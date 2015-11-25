@@ -8,7 +8,8 @@ Installation
 ------------
 
 In the top level directory, run
-  $ python setup.py install
+
+  python setup.py install
   
 Project Status
 --------------
