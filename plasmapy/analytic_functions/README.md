@@ -1,1 +1,1 @@
-# Analytic functions package in PlasmaPy
+## Analytic functions package in PlasmaPy
