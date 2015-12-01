@@ -19,4 +19,4 @@ If you would like to join the PlasmaPy Project, please contact Nick Murphy at na
 ## License
 
 Astropy is licensed under a 3-clause BSD style license - see the
-``licenses/LICENSE.rst`` file.
+``licenses/LICENSE.md`` file.
