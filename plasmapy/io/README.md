@@ -1,1 +1,1 @@
-# Input/output package for PlasmaPy
+## Input/output package for PlasmaPy
