@@ -1,1 +1,1 @@
-# Visualization package for PlasmaPy
+## Visualization package for PlasmaPy
