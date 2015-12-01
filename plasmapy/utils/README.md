@@ -1,1 +1,1 @@
-# Utilities package for PlasmaPy
+## Utilities package for PlasmaPy
