@@ -1,22 +1,26 @@
 # PlasmaPy
 
-A community developed python package for plasma physics.
+A community developed Python package for plasma physics.
+
+## Project Status
+
+PlasmaPy is at the very beginning of its development.  At present, the project coordinators are seeking plasma physicists who are interested in working on PlasmaPy from the very start of its development.  
+
+An initial description of our hopes for this project are given here:
+
+* Murphy, Nicholas A, Huang, Yi-Min, & PlasmaPy Community. (2016, October). PlasmaPy: beginning a community developed Python package for plasma physics. Zenodo. http://doi.org/10.5281/zenodo.163752
+
+## Becoming Involved
+
+If you would like to join the PlasmaPy Project, please contact Nick Murphy at <namurphy@cfa.harvard.edu> or Yi-Min Huang at <yiminh@princeton.edu>.
 
 ## Installation
 
 In the top level directory, run
 
   python setup.py install
-  
-## Project Status
-
-PlasmaPy is in the very early stages of development.
-
-## Becoming Involved
-
-If you would like to join the PlasmaPy Project, please contact Nick Murphy at namurphy@cfa.harvard.edu
 
 ## License
 
-Astropy is licensed under a 3-clause BSD style license - see the
+PlasmaPy is licensed under a 3-clause BSD style license - see the
 ``licenses/LICENSE.md`` file.
