@@ -8,6 +8,8 @@ Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 import numpy as np
 import astropy.units as u
 
+mu0 = np.pi * 4.0e-7 * (u.newton / (u.amp**2))
+
 class Plasma():
     """Core class for describing and calculating plasma parameters.
 
@@ -60,3 +62,18 @@ class Plasma():
         self.momentum = np.zeros((3, *self.domain_shape)) * u.kg / (u.m**2 * u.s)
         self.pressure = np.zeros(self.domain_shape) * u.Pa
         self.magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
+
+    @property
+    def velocity(self):
+        return self.momentum / self.density
+
+    @property
+    def magnetic_field_strength(self):
+        B = self.magnetic_field
+        return np.sqrt(np.sum(B * B, axis=0))
+
+    @property
+    def alfven_speed(self):
+        B = self.magnetic_field
+        rho = self.density
+        return np.sqrt(np.sum(B * B, axis=0) / (mu0*rho))
