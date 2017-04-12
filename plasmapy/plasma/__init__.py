@@ -1,2 +1,2 @@
-import plasma
 from .plasma import Plasma
+import tests
