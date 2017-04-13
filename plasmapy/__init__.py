@@ -1,1 +1,1 @@
-from .plasma import Plasma
+from .classes import Plasma
