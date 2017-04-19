@@ -135,12 +135,20 @@ git add filename.py
 git commit -m "*brief description of changes*"
 ```
 Committed changes may be pushed to the corresponding branch on your
-GitHub fork of PlasmaPy using
+GitHub fork of PlasmaPy using 
+```
+git push *your-username* *your-new-feature* 
+```
+or, more simply,
 ```
 git push
 ```
 
-
-Changes can be committed using the 
-
-
+Once you have completed your changes and pushed them to the branch on
+GitHub, you are ready to make a pull request.  Go to your fork of
+PlasmaPy in GitHub.  Select "Compare and pull request".  Add a
+descriptive title and some details about your changes.  Then select
+"Create pull request".  Other contributors will then have a chance to
+review the code and offer contructive suggestions.  You can continue
+to edit the pull request by changing the corresponding branch on your
+PlasmaPy fork on GitHub.
