@@ -1,5 +1,6 @@
 """Functions related to the plasma dispersion function"""
 
+
 def plasma_dispersion_func(zeta):
     """Calculate the plasma dispersion function
 
@@ -26,11 +27,11 @@ def plasma_dispersion_func(zeta):
     -----
     The plasma dispersion function is defined as:
 
-    .. math:: 
-    Z(\zeta) = \sqrt{\pi} 
+    .. math::
+    Z(\zeta) = \sqrt{\pi}
     \int_{-\infty}^{+\infty} dx \frac{e^{-x^2}}{x-\zeta}
 
-    where the argument is a complex number [fried.conte-1961].  
+    where the argument is a complex number [fried.conte-1961].
 
     In plasma wave theory, the plasma dispersion function appears
     frequently when the background medium has a Maxwellian
@@ -64,22 +65,22 @@ def plasma_dispersion_func(zeta):
     from scipy import special
 
     if not np.all(np.isfinite(zeta)):
-        raise ValueError("Argument of plasma_dispersion_function " + \
-                             "must be a complex number or array")
+        raise ValueError("Argument of plasma_dispersion_function " +
+                         "must be a complex number or array")
 
-    Z = 1j * np.sqrt(np.pi) * np.exp(-zeta**2) * \
-        (1.0 + special.erf(1j*zeta))
+    Z = 1j * np.sqrt(np.pi) * np.exp(-zeta**2) * (1.0 + special.erf(1j * zeta))
 
     return Z
 
+
 def plasma_dispersion_func_deriv(zeta):
     """Calculate the derivative of the plasma dispersion function
-    
+
     Parameters
     ----------
     zeta : complex number or array
         Argument of plasma dispersion function.
- 
+
     Returns
     -------
     Zprime : complex number or array
@@ -98,10 +99,10 @@ def plasma_dispersion_func_deriv(zeta):
     -----
     The plasma dispersion function is defined as:
 
-    .. math:: Z(\zeta) \equiv \sqrt{\pi} 
+    .. math:: Z(\zeta) \equiv \sqrt{\pi}
     \int_{-\infty}^{+\infty} dx \frac{e^{-x^2}}{x-\zeta}
 
-    where the argument is a complex number [fried.conte-1961].  
+    where the argument is a complex number [fried.conte-1961].
 
     References
     ----------
@@ -114,9 +115,9 @@ def plasma_dispersion_func_deriv(zeta):
     import numpy as np
 
     if not np.all(np.isfinite(zeta)):
-        raise ValueError("Argument of plasma_dispersion_function " + \
-                             "must be a complex number or array")
-    
-    Zprime = -2*(1+zeta*plasma_dispersion_func(zeta))
+        raise ValueError("Argument of plasma_dispersion_function " +
+                         "must be a complex number or array")
+
+    Zprime = -2 * (1 + zeta * plasma_dispersion_func(zeta))
 
     return Zprime
