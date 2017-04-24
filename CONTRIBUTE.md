@@ -59,23 +59,28 @@ directory that will host your PlasmaPy directory, and run one of the
 following commands (after changing *your-username* to your username).
 If you would like to use HTTPS (which is the default and easier to set
 up), then run:
+
+```console
+git clone https://github.com/your-username/PlasmaPy.git
 ```
-git clone https://github.com/*your-username*/PlasmaPy.git
-```
+
 SSH is a more secure option, but requires you to [set up an SSH
 key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/) beforehand.  The equivalent SSH command is:
+
 ```
-git clone git@github.com:*your-username*/PlasmaPy.git
+git clone git@github.com:your-username/PlasmaPy.git
 ```
 
 After cloning, we must tell git where the development version of
 PlasmaPy is by running:
+
 ```
 git remote add upstream git://github.com/PlasmaPy/PlasmaPy.git
 ```
 
 To check on which remotes exist, run `git remote -v`.  You should get
 something like this:
+
 ```
 origin		git@github.com:namurphy/PlasmaPy.git (fetch)
 origin		git@github.com:namurphy/PlasmaPy.git (push)
@@ -87,34 +92,39 @@ upstream	git@github.com:PlasmaPy/PlasmaPy.git (push)
 
 Before making any changes, it is prudent to update your local
 repository with the most recent changes from the development
-repository: 
-```
-git fetch plasmapy
-```
+repository:
+
+```git fetch plasmapy```
 
 Changes to PlasmaPy should be made using branches.  It is usually best
 to avoid making changes on your master branch so that it can be kept
 consistent with the upstream repository.  Instead we can create a new
-branch for the specific feature that you would like to work on: ```
-git branch *your-new-feature* ``` Descriptive branch names such as
-`grad-shafranov` or `adding-eigenfunction-poetry` are helpful, while
-vague names like `edits` are considered harmful.  After creating your
-branch locally, let your fork of PlasmaPy know about it by running:
-``` git push --set-upstream *your-username* *your-new-feature* ``` It
-is also useful to configure git so that only the branch you are
-working on gets pushed to GitHub: ``` git config --global push.default
-simple ```
+branch for the specific feature that you would like to work on:
+
+```git branch *your-new-feature* ``` 
+
+Descriptive branch names such as `grad-shafranov` or
+`adding-eigenfunction-poetry` are helpful, while vague names like
+`edits` are considered harmful.  After creating your branch locally,
+let your fork of PlasmaPy know about it by running:
+
+``` git push --set-upstream origin *your-new-feature* ``` 
+
+It is also useful to configure git so that only the branch you are
+working on gets pushed to GitHub:
+
+```git config --global push.default simple```
 
 Once you have set up your fork and created a branch, you are ready to
 make edits to PlasmaPy.  Switch to your new branch by running:
-```
-git checkout *your-new-feature*
-```
+
+```git checkout *your-new-feature*```
+
 Go ahead and modify files with your favorite text editor.  Be sure to
 include tests and documentation with any new functionality.  We also
 recommend reading about [best practices for scientific
-computing](https://doi.org/10.1371/journal.pbio.1001745).
-PlasmaPy uses the [PEP 8 style guide for Python
+computing](https://doi.org/10.1371/journal.pbio.1001745).  PlasmaPy
+uses the [PEP 8 style guide for Python
 code](https://www.python.org/dev/peps/pep-0008/) and the [numpydoc
 format for
 docstrings](https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt).
@@ -130,7 +140,7 @@ git commit -m "*brief description of changes*"
 Committed changes may be pushed to the corresponding branch on your
 GitHub fork of PlasmaPy using 
 ```
-git push *your-username* *your-new-feature* 
+git push origin *your-new-feature* 
 ```
 or, more simply,
 ```
