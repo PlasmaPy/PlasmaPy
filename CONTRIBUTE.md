@@ -62,7 +62,7 @@ up), then run:
 ```
 git clone https://github.com/*your-username*/PlasmaPy.git
 ```
-SSH is a more secure option, but requires to to [set up an SSH
+SSH is a more secure option, but requires you to [set up an SSH
 key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/) beforehand.  The equivalent SSH command is:
 ```
 git clone git@github.com:*your-username*/PlasmaPy.git
