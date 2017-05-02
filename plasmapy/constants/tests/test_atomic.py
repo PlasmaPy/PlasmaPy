@@ -5,13 +5,10 @@ from ..atomic import (element_symbol, isotope_symbol, atomic_number,
                       mass_number, element_name, standard_atomic_weight,
                       isotope_mass, ion_mass, nuclear_binding_energy,
                       energy_from_nuclear_reaction, is_isotope_stable,
-                      half_life)
+                      half_life, known_isotopes, common_isotopes, 
+                      stable_isotopes)
+
 import pytest
-
-
-def test_zero_division():
-    with pytest.raises(ZeroDivisionError):
-        1 / 0
 
 
 def test_element_symbol():
@@ -306,6 +303,19 @@ def test_is_isotope_stable():
     assert is_isotope_stable('Pb', 209) is False
     assert is_isotope_stable(82, 209) is False
     assert is_isotope_stable('82', '209') is False
+
+    with pytest.raises(ValueError):
+        is_isotope_stable('hydrogen-444444')
+
+    with pytest.raises(ValueError):
+        is_isotope_stable('hydrogen', 0)
+
+
+def test_isotope_calls():
+    assert known_isotopes('H') == \
+        ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7']
+    assert common_isotopes('H') == ['H-1', 'D']
+    assert stable_isotopes('He') == ['He-3', 'He-4']
 
 
 def test_half_life():
