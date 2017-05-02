@@ -1,8 +1,7 @@
+import numpy as np
 from astropy import units as u, constants as const
 from .elements import atomic_symbols_list, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
-
-import warnings
 
 
 def element_symbol(argument):
@@ -17,18 +16,21 @@ def element_symbol(argument):
     Returns
     -------
     symbol: string
-        The atomic symbol of the element or isotope.
+        The atomic symbol of the element, isotope, or nucleon.
 
     Raises
     ------
+    TypeError:
+        If the argument is not a string or integer.
+
     ValueError:
         If the argument cannot be used to identify the element.
 
     See also
     --------
-    isotope_symbol : returns isotope symbol instead of atomic symbol
+    isotope_symbol : returns isotope symbol instead of atomic symbol.
 
-    element_name : returns the name of an element
+    element_name : returns the name of an element.
 
     Notes
     -----
@@ -37,9 +39,10 @@ def element_symbol(argument):
     'alpha' will yield 'He'; and 'iron-56' or 'Fe-56' will yield 'Fe'.
 
     This function is case insensitive when there is no ambiguity associated
-    with case.  However, this function will return 'H' for hydrogen if the 
-    argument is lower case 'p' for proton, and will return capital 'P' if the
-    argument is 'P' for phosphorus.
+    with case.  However, this function will return 'H' for hydrogen for lower
+    case 'p' but capital 'P' if the argument is 'P' for phosphorus.  This
+    function will also return lower case 'n' if the argument is lower case 'n' 
+    for neutrons, but capital 'N' for nitrogen if the argument is capital 'N'.
 
     Examples
     --------
@@ -58,20 +61,26 @@ def element_symbol(argument):
 
     """
 
-#    if str(argument) == '0':
-#        warnings.warn('Assuming atomic number of zero corresponds to neutron')
-#        return 'n'
+    if type(argument) not in [str, int]:
+        raise TypeError("The first argument in element_symbol must be either "
+                        "a string representing an element or isotope, or an "
+                        "integer representing the atomic number (or 0 for "
+                        " neutrons).")
 
     if type(argument) == str:
 
-
-        if '-' in argument:  # check for isotope notation
-            dash_position = argument.find('-')
-            argument = argument[:dash_position]
-        elif argument in ['n', 'neutron', 0]:
+        if argument in ['n', 'neutron', 0, '0', 'n-1']:
             return 'n'
         elif argument == 'p' or argument.lower() == 'proton':
             return 'H'
+        elif '-' in argument:
+            dash_position = argument.find('-')
+            argument = argument[:dash_position]
+        elif argument in ['n', 'neutron', 0, '0', 'n-1']:
+            return 'n'
+        elif argument == 'p' or argument.lower() == 'proton':
+            return 'H'
+
         if atomic_symbols_dict.keys().__contains__(argument.lower()):
             symbol = atomic_symbols_dict[argument.lower()]
         elif atomic_symbols_list.__contains__(argument.capitalize()):
@@ -82,7 +91,7 @@ def element_symbol(argument):
             symbol = 'H'
         elif 'alpha' == argument.lower():
             symbol = 'He'
-        elif argument.isalnum():
+        elif argument.isnumeric():
             argument = int(argument)
         else:
             raise ValueError(argument+" is an invalid argument for "
@@ -94,6 +103,9 @@ def element_symbol(argument):
         else:
             raise ValueError(str(argument)+" is an invalid atomic number in "
                              "element_symbol")
+
+    if symbol not in Elements.keys():
+        raise ValueError('')
 
     return symbol
 
@@ -120,14 +132,17 @@ def isotope_symbol(argument, mass_numb=None):
     Raises
     ------
     ValueError:
-        Invalid argument.
-
+        If insufficient or contradictory isotope information is provided, the
+        element cannot be determined from the first argument, or the mass
+        number exceeds the atomic number.
+    
     TypeError:
-        Invalid type.
+        If isotope information cannot be found because one or both inputs is
+        of an inappropriate type.
 
-    Warning:
-        Resulting isotope not in database, which means it is an uncommon or
-        very rare isotope.
+    UserWarning:
+        If redundant isotope information is provided, or isotope is not in 
+        database (and therefore might not exist).
 
     See also
     --------
@@ -153,42 +168,86 @@ def isotope_symbol(argument, mass_numb=None):
     'He-4'
 
     """
-
-    if argument in ['n', 'neutron', 'Neutron', 0, '0']:
-        return 'n'
+    if type(argument) not in [str, int]:
+        raise TypeError("The first argument in isotope_symbol must be either "
+                        "a string representing an element or isotope, or an "
+                        "integer representing the atomic number (or 0 for "
+                        " neutrons).")
 
     if type(mass_numb) == str:
-        try:
+        if mass_numb.isdigit():
             mass_numb = int(mass_numb)
-        except:
+        else:           
             raise TypeError("The second argument in isotope_symbol is an "
                             "invalid mass number.")
-    elif type(argument) == int and type(mass_numb) == int:
-        if argument > mass_numb:
-            raise ValueError("The first argument of isotope_symbol, which "
-                             "represents the atomic number when it is an "
-                             "integer, cannot exceed the second (keyword) "
-                             "argument which represents the mass number.")
 
-    atomic_symbol = element_symbol(argument)
+    if type(argument) == str:
+        if argument.isdigit():
+            argument = int(argument)
 
-    if mass_numb is None:
-        if type(argument) == str:
-            if '-' in argument:
-                dash_position = argument.find('-')
-                mass_numb = argument[dash_position+1:]
-            elif argument.lower() in ['protium', 'proton', 'p', 'p+']:
-                mass_numb = 1
-            elif argument.lower() in ['d', 'deuterium', 'h-2', 'hydrogen-2']:
-                mass_numb = '2'
-            elif argument.lower() in ['t', 'tritium', 'h-3', 'hydrogen-3']:
-                mass_numb = '3'
-            elif argument.lower() == 'alpha':
-                mass_numb = 4
+    if type(argument) == int:
+        if argument > 0 and mass_numb is None:
+            raise ValueError("Insufficient information to find isotope")
+          
+    special_case_sensitive = {'n': (1, 'n'), 'n-1': (1, 'n'),
+                              'p': (1, 'H-1'), 'p+': (1, 'H-1')}   
+
+    special_case_insensitive = {'neutron': (1, 'n'),
+                                'proton': (1, 'H-1'), 'protium': (1, 'H-1'),
+                                'hydrogen-1': (1, 'H-1'), 'h-1': (1, 'H-1'),
+                                'deuterium': (2, 'D'),  'd': (2, 'D'), 
+                                'h-2': (2, 'D'), 'hydrogen-2': (2, 'D'),
+                                't': (3, 'T'), 'tritium': (3, 'T'),
+                                'h-3': (3, 'T'), 'hydrogen-3': (3, 'T'),
+                                'alpha': (4, 'He-4'), 'he-4': (4, 'He-4'),
+                                'helium-4': (4, 'He-4')}
+
+    special_case = False
+
+    if type(argument) == str:
+        
+        if argument in special_case_sensitive.keys():
+            new_mass_number, isotope = special_case_sensitive[argument]
+            special_case = True
+        elif argument.lower() in special_case_insensitive.keys():
+            new_mass_number, isotope = special_case_insensitive[argument.lower()]
+            special_case = True
+        
+        if special_case and mass_numb is not None:
+            if mass_numb == new_mass_number:
+                raise UserWarning("Redundant isotope information")
+            elif mass_numb != new_mass_number:
+                raise ValueError("Contradictory isotope information")
+
+    elif argument == 0:
+        new_mass_number, isotope = 0, 'n'
+        special_case = True
+    else:
+        special_case = False
+         
+    if special_case:
+        return isotope
+
+
+    try:
+        atomic_symbol = element_symbol(argument)
+    except:
+        raise ValueError("The first argument of isotope_symbol (" + 
+                         str(argument) + ") does not give element information")
+       
+    if type(argument) == str:
+        if '-' in argument:
+            dash_position = argument.find('-')
+            new_mass_numb = argument[dash_position+1:].strip()
+            if type(mass_numb) == int:
+                if str(mass_numb) == new_mass_numb:
+                    raise UserWarning("Redundant isotope information")
+                else:
+                    raise ValueError("Contradictory isotope information")
+            mass_numb = new_mass_numb
         else:
-            raise TypeError("Argument in isotope_symbol must be a string "
-                            "representing an isotope if no mass number is " 
-                            "provided.")
+            if mass_numb is None:
+                raise ValueError("Insufficient information to find isotope")
 
     isotope = atomic_symbol + '-' + str(mass_numb)
 
@@ -202,9 +261,9 @@ def isotope_symbol(argument, mass_numb=None):
                          "cannot exceed the atomic number (" + 
                          str(atomic_number(isotope)) + ") in isotope_symbol.")
 
-#    if isotope not in Isotopes.keys():
-#        warnings.warn("No data is available for isotope " + isotope + 
-#                      ", so this isotope is either unknown or rare.")
+    if isotope not in Isotopes.keys():
+        raise UserWarning("The isotope " + isotope + " is not in database, "
+                          "and might not exist.")
 
     return isotope
 
@@ -245,61 +304,86 @@ def atomic_number(argument):
     atomic_numb = Elements[atomic_symbol]['atomic_number']
     return atomic_numb
 
-def is_isotope_stable(isotope, mass_numb=None):
-    """Returns true for stable isotopes and false otherwise."""
+def is_isotope_stable(argument, mass_numb=None):
+    """Returns true for stable isotopes and false otherwise.
 
-    stable_isotopes = ['H-1', 'D', 'He-3', 'He-4', 'Li-6', 'Li-7', 'Be-9', 
-                       'B-10', 'B-11', 'C-12', 'C-13', 'N-14', 'N-15', 'O-16',
-                       'O-17', 'O-18', 'F-19', 'Ne-20', 'Ne-21', 'Ne-22', 
-                       'Na-23', 'Mg-24', 'Mg-25', 'Mg-26', 'Al-27', 'Si-28', 
-                       'Si-29', 'Si-30', 'P-31', 'S-32', 'S-33', 'S-34', 
-                       'S-36', 'Cl-35', 'Cl-37', 'Ar-36', 'Ar-38', 'Ar-40', 
-                       'K-39', 'K-41', 'Ca-40', 'Ca-42', 'Ca-43', 'Ca-44', 
-                       'Ca-46', 'Sc-45', 'Ti-46', 'Ti-47', 'Ti-48', 'Ti-49',
-                       'Ti-50', 'V-51', 'Cr-50', 'Cr-52', 'Cr-53', 'Cr-54', 
-                       'Mn-55', 'Fe-54', 'Fe-56', 'Fe-57', 'Fe-58', 'Co-59',
-                       'Ni-58', 'Ni-60', 'Ni-61', 'Ni-62', 'Ni-64', 'Cu-63',
-                       'Cu-65', 'Zn-64', 'Zn-66', 'Zn-67', 'Zn-68', 'Zn-70', 
-                       'Ga-69', 'Ga-71', 'Ge-70', 'Ge-72', 'Ge-73', 'Ge-74',
-                       'As-75', 'Se-74', 'Se-76', 'Se-77', 'Se-78', 'Se-80', 
-                       'Br-79', 'Br-81', 'Kr-78', 'Kr-80', 'Kr-82', 'Kr-83',
-                       'Kr-84', 'Kr-86', 'Rb-85', 'Sr-84', 'Sr-86', 'Sr-87', 
-                       'Sr-88', 'Y-89', 'Zr-90', 'Zr-91', 'Zr-92', 'Zr-94', 
-                       'Nb-93', 'Mo-92', 'Mo-94', 'Mo-95', 'Mo-96', 'Mo-97', 
-                       'Mo-98', 'Ru-96', 'Ru-98', 'Ru-99', 'Ru-100', 'Ru-101', 
-                       'Ru-102', 'Ru-104', 'Rh-103', 'Pd-102', 'Pd-104', 
-                       'Pd-105', 'Pd-106', 'Pd-108', 'Pd-110', 'Ag-107', 
-                       'Ag-109', 'Cd-106', 'Cd-108', 'Cd-110', 'Cd-111', 
-                       'Cd-112', 'Cd-114', 'In-113', 'Sn-112', 'Sn-114', 
-                       'Sn-115', 'Sn-116', 'Sn-117', 'Sn-118', 'Sn-119', 
-                       'Sn-120', 'Sn-122', 'Sn-124', 'Sb-121', 'Sb-123', 
-                       'Te-120', 'Te-122', 'Te-123', 'Te-124', 'Te-125', 
-                       'Te-126', 'I-127', 'Xe-124', 'Xe-126', 'Xe-128', 
-                       'Xe-129', 'Xe-130', 'Xe-131', 'Xe-132', 'Xe-134', 
-                       'Cs-133', 'Ba-132', 'Ba-134', 'Ba-135', 'Ba-136', 
-                       'Ba-137', 'Ba-138', 'La-139', 'Ce-136', 'Ce-138', 
-                       'Ce-140', 'Ce-142', 'Pr-141', 'Nd-142', 'Nd-143', 
-                       'Nd-145', 'Nd-146', 'Nd-148', 'Sm-144', 'Sm-149', 
-                       'Sm-150', 'Sm-152', 'Sm-154', 'Eu-153', 'Gd-154', 
-                       'Gd-155', 'Gd-156', 'Gd-157', 'Gd-158', 'Gd-160', 
-                       'Tb-159', 'Dy-156', 'Dy-158', 'Dy-160', 'Dy-161', 
-                       'Dy-162', 'Dy-163', 'Dy-164', 'Ho-165', 'Er-162', 
-                       'Er-164', 'Er-166', 'Er-167', 'Er-168', 'Er-170', 
-                       'Tm-169', 'Yb-168', 'Yb-170', 'Yb-171', 'Yb-172', 
-                       'Yb-173', 'Yb-174', 'Yb-176', 'Lu-175', 'Hf-176', 
-                       'Hf-177', 'Hf-178', 'Hf-179', 'Hf-180', 'Ta-180', 
-                       'Ta-181', 'W-182', 'W-183', 'W-184', 'W-186', 'Re-185', 
-                       'Os-184', 'Os-187', 'Os-188', 'Os-189', 'Os-190', 
-                       'Os-192', 'Ir-191', 'Ir-193', 'Pt-192', 'Pt-194', 
-                       'Pt-195', 'Pt-196', 'Pt-198', 'Au-197', 'Hg-196', 
-                       'Hg-198', 'Hg-199', 'Hg-200', 'Hg-201', 'Hg-202', 
-                       'Hg-204', 'Tl-203', 'Tl-205', 'Pb-204', 'Pb-206', 
-                       'Pb-207', 'Pb-208']
+    Parameters
+    ----------
+    argument: integer or string
+        A string or integer representing an atomic number or element, or a
+        string represnting an isotope.
+
+    mass_numb: integer
+        The mass number of the isotope.
+
+    Returns
+    -------
+    is_stable: boolean
+        True if the isotope is stable, False if it is unstable.
+
+    Raises:
+    -------
+    ValueError:
+        If isotope is not recognized.
+    """
+
+    try:
+        isotope = isotope_symbol(argument, mass_numb)
+        is_stable = Isotopes[isotope]['is_stable']
+    except TypeError:
+        raise
+    except ValueError:
+        raise #ValueError("Isotope not recognized in is_isotope_stable")
+ 
+    return is_stable
+
+
+def half_life(argument, mass_numb=None):
+    """Returns the half-life in seconds for unstable isotopes, and numpy.inf
+    for stable isotopes.
+
+    Parameters
+    ----------
+    argument: integer or string
+        A string or integer representing an atomic number or element, or a
+        string represnting an isotope.
+    mass_numb: integer
+        The mass number of the isotope.
+
+    Returns
+    -------
+    half_life_sec: astropy Quantity
+        The half-life in units of seconds.
+
+    Raises:
+    -------
+    ValueError:
+        If no half-life data is available for the isotope.
+
+    Notes:
+    ------
+    At present there is limited half-life data available.
     
-    if isotope_symbol(isotope, mass_numb) in stable_isotopes:
-        return True
-    else:
-        return False
+    Examples:
+    ---------
+    >>> half_life('T')
+    <Quantity 388800000.0 s>
+    >>> half_life('n')
+    <Quantity 881.5 s>
+    """
+
+    isotope = isotope_symbol(argument, mass_numb)
+
+    try:
+        if Isotopes[isotope]['is_stable']:
+            half_life_sec = np.inf * u.s
+        else:
+            half_life_sec = Isotopes[isotope]['half_life']
+    except:
+        raise ValueError("The half-life for isotope " + isotope +
+                         " is not available.")
+
+    return half_life_sec
 
 
 def mass_number(isotope):
@@ -317,9 +401,8 @@ def mass_number(isotope):
 
     Raises
     ------
-
-    Warning:
-        If the isotope is not in the list of common isotopes.
+    ValueError
+        If the mass number cannot be found.
 
     See also
     --------
@@ -327,23 +410,26 @@ def mass_number(isotope):
 
     Examples
     --------
+    >>> mass_number("H-1")
+    1
+    >>> mass_number("Pb-208")
+    208
     >>> mass_number("tritium")
     3
-
+    >>> mass_number("n")
+    1
+    >>> mass_number("N")
+    7
+    >>> mass_number("alpha")
+    4
+    
     """
-
-    if isotope == 'n':
-        return 1
 
     symbol = isotope_symbol(isotope)
     try:
         mass_numb = Isotopes[symbol]["mass_number"]
     except:
-        if symbol == 'D':
-            mass_numb = 2
-        elif symbol == 'T':
-            mass_numb = 3
-        elif '-' in symbol:
+        if '-' in symbol:
             dash_position = symbol.find('-')
             mass_numb_string = symbol[dash_position+1:]
             try:
@@ -351,6 +437,7 @@ def mass_number(isotope):
             except:
                 raise ValueError("Cannot find mass number for isotope " +
                                  str(isotope))
+
     return mass_numb
 
 
@@ -456,25 +543,61 @@ def standard_atomic_weight(argument):
 
     """
 
-    if type(argument) == int:
-        try:
-            atomic_symbol = element_symbol(argument)
-        except:
-            raise ValueError(str(argument)+' is an invalid atomic number')
-    elif type(argument) == str:
-        if argument == 'P':
-            atomic_symbol = 'P'
-        elif (not argument.isalpha() or argument.lower() in
-              ['p', 'protium', 'd', 'deuterium', 't', 'tritium', 'alpha']):
-            raise ValueError("Use isotope_mass to get atomic mass of isotopes")
-        else:
-            atomic_symbol = element_symbol(argument)
-    atomic_weight = Elements[atomic_symbol]["atomic_mass"]
+    try:
+        isotope = isotope_symbol(argument)
+    except:
+        isotope = ''
 
-    if atomic_weight is None:
-        raise ValueError("No standard atomic weight is available for " +
+    if isotope in ['p', 'alpha']:
+        raise ValueError("Use ion_mass to get masses of protons and alpha "
+                         "particles instead of standard_atomic_weight")
+    elif isotope in ['n']:
+        raise ValueError("Use isotope_mass('n') or plasmapy.constants.m_n "
+                         "instead of standard_atomic_weight to get neutron "
+                         "mass")
+    elif '-' in isotope or isotope in ['D', 'T']:
+        raise ValueError("Use isotope_mass() to get masses of isotopes")
+
+    atomic_symbol = element_symbol(argument)
+
+    try:
+        atomic_weight = Elements[atomic_symbol]['atomic_mass']
+    except:
+        raise ValueError("No standard atomic weight is available for " + 
                          atomic_symbol)
+
     return atomic_weight
+
+#    if 'atomic_mass' in Elements[atomic_symbol].keys():
+#        atomic_weight = Elements[atomic_symbol]['atomic_weight']
+#        if atomic_weight is None:
+#            raise ValueError("No standard atomic weight is available fro")
+
+#   if 'atomic_mass' in Elements[atomic_symbol].keys():
+#       atomic_weight = Elements[atomic_symbol]['atomic_weight']
+#   else:
+#       raise ValueError("No standard atomic weight is available for " + 
+#                        atomic_symbol)
+
+#    if type(argument) == int:
+#        try:
+#            atomic_symbol = element_symbol(argument)
+#        except:
+#            raise ValueError(str(argument)+' is an invalid atomic number')
+#    elif type(argument) == str:
+#        if argument == 'P':
+#            atomic_symbol = 'P'
+#        elif (not argument.isalpha() or argument.lower() in
+#              ['p', 'protium', 'd', 'deuterium', 't', 'tritium', 'alpha']):
+#            raise ValueError("Use isotope_mass to get atomic mass of isotopes")
+#        else:
+#            atomic_symbol = element_symbol(argument)
+#    atomic_weight = Elements[atomic_symbol]["atomic_mass"]
+#
+#    if atomic_weight is None:
+#        raise ValueError("No standard atomic weight is available for " +
+#                         atomic_symbol)
+#    return atomic_weight
 
 
 def isotope_mass(argument, mass_numb=None):
@@ -527,26 +650,14 @@ def isotope_mass(argument, mass_numb=None):
 
     """
 
-    if argument == "alpha":
+    if argument == 'alpha':
         raise ValueError("Use ion_mass for mass of an alpha particle")
+    elif argument in ['p', 'proton']:
+        raise ValueError("Use plasmapy.constants.m_p or ion_mass('p') to get "
+                         "proton mass")
 
-    if type(argument) == str and type(mass_numb) is int:
-        if '-' in argument or argument in ['D', 'T']:
-            if mass_numb == mass_number(argument):
-                warnings.warn("Redundant isotope information in isotope_mass")
-            else:
-                raise ValueError("Contradictory or insufficient information" +
-                                 " relating to isotope and mass number\n" +
-                                 "(first argument = " + str(argument) + "   " +
-                                 "second argument = " + str(mass_numb) + ")")
-
-    try:
-        symbol = isotope_symbol(argument, mass_numb)
-        atomic_mass = Isotopes[symbol]['atomic_mass']
-    except:
-        if symbol == 'n':
-            return 1.00866491588*u.u
-        raise ValueError("Isotope mass not available for " + str(argument))
+    symbol = isotope_symbol(argument, mass_numb)
+    atomic_mass = Isotopes[symbol]['atomic_mass']
 
     return atomic_mass
 
@@ -733,12 +844,10 @@ def energy_from_nuclear_reaction(reaction):
 
     """
     
-    import re, string
+    import re
 
     def _get_isotopes_list(side):
-        print(side)
         pre_list = re.split(' \+ ', side)
-        print(pre_list)
         isotopes_list = []
         for item in pre_list:
             item = item.strip()
@@ -797,4 +906,5 @@ def energy_from_nuclear_reaction(reaction):
     binding_energy_before = _add_binding_energies(reactants) 
     binding_energy_after = _add_binding_energies(products)
     energy = binding_energy_after - binding_energy_before
+
     return energy.to(u.MeV)
