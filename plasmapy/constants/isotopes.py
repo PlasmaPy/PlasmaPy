@@ -1,7 +1,8 @@
 from numpy import inf, nan
 from astropy.units import u, s
 
-def Iso(symbol, name, atomic_number, mass_number, relative_atomic_mass, \
+
+def Iso(symbol, name, atomic_number, mass_number, relative_atomic_mass,
         is_stable, isotopic_composition=None, half_life=None):
     """Create a dictionary containing isotope information."""
     Isotope = {'name': name,
@@ -18,9 +19,11 @@ def Iso(symbol, name, atomic_number, mass_number, relative_atomic_mass, \
 
     return Isotope
 
+
 # From NIST
 
 Isotopes = {
+    'n': Iso('n', 'neutron', 0, 1, 1.00866491588, False, half_life=881.5),
     'H-1': Iso('H-1', 'hydrogen-1', 1, 1, 1.00782503223, True,
                isotopic_composition=0.999885),
     'D': Iso('D', 'deuterium', 1, 2, 2.01410177812, True,
@@ -57,7 +60,8 @@ Isotopes = {
     'Be-5': Iso('Be-5', 'beryllium-5', 4, 5, 5.0399, False),
     'Be-6': Iso('Be-6', 'beryllium-6', 4, 6, 6.0197264, False),
     'Be-7': Iso('Be-7', 'beryllium-7', 4, 7, 7.016928717, False),
-    'Be-8': Iso('Be-8', 'beryllium-8', 4, 8, 8.005305102, False),
+    'Be-8': Iso('Be-8', 'beryllium-8', 4, 8, 8.005305102, False,
+                half_life=6.7e-17),
     'Be-9': Iso('Be-9', 'beryllium-9', 4, 9, 9.012183065, True,
                 isotopic_composition=1),
     'Be-10': Iso('Be-10', 'beryllium-10', 4, 10, 10.013534695, False),
