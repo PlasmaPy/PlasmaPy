@@ -41,7 +41,7 @@ def element_symbol(argument):
     This function is case insensitive when there is no ambiguity associated
     with case.  However, this function will return 'H' for hydrogen for lower
     case 'p' but capital 'P' if the argument is 'P' for phosphorus.  This
-    function will also return lower case 'n' if the argument is lower case 'n' 
+    function will also return lower case 'n' if the argument is lower case 'n'
     for neutrons, but capital 'N' for nitrogen if the argument is capital 'N'.
 
     Examples
@@ -135,13 +135,13 @@ def isotope_symbol(argument, mass_numb=None):
         If insufficient or contradictory isotope information is provided, the
         element cannot be determined from the first argument, or the mass
         number exceeds the atomic number.
-    
+
     TypeError:
         If isotope information cannot be found because one or both inputs is
         of an inappropriate type.
 
     UserWarning:
-        If redundant isotope information is provided, or isotope is not in 
+        If redundant isotope information is provided, or isotope is not in
         database (and therefore might not exist).
 
     See also
@@ -178,7 +178,7 @@ def isotope_symbol(argument, mass_numb=None):
     if type(mass_numb) == str:
         if mass_numb.isdigit():
             mass_numb = int(mass_numb)
-        else:           
+        else:
             raise TypeError("The second argument in isotope_symbol is an "
                             "invalid mass number.")
 
@@ -189,14 +189,14 @@ def isotope_symbol(argument, mass_numb=None):
     if type(argument) == int:
         if argument > 0 and mass_numb is None:
             raise ValueError("Insufficient information to find isotope")
-          
+
     special_case_sensitive = {'n': (1, 'n'), 'n-1': (1, 'n'),
-                              'p': (1, 'H-1'), 'p+': (1, 'H-1')}   
+                              'p': (1, 'H-1'), 'p+': (1, 'H-1')}
 
     special_case_insensitive = {'neutron': (1, 'n'),
                                 'proton': (1, 'H-1'), 'protium': (1, 'H-1'),
                                 'hydrogen-1': (1, 'H-1'), 'h-1': (1, 'H-1'),
-                                'deuterium': (2, 'D'),  'd': (2, 'D'), 
+                                'deuterium': (2, 'D'),  'd': (2, 'D'),
                                 'h-2': (2, 'D'), 'hydrogen-2': (2, 'D'),
                                 't': (3, 'T'), 'tritium': (3, 'T'),
                                 'h-3': (3, 'T'), 'hydrogen-3': (3, 'T'),
@@ -206,14 +206,15 @@ def isotope_symbol(argument, mass_numb=None):
     special_case = False
 
     if type(argument) == str:
-        
+
         if argument in special_case_sensitive.keys():
             new_mass_number, isotope = special_case_sensitive[argument]
             special_case = True
         elif argument.lower() in special_case_insensitive.keys():
-            new_mass_number, isotope = special_case_insensitive[argument.lower()]
+            new_mass_number, isotope = \
+                special_case_insensitive[argument.lower()]
             special_case = True
-        
+
         if special_case and mass_numb is not None:
             if mass_numb == new_mass_number:
                 raise UserWarning("Redundant isotope information")
@@ -225,17 +226,16 @@ def isotope_symbol(argument, mass_numb=None):
         special_case = True
     else:
         special_case = False
-         
+
     if special_case:
         return isotope
-
 
     try:
         atomic_symbol = element_symbol(argument)
     except:
-        raise ValueError("The first argument of isotope_symbol (" + 
+        raise ValueError("The first argument of isotope_symbol (" +
                          str(argument) + ") does not give element information")
-       
+
     if type(argument) == str:
         if '-' in argument:
             dash_position = argument.find('-')
@@ -259,7 +259,7 @@ def isotope_symbol(argument, mass_numb=None):
 
     if atomic_number(isotope) > int(mass_numb):
         raise ValueError("The mass number (" + str(mass_numb) + ") "
-                         "cannot exceed the atomic number (" + 
+                         "cannot exceed the atomic number (" +
                          str(atomic_number(isotope)) + ") in isotope_symbol.")
 
     if isotope not in Isotopes.keys():
@@ -305,6 +305,7 @@ def atomic_number(argument):
     atomic_numb = Elements[atomic_symbol]['atomic_number']
     return atomic_numb
 
+
 def is_isotope_stable(argument, mass_numb=None):
     """Returns true for stable isotopes and false otherwise.
 
@@ -334,9 +335,9 @@ def is_isotope_stable(argument, mass_numb=None):
     except (UserWarning, ValueError):
         raise ValueError("Unable to determine isotope in input for "
                          "is_isotope_stable")
- 
+
     is_stable = Isotopes[isotope]['is_stable']
- 
+
     return is_stable
 
 
@@ -365,7 +366,7 @@ def half_life(argument, mass_numb=None):
     Notes:
     ------
     At present there is limited half-life data available.
-    
+
     Examples:
     ---------
     >>> half_life('T')
@@ -424,7 +425,7 @@ def mass_number(isotope):
     7
     >>> mass_number("alpha")
     4
-    
+
     """
 
     symbol = isotope_symbol(isotope)
@@ -565,7 +566,7 @@ def standard_atomic_weight(argument):
     try:
         atomic_weight = Elements[atomic_symbol]['atomic_mass']
     except:
-        raise ValueError("No standard atomic weight is available for " + 
+        raise ValueError("No standard atomic weight is available for " +
                          atomic_symbol)
 
     return atomic_weight
@@ -710,7 +711,8 @@ def ion_mass(argument, Z=1, mass_numb=None):
         return const.m_e
 
     if atomic_number(argument) < Z:
-        raise ValueError("The ionization state cannot exceed the atomic number")
+        raise ValueError("The ionization state cannot exceed the "
+                         "atomic number in ion_mass")
 
     if argument == 'alpha' or element_symbol(argument) == 'He' and Z == 2:
         return 6.644657230e-27*u.kg
@@ -738,7 +740,7 @@ def ion_mass(argument, Z=1, mass_numb=None):
                 "available to get ion mass for " + str(argument)
             if type(mass_numb) is int:
                 errormessage += " with mass number " + str(mass_numb)
-            
+
             raise ValueError(errormessage)
 
     m_i = (atomic_mass - Z*const.m_e).to(u.kg)
@@ -757,7 +759,7 @@ def nuclear_binding_energy(argument, mass_numb=None):
 
     mass_numb: integer
         The mass number of an isotope, which is required if and only if the
-        first argument can only be used 
+        first argument can only be used
 
     Returns
     -------
@@ -796,16 +798,17 @@ def nuclear_binding_energy(argument, mass_numb=None):
     if mass_numb is None:
         mass_numb = mass_number(argument)
     number_of_neutrons = mass_numb - number_of_protons
-    
+
     if number_of_protons == 1 and number_of_neutrons == 0:
         binding_energy = 0 * u.J
     else:
-        mass_of_nucleons = (number_of_protons * const.m_p + 
+        mass_of_nucleons = (number_of_protons * const.m_p +
                             number_of_neutrons * const.m_n)
-        mass_defect = mass_of_nucleons - isotopic_mass        
+        mass_defect = mass_of_nucleons - isotopic_mass
         binding_energy = mass_defect * const.c**2
-    
+
     return binding_energy.to(u.J)
+
 
 def energy_from_nuclear_reaction(reaction):
     """Returns the released energy from a nuclear fusion reaction.
@@ -824,7 +827,7 @@ def energy_from_nuclear_reaction(reaction):
     Raises
     ------
     ValueError:
-        If the input is not a valid reaction, there is insufficient 
+        If the input is not a valid reaction, there is insufficient
         information to determine an isotope, or if the number of nucleons
         is not conserved during the reaction.
 
@@ -844,7 +847,7 @@ def energy_from_nuclear_reaction(reaction):
     >>> energy_triplealpha1 = energy_from_nuclear_reaction(triple_alpha1)
     >>> energy_triplealpha2 = energy_from_nuclear_reaction(triple_alpha2)
     >>> print(energy_triplealpha1, '\n', energy_triplealpha2)
-    -0.09183948324626812 MeV 
+    -0.09183948324626812 MeV
     7.366586766240317 MeV
     >>> energy_triplealpha1.to(u.J)
     <Quantity -1.471430677988809e-14 J>
@@ -854,7 +857,7 @@ def energy_from_nuclear_reaction(reaction):
     <Quantity 0.0 MeV>
 
     """
-    
+
     import re
 
     def _get_isotopes_list(side):
@@ -875,7 +878,7 @@ def energy_from_nuclear_reaction(reaction):
                         multiplier_string += item[0]
                         item = item[1:]
                     symbol = isotope_symbol(item)
-                    for i in range(0,int(multiplier_string)):
+                    for i in range(0, int(multiplier_string)):
                         isotopes_list.append(symbol)
                 except:
                     raise
@@ -903,7 +906,7 @@ def energy_from_nuclear_reaction(reaction):
     except:
         raise ValueError("The left and right hand sides of the reaction "
                          "should be separated by '-->'")
-    
+
     reactants = _get_isotopes_list(LHS)
     products = _get_isotopes_list(RHS)
 
@@ -913,8 +916,8 @@ def energy_from_nuclear_reaction(reaction):
     if mass_num_reactants != mass_num_products:
         raise ValueError("Mass numbers on LHS and RHS do not match for "
                          "reaction "+reaction)
- 
-    binding_energy_before = _add_binding_energies(reactants) 
+
+    binding_energy_before = _add_binding_energies(reactants)
     binding_energy_after = _add_binding_energies(products)
     energy = binding_energy_after - binding_energy_before
 
@@ -959,18 +962,18 @@ def known_isotopes(argument):
 
     element = element_symbol(argument)
 
-    isotopes_of_element = []   
+    isotopes_of_element = []
     for isotope in Isotopes.keys():
         if element + '-' in isotope and isotope[0:len(element)] == element:
             isotopes_of_element.append(isotope)
 
     if element == 'H':
         isotopes_of_element.insert(1, 'D')
-        isotopes_of_element.insert(2, 'T')      
+        isotopes_of_element.insert(2, 'T')
 
     mass_numbers = [mass_number(isotope) for isotope in isotopes_of_element]
 
-    sorted_isotopes = [mass_number for (isotope, mass_number) in 
+    sorted_isotopes = [mass_number for (isotope, mass_number) in
                        sorted(zip(mass_numbers, isotopes_of_element))]
 
     return sorted_isotopes
@@ -978,9 +981,9 @@ def known_isotopes(argument):
 
 def common_isotopes(argument):
     """Returns a list of isotopes of an element with isotopic compositions
-    greater than zero, or an empty list if no isotopes have nonzero 
+    greater than zero, or an empty list if no isotopes have nonzero
     isotopic compositions.
-    
+
     Parameters
     ----------
     argument: integer or string
@@ -999,11 +1002,11 @@ def common_isotopes(argument):
     --------
     known_isotopes : returns a list of all isotopes of an element that have
         been discovered, sorted from lowest to highest mass number.
-    
+
     stable_isotopes : returns a list of all stable isotopes of an element,
         sorted from lowest to highest mass number, or an empty list if an
         element has no stable isotopes.
-    
+
     Examples
     --------
     >>> common_isotopes('H')
@@ -1020,14 +1023,14 @@ def common_isotopes(argument):
     """
 
     isotopes = known_isotopes(argument)
-        
-    CommonIsotopes = [isotope for isotope in isotopes if 
-                            'isotopic_composition' in Isotopes[isotope].keys()]
 
-    isotopic_compositions = [Isotopes[isotope]['isotopic_composition'] 
+    CommonIsotopes = [isotope for isotope in isotopes if
+                      'isotopic_composition' in Isotopes[isotope].keys()]
+
+    isotopic_compositions = [Isotopes[isotope]['isotopic_composition']
                              for isotope in CommonIsotopes]
 
-    sorted_isotopes = [iso_comp for (isotope, iso_comp) in 
+    sorted_isotopes = [iso_comp for (isotope, iso_comp) in
                        sorted(zip(isotopic_compositions, CommonIsotopes))]
     sorted_isotopes.reverse()
 
@@ -1037,7 +1040,7 @@ def common_isotopes(argument):
 def stable_isotopes(argument):
     """Returns a list of all stable isotopes of an element, or an empty list
     if an element has no stable isotopes.
-    
+
     Parameters
     ----------
     argument: integer or string
@@ -1059,7 +1062,7 @@ def stable_isotopes(argument):
     common_isotopes : returns a list of all isotopes of an element with
         isotopic compositions greater than zero, sorted from highest
         abundance to lowest abundance.
-     
+
     Examples
     --------
     >>> stable_isotopes('H')
@@ -1076,8 +1079,8 @@ def stable_isotopes(argument):
     """
 
     KnownIsotopes = known_isotopes(argument)
-    
-    StableIsotopes = [isotope for isotope in KnownIsotopes if 
+
+    StableIsotopes = [isotope for isotope in KnownIsotopes if
                       Isotopes[isotope]['is_stable']]
-    
+
     return StableIsotopes
