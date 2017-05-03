@@ -6,7 +6,8 @@ from ..atomic import (element_symbol, isotope_symbol, atomic_number,
                       isotope_mass, ion_mass, nuclear_binding_energy,
                       energy_from_nuclear_reaction, is_isotope_stable,
                       half_life, known_isotopes, common_isotopes,
-                      stable_isotopes, Elements, Isotopes)
+                      stable_isotopes, isotopic_composition, 
+                      Elements, Isotopes)
 
 import pytest
 
@@ -370,3 +371,51 @@ def test_atomic_ValueErrors():
     with pytest.raises(ValueError):
         energy_from_nuclear_reaction("I didn't like unstable eigenfunctions "
                                      "at first, but then they grew on me")
+
+
+def test_known_common_stable_isotopes():
+
+    assert 'H-1' in known_isotopes('H')
+    assert 'D' in known_isotopes('H')
+    assert 'T' in known_isotopes('H')
+    assert 'Be-8' in known_isotopes('Be')
+    assert 'Og-294' in known_isotopes(118)
+
+    assert 'H-1' in common_isotopes('H')
+    assert 'H-4' not in common_isotopes(1)
+
+    assert 'H-1' in stable_isotopes('H')
+    assert 'D' in stable_isotopes('H')
+    assert 'T' not in stable_isotopes('H')
+
+
+def test_isotopic_composition():
+
+    assert isotopic_composition('H', 1) == isotopic_composition('protium')
+    assert np.isclose(isotopic_composition('D'), 0.000115)
+    assert isotopic_composition('Be-8') == 0.0, 'Be-8'
+    assert isotopic_composition('Li-8') == 0.0, 'Li-8'
+
+
+    assert isotopic_composition('Og', 294) == 0.0
+
+    with pytest.raises(ValueError):
+        isotopic_composition('neutron')
+
+    # Check that the sum of isotopic compositions for each element is one
+
+    for atomic_numb in range(1,119):
+
+        element = atomic_number(atomic_numb)
+        isotopes = common_isotopes(element)
+
+        if len(isotopes) > 0:
+
+            sum_of_iso_comps = 0
+            for isotope in isotopes:
+                sum_of_iso_comps += isotopic_composition(isotope)
+
+            assert np.isclose(sum_of_iso_comps, 1, atol=1e-6), \
+                "Problem with: " + element
+
+

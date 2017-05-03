@@ -13,7 +13,8 @@ from .atomic import (element_symbol, isotope_symbol, atomic_number,
                      mass_number, element_name, standard_atomic_weight,
                      isotope_mass, ion_mass, nuclear_binding_energy, half_life,
                      energy_from_nuclear_reaction, is_isotope_stable,
-                     known_isotopes, common_isotopes, stable_isotopes)
+                     known_isotopes, common_isotopes, stable_isotopes,
+                     isotopic_composition)
 
 from .elements import Elements
 

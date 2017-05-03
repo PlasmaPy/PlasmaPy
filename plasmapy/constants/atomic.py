@@ -1093,3 +1093,54 @@ def stable_isotopes(argument):
                       Isotopes[isotope]['is_stable']]
 
     return StableIsotopes
+
+
+def isotopic_composition(argument, mass_numb=None):
+    """Returns the isotopic composition if known, and otherwise zero.
+
+    Parameters
+    ----------
+    argument: string or integer
+        A string representing an element or isotope, or an integer representing
+        the atomic number of an element.
+
+    mass_numb: integer
+        The mass number of an isotope, which is required if and only if the
+        first argument can only be used
+
+    Returns
+    -------
+    iso_comp: float
+        The isotopic composition
+
+    Raises
+    ------
+    ValueError
+        Invalid input.
+
+    Examples
+    --------
+    >>> isotopic_composition('Pb-208')
+    0.524
+    >>> isotopic_composition('hydrogen', 1)
+    0.999885
+    >>> isotopic_composition(118, 294)  # Og-294
+    0.0
+
+    """
+
+    try:
+        isotope = isotope_symbol(argument, mass_numb)
+        element = element_symbol(isotope)
+    except:
+        raise ValueError("Invalid isotope in isotopic_composition.")
+
+    if isotope == 'n':
+        raise ValueError("Neutrons do not have an isotopic composition.")
+
+    try:
+        iso_comp = Isotopes[isotope]['isotopic_composition']
+    except:
+        iso_comp = 0.0
+
+    return iso_comp
