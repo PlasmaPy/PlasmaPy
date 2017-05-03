@@ -341,7 +341,10 @@ def is_isotope_stable(argument, mass_numb=None):
         raise ValueError("Unable to determine isotope in input for "
                          "is_isotope_stable")
 
-    is_stable = Isotopes[isotope]['is_stable']
+    try:
+        is_stable = Isotopes[isotope]['is_stable']
+    except:
+        ValueError("No data on stability of " + isotope)
 
     return is_stable
 
@@ -378,6 +381,7 @@ def half_life(argument, mass_numb=None):
     <Quantity 388800000.0 s>
     >>> half_life('n')
     <Quantity 881.5 s>
+
     """
 
     try:
@@ -437,18 +441,20 @@ def mass_number(isotope):
 
     """
 
-    symbol = isotope_symbol(isotope)
+    if type(isotope) not in [int, str]:
+        raise TypeError("Invalid input to mass_number.")
+
+    try:
+        symbol = isotope_symbol(isotope)
+    except:
+        raise ValueError("The isotope cannot be determined in mass_number " +
+                         "from input " + str(isotope))
+
     try:
         mass_numb = Isotopes[symbol]["mass_number"]
     except:
-        if '-' in symbol:
-            dash_position = symbol.find('-')
-            mass_numb_string = symbol[dash_position+1:]
-            try:
-                mass_numb = int(mass_numb_string)
-            except:
-                raise ValueError("Cannot find mass number for isotope " +
-                                 str(isotope))
+        raise ValueError("Mass number not able to be found from input " +
+                         str(isotope))
 
     return mass_numb
 
@@ -488,8 +494,10 @@ def element_name(argument):
     'carbon'
 
     """
+
     atomic_symbol = element_symbol(argument)
     name = Elements[atomic_symbol]["name"]
+
     return name
 
 
@@ -798,7 +806,7 @@ def nuclear_binding_energy(argument, mass_numb=None):
     """
 
     if argument == 'n' and mass_numb is None or mass_numb == 1:
-        return 0 * u.J
+        return 0.0 * u.J
 
     isotopic_symbol = isotope_symbol(argument, mass_numb)
     isotopic_mass = isotope_mass(isotopic_symbol)
@@ -809,7 +817,7 @@ def nuclear_binding_energy(argument, mass_numb=None):
     number_of_neutrons = mass_numb - number_of_protons
 
     if number_of_protons == 1 and number_of_neutrons == 0:
-        binding_energy = 0 * u.J
+        binding_energy = 0.0 * u.J
     else:
         mass_of_nucleons = (number_of_protons * const.m_p +
                             number_of_neutrons * const.m_n)
@@ -1041,6 +1049,7 @@ def common_isotopes(argument):
 
     sorted_isotopes = [iso_comp for (isotope, iso_comp) in
                        sorted(zip(isotopic_compositions, CommonIsotopes))]
+
     sorted_isotopes.reverse()
 
     return sorted_isotopes
@@ -1116,7 +1125,7 @@ def isotopic_composition(argument, mass_numb=None):
     Raises
     ------
     ValueError
-        Invalid input.
+        Invalid isotope input, or the input corresponded to neutrons.
 
     Examples
     --------
@@ -1131,7 +1140,6 @@ def isotopic_composition(argument, mass_numb=None):
 
     try:
         isotope = isotope_symbol(argument, mass_numb)
-        element = element_symbol(isotope)
     except:
         raise ValueError("Invalid isotope in isotopic_composition.")
 
