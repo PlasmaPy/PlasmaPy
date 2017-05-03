@@ -5,8 +5,8 @@ from ..atomic import (element_symbol, isotope_symbol, atomic_number,
                       mass_number, element_name, standard_atomic_weight,
                       isotope_mass, ion_mass, nuclear_binding_energy,
                       energy_from_nuclear_reaction, is_isotope_stable,
-                      half_life, known_isotopes, common_isotopes, 
-                      stable_isotopes)
+                      half_life, known_isotopes, common_isotopes,
+                      stable_isotopes, Elements, Isotopes)
 
 import pytest
 
@@ -64,7 +64,7 @@ def test_isotope_symbol():
     assert isotope_symbol('beryllium-8') == 'Be-8'
     assert isotope_symbol('neutron') == 'n'
     assert isotope_symbol('n') == 'n'
-    assert isotope_symbol(0) == 'n'
+    assert isotope_symbol(0, 1) == 'n'
     assert isotope_symbol('n-1') == 'n'
     assert isotope_symbol('N-13') == 'N-13'
     assert isotope_symbol('p') == 'H-1'
@@ -310,6 +310,9 @@ def test_is_isotope_stable():
     with pytest.raises(ValueError):
         is_isotope_stable('hydrogen', 0)
 
+    with pytest.raises(ValueError):
+        is_isotope_stable('')
+
 
 def test_isotope_calls():
     assert known_isotopes('H') == \
@@ -324,6 +327,12 @@ def test_half_life():
                       (12.32*u.yr).to(u.s).value, rtol=2e-4)
     assert half_life('H-1').unit == 's'
     assert half_life('tritium').unit == 's'
+
+    for isotope in Isotopes.keys():  # unstable isotopes w/o half-life data
+        if 'half_life' not in Isotopes[isotope].keys() and \
+                not Isotopes[isotope].keys():
+            with pytest.raises(UserWarning):
+                assert half_life(isotope) is None
 
 
 def test_atomic_TypeErrors():
