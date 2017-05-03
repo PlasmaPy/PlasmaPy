@@ -58,6 +58,10 @@ def element_symbol(argument):
     'He'
     >>> element_symbol('79')
     'Au'
+    >>> element_symbol('N'), element_symbol('n')  # Nitrogen, neutron
+    ('N', 'n')
+    >>> element_symbol('P'), element_symbol('p')  # Phosphorus, proton
+    ('P', 'p')
 
     """
 
@@ -169,102 +173,103 @@ def isotope_symbol(argument, mass_numb=None):
 
     """
 
+    # First, if the argument is already in our standard form for an isotope,
+    # return the argument.
+
+    if mass_numb is None and argument in Isotopes.keys():
+        return argument
+
+    if type(argument) == str and argument.isdigit():
+        argument = int(argument)
+
+    if type(mass_numb) == str and mass_numb.isdigit():
+        mass_numb = int(mass_numb)
+
+    # A tricky part in this routine is to handle all of the possible exceptions
+    # that can arise, while allowing for a variety of forms of input.
+
     if type(argument) not in [str, int]:
         raise TypeError("The first argument in isotope_symbol must be either "
                         "a string representing an element or isotope, or an "
                         "integer representing the atomic number (or 0 for "
                         " neutrons).")
 
-    if type(mass_numb) == str:
-        if mass_numb.isdigit():
-            mass_numb = int(mass_numb)
-        else:
-            raise TypeError("The second argument in isotope_symbol is an "
-                            "invalid mass number.")
+    if not (type(mass_numb) == int or mass_numb is None):
+        raise TypeError("The second argument in isotope_symbol must be an "
+                        "integer (or a string containing an integer) that "
+                        "represents the mass number of an isotope.")
 
-    if type(argument) == str:
-        if argument.isdigit():
-            argument = int(argument)
-
-    if type(argument) == int:
-        if argument > 0 and mass_numb is None:
-            raise ValueError("Insufficient information to find isotope")
-
-    special_case_sensitive = {'n': (1, 'n'), 'n-1': (1, 'n'),
-                              'p': (1, 'H-1'), 'p+': (1, 'H-1')}
-
-    special_case_insensitive = {'neutron': (1, 'n'),
-                                'proton': (1, 'H-1'), 'protium': (1, 'H-1'),
-                                'hydrogen-1': (1, 'H-1'), 'h-1': (1, 'H-1'),
-                                'deuterium': (2, 'D'),  'd': (2, 'D'),
-                                'h-2': (2, 'D'), 'hydrogen-2': (2, 'D'),
-                                't': (3, 'T'), 'tritium': (3, 'T'),
-                                'h-3': (3, 'T'), 'hydrogen-3': (3, 'T'),
-                                'alpha': (4, 'He-4'), 'he-4': (4, 'He-4'),
-                                'helium-4': (4, 'He-4')}
-
-    special_case = False
-
-    if type(argument) == str:
-
-        if argument in special_case_sensitive.keys():
-            new_mass_number, isotope = special_case_sensitive[argument]
-            special_case = True
-        elif argument.lower() in special_case_insensitive.keys():
-            new_mass_number, isotope = \
-                special_case_insensitive[argument.lower()]
-            special_case = True
-
-        if special_case and mass_numb is not None:
-            if mass_numb == new_mass_number:
-                raise UserWarning("Redundant isotope information")
-            elif mass_numb != new_mass_number:
-                raise ValueError("Contradictory isotope information")
-
-    elif argument == 0:
-        new_mass_number, isotope = 0, 'n'
-        special_case = True
-    else:
-        special_case = False
-
-    if special_case:
-        return isotope
+    if type(argument) == int and mass_numb is None:
+        raise ValueError("Insufficient information to determine element and "
+                         "mass number in isotope_symbol.")
 
     try:
-        atomic_symbol = element_symbol(argument)
+        element = element_symbol(argument)
     except:
         raise ValueError("The first argument of isotope_symbol (" +
                          str(argument) + ") does not give element information")
 
+    # Get mass number from argument, and account for special cases.
+
     if type(argument) == str:
-        if '-' in argument:
+        if argument.count('-') == 1:
+
             dash_position = argument.find('-')
-            new_mass_numb = argument[dash_position+1:].strip()
-            if type(mass_numb) == int:
-                if str(mass_numb) == new_mass_numb:
-                    raise UserWarning("Redundant isotope information")
-                else:
-                    raise ValueError("Contradictory isotope information")
-            mass_numb = new_mass_numb
+            mass_numb_from_arg = argument[dash_position+1:].strip()
+
+            if not mass_numb_from_arg.isdigit():
+                raise ValueError("Unable to extract mass number from the first"
+                                 " argument of isotope_symbol, which is: " +
+                                 str(argument))
+            else:
+                mass_numb_from_arg = int(mass_numb_from_arg)
+
+        elif argument == 'n' or argument.lower() == 'neutron':
+            mass_numb_from_arg = 1
+        elif argument in ['p', 'p+'] or \
+                argument.lower() in ['protium', 'proton']:
+            mass_numb_from_arg = 1
+        elif argument.lower() in ['d', 'deuterium']:
+            mass_numb_from_arg = 2
+        elif argument.lower() in ['t', 'tritium']:
+            mass_numb_from_arg = 3
+        elif argument.lower() in ['alpha']:
+            mass_numb_from_arg = 4
         else:
-            if mass_numb is None:
-                raise ValueError("Insufficient information to find isotope")
+            mass_numb_from_arg = None
 
-    isotope = atomic_symbol + '-' + str(mass_numb)
+        if mass_numb is None and mass_numb_from_arg is None:
+            raise ValueError("Insufficient information to determine the mass "
+                             "number from the inputs to isotope_symbol.")
 
-    if isotope == 'H-2':
+        if mass_numb is not None and mass_numb_from_arg is not None:
+            if mass_numb == mass_numb_from_arg:
+                raise UserWarning("Redundant mass number information in " +
+                                  "isotope_symbol from inputs: (" +
+                                  str(argument)+", " + str(mass_numb) + ")")
+            else:
+                raise ValueError("Contradictory mass number information in "
+                                 "isotope_symbol.")
+
+        if mass_numb_from_arg is not None:
+            mass_numb = mass_numb_from_arg
+
+    isotope = element + '-' + str(mass_numb)
+
+    if isotope == 'n-1':
+        isotope = 'n'
+    elif isotope == 'H-2':
         isotope = 'D'
     elif isotope == 'H-3':
         isotope = 'T'
 
-    if atomic_number(isotope) > int(mass_numb):
-        raise ValueError("The mass number (" + str(mass_numb) + ") "
-                         "cannot exceed the atomic number (" +
-                         str(atomic_number(isotope)) + ") in isotope_symbol.")
+    if atomic_number(element) > mass_numb:
+        raise ValueError("The atomic number cannot exceed the mass number in "
+                         "isotope symbol.")
 
     if isotope not in Isotopes.keys():
-        raise UserWarning("The isotope " + isotope + " is not in database, "
-                          "and might not exist.")
+        raise UserWarning("The isotope " + isotope + "returned by "
+                          "isotope_symbol is unknown and may not exist.")
 
     return isotope
 
@@ -375,7 +380,10 @@ def half_life(argument, mass_numb=None):
     <Quantity 881.5 s>
     """
 
-    isotope = isotope_symbol(argument, mass_numb)
+    try:
+        isotope = isotope_symbol(argument, mass_numb)
+    except:
+        raise
 
     try:
         if Isotopes[isotope]['is_stable']:
@@ -383,8 +391,9 @@ def half_life(argument, mass_numb=None):
         else:
             half_life_sec = Isotopes[isotope]['half_life']
     except:
-        raise ValueError("The half-life for isotope " + isotope +
-                         " is not available.")
+        raise UserWarning("The half-life for isotope " + isotope +
+                          " is not available; returning None.")
+        half_life_sec = None
 
     return half_life_sec
 
