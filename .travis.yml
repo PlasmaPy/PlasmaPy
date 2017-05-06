@@ -4,7 +4,7 @@ python:
         - "3.6"
 
 # Install dependencies
-install: "pip install astropy " # -r requirements.txt"
+install: "pip install -r requirements/base.txt"
 
 # Run the tests
 script: pytest
