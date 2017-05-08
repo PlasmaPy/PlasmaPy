@@ -4,21 +4,21 @@ A community developed Python package for plasma physics.
 
 ## Project Status
 
-PlasmaPy is at the very beginning of its development.  At present, the project coordinators are seeking plasma physicists who are interested in working on PlasmaPy from the very start of its development.  
-
-An initial description of our hopes for this project are given here:
+PlasmaPy is in a very early stage of development.  The goals of this project are described in our [vision_statement](https://github.com/PlasmaPy/PlasmaPy/blob/master/vision_statement.md) and an earlier conference poster:
 
 * Murphy, Nicholas A, Huang, Yi-Min, & PlasmaPy Community. (2016, October). PlasmaPy: beginning a community developed Python package for plasma physics. Zenodo. http://doi.org/10.5281/zenodo.163752
 
-## Becoming Involved
+We recently created a guide on [contributing to PlasmaPy](https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTE.md), which also contains instructions on how to join our email list.  New contributors are very welcome!  
 
-If you would like to join the PlasmaPy Project, please contact Nick Murphy at <namurphy@cfa.harvard.edu> or Yi-Min Huang at <yiminh@princeton.edu>.
+If you have any questions, please contact Nick Murphy at <namurphy@cfa.harvard.edu> or Yi-Min Huang at <yiminh@princeton.edu>.
 
 ## Installation
 
 In the top level directory, run
 
   python setup.py install
+
+PlasmaPy is presently being designed to be compatible with Python 3.6 and above, and does not guarantee support for Python 3.5 and below.  PlasmaPy is not compatible with Python 2.
 
 ## License
 
