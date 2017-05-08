@@ -71,45 +71,58 @@ def element_symbol(argument):
                         "integer representing the atomic number (or 0 for "
                         " neutrons).")
 
-    if type(argument) == str:
-
-        if argument in ['n', 'neutron', 0, '0', 'n-1']:
-            return 'n'
-        elif argument == 'p' or argument.lower() == 'proton':
-            return 'H'
-        elif '-' in argument:
-            dash_position = argument.find('-')
-            argument = argument[:dash_position]
-        elif argument in ['n', 'neutron', 0, '0', 'n-1']:
-            return 'n'
-        elif argument == 'p' or argument.lower() == 'proton':
-            return 'H'
-
-        if atomic_symbols_dict.keys().__contains__(argument.lower()):
-            symbol = atomic_symbols_dict[argument.lower()]
-        elif atomic_symbols_list.__contains__(argument.capitalize()):
-            symbol = argument.capitalize()
-        elif argument in ['p', 'p+']:
-            symbol = 'H'
-        elif argument.lower() in ['d', 't', 'protium', 'deuterium', 'tritium']:
-            symbol = 'H'
-        elif 'alpha' == argument.lower():
-            symbol = 'He'
-        elif argument.isnumeric():
-            argument = int(argument)
-        else:
-            raise ValueError(argument+" is an invalid argument for "
-                             "element_symbol")
+    if type(argument) == str and argument.isdigit():
+        argument = int(argument)
 
     if type(argument) == int:
+
         if 0 <= argument <= 118:
             symbol = atomic_symbols_list[argument]
         else:
             raise ValueError(str(argument)+" is an invalid atomic number in "
                              "element_symbol")
 
+    elif type(argument) == str:
+
+        if argument in ['n', 'neutron', 'n-1']:
+            return 'n'
+        elif argument in ['p', 'p+'] or argument.lower() in \
+             ['d', 't', 'proton', 'protium', 'deuterium', 'tritium']:
+            return 'H'
+        elif argument.lower() == 'alpha':
+            return 'He'
+
+        if argument.count('-') == 1:
+            dash_position = argument.find('-')
+            mass_numb = argument[dash_position+1:]
+            if not mass_numb.isdigit():
+                raise ValueError("Invalid isotope format in element_symbol")
+            argument = argument[:dash_position]
+        else:
+            mass_numb = ''
+
+        if atomic_symbols_dict.keys().__contains__(argument.lower()):
+            symbol = atomic_symbols_dict[argument.lower()]
+        elif atomic_symbols_list.__contains__(argument.capitalize()):
+            symbol = argument.capitalize()
+        else:
+            raise ValueError(argument+" is an invalid argument for "
+                             "element_symbol")
+
+        if mass_numb.isdigit():
+            isotope = symbol.capitalize() + '-' + mass_numb
+            if isotope == 'H-2':
+                isotope = 'D'
+            if isotope == 'H-3':
+                isotope = 'T'
+
+            if isotope not in Isotopes.keys():
+                raise ValueError("The input in element_symbol corresponding "
+                                 "to " + isotope + " is not a valid isotope.")
+
     if symbol not in Elements.keys():
-        raise ValueError('')
+        raise ValueError("The element " + symbol + " is unknown in "
+                         "element_symbol.")
 
     return symbol
 
@@ -145,8 +158,7 @@ def isotope_symbol(argument, mass_numb=None):
         of an inappropriate type.
 
     UserWarning:
-        If redundant isotope information is provided, or isotope is not in
-        database (and therefore might not exist).
+        If redundant isotope information is provided.
 
     See also
     --------
@@ -185,8 +197,8 @@ def isotope_symbol(argument, mass_numb=None):
     if type(mass_numb) == str and mass_numb.isdigit():
         mass_numb = int(mass_numb)
 
-    # A tricky part in this routine is to handle all of the possible exceptions
-    # that can arise, while allowing for a variety of forms of input.
+    # This routine allows several forms of input, and must be able to handle
+    # all of the exceptions that can arise with useful error messages.
 
     if type(argument) not in [str, int]:
         raise TypeError("The first argument in isotope_symbol must be either "
@@ -209,7 +221,8 @@ def isotope_symbol(argument, mass_numb=None):
         raise ValueError("The first argument of isotope_symbol (" +
                          str(argument) + ") does not give element information")
 
-    # Get mass number from argument, and account for special cases.
+    # Get mass number from argument, check for redundancies, and take
+    # care of special cases.
 
     if type(argument) == str:
         if argument.count('-') == 1:
@@ -265,11 +278,11 @@ def isotope_symbol(argument, mass_numb=None):
 
     if atomic_number(element) > mass_numb:
         raise ValueError("The atomic number cannot exceed the mass number in "
-                         "isotope symbol.")
+                         "isotope_symbol.")
 
     if isotope not in Isotopes.keys():
-        raise UserWarning("The isotope " + isotope + "returned by "
-                          "isotope_symbol is unknown and may not exist.")
+        raise ValueError("The isotope " + isotope + "returned by "
+                         "isotope_symbol is unknown and may not exist.")
 
     return isotope
 
@@ -328,10 +341,17 @@ def is_isotope_stable(argument, mass_numb=None):
     is_stable: boolean
         True if the isotope is stable, False if it is unstable.
 
-    Raises:
-    -------
+    Raises
+    ------
     ValueError:
         If isotope cannot be determined or is not known.
+
+    Examples
+    --------
+    >>> is_isotope_stable("H-1")
+    True
+    >>> is_isotope_stable("tritium")
+    False
 
     """
 
@@ -381,13 +401,19 @@ def half_life(argument, mass_numb=None):
     <Quantity 388800000.0 s>
     >>> half_life('n')
     <Quantity 881.5 s>
+    >>> half_life('H-1')
+    <Quantity inf s>
 
     """
 
     try:
         isotope = isotope_symbol(argument, mass_numb)
-    except:
-        raise
+    except ValueError:
+        raise ValueError("Cannot determine isotope information from these " +
+                         "inputs to half_life: (" + str(argument) + ", " +
+                         str(mass_numb) + ")")
+    except TypeError:
+        raise TypeError("Incorrect argument type for half_life")
 
     try:
         if Isotopes[isotope]['is_stable']:
@@ -441,14 +467,7 @@ def mass_number(isotope):
 
     """
 
-    if type(isotope) not in [int, str]:
-        raise TypeError("Invalid input to mass_number.")
-
-    try:
-        symbol = isotope_symbol(isotope)
-    except:
-        raise ValueError("The isotope cannot be determined in mass_number " +
-                         "from input " + str(isotope))
+    symbol = isotope_symbol(isotope)
 
     try:
         mass_numb = Isotopes[symbol]["mass_number"]
@@ -568,15 +587,16 @@ def standard_atomic_weight(argument):
     except:
         isotope = ''
 
-    if isotope in ['p', 'alpha']:
+    if type(argument) == str and (argument in ['p', 'p+'] or
+       argument.lower() in ['proton', 'alpha']):
         raise ValueError("Use ion_mass to get masses of protons and alpha "
                          "particles instead of standard_atomic_weight")
-    elif isotope in ['n']:
+    elif isotope == 'n':
         raise ValueError("Use isotope_mass('n') or plasmapy.constants.m_n "
                          "instead of standard_atomic_weight to get neutron "
                          "mass")
     elif '-' in isotope or isotope in ['D', 'T']:
-        raise ValueError("Use isotope_mass() to get masses of isotopes")
+        raise ValueError("Use isotope_mass to get masses of isotopes")
 
     atomic_symbol = element_symbol(argument)
 
@@ -721,6 +741,19 @@ def ion_mass(argument, Z=1, mass_numb=None):
     <Quantity 9.288122788133088e-26 kg>
 
     """
+
+    if type(Z) == str and Z.isdigit():
+        Z = int(Z)
+    if type(mass_numb) == str and mass_numb.isdigit():
+        mass_numb = int(mass_numb)
+
+    if type(Z) != int:
+        raise TypeError("In ion_mass, Z must be an integer representing the "
+                        "ionization state (e.g., Z=1 for singly ionized).")
+
+    if mass_numb is not None and type(mass_numb) != int:
+        raise TypeError("In ion_mass, mass_numb must be an integer "
+                        "representing the mass number of an isotope.")
 
     if str(argument).lower() in ['e+', 'positron']:
         return const.m_e
