@@ -65,16 +65,16 @@ def element_symbol(argument):
 
     """
 
-    if type(argument) not in [str, int]:
+    if not isinstance(argument, (str, int)):
         raise TypeError("The first argument in element_symbol must be either "
                         "a string representing an element or isotope, or an "
                         "integer representing the atomic number (or 0 for "
                         " neutrons).")
 
-    if type(argument) == str and argument.isdigit():
+    if isinstance(argument, str) and argument.isdigit():
         argument = int(argument)
 
-    if type(argument) == int:
+    if isinstance(argument, int):
 
         if 0 <= argument <= 118:
             symbol = atomic_symbols_list[argument]
@@ -82,7 +82,7 @@ def element_symbol(argument):
             raise ValueError(str(argument)+" is an invalid atomic number in "
                              "element_symbol")
 
-    elif type(argument) == str:
+    elif isinstance(argument, str):
 
         if argument in ['n', 'neutron', 'n-1']:
             return 'n'
@@ -191,27 +191,27 @@ def isotope_symbol(argument, mass_numb=None):
     if mass_numb is None and argument in Isotopes.keys():
         return argument
 
-    if type(argument) == str and argument.isdigit():
+    if isinstance(argument, str) and argument.isdigit():
         argument = int(argument)
 
-    if type(mass_numb) == str and mass_numb.isdigit():
+    if isinstance(mass_numb, str) and mass_numb.isdigit():
         mass_numb = int(mass_numb)
 
     # This routine allows several forms of input, and must be able to handle
     # all of the exceptions that can arise with useful error messages.
 
-    if type(argument) not in [str, int]:
+    if not isinstance(argument, (str, int)):
         raise TypeError("The first argument in isotope_symbol must be either "
                         "a string representing an element or isotope, or an "
                         "integer representing the atomic number (or 0 for "
                         " neutrons).")
 
-    if not (type(mass_numb) == int or mass_numb is None):
+    if not (isinstance(mass_numb, int) or mass_numb is None):
         raise TypeError("The second argument in isotope_symbol must be an "
                         "integer (or a string containing an integer) that "
                         "represents the mass number of an isotope.")
 
-    if type(argument) == int and mass_numb is None:
+    if isinstance(argument, int) and mass_numb is None:
         raise ValueError("Insufficient information to determine element and "
                          "mass number in isotope_symbol.")
 
@@ -224,7 +224,7 @@ def isotope_symbol(argument, mass_numb=None):
     # Get mass number from argument, check for redundancies, and take
     # care of special cases.
 
-    if type(argument) == str:
+    if isinstance(argument, str):
         if argument.count('-') == 1:
 
             dash_position = argument.find('-')
@@ -587,8 +587,8 @@ def standard_atomic_weight(argument):
     except:
         isotope = ''
 
-    if type(argument) == str and (argument in ['p', 'p+'] or
-       argument.lower() in ['proton', 'alpha']):
+    if isinstance(argument, str) and (argument in ['p', 'p+'] or 
+        argument.lower() in ['proton', 'alpha']):
         raise ValueError("Use ion_mass to get masses of protons and alpha "
                          "particles instead of standard_atomic_weight")
     elif isotope == 'n':
@@ -742,16 +742,16 @@ def ion_mass(argument, Z=1, mass_numb=None):
 
     """
 
-    if type(Z) == str and Z.isdigit():
+    if isinstance(Z, str) and Z.isdigit():
         Z = int(Z)
-    if type(mass_numb) == str and mass_numb.isdigit():
+    if isinstance(mass_numb, str) and mass_numb.isdigit():
         mass_numb = int(mass_numb)
 
-    if type(Z) != int:
+    if not isinstance(Z, int):
         raise TypeError("In ion_mass, Z must be an integer representing the "
                         "ionization state (e.g., Z=1 for singly ionized).")
 
-    if mass_numb is not None and type(mass_numb) != int:
+    if not isinstance(mass_numb, int) and mass_numb is not None:
         raise TypeError("In ion_mass, mass_numb must be an integer "
                         "representing the mass number of an isotope.")
 
@@ -768,7 +768,7 @@ def ion_mass(argument, Z=1, mass_numb=None):
             ['proton', 'protium']:
         return const.m_p
     elif atomic_number(argument) == 1:
-        if type(argument) == str and '-1' in str(argument):
+        if isinstance(argument, str) and '-1' in str(argument):
             return const.m_p
         elif argument == 1 and mass_numb == 1:
             return const.m_p
@@ -786,7 +786,7 @@ def ion_mass(argument, Z=1, mass_numb=None):
         except:
             errormessage = "No isotope mass or standard atomic weight is " +\
                 "available to get ion mass for " + str(argument)
-            if type(mass_numb) is int:
+            if isinstance(mass_numb, int):
                 errormessage += " with mass number " + str(mass_numb)
 
             raise ValueError(errormessage)
@@ -944,7 +944,7 @@ def energy_from_nuclear_reaction(reaction):
             total_binding_energy += nuclear_binding_energy(isotope)
         return total_binding_energy
 
-    if type(reaction) != str:
+    if not isinstance(reaction, str):
         raise TypeError("The input of energy_from_nuclear_reaction "
                         "must be a string representing the reaction (e.g., "
                         "'D + T --> He + n')")
