@@ -1,8 +1,15 @@
+"""Functions that retrieve or are related to elemental or isotopic data."""
+
 import numpy as np
 from astropy import units as u, constants as const
 from .elements import atomic_symbols_list, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
 
+
+# The code contained within element_symbol and isotope_symbol is
+# designed to catch all of the special cases for different inputs.
+# Complexity is concentrated in these functions so that the rest of
+# the functions are simpler.
 
 def element_symbol(argument):
     """Returns the atomic symbol.
@@ -185,7 +192,7 @@ def isotope_symbol(argument, mass_numb=None):
 
     """
 
-    # First, if the argument is already in our standard form for an isotope,
+    # If the argument is already in our standard form for an isotope,
     # return the argument.
 
     if mass_numb is None and argument in Isotopes.keys():

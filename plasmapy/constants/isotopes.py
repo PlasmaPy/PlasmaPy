@@ -1,3 +1,5 @@
+"""Sets up a dictionary containing basic data about isotopes."""
+
 from numpy import inf, nan
 from astropy.units import u, s
 
@@ -20,7 +22,9 @@ def Iso(symbol, name, atomic_number, mass_number, relative_atomic_mass,
     return Isotope
 
 
-# From NIST
+# Most of the following data is from NIST retrieved in early 2017.
+# The atomic mass is given in units of u, and half-lives are in seconds.
+# The half-life data is presently incomplete.
 
 Isotopes = {
     'n': Iso('n', 'neutron', 0, 1, 1.00866491588, False, half_life=881.5),
