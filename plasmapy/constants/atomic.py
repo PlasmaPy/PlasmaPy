@@ -652,11 +652,9 @@ def isotope_mass(argument, mass_numb=None):
 
 
 def ion_mass(argument, Z=1, mass_numb=None):
-    """Returns the mass of an ion.
-
- by finding the atomic mass of a neutral
-    isotope (when available) or the standard atomic mass of an element based
-    on terrestrial abundances, and then accounting for the change in mass due
+    """Returns the mass of an ion by finding the standard atomic
+    weight of an element or the atomic mass of an isotope, and then
+    accounting for the change in mass due to loss of electrons from
     ionization.
 
     Parameters
