@@ -344,7 +344,7 @@ def test_atomic_TypeErrors():
                           ion_mass, nuclear_binding_energy,
                           energy_from_nuclear_reaction]
 
-    BadArguments = [1.1, True, False, {'cats': 'bats'}, 1+1j]
+    BadArguments = [1.1, {'cats': 'bats'}, 1+1j]
 
     for function in TypeErrorFunctions:
         for argument in BadArguments:
