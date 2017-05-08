@@ -87,7 +87,7 @@ def element_symbol(argument):
         if argument in ['n', 'neutron', 'n-1']:
             return 'n'
         elif argument in ['p', 'p+'] or argument.lower() in \
-             ['d', 't', 'proton', 'protium', 'deuterium', 'tritium']:
+                ['d', 't', 'proton', 'protium', 'deuterium', 'tritium']:
             return 'H'
         elif argument.lower() == 'alpha':
             return 'He'
@@ -587,8 +587,8 @@ def standard_atomic_weight(argument):
     except:
         isotope = ''
 
-    if isinstance(argument, str) and (argument in ['p', 'p+'] or 
-        argument.lower() in ['proton', 'alpha']):
+    if isinstance(argument, str) and (argument in ['p', 'p+'] or
+                                      argument.lower() in ['proton', 'alpha']):
         raise ValueError("Use ion_mass to get masses of protons and alpha "
                          "particles instead of standard_atomic_weight")
     elif isotope == 'n':
@@ -909,6 +909,7 @@ def energy_from_nuclear_reaction(reaction):
     import re
 
     def _get_isotopes_list(side):
+        """Parse a side of a reaction to get a list of the isotopes."""
         pre_list = re.split(' \+ ', side)
         isotopes_list = []
         for item in pre_list:
@@ -933,12 +934,14 @@ def energy_from_nuclear_reaction(reaction):
         return isotopes_list
 
     def _mass_number_of_list(isotopes_list):
+        """Find the total number of nucleons in a list of isotopes."""
         mass_numb = 0
         for symbol in isotopes_list:
             mass_numb += mass_number(symbol)
         return mass_numb
 
     def _add_binding_energies(isotopes_list):
+        """Finds the total binding energy from a list of isotopes."""
         total_binding_energy = 0.0*u.MeV
         for isotope in isotopes_list:
             total_binding_energy += nuclear_binding_energy(isotope)
