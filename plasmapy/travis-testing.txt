@@ -1,3 +1,0 @@
-This is a thing.
-It's here to test travis.
-Do not merge.
