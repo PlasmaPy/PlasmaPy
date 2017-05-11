@@ -10,4 +10,8 @@ install:
         - "pip install -r requirements/base.txt"
 
 # Run the tests
-script: pytest
+script: pytest 
+
+# Assess test coverage
+after_success:
+        - coveralls
