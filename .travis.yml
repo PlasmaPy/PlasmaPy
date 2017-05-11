@@ -12,3 +12,6 @@ install:
 # Run the tests
 script: coverage run -m pytest 
 
+# Assess test coverage
+after_success:
+        - coveralls
