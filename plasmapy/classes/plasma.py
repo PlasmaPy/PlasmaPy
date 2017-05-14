@@ -58,22 +58,152 @@ class Plasma():
         self.domain_shape = (len(self.x), len(self.y), len(self.z))
 
         # Initiate core plasma variables
-        self.density = np.zeros(self.domain_shape) * u.kg / u.m**3
-        self.momentum = np.zeros((3, *self.domain_shape)) * u.kg / (u.m**2 * u.s)
-        self.pressure = np.zeros(self.domain_shape) * u.Pa
-        self.magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
+        self._density = np.zeros(self.domain_shape) * u.kg / u.m**3
+        self._momentum = np.zeros((3, *self.domain_shape)) * u.kg / (u.m**2 * u.s)
+        self._pressure = np.zeros(self.domain_shape) * u.Pa
+        self._magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
 
+    """
+    Define getters and setters for variables.
+    """
+    ## ==== Core variables ====
+    # Density
+    @property
+    def density(self):
+        return self._density
+
+    @density.setter
+    @u.quantity_input
+    def density(self, density: u.kg/u.m**3):
+        """Sets the simulation's density profile to the specified array.
+        Other arrays which depend on the density values, such as the kinetic pressure,
+        are then redefined automatically.
+        
+        Parameters
+        ----------
+
+        density : ndarray
+            Array of density values. Shape and size must be equal to those of the simulation grid.
+            Must have units of density.
+
+        """
+
+        assert density.shape == self.grid_size, \
+            'Specified density array shape does not match simulation grid.'
+        self._density = density
+
+    # Momentum
+    @property
+    def momentum(self):
+        return self._momentum
+
+    @momentum.setter
+    @u.quantity_input
+    def momentum(self, momentum: u.kg/(u.m**2 * u.s)):
+        """Sets the simulation's momentum profile to the specified array.
+        Other arrays which depend on the velocity values, such as the kinetic pressure,
+        are then redefined automatically.
+        
+        Parameters
+        ----------
+
+        momentum : ndarray
+            Array of momentum vectors. Shape must be (3, x, [y, z]), where x, y and z are the dimensions of the simulation grid.
+            Note that a full 3D vector is necessary even if the simulation has fewer than 3 dimensions.
+
+            TODO: Figure out if this 'feature' is breaking things and if it can be removed.
+
+        """
+        assert momentum.shape == (3, *self.grid_size), \
+            'Specified density array shape does not match simulation grid.'
+        self._momentum = momentum
+
+    # Internal energy
+    @property
+    def energy(self):
+        return self._energy
+
+    @energy.setter
+    @u.quantity_input
+    def energy(self, energy: u.J/u.m**3):
+        """Sets the simulation's total energy density profile to the specified array.
+        Other arrays which depend on the energy values, such as the kinetic pressure,
+        are then redefined automatically.
+        
+        Parameters
+        ----------
+
+        energy : ndarray
+            Array of energy values. Shape must be (x, y, z), where x, y, and z are the grid
+            sizes of the simulation in the x, y, and z dimensions.
+            Must have units of energy.
+
+        """
+
+        assert energy.shape == self.grid_size, \
+            'Specified energy density array shape does not match simulation grid.'
+        shape, unit = self._energy.shape, self._energy.unit
+        self._energy = energy
+
+    @property
+    def core_variables(self):
+        """Returns an up-to-date list of the core variables used in the calculations.
+
+        """
+        return [self.density, self.momentum, self.energy]
+
+    ## ==== Derived variables ====
+    # Velocity
     @property
     def velocity(self):
+        """Returns the velocity profile of the simulation, as calculated from the momentum and total density.
+        """
+
         return self.momentum / self.density
 
-    @property
-    def magnetic_field_strength(self):
-        B = self.magnetic_field
-        return np.sqrt(np.sum(B * B, axis=0))
+    @velocity.setter
+    @u.quantity_input
+    def velocity(self, velocity: u.m / u.s):
+        """Defines the velocity throughout the simulation, and automatically updates the momentum based on the current density values.
+
+        Parameters
+        ----------
+
+        velocity : ndarray
+            Array of velocity vectors with shape (3, x, [y, z]) where x, y and z are the spatial grid sizes of the simulation.
+            Note that a full 3D vector is required even if the simulation is run for fewer than 3 dimensions.
+            Must have units of velocity.
+
+        """
+        assert velocity.shape == (3, *self.grid_size), \
+          'Specified velocity array shape does not match simulation grid.'
+        self.momentum = velocity * self.density
 
     @property
-    def alfven_speed(self):
-        B = self.magnetic_field
-        rho = self.density
-        return np.sqrt(np.sum(B * B, axis=0) / (mu0*rho))
+    def pressure(self):
+        """Sets the simulation's kinetic pressure profile to the specified array.
+
+        The kinetic pressure is defined as:
+
+        .. math::
+
+            p = (\\gamma - 1) (e_0 - \\frac{\\rho\\textbf{v}^2}{2})
+        
+        """
+        v = self.velocity
+
+        return (self.gamma - 1) * (self.energy - ((self.density * dot(v, v)) / 2))
+
+
+    @property
+    def sound_speed(self):
+        """Calculate the sound speed everywhere in the domain based on the pressure, density and adiabatic
+        index:
+
+        .. math::
+
+            c_s = \\sqrt{\\frac{\\gamma p}{\\rho}}
+
+        """
+
+        return np.sqrt((self.gamma * self.pressure) / self.density)
