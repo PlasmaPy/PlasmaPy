@@ -10,7 +10,7 @@ PlasmaPy is in a very early stage of development.  The goals of this project are
 
 We recently created a guide on [contributing to PlasmaPy](https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTE.md), which also contains instructions on how to join our email list.  New contributors are very welcome!  
 
-If you have any questions, please contact Nick Murphy at <namurphy@cfa.harvard.edu> or Yi-Min Huang at <yiminh@princeton.edu>.
+If you have any questions, please contact Nick Murphy at <namurphy@cfa.harvard.edu>, Yi-Min Huang at <yiminh@princeton.edu>, or Drew Leonard at <andy.j.leonard@gmail.com>.
 
 ## Installation
 
