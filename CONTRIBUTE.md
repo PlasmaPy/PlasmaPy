@@ -137,10 +137,12 @@ computing](https://doi.org/10.1371/journal.pbio.1001745).  PlasmaPy
 uses the [PEP 8 style guide for Python
 code](https://www.python.org/dev/peps/pep-0008/) and the [numpydoc
 format for
-docstrings](https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt).
-New contributors do not need to worry too much about precisely
-matching these styles when first submitting a pull request, as changes
-to the style can be suggested during code review.
+docstrings](https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt)
+to maintain consistency and readability.  New contributors should not 
+worry too much about precisely matching these styles when first 
+submitting a pull request, as the [PEP8 Speaks](http://pep8speaks.com/)
+GitHub integration will check pull requests for PEP 8 compatibility, and
+further changes to the style can be suggested during code review.
 
 You may periodically commit changes to your branch by running
 
