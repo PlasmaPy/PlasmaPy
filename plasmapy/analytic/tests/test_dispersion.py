@@ -17,16 +17,16 @@ def test_plasma_dispersion_func():
                       atol=atol, rtol=0), \
         "Z(0) does not give accurate answer"
 
-    assert np.isclose(plasma_dispersion_func(1), -1.076_159_01 + 0.652_049_33j,
+    assert np.isclose(plasma_dispersion_func(1), -1.07615901 + 0.65204933j,
                       atol=atol, rtol=0), \
         "Z(1) not consistent with tabulated results"
 
-    assert np.isclose(plasma_dispersion_func(1j), 0.757_872_156j,
+    assert np.isclose(plasma_dispersion_func(1j), 0.757872156j,
                       atol=atol, rtol=0), \
         "Z(1j) not consistent with tabulated results"
 
     assert np.isclose(plasma_dispersion_func(1.2 + 4.4j),
-                      -0.054_246_146 + 0.207_960_589j, atol=atol, rtol=0), \
+                      -0.054246146 + 0.207960589j, atol=atol, rtol=0), \
         "Z(1.2+4.4j) not consistent with tabulated results"
 
     zeta = -1.2 + 0.4j
@@ -53,13 +53,13 @@ def test_plasma_dispersion_func_deriv():
     assert np.isclose(plasma_dispersion_func_deriv(0), -2, atol=atol, rtol=0), \
         "Z'(0) not consistent with tabulated values"
 
-    assert np.isclose(plasma_dispersion_func_deriv(1), 0.152_318 - 1.304_10j,
+    assert np.isclose(plasma_dispersion_func_deriv(1), 0.152318 - 1.30410j,
                       atol=atol, rtol=0), \
         "Z'(1) not consistent with tabulated values"
 
     assert np.isclose(plasma_dispersion_func_deriv(1j),
-                      -0.484_257, atol=atol, rtol=0), \
+                      -0.484257, atol=atol, rtol=0), \
         "Z'(1j) not consistent with tabulated values"
 
     assert np.isclose(plasma_dispersion_func_deriv(1.2 + 4.4j),
-                      -0.397_561e-1 - 0.217_392e-1j, atol=atol, rtol=0)
+                      -0.397561e-1 - 0.217392e-1j, atol=atol, rtol=0)
