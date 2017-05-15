@@ -1,9 +1,6 @@
 """Functions to calculate plasma parameters."""
 
 from astropy import units as u
-#from astropy.units import (Unit, IrreducibleUnit, CompositeUnit, LogUnit,
-#                           DexUnit, MagUnit, Quantity, quantity_input,
-#                           UnitsError, UnitConversionError, UnitTypeError)
 
 from astropy.units import UnitConversionError, quantity_input
 
@@ -12,36 +9,38 @@ from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, ion_mass)
 import numpy as np
 
 
-# Values should be returned as an Astropy Quantity in SI units.
+"""
+Values should be returned as an Astropy Quantity in SI units.
 
-# If a quantity has several names, then the function name should be
-# the one that provides the most physical insight into what the
-# quantity represents.  For example, 'gyrofrequency' indicates
-# gyration, while Larmor frequency indicates that this frequency was
-# discovered by Larmor.
+If a quantity has several names, then the function name should be
+the one that provides the most physical insight into what the
+quantity represents.  For example, 'gyrofrequency' indicates
+gyration, while Larmor frequency indicates that this frequency was
+discovered by Larmor.
 
-# The docstrings for plasma parameter methods should define these
-# quantities in ways that are understandable to students who are
-# taking their first course in plasma physics and yet are useful to
-# experienced plasma physicists.
+The docstrings for plasma parameter methods should define these
+quantities in ways that are understandable to students who are
+taking their first course in plasma physics and yet are useful to
+experienced plasma physicists.
 
-# Unit conversions involving angles must be treated with care.  Angles
-# are dimensionless but do have units.  Angular velocity is often
-# given in units of radians per second, though dimensionally this is
-# equivalent to inverse seconds.  Astropy will treat radians
-# dimensionlessly when using the dimensionless_angles() equivalency,
-# but dimensionless_angles() does not account for multiplicative
-# factor of 2*pi that is used when converting between frequency (1 /
-# s) and angular velocity (rad / s).  A clear way to do this
-# conversion is to set up an equivalency between cycles/s and Hz:
-#
-# >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
-#
-# However, dimensionless_angles() does work when dividing a velocity
-# by an angular frequency to get a length scale:
-#
-# >>> d_i = (c/omega_pi).to(u.m, equivalencies=dimensionless_angles())
+Unit conversions involving angles must be treated with care.  Angles
+are dimensionless but do have units.  Angular velocity is often
+given in units of radians per second, though dimensionally this is
+equivalent to inverse seconds.  Astropy will treat radians
+dimensionlessly when using the dimensionless_angles() equivalency,
+but dimensionless_angles() does not account for multiplicative
+factor of 2*pi that is used when converting between frequency (1 /
+s) and angular velocity (rad / s).  A clear way to do this
+conversion is to set up an equivalency between cycles/s and Hz:
 
+  >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
+
+However, dimensionless_angles() does work when dividing a velocity
+by an angular frequency to get a length scale:
+
+  >>> d_i = (c/omega_pi).to(u.m, equivalencies=dimensionless_angles())
+
+"""
 
 def charge_state(ion):
     """Temporary: gets Z from a string representing an ion."""
@@ -140,36 +139,38 @@ def Alfven_speed(B, density, ion="p"):
     return V_A
 
 
-def ion_sound_speed(T_i, ion='p'):
+def ion_sound_speed(T_i, ion='p', gamma=5/3):
     """Returns the ion sound speed.
 
     Parameters
     ----------
     T_i : Quantity
         Ion temperature.
-    ion : string
-        A representation of the ion species.
+    ion : string, optional
+        Representation of the ion species (assumed to be protons if not given)
+    gamma : float, optional
+        Heat capacity ratio (also known as the adiabatic index, ratio of
+        specific heats, Poisson constant, or isentropic expansion parameter).
+        Defaults to 5/3 which is appropriate for a monatomic gas.
 
     Returns
     -------
     V_S : Quantity
         The ion sound speed.
 
-    Notes
-    -----
-
-
     Example
     -------
     >>> from astropy import units as u
-    >>> T_i = 1e6*u.K
-    >>> ion_sound_speed()
-
+    >>> ion_sound_speed(5e6*u.K)
+    <Quantity 203155.10435273056 m / s>
+    >>> ion_sound_speed(1*u.keV)
+    <Quantity 309496.9076337826 m / s>
 
     """
 
     m_i = ion_mass(ion)
-    V_S = (np.sqrt(k_B*T_i/m_i)).si
+    T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
+    V_S = (np.sqrt(gamma*k_B*T_i/m_i)).to(u.m/u.s)
     return V_S
 
 
