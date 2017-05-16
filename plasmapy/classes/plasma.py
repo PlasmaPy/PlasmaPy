@@ -152,11 +152,12 @@ class Plasma():
         """
         return [self.density, self.momentum, self.energy]
 
-    ## ==== Derived variables ====
+    # ==== Derived variables ====
     # Velocity
     @property
     def velocity(self):
-        """Returns the velocity profile of the simulation, as calculated from the momentum and total density.
+        """Returns the velocity profile of the simulation, as calculated from the
+        momentum and total density.
         """
 
         return self.momentum / self.density
@@ -164,14 +165,17 @@ class Plasma():
     @velocity.setter
     @u.quantity_input
     def velocity(self, velocity: u.m / u.s):
-        """Defines the velocity throughout the simulation, and automatically updates the momentum based on the current density values.
+        """Defines the velocity throughout the simulation, and automatically updates the
+        momentum based on the current density values.
 
         Parameters
         ----------
 
         velocity : ndarray
-            Array of velocity vectors with shape (3, x, [y, z]) where x, y and z are the spatial grid sizes of the simulation.
-            Note that a full 3D vector is required even if the simulation is run for fewer than 3 dimensions.
+            Array of velocity vectors with shape (3, x, [y, z]) where x, y and z are the
+            spatial grid sizes of the simulation.
+            Note that a full 3D vector is required even if the simulation is run for fewer
+            than 3 dimensions.
             Must have units of velocity.
 
         """
@@ -188,17 +192,17 @@ class Plasma():
         .. math::
 
             p = (\\gamma - 1) (e_0 - \\frac{\\rho\\textbf{v}^2}{2})
-        
+
         """
         v = self.velocity
 
-        return (self.gamma - 1) * (self.energy - ((self.density * dot(v, v)) / 2))
-
+        return (self.gamma - 1) \
+            * (self.energy - ((self.density * dot(v, v)) / 2))
 
     @property
     def sound_speed(self):
-        """Calculate the sound speed everywhere in the domain based on the pressure, density and adiabatic
-        index:
+        """Calculate the sound speed everywhere in the domain based on the pressure,
+        density and adiabatic index:
 
         .. math::
 
