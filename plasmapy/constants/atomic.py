@@ -234,7 +234,7 @@ def isotope_symbol(argument, mass_numb=None):
     try:
         element = element_symbol(argument)
     except Exception:
-        raise ValueError("The first argument of isotope_symbol (" + 
+        raise ValueError("The first argument of isotope_symbol (" +
                          str(argument) + ") does not correspond to a valid "
                          "element or isotope.")
 
@@ -247,12 +247,12 @@ def isotope_symbol(argument, mass_numb=None):
             dash_position = argument.find('-')
             mass_numb_from_arg = argument[dash_position+1:].strip()
 
-            if not mass_numb_from_arg.isdigit():
+            try:
+                mass_numb_from_arg = int(mass_numb_from_arg)
+            except Exception:
                 raise ValueError("Unable to extract mass number from the first"
                                  " argument of isotope_symbol, which is: " +
                                  str(argument))
-            else:
-                mass_numb_from_arg = int(mass_numb_from_arg)
 
         elif argument == 'n' or argument.lower() == 'neutron':
             mass_numb_from_arg = 1

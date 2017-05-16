@@ -384,6 +384,7 @@ def test_isotope_mass():
     with pytest.raises(ValueError):
         isotope_mass('p')
 
+
 def test_ion_mass():
     assert ion_mass('H') > const.m_p, "Use standard_atomic_weight of 'H'"
     assert ion_mass('hydrogen') > const.m_p
@@ -398,17 +399,18 @@ def test_ion_mass():
     assert ion_mass('He+') == ion_mass('He')
     assert ion_mass('He 1+') == ion_mass('He')
     assert ion_mass('He 2+') == ion_mass('alpha')
-    assert np.isclose(ion_mass('Fe 1-').value, 
+    assert np.isclose(ion_mass('Fe 1-').value,
                       (ion_mass('Fe 1+') + 2*const.m_e).value, rtol=1e-14)
-    assert np.isclose(ion_mass('Fe-56 1-').value, 
+    assert np.isclose(ion_mass('Fe-56 1-').value,
                       (ion_mass('Fe-56 1+') + 2*const.m_e).value, rtol=1e-14)
-    assert np.isclose((ion_mass('Fe-56 1+')).value, 
+    assert np.isclose((ion_mass('Fe-56 1+')).value,
                       (ion_mass('Fe', Z=1, mass_numb=56)).value)
-    assert np.isclose((ion_mass('Fe-56 1+')).value, 
+    assert np.isclose((ion_mass('Fe-56 1+')).value,
                       (ion_mass(26, Z=1, mass_numb=56)).value)
     assert ion_mass(1, Z=1, mass_numb=1) == ion_mass('p')
     assert ion_mass('deuteron') == ion_mass('D +1')
     assert ion_mass('T', Z=1) == ion_mass('T +1')
+    assert ion_mass('Fe', mass_numb=56) == ion_mass('Fe', mass_numb='56')
 
     with pytest.raises(ValueError):
         ion_mass('Og')  # no standard atomic weight
@@ -472,11 +474,19 @@ def test_energy_from_nuclear_reaction():
     energy_alpha_decay = energy_from_nuclear_reaction(alpha_decay_example)
     assert np.isclose(energy_alpha_decay.to(u.MeV).value, 4.26975, atol=1e-5)
 
+    triple_alpha1_r = '4He-4 --> 2Be-8'
+    energy_triplealpha1_r = energy_from_nuclear_reaction(triple_alpha1_r)
+    assert np.isclose(energy_triplealpha1_r.to(u.keV).value,
+                      -91.8*2, atol=0.1)
+
     with pytest.raises(ValueError):
         energy_from_nuclear_reaction('H + H --> H')
 
     with pytest.raises(TypeError):
         energy_from_nuclear_reaction(1)
+
+    with pytest.raises(ValueError):
+        energy_from_nuclear_reaction('H-1 + H-1 --> H-1')
 
 
 def test_is_isotope_stable():
@@ -617,6 +627,9 @@ def test_isotopic_composition():
 
     with pytest.raises(ValueError):
         isotopic_composition('neutron')
+
+    with pytest.raises(ValueError):
+        isotopic_composition('Og-2')
 
     # Check that the sum of isotopic compositions for each element is one
 
