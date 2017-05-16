@@ -247,7 +247,7 @@ def test_mass_number():
     with pytest.raises(ValueError):
         mass_number('C-12b')
 
-    with pytest.raises(TypeError):
+    with pytest.raises(Exception):
         mass_number(-1.5)
 
     with pytest.raises(ValueError):
@@ -378,6 +378,12 @@ def test_isotope_mass():
     with pytest.raises(ValueError):
         isotope_mass('triton')
 
+    with pytest.raises(ValueError):
+        isotope_mass('alpha')
+
+    with pytest.raises(ValueError):
+        isotope_mass('p')
+
 def test_ion_mass():
     assert ion_mass('H') > const.m_p, "Use standard_atomic_weight of 'H'"
     assert ion_mass('hydrogen') > const.m_p
@@ -394,9 +400,15 @@ def test_ion_mass():
     assert ion_mass('He 2+') == ion_mass('alpha')
     assert np.isclose(ion_mass('Fe 1-').value, 
                       (ion_mass('Fe 1+') + 2*const.m_e).value, rtol=1e-14)
-
     assert np.isclose(ion_mass('Fe-56 1-').value, 
                       (ion_mass('Fe-56 1+') + 2*const.m_e).value, rtol=1e-14)
+    assert np.isclose((ion_mass('Fe-56 1+')).value, 
+                      (ion_mass('Fe', Z=1, mass_numb=56)).value)
+    assert np.isclose((ion_mass('Fe-56 1+')).value, 
+                      (ion_mass(26, Z=1, mass_numb=56)).value)
+    assert ion_mass(1, Z=1, mass_numb=1) == ion_mass('p')
+    assert ion_mass('deuteron') == ion_mass('D +1')
+    assert ion_mass('T', Z=1) == ion_mass('T +1')
 
     with pytest.raises(ValueError):
         ion_mass('Og')  # no standard atomic weight
@@ -406,6 +418,21 @@ def test_ion_mass():
 
     with pytest.raises(ValueError):
         ion_mass('n')
+
+    with pytest.raises(ValueError):
+        ion_mass('H-1 +1', Z=0)
+
+    with pytest.raises(UserWarning):
+        ion_mass('H-1 +1', Z=1)
+
+    with pytest.raises(TypeError):
+        ion_mass(26, Z=1, mass_numb='a')
+
+    with pytest.raises(ValueError):
+        ion_mass(26, Z=27, mass_numb=56)
+
+    with pytest.raises(ValueError):
+        ion_mass('Og', Z=1)
 
 
 def test_nuclear_binding_energy():

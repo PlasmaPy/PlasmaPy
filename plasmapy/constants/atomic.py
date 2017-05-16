@@ -234,8 +234,9 @@ def isotope_symbol(argument, mass_numb=None):
     try:
         element = element_symbol(argument)
     except Exception:
-        raise ValueError("The first argument of isotope_symbol (" +
-                         str(argument) + ") does not give element information")
+        raise ValueError("The first argument of isotope_symbol (" + 
+                         str(argument) + ") does not correspond to a valid "
+                         "element or isotope.")
 
     # Get mass number from argument, check for redundancies, and take
     # care of special cases.
@@ -437,9 +438,9 @@ def half_life(argument, mass_numb=None):
         else:
             half_life_sec = Isotopes[isotope]['half_life']
     except Exception:
+        half_life_sec = None
         raise UserWarning("The half-life for isotope " + isotope +
                           " is not available; returning None.")
-        half_life_sec = None
 
     return half_life_sec
 
@@ -483,11 +484,12 @@ def mass_number(isotope):
 
     """
 
-    symbol = isotope_symbol(isotope)
-
     try:
+        symbol = isotope_symbol(isotope)
         mass_numb = Isotopes[symbol]["mass_number"]
-    except Exception:
+    except TypeError:
+        raise("Incorrect type for mass_number input.")
+    except ValueError:
         raise ValueError("Mass number not able to be found from input " +
                          str(isotope))
 
@@ -601,7 +603,7 @@ def standard_atomic_weight(argument):
     argument, charge_state = __extract_charge_state(argument)
 
     if charge_state is not None and charge_state != 0:
-        raise ValueError("Use ion_mass to get masses")
+        raise ValueError("Use ion_mass to get masses of charged particles.")
 
     try:
         isotope = isotope_symbol(argument)
@@ -790,6 +792,8 @@ def ion_mass(argument, Z=None, mass_numb=None):
         raise ValueError("Inconsistent charge state information in ion_mass")
     elif Z is None and Z_from_arg is not None:
         Z = Z_from_arg
+    elif Z == Z_from_arg:
+        raise UserWarning("Redundant charge state information in ion_mass")
 
     if isinstance(Z, str) and Z.isdigit():
         Z = int(Z)
