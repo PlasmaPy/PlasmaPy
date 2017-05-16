@@ -1237,6 +1237,12 @@ def charge_state(argument):
     Z : integer
         The charge state, or None if it is not available.
 
+    Raises
+    ------
+    ValueError:
+        If the charge state or isotope information is invalid, or the charge
+        state exceeds the atomic number.
+
     Notes
     -----
     This function supports two formats for the charge state information.
