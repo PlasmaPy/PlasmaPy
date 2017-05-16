@@ -709,9 +709,10 @@ def ion_mass(argument, Z=None, mass_numb=None):
     Parameters
     ----------
     argument: string or integer
-        A string representing an element or isotope possibly with charge
-        state information at the end, or an integer representing the atomic
-        number of an element.
+        Returns the mass of an ion by finding the standard atomic
+        weight of an element or the atomic mass of an isotope, and then
+        accounting for the change in mass due to loss of electrons from
+        ionization.
 
     Z: integer (optional)
         The ionization state of the ion (defaulting to a charge of Z=1)
@@ -728,6 +729,10 @@ def ion_mass(argument, Z=None, mass_numb=None):
     ------
     ValueError
         If the ionization state exceeds the atomic number.
+
+    UserWarning
+        If a mass was inputted and it is outside of the range of known isotopes
+        or electrons/positrons.
 
     See also
     --------
@@ -752,6 +757,12 @@ def ion_mass(argument, Z=None, mass_numb=None):
     uses hydrogen's standard atomic weight based on terrestrial values.  To
     get the mass of a proton, use ion_mass('p').
 
+    This function can accept a Quantity in units of mass.  If the Quantity
+    is close to the mass of an electron or positron, it will return the
+    mass of an electron or positron to full known precision.  If the
+    Quantity is within the mass range of known isotopes, it will return the
+    mass that is inputted to it.
+
     Examples
     --------
     >>> ion_mass('p')  # proton
@@ -771,8 +782,33 @@ def ion_mass(argument, Z=None, mass_numb=None):
     <Quantity 9.288122788133088e-26 kg>
     >>> ion_mass('Fe-56')
     <Quantity 9.288122788133088e-26 kg>
+    >>> ion_mass(9.11e-31*u.kg)
+    <Constant name='Electron mass' value=9.10938291e-31 uncertainty=4e-38 unit='kg' reference='CODATA 2010'>
+    >>> ion_mass(1.67e-27*u.kg)
+    <Quantity 1.67e-27 kg>
 
     """
+
+    if isinstance(argument, u.Quantity) and Z is None and mass_numb is None:
+
+        try:
+            m_i = argument.to(u.kg)
+        except:
+            raise UnitConversionError("If the ion in given as a Quantity, "
+                                      "then it must have units of mass.")
+
+        if np.isclose(m_i.value, const.m_e.value, atol=1e-33):  # positrons
+            return const.m_e
+        elif 1.66e-27 <= m_i.value < 7e-25:  # mass range of known isotopes
+            return m_i
+        else:
+            raise UserWarning("The mass that was inputted to ion_mass and is "
+                              "being returned from ion_mass is outside of the "
+                              "range of known isotopes or electrons/ions.")
+
+    if isinstance(argument, str) and \
+            str(argument).lower() in ['e+', 'positron']:
+        return const.m_e
 
     if isinstance(argument, str) and \
             str(argument).lower() in ['e+', 'positron']:
