@@ -6,7 +6,7 @@ from ..atomic import (element_symbol, isotope_symbol, atomic_number,
                       isotope_mass, ion_mass, nuclear_binding_energy,
                       energy_from_nuclear_reaction, is_isotope_stable,
                       half_life, known_isotopes, common_isotopes,
-                      stable_isotopes, isotopic_composition,
+                      stable_isotopes, isotopic_composition, charge_state,
                       Elements, Isotopes)
 
 import pytest
@@ -40,6 +40,16 @@ def test_element_symbol():
     assert element_symbol('N-14') == 'N'
     assert element_symbol('n') == 'n'
     assert element_symbol('N') == 'N'
+    assert element_symbol('H +1') == 'H'
+    assert element_symbol('H 1+') == 'H'
+    assert element_symbol('hydrogen 1+') == 'H'
+    assert element_symbol('deuterium 1+') == 'H'
+    assert element_symbol('Fe 24+') == 'Fe'
+    assert element_symbol('Fe +24') == 'Fe'
+    assert element_symbol('Fe+') == 'Fe'
+    assert element_symbol('Fe++') == 'Fe'
+    assert element_symbol('Fe-') == 'Fe'
+    assert element_symbol('Fe++++++++') == 'Fe'
 
     with pytest.raises(ValueError):
         element_symbol('H-0')
@@ -52,6 +62,21 @@ def test_element_symbol():
 
     with pytest.raises(ValueError):
         element_symbol('H-934361079326356530741942970523610389')
+
+    with pytest.raises(ValueError):
+        element_symbol('Fe 2+4')
+
+    with pytest.raises(ValueError):
+        element_symbol('Fe+24')
+
+    with pytest.raises(ValueError):
+        element_symbol('Fe +59')
+
+    with pytest.raises(ValueError):
+        element_symbol('C++++++++++++++++')
+
+    with pytest.raises(ValueError):
+        element_symbol('C-++++')
 
 
 def test_isotope_symbol():
@@ -83,6 +108,9 @@ def test_isotope_symbol():
     assert isotope_symbol('p') == 'H-1'
     assert isotope_symbol('proton') == 'H-1'
     assert isotope_symbol('protium') == 'H-1'
+    assert isotope_symbol('N-13 2+') == 'N-13'
+    assert isotope_symbol('d+') == 'D'
+    assert isotope_symbol('Hydrogen-3 +1') == 'T'
 
     with pytest.raises(UserWarning):
         isotope_symbol('H-1', 1)
@@ -170,6 +198,9 @@ def test_atomic_number():
     assert atomic_number('n-1') == 0
     assert atomic_number('Neutron') == 0
     assert atomic_number('N') == 7
+    assert atomic_number('N 2+') == 7
+    assert atomic_number('N +1') == 7
+    assert atomic_number('N+++') == 7
 
     with pytest.raises(ValueError):
         atomic_number('H-3934')
@@ -194,6 +225,9 @@ def test_mass_number():
     assert mass_number('n') == 1
     assert mass_number('Be-8') == 8
     assert mass_number('N-13') == 13
+    assert mass_number('N-13 2+') == 13
+    assert mass_number('N-13 +2') == 13
+    assert mass_number('N-13+++') == 13
 
     with pytest.raises(ValueError):
         mass_number('H-359')
@@ -203,6 +237,9 @@ def test_mass_number():
 
     with pytest.raises(TypeError):
         mass_number(-1.5)
+
+    with pytest.raises(ValueError):
+        mass_number('N-13+-+-')
 
 
 def test_element_name():
@@ -233,15 +270,20 @@ def test_element_name():
     assert element_name('n') == 'neutron'
     assert element_name(0) == 'neutron'
     assert element_name('N') == 'nitrogen'
+    assert element_name('N+++') == 'nitrogen'
+    assert element_name('D-') == 'hydrogen'
 
     with pytest.raises(ValueError):
-        element_name("vegan cupcakes")
+        element_name('vegan cupcakes')
 
     with pytest.raises(ValueError):
         element_name('C-13-14-15-51698024')
 
     with pytest.raises(TypeError):
         element_name(1.24)
+
+    with pytest.raises(ValueError):
+        element_name('H++')
 
 
 def test_standard_atomic_weight():
@@ -251,6 +293,7 @@ def test_standard_atomic_weight():
     assert 30.973 < standard_atomic_weight('P').value < 30.974
     assert standard_atomic_weight('Au').unit == u.u
     assert standard_atomic_weight('N') is not None
+    assert standard_atomic_weight('Au+') is not None
 
     with pytest.raises(ValueError):
         standard_atomic_weight('H-1')
@@ -280,7 +323,7 @@ def test_isotope_mass():
 
 
 def test_ion_mass():
-    assert ion_mass('H') > const.m_p
+    assert ion_mass('H') > const.m_p, "Use standard_atomic_weight of 'H'"
     assert ion_mass('hydrogen') > const.m_p
     assert ion_mass('proton') == const.m_p
     assert ion_mass('e+') == ion_mass('positron') == const.m_e
@@ -289,6 +332,8 @@ def test_ion_mass():
     assert ion_mass('Ne-22', 2) == 21.991385114*u.u - 2*const.m_e
     assert ion_mass('F-19', Z=3).unit == u.kg
     assert ion_mass('F-19', Z='3').unit == u.kg
+
+    assert ion_mass('H-1+') == const.m_p
 
     with pytest.raises(ValueError):
         ion_mass('Og')  # no standard atomic weight
@@ -488,3 +533,9 @@ def test_isotopic_composition():
 
             assert np.isclose(sum_of_iso_comps, 1, atol=1e-6), \
                 "Problem with: " + element
+
+
+def test_charge_state():
+    assert charge_state('H+') == 1
+    assert charge_state('D +1') == 1
+    assert charge_state('tritium 1+') == 1

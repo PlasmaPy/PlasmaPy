@@ -14,7 +14,7 @@ from .atomic import (element_symbol, isotope_symbol, atomic_number,
                      isotope_mass, ion_mass, nuclear_binding_energy, half_life,
                      energy_from_nuclear_reaction, is_isotope_stable,
                      known_isotopes, common_isotopes, stable_isotopes,
-                     isotopic_composition)
+                     isotopic_composition, charge_state)
 
 from .elements import Elements
 

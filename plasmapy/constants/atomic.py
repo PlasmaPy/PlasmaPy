@@ -1,15 +1,16 @@
 """Functions that retrieve or are related to elemental or isotopic data."""
 
 import numpy as np
+import re
 from astropy import units as u, constants as const
 from .elements import atomic_symbols_list, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
 
 
-# The code contained within element_symbol and isotope_symbol is
-# designed to catch all of the special cases for different inputs.
-# Complexity is concentrated in these functions so that the rest of
-# the functions are simpler.
+# The code contained within element_symbol(), isotope_symbol(), and
+# __extract_charge_state() is designed to catch all of the special
+# cases for different inputs.  Complexity is concentrated in these
+# functions so that the rest of the functions can be simpler.
 
 def element_symbol(argument):
     """Returns the atomic symbol.
@@ -72,6 +73,8 @@ def element_symbol(argument):
 
     """
 
+    argument, charge_state = __extract_charge_state(argument)
+
     if not isinstance(argument, (str, int)):
         raise TypeError("The first argument in element_symbol must be either "
                         "a string representing an element or isotope, or an "
@@ -130,6 +133,12 @@ def element_symbol(argument):
     if symbol not in Elements.keys():
         raise ValueError("The element " + symbol + " is unknown in "
                          "element_symbol.")
+
+    if charge_state is not None and \
+            charge_state > Elements[symbol]['atomic_number']:
+
+        raise ValueError("Cannot have an ionization state greater than the "
+                         "atomic number in element_name.")
 
     return symbol
 
@@ -197,6 +206,9 @@ def isotope_symbol(argument, mass_numb=None):
 
     if mass_numb is None and argument in Isotopes.keys():
         return argument
+
+    if isinstance(argument, str):
+        argument, charge_state = __extract_charge_state(argument)
 
     if isinstance(argument, str) and argument.isdigit():
         argument = int(argument)
@@ -678,7 +690,7 @@ def isotope_mass(argument, mass_numb=None):
     return atomic_mass
 
 
-def ion_mass(argument, Z=1, mass_numb=None):
+def ion_mass(argument, Z=None, mass_numb=None):
     """Returns the mass of an ion by finding the standard atomic
     weight of an element or the atomic mass of an isotope, and then
     accounting for the change in mass due to loss of electrons from
@@ -687,11 +699,12 @@ def ion_mass(argument, Z=1, mass_numb=None):
     Parameters
     ----------
     argument: string or integer
-        A string representing an element or isotope, or an integer representing
-        the atomic number of an element.
+        A string representing an element or isotope possibly with charge
+        state information at the end, or an integer representing the atomic
+        number of an element.
 
     Z: integer (optional)
-        The ionization state of the ion (defaulting to a charge of Z = 1)
+        The ionization state of the ion (defaulting to a charge of Z=1)
 
     mass_numb: integer (optional)
         The mass number of an isotope.
@@ -704,7 +717,7 @@ def ion_mass(argument, Z=1, mass_numb=None):
     Raises
     ------
     ValueError
-        If the ionization state exceeds the atomic number
+        If the ionization state exceeds the atomic number.
 
     See also
     --------
@@ -734,6 +747,8 @@ def ion_mass(argument, Z=1, mass_numb=None):
     >>> ion_mass('p')  # proton
     <Constant name='Proton mass' value=1.672621777e-27 uncertainty=7.4e-35
     unit='kg' reference='CODATA 2010'>
+    >>> ion_mass('H')  # assumes terrestrial abundance of D
+    <Quantity 1.672912294077e-27 kg>
     >>> ion_mass('H') == ion_mass('p')
     False
     >>> ion_mass('P')  # phosphorus
@@ -749,6 +764,22 @@ def ion_mass(argument, Z=1, mass_numb=None):
 
     """
 
+    if isinstance(argument, str) and \
+            str(argument).lower() in ['e+', 'positron']:
+        return const.m_e
+
+    if isinstance(argument, str):
+        new_arg, Z_from_arg = __extract_charge_state(argument)
+    else:
+        Z_from_arg = None
+
+    if Z is None and Z_from_arg is None:
+        Z = 1
+    elif Z is not None and Z_from_arg is not None and Z != Z_from_arg:
+        raise ValueError("Inconsistent charge state information in ion_mass")
+    elif Z is None and Z_from_arg is not None:
+        Z = Z_from_arg
+
     if isinstance(Z, str) and Z.isdigit():
         Z = int(Z)
     if isinstance(mass_numb, str) and mass_numb.isdigit():
@@ -762,9 +793,6 @@ def ion_mass(argument, Z=1, mass_numb=None):
         raise TypeError("In ion_mass, mass_numb must be an integer "
                         "representing the mass number of an isotope.")
 
-    if str(argument).lower() in ['e+', 'positron']:
-        return const.m_e
-
     if atomic_number(argument) < Z:
         raise ValueError("The ionization state cannot exceed the "
                          "atomic number in ion_mass")
@@ -772,7 +800,7 @@ def ion_mass(argument, Z=1, mass_numb=None):
     if argument == 'alpha' or element_symbol(argument) == 'He' and Z == 2:
         return 6.644657230e-27*u.kg
     elif argument in ['p', 'p+'] or str(argument).lower() in \
-            ['proton', 'protium']:
+            ['proton', 'protium']:  # Not H because conv atom weight has some D
         return const.m_p
     elif atomic_number(argument) == 1:
         if isinstance(argument, str) and '-1' in str(argument):
@@ -1193,3 +1221,148 @@ def isotopic_composition(argument, mass_numb=None):
         iso_comp = 0.0
 
     return iso_comp
+
+
+def charge_state(argument):
+    """Returns the charge state of an ion.
+
+    Parameters
+    ----------
+    argument : string
+        String representing an element or isotope followed by charge state
+        information.
+
+    Returns
+    -------
+    Z : integer
+        The charge state, or None if it is not available.
+
+    Notes
+    -----
+    This function supports two formats for the charge state information.
+
+    The first format is a string that has information for the element
+    or isotope at the beginning, a space in between, and the charge
+    state information in the form of an integer followed by a plus or
+    minus sign, or a plus or minus sign followed by an integer.
+
+    The second format is a string containing element information at
+    the beginning, following by one or more plus or minus signs.
+
+    Examples
+    --------
+    >>> charge_state('Fe-56 2+')
+    2
+    >>> charge_state('He -2)
+    -2
+    >>> charge_state('H+')
+    1
+    >>> charge_state('N-14++')
+    2
+
+    """
+
+    argument, Z = __extract_charge_state(argument)
+
+    try:
+        atomic_numb = atomic_number(argument)
+    except:
+        raise ValueError("Invalid element or isotope information in "
+                         "charge_state")
+
+    if Z > atomic_numb:
+        raise ValueError("The charge state cannot be greater than the atomic "
+                         "number.")
+
+    return Z
+
+
+def __extract_charge_state(argument):
+    """Splits strings containing element or isotope and charge state
+    information into a string without the charge state information and
+    the charge state as an integer (or None if no charge state
+    information is given).
+
+    Parameters
+    ----------
+    argument : string
+        String containing information for an element or isotope in any of
+        the allowed formats, followed by charge state information.
+
+    Returns
+    -------
+    argument : string
+        The original string with charge state information removed.
+
+    charge_state : integer
+        The charge state of an ion (e.g., this will return 1 if one electron
+        has been removed and -1 if one electron has been gained)
+
+    Notes
+    -----
+    If the argument is not a string, this function will return the
+    original argument and None.
+
+    This function does not check that the charge state is valid.
+
+    Examples
+    --------
+    >>> isotope, charge_state = __extract_charge_state('Fe-56+++')
+    >>> print(isotope)
+    'Fe-56'
+    >>> print(charge_state)
+    3
+    >>> __extract_charge_state('D +1')
+    ('D', 1)
+
+    """
+
+    if not isinstance(argument, str):
+        return argument, None
+
+    if argument.count(' ') == 1:  # For cases like 'Fe +2' and 'Fe-56 2+'
+
+        argument, ion_info = argument.split()
+
+        check1 = (ion_info.endswith(('-', '+')) ^
+                  ion_info.startswith(('-', '+')))
+
+        check2 = ((ion_info.count('-') == 1 and ion_info.count('+') == 0) or
+                  (ion_info.count('-') == 0 and ion_info.count('+') == 1))
+
+        if '-' in ion_info:
+            sign = -1
+            charge = ion_info.replace('-', '')
+        elif '+' in ion_info:
+            sign = +1
+            charge = ion_info.replace('+', '')
+
+        try:
+            charge_state = sign*int(charge)
+            check3 = True
+        except:
+            check3 = False
+
+        if not (check1 and check2 and check3):
+            raise ValueError("The following input does not have valid charge "
+                             "state information: " + argument + ion_info)
+
+    elif argument.endswith(('-', '+')):  # For cases like 'Fe++' or 'Si-'
+
+        char = argument[-1]
+        match = re.match(r"["+char+"]*", argument[::-1])
+        charge_state = match.span()[1]
+
+        if char == '-':
+            charge_state = -charge_state
+
+        if argument.count(char) != np.abs(charge_state):
+            raise ValueError("The following input does not have valid charge "
+                             "state information: " + argument)
+
+        argument = argument[0:len(argument)-match.span()[1]]
+
+    else:
+        charge_state = None
+
+    return argument, charge_state
