@@ -236,7 +236,7 @@ def isotope_symbol(argument, mass_numb=None):
 
     try:
         element = element_symbol(argument)
-    except:
+    except Exception:
         raise ValueError("The first argument of isotope_symbol (" +
                          str(argument) + ") does not give element information")
 
@@ -382,7 +382,7 @@ def is_isotope_stable(argument, mass_numb=None):
 
     try:
         is_stable = Isotopes[isotope]['is_stable']
-    except:
+    except Exception:
         ValueError("No data on stability of " + isotope)
 
     return is_stable
@@ -439,7 +439,7 @@ def half_life(argument, mass_numb=None):
             half_life_sec = np.inf * u.s
         else:
             half_life_sec = Isotopes[isotope]['half_life']
-    except:
+    except Exception:
         raise UserWarning("The half-life for isotope " + isotope +
                           " is not available; returning None.")
         half_life_sec = None
@@ -490,7 +490,7 @@ def mass_number(isotope):
 
     try:
         mass_numb = Isotopes[symbol]["mass_number"]
-    except:
+    except Exception:
         raise ValueError("Mass number not able to be found from input " +
                          str(isotope))
 
@@ -603,7 +603,7 @@ def standard_atomic_weight(argument):
 
     try:
         isotope = isotope_symbol(argument)
-    except:
+    except Exception:
         isotope = ''
 
     if isinstance(argument, str) and (argument in ['p', 'p+'] or
@@ -621,7 +621,7 @@ def standard_atomic_weight(argument):
 
     try:
         atomic_weight = Elements[atomic_symbol]['atomic_mass']
-    except:
+    except Exception:
         raise ValueError("No standard atomic weight is available for " +
                          atomic_symbol)
 
@@ -815,10 +815,10 @@ def ion_mass(argument, Z=None, mass_numb=None):
         elif isotope_symb == 'T' and Z == 1:
             return 5.007356665e-27 * u.kg
         atomic_mass = isotope_mass(isotope_symb)
-    except:
+    except Exception:
         try:
             atomic_mass = standard_atomic_weight(argument)
-        except:
+        except Exception:
             errormessage = "No isotope mass or standard atomic weight is " +\
                 "available to get ion mass for " + str(argument)
             if isinstance(mass_numb, int):
@@ -955,7 +955,7 @@ def energy_from_nuclear_reaction(reaction):
                 else:
                     symbol = isotope_symbol(item)
                 isotopes_list.append(symbol)
-            except:
+            except Exception:
                 try:
                     multiplier_string = ''
                     while item[0].isdigit():
@@ -964,7 +964,7 @@ def energy_from_nuclear_reaction(reaction):
                     symbol = isotope_symbol(item)
                     for i in range(0, int(multiplier_string)):
                         isotopes_list.append(symbol)
-                except:
+                except Exception:
                     raise
         return isotopes_list
 
@@ -989,7 +989,7 @@ def energy_from_nuclear_reaction(reaction):
 
     try:
         LHS, RHS = re.split('-+>', reaction)
-    except:
+    except Exception:
         raise ValueError("The left and right hand sides of the reaction "
                          "should be separated by '-->'")
 
@@ -1209,7 +1209,7 @@ def isotopic_composition(argument, mass_numb=None):
 
     try:
         isotope = isotope_symbol(argument, mass_numb)
-    except:
+    except Exception:
         raise ValueError("Invalid isotope in isotopic_composition.")
 
     if isotope == 'n':
@@ -1217,7 +1217,7 @@ def isotopic_composition(argument, mass_numb=None):
 
     try:
         iso_comp = Isotopes[isotope]['isotopic_composition']
-    except:
+    except Exception:
         iso_comp = 0.0
 
     return iso_comp
@@ -1272,7 +1272,7 @@ def charge_state(argument):
 
     try:
         atomic_numb = atomic_number(argument)
-    except:
+    except Exception:
         raise ValueError("Invalid element or isotope information in "
                          "charge_state")
 
@@ -1346,7 +1346,7 @@ def __extract_charge_state(argument):
         try:
             charge_state = sign*int(charge)
             check3 = True
-        except:
+        except Exception:
             check3 = False
 
         if not (check1 and check2 and check3):
