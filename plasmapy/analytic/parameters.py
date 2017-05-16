@@ -2,9 +2,10 @@
 
 from astropy import units as u
 
-from astropy.units import UnitConversionError, quantity_input
+from astropy.units import UnitConversionError, quantity_input, Quantity
 
-from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, ion_mass)
+from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, ion_mass,
+                         charge_state)
 
 import numpy as np
 
@@ -42,11 +43,6 @@ by an angular frequency to get a length scale:
 
 """
 
-def charge_state(ion):
-    """Temporary: gets Z from a string representing an ion."""
-    print("Need to update charge_state")
-    return 1
-
 
 def Alfven_speed(B, density, ion="p"):
     """Returns the Alfven speed.
@@ -68,7 +64,10 @@ def Alfven_speed(B, density, ion="p"):
 
     Raises
     ------
-    UserWarning
+    UnitConversionError:
+        If the magnetic field or density is not in correct units
+
+    UserWarning:
         If the Alfven velocity exceeds the speed of light
 
     Notes
@@ -80,6 +79,8 @@ def Alfven_speed(B, density, ion="p"):
     V_A = \frac{B}{\sqrt{\mu_0\rho}}
 
     where the mass density is :math:`\rho \approx n_i m_i`.
+
+    This expression does not account for relativisitic effects.
 
     Examples
     --------
@@ -106,30 +107,41 @@ def Alfven_speed(B, density, ion="p"):
     try:
         if B.si.unit in ['1 / m3', 'kg / m3'] and density.si.unit in ['T']:
             B, density = density, B
-    except:
+    except Exception:
         pass
 
     try:
         B = B.to(u.T)
-    except:
+    except Exception:
         raise UnitConversionError("The magnetic field in Alfven_speed cannot "
                                   "be converted to Tesla")
 
     try:
         density = density.si
-    except:
-        raise UnitConversionError('The density in Alfven_speed')
+    except Exception:
+        raise UnitConversionError("Alfven_speed requires a number density or "
+                                  "mass density as an input.")
 
     if density.unit not in ['1 / m3', 'kg / m3']:
         raise UnitsError("One input of Alfven_speed must have units of either "
                          "a number density or mass density.")
 
-    if density.unit == '1 / m3':
+    try:
         m_i = ion_mass(ion)
-        Z = charge_state(ion)
-        rho = density*m_i + Z*density*m_e
-    elif density.unit == 'kg / m3':
-        rho = density
+    except:
+        raise ValueError("Unable to find ion mass")
+
+    try:
+        if density.unit == '1 / m3':
+            Z = charge_state(ion)
+            if Z is None:
+                Z = 1
+                m_i = ion_mass(ion)
+            rho = density*m_i + Z*density*m_e
+        elif density.unit == 'kg / m3':
+            rho = density
+    except:
+        raise ValueError("Unable to find mass density in Alfven_speed")
 
     V_A = (np.abs(B)/np.sqrt(mu0*rho)).to(u.m/u.s)
 
@@ -168,13 +180,35 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
 
     """
 
+    if gamma < 1:
+        raise ValueError("The ratio of specific heats cannot be less than one")
+    elif gamma is np.inf:
+        return np.inf*u.m/u.s
+    
+
+#    try:
     m_i = ion_mass(ion)
+#    except Exception:
+#        if isinstance
+            
+
+#        raise UnitConversionError("Unable to find ion mass")
+
+    
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
-    V_S = (np.sqrt(gamma*k_B*T_i/m_i)).to(u.m/u.s)
+
+    try:
+        V_S = (np.sqrt(gamma*k_B*T_i/m_i)).to(u.m/u.s)
+    except:
+        raise ValueError("Unable to find ion sound speed")
+
+    if V_S > c:
+        raise UserWarning("Ion sound speed is greater than speed "
+                          "of light")
+
     return V_S
 
 
-#@u.quantity_input
 def electron_thermal_speed(T_e):
     """Returns the most probable speed for an electron within a
     Maxwellian distribution.
@@ -182,7 +216,7 @@ def electron_thermal_speed(T_e):
     Parameters
     ----------
     T_e : Quantity
-        The electron temperature.
+        The electron temperature in either Kelvin or electron-volts
 
     Returns
     -------
@@ -192,8 +226,9 @@ def electron_thermal_speed(T_e):
     Notes
     -----
     The electron thermal speed is given by:
-    
-    MATH MATH MATH MATH MATH
+
+    .. math::
+    V_{th,e} = \sqrt{\frac{2 k_B T_e}{m_e}}
 
     This function yields the most probable speed within a distribution
     function.  However, the definition of thermal velocity varies by
@@ -203,15 +238,24 @@ def electron_thermal_speed(T_e):
     Plasma Formulary [1] is a square root of two smaller than the
     result from this function.
 
+    Examples
+    --------
+    >>> electron_thermal_speed(5*u.eV)
+    <Quantity 1326205.1454609886 m / s>
+    >>> electron_thermal_speed(1e6*u.K)
+    <Quantity 5505694.743141063 m / s>
+
     """
 
     try:
         T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
-    except:
-        raise UnitConversionError("Cannot convert input of "
-                                  "electron_thermal_velocity to Kelvin")
+        V_Te = (np.sqrt(2*k_B*T_e/m_e)).to(u.m/u.s)
+    except Exception:
+        raise ValueError("Cannot find electron thermal speed")
 
-    V_Te = (np.sqrt(2*k_B*T_e/m_e)).to(u.m/u.s)
+    if V_Te > c:
+        raise UserWarning("Electron thermal speed is greater than speed "
+                          "of light")
 
     return V_Te
 
@@ -236,8 +280,9 @@ def ion_thermal_speed(T_i, ion='p'):
     Notes
     -----
     The electron thermal speed is given by:
-    
-    MATH MATH MATH MATH MATH
+
+    .. math::
+    V_{th,i} = \sqrt{\frac{2 k_B T_i}{m_i}}
 
     This function yields the most probable speed within a distribution
     function.  However, the definition of thermal velocity varies by
@@ -249,17 +294,22 @@ def ion_thermal_speed(T_i, ion='p'):
 
     Examples
     --------
-
-    >>>
+    >>> ion_thermal_speed(5*u.eV)
+    <Quantity 30949.690763378258 m / s>
+    >>> ion_thermal_speed(1e6*u.K, ion='p')
+    <Quantity 128486.56960876317 m / s>
 
     """
+
     try:
         T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
+        m_i = ion_mass(ion)
+        V_Ti = (np.sqrt(2*k_B*T_i/m_i)).to(u.m/u.s)
     except:
-        raise UnitConversionError("Cannot convert input of "
-                                  "ion_thermal_velocity to Kelvin")
+        raise ValueError("Unable to find ion thermal speed")
 
-    V_Ti = (np.sqrt(2*k_B*T_i/m_i)).to(u.m/u.s)
+    if V_Ti > c:
+        raise UserWarning("Ion thermal speed is greater than speed of light")
 
     return V_Ti
 
@@ -306,7 +356,10 @@ def electron_gyrofrequency(B: u.T):
 
     """
 
-    omega_ce = u.rad*(e*B/m_e).to(1/u.s)
+    try:
+        omega_ce = u.rad*(e*B/m_e).to(1/u.s)
+    except Exception:
+        raise ValueError("Unable to find electron gyrofrequency")
 
     return omega_ce
 
@@ -348,20 +401,25 @@ def ion_gyrofrequency(B: u.T, ion='p'):
 
     """
 
-    m_i = ion_mass(ion)
+    try:
+        m_i = ion_mass(ion)
+    except Exception:
+        raise ValueError("Unable to get mass of ion in ion_gyrofrequency")
 
     try:
         B = B.to(u.T)
-    except:
+    except Exception:
         raise UnitsError("Argument 'B' to function 'ion_gyrofrequency' must "
                          "be in units convertible to 'T'")
 
-    omega_ci = u.rad * (e*B/m_i).to(1/u.s)
+    try:
+        omega_ci = u.rad * (e*B/m_i).to(1/u.s)
+    except Exception:
+        raise ValueError("Unable to find ion gyrofrequency")
 
     return omega_ci
 
 
-#@u.quantity_input
 def electron_gyroradius(B, Te_or_Vperp):
     """Returns the radius of gyration for an electron in a uniform
     magnetic field.
@@ -384,33 +442,37 @@ def electron_gyroradius(B, Te_or_Vperp):
     electrons.
 
     """
-    
+
     try:
-        if Te_or_Vperp.si.unit == 'T' and (B.si.unit in ['m / s', 'K'] or 
-                                           B.unit[-2:] == 'eV'):
+        if Te_or_Vperp.si.unit == 'T' and \
+                (B.si.unit in ['m / s', 'K'] or B.unit[-2:] == 'eV'):
             B, Te_or_Vperp = Te_or_Vperp, B
-    except:
+    except Exception:
         pass
 
-    B = B.to(u.T)
-    
+    try:
+        B = B.to(u.T)
+    except Exception:
+        raise
+
     try:
         T_e = Te_or_Vperp.to(u.K, equivalencies=u.temperature_energy())
         Vperp = electron_thermal_speed(T_e).to(u.m/u.s)
-    except:
+    except Exception:
         try:
             Vperp = Te_or_Vperp.to(u.m/u.s)
-        except:
-            raise UnitConversionError("Incorrect inputs for electron_gyroradius")
+        except Exception:
+            raise UnitConversionError("Incorrect inputs for "
+                                      "electron_gyroradius")
 
 #    if Te_Te_or_Vperp.unit[-2:] == 'eV':
 #        T_e = Te_or_Vperp.to(u.K, equivalencies=u.temperature_energy())
 #        V_perp = electron_thermal_speed(T_e)
-#    elif 
+#    elif
 
     omega_ce = electron_gyrofrequency(B)
     r_L = (Vperp/omega_ce).to(u.m, equivalencies=u.dimensionless_angles())
-    
+
     return r_L
 
 def ion_gyroradius(B=None, V=None, T_i=None, ion='p'):
