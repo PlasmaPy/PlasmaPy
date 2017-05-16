@@ -19,11 +19,12 @@ def test_element_symbol():
     assert element_symbol('d') == 'H'
     assert element_symbol('T') == 'H'
     assert element_symbol('deuterium') == 'H'
+    assert element_symbol('deuteron') == 'H'
     assert element_symbol('Tritium') == 'H'
+    assert element_symbol('triton') == 'H'
     assert element_symbol('H-3') == 'H'
     assert element_symbol('Hydrogen-3') == 'H'
     assert element_symbol('helium') == 'He'
-    assert element_symbol('Helium') == 'He'
     assert element_symbol(2) == 'He'
     assert element_symbol('alpha') == 'He'
     assert element_symbol('he') == 'He'
@@ -46,10 +47,12 @@ def test_element_symbol():
     assert element_symbol('deuterium 1+') == 'H'
     assert element_symbol('Fe 24+') == 'Fe'
     assert element_symbol('Fe +24') == 'Fe'
+    assert element_symbol('Fe 2-') == 'Fe'
+    assert element_symbol('Fe -2') == 'Fe'
     assert element_symbol('Fe+') == 'Fe'
     assert element_symbol('Fe++') == 'Fe'
     assert element_symbol('Fe-') == 'Fe'
-    assert element_symbol('Fe++++++++') == 'Fe'
+    assert element_symbol('Fe++++++++++++++') == 'Fe'
 
     with pytest.raises(ValueError):
         element_symbol('H-0')
@@ -86,6 +89,9 @@ def test_isotope_symbol():
     assert isotope_symbol('d') == 'D'
     assert isotope_symbol('Deuterium') == 'D'
     assert isotope_symbol('deuterium') == 'D'
+    assert isotope_symbol('deuteron') == 'D'
+    assert isotope_symbol('tritium') == 'T'
+    assert isotope_symbol('triton') == 'T'
     assert isotope_symbol('Hydrogen-3') == 'T'
     assert isotope_symbol('hydrogen-3') == 'T'
     assert isotope_symbol('h-3') == 'T'
@@ -319,6 +325,12 @@ def test_standard_atomic_weight():
         standard_atomic_weight('alpha')
 
     with pytest.raises(ValueError):
+        standard_atomic_weight('deuteron')
+
+    with pytest.raises(ValueError):
+        standard_atomic_weight('tritium')
+
+    with pytest.raises(ValueError):
         standard_atomic_weight('Au+')
 
     with pytest.raises(ValueError):
@@ -360,6 +372,11 @@ def test_isotope_mass():
     with pytest.raises(ValueError):
         isotope_mass('Fe -2')
 
+    with pytest.raises(ValueError):
+        isotope_mass('deuteron')
+
+    with pytest.raises(ValueError):
+        isotope_mass('triton')
 
 def test_ion_mass():
     assert ion_mass('H') > const.m_p, "Use standard_atomic_weight of 'H'"
@@ -371,8 +388,15 @@ def test_ion_mass():
     assert ion_mass('Ne-22', 2) == 21.991385114*u.u - 2*const.m_e
     assert ion_mass('F-19', Z=3).unit == u.kg
     assert ion_mass('F-19', Z='3').unit == u.kg
-
     assert ion_mass('H-1+') == const.m_p
+    assert ion_mass('He+') == ion_mass('He')
+    assert ion_mass('He 1+') == ion_mass('He')
+    assert ion_mass('He 2+') == ion_mass('alpha')
+    assert np.isclose(ion_mass('Fe 1-').value, 
+                      (ion_mass('Fe 1+') + 2*const.m_e).value, rtol=1e-14)
+
+    assert np.isclose(ion_mass('Fe-56 1-').value, 
+                      (ion_mass('Fe-56 1+') + 2*const.m_e).value, rtol=1e-14)
 
     with pytest.raises(ValueError):
         ion_mass('Og')  # no standard atomic weight

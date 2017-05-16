@@ -258,9 +258,9 @@ def isotope_symbol(argument, mass_numb=None):
         elif argument in ['p', 'p+'] or \
                 argument.lower() in ['protium', 'proton']:
             mass_numb_from_arg = 1
-        elif argument.lower() in ['d', 'deuterium']:
+        elif argument.lower() in ['d', 'deuterium', 'deuteron']:
             mass_numb_from_arg = 2
-        elif argument.lower() in ['t', 'tritium']:
+        elif argument.lower() in ['t', 'tritium', 'triton']:
             mass_numb_from_arg = 3
         elif argument.lower() in ['alpha']:
             mass_numb_from_arg = 4
@@ -780,7 +780,7 @@ def ion_mass(argument, Z=None, mass_numb=None):
         raise ValueError("Use isotope_mass or m_n to get mass of neutron")
 
     if isinstance(argument, str):
-        new_arg, Z_from_arg = __extract_charge_state(argument)
+        argument, Z_from_arg = __extract_charge_state(argument)
     else:
         Z_from_arg = None
 
