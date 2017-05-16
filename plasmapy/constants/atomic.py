@@ -97,7 +97,8 @@ def element_symbol(argument):
         if argument in ['n', 'neutron', 'n-1']:
             return 'n'
         elif argument in ['p', 'p+'] or argument.lower() in \
-                ['d', 't', 'proton', 'protium', 'deuterium', 'tritium']:
+                ['d', 't', 'proton', 'protium', 'deuterium', 'deuteron',
+                 'triton', 'tritium']:
             return 'H'
         elif argument.lower() == 'alpha':
             return 'He'
@@ -129,10 +130,6 @@ def element_symbol(argument):
             if isotope not in Isotopes.keys():
                 raise ValueError("The input in element_symbol corresponding "
                                  "to " + isotope + " is not a valid isotope.")
-
-    if symbol not in Elements.keys():
-        raise ValueError("The element " + symbol + " is unknown in "
-                         "element_symbol.")
 
     if charge_state is not None and \
             charge_state > Elements[symbol]['atomic_number']:
@@ -601,6 +598,11 @@ def standard_atomic_weight(argument):
 
     """
 
+    argument, charge_state = __extract_charge_state(argument)
+
+    if charge_state is not None and charge_state != 0:
+        raise ValueError("Use ion_mass to get masses")
+
     try:
         isotope = isotope_symbol(argument)
     except Exception:
@@ -677,6 +679,12 @@ def isotope_mass(argument, mass_numb=None):
     >>> isotope_mass(2, 4)
 
     """
+
+    argument, charge_state = __extract_charge_state(argument)
+
+    if charge_state is not None and charge_state != 0:
+        raise ValueError("Use ion_mass instead of isotope_mass for masses of "
+                         "charged particles")
 
     if argument == 'alpha':
         raise ValueError("Use ion_mass for mass of an alpha particle")
@@ -767,6 +775,9 @@ def ion_mass(argument, Z=None, mass_numb=None):
     if isinstance(argument, str) and \
             str(argument).lower() in ['e+', 'positron']:
         return const.m_e
+
+    if atomic_number(argument) == 0:
+        raise ValueError("Use isotope_mass or m_n to get mass of neutron")
 
     if isinstance(argument, str):
         new_arg, Z_from_arg = __extract_charge_state(argument)
@@ -1276,9 +1287,14 @@ def charge_state(argument):
         raise ValueError("Invalid element or isotope information in "
                          "charge_state")
 
-    if Z > atomic_numb:
+    if Z is not None and Z > atomic_numb:
         raise ValueError("The charge state cannot be greater than the atomic "
                          "number.")
+
+    if Z is not None and Z < -atomic_numb - 1:
+        raise UserWarning("Element " + element_symbol(argument) + " has a "
+                          "charge of " + str(Z) + " which is "
+                          "unlikely to occur in nature.")
 
     return Z
 
@@ -1300,7 +1316,7 @@ def __extract_charge_state(argument):
     argument : string
         The original string with charge state information removed.
 
-    charge_state : integer
+    Z : integer
         The charge state of an ion (e.g., this will return 1 if one electron
         has been removed and -1 if one electron has been gained)
 
@@ -1313,10 +1329,10 @@ def __extract_charge_state(argument):
 
     Examples
     --------
-    >>> isotope, charge_state = __extract_charge_state('Fe-56+++')
+    >>> isotope, Z = __extract_charge_state('Fe-56+++')
     >>> print(isotope)
     'Fe-56'
-    >>> print(charge_state)
+    >>> print(Z)
     3
     >>> __extract_charge_state('D +1')
     ('D', 1)
@@ -1325,6 +1341,14 @@ def __extract_charge_state(argument):
 
     if not isinstance(argument, str):
         return argument, None
+
+    if argument in ['n', 'neutron', 'n-1']:
+        return argument, 0
+    elif argument in ['p', 'p+'] or argument.lower() in \
+            ['proton', 'deuteron', 'triton']:
+        return argument, 1
+    elif argument.lower() == 'alpha':
+        return argument, 2
 
     if argument.count(' ') == 1:  # For cases like 'Fe +2' and 'Fe-56 2+'
 
@@ -1370,5 +1394,10 @@ def __extract_charge_state(argument):
 
     else:
         charge_state = None
+
+    if charge_state is not None and charge_state < -6:
+        raise UserWarning("Element " + element_symbol(argument) + " has a "
+                          "charge of " + str(charge_state) + " which is "
+                          "unlikely to occur in nature.")
 
     return argument, charge_state
