@@ -17,9 +17,9 @@ def element_symbol(argument):
 
     Parameters
     ----------
-    argument: integer or string
-        An integer representing the atomic number, or a string containing a
-        representation of an element or an isotope.
+    argument: string or integer
+        A string representing an element, isotope, or ion or an integer
+        representing an atomic number
 
     Returns
     -------
@@ -32,7 +32,8 @@ def element_symbol(argument):
         If the argument is not a string or integer.
 
     ValueError:
-        If the argument cannot be used to identify the element.
+        If the argument cannot be used to identify the element, the
+        isotope has not been discovered, or the charge state is invalid.
 
     See also
     --------
@@ -146,8 +147,8 @@ def isotope_symbol(argument, mass_numb=None):
     Parameters
     ----------
     argument: integer or string
-        An integer representing the atomic number, or a string containing a
-        representation of an element or an isotope.
+        A string representing an element, isotope, or ion or an integer
+        representing an atomic number
 
     mass_numb: integer or string
         An integer or string representing the mass number of the isotope.
@@ -311,7 +312,7 @@ def atomic_number(argument):
     Parameters
     ----------
     argument: string
-        A string represnting the symbol or name of an element or isotope.
+        A string representing an element, isotope, or ion.
 
     Returns
     -------
@@ -347,8 +348,8 @@ def is_isotope_stable(argument, mass_numb=None):
     Parameters
     ----------
     argument: integer or string
-        A string or integer representing an atomic number or element, or a
-        string represnting an isotope.
+        A string representing an isotope or an integer representing an
+        atomic number
 
     mass_numb: integer
         The mass number of the isotope.
@@ -393,8 +394,9 @@ def half_life(argument, mass_numb=None):
     Parameters
     ----------
     argument: integer or string
-        A string or integer representing an atomic number or element, or a
-        string represnting an isotope.
+        A string representing an isotope or an integer representing an
+        atomic number
+
     mass_numb: integer
         The mass number of the isotope.
 
@@ -451,7 +453,7 @@ def mass_number(isotope):
     Parameters
     ----------
     isotope : string
-        A string representing the symbol or name of an isotope.
+        A string representing an isotope.
 
     Returns
     -------
@@ -502,8 +504,8 @@ def element_name(argument):
     Parameters
     ----------
     argument : string or integer
-        String representing an element or isotope, or an integer representing
-        the atomic number of an element.
+        A string representing an element, isotope, or ion or an integer
+        representing an atomic number
 
     Returns
     -------
@@ -545,8 +547,8 @@ def standard_atomic_weight(argument):
     Parameters
     ----------
     argument: string or integer
-        A string representing the symbol or name of an element or isotope, or
-        an integer representing an element's atomic number.
+        A string representing an element or an integer representing an
+        atomic number
 
     Returns
     -------
@@ -573,6 +575,10 @@ def standard_atomic_weight(argument):
 
     Notes
     -----
+    Standard atomic weight data are most readily available for the terrestrial
+    environment, so this function may not be wholly appropriate for space and
+    astrophysical environments.
+
     The relative abundances of different isotopes of an element sometimes vary
     naturally in different locations within the terrestrial environment.  The
     CIAAW provides ranges for these element, which include H, Li, B, C, N, O,
@@ -638,8 +644,8 @@ def isotope_mass(argument, mass_numb=None):
     Parameters
     ----------
     argument : string or integer
-        A string representing an element or isotope or an integer representing
-        an atomic number
+        A string representing an element, isotope, or ion or an integer
+        representing an atomic number
 
     mass_numb : integer (optional)
         The mass number of the isotope.
@@ -708,11 +714,10 @@ def ion_mass(argument, Z=None, mass_numb=None):
 
     Parameters
     ----------
-    argument: string or integer
-        Returns the mass of an ion by finding the standard atomic
-        weight of an element or the atomic mass of an isotope, and then
-        accounting for the change in mass due to loss of electrons from
-        ionization.
+    argument: string, integer, or Quantity
+        A string representing an element, isotope, or ion; an integer
+        representing an atomic number; or a Quantity in units of mass
+        within the mass range that is appropriate for an ion.
 
     Z: integer (optional)
         The ionization state of the ion (defaulting to a charge of Z=1)
@@ -811,10 +816,6 @@ def ion_mass(argument, Z=None, mass_numb=None):
             str(argument).lower() in ['e+', 'positron']:
         return const.m_e
 
-    if isinstance(argument, str) and \
-            str(argument).lower() in ['e+', 'positron']:
-        return const.m_e
-
     if atomic_number(argument) == 0:
         raise ValueError("Use isotope_mass or m_n to get mass of neutron")
 
@@ -892,19 +893,25 @@ def nuclear_binding_energy(argument, mass_numb=None):
         A string representing an element or isotope, or an integer representing
         the atomic number of an element.
 
-    mass_numb: integer
+    mass_numb: integer, optional
         The mass number of an isotope, which is required if and only if the
-        first argument can only be used
+        first argument can only be used to determine the element and not the
+        isotope.
 
     Returns
     -------
     binding_energy: Quantity
-        The binding energy of the nucleus.
+        The binding energy of the nucleus in units of Joules.
 
     Raises
     ------
     ValueError
         If the isotope cannot be uniquely determined from the inputs.
+
+    See also
+    --------
+    energy_from_nuclear_reaction : Returns the change in binding energy during
+        nuclear fusion or fission reactions.
 
     Examples
     --------
@@ -1062,88 +1069,118 @@ def energy_from_nuclear_reaction(reaction):
     return energy.to(u.MeV)
 
 
-def known_isotopes(argument):
-    """Return a list of all known isotopes of an element in order of mass
-    number.
+def known_isotopes(argument=None):
+    """Returns a list of all known isotopes of an element, or a list of all
+    known isotopes of every element if no input is provided.
 
     Parameters
     ----------
-    argument: integer or string
-        A string or integer representing an atomic number or element, or a
-        string represnting an isotope.
+    argument: integer or string, optional
+        A string representing an element, isotope, or ion or an integer
+        representing an atomic number
 
     Returns
     -------
-    sorted_isotopes: list of strings or empty list
-        List of all known isotopes of an element, sorted from lowest mass
-        number to highest mass number.  This list includes all isotopes
-        that have been discovered.
+    isotopes_list: list of strings or empty list
+        List of all of the isotopes of an element that have been discovered,
+        sorted from lowest mass number to highest mass number.  If no argument
+        is provided, then a list of all known isotopes of every element will
+        be returned that is sorted by atomic number, with entries for each
+        element sorted by mass number.
+
+    Notes
+    -----
+    This list returns both natural and artifically produced isotopes.
 
     See also
     --------
-    common_isotopes : returns a list of all isotopes of an element with
-        isotopic compositions greater than zero, sorted from highest
-        abundance to lowest abundance.
+    common_isotopes : returns isotopes with non-zero isotopic abundances
 
-    stable_isotopes : returns a list of all stable isotopes of an element,
-        sorted from lowest to highest mass number, or an empty list if an
-        element has no stable isotopes.
+    stable_isotopes : returns isotopes that are stable against radioactive
+        decay
 
     Examples
     --------
     >>> known_isotopes('H')
     ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7']
-    >>> known_isotopes('helium')
+    >>> known_isotopes('helium 1+')
     ['He-3', 'He-4', 'He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10']
+    >>> known_isotopes()[0:10]
+    ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7', 'He-3', 'He-4', 'He-5']
+    >>> len(known_isotopes())
+    3352
 
     """
 
-    element = element_symbol(argument)
+    def known_isotopes_for_element(argument):
+        element = element_symbol(argument)
+        isotopes = []
+        for isotope in Isotopes.keys():
+            if element + '-' in isotope and isotope[0:len(element)] == element:
+                isotopes.append(isotope)
+        if element == 'H':
+            isotopes.insert(1, 'D')
+            isotopes.insert(2, 'T')
+        mass_numbers = [mass_number(isotope) for isotope in isotopes]
+        sorted_isotopes = [mass_number for (isotope, mass_number) in
+                           sorted(zip(mass_numbers, isotopes))]
+        return sorted_isotopes
 
-    isotopes_of_element = []
-    for isotope in Isotopes.keys():
-        if element + '-' in isotope and isotope[0:len(element)] == element:
-            isotopes_of_element.append(isotope)
+    if argument is not None:
+        try:
+            element = element_symbol(argument)
+            if element == 'n':
+                raise
+            isotopes_list = known_isotopes_for_element(element)
+        except:
+            raise ValueError("known_isotopes is unable to get isotopes from "
+                             "an input of: " + str(argument))
+    elif argument is None:
+        isotopes_list = []
+        for atomic_numb in range(1, 119):
+            isotopes_list += known_isotopes_for_element(atomic_numb)
 
-    if element == 'H':
-        isotopes_of_element.insert(1, 'D')
-        isotopes_of_element.insert(2, 'T')
-
-    mass_numbers = [mass_number(isotope) for isotope in isotopes_of_element]
-
-    sorted_isotopes = [mass_number for (isotope, mass_number) in
-                       sorted(zip(mass_numbers, isotopes_of_element))]
-
-    return sorted_isotopes
+    return isotopes_list
 
 
-def common_isotopes(argument):
-    """Returns a list of isotopes of an element with isotopic compositions
-    greater than zero, or an empty list if no isotopes have nonzero
-    isotopic compositions.
+def common_isotopes(argument=None, most_common_only=False):
+    """Returns a list of isotopes of an element with an isotopic abundances
+    greater than zero, or if no input is provided, a list of all such isotopes
+    for every element.
 
     Parameters
     ----------
-    argument: integer or string
+    argument: integer or string, optional
         A string or integer representing an atomic number or element, or a
         string represnting an isotope.
 
+    most_common: boolean
+        If set to True, return only the most common isotope
+
     Returns
     -------
-    sorted_isotopes: list of strings or empty list
-        List of all isotopes of an element with isotopic compositions greater
+    isotopes_list: list of strings or empty list
+        List of all isotopes of an element with isotopic abundances greater
         than zero, sorted from most abundant to least abundant.  If no isotopes
-        have isotopic compositions greater than zero, this function returns
-        an empty list.
+        have isotopic abundances greater than zero, this function will return
+        an empty list.  If no arguments are provided, then a list of all common
+        isotopes of all elements will be provided that is sorted by atomic
+        number, with entries for each element sorted from most abundant to
+        least abundant.
+
+    Notes
+    -----
+    The isotopic abundances are based on the terrestrial environment and may
+    not be wholly appropriate for space and astrophysical applications.
 
     See also
     --------
-    known_isotopes : returns a list of all isotopes of an element that have
-        been discovered, sorted from lowest to highest mass number.
+    known_isotopes : returns a list of isotopes that have been discovered
 
-    stable_isotopes : returns a list of all stable isotopes of an element,
-        sorted from lowest to highest mass number, or an empty list if an
-        element has no stable isotopes.
+    stable_isotopes : returns isotopes that are stable against radioactive
+        decay
+
+    isotopic_abundance : returns the relat
 
     Examples
     --------
@@ -1151,40 +1188,63 @@ def common_isotopes(argument):
     ['H-1', 'D']
     >>> common_isotopes(44)
     ['Ru-102', 'Ru-104', 'Ru-101', 'Ru-99', 'Ru-100', 'Ru-96', 'Ru-98']
-    >>> common_isotopes('beryllium')
+    >>> common_isotopes('beryllium 2+')
     ['Be-9']
-    >>> common_isotopes('Pb-209')
-    ['Pb-208', 'Pb-206', 'Pb-207', 'Pb-204']
-    >>> common_isotopes(118)
-    []
+    >>> common_isotopes('Fe')
+    ['Fe-56', 'Fe-54', 'Fe-57', 'Fe-58']
+    >>> common_isotopes('Fe', most_common_only=True)
+    ['Fe-56']
+    >>> common_isotopes()[0:7]
+    ['H-1', 'D', 'He-4', 'He-3', 'Li-7', 'Li-6', 'Be-9']
 
     """
 
-    isotopes = known_isotopes(argument)
+    def common_isotopes_for_element(argument, most_common_only):
+        element = element_symbol(argument)
+        isotopes = known_isotopes(argument)
+        CommonIsotopes = [isotope for isotope in isotopes if
+                          'isotopic_abundance' in Isotopes[isotope].keys()]
+        isotopic_abundances = [Isotopes[isotope]['isotopic_abundance']
+                               for isotope in CommonIsotopes]
+        sorted_isotopes = [iso_comp for (isotope, iso_comp) in
+                           sorted(zip(isotopic_abundances, CommonIsotopes))]
 
-    CommonIsotopes = [isotope for isotope in isotopes if
-                      'isotopic_composition' in Isotopes[isotope].keys()]
+        sorted_isotopes.reverse()
 
-    isotopic_compositions = [Isotopes[isotope]['isotopic_composition']
-                             for isotope in CommonIsotopes]
+        if most_common_only and len(sorted_isotopes) > 1:
+            sorted_isotopes = sorted_isotopes[0:1]
 
-    sorted_isotopes = [iso_comp for (isotope, iso_comp) in
-                       sorted(zip(isotopic_compositions, CommonIsotopes))]
+        return sorted_isotopes
 
-    sorted_isotopes.reverse()
+    if argument is not None:
+        try:
+            isotopes_list = \
+                common_isotopes_for_element(argument, most_common_only)
+        except:
+            raise ValueError("common_isotopes is unable to get isotopes from "
+                             "an input of: " + str(argument))
+    elif argument is None:
+        isotopes_list = []
+        for atomic_numb in range(1, 119):
+            isotopes_list += \
+                common_isotopes_for_element(atomic_numb, most_common_only)
 
-    return sorted_isotopes
+    return isotopes_list
 
 
-def stable_isotopes(argument):
-    """Returns a list of all stable isotopes of an element, or an empty list
-    if an element has no stable isotopes.
+def stable_isotopes(argument=None, unstable_instead=False):
+    """Returns a list of all stable isotopes of an element, or if no input is
+    provided, a list of all such isotopes for every element.
 
     Parameters
     ----------
     argument: integer or string
         A string or integer representing an atomic number or element, or a
         string represnting an isotope.
+
+    unstable_instead: boolean
+        If set to True, this function will return a list of the unstable
+        isotopes instead of the stable isotopes.
 
     Returns
     -------
@@ -1193,14 +1253,19 @@ def stable_isotopes(argument):
         number.  If an element has no stable isotopes, this function returns
         an empty list.
 
+    Notes
+    -----
+    There are 254 isotopes for which no radioactive decay has been observed.
+    It is possible that some isotopes will be discovered to be unstable but
+    with extremely long half-lives.  For example, bismuth-209 was recently
+    discovered to have a half-life of about 1.9e19 years.  However, such
+    isotopes can be regarded as virtually stable for most applications.
+
     See also
     --------
-    known_isotopes : returns a list of all isotopes of an element that have
-        been discovered, sorted from lowest to highest mass number.
+    known_isotopes : returns a list of isotopes that have been discovered
 
-    common_isotopes : returns a list of all isotopes of an element with
-        isotopic compositions greater than zero, sorted from highest
-        abundance to lowest abundance.
+    common_isotopes : returns isotopes with non-zero isotopic abundances
 
     Examples
     --------
@@ -1215,18 +1280,32 @@ def stable_isotopes(argument):
     >>> stable_isotopes(118)
     []
 
+    Find unstable isotopes
+
+    >>>
+
     """
 
-    KnownIsotopes = known_isotopes(argument)
+    def stable_isotopes_for_element(argument, stable_only):
+        KnownIsotopes = known_isotopes(argument)
+        StableIsotopes = [isotope for isotope in KnownIsotopes if
+                          Isotopes[isotope]['is_stable'] == stable_only]
+        return StableIsotopes
 
-    StableIsotopes = [isotope for isotope in KnownIsotopes if
-                      Isotopes[isotope]['is_stable']]
+    if argument is not None:
+        isotopes_list = \
+            stable_isotopes_for_element(argument, not unstable_instead)
+    elif argument is None:
+        isotopes_list = []
+        for atomic_numb in range(1, 119):
+            isotopes_list += \
+                stable_isotopes_for_element(atomic_numb, not unstable_instead)
 
-    return StableIsotopes
+    return isotopes_list
 
 
-def isotopic_composition(argument, mass_numb=None):
-    """Returns the isotopic composition if known, and otherwise zero.
+def isotopic_abundance(argument, mass_numb=None):
+    """Returns the isotopic abundances if known, and otherwise zero.
 
     Parameters
     ----------
@@ -1241,20 +1320,29 @@ def isotopic_composition(argument, mass_numb=None):
     Returns
     -------
     iso_comp: float
-        The isotopic composition
+        The relative isotopic abundance in the terrestrial environment
 
     Raises
     ------
     ValueError
         Invalid isotope input, or the input corresponded to neutrons.
 
+    Notes
+    -----
+    Isotopic composition data are most readily available for the terrestrial
+    environment, so this function may not be wholly appropriate for space
+    and astrophysical applications.
+
+    The data retrieved from this routine are those recommended by NIST as of
+    2017.
+
     Examples
     --------
-    >>> isotopic_composition('Pb-208')
+    >>> isotopic_abundance('Pb-208')
     0.524
-    >>> isotopic_composition('hydrogen', 1)
+    >>> isotopic_abundance('hydrogen', 1)
     0.999885
-    >>> isotopic_composition(118, 294)  # Og-294
+    >>> isotopic_abundance(118, 294)  # Og-294
     0.0
 
     """
@@ -1262,13 +1350,13 @@ def isotopic_composition(argument, mass_numb=None):
     try:
         isotope = isotope_symbol(argument, mass_numb)
     except Exception:
-        raise ValueError("Invalid isotope in isotopic_composition.")
+        raise ValueError("Invalid isotope in isotopic_abundance.")
 
     if isotope == 'n':
-        raise ValueError("Neutrons do not have an isotopic composition.")
+        raise ValueError("Neutrons do not have an isotopic abundance.")
 
     try:
-        iso_comp = Isotopes[isotope]['isotopic_composition']
+        iso_comp = Isotopes[isotope]['isotopic_abundance']
     except Exception:
         iso_comp = 0.0
 

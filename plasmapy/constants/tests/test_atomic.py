@@ -6,7 +6,7 @@ from ..atomic import (element_symbol, isotope_symbol, atomic_number,
                       isotope_mass, ion_mass, nuclear_binding_energy,
                       energy_from_nuclear_reaction, is_isotope_stable,
                       half_life, known_isotopes, common_isotopes,
-                      stable_isotopes, isotopic_composition, charge_state,
+                      stable_isotopes, isotopic_abundance, charge_state,
                       Elements, Isotopes)
 
 import pytest
@@ -614,36 +614,44 @@ def test_atomic_ValueErrors():
 
 
 def test_known_common_stable_isotopes():
-
     assert 'H-1' in known_isotopes('H')
     assert 'D' in known_isotopes('H')
     assert 'T' in known_isotopes('H')
     assert 'Be-8' in known_isotopes('Be')
     assert 'Og-294' in known_isotopes(118)
-
     assert 'H-1' in common_isotopes('H')
     assert 'H-4' not in common_isotopes(1)
-
     assert 'H-1' in stable_isotopes('H')
     assert 'D' in stable_isotopes('H')
     assert 'T' not in stable_isotopes('H')
 
+    assert len(common_isotopes()) == 288, \
+        ("The number of common isotopes may change if isotopic composition "
+         "data has any significant changes.")
 
-def test_isotopic_composition():
+    assert len(stable_isotopes()) == 254, \
+        ("The number of stable isotopes may decrese slightly if some are "
+         "discovered to be unstable but with extremely long half-lives.")
 
-    assert isotopic_composition('H', 1) == isotopic_composition('protium')
-    assert np.isclose(isotopic_composition('D'), 0.000115)
-    assert isotopic_composition('Be-8') == 0.0, 'Be-8'
-    assert isotopic_composition('Li-8') == 0.0, 'Li-8'
-    assert isotopic_composition('Og', 294) == 0.0
+    assert 3351 <= len(known_isotopes()) <= 3600, \
+        ("The number of known isotopes ")
+
+
+def test_isotopic_abundance():
+
+    assert isotopic_abundance('H', 1) == isotopic_abundance('protium')
+    assert np.isclose(isotopic_abundance('D'), 0.000115)
+    assert isotopic_abundance('Be-8') == 0.0, 'Be-8'
+    assert isotopic_abundance('Li-8') == 0.0, 'Li-8'
+    assert isotopic_abundance('Og', 294) == 0.0
 
     with pytest.raises(ValueError):
-        isotopic_composition('neutron')
+        isotopic_abundance('neutron')
 
     with pytest.raises(ValueError):
-        isotopic_composition('Og-2')
+        isotopic_abundance('Og-2')
 
-    # Check that the sum of isotopic compositions for each element is one
+    # Check that the sum of isotopic abundances for each element is one
 
     for atomic_numb in range(1, 119):
 
@@ -652,11 +660,11 @@ def test_isotopic_composition():
 
         if len(isotopes) > 0:
 
-            sum_of_iso_comps = 0
+            sum_of_iso_abund = 0
             for isotope in isotopes:
-                sum_of_iso_comps += isotopic_composition(isotope)
+                sum_of_iso_abund += isotopic_abundance(isotope)
 
-            assert np.isclose(sum_of_iso_comps, 1, atol=1e-6), \
+            assert np.isclose(sum_of_iso_abund, 1, atol=1e-6), \
                 "Problem with: " + element
 
 
