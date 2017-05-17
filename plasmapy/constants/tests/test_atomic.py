@@ -636,6 +636,13 @@ def test_known_common_stable_isotopes():
     assert 3351 <= len(known_isotopes()) <= 3600, \
         ("The number of known isotopes ")
 
+    assert 'Fe-56' in common_isotopes('Fe', most_common_only=True)
+    assert 'He-4' in common_isotopes('He', most_common_only=True)
+
+    for func in [common_isotopes, stable_isotopes, known_isotopes]:
+        with pytest.raises(ValueError):
+            func('n')
+
 
 def test_isotopic_abundance():
 

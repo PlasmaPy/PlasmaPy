@@ -616,11 +616,7 @@ def standard_atomic_weight(argument):
     except Exception:
         isotope = ''
 
-    if isinstance(argument, str) and (argument in ['p', 'p+'] or
-                                      argument.lower() in ['proton', 'alpha']):
-        raise ValueError("Use ion_mass to get masses of protons and alpha "
-                         "particles instead of standard_atomic_weight")
-    elif isotope == 'n':
+    if isotope == 'n':
         raise ValueError("Use isotope_mass('n') or plasmapy.constants.m_n "
                          "instead of standard_atomic_weight to get neutron "
                          "mass")
@@ -1132,7 +1128,7 @@ def known_isotopes(argument=None):
             if element == 'n':
                 raise
             isotopes_list = known_isotopes_for_element(element)
-        except:
+        except Exception:
             raise ValueError("known_isotopes is unable to get isotopes from "
                              "an input of: " + str(argument))
     elif argument is None:
@@ -1154,7 +1150,7 @@ def common_isotopes(argument=None, most_common_only=False):
         A string or integer representing an atomic number or element, or a
         string represnting an isotope.
 
-    most_common: boolean
+    most_common_only: boolean
         If set to True, return only the most common isotope
 
     Returns
@@ -1200,7 +1196,6 @@ def common_isotopes(argument=None, most_common_only=False):
     """
 
     def common_isotopes_for_element(argument, most_common_only):
-        element = element_symbol(argument)
         isotopes = known_isotopes(argument)
         CommonIsotopes = [isotope for isotope in isotopes if
                           'isotopic_abundance' in Isotopes[isotope].keys()]
@@ -1218,9 +1213,12 @@ def common_isotopes(argument=None, most_common_only=False):
 
     if argument is not None:
         try:
+            element = element_symbol(argument)
+            if element == 'n':
+                raise
             isotopes_list = \
-                common_isotopes_for_element(argument, most_common_only)
-        except:
+                common_isotopes_for_element(element, most_common_only)
+        except Exception:
             raise ValueError("common_isotopes is unable to get isotopes from "
                              "an input of: " + str(argument))
     elif argument is None:
@@ -1293,8 +1291,15 @@ def stable_isotopes(argument=None, unstable_instead=False):
         return StableIsotopes
 
     if argument is not None:
-        isotopes_list = \
-            stable_isotopes_for_element(argument, not unstable_instead)
+        try:
+            element = element_symbol(argument)
+            if element == 'n':
+                raise
+            isotopes_list = \
+                stable_isotopes_for_element(element, not unstable_instead)
+        except Exception:
+            raise ValueError("stable_isotopes is unable to get isotopes from "
+                             "an input of: " + str(argument))
     elif argument is None:
         isotopes_list = []
         for atomic_numb in range(1, 119):
