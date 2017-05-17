@@ -411,9 +411,12 @@ def test_ion_mass():
     assert ion_mass('deuteron') == ion_mass('D +1')
     assert ion_mass('T', Z=1) == ion_mass('T +1')
     assert ion_mass('Fe', mass_numb=56) == ion_mass('Fe', mass_numb='56')
-
+    assert np.isclose(ion_mass(9.11e-31*u.kg).value, 9.10938291e-31,
+                      atol=1e-37)
+    assert ion_mass(1.67e-27*u.kg) == 1.67e-27*u.kg
+    assert np.isclose(ion_mass(1*u.u).value, 1.660538921e-27, atol=1e-35)
     with pytest.raises(ValueError):
-        ion_mass('Og')  # no standard atomic weight
+        ion_mass('Og')  # since it has no standard atomic weight
 
     with pytest.raises(TypeError):
         ion_mass('Fe-56', Z=1.4)
@@ -435,6 +438,15 @@ def test_ion_mass():
 
     with pytest.raises(ValueError):
         ion_mass('Og', Z=1)
+
+    with pytest.raises(UserWarning):
+        ion_mass(1.6e-27*u.kg)
+
+    with pytest.raises(UserWarning):
+        ion_mass(8e-25*u.kg)
+
+    with pytest.raises(u.UnitConversionError):
+        ion_mass(1*u.m)
 
 
 def test_nuclear_binding_energy():

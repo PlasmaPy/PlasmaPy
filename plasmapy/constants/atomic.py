@@ -783,7 +783,8 @@ def ion_mass(argument, Z=None, mass_numb=None):
     >>> ion_mass('Fe-56')
     <Quantity 9.288122788133088e-26 kg>
     >>> ion_mass(9.11e-31*u.kg)
-    <Constant name='Electron mass' value=9.10938291e-31 uncertainty=4e-38 unit='kg' reference='CODATA 2010'>
+    <Constant name='Electron mass' value=9.10938291e-31 uncertainty=4e-38
+    unit='kg' reference='CODATA 2010'>
     >>> ion_mass(1.67e-27*u.kg)
     <Quantity 1.67e-27 kg>
 
@@ -793,9 +794,9 @@ def ion_mass(argument, Z=None, mass_numb=None):
 
         try:
             m_i = argument.to(u.kg)
-        except:
-            raise UnitConversionError("If the ion in given as a Quantity, "
-                                      "then it must have units of mass.")
+        except Exception:
+            raise u.UnitConversionError("If the ion in given as a Quantity, "
+                                        "then it must have units of mass.")
 
         if np.isclose(m_i.value, const.m_e.value, atol=1e-33):  # positrons
             return const.m_e
