@@ -244,17 +244,9 @@ def isotope_symbol(argument, mass_numb=None):
 
     if isinstance(argument, str):
         if argument.count('-') == 1:
-
             dash_position = argument.find('-')
             mass_numb_from_arg = argument[dash_position+1:].strip()
-
-            try:
-                mass_numb_from_arg = int(mass_numb_from_arg)
-            except Exception:
-                raise ValueError("Unable to extract mass number from the first"
-                                 " argument of isotope_symbol, which is: " +
-                                 str(argument))
-
+            mass_numb_from_arg = int(mass_numb_from_arg)
         elif argument == 'n' or argument.lower() == 'neutron':
             mass_numb_from_arg = 1
         elif argument in ['p', 'p+'] or \
@@ -297,10 +289,6 @@ def isotope_symbol(argument, mass_numb=None):
     if atomic_number(element) > mass_numb:
         raise ValueError("The atomic number cannot exceed the mass number in "
                          "isotope_symbol.")
-
-    if isotope not in Isotopes.keys():
-        raise ValueError("The isotope " + isotope + "returned by "
-                         "isotope_symbol is unknown and may not exist.")
 
     return isotope
 
@@ -689,12 +677,6 @@ def isotope_mass(argument, mass_numb=None):
     if charge_state is not None and charge_state != 0:
         raise ValueError("Use ion_mass instead of isotope_mass for masses of "
                          "charged particles")
-
-    if argument == 'alpha':
-        raise ValueError("Use ion_mass for mass of an alpha particle")
-    elif argument in ['p', 'proton']:
-        raise ValueError("Use plasmapy.constants.m_p or ion_mass('p') to get "
-                         "proton mass")
 
     symbol = isotope_symbol(argument, mass_numb)
     atomic_mass = Isotopes[symbol]['atomic_mass']

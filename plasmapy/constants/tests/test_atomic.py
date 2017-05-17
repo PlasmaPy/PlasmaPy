@@ -448,6 +448,9 @@ def test_ion_mass():
     with pytest.raises(u.UnitConversionError):
         ion_mass(1*u.m)
 
+    with pytest.raises(ValueError):
+        ion_mass('Og', 1)
+
 
 def test_nuclear_binding_energy():
     assert nuclear_binding_energy('p') == 0
