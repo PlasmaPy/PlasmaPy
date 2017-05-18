@@ -2,7 +2,8 @@
 
 from astropy import units as u
 
-from astropy.units import UnitConversionError, quantity_input, Quantity
+from astropy.units import (UnitConversionError, UnitsError, quantity_input,
+                           Quantity)
 
 from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, ion_mass,
                          charge_state)
@@ -54,8 +55,9 @@ def Alfven_speed(B, density, ion="p"):
     density: Quantity
         Either the ion number density in units such as 1 / m**3, or the
         mass density in units such as kg / m**3
-    ion : string
-        Symbol representing the ion species, defaulting to protons
+    ion : string, optional
+        Representation of the ion species.  If not given, then the ions
+        are assumed to be protons.
 
     Returns
     -------
@@ -115,20 +117,20 @@ def Alfven_speed(B, density, ion="p"):
     except Exception:
         raise UnitConversionError("The magnetic field in Alfven_speed cannot "
                                   "be converted to Tesla")
-
+    
     try:
         density = density.si
     except Exception:
         raise UnitConversionError("Alfven_speed requires a number density or "
                                   "mass density as an input.")
-
+    
     if density.unit not in ['1 / m3', 'kg / m3']:
         raise UnitsError("One input of Alfven_speed must have units of either "
                          "a number density or mass density.")
 
     try:
         m_i = ion_mass(ion)
-    except:
+    except Exception:
         raise ValueError("Unable to find ion mass")
 
     try:
@@ -140,7 +142,7 @@ def Alfven_speed(B, density, ion="p"):
             rho = density*m_i + Z*density*m_e
         elif density.unit == 'kg / m3':
             rho = density
-    except:
+    except Exception:
         raise ValueError("Unable to find mass density in Alfven_speed")
 
     V_A = (np.abs(B)/np.sqrt(mu0*rho)).to(u.m/u.s)
@@ -159,7 +161,8 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
     T_i : Quantity
         Ion temperature.
     ion : string, optional
-        Representation of the ion species (assumed to be protons if not given)
+        Representation of the ion species.  If not given, then the ions
+        are assumed to be protons.
     gamma : float, optional
         Heat capacity ratio (also known as the adiabatic index, ratio of
         specific heats, Poisson constant, or isentropic expansion parameter).
@@ -186,20 +189,20 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
         return np.inf*u.m/u.s
     
 
-#    try:
-    m_i = ion_mass(ion)
-#    except Exception:
-#        if isinstance
-            
-
-#        raise UnitConversionError("Unable to find ion mass")
-
+    try:
+        m_i = ion_mass(ion)
+    except Exception:
+        raise ValueError("Unable to find ion mass")
     
-    T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
+    try:
+        T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
+    except Exception:
+        raise u.UnitConversionError("The ion temperature in ion_sound_speed "
+                                    "cannot be converted to Kelvin.")
 
     try:
         V_S = (np.sqrt(gamma*k_B*T_i/m_i)).to(u.m/u.s)
-    except:
+    except Exception:
         raise ValueError("Unable to find ion sound speed")
 
     if V_S > c:
@@ -270,7 +273,7 @@ def ion_thermal_speed(T_i, ion='p'):
         The ion temperature
 
     ion : string
-        A representation of the ion species.
+        Symbol representing the ion species, defaulting to protons
 
     Returns
     -------
@@ -305,7 +308,7 @@ def ion_thermal_speed(T_i, ion='p'):
         T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
         m_i = ion_mass(ion)
         V_Ti = (np.sqrt(2*k_B*T_i/m_i)).to(u.m/u.s)
-    except:
+    except Exception:
         raise ValueError("Unable to find ion thermal speed")
 
     if V_Ti > c:
@@ -364,16 +367,15 @@ def electron_gyrofrequency(B: u.T):
     return omega_ce
 
 
-@u.quantity_input
-def ion_gyrofrequency(B: u.T, ion='p'):
+def ion_gyrofrequency(B: u.T, ion='p', Z=None):
     """Calculate the ion gyrofrequency in units of radians per second.
 
     Parameters
     ----------
     B: Quantity
         Magnetic field strength
-    ion: string
-        Representation of the ion
+    ion : string
+        Symbol representing the ion species, defaulting to protons
 
     Returns
     -------
@@ -402,7 +404,7 @@ def ion_gyrofrequency(B: u.T, ion='p'):
     """
 
     try:
-        m_i = ion_mass(ion)
+        m_i = ion_mass(ion, Z=Z)
     except Exception:
         raise ValueError("Unable to get mass of ion in ion_gyrofrequency")
 
@@ -484,7 +486,9 @@ def ion_gyroradius(B=None, V=None, T_i=None, ion='p'):
         Magnetic field strength
     V: Quantity
         Ion velocity
-    ion : str, optional
+    ion : string, optional
+        Representation of the ion species.  If not given, then the ions
+        are assumed to be protons.
 
 
 
@@ -528,8 +532,10 @@ def electron_plasma_frequency(n_e: u.m**-3):
     >>>
 
     """
-
-    omega_pe = (u.rad*e*np.sqrt(n_e/(eps0*m_e))).to(u.rad/u.s)
+    try:
+        omega_pe = (u.rad*e*np.sqrt(n_e/(eps0*m_e))).to(u.rad/u.s)
+    except:
+        raise ValueError("Unable to find electron plasma frequency.")
 
     return omega_pe
 
@@ -541,10 +547,11 @@ def ion_plasma_frequency(n_i, Z=None, ion='p'):
     ----------
     n_i : Quantity
         Ion number density
-    ion : string
-        A representation of the ion species
     Z : integer
         The ionization state (e.g., Z=1 for singly ionized)
+    ion : string, optional
+        Representation of the ion species.  If not given, then the ions
+        are assumed to be protons.
 
     Returns
     -------
@@ -568,8 +575,23 @@ def ion_plasma_frequency(n_i, Z=None, ion='p'):
 
     """
 
-    m_i = ion_mass(ion)
-    omega_pi = u.rad*Z*e*np.sqrt(n_i/(eps0*m_e))
+    try:
+        m_i = ion_mass(ion, Z=Z)
+    except Exception:
+        raise ValueError("Unable to get mass of ion in ion_gyrofrequency")
+
+    if Z is None:
+        try:
+            Z = charge_state(ion)
+        except:
+            raise ValueError("Unable to get charge state to calculate ion "
+                             "plasma frequency.")
+    
+    try:
+        omega_pi = u.rad*Z*e*np.sqrt(n_i/(eps0*m_e))
+    except Exception:
+        raise ValueError("Unable to find ion plasma frequency.")
+
     return omega_pi.si
 
 
@@ -620,8 +642,11 @@ def Debye_length(T_e: u.K, n_e: u.m**-3):  # Add equivalency related to T in eV
     [1] Declan Diver plasma formulary.......
 
     """
+    try:
+        lambda_D = ((eps0*k_B*T_e / (n_e * e**2))**0.5).to(u.m)
+    except:
+        raise ValueError("Unable to find Debye length.")
 
-    lambda_D = ((eps0*k_B*T_e / (n_e * e**2))**0.5).to(u.m)
     return lambda_D
 
 
@@ -662,8 +687,13 @@ def Debye_number(T_e: u.K, n_e: u.m**-3):
 
     """
 
-    lambda_D = Debye_length(T_e, n_e)
-    N_D = (4/3)*n_e*lambda_D**3
+    try:
+        lambda_D = Debye_length(T_e, n_e)
+        N_D = (4/3)*n_e*lambda_D**3
+    except:
+        raise ValueError("Unable to find Debye number.")
+
+
     return N_D.to(u.dimensionless_unscaled)
 
 
@@ -674,6 +704,9 @@ def ion_inertial_length(n_i, ion='p', Z=None):
     ----------
     n_i : Quantity
         Ion number density
+    ion : string, optional
+        Representation of the ion species.  If not given, then the ions
+        are assumed to be protons.
 
     Returns
     -------
@@ -696,11 +729,17 @@ def ion_inertial_length(n_i, ion='p', Z=None):
 
     """
 
-    if Z is not None:  # need to think about this more...
-        Z = charge_state(ion)
+    try:
+        Z = charge_state(ion, Z)
+    except:
+        raise ValueError("Unable to find charge state in ion_inertial_length.")
 
-    omega_pi = ion_plasma_frequency(n_i, Z=1, ion=ion)
-    d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())
+    try:
+        omega_pi = ion_plasma_frequency(n_i, Z=1, ion=ion)
+        d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())
+    except:
+        raise ValueError("Unable to find ion inertial length.")
+
     return d_i
 
 
@@ -729,10 +768,13 @@ def electron_inertial_length(n_e: u.m**-3):
 
     """
 
-    omega_pe = electron_plasma_frequency(n_e)
-    d_e = (c/omega_pe).to(u.m, equivalencies=u.dimensionless_angles())
-    return d_e
+    try:
+        omega_pe = electron_plasma_frequency(n_e)
+        d_e = (c/omega_pe).to(u.m, equivalencies=u.dimensionless_angles())
+    except:
+        raise ValueError("Unable to find electron inertial length.")
 
+    return d_e
 
 
 @u.quantity_input
@@ -763,7 +805,10 @@ def magnetic_pressure(B: u.T):
     <Quantity 3978.873577297384 Pa>
     """
 
-    p_B = (B**2/(2*mu0)).to(u.N/u.m**2)
+    try:
+        p_B = (B**2/(2*mu0)).to(u.N/u.m**2)
+    except:
+        raise ValueError("Unable to find magnetic pressure.")
 
     return p_B
 
@@ -799,6 +844,9 @@ def magnetic_energy_density(B: u.T):
 
     """
 
-    E_B = (B**2/(2*mu0)).to(u.J/u.m**3)
+    try:
+        E_B = (B**2/(2*mu0)).to(u.J/u.m**3)
+    except:
+        raise ValueError("Unable to find magnetic pressure.")
 
     return E_B
