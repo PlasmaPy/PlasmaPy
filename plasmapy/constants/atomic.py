@@ -808,8 +808,6 @@ def ion_mass(argument, Z=None, mass_numb=None):
         raise ValueError("Inconsistent charge state information in ion_mass")
     elif Z is None and Z_from_arg is not None:
         Z = Z_from_arg
-    elif Z == Z_from_arg:
-        raise UserWarning("Redundant charge state information in ion_mass")
 
     if isinstance(Z, str) and Z.isdigit():
         Z = int(Z)

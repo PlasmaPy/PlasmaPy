@@ -427,9 +427,6 @@ def test_ion_mass():
     with pytest.raises(ValueError):
         ion_mass('H-1 +1', Z=0)
 
-    with pytest.raises(UserWarning):
-        ion_mass('H-1 +1', Z=1)
-
     with pytest.raises(TypeError):
         ion_mass(26, Z=1, mass_numb='a')
 
