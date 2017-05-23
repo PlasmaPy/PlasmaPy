@@ -68,46 +68,6 @@ class Plasma():
         self._pressure = np.zeros(self.domain_shape) * u.Pa
         self._magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
 
-    def _ddt_density(self, t, density=None):
-        """
-        """
-        if not density:
-            density = self.density
-        return -div(self.velocity * density, self.solver)
-
-    def _ddt_momentum(self, t, momentum=None):
-        """
-        """
-        if not momentum:
-            momentum = self.momentum
-        v = self.velocity
-        B = self.magnetic_field / np.sqrt(mu0)
-
-        return (-grad(self.pressure, self.solver)
-                - tensordiv(vdp(v, momentum) - vdp(B, B), self.solver))
-
-    def _ddt_energy(self, t, energy=None):
-        """
-        """
-        if not energy:
-            energy = self.energy
-        v = self.velocity
-        B = self.magnetic_field / np.sqrt(mu0)
-
-        return -div((v*energy) - (B * dot(B, v))
-                    + (v*self.pressure), self.solver)
-
-    def _ddt_magfield(self, t, magfield=None):
-        """
-        """
-        if not magfield:
-            B = self.magnetic_field / np.sqrt(mu0)
-        else:
-            B = magfield / np.sqrt(mu0)
-        v = self.velocity
-
-        return -tensordiv(vdp(v, B) - vdp(B, v), self.solver) * np.sqrt(mu0)
-
     """
     Define getters and setters for variables.
     """
@@ -150,15 +110,15 @@ class Plasma():
         Other arrays which depend on the velocity values, such as the kinetic
         pressure,
         are then redefined automatically.
-        
+
         Parameters
         ----------
 
         momentum : ndarray
-            Array of momentum vectors. Shape must be (3, x, [y, z]), where x, y and z are the dimensions of the simulation grid.
-            Note that a full 3D vector is necessary even if the simulation has fewer than 3 dimensions.
-
-            TODO: Figure out if this 'feature' is breaking things and if it can be removed.
+            Array of momentum vectors. Shape must be (3, x, [y, z]), where x,
+            y and z are the dimensions of the simulation grid.
+            Note that a full 3D vector is necessary even if the simulation has
+            fewer than 3 dimensions.
 
         """
         assert momentum.shape == (3, *self.grid_size), \
