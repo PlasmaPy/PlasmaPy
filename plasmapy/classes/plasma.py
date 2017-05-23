@@ -11,6 +11,44 @@ import astropy.units as u
 mu0 = np.pi * 4.0e-7 * (u.newton / (u.amp**2))
 
 
+def dot(vec1, vec2):
+    """
+    Calculates the dot product of two arrays of vector quantities.
+    TODO: Replace this everywhere with the new NumPy way of doing this.
+
+    Parameters
+    ----------
+
+    vec1, vec2 : array-like, shape=(3, x, [y, z])
+        Arrays of vector values in a 1D, 2D or 3D domain.
+
+    Returns
+    -------
+
+    scalar : ndarray, shape=(x, [y, z])
+        3D grid of scalar values which are the dot products of specified
+        vectors,
+
+        .. math::
+
+           a = \\vec{v_1} \\cdot \\vec{v_2}
+
+    """
+
+    assert vec1.shape[0] == 3, "First argument provided is not a vector field"
+    assert vec2.shape[0] == 3, "Second argument provided is not a vector field"
+    assert vec1.shape == vec2.shape, \
+        "Shapes of vectors provided do not match: {}/{}".format(vec1.shape,
+                                                                vec2.shape)
+
+    product = np.sum(vec1 * vec2, axis=0)
+    assert product.shape == vec1.shape[1:], \
+        "Result calculated has shape {}, should be {}".format(product.shape,
+                                                              vec1.shape[1:])
+
+    return product
+
+
 class Plasma():
     """Core class for describing and calculating plasma parameters.
 
@@ -65,7 +103,7 @@ class Plasma():
         self._density = np.zeros(self.domain_shape) * u.kg / u.m**3
         self._momentum = np.zeros((3, *self.domain_shape)) * u.kg \
             / (u.m**2 * u.s)
-        self._pressure = np.zeros(self.domain_shape) * u.Pa
+        self._energy = np.zeros(self.domain_shape) * u.J / u.m**3
         self._magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
 
     """
