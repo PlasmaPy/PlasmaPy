@@ -730,7 +730,7 @@ def ion_inertial_length(n_i, ion='p', Z=None):
     """
 
     try:
-        Z = charge_state(ion, Z)
+        Z = charge_state(ion)
     except:
         raise ValueError("Unable to find charge state in ion_inertial_length.")
 
