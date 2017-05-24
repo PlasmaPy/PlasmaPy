@@ -51,7 +51,7 @@ def Alfven_speed(B, density, ion="p"):
     Parameters
     ----------
     B : Quantity
-        The magnetic field in units such as Tesla or Gauss
+        The magnetic field magnitude in units such as Tesla or Gauss
     density: Quantity
         Either the ion number density in units such as 1 / m**3, or the
         mass density in units such as kg / m**3
@@ -269,7 +269,7 @@ def ion_thermal_speed(T_i, ion='p'):
     Parameters
     ----------
     T_i : Quantity
-        The ion temperature
+        The ion temperature in either Kelvin or electron-volts
 
     ion : string
         Symbol representing the ion species, defaulting to protons
@@ -333,7 +333,10 @@ def electron_gyrofrequency(B: u.T):
     Notes
     -----
     The electron gyrofrequency is the angular frequency of electrons
-    gyration around magnetic field lines.
+    gyration around magnetic field lines and is given by:
+
+    .. math::
+    omega_{ce} = \frac{e B}{m_e}
 
     The electron gyrofrequency is also known as the electron cyclotron
     frequency or the electron Larmor frequency.
@@ -384,7 +387,10 @@ def ion_gyrofrequency(B: u.T, ion='p', Z=None):
     Notes
     -----
     The ion gyrofrequency is the angular frequency of ion gyration
-    around magnetic field lines.
+    around magnetic field lines and is given by:
+
+    .. math::
+    omega_{ci} = \frac{e B}{m_i}
 
     The ion gyrofrequency is also known as the ion cyclotron frequency
     or the ion Larmor frequency.
@@ -440,7 +446,10 @@ def electron_gyroradius(B, Te_or_Vperp):
     Notes
     -----
     The electron gyroradius is also known as the Larmor radius for
-    electrons.
+    electrons and is given by:
+
+    .. math::
+    r_L = \frac{V_{perp}}{omega_{ce}}
 
     """
 
@@ -490,15 +499,17 @@ def ion_gyroradius(B=None, V=None, T_i=None, ion='p'):
         Representation of the ion species.  If not given, then the ions
         are assumed to be protons.
 
-
-
     Notes
     -----
 
+    The ion gyroradius is also known as the Larmor radius for ions and is
+    given by
 
-    The ion gyroradius is also known as the Larmor radius for ions.
+    .. math::
+    r_L = \frac{V_{perp}}{omega_{ci}}
 
     """
+
     return 0
 
 
@@ -519,6 +530,9 @@ def electron_plasma_frequency(n_e: u.m**-3):
     Notes
     -----
     The electron plasma frequency is
+
+    .. math::
+    \omega_{pe} = e \sqrt{\frac{n_e}{\epsilon_0 m_e}}
 
     At present, astropy.units does not allow direct conversions from
     radians/second for angular frequency to 1/second or Hz for
@@ -561,6 +575,9 @@ def ion_plasma_frequency(n_i, Z=None, ion='p'):
     Notes
     -----
     The ion plasma frequency is
+
+    .. math::
+    \omega_{pi} = Z e \sqrt{\frac{n_i}{\epsilon_0 m_i}}
 
     At present, astropy.units does not allow direct conversions from
     radians/second for angular frequency to 1/second or Hz for
@@ -618,7 +635,8 @@ def Debye_length(T_e: u.K, n_e: u.m**-3):  # Add equivalency related to T in eV
     The Debye length is the exponential scale length for charge
     screening and is given by
 
-    MATH MATH MATH MATH MATH
+    .. math::
+    \lambda_D = \sqrt{\frac{\epsilon_0 k_b T_e}{n_e e^2}}
 
     for an electron plasma with nearly stationary ions.
 
@@ -642,6 +660,7 @@ def Debye_length(T_e: u.K, n_e: u.m**-3):  # Add equivalency related to T in eV
     [1] Declan Diver plasma formulary.......
 
     """
+
     try:
         lambda_D = ((eps0*k_B*T_e / (n_e * e**2))**0.5).to(u.m)
     except:
@@ -670,7 +689,10 @@ def Debye_number(T_e: u.K, n_e: u.m**-3):
     Notes
     -----
     The Debye number is the number of electrons contained within a sphere with
-    a radius of a Debye length.
+    a radius of a Debye length and is given by
+
+    .. math::
+    N_D = \frac{4}{3}n_e\lambda_D^3
 
     The Debye number is also known as the plasma parameter.
 
@@ -713,7 +735,11 @@ def ion_inertial_length(n_i, ion='p', Z=None):
 
     Notes
     -----
-    The ion inertial length is also known as an ion skin depth.
+    The ion inertial length is also known as an ion skin depth and is 
+    given by:
+
+    .. math::
+    d_i = \frac{c}{\omega_{pi}}
 
     Example
     -------
@@ -758,8 +784,11 @@ def electron_inertial_length(n_e: u.m**-3):
 
     Notes
     -----
-    The electron inertial length is also known as an electron skin depth.
+    The electron inertial length is also known as an electron skin depth and
+    is given by:
 
+    .. math::
+    d_e = \frac{c}{\omega_{pe}}
 
     Example
     -------
@@ -792,6 +821,10 @@ def magnetic_pressure(B: u.T):
 
     Notes
     -----
+    The magnetic pressure is given by:
+
+    .. math::
+    p_B = \frac{B^2}{2 \mu_0}
 
     See also
     --------
@@ -828,6 +861,11 @@ def magnetic_energy_density(B: u.T):
 
     Notes
     -----
+    The magnetic energy density is given by:
+
+    .. math::
+    E_B = \frac{B^2}{2 \mu_0}
+
     The expressions for magnetic pressure
     This function is very similar to magnetic_pressure, except for the
 
