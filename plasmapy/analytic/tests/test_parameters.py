@@ -12,7 +12,7 @@ from ..parameters import (Alfven_speed,
                           electron_plasma_frequency, ion_plasma_frequency,
                           Debye_length, Debye_number,
                           electron_inertial_length, ion_inertial_length,
-                          ion_sound_speed, 
+                          ion_sound_speed,
                           magnetic_energy_density, magnetic_pressure)
 
 B = 1.0*u.T
@@ -25,6 +25,7 @@ rho = n_i*m_i + n_e*m_e
 T_e = 1e6*u.K
 T_i = 1e6*u.K
 
+
 def test_Alfven_speed():
     """Test the Alfven_speed function in parameters.py."""
     V_A = Alfven_speed(B, n_i)
@@ -34,7 +35,7 @@ def test_Alfven_speed():
     assert Alfven_speed(B, rho).unit == 'm / s'
 
     with pytest.raises(u.UnitConversionError):
-        Alfven_speed(5*u.A,n_i)
+        Alfven_speed(5*u.A, n_i)
 
     with pytest.raises(u.UnitConversionError):
         Alfven_speed(B, 5)
@@ -47,6 +48,7 @@ def test_Alfven_speed():
 
     with pytest.raises(UserWarning):
         Alfven_speed(5e19*u.T, n_i)
+
 
 def test_ion_sound_speed():
     """Test the ion_sound_velocity function in parameters.py."""
@@ -62,7 +64,7 @@ def test_ion_thermal_speed():
     """Test the ion_thermal_speed function in parameters.py"""
     assert ion_thermal_speed(T_i).unit == 'm / s'
 
-    
+
 def test_electron_gyrofrequency():
     """Test the electron_gyrofrequency function in parameters.py."""
     assert electron_gyrofrequency(B).unit == 'rad / s'
@@ -120,6 +122,7 @@ def test_magnetic_pressure():
     """Test the magnetic_pressure function in parameters.py."""
     assert magnetic_pressure(B).unit == 'Pa'
     assert magnetic_pressure(B).value == magnetic_energy_density(B).value
+
 
 def test_magnetic_energy_density():
     """Test the magnetic_energy_density function in parameters.py."""
