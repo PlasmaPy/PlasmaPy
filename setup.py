@@ -6,7 +6,7 @@ NAME = 'plasmapy'
 # The version scheme is being discussed at:
 #    https://github.com/PlasmaPy/PlasmaPy/issues/25
 
-VERSION = '0.0.1.dev1'
+VERSION = '0.1.dev1'
 
 setup(name=NAME,
       version=VERSION,
