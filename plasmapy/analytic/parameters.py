@@ -117,13 +117,13 @@ def Alfven_speed(B, density, ion="p"):
     except Exception:
         raise UnitConversionError("The magnetic field in Alfven_speed cannot "
                                   "be converted to Tesla")
-    
+
     try:
         density = density.si
     except Exception:
         raise UnitConversionError("Alfven_speed requires a number density or "
                                   "mass density as an input.")
-    
+
     if density.unit not in ['1 / m3', 'kg / m3']:
         raise UnitsError("One input of Alfven_speed must have units of either "
                          "a number density or mass density.")
@@ -187,13 +187,12 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
         raise ValueError("The ratio of specific heats cannot be less than one")
     elif gamma is np.inf:
         return np.inf*u.m/u.s
-    
 
     try:
         m_i = ion_mass(ion)
     except Exception:
         raise ValueError("Unable to find ion mass")
-    
+
     try:
         T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     except Exception:
@@ -477,6 +476,7 @@ def electron_gyroradius(B, Te_or_Vperp):
 
     return r_L
 
+
 def ion_gyroradius(B=None, V=None, T_i=None, ion='p'):
     """Returns the ion gyroradius.
 
@@ -586,7 +586,7 @@ def ion_plasma_frequency(n_i, Z=None, ion='p'):
         except:
             raise ValueError("Unable to get charge state to calculate ion "
                              "plasma frequency.")
-    
+
     try:
         omega_pi = u.rad*Z*e*np.sqrt(n_i/(eps0*m_e))
     except Exception:
@@ -692,7 +692,6 @@ def Debye_number(T_e: u.K, n_e: u.m**-3):
         N_D = (4/3)*n_e*lambda_D**3
     except:
         raise ValueError("Unable to find Debye number.")
-
 
     return N_D.to(u.dimensionless_unscaled)
 
