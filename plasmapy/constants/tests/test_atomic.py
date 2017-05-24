@@ -6,7 +6,7 @@ from ..atomic import (element_symbol, isotope_symbol, atomic_number,
                       isotope_mass, ion_mass, nuclear_binding_energy,
                       energy_from_nuclear_reaction, is_isotope_stable,
                       half_life, known_isotopes, common_isotopes,
-                      stable_isotopes, isotopic_composition,
+                      stable_isotopes, isotopic_abundance, charge_state,
                       Elements, Isotopes)
 
 import pytest
@@ -19,11 +19,12 @@ def test_element_symbol():
     assert element_symbol('d') == 'H'
     assert element_symbol('T') == 'H'
     assert element_symbol('deuterium') == 'H'
+    assert element_symbol('deuteron') == 'H'
     assert element_symbol('Tritium') == 'H'
+    assert element_symbol('triton') == 'H'
     assert element_symbol('H-3') == 'H'
     assert element_symbol('Hydrogen-3') == 'H'
     assert element_symbol('helium') == 'He'
-    assert element_symbol('Helium') == 'He'
     assert element_symbol(2) == 'He'
     assert element_symbol('alpha') == 'He'
     assert element_symbol('he') == 'He'
@@ -40,6 +41,18 @@ def test_element_symbol():
     assert element_symbol('N-14') == 'N'
     assert element_symbol('n') == 'n'
     assert element_symbol('N') == 'N'
+    assert element_symbol('H +1') == 'H'
+    assert element_symbol('H 1+') == 'H'
+    assert element_symbol('hydrogen 1+') == 'H'
+    assert element_symbol('deuterium 1+') == 'H'
+    assert element_symbol('Fe 24+') == 'Fe'
+    assert element_symbol('Fe +24') == 'Fe'
+    assert element_symbol('Fe 2-') == 'Fe'
+    assert element_symbol('Fe -2') == 'Fe'
+    assert element_symbol('Fe+') == 'Fe'
+    assert element_symbol('Fe++') == 'Fe'
+    assert element_symbol('Fe-') == 'Fe'
+    assert element_symbol('Fe++++++++++++++') == 'Fe'
 
     with pytest.raises(ValueError):
         element_symbol('H-0')
@@ -53,6 +66,21 @@ def test_element_symbol():
     with pytest.raises(ValueError):
         element_symbol('H-934361079326356530741942970523610389')
 
+    with pytest.raises(ValueError):
+        element_symbol('Fe 2+4')
+
+    with pytest.raises(ValueError):
+        element_symbol('Fe+24')
+
+    with pytest.raises(ValueError):
+        element_symbol('Fe +59')
+
+    with pytest.raises(ValueError):
+        element_symbol('C++++++++++++++++')
+
+    with pytest.raises(ValueError):
+        element_symbol('C-++++')
+
 
 def test_isotope_symbol():
     assert isotope_symbol('He', 4) == 'He-4'
@@ -61,6 +89,9 @@ def test_isotope_symbol():
     assert isotope_symbol('d') == 'D'
     assert isotope_symbol('Deuterium') == 'D'
     assert isotope_symbol('deuterium') == 'D'
+    assert isotope_symbol('deuteron') == 'D'
+    assert isotope_symbol('tritium') == 'T'
+    assert isotope_symbol('triton') == 'T'
     assert isotope_symbol('Hydrogen-3') == 'T'
     assert isotope_symbol('hydrogen-3') == 'T'
     assert isotope_symbol('h-3') == 'T'
@@ -83,6 +114,9 @@ def test_isotope_symbol():
     assert isotope_symbol('p') == 'H-1'
     assert isotope_symbol('proton') == 'H-1'
     assert isotope_symbol('protium') == 'H-1'
+    assert isotope_symbol('N-13 2+') == 'N-13'
+    assert isotope_symbol('d+') == 'D'
+    assert isotope_symbol('Hydrogen-3 +1') == 'T'
 
     with pytest.raises(UserWarning):
         isotope_symbol('H-1', 1)
@@ -147,6 +181,12 @@ def test_isotope_symbol():
     with pytest.raises(ValueError):
         isotope_symbol('hydrogen-444444')
 
+    with pytest.raises(TypeError):
+        isotope_symbol('Fe', 2.1)
+
+    with pytest.raises(ValueError):
+        isotope_symbol('Fe', None)
+
 
 def test_atomic_number():
     assert atomic_number('H') == 1
@@ -170,6 +210,9 @@ def test_atomic_number():
     assert atomic_number('n-1') == 0
     assert atomic_number('Neutron') == 0
     assert atomic_number('N') == 7
+    assert atomic_number('N 2+') == 7
+    assert atomic_number('N +1') == 7
+    assert atomic_number('N+++') == 7
 
     with pytest.raises(ValueError):
         atomic_number('H-3934')
@@ -194,6 +237,9 @@ def test_mass_number():
     assert mass_number('n') == 1
     assert mass_number('Be-8') == 8
     assert mass_number('N-13') == 13
+    assert mass_number('N-13 2+') == 13
+    assert mass_number('N-13 +2') == 13
+    assert mass_number('N-13+++') == 13
 
     with pytest.raises(ValueError):
         mass_number('H-359')
@@ -201,8 +247,11 @@ def test_mass_number():
     with pytest.raises(ValueError):
         mass_number('C-12b')
 
-    with pytest.raises(TypeError):
+    with pytest.raises(Exception):
         mass_number(-1.5)
+
+    with pytest.raises(ValueError):
+        mass_number('N-13+-+-')
 
 
 def test_element_name():
@@ -233,15 +282,20 @@ def test_element_name():
     assert element_name('n') == 'neutron'
     assert element_name(0) == 'neutron'
     assert element_name('N') == 'nitrogen'
+    assert element_name('N+++') == 'nitrogen'
+    assert element_name('D-') == 'hydrogen'
 
     with pytest.raises(ValueError):
-        element_name("vegan cupcakes")
+        element_name('vegan cupcakes')
 
     with pytest.raises(ValueError):
         element_name('C-13-14-15-51698024')
 
     with pytest.raises(TypeError):
         element_name(1.24)
+
+    with pytest.raises(ValueError):
+        element_name('H++')
 
 
 def test_standard_atomic_weight():
@@ -261,9 +315,34 @@ def test_standard_atomic_weight():
     with pytest.raises(TypeError):
         standard_atomic_weight(1.1)
 
+    with pytest.raises(ValueError):
+        standard_atomic_weight('n')
+
+    with pytest.raises(ValueError):
+        standard_atomic_weight('p')
+
+    with pytest.raises(ValueError):
+        standard_atomic_weight('alpha')
+
+    with pytest.raises(ValueError):
+        standard_atomic_weight('deuteron')
+
+    with pytest.raises(ValueError):
+        standard_atomic_weight('tritium')
+
+    with pytest.raises(ValueError):
+        standard_atomic_weight('Au+')
+
+    with pytest.raises(ValueError):
+        standard_atomic_weight('Fe -2')
+
+    with pytest.raises(ValueError):
+        standard_atomic_weight('Og 2+')
+
 
 def test_isotope_mass():
-    assert isotope_mass('H-1') == isotope_mass('protium') == isotope_mass(1, 1)
+    assert isotope_mass('H-1') == isotope_mass('protium')
+    assert isotope_mass('H-1') == isotope_mass(1, 1)
     assert isotope_mass('D') == isotope_mass('H-2') == \
         isotope_mass('deuterium') == isotope_mass(1, 2)
     assert isotope_mass('T') == isotope_mass('H-3') == \
@@ -278,9 +357,36 @@ def test_isotope_mass():
     with pytest.raises(TypeError):
         isotope_mass(1.1)
 
+    with pytest.raises(ValueError):
+        isotope_mass('alpha')
+
+    with pytest.raises(ValueError):
+        isotope_mass('He-4 2+')
+
+    with pytest.raises(ValueError):
+        isotope_mass('p')
+
+    with pytest.raises(ValueError):
+        isotope_mass('Fe 2+')
+
+    with pytest.raises(ValueError):
+        isotope_mass('Fe -2')
+
+    with pytest.raises(ValueError):
+        isotope_mass('deuteron')
+
+    with pytest.raises(ValueError):
+        isotope_mass('triton')
+
+    with pytest.raises(ValueError):
+        isotope_mass('alpha')
+
+    with pytest.raises(ValueError):
+        isotope_mass('p')
+
 
 def test_ion_mass():
-    assert ion_mass('H') > const.m_p
+    assert ion_mass('H') > const.m_p, "Use standard_atomic_weight of 'H'"
     assert ion_mass('hydrogen') > const.m_p
     assert ion_mass('proton') == const.m_p
     assert ion_mass('e+') == ion_mass('positron') == const.m_e
@@ -289,12 +395,58 @@ def test_ion_mass():
     assert ion_mass('Ne-22', 2) == 21.991385114*u.u - 2*const.m_e
     assert ion_mass('F-19', Z=3).unit == u.kg
     assert ion_mass('F-19', Z='3').unit == u.kg
-
+    assert ion_mass('H-1+') == const.m_p
+    assert ion_mass('He+') == ion_mass('He')
+    assert ion_mass('He 1+') == ion_mass('He')
+    assert ion_mass('He 2+') == ion_mass('alpha')
+    assert np.isclose(ion_mass('Fe 1-').value,
+                      (ion_mass('Fe 1+') + 2*const.m_e).value, rtol=1e-14)
+    assert np.isclose(ion_mass('Fe-56 1-').value,
+                      (ion_mass('Fe-56 1+') + 2*const.m_e).value, rtol=1e-14)
+    assert np.isclose((ion_mass('Fe-56 1+')).value,
+                      (ion_mass('Fe', Z=1, mass_numb=56)).value)
+    assert np.isclose((ion_mass('Fe-56 1+')).value,
+                      (ion_mass(26, Z=1, mass_numb=56)).value)
+    assert ion_mass(1, Z=1, mass_numb=1) == ion_mass('p')
+    assert ion_mass('deuteron') == ion_mass('D +1')
+    assert ion_mass('T', Z=1) == ion_mass('T +1')
+    assert ion_mass('Fe', mass_numb=56) == ion_mass('Fe', mass_numb='56')
+    assert np.isclose(ion_mass(9.11e-31*u.kg).value, 9.10938291e-31,
+                      atol=1e-37)
+    assert ion_mass(1.67e-27*u.kg) == 1.67e-27*u.kg
+    assert np.isclose(ion_mass(1*u.u).value, 1.660538921e-27, atol=1e-35)
     with pytest.raises(ValueError):
-        ion_mass('Og')  # no standard atomic weight
+        ion_mass('Og')  # since it has no standard atomic weight
 
     with pytest.raises(TypeError):
         ion_mass('Fe-56', Z=1.4)
+
+    with pytest.raises(ValueError):
+        ion_mass('n')
+
+    with pytest.raises(ValueError):
+        ion_mass('H-1 +1', Z=0)
+
+    with pytest.raises(TypeError):
+        ion_mass(26, Z=1, mass_numb='a')
+
+    with pytest.raises(ValueError):
+        ion_mass(26, Z=27, mass_numb=56)
+
+    with pytest.raises(ValueError):
+        ion_mass('Og', Z=1)
+
+    with pytest.raises(UserWarning):
+        ion_mass(1.6e-27*u.kg)
+
+    with pytest.raises(UserWarning):
+        ion_mass(8e-25*u.kg)
+
+    with pytest.raises(u.UnitConversionError):
+        ion_mass(1*u.m)
+
+    with pytest.raises(ValueError):
+        ion_mass('Og', 1)
 
 
 def test_nuclear_binding_energy():
@@ -334,11 +486,19 @@ def test_energy_from_nuclear_reaction():
     energy_alpha_decay = energy_from_nuclear_reaction(alpha_decay_example)
     assert np.isclose(energy_alpha_decay.to(u.MeV).value, 4.26975, atol=1e-5)
 
+    triple_alpha1_r = '4He-4 --> 2Be-8'
+    energy_triplealpha1_r = energy_from_nuclear_reaction(triple_alpha1_r)
+    assert np.isclose(energy_triplealpha1_r.to(u.keV).value,
+                      -91.8*2, atol=0.1)
+
     with pytest.raises(ValueError):
         energy_from_nuclear_reaction('H + H --> H')
 
     with pytest.raises(TypeError):
         energy_from_nuclear_reaction(1)
+
+    with pytest.raises(ValueError):
+        energy_from_nuclear_reaction('H-1 + H-1 --> H-1')
 
 
 def test_is_isotope_stable():
@@ -408,6 +568,13 @@ def test_half_life():
             with pytest.raises(UserWarning):
                 assert half_life(isotope) is None
 
+    with pytest.raises(UserWarning):
+        half_life('U-220')
+        assert half_life('U-220') is None, \
+            ("If half-life data is added for this isotope, then this test "
+             "*should* fail and a different isotope without half-life data "
+             "should be chosen instead")
+
 
 def test_atomic_TypeErrors():
 
@@ -447,33 +614,51 @@ def test_atomic_ValueErrors():
 
 
 def test_known_common_stable_isotopes():
-
     assert 'H-1' in known_isotopes('H')
     assert 'D' in known_isotopes('H')
     assert 'T' in known_isotopes('H')
     assert 'Be-8' in known_isotopes('Be')
     assert 'Og-294' in known_isotopes(118)
-
     assert 'H-1' in common_isotopes('H')
     assert 'H-4' not in common_isotopes(1)
-
     assert 'H-1' in stable_isotopes('H')
     assert 'D' in stable_isotopes('H')
     assert 'T' not in stable_isotopes('H')
 
+    assert len(common_isotopes()) == 288, \
+        ("The number of common isotopes may change if isotopic composition "
+         "data has any significant changes.")
 
-def test_isotopic_composition():
+    assert len(stable_isotopes()) == 254, \
+        ("The number of stable isotopes may decrese slightly if some are "
+         "discovered to be unstable but with extremely long half-lives.")
 
-    assert isotopic_composition('H', 1) == isotopic_composition('protium')
-    assert np.isclose(isotopic_composition('D'), 0.000115)
-    assert isotopic_composition('Be-8') == 0.0, 'Be-8'
-    assert isotopic_composition('Li-8') == 0.0, 'Li-8'
-    assert isotopic_composition('Og', 294) == 0.0
+    assert 3351 <= len(known_isotopes()) <= 3600, \
+        ("The number of known isotopes ")
+
+    assert 'Fe-56' in common_isotopes('Fe', most_common_only=True)
+    assert 'He-4' in common_isotopes('He', most_common_only=True)
+
+    for func in [common_isotopes, stable_isotopes, known_isotopes]:
+        with pytest.raises(ValueError):
+            func('n')
+
+
+def test_isotopic_abundance():
+
+    assert isotopic_abundance('H', 1) == isotopic_abundance('protium')
+    assert np.isclose(isotopic_abundance('D'), 0.000115)
+    assert isotopic_abundance('Be-8') == 0.0, 'Be-8'
+    assert isotopic_abundance('Li-8') == 0.0, 'Li-8'
+    assert isotopic_abundance('Og', 294) == 0.0
 
     with pytest.raises(ValueError):
-        isotopic_composition('neutron')
+        isotopic_abundance('neutron')
 
-    # Check that the sum of isotopic compositions for each element is one
+    with pytest.raises(ValueError):
+        isotopic_abundance('Og-2')
+
+    # Check that the sum of isotopic abundances for each element is one
 
     for atomic_numb in range(1, 119):
 
@@ -482,9 +667,46 @@ def test_isotopic_composition():
 
         if len(isotopes) > 0:
 
-            sum_of_iso_comps = 0
+            sum_of_iso_abund = 0
             for isotope in isotopes:
-                sum_of_iso_comps += isotopic_composition(isotope)
+                sum_of_iso_abund += isotopic_abundance(isotope)
 
-            assert np.isclose(sum_of_iso_comps, 1, atol=1e-6), \
+            assert np.isclose(sum_of_iso_abund, 1, atol=1e-6), \
                 "Problem with: " + element
+
+
+def test_charge_state():
+    assert charge_state('H+') == 1
+    assert charge_state('D +1') == 1
+    assert charge_state('tritium 1+') == 1
+    assert charge_state('H-') == -1
+    assert charge_state('Fe -4') == -4
+    assert charge_state('Fe 4-') == -4
+    assert charge_state('N---') == -3
+    assert charge_state('N++') == 2
+
+    assert charge_state('alpha') == 2
+    assert charge_state('proton') == 1
+    assert charge_state('deuteron') == 1
+    assert charge_state('triton') == 1
+
+    with pytest.raises(ValueError):
+        charge_state('fads')
+
+    with pytest.raises(ValueError):
+        charge_state('H++')
+
+    with pytest.raises(ValueError):
+        charge_state('Fe 29+')
+
+    with pytest.raises(ValueError):
+        charge_state('Fe 29+')
+
+    with pytest.raises(UserWarning):
+        charge_state('H---')
+
+    with pytest.raises(UserWarning):
+        charge_state('Fe -26')
+
+    with pytest.raises(UserWarning):
+        charge_state('Og 10-')
