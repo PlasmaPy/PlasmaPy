@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 import astropy.units as u
 
-from plasmapy import plasma
+from plasmapy.classes import plasma
 
 @pytest.mark.parametrize('grid_dimensions, expected_size', [
     ((100, 1, 1), 100), # Test 1D setup

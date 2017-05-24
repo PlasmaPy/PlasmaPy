@@ -1,0 +1,17 @@
+# Language options
+language: python
+python:
+        - "3.6"
+
+# Install dependencies
+install:
+        - git clone git://github.com/astropy/ci-helpers.git
+        - source ci-helpers/travis/setup_conda.sh
+        - "pip install -r requirements/base.txt"
+
+# Run the tests
+script: coverage run -m pytest 
+
+# Assess test coverage
+after_success:
+        - coveralls
