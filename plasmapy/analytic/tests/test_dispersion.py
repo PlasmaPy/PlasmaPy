@@ -83,10 +83,10 @@ def test_plasma_dispersion_func_deriv():
                       atol=atol, rtol=0)
 
     with pytest.raises(TypeError):
-        plasma_dispersion_func('')
+        plasma_dispersion_func_deriv('')
 
     with pytest.raises(u.UnitsError):
-        plasma_dispersion_func(6*u.m)
+        plasma_dispersion_func_deriv(6*u.m)
 
     with pytest.raises(ValueError):
-        plasma_dispersion_func(np.inf)
+        plasma_dispersion_func_deriv(np.inf)
