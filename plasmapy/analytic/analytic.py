@@ -1,23 +1,31 @@
 """Functions related to the plasma dispersion function"""
 
+import numpy as np
+from scipy import special
+from astropy import units as u
+
 
 def plasma_dispersion_func(zeta):
     """Calculate the plasma dispersion function
 
     Parameters
     ----------
-    zeta : complex number or array
+    zeta : complex, int, float, ndarray, or Quantity
         Argument of plasma dispersion function.
 
     Returns
     -------
-    Z : complex number or array
+    Z : complex, float, or ndarray
         Value of plasma dispersion function.
 
     Raises
     ------
+    TypeError
+        If the argument is invalid.
+    UnitsError
+        If the argument is a Quantity but is not dimensionless
     ValueError
-        Invalid argument.
+        If the argument is not entirely finite
 
     See also
     --------
@@ -47,26 +55,30 @@ def plasma_dispersion_func(zeta):
 
     Examples
     --------
-    Here we calculate Z(0) and Z(1j).
-
-    >>> from plasmapy.analytic_functions import plasma_dispersion_func
-    >>> Z_of_0 = plasma_dispersion_func(0)
-    >>> print(Z_of_0)
-    1.77245385091j
-    >>> Z_of_1j = plasma_dispersion_func(1j)
-    >>> print(Z_of_1j)
-    >>> Z_of_complex_number = plasma_dispersion_func(-1.52+0.47j)
-    print(Z_of_complex_number)
-    (0.608888895723+0.334945838829j)
+    >>> plasma_dispersion_func(0)
+    1.7724538509055159j
+    >>> plasma_dispersion_func(1j)
+    0.75787215614131187j
+    >>> plasma_dispersion_func(-1.52+0.47j)
+    (0.60888889572342553+0.33494583882874029j)
 
     """
 
-    import numpy as np
-    from scipy import special
+    if not isinstance(zeta, (int, float, complex, np.ndarray, u.Quantity)):
+        raise TypeError("The argument to plasma_dispersion_function "
+                        "must be one of the following types: complex, float, "
+                        "int, ndarray, or Quantity.")
+
+    if isinstance(zeta, u.Quantity):
+        if zeta.unit == u.dimensionless_unscaled:
+            zeta = zeta.value
+        else:
+            raise u.UnitsError("The argument to plasma_dispersion_function "
+                               "must be dimensionless if it is a Quantity")
 
     if not np.all(np.isfinite(zeta)):
-        raise ValueError("Argument of plasma_dispersion_function " +
-                         "must be a complex number or array")
+        raise ValueError("The argument to plasma_dispersion_function is "
+                         "not finite.")
 
     Z = 1j * np.sqrt(np.pi) * np.exp(-zeta**2) * (1.0 + special.erf(1j * zeta))
 
@@ -78,18 +90,22 @@ def plasma_dispersion_func_deriv(zeta):
 
     Parameters
     ----------
-    zeta : complex number or array
+    zeta : complex, int, float, ndarray, or Quantity
         Argument of plasma dispersion function.
 
     Returns
     -------
-    Zprime : complex number or array
-        Derivative of plasma dispersion function.
+    Zprime : complex, int, float, or ndarray
+        First derivative of plasma dispersion function.
 
     Raises
     ------
+    TypeError
+        If the argument is invalid.
+    UnitsError
+        If the argument is a Quantity but is not dimensionless
     ValueError
-        Invalid argument.
+        If the argument is not entirely finite
 
     See also
     --------
@@ -111,12 +127,33 @@ def plasma_dispersion_func_deriv(zeta):
     Function: The Hilbert Transformation of the Gaussian. Academic
     Press (New York and London).
 
+    Examples
+    --------
+    >>> plasma_dispersion_func_deriv(0)
+    (-2+0j)
+    >>> plasma_dispersion_func_deriv(1j)
+    (-0.48425568771737626+0j)
+    >>> plasma_dispersion_func_deriv(-1.52+0.47j)
+    (0.16587133149822941+0.44587978805935069j)
+
     """
-    import numpy as np
+
+    if not isinstance(zeta, (int, float, complex, np.ndarray, u.Quantity)):
+        raise TypeError("The argument to plasma_dispersion_function_deriv "
+                        "must be one of the following types: complex, float, "
+                        "int, ndarray, or Quantity.")
+
+    if isinstance(zeta, u.Quantity):
+        if zeta.unit == u.dimensionless_unscaled:
+            zeta = zeta.value
+        else:
+            raise u.UnitsError("The argument to "
+                               "plasma_dispersion_function_deriv "
+                               "must be dimensionless if it is a Quantity")
 
     if not np.all(np.isfinite(zeta)):
-        raise ValueError("Argument of plasma_dispersion_function " +
-                         "must be a complex number or array")
+        raise ValueError("The argument to plasma_dispersion_function_deriv is "
+                         "not finite.")
 
     Zprime = -2 * (1 + zeta * plasma_dispersion_func(zeta))
 
