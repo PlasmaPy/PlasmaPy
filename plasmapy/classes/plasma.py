@@ -284,3 +284,17 @@ class Plasma():
         """
 
         return np.sqrt((self.gamma * self.pressure) / self.density)
+
+    @property
+    def magnetic_field_strength(self):
+        """
+        """
+
+        return np.sqrt(dot(self.magnetic_field, self.magnetic_field))
+
+    @property
+    def alfven_speed(self):
+        """
+        """
+
+        return self.magnetic_field_strength / np.sqrt(mu0 * self.density)
