@@ -78,10 +78,12 @@ def test_Plasma_derived_vars():
     assert test_plasma.velocity.shape == test_plasma.momentum.shape
     assert (test_plasma.velocity == 5.0 * u.m / u.s).all()
 
-    assert test_plasma.magnetic_field_strength.shape == test_plasma.magnetic_field.shape[1:]
-    assert test_plasma.magnetic_field_strength.si.unit == u.T
-    assert np.allclose(test_plasma.magnetic_field_strength.value, 0.017320508)
+    B = test_plasma.magnetic_field_strength
+    assert B.shape == test_plasma.magnetic_field.shape[1:]
+    assert B.si.unit == u.T
+    assert np.allclose(B.value, 0.017320508)
 
-    assert test_plasma.alfven_speed.shape == test_plasma.density.shape
-    assert test_plasma.alfven_speed.unit.si == u.m / u.s
-    assert np.allclose(test_plasma.alfven_speed.value, 10.92548431)
+    vA = test_plasma.alfven_speed
+    assert vA.shape == test_plasma.density.shape
+    assert vA.unit.si == u.m / u.s
+    assert np.allclose(vA.value, 10.92548431)
