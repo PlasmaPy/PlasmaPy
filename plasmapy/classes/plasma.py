@@ -96,7 +96,12 @@ class Plasma():
 
         x, y, z = self.x.si.value, self.y.si.value, self.z.si.value
         self.grid = np.meshgrid(x, y, z, indexing='ij') * u.m
-        self.domain_shape = (len(self.x), len(self.y), len(self.z))
+        self.domain_shape = []
+        for length in (len(x), len(y), len(z)):
+            if length > 1:
+                self.domain_shape.append(length)
+        self.domain_shape = tuple(self.domain_shape)
+        print(self.domain_shape)
         self.gamma = gamma
 
         # Initiate core plasma variables
@@ -132,8 +137,9 @@ class Plasma():
 
         """
 
-        assert density.shape == self.grid_size, \
-            'Specified density array shape does not match simulation grid.'
+        assert density.shape == self.domain_shape, """
+            Specified density array shape {} does not match simulation grid {}.
+            """.format(density.shape, self.domain_shape)
         self._density = density
 
     # Momentum
@@ -159,8 +165,9 @@ class Plasma():
             fewer than 3 dimensions.
 
         """
-        assert momentum.shape == (3, *self.grid_size), \
-            'Specified density array shape does not match simulation grid.'
+        assert momentum.shape == (3, *self.domain_shape), """
+            Specified density array shape {} does not match simulation grid {}.
+            """.format(momentum.shape, (3, *self.domain_shape))
         self._momentum = momentum
 
     # Internal energy
@@ -185,8 +192,9 @@ class Plasma():
 
         """
 
-        assert energy.shape == self.grid_size, """Specified energy density
-            array shape does not match simulation grid."""
+        assert energy.shape == self.domain_shape, """
+            Specified density array shape {} does not match simulation grid {}.
+            """.format(energy.shape, self.domain_shape)
         self._energy = energy
 
     # Magnetic field
@@ -214,14 +222,14 @@ class Plasma():
 
         """
 
-        assert magnetic_field.shape == (3, *self.grid_size), """Specified
-            magnetic field array shape does not match simulation grid."""
+        assert magnetic_field.shape == (3, *self.domain_shape), """
+            Specified density array shape {} does not match simulation grid {}.
+            """.format(magnetic_field.shape, (3, *self.domain_shape))
         self._magnetic_field = magnetic_field
 
     @property
     def core_variables(self):
         """Returns an up-to-date list of the core variables used in the calculations.
-
         """
         return [self.density, self.momentum, self.energy, self.magnetic_field]
 
@@ -252,7 +260,7 @@ class Plasma():
             Must have units of velocity.
 
         """
-        assert velocity.shape == (3, *self.grid_size), """Specified velocity
+        assert velocity.shape == (3, *self.domain_shape), """Specified velocity
             array shape does not match simulation grid."""
         self.momentum = velocity * self.density
 
