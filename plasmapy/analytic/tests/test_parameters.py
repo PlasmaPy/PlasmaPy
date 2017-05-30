@@ -25,6 +25,9 @@ rho = n_i*m_i + n_e*m_e
 T_e = 1e6*u.K
 T_i = 1e6*u.K
 
+B_arr = np.array([0.001, 0.002])*u.T
+rho_arr = np.array([5e-10, 2e-10])*u.kg/u.m**3
+
 
 def test_Alfven_speed():
     """Test the Alfven_speed function in parameters.py."""
@@ -33,11 +36,28 @@ def test_Alfven_speed():
     assert Alfven_speed(B, rho) == Alfven_speed(B, n_i)
     assert Alfven_speed(B, rho) == Alfven_speed(rho, B)
     assert Alfven_speed(B, rho).unit == 'm / s'
+    assert Alfven_speed(B, rho) == Alfven_speed(-B, rho)
+    assert Alfven_speed(B, 4*rho) == 0.5*Alfven_speed(B, rho)
+    assert Alfven_speed(2*B, rho) == 2*Alfven_speed(B, rho)
+
+    # Case where magnetic field and density are Quantity arrays
+    V_A_arr = Alfven_speed(B_arr, rho_arr)
+    V_A_arr0 = Alfven_speed(B_arr[0], rho_arr[0])
+    V_A_arr1 = Alfven_speed(B_arr[1], rho_arr[1])
+    assert np.isclose(V_A_arr0.value, V_A_arr[0].value)
+    assert np.isclose(V_A_arr1.value, V_A_arr[1].value)
+
+    # Case where magnetic field is an array but density is a scalar Quantity
+    V_A_arr = Alfven_speed(B_arr, rho)
+    V_A_arr0 = Alfven_speed(B_arr[0], rho)
+    V_A_arr1 = Alfven_speed(B_arr[1], rho)
+    assert np.isclose(V_A_arr0.value, V_A_arr[0].value)
+    assert np.isclose(V_A_arr1.value, V_A_arr[1].value)
 
     with pytest.raises(u.UnitConversionError):
         Alfven_speed(5*u.A, n_i)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(TypeError):
         Alfven_speed(B, 5)
 
     with pytest.raises(u.UnitsError):
@@ -46,8 +66,11 @@ def test_Alfven_speed():
     with pytest.raises(ValueError):
         Alfven_speed(B, n_i, ion='spacecats')
 
-    with pytest.raises(UserWarning):
-        Alfven_speed(5e19*u.T, n_i)
+    with pytest.raises(UserWarning):  # superrelativistic velocity
+        Alfven_speed(5e29*u.T, 5e19*u.m**-3)
+
+    with pytest.raises(ValueError):
+        Alfven_speed(0.001*u.T, -5e19*u.m**-3)
 
 
 def test_ion_sound_speed():
