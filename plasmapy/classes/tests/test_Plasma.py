@@ -87,3 +87,18 @@ def test_Plasma_derived_vars():
     assert vA.shape == test_plasma.density.shape
     assert vA.unit.si == u.m / u.s
     assert np.allclose(vA.value, 10.92548431)
+
+
+def test_Plasma_simulation():
+    """Tests that the `simulate()` method exists and doesn't immediately break.
+    """
+    test_plasma = plasma.Plasma(domain_x=np.linspace(0, 1, 8)*u.m,
+                                domain_y=np.linspace(0, 1, 8)*u.m,
+                                domain_z=np.linspace(0, 1, 8)*u.m)
+    test_plasma.simulate(max_its=10)
+
+    assert (test_plasma.density == np.zeros((8, 8)) * u.kg / u.m**3).all()
+    assert (test_plasma.momentum
+            == np.zeros((8, 8))* u.kg / (u.m**2 * u.s)).all()
+    assert (test_plasma.energy == np.zeros((8, 8)) * u.J / u.m**3).all()
+    assert (test_plasma.magnetic_field == np.zeros((8, 8)) * u.T).all()
