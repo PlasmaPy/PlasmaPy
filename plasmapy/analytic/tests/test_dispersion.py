@@ -1,7 +1,8 @@
 """Tests for the plasma dispersion function and its derivative"""
 
 import numpy as np
-
+import pytest
+from astropy import units as u
 from ..analytic import plasma_dispersion_func, plasma_dispersion_func_deriv
 
 
@@ -43,6 +44,19 @@ def test_plasma_dispersion_func():
                           atol=atol, rtol=0), \
             "Symmetry property of Z(zeta*) valid for zeta.imag>0 not satisfied"
 
+    assert np.isclose(plasma_dispersion_func(9.2j),
+                      plasma_dispersion_func(9.2j*u.dimensionless_unscaled),
+                      atol=atol, rtol=0)
+
+    with pytest.raises(TypeError):
+        plasma_dispersion_func('')
+
+    with pytest.raises(u.UnitsError):
+        plasma_dispersion_func(6*u.m)
+
+    with pytest.raises(ValueError):
+        plasma_dispersion_func(np.inf)
+
 
 def test_plasma_dispersion_func_deriv():
     """Test the implementation of plasma_dispersion_func_deriv against
@@ -50,7 +64,7 @@ def test_plasma_dispersion_func_deriv():
 
     atol = 2e-6*(1 + 1j)
 
-    assert np.isclose(plasma_dispersion_func_deriv(0), -2, atol=atol, rtol=0), \
+    assert np.isclose(plasma_dispersion_func_deriv(0), -2, atol=atol, rtol=0),\
         "Z'(0) not consistent with tabulated values"
 
     assert np.isclose(plasma_dispersion_func_deriv(1), 0.152318 - 1.30410j,
@@ -63,3 +77,16 @@ def test_plasma_dispersion_func_deriv():
 
     assert np.isclose(plasma_dispersion_func_deriv(1.2 + 4.4j),
                       -0.397561e-1 - 0.217392e-1j, atol=atol, rtol=0)
+
+    assert np.isclose(plasma_dispersion_func_deriv(9j),
+                      plasma_dispersion_func_deriv(9j*u.m/u.m),
+                      atol=atol, rtol=0)
+
+    with pytest.raises(TypeError):
+        plasma_dispersion_func_deriv('')
+
+    with pytest.raises(u.UnitsError):
+        plasma_dispersion_func_deriv(6*u.m)
+
+    with pytest.raises(ValueError):
+        plasma_dispersion_func_deriv(np.inf)
