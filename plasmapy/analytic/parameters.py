@@ -136,15 +136,11 @@ def Alfven_speed(B, density, ion="p"):
 
         try:
             m_i = ion_mass(ion)
-        except Exception:
-            raise ValueError("Unable to find ion mass in Alfven_speed.")
-
-        try:
             Z = charge_state(ion)
             if Z is None:
                 Z = 1
         except Exception:
-            raise ValueError("Unable to find charge state in Alfven_speed.")
+            raise ValueError("Invalid ion in Alfven_speed.")
 
         rho = density*m_i + Z*density*m_e
 
@@ -171,19 +167,39 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
     Parameters
     ----------
     T_i : Quantity
-        Ion temperature.
+        Ion temperature
+
     ion : string, optional
         Representation of the ion species.  If not given, then the ions
         are assumed to be protons.
+
     gamma : float, optional
-        Heat capacity ratio (also known as the adiabatic index, ratio of
-        specific heats, Poisson constant, or isentropic expansion parameter).
-        Defaults to 5/3 which is appropriate for a monatomic gas.
+        The adiabatic index, which defaults to 5/3 which is appropriate for
+        a monatomic gas.  This quantity is the ratio of the heat capacity at
+        constant pressure to the heat capacity at constant volume.
 
     Returns
     -------
     V_S : Quantity
-        The ion sound speed.
+        The ion sound speed
+
+    Raises
+    ------
+    ValueError
+        If the ion mass, adiabatic index, or temperature are invalid
+
+    UnitConversionError
+        If the temperature is in incorrect units
+
+    UserWarning
+        If the ion sound speed exceeds 10% of the speed of light
+
+    Notes
+    -----
+    The ion sound speed is given by
+
+    .. math::
+    V_S = \sqrt{\frac{\gamma k_B T_i}{m_i}}
 
     Example
     -------
@@ -211,14 +227,20 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
         raise u.UnitConversionError("The ion temperature in ion_sound_speed "
                                     "cannot be converted to Kelvin.")
 
+    if np.any(T_i < 0):
+        raise ValueError("Negative temperature in ion_sound_speed.")
+
     try:
         V_S = (np.sqrt(gamma*k_B*T_i/m_i)).to(u.m/u.s)
     except Exception:
-        raise ValueError("Unable to find ion sound speed")
+        raise ValueError("Unable to find ion sound speed.")
 
     if V_S > c:
         raise UserWarning("Ion sound speed is greater than speed "
-                          "of light")
+                          "of light.")
+    elif V_S > 0.1*c:
+        raise UserWarning("Ion sound speed is greater than 10% of the speed "
+                          "of light.")
 
     return V_S
 

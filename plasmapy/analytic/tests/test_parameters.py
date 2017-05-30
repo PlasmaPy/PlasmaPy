@@ -31,6 +31,7 @@ rho_arr = np.array([5e-10, 2e-10])*u.kg/u.m**3
 
 def test_Alfven_speed():
     """Test the Alfven_speed function in parameters.py."""
+
     V_A = Alfven_speed(B, n_i)
     assert np.isclose(V_A.value, (B/np.sqrt(mu0*n_i*(m_p+m_e))).si.value)
     assert Alfven_speed(B, rho) == Alfven_speed(B, n_i)
@@ -75,7 +76,25 @@ def test_Alfven_speed():
 
 def test_ion_sound_speed():
     """Test the ion_sound_velocity function in parameters.py."""
-    assert ion_sound_speed(T_i, ion='p').unit == 'm / s'
+
+    assert ion_sound_speed(T_i, ion='p').unit == 'm / s'    
+    assert ion_sound_speed(4*T_i) == 2*ion_sound_speed(T_i)
+    assert ion_sound_speed(T_i, gamma=np.inf) == np.inf*u.m/u.s
+
+    with pytest.raises(ValueError):
+        ion_sound_speed(T_i, gamma=0.99)
+
+    with pytest.raises(ValueError):
+        ion_sound_speed(T_i, ion='vegan cupcakes')
+
+    with pytest.raises(ValueError):
+        ion_sound_speed(-np.abs(T_i))
+
+    with pytest.raises(UserWarning):
+        ion_sound_speed(5e12*u.K)
+
+    with pytest.raises(UserWarning):
+        ion_sound_speed(5e19*u.K)
 
 
 def test_electron_thermal_speed():
