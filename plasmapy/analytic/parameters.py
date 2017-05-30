@@ -52,9 +52,11 @@ def Alfven_speed(B, density, ion="p"):
     ----------
     B : Quantity
         The magnetic field magnitude in units such as Tesla or Gauss
+
     density: Quantity
         Either the ion number density in units such as 1 / m**3, or the
         mass density in units such as kg / m**3
+
     ion : string, optional
         Representation of the ion species.  If not given, then the ions
         are assumed to be protons.
@@ -66,11 +68,18 @@ def Alfven_speed(B, density, ion="p"):
 
     Raises
     ------
-    UnitConversionError:
+    TypeError
+        The magnetic field and density arguments are not Quantities.
+
+    UnitConversionError
         If the magnetic field or density is not in correct units
 
-    UserWarning:
-        If the Alfven velocity exceeds the speed of light
+    UserWarning
+        If the Alfven velocity exceeds 10% of the speed of light
+
+    ValueError
+        If the density is negative, or the ion mass or charge state
+        cannot be found.
 
     Notes
     -----
@@ -106,49 +115,52 @@ def Alfven_speed(B, density, ion="p"):
 
     """
 
-    try:
-        if B.si.unit in ['1 / m3', 'kg / m3'] and density.si.unit in ['T']:
-            B, density = density, B
-    except Exception:
-        pass
+    if not isinstance(B, u.Quantity) or not isinstance(density, u.Quantity):
+        raise TypeError("The inputs to Alfven_speed must be Quantities.")
+
+    if B.si.unit in ['1 / m3', 'kg / m3'] and density.si.unit in ['T']:
+        B, density = density, B
 
     try:
         B = B.to(u.T)
     except Exception:
         raise UnitConversionError("The magnetic field in Alfven_speed cannot "
-                                  "be converted to Tesla")
+                                  "be converted to Tesla.")
 
-    try:
-        density = density.si
-    except Exception:
-        raise UnitConversionError("Alfven_speed requires a number density or "
-                                  "mass density as an input.")
+    density = density.si
+    if np.any(density.value < 0):
+        raise ValueError("The number or mass density in Alfven_speed cannot "
+                         "be negative.")
 
-    if density.unit not in ['1 / m3', 'kg / m3']:
-        raise UnitsError("One input of Alfven_speed must have units of either "
-                         "a number density or mass density.")
+    if density.unit == '1 / m3':
 
-    try:
-        m_i = ion_mass(ion)
-    except Exception:
-        raise ValueError("Unable to find ion mass")
+        try:
+            m_i = ion_mass(ion)
+        except Exception:
+            raise ValueError("Unable to find ion mass in Alfven_speed.")
 
-    try:
-        if density.unit == '1 / m3':
+        try:
             Z = charge_state(ion)
             if Z is None:
                 Z = 1
-                m_i = ion_mass(ion)
-            rho = density*m_i + Z*density*m_e
-        elif density.unit == 'kg / m3':
+        except Exception:
+            raise ValueError("Unable to find charge state in Alfven_speed.")
+
+        rho = density*m_i + Z*density*m_e
+
+    elif density.unit == 'kg / m3':
             rho = density
-    except Exception:
-        raise ValueError("Unable to find mass density in Alfven_speed")
+    else:
+        raise UnitsError("One input of Alfven_speed must have units of either "
+                         "a number density or mass density.")
 
     V_A = (np.abs(B)/np.sqrt(mu0*rho)).to(u.m/u.s)
 
-    if V_A > c:
-        raise UserWarning("Alfven speed is greater than speed of light")
+    if np.any(V_A > c):
+        raise UserWarning("Alfven speed is greater than the speed of light.")
+    elif np.any(V_A > 0.1*c):
+        raise UserWarning("Alfven speed is greater than 10% of the speed of "
+                          "light.")
 
     return V_A
 
@@ -548,7 +560,7 @@ def electron_plasma_frequency(n_e: u.m**-3):
     """
     try:
         omega_pe = (u.rad*e*np.sqrt(n_e/(eps0*m_e))).to(u.rad/u.s)
-    except:
+    except Exception:
         raise ValueError("Unable to find electron plasma frequency.")
 
     return omega_pe
@@ -600,7 +612,7 @@ def ion_plasma_frequency(n_i, Z=None, ion='p'):
     if Z is None:
         try:
             Z = charge_state(ion)
-        except:
+        except Exception:
             raise ValueError("Unable to get charge state to calculate ion "
                              "plasma frequency.")
 
@@ -663,7 +675,7 @@ def Debye_length(T_e: u.K, n_e: u.m**-3):  # Add equivalency related to T in eV
 
     try:
         lambda_D = ((eps0*k_B*T_e / (n_e * e**2))**0.5).to(u.m)
-    except:
+    except Exception:
         raise ValueError("Unable to find Debye length.")
 
     return lambda_D
@@ -712,7 +724,7 @@ def Debye_number(T_e: u.K, n_e: u.m**-3):
     try:
         lambda_D = Debye_length(T_e, n_e)
         N_D = (4/3)*n_e*lambda_D**3
-    except:
+    except Exception:
         raise ValueError("Unable to find Debye number.")
 
     return N_D.to(u.dimensionless_unscaled)
@@ -735,7 +747,7 @@ def ion_inertial_length(n_i, ion='p', Z=None):
 
     Notes
     -----
-    The ion inertial length is also known as an ion skin depth and is 
+    The ion inertial length is also known as an ion skin depth and is
     given by:
 
     .. math::
@@ -756,13 +768,13 @@ def ion_inertial_length(n_i, ion='p', Z=None):
 
     try:
         Z = charge_state(ion)
-    except:
+    except Exception:
         raise ValueError("Unable to find charge state in ion_inertial_length.")
 
     try:
         omega_pi = ion_plasma_frequency(n_i, Z=1, ion=ion)
         d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())
-    except:
+    except Exception:
         raise ValueError("Unable to find ion inertial length.")
 
     return d_i
@@ -799,7 +811,7 @@ def electron_inertial_length(n_e: u.m**-3):
     try:
         omega_pe = electron_plasma_frequency(n_e)
         d_e = (c/omega_pe).to(u.m, equivalencies=u.dimensionless_angles())
-    except:
+    except Exception:
         raise ValueError("Unable to find electron inertial length.")
 
     return d_e
@@ -839,7 +851,7 @@ def magnetic_pressure(B: u.T):
 
     try:
         p_B = (B**2/(2*mu0)).to(u.N/u.m**2)
-    except:
+    except Exception:
         raise ValueError("Unable to find magnetic pressure.")
 
     return p_B
@@ -883,7 +895,7 @@ def magnetic_energy_density(B: u.T):
 
     try:
         E_B = (B**2/(2*mu0)).to(u.J/u.m**3)
-    except:
+    except Exception:
         raise ValueError("Unable to find magnetic pressure.")
 
     return E_B
