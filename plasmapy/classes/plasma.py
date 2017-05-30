@@ -1,12 +1,13 @@
 """
 plasmapy.classes.plasma
-===============
+=======================
 
 Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
 
 import numpy as np
 import astropy.units as u
+from astropy.utils.console import ProgressBar
 
 mu0 = np.pi * 4.0e-7 * (u.newton / (u.amp**2))
 
@@ -306,3 +307,48 @@ class Plasma():
         """
 
         return self.magnetic_field_strength / np.sqrt(mu0 * self.density)
+
+    @u.quantity_input(max_time=u.s)
+    def simulate(self, max_its=np.inf, max_time=np.inf*u.s):
+        """Simulates the plasma as set up, either for the given number of
+        iterations or until the simulation reaches the given time.
+
+        Parameters
+        ----------
+        max_its : int
+            Tells the simulation to run for a set number of iterations.
+
+        max_time : astropy.units.Quantity
+            Maximum total (in-simulation) time to allow the simulation to run.
+            Must have units of time.
+
+        Examples
+        --------
+        >>> # Run a simulation for exactly one thousand iterations.
+        >>> myplasma.simulate(max_time=1000)
+
+        >>> # Run a simulation for up to half an hour of simulation time.
+        >>> myplasma.simulate(max_time=30*u.minute)
+        """
+        if np.isinf(max_its) and np.isinf(max_time.value):
+            raise ValueError("Either max_time or max_its must be set.")
+
+        if np.isinf(max_time):
+            pb = ProgressBar(max_its)
+        else:
+            pb = ProgressBar(int(max_time / self.dt))
+
+        physics = self.simulation_physics
+        dt = physics.dt
+
+        with pb as bar:
+            while (physics.current_iteration < max_its
+                   and physics.current_time < max_time):
+
+                physics.time_stepper()
+
+                # Advance time information on the simulation
+                self.current_time += dt
+                self.current_iteration += 1
+
+                bar.update()
