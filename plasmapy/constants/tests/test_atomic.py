@@ -680,8 +680,8 @@ def test_charge_state():
     assert charge_state('D +1') == 1
     assert charge_state('tritium 1+') == 1
     assert charge_state('H-') == -1
-    assert charge_state('Fe -4') == -4
-    assert charge_state('Fe 4-') == -4
+    assert charge_state('Fe -2') == -2
+    assert charge_state('Fe 2-') == -2
     assert charge_state('N---') == -3
     assert charge_state('N++') == 2
 

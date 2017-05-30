@@ -134,7 +134,6 @@ def element_symbol(argument):
 
     if charge_state is not None and \
             charge_state > Elements[symbol]['atomic_number']:
-
         raise ValueError("Cannot have an ionization state greater than the "
                          "atomic number in element_name.")
 
@@ -398,6 +397,12 @@ def half_life(argument, mass_numb=None):
     ValueError:
         If no half-life data is available for the isotope.
 
+    TypeError:
+        The argument is not an integer or string.
+
+    UserWarning:
+        The half-life is unavailable so the routine returns None.
+
     Notes:
     ------
     At present there is limited half-life data available.
@@ -452,6 +457,9 @@ def mass_number(isotope):
     ------
     ValueError
         If the mass number cannot be found.
+
+    TypeError
+        The first argument is not a string.
 
     See also
     --------
@@ -524,7 +532,6 @@ def element_name(argument):
 
     atomic_symbol = element_symbol(argument)
     name = Elements[atomic_symbol]["name"]
-
     return name
 
 
@@ -546,12 +553,9 @@ def standard_atomic_weight(argument):
     Raises
     ------
     ValueError:
-        If the argument cannot be used to identify an element, or if the
-        argument represents an isotope.
-
-    UserWarning:
-        If the standard atomic weight is not provided for an element (e.g., if
-        an element does not naturally occur).
+        If the argument cannot be used to identify an element; the argument
+        represents an isotope, ion, or neutron; or no standard atomic weight
+        is provided for an element.
 
     See also
     --------
@@ -641,9 +645,6 @@ def isotope_mass(argument, mass_numb=None):
 
     Raises
     ------
-    UserWarning:
-        Redundant (but consistent) isotope information is provided.
-
     ValueError:
         Contradictory or insufficient isotope information is provided.
 
@@ -710,12 +711,20 @@ def ion_mass(argument, Z=None, mass_numb=None):
 
     Raises
     ------
+    TypeError
+        The argument is not a string, integer, or Quantity.
+
     ValueError
-        If the ionization state exceeds the atomic number.
+        If the argument represents a particle other than an ion, the ionization
+        state exceeds the atomic number, or no isotope mass or standard atomic
+        weight is available.
 
     UserWarning
         If a mass was inputted and it is outside of the range of known isotopes
         or electrons/positrons.
+
+    UnitConversionError
+        If the argument is a Quantity but does not have units of mass.
 
     See also
     --------
@@ -878,11 +887,6 @@ def nuclear_binding_energy(argument, mass_numb=None):
     -------
     binding_energy: Quantity
         The binding energy of the nucleus in units of Joules.
-
-    Raises
-    ------
-    ValueError
-        If the isotope cannot be uniquely determined from the inputs.
 
     See also
     --------
@@ -1064,6 +1068,11 @@ def known_isotopes(argument=None):
         be returned that is sorted by atomic number, with entries for each
         element sorted by mass number.
 
+    Raises
+    ------
+    ValueError
+        The argument cannot be used to determine an element.
+
     Notes
     -----
     This list returns both natural and artifically produced isotopes.
@@ -1143,6 +1152,11 @@ def common_isotopes(argument=None, most_common_only=False):
         isotopes of all elements will be provided that is sorted by atomic
         number, with entries for each element sorted from most abundant to
         least abundant.
+
+    Raises
+    ------
+    ValueError
+        The argument cannot be used to determine an element.
 
     Notes
     -----
@@ -1368,6 +1382,9 @@ def charge_state(argument):
         If the charge state or isotope information is invalid, or the charge
         state exceeds the atomic number.
 
+    UserWarning:
+        If the input represents an ion with a charge state that is below -3.
+
     Notes
     -----
     This function supports two formats for the charge state information.
@@ -1405,7 +1422,7 @@ def charge_state(argument):
         raise ValueError("The charge state cannot be greater than the atomic "
                          "number.")
 
-    if Z is not None and Z < -atomic_numb - 1:
+    if Z is not None and (Z < -atomic_numb-1 or Z < -3):
         raise UserWarning("Element " + element_symbol(argument) + " has a "
                           "charge of " + str(Z) + " which is "
                           "unlikely to occur in nature.")
@@ -1509,7 +1526,7 @@ def __extract_charge_state(argument):
     else:
         charge_state = None
 
-    if charge_state is not None and charge_state < -6:
+    if charge_state is not None and charge_state < -3:
         raise UserWarning("Element " + element_symbol(argument) + " has a "
                           "charge of " + str(charge_state) + " which is "
                           "unlikely to occur in nature.")
