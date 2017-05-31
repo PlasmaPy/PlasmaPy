@@ -112,6 +112,9 @@ class Plasma():
         self._energy = np.zeros(self.domain_shape) * u.J / u.m**3
         self._magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
 
+        # Connect a simulation object for simulating
+        self.simulation_physics = MHDSimulation()
+
     """
     Define getters and setters for variables.
     """
@@ -348,7 +351,7 @@ class Plasma():
                 physics.time_stepper()
 
                 # Advance time information on the simulation
-                self.current_time += dt
-                self.current_iteration += 1
+                physics.current_time += dt
+                physics.current_iteration += 1
 
                 bar.update()
