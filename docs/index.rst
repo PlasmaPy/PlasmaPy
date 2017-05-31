@@ -10,9 +10,6 @@ Welcome to PlasmaPy's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   intro
-   tutorial
-
 
 Indices and tables
 ==================
