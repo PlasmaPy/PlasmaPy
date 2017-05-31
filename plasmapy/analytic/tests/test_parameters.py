@@ -28,6 +28,12 @@ T_i = 1e6*u.K
 B_arr = np.array([0.001, 0.002])*u.T
 rho_arr = np.array([5e-10, 2e-10])*u.kg/u.m**3
 
+B_nanarr = np.array([0.001, np.nan])*u.T
+rho_infarr = np.array([np.inf, 5e19])*u.m**-3
+rho_negarr = np.array([-5e19, 6e19])*u.m**-3
+T_nanarr = np.array([1e6, np.nan])*u.K
+T_negarr = np.array([1e6, -5151.])*u.K
+
 
 def test_Alfven_speed():
     """Test the Alfven_speed function in parameters.py."""
@@ -55,6 +61,15 @@ def test_Alfven_speed():
     assert np.isclose(V_A_arr0.value, V_A_arr[0].value)
     assert np.isclose(V_A_arr1.value, V_A_arr[1].value)
 
+    with pytest.raises(ValueError):
+        Alfven_speed(B_nanarr, rho_arr)
+
+    with pytest.raises(ValueError):
+        Alfven_speed(B_arr, rho_infarr)
+
+    with pytest.raises(ValueError):
+        Alfven_speed(B_arr, rho_negarr)
+
     with pytest.raises(u.UnitConversionError):
         Alfven_speed(5*u.A, n_i)
 
@@ -67,11 +82,17 @@ def test_Alfven_speed():
     with pytest.raises(ValueError):
         Alfven_speed(B, n_i, ion='spacecats')
 
-    with pytest.raises(UserWarning):  # superrelativistic velocity
+    with pytest.raises(UserWarning):
         Alfven_speed(5e29*u.T, 5e19*u.m**-3)
 
     with pytest.raises(ValueError):
         Alfven_speed(0.001*u.T, -5e19*u.m**-3)
+
+    with pytest.raises(ValueError):
+        Alfven_speed(np.nan*u.T, 1*u.m**-3)
+
+    with pytest.raises(ValueError):
+        Alfven_speed(1*u.T, np.nan*u.m**-3)
 
 
 def test_ion_sound_speed():
@@ -80,12 +101,13 @@ def test_ion_sound_speed():
     assert ion_sound_speed(T_i, ion='p').unit == 'm / s'    
     assert ion_sound_speed(4*T_i) == 2*ion_sound_speed(T_i)
     assert ion_sound_speed(T_i, gamma=np.inf) == np.inf*u.m/u.s
+    assert ion_sound_speed(T_i, gamma=5/3) == ion_sound_speed(T_i)
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i, gamma=0.99)
+        ion_sound_speed(T_i, gamma=0.9999)
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i, ion='vegan cupcakes')
+        ion_sound_speed(T_i, ion='cupcakes')
 
     with pytest.raises(ValueError):
         ion_sound_speed(-np.abs(T_i))
@@ -96,10 +118,32 @@ def test_ion_sound_speed():
     with pytest.raises(UserWarning):
         ion_sound_speed(5e19*u.K)
 
+    with pytest.raises(u.UnitConversionError):
+        ion_sound_speed(5*u.A)
+
+    with pytest.raises(ValueError):
+        ion_sound_speed(T_nanarr)
+
+    with pytest.raises(ValueError):
+        ion_sound_speed(T_negarr)
+
 
 def test_electron_thermal_speed():
     """Test the electron_thermal_speed function in parameters.py."""
     assert electron_thermal_speed(T_e).unit == 'm / s'
+    assert electron_thermal_speed(T_e) > ion_thermal_speed(T_e)
+
+    with pytest.raises(u.UnitConversionError):
+        electron_thermal_speed(5*u.m)
+
+    with pytest.raises(ValueError):
+        electron_thermal_speed(-T_e)
+
+    with pytest.raises(UserWarning):
+        electron_thermal_speed(1e9*u.K)
+
+    with pytest.raises(UserWarning):
+        electron_thermal_speed(5e19*u.K)
 
 
 def test_ion_thermal_speed():

@@ -150,6 +150,13 @@ def Alfven_speed(B, density, ion="p"):
         raise UnitsError("One input of Alfven_speed must have units of either "
                          "a number density or mass density.")
 
+    if (not np.all(np.isfinite(rho.value)) or not np.all(np.isreal(rho.value))
+        or np.any(rho.value <= 0)):
+        raise ValueError("Invalid density in Alfven_speed.")
+
+    if (not np.all(np.isfinite(B.value)) or not np.all(np.isreal(B.value))):
+        raise ValueError("Invalid magnetic field strength in Alfven_speed")
+
     V_A = (np.abs(B)/np.sqrt(mu0*rho)).to(u.m/u.s)
 
     if np.any(V_A > c):
@@ -212,14 +219,15 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
     """
 
     if gamma < 1:
-        raise ValueError("The ratio of specific heats cannot be less than one")
+        raise ValueError("The ratio of specific heats is less than one in "
+                         "ion_sound_speed.")
     elif gamma is np.inf:
         return np.inf*u.m/u.s
 
     try:
         m_i = ion_mass(ion)
     except Exception:
-        raise ValueError("Unable to find ion mass")
+        raise ValueError("Unable to find ion mass in ion_sound_speed.")
 
     try:
         T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
@@ -227,18 +235,19 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
         raise u.UnitConversionError("The ion temperature in ion_sound_speed "
                                     "cannot be converted to Kelvin.")
 
-    if np.any(T_i < 0):
-        raise ValueError("Negative temperature in ion_sound_speed.")
+    if (not np.all(np.isfinite(T_i.value)) or not np.all(np.isreal(T_i.value))
+        or np.any(T_i.value <= 0)):
+        raise ValueError("Invalid temperature value in ion_sound_speed.")
 
     try:
         V_S = (np.sqrt(gamma*k_B*T_i/m_i)).to(u.m/u.s)
     except Exception:
         raise ValueError("Unable to find ion sound speed.")
 
-    if V_S > c:
+    if np.any(V_S > c):
         raise UserWarning("Ion sound speed is greater than speed "
                           "of light.")
-    elif V_S > 0.1*c:
+    elif np.any(V_S > 0.1*c):
         raise UserWarning("Ion sound speed is greater than 10% of the speed "
                           "of light.")
 
@@ -285,13 +294,25 @@ def electron_thermal_speed(T_e):
 
     try:
         T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
+    except Exception:
+        raise u.UnitConversionError("The electron temperature in "
+                                    "electron_thermal_speed "
+                                    "cannot be converted to Kelvin.")
+
+    if np.any(not 0 <= T_e.value <= np.inf):
+        raise ValueError("Invalid temperature in electron_thermal_speed.")
+
+    try:    
         V_Te = (np.sqrt(2*k_B*T_e/m_e)).to(u.m/u.s)
     except Exception:
         raise ValueError("Cannot find electron thermal speed")
 
     if V_Te > c:
         raise UserWarning("Electron thermal speed is greater than speed "
-                          "of light")
+                          "of light.")
+    elif V_Te > 0.1*c:
+        raise UserWarning("Electron thermal speed is greater than 10% of "
+                          "speed of light.")
 
     return V_Te
 
