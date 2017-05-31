@@ -8,8 +8,8 @@ Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 import numpy as np
 import astropy.units as u
 from astropy.utils.console import ProgressBar
-
-mu0 = np.pi * 4.0e-7 * (u.newton / (u.amp**2))
+from .simulation import MHDSimulation
+from ..constants import mu0
 
 
 def dot(vec1, vec2):
