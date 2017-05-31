@@ -50,7 +50,7 @@ master_doc = 'index'
 # General information about the project.
 project = 'PlasmaPy'
 copyright = '2017, Murphy, Nicholas A, Huang, Yi-Min, & PlasmaPy Community'
-author = 'Murphy, Nicholas A, Huang, Yi-Min, & PlasmaPy Community'
+author = 'Nicholas Murphy & the PlasmaPy Community'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
