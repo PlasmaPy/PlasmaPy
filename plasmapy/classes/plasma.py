@@ -74,6 +74,9 @@ class Plasma():
         self._energy = np.zeros(self.domain_shape) * u.J / u.m**3
         self._magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
 
+        # Collect core variables into a list for usefulness
+        self.core_variables
+
         # Connect a simulation object for simulating
         self.simulation_physics = MHDSimulation(self)
 
@@ -309,7 +312,5 @@ class Plasma():
         with pb as bar:
             while (physics.current_iteration < max_its
                    and physics.current_time < max_time):
-
                 physics.time_stepper()
-
                 bar.update()

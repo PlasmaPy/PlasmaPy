@@ -44,7 +44,7 @@ class MHDSimulation():
     def __init__(self, plasma):
         """
         """
-        self.dt = 0
+        self.dt = 0.01 * u.s
         self.current_iteration = 0
         self.current_time = 0 * u.s
         self.plasma = plasma
@@ -54,11 +54,58 @@ class MHDSimulation():
         # Physical parameters
         # self.gamma = gamma
 
+        grids = (self.plasma.x.si, self.plasma.y.si, self.plasma.z.si)
+        ranges = [grid for grid in grids if len(grid) > 1]
+        stepsize = [range[1] - range[0] for range in ranges] * grids[0].unit
+        self.solver = Solver(stepsize)
+
         # Collect equations into a nice easy-to-use list
-        # self.equations = [self._ddt_density, self._ddt_momentum,
-        #                  self._ddt_energy, self._ddt_magfield]
+        self.equations = [self._ddt_density, self._ddt_momentum,
+                          self._ddt_energy, self._ddt_magfield]
 
     def time_stepper(self):
+        """4th-order Runge-Kutta solver for stepping the simulation forward
+        through time based on the equations defining the physics for the
+        simulation.
+        """
+        half_dt = self.dt / 2
+        kn = []
+        derivs = []
+        plasma = self.plasma
+        orig_variables = [var.copy() for var in plasma.core_variables]
+
+        for eq in self.equations:
+            k1 = eq(self.current_time) * self.dt
+            kn.append(k1)
+            derivs.append(k1)
+        for f, k1 in zip(plasma.core_variables, kn):
+            np.add(f, k1/2, out=f)
+
+        for i, (f, k1, eq) in enumerate(zip(plasma.core_variables, kn,
+                                            self.equations)):
+            k2 = eq(self.current_time + half_dt, f) * self.dt
+            kn[i] = k2
+            derivs[i] += (2 * k2)
+        for f, f0, k2 in zip(plasma.core_variables, orig_variables, kn):
+            np.add(f0, k2/2, out=f)
+
+        for i, (f, k2, eq) in enumerate(zip(plasma.core_variables, kn,
+                                            self.equations)):
+            k3 = eq(self.current_time + half_dt, f) * self.dt
+            kn[i] = k3
+            derivs[i] += (2 * k3)
+        for f, f0, k3 in zip(plasma.core_variables,
+                             orig_variables, kn):
+            np.add(f0, k3, out=f)
+
+        for i, (f, k3, eq) in enumerate(zip(plasma.core_variables, kn,
+                                            self.equations)):
+            derivs[i] += eq(self.current_time+self.dt, f) * self.dt
+
+        for f, f0, df in zip(plasma.core_variables,
+                             orig_variables, derivs):
+            np.add(f0, df/6, out=f)
+
         self.current_time += self.dt
         self.current_iteration += 1
 
