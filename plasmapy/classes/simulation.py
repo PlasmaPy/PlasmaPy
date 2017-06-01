@@ -176,13 +176,243 @@ def dot(vec1, vec2):
 
     assert vec1.shape[0] == 3, "First argument provided is not a vector field"
     assert vec2.shape[0] == 3, "Second argument provided is not a vector field"
-    assert vec1.shape == vec2.shape, \
-        "Shapes of vectors provided do not match: {}/{}".format(vec1.shape,
-                                                                vec2.shape)
+    assert vec1.shape == vec2.shape, """
+        Shapes of vectors provided do not match: {}/{}
+        """.format(vec1.shape, vec2.shape)
 
     product = np.sum(vec1 * vec2, axis=0)
-    assert product.shape == vec1.shape[1:], \
-        "Result calculated has shape {}, should be {}".format(product.shape,
-                                                              vec1.shape[1:])
+    assert product.shape == vec1.shape[1:], """
+        Result calculated has shape {}, should be {}
+        """.format(product.shape, vec1.shape[1:])
 
     return product
+
+
+def cross(vec1, vec2):
+    """
+    Calculates the cross product of two arrays of vector quantities.
+
+    Parameters
+    ----------
+
+    vec1, vec2 : array-like, shape=(3, x, [y, z])
+        Arrays of vector values in a 1D, 2D or 3D domain.
+
+    Returns
+    -------
+
+    product : ndarray, shape=(3, x, [y, z])
+        Vector field corresponding to the cross product of the specified
+        vectors,
+
+        .. math::
+
+           \\vec{a} = \\vec{v_1} \\times \\vec{v_2}
+
+    """
+
+    assert vec1.shape[0] == 3, "First argument provided is not a vector field"
+    assert vec2.shape[0] == 3, "Second argument provided is not a vector field"
+    assert vec1.shape == vec2.shape, """
+        Shapes of vectors provided do not match: {}/{}
+        """.format(vec1.shape, vec2.shape)
+
+    product = np.array((((vec1[1] * vec2[2]) - (vec1[2] * vec2[1])),
+                        ((vec1[2] * vec2[0]) - (vec1[0] * vec2[2])),
+                        ((vec1[0] * vec2[1]) - (vec1[1] * vec2[0]))))\
+        * vec1.unit * vec2.unit
+    assert product.shape == vec1.shape, """
+        Result calculated has shape {}, should be {}
+        """.format(product.shape, vec1.shape)
+
+    return product
+
+
+def grad(f, solver):
+    """
+    Calculates the gradient of a scalar field.
+
+    Parameters
+    ----------
+
+    f : array-like, shape=(x, [y, z])
+        1-, 2- or 3-dimensional scalar field.
+
+    Returns
+    -------
+
+    gradient : astropy.units.Quantity, shape=(3, x, [y, z])
+        Vector field corresponding to the gradient of the specified scalar
+        field,
+
+        .. math::
+
+           \\vec{a} = \\nabla f
+
+    """
+
+    assert len(solver.dx) == len(f.shape), """
+        Number of grid step sizes ({}) != to dimensionality of field ({})
+        """.format(len(h), len(f.shape))
+
+    gradient = np.zeros((3, *f.shape)) * f.unit / solver.dx.unit
+    for dim in range(len(solver.dx)):
+        gradient[dim] = solver(f, dim)
+
+    return gradient
+
+
+def div(vec, solver):
+    """
+    Calculates the divergence of a vector field.
+
+    Parameters
+    ----------
+
+    vec : array-like, shape=(3, x, [y, z])
+        3-dimensional vector field.
+
+    Returns
+    -------
+
+    divergence : ndarray, shape=(x, [y, z])
+        Scalar field of values corresponding to divergence of specified vector
+        field,
+
+        .. math::
+
+           a = \\nabla \\cdot \\vec{v}
+
+    """
+
+    assert vec.shape[0] == 3, "First argument provided is not a vector field"
+    assert len(solver.dx) == len(vec.shape[1:]), """
+        Number of grid step sizes ({}) != to dimensionality of field ({})
+        """.format(len(solver.dx), len(vec.shape[1:]))
+
+    dims = range(len(solver.dx))
+    divergence = sum([solver(vec[i], i) for i in dims])
+    assert divergence.shape == vec.shape[1:], """
+        Output field has shape {}, should be {}
+        """.format(divergence.shape, vec.shape[1:])
+
+    return divergence
+
+
+def curl(vec, solver):
+    """
+    Calculates the curl of a vector field.
+
+    Parameters
+    ----------
+
+    vec : array-like, shape=(3, x, [y, z])
+        3-dimensional vector field.
+
+    Returns
+    -------
+
+    curl : ndarray, shape=(3, x, [y, z])
+        Vector field corresponding to the curl of the input vector field.
+
+        .. math::
+
+           \\vec{a} = \\nabla \\times \\vec{v}
+
+    """
+
+    assert vec.shape[0] == 3, "First argument provided is not a vector field"
+    assert len(solver.dx) == len(vec.shape[1:]), """
+        Number of grid step sizes ({}) != to dimensionality of field ({})
+        """.format(len(solver.dx), len(vec.shape[1:]))
+
+    curl = np.zeros(vec.shape) * vec.unit / solver.dx.unit
+    for k in range(3):
+        for l in range(3):
+            for m in range(3):
+                try:
+                    curl[k] += levi_civita3d(k, l, m) * solver(vec[m], l, solver.dx[l])
+                except IndexError:
+                    pass
+
+    return curl
+
+
+def vdp(vec1, vec2):
+    """
+    Calculate the Vector Direct Product of two vectors.
+
+    Parameters
+    ----------
+
+    vec1, vec2 : array-like, shape=(3, x, [y, z])
+        Arrays of vector values in a 1D, 2D or 3D domain.
+
+    Returns
+    -------
+
+    tensor : ndarray, shape=(3, 3, x, [y, z])
+        Tensor field resulting from direct product of the specified vectors.
+
+        .. math::
+
+           \\textbf{A} = \\vec{v_1} \\vec{v_2}
+
+    References
+    ----------
+    http://mathworld.wolfram.com/VectorDirectProduct.html
+
+    """
+
+    assert vec1.shape[0] == 3, "First argument provided is not a vector field"
+    assert vec2.shape[0] == 3, "Second argument provided is not a vector field"
+    assert vec1.shape == vec2.shape, """
+        Shapes of vectors provided do not match: {}/{}
+        """.format(vec1.shape, vec2.shape)
+
+    tensor = vec1 * vec2.reshape(3, 1, *vec2.shape[1:])
+    assert tensor.shape == (3, *vec1.shape), """
+        Output field has shape {}, should be {}
+        """.format(tensor.shape, (3, *vec1.shape))
+
+    return tensor
+
+
+def tensordiv(tensor, solver):
+    """
+    Calculates the divergence of a tensor field.
+
+    Parameters
+    ----------
+
+    tensor : array-like, shape=(3, 3, x, [y, z])
+        3-dimensional tensor field.
+
+    Returns
+    -------
+
+    divergence : ndarray, shape=(3, x, [y, z])
+        Vector field corresponding to the divergence of the input tensor field.
+
+        .. math::
+
+           \\vec{a} = \\nabla \\cdot \\textbf{T}
+
+    """
+
+    assert tensor.shape[:2] == (3, 3), """
+        First argument provided is not a tensor field"""
+    assert len(solver.dx) == len(tensor.shape[2:]), """
+        Number of grid step sizes ({}) != to dimensionality of field ({})
+        """.format(len(solver.dx), len(tensor.shape[2:]))
+
+    dims = range(len(solver.dx))
+    divergence = np.array([sum([solver(tensor[i, 0, ...], i) for i in dims]),
+                           sum([solver(tensor[i, 1, ...], i) for i in dims]),
+                           sum([solver(tensor[i, 2, ...], i) for i in dims])])\
+        * tensor.unit / solver.dx.unit
+    assert divergence.shape == tensor.shape[1:], """
+        Output field has shape {}, should be {}
+        """.format(divergence.shape, tensor.shape[1:])
+
+    return divergence
