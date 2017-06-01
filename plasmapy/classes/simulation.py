@@ -59,7 +59,8 @@ class MHDSimulation():
         #                  self._ddt_energy, self._ddt_magfield]
 
     def time_stepper(self):
-        pass
+        self.current_time += self.dt
+        self.current_iteration += 1
 
     def _ddt_density(self, t, density=None):
         """
@@ -138,4 +139,3 @@ def dot(vec1, vec2):
                                                               vec1.shape[1:])
 
     return product
-

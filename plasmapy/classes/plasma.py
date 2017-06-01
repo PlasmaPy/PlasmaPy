@@ -298,22 +298,18 @@ class Plasma():
         if np.isinf(max_its) and np.isinf(max_time.value):
             raise ValueError("Either max_time or max_its must be set.")
 
+        physics = self.simulation_physics
+        dt = physics.dt
+
         if np.isinf(max_time):
             pb = ProgressBar(max_its)
         else:
-            pb = ProgressBar(int(max_time / self.dt))
-
-        physics = self.simulation_physics
-        dt = physics.dt
+            pb = ProgressBar(int(max_time / dt))
 
         with pb as bar:
             while (physics.current_iteration < max_its
                    and physics.current_time < max_time):
 
                 physics.time_stepper()
-
-                # Advance time information on the simulation
-                physics.current_time += dt
-                physics.current_iteration += 1
 
                 bar.update()
