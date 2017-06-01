@@ -75,7 +75,7 @@ class Plasma():
         self._magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
 
         # Connect a simulation object for simulating
-        self.simulation_physics = MHDSimulation()
+        self.simulation_physics = MHDSimulation(self)
 
     """
     Define getters and setters for variables.

@@ -29,8 +29,8 @@ class MHDSimulation():
 
     Parameters
     ----------
-    grid_size : tuple of ints
-        Tuple of 1, 2 or 3 values defining the size of the simulation grid.
+    plasma : plasmapy.Plasma
+        Plasma object describing variables that are being solved for, etc.
     gamma : float
         Value of the adiabatic index.
 
@@ -41,12 +41,13 @@ class MHDSimulation():
     gamma : float
         Adiabatic index for the simulation.
     """
-    def __init__(self):  #, grid_size, gamma=5/3):
+    def __init__(self, plasma):
         """
         """
         self.dt = 0
         self.current_iteration = 0
         self.current_time = 0 * u.s
+        self.plasma = plasma
         # Domain size
         # self.grid_size = grid_size
 
@@ -64,38 +65,39 @@ class MHDSimulation():
         """
         """
         if not density:
-            density = self.density
-        return -div(self.velocity * density, self.solver)
+            density = self.plasma.density
+        return -div(self.plasma.velocity * density, self.solver)
 
     def _ddt_momentum(self, t, momentum=None):
         """
         """
         if not momentum:
-            momentum = self.momentum
-        v = self.velocity
-        B = self.magnetic_field / np.sqrt(mu0)
+            momentum = self.plasma.momentum
+        v = self.plasma.velocity
+        B = self.plasma.magnetic_field / np.sqrt(mu0)
 
-        return (-grad(self.pressure, self.solver) \
+        return (-grad(self.plasma.pressure, self.solver) \
                 - tensordiv(vdp(v, momentum) - vdp(B, B), self.solver))
 
     def _ddt_energy(self, t, energy=None):
         """
         """
         if not energy:
-            energy = self.energy
-        v = self.velocity
-        B = self.magnetic_field / np.sqrt(mu0)
+            energy = self.plasma.energy
+        v = self.plasma.velocity
+        B = self.plasma.magnetic_field / np.sqrt(mu0)
 
-        return -div((v*energy) - (B * dot(B, v)) + (v*self.pressure), self.solver)
+        return -div((v*energy) - (B * dot(B, v)) + (v*self.plasma.pressure),
+                    self.solver)
 
     def _ddt_magfield(self, t, magfield=None):
         """
         """
         if not magfield:
-            B = self.magnetic_field / np.sqrt(mu0)
+            B = self.plasma.magnetic_field / np.sqrt(mu0)
         else:
             B = magfield / np.sqrt(mu0)
-        v = self.velocity
+        v = self.plasma.velocity
 
         return -tensordiv(vdp(v, B) - vdp(B, v), self.solver) * np.sqrt(mu0)
 
