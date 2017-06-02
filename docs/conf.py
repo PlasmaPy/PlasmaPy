@@ -31,7 +31,11 @@ sys.path.insert(0, os.path.abspath('..'))
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.mathjax']
+# Warning: I installed numpydoc on my local machine to get this to work
+#          but I am not sure if there is supposed to be a requirements
+#          page for the docs section. So you might need to install this
+#          to use sphinx here. ~Colby
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.mathjax', 'numpydoc']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
