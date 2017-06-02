@@ -10,6 +10,21 @@ Welcome to PlasmaPy's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+Classes
+=======
+
+.. toctree::
+    :maxdepth: 1
+
+    plasma/index
+
+Functions
+=========
+.. toctree::
+    :maxdepth: 1
+
+    dispersion_solver/index
+
 
 Indices and tables
 ==================
