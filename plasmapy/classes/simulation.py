@@ -45,7 +45,7 @@ class MHDSimulation():
     def __init__(self, plasma):
         """
         """
-        self.dt = 0.01 * u.s
+        self.dt = 1e-4 * u.s
         self.current_iteration = 0
         self.current_time = 0 * u.s
         self.plasma = plasma

@@ -59,6 +59,7 @@ class Plasma():
 
         x, y, z = self.x.si.value, self.y.si.value, self.z.si.value
         self.grid = np.meshgrid(x, y, z, indexing='ij') * u.m
+        self.grid = np.squeeze(self.grid)
         self.domain_shape = []
         for length in (len(x), len(y), len(z)):
             if length > 1:

@@ -91,6 +91,7 @@ def test_Plasma_derived_vars():
 
 def test_Plasma_simulation():
     """Tests that the `simulate()` method exists and doesn't immediately break.
+    Simulates 10 iterations of uniform plasma, so nothing should happen.
     """
     test_plasma = plasma.Plasma(domain_x=np.linspace(0, 1, 8)*u.m,
                                 domain_y=np.linspace(0, 1, 8)*u.m,
@@ -98,8 +99,7 @@ def test_Plasma_simulation():
     test_plasma.density = np.ones((8, 8, 8)) * u.kg / u.m**3
     test_plasma.simulate(max_its=10)
 
-    assert (test_plasma.density == np.ones((8, 8, 8)) * u.kg / u.m**3).all()
-    assert (test_plasma.momentum
-            == np.zeros((8, 8, 8)) * u.kg / (u.m**2 * u.s)).all()
-    assert (test_plasma.energy == np.zeros((8, 8, 8)) * u.J / u.m**3).all()
-    assert (test_plasma.magnetic_field == np.zeros((8, 8, 8)) * u.T).all()
+    assert np.allclose(test_plasma.density.si.value, np.ones((8, 8, 8)))
+    assert np.allclose(test_plasma.momentum.si.value, np.zeros((8, 8, 8)))
+    assert np.allclose(test_plasma.energy.si.value, np.zeros((8, 8, 8)))
+    assert np.allclose(test_plasma.magnetic_field.si.value, np.zeros((8, 8, 8)))
