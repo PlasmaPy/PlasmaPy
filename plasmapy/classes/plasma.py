@@ -12,7 +12,7 @@ from .simulation import MHDSimulation, dot
 from ..constants import mu0
 
 
-class Plasma():
+class Plasma:
     """Core class for describing and calculating plasma parameters.
 
     Attributes

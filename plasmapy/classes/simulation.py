@@ -11,22 +11,23 @@ from .spatial_solvers import Solver
 from ..constants import mu0
 
 
-class MHDSimulation():
-    """Physics class for magnetohydrodynamics.
+class MHDSimulation:
+    r"""Physics class for magnetohydrodynamics.
 
     This class defines the MHD equations and implements time-stepping them:
 
     .. math::
 
-       \\frac{\\partial \\rho}{\\partial t} + \\nabla \\cdot (\\vec{v} \\rho) = 0
-       \\frac{\\partial (\\rho \vec{v})}{\\partial t} + \\nabla \\cdot (\\vec{v} \\rho \\vec{v}) + \\nabla p = 0
-       \\frac{\\partial e}{\\partial t} + \\nabla \\cdot (\\vec{v} e + \\vec{v} p) = 0
+       \frac{\partial \rho}{\partial t} + \nabla \cdot (\vec{v} \rho) = 0
+       \frac{\partial (\rho \vec{v})}{\partial t} + \nabla \cdot (\vec{v} \rho \vec{v}) + \nabla p = 0
+       \frac{\partial e}{\partial t} + \nabla \cdot (\vec{v} e + \vec{v} p) = 0
 
-    for the fluid density, :math:`\\rho`, momentum, :math:`\\vec{m} = \\vec{v} \\rho`, energy :math:`e` and kinetic pressure :math:`p`.
-    The pressure is a derived quantity defined as
+    for the fluid density, :math:`\rho`, momentum,
+    :math:`\vec{m} = \vec{v} \rho`, energy :math:`e` and kinetic pressure
+    :math:`p`. The pressure is a derived quantity defined as
 
     .. math::
-       p = (\\gamma - 1) (e - \\frac{\\rho \\vec{v}^2}{2})
+       p = (\gamma - 1) (e - \frac{\rho \vec{v}^2}{2})
 
     Parameters
     ----------
