@@ -89,7 +89,7 @@ todo_include_todos = False
 #
 #html_theme = 'alabaster'
 #html_theme = 'traditional'
-html_theme = 'agogo'
+#html_theme = 'agogo'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
