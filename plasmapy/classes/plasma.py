@@ -175,8 +175,7 @@ class Plasma:
     @magnetic_field.setter
     @u.quantity_input
     def magnetic_field(self, magnetic_field: u.Tesla):
-        """
-        Sets the simulation's magnetic field profile to the specified array.
+        """Sets the simulation's magnetic field profile to the specified array.
         Other arrays which depend on the magnetic field, such as the magnetic
         pressure, are then redefined automatically.
 
@@ -189,7 +188,6 @@ class Plasma:
             and z dimensions.
             Note that a full 3D vector is necessary even if the simulation has
             fewer than 3 dimensions.
-
         """
 
         assert magnetic_field.shape == (3, *self.domain_shape), """

@@ -126,7 +126,7 @@ class MHDSimulation:
         v = self.plasma.velocity
         B = self.plasma.magnetic_field / np.sqrt(mu0)
 
-        return (-grad(self.plasma.pressure, self.solver) \
+        return (-grad(self.plasma.pressure, self.solver)
                 - tensordiv(vdp(v, momentum) - vdp(B, B), self.solver))
 
     def _ddt_energy(self, t, energy=None):
@@ -153,8 +153,7 @@ class MHDSimulation:
 
 
 def dot(vec1, vec2):
-    """
-    Calculates the dot product of two arrays of vector quantities.
+    r"""Calculates the dot product of two arrays of vector quantities.
     TODO: Replace this everywhere with the new NumPy way of doing this.
 
     Parameters
@@ -172,8 +171,7 @@ def dot(vec1, vec2):
 
         .. math::
 
-           a = \\vec{v_1} \\cdot \\vec{v_2}
-
+           a = \vec{v_1} \cdot \vec{v_2}
     """
 
     assert vec1.shape[0] == 3, "First argument provided is not a vector field"
@@ -191,8 +189,7 @@ def dot(vec1, vec2):
 
 
 def cross(vec1, vec2):
-    """
-    Calculates the cross product of two arrays of vector quantities.
+    r"""Calculates the cross product of two arrays of vector quantities.
 
     Parameters
     ----------
@@ -209,8 +206,7 @@ def cross(vec1, vec2):
 
         .. math::
 
-           \\vec{a} = \\vec{v_1} \\times \\vec{v_2}
-
+           \vec{a} = \vec{v_1} \times \vec{v_2}
     """
 
     assert vec1.shape[0] == 3, "First argument provided is not a vector field"
@@ -231,8 +227,7 @@ def cross(vec1, vec2):
 
 
 def grad(f, solver):
-    """
-    Calculates the gradient of a scalar field.
+    r"""Calculates the gradient of a scalar field.
 
     Parameters
     ----------
@@ -249,8 +244,7 @@ def grad(f, solver):
 
         .. math::
 
-           \\vec{a} = \\nabla f
-
+           \vec{a} = \nabla f
     """
 
     assert len(solver.dx) == len(f.shape), """
@@ -265,8 +259,7 @@ def grad(f, solver):
 
 
 def div(vec, solver):
-    """
-    Calculates the divergence of a vector field.
+    r"""Calculates the divergence of a vector field.
 
     Parameters
     ----------
@@ -283,8 +276,7 @@ def div(vec, solver):
 
         .. math::
 
-           a = \\nabla \\cdot \\vec{v}
-
+           a = \nabla \cdot \vec{v}
     """
 
     assert vec.shape[0] == 3, "First argument provided is not a vector field"
@@ -302,8 +294,7 @@ def div(vec, solver):
 
 
 def curl(vec, solver):
-    """
-    Calculates the curl of a vector field.
+    r"""Calculates the curl of a vector field.
 
     Parameters
     ----------
@@ -319,8 +310,7 @@ def curl(vec, solver):
 
         .. math::
 
-           \\vec{a} = \\nabla \\times \\vec{v}
-
+           \vec{a} = \nabla \times \vec{v}
     """
 
     assert vec.shape[0] == 3, "First argument provided is not a vector field"
@@ -341,8 +331,7 @@ def curl(vec, solver):
 
 
 def vdp(vec1, vec2):
-    """
-    Calculate the Vector Direct Product of two vectors.
+    r"""Calculate the Vector Direct Product of two vectors.
 
     Parameters
     ----------
@@ -358,7 +347,7 @@ def vdp(vec1, vec2):
 
         .. math::
 
-           \\textbf{A} = \\vec{v_1} \\vec{v_2}
+           \textbf{A} = \vec{v_1} \vec{v_2}
 
     References
     ----------
@@ -381,8 +370,7 @@ def vdp(vec1, vec2):
 
 
 def tensordiv(tensor, solver):
-    """
-    Calculates the divergence of a tensor field.
+    r"""Calculates the divergence of a tensor field.
 
     Parameters
     ----------
@@ -398,8 +386,7 @@ def tensordiv(tensor, solver):
 
         .. math::
 
-           \\vec{a} = \\nabla \\cdot \\textbf{T}
-
+           \vec{a} = \nabla \cdot \textbf{T}
     """
 
     assert tensor.shape[:2] == (3, 3), """
