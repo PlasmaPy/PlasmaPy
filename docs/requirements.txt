@@ -3,3 +3,4 @@ scipy
 astropy
 coveralls
 numpydoc
+pytest
