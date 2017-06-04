@@ -165,7 +165,7 @@ def dot(vec1, vec2):
     Returns
     -------
 
-    scalar : ndarray, shape=(x, [y, z])
+    scalar : numpy.ndarray, shape=(x, [y, z])
         3D grid of scalar values which are the dot products of specified
         vectors,
 
@@ -200,7 +200,7 @@ def cross(vec1, vec2):
     Returns
     -------
 
-    product : ndarray, shape=(3, x, [y, z])
+    product : numpy.ndarray, shape=(3, x, [y, z])
         Vector field corresponding to the cross product of the specified
         vectors,
 
@@ -270,7 +270,7 @@ def div(vec, solver):
     Returns
     -------
 
-    divergence : ndarray, shape=(x, [y, z])
+    divergence : numpy.ndarray, shape=(x, [y, z])
         Scalar field of values corresponding to divergence of specified vector
         field,
 
@@ -305,7 +305,7 @@ def curl(vec, solver):
     Returns
     -------
 
-    curl : ndarray, shape=(3, x, [y, z])
+    curl : numpy.ndarray, shape=(3, x, [y, z])
         Vector field corresponding to the curl of the input vector field.
 
         .. math::
@@ -342,7 +342,7 @@ def vdp(vec1, vec2):
     Returns
     -------
 
-    tensor : ndarray, shape=(3, 3, x, [y, z])
+    tensor : numpy.ndarray, shape=(3, 3, x, [y, z])
         Tensor field resulting from direct product of the specified vectors.
 
         .. math::
@@ -381,7 +381,7 @@ def tensordiv(tensor, solver):
     Returns
     -------
 
-    divergence : ndarray, shape=(3, x, [y, z])
+    divergence : numpy.ndarray, shape=(3, x, [y, z])
         Vector field corresponding to the divergence of the input tensor field.
 
         .. math::

@@ -67,8 +67,7 @@ def set_boundaries(f):
 
 class Solver():
     def __init__(self, dx, method='central', deriv=1, acc=2):
-        """
-        Create a callable instance to calculate derivatives of order `deriv`.
+        """Create a callable instance to calculate derivatives of order `deriv`.
         Sets up the solver to use forward, backward or central differences for
         the specified derivative at accuracy corresponding to `acc`.
 
@@ -105,14 +104,13 @@ class Solver():
         self.coeffs = coeffs[method][deriv-1][acc]
 
     def __call__(self, f, axis):
-        """
-        Calculates the derivative of function f with respect to the specified
+        """Calculates the derivative of function f with respect to the specified
         axis.
 
         Parameters
         ----------
 
-        f : ndarray (x, y, z)
+        f : numpy.ndarray (x, y, z)
             Values of some function f(x, y, z) at every point in a 3D range.
         axis : int [0 | 1 | 2]
             Direction in which to calculate the derivative. 0, 1 and 2

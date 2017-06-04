@@ -100,7 +100,7 @@ class Plasma:
         Parameters
         ----------
 
-        density : ndarray
+        density : numpy.ndarray
             Array of density values. Shape and size must be equal to those of
             the simulation grid.
             Must have units of density.
@@ -128,7 +128,7 @@ class Plasma:
         Parameters
         ----------
 
-        momentum : ndarray
+        momentum : numpy.ndarray
             Array of momentum vectors. Shape must be (3, x, [y, z]), where x,
             y and z are the dimensions of the simulation grid.
             Note that a full 3D vector is necessary even if the simulation has
@@ -155,7 +155,7 @@ class Plasma:
         Parameters
         ----------
 
-        energy : ndarray
+        energy : numpy.ndarray
             Array of energy values. Shape must be (x, y, z), where x, y, and z
             are the grid sizes of the simulation in the x, y, and z dimensions.
             Must have units of energy.
@@ -182,7 +182,7 @@ class Plasma:
         Parameters
         ----------
 
-        magnetic_field : ndarray
+        magnetic_field : numpy.ndarray
             Array of magnetic field values. Shape must be (3, x, [y, z]),
             where x, y, and z are the grid sizes of the simulation in the x, y,
             and z dimensions.
@@ -220,7 +220,7 @@ class Plasma:
         Parameters
         ----------
 
-        velocity : ndarray
+        velocity : numpy.ndarray
             Array of velocity vectors with shape (3, x, [y, z]) where x, y and
             z are the spatial grid sizes of the simulation.
             Note that a full 3D vector is required even if the simulation is
