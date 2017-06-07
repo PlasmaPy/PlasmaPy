@@ -102,4 +102,5 @@ def test_Plasma_simulation():
     assert np.allclose(test_plasma.density.si.value, np.ones((8, 8, 8)))
     assert np.allclose(test_plasma.momentum.si.value, np.zeros((8, 8, 8)))
     assert np.allclose(test_plasma.energy.si.value, np.zeros((8, 8, 8)))
-    assert np.allclose(test_plasma.magnetic_field.si.value, np.zeros((8, 8, 8)))
+    assert np.allclose(test_plasma.magnetic_field.si.value,
+                       np.zeros((8, 8, 8)))

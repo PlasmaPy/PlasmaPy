@@ -323,7 +323,8 @@ def curl(vec, solver):
         for l in range(3):
             for m in range(3):
                 try:
-                    curl[k] += levi_civita3d(k, l, m) * solver(vec[m], l, solver.dx[l])
+                    curl[k] += levi_civita3d(k, l, m) * solver(vec[m], l,
+                                                               solver.dx[l])
                 except IndexError:
                     pass
 
