@@ -88,6 +88,11 @@ def test_Plasma_derived_vars():
     assert vA.unit.si == u.m / u.s
     assert np.allclose(vA.value, 10.92548431)
 
+    # Test setting of derived variable by checking corresponding core variable
+    new_velocity = np.ones((3, 8, 8)) * u.m / u.s
+    test_plasma.velocity = new_velocity
+    assert np.allclose(test_plasma.momentum.value, 2.0)
+
 
 def test_Plasma_simulation():
     """Tests that the `simulate()` method exists and doesn't immediately break.
