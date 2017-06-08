@@ -1,4 +1,5 @@
 numpy
 scipy
+matplotlib
 astropy
 coveralls
