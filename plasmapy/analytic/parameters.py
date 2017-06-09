@@ -44,18 +44,17 @@ by an angular frequency to get a length scale:
 
 """
 
-
 def Alfven_speed(B, density, ion="p"):
     """Returns the Alfven speed.
 
     Parameters
     ----------
     B : Quantity
-        The magnetic field magnitude in units such as Tesla or Gauss
+        The magnetic field magnitude in units convertible to Tesla
 
     density: Quantity
-        Either the ion number density in units such as 1 / m**3, or the
-        mass density in units such as kg / m**3
+        Either the ion number density in units convertible to 1 / m**3,
+        or the mass density in units convertible to kg / m**3
 
     ion : string, optional
         Representation of the ion species.  If not given, then the ions
@@ -72,10 +71,10 @@ def Alfven_speed(B, density, ion="p"):
         The magnetic field and density arguments are not Quantities.
 
     UnitConversionError
-        If the magnetic field or density is not in correct units
+        If the magnetic field or density is not in appropriate units.
 
     UserWarning
-        If the Alfven velocity exceeds 10% of the speed of light
+        If the Alfven velocity exceeds 10% of the speed of light.
 
     ValueError
         If the density is negative, or the ion mass or charge state
@@ -89,29 +88,26 @@ def Alfven_speed(B, density, ion="p"):
     .. math::
     V_A = \frac{B}{\sqrt{\mu_0\rho}}
 
-    where the mass density is :math:`\rho \approx n_i m_i`.
+    where the mass density is :math:`\rho = n_i m_i + n_e m_e`.
 
-    This expression does not account for relativisitic effects.
+    This expression does not account for relativistic effects, and
+    loses validity when the resulting speed is a significant fraction
+    of the speed of light.
 
     Examples
     --------
-
-    >>> from astropy import units as u
     >>> import plasmapy
-    >>> B = 140 * u.G
-    >>> n = 5e19 * u.m**-3
-    >>> rho = n * plasmapy.constants.m_i
-    >>> element = 'H'
-    >>> V_A1 = Alfven_speed(B, n, element)
-    >>> print(V_A1)
-    43185.62686969444 m / s
-    >>> V_A2 = Alfven_speed(B, rho, element)
-    >>> print(V_A2)
-    43185.62686969444 m / s
-    >>> print(V_A2.cgs)
-    4318562.686969444 cm / s
-    >>> print(V_A2.to(u.km/u.s))
-    43.18562686969444 km / s
+    >>> from astropy import units as u
+    >>> B = 0.014*u.T
+    >>> n = 5e19*u.m**-3
+    >>> rho = n*(plasmapy.constants.m_p + plasmapy.constants.m_e)
+    >>> ion = 'p'
+    >>> Alfven_speed(B, n, ion)
+    <Quantity 43173.871857213584 m / s>
+    >>> Alfven_speed(B, rho, ion)
+    <Quantity 43173.871857213584 m / s>
+    >>> Alfven_speed(B, rho).to(u.cm/u.us)
+    <Quantity 4.317387185721358 cm / us>
 
     """
 
@@ -181,22 +177,22 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
         are assumed to be protons.
 
     gamma : float, optional
-        The adiabatic index, which defaults to 5/3 which is appropriate for
-        a monatomic gas.  This quantity is the ratio of the heat capacity at
+        The adiabatic index, which defaults to 5/3 as appropriate for a
+        monatomic gas.  This quantity is the ratio of the heat capacity at
         constant pressure to the heat capacity at constant volume.
 
     Returns
     -------
     V_S : Quantity
-        The ion sound speed
+        The ion sound speed in units of meters per second.
 
     Raises
     ------
     ValueError
-        If the ion mass, adiabatic index, or temperature are invalid
+        If the ion mass, adiabatic index, or temperature are invalid.
 
     UnitConversionError
-        If the temperature is in incorrect units
+        If the temperature is in incorrect units.
 
     UserWarning
         If the ion sound speed exceeds 10% of the speed of light
