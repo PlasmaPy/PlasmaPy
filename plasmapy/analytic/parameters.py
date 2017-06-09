@@ -11,14 +11,15 @@ from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, ion_mass,
 import numpy as np
 
 
-"""
-Values should be returned as an Astropy Quantity in SI units.
+"""Values should be returned as an Astropy Quantity in SI units.
 
-If a quantity has several names, then the function name should be
-the one that provides the most physical insight into what the
-quantity represents.  For example, 'gyrofrequency' indicates
-gyration, while Larmor frequency indicates that this frequency was
-discovered by Larmor.
+If a quantity has several names, then the function name should be the
+one that provides the most physical insight into what the quantity
+represents.  For example, 'gyrofrequency' indicates gyration, while
+Larmor frequency indicates that this frequency is somehow related to
+someone named Larmor.  Similarly, using omega_ce as a function name
+for this quantity will make the code less readable to people who are
+unfamiliar with the notation.
 
 The docstrings for plasma parameter methods should define these
 quantities in ways that are understandable to students who are
@@ -42,7 +43,11 @@ by an angular frequency to get a length scale:
 
   >>> d_i = (c/omega_pi).to(u.m, equivalencies=dimensionless_angles())
 
+Units that were named after a person should be lower case except at
+the beginning of a sentence, even if their symbol is capitalized.
+
 """
+
 
 def Alfven_speed(B, density, ion="p"):
     """Returns the Alfven speed.
@@ -50,7 +55,7 @@ def Alfven_speed(B, density, ion="p"):
     Parameters
     ----------
     B : Quantity
-        The magnetic field magnitude in units convertible to Tesla
+        The magnetic field magnitude in units convertible to tesla
 
     density: Quantity
         Either the ion number density in units convertible to 1 / m**3,
@@ -111,7 +116,7 @@ def Alfven_speed(B, density, ion="p"):
 
     """
 
-    if not isinstance(B, u.Quantity) or not isinstance(density, u.Quantity):
+    if not isinstance(B, Quantity) or not isinstance(density, Quantity):
         raise TypeError("The inputs to Alfven_speed must be Quantities.")
 
     if B.si.unit in ['1 / m3', 'kg / m3'] and density.si.unit in ['T']:
@@ -121,7 +126,7 @@ def Alfven_speed(B, density, ion="p"):
         B = B.to(u.T)
     except Exception:
         raise UnitConversionError("The magnetic field in Alfven_speed cannot "
-                                  "be converted to Tesla.")
+                                  "be converted to tesla.")
 
     density = density.si
     if np.any(density.value < 0):
@@ -141,13 +146,13 @@ def Alfven_speed(B, density, ion="p"):
         rho = density*m_i + Z*density*m_e
 
     elif density.unit == 'kg / m3':
-            rho = density
+        rho = density
     else:
         raise UnitsError("One input of Alfven_speed must have units of either "
                          "a number density or mass density.")
 
-    if (not np.all(np.isfinite(rho.value)) or not np.all(np.isreal(rho.value))
-        or np.any(rho.value <= 0)):
+    if not np.all(np.isfinite(rho.value)) or not np.all(np.isreal(rho.value)) \
+            or np.any(rho.value <= 0):
         raise ValueError("Invalid density in Alfven_speed.")
 
     if (not np.all(np.isfinite(B.value)) or not np.all(np.isreal(B.value))):
@@ -229,10 +234,10 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
         T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     except Exception:
         raise u.UnitConversionError("The ion temperature in ion_sound_speed "
-                                    "cannot be converted to Kelvin.")
+                                    "cannot be converted to kelvin.")
 
-    if (not np.all(np.isfinite(T_i.value)) or not np.all(np.isreal(T_i.value))
-        or np.any(T_i.value <= 0)):
+    if not np.all(np.isfinite(T_i.value)) or not np.all(np.isreal(T_i.value)) \
+            or np.any(T_i.value <= 0):
         raise ValueError("Invalid temperature value in ion_sound_speed.")
 
     try:
@@ -240,12 +245,14 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
     except Exception:
         raise ValueError("Unable to find ion sound speed.")
 
-    if np.any(V_S > c):
-        raise UserWarning("Ion sound speed is greater than speed "
-                          "of light.")
-    elif np.any(V_S > 0.1*c):
-        raise UserWarning("Ion sound speed is greater than 10% of the speed "
-                          "of light.")
+    beta = (V_S/c).value
+
+    if np.any(beta > 1):
+        raise UserWarning("The ion sound speed is roughly " +
+                          str(round(beta, 2)) + " times the speed of light.")
+    elif np.any(beta > 0.1):
+        raise UserWarning("The ion sound speed is roughly " +
+                          str(round(beta*100, 2)) + "% of the speed of light.")
 
     return V_S
 
@@ -257,7 +264,7 @@ def electron_thermal_speed(T_e):
     Parameters
     ----------
     T_e : Quantity
-        The electron temperature in either Kelvin or electron-volts
+        The electron temperature in either kelvin or electron-volts
 
     Returns
     -------
@@ -293,12 +300,12 @@ def electron_thermal_speed(T_e):
     except Exception:
         raise u.UnitConversionError("The electron temperature in "
                                     "electron_thermal_speed "
-                                    "cannot be converted to Kelvin.")
+                                    "cannot be converted to kelvin.")
 
     if np.any(not 0 <= T_e.value <= np.inf):
         raise ValueError("Invalid temperature in electron_thermal_speed.")
 
-    try:    
+    try:
         V_Te = (np.sqrt(2*k_B*T_e/m_e)).to(u.m/u.s)
     except Exception:
         raise ValueError("Cannot find electron thermal speed")
@@ -320,7 +327,7 @@ def ion_thermal_speed(T_i, ion='p'):
     Parameters
     ----------
     T_i : Quantity
-        The ion temperature in either Kelvin or electron-volts
+        The ion temperature in either kelvin or electron-volts
 
     ion : string
         Symbol representing the ion species, defaulting to protons
@@ -478,21 +485,29 @@ def ion_gyrofrequency(B: u.T, ion='p', Z=None):
     return omega_ci
 
 
-def electron_gyroradius(B, Te_or_Vperp):
+def electron_gyroradius(B, Vperp_or_Te):
     """Returns the radius of gyration for an electron in a uniform
     magnetic field.
 
     Parameters
     ----------
     B : Quantity
-        Magnetic field strength
-    Te_or_Vperp : Quantity
-        Either the electron temperature or the perpendicular velocity.
+        The magnetic field magnitude in units convertible to tesla
+
+    Vperp_or_Te : Quantity
+        Either the component of electron velocity that is
+        perpendicular to the magnetic field in units convertible to
+        meters per second, or the electron temperature in units
+        convertible to kelvin.
 
     Returns
     -------
     r_L : Quantity
-        Electron gyroradius
+
+        The electron gyroradius in units of meters.  This quantity
+        corresponds to either the perpendicular component of electron
+        velocity, or the most probable speed for an electron within a
+        Maxwellian distribution for the electron temperature.
 
     Notes
     -----
@@ -504,32 +519,39 @@ def electron_gyroradius(B, Te_or_Vperp):
 
     """
 
-    try:
-        if Te_or_Vperp.si.unit == 'T' and \
-                (B.si.unit in ['m / s', 'K'] or B.unit[-2:] == 'eV'):
-            B, Te_or_Vperp = Te_or_Vperp, B
-    except Exception:
-        pass
+    input_error_message = "The inputs to electron_gyroradius should be"
+
+    if not isinstance(B, Quantity) or not isinstance(Vperp_or_Te, Quantity):
+        raise TypeError("Both inputs of electron_gyroradius must be "
+                        "Quantities.  The first should be in units "
+                        "convertible to tesla. The second should be in units "
+                        "convertible to either meters per second or kelvin. ")
+
+    if Vperp_or_Te.si.unit == 'T':
+        B, Vperp_or_Te = Vperp_or_Te, B
 
     try:
         B = B.to(u.T)
-    except Exception:
-        raise
+    except:
+        raise UnitConversionError("The first input to electron_gyroradius "
+                                  "should be the magnetic field strength in "
+                                  "units convertible to tesla.")
 
     try:
-        T_e = Te_or_Vperp.to(u.K, equivalencies=u.temperature_energy())
-        Vperp = electron_thermal_speed(T_e).to(u.m/u.s)
+        T_e = Vperp_or_Te.to(u.K, equivalencies=u.temperature_energy())
+        Vperp = electron_thermal_speed(T_e)
     except Exception:
         try:
-            Vperp = Te_or_Vperp.to(u.m/u.s)
+            Vperp = Vperp_or_Te.to(u.m/u.s)
         except Exception:
-            raise UnitConversionError("Incorrect inputs for "
-                                      "electron_gyroradius")
+            raise UnitConversionError("The second input to "
+                                      "electron_gyroradius should either the "
+                                      "perpendicular component of electron "
+                                      "velocity or a temperature in units "
+                                      "convertible to kelvin.")
 
-#    if Te_Te_or_Vperp.unit[-2:] == 'eV':
-#        T_e = Te_or_Vperp.to(u.K, equivalencies=u.temperature_energy())
-#        V_perp = electron_thermal_speed(T_e)
-#    elif
+#            raise UnitConversionError("Incorrect inputs for "
+#                                      "electron_gyroradius")
 
     omega_ce = electron_gyrofrequency(B)
     r_L = (Vperp/omega_ce).to(u.m, equivalencies=u.dimensionless_angles())
@@ -537,15 +559,18 @@ def electron_gyroradius(B, Te_or_Vperp):
     return r_L
 
 
-def ion_gyroradius(B=None, V=None, T_i=None, ion='p'):
+def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
     """Returns the ion gyroradius.
 
     Parameters
     ----------
     B: Quantity
-        Magnetic field strength
-    V: Quantity
-        Ion velocity
+        The magnetic field magnitude in units convertible to tesla
+
+    Vperp: Quantity
+        The component of ion velocity that is perpendicular to the
+        magnetic field in units convertible to meters per second
+
     ion : string, optional
         Representation of the ion species.  If not given, then the ions
         are assumed to be protons.
@@ -553,7 +578,7 @@ def ion_gyroradius(B=None, V=None, T_i=None, ion='p'):
     Notes
     -----
 
-    The ion gyroradius is also known as the Larmor radius for ions and is
+    The ion gyroradius is also known as the ion Larmor radius and is
     given by
 
     .. math::
@@ -561,7 +586,27 @@ def ion_gyroradius(B=None, V=None, T_i=None, ion='p'):
 
     """
 
-    return 0
+    try:
+        if Vperp_or_Ti.si.unit == 'T' and \
+                (B.si.unit in ['m / s', 'K'] or B.unit[-2:] == 'eV'):
+            B, Vperp_or_Ti = Vperp_or_Ti, B
+    except Exception:
+        pass  # Do not let exceptions pass silently!
+
+
+
+
+#    if isinstance(Vperp, u.Quantity) and T_i is None
+#
+#    if not isinstance(Vperp, u.Quantity) and not isinstance(T_i, u.Quantity):
+#        raise ValueError("ion_gyroradius requires either the perpendicular ion"
+#                         "velocity or the ion temperature as an input")
+#
+#    if isinstance(Vperp, u.Quantity) and isinstance(T_i, u.Quantity):
+#        raise ValueError("ion_gyroradius cannot have both the perpendicular"
+#                         "ion velocity")
+#
+    return 0*u.m
 
 
 @quantity_input
@@ -863,12 +908,12 @@ def magnetic_pressure(B: u.T):
     Parameters
     ----------
     B: Quantity
-        The magnetic field in units such as Tesla or Gauss
+        The magnetic field in units convertible to telsa
 
     Returns
     -------
     p_B: Quantity
-        The magnetic pressure in units Pascals (Newtons per square meter)
+        The magnetic pressure in units in pascals (newtons per square meter)
 
     Notes
     -----
@@ -877,13 +922,19 @@ def magnetic_pressure(B: u.T):
     .. math::
     p_B = \frac{B^2}{2 \mu_0}
 
+    The motivation behind having two separate functions for magnetic
+    pressure and magnetic energy density is that it allows greater
+    insight into the physics that are being considered by the user and
+    thus more readable code.
+
     See also
     --------
-    magnetic_energy_density : returns an equivalent quantity, except with
-        units converted to Joules per cubic meter.
+    magnetic_energy_density : returns an equivalent quantity, except in
+        units of joules per cubic meter.
 
     Example
     -------
+    >>> from astropy import units as u
     >>> magnetic_pressure(0.1*u.T).to(u.Pa)
     <Quantity 3978.873577297384 Pa>
     """
@@ -903,12 +954,12 @@ def magnetic_energy_density(B: u.T):
     Parameters
     ----------
     B: Quantity
-        The magnetic field in units such as Tesla or Gauss
+        The magnetic field in units convertible to tesla
 
     Returns
     -------
     E_B: Quantity
-        The magnetic energy density in units of Joules per cubic meter
+        The magnetic energy density in units of joules per cubic meter
 
     Notes
     -----
@@ -917,16 +968,19 @@ def magnetic_energy_density(B: u.T):
     .. math::
     E_B = \frac{B^2}{2 \mu_0}
 
-    The expressions for magnetic pressure
-    This function is very similar to magnetic_pressure, except for the
+    The motivation behind having two separate functions for magnetic
+    pressure and magnetic energy density is that it allows greater
+    insight into the physics that are being considered by the user and
+    thus more readable code.
 
     See also
     --------
-    magnetic_pressure : returns an equivalent quantity, except with units
-        converted to Pascals (Newtons per square meter).
+    magnetic_pressure : returns an equivalent quantity, except in units
+        of pascals.
 
     Example
     -------
+    >>> from astropy import units as u
     >>> magnetic_energy_density(0.1*u.T)
     <Quantity 3978.873577297384 J / m3>
 
@@ -935,6 +989,6 @@ def magnetic_energy_density(B: u.T):
     try:
         E_B = (B**2/(2*mu0)).to(u.J/u.m**3)
     except Exception:
-        raise ValueError("Unable to find magnetic pressure.")
+        raise ValueError("Unable to find magnetic energy density.")
 
     return E_B
