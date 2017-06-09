@@ -26,6 +26,9 @@ quantities in ways that are understandable to students who are
 taking their first course in plasma physics and yet are useful to
 experienced plasma physicists.
 
+Units that were named after a person should be lower case except at
+the beginning of a sentence, even if their symbol is capitalized.
+
 Unit conversions involving angles must be treated with care.  Angles
 are dimensionless but do have units.  Angular velocity is often
 given in units of radians per second, though dimensionally this is
@@ -42,9 +45,6 @@ However, dimensionless_angles() does work when dividing a velocity
 by an angular frequency to get a length scale:
 
   >>> d_i = (c/omega_pi).to(u.m, equivalencies=dimensionless_angles())
-
-Units that were named after a person should be lower case except at
-the beginning of a sentence, even if their symbol is capitalized.
 
 """
 
@@ -165,6 +165,15 @@ def Alfven_speed(B, density, ion="p"):
     elif np.any(V_A > 0.1*c):
         raise UserWarning("Alfven speed is greater than 10% of the speed of "
                           "light.")
+
+    beta = (V_A/c).value
+
+    if np.any(beta > 1):
+        raise UserWarning("The Alfven speed is roughly " +
+                          str(round(beta, 2)) + " times the speed of light.")
+    elif np.any(beta > 0.1):
+        raise UserWarning("The Alfven speed is roughly " +
+                          str(round(beta*100, 2)) + "% of the speed of light.")
 
     return V_A
 
@@ -310,12 +319,14 @@ def electron_thermal_speed(T_e):
     except Exception:
         raise ValueError("Cannot find electron thermal speed")
 
-    if V_Te > c:
-        raise UserWarning("Electron thermal speed is greater than speed "
-                          "of light.")
-    elif V_Te > 0.1*c:
-        raise UserWarning("Electron thermal speed is greater than 10% of "
-                          "speed of light.")
+    beta = (V_Te/c).value
+
+    if np.any(beta > 1):
+        raise UserWarning("The electron thermal speed is roughly " +
+                          str(round(beta, 2)) + " times the speed of light.")
+    elif np.any(beta > 0.1):
+        raise UserWarning("The electron thermal is roughly " +
+                          str(round(beta*100, 2)) + "% of the speed of light.")
 
     return V_Te
 
@@ -368,8 +379,14 @@ def ion_thermal_speed(T_i, ion='p'):
     except Exception:
         raise ValueError("Unable to find ion thermal speed")
 
-    if V_Ti > c:
-        raise UserWarning("Ion thermal speed is greater than speed of light")
+    beta = (V_Ti/c).value
+
+    if np.any(beta > 1):
+        raise UserWarning("The electron thermal speed is roughly " +
+                          str(round(beta, 2)) + " times the speed of light.")
+    elif np.any(beta > 0.1):
+        raise UserWarning("The electron thermal is roughly " +
+                          str(round(beta*100, 2)) + "% of the speed of light.")
 
     return V_Ti
 
@@ -427,15 +444,21 @@ def electron_gyrofrequency(B: u.T):
     return omega_ce
 
 
-def ion_gyrofrequency(B: u.T, ion='p', Z=None):
+def ion_gyrofrequency(B, ion='p', Z=None):
     """Calculate the ion gyrofrequency in units of radians per second.
 
     Parameters
     ----------
     B: Quantity
-        Magnetic field strength
-    ion : string
-        Symbol representing the ion species, defaulting to protons
+        The magnetic field magnitude in units convertible to tesla
+
+    ion : string, optional
+        Representation of the ion species.  If not given, then the ions
+        are assumed to be protons.
+
+    Z : integer, optional
+        The charge state.  If not given, then the ion is assumed to be
+        singly charged.
 
     Returns
     -------
@@ -462,23 +485,41 @@ def ion_gyrofrequency(B: u.T, ion='p', Z=None):
 
     Example
     -------
-    >>>
+    >>> from astropy import units as u
+    >>> ion_gyrofrequency(0.01*u.T)
+    <Quantity 152451.87138666757 Hz>
+    >>> ion_gyrofrequency(0.01*u.T, 'p')
+    <Quantity 152451.87138666757 Hz>
+    >>> ion_gyrofrequency(0.01*u.T, ion='T', Z=1)
+
 
     """
 
     try:
+        B = np.abs(B.to(u.T))
+    except Exception:
+        raise UnitsError("The first argument of ion_gyrofrequency must "
+                         "be a quantity with units convertible to tesla.")
+
+    if Z is None:
+        try:
+            Z = charge_state(ion)
+            if Z is None:
+                Z = 1
+        except:
+            raise ValueError("Unable to find charge state in "
+                             "ion_gyrofrequency")
+    elif not isinstance(Z, int):
+        raise TypeError("In ion_gyrofrequency, the charge state (Z) must be "
+                        "an integer.")
+
+    try:
         m_i = ion_mass(ion, Z=Z)
     except Exception:
-        raise ValueError("Unable to get mass of ion in ion_gyrofrequency")
+        raise ValueError("Unable to get ion mass in ion_gyrofrequency")
 
     try:
-        B = B.to(u.T)
-    except Exception:
-        raise UnitsError("Argument 'B' to function 'ion_gyrofrequency' must "
-                         "be in units convertible to 'T'")
-
-    try:
-        omega_ci = u.rad * (e*B/m_i).to(1/u.s)
+        omega_ci = u.rad * (Z*e*B/m_i).to(1/u.s)
     except Exception:
         raise ValueError("Unable to find ion gyrofrequency")
 
@@ -519,13 +560,15 @@ def electron_gyroradius(B, Vperp_or_Te):
 
     """
 
-    input_error_message = "The inputs to electron_gyroradius should be"
+    if not isinstance(B, Quantity):
+        raise TypeError("The first input to electron_gyroradius is not a "
+                        "quantity.")
 
-    if not isinstance(B, Quantity) or not isinstance(Vperp_or_Te, Quantity):
-        raise TypeError("Both inputs of electron_gyroradius must be "
-                        "Quantities.  The first should be in units "
-                        "convertible to tesla. The second should be in units "
-                        "convertible to either meters per second or kelvin. ")
+    if not isinstance(Vperp_or_Te, Quantity):
+        raise TypeError("The second input to electron_gyroradius is not a "
+                        "quantity.")
+
+    Vperp_or_Te = Vperp_or_Te.si
 
     if Vperp_or_Te.si.unit == 'T':
         B, Vperp_or_Te = Vperp_or_Te, B
@@ -533,25 +576,22 @@ def electron_gyroradius(B, Vperp_or_Te):
     try:
         B = B.to(u.T)
     except:
-        raise UnitConversionError("The first input to electron_gyroradius "
-                                  "should be the magnetic field strength in "
-                                  "units convertible to tesla.")
+        raise UnitConversionError("electron_gyroradius requires a quantity "
+                                  "with units convertible to tesla as an "
+                                  "argument.")
 
-    try:
+    if Vperp_or_Te.unit in ['J', 'K']:
         T_e = Vperp_or_Te.to(u.K, equivalencies=u.temperature_energy())
+        if T_e < 0*u.K:
+            raise ValueError("An argument to electron_gyroradius corresponds "
+                             "to a negative temperature.")
         Vperp = electron_thermal_speed(T_e)
-    except Exception:
-        try:
-            Vperp = Vperp_or_Te.to(u.m/u.s)
-        except Exception:
-            raise UnitConversionError("The second input to "
-                                      "electron_gyroradius should either the "
-                                      "perpendicular component of electron "
-                                      "velocity or a temperature in units "
-                                      "convertible to kelvin.")
-
-#            raise UnitConversionError("Incorrect inputs for "
-#                                      "electron_gyroradius")
+    elif Vperp_or_Te.unit == 'm / s':
+        Vperp = Vperp_or_Te
+    else:
+        raise UnitConversionError("electron_gyroradius requires a quantity "
+                                  "with units convertible to kelvin or to "
+                                  "meters per second as an argument.")
 
     omega_ce = electron_gyrofrequency(B)
     r_L = (Vperp/omega_ce).to(u.m, equivalencies=u.dimensionless_angles())
@@ -567,9 +607,10 @@ def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
     B: Quantity
         The magnetic field magnitude in units convertible to tesla
 
-    Vperp: Quantity
+    Vperp_or_Ti: Quantity
         The component of ion velocity that is perpendicular to the
-        magnetic field in units convertible to meters per second
+        magnetic field in units convertible to meters per second, or the
+        ion temperature in units convertible to kelvin.
 
     ion : string, optional
         Representation of the ion species.  If not given, then the ions
@@ -586,27 +627,43 @@ def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
 
     """
 
+    if not isinstance(B, Quantity):
+        raise TypeError("The first input to ion_gyroradius is not a "
+                        "quantity.")
+
+    if not isinstance(Vperp_or_Ti, Quantity):
+        raise TypeError("The second input to ion_gyroradius is not a "
+                        "quantity.")
+
+    Vperp_or_Ti = Vperp_or_Ti.si
+
+    if Vperp_or_Ti.si.unit == 'T':
+        B, Vperp_or_Ti = Vperp_or_Ti, B
+
     try:
-        if Vperp_or_Ti.si.unit == 'T' and \
-                (B.si.unit in ['m / s', 'K'] or B.unit[-2:] == 'eV'):
-            B, Vperp_or_Ti = Vperp_or_Ti, B
-    except Exception:
-        pass  # Do not let exceptions pass silently!
+        B = B.to(u.T)
+    except:
+        raise UnitConversionError("ion_gyroradius requires a quantity "
+                                  "with units convertible to tesla as an "
+                                  "argument.")
 
+    if Vperp_or_Ti.unit in ['J', 'K']:
+        T_i = Vperp_or_Ti.to(u.K, equivalencies=u.temperature_energy())
+        if T_i < 0*u.K:
+            raise ValueError("An argument to ion_gyroradius corresponds "
+                             "to a negative temperature.")
+        Vperp = ion_thermal_speed(T_i, ion)
+    elif Vperp_or_Ti.unit == 'm / s':
+        Vperp = Vperp_or_Ti
+    else:
+        raise UnitConversionError("ion_gyroradius requires a quantity "
+                                  "with units convertible to kelvin or to "
+                                  "meters per second as an argument.")
 
+    omega_ci = ion_gyrofrequency(B, ion)
+    r_L = (Vperp/omega_ci).to(u.m, equivalencies=u.dimensionless_angles())
 
-
-#    if isinstance(Vperp, u.Quantity) and T_i is None
-#
-#    if not isinstance(Vperp, u.Quantity) and not isinstance(T_i, u.Quantity):
-#        raise ValueError("ion_gyroradius requires either the perpendicular ion"
-#                         "velocity or the ion temperature as an input")
-#
-#    if isinstance(Vperp, u.Quantity) and isinstance(T_i, u.Quantity):
-#        raise ValueError("ion_gyroradius cannot have both the perpendicular"
-#                         "ion velocity")
-#
-    return 0*u.m
+    return r_L
 
 
 @quantity_input

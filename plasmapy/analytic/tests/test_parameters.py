@@ -169,7 +169,10 @@ def test_electron_gyroradius():
 
 def test_ion_gyroradius():
     """Test the ion_gyroradius function in parameters.py."""
-    return None
+    assert ion_gyroradius(B, T_i).unit == 'm'
+    assert ion_gyroradius(B, 25*u.m/u.s).unit == 'm'
+
+
 
 
 def test_electron_plasma_frequency():
@@ -213,3 +216,5 @@ def test_magnetic_pressure():
 def test_magnetic_energy_density():
     """Test the magnetic_energy_density function in parameters.py."""
     assert magnetic_energy_density(B).unit == 'J / m3'
+    assert magnetic_energy_density(B).value == magnetic_pressure(B).value
+    assert magnetic_energy_density(2*B) == 4*magnetic_energy_density(B)
