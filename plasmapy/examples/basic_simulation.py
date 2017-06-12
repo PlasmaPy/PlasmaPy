@@ -2,7 +2,7 @@ import numpy as np
 import astropy.units as u
 import matplotlib.pyplot as plt
 from pathlib import Path
-from ..plasma import Plasma
+from plasmapy import Plasma
 
 
 def gaussian(x, mean=0.0, std=1.0, amp=1.0):
