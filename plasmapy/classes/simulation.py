@@ -7,7 +7,7 @@ Classes and functionality for simulations.
 
 import numpy as np
 import astropy.units as u
-from .spatial_solvers import Solver
+from ..numerical.spatial_solvers import Solver
 from ..constants import mu0
 
 
