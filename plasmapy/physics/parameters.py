@@ -483,8 +483,8 @@ def ion_gyrofrequency(B, ion='p', Z=None):
     dimensionless_angles() equivalency is appropriate when dividing a
     velocity by an angular frequency to get a length scale.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> ion_gyrofrequency(0.01*u.T)
     <Quantity 152451.87138666757 Hz>
@@ -558,6 +558,17 @@ def electron_gyroradius(B, Vperp_or_Te):
     .. math::
     r_L = \frac{V_{perp}}{omega_{ce}}
 
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> from plasmapy.physics import electron_gyroradius
+    >>> electron_gyroradius(0.2*u.T, 1e5*u.K)
+    <Quantity 4.949493018143766e-05 m>
+    >>> electron_gyroradius(5*u.uG, 1*u.eV)
+    <Quantity 6744.259695124416 m>
+    >>> electron_gyroradius(400*u.G, 1e7*u.m/u.s)
+    <Quantity 0.00142140746360249 m>
+
     """
 
     if not isinstance(B, Quantity):
@@ -624,6 +635,19 @@ def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
 
     .. math::
     r_L = \frac{V_{perp}}{omega_{ci}}
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> from plasmapy.physics import ion_gyroradius
+    >>> ion_gyroradius(0.2*u.T, 1e5*u.K)
+    <Quantity 0.0021208751836230026 m>
+    >>> ion_gyroradius(0.2*u.T, 1e5*u.K, ion='p')
+    <Quantity 0.0021208751836230026 m>
+    >>> ion_gyroradius(5*u.uG, 1*u.eV, ion='alpha')
+    <Quantity 288002.3964615791 m>
+    >>> ion_gyroradius(400*u.G, 1e7*u.m/u.s, ion='Fe+++')
+    <Quantity 48.23129633674924 m>
 
     """
 
@@ -696,7 +720,10 @@ def electron_plasma_frequency(n_e: u.m**-3):
 
     Example
     -------
-    >>>
+    >>> from astropy import units as u
+    >>> from plasmapy import electron_plasma_frequency
+    >>> electron_plasma_frequency(1e19*u.m**-3)
+    <Quantity 178398636622.99567 rad / s>
 
     """
     try:
@@ -741,7 +768,10 @@ def ion_plasma_frequency(n_i, Z=None, ion='p'):
 
     Example
     -------
-    >>>
+    >>> ion_plasma_frequency(1e19*u.m**-3)
+    <Quantity 178398636622.99567 rad / s>
+    >>> ion_plasma_frequency(1e19*u.m**-3, ion='p')
+    <Quantity 178398636622.99567 rad / s>
 
     """
 
@@ -807,10 +837,7 @@ def Debye_length(T_e: u.K, n_e: u.m**-3):  # Add equivalency related to T in eV
     -------
     >>> from astropy import units as u
     >>> Debye_length(5e6*u.K, 5e15*u.m**-3)
-
-    References
-    ----------
-    [1] Declan Diver plasma formulary.......
+    <Quantity 0.0021822555159125854 m>
 
     """
 
@@ -877,14 +904,16 @@ def ion_inertial_length(n_i, ion='p', Z=None):
     Parameters
     ----------
     n_i : Quantity
-        Ion number density
+        Ion number density in units convertible to 
+
     ion : string, optional
         Representation of the ion species.  If not given, then the ions
         are assumed to be protons.
 
     Returns
     -------
-
+    d_i : Quantity
+        Ion inertial length in meters
 
     Notes
     -----
@@ -897,13 +926,8 @@ def ion_inertial_length(n_i, ion='p', Z=None):
     Example
     -------
     >>> from astropy import units as u
-    >>> ion_plasma_frequency(5e19*u.m**-3, 1, 'p')
-    <Quantity 398911478582.3019 rad / s>
-    >>> ion_plasma_frequency(5e19*u.m**-3)  # assumes Z=1 and ion='p'
-    <Quantity 398911478582.3019 rad / s>
-    >>> from plasmapy.constants import c
-    >>> omega_pi = ion_plasma_frequency(1e15*u.m**-3)
-    >>> c/omega_pi
+    >>> ion_inertial_length(5*u.m**-3, ion='He+')
+    <Quantity 2376534.754 m>
 
     """
 
@@ -933,7 +957,7 @@ def electron_inertial_length(n_e: u.m**-3):
     Returns
     -------
     d_e : Quantity
-        Electron inertial length
+        Electron inertial length in meters
 
     Notes
     -----
@@ -945,7 +969,9 @@ def electron_inertial_length(n_e: u.m**-3):
 
     Example
     -------
-    >>>
+    >>> from astropy import units as u
+    >>> electron_inertial_length(5*u.m**-3)
+    <Quantity 2376534.754 m>
 
     """
 
@@ -994,6 +1020,7 @@ def magnetic_pressure(B: u.T):
     >>> from astropy import units as u
     >>> magnetic_pressure(0.1*u.T).to(u.Pa)
     <Quantity 3978.873577297384 Pa>
+
     """
 
     try:
