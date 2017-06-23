@@ -36,6 +36,7 @@ T_negarr = np.array([1e6, -5151.])*u.K
 
 mu = m_p.to(u.u).value
 
+
 def test_Alfven_speed():
     """Test the Alfven_speed function in parameters.py."""
 
@@ -298,7 +299,7 @@ def test_ion_inertial_length():
     assert ion_inertial_length(n_i, ion='p').unit == 'm'
 
     # Add a numerical test!
-    
+
     assert np.isclose(ion_inertial_length(mu*u.cm**-3, ion='p').cgs.value,
                       2.28e7, rtol=0.01)
 
