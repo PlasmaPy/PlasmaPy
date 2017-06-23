@@ -762,7 +762,7 @@ def ion_plasma_frequency(n_i, ion='p'):
         raise ValueError("Unable to get charge state to calculate ion "
                          "plasma frequency.")
 
-    omega_pi = u.rad*Z*e*np.sqrt(n_i/(eps0*m_e))
+    omega_pi = u.rad*Z*e*np.sqrt(n_i/(eps0*m_i))
 
     return omega_pi.si
 
@@ -813,6 +813,9 @@ def Debye_length(T_e, n_e):
     """
 
     _check_quantity(T_e, 'T_e', 'Debye_length', u.K, can_be_negative=False)
+    _check_quantity(n_e, 'n_e', 'Debye_length', u.m**-3, can_be_negative=False)
+
+    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
 
     lambda_D = ((eps0*k_B*T_e / (n_e * e**2))**0.5).to(u.m)
 
@@ -863,7 +866,7 @@ def Debye_number(T_e, n_e):
     _check_quantity(n_e, 'n_e', 'Debye_number', u.m**-3, can_be_negative=False)
 
     lambda_D = Debye_length(T_e, n_e)
-    N_D = (4/3)*n_e*lambda_D**3
+    N_D = (4/3)*np.pi*n_e*lambda_D**3
 
     return N_D.to(u.dimensionless_unscaled)
 
@@ -874,7 +877,7 @@ def ion_inertial_length(n_i, ion='p'):
     Parameters
     ----------
     n_i : Quantity
-        Ion number density in units convertible to
+        Ion number density in units convertible to m**-3
 
     ion : string, optional
         Representation of the ion species.  If not given, then the ions
@@ -884,6 +887,17 @@ def ion_inertial_length(n_i, ion='p'):
     -------
     d_i : Quantity
         Ion inertial length in meters
+
+    Raises
+    ------
+    TypeError
+        If n_i not a Quantity or ion is not a string
+
+    UnitConversionError
+        If n_i is not in units of a number density
+
+    ValueError
+        The ion density does not have an appropriate value.
 
     Notes
     -----
@@ -971,7 +985,7 @@ def magnetic_pressure(B):
     TypeError
         If the input is not a Quantity
 
-    UnitsError
+    UnitConversionError
         If the input is not in units convertible to tesla
 
     ValueError
@@ -1010,7 +1024,7 @@ def magnetic_pressure(B):
     return p_B
 
 
-def magnetic_energy_density(B: u.T):
+def magnetic_energy_density(B):
     r"""Calculate the magnetic energy density.
 
     Parameters
@@ -1028,12 +1042,12 @@ def magnetic_energy_density(B: u.T):
     TypeError
         If the input is not a Quantity
 
-    UnitsError
+    UnitConversionError
         If the input is not in units convertible to tesla
 
     ValueError
-        If the magnetic field strength is not a real number between
-        +/- infinity
+        If the magnetic field strength does not have an appropriate
+        value.
 
     Notes
     -----
