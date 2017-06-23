@@ -1,12 +1,12 @@
 import numpy as np
 from astropy import units as u
+from ..constants import c
 
 
 def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
-                   can_be_complex=False, can_be_inf=True):
-
-    """Check that an object is an astropy Quantity with correct units
-    and valid numerical values.
+                    can_be_complex=False, can_be_inf=True):
+    """Raises exceptions if an object is not an astropy Quantity with
+    correct units and valid numerical values.
 
     Parameters
     ----------
@@ -21,7 +21,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
     units : Unit or list of Units
         Acceptable units for arg.
-    
+
     can_be_negative : boolean, optional
         True if the Quantity can be negative, False otherwise.
         Defaults to True.
@@ -63,7 +63,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
     # Create a generic error message
 
-    typeerror_message = ("The argument " + argname + " to " + funcname + 
+    typeerror_message = ("The argument " + argname + " to " + funcname +
                          " must be a Quantity with ")
 
     if len(units) == 1:
@@ -92,10 +92,10 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
     if not np.any(in_acceptable_units):
         raise u.UnitConversionError(typeerror_message)
-           
+
     # Make sure that the quantity has valid numerical values
 
-    valueerror_message = ("The argument " + argname + " to function " + 
+    valueerror_message = ("The argument " + argname + " to function " +
                           funcname + " cannot contain ")
 
     if np.any(np.isnan(arg.value)):
@@ -106,3 +106,63 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         raise ValueError(valueerror_message + "negative numbers.")
     elif not can_be_inf and np.any(np.isinf(arg.value)):
         raise ValueError(valueerror_message + "infs.")
+
+
+def _check_relativistic(V, funcname, betafrac=0.1):
+    r"""Raise UserWarnings if a velocity is relativistic or superrelativistic
+    
+    Parameters
+    ----------
+    V : Quantity
+        A velocity
+
+    funcname : string
+        The name of the original function to be printed in the error messages.
+
+    betafrac : float
+        The minimum fraction of the speed of light that will raise a UserWarning
+
+    Raises
+    ------
+    TypeError
+        If V is not a Quantity
+
+    UnitConversionError
+        If V is not in units of velocity
+
+    ValueError
+        If V contains any NaNs
+
+    UserWarning
+        If V is greater than betafrac times the speed of light
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> _check_relativistic(1*u.m/u.s, 'function_calling_this')
+    
+    """
+
+    errmsg = ("V must be a Quantity with units of velocity in"
+              "_check_relativistic")
+
+    if not isinstance(V, u.Quantity):
+        raise TypeError(errmsg)
+
+    if V.si.unit != u.m/u.s:
+        raise u.UnitConversionError(errmsg)
+
+    if np.any(np.isnan(V.value)):
+        raise ValueError("V includes NaNs in _check_relativistic")
+
+    beta = np.max(np.abs((V/c).value))
+
+    if beta == np.inf:
+        raise UserWarning(funcname + " is yielding an infinite velocity.")
+    elif beta >= 1:
+        raise UserWarning(funcname + " is yielding a velocity that is " +
+                          str(round(beta, 3)) + " times the speed of light.")
+    elif beta >= betafrac:
+        raise UserWarning(funcname + " is yielding a velocity that is " +
+                          str(round(beta*100, 3)) + "% of the speed of " +
+                          "light. Relativistic effects may be important.")

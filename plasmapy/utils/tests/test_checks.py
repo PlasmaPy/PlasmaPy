@@ -4,9 +4,9 @@ import numpy as np
 from astropy import units as u
 import pytest
 
-from ..quantities import _check_quantity
+from ...constants import c
+from ..checks import (_check_quantity, _check_relativistic)
 
-B = 5*u.T
 
 def test__check_quantity():
 
@@ -60,3 +60,53 @@ def test__check_quantity():
 
     with pytest.raises(ValueError):
         _check_quantity(np.inf*u.K, 'T', 'f', u.K, can_be_inf=False)
+
+
+def test__check_relativistic():
+
+    _check_relativistic(0*u.m/u.s, 'f')
+    _check_relativistic(0.099999*c, 'f')
+    _check_relativistic(-0.09*c, 'f')
+    _check_relativistic(5*u.AA/u.Gyr, 'f')
+
+    with pytest.raises(UserWarning):
+        _check_relativistic(0.11*c, 'f')
+
+    with pytest.raises(UserWarning):
+        _check_relativistic(1.0*c, 'f')
+
+    with pytest.raises(UserWarning):
+        _check_relativistic(1.1*c, 'f')
+
+    with pytest.raises(UserWarning):
+        _check_relativistic(np.inf*u.cm/u.s, 'f')
+
+    with pytest.raises(UserWarning):
+        _check_relativistic(-0.11*c, 'f')
+
+    with pytest.raises(UserWarning):
+        _check_relativistic(-1.0*c, 'f')
+
+    with pytest.raises(UserWarning):
+        _check_relativistic(-1.1*c, 'f')
+
+    with pytest.raises(UserWarning):
+        _check_relativistic(-np.inf*u.cm/u.s, 'f')
+
+    with pytest.raises(UserWarning):
+        _check_relativistic(2997924581*u.cm/u.s, 'f')
+
+    with pytest.raises(UserWarning):
+        _check_relativistic(0.02*c, 'f', betafrac=0.01)
+
+    with pytest.raises(TypeError):
+        _check_relativistic(u.m/u.s, 'f')
+
+    with pytest.raises(TypeError):
+        _check_relativistic(51513.35, 'f')
+
+    with pytest.raises(u.UnitConversionError):
+        _check_relativistic(5*u.m, 'f')
+
+    with pytest.raises(ValueError):
+        _check_relativistic(np.nan*u.m/u.s, 'f')
