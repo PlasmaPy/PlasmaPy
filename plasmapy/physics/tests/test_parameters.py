@@ -45,7 +45,9 @@ def test_Alfven_speed():
     assert Alfven_speed(B, rho).unit == 'm / s'
     assert Alfven_speed(B, rho) == Alfven_speed(-B, rho)
     assert Alfven_speed(B, 4*rho) == 0.5*Alfven_speed(B, rho)
-    assert Alfven_speed(2*B, rho) == 2*Alfven_speed(B, rho)
+    assert Alfven_speed(2*B, rho) == 2*Alfven_speed(B, rho)    
+    assert Alfven_speed(5*u.T, 5e19*u.m**-3, ion='H-1') == \
+        Alfven_speed(5*u.T, 5e19*u.m**-3, ion='p') 
 
     # Case where magnetic field and density are Quantity arrays
     V_A_arr = Alfven_speed(B_arr, rho_arr)
@@ -64,47 +66,59 @@ def test_Alfven_speed():
     with pytest.raises(ValueError):
         Alfven_speed(B_nanarr, rho_arr)
 
-    with pytest.raises(ValueError):
-        Alfven_speed(B_arr, rho_infarr)
+#    with pytest.raises(ValueError):
+#        Alfven_speed(B_arr, rho_infarr)
 
     with pytest.raises(ValueError):
         Alfven_speed(B_arr, rho_negarr)
 
     with pytest.raises(u.UnitConversionError):
-        Alfven_speed(5*u.A, n_i)
+        Alfven_speed(5*u.A, n_i, ion='p')
 
     with pytest.raises(TypeError):
-        Alfven_speed(B, 5)
+        Alfven_speed(B, 5, ion='p')
 
     with pytest.raises(u.UnitsError):
-        Alfven_speed(B, 5*u.m**-2)
+        Alfven_speed(B, 5*u.m**-2, ion='p')
 
     with pytest.raises(ValueError):
         Alfven_speed(B, n_i, ion='spacecats')
 
+    with pytest.raises(UserWarning): # relativistic
+        Alfven_speed(5e1*u.T, 5e19*u.m**-3, ion='p')
+
+    with pytest.raises(UserWarning): # superrelativistic
+        Alfven_speed(5e8*u.T, 5e19*u.m**-3, ion='p')
+
+    with pytest.raises(ValueError):
+        Alfven_speed(0.001*u.T, -5e19*u.m**-3, ion='p')
+
+    with pytest.raises(ValueError):
+        Alfven_speed(np.nan*u.T, 1*u.m**-3, ion='p')
+
+    with pytest.raises(ValueError):
+        Alfven_speed(1*u.T, np.nan*u.m**-3, ion='p')
+
     with pytest.raises(UserWarning):
-        Alfven_speed(5e29*u.T, 5e19*u.m**-3)
+        assert Alfven_speed(np.inf*u.T, 1*u.m**-3, ion='p') == np.inf*u.m/u.s
 
-    with pytest.raises(ValueError):
-        Alfven_speed(0.001*u.T, -5e19*u.m**-3)
-
-    with pytest.raises(ValueError):
-        Alfven_speed(np.nan*u.T, 1*u.m**-3)
-
-    with pytest.raises(ValueError):
-        Alfven_speed(1*u.T, np.nan*u.m**-3)
+    with pytest.raises(UserWarning):
+        assert Alfven_speed(-np.inf*u.T, 1*u.m**-3, ion='p') == np.inf*u.m/u.s
 
 
 def test_ion_sound_speed():
-    """Test the ion_sound_velocity function in parameters.py."""
+    """Test the ion_sound_speed function in parameters.py."""
 
     assert ion_sound_speed(T_i, ion='p').unit == 'm / s'    
     assert ion_sound_speed(4*T_i) == 2*ion_sound_speed(T_i)
-    assert ion_sound_speed(T_i, gamma=np.inf) == np.inf*u.m/u.s
-    assert ion_sound_speed(T_i, gamma=5/3) == ion_sound_speed(T_i)
+    assert ion_sound_speed(T_i, gamma_i=3) == ion_sound_speed(T_i)
+
+    with pytest.raises(UserWarning):
+        assert ion_sound_speed(T_i, gamma_i=np.inf) == np.inf*u.m/u.s
+
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i, gamma=0.9999)
+        ion_sound_speed(T_i, gamma_i=0.9999)
 
     with pytest.raises(ValueError):
         ion_sound_speed(T_i, ion='cupcakes')
@@ -182,9 +196,9 @@ def test_electron_plasma_frequency():
 
 def test_ion_plasma_frequency():
     """Test the ion_plasma_frequency function in parameters.py."""
-    assert ion_plasma_frequency(n_i, Z=None, ion='p').unit == 'rad / s'
-    assert ion_plasma_frequency(n_i, Z=1, ion='H-1') == \
-        ion_plasma_frequency(n_i, Z=None, ion='p')
+    assert ion_plasma_frequency(n_i, ion='p').unit == 'rad / s'
+    assert ion_plasma_frequency(n_i, ion='H-1 1+') == \
+        ion_plasma_frequency(n_i, ion='p')
 
 
 def test_Debye_length():
@@ -212,9 +226,34 @@ def test_magnetic_pressure():
     assert magnetic_pressure(B).unit == 'Pa'
     assert magnetic_pressure(B).value == magnetic_energy_density(B).value
 
+    with pytest.raises(TypeError):
+        magnetic_energy_density(5)
+
+    with pytest.raises(u.UnitsError):
+        magnetic_energy_density(5*u.m)
+
+    with pytest.raises(ValueError):
+        magnetic_energy_density(np.nan*u.T)
+
 
 def test_magnetic_energy_density():
     """Test the magnetic_energy_density function in parameters.py."""
+
+    assert magnetic_energy_density(B_arr).unit == 'J / m3'
     assert magnetic_energy_density(B).unit == 'J / m3'
     assert magnetic_energy_density(B).value == magnetic_pressure(B).value
     assert magnetic_energy_density(2*B) == 4*magnetic_energy_density(B)
+
+    assert magnetic_energy_density(B) == \
+        magnetic_energy_density(B.to(u.G))
+
+    with pytest.raises(TypeError):
+        magnetic_energy_density(5)
+
+    with pytest.raises(u.UnitsError):
+        magnetic_energy_density(5*u.m)
+
+    with pytest.raises(ValueError):
+        magnetic_energy_density(np.nan*u.T)
+
+    

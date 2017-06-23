@@ -10,8 +10,9 @@ from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, ion_mass,
 
 import numpy as np
 
+from ..utils import _check_quantity, _check_relativistic
 
-"""Values should be returned as an Astropy Quantity in SI units.
+r"""Values should be returned as an Astropy Quantity in SI units.
 
 If a quantity has several names, then the function name should be the
 one that provides the most physical insight into what the quantity
@@ -50,16 +51,16 @@ by an angular frequency to get a length scale:
 
 
 def Alfven_speed(B, density, ion="p"):
-    """Returns the Alfven speed.
+    r"""Returns the Alfven speed.
 
     Parameters
     ----------
     B : Quantity
-        The magnetic field magnitude in units convertible to tesla
+        The magnetic field magnitude in units convertible to tesla.
 
     density: Quantity
         Either the ion number density in units convertible to 1 / m**3,
-        or the mass density in units convertible to kg / m**3
+        or the mass density in units convertible to kg / m**3.
 
     ion : string, optional
         Representation of the ion species.  If not given, then the ions
@@ -101,7 +102,6 @@ def Alfven_speed(B, density, ion="p"):
 
     Examples
     --------
-    >>> import plasmapy
     >>> from astropy import units as u
     >>> B = 0.014*u.T
     >>> n = 5e19*u.m**-3
@@ -116,25 +116,17 @@ def Alfven_speed(B, density, ion="p"):
 
     """
 
-    if not isinstance(B, Quantity) or not isinstance(density, Quantity):
-        raise TypeError("The inputs to Alfven_speed must be Quantities.")
-
-    if B.si.unit in ['1 / m3', 'kg / m3'] and density.si.unit in ['T']:
+    if B.si.unit in [u.m**-3, u.kg/u.m**3] and density.si.unit in [u.T]:
         B, density = density, B
 
-    try:
-        B = B.to(u.T)
-    except Exception:
-        raise UnitConversionError("The magnetic field in Alfven_speed cannot "
-                                  "be converted to tesla.")
+    _check_quantity(B, 'B', 'Alfven_speed', u.T)
+    _check_quantity(density, 'density', 'Alfven_speed', [u.m**-3, u.kg/u.m**3],
+                    can_be_negative=False)
 
+    B = B.to(u.T)
     density = density.si
-    if np.any(density.value < 0):
-        raise ValueError("The number or mass density in Alfven_speed cannot "
-                         "be negative.")
 
-    if density.unit == '1 / m3':
-
+    if density.unit == u.m**-3:
         try:
             m_i = ion_mass(ion)
             Z = charge_state(ion)
@@ -142,58 +134,51 @@ def Alfven_speed(B, density, ion="p"):
                 Z = 1
         except Exception:
             raise ValueError("Invalid ion in Alfven_speed.")
-
         rho = density*m_i + Z*density*m_e
 
-    elif density.unit == 'kg / m3':
+    elif density.unit == u.kg/u.m**3:
         rho = density
     else:
         raise UnitsError("One input of Alfven_speed must have units of either "
                          "a number density or mass density.")
 
-    if not np.all(np.isfinite(rho.value)) or not np.all(np.isreal(rho.value)) \
-            or np.any(rho.value <= 0):
-        raise ValueError("Invalid density in Alfven_speed.")
-
-    if (not np.all(np.isfinite(B.value)) or not np.all(np.isreal(B.value))):
-        raise ValueError("Invalid magnetic field strength in Alfven_speed")
-
     V_A = (np.abs(B)/np.sqrt(mu0*rho)).to(u.m/u.s)
 
-    if np.any(V_A > c):
-        raise UserWarning("Alfven speed is greater than the speed of light.")
-    elif np.any(V_A > 0.1*c):
-        raise UserWarning("Alfven speed is greater than 10% of the speed of "
-                          "light.")
-
-    beta = (V_A/c).value
-
-    if np.any(beta > 1):
-        raise UserWarning("The Alfven speed is roughly " +
-                          str(round(beta, 2)) + " times the speed of light.")
-    elif np.any(beta > 0.1):
-        raise UserWarning("The Alfven speed is roughly " +
-                          str(round(beta*100, 2)) + "% of the speed of light.")
+    _check_relativistic(V_A, 'Alfven_speed')
 
     return V_A
 
 
-def ion_sound_speed(T_i, ion='p', gamma=5/3):
-    """Returns the ion sound speed.
+def ion_sound_speed(T_i=None, T_e=None, ion='p', gamma_e=1, gamma_i=3):
+    r"""Returns the ion sound speed for an electron-ion plasma.
 
     Parameters
     ----------
-    T_i : Quantity
-        Ion temperature
+    T_i : Quantity, optional if T_e is given
+        Ion temperature in units of temperature or energy per
+        particle.  If this is not given, then the ion temperature is
+        assumed to be equal to the electron temperature.
+
+    T_e : Quantity, optional if T_i is given
+        Electron temperature in units of temperature or energy per
+        particle.  If this is not given, then the electron temperature
+        is assumed to be equal to the ion temperature.
 
     ion : string, optional
         Representation of the ion species.  If not given, then the ions
-        are assumed to be protons.
+        are assumed to be protons.  If the charge state is not given, then
+        ions are assumed to be singly charged.
 
-    gamma : float, optional
-        The adiabatic index, which defaults to 5/3 as appropriate for a
-        monatomic gas.  This quantity is the ratio of the heat capacity at
-        constant pressure to the heat capacity at constant volume.
+    gamma_i : float or int
+        The adiabatic index for ions, which defaults to 3.  This value
+        assumes that ion motion has only one degree of freedom, namely
+        along magnetic field lines.
+
+    gamma_e : float or int
+        The adiabatic index for electrons, which defaults to 1.  This
+        value assumes that the electrons are able to equalize their
+        temperature rapidly enough that the electrons are effectively
+        isothermal.
 
     Returns
     -------
@@ -202,6 +187,9 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
 
     Raises
     ------
+    TypeError
+        If T_i or T_e are not quantities.
+
     ValueError
         If the ion mass, adiabatic index, or temperature are invalid.
 
@@ -209,30 +197,39 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
         If the temperature is in incorrect units.
 
     UserWarning
-        If the ion sound speed exceeds 10% of the speed of light
+        If the ion sound speed exceeds 10% of the speed of light.
 
     Notes
     -----
-    The ion sound speed is given by
+    The ion sound speed :math:`V_S` is approximately given by
 
     .. math::
-    V_S = \sqrt{\frac{\gamma k_B T_i}{m_i}}
+    V_S = \sqrt{\frac{\gamma_e Z k_B T_e + \gamma_i k_B T_i}{m_i}}
+
+    where :math:`\gamma_e` and :math:`\gamma_i` are the electron and
+    ion adiabatic indices, :math:`k_B` is the Boltzmann constant,
+    :math:`T_e` and :math:`T_i` are the electron and ion temperatures,
+    :math:`Z` is the charge state of the ion, and :math:`m_i` is the
+    ion mass.
+
+    This function assumes that the product of the wavenumber and the
+    Debye length is small. In this limit, the ion sound speed is not
+    dispersive (frequency independent).
+
+    When the electron temperature is much greater than the ion
+    temperature, the ion sound velocity reduces to
+    :math:`\sqrt{\gamma_e k_B T_e / m_i}`.  Ion acoustic waves can
+    therefore occur even when the ion temperature is zero.
 
     Example
     -------
     >>> from astropy import units as u
-    >>> ion_sound_speed(5e6*u.K)
-    <Quantity 203155.10435273056 m / s>
-    >>> ion_sound_speed(1*u.keV)
-    <Quantity 309496.9076337826 m / s>
+    >>> ion_sound_speed(5e6*u.K, ion='p', gamma=5/3)
+    <Quantity 262272.11195171846 m / s>
+    >>> ion_sound_speed(1*u.keV, ion='D+', gamma=5/3)
+    <Quantity 282600.8484562855 m / s>
 
     """
-
-    if gamma < 1:
-        raise ValueError("The ratio of specific heats is less than one in "
-                         "ion_sound_speed.")
-    elif gamma is np.inf:
-        return np.inf*u.m/u.s
 
     try:
         m_i = ion_mass(ion)
@@ -240,45 +237,72 @@ def ion_sound_speed(T_i, ion='p', gamma=5/3):
         raise ValueError("Unable to find ion mass in ion_sound_speed.")
 
     try:
-        T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
+        Z = charge_state(ion)
+        if Z is None:
+            Z = 1
     except Exception:
-        raise u.UnitConversionError("The ion temperature in ion_sound_speed "
-                                    "cannot be converted to kelvin.")
+        raise ValueError("Unable to find charge state in ion_sound_speed")
 
-    if not np.all(np.isfinite(T_i.value)) or not np.all(np.isreal(T_i.value)) \
-            or np.any(T_i.value <= 0):
-        raise ValueError("Invalid temperature value in ion_sound_speed.")
+    if not isinstance(gamma_e, (float, int)):
+        raise TypeError("The adiabatic index for electrons (gamma_e) must be "
+                        "a float or int in ion_sound_speed")
+    if not isinstance(gamma_i, (float, int)):
+        raise TypeError("The adiabatic index for ions (gamma_i) must be "
+                        "a float or int in ion_sound_speed")
 
-    try:
-        V_S = (np.sqrt(gamma*k_B*T_i/m_i)).to(u.m/u.s)
-    except Exception:
-        raise ValueError("Unable to find ion sound speed.")
+    if not 1 <= gamma_e <= np.inf:
+        raise ValueError("The adiabatic index for electrons must be between "
+                         "one and infinity")
+    if not 1 <= gamma_i <= np.inf:
+        raise ValueError("The adiabatic index for ions must be between "
+                         "one and infinity")
 
-    beta = (V_S/c).value
+    if (T_i is None) ^ (T_e is None):
+        if T_i is None:
+            T_i = T_e
+        else:
+            T_e = T_i
 
-    if np.any(beta > 1):
-        raise UserWarning("The ion sound speed is roughly " +
-                          str(round(beta, 2)) + " times the speed of light.")
-    elif np.any(beta > 0.1):
-        raise UserWarning("The ion sound speed is roughly " +
-                          str(round(beta*100, 2)) + "% of the speed of light.")
+    _check_quantity(T_i, 'T_i', 'ion_sound_speed', u.K, can_be_negative=False)
+    _check_quantity(T_e, 'T_e', 'ion_sound_speed', u.K, can_be_negative=False)
+
+    T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
+    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
+
+    V_S = np.sqrt((gamma_e*Z*k_B*T_e + gamma_i*k_B*T_i)/m_i).to(u.m/u.s)
+
+    _check_relativistic(V_S, 'ion_sound_speed')
 
     return V_S
 
 
 def electron_thermal_speed(T_e):
-    """Returns the most probable speed for an electron within a
+    r"""Returns the most probable speed for an electron within a
     Maxwellian distribution.
 
     Parameters
     ----------
     T_e : Quantity
-        The electron temperature in either kelvin or electron-volts
+        The electron temperature in either kelvin or energy per particle
 
     Returns
     -------
     V_Te : Quantity
         Electron thermal speed
+
+    Raises
+    ------
+    TypeError
+        The electron temperature is not a Quantity
+
+    UnitConversionError
+        If the electron temperature is not in appropriate units
+
+    ValueError
+        The electron temperature is invalid
+
+    UserWarning
+        If the electron thermal speed exceeds 10% of the speed of light.
 
     Notes
     -----
@@ -297,12 +321,17 @@ def electron_thermal_speed(T_e):
 
     Examples
     --------
+    >>> from astropy import units as u
     >>> electron_thermal_speed(5*u.eV)
     <Quantity 1326205.1454609886 m / s>
     >>> electron_thermal_speed(1e6*u.K)
     <Quantity 5505694.743141063 m / s>
 
     """
+
+    if not isinstance(T_e, Quantity):
+        raise TypeError("The input to electron_thermal_speed must "
+                        "be a Quantity.")
 
     try:
         T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
@@ -314,10 +343,7 @@ def electron_thermal_speed(T_e):
     if np.any(not 0 <= T_e.value <= np.inf):
         raise ValueError("Invalid temperature in electron_thermal_speed.")
 
-    try:
-        V_Te = (np.sqrt(2*k_B*T_e/m_e)).to(u.m/u.s)
-    except Exception:
-        raise ValueError("Cannot find electron thermal speed")
+    V_Te = (np.sqrt(2*k_B*T_e/m_e)).to(u.m/u.s)
 
     beta = (V_Te/c).value
 
@@ -332,7 +358,7 @@ def electron_thermal_speed(T_e):
 
 
 def ion_thermal_speed(T_i, ion='p'):
-    """Returns the most probable speed for an ion within a Maxwellian
+    r"""Returns the most probable speed for an ion within a Maxwellian
     distribution.
 
     Parameters
@@ -365,6 +391,7 @@ def ion_thermal_speed(T_i, ion='p'):
 
     Examples
     --------
+    >>> from astropy import units as u
     >>> ion_thermal_speed(5*u.eV)
     <Quantity 30949.690763378258 m / s>
     >>> ion_thermal_speed(1e6*u.K, ion='p')
@@ -391,9 +418,8 @@ def ion_thermal_speed(T_i, ion='p'):
     return V_Ti
 
 
-@u.quantity_input
-def electron_gyrofrequency(B: u.T):
-    """Calculate the electron gyrofrequency in units of radians per second.
+def electron_gyrofrequency(B):
+    r"""Calculate the electron gyrofrequency in units of radians per second.
 
     Parameters
     ----------
@@ -436,16 +462,15 @@ def electron_gyrofrequency(B: u.T):
 
     """
 
-    try:
-        omega_ce = u.rad*(e*B/m_e).to(1/u.s)
-    except Exception:
-        raise ValueError("Unable to find electron gyrofrequency")
+    _check_quantity(B, 'B', 'electron_gyrofrequency', u.T)
+
+    omega_ce = u.rad*(e*np.abs(B)/m_e).to(1/u.s)
 
     return omega_ce
 
 
-def ion_gyrofrequency(B, ion='p', Z=None):
-    """Calculate the ion gyrofrequency in units of radians per second.
+def ion_gyrofrequency(B, ion='p'):
+    r"""Calculate the ion gyrofrequency in units of radians per second.
 
     Parameters
     ----------
@@ -455,10 +480,6 @@ def ion_gyrofrequency(B, ion='p', Z=None):
     ion : string, optional
         Representation of the ion species.  If not given, then the ions
         are assumed to be protons.
-
-    Z : integer, optional
-        The charge state.  If not given, then the ion is assumed to be
-        singly charged.
 
     Returns
     -------
@@ -490,44 +511,32 @@ def ion_gyrofrequency(B, ion='p', Z=None):
     <Quantity 152451.87138666757 Hz>
     >>> ion_gyrofrequency(0.01*u.T, 'p')
     <Quantity 152451.87138666757 Hz>
-    >>> ion_gyrofrequency(0.01*u.T, ion='T', Z=1)
-
+    >>> ion_gyrofrequency(0.01*u.T, ion='T')
 
     """
 
+    _check_quantity(B, 'B', 'ion_gyrofrequency', u.T)
+
     try:
-        B = np.abs(B.to(u.T))
+        Z = charge_state(ion)
+        if Z is None:
+            Z = 1
     except Exception:
-        raise UnitsError("The first argument of ion_gyrofrequency must "
-                         "be a quantity with units convertible to tesla.")
-
-    if Z is None:
-        try:
-            Z = charge_state(ion)
-            if Z is None:
-                Z = 1
-        except:
-            raise ValueError("Unable to find charge state in "
-                             "ion_gyrofrequency")
-    elif not isinstance(Z, int):
-        raise TypeError("In ion_gyrofrequency, the charge state (Z) must be "
-                        "an integer.")
+        raise ValueError("Unable to find charge state in "
+                         "ion_gyrofrequency")
 
     try:
-        m_i = ion_mass(ion, Z=Z)
+        m_i = ion_mass(ion)
     except Exception:
         raise ValueError("Unable to get ion mass in ion_gyrofrequency")
 
-    try:
-        omega_ci = u.rad * (Z*e*B/m_i).to(1/u.s)
-    except Exception:
-        raise ValueError("Unable to find ion gyrofrequency")
+    omega_ci = u.rad * (Z*e*np.abs(B)/m_i).to(1/u.s)
 
     return omega_ci
 
 
 def electron_gyroradius(B, Vperp_or_Te):
-    """Returns the radius of gyration for an electron in a uniform
+    r"""Returns the radius of gyration for an electron in a uniform
     magnetic field.
 
     Parameters
@@ -561,7 +570,6 @@ def electron_gyroradius(B, Vperp_or_Te):
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.physics import electron_gyroradius
     >>> electron_gyroradius(0.2*u.T, 1e5*u.K)
     <Quantity 4.949493018143766e-05 m>
     >>> electron_gyroradius(5*u.uG, 1*u.eV)
@@ -571,25 +579,12 @@ def electron_gyroradius(B, Vperp_or_Te):
 
     """
 
-    if not isinstance(B, Quantity):
-        raise TypeError("The first input to electron_gyroradius is not a "
-                        "quantity.")
-
-    if not isinstance(Vperp_or_Te, Quantity):
-        raise TypeError("The second input to electron_gyroradius is not a "
-                        "quantity.")
-
-    Vperp_or_Te = Vperp_or_Te.si
-
     if Vperp_or_Te.si.unit == 'T':
         B, Vperp_or_Te = Vperp_or_Te, B
 
-    try:
-        B = B.to(u.T)
-    except:
-        raise UnitConversionError("electron_gyroradius requires a quantity "
-                                  "with units convertible to tesla as an "
-                                  "argument.")
+    _check_quantity(B, 'B', 'electron_gyroradius', u.T)
+    _check_quantity(Vperp_or_Te, 'Vperp_or_Te', 'electron_gyroradius',
+                    [u.m/u.s, u.K])
 
     if Vperp_or_Te.unit in ['J', 'K']:
         T_e = Vperp_or_Te.to(u.K, equivalencies=u.temperature_energy())
@@ -599,19 +594,15 @@ def electron_gyroradius(B, Vperp_or_Te):
         Vperp = electron_thermal_speed(T_e)
     elif Vperp_or_Te.unit == 'm / s':
         Vperp = Vperp_or_Te
-    else:
-        raise UnitConversionError("electron_gyroradius requires a quantity "
-                                  "with units convertible to kelvin or to "
-                                  "meters per second as an argument.")
 
     omega_ce = electron_gyrofrequency(B)
-    r_L = (Vperp/omega_ce).to(u.m, equivalencies=u.dimensionless_angles())
+    r_L = (Vperp/omega_ce).to(u.m, equivalencies=[(u.cy/u.s, u.Hz)])
 
     return r_L
 
 
 def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
-    """Returns the ion gyroradius.
+    r"""Returns the ion gyroradius.
 
     Parameters
     ----------
@@ -639,7 +630,6 @@ def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.physics import ion_gyroradius
     >>> ion_gyroradius(0.2*u.T, 1e5*u.K)
     <Quantity 0.0021208751836230026 m>
     >>> ion_gyroradius(0.2*u.T, 1e5*u.K, ion='p')
@@ -651,25 +641,12 @@ def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
 
     """
 
-    if not isinstance(B, Quantity):
-        raise TypeError("The first input to ion_gyroradius is not a "
-                        "quantity.")
-
-    if not isinstance(Vperp_or_Ti, Quantity):
-        raise TypeError("The second input to ion_gyroradius is not a "
-                        "quantity.")
-
-    Vperp_or_Ti = Vperp_or_Ti.si
-
-    if Vperp_or_Ti.si.unit == 'T':
+    if Vperp_or_Ti.unit.si == 'T':
         B, Vperp_or_Ti = Vperp_or_Ti, B
 
-    try:
-        B = B.to(u.T)
-    except:
-        raise UnitConversionError("ion_gyroradius requires a quantity "
-                                  "with units convertible to tesla as an "
-                                  "argument.")
+    _check_quantity(B, 'B', 'ion_gyroradius', u.T)
+    _check_quantity(Vperp_or_Ti, 'Vperp_or_Ti', 'ion_gyroradius',
+                    [u.m/u.s, u.K])
 
     if Vperp_or_Ti.unit in ['J', 'K']:
         T_i = Vperp_or_Ti.to(u.K, equivalencies=u.temperature_energy())
@@ -679,20 +656,15 @@ def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
         Vperp = ion_thermal_speed(T_i, ion)
     elif Vperp_or_Ti.unit == 'm / s':
         Vperp = Vperp_or_Ti
-    else:
-        raise UnitConversionError("ion_gyroradius requires a quantity "
-                                  "with units convertible to kelvin or to "
-                                  "meters per second as an argument.")
 
     omega_ci = ion_gyrofrequency(B, ion)
-    r_L = (Vperp/omega_ci).to(u.m, equivalencies=u.dimensionless_angles())
+    r_L = (Vperp/omega_ci).to(u.m, equivalencies=[(u.cy/u.s, u.Hz)])
 
     return r_L
 
 
-@quantity_input
-def electron_plasma_frequency(n_e: u.m**-3):
-    """Calculates the electron plasma frequency.
+def electron_plasma_frequency(n_e):
+    r"""Calculates the electron plasma frequency.
 
     Parameters
     ----------
@@ -726,23 +698,23 @@ def electron_plasma_frequency(n_e: u.m**-3):
     <Quantity 178398636622.99567 rad / s>
 
     """
-    try:
-        omega_pe = (u.rad*e*np.sqrt(n_e/(eps0*m_e))).to(u.rad/u.s)
-    except Exception:
-        raise ValueError("Unable to find electron plasma frequency.")
+
+    _check_quantity(n_e, 'n_e', 'electron_plasma_frequency', u.m**-3,
+                    can_be_negative=False)
+
+    omega_pe = (u.rad*e*np.sqrt(n_e/(eps0*m_e))).to(u.rad/u.s)
 
     return omega_pe
 
 
-def ion_plasma_frequency(n_i, Z=None, ion='p'):
-    """Calculates the ion plasma frequency.
+def ion_plasma_frequency(n_i, ion='p'):
+    r"""Calculates the ion plasma frequency.
 
     Parameters
     ----------
     n_i : Quantity
         Ion number density
-    Z : integer
-        The ionization state (e.g., Z=1 for singly ionized)
+
     ion : string, optional
         Representation of the ion species.  If not given, then the ions
         are assumed to be protons.
@@ -768,6 +740,7 @@ def ion_plasma_frequency(n_i, Z=None, ion='p'):
 
     Example
     -------
+    >>> from astropy import units as u
     >>> ion_plasma_frequency(1e19*u.m**-3)
     <Quantity 178398636622.99567 rad / s>
     >>> ion_plasma_frequency(1e19*u.m**-3, ion='p')
@@ -775,29 +748,27 @@ def ion_plasma_frequency(n_i, Z=None, ion='p'):
 
     """
 
+    _check_quantity(n_i, 'n_i', 'ion_plasma_frequency', u.m**-3,
+                    can_be_negative=False)
+
     try:
-        m_i = ion_mass(ion, Z=Z)
+        m_i = ion_mass(ion)
     except Exception:
         raise ValueError("Unable to get mass of ion in ion_gyrofrequency")
 
-    if Z is None:
-        try:
-            Z = charge_state(ion)
-        except Exception:
-            raise ValueError("Unable to get charge state to calculate ion "
-                             "plasma frequency.")
-
     try:
-        omega_pi = u.rad*Z*e*np.sqrt(n_i/(eps0*m_e))
+        Z = charge_state(ion)
     except Exception:
-        raise ValueError("Unable to find ion plasma frequency.")
+        raise ValueError("Unable to get charge state to calculate ion "
+                         "plasma frequency.")
+
+    omega_pi = u.rad*Z*e*np.sqrt(n_i/(eps0*m_e))
 
     return omega_pi.si
 
 
-@u.quantity_input
-def Debye_length(T_e: u.K, n_e: u.m**-3):  # Add equivalency related to T in eV
-    """Calculate the Debye length.
+def Debye_length(T_e, n_e):
+    r"""Calculate the Debye length.
 
     Parameters
     ----------
@@ -841,17 +812,15 @@ def Debye_length(T_e: u.K, n_e: u.m**-3):  # Add equivalency related to T in eV
 
     """
 
-    try:
-        lambda_D = ((eps0*k_B*T_e / (n_e * e**2))**0.5).to(u.m)
-    except Exception:
-        raise ValueError("Unable to find Debye length.")
+    _check_quantity(T_e, 'T_e', 'Debye_length', u.K, can_be_negative=False)
+
+    lambda_D = ((eps0*k_B*T_e / (n_e * e**2))**0.5).to(u.m)
 
     return lambda_D
 
 
-@u.quantity_input
-def Debye_number(T_e: u.K, n_e: u.m**-3):
-    """Returns the Debye number.
+def Debye_number(T_e, n_e):
+    r"""Returns the Debye number.
 
     Parameters
     ----------
@@ -884,27 +853,28 @@ def Debye_number(T_e: u.K, n_e: u.m**-3):
 
     Example
     -------
+    >>> from astropy import units as u
     >>> Debye_number(5e6*u.K, 5e9*u.cm**-3)
     <Quantity 69282817.49483868>
 
     """
 
-    try:
-        lambda_D = Debye_length(T_e, n_e)
-        N_D = (4/3)*n_e*lambda_D**3
-    except Exception:
-        raise ValueError("Unable to find Debye number.")
+    _check_quantity(T_e, 'T_e', 'Debye_number', u.K, can_be_negative=False)
+    _check_quantity(n_e, 'n_e', 'Debye_number', u.m**-3, can_be_negative=False)
+
+    lambda_D = Debye_length(T_e, n_e)
+    N_D = (4/3)*n_e*lambda_D**3
 
     return N_D.to(u.dimensionless_unscaled)
 
 
-def ion_inertial_length(n_i, ion='p', Z=None):
-    """Calculate the ion inertial length,
+def ion_inertial_length(n_i, ion='p'):
+    r"""Calculate the ion inertial length,
 
     Parameters
     ----------
     n_i : Quantity
-        Ion number density in units convertible to 
+        Ion number density in units convertible to
 
     ion : string, optional
         Representation of the ion species.  If not given, then the ions
@@ -936,18 +906,17 @@ def ion_inertial_length(n_i, ion='p', Z=None):
     except Exception:
         raise ValueError("Unable to find charge state in ion_inertial_length.")
 
-    try:
-        omega_pi = ion_plasma_frequency(n_i, Z=1, ion=ion)
-        d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())
-    except Exception:
-        raise ValueError("Unable to find ion inertial length.")
+    _check_quantity(n_i, 'n_i', 'ion_inertial_length', u.m**-3,
+                    can_be_negative=False)
+
+    omega_pi = ion_plasma_frequency(n_i, ion=ion)
+    d_i = (c/omega_pi).to(u.m, equivalencies=[(u.cy/u.s, u.Hz)])
 
     return d_i
 
 
-@u.quantity_input
-def electron_inertial_length(n_e: u.m**-3):
-    """Returns the electron inertial length.
+def electron_inertial_length(n_e):
+    r"""Returns the electron inertial length.
 
     Parameters
     ----------
@@ -975,18 +944,17 @@ def electron_inertial_length(n_e: u.m**-3):
 
     """
 
-    try:
-        omega_pe = electron_plasma_frequency(n_e)
-        d_e = (c/omega_pe).to(u.m, equivalencies=u.dimensionless_angles())
-    except Exception:
-        raise ValueError("Unable to find electron inertial length.")
+    _check_quantity(n_e, 'n_e', 'electron_inertial_length', u.m**-3,
+                    can_be_negative=False)
+
+    omega_pe = electron_plasma_frequency(n_e)
+    d_e = (c/omega_pe).to(u.m, equivalencies=[(u.cy/u.s, u.Hz)])
 
     return d_e
 
 
-@u.quantity_input
-def magnetic_pressure(B: u.T):
-    """Calculate the magnetic pressure.
+def magnetic_pressure(B):
+    r"""Calculate the magnetic pressure.
 
     Parameters
     ----------
@@ -997,6 +965,18 @@ def magnetic_pressure(B: u.T):
     -------
     p_B: Quantity
         The magnetic pressure in units in pascals (newtons per square meter)
+
+    Raises
+    ------
+    TypeError
+        If the input is not a Quantity
+
+    UnitsError
+        If the input is not in units convertible to tesla
+
+    ValueError
+        If the magnetic field strength is not a real number between
+        +/- infinity
 
     Notes
     -----
@@ -1012,7 +992,7 @@ def magnetic_pressure(B: u.T):
 
     See also
     --------
-    magnetic_energy_density : returns an equivalent quantity, except in
+    magnetic_energy_density : returns an equivalent Quantity, except in
         units of joules per cubic meter.
 
     Example
@@ -1023,17 +1003,15 @@ def magnetic_pressure(B: u.T):
 
     """
 
-    try:
-        p_B = (B**2/(2*mu0)).to(u.N/u.m**2)
-    except Exception:
-        raise ValueError("Unable to find magnetic pressure.")
+    _check_quantity(B, 'B', 'magnetic_pressure', u.T)
+
+    p_B = (B**2/(2*mu0)).to(u.N/u.m**2)
 
     return p_B
 
 
-@u.quantity_input
 def magnetic_energy_density(B: u.T):
-    """Calculate the magnetic energy density.
+    r"""Calculate the magnetic energy density.
 
     Parameters
     ----------
@@ -1044,6 +1022,18 @@ def magnetic_energy_density(B: u.T):
     -------
     E_B: Quantity
         The magnetic energy density in units of joules per cubic meter
+
+    Raises
+    ------
+    TypeError
+        If the input is not a Quantity
+
+    UnitsError
+        If the input is not in units convertible to tesla
+
+    ValueError
+        If the magnetic field strength is not a real number between
+        +/- infinity
 
     Notes
     -----
@@ -1059,7 +1049,7 @@ def magnetic_energy_density(B: u.T):
 
     See also
     --------
-    magnetic_pressure : returns an equivalent quantity, except in units
+    magnetic_pressure : returns an equivalent Quantity, except in units
         of pascals.
 
     Example
@@ -1070,9 +1060,8 @@ def magnetic_energy_density(B: u.T):
 
     """
 
-    try:
-        E_B = (B**2/(2*mu0)).to(u.J/u.m**3)
-    except Exception:
-        raise ValueError("Unable to find magnetic energy density.")
+    _check_quantity(B, 'B', 'magnetic_energy_density', u.T)
+
+    E_B = (B**2/(2*mu0)).to(u.J/u.m**3)
 
     return E_B
