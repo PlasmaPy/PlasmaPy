@@ -596,7 +596,7 @@ def electron_gyroradius(B, Vperp_or_Te):
         Vperp = Vperp_or_Te
 
     omega_ce = electron_gyrofrequency(B)
-    r_L = (Vperp/omega_ce).to(u.m, equivalencies=[(u.cy/u.s, u.Hz)])
+    r_L = (Vperp/omega_ce).to(u.m, equivalencies=u.dimensionless_angles())
 
     return r_L
 
@@ -658,7 +658,7 @@ def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
         Vperp = Vperp_or_Ti
 
     omega_ci = ion_gyrofrequency(B, ion)
-    r_L = (Vperp/omega_ci).to(u.m, equivalencies=[(u.cy/u.s, u.Hz)])
+    r_L = (Vperp/omega_ci).to(u.m, equivalencies=u.dimensionless_angles())
 
     return r_L
 
@@ -910,7 +910,7 @@ def ion_inertial_length(n_i, ion='p'):
                     can_be_negative=False)
 
     omega_pi = ion_plasma_frequency(n_i, ion=ion)
-    d_i = (c/omega_pi).to(u.m, equivalencies=[(u.cy/u.s, u.Hz)])
+    d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())
 
     return d_i
 
@@ -948,7 +948,7 @@ def electron_inertial_length(n_e):
                     can_be_negative=False)
 
     omega_pe = electron_plasma_frequency(n_e)
-    d_e = (c/omega_pe).to(u.m, equivalencies=[(u.cy/u.s, u.Hz)])
+    d_e = (c/omega_pe).to(u.m, equivalencies=u.dimensionless_angles())
 
     return d_e
 
