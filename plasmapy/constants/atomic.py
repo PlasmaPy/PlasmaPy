@@ -1349,7 +1349,7 @@ def isotopic_abundance(argument, mass_numb=None):
 
 
 def charge_state(argument):
-    """Returns the charge state of an ion.
+    """Returns the charge state of an ion or other particle.
 
     Parameters
     ----------
@@ -1380,6 +1380,8 @@ def charge_state(argument):
     The second format is a string containing element information at
     the beginning, following by one or more plus or minus signs.
 
+    This function returns -1 for electrons and +1 for positrons.
+
     Examples
     --------
     >>> charge_state('Fe-56 2+')
@@ -1392,6 +1394,11 @@ def charge_state(argument):
     2
 
     """
+
+    if argument in ['e', 'e-'] or argument.lower() == 'electron':
+        return -1
+    elif argument == 'e+' or argument.lower() == 'positron':
+        return 1
 
     argument, Z = __extract_charge_state(argument)
 
@@ -1463,6 +1470,8 @@ def __extract_charge_state(argument):
         return argument, 1
     elif argument.lower() == 'alpha':
         return argument, 2
+    elif argument == 'e+' or argument.lower() == 'positron':
+        return argument, 1
 
     if argument.count(' ') == 1:  # For cases like 'Fe +2' and 'Fe-56 2+'
 

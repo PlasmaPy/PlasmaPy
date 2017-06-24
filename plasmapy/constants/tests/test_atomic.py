@@ -690,6 +690,11 @@ def test_charge_state():
     assert charge_state('deuteron') == 1
     assert charge_state('triton') == 1
 
+    assert charge_state('electron') == -1
+    assert charge_state('e-') == -1
+    assert charge_state('e+') == 1
+    assert charge_state('positron') == 1
+
     with pytest.raises(ValueError):
         charge_state('fads')
 
