@@ -168,9 +168,6 @@ def Alfven_speed(B, density, ion="p"):
 
     elif density.unit == units.kg/units.m**3:
         rho = density
-    else:
-        raise UnitsError("One input of Alfven_speed must have units of either "
-                         "a number density or mass density.")
 
     try:
         V_A = (np.abs(B)/np.sqrt(mu0*rho)).to(units.m/units.s)
@@ -279,15 +276,11 @@ def ion_sound_speed(*ignore, ion='p', T_e=0*units.K, T_i=0*units.K,
 
     try:
         m_i = ion_mass(ion)
-    except Exception:
-        raise ValueError("Unable to find ion mass in ion_sound_speed.")
-
-    try:
         Z = charge_state(ion)
         if Z is None:
             Z = 1
     except Exception:
-        raise ValueError("Unable to find charge state in ion_sound_speed")
+        raise ValueError("Invalid ion in ion_sound_speed.")
 
     if not isinstance(gamma_e, (float, int)):
         raise TypeError("The adiabatic index for electrons (gamma_e) must be "
@@ -583,17 +576,12 @@ def ion_gyrofrequency(B, ion='p'):
     _check_quantity(B, 'B', 'ion_gyrofrequency', units.T)
 
     try:
+        m_i = ion_mass(ion)
         Z = charge_state(ion)
         if Z is None:
             Z = 1
     except Exception:
-        raise ValueError("Unable to find charge state in "
-                         "ion_gyrofrequency")
-
-    try:
-        m_i = ion_mass(ion)
-    except Exception:
-        raise ValueError("Unable to get ion mass in ion_gyrofrequency")
+        raise ValueError("Invalid ion in ion_gyrofrequency")
 
     omega_ci = units.rad * (Z*e*np.abs(B)/m_i).to(1/units.s)
 
@@ -668,7 +656,7 @@ def electron_gyroradius(B, Vperp_or_Te):
                              "to a negative temperature.")
         Vperp = electron_thermal_speed(T_e)
     elif Vperp_or_Te.unit == 'm / s':
-        Vperp = Vperp_or_Te
+        Vperp = np.abs(Vperp_or_Te)
 
     omega_ce = electron_gyrofrequency(B)
     r_L = (Vperp/omega_ce).to(units.m,
@@ -746,7 +734,7 @@ def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
                              "to a negative temperature.")
         Vperp = ion_thermal_speed(T_i, ion)
     elif Vperp_or_Ti.unit == 'm / s':
-        Vperp = Vperp_or_Ti
+        Vperp = np.abs(Vperp_or_Ti)
 
     omega_ci = ion_gyrofrequency(B, ion)
 
@@ -872,16 +860,11 @@ def ion_plasma_frequency(n_i=None, ion='p'):
 
     try:
         m_i = ion_mass(ion)
-    except Exception:
-        raise ValueError("Unable to get mass of ion in ion_gyrofrequency")
-
-    try:
         Z = charge_state(ion)
         if Z is None:
             Z = 1
     except Exception:
-        raise ValueError("Unable to get charge state to calculate ion "
-                         "plasma frequency.")
+        raise ValueError("Invalid ion in ion_gyrofrequency")
 
     omega_pi = units.rad*Z*e*np.sqrt(n_i/(eps0*m_i))
 
@@ -952,7 +935,7 @@ def Debye_length(T_e=None, n_e=None):
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
 
     try:
-        lambda_D = ((eps0*k_B*T_e / (n_e * e**2))**0.5).to(units.m)
+        lambda_D = ((eps0*k_B*T_e/(n_e*e**2))**0.5).to(units.m)
     except Exception:
         raise ValueError("Unable to find Debye length.")
 
@@ -1071,7 +1054,7 @@ def ion_inertial_length(n_i=None, ion='p'):
     try:
         Z = charge_state(ion)
     except Exception:
-        raise ValueError("Unable to find charge state in ion_inertial_length.")
+        raise ValueError("Invalid ion in ion_inertial_length.")
 
     _check_quantity(n_i, 'n_i', 'ion_inertial_length', units.m**-3,
                     can_be_negative=False)

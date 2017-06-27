@@ -45,6 +45,8 @@ T_negarr = np.array([1e6, -5151.])*u.K
 
 mu = m_p.to(u.u).value
 
+V = 25.2*u.m/u.s
+
 # Assertions below that are in CGS units with 2-3 significant digits
 # are generally from the NRL Plasma Formulary.
 
@@ -327,6 +329,12 @@ def test_electron_gyroradius():
 
     assert electron_gyroradius(B, 25*u.m/u.s).unit == u.m
 
+    assert electron_gyroradius(T_e, B) == electron_gyroradius(B, T_e)
+
+    assert electron_gyroradius(V, B) == electron_gyroradius(B, V)
+
+    assert electron_gyroradius(B, V) == electron_gyroradius(B, -V)
+
     Vperp = 1e6*u.m/u.s
     Bmag = 1*u.T
     omega_ce = electron_gyrofrequency(Bmag)
@@ -348,6 +356,9 @@ def test_electron_gyroradius():
     with pytest.raises(ValueError):
         electron_gyroradius(np.nan*u.T, 1*u.m/u.s)
 
+    with pytest.raises(ValueError):
+        electron_gyroradius(3.14159*u.T, -1*u.K)
+
 
 def test_ion_gyroradius():
     """Test the ion_gyroradius function in parameters.py."""
@@ -358,6 +369,12 @@ def test_ion_gyroradius():
 
     assert ion_gyroradius(B, T_i, ion='p') == \
         ion_gyroradius(B, T_i, ion='H-1')
+
+    assert ion_gyroradius(T_i, B) == ion_gyroradius(B, T_i)
+
+    assert ion_gyroradius(V, B) == ion_gyroradius(B, V)
+
+    assert ion_gyroradius(B, V) == ion_gyroradius(B, -V)
 
     Vperp = 1e6*u.m/u.s
     Bmag = 1*u.T
@@ -380,6 +397,9 @@ def test_ion_gyroradius():
 
     with pytest.raises(ValueError):
         ion_gyroradius(B, T_i, ion='asfdas')
+
+    with pytest.raises(ValueError):
+        ion_gyroradius(B, -1*u.K, ion='p')
 
 
 def test_electron_plasma_frequency():
@@ -441,6 +461,11 @@ def test_Debye_length():
     with pytest.raises(ValueError):
         Debye_length(-45*u.K, 5*u.m**-3)
 
+    Tarr2 = np.array([1, 2])*u.K
+    narr3 = np.array([1, 2, 3])*u.m**-3
+    with pytest.raises(ValueError):
+        Debye_length(Tarr2, narr3)
+
 
 def test_Debye_number():
     """Test the Debye_number function in parameters.py."""
@@ -468,6 +493,11 @@ def test_Debye_number():
     with pytest.raises(ValueError):
         Debye_number(5j*u.K, 5*u.cm**-3)
 
+    Tarr2 = np.array([1, 2])*u.K
+    narr3 = np.array([1, 2, 3])*u.m**-3
+    with pytest.raises(ValueError):
+        Debye_number(Tarr2, narr3)
+
 
 def test_ion_inertial_length():
     """Test the ion_inertial_length function in parameters.py."""
@@ -491,6 +521,9 @@ def test_ion_inertial_length():
 
     with pytest.raises(ValueError):
         ion_inertial_length(-5*u.m**-3)
+
+    with pytest.raises(ValueError):
+        ion_inertial_length(n_i, ion=-135)
 
 
 def test_electron_inertial_length():
