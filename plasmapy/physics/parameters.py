@@ -1226,3 +1226,46 @@ def magnetic_energy_density(B):
     E_B = (B**2/(2*mu0)).to(units.J/units.m**3)
 
     return E_B
+
+
+def upper_hybrid_frequency(B, n_e=None):
+    """Returns the upper hybrid frequency."""
+
+    _check_quantity(B, 'B', 'upper_hybrid_frequency', units.T)
+    _check_quantity(n_e, 'n_e', 'upper_hybrid_frequency', units.m**-3,
+                    can_be_negative=False)
+
+    try:
+        omega_pe = electron_plasma_frequency(n_e=n_e)
+        omega_ce = electron_gyrofrequency(B)
+        omega_uh = (np.sqrt(omega_pe**2 + omega_ce**2)).to(units.rad/units.s)
+    except Exception:
+        raise ValueError("Unable to find upper hybrid frequency.")
+   
+    return omega_uh
+
+
+def lower_hybrid_frequency(B, n_i=None, ion='p'):
+    """Returns the lower hybrid frequency."""
+
+    _check_quantity(B, 'B', 'lower_hybrid_frequency', units.T)
+    _check_quantity(n_i, 'n_i', 'lower_hybrid_frequency', units.m**-3,
+                    can_be_negative=False)
+   
+    # We do not need a charge state here, so the sole intent is to
+    # catch invalid ions.
+    try:
+        charge_state(ion)
+    except Exception:
+        raise ValueError("Invalid ion in lower_hybrid_frequency.")
+
+    try:
+        omega_ci = ion_gyrofrequency(B, ion=ion)
+        omega_pi = ion_plasma_frequency(n_i, ion=ion)
+        omega_ce = electron_gyrofrequency(B)
+        omega_lh = 1/np.sqrt((omega_ci*omega_ce)**-1+omega_pi**-2)
+        omega_lh = omega_lh.to(units.rad/units.s)
+    except Exception:
+        raise ValueError("Unable to find lower hybrid frequency.")
+
+    return omega_lh

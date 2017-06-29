@@ -17,4 +17,6 @@ from .parameters import (Alfven_speed,
                          electron_inertial_length,
                          magnetic_pressure,
                          magnetic_energy_density,
+                         upper_hybrid_frequency,
+                         lower_hybrid_frequency,
                          )
