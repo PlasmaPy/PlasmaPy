@@ -461,7 +461,7 @@ def electron_gyrofrequency(B):
     Parameters
     ----------
     B: Quantity
-        Magnetic field strength
+        The magnetic field magnitude in units convertible to tesla.
 
     Returns
     -------
@@ -523,7 +523,7 @@ def ion_gyrofrequency(B, ion='p'):
     Parameters
     ----------
     B: Quantity
-        The magnetic field magnitude in units convertible to tesla
+        The magnetic field magnitude in units convertible to tesla.
 
     ion : string, optional
         Representation of the ion species.  If not given, then the ions
@@ -595,7 +595,7 @@ def electron_gyroradius(B, Vperp_or_Te):
     Parameters
     ----------
     B : Quantity
-        The magnetic field magnitude in units convertible to tesla
+        The magnetic field magnitude in units convertible to tesla.
 
     Vperp_or_Te : Quantity
         Either the component of electron velocity that is
@@ -671,7 +671,7 @@ def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
     Parameters
     ----------
     B: Quantity
-        The magnetic field magnitude in units convertible to tesla
+        The magnetic field magnitude in units convertible to tesla.
 
     Vperp_or_Ti: Quantity
         The component of ion velocity that is perpendicular to the
@@ -821,8 +821,7 @@ def ion_plasma_frequency(n_i=None, ion='p'):
     Raises
     ------
     TypeError
-        If the n_i is not a Quantity or ion is not of an appropriate
-        type
+        If n_i is not a Quantity or ion is not of an appropriate type
 
     UnitConversionError
         If n_i is not in correct units
@@ -1229,7 +1228,47 @@ def magnetic_energy_density(B):
 
 
 def upper_hybrid_frequency(B, n_e=None):
-    """Returns the upper hybrid frequency."""
+    r"""Returns the upper hybrid frequency.
+
+    Parameters
+    ----------
+    B : Quantity
+        The magnetic field magnitude in units convertible to tesla.
+
+    n_e : Quantity
+        The electron number density
+
+    Returns
+    -------
+    omega_uh : Quantity
+        The upper hybrid frequency in radians per second
+
+    Raises
+    ------
+    TypeError
+        If either of B or n_e is not a Quantity
+
+    UnitConversionError
+        If either of B or n_e is in incorrect units
+
+    ValueError
+        If either of B or n_e contains invalid values or are of
+        incompatible dimensions
+
+    Notes
+    -----
+    The upper hybrid frequency is given through the relation
+
+    .. math::
+    \omega_{lh} = 
+
+    Example
+    -------
+    >>> from astropy import units as u
+    >>> upper_hybrid_frequency(0.2*u.T, n_e=5e19*u.m**-3)
+    <Quantity 400459419898.30164 rad / s>
+
+    """
 
     _check_quantity(B, 'B', 'upper_hybrid_frequency', units.T)
     _check_quantity(n_e, 'n_e', 'upper_hybrid_frequency', units.m**-3,
@@ -1246,7 +1285,54 @@ def upper_hybrid_frequency(B, n_e=None):
 
 
 def lower_hybrid_frequency(B, n_i=None, ion='p'):
-    """Returns the lower hybrid frequency."""
+    r"""Returns the lower hybrid frequency.
+
+    Parameters
+    ----------
+    B : Quantity
+        The magnetic field magnitude in units convertible to tesla.
+
+    n_i : Quantity
+        Ion number density
+
+    ion : string, optional
+        Representation of the ion species.  If not given, then the
+        ions are assumed to be protons.  If the isotope is given but
+        the charge state is not given, the ion is assumed to be singly
+        ionized.
+
+    Returns
+    -------
+    omega_lh : Quantity
+        The lower hybrid frequency in radians per second
+
+    Raises
+    ------
+    TypeError
+        If either of B or n_i is not a Quantity, or ion is of an inappropriate type
+
+    UnitConversionError
+        If either of B or n_i is in incorrect units
+
+    ValueError
+        If either of B or n_i contains invalid values or are of
+        incompatible dimensions, or ion cannot be used to identify an
+        ion or isotope
+
+    Notes
+    -----
+    The lower hybrid frequency is given through the relation
+
+    .. math::
+    \omega_{lh} = 
+
+    Example
+    -------
+    >>> from astropy import units as u
+    >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+')
+    <Quantity 578372732.8478782 rad / s>
+
+    """
 
     _check_quantity(B, 'B', 'lower_hybrid_frequency', units.T)
     _check_quantity(n_i, 'n_i', 'lower_hybrid_frequency', units.m**-3,
