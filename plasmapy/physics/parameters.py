@@ -1260,7 +1260,7 @@ def upper_hybrid_frequency(B, n_e=None):
     The upper hybrid frequency is given through the relation
 
     .. math::
-    \omega_{lh} = 
+    \omega_{lh} =
 
     Example
     -------
@@ -1280,7 +1280,7 @@ def upper_hybrid_frequency(B, n_e=None):
         omega_uh = (np.sqrt(omega_pe**2 + omega_ce**2)).to(units.rad/units.s)
     except Exception:
         raise ValueError("Unable to find upper hybrid frequency.")
-   
+
     return omega_uh
 
 
@@ -1309,7 +1309,8 @@ def lower_hybrid_frequency(B, n_i=None, ion='p'):
     Raises
     ------
     TypeError
-        If either of B or n_i is not a Quantity, or ion is of an inappropriate type
+        If either of B or n_i is not a Quantity, or ion is of an
+        inappropriate type
 
     UnitConversionError
         If either of B or n_i is in incorrect units
@@ -1324,7 +1325,7 @@ def lower_hybrid_frequency(B, n_i=None, ion='p'):
     The lower hybrid frequency is given through the relation
 
     .. math::
-    \omega_{lh} = 
+    \omega_{lh} =
 
     Example
     -------
@@ -1337,7 +1338,7 @@ def lower_hybrid_frequency(B, n_i=None, ion='p'):
     _check_quantity(B, 'B', 'lower_hybrid_frequency', units.T)
     _check_quantity(n_i, 'n_i', 'lower_hybrid_frequency', units.m**-3,
                     can_be_negative=False)
-   
+
     # We do not need a charge state here, so the sole intent is to
     # catch invalid ions.
     try:
