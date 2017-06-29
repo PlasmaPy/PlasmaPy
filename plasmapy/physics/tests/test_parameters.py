@@ -22,7 +22,9 @@ from ..parameters import (Alfven_speed,
                           ion_inertial_length,
                           ion_sound_speed,
                           magnetic_energy_density,
-                          magnetic_pressure)
+                          magnetic_pressure,
+                          upper_hybrid_frequency,
+                          lower_hybrid_frequency)
 
 B = 1.0*u.T
 Z = 1
@@ -608,3 +610,46 @@ def test_magnetic_energy_density():
 
     with pytest.raises(ValueError):
         magnetic_energy_density(B_nanarr)
+
+
+def test_upper_hybrid_frequency():
+    """Test the upper_hybrid_frequency function in parameters.py."""
+
+    omega_uh = upper_hybrid_frequency(B, n_e=n_e)
+    omega_ce = electron_gyrofrequency(B)
+    omega_pe = electron_plasma_frequency(n_e=n_e)
+    assert omega_ce.unit == u.rad/u.s
+    assert omega_pe.unit == u.rad/u.s
+    assert omega_uh.unit == u.rad/u.s
+    LHS = omega_uh**2
+    RHS = omega_ce**2 + omega_pe**2
+    assert np.isclose(LHS.value, RHS.value)
+
+    with pytest.raises(ValueError):
+        upper_hybrid_frequency(5*u.T, n_e=-1*u.m**-3)
+
+
+def test_lower_hybrid_frequency():
+    """Test the lower_hybrid_frequency function in parameters.py."""
+
+    ion = 'He-4 1+'
+    omega_ci = ion_gyrofrequency(B, ion=ion)
+    omega_pi = ion_plasma_frequency(n_i=n_i, ion=ion)
+    omega_ce = electron_gyrofrequency(B)
+    omega_lh = lower_hybrid_frequency(B, n_i=n_i, ion=ion)
+    assert omega_ci.unit == u.rad/u.s
+    assert omega_pi.unit == u.rad/u.s
+    assert omega_ce.unit == u.rad/u.s
+    assert omega_lh.unit == u.rad/u.s
+    LHS = omega_lh**-2
+    RHS = 1/(omega_ci**2 + omega_pi**2) + omega_ci**-1*omega_ce**-1
+    assert np.isclose(LHS.value, RHS.value)
+
+    with pytest.raises(ValueError):
+        lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='asdfasd')
+
+    with pytest.raises(ValueError):
+        lower_hybrid_frequency(0.2*u.T, n_i=-5e19*u.m**-3, ion='asdfasd')
+
+    with pytest.raises(ValueError):
+        lower_hybrid_frequency(np.nan*u.T, n_i=-5e19*u.m**-3, ion='asdfasd')
