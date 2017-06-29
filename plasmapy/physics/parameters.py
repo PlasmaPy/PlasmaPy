@@ -1260,7 +1260,10 @@ def upper_hybrid_frequency(B, n_e=None):
     The upper hybrid frequency is given through the relation
 
     .. math::
-    \omega_{lh} =
+    \omega_{uh}^2 = \omega_{ce}^2 + \omega_{pe}^2
+
+    where :math:`\omega_{ce}` is the electron gyrofrequency and
+    :math:`\omega_{pe}` is the electron plasma frequency.
 
     Example
     -------
@@ -1325,7 +1328,12 @@ def lower_hybrid_frequency(B, n_i=None, ion='p'):
     The lower hybrid frequency is given through the relation
 
     .. math::
-    \omega_{lh} =
+    \frac{1}{\omega_{lh}^2} = \frac{1}{\omega_{ci}^2 + \omega_{pi}^2}
+    + \frac{1}{\omega_{ci}\omega_{ce}}
+
+    where .. math::`\omega_{ci}` is the ion gyrofrequency,
+    .. math::`\omega_{ce}` is the electron gyrofrequency, and
+    .. math::`\omega_{pi}` is the ion plasma frequency.
 
     Example
     -------
