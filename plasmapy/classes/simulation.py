@@ -169,11 +169,8 @@ class MHDSimulation:
 
     @property
     def viscous_tensor(self):
-        """
-        Defines the viscous tensor $\tau$:
-
-        .. math::
-            \tau_{kl} = \frac{1}{2}(\rho_0 + \rho_1)[\nu_k(v_l)\frac{\partial v_l}{\partial x_k} + \nu_l(v_k)\frac{\partial v_k}{\partial x_l}]
+        r"""Defines the viscous tensor for the plasma following (approximately) Shelyag et al. 2008
+        (http://dx.doi.org/10.1051/0004-6361:200809800)
         """
 
         rho = self.plasma.density
@@ -183,7 +180,8 @@ class MHDSimulation:
         v_solver = Solver(self.solver.dx)
 
         # So very unsure about this equation right here
-        visctens = np.zeros(shape=(3, 3, *self.plasma.domain_shape)) * (u.m**2 / u.s**2)
+        visctens = np.zeros(shape=(3, 3, *self.plasma.domain_shape)) \
+            * (u.m**2 / u.s**2)
 
         # This is fudged to work on the assumption that the tensor is symmetric
         visctens[0, 0] = (visc[0] * v_solver(v[0], 0)) * 2
