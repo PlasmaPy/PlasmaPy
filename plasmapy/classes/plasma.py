@@ -65,7 +65,6 @@ class Plasma:
             if length > 1:
                 self.domain_shape.append(length)
         self.domain_shape = tuple(self.domain_shape)
-        print(self.domain_shape)
         self.gamma = gamma
 
         # Initiate core plasma variables

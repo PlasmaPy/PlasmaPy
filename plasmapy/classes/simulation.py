@@ -116,7 +116,10 @@ class MHDSimulation:
         """
         if not density:
             density = self.plasma.density
-        return -div(self.plasma.velocity * density, self.solver)
+        nu = self.total_viscosity(self.plasma.density)
+        D_rho = self.solver(nu, 0) * self.solver(self.plasma.density, 0)
+
+        return D_rho - div(self.plasma.velocity * density, self.solver)
 
     def _ddt_momentum(self, t, momentum=None):
         """
@@ -126,7 +129,9 @@ class MHDSimulation:
         v = self.plasma.velocity
         B = self.plasma.magnetic_field / np.sqrt(mu0)
 
-        return (-grad(self.plasma.pressure, self.solver)
+        D_mom = tensordiv(self.viscous_tensor, self.solver)
+
+        return (D_mom - grad(self.plasma.pressure, self.solver)
                 - tensordiv(vdp(v, momentum) - vdp(B, B), self.solver))
 
     def _ddt_energy(self, t, energy=None):
@@ -150,6 +155,60 @@ class MHDSimulation:
         v = self.plasma.velocity
 
         return -tensordiv(vdp(v, B) - vdp(B, v), self.solver) * np.sqrt(mu0)
+
+    @property
+    def shock_viscosity(self):
+        """
+        """
+
+        c = 1.0
+        delv = div(self.plasma.velocity, self.solver)
+        delv[np.where(delv > 0)] = 0
+
+        return c * (self.solver.dx**2) * abs(delv)
+
+    @property
+    def viscous_tensor(self):
+        """
+        Defines the viscous tensor $\tau$:
+
+        .. math::
+            \tau_{kl} = \frac{1}{2}(\rho_0 + \rho_1)[\nu_k(v_l)\frac{\partial v_l}{\partial x_k} + \nu_l(v_k)\frac{\partial v_k}{\partial x_l}]
+        """
+
+        rho = self.plasma.density
+        v = self.plasma.velocity
+        visc = self.total_viscosity(v[0])
+        # Define a new solver to differentiate individial velocity vectors.
+        v_solver = Solver(self.solver.dx)
+
+        # So very unsure about this equation right here
+        visctens = np.zeros(shape=(3, 3, *self.plasma.domain_shape)) * (u.m**2 / u.s**2)
+
+        # This is fudged to work on the assumption that the tensor is symmetric
+        visctens[0, 0] = (visc[0] * v_solver(v[0], 0)) * 2
+        visctens *= 0.5 * rho
+
+        assert visctens.shape == (3, 3, *self.plasma.domain_shape), \
+            """Viscous tensor calculated with incorrect shape: {}, should be {}
+            """.format(visctens.shape, (3, 3, *self.grid_size))
+
+        return visctens
+
+    def hyperdiff_viscosity(self, param, paramaxis):
+        """
+        """
+
+        vt = self.plasma.alfven_speed.max() + self.plasma.sound_speed.max()
+        visc = self.solver.dx * vt
+        return visc
+
+    def total_viscosity(self, param, paramaxis=0):
+        """
+        """
+
+        return self.hyperdiff_viscosity(param, paramaxis) \
+            + self.shock_viscosity
 
 
 def dot(vec1, vec2):
