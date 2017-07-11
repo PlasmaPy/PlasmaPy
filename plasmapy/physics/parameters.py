@@ -315,7 +315,7 @@ def ion_sound_speed(*ignore, ion='p', T_e=0*units.K, T_i=0*units.K,
     return V_S
 
 
-def electron_thermal_speed(T_e=None):
+def electron_thermal_speed(T_e):
     r"""Returns the most probable speed for an electron within a
     Maxwellian distribution.
 
@@ -380,7 +380,7 @@ def electron_thermal_speed(T_e=None):
     return V_Te
 
 
-def ion_thermal_speed(T_i=None, ion='p'):
+def ion_thermal_speed(T_i, ion='p'):
     r"""Returns the most probable speed for an ion within a Maxwellian
     distribution.
 
@@ -744,7 +744,7 @@ def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
     return r_L
 
 
-def electron_plasma_frequency(n_e=None):
+def electron_plasma_frequency(n_e):
     r"""Calculates the electron plasma frequency.
 
     Parameters
@@ -799,7 +799,7 @@ def electron_plasma_frequency(n_e=None):
     return omega_pe
 
 
-def ion_plasma_frequency(n_i=None, ion='p'):
+def ion_plasma_frequency(n_i, ion='p'):
     r"""Calculates the ion plasma frequency.
 
     Parameters
@@ -870,7 +870,7 @@ def ion_plasma_frequency(n_i=None, ion='p'):
     return omega_pi.si
 
 
-def Debye_length(T_e=None, n_e=None):
+def Debye_length(T_e, n_e):
     r"""Calculate the Debye length.
 
     Parameters
@@ -941,7 +941,7 @@ def Debye_length(T_e=None, n_e=None):
     return lambda_D
 
 
-def Debye_number(T_e=None, n_e=None):
+def Debye_number(T_e, n_e):
     r"""Returns the Debye number.
 
     Parameters
@@ -1006,7 +1006,7 @@ def Debye_number(T_e=None, n_e=None):
     return N_D.to(units.dimensionless_unscaled)
 
 
-def ion_inertial_length(n_i=None, ion='p'):
+def ion_inertial_length(n_i, ion='p'):
     r"""Calculate the ion inertial length,
 
     Parameters
@@ -1064,7 +1064,7 @@ def ion_inertial_length(n_i=None, ion='p'):
     return d_i
 
 
-def electron_inertial_length(n_e=None):
+def electron_inertial_length(n_e):
     r"""Returns the electron inertial length.
 
     Parameters
@@ -1227,7 +1227,7 @@ def magnetic_energy_density(B):
     return E_B
 
 
-def upper_hybrid_frequency(B, n_e=None):
+def upper_hybrid_frequency(B, n_e):
     r"""Returns the upper hybrid frequency.
 
     Parameters
@@ -1287,7 +1287,7 @@ def upper_hybrid_frequency(B, n_e=None):
     return omega_uh
 
 
-def lower_hybrid_frequency(B, n_i=None, ion='p'):
+def lower_hybrid_frequency(B, n_i, ion='p'):
     r"""Returns the lower hybrid frequency.
 
     Parameters
