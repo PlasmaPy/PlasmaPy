@@ -9,7 +9,7 @@ from astropy.constants.si import (h, hbar, k_B, c, G, g0, m_p, m_n, m_e,
 
 try:
     from astropy.constants import atm  # astropy 2.0 and later
-except:
+except Exception:
     from astropy.constants import atmosphere as atm  # astropy 1.x and before
 
 from .atomic import (element_symbol, isotope_symbol, atomic_number,
