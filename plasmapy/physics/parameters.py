@@ -588,7 +588,7 @@ def ion_gyrofrequency(B, ion='p'):
     return omega_ci
 
 
-def electron_gyroradius(B, Vperp_or_Te):
+def electron_gyroradius(B, *args, Vperp=None, T_e=None):
     r"""Returns the radius of gyration for an electron in a uniform
     magnetic field.
 
@@ -596,12 +596,25 @@ def electron_gyroradius(B, Vperp_or_Te):
     ----------
     B : Quantity
         The magnetic field magnitude in units convertible to tesla.
+        If no units are given, a UserWarning will be raised and units
+        of tesla will be assumed.
 
-    Vperp_or_Te : Quantity
-        Either the component of electron velocity that is
-        perpendicular to the magnetic field in units convertible to
-        meters per second, or the electron temperature in units
-        convertible to kelvin.
+    Vperp : Quantity
+        The component of electron velocity that is perpendicular to
+        the magnetic field in units convertible to meters per second.
+        If no units are given, a UserWarning will be raised and units
+        of meters per second will be assumed.  Only one of Vperp and
+        T_e may be given.
+
+    T_e : Quantity
+        The electron temperature in units convertible to kelvin.  If
+        no units are given, a UserWarning will be raised and units of
+        kelvin will be assumed.  Only one of T_e and Vperp may be given.
+
+    args : Quantity
+        If the second positional argument is a Quantity with units
+        appropriate to Vperp or T_e, then this argument will take the
+        place of that keyword argument.
 
     Returns
     -------
@@ -622,6 +635,10 @@ def electron_gyroradius(B, Vperp_or_Te):
     ValueError
         If either argument contains invalid values
 
+    UserWarning
+        To warn that if units are not provided, then SI units will
+        be assumed
+
     Notes
     -----
     The electron gyroradius is also known as the Larmor radius for
@@ -633,6 +650,10 @@ def electron_gyroradius(B, Vperp_or_Te):
     Examples
     --------
     >>> from astropy import units as u
+    >>> electron_gyroradius(B = 0.01*u.T, T_e = 1e6*u.K)
+    <Quantity 0.0031303339253265536 m>
+    >>> electron_gyroradius(B = 0.01*u.T, Vperp = 1e6*u.m/u.s)
+    <Quantity 0.0005685630062091092 m>
     >>> electron_gyroradius(0.2*u.T, 1e5*u.K)
     <Quantity 4.949493018143766e-05 m>
     >>> electron_gyroradius(5*u.uG, 1*u.eV)
@@ -642,27 +663,38 @@ def electron_gyroradius(B, Vperp_or_Te):
 
     """
 
-    if Vperp_or_Te.si.unit == 'T':
-        B, Vperp_or_Te = Vperp_or_Te, B
+    if Vperp is not None and T_e is not None:
+        raise ValueError("Cannot have both Vperp and T_e as arguments to "
+                         "electron_gyroradius")
+
+    if len(args) == 1 and isinstance(args[0], units.Quantity):
+        arg = args[0].si
+        if arg.unit == units.T and B.si.unit in [units.J, units.K,
+                                                 units.m/units.s]:
+            B, arg = arg, B
+
+        if arg.unit == units.m/units.s:
+            Vperp = arg
+        elif arg.unit in (units.J, units.K):
+            T_e = arg.to(units.K, equivalencies=units.temperature_energy())
+        else:
+            raise units.UnitConversionError("Incorrect units for positional "
+                                            "argument in electron_gyroradius")
+    elif len(args) > 0:
+        raise ValueError("Incorrect inputs to electron_gyroradius")
 
     _check_quantity(B, 'B', 'electron_gyroradius', units.T)
-    _check_quantity(Vperp_or_Te, 'Vperp_or_Te', 'electron_gyroradius',
-                    [units.m/units.s, units.K])
 
-    if Vperp_or_Te.si.unit in ['J', 'K']:
-        T_e = Vperp_or_Te.to(units.K, equivalencies=units.temperature_energy())
-        if T_e < 0*units.K:
-            raise ValueError("An argument to electron_gyroradius corresponds "
-                             "to a negative temperature.")
+    if Vperp is not None:
+        _check_quantity(Vperp, 'Vperp', 'electron_gyroradius', units.m/units.s)
+    elif T_e is not None:
+        _check_quantity(T_e, 'T_e', 'electron_gyroradius', units.K)
         Vperp = electron_thermal_speed(T_e)
-    elif Vperp_or_Te.unit == 'm / s':
-        Vperp = np.abs(Vperp_or_Te)
 
     omega_ce = electron_gyrofrequency(B)
-    r_L = (Vperp/omega_ce).to(units.m,
-                              equivalencies=units.dimensionless_angles())
+    r_L = np.abs(Vperp)/omega_ce
 
-    return r_L
+    return r_L.to(units.m, equivalencies=units.dimensionless_angles())
 
 
 def ion_gyroradius(B, Vperp_or_Ti, ion='p'):

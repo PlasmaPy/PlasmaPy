@@ -161,7 +161,7 @@ def test_ion_sound_speed():
     with pytest.raises(ValueError):
         ion_sound_speed(T_i=np.array([5, 6, 5])*u.K, T_e=np.array([3, 4])*u.K)
 
-    with pytest.raises(TypeError):
+    with pytest.raises(TypeError):    # Is this test right??????
         ion_sound_speed(5*u.T)
 
     with pytest.raises(TypeError):
@@ -314,7 +314,7 @@ def test_ion_gyrofrequency():
     assert ion_gyrofrequency(B, ion='e+') == \
         electron_gyrofrequency(B)
 
-    with pytest.raises(TypeError):
+    with pytest.raises(UserWarning):
         ion_gyrofrequency(8)
 
     with pytest.raises(u.UnitConversionError):
@@ -451,7 +451,7 @@ def test_Debye_length():
 
     assert np.isclose(Debye_length(1*u.eV, 1*u.cm**-3).value, 7.43, atol=0.005)
 
-    with pytest.raises(TypeError):
+    with pytest.raises(UserWarning):
         Debye_length(5, 5*u.m**-3)
 
     with pytest.raises(u.UnitConversionError):
@@ -480,7 +480,7 @@ def test_Debye_number():
 
     assert np.isclose(Debye_number(1*u.eV, 1*u.cm**-3).value, 1720862385.43342)
 
-    with pytest.raises(TypeError):
+    with pytest.raises(UserWarning):
         Debye_number(T_e, 4)
 
     with pytest.raises(TypeError):
@@ -515,7 +515,7 @@ def test_ion_inertial_length():
     assert ion_inertial_length(n_i, ion='p') == \
         ion_inertial_length(n_i, ion='H-1')
 
-    with pytest.raises(TypeError):
+    with pytest.raises(UserWarning):
         ion_inertial_length(4)
 
     with pytest.raises(u.UnitConversionError):
@@ -536,7 +536,7 @@ def test_electron_inertial_length():
     assert np.isclose(electron_inertial_length(1*u.cm**-3).cgs.value,
                       5.31e5, rtol=1e-3)
 
-    with pytest.raises(TypeError):
+    with pytest.raises(UserWarning):
         electron_inertial_length(5)
 
     with pytest.raises(u.UnitConversionError):
@@ -561,7 +561,7 @@ def test_magnetic_pressure():
 
     assert np.isclose(magnetic_pressure(B).value, 397887.35772973835)
 
-    with pytest.raises(TypeError):
+    with pytest.raises(UserWarning):
         magnetic_pressure(5)
 
     with pytest.raises(u.UnitConversionError):
@@ -596,7 +596,7 @@ def test_magnetic_energy_density():
 
     assert magnetic_energy_density(B_arr)
 
-    with pytest.raises(TypeError):
+    with pytest.raises(UserWarning):
         magnetic_energy_density(5)
 
     with pytest.raises(u.UnitConversionError):

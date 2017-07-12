@@ -64,7 +64,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
     # Create a generic error message
 
     typeerror_message = ("The argument " + argname + " to " + funcname +
-                         " must be a Quantity with ")
+                         " should be a Quantity with ")
 
     if len(units) == 1:
         typeerror_message += "the following units: " + str(units[0])
@@ -75,10 +75,23 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
             if unit != units[-1]:
                 typeerror_message += ", "
 
+    if isinstance(arg, (u.Unit, u.CompositeUnit, u.IrreducibleUnit)):
+        raise TypeError(typeerror_message)
+
     # Make sure arg is a quantity with correct units
 
-    if not isinstance(arg, u.Quantity):
-        raise TypeError(typeerror_message)
+    if not isinstance(arg, (u.Quantity)):
+        if len(units) != 1:
+            raise TypeError(typeerror_message)
+        else:
+            try:
+                arg = arg*units[0]
+            except:
+                raise TypeError(typeerror_message)
+            else:
+                raise UserWarning("No units are specified for " + argname +
+                                  " in " + funcname + ". Assuming units of " +
+                                  str(units[0]) + ".")
 
     in_acceptable_units = []
 
