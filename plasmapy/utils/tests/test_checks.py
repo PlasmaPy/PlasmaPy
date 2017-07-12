@@ -27,7 +27,7 @@ def test__check_quantity():
     with pytest.raises(TypeError):
         _check_quantity(u.T, 'arg', 'funcname', u.J)
 
-    with pytest.raises(TypeError):
+    with pytest.raises(UserWarning):
         _check_quantity(5.0, 'arg', 'funcname', u.m)
 
     with pytest.raises(u.UnitConversionError):
