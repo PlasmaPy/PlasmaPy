@@ -145,9 +145,10 @@ def Alfven_speed(B, density, ion="p"):
 
     """
 
-    if B.si.unit in [units.m**-3, units.kg/units.m**3] and \
-            density.si.unit in [units.T]:
-        B, density = density, B
+    if isinstance(B, units.Quantity) and isinstance(density, units.Quantity):
+        if B.si.unit in [units.m**-3, units.kg/units.m**3] and \
+                density.si.unit in [units.T]:
+            B, density = density, B
 
     _check_quantity(B, 'B', 'Alfven_speed', units.T)
     _check_quantity(density, 'density', 'Alfven_speed',
@@ -599,17 +600,12 @@ def electron_gyroradius(B, *args, Vperp=None, T_e=None):
         If no units are given, a UserWarning will be raised and units
         of tesla will be assumed.
 
-    Vperp : Quantity
+    Vperp : Quantity, optional
         The component of electron velocity that is perpendicular to
         the magnetic field in units convertible to meters per second.
-        If no units are given, a UserWarning will be raised and units
-        of meters per second will be assumed.  Only one of Vperp and
-        T_e may be given.
 
-    T_e : Quantity
-        The electron temperature in units convertible to kelvin.  If
-        no units are given, a UserWarning will be raised and units of
-        kelvin will be assumed.  Only one of T_e and Vperp may be given.
+    T_e : Quantity, optional
+        The electron temperature in units convertible to kelvin.  
 
     args : Quantity
         If the second positional argument is a Quantity with units
@@ -618,11 +614,12 @@ def electron_gyroradius(B, *args, Vperp=None, T_e=None):
 
     Returns
     -------
-    r_L : Quantity
-        The electron gyroradius in units of meters.  This quantity
-        corresponds to either the perpendicular component of electron
-        velocity, or the most probable speed for an electron within a
-        Maxwellian distribution for the electron temperature.
+    r_Le : Quantity
+        The electron gyroradius in units of meters.  This Quantity
+        will be based on either the perpendicular component of
+        electron velocity as inputted, or the most probable speed for
+        an electron within a Maxwellian distribution for the electron
+        temperature.
 
     Raises
     ------
@@ -636,16 +633,28 @@ def electron_gyroradius(B, *args, Vperp=None, T_e=None):
         If either argument contains invalid values
 
     UserWarning
-        To warn that if units are not provided, then SI units will
-        be assumed
+        If units are not provided and SI units are assumed
 
     Notes
+    -----
+    One but not both of Vperp and T_i must be inputted.
+
+    If any of B, Vperp, or T_e is a number rather than a Quantity,
+    then SI units will be assumed and a UserWarning will be raised.
+
+    Formula
     -----
     The electron gyroradius is also known as the Larmor radius for
     electrons and is given by:
 
     .. math::
-    r_L = \frac{V_{perp}}{omega_{ce}}
+    r_{Le} = \frac{V_{perp}}{omega_{ce}}
+
+    where :math:`V_{\perp}` is the component of electron velocity that
+    is perpendicular to the magnetic field and :math:`\omega_{ce}` is
+    the electron gyrofrequency.  If a temperature is provided, then
+    :math:`V_\perp` will be the most probable thermal velocity of an
+    electron at that temperature.
 
     Examples
     --------
@@ -697,7 +706,7 @@ def electron_gyroradius(B, *args, Vperp=None, T_e=None):
     return r_L.to(units.m, equivalencies=units.dimensionless_angles())
 
 
-def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
+def ion_gyroradius(B, *args, Vperp=None, T_i=None, ion='p'):
     r"""Returns the ion gyroradius.
 
     Parameters
@@ -705,21 +714,31 @@ def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
     B: Quantity
         The magnetic field magnitude in units convertible to tesla.
 
-    Vperp_or_Ti: Quantity
+    Vperp: Quantity, optional
         The component of ion velocity that is perpendicular to the
-        magnetic field in units convertible to meters per second, or the
-        ion temperature in units convertible to kelvin.
+        magnetic field in units convertible to meters per second.
 
-    ion : string, optional
+    T_i: Quantity, optional
+        The ion temperature in units convertible to kelvin.
+
+    ion : string, optional keyword
         Representation of the ion species.  If not given, then the
         ions are assumed to be protons.  If the element or isotope is
-        given but the charge state isn't, then the ion is assumed to be
-        singly ionized.
+        given but the charge state is not, then the ion is assumed to
+        be singly ionized.
+
+    args : Quantity
+        If the second positional argument is a Quantity with units
+        appropriate to Vperp or T_i, then this argument will take the
+        place of that keyword argument.
 
     Returns
     -------
-    r_L : Quantity
-        The ion gyroradius in units of meters
+    r_Li : Quantity
+        The ion gyroradius in units of meters.  This Quantity will be
+        based on either the perpendicular component of ion velocity as
+        inputted, or the most probable speed for an ion within a
+        Maxwellian distribution for the ion temperature.
 
     Raises
     ------
@@ -729,14 +748,32 @@ def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
     UnitConversionError
         The arguments do not have appropriate units
 
+    ValueError
+        If any argument contains invalid values
+
+    UserWarning
+        If units are not provided and SI units are assumed
+
     Notes
     -----
+    One but not both of Vperp and T_i must be inputted.
 
+    If any of B, Vperp, or T_i is a number rather than a Quantity,
+    then SI units will be assumed and a warning will be raised.
+    
+    Formula
+    -------
     The ion gyroradius is also known as the ion Larmor radius and is
     given by
 
     .. math::
-    r_L = \frac{V_{perp}}{omega_{ci}}
+    r_{Li} = \frac{V_{\perp}}{omega_{ci}}
+
+    where :math:`V_{\perp}` is the component of ion velocity that is
+    perpendicular to the magnetic field and :math:`\omega_{ci}` is the
+    ion gyrofrequency.  If a temperature is provided, then
+    :math:`V_\perp` will be the most probable thermal velocity of an
+    ion at that temperature.
 
     Examples
     --------
@@ -752,28 +789,39 @@ def ion_gyroradius(B, Vperp_or_Ti, ion='p'):
 
     """
 
-    if Vperp_or_Ti.unit.si == 'T':
-        B, Vperp_or_Ti = Vperp_or_Ti, B
+    if Vperp is not None and T_i is not None:
+        raise ValueError("Cannot have both Vperp and T_i as arguments to "
+                         "ion_gyroradius")
+
+    if len(args) == 1 and isinstance(args[0], units.Quantity):
+        arg = args[0].si
+        if arg.unit == units.T and B.si.unit in [units.J, units.K,
+                                                 units.m/units.s]:
+            B, arg = arg, B
+
+        if arg.unit == units.m/units.s:
+            Vperp = arg
+        elif arg.unit in (units.J, units.K):
+            T_i = arg.to(units.K, equivalencies=units.temperature_energy())
+        else:
+            raise units.UnitConversionError("Incorrect units for positional "
+                                            "argument in ion_gyroradius")
+    elif len(args) > 0:
+        raise ValueError("Incorrect inputs to ion_gyroradius")
 
     _check_quantity(B, 'B', 'ion_gyroradius', units.T)
-    _check_quantity(Vperp_or_Ti, 'Vperp_or_Ti', 'ion_gyroradius',
-                    [units.m/units.s, units.K])
 
-    if Vperp_or_Ti.si.unit in ['J', 'K']:
-        T_i = Vperp_or_Ti.to(units.K, equivalencies=units.temperature_energy())
-        if T_i < 0*units.K:
-            raise ValueError("An argument to ion_gyroradius corresponds "
-                             "to a negative temperature.")
-        Vperp = ion_thermal_speed(T_i, ion)
-    elif Vperp_or_Ti.unit == 'm / s':
-        Vperp = np.abs(Vperp_or_Ti)
+    if Vperp is not None:
+        _check_quantity(Vperp, 'Vperp', 'ion_gyroradius', units.m/units.s)
+    elif T_i is not None:
+        _check_quantity(T_i, 'T_i', 'ion_gyroradius', units.K)
+        Vperp = ion_thermal_speed(T_i, ion=ion)
 
     omega_ci = ion_gyrofrequency(B, ion)
 
-    r_L = (Vperp/omega_ci).to(units.m,
-                              equivalencies=units.dimensionless_angles())
+    r_Li = np.abs(Vperp)/omega_ci
 
-    return r_L
+    return r_Li.to(units.m, equivalencies=units.dimensionless_angles())
 
 
 def electron_plasma_frequency(n_e):
