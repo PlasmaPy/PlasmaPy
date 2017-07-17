@@ -86,7 +86,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         else:
             try:
                 arg = arg*units[0]
-            except:
+            except Exception:
                 raise TypeError(typeerror_message)
             else:
                 raise UserWarning("No units are specified for " + argname +
@@ -98,7 +98,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
     for unit in units:
         try:
             arg.unit.to(unit, equivalencies=u.temperature_energy())
-        except:
+        except Exception:
             in_acceptable_units.append(False)
         else:
             in_acceptable_units.append(True)
@@ -123,7 +123,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
 def _check_relativistic(V, funcname, betafrac=0.1):
     r"""Raise UserWarnings if a velocity is relativistic or superrelativistic
-    
+
     Parameters
     ----------
     V : Quantity
@@ -133,7 +133,8 @@ def _check_relativistic(V, funcname, betafrac=0.1):
         The name of the original function to be printed in the error messages.
 
     betafrac : float
-        The minimum fraction of the speed of light that will raise a UserWarning
+        The minimum fraction of the speed of light that will raise a
+        UserWarning
 
     Raises
     ------
@@ -153,7 +154,7 @@ def _check_relativistic(V, funcname, betafrac=0.1):
     --------
     >>> from astropy import units as u
     >>> _check_relativistic(1*u.m/u.s, 'function_calling_this')
-    
+
     """
 
     errmsg = ("V must be a Quantity with units of velocity in"
