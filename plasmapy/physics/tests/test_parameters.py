@@ -454,6 +454,9 @@ def test_ion_gyroradius():
     with pytest.raises(ValueError):
         ion_gyroradius(1.1*u.T, 1.2*u.K, 1.1*u.m)
 
+    with pytest.raises(ValueError):
+        ion_gyroradius(1.1*u.T, 1.2*u.m, 1.1*u.K)
+
 
 def test_electron_plasma_frequency():
     """Test the electron_plasma_frequency function in parameters.py."""
