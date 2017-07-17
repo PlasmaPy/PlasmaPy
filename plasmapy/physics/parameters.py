@@ -232,7 +232,8 @@ def ion_sound_speed(*ignore, ion='p', T_e=0*units.K, T_i=0*units.K,
         If the temperature is in incorrect units.
 
     UserWarning
-        If the ion sound speed exceeds 10% of the speed of light.
+        If the ion sound speed exceeds 10% of the speed of light, or
+        if units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -344,7 +345,8 @@ def electron_thermal_speed(T_e):
         The electron temperature is invalid
 
     UserWarning
-        If the electron thermal speed exceeds 10% of the speed of light.
+        If the electron thermal speed exceeds 10% of the speed of
+        light, or if units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -413,7 +415,8 @@ def ion_thermal_speed(T_i, ion='p'):
         identify an isotope or ion
 
     UserWarning
-        If the ion thermal speed exceeds 10% of the speed of light.
+        If the ion thermal speed exceeds 10% of the speed of light, or
+        if units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -481,6 +484,9 @@ def electron_gyrofrequency(B):
     ValueError
         If the magnetic field has an invalid value
 
+    UserWarning
+        If units are not provided and SI units are assumed
+
     Notes
     -----
     The electron gyrofrequency is the angular frequency of electrons
@@ -545,6 +551,9 @@ def ion_gyrofrequency(B, ion='p'):
     ValueError
         If the magnetic field contains invalid values or ion cannot be
         used to identify an ion or isotope
+
+    UserWarning
+        If units are not provided and SI units are assumed
 
     Notes
     -----

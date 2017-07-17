@@ -392,6 +392,12 @@ def test_electron_gyroradius():
         assert electron_gyroradius(1.1, T_e=1.2) == \
             electron_gyroradius(1.1*u.T, T_e=1.2*u.K)
 
+    with pytest.raises(ValueError):
+        electron_gyroradius(1.1*u.T, T_e=1.2*u.K, Vperp=1*u.m/u.s)
+
+    with pytest.raises(ValueError):
+        electron_gyroradius(1.1*u.T, 1.2*u.K, 1.1*u.m)
+
 
 def test_ion_gyroradius():
     """Test the ion_gyroradius function in parameters.py."""
@@ -441,6 +447,12 @@ def test_ion_gyroradius():
     with pytest.raises(UserWarning):
         assert ion_gyroradius(1.1, T_i=1.2) == \
             ion_gyroradius(1.1*u.T, T_i=1.2*u.K)
+
+    with pytest.raises(ValueError):
+        ion_gyroradius(1.1*u.T, T_i=1.2*u.K, Vperp=1*u.m/u.s)
+
+    with pytest.raises(ValueError):
+        ion_gyroradius(1.1*u.T, 1.2*u.K, 1.1*u.m)
 
 
 def test_electron_plasma_frequency():
