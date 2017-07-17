@@ -605,7 +605,7 @@ def electron_gyroradius(B, *args, Vperp=None, T_e=None):
         the magnetic field in units convertible to meters per second.
 
     T_e : Quantity, optional
-        The electron temperature in units convertible to kelvin.  
+        The electron temperature in units convertible to kelvin.
 
     args : Quantity
         If the second positional argument is a Quantity with units
@@ -760,7 +760,7 @@ def ion_gyroradius(B, *args, Vperp=None, T_i=None, ion='p'):
 
     If any of B, Vperp, or T_i is a number rather than a Quantity,
     then SI units will be assumed and a warning will be raised.
-    
+
     Formula
     -------
     The ion gyroradius is also known as the ion Larmor radius and is
