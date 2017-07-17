@@ -102,7 +102,8 @@ def Alfven_speed(B, density, ion="p"):
         If the magnetic field or density is not in appropriate units.
 
     UserWarning
-        If the Alfven velocity exceeds 10% of the speed of light.
+        If the Alfven velocity exceeds 10% of the speed of light, or
+        if units are not provided and SI units are assumed.
 
     ValueError
         If the density is negative, or the ion mass or charge state
@@ -848,6 +849,9 @@ def electron_plasma_frequency(n_e):
     ValueError
         If n_e contains invalid values
 
+    UserWarning
+        If units are not provided and SI units are assumed
+
     Notes
     -----
     The electron plasma frequency is
@@ -909,6 +913,9 @@ def ion_plasma_frequency(n_i, ion='p'):
     ValueError
         If n_i contains invalid values or ion cannot be used to
         identify an ion or isotope.
+
+    UserWarning
+        If units are not provided and SI units are assumed
 
     Notes
     -----
@@ -977,6 +984,9 @@ def Debye_length(T_e, n_e):
     ValueError
         If either argument contains invalid values
 
+    UserWarning
+        If units are not provided and SI units are assumed
+
     Notes
     -----
 
@@ -1042,6 +1052,9 @@ def Debye_number(T_e, n_e):
 
     ValueError
         If either argument contains invalid values
+
+    UserWarning
+        If units are not provided and SI units are assumed
 
     Returns
     -------
@@ -1114,6 +1127,9 @@ def ion_inertial_length(n_i, ion='p'):
     ValueError
         The ion density does not have an appropriate value.
 
+    UserWarning
+        If units are not provided and SI units are assumed
+
     Notes
     -----
     The ion inertial length is also known as an ion skin depth and is
@@ -1168,6 +1184,9 @@ def electron_inertial_length(n_e):
     ValueError
         If n_e contains invalid values
 
+    UserWarning
+        If units are not provided and SI units are assumed
+
     Notes
     -----
     The electron inertial length is also known as an electron skin depth and
@@ -1217,6 +1236,9 @@ def magnetic_pressure(B):
     ValueError
         If the magnetic field strength is not a real number between
         +/- infinity
+
+    UserWarning
+        If units are not provided and SI units are assumed
 
     Notes
     -----
@@ -1274,6 +1296,9 @@ def magnetic_energy_density(B):
     ValueError
         If the magnetic field strength does not have an appropriate
         value.
+
+    UserWarning
+        If units are not provided and SI units are assumed
 
     Notes
     -----
@@ -1334,6 +1359,9 @@ def upper_hybrid_frequency(B, n_e):
     ValueError
         If either of B or n_e contains invalid values or are of
         incompatible dimensions
+
+    UserWarning
+        If units are not provided and SI units are assumed
 
     Notes
     -----
@@ -1402,6 +1430,9 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
         If either of B or n_i contains invalid values or are of
         incompatible dimensions, or ion cannot be used to identify an
         ion or isotope
+
+    UserWarning
+        If units are not provided and SI units are assumed
 
     Notes
     -----
