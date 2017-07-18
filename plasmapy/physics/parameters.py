@@ -85,8 +85,10 @@ def Alfven_speed(B, density, ion="p"):
         or the mass density in units convertible to kg / m**3.
 
     ion : string, optional
-        Representation of the ion species.  If not given, then the ions
-        are assumed to be protons.
+        Representation of the ion species (e.g., 'p' for protons, 'D+'
+        for deuterium, or 'He-4 +1' for singly ionized helium-4),
+        which defaults to protons.  If no charge state information is
+        provided, then the ions are assumed to be singly charged.
 
     Returns
     -------
@@ -181,8 +183,8 @@ def Alfven_speed(B, density, ion="p"):
     return V_A
 
 
-def ion_sound_speed(*ignore, ion='p', T_e=0*units.K, T_i=0*units.K,
-                    gamma_e=1, gamma_i=3):
+def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
+                    gamma_e=1, gamma_i=3, ion='p'):
     r"""Returns the ion sound speed for an electron-ion plasma.
 
     Parameters
@@ -198,11 +200,6 @@ def ion_sound_speed(*ignore, ion='p', T_e=0*units.K, T_i=0*units.K,
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
 
-    ion : string, optional
-        Representation of the ion species.  If not given, then the ions
-        are assumed to be protons.  If the charge state is not given, then
-        ions are assumed to be singly charged.
-
     gamma_e : float or int
         The adiabatic index for electrons, which defaults to 1.  This
         value assumes that the electrons are able to equalize their
@@ -213,6 +210,12 @@ def ion_sound_speed(*ignore, ion='p', T_e=0*units.K, T_i=0*units.K,
         The adiabatic index for ions, which defaults to 3.  This value
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
+
+    ion : string, optional
+        Representation of the ion species (e.g., 'p' for protons, 'D+'
+        for deuterium, or 'He-4 +1' for singly ionized helium-4),
+        which defaults to protons.  If no charge state information is
+        provided, then the ions are assumed to be singly charged.
 
     Returns
     -------
@@ -393,8 +396,11 @@ def ion_thermal_speed(T_i, ion='p'):
     T_i : Quantity
         The ion temperature in either kelvin or energy per particle
 
-    ion : string
-        Symbol representing the ion species, defaulting to protons
+    ion : string, optional
+        Representation of the ion species (e.g., 'p' for protons, 'D+'
+        for deuterium, or 'He-4 +1' for singly ionized helium-4),
+        which defaults to protons.  If no charge state information is
+        provided, then the ions are assumed to be singly charged.
 
     Returns
     -------
@@ -534,8 +540,10 @@ def ion_gyrofrequency(B, ion='p'):
         The magnetic field magnitude in units convertible to tesla.
 
     ion : string, optional
-        Representation of the ion species.  If not given, then the ions
-        are assumed to be protons.
+        Representation of the ion species (e.g., 'p' for protons, 'D+'
+        for deuterium, or 'He-4 +1' for singly ionized helium-4),
+        which defaults to protons.  If no charge state information is
+        provided, then the ions are assumed to be singly charged.
 
     Returns
     -------
@@ -731,11 +739,11 @@ def ion_gyroradius(B, *args, Vperp=None, T_i=None, ion='p'):
     T_i: Quantity, optional
         The ion temperature in units convertible to kelvin.
 
-    ion : string, optional keyword
-        Representation of the ion species.  If not given, then the
-        ions are assumed to be protons.  If the element or isotope is
-        given but the charge state is not, then the ion is assumed to
-        be singly ionized.
+    ion : string, optional
+        Representation of the ion species (e.g., 'p' for protons, 'D+'
+        for deuterium, or 'He-4 +1' for singly ionized helium-4),
+        which defaults to protons.  If no charge state information is
+        provided, then the ions are assumed to be singly charged.
 
     args : Quantity
         If the second positional argument is a Quantity with units
@@ -898,13 +906,13 @@ def ion_plasma_frequency(n_i, ion='p'):
     Parameters
     ----------
     n_i : Quantity
-        Ion number density
+        Ion number density in units convertible to per cubic meter
 
     ion : string, optional
-        Representation of the ion species.  If not given, then the
-        ions are assumed to be protons.  If the isotope is given but
-        the charge state is not given, the ion is assumed to be singly
-        ionized.
+        Representation of the ion species (e.g., 'p' for protons, 'D+'
+        for deuterium, or 'He-4 +1' for singly ionized helium-4),
+        which defaults to protons.  If no charge state information is
+        provided, then the ions are assumed to be singly charged.
 
     Returns
     -------
@@ -1117,8 +1125,10 @@ def ion_inertial_length(n_i, ion='p'):
         Ion number density in units convertible to m**-3
 
     ion : string, optional
-        Representation of the ion species.  If not given, then the ions
-        are assumed to be protons.
+        Representation of the ion species (e.g., 'p' for protons, 'D+'
+        for deuterium, or 'He-4 +1' for singly ionized helium-4),
+        which defaults to protons.  If no charge state information is
+        provided, then the ions are assumed to be singly charged.
 
     Returns
     -------
@@ -1416,10 +1426,10 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
         Ion number density
 
     ion : string, optional
-        Representation of the ion species.  If not given, then the
-        ions are assumed to be protons.  If the isotope is given but
-        the charge state is not given, the ion is assumed to be singly
-        ionized.
+        Representation of the ion species (e.g., 'p' for protons, 'D+'
+        for deuterium, or 'He-4 +1' for singly ionized helium-4),
+        which defaults to protons.  If no charge state information is
+        provided, then the ions are assumed to be singly charged.
 
     Returns
     -------
