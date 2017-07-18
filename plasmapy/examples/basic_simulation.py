@@ -2,6 +2,8 @@ import numpy as np
 import astropy.units as u
 import matplotlib.pyplot as plt
 from pathlib import Path
+import datetime
+
 from plasmapy import Plasma
 
 savedir = Path("/home/drew/PlasmaPy/plasmapy/tests/test_output")
@@ -51,23 +53,41 @@ def riemann_shock():
     riemann.energy = energy
     print('Success')
 
-    for maxt in np.arange(0, 0.21, 0.02):
-        print('- Running Simulation... ', end='')
-        riemann.simulate(max_time=maxt*u.s)
-        print("Simulation complete")
+    # for maxt in np.arange(0, 0.21, 0.02):
+    #     print('- Running Simulation... ', end='')
+    #     riemann.simulate(max_time=maxt*u.s)
+    #     print("Simulation complete")
 
-        fig, ax = plt.subplots(2, 2)
-        ax = ax.flatten()
-        ax[0].plot(x, riemann.density)
-        ax[0].set_ylim(0, 1.2)
-        ax[1].plot(x, riemann.velocity[0, :, ...])
-        ax[1].set_ylim(0, 1.1)
-        ax[2].plot(x, riemann.energy)
-        ax[3].plot(x, riemann.pressure)
-        ax[3].set_ylim(0, 1.2)
-        plt.savefig(
-            str(savedir/"riemann_shock_{:.4f}".format(maxt)).replace('.', '_'))
-        plt.close()
+    #     fig, ax = plt.subplots(2, 2)
+    #     ax = ax.flatten()
+    #     ax[0].plot(x, riemann.density)
+    #     ax[0].set_ylim(0, 1.2)
+    #     ax[1].plot(x, riemann.velocity[0, :, ...])
+    #     ax[1].set_ylim(0, 1.1)
+    #     ax[2].plot(x, riemann.energy)
+    #     ax[3].plot(x, riemann.pressure)
+    #     ax[3].set_ylim(0, 1.2)
+    #     plt.savefig(
+    #         str(savedir/"riemann_shock_{:.4f}".format(maxt)).replace('.', '_'))
+    #     plt.close()
+
+    t0 = datetime.datetime.now()
+    riemann.simulate(max_time=0.2*u.s)
+    t1 = datetime.datetime.now()
+    dt = t1 - t0
+
+    print(f'Simulation begun {t0}, ended {t1}, duration {dt}')
+    params = [riemann.density, riemann.velocity[0, :, ...],
+              riemann.energy, riemann.pressure]
+    labels = [r'$\rho$', r'$v_x$', r'$e$', r'p']
+
+    fig, axes = plt.subplots(2, 2, figsize=(12, 6))
+    axes = axes.flatten()
+    for i, ax in enumerate(axes):
+        ax.plot(x, params[i])
+        ax.set_xlabel(labels[i])
+    plt.savefig(str(savedir/"riemann_shock_final"))
+    plt.close()
 
 
 def test_mhd_waves():
@@ -108,5 +128,5 @@ def test_mhd_waves():
         plt.close()
 
 
-if __name__== '__main__':
+if __name__ == '__main__':
     riemann_shock()
