@@ -181,7 +181,7 @@ def Alfven_speed(B, density, ion="p"):
     return V_A
 
 
-def ion_sound_speed(*ignore, ion='p', T_e=0*units.K, T_i=0*units.K,
+def ion_sound_speed(*, ion='p', T_e=0*units.K, T_i=0*units.K,
                     gamma_e=1, gamma_i=3):
     r"""Returns the ion sound speed for an electron-ion plasma.
 
