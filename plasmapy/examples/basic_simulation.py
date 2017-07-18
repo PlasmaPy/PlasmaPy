@@ -6,9 +6,9 @@ import datetime
 
 from plasmapy import Plasma
 
-savedir = Path("/home/drew/PlasmaPy/plasmapy/tests/test_output")
+savedir = Path("~/PlasmaPy/plasmapy/tests/test_output").expanduser()
 if not savedir.exists():
-    savedir.mkdir()
+    savedir.mkdir(parents = True)
 
 
 def gaussian(x, mean=0.0, std=1.0, amp=1.0):
@@ -70,7 +70,6 @@ def riemann_shock():
     #     plt.savefig(
     #         str(savedir/"riemann_shock_{:.4f}".format(maxt)).replace('.', '_'))
     #     plt.close()
-
     t0 = datetime.datetime.now()
     riemann.simulate(max_time=0.2*u.s)
     t1 = datetime.datetime.now()
@@ -86,8 +85,8 @@ def riemann_shock():
     for i, ax in enumerate(axes):
         ax.plot(x, params[i])
         ax.set_xlabel(labels[i])
-    plt.savefig(str(savedir/"riemann_shock_final"))
-    plt.close()
+    fig.savefig(str(savedir/"riemann_shock_final"))
+    plt.close(fig)
 
 
 def test_mhd_waves():
@@ -122,10 +121,10 @@ def test_mhd_waves():
         print("Simulation complete")
 
         fig, ax = plt.subplots()
-        plt.imshow(waves.density.value, cmap='plasma')
-        plt.colorbar()
-        plt.savefig(str(savedir/"mhd_waves_{}".format(max_i)))
-        plt.close()
+        IM = ax.imshow(waves.density.value, cmap='plasma')
+        plt.colorbar(IM)
+        fig.savefig(str(savedir/f"mhd_waves_{max_i}"))
+        plt.close(fig)
 
 
 if __name__ == '__main__':
