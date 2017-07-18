@@ -5,6 +5,8 @@ from .classes import Plasma
 from . import classes
 from . import constants
 from . import analytic
+from . import physics
+from . import utils
 
 import sys
 import warnings
