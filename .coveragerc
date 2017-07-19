@@ -1,4 +1,8 @@
 [report]
-omit = 
-	ci-helpers/*
-	*/tests/*
+omit =
+ 	ci-helpers/*
+ 	*/tests/*
+	*__init__.py
+exclude_lines =
+    def __repr__
+    def __str__
