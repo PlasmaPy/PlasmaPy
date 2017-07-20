@@ -20,3 +20,5 @@ from .parameters import (Alfven_speed,
                          upper_hybrid_frequency,
                          lower_hybrid_frequency,
                          )
+
+from .transport import Coulomb_logarithm
