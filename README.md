@@ -6,7 +6,7 @@ A community developed Python package for plasma physics.
 
 ## Project Status
 
-PlasmaPy is in a very early stage of development.  The goals of this project are described in our [vision_statement](https://github.com/PlasmaPy/PlasmaPy/blob/master/vision_statement.md) and an earlier conference poster:
+PlasmaPy is in an early stage of development.  The goals of this project are described in our [vision statement](https://github.com/PlasmaPy/PlasmaPy/blob/master/vision_statement.md) and an earlier conference poster:
 
 * Murphy, Nicholas A, Huang, Yi-Min, & PlasmaPy Community. (2016, October). PlasmaPy: beginning a community developed Python package for plasma physics. Zenodo. http://doi.org/10.5281/zenodo.163752
 
@@ -27,23 +27,23 @@ would like to use HTTPS (which is the default and easier to set up), then run:
 git clone https://github.com/PlasmaPy/PlasmaPy.git
 ```
 
-If you have [set up an SSH
-key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/), an equivalent and more secure command is:
+If you have [set up an SSH key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/), an equivalent and more secure command is:
 
 ```ShellSession
 git clone git@github.com:PlasmaPy/PlasmaPy.git
 ```
 
-The [contributing to PlasmaPy](https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTE.md)
-guide has instructions on how to fork a repository so that you may make pull requests.
+The [contributing to PlasmaPy](https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTE.md) guide has instructions on how to fork a repository so that you may make pull requests.
 
 In the top level directory, run
 
-  python setup.py install
+```ShellSession
+python setup.py install
+```
 
 PlasmaPy is presently being designed to be compatible with Python 3.6 and above, and does not guarantee support for Python 3.5 and below.  PlasmaPy is not compatible with Python 2.
 
 ## License
 
-PlasmaPy is licensed under a 3-clause BSD style license - see the
-``licenses/LICENSE.md`` file.
+PlasmaPy is licensed under a 3-clause BSD style license - see
+``LICENSE.md`` file in the top-level directory.
