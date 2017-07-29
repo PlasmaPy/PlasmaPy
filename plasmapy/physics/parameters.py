@@ -98,7 +98,8 @@ def Alfven_speed(B, density, ion="p"):
     Raises
     ------
     TypeError
-        The magnetic field and density arguments are not Quantities.
+        The magnetic field and density arguments are not Quantities and
+        cannot be converted into Quantities.
 
     UnitConversionError
         If the magnetic field or density is not in appropriate units.
