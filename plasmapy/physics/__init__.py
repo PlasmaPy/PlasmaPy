@@ -26,5 +26,3 @@ from .quantum import deBroglie_wavelength
 from .relativity import Lorentz_factor
 
 from .transport import Coulomb_logarithm
-
-
