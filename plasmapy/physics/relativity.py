@@ -65,8 +65,8 @@ def Lorentz_factor(V):
 
         gamma = np.zeros_like(V.value)
 
-        equals_c = np.where(np.abs(V) == c)
-        is_slow = np.invert(equals_c)
+        equals_c = np.abs(V) == c
+        is_slow = ~equals_c
 
         gamma[is_slow] = ((1 - (V[is_slow]/c)**2)**-0.5).value
         gamma[equals_c] = np.inf

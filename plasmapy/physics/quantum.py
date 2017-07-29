@@ -71,14 +71,14 @@ def deBroglie_wavelength(V, particle):
                          "greater than or equal to the speed of light.")
 
     try:
-        m = ion_mass(particle)  # Replace with more general routine!
+        m = ion_mass(particle)  # TODO: Replace with more general routine!
     except Exception:
         raise ValueError("Unable to find particle mass.")
 
     if V.size > 1:
 
         is_zero = np.where(V == 0*units.m/units.s)
-        is_nonzero = np.invert(is_zero)
+        is_nonzero = ~is_zero
 
         lambda_dB = np.zeros_like(V.value)
         lambda_dB[is_zero] = np.inf*units.m
