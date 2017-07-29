@@ -1,7 +1,50 @@
+from functools import wraps
 import numpy as np
 from astropy import units as u
 from ..constants import c
 
+
+def check_relativistic(func=None, betafrac=0.1):
+    """Raises an error when the output of the decorated
+    function is greater than betafrac times the speed of light
+
+    Parameters
+    ----------
+    func : function, optional
+        The function to decorate
+    betafrac : float, optional
+        The minimum fraction of the speed of light that will raise a
+        UserWarning
+
+    Returns
+    -------
+    function
+        Decorated function
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> @check_relativistic
+    >>> def speed():
+    >>>     return 1*u.m/u.s
+
+    Passing in a custom `betafrac`
+    >>> @check_relativistic(betafrac=0.01)
+    >>> def speed():
+    >>>     return 1*u.m/u.s
+
+    """
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            return_ = f(*args, **kwargs)
+            _check_relativistic(return_, f.__name__,
+                                betafrac=betafrac)
+            return return_
+        return wrapper
+    if func:
+        return decorator(func)
+    return decorator
 
 def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
                     can_be_complex=False, can_be_inf=True):

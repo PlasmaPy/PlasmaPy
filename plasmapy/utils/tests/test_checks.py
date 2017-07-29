@@ -5,7 +5,9 @@ from astropy import units as u
 import pytest
 
 from ...constants import c
-from ..checks import (_check_quantity, _check_relativistic)
+from ..checks import (
+    _check_quantity, _check_relativistic, check_relativistic
+)
 
 
 def test__check_quantity():
@@ -63,7 +65,10 @@ def test__check_quantity():
 
 
 non_relativistic_speeds = [
-    0*u.m/u.s, 0.099999*c, -0.09*c, 5*u.AA/u.Gyr
+    (0*u.m/u.s, 0.1),
+    (0.099999*c, 0.1),
+    (-0.09*c, 0.1),
+    (5*u.AA/u.Gyr, 0.1)
 ]
 relativisitc_error_inputs = [
     (0.11*c, 0.1, UserWarning),
@@ -83,12 +88,45 @@ relativisitc_error_inputs = [
 ]
 
 
-@pytest.mark.parametrize("speed", non_relativistic_speeds)
-def test__check_relativisitc_valid(speed):
-    _check_relativistic(speed, 'f')
+@pytest.mark.parametrize("speed, betafrac", non_relativistic_speeds)
+def test__check_relativisitc_valid(speed, betafrac):
+    _check_relativistic(speed, 'f', betafrac=betafrac)
 
 
 @pytest.mark.parametrize("speed, betafrac, error", relativisitc_error_inputs)
 def test__check_relativistic_errors(speed, betafrac, error):
     with pytest.raises(error):
         _check_relativistic(speed, 'f', betafrac=betafrac)
+
+
+@pytest.mark.parametrize("speed, betafrac", non_relativistic_speeds)
+def test_check_relativistic_decorator(speed, betafrac):
+
+    @check_relativistic(betafrac=betafrac)
+    def speed_func():
+        return speed
+
+    speed_func()
+
+
+@pytest.mark.parametrize(
+    "speed",
+    [item[0] for item in non_relativistic_speeds])
+def test_check_relativistic_decorator_no_args(speed):
+
+    @check_relativistic
+    def speed_func():
+        return speed
+
+    speed_func()
+
+@pytest.mark.parametrize("speed, betafrac, error", relativisitc_error_inputs)
+def test_check_relativistic_decorator_errors(
+    speed, betafrac, error):
+
+    @check_relativistic(betafrac=betafrac)
+    def speed_func():
+        return speed
+
+    with pytest.raises(error):
+        speed_func()
