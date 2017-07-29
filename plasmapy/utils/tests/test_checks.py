@@ -10,62 +10,63 @@ from ..checks import (
 )
 
 
-def test__check_quantity():
-
+# (value, units, can_be_negative, can_be_complex, can_be_inf, error)
+quantity_error_examples = [
     # exceptions associated with the units keyword
+    (5*u.T, 5*u.T, True, False, True, TypeError),
+    (5*u.T, 5, True, False, True, TypeError),
+    (5*u.T, [u.T, 1], True, False, True, TypeError),
+    (5*u.T, [1, u.m], True, False, True, TypeError),
+    (u.T, u.J, True, False, True, TypeError),
+    (5.0, u.m, True, False, True, UserWarning),
+    (3*u.m/u.s, u.m, True, False, True, u.UnitConversionError),
+    (-5*u.K, u.K, False, False, True, ValueError),
+    (5j*u.K, u.K, True, False, True, ValueError),
+    (np.inf*u.K, u.K, True, False, False, ValueError)
+]
 
-    with pytest.raises(TypeError):
-        _check_quantity(5*u.T, 'arg', 'funcname', 5*u.T)
-
-    with pytest.raises(TypeError):
-        _check_quantity(5*u.T, 'arg', 'funcname', 5)
-
-    with pytest.raises(TypeError):
-        _check_quantity(5*u.T, 'arg', 'funcname', [u.T, 1])
-
-    with pytest.raises(TypeError):
-        _check_quantity(5*u.T, 'arg', 'funcname', [1, u.m])
-
-    with pytest.raises(TypeError):
-        _check_quantity(u.T, 'arg', 'funcname', u.J)
-
-    with pytest.raises(UserWarning):
-        _check_quantity(5.0, 'arg', 'funcname', u.m)
-
-    with pytest.raises(u.UnitConversionError):
-        _check_quantity(3*u.m/u.s, 'V', 'f', u.m)
-
+# (value, units, can_be_negative, can_be_complex, can_be_inf)
+quantity_valid_examples = [
     # check basic functionality
-
-    _check_quantity(5*u.T, 'B', 'f', u.T)
-    _check_quantity(3*u.m/u.s, 'V', 'f', u.m/u.s)
-    _check_quantity(3*u.m/u.s, 'V', 'f', [u.m/u.s])
-    _check_quantity(3*u.m/u.s**2, 'a', 'f', [u.m/u.s, u.m/(u.s**2)])
-    _check_quantity(3*u.km/u.yr, 'V', 'f', u.m/u.s)
-
+    (5*u.T, u.T, True, False, True),
+    (3*u.m/u.s, u.m/u.s, True, False, True),
+    (3*u.m/u.s, [u.m/u.s], True, False, True),
+    (3*u.m/u.s**2, [u.m/u.s, u.m/(u.s**2)], True, False, True),
+    (3*u.km/u.yr, u.m/u.s, True, False, True),
     # check temperature in units of energy per particle (e.g., eV)
-
-    _check_quantity(5*u.eV, 'T', 'f', u.K)
-    _check_quantity(5*u.K, 'T', 'f', u.eV)
-    _check_quantity(5*u.keV, 'T', 'f', [u.m, u.K])
-
+    (5*u.eV, u.K, True, False, True),
+    (5*u.K, u.eV, True, False, True),
+    (5*u.keV, [u.m, u.K], True, False, True),
     # check keywords relating to numerical values
+    (5j*u.m, u.m, True, True, True),
+    (np.inf*u.T, u.T, True, False, True)
+]
 
-    _check_quantity(5j*u.m, 'L', 'f', u.m, can_be_complex=True)
-    _check_quantity(np.inf*u.T, 'B', 'f', u.T)
 
-    with pytest.raises(ValueError):
-        _check_quantity(-5*u.K, 'T', 'f', u.K, can_be_negative=False)
+@pytest.mark.parametrize(
+    "value, units, can_be_negative, can_be_complex, can_be_inf, error",
+    quantity_error_examples)
+def test__check_quantity_errors(
+        value, units, can_be_negative, can_be_complex, can_be_inf, error):
+    with pytest.raises(error):
+        _check_quantity(value, 'arg', 'funcname', units,
+                        can_be_negative=can_be_negative,
+                        can_be_complex=can_be_complex,
+                        can_be_inf=can_be_inf)
 
-    with pytest.raises(ValueError):
-        _check_quantity(5j*u.K, 'T', 'f', u.K)
 
-    with pytest.raises(ValueError):
-        _check_quantity(np.inf*u.K, 'T', 'f', u.K, can_be_inf=False)
+@pytest.mark.parametrize(
+    "value, units, can_be_negative, can_be_complex, can_be_inf",
+    quantity_valid_examples)
+def test__check_quantity(value, units, can_be_negative, can_be_complex, can_be_inf):
 
+    _check_quantity(value, 'arg', 'funcname', units,
+                    can_be_negative=can_be_negative,
+                    can_be_complex=can_be_complex,
+                    can_be_inf=can_be_inf)
 
 # (speed, betafrac)
-non_relativistic_speeds = [
+non_relativistic_speed_examples = [
     (0*u.m/u.s, 0.1),
     (0.099999*c, 0.1),
     (-0.09*c, 0.1),
@@ -73,7 +74,7 @@ non_relativistic_speeds = [
 ]
 
 # (speed, betafrac, error)
-relativisitc_error_inputs = [
+relativisitc_error_examples = [
     (0.11*c, 0.1, UserWarning),
     (1.0*c, 0.1, UserWarning),
     (1.1*c, 0.1, UserWarning),
@@ -91,18 +92,18 @@ relativisitc_error_inputs = [
 ]
 
 
-@pytest.mark.parametrize("speed, betafrac", non_relativistic_speeds)
+@pytest.mark.parametrize("speed, betafrac", non_relativistic_speed_examples)
 def test__check_relativisitc_valid(speed, betafrac):
     _check_relativistic(speed, 'f', betafrac=betafrac)
 
 
-@pytest.mark.parametrize("speed, betafrac, error", relativisitc_error_inputs)
+@pytest.mark.parametrize("speed, betafrac, error", relativisitc_error_examples)
 def test__check_relativistic_errors(speed, betafrac, error):
     with pytest.raises(error):
         _check_relativistic(speed, 'f', betafrac=betafrac)
 
 
-@pytest.mark.parametrize("speed, betafrac", non_relativistic_speeds)
+@pytest.mark.parametrize("speed, betafrac", non_relativistic_speed_examples)
 def test_check_relativistic_decorator(speed, betafrac):
 
     @check_relativistic(betafrac=betafrac)
@@ -114,7 +115,7 @@ def test_check_relativistic_decorator(speed, betafrac):
 
 @pytest.mark.parametrize(
     "speed",
-    [item[0] for item in non_relativistic_speeds])
+    [item[0] for item in non_relativistic_speed_examples])
 def test_check_relativistic_decorator_no_args(speed):
 
     @check_relativistic
@@ -123,9 +124,9 @@ def test_check_relativistic_decorator_no_args(speed):
 
     speed_func()
 
-@pytest.mark.parametrize("speed, betafrac, error", relativisitc_error_inputs)
-def test_check_relativistic_decorator_errors(
-    speed, betafrac, error):
+
+@pytest.mark.parametrize("speed, betafrac, error", relativisitc_error_examples)
+def test_check_relativistic_decorator_errors(speed, betafrac, error):
 
     @check_relativistic(betafrac=betafrac)
     def speed_func():
