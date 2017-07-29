@@ -21,4 +21,10 @@ from .parameters import (Alfven_speed,
                          lower_hybrid_frequency,
                          )
 
+from .quantum import deBroglie_wavelength
+
+from .relativity import Lorentz_factor
+
 from .transport import Coulomb_logarithm
+
+
