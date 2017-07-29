@@ -22,6 +22,9 @@ def test_Lorentz_factor():
     assert np.isclose(gamma_arr[0], (1/np.sqrt(1-V_arr[0]**2/c**2)).value)
     assert gamma_arr[1] == np.inf
 
+    assert (Lorentz_factor(3*u.m/u.s)*u.dimensionless_unscaled).unit == \
+        u.dimensionless_unscaled
+
     with pytest.raises(ValueError):
         Lorentz_factor(1.0000000001*c)
 
