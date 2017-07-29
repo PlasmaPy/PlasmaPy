@@ -64,12 +64,15 @@ def test__check_quantity():
         _check_quantity(np.inf*u.K, 'T', 'f', u.K, can_be_inf=False)
 
 
+# (speed, betafrac)
 non_relativistic_speeds = [
     (0*u.m/u.s, 0.1),
     (0.099999*c, 0.1),
     (-0.09*c, 0.1),
     (5*u.AA/u.Gyr, 0.1)
 ]
+
+# (speed, betafrac, error)
 relativisitc_error_inputs = [
     (0.11*c, 0.1, UserWarning),
     (1.0*c, 0.1, UserWarning),
