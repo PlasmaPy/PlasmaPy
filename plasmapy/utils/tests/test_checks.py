@@ -62,51 +62,33 @@ def test__check_quantity():
         _check_quantity(np.inf*u.K, 'T', 'f', u.K, can_be_inf=False)
 
 
-def test__check_relativistic():
+non_relativistic_speeds = [
+    0*u.m/u.s, 0.099999*c, -0.09*c, 5*u.AA/u.Gyr
+]
+relativisitc_error_inputs = [
+    (0.11*c, 0.1, UserWarning),
+    (1.0*c, 0.1, UserWarning),
+    (1.1*c, 0.1, UserWarning),
+    (np.inf*u.cm/u.s, 0.1, UserWarning),
+    (-0.11*c, 0.1, UserWarning),
+    (-1.0*c, 0.1, UserWarning),
+    (-1.1*c, 0.1, UserWarning),
+    (-np.inf*u.cm/u.s, 0.1, UserWarning),
+    (2997924581*u.cm/u.s, 0.1, UserWarning),
+    (0.02*c, 0.01, UserWarning),
+    (u.m/u.s, 0.1, TypeError),
+    (51513.35, 0.1, TypeError),
+    (5*u.m, 0.1, u.UnitConversionError),
+    (np.nan*u.m/u.s, 0.1, ValueError)
+]
 
-    _check_relativistic(0*u.m/u.s, 'f')
-    _check_relativistic(0.099999*c, 'f')
-    _check_relativistic(-0.09*c, 'f')
-    _check_relativistic(5*u.AA/u.Gyr, 'f')
 
-    with pytest.raises(UserWarning):
-        _check_relativistic(0.11*c, 'f')
+@pytest.mark.parametrize("speed", non_relativistic_speeds)
+def test__check_relativisitc_valid(speed):
+    _check_relativistic(speed, 'f')
 
-    with pytest.raises(UserWarning):
-        _check_relativistic(1.0*c, 'f')
 
-    with pytest.raises(UserWarning):
-        _check_relativistic(1.1*c, 'f')
-
-    with pytest.raises(UserWarning):
-        _check_relativistic(np.inf*u.cm/u.s, 'f')
-
-    with pytest.raises(UserWarning):
-        _check_relativistic(-0.11*c, 'f')
-
-    with pytest.raises(UserWarning):
-        _check_relativistic(-1.0*c, 'f')
-
-    with pytest.raises(UserWarning):
-        _check_relativistic(-1.1*c, 'f')
-
-    with pytest.raises(UserWarning):
-        _check_relativistic(-np.inf*u.cm/u.s, 'f')
-
-    with pytest.raises(UserWarning):
-        _check_relativistic(2997924581*u.cm/u.s, 'f')
-
-    with pytest.raises(UserWarning):
-        _check_relativistic(0.02*c, 'f', betafrac=0.01)
-
-    with pytest.raises(TypeError):
-        _check_relativistic(u.m/u.s, 'f')
-
-    with pytest.raises(TypeError):
-        _check_relativistic(51513.35, 'f')
-
-    with pytest.raises(u.UnitConversionError):
-        _check_relativistic(5*u.m, 'f')
-
-    with pytest.raises(ValueError):
-        _check_relativistic(np.nan*u.m/u.s, 'f')
+@pytest.mark.parametrize("speed, betafrac, error", relativisitc_error_inputs)
+def test__check_relativistic_errors(speed, betafrac, error):
+    with pytest.raises(error):
+        _check_relativistic(speed, 'f', betafrac=betafrac)
