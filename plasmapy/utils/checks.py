@@ -1,12 +1,88 @@
 from functools import wraps
+import inspect
+
 import numpy as np
 from astropy import units as u
 from ..constants import c
 
 
+def check_quantity(argname, can_be_negative=True,
+                   can_be_complex=False, can_be_inf=True):
+    """Raises exceptions if `argname` in decorated function is not an
+    astropy Quantity with correct units and valid numerical values.
+
+    Parameters
+    ----------
+    argname : str
+        The argument name in decorated function
+    can_be_negative : bool, optional
+        True if the Quantity can be negative, False otherwise.
+        Defaults to True.
+    can_be_complex : bool, optional
+        True if the Quantity can be a complex number, False otherwise.
+        Defaults to False.
+    can_be_inf : bool, optional
+        True if the Quantity can contain infinite values, False
+        Defaults to True.
+
+    Raises
+    ------
+    TypeError
+        If the argument is not a Quantity, units is not entirely units or
+        `argname` does not have a type annotation.
+
+    UnitConversionError
+        If the argument is not in acceptable units.
+
+    ValueError
+        If the argument contains NaNs or other invalid values as
+        determined by the keywords.
+
+    Returns
+    -------
+    function
+        Decorated function
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> @check_quantity("x")
+    >>> def func(x: u.m):
+    >>>     return x
+    >>> func(1*u.m)
+    """
+    def decorator(f):
+        wrapped_sign = inspect.signature(f)
+
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            bind_args = wrapped_sign.bind(*args, **kwargs)
+            try:
+                param = wrapped_sign.parameters[argname]
+            except:
+                raise ValueError(f"{argname} is not an argument name")
+
+            # Handle keyword arguments that uses default values
+            if (param.name not in bind_args.arguments
+                    and param.default is not param.empty):
+                bind_args.arguments[param.name] = param.default
+
+            value = bind_args.arguments[argname]
+            targets = param.annotation
+            if targets is param.empty:
+                raise TypeError(f"{argname} has no type annotation")
+            _check_quantity(value, argname, f.__name__, targets,
+                            can_be_negative=can_be_negative,
+                            can_be_complex=can_be_complex,
+                            can_be_inf=can_be_inf)
+            return f(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
 def check_relativistic(func=None, betafrac=0.1):
     """Raises an error when the output of the decorated
-    function is greater than betafrac times the speed of light
+    function is greater than `betafrac` times the speed of light
 
     Parameters
     ----------
@@ -15,11 +91,27 @@ def check_relativistic(func=None, betafrac=0.1):
     betafrac : float, optional
         The minimum fraction of the speed of light that will raise a
         UserWarning
+        Defaults to 0.1
 
     Returns
     -------
     function
         Decorated function
+
+    Raises
+    ------
+    TypeError
+        If V is not a Quantity
+
+    UnitConversionError
+        If V is not in units of velocity
+
+    ValueError
+        If V contains any NaNs
+
+    UserWarning
+        If V is greater than betafrac times the speed of light
+
 
     Examples
     --------
@@ -45,6 +137,7 @@ def check_relativistic(func=None, betafrac=0.1):
     if func:
         return decorator(func)
     return decorator
+
 
 def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
                     can_be_complex=False, can_be_inf=True):

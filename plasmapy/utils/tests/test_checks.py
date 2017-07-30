@@ -6,47 +6,57 @@ import pytest
 
 from ...constants import c
 from ..checks import (
-    _check_quantity, _check_relativistic, check_relativistic
+    _check_quantity, _check_relativistic, check_relativistic,
+    check_quantity
 )
 
 
-# (value, units, can_be_negative, can_be_complex, can_be_inf, error)
-quantity_error_examples = [
+# (value, units, error)
+quantity_error_examples_default = [
     # exceptions associated with the units keyword
-    (5*u.T, 5*u.T, True, False, True, TypeError),
-    (5*u.T, 5, True, False, True, TypeError),
-    (5*u.T, [u.T, 1], True, False, True, TypeError),
-    (5*u.T, [1, u.m], True, False, True, TypeError),
-    (u.T, u.J, True, False, True, TypeError),
-    (5.0, u.m, True, False, True, UserWarning),
-    (3*u.m/u.s, u.m, True, False, True, u.UnitConversionError),
+    (5*u.T, 5*u.T, TypeError),
+    (5*u.T, 5, TypeError),
+    (5*u.T, [u.T, 1], TypeError),
+    (5*u.T, [1, u.m], TypeError),
+    (u.T, u.J, TypeError),
+    (5.0, u.m, UserWarning),
+    (3*u.m/u.s, u.m, u.UnitConversionError),
+    (5j*u.K, u.K, ValueError),
+]
+
+# (value, units, can_be_negative, can_be_complex, can_be_inf, error)
+quantity_error_examples_non_default = [
     (-5*u.K, u.K, False, False, True, ValueError),
-    (5j*u.K, u.K, True, False, True, ValueError),
     (np.inf*u.K, u.K, True, False, False, ValueError)
 ]
 
-# (value, units, can_be_negative, can_be_complex, can_be_inf)
-quantity_valid_examples = [
+# (value, units)
+quantity_valid_examples_default = [
     # check basic functionality
-    (5*u.T, u.T, True, False, True),
-    (3*u.m/u.s, u.m/u.s, True, False, True),
-    (3*u.m/u.s, [u.m/u.s], True, False, True),
-    (3*u.m/u.s**2, [u.m/u.s, u.m/(u.s**2)], True, False, True),
-    (3*u.km/u.yr, u.m/u.s, True, False, True),
+    (5*u.T, u.T),
+    (3*u.m/u.s, u.m/u.s),
+    (3*u.m/u.s, [u.m/u.s]),
+    (3*u.m/u.s**2, [u.m/u.s, u.m/(u.s**2)]),
+    (3*u.km/u.yr, u.m/u.s),
     # check temperature in units of energy per particle (e.g., eV)
-    (5*u.eV, u.K, True, False, True),
-    (5*u.K, u.eV, True, False, True),
-    (5*u.keV, [u.m, u.K], True, False, True),
+    (5*u.eV, u.K),
+    (5*u.K, u.eV),
+    (5*u.keV, [u.m, u.K]),
     # check keywords relating to numerical values
-    (5j*u.m, u.m, True, True, True),
-    (np.inf*u.T, u.T, True, False, True)
+    (np.inf*u.T, u.T)
+]
+
+# (value, units, can_be_negative, can_be_complex, can_be_inf)
+quantity_valid_examples_non_default = [
+    (5j*u.m, u.m, True, True, True)
 ]
 
 
+# Tests for _check_quantity
 @pytest.mark.parametrize(
     "value, units, can_be_negative, can_be_complex, can_be_inf, error",
-    quantity_error_examples)
-def test__check_quantity_errors(
+    quantity_error_examples_non_default)
+def test__check_quantity_errors_non_default(
         value, units, can_be_negative, can_be_complex, can_be_inf, error):
     with pytest.raises(error):
         _check_quantity(value, 'arg', 'funcname', units,
@@ -55,15 +65,147 @@ def test__check_quantity_errors(
                         can_be_inf=can_be_inf)
 
 
+@pytest.mark.parametrize("value, units, error", quantity_error_examples_default)
+def test__check_quantity_errors_default(value, units, error):
+    with pytest.raises(error):
+        _check_quantity(value, 'arg', 'funcname', units)
+
+
 @pytest.mark.parametrize(
     "value, units, can_be_negative, can_be_complex, can_be_inf",
-    quantity_valid_examples)
-def test__check_quantity(value, units, can_be_negative, can_be_complex, can_be_inf):
-
+    quantity_valid_examples_non_default)
+def test__check_quantity_non_default(
+        value, units, can_be_negative, can_be_complex, can_be_inf):
     _check_quantity(value, 'arg', 'funcname', units,
                     can_be_negative=can_be_negative,
                     can_be_complex=can_be_complex,
                     can_be_inf=can_be_inf)
+
+
+@pytest.mark.parametrize("value, units", quantity_valid_examples_default)
+def test__check_quantity_default(value, units):
+    _check_quantity(value, 'arg', 'funcname', units)
+
+
+# Tests for check_quantity decorator
+@pytest.mark.parametrize("value, units, error", quantity_error_examples_default)
+def test_check_quantity_decorator_errors_default(value, units, error):
+
+    @check_quantity("x")
+    def func(x: units):
+        return x
+
+    with pytest.raises(error):
+        func(value)
+
+
+@pytest.mark.parametrize(
+    "value, units, can_be_negative, can_be_complex, can_be_inf, error",
+    quantity_error_examples_non_default)
+def test_check_quantity_decorator_errors_non_default(
+        value, units, can_be_negative, can_be_complex, can_be_inf, error):
+
+    @check_quantity(
+        "x",
+        can_be_negative=can_be_negative,
+        can_be_complex=can_be_complex,
+        can_be_inf=can_be_inf)
+    def func(x: units):
+        return x
+
+    with pytest.raises(error):
+        func(value)
+
+
+@pytest.mark.parametrize("value, units", quantity_valid_examples_default)
+def test_check_quantity_decorator_default(value, units):
+
+    @check_quantity("x")
+    def func(x: units):
+        return x
+
+    func(value)
+
+
+@pytest.mark.parametrize(
+    "value, units, can_be_negative, can_be_complex, can_be_inf",
+    quantity_valid_examples_non_default)
+def test_check_quantity_decorator_non_default(
+        value, units, can_be_negative, can_be_complex, can_be_inf):
+
+    @check_quantity("x",
+                    can_be_negative=can_be_negative,
+                    can_be_complex=can_be_complex,
+                    can_be_inf=can_be_inf)
+    def func(x: units):
+        return x
+
+    func(value)
+
+
+def test_check_quantity_decorator_two_args_default():
+
+    @check_quantity("x")
+    @check_quantity("y")
+    def func(x: u.m, y: u.s):
+        return x/y
+
+    func(1*u.m, 1*u.s)
+
+
+def test_check_quantity_decorator_two_args_not_default():
+
+    @check_quantity("x", can_be_negative=False)
+    @check_quantity("y")
+    def func(x: u.m, y: u.s):
+        return x/y
+
+    with pytest.raises(ValueError):
+        func(-1*u.m, 2*u.s)
+
+
+def test_check_quantity_decorator_two_args_one_kwargs_default():
+
+    @check_quantity("x")
+    @check_quantity("y")
+    @check_quantity("z")
+    def func(x: u.m, y: u.s, another: int, z: u.eV=10*u.eV):
+        return x*y*z
+
+    func(1*u.m, 1*u.s, 10)
+
+
+def test_check_quantity_decorator_two_args_one_kwargs_not_default():
+
+    @check_quantity("x")
+    @check_quantity("y", can_be_negative=False)
+    @check_quantity("z", can_be_inf=False)
+    def func(x: u.m, y: u.s, z: u.eV=10*u.eV):
+        return x*y*z
+
+    with pytest.raises(ValueError):
+        func(1*u.m, 1*u.s, z=np.inf*u.eV)
+
+
+def test_check_quantity_decorator_invalid_name():
+
+    @check_quantity("bad")
+    def func(x: u.m):
+        return x
+
+    with pytest.raises(ValueError):
+        func(1*u.m)
+
+
+def test_check_quantity_decorator_no_annotation():
+
+    @check_quantity("x")
+    def func(x):
+        return x
+
+    with pytest.raises(TypeError):
+        func(1*u.m)
+
 
 # (speed, betafrac)
 non_relativistic_speed_examples = [
@@ -92,6 +234,7 @@ relativisitc_error_examples = [
 ]
 
 
+# Tests for _check_relativistic
 @pytest.mark.parametrize("speed, betafrac", non_relativistic_speed_examples)
 def test__check_relativisitc_valid(speed, betafrac):
     _check_relativistic(speed, 'f', betafrac=betafrac)
@@ -103,6 +246,7 @@ def test__check_relativistic_errors(speed, betafrac, error):
         _check_relativistic(speed, 'f', betafrac=betafrac)
 
 
+# Tests for check_relativistic decorator
 @pytest.mark.parametrize("speed, betafrac", non_relativistic_speed_examples)
 def test_check_relativistic_decorator(speed, betafrac):
 
@@ -119,6 +263,18 @@ def test_check_relativistic_decorator(speed, betafrac):
 def test_check_relativistic_decorator_no_args(speed):
 
     @check_relativistic
+    def speed_func():
+        return speed
+
+    speed_func()
+
+
+@pytest.mark.parametrize(
+    "speed",
+    [item[0] for item in non_relativistic_speed_examples])
+def test_check_relativistic_decorator_no_args_parentheses(speed):
+
+    @check_relativistic()
     def speed_func():
         return speed
 
