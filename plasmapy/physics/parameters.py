@@ -183,9 +183,11 @@ def Alfven_speed(B, density, ion="p"):
 
 
 @check_relativistic
-@check_quantity("T_e", can_be_negative=False)
-@check_quantity("T_i", can_be_negative=False)
-def ion_sound_speed(*ignore, T_e: units.K=0*units.K, T_i: units.K=0*units.K,
+@check_quantity({
+    'T_i': {'units': units.K, 'can_be_negative': False},
+    'T_e': {'units': units.K, 'can_be_negative': False}
+})
+def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
                     gamma_e=1, gamma_i=3, ion='p'):
     r"""Returns the ion sound speed for an electron-ion plasma.
 
@@ -317,8 +319,10 @@ def ion_sound_speed(*ignore, T_e: units.K=0*units.K, T_i: units.K=0*units.K,
 
 
 @check_relativistic
-@check_quantity("T_e", can_be_negative=False)
-def electron_thermal_speed(T_e: units.K):
+@check_quantity({
+    'T_e': {'units': units.K, 'can_be_negative': False}
+})
+def electron_thermal_speed(T_e):
     r"""Returns the most probable speed for an electron within a
     Maxwellian distribution.
 
@@ -380,8 +384,10 @@ def electron_thermal_speed(T_e: units.K):
 
 
 @check_relativistic
-@check_quantity("T_i", can_be_negative=False)
-def ion_thermal_speed(T_i: units.K, ion='p'):
+@check_quantity({
+    'T_i': {'units': units.K, 'can_be_negative': False}
+})
+def ion_thermal_speed(T_i, ion='p'):
     r"""Returns the most probable speed for an ion within a Maxwellian
     distribution.
 
@@ -455,8 +461,10 @@ def ion_thermal_speed(T_i: units.K, ion='p'):
     return V_Ti
 
 
-@check_quantity("B")
-def electron_gyrofrequency(B: units.T):
+@check_quantity({
+    'B': {'units': units.T}
+})
+def electron_gyrofrequency(B):
     r"""Calculate the electron gyrofrequency in units of radians per second.
 
     Parameters
@@ -519,8 +527,10 @@ def electron_gyrofrequency(B: units.T):
     return omega_ce
 
 
-@check_quantity("B")
-def ion_gyrofrequency(B: units.T, ion='p'):
+@check_quantity({
+    'B': {'units': units.T}
+})
+def ion_gyrofrequency(B, ion='p'):
     r"""Calculate the ion gyrofrequency in units of radians per second.
 
     Parameters
@@ -829,8 +839,10 @@ def ion_gyroradius(B, *args, Vperp=None, T_i=None, ion='p'):
     return r_Li.to(units.m, equivalencies=units.dimensionless_angles())
 
 
-@check_quantity("n_e", can_be_negative=False)
-def electron_plasma_frequency(n_e: units.m**-3):
+@check_quantity({
+    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+})
+def electron_plasma_frequency(n_e):
     r"""Calculates the electron plasma frequency.
 
     Parameters
@@ -885,8 +897,10 @@ def electron_plasma_frequency(n_e: units.m**-3):
     return omega_pe
 
 
-@check_quantity("n_i", can_be_negative=False)
-def ion_plasma_frequency(n_i: units.m**-3, ion='p'):
+@check_quantity({
+    'n_i': {'units': units.m**-3, 'can_be_negative': False}
+})
+def ion_plasma_frequency(n_i, ion='p'):
     r"""Calculates the ion plasma frequency.
 
     Parameters
@@ -957,9 +971,11 @@ def ion_plasma_frequency(n_i: units.m**-3, ion='p'):
     return omega_pi.si
 
 
-@check_quantity("T_e", can_be_negative=False)
-@check_quantity("n_e", can_be_negative=False)
-def Debye_length(T_e: units.K, n_e: units.m**-3):
+@check_quantity({
+    'T_e': {'units': units.K, 'can_be_negative': False},
+    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+})
+def Debye_length(T_e, n_e):
     r"""Calculate the Debye length.
 
     Parameters
@@ -1028,9 +1044,11 @@ def Debye_length(T_e: units.K, n_e: units.m**-3):
     return lambda_D
 
 
-@check_quantity("T_e", can_be_negative=False)
-@check_quantity("n_e", can_be_negative=False)
-def Debye_number(T_e: units.K, n_e: units.m**-3):
+@check_quantity({
+    'T_e': {'units': units.K, 'can_be_negative': False},
+    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+})
+def Debye_number(T_e, n_e):
     r"""Returns the Debye number.
 
     Parameters
@@ -1093,8 +1111,10 @@ def Debye_number(T_e: units.K, n_e: units.m**-3):
     return N_D.to(units.dimensionless_unscaled)
 
 
-@check_quantity("n_i", can_be_negative=False)
-def ion_inertial_length(n_i: units.m**-3, ion='p'):
+@check_quantity({
+    'n_i': {'units': units.m**-3, 'can_be_negative': False}
+})
+def ion_inertial_length(n_i, ion='p'):
     r"""Calculate the ion inertial length,
 
     Parameters
@@ -1154,8 +1174,10 @@ def ion_inertial_length(n_i: units.m**-3, ion='p'):
     return d_i
 
 
-@check_quantity("n_e", can_be_negative=False)
-def electron_inertial_length(n_e: units.m**-3):
+@check_quantity({
+    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+})
+def electron_inertial_length(n_e):
     r"""Returns the electron inertial length.
 
     Parameters
@@ -1204,8 +1226,10 @@ def electron_inertial_length(n_e: units.m**-3):
     return d_e
 
 
-@check_quantity("B")
-def magnetic_pressure(B: units.T):
+@check_quantity({
+    'B': {'units': units.T}
+})
+def magnetic_pressure(B):
     r"""Calculate the magnetic pressure.
 
     Parameters
@@ -1263,7 +1287,9 @@ def magnetic_pressure(B: units.T):
     return p_B
 
 
-@check_quantity("B")
+@check_quantity({
+    'B': {'units': units.T}
+})
 def magnetic_energy_density(B: units.T):
     r"""Calculate the magnetic energy density.
 
@@ -1322,9 +1348,11 @@ def magnetic_energy_density(B: units.T):
     return E_B
 
 
-@check_quantity("B")
-@check_quantity("n_e", can_be_negative=False)
-def upper_hybrid_frequency(B: units.T, n_e: units.m**-3):
+@check_quantity({
+    'B': {'units': units.T},
+    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+})
+def upper_hybrid_frequency(B, n_e):
     r"""Returns the upper hybrid frequency.
 
     Parameters
@@ -1383,9 +1411,11 @@ def upper_hybrid_frequency(B: units.T, n_e: units.m**-3):
     return omega_uh
 
 
-@check_quantity("B")
-@check_quantity("n_i", can_be_negative=False)
-def lower_hybrid_frequency(B: units.T, n_i: units.m**-3, ion='p'):
+@check_quantity({
+    'B': {'units': units.T},
+    'n_i': {'units': units.m**-3, 'can_be_negative': False}
+})
+def lower_hybrid_frequency(B, n_i, ion='p'):
     r"""Returns the lower hybrid frequency.
 
     Parameters

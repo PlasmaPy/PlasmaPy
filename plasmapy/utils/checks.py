@@ -6,24 +6,15 @@ from astropy import units as u
 from ..constants import c
 
 
-def check_quantity(argname, can_be_negative=True,
+def check_quantity(validations, can_be_negative=True,
                    can_be_complex=False, can_be_inf=True):
     """Raises exceptions if `argname` in decorated function is not an
     astropy Quantity with correct units and valid numerical values.
 
     Parameters
     ----------
-    argname : str
-        The argument name in decorated function
-    can_be_negative : bool, optional
-        True if the Quantity can be negative, False otherwise.
-        Defaults to True.
-    can_be_complex : bool, optional
-        True if the Quantity can be a complex number, False otherwise.
-        Defaults to False.
-    can_be_inf : bool, optional
-        True if the Quantity can contain infinite values, False
-        Defaults to True.
+    validations : dict
+        Validation dictionary.
 
     Raises
     ------
@@ -46,8 +37,13 @@ def check_quantity(argname, can_be_negative=True,
     Examples
     --------
     >>> from astropy import units as u
-    >>> @check_quantity("x")
-    >>> @check_quantity("y", can_be_negative=False)
+    >>> @check_quantity({
+    >>>      "x": {"units": u.m},
+    >>>      "y": {"units": u.s,
+    >>>            "can_be_negative": False,
+    >>>            "can_be_complex": True,
+    >>>            "can_be_inf": False}
+    >>> })
     >>> def func(x: u.m, y: u.s=1*u.s):
     >>>     return x
     >>> func(1*u.m, 2*u.s)
@@ -55,28 +51,42 @@ def check_quantity(argname, can_be_negative=True,
     """
     def decorator(f):
         wrapped_sign = inspect.signature(f)
+        fname = f.__name__
 
         @wraps(f)
         def wrapper(*args, **kwargs):
-            bind_args = wrapped_sign.bind(*args, **kwargs)
-            try:
-                param = wrapped_sign.parameters[argname]
-            except KeyError:
-                raise ValueError(f"{argname} is not an argument name")
+            # combine args and kwargs into dictionary
+            bound_args = wrapped_sign.bind(*args, **kwargs)
+            bound_args.apply_defaults()
+            given_params_values = bound_args.arguments
+            given_params = set(given_params_values.keys())
 
-            # Handle keyword arguments that uses default values
-            if (param.name not in bind_args.arguments
-                    and param.default is not param.empty):
-                bind_args.arguments[param.name] = param.default
+            # names of params to check
+            validated_params = set(validations.keys())
 
-            value = bind_args.arguments[argname]
-            targets = param.annotation
-            if targets is param.empty:
-                raise TypeError(f"{argname} has no type annotation")
-            _check_quantity(value, argname, f.__name__, targets,
-                            can_be_negative=can_be_negative,
-                            can_be_complex=can_be_complex,
-                            can_be_inf=can_be_inf)
+            missing_params = [param for param in (validated_params - given_params)]
+
+            if len(missing_params) > 0:
+                params_str = ", ".join(missing_params)
+                raise TypeError(
+                    f"Call to {fname} is missing validated params {params_str}")
+
+            for param_to_check, validation_settings in validations.items():
+                value_to_check = given_params_values[param_to_check]
+
+                can_be_negative = validation_settings.get('can_be_negative', True)
+                can_be_complex = validation_settings.get('can_be_complex', False)
+                can_be_inf = validation_settings.get('can_be_inf', True)
+
+                _check_quantity(value_to_check,
+                                param_to_check,
+                                fname,
+                                validation_settings['units'],
+                                can_be_negative=can_be_negative,
+                                can_be_complex=can_be_complex,
+                                can_be_inf=can_be_inf)
+
+
             return f(*args, **kwargs)
         return wrapper
     return decorator

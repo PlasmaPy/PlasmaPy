@@ -93,8 +93,10 @@ def test__check_quantity_default(value, units):
     "value, units, error", quantity_error_examples_default)
 def test_check_quantity_decorator_errors_default(value, units, error):
 
-    @check_quantity("x")
-    def func(x: units):
+    @check_quantity({
+        "x": {"units": units}
+    })
+    def func(x):
         return x
 
     with pytest.raises(error):
@@ -107,12 +109,11 @@ def test_check_quantity_decorator_errors_default(value, units, error):
 def test_check_quantity_decorator_errors_non_default(
         value, units, can_be_negative, can_be_complex, can_be_inf, error):
 
-    @check_quantity(
-        "x",
-        can_be_negative=can_be_negative,
-        can_be_complex=can_be_complex,
-        can_be_inf=can_be_inf)
-    def func(x: units):
+    @check_quantity({
+        "x": {"units": units, "can_be_negative": can_be_negative,
+              "can_be_complex": can_be_complex, "can_be_inf": can_be_inf}
+    })
+    def func(x):
         return x
 
     with pytest.raises(error):
@@ -122,8 +123,10 @@ def test_check_quantity_decorator_errors_non_default(
 @pytest.mark.parametrize("value, units", quantity_valid_examples_default)
 def test_check_quantity_decorator_default(value, units):
 
-    @check_quantity("x")
-    def func(x: units):
+    @check_quantity({
+        "x": {"units": units}
+    })
+    def func(x):
         return x
 
     func(value)
@@ -135,21 +138,38 @@ def test_check_quantity_decorator_default(value, units):
 def test_check_quantity_decorator_non_default(
         value, units, can_be_negative, can_be_complex, can_be_inf):
 
-    @check_quantity("x",
-                    can_be_negative=can_be_negative,
-                    can_be_complex=can_be_complex,
-                    can_be_inf=can_be_inf)
-    def func(x: units):
+    @check_quantity({
+        "x": {"units": units, "can_be_negative": can_be_negative,
+              "can_be_complex": can_be_complex, "can_be_inf": can_be_inf}
+    })
+    def func(x):
         return x
 
     func(value)
 
 
+def test_check_quantity_decorator_missing_validated_params():
+
+    @check_quantity({
+        "x": {"units": u.m},
+        "y": {"units": u.s}
+    })
+    def func(x):
+        return x
+
+    with pytest.raises(TypeError) as e:
+        func(1*u.m)
+
+    assert "Call to func is missing validated params y" == str(e.value)
+
+
 def test_check_quantity_decorator_two_args_default():
 
-    @check_quantity("x")
-    @check_quantity("y")
-    def func(x: u.m, y: u.s):
+    @check_quantity({
+        "x": {"units": u.m},
+        "y": {"units": u.s}
+    })
+    def func(x, y):
         return x/y
 
     func(1*u.m, 1*u.s)
@@ -157,9 +177,11 @@ def test_check_quantity_decorator_two_args_default():
 
 def test_check_quantity_decorator_two_args_not_default():
 
-    @check_quantity("x", can_be_negative=False)
-    @check_quantity("y")
-    def func(x: u.m, y: u.s):
+    @check_quantity({
+        "x": {"units": u.m, "can_be_negative": False},
+        "y": {"units": u.s}
+    })
+    def func(x, y):
         return x/y
 
     with pytest.raises(ValueError):
@@ -168,10 +190,12 @@ def test_check_quantity_decorator_two_args_not_default():
 
 def test_check_quantity_decorator_two_args_one_kwargs_default():
 
-    @check_quantity("x")
-    @check_quantity("y")
-    @check_quantity("z")
-    def func(x: u.m, y: u.s, another: int, z: u.eV=10*u.eV):
+    @check_quantity({
+        "x": {"units": u.m},
+        "y": {"units": u.s},
+        "z": {"units": u.eV}
+    })
+    def func(x, y, another, z=10*u.eV):
         return x*y*z
 
     func(1*u.m, 1*u.s, 10)
@@ -179,38 +203,16 @@ def test_check_quantity_decorator_two_args_one_kwargs_default():
 
 def test_check_quantity_decorator_two_args_one_kwargs_not_default():
 
-    @check_quantity("x")
-    @check_quantity("y", can_be_negative=False)
-    @check_quantity("z", can_be_inf=False)
+    @check_quantity({
+        "x": {"units": u.m},
+        "y": {"units": u.s, "can_be_negative": False},
+        "z": {"units": u.eV, "can_be_inf": False}
+    })
     def func(x: u.m, y: u.s, z: u.eV=10*u.eV):
         return x*y*z
 
     with pytest.raises(ValueError):
         func(1*u.m, 1*u.s, z=np.inf*u.eV)
-
-
-def test_check_quantity_decorator_invalid_name():
-
-    @check_quantity("bad")
-    def func(x: u.m):
-        return x
-
-    with pytest.raises(ValueError) as e:
-        func(1*u.m)
-
-    assert "bad is not an argument name" == str(e.value)
-
-
-def test_check_quantity_decorator_no_annotation():
-
-    @check_quantity("x")
-    def func(x):
-        return x
-
-    with pytest.raises(TypeError) as e:
-        func(1*u.m)
-
-    assert "x has no type annotation" == str(e.value)
 
 
 # (speed, betafrac)
