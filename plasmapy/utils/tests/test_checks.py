@@ -65,7 +65,8 @@ def test__check_quantity_errors_non_default(
                         can_be_inf=can_be_inf)
 
 
-@pytest.mark.parametrize("value, units, error", quantity_error_examples_default)
+@pytest.mark.parametrize(
+    "value, units, error", quantity_error_examples_default)
 def test__check_quantity_errors_default(value, units, error):
     with pytest.raises(error):
         _check_quantity(value, 'arg', 'funcname', units)
@@ -88,7 +89,8 @@ def test__check_quantity_default(value, units):
 
 
 # Tests for check_quantity decorator
-@pytest.mark.parametrize("value, units, error", quantity_error_examples_default)
+@pytest.mark.parametrize(
+    "value, units, error", quantity_error_examples_default)
 def test_check_quantity_decorator_errors_default(value, units, error):
 
     @check_quantity("x")

@@ -61,7 +61,7 @@ def check_quantity(argname, can_be_negative=True,
             bind_args = wrapped_sign.bind(*args, **kwargs)
             try:
                 param = wrapped_sign.parameters[argname]
-            except:
+            except KeyError:
                 raise ValueError(f"{argname} is not an argument name")
 
             # Handle keyword arguments that uses default values

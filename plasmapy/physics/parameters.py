@@ -1321,6 +1321,7 @@ def magnetic_energy_density(B: units.T):
 
     return E_B
 
+
 @check_quantity("B")
 @check_quantity("n_e", can_be_negative=False)
 def upper_hybrid_frequency(B: units.T, n_e: units.m**-3):
@@ -1384,7 +1385,7 @@ def upper_hybrid_frequency(B: units.T, n_e: units.m**-3):
 
 @check_quantity("B")
 @check_quantity("n_i", can_be_negative=False)
-def lower_hybrid_frequency(B: units.T, n_i:units.m**-3, ion='p'):
+def lower_hybrid_frequency(B: units.T, n_i: units.m**-3, ion='p'):
     r"""Returns the lower hybrid frequency.
 
     Parameters
