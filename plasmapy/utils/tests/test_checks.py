@@ -198,7 +198,7 @@ def test_check_quantity_decorator_two_args_one_kwargs_default():
     def func(x, y, another, z=10*u.eV):
         return x*y*z
 
-    func(1*u.m, 1*u.s, 10)
+    func(1*u.m, 1*u.s, 10*u.T)
 
 
 def test_check_quantity_decorator_two_args_one_kwargs_not_default():
@@ -208,7 +208,7 @@ def test_check_quantity_decorator_two_args_one_kwargs_not_default():
         "y": {"units": u.s, "can_be_negative": False},
         "z": {"units": u.eV, "can_be_inf": False}
     })
-    def func(x: u.m, y: u.s, z: u.eV=10*u.eV):
+    def func(x, y, z=10*u.eV):
         return x*y*z
 
     with pytest.raises(ValueError):
