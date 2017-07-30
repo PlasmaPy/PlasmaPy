@@ -13,7 +13,7 @@ import numpy as np
 # For future: change these into decorators.  _check_quantity does a
 # bit more than @quantity_input as it can allow
 
-from ..utils import _check_quantity, _check_relativistic
+from ..utils import _check_quantity, check_relativistic, check_quantity
 
 
 r"""Values should be returned as an Astropy Quantity in SI units.
@@ -72,6 +72,7 @@ by an angular frequency to get a length scale:
 """
 
 
+@check_relativistic
 def Alfven_speed(B, density, ion="p"):
     r"""Returns the Alfven speed.
 
@@ -178,12 +179,13 @@ def Alfven_speed(B, density, ion="p"):
     except Exception:
         raise ValueError("Unable to find Alfven speed")
 
-    _check_relativistic(V_A, 'Alfven_speed')
-
     return V_A
 
 
-def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
+@check_relativistic
+@check_quantity("T_e", can_be_negative=False)
+@check_quantity("T_i", can_be_negative=False)
+def ion_sound_speed(*ignore, T_e: units.K=0*units.K, T_i: units.K=0*units.K,
                     gamma_e=1, gamma_i=3, ion='p'):
     r"""Returns the ion sound speed for an electron-ion plasma.
 
@@ -302,11 +304,6 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
         raise ValueError("The adiabatic index for ions must be between "
                          "one and infinity")
 
-    _check_quantity(T_i, 'T_i', 'ion_sound_speed', units.K,
-                    can_be_negative=False)
-    _check_quantity(T_e, 'T_e', 'ion_sound_speed', units.K,
-                    can_be_negative=False)
-
     T_i = T_i.to(units.K, equivalencies=units.temperature_energy())
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
 
@@ -316,12 +313,12 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
     except Exception:
         raise ValueError("Unable to find ion sound speed.")
 
-    _check_relativistic(V_S, 'ion_sound_speed')
-
     return V_S
 
 
-def electron_thermal_speed(T_e):
+@check_relativistic
+@check_quantity("T_e", can_be_negative=False)
+def electron_thermal_speed(T_e: units.K):
     r"""Returns the most probable speed for an electron within a
     Maxwellian distribution.
 
@@ -376,18 +373,15 @@ def electron_thermal_speed(T_e):
 
     """
 
-    _check_quantity(T_e, 'T_e', 'electron_thermal_speed', units.K,
-                    can_be_negative=False)
-
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
     V_Te = (np.sqrt(2*k_B*T_e/m_e)).to(units.m/units.s)
-
-    _check_relativistic(V_Te, 'electron_thermal_speed')
 
     return V_Te
 
 
-def ion_thermal_speed(T_i, ion='p'):
+@check_relativistic
+@check_quantity("T_i", can_be_negative=False)
+def ion_thermal_speed(T_i: units.K, ion='p'):
     r"""Returns the most probable speed for an ion within a Maxwellian
     distribution.
 
@@ -449,9 +443,6 @@ def ion_thermal_speed(T_i, ion='p'):
 
     """
 
-    _check_quantity(T_i, 'T_i', 'ion_thermal_speed', units.K,
-                    can_be_negative=False)
-
     T_i = T_i.to(units.K, equivalencies=units.temperature_energy())
 
     try:
@@ -461,12 +452,11 @@ def ion_thermal_speed(T_i, ion='p'):
 
     V_Ti = (np.sqrt(2*k_B*T_i/m_i)).to(units.m/units.s)
 
-    _check_relativistic(V_Ti, 'ion_thermal_speed')
-
     return V_Ti
 
 
-def electron_gyrofrequency(B):
+@check_quantity("B")
+def electron_gyrofrequency(B: units.T):
     r"""Calculate the electron gyrofrequency in units of radians per second.
 
     Parameters
@@ -524,14 +514,13 @@ def electron_gyrofrequency(B):
 
     """
 
-    _check_quantity(B, 'B', 'electron_gyrofrequency', units.T)
-
     omega_ce = units.rad*(e*np.abs(B)/m_e).to(1/units.s)
 
     return omega_ce
 
 
-def ion_gyrofrequency(B, ion='p'):
+@check_quantity("B")
+def ion_gyrofrequency(B: units.T, ion='p'):
     r"""Calculate the ion gyrofrequency in units of radians per second.
 
     Parameters
@@ -591,8 +580,6 @@ def ion_gyrofrequency(B, ion='p'):
     >>> ion_gyrofrequency(0.01*u.T, ion='T')
 
     """
-
-    _check_quantity(B, 'B', 'ion_gyrofrequency', units.T)
 
     try:
         m_i = ion_mass(ion)
@@ -842,7 +829,8 @@ def ion_gyroradius(B, *args, Vperp=None, T_i=None, ion='p'):
     return r_Li.to(units.m, equivalencies=units.dimensionless_angles())
 
 
-def electron_plasma_frequency(n_e):
+@check_quantity("n_e", can_be_negative=False)
+def electron_plasma_frequency(n_e: units.m**-3):
     r"""Calculates the electron plasma frequency.
 
     Parameters
@@ -892,15 +880,13 @@ def electron_plasma_frequency(n_e):
 
     """
 
-    _check_quantity(n_e, 'n_e', 'electron_plasma_frequency', units.m**-3,
-                    can_be_negative=False)
-
     omega_pe = (units.rad*e*np.sqrt(n_e/(eps0*m_e))).to(units.rad/units.s)
 
     return omega_pe
 
 
-def ion_plasma_frequency(n_i, ion='p'):
+@check_quantity("n_i", can_be_negative=False)
+def ion_plasma_frequency(n_i: units.m**-3, ion='p'):
     r"""Calculates the ion plasma frequency.
 
     Parameters
@@ -958,9 +944,6 @@ def ion_plasma_frequency(n_i, ion='p'):
 
     """
 
-    _check_quantity(n_i, 'n_i', 'ion_plasma_frequency', units.m**-3,
-                    can_be_negative=False)
-
     try:
         m_i = ion_mass(ion)
         Z = charge_state(ion)
@@ -974,7 +957,9 @@ def ion_plasma_frequency(n_i, ion='p'):
     return omega_pi.si
 
 
-def Debye_length(T_e, n_e):
+@check_quantity("T_e", can_be_negative=False)
+@check_quantity("n_e", can_be_negative=False)
+def Debye_length(T_e: units.K, n_e: units.m**-3):
     r"""Calculate the Debye length.
 
     Parameters
@@ -1033,11 +1018,6 @@ def Debye_length(T_e, n_e):
 
     """
 
-    _check_quantity(T_e, 'T_e', 'Debye_length', units.K,
-                    can_be_negative=False)
-    _check_quantity(n_e, 'n_e', 'Debye_length', units.m**-3,
-                    can_be_negative=False)
-
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
 
     try:
@@ -1048,7 +1028,9 @@ def Debye_length(T_e, n_e):
     return lambda_D
 
 
-def Debye_number(T_e, n_e):
+@check_quantity("T_e", can_be_negative=False)
+@check_quantity("n_e", can_be_negative=False)
+def Debye_number(T_e: units.K, n_e: units.m**-3):
     r"""Returns the Debye number.
 
     Parameters
@@ -1102,11 +1084,6 @@ def Debye_number(T_e, n_e):
 
     """
 
-    _check_quantity(T_e, 'T_e', 'Debye_number', units.K,
-                    can_be_negative=False)
-    _check_quantity(n_e, 'n_e', 'Debye_number', units.m**-3,
-                    can_be_negative=False)
-
     try:
         lambda_D = Debye_length(T_e, n_e)
         N_D = (4/3)*np.pi*n_e*lambda_D**3
@@ -1116,7 +1093,8 @@ def Debye_number(T_e, n_e):
     return N_D.to(units.dimensionless_unscaled)
 
 
-def ion_inertial_length(n_i, ion='p'):
+@check_quantity("n_i", can_be_negative=False)
+def ion_inertial_length(n_i: units.m**-3, ion='p'):
     r"""Calculate the ion inertial length,
 
     Parameters
@@ -1170,16 +1148,14 @@ def ion_inertial_length(n_i, ion='p'):
     except Exception:
         raise ValueError("Invalid ion in ion_inertial_length.")
 
-    _check_quantity(n_i, 'n_i', 'ion_inertial_length', units.m**-3,
-                    can_be_negative=False)
-
     omega_pi = ion_plasma_frequency(n_i, ion=ion)
     d_i = (c/omega_pi).to(units.m, equivalencies=units.dimensionless_angles())
 
     return d_i
 
 
-def electron_inertial_length(n_e):
+@check_quantity("n_e", can_be_negative=False)
+def electron_inertial_length(n_e: units.m**-3):
     r"""Returns the electron inertial length.
 
     Parameters
@@ -1222,16 +1198,14 @@ def electron_inertial_length(n_e):
 
     """
 
-    _check_quantity(n_e, 'n_e', 'electron_inertial_length', units.m**-3,
-                    can_be_negative=False)
-
     omega_pe = electron_plasma_frequency(n_e)
     d_e = (c/omega_pe).to(units.m, equivalencies=units.dimensionless_angles())
 
     return d_e
 
 
-def magnetic_pressure(B):
+@check_quantity("B")
+def magnetic_pressure(B: units.T):
     r"""Calculate the magnetic pressure.
 
     Parameters
@@ -1284,14 +1258,13 @@ def magnetic_pressure(B):
 
     """
 
-    _check_quantity(B, 'B', 'magnetic_pressure', units.T)
-
     p_B = (B**2/(2*mu0)).to(units.Pa)
 
     return p_B
 
 
-def magnetic_energy_density(B):
+@check_quantity("B")
+def magnetic_energy_density(B: units.T):
     r"""Calculate the magnetic energy density.
 
     Parameters
@@ -1344,14 +1317,13 @@ def magnetic_energy_density(B):
 
     """
 
-    _check_quantity(B, 'B', 'magnetic_energy_density', units.T)
-
     E_B = (B**2/(2*mu0)).to(units.J/units.m**3)
 
     return E_B
 
-
-def upper_hybrid_frequency(B, n_e):
+@check_quantity("B")
+@check_quantity("n_e", can_be_negative=False)
+def upper_hybrid_frequency(B: units.T, n_e: units.m**-3):
     r"""Returns the upper hybrid frequency.
 
     Parameters
@@ -1400,10 +1372,6 @@ def upper_hybrid_frequency(B, n_e):
 
     """
 
-    _check_quantity(B, 'B', 'upper_hybrid_frequency', units.T)
-    _check_quantity(n_e, 'n_e', 'upper_hybrid_frequency', units.m**-3,
-                    can_be_negative=False)
-
     try:
         omega_pe = electron_plasma_frequency(n_e=n_e)
         omega_ce = electron_gyrofrequency(B)
@@ -1414,7 +1382,9 @@ def upper_hybrid_frequency(B, n_e):
     return omega_uh
 
 
-def lower_hybrid_frequency(B, n_i, ion='p'):
+@check_quantity("B")
+@check_quantity("n_i", can_be_negative=False)
+def lower_hybrid_frequency(B: units.T, n_i:units.m**-3, ion='p'):
     r"""Returns the lower hybrid frequency.
 
     Parameters
@@ -1472,10 +1442,6 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
     <Quantity 578372732.8478782 rad / s>
 
     """
-
-    _check_quantity(B, 'B', 'lower_hybrid_frequency', units.T)
-    _check_quantity(n_i, 'n_i', 'lower_hybrid_frequency', units.m**-3,
-                    can_be_negative=False)
 
     # We do not need a charge state here, so the sole intent is to
     # catch invalid ions.
