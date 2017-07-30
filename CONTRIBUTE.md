@@ -20,14 +20,11 @@ early stages of PlasmaPy development:
   [submit issues](https://github.com/PlasmaPy/plasmapy/issues) and
   review [pull requests](https://github.com/PlasmaPy/plasmapy/pulls).
 
-* The [PlasmaPy HipChat group](https://plasmapy.hipchat.com/chat) is a
-  great place to have informal conversations and share ideas.  Before
-  participating it is necessary to join the PlasmaPy team on HipChat
-  (note: if you have another HipChat account, then you must use a
-  different email address for this one).
+* The [PlasmaPy Matrix channel](https://riot.im/app/#/room/#plasmapy:matrix.org)
+  is a great place to have informal conversations, coordinate efforts,
+  and share ideas.  
 
-* We have regularly scheduled telecons which are announced on the
-  email list.
+* We have biweekly telecons which are announced on the email list.
 
 ## Contributing code or documentation to PlasmaPy
 
