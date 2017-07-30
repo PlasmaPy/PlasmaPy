@@ -193,8 +193,10 @@ def test_check_quantity_decorator_invalid_name():
     def func(x: u.m):
         return x
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as e:
         func(1*u.m)
+
+    assert "bad is not an argument name" == str(e.value)
 
 
 def test_check_quantity_decorator_no_annotation():
@@ -203,8 +205,10 @@ def test_check_quantity_decorator_no_annotation():
     def func(x):
         return x
 
-    with pytest.raises(TypeError):
+    with pytest.raises(TypeError) as e:
         func(1*u.m)
+
+    assert "x has no type annotation" == str(e.value)
 
 
 # (speed, betafrac)
