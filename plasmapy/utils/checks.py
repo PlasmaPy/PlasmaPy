@@ -47,9 +47,10 @@ def check_quantity(argname, can_be_negative=True,
     --------
     >>> from astropy import units as u
     >>> @check_quantity("x")
-    >>> def func(x: u.m):
+    >>> @check_quantity("y", can_be_negative=False)
+    >>> def func(x: u.m, y: u.s=1*u.s):
     >>>     return x
-    >>> func(1*u.m)
+    >>> func(1*u.m, 2*u.s)
     """
     def decorator(f):
         wrapped_sign = inspect.signature(f)
