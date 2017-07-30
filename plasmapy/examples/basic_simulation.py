@@ -8,7 +8,7 @@ from plasmapy import Plasma
 
 savedir = Path("~/PlasmaPy/plasmapy/tests/test_output").expanduser()
 if not savedir.exists():
-    savedir.mkdir(parents = True)
+    savedir.mkdir(parents=True)
 
 
 def gaussian(x, mean=0.0, std=1.0, amp=1.0):
@@ -77,14 +77,14 @@ def riemann_shock():
 
     print(f'Simulation begun {t0}, ended {t1}, duration {dt}')
     params = [riemann.density, riemann.velocity[0, :, ...],
-              riemann.energy, riemann.pressure]
-    labels = [r'$\rho$', r'$v_x$', r'$e$', r'p']
+              riemann.pressure, riemann.energy]
+    labels = [r'$\rho$', r'$v_x$', r'$p$', r'$e$']
 
     fig, axes = plt.subplots(2, 2, figsize=(12, 6))
     axes = axes.flatten()
     for i, ax in enumerate(axes):
         ax.plot(x, params[i])
-        ax.set_xlabel(labels[i])
+        ax.set_ylabel(labels[i])
     fig.savefig(str(savedir/"riemann_shock_final"))
     plt.close(fig)
 
