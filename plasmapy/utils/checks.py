@@ -6,8 +6,7 @@ from astropy import units as u
 from ..constants import c
 
 
-def check_quantity(validations, can_be_negative=True,
-                   can_be_complex=False, can_be_inf=True):
+def check_quantity(validations):
     """Raises exceptions if `argname` in decorated function is not an
     astropy Quantity with correct units and valid numerical values.
 
@@ -64,19 +63,25 @@ def check_quantity(validations, can_be_negative=True,
             # names of params to check
             validated_params = set(validations.keys())
 
-            missing_params = [param for param in (validated_params - given_params)]
+            missing_params = [
+                param for param in (validated_params - given_params)
+            ]
 
             if len(missing_params) > 0:
                 params_str = ", ".join(missing_params)
                 raise TypeError(
-                    f"Call to {fname} is missing validated params {params_str}")
+                    f"Call to {fname} is missing "
+                    f"validated params {params_str}")
 
             for param_to_check, validation_settings in validations.items():
                 value_to_check = given_params_values[param_to_check]
 
-                can_be_negative = validation_settings.get('can_be_negative', True)
-                can_be_complex = validation_settings.get('can_be_complex', False)
-                can_be_inf = validation_settings.get('can_be_inf', True)
+                can_be_negative = validation_settings.get(
+                    'can_be_negative', True)
+                can_be_complex = validation_settings.get(
+                    'can_be_complex', False)
+                can_be_inf = validation_settings.get(
+                    'can_be_inf', True)
 
                 _check_quantity(value_to_check,
                                 param_to_check,
@@ -85,7 +90,6 @@ def check_quantity(validations, can_be_negative=True,
                                 can_be_negative=can_be_negative,
                                 can_be_complex=can_be_complex,
                                 can_be_inf=can_be_inf)
-
 
             return f(*args, **kwargs)
         return wrapper
