@@ -1,6 +1,72 @@
 import numpy as np
 from astropy import units as u
 from ..constants import c
+import inspect
+from functools import wraps
+
+
+def check_quantity(validations):
+    def decorator(f):
+        @wraps(f)
+        def wrapped_function(*args, **kwargs):
+            fname = f.__name__
+            fsig = inspect.signature(f)
+
+            # names of params to check
+            validated_params = set(validations.keys())
+
+            # map of given param names to given values
+            args_params_values = {k:v for (k,v) in zip(fsig.parameters, args)}
+
+            # combine args and kwargs
+            given_params_values = {**args_params_values, **kwargs}
+
+            # given param names, including kwargs
+            given_params = set(given_params_values.keys())
+
+            default_params_values = {name:param.default for (name, param) in fsig.parameters.items() if param.default != inspect.Parameter.empty}
+            default_params = set(default_params_values.keys())
+
+            missing_params = [param for param in (validated_params - given_params - default_params)\
+                                    if not validations[param].get('ignore', False)]
+            if len(missing_params) > 0:
+                raise TypeError("Call to {} is missing validated params {}".format(fname, ", ".join(missing_params)))
+
+            for param_to_check in validated_params:
+                if validations[param_to_check].get('ignore', False):
+                    continue
+
+                value_to_check = given_params_values.get(param_to_check, default_params_values.get(param_to_check))
+
+                if value_to_check is None:
+                    raise TypeError("Parameter {} in call to {} was expected to be validated by check_quantity, "
+                                        "but not given".format(param_to_check, fname))
+
+                validation_settings = validations[param_to_check]
+
+                can_be_negative = validation_settings.get('can_be_negative', True)
+                can_be_complex = validation_settings.get('can_be_complex', False)
+                can_be_inf = validation_settings.get('can_be_inf', True)
+
+                _check_quantity(value_to_check,
+                                param_to_check,
+                                fname,
+                                validation_settings['units'],
+                                can_be_negative=can_be_negative,
+                                can_be_complex=can_be_complex,
+                                can_be_inf=can_be_inf)
+
+            # if we are validating our params, make sure we mention all Quantity params in our validation
+            for param in given_params:
+                if given_params_values[param] is not None and\
+                        issubclass(type(given_params_values[param]), u.quantity.Quantity) and\
+                        param not in validated_params:
+                    raise ValueError("Parameter {} in call to {} is a Quantity "
+                                        "but is not validated".format(param, fname))
+
+            return f(*args, **kwargs)
+        return wrapped_function
+    return decorator
 
 
 def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
@@ -121,62 +187,74 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         raise ValueError(valueerror_message + "infs.")
 
 
-def _check_relativistic(V, funcname, betafrac=0.1):
-    r"""Raise UserWarnings if a velocity is relativistic or superrelativistic
+def check_relativistic(betafrac=0.1):
+    def _check_relativistic(V, funcname, betafrac=0.1):
+        r"""Raise UserWarnings if a velocity is relativistic or superrelativistic
 
-    Parameters
-    ----------
-    V : Quantity
-        A velocity
+        Parameters
+        ----------
+        V : Quantity
+            A velocity
 
-    funcname : string
-        The name of the original function to be printed in the error messages.
+        funcname : string
+            The name of the original function to be printed in the error messages.
 
-    betafrac : float
-        The minimum fraction of the speed of light that will raise a
+        betafrac : float
+            The minimum fraction of the speed of light that will raise a
+            UserWarning
+
+        Raises
+        ------
+        TypeError
+            If V is not a Quantity
+
+        UnitConversionError
+            If V is not in units of velocity
+
+        ValueError
+            If V contains any NaNs
+
         UserWarning
+            If V is greater than betafrac times the speed of light
 
-    Raises
-    ------
-    TypeError
-        If V is not a Quantity
+        Examples
+        --------
+        >>> from astropy import units as u
+        >>> _check_relativistic(1*u.m/u.s, 'function_calling_this')
 
-    UnitConversionError
-        If V is not in units of velocity
+        """
 
-    ValueError
-        If V contains any NaNs
+        errmsg = ("V must be a Quantity with units of velocity in"
+                  "_check_relativistic")
 
-    UserWarning
-        If V is greater than betafrac times the speed of light
+        if not isinstance(V, u.Quantity):
+            raise TypeError(errmsg)
 
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> _check_relativistic(1*u.m/u.s, 'function_calling_this')
+        if V.si.unit != u.m/u.s:
+            raise u.UnitConversionError(errmsg)
 
-    """
+        if np.any(np.isnan(V.value)):
+            raise ValueError("V includes NaNs in _check_relativistic")
 
-    errmsg = ("V must be a Quantity with units of velocity in"
-              "_check_relativistic")
+        beta = np.max(np.abs((V/c).value))
 
-    if not isinstance(V, u.Quantity):
-        raise TypeError(errmsg)
+        if beta == np.inf:
+            raise UserWarning(funcname + " is yielding an infinite velocity.")
+        elif beta >= 1:
+            raise UserWarning(funcname + " is yielding a velocity that is " +
+                              str(round(beta, 3)) + " times the speed of light.")
+        elif beta >= betafrac:
+            raise UserWarning(funcname + " is yielding a velocity that is " +
+                              str(round(beta*100, 3)) + "% of the speed of " +
+                              "light. Relativistic effects may be important.")
 
-    if V.si.unit != u.m/u.s:
-        raise u.UnitConversionError(errmsg)
+    def decorator(f):
+        @wraps(f)
+        def wrapped_function(*args, **kwargs):
+            result = f(*args, **kwargs)
+            _check_relativistic(result, f.__name__, betafrac)
+            return result
+        return wrapped_function
+    return decorator
 
-    if np.any(np.isnan(V.value)):
-        raise ValueError("V includes NaNs in _check_relativistic")
 
-    beta = np.max(np.abs((V/c).value))
-
-    if beta == np.inf:
-        raise UserWarning(funcname + " is yielding an infinite velocity.")
-    elif beta >= 1:
-        raise UserWarning(funcname + " is yielding a velocity that is " +
-                          str(round(beta, 3)) + " times the speed of light.")
-    elif beta >= betafrac:
-        raise UserWarning(funcname + " is yielding a velocity that is " +
-                          str(round(beta*100, 3)) + "% of the speed of " +
-                          "light. Relativistic effects may be important.")
