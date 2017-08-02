@@ -14,3 +14,6 @@ description = """
 PlasmaPy is a community-developed and community-driven core Python
 package for plasma physics.
 """
+
+# Author(s)
+author = 'The PlasmaPy Community'
