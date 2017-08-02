@@ -6,10 +6,14 @@ metadata = {}
 with open('plasmapy/_metadata.py', 'r') as metadata_file:
     exec(metadata_file.read(), metadata)
 
+# Requirements
+with open('requirements/base.txt', 'r') as req_file:
+    requirements = req_file.read().splitlines()
+
 setup(name=metadata['name'],
       version=metadata['version'],
       description="Python package for plasma physics",
-      requires=['numpy', 'scipy', 'astropy'],
+      requires=requirements,
       provides=[NAME],
       author="The PlasmaPy Community",
       author_email="namurphy@cfa.harvard.edu",  # until we get an email address
