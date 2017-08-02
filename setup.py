@@ -14,6 +14,7 @@ setup(name=metadata['name'],
       version=metadata['version'],
       description="Python package for plasma physics",
       requires=requirements,
+      install_requires=requirements,
       provides=[metadata['name']],
       author="The PlasmaPy Community",
       author_email="namurphy@cfa.harvard.edu",  # until we get an email address
