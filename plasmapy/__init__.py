@@ -1,5 +1,9 @@
-"""PlasmaPy is a community-developed and community-driven core Python
-package for plasma physics."""
+from ._metadata import (
+    name as __name__,
+    version as __version__,
+    description as __doc__,
+    author as __author__,
+)
 
 from .classes import Plasma
 from . import classes

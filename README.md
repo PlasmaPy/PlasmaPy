@@ -38,7 +38,10 @@ The [contributing to PlasmaPy](https://github.com/PlasmaPy/PlasmaPy/blob/master/
 In the top level directory, run
 
 ```ShellSession
-pip install -r requirements/base.txt
+pip install .
+```
+or
+```ShellSession
 python setup.py install
 ```
 
