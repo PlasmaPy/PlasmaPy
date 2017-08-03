@@ -4,7 +4,7 @@
 
 PlasmaPy is a community-developed and community-driven free and open
 source Python package that provides common functionality required for
-plasma physics in a single, reliable code base.
+plasma physics in a single, reliable codebase.
 
 ## Motivation
 
@@ -21,28 +21,29 @@ Python software package for plasma physics.
 There is considerable need in plasma physics for open, general purpose
 software framework using modern [best practices for scientific
 computing](http://dx.doi.org/10.1371/journal.pbio.1001745). As most
-scientific programmers are largely self-taught, codes often do not
-take advantage of these practices and are instead written in a rush to
+scientific programmers are largely self-taught, software often does not
+take advantage of these practices and is instead written in a rush to
 produce results for the next research paper. The resulting code is
 often difficult to read and maintain, the documentation is usually
 inadequate, and tests are typically implemented late in the
-development process if at all.  Legacy codes are often written in low
+development process if at all.  Legacy code is often written in low
 level languages such as Fortran, which typically makes compiling and
-installing codes difficult and frustrating, especially if the code
+installing packages difficult and frustrating, especially if it
 calls external libraries. It is also unusual to share code, and access
-to major codes is often restricted in some way, resulting in many
-different versions of software which do essentially the same thing but
+to major software is often restricted in some way, resulting in many
+different programs and packages which do essentially the same thing but
 with little or no interoperability. These factors lead to research
 that is difficult to reproduce, and present a significant barrier to
 entry for new users.
 
 The plasma physics community is slowly moving in the open source
-direction.  Several codes have been released under open source
-licences, including the UCLA PIC codes, PICCANTE, EPOCH, VPIC,
-PIConGPU, WARP, the FLASH framework, Athena, and PENCIL.  These codes
-are built as individual packages, are written in different programming
-languages, and often depend on specific packages.  Python packages
-such as Astropy, SunPy, and SpacePy have had notable success providing
+direction.  Several different types of packages and software have 
+been released under open source licences, including the UCLA 
+PIC codes, PICCANTE, EPOCH, VPIC, PIConGPU, WARP, the FLASH framework, 
+Athena, and PENCIL.  These projects are built as individual packages, 
+are written in different programming languages, and often have many 
+dependencies  on specific packages.  Python packages such as Astropy, 
+SunPy, and SpacePy have had notable success providing
 open source alternatives to legacy code in related fields.  We are
 grateful to these communities for their hard work, and hope to build
 upon their accomplishments for the field of plasma physics.
@@ -121,11 +122,11 @@ facilitating compromises and cooperation, and fostering a culture of
 appreciation.
  
 The Code Development Committee (CDC) will directly oversee the
-development of the code base.  This committee will be responsible for
-managing the code repository, reviewing and accepting pull requests,
+development of the codebase.  This committee will be responsible for
+managing the project repository, reviewing and accepting pull requests,
 ensuring intercompatibility between different subpackages, and
 coordinating automated testing.  The CDC will be responsible for
-ensuring that the PlasmaPy code base adheres to the standards defined
+ensuring that the PlasmaPy codebase adheres to the standards defined
 in this document.
 
 The Community Engagement Committee (CEC) will be responsible for
@@ -139,7 +140,7 @@ Each subpackage will have lead and deputy coordinators who will guide
 and oversee the development of that subpackage.
 
 The Accessibility Coordinator will work to ensure that the PlasmaPy
-code base, documentation, and practices are accessible to disabled
+codebase, documentation, and practices are accessible to disabled
 students and scientists.  Additional roles include the Webpage
 Maintainer, the Release Coordinator, and the Testing Coordinator.
 
@@ -154,7 +155,7 @@ Astropy](http://www.astropy.org/team.html).
 
 ## Development procedure
 
-The initial developers of PlasmaPy will create a flexible code
+The initial developers of PlasmaPy will create a flexible 
 development roadmap that outlines and prioritizes subpackages to be
 developed.  The developers will survey existing open source Python
 packages in plasma physics.  Priority will be given to determining how
@@ -187,10 +188,10 @@ Every new module, class and function should have an appropriate
 docstring.  The documentation should describe the interface and the
 purpose for the method, but generally not the implementation.  The
 code itself should be readable enough to be able to explain how it
-works.  Documentation should be updated what the code is edited.  The
+works.  Documentation should be updated when the code is edited.  The
 tests should cover new functionality (especially methods with complex
 logic), but the tests should also be readable and easy to maintain.
-Existing tests for code should be updated when necessary (e.g., during
+Existing tests should be updated when necessary (e.g., during
 the initial development of a new feature when the API is not yet
 stable), but with caution since this may imply loss of backwards
 compatibility.
@@ -263,8 +264,8 @@ as how an electron volt is typically used as a measurement of
 temperature.  Code will be most readable and maintainable if written
 assuming a particular set of units, but there should be enough
 flexibility for people in different subfields to choose their
-preferred set of units.  We will write code assuming SI base units as
-the most commonly accepted international standard.  We will use an
+preferred set of units. As the generally most common accepted 
+international standard, SI base units will be utilized.  We will use an
 existing Python module (e.g., astropy.units or pint) to assign units
 to variables and allow straightforward conversion between different
 systems of units.
