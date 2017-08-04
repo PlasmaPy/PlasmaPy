@@ -6,7 +6,7 @@ from .relativity import Lorentz_factor
 
 
 def deBroglie_wavelength(V, particle):
-    """Calculates the de Broglie wavelength.
+    r"""Calculates the de Broglie wavelength.
 
     Parameters
     ----------
