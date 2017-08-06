@@ -871,22 +871,23 @@ def electron_plasma_frequency(n_e):
 
     Notes
     -----
-    The separation of charge within a plasma creates an electric field
-    (proportional to separation length) which has magnitude:
+    In a simple one dimensional model, the separation of charge
+    within a plasma creates an electric field proportional to
+    separation distance with magnitude:
 
     .. math::
     E = \frac{e}{\epsilon_0} n_e x
 
-    Where x is separation length.
+    Where x is the separation distance.
+    
     The electrons will move under the action of this field with force
     magnitude:
 
     .. math::
     F = e E = \frac{e^2}{\epsilon_0} n x = m_e \frac{d^2 x}{d t^2}
-
-    Computing the eigenfrequency of the harmonic oscilator as represented above
-    yields the electron plasma frequency,
-    which is given by:
+    
+    This is a simple harmonic oscillator. Computing its eigenfrequency
+    yields the electron plasma frequency, which is given by:
 
     .. math::
     \omega_{pe} = e \sqrt{\frac{n_e}{\epsilon_0 m_e}}
