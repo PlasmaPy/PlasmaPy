@@ -15,5 +15,5 @@ from . import utils
 import sys
 import warnings
 
-if sys.version_info[:2] < (3, 6): # coveralls: ignore
+if sys.version_info[:2] < (3, 6):  # coveralls: ignore
     warnings.warn("PlasmaPy does not support Python 3.5 and below")
