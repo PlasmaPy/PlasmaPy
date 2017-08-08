@@ -142,8 +142,21 @@ class MHDSimulation:
         v = self.plasma.velocity
         B = self.plasma.magnetic_field / np.sqrt(mu0)
 
-        return -div((v*energy) - (B * dot(B, v)) + (v*self.plasma.pressure),
-                    self.solver)
+        # d_visc = div(vt_dot(self.velocity, self.viscous_tensor), self.solver)
+        nu = self.total_viscosity(self.plasma.energy)
+        d_diff = self.solver(nu, 0) * self.solver(self.plasma.energy, 0)
+        # A = cross(self.magnetic_field/np.sqrt(mu0), eps)
+        # print('\n\n', 'A', A.shape, A.unit.si)
+        # d_ohm = div(cross(A, eps), self.solver)
+        # print('\n\n', d_visc.unit.si, d_diff.unit.si, d_ohm.unit.si)
+        # print(eps.shape, eps.unit.si)
+
+        D_e = d_diff  # d_visc + d_diff# + d_ohm
+
+        return D_e - div((v * energy)
+                         - (B * dot(B, v))
+                         + (v*self.plasma.pressure),
+                         self.solver)
 
     def _ddt_magfield(self, t, magfield=None):
         """
