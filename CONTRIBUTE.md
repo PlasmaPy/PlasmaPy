@@ -168,4 +168,7 @@ descriptive title and some details about your changes.  Then select
 "Create pull request".  Other contributors will then have a chance to
 review the code and offer contructive suggestions.  You can continue
 to edit the pull request by changing the corresponding branch on your
-PlasmaPy fork on GitHub.
+PlasmaPy fork on GitHub.  After a pull request is merged into the
+code, you may delete the branch you created for that pull request.
+
+
