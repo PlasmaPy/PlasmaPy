@@ -9,8 +9,8 @@ from .parameters import Debye_length
 from .quantum import deBroglie_wavelength
 
 
-def Coulomb_logarithm(T = 1e6*units.K, n_e = 1e19*units.m**-3,
-                      particles = ('e', 'p') ):
+def Coulomb_logarithm(T=1e6*units.K, n_e=1e19*units.m**-3,
+                      particles=('e', 'p')):
     r"""Estimates the Coulomb logarithm.
 
     Parameters
@@ -78,8 +78,8 @@ def Coulomb_logarithm(T = 1e6*units.K, n_e = 1e19*units.m**-3,
     # involve electrons, it would probably make more sense to choose
     # the electron temperature.
 
-    _check_quantity(T, 'T', 'Coulomb_logarithm', u.K)
-    _check_quantity(n_e, 'n_e', 'Coulomb_logarithm', u.m**-3)
+    _check_quantity(T, 'T', 'Coulomb_logarithm', units.K)
+    _check_quantity(n_e, 'n_e', 'Coulomb_logarithm', units.m**-3)
 
     if len(particles) != 2:
         raise ValueError("Incorrect number of particles in Coulomb_logarithm")
@@ -106,7 +106,11 @@ def Coulomb_logarithm(T = 1e6*units.K, n_e = 1e19*units.m**-3,
 
     bperp = q1*q2/(12*pi*eps0*k_B*T) # Bittencourt eq
 
-    # The second possibility is the de Broglie wavelength
+
+
+    # The second possibility is the electron de Broglie wavelength.
+    # The wave nature of ions can usually be neglected (Spitzer 1962).
+    # 
 
     m1 = ion_mass(particles[0])
     m2 = ion_mass(particles[1])

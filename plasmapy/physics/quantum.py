@@ -82,7 +82,8 @@ def deBroglie_wavelength(V, particle):
 
         lambda_dB = np.zeros_like(V.value)
         lambda_dB[is_zero] = np.inf*units.m
-        lambda_dB[nonzero] = h / (m * V[nonzero] * Lorentz_factor(V[nonzero]))
+        lambda_dB[is_nonzero] = \
+            h / (m * V[is_nonzero] * Lorentz_factor(V[is_nonzero]))
 
     else:
 
