@@ -10,7 +10,7 @@ PlasmaPy is in an early stage of development.  The goals of this project are des
 
 * Murphy, Nicholas A, Huang, Yi-Min, & PlasmaPy Community. (2016, October). PlasmaPy: beginning a community developed Python package for plasma physics. Zenodo. http://doi.org/10.5281/zenodo.163752
 
-We recently created a guide on [contributing to PlasmaPy](https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTE.md), which also contains instructions on how to join our email list.  New contributors are very welcome!  
+We recently created a guide on [contributing to PlasmaPy](https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTING.md), which also contains instructions on how to join our email list.  New contributors are very welcome!  
 
 If you have any questions, please contact Nick Murphy at <namurphy@cfa.harvard.edu>, Yi-Min Huang at <yiminh@princeton.edu>, or Drew Leonard at <andy.j.leonard@gmail.com>.
 
@@ -33,7 +33,7 @@ If you have [set up an SSH key](https://help.github.com/articles/generating-a-ne
 git clone git@github.com:PlasmaPy/PlasmaPy.git
 ```
 
-The [contributing to PlasmaPy](https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTE.md) guide has instructions on how to fork a repository so that you may make pull requests.
+The [contributing to PlasmaPy](https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTING.md) guide has instructions on how to fork a repository so that you may make pull requests.
 
 In the top level directory, run
 
