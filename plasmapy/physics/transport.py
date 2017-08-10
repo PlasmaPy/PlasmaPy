@@ -9,21 +9,22 @@ from .parameters import Debye_length
 from .quantum import deBroglie_wavelength
 
 
-def Coulomb_logarithm(T=1e6*units.K, n_e=1e19*units.m**-3,
-                      particles=('e', 'p')):
-    r"""Estimates the Coulomb logarithm.
+def Coulomb_logarithm(n_e, T, particles, V=None):
+    r"""Estimates the Coulomb logarithm with an accuracy of order 10%.
 
     Parameters
     ----------
-    T : Quantity
-        Temperature in units of temperature or energy per particle.
-
     n_e : Quantity
-        The electron density in units convertible to per cubic meter,
-        defaulting to
+        The electron density in units convertible to per cubic meter.
+
+    T : Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
 
     particles : tuple containing two objects
-        A tuple containing
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
 
     Returns
     -------
@@ -46,14 +47,17 @@ def Coulomb_logarithm(T=1e6*units.K, n_e=1e19*units.m**-3,
     impact parameters.
 
     The outer impact parameter is generally accepted to be the Debye
-    length: `b_{min} = \lambda_D`.  At distances greater than the
-    Debye length,
+    length: :math:`b_{min} = \lambda_D` which is a function of electron
+    temperature and electron density.  At distances greater than the
+    Debye length, charges from other particles will be screened out
+    due to electrons rearranging themselves.
 
-    At this distance, charges from particles are screened out by other
-    particles.
+    The inner impact parameter is generally thought to be the maximum
+    of :math:`b_\perp`, the angle at which a test particle is
+    deflected by 90 degrees, and the test particle de Broglie wavelength,
+    `\lambda_B`
 
-    There is some disagreement on what the inner impact parameter
-    should be.
+
 
     Examples
     --------
@@ -74,59 +78,76 @@ def Coulomb_logarithm(T=1e6*units.K, n_e=1e19*units.m**-3,
 
     # The temperatures of the two species are assumed to be the same.
     # The temperature comes up in the calculation of the Debye length
-    # and the relative velocity between particles.  If the collisions
-    # involve electrons, it would probably make more sense to choose
-    # the electron temperature.
+    # and the relative velocity between particles.
 
     _check_quantity(T, 'T', 'Coulomb_logarithm', units.K)
     _check_quantity(n_e, 'n_e', 'Coulomb_logarithm', units.m**-3)
 
+    if V is not None:
+        _check_quantity(V, 'V', 'Coulomb_logarithm', units.m/units.s)
+
     if len(particles) != 2:
         raise ValueError("Incorrect number of particles in Coulomb_logarithm")
+
+    m_test = ion_mass(particles[0])
+    m_target = ion_mass(particles[1])
+
+    reduced_mass = (m_test * m_target) / (m_test + m_target)
+
+    q_test = np.abs(e*charge_state(particles[0]))
+    q_target = np.abs(e*charge_state(particles[1]))
 
     # The outer impact parameter is the Debye length.  At distances
     # greater than the Debye length, the electrostatic potential of a
     # single particle is screened out by the electrostatic potentials
     # of other particles.  Past this distance, the electric fields of
-    # individual particles do not affect each other.
+    # individual particles do not affect each other much.  This
+    # expression neglects screening by heavier ions.
 
-    bmax = Debye_length(T, n_e)
+    b_max = Debye_length(T, n_e)
 
-    # The choice of inner impact parameter is somewhat more
-    # controversial.
+    # The choice of inner impact parameter is more controversial.
+    # There are two broad possibilities, and the expressions in the
+    # literature often differ by factors of order unity or by
+    # interchanging the reduced mass with the test particle mass.
 
+    # The relative velocity is a source of uncertainty.  It is
+    # reasonable to make an assumption relating the thermal energy to
+    # the kinetic energy: reduced_mass*velocity**2 is approximately
+    # equal to 3*k_B*T.  If a velocity was inputted, then we use that
+    # instead.
 
-    # Heuristic arguments suggest that the minimum impact paramter is
-    # the maximum of either the de Broglie wavelength (below which
-    # quantum effects dominate) or the angle of perpendicular
-    # deflection.
+    if V is None:
+        velocity = np.sqrt(3*k_B*T/reduced_mass)
+    else:
+        velocity = V
 
-    q1 = np.abs(e*charge_state(particles[0]))
-    q2 = np.abs(e*charge_state(particles[1]))
+    # The first possibility is that the inner impact parameter
+    # corresponding to a deflection of 90 degrees, which is important
+    # when classical effects dominate.
 
-    bperp = q1*q2/(12*pi*eps0*k_B*T) # Bittencourt eq
+    b_perp = q_test*q_target/(4*pi*eps0*reduced_mass*velocity**2)
 
+    # The second possibility is that the inner impact parameter is a
+    # de Broglie wavelength.  There remains some ambiguity as to which
+    # mass to choose to go into the de Broglie wavelength calculation.
+    # Here we use the reduced mass, which will be comparable to the
 
+    b_deBroglie = hbar/(2*reduced_mass*velocity)
 
-    # The second possibility is the electron de Broglie wavelength.
-    # The wave nature of ions can usually be neglected (Spitzer 1962).
-    # 
+    # Coulomb-style collisions will not happen for impact parameters
+    # shorter than either of these two impact parameters, so we choose
+    # the larger one.
 
-    m1 = ion_mass(particles[0])
-    m2 = ion_mass(particles[1])
+    if b_perp > b_deBroglie:
+        b_min = b_perp
+    else:
+        b_min = b_deBroglie
 
-    reduced_mass = m1*m2/(m1+m2)
+    # Now that we know how many approximations have to go into plasma
+    # transport theory, we shall celebrate by returning the Coulomb
+    # logarithm.
 
-    # What thermal velocity?  How to define this between arbitrary particles?
-
-#    b_deBroglie = hbar/
-
-    bmin = bperp  # temporary
-
-    # The minimum
-
-    lnLambda = np.log(bmax/bmin)
+    lnLambda = np.log(b_max/b_min)
 
     return lnLambda
-
-
