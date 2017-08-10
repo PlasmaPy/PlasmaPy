@@ -9,11 +9,11 @@ from .parameters import Debye_length
 from .quantum import deBroglie_wavelength
 
 
-@check_quantity({"n_e": {"units": u.m**-3},
-                 "T": {"units": u.K, can_be_negative: False},
-                 "V": {"units": u.m/u.s}})
+@check_quantity({"n_e": {"units": units.m**-3},
+                 "T": {"units": units.K, "can_be_negative": False},
+                 "V": {"units": units.m/units.s}})
 def Coulomb_logarithm(n_e, T, particles, V=None):
-    r"""Estimates the Coulomb logarithm with an accuracy of order 10%.
+    r"""Estimates the Coulomb logarithm.
 
     Parameters
     ----------
@@ -30,16 +30,20 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
         (listed first) and the target particle (listed second)
 
     V : Quantity, optional
-        The relative velocity between particles
+        The relative velocity between particles.  If not provided, it
+        is assumed that :math:`\mu V^2 \sim 3 k_B T` where `mu` is the
+        reduced mass.
 
     Returns
     -------
     lnLambda : float or numpy.ndarray
-        An estimate of the Coulomb logarithm
+        An estimate of the Coulomb logarithm that is accurate to
+        roughly its reciprocal.
 
     Raises
     ------
-
+    ValueError
+        If the mass or charge of either particle cannot be found.
 
 
     Notes
@@ -63,12 +67,14 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
     deflected by 90 degrees, and the test particle de Broglie wavelength,
     `\lambda_B`
 
-
+    If the Coulomb logarithm is of order unity, then the
+    approximations made in Coulomb collision theory are invalid.
 
     Examples
     --------
     >>> from astropy import units as u
-    >>> Coulomb_logarithm(T=1e6*units.K, n_e=1e19*units.m**-3)
+    >>> Coulomb_logarithm(T=1e6*units.K, n_e=1e19*units.m**-3, ('e', 'p'))
+    14.748259780491056
 
     See also
     --------
@@ -76,25 +82,13 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
     References
     ----------
 
-    [1] Bittencourt
-
-    [2] Mulser, Alber, and Murakami (2014)
 
     """
 
-
-    # Here we are trying to include 
-
-#    _check_quantity(T, 'T', 'Coulomb_logarithm', units.K)
-#    _check_quantity(n_e, 'n_e', 'Coulomb_logarithm', units.m**-3)
-
-#    if V is not None:
-#        _check_quantity(V, 'V', 'Coulomb_logarithm', units.m/units.s)
-
     if not isinstance(particles, (list, tuple)) or len(particles) != 2:
-        raise ValueError("The third input of Coulomb_logarithm "
-                         "must be a list or tuple containing representations "
-                         "of two charged particles")
+        raise ValueError("The third input of Coulomb_logarithm must be a list "
+                         "or tuple containing representations of two charged "
+                         "particles.")
 
     masses = np.zeros(2)*units.kg
     charges = np.zeros(2)*units.C
@@ -134,7 +128,7 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
     # The relative velocity is a source of uncertainty.  It is
     # reasonable to make an assumption relating the thermal energy to
     # the kinetic energy: reduced_mass*velocity**2 is approximately
-    # equal to 3*k_B*T.  
+    # equal to 3*k_B*T.
 
     # If no relative velocity is inputted, then we make an assumption
     # that relates the thermal energy to the kinetic energy:
@@ -171,6 +165,8 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
     # transport theory, we shall celebrate by returning the Coulomb
     # logarithm.
 
-    lnLambda = np.log(b_max/b_min)
+    ln_Lambda = np.log(b_max/b_min)
 
-    return lnLambda
+    ln_Lambda = ln_Lambda.to(units.dimensionless_unscaled).value
+
+    return ln_Lambda
