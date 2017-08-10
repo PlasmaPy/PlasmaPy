@@ -2,13 +2,16 @@
 
 from astropy import units
 import numpy as np
-from ..utils import _check_quantity
+from ..utils import check_quantity, check_relativistic
 from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar,
                          ion_mass, charge_state)
 from .parameters import Debye_length
 from .quantum import deBroglie_wavelength
 
 
+@check_quantity({"n_e": {"units": u.m**-3},
+                 "T": {"units": u.K, can_be_negative: False},
+                 "V": {"units": u.m/u.s}})
 def Coulomb_logarithm(n_e, T, particles, V=None):
     r"""Estimates the Coulomb logarithm with an accuracy of order 10%.
 
@@ -22,9 +25,12 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
         which is assumed to be equal for both the test particle and
         the target particle
 
-    particles : tuple containing two objects
+    particles : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
+
+    V : Quantity, optional
+        The relative velocity between particles
 
     Returns
     -------
@@ -76,26 +82,40 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
 
     """
 
-    # The temperatures of the two species are assumed to be the same.
-    # The temperature comes up in the calculation of the Debye length
-    # and the relative velocity between particles.
 
-    _check_quantity(T, 'T', 'Coulomb_logarithm', units.K)
-    _check_quantity(n_e, 'n_e', 'Coulomb_logarithm', units.m**-3)
+    # Here we are trying to include 
 
-    if V is not None:
-        _check_quantity(V, 'V', 'Coulomb_logarithm', units.m/units.s)
+#    _check_quantity(T, 'T', 'Coulomb_logarithm', units.K)
+#    _check_quantity(n_e, 'n_e', 'Coulomb_logarithm', units.m**-3)
 
-    if len(particles) != 2:
-        raise ValueError("Incorrect number of particles in Coulomb_logarithm")
+#    if V is not None:
+#        _check_quantity(V, 'V', 'Coulomb_logarithm', units.m/units.s)
 
-    m_test = ion_mass(particles[0])
-    m_target = ion_mass(particles[1])
+    if not isinstance(particles, (list, tuple)) or len(particles) != 2:
+        raise ValueError("The third input of Coulomb_logarithm "
+                         "must be a list or tuple containing representations "
+                         "of two charged particles")
 
-    reduced_mass = (m_test * m_target) / (m_test + m_target)
+    masses = np.zeros(2)*units.kg
+    charges = np.zeros(2)*units.C
 
-    q_test = np.abs(e*charge_state(particles[0]))
-    q_target = np.abs(e*charge_state(particles[1]))
+    for particle, i in zip(particles, range(2)):
+
+        try:
+            masses[i] = ion_mass(particles[i])
+        except Exception:
+            raise ValueError("Unable to find mass of particle: " +
+                             str(particles[i]) + " in Coulomb_logarithm.")
+
+        try:
+            charges[i] = np.abs(e*charge_state(particles[i]))
+            if charges[i] is None:
+                raise
+        except Exception:
+            raise ValueError("Unable to find charge of particle: " +
+                             str(particles[i]) + " in Coulomb_logarithm.")
+
+    reduced_mass = masses[0] * masses[1] / (masses[0] + masses[1])
 
     # The outer impact parameter is the Debye length.  At distances
     # greater than the Debye length, the electrostatic potential of a
@@ -114,30 +134,33 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
     # The relative velocity is a source of uncertainty.  It is
     # reasonable to make an assumption relating the thermal energy to
     # the kinetic energy: reduced_mass*velocity**2 is approximately
-    # equal to 3*k_B*T.  If a velocity was inputted, then we use that
-    # instead.
+    # equal to 3*k_B*T.  
+
+    # If no relative velocity is inputted, then we make an assumption
+    # that relates the thermal energy to the kinetic energy:
+    # reduced_mass*velocity**2 is approximately equal to 3*k_B*T.
 
     if V is None:
-        velocity = np.sqrt(3*k_B*T/reduced_mass)
-    else:
-        velocity = V
+        V = np.sqrt(3 * k_B * T / reduced_mass)
 
     # The first possibility is that the inner impact parameter
-    # corresponding to a deflection of 90 degrees, which is important
-    # when classical effects dominate.
+    # corresponds to a deflection of 90 degrees, which is valid when
+    # classical effects dominate.
 
-    b_perp = q_test*q_target/(4*pi*eps0*reduced_mass*velocity**2)
+    b_perp = charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V**2)
 
     # The second possibility is that the inner impact parameter is a
     # de Broglie wavelength.  There remains some ambiguity as to which
     # mass to choose to go into the de Broglie wavelength calculation.
-    # Here we use the reduced mass, which will be comparable to the
+    # Here we use the reduced mass, which will be of the same order as
+    # mass of the smaller particle and thus the longer de Broglie
+    # wavelength.
 
-    b_deBroglie = hbar/(2*reduced_mass*velocity)
+    b_deBroglie = hbar / (2 * reduced_mass * V)
 
     # Coulomb-style collisions will not happen for impact parameters
     # shorter than either of these two impact parameters, so we choose
-    # the larger one.
+    # the larger of these two possibilities.
 
     if b_perp > b_deBroglie:
         b_min = b_perp
