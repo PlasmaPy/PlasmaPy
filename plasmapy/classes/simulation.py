@@ -476,3 +476,36 @@ def tensordiv(tensor, solver):
         """.format(divergence.shape, tensor.shape[1:])
 
     return divergence
+
+
+def vt_dot(vec, tensor):
+    r"""Calculate the dot product of a vector with a tensor.
+
+    Parameters
+    ----------
+    vec : array-like, shape=(3, x, [y, z])
+        Array of vector values in a 1D, 2D or 3D domain.
+
+    tensor : array-like, shape=(3, 3, x, [y, z])
+        Tensor field in the same space as the vector above.
+
+    Returns
+    -------
+    dot : ndarray, shape=(3, x, [y, z])
+        Resultant vector field.
+    """
+
+    assert vec.shape[0] == 3, "First argument provided is not a vector field"
+    assert tensor.shape[:2] == (3, 3), \
+        "Second argument provided is not a tensor field"
+
+    dims = range(len(vec.shape[1:]))
+    dot = np.array([sum([vec[i] * tensor[i, 0, ...] for i in dims]),
+                    sum([vec[i] * tensor[i, 1, ...] for i in dims]),
+                    sum([vec[i] * tensor[i, 2, ...] for i in dims])]) \
+        * vec.unit * tensor.unit
+    assert dot.shape == tensor.shape[1:], \
+        "Output field has shape {}, should be {}".format(dot.shape,
+                                                         tensor.shape[1:])
+
+    return dot
