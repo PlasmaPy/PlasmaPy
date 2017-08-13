@@ -142,16 +142,16 @@ class MHDSimulation:
         v = self.plasma.velocity
         B = self.plasma.magnetic_field / np.sqrt(mu0)
 
-        # d_visc = div(vt_dot(self.velocity, self.viscous_tensor), self.solver)
+        d_visc = div(vt_dot(v, self.viscous_tensor), self.solver)
         nu = self.total_viscosity(self.plasma.energy)
         d_diff = self.solver(nu, 0) * self.solver(self.plasma.energy, 0)
-        # A = cross(self.magnetic_field/np.sqrt(mu0), eps)
-        # print('\n\n', 'A', A.shape, A.unit.si)
-        # d_ohm = div(cross(A, eps), self.solver)
-        # print('\n\n', d_visc.unit.si, d_diff.unit.si, d_ohm.unit.si)
-        # print(eps.shape, eps.unit.si)
+        # This should just be 0 for current testing purposes because there's
+        # no B field
+        # Therefore culling it for minor speed boost.
+        # eps = self.epsilon
+        # d_ohm = div(cross(B, eps), self.solver)
 
-        D_e = d_diff  # d_visc + d_diff# + d_ohm
+        D_e = d_diff + d_visc  # + d_ohm
 
         return D_e - div((v * energy)
                          - (B * dot(B, v))
