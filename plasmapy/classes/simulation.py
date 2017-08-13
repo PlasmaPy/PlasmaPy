@@ -179,16 +179,16 @@ class MHDSimulation:
         eps = nu * self.solver(self.plasma.magnetic_field/np.sqrt(mu0), 0)
         return eps
 
-    @property
-    def shock_viscosity(self):
+    def shock_viscosity(self, paramaxis):
         """
         """
 
         c = 0.4
+        dx = self.solver.dx[paramaxis]
         delv = div(self.plasma.velocity, self.solver)
         delv[np.where(delv > 0)] = 0
 
-        return c * (self.solver.dx**2) * abs(delv)
+        return c * dx**2 * abs(delv)
 
     @property
     def viscous_tensor(self):
@@ -221,7 +221,7 @@ class MHDSimulation:
         """
 
         vt = self.plasma.alfven_speed.max() + self.plasma.sound_speed.max()
-        visc = 0.8 * self.solver.dx * vt
+        visc = 0.8 * self.solver.dx[paramaxis] * vt
         return visc
 
     def total_viscosity(self, param, paramaxis=0):
@@ -229,7 +229,7 @@ class MHDSimulation:
         """
 
         return self.hyperdiff_viscosity(param, paramaxis) \
-            + self.shock_viscosity
+            + self.shock_viscosity(paramaxis)
 
 
 def dot(vec1, vec2):
