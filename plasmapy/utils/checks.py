@@ -1,6 +1,158 @@
+from functools import wraps
+import inspect
+
 import numpy as np
 from astropy import units as u
 from ..constants import c
+
+
+def check_quantity(validations):
+    """Raises exceptions if `argname` in decorated function is not an
+    astropy Quantity with correct units and valid numerical values.
+
+    Parameters
+    ----------
+    validations : dict
+        Validation dictionary.
+
+    Raises
+    ------
+    TypeError
+        If the argument is not a Quantity, units is not entirely units or
+        `argname` does not have a type annotation.
+
+    UnitConversionError
+        If the argument is not in acceptable units.
+
+    ValueError
+        If the argument contains NaNs or other invalid values as
+        determined by the keywords.
+
+    Returns
+    -------
+    function
+        Decorated function
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> @check_quantity({
+    >>>      "x": {"units": u.m},
+    >>>      "y": {"units": u.s,
+    >>>            "can_be_negative": False,
+    >>>            "can_be_complex": True,
+    >>>            "can_be_inf": False}
+    >>> })
+    >>> def func(x: u.m, y: u.s=1*u.s):
+    >>>     return x
+    >>> func(1*u.m, 2*u.s)
+
+    """
+    def decorator(f):
+        wrapped_sign = inspect.signature(f)
+        fname = f.__name__
+
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            # combine args and kwargs into dictionary
+            bound_args = wrapped_sign.bind(*args, **kwargs)
+            bound_args.apply_defaults()
+            given_params_values = bound_args.arguments
+            given_params = set(given_params_values.keys())
+
+            # names of params to check
+            validated_params = set(validations.keys())
+
+            missing_params = [
+                param for param in (validated_params - given_params)
+            ]
+
+            if len(missing_params) > 0:
+                params_str = ", ".join(missing_params)
+                raise TypeError(
+                    f"Call to {fname} is missing "
+                    f"validated params {params_str}")
+
+            for param_to_check, validation_settings in validations.items():
+                value_to_check = given_params_values[param_to_check]
+
+                can_be_negative = validation_settings.get(
+                    'can_be_negative', True)
+                can_be_complex = validation_settings.get(
+                    'can_be_complex', False)
+                can_be_inf = validation_settings.get(
+                    'can_be_inf', True)
+
+                _check_quantity(value_to_check,
+                                param_to_check,
+                                fname,
+                                validation_settings['units'],
+                                can_be_negative=can_be_negative,
+                                can_be_complex=can_be_complex,
+                                can_be_inf=can_be_inf)
+
+            return f(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
+def check_relativistic(func=None, betafrac=0.1):
+    """Raises an error when the output of the decorated
+    function is greater than `betafrac` times the speed of light
+
+    Parameters
+    ----------
+    func : function, optional
+        The function to decorate
+    betafrac : float, optional
+        The minimum fraction of the speed of light that will raise a
+        UserWarning
+        Defaults to 0.1
+
+    Returns
+    -------
+    function
+        Decorated function
+
+    Raises
+    ------
+    TypeError
+        If V is not a Quantity
+
+    UnitConversionError
+        If V is not in units of velocity
+
+    ValueError
+        If V contains any NaNs
+
+    UserWarning
+        If V is greater than betafrac times the speed of light
+
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> @check_relativistic
+    >>> def speed():
+    >>>     return 1*u.m/u.s
+
+    Passing in a custom `betafrac`
+    >>> @check_relativistic(betafrac=0.01)
+    >>> def speed():
+    >>>     return 1*u.m/u.s
+
+    """
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            return_ = f(*args, **kwargs)
+            _check_relativistic(return_, f.__name__,
+                                betafrac=betafrac)
+            return return_
+        return wrapper
+    if func:
+        return decorator(func)
+    return decorator
 
 
 def _check_quantity(arg, argname, funcname, units, can_be_negative=True,

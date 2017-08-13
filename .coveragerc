@@ -2,3 +2,7 @@
 omit = 
 	ci-helpers/*
 	*/tests/*
+exclude_lines = 
+	coveralls: ignore
+	def __repr__
+	raise NotImplementedError
