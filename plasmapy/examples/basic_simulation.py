@@ -31,7 +31,7 @@ def riemann_shock():
 
     # Define simulation grid and coordinates
     print('- Initiating Simulation... ', end='')
-    riemann = Plasma(domain_x=np.linspace(0, 1, 128)*u.m,
+    riemann = Plasma(domain_x=np.linspace(0, 1, 256)*u.m,
                      domain_y=[0]*u.m, domain_z=[0]*u.m,
                      gamma=1.4)
     grid = riemann.domain_shape
