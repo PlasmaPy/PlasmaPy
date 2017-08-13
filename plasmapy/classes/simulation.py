@@ -170,11 +170,21 @@ class MHDSimulation:
         return -tensordiv(vdp(v, B) - vdp(B, v), self.solver) * np.sqrt(mu0)
 
     @property
+    def epsilon(self):
+        """
+        """
+
+        nu = self.total_viscosity(self.plasma.magnetic_field/np.sqrt(mu0))
+
+        eps = nu * self.solver(self.plasma.magnetic_field/np.sqrt(mu0), 0)
+        return eps
+
+    @property
     def shock_viscosity(self):
         """
         """
 
-        c = 1.0
+        c = 0.4
         delv = div(self.plasma.velocity, self.solver)
         delv[np.where(delv > 0)] = 0
 
@@ -182,8 +192,8 @@ class MHDSimulation:
 
     @property
     def viscous_tensor(self):
-        r"""Defines the viscous tensor for the plasma following (approximately) Shelyag et al. 2008
-        (http://dx.doi.org/10.1051/0004-6361:200809800)
+        r"""Defines the viscous tensor for the plasma following (approximately)
+        Shelyag et al. 2008 (http://dx.doi.org/10.1051/0004-6361:200809800)
         """
 
         rho = self.plasma.density
@@ -211,7 +221,7 @@ class MHDSimulation:
         """
 
         vt = self.plasma.alfven_speed.max() + self.plasma.sound_speed.max()
-        visc = self.solver.dx * vt
+        visc = 0.8 * self.solver.dx * vt
         return visc
 
     def total_viscosity(self, param, paramaxis=0):
