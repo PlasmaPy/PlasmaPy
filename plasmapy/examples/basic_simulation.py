@@ -53,24 +53,25 @@ def riemann_shock():
     riemann.energy = energy
     print('Success')
 
-    # for maxt in np.arange(0, 0.21, 0.02):
-    #     print('- Running Simulation... ', end='')
-    #     riemann.simulate(max_time=maxt*u.s)
-    #     print("Simulation complete")
-
-    #     fig, ax = plt.subplots(2, 2)
-    #     ax = ax.flatten()
-    #     ax[0].plot(x, riemann.density)
-    #     ax[0].set_ylim(0, 1.2)
-    #     ax[1].plot(x, riemann.velocity[0, :, ...])
-    #     ax[1].set_ylim(0, 1.1)
-    #     ax[2].plot(x, riemann.energy)
-    #     ax[3].plot(x, riemann.pressure)
-    #     ax[3].set_ylim(0, 1.2)
-    #     plt.savefig(
-    #         str(savedir/"riemann_shock_{:.4f}".format(maxt)).replace('.', '_'))
-    #     plt.close()
     t0 = datetime.datetime.now()
+    for maxt in np.arange(0, 0.21, 0.02):
+        print('- Running Simulation... ', end='')
+        riemann.simulate(max_time=maxt*u.s)
+        print("Simulation complete")
+
+        fig, ax = plt.subplots(2, 2)
+        ax = ax.flatten()
+        ax[0].plot(x, riemann.density)
+        ax[0].set_ylim(0, 1.2)
+        ax[1].plot(x, riemann.velocity[0, :, ...])
+        ax[1].set_ylim(0, 1.1)
+        ax[2].plot(x, riemann.energy)
+        ax[3].plot(x, riemann.pressure)
+        ax[3].set_ylim(0, 1.2)
+        plt.savefig(
+            str(savedir/"riemann_shock_{:.4f}".format(maxt)).replace('.', '_'))
+        plt.close()
+
     riemann.simulate(max_time=0.2*u.s)
     t1 = datetime.datetime.now()
     dt = t1 - t0
