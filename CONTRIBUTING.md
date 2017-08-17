@@ -92,7 +92,7 @@ repository with the most recent changes from the development
 repository:
 
 ```ShellSession
-git fetch plasmapy
+git fetch upstream
 ```
 
 Changes to PlasmaPy should be made using branches.  It is usually best
