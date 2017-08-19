@@ -20,7 +20,7 @@ class Species:
     type : str
         particle type. See `plasmapy.constants.atomic` for suitable arguments.
         The default is a proton.
-    n: int
+    n_particles : int
         number of macroparticles. The default is a single particle.
     scaling : float
         number of particles represented by each macroparticle.
@@ -33,46 +33,50 @@ class Species:
 
     Attributes
     ----------
-    x: `astropy.units.Quantity`
-    v: `astropy.units.Quantity`
+    x : `astropy.units.Quantity`
+    v : `astropy.units.Quantity`
         Current position and velocity, respectively. Shape (n, 3).
-    position_history: `astropy.units.Quantity`
-    velocity_history: `astropy.units.Quantity`
+    position_history : `astropy.units.Quantity`
+    velocity_history : `astropy.units.Quantity`
         History of position and velocity. Shape (nt, n, 3).
-    q: `astropy.units.Quantity`
-    m: `astropy.units.Quantity`
+    q : `astropy.units.Quantity`
+    m : `astropy.units.Quantity`
         Charge and mass of particle.
-    eff_q: `astropy.units.Quantity`
-    eff_m: `astropy.units.Quantity`
+    eff_q : `astropy.units.Quantity`
+    eff_m : `astropy.units.Quantity`
         Total charge and mass of macroparticle.
     kinetic_energy
+        calculated from `v`, as in, current velocity.
     kinetic_energy_history
+        calculated from `velocity_history`.
 
     Examples
     ----------
     See `plasmapy/examples/particle-stepper.ipynb.`
 
     """
-    def __init__(self, plasma, particle_type='p', n=1, scaling=1,
-                 dt=np.inf, nt=np.inf):
+    @u.quantity_input(dt=u.s)
+    def __init__(self, plasma, particle_type='p', n_particles=1, scaling=1,
+                 dt=np.inf * u.s, nt=np.inf):
+
+        if np.isinf(dt) and np.isinf(nt):
+            raise ValueError("Both dt and nt are infinite.")
+
         self.q = atomic.charge_state(particle_type) * constants.e.si
         self.m = atomic.ion_mass(particle_type)
-        self.N = int(n)
+        self.N = int(n_particles)
         self.scaling = scaling
         self.eff_q = self.q * scaling
         self.eff_m = self.m * scaling
 
         self.plasma = plasma
-        if np.isinf(dt) and np.isinf(nt):
-            raise ValueError("Both dt and nt are infinite.")
 
         self.dt = dt
-        assert self.dt.si.unit == u.s
         self.NT = int(nt)
         self.t = np.arange(nt) * dt
 
-        self.x = np.zeros((n, 3), dtype=float) * u.m
-        self.v = np.zeros((n, 3), dtype=float) * (u.m / u.s)
+        self.x = np.zeros((n_particles, 3), dtype=float) * u.m
+        self.v = np.zeros((n_particles, 3), dtype=float) * (u.m / u.s)
         self.name = particle_type
 
         self.position_history = np.zeros((self.NT, *self.x.shape),
@@ -134,6 +138,26 @@ class Species:
         init: bool (optional)
             If `True`, does not change the particle positions and sets dt
             to -dt/2.
+
+        Notes
+        ----------
+        The Boris algorithm is the standard energy conserving algorithm for
+        particle movement in plasma physics.
+
+        Conceptually, the algorithm has three phases:
+
+        1. Add half the impulse from electric field
+        2. Rotate the particle velocity about the direction of the magnetic
+        field
+        3. Add the second half of the impulse from the electric field
+
+        This ends up causing the magnetic field action to be properly
+        "centered" in time, and the algorithm conserves energy.
+
+        References
+        ----------
+        .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
+        Simulation", 2004, p. 58-63
         """
         dt = -self.dt / 2 if init else self.dt
         b, e = self._interpolate_fields()
@@ -143,7 +167,7 @@ class Species:
 
         # rotate to add magnetic field
         t = -b * self.eff_q / self.eff_m * dt * 0.5
-        s = 2 * t / (1 + t * t)
+        s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
         vprime = vminus + np.cross(vminus.si.value, t) * u.m / u.s
         vplus = vminus + np.cross(vprime.si.value, s) * u.m / u.s
 
@@ -159,7 +183,9 @@ class Species:
         Runs a simulation instance.
         """
         self.boris_push(init=True)
-        for i in range(self.NT):
+        self.position_history[0] = self.x
+        self.velocity_history[0] = self.v
+        for i in range(1, self.NT):
             self.boris_push()
             self.position_history[i] = self.x
             self.velocity_history[i] = self.v
@@ -168,13 +194,13 @@ class Species:
         return f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N}," \
                f"name=\"{self.name}\",NT={self.NT})"
 
-    def __str__(self):
+    def __str__(self): # coveralls: ignore
         return f"{self.N} {self.scaling:.2e}-{self.name} with " \
                f"q = {self.q:.2e}, m = {self.m:.2e}, " \
                f"{self.saved_iterations} saved history " \
                f"steps over {self.NT} iterations"
 
-    def plot_trajectories(self):  # pragma: no cover
+    def plot_trajectories(self):  # coveralls: ignore
         """ Draws trajectory history."""
         from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
@@ -193,7 +219,7 @@ class Species:
         ax.set_zlabel("$z$ position")
         plt.show()
 
-    def plot_time_trajectories(self, plot="xyz"):  # pragma: no cover
+    def plot_time_trajectories(self, plot="xyz"):  # coveralls: ignore
         """
         Draws position history versus time.
 

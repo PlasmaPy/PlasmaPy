@@ -16,11 +16,6 @@ def uniform_magnetic_field(N=3, max_x=1):
     return test_plasma
 
 
-@pytest.fixture(params=['p', 'He+', 'N-14++'])
-def particle_type(request):
-    return request.param
-
-
 def test_basic_species_functionality():
     plasma = uniform_magnetic_field()
 
@@ -45,14 +40,15 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
     return params, stds
 
 
-def test_particle_uniform_magnetic(particle_type):
+def test_particle_uniform_magnetic():
     """
         Tests the particle stepper for a uniform magnetic field motion.
     """
     test_plasma = uniform_magnetic_field()
 
-    s = Species(test_plasma, particle_type=particle_type,
-                dt=1e-2 * u.s, nt=int(1e4))
+    particle_type = 'N-14++'
+    s = Species(test_plasma, particle_type=particle_type, dt=1e-2 * u.s,
+                nt=int(1e4))
 
     perp_speed = 0.01 * u.m / u.s
     parallel_speed = 1e-5 * u.m / u.s
