@@ -8,6 +8,14 @@ install:
         - git clone git://github.com/astropy/ci-helpers.git
         - source ci-helpers/travis/setup_conda.sh
         - "pip install -r requirements/base.txt"
+        - pip install flake8
+
+# Run flake8 tests
+before_script:
+        # stop the build if there are Python syntax errors or undefined names
+        - time flake8 . --count --select=E901,E999,F821,F822,F823 --show-source --statistics
+        # exit-zero treats all errors as warnings.  The GitHub editor is 127 chars wide
+        - time flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
 # Run the tests
 script: coverage run -m pytest 
@@ -15,3 +23,12 @@ script: coverage run -m pytest
 # Assess test coverage
 after_success:
         - coveralls
+
+# Hook travis into matrix channel for notifications
+notifications:
+    webhooks:
+        urls:
+            - "https://scalar.vector.im/api/neb/services/hooks/dHJhdmlzLWNpLyU0MFNvbGFyRHJldyUzQW1hdHJpeC5vcmcvJTIxaGtXQ2l5aFF5eGlZSmxVdEtGJTNBbWF0cml4Lm9yZw"
+        on_success: change  # always|never|change
+        on_failure: always
+        on_start: never

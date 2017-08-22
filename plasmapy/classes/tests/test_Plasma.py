@@ -54,6 +54,8 @@ def test_Plasma_setup(grid_dimensions, expected_size):
     assert test_plasma.magnetic_field.size == 3 * expected_size
     assert test_plasma.magnetic_field.si.unit == u.T
 
+    assert test_plasma.electric_field.size == 3 * expected_size
+    assert test_plasma.electric_field.si.unit == u.V / u.m
 
 # @pytest.mark.parametrize([()])
 def test_Plasma_derived_vars():
@@ -67,10 +69,11 @@ def test_Plasma_derived_vars():
                                 domain_z=np.linspace(0, 1, 1)*u.m)
 
     # Set an arbitrary uniform values throughout the plasma
-    test_plasma.density = 2.0 * np.ones((8, 8)) * u.kg / u.m**3
-    test_plasma.momentum = 10.0 * np.ones((3, 8, 8)) * u.kg / (u.m**2 * u.s)
-    test_plasma.pressure = np.ones((8, 8)) * u.Pa
-    test_plasma.magnetic_field = 0.01 * np.ones((3, 8, 8)) * u.T
+    test_plasma.density[...] = 2.0 *  u.kg / u.m**3
+    test_plasma.momentum[...] = 10.0 * u.kg / (u.m**2 * u.s)
+    test_plasma.pressure[...] = 1 * u.Pa
+    test_plasma.magnetic_field[...] = 0.01 * u.T
+    test_plasma.electric_field[...] = 0.01 * u.V / u.m
 
     # Test derived variable units and shapes
     assert test_plasma.velocity.shape == test_plasma.momentum.shape
@@ -79,6 +82,9 @@ def test_Plasma_derived_vars():
     assert test_plasma.magnetic_field_strength.shape == test_plasma.magnetic_field.shape[1:]
     assert test_plasma.magnetic_field_strength.si.unit == u.T
     assert np.allclose(test_plasma.magnetic_field_strength.value, 0.017320508)
+
+    assert test_plasma.electric_field_strength.shape == test_plasma.electric_field.shape[1:]
+    assert test_plasma.electric_field_strength.si.unit == u.V/u.m
 
     assert test_plasma.alfven_speed.shape == test_plasma.density.shape
     assert test_plasma.alfven_speed.unit.si == u.m / u.s
