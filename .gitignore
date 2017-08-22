@@ -102,3 +102,6 @@ ENV/
 *~
 *.#
 .#*
+
+# Auxilliary files associated with vim
+*.swp

@@ -1,23 +1,26 @@
 from setuptools import setup
-import plasmapy
 
-NAME = 'plasmapy'
 
-# The version scheme is being discussed at:
-#    https://github.com/PlasmaPy/PlasmaPy/issues/25
+# Package metadata
+metadata = {}
+with open('plasmapy/_metadata.py', 'r') as metadata_file:
+    exec(metadata_file.read(), metadata)
 
-VERSION = '0.1.dev1'
+# Requirements
+with open('requirements/base.txt', 'r') as req_file:
+    requirements = req_file.read().splitlines()
 
-setup(name=NAME,
-      version=VERSION,
+setup(name=metadata['name'],
+      version=metadata['version'],
       description="Python package for plasma physics",
-      requires=['numpy', 'scipy', 'astropy'],
-      provides=[NAME],
-      author="The PlasmaPy Community",
+      requires=requirements,
+      install_requires=requirements,
+      provides=[metadata['name']],
+      author=metadata['author'],
       author_email="namurphy@cfa.harvard.edu",  # until we get an email address
       license="BSD",
       url="https://github.com/PlasmaPy/PlasmaPy",  # until we make a webpage
-      long_description=plasmapy.__doc__,
+      long_description=metadata['description'],
       keywords=['plasma', 'plasma physics', 'science'],
       classifiers=[
         'Intended Audience :: Science/Research',
