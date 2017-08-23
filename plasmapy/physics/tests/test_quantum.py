@@ -22,7 +22,7 @@ def test_deBroglie_wavelength():
 
     assert deBroglie_wavelength(1*u.m/u.s, 5*u.kg) == \
         deBroglie_wavelength(100*u.cm/u.s, 5000*u.g)
-    
+
     with pytest.raises(ValueError):
         deBroglie_wavelength(c*1.000000001, 'e')
 
