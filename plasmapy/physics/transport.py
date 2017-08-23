@@ -2,7 +2,7 @@
 
 from astropy import units
 import numpy as np
-from ..utils import check_quantity, check_relativistic
+from ..utils import check_quantity, _check_relativistic
 from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar,
                          ion_mass, charge_state)
 from .parameters import Debye_length
@@ -10,8 +10,8 @@ from .quantum import deBroglie_wavelength
 
 
 @check_quantity({"n_e": {"units": units.m**-3},
-                 "T": {"units": units.K, "can_be_negative": False},
-                 "V": {"units": units.m/units.s}})
+                 "T": {"units": units.K, "can_be_negative": False}
+                 })
 def Coulomb_logarithm(n_e, T, particles, V=None):
     r"""Estimates the Coulomb logarithm.
 
@@ -43,8 +43,18 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
     Raises
     ------
     ValueError
-        If the mass or charge of either particle cannot be found.
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
 
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
 
     Notes
     -----
@@ -54,34 +64,35 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
     \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
 
     where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
-    impact parameters.
+    impact parameters for Coulomb collisions.
 
-    The outer impact parameter is generally accepted to be the Debye
-    length: :math:`b_{min} = \lambda_D` which is a function of electron
+    The outer impact parameter is given by the Debye length:
+    :math:`b_{min} = \lambda_D` which is a function of electron
     temperature and electron density.  At distances greater than the
-    Debye length, charges from other particles will be screened out
-    due to electrons rearranging themselves.
+    Debye length, electric fields from other particles will be
+    screened out due to electrons rearranging themselves.
 
-    The inner impact parameter is generally thought to be the maximum
-    of :math:`b_\perp`, the angle at which a test particle is
-    deflected by 90 degrees, and the test particle de Broglie wavelength,
-    `\lambda_B`
+    The choice of inner impact parameter is more controversial. There
+    are two main possibilities.  The first possibility is that the
+    inner impact parameter corresponds to a deflection angle of 90
+    degrees.  The second possibility is that the inner impact
+    parameter is a de Broglie wavelength, :math:`\lambda_B`
+    corresponding to the reduced mass of the two particles and the
+    relative velocity between collisions.  This function uses the
+    standard practice of choosing the inner impact parameter to be the
+    maximum of these two possibilities.
 
-    If the Coulomb logarithm is of order unity, then the
-    approximations made in Coulomb collision theory are invalid.
+    Errors associated with the Coulomb logarithm are of order its inverse
+    If the Coulomb logarithm is of order unity, then the assumptions
+    made in the standard analysis of Coulomb collisions are invalid.
 
     Examples
     --------
     >>> from astropy import units as u
     >>> Coulomb_logarithm(T=1e6*units.K, n_e=1e19*units.m**-3, ('e', 'p'))
     14.748259780491056
-
-    See also
-    --------
-
-    References
-    ----------
-
+    >>> Coulomb_logarithm(1e6*units.K, 1e19*units.m**-3, ('e', 'p'),
+                          V=1e6*u.m/u.s)
 
     """
 
@@ -118,6 +129,8 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
     # individual particles do not affect each other much.  This
     # expression neglects screening by heavier ions.
 
+    T = T.to(units.K, equivalencies=units.temperature_energy())
+
     b_max = Debye_length(T, n_e)
 
     # The choice of inner impact parameter is more controversial.
@@ -136,6 +149,8 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
 
     if V is None:
         V = np.sqrt(3 * k_B * T / reduced_mass)
+    else:
+        _check_relativistic(V, 'Coulomb_logarithm', betafrac=0.8)
 
     # The first possibility is that the inner impact parameter
     # corresponds to a deflection of 90 degrees, which is valid when
@@ -156,17 +171,20 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
     # shorter than either of these two impact parameters, so we choose
     # the larger of these two possibilities.
 
-    if b_perp > b_deBroglie:
-        b_min = b_perp
-    else:
-        b_min = b_deBroglie
+    b_min = np.zeros_like(b_perp)
+
+    for i in range(b_min.size):
+
+        if b_perp.flat[i] > b_deBroglie.flat[i]:
+            b_min.flat[i] = b_perp.flat[i]
+        else:
+            b_min.flat[i] = b_deBroglie.flat[i]
 
     # Now that we know how many approximations have to go into plasma
     # transport theory, we shall celebrate by returning the Coulomb
     # logarithm.
 
     ln_Lambda = np.log(b_max/b_min)
-
     ln_Lambda = ln_Lambda.to(units.dimensionless_unscaled).value
 
     return ln_Lambda
