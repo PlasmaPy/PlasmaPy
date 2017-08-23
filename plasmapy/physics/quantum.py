@@ -70,26 +70,35 @@ def deBroglie_wavelength(V, particle):
         raise ValueError("Velocity input in deBroglie_wavelength cannot be "
                          "greater than or equal to the speed of light.")
 
-    try:
-        m = ion_mass(particle)  # TODO: Replace with more general routine!
-    except Exception:
-        raise ValueError("Unable to find particle mass.")
+    if not isinstance(particle, units.Quantity):
+        try:
+            m = ion_mass(particle)  # TODO: Replace with more general routine!
+        except Exception:
+            raise ValueError("Unable to find particle mass.")
+    else:
+        try:
+            m = particle.to(units.kg)
+        except Exception:
+            raise units.UnitConversionError("The second argument for deBroglie"
+                                            " wavelength must be either a "
+                                            "representation of a particle or a"
+                                            " Quantity with units of mass.")
 
     if V.size > 1:
 
         is_zero = np.where(V == 0*units.m/units.s)
         is_nonzero = ~is_zero
 
-        lambda_dB = np.zeros_like(V.value)
-        lambda_dB[is_zero] = np.inf*units.m
-        lambda_dB[is_nonzero] = \
+        lambda_dBr = np.zeros_like(V.value)
+        lambda_dBr[is_zero] = np.inf*units.m
+        lambda_dBr[is_nonzero] = \
             h / (m * V[is_nonzero] * Lorentz_factor(V[is_nonzero]))
 
     else:
 
         if V == 0*units.m/units.s:
-            lambda_dB = np.inf*units.m
+            lambda_dBr = np.inf*units.m
         else:
-            lambda_dB = h / (Lorentz_factor(V) * m * V)
+            lambda_dBr = h / (Lorentz_factor(V) * m * V)
 
-    return lambda_dB.to(units.m)
+    return lambda_dBr.to(units.m)
