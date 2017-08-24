@@ -17,11 +17,12 @@ def test_Coulomb_logarithm():
     Lambda = np.array([5.97, 21.66, 6.69])
     particles = ('e', 'p')
 
-    Coulomb_logarithm(5*u.m**-3, 1*u.eV, ('e', 'e'))
-
     for i in range(3):
         assert np.isclose(Coulomb_logarithm(n_e[i], T[i], particles),
                           Lambda[i], atol=0.01)
+
+    assert np.isclose(Coulomb_logarithm(5*u.m**-3, 1*u.eV, ('e', 'e')),
+                      Coulomb_logarithm(5*u.m**-3, 11604.5220*u.K, ('e', 'e')))
 
     assert np.isclose(Coulomb_logarithm(1e9*u.cm**-3, 1e2*u.K, ('e', 'p')),
                       5.97, atol=0.01)
@@ -33,6 +34,9 @@ def test_Coulomb_logarithm():
                       6.69, atol=0.01)
 
     assert np.allclose(Coulomb_logarithm(n_e, T, particles), Lambda, atol=0.01)
+
+    assert np.isclose(Coulomb_logarithm(5*u.m**-3, 1e5*u.K, ('e', 'e'),
+                                        V=1e4*u.m/u.s), 21.379082011)
 
     with pytest.raises(UserWarning):
         Coulomb_logarithm(1*u.m**-3, 1e5*u.K, ('e', 'p'), 299792458*u.m/u.s)
