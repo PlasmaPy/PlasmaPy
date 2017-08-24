@@ -62,6 +62,8 @@ If you see something you'd like to work on amongst our
  
 Please note that PlasmaPy has a [Code of Conduct](code_of_conduct.md).
 
+Issues marked by the community as *help wanted* mean just that - either they're good contributions for outsiders or there's an issue in the ongoing work that requires a second opinion. Please consider these first!
+
 ### Preliminaries
 
 Work on PlasmaPy is done via GitHub, so you'll need a
