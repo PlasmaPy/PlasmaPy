@@ -15,9 +15,24 @@ def test_deBroglie_wavelength():
     assert dbwavelength2 == np.inf*u.m
 
 
-    V_array = np.array([3e6,6e6])*u.m/u.s
+    V_array = np.array([2e5,0])*u.m/u.s
+    dbwavelength_arr = deBroglie_wavelength(V_array, 'e')
 
-    deBroglie_wavelength(V_array, 'e')
+    assert np.isclose(dbwavelength_arr.value[0], 3.628845222852886e-11)
+    assert dbwavelength_arr.value[1] == np.inf
+    assert dbwavelength_arr.unit == u.m
+
+
+    V_array = np.array([2e5,2e5])*u.m/u.s
+    dbwavelength_arr = deBroglie_wavelength(V_array, 'e')
+
+    assert np.isclose(dbwavelength_arr.value[0], 3.628845222852886e-11)
+    assert np.isclose(dbwavelength_arr.value[1], 3.628845222852886e-11)
+    assert dbwavelength_arr.unit == u.m
+
+
+#    assert dbwavelength_arr[0]
+#    assert dbwavelength2 == 
 
     assert deBroglie_wavelength(-5e5*u.m/u.s, 'p') == \
         deBroglie_wavelength(5e5*u.m/u.s, 'p')

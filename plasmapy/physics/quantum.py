@@ -86,13 +86,9 @@ def deBroglie_wavelength(V, particle):
 
     if V.size > 1:
 
-        lambda_dBr = np.zeros_like(V.value)*units.m
-
-        for i in range(V.size):
-            if V.flat[i].value == 0:
-                lambda_dBr.flat[i] = np.inf*units.m
-            else:
-                lambda_dBr.flat[i] = h/(m*V.flat[i]*Lorentz_factor(V.flat[i]))
+        lambda_dBr = np.ones(V.shape) * np.inf * units.m
+        indices = V.value != 0
+        lambda_dBr[indices] = h / (m*V[indices]*Lorentz_factor(V[indices]))
 
     else:
 
