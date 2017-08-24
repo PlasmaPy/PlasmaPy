@@ -38,4 +38,4 @@ def test_Coulomb_logarithm():
         Coulomb_logarithm(1*u.m**-3, 1e5*u.K, ('e', 'p'), 299792458*u.m/u.s)
 
     with pytest.raises(u.UnitConversionError):
-        Coulomb_logarithm(1*u.m**-3, 1e5*u.K, ('e', 'p'), 29979245*u.m/u.s)
+        Coulomb_logarithm(1*u.m**-3, 1e5*u.g, ('e', 'p'), 29979245*u.m/u.s)
