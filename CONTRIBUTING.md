@@ -47,20 +47,26 @@ early stages of PlasmaPy development:
   [submit issues](https://github.com/PlasmaPy/plasmapy/issues) and
   review [pull requests](https://github.com/PlasmaPy/plasmapy/pulls).
 
-* The [PlasmaPy Matrix channel](https://riot.im/app/#/room/#plasmapy:matrix.org)
+* The PlasmaPy [Matrix](https://riot.im/app/#/room/#plasmapy:matrix.org) or 
+  [Gitter](https://gitter.im/PlasmaPy/Lobby) joint channel
   is a great place to have informal conversations, coordinate efforts,
   and share ideas.  
-
 * We have biweekly telecons which are announced on the email list.
 
 ## Contributing code or documentation to PlasmaPy
 
+If you see something you'd like to work on amongst our
+[issues](https://github.com/PlasmaPy/PlasmaPy/issues), start hacking away on
+ that! However, please announce your intent first in the relevant issue to 
+ make sure there is no work duplication.
+ 
+Please note that PlasmaPy has a [Code of Conduct](code_of_conduct.md).
+
 ### Preliminaries
 
-Before contributing to the PlasmaPy code base, one must [**join
-GitHub**](https://github.com/join?source=header-home).  A free account
-will suffice for you to have unlimited public repositories.  If you
-are new to [git](https://git-scm.com/), helpful resources include
+Work on PlasmaPy is done via GitHub, so you'll need a
+[(free) account](https://github.com/join?source=header-home).
+If you are new to [git](https://git-scm.com/), helpful resources include
 documentation on [git
 basics](https://git-scm.com/book/en/v2/Getting-Started-Git-Basics) and
 an [interactive git
