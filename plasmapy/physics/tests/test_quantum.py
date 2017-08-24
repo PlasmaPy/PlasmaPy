@@ -14,6 +14,11 @@ def test_deBroglie_wavelength():
     dbwavelength2 = deBroglie_wavelength(0*u.m/u.s, 'e')
     assert dbwavelength2 == np.inf*u.m
 
+
+    V_array = np.array([3e6,6e6])*u.m/u.s
+
+    deBroglie_wavelength(V_array, 'e')
+
     assert deBroglie_wavelength(-5e5*u.m/u.s, 'p') == \
         deBroglie_wavelength(5e5*u.m/u.s, 'p')
 
