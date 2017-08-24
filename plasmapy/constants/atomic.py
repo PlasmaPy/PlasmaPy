@@ -800,7 +800,7 @@ def ion_mass(argument, Z=None, mass_numb=None):
                               "range of known isotopes or electrons/ions.")
 
     if isinstance(argument, str) and \
-            str(argument).lower() in ['e+', 'positron', 'e', 'electron']:
+            str(argument).lower() in ['e+', 'positron', 'e', 'e-', 'electron']:
         return const.m_e
 
     if atomic_number(argument) == 0:
