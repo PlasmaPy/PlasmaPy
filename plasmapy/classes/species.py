@@ -194,7 +194,7 @@ class Species:
         return f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N}," \
                f"name=\"{self.name}\",NT={self.NT})"
 
-    def __str__(self): # coveralls: ignore
+    def __str__(self):  # coveralls: ignore
         return f"{self.N} {self.scaling:.2e}-{self.name} with " \
                f"q = {self.q:.2e}, m = {self.m:.2e}, " \
                f"{self.saved_iterations} saved history " \
