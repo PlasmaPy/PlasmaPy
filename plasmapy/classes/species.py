@@ -105,7 +105,6 @@ class Species:
             bounds_error=True)
 
     def _interpolate_fields(self):
-        print(self.x.si.value)
         interpolated_b = self._B_interpolator(self.x.si.value) * u.T
         interpolated_e = self._E_interpolator(self.x.si.value) * u.V / u.m
         return interpolated_b, interpolated_e
@@ -210,6 +209,7 @@ class Species:
         """ Draws trajectory history."""
         from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
+        from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
         fig = plt.figure()
@@ -236,6 +236,7 @@ class Species:
         """
         from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
+        from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
         fig, ax = plt.subplots()
