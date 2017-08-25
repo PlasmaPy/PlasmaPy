@@ -1,7 +1,8 @@
 import numpy as np
 from astropy import units
 
-from ..constants import c, ion_mass, charge_state
+from ..constants import c
+from ..atomic import (ion_mass, charge_state)
 from ..utils import _check_quantity
 
 

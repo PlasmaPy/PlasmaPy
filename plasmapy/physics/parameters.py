@@ -5,8 +5,8 @@ from astropy import units
 from astropy.units import (UnitConversionError, UnitsError, quantity_input,
                            Quantity)
 
-from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, ion_mass,
-                         charge_state)
+from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
+from ..atomic import (ion_mass, charge_state)
 
 import numpy as np
 
@@ -880,13 +880,13 @@ def electron_plasma_frequency(n_e):
     E = \frac{e}{\epsilon_0} n_e x
 
     Where x is the separation distance.
-    
+
     The electrons will move under the action of this field with force
     magnitude:
 
     .. math::
     F = e E = \frac{e^2}{\epsilon_0} n x = m_e \frac{d^2 x}{d t^2}
-    
+
     This is a simple harmonic oscillator. Computing its eigenfrequency
     yields the electron plasma frequency, which is given by:
 

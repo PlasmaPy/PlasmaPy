@@ -398,7 +398,7 @@ def test_ion_mass():
     assert ion_mass('H-1+') == const.m_p
     assert ion_mass('He+') == ion_mass('He')
     assert ion_mass('He 1+') == ion_mass('He')
-    assert ion_mass('He 2+') == ion_mass('alpha')
+    assert ion_mass('He-4 2+') == ion_mass('alpha')
     assert np.isclose(ion_mass('Fe 1-').value,
                       (ion_mass('Fe 1+') + 2*const.m_e).value, rtol=1e-14)
     assert np.isclose(ion_mass('Fe-56 1-').value,
@@ -415,6 +415,9 @@ def test_ion_mass():
                       atol=1e-37)
     assert ion_mass(1.67e-27*u.kg) == 1.67e-27*u.kg
     assert np.isclose(ion_mass(1*u.u).value, 1.660538921e-27, atol=1e-35)
+    assert ion_mass('alpha') > ion_mass('He-3 2+')
+    assert ion_mass('antiproton') == ion_mass('p-') == ion_mass('p+')
+
     with pytest.raises(ValueError):
         ion_mass('Og')  # since it has no standard atomic weight
 
