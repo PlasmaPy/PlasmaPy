@@ -85,9 +85,9 @@ class Species:
                                          dtype=float) * (u.m / u.s)
         # create intermediate array of dimension (nx,ny,nz,3) in order to allow
         # interpolation on non-equal spatial domain dimensions
-        _B = np.moveaxis(self.plasma.magnetic_field.si.value,0,-1)
-        _E = np.moveaxis(self.plasma.electric_field.si.value,0,-1)
-        
+        _B = np.moveaxis(self.plasma.magnetic_field.si.value, 0, -1)
+        _E = np.moveaxis(self.plasma.electric_field.si.value, 0, -1)
+
         self._B_interpolator = RegularGridInterpolator(
             (self.plasma.x.si.value,
              self.plasma.y.si.value,
@@ -200,7 +200,7 @@ class Species:
         return f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N}," \
                f"name=\"{self.name}\",NT={self.NT})"
 
-    def __str__(self): # coveralls: ignore
+    def __str__(self):  # coveralls: ignore
         return f"{self.N} {self.scaling:.2e}-{self.name} with " \
                f"q = {self.q:.2e}, m = {self.m:.2e}, " \
                f"{self.saved_iterations} saved history " \
@@ -210,7 +210,6 @@ class Species:
         """ Draws trajectory history."""
         from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
-        from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
         fig = plt.figure()
@@ -237,7 +236,6 @@ class Species:
         """
         from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
-        from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
         fig, ax = plt.subplots()
