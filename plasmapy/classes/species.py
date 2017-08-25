@@ -3,7 +3,7 @@ Class representing a group of particles"""
 # coding=utf-8
 import numpy as np
 from scipy.interpolate import RegularGridInterpolator
-from plasmapy.constants import atomic
+from plasmapy.atomic import atomic
 from astropy import constants
 from astropy import units as u
 
@@ -18,7 +18,7 @@ class Species:
     plasma : `Plasma`
         plasma from which fields can be pulled
     type : str
-        particle type. See `plasmapy.constants.atomic` for suitable arguments.
+        particle type. See `plasmapy.atomic.atomic` for suitable arguments.
         The default is a proton.
     n_particles : int
         number of macroparticles. The default is a single particle.

@@ -1,6 +1,7 @@
 import numpy as np
 from astropy import units
-from ..constants import c, h, ion_mass
+from ..constants import c, h
+from ..atomic import ion_mass
 from ..utils import _check_quantity, _check_relativistic
 from .relativity import Lorentz_factor
 

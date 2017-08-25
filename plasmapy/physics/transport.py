@@ -3,10 +3,9 @@
 from astropy import units
 import numpy as np
 from ..utils import check_quantity, _check_relativistic
-from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar,
-                         ion_mass, charge_state)
+from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar)
+from ..atomic import (ion_mass, charge_state)
 from .parameters import Debye_length
-from .quantum import deBroglie_wavelength
 
 
 @check_quantity({"n_e": {"units": units.m**-3},

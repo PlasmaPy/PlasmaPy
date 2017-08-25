@@ -5,8 +5,8 @@ from astropy import units
 from astropy.units import (UnitConversionError, UnitsError, quantity_input,
                            Quantity)
 
-from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, ion_mass,
-                         charge_state)
+from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
+from ..atomic import (ion_mass, charge_state)
 
 import numpy as np
 
