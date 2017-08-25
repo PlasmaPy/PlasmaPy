@@ -189,3 +189,15 @@ def test_particle_exb_nonuniform_drift():
     #
     # s.test_kinetic_energy()
 """
+
+def test_particle_nonuniform_grid():
+    '''
+        Test the particle stepper when the spatial domain dimensions are not equal
+    '''   
+    x = np.linspace(0,1,10)*u.m
+    y = np.linspace(0,1,20)*u.m
+    z = np.linspace(0,1,30)*u.m
+    
+    plasma = Plasma(x,y,z)
+    
+    Species(plasma, 'e', dt=1e-14*u.s, nt=1e3)

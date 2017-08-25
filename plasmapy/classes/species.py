@@ -83,11 +83,16 @@ class Species:
                                          dtype=float) * u.m
         self.velocity_history = np.zeros((self.NT, *self.v.shape),
                                          dtype=float) * (u.m / u.s)
+        # create intermediate array of dimension (nx,ny,nz,3) in order to allow
+        # interpolation on non-equal spatial domain dimensions
+        _B = np.moveaxis(self.plasma.magnetic_field.si.value,0,-1)
+        _E = np.moveaxis(self.plasma.electric_field.si.value,0,-1)
+        
         self._B_interpolator = RegularGridInterpolator(
             (self.plasma.x.si.value,
              self.plasma.y.si.value,
              self.plasma.z.si.value),
-            self.plasma.magnetic_field.T.si.value,
+            _B,
             method="linear",
             bounds_error=True)
 
@@ -95,11 +100,12 @@ class Species:
             (self.plasma.x.si.value,
              self.plasma.y.si.value,
              self.plasma.z.si.value),
-            self.plasma.electric_field.T.si.value,
+            _E,
             method="linear",
             bounds_error=True)
 
     def _interpolate_fields(self):
+        print(self.x.si.value)
         interpolated_b = self._B_interpolator(self.x.si.value) * u.T
         interpolated_e = self._E_interpolator(self.x.si.value) * u.V / u.m
         return interpolated_b, interpolated_e
