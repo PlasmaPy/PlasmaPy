@@ -3,12 +3,12 @@
 [![Build Status](https://travis-ci.org/PlasmaPy/PlasmaPy.svg?branch=master)](https://travis-ci.org/PlasmaPy/PlasmaPy)
 [![Coverage Status](https://coveralls.io/repos/github/PlasmaPy/PlasmaPy/badge.svg?branch=master)](https://coveralls.io/github/PlasmaPy/PlasmaPy?branch=master)
 
-A community developed Python 3.6+ package for plasma physics in 
-the early stages. PlasmaPy intends to be for plasmas what
+An open source community developed Python 3.6+ package for plasma physics in 
+the early stages of development. PlasmaPy intends to be for plasmas what
 [Astropy](https://github.com/astropy/astropy) is for astronomy - a 
 collection of functionality commonly used and shared between plasma physicists 
 and researchers globally, running within and leveraging the open source 
-scientific Python ecosystem. The goals of this project are better described in our
+scientific Python ecosystem. The goals of this project are more thoroughly described in our
 [vision statement](vision_statement.md)
 and [an earlier conference poster](http://doi.org/10.5281/zenodo.163752).
 
