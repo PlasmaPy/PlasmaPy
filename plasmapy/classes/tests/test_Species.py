@@ -202,4 +202,4 @@ def test_particle_nonuniform_grid():
 
     plasma = Plasma(x, y, z)
 
-    Species(plasma, 'e', dt=1e-14*u.s, nt=1e3)
+    Species(plasma, 'e', dt=1e-14*u.s, nt=5).run()
