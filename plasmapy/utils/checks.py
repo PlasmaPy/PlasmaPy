@@ -198,6 +198,11 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         If the argument contains NaNs or other invalid values as
         determined by the keywords.
 
+    UserWarning
+        If a Quantity is not provided and unique units are provided, a
+        UserWarning will be raised and the inputted units will be
+        assumed.
+
     Examples
     --------
     >>> from astropy import units as u
@@ -319,7 +324,7 @@ def _check_relativistic(V, funcname, betafrac=0.1):
         raise u.UnitConversionError(errmsg)
 
     if np.any(np.isnan(V.value)):
-        raise ValueError("V includes NaNs in _check_relativistic")
+        raise ValueError("V includes NaNs in " + funcname)
 
     beta = np.max(np.abs((V/c).value))
 

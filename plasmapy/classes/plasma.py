@@ -10,6 +10,7 @@ import astropy.units as u
 
 mu0 = np.pi * 4.0e-7 * (u.newton / (u.amp**2))
 
+
 class Plasma():
     """Core class for describing and calculating plasma parameters.
 
@@ -36,7 +37,7 @@ class Plasma():
     magnetic_field : `astropy.units.Quantity`
         (3, x, y, z) array of the magnetic field vector at every point in the domain.
 
-        
+
     Parameters
     ----------
     domain_x : `astropy.units.Quantity`
@@ -54,7 +55,7 @@ class Plasma():
         self.z = domain_z
 
         self.grid = np.array(np.meshgrid(self.x, self.y, self.z,
-                                indexing='ij'))
+                                         indexing='ij'))
         self.domain_shape = (len(self.x), len(self.y), len(self.z))
 
         # Initiate core plasma variables

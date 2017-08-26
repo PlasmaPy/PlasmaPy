@@ -4,23 +4,25 @@ import astropy.units as u
 
 from plasmapy.classes import plasma
 
+
 @pytest.mark.parametrize('grid_dimensions, expected_size', [
-    ((100, 1, 1), 100), # Test 1D setup
-    ((128, 128, 1), 16384), # 2D
-    ((64, 64, 64), 262144), # 3D
+    ((100, 1, 1), 100),  # Test 1D setup
+    ((128, 128, 1), 16384),  # 2D
+    ((64, 64, 64), 262144),  # 3D
 ])
 def test_Plasma_setup(grid_dimensions, expected_size):
     """Function to test basic setup of the Plasma object.
 
-    Tests that a Plasma object initiated with a particular specification behaves in the 
-    correct way.
+    Tests that a Plasma object initiated with a particular
+    specification behaves in the correct way.
 
     Parameters
     ----------
     grid_dimensions : tuple of ints
-        Grid size of the Plasma object to test. Must be a tuple of length 3, indicating 
-        length of the grid in x, y, and z directions respectively. Directions not needed 
-        should have a length of 1.
+        Grid size of the Plasma object to test. Must be a tuple of
+        length 3, indicating length of the grid in x, y, and z
+        directions respectively. Directions not needed should have a
+        length of 1.
 
     expected_size : int
         Product of grid dimensions.
@@ -57,19 +59,21 @@ def test_Plasma_setup(grid_dimensions, expected_size):
     assert test_plasma.electric_field.size == 3 * expected_size
     assert test_plasma.electric_field.si.unit == u.V / u.m
 
+
 # @pytest.mark.parametrize([()])
 def test_Plasma_derived_vars():
     """Function to test derived variables of the Plasma class.
 
-    Tests the shapes, units and values of variables derived from core variables.
-    The core variables are set with arbitrary uniform values.
+    Tests the shapes, units and values of variables derived from core
+    variables.  The core variables are set with arbitrary uniform
+    values.
     """
     test_plasma = plasma.Plasma(domain_x=np.linspace(0, 1, 64)*u.m,
                                 domain_y=np.linspace(0, 1, 64)*u.m,
                                 domain_z=np.linspace(0, 1, 1)*u.m)
 
     # Set an arbitrary uniform values throughout the plasma
-    test_plasma.density[...] = 2.0 *  u.kg / u.m**3
+    test_plasma.density[...] = 2.0 * u.kg / u.m**3
     test_plasma.momentum[...] = 10.0 * u.kg / (u.m**2 * u.s)
     test_plasma.pressure[...] = 1 * u.Pa
     test_plasma.magnetic_field[...] = 0.01 * u.T
@@ -79,11 +83,13 @@ def test_Plasma_derived_vars():
     assert test_plasma.velocity.shape == test_plasma.momentum.shape
     assert (test_plasma.velocity == 5.0 * u.m / u.s).all()
 
-    assert test_plasma.magnetic_field_strength.shape == test_plasma.magnetic_field.shape[1:]
+    assert test_plasma.magnetic_field_strength.shape == \
+        test_plasma.magnetic_field.shape[1:]
     assert test_plasma.magnetic_field_strength.si.unit == u.T
     assert np.allclose(test_plasma.magnetic_field_strength.value, 0.017320508)
 
-    assert test_plasma.electric_field_strength.shape == test_plasma.electric_field.shape[1:]
+    assert test_plasma.electric_field_strength.shape == \
+        test_plasma.electric_field.shape[1:]
     assert test_plasma.electric_field_strength.si.unit == u.V/u.m
 
     assert test_plasma.alfven_speed.shape == test_plasma.density.shape

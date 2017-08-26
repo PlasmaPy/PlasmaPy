@@ -8,6 +8,7 @@ from ._metadata import (
 from .classes import Plasma
 from . import classes
 from . import constants
+from . import atomic
 from . import analytic
 from . import physics
 from . import utils

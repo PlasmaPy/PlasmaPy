@@ -3,7 +3,7 @@ Class representing a group of particles"""
 # coding=utf-8
 import numpy as np
 from scipy.interpolate import RegularGridInterpolator
-from plasmapy.constants import atomic
+from plasmapy.atomic import atomic
 from astropy import constants
 from astropy import units as u
 
@@ -18,7 +18,7 @@ class Species:
     plasma : `Plasma`
         plasma from which fields can be pulled
     type : str
-        particle type. See `plasmapy.constants.atomic` for suitable arguments.
+        particle type. See `plasmapy.atomic.atomic` for suitable arguments.
         The default is a proton.
     n_particles : int
         number of macroparticles. The default is a single particle.
@@ -83,11 +83,16 @@ class Species:
                                          dtype=float) * u.m
         self.velocity_history = np.zeros((self.NT, *self.v.shape),
                                          dtype=float) * (u.m / u.s)
+        # create intermediate array of dimension (nx,ny,nz,3) in order to allow
+        # interpolation on non-equal spatial domain dimensions
+        _B = np.moveaxis(self.plasma.magnetic_field.si.value, 0, -1)
+        _E = np.moveaxis(self.plasma.electric_field.si.value, 0, -1)
+
         self._B_interpolator = RegularGridInterpolator(
             (self.plasma.x.si.value,
              self.plasma.y.si.value,
              self.plasma.z.si.value),
-            self.plasma.magnetic_field.T.si.value,
+            _B,
             method="linear",
             bounds_error=True)
 
@@ -95,7 +100,7 @@ class Species:
             (self.plasma.x.si.value,
              self.plasma.y.si.value,
              self.plasma.z.si.value),
-            self.plasma.electric_field.T.si.value,
+            _E,
             method="linear",
             bounds_error=True)
 
@@ -194,7 +199,7 @@ class Species:
         return f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N}," \
                f"name=\"{self.name}\",NT={self.NT})"
 
-    def __str__(self): # coveralls: ignore
+    def __str__(self):  # coveralls: ignore
         return f"{self.N} {self.scaling:.2e}-{self.name} with " \
                f"q = {self.q:.2e}, m = {self.m:.2e}, " \
                f"{self.saved_iterations} saved history " \

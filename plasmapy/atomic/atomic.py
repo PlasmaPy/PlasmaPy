@@ -782,6 +782,11 @@ def ion_mass(argument, Z=None, mass_numb=None):
 
     """
 
+    # TODO: Replace ion_mass() with particle_mass()
+
+    # TODO: Find a better way to account for the special cases that
+    # are complicating this and other atomic functions
+
     if isinstance(argument, u.Quantity) and Z is None and mass_numb is None:
 
         try:
@@ -800,8 +805,12 @@ def ion_mass(argument, Z=None, mass_numb=None):
                               "range of known isotopes or electrons/ions.")
 
     if isinstance(argument, str) and \
-            str(argument).lower() in ['e+', 'positron']:
+            str(argument).lower() in ['e+', 'positron', 'e', 'e-', 'electron']:
         return const.m_e
+
+    if argument in ['p', 'p+', 'p-'] or str(argument).lower() in \
+            ['proton', 'protium', 'antiproton'] and Z is None:
+        return const.m_p
 
     if atomic_number(argument) == 0:
         raise ValueError("Use isotope_mass or m_n to get mass of neutron")
@@ -810,6 +819,12 @@ def ion_mass(argument, Z=None, mass_numb=None):
         argument, Z_from_arg = __extract_charge_state(argument)
     else:
         Z_from_arg = None
+
+    if atomic_number(argument) == 1:
+        if isinstance(argument, str) and 'H-1' in str(argument) and Z is None:
+            return const.m_p
+        if mass_numb == 1 and Z == 1:
+            return const.m_p
 
     if Z is None and Z_from_arg is None:
         Z = 1
@@ -834,17 +849,6 @@ def ion_mass(argument, Z=None, mass_numb=None):
     if atomic_number(argument) < Z:
         raise ValueError("The ionization state cannot exceed the "
                          "atomic number in ion_mass")
-
-    if argument == 'alpha' or element_symbol(argument) == 'He' and Z == 2:
-        return 6.644657230e-27*u.kg
-    elif argument in ['p', 'p+'] or str(argument).lower() in \
-            ['proton', 'protium']:  # Not H because conv atom weight has some D
-        return const.m_p
-    elif atomic_number(argument) == 1:
-        if isinstance(argument, str) and '-1' in str(argument):
-            return const.m_p
-        elif argument == 1 and mass_numb == 1:
-            return const.m_p
 
     try:
         isotope_symb = isotope_symbol(argument, mass_numb)
@@ -1412,7 +1416,8 @@ def charge_state(argument):
 
     """
 
-    if argument in ['e', 'e-'] or argument.lower() == 'electron':
+    if argument in ['e', 'e-', 'p-'] or \
+            argument.lower() in ['electron', 'antiproton']:
         return -1
     elif argument == 'e+' or argument.lower() == 'positron':
         return 1
