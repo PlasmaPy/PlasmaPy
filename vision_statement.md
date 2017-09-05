@@ -112,22 +112,13 @@ conduct](https://www.python.org/psf/codeofconduct/).
 
 ## Organizational structure
 
-The Coordinating Committee (CC) will oversee the PlasmaPy project.
-This committee will take a big picture approach defining the goals and
-future directions of PlasmaPy.  The CC will make sure that roles are
-being filled, necessary tasks are being completed, facilitating
-intergroup communication (including the email list and HipChat group),
-coordinating and delegating tasks, seeking funding mechanisms,
-facilitating compromises and cooperation, and fostering a culture of
-appreciation.
- 
-The Code Development Committee (CDC) will directly oversee the
-development of the codebase.  This committee will be responsible for
-managing the project repository, reviewing and accepting pull requests,
-ensuring intercompatibility between different subpackages, and
-coordinating automated testing.  The CDC will be responsible for
-ensuring that the PlasmaPy codebase adheres to the standards defined
-in this document.
+The Coordinating Committee (CC) will oversee the PlasmaPy project and
+code development.  The CC will ensure that roles are being filled,
+facilitate intergroup communication, coordinate and delegate tasks,
+manage the project repository, oversee the code review process,
+regulate intercompatibility between different subpackages, seek
+funding mechanisms, facilitate compromises and cooperation, enforce
+the code of conduct, and foster a culture of appreciation.
 
 The Community Engagement Committee (CEC) will be responsible for
 organizing conferences, trainings, and workshops; maintaining and
@@ -171,11 +162,11 @@ the project that are director towards the initial developers.
 New code and edits should be submitted as a pull request to the
 development branch of the PlasmaPy repository on GitHub.  The pull
 request will undergo a code review by the subpackage maintainers
-and/or the CDC, who will provide suggestions on how the contributor
-may update the pull request.  Subpackage maintainers will generally be
+and/or the CC, who will provide suggestions on how the contributor may
+update the pull request.  Subpackage maintainers will generally be
 responsible for deciding on pull requests with minor changes, while
 pull requests with major changes should be decided jointly by the
-subpackage maintainers and the CDC.  The CDC and CEC will develop a
+subpackage maintainers and the CC.  The CC and CEC will develop a
 friendly guide on how users may contribute new code to PlasmaPy.
 
 New code should conform to the [PEP 8 style guide for Python
@@ -206,10 +197,10 @@ not require community discussion.  The CC shall maintain a GitHub
 repository of PLEPs.  PLEPs will be made openly available for
 community discussion and transparency for a period of at least four
 weeks, during which time the proposal may be updated and revised by
-the proposers.  The CC and CDC shall approve or decline these
-proposals after seeking community input.  The rationale behind the
-decision and a summary of the community discussion shall be recorded
-along with the PLEP.
+the proposers.  The CC shall approve or decline these proposals after
+seeking community input.  The rationale behind the decision and a
+summary of the community discussion shall be recorded along with the
+PLEP.
 
 ## Programming guidelines
 
