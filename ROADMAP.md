@@ -33,3 +33,9 @@ requests](https://github.com/PlasmaPy/plasmapy/pulls), and
 
 - Analytical plasma physics tools (with SymPy)
 - Capability to read in CDF files (separate package?)
+
+## Future events
+
+- Code development meeting
+- Software Carpentry workshops at plasma physics conferences
+- Python in Plasma Physics conference?
