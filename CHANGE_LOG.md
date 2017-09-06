@@ -1,5 +1,7 @@
 # PlasmaPy Change Log
 
+PlasmaPy uses [Semantic Versioning](http://semver.org/).
+
 ## Version 0.1 (20 minutes into the future)
 
 - Initial development release.  
