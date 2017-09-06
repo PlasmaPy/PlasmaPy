@@ -114,8 +114,8 @@ conduct](https://www.python.org/psf/codeofconduct/).
 
 The Coordinating Committee (CC) will oversee the PlasmaPy project and
 code development.  The CC will ensure that roles are being filled,
-facilitate intergroup communication, coordinate and delegate tasks,
-manage the project repository, oversee the code review process,
+facilitate community-wide communication, coordinate and delegate
+tasks, manage the project repository, oversee the code review process,
 regulate intercompatibility between different subpackages, seek
 funding mechanisms, facilitate compromises and cooperation, enforce
 the code of conduct, and foster a culture of appreciation.
