@@ -182,10 +182,10 @@ code itself should be readable enough to be able to explain how it
 works.  Documentation should be updated when the code is edited.  The
 tests should cover new functionality (especially methods with complex
 logic), but the tests should also be readable and easy to maintain.
-Existing tests should be updated when necessary (e.g., during
-the initial development of a new feature when the API is not yet
-stable), but with caution since this may imply loss of backwards
-compatibility.
+Existing tests should be updated when necessary [e.g., during the
+initial development of a new feature when the application program
+interface (API) is not yet stable], but with caution since this may
+imply loss of backwards compatibility.
 
 Members of the PlasmaPy community may submit PlasmaPy Enhancement
 Proposals (PLEPs) to suggest changes such as major reorganization of a
@@ -220,6 +220,25 @@ it to work, and primarily for where there is a performance bottleneck.
 Performance-critical parts of the core package will preferably be
 written using Cython or Numba to achieve compiled speeds while
 maintaining the significant advantages of using a high level language.
+
+### Versioning
+
+PlasmaPy will use [Semantic Versioning](http://semver.org/).  Releases
+will be given version numbers of the form *MAJOR*.*MINOR*.*PATCH*,
+where *MAJOR*, *MINOR*, and *PATCH* are nonnegative integers. Starting
+with version 1.0, *MAJOR* will be incremented when backwards
+incompatible changes are made, *MINOR* will be incremented when new
+backwards-compatible functionality is added, and *PATCH* will be
+incremented when backwards-compatible bug fixes are made.  
+
+Development releases will have *MAJOR* equal to zero and start at
+version 0.1.  The API should not be considered stable during the
+development phase.  PlasmaPy will release version 1.0 once it has a
+stable public API that users are depending on for production code.
+
+All releases will be provided with release notes and change log
+entries, and a table will be provided that describes how stable the
+API is of PlasmaPy subpackages.
 
 ### Dependencies
 
