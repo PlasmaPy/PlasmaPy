@@ -237,8 +237,8 @@ development phase.  PlasmaPy will release version 1.0 once it has a
 stable public API that users are depending on for production code.
 
 All releases will be provided with release notes and change log
-entries, and a table will be provided that describes how stable the
-API is of PlasmaPy subpackages.
+entries, and a table will be provided that describes the stability of
+the public API for each PlasmaPy subpackage.
 
 ### Dependencies
 
