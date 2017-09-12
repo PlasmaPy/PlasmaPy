@@ -1547,9 +1547,10 @@ def __extract_charge_state(argument):
 
     return argument, charge_state
 
+
 def electric_charge(argument):
     """Returns the electric charge (in coulombs) of an ion or other particle
-    
+
     Parameters
     ----------
     argument : string
@@ -1582,14 +1583,15 @@ def electric_charge(argument):
     The second format is a string containing element information at
     the beginning, following by one or more plus or minus signs.
 
-    This function returns -1.6021766208e-19 C for electrons and 1.6021766208e-19 C for positrons.
+    This function returns -1.6021766208e-19 C for electrons and 
+    1.6021766208e-19 C for positrons.
 
     Examples
     --------
     >>> q = electric_charge('p')
     <Quantity 1.6021766208e-19 C>
     """
-    
+
     charge = charge_state(argument) * const.e.to('C')
-    
+
     return charge

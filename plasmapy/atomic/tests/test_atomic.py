@@ -716,23 +716,24 @@ def test_charge_state():
     with pytest.raises(UserWarning):
         charge_state('Og 10-')
 
+
 def test_electric_charge():
     assert electric_charge('p').value == 1.6021766208e-19
     assert electric_charge('p').unit == 'C'
     assert electric_charge('e').value == -1.6021766208e-19
     assert electric_charge('alpha').value == 3.2043532416e-19
-    
+
     with pytest.raises(ValueError):
         electric_charge('badinput')
-    
+
     with pytest.raises(ValueError):
         electric_charge(' ')
-        
+
     with pytest.raises(ValueError):
         electric_charge('Au 81+')
-    
+
     with pytest.raises(UserWarning):
         electric_charge('Au 81-')
-        
+
     with pytest.raises(UserWarning):
         electric_charge('H---')
