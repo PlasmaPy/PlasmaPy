@@ -6,7 +6,7 @@ Subpackages
 
 .. toctree::
 
-    plasmapy.analytic
+    plasmapy.math
     plasmapy.classes
     plasmapy.constants
 
