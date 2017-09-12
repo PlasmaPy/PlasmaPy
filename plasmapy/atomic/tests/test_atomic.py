@@ -1,6 +1,5 @@
 from astropy import units as u, constants as const
 import numpy as np
-
 from ..atomic import (element_symbol, isotope_symbol, atomic_number,
                       mass_number, element_name, standard_atomic_weight,
                       isotope_mass, ion_mass, nuclear_binding_energy,
