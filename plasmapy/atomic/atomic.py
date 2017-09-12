@@ -1583,7 +1583,7 @@ def electric_charge(argument):
     The second format is a string containing element information at
     the beginning, following by one or more plus or minus signs.
 
-    This function returns -1.6021766208e-19 C for electrons and 
+    This function returns -1.6021766208e-19 C for electrons and
     1.6021766208e-19 C for positrons.
 
     Examples
