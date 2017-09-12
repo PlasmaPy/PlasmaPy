@@ -1546,3 +1546,52 @@ def __extract_charge_state(argument):
                           "unlikely to occur in nature.")
 
     return argument, charge_state
+
+
+def electric_charge(argument):
+    """Returns the electric charge (in coulombs) of an ion or other particle
+
+    Parameters
+    ----------
+    argument : string
+        String representing an element or isotope followed by charge state
+        information.
+
+    Returns
+    -------
+    charge: Quantity
+        The electric charge in coulombs.
+
+    Raises
+    ------
+    ValueError:
+        If the charge state or isotope information is invalid, or the charge
+        state exceeds the atomic number.
+
+    UserWarning:
+        If the input represents an ion with a charge state that is below -3.
+
+    Notes
+    -----
+    This function supports two formats for the charge state information.
+
+    The first format is a string that has information for the element
+    or isotope at the beginning, a space in between, and the charge
+    state information in the form of an integer followed by a plus or
+    minus sign, or a plus or minus sign followed by an integer.
+
+    The second format is a string containing element information at
+    the beginning, following by one or more plus or minus signs.
+
+    This function returns -1.6021766208e-19 C for electrons and
+    1.6021766208e-19 C for positrons.
+
+    Examples
+    --------
+    >>> q = electric_charge('p')
+    <Quantity 1.6021766208e-19 C>
+    """
+
+    charge = charge_state(argument) * const.e.to('C')
+
+    return charge
