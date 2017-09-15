@@ -112,22 +112,13 @@ conduct](https://www.python.org/psf/codeofconduct/).
 
 ## Organizational structure
 
-The Coordinating Committee (CC) will oversee the PlasmaPy project.
-This committee will take a big picture approach defining the goals and
-future directions of PlasmaPy.  The CC will make sure that roles are
-being filled, necessary tasks are being completed, facilitating
-intergroup communication (including the email list and HipChat group),
-coordinating and delegating tasks, seeking funding mechanisms,
-facilitating compromises and cooperation, and fostering a culture of
-appreciation.
- 
-The Code Development Committee (CDC) will directly oversee the
-development of the codebase.  This committee will be responsible for
-managing the project repository, reviewing and accepting pull requests,
-ensuring intercompatibility between different subpackages, and
-coordinating automated testing.  The CDC will be responsible for
-ensuring that the PlasmaPy codebase adheres to the standards defined
-in this document.
+The Coordinating Committee (CC) will oversee the PlasmaPy project and
+code development.  The CC will ensure that roles are being filled,
+facilitate community-wide communication, coordinate and delegate
+tasks, manage the project repository, oversee the code review process,
+regulate intercompatibility between different subpackages, seek
+funding mechanisms, facilitate compromises and cooperation, enforce
+the code of conduct, and foster a culture of appreciation.
 
 The Community Engagement Committee (CEC) will be responsible for
 organizing conferences, trainings, and workshops; maintaining and
@@ -171,11 +162,11 @@ the project that are director towards the initial developers.
 New code and edits should be submitted as a pull request to the
 development branch of the PlasmaPy repository on GitHub.  The pull
 request will undergo a code review by the subpackage maintainers
-and/or the CDC, who will provide suggestions on how the contributor
-may update the pull request.  Subpackage maintainers will generally be
+and/or the CC, who will provide suggestions on how the contributor may
+update the pull request.  Subpackage maintainers will generally be
 responsible for deciding on pull requests with minor changes, while
 pull requests with major changes should be decided jointly by the
-subpackage maintainers and the CDC.  The CDC and CEC will develop a
+subpackage maintainers and the CC.  The CC and CEC will develop a
 friendly guide on how users may contribute new code to PlasmaPy.
 
 New code should conform to the [PEP 8 style guide for Python
@@ -191,10 +182,10 @@ code itself should be readable enough to be able to explain how it
 works.  Documentation should be updated when the code is edited.  The
 tests should cover new functionality (especially methods with complex
 logic), but the tests should also be readable and easy to maintain.
-Existing tests should be updated when necessary (e.g., during
-the initial development of a new feature when the API is not yet
-stable), but with caution since this may imply loss of backwards
-compatibility.
+Existing tests should be updated when necessary [e.g., during the
+initial development of a new feature when the application program
+interface (API) is not yet stable], but with caution since this may
+imply loss of backwards compatibility.
 
 Members of the PlasmaPy community may submit PlasmaPy Enhancement
 Proposals (PLEPs) to suggest changes such as major reorganization of a
@@ -206,10 +197,10 @@ not require community discussion.  The CC shall maintain a GitHub
 repository of PLEPs.  PLEPs will be made openly available for
 community discussion and transparency for a period of at least four
 weeks, during which time the proposal may be updated and revised by
-the proposers.  The CC and CDC shall approve or decline these
-proposals after seeking community input.  The rationale behind the
-decision and a summary of the community discussion shall be recorded
-along with the PLEP.
+the proposers.  The CC shall approve or decline these proposals after
+seeking community input.  The rationale behind the decision and a
+summary of the community discussion shall be recorded along with the
+PLEP.
 
 ## Programming guidelines
 
@@ -229,6 +220,25 @@ it to work, and primarily for where there is a performance bottleneck.
 Performance-critical parts of the core package will preferably be
 written using Cython or Numba to achieve compiled speeds while
 maintaining the significant advantages of using a high level language.
+
+### Versioning
+
+PlasmaPy will use [Semantic Versioning](http://semver.org/).  Releases
+will be given version numbers of the form *MAJOR*.*MINOR*.*PATCH*,
+where *MAJOR*, *MINOR*, and *PATCH* are nonnegative integers. Starting
+with version 1.0, *MAJOR* will be incremented when backwards
+incompatible changes are made, *MINOR* will be incremented when new
+backwards-compatible functionality is added, and *PATCH* will be
+incremented when backwards-compatible bug fixes are made.  
+
+Development releases will have *MAJOR* equal to zero and start at
+version 0.1.  The API should not be considered stable during the
+development phase.  PlasmaPy will release version 1.0 once it has a
+stable public API that users are depending on for production code.
+
+All releases will be provided with release notes and change log
+entries, and a table will be provided that describes the stability of
+the public API for each PlasmaPy subpackage.
 
 ### Dependencies
 

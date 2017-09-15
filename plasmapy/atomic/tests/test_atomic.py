@@ -1,13 +1,12 @@
 from astropy import units as u, constants as const
 import numpy as np
-
 from ..atomic import (element_symbol, isotope_symbol, atomic_number,
                       mass_number, element_name, standard_atomic_weight,
                       isotope_mass, ion_mass, nuclear_binding_energy,
                       energy_from_nuclear_reaction, is_isotope_stable,
                       half_life, known_isotopes, common_isotopes,
                       stable_isotopes, isotopic_abundance, charge_state,
-                      Elements, Isotopes)
+                      electric_charge, Elements, Isotopes)
 
 import pytest
 
@@ -707,9 +706,6 @@ def test_charge_state():
     with pytest.raises(ValueError):
         charge_state('Fe 29+')
 
-    with pytest.raises(ValueError):
-        charge_state('Fe 29+')
-
     with pytest.raises(UserWarning):
         charge_state('H---')
 
@@ -718,3 +714,25 @@ def test_charge_state():
 
     with pytest.raises(UserWarning):
         charge_state('Og 10-')
+
+
+def test_electric_charge():
+    assert electric_charge('p').value == 1.6021766208e-19
+    assert electric_charge('p').unit == 'C'
+    assert electric_charge('e').value == -1.6021766208e-19
+    assert electric_charge('alpha').value == 3.2043532416e-19
+
+    with pytest.raises(ValueError):
+        electric_charge('badinput')
+
+    with pytest.raises(ValueError):
+        electric_charge(' ')
+
+    with pytest.raises(ValueError):
+        electric_charge('Au 81+')
+
+    with pytest.raises(UserWarning):
+        electric_charge('Au 81-')
+
+    with pytest.raises(UserWarning):
+        electric_charge('H---')

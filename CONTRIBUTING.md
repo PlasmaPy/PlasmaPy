@@ -60,7 +60,7 @@ If you see something you'd like to work on amongst our
  that! However, please announce your intent first in the relevant issue to 
  make sure there is no work duplication.
  
-Please note that PlasmaPy has a [Code of Conduct](code_of_conduct.md).
+Please note that PlasmaPy has a [Code of Conduct](CODE_OF_CONDUCT.md).
 
 Issues marked by the community as *help wanted* mean just that - either they're good contributions for outsiders or there's an issue in the ongoing work that requires a second opinion. Please consider these first!
 

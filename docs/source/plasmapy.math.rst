@@ -1,4 +1,4 @@
-plasmapy\.analytic package
+plasmapy\.math package
 ==========================
 
 Subpackages
@@ -6,15 +6,15 @@ Subpackages
 
 .. toctree::
 
-    plasmapy.analytic.tests
+    plasmapy.math.tests
 
 Submodules
 ----------
 
-plasmapy\.analytic\.analytic module
+plasmapy\.math\.math module
 -----------------------------------
 
-.. automodule:: plasmapy.analytic.analytic
+.. automodule:: plasmapy.math.math
     :members:
     :undoc-members:
     :show-inheritance:
@@ -23,7 +23,7 @@ plasmapy\.analytic\.analytic module
 Module contents
 ---------------
 
-.. automodule:: plasmapy.analytic
+.. automodule:: plasmapy.math
     :members:
     :undoc-members:
     :show-inheritance:
