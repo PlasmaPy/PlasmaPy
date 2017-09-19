@@ -1,3 +1,5 @@
+# PlasmaPy License
+
 Copyright (c) 2015-2017, PlasmaPy Community.
 
 Redistribution and use in source and binary forms, with or without
@@ -38,6 +40,8 @@ Contribution.
 Except as expressly stated above, no rights or licenses from any
 copyright holder or contributor is granted under this license, whether
 expressly, by implication, estoppel or otherwise.
+
+## Disclaimer
 
 This software is provided by the copyright holders and contributors "as is"
 and any express or implied warranties, including, but not limited to, the 
