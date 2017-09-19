@@ -2,3 +2,6 @@ sphinx
 numpy
 scipy
 sphinx-automodapi
+matplotlib
+pillow
+sphinx-gallery

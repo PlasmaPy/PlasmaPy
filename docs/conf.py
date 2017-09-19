@@ -35,7 +35,8 @@ sys.path.insert(0, os.path.abspath('..'))
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.mathjax',
               'sphinx.ext.napoleon', 'sphinx.ext.intersphinx',
               'sphinx_automodapi.automodapi',
-              'sphinx_automodapi.smart_resolver']
+              'sphinx_automodapi.smart_resolver',
+              'sphinx_gallery.gen_gallery']
 
 
 intersphinx_mapping = {
@@ -44,7 +45,6 @@ intersphinx_mapping = {
     'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
     'pandas': ('http://pandas.pydata.org/pandas-docs/stable/', None),
     'astropy': ('http://docs.astropy.org/en/stable/', None)}
-
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -95,9 +95,9 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-#html_theme = 'alabaster'
-#html_theme = 'traditional'
-#html_theme = 'agogo'
+# html_theme = 'alabaster'
+# html_theme = 'traditional'
+# html_theme = 'agogo'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -166,3 +166,13 @@ texinfo_documents = [
      author, 'PlasmaPy', 'Python package for plasma physics',
      'Miscellaneous'),
 ]
+
+
+# -- Options for Sphinx Gallery -----------------
+
+sphinx_gallery_conf = {
+    # path to your examples scripts
+    'examples_dirs': '../plasmapy/examples',
+    # path where to save gallery generated examples
+    'backreferences_dir': 'gen_modules/backreferences',
+    'gallery_dirs': 'auto_examples'}

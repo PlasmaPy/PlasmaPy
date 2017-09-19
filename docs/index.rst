@@ -24,6 +24,13 @@ Getting Started
 * `PlasmaPy website
   <http://www.plasmapy.org/>`_
 
+Examples
+========
+.. toctree::
+    :maxdepth: 1
+
+    auto_examples/index
+
 Modules
 =======
 

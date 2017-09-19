@@ -8,3 +8,6 @@ dependencies:
   - pytest
   - pip:
     - coveralls
+    - sphinx-gallery
+    - matplotlib
+    - pillow
