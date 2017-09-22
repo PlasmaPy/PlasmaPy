@@ -10,75 +10,77 @@ from ..atomic import (element_symbol, isotope_symbol, atomic_number,
 
 import pytest
 
+# (argument, expected)
+element_symbol_table = [
+    (1, 'H'),
+    ('H', 'H'),
+    ('h', 'H'),
+    ('d', 'H'),
+    ('T', 'H'),
+    ('deuterium', 'H'),
+    ('deuteron', 'H'),
+    ('Tritium', 'H'),
+    ('triton', 'H'),
+    ('H-3', 'H'),
+    ('Hydrogen-3', 'H'),
+    ('helium', 'He'),
+    (2, 'He'),
+    ('alpha', 'He'),
+    ('he', 'He'),
+    ('gold', 'Au'),
+    ('Gold', 'Au'),
+    ('au', 'Au'),
+    (79, 'Au'),
+    ('79', 'Au'),
+    ('p', 'H'),
+    ('P', 'P'),
+    (118, 'Og'),
+    ('neutron', 'n'),
+    ('n-1', 'n'),
+    ('N-14', 'N'),
+    ('n', 'n'),
+    ('N', 'N'),
+    ('H +1', 'H'),
+    ('H 1+', 'H'),
+    ('hydrogen 1+', 'H'),
+    ('deuterium 1+', 'H'),
+    ('Fe 24+', 'Fe'),
+    ('Fe +24', 'Fe'),
+    ('Fe 2-', 'Fe'),
+    ('Fe -2', 'Fe'),
+    ('Fe+', 'Fe'),
+    ('Fe++', 'Fe'),
+    ('Fe-', 'Fe'),
+    ('Fe++++++++++++++', 'Fe')
+]
 
-def test_element_symbol():
-    assert element_symbol(1) == 'H'
-    assert element_symbol('H') == 'H'
-    assert element_symbol('h') == 'H'
-    assert element_symbol('d') == 'H'
-    assert element_symbol('T') == 'H'
-    assert element_symbol('deuterium') == 'H'
-    assert element_symbol('deuteron') == 'H'
-    assert element_symbol('Tritium') == 'H'
-    assert element_symbol('triton') == 'H'
-    assert element_symbol('H-3') == 'H'
-    assert element_symbol('Hydrogen-3') == 'H'
-    assert element_symbol('helium') == 'He'
-    assert element_symbol(2) == 'He'
-    assert element_symbol('alpha') == 'He'
-    assert element_symbol('he') == 'He'
-    assert element_symbol('gold') == 'Au'
-    assert element_symbol('Gold') == 'Au'
-    assert element_symbol('au') == 'Au'
-    assert element_symbol(79) == 'Au'
-    assert element_symbol('79') == 'Au'
-    assert element_symbol('p') == 'H'
-    assert element_symbol('P') == 'P'
-    assert element_symbol(118) == 'Og'
-    assert element_symbol('neutron') == 'n'
-    assert element_symbol('n-1') == 'n'
-    assert element_symbol('N-14') == 'N'
-    assert element_symbol('n') == 'n'
-    assert element_symbol('N') == 'N'
-    assert element_symbol('H +1') == 'H'
-    assert element_symbol('H 1+') == 'H'
-    assert element_symbol('hydrogen 1+') == 'H'
-    assert element_symbol('deuterium 1+') == 'H'
-    assert element_symbol('Fe 24+') == 'Fe'
-    assert element_symbol('Fe +24') == 'Fe'
-    assert element_symbol('Fe 2-') == 'Fe'
-    assert element_symbol('Fe -2') == 'Fe'
-    assert element_symbol('Fe+') == 'Fe'
-    assert element_symbol('Fe++') == 'Fe'
-    assert element_symbol('Fe-') == 'Fe'
-    assert element_symbol('Fe++++++++++++++') == 'Fe'
 
-    with pytest.raises(ValueError):
-        element_symbol('H-0')
+@pytest.mark.parametrize(
+    'argument, expected', element_symbol_table
+)
+def test_element_symbol(argument, expected):
+    assert element_symbol(argument) == expected
 
-    with pytest.raises(TypeError):
-        element_symbol(3.141592653589793238462643383279502884)
 
-    with pytest.raises(ValueError):
-        element_symbol('Og-294b')
+element_symbol_error_table = [
+    ('H-0', ValueError),
+    (3.141592653589793238462643383279502884, TypeError),
+    ('Og-294b', ValueError),
+    ('H-934361079326356530741942970523610389', ValueError),
+    ('Fe 2+4', ValueError),
+    ('Fe+24', ValueError),
+    ('Fe +59', ValueError),
+    ('C++++++++++++++++', ValueError),
+    ('C-++++', ValueError)
+]
 
-    with pytest.raises(ValueError):
-        element_symbol('H-934361079326356530741942970523610389')
 
-    with pytest.raises(ValueError):
-        element_symbol('Fe 2+4')
-
-    with pytest.raises(ValueError):
-        element_symbol('Fe+24')
-
-    with pytest.raises(ValueError):
-        element_symbol('Fe +59')
-
-    with pytest.raises(ValueError):
-        element_symbol('C++++++++++++++++')
-
-    with pytest.raises(ValueError):
-        element_symbol('C-++++')
+@pytest.mark.parametrize(
+    'argument, expected_error', element_symbol_error_table
+)
+def test_element_symbol_error(argument, expected_error):
+    with pytest.raises(expected_error):
+        element_symbol(argument)
 
 
 def test_isotope_symbol():
@@ -348,7 +350,7 @@ def test_isotope_mass():
         isotope_mass('tritium') == isotope_mass(1, 3)
     assert np.isclose(isotope_mass('berkelium-249').value, 249.0749877)
     assert isotope_mass('Si-30').unit == u.u
-    assert np.isclose(isotope_mass('n')/(1.008664*u.u), 1, atol=1e-6)
+    assert np.isclose(isotope_mass('n') / (1.008664 * u.u), 1, atol=1e-6)
 
     with pytest.raises(ValueError):
         isotope_mass("H")
@@ -389,9 +391,9 @@ def test_ion_mass():
     assert ion_mass('hydrogen') > const.m_p
     assert ion_mass('proton') == const.m_p
     assert ion_mass('e+') == ion_mass('positron') == const.m_e
-    assert np.isclose(ion_mass('alpha')/ion_mass('He-4', 2), 1.0)
+    assert np.isclose(ion_mass('alpha') / ion_mass('He-4', 2), 1.0)
     assert ion_mass('protium') == const.m_p
-    assert ion_mass('Ne-22', 2) == 21.991385114*u.u - 2*const.m_e
+    assert ion_mass('Ne-22', 2) == 21.991385114 * u.u - 2 * const.m_e
     assert ion_mass('F-19', Z=3).unit == u.kg
     assert ion_mass('F-19', Z='3').unit == u.kg
     assert ion_mass('H-1+') == const.m_p
@@ -399,9 +401,9 @@ def test_ion_mass():
     assert ion_mass('He 1+') == ion_mass('He')
     assert ion_mass('He-4 2+') == ion_mass('alpha')
     assert np.isclose(ion_mass('Fe 1-').value,
-                      (ion_mass('Fe 1+') + 2*const.m_e).value, rtol=1e-14)
+                      (ion_mass('Fe 1+') + 2 * const.m_e).value, rtol=1e-14)
     assert np.isclose(ion_mass('Fe-56 1-').value,
-                      (ion_mass('Fe-56 1+') + 2*const.m_e).value, rtol=1e-14)
+                      (ion_mass('Fe-56 1+') + 2 * const.m_e).value, rtol=1e-14)
     assert np.isclose((ion_mass('Fe-56 1+')).value,
                       (ion_mass('Fe', Z=1, mass_numb=56)).value)
     assert np.isclose((ion_mass('Fe-56 1+')).value,
@@ -410,10 +412,10 @@ def test_ion_mass():
     assert ion_mass('deuteron') == ion_mass('D +1')
     assert ion_mass('T', Z=1) == ion_mass('T +1')
     assert ion_mass('Fe', mass_numb=56) == ion_mass('Fe', mass_numb='56')
-    assert np.isclose(ion_mass(9.11e-31*u.kg).value, 9.10938291e-31,
+    assert np.isclose(ion_mass(9.11e-31 * u.kg).value, 9.10938291e-31,
                       atol=1e-37)
-    assert ion_mass(1.67e-27*u.kg) == 1.67e-27*u.kg
-    assert np.isclose(ion_mass(1*u.u).value, 1.660538921e-27, atol=1e-35)
+    assert ion_mass(1.67e-27 * u.kg) == 1.67e-27 * u.kg
+    assert np.isclose(ion_mass(1 * u.u).value, 1.660538921e-27, atol=1e-35)
     assert ion_mass('alpha') > ion_mass('He-3 2+')
     assert ion_mass('antiproton') == ion_mass('p-') == ion_mass('p+')
 
@@ -439,13 +441,13 @@ def test_ion_mass():
         ion_mass('Og', Z=1)
 
     with pytest.raises(UserWarning):
-        ion_mass(1.6e-27*u.kg)
+        ion_mass(1.6e-27 * u.kg)
 
     with pytest.raises(UserWarning):
-        ion_mass(8e-25*u.kg)
+        ion_mass(8e-25 * u.kg)
 
     with pytest.raises(u.UnitConversionError):
-        ion_mass(1*u.m)
+        ion_mass(1 * u.m)
 
     with pytest.raises(ValueError):
         ion_mass('Og', 1)
@@ -491,7 +493,7 @@ def test_energy_from_nuclear_reaction():
     triple_alpha1_r = '4He-4 --> 2Be-8'
     energy_triplealpha1_r = energy_from_nuclear_reaction(triple_alpha1_r)
     assert np.isclose(energy_triplealpha1_r.to(u.keV).value,
-                      -91.8*2, atol=0.1)
+                      -91.8 * 2, atol=0.1)
 
     with pytest.raises(ValueError):
         energy_from_nuclear_reaction('H + H --> H')
@@ -558,9 +560,9 @@ def test_isotope_calls():
 
 
 def test_half_life():
-    assert half_life('H-1') == np.inf*u.s
+    assert half_life('H-1') == np.inf * u.s
     assert np.isclose(half_life('tritium').to(u.s).value,
-                      (12.32*u.yr).to(u.s).value, rtol=2e-4)
+                      (12.32 * u.yr).to(u.s).value, rtol=2e-4)
     assert half_life('H-1').unit == 's'
     assert half_life('tritium').unit == 's'
 
@@ -586,7 +588,7 @@ def test_atomic_TypeErrors():
                           ion_mass, nuclear_binding_energy,
                           energy_from_nuclear_reaction]
 
-    BadArguments = [1.1, {'cats': 'bats'}, 1+1j]
+    BadArguments = [1.1, {'cats': 'bats'}, 1 + 1j]
 
     for function in TypeErrorFunctions:
         for argument in BadArguments:
