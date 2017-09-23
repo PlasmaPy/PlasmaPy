@@ -719,11 +719,10 @@ isotopic_abundance_elements = (
     atomic_number(atomic_numb) for atomic_numb in range(1, 119))
 isotopic_abundance_isotopes = (
     common_isotopes(element) for element in isotopic_abundance_elements)
-isotopic_abundance_sum_table = [
-    (element, isotopes)
-    for element, isotopes in
+isotopic_abundance_sum_table = (
+    (element, isotopes) for element, isotopes in
     zip(isotopic_abundance_elements, isotopic_abundance_isotopes)
-    if isotopes]
+    if isotopes)
 
 
 @pytest.mark.parametrize("element, isotopes", isotopic_abundance_sum_table)
