@@ -62,6 +62,7 @@ def test_element_symbol(argument, expected):
     assert element_symbol(argument) == expected
 
 
+# (argument, expected_error)
 element_symbol_error_table = [
     ('H-0', ValueError),
     (3.141592653589793238462643383279502884, TypeError),
@@ -82,7 +83,7 @@ def test_element_symbol_error(argument, expected_error):
         element_symbol(argument)
 
 
-# (argument, kwargs, expected)
+# (argument, expected)
 isotype_symbol_table = [
     (('He', 4), 'He-4'),
     (('helium-4',), 'He-4'),
@@ -126,6 +127,7 @@ def test_isotope_symbol(argument, expected):
     assert isotope_symbol(*argument) == expected
 
 
+# (argument, kwargs, expected_error)
 isotope_symbol_error_table = [
     ('H-1', {"mass_numb": 1}, UserWarning),
     ('H-2', {"mass_numb": 2}, UserWarning),
@@ -158,6 +160,7 @@ def test_isotope_symbol_error(argument, kwargs, expected_error):
         isotope_symbol(argument, **kwargs)
 
 
+# (argument, expected)
 atomic_number_table = [
     ('H', 1),
     ('d', 1),
@@ -190,6 +193,7 @@ def test_atomic_number(argument, expected):
     assert atomic_number(argument) == expected
 
 
+# (argument, expected_error)
 atomic_number_error_table = [
     ('H-3934', ValueError),
     ('C-12b', ValueError),
@@ -204,6 +208,7 @@ def test_atomic_number_error(argument, expected_error):
         atomic_number(argument)
 
 
+# (isotope, expected)
 mass_number_table = [
     ('helium-3', 3),
     ('Au-197', 197),
@@ -227,6 +232,7 @@ def test_mass_number(isotope, expected):
     assert mass_number(isotope) == expected
 
 
+# (argument, expected_error)
 mass_number_error_table = [
     ('H-359', ValueError),
     ('C-12b', ValueError),
@@ -241,6 +247,7 @@ def test_mass_number_error(argument, expected_error):
         mass_number(argument)
 
 
+# (argument, expected)
 element_name_table = [
     ('D', 'hydrogen'),
     ('deuterium', 'hydrogen'),
@@ -278,6 +285,7 @@ def test_element_name(argument, expected):
     assert element_name(argument) == expected
 
 
+# (argument, expected_error)
 element_name_error_table = [
     ('vegan cupcakes', ValueError),
     ('C-13-14-15-51698024', ValueError),
@@ -304,6 +312,7 @@ def test_standard_atomic_weight_unit():
     assert standard_atomic_weight('Au').unit == u.u
 
 
+# (argument, expected)
 standard_atomic_weight_table = [
     ('H', 1.008),
     (1, 1.008),
@@ -315,6 +324,7 @@ def test_standard_atomic_weight(argument, expected):
     assert standard_atomic_weight(argument).value == expected
 
 
+# (argument, expected_error)
 standard_atomic_weight_error_table = [
     ('H-1', ValueError),
     ('wrong input', ValueError),
@@ -347,6 +357,7 @@ def test_isotope_mass_si_30_units():
     assert isotope_mass('Si-30').unit == u.u
 
 
+# (arg1, arg2)
 isotope_mass_table = [
     (('H-1',), ('protium',)),
     (('H-1',), (1, 1)),
@@ -363,6 +374,7 @@ def test_isotope_mass(arg1, arg2):
     assert isotope_mass(*arg1) == isotope_mass(*arg2)
 
 
+# (argument, expected_error)
 isotope_mass_error_table = [
     ("H", ValueError),
     (1.1, TypeError),
@@ -423,6 +435,7 @@ def test_ion_mass():
     assert ion_mass('antiproton') == ion_mass('p-') == ion_mass('p+')
 
 
+# (argument, kwargs, expected_error)
 ion_mass_error_table = [
     ('0g', {}, ValueError),  # since it has no standard atomic weight
     ('Fe-56', {"Z": 1.4}, TypeError),
@@ -457,6 +470,7 @@ def test_nuclear_binding_energy_D_T():
     assert np.isclose(E_in_MeV, 17.58, rtol=0.01)
 
 
+# (argument, expected_error)
 nuclear_binding_energy_table = [
     ("H", ValueError),
     (1.1, TypeError)]
@@ -499,6 +513,7 @@ def test_energy_from_nuclear_reaction_triple_alpha_r():
                       -91.8 * 2, atol=0.1)
 
 
+# (reaction, expected_error)
 energy_from_nuclear_reaction_error_table = [
     ('H + H --> H', ValueError),
     (1, TypeError),
@@ -515,6 +530,7 @@ def test_energy_from_nuclear_reaction_error(reaction, expected_error):
         energy_from_nuclear_reaction(reaction)
 
 
+# (argument)
 is_isotope_stable_table = [
     ('H-1',),
     (1, 1),
@@ -540,6 +556,7 @@ def test_is_isotope_stable(argument):
     assert is_isotope_stable(*argument)
 
 
+# (argument)
 is_isotope_stable_false_table = [
     ('Be-8',),
     ('n',),
@@ -565,6 +582,7 @@ def test_is_isotope_stable_false(argument):
     assert not is_isotope_stable(*argument)
 
 
+# (argument, expected_error)
 is_isotope_stable_error_table = [
     (('hydrogen-444444',), ValueError),
     (('hydrogen', 0), ValueError),
@@ -708,6 +726,7 @@ def test_isotopic_abundances_sum(element, isotopes):
         "Problem with: " + element
 
 
+# (argument, expected)
 charge_state_table = [
     ('H+', 1),
     ('D +1', 1),
@@ -732,6 +751,7 @@ def test_charge_state(argument, expected):
     assert charge_state(argument) == expected
 
 
+# (argument, expected_error)
 charge_state_error_table = [
     ('fads', ValueError),
     ('H++', ValueError),
@@ -754,13 +774,13 @@ def test_electric_charge():
     assert electric_charge('alpha').value == 3.2043532416e-19
 
 
+# (argument, expected_error)
 electric_charge_error_table = [
     ('badinput', ValueError),
     (' ', ValueError),
     ('Au 81+', ValueError),
     ('Au 81-', UserWarning),
-    ('H---', UserWarning)
-]
+    ('H---', UserWarning)]
 
 
 @pytest.mark.parametrize("argument, expected_error", electric_charge_error_table)
