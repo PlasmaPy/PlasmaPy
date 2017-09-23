@@ -154,7 +154,8 @@ isotope_symbol_error_table = [
     ('Fe', {"mass_numb": None}, ValueError)]
 
 
-@pytest.mark.parametrize("argument, kwargs, expected_error", isotope_symbol_error_table)
+@pytest.mark.parametrize(
+    "argument, kwargs, expected_error", isotope_symbol_error_table)
 def test_isotope_symbol_error(argument, kwargs, expected_error):
     with pytest.raises(expected_error):
         isotope_symbol(argument, **kwargs)
@@ -339,7 +340,8 @@ standard_atomic_weight_error_table = [
     ('Og 2+', ValueError)]
 
 
-@pytest.mark.parametrize("argument, expected_error", standard_atomic_weight_error_table)
+@pytest.mark.parametrize("argument, expected_error",
+                         standard_atomic_weight_error_table)
 def test_standard_atomic_weight_error(argument, expected_error):
     with pytest.raises(expected_error):
         standard_atomic_weight(argument)
@@ -450,7 +452,8 @@ ion_mass_error_table = [
     ('Og', {"Z": 1}, ValueError)]
 
 
-@pytest.mark.parametrize("argument, kwargs, expected_error", ion_mass_error_table)
+@pytest.mark.parametrize("argument, kwargs, expected_error",
+                         ion_mass_error_table)
 def test_ion_mass_error(argument, kwargs, expected_error):
     with pytest.raises(expected_error):
         ion_mass(argument, **kwargs)
@@ -476,7 +479,8 @@ nuclear_binding_energy_table = [
     (1.1, TypeError)]
 
 
-@pytest.mark.parametrize("argument, expected_error", nuclear_binding_energy_table)
+@pytest.mark.parametrize("argument, expected_error",
+                         nuclear_binding_energy_table)
 def test_nuclear_binding_energy(argument, expected_error):
     with pytest.raises(expected_error):
         nuclear_binding_energy(argument)
@@ -589,7 +593,8 @@ is_isotope_stable_error_table = [
     (('',), ValueError)]
 
 
-@pytest.mark.parametrize("argument, expected_error", is_isotope_stable_error_table)
+@pytest.mark.parametrize("argument, expected_error",
+                         is_isotope_stable_error_table)
 def test_is_isotope_stable_error(argument, expected_error):
     with pytest.raises(expected_error):
         is_isotope_stable(*argument)
@@ -710,11 +715,14 @@ def test_isotopic_abundance():
         isotopic_abundance('Og-2')
 
 
-isotopic_abundance_elements = (atomic_number(atomic_numb) for atomic_numb in range(1, 119))
-isotopic_abundance_isotopes = (common_isotopes(element) for element in isotopic_abundance_elements)
+isotopic_abundance_elements = (
+    atomic_number(atomic_numb) for atomic_numb in range(1, 119))
+isotopic_abundance_isotopes = (
+    common_isotopes(element) for element in isotopic_abundance_elements)
 isotopic_abundance_sum_table = [
     (element, isotopes)
-    for element, isotopes in zip(isotopic_abundance_elements, isotopic_abundance_isotopes)
+    for element, isotopes in
+    zip(isotopic_abundance_elements, isotopic_abundance_isotopes)
     if isotopes]
 
 
@@ -783,7 +791,8 @@ electric_charge_error_table = [
     ('H---', UserWarning)]
 
 
-@pytest.mark.parametrize("argument, expected_error", electric_charge_error_table)
+@pytest.mark.parametrize("argument, expected_error",
+                         electric_charge_error_table)
 def test_electric_charge_error(argument, expected_error):
     with pytest.raises(expected_error):
         electric_charge(argument)
