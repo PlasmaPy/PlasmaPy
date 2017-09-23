@@ -83,137 +83,118 @@ def test_element_symbol_error(argument, expected_error):
         element_symbol(argument)
 
 
-def test_isotope_symbol():
-    assert isotope_symbol('He', 4) == 'He-4'
-    assert isotope_symbol('helium-4') == 'He-4'
-    assert isotope_symbol('H-2') == 'D'
-    assert isotope_symbol('d') == 'D'
-    assert isotope_symbol('Deuterium') == 'D'
-    assert isotope_symbol('deuterium') == 'D'
-    assert isotope_symbol('deuteron') == 'D'
-    assert isotope_symbol('tritium') == 'T'
-    assert isotope_symbol('triton') == 'T'
-    assert isotope_symbol('Hydrogen-3') == 'T'
-    assert isotope_symbol('hydrogen-3') == 'T'
-    assert isotope_symbol('h-3') == 'T'
-    assert isotope_symbol('H-3') == 'T'
-    assert isotope_symbol(1, 2) == 'D'
-    assert isotope_symbol('h', 2) == 'D'
-    assert isotope_symbol('Hydrogen', 3) == 'T'
-    assert isotope_symbol('tritium') == 'T'
-    assert isotope_symbol('H', 2) == 'D'
-    assert isotope_symbol('Alpha') == 'He-4'
-    assert isotope_symbol('alpha') == 'He-4'
-    assert isotope_symbol(79, 197) == 'Au-197'
-    assert isotope_symbol('p') == 'H-1'
-    assert isotope_symbol('beryllium-8') == 'Be-8'
-    assert isotope_symbol('neutron') == 'n'
-    assert isotope_symbol('n') == 'n'
-    assert isotope_symbol(0, 1) == 'n'
-    assert isotope_symbol('n-1') == 'n'
-    assert isotope_symbol('N-13') == 'N-13'
-    assert isotope_symbol('p') == 'H-1'
-    assert isotope_symbol('proton') == 'H-1'
-    assert isotope_symbol('protium') == 'H-1'
-    assert isotope_symbol('N-13 2+') == 'N-13'
-    assert isotope_symbol('d+') == 'D'
-    assert isotope_symbol('Hydrogen-3 +1') == 'T'
-
-    with pytest.raises(UserWarning):
-        isotope_symbol('H-1', 1)
-
-    with pytest.raises(UserWarning):
-        isotope_symbol('H-2', 2)
-
-    with pytest.raises(UserWarning):
-        isotope_symbol('T', 3)
-
-    with pytest.raises(UserWarning):
-        isotope_symbol('Li-6', 6)
-
-    with pytest.raises(UserWarning):
-        isotope_symbol('lithium-6', 6)
-
-    with pytest.raises(UserWarning):
-        isotope_symbol('alpha', 4)
-
-    with pytest.raises(UserWarning):
-        isotope_symbol('p', 1)
-
-    with pytest.raises(UserWarning):
-        isotope_symbol('n', 1)
-
-    with pytest.raises(ValueError):
-        isotope_symbol('Md-260', 261)
-
-    with pytest.raises(ValueError):
-        isotope_symbol('protium', 2)
-
-    with pytest.raises(ValueError):
-        isotope_symbol('alpha', 3)
-
-    with pytest.raises(ValueError):
-        isotope_symbol('O-18', 19)
-
-    with pytest.raises(ValueError):
-        isotope_symbol('lead-209', 511)
-
-    with pytest.raises(ValueError):
-        isotope_symbol('He-1')
-
-    with pytest.raises(ValueError):
-        isotope_symbol(24, 23)
-
-    with pytest.raises(ValueError):
-        isotope_symbol('H', 0)
-
-    with pytest.raises(ValueError):
-        isotope_symbol('H-1', 2)
-
-    with pytest.raises(ValueError):
-        isotope_symbol('P')
-
-    with pytest.raises(ValueError):
-        isotope_symbol(1)
-
-    with pytest.raises(ValueError):
-        isotope_symbol(4)
-
-    with pytest.raises(ValueError):
-        isotope_symbol('hydrogen-444444')
-
-    with pytest.raises(TypeError):
-        isotope_symbol('Fe', 2.1)
-
-    with pytest.raises(ValueError):
-        isotope_symbol('Fe', None)
+# (argument, kwargs, expected)
+isotype_symbol_table = [
+    ('He', {"mass_numb": 4}, 'He-4'),
+    ('helium-4', {}, 'He-4'),
+    ('H-2', {}, 'D'),
+    ('d', {}, 'D'),
+    ('Deuterium', {}, 'D'),
+    ('deuterium', {}, 'D'),
+    ('deuteron', {}, 'D'),
+    ('tritium', {}, 'T'),
+    ('triton', {}, 'T'),
+    ('Hydrogen-3', {}, 'T'),
+    ('hydrogen-3', {}, 'T'),
+    ('h-3', {}, 'T'),
+    ('H-3', {}, 'T'),
+    (1, {"mass_numb": 2}, 'D'),
+    ('h', {"mass_numb": 2}, 'D'),
+    ('Hydrogen', {"mass_numb": 3}, 'T'),
+    ('tritium', {}, 'T'),
+    ('H', {"mass_numb": 2}, 'D'),
+    ('Alpha', {}, 'He-4'),
+    ('alpha', {}, 'He-4'),
+    (79, {"mass_numb": 197}, 'Au-197'),
+    ('p', {}, 'H-1'),
+    ('beryllium-8', {}, 'Be-8'),
+    ('neutron', {}, 'n'),
+    ('n', {}, 'n'),
+    (0, {"mass_numb": 1}, 'n'),
+    ('n-1', {}, 'n'),
+    ('N-13', {}, 'N-13'),
+    ('p', {}, 'H-1'),
+    ('proton', {}, 'H-1'),
+    ('protium', {}, 'H-1'),
+    ('N-13 2+', {}, 'N-13'),
+    ('d+', {}, 'D'),
+    ('Hydrogen-3 +1', {}, 'T')
+]
 
 
-def test_atomic_number():
-    assert atomic_number('H') == 1
-    assert atomic_number('d') == 1
-    assert atomic_number('D') == 1
-    assert atomic_number('deuterium') == 1
-    assert atomic_number('Deuterium') == 1
-    assert atomic_number('t') == 1
-    assert atomic_number('tritium') == 1
-    assert atomic_number('p') == 1
-    assert atomic_number('P') == 15
-    assert atomic_number('Alpha') == 2
-    assert atomic_number('C-12') == 6
-    assert atomic_number('s-36') == 16
-    assert atomic_number('Argon') == 18
-    assert atomic_number('protium') == 1
-    assert atomic_number('H-3') == 1
-    assert atomic_number('p+') == 1
-    assert atomic_number('Be-8') == 4
-    assert atomic_number('n') == 0
-    assert atomic_number('n-1') == 0
-    assert atomic_number('Neutron') == 0
-    assert atomic_number('N') == 7
-    assert atomic_number('N 2+') == 7
-    assert atomic_number('N +1') == 7
-    assert atomic_number('N+++') == 7
+@pytest.mark.parametrize(
+    "argument, kwargs, expected", isotype_symbol_table)
+def test_isotope_symbol(argument, kwargs, expected):
+    assert isotope_symbol(argument, **kwargs) == expected
+
+
+isotope_symbol_error_table = [
+    ('H-1', {"mass_numb": 1}, UserWarning),
+    ('H-2', {"mass_numb": 2}, UserWarning),
+    ('T', {"mass_numb": 3}, UserWarning),
+    ('Li-6', {"mass_numb": 6}, UserWarning),
+    ('lithium-6', {"mass_numb": 6}, UserWarning),
+    ('alpha', {"mass_numb": 4}, UserWarning),
+    ('p', {"mass_numb": 1}, UserWarning),
+    ('n', {"mass_numb": 1}, UserWarning),
+    ('Md-260', {"mass_numb": 261}, ValueError),
+    ('protium', {"mass_numb": 2}, ValueError),
+    ('alpha', {"mass_numb": 3}, ValueError),
+    ('O-18', {"mass_numb": 19}, ValueError),
+    ('lead-209', {"mass_numb": 511}, ValueError),
+    ('He-1', {}, ValueError),
+    (24, {"mass_numb": 23}, ValueError),
+    ('H', {"mass_numb": 0}, ValueError),
+    ('H-1', {"mass_numb": 2}, ValueError),
+    ('P', {}, ValueError),
+    (1, {}, ValueError),
+    (4, {}, ValueError),
+    ('hydrogen-444444', {}, ValueError),
+    ('Fe', {"mass_numb": 2.1}, TypeError),
+    ('Fe', {"mass_numb": None}, ValueError)
+]
+
+
+@pytest.mark.parametrize("argument, kwargs, expected_error", isotope_symbol_error_table)
+def test_isotope_symbol_error(argument, kwargs, expected_error):
+    with pytest.raises(expected_error):
+        isotope_symbol(argument, **kwargs)
+
+
+atomic_number_table = [
+    ('H', 1),
+    ('d', 1),
+    ('D', 1),
+    ('deuterium', 1),
+    ('Deuterium', 1),
+    ('t', 1),
+    ('tritium', 1),
+    ('p', 1),
+    ('P', 15),
+    ('Alpha', 2),
+    ('C-12', 6),
+    ('s-36', 16),
+    ('Argon', 18),
+    ('protium', 1),
+    ('H-3', 1),
+    ('p+', 1),
+    ('Be-8', 4),
+    ('n', 0),
+    ('n-1', 0),
+    ('Neutron', 0),
+    ('N', 7),
+    ('N 2+', 7),
+    ('N +1', 7),
+    ('N+++', 7)
+]
+
+
+@pytest.mark.parametrize("argument, expected", atomic_number_table)
+def test_atomic_number(argument, expected):
+    assert atomic_number(argument) == expected
+
+
+def test_atomic_number_error():
 
     with pytest.raises(ValueError):
         atomic_number('H-3934')
@@ -225,23 +206,31 @@ def test_atomic_number():
         atomic_number(-1.5)
 
 
-def test_mass_number():
-    assert mass_number('helium-3') == 3
-    assert mass_number('Au-197') == 197
-    assert mass_number('deuterium') == 2
-    assert mass_number('D') == 2
-    assert mass_number('H-2') == 2
-    assert mass_number('tritium') == 3
-    assert mass_number('T') == 3
-    assert mass_number('alpha') == 4
-    assert mass_number('p') == 1
-    assert mass_number('n') == 1
-    assert mass_number('Be-8') == 8
-    assert mass_number('N-13') == 13
-    assert mass_number('N-13 2+') == 13
-    assert mass_number('N-13 +2') == 13
-    assert mass_number('N-13+++') == 13
+mass_number_table = [
+    ('helium-3', 3),
+    ('Au-197', 197),
+    ('deuterium', 2),
+    ('D', 2),
+    ('H-2', 2),
+    ('tritium', 3),
+    ('T', 3),
+    ('alpha', 4),
+    ('p', 1),
+    ('n', 1),
+    ('Be-8', 8),
+    ('N-13', 13),
+    ('N-13 2+', 13),
+    ('N-13 +2', 13),
+    ('N-13+++', 13)
+]
 
+
+@pytest.mark.parametrize("isotope, expected", mass_number_table)
+def test_mass_number(isotope, expected):
+    assert mass_number(isotope) == expected
+
+
+def test_mass_number_error():
     with pytest.raises(ValueError):
         mass_number('H-359')
 
@@ -255,36 +244,45 @@ def test_mass_number():
         mass_number('N-13+-+-')
 
 
-def test_element_name():
-    assert element_name('D') == 'hydrogen'
-    assert element_name('deuterium') == 'hydrogen'
-    assert element_name('t') == 'hydrogen'
-    assert element_name('Au') == 'gold'
-    assert element_name('pb') == 'lead'
-    assert element_name('alpha') == 'helium'
-    assert element_name('helium-4') == 'helium'
-    assert element_name('H-2') == 'hydrogen'
-    assert element_name('d') == 'hydrogen'
-    assert element_name('Deuterium') == 'hydrogen'
-    assert element_name('Hydrogen-3') == 'hydrogen'
-    assert element_name('hydrogen-3') == 'hydrogen'
-    assert element_name('h-3') == 'hydrogen'
-    assert element_name('H-3') == 'hydrogen'
-    assert element_name('tritium') == 'hydrogen'
-    assert element_name('Alpha') == 'helium'
-    assert element_name('alpha') == 'helium'
-    assert element_name(1) == 'hydrogen'
-    assert element_name(26) == 'iron'
-    assert element_name(79) == 'gold'
-    assert element_name('p') == 'hydrogen'
-    assert element_name('P') == 'phosphorus'
-    assert element_name('Be-8') == 'beryllium'
-    assert element_name('Li-7') == 'lithium'
-    assert element_name('n') == 'neutron'
-    assert element_name(0) == 'neutron'
-    assert element_name('N') == 'nitrogen'
-    assert element_name('N+++') == 'nitrogen'
-    assert element_name('D-') == 'hydrogen'
+element_name_table = [
+    ('D', 'hydrogen'),
+    ('deuterium', 'hydrogen'),
+    ('t', 'hydrogen'),
+    ('Au', 'gold'),
+    ('pb', 'lead'),
+    ('alpha', 'helium'),
+    ('helium-4', 'helium'),
+    ('H-2', 'hydrogen'),
+    ('d', 'hydrogen'),
+    ('Deuterium', 'hydrogen'),
+    ('Hydrogen-3', 'hydrogen'),
+    ('hydrogen-3', 'hydrogen'),
+    ('h-3', 'hydrogen'),
+    ('H-3', 'hydrogen'),
+    ('tritium', 'hydrogen'),
+    ('Alpha', 'helium'),
+    ('alpha', 'helium'),
+    (1, 'hydrogen'),
+    (26, 'iron'),
+    (79, 'gold'),
+    ('p', 'hydrogen'),
+    ('P', 'phosphorus'),
+    ('Be-8', 'beryllium'),
+    ('Li-7', 'lithium'),
+    ('n', 'neutron'),
+    (0, 'neutron'),
+    ('N', 'nitrogen'),
+    ('N+++', 'nitrogen'),
+    ('D-', 'hydrogen')
+]
+
+
+@pytest.mark.parametrize("argument, expected", element_name_table)
+def test_element_name(argument, expected):
+    assert element_name(argument) == expected
+
+
+def test_element_name_error():
 
     with pytest.raises(ValueError):
         element_name('vegan cupcakes')
@@ -299,13 +297,31 @@ def test_element_name():
         element_name('H++')
 
 
-def test_standard_atomic_weight():
-    assert standard_atomic_weight('H').value == 1.008
-    assert standard_atomic_weight(1).value == 1.008
-    assert standard_atomic_weight('Hydrogen').value == 1.008
-    assert 30.973 < standard_atomic_weight('P').value < 30.974
-    assert standard_atomic_weight('Au').unit == u.u
+def test_standard_atomic_weight_not_none():
     assert standard_atomic_weight('N') is not None
+
+
+def test_standard_atomic_weight_value_between():
+    assert 30.973 < standard_atomic_weight('P').value < 30.974
+
+
+def test_standard_atomic_weight_unit():
+    assert standard_atomic_weight('Au').unit == u.u
+
+
+standard_atomic_weight_table = [
+    ('H', 1.008),
+    (1, 1.008),
+    ('Hydrogen', 1.008)
+]
+
+
+@pytest.mark.parametrize("argument, expected", standard_atomic_weight_table)
+def test_standard_atomic_weight(argument, expected):
+    assert standard_atomic_weight(argument).value == expected
+
+
+def test_standard_atomic_weight_error():
 
     with pytest.raises(ValueError):
         standard_atomic_weight('H-1')
