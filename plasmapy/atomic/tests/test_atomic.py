@@ -481,7 +481,7 @@ nuclear_binding_energy_table = [
 
 @pytest.mark.parametrize("argument, expected_error",
                          nuclear_binding_energy_table)
-def test_nuclear_binding_energy(argument, expected_error):
+def test_nuclear_binding_energy_error(argument, expected_error):
     with pytest.raises(expected_error):
         nuclear_binding_energy(argument)
 
