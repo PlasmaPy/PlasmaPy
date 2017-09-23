@@ -643,8 +643,8 @@ atomic_TypeError_bad_arguments = [1.1, {'cats': 'bats'}, 1 + 1j]
 
 @pytest.mark.parametrize(
     "function, argument",
-    list(product(atomic_TypeError_funcs_table,
-                 atomic_TypeError_bad_arguments)))
+    product(atomic_TypeError_funcs_table,
+            atomic_TypeError_bad_arguments))
 def test_atomic_TypeErrors(function, argument):
     with pytest.raises(TypeError):
         function(argument)
@@ -659,8 +659,8 @@ atomic_ValueError_bad_arguments = [-1, 119, 'grumblemuffins', 'Oj']
 
 @pytest.mark.parametrize(
     "function, argument",
-    list(product(atomic_ValueErrors_funcs_table,
-                 atomic_ValueError_bad_arguments)))
+    product(atomic_ValueErrors_funcs_table,
+            atomic_ValueError_bad_arguments))
 def test_atomic_ValueErrors(function, argument):
     with pytest.raises(ValueError):
         function(argument)
