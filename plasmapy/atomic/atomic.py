@@ -3,6 +3,7 @@
 import numpy as np
 import re
 from astropy import units as u, constants as const
+from warnings import warn
 from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
 
@@ -83,7 +84,7 @@ def atomic_symbol(argument):
         raise TypeError("The first argument in atomic_symbol must be either "
                         "a string representing an element or isotope, or an "
                         "integer representing the atomic number (or 0 for "
-                        " neutrons).")
+                        "neutrons).")
 
     if isinstance(argument, str) and argument.isdigit():
         argument = int(argument)
@@ -271,9 +272,9 @@ def isotope_symbol(argument, mass_numb=None):
 
         if mass_numb is not None and mass_numb_from_arg is not None:
             if mass_numb == mass_numb_from_arg:
-                raise UserWarning("Redundant mass number information in " +
-                                  "isotope_symbol from inputs: (" +
-                                  str(argument)+", " + str(mass_numb) + ")")
+                warn("Redundant mass number information in isotope_symbol from"
+                     " inputs: (" + str(argument)+", " + str(mass_numb) + ")",
+                     UserWarning)
             else:
                 raise ValueError("Contradictory mass number information in "
                                  "isotope_symbol.")
@@ -368,7 +369,7 @@ def is_isotope_stable(argument, mass_numb=None):
 
     try:
         isotope = isotope_symbol(argument, mass_numb)
-    except (UserWarning, ValueError):
+    except ValueError:
         raise ValueError("Unable to determine isotope in input for "
                          "is_isotope_stable")
 
@@ -440,8 +441,8 @@ def half_life(argument, mass_numb=None):
             half_life_sec = Isotopes[isotope]['half_life']
     except Exception:
         half_life_sec = None
-        raise UserWarning("The half-life for isotope " + isotope +
-                          " is not available; returning None.")
+        warn("The half-life for isotope " + isotope + " is not available; "
+             "returning None.", UserWarning)
 
     return half_life_sec
 
@@ -816,9 +817,10 @@ def ion_mass(argument, Z=None, mass_numb=None):
         elif 1.66e-27 <= m_i.value < 7e-25:  # mass range of known isotopes
             return m_i
         else:
-            raise UserWarning("The mass that was inputted to ion_mass and is "
-                              "being returned from ion_mass is outside of the "
-                              "range of known isotopes or electrons/ions.")
+            warn("The mass that was inputted to ion_mass and is being returned"
+                 " from ion_mass is outside of the range of known isotopes or "
+                 "electrons/ions.", UserWarning)
+            return m_i
 
     if isinstance(argument, str) and \
             str(argument).lower() in ['e+', 'positron', 'e', 'e-', 'electron']:
@@ -1281,9 +1283,8 @@ def charge_state(argument):
                          "number.")
 
     if Z is not None and (Z < -atomic_numb-1 or Z < -3):
-        raise UserWarning("Element " + atomic_symbol(argument) + " has a "
-                          "charge of " + str(Z) + " which is "
-                          "unlikely to occur in nature.")
+        warn("Element " + atomic_symbol(argument) + " has a charge of " +
+             str(Z) + " which is unlikely to occur in nature.", UserWarning)
 
     return Z
 
@@ -1441,8 +1442,8 @@ def __extract_charge_state(argument):
         charge_state = None
 
     if charge_state is not None and charge_state < -3:
-        raise UserWarning("Element " + atomic_symbol(argument) + " has a "
-                          "charge of " + str(charge_state) + " which is "
-                          "unlikely to occur in nature.")
+        warn("Element " + atomic_symbol(argument) + " has a charge of " +
+             str(charge_state) + " which is unlikely to occur in nature.",
+             UserWarning)
 
     return argument, charge_state

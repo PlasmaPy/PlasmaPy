@@ -131,14 +131,6 @@ def test_isotope_symbol(argument, expected):
 
 # (argument, kwargs, expected_error)
 isotope_symbol_error_table = [
-    ('H-1', {"mass_numb": 1}, UserWarning),
-    ('H-2', {"mass_numb": 2}, UserWarning),
-    ('T', {"mass_numb": 3}, UserWarning),
-    ('Li-6', {"mass_numb": 6}, UserWarning),
-    ('lithium-6', {"mass_numb": 6}, UserWarning),
-    ('alpha', {"mass_numb": 4}, UserWarning),
-    ('p', {"mass_numb": 1}, UserWarning),
-    ('n', {"mass_numb": 1}, UserWarning),
     ('Md-260', {"mass_numb": 261}, ValueError),
     ('protium', {"mass_numb": 2}, ValueError),
     ('alpha', {"mass_numb": 3}, ValueError),
@@ -160,6 +152,25 @@ isotope_symbol_error_table = [
     "argument, kwargs, expected_error", isotope_symbol_error_table)
 def test_isotope_symbol_error(argument, kwargs, expected_error):
     with pytest.raises(expected_error):
+        isotope_symbol(argument, **kwargs)
+
+
+# (argument, kwargs, expected_warning)
+isotope_symbol_warning_table = [
+    ('H-1', {"mass_numb": 1}, UserWarning),
+    ('H-2', {"mass_numb": 2}, UserWarning),
+    ('T', {"mass_numb": 3}, UserWarning),
+    ('Li-6', {"mass_numb": 6}, UserWarning),
+    ('lithium-6', {"mass_numb": 6}, UserWarning),
+    ('alpha', {"mass_numb": 4}, UserWarning),
+    ('p', {"mass_numb": 1}, UserWarning),
+    ('n', {"mass_numb": 1}, UserWarning)]
+
+
+@pytest.mark.parametrize(
+    "argument, kwargs, expected_warning", isotope_symbol_warning_table)
+def test_isotope_symbol_error(argument, kwargs, expected_warning):
+    with pytest.warns(expected_warning):
         isotope_symbol(argument, **kwargs)
 
 
@@ -448,8 +459,6 @@ ion_mass_error_table = [
     (26, {"Z": 1, "mass_numb": 'a'}, TypeError),
     (26, {"Z": 27, "mass_numb": 56}, ValueError),
     ('Og', {"Z": 1}, ValueError),
-    (1.6e-27 * u.kg, {}, UserWarning),
-    (8e-25 * u.kg, {}, UserWarning),
     (1 * u.m, {}, u.UnitConversionError),
     ('Og', {"Z": 1}, ValueError)]
 
@@ -460,6 +469,18 @@ def test_ion_mass_error(argument, kwargs, expected_error):
     with pytest.raises(expected_error):
         ion_mass(argument, **kwargs)
 
+
+# (argument, kwargs, expected_warning)
+ion_mass_warning_table = [
+    (1.6e-27 * u.kg, {}, UserWarning),
+    (8e-25 * u.kg, {}, UserWarning)]
+
+
+@pytest.mark.parametrize("argument, kwargs, expected_warning",
+                         ion_mass_warning_table)
+def test_ion_mass_warnings(argument, kwargs, expected_warning):
+    with pytest.warns(expected_warning):
+        ion_mass(argument, **kwargs)
 
 
 # (argument)
@@ -547,12 +568,12 @@ def test_half_life_unstable_isotopes():
     for isotope in Isotopes.keys():  # unstable isotopes w/o half-life data
         if 'half_life' not in Isotopes[isotope].keys() and \
                 not Isotopes[isotope].keys():
-            with pytest.raises(UserWarning):
+            with pytest.warns(UserWarning):
                 assert half_life(isotope) is None
 
 
 def test_half_life_u_220():
-    with pytest.raises(UserWarning):
+    with pytest.warns(UserWarning):
         half_life('U-220')
         assert half_life('U-220') is None, \
             ("If half-life data is added for this isotope, then this test "
@@ -690,15 +711,26 @@ def test_charge_state(argument, expected):
 charge_state_error_table = [
     ('fads', ValueError),
     ('H++', ValueError),
-    ('Fe 29+', ValueError),
-    ('H---', UserWarning),
-    ('Fe -26', UserWarning),
-    ('Og 10-', UserWarning)]
+    ('Fe 29+', ValueError)]
 
 
 @pytest.mark.parametrize("argument, expected_error", charge_state_error_table)
 def test_charge_state_error(argument, expected_error):
     with pytest.raises(expected_error):
+        charge_state(argument)
+
+
+# (argument, expected_warning)
+charge_state_warning_table = [
+    ('H---', UserWarning),
+    ('Fe -26', UserWarning),
+    ('Og 10-', UserWarning)]
+
+
+@pytest.mark.parametrize("argument, expected_warning",
+                         charge_state_warning_table)
+def test_charge_state_warnings(argument, expected_warning):
+    with pytest.warns(expected_warning):
         charge_state(argument)
 
 
@@ -713,13 +745,24 @@ def test_electric_charge():
 electric_charge_error_table = [
     ('badinput', ValueError),
     (' ', ValueError),
-    ('Au 81+', ValueError),
-    ('Au 81-', UserWarning),
-    ('H---', UserWarning)]
+    ('Au 81+', ValueError)]
 
 
 @pytest.mark.parametrize("argument, expected_error",
                          electric_charge_error_table)
 def test_electric_charge_error(argument, expected_error):
     with pytest.raises(expected_error):
+        electric_charge(argument)
+
+
+# (argument, expected_warning)
+electric_charge_warning_table = [
+    ('Au 81-', UserWarning),
+    ('H---', UserWarning)]
+
+
+@pytest.mark.parametrize("argument, expected_warning",
+                         electric_charge_warning_table)
+def test_electric_charge_error(argument, expected_warning):
+    with pytest.warns(expected_warning):
         electric_charge(argument)
