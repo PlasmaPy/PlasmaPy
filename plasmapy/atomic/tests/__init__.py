@@ -6,8 +6,6 @@ from .test_atomic import (test_atomic_symbol,
                           test_standard_atomic_weight,
                           test_isotope_mass,
                           test_ion_mass,
-                          test_nuclear_binding_energy,
-                          test_nuclear_reaction_energy,
                           test_is_isotope_stable,
                           test_isotope_calls,
                           test_half_life,
@@ -16,3 +14,6 @@ from .test_atomic import (test_atomic_symbol,
                           test_known_common_stable_isotopes,
                           test_isotopic_abundance,
                           test_charge_state)
+
+from .test_nuclear import (test_nuclear_binding_energy,
+                           test_nuclear_reaction_energy)
