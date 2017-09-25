@@ -3,7 +3,7 @@
 import numpy as np
 import re
 from astropy import units as u, constants as const
-from .elements import atomic_symbols_list, atomic_symbols_dict, Elements
+from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
 
 
@@ -91,7 +91,7 @@ def atomic_symbol(argument):
     if isinstance(argument, int):
 
         if 0 <= argument <= 118:
-            element = atomic_symbols_list[argument]
+            element = atomic_symbols[argument]
         else:
             raise ValueError(str(argument)+" is an invalid atomic number in "
                              "atomic_symbol")
@@ -116,9 +116,9 @@ def atomic_symbol(argument):
         else:
             mass_numb = ''
 
-        if atomic_symbols_dict.keys().__contains__(argument.lower()):
+        if argument.lower() in atomic_symbols_dict.keys():
             element = atomic_symbols_dict[argument.lower()]
-        elif atomic_symbols_list.__contains__(argument.capitalize()):
+        elif argument.capitalize() in atomic_symbols.values():
             element = argument.capitalize()
         else:
             raise ValueError(argument+" is an invalid argument for "
