@@ -18,8 +18,8 @@ def atomic_symbol(argument):
     Parameters
     ----------
     argument: string or integer
-        A string representing an element, isotope, or ion or an integer
-        representing an atomic number
+        A string representing an element, isotope, or ion or an
+        integer representing an atomic number
 
     Returns
     -------
@@ -33,7 +33,8 @@ def atomic_symbol(argument):
 
     ValueError:
         If the argument cannot be used to identify the element, the
-        isotope has not been discovered, or the charge state is invalid.
+        isotope has not been discovered, or the charge state is
+        invalid.
 
     See also
     --------
@@ -43,15 +44,17 @@ def atomic_symbol(argument):
 
     Notes
     -----
-    This function returns the symbol of the element rather than the symbol of
-    an isotope.  For example, 'deuterium', 'T', or 'hydrogen-2' will yield 'H';
-    'alpha' will yield 'He'; and 'iron-56' or 'Fe-56' will yield 'Fe'.
+    This function returns the symbol of the element rather than the
+    symbol of an isotope.  For example, 'deuterium', 'T', or
+    'hydrogen-2' will yield 'H'; 'alpha' will yield 'He'; and
+    'iron-56' or 'Fe-56' will yield 'Fe'.
 
-    This function is case insensitive when there is no ambiguity associated
-    with case.  However, this function will return 'H' for hydrogen for lower
-    case 'p' but capital 'P' if the argument is 'P' for phosphorus.  This
-    function will also return lower case 'n' if the argument is lower case 'n'
-    for neutrons, but capital 'N' for nitrogen if the argument is capital 'N'.
+    This function is case insensitive when there is no ambiguity
+    associated with case.  However, this function will return 'H' for
+    hydrogen for lower case 'p' but capital 'P' if the argument is 'P'
+    for phosphorus.  This function will also return lower case 'n' if
+    the argument is lower case 'n' for neutrons, but capital 'N' for
+    nitrogen if the argument is capital 'N'.
 
     Examples
     --------
@@ -146,29 +149,30 @@ def isotope_symbol(argument, mass_numb=None):
     Parameters
     ----------
     argument: integer or string
-        A string representing an element, isotope, or ion or an integer
-        representing an atomic number
+        A string representing an element, isotope, or ion or an
+        integer representing an atomic number
 
     mass_numb: integer or string
-        An integer or string representing the mass number of the isotope.
+        An integer or string representing the mass number of the
+        isotope.
 
     Returns
     -------
     symbol: string
-        The isotopic symbol. The result will generally be returned as something
-        like 'He-4' or 'Au-197', but will return 'D' for deuterium and 'T' for
-        tritium.
+        The isotopic symbol. The result will generally be returned as
+        something like 'He-4' or 'Au-197', but will return 'D' for
+        deuterium and 'T' for tritium.
 
     Raises
     ------
     ValueError:
-        If insufficient or contradictory isotope information is provided, the
-        element cannot be determined from the first argument, or the mass
-        number exceeds the atomic number.
+        If insufficient or contradictory isotope information is
+        provided, the element cannot be determined from the first
+        argument, or the mass number exceeds the atomic number.
 
     TypeError:
-        If isotope information cannot be found because one or both inputs is
-        of an inappropriate type.
+        If isotope information cannot be found because one or both
+        inputs is of an inappropriate type.
 
     UserWarning:
         If redundant isotope information is provided.
@@ -179,9 +183,10 @@ def isotope_symbol(argument, mass_numb=None):
 
     Notes
     -----
-    This function returns the symbol of the element rather than the symbol of
-    an isotope.  For example, 'deuterium', 'T', or 'hydrogen-2' will yield 'H';
-    'alpha' will yield 'He'; and 'iron-56' or 'Fe-56' will yield 'Fe'.
+    This function returns the symbol of the element rather than the
+    symbol of an isotope.  For example, 'deuterium', 'T', or
+    'hydrogen-2' will yield 'H'; 'alpha' will yield 'He'; and
+    'iron-56' or 'Fe-56' will yield 'Fe'.
 
     Examples
     --------
@@ -304,12 +309,13 @@ def atomic_number(argument):
     Returns
     -------
     atomic_number: integer
-        An integer representing the atomic number of the element or isotope.
+        An integer representing the atomic number of the element or
+        isotope.
 
     See also
     --------
-    mass_number : returns the mass number (the total number of protons and
-        neutrons) of an isotope.
+    mass_number : returns the mass number (the total number of protons
+        and neutrons) of an isotope.
 
     Examples
     --------
@@ -375,8 +381,8 @@ def is_isotope_stable(argument, mass_numb=None):
 
 
 def half_life(argument, mass_numb=None):
-    """Returns the half-life in seconds for unstable isotopes, and numpy.inf
-    for stable isotopes.
+    """Returns the half-life in seconds for unstable isotopes, and
+    numpy.inf for stable isotopes.
 
     Parameters
     ----------
@@ -441,7 +447,8 @@ def half_life(argument, mass_numb=None):
 
 
 def mass_number(isotope):
-    """Get the mass number (the number of protons and neutrals) of an isotope.
+    """Get the mass number (the number of protons and neutrals) of an
+    isotope.
 
     Parameters
     ----------
@@ -463,7 +470,8 @@ def mass_number(isotope):
 
     See also
     --------
-    atomic_number : returns the number of protons in an isotope or element
+    atomic_number : returns the number of protons in an isotope or
+    element
 
     Examples
     --------
@@ -500,8 +508,8 @@ def element_name(argument):
     Parameters
     ----------
     argument : string or integer
-        A string representing an element, isotope, or ion or an integer
-        representing an atomic number
+        A string representing an element, isotope, or ion or an
+        integer representing an atomic number
 
     Returns
     -------
@@ -536,8 +544,9 @@ def element_name(argument):
 
 
 def standard_atomic_weight(argument):
-    """Returns the standard (conventional) atomic weight of an element based on
-    the relative abundances of isotopes in terrestrial environments.
+    """Returns the standard (conventional) atomic weight of an element
+    based on the relative abundances of isotopes in terrestrial
+    environments.
 
     Parameters
     ----------
@@ -547,37 +556,41 @@ def standard_atomic_weight(argument):
 
     Returns
     -------
-    atomic_weight: astropy.units.Quantity with units of astropy.units.u
-        The standard atomic weight of an element based on values frmo
+
+    atomic_weight: astropy.units.Quantity with units of u
+        The standard atomic weight of an element based on values from
+        NIST
 
     Raises
     ------
     ValueError:
-        If the argument cannot be used to identify an element; the argument
-        represents an isotope, ion, or neutron; or no standard atomic weight
-        is provided for an element.
+        If the argument cannot be used to identify an element; the
+        argument represents an isotope, ion, or neutron; or no
+        standard atomic weight is provided for an element.
 
     See also
     --------
     isotope_mass : returns the atomic mass of an isotope.
 
-    ion_mass : returns the mass of an ion of an element or isotope, accounting
-        for reduction of mass from the neutral state due to different numbers
-        of electrons.
+    ion_mass : returns the mass of an ion of an element or isotope,
+        accounting for reduction of mass from the neutral state due to
+        different numbers of electrons.
 
     Notes
     -----
-    Standard atomic weight data are most readily available for the terrestrial
-    environment, so this function may not be wholly appropriate for space and
-    astrophysical environments.
+    Standard atomic weight data are most readily available for the
+    terrestrial environment, so this function may not be wholly
+    appropriate for space and astrophysical environments.
 
-    The relative abundances of different isotopes of an element sometimes vary
-    naturally in different locations within the terrestrial environment.  The
-    CIAAW provides ranges for these element, which include H, Li, B, C, N, O,
-    Mg, Si, S, Cl, Br, Tl.  This function provides a single value from the
-    CIAWW 2015 standard values when a single value is given, and the lower
-    accuracy conventional value given by Meija et al. (2013,
-    doi:10.1515/pac-2015-0305) for the elements where a range is given.
+    The relative abundances of different isotopes of an element
+    sometimes vary naturally in different locations within the
+    terrestrial environment.  The CIAAW provides ranges for these
+    element, which include H, Li, B, C, N, O, Mg, Si, S, Cl, Br, Tl.
+    This function provides a single value from the CIAWW 2015 standard
+    values when a single value is given, and the lower accuracy
+    conventional value given by Meija et al. (2013,
+    doi:10.1515/pac-2015-0305) for the elements where a range is
+    given.
 
     Examples
     --------
@@ -632,8 +645,8 @@ def isotope_mass(argument, mass_numb=None):
     Parameters
     ----------
     argument : string or integer
-        A string representing an element, isotope, or ion or an integer
-        representing an atomic number
+        A string representing an element, isotope, or ion or an
+        integer representing an atomic number
 
     mass_numb : integer (optional)
         The mass number of the isotope.
@@ -650,11 +663,11 @@ def isotope_mass(argument, mass_numb=None):
 
     See also
     --------
-    standard_atomic_weight : returns atomic weight of an element based on
-        terrestrial abundances of isotopes
+    standard_atomic_weight : returns atomic weight of an element based
+        on terrestrial abundances of isotopes
 
-    ion_mass : returns the mass of an ion of an element or isotope, accounting
-        for loss of electrons
+    ion_mass : returns the mass of an ion of an element or isotope,
+        accounting for loss of electrons
 
     Notes
     -----
@@ -699,7 +712,8 @@ def ion_mass(argument, Z=None, mass_numb=None):
         within the mass range that is appropriate for an ion.
 
     Z: integer (optional)
-        The ionization state of the ion (defaulting to a charge of Z=1)
+        The ionization state of the ion (defaulting to a charge of
+        Z=1)
 
     mass_numb: integer (optional)
         The mass number of an isotope.
@@ -707,7 +721,8 @@ def ion_mass(argument, Z=None, mass_numb=None):
     Returns
     -------
     m_i: Quantity
-        The mass of a single ion of the isotope or element with charge state Z.
+        The mass of a single ion of the isotope or element with charge
+        state Z.
 
     Raises
     ------
@@ -715,45 +730,46 @@ def ion_mass(argument, Z=None, mass_numb=None):
         The argument is not a string, integer, or Quantity.
 
     ValueError
-        If the argument represents a particle other than an ion, the ionization
-        state exceeds the atomic number, or no isotope mass or standard atomic
-        weight is available.
+        If the argument represents a particle other than an ion, the
+        ionization state exceeds the atomic number, or no isotope mass
+        or standard atomic weight is available.
 
     UserWarning
-        If a mass was inputted and it is outside of the range of known isotopes
-        or electrons/positrons.
+        If a mass was inputted and it is outside of the range of known
+        isotopes or electrons/positrons.
 
     UnitConversionError
         If the argument is a Quantity but does not have units of mass.
 
     See also
     --------
-    standard_atomic_mass : returns the conventional atomic mass of an element
-        based on terrestrial values and assuming the atom is neutral.
+    standard_atomic_mass : returns the conventional atomic mass of an
+        element based on terrestrial values and assuming the atom is
+        neutral.
 
-    isotope_mass : returns the mass of an isotope (if available) assuming the
-        atom is neutral.
+    isotope_mass : returns the mass of an isotope (if available)
+        assuming the atom is neutral.
 
     Notes
     -----
-    This function in general finds the mass of an isotope (or the standard
-    atomic weight based on terrestrial values if a unique isotope cannot be
-    identified), and then substracts the mass of Z electrons.  If Z is not
-    provided as an input, then this function assumes that the ion is singly
-    ionized.
+    This function in general finds the mass of an isotope (or the
+    standard atomic weight based on terrestrial values if a unique
+    isotope cannot be identified), and then substracts the mass of Z
+    electrons.  If Z is not provided as an input, then this function
+    assumes that the ion is singly ionized.
 
     Specific values are returns for protons, deuterons, tritons, alpha
     particles, and positrons.
 
-    Calling ion_mass('H') does not return the mass of a proton but instea
-    uses hydrogen's standard atomic weight based on terrestrial values.  To
-    get the mass of a proton, use ion_mass('p').
+    Calling ion_mass('H') does not return the mass of a proton but
+    instea uses hydrogen's standard atomic weight based on terrestrial
+    values.  To get the mass of a proton, use ion_mass('p').
 
-    This function can accept a Quantity in units of mass.  If the Quantity
-    is close to the mass of an electron or positron, it will return the
-    mass of an electron or positron to full known precision.  If the
-    Quantity is within the mass range of known isotopes, it will return the
-    mass that is inputted to it.
+    This function can accept a Quantity in units of mass.  If the
+    Quantity is close to the mass of an electron or positron, it will
+    return the mass of an electron or positron to full known
+    precision.  If the Quantity is within the mass range of known
+    isotopes, it will return the mass that is inputted to it.
 
     Examples
     --------
@@ -873,203 +889,25 @@ def ion_mass(argument, Z=None, mass_numb=None):
     return m_i
 
 
-def nuclear_binding_energy(argument, mass_numb=None):
-    """Returns the nuclear binding energy associated with an isotope.
-
-    Parameters
-    ----------
-    argument: string or integer
-        A string representing an element or isotope, or an integer representing
-        the atomic number of an element.
-
-    mass_numb: integer, optional
-        The mass number of an isotope, which is required if and only if the
-        first argument can only be used to determine the element and not the
-        isotope.
-
-    Returns
-    -------
-    binding_energy: Quantity
-        The binding energy of the nucleus in units of Joules.
-
-    See also
-    --------
-    nuclear_reaction_energy : Returns the change in binding energy during
-        nuclear fusion or fission reactions.
-
-    Examples
-    --------
-    >>> nuclear_binding_energy('Fe-56')
-    <Quantity 7.674002331034521e-11 J>
-    >>> nuclear_binding_energy(26, 56)
-    <Quantity 7.674002331034521e-11 J>
-    >>> nuclear_binding_energy('p')  # proton
-    <Quantity 0.0 J>
-
-    >>> from astropy import units as u
-    >>> before = nuclear_binding_energy("D") + nuclear_binding_energy("T")
-    >>> after = nuclear_binding_energy("alpha")
-    >>> (after - before).to(u.MeV)  # released energy from D + T --> alpha + n
-    <Quantity 17.589296207151556 MeV>
-
-    """
-
-    if argument == 'n' and mass_numb is None or mass_numb == 1:
-        return 0.0 * u.J
-
-    isotopic_symbol = isotope_symbol(argument, mass_numb)
-    isotopic_mass = isotope_mass(isotopic_symbol)
-    number_of_protons = atomic_number(argument)
-
-    if mass_numb is None:
-        mass_numb = mass_number(argument)
-    number_of_neutrons = mass_numb - number_of_protons
-
-    if number_of_protons == 1 and number_of_neutrons == 0:
-        binding_energy = 0.0 * u.J
-    else:
-        mass_of_nucleons = (number_of_protons * const.m_p +
-                            number_of_neutrons * const.m_n)
-        mass_defect = mass_of_nucleons - isotopic_mass
-        binding_energy = mass_defect * const.c**2
-
-    return binding_energy.to(u.J)
-
-
-def nuclear_reaction_energy(reaction):
-    """Returns the released energy from a nuclear fusion reaction.
-
-    Parameters
-    ----------
-    reaction: string
-        A string representing the reaction, like "D + T --> alpha + n"
-
-    Returns
-    -------
-    energy: the change in nuclear binding energy, which will be positive
-    if the reaction releases and negative if the reaction is energetically
-    unfavorable.
-
-    Raises
-    ------
-    ValueError:
-        If the input is not a valid reaction, there is insufficient
-        information to determine an isotope, or if the number of nucleons
-        is not conserved during the reaction.
-
-    TypeError:
-        If the input is not a string.
-
-    See also
-    --------
-    nuclear_binding_energy : finds the binding energy of an isotope
-
-    Examples
-    --------
-    >>> nuclear_reaction_energy("D + T --> alpha + n")
-    <Quantity 17.589296207151556 MeV>
-    >>> triple_alpha1 = 'alpha + He-4 --> Be-8'
-    >>> triple_alpha2 = 'Be-8 + alpha --> carbon-12'
-    >>> energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
-    >>> energy_triplealpha2 = nuclear_reaction_energy(triple_alpha2)
-    >>> print(energy_triplealpha1, '\n', energy_triplealpha2)
-    -0.09183948324626812 MeV
-    7.366586766240317 MeV
-    >>> energy_triplealpha1.to(u.J)
-    <Quantity -1.471430677988809e-14 J>
-    >>> energy_triplealpha2.cgs
-    <Quantity -1.4714306779888094e-07 erg>
-    >>> nuclear_reaction_energy('alpha + alpha --> 2alpha')
-    <Quantity 0.0 MeV>
-
-    """
-
-    import re
-
-    def _get_isotopes_list(side):
-        """Parse a side of a reaction to get a list of the isotopes."""
-        pre_list = re.split(' \+ ', side)
-        isotopes_list = []
-        for item in pre_list:
-            item = item.strip()
-            try:
-                if item == 'n':
-                    symbol = 'n'
-                else:
-                    symbol = isotope_symbol(item)
-                isotopes_list.append(symbol)
-            except Exception:
-                try:
-                    multiplier_string = ''
-                    while item[0].isdigit():
-                        multiplier_string += item[0]
-                        item = item[1:]
-                    symbol = isotope_symbol(item)
-                    for i in range(0, int(multiplier_string)):
-                        isotopes_list.append(symbol)
-                except Exception:
-                    raise
-        return isotopes_list
-
-    def _mass_number_of_list(isotopes_list):
-        """Find the total number of nucleons in a list of isotopes."""
-        mass_numb = 0
-        for symbol in isotopes_list:
-            mass_numb += mass_number(symbol)
-        return mass_numb
-
-    def _add_binding_energies(isotopes_list):
-        """Finds the total binding energy from a list of isotopes."""
-        total_binding_energy = 0.0*u.MeV
-        for isotope in isotopes_list:
-            total_binding_energy += nuclear_binding_energy(isotope)
-        return total_binding_energy
-
-    if not isinstance(reaction, str):
-        raise TypeError("The input of nuclear_reaction_energy must be a string"
-                        " representing a reaction (e.g., 'D + T --> He + n')")
-
-    try:
-        LHS, RHS = re.split('-+>', reaction)
-    except Exception:
-        raise ValueError("The left and right hand sides of the reaction "
-                         "should be separated by '-->'")
-
-    reactants = _get_isotopes_list(LHS)
-    products = _get_isotopes_list(RHS)
-
-    mass_num_reactants = _mass_number_of_list(reactants)
-    mass_num_products = _mass_number_of_list(products)
-
-    if mass_num_reactants != mass_num_products:
-        raise ValueError("Mass numbers on LHS and RHS do not match for "
-                         "reaction "+reaction)
-
-    binding_energy_before = _add_binding_energies(reactants)
-    binding_energy_after = _add_binding_energies(products)
-    energy = binding_energy_after - binding_energy_before
-
-    return energy.to(u.MeV)
-
-
 def known_isotopes(argument=None):
-    """Returns a list of all known isotopes of an element, or a list of all
-    known isotopes of every element if no input is provided.
+    """Returns a list of all known isotopes of an element, or a list
+    of all known isotopes of every element if no input is provided.
 
     Parameters
     ----------
     argument: integer or string, optional
-        A string representing an element, isotope, or ion or an integer
-        representing an atomic number
+        A string representing an element, isotope, or ion or an
+        integer representing an atomic number
 
     Returns
     -------
     isotopes_list: list of strings or empty list
-        List of all of the isotopes of an element that have been discovered,
-        sorted from lowest mass number to highest mass number.  If no argument
-        is provided, then a list of all known isotopes of every element will
-        be returned that is sorted by atomic number, with entries for each
-        element sorted by mass number.
+        List of all of the isotopes of an element that have been
+        discovered, sorted from lowest mass number to highest mass
+        number.  If no argument is provided, then a list of all known
+        isotopes of every element will be returned that is sorted by
+        atomic number, with entries for each element sorted by mass
+        number.
 
     Raises
     ------
@@ -1082,10 +920,11 @@ def known_isotopes(argument=None):
 
     See also
     --------
-    common_isotopes : returns isotopes with non-zero isotopic abundances
+    common_isotopes : returns isotopes with non-zero isotopic
+        abundances
 
-    stable_isotopes : returns isotopes that are stable against radioactive
-        decay
+    stable_isotopes : returns isotopes that are stable against
+        radioactive decay
 
     Examples
     --------
@@ -1132,15 +971,15 @@ def known_isotopes(argument=None):
 
 
 def common_isotopes(argument=None, most_common_only=False):
-    """Returns a list of isotopes of an element with an isotopic abundances
-    greater than zero, or if no input is provided, a list of all such isotopes
-    for every element.
+    """Returns a list of isotopes of an element with an isotopic
+    abundances greater than zero, or if no input is provided, a list
+    of all such isotopes for every element.
 
     Parameters
     ----------
     argument: integer or string, optional
-        A string or integer representing an atomic number or element, or a
-        string represnting an isotope.
+        A string or integer representing an atomic number or element,
+        or a string represnting an isotope.
 
     most_common_only: boolean
         If set to True, return only the most common isotope
@@ -1148,12 +987,13 @@ def common_isotopes(argument=None, most_common_only=False):
     Returns
     -------
     isotopes_list: list of strings or empty list
-        List of all isotopes of an element with isotopic abundances greater
-        than zero, sorted from most abundant to least abundant.  If no isotopes
-        have isotopic abundances greater than zero, this function will return
-        an empty list.  If no arguments are provided, then a list of all common
-        isotopes of all elements will be provided that is sorted by atomic
-        number, with entries for each element sorted from most abundant to
+        List of all isotopes of an element with isotopic abundances
+        greater than zero, sorted from most abundant to least
+        abundant.  If no isotopes have isotopic abundances greater
+        than zero, this function will return an empty list.  If no
+        arguments are provided, then a list of all common isotopes of
+        all elements will be provided that is sorted by atomic number,
+        with entries for each element sorted from most abundant to
         least abundant.
 
     Raises
@@ -1163,17 +1003,19 @@ def common_isotopes(argument=None, most_common_only=False):
 
     Notes
     -----
-    The isotopic abundances are based on the terrestrial environment and may
-    not be wholly appropriate for space and astrophysical applications.
+    The isotopic abundances are based on the terrestrial environment
+    and may not be wholly appropriate for space and astrophysical
+    applications.
 
     See also
     --------
-    known_isotopes : returns a list of isotopes that have been discovered
+    known_isotopes : returns a list of isotopes that have been
+        discovered
 
-    stable_isotopes : returns isotopes that are stable against radioactive
-        decay
+    stable_isotopes : returns isotopes that are stable against
+        radioactive decay
 
-    isotopic_abundance : returns the relat
+    isotopic_abundance : returns the relative isotopic abundance
 
     Examples
     --------
@@ -1228,39 +1070,42 @@ def common_isotopes(argument=None, most_common_only=False):
 
 
 def stable_isotopes(argument=None, unstable_instead=False):
-    """Returns a list of all stable isotopes of an element, or if no input is
-    provided, a list of all such isotopes for every element.
+    """Returns a list of all stable isotopes of an element, or if no
+    input is provided, a list of all such isotopes for every element.
 
     Parameters
     ----------
     argument: integer or string
-        A string or integer representing an atomic number or element, or a
-        string represnting an isotope.
+        A string or integer representing an atomic number or element,
+        or a string represnting an isotope.
 
     unstable_instead: boolean
-        If set to True, this function will return a list of the unstable
-        isotopes instead of the stable isotopes.
+        If set to True, this function will return a list of the
+        unstable isotopes instead of the stable isotopes.
 
     Returns
     -------
     StableIsotopes: list of strings or empty list
-        List of all stable isotopes of an element, sorted from lowest mass
-        number.  If an element has no stable isotopes, this function returns
-        an empty list.
+        List of all stable isotopes of an element, sorted from lowest
+        mass number.  If an element has no stable isotopes, this
+        function returns an empty list.
 
     Notes
     -----
-    There are 254 isotopes for which no radioactive decay has been observed.
-    It is possible that some isotopes will be discovered to be unstable but
-    with extremely long half-lives.  For example, bismuth-209 was recently
-    discovered to have a half-life of about 1.9e19 years.  However, such
-    isotopes can be regarded as virtually stable for most applications.
+    There are 254 isotopes for which no radioactive decay has been
+    observed.  It is possible that some isotopes will be discovered to
+    be unstable but with extremely long half-lives.  For example,
+    bismuth-209 was recently discovered to have a half-life of about
+    1.9e19 years.  However, such isotopes can be regarded as virtually
+    stable for most applications.
 
     See also
     --------
-    known_isotopes : returns a list of isotopes that have been discovered
+    known_isotopes : returns a list of isotopes that have been
+        discovered
 
-    common_isotopes : returns isotopes with non-zero isotopic abundances
+    common_isotopes : returns isotopes with non-zero isotopic
+        abundances
 
     Examples
     --------
@@ -1312,12 +1157,12 @@ def isotopic_abundance(argument, mass_numb=None):
     Parameters
     ----------
     argument: string or integer
-        A string representing an element or isotope, or an integer representing
-        the atomic number of an element.
+        A string representing an element or isotope, or an integer
+        representing the atomic number of an element.
 
     mass_numb: integer
-        The mass number of an isotope, which is required if and only if the
-        first argument can only be used
+        The mass number of an isotope, which is required if and only
+        if the first argument can only be used
 
     Returns
     -------
@@ -1331,12 +1176,12 @@ def isotopic_abundance(argument, mass_numb=None):
 
     Notes
     -----
-    Isotopic composition data are most readily available for the terrestrial
-    environment, so this function may not be wholly appropriate for space
-    and astrophysical applications.
+    Isotopic composition data are most readily available for the
+    terrestrial environment, so this function may not be wholly
+    appropriate for space and astrophysical applications.
 
-    The data retrieved from this routine are those recommended by NIST as of
-    2017.
+    The data retrieved from this routine are those recommended by NIST
+    as of 2017.
 
     Examples
     --------
@@ -1371,8 +1216,8 @@ def charge_state(argument):
     Parameters
     ----------
     argument : string
-        String representing an element or isotope followed by charge state
-        information.
+        String representing an element or isotope followed by charge
+        state information.
 
     Returns
     -------
@@ -1382,15 +1227,17 @@ def charge_state(argument):
     Raises
     ------
     ValueError:
-        If the charge state or isotope information is invalid, or the charge
-        state exceeds the atomic number.
+        If the charge state or isotope information is invalid, or the
+        charge state exceeds the atomic number.
 
     UserWarning:
-        If the input represents an ion with a charge state that is below -3.
+        If the input represents an ion with a charge state that is
+        below -3.
 
     Notes
     -----
-    This function supports two formats for the charge state information.
+    This function supports two formats for the charge state
+    information.
 
     The first format is a string that has information for the element
     or isotope at the beginning, a space in between, and the charge
@@ -1441,6 +1288,59 @@ def charge_state(argument):
     return Z
 
 
+def electric_charge(argument):
+    """Returns the electric charge (in coulombs) of an ion or other
+    particle
+
+    Parameters
+    ----------
+    argument : string
+        String representing an element or isotope followed by charge
+        state information.
+
+    Returns
+    -------
+    charge: Quantity
+        The electric charge in coulombs.
+
+    Raises
+    ------
+    ValueError:
+        If the charge state or isotope information is invalid, or the
+        charge state exceeds the atomic number.
+
+    UserWarning:
+        If the input represents an ion with a charge state that is
+        below -3.
+
+    Notes
+    -----
+    This function supports two formats for the charge state
+    information.
+
+    The first format is a string that has information for the element
+    or isotope at the beginning, a space in between, and the charge
+    state information in the form of an integer followed by a plus or
+    minus sign, or a plus or minus sign followed by an integer.
+
+    The second format is a string containing element information at
+    the beginning, following by one or more plus or minus signs.
+
+    This function returns -1.6021766208e-19 C for electrons and
+    1.6021766208e-19 C for positrons.
+
+    Examples
+    --------
+    >>> q = electric_charge('p')
+    <Quantity 1.6021766208e-19 C>
+
+    """
+
+    charge = charge_state(argument) * const.e.to('C')
+
+    return charge
+
+
 def __extract_charge_state(argument):
     """Splits strings containing element or isotope and charge state
     information into a string without the charge state information and
@@ -1450,8 +1350,8 @@ def __extract_charge_state(argument):
     Parameters
     ----------
     argument : string
-        String containing information for an element or isotope in any of
-        the allowed formats, followed by charge state information.
+        String containing information for an element or isotope in any
+        of the allowed formats, followed by charge state information.
 
     Returns
     -------
@@ -1459,8 +1359,9 @@ def __extract_charge_state(argument):
         The original string with charge state information removed.
 
     Z : integer
-        The charge state of an ion (e.g., this will return 1 if one electron
-        has been removed and -1 if one electron has been gained)
+        The charge state of an ion (e.g., this will return 1 if one
+        electron has been removed and -1 if one electron has been
+        gained)
 
     Notes
     -----
@@ -1545,52 +1446,3 @@ def __extract_charge_state(argument):
                           "unlikely to occur in nature.")
 
     return argument, charge_state
-
-
-def electric_charge(argument):
-    """Returns the electric charge (in coulombs) of an ion or other particle
-
-    Parameters
-    ----------
-    argument : string
-        String representing an element or isotope followed by charge state
-        information.
-
-    Returns
-    -------
-    charge: Quantity
-        The electric charge in coulombs.
-
-    Raises
-    ------
-    ValueError:
-        If the charge state or isotope information is invalid, or the charge
-        state exceeds the atomic number.
-
-    UserWarning:
-        If the input represents an ion with a charge state that is below -3.
-
-    Notes
-    -----
-    This function supports two formats for the charge state information.
-
-    The first format is a string that has information for the element
-    or isotope at the beginning, a space in between, and the charge
-    state information in the form of an integer followed by a plus or
-    minus sign, or a plus or minus sign followed by an integer.
-
-    The second format is a string containing element information at
-    the beginning, following by one or more plus or minus signs.
-
-    This function returns -1.6021766208e-19 C for electrons and
-    1.6021766208e-19 C for positrons.
-
-    Examples
-    --------
-    >>> q = electric_charge('p')
-    <Quantity 1.6021766208e-19 C>
-    """
-
-    charge = charge_state(argument) * const.e.to('C')
-
-    return charge

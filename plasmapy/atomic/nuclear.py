@@ -10,13 +10,13 @@ def nuclear_binding_energy(argument, mass_numb=None):
     Parameters
     ----------
     argument: string or integer
-        A string representing an element or isotope, or an integer representing
-        the atomic number of an element.
+        A string representing an element or isotope, or an integer
+        representing the atomic number of an element.
 
     mass_numb: integer, optional
-        The mass number of an isotope, which is required if and only if the
-        first argument can only be used to determine the element and not the
-        isotope.
+        The mass number of an isotope, which is required if and only
+        if the first argument can only be used to determine the
+        element and not the isotope.
 
     Returns
     -------
@@ -25,8 +25,8 @@ def nuclear_binding_energy(argument, mass_numb=None):
 
     See also
     --------
-    nuclear_reaction_energy : Returns the change in binding energy during
-        nuclear fusion or fission reactions.
+    nuclear_reaction_energy : Returns the change in binding energy
+        during nuclear fusion or fission reactions.
 
     Examples
     --------
@@ -77,16 +77,17 @@ def nuclear_reaction_energy(reaction):
 
     Returns
     -------
-    energy: the change in nuclear binding energy, which will be positive
-    if the reaction releases and negative if the reaction is energetically
-    unfavorable.
+    energy: Quantity
+        The change in nuclear binding energy, which will be positive
+        if the reaction releases and negative if the reaction is
+        energetically unfavorable.
 
     Raises
     ------
     ValueError:
         If the input is not a valid reaction, there is insufficient
-        information to determine an isotope, or if the number of nucleons
-        is not conserved during the reaction.
+        information to determine an isotope, or if the number of
+        nucleons is not conserved during the reaction.
 
     TypeError:
         If the input is not a string.
