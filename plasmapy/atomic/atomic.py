@@ -894,7 +894,7 @@ def nuclear_binding_energy(argument, mass_numb=None):
 
     See also
     --------
-    energy_from_nuclear_reaction : Returns the change in binding energy during
+    nuclear_reaction_energy : Returns the change in binding energy during
         nuclear fusion or fission reactions.
 
     Examples
@@ -936,7 +936,7 @@ def nuclear_binding_energy(argument, mass_numb=None):
     return binding_energy.to(u.J)
 
 
-def energy_from_nuclear_reaction(reaction):
+def nuclear_reaction_energy(reaction):
     """Returns the released energy from a nuclear fusion reaction.
 
     Parameters
@@ -966,12 +966,12 @@ def energy_from_nuclear_reaction(reaction):
 
     Examples
     --------
-    >>> energy_from_nuclear_reaction("D + T --> alpha + n")
+    >>> nuclear_reaction_energy("D + T --> alpha + n")
     <Quantity 17.589296207151556 MeV>
     >>> triple_alpha1 = 'alpha + He-4 --> Be-8'
     >>> triple_alpha2 = 'Be-8 + alpha --> carbon-12'
-    >>> energy_triplealpha1 = energy_from_nuclear_reaction(triple_alpha1)
-    >>> energy_triplealpha2 = energy_from_nuclear_reaction(triple_alpha2)
+    >>> energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
+    >>> energy_triplealpha2 = nuclear_reaction_energy(triple_alpha2)
     >>> print(energy_triplealpha1, '\n', energy_triplealpha2)
     -0.09183948324626812 MeV
     7.366586766240317 MeV
@@ -979,7 +979,7 @@ def energy_from_nuclear_reaction(reaction):
     <Quantity -1.471430677988809e-14 J>
     >>> energy_triplealpha2.cgs
     <Quantity -1.4714306779888094e-07 erg>
-    >>> energy_from_nuclear_reaction('alpha + alpha --> 2alpha')
+    >>> nuclear_reaction_energy('alpha + alpha --> 2alpha')
     <Quantity 0.0 MeV>
 
     """
@@ -1026,9 +1026,8 @@ def energy_from_nuclear_reaction(reaction):
         return total_binding_energy
 
     if not isinstance(reaction, str):
-        raise TypeError("The input of energy_from_nuclear_reaction "
-                        "must be a string representing the reaction (e.g., "
-                        "'D + T --> He + n')")
+        raise TypeError("The input of nuclear_reaction_energy must be a string"
+                        " representing a reaction (e.g., 'D + T --> He + n')")
 
     try:
         LHS, RHS = re.split('-+>', reaction)

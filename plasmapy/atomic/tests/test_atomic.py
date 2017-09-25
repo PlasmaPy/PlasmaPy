@@ -4,7 +4,7 @@ import numpy as np
 from ..atomic import (atomic_symbol, isotope_symbol, atomic_number,
                       mass_number, element_name, standard_atomic_weight,
                       isotope_mass, ion_mass, nuclear_binding_energy,
-                      energy_from_nuclear_reaction, is_isotope_stable,
+                      nuclear_reaction_energy, is_isotope_stable,
                       half_life, known_isotopes, common_isotopes,
                       stable_isotopes, isotopic_abundance, charge_state,
                       electric_charge, Elements, Isotopes)
@@ -486,39 +486,39 @@ def test_nuclear_binding_energy_error(argument, expected_error):
         nuclear_binding_energy(argument)
 
 
-def test_energy_from_nuclear_reaction():
+def test_nuclear_reaction_energy():
     reaction1 = 'D + T --> alpha + n'
     reaction2 = 'T + D -> n + alpha'
-    released_energy1 = energy_from_nuclear_reaction(reaction1)
-    released_energy2 = energy_from_nuclear_reaction(reaction2)
+    released_energy1 = nuclear_reaction_energy(reaction1)
+    released_energy2 = nuclear_reaction_energy(reaction2)
     assert np.isclose(released_energy1.to(u.MeV).value, 17.58, rtol=0.01)
     assert released_energy1 == released_energy2
 
 
-def test_energy_from_nuclear_reaction_triple_alpha():
+def test_nuclear_reaction_energy_triple_alpha():
     triple_alpha1 = 'alpha + He-4 --> Be-8'
     triple_alpha2 = 'Be-8 + alpha --> carbon-12'
-    energy_triplealpha1 = energy_from_nuclear_reaction(triple_alpha1)
-    energy_triplealpha2 = energy_from_nuclear_reaction(triple_alpha2)
+    energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
+    energy_triplealpha2 = nuclear_reaction_energy(triple_alpha2)
     assert np.isclose(energy_triplealpha1.to(u.keV).value, -91.8, atol=0.1)
     assert np.isclose(energy_triplealpha2.to(u.MeV).value, 7.367, atol=0.1)
 
 
-def test_energy_from_nuclear_reaction_alpha_decay():
+def test_nuclear_reaction_energy_alpha_decay():
     alpha_decay_example = 'U-238 --> Th-234 + alpha'
-    energy_alpha_decay = energy_from_nuclear_reaction(alpha_decay_example)
+    energy_alpha_decay = nuclear_reaction_energy(alpha_decay_example)
     assert np.isclose(energy_alpha_decay.to(u.MeV).value, 4.26975, atol=1e-5)
 
 
-def test_energy_from_nuclear_reaction_triple_alpha_r():
+def test_nuclear_reaction_energy_triple_alpha_r():
     triple_alpha1_r = '4He-4 --> 2Be-8'
-    energy_triplealpha1_r = energy_from_nuclear_reaction(triple_alpha1_r)
+    energy_triplealpha1_r = nuclear_reaction_energy(triple_alpha1_r)
     assert np.isclose(energy_triplealpha1_r.to(u.keV).value,
                       -91.8 * 2, atol=0.1)
 
 
 # (reaction, expected_error)
-energy_from_nuclear_reaction_error_table = [
+nuclear_reaction_energy_error_table = [
     ('H + H --> H', ValueError),
     (1, TypeError),
     ('H-1 + H-1 --> H-1', ValueError),
@@ -528,10 +528,10 @@ energy_from_nuclear_reaction_error_table = [
 
 
 @pytest.mark.parametrize(
-    "reaction, expected_error", energy_from_nuclear_reaction_error_table)
-def test_energy_from_nuclear_reaction_error(reaction, expected_error):
+    "reaction, expected_error", nuclear_reaction_energy_error_table)
+def test_nuclear_reaction_energy_error(reaction, expected_error):
     with pytest.raises(expected_error):
-        energy_from_nuclear_reaction(reaction)
+        nuclear_reaction_energy(reaction)
 
 
 # (argument)
@@ -637,7 +637,7 @@ atomic_TypeError_funcs_table = [
     is_isotope_stable, half_life, mass_number,
     element_name, standard_atomic_weight, isotope_mass,
     ion_mass, nuclear_binding_energy,
-    energy_from_nuclear_reaction]
+    nuclear_reaction_energy]
 atomic_TypeError_bad_arguments = [1.1, {'cats': 'bats'}, 1 + 1j]
 
 
