@@ -91,7 +91,7 @@ def atomic_symbol(argument):
     if isinstance(argument, int):
 
         if 0 <= argument <= 118:
-            symbol = atomic_symbols_list[argument]
+            element = atomic_symbols_list[argument]
         else:
             raise ValueError(str(argument)+" is an invalid atomic number in "
                              "atomic_symbol")
@@ -117,15 +117,15 @@ def atomic_symbol(argument):
             mass_numb = ''
 
         if atomic_symbols_dict.keys().__contains__(argument.lower()):
-            symbol = atomic_symbols_dict[argument.lower()]
+            element = atomic_symbols_dict[argument.lower()]
         elif atomic_symbols_list.__contains__(argument.capitalize()):
-            symbol = argument.capitalize()
+            element = argument.capitalize()
         else:
             raise ValueError(argument+" is an invalid argument for "
                              "atomic_symbol")
 
         if mass_numb.isdigit():
-            isotope = symbol.capitalize() + '-' + mass_numb
+            isotope = element.capitalize() + '-' + mass_numb
             if isotope == 'H-2':
                 isotope = 'D'
             if isotope == 'H-3':
@@ -136,11 +136,11 @@ def atomic_symbol(argument):
                                  "to " + isotope + " is not a valid isotope.")
 
     if charge_state is not None and \
-            charge_state > Elements[symbol]['atomic_number']:
+            charge_state > Elements[element]['atomic_number']:
         raise ValueError("Cannot have an ionization state greater than the "
                          "atomic number in element_name.")
 
-    return symbol
+    return element
 
 
 def isotope_symbol(argument, mass_numb=None):
@@ -471,7 +471,7 @@ def mass_number(isotope):
     See also
     --------
     atomic_number : returns the number of protons in an isotope or
-    element
+        element
 
     Examples
     --------
@@ -491,8 +491,8 @@ def mass_number(isotope):
     """
 
     try:
-        symbol = isotope_symbol(isotope)
-        mass_numb = Isotopes[symbol]["mass_number"]
+        isotope = isotope_symbol(isotope)
+        mass_numb = Isotopes[isotope]["mass_number"]
     except TypeError:
         raise("Incorrect type for mass_number input.")
     except ValueError:
@@ -692,8 +692,8 @@ def isotope_mass(argument, mass_numb=None):
         raise ValueError("Use ion_mass instead of isotope_mass for masses of "
                          "charged particles")
 
-    symbol = isotope_symbol(argument, mass_numb)
-    atomic_mass = Isotopes[symbol]['atomic_mass']
+    isotope = isotope_symbol(argument, mass_numb)
+    atomic_mass = Isotopes[isotope]['atomic_mass']
 
     return atomic_mass
 
@@ -867,12 +867,12 @@ def ion_mass(argument, Z=None, mass_numb=None):
                          "atomic number in ion_mass")
 
     try:
-        isotope_symb = isotope_symbol(argument, mass_numb)
-        if isotope_symb == 'D' and Z == 1:
+        isotope = isotope_symbol(argument, mass_numb)
+        if isotope == 'D' and Z == 1:
             return 3.343583719e-27 * u.kg
-        elif isotope_symb == 'T' and Z == 1:
+        elif isotope == 'T' and Z == 1:
             return 5.007356665e-27 * u.kg
-        atomic_mass = isotope_mass(isotope_symb)
+        atomic_mass = isotope_mass(isotope)
     except Exception:
         try:
             atomic_mass = standard_atomic_weight(argument)
@@ -1122,7 +1122,7 @@ def stable_isotopes(argument=None, unstable_instead=False):
 
     Find unstable isotopes
 
-    >>>
+    >>> stable_isotopes('U', unstable_instead=True)
 
     """
 
