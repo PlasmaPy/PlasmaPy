@@ -7,12 +7,12 @@ from .elements import atomic_symbols_list, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
 
 
-# The code contained within element_symbol(), isotope_symbol(), and
+# The code contained within atomic_symbol(), isotope_symbol(), and
 # __extract_charge_state() is designed to catch all of the special
 # cases for different inputs.  Complexity is concentrated in these
 # functions so that the rest of the functions can be simpler.
 
-def element_symbol(argument):
+def atomic_symbol(argument):
     """Returns the atomic symbol.
 
     Parameters
@@ -55,21 +55,21 @@ def element_symbol(argument):
 
     Examples
     --------
-    >>> element_symbol('helium')
+    >>> atomic_symbol('helium')
     'He'
-    >>> element_symbol(42)
+    >>> atomic_symbol(42)
     'Mo'
-    >>> element_symbol('D')
+    >>> atomic_symbol('D')
     'H'
-    >>> element_symbol('C-13')
+    >>> atomic_symbol('C-13')
     'C'
-    >>> element_symbol('alpha')
+    >>> atomic_symbol('alpha')
     'He'
-    >>> element_symbol('79')
+    >>> atomic_symbol('79')
     'Au'
-    >>> element_symbol('N'), element_symbol('n')  # Nitrogen, neutron
+    >>> atomic_symbol('N'), atomic_symbol('n')  # Nitrogen, neutron
     ('N', 'n')
-    >>> element_symbol('P'), element_symbol('p')  # Phosphorus, proton
+    >>> atomic_symbol('P'), atomic_symbol('p')  # Phosphorus, proton
     ('P', 'p')
 
     """
@@ -77,7 +77,7 @@ def element_symbol(argument):
     argument, charge_state = __extract_charge_state(argument)
 
     if not isinstance(argument, (str, int)):
-        raise TypeError("The first argument in element_symbol must be either "
+        raise TypeError("The first argument in atomic_symbol must be either "
                         "a string representing an element or isotope, or an "
                         "integer representing the atomic number (or 0 for "
                         " neutrons).")
@@ -91,7 +91,7 @@ def element_symbol(argument):
             symbol = atomic_symbols_list[argument]
         else:
             raise ValueError(str(argument)+" is an invalid atomic number in "
-                             "element_symbol")
+                             "atomic_symbol")
 
     elif isinstance(argument, str):
 
@@ -108,7 +108,7 @@ def element_symbol(argument):
             dash_position = argument.find('-')
             mass_numb = argument[dash_position+1:]
             if not mass_numb.isdigit():
-                raise ValueError("Invalid isotope format in element_symbol")
+                raise ValueError("Invalid isotope format in atomic_symbol")
             argument = argument[:dash_position]
         else:
             mass_numb = ''
@@ -119,7 +119,7 @@ def element_symbol(argument):
             symbol = argument.capitalize()
         else:
             raise ValueError(argument+" is an invalid argument for "
-                             "element_symbol")
+                             "atomic_symbol")
 
         if mass_numb.isdigit():
             isotope = symbol.capitalize() + '-' + mass_numb
@@ -129,7 +129,7 @@ def element_symbol(argument):
                 isotope = 'T'
 
             if isotope not in Isotopes.keys():
-                raise ValueError("The input in element_symbol corresponding "
+                raise ValueError("The input in atomic_symbol corresponding "
                                  "to " + isotope + " is not a valid isotope.")
 
     if charge_state is not None and \
@@ -175,7 +175,7 @@ def isotope_symbol(argument, mass_numb=None):
 
     See also
     --------
-    element_symbol : returns atomic symbol instead of isotopic symbol
+    atomic_symbol : returns atomic symbol instead of isotopic symbol
 
     Notes
     -----
@@ -232,7 +232,7 @@ def isotope_symbol(argument, mass_numb=None):
                          "mass number in isotope_symbol.")
 
     try:
-        element = element_symbol(argument)
+        element = atomic_symbol(argument)
     except Exception:
         raise ValueError("The first argument of isotope_symbol (" +
                          str(argument) + ") does not correspond to a valid "
@@ -324,8 +324,8 @@ def atomic_number(argument):
 
     """
 
-    atomic_symbol = element_symbol(argument)
-    atomic_numb = Elements[atomic_symbol]['atomic_number']
+    element = atomic_symbol(argument)
+    atomic_numb = Elements[element]['atomic_number']
     return atomic_numb
 
 
@@ -510,7 +510,7 @@ def element_name(argument):
 
     See also
     --------
-    element_symbol : returns the atomic symbol
+    atomic_symbol : returns the atomic symbol
 
     isotope_symbol : returns the symbol of an isotope
 
@@ -530,8 +530,8 @@ def element_name(argument):
 
     """
 
-    atomic_symbol = element_symbol(argument)
-    name = Elements[atomic_symbol]["name"]
+    element = atomic_symbol(argument)
+    name = Elements[element]["name"]
     return name
 
 
@@ -615,13 +615,13 @@ def standard_atomic_weight(argument):
     elif '-' in isotope or isotope in ['D', 'T']:
         raise ValueError("Use isotope_mass to get masses of isotopes")
 
-    atomic_symbol = element_symbol(argument)
+    element = atomic_symbol(argument)
 
     try:
-        atomic_weight = Elements[atomic_symbol]['atomic_mass']
+        atomic_weight = Elements[element]['atomic_mass']
     except Exception:
         raise ValueError("No standard atomic weight is available for " +
-                         atomic_symbol)
+                         element)
 
     return atomic_weight
 
@@ -1102,7 +1102,7 @@ def known_isotopes(argument=None):
     """
 
     def known_isotopes_for_element(argument):
-        element = element_symbol(argument)
+        element = atomic_symbol(argument)
         isotopes = []
         for isotope in Isotopes.keys():
             if element + '-' in isotope and isotope[0:len(element)] == element:
@@ -1117,7 +1117,7 @@ def known_isotopes(argument=None):
 
     if argument is not None:
         try:
-            element = element_symbol(argument)
+            element = atomic_symbol(argument)
             if element == 'n':
                 raise
             isotopes_list = known_isotopes_for_element(element)
@@ -1211,7 +1211,7 @@ def common_isotopes(argument=None, most_common_only=False):
 
     if argument is not None:
         try:
-            element = element_symbol(argument)
+            element = atomic_symbol(argument)
             if element == 'n':
                 raise
             isotopes_list = \
@@ -1290,7 +1290,7 @@ def stable_isotopes(argument=None, unstable_instead=False):
 
     if argument is not None:
         try:
-            element = element_symbol(argument)
+            element = atomic_symbol(argument)
             if element == 'n':
                 raise
             isotopes_list = \
@@ -1435,7 +1435,7 @@ def charge_state(argument):
                          "number.")
 
     if Z is not None and (Z < -atomic_numb-1 or Z < -3):
-        raise UserWarning("Element " + element_symbol(argument) + " has a "
+        raise UserWarning("Element " + atomic_symbol(argument) + " has a "
                           "charge of " + str(Z) + " which is "
                           "unlikely to occur in nature.")
 
@@ -1541,7 +1541,7 @@ def __extract_charge_state(argument):
         charge_state = None
 
     if charge_state is not None and charge_state < -3:
-        raise UserWarning("Element " + element_symbol(argument) + " has a "
+        raise UserWarning("Element " + atomic_symbol(argument) + " has a "
                           "charge of " + str(charge_state) + " which is "
                           "unlikely to occur in nature.")
 

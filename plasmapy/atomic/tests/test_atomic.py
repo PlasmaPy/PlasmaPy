@@ -1,7 +1,7 @@
 from itertools import product
 from astropy import units as u, constants as const
 import numpy as np
-from ..atomic import (element_symbol, isotope_symbol, atomic_number,
+from ..atomic import (atomic_symbol, isotope_symbol, atomic_number,
                       mass_number, element_name, standard_atomic_weight,
                       isotope_mass, ion_mass, nuclear_binding_energy,
                       energy_from_nuclear_reaction, is_isotope_stable,
@@ -12,7 +12,7 @@ from ..atomic import (element_symbol, isotope_symbol, atomic_number,
 import pytest
 
 # (argument, expected)
-element_symbol_table = [
+atomic_symbol_table = [
     (1, 'H'),
     ('H', 'H'),
     ('h', 'H'),
@@ -56,14 +56,14 @@ element_symbol_table = [
 
 
 @pytest.mark.parametrize(
-    'argument, expected', element_symbol_table
+    'argument, expected', atomic_symbol_table
 )
-def test_element_symbol(argument, expected):
-    assert element_symbol(argument) == expected
+def test_atomic_symbol(argument, expected):
+    assert atomic_symbol(argument) == expected
 
 
 # (argument, expected_error)
-element_symbol_error_table = [
+atomic_symbol_error_table = [
     ('H-0', ValueError),
     (3.141592653589793238462643383279502884, TypeError),
     ('Og-294b', ValueError),
@@ -76,11 +76,11 @@ element_symbol_error_table = [
 
 
 @pytest.mark.parametrize(
-    'argument, expected_error', element_symbol_error_table
+    'argument, expected_error', atomic_symbol_error_table
 )
-def test_element_symbol_error(argument, expected_error):
+def test_atomic_symbol_error(argument, expected_error):
     with pytest.raises(expected_error):
-        element_symbol(argument)
+        atomic_symbol(argument)
 
 
 # (argument, expected)
@@ -633,7 +633,7 @@ def test_half_lift_u_220():
 
 
 atomic_TypeError_funcs_table = [
-    element_symbol, isotope_symbol, atomic_number,
+    atomic_symbol, isotope_symbol, atomic_number,
     is_isotope_stable, half_life, mass_number,
     element_name, standard_atomic_weight, isotope_mass,
     ion_mass, nuclear_binding_energy,
@@ -651,7 +651,7 @@ def test_atomic_TypeErrors(function, argument):
 
 
 atomic_ValueErrors_funcs_table = [
-    element_symbol, isotope_symbol, atomic_number,
+    atomic_symbol, isotope_symbol, atomic_number,
     is_isotope_stable, half_life, mass_number,
     element_name, standard_atomic_weight]
 atomic_ValueError_bad_arguments = [-1, 119, 'grumblemuffins', 'Oj']

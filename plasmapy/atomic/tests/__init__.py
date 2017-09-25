@@ -1,4 +1,4 @@
-from .test_atomic import (test_element_symbol,
+from .test_atomic import (test_atomic_symbol,
                           test_isotope_symbol,
                           test_atomic_number,
                           test_mass_number,
