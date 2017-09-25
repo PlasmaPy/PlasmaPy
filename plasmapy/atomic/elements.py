@@ -2,10 +2,7 @@
 
 from astropy import units as u, constants as const
 
-# TO DO: Remove neutrons from these dictionaries!
-
-atomic_symbols = {0: 'n',
-                  1: "H", 2: "He", 3: "Li", 4: "Be", 5: "B", 6: "C", 7: "N",
+atomic_symbols = {1: "H", 2: "He", 3: "Li", 4: "Be", 5: "B", 6: "C", 7: "N",
                   8: "O", 9: "F", 10: "Ne", 11: "Na", 12: "Mg", 13: "Al",
                   14: "Si", 15: "P", 16: "S", 17: "Cl", 18: "Ar", 19: "K",
                   20: "Ca", 21: "Sc", 22: "Ti", 23: "V", 24: "Cr", 25: "Mn",
@@ -70,11 +67,9 @@ atomic_symbols_dict = {"hydrogen": "H", "helium": "He", "lithium": "Li",
                        "copernicium": "Cn", "nihonium": "Nh",
                        "flerovium": "Fl", "moscovium": "Mc",
                        "livermorium": "Lv", "tennessine": "Ts",
-                       "oganesson": "Og", "neutron": "n"}
+                       "oganesson": "Og"}
 
 Elements = {
-    "n": {"atomic_number": 0, "symbol": "n",
-          "name": "neutron"},
     "H": {"atomic_number": 1, "symbol": "H",
           "atomic_mass": 1.008*u.u, "name": "hydrogen"},
     "He": {"atomic_number": 2, "symbol": "He",

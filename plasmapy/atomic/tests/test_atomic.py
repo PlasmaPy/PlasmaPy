@@ -38,10 +38,7 @@ atomic_symbol_table = [
     ('p', 'H'),
     ('P', 'P'),
     (118, 'Og'),
-    ('neutron', 'n'),
-    ('n-1', 'n'),
     ('N-14', 'N'),
-    ('n', 'n'),
     ('N', 'N'),
     ('H +1', 'H'),
     ('H 1+', 'H'),
@@ -74,7 +71,10 @@ atomic_symbol_error_table = [
     ('Fe+24', ValueError),
     ('Fe +59', ValueError),
     ('C++++++++++++++++', ValueError),
-    ('C-++++', ValueError)]
+    ('C-++++', ValueError),
+    ('neutron', ValueError),
+    ('n', ValueError),
+    ('n-1', ValueError)]
 
 
 @pytest.mark.parametrize(
@@ -86,7 +86,7 @@ def test_atomic_symbol_error(argument, expected_error):
 
 
 # (argument, expected)
-isotype_symbol_table = [
+isotope_symbol_table = [
     (('He', 4), 'He-4'),
     (('helium-4',), 'He-4'),
     (('H-2',), 'D'),
@@ -110,21 +110,23 @@ isotype_symbol_table = [
     ((79, 197), 'Au-197'),
     (('p',), 'H-1'),
     (('beryllium-8',), 'Be-8'),
-    (('neutron',), 'n'),
-    (('n',), 'n'),
-    ((0, 1), 'n'),
-    (('n-1',), 'n'),
     (('N-13',), 'N-13'),
     (('p',), 'H-1'),
     (('proton',), 'H-1'),
     (('protium',), 'H-1'),
     (('N-13 2+',), 'N-13'),
     (('d+',), 'D'),
-    (('Hydrogen-3 +1',), 'T')]
+    (('Hydrogen-3 +1',), 'T'),
+    (('neutron',), 'n'),
+    (('n',), 'n'),
+    ((0, 1), 'n'),
+    (('neutron',), 'n'),
+    (('Neutron',), 'n'),
+    (('n-1',), 'n')]
 
 
 @pytest.mark.parametrize(
-    "argument, expected", isotype_symbol_table)
+    "argument, expected", isotope_symbol_table)
 def test_isotope_symbol(argument, expected):
     assert isotope_symbol(*argument) == expected
 
@@ -163,8 +165,7 @@ isotope_symbol_warning_table = [
     ('Li-6', {"mass_numb": 6}, UserWarning),
     ('lithium-6', {"mass_numb": 6}, UserWarning),
     ('alpha', {"mass_numb": 4}, UserWarning),
-    ('p', {"mass_numb": 1}, UserWarning),
-    ('n', {"mass_numb": 1}, UserWarning)]
+    ('p', {"mass_numb": 1}, UserWarning)]
 
 
 @pytest.mark.parametrize(
@@ -193,9 +194,6 @@ atomic_number_table = [
     ('H-3', 1),
     ('p+', 1),
     ('Be-8', 4),
-    ('n', 0),
-    ('n-1', 0),
-    ('Neutron', 0),
     ('N', 7),
     ('N 2+', 7),
     ('N +1', 7),
@@ -211,7 +209,11 @@ def test_atomic_number(argument, expected):
 atomic_number_error_table = [
     ('H-3934', ValueError),
     ('C-12b', ValueError),
-    (-1.5, TypeError)]
+    (-1.5, TypeError),
+    ('n', ValueError),
+    ('n-1', ValueError),
+    ('neutron', ValueError),
+    ('Neutron', ValueError)]
 
 
 @pytest.mark.parametrize(
@@ -287,8 +289,6 @@ element_name_table = [
     ('P', 'phosphorus'),
     ('Be-8', 'beryllium'),
     ('Li-7', 'lithium'),
-    ('n', 'neutron'),
-    (0, 'neutron'),
     ('N', 'nitrogen'),
     ('N+++', 'nitrogen'),
     ('D-', 'hydrogen')]
@@ -304,6 +304,9 @@ element_name_error_table = [
     ('vegan cupcakes', ValueError),
     ('C-13-14-15-51698024', ValueError),
     (1.24, TypeError),
+    ('n', ValueError),
+    ('neutron', ValueError),
+    (0, ValueError),
     ('H++', ValueError)]
 
 

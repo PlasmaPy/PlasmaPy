@@ -4,6 +4,7 @@ from astropy import units, constants
 import re
 from .atomic import (isotope_symbol, mass_number, isotope_mass, atomic_number)
 
+
 def nuclear_binding_energy(argument, mass_numb=None):
     """Returns the nuclear binding energy associated with an isotope.
 

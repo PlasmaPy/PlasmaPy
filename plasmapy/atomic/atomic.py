@@ -91,16 +91,16 @@ def atomic_symbol(argument):
 
     if isinstance(argument, int):
 
-        if 0 <= argument <= 118:
+        try:
             element = atomic_symbols[argument]
-        else:
-            raise ValueError(str(argument)+" is an invalid atomic number in "
+        except Exception:
+            raise ValueError(str(argument) + " is an invalid atomic number in "
                              "atomic_symbol")
 
     elif isinstance(argument, str):
 
-        if argument in ['n', 'neutron', 'n-1']:
-            return 'n'
+        if argument in ['n', 'n-1'] or argument.lower == 'neutron':
+            raise ValueError("atomic_symbol does not work with neutrons")
         elif argument in ['p', 'p+'] or argument.lower() in \
                 ['d', 't', 'proton', 'protium', 'deuterium', 'deuteron',
                  'triton', 'tritium']:
@@ -237,6 +237,12 @@ def isotope_symbol(argument, mass_numb=None):
         raise ValueError("Insufficient information to determine element and "
                          "mass number in isotope_symbol.")
 
+    if isinstance(argument, str):
+        if argument in ['n', 'n-1'] or argument.lower() == 'neutron':
+            return 'n'
+    elif argument == 0 and mass_numb == 1:
+        return 'n'
+
     try:
         element = atomic_symbol(argument)
     except Exception:
@@ -370,8 +376,7 @@ def is_isotope_stable(argument, mass_numb=None):
     try:
         isotope = isotope_symbol(argument, mass_numb)
     except ValueError:
-        raise ValueError("Unable to determine isotope in input for "
-                         "is_isotope_stable")
+        raise ValueError("Invalid isotope in is_isotope_stable")
 
     try:
         is_stable = Isotopes[isotope]['is_stable']
@@ -448,7 +453,7 @@ def half_life(argument, mass_numb=None):
 
 
 def mass_number(isotope):
-    """Get the mass number (the number of protons and neutrals) of an
+    """Get the mass number (the number of protons and neutrons) of an
     isotope.
 
     Parameters
@@ -490,6 +495,10 @@ def mass_number(isotope):
     4
 
     """
+
+    if isinstance(isotope, str):
+        if isotope in ['n', 'n-1'] or isotope.lower() == 'neutron':
+            return 1
 
     try:
         isotope = isotope_symbol(isotope)
@@ -958,8 +967,6 @@ def known_isotopes(argument=None):
     if argument is not None:
         try:
             element = atomic_symbol(argument)
-            if element == 'n':
-                raise
             isotopes_list = known_isotopes_for_element(element)
         except Exception:
             raise ValueError("known_isotopes is unable to get isotopes from "
