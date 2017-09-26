@@ -74,7 +74,7 @@ def atomic_symbol(argument):
     >>> atomic_symbol('N')  # Nitrogen
     'N'
     >>> atomic_symbol('P'), atomic_symbol('p')  # Phosphorus, proton
-    ('P', 'p')
+    ('P', 'H')
 
     """
 
@@ -117,7 +117,7 @@ def atomic_symbol(argument):
 
         if argument.lower() in atomic_symbols_dict.keys():
             element = atomic_symbols_dict[argument.lower()]
-        elif argument.capitalize() in atomic_symbols.values():
+        elif argument in atomic_symbols.values():
             element = argument.capitalize()
         else:
             raise ValueError(argument+" is an invalid argument for "
@@ -1479,14 +1479,13 @@ def __is_hydrogen(argument, can_be_atomic_number=False):
     if argument == 'p-':
         return False
 
-    case_sensitive_aliases = ['p', 'p+']
+    case_sensitive_aliases = ['p', 'p+', 'H', 'D', 'T']
 
-    case_insensitive_aliases = ['d', 't', 'proton', 'protium', 'deuterium',
-                                'deuteron', 'triton', 'tritium', 'hydrogen',
-                                'h']
+    case_insensitive_aliases = ['proton', 'protium', 'deuterium',
+                                'deuteron', 'triton', 'tritium', 'hydrogen']
 
     for mass_numb in range(1, 8):
-        case_insensitive_aliases.append('h-' + str(mass_numb))
+        case_sensitive_aliases.append('H-' + str(mass_numb))
         case_insensitive_aliases.append('hydrogen-' + str(mass_numb))
 
     if isinstance(argument, str):
@@ -1571,7 +1570,7 @@ def __is_alpha(argument):
             dash_position = argument.find('-')
             argument = argument[:dash_position]
 
-            if argument.lower() in ['he', 'helium']:
+            if argument.lower() == 'helium' or argument == 'He':
                 is_alpha = True
             else:
                 is_alpha = False

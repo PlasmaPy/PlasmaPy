@@ -20,6 +20,7 @@ import pytest
 atomic_symbol_table = [
     (1, 'H'),
     ('H', 'H'),
+    ('p', 'H'),
     ('T', 'H'),
     ('deuterium', 'H'),
     ('deuteron', 'H'),
@@ -79,8 +80,7 @@ atomic_symbol_error_table = [
     ('h', ValueError),
     ('d', ValueError),
     ('he', ValueError),
-    ('au', ValueError),
-    ('p', ValueError)]
+    ('au', ValueError)]
 
 
 @pytest.mark.parametrize(
@@ -520,7 +520,6 @@ is_isotope_stable_table = [
     ('Fe', 56),
     ('Fe', '56'),
     ('Fe-56',),
-    ('fe-56',),
     ('iron-56',),
     ('Iron-56',),
     (26, 56)]
@@ -544,7 +543,6 @@ is_isotope_stable_false_table = [
     ('tritium',),
     ('neutron',),
     ('Pb-209',),
-    ('pb-209',),
     ('lead-209',),
     ('Lead-209',),
     ('Pb', 209),
@@ -562,7 +560,7 @@ is_isotope_stable_error_table = [
     (('hydrogen-444444',), ValueError),
     (('hydrogen', 0), ValueError),
     (('',), ValueError),
-    (('pb',), ValueError),
+    (('pb-209',), ValueError),
     (('h',), ValueError)]
 
 
@@ -825,7 +823,7 @@ def test_is_neutron(test_input, kwargs, expected):
                           ('tritium', False, True),
                           ('triton', False, True),
                           ('deuteron', False, True),
-                          ('h', False, True),
+                          ('h', False, False),
                           ('D', False, True),
                           ('D+', False, True),
                           ('H-2', False, True),
@@ -846,7 +844,8 @@ def test_is_hydrogen(test_input, can_be_atom_numb, expected):
 
 
 @pytest.mark.parametrize("test_input,kwargs,expected_error",
-                         [('H 2+', {}, ValueError)])
+                         [('H 2+', {}, ValueError),
+                          ('D++', {}, ValueError)])
 def test_is_hydrogen_errors(test_input, kwargs, expected_error):
     with pytest.raises(expected_error):
         __is_hydrogen(test_input, **kwargs)
