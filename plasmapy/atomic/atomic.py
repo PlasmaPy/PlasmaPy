@@ -1436,10 +1436,6 @@ def __extract_charge_state(argument):
         if char == '-':
             charge_state = -charge_state
 
-#        if argument[-np.abs(charge_state:)].count(char) != np.abs(charge_state):
-#            raise ValueError("The following input does not have valid charge "
-#                             "state information: " + argument)
-
         argument = argument[0:len(argument)-match.span()[1]]
 
         if argument.endswith(('-', '+')):
