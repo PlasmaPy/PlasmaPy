@@ -223,7 +223,8 @@ def isotope_symbol(argument, mass_numb=None):
                         "integer representing the atomic number (or 0 for "
                         " neutrons).")
 
-    if not (isinstance(mass_numb, int) or mass_numb is None):
+    if not (isinstance(mass_numb, int)
+            or mass_numb is None):  # coveralls: ignore
         raise TypeError("The second argument in isotope_symbol must be an "
                         "integer (or a string containing an integer) that "
                         "represents the mass number of an isotope.")
@@ -232,7 +233,7 @@ def isotope_symbol(argument, mass_numb=None):
         raise ValueError("Insufficient information to determine element and "
                          "mass number in isotope_symbol.")
 
-    if __is_neutron(argument) and mass_numb is None:
+    if __is_neutron(argument) and (mass_numb is None or mass_numb == 1):
         return 'n'
     elif argument == 0 and mass_numb == 1:
         return 'n'
@@ -252,8 +253,6 @@ def isotope_symbol(argument, mass_numb=None):
             dash_position = argument.find('-')
             mass_numb_from_arg = argument[dash_position+1:].strip()
             mass_numb_from_arg = int(mass_numb_from_arg)
-        elif __is_neutron(argument):
-            mass_numb_from_arg = 1
         elif argument in ['p', 'p+'] or \
                 argument.lower() in ['protium', 'proton']:
             mass_numb_from_arg = 1
@@ -903,7 +902,7 @@ def ion_mass(argument, Z=None, mass_numb=None):
 
         try:
             atomic_mass = standard_atomic_weight(argument)
-        except Exception:
+        except Exception:  # coveralls: ignore
 
             errormessage = "No isotope mass or standard atomic weight is " +\
                 "available to get ion mass for " + str(argument)
