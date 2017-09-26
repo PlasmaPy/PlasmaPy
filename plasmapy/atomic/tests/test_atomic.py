@@ -478,6 +478,7 @@ ion_mass_error_table = [
     (26, {"Z": 1, "mass_numb": 'a'}, TypeError),
     (26, {"Z": 27, "mass_numb": 56}, ValueError),
     ('Og', {"Z": 1}, ValueError),
+    ('Og', {"mass_numb": 296, "Z": 1}, ValueError),
     ('n', {}, ValueError),
     ('He', {"mass_numb": 99}, ValueError),
     (1 * u.m, {}, u.UnitConversionError),

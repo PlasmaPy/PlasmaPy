@@ -127,11 +127,6 @@ def atomic_symbol(argument):
 
             isotope = element.capitalize() + '-' + mass_numb
 
-            if isotope == 'H-2':
-                isotope = 'D'
-            if isotope == 'H-3':
-                isotope = 'T'
-
             if isotope not in Isotopes.keys():
                 raise ValueError("The input in atomic_symbol corresponding "
                                  "to " + isotope + " is not a valid isotope.")
@@ -280,7 +275,7 @@ def isotope_symbol(argument, mass_numb=None):
                 warn("Redundant mass number information in isotope_symbol from"
                      " inputs: (" + str(argument)+", " + str(mass_numb) + ")",
                      UserWarning)
-            else:
+            else:  # coveralls: ignore
                 raise ValueError("Contradictory mass number information in "
                                  "isotope_symbol.")
 
