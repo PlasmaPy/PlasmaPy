@@ -333,8 +333,14 @@ def atomic_number(argument):
 
     """
 
-    element = atomic_symbol(argument)
-    atomic_numb = Elements[element]['atomic_number']
+    try:
+        element = atomic_symbol(argument)
+        atomic_numb = Elements[element]['atomic_number']
+    except ValueError:
+        raise ValueError("Unable to identify element in atomic_number")
+    except TypeError:
+        raise TypeError("Invalid type in atomic_number")
+
     return atomic_numb
 
 
@@ -373,6 +379,8 @@ def is_isotope_stable(argument, mass_numb=None):
         isotope = isotope_symbol(argument, mass_numb)
     except ValueError:
         raise ValueError("Invalid isotope in is_isotope_stable")
+    except TypeError:
+        raise TypeError("Invalid input to is_isotope_stable")
 
     try:
         is_stable = Isotopes[isotope]['is_stable']
@@ -543,8 +551,14 @@ def element_name(argument):
 
     """
 
-    element = atomic_symbol(argument)
-    name = Elements[element]["name"]
+    try:
+        element = atomic_symbol(argument)
+        name = Elements[element]["name"]
+    except ValueError:
+        raise ValueError("Unable to identify element in element_name")
+    except TypeError:
+        raise TypeError("Invalid input to element_name")
+
     return name
 
 
@@ -697,8 +711,13 @@ def isotope_mass(argument, mass_numb=None):
         raise ValueError("Use ion_mass instead of isotope_mass for masses of "
                          "charged particles")
 
-    isotope = isotope_symbol(argument, mass_numb)
-    atomic_mass = Isotopes[isotope]['atomic_mass']
+    try:
+        isotope = isotope_symbol(argument, mass_numb)
+        atomic_mass = Isotopes[isotope]['atomic_mass']
+    except ValueError:
+        raise ValueError("Unable to identify isotope in isotope_mass")
+    except TypeError:
+        raise TypeError("Invalid input to isotope_mass")
 
     return atomic_mass
 
@@ -1345,7 +1364,10 @@ def electric_charge(argument):
 
     """
 
-    charge = charge_state(argument) * const.e.to('C')
+    try:
+        charge = charge_state(argument) * const.e.to('C')
+    except Exception:
+        raise ValueError("Invalid input to electric_charge")
 
     return charge
 
