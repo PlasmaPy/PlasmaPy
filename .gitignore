@@ -105,3 +105,9 @@ ENV/
 
 # Auxilliary files associated with vim
 *.swp
+
+# Miscellaneous files
+.idea/
+Untitled*
+untitled*
+C\:*
