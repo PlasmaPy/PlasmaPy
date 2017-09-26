@@ -836,7 +836,6 @@ def ion_mass(argument, Z=None, mass_numb=None):
     elif __is_antiproton(argument) and Z is None:
         return const.m_p
 
-
     if atomic_number(argument) == 0:
         raise ValueError("Use isotope_mass or m_n to get mass of neutron")
 
@@ -1498,14 +1497,13 @@ def __is_hydrogen(argument, can_be_atomic_number=False):
 
         if is_hydrogen and Z is not None and Z > 1:
             raise ValueError("Invalid charge state of hydrogen")
-            
+
     elif argument == 1 and can_be_atomic_number:
         is_hydrogen = True
     else:
         is_hydrogen = False
 
     return is_hydrogen
-    
 
 
 def __is_electron(argument):
@@ -1538,7 +1536,6 @@ def __is_antiproton(argument):
     """Returns True if the argument corresponds to an antiproton, and
     False otherwise."""
 
-
     if not isinstance(argument, str):
         return False
 
@@ -1551,7 +1548,7 @@ def __is_antiproton(argument):
 def __is_alpha(argument):
     """Returns True if the argument corresponds to an alpha particle,
     and False otherwise."""
-    
+
     if not isinstance(argument, str):
         return False
 
@@ -1559,7 +1556,7 @@ def __is_alpha(argument):
         is_alpha = True
     else:
         argument, Z = __extract_charge_state(argument)
-    
+
         if Z != 2:
             is_alpha = False
         elif argument[-2:] != '-4':

@@ -903,5 +903,3 @@ def test_is_antiproton(test_input, expected):
                           ])
 def test_is_alpha(test_input, expected):
     assert __is_alpha(test_input) == expected
-
-
