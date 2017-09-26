@@ -376,7 +376,7 @@ def is_isotope_stable(argument, mass_numb=None):
 
     try:
         is_stable = Isotopes[isotope]['is_stable']
-    except Exception:
+    except Exception:  # coveralls: ignore
         ValueError("No data on stability of " + isotope)
 
     return is_stable
@@ -803,11 +803,6 @@ def ion_mass(argument, Z=None, mass_numb=None):
 
     """
 
-    # TODO: Replace ion_mass() with particle_mass()
-
-    # TODO: Find a better way to account for the special cases that
-    # are complicating this and other atomic functions
-
     if isinstance(argument, u.Quantity) and Z is None and mass_numb is None:
 
         try:
@@ -836,7 +831,7 @@ def ion_mass(argument, Z=None, mass_numb=None):
     elif __is_antiproton(argument) and Z is None:
         return const.m_p
 
-    if atomic_number(argument) == 0:
+    if __is_neutron(argument):
         raise ValueError("Use isotope_mass or m_n to get mass of neutron")
 
     if isinstance(argument, str):
@@ -876,23 +871,35 @@ def ion_mass(argument, Z=None, mass_numb=None):
 
     try:
         isotope = isotope_symbol(argument, mass_numb)
+    except Exception:
+        is_isotope = False
+    else:
+        is_isotope = True
+
+    if is_isotope:
+
         if isotope == 'D' and Z == 1:
             return 3.343583719e-27 * u.kg
         elif isotope == 'T' and Z == 1:
             return 5.007356665e-27 * u.kg
+
         atomic_mass = isotope_mass(isotope)
-    except Exception:
+
+    else:
+
         try:
             atomic_mass = standard_atomic_weight(argument)
         except Exception:
+
             errormessage = "No isotope mass or standard atomic weight is " +\
                 "available to get ion mass for " + str(argument)
+
             if isinstance(mass_numb, int):
                 errormessage += " with mass number " + str(mass_numb)
 
             raise ValueError(errormessage)
 
-    m_i = (atomic_mass - Z*const.m_e).to(u.kg)
+    m_i = (atomic_mass - Z * const.m_e).to(u.kg)
 
     return m_i
 
@@ -1057,15 +1064,15 @@ def common_isotopes(argument=None, most_common_only=False):
         return sorted_isotopes
 
     if argument is not None:
+
         try:
             element = atomic_symbol(argument)
-            if element == 'n':
-                raise
             isotopes_list = \
                 common_isotopes_for_element(element, most_common_only)
         except Exception:
             raise ValueError("common_isotopes is unable to get isotopes from "
                              "an input of: " + str(argument))
+
     elif argument is None:
         isotopes_list = []
         for atomic_numb in range(1, 119):
@@ -1141,8 +1148,6 @@ def stable_isotopes(argument=None, unstable_instead=False):
     if argument is not None:
         try:
             element = atomic_symbol(argument)
-            if element == 'n':
-                raise
             isotopes_list = \
                 stable_isotopes_for_element(element, not unstable_instead)
         except Exception:
@@ -1430,7 +1435,7 @@ def __extract_charge_state(argument):
 
         char = argument[-1]
         match = re.match(r"["+char+"]*", argument[::-1])
-        print(match)
+
         charge_state = match.span()[1]
 
         if char == '-':
@@ -1563,12 +1568,8 @@ def __is_alpha(argument):
             is_alpha = False
         else:
 
-            print(argument)
-
             dash_position = argument.find('-')
             argument = argument[:dash_position]
-
-            print(argument)
 
             if argument.lower() in ['he', 'helium']:
                 is_alpha = True
