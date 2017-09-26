@@ -9,7 +9,8 @@ from ..atomic import (atomic_symbol, isotope_symbol, atomic_number,
                       stable_isotopes, isotopic_abundance, charge_state,
                       electric_charge, Elements, Isotopes,
                       __is_neutron, __is_hydrogen, __is_electron,
-                      __is_positron, __is_antiproton, __is_alpha)
+                      __is_positron, __is_antiproton, __is_alpha,
+                      __extract_charge_state)
 
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
 
@@ -782,8 +783,7 @@ def test_electric_charge_error(argument, expected_warning):
                           ('neutron', True),
                           ('James Chadwick', False),
                           (0, False),
-                          ('n0', True),
-                          ])
+                          ('n0', True)])
 def test_is_neutron(test_input, expected):
     assert __is_neutron(test_input) == expected
 
@@ -814,8 +814,7 @@ def test_is_neutron(test_input, expected):
                           ('H-1', True),
                           ('H-7', True),
                           ('antiproton', False),
-                          ('p-', False),
-                          ])
+                          ('p-', False)])
 def test_is_hydrogen(test_input, expected):
     assert __is_hydrogen(test_input) == expected
 
@@ -830,8 +829,7 @@ def test_is_hydrogen(test_input, expected):
                           ('E', False),
                           ('E-', False),
                           ('beta', False),
-                          (57, False),
-                          ])
+                          (57, False)])
 def test_is_electron(test_input, expected):
     assert __is_electron(test_input) == expected
 
@@ -846,8 +844,7 @@ def test_is_electron(test_input, expected):
                           ('E', False),
                           ('E-', False),
                           ('beta', False),
-                          (57, False),
-                          ])
+                          (57, False)])
 def test_is_positron(test_input, expected):
     assert __is_positron(test_input) == expected
 
@@ -868,8 +865,7 @@ def test_is_positron(test_input, expected):
                           ('p+', False),
                           ('p--', False),
                           ('P-', False),
-                          (57, False),
-                          ])
+                          (57, False)])
 def test_is_antiproton(test_input, expected):
     assert __is_antiproton(test_input) == expected
 
@@ -899,7 +895,41 @@ def test_is_antiproton(test_input, expected):
                           ('Helium-4 -2', False),
                           ('He-4', False),
                           ('helium', False),
-                          ('He', False)
-                          ])
+                          ('He', False)])
 def test_is_alpha(test_input, expected):
     assert __is_alpha(test_input) == expected
+
+
+@pytest.mark.parametrize("test_input,expected_newarg,expected_Z",
+                         [('H', 'H', None),
+                          ('H+', 'H', 1),
+                          ('D 1+', 'D', 1),
+                          ('alpha', 'alpha', 2),
+                          ('Fe', 'Fe', None),
+                          ('Titanium', 'Titanium', None),
+                          ('N-7+++', 'N-7', 3),
+                          ('H-1-', 'H-1', -1),
+                          ('He-4-', 'He-4', -1)])
+def test_extract_charge_state(test_input, expected_newarg, expected_Z):
+    new_symbol, new_Z = __extract_charge_state(test_input)
+    assert new_symbol == expected_newarg, str(test_input)
+    assert new_Z == expected_Z
+
+
+@pytest.mark.parametrize("test_input,expected_error",
+                         [('H-1-+-+', ValueError),
+                          ('H ++', ValueError),
+                          ('Fe +21+', ValueError),
+                          ('lead-12345', ValueError)])
+def test_extract_charge_state_errors(test_input, expected_error):
+    with pytest.raises(expected_error):
+        __extract_charge_state(test_input)
+
+
+@pytest.mark.parametrize("test_input,expected_warning",
+                         [('H-1----', UserWarning),
+                          ('Fe -4', UserWarning),
+                          ('lead 4-', UserWarning)])
+def test_extract_charge_state_errors(test_input, expected_warning):
+    with pytest.warns(expected_warning):
+        __extract_charge_state(test_input)

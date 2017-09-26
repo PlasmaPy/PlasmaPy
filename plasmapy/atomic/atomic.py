@@ -1430,16 +1430,20 @@ def __extract_charge_state(argument):
 
         char = argument[-1]
         match = re.match(r"["+char+"]*", argument[::-1])
+        print(match)
         charge_state = match.span()[1]
 
         if char == '-':
             charge_state = -charge_state
 
-        if argument.count(char) != np.abs(charge_state):
-            raise ValueError("The following input does not have valid charge "
-                             "state information: " + argument)
+#        if argument[-np.abs(charge_state:)].count(char) != np.abs(charge_state):
+#            raise ValueError("The following input does not have valid charge "
+#                             "state information: " + argument)
 
         argument = argument[0:len(argument)-match.span()[1]]
+
+        if argument.endswith(('-', '+')):
+            raise ValueError("Invalid charge state information")
 
     else:
         charge_state = None
