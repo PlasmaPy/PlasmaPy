@@ -7,7 +7,9 @@ from ..atomic import (atomic_symbol, isotope_symbol, atomic_number,
                       isotope_mass, ion_mass, is_isotope_stable,
                       half_life, known_isotopes, common_isotopes,
                       stable_isotopes, isotopic_abundance, charge_state,
-                      electric_charge, Elements, Isotopes)
+                      electric_charge, Elements, Isotopes,
+                      __is_neutron, __is_hydrogen, __is_electron,
+                      __is_positron, __is_antiproton, __is_alpha)
 
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
 
@@ -769,3 +771,137 @@ electric_charge_warning_table = [
 def test_electric_charge_error(argument, expected_warning):
     with pytest.warns(expected_warning):
         electric_charge(argument)
+
+
+@pytest.mark.parametrize("test_input,expected",
+                         [('n', True),
+                          ('n-1', True),
+                          ('N', False),
+                          ('N-1', False),
+                          ('N-7', False),
+                          ('neutron', True),
+                          ('James Chadwick', False),
+                          (0, False),
+                          ('n0', True),
+                          ])
+def test_is_neutron(test_input, expected):
+    assert __is_neutron(test_input) == expected
+
+
+@pytest.mark.parametrize("test_input,expected",
+                         [('hydrogen', True),
+                          ('hydrogen+', True),
+                          ('hydrogen-', True),
+                          ('hydrogen--', True),
+                          ('H', True),
+                          ('H+', True),
+                          ('H-', True),
+                          ('proton', True),
+                          ('protium', True),
+                          ('deuterium', True),
+                          ('tritium', True),
+                          ('triton', True),
+                          ('deuteron', True),
+                          ('h', True),
+                          ('D', True),
+                          ('D+', True),
+                          ('H-2', True),
+                          ('H-2+', True),
+                          ('H-2 1+', True),
+                          ('H-2 +1', True),
+                          ('H-3 -1', True),
+                          ('He', False),
+                          ('H-1', True),
+                          ('H-7', True),
+                          ('antiproton', False),
+                          ('p-', False),
+                          ])
+def test_is_hydrogen(test_input, expected):
+    assert __is_hydrogen(test_input) == expected
+
+
+@pytest.mark.parametrize("test_input,expected",
+                         [('e-', True),
+                          ('e+', False),
+                          ('Electron', True),
+                          ('electron', True),
+                          ('positron', False),
+                          ('p', False),
+                          ('E', False),
+                          ('E-', False),
+                          ('beta', False),
+                          (57, False),
+                          ])
+def test_is_electron(test_input, expected):
+    assert __is_electron(test_input) == expected
+
+
+@pytest.mark.parametrize("test_input,expected",
+                         [('e-', False),
+                          ('e+', True),
+                          ('Electron', False),
+                          ('electron', False),
+                          ('positron', True),
+                          ('p', False),
+                          ('E', False),
+                          ('E-', False),
+                          ('beta', False),
+                          (57, False),
+                          ])
+def test_is_positron(test_input, expected):
+    assert __is_positron(test_input) == expected
+
+
+@pytest.mark.parametrize("test_input,expected",
+                         [('e-', False),
+                          ('e+', False),
+                          ('Electron', False),
+                          ('electron', False),
+                          ('positron', False),
+                          ('p', False),
+                          ('E', False),
+                          ('E-', False),
+                          ('beta', False),
+                          ('p-', True),
+                          ('Antiproton', True),
+                          ('antiproton', True),
+                          ('p+', False),
+                          ('p--', False),
+                          ('P-', False),
+                          (57, False),
+                          ])
+def test_is_antiproton(test_input, expected):
+    assert __is_antiproton(test_input) == expected
+
+
+@pytest.mark.parametrize("test_input,expected",
+                         [('e-', False),
+                          ('e+', False),
+                          ('Electron', False),
+                          ('electron', False),
+                          ('positron', False),
+                          ('p', False),
+                          ('E', False),
+                          ('E-', False),
+                          ('beta', False),
+                          ('p-', False),
+                          ('Antiproton', False),
+                          ('antiproton', False),
+                          ('p+', False),
+                          ('p--', False),
+                          ('P-', False),
+                          (57, False),
+                          ('alpha', True),
+                          ('He-4 2+', True),
+                          ('He-3 2+', False),
+                          ('He-5 2+', False),
+                          ('Helium-4 +2', True),
+                          ('Helium-4 -2', False),
+                          ('He-4', False),
+                          ('helium', False),
+                          ('He', False)
+                          ])
+def test_is_alpha(test_input, expected):
+    assert __is_alpha(test_input) == expected
+
+

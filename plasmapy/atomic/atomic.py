@@ -53,9 +53,9 @@ def atomic_symbol(argument):
     This function is case insensitive when there is no ambiguity
     associated with case.  However, this function will return 'H' for
     hydrogen for lower case 'p' but capital 'P' if the argument is 'P'
-    for phosphorus.  This function will also return lower case 'n' if
-    the argument is lower case 'n' for neutrons, but capital 'N' for
-    nitrogen if the argument is capital 'N'.
+    for phosphorus.  This function will return 'N' for nitrogen if the
+    argument is capital 'N', but will not accept lower case 'n' for
+    neutrons.
 
     Examples
     --------
@@ -71,14 +71,17 @@ def atomic_symbol(argument):
     'He'
     >>> atomic_symbol('79')
     'Au'
-    >>> atomic_symbol('N'), atomic_symbol('n')  # Nitrogen, neutron
-    ('N', 'n')
+    >>> atomic_symbol('N')  # Nitrogen
+    'N'
     >>> atomic_symbol('P'), atomic_symbol('p')  # Phosphorus, proton
     ('P', 'p')
 
     """
 
-    argument, charge_state = __extract_charge_state(argument)
+    if __is_neutron(argument):
+        raise ValueError("Neutrons do not have an atomic symbol")
+
+    argument, Z = __extract_charge_state(argument)
 
     if not isinstance(argument, (str, int)):
         raise TypeError("The first argument in atomic_symbol must be either "
@@ -97,16 +100,11 @@ def atomic_symbol(argument):
             raise ValueError(str(argument) + " is an invalid atomic number in "
                              "atomic_symbol")
 
+    elif __is_hydrogen(argument):
+        element = 'H'
+    elif __is_alpha(argument):
+        element = 'He'
     elif isinstance(argument, str):
-
-        if argument in ['n', 'n-1'] or argument.lower == 'neutron':
-            raise ValueError("atomic_symbol does not work with neutrons")
-        elif argument in ['p', 'p+'] or argument.lower() in \
-                ['d', 't', 'proton', 'protium', 'deuterium', 'deuteron',
-                 'triton', 'tritium']:
-            return 'H'
-        elif argument.lower() == 'alpha':
-            return 'He'
 
         if argument.count('-') == 1:
             dash_position = argument.find('-')
@@ -126,7 +124,9 @@ def atomic_symbol(argument):
                              "atomic_symbol")
 
         if mass_numb.isdigit():
+
             isotope = element.capitalize() + '-' + mass_numb
+
             if isotope == 'H-2':
                 isotope = 'D'
             if isotope == 'H-3':
@@ -136,10 +136,10 @@ def atomic_symbol(argument):
                 raise ValueError("The input in atomic_symbol corresponding "
                                  "to " + isotope + " is not a valid isotope.")
 
-    if charge_state is not None and \
-            charge_state > Elements[element]['atomic_number']:
+    if Z is not None and \
+            Z > Elements[element]['atomic_number']:
         raise ValueError("Cannot have an ionization state greater than the "
-                         "atomic number in element_name.")
+                         "atomic number.")
 
     return element
 
@@ -237,9 +237,8 @@ def isotope_symbol(argument, mass_numb=None):
         raise ValueError("Insufficient information to determine element and "
                          "mass number in isotope_symbol.")
 
-    if isinstance(argument, str):
-        if argument in ['n', 'n-1'] or argument.lower() == 'neutron':
-            return 'n'
+    if __is_neutron(argument) and mass_numb is None:
+        return 'n'
     elif argument == 0 and mass_numb == 1:
         return 'n'
 
@@ -258,7 +257,7 @@ def isotope_symbol(argument, mass_numb=None):
             dash_position = argument.find('-')
             mass_numb_from_arg = argument[dash_position+1:].strip()
             mass_numb_from_arg = int(mass_numb_from_arg)
-        elif argument == 'n' or argument.lower() == 'neutron':
+        elif __is_neutron(argument):
             mass_numb_from_arg = 1
         elif argument in ['p', 'p+'] or \
                 argument.lower() in ['protium', 'proton']:
@@ -267,7 +266,7 @@ def isotope_symbol(argument, mass_numb=None):
             mass_numb_from_arg = 2
         elif argument.lower() in ['t', 'tritium', 'triton']:
             mass_numb_from_arg = 3
-        elif argument.lower() in ['alpha']:
+        elif __is_alpha(argument):
             mass_numb_from_arg = 4
         else:
             mass_numb_from_arg = None
@@ -290,9 +289,7 @@ def isotope_symbol(argument, mass_numb=None):
 
     isotope = element + '-' + str(mass_numb)
 
-    if isotope == 'n-1':
-        isotope = 'n'
-    elif isotope == 'H-2':
+    if isotope == 'H-2':
         isotope = 'D'
     elif isotope == 'H-3':
         isotope = 'T'
@@ -305,8 +302,7 @@ def isotope_symbol(argument, mass_numb=None):
 
 
 def atomic_number(argument):
-    """Returns the atomic number (the number of protons in an atom)
-    from an atomic symbol or name.
+    """Returns the number of protons in an atom, isotope, or ion.
 
     Parameters
     ----------
@@ -459,12 +455,12 @@ def mass_number(isotope):
     Parameters
     ----------
     isotope : string
-        A string representing an isotope.
+        A string representing an isotope or a neutron.
 
     Returns
     -------
     mass_number : integer
-       An integer representing the mass number of the isotope.
+       The total number of protons plus neutrons in a nuclide.
 
     Raises
     ------
@@ -496,9 +492,8 @@ def mass_number(isotope):
 
     """
 
-    if isinstance(isotope, str):
-        if isotope in ['n', 'n-1'] or isotope.lower() == 'neutron':
-            return 1
+    if __is_neutron(isotope):
+        return 1
 
     try:
         isotope = isotope_symbol(isotope)
@@ -631,7 +626,7 @@ def standard_atomic_weight(argument):
     except Exception:
         isotope = ''
 
-    if isotope == 'n':
+    if __is_neutron(isotope):
         raise ValueError("Use isotope_mass('n') or plasmapy.constants.m_n "
                          "instead of standard_atomic_weight to get neutron "
                          "mass")
@@ -835,9 +830,12 @@ def ion_mass(argument, Z=None, mass_numb=None):
             str(argument).lower() in ['e+', 'positron', 'e', 'e-', 'electron']:
         return const.m_e
 
-    if argument in ['p', 'p+', 'p-'] or str(argument).lower() in \
-            ['proton', 'protium', 'antiproton'] and Z is None:
+    if argument in ['p', 'p+'] or str(argument).lower() in \
+            ['proton', 'protium'] and Z is None:
         return const.m_p
+    elif __is_antiproton(argument) and Z is None:
+        return const.m_p
+
 
     if atomic_number(argument) == 0:
         raise ValueError("Use isotope_mass or m_n to get mass of neutron")
@@ -1271,10 +1269,9 @@ def charge_state(argument):
 
     """
 
-    if argument in ['e', 'e-', 'p-'] or \
-            argument.lower() in ['electron', 'antiproton']:
+    if __is_electron(argument):
         return -1
-    elif argument == 'e+' or argument.lower() == 'positron':
+    elif __is_positron(argument):
         return 1
 
     argument, Z = __extract_charge_state(argument)
@@ -1454,3 +1451,131 @@ def __extract_charge_state(argument):
              UserWarning)
 
     return argument, charge_state
+
+
+def __is_neutron(argument, mass_numb=None):
+    """Returns True if the argument corresponds to a neutron, and
+    False otherwise."""
+
+    if argument == 0 and mass_numb == 1:
+        return True
+    elif isinstance(argument, str) and mass_numb is None:
+        if argument in ('n', 'n-1') or argument.lower() in ['neutron', 'n0']:
+            return True
+        else:
+            return False
+    else:
+        return False
+
+
+def __is_hydrogen(argument, can_be_atomic_number=False):
+    """Returns True if the argument corresponds to hydrogen, and False
+    otherwise."""
+
+    if argument == 'p-':
+        return False
+
+    case_sensitive_aliases = ['p', 'p+']
+
+    case_insensitive_aliases = ['d', 't', 'proton', 'protium', 'deuterium',
+                                'deuteron', 'triton', 'tritium', 'hydrogen',
+                                'h']
+
+    for mass_numb in range(1, 8):
+        case_insensitive_aliases.append('h-' + str(mass_numb))
+        case_insensitive_aliases.append('hydrogen-' + str(mass_numb))
+
+    if isinstance(argument, str):
+
+        argument, Z = __extract_charge_state(argument)
+
+        if argument in case_sensitive_aliases:
+            is_hydrogen = True
+        elif argument.lower() in case_insensitive_aliases:
+            is_hydrogen = True
+        else:
+            is_hydrogen = False
+
+        if is_hydrogen and Z is not None and Z > 1:
+            raise ValueError("Invalid charge state of hydrogen")
+            
+    elif argument == 1 and can_be_atomic_number:
+        is_hydrogen = True
+    else:
+        is_hydrogen = False
+
+    return is_hydrogen
+    
+
+
+def __is_electron(argument):
+    """Returns True if the argument corresponds to an electron, and False
+    otherwise."""
+
+    if not isinstance(argument, str):
+        return False
+
+    if argument in ['e', 'e-'] or argument.lower() == 'electron':
+        return True
+    else:
+        return False
+
+
+def __is_positron(argument):
+    """Returns True if the argument corresponds to a positron, and False
+    otherwise."""
+
+    if not isinstance(argument, str):
+        return False
+
+    if argument == 'e+' or argument.lower() == 'positron':
+        return True
+    else:
+        return False
+
+
+def __is_antiproton(argument):
+    """Returns True if the argument corresponds to an antiproton, and
+    False otherwise."""
+
+
+    if not isinstance(argument, str):
+        return False
+
+    if argument == 'p-' or argument.lower() == 'antiproton':
+        return True
+    else:
+        return False
+
+
+def __is_alpha(argument):
+    """Returns True if the argument corresponds to an alpha particle,
+    and False otherwise."""
+    
+    if not isinstance(argument, str):
+        return False
+
+    if argument.lower() == 'alpha':
+        is_alpha = True
+    else:
+        argument, Z = __extract_charge_state(argument)
+    
+        if Z != 2:
+            is_alpha = False
+        elif argument[-2:] != '-4':
+            is_alpha = False
+        else:
+
+            print(argument)
+
+            dash_position = argument.find('-')
+            argument = argument[:dash_position]
+
+            print(argument)
+
+            if argument.lower() in ['he', 'helium']:
+                is_alpha = True
+            else:
+                is_alpha = False
+
+    return is_alpha
