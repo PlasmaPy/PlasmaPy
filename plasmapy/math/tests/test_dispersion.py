@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 from astropy import units as u
-from ..analytic import plasma_dispersion_func, plasma_dispersion_func_deriv
+from ..math import plasma_dispersion_func, plasma_dispersion_func_deriv
 
 
 def test_plasma_dispersion_func():

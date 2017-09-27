@@ -9,7 +9,7 @@ from .classes import Plasma
 from . import classes
 from . import constants
 from . import atomic
-from . import analytic
+from . import math
 from . import physics
 from . import utils
 

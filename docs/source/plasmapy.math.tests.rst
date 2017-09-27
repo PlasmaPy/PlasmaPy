@@ -1,13 +1,13 @@
-plasmapy\.analytic\.tests package
+plasmapy\.math\.tests package
 =================================
 
 Submodules
 ----------
 
-plasmapy\.analytic\.tests\.test\_dispersion module
+plasmapy\.math\.tests\.test\_dispersion module
 --------------------------------------------------
 
-.. automodule:: plasmapy.analytic.tests.test_dispersion
+.. automodule:: plasmapy.math.tests.test_dispersion
     :members:
     :undoc-members:
     :show-inheritance:
@@ -16,7 +16,7 @@ plasmapy\.analytic\.tests\.test\_dispersion module
 Module contents
 ---------------
 
-.. automodule:: plasmapy.analytic.tests
+.. automodule:: plasmapy.math.tests
     :members:
     :undoc-members:
     :show-inheritance:

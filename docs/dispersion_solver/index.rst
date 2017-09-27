@@ -2,7 +2,7 @@
 dispersion solver
 **************************************
 
-.. currentmodule:: plasmapy.analytic.analytic
+.. currentmodule:: plasmapy.math.math
 
 introduction
 ============
