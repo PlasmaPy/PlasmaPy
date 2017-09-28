@@ -17,7 +17,7 @@ def _split_version(version):
     return tuple(int(ver) for ver in version.split('.'))
 
 
-def _min_required_version(required, current):
+def _min_required_version(required, current): # coveralls: ignore
     """ Return `True` if the current version meets the required minimum
         version and `False` if not/ if not installed.
 
@@ -27,7 +27,7 @@ def _min_required_version(required, current):
     return _split_version(current) >= _split_version(required)
 
 
-def _check_numpy_version():
+def _check_numpy_version(): # coveralls: ignore
     """ Make sure numpy in installed and meets the minimum version requiremnets
     """
     required_version = False
@@ -47,7 +47,7 @@ def _check_numpy_version():
         raise ImportError(ver_error)
 
 
-def _check_astropy_version():
+def _check_astropy_version(): # coveralls: ignore
     """ Make sure astropy in installed and meets the minimum version requiremnets
     """
     required_version = False
@@ -67,8 +67,7 @@ def _check_astropy_version():
         raise ImportError(ver_error)
 
 
-# coveralls: ignore
-if sys.version_info < _split_version(__minimum_python_version__):
+if sys.version_info < _split_version(__minimum_python_version__): # coveralls: ignore
     warnings.warn("PlasmaPy does not support Python 3.5 and below")
 
 _check_numpy_version()
