@@ -18,7 +18,7 @@ def _split_version(version):
 
 
 def _min_required_version(required, current):
-    """ Return `True` if the current version meets the required minimum 
+    """ Return `True` if the current version meets the required minimum
         version and `False` if not/ if not installed.
 
         Right now `required` and `current` are just . seperated strings
@@ -43,7 +43,7 @@ def _check_numpy_version():
     if not required_version:
         ver_error = ("Numpy {} or above is required for PlasmaPy. The "
                      "currently installed version is {}"
-                    ).format(__minimum_numpy_version__, np_ver)
+                     ).format(__minimum_numpy_version__, np_ver)
         raise ImportError(ver_error)
 
 
@@ -63,12 +63,12 @@ def _check_astropy_version():
     if not required_version:
         ver_error = ("Astropy {} or above is required for PlasmaPy. The "
                      "currently installed version is {}"
-                    ).format(__minimum_astropy_version__, ap_ver)
+                     ).format(__minimum_astropy_version__, ap_ver)
         raise ImportError(ver_error)
 
 
 # coveralls: ignore
-if sys.version_info < _split_version(__minimum_python_version__ ):
+if sys.version_info < _split_version(__minimum_python_version__):
     warnings.warn("PlasmaPy does not support Python 3.5 and below")
 
 _check_numpy_version()
@@ -81,5 +81,3 @@ from . import atomic
 from . import math
 from . import physics
 from . import utils
-
-
