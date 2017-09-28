@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 # Package metadata
@@ -32,7 +32,7 @@ setup(name=metadata['name'],
         'Topic :: Scientific/Engineering :: Astronomy',
         'Development Status :: 2 - Pre-Alpha',
         ],
-      packages=["plasmapy"],
+      packages=find_packages(),
       zip_safe=False,
       use_2to3=False,
       python_requires='>=3.6',
