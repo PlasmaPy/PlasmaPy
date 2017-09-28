@@ -5,6 +5,75 @@ from ._metadata import (
     author as __author__,
 )
 
+import sys
+import warnings
+
+__minimum_python_version__ = '3.6'
+__minimum_numpy_version__ = '1.10.0'
+__minimum_astropy_version__ = '2.0.0'
+
+
+def _split_version(version):
+    return tuple(int(ver) for ver in version.split('.'))
+
+
+def _min_required_version(required, current):
+    """ Return `True` if the current version meets the required minimum 
+        version and `False` if not/ if not installed.
+
+        Right now `required` and `current` are just . seperated strings
+        but It would be good to make this more general and accept modules.
+    """
+    return _split_version(current) >= _split_version(required)
+
+
+def _check_numpy_version():
+    """ Make sure numpy in installed and meets the minimum version requiremnets
+    """
+    required_version = False
+    np_ver = None
+
+    try:
+        from numpy import __version__ as np_ver
+        required_version = _min_required_version(__minimum_numpy_version__,
+                                                 np_ver)
+    except ImportError:
+        pass
+
+    if not required_version:
+        ver_error = ("Numpy {} or above is required for PlasmaPy. The "
+                     "currently installed version is {}"
+                    ).format(__minimum_numpy_version__, np_ver)
+        raise ImportError(ver_error)
+
+
+def _check_astropy_version():
+    """ Make sure astropy in installed and meets the minimum version requiremnets
+    """
+    required_version = False
+    ap_ver = None
+
+    try:
+        from astropy import __version__ as ap_ver
+        required_version = _min_required_version(__minimum_astropy_version__,
+                                                 ap_ver)
+    except ImportError:
+        pass
+
+    if not required_version:
+        ver_error = ("Astropy {} or above is required for PlasmaPy. The "
+                     "currently installed version is {}"
+                    ).format(__minimum_astropy_version__, ap_ver)
+        raise ImportError(ver_error)
+
+
+# coveralls: ignore
+if sys.version_info < _split_version(__minimum_python_version__ ):
+    warnings.warn("PlasmaPy does not support Python 3.5 and below")
+
+_check_numpy_version()
+_check_astropy_version()
+
 from .classes import Plasma
 from . import classes
 from . import constants
@@ -13,8 +82,4 @@ from . import math
 from . import physics
 from . import utils
 
-import sys
-import warnings
 
-if sys.version_info[:2] < (3, 6):  # coveralls: ignore
-    warnings.warn("PlasmaPy does not support Python 3.5 and below")
