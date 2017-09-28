@@ -6,3 +6,6 @@ exclude_lines =
 	coveralls: ignore
 	def __repr__
 	raise NotImplementedError
+        raise ImportError
+	except ImportError
+	
