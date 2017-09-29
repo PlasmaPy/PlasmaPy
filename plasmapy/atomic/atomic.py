@@ -9,7 +9,7 @@ from .isotopes import Isotopes
 
 
 # The code contained within atomic_symbol(), isotope_symbol(), and
-# __extract_charge_state() is designed to catch all of the special
+# _extract_charge_state() is designed to catch all of the special
 # cases for different inputs.  Complexity is concentrated in these
 # functions so that the rest of the functions can be simpler.
 
@@ -78,10 +78,10 @@ def atomic_symbol(argument):
 
     """
 
-    if __is_neutron(argument):
+    if _is_neutron(argument):
         raise ValueError("Neutrons do not have an atomic symbol")
 
-    argument, Z = __extract_charge_state(argument)
+    argument, Z = _extract_charge_state(argument)
 
     if not isinstance(argument, (str, int)):
         raise TypeError("The first argument in atomic_symbol must be either "
@@ -97,12 +97,12 @@ def atomic_symbol(argument):
         try:
             element = atomic_symbols[argument]
         except Exception:
-            raise ValueError(str(argument) + " is an invalid atomic number in "
+            raise ValueError(f"{argument} is an invalid atomic number in "
                              "atomic_symbol")
 
-    elif __is_hydrogen(argument):
+    elif _is_hydrogen(argument):
         element = 'H'
-    elif __is_alpha(argument):
+    elif _is_alpha(argument):
         element = 'He'
     elif isinstance(argument, str):
 
@@ -120,7 +120,7 @@ def atomic_symbol(argument):
         elif argument in atomic_symbols.values():
             element = argument.capitalize()
         else:
-            raise ValueError(argument+" is an invalid argument for "
+            raise ValueError(f"{argument} is an invalid argument for "
                              "atomic_symbol")
 
         if mass_numb.isdigit():
@@ -129,7 +129,7 @@ def atomic_symbol(argument):
 
             if isotope not in Isotopes.keys():
                 raise ValueError("The input in atomic_symbol corresponding "
-                                 "to " + isotope + " is not a valid isotope.")
+                                 f"to {isotope} is not a valid isotope.")
 
     if Z is not None and \
             Z > Elements[element]['atomic_number']:
@@ -206,7 +206,7 @@ def isotope_symbol(argument, mass_numb=None):
         return argument
 
     if isinstance(argument, str):
-        argument, charge_state = __extract_charge_state(argument)
+        argument, charge_state = _extract_charge_state(argument)
 
     if isinstance(argument, str) and argument.isdigit():
         argument = int(argument)
@@ -223,8 +223,8 @@ def isotope_symbol(argument, mass_numb=None):
                         "integer representing the atomic number (or 0 for "
                         " neutrons).")
 
-    if not (isinstance(mass_numb, int)
-            or mass_numb is None):  # coveralls: ignore
+    if not (isinstance(mass_numb, int) or
+            mass_numb is None):  # coveralls: ignore
         raise TypeError("The second argument in isotope_symbol must be an "
                         "integer (or a string containing an integer) that "
                         "represents the mass number of an isotope.")
@@ -233,17 +233,14 @@ def isotope_symbol(argument, mass_numb=None):
         raise ValueError("Insufficient information to determine element and "
                          "mass number in isotope_symbol.")
 
-    if __is_neutron(argument) and (mass_numb is None or mass_numb == 1):
-        return 'n'
-    elif argument == 0 and mass_numb == 1:
+    if _is_neutron(argument, mass_numb):
         return 'n'
 
     try:
         element = atomic_symbol(argument)
     except Exception:
-        raise ValueError("The first argument of isotope_symbol (" +
-                         str(argument) + ") does not correspond to a valid "
-                         "element or isotope.")
+        raise ValueError(f"The first argument of isotope_symbol ({argument})"
+                         "does not correspond to a valid element or isotope.")
 
     # Get mass number from argument, check for redundancies, and take
     # care of special cases.
@@ -260,7 +257,7 @@ def isotope_symbol(argument, mass_numb=None):
             mass_numb_from_arg = 2
         elif argument.lower() in ['t', 'tritium', 'triton']:
             mass_numb_from_arg = 3
-        elif __is_alpha(argument):
+        elif _is_alpha(argument):
             mass_numb_from_arg = 4
         else:
             mass_numb_from_arg = None
@@ -271,9 +268,8 @@ def isotope_symbol(argument, mass_numb=None):
 
         if mass_numb is not None and mass_numb_from_arg is not None:
             if mass_numb == mass_numb_from_arg:
-                warn("Redundant mass number information in isotope_symbol from"
-                     " inputs: (" + str(argument)+", " + str(mass_numb) + ")",
-                     UserWarning)
+                warn("Redundant mass number information in isotope_symbol "
+                     f"from inputs: {argument}, {mass_numb}", UserWarning)
             else:  # coveralls: ignore
                 raise ValueError("Contradictory mass number information in "
                                  "isotope_symbol.")
@@ -281,7 +277,7 @@ def isotope_symbol(argument, mass_numb=None):
         if mass_numb_from_arg is not None:
             mass_numb = mass_numb_from_arg
 
-    isotope = element + '-' + str(mass_numb)
+    isotope = f"{element}-{mass_numb}"
 
     if isotope == 'H-2':
         isotope = 'D'
@@ -432,8 +428,7 @@ def half_life(argument, mass_numb=None):
         isotope = isotope_symbol(argument, mass_numb)
     except ValueError:
         raise ValueError("Cannot determine isotope information from these " +
-                         "inputs to half_life: (" + str(argument) + ", " +
-                         str(mass_numb) + ")")
+                         f"inputs to half_life: {argument}, {mass_numb}")
     except TypeError:
         raise TypeError("Incorrect argument type for half_life")
 
@@ -444,7 +439,7 @@ def half_life(argument, mass_numb=None):
             half_life_sec = Isotopes[isotope]['half_life']
     except Exception:
         half_life_sec = None
-        warn("The half-life for isotope " + isotope + " is not available; "
+        warn(f"The half-life for isotope {isotope} is not available; "
              "returning None.", UserWarning)
 
     return half_life_sec
@@ -494,17 +489,14 @@ def mass_number(isotope):
 
     """
 
-    if __is_neutron(isotope):
-        return 1
-
     try:
         isotope = isotope_symbol(isotope)
         mass_numb = Isotopes[isotope]["mass_number"]
     except TypeError:
         raise("Incorrect type for mass_number input.")
     except ValueError:
-        raise ValueError("Mass number not able to be found from input " +
-                         str(isotope))
+        raise ValueError("Mass number not able to be found from input "
+                         f"{isotope}")
 
     return mass_numb
 
@@ -624,7 +616,7 @@ def standard_atomic_weight(argument):
 
     """
 
-    argument, charge_state = __extract_charge_state(argument)
+    argument, charge_state = _extract_charge_state(argument)
 
     if charge_state is not None and charge_state != 0:
         raise ValueError("Use ion_mass to get masses of charged particles.")
@@ -634,7 +626,7 @@ def standard_atomic_weight(argument):
     except Exception:
         isotope = ''
 
-    if __is_neutron(isotope):
+    if _is_neutron(isotope):
         raise ValueError("Use isotope_mass('n') or plasmapy.constants.m_n "
                          "instead of standard_atomic_weight to get neutron "
                          "mass")
@@ -699,7 +691,7 @@ def isotope_mass(argument, mass_numb=None):
 
     """
 
-    argument, charge_state = __extract_charge_state(argument)
+    argument, charge_state = _extract_charge_state(argument)
 
     if charge_state is not None and charge_state != 0:
         raise ValueError("Use ion_mass instead of isotope_mass for masses of "
@@ -780,8 +772,9 @@ def ion_mass(argument, Z=None, mass_numb=None):
     particles, and positrons.
 
     Calling ion_mass('H') does not return the mass of a proton but
-    instea uses hydrogen's standard atomic weight based on terrestrial
-    values.  To get the mass of a proton, use ion_mass('p').
+    instead uses hydrogen's standard atomic weight based on
+    terrestrial values.  To get the mass of a proton, use
+    ion_mass('p').
 
     This function can accept a Quantity in units of mass.  If the
     Quantity is close to the mass of an electron or positron, it will
@@ -841,14 +834,14 @@ def ion_mass(argument, Z=None, mass_numb=None):
     if argument in ['p', 'p+'] or str(argument).lower() in \
             ['proton', 'protium'] and Z is None:
         return const.m_p
-    elif __is_antiproton(argument) and Z is None:
+    elif _is_antiproton(argument) and Z is None:
         return const.m_p
 
-    if __is_neutron(argument):
+    if _is_neutron(argument, mass_numb):
         raise ValueError("Use isotope_mass or m_n to get mass of neutron")
 
     if isinstance(argument, str):
-        argument, Z_from_arg = __extract_charge_state(argument)
+        argument, Z_from_arg = _extract_charge_state(argument)
     else:
         Z_from_arg = None
 
@@ -904,11 +897,11 @@ def ion_mass(argument, Z=None, mass_numb=None):
             atomic_mass = standard_atomic_weight(argument)
         except Exception:  # coveralls: ignore
 
-            errormessage = "No isotope mass or standard atomic weight is " +\
-                "available to get ion mass for " + str(argument)
+            errormessage = ("No isotope mass or standard atomic weight is "
+                            f"available to get ion mass for {argument}")
 
             if isinstance(mass_numb, int):
-                errormessage += " with mass number " + str(mass_numb)
+                errormessage += f" with mass number {mass_numb}"
 
             raise ValueError(errormessage)
 
@@ -987,7 +980,7 @@ def known_isotopes(argument=None):
             isotopes_list = known_isotopes_for_element(element)
         except Exception:
             raise ValueError("known_isotopes is unable to get isotopes from "
-                             "an input of: " + str(argument))
+                             f"an input of: {argument}")
     elif argument is None:
         isotopes_list = []
         for atomic_numb in range(1, 119):
@@ -1084,7 +1077,7 @@ def common_isotopes(argument=None, most_common_only=False):
                 common_isotopes_for_element(element, most_common_only)
         except Exception:
             raise ValueError("common_isotopes is unable to get isotopes from "
-                             "an input of: " + str(argument))
+                             f"an input of: {argument}")
 
     elif argument is None:
         isotopes_list = []
@@ -1095,7 +1088,7 @@ def common_isotopes(argument=None, most_common_only=False):
     return isotopes_list
 
 
-def stable_isotopes(argument=None, unstable_instead=False):
+def stable_isotopes(argument=None, unstable=False):
     """Returns a list of all stable isotopes of an element, or if no
     input is provided, a list of all such isotopes for every element.
 
@@ -1105,7 +1098,7 @@ def stable_isotopes(argument=None, unstable_instead=False):
         A string or integer representing an atomic number or element,
         or a string represnting an isotope.
 
-    unstable_instead: boolean
+    unstable: boolean
         If set to True, this function will return a list of the
         unstable isotopes instead of the stable isotopes.
 
@@ -1162,15 +1155,15 @@ def stable_isotopes(argument=None, unstable_instead=False):
         try:
             element = atomic_symbol(argument)
             isotopes_list = \
-                stable_isotopes_for_element(element, not unstable_instead)
+                stable_isotopes_for_element(element, not unstable)
         except Exception:
             raise ValueError("stable_isotopes is unable to get isotopes from "
-                             "an input of: " + str(argument))
+                             f"an input of: {argument}")
     elif argument is None:
         isotopes_list = []
         for atomic_numb in range(1, 119):
             isotopes_list += \
-                stable_isotopes_for_element(atomic_numb, not unstable_instead)
+                stable_isotopes_for_element(atomic_numb, not unstable)
 
     return isotopes_list
 
@@ -1286,12 +1279,12 @@ def charge_state(argument):
 
     """
 
-    if __is_electron(argument):
+    if _is_electron(argument):
         return -1
-    elif __is_positron(argument):
+    elif _is_positron(argument):
         return 1
 
-    argument, Z = __extract_charge_state(argument)
+    argument, Z = _extract_charge_state(argument)
 
     try:
         atomic_numb = atomic_number(argument)
@@ -1304,8 +1297,8 @@ def charge_state(argument):
                          "number.")
 
     if Z is not None and (Z < -atomic_numb-1 or Z < -3):
-        warn("Element " + atomic_symbol(argument) + " has a charge of " +
-             str(Z) + " which is unlikely to occur in nature.", UserWarning)
+        warn(f"Element {atomic_symbol(argument)} has a charge of {Z}"
+             " which is unlikely to occur in nature.", UserWarning)
 
     return Z
 
@@ -1366,7 +1359,7 @@ def electric_charge(argument):
     return charge
 
 
-def __extract_charge_state(argument):
+def _extract_charge_state(argument):
     """Splits strings containing element or isotope and charge state
     information into a string without the charge state information and
     the charge state as an integer (or None if no charge state
@@ -1397,12 +1390,12 @@ def __extract_charge_state(argument):
 
     Examples
     --------
-    >>> isotope, Z = __extract_charge_state('Fe-56+++')
+    >>> isotope, Z = _extract_charge_state('Fe-56+++')
     >>> print(isotope)
     'Fe-56'
     >>> print(Z)
     3
-    >>> __extract_charge_state('D +1')
+    >>> _extract_charge_state('D +1')
     ('D', 1)
 
     """
@@ -1445,7 +1438,7 @@ def __extract_charge_state(argument):
 
         if not (check1 and check2 and check3):
             raise ValueError("The following input does not have valid charge "
-                             "state information: " + argument + ion_info)
+                             f"state information: {argument}{ion_info}")
 
     elif argument.endswith(('-', '+')):  # For cases like 'Fe++' or 'Si-'
 
@@ -1466,14 +1459,14 @@ def __extract_charge_state(argument):
         charge_state = None
 
     if charge_state is not None and charge_state < -3:
-        warn("Element " + atomic_symbol(argument) + " has a charge of " +
-             str(charge_state) + " which is unlikely to occur in nature.",
+        warn(f"Element {atomic_symbol(argument)} has a charge of "
+             f"{charge_state} which is unlikely to occur in nature.",
              UserWarning)
 
     return argument, charge_state
 
 
-def __is_neutron(argument, mass_numb=None):
+def _is_neutron(argument, mass_numb=None):
     """Returns True if the argument corresponds to a neutron, and
     False otherwise."""
 
@@ -1488,7 +1481,7 @@ def __is_neutron(argument, mass_numb=None):
         return False
 
 
-def __is_hydrogen(argument, can_be_atomic_number=False):
+def _is_hydrogen(argument, can_be_atomic_number=False):
     """Returns True if the argument corresponds to hydrogen, and False
     otherwise."""
 
@@ -1501,12 +1494,12 @@ def __is_hydrogen(argument, can_be_atomic_number=False):
                                 'deuteron', 'triton', 'tritium', 'hydrogen']
 
     for mass_numb in range(1, 8):
-        case_sensitive_aliases.append('H-' + str(mass_numb))
-        case_insensitive_aliases.append('hydrogen-' + str(mass_numb))
+        case_sensitive_aliases.append(f'H-{mass_numb}')
+        case_insensitive_aliases.append(f'hydrogen-{mass_numb}')
 
     if isinstance(argument, str):
 
-        argument, Z = __extract_charge_state(argument)
+        argument, Z = _extract_charge_state(argument)
 
         if argument in case_sensitive_aliases:
             is_hydrogen = True
@@ -1526,7 +1519,7 @@ def __is_hydrogen(argument, can_be_atomic_number=False):
     return is_hydrogen
 
 
-def __is_electron(argument):
+def _is_electron(argument):
     """Returns True if the argument corresponds to an electron, and False
     otherwise."""
 
@@ -1539,7 +1532,7 @@ def __is_electron(argument):
         return False
 
 
-def __is_positron(argument):
+def _is_positron(argument):
     """Returns True if the argument corresponds to a positron, and False
     otherwise."""
 
@@ -1552,7 +1545,7 @@ def __is_positron(argument):
         return False
 
 
-def __is_antiproton(argument):
+def _is_antiproton(argument):
     """Returns True if the argument corresponds to an antiproton, and
     False otherwise."""
 
@@ -1565,7 +1558,7 @@ def __is_antiproton(argument):
         return False
 
 
-def __is_alpha(argument):
+def _is_alpha(argument):
     """Returns True if the argument corresponds to an alpha particle,
     and False otherwise."""
 
@@ -1575,7 +1568,7 @@ def __is_alpha(argument):
     if argument.lower() == 'alpha':
         is_alpha = True
     else:
-        argument, Z = __extract_charge_state(argument)
+        argument, Z = _extract_charge_state(argument)
 
         if Z != 2:
             is_alpha = False

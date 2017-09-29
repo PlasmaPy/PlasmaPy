@@ -2,7 +2,8 @@
 
 from astropy import units, constants
 import re
-from .atomic import (isotope_symbol, mass_number, isotope_mass, atomic_number)
+from .atomic import (isotope_symbol, mass_number, isotope_mass, atomic_number,
+                     _is_neutron)
 
 
 def nuclear_binding_energy(argument, mass_numb=None):
@@ -46,10 +47,11 @@ def nuclear_binding_energy(argument, mass_numb=None):
 
     """
 
-    if argument == 'n' and mass_numb is None or mass_numb == 1:
+    if _is_neutron(argument) and mass_numb is None or mass_numb == 1:
         return 0.0 * units.J
 
     isotopic_symbol = isotope_symbol(argument, mass_numb)
+
     isotopic_mass = isotope_mass(isotopic_symbol)
     number_of_protons = atomic_number(argument)
 
@@ -80,8 +82,8 @@ def nuclear_reaction_energy(reaction):
     -------
     energy: Quantity
         The change in nuclear binding energy, which will be positive
-        if the reaction releases and negative if the reaction is
-        energetically unfavorable.
+        if the reaction releases energy and negative if the reaction
+        is energetically unfavorable.
 
     Raises
     ------
@@ -118,8 +120,6 @@ def nuclear_reaction_energy(reaction):
 
     """
 
-    import re
-
     def _get_isotopes_list(side):
         """Parse a side of a reaction to get a list of the isotopes."""
         pre_list = re.split(' \+ ', side)
@@ -127,20 +127,17 @@ def nuclear_reaction_energy(reaction):
         for item in pre_list:
             item = item.strip()
             try:
-                if item == 'n':
-                    symbol = 'n'
-                else:
-                    symbol = isotope_symbol(item)
-                isotopes_list.append(symbol)
+                isotope = isotope_symbol(item)
+                isotopes_list.append(isotope)
             except Exception:
                 try:
                     multiplier_string = ''
                     while item[0].isdigit():
                         multiplier_string += item[0]
                         item = item[1:]
-                    symbol = isotope_symbol(item)
+                    isotope = isotope_symbol(item)
                     for i in range(0, int(multiplier_string)):
-                        isotopes_list.append(symbol)
+                        isotopes_list.append(isotope)
                 except Exception:
                     raise
         return isotopes_list
@@ -148,8 +145,8 @@ def nuclear_reaction_energy(reaction):
     def _mass_number_of_list(isotopes_list):
         """Find the total number of nucleons in a list of isotopes."""
         mass_numb = 0
-        for symbol in isotopes_list:
-            mass_numb += mass_number(symbol)
+        for isotope in isotopes_list:
+            mass_numb += mass_number(isotope)
         return mass_numb
 
     def _add_binding_energies(isotopes_list):
@@ -177,7 +174,7 @@ def nuclear_reaction_energy(reaction):
 
     if mass_num_reactants != mass_num_products:
         raise ValueError("Mass numbers on LHS and RHS do not match for "
-                         "reaction "+reaction)
+                         "reaction " + reaction)
 
     binding_energy_before = _add_binding_energies(reactants)
     binding_energy_after = _add_binding_energies(products)
