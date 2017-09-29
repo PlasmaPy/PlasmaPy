@@ -110,4 +110,4 @@ ENV/
 .idea/
 Untitled*
 untitled*
-C\:*
+*debuglog*
