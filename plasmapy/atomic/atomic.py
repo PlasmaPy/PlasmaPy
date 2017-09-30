@@ -1392,7 +1392,7 @@ def _extract_charge_state(argument):
     --------
     >>> isotope, Z = _extract_charge_state('Fe-56+++')
     >>> print(isotope)
-    "'Fe-56'"
+    'Fe-56'
     >>> print(Z)
     3
     >>> _extract_charge_state('D +1')
