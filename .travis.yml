@@ -9,6 +9,7 @@ install:
         - source ci-helpers/travis/setup_conda.sh
         - "pip install -r requirements/base.txt"
         - pip install flake8
+        - pip install coveralls
 
 # Run flake8 tests
 before_script:
