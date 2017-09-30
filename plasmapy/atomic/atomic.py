@@ -1585,7 +1585,3 @@ def _is_alpha(argument):
                 is_alpha = False
 
     return is_alpha
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
