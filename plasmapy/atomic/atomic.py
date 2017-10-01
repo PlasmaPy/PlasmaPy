@@ -186,10 +186,10 @@ def isotope_symbol(argument, mass_numb=None):
 
     Examples
     --------
-    >>> isotope_symbol('He, 4')
+    >>> isotope_symbol('He', 4)
     'He-4'
     >>> isotope_symbol(79, 197)
-    'Au-197
+    'Au-197'
     >>> isotope_symbol('hydrogen-2')
     'D'
     >>> isotope_symbol('carbon-13')
