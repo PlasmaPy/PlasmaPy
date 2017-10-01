@@ -683,7 +683,7 @@ def isotope_mass(argument, mass_numb=None):
     >>> from astropy import units as u
     >>> isotope_mass("H-1")
     <Quantity 1.00782503223 u>
-    >>> isotope_mass("H-1").to(units.kg)
+    >>> isotope_mass("H-1").to(u.kg)
     <Quantity 1.6735326915759943e-27 kg>
     >>> isotope_mass("He", 4)
     <Quantity 4.00260325413 u>
@@ -1270,7 +1270,7 @@ def charge_state(argument):
     --------
     >>> charge_state('Fe-56 2+')
     2
-    >>> charge_state('He -2)
+    >>> charge_state('He -2')
     -2
     >>> charge_state('H+')
     1
@@ -1392,7 +1392,7 @@ def _extract_charge_state(argument):
     --------
     >>> isotope, Z = _extract_charge_state('Fe-56+++')
     >>> print(isotope)
-    'Fe-56'
+    Fe-56
     >>> print(Z)
     3
     >>> _extract_charge_state('D +1')

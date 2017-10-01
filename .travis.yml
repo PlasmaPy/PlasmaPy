@@ -19,7 +19,7 @@ before_script:
         - time flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
 # Run the tests
-script: coverage run -m pytest 
+script: coverage run -m pytest plasmapy
 
 # Assess test coverage
 after_success:
