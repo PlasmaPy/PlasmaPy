@@ -147,6 +147,20 @@ Equations and Physical Formulae
   ``omega_ce`` as a function name will make the code less readable to
   people who are unfamiliar with this particular notation.
 
+* Physical formulae should be inputted without first evaluating all of
+  the physical constants.  For example, the following line of code
+  obscures information about the physics being represented:
+
+>>> omega_ce = 1.76e7*(B/units.G)*units.rad/units.s
+
+  In contrast, the following line of code shows the exact formula
+  which makes the code much more readable.
+
+>>> omega_ce = (e * B) / (m_e * c)
+
+  The origins of numerical coefficients in formulae should be
+  documented.
+
 * Docstrings should describe the physics associated with these
   quantities in ways that are understandable to students who are
   taking their first course in plasma physics while still being useful
