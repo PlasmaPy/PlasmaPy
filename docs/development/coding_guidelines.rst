@@ -46,6 +46,26 @@ Coding Style
   
 * There should be at most one pun per 1284 lines of code.
 
+Commit Messages
+===============
+
+From `How to Write a Git Commit Message
+<https://chris.beams.io/posts/git-commit/>`_:
+
+* Separate subject from body with a blank line
+
+* Limit the subject line to 50 characters
+
+* Capitalize the subject line
+
+* Do not end the subject line with a period
+
+* Use the imperative mood in the subject line
+
+* Wrap the body at 72 characters
+
+* Use the body to explain what and why vs. how
+  
 Documentation
 =============
 
@@ -68,7 +88,7 @@ Testing
 * Tests are run frequently during code development, and slow tests may
   interrupt the flow of a contributor.  Tests should be efficient
   except as needed.
-
+  
 Warnings and Exceptions
 =======================
 
