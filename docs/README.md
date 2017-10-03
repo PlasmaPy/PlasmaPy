@@ -1,1 +1,0 @@
-## PlasmaPy documentation
