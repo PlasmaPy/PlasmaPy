@@ -8,8 +8,8 @@ from ..atomic import (ion_mass, charge_state)
 from .parameters import Debye_length
 
 
-@check_quantity({"n_e": {"units": units.m**-3},
-                 "T": {"units": units.K, "can_be_negative": False}
+@check_quantity({"T": {"units": units.K, "can_be_negative": False},
+                 "n_e": {"units": units.m**-3}
                  })
 def Coulomb_logarithm(T, n_e, particles, V=None):
     r"""Estimates the Coulomb logarithm.
