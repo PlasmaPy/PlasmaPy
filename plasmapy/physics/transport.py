@@ -8,30 +8,31 @@ from ..atomic import (ion_mass, charge_state)
 from .parameters import Debye_length
 
 
-@check_quantity({"n_e": {"units": units.m**-3},
-                 "T": {"units": units.K, "can_be_negative": False}
+@check_quantity({"T": {"units": units.K, "can_be_negative": False},
+                 "n_e": {"units": units.m**-3}
                  })
-def Coulomb_logarithm(n_e, T, particles, V=None):
+def Coulomb_logarithm(T, n_e, particles, V=None):
     r"""Estimates the Coulomb logarithm.
 
     Parameters
     ----------
-    n_e : Quantity
-        The electron density in units convertible to per cubic meter.
 
     T : Quantity
-        Temperature in units of temperature or energy per particle,
-        which is assumed to be equal for both the test particle and
-        the target particle
+    Temperature in units of temperature or energy per particle,
+    which is assumed to be equal for both the test particle and
+    the target particle
+
+    n_e : Quantity
+        The electron density in units convertible to per cubic meter.
 
     particles : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
     V : Quantity, optional
-        The relative velocity between particles.  If not provided, it
-        is assumed that :math:`\mu V^2 \sim 3 k_B T` where `mu` is the
-        reduced mass.
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 3 k_B T`
+        where `mu` is the reduced mass.
 
     Returns
     -------
@@ -93,9 +94,9 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
     >>> n = 1e19*units.m**-3
     >>> T = 1e6*units.K
     >>> particles = ('e', 'p')
-    >>> Coulomb_logarithm(n, T, particles)
+    >>> Coulomb_logarithm(T, n, particles)
     14.748259780491056
-    >>> Coulomb_logarithm(n, T, particles, 1e6*u.m/u.s)
+    >>> Coulomb_logarithm(T, n, particles, 1e6*u.m/u.s)
     11.363478214139432
 
     References

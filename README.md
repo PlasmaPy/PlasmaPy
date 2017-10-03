@@ -24,8 +24,12 @@ or Drew Leonard at <andy.j.leonard@gmail.com>.
 
 ## Installation
 
-We're not on pip or conda just yet, but we're working on it! Meanwhile check
+You can get PlasmaPy from pip via `pip install plasmapy`. To work on the package, check
 out [our instructions on installing PlasmaPy from source](INSTALL.md).
+
+We're not on Conda yet, but we're working on it!
+
+Like most scientific Python packages, PlasmaPy probably runs best on the [Anaconda distribution](https://www.anaconda.com/downloads).
 
 PlasmaPy requires Python 3.6 and is
 [not compatible with Python 2](https://pythonclock.org/).
