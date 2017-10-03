@@ -215,7 +215,6 @@ def test_ion_sound_speed():
         assert ion_sound_speed(T_i=1.3e6) == ion_sound_speed(T_i=1.3e6*u.K)
 
 
-
 def test_thermal_speed():
     """Test the thermal_speed function in parameters.py"""
     assert thermal_speed(T_e).unit == u.m/u.s

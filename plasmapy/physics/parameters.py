@@ -402,7 +402,6 @@ def thermal_speed(T, ion="e"):
     return V
 
 
-
 @check_quantity({
     'B': {'units': units.T}
 })
