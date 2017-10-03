@@ -10,6 +10,16 @@ Welcome to PlasmaPy's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+
+Development
+=======
+
+.. toctree::
+    :maxdepth: 1
+       
+    development/code_guide
+    development/doc_guide
+
 Classes
 =======
 
