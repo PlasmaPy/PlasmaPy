@@ -91,9 +91,9 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     Examples
     --------
     >>> from astropy import units as u
-    >>> Coulomb_logarithm(T=1e6*units.K, n_e=1e19*units.m**-3, ('e', 'p'))
+    >>> Coulomb_logarithm(T=1e6*u.K, n_e=1e19*u.m**-3, ('e', 'p'))
     14.748259780491056
-    >>> Coulomb_logarithm(1e6*units.K, 1e19*units.m**-3, ('e', 'p'),
+    >>> Coulomb_logarithm(1e6*u.K, 1e19*u.m**-3, ('e', 'p'),
                           V=1e6*u.m/u.s)
 
     References
