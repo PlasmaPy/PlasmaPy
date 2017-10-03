@@ -11,18 +11,19 @@ from .parameters import Debye_length
 @check_quantity({"n_e": {"units": units.m**-3},
                  "T": {"units": units.K, "can_be_negative": False}
                  })
-def Coulomb_logarithm(n_e, T, particles, V=None):
+def Coulomb_logarithm(T, n_e, particles, V=None):
     r"""Estimates the Coulomb logarithm.
 
     Parameters
     ----------
-    n_e : Quantity
-        The electron density in units convertible to per cubic meter.
 
     T : Quantity
-        Temperature in units of temperature or energy per particle,
-        which is assumed to be equal for both the test particle and
-        the target particle
+    Temperature in units of temperature or energy per particle,
+    which is assumed to be equal for both the test particle and
+    the target particle
+
+    n_e : Quantity
+        The electron density in units convertible to per cubic meter.
 
     particles : tuple
         A tuple containing string representations of the test particle
