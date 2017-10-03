@@ -29,9 +29,9 @@ def Coulomb_logarithm(n_e, T, particles, V=None):
         (listed first) and the target particle (listed second)
 
     V : Quantity, optional
-        The relative velocity between particles.  If not provided, it
-        is assumed that :math:`\mu V^2 \sim 3 k_B T` where `mu` is the
-        reduced mass.
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 3 k_B T`
+        where `mu` is the reduced mass.
 
     Returns
     -------
