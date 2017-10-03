@@ -3,7 +3,7 @@ Class representing a group of particles"""
 # coding=utf-8
 import numpy as np
 from scipy.interpolate import RegularGridInterpolator
-from plasmapy.atomic import atomic
+from ..atomic import atomic
 from astropy import constants
 from astropy import units as u
 
