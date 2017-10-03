@@ -405,73 +405,7 @@ def thermal_speed(T, ion="e"):
 @check_quantity({
     'B': {'units': units.T}
 })
-def electron_gyrofrequency(B):
-    r"""Calculate the electron gyrofrequency in units of radians per second.
-
-    Parameters
-    ----------
-    B: Quantity
-        The magnetic field magnitude in units convertible to tesla.
-
-    Returns
-    -------
-    omega_ce: Quantity
-        Electron gyrofrequency in radians per second.
-
-    Raises
-    ------
-    TypeError
-        The magnetic field is not a Quantity
-
-    UnitConversionError
-        If the magnetic field is in incorrect units
-
-    ValueError
-        If the magnetic field has an invalid value
-
-    UserWarning
-        If units are not provided and SI units are assumed
-
-    Notes
-    -----
-    The electron gyrofrequency is the angular frequency of electrons
-    gyration around magnetic field lines and is given by:
-
-    .. math::
-    omega_{ce} = \frac{e B}{m_e}
-
-    The electron gyrofrequency is also known as the electron cyclotron
-    frequency or the electron Larmor frequency.
-
-    The recommended way to convert from angular frequency to frequency
-    is to use an equivalency between cycles per second and Hertz, as
-    Astropy's dimensionles_angles() equivalency does not account for
-    the factor of 2*pi needed during this conversion.  The
-    dimensionless_angles() equivalency is appropriate when dividing a
-    velocity by an angular frequency to get a length scale.
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> from numpy import pi
-    >>> omega_ce = electron_gyrofrequency(0.1*u.T)
-    >>> print(omega_ce)
-    17588200878.472023 rad / s
-    >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
-    >>> print(f_ce)
-    2799249109.9020386 Hz
-
-    """
-
-    omega_ce = units.rad*(e*np.abs(B)/m_e).to(1/units.s)
-
-    return omega_ce
-
-
-@check_quantity({
-    'B': {'units': units.T}
-})
-def ion_gyrofrequency(B, ion='p'):
+def gyrofrequency(B, ion='e'):
     r"""Calculate the ion gyrofrequency in units of radians per second.
 
     Parameters
@@ -482,7 +416,7 @@ def ion_gyrofrequency(B, ion='p'):
     ion : string, optional
         Representation of the ion species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
-        which defaults to protons.  If no charge state information is
+        which defaults to electrons.  If no charge state information is
         provided, then the ions are assumed to be singly charged.
 
     Returns
@@ -523,12 +457,19 @@ def ion_gyrofrequency(B, ion='p'):
 
     Examples
     --------
+    >>> from numpy import pi
     >>> from astropy import units as u
-    >>> ion_gyrofrequency(0.01*u.T)
+    >>> gyrofrequency(0.01*u.T, 'p')
     <Quantity 152451.87138666757 Hz>
-    >>> ion_gyrofrequency(0.01*u.T, 'p')
+    >>> gyrofrequency(0.01*u.T, 'p')
     <Quantity 152451.87138666757 Hz>
-    >>> ion_gyrofrequency(0.01*u.T, ion='T')
+    >>> gyrofrequency(0.01*u.T, ion='T')
+    >>> omega_ce = gyrofrequency(0.1*u.T)
+    >>> print(omega_ce)
+    17588200878.472023 rad / s
+    >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
+    >>> print(f_ce)
+    2799249109.9020386 Hz
 
     """
 
@@ -537,8 +478,9 @@ def ion_gyrofrequency(B, ion='p'):
         Z = charge_state(ion)
         if Z is None:
             Z = 1
+        Z = abs(Z)
     except Exception:
-        raise ValueError("Invalid ion in ion_gyrofrequency")
+        raise ValueError("Invalid ion {} in gyrofrequency".format(ion))
 
     omega_ci = units.rad * (Z*e*np.abs(B)/m_i).to(1/units.s)
 
@@ -656,7 +598,7 @@ def electron_gyroradius(B, *args, Vperp=None, T_e=None):
         _check_quantity(T_e, 'T_e', 'electron_gyroradius', units.K)
         Vperp = thermal_speed(T_e)
 
-    omega_ce = electron_gyrofrequency(B)
+    omega_ce = gyrofrequency(B)
     r_L = np.abs(Vperp)/omega_ce
 
     return r_L.to(units.m, equivalencies=units.dimensionless_angles())
@@ -773,7 +715,7 @@ def ion_gyroradius(B, *args, Vperp=None, T_i=None, ion='p'):
         _check_quantity(T_i, 'T_i', 'ion_gyroradius', units.K)
         Vperp = thermal_speed(T_i, ion=ion)
 
-    omega_ci = ion_gyrofrequency(B, ion)
+    omega_ci = gyrofrequency(B, ion)
 
     r_Li = np.abs(Vperp)/omega_ci
 
@@ -921,7 +863,7 @@ def ion_plasma_frequency(n_i, ion='p'):
         if Z is None:
             Z = 1
     except Exception:
-        raise ValueError("Invalid ion in ion_gyrofrequency")
+        raise ValueError("Invalid ion in gyrofrequency")
 
     omega_pi = units.rad*Z*e*np.sqrt(n_i/(eps0*m_i))
 
@@ -1360,7 +1302,7 @@ def upper_hybrid_frequency(B, n_e):
 
     try:
         omega_pe = electron_plasma_frequency(n_e=n_e)
-        omega_ce = electron_gyrofrequency(B)
+        omega_ce = gyrofrequency(B)
         omega_uh = (np.sqrt(omega_pe**2 + omega_ce**2)).to(units.rad/units.s)
     except Exception:
         raise ValueError("Unable to find upper hybrid frequency.")
@@ -1439,9 +1381,9 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
         raise ValueError("Invalid ion in lower_hybrid_frequency.")
 
     try:
-        omega_ci = ion_gyrofrequency(B, ion=ion)
+        omega_ci = gyrofrequency(B, ion=ion)
         omega_pi = ion_plasma_frequency(n_i, ion=ion)
-        omega_ce = electron_gyrofrequency(B)
+        omega_ce = gyrofrequency(B)
         omega_lh = 1/np.sqrt((omega_ci*omega_ce)**-1+omega_pi**-2)
         omega_lh = omega_lh.to(units.rad/units.s)
     except Exception:
