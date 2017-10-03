@@ -603,7 +603,8 @@ def standard_atomic_weight(argument):
     >>> from astropy import units
     >>> standard_atomic_weight("H")
     <Quantity 1.008 u>
-    >>> standard_atomic_weight("H").to(units.kg)  # the result accounts for small amount of deuterium
+    >>> # the following result accounts for small amount of deuterium
+    >>> standard_atomic_weight("H").to(units.kg)
     <Quantity 1.67382335232e-27 kg>
     >>> isotope_mass("H-1")
     <Quantity 1.00782503223 u>
@@ -786,8 +787,8 @@ def ion_mass(argument, Z=None, mass_numb=None):
 
     Examples
     --------
-    >>> ion_mass('p')  # proton
-    <<class 'astropy.constants.codata2014.CODATA2014'> name='Proton mass' value=1.672621898e-27 uncertainty=2.1e-35 unit='kg' reference='CODATA 2014'>
+    >>> print(ion_mass('p').si.value)
+    1.672621898e-27
     >>> ion_mass('H')  # assumes terrestrial abundance of D
     <Quantity 1.672912413964e-27 kg>
     >>> ion_mass('H') == ion_mass('p')
@@ -802,8 +803,8 @@ def ion_mass(argument, Z=None, mass_numb=None):
     <Quantity 9.288123453752331e-26 kg>
     >>> ion_mass('Fe-56')
     <Quantity 9.288123453752331e-26 kg>
-    >>> ion_mass(9.11e-31*u.kg)
-    <<class 'astropy.constants.codata2014.CODATA2014'> name='Electron mass' value=9.10938356e-31 uncertainty=1.1e-38 unit='kg' reference='CODATA 2014'>
+    >>> ion_mass(9.11e-31*u.kg).si.value
+    9.10938356e-31
     >>> ion_mass(1.67e-27*u.kg)
     <Quantity 1.67e-27 kg>
 
@@ -1358,7 +1359,6 @@ def electric_charge(argument):
         return charge
     except Exception:
         raise ValueError("Invalid input to electric_charge")
-
 
 
 def _extract_charge_state(argument):
