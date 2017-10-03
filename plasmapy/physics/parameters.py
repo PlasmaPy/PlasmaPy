@@ -1092,7 +1092,7 @@ def Debye_number(T_e, n_e):
     a radius of a Debye length and is given by
 
     .. math::
-    N_D = \frac{4}{3}n_e\lambda_D^3
+    N_D = \frac{4\pi}{3}n_e\lambda_D^3
 
     The Debye number is also known as the plasma parameter.
 
