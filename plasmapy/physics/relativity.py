@@ -53,7 +53,7 @@ def Lorentz_factor(V):
     >>> Lorentz_factor(velocity)
     1.130885603948959
     >>> Lorentz_factor(299792458*u.m/u.s)
-
+    inf
     """
 
     _check_quantity(V, 'V', 'Lorentz_factor', units.m/units.s)
