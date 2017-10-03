@@ -8,8 +8,7 @@ from astropy import units as u
 from ...constants import c, m_p, m_e, e, mu0
 
 from ..parameters import (Alfven_speed,
-                          electron_gyrofrequency,
-                          ion_gyrofrequency,
+                          gyrofrequency,
                           electron_gyroradius,
                           ion_gyroradius,
                           thermal_speed,
@@ -274,72 +273,68 @@ def test_thermal_speed():
             thermal_speed(1e6*u.K, ion='p')
 
 
-def test_electron_gyrofrequency():
-    """Test the electron_gyrofrequency function in parameters.py."""
+def test_gyrofrequency():
+    """Test the gyrofrequency function in parameters.py."""
 
-    assert electron_gyrofrequency(B).unit == u.rad/u.s
+    assert gyrofrequency(B).unit == u.rad/u.s
 
-    assert np.isclose(electron_gyrofrequency(1*u.T).value, 175882008784.72018)
+    assert np.isclose(gyrofrequency(1*u.T).value, 175882008784.72018)
 
-    assert np.isclose(electron_gyrofrequency(2.4*u.T).value,
+    assert np.isclose(gyrofrequency(2.4*u.T).value,
                       422116821083.3284)
 
-    assert np.isclose(electron_gyrofrequency(1*u.G).cgs.value,
+    assert np.isclose(gyrofrequency(1*u.G).cgs.value,
                       1.76e7, rtol=1e-3)
 
     with pytest.raises(TypeError):
-        electron_gyrofrequency(u.m)
+        gyrofrequency(u.m)
 
     with pytest.raises(u.UnitConversionError):
-        electron_gyrofrequency(u.m*1)
+        gyrofrequency(u.m*1)
 
     with pytest.raises(ValueError):
-        electron_gyrofrequency(B_nanarr)
+        gyrofrequency(B_nanarr)
 
     # The following is a test to check that equivalencies from astropy
     # are working.
-    omega_ce = electron_gyrofrequency(2.2*u.T)
+    omega_ce = gyrofrequency(2.2*u.T)
     f_ce = (omega_ce/(2*np.pi))/u.rad
     f_ce_use_equiv = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
     assert np.isclose(f_ce.value, f_ce_use_equiv.value)
 
     with pytest.raises(UserWarning):
-        assert electron_gyrofrequency(5.0) == electron_gyrofrequency(5.0*u.T)
+        assert gyrofrequency(5.0) == gyrofrequency(5.0*u.T)
 
+    assert gyrofrequency(B, ion=ion).unit == u.rad/u.s
 
-def test_ion_gyrofrequency():
-    """Test the ion_gyrofrequency function in parameters.py."""
-
-    assert ion_gyrofrequency(B, ion=ion).unit == u.rad/u.s
-
-    assert np.isclose(ion_gyrofrequency(1*u.T, ion='p').value,
+    assert np.isclose(gyrofrequency(1*u.T, ion='p').value,
                       95788335.834874)
 
-    assert np.isclose(ion_gyrofrequency(2.4*u.T, ion='p').value,
+    assert np.isclose(gyrofrequency(2.4*u.T, ion='p').value,
                       229892006.00369796)
 
-    assert np.isclose(ion_gyrofrequency(1*u.G, ion='p').cgs.value,
+    assert np.isclose(gyrofrequency(1*u.G, ion='p').cgs.value,
                       9.58e3, rtol=2e-3)
 
-    assert ion_gyrofrequency(-5*u.T) == ion_gyrofrequency(5*u.T)
+    assert gyrofrequency(-5*u.T, 'p') == gyrofrequency(5*u.T, 'p')
 
-    assert ion_gyrofrequency(B, ion='p') == \
-        ion_gyrofrequency(B, ion='H-1')
+    assert gyrofrequency(B, ion='p') == \
+        gyrofrequency(B, ion='H-1')
 
-    assert ion_gyrofrequency(B, ion='e+') == \
-        electron_gyrofrequency(B)
+    assert gyrofrequency(B, ion='e+') == \
+        gyrofrequency(B)
 
     with pytest.raises(UserWarning):
-        ion_gyrofrequency(8)
+        gyrofrequency(8, 'p')
 
     with pytest.raises(u.UnitConversionError):
-        ion_gyrofrequency(5*u.m)
+        gyrofrequency(5*u.m, 'p')
 
     with pytest.raises(ValueError):
-        ion_gyrofrequency(8*u.T, ion='asdfasd')
+        gyrofrequency(8*u.T, ion='asdfasd')
 
     with pytest.raises(UserWarning):
-        assert ion_gyrofrequency(5.0) == ion_gyrofrequency(5.0*u.T)
+        assert gyrofrequency(5.0, 'p') == gyrofrequency(5.0*u.T, 'p')
 
 
 def test_electron_gyroradius():
@@ -357,7 +352,7 @@ def test_electron_gyroradius():
 
     Vperp = 1e6*u.m/u.s
     Bmag = 1*u.T
-    omega_ce = electron_gyrofrequency(Bmag)
+    omega_ce = gyrofrequency(Bmag)
     assert electron_gyroradius(Bmag, Vperp) == \
         (Vperp/omega_ce).to(u.m, equivalencies=u.dimensionless_angles())
 
@@ -412,7 +407,7 @@ def test_ion_gyroradius():
 
     Vperp = 1e6*u.m/u.s
     Bmag = 1*u.T
-    omega_ci = ion_gyrofrequency(Bmag, ion='p')
+    omega_ci = gyrofrequency(Bmag, ion='p')
     assert ion_gyroradius(Bmag, Vperp) == \
         (Vperp/omega_ci).to(u.m, equivalencies=u.dimensionless_angles())
 
@@ -694,7 +689,7 @@ def test_upper_hybrid_frequency():
     """Test the upper_hybrid_frequency function in parameters.py."""
 
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
-    omega_ce = electron_gyrofrequency(B)
+    omega_ce = gyrofrequency(B)
     omega_pe = electron_plasma_frequency(n_e=n_e)
     assert omega_ce.unit == u.rad/u.s
     assert omega_pe.unit == u.rad/u.s
@@ -719,9 +714,9 @@ def test_lower_hybrid_frequency():
     """Test the lower_hybrid_frequency function in parameters.py."""
 
     ion = 'He-4 1+'
-    omega_ci = ion_gyrofrequency(B, ion=ion)
+    omega_ci = gyrofrequency(B, ion=ion)
     omega_pi = ion_plasma_frequency(n_i=n_i, ion=ion)
-    omega_ce = electron_gyrofrequency(B)
+    omega_ce = gyrofrequency(B)
     omega_lh = lower_hybrid_frequency(B, n_i=n_i, ion=ion)
     assert omega_ci.unit == u.rad/u.s
     assert omega_pi.unit == u.rad/u.s
