@@ -487,124 +487,7 @@ def gyrofrequency(B, ion='e'):
     return omega_ci
 
 
-def electron_gyroradius(B, *args, Vperp=None, T_e=None):
-    r"""Returns the radius of gyration for an electron in a uniform
-    magnetic field.
-
-    Parameters
-    ----------
-    B : Quantity
-        The magnetic field magnitude in units convertible to tesla.
-        If no units are given, a UserWarning will be raised and units
-        of tesla will be assumed.
-
-    Vperp : Quantity, optional
-        The component of electron velocity that is perpendicular to
-        the magnetic field in units convertible to meters per second.
-
-    T_e : Quantity, optional
-        The electron temperature in units convertible to kelvin.
-
-    args : Quantity
-        If the second positional argument is a Quantity with units
-        appropriate to Vperp or T_e, then this argument will take the
-        place of that keyword argument.
-
-    Returns
-    -------
-    r_Le : Quantity
-        The electron gyroradius in units of meters.  This Quantity
-        will be based on either the perpendicular component of
-        electron velocity as inputted, or the most probable speed for
-        an electron within a Maxwellian distribution for the electron
-        temperature.
-
-    Raises
-    ------
-    TypeError
-        If either of the inputs is not a Quantity
-
-    UnitConversionError
-        If either argument is in incorrect units
-
-    ValueError
-        If either argument contains invalid values
-
-    UserWarning
-        If units are not provided and SI units are assumed
-
-    Notes
-    -----
-    One but not both of Vperp and T_i must be inputted.
-
-    If any of B, Vperp, or T_e is a number rather than a Quantity,
-    then SI units will be assumed and a UserWarning will be raised.
-
-    Formula
-    -----
-    The electron gyroradius is also known as the Larmor radius for
-    electrons and is given by:
-
-    .. math::
-    r_{Le} = \frac{V_{perp}}{omega_{ce}}
-
-    where :math:`V_{\perp}` is the component of electron velocity that
-    is perpendicular to the magnetic field and :math:`\omega_{ce}` is
-    the electron gyrofrequency.  If a temperature is provided, then
-    :math:`V_\perp` will be the most probable thermal velocity of an
-    electron at that temperature.
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> electron_gyroradius(B = 0.01*u.T, T_e = 1e6*u.K)
-    <Quantity 0.0031303339253265536 m>
-    >>> electron_gyroradius(B = 0.01*u.T, Vperp = 1e6*u.m/u.s)
-    <Quantity 0.0005685630062091092 m>
-    >>> electron_gyroradius(0.2*u.T, 1e5*u.K)
-    <Quantity 4.949493018143766e-05 m>
-    >>> electron_gyroradius(5*u.uG, 1*u.eV)
-    <Quantity 6744.259695124416 m>
-    >>> electron_gyroradius(400*u.G, 1e7*u.m/u.s)
-    <Quantity 0.00142140746360249 m>
-
-    """
-
-    if Vperp is not None and T_e is not None:
-        raise ValueError("Cannot have both Vperp and T_e as arguments to "
-                         "electron_gyroradius")
-
-    if len(args) == 1 and isinstance(args[0], units.Quantity):
-        arg = args[0].si
-        if arg.unit == units.T and B.si.unit in [units.J, units.K,
-                                                 units.m/units.s]:
-            B, arg = arg, B
-
-        if arg.unit == units.m/units.s:
-            Vperp = arg
-        elif arg.unit in (units.J, units.K):
-            T_e = arg.to(units.K, equivalencies=units.temperature_energy())
-        else:
-            raise units.UnitConversionError("Incorrect units for positional "
-                                            "argument in electron_gyroradius")
-    elif len(args) > 0:
-        raise ValueError("Incorrect inputs to electron_gyroradius")
-
-    _check_quantity(B, 'B', 'electron_gyroradius', units.T)
-
-    if Vperp is not None:
-        _check_quantity(Vperp, 'Vperp', 'electron_gyroradius', units.m/units.s)
-    elif T_e is not None:
-        _check_quantity(T_e, 'T_e', 'electron_gyroradius', units.K)
-        Vperp = thermal_speed(T_e)
-
-    omega_ce = gyrofrequency(B)
-    r_L = np.abs(Vperp)/omega_ce
-
-    return r_L.to(units.m, equivalencies=units.dimensionless_angles())
-
-
-def ion_gyroradius(B, *args, Vperp=None, T_i=None, ion='p'):
+def gyroradius(B, *args, Vperp=None, T_i=None, ion='e'):
     r"""Returns the ion gyroradius.
 
     Parameters
@@ -622,7 +505,7 @@ def ion_gyroradius(B, *args, Vperp=None, T_i=None, ion='p'):
     ion : string, optional
         Representation of the ion species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
-        which defaults to protons.  If no charge state information is
+        which defaults to electrons.  If no charge state information is
         provided, then the ions are assumed to be singly charged.
 
     args : Quantity
@@ -676,7 +559,7 @@ def ion_gyroradius(B, *args, Vperp=None, T_i=None, ion='p'):
     Examples
     --------
     >>> from astropy import units as u
-    >>> ion_gyroradius(0.2*u.T, 1e5*u.K)
+    >>> ion_gyroradius(0.2*u.T, 1e5*u.K, ion='p')
     <Quantity 0.0021208751836230026 m>
     >>> ion_gyroradius(0.2*u.T, 1e5*u.K, ion='p')
     <Quantity 0.0021208751836230026 m>
@@ -684,6 +567,16 @@ def ion_gyroradius(B, *args, Vperp=None, T_i=None, ion='p'):
     <Quantity 288002.3964615791 m>
     >>> ion_gyroradius(400*u.G, 1e7*u.m/u.s, ion='Fe+++')
     <Quantity 48.23129633674924 m>
+    >>> gyroradius(B = 0.01*u.T, T_i = 1e6*u.K)
+    <Quantity 0.0031303339253265536 m>
+    >>> gyroradius(B = 0.01*u.T, Vperp = 1e6*u.m/u.s)
+    <Quantity 0.0005685630062091092 m>
+    >>> gyroradius(0.2*u.T, 1e5*u.K)
+    <Quantity 4.949493018143766e-05 m>
+    >>> gyroradius(5*u.uG, 1*u.eV)
+    <Quantity 6744.259695124416 m>
+    >>> gyroradius(400*u.G, 1e7*u.m/u.s)
+    <Quantity 0.00142140746360249 m>
 
     """
 

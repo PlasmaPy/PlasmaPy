@@ -9,8 +9,7 @@ from ...constants import c, m_p, m_e, e, mu0
 
 from ..parameters import (Alfven_speed,
                           gyrofrequency,
-                          electron_gyroradius,
-                          ion_gyroradius,
+                          gyroradius,
                           thermal_speed,
                           electron_plasma_frequency,
                           ion_plasma_frequency,
@@ -337,115 +336,111 @@ def test_gyrofrequency():
         assert gyrofrequency(5.0, 'p') == gyrofrequency(5.0*u.T, 'p')
 
 
-def test_electron_gyroradius():
-    """Test the electron_gyroradius function in parameters.py."""
+def test_gyroradius():
+    """Test the gyroradius function in parameters.py."""
 
-    assert electron_gyroradius(B, T_e).unit == u.m
+    assert gyroradius(B, T_e).unit == u.m
 
-    assert electron_gyroradius(B, 25*u.m/u.s).unit == u.m
+    assert gyroradius(B, 25*u.m/u.s).unit == u.m
 
-    assert electron_gyroradius(T_e, B) == electron_gyroradius(B, T_e)
+    assert gyroradius(T_e, B) == gyroradius(B, T_e)
 
-    assert electron_gyroradius(V, B) == electron_gyroradius(B, V)
+    assert gyroradius(V, B) == gyroradius(B, V)
 
-    assert electron_gyroradius(B, V) == electron_gyroradius(B, -V)
+    assert gyroradius(B, V) == gyroradius(B, -V)
 
     Vperp = 1e6*u.m/u.s
     Bmag = 1*u.T
     omega_ce = gyrofrequency(Bmag)
-    assert electron_gyroradius(Bmag, Vperp) == \
+    assert gyroradius(Bmag, Vperp) == \
         (Vperp/omega_ce).to(u.m, equivalencies=u.dimensionless_angles())
 
     with pytest.raises(TypeError):
-        electron_gyroradius(u.T, 8*u.m/u.s)
+        gyroradius(u.T, 8*u.m/u.s)
 
     with pytest.raises(u.UnitConversionError):
-        electron_gyroradius(5*u.A, 8*u.m/u.s)
+        gyroradius(5*u.A, 8*u.m/u.s)
 
     with pytest.raises(u.UnitConversionError):
-        electron_gyroradius(5*u.T, 8*u.m)
+        gyroradius(5*u.T, 8*u.m)
 
     with pytest.raises(ValueError):
-        electron_gyroradius(np.array([5, 6])*u.T, np.array([5, 6, 7])*u.m/u.s)
+        gyroradius(np.array([5, 6])*u.T, np.array([5, 6, 7])*u.m/u.s)
 
     with pytest.raises(ValueError):
-        electron_gyroradius(np.nan*u.T, 1*u.m/u.s)
+        gyroradius(np.nan*u.T, 1*u.m/u.s)
 
     with pytest.raises(ValueError):
-        electron_gyroradius(3.14159*u.T, -1*u.K)
+        gyroradius(3.14159*u.T, -1*u.K)
 
     with pytest.raises(UserWarning):
-        assert electron_gyroradius(1.0, Vperp=1.0) == \
-            electron_gyroradius(1.0*u.T, Vperp=1.0*u.m/u.s)
+        assert gyroradius(1.0, Vperp=1.0) == \
+            gyroradius(1.0*u.T, Vperp=1.0*u.m/u.s)
 
     with pytest.raises(UserWarning):
-        assert electron_gyroradius(1.1, T_e=1.2) == \
-            electron_gyroradius(1.1*u.T, T_e=1.2*u.K)
+        assert gyroradius(1.1, T_i=1.2) == \
+            gyroradius(1.1*u.T, T_i=1.2*u.K)
 
     with pytest.raises(ValueError):
-        electron_gyroradius(1.1*u.T, T_e=1.2*u.K, Vperp=1*u.m/u.s)
+        gyroradius(1.1*u.T, T_i=1.2*u.K, Vperp=1*u.m/u.s)
 
     with pytest.raises(ValueError):
-        electron_gyroradius(1.1*u.T, 1.2*u.K, 1.1*u.m)
+        gyroradius(1.1*u.T, 1.2*u.K, 1.1*u.m)
 
+    assert gyroradius(B, T_i, ion="p").unit == u.m
 
-def test_ion_gyroradius():
-    """Test the ion_gyroradius function in parameters.py."""
+    assert gyroradius(B, 25*u.m/u.s, ion="p").unit == u.m
 
-    assert ion_gyroradius(B, T_i).unit == u.m
+    assert gyroradius(B, T_i, ion='p') == \
+        gyroradius(B, T_i, ion='H-1')
 
-    assert ion_gyroradius(B, 25*u.m/u.s).unit == u.m
+    assert gyroradius(T_i, B, ion="p") == gyroradius(B, T_i, ion="p")
 
-    assert ion_gyroradius(B, T_i, ion='p') == \
-        ion_gyroradius(B, T_i, ion='H-1')
+    assert gyroradius(V, B, ion="p") == gyroradius(B, V, ion="p")
 
-    assert ion_gyroradius(T_i, B) == ion_gyroradius(B, T_i)
-
-    assert ion_gyroradius(V, B) == ion_gyroradius(B, V)
-
-    assert ion_gyroradius(B, V) == ion_gyroradius(B, -V)
+    assert gyroradius(B, V, ion="p") == gyroradius(B, -V, ion="p")
 
     Vperp = 1e6*u.m/u.s
     Bmag = 1*u.T
     omega_ci = gyrofrequency(Bmag, ion='p')
-    assert ion_gyroradius(Bmag, Vperp) == \
+    assert gyroradius(Bmag, Vperp, ion="p") == \
         (Vperp/omega_ci).to(u.m, equivalencies=u.dimensionless_angles())
 
     T2 = 1.2*u.MK
     B2 = 123*u.G
     ion2 = 'alpha'
     Vperp2 = thermal_speed(T2, ion=ion2)
-    assert ion_gyroradius(B2, Vperp=Vperp2, ion='alpha') == \
-        ion_gyroradius(B2, T_i=T2, ion='alpha')
+    assert gyroradius(B2, Vperp=Vperp2, ion='alpha') == \
+        gyroradius(B2, T_i=T2, ion='alpha')
 
-    assert ion_gyroradius(1*u.T, 1*u.MK, ion='positron') == \
-        electron_gyroradius(1*u.T, 1*u.MK)
+    assert gyroradius(1*u.T, 1*u.MK, ion='positron') == \
+        gyroradius(1*u.T, 1*u.MK)
 
     with pytest.raises(TypeError):
-        ion_gyroradius(u.T, 8*u.m/u.s)
+        gyroradius(u.T, 8*u.m/u.s, ion="p")
 
     with pytest.raises(ValueError):
-        ion_gyroradius(B, T_i, ion='asfdas')
+        gyroradius(B, T_i, ion='asfdas')
 
     with pytest.raises(ValueError):
-        ion_gyroradius(B, -1*u.K, ion='p')
+        gyroradius(B, -1*u.K, ion='p')
 
     with pytest.raises(UserWarning):
-        assert ion_gyroradius(1.0, Vperp=1.0) == \
-            ion_gyroradius(1.0*u.T, Vperp=1.0*u.m/u.s)
+        assert gyroradius(1.0, Vperp=1.0, ion="p") == \
+            gyroradius(1.0*u.T, Vperp=1.0*u.m/u.s, ion="p")
 
     with pytest.raises(UserWarning):
-        assert ion_gyroradius(1.1, T_i=1.2) == \
-            ion_gyroradius(1.1*u.T, T_i=1.2*u.K)
+        assert gyroradius(1.1, T_i=1.2, ion="p") == \
+            gyroradius(1.1*u.T, T_i=1.2*u.K, ion="p")
 
     with pytest.raises(ValueError):
-        ion_gyroradius(1.1*u.T, T_i=1.2*u.K, Vperp=1*u.m/u.s)
+        gyroradius(1.1*u.T, T_i=1.2*u.K, Vperp=1*u.m/u.s, ion="p")
 
     with pytest.raises(ValueError):
-        ion_gyroradius(1.1*u.T, 1.2*u.K, 1.1*u.m)
+        gyroradius(1.1*u.T, 1.2*u.K, 1.1*u.m, ion="p")
 
     with pytest.raises(ValueError):
-        ion_gyroradius(1.1*u.T, 1.2*u.m, 1.1*u.K)
+        gyroradius(1.1*u.T, 1.2*u.m, 1.1*u.K, ion="p")
 
 
 def test_electron_plasma_frequency():
