@@ -1,7 +1,6 @@
 from .test_parameters import (test_Alfven_speed,
                               test_ion_sound_speed,
-                              test_electron_thermal_speed,
-                              test_ion_thermal_speed,
+                              test_thermal_speed,
                               test_electron_gyrofrequency,
                               test_ion_gyrofrequency,
                               test_electron_gyroradius,

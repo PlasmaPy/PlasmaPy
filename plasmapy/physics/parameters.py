@@ -321,91 +321,26 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
 
 @check_relativistic
 @check_quantity({
-    'T_e': {'units': units.K, 'can_be_negative': False}
+    'T': {'units': units.K, 'can_be_negative': False}
 })
-def electron_thermal_speed(T_e):
-    r"""Returns the most probable speed for an electron within a
-    Maxwellian distribution.
-
-    Parameters
-    ----------
-    T_e : Quantity
-        The electron temperature in either kelvin or energy per particle
-
-    Returns
-    -------
-    V_Te : Quantity
-        Electron thermal speed
-
-    Raises
-    ------
-    TypeError
-        The electron temperature is not a Quantity
-
-    UnitConversionError
-        If the electron temperature is not in units of temperature or
-        energy per particle
-
-    ValueError
-        The electron temperature is invalid
-
-    UserWarning
-        If the electron thermal speed exceeds 10% of the speed of
-        light, or if units are not provided and SI units are assumed.
-
-    Notes
-    -----
-    The electron thermal speed is given by:
-
-    .. math::
-    V_{th,e} = \sqrt{\frac{2 k_B T_e}{m_e}}
-
-    This function yields the most probable speed within a distribution
-    function.  However, the definition of thermal velocity varies by
-    the square root of two depending on whether or not this velocity
-    absorbs that factor in the expression for a Maxwellian
-    distribution.  In particular, the expression given in the NRL
-    Plasma Formulary [1] is a square root of two smaller than the
-    result from this function.
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> electron_thermal_speed(5*u.eV)
-    <Quantity 1326205.1454609886 m / s>
-    >>> electron_thermal_speed(1e6*u.K)
-    <Quantity 5505694.743141063 m / s>
-
-    """
-
-    T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
-    V_Te = (np.sqrt(2*k_B*T_e/m_e)).to(units.m/units.s)
-
-    return V_Te
-
-
-@check_relativistic
-@check_quantity({
-    'T_i': {'units': units.K, 'can_be_negative': False}
-})
-def ion_thermal_speed(T_i, ion='p'):
+def thermal_speed(T, ion="e"):
     r"""Returns the most probable speed for an ion within a Maxwellian
     distribution.
 
     Parameters
     ----------
-    T_i : Quantity
+    T : Quantity
         The ion temperature in either kelvin or energy per particle
 
     ion : string, optional
         Representation of the ion species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
-        which defaults to protons.  If no charge state information is
+        which defaults to electrons.  If no charge state information is
         provided, then the ions are assumed to be singly charged.
 
     Returns
     -------
-    V_Ti : Quantity
+    V : Quantity
         Ion thermal speed
 
     Raises
@@ -427,7 +362,7 @@ def ion_thermal_speed(T_i, ion='p'):
 
     Notes
     -----
-    The electron thermal speed is given by:
+    The ion thermal speed is given by:
 
     .. math::
     V_{th,i} = \sqrt{\frac{2 k_B T_i}{m_i}}
@@ -443,23 +378,29 @@ def ion_thermal_speed(T_i, ion='p'):
     Examples
     --------
     >>> from astropy import units as u
-    >>> ion_thermal_speed(5*u.eV)
+    >>> thermal_speed(5*u.eV, 'p')
     <Quantity 30949.690763378258 m / s>
-    >>> ion_thermal_speed(1e6*u.K, ion='p')
+    >>> thermal_speed(1e6*u.K, ion='p')
     <Quantity 128486.56960876317 m / s>
+    >>> from astropy import units as u
+    >>> thermal_speed(5*u.eV)
+    <Quantity 1326205.1454609886 m / s>
+    >>> thermal_speed(1e6*u.K)
+    <Quantity 5505694.743141063 m / s>
 
     """
 
-    T_i = T_i.to(units.K, equivalencies=units.temperature_energy())
+    T = T.to(units.K, equivalencies=units.temperature_energy())
 
     try:
-        m_i = ion_mass(ion)
+        m = ion_mass(ion)
     except Exception:
-        raise ValueError("Unable to find ion mass in ion_thermal_speed")
+        raise ValueError("Unable to find {} mass in thermal_speed".format(ion))
 
-    V_Ti = (np.sqrt(2*k_B*T_i/m_i)).to(units.m/units.s)
+    V = (np.sqrt(2*k_B*T/m)).to(units.m/units.s)
 
-    return V_Ti
+    return V
+
 
 
 @check_quantity({
@@ -714,7 +655,7 @@ def electron_gyroradius(B, *args, Vperp=None, T_e=None):
         _check_quantity(Vperp, 'Vperp', 'electron_gyroradius', units.m/units.s)
     elif T_e is not None:
         _check_quantity(T_e, 'T_e', 'electron_gyroradius', units.K)
-        Vperp = electron_thermal_speed(T_e)
+        Vperp = thermal_speed(T_e)
 
     omega_ce = electron_gyrofrequency(B)
     r_L = np.abs(Vperp)/omega_ce
@@ -831,7 +772,7 @@ def ion_gyroradius(B, *args, Vperp=None, T_i=None, ion='p'):
         _check_quantity(Vperp, 'Vperp', 'ion_gyroradius', units.m/units.s)
     elif T_i is not None:
         _check_quantity(T_i, 'T_i', 'ion_gyroradius', units.K)
-        Vperp = ion_thermal_speed(T_i, ion=ion)
+        Vperp = thermal_speed(T_i, ion=ion)
 
     omega_ci = ion_gyrofrequency(B, ion)
 

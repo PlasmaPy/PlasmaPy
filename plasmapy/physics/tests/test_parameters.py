@@ -12,8 +12,7 @@ from ..parameters import (Alfven_speed,
                           ion_gyrofrequency,
                           electron_gyroradius,
                           ion_gyroradius,
-                          electron_thermal_speed,
-                          ion_thermal_speed,
+                          thermal_speed,
                           electron_plasma_frequency,
                           ion_plasma_frequency,
                           Debye_length,
@@ -216,67 +215,64 @@ def test_ion_sound_speed():
         assert ion_sound_speed(T_i=1.3e6) == ion_sound_speed(T_i=1.3e6*u.K)
 
 
-def test_electron_thermal_speed():
-    """Test the electron_thermal_speed function in parameters.py."""
 
-    assert electron_thermal_speed(T_e).unit == u.m/u.s
+def test_thermal_speed():
+    """Test the thermal_speed function in parameters.py"""
+    assert thermal_speed(T_e).unit == u.m/u.s
 
-    assert electron_thermal_speed(T_e) > ion_thermal_speed(T_e)
+    assert thermal_speed(T_e) > thermal_speed(T_e, 'p')
 
     # The NRL Plasma Formulary uses a definition of the electron
     # thermal speed that differs by a factor of sqrt(2).
-    assert np.isclose(electron_thermal_speed(1*u.MK).value,
+    assert np.isclose(thermal_speed(1*u.MK).value,
                       5505694.743141063)
 
     with pytest.raises(u.UnitConversionError):
-        electron_thermal_speed(5*u.m)
+        thermal_speed(5*u.m)
 
     with pytest.raises(ValueError):
-        electron_thermal_speed(-T_e)
+        thermal_speed(-T_e)
 
     with pytest.raises(UserWarning):
-        electron_thermal_speed(1e9*u.K)
+        thermal_speed(1e9*u.K)
 
     with pytest.raises(UserWarning):
-        electron_thermal_speed(5e19*u.K)
+        thermal_speed(5e19*u.K)
 
     with pytest.raises(UserWarning):
-        assert electron_thermal_speed(1e5) == electron_thermal_speed(1e5*u.K)
+        assert thermal_speed(1e5) == thermal_speed(1e5*u.K)
 
-
-def test_ion_thermal_speed():
-    """Test the ion_thermal_speed function in parameters.py"""
-
-    assert ion_thermal_speed(T_i).unit == u.m/u.s
+    assert thermal_speed(T_i, ion='p').unit == u.m/u.s
 
     # The NRL Plasma Formulary uses a definition of the ion thermal
     # speed that differs by a factor of sqrt(2).
-    assert np.isclose(ion_thermal_speed(1*u.MK, ion='p').si.value,
+    assert np.isclose(thermal_speed(1*u.MK, ion='p').si.value,
                       128486.56960876315)
 
-    assert ion_thermal_speed(T_i, ion='p') == \
-        ion_thermal_speed(T_i, ion='H-1')
+    assert thermal_speed(T_i, ion='p') == \
+        thermal_speed(T_i, ion='H-1')
 
-    assert ion_thermal_speed(1*u.MK, ion='e+') == \
-        electron_thermal_speed(1*u.MK)
+    assert thermal_speed(1*u.MK, ion='e+') == \
+        thermal_speed(1*u.MK)
 
     with pytest.raises(u.UnitConversionError):
-        ion_thermal_speed(5*u.m)
+        thermal_speed(5*u.m, ion='p')
 
     with pytest.raises(ValueError):
-        ion_thermal_speed(-T_e)
+        thermal_speed(-T_e, ion='p')
 
     with pytest.raises(UserWarning):
-        ion_thermal_speed(1e11*u.K)
+        thermal_speed(1e11*u.K, ion='p')
 
     with pytest.raises(UserWarning):
-        ion_thermal_speed(1e14*u.K)
+        thermal_speed(1e14*u.K, ion='p')
 
     with pytest.raises(ValueError):
-        ion_thermal_speed(T_i, ion='asdfasd')
+        thermal_speed(T_i, ion='asdfasd')
 
     with pytest.raises(UserWarning):
-        assert ion_thermal_speed(1e6) == ion_thermal_speed(1e6*u.K)
+        assert thermal_speed(1e6, ion='p') ==\
+            thermal_speed(1e6*u.K, ion='p')
 
 
 def test_electron_gyrofrequency():
@@ -424,7 +420,7 @@ def test_ion_gyroradius():
     T2 = 1.2*u.MK
     B2 = 123*u.G
     ion2 = 'alpha'
-    Vperp2 = ion_thermal_speed(T2, ion=ion2)
+    Vperp2 = thermal_speed(T2, ion=ion2)
     assert ion_gyroradius(B2, Vperp=Vperp2, ion='alpha') == \
         ion_gyroradius(B2, T_i=T2, ion='alpha')
 
