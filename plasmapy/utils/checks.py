@@ -45,7 +45,7 @@ def check_quantity(validations):
     ... })
     ... def func(x: u.m, y: u.s=1*u.s):
     ...     return x
-    ... 
+    ...
     >>> func(1*u.m)
     <Quantity 1.0 m>
     >>> func(1*u.m, 2*u.m)

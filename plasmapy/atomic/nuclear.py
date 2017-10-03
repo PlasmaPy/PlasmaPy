@@ -109,7 +109,7 @@ def nuclear_reaction_energy(reaction):
     >>> energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
     >>> energy_triplealpha2 = nuclear_reaction_energy(triple_alpha2)
     >>> print(energy_triplealpha1, '\\n', energy_triplealpha2)
-    -0.0918394866304908 MeV 
+    -0.0918394866304908 MeV
      7.3665870375939875 MeV
     >>> energy_triplealpha1.to(u.J)
     <Quantity -1.4714307834564652e-14 J>
