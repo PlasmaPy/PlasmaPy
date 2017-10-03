@@ -3,8 +3,7 @@
 
 from .parameters import (Alfven_speed,
                          ion_sound_speed,
-                         electron_thermal_speed,
-                         ion_thermal_speed,
+                         thermal_speed,
                          electron_gyrofrequency,
                          ion_gyrofrequency,
                          electron_gyroradius,
