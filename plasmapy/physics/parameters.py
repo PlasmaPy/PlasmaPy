@@ -399,7 +399,8 @@ def thermal_speed(T, particle="e", method="most_probable"):
     try:
         m = ion_mass(particle)
     except Exception:
-        raise ValueError("Unable to find {} mass in thermal_speed".format(particle))
+        raise ValueError("Unable to find {} mass in thermal_speed"
+                         .format(particle))
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     if method == "most_probable":
@@ -409,7 +410,8 @@ def thermal_speed(T, particle="e", method="most_probable"):
     elif method == "mean_magnitude":
         V = (np.sqrt(8*k_B*T/(m/np.pi))).to(units.m/units.s)
     else:
-        raise(ValueError("Method {} not supported in thermal_speed".format(method)))
+        raise(ValueError("Method {} not supported in thermal_speed"
+                         .format(method)))
 
     return V
 
@@ -457,8 +459,8 @@ def gyrofrequency(B, particle='e'):
     .. math::
     omega_{ci} = \frac{Z e B}{m_i}
 
-    The particle gyrofrequency is also known as the particle cyclotron frequency
-    or the particle Larmor frequency.
+    The particle gyrofrequency is also known as the particle cyclotron
+    frequency or the particle Larmor frequency.
 
     The recommended way to convert from angular frequency to frequency
     is to use an equivalency between cycles per second and Hertz, as
@@ -492,7 +494,8 @@ def gyrofrequency(B, particle='e'):
             Z = 1
         Z = abs(Z)
     except Exception:
-        raise ValueError("Invalid particle {} in gyrofrequency".format(particle))
+        raise ValueError("Invalid particle {} in gyrofrequency"
+                         .format(particle))
 
     omega_ci = units.rad * (Z*e*np.abs(B)/m_i).to(1/units.s)
 
@@ -695,9 +698,9 @@ def plasma_frequency(n, particle='e'):
         Z = charge_state(particle)
         if Z is None:
             Z = 1
-        #Z = abs(Z)
     except Exception:
-        raise ValueError("Invalid particle {} in gyrofrequency".format(particle))
+        raise ValueError("Invalid particle {} in gyrofrequency"
+                         .format(particle))
 
     omega_p = (units.rad*e*np.sqrt(n/(eps0*m)))
 
@@ -901,8 +904,8 @@ def inertial_length(n, particle='e'):
     try:
         Z = charge_state(particle)
     except Exception:
-        raise ValueError("Invalid particle {} in inertial_length."\
-            .format(particle))
+        raise ValueError("Invalid particle {} in inertial_length."
+                         .format(particle))
     if Z:
         Z = abs(Z)
 

@@ -269,11 +269,12 @@ def test_thermal_speed():
         assert thermal_speed(1e6, particle='p') ==\
             thermal_speed(1e6*u.K, particle='p')
 
-    assert np.isclose(thermal_speed(1e6*u.K, method="mean_magnitude")\
-        .si.value, 19517177.023383822)
+    assert np.isclose(thermal_speed(1e6*u.K,
+                                    method="mean_magnitude").si.value,
+                      19517177.023383822)
 
-    assert np.isclose(thermal_speed(1e6*u.K, method="rms")\
-        .si.value, 6743070.475775486)
+    assert np.isclose(thermal_speed(1e6*u.K, method="rms").si.value,
+                      6743070.475775486)
 
     with pytest.raises(ValueError):
         thermal_speed(T_i, method="sadks")
