@@ -323,7 +323,7 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
 @check_quantity({
     'T': {'units': units.K, 'can_be_negative': False}
 })
-def thermal_speed(T, particle="e"):
+def thermal_speed(T, particle="e", method="most_probable"):
     r"""Returns the most probable speed for an particle within a Maxwellian
     distributparticle.
 
@@ -387,6 +387,10 @@ def thermal_speed(T, particle="e"):
     <Quantity 1326205.1454609886 m / s>
     >>> thermal_speed(1e6*u.K)
     <Quantity 5505694.743141063 m / s>
+    >>> thermal_speed(1e6*u.K, method="rms")
+    <Quantity 6743070.475775486 m / s>
+    >>> thermal_speed(1e6*u.K, method="mean_magnitude")
+    <Quantity 19517177.023383822 m / s>
 
     """
 
@@ -397,7 +401,15 @@ def thermal_speed(T, particle="e"):
     except Exception:
         raise ValueError("Unable to find {} mass in thermal_speed".format(particle))
 
-    V = (np.sqrt(2*k_B*T/m)).to(units.m/units.s)
+    # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
+    if method == "most_probable":
+        V = (np.sqrt(2*k_B*T/m)).to(units.m/units.s)
+    elif method == "rms":
+        V = (np.sqrt(3*k_B*T/m)).to(units.m/units.s)
+    elif method == "mean_magnitude":
+        V = (np.sqrt(8*k_B*T/(m/np.pi))).to(units.m/units.s)
+    else:
+        raise(ValueError("Method {} not supported in thermal_speed".format(method)))
 
     return V
 
