@@ -635,6 +635,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
 })
 def plasma_frequency(n, particle='e'):
     r"""Calculates the particle plasma frequency.
+    Defaults to the fastest, electron plasma frequency.
 
     Parameters
     ----------
