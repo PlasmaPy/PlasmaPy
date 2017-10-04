@@ -616,119 +616,45 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
 
 
 @check_quantity({
-    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+    'n': {'units': units.m**-3, 'can_be_negative': False}
 })
-def electron_plasma_frequency(n_e):
-    r"""Calculates the electron plasma frequency.
+def plasma_frequency(n, particle='e'):
+    r"""Calculates the particle plasma frequency.
 
     Parameters
     ----------
-    n_e: Quantity
-        Electron number density
+    n : Quantity
+        Particle number density in units convertible to per cubic meter
 
-    Returns
-    -------
-    omega_pe: Quantity
-        Electron plasma frequency in radians per second
-
-    Raises
-    ------
-    TypeError
-        If n_e is not a Quantity
-
-    UnitConversionError
-        If n_e is in incorrect units
-
-    ValueError
-        If n_e contains invalid values
-
-    UserWarning
-        If units are not provided and SI units are assumed
-
-    Notes
-    -----
-    In a simple one dimensional model, the separation of charge
-    within a plasma creates an electric field proportional to
-    separation distance with magnitude:
-
-    .. math::
-    E = \frac{e}{\epsilon_0} n_e x
-
-    Where x is the separation distance.
-
-    The electrons will move under the action of this field with force
-    magnitude:
-
-    .. math::
-    F = e E = \frac{e^2}{\epsilon_0} n x = m_e \frac{d^2 x}{d t^2}
-
-    This is a simple harmonic oscillator. Computing its eigenfrequency
-    yields the electron plasma frequency, which is given by:
-
-    .. math::
-    \omega_{pe} = e \sqrt{\frac{n_e}{\epsilon_0 m_e}}
-
-    At present, astropy.units does not allow direct conversions from
-    radians/second for angular frequency to 1/second or Hz for
-    frequency.  The dimensionless_angles equivalency allows that
-    conversion, but does not account for the factor of 2*pi.  The
-    alternatives are to convert to cycle/second or to do the
-    conversion manually, as shown in the examples.
-
-    Example
-    -------
-    >>> from astropy import units as u
-    >>> from plasmapy import electron_plasma_frequency
-    >>> electron_plasma_frequency(1e19*u.m**-3)
-    <Quantity 178398636622.99567 rad / s>
-
-    """
-
-    omega_pe = (units.rad*e*np.sqrt(n_e/(eps0*m_e))).to(units.rad/units.s)
-
-    return omega_pe
-
-
-@check_quantity({
-    'n_i': {'units': units.m**-3, 'can_be_negative': False}
-})
-def ion_plasma_frequency(n_i, ion='p'):
-    r"""Calculates the ion plasma frequency.
-
-    Parameters
-    ----------
-    n_i : Quantity
-        Ion number density in units convertible to per cubic meter
-
-    ion : string, optional
-        Representation of the ion species (e.g., 'p' for protons, 'D+'
+    particle : string, optional
+        Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
-        which defaults to protons.  If no charge state information is
-        provided, then the ions are assumed to be singly charged.
+        which defaults to electrons.  If no charge state information is
+        provided, then the particles are assumed to be singly charged.
 
     Returns
     -------
     omega_pi : Quantity
-        The ion plasma frequency in radians per second.
+        The particle plasma frequency in radians per second.
 
     Raises
     ------
     TypeError
-        If n_i is not a Quantity or ion is not of an appropriate type
+        If n_i is not a Quantity or particle is not of an appropriate type
 
     UnitConversionError
         If n_i is not in correct units
 
     ValueError
-        If n_i contains invalid values or ion cannot be used to
-        identify an ion or isotope.
+        If n_i contains invalid values or particle cannot be used to
+        identify an particle or isotope.
 
     UserWarning
         If units are not provided and SI units are assumed
 
     Notes
     -----
-    The ion plasma frequency is
+    The particle plasma frequency is
 
     .. math::
     \omega_{pi} = Z e \sqrt{\frac{n_i}{\epsilon_0 m_i}}
@@ -743,24 +669,27 @@ def ion_plasma_frequency(n_i, ion='p'):
     Example
     -------
     >>> from astropy import units as u
-    >>> ion_plasma_frequency(1e19*u.m**-3)
+    >>> frequency(1e19*u.m**-3, particle='p')
     <Quantity 178398636622.99567 rad / s>
-    >>> ion_plasma_frequency(1e19*u.m**-3, ion='p')
+    >>> frequency(1e19*u.m**-3, particle='p')
+    <Quantity 178398636622.99567 rad / s>
+    >>> plasma_frequency(1e19*u.m**-3)
     <Quantity 178398636622.99567 rad / s>
 
     """
 
     try:
-        m_i = ion_mass(ion)
-        Z = charge_state(ion)
+        m = ion_mass(particle)
+        Z = charge_state(particle)
         if Z is None:
             Z = 1
+        #Z = abs(Z)
     except Exception:
-        raise ValueError("Invalid ion in gyrofrequency")
+        raise ValueError("Invalid particle {} in gyrofrequency".format(particle))
 
-    omega_pi = units.rad*Z*e*np.sqrt(n_i/(eps0*m_i))
+    omega_p = (units.rad*e*np.sqrt(n/(eps0*m)))
 
-    return omega_pi.si
+    return omega_p.si
 
 
 @check_quantity({
@@ -960,7 +889,7 @@ def ion_inertial_length(n_i, ion='p'):
     except Exception:
         raise ValueError("Invalid ion in ion_inertial_length.")
 
-    omega_pi = ion_plasma_frequency(n_i, ion=ion)
+    omega_pi = plasma_frequency(n_i, particle=ion)
     d_i = (c/omega_pi).to(units.m, equivalencies=units.dimensionless_angles())
 
     return d_i
@@ -1012,7 +941,7 @@ def electron_inertial_length(n_e):
 
     """
 
-    omega_pe = electron_plasma_frequency(n_e)
+    omega_pe = plasma_frequency(n_e)
     d_e = (c/omega_pe).to(units.m, equivalencies=units.dimensionless_angles())
 
     return d_e
@@ -1194,7 +1123,7 @@ def upper_hybrid_frequency(B, n_e):
     """
 
     try:
-        omega_pe = electron_plasma_frequency(n_e=n_e)
+        omega_pe = plasma_frequency(n=n_e)
         omega_ce = gyrofrequency(B)
         omega_uh = (np.sqrt(omega_pe**2 + omega_ce**2)).to(units.rad/units.s)
     except Exception:
@@ -1275,7 +1204,7 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
 
     try:
         omega_ci = gyrofrequency(B, particle=ion)
-        omega_pi = ion_plasma_frequency(n_i, ion=ion)
+        omega_pi = plasma_frequency(n_i, particle=ion)
         omega_ce = gyrofrequency(B)
         omega_lh = 1/np.sqrt((omega_ci*omega_ce)**-1+omega_pi**-2)
         omega_lh = omega_lh.to(units.rad/units.s)

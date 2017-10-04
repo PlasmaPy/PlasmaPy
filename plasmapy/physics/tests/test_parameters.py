@@ -11,8 +11,7 @@ from ..parameters import (Alfven_speed,
                           gyrofrequency,
                           gyroradius,
                           thermal_speed,
-                          electron_plasma_frequency,
-                          ion_plasma_frequency,
+                          plasma_frequency,
                           Debye_length,
                           Debye_number,
                           electron_inertial_length,
@@ -443,47 +442,41 @@ def test_gyroradius():
         gyroradius(1.1*u.T, 1.2*u.m, 1.1*u.K, particle="p")
 
 
-def test_electron_plasma_frequency():
-    """Test the electron_plasma_frequency function in parameters.py."""
+def test_plasma_frequency():
+    """Test the plasma_frequency function in parameters.py."""
 
-    assert electron_plasma_frequency(n_e).unit == u.rad/u.s
+    assert plasma_frequency(n_e).unit == u.rad/u.s
 
-    assert np.isclose(electron_plasma_frequency(1*u.cm**-3).value,
+    assert np.isclose(plasma_frequency(1*u.cm**-3).value,
                       5.64e4, rtol=1e-2)
 
     with pytest.raises(TypeError):
-        electron_plasma_frequency(u.m**-3)
+        plasma_frequency(u.m**-3)
 
     with pytest.raises(u.UnitConversionError):
-        electron_plasma_frequency(5*u.m**-2)
+        plasma_frequency(5*u.m**-2)
 
     with pytest.raises(ValueError):
-        electron_plasma_frequency(np.nan*u.m**-3)
+        plasma_frequency(np.nan*u.m**-3)
 
     with pytest.raises(UserWarning):
-        assert electron_plasma_frequency(1e19) == \
-            electron_plasma_frequency(1e19*u.m**-3)
+        assert plasma_frequency(1e19) == \
+            plasma_frequency(1e19*u.m**-3)
 
+        assert plasma_frequency(n_i, particle='p').unit == u.rad/u.s
 
-def test_ion_plasma_frequency():
-    """Test the ion_plasma_frequency function in parameters.py."""
+    assert plasma_frequency(n_i, particle='H-1') == \
+        plasma_frequency(n_i, particle='p')
 
-    assert ion_plasma_frequency(n_i, ion='p').unit == u.rad/u.s
-
-    assert ion_plasma_frequency(n_i, ion='H-1') == \
-        ion_plasma_frequency(n_i, ion='p')
-
-    assert np.isclose(ion_plasma_frequency(mu*u.cm**-3, ion='p').value,
+    assert np.isclose(plasma_frequency(mu*u.cm**-3, particle='p').value,
                       1.32e3, rtol=1e-2)
 
-    assert ion_plasma_frequency(n_i, ion='e+') == \
-        electron_plasma_frequency(n_i)
-
     with pytest.raises(ValueError):
-        ion_plasma_frequency(n_i=5*u.m**-3, ion='sdfas')
+        plasma_frequency(n=5*u.m**-3, particle='sdfas')
 
     with pytest.raises(UserWarning):
-        assert ion_plasma_frequency(1e19) == ion_plasma_frequency(1e19*u.m**-3)
+        assert plasma_frequency(1e19, particle='p') ==\
+            plasma_frequency(1e19*u.m**-3, particle='p')
 
 
 def test_Debye_length():
@@ -685,7 +678,7 @@ def test_upper_hybrid_frequency():
 
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
     omega_ce = gyrofrequency(B)
-    omega_pe = electron_plasma_frequency(n_e=n_e)
+    omega_pe = plasma_frequency(n=n_e)
     assert omega_ce.unit == u.rad/u.s
     assert omega_pe.unit == u.rad/u.s
     assert omega_uh.unit == u.rad/u.s
@@ -710,7 +703,7 @@ def test_lower_hybrid_frequency():
 
     ion = 'He-4 1+'
     omega_ci = gyrofrequency(B, particle=ion)
-    omega_pi = ion_plasma_frequency(n_i=n_i, ion=ion)
+    omega_pi = plasma_frequency(n=n_i, particle=ion)
     omega_ce = gyrofrequency(B)
     omega_lh = lower_hybrid_frequency(B, n_i=n_i, ion=ion)
     assert omega_ci.unit == u.rad/u.s
