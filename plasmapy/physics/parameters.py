@@ -323,46 +323,46 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
 @check_quantity({
     'T': {'units': units.K, 'can_be_negative': False}
 })
-def thermal_speed(T, ion="e"):
-    r"""Returns the most probable speed for an ion within a Maxwellian
-    distribution.
+def thermal_speed(T, particle="e"):
+    r"""Returns the most probable speed for an particle within a Maxwellian
+    distributparticle.
 
     Parameters
     ----------
     T : Quantity
-        The ion temperature in either kelvin or energy per particle
+        The particle temperature in either kelvin or energy per particle
 
-    ion : string, optional
-        Representation of the ion species (e.g., 'p' for protons, 'D+'
+    particle : string, optional
+        Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
         which defaults to electrons.  If no charge state information is
-        provided, then the ions are assumed to be singly charged.
+        provided, then the particles are assumed to be singly charged.
 
     Returns
     -------
     V : Quantity
-        Ion thermal speed
+        particle thermal speed
 
     Raises
     ------
     TypeError
-        The ion temperature is not a Quantity
+        The particle temperature is not a Quantity
 
     UnitConversionError
-        If the ion temperature is not in units of temperature or
+        If the particle temperature is not in units of temperature or
         energy per particle
 
     ValueError
-        The ion temperature is invalid or ion cannot be used to
-        identify an isotope or ion
+        The particle temperature is invalid or particle cannot be used to
+        identify an isotope or particle
 
     UserWarning
-        If the ion thermal speed exceeds 10% of the speed of light, or
+        If the particle thermal speed exceeds 10% of the speed of light, or
         if units are not provided and SI units are assumed.
 
     Notes
     -----
-    The ion thermal speed is given by:
+    The particle thermal speed is given by:
 
     .. math::
     V_{th,i} = \sqrt{\frac{2 k_B T_i}{m_i}}
@@ -380,7 +380,7 @@ def thermal_speed(T, ion="e"):
     >>> from astropy import units as u
     >>> thermal_speed(5*u.eV, 'p')
     <Quantity 30949.690763378258 m / s>
-    >>> thermal_speed(1e6*u.K, ion='p')
+    >>> thermal_speed(1e6*u.K, particle='p')
     <Quantity 128486.56960876317 m / s>
     >>> from astropy import units as u
     >>> thermal_speed(5*u.eV)
@@ -393,9 +393,9 @@ def thermal_speed(T, ion="e"):
     T = T.to(units.K, equivalencies=units.temperature_energy())
 
     try:
-        m = ion_mass(ion)
+        m = ion_mass(particle)
     except Exception:
-        raise ValueError("Unable to find {} mass in thermal_speed".format(ion))
+        raise ValueError("Unable to find {} mass in thermal_speed".format(particle))
 
     V = (np.sqrt(2*k_B*T/m)).to(units.m/units.s)
 
@@ -405,48 +405,48 @@ def thermal_speed(T, ion="e"):
 @check_quantity({
     'B': {'units': units.T}
 })
-def gyrofrequency(B, ion='e'):
-    r"""Calculate the ion gyrofrequency in units of radians per second.
+def gyrofrequency(B, particle='e'):
+    r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
     ----------
     B: Quantity
         The magnetic field magnitude in units convertible to tesla.
 
-    ion : string, optional
-        Representation of the ion species (e.g., 'p' for protons, 'D+'
+    particle : string, optional
+        Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
         which defaults to electrons.  If no charge state information is
-        provided, then the ions are assumed to be singly charged.
+        provided, then the particles are assumed to be singly charged.
 
     Returns
     -------
     omega_ci: Quantity
-        The ion gyrofrequency in units of radians per second
+        The particle gyrofrequency in units of radians per second
 
     Raises
     ------
     TypeError
-        If the magnetic field is not a Quantity or ion is not of an
+        If the magnetic field is not a Quantity or particle is not of an
         appropriate type
 
     ValueError
-        If the magnetic field contains invalid values or ion cannot be
-        used to identify an ion or isotope
+        If the magnetic field contains invalid values or particle cannot be
+        used to identify an particle or isotope
 
     UserWarning
         If units are not provided and SI units are assumed
 
     Notes
     -----
-    The ion gyrofrequency is the angular frequency of ion gyration
+    The particle gyrofrequency is the angular frequency of particle gyration
     around magnetic field lines and is given by:
 
     .. math::
     omega_{ci} = \frac{Z e B}{m_i}
 
-    The ion gyrofrequency is also known as the ion cyclotron frequency
-    or the ion Larmor frequency.
+    The particle gyrofrequency is also known as the particle cyclotron frequency
+    or the particle Larmor frequency.
 
     The recommended way to convert from angular frequency to frequency
     is to use an equivalency between cycles per second and Hertz, as
@@ -463,7 +463,7 @@ def gyrofrequency(B, ion='e'):
     <Quantity 152451.87138666757 Hz>
     >>> gyrofrequency(0.01*u.T, 'p')
     <Quantity 152451.87138666757 Hz>
-    >>> gyrofrequency(0.01*u.T, ion='T')
+    >>> gyrofrequency(0.01*u.T, particle='T')
     >>> omega_ce = gyrofrequency(0.1*u.T)
     >>> print(omega_ce)
     17588200878.472023 rad / s
@@ -474,21 +474,21 @@ def gyrofrequency(B, ion='e'):
     """
 
     try:
-        m_i = ion_mass(ion)
-        Z = charge_state(ion)
+        m_i = ion_mass(particle)
+        Z = charge_state(particle)
         if Z is None:
             Z = 1
         Z = abs(Z)
     except Exception:
-        raise ValueError("Invalid ion {} in gyrofrequency".format(ion))
+        raise ValueError("Invalid particle {} in gyrofrequency".format(particle))
 
     omega_ci = units.rad * (Z*e*np.abs(B)/m_i).to(1/units.s)
 
     return omega_ci
 
 
-def gyroradius(B, *args, Vperp=None, T_i=None, ion='e'):
-    r"""Returns the ion gyroradius.
+def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
+    r"""Returns the particle gyroradius.
 
     Parameters
     ----------
@@ -496,17 +496,17 @@ def gyroradius(B, *args, Vperp=None, T_i=None, ion='e'):
         The magnetic field magnitude in units convertible to tesla.
 
     Vperp: Quantity, optional
-        The component of ion velocity that is perpendicular to the
+        The component of particle velocity that is perpendicular to the
         magnetic field in units convertible to meters per second.
 
     T_i: Quantity, optional
-        The ion temperature in units convertible to kelvin.
+        The particle temperature in units convertible to kelvin.
 
-    ion : string, optional
-        Representation of the ion species (e.g., 'p' for protons, 'D+'
+    particle : string, optional
+        Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
         which defaults to electrons.  If no charge state information is
-        provided, then the ions are assumed to be singly charged.
+        provided, then the particles are assumed to be singly charged.
 
     args : Quantity
         If the second positional argument is a Quantity with units
@@ -516,10 +516,10 @@ def gyroradius(B, *args, Vperp=None, T_i=None, ion='e'):
     Returns
     -------
     r_Li : Quantity
-        The ion gyroradius in units of meters.  This Quantity will be
-        based on either the perpendicular component of ion velocity as
-        inputted, or the most probable speed for an ion within a
-        Maxwellian distribution for the ion temperature.
+        The particle gyroradius in units of meters.  This Quantity will be
+        based on either the perpendicular component of particle velocity as
+        inputted, or the most probable speed for an particle within a
+        Maxwellian distribution for the particle temperature.
 
     Raises
     ------
@@ -544,28 +544,28 @@ def gyroradius(B, *args, Vperp=None, T_i=None, ion='e'):
 
     Formula
     -------
-    The ion gyroradius is also known as the ion Larmor radius and is
+    The particle gyroradius is also known as the particle Larmor radius and is
     given by
 
     .. math::
     r_{Li} = \frac{V_{\perp}}{omega_{ci}}
 
-    where :math:`V_{\perp}` is the component of ion velocity that is
+    where :math:`V_{\perp}` is the component of particle velocity that is
     perpendicular to the magnetic field and :math:`\omega_{ci}` is the
-    ion gyrofrequency.  If a temperature is provided, then
+    particle gyrofrequency.  If a temperature is provided, then
     :math:`V_\perp` will be the most probable thermal velocity of an
-    ion at that temperature.
+    particle at that temperature.
 
     Examples
     --------
     >>> from astropy import units as u
-    >>> ion_gyroradius(0.2*u.T, 1e5*u.K, ion='p')
+    >>> gyroradius(0.2*u.T, 1e5*u.K, particle='p')
     <Quantity 0.0021208751836230026 m>
-    >>> ion_gyroradius(0.2*u.T, 1e5*u.K, ion='p')
+    >>> gyroradius(0.2*u.T, 1e5*u.K, particle='p')
     <Quantity 0.0021208751836230026 m>
-    >>> ion_gyroradius(5*u.uG, 1*u.eV, ion='alpha')
+    >>> gyroradius(5*u.uG, 1*u.eV, particle='alpha')
     <Quantity 288002.3964615791 m>
-    >>> ion_gyroradius(400*u.G, 1e7*u.m/u.s, ion='Fe+++')
+    >>> gyroradius(400*u.G, 1e7*u.m/u.s, particle='Fe+++')
     <Quantity 48.23129633674924 m>
     >>> gyroradius(B = 0.01*u.T, T_i = 1e6*u.K)
     <Quantity 0.0031303339253265536 m>
@@ -582,7 +582,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, ion='e'):
 
     if Vperp is not None and T_i is not None:
         raise ValueError("Cannot have both Vperp and T_i as arguments to "
-                         "ion_gyroradius")
+                         "gyroradius")
 
     if len(args) == 1 and isinstance(args[0], units.Quantity):
         arg = args[0].si
@@ -596,19 +596,19 @@ def gyroradius(B, *args, Vperp=None, T_i=None, ion='e'):
             T_i = arg.to(units.K, equivalencies=units.temperature_energy())
         else:
             raise units.UnitConversionError("Incorrect units for positional "
-                                            "argument in ion_gyroradius")
+                                            "argument in gyroradius")
     elif len(args) > 0:
-        raise ValueError("Incorrect inputs to ion_gyroradius")
+        raise ValueError("Incorrect inputs to gyroradius")
 
-    _check_quantity(B, 'B', 'ion_gyroradius', units.T)
+    _check_quantity(B, 'B', 'gyroradius', units.T)
 
     if Vperp is not None:
-        _check_quantity(Vperp, 'Vperp', 'ion_gyroradius', units.m/units.s)
+        _check_quantity(Vperp, 'Vperp', 'gyroradius', units.m/units.s)
     elif T_i is not None:
-        _check_quantity(T_i, 'T_i', 'ion_gyroradius', units.K)
-        Vperp = thermal_speed(T_i, ion=ion)
+        _check_quantity(T_i, 'T_i', 'gyroradius', units.K)
+        Vperp = thermal_speed(T_i, particle=particle)
 
-    omega_ci = gyrofrequency(B, ion)
+    omega_ci = gyrofrequency(B, particle)
 
     r_Li = np.abs(Vperp)/omega_ci
 
@@ -1274,7 +1274,7 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
         raise ValueError("Invalid ion in lower_hybrid_frequency.")
 
     try:
-        omega_ci = gyrofrequency(B, ion=ion)
+        omega_ci = gyrofrequency(B, particle=ion)
         omega_pi = ion_plasma_frequency(n_i, ion=ion)
         omega_ce = gyrofrequency(B)
         omega_lh = 1/np.sqrt((omega_ci*omega_ce)**-1+omega_pi**-2)
