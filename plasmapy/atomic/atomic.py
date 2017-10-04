@@ -186,10 +186,10 @@ def isotope_symbol(argument, mass_numb=None):
 
     Examples
     --------
-    >>> isotope_symbol('He, 4')
+    >>> isotope_symbol('He', 4)
     'He-4'
     >>> isotope_symbol(79, 197)
-    'Au-197
+    'Au-197'
     >>> isotope_symbol('hydrogen-2')
     'D'
     >>> isotope_symbol('carbon-13')
@@ -483,7 +483,9 @@ def mass_number(isotope):
     >>> mass_number("n")
     1
     >>> mass_number("N")
-    7
+    Traceback (most recent call last):
+      ...
+    ValueError: Mass number not able to be found from input N
     >>> mass_number("alpha")
     4
 
@@ -529,7 +531,6 @@ def element_name(argument):
     'hydrogen'
     >>> element_name("alpha")
     'helium'
-    >>> element_name()
     >>> element_name(42)
     'molybdenum'
     >>> element_name("C-12")
@@ -602,17 +603,19 @@ def standard_atomic_weight(argument):
     >>> from astropy import units
     >>> standard_atomic_weight("H")
     <Quantity 1.008 u>
+    >>> # the following result accounts for small amount of deuterium
     >>> standard_atomic_weight("H").to(units.kg)
-    <Quantity 1.673823232368e-27 kg>  # accounts for small amount of deuterium
+    <Quantity 1.67382335232e-27 kg>
     >>> isotope_mass("H-1")
-    <Quantity 1.6735326915759943e-27 kg>  # pure hydrogen-1
+    <Quantity 1.00782503223 u>
     >>> standard_atomic_weight(82)
-    <Quantity 238.02891 u>
+    <Quantity 207.2 u>
     >>> standard_atomic_weight("lead")
-    <Quantity 238.02891 u>
+    <Quantity 207.2 u>
     >>> standard_atomic_weight(118) is None
-    UserWarning: No standard atomic weight is available for Og. Returning None.
-    True
+    Traceback (most recent call last):
+      ...
+    ValueError: No standard atomic weight is available for Og
 
     """
 
@@ -680,15 +683,15 @@ def isotope_mass(argument, mass_numb=None):
 
     Examples
     --------
-    >>>from astropy import units as u
-    >>>isotope_mass("H-1")
+    >>> from astropy import units as u
+    >>> isotope_mass("H-1")
     <Quantity 1.00782503223 u>
-    >>>isotope_mass("H-1").to(units.kg)
-    <Quantity 1.6735326915759943e-27 kg>
+    >>> isotope_mass("H-1").to(u.kg)
+    <Quantity 1.6735328115071732e-27 kg>
     >>> isotope_mass("He", 4)
     <Quantity 4.00260325413 u>
     >>> isotope_mass(2, 4)
-
+    <Quantity 4.00260325413 u>
     """
 
     argument, charge_state = _extract_charge_state(argument)
@@ -784,26 +787,24 @@ def ion_mass(argument, Z=None, mass_numb=None):
 
     Examples
     --------
-    >>> ion_mass('p')  # proton
-    <Constant name='Proton mass' value=1.672621777e-27 uncertainty=7.4e-35
-    unit='kg' reference='CODATA 2010'>
+    >>> print(ion_mass('p').si.value)
+    1.672621898e-27
     >>> ion_mass('H')  # assumes terrestrial abundance of D
-    <Quantity 1.672912294077e-27 kg>
+    <Quantity 1.672912413964e-27 kg>
     >>> ion_mass('H') == ion_mass('p')
     False
     >>> ion_mass('P')  # phosphorus
-    <Quantity 5.143222638917872e-26 kg>
+    <Quantity 5.14322300749914e-26 kg>
     >>> ion_mass('He-4', 2)
-    <Quantity 6.64465723e-27 kg>
+    <Quantity 6.644657088401906e-27 kg>
     >>> ion_mass('T')
-    <Quantity 3.343583719e-27 kg>
+    <Quantity 5.007356665e-27 kg>
     >>> ion_mass(26, Z=1, mass_numb=56)
-    <Quantity 9.288122788133088e-26 kg>
+    <Quantity 9.288123453752331e-26 kg>
     >>> ion_mass('Fe-56')
-    <Quantity 9.288122788133088e-26 kg>
-    >>> ion_mass(9.11e-31*u.kg)
-    <Constant name='Electron mass' value=9.10938291e-31 uncertainty=4e-38
-    unit='kg' reference='CODATA 2010'>
+    <Quantity 9.288123453752331e-26 kg>
+    >>> ion_mass(9.11e-31*u.kg).si.value
+    9.10938356e-31
     >>> ion_mass(1.67e-27*u.kg)
     <Quantity 1.67e-27 kg>
 
@@ -1141,8 +1142,8 @@ def stable_isotopes(argument=None, unstable=False):
 
     Find unstable isotopes
 
-    >>> stable_isotopes('U', unstable_instead=True)
-
+    >>> stable_isotopes('U', unstable=True)[:5] # only first five
+    ['U-217', 'U-218', 'U-219', 'U-220', 'U-221']
     """
 
     def stable_isotopes_for_element(argument, stable_only):
@@ -1270,7 +1271,7 @@ def charge_state(argument):
     --------
     >>> charge_state('Fe-56 2+')
     2
-    >>> charge_state('He -2)
+    >>> charge_state('He -2')
     -2
     >>> charge_state('H+')
     1
@@ -1346,17 +1347,18 @@ def electric_charge(argument):
 
     Examples
     --------
-    >>> q = electric_charge('p')
+    >>> electric_charge('p')
     <Quantity 1.6021766208e-19 C>
+    >>> electric_charge('e')
+    <Quantity -1.6021766208e-19 C>
 
     """
 
     try:
         charge = charge_state(argument) * const.e.to('C')
+        return charge
     except Exception:
         raise ValueError("Invalid input to electric_charge")
-
-    return charge
 
 
 def _extract_charge_state(argument):
@@ -1392,7 +1394,7 @@ def _extract_charge_state(argument):
     --------
     >>> isotope, Z = _extract_charge_state('Fe-56+++')
     >>> print(isotope)
-    'Fe-56'
+    Fe-56
     >>> print(Z)
     3
     >>> _extract_charge_state('D +1')
