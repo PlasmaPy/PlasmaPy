@@ -59,8 +59,6 @@ def test_Alfven_speed():
 
     assert Alfven_speed(B, rho) == Alfven_speed(B, n_i)
 
-    assert Alfven_speed(B, rho) == Alfven_speed(rho, B)
-
     assert Alfven_speed(B, rho).unit == u.m/u.s
 
     assert Alfven_speed(B, rho) == Alfven_speed(-B, rho)
