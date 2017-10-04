@@ -374,9 +374,9 @@ def thermal_speed(T, particle="e", method="most_probable"):
     <Quantity 30949.690182856546 m / s>
     >>> thermal_speed(1e6*u.K, particle='p')
     <Quantity 128486.55193256242 m / s>
-    >>> electron_thermal_speed(5*u.eV)
+    >>> thermal_speed(5*u.eV)
     <Quantity 1326205.1212395933 m / s>
-    >>> electron_thermal_speed(1e6*u.K)
+    >>> thermal_speed(1e6*u.K)
     <Quantity 5505693.988425379 m / s>
     >>> thermal_speed(1e6*u.K, method="rms")
     <Quantity 6743070.475775486 m / s>
@@ -470,7 +470,7 @@ def gyrofrequency(B, particle='e'):
     <Quantity 957883.3224148067 rad / s>
     >>> gyrofrequency(0.01*u.T, particle='T')
     <Quantity 319964.54975910933 rad / s>
-    >>> omega_ce = electron_gyrofrequency(0.1*u.T)
+    >>> omega_ce = gyrofrequency(0.1*u.T)
     >>> print(omega_ce)
     17588200236.02124 rad / s
     >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
