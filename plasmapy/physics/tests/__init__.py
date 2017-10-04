@@ -6,8 +6,7 @@ from .test_parameters import (test_Alfven_speed,
                               test_plasma_frequency,
                               test_Debye_length,
                               test_Debye_number,
-                              test_ion_inertial_length,
-                              test_electron_inertial_length,
+                              test_inertial_length,
                               test_magnetic_pressure,
                               test_magnetic_energy_density
                               )

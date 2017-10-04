@@ -833,44 +833,44 @@ def Debye_number(T_e, n_e):
 
 
 @check_quantity({
-    'n_i': {'units': units.m**-3, 'can_be_negative': False}
+    'n': {'units': units.m**-3, 'can_be_negative': False}
 })
-def ion_inertial_length(n_i, ion='p'):
-    r"""Calculate the ion inertial length,
+def inertial_length(n, particle='e'):
+    r"""Calculate the particle inertial length,
 
     Parameters
     ----------
     n_i : Quantity
-        Ion number density in units convertible to m**-3
+        Particle number density in units convertible to m**-3
 
-    ion : string, optional
-        Representation of the ion species (e.g., 'p' for protons, 'D+'
+    particle : string, optional
+        Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
-        which defaults to protons.  If no charge state information is
-        provided, then the ions are assumed to be singly charged.
+        which defaults to electrons.  If no charge state information is
+        provided, then the particles are assumed to be singly charged.
 
     Returns
     -------
     d_i : Quantity
-        Ion inertial length in meters
+        Particles inertial length in meters
 
     Raises
     ------
     TypeError
-        If n_i not a Quantity or ion is not a string
+        If n_i not a Quantity or particle is not a string
 
     UnitConversionError
         If n_i is not in units of a number density
 
     ValueError
-        The ion density does not have an appropriate value.
+        The particle density does not have an appropriate value.
 
     UserWarning
         If units are not provided and SI units are assumed
 
     Notes
     -----
-    The ion inertial length is also known as an ion skin depth and is
+    The particle inertial length is also known as an particle skin depth and is
     given by:
 
     .. math::
@@ -879,72 +879,25 @@ def ion_inertial_length(n_i, ion='p'):
     Example
     -------
     >>> from astropy import units as u
-    >>> ion_inertial_length(5*u.m**-3, ion='He+')
+    >>> inertial_length(5*u.m**-3, particle='He+')
+    <Quantity 2376534.754 m>
+    >>> inertial_length(5*u.m**-3)
     <Quantity 2376534.754 m>
 
     """
 
     try:
-        Z = charge_state(ion)
+        Z = charge_state(particle)
     except Exception:
-        raise ValueError("Invalid ion in ion_inertial_length.")
+        raise ValueError("Invalid particle {} in inertial_length."\
+            .format(particle))
+    if Z:
+        Z = abs(Z)
 
-    omega_pi = plasma_frequency(n_i, particle=ion)
-    d_i = (c/omega_pi).to(units.m, equivalencies=units.dimensionless_angles())
+    omega_p = plasma_frequency(n, particle=particle)
+    d = (c/omega_p).to(units.m, equivalencies=units.dimensionless_angles())
 
-    return d_i
-
-
-@check_quantity({
-    'n_e': {'units': units.m**-3, 'can_be_negative': False}
-})
-def electron_inertial_length(n_e):
-    r"""Returns the electron inertial length.
-
-    Parameters
-    ----------
-    n_e : Quantity
-        Electron number density
-
-    Returns
-    -------
-    d_e : Quantity
-        Electron inertial length in meters
-
-    Raises
-    ------
-    TypeError
-        If n_e is not a Quantity
-
-    UnitConversionError
-        If n_e is not in units of per cubic meter
-
-    ValueError
-        If n_e contains invalid values
-
-    UserWarning
-        If units are not provided and SI units are assumed
-
-    Notes
-    -----
-    The electron inertial length is also known as an electron skin depth and
-    is given by:
-
-    .. math::
-    d_e = \frac{c}{\omega_{pe}}
-
-    Example
-    -------
-    >>> from astropy import units as u
-    >>> electron_inertial_length(5*u.m**-3)
-    <Quantity 2376534.754 m>
-
-    """
-
-    omega_pe = plasma_frequency(n_e)
-    d_e = (c/omega_pe).to(units.m, equivalencies=units.dimensionless_angles())
-
-    return d_e
+    return d
 
 
 @check_quantity({

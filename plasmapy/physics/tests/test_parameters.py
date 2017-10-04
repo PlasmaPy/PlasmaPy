@@ -14,8 +14,7 @@ from ..parameters import (Alfven_speed,
                           plasma_frequency,
                           Debye_length,
                           Debye_number,
-                          electron_inertial_length,
-                          ion_inertial_length,
+                          inertial_length,
                           ion_sound_speed,
                           magnetic_energy_density,
                           magnetic_pressure,
@@ -548,56 +547,53 @@ def test_Debye_number():
         assert Debye_number(1.1*u.K, 1.1) == Debye_number(1.1, 1.1*u.m**-3)
 
 
-def test_ion_inertial_length():
-    """Test the ion_inertial_length function in parameters.py."""
+def test_inertial_length():
+    """Test the inertial_length function in parameters.py."""
 
-    assert ion_inertial_length(n_i, ion='p').unit == u.m
+    assert inertial_length(n_i, particle='p').unit == u.m
 
-    assert np.isclose(ion_inertial_length(mu*u.cm**-3, ion='p').cgs.value,
+    assert np.isclose(inertial_length(mu*u.cm**-3, particle='p').cgs.value,
                       2.28e7, rtol=0.01)
 
-    assert ion_inertial_length(5.351*u.m**-3, ion='e+') == \
-        electron_inertial_length(5.351*u.m**-3)
+    assert inertial_length(5.351*u.m**-3, particle='e+') == \
+        inertial_length(5.351*u.m**-3, particle='e')
 
-    assert ion_inertial_length(n_i, ion='p') == \
-        ion_inertial_length(n_i, ion='H-1')
+    assert inertial_length(n_i, particle='p') == \
+        inertial_length(n_i, particle='H-1')
 
     with pytest.raises(UserWarning):
-        ion_inertial_length(4)
+        inertial_length(4, particle='p')
 
     with pytest.raises(u.UnitConversionError):
-        ion_inertial_length(4*u.m**-2)
+        inertial_length(4*u.m**-2, particle='p')
 
     with pytest.raises(ValueError):
-        ion_inertial_length(-5*u.m**-3)
+        inertial_length(-5*u.m**-3, particle='p')
 
     with pytest.raises(ValueError):
-        ion_inertial_length(n_i, ion=-135)
+        inertial_length(n_i, particle=-135)
 
     with pytest.raises(UserWarning):
-        assert ion_inertial_length(1e19) == ion_inertial_length(1e19*u.m**-3)
+        assert inertial_length(1e19, particle='p') ==\
+            inertial_length(1e19*u.m**-3, particle='p')
 
+    assert inertial_length(n_e).unit == u.m
 
-def test_electron_inertial_length():
-    """Test the electron_inertial_length function in parameters.py."""
-
-    assert electron_inertial_length(n_e).unit == u.m
-
-    assert np.isclose(electron_inertial_length(1*u.cm**-3).cgs.value,
+    assert np.isclose(inertial_length(1*u.cm**-3).cgs.value,
                       5.31e5, rtol=1e-3)
 
     with pytest.raises(UserWarning):
-        electron_inertial_length(5)
+        inertial_length(5)
 
     with pytest.raises(u.UnitConversionError):
-        electron_inertial_length(5*u.m)
+        inertial_length(5*u.m)
 
     with pytest.raises(ValueError):
-        electron_inertial_length(-5*u.m**-3)
+        inertial_length(-5*u.m**-3)
 
     with pytest.raises(UserWarning):
-        assert electron_inertial_length(1e19) == \
-            electron_inertial_length(1e19*u.m**-3)
+        assert inertial_length(1e19) == \
+            inertial_length(1e19*u.m**-3)
 
 
 def test_magnetic_pressure():
