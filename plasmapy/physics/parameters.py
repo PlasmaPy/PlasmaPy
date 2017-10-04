@@ -325,7 +325,7 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
 })
 def thermal_speed(T, particle="e", method="most_probable"):
     r"""Returns the most probable speed for an particle within a Maxwellian
-    distributparticle.
+    distribution.
 
     Parameters
     ----------
