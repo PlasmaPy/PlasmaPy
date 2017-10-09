@@ -3,10 +3,12 @@ from astropy import units
 
 from ..constants import c
 from ..atomic import (ion_mass, charge_state)
-from ..utils import _check_quantity
+from ..utils import check_relativistic, check_positive, check_finite
+from astropy.units import quantity_input
 
 
-def Lorentz_factor(V):
+@quantity_input
+def Lorentz_factor(V: units.m/units.s):
     r"""Returns the Lorentz factor.
 
     Parameters
@@ -55,8 +57,6 @@ def Lorentz_factor(V):
     >>> Lorentz_factor(299792458*u.m/u.s)
     inf
     """
-
-    _check_quantity(V, 'V', 'Lorentz_factor', units.m/units.s)
 
     if not np.all(np.abs(V) <= c):
         raise ValueError("The Lorentz factor cannot be calculated for speeds "
