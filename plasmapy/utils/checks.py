@@ -1,5 +1,6 @@
 from functools import wraps
 import inspect
+import warnings
 
 import numpy as np
 from astropy import units as u
@@ -7,8 +8,10 @@ from ..constants import c
 
 
 def check_quantity(validations):
-    """Raises exceptions if `argname` in decorated function is not an
-    astropy Quantity with correct units and valid numerical values.
+    """Raises exceptions if `argname` in decorated function is an
+    astropy Quantity with incorrect units, but valid numerical values.
+
+    Converts dimensionless Python floats and ints to default astropy Quantities.
 
     Parameters
     ----------
@@ -160,6 +163,110 @@ def check_relativistic(func=None, betafrac=0.1):
         return decorator(func)
     return decorator
 
+def check_positive(*args, **kwargs):
+    """Raises an error when the specified input of the decorated
+    function is negative.
+
+    If no arguments are given, no arguments are tested.
+
+    Parameters
+    ----------
+    argument: iterable
+        Parameter names for which to check the sign of value
+
+    Returns
+    --------
+    function
+        Decorated function
+
+    Raises
+    --------
+    ValueError
+        if value of specified argument is negative
+
+    Examples
+    --------
+    >>> @check_positive('b')
+    ... def addition(a, b):
+    ...     return a + b
+    >>> addition(3, 4)
+    7
+    >>> addition(-3, 4)
+    1
+    >>> addition(3, -4)
+    Traceback (most recent call last):
+      ...
+    ValueError: Passed non-physical b (negative value -4) in check_positive
+    """
+    argument = args + tuple(kwargs.keys())
+    decorator_name = check_positive.__name__
+    def real_decorator(function):
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            inspected_arguments = inspect.getfullargspec(function).args
+            for checked_name in argument:
+                argument_index = inspected_arguments.index(checked_name)
+                passed_value = args[argument_index]
+
+                if passed_value < 0:
+                    raise ValueError(f"Passed non-physical {checked_name} (negative value {passed_value}) in {decorator_name}")
+
+            return function(*args, **kwargs)
+        return wrapper
+    return real_decorator
+
+def check_finite(*args, **kwargs):
+    """Raises an error when the specified input of the decorated
+    function is transfinite (NaN or inf).
+
+    If no arguments are given, no arguments are tested.
+
+    Parameters
+    ----------
+    argument: iterable
+        Parameter names for which to check finity
+
+    Returns
+    --------
+    function
+        Decorated function
+
+    Raises
+    --------
+    ValueError
+        if value of specified argument is transfinite
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> @check_finite('b')
+    ... def addition(a, b):
+    ...     return a + b
+    >>> addition(np.Inf, 4)
+    inf
+    >>> addition(np.NaN, 4)
+    nan
+    >>> addition(3, np.NaN)
+    Traceback (most recent call last):
+      ...
+    ValueError: Passed non-physical b (value nan) in check_finite
+    """
+    argument = args + tuple(kwargs.keys())
+    decorator_name = check_finite.__name__
+    def real_decorator(function):
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            inspected_arguments = inspect.getfullargspec(function).args
+            for checked_name in argument:
+                passed_value = args[inspected_arguments.index(checked_name)]
+
+                if not np.isfinite(passed_value):
+                    raise ValueError(f"Passed non-physical {checked_name} (value {passed_value}) in {decorator_name}")
+
+            return function(*args, **kwargs)
+        return wrapper
+    return real_decorator
+
 
 def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
                     can_be_complex=False, can_be_inf=True):
@@ -252,7 +359,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
             except Exception:
                 raise TypeError(typeerror_message)
             else:
-                raise UserWarning("No units are specified for " + argname +
+                warnings.warn("No units are specified for " + argname +
                                   " in " + funcname + ". Assuming units of " +
                                   str(units[0]) + ".")
 
@@ -335,11 +442,11 @@ def _check_relativistic(V, funcname, betafrac=0.1):
     beta = np.max(np.abs((V/c).value))
 
     if beta == np.inf:
-        raise UserWarning(funcname + " is yielding an infinite velocity.")
+        warnings.warn(funcname + " is yielding an infinite velocity.")
     elif beta >= 1:
-        raise UserWarning(funcname + " is yielding a velocity that is " +
+        warnings.warn(funcname + " is yielding a velocity that is " +
                           str(round(beta, 3)) + " times the speed of light.")
     elif beta >= betafrac:
-        raise UserWarning(funcname + " is yielding a velocity that is " +
+        warnings.warn(funcname + " is yielding a velocity that is " +
                           str(round(beta*100, 3)) + "% of the speed of " +
                           "light. Relativistic effects may be important.")

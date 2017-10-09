@@ -1,4 +1,1 @@
-from .checks import (_check_quantity,
-                     _check_relativistic,
-                     check_quantity,
-                     check_relativistic)
+from .checks import check_relativistic, check_positive, check_finite
