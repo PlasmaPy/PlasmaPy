@@ -57,7 +57,7 @@ non_relativistic_speed_examples = [
 ]
 
 # (speed, betafrac, error)
-relativisitc_error_examples = [
+relativisitc_warning_examples = [
     (0.11*c, 0.1, UserWarning),
     (1.0*c, 0.1, UserWarning),
     (1.1*c, 0.1, UserWarning),
@@ -67,7 +67,9 @@ relativisitc_error_examples = [
     (-1.1*c, 0.1, UserWarning),
     (-np.inf*u.cm/u.s, 0.1, UserWarning),
     (2997924581*u.cm/u.s, 0.1, UserWarning),
-    (0.02*c, 0.01, UserWarning),
+    (0.02*c, 0.01, UserWarning)]
+
+relativisitc_error_examples = [
     (u.m/u.s, 0.1, TypeError),
     (51513.35, 0.1, TypeError),
     (5*u.m, 0.1, u.UnitConversionError),
@@ -129,4 +131,14 @@ def test_check_relativistic_decorator_errors(speed, betafrac, error):
         return speed
 
     with pytest.raises(error):
+        speed_func()
+
+@pytest.mark.parametrize("speed, betafrac, warning", relativisitc_warning_examples)
+def test_check_relativistic_decorator_warnings(speed, betafrac, warning):
+
+    @check_relativistic(betafrac=betafrac)
+    def speed_func():
+        return speed
+
+    with pytest.warns(warning):
         speed_func()
