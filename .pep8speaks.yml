@@ -1,0 +1,5 @@
+pycodestyle:
+  exclude:
+    - ez_setup.py
+    - ah_bootstrap.py
+    - astropy_helpers/
