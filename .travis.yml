@@ -3,6 +3,9 @@ language: python
 python:
         - "3.6"
 
+git:
+    submodules: false
+
 # Install dependencies
 install:
         - git clone git://github.com/astropy/ci-helpers.git
