@@ -3,3 +3,4 @@ pycodestyle:
     - ez_setup.py
     - ah_bootstrap.py
     - astropy_helpers/
+    - vision_statement.md
