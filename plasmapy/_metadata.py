@@ -2,12 +2,16 @@
 # Package metadata
 ##
 
+import ah_bootstrap
+#import astropy_helpers
+#from . import astropy_helpers
+
+
+
+from astropy_helpers.astropy_helpers.git_helpers import get_git_devstr
+
 # Name
 name = 'plasmapy'
-
-import ah_bootstrap
-
-from astropy_helpers.git_helpers import get_git_devstr
 
 # PlasmaPy uses Semantic Versioning of the form: MAJOR.MINOR.PATCH
 #
