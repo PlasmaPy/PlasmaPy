@@ -485,7 +485,9 @@ def gyrofrequency(B: units.T, particle='e'):
     return omega_ci
 
 
-def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
+@quantity_input(equivalencies = units.temperature_energy())
+def gyroradius(B: units.T, *args, Vperp: units.m/units.s=None,
+               T: units.K = None, particle='e'):
     r"""Returns the particle gyroradius.
 
     Parameters
@@ -497,7 +499,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
         The component of particle velocity that is perpendicular to the
         magnetic field in units convertible to meters per second.
 
-    T_i: Quantity, optional
+    T: Quantity, optional
         The particle temperature in units convertible to kelvin.
 
     particle : string, optional
@@ -565,7 +567,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
     <Quantity 288002.38837768475 m>
     >>> gyroradius(400*u.G, 1e7*u.m/u.s, particle='Fe+++')
     <Quantity 48.23129811339086 m>
-    >>> gyroradius(B = 0.01*u.T, T_i = 1e6*u.K)
+    >>> gyroradius(B = 0.01*u.T, T = 1e6*u.K)
     <Quantity 0.0031303339253265536 m>
     >>> gyroradius(B = 0.01*u.T, Vperp = 1e6*u.m/u.s)
     <Quantity 0.0005685630062091092 m>
@@ -578,7 +580,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
 
     """
 
-    if Vperp is not None and T_i is not None:
+    if Vperp is not None and T is not None:
         raise ValueError("Cannot have both Vperp and T_i as arguments to "
                          "gyroradius")
 
@@ -591,20 +593,15 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
         if arg.unit == units.m/units.s:
             Vperp = arg
         elif arg.unit in (units.J, units.K):
-            T_i = arg.to(units.K, equivalencies=units.temperature_energy())
+            T = arg.to(units.K, equivalencies=units.temperature_energy())
         else:
             raise units.UnitConversionError("Incorrect units for positional "
                                             "argument in gyroradius")
     elif len(args) > 0:
         raise ValueError("Incorrect inputs to gyroradius")
 
-    _check_quantity(B, 'B', 'gyroradius', units.T)
-
-    if Vperp is not None:
-        _check_quantity(Vperp, 'Vperp', 'gyroradius', units.m/units.s)
-    elif T_i is not None:
-        _check_quantity(T_i, 'T_i', 'gyroradius', units.K)
-        Vperp = thermal_speed(T_i, particle=particle)
+    if T is not None:
+        Vperp = thermal_speed(T, particle=particle)
 
     omega_ci = gyrofrequency(B, particle)
 
