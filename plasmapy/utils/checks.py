@@ -163,7 +163,23 @@ def check_relativistic(func=None, betafrac=0.1):
         return decorator(func)
     return decorator
 
-def check_positive(*args, **kwargs):
+def _check_argument_logic(arguments_to_check, function, args, kwargs):
+    """"""
+    inspection = inspect.getfullargspec(function)
+    result = {}
+    for checked_name in arguments_to_check:
+        if checked_name in inspection.kwonlyargs and checked_name in kwargs:
+            result[checked_name] = kwargs[checked_name]
+        elif checked_name in inspection.args:
+            if checked_name in kwargs:
+                result[checked_name] = kwargs[checked_name]
+            else:
+                argument_index = inspection.args.index(checked_name)
+                result[checked_name] = args[argument_index]
+    return result
+
+# TODO: merge the following two decorators elegantly, maybe?
+def check_positive(*arguments_to_check):
     """Raises an error when the specified input of the decorated
     function is negative.
 
@@ -171,7 +187,7 @@ def check_positive(*args, **kwargs):
 
     Parameters
     ----------
-    argument: iterable
+    arguments_to_check: iterable
         Parameter names for which to check the sign of value
 
     Returns
@@ -198,24 +214,23 @@ def check_positive(*args, **kwargs):
       ...
     ValueError: Passed non-physical b (negative value -4) in check_positive
     """
-    argument = args + tuple(kwargs.keys())
     decorator_name = check_positive.__name__
     def real_decorator(function):
         @wraps(function)
         def wrapper(*args, **kwargs):
-            inspected_arguments = inspect.getfullargspec(function).args
-            for checked_name in argument:
-                argument_index = inspected_arguments.index(checked_name)
-                passed_value = args[argument_index]
-
-                if passed_value < 0:
+            # inputs: function, args, kwargs
+            checked_arguments = _check_argument_logic(arguments_to_check,
+                                                      function,
+                                                     args,
+                                                     kwargs)
+            for checked_name, passed_value in checked_arguments.items():
+                if np.any(passed_value < 0):
                     raise ValueError(f"Passed non-physical {checked_name} (negative value {passed_value}) in {decorator_name}")
-
             return function(*args, **kwargs)
         return wrapper
     return real_decorator
 
-def check_finite(*args, **kwargs):
+def check_finite(*arguments_to_check):
     """Raises an error when the specified input of the decorated
     function is transfinite (NaN or inf).
 
@@ -223,7 +238,7 @@ def check_finite(*args, **kwargs):
 
     Parameters
     ----------
-    argument: iterable
+    arguments_to_check: iterable
         Parameter names for which to check finity
 
     Returns
@@ -256,13 +271,12 @@ def check_finite(*args, **kwargs):
     def real_decorator(function):
         @wraps(function)
         def wrapper(*args, **kwargs):
-            inspected_arguments = inspect.getfullargspec(function).args
-            for checked_name in argument:
-                passed_value = args[inspected_arguments.index(checked_name)]
-
+            checked_arguments = _check_argument_logic(arguments_to_check, function,
+                                                     args,
+                                                     kwargs)
+            for checked_name, passed_value in checked_arguments.items():
                 if not np.isfinite(passed_value):
                     raise ValueError(f"Passed non-physical {checked_name} (value {passed_value}) in {decorator_name}")
-
             return function(*args, **kwargs)
         return wrapper
     return real_decorator

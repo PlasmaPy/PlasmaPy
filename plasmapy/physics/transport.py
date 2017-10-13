@@ -10,7 +10,7 @@ from .parameters import Debye_length
 
 @check_positive('T', 'n_e')
 @units.quantity_input
-def Coulomb_logarithm(T, n_e: units.m**-3, particles, V=None):
+def Coulomb_logarithm(T, n_e: units.m**-3, particles, V: units.m/units.s =None):
     r"""Estimates the Coulomb logarithm.
 
     Parameters
@@ -162,8 +162,6 @@ def Coulomb_logarithm(T, n_e: units.m**-3, particles, V=None):
 
     if V is None:
         V = np.sqrt(3 * k_B * T / reduced_mass)
-    else:
-        _check_relativistic(V, 'Coulomb_logarithm', betafrac=0.8)
 
     # The first possibility is that the inner impact parameter
     # corresponds to a deflection of 90 degrees, which is valid when

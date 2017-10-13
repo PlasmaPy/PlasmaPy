@@ -31,7 +31,7 @@ def test_Lorentz_factor():
     with pytest.raises((ValueError, UserWarning)):
         Lorentz_factor(299792459)
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(UserWarning):
         Lorentz_factor(2.2)
 
     with pytest.raises(u.UnitConversionError):

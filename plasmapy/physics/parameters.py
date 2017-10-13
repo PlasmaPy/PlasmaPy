@@ -1066,7 +1066,7 @@ def upper_hybrid_frequency(B: units.T, n_e: units.m**-3):
     return omega_uh
 
 
-@check_positive('n_e')
+@check_positive('n_i')
 @quantity_input
 def lower_hybrid_frequency(B: units.T, n_i: units.m**-3, ion='p'):
     r"""Returns the lower hybrid frequency.
