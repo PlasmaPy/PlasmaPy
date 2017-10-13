@@ -2,6 +2,8 @@
 omit = 
 	ci-helpers/*
 	*/tests/*
+	astropy_helpers/*
+	ah_bootstrap.py
 exclude_lines = 
 	coveralls: ignore
 	def __repr__
