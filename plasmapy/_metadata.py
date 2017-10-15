@@ -21,9 +21,10 @@ name = 'plasmapy'
 # While a new version is being developed, '.dev' followed by the commit number
 # will be appended to the version string.
 
-version = '0.1.dev'
+version = '0.1.0.dev'
 
 release = 'dev' in version
+
 if release:
     version += get_git_devstr(False)
 
