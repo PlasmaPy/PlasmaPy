@@ -1,5 +1,12 @@
+import ah_bootstrap
 from setuptools import setup, find_packages
+import builtins
+builtins._ASTROPY_SETUP_ = True
 
+#import astropy_helpers
+
+from astropy_helpers.setup_helpers import (
+    register_commands, get_package_info, get_debug_option)
 
 # Package metadata
 metadata = {}

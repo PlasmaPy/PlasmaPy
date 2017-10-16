@@ -113,3 +113,5 @@ Untitled*
 untitled*
 *debuglog*
 .DS_Store
+*/version.py
+*/cython_version.py

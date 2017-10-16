@@ -2,12 +2,31 @@
 # Package metadata
 ##
 
+import ah_bootstrap
+
+from astropy_helpers.git_helpers import get_git_devstr
+
 # Name
 name = 'plasmapy'
 
-# The version scheme is being discussed at:
-#    https://github.com/PlasmaPy/PlasmaPy/issues/25
-version = '0.1.dev2'
+# PlasmaPy uses Semantic Versioning of the form: MAJOR.MINOR.PATCH
+#
+#  - The MAJOR version changes when there are backwards incompatible changes
+#  - The MINOR version changes when backwards compatible functionality is added
+#  - The PATCH version changes when the public API remains the same
+#
+# During initial development releases (with MAJOR = 0), backwards compatibility
+# does not need to be maintained when MINOR is incremented.
+#
+# While a new version is being developed, '.dev' followed by the commit number
+# will be appended to the version string.
+
+version = '0.1.0.dev'
+
+release = 'dev' in version
+
+if release:
+    version += get_git_devstr(False)
 
 # Long description / docstring
 description = """
