@@ -11,6 +11,8 @@ and researchers globally, running within and leveraging the open source
 scientific Python ecosystem. The goals of this project are more thoroughly described in our
 [vision statement](vision_statement.md)
 and [an earlier conference poster](http://doi.org/10.5281/zenodo.163752).
+We are in the process of writing [online
+documentation](http://plasmapy.readthedocs.io/en/latest/).
 
 We created a guide on
 [contributing to PlasmaPy](CONTRIBUTING.md) and have a [code of conduct](CODE_OF_CONDUCT.md).
