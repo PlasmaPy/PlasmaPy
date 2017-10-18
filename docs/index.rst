@@ -25,6 +25,15 @@ Functions
 
     dispersion_solver/index
 
+Development
+=======
+
+.. toctree::
+    :maxdepth: 1
+       
+    development/code_guide
+    development/doc_guide
+    development/release_guide
 
 Indices and tables
 ==================
