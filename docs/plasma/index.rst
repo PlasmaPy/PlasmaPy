@@ -3,6 +3,7 @@ Plasma
 ******
 
 .. currentmodule:: plasmapy.classes.plasma
+.. automodule:: plasmapy.classes.plasma
 
 Introduction
 ============

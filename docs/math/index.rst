@@ -6,13 +6,13 @@
 Math
 ****
 
-This document will describe the capabilities of the math subpackage.
+.. automodule:: plasmapy.math
 
 Functions
 =========
 
 The functions contained within the math subpackage are:
 
-* .. py:function:: plasma_dispersion_func
+* .. autofunction:: plasma_dispersion_func
 
-* .. py:function:: plasma_dispersion_func_deriv
+* .. autofunction:: plasma_dispersion_func_deriv
