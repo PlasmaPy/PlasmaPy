@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = python3.6 -msphinx
-SPHINXPROJ    = PlasmaPy
+SPHINXPROJ    = plasmapy
 SOURCEDIR     = .
 BUILDDIR      = _build
 
