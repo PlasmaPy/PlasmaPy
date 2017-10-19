@@ -20,7 +20,7 @@
 
 import os
 import sys
-#sys.path.insert(0, os.path.abspath('..'))
+
 sys.path.insert(0, os.path.abspath('..'))
 
 # -- General configuration ------------------------------------------------
@@ -51,7 +51,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'PlasmaPy'
+project = 'plasmapy'
 copyright = '2015-2017, PlasmaPy Community'
 author = 'PlasmaPy Community'
 
