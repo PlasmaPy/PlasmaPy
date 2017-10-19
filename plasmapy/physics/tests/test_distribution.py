@@ -20,7 +20,7 @@ v_vect = np.arange(start, stop, dtype='float64') * dv
 
 
 def test_Maxwellian_1D():
-    """test the 1D maxwellian distribution function"""
+    r"""test the 1D maxwellian distribution function"""
 
     max_index = Maxwellian_1D(v_vect, T=T_e, particle='e', V_drift=0*u.m/u.s
                               ).argmax()

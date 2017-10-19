@@ -49,7 +49,7 @@ V = 25.2*u.m/u.s
 
 
 def test_Alfven_speed():
-    """Test the Alfven_speed function in parameters.py."""
+    r"""Test the Alfven_speed function in parameters.py."""
 
     assert np.isclose(Alfven_speed(1*u.T, 1e-8*u.kg*u.m**-3).value,
                       8920620.580763856)
@@ -132,7 +132,7 @@ def test_Alfven_speed():
 
 
 def test_ion_sound_speed():
-    """Test the ion_sound_speed function in parameters.py."""
+    r"""Test the ion_sound_speed function in parameters.py."""
 
     assert np.isclose(ion_sound_speed(T_i=1.3232*u.MK, T_e=1.831*u.MK,
                                       ion='p', gamma_e=1, gamma_i=3).value,
@@ -210,7 +210,7 @@ def test_ion_sound_speed():
 
 
 def test_thermal_speed():
-    """Test the thermal_speed function in parameters.py"""
+    r"""Test the thermal_speed function in parameters.py"""
     assert thermal_speed(T_e).unit == u.m/u.s
 
     assert thermal_speed(T_e) > thermal_speed(T_e, 'p')
@@ -279,7 +279,7 @@ def test_thermal_speed():
 
 
 def test_gyrofrequency():
-    """Test the gyrofrequency function in parameters.py."""
+    r"""Test the gyrofrequency function in parameters.py."""
 
     assert gyrofrequency(B).unit == u.rad/u.s
 
@@ -343,7 +343,7 @@ def test_gyrofrequency():
 
 
 def test_gyroradius():
-    """Test the gyroradius function in parameters.py."""
+    r"""Test the gyroradius function in parameters.py."""
 
     assert gyroradius(B, T_e).unit == u.m
 
@@ -450,7 +450,7 @@ def test_gyroradius():
 
 
 def test_plasma_frequency():
-    """Test the plasma_frequency function in parameters.py."""
+    r"""Test the plasma_frequency function in parameters.py."""
 
     assert plasma_frequency(n_e).unit == u.rad/u.s
 
@@ -487,7 +487,7 @@ def test_plasma_frequency():
 
 
 def test_Debye_length():
-    """Test the Debye_length function in parameters.py."""
+    r"""Test the Debye_length function in parameters.py."""
 
     assert Debye_length(T_e, n_e).unit == u.m
 
@@ -518,7 +518,7 @@ def test_Debye_length():
 
 
 def test_Debye_number():
-    """Test the Debye_number function in parameters.py."""
+    r"""Test the Debye_number function in parameters.py."""
 
     assert Debye_number(T_e, n_e).unit == u.dimensionless_unscaled
 
@@ -556,7 +556,7 @@ def test_Debye_number():
 
 
 def test_inertial_length():
-    """Test the inertial_length function in parameters.py."""
+    r"""Test the inertial_length function in parameters.py."""
 
     assert inertial_length(n_i, particle='p').unit == u.m
 
@@ -605,7 +605,7 @@ def test_inertial_length():
 
 
 def test_magnetic_pressure():
-    """Test the magnetic_pressure function in parameters.py."""
+    r"""Test the magnetic_pressure function in parameters.py."""
 
     assert magnetic_pressure(B_arr).unit == u.Pa
 
@@ -639,7 +639,7 @@ def test_magnetic_pressure():
 
 
 def test_magnetic_energy_density():
-    """Test the magnetic_energy_density function in parameters.py."""
+    r"""Test the magnetic_energy_density function in parameters.py."""
 
     assert magnetic_energy_density(B_arr).unit == u.J/u.m**3
 
@@ -678,7 +678,7 @@ def test_magnetic_energy_density():
 
 
 def test_upper_hybrid_frequency():
-    """Test the upper_hybrid_frequency function in parameters.py."""
+    r"""Test the upper_hybrid_frequency function in parameters.py."""
 
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
     omega_ce = gyrofrequency(B)
@@ -703,7 +703,7 @@ def test_upper_hybrid_frequency():
 
 
 def test_lower_hybrid_frequency():
-    """Test the lower_hybrid_frequency function in parameters.py."""
+    r"""Test the lower_hybrid_frequency function in parameters.py."""
 
     ion = 'He-4 1+'
     omega_ci = gyrofrequency(B, particle=ion)

@@ -41,7 +41,7 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 
 
 def test_particle_uniform_magnetic():
-    """
+    r"""
         Tests the particle stepper for a uniform magnetic field motion.
     """
     test_plasma = uniform_magnetic_field()
@@ -98,7 +98,7 @@ def test_particle_uniform_magnetic():
 
 
 def test_particle_exb_drift():
-    """
+    r"""
         Tests the particle stepper for a field with magnetic field in the Z
         direction, electric field in the y direction. This should produce a
         drift in the negative X direction, with the drift velocity
