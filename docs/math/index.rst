@@ -2,9 +2,9 @@
 
 .. _plasmapy-math:
 
-***************
-Math Subpackage
-***************
+****
+Math
+****
 
 This document will describe the capabilities of the math subpackage.
 

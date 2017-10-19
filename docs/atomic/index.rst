@@ -2,9 +2,9 @@
 
 .. _plasmapy-atomic:
 
-*****************
-Atomic Subpackage
-*****************
+******
+Atomic
+******
 
 This document will describe the capabilities of the atomic
 subpackage.  
