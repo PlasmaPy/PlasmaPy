@@ -38,5 +38,6 @@ PlasmaPy requires Python 3.6 and is
 
 ## License
 
-PlasmaPy is licensed under a 3-clause BSD style license - see
-``LICENSE.md`` file in the top-level directory.
+PlasmaPy is licensed under a 3-clause BSD license with added protections
+against software patents - see the [``LICENSE.md``](LICENSE.md) file in
+the top-level directory.
