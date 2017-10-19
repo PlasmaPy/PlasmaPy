@@ -28,12 +28,6 @@ Classes
 
     plasma/index
 
-Functions
-=========
-
-..toctree: :
-    :maxdepth: 1
-
 Development
 =======
 
@@ -49,4 +43,6 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
+
+.. Did not include one for `search` since that page didn't show up
+   satisfactorily
