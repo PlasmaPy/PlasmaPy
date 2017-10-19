@@ -81,5 +81,5 @@ try:
     from . import math
     from . import physics
     from . import utils
-except (ImportError, ModuleNotFoundError):  # coveralls: ignore
+except ImportError:  # coveralls: ignore
     raise ImportError("Unable to load PlasmaPy subpackages.")
