@@ -3,12 +3,30 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to PlasmaPy's documentation!
-====================================
+PlasmaPy Documentation
+======================
+
+PlasmaPy is an open source community-developed core Python package for
+plasma physics in the early stages of development.  The documentation
+contained on this page is in the process of being written.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
+Getting Started
+===============
+
+* `Installation instructions
+  <https://github.com/PlasmaPy/PlasmaPy/blob/master/INSTALL.md>`_
+* `Contributing to PlasmaPy
+  <https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTING.md>`_
+* `Code of conduct
+  <https://github.com/PlasmaPy/PlasmaPy/blob/master/CODE_OF_CONDUCT.md>`_
+* `PlasmaPy on GitHub
+  <https://github.com/PlasmaPy/plasmapy>`_
+* `PlasmaPy website
+  <http://www.plasmapy.org/>`_
 
 Modules
 =======
