@@ -3,6 +3,12 @@ from astropy import units
 from ..constants import mu0, pi
 from ..utils import _check_quantity
 
+@check_quantity({"I": {"units" : units.ampere, "can_be_complex": False,
+                          "can_be_inf": False},
+                     "r": {"units" : units.m, "can_be_complex": False,
+                          "can_be_inf": True, "can_be_negative": False}})
+    
+    
 def infinite_wire(I, r):
     r"""Returns the magnetic field of an infinite,
     current-carrying wire at distance r.
@@ -48,11 +54,6 @@ def infinite_wire(I, r):
     >>> infinite_wire(current, distance)
     <Quantity 3.2666666666666673e-07 T>
     """
-    _check_quantity({"I": {"units" : units.ampere, "can_be_complex": False,
-                          "can_be_inf": False},
-                     "r": {"units" : units.m, "can_be_complex": False,
-                          "can_be_inf": True, "can_be_negative": False}})
-
     if r > 0:
         B = np.divide(mu0 * I,2*pi*r) 
     else:
