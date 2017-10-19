@@ -14,7 +14,7 @@ from .isotopes import Isotopes
 # functions so that the rest of the functions can be simpler.
 
 def atomic_symbol(argument):
-    """Returns the atomic symbol.
+    r"""Returns the atomic symbol.
 
     Parameters
     ----------
@@ -140,7 +140,7 @@ def atomic_symbol(argument):
 
 
 def isotope_symbol(argument, mass_numb=None):
-    """Returns the symbol representing an isotope.
+    r"""Returns the symbol representing an isotope.
 
     Parameters
     ----------
@@ -292,7 +292,7 @@ def isotope_symbol(argument, mass_numb=None):
 
 
 def atomic_number(argument):
-    """Returns the number of protons in an atom, isotope, or ion.
+    r"""Returns the number of protons in an atom, isotope, or ion.
 
     Parameters
     ----------
@@ -335,7 +335,7 @@ def atomic_number(argument):
 
 
 def is_isotope_stable(argument, mass_numb=None):
-    """Returns true for stable isotopes and false otherwise.
+    r"""Returns true for stable isotopes and false otherwise.
 
     Parameters
     ----------
@@ -381,7 +381,7 @@ def is_isotope_stable(argument, mass_numb=None):
 
 
 def half_life(argument, mass_numb=None):
-    """Returns the half-life in seconds for unstable isotopes, and
+    r"""Returns the half-life in seconds for unstable isotopes, and
     numpy.inf for stable isotopes.
 
     Parameters
@@ -446,7 +446,7 @@ def half_life(argument, mass_numb=None):
 
 
 def mass_number(isotope):
-    """Get the mass number (the number of protons and neutrons) of an
+    r"""Get the mass number (the number of protons and neutrons) of an
     isotope.
 
     Parameters
@@ -504,7 +504,7 @@ def mass_number(isotope):
 
 
 def element_name(argument):
-    """Returns the name of an element.
+    r"""Returns the name of an element.
 
     Parameters
     ----------
@@ -550,7 +550,7 @@ def element_name(argument):
 
 
 def standard_atomic_weight(argument):
-    """Returns the standard (conventional) atomic weight of an element
+    r"""Returns the standard (conventional) atomic weight of an element
     based on the relative abundances of isotopes in terrestrial
     environments.
 
@@ -648,7 +648,7 @@ def standard_atomic_weight(argument):
 
 
 def isotope_mass(argument, mass_numb=None):
-    """Return the mass of an isotope.
+    r"""Return the mass of an isotope.
 
     Parameters
     ----------
@@ -712,7 +712,7 @@ def isotope_mass(argument, mass_numb=None):
 
 
 def ion_mass(argument, Z=None, mass_numb=None):
-    """Returns the mass of an ion by finding the standard atomic
+    r"""Returns the mass of an ion by finding the standard atomic
     weight of an element or the atomic mass of an isotope, and then
     accounting for the change in mass due to loss of electrons from
     ionization.
@@ -912,7 +912,7 @@ def ion_mass(argument, Z=None, mass_numb=None):
 
 
 def known_isotopes(argument=None):
-    """Returns a list of all known isotopes of an element, or a list
+    r"""Returns a list of all known isotopes of an element, or a list
     of all known isotopes of every element if no input is provided.
 
     Parameters
@@ -991,7 +991,7 @@ def known_isotopes(argument=None):
 
 
 def common_isotopes(argument=None, most_common_only=False):
-    """Returns a list of isotopes of an element with an isotopic
+    r"""Returns a list of isotopes of an element with an isotopic
     abundances greater than zero, or if no input is provided, a list
     of all such isotopes for every element.
 
@@ -1090,7 +1090,7 @@ def common_isotopes(argument=None, most_common_only=False):
 
 
 def stable_isotopes(argument=None, unstable=False):
-    """Returns a list of all stable isotopes of an element, or if no
+    r"""Returns a list of all stable isotopes of an element, or if no
     input is provided, a list of all such isotopes for every element.
 
     Parameters
@@ -1170,7 +1170,7 @@ def stable_isotopes(argument=None, unstable=False):
 
 
 def isotopic_abundance(argument, mass_numb=None):
-    """Returns the isotopic abundances if known, and otherwise zero.
+    r"""Returns the isotopic abundances if known, and otherwise zero.
 
     Parameters
     ----------
@@ -1229,7 +1229,7 @@ def isotopic_abundance(argument, mass_numb=None):
 
 
 def charge_state(argument):
-    """Returns the charge state of an ion or other particle.
+    r"""Returns the charge state of an ion or other particle.
 
     Parameters
     ----------
@@ -1305,7 +1305,7 @@ def charge_state(argument):
 
 
 def electric_charge(argument):
-    """Returns the electric charge (in coulombs) of an ion or other
+    r"""Returns the electric charge (in coulombs) of an ion or other
     particle
 
     Parameters
@@ -1362,7 +1362,7 @@ def electric_charge(argument):
 
 
 def _extract_charge_state(argument):
-    """Splits strings containing element or isotope and charge state
+    r"""Splits strings containing element or isotope and charge state
     information into a string without the charge state information and
     the charge state as an integer (or None if no charge state
     information is given).
@@ -1469,7 +1469,7 @@ def _extract_charge_state(argument):
 
 
 def _is_neutron(argument, mass_numb=None):
-    """Returns True if the argument corresponds to a neutron, and
+    r"""Returns True if the argument corresponds to a neutron, and
     False otherwise."""
 
     if argument == 0 and mass_numb == 1:
@@ -1484,7 +1484,7 @@ def _is_neutron(argument, mass_numb=None):
 
 
 def _is_hydrogen(argument, can_be_atomic_number=False):
-    """Returns True if the argument corresponds to hydrogen, and False
+    r"""Returns True if the argument corresponds to hydrogen, and False
     otherwise."""
 
     if argument == 'p-':
@@ -1522,7 +1522,7 @@ def _is_hydrogen(argument, can_be_atomic_number=False):
 
 
 def _is_electron(argument):
-    """Returns True if the argument corresponds to an electron, and False
+    r"""Returns True if the argument corresponds to an electron, and False
     otherwise."""
 
     if not isinstance(argument, str):
@@ -1535,7 +1535,7 @@ def _is_electron(argument):
 
 
 def _is_positron(argument):
-    """Returns True if the argument corresponds to a positron, and False
+    r"""Returns True if the argument corresponds to a positron, and False
     otherwise."""
 
     if not isinstance(argument, str):
@@ -1548,7 +1548,7 @@ def _is_positron(argument):
 
 
 def _is_antiproton(argument):
-    """Returns True if the argument corresponds to an antiproton, and
+    r"""Returns True if the argument corresponds to an antiproton, and
     False otherwise."""
 
     if not isinstance(argument, str):
@@ -1561,7 +1561,7 @@ def _is_antiproton(argument):
 
 
 def _is_alpha(argument):
-    """Returns True if the argument corresponds to an alpha particle,
+    r"""Returns True if the argument corresponds to an alpha particle,
     and False otherwise."""
 
     if not isinstance(argument, str):

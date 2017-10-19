@@ -6,7 +6,7 @@ from astropy import units as u
 
 
 def plasma_dispersion_func(zeta):
-    """Calculate the plasma dispersion function
+    r"""Calculate the plasma dispersion function
 
     Parameters
     ----------
@@ -86,7 +86,7 @@ def plasma_dispersion_func(zeta):
 
 
 def plasma_dispersion_func_deriv(zeta):
-    """Calculate the derivative of the plasma dispersion function
+    r"""Calculate the derivative of the plasma dispersion function
 
     Parameters
     ----------

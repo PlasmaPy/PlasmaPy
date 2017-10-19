@@ -18,7 +18,7 @@ def _split_version(version):
 
 
 def _min_required_version(required, current):  # coveralls: ignore
-    """ Return `True` if the current version meets the required minimum
+    r""" Return `True` if the current version meets the required minimum
         version and `False` if not/ if not installed.
 
         Right now `required` and `current` are just '.' separated strings
@@ -28,7 +28,7 @@ def _min_required_version(required, current):  # coveralls: ignore
 
 
 def _check_numpy_version():  # coveralls: ignore
-    """ Make sure numpy in installed and meets the minimum version requirements
+    r""" Make sure numpy in installed and meets the minimum version requirements
     """
     required_version = False
     np_ver = None
@@ -48,7 +48,7 @@ def _check_numpy_version():  # coveralls: ignore
 
 
 def _check_astropy_version():  # coveralls: ignore
-    """ Make sure astropy in installed and meets the minimum version requirements
+    r""" Make sure astropy in installed and meets the minimum version requirements
     """
     required_version = False
     ap_ver = None

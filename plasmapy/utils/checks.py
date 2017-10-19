@@ -7,7 +7,7 @@ from ..constants import c
 
 
 def check_quantity(validations):
-    """Raises exceptions if `argname` in decorated function is not an
+    r"""Raises exceptions if `argname` in decorated function is not an
     astropy Quantity with correct units and valid numerical values.
 
     Parameters
@@ -103,7 +103,7 @@ def check_quantity(validations):
 
 
 def check_relativistic(func=None, betafrac=0.1):
-    """Raises an error when the output of the decorated
+    r"""Raises an error when the output of the decorated
     function is greater than `betafrac` times the speed of light
 
     Parameters

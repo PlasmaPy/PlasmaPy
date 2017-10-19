@@ -7,7 +7,7 @@ from ..math import plasma_dispersion_func, plasma_dispersion_func_deriv
 
 
 def test_plasma_dispersion_func():
-    """Test the implementation of plasma_dispersion_func against exact
+    r"""Test the implementation of plasma_dispersion_func against exact
     results, quantities calculated by Fried & Conte (1961), and
     analytic results.
     """
@@ -59,7 +59,7 @@ def test_plasma_dispersion_func():
 
 
 def test_plasma_dispersion_func_deriv():
-    """Test the implementation of plasma_dispersion_func_deriv against
+    r"""Test the implementation of plasma_dispersion_func_deriv against
     tabulated results from Fried & Conte (1961)."""
 
     atol = 2e-6*(1 + 1j)

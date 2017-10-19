@@ -111,7 +111,7 @@ class Species:
 
     @property
     def kinetic_energy(self):
-        """
+        r"""
         Calculates the kinetic energy for each macroparticle.
 
         Returns
@@ -123,7 +123,7 @@ class Species:
 
     @property
     def kinetic_energy_history(self):
-        """
+        r"""
         Calculates the kinetic energy history for each particle.
 
         Returns
@@ -134,7 +134,7 @@ class Species:
         return (self.velocity_history ** 2).sum(axis=-1) * self.eff_m / 2
 
     def boris_push(self, init=False):
-        """
+        r"""
         Implements the Boris algorithm for moving particles and updating their
         velocities.
 
@@ -184,7 +184,7 @@ class Species:
             self.x += self.v * dt
 
     def run(self):
-        """
+        r"""
         Runs a simulation instance.
         """
         self.boris_push(init=True)
@@ -206,7 +206,7 @@ class Species:
                f"steps over {self.NT} iterations"
 
     def plot_trajectories(self):  # coveralls: ignore
-        """ Draws trajectory history."""
+        r""" Draws trajectory history."""
         from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
         from mpl_toolkits.mplot3d import Axes3D
@@ -225,7 +225,7 @@ class Species:
         plt.show()
 
     def plot_time_trajectories(self, plot="xyz"):  # coveralls: ignore
-        """
+        r"""
         Draws position history versus time.
 
         Arguments
@@ -255,7 +255,7 @@ class Species:
         plt.show()
 
     def test_kinetic_energy(self):
-        """ Test conservation of kinetic energy. """
+        r""" Test conservation of kinetic energy. r"""
         assert np.allclose(self.kinetic_energy_history,
                            self.kinetic_energy_history.mean(),
                            atol=3 * self.kinetic_energy_history.std()), \

@@ -8,7 +8,7 @@ from ..relativity import Lorentz_factor
 
 
 def test_Lorentz_factor():
-    """Test Lorentz_factor in relativity.py"""
+    r"""Test Lorentz_factor in relativity.py"""
 
     V = 123456789*u.m/u.s
     assert np.isclose(Lorentz_factor(V), (1/np.sqrt(1-V**2/c**2)).value)

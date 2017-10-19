@@ -7,7 +7,7 @@ from .atomic import (isotope_symbol, mass_number, isotope_mass, atomic_number,
 
 
 def nuclear_binding_energy(argument, mass_numb=None):
-    """Returns the nuclear binding energy associated with an isotope.
+    r"""Returns the nuclear binding energy associated with an isotope.
 
     Parameters
     ----------
@@ -71,7 +71,7 @@ def nuclear_binding_energy(argument, mass_numb=None):
 
 
 def nuclear_reaction_energy(reaction):
-    """Returns the released energy from a nuclear fusion reaction.
+    r"""Returns the released energy from a nuclear fusion reaction.
 
     Parameters
     ----------
@@ -120,7 +120,7 @@ def nuclear_reaction_energy(reaction):
     """
 
     def _get_isotopes_list(side):
-        """Parse a side of a reaction to get a list of the isotopes."""
+        r"""Parse a side of a reaction to get a list of the isotopes."""
         pre_list = re.split(' \+ ', side)
         isotopes_list = []
         for item in pre_list:
@@ -142,14 +142,14 @@ def nuclear_reaction_energy(reaction):
         return isotopes_list
 
     def _mass_number_of_list(isotopes_list):
-        """Find the total number of nucleons in a list of isotopes."""
+        r"""Find the total number of nucleons in a list of isotopes."""
         mass_numb = 0
         for isotope in isotopes_list:
             mass_numb += mass_number(isotope)
         return mass_numb
 
     def _add_binding_energies(isotopes_list):
-        """Finds the total binding energy from a list of isotopes."""
+        r"""Finds the total binding energy from a list of isotopes."""
         total_binding_energy = 0.0*units.MeV
         for isotope in isotopes_list:
             total_binding_energy += nuclear_binding_energy(isotope)

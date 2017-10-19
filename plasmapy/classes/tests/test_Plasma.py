@@ -11,7 +11,7 @@ from plasmapy.classes import plasma
     ((64, 64, 64), 262144),  # 3D
 ])
 def test_Plasma_setup(grid_dimensions, expected_size):
-    """Function to test basic setup of the Plasma object.
+    r"""Function to test basic setup of the Plasma object.
 
     Tests that a Plasma object initiated with a particular
     specification behaves in the correct way.
@@ -62,7 +62,7 @@ def test_Plasma_setup(grid_dimensions, expected_size):
 
 # @pytest.mark.parametrize([()])
 def test_Plasma_derived_vars():
-    """Function to test derived variables of the Plasma class.
+    r"""Function to test derived variables of the Plasma class.
 
     Tests the shapes, units and values of variables derived from core
     variables.  The core variables are set with arbitrary uniform
