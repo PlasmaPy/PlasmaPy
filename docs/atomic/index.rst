@@ -8,6 +8,8 @@ Atomic
 
 .. automodule:: plasmapy.atomic
 
+Test: :func:`~plasmapy.atomic.atomic_symbol`
+
 Functions
 =========
 
@@ -44,4 +46,7 @@ The functions contained within the atomic subpackage are:
 * .. autofunction:: charge_state
 
 * .. autofunction:: electric_charge
+
+
+
 
