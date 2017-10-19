@@ -1,17 +1,16 @@
-**************************************
-plasma class 
-**************************************
+******
+Plasma
+******
 
 .. currentmodule:: plasmapy.classes.plasma
 
-introduction
+Introduction
 ============
 
-The :class:`Plasma` class is the basic structure that contains the physical systems
-information. You inital some plasma system by creating an instance of the plasma
-class and then setting the :attr:`Plasma.density`, :attr:`plasma.momentum`,
+The :class:`Plasma` class is a basic structure to contain physical
+information about a plasma.  To initialize a plasma system, first
+create an instance of the :class:`Plasma` class and then set the
+:attr:`Plasma.density`, :attr:`plasma.momentum`,
 :attr:`plasma.pressure` and the :attr:`plasma.magnetic_field`.
 
-Then...?
-
-This should be filled out by someone who has a better idea of whats going on.
+This feature is currently under development.
