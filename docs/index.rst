@@ -30,10 +30,9 @@ Classes
 
 Functions
 =========
-.. toctree::
-    :maxdepth: 1
 
-    dispersion_solver/index
+..toctree: :
+    :maxdepth: 1
 
 Development
 =======
