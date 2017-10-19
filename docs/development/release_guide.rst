@@ -1,6 +1,6 @@
-**********************
-PlasmaPy Release Guide
-**********************
+*************
+Release Guide
+*************
 
 This document describes the procedure for making a release of
 PlasmaPy.  This document is under development and should be updated

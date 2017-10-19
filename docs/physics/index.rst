@@ -2,9 +2,9 @@
 
 .. _plasmapy-physics:
 
-******************
-Physics Subpackage
-******************
+*******
+Physics
+*******
 
 This document will describe the physics subpackage.
 

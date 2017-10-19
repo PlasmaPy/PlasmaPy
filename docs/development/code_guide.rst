@@ -1,6 +1,6 @@
-**************************
-PlasmaPy Coding Guidelines
-**************************
+***************************
+Code Development Guidelines
+***************************
 
 This document describes the coding requirements and guidelines to be
 followed during the development of PlasmaPy and affiliated packages.

@@ -1,6 +1,6 @@
-*********************************
-PlasmaPy Documentation Guidelines
-*********************************
+************************
+Documentation Guidelines
+************************
 
 This document describes the documentation requirements and guidelines
 to be followed during the development of PlasmaPy and affiliated
