@@ -1,4 +1,4 @@
-# [PlasmaPy License prior to 2017 October 19](#old-license)
+# PlasmaPy License prior to 2017 October 19
 
 Copyright (c) 2015-2017, PlasmaPy Community. All rights reserved.
 
@@ -38,7 +38,8 @@ was [updated on 2017 October
 protections against software patents from the [BSD+Patent
 license](https://opensource.org/licenses/BSDplusPatent).  Updates
 prior to 2017 October 19 remain available under [PlasmaPy's old
-license](old-license).  Most contributors to PlasmaPy [have
+license](plasmapy-license-prior-to-2017-october-19).  Most
+contributors to PlasmaPy [have
 agreed](https://github.com/PlasmaPy/PlasmaPy/pull/114) to have
 their contributions covered by the [new
 license](https://github.com/PlasmaPy/PlasmaPy/blob/master/LICENSE.md).
@@ -47,4 +48,5 @@ Pull requests
 [#77](https://github.com/PlasmaPy/PlasmaPy/pull/77),
 [#107](https://github.com/PlasmaPy/PlasmaPy/pull/107), and
 [#108](https://github.com/PlasmaPy/PlasmaPy/pull/108) are covered
-solely by [PlasmaPy's old license](old-license).
+solely by [PlasmaPy's old
+license](plasmapy-license-prior-to-2017-october-19).
