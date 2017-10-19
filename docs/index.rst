@@ -10,6 +10,16 @@ Welcome to PlasmaPy's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+Modules
+=======
+
+.. toctree::
+    :maxdepth: 1
+
+    atomic/index
+    math/index
+    physics/index
+
 Classes
 =======
 
