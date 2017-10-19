@@ -1,4 +1,4 @@
-# PlasmaPy License for contributions prior to October 10, 2017
+# [PlasmaPy License prior to 2017 October 19](#old-license)
 
 Copyright (c) 2015-2017, PlasmaPy Community. All rights reserved.
 
@@ -31,40 +31,20 @@ of this software, even if advised of the possibility of such damage.
 
 # Notice
 
-On October 10, 2017, the following patent grant (originally from the
-[BSD+Patent license](https://opensource.org/licenses/BSDplusPatent))
-was added to PlasmaPy's license:
-
-> Subject to the terms and conditions of this license, each copyright
-> holder and contributor hereby grants to those receiving rights under
-> this license a perpetual, worldwide, non-exclusive, no-charge,
-> royalty-free, irrevocable (except for failure to satisfy the
-> conditions of this license) patent license to make, have made, use,
-> offer to sell, sell, import, and otherwise transfer this software,
-> where such license applies only to those patent claims, already
-> acquired or hereafter acquired, licensable by such copyright holder or
-> contributor that are necessarily infringed by:
-> 
-> (a) their Contribution(s) (the licensed copyrights of copyright
-> holders and non-copyrightable additions of contributors, in source or
-> binary form) alone; or
-> 
-> (b) combination of their Contribution(s) with the work of authorship
-> to which such Contribution(s) was added by such copyright holder or
-> contributor, if, at the time the Contribution is added, such addition
-> causes such combination to be necessarily infringed. The patent
-> license shall not apply to any other combinations which include the
-> Contribution.
-> 
-> Except as expressly stated above, no rights or licenses from any
-> copyright holder or contributor is granted under this license, whether
-> expressly, by implication, estoppel or otherwise.
-
-This patent grant applies to all contributions made after being
-adopted on October 10, 2017.  This patent grant does not apply to
-contributions made prior to its adoption, except as follows.  The
-following contributors and copyright holders have agreed for this
-patent grant to cover their contributions to PlasmaPy prior to October
-10, 2017:
-
-* Nick Murphy (namurphy)
+[PlasmaPy's
+license](https://github.com/PlasmaPy/PlasmaPy/blob/master/LICENSE.md)
+was [updated on 2017 October
+19](https://github.com/PlasmaPy/PlasmaPy/pull/114) to include
+protections against software patents from the [BSD+Patent
+license](https://opensource.org/licenses/BSDplusPatent).  Updates
+prior to 2017 October 19 remain available under [PlasmaPy's old
+license](old-license).  Most contributors to PlasmaPy [have
+agreed](https://github.com/PlasmaPy/PlasmaPy/pull/114) to have
+their contributions covered by the [new
+license](https://github.com/PlasmaPy/PlasmaPy/blob/master/LICENSE.md).
+Pull requests
+[#63](https://github.com/PlasmaPy/PlasmaPy/pull/63),
+[#77](https://github.com/PlasmaPy/PlasmaPy/pull/77),
+[#107](https://github.com/PlasmaPy/PlasmaPy/pull/107), and
+[#108](https://github.com/PlasmaPy/PlasmaPy/pull/108) are covered
+solely by [PlasmaPy's old license](old-license).
