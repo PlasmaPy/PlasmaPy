@@ -1,12 +1,14 @@
 import numpy as np
 from astropy import units
+from astropy.units import quantity_input
 from ..constants import c, h
 from ..atomic import ion_mass
-from ..utils import _check_quantity, _check_relativistic
+from ..utils import check_relativistic, check_positive, check_finite
 from .relativity import Lorentz_factor
 
 
-def deBroglie_wavelength(V, particle):
+@quantity_input
+def deBroglie_wavelength(V: units.m/units.s, particle):
     r"""Calculates the de Broglie wavelength.
 
     Parameters
@@ -62,8 +64,6 @@ def deBroglie_wavelength(V, particle):
     <Quantity inf m>
 
     """
-
-    _check_quantity(V, 'V', 'deBroglie_wavelength', units.m/units.s)
 
     V = np.abs(V)
 

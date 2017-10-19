@@ -13,7 +13,7 @@ import numpy as np
 # For future: change these into decorators.  _check_quantity does a
 # bit more than @quantity_input as it can allow
 
-from ..utils import _check_quantity, check_relativistic, check_quantity
+from ..utils import check_relativistic, check_positive, check_finite
 
 
 r"""Values should be returned as an Astropy Quantity in SI units.
@@ -73,7 +73,9 @@ by an angular frequency to get a length scale:
 
 
 @check_relativistic
-def Alfven_speed(B, density, ion="p"):
+@check_positive("density")
+@quantity_input
+def Alfven_speed(B: units.T, density, ion="p"): # TODO density
     r"""Returns the Alfven speed.
 
     Parameters
@@ -147,10 +149,6 @@ def Alfven_speed(B, density, ion="p"):
     <Quantity 4.317387029559353 cm / us>
     """
 
-    _check_quantity(B, 'B', 'Alfven_speed', units.T)
-    _check_quantity(density, 'density', 'Alfven_speed',
-                    [units.m**-3, units.kg/units.m**3], can_be_negative=False)
-
     B = B.to(units.T)
     density = density.si
 
@@ -176,11 +174,9 @@ def Alfven_speed(B, density, ion="p"):
 
 
 @check_relativistic
-@check_quantity({
-    'T_i': {'units': units.K, 'can_be_negative': False},
-    'T_e': {'units': units.K, 'can_be_negative': False}
-})
-def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
+@check_positive('T_e', 'T_i')
+@quantity_input
+def ion_sound_speed(*ignore, T_e = 0*units.K, T_i=0*units.K,
                     gamma_e=1, gamma_i=3, ion='p'):
     r"""Returns the ion sound speed for an electron-ion plasma.
 
@@ -312,9 +308,8 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
 
 
 @check_relativistic
-@check_quantity({
-    'T': {'units': units.K, 'can_be_negative': False}
-})
+@check_positive('T')
+@quantity_input
 def thermal_speed(T, particle="e", method="most_probable"):
     r"""Returns the most probable speed for an particle within a Maxwellian
     distribution.
@@ -406,11 +401,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
 
     return V
 
-
-@check_quantity({
-    'B': {'units': units.T}
-})
-def gyrofrequency(B, particle='e'):
+def gyrofrequency(B: units.T, particle='e'):
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
@@ -494,7 +485,9 @@ def gyrofrequency(B, particle='e'):
     return omega_ci
 
 
-def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
+@quantity_input(equivalencies = units.temperature_energy())
+def gyroradius(B: units.T, *args, Vperp: units.m/units.s=None,
+               T: units.K = None, particle='e'):
     r"""Returns the particle gyroradius.
 
     Parameters
@@ -506,7 +499,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
         The component of particle velocity that is perpendicular to the
         magnetic field in units convertible to meters per second.
 
-    T_i: Quantity, optional
+    T: Quantity, optional
         The particle temperature in units convertible to kelvin.
 
     particle : string, optional
@@ -574,7 +567,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
     <Quantity 288002.38837768475 m>
     >>> gyroradius(400*u.G, 1e7*u.m/u.s, particle='Fe+++')
     <Quantity 48.23129811339086 m>
-    >>> gyroradius(B = 0.01*u.T, T_i = 1e6*u.K)
+    >>> gyroradius(B = 0.01*u.T, T = 1e6*u.K)
     <Quantity 0.0031303339253265536 m>
     >>> gyroradius(B = 0.01*u.T, Vperp = 1e6*u.m/u.s)
     <Quantity 0.0005685630062091092 m>
@@ -587,7 +580,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
 
     """
 
-    if Vperp is not None and T_i is not None:
+    if Vperp is not None and T is not None:
         raise ValueError("Cannot have both Vperp and T_i as arguments to "
                          "gyroradius")
 
@@ -600,20 +593,15 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
         if arg.unit == units.m/units.s:
             Vperp = arg
         elif arg.unit in (units.J, units.K):
-            T_i = arg.to(units.K, equivalencies=units.temperature_energy())
+            T = arg.to(units.K, equivalencies=units.temperature_energy())
         else:
             raise units.UnitConversionError("Incorrect units for positional "
                                             "argument in gyroradius")
     elif len(args) > 0:
         raise ValueError("Incorrect inputs to gyroradius")
 
-    _check_quantity(B, 'B', 'gyroradius', units.T)
-
-    if Vperp is not None:
-        _check_quantity(Vperp, 'Vperp', 'gyroradius', units.m/units.s)
-    elif T_i is not None:
-        _check_quantity(T_i, 'T_i', 'gyroradius', units.K)
-        Vperp = thermal_speed(T_i, particle=particle)
+    if T is not None:
+        Vperp = thermal_speed(T, particle=particle)
 
     omega_ci = gyrofrequency(B, particle)
 
@@ -622,9 +610,8 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
     return r_Li.to(units.m, equivalencies=units.dimensionless_angles())
 
 
-@check_quantity({
-    'n': {'units': units.m**-3, 'can_be_negative': False}
-})
+@check_positive('n')
+@quantity_input
 def plasma_frequency(n, particle='e'):
     r"""Calculates the particle plasma frequency.
     Defaults to the fastest, electron plasma frequency.
@@ -700,11 +687,9 @@ def plasma_frequency(n, particle='e'):
     return omega_p.si
 
 
-@check_quantity({
-    'T_e': {'units': units.K, 'can_be_negative': False},
-    'n_e': {'units': units.m**-3, 'can_be_negative': False}
-})
-def Debye_length(T_e, n_e):
+@check_positive("T_e", "n_e")
+@quantity_input
+def Debye_length(T_e, n_e: units.m**-3):
     r"""Calculate the Debye length.
 
     Parameters
@@ -773,11 +758,9 @@ def Debye_length(T_e, n_e):
     return lambda_D
 
 
-@check_quantity({
-    'T_e': {'units': units.K, 'can_be_negative': False},
-    'n_e': {'units': units.m**-3, 'can_be_negative': False}
-})
-def Debye_number(T_e, n_e):
+@check_positive("T_e", "n_e")
+@quantity_input
+def Debye_number(T_e, n_e: units.m**-3):
     r"""Returns the Debye number.
 
     Parameters
@@ -839,11 +822,9 @@ def Debye_number(T_e, n_e):
 
     return N_D.to(units.dimensionless_unscaled)
 
-
-@check_quantity({
-    'n': {'units': units.m**-3, 'can_be_negative': False}
-})
-def inertial_length(n, particle='e'):
+@check_positive('n')
+@quantity_input
+def inertial_length(n: units.m**-3, particle='e'):
     r"""Calculate the particle inertial length,
 
     Parameters
@@ -908,10 +889,8 @@ def inertial_length(n, particle='e'):
     return d
 
 
-@check_quantity({
-    'B': {'units': units.T}
-})
-def magnetic_pressure(B):
+@quantity_input
+def magnetic_pressure(B: units.T):
     r"""Calculate the magnetic pressure.
 
     Parameters
@@ -968,10 +947,7 @@ def magnetic_pressure(B):
 
     return p_B
 
-
-@check_quantity({
-    'B': {'units': units.T}
-})
+@quantity_input
 def magnetic_energy_density(B: units.T):
     r"""Calculate the magnetic energy density.
 
@@ -1029,12 +1005,9 @@ def magnetic_energy_density(B: units.T):
 
     return E_B
 
-
-@check_quantity({
-    'B': {'units': units.T},
-    'n_e': {'units': units.m**-3, 'can_be_negative': False}
-})
-def upper_hybrid_frequency(B, n_e):
+@check_positive('n_e')
+@quantity_input
+def upper_hybrid_frequency(B: units.T, n_e: units.m**-3):
     r"""Returns the upper hybrid frequency.
 
     Parameters
@@ -1093,11 +1066,9 @@ def upper_hybrid_frequency(B, n_e):
     return omega_uh
 
 
-@check_quantity({
-    'B': {'units': units.T},
-    'n_i': {'units': units.m**-3, 'can_be_negative': False}
-})
-def lower_hybrid_frequency(B, n_i, ion='p'):
+@check_positive('n_i')
+@quantity_input
+def lower_hybrid_frequency(B: units.T, n_i: units.m**-3, ion='p'):
     r"""Returns the lower hybrid frequency.
 
     Parameters

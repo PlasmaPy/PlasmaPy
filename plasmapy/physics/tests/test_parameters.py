@@ -94,7 +94,7 @@ def test_Alfven_speed():
     with pytest.raises(ValueError):
         Alfven_speed(B_arr, rho_negarr)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitsError):
         Alfven_speed(5*u.A, n_i, ion='p')
 
     with pytest.raises(TypeError):

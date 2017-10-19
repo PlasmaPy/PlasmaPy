@@ -2,16 +2,15 @@
 
 from astropy import units
 import numpy as np
-from ..utils import check_quantity, _check_relativistic
+from ..utils import check_relativistic, check_positive, check_finite
 from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar)
 from ..atomic import (ion_mass, charge_state)
 from .parameters import Debye_length
 
 
-@check_quantity({"T": {"units": units.K, "can_be_negative": False},
-                 "n_e": {"units": units.m**-3}
-                 })
-def Coulomb_logarithm(T, n_e, particles, V=None):
+@check_positive('T', 'n_e')
+@units.quantity_input
+def Coulomb_logarithm(T, n_e: units.m**-3, particles, V: units.m/units.s =None):
     r"""Estimates the Coulomb logarithm.
 
     Parameters
@@ -163,8 +162,6 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
 
     if V is None:
         V = np.sqrt(3 * k_B * T / reduced_mass)
-    else:
-        _check_relativistic(V, 'Coulomb_logarithm', betafrac=0.8)
 
     # The first possibility is that the inner impact parameter
     # corresponds to a deflection of 90 degrees, which is valid when

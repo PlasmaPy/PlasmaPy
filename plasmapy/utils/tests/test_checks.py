@@ -5,10 +5,7 @@ from astropy import units as u
 import pytest
 
 from ...constants import c
-from ..checks import (
-    _check_quantity, _check_relativistic, check_relativistic,
-    check_quantity
-)
+from ..checks import (_check_relativistic, check_relativistic, )
 
 
 # (value, units, error)
@@ -51,170 +48,6 @@ quantity_valid_examples_non_default = [
     (5j*u.m, u.m, True, True, True)
 ]
 
-
-# Tests for _check_quantity
-@pytest.mark.parametrize(
-    "value, units, can_be_negative, can_be_complex, can_be_inf, error",
-    quantity_error_examples_non_default)
-def test__check_quantity_errors_non_default(
-        value, units, can_be_negative, can_be_complex, can_be_inf, error):
-    with pytest.raises(error):
-        _check_quantity(value, 'arg', 'funcname', units,
-                        can_be_negative=can_be_negative,
-                        can_be_complex=can_be_complex,
-                        can_be_inf=can_be_inf)
-
-
-@pytest.mark.parametrize(
-    "value, units, error", quantity_error_examples_default)
-def test__check_quantity_errors_default(value, units, error):
-    with pytest.raises(error):
-        _check_quantity(value, 'arg', 'funcname', units)
-
-
-@pytest.mark.parametrize(
-    "value, units, can_be_negative, can_be_complex, can_be_inf",
-    quantity_valid_examples_non_default)
-def test__check_quantity_non_default(
-        value, units, can_be_negative, can_be_complex, can_be_inf):
-    _check_quantity(value, 'arg', 'funcname', units,
-                    can_be_negative=can_be_negative,
-                    can_be_complex=can_be_complex,
-                    can_be_inf=can_be_inf)
-
-
-@pytest.mark.parametrize("value, units", quantity_valid_examples_default)
-def test__check_quantity_default(value, units):
-    _check_quantity(value, 'arg', 'funcname', units)
-
-
-# Tests for check_quantity decorator
-@pytest.mark.parametrize(
-    "value, units, error", quantity_error_examples_default)
-def test_check_quantity_decorator_errors_default(value, units, error):
-
-    @check_quantity({
-        "x": {"units": units}
-    })
-    def func(x):
-        return x
-
-    with pytest.raises(error):
-        func(value)
-
-
-@pytest.mark.parametrize(
-    "value, units, can_be_negative, can_be_complex, can_be_inf, error",
-    quantity_error_examples_non_default)
-def test_check_quantity_decorator_errors_non_default(
-        value, units, can_be_negative, can_be_complex, can_be_inf, error):
-
-    @check_quantity({
-        "x": {"units": units, "can_be_negative": can_be_negative,
-              "can_be_complex": can_be_complex, "can_be_inf": can_be_inf}
-    })
-    def func(x):
-        return x
-
-    with pytest.raises(error):
-        func(value)
-
-
-@pytest.mark.parametrize("value, units", quantity_valid_examples_default)
-def test_check_quantity_decorator_default(value, units):
-
-    @check_quantity({
-        "x": {"units": units}
-    })
-    def func(x):
-        return x
-
-    func(value)
-
-
-@pytest.mark.parametrize(
-    "value, units, can_be_negative, can_be_complex, can_be_inf",
-    quantity_valid_examples_non_default)
-def test_check_quantity_decorator_non_default(
-        value, units, can_be_negative, can_be_complex, can_be_inf):
-
-    @check_quantity({
-        "x": {"units": units, "can_be_negative": can_be_negative,
-              "can_be_complex": can_be_complex, "can_be_inf": can_be_inf}
-    })
-    def func(x):
-        return x
-
-    func(value)
-
-
-def test_check_quantity_decorator_missing_validated_params():
-
-    @check_quantity({
-        "x": {"units": u.m},
-        "y": {"units": u.s}
-    })
-    def func(x):
-        return x
-
-    with pytest.raises(TypeError) as e:
-        func(1*u.m)
-
-    assert "Call to func is missing validated params y" == str(e.value)
-
-
-def test_check_quantity_decorator_two_args_default():
-
-    @check_quantity({
-        "x": {"units": u.m},
-        "y": {"units": u.s}
-    })
-    def func(x, y):
-        return x/y
-
-    func(1*u.m, 1*u.s)
-
-
-def test_check_quantity_decorator_two_args_not_default():
-
-    @check_quantity({
-        "x": {"units": u.m, "can_be_negative": False},
-        "y": {"units": u.s}
-    })
-    def func(x, y):
-        return x/y
-
-    with pytest.raises(ValueError):
-        func(-1*u.m, 2*u.s)
-
-
-def test_check_quantity_decorator_two_args_one_kwargs_default():
-
-    @check_quantity({
-        "x": {"units": u.m},
-        "y": {"units": u.s},
-        "z": {"units": u.eV}
-    })
-    def func(x, y, another, z=10*u.eV):
-        return x*y*z
-
-    func(1*u.m, 1*u.s, 10*u.T)
-
-
-def test_check_quantity_decorator_two_args_one_kwargs_not_default():
-
-    @check_quantity({
-        "x": {"units": u.m},
-        "y": {"units": u.s, "can_be_negative": False},
-        "z": {"units": u.eV, "can_be_inf": False}
-    })
-    def func(x, y, z=10*u.eV):
-        return x*y*z
-
-    with pytest.raises(ValueError):
-        func(1*u.m, 1*u.s, z=np.inf*u.eV)
-
-
 # (speed, betafrac)
 non_relativistic_speed_examples = [
     (0*u.m/u.s, 0.1),
@@ -224,7 +57,7 @@ non_relativistic_speed_examples = [
 ]
 
 # (speed, betafrac, error)
-relativisitc_error_examples = [
+relativisitc_warning_examples = [
     (0.11*c, 0.1, UserWarning),
     (1.0*c, 0.1, UserWarning),
     (1.1*c, 0.1, UserWarning),
@@ -234,7 +67,9 @@ relativisitc_error_examples = [
     (-1.1*c, 0.1, UserWarning),
     (-np.inf*u.cm/u.s, 0.1, UserWarning),
     (2997924581*u.cm/u.s, 0.1, UserWarning),
-    (0.02*c, 0.01, UserWarning),
+    (0.02*c, 0.01, UserWarning)]
+
+relativisitc_error_examples = [
     (u.m/u.s, 0.1, TypeError),
     (51513.35, 0.1, TypeError),
     (5*u.m, 0.1, u.UnitConversionError),
@@ -277,8 +112,7 @@ def test_check_relativistic_decorator_no_args(speed):
     speed_func()
 
 
-@pytest.mark.parametrize(
-    "speed",
+@pytest.mark.parametrize("speed",
     [item[0] for item in non_relativistic_speed_examples])
 def test_check_relativistic_decorator_no_args_parentheses(speed):
 
@@ -297,4 +131,14 @@ def test_check_relativistic_decorator_errors(speed, betafrac, error):
         return speed
 
     with pytest.raises(error):
+        speed_func()
+
+@pytest.mark.parametrize("speed, betafrac, warning", relativisitc_warning_examples)
+def test_check_relativistic_decorator_warnings(speed, betafrac, warning):
+
+    @check_relativistic(betafrac=betafrac)
+    def speed_func():
+        return speed
+
+    with pytest.warns(warning):
         speed_func()
