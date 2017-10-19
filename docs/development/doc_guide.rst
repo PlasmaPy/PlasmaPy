@@ -15,9 +15,20 @@ Docstrings
   <https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt>`_
   standard for docstrings.
 
-* Simple functions may need only a one-line docstring
+* Docstrings should generally be raw string `literals
+  <https://docs.python.org/3/reference/lexical_analysis.html#literals>`_:
+  
+.. code-block:: python
+
+   r""" I did not like unstable eigenfunctions at first, but then
+   they grew on me.
+   
+   """
+    
+* Simple functions may need only a one-line docstring.
 
 Narrative Documentation
 =======================
 
-* Each subpackage must have narrative documentation describing its use.
+* Each subpackage must have narrative documentation describing its
+  use.
