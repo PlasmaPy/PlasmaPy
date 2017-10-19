@@ -6,43 +6,42 @@
 Atomic
 ******
 
-This document will describe the capabilities of the atomic
-subpackage.  
+.. automodule:: plasmapy.atomic
 
 Functions
 =========
 
 The functions contained within the atomic subpackage are:
 
-* .. py:function:: atomic_symbol
+* .. autofunction:: atomic_symbol
 
-* .. py:function:: isotope_symbol
+* .. autofunction:: isotope_symbol
 
-* .. py:function:: atomic_number
+* .. autofunction:: atomic_number
 
-* .. py:function:: is_isotope_stable
+* .. autofunction:: is_isotope_stable
 
-* .. py:function:: half_life
+* .. autofunction:: half_life
 
-* .. py:function:: mass_number
+* .. autofunction:: mass_number
 
-* .. py:function:: element_name
+* .. autofunction:: element_name
 
-* .. py:function:: standard_atomic_weight
+* .. autofunction:: standard_atomic_weight
 
-* .. py:function:: isotope_mass
+* .. autofunction:: isotope_mass
 
-* .. py:function:: ion_mass
+* .. autofunction:: ion_mass
 
-* .. py:function:: known_isotopes
+* .. autofunction:: known_isotopes
 
-* .. py:function:: common_isotopes
+* .. autofunction:: common_isotopes
 
-* .. py:function:: stable_isotopes
+* .. autofunction:: stable_isotopes
 
-* .. py:function:: isotopic_abundance
+* .. autofunction:: isotopic_abundance
 
-* .. py:function:: charge_state
+* .. autofunction:: charge_state
 
-* .. py:function:: electric_charge
+* .. autofunction:: electric_charge
 
