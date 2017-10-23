@@ -14,6 +14,8 @@ contained on this page is in the process of being written.
    :maxdepth: 2
    :caption: Contents:
 
+   plasmapy/index.rst
+
 Getting Started
 ===============
 
