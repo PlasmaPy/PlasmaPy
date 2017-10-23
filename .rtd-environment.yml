@@ -1,0 +1,14 @@
+name: plasmapy
+
+channels:
+    - astropy
+
+dependencies:
+    - python=3.6
+    - astropy
+    - matplotlib
+    - numpy
+    - scipy
+    - numpydoc
+#   - pip:
+#       - dependency_from_pip

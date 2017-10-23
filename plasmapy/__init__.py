@@ -1,10 +1,3 @@
-from ._metadata import (
-    name as __name__,
-    version as __version__,
-    description as __doc__,
-    author as __author__,
-)
-
 import sys
 import warnings
 
