@@ -16,7 +16,10 @@ from .parameters import (Alfven_speed,
                          lower_hybrid_frequency,
                          )
 
-from .quantum import deBroglie_wavelength
+from .quantum import (deBroglie_wavelength,
+                      Fermi_energy,
+                      Thomas_Fermi_length,
+                      )
 
 from .relativity import Lorentz_factor
 
