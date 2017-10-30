@@ -6,6 +6,19 @@ This document describes the documentation requirements and guidelines
 to be followed during the development of PlasmaPy and affiliated
 packages.
 
+Building documentation
+======================
+Documentation is built from the master branch on every commit pushed to it.
+
+
+Using sphinx within the project
+-------------------------------
+To build docs locally, run ``sphinx-docs docs docs/_build`` from within the main
+PlasmaPy repository directory, then open ``docs/_build/index.html`` with your
+browser of choice.
+
+Do try to solve warnings in documentation.
+
 Docstrings
 ==========
 
