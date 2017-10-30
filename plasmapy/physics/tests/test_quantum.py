@@ -1,21 +1,11 @@
-if __name__ == "__main__":    
-    import numpy as np
-    import pytest
-    import astropy.units as u
-    from plasmapy.constants import c, h
-    from plasmapy.physics.quantum import(deBroglie_wavelength, 
-                                         thermal_deBroglie_wavelength, 
-                                         Fermi_energy, 
-                                         Thomas_Fermi_length)
-else:
-    import numpy as np
-    import pytest
-    import astropy.units as u
-    from ...constants import c, h
-    from ..quantum import (deBroglie_wavelength, 
-                           thermal_deBroglie_wavelength, 
-                           Fermi_energy, 
-                           Thomas_Fermi_length)
+import numpy as np
+import pytest
+import astropy.units as u
+from ...constants import c, h
+from ..quantum import (deBroglie_wavelength, 
+                       thermal_deBroglie_wavelength, 
+                       Fermi_energy, 
+                       Thomas_Fermi_length)
 
 def test_deBroglie_wavelength():
 
@@ -71,8 +61,9 @@ def test_thermal_deBroglie_wavelength():
     r"""Test the thermal_deBroglie_wavelength function in quantum.py."""
     lambda_dbTh = thermal_deBroglie_wavelength(T_e)
     # test a simple case for expected value
+    expectStr = "Thermal deBroglie wavelength is off expected result for 1eV"
     assert np.isclose(lambda_dbTh.value,
-                      6.919367518364532e-10)
+                      6.919367518364532e-10), expectStr
     # testing returned units
     assert lambda_dbTh.unit == u.m
 
@@ -80,8 +71,9 @@ def test_Fermi_energy():
     r"""Test the Fermi_energy function in quantum.py."""
     energy_F = Fermi_energy(n_e)
     # test a simple case for expected value
+    expectStr = "Fermi energy is off expected result for 1e23 cm^-3"
     assert np.isclose(energy_F.value,
-                      1.2586761116196002e-18)
+                      1.2586761116196002e-18), expectStr
     # testing returned units
     assert energy_F.unit == u.J
 
@@ -89,8 +81,9 @@ def test_Thomas_Fermi_length():
     r"""Test the Thomas_Fermi_length function in quantum.py."""
     lambda_TF = Thomas_Fermi_length(n_e)
     # test a simple case for expected value
+    expectStr = "Thomas-Fermi length is off expected result for 1e23 cm^-3"
     assert np.isclose(lambda_TF.value,
-                      5.379914085596706e-11)
+                      5.379914085596706e-11), expectStr
     # testing returned units
     assert lambda_TF.unit == u.m
     
