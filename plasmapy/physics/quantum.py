@@ -2,20 +2,12 @@
 Functions for quantum parameters, including electron degenerate
 gases and warm dense matter.
 """
-if __name__ == "__main__":    
-    import numpy as np
-    from astropy import units
-    from plasmapy.constants import c, h, hbar, m_e, eps0, e, k_B
-    from plasmapy.atomic import ion_mass
-    from plasmapy.utils import _check_quantity, _check_relativistic, check_quantity
-    from plasmapy.physics.relativity import Lorentz_factor
-else:
-    import numpy as np
-    from astropy import units
-    from ..constants import c, h, hbar, m_e, eps0, e, k_B
-    from ..atomic import ion_mass
-    from ..utils import _check_quantity, _check_relativistic, check_quantity
-    from .relativity import Lorentz_factor
+import numpy as np
+from astropy import units
+from ..constants import c, h, hbar, m_e, eps0, e, k_B
+from ..atomic import ion_mass
+from ..utils import _check_quantity, _check_relativistic, check_quantity
+from .relativity import Lorentz_factor
 
 
 def deBroglie_wavelength(V, particle):
