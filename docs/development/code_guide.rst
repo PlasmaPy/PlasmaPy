@@ -108,30 +108,30 @@ Assert statements
 * Pytest runs tests by checking ``assert`` statements, so this is sufficient:
 
 .. code-block:: python
+
   def test_universe_is_sane():
       assert 2 + 2 == 4
-..
 
 However, making assertions descriptive is better in most cases:
 
 .. code-block:: python
+
   def test_universe_is_sane():
       assert 2 + 2 == 4, "Addition is broken. Reinstall the universe and reboot."
-..
 
 pytest should display the value of the ``2 + 2`` expression, but the value can be added to the thrown string:
 
 .. code-block:: python
+
   def test_universe_is_sane():
       assert 2 + 2 == 4, f"Addition is broken, 2 + 2 giving {2 + 2}. Reinstall the universe and reboot."
-..
 
 A note on test independence and parametrization
 -----------------------------------------------
 
 In this section, we'll discuss the issue of parametrization based on a made up example
-of a proof_ of Gauss's class number conjecture:
-.. _proof: https://en.wikipedia.org/wiki/Riemann_hypothesis#Excluded_middle
+of a `proof <https://en.wikipedia.org/wiki/Riemann\_hypothesis#Excluded\_middle>`_ of Gauss's class number conjecture:
+.. _proof: 
 The proof goes along these lines: 
 * If the generalized Riemann hypothesis is true, the conjecture is true.
 * If the former is false, the latter is also true.
@@ -140,40 +140,42 @@ The proof goes along these lines:
 One way to use pytest for testing is to write continuous assertions:
 
 .. code-block:: python
+
   def test_proof_by_riemann_hypothesis():
-       assert proof_by_riemann(False) # if this step fails, the test stops
-       assert proof_by_riemann(True) # and you have to run this again
-..
+       # if this step fails, the test stops
+       assert proof_by_riemann(False) 
+       # and you have to run this again
+       assert proof_by_riemann(True) 
 
 To do this the right way, what you technically should do to make the tests independent:
 
 .. code-block:: python
+
   def test_proof_if_riemann_false():
        assert proof_by_riemann(False)
   def test_proof_if_riemann_true():
        assert proof_by_riemann(True)
-..
 
 but that's a lot of typing so what you actually do is use pytest parametrization:
 
 .. code-block:: python
+
   @pytest.mark.parametrize("truth", [True, False])
   def test_proof_if_riemann(truth):
        assert proof_by_riemann(truth)
-..
 
 And both of these are going to run regardless of failures, which is awesome!
 
 Of course, with qualitatively different tests you would use either separate functions or you'd pass in pairs of inputs and expected values:
 
 .. code-block:: python
+
   @pytest.mark.parametrize("truth,expected", [(True, True), (False, True)])
   def test_proof_if_riemann(truth, expected):
        assert proof_by_riemann(truth) == expected
-..
 
 Code coverage
-------------
+-------------
 
 PlasmaPy uses the coverage.py addon via Coveralls.io. At the end of every
 Travis CI testing session, information on which lines were executed in the test
