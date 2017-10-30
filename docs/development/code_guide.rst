@@ -188,6 +188,14 @@ description with ``coverage html``.
 At the time of writing this, coverage.py has a known issue with being
 unable to check lines executed in Numba JIT compiled functions.
   
+Occasionally there will be some lines that do not require testing.  For
+example, testing exception handling for an `ImportError` when importing an
+external package would usually be impractical.  In these instances, we may end
+a line with `# coveralls: ignore` to indicate that these lines should be
+excluded from coverage reports (or add a line to `.coveragerc`).  This strategy
+should be used sparingly, since it is often better to explicitly test
+exceptions and warnings and to show the lines of code that are not tested.  
+
 Warnings and Exceptions
 =======================
 
