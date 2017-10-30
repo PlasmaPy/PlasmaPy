@@ -129,9 +129,9 @@ pytest should display the value of the ``2 + 2`` expression, but the value can b
 A note on test independence and parametrization
 -----------------------------------------------
 
-In this section, we'll discuss the issue of parametrization based on a made up example
-of a `proof <https://en.wikipedia.org/wiki/Riemann\_hypothesis#Excluded\_middle>`_ of Gauss's class number conjecture:
-.. _proof: 
+In this section, we'll discuss the issue of parametrization based on an example
+of a `proof <https://en.wikipedia.org/wiki/Riemann\_hypothesis#Excluded\_middle>`_ of Gauss's class number conjecture.
+
 The proof goes along these lines: 
 * If the generalized Riemann hypothesis is true, the conjecture is true.
 * If the former is false, the latter is also true.
