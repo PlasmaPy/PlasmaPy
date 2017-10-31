@@ -59,7 +59,6 @@ def test_Maxwellian_speed_1D():
     yData1D = Maxwellian_speed_1D(v=xData1D,T=T,particle=particle)
     # integrating, this should be close to 1
     integ = spint.trapz(y=yData1D, x=xData1D)
-    print("1D integral {0}".format(integ))
     exceptStr = "Integral of distribution function should be 1."
     assert np.isclose(integ.value, 1), exceptStr
     
