@@ -1,6 +1,6 @@
 """Functions to deal with distribution : generate, fit, calculate"""
 
-from astropy import units
+from astropy import units as u
 
 from astropy.units import (UnitConversionError, UnitsError, quantity_input,
                            Quantity)
@@ -14,14 +14,14 @@ import numpy as np
 from ..utils import _check_quantity, check_relativistic, check_quantity
 
 
-@units.quantity_input
-def Maxwellian_1D(v: units.m/units.s,
+@u.quantity_input
+def Maxwellian_1D(v: u.m/u.s,
                   T, 
                   particle="e",
-                  V_drift=0*units.m/units.s):
+                  V_drift=0*u.m/u.s):
     r"""Returns the probability at the velocity `v` in m/s
-    to find a particle `particle` in a plasma of temperature `T`
-    following the Maxwellian distribution function.
+     to find a particle `particle` in a plasma of temperature `T`
+     following the Maxwellian distribution function.
 
     Parameters
     ----------
@@ -76,7 +76,7 @@ def Maxwellian_1D(v: units.m/units.s,
     <Quantity 5.916329687405703e-07 s / m>
     """
     # convert temperature to Kelvins
-    T = T.to(units.K, equivalencies=units.temperature_energy())
+    T = T.to(u.K, equivalencies=u.temperature_energy())
     # get thermal velocity and thermal velocity squared
     vTh = thermal_speed(T, particle=particle, method="most_probable")
     vThSq = vTh ** 2
@@ -89,17 +89,17 @@ def Maxwellian_1D(v: units.m/units.s,
         distFunc = coeff * expTerm
     except Exception:
         raise ValueError("Unable to get distribution function.")
-    return distFunc.to(units.s/units.m)
+    return distFunc.to(u.s/u.m)
 
-@units.quantity_input
-def Maxwellian_velocity_3D(vx: units.m/units.s,
-                           vy: units.m/units.s,
-                           vz: units.m/units.s,
+@u.quantity_input
+def Maxwellian_velocity_3D(vx: u.m/u.s,
+                           vy: u.m/u.s,
+                           vz: u.m/u.s,
                            T, 
                            particle="e",
-                           Vx_drift=0*units.m/units.s,
-                           Vy_drift=0*units.m/units.s,
-                           Vz_drift=0*units.m/units.s):
+                           Vx_drift=0*u.m/u.s,
+                           Vy_drift=0*u.m/u.s,
+                           Vz_drift=0*u.m/u.s):
     r"""Return the probability of finding a particle with velocity components
     `v_x`, `v_y`, and `v_z`in m/s in an equilibrium plasma of temperature 
     `T` which follows the 3D Maxwellian distribution function. This 
@@ -184,7 +184,7 @@ def Maxwellian_velocity_3D(vx: units.m/units.s,
     
     """
     # convert temperature to Kelvins
-    T = T.to(units.K, equivalencies=units.temperature_energy())
+    T = T.to(u.K, equivalencies=u.temperature_energy())
     # get thermal velocity and thermal velocity squared
     vTh = thermal_speed(T, particle=particle, method="most_probable")
     # accounting for thermal velocity in 3D
@@ -199,13 +199,13 @@ def Maxwellian_velocity_3D(vx: units.m/units.s,
         distFunc = coeff * expTerm
     except Exception:
         raise ValueError("Unable to get distribution function.")
-    return distFunc.to((units.s/units.m) ** 3)
+    return distFunc.to((u.s/u.m) ** 3)
 
-@units.quantity_input
-def Maxwellian_speed_1D(v: units.m/units.s,
+@u.quantity_input
+def Maxwellian_speed_1D(v: u.m/u.s,
                         T, 
                         particle="e",
-                        V_drift=0*units.m/units.s):
+                        V_drift=0*u.m/u.s):
     r"""Return the probability of finding a particle with speed `v` in m/s
      in an equilibrium plasma of temperature `T` which follows the 
      Maxwellian distribution function.
@@ -266,7 +266,7 @@ def Maxwellian_speed_1D(v: units.m/units.s,
     
     """
     # convert temperature to Kelvins
-    T = T.to(units.K, equivalencies=units.temperature_energy())
+    T = T.to(u.K, equivalencies=u.temperature_energy())
     # get thermal velocity and thermal velocity squared
     vTh = thermal_speed(T, particle=particle, method="most_probable")
     vThSq = vTh ** 2
@@ -280,17 +280,17 @@ def Maxwellian_speed_1D(v: units.m/units.s,
         distFunc = coeff1 * coeff2 * expTerm
     except Exception:
         raise ValueError("Unable to get distribution function.")
-    return distFunc.to(units.s/units.m)
+    return distFunc.to(u.s/u.m)
 
-@units.quantity_input
-def Maxwellian_speed_3D(vx: units.m/units.s,
-                        vy: units.m/units.s,
-                        vz: units.m/units.s,
+@u.quantity_input
+def Maxwellian_speed_3D(vx: u.m/u.s,
+                        vy: u.m/u.s,
+                        vz: u.m/u.s,
                         T, 
                         particle="e",
-                        Vx_drift=0*units.m/units.s,
-                        Vy_drift=0*units.m/units.s,
-                        Vz_drift=0*units.m/units.s):
+                        Vx_drift=0*u.m/u.s,
+                        Vy_drift=0*u.m/u.s,
+                        Vz_drift=0*u.m/u.s):
     r"""Return the probability of finding a particle with speed components
     `v_x`, `v_y`, and `v_z`in m/s in an equilibrium plasma of temperature 
     `T` which follows the 3D Maxwellian distribution function. This 
@@ -374,7 +374,7 @@ def Maxwellian_speed_3D(vx: units.m/units.s,
     
     """
     # convert temperature to Kelvins
-    T = T.to(units.K, equivalencies=units.temperature_energy())
+    T = T.to(u.K, equivalencies=u.temperature_energy())
     # Get particle speed and drift speed
     v = np.sqrt(vx ** 2 + vy ** 2 + vz ** 2)
     V_drift = np.sqrt(Vx_drift ** 2 + Vy_drift ** 2 + Vz_drift ** 2)
@@ -386,4 +386,4 @@ def Maxwellian_speed_3D(vx: units.m/units.s,
                                        V_drift=V_drift)
     except Exception:
         raise ValueError("Unable to get distribution function.")
-    return distFunc.to(units.s/units.m)
+    return distFunc.to(u.s/u.m)
