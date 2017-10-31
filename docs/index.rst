@@ -49,6 +49,7 @@ Development
     :maxdepth: 1
        
     development/code_guide
+    development/testing_guide
     development/doc_guide
     development/release_guide
 
