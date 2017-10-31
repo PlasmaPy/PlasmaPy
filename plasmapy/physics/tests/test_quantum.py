@@ -60,30 +60,45 @@ n_e = 1e23 * u.cm**-3
 def test_thermal_deBroglie_wavelength():
     r"""Test the thermal_deBroglie_wavelength function in quantum.py."""
     lambda_dbTh = thermal_deBroglie_wavelength(T_e)
+    # true value at 1 eV
+    lambda_dbTh_true = 6.919367518364532e-10
     # test a simple case for expected value
-    expectStr = "Thermal deBroglie wavelength is off expected result for 1eV"
+    expectStr = ("Thermal deBroglie wavelength at 1 eV should be "
+                 f"{lambda_dbTh_true} and not {lambda_dbTh}")
     assert np.isclose(lambda_dbTh.value,
-                      6.919367518364532e-10), expectStr
+                      lambda_dbTh_true,
+                      rtol=1e-15,
+                      atol=0.0), expectStr
     # testing returned units
     assert lambda_dbTh.unit == u.m
 
 def test_Fermi_energy():
     r"""Test the Fermi_energy function in quantum.py."""
     energy_F = Fermi_energy(n_e)
+    # true value at 1e23 cm-3
+    energy_F_true = 1.2586761116196002e-18
     # test a simple case for expected value
-    expectStr = "Fermi energy is off expected result for 1e23 cm^-3"
+    expectStr = ("Fermi energy at 1e23 cm^-3 should be "
+                 f"{energy_F_true} and not {energy_F}.")
     assert np.isclose(energy_F.value,
-                      1.2586761116196002e-18), expectStr
+                      energy_F_true,
+                      rtol=1e-15,
+                      atol=0.0), expectStr
     # testing returned units
     assert energy_F.unit == u.J
 
 def test_Thomas_Fermi_length():
     r"""Test the Thomas_Fermi_length function in quantum.py."""
     lambda_TF = Thomas_Fermi_length(n_e)
+    # true value at 1e23 cm-3
+    lambda_TF_true = 5.379914085596706e-11
     # test a simple case for expected value
-    expectStr = "Thomas-Fermi length is off expected result for 1e23 cm^-3"
+    expectStr = ("Thomas-Fermi length at 1e23 cm^-3 should be "
+                 f"{lambda_TF_true} and not {lambda_TF}.")
     assert np.isclose(lambda_TF.value,
-                      5.379914085596706e-11), expectStr
+                      lambda_TF_true,
+                      rtol=1e-15,
+                      atol=0.0), expectStr
     # testing returned units
     assert lambda_TF.unit == u.m
     
