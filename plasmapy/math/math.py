@@ -35,9 +35,7 @@ def plasma_dispersion_func(zeta):
     -----
     The plasma dispersion function is defined as:
 
-    .. math::
-    Z(\zeta) = \sqrt{\pi}
-    \int_{-\infty}^{+\infty} dx \frac{e^{-x^2}}{x-\zeta}
+    :math:`Z(\zeta) = \sqrt{\pi} \int_{-\infty}^{+\infty} dx \frac{e^{-x^2}}{x-\zeta}`
 
     where the argument is a complex number [fried.conte-1961].
 
@@ -115,8 +113,7 @@ def plasma_dispersion_func_deriv(zeta):
     -----
     The plasma dispersion function is defined as:
 
-    .. math:: Z(\zeta) \equiv \sqrt{\pi}
-    \int_{-\infty}^{+\infty} dx \frac{e^{-x^2}}{x-\zeta}
+    :math:`Z(\zeta) \equiv \sqrt{\pi} \int_{-\infty}^{+\infty} dx \frac{e^{-x^2}}{x-\zeta}`
 
     where the argument is a complex number [fried.conte-1961].
 
