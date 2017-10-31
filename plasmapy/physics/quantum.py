@@ -165,7 +165,7 @@ def thermal_deBroglie_wavelength(T_e):
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
 def Fermi_energy(n_e):
-    r"""Calculate the Thomas-Fermi screening length.
+    r"""Calculate the Fermi energy.
 
     Parameters
     ----------
