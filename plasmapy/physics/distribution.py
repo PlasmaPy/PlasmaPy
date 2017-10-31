@@ -73,14 +73,14 @@ def Maxwellian_1D(v: units.m/units.s,
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
     >>> Maxwellian_1D(v=v, T= 30000*u.K, particle='e',V_drift=0*u.m/u.s)
-    <Quantity 5.916329687405701e-07 s / m>
+    <Quantity 5.916329687405703e-07 s / m>
     """
     # convert temperature to Kelvins
     T = T.to(units.K, equivalencies=units.temperature_energy())
     # get thermal velocity and thermal velocity squared
     vTh = thermal_speed(T, particle=particle, method="most_probable")
     vThSq = vTh ** 2
-    # Get particle velocity squared
+    # Get square of relative particle velocity
     vSq = (v - V_drift) ** 2
     # calculating distribution function
     try:
@@ -97,9 +97,9 @@ def Maxwellian_velocity_3D(vx: units.m/units.s,
                            vz: units.m/units.s,
                            T, 
                            particle="e",
-                           vx_drift=0*units.m/units.s,
-                           vy_drift=0*units.m/units.s,
-                           vz_drift=0*units.m/units.s):
+                           Vx_drift=0*units.m/units.s,
+                           Vy_drift=0*units.m/units.s,
+                           Vz_drift=0*units.m/units.s):
     r"""Return the probability of finding a particle with velocity components
     `v_x`, `v_y`, and `v_z`in m/s in an equilibrium plasma of temperature 
     `T` which follows the 3D Maxwellian distribution function. This 
@@ -124,13 +124,13 @@ def Maxwellian_velocity_3D(vx: units.m/units.s,
         for deuterium, or 'He-4 +1' for $He_4^{+1}$ : singly ionized helium-4),
         which defaults to electrons.
         
-    vx_drift: Quantity
+    Vx_drift: Quantity
         The drift velocity in x-direction units convertible to m/s
         
-    vy_drift: Quantity
+    Vy_drift: Quantity
         The drift velocity in y-direction units convertible to m/s
         
-    vz_drift: Quantity
+    Vz_drift: Quantity
         The drift velocity in z-direction units convertible to m/s
 
     Returns
@@ -159,7 +159,7 @@ def Maxwellian_velocity_3D(vx: units.m/units.s,
     is given by:
 
     .. math::
-    f = (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} - \vec{v_{drift}})^2 / v_Th^2)
+    f = (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} - \vec{V_{drift}})^2 / v_Th^2)
     where v_Th = \sqrt(2 k_B T / m) is the thermal speed
 
     See also
@@ -168,6 +168,18 @@ def Maxwellian_velocity_3D(vx: units.m/units.s,
 
     Example
     -------
+    >>> from plasmapy.physics import Maxwellian_velocity_3D
+    >>> from astropy import units as u
+    >>> v=1*u.m/u.s
+    >>> Maxwellian_velocity_3D(vx=v,
+    ... vy=v,
+    ... vz=v,
+    ... T=30000*u.K,
+    ... particle='e',
+    ... Vx_drift=0*u.m/u.s,
+    ... Vy_drift=0*u.m/u.s,
+    ... Vz_drift=0*u.m/u.s)
+    <Quantity 3.985430307328086e-20 s3 / m3>
     
     
     """
@@ -178,8 +190,8 @@ def Maxwellian_velocity_3D(vx: units.m/units.s,
     # accounting for thermal velocity in 3D
     vTh3D = np.sqrt(3) * vTh
     vThSq = vTh3D ** 2
-    # Get particle velocity squared
-    vSq = ((vx-vx_drift) ** 2 + (vy-vy_drift) ** 2 + (vz-vz_drift) ** 2)
+    # Get square of relative particle velocity
+    vSq = ((vx-Vx_drift) ** 2 + (vy-Vy_drift) ** 2 + (vz-Vz_drift) ** 2)
     # calculating distribution function
     try:
         coeff = (vThSq * np.pi) ** (-3 / 2)
@@ -193,7 +205,7 @@ def Maxwellian_velocity_3D(vx: units.m/units.s,
 def Maxwellian_speed_1D(v: units.m/units.s,
                         T, 
                         particle="e",
-                        v_drift=0*units.m/units.s):
+                        V_drift=0*units.m/units.s):
     r"""Return the probability of finding a particle with speed `v` in m/s
      in an equilibrium plasma of temperature `T` which follows the 
      Maxwellian distribution function.
@@ -211,7 +223,7 @@ def Maxwellian_speed_1D(v: units.m/units.s,
         for deuterium, or 'He-4 +1' for $He_4^{+1}$ : singly ionized helium-4),
         which defaults to electrons.
     
-    v_drift: Quantity
+    V_drift: Quantity
         The drift speed in units convertible to m/s
 
     Returns
@@ -240,12 +252,17 @@ def Maxwellian_speed_1D(v: units.m/units.s,
     is given by:
 
     .. math::
-    f(v) = 4 \pi v^2 (\pi * v_Th^2)^{-3/2} \exp(-(v - v_{drift})^2 / v_Th^2)
+    f(v) = 4 \pi v^2 (\pi * v_Th^2)^{-3/2} \exp(-(v - V_{drift})^2 / v_Th^2)
     where v_Th = \sqrt(2 k_B T / m) is the thermal speed
 
 
     Example
     -------
+    >>> from plasmapy.physics import Maxwellian_speed_1D
+    >>> from astropy import units as u
+    >>> v=1*u.m/u.s
+    >>> Maxwellian_speed_1D(v=v, T= 30000*u.K, particle='e',V_drift=0*u.m/u.s)
+    <Quantity 2.602357544747327e-18 s / m>
     
     """
     # convert temperature to Kelvins
@@ -253,8 +270,8 @@ def Maxwellian_speed_1D(v: units.m/units.s,
     # get thermal velocity and thermal velocity squared
     vTh = thermal_speed(T, particle=particle, method="most_probable")
     vThSq = vTh ** 2
-    # square of particle velocity [m^2/s^2]
-    vSq = (v - v_drift) ** 2
+    # get square of relative particle velocity
+    vSq = (v - V_drift) ** 2
     # calculating distribution function
     try:
         coeff1 = (np.pi * vThSq) ** (-3 / 2)
@@ -271,9 +288,9 @@ def Maxwellian_speed_3D(vx: units.m/units.s,
                         vz: units.m/units.s,
                         T, 
                         particle="e",
-                        vx_drift=0*units.m/units.s,
-                        vy_drift=0*units.m/units.s,
-                        vz_drift=0*units.m/units.s):
+                        Vx_drift=0*units.m/units.s,
+                        Vy_drift=0*units.m/units.s,
+                        Vz_drift=0*units.m/units.s):
     r"""Return the probability of finding a particle with speed components
     `v_x`, `v_y`, and `v_z`in m/s in an equilibrium plasma of temperature 
     `T` which follows the 3D Maxwellian distribution function. This 
@@ -298,13 +315,13 @@ def Maxwellian_speed_3D(vx: units.m/units.s,
         for deuterium, or 'He-4 +1' for $He_4^{+1}$ : singly ionized helium-4),
         which defaults to electrons.
         
-    vx_drift: Quantity
+    Vx_drift: Quantity
         The drift speed in x-direction units convertible to m/s
         
-    vy_drift: Quantity
+    Vy_drift: Quantity
         The drift speed in y-direction units convertible to m/s
         
-    vz_drift: Quantity
+    Vz_drift: Quantity
         The drift speed in z-direction units convertible to m/s
         
     Returns
@@ -333,7 +350,7 @@ def Maxwellian_speed_3D(vx: units.m/units.s,
     is given by:
 
     .. math::
-    f = 4 \pi \vec{v}^2 (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} - \vec{v_{drift}})^2 / v_Th^2)
+    f = 4 \pi \vec{v}^2 (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} - \vec{V_{drift}})^2 / v_Th^2)
     where v_Th = \sqrt(2 k_B T / m) is the thermal speed
 
     See also
@@ -342,19 +359,31 @@ def Maxwellian_speed_3D(vx: units.m/units.s,
 
     Example
     -------
+    >>> from plasmapy.physics import Maxwellian_speed_3D
+    >>> from astropy import units as u
+    >>> v=1*u.m/u.s
+    >>> Maxwellian_speed_3D(vx=v,
+    ... vy=v,
+    ... vz=v,
+    ... T=30000*u.K,
+    ... particle='e',
+    ... Vx_drift=0*u.m/u.s,
+    ... Vy_drift=0*u.m/u.s,
+    ... Vz_drift=0*u.m/u.s)
+    <Quantity 7.80707263422481e-18 s / m>
     
     """
     # convert temperature to Kelvins
     T = T.to(units.K, equivalencies=units.temperature_energy())
     # Get particle speed and drift speed
     v = np.sqrt(vx ** 2 + vy ** 2 + vz ** 2)
-    v_drift = np.sqrt(vx_drift ** 2 + vy_drift ** 2 + vz_drift ** 2)
+    V_drift = np.sqrt(Vx_drift ** 2 + Vy_drift ** 2 + Vz_drift ** 2)
     # calculating distribution function
     try:
         distFunc = Maxwellian_speed_1D(v=v,
                                        T=T, 
                                        particle=particle,
-                                       v_drift=v_drift)
+                                       V_drift=V_drift)
     except Exception:
         raise ValueError("Unable to get distribution function.")
     return distFunc.to(units.s/units.m)
