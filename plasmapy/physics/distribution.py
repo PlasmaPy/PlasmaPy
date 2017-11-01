@@ -17,9 +17,9 @@ from ..utils import _check_quantity, check_relativistic, check_quantity
 def Maxwellian_1D(v: units.m/units.s,
                   T: units.K, particle="e",
                   V_drift=0*units.m/units.s):
-    r"""Return the probability at the velocity `v` in m/s
-     to find a particle `particle` in a plasma of temperature `T`
-     following the Maxwellian distribution function
+    r"""Returns the probability at the velocity `v` in m/s
+    to find a particle `particle` in a plasma of temperature `T`
+    following the Maxwellian distribution function.
 
     Parameters
     ----------
@@ -61,7 +61,7 @@ def Maxwellian_1D(v: units.m/units.s,
 
 
     Examples
-    -------
+    --------
     >>> from plasmapy.physics import Maxwellian_1D
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
