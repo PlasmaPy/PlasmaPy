@@ -81,9 +81,9 @@ def Alfven_speed(B, density, ion="p"):
     B : Quantity
         The magnetic field magnitude in units convertible to tesla.
 
-    density: Quantity
-        Either the ion number density in units convertible to 1 / m**3,
-        or the mass density in units convertible to kg / m**3.
+    density : Quantity
+        Either the ion number density in units convertible to 1 m:math:`^{-3}`,
+        or the mass density in units convertible to kg m:math:`^{-3}`.
 
     ion : string, optional
         Representation of the ion species (e.g., 'p' for protons, 'D+'
@@ -118,8 +118,7 @@ def Alfven_speed(B, density, ion="p"):
     The Alfven velocity :math:`V_A` is the typical propagation speed
     of magnetic disturbances in a plasma, and is given by:
 
-    .. math::
-    V_A = \frac{B}{\sqrt{\mu_0\rho}}
+    :math:`V_A = \frac{B}{\sqrt{\mu_0\rho}}`
 
     where the mass density is :math:`\rho = n_i m_i + n_e m_e`.
 
@@ -239,8 +238,7 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
     -----
     The ion sound speed :math:`V_S` is approximately given by
 
-    .. math::
-    V_S = \sqrt{\frac{\gamma_e Z k_B T_e + \gamma_i k_B T_i}{m_i}}
+    :math:`V_S = \sqrt{\frac{\gamma_e Z k_B T_e + \gamma_i k_B T_i}{m_i}}`
 
     where :math:`\gamma_e` and :math:`\gamma_i` are the electron and
     ion adiabatic indices, :math:`k_B` is the Boltzmann constant,
@@ -330,6 +328,10 @@ def thermal_speed(T, particle="e", method="most_probable"):
         which defaults to electrons.  If no charge state information is
         provided, then the particles are assumed to be singly charged.
 
+    method : string, optional
+        Method to be used for calculating the thermal speed. Options are
+        'most_probable' (default), 'rms', and 'mean_magnitude'. 
+
     Returns
     -------
     V : Quantity
@@ -356,8 +358,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
     -----
     The particle thermal speed is given by:
 
-    .. math::
-    V_{th,i} = \sqrt{\frac{2 k_B T_i}{m_i}}
+    :math:`V_{th,i} = \sqrt{\frac{2 k_B T_i}{m_i}}`
 
     This function yields the most probable speed within a distribution
     function.  However, the definition of thermal velocity varies by
@@ -415,7 +416,7 @@ def gyrofrequency(B, particle='e'):
 
     Parameters
     ----------
-    B: Quantity
+    B : Quantity
         The magnetic field magnitude in units convertible to tesla.
 
     particle : string, optional
@@ -426,7 +427,7 @@ def gyrofrequency(B, particle='e'):
 
     Returns
     -------
-    omega_ci: Quantity
+    omega_ci : Quantity
         The particle gyrofrequency in units of radians per second
 
     Raises
@@ -447,8 +448,7 @@ def gyrofrequency(B, particle='e'):
     The particle gyrofrequency is the angular frequency of particle gyration
     around magnetic field lines and is given by:
 
-    .. math::
-    omega_{ci} = \frac{Z e B}{m_i}
+    :math:`omega_{ci} = \frac{Z e B}{m_i}`
 
     The particle gyrofrequency is also known as the particle cyclotron
     frequency or the particle Larmor frequency.
@@ -499,14 +499,14 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
 
     Parameters
     ----------
-    B: Quantity
+    B : Quantity
         The magnetic field magnitude in units convertible to tesla.
 
-    Vperp: Quantity, optional
+    Vperp : Quantity, optional
         The component of particle velocity that is perpendicular to the
         magnetic field in units convertible to meters per second.
 
-    T_i: Quantity, optional
+    T_i : Quantity, optional
         The particle temperature in units convertible to kelvin.
 
     particle : string, optional
@@ -554,8 +554,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
     The particle gyroradius is also known as the particle Larmor radius and is
     given by
 
-    .. math::
-    r_{Li} = \frac{V_{\perp}}{omega_{ci}}
+    :math:`r_{Li} = \frac{V_{\perp}}{omega_{ci}}`
 
     where :math:`V_{\perp}` is the component of particle velocity that is
     perpendicular to the magnetic field and :math:`\omega_{ci}` is the
@@ -664,13 +663,12 @@ def plasma_frequency(n, particle='e'):
     -----
     The particle plasma frequency is
 
-    .. math::
-    \omega_{pi} = Z e \sqrt{\frac{n_i}{\epsilon_0 m_i}}
+    :math:`\omega_{pi} = Z e \sqrt{\frac{n_i}{\epsilon_0 m_i}}`
 
     At present, astropy.units does not allow direct conversions from
     radians/second for angular frequency to 1/second or Hz for
     frequency.  The dimensionless_angles equivalency allows that
-    conversion, but does not account for the factor of 2*pi.  The
+    conversion, but does not account for the factor of 2*pi. The
     alternatives are to convert to cycle/second or to do the
     conversion manually, as shown in the examples.
 
@@ -717,7 +715,7 @@ def Debye_length(T_e, n_e):
 
     Returns
     -------
-    lambda_D: Quantity
+    lambda_D : Quantity
         The Debye length in meters
 
     Raises
@@ -740,8 +738,7 @@ def Debye_length(T_e, n_e):
     The Debye length is the exponential scale length for charge
     screening and is given by
 
-    .. math::
-    \lambda_D = \sqrt{\frac{\epsilon_0 k_b T_e}{n_e e^2}}
+    :math:`\lambda_D = \sqrt{\frac{\epsilon_0 k_b T_e}{n_e e^2}}`
 
     for an electron plasma with nearly stationary ions.
 
@@ -782,10 +779,10 @@ def Debye_number(T_e, n_e):
 
     Parameters
     ----------
-    T_e: Quantity
+    T_e : Quantity
         Electron temperature
 
-    n_e: Quantity
+    n_e : Quantity
         Electron number density
 
     Raises
@@ -812,8 +809,7 @@ def Debye_number(T_e, n_e):
     The Debye number is the number of electrons contained within a sphere with
     a radius of a Debye length and is given by
 
-    .. math::
-    N_D = \frac{4\pi}{3}n_e\lambda_D^3
+    :math:`N_D = \frac{4\pi}{3}n_e\lambda_D^3`
 
     The Debye number is also known as the plasma parameter.
 
@@ -881,8 +877,7 @@ def inertial_length(n, particle='e'):
     The particle inertial length is also known as an particle skin depth and is
     given by:
 
-    .. math::
-    d_i = \frac{c}{\omega_{pi}}
+    :math:`d_i = \frac{c}{\omega_{pi}}`
 
     Example
     -------
@@ -916,12 +911,12 @@ def magnetic_pressure(B):
 
     Parameters
     ----------
-    B: Quantity
+    B : Quantity
         The magnetic field in units convertible to telsa
 
     Returns
     -------
-    p_B: Quantity
+    p_B : Quantity
         The magnetic pressure in units in pascals (newtons per square meter)
 
     Raises
@@ -943,8 +938,7 @@ def magnetic_pressure(B):
     -----
     The magnetic pressure is given by:
 
-    .. math::
-    p_B = \frac{B^2}{2 \mu_0}
+    :math:`p_B = \frac{B^2}{2 \mu_0}`
 
     The motivation behind having two separate functions for magnetic
     pressure and magnetic energy density is that it allows greater
@@ -977,12 +971,12 @@ def magnetic_energy_density(B: units.T):
 
     Parameters
     ----------
-    B: Quantity
+    B : Quantity
         The magnetic field in units convertible to tesla
 
     Returns
     -------
-    E_B: Quantity
+    E_B : Quantity
         The magnetic energy density in units of joules per cubic meter
 
     Raises
@@ -1004,8 +998,7 @@ def magnetic_energy_density(B: units.T):
     -----
     The magnetic energy density is given by:
 
-    .. math::
-    E_B = \frac{B^2}{2 \mu_0}
+    :math:`E_B = \frac{B^2}{2 \mu_0}`
 
     The motivation behind having two separate functions for magnetic
     pressure and magnetic energy density is that it allows greater
@@ -1069,8 +1062,7 @@ def upper_hybrid_frequency(B, n_e):
     -----
     The upper hybrid frequency is given through the relation
 
-    .. math::
-    \omega_{uh}^2 = \omega_{ce}^2 + \omega_{pe}^2
+    :math:`\omega_{uh}^2 = \omega_{ce}^2 + \omega_{pe}^2`
 
     where :math:`\omega_{ce}` is the electron gyrofrequency and
     :math:`\omega_{pe}` is the electron plasma frequency.
@@ -1140,13 +1132,12 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
     -----
     The lower hybrid frequency is given through the relation
 
-    .. math::
-    \frac{1}{\omega_{lh}^2} = \frac{1}{\omega_{ci}^2 + \omega_{pi}^2}
-    + \frac{1}{\omega_{ci}\omega_{ce}}
+    :math:`\frac{1}{\omega_{lh}^2} = \frac{1}{\omega_{ci}^2 + \omega_{pi}^2}
+    + \frac{1}{\omega_{ci}\omega_{ce}}`
 
-    where .. math::`\omega_{ci}` is the ion gyrofrequency,
-    .. math::`\omega_{ce}` is the electron gyrofrequency, and
-    .. math::`\omega_{pi}` is the ion plasma frequency.
+    where :math:`\omega_{ci}` is the ion gyrofrequency,
+    :math:`\omega_{ce}` is the electron gyrofrequency, and
+    :math:`\omega_{pi}` is the ion plasma frequency.
 
     Example
     -------

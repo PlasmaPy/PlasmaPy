@@ -18,9 +18,9 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     ----------
 
     T : Quantity
-    Temperature in units of temperature or energy per particle,
-    which is assumed to be equal for both the test particle and
-    the target particle
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
 
     n_e : Quantity
         The electron density in units convertible to per cubic meter.
@@ -60,8 +60,7 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     -----
     The Coulomb logarithm is given by
 
-    .. math::
-    \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+    :math:`\ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)`
 
     where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
     impact parameters for Coulomb collisions _[1].

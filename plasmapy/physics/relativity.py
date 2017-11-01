@@ -39,8 +39,7 @@ def Lorentz_factor(V):
     -----
     The Lorentz factor is a dimensionless number given by
 
-    .. math::
-    \gamma = \frac{1}{\sqrt{1-\frac{V^2}{c^2}}}
+    :math:`\gamma = \frac{1}{\sqrt{1-\frac{V^2}{c^2}}}`
 
     The Lorentz factor is approximately one for sub-relativistic
     velocities, and goes to infinity as the velocity approaches the
