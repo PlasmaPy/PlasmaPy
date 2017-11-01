@@ -82,8 +82,8 @@ def Alfven_speed(B, density, ion="p"):
         The magnetic field magnitude in units convertible to tesla.
 
     density : Quantity
-        Either the ion number density in units convertible to 1 m:math:`^{-3}`,
-        or the mass density in units convertible to kg m:math:`^{-3}`.
+        Either the ion number density in units convertible to 1 / m**3,
+        or the mass density in units convertible to kg / m**3.
 
     ion : string, optional
         Representation of the ion species (e.g., 'p' for protons, 'D+'
@@ -448,7 +448,7 @@ def gyrofrequency(B, particle='e'):
     The particle gyrofrequency is the angular frequency of particle gyration
     around magnetic field lines and is given by:
 
-    :math:`omega_{ci} = \frac{Z e B}{m_i}`
+    :math:`\omega_{ci} = \frac{Z e B}{m_i}`
 
     The particle gyrofrequency is also known as the particle cyclotron
     frequency or the particle Larmor frequency.

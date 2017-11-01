@@ -38,7 +38,7 @@ def Maxwellian_1D(v: units.m/units.s,
     -------
     f : Quantity
         probability in Velocity^-1, normized so that:
-        $\int_{- \infty}^{\infty} f(v) dv = 1}
+        :math:`\int_{-\infty}^{+\infty} f(v) dv = 1}`
 
     Raises
     ------
@@ -58,8 +58,7 @@ def Maxwellian_1D(v: units.m/units.s,
     In one dimension, the Maxwellian distribution function for a particle of
     mass m, velocity v, a drift velocity V and with temperature T is:
 
-    .. math::
-    f = \sqrt{\frac{m}{2 \pi k_B T}} \exp(-\frac{m}{2 k_B T} (v-V)^2)
+    :math:`f = \sqrt{\frac{m}{2 \pi k_B T}} \exp(-\frac{m}{2 k_B T} (v-V)^2)`
 
 
     Example
