@@ -1,0 +1,9 @@
+name: plasmapy-dev
+dependencies:
+  - numpy
+  - scipy
+  - astropy
+  - numpydoc
+  - pytest
+  - pip:
+    - coveralls
