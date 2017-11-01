@@ -155,10 +155,7 @@ def thermal_deBroglie_wavelength(T_e):
 
     """
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
-    try:
-        lambda_dbTh = h / np.sqrt(2 * np.pi * m_e * k_B * T_e)
-    except Exception:
-        raise ValueError("Unable to find thermal deBroglie wavelength.")
+    lambda_dbTh = h / np.sqrt(2 * np.pi * m_e * k_B * T_e)
     return lambda_dbTh.to(units.m)
 
 @check_quantity({
@@ -213,11 +210,8 @@ def Fermi_energy(n_e):
     <Quantity 1.2586761116196002e-18 J>
 
     """
-    try:
-        coeff = (np.pi * hbar) ** 2 / (2 * m_e)
-        energy_F = coeff * (3 * n_e / np.pi) ** (2/3)
-    except Exception:
-        raise ValueError("Unable to find Fermi energy.")
+    coeff = (np.pi * hbar) ** 2 / (2 * m_e)
+    energy_F = coeff * (3 * n_e / np.pi) ** (2/3)
     return energy_F.to(units.Joule)
 
 @check_quantity({
@@ -280,10 +274,6 @@ def Thomas_Fermi_length(n_e):
     <Quantity 5.379914085596706e-11 m>
 
     """
-    try:
-        energy_F = Fermi_energy(n_e)
-        lambda_TF = np.sqrt(2 * eps0 * energy_F / (3 * n_e * e ** 2))
-    except Exception:
-        raise ValueError("Unable to find Thomas Fermi screening length.")
-    
+    energy_F = Fermi_energy(n_e)
+    lambda_TF = np.sqrt(2 * eps0 * energy_F / (3 * n_e * e ** 2))
     return lambda_TF.to(units.m)
