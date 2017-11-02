@@ -80,6 +80,42 @@ git by going through these tutorials or a [Software
 Carpentry](https://software-carpentry.org/) workshop prior to making
 code contributions.
 
+### Virtual Environments
+
+Before you grab plasmapy from github, you are going to want to setup a sensible directory structure and a virtual environment. The virtual environment will allow you to import, run, and test your development version of plasmapy without contaminating or conflicting with other version of plasmapy or other packages that may be on your system.
+
+If you are running the Anaconda suite and want to use virtualenv to setup your virtual environment, you will have to let the system know where the Python compiler can be found. On linux this is done with (for example):
+
+```ShellSession
+export LD_LIBRARY_PATH="$HOME/anaconda3/lib/"
+```
+Exporting the library path to the dynamic linker will only last for the duration of the current shell session.
+
+Next you should create a sensible direction structure. Something like:
+```ShellSession
+mkdir ~/programming/plasmapy/
+```
+You need to make sure that the directory path names don't contain any spaces, otherwise virtualenv will throw an error. Now move into the directory and create the virtual environment
+```ShellSession
+cd ~/programming/plasmapy/
+virtualenv -p python3 .
+```
+Your virtual environment should now be created. If you run `ls` you will notice that virtualenv has created a number of subdirectories: `bin/`, `lib/`, and `include/`. To activate the virtualenv you will run:
+```ShellSession
+source ./bin/activate
+```
+You will have to add the python library directory to LD_LIBRARY_PATH, as described in a previous step, prior to activating the virtualenv for every new shell session.
+You should now see that your shell session is prepended with (plasmapy), like so:
+```ShellSession
+(plasmapy) user@name:~/programming/plasmapy$ 
+```
+This indicates that the virtualenv is running. Congratulations!
+When your're done working on plasmapy, you can deactivate the virtualenv by running
+```ShellSession
+source deactivate
+```
+If you are running virtualenv, then in the next step you will want to clone plasmapy while in the `~/programming/plasmapy` directory. This will create a subdirectory `~/programming/plasmapy/PlasmaPy/` which will prevent the package from being contaminated will all those `lib/`, `bin/`, `include/` directories which virtualenv generated. Alternatively, you can setup the clone first, and then setup the virtualenv inside `PlasmaPy/`, making sure to add those virtualenv directories into a .gitignore file so that they don't get pushed upstream.
+
 ### Forking and cloning PlasmaPy
 
 After creating your GitHub account, go to the [main
@@ -119,6 +155,20 @@ origin		git@github.com:namurphy/PlasmaPy.git (push)
 upstream	git@github.com:PlasmaPy/PlasmaPy.git (fetch)
 upstream	git@github.com:PlasmaPy/PlasmaPy.git (push)
 ```
+
+### Setting up plasmapy for testing
+
+Now that you have plasmapy on your local computer and you have a virtual environment, you will want to "install" this development version of plasmapy along with its dependencies. Start by activating your virtual environment. Next you want install the plasmapy dependencies. One way to do this is to just install and then remove plasmapy:
+```ShellSession
+(plasmapy) user@name:~/programming/plasmapy$ pip install plasmapy
+(plasmapy) user@name:~/programming/plasmapy$ pip uninstall plasmapy
+```
+Here we removed plasmapy from the virtualenv so that it doesn't conflict with the development version, but all the dependencies remain. Next, setup the development version of plasmapy which you just cloned by moving into the root directory of the cloned repo and running the setup.py script there:
+```ShellSession
+(plasmapy) user@name:~/programming/plasmapy/PlasmaPy$ python setup.py develop
+```
+You should now be all set to run development versions of plasmapy modules via `import plasmapy` in your test scripts!
+
 
 ### Branches, commits, and pull requests
 
