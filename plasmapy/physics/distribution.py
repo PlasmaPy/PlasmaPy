@@ -99,7 +99,7 @@ def Maxwellian_velocity_3D(vx,
                            Vx_drift=0,
                            Vy_drift=0,
                            Vz_drift=0,
-                           vTh=-1,
+                           vTh=np.nan,
                            units="units"):
     r"""Return the probability of finding a particle with velocity components
     `v_x`, `v_y`, and `v_z`in m/s in an equilibrium plasma of temperature 
@@ -218,15 +218,15 @@ def Maxwellian_velocity_3D(vx,
         Vz_drift = Vz_drift.to(u.m/u.s)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
-        if vTh == -1:
+        if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
             vTh = (thermal_speed(T, particle=particle, method="most_probable"))
-        elif vTh != -1:
+        elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m/u.s)
-    elif vTh == -1 and units == "unitless":
+    elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = (thermal_speed(T*u.K, particle=particle, method="most_probable"))
+        vTh = (thermal_speed(T*u.K, particle=particle, method="most_probable")).si.value
     # accounting for thermal velocity in 3D
     vThSq = 3 * vTh ** 2
 #    vTh3D = np.sqrt(3) * vTh
@@ -247,7 +247,7 @@ def Maxwellian_speed_1D(v,
                         T, 
                         particle="e",
                         V_drift=0,
-                        vTh=-1,
+                        vTh=np.nan,
                         units="units"):
     r"""Return the probability of finding a particle with speed `v` in m/s
      in an equilibrium plasma of temperature `T` which follows the 
@@ -332,15 +332,15 @@ def Maxwellian_speed_1D(v,
         V_drift = V_drift.to(u.m/u.s)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
-        if vTh == -1:
+        if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
             vTh = (thermal_speed(T, particle=particle, method="most_probable"))
-        elif vTh != -1:
+        elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m/u.s)
-    elif vTh == -1 and units == "unitless":
+    elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = (thermal_speed(T*u.K, particle=particle, method="most_probable"))
+        vTh = (thermal_speed(T*u.K, particle=particle, method="most_probable")).si.value
     # getting square of thermal speed
     vThSq = vTh ** 2
     # get square of relative particle speed
@@ -367,7 +367,7 @@ def Maxwellian_speed_3D(vx,
                         Vx_drift=0,
                         Vy_drift=0,
                         Vz_drift=0,
-                        vTh=-1,
+                        vTh=np.nan,
                         units="units"):
     r"""Return the probability of finding a particle with speed components
     `v_x`, `v_y`, and `v_z`in m/s in an equilibrium plasma of temperature 
@@ -484,15 +484,15 @@ def Maxwellian_speed_3D(vx,
         Vz_drift = Vz_drift.to(u.m/u.s)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
-        if vTh == -1:
+        if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
             vTh = (thermal_speed(T, particle=particle, method="most_probable"))
-        elif vTh != -1:
+        elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m/u.s)
-    elif vTh == -1 and units == "unitless":
+    elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = (thermal_speed(T*u.K, particle=particle, method="most_probable"))
+        vTh = (thermal_speed(T*u.K, particle=particle, method="most_probable")).si.value
     try:
         fx = Maxwellian_speed_1D(vx,
                                  T, 
