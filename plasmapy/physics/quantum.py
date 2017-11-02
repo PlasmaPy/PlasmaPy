@@ -49,7 +49,7 @@ def deBroglie_wavelength(V, particle):
     The de Broglie wavelength is given by
 
     .. math::
-    \lambda_{dB} = \frac{h}{p} = \frac{h}{\gamma m V}.
+        \lambda_{dB} = \frac{h}{p} = \frac{h}{\gamma m V}
 
     where :math:`h` is the Planck constant, :math:`p` is the
     relativistic momentum of the particle, :math:`gamma` is the

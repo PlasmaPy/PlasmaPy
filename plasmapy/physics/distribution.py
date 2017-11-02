@@ -17,9 +17,9 @@ from ..utils import _check_quantity, check_relativistic, check_quantity
 def Maxwellian_1D(v: units.m/units.s,
                   T: units.K, particle="e",
                   V_drift=0*units.m/units.s):
-    r"""Return the probability at the velocity `v` in m/s
-     to find a particle `particle` in a plasma of temperature `T`
-     following the Maxwellian distribution function
+    r"""Returns the probability at the velocity `v` in m/s
+    to find a particle `particle` in a plasma of temperature `T`
+    following the Maxwellian distribution function.
 
     Parameters
     ----------
@@ -37,8 +37,7 @@ def Maxwellian_1D(v: units.m/units.s,
     Returns
     -------
     f : Quantity
-        probability in Velocity^-1, normized so that:
-        $\int_{- \infty}^{\infty} f(v) dv = 1}
+        probability in Velocity^-1, normized so that: :math:`\int_{-\infty}^{+\infty} f(v) dv = 1`
 
     Raises
     ------
@@ -59,11 +58,10 @@ def Maxwellian_1D(v: units.m/units.s,
     mass m, velocity v, a drift velocity V and with temperature T is:
 
     .. math::
-    f = \sqrt{\frac{m}{2 \pi k_B T}} \exp(-\frac{m}{2 k_B T} (v-V)^2)
+        f = \sqrt{\frac{m}{2 \pi k_B T}} e^{-\frac{m}{2 k_B T} (v-V)^2}
 
-
-    Example
-    -------
+    Examples
+    --------
     >>> from plasmapy.physics import Maxwellian_1D
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
