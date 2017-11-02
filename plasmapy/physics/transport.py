@@ -60,7 +60,8 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     -----
     The Coulomb logarithm is given by
 
-    :math:`\ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)`
+    .. math::
+        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
 
     where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
     impact parameters for Coulomb collisions _[1].

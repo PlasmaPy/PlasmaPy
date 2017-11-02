@@ -57,8 +57,8 @@ def Maxwellian_1D(v: units.m/units.s,
     In one dimension, the Maxwellian distribution function for a particle of
     mass m, velocity v, a drift velocity V and with temperature T is:
 
-    :math:`f = \sqrt{\frac{m}{2 \pi k_B T}} e^{-\frac{m}{2 k_B T} (v-V)^2}`
-
+    .. math::
+        f = \sqrt{\frac{m}{2 \pi k_B T}} e^{-\frac{m}{2 k_B T} (v-V)^2}
 
     Examples
     --------
