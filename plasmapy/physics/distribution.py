@@ -83,12 +83,9 @@ def Maxwellian_1D(v: u.m/u.s,
     # Get square of relative particle velocity
     vSq = (v - V_drift) ** 2
     # calculating distribution function
-    try:
-        coeff = (vThSq * np.pi) ** (-1 / 2)
-        expTerm = np.exp(-vSq / vThSq)
-        distFunc = coeff * expTerm
-    except Exception:
-        raise ValueError("Unable to get distribution function.")
+    coeff = (vThSq * np.pi) ** (-1 / 2)
+    expTerm = np.exp(-vSq / vThSq)
+    distFunc = coeff * expTerm
     return distFunc.to(u.s/u.m)
 
 def Maxwellian_velocity_3D(vx,
@@ -346,13 +343,10 @@ def Maxwellian_speed_1D(v,
     # get square of relative particle speed
     vSq = (v - V_drift) ** 2
     # calculating distribution function
-    try:
-        coeff1 = (np.pi * vThSq) ** (-3 / 2)
-        coeff2 = 4 * np.pi * vSq
-        expTerm = np.exp(-vSq / vThSq)
-        distFunc = coeff1 * coeff2 * expTerm
-    except Exception:
-        raise ValueError("Unable to get distribution function.")
+    coeff1 = (np.pi * vThSq) ** (-3 / 2)
+    coeff2 = 4 * np.pi * vSq
+    expTerm = np.exp(-vSq / vThSq)
+    distFunc = coeff1 * coeff2 * expTerm
     if units == "units":
         return distFunc.to(u.s/u.m)
     elif units == "unitless":
@@ -493,29 +487,27 @@ def Maxwellian_speed_3D(vx,
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
         vTh = (thermal_speed(T*u.K, particle=particle, method="most_probable")).si.value
-    try:
-        fx = Maxwellian_speed_1D(vx,
-                                 T, 
-                                 particle=particle,
-                                 V_drift=Vx_drift,
-                                 vTh=vTh,
-                                 units=units)
-        fy = Maxwellian_speed_1D(vy,
-                                 T, 
-                                 particle=particle,
-                                 V_drift=Vy_drift,
-                                 vTh=vTh,
-                                 units=units)
-        fz = Maxwellian_speed_1D(vz,
-                                 T, 
-                                 particle=particle,
-                                 V_drift=Vz_drift,
-                                 vTh=vTh,
-                                 units=units)
-        # multiplying probabilities in each axis to get 3D probability
-        distFunc = fx * fy * fz
-    except Exception:
-        raise ValueError("Unable to get distribution function.")
+    # getting distribution functions along each axis
+    fx = Maxwellian_speed_1D(vx,
+                             T, 
+                             particle=particle,
+                             V_drift=Vx_drift,
+                             vTh=vTh,
+                             units=units)
+    fy = Maxwellian_speed_1D(vy,
+                             T, 
+                             particle=particle,
+                             V_drift=Vy_drift,
+                             vTh=vTh,
+                             units=units)
+    fz = Maxwellian_speed_1D(vz,
+                             T, 
+                             particle=particle,
+                             V_drift=Vz_drift,
+                             vTh=vTh,
+                             units=units)
+    # multiplying probabilities in each axis to get 3D probability
+    distFunc = fx * fy * fz
     if units == "units":
         return distFunc.to((u.s/u.m)**3)
     elif units == "unitless":
