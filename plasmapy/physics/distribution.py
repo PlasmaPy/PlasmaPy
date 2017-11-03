@@ -1,17 +1,8 @@
 """Functions to deal with distribution : generate, fit, calculate"""
 import astropy as astropy
 from astropy import units as u
-
-from astropy.units import (UnitConversionError, UnitsError, quantity_input,
-                           Quantity)
-
-from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, e)
-from ..atomic import (ion_mass, charge_state)
-from ..atomic.atomic import _is_electron as is_electron
 from .parameters import thermal_speed
 import numpy as np
-
-from ..utils import _check_quantity, check_relativistic, check_quantity
 
 
 def Maxwellian_1D(v,
