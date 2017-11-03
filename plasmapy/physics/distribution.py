@@ -93,13 +93,17 @@ def Maxwellian_1D(v,
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
-            vTh = (thermal_speed(T, particle=particle, method="most_probable"))
+            vTh = (thermal_speed(T, 
+                                 particle=particle, 
+                                 method="most_probable"))
         elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m/u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = (thermal_speed(T*u.K, particle=particle, method="most_probable")).si.value
+        vTh = (thermal_speed(T*u.K, 
+                             particle=particle, 
+                             method="most_probable")).si.value
     # Get thermal velocity squared
     vThSq = vTh ** 2
     # Get square of relative particle velocity
@@ -242,13 +246,17 @@ def Maxwellian_velocity_3D(vx,
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
-            vTh = (thermal_speed(T, particle=particle, method="most_probable"))
+            vTh = (thermal_speed(T, 
+                                 particle=particle, 
+                                 method="most_probable"))
         elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m/u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = (thermal_speed(T*u.K, particle=particle, method="most_probable")).si.value
+        vTh = (thermal_speed(T*u.K, 
+                             particle=particle, 
+                             method="most_probable")).si.value
     # accounting for thermal velocity in 3D
     vThSq = 3 * vTh ** 2
     # Get square of relative particle velocity
@@ -354,13 +362,17 @@ def Maxwellian_speed_1D(v,
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
-            vTh = (thermal_speed(T, particle=particle, method="most_probable"))
+            vTh = (thermal_speed(T, 
+                                 particle=particle, 
+                                 method="most_probable"))
         elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m/u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = (thermal_speed(T*u.K, particle=particle, method="most_probable")).si.value
+        vTh = (thermal_speed(T*u.K, 
+                             particle=particle, 
+                             method="most_probable")).si.value
     # getting square of thermal speed
     vThSq = vTh ** 2
     # get square of relative particle speed
@@ -503,13 +515,17 @@ def Maxwellian_speed_3D(vx,
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
-            vTh = (thermal_speed(T, particle=particle, method="most_probable"))
+            vTh = (thermal_speed(T, 
+                                 particle=particle, 
+                                 method="most_probable"))
         elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m/u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = (thermal_speed(T*u.K, particle=particle, method="most_probable")).si.value
+        vTh = (thermal_speed(T*u.K, 
+                             particle=particle, 
+                             method="most_probable")).si.value
     # getting distribution functions along each axis
     fx = Maxwellian_speed_1D(vx,
                              T, 
