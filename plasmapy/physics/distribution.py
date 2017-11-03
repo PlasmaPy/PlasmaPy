@@ -14,11 +14,12 @@ import numpy as np
 from ..utils import _check_quantity, check_relativistic, check_quantity
 
 
-@u.quantity_input
-def Maxwellian_1D(v: u.m/u.s,
+def Maxwellian_1D(v,
                   T, 
                   particle="e",
-                  V_drift=0*u.m/u.s):
+                  V_drift=0,
+                  vTh=np.nan,
+                  units="units"):
     r"""Returns the probability at the velocity `v` in m/s
      to find a particle `particle` in a plasma of temperature `T`
      following the Maxwellian distribution function.
@@ -38,6 +39,17 @@ def Maxwellian_1D(v: u.m/u.s,
         
     V_drift: Quantity, optional
         The drift velocity in units convertible to m/s
+        
+    vTh: Quantity, optional
+        Thermal velocity (most probable) in m/s. This is used for
+        optimization purposes to avoid re-calculating vTh, for example
+        when integrating over velocity-space.
+        
+    units: string, optional
+        Selects whether to run function with units and unit checks (when
+        equal to "units") or to run as unitless (when equal to "unitless").
+        The unitless version is substantially faster for intensive
+        computations.
 
     Returns
     -------
@@ -75,10 +87,29 @@ def Maxwellian_1D(v: u.m/u.s,
     >>> Maxwellian_1D(v=v, T= 30000*u.K, particle='e',V_drift=0*u.m/u.s)
     <Quantity 5.916329687405703e-07 s / m>
     """
-    # convert temperature to Kelvins
-    T = T.to(u.K, equivalencies=u.temperature_energy())
-    # get thermal velocity and thermal velocity squared
-    vTh = thermal_speed(T, particle=particle, method="most_probable")
+    if units == "units":
+        # unit checks and conversions
+        # checking velocity units
+        v = v.to(u.m/u.s)
+        # catching case where drift velocities have default values, they
+        # need to be assigned units
+        if V_drift == 0:
+            if not isinstance(V_drift, astropy.units.quantity.Quantity):
+                V_drift = V_drift * u.m/u.s
+        # checking units of drift velocities
+        V_drift = V_drift.to(u.m/u.s)
+        # convert temperature to Kelvins
+        T = T.to(u.K, equivalencies=u.temperature_energy())
+        if np.isnan(vTh):
+            # get thermal velocity and thermal velocity squared
+            vTh = (thermal_speed(T, particle=particle, method="most_probable"))
+        elif not np.isnan(vTh):
+            # check units of thermal velocity
+            vTh = vTh.to(u.m/u.s)
+    elif np.isnan(vTh) and units == "unitless":
+        # assuming unitless temperature is in Kelvins
+        vTh = (thermal_speed(T*u.K, particle=particle, method="most_probable")).si.value
+    # Get thermal velocity squared
     vThSq = vTh ** 2
     # Get square of relative particle velocity
     vSq = (v - V_drift) ** 2
@@ -86,7 +117,10 @@ def Maxwellian_1D(v: u.m/u.s,
     coeff = (vThSq * np.pi) ** (-1 / 2)
     expTerm = np.exp(-vSq / vThSq)
     distFunc = coeff * expTerm
-    return distFunc.to(u.s/u.m)
+    if units == "units":
+        return distFunc.to(u.s/u.m)
+    elif units == "unitless":
+        return distFunc
 
 def Maxwellian_velocity_3D(vx,
                            vy,
@@ -226,8 +260,6 @@ def Maxwellian_velocity_3D(vx,
         vTh = (thermal_speed(T*u.K, particle=particle, method="most_probable")).si.value
     # accounting for thermal velocity in 3D
     vThSq = 3 * vTh ** 2
-#    vTh3D = np.sqrt(3) * vTh
-#    vThSq = vTh3D ** 2
     # Get square of relative particle velocity
     vSq = ((vx-Vx_drift) ** 2 + (vy-Vy_drift) ** 2 + (vz-Vz_drift) ** 2)
     # calculating distribution function
