@@ -8,6 +8,7 @@ Defines the Langmuir analysis module as part of the diagnostics package.
 import numpy as np
 import astropy.units as u
 
+
 class Probe():
     r"""Class containing various Langmuir probe properties. For the moment
     cylindrical probes are assumed as spherical ones are generally impractical
@@ -22,29 +23,30 @@ class Probe():
         Electrode configuration. Possible options are 'single' (default),
         'double', 'double-asym', 'triple', 'tetra', 'penta'. The electrode
         configuration must correspond to the number of areas provided.
-    
+
     """
     def __init__(self, area=u.m**2, config='single'):
         # Initialize probe properties
         self.area = area
         self.config = config
 
-def langmuir_analysis(potential_sweep, measured_current, probe, ion='H',
-                      method='maxwellian', smoothing=None, polyorder=3):
+
+def swept_probe_analysis(potential_sweep, measured_current, probe, ion='H',
+                         method='maxwellian', smoothing=None, polyorder=3):
     r"""Performs a Langmuir analysis of a given probe V-I profile in order to
     obtain various plasma parameters.
 
     Parameters
-    ----------    
+    ----------
     potential_sweep : Quantity
         The potential sweep applied to the probe in units convertible to V.
-    
+
     measured_current : Quantity
         The corresponding measured current in units convertible to A.
-        
+
     probe : Probe
         An instance of the Probe class containing probe properties.
-    
+
     ion : string, optional
         Representation of the ion species. Defaults to Hydrogen.
 
@@ -67,22 +69,23 @@ def langmuir_analysis(potential_sweep, measured_current, probe, ion='H',
     -------
     T_e : Quantity
         Best estimate of the electron temperature in units of eV.
-        
+
     n_e : Quantity
         Best estimate of the electron density in units of m^-3.
-        
+
     n_i : Quantity
         Best estimate of the ion density in units of m^-3. Equal to n_e
         unless the OML method is used.
-                
+
     V_F : Quantity
         Best estimate of the floating potential in units of V.
-                
+
     V_P : Quantity
-        Best estimate of the plasma potential in units of V.        
-        
+        Best estimate of the plasma potential in units of V.
+
     """
     return
+
 
 def obtain_EEDF(potential_sweep, measured_current, probe):
     r"""Obtains the Electron Energy Distribution Function of the plasma
@@ -90,16 +93,16 @@ def obtain_EEDF(potential_sweep, measured_current, probe):
     Druyvestein's equations.
 
     Parameters
-    ----------    
+    ----------
     potential_sweep : Quantity
         The potential sweep applied to the probe in units convertible to V.
-    
+
     measured_current : Quantity
         The corresponding measured current in units convertible to A.
-        
+
     probe : Probe
         An instance of the Probe class containing probe properties.
-        
+
     Returns
     -------
     EEDF : ndarray
@@ -108,22 +111,23 @@ def obtain_EEDF(potential_sweep, measured_current, probe):
     """
     return
 
+
 def obtain_EEPF(potential_sweep, measured_current, probe):
     r"""Obtains the Electron Energy Probability Function of the plasma
     from the second derivative of the measured current response using
     Druyvestein's equations.
 
     Parameters
-    ----------    
+    ----------
     potential_sweep : Quantity
         The potential sweep applied to the probe in units convertible to V.
-    
+
     measured_current : Quantity
         The corresponding measured current in units convertible to A.
-        
+
     probe : Probe
         An instance of the Probe class containing probe properties.
-        
+
     Returns
     -------
     EEPF : ndarray
