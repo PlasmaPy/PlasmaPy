@@ -82,9 +82,9 @@ code contributions.
 
 ### Virtual Environments
 
-Before you grab PlasmaPy from GitHub, you are going to want to setup a sensible directory structure and a virtual environment. The virtual environment will allow you to import, run, and test your development version of PlasmaPy without contaminating or conflicting with other version of plasmapy or other packages that may be on your system.
+Before you grab PlasmaPy from GitHub, you are going to want to setup a sensible directory structure and a virtual environment. The virtual environment will allow you to import, run, and test your development version of PlasmaPy without contaminating or conflicting with other version of PlasmaPy or other packages that may be on your system.
 
-If you are running the Anaconda suite and want to use virtualenv to setup your virtual environment, you will have to let the system know where the Python compiler can be found. On linux this is done with (for example):
+If you are running the Anaconda suite and want to use virtualenv to setup your virtual environment, you will have to let the system know where the Python interpreter can be found. On Linux this is done with (for example, assuming having installed Anaconda into `~/anaconda3`):
 
 ```ShellSession
 export LD_LIBRARY_PATH="$HOME/anaconda3/lib/"
