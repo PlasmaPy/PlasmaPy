@@ -195,18 +195,15 @@ upstream	git@github.com:PlasmaPy/PlasmaPy.git (push)
 Now that you have plasmapy on your local computer and you have a virtual
 environment, you will want to "install" this development version of PlasmaPy
 along with its dependencies. Start by activating your virtual environment. Next
-you want install the PlasmaPy dependencies. One way to do this is to just
-install and then remove PlasmaPy:
+you want install the PlasmaPy dependencies. One way to do this is to do
 
 ```ShellSession
-(plasmapy) user@name:~/programming/plasmapy$ pip install PlasmaPy
-(plasmapy) user@name:~/programming/plasmapy$ pip uninstall PlasmaPy
+(plasmapy) user@name:~/programming/plasmapy$ pip install -r requirements/base.txt
 ```
 
-Here we removed PlasmaPy from the virtualenv so that it doesn't conflict with
-the development version, but all the dependencies remain. Next, setup the
-development version of PlasmaPy which you just cloned by moving into the root
-directory of the cloned repo and running the setup.py script there:
+Next, setup the development version of PlasmaPy which you just cloned by moving
+into the root directory of the cloned repo and running the setup.py script
+there:
 
 ```ShellSession
 (plasmapy) user@name:~/programming/plasmapy/PlasmaPy$ python setup.py develop
