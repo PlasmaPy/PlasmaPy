@@ -25,4 +25,7 @@ from .relativity import Lorentz_factor
 
 from .transport import Coulomb_logarithm
 
-from .distribution import (Maxwellian_1D)
+from .distribution import (Maxwellian_1D,
+                           Maxwellian_speed_1D,
+                           Maxwellian_velocity_3D,
+                           Maxwellian_speed_3D)
