@@ -13,11 +13,11 @@ Documentation is built from the master branch on every commit pushed to it.
 
 Using sphinx within the project
 -------------------------------
-To build docs locally, run ``sphinx-docs docs docs/_build`` from within the main
+To build docs locally, run ``sphinx-build docs docs/_build`` from within the main
 PlasmaPy repository directory, then open ``docs/_build/index.html`` with your
 browser of choice.
 
-Do try to solve warnings in documentation.
+Do try to solve warnings in documentation when writing your code.
 
 Docstrings
 ==========
