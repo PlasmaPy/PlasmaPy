@@ -31,15 +31,20 @@ class Probe():
         self.config = config
 
 
-def swept_probe_analysis(potential_sweep, measured_current, probe, ion='H',
-                         method='maxwellian', smoothing=None, polyorder=3):
+def swept_probe_analysis(potential_sweep, 
+                         measured_current, 
+                         probe, 
+                         ion='H',
+                         method='maxwellian', 
+                         smoothing=None, 
+                         polyorder=3):
     r"""Performs a Langmuir analysis of a given probe V-I profile in order to
     obtain various plasma parameters.
 
     Parameters
     ----------
     potential_sweep : Quantity
-        The potential sweep applied to the probe in units convertible to V.
+        The swept electric potential applied to the probe in units convertible to V.
 
     measured_current : Quantity
         The corresponding measured current in units convertible to A.
@@ -57,9 +62,8 @@ def swept_probe_analysis(potential_sweep, measured_current, probe, ion='H',
     smoothing : string, optional
         The smoothing method applied to the measured current in order to
         obtain clean derivatives. Options are None (default) and 'savgol',
-        which uses scipy.signal.savgol_filter.
-        When `smoothing` is 'savgol', the polynomial order is given by
-        polyorder.
+        which uses scipy.signal.savgol_filter. When `smoothing` is 'savgol', 
+        the polynomial order is given by polyorder.
 
     polyorder : int
         The order of the polynomial used to smooth the measured current and
@@ -83,6 +87,10 @@ def swept_probe_analysis(potential_sweep, measured_current, probe, ion='H',
     V_P : Quantity
         Best estimate of the plasma potential in units of V.
 
+    Notes
+    -----
+    Due to the use of different methods to obtain n_e and n_i, the ratio
+    between these does not necessarily give an accurate average ionization.
     """
     return
 
@@ -95,7 +103,7 @@ def obtain_EEDF(potential_sweep, measured_current, probe):
     Parameters
     ----------
     potential_sweep : Quantity
-        The potential sweep applied to the probe in units convertible to V.
+        The swept electric potential applied to the probe in units convertible to V.
 
     measured_current : Quantity
         The corresponding measured current in units convertible to A.
@@ -120,7 +128,7 @@ def obtain_EEPF(potential_sweep, measured_current, probe):
     Parameters
     ----------
     potential_sweep : Quantity
-        The potential sweep applied to the probe in units convertible to V.
+        The swept electric potential applied to the probe in units convertible to V.
 
     measured_current : Quantity
         The corresponding measured current in units convertible to A.
