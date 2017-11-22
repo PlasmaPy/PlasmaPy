@@ -414,13 +414,11 @@ isotope_mass_error_table = [
     ('alpha', ValueError),
     ('He-4 2+', ValueError),
     ('he-4', ValueError),
-    ('p', ValueError),
     ('Fe 2+', ValueError),
     ('Fe -2', ValueError),
     ('deuteron', ValueError),
     ('triton', ValueError),
-    ('alpha', ValueError),
-    ('p', ValueError)]
+    ('alpha', ValueError)]
 
 
 @pytest.mark.parametrize("argument, expected_error", isotope_mass_error_table)
