@@ -722,7 +722,9 @@ charge_state_table = [
     ('electron', -1),
     ('e-', -1),
     ('e+', 1),
-    ('positron', 1)]
+    ('positron', 1),
+    ('n', 0),
+    ('neutron', 0)]
 
 
 @pytest.mark.parametrize("argument, expected", charge_state_table)
@@ -765,6 +767,7 @@ def test_electric_charge():
     assert electric_charge('p').unit == 'C'
     assert electric_charge('e').value == -1.6021766208e-19
     assert electric_charge('alpha').value == 3.2043532416e-19
+    assert electric_charge('n').value == 0
 
 
 # (argument, expected_error)
