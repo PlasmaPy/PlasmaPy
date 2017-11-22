@@ -1265,7 +1265,8 @@ def charge_state(argument):
     The second format is a string containing element information at
     the beginning, following by one or more plus or minus signs.
 
-    This function returns -1 for electrons and +1 for positrons.
+    This function returns -1 for electrons, +1 for positrons, and 0
+    for neutrons.
 
     Examples
     --------
@@ -1284,6 +1285,8 @@ def charge_state(argument):
         return -1
     elif _is_positron(argument):
         return 1
+    elif _is_neutron(argument):
+        return 0
 
     argument, Z = _extract_charge_state(argument)
 
