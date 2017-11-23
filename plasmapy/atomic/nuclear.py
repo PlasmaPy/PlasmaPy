@@ -2,8 +2,9 @@
 
 from astropy import units, constants
 import re
-from .atomic import (isotope_symbol, mass_number, isotope_mass, atomic_number,
-                     charge_state, _is_neutron, _is_electron, _is_positron)
+from .atomic import (isotope_symbol, mass_number, isotope_mass, ion_mass, 
+                     atomic_number, charge_state, _is_neutron, _is_electron,
+                     _is_positron)
 
 
 def nuclear_binding_energy(argument, mass_numb=None):
@@ -114,30 +115,32 @@ def nuclear_reaction_energy(*args, **kwargs):
     containing strings representing the isotopes and other particles
     participating in the reaction.
 
+    An integer immediately preceding a species acts as a multiplier.
+
     Examples
     --------
     >>> from astropy import units as u
     >>> nuclear_reaction_energy("D + T --> alpha + n")
-    <Quantity 2.8181160225476198e-12 J>
-    >>> triple_alpha1 = 'alpha + He-4 --> Be-8'
+    <Quantity 2.8181209741100133e-12 J>
+    >>> triple_alpha1 = '2He-4 --> Be-8'
     >>> triple_alpha2 = 'Be-8 + alpha --> carbon-12'
     >>> energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
     >>> energy_triplealpha2 = nuclear_reaction_energy(triple_alpha2)
     >>> print(energy_triplealpha1, energy_triplealpha2)
-    -1.4714307834595232e-14 J 1.1802573526724632e-12 J
+    -1.4714307834388437e-14 J 1.18025735267267e-12 J
     >>> energy_triplealpha2.to(u.MeV)
-    <Quantity 7.366587037595994 MeV>
+    <Quantity 7.366587037597284 MeV>
     >>> nuclear_reaction_energy(reactants=['n'], products=['p', 'e-'])
-    <Quantity 1.25343510874046e-13 J>
+    <Quantity 1.2534574417523367e-13 J>
 
     """
 
-    def _get_species(side_of_reaction):
-        r"""Parse a side of a reaction to get a list of the isotopes
-        and other participants in the reaction."""
+    def _get_species(unformatted_list):
+        """Takes a list of species and put each element into standard form,
+        while allowing an integer immediately preceding a species to act as
+        a multiplier."""
         species = []
-        split_list = re.split(' \+ ', side_of_reaction)
-        for item in split_list:
+        for item in unformatted_list:
             item = item.strip()
             try:
                 if _is_electron(item):
@@ -182,7 +185,8 @@ def nuclear_reaction_energy(*args, **kwargs):
         return total_charge
 
     def _mass_energy(species_list):
-        r"""Finds the total mass energy from a list of species."""
+        r"""Finds the total mass energy from a list of species, while
+        taking the masses of the fully ionized isotopes."""
         total_mass = 0.0*units.kg
         for species in species_list:
             if _is_electron(species) or _is_positron(species):
@@ -190,7 +194,8 @@ def nuclear_reaction_energy(*args, **kwargs):
             elif _is_neutron(species):
                 total_mass += constants.m_n
             else:
-                total_mass += isotope_mass(species)
+                atomic_numb = atomic_number(species)
+                total_mass += ion_mass(species, Z=atomic_numb)
         return (total_mass * constants.c**2).to(units.J)
 
     input_err_msg = ("The inputs to nuclear_reaction_energy must be either a "
@@ -202,22 +207,24 @@ def nuclear_reaction_energy(*args, **kwargs):
     if kwargs and not args and len(kwargs) == 2:  # keyword inputs
 
         try:
-            reactants = list(kwargs['reactants'])
-            products = list(kwargs['products'])
+            reactants = _get_species(list(kwargs['reactants']))
+            products = _get_species(list(kwargs['products']))
         except:
             raise ValueError(input_err_msg)
 
     elif args and not kwargs and len(args) == 1:  # reaction string input
 
         try:
-            LHS, RHS = re.split('-+>', args[0])
+            LHS_string, RHS_string = re.split('-+>', args[0])
+            LHS_list = re.split(' \+ ', LHS_string)
+            RHS_list = re.split(' \+ ', RHS_string)
         except TypeError:
             raise TypeError("The left and right hand sides of the reaction "
                             "should be separated by '-->'")
 
         try:
-            reactants = _get_species(LHS)
-            products = _get_species(RHS)
+            reactants = _get_species(LHS_list)
+            products = _get_species(RHS_list)
         except Exception:
             raise ValueError(input_err_msg)
 

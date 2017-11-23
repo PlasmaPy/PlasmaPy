@@ -50,6 +50,11 @@ def test_nuclear_reaction_energy_triple_alpha():
     assert np.isclose(energy_triplealpha1.to(u.keV).value, -91.8, atol=0.1)
     assert np.isclose(energy_triplealpha2.to(u.MeV).value, 7.367, atol=0.1)
 
+    reactants = ['He-4', 'alpha']
+    products = ['Be-8']
+    energy = nuclear_reaction_energy(reactants=reactants, products=products)
+    assert np.isclose(energy.to(u.keV).value, -91.8, atol=0.1)
+
 
 def test_nuclear_reaction_energy_alpha_decay():
     alpha_decay_example = 'U-238 --> Th-234 + alpha'
@@ -63,6 +68,13 @@ def test_nuclear_reaction_energy_triple_alpha_r():
     assert np.isclose(energy_triplealpha1_r.to(u.keV).value,
                       -91.8 * 2, atol=0.1)
 
+
+def test_nuclear_reaction_energy_beta():
+    energy1 = nuclear_reaction_energy(reactants=['n'], products=['p', 'e-'])
+    assert np.isclose(energy1.to(u.MeV).value, 0.78, atol=0.01)
+    energy2 = nuclear_reaction_energy(
+        reactants=['Mg-23'], products=['Na-23', 'e+'])
+    assert np.isclose(energy2.to(u.MeV).value, 3.034591, atol=1e-5)
 
 # (reaction, expected_error)
 nuclear_reaction_energy_error_table = [
