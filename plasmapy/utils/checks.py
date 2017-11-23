@@ -310,6 +310,11 @@ def _check_relativistic(V, funcname, betafrac=0.1):
 
     ValueError
         If V contains any NaNs
+        
+    Warns
+    -----
+    RelativityWarning
+        If V exceeds the specified fraction of the speed of light
 
     Examples
     --------
