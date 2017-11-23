@@ -5,6 +5,7 @@ import numpy as np
 from astropy import units as u
 from ..constants import c
 import warnings
+from plasmapy.classes.errors import RelativityWarning
 
 
 def check_quantity(validations):
@@ -333,13 +334,13 @@ def _check_relativistic(V, funcname, betafrac=0.1):
 
     if beta == np.inf:
         warnings.warn(funcname + " is yielding an infinite velocity.", 
-                      UserWarning)
+                      RelativityWarning)
     elif beta >= 1:
         warnings.warn(funcname + " is yielding a velocity that is " +
                       str(round(beta, 3)) + " times the speed of light.",
-                      UserWarning)
+                      RelativityWarning)
     elif beta >= betafrac:
         warnings.warn(funcname + " is yielding a velocity that is " +
                       str(round(beta*100, 3)) + "% of the speed of " +
                       "light. Relativistic effects may be important.",
-                      UserWarning)
+                      RelativityWarning)
