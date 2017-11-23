@@ -33,28 +33,28 @@ def nuclear_binding_energy(argument, mass_numb=None):
 
     Examples
     --------
-    >>> nuclear_binding_energy('Fe-56')
-    <Quantity 7.674003137600576e-11 J>
+    >>> from astropy import units as u
+    >>> nuclear_binding_energy('Fe-56').to(u.MeV)
+    <Quantity 492.25957875689096 MeV>
     >>> nuclear_binding_energy(26, 56)
-    <Quantity 7.674003137600576e-11 J>
+    <Quantity 7.88686788449147e-11 J>
     >>> nuclear_binding_energy('p')  # proton
     <Quantity 0.0 J>
-
     >>> from astropy import units as u
     >>> before = nuclear_binding_energy("D") + nuclear_binding_energy("T")
     >>> after = nuclear_binding_energy("alpha")
     >>> (after - before).to(u.MeV)  # released energy from D + T --> alpha + n
-    <Quantity 17.58929687252852 MeV>
+    <Quantity 17.58932777775092 MeV>
 
     """
 
     if _is_neutron(argument) and mass_numb is None or mass_numb == 1:
         return 0.0 * units.J
 
-    isotopic_symbol = isotope_symbol(argument, mass_numb)
+    isotope = isotope_symbol(argument, mass_numb)
 
-    isotopic_mass = isotope_mass(isotopic_symbol)
     number_of_protons = atomic_number(argument)
+    nuclide_mass = ion_mass(isotope, Z=number_of_protons)
 
     if mass_numb is None:
         mass_numb = mass_number(argument)
@@ -65,7 +65,7 @@ def nuclear_binding_energy(argument, mass_numb=None):
     else:
         mass_of_nucleons = (number_of_protons * constants.m_p +
                             number_of_neutrons * constants.m_n)
-        mass_defect = mass_of_nucleons - isotopic_mass
+        mass_defect = mass_of_nucleons - nuclide_mass
         binding_energy = mass_defect * constants.c**2
 
     return binding_energy.to(units.J)
