@@ -230,7 +230,7 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
         If the ion mass, adiabatic index, or temperature are invalid.
         
     PhysicsError
-        If an adiabtic index is less than one.
+        If an adiabatic index is less than one.
 
     UnitConversionError
         If the temperature is in incorrect units.
