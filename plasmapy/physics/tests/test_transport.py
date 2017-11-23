@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from astropy import units as u
 
-from ...classes.errors import RelativityWarning
+from ...utils.exceptions import RelativityWarning
 from ...constants import c, m_p, m_e, e, mu0
 
 from ..transport import (Coulomb_logarithm)

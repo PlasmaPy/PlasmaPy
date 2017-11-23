@@ -5,7 +5,7 @@ import numpy as np
 from astropy import units as u
 from ..constants import c
 import warnings
-from plasmapy.classes.errors import RelativityWarning
+from plasmapy.utils.exceptions import RelativityWarning
 
 
 def check_quantity(validations):
