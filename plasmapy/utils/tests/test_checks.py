@@ -4,6 +4,7 @@ import numpy as np
 from astropy import units as u
 import pytest
 
+from ...classes.errors import RelativityWarning
 from ...constants import c
 from ..checks import (
     _check_quantity, _check_relativistic, check_relativistic,
@@ -233,16 +234,16 @@ relativistic_error_examples = [
 
 # (speed, betafrac, warning)
 relativistic_warning_examples = [
-    (0.11*c, 0.1, UserWarning),
-    (1.0*c, 0.1, UserWarning),
-    (1.1*c, 0.1, UserWarning),
-    (np.inf*u.cm/u.s, 0.1, UserWarning),
-    (-0.11*c, 0.1, UserWarning),
-    (-1.0*c, 0.1, UserWarning),
-    (-1.1*c, 0.1, UserWarning),
-    (-np.inf*u.cm/u.s, 0.1, UserWarning),
-    (2997924581*u.cm/u.s, 0.1, UserWarning),
-    (0.02*c, 0.01, UserWarning),
+    (0.11*c, 0.1, RelativityWarning),
+    (1.0*c, 0.1, RelativityWarning),
+    (1.1*c, 0.1, RelativityWarning),
+    (np.inf*u.cm/u.s, 0.1, RelativityWarning),
+    (-0.11*c, 0.1, RelativityWarning),
+    (-1.0*c, 0.1, RelativityWarning),
+    (-1.1*c, 0.1, RelativityWarning),
+    (-np.inf*u.cm/u.s, 0.1, RelativityWarning),
+    (2997924581*u.cm/u.s, 0.1, RelativityWarning),
+    (0.02*c, 0.01, RelativityWarning),
 ]
 
 # Tests for _check_relativistic
