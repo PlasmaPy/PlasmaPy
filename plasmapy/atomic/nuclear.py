@@ -2,7 +2,7 @@
 
 from astropy import units, constants
 import re
-from .atomic import (isotope_symbol, mass_number, isotope_mass, ion_mass, 
+from .atomic import (isotope_symbol, mass_number, isotope_mass, ion_mass,
                      atomic_number, charge_state, _is_neutron, _is_electron,
                      _is_positron)
 
@@ -209,7 +209,7 @@ def nuclear_reaction_energy(*args, **kwargs):
         try:
             reactants = _get_species(list(kwargs['reactants']))
             products = _get_species(list(kwargs['products']))
-        except:
+        except Exception:
             raise ValueError(input_err_msg)
 
     elif args and not kwargs and len(args) == 1:  # reaction string input

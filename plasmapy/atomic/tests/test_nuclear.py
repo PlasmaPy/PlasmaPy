@@ -76,6 +76,7 @@ def test_nuclear_reaction_energy_beta():
         reactants=['Mg-23'], products=['Na-23', 'e+'])
     assert np.isclose(energy2.to(u.MeV).value, 3.034591, atol=1e-5)
 
+
 # (reaction, expected_error)
 nuclear_reaction_energy_error_table = [
     ('H + H --> H', ValueError),
