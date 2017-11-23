@@ -38,7 +38,7 @@ def test_nuclear_reaction_energy():
     reaction2 = 'T + D -> n + alpha'
     released_energy1 = nuclear_reaction_energy(reaction1)
     released_energy2 = nuclear_reaction_energy(reaction2)
-    assert np.isclose(released_energy1.to(u.MeV).value, 17.58, rtol=0.01)
+    assert np.isclose((released_energy1.to(u.MeV)).value, 17.58, rtol=0.01)
     assert released_energy1 == released_energy2
 
 

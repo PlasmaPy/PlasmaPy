@@ -3,7 +3,7 @@
 from astropy import units, constants
 import re
 from .atomic import (isotope_symbol, mass_number, isotope_mass, atomic_number,
-                     _is_neutron)
+                     charge_state, _is_neutron, _is_electron, _is_positron)
 
 
 def nuclear_binding_energy(argument, mass_numb=None):
@@ -70,13 +70,21 @@ def nuclear_binding_energy(argument, mass_numb=None):
     return binding_energy.to(units.J)
 
 
-def nuclear_reaction_energy(reaction):
-    r"""Returns the released energy from a nuclear fusion reaction.
+def nuclear_reaction_energy(*args, **kwargs):
+    r"""Returns the released energy from a nuclear reaction.
 
     Parameters
     ----------
-    reaction: string
+    reaction: string, optional
         A string representing the reaction, like "D + T --> alpha + n"
+
+    reactants: list, optional
+        A list of strings representing the reactants of a nuclear
+        reaction
+
+    products: list, optional
+        A list of strings representing the products of a nuclear
+        reaction
 
     Returns
     -------
@@ -88,95 +96,146 @@ def nuclear_reaction_energy(reaction):
     Raises
     ------
     ValueError:
-        If the input is not a valid reaction, there is insufficient
-        information to determine an isotope, or if the number of
-        nucleons is not conserved during the reaction.
+        If the reaction is not valid, there is insufficient
+        information to determine an isotope, the number of nucleons is
+        not conserved, or the charge is not conserved.
 
     TypeError:
-        If the input is not a string.
+        If a positional input is given for the reaction
+
+        If the positional input for reaction is not a string.
 
     See also
     --------
     nuclear_binding_energy : finds the binding energy of an isotope
 
+    Notes
+    -----
+    This function requires either a string containing the nuclear
+    reaction, or reactants and products as two keyword-only lists
+    containing strings representing the isotopes and other particles
+    participating in the reaction.
+
     Examples
     --------
     >>> from astropy import units as u
     >>> nuclear_reaction_energy("D + T --> alpha + n")
-    <Quantity 17.58929687252852 MeV>
+    <Quantity 2.8181160225476198e-12 J>
     >>> triple_alpha1 = 'alpha + He-4 --> Be-8'
     >>> triple_alpha2 = 'Be-8 + alpha --> carbon-12'
     >>> energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
     >>> energy_triplealpha2 = nuclear_reaction_energy(triple_alpha2)
     >>> print(energy_triplealpha1, energy_triplealpha2)
-    -0.0918394866304908 MeV 7.3665870375939875 MeV
-    >>> energy_triplealpha1.to(u.J)
-    <Quantity -1.4714307834564652e-14 J>
-    >>> energy_triplealpha2.cgs
-    <Quantity 1.1802573526721418e-05 erg>
-    >>> nuclear_reaction_energy('alpha + alpha --> 2alpha')
-    <Quantity 0.0 MeV>
+    -1.4714307834595232e-14 J 1.1802573526724632e-12 J
+    >>> energy_triplealpha2.to(u.MeV)
+    <Quantity 7.366587037595994 MeV>
+    >>> nuclear_reaction_energy(reactants=['n'], products=['p', 'e-'])
+    <Quantity 1.25343510874046e-13 J>
 
     """
 
-    def _get_isotopes_list(side):
-        r"""Parse a side of a reaction to get a list of the isotopes."""
-        pre_list = re.split(' \+ ', side)
-        isotopes_list = []
-        for item in pre_list:
+    def _get_species(side_of_reaction):
+        r"""Parse a side of a reaction to get a list of the isotopes
+        and other participants in the reaction."""
+        species = []
+        split_list = re.split(' \+ ', side_of_reaction)
+        for item in split_list:
             item = item.strip()
             try:
-                isotope = isotope_symbol(item)
-                isotopes_list.append(isotope)
+                if _is_electron(item):
+                    species.append('e-')
+                elif _is_positron(item):
+                    species.append('e+')
+                else:
+                    isotope = isotope_symbol(item)
+                    species.append(isotope)
             except Exception:
                 try:
                     multiplier_string = ''
                     while item[0].isdigit():
                         multiplier_string += item[0]
                         item = item[1:]
-                    isotope = isotope_symbol(item)
+                        isotope = isotope_symbol(item)
                     for i in range(0, int(multiplier_string)):
-                        isotopes_list.append(isotope)
+                        species.append(isotope)
                 except Exception:
-                    raise
-        return isotopes_list
+                    raise ValueError("'"+str(item)+"' is an invalid isotope")
+        return species
 
-    def _mass_number_of_list(isotopes_list):
-        r"""Find the total number of nucleons in a list of isotopes."""
-        mass_numb = 0
-        for isotope in isotopes_list:
-            mass_numb += mass_number(isotope)
-        return mass_numb
+    def _nucleon_number(species_list):
+        r"""Finds the total number of nucleons in a list of species."""
+        nucleon_number = 0
+        for species in species_list:
+            if not (_is_electron(species) or _is_positron(species)):
+                nucleon_number += mass_number(species)
+        return nucleon_number
 
-    def _add_binding_energies(isotopes_list):
-        r"""Finds the total binding energy from a list of isotopes."""
-        total_binding_energy = 0.0*units.MeV
-        for isotope in isotopes_list:
-            total_binding_energy += nuclear_binding_energy(isotope)
-        return total_binding_energy
+    def _total_charge(species_list):
+        r"""Finds the total integer charge in a list of species,
+        excluding bound electrons."""
+        total_charge = 0
+        for species in species_list:
+            if _is_electron(species):
+                total_charge -= 1
+            elif _is_positron(species):
+                total_charge += 1
+            elif not _is_neutron(species):
+                total_charge += atomic_number(species)
+        return total_charge
 
-    if not isinstance(reaction, str):
-        raise TypeError("The input of nuclear_reaction_energy must be a string"
-                        " representing a reaction (e.g., 'D + T --> He + n')")
+    def _mass_energy(species_list):
+        r"""Finds the total mass energy from a list of species."""
+        total_mass = 0.0*units.kg
+        for species in species_list:
+            if _is_electron(species) or _is_positron(species):
+                total_mass += constants.m_e
+            elif _is_neutron(species):
+                total_mass += constants.m_n
+            else:
+                total_mass += isotope_mass(species)
+        return (total_mass * constants.c**2).to(units.J)
+
+    input_err_msg = ("The inputs to nuclear_reaction_energy must be either a "
+                     "a string representing a nuclear reaction (e.g., "
+                     "'D + T -> He-4 + n') or the keywords 'reactants' and "
+                     "'products' as lists with the nucleons or particles "
+                     "involved in the reaction.")
+
+    if kwargs and not args and len(kwargs) == 2:  # keyword inputs
+
+        try:
+            reactants = list(kwargs['reactants'])
+            products = list(kwargs['products'])
+        except:
+            raise ValueError(input_err_msg)
+
+    elif args and not kwargs and len(args) == 1:  # reaction string input
+
+        try:
+            LHS, RHS = re.split('-+>', args[0])
+        except TypeError:
+            raise TypeError("The left and right hand sides of the reaction "
+                            "should be separated by '-->'")
+
+        try:
+            reactants = _get_species(LHS)
+            products = _get_species(RHS)
+        except Exception:
+            raise ValueError(input_err_msg)
+
+    else:
+        raise ValueError(input_err_msg)
 
     try:
-        LHS, RHS = re.split('-+>', reaction)
+        if _nucleon_number(reactants) != _nucleon_number(products):
+            raise ValueError("The number of nucleons is not conserved")
+
+        if _total_charge(reactants) != _total_charge(products):
+            raise ValueError("Total charge is not conserved")
+
+        released_energy = _mass_energy(reactants) - _mass_energy(products)
+
     except Exception:
-        raise ValueError("The left and right hand sides of the reaction "
-                         "should be separated by '-->'")
+        raise ValueError("Invalid reactant or product")
 
-    reactants = _get_isotopes_list(LHS)
-    products = _get_isotopes_list(RHS)
-
-    mass_num_reactants = _mass_number_of_list(reactants)
-    mass_num_products = _mass_number_of_list(products)
-
-    if mass_num_reactants != mass_num_products:
-        raise ValueError("Mass numbers on LHS and RHS do not match for "
-                         "reaction " + reaction)
-
-    binding_energy_before = _add_binding_energies(reactants)
-    binding_energy_after = _add_binding_energies(products)
-    energy = binding_energy_after - binding_energy_before
-
-    return energy.to(units.MeV)
+    return released_energy.to(units.J)
