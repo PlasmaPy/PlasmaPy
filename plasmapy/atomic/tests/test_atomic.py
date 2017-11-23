@@ -842,7 +842,7 @@ def test_is_neutron(test_input, kwargs, expected):
                           ('p-', False, False)])
 def test_is_hydrogen(test_input, can_be_atom_numb, expected):
     assert _is_hydrogen(test_input,
-                         can_be_atomic_number=can_be_atom_numb) == expected
+                        can_be_atomic_number=can_be_atom_numb) == expected
 
 
 @pytest.mark.parametrize("test_input,kwargs,expected_error",
