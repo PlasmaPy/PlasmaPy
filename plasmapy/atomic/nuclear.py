@@ -101,8 +101,6 @@ def nuclear_reaction_energy(*args, **kwargs):
         not conserved, or the charge is not conserved.
 
     TypeError:
-        If a positional input is given for the reaction
-
         If the positional input for reaction is not a string.
 
     See also
@@ -236,6 +234,6 @@ def nuclear_reaction_energy(*args, **kwargs):
         released_energy = _mass_energy(reactants) - _mass_energy(products)
 
     except Exception:
-        raise ValueError("Invalid reactant or product")
+        raise ValueError("Invalid reactant(s) and/or product(s)")
 
     return released_energy.to(units.J)
