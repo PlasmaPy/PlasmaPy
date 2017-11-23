@@ -332,11 +332,14 @@ def _check_relativistic(V, funcname, betafrac=0.1):
     beta = np.max(np.abs((V/c).value))
 
     if beta == np.inf:
-        warnings.warn(funcname + " is yielding an infinite velocity.")
+        warnings.warn(funcname + " is yielding an infinite velocity.", 
+                      UserWarning)
     elif beta >= 1:
         warnings.warn(funcname + " is yielding a velocity that is " +
-                      str(round(beta, 3)) + " times the speed of light.")
+                      str(round(beta, 3)) + " times the speed of light.",
+                      UserWarning)
     elif beta >= betafrac:
         warnings.warn(funcname + " is yielding a velocity that is " +
                       str(round(beta*100, 3)) + "% of the speed of " +
-                      "light. Relativistic effects may be important.")
+                      "light. Relativistic effects may be important.",
+                      UserWarning)

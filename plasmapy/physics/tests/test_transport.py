@@ -38,7 +38,7 @@ def test_Coulomb_logarithm():
     assert np.isclose(Coulomb_logarithm(1e5*u.K, 5*u.m**-3, ('e', 'e'),
                                         V=1e4*u.m/u.s), 21.379082011)
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(UserWarning):
         Coulomb_logarithm(1e5*u.K, 1*u.m**-3, ('e', 'p'), 299792458*u.m/u.s)
 
     with pytest.raises(u.UnitConversionError):

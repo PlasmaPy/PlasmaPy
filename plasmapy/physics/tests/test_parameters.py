@@ -106,10 +106,10 @@ def test_Alfven_speed():
     with pytest.raises(ValueError):
         Alfven_speed(B, n_i, ion='spacecats')
 
-    with pytest.raises(UserWarning):  # relativistic
+    with pytest.warns(UserWarning):  # relativistic
         Alfven_speed(5e1*u.T, 5e19*u.m**-3, ion='p')
 
-    with pytest.raises(UserWarning):  # super-relativistic
+    with pytest.warns(UserWarning):  # super-relativistic
         Alfven_speed(5e8*u.T, 5e19*u.m**-3, ion='p')
 
     with pytest.raises(ValueError):
@@ -121,10 +121,10 @@ def test_Alfven_speed():
     with pytest.raises(ValueError):
         Alfven_speed(1*u.T, np.nan*u.m**-3, ion='p')
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(UserWarning):
         assert Alfven_speed(np.inf*u.T, 1*u.m**-3, ion='p') == np.inf*u.m/u.s
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(UserWarning):
         assert Alfven_speed(-np.inf*u.T, 1*u.m**-3, ion='p') == np.inf*u.m/u.s
 
     with pytest.raises(UserWarning):
@@ -151,7 +151,7 @@ def test_ion_sound_speed():
 
     assert ion_sound_speed(T_e=T_e, gamma_e=1) == ion_sound_speed(T_e=T_e)
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(UserWarning):
         assert ion_sound_speed(T_i=T_i, gamma_i=np.inf) == np.inf*u.m/u.s
 
     with pytest.raises(ValueError):
@@ -181,10 +181,10 @@ def test_ion_sound_speed():
     with pytest.raises(ValueError):
         ion_sound_speed(T_i=-np.abs(T_i))
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(UserWarning):
         ion_sound_speed(T_i=5e12*u.K)
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(UserWarning):
         ion_sound_speed(T_i=5e19*u.K)
 
     with pytest.raises(u.UnitConversionError):
@@ -226,10 +226,10 @@ def test_thermal_speed():
     with pytest.raises(ValueError):
         thermal_speed(-T_e)
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(UserWarning):
         thermal_speed(1e9*u.K)
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(UserWarning):
         thermal_speed(5e19*u.K)
 
     with pytest.raises(UserWarning):
@@ -254,10 +254,10 @@ def test_thermal_speed():
     with pytest.raises(ValueError):
         thermal_speed(-T_e, particle='p')
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(UserWarning):
         thermal_speed(1e11*u.K, particle='p')
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(UserWarning):
         thermal_speed(1e14*u.K, particle='p')
 
     with pytest.raises(ValueError):
