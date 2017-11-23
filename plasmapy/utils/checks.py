@@ -4,6 +4,7 @@ import inspect
 import numpy as np
 from astropy import units as u
 from ..constants import c
+import warnings
 
 
 def check_quantity(validations):
@@ -285,7 +286,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
 
 def _check_relativistic(V, funcname, betafrac=0.1):
-    r"""Raise UserWarnings if a velocity is relativistic or superrelativistic
+    r"""Warn if a velocity is relativistic or superrelativistic
 
     Parameters
     ----------
@@ -296,8 +297,7 @@ def _check_relativistic(V, funcname, betafrac=0.1):
         The name of the original function to be printed in the error messages.
 
     betafrac : float
-        The minimum fraction of the speed of light that will raise a
-        UserWarning
+        The minimum fraction of the speed of light that will generate a warning
 
     Raises
     ------
@@ -309,9 +309,6 @@ def _check_relativistic(V, funcname, betafrac=0.1):
 
     ValueError
         If V contains any NaNs
-
-    UserWarning
-        If V is greater than betafrac times the speed of light
 
     Examples
     --------
@@ -335,11 +332,11 @@ def _check_relativistic(V, funcname, betafrac=0.1):
     beta = np.max(np.abs((V/c).value))
 
     if beta == np.inf:
-        raise UserWarning(funcname + " is yielding an infinite velocity.")
+        warnings.warn(funcname + " is yielding an infinite velocity.")
     elif beta >= 1:
-        raise UserWarning(funcname + " is yielding a velocity that is " +
-                          str(round(beta, 3)) + " times the speed of light.")
+        warnings.warn(funcname + " is yielding a velocity that is " +
+                      str(round(beta, 3)) + " times the speed of light.")
     elif beta >= betafrac:
-        raise UserWarning(funcname + " is yielding a velocity that is " +
-                          str(round(beta*100, 3)) + "% of the speed of " +
-                          "light. Relativistic effects may be important.")
+        warnings.warn(funcname + " is yielding a velocity that is " +
+                      str(round(beta*100, 3)) + "% of the speed of " +
+                      "light. Relativistic effects may be important.")
