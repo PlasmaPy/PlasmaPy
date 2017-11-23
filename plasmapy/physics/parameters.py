@@ -14,6 +14,7 @@ import numpy as np
 # bit more than @quantity_input as it can allow
 
 from ..utils import _check_quantity, check_relativistic, check_quantity
+from ..utils.exceptions import PhysicsError
 
 
 r"""Values should be returned as an Astropy Quantity in SI units.
@@ -293,11 +294,11 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
                         "a float or int in ion_sound_speed")
 
     if not 1 <= gamma_e <= np.inf:
-        raise ValueError("The adiabatic index for electrons must be between "
-                         "one and infinity")
+        raise PhysicsError("The adiabatic index for electrons must be between "
+                           "one and infinity")
     if not 1 <= gamma_i <= np.inf:
-        raise ValueError("The adiabatic index for ions must be between "
-                         "one and infinity")
+        raise PhysicsError("The adiabatic index for ions must be between "
+                           "one and infinity")
 
     T_i = T_i.to(units.K, equivalencies=units.temperature_energy())
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())

@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from astropy import units as u
 
-from ...utils.exceptions import RelativityWarning
+from ...utils.exceptions import RelativityWarning, PhysicsError
 from ...constants import c, m_p, m_e, e, mu0
 from ..parameters import (Alfven_speed,
                           gyrofrequency,
@@ -162,10 +162,10 @@ def test_ion_sound_speed():
     with pytest.raises(TypeError):
         ion_sound_speed('p')
 
-    with pytest.raises(ValueError):
+    with pytest.raises(PhysicsError):
         ion_sound_speed(T_i=T_i, gamma_i=0.9999)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(PhysicsError):
         ion_sound_speed(T_i=T_i, gamma_e=0.9999)
 
     with pytest.raises(TypeError):
