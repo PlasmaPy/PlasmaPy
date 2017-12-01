@@ -29,4 +29,6 @@ from .transport import Coulomb_logarithm
 from .distribution import (Maxwellian_1D,
                            Maxwellian_speed_1D,
                            Maxwellian_velocity_3D,
-                           Maxwellian_speed_3D)
+                           Maxwellian_speed_3D,
+                           kappa_velocity_1D,
+                           kappa_velocity_3D)
