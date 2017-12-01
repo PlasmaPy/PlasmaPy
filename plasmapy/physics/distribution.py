@@ -553,8 +553,6 @@ def Maxwellian_speed_3D(vx,
     elif units == "unitless":
         return distFunc
 
-#%% kappas
-
 def kappa_velocity_1D(v,
                       T,
                       kappa,
@@ -636,7 +634,7 @@ def kappa_velocity_1D(v,
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
     >>> kappa_velocity_1D(v=v, T=30000*u.K, kappa=4, particle='e',V_drift=0*u.m/u.s)
-    <Quantity 5.916329687405703e-07 s / m>
+    <Quantity 8.601367890132278e-07 s / m>
     """
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3/2:
@@ -791,7 +789,7 @@ def kappa_velocity_3D(vx,
     ... Vx_drift=0*u.m/u.s,
     ... Vy_drift=0*u.m/u.s,
     ... Vz_drift=0*u.m/u.s)
-    <Quantity 3.985430307328085e-20 s3 / m3>
+    <Quantity 3.7833987973293507e-19 s3 / m3>
     """
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3/2:
