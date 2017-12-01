@@ -491,7 +491,7 @@ def kappa_thermal_speed(T, kappa, particle="e"):
     """
     # Checking thermal units
     T = T.to(units.K, equivalencies=units.temperature_energy())
-    # must have kappa > 1/2 for distribution function to be valid
+    # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3/2:
         raise ValueError(f"Must have kappa > 3/2, instead of {kappa}.")
     # obtaining particle mass

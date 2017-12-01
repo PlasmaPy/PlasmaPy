@@ -4,6 +4,7 @@
 from .parameters import (Alfven_speed,
                          ion_sound_speed,
                          thermal_speed,
+                         kappa_thermal_speed,
                          gyrofrequency,
                          gyroradius,
                          plasma_frequency,
