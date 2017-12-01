@@ -12,6 +12,7 @@ from ..parameters import (Alfven_speed,
                           gyrofrequency,
                           gyroradius,
                           thermal_speed,
+                          kappa_thermal_speed,
                           plasma_frequency,
                           Debye_length,
                           Debye_number,
@@ -281,6 +282,38 @@ def test_thermal_speed():
 
     with pytest.raises(ValueError):
         thermal_speed(T_i, method="sadks")
+        
+# test class for kappa_thermal_speed() function:
+class Test_kappa_thermal_speed(object):
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T_e = 5*u.eV
+        self.kappaInvalid = 3/2
+        self.kappa = 4
+        self.particle = "p"
+        self.known1True = 24467.878463594963
+    def test_invalid_kappa(self):
+        """
+        Checks if function raises error when kappa <= 1/2 is passed as an
+        argument.
+        """
+        with pytest.raises(ValueError):
+            kappa_thermal_speed(self.T_e, 
+                                self.kappaInvalid, 
+                                particle=self.particle)
+    def test_known1(self):
+        """
+        Tests if expected value is returned for a set of regular inputs.
+        """
+        known1 = kappa_thermal_speed(self.T_e, 
+                                     self.kappa, 
+                                     particle=self.particle)
+        errStr = (f"Kappa thermal velocity should be {self.known1True} "
+                  f"and not {known1.si.value}.")
+        assert np.isclose(known1.value, 
+                          self.known1True,
+                          rtol=1e-8,
+                          atol=0.0), errStr
 
 
 def test_gyrofrequency():

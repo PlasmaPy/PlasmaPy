@@ -331,7 +331,7 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
     'T': {'units': units.K, 'can_be_negative': False}
 })
 def thermal_speed(T, particle="e", method="most_probable"):
-    r"""Returns the most probable speed for an particle within a Maxwellian
+    r"""Returns the most probable speed for a particle within a Maxwellian
     distribution.
 
     Parameters
@@ -425,6 +425,84 @@ def thermal_speed(T, particle="e", method="most_probable"):
 
     return V
 
+@check_relativistic
+@check_quantity({
+    'T': {'units': units.K, 'can_be_negative': False}
+})
+def kappa_thermal_speed(T, kappa, particle="e"):
+    r"""Returns the most probable speed for a particle within a Kappa
+    distribution.
+
+    Parameters
+    ----------
+    T : Quantity
+        The particle temperature in either kelvin or energy per particle
+        
+    kappa: Quantity
+        The kappa parameter is a dimensionless number which sets the slope
+        of the energy spectrum of suprathermal particles forming the tail
+        of the Kappa velocity distribution function. Kappa must be greater
+        than 3/2.
+
+    particle : string, optional
+        Representation of the particle species (e.g., 'p' for protons, 'D+'
+        for deuterium, or 'He-4 +1' for singly ionized helium-4),
+        which defaults to electrons.  If no charge state information is
+        provided, then the particles are assumed to be singly charged.
+
+    method : string, optional
+        Method to be used for calculating the thermal speed. Options are
+        'most_probable' (default), 'rms', and 'mean_magnitude'. 
+
+    Returns
+    -------
+    V : Quantity
+        particle thermal speed
+
+    Raises
+    ------
+    TypeError
+        The particle temperature is not a Quantity
+
+    UnitConversionError
+        If the particle temperature is not in units of temperature or
+        energy per particle
+
+    ValueError
+        The particle temperature is invalid or particle cannot be used to
+        identify an isotope or particle
+
+    UserWarning
+        If the particle thermal speed exceeds 10% of the speed of light, or
+        if units are not provided and SI units are assumed.
+
+    Notes
+    -----
+    The particle thermal speed is given by:
+
+    .. math::
+        V_{th,i} = \sqrt{(2 \kappa - 3)\frac{2 k_B T_i}{\kappa m_i}}
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> kappa_thermal_speed(5*u.eV, 4, 'p')
+    <Quantity 24467.878463594963 m / s>
+    """
+    # Checking thermal units
+    T = T.to(units.K, equivalencies=units.temperature_energy())
+    # must have kappa > 1/2 for distribution function to be valid
+    if kappa <= 3/2:
+        raise ValueError(f"Must have kappa > 3/2, instead of {kappa}.")
+    # obtaining particle mass
+    try:
+        m = ion_mass(particle)
+    except Exception:
+        raise ValueError("Unable to find {} mass in thermal_speed"
+                         .format(particle))
+    # thermal velocity of Kappa distribution function
+    vTh = (np.sqrt((2*kappa-3)*k_B*T/(kappa*m))).to(units.m/units.s)
+    return vTh
 
 @check_quantity({
     'B': {'units': units.T}
