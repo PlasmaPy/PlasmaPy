@@ -628,6 +628,9 @@ def kappa_velocity_1D(v,
     where v_Th,\kappa is the kappa thermal speed
     and A_\kappa = \frac{1}{2 \pi (\kappa v_Th,\kappa^2)^{1/2} \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)} is the normalization constant
 
+    As kappa approaches infinity, the kappa distribution function converges
+    to the Maxwellian distribution function.
+    
     Examples
     --------
     >>> from plasmapy.physics import kappa_velocity_1D
@@ -665,14 +668,14 @@ def kappa_velocity_1D(v,
         vTh = (kappa_thermal_speed(T*u.K,
                                    kappa,
                                    particle=particle)).si.value
-    # Get thermal velocity squared
+    # Get thermal velocity squared and accounting for 1D instead of 3D
     vThSq = vTh ** 2
     # Get square of relative particle velocity
     vSq = (v - V_drift) ** 2
     # calculating distribution function
     expTerm = (1 + vSq / (kappa * vThSq)) ** (-(kappa + 1))
     coeff1 = 1 / (2 * np.pi * (kappa * vThSq) ** (1 / 2))
-    coeff2 = gamma(kappa + 1) / (gamma(kappa - 1/2) * gamma(3/2))
+    coeff2 = gamma(kappa + 1) / (gamma(kappa - 1/2) * gamma(3 / 2))
     distFunc = coeff1 * coeff2 * expTerm
     if units == "units":
         return distFunc.to(u.s/u.m)
@@ -769,7 +772,10 @@ def kappa_velocity_3D(vx,
     f = A_\kappa \left(1 + \frac{(\vec{v} - \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-(\kappa + 1)}
     where v_Th,\kappa is the kappa thermal speed
     and A_\kappa = \frac{1}{2 \pi (\kappa v_Th,\kappa^2)^{3/2} \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)} is the normalization constant
-
+                        
+    As kappa approaches infinity, the kappa distribution function converges
+    to the Maxwellian distribution function.
+    
     See also
     --------
     kappa_velocity_1D
