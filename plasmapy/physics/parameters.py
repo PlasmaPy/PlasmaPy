@@ -501,7 +501,9 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
         raise ValueError("Unable to find {} mass in thermal_speed"
                          .format(particle))
     # thermal velocity of Kappa distribution function is just Maxwellian
-    # thermal speed modulated by the following factor
+    # thermal speed modulated by the following factor.
+    # This is true for the "most probable" velocity, though it may change
+    # for the other two methods. Must be checked!
     coeff = np.sqrt((kappa - 3/2) / kappa)
     
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
@@ -514,7 +516,6 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     else:
         raise(ValueError("Method {} not supported in thermal_speed"
                          .format(method)))
-    
     return coeff*vTh
 
 @check_quantity({
