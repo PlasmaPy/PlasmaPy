@@ -501,7 +501,10 @@ def kappa_thermal_speed(T, kappa, particle="e"):
         raise ValueError("Unable to find {} mass in thermal_speed"
                          .format(particle))
     # thermal velocity of Kappa distribution function
-    vTh = (np.sqrt((2*kappa-3)*k_B*T/(kappa*m))).to(units.m/units.s)
+    coeff = (kappa - 3/2) / kappa
+    vTh = np.sqrt(coeff) * thermal_speed(T=T, 
+                                         particle=particle,
+                                         method="most_probable")
     return vTh
 
 @check_quantity({
