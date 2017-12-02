@@ -429,7 +429,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
 @check_quantity({
     'T': {'units': units.K, 'can_be_negative': False}
 })
-def kappa_thermal_speed(T, kappa, particle="e"):
+def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     r"""Returns the most probable speed for a particle within a Kappa
     distribution.
 
@@ -500,12 +500,22 @@ def kappa_thermal_speed(T, kappa, particle="e"):
     except Exception:
         raise ValueError("Unable to find {} mass in thermal_speed"
                          .format(particle))
-    # thermal velocity of Kappa distribution function
-    coeff = (kappa - 3/2) / kappa
-    vTh = np.sqrt(coeff) * thermal_speed(T=T, 
-                                         particle=particle,
-                                         method="most_probable")
-    return vTh
+    # thermal velocity of Kappa distribution function is just Maxwellian
+    # thermal speed modulated by the following factor
+    coeff = np.sqrt((kappa - 3/2) / kappa)
+    
+    # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
+    if method == "most_probable":
+        vTh = (np.sqrt(2*k_B*T/m)).to(units.m/units.s)
+    elif method == "rms":
+        vTh = (np.sqrt(3*k_B*T/m)).to(units.m/units.s)
+    elif method == "mean_magnitude":
+        vTh = (np.sqrt(8*k_B*T/(m/np.pi))).to(units.m/units.s)
+    else:
+        raise(ValueError("Method {} not supported in thermal_speed"
+                         .format(method)))
+    
+    return coeff*vTh
 
 @check_quantity({
     'B': {'units': units.T}
