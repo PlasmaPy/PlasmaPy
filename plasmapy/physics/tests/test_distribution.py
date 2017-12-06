@@ -706,6 +706,7 @@ class Test_kappa_velocity_1D(object):
         """initializing parameters for tests """
         self.T_e = 30000 * u.K
         self.kappa = 4
+        self.kappaInvalid = 3 / 2
         self.v = 1e5 * u.m / u.s
         self.V_drift = 1000000 * u.m / u.s
         self.V_drift2 = 0 * u.m / u.s
@@ -721,7 +722,17 @@ class Test_kappa_velocity_1D(object):
                                        kappa=self.kappa,
                                        particle=self.particle)
         self.distFuncTrue = 6.637935187755855e-07
-
+    def test_invalid_kappa(self):
+        """
+        Checks if function raises error when kappa <= 3/2 is passed as an
+        argument.
+        """
+        with pytest.raises(ValueError):
+            kappa_velocity_1D(v=self.v,
+                                     T=self.T_e,
+                                     kappa=self.kappaInvalid,
+                                     particle=self.particle,
+                                     units="units")
     def test_max_noDrift(self):
         """
         Checks maximum value of distribution function is in expected place,
@@ -922,6 +933,7 @@ class Test_kappa_velocity_3D(object):
         """initializing parameters for tests """
         self.T = 1.0 * u.eV
         self.kappa = 4
+        self.kappaInvalid = 3 / 2
         self.particle = 'H'
         # get thermal velocity and thermal velocity squared
         self.vTh = kappa_thermal_speed(self.T,
@@ -937,6 +949,19 @@ class Test_kappa_velocity_3D(object):
         self.Vy_drift2 = 1e5 * u.m / u.s
         self.Vz_drift2 = 1e5 * u.m / u.s
         self.distFuncTrue = 1.1847914288918793e-22
+    def test_invalid_kappa(self):
+        """
+        Checks if function raises error when kappa <= 3/2 is passed as an
+        argument.
+        """
+        with pytest.raises(ValueError):
+            kappa_velocity_3D(vx=self.vx,
+                                     vy=self.vy,
+                                     vz=self.vz,
+                                     T=self.T,
+                                     kappa=self.kappaInvalid,
+                                     particle=self.particle,
+                                     units="units")
 #    def test_maxwellian_limit(self):
 #        """
 #        Tests the limit of large kappa to see if kappa distribution function
@@ -971,7 +996,6 @@ class Test_kappa_velocity_3D(object):
 #                          atol=0.0), errStr
 #
 #        return
-
     def test_norm(self):
         """
         Tests whether distribution function is normalized, and integrates to 1.

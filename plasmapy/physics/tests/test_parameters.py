@@ -301,7 +301,7 @@ class Test_kappa_thermal_speed(object):
 
     def test_invalid_kappa(self):
         """
-        Checks if function raises error when kappa <= 1/2 is passed as an
+        Checks if function raises error when kappa <= 3/2 is passed as an
         argument.
         """
         with pytest.raises(ValueError):
