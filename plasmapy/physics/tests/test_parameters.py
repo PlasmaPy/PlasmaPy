@@ -309,7 +309,18 @@ class Test_kappa_thermal_speed(object):
             kappa_thermal_speed(self.T_e,
                                 self.kappaInvalid,
                                 particle=self.particle)
-
+        return
+    def test_invalid_method(self):
+        """
+        Checks if function raises error when invalid method is passed as an
+        argument.
+        """
+        with pytest.raises(ValueError):
+            kappa_thermal_speed(self.T_e,
+                                self.kappaInvalid,
+                                particle=self.particle,
+                                method="invalid")
+        return
     def test_probable1(self):
         """
         Tests if expected value is returned for a set of regular inputs.
