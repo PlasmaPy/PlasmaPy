@@ -297,8 +297,9 @@ class Test_kappa_thermal_speed(object):
         self.kappaInvalid = 3 / 2
         self.kappa = 4
         self.particle = "p"
-        self.known1True = 24467.878463594963
-
+        self.probable1True = 24467.878463594963
+        self.rms1True = 29966.908662120648
+        self.mean1True = 86736.37081257407
     def test_invalid_kappa(self):
         """
         Checks if function raises error when kappa <= 3/2 is passed as an
@@ -309,19 +310,53 @@ class Test_kappa_thermal_speed(object):
                                 self.kappaInvalid,
                                 particle=self.particle)
 
-    def test_known1(self):
+    def test_probable1(self):
         """
         Tests if expected value is returned for a set of regular inputs.
         """
         known1 = kappa_thermal_speed(self.T_e,
                                      self.kappa,
-                                     particle=self.particle)
-        errStr = (f"Kappa thermal velocity should be {self.known1True} "
+                                     particle=self.particle,
+                                     method="most_probable")
+        errStr = (f"Kappa thermal velocity should be {self.probable1True} "
                   f"and not {known1.si.value}.")
         assert np.isclose(known1.value,
-                          self.known1True,
+                          self.probable1True,
                           rtol=1e-8,
                           atol=0.0), errStr
+        return
+    def test_rms1(self):
+        """
+        Tests if expected value is returned for a set of regular inputs.
+        """
+        known1 = kappa_thermal_speed(self.T_e,
+                                     self.kappa,
+                                     particle=self.particle,
+                                     method="rms")
+        errStr = (f"Kappa thermal velocity should be {self.rms1True} "
+                  f"and not {known1.si.value}.")
+        assert np.isclose(known1.value,
+                          self.rms1True,
+                          rtol=1e-8,
+                          atol=0.0), errStr
+        return
+    def test_mean1(self):
+        """
+        Tests if expected value is returned for a set of regular inputs.
+        """
+        known1 = kappa_thermal_speed(self.T_e,
+                                     self.kappa,
+                                     particle=self.particle,
+                                     method="mean_magnitude")
+        errStr = (f"Kappa thermal velocity should be {self.mean1True} "
+                  f"and not {known1.si.value}.")
+        assert np.isclose(known1.value,
+                          self.mean1True,
+                          rtol=1e-8,
+                          atol=0.0), errStr
+        return
+    
+    
 
 
 def test_gyrofrequency():
