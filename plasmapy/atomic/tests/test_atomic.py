@@ -863,7 +863,7 @@ def test_is_hydrogen_errors(test_input, kwargs, expected_error):
                           ('E', False),
                           ('E-', False),
                           ('beta', False),
-                          (57, False)])
+                          (-1, False)])
 def test_is_electron(test_input, expected):
     assert _is_electron(test_input) == expected
 
@@ -878,26 +878,27 @@ def test_is_electron(test_input, expected):
                           ('E', False),
                           ('E-', False),
                           ('beta', False),
-                          (57, False)])
+                          (1, False)])
 def test_is_positron(test_input, expected):
     assert _is_positron(test_input) == expected
 
 
 @pytest.mark.parametrize("test_input,expected",
-                          [('p', True),
-                           ('p+', True),
-                           ('hydrogen-1+', True),
-                           ('H-1 1+', True),
-                           ('H-1', False),
-                           ('H', False),
-                           ('p-', False),
-                           ('antiproton', False),
-                           ('Antiproton', False),
-                           ('proton', True),
-                           ('Proton', True),
-                           ('P', False),
-                           ('P+', False),
-                           ])
+                         [('p', True),
+                          ('p+', True),
+                          ('hydrogen-1+', True),
+                          ('H-1 1+', True),
+                          ('H-1', False),
+                          ('H', False),
+                          ('p-', False),
+                          ('antiproton', False),
+                          ('Antiproton', False),
+                          ('proton', True),
+                          ('Proton', True),
+                          ('P', False),
+                          ('P+', False),
+                          (1, False),
+                          ])
 def test_is_proton(test_input, expected):
     assert _is_proton(test_input) == expected
 
