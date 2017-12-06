@@ -1573,7 +1573,13 @@ def _is_proton(argument):
     if not isinstance(argument, str):
         return False
 
-    if argument in ['p', 'p+'] or argument.lower() == 'proton':
+    proton_aliases = ['p', 'p+', 'H-1 1+', 'H-1 +1', 'H-1+']
+    proton_aliases_case_insensitive = ['hydrogen-1 1+', 'hydrogen-1 +1',
+                                       'hydrogen-1+', 'proton']
+
+    if argument in proton_aliases:
+        return True
+    elif argument.lower() in proton_aliases_case_insensitive:
         return True
     else:
         return False
