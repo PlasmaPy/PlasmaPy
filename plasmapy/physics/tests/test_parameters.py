@@ -317,7 +317,7 @@ class Test_kappa_thermal_speed(object):
         """
         with pytest.raises(ValueError):
             kappa_thermal_speed(self.T_e,
-                                self.kappaInvalid,
+                                self.kappa,
                                 particle=self.particle,
                                 method="invalid")
         return
