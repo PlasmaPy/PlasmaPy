@@ -10,7 +10,7 @@ from ..atomic import (atomic_symbol, isotope_symbol, atomic_number,
                       electric_charge, Elements, Isotopes,
                       _is_neutron, _is_hydrogen, _is_electron,
                       _is_positron, _is_antiproton, _is_alpha,
-                      _extract_charge_state)
+                      _extract_charge_state, _is_proton)
 
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
 
@@ -881,6 +881,25 @@ def test_is_electron(test_input, expected):
                           (57, False)])
 def test_is_positron(test_input, expected):
     assert _is_positron(test_input) == expected
+
+
+@pytest.mark.parametrize("test_input,expected",
+                          [('p', True),
+                           ('p+', True),
+                           ('hydrogen-1+', True),
+                           ('H-1 1+', True),
+                           ('H-1', False),
+                           ('H', False),
+                           ('p-', False),
+                           ('antiproton', False),
+                           ('Antiproton', False),
+                           ('proton', True),
+                           ('Proton', True),
+                           ('P', False),
+                           ('P+', False),
+                           ])
+def test_is_proton(test_input, expected):
+    assert _is_proton(test_input) == expected
 
 
 @pytest.mark.parametrize("test_input,expected",
