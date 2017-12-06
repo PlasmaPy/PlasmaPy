@@ -487,7 +487,7 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     --------
     >>> from astropy import units as u
     >>> kappa_thermal_speed(5*u.eV, 4, 'p')
-    <Quantity 24467.878463594963 m / s>
+    <Quantity 24467.878463594967 m / s>
     """
     # Checking thermal units
     T = T.to(units.K, equivalencies=units.temperature_energy())

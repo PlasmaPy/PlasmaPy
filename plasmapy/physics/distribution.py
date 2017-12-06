@@ -624,9 +624,9 @@ def kappa_velocity_1D(v,
     and suprathermal parameter kappa is given by:
 
     .. math::
-    f = A_\kappa \left(1 + \frac{(\vec{v} - \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-(\kappa + 1)}
+    f = A_\kappa \left(1 + \frac{(\vec{v} - \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-\kappa}
     where v_Th,\kappa is the kappa thermal speed
-    and A_\kappa = \frac{1}{2 \pi (\kappa v_Th,\kappa^2)^{1/2} \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)} is the normalization constant
+    and A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_Th,\kappa^2 \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2)} is the normalization constant
 
     As kappa approaches infinity, the kappa distribution function converges
     to the Maxwellian distribution function.
@@ -637,7 +637,7 @@ def kappa_velocity_1D(v,
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
     >>> kappa_velocity_1D(v=v, T=30000*u.K, kappa=4, particle='e',V_drift=0*u.m/u.s)
-    <Quantity 8.601367890132278e-07 s / m>
+    <Quantity 6.755498543618647e-07 s / m>
     """
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3/2:
@@ -673,9 +673,9 @@ def kappa_velocity_1D(v,
     # Get square of relative particle velocity
     vSq = (v - V_drift) ** 2
     # calculating distribution function
-    expTerm = (1 + vSq / (kappa * vThSq)) ** (-(kappa + 1))
-    coeff1 = 1 / (2 * np.pi * (kappa * vThSq) ** (1 / 2))
-    coeff2 = gamma(kappa + 1) / (gamma(kappa - 1/2) * gamma(3 / 2))
+    expTerm = (1 + vSq / (kappa * vThSq)) ** (-kappa)
+    coeff1 = 1 / (np.sqrt(np.pi) * kappa ** (3/2) * vTh)
+    coeff2 = gamma(kappa + 1) / (gamma(kappa - 1/2))
     distFunc = coeff1 * coeff2 * expTerm
     if units == "units":
         return distFunc.to(u.s/u.m)

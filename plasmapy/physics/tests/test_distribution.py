@@ -686,7 +686,7 @@ class Test_kappa_velocity_1D(object):
         self.vTh = kappa_thermal_speed(self.T_e,
                                        kappa=self.kappa,
                                        particle=self.particle)
-        self.distFuncTrue = 5.851627151617136e-07
+        self.distFuncTrue = 6.637935187755855e-07
     def test_max_noDrift(self):
         """
         Checks maximum value of distribution function is in expected place,
@@ -855,7 +855,7 @@ class Test_kappa_velocity_1D(object):
         """
         Testing vdrifts with values
         """
-        testVal = ((self.vTh**2 * np.pi) ** (-1 / 2)).si.value
+        testVal = 6.755498543630533e-07
         distFunc = kappa_velocity_1D(v=self.v,
                                      T=self.T_e,
                                      kappa=self.kappa,
@@ -897,7 +897,7 @@ class Test_kappa_velocity_3D(object):
 #        Tests the limit of large kappa to see if kappa distribution function
 #        converges to Maxwellian.
 #        """
-#        kappaLarge = 150
+#        kappaLarge = 100
 #        kappaDistFunc = kappa_velocity_3D(vx=self.vx,
 #                                          vy=self.vy,
 #                                          vz=self.vz,
@@ -908,10 +908,11 @@ class Test_kappa_velocity_3D(object):
 #                                          Vy_drift=self.Vy_drift2,
 #                                          Vz_drift=self.Vz_drift2,
 #                                          units="units")
+#        Teff =  self.T
 #        maxwellDistFunc = Maxwellian_velocity_3D(vx=self.vx,
 #                                                 vy=self.vy,
 #                                                 vz=self.vz,
-#                                                 T=self.T,
+#                                                 T=Teff,
 #                                                 particle=self.particle,
 #                                                 Vx_drift=self.Vx_drift2,
 #                                                 Vy_drift=self.Vy_drift2,
