@@ -357,7 +357,7 @@ def test_standard_atomic_weight(argument, expected):
 # (argument, expected_error)
 standard_atomic_weight_error_table = [
     ('H-1', ValueError),
-    ('wrong input', ValueError),
+    ("help i'm trapped in a unit test", ValueError),
     (1.1, TypeError),
     ('n', ValueError),
     ('p', ValueError),
@@ -418,7 +418,8 @@ isotope_mass_error_table = [
     ('Fe -2', ValueError),
     ('deuteron', ValueError),
     ('triton', ValueError),
-    ('alpha', ValueError)]
+    ('H-1 +1', ValueError),
+    ('H-1+', ValueError)]
 
 
 @pytest.mark.parametrize("argument, expected_error", isotope_mass_error_table)

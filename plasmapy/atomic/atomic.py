@@ -697,9 +697,6 @@ def isotope_mass(argument, mass_numb=None):
 
     argument, charge_state = _extract_charge_state(argument)
 
-    if _is_proton(argument) or _is_antiproton(argument):
-        return const.m_p
-
     if charge_state is not None and charge_state != 0:
         raise ValueError("Use ion_mass instead of isotope_mass for masses of "
                          "charged particles")
