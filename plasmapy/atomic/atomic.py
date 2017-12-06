@@ -692,6 +692,7 @@ def isotope_mass(argument, mass_numb=None):
     <Quantity 4.00260325413 u>
     >>> isotope_mass(2, 4)
     <Quantity 4.00260325413 u>
+
     """
 
     argument, charge_state = _extract_charge_state(argument)
@@ -1147,6 +1148,7 @@ def stable_isotopes(argument=None, unstable=False):
 
     >>> stable_isotopes('U', unstable=True)[:5] # only first five
     ['U-217', 'U-218', 'U-219', 'U-220', 'U-221']
+
     """
 
     def stable_isotopes_for_element(argument, stable_only):
@@ -1568,7 +1570,8 @@ def _is_antiproton(argument):
 
 def _is_proton(argument):
     r"""Returns True if the argument corresponds to a proton, and
-    False otherwise."""
+    False otherwise.  This function returns False for 'H-1' if no
+    charge state is given."""
 
     if not isinstance(argument, str):
         return False
