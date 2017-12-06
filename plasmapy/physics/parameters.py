@@ -158,7 +158,7 @@ def Alfven_speed(B, density, ion="p"):
 
     _check_quantity(B, 'B', 'Alfven_speed', units.T)
     _check_quantity(density, 'density', 'Alfven_speed',
-                    [units.m**-3, units.kg/units.m**3], can_be_negative=False)
+                    [units.m**-3, units.kg / units.m**3], can_be_negative=False)
 
     B = B.to(units.T)
     density = density.si
@@ -172,13 +172,13 @@ def Alfven_speed(B, density, ion="p"):
                 Z = 1
         except Exception:
             raise ValueError("Invalid ion in Alfven_speed.")
-        rho = density*m_i + Z*density*m_e
+        rho = density * m_i + Z * density * m_e
 
-    elif density.unit == units.kg/units.m**3:
+    elif density.unit == units.kg / units.m**3:
         rho = density
 
     try:
-        V_A = (np.abs(B)/np.sqrt(mu0*rho)).to(units.m/units.s)
+        V_A = (np.abs(B) / np.sqrt(mu0 * rho)).to(units.m / units.s)
     except Exception:
         raise ValueError("Unable to find Alfven speed")
 
@@ -190,7 +190,7 @@ def Alfven_speed(B, density, ion="p"):
     'T_i': {'units': units.K, 'can_be_negative': False},
     'T_e': {'units': units.K, 'can_be_negative': False}
 })
-def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
+def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
                     gamma_e=1, gamma_i=3, ion='p'):
     r"""Returns the ion sound speed for an electron-ion plasma.
 
@@ -318,8 +318,8 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
 
     try:
-        V_S_squared = (gamma_e*Z*k_B*T_e + gamma_i*k_B*T_i)/m_i
-        V_S = np.sqrt(V_S_squared).to(units.m/units.s)
+        V_S_squared = (gamma_e * Z * k_B * T_e + gamma_i * k_B * T_i) / m_i
+        V_S = np.sqrt(V_S_squared).to(units.m / units.s)
     except Exception:
         raise ValueError("Unable to find ion sound speed.")
 
@@ -414,16 +414,17 @@ def thermal_speed(T, particle="e", method="most_probable"):
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     if method == "most_probable":
-        V = (np.sqrt(2*k_B*T/m)).to(units.m/units.s)
+        V = (np.sqrt(2 * k_B * T / m)).to(units.m / units.s)
     elif method == "rms":
-        V = (np.sqrt(3*k_B*T/m)).to(units.m/units.s)
+        V = (np.sqrt(3 * k_B * T / m)).to(units.m / units.s)
     elif method == "mean_magnitude":
-        V = (np.sqrt(8*k_B*T/(m/np.pi))).to(units.m/units.s)
+        V = (np.sqrt(8 * k_B * T / (m / np.pi))).to(units.m / units.s)
     else:
         raise(ValueError("Method {} not supported in thermal_speed"
                          .format(method)))
 
     return V
+
 
 @check_relativistic
 @check_quantity({
@@ -437,7 +438,7 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     ----------
     T : Quantity
         The particle temperature in either kelvin or energy per particle
-        
+
     kappa: Quantity
         The kappa parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
@@ -492,7 +493,7 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     # Checking thermal units
     T = T.to(units.K, equivalencies=units.temperature_energy())
     # must have kappa > 3/2 for distribution function to be valid
-    if kappa <= 3/2:
+    if kappa <= 3 / 2:
         raise ValueError(f"Must have kappa > 3/2, instead of {kappa}.")
     # obtaining particle mass
     try:
@@ -504,19 +505,20 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     # thermal speed modulated by the following factor.
     # This is true for the "most probable" velocity, though it may change
     # for the other two methods. Must be checked!
-    coeff = np.sqrt((kappa - 3/2) / kappa)
-    
+    coeff = np.sqrt((kappa - 3 / 2) / kappa)
+
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     if method == "most_probable":
-        vTh = (np.sqrt(2*k_B*T/m)).to(units.m/units.s)
+        vTh = (np.sqrt(2 * k_B * T / m)).to(units.m / units.s)
     elif method == "rms":
-        vTh = (np.sqrt(3*k_B*T/m)).to(units.m/units.s)
+        vTh = (np.sqrt(3 * k_B * T / m)).to(units.m / units.s)
     elif method == "mean_magnitude":
-        vTh = (np.sqrt(8*k_B*T/(m/np.pi))).to(units.m/units.s)
+        vTh = (np.sqrt(8 * k_B * T / (m / np.pi))).to(units.m / units.s)
     else:
         raise(ValueError("Method {} not supported in thermal_speed"
                          .format(method)))
-    return coeff*vTh
+    return coeff * vTh
+
 
 @check_quantity({
     'B': {'units': units.T}
@@ -601,7 +603,7 @@ def gyrofrequency(B, particle='e'):
         raise ValueError("Invalid particle {} in gyrofrequency"
                          .format(particle))
 
-    omega_ci = units.rad * (Z*e*np.abs(B)/m_i).to(1/units.s)
+    omega_ci = units.rad * (Z * e * np.abs(B) / m_i).to(1 / units.s)
 
     return omega_ci
 
@@ -706,10 +708,10 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
     if len(args) == 1 and isinstance(args[0], units.Quantity):
         arg = args[0].si
         if arg.unit == units.T and B.si.unit in [units.J, units.K,
-                                                 units.m/units.s]:
+                                                 units.m / units.s]:
             B, arg = arg, B
 
-        if arg.unit == units.m/units.s:
+        if arg.unit == units.m / units.s:
             Vperp = arg
         elif arg.unit in (units.J, units.K):
             T_i = arg.to(units.K, equivalencies=units.temperature_energy())
@@ -722,14 +724,14 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
     _check_quantity(B, 'B', 'gyroradius', units.T)
 
     if Vperp is not None:
-        _check_quantity(Vperp, 'Vperp', 'gyroradius', units.m/units.s)
+        _check_quantity(Vperp, 'Vperp', 'gyroradius', units.m / units.s)
     elif T_i is not None:
         _check_quantity(T_i, 'T_i', 'gyroradius', units.K)
         Vperp = thermal_speed(T_i, particle=particle)
 
     omega_ci = gyrofrequency(B, particle)
 
-    r_Li = np.abs(Vperp)/omega_ci
+    r_Li = np.abs(Vperp) / omega_ci
 
     return r_Li.to(units.m, equivalencies=units.dimensionless_angles())
 
@@ -808,7 +810,7 @@ def plasma_frequency(n, particle='e'):
         raise ValueError("Invalid particle {} in gyrofrequency"
                          .format(particle))
 
-    omega_p = (units.rad*e*np.sqrt(n/(eps0*m)))
+    omega_p = (units.rad * e * np.sqrt(n / (eps0 * m)))
 
     return omega_p.si
 
@@ -879,7 +881,7 @@ def Debye_length(T_e, n_e):
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
 
     try:
-        lambda_D = ((eps0*k_B*T_e/(n_e*e**2))**0.5).to(units.m)
+        lambda_D = ((eps0 * k_B * T_e / (n_e * e**2))**0.5).to(units.m)
     except Exception:
         raise ValueError("Unable to find Debye length.")
 
@@ -946,7 +948,7 @@ def Debye_number(T_e, n_e):
 
     try:
         lambda_D = Debye_length(T_e, n_e)
-        N_D = (4/3)*np.pi*n_e*lambda_D**3
+        N_D = (4 / 3) * np.pi * n_e * lambda_D**3
     except Exception:
         raise ValueError("Unable to find Debye number")
 
@@ -1016,7 +1018,7 @@ def inertial_length(n, particle='e'):
         Z = abs(Z)
 
     omega_p = plasma_frequency(n, particle=particle)
-    d = (c/omega_p).to(units.m, equivalencies=units.dimensionless_angles())
+    d = (c / omega_p).to(units.m, equivalencies=units.dimensionless_angles())
 
     return d
 
@@ -1077,7 +1079,7 @@ def magnetic_pressure(B):
 
     """
 
-    p_B = (B**2/(2*mu0)).to(units.Pa)
+    p_B = (B**2 / (2 * mu0)).to(units.Pa)
 
     return p_B
 
@@ -1138,7 +1140,7 @@ def magnetic_energy_density(B: units.T):
 
     """
 
-    E_B = (B**2/(2*mu0)).to(units.J/units.m**3)
+    E_B = (B**2 / (2 * mu0)).to(units.J / units.m**3)
 
     return E_B
 
@@ -1199,7 +1201,7 @@ def upper_hybrid_frequency(B, n_e):
     try:
         omega_pe = plasma_frequency(n=n_e)
         omega_ce = gyrofrequency(B)
-        omega_uh = (np.sqrt(omega_pe**2 + omega_ce**2)).to(units.rad/units.s)
+        omega_uh = (np.sqrt(omega_pe**2 + omega_ce**2)).to(units.rad / units.s)
     except Exception:
         raise ValueError("Unable to find upper hybrid frequency.")
 
@@ -1280,8 +1282,8 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
         omega_ci = gyrofrequency(B, particle=ion)
         omega_pi = plasma_frequency(n_i, particle=ion)
         omega_ce = gyrofrequency(B)
-        omega_lh = 1/np.sqrt((omega_ci*omega_ce)**-1+omega_pi**-2)
-        omega_lh = omega_lh.to(units.rad/units.s)
+        omega_lh = 1 / np.sqrt((omega_ci * omega_ce)**-1 + omega_pi**-2)
+        omega_lh = omega_lh.to(units.rad / units.s)
     except Exception:
         raise ValueError("Unable to find lower hybrid frequency.")
 
