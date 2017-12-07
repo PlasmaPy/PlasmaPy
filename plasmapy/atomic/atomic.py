@@ -790,19 +790,19 @@ def ion_mass(argument, Z=None, mass_numb=None):
     --------
     >>> print(ion_mass('p').si.value)
     1.672621898e-27
-    >>> ion_mass('H')  # assumes terrestrial abundance of D
+    >>> ion_mass('H+')  # assumes terrestrial abundance of D
     <Quantity 1.672912413964e-27 kg>
-    >>> ion_mass('H') == ion_mass('p')
+    >>> ion_mass('H+') == ion_mass('p')
     False
-    >>> ion_mass('P')  # phosphorus
+    >>> ion_mass('P+')  # phosphorus
     <Quantity 5.14322300749914e-26 kg>
-    >>> ion_mass('He-4', 2)
+    >>> ion_mass('He-4', Z=2)
     <Quantity 6.644657088401906e-27 kg>
-    >>> ion_mass('T')
+    >>> ion_mass('T+')
     <Quantity 5.007356665e-27 kg>
     >>> ion_mass(26, Z=1, mass_numb=56)
     <Quantity 9.288123453752331e-26 kg>
-    >>> ion_mass('Fe-56')
+    >>> ion_mass('Fe-56 1+')
     <Quantity 9.288123453752331e-26 kg>
     >>> ion_mass(9.11e-31*u.kg).si.value
     9.10938356e-31
@@ -829,17 +829,11 @@ def ion_mass(argument, Z=None, mass_numb=None):
                  "electrons/ions.", UserWarning)
             return m_i
 
-    if isinstance(argument, str) and \
-            str(argument).lower() in ['e+', 'positron', 'e', 'e-', 'electron']:
+    if _is_electron(argument) or _is_positron(argument):
         return const.m_e
-
-    if argument in ['p', 'p+'] or str(argument).lower() in \
-            ['proton', 'protium'] and Z is None:
+    elif _is_proton(argument, Z, mass_numb) or _is_antiproton(argument):
         return const.m_p
-    elif _is_antiproton(argument) and Z is None:
-        return const.m_p
-
-    if _is_neutron(argument, mass_numb):
+    elif _is_neutron(argument, mass_numb):
         raise ValueError("Use isotope_mass or m_n to get mass of neutron")
 
     if isinstance(argument, str):
@@ -1565,23 +1559,25 @@ def _is_antiproton(argument):
         return False
 
 
-def _is_proton(argument):
+def _is_proton(argument, Z=None, mass_numb=None):
     r"""Returns True if the argument corresponds to a proton, and
     False otherwise.  This function returns False for 'H-1' if no
     charge state is given."""
 
-    if not isinstance(argument, str):
-        return False
+    try:
 
-    proton_aliases = ['p', 'p+', 'H-1 1+', 'H-1 +1', 'H-1+']
-    proton_aliases_case_insensitive = ['hydrogen-1 1+', 'hydrogen-1 +1',
-                                       'hydrogen-1+', 'proton']
+        isotope = isotope_symbol(argument, mass_numb)
 
-    if argument in proton_aliases:
-        return True
-    elif argument.lower() in proton_aliases_case_insensitive:
-        return True
-    else:
+        if Z is None:
+            Z = charge_state(argument)
+
+        if isotope == 'H-1' and Z == 1:
+            return True
+        else:
+            return False
+
+    except Exception:
+
         return False
 
 
