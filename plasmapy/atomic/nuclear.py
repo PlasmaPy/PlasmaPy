@@ -131,7 +131,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     >>> energy_triplealpha2.to(u.MeV)
     <Quantity 7.366587037597284 MeV>
     >>> nuclear_reaction_energy(reactants=['n'], products=['p', 'e-'])
-    <Quantity 1.25343510874046e-13 J>
+    <Quantity 1.2534574417523367e-13 J>
 
     """
 
