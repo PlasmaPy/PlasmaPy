@@ -409,8 +409,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
     try:
         m = ion_mass(particle)
     except Exception:
-        raise ValueError("Unable to find {} mass in thermal_speed"
-                         .format(particle))
+        raise ValueError("Unable to find {particle} mass in thermal_speed")
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     if method == "most_probable":
@@ -420,8 +419,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
     elif method == "mean_magnitude":
         V = (np.sqrt(8 * k_B * T / (m / np.pi))).to(units.m / units.s)
     else:
-        raise(ValueError("Method {} not supported in thermal_speed"
-                         .format(method)))
+        raise ValueError("Method {method} not supported in thermal_speed")
 
     return V
 
@@ -492,15 +490,14 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     """
     # Checking thermal units
     T = T.to(units.K, equivalencies=units.temperature_energy())
-    # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3 / 2:
-        raise ValueError(f"Must have kappa > 3/2, instead of {kappa}.")
+        raise ValueError(f"Must have kappa > 3/2, instead of {kappa}, for "
+                         "kappa distribution function to be valid.")
     # obtaining particle mass
     try:
         m = ion_mass(particle)
     except Exception:
-        raise ValueError("Unable to find {} mass in thermal_speed"
-                         .format(particle))
+        raise ValueError(f"Unable to find {particle} mass in thermal_speed")
     # thermal velocity of Kappa distribution function is just Maxwellian
     # thermal speed modulated by the following factor.
     # This is true for the "most probable" velocity, though it may change
@@ -515,8 +512,7 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     elif method == "mean_magnitude":
         vTh = (np.sqrt(8 * k_B * T / (m / np.pi))).to(units.m / units.s)
     else:
-        raise(ValueError("Method {} not supported in thermal_speed"
-                         .format(method)))
+        raise ValueError("Method {method} not supported in thermal_speed")
     return coeff * vTh
 
 
