@@ -794,6 +794,8 @@ def ion_mass(argument, Z=None, mass_numb=None):
     <Quantity 1.672912413964e-27 kg>
     >>> ion_mass('H+') == ion_mass('p')
     False
+    >>> ion_mass('H-1') == ion_mass('p')
+    True
     >>> ion_mass('P+')  # phosphorus
     <Quantity 5.14322300749914e-26 kg>
     >>> ion_mass('He-4', Z=2)
@@ -874,7 +876,9 @@ def ion_mass(argument, Z=None, mass_numb=None):
 
     if is_isotope:
 
-        if isotope == 'D' and Z == 1:
+        if isotope == 'H-1' and Z == 1:
+            return const.m_p
+        elif isotope == 'D' and Z == 1:
             return 3.343583719e-27 * u.kg
         elif isotope == 'T' and Z == 1:
             return 5.007356665e-27 * u.kg
