@@ -841,12 +841,6 @@ def ion_mass(argument, Z=None, mass_numb=None):
     else:
         Z_from_arg = None
 
-    if atomic_number(argument) == 1:
-        if isinstance(argument, str) and 'H-1' in str(argument) and Z is None:
-            return const.m_p
-        if mass_numb == 1 and Z == 1:
-            return const.m_p
-
     if Z is None and Z_from_arg is None:
         Z = 1
     elif Z is not None and Z_from_arg is not None and Z != Z_from_arg:
