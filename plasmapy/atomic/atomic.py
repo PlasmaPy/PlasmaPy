@@ -1351,7 +1351,7 @@ def electric_charge(argument):
         charge = charge_state(argument) * const.e.to('C')
         return charge
     except Exception:  # coveralls: ignore
-        raise ValueError("Invalid input to electric_charge")
+        raise ValueError(f"{argument} is an invalid input to electric_charge")
 
 
 def _extract_charge_state(argument):
