@@ -77,18 +77,19 @@ def test_nuclear_reaction_energy_beta():
     assert np.isclose(energy2.to(u.MeV).value, 3.034591, atol=1e-5)
 
 
-# (reaction, expected_error)
+# (reaction, kwargs, expected_error)
 nuclear_reaction_energy_error_table = [
-    ('H + H --> H', ValueError),
-    (1, TypeError),
-    ('H-1 + H-1 --> H-1', ValueError),
-    ("I didn't like unstable eigenfunctions "
-     "at first, but then they grew on me", ValueError)
+    ('H + H --> H', {}, ValueError),
+    (1, {}, TypeError),
+    ('H-1 + H-1 --> H-1', {}, ValueError),
+    ("invalid input", {}, ValueError),
+    ('p --> n', {}, ValueError),
+    ('p --> p', {'reactants': ['p'], 'products': ['p']}, ValueError),
 ]
 
 
 @pytest.mark.parametrize(
-    "reaction, expected_error", nuclear_reaction_energy_error_table)
-def test_nuclear_reaction_energy_error(reaction, expected_error):
+    "reaction, kwargs, expected_error", nuclear_reaction_energy_error_table)
+def test_nuclear_reaction_energy_error(reaction, kwargs, expected_error):
     with pytest.raises(expected_error):
-        nuclear_reaction_energy(reaction)
+        nuclear_reaction_energy(reaction, **kwargs)
