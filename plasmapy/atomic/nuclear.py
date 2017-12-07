@@ -225,7 +225,7 @@ def nuclear_reaction_energy(*args, **kwargs):
         try:
             reactants = _get_species(LHS_list)
             products = _get_species(RHS_list)
-        except Exception:
+        except Exception:  # coveralls: ignore
             raise ValueError(input_err_msg)
 
     else:
@@ -239,7 +239,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     try:
         released_energy = _mass_energy(reactants) - _mass_energy(products)
-    except Exception:
+    except Exception:  # coveralls: ignore
         raise ValueError("Invalid reactant(s) and/or product(s)")
 
     return released_energy.to(units.J)
