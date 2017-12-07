@@ -231,15 +231,14 @@ def nuclear_reaction_energy(*args, **kwargs):
     else:
         raise ValueError(input_err_msg)
 
+    if _nucleon_number(reactants) != _nucleon_number(products):
+        raise ValueError("The number of nucleons is not conserved")
+
+    if _total_charge(reactants) != _total_charge(products):
+        raise ValueError("Total charge is not conserved")
+
     try:
-        if _nucleon_number(reactants) != _nucleon_number(products):
-            raise ValueError("The number of nucleons is not conserved")
-
-        if _total_charge(reactants) != _total_charge(products):
-            raise ValueError("Total charge is not conserved")
-
         released_energy = _mass_energy(reactants) - _mass_energy(products)
-
     except Exception:
         raise ValueError("Invalid reactant(s) and/or product(s)")
 
