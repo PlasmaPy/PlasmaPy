@@ -105,7 +105,8 @@ def nuclear_reaction_energy(*args, **kwargs):
         not conserved, or the charge is not conserved.
 
     TypeError:
-        If the positional input for reaction is not a string, or
+        If the positional input for the reaction is not a string, or
+        reactants and/or products is not of an appropriate type.
 
     See also
     --------
