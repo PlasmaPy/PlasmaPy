@@ -193,8 +193,8 @@ def nuclear_reaction_energy(*args, **kwargs):
 
         for particle in particles:
             try:
-                nucleon_number += mass_number(particles)
-            except Exception:
+                nucleon_number += mass_number(particle)
+            except ValueError:
                 pass
 
         return nucleon_number

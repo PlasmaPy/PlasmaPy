@@ -129,6 +129,7 @@ nuclear_reaction_energy_kwerrors_table = [
     (['e+', 'n'], ['p-'], ValueError),
     (['kljsdf'], 'H-3', ValueError),
     (['H'], ['H-1'], ValueError),
+    (['p'], ['n', 'n', 'e+'], ValueError),
 ]
 
 
