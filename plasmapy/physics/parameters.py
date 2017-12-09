@@ -472,7 +472,7 @@ def gyrofrequency(B, particle='e'):
     <Quantity 957883.3224148067 rad / s>
     >>> gyrofrequency(0.01*u.T, 'p')
     <Quantity 957883.3224148067 rad / s>
-    >>> gyrofrequency(0.01*u.T, particle='T')
+    >>> gyrofrequency(0.01*u.T, particle='T+')
     <Quantity 319964.54975910933 rad / s>
     >>> omega_ce = gyrofrequency(0.1*u.T)
     >>> print(omega_ce)

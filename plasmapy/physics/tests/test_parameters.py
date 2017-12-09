@@ -67,7 +67,7 @@ def test_Alfven_speed():
 
     assert Alfven_speed(2*B, rho) == 2*Alfven_speed(B, rho)
 
-    assert Alfven_speed(5*u.T, 5e19*u.m**-3, ion='H-1') == \
+    assert Alfven_speed(5*u.T, 5e19*u.m**-3, ion='H-1+') == \
         Alfven_speed(5*u.T, 5e19*u.m**-3, ion='p')
 
     # Case where magnetic field and density are Quantity arrays
@@ -143,7 +143,7 @@ def test_ion_sound_speed():
                       193328.52857788358)
 
     assert ion_sound_speed(T_i=T_i, T_e=T_e, ion='p') == \
-        ion_sound_speed(T_i=T_i, T_e=T_e, ion='H-1')
+        ion_sound_speed(T_i=T_i, T_e=T_e, ion='H-1+')
 
     assert ion_sound_speed(T_i=T_i, ion='p').unit == u.m/u.s
 
@@ -243,7 +243,7 @@ def test_thermal_speed():
                       128486.56960876315)
 
     assert thermal_speed(T_i, particle='p') == \
-        thermal_speed(T_i, particle='H-1')
+        thermal_speed(T_i, particle='H-1+')
 
     assert thermal_speed(1*u.MK, particle='e+') == \
         thermal_speed(1*u.MK)
@@ -324,7 +324,7 @@ def test_gyrofrequency():
     assert gyrofrequency(-5*u.T, 'p') == gyrofrequency(5*u.T, 'p')
 
     assert gyrofrequency(B, particle='p') == \
-        gyrofrequency(B, particle='H-1')
+        gyrofrequency(B, particle='H-1+')
 
     assert gyrofrequency(B, particle='e+') == \
         gyrofrequency(B)
@@ -398,7 +398,7 @@ def test_gyroradius():
     assert gyroradius(B, 25*u.m/u.s, particle="p").unit == u.m
 
     assert gyroradius(B, T_i, particle='p') == \
-        gyroradius(B, T_i, particle='H-1')
+        gyroradius(B, T_i, particle='H-1+')
 
     assert gyroradius(T_i, B, particle="p") == gyroradius(B, T_i, particle="p")
 
@@ -472,7 +472,7 @@ def test_plasma_frequency():
 
         assert plasma_frequency(n_i, particle='p').unit == u.rad/u.s
 
-    assert plasma_frequency(n_i, particle='H-1') == \
+    assert plasma_frequency(n_i, particle='H-1+') == \
         plasma_frequency(n_i, particle='p')
 
     assert np.isclose(plasma_frequency(mu*u.cm**-3, particle='p').value,
@@ -565,9 +565,6 @@ def test_inertial_length():
 
     assert inertial_length(5.351*u.m**-3, particle='e+') == \
         inertial_length(5.351*u.m**-3, particle='e')
-
-    assert inertial_length(n_i, particle='p') == \
-        inertial_length(n_i, particle='H-1')
 
     with pytest.raises(UserWarning):
         inertial_length(4, particle='p')
