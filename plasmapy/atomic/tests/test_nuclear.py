@@ -40,7 +40,8 @@ def test_nuclear_reaction_energy():
     released_energy2 = nuclear_reaction_energy(reaction2)
     assert np.isclose((released_energy1.to(u.MeV)).value, 17.58, rtol=0.01)
     assert released_energy1 == released_energy2
-
+    nuclear_reaction_energy('n + p+ --> n + p+ + p- + p+')
+    nuclear_reaction_energy('neutron + antineutron --> neutron + antineutron')
 
 def test_nuclear_reaction_energy_triple_alpha():
     triple_alpha1 = 'alpha + He-4 --> Be-8'

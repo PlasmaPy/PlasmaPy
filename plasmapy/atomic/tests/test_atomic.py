@@ -749,7 +749,9 @@ charge_state_error_table = [
     ('h+', ValueError),
     ('fe 1+', ValueError),
     ('d+', ValueError),
-    ('Fe 29+', ValueError)]
+    ('Fe 29+', ValueError),
+    ('H-1', ValueError),
+]
 
 
 @pytest.mark.parametrize("argument, expected_error", charge_state_error_table)

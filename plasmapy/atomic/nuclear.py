@@ -4,7 +4,7 @@ from astropy import units, constants
 import re
 from .atomic import (isotope_symbol, mass_number, isotope_mass, ion_mass,
                      atomic_number, charge_state, _is_neutron, _is_electron,
-                     _is_positron)
+                     _is_positron, _is_antiproton)
 
 
 def nuclear_binding_energy(argument, mass_numb=None):
@@ -163,6 +163,10 @@ def nuclear_reaction_energy(*args, **kwargs):
                     species.append('e-')
                 elif _is_positron(item):
                     species.append('e+')
+                elif _is_antiproton(item):
+                    species.append('p-')
+                elif item == 'antineutron':
+                    species.append('antineutron')
                 else:
                     isotope = isotope_symbol(item)
                     species.append(isotope)
@@ -186,18 +190,20 @@ def nuclear_reaction_energy(*args, **kwargs):
 
         return species
 
-    def _nucleon_number(particles):
-        r"""Finds the total number of nucleons in a list of particles."""
+    def _baryon_number(particles):
+        r"""Finds the total number of baryons minus the number of
+        antibaryons in a list of particles."""
 
-        nucleon_number = 0
+        baryon_number = 0
 
         for particle in particles:
             try:
-                nucleon_number += mass_number(particle)
+                baryon_number += mass_number(particle)
             except ValueError:
-                pass
+                if _is_antiproton(particle) or particle == 'antineutron':
+                    baryon_number -= 1
 
-        return nucleon_number
+        return baryon_number
 
     def _total_charge(particles):
         r"""Finds the total integer charge in a list of nuclides
@@ -223,6 +229,10 @@ def nuclear_reaction_energy(*args, **kwargs):
             if _is_electron(species) or _is_positron(species):
                 total_mass += constants.m_e
             elif _is_neutron(species):
+                total_mass += constants.m_n
+            elif _is_antiproton(species):
+                total_mass += constants.m_p
+            elif species == 'antineutron':
                 total_mass += constants.m_n
             else:
                 atomic_numb = atomic_number(species)
@@ -275,8 +285,8 @@ def nuclear_reaction_energy(*args, **kwargs):
             raise ValueError("Invalid reactants and/or products in "
                              "nuclear_reaction_energy.") from e
 
-    if _nucleon_number(reactants) != _nucleon_number(products):
-        raise ValueError("The number of nucleons is not conserved for "
+    if _baryon_number(reactants) != _baryon_number(products):
+        raise ValueError("The baryon number not conserved for "
                          f"reactants = {reactants} and products = {products}.")
 
     if _total_charge(reactants) != _total_charge(products):

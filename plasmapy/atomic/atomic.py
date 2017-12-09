@@ -1224,14 +1224,13 @@ def isotopic_abundance(argument, mass_numb=None):
     return iso_comp
 
 
-def charge_state(argument):
+def charge_state(particle):
     r"""Returns the charge state of an ion or other particle.
 
     Parameters
     ----------
-    argument : string
-        String representing an element or isotope followed by charge
-        state information.
+    particle : string
+        String representing a particle.
 
     Returns
     -------
@@ -1277,17 +1276,17 @@ def charge_state(argument):
 
     """
 
-    if _is_electron(argument) or _is_antiproton(argument):
+    if _is_electron(particle) or _is_antiproton(particle):
         return -1
-    elif _is_positron(argument):
+    elif _is_positron(particle):
         return 1
-    elif _is_neutron(argument):
+    elif _is_neutron(particle) or _is_antineutron(particle):
         return 0
 
-    argument, Z = _extract_charge_state(argument)
+    particle, Z = _extract_charge_state(particle)
 
     try:
-        atomic_numb = atomic_number(argument)
+        atomic_numb = atomic_number(particle)
     except Exception:
         raise ValueError("Invalid element or isotope information in "
                          "charge_state")
@@ -1297,19 +1296,22 @@ def charge_state(argument):
                          "number.")
 
     if Z is not None and (Z < -atomic_numb-1 or Z < -3):
-        warn(f"Element {atomic_symbol(argument)} has a charge of {Z}"
+        warn(f"Element {atomic_symbol(particle)} has a charge of {Z}"
              " which is unlikely to occur in nature.", UserWarning)
+
+    if Z is None:
+        raise ValueError(f"Unable to find charge of {particle}")
 
     return Z
 
 
-def electric_charge(argument):
+def electric_charge(particle):
     r"""Returns the electric charge (in coulombs) of an ion or other
     particle
 
     Parameters
     ----------
-    argument : string
+    particle : string
         String representing an element or isotope followed by charge
         state information.
 
@@ -1354,10 +1356,10 @@ def electric_charge(argument):
     """
 
     try:
-        charge = charge_state(argument) * const.e.to('C')
+        charge = charge_state(particle) * const.e.to('C')
         return charge
     except Exception:  # coveralls: ignore
-        raise ValueError(f"{argument} is an invalid input to electric_charge")
+        raise ValueError(f"{particle} is an invalid input to electric_charge")
 
 
 def _extract_charge_state(argument):
@@ -1556,6 +1558,16 @@ def _is_antiproton(argument):
         return False
 
     if argument == 'p-' or argument.lower() == 'antiproton':
+        return True
+    else:
+        return False
+
+
+def _is_antineutron(argument):
+    r"""Returns True if the argument corresponds to an antineutron, and
+    False otherwise."""
+
+    if argument.lower() == 'antineutron':
         return True
     else:
         return False
