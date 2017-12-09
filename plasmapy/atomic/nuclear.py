@@ -76,23 +76,26 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     Parameters
     ----------
-    reaction: string, optional
+    reaction: string (optional, positional argument only)
         A string representing the reaction, like "D + T --> alpha + n"
 
-    reactants: list, optional
-        A list of strings representing the reactants of a nuclear
-        reaction
+    reactants: list, tuple, or string (optional, keyword argument only)
+        A list or tuple containing the reactants of a nuclear reaction
+        (e.g., ['D', 'T']), or a string representing the sole reactant.
 
-    products: list, optional
-        A list of strings representing the products of a nuclear
-        reaction
+    products: list, tuple, or string (optional, keyword argument only)
+        A list or tuple containing the products of a nuclear reaction
+        (e.g., ['alpha', 'n']), or a string representing the sole
+        product.
 
     Returns
     -------
     energy: Quantity
-        The change in nuclear binding energy, which will be positive
-        if the reaction releases energy and negative if the reaction
-        is energetically unfavorable.
+        The difference between the mass energy of the reactants and
+        the mass energy of the products in a nuclear reaction.  This
+        quantity will be positive if the reaction is exothermic
+        (releases energy) and negative if the reaction is endothermic
+        (absorbs energy).
 
     Raises
     ------
@@ -102,7 +105,7 @@ def nuclear_reaction_energy(*args, **kwargs):
         not conserved, or the charge is not conserved.
 
     TypeError:
-        If the positional input for reaction is not a string.
+        If the positional input for reaction is not a string, or
 
     See also
     --------
@@ -136,13 +139,26 @@ def nuclear_reaction_energy(*args, **kwargs):
     """
 
     def _get_species(unformatted_list):
-        """Takes a list of species and put each element into standard form,
-        while allowing an integer immediately preceding a species to act as
-        a multiplier."""
+        """Takes a list of species and put each element into standard
+        form, while allowing an integer immediately preceding a
+        species to act as a multiplier.  A string argument will be
+        treated as a list containing that string as its sole item."""
+
+        if isinstance(unformatted_list, str):
+            unformatted_list = [unformatted_list]
+
+        if not isinstance(unformatted_list, (list, tuple)):
+            raise TypeError("The input to _get_species should be a string, "
+                            "list, or tuple.")
+
         species = []
+
         for item in unformatted_list:
+
             item = item.strip()
+
             try:
+
                 if _is_electron(item):
                     species.append('e-')
                 elif _is_positron(item):
@@ -150,44 +166,59 @@ def nuclear_reaction_energy(*args, **kwargs):
                 else:
                     isotope = isotope_symbol(item)
                     species.append(isotope)
+
             except Exception:
                 try:
+
                     multiplier_string = ''
+
                     while item[0].isdigit():
                         multiplier_string += item[0]
                         item = item[1:]
                         isotope = isotope_symbol(item)
+
                     for i in range(0, int(multiplier_string)):
                         species.append(isotope)
+
                 except Exception:
-                    raise ValueError("'"+str(item)+"' is an invalid isotope")
+                    raise ValueError(f"{item} is not a valid reactant or "
+                                     "product in a nuclear reaction") from None
+
         return species
 
-    def _nucleon_number(species_list):
-        r"""Finds the total number of nucleons in a list of species."""
+    def _nucleon_number(particles):
+        r"""Finds the total number of nucleons in a list of particles."""
+
         nucleon_number = 0
-        for species in species_list:
-            if not (_is_electron(species) or _is_positron(species)):
-                nucleon_number += mass_number(species)
+
+        for particle in particles:
+            try:
+                nucleon_number += mass_number(particles)
+            except Exception:
+                pass
+
         return nucleon_number
 
-    def _total_charge(species_list):
-        r"""Finds the total integer charge in a list of species,
-        excluding bound electrons."""
+    def _total_charge(particles):
+        r"""Finds the total integer charge in a list of nuclides
+        (excluding bound electrons) and other particles."""
+
         total_charge = 0
-        for species in species_list:
-            if _is_electron(species):
-                total_charge -= 1
-            elif _is_positron(species):
-                total_charge += 1
-            elif not _is_neutron(species):
-                total_charge += atomic_number(species)
+
+        for particle in particles:
+            try:
+                total_charge += atomic_number(particle)
+            except ValueError:
+                total_charge += charge_state(particle)
+
         return total_charge
 
     def _mass_energy(species_list):
         r"""Finds the total mass energy from a list of species, while
         taking the masses of the fully ionized isotopes."""
+
         total_mass = 0.0*units.kg
+
         for species in species_list:
             if _is_electron(species) or _is_positron(species):
                 total_mass += constants.m_e
@@ -196,50 +227,62 @@ def nuclear_reaction_energy(*args, **kwargs):
             else:
                 atomic_numb = atomic_number(species)
                 total_mass += ion_mass(species, Z=atomic_numb)
+
         return (total_mass * constants.c**2).to(units.J)
 
-    input_err_msg = ("The inputs to nuclear_reaction_energy must be either a "
+    input_err_msg = ("The inputs to nuclear_reaction_energy should be either "
                      "a string representing a nuclear reaction (e.g., "
                      "'D + T -> He-4 + n') or the keywords 'reactants' and "
                      "'products' as lists with the nucleons or particles "
-                     "involved in the reaction.")
+                     "involved in the reaction (e.g., reactants=['D', 'T'] "
+                     "and products=['He-4', 'n'].")
 
-    if kwargs and not args and len(kwargs) == 2:  # keyword inputs
+    reaction_string_is_input = args and not kwargs and len(args) == 1
 
-        try:
-            reactants = _get_species(list(kwargs['reactants']))
-            products = _get_species(list(kwargs['products']))
-        except Exception:
-            raise ValueError(input_err_msg)
+    reactants_products_are_inputs = kwargs and not args and len(kwargs) == 2
 
-    elif args and not kwargs and len(args) == 1:  # reaction string input
-
-        try:
-            LHS_string, RHS_string = re.split('-+>', args[0])
-            LHS_list = re.split(' \+ ', LHS_string)
-            RHS_list = re.split(' \+ ', RHS_string)
-        except TypeError:
-            raise TypeError("The left and right hand sides of the reaction "
-                            "should be separated by '-->'")
-
-        try:
-            reactants = _get_species(LHS_list)
-            products = _get_species(RHS_list)
-        except Exception:  # coveralls: ignore
-            raise ValueError(input_err_msg)
-
-    else:
+    if reaction_string_is_input == reactants_products_are_inputs:
         raise ValueError(input_err_msg)
 
+    if reaction_string_is_input:
+
+        reaction = args[0]
+
+        if not isinstance(reaction, str):
+            raise TypeError(input_err_msg)
+        elif '->' not in reaction:
+            raise ValueError(f"The reaction '{reaction}' is missing a '->'"
+                             " or '-->' between the reactants and products.")
+
+        try:
+            LHS_string, RHS_string = re.split('-+>', reaction)
+            LHS_list = re.split(' \+ ', LHS_string)
+            RHS_list = re.split(' \+ ', RHS_string)
+            reactants = _get_species(LHS_list)
+            products = _get_species(RHS_list)
+        except Exception as ex:
+            raise ValueError(f"{reaction} is not a valid nuclear reaction.") \
+                from ex
+
+    elif reactants_products_are_inputs:
+
+        try:
+            reactants = _get_species(kwargs['reactants'])
+            products = _get_species(kwargs['products'])
+        except TypeError as t:
+            raise TypeError(input_err_msg) from t
+        except Exception as e:
+            raise ValueError("Invalid reactants and/or products in "
+                             "nuclear_reaction_energy.") from e
+
     if _nucleon_number(reactants) != _nucleon_number(products):
-        raise ValueError("The number of nucleons is not conserved")
+        raise ValueError("The number of nucleons is not conserved for "
+                         f"reactants = {reactants} and products = {products}.")
 
     if _total_charge(reactants) != _total_charge(products):
-        raise ValueError("Total charge is not conserved")
+        raise ValueError("Total charge is not conserved for "
+                         f"reactants = {reactants} and products = {products}.")
 
-    try:
-        released_energy = _mass_energy(reactants) - _mass_energy(products)
-    except Exception:  # coveralls: ignore
-        raise ValueError("Invalid reactant(s) and/or product(s)")
+    released_energy = _mass_energy(reactants) - _mass_energy(products)
 
     return released_energy.to(units.J)
