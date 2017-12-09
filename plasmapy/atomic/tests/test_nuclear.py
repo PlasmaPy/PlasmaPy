@@ -93,3 +93,47 @@ nuclear_reaction_energy_error_table = [
 def test_nuclear_reaction_energy_error(reaction, kwargs, expected_error):
     with pytest.raises(expected_error):
         nuclear_reaction_energy(reaction, **kwargs)
+
+
+# (reactants, products, expectedMeV, tol)
+nuclear_reaction_energy_kwargs_table = [
+    ('H-1', 'p', 0.0, 0.0),
+    (['B-10', 'n'], ['Li-7', 'He-4'], 2.8, 0.06),
+    (['Li-6', 'D'], ['2alpha'], 22.2, 0.06),
+    (['C-12', 'p'], 'N-13', 1.95, 0.006),
+    (['N-13'], ['C-13', 'e+'], 1.20, 0.006),
+    (['C-13', 'hydrogen-1'], ['Nitrogen-14'], 7.54, 0.006),
+    (['N-14', 'H-1'], ['O-15'], 7.35, 0.006),
+    (['O-15'], ['N-15', 'e+'], 1.73, 0.006),
+    (('N-15', 'H-1'), ('C-12', 'He-4'), 4.96, 0.006),
+]
+
+
+@pytest.mark.parametrize(
+    "reactants, products, expectedMeV, tol",
+    nuclear_reaction_energy_kwargs_table)
+def test_nuclear_reaction_energy_kwargs(reactants, products, expectedMeV, tol):
+    energy = nuclear_reaction_energy(reactants=reactants, products=products).si
+    expected = (expectedMeV*u.MeV).si
+    assert np.isclose(expected.value, energy.value, atol=tol)
+
+
+# (reactants, products, expected_error)
+nuclear_reaction_energy_kwerrors_table = [
+    ('n', 3, TypeError),
+    ('n', [3], ValueError),
+    (['n'], ['p'], ValueError),
+    (['n'], ['He-4'], ValueError),
+    (['h'], ['H-1'], ValueError),
+    (['e-', 'n'], 'p', ValueError),
+    (['e+', 'n'], ['p-'], ValueError),
+    (['kljsdf'], 'H-3', ValueError),
+    (['H'], ['H-1'], ValueError),
+]
+
+
+@pytest.mark.parametrize("reactants, products, expected_error",
+                         nuclear_reaction_energy_kwerrors_table)
+def test_nuclear_reaction_energy_kwerrors(reactants, products, expected_error):
+    with pytest.raises(expected_error):
+        nuclear_reaction_energy(reactants=reactants, products=products)
