@@ -80,6 +80,8 @@ def atomic_symbol(argument):
 
     if _is_neutron(argument):
         raise ValueError("Neutrons do not have an atomic symbol")
+    elif _is_antiproton(argument):
+        raise ValueError("Antiprotons do not have an atomic symbol")
 
     argument, Z = _extract_charge_state(argument)
 
@@ -239,7 +241,7 @@ def isotope_symbol(argument, mass_numb=None):
     try:
         element = atomic_symbol(argument)
     except Exception:
-        raise ValueError(f"The first argument of isotope_symbol ({argument})"
+        raise ValueError(f"The first argument of isotope_symbol ({argument}) "
                          "does not correspond to a valid element or isotope.")
 
     # Get mass number from argument, check for redundancies, and take
@@ -1275,7 +1277,7 @@ def charge_state(argument):
 
     """
 
-    if _is_electron(argument):
+    if _is_electron(argument) or _is_antiproton(argument):
         return -1
     elif _is_positron(argument):
         return 1
@@ -1411,6 +1413,8 @@ def _extract_charge_state(argument):
         return argument, 2
     elif argument == 'e+' or argument.lower() == 'positron':
         return argument, 1
+    elif _is_antiproton(argument):
+        return argument, -1
 
     if argument.count(' ') == 1:  # For cases like 'Fe +2' and 'Fe-56 2+'
 

@@ -80,7 +80,10 @@ atomic_symbol_error_table = [
     ('h', ValueError),
     ('d', ValueError),
     ('he', ValueError),
-    ('au', ValueError)]
+    ('au', ValueError),
+    ('p-', ValueError),
+    ('antiproton', ValueError),
+]
 
 
 @pytest.mark.parametrize(
@@ -728,7 +731,10 @@ charge_state_table = [
     ('e+', 1),
     ('positron', 1),
     ('n', 0),
-    ('neutron', 0)]
+    ('neutron', 0),
+    ('p-', -1),
+    ('antiproton', -1),
+]
 
 
 @pytest.mark.parametrize("argument, expected", charge_state_table)
