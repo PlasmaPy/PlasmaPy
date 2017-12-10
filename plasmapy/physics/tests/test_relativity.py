@@ -5,6 +5,7 @@ import numpy as np
 from astropy import units as u
 from ...constants import c
 from ..relativity import Lorentz_factor
+from ...utils.exceptions import RelativityError
 
 
 def test_Lorentz_factor():
@@ -25,7 +26,7 @@ def test_Lorentz_factor():
     assert (Lorentz_factor(3*u.m/u.s)*u.dimensionless_unscaled).unit == \
         u.dimensionless_unscaled
 
-    with pytest.raises(ValueError):
+    with pytest.raises(RelativityError):
         Lorentz_factor(1.0000000001*c)
 
     with pytest.raises((ValueError, UserWarning)):
