@@ -23,8 +23,6 @@ from ..parameters import (Alfven_speed,
                           lower_hybrid_frequency)
 
 
-simplefilter('always', RelativityWarning)
-
 B = 1.0*u.T
 Z = 1
 ion = 'p'
