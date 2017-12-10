@@ -53,8 +53,7 @@ def check_quantity(validations):
     >>> func(1*u.m, 2*u.m)
     Traceback (most recent call last):
       ...
-    astropy.units.core.UnitConversionError: The argument y to func should be a
-    Quantity with the following units: s
+    astropy.units.core.UnitConversionError: The argument y to func should be a Quantity with the following units: s
 
     """
     def decorator(f):
