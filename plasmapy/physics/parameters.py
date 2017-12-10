@@ -106,13 +106,21 @@ def Alfven_speed(B, density, ion="p"):
     UnitConversionError
         If the magnetic field or density is not in appropriate units.
 
-    UserWarning
-        If the Alfven velocity exceeds 10% of the speed of light, or
-        if units are not provided and SI units are assumed.
+    RelativityError
+        If the Alfven velocity is greater than or equal to the speed of light
 
     ValueError
         If the density is negative, or the ion mass or charge state
         cannot be found.
+        
+    UserWarning
+        if units are not provided and SI units are assumed.
+        
+    Warns
+    -----
+    RelativityWarning
+        If the Alfven velocity exceeds 10% of the speed of light
+
 
     Notes
     -----
