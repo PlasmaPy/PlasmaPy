@@ -7,6 +7,7 @@ from astropy import units
 from ..constants import c, h, hbar, m_e, eps0, e, k_B
 from ..atomic import ion_mass
 from ..utils import _check_quantity, _check_relativistic, check_quantity
+from ..utils.exceptions import RelativityError
 from .relativity import Lorentz_factor
 
 
@@ -37,7 +38,7 @@ def deBroglie_wavelength(V, particle):
     UnitConversionError
         If the velocity is not in appropriate units.
 
-    ValueError
+    RelativityError
         If the magnitude of V is faster than the speed of light.
 
     UserWarning
@@ -72,8 +73,9 @@ def deBroglie_wavelength(V, particle):
     V = np.abs(V)
 
     if np.any(V >= c):
-        raise ValueError("Velocity input in deBroglie_wavelength cannot be "
-                         "greater than or equal to the speed of light.")
+        raise RelativityError("Velocity input in deBroglie_wavelength cannot "
+                              "be greater than or equal to the speed of "
+                              "light.")
 
     if not isinstance(particle, units.Quantity):
         try:

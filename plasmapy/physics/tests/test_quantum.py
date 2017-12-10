@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 import astropy.units as u
 from ...constants import c, h
+from ...utils.exceptions import RelativityError
 from ..quantum import (deBroglie_wavelength, 
                        thermal_deBroglie_wavelength, 
                        Fermi_energy, 
@@ -39,7 +40,7 @@ def test_deBroglie_wavelength():
     assert deBroglie_wavelength(1*u.m/u.s, 5*u.kg) == \
         deBroglie_wavelength(100*u.cm/u.s, 5000*u.g)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(RelativityError):
         deBroglie_wavelength(c*1.000000001, 'e')
 
     with pytest.raises(UserWarning):
