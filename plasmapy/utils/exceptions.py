@@ -36,12 +36,12 @@ class RelativityError(PhysicsError):
 
 class PlasmaPyWarning(Warning):
     """Base class of any warning issued by PlasmaPy
-    
+
     All warnings issued by PlasmaPy should inherit from this class, including
     custom warnings defined in this module.
-    
+
     Warnings should be issued using warnings.warn, which will not break
-    execution if unhandled. 
+    execution if unhandled.
     """
 
 

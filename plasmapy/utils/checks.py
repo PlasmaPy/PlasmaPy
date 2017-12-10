@@ -53,7 +53,8 @@ def check_quantity(validations):
     >>> func(1*u.m, 2*u.m)
     Traceback (most recent call last):
       ...
-    astropy.units.core.UnitConversionError: The argument y to func should be a Quantity with the following units: s
+    astropy.units.core.UnitConversionError: The argument y to func should be a
+    Quantity with the following units: s
 
     """
     def decorator(f):
@@ -135,7 +136,7 @@ def check_relativistic(func=None, betafrac=0.1):
 
     RelativityError
         If V is greater than or equal to the speed of light
-        
+
     Warns
     -----
     RelativityWarning
@@ -315,10 +316,10 @@ def _check_relativistic(V, funcname, betafrac=0.1):
 
     ValueError
         If V contains any NaNs
-        
+
     RelativityError
         If V is greater than or equal to the speed of light
-        
+
     Warns
     -----
     RelativityWarning
@@ -350,7 +351,8 @@ def _check_relativistic(V, funcname, betafrac=0.1):
         raise RelativityError(funcname + " is yielding an infinite velocity.")
     elif beta >= 1:
         raise RelativityError(funcname + " is yielding a velocity that is " +
-                      str(round(beta, 3)) + " times the speed of light.")
+                              str(round(beta, 3)) + " times the speed of " +
+                              "light.")
     elif beta >= betafrac:
         warnings.warn(funcname + " is yielding a velocity that is " +
                       str(round(beta*100, 3)) + "% of the speed of " +
