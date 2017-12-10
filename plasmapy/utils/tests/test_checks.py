@@ -240,10 +240,10 @@ relativistic_error_examples = [
 
 # (speed, betafrac, warning)
 relativistic_warning_examples = [
-    (0.11*c, 0.1, RelativityWarning),
-    (-0.11*c, 0.1, RelativityWarning),
-    (2997924581*u.cm/u.s, 0.1, RelativityWarning),
-    (0.02*c, 0.01, RelativityWarning),
+    (0.11*c, 0.1),
+    (-0.11*c, 0.1),
+    (2997924581*u.cm/u.s, 0.1),
+    (0.02*c, 0.01),
 ]
 
 # Tests for _check_relativistic
@@ -258,10 +258,10 @@ def test__check_relativistic_errors(speed, betafrac, error):
         _check_relativistic(speed, 'f', betafrac=betafrac)
         
         
-@pytest.mark.parametrize("speed, betafrac, warning", 
+@pytest.mark.parametrize("speed, betafrac", 
                          relativistic_warning_examples)
-def test__check_relativistic_warnings(speed, betafrac, warning):
-    with pytest.warns(warning):
+def test__check_relativistic_warnings(speed, betafrac):
+    with pytest.warns(RelativityWarning):
         _check_relativistic(speed, 'f', betafrac=betafrac)
 
 
