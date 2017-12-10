@@ -5,7 +5,7 @@ import pytest
 from astropy import units as u
 from warnings import simplefilter
 
-from ...utils.exceptions import RelativityWarning, RelativityError 
+from ...utils.exceptions import RelativityWarning, RelativityError
 from ...utils.exceptions import PhysicsError
 from ...constants import c, m_p, m_e, e, mu0
 from ..parameters import (Alfven_speed,
@@ -228,7 +228,7 @@ def test_thermal_speed():
     with pytest.raises(ValueError):
         thermal_speed(-T_e)
 
-    with pytest.warns(RelativityWarning): 
+    with pytest.warns(RelativityWarning):
         thermal_speed(1e9*u.K)
 
     with pytest.raises(RelativityError):

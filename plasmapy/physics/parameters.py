@@ -112,10 +112,10 @@ def Alfven_speed(B, density, ion="p"):
     ValueError
         If the density is negative, or the ion mass or charge state
         cannot be found.
-        
+
     UserWarning
         if units are not provided and SI units are assumed.
-        
+
     Warns
     -----
     RelativityWarning
@@ -236,7 +236,7 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
 
     ValueError
         If the ion mass, adiabatic index, or temperature are invalid.
-        
+
     PhysicsError
         If an adiabatic index is less than one.
 
@@ -344,7 +344,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
 
     method : string, optional
         Method to be used for calculating the thermal speed. Options are
-        'most_probable' (default), 'rms', and 'mean_magnitude'. 
+        'most_probable' (default), 'rms', and 'mean_magnitude'.
 
     Returns
     -------
@@ -1157,7 +1157,8 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
     The lower hybrid frequency is given through the relation
 
     .. math::
-        \frac{1}{\omega_{lh}^2} = \frac{1}{\omega_{ci}^2 + \omega_{pi}^2} + \frac{1}{\omega_{ci}\omega_{ce}}
+        \frac{1}{\omega_{lh}^2} = \frac{1}{\omega_{ci}^2 + \omega_{pi}^2} +
+        \frac{1}{\omega_{ci}\omega_{ce}}
 
     where :math:`\omega_{ci}` is the ion gyrofrequency,
     :math:`\omega_{ce}` is the electron gyrofrequency, and

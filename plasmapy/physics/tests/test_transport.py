@@ -41,7 +41,7 @@ def test_Coulomb_logarithm():
 
     with pytest.warns(RelativityWarning):
         Coulomb_logarithm(1e5*u.K, 1*u.m**-3, ('e', 'p'), 0.9*c)
-        
+
     with pytest.raises(RelativityError):
         Coulomb_logarithm(1e5*u.K, 1*u.m**-3, ('e', 'p'), 1.0*c)
 
