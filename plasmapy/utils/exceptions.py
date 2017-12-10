@@ -25,7 +25,7 @@ class PhysicsError(PlasmaPyError, ValueError):
     """Error for use of a physics value outside PlasmaPy theoretical bounds"""
 
 class RelativityError(PhysicsError):
-    """Error for use of a speed quantity exceeding the speed of light"""
+    """Error for use of a speed greater than or equal to the speed of light"""
 
 
 

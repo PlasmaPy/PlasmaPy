@@ -4,7 +4,7 @@ import numpy as np
 from astropy import units as u
 import pytest
 
-from ...utils.exceptions import RelativityWarning
+from ...utils.exceptions import RelativityWarning, RelativityError
 from ...constants import c
 from ..checks import (
     _check_quantity, _check_relativistic, check_relativistic,
@@ -229,19 +229,19 @@ relativistic_error_examples = [
     (u.m/u.s, 0.1, TypeError),
     (51513.35, 0.1, TypeError),
     (5*u.m, 0.1, u.UnitConversionError),
-    (np.nan*u.m/u.s, 0.1, ValueError)
+    (np.nan*u.m/u.s, 0.1, ValueError),
+    (1.0*c, 0.1, RelativityError),
+    (1.1*c, 0.1, RelativityError),
+    (np.inf*u.cm/u.s, 0.1, RelativityError),
+    (-1.0*c, 0.1, RelativityError),
+    (-1.1*c, 0.1, RelativityError),
+    (-np.inf*u.cm/u.s, 0.1, RelativityError),
 ]
 
 # (speed, betafrac, warning)
 relativistic_warning_examples = [
     (0.11*c, 0.1, RelativityWarning),
-    (1.0*c, 0.1, RelativityWarning),
-    (1.1*c, 0.1, RelativityWarning),
-    (np.inf*u.cm/u.s, 0.1, RelativityWarning),
     (-0.11*c, 0.1, RelativityWarning),
-    (-1.0*c, 0.1, RelativityWarning),
-    (-1.1*c, 0.1, RelativityWarning),
-    (-np.inf*u.cm/u.s, 0.1, RelativityWarning),
     (2997924581*u.cm/u.s, 0.1, RelativityWarning),
     (0.02*c, 0.01, RelativityWarning),
 ]
@@ -258,7 +258,8 @@ def test__check_relativistic_errors(speed, betafrac, error):
         _check_relativistic(speed, 'f', betafrac=betafrac)
         
         
-@pytest.mark.parametrize("speed, betafrac, warning", relativistic_warning_examples)
+@pytest.mark.parametrize("speed, betafrac, warning", 
+                         relativistic_warning_examples)
 def test__check_relativistic_warnings(speed, betafrac, warning):
     with pytest.warns(warning):
         _check_relativistic(speed, 'f', betafrac=betafrac)

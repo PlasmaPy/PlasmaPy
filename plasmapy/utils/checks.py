@@ -5,7 +5,7 @@ import numpy as np
 from astropy import units as u
 from ..constants import c
 import warnings
-from plasmapy.utils.exceptions import RelativityWarning
+from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 
 
 def check_quantity(validations):
@@ -105,7 +105,7 @@ def check_quantity(validations):
 
 
 def check_relativistic(func=None, betafrac=0.1):
-    r"""Raises an error when the output of the decorated
+    r"""Warns or raises an error when the output of the decorated
     function is greater than `betafrac` times the speed of light
 
     Parameters
@@ -133,9 +133,14 @@ def check_relativistic(func=None, betafrac=0.1):
     ValueError
         If V contains any NaNs
 
-    UserWarning
-        If V is greater than betafrac times the speed of light
-
+    RelativityError
+        If V is greater than or equal to the speed of light
+        
+    Warns
+    -----
+    RelativityWarning
+        If V is greater than or equal to betafrac times the speed of light,
+        but less than the speed of light
 
     Examples
     --------
@@ -287,7 +292,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
 
 def _check_relativistic(V, funcname, betafrac=0.1):
-    r"""Warn if a velocity is relativistic or superrelativistic
+    r"""Warn or raise error if a velocity is relativistic or superrelativistic
 
     Parameters
     ----------
@@ -311,10 +316,14 @@ def _check_relativistic(V, funcname, betafrac=0.1):
     ValueError
         If V contains any NaNs
         
+    RelativityError
+        If V is greater than or equal to the speed of light
+        
     Warns
     -----
     RelativityWarning
-        If V exceeds the specified fraction of the speed of light
+        If V is greater than or equal to the specified fraction of the speed of
+        light
 
     Examples
     --------
@@ -335,15 +344,13 @@ def _check_relativistic(V, funcname, betafrac=0.1):
     if np.any(np.isnan(V.value)):
         raise ValueError("V includes NaNs in " + funcname)
 
-    beta = np.max(np.abs((V/c).value))
+    beta = np.max(np.abs((V.si/c).value))
 
     if beta == np.inf:
-        warnings.warn(funcname + " is yielding an infinite velocity.", 
-                      RelativityWarning)
+        raise RelativityError(funcname + " is yielding an infinite velocity.")
     elif beta >= 1:
-        warnings.warn(funcname + " is yielding a velocity that is " +
-                      str(round(beta, 3)) + " times the speed of light.",
-                      RelativityWarning)
+        raise RelativityError(funcname + " is yielding a velocity that is " +
+                      str(round(beta, 3)) + " times the speed of light.")
     elif beta >= betafrac:
         warnings.warn(funcname + " is yielding a velocity that is " +
                       str(round(beta*100, 3)) + "% of the speed of " +
