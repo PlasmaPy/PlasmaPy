@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from astropy import units as u
 
-from ...utils.exceptions import RelativityWarning
+from ...utils.exceptions import RelativityWarning, RelativityError
 from ...constants import c, m_p, m_e, e, mu0
 
 from ..transport import (Coulomb_logarithm)
@@ -40,7 +40,10 @@ def test_Coulomb_logarithm():
                                         V=1e4*u.m/u.s), 21.379082011)
 
     with pytest.warns(RelativityWarning):
-        Coulomb_logarithm(1e5*u.K, 1*u.m**-3, ('e', 'p'), 299792458*u.m/u.s)
+        Coulomb_logarithm(1e5*u.K, 1*u.m**-3, ('e', 'p'), 0.9*c)
+        
+    with pytest.raises(RelativityError):
+        Coulomb_logarithm(1e5*u.K, 1*u.m**-3, ('e', 'p'), 1.0*c)
 
     with pytest.raises(u.UnitConversionError):
         Coulomb_logarithm(1e5*u.g, 1*u.m**-3, ('e', 'p'), 29979245*u.m/u.s)
