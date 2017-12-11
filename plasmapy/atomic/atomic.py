@@ -1490,9 +1490,6 @@ def _is_hydrogen(argument, can_be_atomic_number=False):
     r"""Returns True if the argument corresponds to hydrogen, and False
     otherwise."""
 
-    if argument == 'p-':
-        return False
-
     case_sensitive_aliases = ['p', 'p+', 'H', 'D', 'T']
 
     case_insensitive_aliases = ['proton', 'protium', 'deuterium',
@@ -1508,10 +1505,8 @@ def _is_hydrogen(argument, can_be_atomic_number=False):
 
         if argument in case_sensitive_aliases:
             is_hydrogen = True
-        elif argument.lower() in case_insensitive_aliases:
-            is_hydrogen = True
         else:
-            is_hydrogen = False
+            is_hydrogen = argument.lower() in case_insensitive_aliases
 
         if is_hydrogen and Z is not None and Z > 1:
             raise ValueError("Invalid charge state of hydrogen")
@@ -1524,101 +1519,82 @@ def _is_hydrogen(argument, can_be_atomic_number=False):
     return is_hydrogen
 
 
-def _is_electron(argument):
+def _is_electron(arg):
     r"""Returns True if the argument corresponds to an electron, and False
     otherwise."""
 
-    if not isinstance(argument, str):
+    if not isinstance(arg, str):
         return False
-
-    if argument in ['e', 'e-'] or argument.lower() == 'electron':
-        return True
-    else:
-        return False
+   
+    return arg in ['e', 'e-'] or arg.lower() == 'electron'
 
 
-def _is_positron(argument):
+def _is_positron(arg):
     r"""Returns True if the argument corresponds to a positron, and False
     otherwise."""
 
-    if not isinstance(argument, str):
+    if not isinstance(arg, str):
         return False
 
-    if argument == 'e+' or argument.lower() == 'positron':
-        return True
-    else:
-        return False
+    return arg == 'e+' or arg.lower() == 'positron'
 
 
-def _is_antiproton(argument):
+def _is_antiproton(arg):
     r"""Returns True if the argument corresponds to an antiproton, and
     False otherwise."""
-
-    if not isinstance(argument, str):
+    
+    if not isinstance(arg, str):
         return False
 
-    if argument == 'p-' or argument.lower() == 'antiproton':
-        return True
-    else:
-        return False
+    return arg == 'p-' or arg.lower() == 'antiproton'
 
 
-def _is_antineutron(argument):
+def _is_antineutron(arg):
     r"""Returns True if the argument corresponds to an antineutron, and
     False otherwise."""
-
-    if argument.lower() == 'antineutron':
-        return True
-    else:
+    
+    if not isinstance(arg, str):
         return False
 
+    return arg.lower() == 'antineutron'
 
-def _is_proton(argument, Z=None, mass_numb=None):
+
+def _is_proton(arg, Z=None, mass_numb=None):
     r"""Returns True if the argument corresponds to a proton, and
     False otherwise.  This function returns False for 'H-1' if no
     charge state is given."""
 
     try:
 
-        isotope = isotope_symbol(argument, mass_numb)
+        isotope = isotope_symbol(arg, mass_numb)
 
         if Z is None:
-            Z = charge_state(argument)
+            Z = charge_state(arg)
 
-        if isotope == 'H-1' and Z == 1:
-            return True
-        else:
-            return False
+        return isotope == 'H-1' and Z == 1
 
     except Exception:
 
         return False
 
 
-def _is_alpha(argument):
+def _is_alpha(arg):
     r"""Returns True if the argument corresponds to an alpha particle,
     and False otherwise."""
 
-    if not isinstance(argument, str):
+    if not isinstance(arg, str):
         return False
 
-    if argument.lower() == 'alpha':
-        is_alpha = True
+    if arg.lower() == 'alpha':
+        return True
     else:
-        argument, Z = _extract_charge_state(argument)
+        arg, Z = _extract_charge_state(arg)
 
-        if Z != 2:
-            is_alpha = False
-        elif argument[-2:] != '-4':
-            is_alpha = False
+        if Z != 2 or arg[-2:] != '-4':
+            return False
         else:
 
-            dash_position = argument.find('-')
-            argument = argument[:dash_position]
+            dash_position = arg.find('-')
+            arg = arg[:dash_position]
 
-            if argument.lower() == 'helium' or argument == 'He':
-                is_alpha = True
-            else:
-                is_alpha = False
-
-    return is_alpha
+            return arg.lower() == 'helium' or arg == 'He'
