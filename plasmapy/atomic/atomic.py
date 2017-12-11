@@ -1525,7 +1525,7 @@ def _is_electron(arg):
 
     if not isinstance(arg, str):
         return False
-   
+
     return arg in ['e', 'e-'] or arg.lower() == 'electron'
 
 
@@ -1542,7 +1542,7 @@ def _is_positron(arg):
 def _is_antiproton(arg):
     r"""Returns True if the argument corresponds to an antiproton, and
     False otherwise."""
-    
+
     if not isinstance(arg, str):
         return False
 
@@ -1552,7 +1552,7 @@ def _is_antiproton(arg):
 def _is_antineutron(arg):
     r"""Returns True if the argument corresponds to an antineutron, and
     False otherwise."""
-    
+
     if not isinstance(arg, str):
         return False
 
