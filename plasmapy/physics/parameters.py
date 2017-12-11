@@ -335,7 +335,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
 
     method : string, optional
         Method to be used for calculating the thermal speed. Options are
-        'most_probable' (default), 'rms', and 'mean_magnitude'. 
+        'most_probable' (default), 'rms', and 'mean_magnitude'.
 
     Returns
     -------

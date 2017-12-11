@@ -43,6 +43,7 @@ def test_nuclear_reaction_energy():
     nuclear_reaction_energy('n + p+ --> n + p+ + p- + p+')
     nuclear_reaction_energy('neutron + antineutron --> neutron + antineutron')
 
+    
 def test_nuclear_reaction_energy_triple_alpha():
     triple_alpha1 = 'alpha + He-4 --> Be-8'
     triple_alpha2 = 'Be-8 + alpha --> carbon-12'
