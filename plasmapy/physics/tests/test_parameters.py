@@ -3,10 +3,11 @@
 import numpy as np
 import pytest
 from astropy import units as u
+from warnings import simplefilter
 
-
+from ...utils.exceptions import RelativityWarning, RelativityError
+from ...utils.exceptions import PhysicsError
 from ...constants import c, m_p, m_e, e, mu0
-
 from ..parameters import (Alfven_speed,
                           gyrofrequency,
                           gyroradius,
@@ -20,6 +21,7 @@ from ..parameters import (Alfven_speed,
                           magnetic_pressure,
                           upper_hybrid_frequency,
                           lower_hybrid_frequency)
+
 
 B = 1.0*u.T
 Z = 1
@@ -106,10 +108,10 @@ def test_Alfven_speed():
     with pytest.raises(ValueError):
         Alfven_speed(B, n_i, ion='spacecats')
 
-    with pytest.raises(UserWarning):  # relativistic
+    with pytest.warns(RelativityWarning):  # relativistic
         Alfven_speed(5e1*u.T, 5e19*u.m**-3, ion='p')
 
-    with pytest.raises(UserWarning):  # super-relativistic
+    with pytest.raises(RelativityError):  # super-relativistic
         Alfven_speed(5e8*u.T, 5e19*u.m**-3, ion='p')
 
     with pytest.raises(ValueError):
@@ -121,10 +123,10 @@ def test_Alfven_speed():
     with pytest.raises(ValueError):
         Alfven_speed(1*u.T, np.nan*u.m**-3, ion='p')
 
-    with pytest.raises(UserWarning):
+    with pytest.raises(RelativityError):
         assert Alfven_speed(np.inf*u.T, 1*u.m**-3, ion='p') == np.inf*u.m/u.s
 
-    with pytest.raises(UserWarning):
+    with pytest.raises(RelativityError):
         assert Alfven_speed(-np.inf*u.T, 1*u.m**-3, ion='p') == np.inf*u.m/u.s
 
     with pytest.raises(UserWarning):
@@ -151,8 +153,8 @@ def test_ion_sound_speed():
 
     assert ion_sound_speed(T_e=T_e, gamma_e=1) == ion_sound_speed(T_e=T_e)
 
-    with pytest.raises(UserWarning):
-        assert ion_sound_speed(T_i=T_i, gamma_i=np.inf) == np.inf*u.m/u.s
+    with pytest.raises(RelativityError):
+        ion_sound_speed(T_i=T_i, gamma_i=np.inf)
 
     with pytest.raises(ValueError):
         ion_sound_speed(T_i=np.array([5, 6, 5])*u.K, T_e=np.array([3, 4])*u.K)
@@ -163,10 +165,10 @@ def test_ion_sound_speed():
     with pytest.raises(TypeError):
         ion_sound_speed('p')
 
-    with pytest.raises(ValueError):
+    with pytest.raises(PhysicsError):
         ion_sound_speed(T_i=T_i, gamma_i=0.9999)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(PhysicsError):
         ion_sound_speed(T_i=T_i, gamma_e=0.9999)
 
     with pytest.raises(TypeError):
@@ -181,10 +183,10 @@ def test_ion_sound_speed():
     with pytest.raises(ValueError):
         ion_sound_speed(T_i=-np.abs(T_i))
 
-    with pytest.raises(UserWarning):
-        ion_sound_speed(T_i=5e12*u.K)
+    with pytest.warns(RelativityWarning):
+        ion_sound_speed(T_i=5e11*u.K)
 
-    with pytest.raises(UserWarning):
+    with pytest.raises(RelativityError):
         ion_sound_speed(T_i=5e19*u.K)
 
     with pytest.raises(u.UnitConversionError):
@@ -226,10 +228,10 @@ def test_thermal_speed():
     with pytest.raises(ValueError):
         thermal_speed(-T_e)
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(RelativityWarning):
         thermal_speed(1e9*u.K)
 
-    with pytest.raises(UserWarning):
+    with pytest.raises(RelativityError):
         thermal_speed(5e19*u.K)
 
     with pytest.raises(UserWarning):
@@ -254,10 +256,10 @@ def test_thermal_speed():
     with pytest.raises(ValueError):
         thermal_speed(-T_e, particle='p')
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(RelativityWarning):
         thermal_speed(1e11*u.K, particle='p')
 
-    with pytest.raises(UserWarning):
+    with pytest.raises(RelativityError):
         thermal_speed(1e14*u.K, particle='p')
 
     with pytest.raises(ValueError):

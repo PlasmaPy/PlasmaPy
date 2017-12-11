@@ -7,6 +7,7 @@ from astropy import units
 from ..constants import c, h, hbar, m_e, eps0, e, k_B
 from ..atomic import ion_mass
 from ..utils import _check_quantity, _check_relativistic, check_quantity
+from ..utils.exceptions import RelativityError
 from .relativity import Lorentz_factor
 
 
@@ -37,7 +38,7 @@ def deBroglie_wavelength(V, particle):
     UnitConversionError
         If the velocity is not in appropriate units.
 
-    ValueError
+    RelativityError
         If the magnitude of V is faster than the speed of light.
 
     UserWarning
@@ -72,8 +73,9 @@ def deBroglie_wavelength(V, particle):
     V = np.abs(V)
 
     if np.any(V >= c):
-        raise ValueError("Velocity input in deBroglie_wavelength cannot be "
-                         "greater than or equal to the speed of light.")
+        raise RelativityError("Velocity input in deBroglie_wavelength cannot "
+                              "be greater than or equal to the speed of "
+                              "light.")
 
     if not isinstance(particle, units.Quantity):
         try:
@@ -145,7 +147,7 @@ def thermal_deBroglie_wavelength(T_e):
 
     See also
     --------
-    
+
 
     Example
     -------
@@ -157,6 +159,7 @@ def thermal_deBroglie_wavelength(T_e):
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
     lambda_dbTh = h / np.sqrt(2 * np.pi * m_e * k_B * T_e)
     return lambda_dbTh.to(units.m)
+
 
 @check_quantity({
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
@@ -214,6 +217,7 @@ def Fermi_energy(n_e):
     energy_F = coeff * (3 * n_e / np.pi) ** (2/3)
     return energy_F.to(units.Joule)
 
+
 @check_quantity({
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
@@ -246,14 +250,14 @@ def Thomas_Fermi_length(n_e):
 
     Notes
     -----
-    The Thomas-Fermi screening length is the exponential scale length for 
+    The Thomas-Fermi screening length is the exponential scale length for
     charge screening and is given by
 
     .. math::
     \lambda_TF = \sqrt{\frac{2 \epsilon_0 E_F}{3 n_e e^2}}
 
     for an electron degenerate gas.
-    
+
     This quantity is often used in place of the Debye length for analysis
     of cold, dense plasmas (e.g. warm dense matter, condensed matter).
 

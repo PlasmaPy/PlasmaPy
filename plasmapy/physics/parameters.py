@@ -14,6 +14,7 @@ import numpy as np
 # bit more than @quantity_input as it can allow
 
 from ..utils import _check_quantity, check_relativistic, check_quantity
+from ..utils.exceptions import PhysicsError
 
 
 r"""Values should be returned as an Astropy Quantity in SI units.
@@ -105,13 +106,21 @@ def Alfven_speed(B, density, ion="p"):
     UnitConversionError
         If the magnetic field or density is not in appropriate units.
 
-    UserWarning
-        If the Alfven velocity exceeds 10% of the speed of light, or
-        if units are not provided and SI units are assumed.
+    RelativityError
+        If the Alfven velocity is greater than or equal to the speed of light
 
     ValueError
         If the density is negative, or the ion mass or charge state
         cannot be found.
+
+    UserWarning
+        if units are not provided and SI units are assumed.
+
+    Warns
+    -----
+    RelativityWarning
+        If the Alfven velocity exceeds 10% of the speed of light
+
 
     Notes
     -----
@@ -228,6 +237,9 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
     ValueError
         If the ion mass, adiabatic index, or temperature are invalid.
 
+    PhysicsError
+        If an adiabatic index is less than one.
+
     UnitConversionError
         If the temperature is in incorrect units.
 
@@ -293,11 +305,11 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
                         "a float or int in ion_sound_speed")
 
     if not 1 <= gamma_e <= np.inf:
-        raise ValueError("The adiabatic index for electrons must be between "
-                         "one and infinity")
+        raise PhysicsError("The adiabatic index for electrons must be between "
+                           "one and infinity")
     if not 1 <= gamma_i <= np.inf:
-        raise ValueError("The adiabatic index for ions must be between "
-                         "one and infinity")
+        raise PhysicsError("The adiabatic index for ions must be between "
+                           "one and infinity")
 
     T_i = T_i.to(units.K, equivalencies=units.temperature_energy())
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
@@ -332,7 +344,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
 
     method : string, optional
         Method to be used for calculating the thermal speed. Options are
-        'most_probable' (default), 'rms', and 'mean_magnitude'. 
+        'most_probable' (default), 'rms', and 'mean_magnitude'.
 
     Returns
     -------
@@ -1145,7 +1157,8 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
     The lower hybrid frequency is given through the relation
 
     .. math::
-        \frac{1}{\omega_{lh}^2} = \frac{1}{\omega_{ci}^2 + \omega_{pi}^2} + \frac{1}{\omega_{ci}\omega_{ce}}
+        \frac{1}{\omega_{lh}^2} = \frac{1}{\omega_{ci}^2 + \omega_{pi}^2} +
+        \frac{1}{\omega_{ci}\omega_{ce}}
 
     where :math:`\omega_{ci}` is the ion gyrofrequency,
     :math:`\omega_{ce}` is the electron gyrofrequency, and

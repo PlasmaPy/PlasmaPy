@@ -4,6 +4,7 @@ from astropy import units
 from ..constants import c
 from ..atomic import (ion_mass, charge_state)
 from ..utils import _check_quantity
+from ..utils.exceptions import RelativityError
 
 
 def Lorentz_factor(V):
@@ -59,8 +60,8 @@ def Lorentz_factor(V):
     _check_quantity(V, 'V', 'Lorentz_factor', units.m/units.s)
 
     if not np.all(np.abs(V) <= c):
-        raise ValueError("The Lorentz factor cannot be calculated for speeds "
-                         "faster than the speed of light.")
+        raise RelativityError("The Lorentz factor cannot be calculated for "
+                              "speeds faster than the speed of light. ")
 
     if V.size > 1:
 

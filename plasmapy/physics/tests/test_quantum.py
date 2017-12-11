@@ -2,10 +2,12 @@ import numpy as np
 import pytest
 import astropy.units as u
 from ...constants import c, h
-from ..quantum import (deBroglie_wavelength, 
-                       thermal_deBroglie_wavelength, 
-                       Fermi_energy, 
+from ...utils.exceptions import RelativityError
+from ..quantum import (deBroglie_wavelength,
+                       thermal_deBroglie_wavelength,
+                       Fermi_energy,
                        Thomas_Fermi_length)
+
 
 def test_deBroglie_wavelength():
 
@@ -39,7 +41,7 @@ def test_deBroglie_wavelength():
     assert deBroglie_wavelength(1*u.m/u.s, 5*u.kg) == \
         deBroglie_wavelength(100*u.cm/u.s, 5000*u.g)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(RelativityError):
         deBroglie_wavelength(c*1.000000001, 'e')
 
     with pytest.raises(UserWarning):
@@ -51,12 +53,15 @@ def test_deBroglie_wavelength():
     with pytest.raises(ValueError):
         deBroglie_wavelength(8*u.m/u.s, 'sddsf')
 
+
 # defining some plasma parameters for tests
 T_e = 1 * u.eV
 n_e = 1e23 * u.cm**-3
 # should probably change this to use unittest module
 # add tests for numpy arrays as inputs
 # add tests for different astropy units (random fuzzing method?)
+
+
 def test_thermal_deBroglie_wavelength():
     r"""Test the thermal_deBroglie_wavelength function in quantum.py."""
     lambda_dbTh = thermal_deBroglie_wavelength(T_e)
@@ -76,6 +81,7 @@ def test_thermal_deBroglie_wavelength():
         thermal_deBroglie_wavelength("Bad Input")
     with pytest.raises(ValueError):
         thermal_deBroglie_wavelength(T_e=-1*u.eV)
+
 
 def test_Fermi_energy():
     r"""Test the Fermi_energy function in quantum.py."""
@@ -97,6 +103,7 @@ def test_Fermi_energy():
     with pytest.raises(ValueError):
         Fermi_energy(n_e=-1*u.m**-3)
 
+
 def test_Thomas_Fermi_length():
     r"""Test the Thomas_Fermi_length function in quantum.py."""
     lambda_TF = Thomas_Fermi_length(n_e)
@@ -116,4 +123,3 @@ def test_Thomas_Fermi_length():
         Thomas_Fermi_length("Bad Input")
     with pytest.raises(ValueError):
         Thomas_Fermi_length(n_e=-1*u.m**-3)
-    
