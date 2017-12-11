@@ -3,6 +3,7 @@ dependencies:
   - numpy
   - scipy
   - astropy
+  - sphinx
   - numpydoc
   - pytest
   - pip:
