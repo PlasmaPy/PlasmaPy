@@ -11,10 +11,10 @@ Custom Error and Warning names to improve readability
 # ----------
 
 class PlasmaPyError(Exception):
-    """Base class of any error raised by PlasmaPy.
+    """Base class of PlasmaPy custom errors.
 
-    All exceptions raised by PlasmaPy should inherit from this class, including
-    custom exceptions defined in this module.
+    All custom exceptions raised by PlasmaPy should inherit from this class
+    and be defined in this module.
 
     Custom exceptions can inherit from other exception types too. Thus, if code
     already knows how to handle a ValueError, it won't need any specific
@@ -35,10 +35,10 @@ class RelativityError(PhysicsError):
 # ----------
 
 class PlasmaPyWarning(Warning):
-    """Base class of any warning issued by PlasmaPy
+    """Base class of PlasmaPy custom warnings.
 
-    All warnings issued by PlasmaPy should inherit from this class, including
-    custom warnings defined in this module.
+    All PlasmaPy custom warnings should inherit from this class and be defined
+    in this module.
 
     Warnings should be issued using warnings.warn, which will not break
     execution if unhandled.
