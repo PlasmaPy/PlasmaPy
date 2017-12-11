@@ -624,9 +624,7 @@ atomic_TypeError_bad_arguments = [1.1, {'cats': 'bats'}, 1 + 1j]
             atomic_TypeError_bad_arguments))
 def test_atomic_TypeErrors(function, argument):
     with pytest.raises(TypeError):
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
-            function(argument)
+        function(argument)
 
 
 atomic_ValueErrors_funcs_table = [
