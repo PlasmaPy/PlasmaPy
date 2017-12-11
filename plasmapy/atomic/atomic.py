@@ -80,6 +80,8 @@ def atomic_symbol(argument):
 
     if _is_neutron(argument):
         raise ValueError("Neutrons do not have an atomic symbol")
+    elif _is_antiproton(argument):
+        raise ValueError("Antiprotons do not have an atomic symbol")
 
     argument, Z = _extract_charge_state(argument)
 
@@ -239,7 +241,7 @@ def isotope_symbol(argument, mass_numb=None):
     try:
         element = atomic_symbol(argument)
     except Exception:
-        raise ValueError(f"The first argument of isotope_symbol ({argument})"
+        raise ValueError(f"The first argument of isotope_symbol ({argument}) "
                          "does not correspond to a valid element or isotope.")
 
     # Get mass number from argument, check for redundancies, and take
@@ -692,6 +694,7 @@ def isotope_mass(argument, mass_numb=None):
     <Quantity 4.00260325413 u>
     >>> isotope_mass(2, 4)
     <Quantity 4.00260325413 u>
+
     """
 
     argument, charge_state = _extract_charge_state(argument)
@@ -789,19 +792,21 @@ def ion_mass(argument, Z=None, mass_numb=None):
     --------
     >>> print(ion_mass('p').si.value)
     1.672621898e-27
-    >>> ion_mass('H')  # assumes terrestrial abundance of D
+    >>> ion_mass('H+')  # assumes terrestrial abundance of D
     <Quantity 1.672912413964e-27 kg>
-    >>> ion_mass('H') == ion_mass('p')
+    >>> ion_mass('H+') == ion_mass('p')
     False
-    >>> ion_mass('P')  # phosphorus
+    >>> ion_mass('H-1') == ion_mass('p')
+    True
+    >>> ion_mass('P+')  # phosphorus
     <Quantity 5.14322300749914e-26 kg>
-    >>> ion_mass('He-4', 2)
+    >>> ion_mass('He-4', Z=2)
     <Quantity 6.644657088401906e-27 kg>
-    >>> ion_mass('T')
+    >>> ion_mass('T+')
     <Quantity 5.007356665e-27 kg>
     >>> ion_mass(26, Z=1, mass_numb=56)
     <Quantity 9.288123453752331e-26 kg>
-    >>> ion_mass('Fe-56')
+    >>> ion_mass('Fe-56 1+')
     <Quantity 9.288123453752331e-26 kg>
     >>> ion_mass(9.11e-31*u.kg).si.value
     9.10938356e-31
@@ -828,29 +833,17 @@ def ion_mass(argument, Z=None, mass_numb=None):
                  "electrons/ions.", UserWarning)
             return m_i
 
-    if isinstance(argument, str) and \
-            str(argument).lower() in ['e+', 'positron', 'e', 'e-', 'electron']:
+    if _is_electron(argument) or _is_positron(argument):
         return const.m_e
-
-    if argument in ['p', 'p+'] or str(argument).lower() in \
-            ['proton', 'protium'] and Z is None:
+    elif _is_proton(argument, Z, mass_numb) or _is_antiproton(argument):
         return const.m_p
-    elif _is_antiproton(argument) and Z is None:
-        return const.m_p
-
-    if _is_neutron(argument, mass_numb):
+    elif _is_neutron(argument, mass_numb):
         raise ValueError("Use isotope_mass or m_n to get mass of neutron")
 
     if isinstance(argument, str):
         argument, Z_from_arg = _extract_charge_state(argument)
     else:
         Z_from_arg = None
-
-    if atomic_number(argument) == 1:
-        if isinstance(argument, str) and 'H-1' in str(argument) and Z is None:
-            return const.m_p
-        if mass_numb == 1 and Z == 1:
-            return const.m_p
 
     if Z is None and Z_from_arg is None:
         Z = 1
@@ -885,7 +878,9 @@ def ion_mass(argument, Z=None, mass_numb=None):
 
     if is_isotope:
 
-        if isotope == 'D' and Z == 1:
+        if isotope == 'H-1' and Z == 1:
+            return const.m_p
+        elif isotope == 'D' and Z == 1:
             return 3.343583719e-27 * u.kg
         elif isotope == 'T' and Z == 1:
             return 5.007356665e-27 * u.kg
@@ -1144,6 +1139,7 @@ def stable_isotopes(argument=None, unstable=False):
 
     >>> stable_isotopes('U', unstable=True)[:5] # only first five
     ['U-217', 'U-218', 'U-219', 'U-220', 'U-221']
+
     """
 
     def stable_isotopes_for_element(argument, stable_only):
@@ -1228,14 +1224,13 @@ def isotopic_abundance(argument, mass_numb=None):
     return iso_comp
 
 
-def charge_state(argument):
+def charge_state(particle):
     r"""Returns the charge state of an ion or other particle.
 
     Parameters
     ----------
-    argument : string
-        String representing an element or isotope followed by charge
-        state information.
+    particle : string
+        String representing a particle.
 
     Returns
     -------
@@ -1265,7 +1260,8 @@ def charge_state(argument):
     The second format is a string containing element information at
     the beginning, following by one or more plus or minus signs.
 
-    This function returns -1 for electrons and +1 for positrons.
+    This function returns -1 for electrons, +1 for positrons, and 0
+    for neutrons.
 
     Examples
     --------
@@ -1280,15 +1276,17 @@ def charge_state(argument):
 
     """
 
-    if _is_electron(argument):
+    if _is_electron(particle) or _is_antiproton(particle):
         return -1
-    elif _is_positron(argument):
+    elif _is_positron(particle):
         return 1
+    elif _is_neutron(particle) or _is_antineutron(particle):
+        return 0
 
-    argument, Z = _extract_charge_state(argument)
+    particle, Z = _extract_charge_state(particle)
 
     try:
-        atomic_numb = atomic_number(argument)
+        atomic_numb = atomic_number(particle)
     except Exception:
         raise ValueError("Invalid element or isotope information in "
                          "charge_state")
@@ -1298,19 +1296,22 @@ def charge_state(argument):
                          "number.")
 
     if Z is not None and (Z < -atomic_numb-1 or Z < -3):
-        warn(f"Element {atomic_symbol(argument)} has a charge of {Z}"
+        warn(f"Element {atomic_symbol(particle)} has a charge of {Z}"
              " which is unlikely to occur in nature.", UserWarning)
+
+    if Z is None:
+        raise ValueError(f"Unable to find charge of {particle}")
 
     return Z
 
 
-def electric_charge(argument):
+def electric_charge(particle):
     r"""Returns the electric charge (in coulombs) of an ion or other
     particle
 
     Parameters
     ----------
-    argument : string
+    particle : string
         String representing an element or isotope followed by charge
         state information.
 
@@ -1355,10 +1356,10 @@ def electric_charge(argument):
     """
 
     try:
-        charge = charge_state(argument) * const.e.to('C')
+        charge = charge_state(particle) * const.e.to('C')
         return charge
-    except Exception:
-        raise ValueError("Invalid input to electric_charge")
+    except Exception:  # coveralls: ignore
+        raise ValueError(f"{particle} is an invalid input to electric_charge")
 
 
 def _extract_charge_state(argument):
@@ -1414,6 +1415,8 @@ def _extract_charge_state(argument):
         return argument, 2
     elif argument == 'e+' or argument.lower() == 'positron':
         return argument, 1
+    elif _is_antiproton(argument):
+        return argument, -1
 
     if argument.count(' ') == 1:  # For cases like 'Fe +2' and 'Fe-56 2+'
 
@@ -1487,9 +1490,6 @@ def _is_hydrogen(argument, can_be_atomic_number=False):
     r"""Returns True if the argument corresponds to hydrogen, and False
     otherwise."""
 
-    if argument == 'p-':
-        return False
-
     case_sensitive_aliases = ['p', 'p+', 'H', 'D', 'T']
 
     case_insensitive_aliases = ['proton', 'protium', 'deuterium',
@@ -1505,10 +1505,8 @@ def _is_hydrogen(argument, can_be_atomic_number=False):
 
         if argument in case_sensitive_aliases:
             is_hydrogen = True
-        elif argument.lower() in case_insensitive_aliases:
-            is_hydrogen = True
         else:
-            is_hydrogen = False
+            is_hydrogen = argument.lower() in case_insensitive_aliases
 
         if is_hydrogen and Z is not None and Z > 1:
             raise ValueError("Invalid charge state of hydrogen")
@@ -1521,69 +1519,82 @@ def _is_hydrogen(argument, can_be_atomic_number=False):
     return is_hydrogen
 
 
-def _is_electron(argument):
+def _is_electron(arg):
     r"""Returns True if the argument corresponds to an electron, and False
     otherwise."""
 
-    if not isinstance(argument, str):
+    if not isinstance(arg, str):
         return False
 
-    if argument in ['e', 'e-'] or argument.lower() == 'electron':
-        return True
-    else:
-        return False
+    return arg in ['e', 'e-'] or arg.lower() == 'electron'
 
 
-def _is_positron(argument):
+def _is_positron(arg):
     r"""Returns True if the argument corresponds to a positron, and False
     otherwise."""
 
-    if not isinstance(argument, str):
+    if not isinstance(arg, str):
         return False
 
-    if argument == 'e+' or argument.lower() == 'positron':
-        return True
-    else:
-        return False
+    return arg == 'e+' or arg.lower() == 'positron'
 
 
-def _is_antiproton(argument):
+def _is_antiproton(arg):
     r"""Returns True if the argument corresponds to an antiproton, and
     False otherwise."""
 
-    if not isinstance(argument, str):
+    if not isinstance(arg, str):
         return False
 
-    if argument == 'p-' or argument.lower() == 'antiproton':
-        return True
-    else:
+    return arg == 'p-' or arg.lower() == 'antiproton'
+
+
+def _is_antineutron(arg):
+    r"""Returns True if the argument corresponds to an antineutron, and
+    False otherwise."""
+
+    if not isinstance(arg, str):
+        return False
+
+    return arg.lower() == 'antineutron'
+
+
+def _is_proton(arg, Z=None, mass_numb=None):
+    r"""Returns True if the argument corresponds to a proton, and
+    False otherwise.  This function returns False for 'H-1' if no
+    charge state is given."""
+
+    try:
+
+        isotope = isotope_symbol(arg, mass_numb)
+
+        if Z is None:
+            Z = charge_state(arg)
+
+        return isotope == 'H-1' and Z == 1
+
+    except Exception:
+
         return False
 
 
-def _is_alpha(argument):
+def _is_alpha(arg):
     r"""Returns True if the argument corresponds to an alpha particle,
     and False otherwise."""
 
-    if not isinstance(argument, str):
+    if not isinstance(arg, str):
         return False
 
-    if argument.lower() == 'alpha':
-        is_alpha = True
+    if arg.lower() == 'alpha':
+        return True
     else:
-        argument, Z = _extract_charge_state(argument)
+        arg, Z = _extract_charge_state(arg)
 
-        if Z != 2:
-            is_alpha = False
-        elif argument[-2:] != '-4':
-            is_alpha = False
+        if Z != 2 or arg[-2:] != '-4':
+            return False
         else:
 
-            dash_position = argument.find('-')
-            argument = argument[:dash_position]
+            dash_position = arg.find('-')
+            arg = arg[:dash_position]
 
-            if argument.lower() == 'helium' or argument == 'He':
-                is_alpha = True
-            else:
-                is_alpha = False
-
-    return is_alpha
+            return arg.lower() == 'helium' or arg == 'He'

@@ -69,6 +69,7 @@ def test_Alfven_speed():
 
     assert Alfven_speed(2*B, rho) == 2*Alfven_speed(B, rho)
 
+    # Case when Z=1 is assumed
     assert Alfven_speed(5*u.T, 5e19*u.m**-3, ion='H-1') == \
         Alfven_speed(5*u.T, 5e19*u.m**-3, ion='p')
 
@@ -144,6 +145,7 @@ def test_ion_sound_speed():
                                       gamma_e=1.2, gamma_i=3.4).value,
                       193328.52857788358)
 
+    # case when Z=1 is assumed
     assert ion_sound_speed(T_i=T_i, T_e=T_e, ion='p') == \
         ion_sound_speed(T_i=T_i, T_e=T_e, ion='H-1')
 
@@ -244,6 +246,7 @@ def test_thermal_speed():
     assert np.isclose(thermal_speed(1*u.MK, particle='p').si.value,
                       128486.56960876315)
 
+    # Case when Z=1 is assumed
     assert thermal_speed(T_i, particle='p') == \
         thermal_speed(T_i, particle='H-1')
 
@@ -325,6 +328,7 @@ def test_gyrofrequency():
 
     assert gyrofrequency(-5*u.T, 'p') == gyrofrequency(5*u.T, 'p')
 
+    # Case when Z=1 is assumed
     assert gyrofrequency(B, particle='p') == \
         gyrofrequency(B, particle='H-1')
 
@@ -399,6 +403,7 @@ def test_gyroradius():
 
     assert gyroradius(B, 25*u.m/u.s, particle="p").unit == u.m
 
+    # Case when Z=1 is assumed
     assert gyroradius(B, T_i, particle='p') == \
         gyroradius(B, T_i, particle='H-1')
 
@@ -474,6 +479,7 @@ def test_plasma_frequency():
 
         assert plasma_frequency(n_i, particle='p').unit == u.rad/u.s
 
+    # Case where Z=1 is assumed
     assert plasma_frequency(n_i, particle='H-1') == \
         plasma_frequency(n_i, particle='p')
 
@@ -567,9 +573,6 @@ def test_inertial_length():
 
     assert inertial_length(5.351*u.m**-3, particle='e+') == \
         inertial_length(5.351*u.m**-3, particle='e')
-
-    assert inertial_length(n_i, particle='p') == \
-        inertial_length(n_i, particle='H-1')
 
     with pytest.raises(UserWarning):
         inertial_length(4, particle='p')

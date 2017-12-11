@@ -166,8 +166,9 @@ def Alfven_speed(B, density, ion="p"):
     if density.unit == units.m**-3:
         try:
             m_i = ion_mass(ion)
-            Z = charge_state(ion)
-            if Z is None:
+            try:
+                Z = charge_state(ion)
+            except ValueError:
                 Z = 1
         except Exception:
             raise ValueError("Invalid ion in Alfven_speed.")
@@ -291,8 +292,10 @@ def ion_sound_speed(*ignore, T_e=0*units.K, T_i=0*units.K,
 
     try:
         m_i = ion_mass(ion)
-        Z = charge_state(ion)
-        if Z is None:
+
+        try:
+            Z = charge_state(ion)
+        except ValueError:
             Z = 1
     except Exception:
         raise ValueError("Invalid ion in ion_sound_speed.")
@@ -484,7 +487,7 @@ def gyrofrequency(B, particle='e'):
     <Quantity 957883.3224148067 rad / s>
     >>> gyrofrequency(0.01*u.T, 'p')
     <Quantity 957883.3224148067 rad / s>
-    >>> gyrofrequency(0.01*u.T, particle='T')
+    >>> gyrofrequency(0.01*u.T, particle='T+')
     <Quantity 319964.54975910933 rad / s>
     >>> omega_ce = gyrofrequency(0.1*u.T)
     >>> print(omega_ce)
@@ -497,8 +500,9 @@ def gyrofrequency(B, particle='e'):
 
     try:
         m_i = ion_mass(particle)
-        Z = charge_state(particle)
-        if Z is None:
+        try:
+            Z = charge_state(particle)
+        except ValueError:
             Z = 1
         Z = abs(Z)
     except Exception:
@@ -704,8 +708,9 @@ def plasma_frequency(n, particle='e'):
 
     try:
         m = ion_mass(particle)
-        Z = charge_state(particle)
-        if Z is None:
+        try:
+            Z = charge_state(particle)
+        except ValueError:
             Z = 1
     except Exception:
         raise ValueError("Invalid particle {} in gyrofrequency"
