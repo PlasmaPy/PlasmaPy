@@ -23,6 +23,8 @@ After creating your GitHub account, go to the [main
 repository](https://github.com/PlasmaPy/PlasmaPy) and **fork a copy of
 PlasmaPy to your account**.
 
+To access Git commands on Windows, try `Git Bash <https://git-scm.com/downloads>`_.
+
 Next you must **clone your fork to your computer**.  Go to the
 directory that will host your PlasmaPy directory, and run one of the
 following commands (after changing *your-username* to your username).
@@ -40,6 +42,7 @@ beforehand.  The equivalent SSH command is:
 .. code-block:: bash
 
     git clone git@github.com:your-username/PlasmaPy.git
+    cd PlasmaPy
 
 After cloning, we must tell git where the development version of
 PlasmaPy is by running:
@@ -60,8 +63,6 @@ something like this:
 
 Setting up an environment for development
 =========================================
-
-To access Git commands on Windows, try `Git Bash <https://git-scm.com/downloads>`_.
 
 Setup procedures for the two most popular virtual
 environments, conda and virtualenv, are listed below.
