@@ -74,13 +74,20 @@ To set up a development environment for PlasmaPy, `the Anaconda
 distribution <https://www.anaconda.com/download/>`_ is strongly
 recommended.
 
-After installing Anaconda, launch any conda environment and enter
-PlasmaPy's repository root directory.
+After installing Anaconda, launch any conda environment. By default, conda installs a `root`
+environment, which you should be able to activate via
+
+.. code-block:: bash
+
+  source /home/user/anaconda3/bin/activate root
+
+where `/home/user/anaconda3/` can be swapped to wherever your anaconda installation
+was resides.
 
 On Windows, the way to do this is via running `Anaconda Prompt` from the
 Start Menu. `Git Bash` may also work if you have added Anaconda to `PATH`.
 
-Afterwards, execute the following:
+Afterwards, enter PlasmaPy's repository root directory and execute the following:
 
 .. code-block:: bash
 
