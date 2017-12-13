@@ -279,7 +279,7 @@ def test_thermal_speed():
 
     assert np.isclose(thermal_speed(1e6 * u.K,
                                     method="mean_magnitude").si.value,
-                      19517177.023383822)
+                      6212510.3969422)
 
     assert np.isclose(thermal_speed(1e6 * u.K, method="rms").si.value,
                       6743070.475775486)
@@ -298,8 +298,8 @@ class Test_kappa_thermal_speed(object):
         self.kappa = 4
         self.particle = "p"
         self.probable1True = 24467.878463594963
-        self.rms1True = 29966.908662120648
-        self.mean1True = 86736.37081257407
+        self.rms1True = 37905.474322612165
+        self.mean1True = 34922.98563039583
     def test_invalid_kappa(self):
         """
         Checks if function raises error when kappa <= 3/2 is passed as an
@@ -664,7 +664,7 @@ def test_inertial_length():
         inertial_length(5.351 * u.m**-3, particle='e')
 
     assert inertial_length(n_i, particle='p') == \
-        inertial_length(n_i, particle='H-1')
+        inertial_length(n_i, particle='p')
 
     with pytest.raises(UserWarning):
         inertial_length(4, particle='p')

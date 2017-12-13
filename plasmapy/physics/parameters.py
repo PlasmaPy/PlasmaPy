@@ -400,7 +400,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
     >>> thermal_speed(1e6*u.K, method="rms")
     <Quantity 6743070.475775486 m / s>
     >>> thermal_speed(1e6*u.K, method="mean_magnitude")
-    <Quantity 19517177.023383822 m / s>
+    <Quantity 6212510.3969422 m / s>
 
     """
 
@@ -417,7 +417,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
     elif method == "rms":
         V = (np.sqrt(3 * k_B * T / m)).to(units.m / units.s)
     elif method == "mean_magnitude":
-        V = (np.sqrt(8 * k_B * T / (m / np.pi))).to(units.m / units.s)
+        V = (np.sqrt(8 * k_B * T / (m * np.pi))).to(units.m / units.s)
     else:
         raise ValueError("Method {method} not supported in thermal_speed")
 
@@ -493,27 +493,29 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     if kappa <= 3 / 2:
         raise ValueError(f"Must have kappa > 3/2, instead of {kappa}, for "
                          "kappa distribution function to be valid.")
-    # obtaining particle mass
-    try:
-        m = ion_mass(particle)
-    except Exception:
-        raise ValueError(f"Unable to find {particle} mass in thermal_speed")
-    # thermal velocity of Kappa distribution function is just Maxwellian
-    # thermal speed modulated by the following factor.
-    # This is true for the "most probable" velocity, though it may change
-    # for the other two methods. Must be checked!
-    coeff = np.sqrt((kappa - 3 / 2) / kappa)
-
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     if method == "most_probable":
-        vTh = (np.sqrt(2 * k_B * T / m)).to(units.m / units.s)
+        # thermal velocity of Kappa distribution function is just Maxwellian
+        # thermal speed modulated by the following factor.
+        # This is only true for "most probable" case. RMS and mean
+        # magnitude velocities are same as Maxwellian.
+        coeff = np.sqrt((kappa - 3 / 2) / kappa)
+        vTh = thermal_speed(T=T,
+                            particle=particle,
+                            method="most_probable")
+        return coeff * vTh
     elif method == "rms":
-        vTh = (np.sqrt(3 * k_B * T / m)).to(units.m / units.s)
+        vTh = thermal_speed(T=T,
+                            particle=particle,
+                            method="rms")
+        return vTh
     elif method == "mean_magnitude":
-        vTh = (np.sqrt(8 * k_B * T / (m / np.pi))).to(units.m / units.s)
+        vTh = thermal_speed(T=T,
+                            particle=particle,
+                            method="mean_magnitude")
+        return vTh
     else:
         raise ValueError("Method {method} not supported in thermal_speed")
-    return coeff * vTh
 
 
 @check_quantity({
