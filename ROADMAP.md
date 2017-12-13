@@ -11,6 +11,7 @@ requests](https://github.com/PlasmaPy/plasmapy/pulls), and
 
 This is to be a preview/prototype release.
 
+- Code and documentation infrastructure
 - Plasma parameter calculations
 - Transport coefficient functions
    - Braginskii theory
