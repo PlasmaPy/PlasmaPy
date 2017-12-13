@@ -184,13 +184,12 @@ To be able to import PlasmaPy from your source version:
 
 .. code-block:: bash
 
-  cd PlasmaPy
-  pip install -e .
+  pip install -e {plasmapy-repository-root}
+
+Where `{plasmapy-repository-root}` is the directory resulting from `git clone`.
 
 If you are not working within a virtual environment, this may end in a
-permission error.
-
-.. note :: TODO verify above now that we're using `pip install -e .`
+permission error - this can be avoided via also adding the `--user` flag.
 
 Coding Style
 ============
