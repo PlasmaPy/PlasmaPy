@@ -713,8 +713,8 @@ def plasma_frequency(n, particle='e'):
         except ValueError:
             Z = 1
     except Exception:
-        raise ValueError("Invalid particle {} in gyrofrequency"
-                         .format(particle))
+        raise ValueError(f"Invalid particle, {particle}, in "
+                         "plasma_frequency.")
 
     omega_p = (units.rad*e*np.sqrt(n/(eps0*m)))
 
