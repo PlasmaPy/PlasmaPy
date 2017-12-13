@@ -9,8 +9,8 @@ contain a narrative description for each version.
 
 Version 0.1.0 is the initial development release of PlasmaPy.  This
 version is a prototype and a preview, and is not feature complete.
-Significant changes to the application programming interface (API) are
-expected to occur between versions 0.1.0 and 0.2.0.
+Significant changes to the API are expected to occur between versions
+0.1.0 and 0.2.0.
 
 ### New Features
 
