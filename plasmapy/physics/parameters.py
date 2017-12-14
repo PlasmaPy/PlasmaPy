@@ -8,6 +8,7 @@ import plasmapy.atomic as atomic
 
 import numpy as np
 # import warnings
+import inspect
 
 # For future: change these into decorators.  _check_quantity does a
 # bit more than @quantity_input as it can allow
@@ -167,7 +168,8 @@ def Alfven_speed(B, density, ion="p", z_mean=None):
 
     _check_quantity(B, 'B', 'Alfven_speed', units.T)
     _check_quantity(density, 'density', 'Alfven_speed',
-                    [units.m**-3, units.kg / units.m**3], can_be_negative=False)
+                    [units.m**-3, units.kg / units.m**3],
+                    can_be_negative=False)
 
     B = B.to(units.T)
     density = density.si
@@ -553,6 +555,168 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
         return vTh
     else:
         raise ValueError("Method {method} not supported in thermal_speed")
+
+
+def particle_params(particle):
+    """Helper function to extract data from particle strings"""
+    try:
+        m = ion_mass(particle)
+        try:
+            Z = charge_state(particle)
+        except ValueError:
+            Z = 1
+        Z = abs(Z)
+    except Exception:
+        raise ValueError("Invalid particle {} in {}"
+                         .format(particle, inspect.stack()[1][3]))
+    return (m, Z)
+
+
+@check_quantity({
+    'T_e': {'units': units.K, 'can_be_negative': False},
+    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+})
+def electron_ion_collision_rate(T_e, n_e, ion_particle,
+                                coulomb_log=None, V=None):
+    """momentum relaxation electron-ion collision rate
+
+    From Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf,
+    equations (2.17) and (2.120)
+
+    Considering a Maxwellian distribution of "test" electrons colliding with
+    a Maxwellian distribution of "field" ions.
+
+    This result is an electron momentum relaxation rate, and is used in many
+    classical transport expressions. It is equivalent to:
+        1/tau_e from ref [1] eqn (1) pp. #,
+        1/tau_e from ref [2] eqn (1) pp. #,
+        nu_e\i_S from ref [2] eqn (1) pp. #,
+
+    Parameters
+    ----------
+
+    T_e : Quantity
+        The electron temperature of the Maxwellian test electrons
+
+    n_e : Quantity
+        The number density of the Maxwellian test electrons
+
+    ion_particle: string
+        String signifying a particle type of the field ions, including charge
+        state information.
+
+    coulomb_log : float or dimensionless Quantity, optional
+        option to specify a Coulomb logarithm of the electrons on the ions.
+        If not specified, the Coulomb log will is calculated using the
+        .transport/Coulomb_logarithm function.
+
+    References
+    ----------
+    .. [1] Braginskii
+
+    .. [2] Formulary
+
+    """
+    from plasmapy.physics.transport import Coulomb_logarithm
+    T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
+    if coulomb_log is not None:
+        coulomb_log_val = coulomb_log
+    else:
+        particles = ['e', ion_particle]
+        coulomb_log_val = Coulomb_logarithm(T_e, n_e, particles, V)
+    Z_i = charge_state(ion_particle)
+    nu_e = 4/3 * np.sqrt(2 * np.pi / m_e) / (4 * np.pi * eps0)**2 * e**4 * \
+        n_e * Z_i * coulomb_log_val / (k_B * T_e)**1.5
+    return nu_e.to(1/units.s)
+
+
+@check_quantity({
+    'T_i': {'units': units.K, 'can_be_negative': False},
+    'n_i': {'units': units.m**-3, 'can_be_negative': False}
+})
+def ion_ion_collision_rate(T_i, n_i, ion_particle,
+                           coulomb_log=None, V=None):
+    """momentum relaxation ion-ion collision rate
+
+    From Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf,
+    equations (2.17) and (2.120)
+
+    Considering a Maxwellian distribution of "test" ions colliding with
+    a Maxwellian distribution of "field" ions.
+
+    Note, it is assumed that electrons are present in such numbers as to
+    establish quasineutrality, but the effects of the test ions colliding
+    with them are not considered here.
+
+    This result is an ion momentum relaxation rate, and is used in many
+    classical transport expressions. It is equivalent to:
+        1/tau_i from ref [1] eqn (1) pp. #,
+        1/tau_i from ref [2] eqn (1) pp. #,
+        nu_i\i_S from ref [2] eqn (1) pp. #,
+    
+    Parameters
+    ----------
+
+    T_i : Quantity
+        The electron temperature of the Maxwellian test ions
+
+    n_i : Quantity
+        The number density of the Maxwellian test ions
+
+    ion_particle: string
+        String signifying a particle type of the test and field ions,
+        including charge state information. This function assumes the test
+        and field ions are the same species.
+
+    coulomb_log : float or dimensionless Quantity, optional
+        option to specify a Coulomb logarithm of the electrons on the ions.
+        If not specified, the Coulomb log will is calculated using the
+        .transport/Coulomb_logarithm function.
+
+    References
+    ----------
+    .. [1] Braginskii
+
+    .. [2] Formulary
+
+    """
+    from plasmapy.physics.transport import Coulomb_logarithm
+    T_i = T_i.to(units.K, equivalencies=units.temperature_energy())
+    if coulomb_log is not None:
+        coulomb_log_val = coulomb_log
+    else:
+        particles = [ion_particle, ion_particle]
+        coulomb_log_val = Coulomb_logarithm(T_i, n_i, particles, V)
+    Z_i = charge_state(ion_particle)
+    m_i = ion_mass(ion_particle)
+    nu_i = 4/3 * np.sqrt(np.pi / m_i) / (4 * np.pi * eps0)**2 * e**4 * \
+        n_i * Z_i**4 * coulomb_log_val / (k_B * T_i)**1.5
+    return nu_i.to(1/units.s)
+
+
+@check_quantity({
+    'n': {'units': units.m**-3, 'can_be_negative': False},
+    'T': {'units': units.K, 'can_be_negative': False},
+    'B': {'units': units.T}
+})
+def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None):
+    """TODO"""
+    try:
+        from ..atomic import _is_electron
+    except ImportError:
+        def _is_electron(arg):
+            if not isinstance(arg, str):
+                return False
+            return arg in ['e', 'e-'] or arg.lower() == 'electron'
+
+    gyro_frequency = gyrofrequency(B, particle)
+    gyro_frequency = gyro_frequency / units.radian
+    if _is_electron(particle):
+        coll_rate = electron_ion_collision_rate(T, n, ion_particle,
+                                                coulomb_log, V)
+    else:
+        coll_rate = ion_ion_collision_rate(T, n, ion_particle, coulomb_log, V)
+    return gyro_frequency / coll_rate
 
 
 @utils.check_quantity({
