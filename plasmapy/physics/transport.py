@@ -12,6 +12,10 @@ from ..atomic import (ion_mass, integer_charge)
 from plasmapy.atomic.atomic import _is_electron
 from .parameters import (Debye_length, Hall_parameter,
                          collision_rate_electron_ion, collision_rate_ion_ion)
+from .quantum import (Wigner_Seitz_radius,
+                      thermal_deBroglie_wavelength,
+                      chemical_potential)
+from ..mathematics import Fermi_integral
 from inspect import stack
 from copy import copy
 import warnings
@@ -20,7 +24,12 @@ import warnings
 @utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
                        "n_e": {"units": u.m**-3}
                        })
-def Coulomb_logarithm(T, n_e, particles, V=None):
+def Coulomb_logarithm(T,
+                      n_e,
+                      particles,
+                      z_mean=None,
+                      V=None,
+                      method="classical"):
     r"""
     Estimates the Coulomb logarithm.
 
@@ -38,6 +47,13 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     particles : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
+
+    z_mean : Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
 
     V : Quantity, optional
         The relative velocity between particles.  If not provided,
@@ -93,6 +109,12 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     maximum of these two possibilities.  Some inconsistencies exist in
     the literature on how to define the inner impact parameter [2]_.
 
+    For dense plasmas where the classical Coulomb logarithm breaks
+    down there are various extended methods. These can be found
+    in D.O. Gericke et al's paper, which has a table summarizing
+    the methods [3]_. The GMS-1 through GMS-6 methods correspond
+    to the methods found it that table.
+
     Errors associated with the Coulomb logarithm are of order its
     inverse. If the Coulomb logarithm is of order unity, then the
     assumptions made in the standard analysis of Coulomb collisions
@@ -105,8 +127,8 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> Coulomb_logarithm(T, n, particles)
-    14.748259780491056
-    >>> Coulomb_logarithm(T, n, particles, 1e6*u.m/u.s)
+    14.545527226436974
+    >>> Coulomb_logarithm(T, n, particles, V=1e6*u.m/u.s)
     11.363478214139432
 
     References
@@ -117,13 +139,80 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
        and Magnetically Confined Fusion Literature, W. Fundamenski and
        O.E. Garcia, EFDA–JET–R(07)01
        (http://www.euro-fusionscipub.org/wp-content/uploads/2014/11/EFDR07001.pdf)
-
+    .. [3] Dense plasma temperature equilibration in the binary collision
+       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
+       DOI: 10.1103/PhysRevE.65.036418
     """
+    # fetching impact min and max impact parameters
+    bmin, bmax = impact_parameter(T=T,
+                                  n_e=n_e,
+                                  particles=particles,
+                                  z_mean=z_mean,
+                                  V=V,
+                                  method=method)
+    if method == "classical":
+        # classical Landau-Spitzer approach. Fails for large coupling
+        # parameter where Lambda can become less than zero.
+        ln_Lambda = np.log(bmax / bmin)
+    elif method == "GMS-1":
+        # 1st method listed in Table 1 of reference [3]
+        # Landau-Spitzer, but with interpolated bmin instead of bmin
+        # selected between deBroglie wavelength and distance of closest
+        # approach. Fails for large coupling
+        # parameter where Lambda can become less than zero.
+        ln_Lambda = np.log(bmax / bmin)
+    elif method == "GMS-2":
+        # 2nd method listed in Table 1 of reference [3]
+        # Another Landau-Spitzer like approach, but now bmax is also
+        # being interpolated. The interpolation is between the Debye
+        # length and the ion sphere radius, allowing for descriptions
+        # of dilute plasmas. Fails for large coupling
+        # parameter where Lambda can become less than zero.
+        ln_Lambda = np.log(bmax / bmin)
+    elif method == "GMS-3":
+        # 3rd method listed in Table 1 of reference [3]
+        # classical Landau-Spitzer fails for argument of Coulomb logarithm
+        # Lambda < 0, therefore a clamp is placed at Lambda_min = 2
+        ln_Lambda = np.log(bmax / bmin)
+        if ln_Lambda < 2:
+            ln_Lambda = 2
+    elif method == "GMS-4":
+        # 4th method listed in Table 1 of reference [3]
+        # Spitzer-like extension to Coulomb logarithm by noting that
+        # Coulomb collisions take hyperbolic trajectories. Removes
+        # divergence for small bmin issue in classical Landau-Spitzer
+        # approach, so bmin can be zero. Also doesn't breakdown as
+        # Lambda < 0 is now impossible, even when coupling parameter is large.
+        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
+    elif method == "GMS-5":
+        # 5th method listed in Table 1 of reference [3]
+        # Similar to GMS-4, but setting bmin as distance of closest approach
+        # and bmax interpolated between Debye length and ion sphere radius.
+        # Lambda < 0 impossible.
+        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
+    elif method == "GMS-6":
+        # 6th method listed in Table 1 of reference [3]
+        # Similar to GMS-4 and GMS-5, but using interpolation methods
+        # for both bmin and bmax.
+        # Lambda < 0 impossible.
+        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
+    # applying dimensionless units
+    ln_Lambda = ln_Lambda.to(units.dimensionless_unscaled).value
+    return ln_Lambda
 
+def _boilerPlate(T, particles, V):
+    """
+    Some boiler plate code for checking if inputs to functions in
+    transport.py are good. Also obtains reduced in mass in a
+    2 particle collision system along with thermal velocity.
+    """
+    # checking temperature is in correct units
+    T = T.to(units.K, equivalencies=units.temperature_energy())
+    # extracting particle information
     if not isinstance(particles, (list, tuple)) or len(particles) != 2:
-        raise ValueError("The third input of Coulomb_logarithm must be a list "
-                         "or tuple containing representations of two charged "
-                         "particles.")
+        raise ValueError("Particles input must be a "
+                         "list or tuple containing representations of two  "
+                         f"charged particles. Got {particles} instead.")
 
     masses = np.zeros(2) * u.kg
     charges = np.zeros(2) * u.C
@@ -131,84 +220,864 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     for particle, i in zip(particles, range(2)):
 
         try:
-            masses[i] = atomic.ion_mass(particles[i])
+            masses[i] = ion_mass(particles[i])
         except Exception:
-            raise ValueError(f"Unable to find mass of particle: {particles[i]}"
-                             f" in Coulomb_logarithm.")
-
+            raise ValueError("Unable to find mass of particle: "
+                             f"{particles[i]}.")
         try:
-            charges[i] = np.abs(e * atomic.integer_charge(particles[i]))
+            charges[i] = np.abs(e * integer_charge(particles[i]))
+            if charges[i] is None:
+                raise ValueError("Unable to find charge of particle: "
+                                 f"{particles[i]}.")
         except Exception:
-            raise ValueError(f"Unable to find charge of particle: "
-                             f"{particles[i]} in Coulomb_logarithm.")
-
+            raise ValueError("Unable to find charge of particle: "
+                             f"{particles[i]}.")
+    # obtaining reduced mass of 2 particle collision system
     reduced_mass = masses[0] * masses[1] / (masses[0] + masses[1])
-
-    # The outer impact parameter is the Debye length.  At distances
-    # greater than the Debye length, the electrostatic potential of a
-    # single particle is screened out by the electrostatic potentials
-    # of other particles.  Past this distance, the electric fields of
-    # individual particles do not affect each other much.  This
-    # expression neglects screening by heavier ions.
-
-    T = T.to(u.K, equivalencies=u.temperature_energy())
-
-    b_max = Debye_length(T, n_e)
-
-    # The choice of inner impact parameter is more controversial.
-    # There are two broad possibilities, and the expressions in the
-    # literature often differ by factors of order unity or by
-    # interchanging the reduced mass with the test particle mass.
-
-    # The relative velocity is a source of uncertainty.  It is
-    # reasonable to make an assumption relating the thermal energy to
-    # the kinetic energy: reduced_mass*velocity**2 is approximately
-    # equal to 3*k_B*T.
-
-    # If no relative velocity is inputted, then we make an assumption
-    # that relates the thermal energy to the kinetic energy:
-    # reduced_mass*velocity**2 is approximately equal to 3*k_B*T.
-
+    # getting thermal velocity of system if no velocity is given
     if V is None:
-        V = np.sqrt(3 * k_B * T / reduced_mass)
-    utils._check_relativistic(V, 'Coulomb_logarithm', betafrac=0.8)
+        V = np.sqrt(2 * k_B * T / reduced_mass)
+    else:
+        _check_relativistic(V, 'impact_parameter', betafrac=0.8)
+    return (T, masses, charges, reduced_mass, V)
 
-    # The first possibility is that the inner impact parameter
-    # corresponds to a deflection of 90 degrees, which is valid when
+
+@check_quantity({"T": {"units": units.K, "can_be_negative": False}
+                 })
+def b_perp(T,
+           particles,
+           V=None):
+    """
+    Distance of closest approach for a 90 degree Coulomb collision
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    # Corresponds to a deflection of 90 degrees, which is valid when
     # classical effects dominate.
+    # !!!Note: an average ionization parameter will have to be
+    # included here in the future
+    bPerp = (charges[0] * charges[1] /
+             (4 * pi * eps0 * reduced_mass * V ** 2))
+    return bPerp.to(units.m)
 
-    b_perp = charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V**2)
 
-    # The second possibility is that the inner impact parameter is a
-    # de Broglie wavelength.  There remains some ambiguity as to which
-    # mass to choose to go into the de Broglie wavelength calculation.
-    # Here we use the reduced mass, which will be of the same order as
-    # mass of the smaller particle and thus the longer de Broglie
-    # wavelength.
+@check_quantity({"T": {"units": units.K, "can_be_negative": False},
+                 "n_e": {"units": units.m**-3}
+                 })
+def impact_parameter(T,
+                     n_e,
+                     particles,
+                     z_mean=None,
+                     V=None,
+                     method="classical"):
+    r"""Impact parameter for classical Coulomb collision
 
-    b_deBroglie = hbar / (2 * reduced_mass * V)
+    Parameters
+    ----------
 
-    # Coulomb-style collisions will not happen for impact parameters
-    # shorter than either of these two impact parameters, so we choose
-    # the larger of these two possibilities.
+    T : Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
 
-    b_min = np.zeros_like(b_perp)
+    n_e : Quantity
+        The electron density in units convertible to per cubic meter.
 
-    for i in range(b_min.size):
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
 
-        if b_perp.flat[i] > b_deBroglie.flat[i]:
-            b_min.flat[i] = b_perp.flat[i]
+    z_mean : Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
+
+    V : Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 3 k_B T`
+        where `mu` is the reduced mass.
+
+    Returns
+    -------
+    lnLambda : float or numpy.ndarray
+        An estimate of the Coulomb logarithm that is accurate to
+        roughly its reciprocal.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The Coulomb logarithm is given by
+
+    .. math::
+        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+
+    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
+    impact parameters for Coulomb collisions [1]_.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 1e19*units.m**-3
+    >>> T = 1e6*units.K
+    >>> particles = ('e', 'p')
+    >>> impact_parameter(T, n, particles)
+    (<Quantity 1.05163088e-11 m>, <Quantity 2.18225522e-05 m>)
+    >>> impact_parameter(T, n, particles, V=1e6*units.m/units.s)
+    (<Quantity 2.53401778e-10 m>, <Quantity 2.18225522e-05 m>)
+
+    References
+    ----------
+    .. [1] Dense plasma temperature equilibration in the binary collision
+       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
+       DOI: 10.1103/PhysRevE.65.036418
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    # catching error where mean charge state is not given for non-classical
+    # methods that require the ion density
+    if method == "GMS-2" or method == "GMS-5" or method == "GMS-6":
+        if z_mean == None:
+            raise ValueError("Must provide a z_mean for GMS-2, GMS-5, and "
+                             "GMS-6 methods.")
+    # Debye length
+    lambdaDe = Debye_length(T, n_e)
+    # deBroglie wavelength
+    lambdaDB = hbar / (2 * reduced_mass * V)
+    # distance of closest approach in 90 degree Coulomb collision
+    bPerp = b_perp(T=T,
+                   particles=particles,
+                   V=V)
+    # obtaining minimum and maximum impact parameters depending on which
+    # method is requested
+    if method == "classical":
+        bmax = lambdaDe
+        # Coulomb-style collisions will not happen for impact parameters
+        # shorter than either of these two impact parameters, so we choose
+        # the larger of these two possibilities. That is, between the
+        # deBroglie wavelength and the distance of closest approach.
+        if bPerp > lambdaDB:
+            bmin = bPerp
         else:
-            b_min.flat[i] = b_deBroglie.flat[i]
+            bmin = lambdaDB
+    elif method == "GMS-1":
+        # 1st method listed in Table 1 of reference [1]
+        # This is just another form of the classical Landau-Spitzer
+        # approach, but bmin is interpolated between the deBroglie
+        # wavelength and distance of closest approach.
+        bmax = lambdaDe
+        bmin = (lambdaDB ** 2 + bPerp ** 2) ** (1 / 2)
+    elif method == "GMS-2":
+        # 2nd method listed in Table 1 of reference [1]
+        # Another Landau-Spitzer like approach, but now bmax is also
+        # being interpolated. The interpolation is between the Debye
+        # length and the ion sphere radius, allowing for descriptions
+        # of dilute plasmas.
+        # Mean ion density.
+        n_i = n_e / z_mean
+        # mean ion sphere radius.
+        ionRadius = Wigner_Seitz_radius(n_i)
+        bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
+        bmin = (lambdaDB ** 2 + bPerp ** 2) ** (1 / 2)
+    elif method == "GMS-3":
+        # 3rd method listed in Table 1 of reference [1]
+        # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
+        # where Lambda is the argument to the Coulomb logarithm.
+        bmax = lambdaDe
+        bmin = (lambdaDB ** 2 + bPerp ** 2) ** (1 / 2)
+    elif method == "GMS-4":
+        # 4th method listed in Table 1 of reference [1]
+        bmax = lambdaDe
+        bmin = (lambdaDB ** 2 + bPerp ** 2) ** (1 / 2)
+    elif method == "GMS-5":
+        # 5th method listed in Table 1 of reference [1]
+        # Mean ion density.
+        n_i = n_e / z_mean
+        # mean ion sphere radius.
+        ionRadius = Wigner_Seitz_radius(n_i)
+        bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
+        bmin = bPerp
+    elif method == "GMS-6":
+        # 6th method listed in Table 1 of reference [1]
+        # Mean ion density.
+        n_i = n_e / z_mean
+        # mean ion sphere radius.
+        ionRadius = Wigner_Seitz_radius(n_i)
+        bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
+        bmin = (lambdaDB ** 2 + bPerp ** 2) ** (1 / 2)
+    else:
+        raise ValueError(f"Method {method} not found!")
+    return (bmin.to(units.m), bmax.to(units.m))
 
-    # Now that we know how many approximations have to go into plasma
-    # transport theory, we shall celebrate by returning the Coulomb
-    # logarithm.
 
-    ln_Lambda = np.log(b_max / b_min)
-    ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
+@check_quantity({"T": {"units": units.K, "can_be_negative": False},
+                 "n": {"units": units.m**-3}
+                 })
+def collision_frequency(T,
+                        n,
+                        particles,
+                        z_mean=None,
+                        V=None):
+    r"""Collision frequency of particles in a plasma.
 
-    return ln_Lambda
+    Parameters
+    ----------
+
+    T : Quantity
+        Temperature in units of temperature.
+        This should be the electron temperature for electron-electron
+        and electron-ion collisions, and the ion temperature for
+        ion-ion collisions.
+
+
+    n : Quantity
+        The density in units convertible to per cubic meter.
+        This should be the electron density for electron-electron collisions,
+        and the ion density for electron-ion and ion-ion collisions.
+
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
+
+    z_mean : Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
+
+    V : Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 3 k_B T`
+        where `mu` is the reduced mass.
+
+    Returns
+    -------
+    lnLambda : float or numpy.ndarray
+        An estimate of the Coulomb logarithm that is accurate to
+        roughly its reciprocal.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The Coulomb logarithm is given by
+
+    .. math::
+        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+
+    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
+    impact parameters for Coulomb collisions.
+
+    See eq (2.14) in [1].
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 1e19*units.m**-3
+    >>> T = 1e6*units.K
+    >>> particles = ('e', 'p')
+    >>> collision_frequency(T, n, particles)
+    <Quantity 702505.15998601 Hz>
+
+    References
+    ----------
+
+
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    if particles[0] == 'e' and particles[1] == 'e':
+        # electron-electron collision
+        # impact parameter for 90 degree collision
+        bPerp = b_perp(T=T,
+                       particles=particles,
+                       V=V)
+        # Coulomb logarithm
+        cou_log = Coulomb_logarithm(T,
+                                    n,
+                                    particles,
+                                    z_mean,
+                                    V=None,
+                                    method="classical")
+    elif particles[0] == 'e' or particles[1] == 'e':
+        # electron-ion collision
+        # Need to manually pass electron thermal velocity to obtain
+        # correct perpendicular collision radius
+        V = np.sqrt(2 * k_B * T / m_e)
+        # need to also correct mass in collision radius from reduced
+        # mass to electron mass
+        bPerp = b_perp(T=T,
+                       particles=particles,
+                       V=V) * reduced_mass / m_e
+        # Coulomb logarithm
+        #!!! may also need to correct Coulomb logarithm to be
+        # electron-electron version !!!
+        cou_log = Coulomb_logarithm(T,
+                                    n,
+                                    particles,
+                                    z_mean,
+                                    V=None,
+                                    method="classical")
+    else:
+        # ion-ion collision
+        bPerp = b_perp(T=T,
+                       particles=particles,
+                       V=V)
+        # Coulomb logarithm
+        cou_log = Coulomb_logarithm(T,
+                                    n,
+                                    particles,
+                                    z_mean,
+                                    V=None,
+                                    method="classical")
+    # collisional cross section
+    sigma = np.pi * (2 * bPerp) ** 2
+    # collision frequency where Coulomb logarithm accounts for
+    # small angle collisions, which are more frequent than large
+    # angle collisions.
+    freq =  n * sigma * V * cou_log
+    return freq.to(units.Hz)
+
+
+@check_quantity({"T": {"units": units.K, "can_be_negative": False},
+                 "n_e": {"units": units.m**-3}
+                 })
+def mean_free_path(T,
+                   n_e,
+                   particles,
+                   z_mean=None,
+                   V=None):
+    r"""Collisional mean free path (m)
+
+    Parameters
+    ----------
+
+    T : Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
+
+    n_e : Quantity
+        The electron density in units convertible to per cubic meter.
+
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
+
+    z_mean : Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
+
+    V : Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 3 k_B T`
+        where `mu` is the reduced mass.
+
+    Returns
+    -------
+    lnLambda : float or numpy.ndarray
+        An estimate of the Coulomb logarithm that is accurate to
+        roughly its reciprocal.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The Coulomb logarithm is given by
+
+    .. math::
+        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+
+    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
+    impact parameters for Coulomb collisions.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 1e19*units.m**-3
+    >>> T = 1e6*units.K
+    >>> particles = ('e', 'p')
+    >>> mean_free_path(T, n, particles)
+    14.545527226436974
+    >>> mean_free_path(T, n, particles, V=1e6*units.m/units.s)
+    11.363478214139432
+
+    References
+    ----------
+
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    # collisional frequency
+    freq = collision_frequency(T=T,
+                               n_e=n_e,
+                               particles=particles,
+                               z_mean=z_mean,
+                               V=V)
+    # mean free path length
+    mfp = V / freq
+    return mfp.to(units.m)
+
+
+@check_quantity({"T": {"units": units.K, "can_be_negative": False},
+                 "n": {"units": units.m**-3}
+                 })
+def Spitzer_resistivity(T,
+                        n,
+                        particles,
+                        z_mean=None,
+                        V=None):
+    r"""Spitzer resistivity of a plasma
+
+    Parameters
+    ----------
+
+    T : Quantity
+        Temperature in units of temperature.
+        This should be the electron temperature for electron-electron
+        and electron-ion collisions, and the ion temperature for
+        ion-ion collisions.
+
+
+    n : Quantity
+        The density in units convertible to per cubic meter.
+        This should be the electron density for electron-electron collisions,
+        and the ion density for electron-ion and ion-ion collisions.
+
+    z_mean : Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
+
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
+
+    V : Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 3 k_B T`
+        where `mu` is the reduced mass.
+
+    Returns
+    -------
+    lnLambda : float or numpy.ndarray
+        An estimate of the Coulomb logarithm that is accurate to
+        roughly its reciprocal.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The Coulomb logarithm is given by
+
+    .. math::
+        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+
+    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
+    impact parameters for Coulomb collisions.
+
+    See eq (2.14) in [1]_.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 1e19*units.m**-3
+    >>> T = 1e6*units.K
+    >>> particles = ('e', 'p')
+    >>> Spitzer_resistivity(T, n, particles)
+    <Quantity 2.4916169e-06 m Ohm>
+    >>> Spitzer_resistivity(T, n, particles, V=1e6*units.m/units.s)
+    <Quantity 2.4916169e-06 m Ohm>
+
+    References
+    ----------
+    .. [1] http://homepages.cae.wisc.edu/~callen/chap2.pdf
+
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    # collisional frequency
+    freq = collision_frequency(T=T,
+                               n=n,
+                               particles=particles,
+                               z_mean=z_mean,
+                               V=V)
+    spitzer = freq * reduced_mass / (n * charges[0] * charges[1])
+    return spitzer.to(units.Ohm * units.m)
+
+
+@check_quantity({"T": {"units": units.K, "can_be_negative": False},
+                 "n_e": {"units": units.m**-3}
+                 })
+def mobility(T,
+             n_e,
+             particles,
+             z_mean=None,
+             V=None):
+    r"""Electrical mobility (m^2/(V s))
+
+    Parameters
+    ----------
+
+    T : Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
+
+    n_e : Quantity
+        The electron density in units convertible to per cubic meter.
+
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
+
+    z_mean : Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters. It is also used the obtain the average mobility
+        of a plasma with multiple charge state species. When z_mean
+        is not given, the average charge between the two particles is
+        used instead.
+
+    V : Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 3 k_B T`
+        where `mu` is the reduced mass.
+
+    Returns
+    -------
+    lnLambda : float or numpy.ndarray
+        An estimate of the Coulomb logarithm that is accurate to
+        roughly its reciprocal.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The Coulomb logarithm is given by
+
+    .. math::
+        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+
+    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
+    impact parameters for Coulomb collisions.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 1e19*units.m**-3
+    >>> T = 1e6*units.K
+    >>> particles = ('e', 'p')
+    >>> mobility(T, n, particles)
+    14.545527226436974
+    >>> mobility(T, n, particles, V=1e6*units.m/units.s)
+    11.363478214139432
+
+    References
+    ----------
+
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    freq = collision_frequency(T=T,
+                               n_e=n_e,
+                               particles=particles,
+                               z_mean=z_mean,
+                               V=V)
+    if z_mean == None:
+        z_val = (charges[0] + charges[1]) / 2
+    else:
+        z_val = z_mean
+    mobility_value = z_val / (reduced_mass * freq)
+    return mobility_value.to(units.m ** 2 / (units.V * units.s))
+
+
+@check_quantity({"T": {"units": units.K, "can_be_negative": False},
+                 "n_e": {"units": units.m**-3}
+                 })
+def knudsen(characteristic_length,
+            T,
+            n_e,
+            particles,
+            z_mean=None,
+            V=None):
+    r"""Knudsen number (dimless)
+
+    Parameters
+    ----------
+
+    T : Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
+
+    n_e : Quantity
+        The electron density in units convertible to per cubic meter.
+
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
+
+    z_mean : Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
+
+    V : Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 3 k_B T`
+        where `mu` is the reduced mass.
+
+    Returns
+    -------
+    lnLambda : float or numpy.ndarray
+        An estimate of the Coulomb logarithm that is accurate to
+        roughly its reciprocal.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The Coulomb logarithm is given by
+
+    .. math::
+        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+
+    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
+    impact parameters for Coulomb collisions.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> L = 1e-3 * units.m
+    >>> n = 1e19*units.m**-3
+    >>> T = 1e6*units.K
+    >>> particles = ('e', 'p')
+    >>> knudsen(L, T, n, particles)
+    14.545527226436974
+    >>> knudsen(L, T, n, particles, V=1e6*units.m/units.s)
+    11.363478214139432
+
+    References
+    ----------
+
+    """
+    path_length = mean_free_path(T=T,
+                                 n_e=n_e,
+                                 particles=particles,
+                                 z_mean=z_mean,
+                                 V=V)
+    knudsen_param = path_length / characteristic_length
+    return knudsen_param.to(units.dimensionless_unscaled)
+
+
+@check_quantity({"T": {"units": units.K, "can_be_negative": False},
+                 "n_e": {"units": units.m**-3}
+                 })
+def coupling_parameter(T,
+                       n_e,
+                       particles,
+                       V=None,
+                       method="classical"):
+    r"""Coupling parameter.
+    Coupling parameter compares Coulomb energy to kinetic energy (typically)
+    thermal. Classical plasmas are weakly coupled Gamma << 1, whereas dense
+    plasmas tend to have significant to strong coupling Gamma >= 1.
+
+    Parameters
+    ----------
+
+    T : Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
+
+    n_e : Quantity
+        The electron density in units convertible to per cubic meter.
+
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
+
+    Returns
+    -------
+    lnLambda : float or numpy.ndarray
+        An estimate of the Coulomb logarithm that is accurate to
+        roughly its reciprocal.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The Coulomb logarithm is given by
+
+    .. math::
+        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+
+    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
+    impact parameters for Coulomb collisions.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 1e19*units.m**-3
+    >>> T = 1e6*units.K
+    >>> particles = ('e', 'p')
+    >>> coupling_parameter(T, n, particles)
+    <Quantity 5.80330315e-05>
+    >>> coupling_parameter(T, n, particles, V=1e6*units.m/units.s)
+    <Quantity 5.80330315e-05>
+
+    References
+    ----------
+    Dense plasma temperature equilibration in the binary collision
+    approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
+    DOI: 10.1103/PhysRevE.65.036418
+
+
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    # Wigner-Seitz radius
+    radius = Wigner_Seitz_radius(n_e)
+    # Coulomb potential energy between particles
+    coulombEnergy = charges[0] * charges[1] / (4 * np.pi * eps0 * radius)
+    if method == "classical":
+        # classical thermal kinetic energy
+        kineticEnergy = k_B * T
+    elif method == "quantum":
+        # quantum kinetic energy for dense plasmas
+        lambda_deBroglie = thermal_deBroglie_wavelength(T)
+        chemicalPotential = chemical_potential(n_e, T)
+        fermiIntegral = Fermi_integral(chemicalPotential, 3 / 2)
+        denom = (n_e * lambda_deBroglie ** 3) * fermiIntegral
+        kineticEnergy = 2 * k_B * T / denom
+    coupling = coulombEnergy / kineticEnergy
+    return coupling.to(units.dimensionless_unscaled)
 
 
 class classical_transport:
@@ -380,18 +1249,18 @@ class classical_transport:
     >>> t = classical_transport(1*u.eV, 1e20/u.m**3,
     ...                         1*u.eV, 1e20/u.m**3, 'p')
     >>> t.resistivity()
-    <Quantity 0.00038845 m Ohm>
+    <Quantity 0.00036701 m Ohm>
     >>> t.thermoelectric_conductivity()
     <Quantity 0.711084>
     >>> t.ion_thermal_conductivity()
-    <Quantity 0.0146639 W / (K m)>
+    <Quantity 0.01552066 W / (K m)>
     >>> t.electron_thermal_conductivity()
-    <Quantity 0.35963098 W / (K m)>
+    <Quantity 0.38064293 W / (K m)>
     >>> t.ion_viscosity()
-    <Quantity [4.36619601e-07, 4.35292253e-07, 4.35292253e-07, 0.00000000e+00,
+    <Quantity [4.62129725e-07, 4.60724824e-07, 4.60724824e-07, 0.00000000e+00,
                0.00000000e+00] Pa s>
     >>> t.electron_viscosity()
-    <Quantity [5.50131582e-09, 5.49950422e-09, 5.49950422e-09, 0.00000000e+00,
+    <Quantity [5.82273805e-09, 5.82082061e-09, 5.82082061e-09, 0.00000000e+00,
                0.00000000e+00] Pa s>
 
     References

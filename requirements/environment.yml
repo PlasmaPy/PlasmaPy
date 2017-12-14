@@ -13,6 +13,7 @@ dependencies:
     - numpydoc
     - pytest
     - coveralls
+    - mpmath
     - matplotlib
     - sphinx
     - sphinx-gallery

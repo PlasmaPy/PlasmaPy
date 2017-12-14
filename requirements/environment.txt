@@ -5,6 +5,7 @@ numpydoc
 pytest
 cython
 coveralls
+mpmath
 matplotlib
 sphinx
 sphinx-gallery

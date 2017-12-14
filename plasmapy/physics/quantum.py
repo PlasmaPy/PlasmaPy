@@ -1,14 +1,20 @@
 """
 Functions for quantum parameters, including electron degenerate
 gases and warm dense matter.
+
+# TODO:
+    -fix ion sphere radius to use ion density
 """
 import numpy as np
 from astropy import units as u
+from scipy.optimize import minimize
 
 from plasmapy import atomic, utils
+from plasmapy.utils.checks import check_quantity
 from plasmapy.physics.relativity import Lorentz_factor
 
 from ..constants import c, h, hbar, m_e, eps0, e, k_B
+from ..mathematics import Fermi_integral
 
 
 def deBroglie_wavelength(V, particle):
@@ -285,3 +291,162 @@ def Thomas_Fermi_length(n_e):
     energy_F = Fermi_energy(n_e)
     lambda_TF = np.sqrt(2 * eps0 * energy_F / (3 * n_e * e ** 2))
     return lambda_TF.to(u.m)
+
+
+@check_quantity({
+    'n': {'units': units.m**-3, 'can_be_negative': False}
+})
+def Wigner_Seitz_radius(n):
+    r"""Calculate the Wigner-Seitz radius, which approximates the inter-
+    particle spacing. It is the radius of a sphere whose volume is
+    equal to the mean volume per atom in a solid. This parameter is
+    often used to calculate the coupling parameter.
+    When ion density is used, this is the ion sphere radius, i.e., the
+    space occupied by a single ion with no other ions in that space. Higher
+    density means less space for each ion, so the radius is smaller.
+
+    Parameters
+    ----------
+    n: Quantity
+        Particle number density
+
+    Returns
+    -------
+    radius: Quantity
+        The Wigner-Seitz radius in meters
+
+    Raises
+    ------
+    TypeError
+        If argument is not a Quantity
+
+    UnitConversionError
+        If argument is in incorrect units
+
+    ValueError
+        If argument contains invalid values
+
+    UserWarning
+        If units are not provided and SI units are assumed
+
+    Notes
+    -----
+    The Wigner-Seitz radius approximates the interparticle spacing.
+    It is the radius of a sphere whose volume is equal to the mean
+    volume per atom in a solid:
+
+    .. math::
+        r = \left(\frac{3}{4 \pi n}\right)^{1/3}
+
+    See also
+    --------
+    Fermi_energy
+
+    Example
+    -------
+    >>> from astropy import units as u
+    >>> Wigner_Seitz_radius(1e29 * u.m**-3)
+    <Quantity 1.33650462e-10 m>
+
+    """
+    radius = (3 / (4 * np.pi * n)) ** (1 / 3)
+    return radius.to(units.m)
+
+
+def chemical_potential(n_e, T, tol=1e-6):
+    r"""Calculate the ideal chemical potential
+
+    Parameters
+    ----------
+    n_e: Quantity
+        Electron number density
+
+    Returns
+    -------
+    radius: Quantity
+        The Wigner-Seitz radius in meters
+
+    Raises
+    ------
+    TypeError
+        If argument is not a Quantity
+
+    UnitConversionError
+        If argument is in incorrect units
+
+    ValueError
+        If argument contains invalid values
+
+    UserWarning
+        If units are not provided and SI units are assumed
+
+    Notes
+    -----
+    The ideal chemical potential is given by [1]_:
+
+    .. math::
+        \chi_a = I_{1/2}(\beta \mu_a^{ideal})
+
+    where \chi is the degeneracy parameter, I_{1/2} is the Fermi integral
+    with order 1/2, \beta is the inverse thermal energy \beta = 1/(k_B T),
+    and \mu_a^{ideal} is the ideal chemical potential.
+
+    The definition for the ideal chemical potential is implicit, so it must
+    be obtained numerically by solving for the Fermi integral for values
+    of chemical potential approaching the degeneracy parameter.
+
+    References
+    ----------
+    .. [1] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.
+
+    Example
+    -------
+    >>> from astropy import units as u
+    >>> Wigner_Seitz_radius(1e29 * u.m**-3)
+    <Quantity 1.33650462e-10 m>
+    """
+    # deBroglie wavelength
+    lambdaDB = thermal_deBroglie_wavelength(T)
+    # degeneracy parameter
+    degen = n_e * lambdaDB ** 3
+
+    def minFunc(alpha):
+        """Function to be minimized"""
+        # Note: alpha = mu / (k_B * T)
+        zeroVal = Fermi_integral(alpha, 1 / 2) - degen
+        return zeroVal
+    # optmizing minFunc to numerically obtain the ideal chemical potential
+    #!!! implement approximation for initial guess!!!
+    # https://de.wikipedia.org/wiki/Fermi-Dirac-Integral
+    alphaGuess = k_B * T / (k_B * T)
+    alphaFinal = minimize(minFunc,
+                          alphaGuess,
+                          method='Nelder-Mead',
+                          tol=tol)
+    return alphaFinal.to(units.dimensionless_unscaled)
+
+
+def chemical_potential_interp(n_e, T):
+    """
+    Fitting formula for interpolating chemical potential between classical
+    and quantum regimes [1]_.
+
+    References
+    ----------
+    .. [1] Ichimaru, Statistical Plasma Physics Addison-Wesley,
+       Reading, MA, 1991.
+
+    Gregori, G., et al. "Theoretical model of x-ray scattering as a
+    dense matter probe." Physical Review E 67.2 (2003): 026412.
+    """
+    A = 0.25945
+    B = 0.072
+    b = 0.858
+    theta = k_B * T / Fermi_energy(n_e)
+    term1 = -3 / 2 * np.log(theta)
+    term2 = np.log(4 / (3 * np.sqrt(np.pi)))
+    term3num = A * theta ** (-b - 1) + B * theta ** (-(b + 1) / 2)
+    term3den = 1 + A * theta ** (-b)
+    term3 = term3num / term3den
+    mu = term1 + term2 + term3
+    return mu.to(units.dimensionless_unscaled)

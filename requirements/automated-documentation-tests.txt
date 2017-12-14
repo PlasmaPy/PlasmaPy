@@ -1,5 +1,6 @@
 astropy
 coveralls
+mpmath
 matplotlib
 numpy
 cython

@@ -3,6 +3,7 @@
 import numpy as np
 from scipy import special
 from astropy import units as u
+from mpmath import polylog
 from scipy.special import wofz as Faddeeva_function
 
 
@@ -153,3 +154,64 @@ def plasma_dispersion_func_deriv(zeta):
     Zprime = -2 * (1 + zeta * plasma_dispersion_func(zeta))
 
     return Zprime
+
+
+def Fermi_integral(x, j):
+    r"""Calculate the complete Fermi-Dirac integral.
+
+    Parameters
+    ----------
+    x : Quantity
+        Argument of the Fermi-Dirac integral function.
+
+    j : Quantity
+        Order/index of the Fermi-Dirac integral function.
+
+    Returns
+    -------
+    integral : Quantity, complex
+        Complete Fermi-Dirac integral for given argument and order.
+
+    Raises
+    ------
+    TypeError
+        If the argument is invalid.
+    UnitsError
+        If the argument is a Quantity but is not dimensionless
+    ValueError
+        If the argument is not entirely finite
+
+    See also
+    --------
+    plasma_dispersion_func
+
+    Notes
+    -----
+    The complete Fermi-Dirac integral is defined as:
+
+    .. math::
+        F_j (x) = \frac{1}{\Gamma (j+1)} \int_0^\inf \frac{t^j}{e^{t-x} + 1} dt
+        for j > 0
+
+    This is equivalent to the following polylogarithm function:
+
+    .. math::
+        F_j (x) = -Li_{j+1}\left(-e^{x}\right)
+
+    References
+    ----------
+    https://en.wikipedia.org/wiki/Complete_Fermi%E2%80%93Dirac_integral
+    https://en.wikipedia.org/wiki/Polylogarithm
+
+    Examples
+    --------
+    >>> Fermi_integral(0, 0)
+    (0.6931471805599453-0j)
+    >>> Fermi_integral(1, 0)
+    (1.3132616875182228-0j)
+    >>> Fermi_integral(1, 1)
+    (1.8062860704447743-0j)
+    """
+    arg = -np.exp(x)
+    integral = -1 * complex(polylog(j + 1, arg))
+    return integral

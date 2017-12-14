@@ -46,7 +46,7 @@ def test_Coulomb_logarithm():
 
     n_e = np.array([1e9, 1e9, 1e24]) * u.cm**-3
     T = np.array([1e2, 1e7, 1e8]) * u.K
-    Lambda = np.array([5.97, 21.66, 6.69])
+    Lambda = np.array([5.56, 21.45, 6.48])
     particles = ('e', 'p')
 
     for i in range(3):
@@ -59,15 +59,15 @@ def test_Coulomb_logarithm():
                                         ('e', 'e')))
 
     assert np.isclose(Coulomb_logarithm(1e2 * u.K, 1e9 * u.cm**-3, ('e', 'p')),
-                      5.97, atol=0.01)
+                      5.56, atol=0.01)
 
     assert np.isclose(Coulomb_logarithm(1e7 * u.K, 1e9 * u.cm**-3, ('e', 'p')),
-                      21.6, atol=0.1)
+                      21.45, atol=0.1)
 
     assert np.isclose(Coulomb_logarithm(1e8 * u.K,
                                         1e24 * u.cm**-3,
                                         ('e', 'p')),
-                      6.69, atol=0.01)
+                      6.48, atol=0.01)
 
     assert np.allclose(Coulomb_logarithm(T, n_e, particles), Lambda, atol=0.01)
 
@@ -368,9 +368,9 @@ class Test_classical_transport:
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held",
-         np.array([0.07582084, 0.07582084, 0.07582084, 0, 0]) * u.Pa * u.s),
+         np.array([0.07674402, 0.07674402, 0.07674402, 0, 0]) * u.Pa * u.s),
         ("braginskii",
-         np.array([0.07582084, 0.07579587, 0.07579587, 0, 0]) * u.Pa * u.s)
+         np.array([0.07674402, 0.07671874, 0.07671874, 0, 0]) * u.Pa * u.s)
     ])
     def test_electron_viscosity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
@@ -384,9 +384,9 @@ class Test_classical_transport:
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held",
-         np.array([7.78786439, 7.78786439, 7.78786439, 0, 0]) * u.Pa * u.s),
+         np.array([7.96226452, 7.96226452, 7.96226452, 0, 0]) * u.Pa * u.s),
         ("braginskii",
-         np.array([7.74590133, 7.72235334, 7.72235334, 0, 0]) * u.Pa * u.s)
+         np.array([7.91936173, 7.89528642, 7.89528642, 0, 0]) * u.Pa * u.s)
     ])
     def test_ion_viscosity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
@@ -399,9 +399,9 @@ class Test_classical_transport:
                            atol=1e-6 * u.Pa * u.s)
 
     @pytest.mark.parametrize("model, expected", [
-        ("ji-held", 5023093.49948463 * u.W / (u.K * u.m)),
-        ("spitzer", 5021013.09835718 * u.W / (u.K * u.m)),
-        ("braginskii", 4956545.55498178 * u.W / (u.K * u.m))
+        ("ji-held", 5084253.556001088 * u.W / (u.K * u.m)),
+        ("spitzer", 5082147.824377487 * u.W / (u.K * u.m)),
+        ("braginskii", 5016895.3386957785 * u.W / (u.K * u.m))
     ])
     def test_electron_thermal_conductivity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
@@ -414,8 +414,8 @@ class Test_classical_transport:
                            atol=1e-6 * u.W / (u.K * u.m))
 
     @pytest.mark.parametrize("model, expected", [
-        ("ji-held", 131600.515524444 * u.W / (u.K * u.m)),
-        ("braginskii", 130137.93045042 * u.W / (u.K * u.m))
+        ("ji-held", 134547.55528106514 * u.W / (u.K * u.m)),
+        ("braginskii", 133052.21732349042 * u.W / (u.K * u.m))
     ])
     def test_ion_thermal_conductivity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
