@@ -31,7 +31,7 @@ Modules
     :maxdepth: 1
 
     atomic/index
-    math/index
+    mathematics/index
     physics/index
 
 Classes

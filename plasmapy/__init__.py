@@ -71,7 +71,7 @@ try:
     from . import classes
     from . import constants
     from . import atomic
-    from . import math
+    from . import mathematics
     from . import physics
     from . import utils
 except ImportError:  # coveralls: ignore
