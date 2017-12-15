@@ -35,7 +35,7 @@ def plasma_dispersion_func(zeta):
     -----
     The plasma dispersion function is defined as:
 
-    .. mathematics::
+    .. math::
         Z(\zeta) = \pi^{-0.5} \int_{-\infty}^{+\infty} \frac{e^{-x^2}}{x-\zeta} dx
 
     where the argument is a complex number [fried.conte-1961].
