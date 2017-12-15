@@ -40,7 +40,8 @@ def test_nuclear_reaction_energy():
     released_energy2 = nuclear_reaction_energy(reaction2)
     assert np.isclose((released_energy1.to(u.MeV)).value, 17.58, rtol=0.01)
     assert released_energy1 == released_energy2
-    nuclear_reaction_energy('n + p+ --> n + p+ + p- + p+')
+    assert nuclear_reaction_energy('n + p+ --> n + p+ + p- + p+') == \
+        nuclear_reaction_energy('n + p+ --> n + 2*p+ + p-')
     nuclear_reaction_energy('neutron + antineutron --> neutron + antineutron')
 
 
@@ -65,7 +66,7 @@ def test_nuclear_reaction_energy_alpha_decay():
 
 
 def test_nuclear_reaction_energy_triple_alpha_r():
-    triple_alpha1_r = '4He-4 --> 2Be-8'
+    triple_alpha1_r = '4*He-4 --> 2*Be-8'
     energy_triplealpha1_r = nuclear_reaction_energy(triple_alpha1_r)
     assert np.isclose(energy_triplealpha1_r.to(u.keV).value,
                       -91.8 * 2, atol=0.1)
@@ -101,7 +102,7 @@ def test_nuclear_reaction_energy_error(reaction, kwargs, expected_error):
 nuclear_reaction_energy_kwargs_table = [
     ('H-1', 'p', 0.0, 0.0),
     (['B-10', 'n'], ['Li-7', 'He-4'], 2.8, 0.06),
-    (['Li-6', 'D'], ['2alpha'], 22.2, 0.06),
+    (['Li-6', 'D'], ['2*alpha'], 22.2, 0.06),
     (['C-12', 'p'], 'N-13', 1.95, 0.006),
     (['N-13'], ['C-13', 'e+'], 1.20, 0.006),
     (['C-13', 'hydrogen-1'], ['Nitrogen-14'], 7.54, 0.006),

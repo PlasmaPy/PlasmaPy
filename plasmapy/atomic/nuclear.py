@@ -2,9 +2,10 @@
 
 from astropy import units, constants
 import re
+from itertools import repeat
 from .atomic import (isotope_symbol, mass_number, isotope_mass, ion_mass,
                      atomic_number, charge_state, _is_neutron, _is_electron,
-                     _is_positron, _is_antiproton)
+                     _is_positron, _is_antiproton, _is_antineutron)
 
 
 def nuclear_binding_energy(argument, mass_numb=None):
@@ -78,6 +79,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     ----------
     reaction: string (optional, positional argument only)
         A string representing the reaction, like "D + T --> alpha + n"
+        or "Be-8 --> 2*He-4"
 
     reactants: list, tuple, or string (optional, keyword argument only)
         A list or tuple containing the reactants of a nuclear reaction
@@ -101,7 +103,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     ------
     ValueError:
         If the reaction is not valid, there is insufficient
-        information to determine an isotope, the number of nucleons is
+        information to determine an isotope, the baryon number is
         not conserved, or the charge is not conserved.
 
     TypeError:
@@ -126,7 +128,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     >>> from astropy import units as u
     >>> nuclear_reaction_energy("D + T --> alpha + n")
     <Quantity 2.8181209741100133e-12 J>
-    >>> triple_alpha1 = '2He-4 --> Be-8'
+    >>> triple_alpha1 = '2*He-4 --> Be-8'
     >>> triple_alpha2 = 'Be-8 + alpha --> carbon-12'
     >>> energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
     >>> energy_triplealpha2 = nuclear_reaction_energy(triple_alpha2)
@@ -139,57 +141,57 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     """
 
-    def _get_species(unformatted_list):
-        """Takes a list of species and put each element into standard
-        form, while allowing an integer immediately preceding a
-        species to act as a multiplier.  A string argument will be
-        treated as a list containing that string as its sole item."""
+    def _process_particles_list(unformatted_particles_list):
+        """Takes an unformatted list of particles and puts each
+        particle into standard form, while allowing an integer and
+        asterisk immediately preceding a particle to act as a
+        multiplier.  A string argument will be treated as a list
+        containing that string as its sole item."""
 
-        if isinstance(unformatted_list, str):
-            unformatted_list = [unformatted_list]
+        if isinstance(unformatted_particles_list, str):
+            unformatted_particles_list = [unformatted_particles_list]
 
-        if not isinstance(unformatted_list, (list, tuple)):
-            raise TypeError("The input to _get_species should be a string, "
-                            "list, or tuple.")
+        if not isinstance(unformatted_particles_list, (list, tuple)):
+            raise TypeError("The input to _process_particles_list should be a "
+                            "string, list, or tuple.")
 
-        species = []
+        particles = []
 
-        for item in unformatted_list:
-
-            item = item.strip()
+        for original_item in unformatted_particles_list:
 
             try:
+                item = original_item.strip()
 
-                if _is_electron(item):
-                    species.append('e-')
-                elif _is_positron(item):
-                    species.append('e+')
-                elif _is_antiproton(item):
-                    species.append('p-')
-                elif item == 'antineutron':
-                    species.append('antineutron')
+                if item.count('*') == 1 and item[0].isdigit():
+                    multiplier_str, item = item.split('*')
+                    multiplier = int(multiplier_str)
                 else:
-                    isotope = isotope_symbol(item)
-                    species.append(isotope)
+                    multiplier = 1
+
+                # The following clause should eventually be replaced
+                # with a particle_symbol function
+
+                try:
+                    particle = isotope_symbol(item)
+                except Exception:
+                    if _is_electron(item):
+                        particle = 'e-'
+                    elif _is_positron(item):
+                        particle = 'e+'
+                    elif _is_antiproton(item):
+                        particle = 'p-'
+                    elif _is_antineutron(item):
+                        particle = 'antineutron'
+                    else:
+                        raise ValueError("{item} is not a valid particle")
+
+                [particles.append(particle) for i in range(multiplier)]
 
             except Exception:
-                try:
+                raise ValueError(f"{original_item} is not a valid reactant or "
+                                 "product in a nuclear reaction.") from None
 
-                    multiplier_string = ''
-
-                    while item[0].isdigit():
-                        multiplier_string += item[0]
-                        item = item[1:]
-                        isotope = isotope_symbol(item)
-
-                    for i in range(0, int(multiplier_string)):
-                        species.append(isotope)
-
-                except Exception:
-                    raise ValueError(f"{item} is not a valid reactant or "
-                                     "product in a nuclear reaction") from None
-
-        return species
+        return particles
 
     def _baryon_number(particles):
         r"""Finds the total number of baryons minus the number of
@@ -201,7 +203,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             try:
                 baryon_number += mass_number(particle)
             except ValueError:
-                if _is_antiproton(particle) or particle == 'antineutron':
+                if _is_antiproton(particle) or _is_antineutron(particle):
                     baryon_number -= 1
 
         return baryon_number
@@ -220,24 +222,22 @@ def nuclear_reaction_energy(*args, **kwargs):
 
         return total_charge
 
-    def _mass_energy(species_list):
-        r"""Finds the total mass energy from a list of species, while
+    def _mass_energy(particles):
+        r"""Finds the total mass energy from a list of particles, while
         taking the masses of the fully ionized isotopes."""
 
         total_mass = 0.0*units.kg
 
-        for species in species_list:
-            if _is_electron(species) or _is_positron(species):
+        for particle in particles:
+            if _is_electron(particle) or _is_positron(particle):
                 total_mass += constants.m_e
-            elif _is_neutron(species):
+            elif _is_neutron(particle) or _is_antineutron(particle):
                 total_mass += constants.m_n
-            elif _is_antiproton(species):
+            elif _is_antiproton(particle):
                 total_mass += constants.m_p
-            elif species == 'antineutron':
-                total_mass += constants.m_n
             else:
-                atomic_numb = atomic_number(species)
-                total_mass += ion_mass(species, Z=atomic_numb)
+                atomic_numb = atomic_number(particle)
+                total_mass += ion_mass(particle, Z=atomic_numb)
 
         return (total_mass * constants.c**2).to(units.J)
 
@@ -269,8 +269,8 @@ def nuclear_reaction_energy(*args, **kwargs):
             LHS_string, RHS_string = re.split('-+>', reaction)
             LHS_list = re.split(' \+ ', LHS_string)
             RHS_list = re.split(' \+ ', RHS_string)
-            reactants = _get_species(LHS_list)
-            products = _get_species(RHS_list)
+            reactants = _process_particles_list(LHS_list)
+            products = _process_particles_list(RHS_list)
         except Exception as ex:
             raise ValueError(f"{reaction} is not a valid nuclear reaction.") \
                 from ex
@@ -278,8 +278,8 @@ def nuclear_reaction_energy(*args, **kwargs):
     elif reactants_products_are_inputs:
 
         try:
-            reactants = _get_species(kwargs['reactants'])
-            products = _get_species(kwargs['products'])
+            reactants = _process_particles_list(kwargs['reactants'])
+            products = _process_particles_list(kwargs['products'])
         except TypeError as t:
             raise TypeError(input_err_msg) from t
         except Exception as e:
