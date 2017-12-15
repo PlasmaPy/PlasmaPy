@@ -5,14 +5,191 @@ Code Development Guidelines
 This document describes the coding requirements and guidelines to be
 followed during the development of PlasmaPy and affiliated packages.
 
-Dependencies
-============
+Code written for PlasmaPy must be compatible with Python 3.6 and
+later. Python 2 is not supported by PlasmaPy.
 
-* Code written for PlasmaPy must be compatible with Python 3.6 and
-  later.
+PlasmaPy requires 
 
-* PlasmaPy requires Astropy 2.0 or later, NumPy 1.13 or later, and
-  matplotlib 2.0 or later.
+* Python 3.6 or later
+* Astropy 2.0 or later
+* NumPy 1.13 or later
+* scipy 0.19 or later
+* matplotlib 2.0 or later
+
+Obtaining PlasmaPy source code
+=========================================
+
+After creating your GitHub account, go to the [main
+repository](https://github.com/PlasmaPy/PlasmaPy) and **fork a copy of
+PlasmaPy to your account**.
+
+To access Git commands on Windows, try `Git Bash <https://git-scm.com/downloads>`_.
+
+Next you must **clone your fork to your computer**.  Go to the
+directory that will host your PlasmaPy directory, and run one of the
+following commands (after changing *your-username* to your username).
+If you would like to use HTTPS (which is the default and easier to set
+up), then run:
+
+.. code-block:: bash
+
+  git clone https://github.com/your-username/PlasmaPy.git
+
+SSH is a more secure option, but requires you to [set up an SSH
+key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/)
+beforehand.  The equivalent SSH command is:
+
+.. code-block:: bash
+
+    git clone git@github.com:your-username/PlasmaPy.git
+    cd PlasmaPy
+
+After cloning, we must tell git where the development version of
+PlasmaPy is by running:
+
+.. code-block:: bash
+
+  git remote add upstream git://github.com/PlasmaPy/PlasmaPy.git
+
+To check on which remotes exist, run `git remote -v`.  You should get
+something like this:
+
+.. code-block:: bash
+
+  origin		git@github.com:namurphy/PlasmaPy.git (fetch)
+  origin		git@github.com:namurphy/PlasmaPy.git (push)
+  upstream	git@github.com:PlasmaPy/PlasmaPy.git (fetch)
+  upstream	git@github.com:PlasmaPy/PlasmaPy.git (push)
+
+Setting up an environment for development
+=========================================
+
+Setup procedures for the two most popular virtual
+environments, conda and virtualenv, are listed below.
+
+Conda
+-----
+
+To set up a development environment for PlasmaPy, `the Anaconda
+distribution <https://www.anaconda.com/download/>`_ is strongly
+recommended.
+
+After installing Anaconda, launch any conda environment. By default, conda installs a `root`
+environment, which you should be able to activate via
+
+.. code-block:: bash
+
+  source /home/user/anaconda3/bin/activate root
+
+where `/home/user/anaconda3/` can be swapped to wherever your anaconda installation
+was resides.
+
+On Windows, the way to do this is via running `Anaconda Prompt` from the
+Start Menu. `Git Bash` may also work if you have added Anaconda to `PATH`.
+
+Afterwards, enter PlasmaPy's repository root directory and execute the following:
+
+.. code-block:: bash
+
+    conda env create -f environment.yml
+
+The `environment.yml` file refers to the one located in PlasmaPy's root.
+You may now enter the environment via
+
+.. code-block:: bash
+
+    source activate plasmapy-dev
+  
+On Windows, skip the `source` part of the previous command.
+
+Virtualenv
+----------
+
+Create a directory for holding the PlasmaPy repository, move into it and
+create the virtual environment
+
+.. code-block:: bash
+
+    virtualenv -p python3 .
+
+You may need to make sure that this directory's path doesn't contain any spaces, otherwise virtualenv may throw an error.
+
+Your virtual environment should now be created. If you run `ls` you will notice
+that virtualenv has created a number of subdirectories: `bin/`, `lib/`, and
+`include/`. This is why we're not creating the virtualenv within the
+repository itself - so as to not pollute it. To activate
+the virtualenv you will run:
+
+.. code-block:: bash
+
+    source ./bin/activate
+
+You should now see that your shell session is prepended with (plasmapy), like so:
+
+.. code-block:: bash
+
+    (plasmapy) user@name:~/programming/plasmapy$
+
+This indicates that the virtualenv is running. Congratulations!
+When your're done working on PlasmaPy, you can deactivate the virtualenv by
+running
+
+.. code-block:: bash
+
+    source deactivate
+
+Now that you have plasmapy on your local computer and you have a virtual
+environment, you will want to "install" this development version of PlasmaPy
+along with its dependencies. Start by activating your virtual environment. Next
+you want install the PlasmaPy dependencies. One way to do this is to do
+
+.. code-block:: bash
+
+    (plasmapy) user@name:~/programming/plasmapy$ pip install -r requirements/base.txt
+
+Next, setup the development version of PlasmaPy which you just cloned by moving
+into the root directory of the cloned repo and running the setup.py script
+there:
+
+.. code-block:: bash
+
+    (plasmapy) user@name:~/programming/plasmapy/PlasmaPy$ pip install -e .
+
+
+You should now be all set to run development versions of PlasmaPy modules via
+`import PlasmaPy` in your test scripts!
+
+Running anaconda with virtualenv
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you are running the Anaconda suite and want to use virtualenv to setup your
+virtual environment, you will have to let the system know where the Python
+interpreter can be found. On Linux this is done with (for example, assuming
+having installed Anaconda into `~/anaconda3`):
+
+.. code-block:: bash
+
+    export LD_LIBRARY_PATH="$HOME/anaconda3/lib/"
+
+Exporting the library path to the dynamic linker will only last for the
+duration of the current shell session.
+
+You will have to add the python library directory to LD_LIBRARY_PATH, as
+described in a previous step, prior to activating the virtualenv for every new
+shell session.
+
+Installing your own dev version
+===============================
+To be able to import PlasmaPy from your source version:
+
+.. code-block:: bash
+
+  pip install -e {plasmapy-repository-root}
+
+Where `{plasmapy-repository-root}` is the directory resulting from `git clone`.
+
+If you are not working within a virtual environment, this may end in a
+permission error - this can be avoided via also adding the `--user` flag.
 
 Coding Style
 ============
@@ -46,8 +223,95 @@ Coding Style
   
 * There should be at most one pun per 1284 lines of code.
 
+Branches, commits, and pull requests
+====================================
+
+Before making any changes, it is prudent to update your local
+repository with the most recent changes from the development
+repository:
+
+.. code-block:: bash
+
+  git fetch upstream
+
+Changes to PlasmaPy should be made using branches.  It is usually best
+to avoid making changes on your master branch so that it can be kept
+consistent with the upstream repository.  Instead we can create a new
+branch for the specific feature that you would like to work on:
+
+.. code-block:: bash
+
+  git branch *your-new-feature*
+
+Descriptive branch names such as `grad-shafranov` or
+`adding-eigenfunction-poetry` are helpful, while vague names like
+`edits` are considered harmful.  After creating your branch locally,
+let your fork of PlasmaPy know about it by running:
+
+.. code-block:: bash
+
+  git push --set-upstream origin *your-new-feature*
+
+It is also useful to configure git so that only the branch you are
+working on gets pushed to GitHub:
+
+.. code-block:: bash
+
+  git config --global push.default simple
+
+Once you have set up your fork and created a branch, you are ready to
+make edits to PlasmaPy.  Switch to your new branch by running:
+
+.. code-block:: bash
+
+  git checkout *your-new-feature*
+
+Go ahead and modify files with your favorite text editor.  Be sure to
+include tests and documentation with any new functionality.  We also
+recommend reading about `best practices for scientific
+computing <https://doi.org/10.1371/journal.pbio.1001745>`_.  PlasmaPy
+uses the `PEP 8 style guide for Python
+code <https://www.python.org/dev/peps/pep-0008/>`_ and the `numpydoc
+format for
+docstrings <https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt>`_
+to maintain consistency and readability.  New contributors should not 
+worry too much about precisely matching these styles when first 
+submitting a pull request, as the `PEP8 Speaks <http://pep8speaks.com/>`_
+GitHub integration will check pull requests for PEP 8 compatibility, and
+further changes to the style can be suggested during code review.
+
+You may periodically commit changes to your branch by running
+
+.. code-block:: bash
+
+  git add filename.py
+  git commit -m "*brief description of changes*"
+
+Committed changes may be pushed to the corresponding branch on your
+GitHub fork of PlasmaPy using 
+
+.. code-block:: bash
+
+  git push origin *your-new-feature* 
+
+or, more simply,
+
+.. code-block:: bash
+
+  git push
+
+Once you have completed your changes and pushed them to the branch on
+GitHub, you are ready to make a pull request.  Go to your fork of
+PlasmaPy in GitHub.  Select "Compare and pull request".  Add a
+descriptive title and some details about your changes.  Then select
+"Create pull request".  Other contributors will then have a chance to
+review the code and offer contructive suggestions.  You can continue
+to edit the pull request by changing the corresponding branch on your
+PlasmaPy fork on GitHub.  After a pull request is merged into the
+code, you may delete the branch you created for that pull request.
+
 Commit Messages
-===============
+---------------
 
 From `How to Write a Git Commit Message
 <https://chris.beams.io/posts/git-commit/>`_:
