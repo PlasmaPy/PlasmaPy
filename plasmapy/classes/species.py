@@ -59,7 +59,7 @@ class Species:
     def __init__(self, plasma, particle_type='p', n_particles=1, scaling=1,
                  dt=np.inf * u.s, nt=np.inf):
 
-        if np.isinf(dt) and np.isinf(nt):
+        if np.isinf(dt) and np.isinf(nt):  # coveralls: ignore
             raise ValueError("Both dt and nt are infinite.")
 
         self.q = atomic.charge_state(particle_type) * constants.e.si
@@ -108,18 +108,6 @@ class Species:
         interpolated_b = self._B_interpolator(self.x.si.value) * u.T
         interpolated_e = self._E_interpolator(self.x.si.value) * u.V / u.m
         return interpolated_b, interpolated_e
-
-    @property
-    def kinetic_energy(self):
-        r"""
-        Calculates the kinetic energy for each macroparticle.
-
-        Returns
-        --------
-        `astropy.units.Quantity`
-            Array of kinetic energies, shape (n,).
-        """
-        return (self.v ** 2).sum(axis=-1) * self.eff_m / 2
 
     @property
     def kinetic_energy_history(self):
