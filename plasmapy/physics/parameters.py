@@ -75,14 +75,15 @@ by an angular frequency to get a length scale:
 
 @check_relativistic
 def Alfven_speed(B, density, ion="p"):
-    r"""Returns the Alfven speed.
+    r"""
+    Returns the Alfven speed.
 
     Parameters
     ----------
-    B : Quantity
+    B : ~astropy.units.Quantity
         The magnetic field magnitude in units convertible to tesla.
 
-    density : Quantity
+    density : ~astropy.units.Quantity
         Either the ion number density in units convertible to 1 / m**3,
         or the mass density in units convertible to kg / m**3.
 
@@ -196,13 +197,13 @@ def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
 
     Parameters
     ----------
-    T_e : Quantity, optional
+    T_e : ~astropy.units.Quantity, optional
         Electron temperature in units of temperature or energy per
         particle.  If this is not given, then the electron temperature
         is assumed to be zero.  If only one temperature is entered, it
         is assumed to be the electron temperature.
 
-    T_i : Quantity, optional
+    T_i : ~astropy.units.Quantity, optional
         Ion temperature in units of temperature or energy per
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
@@ -226,7 +227,7 @@ def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
 
     Returns
     -------
-    V_S : Quantity
+    V_S : ~astropy.units.Quantity
         The ion sound speed in units of meters per second.
 
     Raises
@@ -336,7 +337,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
 
     Parameters
     ----------
-    T : Quantity
+    T : ~astropy.units.Quantity
         The particle temperature in either kelvin or energy per particle
 
     particle : string, optional
@@ -351,7 +352,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
 
     Returns
     -------
-    V : Quantity
+    V : ~astropy.units.Quantity
         particle thermal speed
 
     Raises
@@ -434,10 +435,10 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
 
     Parameters
     ----------
-    T : Quantity
+    T : ~astropy.units.Quantity
         The particle temperature in either kelvin or energy per particle
 
-    kappa: Quantity
+    kappa: ~astropy.units.Quantity
         The kappa parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
         of the Kappa velocity distribution function. Kappa must be greater
@@ -451,11 +452,11 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
 
     method : string, optional
         Method to be used for calculating the thermal speed. Options are
-        'most_probable' (default), 'rms', and 'mean_magnitude'. 
+        'most_probable' (default), 'rms', and 'mean_magnitude'.
 
     Returns
     -------
-    V : Quantity
+    V : ~astropy.units.Quantity
         particle thermal speed
 
     Raises
@@ -526,7 +527,7 @@ def gyrofrequency(B, particle='e'):
 
     Parameters
     ----------
-    B : Quantity
+    B : ~astropy.units.Quantity
         The magnetic field magnitude in units convertible to tesla.
 
     particle : string, optional
@@ -537,7 +538,7 @@ def gyrofrequency(B, particle='e'):
 
     Returns
     -------
-    omega_ci : Quantity
+    omega_ci : ~astropy.units.Quantity
         The particle gyrofrequency in units of radians per second
 
     Raises
@@ -611,14 +612,14 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
 
     Parameters
     ----------
-    B : Quantity
+    B : ~astropy.units.Quantity
         The magnetic field magnitude in units convertible to tesla.
 
-    Vperp : Quantity, optional
+    Vperp : ~astropy.units.Quantity, optional
         The component of particle velocity that is perpendicular to the
         magnetic field in units convertible to meters per second.
 
-    T_i : Quantity, optional
+    T_i : ~astropy.units.Quantity, optional
         The particle temperature in units convertible to kelvin.
 
     particle : string, optional
@@ -627,14 +628,14 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
         which defaults to electrons.  If no charge state information is
         provided, then the particles are assumed to be singly charged.
 
-    args : Quantity
+    args : ~astropy.units.Quantity
         If the second positional argument is a Quantity with units
         appropriate to Vperp or T_i, then this argument will take the
         place of that keyword argument.
 
     Returns
     -------
-    r_Li : Quantity
+    r_Li : ~astropy.units.Quantity
         The particle gyroradius in units of meters.  This Quantity will be
         based on either the perpendicular component of particle velocity as
         inputted, or the most probable speed for an particle within a
@@ -661,8 +662,6 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
     If any of B, Vperp, or T_i is a number rather than a Quantity,
     then SI units will be assumed and a warning will be raised.
 
-    Formula
-    -------
     The particle gyroradius is also known as the particle Larmor radius and is
     given by
 
@@ -743,7 +742,7 @@ def plasma_frequency(n, particle='e'):
 
     Parameters
     ----------
-    n : Quantity
+    n : ~astropy.units.Quantity
         Particle number density in units convertible to per cubic meter
 
     particle : string, optional
@@ -754,7 +753,7 @@ def plasma_frequency(n, particle='e'):
 
     Returns
     -------
-    omega_pi : Quantity
+    omega_pi : ~astropy.units.Quantity
         The particle plasma frequency in radians per second.
 
     Raises
@@ -822,21 +821,21 @@ def Debye_length(T_e, n_e):
 
     Parameters
     ----------
-    T_e: Quantity
+    T_e: ~astropy.units.Quantity
         Electron temperature
 
-    n_e: Quantity
+    n_e: ~astropy.units.Quantity
         Electron number density
 
     Returns
     -------
-    lambda_D : Quantity
+    lambda_D : ~astropy.units.Quantity
         The Debye length in meters
 
     Raises
     ------
     TypeError
-        If either argument is not a Quantity
+        If either argument is not a ~astropy.units.Quantity
 
     UnitConversionError
         If either argument is in incorrect units
@@ -895,10 +894,10 @@ def Debye_number(T_e, n_e):
 
     Parameters
     ----------
-    T_e : Quantity
+    T_e : ~astropy.units.Quantity
         Electron temperature
 
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         Electron number density
 
     Raises
@@ -917,7 +916,7 @@ def Debye_number(T_e, n_e):
 
     Returns
     -------
-    N_D : Quantity
+    N_D : ~astropy.units.Quantity
         Number of electrons within a sphere with a radius of the Debye length
 
     Notes
@@ -961,7 +960,7 @@ def inertial_length(n, particle='e'):
 
     Parameters
     ----------
-    n_i : Quantity
+    n_i : ~astropy.units.Quantity
         Particle number density in units convertible to m**-3
 
     particle : string, optional
@@ -972,7 +971,7 @@ def inertial_length(n, particle='e'):
 
     Returns
     -------
-    d_i : Quantity
+    d_i : ~astropy.units.Quantity
         Particles inertial length in meters
 
     Raises
@@ -1029,12 +1028,12 @@ def magnetic_pressure(B):
 
     Parameters
     ----------
-    B : Quantity
+    B : ~astropy.units.Quantity
         The magnetic field in units convertible to telsa
 
     Returns
     -------
-    p_B : Quantity
+    p_B : ~astropy.units.Quantity
         The magnetic pressure in units in pascals (newtons per square meter)
 
     Raises
@@ -1090,12 +1089,12 @@ def magnetic_energy_density(B: units.T):
 
     Parameters
     ----------
-    B : Quantity
+    B : ~astropy.units.Quantity
         The magnetic field in units convertible to tesla
 
     Returns
     -------
-    E_B : Quantity
+    E_B : ~astropy.units.Quantity
         The magnetic energy density in units of joules per cubic meter
 
     Raises
@@ -1152,15 +1151,15 @@ def upper_hybrid_frequency(B, n_e):
 
     Parameters
     ----------
-    B : Quantity
+    B : ~astropy.units.Quantity
         The magnetic field magnitude in units convertible to tesla.
 
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         The electron number density
 
     Returns
     -------
-    omega_uh : Quantity
+    omega_uh : ~astropy.units.Quantity
         The upper hybrid frequency in radians per second
 
     Raises
@@ -1215,10 +1214,10 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
 
     Parameters
     ----------
-    B : Quantity
+    B : ~astropy.units.Quantity
         The magnetic field magnitude in units convertible to tesla.
 
-    n_i : Quantity
+    n_i : ~astropy.units.Quantity
         Ion number density
 
     ion : string, optional
@@ -1229,7 +1228,7 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
 
     Returns
     -------
-    omega_lh : Quantity
+    omega_lh : ~astropy.units.Quantity
         The lower hybrid frequency in radians per second
 
     Raises
