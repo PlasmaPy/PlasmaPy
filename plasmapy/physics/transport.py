@@ -64,7 +64,7 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
         \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
 
     where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
-    impact parameters for Coulomb collisions _[1].
+    impact parameters for Coulomb collisions [1]_.
 
     The outer impact parameter is given by the Debye length:
     :math:`b_{min} = \lambda_D` which is a function of electron
@@ -81,7 +81,7 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     relative velocity between collisions.  This function uses the
     standard practice of choosing the inner impact parameter to be the
     maximum of these two possibilities.  Some inconsistencies exist in
-    the literature on how to define the inner impact parameter _[2].
+    the literature on how to define the inner impact parameter [2]_.
 
     Errors associated with the Coulomb logarithm are of order its
     inverse If the Coulomb logarithm is of order unity, then the
@@ -104,9 +104,9 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     .. [1] Physics of Fully Ionized Gases, L. Spitzer (1962)
 
     .. [2] Comparison of Coulomb Collision Rates in the Plasma Physics
-    and Magnetically Confined Fusion Literature, W. Fundamenski and
-    O.E. Garcia, EFDA–JET–R(07)01
-    (http://www.euro-fusionscipub.org/wp-content/uploads/2014/11/EFDR07001.pdf)
+       and Magnetically Confined Fusion Literature, W. Fundamenski and
+       O.E. Garcia, EFDA–JET–R(07)01
+       (http://www.euro-fusionscipub.org/wp-content/uploads/2014/11/EFDR07001.pdf)
 
     """
 

@@ -12,7 +12,7 @@ Release Tasks
 The following is a partial list of tasks to be performed for each
 release.  This list is currently under development.  Developers should
 expand the instructions while performing each release, and may use
-`Astropy's release procedures`<https://github.com/astropy/astropy/blob/master/docs/development/releasing.rst>
+`Astropy's release procedures <https://github.com/astropy/astropy/blob/master/docs/development/releasing.rst>`
 for guidance.
 
 * Update ``CHANGE_LOG.rst``

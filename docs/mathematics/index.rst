@@ -2,9 +2,9 @@
 
 .. _plasmapy-mathematics:
 
-****
+***********
 Mathematics
-****
+***********
 
 .. automodule:: plasmapy.mathematics
 
