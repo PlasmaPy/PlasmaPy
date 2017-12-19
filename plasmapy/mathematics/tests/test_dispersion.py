@@ -6,7 +6,43 @@ from astropy import units as u
 from ..mathematics import plasma_dispersion_func, plasma_dispersion_func_deriv
 
 
-def test_plasma_dispersion_func():
+# (argument, expected)
+plasma_dispersion_func_table = [
+    (0, 1j * np.sqrt(np.pi)),
+    (1, -1.076_159_01 + 0.652_049_33j),
+    (1j, 0.757_872_156j),
+    (1.2 + 4.4j, -0.054_246_146 + 0.207_960_589j),
+    (9.2j, plasma_dispersion_func(9.2j * u.dimensionless_unscaled))]
+
+
+@pytest.mark.parametrize('argument, expected', plasma_dispersion_func_table)
+def test_plasma_dispersion_func(argument, expected):
+
+    atol = 1e-8*(1 + 1j)
+
+    Z = plasma_dispersion_func(argument)
+
+    assert np.isclose(Z, expected, atol=atol, rtol=0), \
+        (f"plasma_disperion_func({argument}) equals {Z} instead of the "
+         f"expected approximate result of {expected}")
+
+    if argument.imag > 0:
+
+        atol_conj = 4e-8 * (1 + 1j)
+
+        Z1 = plasma_dispersion_func(argument.conjugate())
+
+        Z2 = (plasma_dispersion_func(argument)).conjugate() \
+            + 2j * np.sqrt(np.pi) * np.exp(-(argument.conjugate()**2))
+
+        assert np.isclose(Z1, Z2, atol=atol_conj, rtol=0), \
+            (f"The first symmetry property of the plasma dispersion function"
+             f"is not met for an argument of {argument}.  The value of "
+             f"plasma_dispersion_func({argument.conjugate()}) is {Z1}, which "
+             f"is not approximately equal to {Z2}")
+
+
+def test_plasma_dispersion_func_old():
     r"""Test the implementation of plasma_dispersion_func against exact
     results, quantities calculated by Fried & Conte (1961), and
     analytic results.
@@ -46,7 +82,7 @@ def test_plasma_dispersion_func():
 
     assert np.isclose(plasma_dispersion_func(9.2j),
                       plasma_dispersion_func(9.2j*u.dimensionless_unscaled),
-                      atol=atol, rtol=0)
+                      atol=0, rtol=0)
 
     with pytest.raises(TypeError):
         plasma_dispersion_func('')
