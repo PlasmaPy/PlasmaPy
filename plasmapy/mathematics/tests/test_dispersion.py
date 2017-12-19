@@ -6,7 +6,7 @@ from astropy import units as u
 from ..mathematics import plasma_dispersion_func, plasma_dispersion_func_deriv
 
 
-# (argument, expected)
+# (zeta, expected)
 plasma_dispersion_func_table = [
     (0, 1j * np.sqrt(np.pi)),
     (1, -1.076_159_01 + 0.652_049_33j),
@@ -15,83 +15,56 @@ plasma_dispersion_func_table = [
     (9.2j, plasma_dispersion_func(9.2j * u.dimensionless_unscaled))]
 
 
-@pytest.mark.parametrize('argument, expected', plasma_dispersion_func_table)
-def test_plasma_dispersion_func(argument, expected):
+@pytest.mark.parametrize('zeta, expected', plasma_dispersion_func_table)
+def test_plasma_dispersion_func(zeta, expected):
+    r"""Test the implementation of plasma_dispersion_func against
+    exact results, quantities calculated by Fried & Conte (1961),
+    symmetry properties, and analytic results."""
 
-    atol = 1e-8*(1 + 1j)
+    Z0 = plasma_dispersion_func(zeta)
 
-    Z = plasma_dispersion_func(argument)
+    assert np.isclose(Z0, expected, atol=1e-8*(1 + 1j), rtol=0), \
+        (f"plasma_disperion_func({zeta}) equals {Z0} instead of the "
+         f"expected approximate result of {expected}.  The difference between "
+         f"the actual and expected results is {Z0 - expected}.")
 
-    assert np.isclose(Z, expected, atol=atol, rtol=0), \
-        (f"plasma_disperion_func({argument}) equals {Z} instead of the "
-         f"expected approximate result of {expected}")
+    Z1 = plasma_dispersion_func(zeta.conjugate())
+    Z2 = -(plasma_dispersion_func(-zeta).conjugate())
 
-    if argument.imag > 0:
-
-        atol_conj = 4e-8 * (1 + 1j)
-
-        Z1 = plasma_dispersion_func(argument.conjugate())
-
-        Z2 = (plasma_dispersion_func(argument)).conjugate() \
-            + 2j * np.sqrt(np.pi) * np.exp(-(argument.conjugate()**2))
-
-        assert np.isclose(Z1, Z2, atol=atol_conj, rtol=0), \
-            (f"The first symmetry property of the plasma dispersion function"
-             f"is not met for an argument of {argument}.  The value of "
-             f"plasma_dispersion_func({argument.conjugate()}) is {Z1}, which "
-             f"is not approximately equal to {Z2}")
-
-
-def test_plasma_dispersion_func_old():
-    r"""Test the implementation of plasma_dispersion_func against exact
-    results, quantities calculated by Fried & Conte (1961), and
-    analytic results.
-    """
-
-    atol = 1e-8*(1 + 1j)
-
-    assert np.isclose(plasma_dispersion_func(0), 1j*np.sqrt(np.pi),
-                      atol=atol, rtol=0), \
-        "Z(0) does not give accurate answer"
-
-    assert np.isclose(plasma_dispersion_func(1), -1.07615901 + 0.65204933j,
-                      atol=atol, rtol=0), \
-        "Z(1) not consistent with tabulated results"
-
-    assert np.isclose(plasma_dispersion_func(1j), 0.757872156j,
-                      atol=atol, rtol=0), \
-        "Z(1j) not consistent with tabulated results"
-
-    assert np.isclose(plasma_dispersion_func(1.2 + 4.4j),
-                      -0.054246146 + 0.207960589j, atol=atol, rtol=0), \
-        "Z(1.2+4.4j) not consistent with tabulated results"
-
-    zeta = -1.2 + 0.4j
-
-    assert np.isclose(plasma_dispersion_func(zeta.conjugate()),
-                      -(plasma_dispersion_func(-zeta).conjugate()),
-                      atol=atol, rtol=0), \
-        "Symmetry property of Z(zeta*) = -[Z(-zeta)]* not satisfied"
+    assert np.isclose(Z1, Z2, atol=1e-8*(1 + 1j), rtol=0), \
+        ("The symmetry property involving conjugates of the plasma dispersion "
+         f"function and its arguments that Z(zeta*) == -[Z(-zeta)]* is not "
+         f"met for zeta = {zeta}.  Instead, Z(zeta*) = {Z1} whereas "
+         f"-[Z(-zeta)]* = {Z2}.  The difference between Z(zeta*) and "
+         f"-[Z(-zeta)]* is {Z1 - Z2}.")
 
     if zeta.imag > 0:
-        assert np.isclose(plasma_dispersion_func(zeta.conjugate()),
-                          (plasma_dispersion_func(zeta)).conjugate() +
-                          2j*np.sqrt(np.pi)*np.exp(-(zeta.conjugate()**2)),
-                          atol=atol, rtol=0), \
-            "Symmetry property of Z(zeta*) valid for zeta.imag>0 not satisfied"
 
-    assert np.isclose(plasma_dispersion_func(9.2j),
-                      plasma_dispersion_func(9.2j*u.dimensionless_unscaled),
-                      atol=0, rtol=0)
+        Z3 = plasma_dispersion_func(zeta.conjugate())
 
-    with pytest.raises(TypeError):
-        plasma_dispersion_func('')
+        Z4 = (plasma_dispersion_func(zeta)).conjugate() \
+            + 2j * np.sqrt(np.pi) * np.exp(-(zeta.conjugate()**2))
 
-    with pytest.raises(u.UnitsError):
-        plasma_dispersion_func(6*u.m)
+        assert np.isclose(Z3, Z4, atol=3e-8 * (1 + 1j), rtol=0), \
+            (f"A symmetry property of the plasma dispersion function "
+             f"is not met for {zeta}.  The value of "
+             f"plasma_dispersion_func({zeta.conjugate()}) is {Z3}, which "
+             f"is not approximately equal to {Z4}.  The difference between "
+             f"the two results is {Z3 - Z4}.")
 
-    with pytest.raises(ValueError):
-        plasma_dispersion_func(np.inf)
+
+# zeta, expected_error
+plasma_disp_func_errors_table = [
+    ('', TypeError),
+    (7 * u.m, u.UnitsError),
+    (np.inf, ValueError),
+    ]
+
+
+@pytest.mark.parametrize('zeta, expected_error', plasma_disp_func_errors_table)
+def test_plasma_dispersion_func_errors(zeta, expected_error):
+    with pytest.raises(expected_error):
+        plasma_dispersion_func(zeta)
 
 
 def test_plasma_dispersion_func_deriv():
