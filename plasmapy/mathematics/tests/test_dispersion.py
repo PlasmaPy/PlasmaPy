@@ -99,4 +99,4 @@ def test_plasma_dispersion_func_errors(zeta, expected_error):
 def test_plasma_dispersion_deriv_errors(zeta, expected_error):
     """Test errors that should be raised by plasma_dispersion_func_deriv."""
     with pytest.raises(expected_error):
-        plasma_dispersion_func_deriv(expected_error)
+        plasma_dispersion_func_deriv(zeta)
