@@ -12,7 +12,8 @@ plasma_dispersion_func_table = [
     (1, -1.076_159_01 + 0.652_049_33j),
     (1j, 0.757_872_156j),
     (1.2 + 4.4j, -0.054_246_146 + 0.207_960_589j),
-    (9.2j, plasma_dispersion_func(9.2j * u.dimensionless_unscaled))]
+    (9.2j, plasma_dispersion_func(9.2j * u.dimensionless_unscaled)),
+    ]
 
 
 @pytest.mark.parametrize('zeta, expected', plasma_dispersion_func_table)
@@ -53,49 +54,49 @@ def test_plasma_dispersion_func(zeta, expected):
              f"the two results is {Z3 - Z4}.")
 
 
+# zeta, expected
+plasma_disp_deriv_table = [
+    (0, -2),
+    (1, 0.152_318 - 1.304_10j),
+    (1j, -0.484_257),
+    (1.2 + 4.4j, -0.397_561e-1 - 0.217_392e-1j),
+    (9j, plasma_dispersion_func_deriv(9j * u.dimensionless_unscaled)),
+    ]
+
+
+@pytest.mark.parametrize('zeta, expected', plasma_disp_deriv_table)
+def test_plasma_dispersion_func_deriv(zeta, expected):
+    r"""Test the implementation of plasma_dispersion_func_deriv against
+    tabulated results from Fried & Conte (1961)."""
+
+    Z_deriv = plasma_dispersion_func_deriv(zeta)
+
+    assert np.isclose(Z_deriv, expected, atol=2e-6 * (1 + 1j), rtol=0), \
+        (f"The derivative of the plasma dispersion function does not match "
+         f"the expected value for zeta = {zeta}.  The value of "
+         f"plasma_dispersion_func_deriv({zeta}) equals {Z_deriv} whereas the "
+         f"expected value is {expected}.  The difference between the actual "
+         f"and expected results is {Z_deriv - expected}.")
+
+
 # zeta, expected_error
 plasma_disp_func_errors_table = [
     ('', TypeError),
     (7 * u.m, u.UnitsError),
     (np.inf, ValueError),
+    (np.nan, ValueError),
     ]
 
 
 @pytest.mark.parametrize('zeta, expected_error', plasma_disp_func_errors_table)
 def test_plasma_dispersion_func_errors(zeta, expected_error):
+    """Test errors that should be raised by plasma_dispersion_func."""
     with pytest.raises(expected_error):
         plasma_dispersion_func(zeta)
 
 
-def test_plasma_dispersion_func_deriv():
-    r"""Test the implementation of plasma_dispersion_func_deriv against
-    tabulated results from Fried & Conte (1961)."""
-
-    atol = 2e-6*(1 + 1j)
-
-    assert np.isclose(plasma_dispersion_func_deriv(0), -2, atol=atol, rtol=0),\
-        "Z'(0) not consistent with tabulated values"
-
-    assert np.isclose(plasma_dispersion_func_deriv(1), 0.152318 - 1.30410j,
-                      atol=atol, rtol=0), \
-        "Z'(1) not consistent with tabulated values"
-
-    assert np.isclose(plasma_dispersion_func_deriv(1j),
-                      -0.484257, atol=atol, rtol=0), \
-        "Z'(1j) not consistent with tabulated values"
-
-    assert np.isclose(plasma_dispersion_func_deriv(1.2 + 4.4j),
-                      -0.397561e-1 - 0.217392e-1j, atol=atol, rtol=0)
-
-    assert np.isclose(plasma_dispersion_func_deriv(9j),
-                      plasma_dispersion_func_deriv(9j*u.m/u.m),
-                      atol=atol, rtol=0)
-
-    with pytest.raises(TypeError):
-        plasma_dispersion_func_deriv('')
-
-    with pytest.raises(u.UnitsError):
-        plasma_dispersion_func_deriv(6*u.m)
-
-    with pytest.raises(ValueError):
-        plasma_dispersion_func_deriv(np.inf)
+@pytest.mark.parametrize('zeta, expected_error', plasma_disp_func_errors_table)
+def test_plasma_dispersion_deriv_errors(zeta, expected_error):
+    """Test errors that should be raised by plasma_dispersion_func_deriv."""
+    with pytest.raises(expected_error):
+        plasma_dispersion_func_deriv(expected_error)
