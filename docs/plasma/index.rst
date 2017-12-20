@@ -16,3 +16,4 @@ create an instance of the :class:`Plasma` class and then set the
 This feature is currently under development.
 
 .. automodapi:: plasmapy.classes.plasma
+   :no-inheritance-diagram:
