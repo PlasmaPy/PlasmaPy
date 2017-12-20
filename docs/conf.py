@@ -33,7 +33,9 @@ sys.path.insert(0, os.path.abspath('..'))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.mathjax',
-              'sphinx.ext.napoleon', 'sphinx.ext.intersphinx']
+              'sphinx.ext.napoleon', 'sphinx.ext.intersphinx',
+              'sphinx_automodapi.automodapi',
+              'sphinx_automodapi.smart_resolver']
 
 
 intersphinx_mapping = {

@@ -1,7 +1,4 @@
 """
-plasmapy.plasma
-===============
-
 Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
 

@@ -2,15 +2,17 @@
 
 from astropy import units
 import numpy as np
-from ..utils import check_quantity, _check_relativistic
+
+import plasmapy.atomic as atomic
+import plasmapy.utils as utils
+
 from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar)
-from ..atomic import (ion_mass, charge_state)
 from .parameters import Debye_length
 
 
-@check_quantity({"T": {"units": units.K, "can_be_negative": False},
-                 "n_e": {"units": units.m**-3}
-                 })
+@utils.check_quantity({"T": {"units": units.K, "can_be_negative": False},
+                       "n_e": {"units": units.m**-3}
+                       })
 def Coulomb_logarithm(T, n_e, particles, V=None):
     r"""Estimates the Coulomb logarithm.
 
@@ -121,13 +123,13 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     for particle, i in zip(particles, range(2)):
 
         try:
-            masses[i] = ion_mass(particles[i])
+            masses[i] = atomic.ion_mass(particles[i])
         except Exception:
             raise ValueError("Unable to find mass of particle: " +
                              str(particles[i]) + " in Coulomb_logarithm.")
 
         try:
-            charges[i] = np.abs(e*charge_state(particles[i]))
+            charges[i] = np.abs(e*atomic.charge_state(particles[i]))
             if charges[i] is None:
                 raise
         except Exception:
@@ -164,7 +166,7 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     if V is None:
         V = np.sqrt(3 * k_B * T / reduced_mass)
     else:
-        _check_relativistic(V, 'Coulomb_logarithm', betafrac=0.8)
+        utils._check_relativistic(V, 'Coulomb_logarithm', betafrac=0.8)
 
     # The first possibility is that the inner impact parameter
     # corresponds to a deflection of 90 degrees, which is valid when
