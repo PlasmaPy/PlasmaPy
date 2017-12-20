@@ -866,6 +866,7 @@ def plasma_frequency(n, particle='e', z_mean=None):
         else:
             # using user provided average ionization
             Z = z_mean
+        Z = np.abs(Z)
     except Exception:
         raise ValueError(f"Invalid particle, {particle}, in "
                          "plasma_frequency.")
