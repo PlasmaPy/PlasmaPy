@@ -73,11 +73,9 @@ def test_plasma_dispersion_func_power_series_expansion():
     Z2 = np.zeros_like(ζ_array)
 
     for n in range(0, 200):
-        Z2 += (1j * ζ_array)**n / np.math.gamma(n / 2 + 1)
+        Z2 += 1j * np.sqrt(π) * (1j * ζ_array)**n / np.math.gamma(n / 2 + 1)
 
-    Z2 = 1j * np.sqrt(π) * Z2
-
-    assert np.allclose(Z1, Z2, atol=1e-10 * (1 + 1j), rtol=1e-10), \
+    assert np.allclose(Z1, Z2, atol=1e-15 * (1 + 1j), rtol=1e-15), \
         ("plasma_dispersion_func is returning values that are inconsistent "
          "with the power series expansion given by equation B.3 from Plasma "
          "Waves by D. G. Swanson (2nd edition, 2003).  The results from "
@@ -111,9 +109,8 @@ plasma_disp_deriv_table = [
     (9j, plasma_dispersion_func_deriv(9j * u.dimensionless_unscaled)),
     (5.4 - 3.1j, 0.012_449_1 + 0.023_138_3j),
     (9.9 - 10j, 476.153 + 553.121j),
-    (5 + 7j, -4.59120e-3 - 0.012_610_4j),
-    (4.5 - 10j, 0.260_153e37 - 0.211_814e37j),
-    ]
+    (5 + 7j, -4.591_20e-3 - 0.012_610_4j),
+    (4.5 - 10j, 0.260_153e37 - 0.211_814e37j)]
 
 
 @pytest.mark.parametrize('ζ, expected', plasma_disp_deriv_table)
@@ -145,8 +142,7 @@ plasma_disp_func_errors_table = [
     ('', TypeError),
     (7 * u.m, u.UnitsError),
     (np.inf, ValueError),
-    (np.nan, ValueError),
-    ]
+    (np.nan, ValueError)]
 
 
 @pytest.mark.parametrize('ζ, expected_error', plasma_disp_func_errors_table)
