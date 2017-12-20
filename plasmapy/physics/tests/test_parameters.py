@@ -6,7 +6,7 @@ from astropy import units as u
 from warnings import simplefilter
 
 from ...utils.exceptions import RelativityWarning, RelativityError
-from ...utils.exceptions import PhysicsError
+from ...utils.exceptions import PhysicsError, PhysicsWarning
 from ...constants import c, m_p, m_e, e, mu0
 
 from ..parameters import (Alfven_speed,
@@ -136,6 +136,23 @@ def test_Alfven_speed():
 
     with pytest.raises(UserWarning):
         assert Alfven_speed(1.0, n_i) == Alfven_speed(1.0 * u.T, n_i)
+        
+    # tests for z_mean functionality
+    # testing if warning is signaled for default value
+    with pytest.warns(PhysicsWarning):
+        Alfven_speed(1 * u.T, 5e19 * u.m**-3, ion='p')
+    # testing for user input z_mean
+    testMeth1 = Alfven_speed(1 * u.T,
+                             5e19 * u.m**-3,
+                             ion='p',
+                             z_mean=0.8).si.value
+    testTrue1 = 3084015.75214846
+    errStr = (f"Alfven_speed() gave {testMeth1}, should be {testTrue1}.")
+    assert np.isclose(testMeth1,
+                      testTrue1,
+                      atol=0.0,
+                      rtol=1e-15), errStr
+    
 
 
 def test_ion_sound_speed():
@@ -217,6 +234,18 @@ def test_ion_sound_speed():
     with pytest.raises(UserWarning):
         assert ion_sound_speed(T_i=1.3e6) == ion_sound_speed(T_i=1.3e6 * u.K)
 
+    # tests for z_mean functionality
+    # testing if warning is signaled for default value
+    with pytest.warns(PhysicsWarning):
+        ion_sound_speed(T_e=1.2e6 * u.K)
+    # testing for user input z_mean
+    testMeth1 = ion_sound_speed(T_e=1.2e6 * u.K, z_mean=0.8).si.value
+    testTrue1 = 89018.0944146141
+    errStr = (f"ion_sound_speed() gave {testMeth1}, should be {testTrue1}.")
+    assert np.isclose(testMeth1,
+                      testTrue1,
+                      atol=0.0,
+                      rtol=1e-15), errStr
 
 def test_thermal_speed():
     r"""Test the thermal_speed function in parameters.py"""
@@ -436,6 +465,19 @@ def test_gyrofrequency():
 
     with pytest.raises(UserWarning):
         assert gyrofrequency(5.0, 'p') == gyrofrequency(5.0 * u.T, 'p')
+        
+    # tests for z_mean functionality
+    # testing if warning is signaled for default value
+    with pytest.warns(PhysicsWarning):
+        gyrofrequency(1 * u.T, particle='p')
+    # testing for user input z_mean
+    testMeth1 = gyrofrequency(1 * u.T, particle='p', z_mean=0.8).si.value
+    testTrue1 = 76630665.79318453
+    errStr = (f"gyrofrequency() gave {testMeth1}, should be {testTrue1}.")
+    assert np.isclose(testMeth1,
+                      testTrue1,
+                      atol=0.0,
+                      rtol=1e-15), errStr
 
 
 def test_gyroradius():
@@ -582,6 +624,21 @@ def test_plasma_frequency():
     with pytest.raises(UserWarning):
         assert plasma_frequency(1e19, particle='p') ==\
             plasma_frequency(1e19 * u.m**-3, particle='p')
+            
+    # tests for z_mean functionality
+    # testing if warning is signaled for default value
+    with pytest.warns(PhysicsWarning):
+        plasma_frequency(1e17 * u.cm**-3, particle='p')
+    # testing for user input z_mean
+    testMeth1 = plasma_frequency(1e17 * u.cm**-3,
+                                 particle='p',
+                                 z_mean=0.8).si.value
+    testTrue1 = 333063562455.4028
+    errStr = (f"plasma_frequency() gave {testMeth1}, should be {testTrue1}.")
+    assert np.isclose(testMeth1,
+                      testTrue1,
+                      atol=0.0,
+                      rtol=1e-15), errStr
 
 
 def test_Debye_length():

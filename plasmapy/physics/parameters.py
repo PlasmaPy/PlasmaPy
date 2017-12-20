@@ -9,12 +9,13 @@ import plasmapy.atomic as atomic
 # from plasmapy.atomic import ion_mass, charge_state
 
 import numpy as np
+import warnings
 
 # For future: change these into decorators.  _check_quantity does a
 # bit more than @quantity_input as it can allow
 import plasmapy.utils as utils
 from plasmapy.utils.checks import _check_quantity
-from plasmapy.utils.exceptions import PhysicsError
+from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
 
 
 r"""
@@ -176,6 +177,8 @@ def Alfven_speed(B, density, ion="p", z_mean=None):
         try:
             m_i = atomic.ion_mass(ion)
             if z_mean == None:
+                warnings.warn("No z_mean given, defaulting to atomic charge",
+                              PhysicsWarning)
                 try:
                     Z = atomic.charge_state(ion)
                 except ValueError:
@@ -183,6 +186,8 @@ def Alfven_speed(B, density, ion="p", z_mean=None):
             else:
                 # using average ionization provided by user
                 Z = z_mean
+            # ensuring positive value of Z
+            Z = np.abs(Z)
         except Exception:
             raise ValueError("Invalid ion in Alfven_speed.")
         rho = density * m_i + Z * density * m_e
@@ -318,15 +323,11 @@ def ion_sound_speed(*ignore,
 
     try:
         m_i = atomic.ion_mass(ion)
-
-        try:
-            Z = atomic.charge_state(ion)
-        except ValueError:
-            Z = 1
-        m_i = ion_mass(ion)
         if z_mean == None:
+            warnings.warn("No z_mean given, defaulting to atomic charge",
+                          PhysicsWarning)
             try:
-                Z = charge_state(ion)
+                Z = atomic.charge_state(ion)
             except ValueError:
                 Z = 1
         else:
@@ -643,6 +644,8 @@ def gyrofrequency(B, particle='e', signed=False, z_mean=None):
     try:
         m_i = atomic.ion_mass(particle)
         if z_mean == None:
+            warnings.warn("No z_mean given, defaulting to atomic charge",
+                          PhysicsWarning)
             try:
                 Z = atomic.charge_state(particle)
             except ValueError:
@@ -859,6 +862,8 @@ def plasma_frequency(n, particle='e', z_mean=None):
     try:
         m = atomic.ion_mass(particle)
         if z_mean == None:
+            warnings.warn("No z_mean given, defaulting to atomic charge",
+                          PhysicsWarning)
             try:
                 Z = atomic.charge_state(particle)
             except ValueError:
