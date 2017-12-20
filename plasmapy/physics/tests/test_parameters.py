@@ -136,7 +136,7 @@ def test_Alfven_speed():
 
     with pytest.raises(UserWarning):
         assert Alfven_speed(1.0, n_i) == Alfven_speed(1.0 * u.T, n_i)
-        
+
     # tests for z_mean functionality
     # testing if warning is signaled for default value
     with pytest.warns(PhysicsWarning):
@@ -152,7 +152,6 @@ def test_Alfven_speed():
                       testTrue1,
                       atol=0.0,
                       rtol=1e-15), errStr
-    
 
 
 def test_ion_sound_speed():
@@ -247,6 +246,7 @@ def test_ion_sound_speed():
                       atol=0.0,
                       rtol=1e-15), errStr
 
+
 def test_thermal_speed():
     r"""Test the thermal_speed function in parameters.py"""
     assert thermal_speed(T_e).unit == u.m / u.s
@@ -329,6 +329,7 @@ class Test_kappa_thermal_speed(object):
         self.probable1True = 24467.878463594963
         self.rms1True = 37905.474322612165
         self.mean1True = 34922.98563039583
+
     def test_invalid_kappa(self):
         """
         Checks if function raises error when kappa <= 3/2 is passed as an
@@ -339,6 +340,7 @@ class Test_kappa_thermal_speed(object):
                                 self.kappaInvalid,
                                 particle=self.particle)
         return
+
     def test_invalid_method(self):
         """
         Checks if function raises error when invalid method is passed as an
@@ -350,6 +352,7 @@ class Test_kappa_thermal_speed(object):
                                 particle=self.particle,
                                 method="invalid")
         return
+
     def test_probable1(self):
         """
         Tests if expected value is returned for a set of regular inputs.
@@ -365,6 +368,7 @@ class Test_kappa_thermal_speed(object):
                           rtol=1e-8,
                           atol=0.0), errStr
         return
+
     def test_rms1(self):
         """
         Tests if expected value is returned for a set of regular inputs.
@@ -380,6 +384,7 @@ class Test_kappa_thermal_speed(object):
                           rtol=1e-8,
                           atol=0.0), errStr
         return
+
     def test_mean1(self):
         """
         Tests if expected value is returned for a set of regular inputs.
@@ -395,8 +400,6 @@ class Test_kappa_thermal_speed(object):
                           rtol=1e-8,
                           atol=0.0), errStr
         return
-    
-    
 
 
 def test_gyrofrequency():
@@ -465,7 +468,7 @@ def test_gyrofrequency():
 
     with pytest.raises(UserWarning):
         assert gyrofrequency(5.0, 'p') == gyrofrequency(5.0 * u.T, 'p')
-        
+
     # tests for z_mean functionality
     # testing if warning is signaled for default value
     with pytest.warns(PhysicsWarning):
@@ -624,7 +627,7 @@ def test_plasma_frequency():
     with pytest.raises(UserWarning):
         assert plasma_frequency(1e19, particle='p') ==\
             plasma_frequency(1e19 * u.m**-3, particle='p')
-            
+
     # tests for z_mean functionality
     # testing if warning is signaled for default value
     with pytest.warns(PhysicsWarning):
