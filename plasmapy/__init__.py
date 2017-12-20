@@ -11,18 +11,18 @@ def _split_version(version):
 
 
 def _min_required_version(required, current):  # coveralls: ignore
-    r""" Return `True` if the current version meets the required minimum
-        version and `False` if not/ if not installed.
+    r""" Return `True` if the current version meets the required
+    minimum version and `False` if not or if not installed.
 
-        Right now `required` and `current` are just '.' separated strings
-        but it would be good to make this more general and accept modules.
+    Right now `required` and `current` are just '.' separated strings
+    but it would be good to make this more general and accept modules.
     """
     return _split_version(current) >= _split_version(required)
 
 
 def _check_numpy_version():  # coveralls: ignore
-    r""" Make sure numpy in installed and meets the minimum version requirements
-    """
+    r""" Make sure numpy in installed and meets the minimum version
+    requirements."""
     required_version = False
     np_ver = None
 
@@ -34,15 +34,13 @@ def _check_numpy_version():  # coveralls: ignore
         pass
 
     if not required_version:
-        ver_error = ("Numpy {} or above is required for PlasmaPy. The "
-                     "currently installed version is {}"
-                     ).format(__minimum_numpy_version__, np_ver)
-        raise ImportError(ver_error)
-
+        raise ImportError(
+            (f"NumPy {__minimum_numpy_version__} is required for "
+             f"PlasmaPy. The currently installed version is {np_ver}"))
 
 def _check_astropy_version():  # coveralls: ignore
-    r""" Make sure astropy in installed and meets the minimum version requirements
-    """
+    r""" Make sure astropy in installed and meets the minimum version
+    requirements."""
     required_version = False
     ap_ver = None
 
@@ -54,13 +52,14 @@ def _check_astropy_version():  # coveralls: ignore
         pass
 
     if not required_version:
-        ver_error = ("Astropy {} or above is required for PlasmaPy. The "
-                     "currently installed version is {}"
-                     ).format(__minimum_astropy_version__, ap_ver)
-        raise ImportError(ver_error)
+        raise ImportError(
+            (f"Astropy {__minimum_astropy_version__} or above is required for "
+             f"PlasmaPy.  The currently installed version is {ap_ver}"))
 
 
-if (sys.version_info < _split_version(__minimum_python_version__)):  # coveralls: ignore
+is_old_python = sys.version_info < _split_version(__minimum_python_version__)
+
+if (is_old_python):  # coveralls: ignore
     warnings.warn("PlasmaPy does not support Python 3.5 and below")
 
 _check_numpy_version()
