@@ -1,4 +1,3 @@
-from .mathematics import (plasma_dispersion_func,
-                          plasma_dispersion_func_deriv)
+from .mathematics import *
 
 from . import tests

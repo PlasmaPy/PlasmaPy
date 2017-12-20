@@ -130,8 +130,8 @@ def Maxwellian_velocity_3D(vx,
                            vTh=np.nan,
                            units="units"):
     r"""Return the probability of finding a particle with velocity components
-    `v_x`, `v_y`, and `v_z`in m/s in an equilibrium plasma of temperature 
-    `T` which follows the 3D Maxwellian distribution function. This 
+    `v_x`, `v_y`, and `v_z`in m/s in an equilibrium plasma of temperature
+    `T` which follows the 3D Maxwellian distribution function. This
     function assumes Cartesian coordinates.
 
     Parameters
@@ -177,7 +177,7 @@ def Maxwellian_velocity_3D(vx,
     -------
     f : Quantity
         probability in Velocity^-1, normalized so that:
-        $\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1}
+        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`
 
     Raises
     ------
@@ -199,8 +199,10 @@ def Maxwellian_velocity_3D(vx,
     is given by:
 
     .. math::
-    f = (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} - \vec{V_{drift}})^2 / v_Th^2)
-    where v_Th = \sqrt(2 k_B T / m) is the thermal speed
+
+        f = (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} - \vec{V_{drift}})^2 / v_Th^2)
+
+    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed
 
     See also
     --------
@@ -279,17 +281,18 @@ def Maxwellian_speed_1D(v,
                         V_drift=0,
                         vTh=np.nan,
                         units="units"):
-    r"""Return the probability of finding a particle with speed `v` in m/s
-     in an equilibrium plasma of temperature `T` which follows the 
-     Maxwellian distribution function.
+    r"""
+    Return the probability of finding a particle with speed `v` in m/s
+    in an equilibrium plasma of temperature `T` which follows the
+    Maxwellian distribution function.
 
     Parameters
     ----------
     v: Quantity
-        The speed in units convertible to m/s
+        The speed in units convertible to m/s.
 
     T: Quantity
-        The temperature, preferably in Kelvin
+        The temperature, preferably in Kelvin.
 
     particle: string, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
@@ -297,7 +300,7 @@ def Maxwellian_speed_1D(v,
         which defaults to electrons.
 
     V_drift: Quantity
-        The drift speed in units convertible to m/s
+        The drift speed in units convertible to m/s.
 
     vTh: Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
@@ -313,8 +316,8 @@ def Maxwellian_speed_1D(v,
     Returns
     -------
     f : Quantity
-        probability in speed^-1, normalized so that:
-        $\int_{0}^{\infty} f(v) dv = 1}
+        Probability in speed^-1, normalized so that
+        $\int_{0}^{\infty} f(v) dv = 1$
 
     Raises
     ------
@@ -336,8 +339,10 @@ def Maxwellian_speed_1D(v,
     is given by:
 
     .. math::
-    f(v) = 4 \pi v^2 (\pi * v_Th^2)^{-3/2} \exp(-(v - V_{drift})^2 / v_Th^2)
-    where v_Th = \sqrt(2 k_B T / m) is the thermal speed
+
+       f(v) = 4 \pi v^2 (\pi * v_Th^2)^{-3/2} \exp(-(v - V_{drift})^2 / v_Th^2)
+
+    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed
 
 
     Example
@@ -400,9 +405,10 @@ def Maxwellian_speed_3D(vx,
                         Vz_drift=0,
                         vTh=np.nan,
                         units="units"):
-    r"""Return the probability of finding a particle with speed components
-    `v_x`, `v_y`, and `v_z`in m/s in an equilibrium plasma of temperature 
-    `T` which follows the 3D Maxwellian distribution function. This 
+    r"""
+    Return the probability of finding a particle with speed components
+    `v_x`, `v_y`, and `v_z`in m/s in an equilibrium plasma of temperature
+    `T` which follows the 3D Maxwellian distribution function. This
     function assumes Cartesian coordinates.
 
     Parameters
@@ -448,7 +454,7 @@ def Maxwellian_speed_3D(vx,
     -------
     f : Quantity
         probability in speed^-1, normalized so that:
-        $\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1}
+        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`
 
     Raises
     ------
@@ -470,8 +476,10 @@ def Maxwellian_speed_3D(vx,
     is given by:
 
     .. math::
-    f = 4 \pi \vec{v}^2 (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} - \vec{V_{drift}})^2 / v_Th^2)
-    where v_Th = \sqrt(2 k_B T / m) is the thermal speed
+
+       f = 4 \pi \vec{v}^2 (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} - \vec{V_{drift}})^2 / v_Th^2)
+
+    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed
 
     See also
     --------
@@ -626,9 +634,11 @@ def kappa_velocity_1D(v,
     and suprathermal parameter kappa is given by:
 
     .. math::
-    f = A_\kappa \left(1 + \frac{(\vec{v} - \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-\kappa}
+
+       f = A_\kappa \left(1 + \frac{(\vec{v} - \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-\kappa}
+
     where v_Th,\kappa is the kappa thermal speed
-    and A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_Th,\kappa^2 \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2)} is the normalization constant
+    and :math:`A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_Th,\kappa^2 \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2)}` is the normalization constant
 
     As kappa approaches infinity, the kappa distribution function converges
     to the Maxwellian distribution function.
@@ -697,8 +707,8 @@ def kappa_velocity_3D(vx,
                       vTh=np.nan,
                       units="units"):
     r"""Return the probability of finding a particle with velocity components
-    `v_x`, `v_y`, and `v_z`in m/s in a suprathermal plasma of temperature 
-    `T` and parameter 'kappa' which follows the 3D Kappa distribution function. 
+    `v_x`, `v_y`, and `v_z`in m/s in a suprathermal plasma of temperature
+    `T` and parameter 'kappa' which follows the 3D Kappa distribution function.
     This function assumes Cartesian coordinates.
 
     Parameters
@@ -772,9 +782,11 @@ def kappa_velocity_3D(vx,
     and suprathermal parameter kappa is given by:
 
     .. math::
-    f = A_\kappa \left(1 + \frac{(\vec{v} - \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-(\kappa + 1)}
+
+       f = A_\kappa \left(1 + \frac{(\vec{v} - \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-(\kappa + 1)}
+
     where v_Th,\kappa is the kappa thermal speed
-    and A_\kappa = \frac{1}{2 \pi (\kappa v_Th,\kappa^2)^{3/2} \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)} is the normalization constant
+    and :math:`A_\kappa = \frac{1}{2 \pi (\kappa v_Th,\kappa^2)^{3/2} \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)}` is the normalization constant
 
     As kappa approaches infinity, the kappa distribution function converges
     to the Maxwellian distribution function.

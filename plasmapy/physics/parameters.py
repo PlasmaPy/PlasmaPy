@@ -2,18 +2,18 @@
 
 from astropy import units
 
-from astropy.units import (UnitConversionError, UnitsError, quantity_input,
-                           Quantity)
+from astropy.units import (UnitConversionError, UnitsError, Quantity)
 
 from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
-from ..atomic import (ion_mass, charge_state)
+import plasmapy.atomic as atomic
+# from plasmapy.atomic import ion_mass, charge_state
 
 import numpy as np
 
 # For future: change these into decorators.  _check_quantity does a
 # bit more than @quantity_input as it can allow
-
-from ..utils import _check_quantity, check_relativistic, check_quantity
+import plasmapy.utils as utils
+from ..utils import _check_quantity
 from ..utils.exceptions import PhysicsError
 
 
@@ -73,7 +73,7 @@ by an angular frequency to get a length scale:
 """
 
 
-@check_relativistic
+@utils.check_relativistic
 def Alfven_speed(B, density, ion="p"):
     r"""
     Returns the Alfven speed.
@@ -166,9 +166,9 @@ def Alfven_speed(B, density, ion="p"):
 
     if density.unit == units.m**-3:
         try:
-            m_i = ion_mass(ion)
+            m_i = atomic.ion_mass(ion)
             try:
-                Z = charge_state(ion)
+                Z = atomic.charge_state(ion)
             except ValueError:
                 Z = 1
         except Exception:
@@ -186,8 +186,8 @@ def Alfven_speed(B, density, ion="p"):
     return V_A
 
 
-@check_relativistic
-@check_quantity({
+@utils.check_relativistic
+@utils.check_quantity({
     'T_i': {'units': units.K, 'can_be_negative': False},
     'T_e': {'units': units.K, 'can_be_negative': False}
 })
@@ -292,10 +292,10 @@ def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
                         "ion='D+')")
 
     try:
-        m_i = ion_mass(ion)
+        m_i = atomic.ion_mass(ion)
 
         try:
-            Z = charge_state(ion)
+            Z = atomic.charge_state(ion)
         except ValueError:
             Z = 1
     except Exception:
@@ -327,8 +327,8 @@ def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
     return V_S
 
 
-@check_relativistic
-@check_quantity({
+@utils.check_relativistic
+@utils.check_quantity({
     'T': {'units': units.K, 'can_be_negative': False}
 })
 def thermal_speed(T, particle="e", method="most_probable"):
@@ -408,7 +408,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
     T = T.to(units.K, equivalencies=units.temperature_energy())
 
     try:
-        m = ion_mass(particle)
+        m = atomic.ion_mass(particle)
     except Exception:
         raise ValueError("Unable to find {particle} mass in thermal_speed")
 
@@ -425,8 +425,8 @@ def thermal_speed(T, particle="e", method="most_probable"):
     return V
 
 
-@check_relativistic
-@check_quantity({
+@utils.check_relativistic
+@utils.check_quantity({
     'T': {'units': units.K, 'can_be_negative': False}
 })
 def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
@@ -519,7 +519,7 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
         raise ValueError("Method {method} not supported in thermal_speed")
 
 
-@check_quantity({
+@utils.check_quantity({
     'B': {'units': units.T}
 })
 def gyrofrequency(B, particle='e'):
@@ -592,9 +592,9 @@ def gyrofrequency(B, particle='e'):
     """
 
     try:
-        m_i = ion_mass(particle)
+        m_i = atomic.ion_mass(particle)
         try:
-            Z = charge_state(particle)
+            Z = atomic.charge_state(particle)
         except ValueError:
             Z = 1
         Z = abs(Z)
@@ -733,7 +733,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
     return r_Li.to(units.m, equivalencies=units.dimensionless_angles())
 
 
-@check_quantity({
+@utils.check_quantity({
     'n': {'units': units.m**-3, 'can_be_negative': False}
 })
 def plasma_frequency(n, particle='e'):
@@ -798,9 +798,9 @@ def plasma_frequency(n, particle='e'):
     """
 
     try:
-        m = ion_mass(particle)
+        m = atomic.ion_mass(particle)
         try:
-            Z = charge_state(particle)
+            Z = atomic.charge_state(particle)
         except ValueError:
             Z = 1
     except Exception:
@@ -812,7 +812,7 @@ def plasma_frequency(n, particle='e'):
     return omega_p.si
 
 
-@check_quantity({
+@utils.check_quantity({
     'T_e': {'units': units.K, 'can_be_negative': False},
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
@@ -885,7 +885,7 @@ def Debye_length(T_e, n_e):
     return lambda_D
 
 
-@check_quantity({
+@utils.check_quantity({
     'T_e': {'units': units.K, 'can_be_negative': False},
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
@@ -952,7 +952,7 @@ def Debye_number(T_e, n_e):
     return N_D.to(units.dimensionless_unscaled)
 
 
-@check_quantity({
+@utils.check_quantity({
     'n': {'units': units.m**-3, 'can_be_negative': False}
 })
 def inertial_length(n, particle='e'):
@@ -1007,7 +1007,7 @@ def inertial_length(n, particle='e'):
     """
 
     try:
-        Z = charge_state(particle)
+        Z = atomic.charge_state(particle)
     except Exception:
         raise ValueError("Invalid particle {} in inertial_length."
                          .format(particle))
@@ -1020,7 +1020,7 @@ def inertial_length(n, particle='e'):
     return d
 
 
-@check_quantity({
+@utils.check_quantity({
     'B': {'units': units.T}
 })
 def magnetic_pressure(B):
@@ -1081,7 +1081,7 @@ def magnetic_pressure(B):
     return p_B
 
 
-@check_quantity({
+@utils.check_quantity({
     'B': {'units': units.T}
 })
 def magnetic_energy_density(B: units.T):
@@ -1142,7 +1142,7 @@ def magnetic_energy_density(B: units.T):
     return E_B
 
 
-@check_quantity({
+@utils.check_quantity({
     'B': {'units': units.T},
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
@@ -1205,7 +1205,7 @@ def upper_hybrid_frequency(B, n_e):
     return omega_uh
 
 
-@check_quantity({
+@utils.check_quantity({
     'B': {'units': units.T},
     'n_i': {'units': units.m**-3, 'can_be_negative': False}
 })
@@ -1271,7 +1271,7 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
     # We do not need a charge state here, so the sole intent is to
     # catch invalid ions.
     try:
-        charge_state(ion)
+        atomic.charge_state(ion)
     except Exception:
         raise ValueError("Invalid ion in lower_hybrid_frequency.")
 

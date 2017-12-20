@@ -3,7 +3,6 @@ Plasma
 ******
 
 .. currentmodule:: plasmapy.classes.plasma
-.. automodule:: plasmapy.classes.plasma
 
 Introduction
 ============
@@ -15,3 +14,5 @@ create an instance of the :class:`Plasma` class and then set the
 :attr:`plasma.pressure` and the :attr:`plasma.magnetic_field`.
 
 This feature is currently under development.
+
+.. automodapi:: plasmapy.classes.plasma

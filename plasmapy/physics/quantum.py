@@ -4,15 +4,19 @@ gases and warm dense matter.
 """
 import numpy as np
 from astropy import units
+
+import plasmapy.atomic as atomic
+import plasmapy.utils as utils
+
 from ..constants import c, h, hbar, m_e, eps0, e, k_B
-from ..atomic import ion_mass
-from ..utils import _check_quantity, _check_relativistic, check_quantity
+from ..utils import _check_quantity, _check_relativistic
 from ..utils.exceptions import RelativityError
 from .relativity import Lorentz_factor
 
 
 def deBroglie_wavelength(V, particle):
-    r"""Calculates the de Broglie wavelength.
+    r"""
+    Calculates the de Broglie wavelength.
 
     Parameters
     ----------
@@ -50,6 +54,7 @@ def deBroglie_wavelength(V, particle):
     The de Broglie wavelength is given by
 
     .. math::
+
         \lambda_{dB} = \frac{h}{p} = \frac{h}{\gamma m V}
 
     where :math:`h` is the Planck constant, :math:`p` is the
@@ -65,7 +70,6 @@ def deBroglie_wavelength(V, particle):
     <Quantity 5.1899709519786425e-11 m>
     >>> deBroglie_wavelength(V = 0*u.m/u.s, particle = 'D+')
     <Quantity inf m>
-
     """
 
     _check_quantity(V, 'V', 'deBroglie_wavelength', units.m/units.s)
@@ -79,7 +83,7 @@ def deBroglie_wavelength(V, particle):
 
     if not isinstance(particle, units.Quantity):
         try:
-            m = ion_mass(particle)  # TODO: Replace with more general routine!
+            m = atomic.ion_mass(particle)  # TODO: Replace with more general routine!
         except Exception:
             raise ValueError("Unable to find particle mass.")
     else:
@@ -107,7 +111,7 @@ def deBroglie_wavelength(V, particle):
     return lambda_dBr.to(units.m)
 
 
-@check_quantity({
+@utils.check_quantity({
     'T_e': {'units': units.K, 'can_be_negative': False}
 })
 def thermal_deBroglie_wavelength(T_e):
@@ -143,7 +147,8 @@ def thermal_deBroglie_wavelength(T_e):
     wavelength for electrons in an ideal gas and is given by
 
     .. math::
-    \lambda_dbTh = \frac{h}{\sqrt{2 \pi m_e k_B T_e}}
+
+       \lambda_dbTh = \frac{h}{\sqrt{2 \pi m_e k_B T_e}}
 
     See also
     --------
@@ -161,7 +166,7 @@ def thermal_deBroglie_wavelength(T_e):
     return lambda_dbTh.to(units.m)
 
 
-@check_quantity({
+@utils.check_quantity({
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
 def Fermi_energy(n_e):
@@ -169,27 +174,27 @@ def Fermi_energy(n_e):
 
     Parameters
     ----------
-    n_e: Quantity
-        Electron number density
+    n_e : Quantity
+        Electron number density.
 
     Returns
     -------
-    energy_F: Quantity
-        The Fermi energy in Joules
+    energy_F : Quantity
+        The Fermi energy in Joules.
 
     Raises
     ------
     TypeError
-        If argument is not a Quantity
+        If argument is not a Quantity.
 
     UnitConversionError
-        If argument is in incorrect units
+        If argument is in incorrect units.
 
     ValueError
-        If argument contains invalid values
+        If argument contains invalid values.
 
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -197,7 +202,8 @@ def Fermi_energy(n_e):
     and is given by
 
     .. math::
-    E_F = \frac{\pi^2 \hbar^2}{2 m_e}\left(\frac{3 n_e}{\pi}\right)^{2/3}
+
+       E_F = \frac{\pi^2 \hbar^2}{2 m_{e}} \left( \frac{3 n_{e}}{\pi} \right )^{2/3}
 
     This quantity is often used in place of thermal energy for analysis
     of cold, dense plasmas (e.g. warm dense matter, condensed matter).
@@ -211,14 +217,13 @@ def Fermi_energy(n_e):
     >>> from astropy import units as u
     >>> Fermi_energy(1e23 * u.cm**-3)
     <Quantity 1.2586761116196002e-18 J>
-
     """
     coeff = (np.pi * hbar) ** 2 / (2 * m_e)
     energy_F = coeff * (3 * n_e / np.pi) ** (2/3)
     return energy_F.to(units.Joule)
 
 
-@check_quantity({
+@utils.check_quantity({
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
 def Thomas_Fermi_length(n_e):
@@ -254,7 +259,8 @@ def Thomas_Fermi_length(n_e):
     charge screening and is given by
 
     .. math::
-    \lambda_TF = \sqrt{\frac{2 \epsilon_0 E_F}{3 n_e e^2}}
+
+       \lambda_TF = \sqrt{\frac{2 \epsilon_0 E_F}{3 n_e e^2}}
 
     for an electron degenerate gas.
 

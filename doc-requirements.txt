@@ -1,3 +1,4 @@
 sphinx
 numpy
 scipy
+sphinx-automodapi

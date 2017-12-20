@@ -2,7 +2,7 @@ import numpy as np
 from astropy import units
 
 from ..constants import c
-from ..atomic import (ion_mass, charge_state)
+import plasmapy.atomic as atomic
 from ..utils import _check_quantity
 from ..utils.exceptions import RelativityError
 
