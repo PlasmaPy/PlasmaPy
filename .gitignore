@@ -116,3 +116,6 @@ untitled*
 .DS_Store
 */version.py
 */cython_version.py
+
+# Documentation files
+auto_examples
