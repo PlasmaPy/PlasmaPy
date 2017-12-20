@@ -73,7 +73,7 @@ def test_plasma_dispersion_func_power_series_expansion():
     Z2 = np.zeros_like(ζ_array)
 
     for n in range(0, 200):
-        Z2 += (1j * ζ_array)**n / np.math.gamma(n/2 + 1)
+        Z2 += (1j * ζ_array)**n / np.math.gamma(n / 2 + 1)
 
     Z2 = 1j * np.sqrt(π) * Z2
 
