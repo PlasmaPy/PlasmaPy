@@ -1,58 +1,58 @@
 """Tests for the plasma dispersion function and its derivative"""
 
 import numpy as np
+from numpy import pi as π
 import pytest
 from astropy import units as u
 from ..mathematics import plasma_dispersion_func, plasma_dispersion_func_deriv
 
 
-# (zeta, expected)
+# (ζ, expected)
 plasma_dispersion_func_table = [
-    (0, 1j * np.sqrt(np.pi)),
+    (0, 1j * np.sqrt(π)),
     (1, -1.076_159_013_825_536_8 + 0.652_049_332_173_292_2j),
     (1j, 0.757_872_156_141_311_87j),
     (1.2 + 4.4j, -0.054_246_146_372_377_471 + 0.207_960_589_336_958_13j),
     (9.2j, plasma_dispersion_func(9.2j * u.dimensionless_unscaled)),
     (5.4 - 3.1j, -0.139_224_873_051_713_11 - 0.082_067_822_640_155_802j),
     (9.9 - 10j, 2.013_835_257_947_027_6 - 25.901_274_737_989_727j),
-    (4.5 - 10j, -1.367_495_046_340_094_7e35 - 6.853_923_234_842_270_6e34j),
-    ]
+    (4.5 - 10j, -1.367_495_046_340_094_7e35 - 6.853_923_234_842_270_6e34j)]
 
 
-@pytest.mark.parametrize('zeta, expected', plasma_dispersion_func_table)
-def test_plasma_dispersion_func(zeta, expected):
+@pytest.mark.parametrize('ζ, expected', plasma_dispersion_func_table)
+def test_plasma_dispersion_func(ζ, expected):
     r"""Test the implementation of plasma_dispersion_func against
     exact results, quantities calculated by Fried & Conte (1961),
     symmetry properties, and analytic results."""
 
-    Z0 = plasma_dispersion_func(zeta)
+    Z0 = plasma_dispersion_func(ζ)
 
     assert np.isclose(Z0, expected, atol=1e-12*(1 + 1j), rtol=1e-12), \
-        (f"plasma_disperion_func({zeta}) equals {Z0} instead of the "
+        (f"plasma_dispersion_func({ζ}) equals {Z0} instead of the "
          f"expected approximate result of {expected}.  The difference between "
          f"the actual and expected results is {Z0 - expected}.")
 
-    Z1 = plasma_dispersion_func(zeta.conjugate())
-    Z2 = -(plasma_dispersion_func(-zeta).conjugate())
+    Z1 = plasma_dispersion_func(ζ.conjugate())
+    Z2 = -(plasma_dispersion_func(-ζ).conjugate())
 
     assert np.isclose(Z1, Z2, atol=0, rtol=1e-15), \
         ("The symmetry property involving conjugates of the plasma dispersion "
-         f"function and its arguments that Z(zeta*) == -[Z(-zeta)]* is not "
-         f"met for zeta = {zeta}.  Instead, Z(zeta*) = {Z1} whereas "
-         f"-[Z(-zeta)]* = {Z2}.  The difference between Z(zeta*) and "
-         f"-[Z(-zeta)]* is {Z1 - Z2}.")
+         f"function and its arguments that Z(ζ*) == -[Z(-ζ)]* is not "
+         f"met for ζ = {ζ}.  Instead, Z(ζ*) = {Z1} whereas "
+         f"-[Z(-ζ)]* = {Z2}.  The difference between Z(ζ*) and "
+         f"-[Z(-ζ)]* is {Z1 - Z2}.")
 
-    if zeta.imag > 0:
+    if ζ.imag > 0:
 
-        Z3 = plasma_dispersion_func(zeta.conjugate())
+        Z3 = plasma_dispersion_func(ζ.conjugate())
 
-        Z4 = (plasma_dispersion_func(zeta)).conjugate() \
-            + 2j * np.sqrt(np.pi) * np.exp(-(zeta.conjugate()**2))
+        Z4 = (plasma_dispersion_func(ζ)).conjugate() \
+            + 2j * np.sqrt(π) * np.exp(-(ζ.conjugate()**2))
 
         assert np.isclose(Z3, Z4, atol=0, rtol=1e-15), \
             (f"A symmetry property of the plasma dispersion function "
-             f"is not met for {zeta}.  The value of "
-             f"plasma_dispersion_func({zeta.conjugate()}) is {Z3}, which "
+             f"is not met for {ζ}.  The value of "
+             f"plasma_dispersion_func({ζ.conjugate()}) is {Z3}, which "
              f"is not approximately equal to {Z4}.  The difference between "
              f"the two results is {Z3 - Z4}.")
 
@@ -61,21 +61,21 @@ def test_plasma_dispersion_func_power_series_expansion():
     """Test plasma_dispersion_func against a power series expansion of
     the plasma dispersion function."""
 
-    zeta_array = np.array(
+    ζ_array = np.array(
         [[0.1356 + 0.114j, -0.204 - 0.0012j],
          [-0.131 + 0.131j, 0.1313 - 0.125j],
          [-0.334 - 0.712j, 0.12411 + 0j],
          [0.1278 + 0.928j, 0 + 0j]],
         dtype=np.complex128)
 
-    Z1 = plasma_dispersion_func(zeta_array)
+    Z1 = plasma_dispersion_func(ζ_array)
 
-    Z2 = np.zeros_like(zeta_array)
+    Z2 = np.zeros_like(ζ_array)
 
     for n in range(0, 200):
-        Z2 += (1j * zeta_array)**n / np.math.gamma(n/2 + 1)
+        Z2 += (1j * ζ_array)**n / np.math.gamma(n/2 + 1)
 
-    Z2 = 1j * np.sqrt(np.pi) * Z2
+    Z2 = 1j * np.sqrt(π) * Z2
 
     assert np.allclose(Z1, Z2, atol=1e-10 * (1 + 1j), rtol=1e-10), \
         ("plasma_dispersion_func is returning values that are inconsistent "
@@ -98,11 +98,11 @@ def test_plasma_dispersion_func_zeros():
     for zero in zeros:
         Z = plasma_dispersion_func(zero)
         assert np.isclose(Z, 0 + 0j, atol=1e-15 * (1 + 1j)), \
-            ("A zero of the plasma dispersion function is expected at zeta = "
+            ("A zero of the plasma dispersion function is expected at ζ = "
              f"{zero}, but plasma_dispersion_func({zero}) is equal to {Z}.")
 
 
-# zeta, expected
+# ζ, expected
 plasma_disp_deriv_table = [
     (0, -2),
     (1, 0.152_318 - 1.304_10j),
@@ -116,31 +116,31 @@ plasma_disp_deriv_table = [
     ]
 
 
-@pytest.mark.parametrize('zeta, expected', plasma_disp_deriv_table)
-def test_plasma_dispersion_func_deriv(zeta, expected):
+@pytest.mark.parametrize('ζ, expected', plasma_disp_deriv_table)
+def test_plasma_dispersion_func_deriv(ζ, expected):
     r"""Test the implementation of plasma_dispersion_func_deriv
     against tabulated results and an analytical relationship from
     Fried & Conte (1961)."""
 
-    Z_deriv = plasma_dispersion_func_deriv(zeta)
+    Z_deriv = plasma_dispersion_func_deriv(ζ)
 
     assert np.isclose(Z_deriv, expected, atol=5e-5*(1+1j), rtol=5e-6), \
         (f"The derivative of the plasma dispersion function does not match "
-         f"the expected value for zeta = {zeta}.  The value of "
-         f"plasma_dispersion_func_deriv({zeta}) equals {Z_deriv} whereas the "
+         f"the expected value for ζ = {ζ}.  The value of "
+         f"plasma_dispersion_func_deriv({ζ}) equals {Z_deriv} whereas the "
          f"expected value is {expected}.  The difference between the actual "
          f"and expected results is {Z_deriv - expected}.")
 
-    Z = plasma_dispersion_func(zeta)
-    Z_deriv_characterization = -2 * (1 + zeta*Z)
+    Z = plasma_dispersion_func(ζ)
+    Z_deriv_characterization = -2 * (1 + ζ*Z)
 
     assert np.isclose(Z_deriv, Z_deriv_characterization, rtol=1e-15), \
-        (f"The relationship that Z'(zeta) = -2 * [1 + zeta * Z(zeta)] is not "
-         f"met for zeta = {zeta}, where Z'(zeta) = {Z_deriv} and "
-         f"-2 * [1 + zeta * Z(zeta)] = {Z_deriv_characterization}.")
+        (f"The relationship that Z'(ζ) = -2 * [1 + ζ * Z(ζ)] is not "
+         f"met for ζ = {ζ}, where Z'(ζ) = {Z_deriv} and "
+         f"-2 * [1 + ζ * Z(ζ)] = {Z_deriv_characterization}.")
 
 
-# zeta, expected_error
+# ζ, expected_error
 plasma_disp_func_errors_table = [
     ('', TypeError),
     (7 * u.m, u.UnitsError),
@@ -149,23 +149,23 @@ plasma_disp_func_errors_table = [
     ]
 
 
-@pytest.mark.parametrize('zeta, expected_error', plasma_disp_func_errors_table)
-def test_plasma_dispersion_func_errors(zeta, expected_error):
+@pytest.mark.parametrize('ζ, expected_error', plasma_disp_func_errors_table)
+def test_plasma_dispersion_func_errors(ζ, expected_error):
     """Test errors that should be raised by plasma_dispersion_func."""
 
-    err_msg = (f"plasma_dispersion_func({zeta}) did not raise "
+    err_msg = (f"plasma_dispersion_func({ζ}) did not raise "
                f"{expected_error.__name__}")
 
     with pytest.raises(expected_error, message=err_msg):
-        plasma_dispersion_func(zeta)
+        plasma_dispersion_func(ζ)
 
 
-@pytest.mark.parametrize('zeta, expected_error', plasma_disp_func_errors_table)
-def test_plasma_dispersion_deriv_errors(zeta, expected_error):
+@pytest.mark.parametrize('ζ, expected_error', plasma_disp_func_errors_table)
+def test_plasma_dispersion_deriv_errors(ζ, expected_error):
     """Test errors that should be raised by plasma_dispersion_func_deriv."""
 
-    err_msg = (f"plasma_dispersion_func_deriv({zeta}) did not raise "
+    err_msg = (f"plasma_dispersion_func_deriv({ζ}) did not raise "
                f"{expected_error.__name__}")
 
     with pytest.raises(expected_error, message=err_msg):
-        plasma_dispersion_func_deriv(zeta)
+        plasma_dispersion_func_deriv(ζ)
