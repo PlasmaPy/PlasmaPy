@@ -8,7 +8,8 @@ from ..utils.exceptions import RelativityError
 
 
 def Lorentz_factor(V):
-    r"""Returns the Lorentz factor.
+    r"""
+    Returns the Lorentz factor.
 
     Parameters
     ----------
@@ -18,7 +19,7 @@ def Lorentz_factor(V):
     Returns
     -------
     gamma : float or ndarray
-        The Lorentz factor associated with the inputted velocities
+        The Lorentz factor associated with the inputted velocities.
 
     Raises
     ------

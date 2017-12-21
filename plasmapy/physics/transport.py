@@ -14,7 +14,8 @@ from .parameters import Debye_length
                        "n_e": {"units": units.m**-3}
                        })
 def Coulomb_logarithm(T, n_e, particles, V=None):
-    r"""Estimates the Coulomb logarithm.
+    r"""
+    Estimates the Coulomb logarithm.
 
     Parameters
     ----------
@@ -22,14 +23,14 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     T : Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
-        the target particle
+        the target particle.
 
     n_e : Quantity
         The electron density in units convertible to per cubic meter.
 
     particles : tuple
         A tuple containing string representations of the test particle
-        (listed first) and the target particle (listed second)
+        (listed first) and the target particle (listed second).
 
     V : Quantity, optional
         The relative velocity between particles.  If not provided,
@@ -49,7 +50,7 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
         any of the inputs contain incorrect values.
 
     UnitConversionError
-        If the units on any of the inputs are incorrect
+        If the units on any of the inputs are incorrect.
 
     UserWarning
         If the inputted velocity is greater than 80% of the speed of

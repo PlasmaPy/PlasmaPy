@@ -59,7 +59,7 @@ def deBroglie_wavelength(V, particle):
 
     where :math:`h` is the Planck constant, :math:`p` is the
     relativistic momentum of the particle, :math:`gamma` is the
-    Lorentz factor, `m` is the particle's mass, and :math:`V` is the
+    Lorentz factor, :math:`m` is the particle's mass, and :math:`V` is the
     particle's velocity.
 
     Examples
@@ -115,31 +115,32 @@ def deBroglie_wavelength(V, particle):
     'T_e': {'units': units.K, 'can_be_negative': False}
 })
 def thermal_deBroglie_wavelength(T_e):
-    r"""Calculate the thermal deBroglie wavelength for electrons.
+    r"""
+    Calculate the thermal deBroglie wavelength for electrons.
 
     Parameters
     ----------
     T_e: Quantity
-        Electron temperature
+        Electron temperature.
 
     Returns
     -------
     lambda_dbTh: Quantity
-        The thermal deBroglie wavelength for electrons in meters
+        The thermal deBroglie wavelength for electrons in meters.
 
     Raises
     ------
     TypeError
-        If argument is not a Quantity
+        If argument is not a Quantity.
 
     UnitConversionError
-        If argument is in incorrect units
+        If argument is in incorrect units.
 
     ValueError
-        If argument contains invalid values
+        If argument contains invalid values.
 
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -150,16 +151,11 @@ def thermal_deBroglie_wavelength(T_e):
 
        \lambda_dbTh = \frac{h}{\sqrt{2 \pi m_e k_B T_e}}
 
-    See also
-    --------
-
-
     Example
     -------
     >>> from astropy import units as u
     >>> thermal_deBroglie_wavelength(1 * u.eV)
     <Quantity 6.919367518364532e-10 m>
-
     """
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
     lambda_dbTh = h / np.sqrt(2 * np.pi * m_e * k_B * T_e)
@@ -170,7 +166,8 @@ def thermal_deBroglie_wavelength(T_e):
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
 def Fermi_energy(n_e):
-    r"""Calculate the Fermi energy.
+    r"""
+    Calculate the Fermi energy.
 
     Parameters
     ----------
@@ -227,31 +224,32 @@ def Fermi_energy(n_e):
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
 def Thomas_Fermi_length(n_e):
-    r"""Calculate the Thomas-Fermi screening length.
+    r"""
+    Calculate the Thomas-Fermi screening length.
 
     Parameters
     ----------
     n_e: Quantity
-        Electron number density
+        Electron number density.
 
     Returns
     -------
     lambda_TF: Quantity
-        The Thomas-Fermi screening length in meters
+        The Thomas-Fermi screening length in meters.
 
     Raises
     ------
     TypeError
-        If argument is not a Quantity
+        If argument is not a Quantity.
 
     UnitConversionError
-        If argument is in incorrect units
+        If argument is in incorrect units.
 
     ValueError
-        If argument contains invalid values
+        If argument contains invalid values.
 
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
