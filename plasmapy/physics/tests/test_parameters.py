@@ -380,6 +380,9 @@ def test_gyrofrequency():
     assert np.isclose(gyrofrequency(2.4 * u.T).value,
                       422116821083.3284)
 
+    assert np.isclose(gyrofrequency(2.4 * u.T, signed=True).value,
+                      -422116821083.3284)
+
     assert np.isclose(gyrofrequency(1 * u.G).cgs.value,
                       1.76e7, rtol=1e-3)
 

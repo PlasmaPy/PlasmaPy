@@ -522,7 +522,7 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
 @utils.check_quantity({
     'B': {'units': units.T}
 })
-def gyrofrequency(B, particle='e'):
+def gyrofrequency(B, particle='e', signed=False):
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
@@ -536,9 +536,13 @@ def gyrofrequency(B, particle='e'):
         which defaults to electrons.  If no charge state information is
         provided, then the particles are assumed to be singly charged.
 
+    signed : boolean, optional
+        The gyrofrequency can be defined as signed (negative for electron,
+        positive for ion). Default is False (unsigned, ie. always positive).
+
     Returns
     -------
-    omega_ci : ~astropy.units.Quantity
+    omega_c : ~astropy.units.Quantity
         The particle gyrofrequency in units of radians per second
 
     Raises
@@ -576,6 +580,10 @@ def gyrofrequency(B, particle='e'):
     --------
     >>> from numpy import pi
     >>> from astropy import units as u
+    >>> gyrofrequency(0.1*u.T)
+    <Quantity 17588200236.02124 rad / s>
+    >>> gyrofrequency(0.1*u.T, signed=True)
+    <Quantity -17588200236.02124 rad / s>
     >>> gyrofrequency(0.01*u.T, 'p')
     <Quantity 957883.3224148067 rad / s>
     >>> gyrofrequency(0.01*u.T, 'p')
@@ -597,10 +605,11 @@ def gyrofrequency(B, particle='e'):
             Z = atomic.charge_state(particle)
         except ValueError:
             Z = 1
-        Z = abs(Z)
     except Exception:
         raise ValueError("Invalid particle {} in gyrofrequency"
                          .format(particle))
+    if not signed:
+        Z = abs(Z)
 
     omega_ci = units.rad * (Z * e * np.abs(B) / m_i).to(1 / units.s)
 
@@ -738,7 +747,6 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
 })
 def plasma_frequency(n, particle='e'):
     r"""Calculates the particle plasma frequency.
-    Defaults to the fastest, electron plasma frequency.
 
     Parameters
     ----------
@@ -753,7 +761,7 @@ def plasma_frequency(n, particle='e'):
 
     Returns
     -------
-    omega_pi : ~astropy.units.Quantity
+    omega_p : ~astropy.units.Quantity
         The particle plasma frequency in radians per second.
 
     Raises
@@ -790,24 +798,19 @@ def plasma_frequency(n, particle='e'):
     >>> from astropy import units as u
     >>> plasma_frequency(1e19*u.m**-3, particle='p')
     <Quantity 4163294530.6925354 rad / s>
-    >>> plasma_frequency(1e19*u.m**-3, particle='p')
-    <Quantity 4163294530.6925354 rad / s>
+    >>> plasma_frequency(1e19*u.m**-3, particle='D+')
+    <Quantity 2944624520.2526317 rad / s>
     >>> plasma_frequency(1e19*u.m**-3)
     <Quantity 178398636471.3789 rad / s>
-
     """
 
     try:
         m = atomic.ion_mass(particle)
-        try:
-            Z = atomic.charge_state(particle)
-        except ValueError:
-            Z = 1
     except Exception:
         raise ValueError(f"Invalid particle, {particle}, in "
                          "plasma_frequency.")
 
-    omega_p = (units.rad * e * np.sqrt(n / (eps0 * m)))
+    omega_p = units.rad * e * np.sqrt(n / (eps0 * m))
 
     return omega_p.si
 
