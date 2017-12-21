@@ -551,6 +551,9 @@ def test_plasma_frequency():
     assert np.isclose(plasma_frequency(1 * u.cm**-3).value,
                       5.64e4, rtol=1e-2)
 
+    assert np.isclose(plasma_frequency(1 * u.cm**-3, signed=True).value,
+                      -5.64e4, rtol=1e-2)
+
     with pytest.raises(TypeError):
         plasma_frequency(u.m**-3)
 

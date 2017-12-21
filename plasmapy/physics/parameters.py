@@ -736,9 +736,8 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
 @utils.check_quantity({
     'n': {'units': units.m**-3, 'can_be_negative': False}
 })
-def plasma_frequency(n, particle='e'):
+def plasma_frequency(n, particle='e', signed=False):
     r"""Calculates the particle plasma frequency.
-    Defaults to the fastest, electron plasma frequency.
 
     Parameters
     ----------
@@ -750,10 +749,14 @@ def plasma_frequency(n, particle='e'):
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
         which defaults to electrons.  If no charge state information is
         provided, then the particles are assumed to be singly charged.
+        
+    signed : boolean, optional
+        The plasma frequency can be defined as signed (negative for electron, 
+        positive for ion). Default is False (unsigned, ie. always positive). 
 
     Returns
     -------
-    omega_pi : ~astropy.units.Quantity
+    omega_p : ~astropy.units.Quantity
         The particle plasma frequency in radians per second.
 
     Raises
@@ -790,11 +793,12 @@ def plasma_frequency(n, particle='e'):
     >>> from astropy import units as u
     >>> plasma_frequency(1e19*u.m**-3, particle='p')
     <Quantity 4163294530.6925354 rad / s>
-    >>> plasma_frequency(1e19*u.m**-3, particle='p')
-    <Quantity 4163294530.6925354 rad / s>
+    >>> plasma_frequency(1e19*u.m**-3, particle='D+')
+    <Quantity 2944624520.2526317 rad / s>
     >>> plasma_frequency(1e19*u.m**-3)
     <Quantity 178398636471.3789 rad / s>
-
+    >>> plasma_frequency(1e19*u.m**-3, signed=True)
+    <Quantity -178398636471.3789 rad / s>
     """
 
     try:
@@ -806,8 +810,10 @@ def plasma_frequency(n, particle='e'):
     except Exception:
         raise ValueError(f"Invalid particle, {particle}, in "
                          "plasma_frequency.")
+    if not signed:
+        Z = abs(Z)
 
-    omega_p = (units.rad * e * np.sqrt(n / (eps0 * m)))
+    omega_p = units.rad * Z * e * np.sqrt(n / (eps0 * m))
 
     return omega_p.si
 
