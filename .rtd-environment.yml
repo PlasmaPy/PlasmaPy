@@ -14,3 +14,4 @@ dependencies:
         - sphinx
         - sphinx-gallery
         - pillow
+        - sphinx-automodapi
