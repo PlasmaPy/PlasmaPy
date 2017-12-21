@@ -749,10 +749,10 @@ def plasma_frequency(n, particle='e', signed=False):
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
         which defaults to electrons.  If no charge state information is
         provided, then the particles are assumed to be singly charged.
-        
+
     signed : boolean, optional
-        The plasma frequency can be defined as signed (negative for electron, 
-        positive for ion). Default is False (unsigned, ie. always positive). 
+        The plasma frequency can be defined as signed (negative for electron,
+        positive for ion). Default is False (unsigned, ie. always positive).
 
     Returns
     -------
