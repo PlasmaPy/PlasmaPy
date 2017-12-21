@@ -12,25 +12,27 @@ def Maxwellian_1D(v,
                   V_drift=0,
                   vTh=np.nan,
                   units="units"):
-    r"""Returns the probability at the velocity `v` in m/s
-     to find a particle `particle` in a plasma of temperature `T`
-     following the Maxwellian distribution function.
+    r"""
+    Returns the probability at the velocity `v` in m/s
+    to find a particle `particle` in a plasma of temperature `T`
+    following the Maxwellian distribution function.
 
     Parameters
     ----------
     v: Quantity
-        The velocity in units convertible to m/s
+        The velocity in units convertible to m/s.
 
     T: Quantity
-        The temperature in Kelvin
+        The temperature in Kelvin.
 
     particle: string, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for $He_4^{+1}$ : singly ionized helium-4),
+        for deuterium, or 'He-4 +1' for :math:`He_4^{+1}`
+        (singly ionized helium-4),
         which defaults to electrons.
 
     V_drift: Quantity, optional
-        The drift velocity in units convertible to m/s
+        The drift velocity in units convertible to m/s.
 
     vTh: Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
@@ -46,7 +48,8 @@ def Maxwellian_1D(v,
     Returns
     -------
     f : Quantity
-        probability in Velocity^-1, normalized so that: :math:`\int_{-\infty}^{+\infty} f(v) dv = 1`
+        Probability in Velocity^-1, normalized so that
+        :math:`\int_{-\infty}^{+\infty} f(v) dv = 1`.
 
     Raises
     ------
@@ -55,7 +58,7 @@ def Maxwellian_1D(v,
         cannot be converted into Quantities.
 
     UnitConversionError
-        If the parameters is not in appropriate units.
+        If the parameters are not in appropriate units.
 
     ValueError
         If the temperature is negative, or the particle mass or charge state
@@ -67,9 +70,11 @@ def Maxwellian_1D(v,
     mass m, velocity v, a drift velocity V and with temperature T is:
 
     .. math::
+
         f = \sqrt{\frac{m}{2 \pi k_B T}} e^{-\frac{m}{2 k_B T} (v-V)^2}
         f = (\pi * v_Th^2)^{-1/2} e^{-(v - v_{drift})^2 / v_Th^2}
-        where v_Th = \sqrt(2 k_B T / m) is the thermal speed
+
+    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed
 
     Examples
     --------
@@ -129,7 +134,8 @@ def Maxwellian_velocity_3D(vx,
                            Vz_drift=0,
                            vTh=np.nan,
                            units="units"):
-    r"""Return the probability of finding a particle with velocity components
+    r"""
+    Return the probability of finding a particle with velocity components
     `v_x`, `v_y`, and `v_z`in m/s in an equilibrium plasma of temperature
     `T` which follows the 3D Maxwellian distribution function. This
     function assumes Cartesian coordinates.
@@ -149,9 +155,9 @@ def Maxwellian_velocity_3D(vx,
         The temperature, preferably in Kelvin
 
     particle: string, optional
-        Representation of the particle species(e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for $He_4^{+1}$ : singly ionized helium-4),
-        which defaults to electrons.
+        Representation of the particle species (e.g., 'p' for protons, 'D+'
+        for deuterium, or 'He-4 +1' for :math:`He_4^{+1}`
+        (singly ionized helium-4), which defaults to electrons.
 
     Vx_drift: Quantity, optional
         The drift velocity in x-direction units convertible to m/s
@@ -176,8 +182,8 @@ def Maxwellian_velocity_3D(vx,
     Returns
     -------
     f : Quantity
-        probability in Velocity^-1, normalized so that:
-        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`
+        probability in Velocity^-1, normalized so that
+        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`.
 
     Raises
     ------
@@ -202,7 +208,7 @@ def Maxwellian_velocity_3D(vx,
 
         f = (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} - \vec{V_{drift}})^2 / v_Th^2)
 
-    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed
+    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed.
 
     See also
     --------
@@ -296,8 +302,8 @@ def Maxwellian_speed_1D(v,
 
     particle: string, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for $He_4^{+1}$ : singly ionized helium-4),
-        which defaults to electrons.
+        for deuterium, or 'He-4 +1' for :math:`He_4^{+1}`
+        (singly ionized helium-4), which defaults to electrons.
 
     V_drift: Quantity
         The drift speed in units convertible to m/s.
@@ -317,7 +323,7 @@ def Maxwellian_speed_1D(v,
     -------
     f : Quantity
         Probability in speed^-1, normalized so that
-        $\int_{0}^{\infty} f(v) dv = 1$
+        :math:`\int_{0}^{\infty} f(v) dv = 1`.
 
     Raises
     ------
@@ -342,7 +348,7 @@ def Maxwellian_speed_1D(v,
 
        f(v) = 4 \pi v^2 (\pi * v_Th^2)^{-3/2} \exp(-(v - V_{drift})^2 / v_Th^2)
 
-    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed
+    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed.
 
 
     Example
@@ -414,30 +420,30 @@ def Maxwellian_speed_3D(vx,
     Parameters
     ----------
     vx: Quantity
-        The speed in x-direction units convertible to m/s
+        The speed in x-direction units convertible to m/s.
 
     vy: Quantity
-        The speed in y-direction units convertible to m/s
+        The speed in y-direction units convertible to m/s.
 
     vz: Quantity
-        The speed in z-direction units convertible to m/s
+        The speed in z-direction units convertible to m/s.
 
     T: Quantity
-        The temperature, preferably in Kelvin
+        The temperature, preferably in Kelvin.
 
     particle: string, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for $He_4^{+1}$ : singly ionized helium-4),
-        which defaults to electrons.
+        for deuterium, or 'He-4 +1' for :math:`He_4^{+1}`
+        (singly ionized helium-4), which defaults to electrons.
 
     Vx_drift: Quantity
-        The drift speed in x-direction units convertible to m/s
+        The drift speed in x-direction units convertible to m/s.
 
     Vy_drift: Quantity
-        The drift speed in y-direction units convertible to m/s
+        The drift speed in y-direction units convertible to m/s.
 
     Vz_drift: Quantity
-        The drift speed in z-direction units convertible to m/s
+        The drift speed in z-direction units convertible to m/s.
 
     vTh: Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
@@ -453,8 +459,8 @@ def Maxwellian_speed_3D(vx,
     Returns
     -------
     f : Quantity
-        probability in speed^-1, normalized so that:
-        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`
+        Probability in speed^-1, normalized so that:
+        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`.
 
     Raises
     ------
@@ -479,7 +485,7 @@ def Maxwellian_speed_3D(vx,
 
        f = 4 \pi \vec{v}^2 (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} - \vec{V_{drift}})^2 / v_Th^2)
 
-    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed
+    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed.
 
     See also
     --------
@@ -570,19 +576,20 @@ def kappa_velocity_1D(v,
                       V_drift=0,
                       vTh=np.nan,
                       units="units"):
-    r"""Returns the probability at the velocity `v` in m/s
-     to find a particle `particle` in a plasma of temperature `T`
-     following the Kappa distribution function. The slope of the
-     tail of the Kappa distribution function is set by 'kappa', which
-     must be greater than 1/2.
+    r"""
+    Returns the probability at the velocity `v` in m/s
+    to find a particle `particle` in a plasma of temperature `T`
+    following the Kappa distribution function. The slope of the
+    tail of the Kappa distribution function is set by 'kappa', which
+    must be greater than 1/2.
 
     Parameters
     ----------
     v: Quantity
-        The velocity in units convertible to m/s
+        The velocity in units convertible to m/s.
 
     T: Quantity
-        The temperature in Kelvin
+        The temperature in Kelvin.
 
     kappa: Quantity
         The kappa parameter is a dimensionless number which sets the slope
@@ -592,8 +599,8 @@ def kappa_velocity_1D(v,
 
     particle: string, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for $He_4^{+1}$ : singly ionized helium-4),
-        which defaults to electrons.
+        for deuterium, or 'He-4 +1' for :math:`He_4^{+1}`
+        (singly ionized helium-4), which defaults to electrons.
 
     V_drift: Quantity, optional
         The drift velocity in units convertible to m/s
@@ -612,7 +619,8 @@ def kappa_velocity_1D(v,
     Returns
     -------
     f : Quantity
-        probability in Velocity^-1, normalized so that: :math:`\int_{-\infty}^{+\infty} f(v) dv = 1`
+        probability in Velocity^-1, normalized so that
+        :math:`\int_{-\infty}^{+\infty} f(v) dv = 1`.
 
     Raises
     ------
@@ -637,8 +645,9 @@ def kappa_velocity_1D(v,
 
        f = A_\kappa \left(1 + \frac{(\vec{v} - \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-\kappa}
 
-    where v_Th,\kappa is the kappa thermal speed
-    and :math:`A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_Th,\kappa^2 \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2)}` is the normalization constant
+    where :math:`v_Th,\kappa` is the kappa thermal speed
+    and :math:`A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_Th,\kappa^2 \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2)}`
+    is the normalization constant
 
     As kappa approaches infinity, the kappa distribution function converges
     to the Maxwellian distribution function.
@@ -706,7 +715,8 @@ def kappa_velocity_3D(vx,
                       Vz_drift=0,
                       vTh=np.nan,
                       units="units"):
-    r"""Return the probability of finding a particle with velocity components
+    r"""
+    Return the probability of finding a particle with velocity components
     `v_x`, `v_y`, and `v_z`in m/s in a suprathermal plasma of temperature
     `T` and parameter 'kappa' which follows the 3D Kappa distribution function.
     This function assumes Cartesian coordinates.
@@ -714,16 +724,16 @@ def kappa_velocity_3D(vx,
     Parameters
     ----------
     vx: Quantity
-        The velocity in x-direction units convertible to m/s
+        The velocity in x-direction units convertible to m/s.
 
     vy: Quantity
-        The velocity in y-direction units convertible to m/s
+        The velocity in y-direction units convertible to m/s.
 
     vz: Quantity
-        The velocity in z-direction units convertible to m/s
+        The velocity in z-direction units convertible to m/s.
 
     T: Quantity
-        The temperature, preferably in Kelvin
+        The temperature, preferably in Kelvin.
 
     kappa: Quantity
         The kappa parameter is a dimensionless number which sets the slope
@@ -733,17 +743,17 @@ def kappa_velocity_3D(vx,
 
     particle: string, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for $He_4^{+1}$ : singly ionized helium-4),
+        for deuterium, or 'He-4 +1' for :math:`He_4^{+1}` : singly ionized helium-4),
         which defaults to electrons.
 
     Vx_drift: Quantity, optional
-        The drift velocity in x-direction units convertible to m/s
+        The drift velocity in x-direction units convertible to m/s.
 
     Vy_drift: Quantity, optional
-        The drift velocity in y-direction units convertible to m/s
+        The drift velocity in y-direction units convertible to m/s.
 
     Vz_drift: Quantity, optional
-        The drift velocity in z-direction units convertible to m/s
+        The drift velocity in z-direction units convertible to m/s.
 
     vTh: Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
@@ -760,7 +770,7 @@ def kappa_velocity_3D(vx,
     -------
     f : Quantity
         probability in Velocity^-1, normalized so that:
-        $\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1}
+        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1}`
 
     Raises
     ------
@@ -785,7 +795,7 @@ def kappa_velocity_3D(vx,
 
        f = A_\kappa \left(1 + \frac{(\vec{v} - \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-(\kappa + 1)}
 
-    where v_Th,\kappa is the kappa thermal speed
+    where :math:`v_Th,\kappa` is the kappa thermal speed
     and :math:`A_\kappa = \frac{1}{2 \pi (\kappa v_Th,\kappa^2)^{3/2} \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)}` is the normalization constant
 
     As kappa approaches infinity, the kappa distribution function converges

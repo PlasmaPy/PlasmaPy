@@ -17,7 +17,8 @@ from ..utils import _check_quantity
 from ..utils.exceptions import PhysicsError
 
 
-r"""Values should be returned as an Astropy Quantity in SI units.
+r"""
+Values should be returned as an Astropy Quantity in SI units.
 
 If a quantity has several names, then the function name should be the
 one that provides the most physical insight into what the quantity
@@ -129,6 +130,7 @@ def Alfven_speed(B, density, ion="p"):
     of magnetic disturbances in a plasma, and is given by:
 
     .. math::
+
         V_A = \frac{B}{\sqrt{\mu_0\rho}}
 
     where the mass density is :math:`\rho = n_i m_i + n_e m_e`.
@@ -193,7 +195,8 @@ def Alfven_speed(B, density, ion="p"):
 })
 def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
                     gamma_e=1, gamma_i=3, ion='p'):
-    r"""Returns the ion sound speed for an electron-ion plasma.
+    r"""
+    Returns the ion sound speed for an electron-ion plasma.
 
     Parameters
     ----------
@@ -254,6 +257,7 @@ def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
     The ion sound speed :math:`V_S` is approximately given by
 
     .. math::
+
         V_S = \sqrt{\frac{\gamma_e Z k_B T_e + \gamma_i k_B T_i}{m_i}}
 
     where :math:`\gamma_e` and :math:`\gamma_i` are the electron and
@@ -332,7 +336,8 @@ def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
     'T': {'units': units.K, 'can_be_negative': False}
 })
 def thermal_speed(T, particle="e", method="most_probable"):
-    r"""Returns the most probable speed for a particle within a Maxwellian
+    r"""
+    Returns the most probable speed for a particle within a Maxwellian
     distribution.
 
     Parameters
@@ -961,7 +966,7 @@ def inertial_length(n, particle='e'):
     Parameters
     ----------
     n_i : ~astropy.units.Quantity
-        Particle number density in units convertible to m**-3
+        Particle number density in units convertible to m**-3.
 
     particle : string, optional
         Representation of the particle species (e.g., 'p' for protons, 'D+'
@@ -972,21 +977,21 @@ def inertial_length(n, particle='e'):
     Returns
     -------
     d_i : ~astropy.units.Quantity
-        Particles inertial length in meters
+        Particles inertial length in meters.
 
     Raises
     ------
     TypeError
-        If n_i not a Quantity or particle is not a string
+        If n_i not a Quantity or particle is not a string.
 
     UnitConversionError
-        If n_i is not in units of a number density
+        If n_i is not in units of a number density.
 
     ValueError
         The particle density does not have an appropriate value.
 
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -1024,32 +1029,33 @@ def inertial_length(n, particle='e'):
     'B': {'units': units.T}
 })
 def magnetic_pressure(B):
-    r"""Calculate the magnetic pressure.
+    r"""
+    Calculate the magnetic pressure.
 
     Parameters
     ----------
     B : ~astropy.units.Quantity
-        The magnetic field in units convertible to telsa
+        The magnetic field in units convertible to telsa.
 
     Returns
     -------
     p_B : ~astropy.units.Quantity
-        The magnetic pressure in units in pascals (newtons per square meter)
+        The magnetic pressure in units in pascals (newtons per square meter).
 
     Raises
     ------
     TypeError
-        If the input is not a Quantity
+        If the input is not a Quantity.
 
     UnitConversionError
-        If the input is not in units convertible to tesla
+        If the input is not in units convertible to tesla.
 
     ValueError
-        If the magnetic field strength is not a real number between
+        If the magnetic field strength is not a real number between.
         +/- infinity
 
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -1085,32 +1091,33 @@ def magnetic_pressure(B):
     'B': {'units': units.T}
 })
 def magnetic_energy_density(B: units.T):
-    r"""Calculate the magnetic energy density.
+    r"""
+    Calculate the magnetic energy density.
 
     Parameters
     ----------
     B : ~astropy.units.Quantity
-        The magnetic field in units convertible to tesla
+        The magnetic field in units convertible to tesla.
 
     Returns
     -------
     E_B : ~astropy.units.Quantity
-        The magnetic energy density in units of joules per cubic meter
+        The magnetic energy density in units of joules per cubic meter.
 
     Raises
     ------
     TypeError
-        If the input is not a Quantity
+        If the input is not a Quantity.
 
     UnitConversionError
-        If the input is not in units convertible to tesla
+        If the input is not in units convertible to tesla.
 
     ValueError
-        If the magnetic field strength does not have an appropriate
+        If the magnetic field strength does not have an appropriate.
         value.
 
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -1126,7 +1133,7 @@ def magnetic_energy_density(B: units.T):
 
     See also
     --------
-    magnetic_pressure : returns an equivalent Quantity, except in units
+    magnetic_pressure : Returns an equivalent Quantity, except in units
         of pascals.
 
     Example
@@ -1147,7 +1154,8 @@ def magnetic_energy_density(B: units.T):
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
 def upper_hybrid_frequency(B, n_e):
-    r"""Returns the upper hybrid frequency.
+    r"""
+    Returns the upper hybrid frequency.
 
     Parameters
     ----------
@@ -1155,27 +1163,27 @@ def upper_hybrid_frequency(B, n_e):
         The magnetic field magnitude in units convertible to tesla.
 
     n_e : ~astropy.units.Quantity
-        The electron number density
+        The electron number density.
 
     Returns
     -------
     omega_uh : ~astropy.units.Quantity
-        The upper hybrid frequency in radians per second
+        The upper hybrid frequency in radians per second.
 
     Raises
     ------
     TypeError
-        If either of B or n_e is not a Quantity
+        If either of B or n_e is not a Quantity.
 
     UnitConversionError
-        If either of B or n_e is in incorrect units
+        If either of B or n_e is in incorrect units.
 
     ValueError
         If either of B or n_e contains invalid values or are of
-        incompatible dimensions
+        incompatible dimensions.
 
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -1210,7 +1218,8 @@ def upper_hybrid_frequency(B, n_e):
     'n_i': {'units': units.m**-3, 'can_be_negative': False}
 })
 def lower_hybrid_frequency(B, n_i, ion='p'):
-    r"""Returns the lower hybrid frequency.
+    r"""
+    Returns the lower hybrid frequency.
 
     Parameters
     ----------
@@ -1218,7 +1227,7 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
         The magnetic field magnitude in units convertible to tesla.
 
     n_i : ~astropy.units.Quantity
-        Ion number density
+        Ion number density.
 
     ion : string, optional
         Representation of the ion species (e.g., 'p' for protons, 'D+'
@@ -1229,24 +1238,24 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
     Returns
     -------
     omega_lh : ~astropy.units.Quantity
-        The lower hybrid frequency in radians per second
+        The lower hybrid frequency in radians per second.
 
     Raises
     ------
     TypeError
         If either of B or n_i is not a Quantity, or ion is of an
-        inappropriate type
+        inappropriate type.
 
     UnitConversionError
-        If either of B or n_i is in incorrect units
+        If either of B or n_i is in incorrect units.
 
     ValueError
         If either of B or n_i contains invalid values or are of
         incompatible dimensions, or ion cannot be used to identify an
-        ion or isotope
+        ion or isotope.
 
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
