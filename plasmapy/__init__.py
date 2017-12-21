@@ -21,7 +21,7 @@ def _min_required_version(required, current):
 
 
 def _check_numpy_version():
-    r""" Make sure numpy in installed and meets the minimum version
+    r""" Make sure NumPy in installed and meets the minimum version
     requirements."""
     required_version = False
     np_ver = None
@@ -30,16 +30,18 @@ def _check_numpy_version():
         from numpy import __version__ as np_ver
         required_version = _min_required_version(__minimum_numpy_version__,
                                                  np_ver)
-    except ImportError:
-        pass
+    except ImportError as exc:
+        raise ImportError("Cannot import NumPy while importing PlasmaPy") \
+            from exc
 
     if not required_version:
         raise ImportError(
             (f"NumPy {__minimum_numpy_version__} is required for "
              f"PlasmaPy. The currently installed version is {np_ver}"))
 
+
 def _check_astropy_version():
-    r""" Make sure astropy in installed and meets the minimum version
+    r""" Make sure Astropy in installed and meets the minimum version
     requirements."""
     required_version = False
     ap_ver = None
@@ -48,8 +50,9 @@ def _check_astropy_version():
         from astropy import __version__ as ap_ver
         required_version = _min_required_version(__minimum_astropy_version__,
                                                  ap_ver)
-    except ImportError:
-        pass
+    except ImportError as exc:
+        raise ImportError("Cannot import Astropy while importing PlasmaPy") \
+            from exc
 
     if not required_version:
         raise ImportError(
@@ -59,7 +62,7 @@ def _check_astropy_version():
 
 too_old_python = sys.version_info < _split_version(__minimum_python_version__)
 
-if too_old_python:    
+if too_old_python:
     raise ImportError("PlasmaPy does not support Python 3.5 and below")
 
 _check_numpy_version()
