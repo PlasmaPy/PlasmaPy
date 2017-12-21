@@ -48,13 +48,14 @@ Classes
     :maxdepth: 1
 
     plasma/index
+    species/index
 
 Development
 ===========
 
 .. toctree::
     :maxdepth: 1
-       
+
     development/code_guide
     development/testing_guide
     development/doc_guide

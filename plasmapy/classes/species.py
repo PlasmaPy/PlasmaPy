@@ -1,8 +1,9 @@
 """
-Class representing a group of particles"""
+Class representing a group of particles.
+"""
 # coding=utf-8
 import numpy as np
-from scipy.interpolate import RegularGridInterpolator
+import scipy.interpolate as interp
 from ..atomic import atomic
 from astropy import constants
 from astropy import units as u
@@ -88,7 +89,7 @@ class Species:
         _B = np.moveaxis(self.plasma.magnetic_field.si.value, 0, -1)
         _E = np.moveaxis(self.plasma.electric_field.si.value, 0, -1)
 
-        self._B_interpolator = RegularGridInterpolator(
+        self._B_interpolator = interp.RegularGridInterpolator(
             (self.plasma.x.si.value,
              self.plasma.y.si.value,
              self.plasma.z.si.value),
@@ -96,7 +97,7 @@ class Species:
             method="linear",
             bounds_error=True)
 
-        self._E_interpolator = RegularGridInterpolator(
+        self._E_interpolator = interp.RegularGridInterpolator(
             (self.plasma.x.si.value,
              self.plasma.y.si.value,
              self.plasma.z.si.value),
@@ -116,7 +117,7 @@ class Species:
 
         Returns
         --------
-        `astropy.units.Quantity`
+        ~astropy.units.Quantity
             Array of kinetic energies, shape (nt, n).
         """
         return (self.velocity_history ** 2).sum(axis=-1) * self.eff_m / 2
@@ -128,21 +129,21 @@ class Species:
 
         Arguments
         ----------
-        init: bool (optional)
+        init : bool (optional)
             If `True`, does not change the particle positions and sets dt
             to -dt/2.
 
         Notes
         ----------
         The Boris algorithm is the standard energy conserving algorithm for
-        particle movement in plasma physics.
+        particle movement in plasma physics. See [1]_ for more details.
 
         Conceptually, the algorithm has three phases:
 
-        1. Add half the impulse from electric field
+        1. Add half the impulse from electric field.
         2. Rotate the particle velocity about the direction of the magnetic
-        field
-        3. Add the second half of the impulse from the electric field
+           field.
+        3. Add the second half of the impulse from the electric field.
 
         This ends up causing the magnetic field action to be properly
         "centered" in time, and the algorithm conserves energy.
@@ -150,7 +151,7 @@ class Species:
         References
         ----------
         .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
-        Simulation", 2004, p. 58-63
+               Simulation", 2004, p. 58-63
         """
         dt = -self.dt / 2 if init else self.dt
         b, e = self._interpolate_fields()
@@ -194,7 +195,7 @@ class Species:
                f"steps over {self.NT} iterations"
 
     def plot_trajectories(self):  # coveralls: ignore
-        r""" Draws trajectory history."""
+        r"""Draws trajectory history."""
         from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
         from mpl_toolkits.mplot3d import Axes3D
@@ -216,9 +217,9 @@ class Species:
         r"""
         Draws position history versus time.
 
-        Arguments
+        Parameters
         ----------
-        plot: str (optional)
+        plot : str (optional)
             Enable plotting of position component x, y, z for each of these
             letters included in `plot`.
         """
@@ -243,7 +244,7 @@ class Species:
         plt.show()
 
     def test_kinetic_energy(self):
-        r""" Test conservation of kinetic energy. r"""
+        r"""Test conservation of kinetic energy."""
         assert np.allclose(self.kinetic_energy_history,
                            self.kinetic_energy_history.mean(),
                            atol=3 * self.kinetic_energy_history.std()), \
