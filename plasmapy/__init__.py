@@ -10,7 +10,7 @@ def _split_version(version):
     return tuple(int(ver) for ver in version.split('.'))
 
 
-def _min_required_version(required, current):  # coveralls: ignore
+def _min_required_version(required, current):
     r""" Return `True` if the current version meets the required
     minimum version and `False` if not or if not installed.
 
@@ -20,7 +20,7 @@ def _min_required_version(required, current):  # coveralls: ignore
     return _split_version(current) >= _split_version(required)
 
 
-def _check_numpy_version():  # coveralls: ignore
+def _check_numpy_version():
     r""" Make sure numpy in installed and meets the minimum version
     requirements."""
     required_version = False
@@ -38,7 +38,7 @@ def _check_numpy_version():  # coveralls: ignore
             (f"NumPy {__minimum_numpy_version__} is required for "
              f"PlasmaPy. The currently installed version is {np_ver}"))
 
-def _check_astropy_version():  # coveralls: ignore
+def _check_astropy_version():
     r""" Make sure astropy in installed and meets the minimum version
     requirements."""
     required_version = False
@@ -57,10 +57,10 @@ def _check_astropy_version():  # coveralls: ignore
              f"PlasmaPy.  The currently installed version is {ap_ver}"))
 
 
-is_old_python = sys.version_info < _split_version(__minimum_python_version__)
+too_old_python = sys.version_info < _split_version(__minimum_python_version__)
 
-if (is_old_python):  # coveralls: ignore
-    warnings.warn("PlasmaPy does not support Python 3.5 and below")
+if too_old_python:    
+    raise ImportError("PlasmaPy does not support Python 3.5 and below")
 
 _check_numpy_version()
 _check_astropy_version()
@@ -73,5 +73,5 @@ try:
     from . import mathematics
     from . import physics
     from . import utils
-except ImportError:
-    raise ImportError("Unable to load PlasmaPy subpackages.")
+except ImportError as exc:
+    raise ImportError("Unable to load PlasmaPy subpackages.") from exc
