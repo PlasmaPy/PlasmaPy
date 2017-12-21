@@ -380,6 +380,9 @@ def test_gyrofrequency():
     assert np.isclose(gyrofrequency(2.4 * u.T).value,
                       422116821083.3284)
 
+    assert np.isclose(gyrofrequency(2.4 * u.T, signed=True).value,
+                      -422116821083.3284)
+
     assert np.isclose(gyrofrequency(1 * u.G).cgs.value,
                       1.76e7, rtol=1e-3)
 
@@ -550,9 +553,6 @@ def test_plasma_frequency():
 
     assert np.isclose(plasma_frequency(1 * u.cm**-3).value,
                       5.64e4, rtol=1e-2)
-
-    assert np.isclose(plasma_frequency(1 * u.cm**-3, signed=True).value,
-                      -5.64e4, rtol=1e-2)
 
     with pytest.raises(TypeError):
         plasma_frequency(u.m**-3)
