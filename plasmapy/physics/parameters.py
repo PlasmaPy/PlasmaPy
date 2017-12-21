@@ -807,7 +807,7 @@ def plasma_frequency(n, particle='e'):
     try:
         m = atomic.ion_mass(particle)
     except Exception:
-        raise ValueError("Invalid particle, {particle}, in "
+        raise ValueError(f"Invalid particle, {particle}, in "
                          "plasma_frequency.")
 
     omega_p = units.rad * e * np.sqrt(n / (eps0 * m))
