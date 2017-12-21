@@ -3,8 +3,8 @@ from astropy import units
 
 from ..constants import c
 import plasmapy.atomic as atomic
-from ..utils import _check_quantity
-from ..utils.exceptions import RelativityError
+from plasmapy.utils.checks import _check_quantity
+from plasmapy.utils.exceptions import RelativityError
 
 
 def Lorentz_factor(V):

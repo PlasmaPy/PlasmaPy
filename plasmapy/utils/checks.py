@@ -1,4 +1,4 @@
-from functools import wraps
+import functools
 import inspect
 
 import numpy as np
@@ -9,7 +9,8 @@ from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 
 
 def check_quantity(validations):
-    r"""Raises exceptions if `argname` in decorated function is not an
+    r"""
+    Raises exceptions if `argname` in decorated function is not an
     astropy Quantity with correct units and valid numerical values.
 
     Parameters
@@ -33,7 +34,7 @@ def check_quantity(validations):
     Returns
     -------
     function
-        Decorated function
+        Decorated function.
 
     Examples
     --------
@@ -60,7 +61,7 @@ def check_quantity(validations):
         wrapped_sign = inspect.signature(f)
         fname = f.__name__
 
-        @wraps(f)
+        @functools.wraps(f)
         def wrapper(*args, **kwargs):
             # combine args and kwargs into dictionary
             bound_args = wrapped_sign.bind(*args, **kwargs)
@@ -105,42 +106,42 @@ def check_quantity(validations):
 
 
 def check_relativistic(func=None, betafrac=0.1):
-    r"""Warns or raises an error when the output of the decorated
+    r"""
+    Warns or raises an error when the output of the decorated
     function is greater than `betafrac` times the speed of light
 
     Parameters
     ----------
     func : function, optional
-        The function to decorate
+        The function to decorate.
     betafrac : float, optional
         The minimum fraction of the speed of light that will raise a
-        UserWarning
-        Defaults to 0.1
+        UserWarning. Defaults to 0.1.
 
     Returns
     -------
     function
-        Decorated function
+        Decorated function.
 
     Raises
     ------
     TypeError
-        If V is not a Quantity
+        If V is not a Quantity.
 
     UnitConversionError
-        If V is not in units of velocity
+        If V is not in units of velocity.
 
     ValueError
-        If V contains any NaNs
+        If V contains any NaNs.
 
     RelativityError
-        If V is greater than or equal to the speed of light
+        If V is greater than or equal to the speed of light.
 
     Warns
     -----
     RelativityWarning
         If V is greater than or equal to betafrac times the speed of light,
-        but less than the speed of light
+        but less than the speed of light.
 
     Examples
     --------
@@ -156,7 +157,7 @@ def check_relativistic(func=None, betafrac=0.1):
 
     """
     def decorator(f):
-        @wraps(f)
+        @functools.wraps(f)
         def wrapper(*args, **kwargs):
             return_ = f(*args, **kwargs)
             _check_relativistic(return_, f.__name__,
@@ -170,7 +171,8 @@ def check_relativistic(func=None, betafrac=0.1):
 
 def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
                     can_be_complex=False, can_be_inf=True):
-    """Raises exceptions if an object is not an astropy Quantity with
+    """
+    Raises exceptions if an object is not an astropy Quantity with
     correct units and valid numerical values.
 
     Parameters
@@ -292,38 +294,40 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
 
 def _check_relativistic(V, funcname, betafrac=0.1):
-    r"""Warn or raise error if a velocity is relativistic or superrelativistic
+    r"""
+    Warn or raise error if a velocity is relativistic or superrelativistic
 
     Parameters
     ----------
     V : Quantity
-        A velocity
+        A velocity.
 
     funcname : string
         The name of the original function to be printed in the error messages.
 
     betafrac : float
-        The minimum fraction of the speed of light that will generate a warning
+        The minimum fraction of the speed of light that will generate
+        a warning.
 
     Raises
     ------
     TypeError
-        If V is not a Quantity
+        If V is not a Quantity.
 
     UnitConversionError
-        If V is not in units of velocity
+        If V is not in units of velocity.
 
     ValueError
-        If V contains any NaNs
+        If V contains any NaNs.
 
     RelativityError
-        If V is greater than or equal to the speed of light
+        If V is greater than or equal to the speed of light.
 
     Warns
     -----
     RelativityWarning
         If V is greater than or equal to the specified fraction of the speed of
-        light
+        light.
 
     Examples
     --------
