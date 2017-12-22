@@ -796,7 +796,7 @@ def kappa_velocity_3D(vx,
        f = A_\kappa \left(1 + \frac{(\vec{v} - \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-(\kappa + 1)}
 
     where :math:`v_Th,\kappa` is the kappa thermal speed
-    and :math:`A_\kappa = \frac{1}{2 \pi (\kappa v_Th,\kappa^2)^{3/2} \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)}` is the normalization constant
+    and :math:`A_\kappa = \frac{1}{2 \pi (\kappa v_Th,\kappa^2)^{3/2}} \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)}` is the normalization constant
 
     As kappa approaches infinity, the kappa distribution function converges
     to the Maxwellian distribution function.
