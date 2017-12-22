@@ -7,9 +7,14 @@ deps-run: &deps-install
     pip install --user -r doc-requirements.txt
     pip install --user .
 
-doc-run: &doc-build
-  name: Build documentation
+html-run: &doc-html
+  name: Build HTML documentation
   command: make html SPHINXOPTS='-W'
+  working_directory: docs
+
+latex-run: &doc-latex
+  name: Build LaTeX documentation
+  command: make latexpdf SPHINXOPTS='-W'
   working_directory: docs
 
 version: 2
@@ -20,4 +25,5 @@ jobs:
     steps:
       - checkout
       - run: *deps-install
-      - run: *doc-build
+      - run: *doc-html
+      - run: *doc-latex
