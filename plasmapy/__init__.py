@@ -1,9 +1,13 @@
 import sys
 import warnings
+import importlib
 
 __minimum_python_version__ = '3.6'
-__minimum_numpy_version__ = '1.13.0'
-__minimum_astropy_version__ = '2.0.0'
+
+__minimum_versions__ = {
+    'numpy': '1.13',
+    'astropy': '2.0',
+    }
 
 
 def _split_version(version):
@@ -12,63 +16,45 @@ def _split_version(version):
     return tuple(int(ver) for ver in version.split('.'))
 
 
-def _min_required_version(required, current):
-    r""" Return `True` if the current version meets the required
-    minimum version and `False` if not or if not installed.
+def _check_python(minimum_python_version):
+    """Raises an ImportError if the version of Python is not at least
+    the version given by a string representing the minimum version
+    number."""
+    required_python = _split_version(minimum_python_version)
+    current_python = sys.version_info
 
-    Right now `required` and `current` are just '.' separated strings
-    but it would be good to make this more general and accept modules.
-    """
-    return _split_version(current) >= _split_version(required)
-
-
-def _check_numpy_version():
-    r""" Make sure NumPy in installed and meets the minimum version
-    requirements."""
-    required_version = False
-    np_ver = None
-
-    try:
-        from numpy import __version__ as np_ver
-        required_version = _min_required_version(__minimum_numpy_version__,
-                                                 np_ver)
-    except ImportError as exc:
-        raise ImportError("Cannot import NumPy while importing PlasmaPy") \
-            from exc
-
-    if not required_version:
-        raise ImportError(
-            (f"NumPy {__minimum_numpy_version__} is required for "
-             f"PlasmaPy. The currently installed version is {np_ver}"))
+    if current_python < required_python:
+        raise ImportError(f"PlasmaPy requires Python {minimum_python_version} "
+                          "or newer.") from None
 
 
-def _check_astropy_version():
-    r""" Make sure Astropy in installed and meets the minimum version
-    requirements."""
-    required_version = False
-    ap_ver = None
+def _check_versions(minimum_versions):
+    """Raises an ImportError if a dependent package is not installed
+    and at the required version number, or provides a warning if the
+    version of the dependent package cannot be found."""
 
-    try:
-        from astropy import __version__ as ap_ver
-        required_version = _min_required_version(__minimum_astropy_version__,
-                                                 ap_ver)
-    except ImportError as exc:
-        raise ImportError("Cannot import Astropy while importing PlasmaPy") \
-            from exc
+    for module_name in minimum_versions.keys():
+        minimum_version = minimum_versions[module_name]
 
-    if not required_version:
-        raise ImportError(
-            (f"Astropy {__minimum_astropy_version__} or above is required for "
-             f"PlasmaPy.  The currently installed version is {ap_ver}"))
+        try:
+            module = importlib.import_module(module_name)
+            module_version = module.__version__
+        except ImportError:
+            raise ImportError(f"Unable to import {module_name} while "
+                              "importing PlasmaPy.") from None
+        except AttributeError:
+            warnings.warn(f"{module_name}.__version__ was not found while "
+                          "importing PlasmaPy", UserWarning)
+        else:
+            if minimum_version > module_version:
+                raise ImportError(
+                    f"{module_name} {minimum_version} or newer is required "
+                    "for PlasmaPy. The currently installed version is "
+                    f"{module_version}.") from None
 
 
-too_old_python = sys.version_info < _split_version(__minimum_python_version__)
-
-if too_old_python:
-    raise ImportError("PlasmaPy does not support Python 3.5 and below")
-
-_check_numpy_version()
-_check_astropy_version()
+_check_python(__minimum_python_version__)
+_check_versions(__minimum_versions__)
 
 try:
     from .classes import Plasma
