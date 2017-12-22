@@ -9,8 +9,8 @@ import plasmapy.atomic as atomic
 import plasmapy.utils as utils
 
 from ..constants import c, h, hbar, m_e, eps0, e, k_B
-from ..utils import _check_quantity, _check_relativistic
-from ..utils.exceptions import RelativityError
+from plasmapy.utils.checks import _check_quantity, _check_relativistic
+from plasmapy.utils.exceptions import RelativityError
 from .relativity import Lorentz_factor
 
 

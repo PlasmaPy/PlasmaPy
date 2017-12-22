@@ -13,8 +13,8 @@ import numpy as np
 # For future: change these into decorators.  _check_quantity does a
 # bit more than @quantity_input as it can allow
 import plasmapy.utils as utils
-from ..utils import _check_quantity
-from ..utils.exceptions import PhysicsError
+from plasmapy.utils.checks import _check_quantity
+from plasmapy.utils.exceptions import PhysicsError
 
 
 r"""

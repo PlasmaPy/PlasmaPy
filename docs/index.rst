@@ -50,6 +50,14 @@ Classes
     plasma/index
     species/index
 
+Utilities
+=========
+
+.. toctree::
+   :maxdepth: 1
+
+   utils/index
+
 Development
 ===========
 
