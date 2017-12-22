@@ -5,6 +5,7 @@ import numpy as np
 
 import plasmapy.atomic as atomic
 import plasmapy.utils as utils
+from plasmapy.utils.checks import _check_relativistic
 
 from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar)
 from .parameters import Debye_length
@@ -165,8 +166,7 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
 
     if V is None:
         V = np.sqrt(3 * k_B * T / reduced_mass)
-    else:
-        utils._check_relativistic(V, 'Coulomb_logarithm', betafrac=0.8)
+    _check_relativistic(V, 'Coulomb_logarithm', betafrac=0.8)
 
     # The first possibility is that the inner impact parameter
     # corresponds to a deflection of 90 degrees, which is valid when
