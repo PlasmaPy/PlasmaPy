@@ -646,7 +646,7 @@ def kappa_velocity_1D(v,
        f = A_\kappa \left(1 + \frac{(\vec{v} - \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-\kappa}
 
     where :math:`v_Th,\kappa` is the kappa thermal speed
-    and :math:`A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_Th,\kappa^2 \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2)}`
+    and :math:`A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_Th,\kappa^2 \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2)}}`
     is the normalization constant
 
     As kappa approaches infinity, the kappa distribution function converges
