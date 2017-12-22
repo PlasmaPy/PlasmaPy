@@ -1,7 +1,4 @@
 """
-plasmapy.diagnostics.langmuir
-===============
-
 Defines the Langmuir analysis module as part of the diagnostics package.
 """
 

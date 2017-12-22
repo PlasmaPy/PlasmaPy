@@ -74,5 +74,6 @@ try:
     from . import mathematics
     from . import physics
     from . import utils
+    from . import diagnostics
 except ImportError:  # coveralls: ignore
     raise ImportError("Unable to load PlasmaPy subpackages.")

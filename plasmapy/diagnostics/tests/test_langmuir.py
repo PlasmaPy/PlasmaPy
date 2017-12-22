@@ -2,12 +2,12 @@
 
 import numpy as np
 
-from plasmapy.langmuir import (swept_probe_analysis,
+from plasmapy.diagnostics.langmuir import (swept_probe_analysis,
                                obtain_EEDF,
                                obtain_EEPF)
 
 class Test_swept_probe_analysis():
-    def test_no_signal():
+    def test_no_signal(self):
         """
         Checks whether an error is raised when zero signal is passed to the
         function.
@@ -17,7 +17,7 @@ class Test_swept_probe_analysis():
         assert True, errStr
 
 class Test_obtain_EEDF():
-    def test_no_signal():
+    def test_no_signal(self):
         """
         Checks whether an error is raised when zero signal is passed to the
         function.
@@ -27,7 +27,7 @@ class Test_obtain_EEDF():
         assert True, errStr
 
 class Test_obtain_EEPF():
-    def test_no_signal():
+    def test_no_signal(self):
         """
         Checks whether an error is raised when zero signal is passed to the
         function.
