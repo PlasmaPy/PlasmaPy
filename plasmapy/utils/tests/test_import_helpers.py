@@ -45,59 +45,56 @@ def _create_different_versions(current_version, time):
     return different_versions
 
 
-def test_check_python():
+_python_version = sys.version.split()[0]
+
+
+@pytest.mark.parametrize(['older_version', 'newer_version'],
+                         zip(_create_different_versions(_python_version, 'older'),
+                             _create_different_versions(_python_version, 'newer')))
+def test_check_python(older_version, newer_version):
     """Test that check_python will raise an ImportError when
     minimum_python_version is newer than the current version, and will
     not raise an ImportError when minimum_python_version is the same
     as or older than the current version."""
 
-    python_version = sys.version.split()[0]
+    with pytest.raises(ImportError):
+        check_python(minimum_python_version=newer_version)
+        raise Exception(
+            "check_python is not raising an exception when it should be "
+            f"raising one, with python_version = {_python_version} and "
+            f"newer_version = {newer_version}")
 
-    older_versions = _create_different_versions(python_version, 'older')
-    newer_versions = _create_different_versions(python_version, 'newer')
-
-    for newer_version in newer_versions:
-        with pytest.raises(ImportError):
-            check_python(minimum_python_version=newer_version)
-            raise Exception(
-                "check_python is not raising an exception when it should be "
-                f"raising one, with python_version = {python_version} and "
-                f"newer_version = {newer_version}")
-
-    for older_version in older_versions:
-        try:
-            check_python(minimum_python_version=older_version)
-        except ImportError as e:
-            raise ImportError(
-                "check_python is raising an exception when it should not be "
-                f"raising one, with python_version = {python_version} and "
-                f"older_version = {older_version}") from e
+    try:
+        check_python(minimum_python_version=older_version)
+    except ImportError as e:
+        raise ImportError(
+            "check_python is raising an exception when it should not be "
+            f"raising one, with python_version = {_python_version} and "
+            f"older_version = {older_version}") from e
 
 
-def test_check_versions():
+@pytest.mark.parametrize(['older_version', 'newer_version'],
+                         zip(_create_different_versions(numpy.__version__, 'older'),
+                             _create_different_versions(numpy.__version__, 'newer')))
+def test_check_versions(older_version, newer_version):
     """Test that check_versions will raise an ImportError when the
     minimum version for NumPy is newer than the current version, and
     will not raise an ImportError when the minimum version is the same
     as or older than the current version."""
 
-    older_versions = _create_different_versions(numpy.__version__, 'older')
-    newer_versions = _create_different_versions(numpy.__version__, 'newer')
+    newer_minimum_versions = {'numpy': newer_version}
+    with pytest.raises(ImportError):
+        check_versions(newer_minimum_versions)
+        raise Exception(
+            "check_versions is not raising an exception when it should be "
+            f"raising one, with numpy.__version__ = {numpy.__version__} "
+            f"and newer_version = {newer_version}.")
 
-    for newer_version in newer_versions:
-        newer_minimum_versions = {'numpy': newer_version}
-        with pytest.raises(ImportError):
-            check_versions(newer_minimum_versions)
-            raise Exception(
-                "check_versions is not raising an exception when it should be "
-                f"raising one, with numpy.__version__ = {numpy.__version__} "
-                f"and newer_version = {newer_version}.")
-
-    for older_version in older_versions:
-        older_minimum_versions = {'numpy': older_version}
-        try:
-            check_versions(older_minimum_versions)
-        except ImportError as e:
-            raise ImportError(
-                "check_versions is raising an exception when it should not be "
-                f"raising one, with numpy.__version__ = {numpy.__version__} "
-                f"and older_version = {older_version}")
+    older_minimum_versions = {'numpy': older_version}
+    try:
+        check_versions(older_minimum_versions)
+    except ImportError as e:
+        raise ImportError(
+            "check_versions is raising an exception when it should not be "
+            f"raising one, with numpy.__version__ = {numpy.__version__} "
+            f"and older_version = {older_version}")
