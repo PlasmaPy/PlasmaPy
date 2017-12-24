@@ -5,3 +5,7 @@ sphinx-automodapi
 matplotlib
 pillow
 sphinx-gallery
+astropy
+coveralls
+numpydoc
+pytest
