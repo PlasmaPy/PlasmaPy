@@ -91,9 +91,8 @@ Afterwards, enter PlasmaPy's repository root directory and execute the following
 
 .. code-block:: bash
 
-    conda env create -f environment.yml
+    conda env create -f requirements/environment.yml
 
-The `environment.yml` file refers to the one located in PlasmaPy's root.
 You may now enter the environment via
 
 .. code-block:: bash
@@ -145,7 +144,7 @@ you want install the PlasmaPy dependencies. One way to do this is to do
 
 .. code-block:: bash
 
-    (plasmapy) user@name:~/programming/plasmapy$ pip install -r requirements/base.txt
+    (plasmapy) user@name:~/programming/plasmapy$ pip install -r requirements/environment.txt
 
 Next, setup the development version of PlasmaPy which you just cloned by moving
 into the root directory of the cloned repo and running the setup.py script
