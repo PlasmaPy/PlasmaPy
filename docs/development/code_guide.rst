@@ -97,7 +97,7 @@ You may now enter the environment via
 
 .. code-block:: bash
 
-    source activate plasmapy-dev
+    source activate plasmapy
   
 On Windows, skip the `source` part of the previous command.
 
