@@ -1,20 +1,6 @@
-import sys
 import importlib
 import warnings
 from distutils.version import LooseVersion
-
-
-def check_python(minimum_python_version):
-    """Raises an ImportError if the version of Python is not at least
-    the version given by a string representing the minimum version
-    number."""
-
-    required_python = LooseVersion(minimum_python_version)
-    current_python = LooseVersion(sys.version)
-
-    if current_python < required_python:
-        raise ImportError(f"PlasmaPy requires Python {minimum_python_version} "
-                          "or newer.") from None
 
 
 def check_versions(minimum_versions):

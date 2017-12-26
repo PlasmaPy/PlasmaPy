@@ -4,16 +4,12 @@ import pytest
 import sys
 import numpy
 
-from ..import_helpers import (check_python, check_versions)
+from ..import_helpers import check_versions
+
+from ... import _split_version
 
 
-def _split_version(version):
-    """Separate a string including digits separated by periods into a
-    tuple of integers."""
-    return tuple(int(ver) for ver in version.split('.'))
-
-
-def _create_different_versions(current_version, time):
+def _create_distinct_versions(current_version, time):
     """Create a list containing version number strings that are either
     newer or older than/same as the inputted version string."""
 
@@ -45,42 +41,8 @@ def _create_different_versions(current_version, time):
     return different_versions
 
 
-_python_version = sys.version.split()[0]
-
-
 @pytest.mark.parametrize('newer_version',
-                         _create_different_versions(_python_version, 'newer'))
-def test_check_python_newer(newer_version):
-    """Test that check_python will raise an ImportError when
-    minimum_python_version is newer than the current version.
-    """
-
-    with pytest.raises(ImportError):
-        check_python(minimum_python_version=newer_version)
-        raise Exception(
-            "check_python is not raising an exception when it should be "
-            f"raising one, with python_version = {_python_version} and "
-            f"newer_version = {newer_version}")
-
-
-@pytest.mark.parametrize('older_version',
-                         _create_different_versions(_python_version, 'older'))
-def test_check_python_older(older_version):
-    """Test that check_python will not raise an ImportError when
-    minimum_python_version is the same as or older than the current version.
-    """
-
-    try:
-        check_python(minimum_python_version=older_version)
-    except ImportError as e:
-        raise ImportError(
-            "check_python is raising an exception when it should not be "
-            f"raising one, with python_version = {_python_version} and "
-            f"older_version = {older_version}") from e
-
-
-@pytest.mark.parametrize('newer_version',
-                         _create_different_versions(numpy.__version__, 'newer'))
+                         _create_distinct_versions(numpy.__version__, 'newer'))
 def test_check_versions_newer(newer_version):
     """Test that check_versions will raise an ImportError when the
     minimum version for NumPy is newer than the current version.
@@ -96,7 +58,7 @@ def test_check_versions_newer(newer_version):
 
 
 @pytest.mark.parametrize('older_version',
-                         _create_different_versions(numpy.__version__, 'older'))
+                         _create_distinct_versions(numpy.__version__, 'older'))
 def test_check_versions_older(older_version):
     """Test that check_versions will not raise an ImportError when the minimum
     version is the same as or older than the current version.
