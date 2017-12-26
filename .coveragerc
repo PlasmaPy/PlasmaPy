@@ -11,4 +11,5 @@ exclude_lines =
 	except NotImplementedError
         raise ImportError
 	except ImportError
-	
+	except (ImportError
+	except SyntaxError
