@@ -6,11 +6,6 @@
 
 import sys
 
-try:
-    from .utils import import_helpers
-except (ImportError, SyntaxError):  # coveralls: ignore
-    pass
-
 
 def _split_version(version):
     """Separate a string including digits separated by periods into a
@@ -37,7 +32,9 @@ if sys.version_info < _split_version(__minimum_python_version__):
         "from Python version {}."
         .format(__minimum_python_version__, sys.version.split()[0]))
 
-import_helpers.check_versions(__minimum_versions__)
+from . import utils
+
+utils.check_versions(__minimum_versions__)
 
 # The file version.py is created by installing PlasmaPy with setup.py
 # using functionality from astropy_helpers.  If this has not been run,
@@ -55,11 +52,10 @@ try:
     from . import atomic
     from . import mathematics
     from . import physics
-    from . import utils
-except ImportError as exc:
+except ImportError:
     raise ImportError("Unable to load PlasmaPy subpackages.")
 
 # A more extensive and thoughtful method for cleaning up our top-level
 # namespace is in Astropy's __init__.py (see also pull request #210).
 
-del (import_helpers, __minimum_python_version__, __minimum_versions__)
+del (__minimum_python_version__, __minimum_versions__)
