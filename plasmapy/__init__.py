@@ -55,6 +55,11 @@ try:
 except ImportError:
     raise ImportError("Unable to load PlasmaPy subpackages.")
 
+try:
+    from astropy import units
+except ImportError:
+    raise ImportError("Unable to import astropy.units as a PlasmaPy submodule")
+
 # A more extensive and thoughtful method for cleaning up our top-level
 # namespace is in Astropy's __init__.py (see also pull request #210).
 
