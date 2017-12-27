@@ -10,9 +10,7 @@ git:
 install:
         - git clone git://github.com/astropy/ci-helpers.git
         - source ci-helpers/travis/setup_conda.sh
-        - "pip install -r requirements/base.txt"
-        - pip install flake8
-        - pip install coveralls
+        - "pip install -r requirements/automated-code-tests.txt"
 
 # Run flake8 tests
 before_script:
