@@ -2,22 +2,23 @@
 
 from astropy import units
 
-from astropy.units import (UnitConversionError, UnitsError, quantity_input,
-                           Quantity)
+from astropy.units import (UnitConversionError, UnitsError, Quantity)
 
 from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
-from ..atomic import (ion_mass, charge_state)
+import plasmapy.atomic as atomic
+# from plasmapy.atomic import ion_mass, charge_state
 
 import numpy as np
 
 # For future: change these into decorators.  _check_quantity does a
 # bit more than @quantity_input as it can allow
+import plasmapy.utils as utils
+from plasmapy.utils.checks import _check_quantity
+from plasmapy.utils.exceptions import PhysicsError
 
-from ..utils import _check_quantity, check_relativistic, check_quantity
-from ..utils.exceptions import PhysicsError
 
-
-r"""Values should be returned as an Astropy Quantity in SI units.
+r"""
+Values should be returned as an Astropy Quantity in SI units.
 
 If a quantity has several names, then the function name should be the
 one that provides the most physical insight into what the quantity
@@ -73,7 +74,7 @@ by an angular frequency to get a length scale:
 """
 
 
-@check_relativistic
+@utils.check_relativistic
 def Alfven_speed(B, density, ion="p"):
     r"""
     Returns the Alfven speed.
@@ -129,6 +130,7 @@ def Alfven_speed(B, density, ion="p"):
     of magnetic disturbances in a plasma, and is given by:
 
     .. math::
+
         V_A = \frac{B}{\sqrt{\mu_0\rho}}
 
     where the mass density is :math:`\rho = n_i m_i + n_e m_e`.
@@ -166,9 +168,9 @@ def Alfven_speed(B, density, ion="p"):
 
     if density.unit == units.m**-3:
         try:
-            m_i = ion_mass(ion)
+            m_i = atomic.ion_mass(ion)
             try:
-                Z = charge_state(ion)
+                Z = atomic.charge_state(ion)
             except ValueError:
                 Z = 1
         except Exception:
@@ -186,14 +188,15 @@ def Alfven_speed(B, density, ion="p"):
     return V_A
 
 
-@check_relativistic
-@check_quantity({
+@utils.check_relativistic
+@utils.check_quantity({
     'T_i': {'units': units.K, 'can_be_negative': False},
     'T_e': {'units': units.K, 'can_be_negative': False}
 })
 def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
                     gamma_e=1, gamma_i=3, ion='p'):
-    r"""Returns the ion sound speed for an electron-ion plasma.
+    r"""
+    Returns the ion sound speed for an electron-ion plasma.
 
     Parameters
     ----------
@@ -254,6 +257,7 @@ def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
     The ion sound speed :math:`V_S` is approximately given by
 
     .. math::
+
         V_S = \sqrt{\frac{\gamma_e Z k_B T_e + \gamma_i k_B T_i}{m_i}}
 
     where :math:`\gamma_e` and :math:`\gamma_i` are the electron and
@@ -292,10 +296,10 @@ def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
                         "ion='D+')")
 
     try:
-        m_i = ion_mass(ion)
+        m_i = atomic.ion_mass(ion)
 
         try:
-            Z = charge_state(ion)
+            Z = atomic.charge_state(ion)
         except ValueError:
             Z = 1
     except Exception:
@@ -327,12 +331,13 @@ def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
     return V_S
 
 
-@check_relativistic
-@check_quantity({
+@utils.check_relativistic
+@utils.check_quantity({
     'T': {'units': units.K, 'can_be_negative': False}
 })
 def thermal_speed(T, particle="e", method="most_probable"):
-    r"""Returns the most probable speed for a particle within a Maxwellian
+    r"""
+    Returns the most probable speed for a particle within a Maxwellian
     distribution.
 
     Parameters
@@ -408,7 +413,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
     T = T.to(units.K, equivalencies=units.temperature_energy())
 
     try:
-        m = ion_mass(particle)
+        m = atomic.ion_mass(particle)
     except Exception:
         raise ValueError("Unable to find {particle} mass in thermal_speed")
 
@@ -425,8 +430,8 @@ def thermal_speed(T, particle="e", method="most_probable"):
     return V
 
 
-@check_relativistic
-@check_quantity({
+@utils.check_relativistic
+@utils.check_quantity({
     'T': {'units': units.K, 'can_be_negative': False}
 })
 def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
@@ -519,10 +524,10 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
         raise ValueError("Method {method} not supported in thermal_speed")
 
 
-@check_quantity({
+@utils.check_quantity({
     'B': {'units': units.T}
 })
-def gyrofrequency(B, particle='e'):
+def gyrofrequency(B, particle='e', signed=False):
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
@@ -536,9 +541,13 @@ def gyrofrequency(B, particle='e'):
         which defaults to electrons.  If no charge state information is
         provided, then the particles are assumed to be singly charged.
 
+    signed : boolean, optional
+        The gyrofrequency can be defined as signed (negative for electron,
+        positive for ion). Default is False (unsigned, ie. always positive).
+
     Returns
     -------
-    omega_ci : ~astropy.units.Quantity
+    omega_c : ~astropy.units.Quantity
         The particle gyrofrequency in units of radians per second
 
     Raises
@@ -576,6 +585,10 @@ def gyrofrequency(B, particle='e'):
     --------
     >>> from numpy import pi
     >>> from astropy import units as u
+    >>> gyrofrequency(0.1*u.T)
+    <Quantity 17588200236.02124 rad / s>
+    >>> gyrofrequency(0.1*u.T, signed=True)
+    <Quantity -17588200236.02124 rad / s>
     >>> gyrofrequency(0.01*u.T, 'p')
     <Quantity 957883.3224148067 rad / s>
     >>> gyrofrequency(0.01*u.T, 'p')
@@ -592,15 +605,16 @@ def gyrofrequency(B, particle='e'):
     """
 
     try:
-        m_i = ion_mass(particle)
+        m_i = atomic.ion_mass(particle)
         try:
-            Z = charge_state(particle)
+            Z = atomic.charge_state(particle)
         except ValueError:
             Z = 1
-        Z = abs(Z)
     except Exception:
         raise ValueError("Invalid particle {} in gyrofrequency"
                          .format(particle))
+    if not signed:
+        Z = abs(Z)
 
     omega_ci = units.rad * (Z * e * np.abs(B) / m_i).to(1 / units.s)
 
@@ -733,12 +747,11 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
     return r_Li.to(units.m, equivalencies=units.dimensionless_angles())
 
 
-@check_quantity({
+@utils.check_quantity({
     'n': {'units': units.m**-3, 'can_be_negative': False}
 })
 def plasma_frequency(n, particle='e'):
     r"""Calculates the particle plasma frequency.
-    Defaults to the fastest, electron plasma frequency.
 
     Parameters
     ----------
@@ -753,7 +766,7 @@ def plasma_frequency(n, particle='e'):
 
     Returns
     -------
-    omega_pi : ~astropy.units.Quantity
+    omega_p : ~astropy.units.Quantity
         The particle plasma frequency in radians per second.
 
     Raises
@@ -790,29 +803,24 @@ def plasma_frequency(n, particle='e'):
     >>> from astropy import units as u
     >>> plasma_frequency(1e19*u.m**-3, particle='p')
     <Quantity 4163294530.6925354 rad / s>
-    >>> plasma_frequency(1e19*u.m**-3, particle='p')
-    <Quantity 4163294530.6925354 rad / s>
+    >>> plasma_frequency(1e19*u.m**-3, particle='D+')
+    <Quantity 2944624520.2526317 rad / s>
     >>> plasma_frequency(1e19*u.m**-3)
     <Quantity 178398636471.3789 rad / s>
-
     """
 
     try:
-        m = ion_mass(particle)
-        try:
-            Z = charge_state(particle)
-        except ValueError:
-            Z = 1
+        m = atomic.ion_mass(particle)
     except Exception:
         raise ValueError(f"Invalid particle, {particle}, in "
                          "plasma_frequency.")
 
-    omega_p = (units.rad * e * np.sqrt(n / (eps0 * m)))
+    omega_p = units.rad * e * np.sqrt(n / (eps0 * m))
 
     return omega_p.si
 
 
-@check_quantity({
+@utils.check_quantity({
     'T_e': {'units': units.K, 'can_be_negative': False},
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
@@ -885,7 +893,7 @@ def Debye_length(T_e, n_e):
     return lambda_D
 
 
-@check_quantity({
+@utils.check_quantity({
     'T_e': {'units': units.K, 'can_be_negative': False},
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
@@ -952,7 +960,7 @@ def Debye_number(T_e, n_e):
     return N_D.to(units.dimensionless_unscaled)
 
 
-@check_quantity({
+@utils.check_quantity({
     'n': {'units': units.m**-3, 'can_be_negative': False}
 })
 def inertial_length(n, particle='e'):
@@ -961,7 +969,7 @@ def inertial_length(n, particle='e'):
     Parameters
     ----------
     n_i : ~astropy.units.Quantity
-        Particle number density in units convertible to m**-3
+        Particle number density in units convertible to m**-3.
 
     particle : string, optional
         Representation of the particle species (e.g., 'p' for protons, 'D+'
@@ -972,21 +980,21 @@ def inertial_length(n, particle='e'):
     Returns
     -------
     d_i : ~astropy.units.Quantity
-        Particles inertial length in meters
+        Particles inertial length in meters.
 
     Raises
     ------
     TypeError
-        If n_i not a Quantity or particle is not a string
+        If n_i not a Quantity or particle is not a string.
 
     UnitConversionError
-        If n_i is not in units of a number density
+        If n_i is not in units of a number density.
 
     ValueError
         The particle density does not have an appropriate value.
 
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -1007,7 +1015,7 @@ def inertial_length(n, particle='e'):
     """
 
     try:
-        Z = charge_state(particle)
+        Z = atomic.charge_state(particle)
     except Exception:
         raise ValueError("Invalid particle {} in inertial_length."
                          .format(particle))
@@ -1020,36 +1028,37 @@ def inertial_length(n, particle='e'):
     return d
 
 
-@check_quantity({
+@utils.check_quantity({
     'B': {'units': units.T}
 })
 def magnetic_pressure(B):
-    r"""Calculate the magnetic pressure.
+    r"""
+    Calculate the magnetic pressure.
 
     Parameters
     ----------
     B : ~astropy.units.Quantity
-        The magnetic field in units convertible to telsa
+        The magnetic field in units convertible to telsa.
 
     Returns
     -------
     p_B : ~astropy.units.Quantity
-        The magnetic pressure in units in pascals (newtons per square meter)
+        The magnetic pressure in units in pascals (newtons per square meter).
 
     Raises
     ------
     TypeError
-        If the input is not a Quantity
+        If the input is not a Quantity.
 
     UnitConversionError
-        If the input is not in units convertible to tesla
+        If the input is not in units convertible to tesla.
 
     ValueError
-        If the magnetic field strength is not a real number between
+        If the magnetic field strength is not a real number between.
         +/- infinity
 
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -1081,36 +1090,37 @@ def magnetic_pressure(B):
     return p_B
 
 
-@check_quantity({
+@utils.check_quantity({
     'B': {'units': units.T}
 })
 def magnetic_energy_density(B: units.T):
-    r"""Calculate the magnetic energy density.
+    r"""
+    Calculate the magnetic energy density.
 
     Parameters
     ----------
     B : ~astropy.units.Quantity
-        The magnetic field in units convertible to tesla
+        The magnetic field in units convertible to tesla.
 
     Returns
     -------
     E_B : ~astropy.units.Quantity
-        The magnetic energy density in units of joules per cubic meter
+        The magnetic energy density in units of joules per cubic meter.
 
     Raises
     ------
     TypeError
-        If the input is not a Quantity
+        If the input is not a Quantity.
 
     UnitConversionError
-        If the input is not in units convertible to tesla
+        If the input is not in units convertible to tesla.
 
     ValueError
-        If the magnetic field strength does not have an appropriate
+        If the magnetic field strength does not have an appropriate.
         value.
 
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -1126,7 +1136,7 @@ def magnetic_energy_density(B: units.T):
 
     See also
     --------
-    magnetic_pressure : returns an equivalent Quantity, except in units
+    magnetic_pressure : Returns an equivalent Quantity, except in units
         of pascals.
 
     Example
@@ -1142,12 +1152,13 @@ def magnetic_energy_density(B: units.T):
     return E_B
 
 
-@check_quantity({
+@utils.check_quantity({
     'B': {'units': units.T},
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
 def upper_hybrid_frequency(B, n_e):
-    r"""Returns the upper hybrid frequency.
+    r"""
+    Returns the upper hybrid frequency.
 
     Parameters
     ----------
@@ -1155,27 +1166,27 @@ def upper_hybrid_frequency(B, n_e):
         The magnetic field magnitude in units convertible to tesla.
 
     n_e : ~astropy.units.Quantity
-        The electron number density
+        The electron number density.
 
     Returns
     -------
     omega_uh : ~astropy.units.Quantity
-        The upper hybrid frequency in radians per second
+        The upper hybrid frequency in radians per second.
 
     Raises
     ------
     TypeError
-        If either of B or n_e is not a Quantity
+        If either of B or n_e is not a Quantity.
 
     UnitConversionError
-        If either of B or n_e is in incorrect units
+        If either of B or n_e is in incorrect units.
 
     ValueError
         If either of B or n_e contains invalid values or are of
-        incompatible dimensions
+        incompatible dimensions.
 
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -1205,12 +1216,13 @@ def upper_hybrid_frequency(B, n_e):
     return omega_uh
 
 
-@check_quantity({
+@utils.check_quantity({
     'B': {'units': units.T},
     'n_i': {'units': units.m**-3, 'can_be_negative': False}
 })
 def lower_hybrid_frequency(B, n_i, ion='p'):
-    r"""Returns the lower hybrid frequency.
+    r"""
+    Returns the lower hybrid frequency.
 
     Parameters
     ----------
@@ -1218,7 +1230,7 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
         The magnetic field magnitude in units convertible to tesla.
 
     n_i : ~astropy.units.Quantity
-        Ion number density
+        Ion number density.
 
     ion : string, optional
         Representation of the ion species (e.g., 'p' for protons, 'D+'
@@ -1229,24 +1241,24 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
     Returns
     -------
     omega_lh : ~astropy.units.Quantity
-        The lower hybrid frequency in radians per second
+        The lower hybrid frequency in radians per second.
 
     Raises
     ------
     TypeError
         If either of B or n_i is not a Quantity, or ion is of an
-        inappropriate type
+        inappropriate type.
 
     UnitConversionError
-        If either of B or n_i is in incorrect units
+        If either of B or n_i is in incorrect units.
 
     ValueError
         If either of B or n_i contains invalid values or are of
         incompatible dimensions, or ion cannot be used to identify an
-        ion or isotope
+        ion or isotope.
 
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -1271,7 +1283,7 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
     # We do not need a charge state here, so the sole intent is to
     # catch invalid ions.
     try:
-        charge_state(ion)
+        atomic.charge_state(ion)
     except Exception:
         raise ValueError("Invalid ion in lower_hybrid_frequency.")
 

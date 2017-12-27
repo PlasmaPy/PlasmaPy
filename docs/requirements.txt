@@ -4,3 +4,6 @@ astropy
 coveralls
 numpydoc
 pytest
+sphinx-gallery
+pillow
+matplotlib

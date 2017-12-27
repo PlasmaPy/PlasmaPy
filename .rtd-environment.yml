@@ -10,5 +10,8 @@ dependencies:
     - numpy
     - scipy
     - numpydoc
-#   - pip:
-#       - dependency_from_pip
+    - pip:
+        - sphinx
+        - sphinx-gallery
+        - pillow
+        - sphinx-automodapi

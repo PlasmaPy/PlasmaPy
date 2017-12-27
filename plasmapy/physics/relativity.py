@@ -2,13 +2,14 @@ import numpy as np
 from astropy import units
 
 from ..constants import c
-from ..atomic import (ion_mass, charge_state)
-from ..utils import _check_quantity
-from ..utils.exceptions import RelativityError
+import plasmapy.atomic as atomic
+from plasmapy.utils.checks import _check_quantity
+from plasmapy.utils.exceptions import RelativityError
 
 
 def Lorentz_factor(V):
-    r"""Returns the Lorentz factor.
+    r"""
+    Returns the Lorentz factor.
 
     Parameters
     ----------
@@ -18,7 +19,7 @@ def Lorentz_factor(V):
     Returns
     -------
     gamma : float or ndarray
-        The Lorentz factor associated with the inputted velocities
+        The Lorentz factor associated with the inputted velocities.
 
     Raises
     ------

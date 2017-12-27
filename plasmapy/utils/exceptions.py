@@ -1,7 +1,4 @@
 """
-plasmapy.utils.exceptions
-===============
-
 Custom Error and Warning names to improve readability
 """
 
@@ -11,7 +8,8 @@ Custom Error and Warning names to improve readability
 # ----------
 
 class PlasmaPyError(Exception):
-    """Base class of PlasmaPy custom errors.
+    """
+    Base class of PlasmaPy custom errors.
 
     All custom exceptions raised by PlasmaPy should inherit from this class
     and be defined in this module.

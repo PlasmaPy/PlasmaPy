@@ -64,6 +64,8 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/api
+docs/gen_modules
 
 # PyBuilder
 target/
@@ -115,3 +117,6 @@ untitled*
 .DS_Store
 */version.py
 */cython_version.py
+
+# Documentation files
+auto_examples
