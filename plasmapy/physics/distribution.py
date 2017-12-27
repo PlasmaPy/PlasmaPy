@@ -770,7 +770,7 @@ def kappa_velocity_3D(vx,
     -------
     f : Quantity
         probability in Velocity^-1, normalized so that:
-        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1}`
+        :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`
 
     Raises
     ------
