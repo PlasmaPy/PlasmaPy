@@ -8,7 +8,7 @@ import sys
 
 try:
     from .utils import import_helpers
-except (ImportError, SyntaxError):
+except (ImportError, SyntaxError):  # coveralls: ignore
     pass
 
 
