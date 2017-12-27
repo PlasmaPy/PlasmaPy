@@ -2,6 +2,7 @@ import importlib
 import warnings
 import distutils.version as dv
 
+
 def check_versions(minimum_versions):
     """Raises an ImportError if a dependent package is not installed
     and at the required version number, or provides a warning if the
