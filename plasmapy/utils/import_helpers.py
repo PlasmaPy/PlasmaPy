@@ -1,7 +1,6 @@
 import importlib
 import warnings
-from distutils.version import LooseVersion
-
+import distutils.version as dv
 
 def check_versions(minimum_versions):
     """Raises an ImportError if a dependent package is not installed
@@ -9,11 +8,11 @@ def check_versions(minimum_versions):
     version of the dependent package cannot be found."""
 
     for module_name in minimum_versions.keys():
-        minimum_version = LooseVersion(minimum_versions[module_name])
+        minimum_version = dv.LooseVersion(minimum_versions[module_name])
 
         try:
             module = importlib.import_module(module_name)
-            module_version = LooseVersion(module.__version__)
+            module_version = dv.LooseVersion(module.__version__)
         except ImportError:
             raise ImportError(f"Unable to import {module_name} while "
                               "importing PlasmaPy.") from None
