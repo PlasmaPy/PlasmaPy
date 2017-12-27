@@ -4,8 +4,8 @@ deps-run: &deps-install
   command: |
     python3 -m venv venv
     . venv/bin/activate
-    pip install --user -r requirements/automated-documentation-tests.txt
-    pip install --user .
+    pip install -q --user -r requirements/automated-documentation-tests.txt
+    pip install -q --user .
 
 html-run: &doc-html
   name: Build HTML documentation
