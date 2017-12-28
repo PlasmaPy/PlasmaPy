@@ -149,7 +149,7 @@ isotope_symbol_table = [
 
 
 @pytest.mark.parametrize(
-    "argument, expected", isotope_symbol_table)
+    "arguments, expected", isotope_symbol_table)
 def test_isotope_symbol(arguments, expected):
     """Test that isotope_symbol returns the expected results."""
     assert isotope_symbol(*arguments) == expected, \
