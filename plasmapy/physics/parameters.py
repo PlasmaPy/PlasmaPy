@@ -2,17 +2,16 @@
 
 from astropy import units
 
-from ..constants import (m_e, c, mu0, k_B, e, eps0)
-import plasmapy.atomic as atomic
 # from plasmapy.atomic import ion_mass, charge_state
 
 import numpy as np
 # import warnings
 import inspect
+from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
+from plasmapy import atomic, utils
 
-# For future: change these into decorators.  _check_quantity does a
+# TODO for future: change these into decorators.  _check_quantity does a
 # bit more than @quantity_input as it can allow
-import plasmapy.utils as utils
 from plasmapy.utils.checks import _check_quantity
 from plasmapy.utils.exceptions import PhysicsError  # , PhysicsWarning
 
@@ -112,7 +111,7 @@ def Alfven_speed(B, density, ion="p", z_mean=None):
         The magnetic field and density arguments are not Quantities and
         cannot be converted into Quantities.
 
-    UnitConversionError
+    units.UnitConversionError
         If the magnetic field or density is not in appropriate units.
 
     RelativityError
@@ -166,10 +165,10 @@ def Alfven_speed(B, density, ion="p", z_mean=None):
     <Quantity 4.31738703 cm / us>
     """
 
-    _check_quantity(B, 'B', 'Alfven_speed', units.T)
-    _check_quantity(density, 'density', 'Alfven_speed',
-                    [units.m**-3, units.kg / units.m**3],
-                    can_be_negative=False)
+    utils._check_quantity(B, 'B', 'Alfven_speed', units.T)
+    utils._check_quantity(density, 'density', 'Alfven_speed',
+                          [units.m**-3, units.kg / units.m**3],
+                          can_be_negative=False)
 
     B = B.to(units.T)
     density = density.si
@@ -270,10 +269,10 @@ def ion_sound_speed(*ignore,
     ValueError
         If the ion mass, adiabatic index, or temperature are invalid.
 
-    PhysicsError
+    plasmapy.utils.PhysicsError
         If an adiabatic index is less than one.
 
-    UnitConversionError
+    units.UnitConversionError
         If the temperature is in incorrect units.
 
     UserWarning
@@ -346,11 +345,13 @@ def ion_sound_speed(*ignore,
                         "a float or int in ion_sound_speed")
 
     if not 1 <= gamma_e <= np.inf:
-        raise PhysicsError("The adiabatic index for electrons must be between "
-                           "one and infinity")
+        raise utils.PhysicsError(
+            "The adiabatic index for electrons must be between "
+            "one and infinity")
     if not 1 <= gamma_i <= np.inf:
-        raise PhysicsError("The adiabatic index for ions must be between "
-                           "one and infinity")
+        raise utils.PhysicsError(
+            "The adiabatic index for ions must be between "
+            "one and infinity")
 
     T_i = T_i.to(units.K, equivalencies=units.temperature_energy())
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
@@ -398,7 +399,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
     TypeError
         The particle temperature is not a Quantity
 
-    UnitConversionError
+    units.UnitConversionError
         If the particle temperature is not in units of temperature or
         energy per particle
 
@@ -502,7 +503,7 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     TypeError
         The particle temperature is not a Quantity
 
-    UnitConversionError
+    units.UnitConversionError
         If the particle temperature is not in units of temperature or
         energy per particle
 
@@ -560,25 +561,25 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
 def particle_params(particle):
     """Helper function to extract data from particle strings"""
     try:
-        m = ion_mass(particle)
+        m = atomic.ion_mass(particle)
         try:
-            Z = charge_state(particle)
+            Z = atomic.charge_state(particle)
         except ValueError:
             Z = 1
         Z = abs(Z)
     except Exception:
-        raise ValueError("Invalid particle {} in {}"
-                         .format(particle, inspect.stack()[1][3]))
+        raise ValueError(f"Invalid particle {particle}")
     return (m, Z)
 
 
-@check_quantity({
+@utils.check_quantity({
     'T_e': {'units': units.K, 'can_be_negative': False},
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
 def electron_ion_collision_rate(T_e, n_e, ion_particle,
                                 coulomb_log=None, V=None):
-    """momentum relaxation electron-ion collision rate
+    r"""
+    momentum relaxation electron-ion collision rate
 
     From Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf,
     equations (2.17) and (2.120)
@@ -588,24 +589,24 @@ def electron_ion_collision_rate(T_e, n_e, ion_particle,
 
     This result is an electron momentum relaxation rate, and is used in many
     classical transport expressions. It is equivalent to:
-        1/tau_e from ref [1] eqn (1) pp. #,
-        1/tau_e from ref [2] eqn (1) pp. #,
-        nu_e\i_S from ref [2] eqn (1) pp. #,
+    * 1/tau_e from ref [1]_ eqn (1) pp. #,
+    * 1/tau_e from ref [2]_ eqn (1) pp. #,
+    * nu_e\i_S from ref [2]_ eqn (1) pp. #,
 
     Parameters
     ----------
 
-    T_e : Quantity
+    T_e : ~astropy.units.Quantity
         The electron temperature of the Maxwellian test electrons
 
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         The number density of the Maxwellian test electrons
 
     ion_particle: string
         String signifying a particle type of the field ions, including charge
         state information.
 
-    coulomb_log : float or dimensionless Quantity, optional
+    coulomb_log : float or dimensionless ~astropy.units.Quantity, optional
         option to specify a Coulomb logarithm of the electrons on the ions.
         If not specified, the Coulomb log will is calculated using the
         .transport/Coulomb_logarithm function.
@@ -624,19 +625,20 @@ def electron_ion_collision_rate(T_e, n_e, ion_particle,
     else:
         particles = ['e', ion_particle]
         coulomb_log_val = Coulomb_logarithm(T_e, n_e, particles, V)
-    Z_i = charge_state(ion_particle)
-    nu_e = 4/3 * np.sqrt(2 * np.pi / m_e) / (4 * np.pi * eps0)**2 * e**4 * \
+    Z_i = atomic.charge_state(ion_particle)
+    nu_e = 4 / 3 * np.sqrt(2 * np.pi / m_e) / (4 * np.pi * eps0)**2 * e**4 * \
         n_e * Z_i * coulomb_log_val / (k_B * T_e)**1.5
-    return nu_e.to(1/units.s)
+    return nu_e.to(1 / units.s)
 
 
-@check_quantity({
+@utils.check_quantity({
     'T_i': {'units': units.K, 'can_be_negative': False},
     'n_i': {'units': units.m**-3, 'can_be_negative': False}
 })
 def ion_ion_collision_rate(T_i, n_i, ion_particle,
                            coulomb_log=None, V=None):
-    """momentum relaxation ion-ion collision rate
+    r"""
+    momentum relaxation ion-ion collision rate
 
     From Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf,
     equations (2.17) and (2.120)
@@ -650,17 +652,17 @@ def ion_ion_collision_rate(T_i, n_i, ion_particle,
 
     This result is an ion momentum relaxation rate, and is used in many
     classical transport expressions. It is equivalent to:
-        1/tau_i from ref [1] eqn (1) pp. #,
-        1/tau_i from ref [2] eqn (1) pp. #,
-        nu_i\i_S from ref [2] eqn (1) pp. #,
-    
+    * 1/tau_i from ref [1]_ eqn (1) pp. #,
+    * 1/tau_i from ref [2]_ eqn (1) pp. #,
+    * nu_i\i_S from ref [2]_ eqn (1) pp. #,
+
     Parameters
     ----------
 
-    T_i : Quantity
+    T_i : ~astropy.units.Quantity
         The electron temperature of the Maxwellian test ions
 
-    n_i : Quantity
+    n_i : ~astropy.units.Quantity
         The number density of the Maxwellian test ions
 
     ion_particle: string
@@ -668,7 +670,7 @@ def ion_ion_collision_rate(T_i, n_i, ion_particle,
         including charge state information. This function assumes the test
         and field ions are the same species.
 
-    coulomb_log : float or dimensionless Quantity, optional
+    coulomb_log : float or dimensionless ~astropy.units.Quantity, optional
         option to specify a Coulomb logarithm of the electrons on the ions.
         If not specified, the Coulomb log will is calculated using the
         .transport/Coulomb_logarithm function.
@@ -687,20 +689,22 @@ def ion_ion_collision_rate(T_i, n_i, ion_particle,
     else:
         particles = [ion_particle, ion_particle]
         coulomb_log_val = Coulomb_logarithm(T_i, n_i, particles, V)
-    Z_i = charge_state(ion_particle)
-    m_i = ion_mass(ion_particle)
-    nu_i = 4/3 * np.sqrt(np.pi / m_i) / (4 * np.pi * eps0)**2 * e**4 * \
+    Z_i = atomic.charge_state(ion_particle)
+    m_i = atomic.ion_mass(ion_particle)
+    nu_i = 4 / 3 * np.sqrt(np.pi / m_i) / (4 * np.pi * eps0)**2 * e**4 * \
         n_i * Z_i**4 * coulomb_log_val / (k_B * T_i)**1.5
-    return nu_i.to(1/units.s)
+    return nu_i.to(1 / units.s)
 
 
-@check_quantity({
+@utils.check_quantity({
     'n': {'units': units.m**-3, 'can_be_negative': False},
     'T': {'units': units.K, 'can_be_negative': False},
     'B': {'units': units.T}
 })
 def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None):
-    """TODO"""
+    r"""
+    TODO
+    """
     try:
         from ..atomic import _is_electron
     except ImportError:
@@ -868,7 +872,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
     TypeError
         The arguments are of an incorrect type
 
-    UnitConversionError
+    units.UnitConversionError
         The arguments do not have appropriate units
 
     ValueError
@@ -940,12 +944,12 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
     elif len(args) > 0:
         raise ValueError("Incorrect inputs to gyroradius")
 
-    _check_quantity(B, 'B', 'gyroradius', units.T)
+    utils._check_quantity(B, 'B', 'gyroradius', units.T)
 
     if Vperp is not None:
-        _check_quantity(Vperp, 'Vperp', 'gyroradius', units.m / units.s)
+        utils._check_quantity(Vperp, 'Vperp', 'gyroradius', units.m / units.s)
     elif T_i is not None:
-        _check_quantity(T_i, 'T_i', 'gyroradius', units.K)
+        utils._check_quantity(T_i, 'T_i', 'gyroradius', units.K)
         Vperp = thermal_speed(T_i, particle=particle)
 
     omega_ci = gyrofrequency(B, particle)
@@ -1071,7 +1075,7 @@ def Debye_length(T_e, n_e):
     TypeError
         If either argument is not a ~astropy.units.Quantity
 
-    UnitConversionError
+    units.UnitConversionError
         If either argument is in incorrect units
 
     ValueError
@@ -1139,7 +1143,7 @@ def Debye_number(T_e, n_e):
     TypeError
         If either argument is not a Quantity
 
-    UnitConversionError
+    units.UnitConversionError
         If either argument is in incorrect units
 
     ValueError
@@ -1213,7 +1217,7 @@ def inertial_length(n, particle='e'):
     TypeError
         If n_i not a Quantity or particle is not a string.
 
-    UnitConversionError
+    units.UnitConversionError
         If n_i is not in units of a number density.
 
     ValueError
@@ -1337,7 +1341,7 @@ def magnetic_energy_density(B: units.T):
     TypeError
         If the input is not a Quantity.
 
-    UnitConversionError
+    units.UnitConversionError
         If the input is not in units convertible to tesla.
 
     ValueError
@@ -1403,7 +1407,7 @@ def upper_hybrid_frequency(B, n_e):
     TypeError
         If either of B or n_e is not a Quantity.
 
-    UnitConversionError
+    units.UnitConversionError
         If either of B or n_e is in incorrect units.
 
     ValueError
@@ -1474,7 +1478,7 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
         If either of B or n_i is not a Quantity, or ion is of an
         inappropriate type.
 
-    UnitConversionError
+    units.UnitConversionError
         If either of B or n_i is in incorrect units.
 
     ValueError
