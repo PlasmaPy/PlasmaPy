@@ -36,7 +36,16 @@ class AtomicError(PlasmaPyError):
     pass
 
 
-class IonError(AtomicError):
+class MissingAtomicDataError(AtomicError):
+    """Error for use when atomic data is missing."""
+    pass
+
+
+class NoChargeInfoError(AtomicError):
+    """Error for use when charge information is needed but missing."""
+
+
+class IonError(NoChargeInfoError):
     """Error for use when an ion is invalid."""
     pass
 
@@ -84,4 +93,9 @@ class RelativityWarning(PhysicsWarning):
 
 class AtomicWarning(PlasmaPyWarning):
     """Warnings for use in the atomic subpackage."""
+    pass
+
+
+class MissingAtomicDataWarning(AtomicWarning):
+    """Warning for use when atomic data is missing."""
     pass
