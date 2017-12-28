@@ -38,6 +38,7 @@ Modules
     :maxdepth: 1
 
     atomic/index
+    diagnostics/index
     mathematics/index
     physics/index
 

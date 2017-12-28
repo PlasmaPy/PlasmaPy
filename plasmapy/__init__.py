@@ -52,6 +52,7 @@ try:
     from . import atomic
     from . import mathematics
     from . import physics
+    from . import diagnostics
 except ImportError:
     raise ImportError("Unable to load PlasmaPy subpackages.")
 
