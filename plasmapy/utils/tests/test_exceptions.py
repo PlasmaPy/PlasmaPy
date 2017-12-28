@@ -4,7 +4,11 @@ import warnings
 from .. import (PlasmaPyError,
                 PhysicsError,
                 RelativityError,
-                AtomicError)
+                AtomicError,
+                IonError,
+                IsotopeError,
+                ElementError,
+                ParticleError)
 
 from .. import (PlasmaPyWarning,
                 PhysicsWarning,
@@ -17,6 +21,10 @@ plasmapy_exceptions = [
     PhysicsError,
     RelativityError,
     AtomicError,
+    IonError,
+    IsotopeError,
+    ElementError,
+    ParticleError,
 ]
 
 plasmapy_warnings = [
