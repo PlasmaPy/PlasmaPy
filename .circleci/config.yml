@@ -33,8 +33,9 @@ jobs:
       - store_artifacts:
           path: docs/_build/html
 
-      - run: *doc-latex
-
       - run:
           name: "Built documentation is available at:"
           command: echo "${CIRCLE_BUILD_URL}/artifacts/${CIRCLE_NODE_INDEX}/${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}/docs/_build/html/index.html"
+
+      - run: *doc-latex
+
