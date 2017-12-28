@@ -1,70 +1,49 @@
-import sys
-import warnings
+# This file must be Python 2 compliant enough so that the appropriate
+# ImportError is raised when PlasmaPy is being imported from Python 2.
+# This precludes the usage of some features such as f-strings.  Helper
+# functions should be put into utils/import_helpers.py except when
+# Python 2 compliance is needed to raise the correct ImportError.
 
-__minimum_python_version__ = '3.6'
-__minimum_numpy_version__ = '1.13.0'
-__minimum_astropy_version__ = '2.0.0'
+import sys
 
 
 def _split_version(version):
+    """Separate a string including digits separated by periods into a
+    tuple of integers."""
     return tuple(int(ver) for ver in version.split('.'))
 
 
-def _min_required_version(required, current):  # coveralls: ignore
-    r""" Return `True` if the current version meets the required minimum
-        version and `False` if not/ if not installed.
+__name__ = "plasmapy"
 
-        Right now `required` and `current` are just '.' separated strings
-        but it would be good to make this more general and accept modules.
-    """
-    return _split_version(current) >= _split_version(required)
+__doc__ = ("A community-developed and community-driven open source core "
+           "Python package for plasma physics.")
 
+__minimum_python_version__ = '3.6'
 
-def _check_numpy_version():  # coveralls: ignore
-    r""" Make sure numpy in installed and meets the minimum version requirements
-    """
-    required_version = False
-    np_ver = None
+__minimum_versions__ = {
+    'numpy': '1.13',
+    'astropy': '2.0',
+    'scipy': '0.19',
+    }
 
-    try:
-        from numpy import __version__ as np_ver
-        required_version = _min_required_version(__minimum_numpy_version__,
-                                                 np_ver)
-    except ImportError:
-        pass
+if sys.version_info < _split_version(__minimum_python_version__):
+    raise ImportError(
+        "PlasmaPy requires Python version {} or higher, but is being called "
+        "from Python version {}."
+        .format(__minimum_python_version__, sys.version.split()[0]))
 
-    if not required_version:
-        ver_error = ("Numpy {} or above is required for PlasmaPy. The "
-                     "currently installed version is {}"
-                     ).format(__minimum_numpy_version__, np_ver)
-        raise ImportError(ver_error)
+from . import utils
 
+utils.check_versions(__minimum_versions__)
 
-def _check_astropy_version():  # coveralls: ignore
-    r""" Make sure astropy in installed and meets the minimum version requirements
-    """
-    required_version = False
-    ap_ver = None
+# The file version.py is created by installing PlasmaPy with setup.py
+# using functionality from astropy_helpers.  If this has not been run,
+# then we will not create the __version__ attribute.
 
-    try:
-        from astropy import __version__ as ap_ver
-        required_version = _min_required_version(__minimum_astropy_version__,
-                                                 ap_ver)
-    except ImportError:
-        pass
-
-    if not required_version:
-        ver_error = ("Astropy {} or above is required for PlasmaPy. The "
-                     "currently installed version is {}"
-                     ).format(__minimum_astropy_version__, ap_ver)
-        raise ImportError(ver_error)
-
-
-if (sys.version_info < _split_version(__minimum_python_version__)):  # coveralls: ignore
-    warnings.warn("PlasmaPy does not support Python 3.5 and below")
-
-_check_numpy_version()
-_check_astropy_version()
+try:
+    from .version import version as __version__
+except ImportError:
+    pass
 
 try:
     from .classes import Plasma
@@ -73,7 +52,16 @@ try:
     from . import atomic
     from . import mathematics
     from . import physics
-    from . import utils
     from . import diagnostics
-except ImportError:  # coveralls: ignore
+except ImportError:
     raise ImportError("Unable to load PlasmaPy subpackages.")
+
+try:
+    from astropy import units
+except ImportError:
+    raise ImportError("Unable to import astropy.units as a PlasmaPy submodule")
+
+# A more extensive and thoughtful method for cleaning up our top-level
+# namespace is in Astropy's __init__.py (see also pull request #210).
+
+del (__minimum_python_version__, __minimum_versions__)

@@ -7,14 +7,6 @@ import warnings
 from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
 
-"""
-__all__ = ['atomic_symbol', 'isotope_symbol', 'atomic_number',
-           'is_isotope_stable', 'half_life', 'mass_number',
-           'element_name', 'standard_atomic_weight', 'isotope_mass',
-           'ion_mass', 'known_isotopes', 'common_isotopes',
-           'stable_isotopes', 'isotopic_abundance', 'charge_state',
-           'electric_charge']
-"""
 # The code contained within atomic_symbol(), isotope_symbol(), and
 # _extract_charge_state() is designed to catch all of the special
 # cases for different inputs.  Complexity is concentrated in these
