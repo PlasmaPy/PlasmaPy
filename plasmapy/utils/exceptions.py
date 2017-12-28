@@ -41,12 +41,12 @@ class IonError(AtomicError):
     pass
 
 
-class IsotopeError(IonError):
+class IsotopeError(AtomicError):
     """Error for use when an isotope is invalid."""
     pass
 
 
-class ElementError(IsotopeError):
+class ElementError(IsotopeError, IonError):
     """Error for use when an element is invalid."""
     pass
 
