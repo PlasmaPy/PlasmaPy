@@ -18,14 +18,42 @@ class PlasmaPyError(Exception):
     already knows how to handle a ValueError, it won't need any specific
     modification.
     """
+    pass
 
 
 class PhysicsError(PlasmaPyError, ValueError):
     """Error for use of a physics value outside PlasmaPy theoretical bounds"""
+    pass
 
 
 class RelativityError(PhysicsError):
     """Error for use of a speed greater than or equal to the speed of light"""
+    pass
+
+
+class AtomicError(PlasmaPyError):
+    """Error for use by an atomic subpackage"""
+    pass
+
+
+class IonError(AtomicError):
+    """Error for use when an ion is invalid."""
+    pass
+
+
+class IsotopeError(IonError):
+    """Error for use when an isotope is invalid."""
+    pass
+
+
+class ElementError(IsotopeError):
+    """Error for use when an element is invalid."""
+    pass
+
+
+class ParticleError(ElementError):
+    """Error for use when a particle is invalid."""
+    pass
 
 
 # ----------
@@ -41,11 +69,19 @@ class PlasmaPyWarning(Warning):
     Warnings should be issued using warnings.warn, which will not break
     execution if unhandled.
     """
+    pass
 
 
 class PhysicsWarning(PlasmaPyWarning):
     """Warning for using a mildly worrisome physics value"""
+    pass
 
 
 class RelativityWarning(PhysicsWarning):
     """Warning for use of a speed quantity approaching the speed of light"""
+    pass
+
+
+class AtomicWarning(PlasmaPyWarning):
+    """Warnings for use in the atomic subpackage."""
+    pass
