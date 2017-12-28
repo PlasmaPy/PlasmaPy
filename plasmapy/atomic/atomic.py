@@ -7,13 +7,15 @@ import warnings
 from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
 
+from typing import (Union, Optional, Any, List, Tuple)
+
 # The code contained within atomic_symbol(), isotope_symbol(), and
 # _extract_charge_state() is designed to catch all of the special
 # cases for different inputs.  Complexity is concentrated in these
 # functions so that the rest of the functions can be simpler.
 
 
-def atomic_symbol(argument):
+def atomic_symbol(argument: Union[str, int]) -> str:
     r"""Returns the atomic symbol.
 
     Parameters
@@ -141,7 +143,7 @@ def atomic_symbol(argument):
     return element
 
 
-def isotope_symbol(argument, mass_numb=None):
+def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
     r"""Returns the symbol representing an isotope.
 
     Parameters
@@ -294,7 +296,7 @@ def isotope_symbol(argument, mass_numb=None):
     return isotope
 
 
-def atomic_number(argument):
+def atomic_number(argument: str) -> str:
     r"""Returns the number of protons in an atom, isotope, or ion.
 
     Parameters
@@ -337,7 +339,8 @@ def atomic_number(argument):
     return atomic_numb
 
 
-def is_isotope_stable(argument, mass_numb=None):
+def is_isotope_stable(argument: Union[str, int],
+                      mass_numb: int = None) -> bool:
     r"""Returns true for stable isotopes and false otherwise.
 
     Parameters
@@ -383,7 +386,7 @@ def is_isotope_stable(argument, mass_numb=None):
     return is_stable
 
 
-def half_life(argument, mass_numb=None):
+def half_life(argument: Union[int, str], mass_numb: int = None) -> u.Quantity:
     r"""Returns the half-life in seconds for unstable isotopes, and
     numpy.inf for stable isotopes.
 
@@ -448,7 +451,7 @@ def half_life(argument, mass_numb=None):
     return half_life_sec
 
 
-def mass_number(isotope):
+def mass_number(isotope: str) -> int:
     r"""Get the mass number (the number of protons and neutrons) of an
     isotope.
 
@@ -506,7 +509,7 @@ def mass_number(isotope):
     return mass_numb
 
 
-def element_name(argument):
+def element_name(argument: Union[str, int]) -> str:
     r"""Returns the name of an element.
 
     Parameters
@@ -552,7 +555,7 @@ def element_name(argument):
     return name
 
 
-def standard_atomic_weight(argument):
+def standard_atomic_weight(argument: Union[str, int]) -> u.Quantity:
     r"""Returns the standard (conventional) atomic weight of an element
     based on the relative abundances of isotopes in terrestrial
     environments.
@@ -650,7 +653,8 @@ def standard_atomic_weight(argument):
     return atomic_weight
 
 
-def isotope_mass(argument, mass_numb=None):
+def isotope_mass(argument: Union[str, int],
+                 mass_numb: int = None) -> u.Quantity:
     r"""Return the mass of an isotope.
 
     Parameters
@@ -715,7 +719,8 @@ def isotope_mass(argument, mass_numb=None):
     return atomic_mass
 
 
-def ion_mass(argument, Z=None, mass_numb=None):
+def ion_mass(argument: Union[str, int, u.Quantity], Z: int = None,
+             mass_numb: int = None) -> u.Quantity:
     r"""Returns the mass of an ion by finding the standard atomic
     weight of an element or the atomic mass of an isotope, and then
     accounting for the change in mass due to loss of electrons from
@@ -908,7 +913,7 @@ def ion_mass(argument, Z=None, mass_numb=None):
     return m_i
 
 
-def known_isotopes(argument=None):
+def known_isotopes(argument: Union[str, int]=None) -> List[str]:
     r"""Returns a list of all known isotopes of an element, or a list
     of all known isotopes of every element if no input is provided.
 
@@ -987,7 +992,8 @@ def known_isotopes(argument=None):
     return isotopes_list
 
 
-def common_isotopes(argument=None, most_common_only=False):
+def common_isotopes(argument: Union[str, int] = None,
+                    most_common_only: bool = False) -> List[str]:
     r"""Returns a list of isotopes of an element with an isotopic
     abundances greater than zero, or if no input is provided, a list
     of all such isotopes for every element.
@@ -1051,7 +1057,9 @@ def common_isotopes(argument=None, most_common_only=False):
 
     """
 
-    def common_isotopes_for_element(argument, most_common_only):
+    def common_isotopes_for_element(argument: Union[str, int],
+                                    most_common_only: Optional[bool]) \
+                                    -> List[str]:
         isotopes = known_isotopes(argument)
         CommonIsotopes = [isotope for isotope in isotopes if
                           'isotopic_abundance' in Isotopes[isotope].keys()]
@@ -1086,7 +1094,8 @@ def common_isotopes(argument=None, most_common_only=False):
     return isotopes_list
 
 
-def stable_isotopes(argument=None, unstable=False):
+def stable_isotopes(argument: Union[str, int] = None,
+                    unstable: bool = False) -> List[str]:
     r"""Returns a list of all stable isotopes of an element, or if no
     input is provided, a list of all such isotopes for every element.
 
@@ -1144,7 +1153,8 @@ def stable_isotopes(argument=None, unstable=False):
 
     """
 
-    def stable_isotopes_for_element(argument, stable_only):
+    def stable_isotopes_for_element(argument: Union[str, int],
+                                    stable_only: Optional[bool]) -> List[str]:
         KnownIsotopes = known_isotopes(argument)
         StableIsotopes = [isotope for isotope in KnownIsotopes if
                           Isotopes[isotope]['is_stable'] == stable_only]
@@ -1167,7 +1177,8 @@ def stable_isotopes(argument=None, unstable=False):
     return isotopes_list
 
 
-def isotopic_abundance(argument, mass_numb=None):
+def isotopic_abundance(argument: Union[str, int],
+                       mass_numb: int = None) -> u.Quantity:
     r"""Returns the isotopic abundances if known, and otherwise zero.
 
     Parameters
@@ -1226,7 +1237,7 @@ def isotopic_abundance(argument, mass_numb=None):
     return iso_comp
 
 
-def charge_state(particle):
+def charge_state(particle: str) -> int:
     r"""Returns the charge state of an ion or other particle.
 
     Parameters
@@ -1307,7 +1318,7 @@ def charge_state(particle):
     return Z
 
 
-def electric_charge(particle):
+def electric_charge(particle: str) -> u.Quantity:
     r"""Returns the electric charge (in coulombs) of an ion or other
     particle
 
@@ -1364,7 +1375,7 @@ def electric_charge(particle):
         raise ValueError(f"{particle} is an invalid input to electric_charge")
 
 
-def _extract_charge_state(argument):
+def _extract_charge_state(argument: str) -> Tuple[str, int]:
     r"""Splits strings containing element or isotope and charge state
     information into a string without the charge state information and
     the charge state as an integer (or None if no charge state
@@ -1473,7 +1484,7 @@ def _extract_charge_state(argument):
     return argument, charge_state
 
 
-def _is_neutron(argument, mass_numb=None):
+def _is_neutron(argument: Any, mass_numb: int = None) -> bool:
     r"""Returns True if the argument corresponds to a neutron, and
     False otherwise."""
 
@@ -1488,7 +1499,8 @@ def _is_neutron(argument, mass_numb=None):
         return False
 
 
-def _is_hydrogen(argument, can_be_atomic_number=False):
+def _is_hydrogen(argument: Any,
+                 can_be_atomic_number: Optional[bool] = False) -> bool:
     r"""Returns True if the argument corresponds to hydrogen, and False
     otherwise."""
 
@@ -1521,7 +1533,7 @@ def _is_hydrogen(argument, can_be_atomic_number=False):
     return is_hydrogen
 
 
-def _is_electron(arg):
+def _is_electron(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to an electron, and False
     otherwise."""
 
@@ -1531,7 +1543,7 @@ def _is_electron(arg):
     return arg in ['e', 'e-'] or arg.lower() == 'electron'
 
 
-def _is_positron(arg):
+def _is_positron(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to a positron, and False
     otherwise."""
 
@@ -1541,7 +1553,7 @@ def _is_positron(arg):
     return arg == 'e+' or arg.lower() == 'positron'
 
 
-def _is_antiproton(arg):
+def _is_antiproton(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to an antiproton, and
     False otherwise."""
 
@@ -1551,7 +1563,7 @@ def _is_antiproton(arg):
     return arg == 'p-' or arg.lower() == 'antiproton'
 
 
-def _is_antineutron(arg):
+def _is_antineutron(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to an antineutron, and
     False otherwise."""
 
@@ -1561,7 +1573,7 @@ def _is_antineutron(arg):
     return arg.lower() == 'antineutron'
 
 
-def _is_proton(arg, Z=None, mass_numb=None):
+def _is_proton(arg: Any, Z: int = None, mass_numb: int = None) -> bool:
     r"""Returns True if the argument corresponds to a proton, and
     False otherwise.  This function returns False for 'H-1' if no
     charge state is given."""
@@ -1580,7 +1592,7 @@ def _is_proton(arg, Z=None, mass_numb=None):
         return False
 
 
-def _is_alpha(arg):
+def _is_alpha(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to an alpha particle,
     and False otherwise."""
 
