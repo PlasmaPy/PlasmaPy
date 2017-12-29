@@ -111,4 +111,73 @@ def _create_Particles_dict():
 
     return Particles
 
+
 _Particles = _create_Particles_dict()
+
+
+def _create_aliases_dict(Particles):
+    """Create a dictionary to contain all of the horrible, horrible
+     aliases used for different particles, antiparticles, isotopes,
+     and ions."""
+
+    aliases = {}
+
+    for symbol in Particles.keys():
+        aliases[symbol] = {'case sensitive': [], 'case insensitive': []}
+        name = Particles[symbol]['name']
+        aliases[symbol]['case insensitive'].append(name)
+
+        if ' ' in name:
+            aliases[symbol]['case insensitive'].append(name.replace(' ', '_'))
+
+        if 'anti' in name:
+            name_with_dash = name.replace('anti', 'anti-')
+            aliases[symbol]['case insensitive'].append(name_with_dash)
+
+    aliases['e-']['case sensitive'].append('beta-')
+
+    aliases['e+']['case sensitive'].append('beta+')
+    aliases['e+']['case insensitive'].extend(
+        ['antielectron', 'anti-electron'])
+
+    for symbol in ['D', 'D 1+', 'T', 'T 1+', 'He-4 2+']:
+        aliases[symbol] = {'case sensitive': [], 'case insensitive': []}
+
+    for symbol, mass_numb in [('D', 2), ('T', 3)]:
+        aliases[symbol]['case sensitive'].append(f"H-{mass_numb}")
+        aliases[symbol]['case insensitive'].append(f"hydrogen-{mass_numb}")
+
+        ion = f"{symbol} 1+"
+        aliases[ion]['case sensitive'].extend(
+            [f"{symbol}+", f"{symbol} +1", f"H-{mass_numb}+",
+             f"H-{mass_numb} 1+", f"H-{mass_numb} +1"])
+
+        aliases[ion]['case insensitive'].extend(
+            [f"hydrogen-{mass_numb}+", f"hydrogen-{mass_numb} 1+",
+             f"hydrogen-{mass_numb} +1"])
+
+    aliases['D']['case insensitive'].append('deuterium')
+    aliases['T']['case insensitive'].append('tritium')
+
+    aliases['D 1+']['case insensitive'].extend(
+        ['deuteron', 'deuterium+', 'deuterium 1+', 'deuterium +1'])
+    aliases['T 1+']['case insensitive'].extend(
+        ['triton', 'tritium+', 'tritium 1+', 'tritium +1'])
+
+    aliases['He-4 2+']['case insensitive'].extend(
+        ['alpha', 'helium-4++', 'helium-4 2+', 'helium-4 +2'])
+    aliases['He-4 2+']['case sensitive'].extend(
+        ['He-4 2+', 'He-4++', 'He-4 +2'])
+
+    aliases['n']['case sensitive'].append('n-1')
+    aliases['n']['case insensitive'].append('n0')
+
+    return aliases
+
+
+_particle_aliases = _create_aliases_dict(_Particles)
+
+
+# screen output for testing purposes
+for symbol in _particle_aliases.keys():
+    print(symbol, '\n', _particle_aliases[symbol], '\n')
