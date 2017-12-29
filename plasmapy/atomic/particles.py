@@ -11,6 +11,9 @@ Particles = {
         "half-life": np.inf * u.s,
         "antimatter": False,
         "generation": 1,
+        "class": "lepton",
+        "lepton number": 1,
+        "baryon number": 0,
     },
 
     "e+": {
@@ -21,6 +24,9 @@ Particles = {
         "half-life": np.inf * u.s,
         "antimatter": True,
         "generation": 1,
+        "class": "antilepton",
+        "lepton number": -1,
+        "baryon number": 0,
     },
 
     "mu-": {
@@ -31,6 +37,9 @@ Particles = {
         "half-life": 2.1969811e-6 * u.s,
         "antimatter": False,
         "generation": 2,
+        "class": "lepton",
+        "lepton number": 1,
+        "baryon number": 0,
     },
 
     "mu+": {
@@ -41,6 +50,9 @@ Particles = {
         "half-life": 2.1969811e-6 * u.s,
         "antimatter": True,
         "generation": 2,
+        "class": "antilepton",
+        "lepton number": -1,
+        "baryon number": 0,
     },
 
     "tau-": {
@@ -51,7 +63,10 @@ Particles = {
         "half-life": 2.906e-13 * u.s,
         "antimatter": False,
         "generation": 3,
-     },
+        "class": "lepton",
+        "lepton number": 1,
+        "baryon number": 0,
+    },
 
     "tau+": {
         "name": "antitau",
@@ -61,6 +76,9 @@ Particles = {
         "half-life": 2.906e-13 * u.s,
         "antimatter": True,
         "generation": 3,
+        "class": "antilepton",
+        "lepton number": -1,
+        "baryon number": 0,
     },
 
     "nu_e": {
@@ -70,6 +88,9 @@ Particles = {
         "half-life": np.inf * u.s,
         "antimatter": False,
         "generation": 1,
+        "class": "lepton",
+        "lepton number": 1,
+        "baryon number": 0,
     },
 
     "anti_nu_e": {
@@ -77,40 +98,103 @@ Particles = {
         "charge": 0,
         "spin": 1/2,
         "half-life": np.inf * u.s,
-        "antimatter": True
-        "generation": 1
+        "antimatter": True,
+        "generation": 1,
+        "class": "antilepton",
+        "lepton number": -1,
+        "baryon number": 0,
     },
 
     "nu_mu": {
         "name": "muon neutrino",
+        "charge": 0,
         "spin": 1/2,
         "half-life": np.inf * u.s,
         "antimatter": False,
         "generation": 2,
+        "class": "lepton",
+        "lepton number": 1,
+        "baryon number": 0,
     },
 
     "anti_nu_mu": {
         "name": "muon antineutrino",
+        "charge": 0,
         "spin": 1/2,
         "half-life": np.inf * u.s,
         "antimatter": True,
         "generation": 2,
+        "class": "antilepton",
+        "lepton number": -1,
+        "baryon number": 0,
     },
 
     "nu_tau": {
         "name": "tau neutrino",
+        "charge": 0,
         "spin": 1/2,
         "half-life": np.inf * u.s,
         "antimatter": False,
         "generation": 3,
+        "class": "lepton",
+        "lepton number": 1,
+        "baryon number": 0,
     },
 
     "anti_nu_tau": {
         "name": "tau antineutrino",
+        "charge": 0,
         "spin": 1/2,
         "half-life": np.inf * u.s,
         "antimatter": True,
         "generation": 3,
+        "class": "antilepton",
+        "lepton number": -1,
+        "baryon number": 0,
+    },
+
+    "p": {
+        "name": "proton",
+        "mass": const.m_p,
+        "charge": 1,
+        "spin": 1/2,
+        "half-life": np.inf * u.s,
+        "class": "baryon",
+        "lepton number": 0,
+        "baryon number": 1,
+    },
+
+    "p-": {
+        "name": "antiproton",
+        "mass": const.m_p,
+        "charge": -1,
+        "spin": 1/2,
+        "half-life": np.inf * u.s,
+        "class": "antibaryon",
+        "lepton number": 0,
+        "baryon number": -1,
+    },
+
+    "n": {
+        "name": "neutron",
+        "mass": const.m_n,
+        "charge": 0,
+        "spin": 1,
+        "half-life": 881.5 * u.s,
+        "class": "baryon",
+        "lepton number": 0,
+        "baryon number": 1,
+    },
+
+    "antineutron": {
+        "name": "antineutron",
+        "mass": const.m_n,
+        "charge": 0,
+        "spin": 1,
+        "half-life": 881.5 * u.s,
+        "class": "antibaryon",
+        "lepton number": 0,
+        "baryon number": -1,
     },
 
 }
