@@ -5,7 +5,8 @@ import numpy as np
 
 
 def _create_Particles_dict():
-
+    """Create a dictionary that will contain physical information for
+    all of the particles and antiparticles that we may care about."""
     leptons = ['e-', 'mu-', 'tau-', 'nu_e', 'nu_mu', 'nu_tau']
     antileptons = ['e+', 'mu+', 'tau+', 'anti_nu_e',
                    'anti_nu_mu', 'anti_nu_tau']
