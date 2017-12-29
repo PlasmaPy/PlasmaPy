@@ -3,6 +3,7 @@
 import numpy as np
 import re
 from astropy import units as u, constants as const
+from astropy.units import Quantity
 import warnings
 from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
@@ -386,7 +387,7 @@ def is_isotope_stable(argument: Union[str, int],
     return is_stable
 
 
-def half_life(argument: Union[int, str], mass_numb: int = None) -> u.Quantity:
+def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
     r"""Returns the half-life in seconds for unstable isotopes, and
     numpy.inf for stable isotopes.
 
@@ -555,7 +556,7 @@ def element_name(argument: Union[str, int]) -> str:
     return name
 
 
-def standard_atomic_weight(argument: Union[str, int]) -> u.Quantity:
+def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
     r"""Returns the standard (conventional) atomic weight of an element
     based on the relative abundances of isotopes in terrestrial
     environments.
@@ -654,7 +655,7 @@ def standard_atomic_weight(argument: Union[str, int]) -> u.Quantity:
 
 
 def isotope_mass(argument: Union[str, int],
-                 mass_numb: int = None) -> u.Quantity:
+                 mass_numb: int = None) -> Quantity:
     r"""Return the mass of an isotope.
 
     Parameters
@@ -719,8 +720,8 @@ def isotope_mass(argument: Union[str, int],
     return atomic_mass
 
 
-def ion_mass(argument: Union[str, int, u.Quantity], Z: int = None,
-             mass_numb: int = None) -> u.Quantity:
+def ion_mass(argument: Union[str, int, Quantity], Z: int = None,
+             mass_numb: int = None) -> Quantity:
     r"""Returns the mass of an ion by finding the standard atomic
     weight of an element or the atomic mass of an isotope, and then
     accounting for the change in mass due to loss of electrons from
@@ -821,7 +822,7 @@ def ion_mass(argument: Union[str, int, u.Quantity], Z: int = None,
 
     """
 
-    if isinstance(argument, u.Quantity) and Z is None and mass_numb is None:
+    if isinstance(argument, Quantity) and Z is None and mass_numb is None:
 
         try:
             m_i = argument.to(u.kg)
@@ -913,7 +914,7 @@ def ion_mass(argument: Union[str, int, u.Quantity], Z: int = None,
     return m_i
 
 
-def known_isotopes(argument: Union[str, int]=None) -> List[str]:
+def known_isotopes(argument: Union[str, int] = None) -> List[str]:
     r"""Returns a list of all known isotopes of an element, or a list
     of all known isotopes of every element if no input is provided.
 
@@ -1058,8 +1059,9 @@ def common_isotopes(argument: Union[str, int] = None,
     """
 
     def common_isotopes_for_element(argument: Union[str, int],
-                                    most_common_only: Optional[bool]) \
-                                    -> List[str]:
+                                    most_common_only: Optional[bool])\
+            -> List[str]:
+
         isotopes = known_isotopes(argument)
         CommonIsotopes = [isotope for isotope in isotopes if
                           'isotopic_abundance' in Isotopes[isotope].keys()]
@@ -1178,7 +1180,7 @@ def stable_isotopes(argument: Union[str, int] = None,
 
 
 def isotopic_abundance(argument: Union[str, int],
-                       mass_numb: int = None) -> u.Quantity:
+                       mass_numb: int = None) -> Quantity:
     r"""Returns the isotopic abundances if known, and otherwise zero.
 
     Parameters
@@ -1318,7 +1320,7 @@ def charge_state(particle: str) -> int:
     return Z
 
 
-def electric_charge(particle: str) -> u.Quantity:
+def electric_charge(particle: str) -> Quantity:
     r"""Returns the electric charge (in coulombs) of an ion or other
     particle
 
