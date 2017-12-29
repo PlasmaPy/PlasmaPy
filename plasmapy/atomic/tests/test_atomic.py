@@ -553,6 +553,8 @@ equivalent_ion_mass_args = [
     ('Fe-56 1+', {}, 'Fe', {"mass_numb": 56, "Z": 1},
      ion_mass('Fe-56 1-') - 2 * const.m_e),
     ('Fe-56 +1', {}, 26, {"mass_numb": 56, "Z": 1}, None),
+    # The functionality for the following test parameters may be deprecated.
+    ('H', {'Z': 1, 'mass_numb': 2}, 1, {'Z': '1', 'mass_numb': '2'}, None)
 ]
 
 
