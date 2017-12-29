@@ -151,6 +151,7 @@ def check_relativistic(func=None, betafrac=0.1):
     ...     return 1*u.m/u.s
 
     Passing in a custom `betafrac`
+
     >>> @check_relativistic(betafrac=0.01)
     ... def speed():
     ...     return 1*u.m/u.s
