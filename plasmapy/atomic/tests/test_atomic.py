@@ -466,8 +466,7 @@ def test_isotope_mass(arg1, arg2):
     """Test that isotope_mass returns equivalent results for equivalent
     arguments."""
     assert isotope_mass(*arg1) == isotope_mass(*arg2), \
-        ("isotope_mass is not getting equivalent results for arguments of "
-         f"{arg1} and {arg2}.")
+        f"isotope_mass(*{arg1}) is not equivalent to isotope_mass(*{arg2})"
 
 
 # (argument, expected_error)
