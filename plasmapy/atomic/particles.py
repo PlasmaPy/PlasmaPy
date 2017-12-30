@@ -1,12 +1,20 @@
 from astropy import units as u, constants as const
 import numpy as np
 
-"""Next we go through the process of creating the Particles dictionary."""
+# TODO: Add tests for _Particles and _Aliases
+# TODO: Add type hints for a dictionary of dictionaries of whatever
+# TODO: Extend docstrings in _create_Particles_dict and _create_aliases_dict
+# TODO: Create function to take an alias and return the standardized symbol
+# TODO: Create an ion_symbol function
+# TODO: Create a particle_symbol function
+# TODO: Create a particle_mass function
+# TODO: Create lepton_number, baryon_number, is_antimatter, is_lepton, etc.
 
 
 def _create_Particles_dict():
     """Create a dictionary that will contain physical information for
     all of the particles and antiparticles that we may care about."""
+
     leptons = ['e-', 'mu-', 'tau-', 'nu_e', 'nu_mu', 'nu_tau']
     antileptons = ['e+', 'mu+', 'tau+', 'anti_nu_e',
                    'anti_nu_mu', 'anti_nu_tau']
@@ -16,7 +24,7 @@ def _create_Particles_dict():
 
     everything = leptons + antileptons + baryons + antibaryons
 
-    particles = leptons + antileptons + baryons + antibaryons
+    particles = leptons + baryons
     antiparticles = antileptons + antibaryons
 
     fermions = leptons + antileptons + baryons + antibaryons
@@ -63,11 +71,19 @@ def _create_Particles_dict():
         Particles[lepton]['class'] = 'lepton'
         Particles[lepton]['lepton number'] = 1
         Particles[lepton]['baryon number'] = 0
+        if lepton not in neutrinos:
+            Particles[lepton]['charge'] = -1
+        else:
+            Particles[lepton]['charge'] = 0
 
     for antilepton in antileptons:
         Particles[antilepton]['class'] = 'antilepton'
         Particles[antilepton]['lepton number'] = -1
         Particles[antilepton]['baryon number'] = 0
+        if antilepton not in antineutrinos:
+            Particles[antilepton]['charge'] = 1
+        else:
+            Particles[antilepton]['charge'] = 0
 
     for baryon in baryons:
         Particles[baryon]['class'] = 'baryon'
@@ -101,18 +117,25 @@ def _create_Particles_dict():
     for thing in ['p', 'p-']:
         Particles[thing]['mass'] = const.m_p
 
+    Particles['p']['charge'] = 1
+    Particles['p-']['charge'] = -1
+
     for thing in ['n', 'antineutron']:
         Particles[thing]['mass'] = const.m_n
         Particles[thing]['half-life'] = 881.5 * u.s
+        Particles[thing]['charge'] = 0
 
     for thing in everything:
         if 'half-life' not in Particles[thing].keys():
             Particles[thing]['half-life'] = np.inf * u.s
 
+    for particle in particles:
+        Particles[particle]['antimatter'] = False
+
+    for antiparticle in antiparticles:
+        Particles[antiparticle]['antimatter'] = True
+
     return Particles
-
-
-_Particles = _create_Particles_dict()
 
 
 def _create_aliases_dict(Particles):
@@ -126,19 +149,18 @@ def _create_aliases_dict(Particles):
         aliases[symbol] = {'case sensitive': [], 'case insensitive': []}
         name = Particles[symbol]['name']
         aliases[symbol]['case insensitive'].append(name)
-
         if ' ' in name:
             aliases[symbol]['case insensitive'].append(name.replace(' ', '_'))
-
-        if 'anti' in name:
-            name_with_dash = name.replace('anti', 'anti-')
-            aliases[symbol]['case insensitive'].append(name_with_dash)
 
     aliases['e-']['case sensitive'].append('beta-')
 
     aliases['e+']['case sensitive'].append('beta+')
-    aliases['e+']['case insensitive'].extend(
-        ['antielectron', 'anti-electron'])
+    aliases['e+']['case insensitive'].append('antielectron')
+
+    aliases['mu-']['case insensitive'].append('muon-')
+    aliases['mu+']['case insensitive'].append('muon+')
+
+    aliases['p']['case sensitive'].append('p+')
 
     for symbol in ['D', 'D 1+', 'T', 'T 1+', 'He-4 2+']:
         aliases[symbol] = {'case sensitive': [], 'case insensitive': []}
@@ -167,17 +189,20 @@ def _create_aliases_dict(Particles):
     aliases['He-4 2+']['case insensitive'].extend(
         ['alpha', 'helium-4++', 'helium-4 2+', 'helium-4 +2'])
     aliases['He-4 2+']['case sensitive'].extend(
-        ['He-4 2+', 'He-4++', 'He-4 +2'])
+        ['He-4++', 'He-4 +2'])
 
     aliases['n']['case sensitive'].append('n-1')
     aliases['n']['case insensitive'].append('n0')
 
+    for symbol in aliases.keys():
+        for alias in aliases[symbol]['case insensitive']:
+            # The second clause in the next line is to avoid an infinite loop
+            if 'anti' in alias and 'anti-' not in alias:
+                new_item = alias.replace('anti', 'anti-')
+                aliases[symbol]['case insensitive'].append(new_item)
+
     return aliases
 
 
-_particle_aliases = _create_aliases_dict(_Particles)
-
-
-# screen output for testing purposes
-for symbol in _particle_aliases.keys():
-    print(symbol, '\n', _particle_aliases[symbol], '\n')
+_Particles = _create_Particles_dict()
+_aliases = _create_aliases_dict(_Particles)
