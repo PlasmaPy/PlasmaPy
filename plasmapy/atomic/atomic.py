@@ -6,6 +6,7 @@ from astropy import units as u, constants as const
 import warnings
 from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
+from .particles import _Particles
 
 # The code contained within atomic_symbol(), isotope_symbol(), and
 # _extract_charge_state() is designed to catch all of the special

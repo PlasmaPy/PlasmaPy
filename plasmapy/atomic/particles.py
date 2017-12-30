@@ -9,11 +9,12 @@ import numpy as np
 # TODO: Create a particle_symbol function
 # TODO: Create a particle_mass function
 # TODO: Create lepton_number, baryon_number, is_antimatter, is_lepton, etc.
+# TODO: Add example code on how to print out these dictionaries
 
 
 def _create_Particles_dict():
-    """Create a dictionary that will contain physical information for
-    all of the particles and antiparticles that we may care about."""
+    """Create a dictionary that contains physical information for
+    particles and antiparticles that are not elements or ions."""
 
     leptons = ['e-', 'mu-', 'tau-', 'nu_e', 'nu_mu', 'nu_tau']
     antileptons = ['e+', 'mu+', 'tau+', 'anti_nu_e',
@@ -138,71 +139,60 @@ def _create_Particles_dict():
     return Particles
 
 
-def _create_aliases_dict(Particles):
-    """Create a dictionary to contain all of the horrible, horrible
-     aliases used for different particles, antiparticles, isotopes,
-     and ions."""
+def _create_alias_dicts(Particles):
+    """Create dictionaries for case sensitive aliases and case
+    insensitive aliases."""
 
-    aliases = {}
+    case_sensitive_aliases = {}
+    case_insensitive_aliases = {}
 
     for symbol in Particles.keys():
-        aliases[symbol] = {'case sensitive': [], 'case insensitive': []}
         name = Particles[symbol]['name']
-        aliases[symbol]['case insensitive'].append(name)
-        if ' ' in name:
-            aliases[symbol]['case insensitive'].append(name.replace(' ', '_'))
+        case_insensitive_aliases[name.lower()] = symbol
 
-    aliases['e-']['case sensitive'].append('beta-')
+    case_sensitive_aliases_for_a_symbol = [
+        (['beta-'], 'e-'),
+        (['beta+'], 'e+'),
+        (['p+'], 'p'),
+        (['n-1'], 'n'),
+        (['H-2'], 'D'),
+        (['H-2+', 'H-2 1+', 'H-2 +1'], 'D 1+'),
+        (['H-3+', 'H-3 1+', 'H-3 +1'], 'T 1+'),
+    ]
 
-    aliases['e+']['case sensitive'].append('beta+')
-    aliases['e+']['case insensitive'].append('antielectron')
+    case_insensitive_aliases_for_a_symbol = [
+        (['antielectron'], 'e+'),
+        (['muon-'], 'mu-'),
+        (['muon-'], 'mu+'),
+        (['protium'], 'H-1'),
+        (['protium+', 'protium 1+', 'protium +1'], 'p'),
+        (['deuterium', 'hydrogen-2'], 'D'),
+        (['deuteron, deuterium+, deuterium 1+, deuterium +1'], 'D 1+'),
+        (['tritium', 'hydrogen-3'], 'T'),
+        (['triton', 'tritium+', 'tritium 1+', 'tritium +1'], 'T 1+'),
+        (['alpha'], 'He 2+'),
+    ]
 
-    aliases['mu-']['case insensitive'].append('muon-')
-    aliases['mu+']['case insensitive'].append('muon+')
+    for aliases, symbol in case_sensitive_aliases_for_a_symbol:
+        for alias in aliases:
+            case_sensitive_aliases[alias] = symbol
 
-    aliases['p']['case sensitive'].append('p+')
+    for aliases, symbol in case_insensitive_aliases_for_a_symbol:
+        for alias in aliases:
+            case_insensitive_aliases[alias.lower()] = symbol
 
-    for symbol in ['D', 'D 1+', 'T', 'T 1+', 'He-4 2+']:
-        aliases[symbol] = {'case sensitive': [], 'case insensitive': []}
+    alias_keys = list(case_insensitive_aliases.keys())
 
-    for symbol, mass_numb in [('D', 2), ('T', 3)]:
-        aliases[symbol]['case sensitive'].append(f"H-{mass_numb}")
-        aliases[symbol]['case insensitive'].append(f"hydrogen-{mass_numb}")
+    for alias in alias_keys:
+        if 'anti' in alias and 'anti-' not in alias:
+            symbol = case_insensitive_aliases[alias].lower()
+            new_alias = alias.replace('anti', 'anti-')
+            case_insensitive_aliases[new_alias] = symbol
 
-        ion = f"{symbol} 1+"
-        aliases[ion]['case sensitive'].extend(
-            [f"{symbol}+", f"{symbol} +1", f"H-{mass_numb}+",
-             f"H-{mass_numb} 1+", f"H-{mass_numb} +1"])
-
-        aliases[ion]['case insensitive'].extend(
-            [f"hydrogen-{mass_numb}+", f"hydrogen-{mass_numb} 1+",
-             f"hydrogen-{mass_numb} +1"])
-
-    aliases['D']['case insensitive'].append('deuterium')
-    aliases['T']['case insensitive'].append('tritium')
-
-    aliases['D 1+']['case insensitive'].extend(
-        ['deuteron', 'deuterium+', 'deuterium 1+', 'deuterium +1'])
-    aliases['T 1+']['case insensitive'].extend(
-        ['triton', 'tritium+', 'tritium 1+', 'tritium +1'])
-
-    aliases['He-4 2+']['case insensitive'].extend(
-        ['alpha', 'helium-4++', 'helium-4 2+', 'helium-4 +2'])
-    aliases['He-4 2+']['case sensitive'].extend(
-        ['He-4++', 'He-4 +2'])
-
-    aliases['n']['case sensitive'].append('n-1')
-    aliases['n']['case insensitive'].append('n0')
-
-    for symbol in aliases.keys():
-        for alias in aliases[symbol]['case insensitive']:
-            # The second clause in the next line is to avoid an infinite loop
-            if 'anti' in alias and 'anti-' not in alias:
-                new_item = alias.replace('anti', 'anti-')
-                aliases[symbol]['case insensitive'].append(new_item)
-
-    return aliases
+    return case_sensitive_aliases, case_insensitive_aliases
 
 
 _Particles = _create_Particles_dict()
-_aliases = _create_aliases_dict(_Particles)
+
+_case_sensitive_aliases, _case_insensitive_aliases = \
+    _create_alias_dicts(_Particles)
