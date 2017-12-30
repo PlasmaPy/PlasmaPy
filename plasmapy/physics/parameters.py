@@ -650,7 +650,6 @@ def gyrofrequency(B, particle='e', signed=False, z_mean=None):
                 Z = atomic.charge_state(particle)
             except ValueError:
                 Z = 1
-            Z = abs(Z)
         else:
             # using user provided average ionization
             Z = z_mean
