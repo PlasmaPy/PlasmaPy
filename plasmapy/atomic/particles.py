@@ -196,3 +196,20 @@ _Particles = _create_Particles_dict()
 
 _case_sensitive_aliases, _case_insensitive_aliases = \
     _create_alias_dicts(_Particles)
+
+
+def _get_standard_symbol(alias):
+    """If the input is a recognized alias for a particle, then
+    this function will return the standard symbol associated
+    with that alias.  Otherwise, this function will return the
+    original string."""
+
+    if not isinstance(alias, str):
+        return alias
+
+    if alias in _case_sensitive_aliases:
+        return _case_sensitive_aliases[alias]
+    elif alias.lower() in _case_insensitive_aliases:
+        return _case_insensitive_aliases[alias.lower()]
+    else:
+        return alias
