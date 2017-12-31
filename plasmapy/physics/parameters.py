@@ -2,9 +2,7 @@
 
 from astropy import units
 
-from astropy.units import (UnitConversionError, UnitsError, Quantity)
-
-from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
+from ..constants import (m_e, c, mu0, k_B, e, eps0)
 import plasmapy.atomic as atomic
 # from plasmapy.atomic import ion_mass, charge_state
 
@@ -15,7 +13,7 @@ import numpy as np
 # bit more than @quantity_input as it can allow
 import plasmapy.utils as utils
 from plasmapy.utils.checks import _check_quantity
-from plasmapy.utils.exceptions import PhysicsError # , PhysicsWarning
+from plasmapy.utils.exceptions import PhysicsError  # , PhysicsWarning
 
 
 r"""
@@ -176,7 +174,7 @@ def Alfven_speed(B, density, ion="p", z_mean=None):
     if density.unit == units.m**-3:
         try:
             m_i = atomic.ion_mass(ion)
-            if z_mean == None:
+            if z_mean is None:
                 # warnings.warn("No z_mean given, defaulting to atomic charge",
                 #               PhysicsWarning)
                 try:
@@ -323,7 +321,7 @@ def ion_sound_speed(*ignore,
 
     try:
         m_i = atomic.ion_mass(ion)
-        if z_mean == None:
+        if z_mean is None:
             # warnings.warn("No z_mean given, defaulting to atomic charge",
             #               PhysicsWarning)
             try:
@@ -643,7 +641,7 @@ def gyrofrequency(B, particle='e', signed=False, z_mean=None):
 
     try:
         m_i = atomic.ion_mass(particle)
-        if z_mean == None:
+        if z_mean is None:
             # warnings.warn("No z_mean given, defaulting to atomic charge",
             #               PhysicsWarning)
             try:
@@ -860,7 +858,7 @@ def plasma_frequency(n, particle='e', z_mean=None):
 
     try:
         m = atomic.ion_mass(particle)
-        if z_mean == None:
+        if z_mean is None:
             # warnings.warn("No z_mean given, defaulting to atomic charge",
             #               PhysicsWarning)
             try:

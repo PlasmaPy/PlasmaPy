@@ -6,7 +6,7 @@ from astropy import units as u
 from warnings import simplefilter
 
 from ...utils.exceptions import RelativityWarning, RelativityError
-from ...utils.exceptions import PhysicsError, PhysicsWarning
+from ...utils.exceptions import PhysicsError
 from ...constants import c, m_p, m_e, e, mu0
 
 from ..parameters import (Alfven_speed,
@@ -137,10 +137,7 @@ def test_Alfven_speed():
     with pytest.raises(UserWarning):
         assert Alfven_speed(1.0, n_i) == Alfven_speed(1.0 * u.T, n_i)
 
-    # tests for z_mean functionality
-    # testing if warning is signaled for default value
-    with pytest.warns(PhysicsWarning):
-        Alfven_speed(1 * u.T, 5e19 * u.m**-3, ion='p')
+    Alfven_speed(1 * u.T, 5e19 * u.m**-3, ion='p')
     # testing for user input z_mean
     testMeth1 = Alfven_speed(1 * u.T,
                              5e19 * u.m**-3,
@@ -233,10 +230,7 @@ def test_ion_sound_speed():
     with pytest.raises(UserWarning):
         assert ion_sound_speed(T_i=1.3e6) == ion_sound_speed(T_i=1.3e6 * u.K)
 
-    # tests for z_mean functionality
-    # testing if warning is signaled for default value
-    with pytest.warns(PhysicsWarning):
-        ion_sound_speed(T_e=1.2e6 * u.K)
+    ion_sound_speed(T_e=1.2e6 * u.K)
     # testing for user input z_mean
     testMeth1 = ion_sound_speed(T_e=1.2e6 * u.K, z_mean=0.8).si.value
     testTrue1 = 89018.0944146141
@@ -469,10 +463,7 @@ def test_gyrofrequency():
     with pytest.raises(UserWarning):
         assert gyrofrequency(5.0, 'p') == gyrofrequency(5.0 * u.T, 'p')
 
-    # tests for z_mean functionality
-    # testing if warning is signaled for default value
-    with pytest.warns(PhysicsWarning):
-        gyrofrequency(1 * u.T, particle='p')
+    gyrofrequency(1 * u.T, particle='p')
     # testing for user input z_mean
     testMeth1 = gyrofrequency(1 * u.T, particle='p', z_mean=0.8).si.value
     testTrue1 = 76630665.79318453
@@ -628,10 +619,7 @@ def test_plasma_frequency():
         assert plasma_frequency(1e19, particle='p') ==\
             plasma_frequency(1e19 * u.m**-3, particle='p')
 
-    # tests for z_mean functionality
-    # testing if warning is signaled for default value
-    with pytest.warns(PhysicsWarning):
-        plasma_frequency(1e17 * u.cm**-3, particle='p')
+    plasma_frequency(1e17 * u.cm**-3, particle='p')
     # testing for user input z_mean
     testMeth1 = plasma_frequency(1e17 * u.cm**-3,
                                  particle='p',
