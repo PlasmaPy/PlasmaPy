@@ -1,7 +1,6 @@
 from astropy import units as u, constants as const
 import numpy as np
 
-# TODO: Add tests for _Particles and _Aliases
 # TODO: Add type hints for a dictionary of dictionaries of whatever
 # TODO: Extend docstrings in _create_Particles_dict and _create_aliases_dict
 # TODO: Create function to take an alias and return the standardized symbol
@@ -163,14 +162,16 @@ def _create_alias_dicts(Particles):
     case_insensitive_aliases_for_a_symbol = [
         (['antielectron'], 'e+'),
         (['muon-'], 'mu-'),
-        (['muon-'], 'mu+'),
+        (['muon+'], 'mu+'),
+        (['tau particle'], 'tau-'),
         (['protium'], 'H-1'),
         (['protium+', 'protium 1+', 'protium +1'], 'p'),
         (['deuterium', 'hydrogen-2'], 'D'),
-        (['deuteron, deuterium+, deuterium 1+, deuterium +1'], 'D 1+'),
+        (['deuteron', 'deuterium+', 'deuterium 1+', 'deuterium +1', 'D+'],
+         'D 1+'),
         (['tritium', 'hydrogen-3'], 'T'),
         (['triton', 'tritium+', 'tritium 1+', 'tritium +1'], 'T 1+'),
-        (['alpha'], 'He 2+'),
+        (['alpha'], 'He-4 2+'),
     ]
 
     for aliases, symbol in case_sensitive_aliases_for_a_symbol:
@@ -207,9 +208,12 @@ def _get_standard_symbol(alias):
     if not isinstance(alias, str):
         return alias
 
-    if alias in _case_sensitive_aliases:
+    if alias in _case_sensitive_aliases.keys():
         return _case_sensitive_aliases[alias]
-    elif alias.lower() in _case_insensitive_aliases:
+    elif alias.lower() in _case_insensitive_aliases.keys():
         return _case_insensitive_aliases[alias.lower()]
     else:
         return alias
+
+
+print(_case_insensitive_aliases)
