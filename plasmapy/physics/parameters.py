@@ -97,7 +97,8 @@ def Alfven_speed(B, density, ion="p", z_mean=None):
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
         given then the atomic charge state (integer) of the ion
-        is used.
+        is used. This is effectively an average Alfven speed for the
+        plasma where multiple charge states are present.
 
     Returns
     -------
@@ -250,7 +251,8 @@ def ion_sound_speed(*ignore,
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
         given then the atomic charge state (integer) of the ion
-        is used.
+        is used. This is effectively an average ion sound speed for the
+        plasma where multiple charge states are present.
 
     Returns
     -------
@@ -574,7 +576,9 @@ def gyrofrequency(B, particle='e', signed=False, z_mean=None):
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
         given then the atomic charge state (integer) of the ion
-        is used.
+        is used. This is effectively an average gyrofrequency for the
+        plasma where multiple charge states are present, and should
+        not be interpreted as the gyrofrequency for any single particle.
 
     signed : boolean, optional
         The gyrofrequency can be defined as signed (negative for electron,
@@ -809,7 +813,8 @@ def plasma_frequency(n, particle='e', z_mean=None):
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
         given then the atomic charge state (integer) of the ion
-        is used.
+        is used. This is effectively an average plasma frequency for the
+        plasma where multiple charge states are present. 
 
     Returns
     -------
