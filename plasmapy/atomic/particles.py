@@ -1,17 +1,15 @@
+import typing
 from astropy import units as u, constants as const
 import numpy as np
 
-# TODO: Add type hints for a dictionary of dictionaries of whatever
 # TODO: Extend docstrings in _create_Particles_dict and _create_aliases_dict
-# TODO: Create function to take an alias and return the standardized symbol
 # TODO: Create an ion_symbol function
 # TODO: Create a particle_symbol function
 # TODO: Create a particle_mass function
 # TODO: Create lepton_number, baryon_number, is_antimatter, is_lepton, etc.
-# TODO: Add example code on how to print out these dictionaries
 
 
-def _create_Particles_dict():
+def _create_Particles_dict() -> typing.Dict[str, dict]:
     """Create a dictionary that contains physical information for
     particles and antiparticles that are not elements or ions."""
 
@@ -138,7 +136,8 @@ def _create_Particles_dict():
     return Particles
 
 
-def _create_alias_dicts(Particles):
+def _create_alias_dicts(Particles: dict) -> (typing.Dict[str, str],
+                                             typing.Dict[str, str]):
     """Create dictionaries for case sensitive aliases and case
     insensitive aliases."""
 
@@ -199,7 +198,7 @@ _case_sensitive_aliases, _case_insensitive_aliases = \
     _create_alias_dicts(_Particles)
 
 
-def _get_standard_symbol(alias):
+def _get_standard_symbol(alias: str) -> str:
     """If the input is a recognized alias for a particle, then
     this function will return the standard symbol associated
     with that alias.  Otherwise, this function will return the
@@ -216,4 +215,13 @@ def _get_standard_symbol(alias):
         return alias
 
 
-print(_case_insensitive_aliases)
+if __name__ == "__main__":
+    from pprint import pprint
+    print("Case insensitive aliases:")
+    pprint(_case_insensitive_aliases)
+    print(20*"=")
+    print("Case sensitive aliases:")
+    pprint(_case_sensitive_aliases)
+    print(20*"=")
+    print("Particles:")
+    pprint(_Particles)
