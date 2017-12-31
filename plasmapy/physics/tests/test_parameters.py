@@ -137,6 +137,19 @@ def test_Alfven_speed():
     with pytest.raises(UserWarning):
         assert Alfven_speed(1.0, n_i) == Alfven_speed(1.0 * u.T, n_i)
 
+    Alfven_speed(1 * u.T, 5e19 * u.m**-3, ion='p')
+    # testing for user input z_mean
+    testMeth1 = Alfven_speed(1 * u.T,
+                             5e19 * u.m**-3,
+                             ion='p',
+                             z_mean=0.8).si.value
+    testTrue1 = 3084015.75214846
+    errStr = (f"Alfven_speed() gave {testMeth1}, should be {testTrue1}.")
+    assert np.isclose(testMeth1,
+                      testTrue1,
+                      atol=0.0,
+                      rtol=1e-15), errStr
+
 
 def test_ion_sound_speed():
     r"""Test the ion_sound_speed function in parameters.py."""
@@ -216,6 +229,16 @@ def test_ion_sound_speed():
 
     with pytest.raises(UserWarning):
         assert ion_sound_speed(T_i=1.3e6) == ion_sound_speed(T_i=1.3e6 * u.K)
+
+    ion_sound_speed(T_e=1.2e6 * u.K)
+    # testing for user input z_mean
+    testMeth1 = ion_sound_speed(T_e=1.2e6 * u.K, z_mean=0.8).si.value
+    testTrue1 = 89018.0944146141
+    errStr = (f"ion_sound_speed() gave {testMeth1}, should be {testTrue1}.")
+    assert np.isclose(testMeth1,
+                      testTrue1,
+                      atol=0.0,
+                      rtol=1e-15), errStr
 
 
 def test_thermal_speed():
@@ -300,6 +323,7 @@ class Test_kappa_thermal_speed(object):
         self.probable1True = 24467.878463594963
         self.rms1True = 37905.474322612165
         self.mean1True = 34922.98563039583
+
     def test_invalid_kappa(self):
         """
         Checks if function raises error when kappa <= 3/2 is passed as an
@@ -310,6 +334,7 @@ class Test_kappa_thermal_speed(object):
                                 self.kappaInvalid,
                                 particle=self.particle)
         return
+
     def test_invalid_method(self):
         """
         Checks if function raises error when invalid method is passed as an
@@ -321,6 +346,7 @@ class Test_kappa_thermal_speed(object):
                                 particle=self.particle,
                                 method="invalid")
         return
+
     def test_probable1(self):
         """
         Tests if expected value is returned for a set of regular inputs.
@@ -336,6 +362,7 @@ class Test_kappa_thermal_speed(object):
                           rtol=1e-8,
                           atol=0.0), errStr
         return
+
     def test_rms1(self):
         """
         Tests if expected value is returned for a set of regular inputs.
@@ -351,6 +378,7 @@ class Test_kappa_thermal_speed(object):
                           rtol=1e-8,
                           atol=0.0), errStr
         return
+
     def test_mean1(self):
         """
         Tests if expected value is returned for a set of regular inputs.
@@ -366,8 +394,6 @@ class Test_kappa_thermal_speed(object):
                           rtol=1e-8,
                           atol=0.0), errStr
         return
-    
-    
 
 
 def test_gyrofrequency():
@@ -436,6 +462,16 @@ def test_gyrofrequency():
 
     with pytest.raises(UserWarning):
         assert gyrofrequency(5.0, 'p') == gyrofrequency(5.0 * u.T, 'p')
+
+    gyrofrequency(1 * u.T, particle='p')
+    # testing for user input z_mean
+    testMeth1 = gyrofrequency(1 * u.T, particle='p', z_mean=0.8).si.value
+    testTrue1 = 76630665.79318453
+    errStr = (f"gyrofrequency() gave {testMeth1}, should be {testTrue1}.")
+    assert np.isclose(testMeth1,
+                      testTrue1,
+                      atol=0.0,
+                      rtol=1e-15), errStr
 
 
 def test_gyroradius():
@@ -582,6 +618,18 @@ def test_plasma_frequency():
     with pytest.raises(UserWarning):
         assert plasma_frequency(1e19, particle='p') ==\
             plasma_frequency(1e19 * u.m**-3, particle='p')
+
+    plasma_frequency(1e17 * u.cm**-3, particle='p')
+    # testing for user input z_mean
+    testMeth1 = plasma_frequency(1e17 * u.cm**-3,
+                                 particle='p',
+                                 z_mean=0.8).si.value
+    testTrue1 = 333063562455.4028
+    errStr = (f"plasma_frequency() gave {testMeth1}, should be {testTrue1}.")
+    assert np.isclose(testMeth1,
+                      testTrue1,
+                      atol=0.0,
+                      rtol=1e-15), errStr
 
 
 def test_Debye_length():

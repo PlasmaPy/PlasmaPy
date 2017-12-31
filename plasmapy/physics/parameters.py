@@ -2,19 +2,18 @@
 
 from astropy import units
 
-from astropy.units import (UnitConversionError, UnitsError, Quantity)
-
-from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
+from ..constants import (m_e, c, mu0, k_B, e, eps0)
 import plasmapy.atomic as atomic
 # from plasmapy.atomic import ion_mass, charge_state
 
 import numpy as np
+# import warnings
 
 # For future: change these into decorators.  _check_quantity does a
 # bit more than @quantity_input as it can allow
 import plasmapy.utils as utils
 from plasmapy.utils.checks import _check_quantity
-from plasmapy.utils.exceptions import PhysicsError
+from plasmapy.utils.exceptions import PhysicsError  # , PhysicsWarning
 
 
 r"""
@@ -75,7 +74,7 @@ by an angular frequency to get a length scale:
 
 
 @utils.check_relativistic
-def Alfven_speed(B, density, ion="p"):
+def Alfven_speed(B, density, ion="p", z_mean=None):
     r"""
     Returns the Alfven speed.
 
@@ -93,6 +92,13 @@ def Alfven_speed(B, density, ion="p"):
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
         which defaults to protons.  If no charge state information is
         provided, then the ions are assumed to be singly charged.
+
+    z_mean : Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. If this quantity is not
+        given then the atomic charge state (integer) of the ion
+        is used. This is effectively an average Alfven speed for the
+        plasma where multiple charge states are present.
 
     Returns
     -------
@@ -169,10 +175,18 @@ def Alfven_speed(B, density, ion="p"):
     if density.unit == units.m**-3:
         try:
             m_i = atomic.ion_mass(ion)
-            try:
-                Z = atomic.charge_state(ion)
-            except ValueError:
-                Z = 1
+            if z_mean is None:
+                # warnings.warn("No z_mean given, defaulting to atomic charge",
+                #               PhysicsWarning)
+                try:
+                    Z = atomic.charge_state(ion)
+                except ValueError:
+                    Z = 1
+            else:
+                # using average ionization provided by user
+                Z = z_mean
+            # ensuring positive value of Z
+            Z = np.abs(Z)
         except Exception:
             raise ValueError("Invalid ion in Alfven_speed.")
         rho = density * m_i + Z * density * m_e
@@ -193,8 +207,13 @@ def Alfven_speed(B, density, ion="p"):
     'T_i': {'units': units.K, 'can_be_negative': False},
     'T_e': {'units': units.K, 'can_be_negative': False}
 })
-def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
-                    gamma_e=1, gamma_i=3, ion='p'):
+def ion_sound_speed(*ignore,
+                    T_e=0 * units.K,
+                    T_i=0 * units.K,
+                    gamma_e=1,
+                    gamma_i=3,
+                    ion='p',
+                    z_mean=None):
     r"""
     Returns the ion sound speed for an electron-ion plasma.
 
@@ -227,6 +246,13 @@ def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
         which defaults to protons.  If no charge state information is
         provided, then the ions are assumed to be singly charged.
+
+    z_mean : Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. If this quantity is not
+        given then the atomic charge state (integer) of the ion
+        is used. This is effectively an average ion sound speed for the
+        plasma where multiple charge states are present.
 
     Returns
     -------
@@ -297,11 +323,16 @@ def ion_sound_speed(*ignore, T_e=0 * units.K, T_i=0 * units.K,
 
     try:
         m_i = atomic.ion_mass(ion)
-
-        try:
-            Z = atomic.charge_state(ion)
-        except ValueError:
-            Z = 1
+        if z_mean is None:
+            # warnings.warn("No z_mean given, defaulting to atomic charge",
+            #               PhysicsWarning)
+            try:
+                Z = atomic.charge_state(ion)
+            except ValueError:
+                Z = 1
+        else:
+            # using average ionization provided by user
+            Z = z_mean
     except Exception:
         raise ValueError("Invalid ion in ion_sound_speed.")
 
@@ -527,7 +558,7 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
 @utils.check_quantity({
     'B': {'units': units.T}
 })
-def gyrofrequency(B, particle='e', signed=False):
+def gyrofrequency(B, particle='e', signed=False, z_mean=None):
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
@@ -540,6 +571,14 @@ def gyrofrequency(B, particle='e', signed=False):
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
         which defaults to electrons.  If no charge state information is
         provided, then the particles are assumed to be singly charged.
+
+    z_mean : Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. If this quantity is not
+        given then the atomic charge state (integer) of the ion
+        is used. This is effectively an average gyrofrequency for the
+        plasma where multiple charge states are present, and should
+        not be interpreted as the gyrofrequency for any single particle.
 
     signed : boolean, optional
         The gyrofrequency can be defined as signed (negative for electron,
@@ -606,10 +645,16 @@ def gyrofrequency(B, particle='e', signed=False):
 
     try:
         m_i = atomic.ion_mass(particle)
-        try:
-            Z = atomic.charge_state(particle)
-        except ValueError:
-            Z = 1
+        if z_mean is None:
+            # warnings.warn("No z_mean given, defaulting to atomic charge",
+            #               PhysicsWarning)
+            try:
+                Z = atomic.charge_state(particle)
+            except ValueError:
+                Z = 1
+        else:
+            # using user provided average ionization
+            Z = z_mean
     except Exception:
         raise ValueError("Invalid particle {} in gyrofrequency"
                          .format(particle))
@@ -750,7 +795,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
 @utils.check_quantity({
     'n': {'units': units.m**-3, 'can_be_negative': False}
 })
-def plasma_frequency(n, particle='e'):
+def plasma_frequency(n, particle='e', z_mean=None):
     r"""Calculates the particle plasma frequency.
 
     Parameters
@@ -763,6 +808,13 @@ def plasma_frequency(n, particle='e'):
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
         which defaults to electrons.  If no charge state information is
         provided, then the particles are assumed to be singly charged.
+
+    z_mean : Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. If this quantity is not
+        given then the atomic charge state (integer) of the ion
+        is used. This is effectively an average plasma frequency for the
+        plasma where multiple charge states are present. 
 
     Returns
     -------
@@ -811,11 +863,22 @@ def plasma_frequency(n, particle='e'):
 
     try:
         m = atomic.ion_mass(particle)
+        if z_mean is None:
+            # warnings.warn("No z_mean given, defaulting to atomic charge",
+            #               PhysicsWarning)
+            try:
+                Z = atomic.charge_state(particle)
+            except ValueError:
+                Z = 1
+        else:
+            # using user provided average ionization
+            Z = z_mean
+        Z = np.abs(Z)
     except Exception:
         raise ValueError(f"Invalid particle, {particle}, in "
                          "plasma_frequency.")
 
-    omega_p = units.rad * e * np.sqrt(n / (eps0 * m))
+    omega_p = units.rad * Z * e * np.sqrt(n / (eps0 * m))
 
     return omega_p.si
 
@@ -886,7 +949,7 @@ def Debye_length(T_e, n_e):
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
 
     try:
-        lambda_D = ((eps0 * k_B * T_e / (n_e * e**2))**0.5).to(units.m)
+        lambda_D = ((eps0 * k_B * T_e / (n_e * e ** 2)) ** 0.5).to(units.m)
     except Exception:
         raise ValueError("Unable to find Debye length.")
 
@@ -953,7 +1016,7 @@ def Debye_number(T_e, n_e):
 
     try:
         lambda_D = Debye_length(T_e, n_e)
-        N_D = (4 / 3) * np.pi * n_e * lambda_D**3
+        N_D = (4 / 3) * np.pi * n_e * lambda_D ** 3
     except Exception:
         raise ValueError("Unable to find Debye number")
 
@@ -1017,8 +1080,7 @@ def inertial_length(n, particle='e'):
     try:
         Z = atomic.charge_state(particle)
     except Exception:
-        raise ValueError("Invalid particle {} in inertial_length."
-                         .format(particle))
+        raise ValueError(f"Invalid particle {particle} in inertial_length.")
     if Z:
         Z = abs(Z)
 
@@ -1038,7 +1100,7 @@ def magnetic_pressure(B):
     Parameters
     ----------
     B : ~astropy.units.Quantity
-        The magnetic field in units convertible to telsa.
+        The magnetic field in units convertible to tesla.
 
     Returns
     -------
@@ -1085,7 +1147,7 @@ def magnetic_pressure(B):
 
     """
 
-    p_B = (B**2 / (2 * mu0)).to(units.Pa)
+    p_B = (B ** 2 / (2 * mu0)).to(units.Pa)
 
     return p_B
 
@@ -1147,7 +1209,7 @@ def magnetic_energy_density(B: units.T):
 
     """
 
-    E_B = (B**2 / (2 * mu0)).to(units.J / units.m**3)
+    E_B = (B ** 2 / (2 * mu0)).to(units.J / units.m ** 3)
 
     return E_B
 
@@ -1291,7 +1353,7 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
         omega_ci = gyrofrequency(B, particle=ion)
         omega_pi = plasma_frequency(n_i, particle=ion)
         omega_ce = gyrofrequency(B)
-        omega_lh = 1 / np.sqrt((omega_ci * omega_ce)**-1 + omega_pi**-2)
+        omega_lh = 1 / np.sqrt((omega_ci * omega_ce) ** -1 + omega_pi ** -2)
         omega_lh = omega_lh.to(units.rad / units.s)
     except Exception:
         raise ValueError("Unable to find lower hybrid frequency.")
