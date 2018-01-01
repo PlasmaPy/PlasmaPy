@@ -198,11 +198,12 @@ _case_sensitive_aliases, _case_insensitive_aliases = \
     _create_alias_dicts(_Particles)
 
 
-def _get_standard_symbol(alias: str) -> str:
+def _get_standard_symbol(alias: typing.Union[str, int]) -> str:
     """If the input is a recognized alias for a particle, then
     this function will return the standard symbol associated
     with that alias.  Otherwise, this function will return the
-    original string."""
+    original argument (which will usually be a string but may
+    be an int representing atomic number)."""
 
     if not isinstance(alias, str):
         return alias
@@ -215,7 +216,7 @@ def _get_standard_symbol(alias: str) -> str:
         return alias
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # coveralls: ignore
     from pprint import pprint
     print("Case insensitive aliases:")
     pprint(_case_insensitive_aliases)
