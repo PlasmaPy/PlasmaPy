@@ -136,5 +136,5 @@ setup(name=PACKAGENAME,
       zip_safe=False,
       use_2to3=False,
       entry_points=entry_points,
-      **package_info
+      **package_info,
 )
