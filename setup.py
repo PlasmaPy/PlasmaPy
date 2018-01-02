@@ -126,7 +126,8 @@ setup(name=PACKAGENAME,
       version=VERSION,
       description=DESCRIPTION,
       scripts=scripts,
-      install_requires=[s.strip() for s in metadata.get('install_requires', 'astropy').split(',')],
+      install_requires=[s.strip() for s in metadata.get(
+          'install_requires', 'astropy').split(',')],
       author=AUTHOR,
       author_email=AUTHOR_EMAIL,
       license=LICENSE,
@@ -137,4 +138,4 @@ setup(name=PACKAGENAME,
       use_2to3=False,
       entry_points=entry_points,
       **package_info,
-)
+      )
