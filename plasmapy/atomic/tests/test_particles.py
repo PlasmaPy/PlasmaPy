@@ -98,7 +98,13 @@ alias_dictionaries = [_case_sensitive_aliases, _case_insensitive_aliases]
 @pytest.mark.parametrize("alias_dict", alias_dictionaries)
 def test_alias_dict_properties(alias_dict):
     """Test properties of the alias dictionaries."""
+
     for key in alias_dict.keys():
-        assert isinstance(key, str), f"{key}\n{alias_dict}"
+        assert isinstance(key, str), \
+            (f"The following key should be a string, but isn't: {key}\n\n"
+             f"The entire dictionary is:\n\n{alias_dict}")
+
     for value in alias_dict.values():
-        assert isinstance(value, str), f"{value}\n{alias_dict}"
+        assert isinstance(value, str), \
+            (f"The following value should be a string, but isn't: {value}\n\n"
+             f"The entire dictionary is:\n\n{alias_dict}")
