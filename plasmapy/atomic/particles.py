@@ -2,12 +2,6 @@ import typing
 from astropy import units as u, constants as const
 import numpy as np
 
-# TODO: Extend docstrings in _create_Particles_dict and _create_aliases_dict
-# TODO: Create an ion_symbol function
-# TODO: Create a particle_symbol function
-# TODO: Create a particle_mass function
-# TODO: Create lepton_number, baryon_number, is_antimatter, is_lepton, etc.
-
 
 def _create_Particles_dict() -> typing.Dict[str, dict]:
     """Create a dictionary of dictionaries that contains physical

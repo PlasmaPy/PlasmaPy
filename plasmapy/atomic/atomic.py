@@ -13,6 +13,13 @@ from .particles import _Particles, _get_standard_symbol
 # cases for different inputs.  Complexity is concentrated in these
 # functions so that the rest of the functions can be simpler.
 
+# TODO: Implement subpackage specific exceptions/warnings (e.g., AtomicError)
+# TODO: Create an ion_symbol function
+# TODO: Create a particle_symbol function
+# TODO: Create a particle_mass function
+# TODO: Create lepton_number and baryon_number functions
+# TODO: Maybe create is_antimatter, is_lepton, is_baryon, is_boson, is_fermion
+
 
 def atomic_symbol(argument):
     r"""Returns the atomic symbol.
