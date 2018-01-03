@@ -2,3 +2,4 @@ numpy (>= 1.13)
 scipy (>= 0.19)
 astropy (>= 2.0)
 matplotlib
+cython

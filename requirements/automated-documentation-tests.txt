@@ -2,6 +2,7 @@ astropy
 coveralls
 matplotlib
 numpy
+cython
 numpydoc
 pillow
 scipy

@@ -1,5 +1,6 @@
 numpy (>= 1.13)
 scipy (>= 0.19)
+cython
 astropy (>= 2.0)
 flake8
 coveralls
