@@ -3,8 +3,8 @@ deps-run: &deps-install
   command: |
     python3 -m venv venv
     . venv/bin/activate
-    pip install -q --user -r requirements/automated-documentation-tests.txt
-    pip install -q --user .
+    pip install --user -r requirements/automated-documentation-tests.txt | cat
+    pip install --user . | cat
 
 latex-install: &latex-installer
   name: Install Latex dependencies
