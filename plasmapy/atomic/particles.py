@@ -10,8 +10,15 @@ import numpy as np
 
 
 def _create_Particles_dict() -> typing.Dict[str, dict]:
-    """Create a dictionary that contains physical information for
-    particles and antiparticles that are not elements or ions."""
+    """Create a dictionary of dictionaries that contains physical
+    information for particles and antiparticles that are not
+    elements or ions.
+
+    The keys of the top-level dictionary are the standard
+    particle symbols. The values of the top-level dictionary
+    are dictionaries for each particle or antiparticle with
+    strings such as 'name', 'mass', and 'spin' as the keys
+    and the corresponding atomic properties as symbols."""
 
     leptons = ['e-', 'mu-', 'tau-', 'nu_e', 'nu_mu', 'nu_tau']
     antileptons = ['e+', 'mu+', 'tau+', 'anti_nu_e',
@@ -139,7 +146,11 @@ def _create_Particles_dict() -> typing.Dict[str, dict]:
 def _create_alias_dicts(Particles: dict) -> (typing.Dict[str, str],
                                              typing.Dict[str, str]):
     """Create dictionaries for case sensitive aliases and case
-    insensitive aliases."""
+    insensitive aliases of special particles and antiparticles.
+
+    The keys of these dictionaries are the aliases, and the values
+    are the corresponding standardized symbol for the particle or
+    antiparticle."""
 
     case_sensitive_aliases = {}
     case_insensitive_aliases = {}
@@ -199,11 +210,11 @@ _case_sensitive_aliases, _case_insensitive_aliases = \
 
 
 def _get_standard_symbol(alias: typing.Union[str, int]) -> str:
-    """If the input is a recognized alias for a particle, then
-    this function will return the standard symbol associated
-    with that alias.  Otherwise, this function will return the
-    original argument (which will usually be a string but may
-    be an int representing atomic number)."""
+    """Returns the standard symbol for a particle or antiparticle
+    when the argument is a valid alias.  If the argument is not a
+    valid alias, then this function returns the original argument
+    (which will usually be a string but may be an int representing
+    atomic number)."""
 
     if not isinstance(alias, str):
         return alias
