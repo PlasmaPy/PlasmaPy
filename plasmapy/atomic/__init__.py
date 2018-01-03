@@ -3,3 +3,4 @@ from .atomic import *
 from .nuclear import *
 from .elements import *
 from .isotopes import *
+from .particles import *
