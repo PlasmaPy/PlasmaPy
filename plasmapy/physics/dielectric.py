@@ -26,7 +26,7 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
     - T.H. Stix, Waves in Plasma, 1992.
 
     Parameters
-    -------
+    ----------
     B : ~astropy.units.Quantity
         Magnetic field magnitude in units convertible to tesla.
 
@@ -88,7 +88,7 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
     >>> B = 2*units.T
     >>> species = ['e', 'D+']
     >>> n = [1e18*units.m**-3, 1e18*units.m**-3]
-    >>> omega = 50e6*(2*np.pi)*(units.rad/units.s)
+    >>> omega = 50e6*(2*pi)*(units.rad/units.s)
     >>> S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega)
     ￼
     """
@@ -98,9 +98,9 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
         omega_c = gyrofrequency(B=B, particle=s, signed=True)
         omega_p = plasma_frequency(n=n[idx], particle=s)
 
-        S += - omega_p**2 / (omega**2 - omega_c**2)
-        D += omega_c/omega * omega_p**2 / (omega**2 - omega_c**2)
-        P += - omega_p**2 / omega**2
+        S += - omega_p ** 2 / (omega ** 2 - omega_c ** 2)
+        D += omega_c/omega * omega_p ** 2 / (omega ** 2 - omega_c ** 2)
+        P += - omega_p ** 2 / omega ** 2
     return S, D, P
 
 
@@ -117,7 +117,7 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
     - T.H. Stix, Waves in Plasma, 1992.
 
     Parameters
-    -------
+    ----------
     B : ~astropy.units.Quantity
         Magnetic field magnitude in units convertible to tesla.
 
@@ -166,7 +166,7 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
     >>> B = 2*units.T
     >>> species = ['e', 'D+']
     >>> n = [1e18*units.m**-3, 1e18*units.m**-3]
-    >>> omega = 50e6*(2*np.pi)*(units.rad/units.s)
+    >>> omega = 50e6*(2*pi)*(units.rad/units.s)
     >>> L, R, P = cold_plasma_permittivity_LRP(B, species, n, omega)
     ￼
     """
@@ -176,7 +176,7 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
         omega_c = gyrofrequency(B=B, particle=s, signed=True)
         omega_p = plasma_frequency(n=n[idx], particle=s)
 
-        L += - omega_p**2 / (omega*(omega - omega_c))
-        R += - omega_p**2 / (omega*(omega + omega_c))
-        P += - omega_p**2 / omega**2
+        L += - omega_p ** 2 / (omega*(omega - omega_c))
+        R += - omega_p ** 2 / (omega*(omega + omega_c))
+        P += - omega_p ** 2 / omega ** 2
     return L, R, P
