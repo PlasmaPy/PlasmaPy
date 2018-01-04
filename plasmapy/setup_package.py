@@ -2,13 +2,27 @@
 from setuptools.extension import Extension
 
 # list of cython extensions in package
-# extensions = [Extension("*", ["*.pyx"])]
+# cython_extensions = [Extension("*", ["*.pyx"])]
+
+# list of c extensions in package
+# c_extensions = [Extension("*", ["*.c"])]
 
 # getting C and Cython extensions
-testFile = 'plasmapy/physics/parameters_cython.pyx'
+cython_testFile = 'plasmapy/physics/parameters_cython.pyx'
+c_testFile = 'plasmapy/physics/parameters_cython.pyx'
 
 
 def get_extensions():
-    return [Extension(name='parameters_cython',
-                      sources=[testFile],
-                      include_dirs=['numpy'])]
+    extensions = []
+    # getting cython files
+    
+    # getting .c files
+
+    # expicitly adding cython and c file
+    extensions.append(Extension(name='parameters_cython.pyx',
+                                sources=[cython_testFile],
+                                include_dirs=['numpy']))
+    extensions.append(Extension(name='parameters_cython.c',
+                                sources=[c_testFile],
+                                include_dirs=['numpy']))
+    return extensions
