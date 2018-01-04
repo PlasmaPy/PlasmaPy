@@ -6,12 +6,12 @@
         "include_dirs": [
             "numpy"
         ],
-        "name": "plasmapy/physics/parameters_cython",
+        "name": "plasmapy.physics.parameters_cython",
         "sources": [
             "plasmapy/physics/parameters_cython.pyx"
         ]
     },
-    "module_name": "plasmapy/physics/parameters_cython"
+    "module_name": "plasmapy.physics.parameters_cython"
 }
 END: Cython Metadata */
 
