@@ -85,10 +85,10 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
 
     Examples
     --------
-    >>> B = 2*u.T
+    >>> B = 2*units.T
     >>> species = ['e', 'D+']
-    >>> n = [1e18*u.m**-3, 1e18*u.m**-3]
-    >>> omega = 50e6*(2*np.pi)*(u.rad/u.s)
+    >>> n = [1e18*units.m**-3, 1e18*units.m**-3]
+    >>> omega = 50e6*(2*np.pi)*(units.rad/units.s)
     >>> S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega)
     ￼
     """
@@ -163,10 +163,10 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
 
     Examples
     --------
-    >>> B = 2*u.T
+    >>> B = 2*units.T
     >>> species = ['e', 'D+']
-    >>> n = [1e18*u.m**-3, 1e18*u.m**-3]
-    >>> omega = 50e6*(2*np.pi)*(u.rad/u.s)
+    >>> n = [1e18*units.m**-3, 1e18*units.m**-3]
+    >>> omega = 50e6*(2*np.pi)*(units.rad/units.s)
     >>> L, R, P = cold_plasma_permittivity_LRP(B, species, n, omega)
     ￼
     """
