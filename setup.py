@@ -122,8 +122,6 @@ package_info['package_data'][PACKAGENAME].extend(c_files)
 # ``setup``, since these are now deprecated. See this link for more details:
 # https://groups.google.com/forum/#!topic/astropy-dev/urYO8ckB2uM
 
-# testing if numpy exists at setup time
-import numpy
 
 setup(name=PACKAGENAME,
       version=VERSION,
