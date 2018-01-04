@@ -22,8 +22,6 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
 
     The :math:`\exp(-i \omega t)` time-harmonic convention is assumed.
 
-    References
-    - T.H. Stix, Waves in Plasma, 1992.
 
     Parameters
     ----------
@@ -84,6 +82,10 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
     :math:`\Omega_{c,s}` is the signed version of the cyclotron frequency
     for the species :math:`s`.
 
+    References
+    ----------
+    - T.H. Stix, Waves in Plasma, 1992.
+
     Examples
     --------
     >>> from astropy import units as u
@@ -121,8 +123,6 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
 
     The :math:`\exp(-i \omega t)` time-harmonic convention is assumed.
 
-    References
-    - T.H. Stix, Waves in Plasma, 1992.
 
     Parameters
     ----------
@@ -170,6 +170,10 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
     where :math:`\omega_{p,s}` is the plasma frequency and
     :math:`\Omega_{c,s}` is the signed version of the cyclotron frequency
     for the species :math:`s`.
+
+    References
+    ----------
+    - T.H. Stix, Waves in Plasma, 1992.
 
     Examples
     --------
