@@ -52,22 +52,19 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
     Notes
     -----
     The dielectric permittivity tensor is expressed in the Stix frame with
-    the :math:`\exp(-i \omega t)` time-harmonic convention as:
+    the :math:`\exp(-i \omega t)` time-harmonic convention as
+    :math:`\varepsilon = \varepsilon_0 A`, with :math:`A` being
 
     .. math::
         :nowrap:
 
-        \varepsilon =
-        \varepsilon_0
-        \left(
         \begin{array}{ccc}
         S & -i D & 0 \\
         +i D & S & 0 \\
         0 & 0 & P
         \end{array}
-        \right)
 
-    with:
+    where:
 
     .. math::
         S = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2 - \Omega_{c,s}^2}
@@ -153,15 +150,15 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
     -----
     In the rotating frame defined by
      :math:`(\mathbf{u}_{+}, \mathbf{u}_{-}, \mathbf{u}_z)`
-    with :math:`\mathbf{u}_{\pm}=(\mathbf{u}_x} \pm \mathbf{u}_y)/\sqrt{2}`,
+    with :math:`\mathbf{u}_{\pm}=(\mathbf{u}_x \pm \mathbf{u}_y)/\sqrt{2}`,
      the dielectric tensor takes a diagonal form with elements L, R, P with:
 
     .. math::
         L = 1 - \sum_s
-                \frac{\omega_{p,s}^2}{\omega[left(\omega - \Omega_{c,s}\right)}
+                \frac{\omega_{p,s}^2}{\omega[\left(\omega - \Omega_{c,s}\right)}
 
         R = 1 - \sum_s
-                \frac{\omega_{p,s}^2}{\omega[left(\omega + \Omega_{c,s}\right)}
+                \frac{\omega_{p,s}^2}{\omega[\left(\omega + \Omega_{c,s}\right)}
 
         P = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2}
 
