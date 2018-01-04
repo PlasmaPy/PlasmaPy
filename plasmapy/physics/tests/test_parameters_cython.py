@@ -9,8 +9,8 @@ from ...utils.exceptions import RelativityWarning, RelativityError
 from ...utils.exceptions import PhysicsError
 from ...constants import c, m_p, m_e, e, mu0
 
-from parameters_cython import (fib,
-                               )
+from ..parameters_cython import (fib,
+                                 )
 
 
 def test_fib():
