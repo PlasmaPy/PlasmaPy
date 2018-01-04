@@ -75,7 +75,8 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
     .. math::
         S = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2 - \Omega_{c,s}^2}
 
-        D = \sum_s \frac{\Omega_{c,s}}{\omega} \frac{\omega_{p,s}^2}{\omega^2 - \Omega_{c,s}^2}
+        D = \sum_s \frac{\Omega_{c,s}}{\omega}
+            \frac{\omega_{p,s}^2}{\omega^2 - \Omega_{c,s}^2}
 
         P = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2}
 
@@ -85,11 +86,19 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
 
     Examples
     --------
-    >>> B = 2*units.T
+    >>> from astropy import units as u
+    >>> from plasmapy.constants import pi
+    >>> B = 2*u.T
     >>> species = ['e', 'D+']
-    >>> n = [1e18*units.m**-3, 1e18*units.m**-3]
-    >>> omega = 50e6*(2*pi)*(units.rad/units.s)
+    >>> n = [1e18*u.m**-3, 1e18*u.m**-3]
+    >>> omega = 3.7e9*(2*pi)*(u.rad/u.s)
     >>> S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega)
+    >>> S
+    <Quantity 1.0242290172193407>
+    >>> D
+    <Quantity 0.3908935245261273>
+    >>> P
+    <Quantity -4.890310398611263>
     ￼
     """
     S, D, P = 1, 0, 1
@@ -108,7 +117,7 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
     """
     Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
     Elements (L, R, P) are given in the "rotating" basis, ie. in the basis
-    :math:`(\mathbf{u}_{+}, \mathbf{u}_{-}, \mathbf{u}_z)`, 
+    :math:`(\mathbf{u}_{+}, \mathbf{u}_{-}, \mathbf{u}_z)`,
     where the tensor is diagonal and with B // z.
 
     The :math:`\exp(-i \omega t)` time-harmonic convention is assumed.
@@ -151,9 +160,11 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
      the dielectric tensor takes a diagonal form with elements L, R, P with:
 
     .. math::
-        L = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega[left(\omega - \Omega_{c,s}\right)}
+        L = 1 - \sum_s
+                \frac{\omega_{p,s}^2}{\omega[left(\omega - \Omega_{c,s}\right)}
 
-        R = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega[left(\omega + \Omega_{c,s}\right)}
+        R = 1 - \sum_s
+                \frac{\omega_{p,s}^2}{\omega[left(\omega + \Omega_{c,s}\right)}
 
         P = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2}
 
@@ -163,11 +174,19 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
 
     Examples
     --------
-    >>> B = 2*units.T
+    >>> from astropy import units as u
+    >>> from plasmapy.constants import pi
+    >>> B = 2*u.T
     >>> species = ['e', 'D+']
-    >>> n = [1e18*units.m**-3, 1e18*units.m**-3]
-    >>> omega = 50e6*(2*pi)*(units.rad/units.s)
+    >>> n = [1e18*u.m**-3, 1e18*u.m**-3]
+    >>> omega = 3.7e9*(2*pi)*(u.rad/u.s)
     >>> L, R, P = cold_plasma_permittivity_LRP(B, species, n, omega)
+    >>> L
+    <Quantity 0.6333354926932133>
+    >>> R
+    <Quantity 1.4151225417454678>
+    >>> P
+    <Quantity -4.890310398611263>
     ￼
     """
     L, R, P = 1, 1, 1
