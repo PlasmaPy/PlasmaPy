@@ -5,7 +5,7 @@ Particle stepper
 ================
 
 An example of PlasmaPy's particle stepper class, currently in need of a rewrite
-for speed.
+for speed. Currently disabled from running.
 """
 
 
