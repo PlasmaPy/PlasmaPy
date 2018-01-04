@@ -7,6 +7,8 @@ from astropy import units as u
 from ..dielectric import (cold_plasma_permittivity_LRP,
                           cold_plasma_permittivity_SDP)
 
+from ..parameters import (plasma_frequency, gyrofrequency)
+
 B = 1.0 * u.T
 n = [1e18/u.m**3]
 omega = 55e6*u.rad/u.s
@@ -16,52 +18,60 @@ two_species = ['e', 'D+']
 three_species = ['e', 'D+', 'H+']
 
 
-def test_cold_plasma_permittivity_SDP():
-    r"""Test the cold plasma dielectric tensor (S, D, P) function"""
+class Test_ColdPlasmaPermittivity(object):
+    def test_proton_electron_plasma(self):
+        """
+        Test proton-electron plasma against the (approximate) 
+        analytical formulas
+        """
+        B = 1*u.T
+        n = [1, 1]*1/u.m**3
+        omega = 1*u.rad/u.s
+        omega_ce = gyrofrequency(B, particle='e', signed=True)
+        omega_pe = plasma_frequency(n[0], particle='e')
+        omega_cp = abs(omega_ce)/1860
+        omega_pp = omega_pe/43
 
-    # test with one species
-    S, D, P = cold_plasma_permittivity_SDP(B, single_species, n, omega)
-    assert np.isclose(S, 1.10288)
-    assert np.isclose(D, 329)
-    assert np.isclose(P, -1052100)
+        S_analytical = 1 \
+            - omega_pe ** 2 / (omega ** 2 - omega_ce ** 2) \
+            - omega_pp ** 2 / (omega ** 2 - omega_cp ** 2)
 
-    # test with two species and same density
-    n_2 = np.array([1, 1])*1e19/u.m**3
-    S, D, P = cold_plasma_permittivity_SDP(B, two_species, n_2, omega)
-    assert np.isclose(S, -11894.2)
-    assert np.isclose(D, 13654.4)
-    assert np.isclose(P, -10523881)
+        D_analytical = \
+            + omega_ce / omega * omega_pe ** 2 / (omega ** 2 - omega_ce ** 2) \
+            + omega_cp / omega * omega_pp ** 2 / (omega ** 2 - omega_cp ** 2)
 
-    # test with three species and a 5% H minority fraction in a D plasma
-    n_3 = np.array([1, 1, 5/100])*1e19/u.m**3
-    S, D, P = cold_plasma_permittivity_SDP(B, three_species, n_3, omega)
-    assert np.isclose(S, -11753.3)
-    assert np.isclose(D, 13408.99181054283)
-    assert np.isclose(P, -10524167.9)
+        P_analytical = 1 - (omega_pe ** 2 + omega_pp ** 2) / omega ** 2
 
+        species = ['e', 'p']
+        S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega)
 
-def test_cold_plasma_permittivity_LRP():
-    r"""Test the cold plasma dielectric tensor (L, R, P) function"""
-    # test with one species
-    L, R, P = cold_plasma_permittivity_LRP(B, single_species, n, omega)
-    assert np.isclose(L, -327.9)
-    assert np.isclose(R, 330.105)
-    assert np.isclose(P, -1052100.6)
+        assert np.isclose(S, S_analytical)
+        assert np.isclose(D, D_analytical)
+        assert np.isclose(P, P_analytical)
 
+    def test_three_species(self):
+        """
+        Test with three species (2 ions): D plasma with 5%H minority fraction
+        """
+        n_3 = np.array([1, 1, 5/100])*1e19/u.m**3
+        S, D, P = cold_plasma_permittivity_SDP(B, three_species, n_3, omega)
+        assert np.isclose(S, -11753.3)
+        assert np.isclose(D, 13408.99181054283)
+        assert np.isclose(P, -10524167.9)
 
-def test_SDP_LRP_relationships():
-    r"""
-    Test the relationships between (S, D, P) notation in Stix basis and
-    (L, R, P) notation in the rotating basis, ie :
-    S = (R+L)/2 and D = (R-L)/2
-    and
-    Checks for R=S+D and L=S-D
-    """
-    # test with one species
-    S, D, P = cold_plasma_permittivity_SDP(B, single_species, n, omega)
-    L, R, P = cold_plasma_permittivity_LRP(B, single_species, n, omega)
+    def test_SD_to_LR_relationships(self):
+        """
+        Test the relationships between (S, D, P) notation in Stix basis and
+        (L, R, P) notation in the rotating basis, ie test:
+         S = (R+L)/2 and D = (R-L)/2
+        and
+         R = S+D and L = S-D
+        """
+        # test with a single species
+        S, D, _ = cold_plasma_permittivity_SDP(B, single_species, n, omega)
+        L, R, _ = cold_plasma_permittivity_LRP(B, single_species, n, omega)
 
-    assert np.isclose(S, (R+L)/2)
-    assert np.isclose(D, (R-L)/2)
-    assert np.isclose(R, S+D)
-    assert np.isclose(L, S-D)
+        assert np.isclose(R, S+D)
+        assert np.isclose(L, S-D)
+        assert np.isclose(S, (R+L)/2)
+        assert np.isclose(D, (R-L)/2)
