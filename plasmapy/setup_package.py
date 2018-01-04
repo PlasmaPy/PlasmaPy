@@ -13,7 +13,8 @@ c_testFile = 'plasmapy/physics/parameters_cython.c'
 
 # names for compiling the .c files to
 compileName = 'parameters_cython'
-compileNamePath = 'plasmapy/physics/parameters_cython'
+#compileNamePath = 'plasmapy/physics/parameters_cython'
+compileNamePath = 'plasmapy.physics.parameters_cython'
 compileName_cython = 'plasmapy/physics/parameters_cython_pyx'
 compileName_c = 'plasmapy/physics/parameters_cython_c'
 
