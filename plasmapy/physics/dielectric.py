@@ -1,0 +1,182 @@
+"""Functions to calculate plasma dielectric paramaters"""
+
+from astropy import units
+import plasmapy.utils as utils
+
+from ..constants import (pi, m_e, c, mu0, e, eps0)
+from .parameters import gyrofrequency, plasma_frequency
+
+r"""
+Values should be returned as an Astropy Quantity in SI units.
+"""
+
+
+@utils.check_quantity({
+    'B': {'units': units.T, 'can_be_negative': False},
+    'omega': {'units': units.rad/units.s, 'can_be_negative': False},
+})
+def cold_plasma_permittivity_SDP(B, species, n, omega):
+    """
+    Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
+    Elements (S, D, P) are given in the "Stix" frame, ie. with B // z.
+
+    The :math:`\exp(-i \omega t)` time-harmonic convention is assumed.
+
+    References
+    - T.H. Stix, Waves in Plasma, 1992.
+
+    Parameters
+    -------
+    B : ~astropy.units.Quantity
+        Magnetic field magnitude in units convertible to tesla.
+
+    species : List of string
+        List of the plasma particle species
+        e.g.: ['e', 'D+'] or ['e', 'D+', 'He+'].
+
+    n : List of ~astropy.units.Quantity
+        List of species density in units convertible to per cubic meter
+        The order of the species densities should follow species.
+
+    omega : ~astropy.units.Quantity
+        Electromagnetic wave frequency in rad/s
+
+    Returns
+    -------
+    S : ~astropy.units.Quantity
+        S ("Sum") dielectric tensor element
+
+    D : ~astropy.units.Quantity
+        D ("Difference") dielectric tensor element
+
+    P : ~astropy.units.Quantity
+        P ("Plasma") dielectric tensor element
+
+    Notes
+    -----
+    The dielectric permittivity tensor is expressed in the Stix frame with
+    the :math:`\exp(-i \omega t)` time-harmonic convention as:
+
+    .. math::
+        :nowrap:
+
+        \varepsilon =
+        \varepsilon_0
+        \left(
+        \begin{array}{ccc}
+        S & -i D & 0 \\
+        +i D & S & 0 \\
+        0 & 0 & P
+        \end{array}
+        \right)
+
+    with:
+
+    .. math::
+        S = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2 - \Omega_{c,s}^2}
+
+        D = \sum_s \frac{\Omega_{c,s}}{\omega} \frac{\omega_{p,s}^2}{\omega^2 - \Omega_{c,s}^2}
+
+        P = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2}
+
+    where :math:`\omega_{p,s}` is the plasma frequency and
+    :math:`\Omega_{c,s}` is the signed version of the cyclotron frequency
+    for the species :math:`s`.
+
+    Examples
+    --------
+    >>> B = 2*u.T
+    >>> species = ['e', 'D+']
+    >>> n = [1e18*u.m**-3, 1e18*u.m**-3]
+    >>> omega = 50e6*(2*np.pi)*(u.rad/u.s)
+    >>> S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega)
+    ￼
+    """
+    S, D, P = 1, 0, 1
+
+    for (idx, s) in enumerate(species):
+        omega_c = gyrofrequency(B=B, particle=s, signed=True)
+        omega_p = plasma_frequency(n=n[idx], particle=s)
+
+        S += - omega_p**2 / (omega**2 - omega_c**2)
+        D += omega_c/omega * omega_p**2 / (omega**2 - omega_c**2)
+        P += - omega_p**2 / omega**2
+    return S, D, P
+
+
+def cold_plasma_permittivity_LRP(B, species, n, omega):
+    """
+    Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
+    Elements (L, R, P) are given in the "rotating" basis, ie. in the basis
+    :math:`(\mathbf{u}_{+}, \mathbf{u}_{-}, \mathbf{u}_z)`, 
+    where the tensor is diagonal and with B // z.
+
+    The :math:`\exp(-i \omega t)` time-harmonic convention is assumed.
+
+    References
+    - T.H. Stix, Waves in Plasma, 1992.
+
+    Parameters
+    -------
+    B : ~astropy.units.Quantity
+        Magnetic field magnitude in units convertible to tesla.
+
+    species : List of string
+        List of the plasma particle species
+        e.g.: ['e', 'D+'] or ['e', 'D+', 'He+'].
+
+    n : List of ~astropy.units.Quantity
+        List of species density in units convertible to per cubic meter
+        The order of the species densities should follow species.
+
+    omega : ~astropy.units.Quantity
+        Electromagnetic wave frequency in rad/s
+
+    Returns
+    -------
+    L : ~astropy.units.Quantity
+        L ("Left") Left-handed circularly polarization tensor element
+
+    R : ~astropy.units.Quantity
+        R ("Right") Right-handed circularly polarization tensor element
+
+    P : ~astropy.units.Quantity
+        P ("Plasma") dielectric tensor element
+
+    Notes
+    -----
+    In the rotating frame defined by
+     :math:`(\mathbf{u}_{+}, \mathbf{u}_{-}, \mathbf{u}_z)`
+    with :math:`\mathbf{u}_{\pm}=(\mathbf{u}_x} \pm \mathbf{u}_y)/\sqrt{2}`,
+     the dielectric tensor takes a diagonal form with elements L, R, P with:
+
+    .. math::
+        L = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega[left(\omega - \Omega_{c,s}\right)}
+
+        R = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega[left(\omega + \Omega_{c,s}\right)}
+
+        P = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2}
+
+    where :math:`\omega_{p,s}` is the plasma frequency and
+    :math:`\Omega_{c,s}` is the signed version of the cyclotron frequency
+    for the species :math:`s`.
+
+    Examples
+    --------
+    >>> B = 2*u.T
+    >>> species = ['e', 'D+']
+    >>> n = [1e18*u.m**-3, 1e18*u.m**-3]
+    >>> omega = 50e6*(2*np.pi)*(u.rad/u.s)
+    >>> L, R, P = cold_plasma_permittivity_LRP(B, species, n, omega)
+    ￼
+    """
+    L, R, P = 1, 1, 1
+
+    for (idx, s) in enumerate(species):
+        omega_c = gyrofrequency(B=B, particle=s, signed=True)
+        omega_p = plasma_frequency(n=n[idx], particle=s)
+
+        L += - omega_p**2 / (omega*(omega - omega_c))
+        R += - omega_p**2 / (omega*(omega + omega_c))
+        P += - omega_p**2 / omega**2
+    return L, R, P
