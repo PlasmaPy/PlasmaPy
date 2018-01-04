@@ -99,7 +99,6 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
     <Quantity 0.3908935245261273>
     >>> P
     <Quantity -4.890310398611263>
-    ￼
     """
     S, D, P = 1, 0, 1
 
@@ -187,7 +186,6 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
     <Quantity 1.4151225417454678>
     >>> P
     <Quantity -4.890310398611263>
-    ￼
     """
     L, R, P = 1, 1, 1
 
