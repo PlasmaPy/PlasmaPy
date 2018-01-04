@@ -4,6 +4,8 @@
 import glob
 import os
 import sys
+# testing if numpy exists at setup time
+import numpy
 
 import ah_bootstrap
 from setuptools import setup
