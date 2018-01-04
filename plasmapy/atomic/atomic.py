@@ -7,6 +7,7 @@ from astropy.units import Quantity
 import warnings
 from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
+from .particles import _Particles, _get_standard_symbol
 
 from typing import (Union, Optional, Any, List, Tuple)
 
@@ -14,6 +15,13 @@ from typing import (Union, Optional, Any, List, Tuple)
 # _extract_charge_state() is designed to catch all of the special
 # cases for different inputs.  Complexity is concentrated in these
 # functions so that the rest of the functions can be simpler.
+
+# TODO: Implement subpackage specific exceptions/warnings (e.g., AtomicError)
+# TODO: Create an ion_symbol function
+# TODO: Create a particle_symbol function
+# TODO: Create a particle_mass function
+# TODO: Create lepton_number and baryon_number functions
+# TODO: Maybe create is_antimatter, is_lepton, is_baryon, is_boson, is_fermion
 
 
 def atomic_symbol(argument: Union[str, int]) -> str:
