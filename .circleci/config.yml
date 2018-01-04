@@ -1,4 +1,3 @@
-
 deps-run: &deps-install
   name: Install Python dependencies
   command: |
@@ -6,6 +5,12 @@ deps-run: &deps-install
     . venv/bin/activate
     pip install -q --user -r requirements/automated-documentation-tests.txt
     pip install -q --user .
+
+latex-install: &latex-installer
+  name: Install Latex dependencies
+  command: |
+    sudo apt update
+    sudo apt install texlive texlive-xetex texlive-fonts-extra texlive-latex-extra texlive-plain-extra latexmk
 
 html-run: &doc-html
   name: Build HTML documentation
@@ -15,27 +20,38 @@ html-run: &doc-html
 latex-run: &doc-latex
   name: Build LaTeX documentation
   command: |
-    sudo apt update
-    sudo apt install texlive texlive-xetex texlive-fonts-extra texlive-latex-extra texlive-plain-extra latexmk
     make latexpdf SPHINXOPTS='-W'
   working_directory: docs
 
+echo-url: &url-echo
+  name: "Built documentation is available at:"
+  command: echo "${CIRCLE_BUILD_URL}/artifacts/${CIRCLE_NODE_INDEX}/${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}/docs/_build/html/index.html"
+
+
 version: 2
 jobs:
-  build:
+  test-latex:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run: *deps-install
+      - run: *latex-installer
+      - run: *doc-latex
+  test-html:
     docker:
       - image: circleci/python:3.6
     steps:
       - checkout
       - run: *deps-install
       - run: *doc-html
-
       - store_artifacts:
           path: docs/_build/html
+      - run: *url-echo
 
-      - run:
-          name: "Built documentation is available at:"
-          command: echo "${CIRCLE_BUILD_URL}/artifacts/${CIRCLE_NODE_INDEX}/${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}/docs/_build/html/index.html"
-
-      - run: *doc-latex
-
+workflows:
+  version: 2
+  test-documentation:
+    jobs:
+      - test-latex
+      - test-html
