@@ -8,9 +8,6 @@ import sys
 import ah_bootstrap
 from setuptools import setup
 
-# importing Cython for cythonizing
-from Cython.Build import cythonize
-
 # A dirty hack to get around some early import/configurations ambiguities
 if sys.version_info[0] >= 3:
     import builtins
@@ -122,6 +119,8 @@ for root, dirs, files in os.walk(PACKAGENAME):
 package_info['package_data'][PACKAGENAME].extend(c_files)
 
 
+# importing Cython for cythonizing
+from Cython.Build import cythonize
 # trying to fetch extensions
 #exts = package_info['ext_modules']
 cython_exts = package_info.pop('ext_modules', [])
