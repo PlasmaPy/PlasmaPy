@@ -62,8 +62,8 @@ species.plot_trajectories()
 # velocity and position
 
 vmean = species.velocity_history[:, :, 2].mean()
-print(
-    f"The calculated drift velocity is {vmean:.4f} to compare with the theoretic E0/B0 = {E0/B0:.4f}")
+print(f"The calculated drift velocity is {vmean:.4f} to compare with the"
+      f"theoretical E0/B0 = {E0/B0:.4f}")
 
 ############################################################
 # and from position:
