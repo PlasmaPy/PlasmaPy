@@ -558,7 +558,7 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
         raise ValueError("Method {method} not supported in thermal_speed")
 
 
-def particle_params(particle):
+def _particle_params(particle):
     """Helper function to extract data from particle strings"""
     try:
         m = atomic.ion_mass(particle)
@@ -576,13 +576,15 @@ def particle_params(particle):
     'T_e': {'units': units.K, 'can_be_negative': False},
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
-def electron_ion_collision_rate(T_e, n_e, ion_particle,
-                                coulomb_log=None, V=None):
+def collision_rate_electron_ion(T_e, 
+                                n_e, 
+                                ion_particle,
+                                coulomb_log=None, 
+                                V=None):
     r"""
     momentum relaxation electron-ion collision rate
 
-    From Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf,
-    equations (2.17) and (2.120)
+    From [3]_, equations (2.17) and (2.120)
 
     Considering a Maxwellian distribution of "test" electrons colliding with
     a Maxwellian distribution of "field" ions.
@@ -616,6 +618,8 @@ def electron_ion_collision_rate(T_e, n_e, ion_particle,
     .. [1] Braginskii
 
     .. [2] Formulary
+    
+    .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     """
     from plasmapy.physics.transport import Coulomb_logarithm
@@ -626,8 +630,8 @@ def electron_ion_collision_rate(T_e, n_e, ion_particle,
         particles = ['e', ion_particle]
         coulomb_log_val = Coulomb_logarithm(T_e, n_e, particles, V)
     Z_i = atomic.charge_state(ion_particle)
-    nu_e = 4 / 3 * np.sqrt(2 * np.pi / m_e) / (4 * np.pi * eps0)**2 * e**4 * \
-        n_e * Z_i * coulomb_log_val / (k_B * T_e)**1.5
+    nu_e = 4 / 3 * np.sqrt(2 * np.pi / m_e) / (4 * np.pi * eps0) ** 2 * \
+        e ** 4 * n_e * Z_i * coulomb_log_val / (k_B * T_e) ** 1.5
     return nu_e.to(1 / units.s)
 
 
@@ -635,13 +639,12 @@ def electron_ion_collision_rate(T_e, n_e, ion_particle,
     'T_i': {'units': units.K, 'can_be_negative': False},
     'n_i': {'units': units.m**-3, 'can_be_negative': False}
 })
-def ion_ion_collision_rate(T_i, n_i, ion_particle,
+def collision_rate_ion_ion(T_i, n_i, ion_particle,
                            coulomb_log=None, V=None):
     r"""
     momentum relaxation ion-ion collision rate
 
-    From Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf,
-    equations (2.17) and (2.120)
+    From [3]_, equations (2.36) and (2.122)
 
     Considering a Maxwellian distribution of "test" ions colliding with
     a Maxwellian distribution of "field" ions.
@@ -680,6 +683,8 @@ def ion_ion_collision_rate(T_i, n_i, ion_particle,
     .. [1] Braginskii
 
     .. [2] Formulary
+    
+    .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     """
     from plasmapy.physics.transport import Coulomb_logarithm
@@ -716,10 +721,13 @@ def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None):
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / units.radian
     if _is_electron(particle):
-        coll_rate = electron_ion_collision_rate(T, n, ion_particle,
-                                                coulomb_log, V)
+        coll_rate = collision_rate_electron_ion(T, 
+                                                n, 
+                                                ion_particle,
+                                                coulomb_log, 
+                                                V)
     else:
-        coll_rate = ion_ion_collision_rate(T, n, ion_particle, coulomb_log, V)
+        coll_rate = collision_rate_ion_ion(T, n, ion_particle, coulomb_log, V)
     return gyro_frequency / coll_rate
 
 

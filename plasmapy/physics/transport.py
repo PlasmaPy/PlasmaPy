@@ -9,7 +9,7 @@ from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar)
 from ..atomic import (ion_mass, charge_state)
 from .parameters import (Debye_length, Hall_parameter,
-                         electron_ion_collision_rate, ion_ion_collision_rate)
+                         collision_rate_electron_ion, collision_rate_ion_ion)
 from inspect import stack
 from copy import copy
 import warnings
@@ -560,7 +560,7 @@ def resistivity(T_e, n_e, ion_particle, e_particle, Z=None, B=0.0,
 #        Z = atomic.charge_state(ion_particle)
     alpha_hat = _nondim_resisitivity(hall_e, Z, e_particle, model,
                                      field_orientation)
-    tau_e = 1 / electron_ion_collision_rate(T_e, n_e, ion_particle,
+    tau_e = 1 / collision_rate_electron_ion(T_e, n_e, ion_particle,
                                             coulomb_log_ei, V_ei)
 
 #    e_cgs = e.value * c.value * 10
@@ -616,7 +616,7 @@ def ion_thermal_conductivity(T_i, n_i, ion_particle, Z=None, B=0.0,
     m_i = atomic.ion_mass(ion_particle)
     kappa_hat = _nondim_thermal_conductivity(hall_i, Z, ion_particle, model,
                                              field_orientation, mu, theta)
-    tau_i = 1 / ion_ion_collision_rate(T_i, n_i, ion_particle,
+    tau_i = 1 / collision_rate_ion_ion(T_i, n_i, ion_particle,
                                        coulomb_log_ii, V_ii)
     kappa = kappa_hat * (n_i * k_B**2 * T_i * tau_i / m_i)
     return kappa.to(units.W / units.m / units.K)
@@ -639,7 +639,7 @@ def electron_thermal_conductivity(T_e, n_e, ion_particle, e_particle,
     #        Z = atomic.charge_state(ion_particle)
     kappa_hat = _nondim_thermal_conductivity(hall_e, Z, e_particle, model,
                                              field_orientation, mu, theta)
-    tau_e = 1 / electron_ion_collision_rate(T_e, n_e, ion_particle,
+    tau_e = 1 / collision_rate_electron_ion(T_e, n_e, ion_particle,
                                             coulomb_log_ei, V_ei)
     kappa = kappa_hat * (n_e * k_B**2 * T_e * tau_e / m_e)
     return kappa.to(units.W / units.m / units.K)
@@ -660,7 +660,7 @@ def ion_viscosity(T_i, n_i, ion_particle, Z=None, B=0.0, model='Braginskii',
 #        Z = atomic.charge_state(ion_particle)
     eta_hat = _nondim_viscosity(hall_i, Z, ion_particle, model,
                                 field_orientation, mu, theta)
-    tau_i = 1 / ion_ion_collision_rate(T_i, n_i, ion_particle,
+    tau_i = 1 / collision_rate_ion_ion(T_i, n_i, ion_particle,
                                        coulomb_log_ii, V_ii)
     if np.isclose(hall_i, 0, rtol=1e-8):
         eta1 = (eta_hat[0] * (n_i * k_B * T_i * tau_i),
@@ -701,7 +701,7 @@ def electron_viscosity(T_e, n_e, ion_particle, e_particle, Z=None, B=0.0,
 #        Z = atomic.charge_state(ion_particle)
     eta_hat = _nondim_viscosity(hall_e, Z, e_particle, model,
                                 field_orientation, mu, theta)
-    tau_e = 1 / electron_ion_collision_rate(T_e, n_e, ion_particle,
+    tau_e = 1 / collision_rate_electron_ion(T_e, n_e, ion_particle,
                                             coulomb_log_ei, V_ei)
     if np.isclose(hall_e, 0, rtol=1e-8):
         eta1 = (eta_hat[0] * (n_e * k_B * T_e * tau_e),
