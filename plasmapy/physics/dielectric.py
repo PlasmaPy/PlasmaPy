@@ -16,7 +16,7 @@ Values should be returned as an Astropy Quantity in SI units.
     'omega': {'units': units.rad/units.s, 'can_be_negative': False},
 })
 def cold_plasma_permittivity_SDP(B, species, n, omega):
-    """
+    r"""
     Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
     Elements (S, D, P) are given in the "Stix" frame, ie. with B // z.
 
@@ -109,7 +109,7 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
 
 
 def cold_plasma_permittivity_LRP(B, species, n, omega):
-    """
+    r"""
     Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
     Elements (L, R, P) are given in the "rotating" basis, ie. in the basis
     :math:`(\mathbf{u}_{+}, \mathbf{u}_{-}, \mathbf{u}_z)`,
