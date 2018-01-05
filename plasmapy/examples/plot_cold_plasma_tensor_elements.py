@@ -1,7 +1,7 @@
 # coding: utf-8
 """
 Cold Magnetized Plasma Waves Tensor Elements (S, D, P in Stix's notation)
-==============================
+=========================================================================
 
 This example shows how to calculate the values of the cold plasma tensor
 elements for various electromagnetic wave frequencies.
