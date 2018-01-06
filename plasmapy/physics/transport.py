@@ -468,43 +468,59 @@ class classical_transport:
             self.hall_i = Hall_parameter(
                 n_i, T_i, B, ion_particle, ion_particle, coulomb_log_ii, V_ii)
         # set up the ion non-dimensional coefficients for the Ji-Held model
-        if model == 'ji-held':
-            if mu is not None:
-                self.mu = mu
-            else:
-                self.mu = m_e / self.m_i
-            if theta is not None:
-                self.theta = theta
-            else:
-                self.theta = self.T_e / self.T_i
+        if mu is not None:
+            self.mu = mu
+        else:
+            self.mu = m_e / self.m_i
+        if theta is not None:
+            self.theta = theta
+        else:
+            self.theta = self.T_e / self.T_i
 
     def resistivity(self):
-        return resistivity(T_e=self.T_e,
-                           n_e=self.n_e,
-                           ion_particle=self.ion_particle,
-                           e_particle=self.e_particle,
-                           hall_e=self.hall_e,
-                           coulomb_log_ei=self.coulomb_log_ei,
-                           V_ei=self.V_ei)
+        return resistivity(
+            T_e=self.T_e,
+            n_e=self.n_e,
+            ion_particle=self.ion_particle,
+            e_particle=self.e_particle,
+            Z=self.Z,
+            B=self.B,
+            model=self.model,
+            field_orientation=self.field_orientation,
+            coulomb_log_ei=self.coulomb_log_ei,
+            V_ei=self.V_ei,
+            hall_e=self.hall_e,
+        )
 
     def thermoelectric_conductivity(self):
-        return thermoelectric_conductivity(T_e=self.T_e,
-                                           n_e=self.n_e,
-                                           e_particle=self.e_particle,
-                                           hall_e=self.hall_e,
-                                           coulomb_log_ei=self.coulomb_log_ei,
-                                           V_ei=self.V_ei,
-                                           )
+        return thermoelectric_conductivity(
+            T_e=self.T_e,
+            n_e=self.n_e,
+            e_particle=self.e_particle,
+            Z=self.Z,
+            B=self.B,
+            model=self.model,
+            field_orientation=self.field_orientation,
+            coulomb_log_ei=self.coulomb_log_ei,
+            V_ei=self.V_ei,
+            hall_e=self.hall_e,
+        )
 
     def ion_thermal_conductivity(self):
-        return ion_thermal_conductivity(T_i=self.T_i,
-                                        n_i=self.n_i,
-                                        ion_particle=self.ion_particle,
-                                        mu=self.mu,
-                                        theta=self.theta,
-                                        hall_i=self.hall_i,
-                                        coulomb_log_ii=self.coulomb_log_ii,
-                                        V_ii=self.V_ii)
+        return ion_thermal_conductivity(
+            T_i=self.T_i,
+            n_i=self.n_i,
+            ion_particle=self.ion_particle,
+            Z=self.Z,
+            B=self.B,
+            model=self.model,
+            field_orientation=self.field_orientation,
+            coulomb_log_ii=self.coulomb_log_ii,
+            V_ii=self.V_ii,
+            hall_i=self.hall_i,
+            mu=self.mu,
+            theta=self.theta,
+        )
 
     def electron_thermal_conductivity(self):
         return electron_thermal_conductivity(
@@ -512,22 +528,31 @@ class classical_transport:
             n_e=self.n_e,
             ion_particle=self.ion_particle,
             e_particle=self.e_particle,
+            Z=self.Z,
+            B=self.B,
+            model=self.model,
+            field_orientation=self.field_orientation,
+            coulomb_log_ei=self.coulomb_log_ei,
+            V_ei=self.V_ei,
+            hall_e=self.hall_e,
             mu=self.mu,
             theta=self.theta,
-            hall_e=self.hall_e,
-            coulomb_log_ei=self.coulomb_log_ei,
-            V_ei=self.V_ei)
+        )
 
     def ion_viscosity(self):
         return ion_viscosity(
             T_i=self.T_i,
             n_i=self.n_i,
             ion_particle=self.ion_particle,
-            mu=self.mu,
-            theta=self.theta,
-            hall_i=self.hall_i,
+            Z=self.Z,
+            B=self.B,
+            model=self.model,
+            field_orientation=self.field_orientation,
             coulomb_log_ii=self.coulomb_log_ii,
             V_ii=self.V_ii,
+            hall_i=self.hall_i,
+            mu=self.mu,
+            theta=self.theta,
         )
 
     def electron_viscosity(self):
@@ -536,11 +561,15 @@ class classical_transport:
             n_e=self.n_e,
             ion_particle=self.ion_particle,
             e_particle=self.e_particle,
-            mu=self.mu,
-            theta=self.theta,
-            hall_e=self.hall_e,
+            Z=self.Z,
+            B=self.B,
+            model=self.model,
+            field_orientation=self.field_orientation,
             coulomb_log_ei=self.coulomb_log_ei,
             V_ei=self.V_ei,
+            hall_e=self.hall_e,
+            mu=self.mu,
+            theta=self.theta,
         )
 
 
@@ -755,7 +784,8 @@ def _nondim_thermal_conductivity(hall, Z, particle, model, field_orientation,
         elif model == 'ji-held':
             kappa_hat = _nondim_tc_e_ji_held(hall, Z, field_orientation)
         else:
-            kappa_hat = 1  # TODO
+            raise ValueError(f"Unrecognized model '{model}' in "
+                             "_nondim_thermal_conductivity")
     else:
         if model == 'braginskii':
             kappa_hat = _nondim_tc_i_braginskii(hall, field_orientation)
@@ -763,7 +793,8 @@ def _nondim_thermal_conductivity(hall, Z, particle, model, field_orientation,
             kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta,
                                              field_orientation)
         else:
-            kappa_hat = 1  # TODO
+            raise ValueError(f"Unrecognized model '{model}' in "
+                             "_nondim_thermal_conductivity")
     return kappa_hat
 
 
@@ -778,14 +809,16 @@ def _nondim_viscosity(hall, Z, particle, model, field_orientation,
         elif model == 'ji-held':
             eta_hat = _nondim_visc_e_ji_held(hall, Z)
         else:
-            eta_hat = 1  # TODO
+            raise ValueError(f"Unrecognized model '{model}' in "
+                             "_nondim_viscosity")
     else:
         if model == 'braginskii':
             eta_hat = _nondim_visc_i_braginskii(hall)
         elif model == 'ji-held':
             eta_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)
         else:
-            eta_hat = 1  # TODO
+            raise ValueError(f"Unrecognized model '{model}' in "
+                             "_nondim_viscosity")
     return eta_hat
 
 
@@ -799,7 +832,8 @@ def _nondim_resisitivity(hall, Z, particle, model, field_orientation):
     elif model == 'ji-held':
         alpha_hat = _nondim_resist_ji_held(hall, Z, field_orientation)
     else:
-        alpha_hat = 1  # TODO
+        raise ValueError(f"Unrecognized model '{model}' in "
+                         "_nondim_resisitivity")
     return alpha_hat
 
 
@@ -813,7 +847,8 @@ def _nondim_te_conductivity(hall, Z, particle, model, field_orientation):
     elif model == 'ji-held':
         beta_hat = _nondim_tec_ji_held(hall, Z, field_orientation)
     else:
-        beta_hat = 1  # TODO
+        raise ValueError(f"Unrecognized model '{model}' in "
+                         "_nondim_te_conductivity")
     return beta_hat
 
 
