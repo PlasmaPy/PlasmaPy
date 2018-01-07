@@ -3,6 +3,7 @@
 import numpy as np
 from scipy import special
 from astropy import units as u
+from scipy.special import wofz as Faddeeva_function
 
 
 def plasma_dispersion_func(zeta):
@@ -57,9 +58,9 @@ def plasma_dispersion_func(zeta):
     >>> plasma_dispersion_func(0)
     1.7724538509055159j
     >>> plasma_dispersion_func(1j)
-    0.7578721561413119j
+    0.757872156141312j
     >>> plasma_dispersion_func(-1.52+0.47j)
-    (0.6088888957234255+0.3349458388287403j)
+    (0.6088888957234254+0.33494583882874024j)
 
     """
 
@@ -79,7 +80,7 @@ def plasma_dispersion_func(zeta):
         raise ValueError("The argument to plasma_dispersion_function is "
                          "not finite.")
 
-    Z = 1j * np.sqrt(np.pi) * np.exp(-zeta**2) * (1.0 + special.erf(1j * zeta))
+    Z = 1j * np.sqrt(np.pi) * Faddeeva_function(zeta)
 
     return Z
 
@@ -124,9 +125,9 @@ def plasma_dispersion_func_deriv(zeta):
     >>> plasma_dispersion_func_deriv(0)
     (-2+0j)
     >>> plasma_dispersion_func_deriv(1j)
-    (-0.48425568771737626+0j)
+    (-0.48425568771737604+0j)
     >>> plasma_dispersion_func_deriv(-1.52+0.47j)
-    (0.1658713314982294+0.4458797880593507j)
+    (0.16587133149822897+0.44587978805935047j)
 
     """
 
