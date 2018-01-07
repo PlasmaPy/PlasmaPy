@@ -82,7 +82,7 @@ def Maxwellian_1D(v,
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
     >>> Maxwellian_1D(v=v, T= 30000*u.K, particle='e',V_drift=0*u.m/u.s)
-    <Quantity 5.916329687405703e-07 s / m>
+    <Quantity 5.91632969e-07 s / m>
     """
     if units == "units":
         # unit checks and conversions
@@ -227,7 +227,7 @@ def Maxwellian_velocity_3D(vx,
     ... Vx_drift=0*u.m/u.s,
     ... Vy_drift=0*u.m/u.s,
     ... Vz_drift=0*u.m/u.s)
-    <Quantity 3.985430307328085e-20 s3 / m3>
+    <Quantity 3.98543031e-20 s3 / m3>
 
 
     """
@@ -357,7 +357,7 @@ def Maxwellian_speed_1D(v,
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
     >>> Maxwellian_speed_1D(v=v, T= 30000*u.K, particle='e',V_drift=0*u.m/u.s)
-    <Quantity 2.602357544747327e-18 s / m>
+    <Quantity 2.60235754e-18 s / m>
 
     """
     if units == "units":
@@ -504,7 +504,7 @@ def Maxwellian_speed_3D(vx,
     ... Vx_drift=0*u.m/u.s,
     ... Vy_drift=0*u.m/u.s,
     ... Vz_drift=0*u.m/u.s)
-    <Quantity 1.7623854373113508e-53 s3 / m3>
+    <Quantity 1.76238544e-53 s3 / m3>
 
     """
     if units == "units":
@@ -658,7 +658,7 @@ def kappa_velocity_1D(v,
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
     >>> kappa_velocity_1D(v=v, T=30000*u.K, kappa=4, particle='e',V_drift=0*u.m/u.s)
-    <Quantity 6.755498543618647e-07 s / m>
+    <Quantity 6.75549854e-07 s / m>
     """
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3 / 2:
@@ -820,7 +820,7 @@ def kappa_velocity_3D(vx,
     ... Vx_drift=0*u.m/u.s,
     ... Vy_drift=0*u.m/u.s,
     ... Vz_drift=0*u.m/u.s)
-    <Quantity 3.7833987973293507e-19 s3 / m3>
+    <Quantity 3.7833988e-19 s3 / m3>
     """
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3 / 2:

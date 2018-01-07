@@ -431,7 +431,7 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
     Examples:
     ---------
     >>> half_life('T')
-    <Quantity 388800000.0 s>
+    <Quantity 3.888e+08 s>
     >>> half_life('n')
     <Quantity 881.5 s>
     >>> half_life('H-1')
@@ -620,9 +620,9 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
     <Quantity 1.008 u>
     >>> # the following result accounts for small amount of deuterium
     >>> standard_atomic_weight("H").to(units.kg)
-    <Quantity 1.67382335232e-27 kg>
+    <Quantity 1.67382335e-27 kg>
     >>> isotope_mass("H-1")
-    <Quantity 1.00782503223 u>
+    <Quantity 1.00782503 u>
     >>> standard_atomic_weight(82)
     <Quantity 207.2 u>
     >>> standard_atomic_weight("lead")
@@ -701,13 +701,13 @@ def isotope_mass(argument: Union[str, int],
     --------
     >>> from astropy import units as u
     >>> isotope_mass("H-1")
-    <Quantity 1.00782503223 u>
+    <Quantity 1.00782503 u>
     >>> isotope_mass("H-1").to(u.kg)
-    <Quantity 1.6735328115071732e-27 kg>
+    <Quantity 1.67353281e-27 kg>
     >>> isotope_mass("He", 4)
-    <Quantity 4.00260325413 u>
+    <Quantity 4.00260325 u>
     >>> isotope_mass(2, 4)
-    <Quantity 4.00260325413 u>
+    <Quantity 4.00260325 u>
 
     """
 
@@ -808,21 +808,21 @@ def ion_mass(argument: Union[str, int, Quantity], Z: int = None,
     >>> print(ion_mass('p').si.value)
     1.672621898e-27
     >>> ion_mass('H+')  # assumes terrestrial abundance of D
-    <Quantity 1.672912413964e-27 kg>
+    <Quantity 1.67291241e-27 kg>
     >>> ion_mass('H+') == ion_mass('p')
     False
     >>> ion_mass('H-1') == ion_mass('p')
     True
     >>> ion_mass('P+')  # phosphorus
-    <Quantity 5.14322300749914e-26 kg>
+    <Quantity 5.14322301e-26 kg>
     >>> ion_mass('He-4', Z=2)
-    <Quantity 6.644657088401906e-27 kg>
+    <Quantity 6.64465709e-27 kg>
     >>> ion_mass('T+')
-    <Quantity 5.007356665e-27 kg>
+    <Quantity 5.00735666e-27 kg>
     >>> ion_mass(26, Z=1, mass_numb=56)
-    <Quantity 9.288123453752331e-26 kg>
+    <Quantity 9.28812345e-26 kg>
     >>> ion_mass('Fe-56 1+')
-    <Quantity 9.288123453752331e-26 kg>
+    <Quantity 9.28812345e-26 kg>
     >>> ion_mass(9.11e-31*u.kg).si.value
     9.10938356e-31
     >>> ion_mass(1.67e-27*u.kg)
@@ -1372,9 +1372,9 @@ def electric_charge(particle: str) -> Quantity:
     Examples
     --------
     >>> electric_charge('p')
-    <Quantity 1.6021766208e-19 C>
+    <Quantity 1.60217662e-19 C>
     >>> electric_charge('e')
-    <Quantity -1.6021766208e-19 C>
+    <Quantity -1.60217662e-19 C>
 
     """
 

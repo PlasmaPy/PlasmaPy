@@ -90,11 +90,11 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
     >>> omega = 3.7e9*(2*pi)*(u.rad/u.s)
     >>> S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega)
     >>> S
-    <Quantity 1.0242290172193407>
+    <Quantity 1.02422902>
     >>> D
-    <Quantity 0.3908935245261273>
+    <Quantity 0.39089352>
     >>> P
-    <Quantity -4.890310398611263>
+    <Quantity -4.8903104>
     """
     S, D, P = 1, 0, 1
 
@@ -179,11 +179,11 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
     >>> omega = 3.7e9*(2*pi)*(u.rad/u.s)
     >>> L, R, P = cold_plasma_permittivity_LRP(B, species, n, omega)
     >>> L
-    <Quantity 0.6333354926932133>
+    <Quantity 0.63333549>
     >>> R
-    <Quantity 1.4151225417454678>
+    <Quantity 1.41512254>
     >>> P
-    <Quantity -4.890310398611263>
+    <Quantity -4.8903104>
     """
     L, R, P = 1, 1, 1
 

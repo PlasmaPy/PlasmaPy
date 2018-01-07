@@ -57,9 +57,9 @@ def plasma_dispersion_func(zeta):
     >>> plasma_dispersion_func(0)
     1.7724538509055159j
     >>> plasma_dispersion_func(1j)
-    0.75787215614131187j
+    0.7578721561413119j
     >>> plasma_dispersion_func(-1.52+0.47j)
-    (0.60888889572342553+0.33494583882874029j)
+    (0.6088888957234255+0.3349458388287403j)
 
     """
 
@@ -126,7 +126,7 @@ def plasma_dispersion_func_deriv(zeta):
     >>> plasma_dispersion_func_deriv(1j)
     (-0.48425568771737626+0j)
     >>> plasma_dispersion_func_deriv(-1.52+0.47j)
-    (0.16587133149822941+0.44587978805935069j)
+    (0.1658713314982294+0.4458797880593507j)
 
     """
 
