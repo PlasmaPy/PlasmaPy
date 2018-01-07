@@ -549,3 +549,31 @@ def test__nondim_resist_ji_held(hall, Z, field_orientation, expected):
     alpha_hat = _nondim_resist_ji_held(hall, Z, field_orientation)
     alpha_check = expected
     assert np.isclose(alpha_hat, alpha_check, rtol=2e-2)
+
+
+# approximated from Ji-Held '13 figure 3 (K = 80)
+@pytest.mark.parametrize("hall, Z, index, expected", [
+    (0.01968, 1, 2, 0.7368),
+    (0.1338, 1, 2, 0.7171),
+    (0.4766, 1, 2, 0.6003),
+    (1.339, 1, 2, 0.3241),
+    (4.479, 1, 2, 0.06964),
+    (15.28, 1, 2, 0.008006),
+    (48.82, 1, 2, 0.0008496),
+    (94.89, 1, 2, 0.0002257),
+    (0.01267, 1, 4, 0.009038),
+    (0.03978, 1, 4, 0.02831),
+    (0.1151, 1, 4, 0.08041),
+    (0.2904, 1, 4, 0.1823),
+    (0.8049, 1, 4, 0.3158),
+    (1.77, 1, 4, 0.3083),
+    (3.886, 1, 4, 0.2062),
+    (16.68, 1, 4, 0.05845),
+    (39.82, 1, 4, 0.02501),
+    (77.82, 1, 4, 0.01288),
+    ])
+def test__nondim_visc_e_ji_held(hall, Z, index, expected):
+    """test _nondim_visc_e_ji_held function"""
+    alpha_hat = _nondim_visc_e_ji_held(hall, Z)
+    alpha_check = expected
+    assert np.isclose(alpha_hat[index], alpha_check, rtol=2e-2)
