@@ -16,6 +16,15 @@ from ..transport import (Coulomb_logarithm, classical_transport,
                          _nondim_resist_braginskii,
                          _nondim_visc_i_braginskii,
                          _nondim_visc_e_braginskii,
+                         _nondim_tc_e_spitzer,
+                         _nondim_tec_spitzer,
+                         _nondim_resist_spitzer,
+                         _nondim_tc_e_ji_held,
+                         _nondim_tc_i_ji_held,
+                         _nondim_tec_ji_held,
+                         _nondim_resist_ji_held,
+                         _nondim_visc_e_ji_held,
+                         _nondim_visc_e_ji_held,
                          )
 
 
@@ -147,6 +156,7 @@ class Test__nondim_tc_e_braginskii(object):
     def setup_method(self):
         """set up some initial values for tests"""
         self.big_hall = 1000
+        self.small_hall = 0
 
     # values from Braginskii '65
     @pytest.mark.parametrize("Z, field_orientation, expected", [
@@ -157,6 +167,7 @@ class Test__nondim_tc_e_braginskii(object):
         (np.inf, 'par', 12.5),  # eq (2.12), table 1
     ])
     def test_known_values_par(self, Z, field_orientation, expected):
+        """check some known values"""
         kappa_e_hat = _nondim_tc_e_braginskii(self.big_hall,
                                               Z,
                                               field_orientation)
@@ -172,12 +183,20 @@ class Test__nondim_tc_e_braginskii(object):
         (np.inf, 'perp', 3.2),  # eq (2.13),table 1
     ])
     def test_known_values_perp(self, Z, field_orientation, expected):
+        """check some known values"""
         kappa_e_hat = _nondim_tc_e_braginskii(self.big_hall,
                                               Z,
                                               field_orientation)
         decimal_places = count_decimal_places(str(expected))
         assert(np.round(kappa_e_hat * self.big_hall ** 2,
                         decimal_places) == expected)
+
+    @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])    
+    def test_unmagnetized(self, Z):
+        """confirm perp -> par as B -> 0"""
+        kappa_e_hat_par = _nondim_tc_e_braginskii(self.small_hall, Z, 'par')
+        kappa_e_hat_perp = _nondim_tc_e_braginskii(self.small_hall, Z, 'perp')
+        assert np.isclose(kappa_e_hat_par, kappa_e_hat_perp, rtol=1e-3)
 
 
 # test class for _nondim_tc_i_braginskii function:
@@ -186,8 +205,10 @@ class Test__nondim_tc_i_braginskii(object):
     def setup_method(self):
         """set up some initial values for tests"""
         self.big_hall = 1000
+        self.small_hall = 0
 
     def test_known_values_par(self):
+        """check some known values"""
         kappa_i_hat = _nondim_tc_i_braginskii(self.big_hall,
                                               field_orientation='par')
         expected = 3.9  # Braginskii '65 eq (2.15)
@@ -195,12 +216,19 @@ class Test__nondim_tc_i_braginskii(object):
         assert(np.round(kappa_i_hat, decimal_places) == expected)
 
     def test_known_values_perp(self):
+        """check some known values"""
         kappa_i_hat = _nondim_tc_i_braginskii(self.big_hall,
                                               field_orientation='perp')
         expected = 2.0  # Braginskii '65 eq (2.16)
         decimal_places = count_decimal_places(str(expected))
         assert(np.round(kappa_i_hat * self.big_hall ** 2,
                         decimal_places) == expected)
+        
+    def test_unmagnetized(self):
+        """confirm perp -> par as B -> 0"""
+        kappa_i_hat_par = _nondim_tc_i_braginskii(self.small_hall, 'par')
+        kappa_i_hat_perp = _nondim_tc_i_braginskii(self.small_hall, 'perp')
+        assert np.isclose(kappa_i_hat_par, kappa_i_hat_perp, rtol=1e-3)
 
 
 # test class for _nondim_tec_braginskii function:
@@ -209,6 +237,7 @@ class Test__nondim_tec_braginskii(object):
     def setup_method(self):
         """set up some initial values for tests"""
         self.big_hall = 1000
+        self.small_hall = 0
 
     # values from Braginskii '65
     @pytest.mark.parametrize("Z, field_orientation, expected", [
@@ -219,11 +248,19 @@ class Test__nondim_tec_braginskii(object):
         (np.inf, 'par', 1.5),  # eq (2.9),table 1
     ])
     def test_known_values_par(self, Z, field_orientation, expected):
+        """check some known values"""
         beta_hat = _nondim_tec_braginskii(self.big_hall,
                                           Z,
                                           field_orientation)
         decimal_places = count_decimal_places(str(expected))
         assert(np.round(beta_hat, decimal_places) == expected)
+    
+    @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])  
+    def test_unmagnetized(self, Z):
+        """confirm perp -> par as B -> 0"""
+        beta_hat_par = _nondim_tec_braginskii(self.small_hall, Z, 'par')
+        beta_hat_perp = _nondim_tec_braginskii(self.small_hall, Z, 'perp')
+        assert np.isclose(beta_hat_par, beta_hat_perp, rtol=1e-3)
 
 
 # test class for _nondim_resist_braginskii function:
@@ -232,6 +269,7 @@ class Test__nondim_resist_braginskii(object):
     def setup_method(self):
         """set up some initial values for tests"""
         self.big_hall = 1000
+        self.small_hall = 0
 
     # values from Braginskii '65
     @pytest.mark.parametrize("Z, field_orientation, expected", [
@@ -242,11 +280,19 @@ class Test__nondim_resist_braginskii(object):
         (np.inf, 'par', 0.29),  # eq (2.8),table 1
     ])
     def test_known_values_par(self, Z, field_orientation, expected):
+        """check some known values"""
         beta_hat = _nondim_resist_braginskii(self.big_hall,
                                              Z,
                                              field_orientation)
         decimal_places = count_decimal_places(str(expected))
         assert(np.round(beta_hat, decimal_places) == expected)
+    
+    @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])  
+    def test_unmagnetized(self, Z):
+        """confirm perp -> par as B -> 0"""
+        alpha_hat_par = _nondim_resist_braginskii(self.small_hall, Z, 'par')
+        alpha_hat_perp = _nondim_resist_braginskii(self.small_hall, Z, 'perp')
+        assert np.isclose(alpha_hat_par, alpha_hat_perp, rtol=1e-3)
 
 
 # test class for _nondim_visc_i_braginskii function:
@@ -255,6 +301,7 @@ class Test__nondim_visc_i_braginskii(object):
     def setup_method(self):
         """set up some initial values for tests"""
         self.big_hall = 1000
+        self.small_hall = 0
 
     # values from Braginskii '65
     @pytest.mark.parametrize("expected, idx", [
@@ -265,6 +312,7 @@ class Test__nondim_visc_i_braginskii(object):
         (1.0, 4),  # eq (2.24)
     ])
     def test_known_values(self, expected, idx):
+        """check some known values"""
         beta_hat = _nondim_visc_i_braginskii(self.big_hall)
         decimal_places = count_decimal_places(str(expected))
         if idx == 0:
@@ -283,6 +331,7 @@ class Test__nondim_visc_e_braginskii(object):
     def setup_method(self):
         """set up some initial values for tests"""
         self.big_hall = 1000
+        self.small_hall = 0
 
     # values from Braginskii '65
     @pytest.mark.parametrize("Z, expected, idx", [
@@ -293,6 +342,7 @@ class Test__nondim_visc_e_braginskii(object):
         (1, 1.0, 4),  # eq (2.27)
     ])
     def test_known_values(self, Z, expected, idx):
+        """check some known values"""
         beta_hat = _nondim_visc_e_braginskii(self.big_hall, Z)
         decimal_places = count_decimal_places(str(expected))
         if idx == 0:
@@ -303,3 +353,54 @@ class Test__nondim_visc_e_braginskii(object):
         elif idx == 3 or idx == 4:
             assert(np.round(beta_hat[idx] * self.big_hall,
                             decimal_places) == expected)
+
+
+@pytest.mark.parametrize("Z", [1, 2, 4, 16, np.inf])
+def test__nondim_tc_e_spitzer(Z):
+    """test _nondim_tc_e_spitzer function"""
+    kappa = _nondim_tc_e_spitzer(Z)
+    if Z == 1:
+        kappa_check = 3.203
+        rtol = 1e-3
+    elif Z == 2 or Z == 4:
+        kappa_check = _nondim_tc_e_braginskii(0, Z, 'par')
+        rtol = 2e-2
+    elif Z == 16:
+        kappa_check = _nondim_tc_e_ji_held(0, Z, 'par')
+        rtol = 2e-2
+    elif Z == np.inf:
+        kappa_check = _nondim_tc_e_ji_held(0, 1e6, 'par')
+        rtol = 2e-2
+    assert np.isclose(kappa, kappa_check, rtol=rtol)
+
+
+@pytest.mark.parametrize("Z", [1, 2, 4, 16, np.inf])
+def test__nondim_resist_spitzer(Z):
+    """test _nondim_resist_spitzer function"""
+    alpha = _nondim_resist_spitzer(Z)
+    if Z == 1:
+        alpha_check = 0.5064
+        rtol = 1e-3
+    elif Z == 2 or Z == 4 or Z == np.inf:
+        alpha_check = _nondim_resist_braginskii(0, Z, 'par')
+        rtol = 2e-2
+    elif Z == 16:
+        alpha_check = _nondim_resist_ji_held(0, Z, 'par')
+        rtol = 2e-2
+    assert np.isclose(alpha, alpha_check, rtol=rtol)
+
+
+@pytest.mark.parametrize("Z", [1, 2, 4, 16, np.inf]) 
+def test__nondim_tec_spitzer(Z):
+    """test _nondim_tec_spitzer function"""
+    beta = _nondim_tec_spitzer(Z)
+    if Z == 1:
+        beta_check = 0.699
+        rtol = 1e-3
+    elif Z == 2 or Z == 4 or Z == np.inf:
+        beta_check = _nondim_tec_braginskii(0, Z, 'par')
+        rtol = 2e-2
+    elif Z == 16:
+        beta_check = _nondim_tec_ji_held(0, Z, 'par')
+        rtol = 2e-2
+    assert np.isclose(beta, beta_check, rtol=rtol)
