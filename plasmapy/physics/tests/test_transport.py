@@ -24,7 +24,7 @@ from ..transport import (Coulomb_logarithm, classical_transport,
                          _nondim_tec_ji_held,
                          _nondim_resist_ji_held,
                          _nondim_visc_e_ji_held,
-                         _nondim_visc_e_ji_held,
+                         _nondim_visc_i_ji_held,
                          )
 
 
@@ -404,3 +404,88 @@ def test__nondim_tec_spitzer(Z):
         beta_check = _nondim_tec_ji_held(0, Z, 'par')
         rtol = 2e-2
     assert np.isclose(beta, beta_check, rtol=rtol)
+
+
+@pytest.mark.parametrize("hall, Z, field_orientation, expected", [
+        (0.0501, 1, 'perp', 3.187),
+        (0.2522, 1, 'perp', 2.597),
+        (1.004, 1, 'perp', 0.9942),
+        (3.178, 1, 'perp', 0.2218),
+        (10.03, 1, 'perp', 0.03216),
+        (31.66, 1, 'perp', 0.003878),
+        (100.6, 1, 'perp', 0.0004241),
+        (315.7, 1, 'perp', 0.00004492),
+        (1005, 1, 'perp', 0.000004543),
+        (0.03175, 1, 'cross', 0.1899),
+        (0.1001, 1, 'cross', 0.5648),
+        (0.3166, 1, 'cross', 1.234),
+        (1.267, 1, 'cross', 1.157),
+        (4, 1, 'cross', 0.5359),
+        (12.64, 1, 'cross', 0.1906),
+        (40.04, 1, 'cross', 0.06191),
+        (126.4, 1, 'cross', 0.01981),
+        (401.6, 1, 'cross', 0.006282),
+        ])
+def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
+    """test _nondim_tc_e_ji_held function"""
+    kappa_hat = _nondim_tc_e_ji_held(hall, Z, field_orientation)
+    kappa_check = expected
+    assert np.isclose(kappa_hat, kappa_check, rtol=2e-2)
+
+
+@pytest.mark.parametrize("hall, Z, field_orientation, expected", [
+        (0.03939, 1, 'perp', 0.6959),
+        (0.2498, 1, 'perp', 0.6216),
+        (1.258, 1, 'perp', 0.3007),
+        (6.321, 1, 'perp', 0.06303),
+        (25.14, 1, 'perp', 0.01126),
+        (100.3, 1, 'perp', 0.00161),
+        (317.2, 1, 'perp', 0.0002877),
+        (1006, 1, 'perp', 0.0000483),
+        (3191, 1, 'perp', 0.000007741),
+        (9958, 1, 'perp', 0.000001226),
+        (0.03023, 1, 'cross', 0.02218),
+        (0.09168, 1, 'cross', 0.0551),
+        (0.2758, 1, 'cross', 0.1268),
+        (1.102, 1, 'cross', 0.2523),
+        (5.776, 1, 'cross', 0.24),
+        (22.88, 1, 'cross', 0.1335),
+        (90.9, 1, 'cross', 0.05613),
+        (275, 1, 'cross', 0.0253),
+        (835.1, 1, 'cross', 0.01083),
+        (2510, 1, 'cross', 0.004495),
+        (7549, 1, 'cross', 0.001839),
+        ])
+def test__nondim_tec_ji_held(hall, Z, field_orientation, expected):
+    """test _nondim_tec_ji_held function"""
+    beta_hat = _nondim_tec_ji_held(hall, Z, field_orientation)
+    beta_check = expected
+    assert np.isclose(beta_hat, beta_check, rtol=5e-2)
+
+
+@pytest.mark.parametrize("hall, Z, field_orientation, expected", [
+        (0.06317, 1, 'perp', 0.5064),
+        (0.3966, 1, 'perp', 0.5316),
+        (1.586, 1, 'perp', 0.619),
+        (5.041, 1, 'perp', 0.7309),
+        (15.8, 1, 'perp', 0.8343),
+        (63.35, 1, 'perp', 0.92),
+        (315.6, 1, 'perp', 0.9701),
+        (1998, 1, 'perp', 0.9912),
+        (0.02495, 1, 'cross', 0.005026),
+        (0.06249, 1, 'cross', 0.01255),
+        (0.1574, 1, 'cross', 0.03007),
+        (0.4998, 1, 'cross', 0.07338),
+        (1.995, 1, 'cross', 0.1254),
+        (12.6, 1, 'cross', 0.1211),
+        (62.96, 1, 'cross', 0.07421),
+        (252.4, 1, 'cross', 0.03992),
+        (998.4, 1, 'cross', 0.01908),
+        (3194, 1, 'cross', 0.009749),
+        (9963, 1, 'cross', 0.004812),
+        ])
+def test__nondim_resist_ji_held(hall, Z, field_orientation, expected):
+    """test _nondim_resist_ji_held function"""
+    alpha_hat = _nondim_resist_ji_held(hall, Z, field_orientation)
+    alpha_check = expected
+    assert np.isclose(alpha_hat, alpha_check, rtol=2e-2)
