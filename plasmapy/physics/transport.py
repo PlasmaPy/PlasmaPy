@@ -1156,7 +1156,7 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
         return numerator / denominator
 
     def f_kappa_1(Z):
-        numerator = 0.211 * Z**3 + 12.7**2 + 48.4 * Z + 6.45
+        numerator = 0.211 * Z**3 + 12.7 * Z**2 + 48.4 * Z + 6.45
         denominator = Z + 57.1
         return numerator / denominator
 
