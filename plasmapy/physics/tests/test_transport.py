@@ -406,6 +406,7 @@ def test__nondim_tec_spitzer(Z):
     assert np.isclose(beta, beta_check, rtol=rtol)
 
 
+# approximated from Ji-Held '13 figures 1 and 2 (black circles)
 @pytest.mark.parametrize("hall, Z, field_orientation, expected", [
         (0.0501, 1, 'perp', 3.187),
         (0.2522, 1, 'perp', 2.597),
@@ -425,6 +426,24 @@ def test__nondim_tec_spitzer(Z):
         (40.04, 1, 'cross', 0.06191),
         (126.4, 1, 'cross', 0.01981),
         (401.6, 1, 'cross', 0.006282),
+        (0.02494, 100, 'perp', 11.57),
+        (0.09969, 100, 'perp', 6.707),
+        (0.3987, 100, 'perp', 1.964),
+        (1.586, 100, 'perp', 0.3524),
+        (4.991, 100, 'perp', 0.06185),
+        (15.85, 100, 'perp', 0.008857),
+        (49.85, 100, 'perp', 0.001078),
+        (158, 100, 'perp', 0.0001184),
+        (499.9, 100, 'perp', 0.00001236),
+        (0.0319, 100, 'cross', 3.68),
+        (0.1271, 100, 'cross', 5.023),
+        (0.502, 100, 'cross', 2.945),
+        (1.595, 100, 'cross', 1.283),
+        (5.017, 100, 'cross', 0.462),
+        (15.95, 100, 'cross', 0.1534),
+        (50.24, 100, 'cross', 0.04949),
+        (158.1, 100, 'cross', 0.01572),
+        (500.8, 100, 'cross', 0.004972),
         ])
 def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
     """test _nondim_tc_e_ji_held function"""
@@ -433,6 +452,7 @@ def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
     assert np.isclose(kappa_hat, kappa_check, rtol=2e-2)
 
 
+# approximated from Ji-Held '13 figures 1 and 2 (black circles)
 @pytest.mark.parametrize("hall, Z, field_orientation, expected", [
         (0.03939, 1, 'perp', 0.6959),
         (0.2498, 1, 'perp', 0.6216),
@@ -455,15 +475,35 @@ def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
         (126.9, 1, 'cross', 0.01083),
         (317.5, 1, 'cross', 0.004495),
         (795.3, 1, 'cross', 0.001839),
+        (0.03975, 100, 'perp', 1.335),
+        (0.2522, 100, 'perp', 0.7647),
+        (1.258, 100, 'perp', 0.2709),
+        (6.345, 100, 'perp', 0.05833),
+        (25.12, 100, 'perp', 0.01112),
+        (100.2, 100, 'perp', 0.001649),
+        (317.8, 100, 'perp', 0.0002915),
+        (992.3, 100, 'perp', 0.00004875),
+        (3170, 100, 'perp', 0.000007839),
+        (9994, 100, 'perp', 0.000001213),
+        (0.02507, 100, 'cross', 0.2022),
+        (0.07935, 100, 'cross', 0.4037),
+        (0.3155, 100, 'cross', 0.4764),
+        (1.258, 100, 'cross', 0.3272),
+        (3.958, 100, 'cross', 0.1795),
+        (12.53, 100, 'cross', 0.08046),
+        (39.62, 100, 'cross', 0.03088),
+        (100.2, 100, 'cross', 0.01332),
+        (250.3, 100, 'cross', 0.00562),
+        (629.8, 100, 'cross', 0.002308),
         ])
 def test__nondim_tec_ji_held(hall, Z, field_orientation, expected):
     """test _nondim_tec_ji_held function"""
     beta_hat = _nondim_tec_ji_held(hall, Z, field_orientation)
     beta_check = expected
-    print(beta_hat)
     assert np.isclose(beta_hat, beta_check, rtol=2e-2)
 
 
+# approximated from Ji-Held '13 figures 1 and 2 (black circles)
 @pytest.mark.parametrize("hall, Z, field_orientation, expected", [
         (0.06317, 1, 'perp', 0.5064),
         (0.3966, 1, 'perp', 0.5316),
@@ -484,6 +524,25 @@ def test__nondim_tec_ji_held(hall, Z, field_orientation, expected):
         (998.4, 1, 'cross', 0.01908),
         (3194, 1, 'cross', 0.009749),
         (9963, 1, 'cross', 0.004812),
+        (0.06333, 100, 'perp', 0.3144),
+        (0.3137, 100, 'perp', 0.3894),
+        (0.9954, 100, 'perp', 0.4979),
+        (2.507, 100, 'perp', 0.6091),
+        (6.324, 100, 'perp', 0.7221),
+        (20.02, 100, 'perp', 0.8401),
+        (79.68, 100, 'perp', 0.9275),
+        (399.2, 100, 'perp', 0.9743),
+        (2509, 100, 'perp', 0.9922),
+        (0.02505, 100, 'cross', 0.02138),
+        (0.07929, 100, 'cross', 0.05403),
+        (0.3138, 100, 'cross', 0.1133),
+        (1.581, 100, 'cross', 0.1693),
+        (9.994, 100, 'cross', 0.1539),
+        (49.88, 100, 'cross', 0.09238),
+        (199.1, 100, 'cross', 0.04845),
+        (786.3, 100, 'cross', 0.02278),
+        (2504, 100, 'cross', 0.01152),
+        (7879, 100, 'cross', 0.005652),
         ])
 def test__nondim_resist_ji_held(hall, Z, field_orientation, expected):
     """test _nondim_resist_ji_held function"""
