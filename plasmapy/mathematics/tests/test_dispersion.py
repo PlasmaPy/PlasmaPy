@@ -35,7 +35,7 @@ def test_plasma_dispersion_func(w, expected):
 
     Z_of_w = plasma_dispersion_func(w)
 
-    assert np.isclose(Z_of_w, expected, atol=1e-12 * (1 + 1j), rtol=1e-12), \
+    assert np.isclose(Z_of_w, expected, atol=1e-12 * (1 + 1j), rtol=1e-6), \
         (f"plasma_dispersion_func({w}) equals {Z_of_w} instead of the "
          f"expected approximate result of {expected}.  The difference between "
          f"the actual and expected results is {Z_of_w - expected}.")
