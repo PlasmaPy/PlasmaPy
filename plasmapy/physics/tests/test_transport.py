@@ -444,23 +444,24 @@ def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
         (1006, 1, 'perp', 0.0000483),
         (3191, 1, 'perp', 0.000007741),
         (9958, 1, 'perp', 0.000001226),
-        (0.03023, 1, 'cross', 0.02218),
-        (0.09168, 1, 'cross', 0.0551),
-        (0.2758, 1, 'cross', 0.1268),
-        (1.102, 1, 'cross', 0.2523),
-        (5.776, 1, 'cross', 0.24),
-        (22.88, 1, 'cross', 0.1335),
-        (90.9, 1, 'cross', 0.05613),
-        (275, 1, 'cross', 0.0253),
-        (835.1, 1, 'cross', 0.01083),
-        (2510, 1, 'cross', 0.004495),
-        (7549, 1, 'cross', 0.001839),
+        (0.02515, 1, 'cross', 0.02218),
+        (0.06343, 1, 'cross', 0.0551),
+        (0.1589, 1, 'cross', 0.1268),
+        (0.5041, 1, 'cross', 0.2523),
+        (2.006, 1, 'cross', 0.24),
+        (6.321, 1, 'cross', 0.1335),
+        (19.97, 1, 'cross', 0.05613),
+        (50.26, 1, 'cross', 0.0253),
+        (126.9, 1, 'cross', 0.01083),
+        (317.5, 1, 'cross', 0.004495),
+        (795.3, 1, 'cross', 0.001839),
         ])
 def test__nondim_tec_ji_held(hall, Z, field_orientation, expected):
     """test _nondim_tec_ji_held function"""
     beta_hat = _nondim_tec_ji_held(hall, Z, field_orientation)
     beta_check = expected
-    assert np.isclose(beta_hat, beta_check, rtol=5e-2)
+    print(beta_hat)
+    assert np.isclose(beta_hat, beta_check, rtol=2e-2)
 
 
 @pytest.mark.parametrize("hall, Z, field_orientation, expected", [

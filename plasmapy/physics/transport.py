@@ -1208,7 +1208,7 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
     kappa_par_e = [3.204, 2.464, f_kappa_par_e(Z)]
     kappa_0 = [0.936, 1.749, f_kappa_0(Z)]
     kappa_1 = [1.166, 2.635, f_kappa_1(Z)]
-    kappa_2 = [5.310, 13.87, f_kappa_2(Z)]
+    kappa_2 = [3.791, 5.644, f_kappa_2(Z)]
     kappa_3 = [-1.635, -2.212, f_kappa_3(Z)]
     kappa_4 = [2.370, 4.129, f_kappa_4(Z)]
     k_0 = [0.222, 0.269, f_k_0(Z)]
