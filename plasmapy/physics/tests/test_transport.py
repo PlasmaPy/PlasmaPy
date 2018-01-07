@@ -191,7 +191,7 @@ class Test__nondim_tc_e_braginskii(object):
         assert(np.round(kappa_e_hat * self.big_hall ** 2,
                         decimal_places) == expected)
 
-    @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])    
+    @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])
     def test_unmagnetized(self, Z):
         """confirm perp -> par as B -> 0"""
         kappa_e_hat_par = _nondim_tc_e_braginskii(self.small_hall, Z, 'par')
@@ -223,7 +223,7 @@ class Test__nondim_tc_i_braginskii(object):
         decimal_places = count_decimal_places(str(expected))
         assert(np.round(kappa_i_hat * self.big_hall ** 2,
                         decimal_places) == expected)
-        
+
     def test_unmagnetized(self):
         """confirm perp -> par as B -> 0"""
         kappa_i_hat_par = _nondim_tc_i_braginskii(self.small_hall, 'par')
@@ -254,8 +254,8 @@ class Test__nondim_tec_braginskii(object):
                                           field_orientation)
         decimal_places = count_decimal_places(str(expected))
         assert(np.round(beta_hat, decimal_places) == expected)
-    
-    @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])  
+
+    @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])
     def test_unmagnetized(self, Z):
         """confirm perp -> par as B -> 0"""
         beta_hat_par = _nondim_tec_braginskii(self.small_hall, Z, 'par')
@@ -286,8 +286,8 @@ class Test__nondim_resist_braginskii(object):
                                              field_orientation)
         decimal_places = count_decimal_places(str(expected))
         assert(np.round(beta_hat, decimal_places) == expected)
-    
-    @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])  
+
+    @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])
     def test_unmagnetized(self, Z):
         """confirm perp -> par as B -> 0"""
         alpha_hat_par = _nondim_resist_braginskii(self.small_hall, Z, 'par')
@@ -390,7 +390,7 @@ def test__nondim_resist_spitzer(Z):
     assert np.isclose(alpha, alpha_check, rtol=rtol)
 
 
-@pytest.mark.parametrize("Z", [1, 2, 4, 16, np.inf]) 
+@pytest.mark.parametrize("Z", [1, 2, 4, 16, np.inf])
 def test__nondim_tec_spitzer(Z):
     """test _nondim_tec_spitzer function"""
     beta = _nondim_tec_spitzer(Z)
