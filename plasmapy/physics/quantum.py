@@ -67,7 +67,7 @@ def deBroglie_wavelength(V, particle):
     >>> from astropy import units as u
     >>> velocity = 1.4e7*u.m/u.s
     >>> deBroglie_wavelength(velocity, 'e')
-    <Quantity 5.1899709519786425e-11 m>
+    <Quantity 5.18997095e-11 m>
     >>> deBroglie_wavelength(V = 0*u.m/u.s, particle = 'D+')
     <Quantity inf m>
     """
@@ -155,7 +155,7 @@ def thermal_deBroglie_wavelength(T_e):
     -------
     >>> from astropy import units as u
     >>> thermal_deBroglie_wavelength(1 * u.eV)
-    <Quantity 6.919367518364532e-10 m>
+    <Quantity 6.91936752e-10 m>
     """
     T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
     lambda_dbTh = h / np.sqrt(2 * np.pi * m_e * k_B * T_e)
@@ -213,7 +213,7 @@ def Fermi_energy(n_e):
     -------
     >>> from astropy import units as u
     >>> Fermi_energy(1e23 * u.cm**-3)
-    <Quantity 1.2586761116196002e-18 J>
+    <Quantity 1.25867611e-18 J>
     """
     coeff = (np.pi * hbar) ** 2 / (2 * m_e)
     energy_F = coeff * (3 * n_e / np.pi) ** (2/3)
@@ -279,7 +279,7 @@ def Thomas_Fermi_length(n_e):
     -------
     >>> from astropy import units as u
     >>> Thomas_Fermi_length(1e23 * u.cm**-3)
-    <Quantity 5.379914085596706e-11 m>
+    <Quantity 5.37991409e-11 m>
 
     """
     energy_F = Fermi_energy(n_e)

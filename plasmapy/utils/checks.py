@@ -50,7 +50,7 @@ def check_quantity(validations):
     ...     return x
     ...
     >>> func(1*u.m)
-    <Quantity 1.0 m>
+    <Quantity 1. m>
     >>> func(1*u.m, 2*u.m)
     Traceback (most recent call last):
       ...

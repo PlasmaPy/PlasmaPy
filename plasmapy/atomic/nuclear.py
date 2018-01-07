@@ -36,16 +36,16 @@ def nuclear_binding_energy(argument, mass_numb=None):
     --------
     >>> from astropy import units as u
     >>> nuclear_binding_energy('Fe-56').to(u.MeV)
-    <Quantity 492.25957875689096 MeV>
+    <Quantity 492.25957876 MeV>
     >>> nuclear_binding_energy(26, 56)
-    <Quantity 7.88686788449147e-11 J>
+    <Quantity 7.88686788e-11 J>
     >>> nuclear_binding_energy('p')  # proton
-    <Quantity 0.0 J>
+    <Quantity 0. J>
     >>> from astropy import units as u
     >>> before = nuclear_binding_energy("D") + nuclear_binding_energy("T")
     >>> after = nuclear_binding_energy("alpha")
     >>> (after - before).to(u.MeV)  # released energy from D + T --> alpha + n
-    <Quantity 17.58932777775092 MeV>
+    <Quantity 17.58932778 MeV>
 
     """
 
@@ -127,7 +127,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     --------
     >>> from astropy import units as u
     >>> nuclear_reaction_energy("D + T --> alpha + n")
-    <Quantity 2.8181209741100133e-12 J>
+    <Quantity 2.81812097e-12 J>
     >>> triple_alpha1 = '2*He-4 --> Be-8'
     >>> triple_alpha2 = 'Be-8 + alpha --> carbon-12'
     >>> energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
@@ -135,9 +135,9 @@ def nuclear_reaction_energy(*args, **kwargs):
     >>> print(energy_triplealpha1, energy_triplealpha2)
     -1.4714307834388437e-14 J 1.18025735267267e-12 J
     >>> energy_triplealpha2.to(u.MeV)
-    <Quantity 7.366587037597284 MeV>
+    <Quantity 7.36658704 MeV>
     >>> nuclear_reaction_energy(reactants=['n'], products=['p', 'e-'])
-    <Quantity 1.25343510874046e-13 J>
+    <Quantity 1.25343511e-13 J>
 
     """
 
