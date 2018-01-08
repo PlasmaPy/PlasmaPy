@@ -577,3 +577,57 @@ def test__nondim_visc_e_ji_held(hall, Z, index, expected):
     alpha_hat = _nondim_visc_e_ji_held(hall, Z)
     alpha_check = expected
     assert np.isclose(alpha_hat[index], alpha_check, rtol=2e-2)
+
+
+# approximated from Ji-Held '13 figure 7
+# note r = sqrt(2) * x
+# note kappa from figure = kappa_hat / sqrt(2)
+@pytest.mark.parametrize("hall, Z, mu, theta, field_orientation, expected", [
+    (0.01529, 1, 0, 100, 'perp', 3.99586042),
+    (0.0589, 1, 0, 100, 'perp', 3.96828326),
+    (0.22953, 1, 0, 100, 'perp', 3.34885772),
+    (0.50077, 1, 0, 100, 'perp', 2.22385083),
+    (1.29924, 1, 0, 100, 'perp', 0.76650375),
+    (5.48856, 1, 0, 100, 'perp', 0.06337091),
+    (25.99325, 1, 0, 100, 'perp', 0.00298328),
+    (68.00953, 1, 0, 100, 'perp', 0.00042822),
+    (120.53342, 1, 0, 100, 'perp', 0.00013739),
+    (0.01865, 1, 0, 100, 'cross', 0.13661303),
+    (0.04544, 1, 0, 100, 'cross', 0.32795613),
+    (0.14199, 1, 0, 100, 'cross', 0.95317994),
+    (0.38806, 1, 0, 100, 'cross', 1.73029029),
+    (1.12996, 1, 0, 100, 'cross', 1.53230039),
+    (2.96843, 1, 0, 100, 'cross', 0.77216061),
+    (12.42528, 1, 0, 100, 'cross', 0.19968696),
+    (77.11707, 1, 0, 100, 'cross', 0.03235721),
+    ])
+def test__nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, expected):
+    """test _nondim_tc_i_ji_held function"""
+    kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)
+    kappa_check = expected
+    assert np.isclose(kappa_hat, kappa_check, rtol=2e-2)
+
+
+# approximated from Ji-Held '13 figure 7
+# note r = sqrt(2) * x
+# note eta from figure = eta_hat / sqrt(2)
+@pytest.mark.parametrize("hall, Z, mu, theta, index, expected", [
+    (0.01981, 1, 0, 100, 2, 0.96166522),
+    (0.17423, 1, 0, 100, 2, 0.92206724),
+    (0.66369, 1, 0, 100, 2, 0.6344162),
+    (1.72958, 1, 0, 100, 2, 0.24890159),
+    (10.09041, 1, 0, 100, 2, 0.01134199),
+    (52.50975, 1, 0, 100, 2, 0.00042844),
+    (0.01829, 1, 0, 100, 4, 0.01943837),
+    (0.07845, 1, 0, 100, 4, 0.08251936),
+    (0.35765, 1, 0, 100, 4, 0.31643028),
+    (0.99985, 1, 0, 100, 4, 0.45346758),
+    (4.35295, 1, 0, 100, 4, 0.21036427),
+    (22.74055, 1, 0, 100, 4, 0.04358606),
+    (80.42633, 1, 0, 100, 4, 0.01238144),
+    ])
+def test__nondim_visc_i_ji_held(hall, Z, mu, theta, index, expected):
+    """test _nondim_visc_i_ji_held function"""
+    kappa_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)
+    kappa_check = expected
+    assert np.isclose(kappa_hat[index], kappa_check, rtol=2e-2)
