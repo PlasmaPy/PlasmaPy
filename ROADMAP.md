@@ -16,6 +16,7 @@ This is to be a preview/prototype release.
 - Transport coefficient functions
    - Braginskii theory
 - Base PlasmaBlob class
+- Dimensionless numbers functionality
 
 ## Features to be included in Version 0.2 release
 
