@@ -15,7 +15,7 @@ plasma_dispersion_func_table = [
     (0, 1j * np.sqrt(π)),
     (1, -1.076_159_013_825_536_8 + 0.652_049_332_173_292_2j),
     (1j, 0.757_872_156_141_311_87j),
-    (1.2 + 4.4j, -0.054_246_146_372_377_471 + 0.207_960_589_336_958_13j),
+    (1.2 + 4.4j, -0.054_246_157_069_223_27+0.207_960_584_359_855_62j),
     (9.2j, plasma_dispersion_func(9.2j * units.dimensionless_unscaled)),
     (5.4 - 3.1j, -0.139_224_873_051_713_11 - 0.082_067_822_640_155_802j),
     (9.9 - 10j, 2.013_835_257_947_027_6 - 25.901_274_737_989_727j),
@@ -35,7 +35,7 @@ def test_plasma_dispersion_func(w, expected):
 
     Z_of_w = plasma_dispersion_func(w)
 
-    assert np.isclose(Z_of_w, expected, atol=1e-12 * (1 + 1j), rtol=1e-6), \
+    assert np.isclose(Z_of_w, expected, atol=1e-12 * (1 + 1j), rtol=1e-12), \
         (f"plasma_dispersion_func({w}) equals {Z_of_w} instead of the "
          f"expected approximate result of {expected}.  The difference between "
          f"the actual and expected results is {Z_of_w - expected}.")
