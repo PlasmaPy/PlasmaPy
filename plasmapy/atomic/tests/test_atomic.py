@@ -29,6 +29,7 @@ from ..atomic import (atomic_symbol,
                       _extract_charge_state,
                       _is_proton)
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
+from ...utils import AtomicWarning
 
 # (argument, expected)
 atomic_symbol_table = [
@@ -197,13 +198,13 @@ def test_isotope_symbol_error(argument, kwargs, expected_error):
 
 # (argument, kwargs, expected_warning)
 isotope_symbol_warning_table = [
-    ('H-1', {"mass_numb": 1}, UserWarning),
-    ('H-2', {"mass_numb": 2}, UserWarning),
-    ('T', {"mass_numb": 3}, UserWarning),
-    ('Li-6', {"mass_numb": 6}, UserWarning),
-    ('lithium-6', {"mass_numb": 6}, UserWarning),
-    ('alpha', {"mass_numb": 4}, UserWarning),
-    ('p', {"mass_numb": 1}, UserWarning)]
+    ('H-1', {"mass_numb": 1}, AtomicWarning),
+    ('H-2', {"mass_numb": 2}, AtomicWarning),
+    ('T', {"mass_numb": 3}, AtomicWarning),
+    ('Li-6', {"mass_numb": 6}, AtomicWarning),
+    ('lithium-6', {"mass_numb": 6}, AtomicWarning),
+    ('alpha', {"mass_numb": 4}, AtomicWarning),
+    ('p', {"mass_numb": 1}, AtomicWarning)]
 
 
 @pytest.mark.parametrize(
@@ -607,8 +608,8 @@ def test_ion_mass_error(argument, kwargs, expected_error):
 
 # (argument, kwargs, expected_warning)
 ion_mass_warning_table = [
-    (1.6e-27 * u.kg, {}, UserWarning),
-    (8e-25 * u.kg, {}, UserWarning)]
+    (1.6e-27 * u.kg, {}, AtomicWarning),
+    (8e-25 * u.kg, {}, AtomicWarning)]
 
 
 @pytest.mark.parametrize("argument, kwargs, expected_warning",
@@ -734,8 +735,8 @@ def test_half_life_unstable_isotopes():
     for isotope in Isotopes.keys():
         if 'half_life' not in Isotopes[isotope].keys() and \
                 not Isotopes[isotope].keys():
-            with pytest.warns(UserWarning, message=(
-                    f"No UserWarning issued for {isotope}")):
+            with pytest.warns(AtomicWarning, message=(
+                    f"No AtomicWarning issued for {isotope}")):
                 assert half_life(isotope) is None
 
 
@@ -749,13 +750,13 @@ def test_half_life_u_220():
 
     isotope_without_half_life_data = "U-220"
 
-    with pytest.warns(UserWarning):
+    with pytest.warns(AtomicWarning):
 
         try:
             half_life_isotope = half_life(isotope_without_half_life_data)
         except Exception:
             raise ValueError(f"half_life is raising an exception instead of "
-                             f"issuing a UserWarning for an isotope without "
+                             f"issuing a AtomicWarning for an isotope without "
                              f"half-life data")
 
         assert half_life_isotope is None, \
@@ -955,9 +956,9 @@ def test_charge_state_error(argument, expected_error):
 
 # (argument, expected_warning)
 charge_state_warning_table = [
-    ('H---', UserWarning),
-    ('Fe -26', UserWarning),
-    ('Og 10-', UserWarning)]
+    ('H---', AtomicWarning),
+    ('Fe -26', AtomicWarning),
+    ('Og 10-', AtomicWarning)]
 
 
 @pytest.mark.parametrize("argument, expected_warning",
@@ -999,8 +1000,8 @@ def test_electric_charge_error(argument, expected_error):
 
 # (argument, expected_warning)
 electric_charge_warning_table = [
-    ('Au 81-', UserWarning),
-    ('H---', UserWarning)]
+    ('Au 81-', AtomicWarning),
+    ('H---', AtomicWarning)]
 
 
 @pytest.mark.parametrize("argument, expected_warning",
@@ -1226,9 +1227,9 @@ def test_extract_charge_state_errors(test_input, expected_error):
 
 
 @pytest.mark.parametrize("test_input,expected_warning",
-                         [('H-1----', UserWarning),
-                          ('Fe -4', UserWarning),
-                          ('lead 4-', UserWarning)])
+                         [('H-1----', AtomicWarning),
+                          ('Fe -4', AtomicWarning),
+                          ('lead 4-', AtomicWarning)])
 def test_extract_charge_state_warnings(test_input, expected_warning):
     """Test that _extract_charge_state issues the expected warnings."""
     with pytest.warns(expected_warning):

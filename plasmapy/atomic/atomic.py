@@ -8,7 +8,7 @@ import warnings
 from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
 from .particles import _Particles, _get_standard_symbol
-
+from ..utils import AtomicWarning
 from typing import (Union, Optional, Any, List, Tuple)
 
 # The code contained within atomic_symbol(), isotope_symbol(), and
@@ -183,7 +183,7 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
         If isotope information cannot be found because one or both
         inputs is of an inappropriate type.
 
-    UserWarning:
+    AtomicWarning:
         If redundant isotope information is provided.
 
     See also
@@ -283,7 +283,7 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
             if mass_numb == mass_numb_from_arg:
                 warnings.warn(
                     "Redundant mass number information in isotope_symbol "
-                    f"from inputs: {argument}, {mass_numb}", UserWarning)
+                    f"from inputs: {argument}, {mass_numb}", AtomicWarning)
             else:  # coveralls: ignore
                 raise ValueError("Contradictory mass number information in "
                                  "isotope_symbol.")
@@ -421,7 +421,7 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
     TypeError:
         The argument is not an integer or string.
 
-    UserWarning:
+    AtomicWarning:
         The half-life is unavailable so the routine returns None.
 
     Notes:
@@ -455,7 +455,7 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
     except Exception:
         half_life_sec = None
         warnings.warn(f"The half-life for isotope {isotope} is not available; "
-                      "returning None.", UserWarning)
+                      "returning None.", AtomicWarning)
 
     return half_life_sec
 
@@ -765,7 +765,7 @@ def ion_mass(argument: Union[str, int, Quantity], Z: int = None,
         ionization state exceeds the atomic number, or no isotope mass
         or standard atomic weight is available.
 
-    UserWarning
+    AtomicWarning
         If a mass was inputted and it is outside of the range of known
         isotopes or electrons/positrons.
 
@@ -846,7 +846,7 @@ def ion_mass(argument: Union[str, int, Quantity], Z: int = None,
             warnings.warn(
                 "The mass that was inputted to ion_mass and is being returned"
                 " from ion_mass is outside of the range of known isotopes or "
-                "electrons/ions.", UserWarning)
+                "electrons/ions.", AtomicWarning)
             return m_i
 
     if _is_electron(argument) or _is_positron(argument):
@@ -1266,7 +1266,7 @@ def charge_state(particle: str) -> int:
         If the charge state or isotope information is invalid, or the
         charge state exceeds the atomic number.
 
-    UserWarning:
+    AtomicWarning:
         If the input represents an ion with a charge state that is
         below -3.
 
@@ -1320,7 +1320,7 @@ def charge_state(particle: str) -> int:
 
     if Z is not None and (Z < -atomic_numb-1 or Z < -3):
         warnings.warn(f"Element {atomic_symbol(particle)} has a charge of {Z}"
-                      " which is unlikely to occur in nature.", UserWarning)
+                      " which is unlikely to occur in nature.", AtomicWarning)
 
     if Z is None:
         raise ValueError(f"Unable to find charge of {particle}")
@@ -1349,7 +1349,7 @@ def electric_charge(particle: str) -> Quantity:
         If the charge state or isotope information is invalid, or the
         charge state exceeds the atomic number.
 
-    UserWarning:
+    AtomicWarning:
         If the input represents an ion with a charge state that is
         below -3.
 
@@ -1489,7 +1489,7 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
     if charge_state is not None and charge_state < -3:
         warnings.warn(f"Element {atomic_symbol(argument)} has a charge of "
                       f"{charge_state} which is unlikely to occur in nature.",
-                      UserWarning)
+                      AtomicWarning)
 
     return argument, charge_state
 
