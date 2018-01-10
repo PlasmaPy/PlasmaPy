@@ -5,11 +5,13 @@ import numpy as np
 import pytest
 from astropy import units as u
 from plasmapy.atomic.atomic import ion_mass, charge_state
-
-from ...utils.exceptions import RelativityWarning, RelativityError
+from plasmapy.utils.exceptions import (PhysicsError, PhysicsWarning,
+                                       RelativityWarning, RelativityError)
+from plasmapy.physics.parameters import Hall_parameter
 from ...constants import c, m_p, m_e, e, mu0
 
-from ..transport import (Coulomb_logarithm, classical_transport,
+from ..transport import (Coulomb_logarithm,
+                         classical_transport,
                          _nondim_tc_e_braginskii,
                          _nondim_tc_i_braginskii,
                          _nondim_tec_braginskii,
@@ -148,6 +150,115 @@ class Test_classical_transport(object):
     def test_electron_viscosity_units(self):
         """output should be Quantity with units of Pa s"""
         assert(self.ct.electron_viscosity().unit == u.Pa * u.s)
+
+    def test_particle_mass(self):
+        """should raise ValueError if particle mass not found"""
+        with pytest.raises(ValueError):
+            ct2 = classical_transport(T_e=self.T_e,
+                                      n_e=self.n_e,
+                                      T_i=self.T_i,
+                                      n_i=self.n_i,
+                                      ion_particle='empty moment',
+                                      Z=1)
+
+    def test_particle_charge_state(self):
+        """should raise ValueError if particle charge state not found"""
+        with pytest.raises(ValueError):
+            ct2 = classical_transport(T_e=self.T_e,
+                                      n_e=self.n_e,
+                                      T_i=self.T_i,
+                                      n_i=self.n_i,
+                                      ion_particle='empty moment',
+                                      m_i=m_p)
+
+    def test_Z_checks(self):
+        """should raise ValueError if Z is negative"""
+        with pytest.raises(ValueError):
+            ct2 = classical_transport(T_e=self.T_e,
+                                      n_e=self.n_e,
+                                      T_i=self.T_i,
+                                      n_i=self.n_i,
+                                      ion_particle=self.ion_particle,
+                                      Z=-1)
+
+    def test_coulomb_log_warnings(self):
+        """should warn PhysicsWarning if coulomb log is near 1"""
+        with pytest.warns(PhysicsWarning):
+            ct2 = classical_transport(T_e=self.T_e,
+                                      n_e=self.n_e,
+                                      T_i=self.T_i,
+                                      n_i=self.n_i,
+                                      ion_particle=self.ion_particle,
+                                      coulomb_log_ii=1.3)
+
+        with pytest.warns(PhysicsWarning):
+            ct2 = classical_transport(T_e=self.T_e,
+                                      n_e=self.n_e,
+                                      T_i=self.T_i,
+                                      n_i=self.n_i,
+                                      ion_particle=self.ion_particle,
+                                      coulomb_log_ei=1.3)
+
+    def test_coulomb_log_errors(self):
+        """should raise PhysicsError if coulomb log is < 1"""
+        with pytest.raises(PhysicsError):
+            ct2 = classical_transport(T_e=self.T_e,
+                                      n_e=self.n_e,
+                                      T_i=self.T_i,
+                                      n_i=self.n_i,
+                                      ion_particle=self.ion_particle,
+                                      coulomb_log_ii=0.3)
+
+        with pytest.raises(PhysicsError):
+            ct2 = classical_transport(T_e=self.T_e,
+                                      n_e=self.n_e,
+                                      T_i=self.T_i,
+                                      n_i=self.n_i,
+                                      ion_particle=self.ion_particle,
+                                      coulomb_log_ei=0.3)
+
+    def test_coulomb_log_calc(self):
+        """if no coulomb logs are input, they should be calculated"""
+        ct2 = classical_transport(T_e=self.T_e,
+                                  n_e=self.n_e,
+                                  T_i=self.T_i,
+                                  n_i=self.n_i,
+                                  ion_particle=self.ion_particle)
+        cl_ii = Coulomb_logarithm(self.T_i, 
+                                  self.n_e,
+                                  [self.ion_particle, self.ion_particle],
+                                  self.V_ii)
+        cl_ei = Coulomb_logarithm(self.T_e,
+                                  self.n_e,
+                                  ['e', self.ion_particle],
+                                  self.V_ei)
+        assert(cl_ii == ct2.coulomb_log_ii)
+        assert(cl_ei == ct2.coulomb_log_ei)
+
+    def test_hall_calc(self):
+        """if no hall parameters are input, they should be calculated"""
+        ct2 = classical_transport(T_e=self.T_e,
+                                  n_e=self.n_e,
+                                  T_i=self.T_i,
+                                  n_i=self.n_i,
+                                  ion_particle=self.ion_particle)
+        hall_i = Hall_parameter(ct2.n_i,
+                                ct2.T_i,
+                                ct2.B,
+                                ct2.ion_particle,
+                                ct2.ion_particle,
+                                ct2.coulomb_log_ii,
+                                ct2.V_ii)
+        hall_e = Hall_parameter(
+                ct2.n_e,
+                ct2.T_e,
+                ct2.B,
+                ct2.e_particle,
+                ct2.ion_particle,
+                ct2.coulomb_log_ei,
+                ct2.V_ei)
+        assert(hall_i == ct2.hall_i)
+        assert(hall_e == ct2.hall_e)
 
 
 # test class for _nondim_tc_e_braginskii function:

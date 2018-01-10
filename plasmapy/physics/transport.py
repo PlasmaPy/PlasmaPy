@@ -350,7 +350,7 @@ class classical_transport:
                            "T_i": {"units": units.K, "can_be_negative": False},
                            "n_i": {"units": units.m**-3},
                            })
-    def __init__(self, T_e, n_e, T_i, n_i, ion_particle, Z=None,
+    def __init__(self, T_e, n_e, T_i, n_i, ion_particle, m_i=None, Z=None,
                  B=0.0 * units.T, model='Braginskii',
                  field_orientation='parallel',
                  coulomb_log_ei=None, V_ei=None,
@@ -388,11 +388,14 @@ class classical_transport:
         self.n_i = n_i.to(units.m**-3)
 
         # get ion mass and charge state
-        try:
-            self.m_i = atomic.ion_mass(ion_particle)
-        except Exception:
-            raise ValueError("Unable to find mass of particle: " +
-                             str(ion_particle) + " in classical_transport.")
+        if m_i is None:
+            try:
+                self.m_i = atomic.ion_mass(ion_particle)
+            except Exception:
+                raise ValueError("Unable to find mass of particle: " +
+                                 str(ion_particle) + " in classical_transport")
+        else:
+            self.m_i = m_i.to(units.kg)
         if Z is None:
             try:
                 self.Z = atomic.charge_state(ion_particle)
