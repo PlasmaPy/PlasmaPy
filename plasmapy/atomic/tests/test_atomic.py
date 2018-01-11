@@ -322,7 +322,7 @@ def test_mass_number_error(argument, expected_error):
     """Test that mass_number raises the expected exceptions."""
 #    with pytest.raises(expected_error):
 #        mass_number(argument)
-
+    pass
 
 # (argument, expected)
 element_name_table = [
