@@ -337,6 +337,26 @@ class classical_transport:
     plasmapy.utils.PhysicsError
         If input or calculated values for Coulomb logarithms are nonphysical.
 
+    Examples
+    --------
+    >>> from astropy import units
+    >>> t = classical_transport(1*units.eV, 1e20/units.m**3,
+    ...                         1*units.eV, 1e20/units.m**3, 'p')
+    >>> t.resistivity()
+    <Quantity 0.00038845 m Ohm>
+    >>> t.thermoelectric_conductivity()
+    <Quantity 0.711084>
+    >>> t.ion_thermal_conductivity()
+    <Quantity 0.0146639 W / (K m)>
+    >>> t.electron_thermal_conductivity()
+    <Quantity 0.35963098 W / (K m)>
+    >>> t.ion_viscosity()
+    <Quantity [4.36619601e-07, 4.35292253e-07, 4.35292253e-07, 0.00000000e+00,
+               0.00000000e+00] Pa s>
+    >>> t.electron_viscosity()
+    <Quantity [5.50131582e-09, 5.49950422e-09, 5.49950422e-09, 0.00000000e+00,
+               0.00000000e+00] Pa s>
+
     References
     ----------
     .. [1] S.I. Braginskii (1965)
