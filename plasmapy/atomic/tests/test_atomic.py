@@ -29,7 +29,7 @@ from ..atomic import (atomic_symbol,
                       _extract_charge_state,
                       _is_proton)
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
-from ...utils import AtomicWarning
+from ...utils import (AtomicWarning, ElementError, IsotopeError, IonError)
 
 # (argument, expected)
 atomic_symbol_table = [
@@ -82,33 +82,33 @@ def test_atomic_symbol(argument, expected):
 
 # (argument, expected_error)
 atomic_symbol_error_table = [
-    ('H-0', ValueError),
+    ('H-0', IsotopeError),
     (3.14159, TypeError),
-    ('Og-294b', ValueError),
-    ('H-934361079326356530741942970523610389', ValueError),
-    ('Fe 2+4', ValueError),
-    ('Fe+24', ValueError),
-    ('Fe +59', ValueError),
-    ('C++++++++++++++++', ValueError),
-    ('C-++++', ValueError),
-    ('neutron', ValueError),
-    ('n', ValueError),
-    ('n-1', ValueError),
-    ('h', ValueError),
-    ('d', ValueError),
-    ('he', ValueError),
-    ('au', ValueError),
-    ('p-', ValueError),
-    ('antiproton', ValueError)]
+    ('Og-294b', IsotopeError),
+    ('H-934361079326356530741942970523610389', IsotopeError),
+    ('Fe 2+4', IonError),  # ???
+    ('Fe+24', IonError),  # ???
+    ('Fe +59', IonError),
+    ('C++++++++++++++++', IonError),
+    ('C-++++', IonError),
+    ('neutron', ElementError),
+    ('n', ElementError),
+    ('n-1', ElementError),
+    ('h', ElementError),
+    ('d', ElementError),
+    ('he', ElementError),
+    ('au', ElementError),
+    ('p-', ElementError),
+    ('antiproton', ElementError)]
 
 
 @pytest.mark.parametrize(
     'argument, expected_error', atomic_symbol_error_table)
 def test_atomic_symbol_error(argument, expected_error):
     """Test that atomic_symbol raises the expected exceptions."""
-#    with pytest.raises(expected_error, message=(
-#            f"atomic_symbol({argument}) is not raising {expected_error}.")):
-#        atomic_symbol(argument)
+    with pytest.raises(expected_error, message=(
+            f"atomic_symbol({argument}) is not raising {expected_error}.")):
+        atomic_symbol(argument)
     pass
 
 
@@ -271,6 +271,7 @@ def test_atomic_number_error(argument, expected_error):
 #            f"atomic_number({argument}) is not raising a {expected_error}")):
 #        atomic_number(argument)
     pass
+
 
 # (isotope, expected)
 mass_number_table = [
@@ -612,6 +613,7 @@ def test_ion_mass_error(argument, kwargs, expected_error):
 #        ion_mass(argument, **kwargs)
     pass
 
+
 # (argument, kwargs, expected_warning)
 ion_mass_warning_table = [
     (1.6e-27 * u.kg, {}, AtomicWarning),
@@ -819,6 +821,7 @@ def test_atomic_ValueErrors(func, argument):
 #        func(argument)
     pass
 
+
 def test_known_common_stable_isotopes_cases():
     """Test that known_isotopes, common_isotopes, and stable_isotopes
     return certain isotopes that fall into these categories."""
@@ -1007,6 +1010,7 @@ def test_electric_charge_error(argument, expected_error):
 #            f"{expected_error}.")):
 #        electric_charge(argument)
     pass
+
 
 # (argument, expected_warning)
 electric_charge_warning_table = [
