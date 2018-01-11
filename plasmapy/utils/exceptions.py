@@ -41,11 +41,11 @@ class MissingAtomicDataError(AtomicError):
     pass
 
 
-class NoChargeInfoError(AtomicError):
+class ChargeError(AtomicError):
     """Error for use when charge information is needed but missing."""
 
 
-class IonError(NoChargeInfoError):
+class IonError(AtomicError):
     """Error for use when an ion is invalid."""
     pass
 
