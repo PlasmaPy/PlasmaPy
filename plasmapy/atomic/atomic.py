@@ -9,7 +9,7 @@ from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
 from .particles import _Particles, _get_standard_symbol
 from ..utils import (AtomicWarning, ElementError, IsotopeError, IonError,
-                     ChargeError)
+                     ChargeError, AtomicError)
 from typing import (Union, Optional, Any, List, Tuple)
 
 # The code contained within atomic_symbol(), isotope_symbol(), and
@@ -17,7 +17,6 @@ from typing import (Union, Optional, Any, List, Tuple)
 # cases for different inputs.  Complexity is concentrated in these
 # functions so that the rest of the functions can be simpler.
 
-# TODO: Implement subpackage specific exceptions/warnings (e.g., AtomicError)
 # TODO: Create an ion_symbol function
 # TODO: Create a particle_symbol function
 # TODO: Create a particle_mass function
@@ -742,7 +741,7 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
     argument, charge_state = _extract_charge_state(argument)
 
     if charge_state is not None and charge_state != 0:
-        raise ValueError("Use ion_mass to get masses of charged particles.")
+        raise AtomicError("Use ion_mass to get masses of charged particles.")
 
     try:
         isotope = isotope_symbol(argument)
@@ -750,19 +749,20 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
         isotope = ''
 
     if _is_neutron(isotope):
-        raise ValueError("Use isotope_mass('n') or plasmapy.constants.m_n "
-                         "instead of standard_atomic_weight to get neutron "
-                         "mass")
+        raise ElementError("Use isotope_mass('n') or plasmapy.constants.m_n "
+                           "instead of standard_atomic_weight to get neutron "
+                           "mass.")
     elif '-' in isotope or isotope in ['D', 'T']:
-        raise ValueError("Use isotope_mass to get masses of isotopes")
-
-    element = atomic_symbol(argument)
+        raise AtomicError("Use isotope_mass to get masses of isotopes.")
 
     try:
+        element = atomic_symbol(argument)
         atomic_weight = Elements[element]['atomic_mass']
-    except Exception:
-        raise ValueError("No standard atomic weight is available for " +
-                         element)
+    except KeyError:
+        raise MissingAtomicDataError(
+            f"No standard atomic weight is available for {element}.")
+    except ElementError:
+        raise ElementError("Invalid element in standard_atomic_weight.")
 
     return atomic_weight
 
@@ -825,14 +825,16 @@ def isotope_mass(argument: Union[str, int],
     argument, charge_state = _extract_charge_state(argument)
 
     if charge_state is not None and charge_state != 0:
-        raise ValueError("Use ion_mass instead of isotope_mass for masses of "
-                         "charged particles")
+        raise AtomicError("Use ion_mass instead of isotope_mass for masses of "
+                          "charged particles.")
 
     try:
         isotope = isotope_symbol(argument, mass_numb)
         atomic_mass = Isotopes[isotope]['atomic_mass']
-    except ValueError:
-        raise ValueError("Unable to identify isotope in isotope_mass")
+    except ElementError:
+        raise ElementError("Invalid element in isotope_mass.")
+    except IsotopeError:
+        raise IsotopeError("Unable to identify isotope in isotope_mass.")
     except TypeError:
         raise TypeError("Invalid input to isotope_mass")
 

@@ -33,7 +33,8 @@ from ...utils import (AtomicWarning,
                       ElementError,
                       IsotopeError,
                       IonError,
-                      ChargeError)
+                      ChargeError,
+                      AtomicError)
 
 # (argument, expected)
 atomic_symbol_table = [
@@ -414,30 +415,29 @@ def test_standard_atomic_weight(argument, expected):
 
 # (argument, expected_error)
 standard_atomic_weight_error_table = [
-    ('H-1', ValueError),
-    ("help i'm trapped in a unit test", ValueError),
+    ('H-1', AtomicError),
+    ("help i'm trapped in a unit test", ElementError),
     (1.1, TypeError),
-    ('n', ValueError),
-    ('p', ValueError),
-    ('alpha', ValueError),
-    ('deuteron', ValueError),
-    ('tritium', ValueError),
-    ('Au+', ValueError),
-    ('Fe -2', ValueError),
-    ('Og 2+', ValueError),
-    ('h', ValueError),
-    ('fe', ValueError)]
+    ('n', ElementError),
+    ('p', AtomicError),
+    ('alpha', AtomicError),
+    ('deuteron', AtomicError),
+    ('tritium', AtomicError),
+    ('Au+', AtomicError),
+    ('Fe -2', AtomicError),
+    ('Og 2+', AtomicError),
+    ('h', ElementError),
+    ('fe', ElementError)]
 
 
 @pytest.mark.parametrize("argument, expected_error",
                          standard_atomic_weight_error_table)
 def test_standard_atomic_weight_error(argument, expected_error):
     """Test that standard_atomic_weight raises the expected exceptions."""
-#    with pytest.raises(expected_error, message=(
-#            f"standard_atomic_weight({argument}) is not raising a "
-#            "{expected_error}.")):
-#        standard_atomic_weight(argument)
-    pass
+    with pytest.raises(expected_error, message=(
+            f"standard_atomic_weight({argument}) is not raising a "
+            "{expected_error}.")):
+        standard_atomic_weight(argument)
 
 
 def test_isotope_mass_berkelium_249():
