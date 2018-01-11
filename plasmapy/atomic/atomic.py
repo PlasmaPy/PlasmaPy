@@ -9,7 +9,7 @@ from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
 from .particles import _Particles, _get_standard_symbol
 from ..utils import (AtomicWarning, ElementError, IsotopeError, IonError,
-                     NoChargeInfoError)
+                     ChargeError)
 from typing import (Union, Optional, Any, List, Tuple)
 
 # The code contained within atomic_symbol(), isotope_symbol(), and
@@ -54,7 +54,7 @@ def atomic_symbol(argument: Union[str, int]) -> str:
     IonError:
         If the argument is a valid element or isotope but is not a valid ion.
 
-    NoChargeInfoError:
+    ChargeError:
         If the charge information is not correctly included.
 
     See also
@@ -105,8 +105,8 @@ def atomic_symbol(argument: Union[str, int]) -> str:
 
     try:
         argument, Z = _extract_charge_state(argument)
-    except NoChargeInfoError:
-        raise NoChargeInfoError("Invalid charge in atomic_symbol")
+    except ChargeError:
+        raise ChargeError("Invalid charge in atomic_symbol")
 
     if not isinstance(argument, (str, int)):
         raise TypeError("The first argument in atomic_symbol must be either "
@@ -255,17 +255,21 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
                         "represents the mass number of an isotope.")
 
     if isinstance(argument, int) and mass_numb is None:
-        raise ValueError("Insufficient information to determine element and "
-                         "mass number in isotope_symbol.")
+        raise IsotopeError("Insufficient information to determine element and "
+                           "mass number in isotope_symbol.")
 
+    # TODO: Remove this functionality when particle_symbol comes online
     if _is_neutron(argument, mass_numb):
         return 'n'
 
     try:
         element = atomic_symbol(argument)
-    except Exception:
-        raise ValueError(f"The first argument of isotope_symbol ({argument}) "
-                         "does not correspond to a valid element or isotope.")
+    except ElementError:
+        raise ElementError(f"The argument {argument} to isotope_symbol does "
+                           f"not correspond to a valid element.")
+    except IsotopeError:
+        raise IsotopeError(f"The argument {argument} to isotope_symbol does "
+                           f"not correspond to a valid isotope.")
 
     # Get mass number from argument, check for redundancies, and take
     # care of special cases.
@@ -288,8 +292,8 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
             mass_numb_from_arg = None
 
         if mass_numb is None and mass_numb_from_arg is None:
-            raise ValueError("Insufficient information to determine the mass "
-                             "number from the inputs to isotope_symbol.")
+            raise IsotopeError("Insufficient information to determine the mass"
+                               " number from the inputs to isotope_symbol.")
 
         if mass_numb is not None and mass_numb_from_arg is not None:
             if mass_numb == mass_numb_from_arg:
@@ -297,8 +301,8 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
                     "Redundant mass number information in isotope_symbol "
                     f"from inputs: {argument}, {mass_numb}", AtomicWarning)
             else:  # coveralls: ignore
-                raise ValueError("Contradictory mass number information in "
-                                 "isotope_symbol.")
+                raise IsotopeError("Contradictory mass number information in "
+                                   "isotope_symbol.")
 
         if mass_numb_from_arg is not None:
             mass_numb = mass_numb_from_arg
@@ -311,8 +315,8 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
         isotope = 'T'
 
     if atomic_number(element) > mass_numb:
-        raise ValueError("The atomic number cannot exceed the mass number in "
-                         "isotope_symbol.")
+        raise IsotopeError("The atomic number cannot exceed the mass number "
+                           "in isotope_symbol.")
 
     return isotope
 
@@ -488,8 +492,11 @@ def mass_number(isotope: str) -> int:
 
     Raises
     ------
-    ValueError
-        If the mass number cannot be found.
+    ElementError
+        If the argument does not correspond to a valid element.
+
+    IsotopeError
+        If the argument does not correspond to a valid isotope.
 
     TypeError
         The first argument is not a string.
@@ -509,10 +516,6 @@ def mass_number(isotope: str) -> int:
     3
     >>> mass_number("n")
     1
-    >>> mass_number("N")
-    Traceback (most recent call last):
-      ...
-    ValueError: Mass number not able to be found from input N
     >>> mass_number("alpha")
     4
 
@@ -522,10 +525,11 @@ def mass_number(isotope: str) -> int:
         isotope = isotope_symbol(isotope)
         mass_numb = Isotopes[isotope]["mass_number"]
     except TypeError:
-        raise("Incorrect type for mass_number input.")
-    except ValueError:
-        raise ValueError("Mass number not able to be found from input "
-                         f"{isotope}")
+        raise TypeError("Incorrect type for mass_number input.")
+    except ElementError:
+        raise ElementError("Invalid element in mass_number.")
+    except IsotopeError:
+        raise IsotopeError("Invalid isotope in mass_number.")
 
     return mass_numb
 
@@ -1422,7 +1426,8 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
     Raises
     ------
 
-    IonError
+    ChargeError:
+        If invalid charge information is included.
 
     Notes
     -----
@@ -1482,7 +1487,7 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
             check3 = False
 
         if not (check1 and check2 and check3):
-            raise NoChargeInfoError(
+            raise ChargeError(
                 "The following input does not have valid charge: "
                 f"state information: {argument}{ion_info}")
 
@@ -1499,7 +1504,7 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
         argument = argument[0:len(argument)-match.span()[1]]
 
         if argument.endswith(('-', '+')):
-            raise NoChargeInfoError("Invalid charge state information")
+            raise ChargeError("Invalid charge state information")
 
     else:
         charge_state = None
