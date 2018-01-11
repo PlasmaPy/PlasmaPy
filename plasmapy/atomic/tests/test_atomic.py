@@ -801,28 +801,27 @@ atomic_TypeError_bad_arguments = [1.1, {'cats': 'bats'}, 1 + 1j]
 def test_atomic_TypeErrors(func, argument):
     """Test that atomic functions raise TypeErrors when arguments of the
     incorrect time are provided."""
-#    with pytest.raises(TypeError):
-#        func(argument)
+    with pytest.raises(TypeError):
+        func(argument)
     pass
 
 
-atomic_ValueErrors_funcs_table = [
+atomic_ElementErrors_funcs_table = [
     atomic_symbol, isotope_symbol, atomic_number,
     is_isotope_stable, half_life, mass_number,
     element_name, standard_atomic_weight]
-atomic_ValueError_bad_arguments = [-1, 119, 'grumblemuffins', 'Oj']
+atomic_ElementError_bad_arguments = [-1, 119, 'grumblemuffins']
 
 
 @pytest.mark.parametrize(
     "func, argument",
-    product(atomic_ValueErrors_funcs_table,
-            atomic_ValueError_bad_arguments))
-def test_atomic_ValueErrors(func, argument):
+    product(atomic_ElementErrors_funcs_table,
+            atomic_ElementError_bad_arguments))
+def test_atomic_ElementErrors(func, argument):
     """Test that atomic functions raise ValueErrors when incorrect
     arguments are provided."""
-#    with pytest.raises(ValueError):
-#        func(argument)
-    pass
+    with pytest.raises(ElementError):
+        func(argument)
 
 
 def test_known_common_stable_isotopes_cases():

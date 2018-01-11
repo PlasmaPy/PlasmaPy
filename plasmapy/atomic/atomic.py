@@ -272,9 +272,12 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
                         "integer (or a string containing an integer) that "
                         "represents the mass number of an isotope.")
 
-    if isinstance(argument, int) and mass_numb is None:
-        raise IsotopeError("Insufficient information to determine element and "
-                           "mass number in isotope_symbol.")
+    if isinstance(argument, int):
+        if not 0 <= argument <= 118:
+            raise ElementError("Invalid atomic number in isotope_symbol")
+        if mass_numb is None:
+            raise IsotopeError("Insufficient information to determine "
+                               "isotope in isotope_symbol.")
 
     # TODO: Remove this functionality when particle_symbol comes online
     if _is_neutron(argument, mass_numb):
@@ -514,9 +517,11 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
 
     try:
         isotope = isotope_symbol(argument, mass_numb)
-    except ValueError:
-        raise ValueError("Cannot determine isotope information from these " +
-                         f"inputs to half_life: {argument}, {mass_numb}")
+    except ElementError:
+        raise ElementError("Invalid element in isotope_symbol.")
+    except IsotopeError:
+        raise IsotopeError("Cannot determine isotope information from these " +
+                           f"inputs to half_life: {argument}, {mass_numb}")
     except TypeError:
         raise TypeError("Incorrect argument type for half_life")
 
@@ -525,7 +530,7 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
             half_life_sec = np.inf * u.s
         else:
             half_life_sec = Isotopes[isotope]['half_life']
-    except Exception:
+    except KeyError:
         half_life_sec = None
         warnings.warn(f"The half-life for isotope {isotope} is not available; "
                       "returning None.", AtomicWarning)
