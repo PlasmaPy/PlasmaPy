@@ -611,7 +611,7 @@ def resistivity(T_e, n_e, ion_particle, e_particle, Z=None, B=0.0,
 #    if Z is None:
 #        Z = atomic.charge_state(ion_particle)
     alpha_hat = _nondim_resistivity(hall_e, Z, e_particle, model,
-                                     field_orientation)
+                                    field_orientation)
     tau_e = 1 / collision_rate_electron_ion(T_e, n_e, ion_particle,
                                             coulomb_log_ei, V_ei)
 

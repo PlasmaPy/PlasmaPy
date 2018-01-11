@@ -41,8 +41,8 @@ def count_decimal_places(digits):
 
 def test_Coulomb_logarithm():
 
-    n_e = np.array([1e9, 1e9, 1e24])*u.cm**-3
-    T = np.array([1e2, 1e7, 1e8])*u.K
+    n_e = np.array([1e9, 1e9, 1e24]) * u.cm**-3
+    T = np.array([1e2, 1e7, 1e8]) * u.K
     Lambda = np.array([5.97, 21.66, 6.69])
     particles = ('e', 'p')
 
@@ -50,40 +50,41 @@ def test_Coulomb_logarithm():
         assert np.isclose(Coulomb_logarithm(T[i], n_e[i], particles),
                           Lambda[i], atol=0.01)
 
-    assert np.isclose(Coulomb_logarithm(1*u.eV, 5*u.m**-3, ('e', 'e')),
-                      Coulomb_logarithm(11604.5220*u.K, 5*u.m**-3, ('e', 'e')))
+    assert np.isclose(Coulomb_logarithm(1 * u.eV, 5 * u.m**-3, ('e', 'e')),
+                      Coulomb_logarithm(11604.5220 * u.K, 5 * u.m**-3, ('e', 'e')))
 
-    assert np.isclose(Coulomb_logarithm(1e2*u.K, 1e9*u.cm**-3, ('e', 'p')),
+    assert np.isclose(Coulomb_logarithm(1e2 * u.K, 1e9 * u.cm**-3, ('e', 'p')),
                       5.97, atol=0.01)
 
-    assert np.isclose(Coulomb_logarithm(1e7*u.K, 1e9*u.cm**-3, ('e', 'p')),
+    assert np.isclose(Coulomb_logarithm(1e7 * u.K, 1e9 * u.cm**-3, ('e', 'p')),
                       21.6, atol=0.1)
 
-    assert np.isclose(Coulomb_logarithm(1e8*u.K, 1e24*u.cm**-3, ('e', 'p')),
+    assert np.isclose(Coulomb_logarithm(1e8 * u.K, 1e24 * u.cm**-3, ('e', 'p')),
                       6.69, atol=0.01)
 
     assert np.allclose(Coulomb_logarithm(T, n_e, particles), Lambda, atol=0.01)
 
-    assert np.isclose(Coulomb_logarithm(1e5*u.K, 5*u.m**-3, ('e', 'e'),
-                                        V=1e4*u.m/u.s), 21.379082011)
+    assert np.isclose(Coulomb_logarithm(1e5 * u.K, 5 * u.m**-3, ('e', 'e'),
+                                        V=1e4 * u.m / u.s), 21.379082011)
 
     with pytest.warns(RelativityWarning):
-        Coulomb_logarithm(1e5*u.K, 1*u.m**-3, ('e', 'p'), 0.9*c)
+        Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), 0.9 * c)
 
     with pytest.raises(RelativityError):
-        Coulomb_logarithm(1e5*u.K, 1*u.m**-3, ('e', 'p'), 1.0*c)
+        Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), 1.0 * c)
 
     with pytest.raises(u.UnitConversionError):
-        Coulomb_logarithm(1e5*u.g, 1*u.m**-3, ('e', 'p'), 29979245*u.m/u.s)
+        Coulomb_logarithm(1e5 * u.g, 1 * u.m**-3,
+                          ('e', 'p'), 29979245 * u.m / u.s)
 
     with pytest.raises(ValueError):
-        Coulomb_logarithm(1*u.K, 5*u.m**-3, ('e'))
+        Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e'))
 
     with pytest.raises(ValueError):
-        Coulomb_logarithm(1*u.K, 5*u.m**-3, ('e', 'g'))
+        Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e', 'g'))
 
     with pytest.raises(ValueError):
-        Coulomb_logarithm(1*u.K, 5*u.m**-3, ('e', 'D'))
+        Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e', 'D'))
 
 
 # test class for classical_transport class:
@@ -227,7 +228,7 @@ class Test_classical_transport(object):
                                   T_i=self.T_i,
                                   n_i=self.n_i,
                                   ion_particle=self.ion_particle)
-        cl_ii = Coulomb_logarithm(self.T_i, 
+        cl_ii = Coulomb_logarithm(self.T_i,
                                   self.n_e,
                                   [self.ion_particle, self.ion_particle],
                                   self.V_ii)
@@ -253,13 +254,13 @@ class Test_classical_transport(object):
                                 ct2.coulomb_log_ii,
                                 ct2.V_ii)
         hall_e = Hall_parameter(
-                ct2.n_e,
-                ct2.T_e,
-                ct2.B,
-                ct2.e_particle,
-                ct2.ion_particle,
-                ct2.coulomb_log_ei,
-                ct2.V_ei)
+            ct2.n_e,
+            ct2.T_e,
+            ct2.B,
+            ct2.e_particle,
+            ct2.ion_particle,
+            ct2.coulomb_log_ei,
+            ct2.V_ei)
         assert(hall_i == ct2.hall_i)
         assert(hall_e == ct2.hall_e)
 
@@ -282,7 +283,6 @@ class Test_classical_transport(object):
                                       field_orientation='to the left')
 
 
-
 class Test__nondim_thermal_conductivity():
     @pytest.mark.parametrize(["particle"], ['e', 'p'])
     def test_unrecognized_model(self, particle):
@@ -291,19 +291,19 @@ class Test__nondim_thermal_conductivity():
                                          'standard model is best model',
                                          'parallel')
 
+
 class Test__nondim_resistivity():
     def test_unrecognized_model(self):
         with pytest.raises(ValueError):
             _nondim_resistivity(1, 1, 'e', 'SURPRISE SUPERSYMMETRY',
-                                 'parallel')
+                                'parallel')
+
 
 class Test__nondim_te_conductivity():
     def test_unrecognized_model(self):
         with pytest.raises(ValueError):
             _nondim_te_conductivity(1, 1, 'e', 'this is not a model',
                                     'parallel')
-
-    
 
 
 # test class for _nondim_tc_e_braginskii function:
@@ -564,43 +564,43 @@ def test__nondim_tec_spitzer(Z):
 
 # approximated from Ji-Held '13 figures 1 and 2 (black circles)
 @pytest.mark.parametrize("hall, Z, field_orientation, expected", [
-        (0.0501, 1, 'perp', 3.187),
-        (0.2522, 1, 'perp', 2.597),
-        (1.004, 1, 'perp', 0.9942),
-        (3.178, 1, 'perp', 0.2218),
-        (10.03, 1, 'perp', 0.03216),
-        (31.66, 1, 'perp', 0.003878),
-        (100.6, 1, 'perp', 0.0004241),
-        (315.7, 1, 'perp', 0.00004492),
-        (1005, 1, 'perp', 0.000004543),
-        (0.03175, 1, 'cross', 0.1899),
-        (0.1001, 1, 'cross', 0.5648),
-        (0.3166, 1, 'cross', 1.234),
-        (1.267, 1, 'cross', 1.157),
-        (4, 1, 'cross', 0.5359),
-        (12.64, 1, 'cross', 0.1906),
-        (40.04, 1, 'cross', 0.06191),
-        (126.4, 1, 'cross', 0.01981),
-        (401.6, 1, 'cross', 0.006282),
-        (0.02494, 100, 'perp', 11.57),
-        (0.09969, 100, 'perp', 6.707),
-        (0.3987, 100, 'perp', 1.964),
-        (1.586, 100, 'perp', 0.3524),
-        (4.991, 100, 'perp', 0.06185),
-        (15.85, 100, 'perp', 0.008857),
-        (49.85, 100, 'perp', 0.001078),
-        (158, 100, 'perp', 0.0001184),
-        (499.9, 100, 'perp', 0.00001236),
-        (0.0319, 100, 'cross', 3.68),
-        (0.1271, 100, 'cross', 5.023),
-        (0.502, 100, 'cross', 2.945),
-        (1.595, 100, 'cross', 1.283),
-        (5.017, 100, 'cross', 0.462),
-        (15.95, 100, 'cross', 0.1534),
-        (50.24, 100, 'cross', 0.04949),
-        (158.1, 100, 'cross', 0.01572),
-        (500.8, 100, 'cross', 0.004972),
-        ])
+    (0.0501, 1, 'perp', 3.187),
+    (0.2522, 1, 'perp', 2.597),
+    (1.004, 1, 'perp', 0.9942),
+    (3.178, 1, 'perp', 0.2218),
+    (10.03, 1, 'perp', 0.03216),
+    (31.66, 1, 'perp', 0.003878),
+    (100.6, 1, 'perp', 0.0004241),
+    (315.7, 1, 'perp', 0.00004492),
+    (1005, 1, 'perp', 0.000004543),
+    (0.03175, 1, 'cross', 0.1899),
+    (0.1001, 1, 'cross', 0.5648),
+    (0.3166, 1, 'cross', 1.234),
+    (1.267, 1, 'cross', 1.157),
+    (4, 1, 'cross', 0.5359),
+    (12.64, 1, 'cross', 0.1906),
+    (40.04, 1, 'cross', 0.06191),
+    (126.4, 1, 'cross', 0.01981),
+    (401.6, 1, 'cross', 0.006282),
+    (0.02494, 100, 'perp', 11.57),
+    (0.09969, 100, 'perp', 6.707),
+    (0.3987, 100, 'perp', 1.964),
+    (1.586, 100, 'perp', 0.3524),
+    (4.991, 100, 'perp', 0.06185),
+    (15.85, 100, 'perp', 0.008857),
+    (49.85, 100, 'perp', 0.001078),
+    (158, 100, 'perp', 0.0001184),
+    (499.9, 100, 'perp', 0.00001236),
+    (0.0319, 100, 'cross', 3.68),
+    (0.1271, 100, 'cross', 5.023),
+    (0.502, 100, 'cross', 2.945),
+    (1.595, 100, 'cross', 1.283),
+    (5.017, 100, 'cross', 0.462),
+    (15.95, 100, 'cross', 0.1534),
+    (50.24, 100, 'cross', 0.04949),
+    (158.1, 100, 'cross', 0.01572),
+    (500.8, 100, 'cross', 0.004972),
+])
 def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
     """test _nondim_tc_e_ji_held function"""
     kappa_hat = _nondim_tc_e_ji_held(hall, Z, field_orientation)
@@ -610,48 +610,48 @@ def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
 
 # approximated from Ji-Held '13 figures 1 and 2 (black circles)
 @pytest.mark.parametrize("hall, Z, field_orientation, expected", [
-        (0.03939, 1, 'perp', 0.6959),
-        (0.2498, 1, 'perp', 0.6216),
-        (1.258, 1, 'perp', 0.3007),
-        (6.321, 1, 'perp', 0.06303),
-        (25.14, 1, 'perp', 0.01126),
-        (100.3, 1, 'perp', 0.00161),
-        (317.2, 1, 'perp', 0.0002877),
-        (1006, 1, 'perp', 0.0000483),
-        (3191, 1, 'perp', 0.000007741),
-        (9958, 1, 'perp', 0.000001226),
-        (0.02515, 1, 'cross', 0.02218),
-        (0.06343, 1, 'cross', 0.0551),
-        (0.1589, 1, 'cross', 0.1268),
-        (0.5041, 1, 'cross', 0.2523),
-        (2.006, 1, 'cross', 0.24),
-        (6.321, 1, 'cross', 0.1335),
-        (19.97, 1, 'cross', 0.05613),
-        (50.26, 1, 'cross', 0.0253),
-        (126.9, 1, 'cross', 0.01083),
-        (317.5, 1, 'cross', 0.004495),
-        (795.3, 1, 'cross', 0.001839),
-        (0.03975, 100, 'perp', 1.335),
-        (0.2522, 100, 'perp', 0.7647),
-        (1.258, 100, 'perp', 0.2709),
-        (6.345, 100, 'perp', 0.05833),
-        (25.12, 100, 'perp', 0.01112),
-        (100.2, 100, 'perp', 0.001649),
-        (317.8, 100, 'perp', 0.0002915),
-        (992.3, 100, 'perp', 0.00004875),
-        (3170, 100, 'perp', 0.000007839),
-        (9994, 100, 'perp', 0.000001213),
-        (0.02507, 100, 'cross', 0.2022),
-        (0.07935, 100, 'cross', 0.4037),
-        (0.3155, 100, 'cross', 0.4764),
-        (1.258, 100, 'cross', 0.3272),
-        (3.958, 100, 'cross', 0.1795),
-        (12.53, 100, 'cross', 0.08046),
-        (39.62, 100, 'cross', 0.03088),
-        (100.2, 100, 'cross', 0.01332),
-        (250.3, 100, 'cross', 0.00562),
-        (629.8, 100, 'cross', 0.002308),
-        ])
+    (0.03939, 1, 'perp', 0.6959),
+    (0.2498, 1, 'perp', 0.6216),
+    (1.258, 1, 'perp', 0.3007),
+    (6.321, 1, 'perp', 0.06303),
+    (25.14, 1, 'perp', 0.01126),
+    (100.3, 1, 'perp', 0.00161),
+    (317.2, 1, 'perp', 0.0002877),
+    (1006, 1, 'perp', 0.0000483),
+    (3191, 1, 'perp', 0.000007741),
+    (9958, 1, 'perp', 0.000001226),
+    (0.02515, 1, 'cross', 0.02218),
+    (0.06343, 1, 'cross', 0.0551),
+    (0.1589, 1, 'cross', 0.1268),
+    (0.5041, 1, 'cross', 0.2523),
+    (2.006, 1, 'cross', 0.24),
+    (6.321, 1, 'cross', 0.1335),
+    (19.97, 1, 'cross', 0.05613),
+    (50.26, 1, 'cross', 0.0253),
+    (126.9, 1, 'cross', 0.01083),
+    (317.5, 1, 'cross', 0.004495),
+    (795.3, 1, 'cross', 0.001839),
+    (0.03975, 100, 'perp', 1.335),
+    (0.2522, 100, 'perp', 0.7647),
+    (1.258, 100, 'perp', 0.2709),
+    (6.345, 100, 'perp', 0.05833),
+    (25.12, 100, 'perp', 0.01112),
+    (100.2, 100, 'perp', 0.001649),
+    (317.8, 100, 'perp', 0.0002915),
+    (992.3, 100, 'perp', 0.00004875),
+    (3170, 100, 'perp', 0.000007839),
+    (9994, 100, 'perp', 0.000001213),
+    (0.02507, 100, 'cross', 0.2022),
+    (0.07935, 100, 'cross', 0.4037),
+    (0.3155, 100, 'cross', 0.4764),
+    (1.258, 100, 'cross', 0.3272),
+    (3.958, 100, 'cross', 0.1795),
+    (12.53, 100, 'cross', 0.08046),
+    (39.62, 100, 'cross', 0.03088),
+    (100.2, 100, 'cross', 0.01332),
+    (250.3, 100, 'cross', 0.00562),
+    (629.8, 100, 'cross', 0.002308),
+])
 def test__nondim_tec_ji_held(hall, Z, field_orientation, expected):
     """test _nondim_tec_ji_held function"""
     beta_hat = _nondim_tec_ji_held(hall, Z, field_orientation)
@@ -661,45 +661,45 @@ def test__nondim_tec_ji_held(hall, Z, field_orientation, expected):
 
 # approximated from Ji-Held '13 figures 1 and 2 (black circles)
 @pytest.mark.parametrize("hall, Z, field_orientation, expected", [
-        (0.06317, 1, 'perp', 0.5064),
-        (0.3966, 1, 'perp', 0.5316),
-        (1.586, 1, 'perp', 0.619),
-        (5.041, 1, 'perp', 0.7309),
-        (15.8, 1, 'perp', 0.8343),
-        (63.35, 1, 'perp', 0.92),
-        (315.6, 1, 'perp', 0.9701),
-        (1998, 1, 'perp', 0.9912),
-        (0.02495, 1, 'cross', 0.005026),
-        (0.06249, 1, 'cross', 0.01255),
-        (0.1574, 1, 'cross', 0.03007),
-        (0.4998, 1, 'cross', 0.07338),
-        (1.995, 1, 'cross', 0.1254),
-        (12.6, 1, 'cross', 0.1211),
-        (62.96, 1, 'cross', 0.07421),
-        (252.4, 1, 'cross', 0.03992),
-        (998.4, 1, 'cross', 0.01908),
-        (3194, 1, 'cross', 0.009749),
-        (9963, 1, 'cross', 0.004812),
-        (0.06333, 100, 'perp', 0.3144),
-        (0.3137, 100, 'perp', 0.3894),
-        (0.9954, 100, 'perp', 0.4979),
-        (2.507, 100, 'perp', 0.6091),
-        (6.324, 100, 'perp', 0.7221),
-        (20.02, 100, 'perp', 0.8401),
-        (79.68, 100, 'perp', 0.9275),
-        (399.2, 100, 'perp', 0.9743),
-        (2509, 100, 'perp', 0.9922),
-        (0.02505, 100, 'cross', 0.02138),
-        (0.07929, 100, 'cross', 0.05403),
-        (0.3138, 100, 'cross', 0.1133),
-        (1.581, 100, 'cross', 0.1693),
-        (9.994, 100, 'cross', 0.1539),
-        (49.88, 100, 'cross', 0.09238),
-        (199.1, 100, 'cross', 0.04845),
-        (786.3, 100, 'cross', 0.02278),
-        (2504, 100, 'cross', 0.01152),
-        (7879, 100, 'cross', 0.005652),
-        ])
+    (0.06317, 1, 'perp', 0.5064),
+    (0.3966, 1, 'perp', 0.5316),
+    (1.586, 1, 'perp', 0.619),
+    (5.041, 1, 'perp', 0.7309),
+    (15.8, 1, 'perp', 0.8343),
+    (63.35, 1, 'perp', 0.92),
+    (315.6, 1, 'perp', 0.9701),
+    (1998, 1, 'perp', 0.9912),
+    (0.02495, 1, 'cross', 0.005026),
+    (0.06249, 1, 'cross', 0.01255),
+    (0.1574, 1, 'cross', 0.03007),
+    (0.4998, 1, 'cross', 0.07338),
+    (1.995, 1, 'cross', 0.1254),
+    (12.6, 1, 'cross', 0.1211),
+    (62.96, 1, 'cross', 0.07421),
+    (252.4, 1, 'cross', 0.03992),
+    (998.4, 1, 'cross', 0.01908),
+    (3194, 1, 'cross', 0.009749),
+    (9963, 1, 'cross', 0.004812),
+    (0.06333, 100, 'perp', 0.3144),
+    (0.3137, 100, 'perp', 0.3894),
+    (0.9954, 100, 'perp', 0.4979),
+    (2.507, 100, 'perp', 0.6091),
+    (6.324, 100, 'perp', 0.7221),
+    (20.02, 100, 'perp', 0.8401),
+    (79.68, 100, 'perp', 0.9275),
+    (399.2, 100, 'perp', 0.9743),
+    (2509, 100, 'perp', 0.9922),
+    (0.02505, 100, 'cross', 0.02138),
+    (0.07929, 100, 'cross', 0.05403),
+    (0.3138, 100, 'cross', 0.1133),
+    (1.581, 100, 'cross', 0.1693),
+    (9.994, 100, 'cross', 0.1539),
+    (49.88, 100, 'cross', 0.09238),
+    (199.1, 100, 'cross', 0.04845),
+    (786.3, 100, 'cross', 0.02278),
+    (2504, 100, 'cross', 0.01152),
+    (7879, 100, 'cross', 0.005652),
+])
 def test__nondim_resist_ji_held(hall, Z, field_orientation, expected):
     """test _nondim_resist_ji_held function"""
     alpha_hat = _nondim_resist_ji_held(hall, Z, field_orientation)
@@ -727,7 +727,7 @@ def test__nondim_resist_ji_held(hall, Z, field_orientation, expected):
     (16.68, 1, 4, 0.05845),
     (39.82, 1, 4, 0.02501),
     (77.82, 1, 4, 0.01288),
-    ])
+])
 def test__nondim_visc_e_ji_held(hall, Z, index, expected):
     """test _nondim_visc_e_ji_held function"""
     alpha_hat = _nondim_visc_e_ji_held(hall, Z)
@@ -756,7 +756,7 @@ def test__nondim_visc_e_ji_held(hall, Z, index, expected):
     (2.96843, 1, 0, 100, 'cross', 0.77216061),
     (12.42528, 1, 0, 100, 'cross', 0.19968696),
     (77.11707, 1, 0, 100, 'cross', 0.03235721),
-    ])
+])
 def test__nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, expected):
     """test _nondim_tc_i_ji_held function"""
     kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)
@@ -781,7 +781,7 @@ def test__nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, expected):
     (4.35295, 1, 0, 100, 4, 0.21036427),
     (22.74055, 1, 0, 100, 4, 0.04358606),
     (80.42633, 1, 0, 100, 4, 0.01238144),
-    ])
+])
 def test__nondim_visc_i_ji_held(hall, Z, mu, theta, index, expected):
     """test _nondim_visc_i_ji_held function"""
     kappa_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)
