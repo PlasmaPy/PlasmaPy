@@ -201,7 +201,7 @@ class Test_classical_transport(object):
 
     def test_coulomb_log_errors(self):
         """should raise PhysicsError if coulomb log is < 1"""
-        with pytest.raises(PhysicsError):
+        with pytest.raises(PhysicsError), pytest.warns(PhysicsWarning):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,
@@ -209,7 +209,7 @@ class Test_classical_transport(object):
                                       ion_particle=self.ion_particle,
                                       coulomb_log_ii=0.3)
 
-        with pytest.raises(PhysicsError):
+        with pytest.raises(PhysicsError), pytest.warns(PhysicsWarning):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,
