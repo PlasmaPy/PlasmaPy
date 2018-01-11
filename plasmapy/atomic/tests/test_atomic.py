@@ -309,20 +309,21 @@ def test_mass_number(isotope, expected):
 
 # (argument, expected_error)
 mass_number_error_table = [
-    ('H-359', ValueError),
-    ('C-12b', ValueError),
+    ('H-359', IsotopeError),
+    ('C-12b', IsotopeError),
     (-1.5, Exception),
-    ('N-13+-+-', ValueError),
-    ('h-3', ValueError)]
+    ('N-13+-+-', ChargeError),
+    ('h-3', ElementError)]
 
 
 @pytest.mark.parametrize(
     "argument, expected_error", mass_number_error_table)
 def test_mass_number_error(argument, expected_error):
     """Test that mass_number raises the expected exceptions."""
-#    with pytest.raises(expected_error):
-#        mass_number(argument)
+    with pytest.raises(expected_error):
+        mass_number(argument)
     pass
+
 
 # (argument, expected)
 element_name_table = [
