@@ -113,7 +113,6 @@ def test_atomic_symbol_error(argument, expected_error):
     with pytest.raises(expected_error, message=(
             f"atomic_symbol({argument}) is not raising {expected_error}.")):
         atomic_symbol(argument)
-    pass
 
 
 # (argument, expected)
@@ -255,26 +254,26 @@ def test_atomic_number(argument, expected):
 
 # (argument, expected_error)
 atomic_number_error_table = [
-    ('H-3934', ValueError),
-    ('C-12b', ValueError),
+    ('H-3934', IsotopeError),
+    ('C-12b', IsotopeError),
     (-1.5, TypeError),
-    ('n', ValueError),
-    ('n-1', ValueError),
-    ('neutron', ValueError),
-    ('Neutron', ValueError),
-    ('d', ValueError),
-    ('t', ValueError),
-    ('s-36', ValueError)]
+    ('n', ElementError),
+    ('n-1', ElementError),
+    ('neutron', ElementError),
+    ('Neutron', ElementError),
+    ('d', ElementError),
+    ('t', ElementError),
+    ('s-36', ElementError)]
 
 
 @pytest.mark.parametrize(
     "argument, expected_error", atomic_number_error_table)
 def test_atomic_number_error(argument, expected_error):
     """Test that atomic_number raises the expected exceptions."""
-#    with pytest.raises(expected_error, warning=(
-#            f"atomic_number({argument}) is not raising a {expected_error}")):
-#        atomic_number(argument)
-    pass
+    with pytest.raises(expected_error, warning=(
+            f"atomic_number({argument}) is not raising a {expected_error}")):
+        atomic_number(argument)
+
 
 
 # (isotope, expected)
@@ -322,7 +321,6 @@ def test_mass_number_error(argument, expected_error):
     """Test that mass_number raises the expected exceptions."""
     with pytest.raises(expected_error):
         mass_number(argument)
-    pass
 
 
 # (argument, expected)
