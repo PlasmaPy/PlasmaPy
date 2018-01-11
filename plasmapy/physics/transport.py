@@ -1550,7 +1550,7 @@ def _nondim_visc_e_ji_held(hall, Z):
     return np.array((eta_0, eta_1, eta_2, eta_3, eta_4))
 
 
-def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation):
+def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
     """TODO"""
 
 #    mu = m_e / m_i
@@ -1559,7 +1559,6 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation):
     r = np.abs(hall / np.sqrt(2))
 
 #    K = 2  # 2x2 moments, equivalent to original Braginskii
-    K = 3  # 3x3 moments, more accurate
 
     if K == 3:
         Delta_par_i1 = 1 + 26.90 * zeta + 187.5 * zeta**2 + 346.9 * zeta**3
@@ -1609,14 +1608,13 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation):
                          kappa_cross_i / np.sqrt(2)))
 
 
-def _nondim_visc_i_ji_held(hall, Z, mu, theta):
+def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
 
     zeta = 1 / Z * np.sqrt(mu / theta)
     r = np.abs(hall / np.sqrt(2))
     r13 = 2 * r
 
 #    K = 2  # 2x2 moments, equivalent to original Braginskii
-    K = 3  # 3x3 moments, more accurate
 
     if K == 3:
         Delta_par_i2 = 1 + 15.79 * zeta + 63.92 * zeta**2 + 71.69 * zeta**3
