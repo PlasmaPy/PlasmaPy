@@ -161,30 +161,30 @@ def test_isotope_symbol(arguments, expected):
 
 # (argument, kwargs, expected_error)
 isotope_symbol_error_table = [
-    ('Md-260', {"mass_numb": 261}, ValueError),
-    ('protium', {"mass_numb": 2}, ValueError),
-    ('alpha', {"mass_numb": 3}, ValueError),
-    ('O-18', {"mass_numb": 19}, ValueError),
-    ('lead-209', {"mass_numb": 511}, ValueError),
-    ('He-1', {}, ValueError),
-    (24, {"mass_numb": 23}, ValueError),
-    ('H', {"mass_numb": 0}, ValueError),
-    ('H-1', {"mass_numb": 2}, ValueError),
-    ('P', {}, ValueError),
-    (1, {}, ValueError),
-    (4, {}, ValueError),
-    ('hydrogen-444444', {}, ValueError),
+    ('Md-260', {"mass_numb": 261}, IsotopeError),
+    ('protium', {"mass_numb": 2}, IsotopeError),
+    ('alpha', {"mass_numb": 3}, IsotopeError),
+    ('O-18', {"mass_numb": 19}, IsotopeError),
+    ('lead-209', {"mass_numb": 511}, IsotopeError),
+    ('He-1', {}, IsotopeError),
+    (24, {"mass_numb": 23}, IsotopeError),
+    ('H', {"mass_numb": 0}, IsotopeError),
+    ('H-1', {"mass_numb": 2}, IsotopeError),
+    ('P', {}, IsotopeError),
+    (1, {}, IsotopeError),
+    (4, {}, IsotopeError),
+    ('hydrogen-444444', {}, IsotopeError),
     ('Fe', {"mass_numb": 2.1}, TypeError),
     ('He', {"mass_numb": 'c'}, TypeError),
-    ('He-3', {"mass_numb": 4}, ValueError),
-    ('alpha', {"mass_numb": 3}, ValueError),
-    ('D', {"mass_numb": 3}, ValueError),
-    ('T', {"mass_numb": 2}, ValueError),
-    ('Fe', {"mass_numb": None}, ValueError),
-    ('d', {}, ValueError),
-    ('h-3', {}, ValueError),
-    ('h', {}, ValueError),
-    ('d+', {}, ValueError),
+    ('He-3', {"mass_numb": 4}, IsotopeError),
+    ('alpha', {"mass_numb": 3}, IsotopeError),
+    ('D', {"mass_numb": 3}, IsotopeError),
+    ('T', {"mass_numb": 2}, IsotopeError),
+    ('Fe', {"mass_numb": None}, IsotopeError),
+    ('d', {}, ElementError),
+    ('h-3', {}, ElementError),
+    ('h', {}, ElementError),
+    ('d+', {}, ElementError),
 ]
 
 
@@ -192,10 +192,10 @@ isotope_symbol_error_table = [
     "argument, kwargs, expected_error", isotope_symbol_error_table)
 def test_isotope_symbol_error(argument, kwargs, expected_error):
     """Test that isotope_symbol raises the expected exceptions."""
-#    with pytest.raises(expected_error, message=(
-#            f"isotope_symbol({argument}, **{kwargs}) is not raising a "
-#            f"{expected_error}.")):
-#        isotope_symbol(argument, **kwargs)
+    with pytest.raises(expected_error, message=(
+            f"isotope_symbol({argument}, **{kwargs}) is not raising a "
+            f"{expected_error}.")):
+        isotope_symbol(argument, **kwargs)
     pass
 
 
