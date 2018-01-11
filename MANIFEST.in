@@ -1,4 +1,5 @@
 include requirements/base.txt
+include LICENSE.md
 
 # the next few stanzas are for astropy_helpers.  It's derived from the
 # astropy_helpers/MANIFEST.in, but requires additional includes for the actual
