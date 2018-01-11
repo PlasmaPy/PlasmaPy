@@ -335,6 +335,12 @@ def atomic_number(argument: str) -> str:
         An integer representing the atomic number of the element or
         isotope.
 
+    Raises
+    ------
+
+    TypeError
+        If the argument is not a string.
+
     See also
     --------
     mass_number : returns the mass number (the total number of protons
@@ -356,8 +362,14 @@ def atomic_number(argument: str) -> str:
     try:
         element = atomic_symbol(argument)
         atomic_numb = Elements[element]['atomic_number']
-    except ValueError:
-        raise ValueError("Unable to identify element in atomic_number")
+    except ElementError:
+        raise ElementError("Unable to identify element in atomic_number.")
+    except IsotopeError:
+        raise IsotopeError("Invalid isotope in atomic_number.")
+    except IonError:
+        raise IonError("Invalid ion in atomic_number.")
+    except ChargeError:
+        raise ChargeError("Invalid charge information in atomic_number.")
     except TypeError:
         raise TypeError("Invalid type in atomic_number")
 

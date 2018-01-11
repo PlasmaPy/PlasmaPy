@@ -275,7 +275,6 @@ def test_atomic_number_error(argument, expected_error):
         atomic_number(argument)
 
 
-
 # (isotope, expected)
 mass_number_table = [
     ('helium-3', 3),
