@@ -260,6 +260,25 @@ class Test_classical_transport(object):
         assert(hall_i == ct2.hall_i)
         assert(hall_e == ct2.hall_e)
 
+    def test_invalid_model(self):
+        with pytest.raises(ValueError):
+            ct2 = classical_transport(T_e=self.T_e,
+                                      n_e=self.n_e,
+                                      T_i=self.T_i,
+                                      n_i=self.n_i,
+                                      ion_particle=self.ion_particle,
+                                      model="standard")
+
+    def test_invalid_field(self):
+        with pytest.raises(ValueError):
+            ct2 = classical_transport(T_e=self.T_e,
+                                      n_e=self.n_e,
+                                      T_i=self.T_i,
+                                      n_i=self.n_i,
+                                      ion_particle=self.ion_particle,
+                                      field_orientation='to the left')
+
+
 
 # test class for _nondim_tc_e_braginskii function:
 class Test__nondim_tc_e_braginskii(object):
