@@ -557,21 +557,6 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     else:
         raise ValueError("Method {method} not supported in thermal_speed")
 
-
-def _particle_params(particle):
-    """Helper function to extract data from particle strings"""
-    try:
-        m = atomic.ion_mass(particle)
-        try:
-            Z = atomic.charge_state(particle)
-        except ValueError:
-            Z = 1
-        Z = abs(Z)
-    except Exception:
-        raise ValueError(f"Invalid particle {particle}")
-    return (m, Z)
-
-
 @utils.check_quantity({
     'T_e': {'units': units.K, 'can_be_negative': False},
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
