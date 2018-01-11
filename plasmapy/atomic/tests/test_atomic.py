@@ -590,7 +590,7 @@ def test_ion_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
 
 # (argument, kwargs, expected_error)
 ion_mass_error_table = [
-    ('0g 1+', {}, MissingAtomicDataError),
+    ('Og 1+', {}, MissingAtomicDataError),
     ('Fe-56', {"Z": 1.4}, TypeError),
     ('n', {}, ElementError),
     ('H-1 +1', {"Z": 0}, IonError),
@@ -952,7 +952,7 @@ charge_state_error_table = [
     ('fe 1+', ElementError),
     ('d+', ElementError),
     ('Fe 29+', IonError),
-    ('H-1', IonError),
+    ('H-1', ChargeError),
 ]
 
 
@@ -993,7 +993,6 @@ def test_electric_charge():
 # (argument, expected_error)
 electric_charge_error_table = [
     ('badinput', ElementError),
-    (' ', ElementError),
     ('h+', ElementError),
     ('Au 81+', IonError)]
 
