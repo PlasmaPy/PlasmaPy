@@ -14,6 +14,7 @@ def nuclear_binding_energy(argument, mass_numb=None):
 
     Parameters
     ----------
+
     argument: string or integer
         A string representing an element or isotope, or an integer
         representing the atomic number of an element.
@@ -25,16 +26,19 @@ def nuclear_binding_energy(argument, mass_numb=None):
 
     Returns
     -------
+
     binding_energy: Quantity
         The binding energy of the nucleus in units of Joules.
 
     See also
     --------
+
     nuclear_reaction_energy : Returns the change in binding energy
         during nuclear fusion or fission reactions.
 
     Examples
     --------
+
     >>> from astropy import units as u
     >>> nuclear_binding_energy('Fe-56').to(u.MeV)
     <Quantity 492.25957876 MeV>
@@ -78,6 +82,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     Parameters
     ----------
+
     reaction: string (optional, positional argument only)
         A string representing the reaction, like "D + T --> alpha + n"
         or "Be-8 --> 2*He-4"
@@ -93,6 +98,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     Returns
     -------
+
     energy: Quantity
         The difference between the mass energy of the reactants and
         the mass energy of the products in a nuclear reaction.  This
@@ -102,6 +108,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     Raises
     ------
+
     ValueError:
         If the reaction is not valid, there is insufficient
         information to determine an isotope, the baryon number is
@@ -113,10 +120,12 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     See also
     --------
+
     nuclear_binding_energy : finds the binding energy of an isotope
 
     Notes
     -----
+
     This function requires either a string containing the nuclear
     reaction, or reactants and products as two keyword-only lists
     containing strings representing the isotopes and other particles
@@ -126,6 +135,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     Examples
     --------
+
     >>> from astropy import units as u
     >>> nuclear_reaction_energy("D + T --> alpha + n")
     <Quantity 2.81812097e-12 J>
