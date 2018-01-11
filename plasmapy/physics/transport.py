@@ -610,7 +610,7 @@ def resistivity(T_e, n_e, ion_particle, e_particle, Z=None, B=0.0,
 #                              coulomb_log, V)
 #    if Z is None:
 #        Z = atomic.charge_state(ion_particle)
-    alpha_hat = _nondim_resisitivity(hall_e, Z, e_particle, model,
+    alpha_hat = _nondim_resistivity(hall_e, Z, e_particle, model,
                                      field_orientation)
     tau_e = 1 / collision_rate_electron_ion(T_e, n_e, ion_particle,
                                             coulomb_log_ei, V_ei)
@@ -845,7 +845,7 @@ def _nondim_viscosity(hall, Z, particle, model, field_orientation,
     return eta_hat
 
 
-def _nondim_resisitivity(hall, Z, particle, model, field_orientation):
+def _nondim_resistivity(hall, Z, particle, model, field_orientation):
     """TODO"""
 
     if model == 'spitzer-harm' or model == 'spitzer':
@@ -856,7 +856,7 @@ def _nondim_resisitivity(hall, Z, particle, model, field_orientation):
         alpha_hat = _nondim_resist_ji_held(hall, Z, field_orientation)
     else:
         raise ValueError(f"Unrecognized model '{model}' in "
-                         "_nondim_resisitivity")
+                         "_nondim_resistivity")
     return alpha_hat
 
 

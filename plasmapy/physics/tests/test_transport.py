@@ -21,6 +21,9 @@ from ..transport import (Coulomb_logarithm,
                          _nondim_tc_e_spitzer,
                          _nondim_tec_spitzer,
                          _nondim_resist_spitzer,
+                         _nondim_thermal_conductivity,
+                         _nondim_resistivity,
+                         _nondim_te_conductivity,
                          _nondim_tc_e_ji_held,
                          _nondim_tc_i_ji_held,
                          _nondim_tec_ji_held,
@@ -278,6 +281,29 @@ class Test_classical_transport(object):
                                       ion_particle=self.ion_particle,
                                       field_orientation='to the left')
 
+
+
+class Test__nondim_thermal_conductivity():
+    @pytest.mark.parametrize(["particle"], ['e', 'p'])
+    def test_unrecognized_model(self, particle):
+        with pytest.raises(ValueError):
+            _nondim_thermal_conductivity(1, 1, particle,
+                                         'standard model is best model',
+                                         'parallel')
+
+class Test__nondim_resistivity():
+    def test_unrecognized_model(self):
+        with pytest.raises(ValueError):
+            _nondim_resistivity(1, 1, 'e', 'SURPRISE SUPERSYMMETRY',
+                                 'parallel')
+
+class Test__nondim_te_conductivity():
+    def test_unrecognized_model(self):
+        with pytest.raises(ValueError):
+            _nondim_te_conductivity(1, 1, 'e', 'this is not a model',
+                                    'parallel')
+
+    
 
 
 # test class for _nondim_tc_e_braginskii function:
