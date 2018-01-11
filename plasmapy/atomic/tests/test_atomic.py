@@ -29,8 +29,11 @@ from ..atomic import (atomic_symbol,
                       _extract_charge_state,
                       _is_proton)
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
-from ...utils import (AtomicWarning, ElementError, IsotopeError, IonError,
-                      NoChargeInfoError)
+from ...utils import (AtomicWarning,
+                      ElementError,
+                      IsotopeError,
+                      IonError,
+                      ChargeError)
 
 # (argument, expected)
 atomic_symbol_table = [
@@ -87,11 +90,11 @@ atomic_symbol_error_table = [
     (3.14159, TypeError),
     ('Og-294b', IsotopeError),
     ('H-934361079326356530741942970523610389', IsotopeError),
-    ('Fe 2+4', NoChargeInfoError),
-    ('Fe+24', NoChargeInfoError),
+    ('Fe 2+4', ChargeError),
+    ('Fe+24', ElementError),
     ('Fe +59', IonError),
     ('C++++++++++++++++', IonError),
-    ('C-++++', NoChargeInfoError),
+    ('C-++++', ChargeError),
     ('neutron', ElementError),
     ('n', ElementError),
     ('n-1', ElementError),
@@ -319,7 +322,6 @@ def test_mass_number_error(argument, expected_error):
     """Test that mass_number raises the expected exceptions."""
 #    with pytest.raises(expected_error):
 #        mass_number(argument)
-    pass
 
 
 # (argument, expected)
