@@ -6,6 +6,7 @@ from itertools import repeat
 from .atomic import (isotope_symbol, mass_number, isotope_mass, ion_mass,
                      atomic_number, charge_state, _is_neutron, _is_electron,
                      _is_positron, _is_antiproton, _is_antineutron)
+from ..utils import ElementError
 
 
 def nuclear_binding_energy(argument, mass_numb=None):
@@ -202,9 +203,11 @@ def nuclear_reaction_energy(*args, **kwargs):
         for particle in particles:
             try:
                 baryon_number += mass_number(particle)
-            except ValueError:
+            except Exception:
                 if _is_antiproton(particle) or _is_antineutron(particle):
                     baryon_number -= 1
+                elif _is_neutron(particle):
+                    baryon_number += 1
 
         return baryon_number
 
@@ -217,7 +220,7 @@ def nuclear_reaction_energy(*args, **kwargs):
         for particle in particles:
             try:
                 total_charge += atomic_number(particle)
-            except ValueError:
+            except ElementError:
                 total_charge += charge_state(particle)
 
         return total_charge
@@ -235,6 +238,8 @@ def nuclear_reaction_energy(*args, **kwargs):
                 total_mass += constants.m_n
             elif _is_antiproton(particle):
                 total_mass += constants.m_p
+            elif _is_neutron(particle):
+                total_mass += constants.m_n
             else:
                 atomic_numb = atomic_number(particle)
                 total_mass += ion_mass(particle, Z=atomic_numb)

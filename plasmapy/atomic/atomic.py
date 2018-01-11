@@ -8,7 +8,8 @@ import warnings
 from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
 from .particles import _Particles, _get_standard_symbol
-from ..utils import AtomicWarning
+from ..utils import (AtomicWarning, ElementError, IsotopeError, IonError,
+                     NoChargeInfoError)
 from typing import (Union, Optional, Any, List, Tuple)
 
 # The code contained within atomic_symbol(), isotope_symbol(), and
@@ -42,6 +43,13 @@ def atomic_symbol(argument: Union[str, int]) -> str:
     ------
     TypeError:
         If the argument is not a string or integer.
+
+    ElementError:
+        If the argument does not correspond to a valid element
+
+    IsotopeError:
+        If the argument is a valid element but does not correspond to a
+        valid isotope
 
     ValueError:
         If the argument cannot be used to identify the element, the
@@ -90,11 +98,14 @@ def atomic_symbol(argument: Union[str, int]) -> str:
     """
 
     if _is_neutron(argument):
-        raise ValueError("Neutrons do not have an atomic symbol")
+        raise ElementError("Neutrons do not have an atomic symbol")
     elif _is_antiproton(argument):
-        raise ValueError("Antiprotons do not have an atomic symbol")
+        raise ElementError("Antiprotons do not have an atomic symbol")
 
-    argument, Z = _extract_charge_state(argument)
+    try:
+        argument, Z = _extract_charge_state(argument)
+    except NoChargeInfoError:
+        raise NoChargeInfoError("Invalid charge in atomic_symbol")
 
     if not isinstance(argument, (str, int)):
         raise TypeError("The first argument in atomic_symbol must be either "
@@ -109,9 +120,9 @@ def atomic_symbol(argument: Union[str, int]) -> str:
 
         try:
             element = atomic_symbols[argument]
-        except Exception:
-            raise ValueError(f"{argument} is an invalid atomic number in "
-                             "atomic_symbol")
+        except KeyError:
+            raise ElementError(f"{argument} is an invalid atomic number in "
+                               "atomic_symbol")
 
     elif _is_hydrogen(argument):
         element = 'H'
@@ -123,7 +134,7 @@ def atomic_symbol(argument: Union[str, int]) -> str:
             dash_position = argument.find('-')
             mass_numb = argument[dash_position+1:]
             if not mass_numb.isdigit():
-                raise ValueError("Invalid isotope format in atomic_symbol")
+                raise IsotopeError("Invalid isotope format in atomic_symbol")
             argument = argument[:dash_position]
         else:
             mass_numb = ''
@@ -133,21 +144,21 @@ def atomic_symbol(argument: Union[str, int]) -> str:
         elif argument in atomic_symbols.values():
             element = argument.capitalize()
         else:
-            raise ValueError(f"{argument} is an invalid argument for "
-                             "atomic_symbol")
+            raise ElementError(f"{argument} is an invalid argument for "
+                               "atomic_symbol")
 
         if mass_numb.isdigit():
 
             isotope = element.capitalize() + '-' + mass_numb
 
             if isotope not in Isotopes.keys():
-                raise ValueError("The input in atomic_symbol corresponding "
-                                 f"to {isotope} is not a valid isotope.")
+                raise IsotopeError("The input in atomic_symbol corresponding "
+                                   f"to {isotope} is not a valid isotope.")
 
     if Z is not None and \
             Z > Elements[element]['atomic_number']:
-        raise ValueError("Cannot have an ionization state greater than the "
-                         "atomic number.")
+        raise IonError("Cannot have an ionization state greater than the "
+                       "atomic number.")
 
     return element
 
@@ -1407,6 +1418,11 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
         electron has been removed and -1 if one electron has been
         gained)
 
+    Raises
+    ------
+
+    IonError
+
     Notes
     -----
     If the argument is not a string, this function will return the
@@ -1465,8 +1481,9 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
             check3 = False
 
         if not (check1 and check2 and check3):
-            raise ValueError("The following input does not have valid charge "
-                             f"state information: {argument}{ion_info}")
+            raise NoChargeInfoError(
+                "The following input does not have valid charge: "
+                f"state information: {argument}{ion_info}")
 
     elif argument.endswith(('-', '+')):  # For cases like 'Fe++' or 'Si-'
 
@@ -1481,7 +1498,7 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
         argument = argument[0:len(argument)-match.span()[1]]
 
         if argument.endswith(('-', '+')):
-            raise ValueError("Invalid charge state information")
+            raise NoChargeInfoError("Invalid charge state information")
 
     else:
         charge_state = None
