@@ -45,16 +45,17 @@ def atomic_symbol(argument: Union[str, int]) -> str:
         If the argument is not a string or integer.
 
     ElementError:
-        If the argument does not correspond to a valid element
+        If the argument does not correspond to a valid element.
 
     IsotopeError:
         If the argument is a valid element but does not correspond to a
-        valid isotope
+        valid isotope.
 
-    ValueError:
-        If the argument cannot be used to identify the element, the
-        isotope has not been discovered, or the charge state is
-        invalid.
+    IonError:
+        If the argument is a valid element or isotope but is not a valid ion.
+
+    NoChargeInfoError:
+        If the charge information is not correctly included.
 
     See also
     --------
