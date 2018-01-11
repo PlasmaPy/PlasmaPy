@@ -584,10 +584,16 @@ def element_name(argument: Union[str, int]) -> str:
     try:
         element = atomic_symbol(argument)
         name = Elements[element]["name"]
-    except ValueError:
-        raise ValueError("Unable to identify element in element_name")
+    except ElementError:
+        raise ElementError("Invalid element in element_name.")
+    except IsotopeError:
+        raise IsotopeError("Invalid isotope in element_name.")
+    except IonError:
+        raise IonError("Invalid ion in element_name.")
+    except ChargeError:
+        raise ChargeError("Invalid charge information in element_name.")
     except TypeError:
-        raise TypeError("Invalid input to element_name")
+        raise TypeError("Invalid input to element_name.")
 
     return name
 

@@ -360,25 +360,27 @@ def test_element_name(argument, expected):
 
 # (argument, expected_error)
 element_name_error_table = [
-    ('vegan cupcakes', ValueError),
-    ('C-13-14-15-51698024', ValueError),
+    ('vegancupcakes', ElementError),
+    ('C-+-', ChargeError),
     (1.24, TypeError),
-    ('n', ValueError),
-    ('neutron', ValueError),
-    (0, ValueError),
-    ('H++', ValueError),
-    ('t', ValueError),
-    ('pb', ValueError),
-    ('d', ValueError),
-    ('h-3', ValueError)]
+    ('n', ElementError),
+    ('neutron', ElementError),
+    (0, ElementError),
+    ('H++', IonError),
+    ('t', ElementError),
+    ('pb', ElementError),
+    ('d', ElementError),
+    ('h-3', ElementError),
+    ('Pb-9', IsotopeError),
+    ('H 2+', IonError),
+]
 
 
 @pytest.mark.parametrize("argument, expected_error", element_name_error_table)
 def test_element_name_error(argument, expected_error):
     """Test that element_name raises the expected exceptions."""
-#    with pytest.raises(expected_error):
-#        element_name(argument)
-    pass
+    with pytest.raises(expected_error):
+        element_name(argument)
 
 
 def test_standard_atomic_weight_value_between():
