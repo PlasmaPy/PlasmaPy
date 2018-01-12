@@ -282,6 +282,18 @@ class Test_classical_transport(object):
                                       ion_particle=self.ion_particle,
                                       field_orientation='to the left')
 
+    def test_precalculated_parameters(self):
+        ct2 = classical_transport(T_e=1*u.eV,
+                                    n_e=1e18/u.m**3,
+                                    T_i=1*u.eV,
+                                    n_i=1e18/u.m**3,
+                                    ion_particle='p',
+                                    hall_i = 0,
+                                    hall_e = 0)
+        assert np.isclose(ct2.resistivity(), 0.0005102265432849018 * u.Ohm * u.m,
+                          atol=1e-6*u.Ohm * u.m)
+
+
 
 class Test__nondim_thermal_conductivity():
     @pytest.mark.parametrize(["particle"], ['e', 'p'])
