@@ -82,9 +82,9 @@ atomic_symbol_table = [
     'argument, expected', atomic_symbol_table)
 def test_atomic_symbol(argument, expected):
     """Test that atomic_symbol returns the expected result."""
-#    assert atomic_symbol(argument) == expected, \
-#        (f"atomic_symbol({argument}) is returning {atomic_symbol(argument)} "
-#         f"which differs from the expected value of {expected}.")
+    assert atomic_symbol(argument) == expected, \
+        (f"atomic_symbol({argument}) is returning {atomic_symbol(argument)} "
+         f"which differs from the expected value of {expected}.")
     pass
 
 

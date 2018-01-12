@@ -8,8 +8,14 @@ import warnings
 from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
 from .particles import _Particles, _get_standard_symbol
-from ..utils import (AtomicWarning, ElementError, IsotopeError, IonError,
-                     ChargeError, AtomicError, MissingAtomicDataError)
+from ..utils import (AtomicWarning,
+                     ElementError,
+                     IsotopeError,
+                     IonError,
+                     ChargeError,
+                     AtomicError,
+                     MissingAtomicDataError,
+                     ParticleError)
 from typing import (Union, Optional, Any, List, Tuple)
 
 # The code contained within atomic_symbol(), isotope_symbol(), and
@@ -44,16 +50,10 @@ def atomic_symbol(argument: Union[str, int]) -> str:
     ------
 
     ElementError
-        If the argument does not correspond to a valid element.
+        If the argument is a valid particle but not a valid element.
 
-    IsotopeError
-        If the argument does not correspond to a valid isotope.
-
-    IonError
-        If the argument does not correspond to a valid ion.
-
-    ChargeError
-        If the argument has invalid charge information.
+    ParticleError
+        If the argument does not correspond to a valid particle.
 
     TypeError
         If the argument is not a string or integer.
@@ -110,7 +110,7 @@ def atomic_symbol(argument: Union[str, int]) -> str:
     try:
         argument, Z = _extract_charge_state(argument)
     except ChargeError:
-        raise ChargeError("Invalid charge in atomic_symbol")
+        raise ParticleError("Invalid charge in atomic_symbol")
 
     if not isinstance(argument, (str, int)):
         raise TypeError("The first argument in atomic_symbol must be either "
@@ -139,7 +139,7 @@ def atomic_symbol(argument: Union[str, int]) -> str:
             dash_position = argument.find('-')
             mass_numb = argument[dash_position+1:]
             if not mass_numb.isdigit():
-                raise IsotopeError("Invalid isotope format in atomic_symbol")
+                raise ParticleError("Invalid isotope format in atomic_symbol")
             argument = argument[:dash_position]
         else:
             mass_numb = ''
@@ -149,21 +149,21 @@ def atomic_symbol(argument: Union[str, int]) -> str:
         elif argument in atomic_symbols.values():
             element = argument.capitalize()
         else:
-            raise ElementError(f"{argument} is an invalid argument for "
-                               "atomic_symbol")
+            raise ParticleError(f"{argument} is an invalid argument for "
+                                "atomic_symbol")
 
         if mass_numb.isdigit():
 
             isotope = element.capitalize() + '-' + mass_numb
 
             if isotope not in Isotopes.keys():
-                raise IsotopeError("The input in atomic_symbol corresponding "
-                                   f"to {isotope} is not a valid isotope.")
+                raise ParticleError("The input in atomic_symbol corresponding "
+                                    f"to {isotope} is not a valid isotope.")
 
     if Z is not None and \
             Z > Elements[element]['atomic_number']:
-        raise IonError("Cannot have an ionization state greater than the "
-                       "atomic number.")
+        raise ParticleError("Cannot have an ionization state greater than the "
+                            "atomic number.")
 
     return element
 
