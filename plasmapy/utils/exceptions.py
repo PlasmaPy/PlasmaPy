@@ -8,60 +8,70 @@ Custom Error and Warning names to improve readability
 # ----------
 
 class PlasmaPyError(Exception):
-    """
+    r"""
     Base class of PlasmaPy custom errors.
 
-    All custom exceptions raised by PlasmaPy should inherit from this class
-    and be defined in this module.
+    All custom exceptions raised by PlasmaPy should inherit from this
+    class and be defined in this module.
 
-    Custom exceptions can inherit from other exception types too. Thus, if code
-    already knows how to handle a ValueError, it won't need any specific
-    modification.
+    Custom exceptions can inherit from other exception types too.
+    Thus, if code already knows how to handle a ValueError, it won't
+    need any specific modification.
     """
     pass
 
 
 class PhysicsError(PlasmaPyError, ValueError):
-    """Error for use of a physics value outside PlasmaPy theoretical bounds"""
+    r"""Error for use of a physics value outside PlasmaPy theoretical
+    bounds"""
     pass
 
 
 class RelativityError(PhysicsError):
-    """Error for use of a speed greater than or equal to the speed of light"""
+    r"""Error for use of a speed greater than or equal to the speed of
+    light"""
     pass
 
 
 class AtomicError(PlasmaPyError):
-    """Error for use by an atomic subpackage"""
+    r"""An exception for errors occurring in the atomic subpackage."""
     pass
 
 
 class MissingAtomicDataError(AtomicError):
-    """Error for use when atomic data is missing."""
+    r"""An exception for when atomic data is missing."""
     pass
 
 
 class ChargeError(AtomicError):
-    """Error for use when charge information is needed but missing."""
-
-
-class IonError(AtomicError):
-    """Error for use when an ion is invalid."""
+    r"""An exception for when charge information is incorrect or
+    missing."""
     pass
 
 
-class IsotopeError(AtomicError):
-    """Error for use when an isotope is invalid."""
+class UnexpectedParticleError(AtomicError):
+    r"""An exception for when a particle is not of the expected
+    category."""
     pass
 
 
-class ElementError(IsotopeError, IonError):
-    """Error for use when an element is invalid."""
+class IonError(UnexpectedParticleError):
+    r"""An exception for when an argument is not an ion."""
     pass
 
 
-class ParticleError(ElementError):
-    """Error for use when a particle is invalid."""
+class IsotopeError(UnexpectedParticleError):
+    r"""An exception for when an argument is not an isotope."""
+    pass
+
+
+class ElementError(UnexpectedParticleError):
+    r"""An exception for when an argument is not an element."""
+    pass
+
+
+class ParticleError(AtomicError):
+    r"""An exception for when a particle is invalid."""
     pass
 
 
@@ -70,7 +80,7 @@ class ParticleError(ElementError):
 # ----------
 
 class PlasmaPyWarning(Warning):
-    """Base class of PlasmaPy custom warnings.
+    r"""Base class of PlasmaPy custom warnings.
 
     All PlasmaPy custom warnings should inherit from this class and be defined
     in this module.
@@ -82,20 +92,20 @@ class PlasmaPyWarning(Warning):
 
 
 class PhysicsWarning(PlasmaPyWarning):
-    """Warning for using a mildly worrisome physics value"""
+    r"""Warning for using a mildly worrisome physics value"""
     pass
 
 
 class RelativityWarning(PhysicsWarning):
-    """Warning for use of a speed quantity approaching the speed of light"""
+    r"""Warning for use of a speed quantity approaching the speed of light"""
     pass
 
 
 class AtomicWarning(PlasmaPyWarning):
-    """Warnings for use in the atomic subpackage."""
+    r"""Warnings for use in the atomic subpackage."""
     pass
 
 
 class MissingAtomicDataWarning(AtomicWarning):
-    """Warning for use when atomic data is missing."""
+    r"""Warning for use when atomic data is missing."""
     pass
