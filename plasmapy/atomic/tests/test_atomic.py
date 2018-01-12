@@ -201,7 +201,7 @@ def test_isotope_symbol_error(argument, kwargs, expected_error):
             f"isotope_symbol({argument}, **{kwargs}) is not raising a "
             f"{expected_error}.")):
         isotope_symbol(argument, **kwargs)
-    pass
+
 
 # (argument, kwargs, expected_warning)
 isotope_symbol_warning_table = [
@@ -256,26 +256,26 @@ def test_atomic_number(argument, expected):
 
 # (argument, expected_error)
 atomic_number_error_table = [
-    ('H-3934', IsotopeError),
-    ('C-12b', IsotopeError),
+    ('H-3934', ParticleError),
+    ('C-12b', ParticleError),
     (-1.5, TypeError),
     ('n', ElementError),
     ('n-1', ElementError),
     ('neutron', ElementError),
     ('Neutron', ElementError),
-    ('d', ElementError),
-    ('t', ElementError),
-    ('s-36', ElementError)]
+    ('d', ParticleError),
+    ('t', ParticleError),
+    ('s-36', ParticleError)]
 
 
 @pytest.mark.parametrize(
     "argument, expected_error", atomic_number_error_table)
 def test_atomic_number_error(argument, expected_error):
     """Test that atomic_number raises the expected exceptions."""
-#    with pytest.raises(expected_error, warning=(
-#            f"atomic_number({argument}) is not raising a {expected_error}")):
-#        atomic_number(argument)
-    pass
+    with pytest.raises(expected_error, warning=(
+            f"atomic_number({argument}) is not raising a {expected_error}")):
+        atomic_number(argument)
+
 
 # (isotope, expected)
 mass_number_table = [

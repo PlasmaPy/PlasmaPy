@@ -356,19 +356,10 @@ def atomic_number(argument: str) -> str:
     ------
 
     ElementError
-        If the argument does not correspond to a valid element.
+        If the argument is a valid particle but not a valid element.
 
-    IsotopeError
-        If the argument does not correspond to a valid isotope.
-
-    IonError
-        If the argument does not correspond to a valid ion.
-
-    ChargeError
-        If the argument has invalid charge information.
-
-    TypeError
-        If the argument is not a string or integer.
+    ParticleError
+        If the argument does not correspond to a valid particle.
 
     TypeError
         If the argument is not a string.
