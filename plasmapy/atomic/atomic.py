@@ -15,6 +15,7 @@ from ..utils import (AtomicWarning,
                      ChargeError,
                      AtomicError,
                      MissingAtomicDataError,
+                     MissingAtomicDataWarning,
                      ParticleError)
 from typing import (Union, Optional, Any, List, Tuple)
 
@@ -109,7 +110,7 @@ def atomic_symbol(argument: Union[str, int]) -> str:
 
     try:
         argument, Z = _extract_charge_state(argument)
-    except ChargeError:
+    except ParticleError:
         raise ParticleError("Invalid charge in atomic_symbol")
 
     if not isinstance(argument, (str, int)):
@@ -423,7 +424,14 @@ def is_isotope_stable(argument: Union[str, int],
     ------
 
     IsotopeError
-        If isotope cannot be determined or is not known.
+        If the arguments correspond to a valid particle but not a
+        valid isotope.
+
+    ParticleError
+        If the arguments do not correspond to a valid particle.
+
+    TypeError
+        If the argument is not a string or integer.
 
     Examples
     --------
@@ -437,19 +445,15 @@ def is_isotope_stable(argument: Union[str, int],
 
     try:
         isotope = isotope_symbol(argument, mass_numb)
-    except ElementError:
-        raise ElementError("Invalid element in is_isotope_stable")
+        is_stable = Isotopes[isotope]['is_stable']
     except IsotopeError:
         raise IsotopeError("Invalid isotope in is_isotope_stable")
-    except IonError:
-        raise IonError("Invalid ion in is_isotope_stable")
+    except ParticleError:
+        raise ParticleError("Invalid particle in is_isotope_stable")
+    except KeyError:
+        raise MissingAtomicDataError(f"No data on stability of {isotope}.")
     except TypeError:
-        raise TypeError("Invalid input to is_isotope_stable")
-
-    try:
-        is_stable = Isotopes[isotope]['is_stable']
-    except KeyError:  # coveralls: ignore
-        raise MissingAtomicDataError("No data on stability of " + isotope)
+        raise TypeError("The argument to is_isotope_stable must be a string.")
 
     return is_stable
 
@@ -504,24 +508,26 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
     """
 
     try:
-        isotope = isotope_symbol(argument, mass_numb)
-    except ElementError:
-        raise ElementError("Invalid element in isotope_symbol.")
-    except IsotopeError:
-        raise IsotopeError("Cannot determine isotope information from these " +
-                           f"inputs to half_life: {argument}, {mass_numb}")
-    except TypeError:
-        raise TypeError("Incorrect argument type for half_life")
 
-    try:
+        isotope = isotope_symbol(argument, mass_numb)
+
         if Isotopes[isotope]['is_stable']:
             half_life_sec = np.inf * u.s
         else:
             half_life_sec = Isotopes[isotope]['half_life']
+
+    except ElementError:
+        raise ElementError("Invalid element in isotope_symbol.")
+    except IsotopeError:
+        raise IsotopeError("Cannot determine isotope information from these "
+                           "" +
+                           f"inputs to half_life: {argument}, {mass_numb}")
+    except TypeError:
+        raise TypeError("Incorrect argument type for half_life")
     except KeyError:
         half_life_sec = None
-        warnings.warn(f"The half-life for isotope {isotope} is not available; "
-                      "returning None.", AtomicWarning)
+        warnings.warn(f"The half-life for isotope {isotope} is not"
+                      "available; returning None.", MissingAtomicDataWarning)
 
     return half_life_sec
 
@@ -545,20 +551,14 @@ def mass_number(isotope: str) -> int:
     Raises
     ------
 
-    ElementError
+    ParticleError
         If the argument does not correspond to a valid element.
 
     IsotopeError
         If the argument does not correspond to a valid isotope.
 
-    IonError
-        If the argument does not correspond to a valid ion.
-
-    ChargeError
-        If the argument has invalid charge information.
-
     TypeError
-        The first argument is not a string.
+        The argument is not a string.
 
 
     See also
@@ -586,16 +586,14 @@ def mass_number(isotope: str) -> int:
     try:
         isotope = isotope_symbol(isotope)
         mass_numb = Isotopes[isotope]["mass_number"]
-    except TypeError:
-        raise TypeError("Incorrect type for mass_number input.")
-    except ElementError:
-        raise ElementError("Invalid element in mass_number.")
     except IsotopeError:
         raise IsotopeError("Invalid isotope in mass_number.")
-    except IonError:
-        raise IonError("Invalid ion in mass_number.")
-    except ChargeError:
-        raise ChargeError("Invalid charge information in mass_number.")
+    except ParticleError:
+        raise ParticleError(f"The argument {isotope} to mass_number does not "
+                            "correspond to a valid isotope.") from None
+    except TypeError:
+        raise TypeError("The argument to mass_number is not a string.")
+
 
     return mass_numb
 
@@ -648,8 +646,8 @@ def element_name(argument: Union[str, int]) -> str:
         raise IsotopeError("Invalid isotope in element_name.")
     except IonError:
         raise IonError("Invalid ion in element_name.")
-    except ChargeError:
-        raise ChargeError("Invalid charge information in element_name.")
+    except ParticleError:
+        raise ParticleError("Invalid charge information in element_name.")
     except TypeError:
         raise TypeError("Invalid input to element_name.")
 
@@ -1621,7 +1619,7 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
             check3 = False
 
         if not (check1 and check2 and check3):
-            raise ChargeError(
+            raise ParticleError(
                 "The following input does not have valid charge: "
                 f"state information: {argument}{ion_info}")
 
@@ -1638,7 +1636,7 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
         argument = argument[0:len(argument)-match.span()[1]]
 
         if argument.endswith(('-', '+')):
-            raise ChargeError("Invalid charge state information")
+            raise ParticleError("Invalid charge state information")
 
     else:
         charge_state = None
