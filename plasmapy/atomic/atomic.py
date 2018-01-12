@@ -386,16 +386,15 @@ def atomic_number(argument: str) -> str:
     try:
         element = atomic_symbol(argument)
         atomic_numb = Elements[element]['atomic_number']
-    except ElementError:
-        raise ElementError("Unable to identify element in atomic_number.")
-    except IsotopeError:
-        raise IsotopeError("Invalid isotope in atomic_number.")
-    except IonError:
-        raise IonError("Invalid ion in atomic_number.")
-    except ChargeError:
-        raise ChargeError("Invalid charge information in atomic_number.")
+    except (ElementError, KeyError):
+        raise ElementError(f"The argument {argument} to atomic_number does "
+                           "not correspond to a valid element.") from None
+    except ParticleError:
+        raise ParticleError(f"The argument {argument} to atomic_number is "
+                            "not a valid particle.") from None
     except TypeError:
-        raise TypeError("Invalid type in atomic_number")
+        raise TypeError(f"The argument {argument} to atomic number is not a "
+                        f"string.") from None
 
     return atomic_numb
 
