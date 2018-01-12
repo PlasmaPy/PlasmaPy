@@ -13,7 +13,7 @@ import numpy as np
 # bit more than @quantity_input as it can allow
 import plasmapy.utils as utils
 from plasmapy.utils.checks import _check_quantity
-from plasmapy.utils.exceptions import PhysicsError  # , PhysicsWarning
+from plasmapy.utils.exceptions import PhysicsError, AtomicError  # , PhysicsWarning
 
 
 r"""
@@ -180,14 +180,14 @@ def Alfven_speed(B, density, ion="p", z_mean=None):
                 #               PhysicsWarning)
                 try:
                     Z = atomic.charge_state(ion)
-                except ValueError:
+                except AtomicError:
                     Z = 1
             else:
                 # using average ionization provided by user
                 Z = z_mean
             # ensuring positive value of Z
             Z = np.abs(Z)
-        except Exception:
+        except AtomicError:
             raise ValueError("Invalid ion in Alfven_speed.")
         rho = density * m_i + Z * density * m_e
 
@@ -328,12 +328,12 @@ def ion_sound_speed(*ignore,
             #               PhysicsWarning)
             try:
                 Z = atomic.charge_state(ion)
-            except ValueError:
+            except AtomicError:
                 Z = 1
         else:
             # using average ionization provided by user
             Z = z_mean
-    except Exception:
+    except AtomicError:
         raise ValueError("Invalid ion in ion_sound_speed.")
 
     if not isinstance(gamma_e, (float, int)):
@@ -445,7 +445,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
 
     try:
         m = atomic.ion_mass(particle)
-    except Exception:
+    except AtomicError:
         raise ValueError("Unable to find {particle} mass in thermal_speed")
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
@@ -649,7 +649,7 @@ def gyrofrequency(B, particle='e', signed=False, z_mean=None):
             #               PhysicsWarning)
             try:
                 Z = atomic.charge_state(particle)
-            except ValueError:
+            except AtomicError:
                 Z = 1
         else:
             # using user provided average ionization
@@ -813,7 +813,7 @@ def plasma_frequency(n, particle='e', z_mean=None):
         a macroscopic description is valid. If this quantity is not
         given then the atomic charge state (integer) of the ion
         is used. This is effectively an average plasma frequency for the
-        plasma where multiple charge states are present. 
+        plasma where multiple charge states are present.
 
     Returns
     -------
@@ -867,7 +867,7 @@ def plasma_frequency(n, particle='e', z_mean=None):
             #               PhysicsWarning)
             try:
                 Z = atomic.charge_state(particle)
-            except ValueError:
+            except Exception:
                 Z = 1
         else:
             # using user provided average ionization
@@ -1078,7 +1078,7 @@ def inertial_length(n, particle='e'):
 
     try:
         Z = atomic.charge_state(particle)
-    except Exception:
+    except AtomicError:
         raise ValueError(f"Invalid particle {particle} in inertial_length.")
     if Z:
         Z = abs(Z)
