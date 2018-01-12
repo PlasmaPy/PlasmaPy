@@ -193,18 +193,11 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
     Raises
     ------
 
-    ElementError
-        If the argument does not correspond to a valid element.
-
     IsotopeError
-        If the argument does not correspond to a valid isotope, or
-        there is contradictory isotope information.
+        If the argument is a valid particle but not a valid isotope.
 
-    IonError
-        If the argument does not correspond to a valid ion.
-
-    ChargeError
-        If the argument has invalid charge information.
+    ParticleError
+        If the argument does not correspond to a valid particle.
 
     TypeError
         If the argument is not a string or integer.
@@ -217,10 +210,12 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
 
     See also
     --------
+
     atomic_symbol : returns atomic symbol instead of isotopic symbol
 
     Notes
     -----
+
     This function returns the symbol of the element rather than the
     symbol of an isotope.  For example, 'deuterium', 'T', or
     'hydrogen-2' will yield 'H'; 'alpha' will yield 'He'; and
@@ -273,7 +268,7 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
 
     if isinstance(argument, int):
         if not 0 <= argument <= 118:
-            raise ElementError("Invalid atomic number in isotope_symbol")
+            raise ParticleError("Invalid atomic number in isotope_symbol")
         if mass_numb is None:
             raise IsotopeError("Insufficient information to determine "
                                "isotope in isotope_symbol.")
@@ -285,11 +280,11 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
     try:
         element = atomic_symbol(argument)
     except ElementError:
-        raise ElementError(f"The argument {argument} to isotope_symbol does "
-                           f"not correspond to a valid element.")
-    except IsotopeError:
-        raise IsotopeError(f"The argument {argument} to isotope_symbol does "
-                           f"not correspond to a valid isotope.")
+        raise ElementError(f"The argument {argument} to isotope_symbol "
+                           f"does not correspond to a valid element.")
+    except ParticleError:
+        raise ParticleError(f"The argument {argument} to isotope_symbol "
+                           f"does not correspond to a valid particle.")
 
     # Get mass number from argument, check for redundancies, and take
     # care of special cases.
@@ -321,8 +316,8 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
                     "Redundant mass number information in isotope_symbol "
                     f"from inputs: {argument}, {mass_numb}", AtomicWarning)
             else:  # coveralls: ignore
-                raise IsotopeError("Contradictory mass number information in "
-                                   "isotope_symbol.")
+                raise ParticleError("Contradictory mass number information "
+                                    "in isotope_symbol.")
 
         if mass_numb_from_arg is not None:
             mass_numb = mass_numb_from_arg
@@ -335,8 +330,8 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
         isotope = 'T'
 
     if atomic_number(element) > mass_numb:
-        raise IsotopeError("The atomic number cannot exceed the mass number "
-                           "in isotope_symbol.")
+        raise ParticleError("The atomic number cannot exceed the mass "
+                            "number in isotope_symbol.")
 
     return isotope
 
