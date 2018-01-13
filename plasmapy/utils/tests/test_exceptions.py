@@ -10,10 +10,10 @@ plasmapy_exceptions = [
     AtomicError,
     MissingAtomicDataError,
     ChargeError,
-    IonError,
-    IsotopeError,
-    ElementError,
-    ParticleError,
+    InvalidIonError,
+    InvalidIsotopeError,
+    InvalidElementError,
+    InvalidParticleError,
 ]
 
 

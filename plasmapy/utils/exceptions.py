@@ -55,22 +55,22 @@ class UnexpectedParticleError(AtomicError):
     pass
 
 
-class IonError(UnexpectedParticleError):
+class InvalidIonError(UnexpectedParticleError):
     r"""An exception for when an argument is not an ion."""
     pass
 
 
-class IsotopeError(UnexpectedParticleError):
+class InvalidIsotopeError(UnexpectedParticleError):
     r"""An exception for when an argument is not an isotope."""
     pass
 
 
-class ElementError(UnexpectedParticleError):
+class InvalidElementError(UnexpectedParticleError):
     r"""An exception for when an argument is not an element."""
     pass
 
 
-class ParticleError(AtomicError):
+class InvalidParticleError(AtomicError):
     r"""An exception for when a particle is invalid."""
     pass
 

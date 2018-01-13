@@ -6,7 +6,7 @@ from itertools import repeat
 from .atomic import (isotope_symbol, mass_number, isotope_mass, ion_mass,
                      atomic_number, charge_state, _is_neutron, _is_electron,
                      _is_positron, _is_antiproton, _is_antineutron)
-from ..utils import (ElementError, IsotopeError)
+from ..utils import (InvalidElementError, InvalidIsotopeError)
 
 
 def nuclear_binding_energy(argument, mass_numb=None):
