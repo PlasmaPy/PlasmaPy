@@ -24,6 +24,17 @@ from typing import (Union, Optional, Any, List, Tuple)
 # cases for different inputs.  Complexity is concentrated in these
 # functions so that the rest of the functions can be simpler.
 
+# TODO: refactor the atomic subpackage
+#  - Create a Particle class
+#  - Create a decorator that:
+#     1. Takes the inputs of a function corresponding to a particle
+#     2. Checks to make sure the particle is valid
+#     3. Checks to make sure that the inputs are of the correct types
+#     4. Returns the Particle class which would be the input to the
+#        inner function
+#    Would it be helpful to put the string parsing code into a new file
+#    called something like parsing.py?
+
 # TODO: Create an ion_symbol function
 # TODO: Create a particle_symbol function
 # TODO: Create a particle_mass function
@@ -198,7 +209,8 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
         If the argument is a valid particle but not a valid isotope.
 
     ParticleError
-        If the argument does not correspond to a valid particle.
+        If the argument does not correspond to a valid particle
+        or contradictory information is provided.
 
     TypeError
         If the argument is not a string or integer.
@@ -280,13 +292,12 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
 
     try:
         element = atomic_symbol(argument)
-    except ElementError:
-        raise ElementError(f"The argument {argument} to isotope_symbol "
-                           f"does not correspond to a valid element.")
     except ParticleError:
         raise ParticleError(f"The argument {argument} to isotope_symbol "
                             f"does not correspond to a valid particle.")
-
+    except ElementError:
+        raise ElementError(f"The argument {argument} to isotope_symbol "
+                           f"does not correspond to a valid element.")
     # Get mass number from argument, check for redundancies, and take
     # care of special cases.
 
@@ -433,6 +444,9 @@ def is_isotope_stable(argument: Union[str, int],
     TypeError
         If the argument is not a string or integer.
 
+    MissingAtomicDataError
+        If stability information is not available.
+
     Examples
     --------
 
@@ -481,11 +495,19 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
     Raises:
     -------
 
+    IsotopeError
+        If the argument is a valid particle but not a valid isotope.
+
+    ParticleError
+        If the argument does not correspond to a valid particle
+        or contradictory information is provided.
+
     MissingAtomicDataError
         If no half-life data is available for the isotope.
 
     TypeError
-        The argument is not an integer or string.
+        The argument is not an integer or string or the mass number is
+        not an integer.
 
     AtomicWarning
         The half-life is unavailable so the routine returns None.
@@ -516,11 +538,10 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
         else:
             half_life_sec = Isotopes[isotope]['half_life']
 
-    except ElementError:
-        raise ElementError("Invalid element in isotope_symbol.")
+    except ParticleError:
+        raise ParticleError("Invalid element in isotope_symbol.")
     except IsotopeError:
         raise IsotopeError("Cannot determine isotope information from these "
-                           "" +
                            f"inputs to half_life: {argument}, {mass_numb}")
     except TypeError:
         raise TypeError("Incorrect argument type for half_life")
@@ -552,7 +573,7 @@ def mass_number(isotope: str) -> int:
     ------
 
     ParticleError
-        If the argument does not correspond to a valid element.
+        If the argument does not correspond to a valid particle.
 
     IsotopeError
         If the argument does not correspond to a valid isotope.
@@ -613,6 +634,18 @@ def element_name(argument: Union[str, int]) -> str:
     name : string
         The name of the element.
 
+    Raises
+    ------
+
+    ElementError
+        If the argument is a valid particle but not a valid element.
+
+    ParticleError
+        If the argument does not correspond to a valid particle.
+
+    TypeError
+        If the argument is not a string or integer.
+
     See also
     --------
 
@@ -671,10 +704,14 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
     Raises
     ------
 
-    ElementError:
-        If the argument cannot be used to identify an element; the
-        argument represents an isotope, ion, or neutron; or no
-        standard atomic weight is provided for an element.
+    ElementError
+        If the argument is a valid particle but not a valid element.
+
+    ParticleError
+        If the argument does not correspond to a valid particle.
+
+    TypeError
+        If the argument is not a string or integer.
 
     See also
     --------
@@ -748,9 +785,9 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
     except ElementError:
         raise ElementError("Invalid element in standard_atomic_weight.")
     except ParticleError:
-        raise
+        raise ParticleError("Invalid particle in standard_atomic_weight.")
     except TypeError:
-        raise
+        raise TypeError("The input is not a string or integer.")
 
     return atomic_weight
 
