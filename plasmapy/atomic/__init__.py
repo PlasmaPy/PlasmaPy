@@ -3,4 +3,3 @@ from .atomic import atomic_symbol, isotope_symbol, atomic_number, is_isotope_sta
 from .nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Iso
-from .particles import *
