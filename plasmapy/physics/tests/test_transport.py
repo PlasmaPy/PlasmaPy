@@ -329,7 +329,7 @@ class Test_classical_transport:
                      marks=pytest.mark.xfail(reason="Not implemented yet?")),
         ("braginskii", np.array([0.07582084, 0.07579587, 0.07579587, 0, 0]) * u.Pa * u.s)
         ])
-    def test_viscosity_by_model(self, model, expected):
+    def test_electron_viscosity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
                                   T_i=self.T_i,
@@ -338,6 +338,23 @@ class Test_classical_transport:
                                   model=model)
         assert np.allclose(ct2.electron_viscosity(), expected,
                            atol=1e-6*u.Pa * u.s)
+
+
+        @pytest.mark.parametrize("model, expected", [
+            ("ji-held", np.array([0.07582084, 0.07582084, 0.07582084, 0, 0]) * u.Pa * u.s),
+            pytest.param("spitzer", np.array([0.07582084]) * u.Pa * u.s,
+                         marks=pytest.mark.xfail(reason="Not implemented yet?")),
+            ("braginskii", np.array([0.07582084, 0.07579587, 0.07579587, 0, 0]) * u.Pa * u.s)
+            ])
+        def test_ion_viscosity_by_model(self, model, expected):
+            ct2 = classical_transport(T_e=self.T_e,
+                                      n_e=self.n_e,
+                                      T_i=self.T_i,
+                                      n_i=self.n_i,
+                                      ion_particle=self.ion_particle,
+                                      model=model)
+            assert np.allclose(ct2.ion_viscosity(), expected,
+                               atol=1e-6*u.Pa * u.s)
 
 
     @pytest.mark.parametrize("model, expected", [
@@ -355,6 +372,21 @@ class Test_classical_transport:
         assert np.allclose(ct2.electron_thermal_conductivity(), expected,
                            atol=1e-6*u.W / (u.K * u.m))
 
+    @pytest.mark.parametrize("model, expected", [
+        ("ji-held", 115593.62970243 * u.W / (u.K * u.m)),
+        pytest.param("spitzer", 5021013.09835718 * u.W / (u.K * u.m),
+            marks=pytest.mark.xfail(reason="Not implemented yet?")),
+        ("braginskii", 130137.93045042 * u.W / (u.K * u.m))
+        ])
+    def test_ion_thermal_conductivity_by_model(self, model, expected):
+        ct2 = classical_transport(T_e=self.T_e,
+                                  n_e=self.n_e,
+                                  T_i=self.T_i,
+                                  n_i=self.n_i,
+                                  ion_particle=self.ion_particle,
+                                  model=model)
+        assert np.allclose(ct2.ion_thermal_conductivity(), expected,
+                           atol=1e-6*u.W / (u.K * u.m))
 
 @pytest.mark.parametrize(["particle"], ['e', 'p'])
 def test_nondim_thermal_conductivity_unrecognized_model(particle):
