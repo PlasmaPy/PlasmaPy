@@ -344,8 +344,6 @@ class Test_classical_transport:
 
         @pytest.mark.parametrize("model, expected", [
             ("ji-held", np.array([0.07582084, 0.07582084, 0.07582084, 0, 0]) * u.Pa * u.s),
-            pytest.param("spitzer", np.array([0.07582084]) * u.Pa * u.s,
-                         marks=pytest.mark.xfail(reason="Not implemented yet?")),
             ("braginskii", np.array([0.07582084, 0.07579587, 0.07579587, 0, 0]) * u.Pa * u.s)
             ])
         def test_ion_viscosity_by_model(self, model, expected):
@@ -376,8 +374,6 @@ class Test_classical_transport:
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held", 115593.62970243 * u.W / (u.K * u.m)),
-        pytest.param("spitzer", 5021013.09835718 * u.W / (u.K * u.m),
-            marks=pytest.mark.xfail(reason="Not implemented yet?")),
         ("braginskii", 130137.93045042 * u.W / (u.K * u.m))
         ])
     def test_ion_thermal_conductivity_by_model(self, model, expected):
