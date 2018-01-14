@@ -619,7 +619,7 @@ def test__nondim_tc_e_spitzer(Z):
 @pytest.mark.parametrize("Z", [1, 2, 4, 16, np.inf])
 def test__nondim_resist_spitzer(Z):
     """test _nondim_resist_spitzer function"""
-    alpha = _nondim_resist_spitzer(Z)
+    alpha = _nondim_resist_spitzer(Z, 'par')
     if Z == 1:
         alpha_check = 0.5064
         rtol = 1e-3

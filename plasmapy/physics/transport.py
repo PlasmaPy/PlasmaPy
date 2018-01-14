@@ -643,7 +643,7 @@ def _nondim_resistivity(hall, Z, particle, model, field_orientation):
     """TODO"""
 
     if model == 'spitzer-harm' or model == 'spitzer':
-        alpha_hat = _nondim_resist_spitzer(Z)
+        alpha_hat = _nondim_resist_spitzer(Z, field_orientation)
     elif model == 'braginskii':
         alpha_hat = _nondim_resist_braginskii(hall, Z, field_orientation)
     elif model == 'ji-held':
@@ -714,12 +714,21 @@ def _nondim_tc_e_spitzer(Z):
     return kappa
 
 
-def _nondim_resist_spitzer(Z):
+def _nondim_resist_spitzer(Z, field_orientation):
     """TODO"""
+
+    alpha_perp = 1
+    if field_orientation == 'perpendicular' or field_orientation == 'perp':
+        return alpha_perp
+
     (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
-    alpha = (3 * np.pi / 32) * (1 / gamma_E)
-#    alpha = 0.5064
-    return alpha
+    alpha_par = (3 * np.pi / 32) * (1 / gamma_E)
+    if field_orientation == 'parallel' or field_orientation == 'par':
+        return alpha_par
+#        alpha_par = 0.5064 # Z = 1
+
+    if field_orientation == 'all':
+        return (alpha_par, alpha_perp)
 
 
 def _nondim_tec_spitzer(Z):
