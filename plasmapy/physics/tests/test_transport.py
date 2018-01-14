@@ -340,6 +340,22 @@ class Test_classical_transport:
                            atol=1e-6*u.Pa * u.s)
 
 
+    @pytest.mark.parametrize("model, expected", [
+        ("ji-held", 5023093.49948463 * u.W / (u.K * u.m)),
+        ("spitzer", 5021013.09835718 * u.W / (u.K * u.m)),
+        ("braginskii", 4956545.55498178 * u.W / (u.K * u.m))
+        ])
+    def test_electron_thermal_conductivity_by_model(self, model, expected):
+        ct2 = classical_transport(T_e=self.T_e,
+                                  n_e=self.n_e,
+                                  T_i=self.T_i,
+                                  n_i=self.n_i,
+                                  ion_particle=self.ion_particle,
+                                  model=model)
+        assert np.allclose(ct2.electron_thermal_conductivity(), expected,
+                           atol=1e-6*u.W / (u.K * u.m))
+
+
 @pytest.mark.parametrize(["particle"], ['e', 'p'])
 def test_nondim_thermal_conductivity_unrecognized_model(particle):
     with pytest.raises(ValueError):
