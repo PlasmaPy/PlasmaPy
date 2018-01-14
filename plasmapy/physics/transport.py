@@ -596,20 +596,103 @@ class classical_transport:
         )
 
 
-def resistivity(T_e, n_e, ion_particle, e_particle, Z=None, B=0.0,
+def resistivity(T_e, n_e, ion_particle, e_particle='e',
+                Z=None, B=0.0 * units.T,
                 model='Braginskii', field_orientation='parallel',
                 coulomb_log_ei=None, V_ei=None, hall_e=None):
-    r"""TODO"""
-#    T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
-#    n_e = n_e.to(units.m**-3)
-#    model = model.lower()
-#    field_orientation = field_orientation.lower()
-#    e_particle = 'e'
-#    if hall is None:
-#        hall = Hall_parameter(n_e, T_e, B, e_particle, ion_particle,
-#                              coulomb_log, V)
-#    if Z is None:
-#        Z = atomic.charge_state(ion_particle)
+    r"""
+    Braginskii-esque resistivity.
+
+    Parameters
+    ----------
+    T_e : Quantity
+        Temperature in units of temperature or energy per particle
+
+    n_e : Quantity
+        The number density in units convertible to per cubic meter.
+
+    T_i : Quantity
+        Temperature in units of temperature or energy per particle
+
+    n_i : Quantity
+        The number density in units convertible to per cubic meter.
+
+    ion_particle : string
+        Representation of the ion species (e.g., 'p' for protons,
+        'e' for electrons, 'D+' for deuterium, or 'He-4 +1' for singly
+        ionized helium-4). If no charge state information is provided,
+        then the particles are assumed to be singly charged.
+
+    Z : integer or np.inf, optional
+        The ion charge state. Overrides particle charge state if included.
+        Different theories support different values of Z.
+        For the original Braginskii model, Z can be any of [1,2,3,4,infinity].
+        The Ji-Held model supports arbitrary Z. Average ionization state
+        Zbar can be input using this input and model, but doing so may neglect
+        effects caused by multiple ion populations.
+
+    B : Quantity, optional
+        The magnetic field strength in units convertible to Tesla. Defaults
+        to zero.
+
+    model: string
+        Indication of whose formulation from literature to use. Allowed values
+        are:
+        'Braginskii',
+        'Spitzer-Harm',
+        'Epperlein-Haines' (not yet implemented),
+        'Ji-Held'.
+        See refs [1]_, [2]_, [3]_ and [4]_.
+
+    field_orientation : string
+        Either of 'parallel', 'par', 'perpendicular', 'perp', 'cross', or
+        'all', indicating the cardinal orientation of the magnetic field with
+        respect to the transport direction of interest. Note that 'perp' refers
+        to transport perpendicular to the field direction in the direction of
+        the temperature gradient, while 'cross' refers to the B X grad(T)
+        direction. The option 'all' will return a numpy array of all three,
+        np.array((par, perp, cross)).
+
+    coulomb_log_ei: float or dimensionless Quantity, optional
+        Force a particular value to be used for the Coulomb logarithm. If
+        None, the PlasmaPy function Coulomb_Logarithm() will be used. Useful
+        for comparing calculations.
+
+    V_ei: Quantity, optional
+       Supplied to coulomb_logarithm() function, not otherwise used.
+       The relative velocity between particles.  If not provided,
+       thermal velocity is assumed: :math:`\mu V^2 \sim 3 k_B T`
+       where `mu` is the reduced mass.
+
+    hall_e: float or dimensionless Quantity, optional
+        Force a particular value to be used for the e Hall parameter. If
+        None, the PlasmaPy function Hall_parameter() will be used. Useful
+        for comparing calculations.
+
+    See also
+    --------
+    classical_transport
+
+    Examples
+    --------
+    >>> from astropy import units
+    >>> resistivity(1*units.eV, 1e20/units.m**3, 'p')
+    <Quantity 0.00038845 m Ohm>
+
+    Returns
+    -------
+
+    """
+    T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
+    n_e = n_e.to(units.m**-3)
+    model = model.lower()
+    field_orientation = field_orientation.lower()
+    e_particle = 'e'
+    if hall_e is None:
+        hall_e = Hall_parameter(n_e, T_e, B, e_particle, ion_particle,
+                              coulomb_log_ei, V_ei)
+    if Z is None:
+        Z = atomic.charge_state(ion_particle)
     alpha_hat = _nondim_resistivity(hall_e, Z, e_particle, model,
                                     field_orientation)
     tau_e = 1 / collision_rate_electron_ion(T_e, n_e, ion_particle,
@@ -624,7 +707,7 @@ def resistivity(T_e, n_e, ion_particle, e_particle, Z=None, B=0.0,
 
 
 def thermoelectric_conductivity(T_e, n_e, e_particle, Z=None,
-                                B=0.0, model='Braginskii',
+                                B=0.0 * units.T, model='Braginskii',
                                 field_orientation='parallel',
                                 coulomb_log_ei=None, V_ei=None, hall_e=None):
     r"""TODO"""
@@ -644,7 +727,7 @@ def thermoelectric_conductivity(T_e, n_e, e_particle, Z=None,
     return beta
 
 
-def ion_thermal_conductivity(T_i, n_i, ion_particle, Z=None, B=0.0,
+def ion_thermal_conductivity(T_i, n_i, ion_particle, Z=None, B=0.0 * units.T,
                              model='Braginskii', field_orientation='parallel',
                              coulomb_log_ii=None, V_ii=None, hall_i=None,
                              mu=None, theta=None):
@@ -675,7 +758,7 @@ def ion_thermal_conductivity(T_i, n_i, ion_particle, Z=None, B=0.0,
 
 
 def electron_thermal_conductivity(T_e, n_e, ion_particle, e_particle,
-                                  Z=None, B=0.0, model='Braginskii',
+                                  Z=None, B=0.0 * units.T, model='Braginskii',
                                   field_orientation='parallel',
                                   coulomb_log_ei=None, V_ei=None, hall_e=None,
                                   mu=None, theta=None):
@@ -697,7 +780,8 @@ def electron_thermal_conductivity(T_e, n_e, ion_particle, e_particle,
     return kappa.to(units.W / units.m / units.K)
 
 
-def ion_viscosity(T_i, n_i, ion_particle, Z=None, B=0.0, model='Braginskii',
+def ion_viscosity(T_i, n_i, ion_particle, Z=None, B=0.0 * units.T,
+                  model='Braginskii',
                   field_orientation='parallel', coulomb_log_ii=None, V_ii=None,
                   hall_i=None, mu=None, theta=None):
     r"""TODO"""
@@ -736,7 +820,8 @@ def ion_viscosity(T_i, n_i, ion_particle, Z=None, B=0.0, model='Braginskii',
     return eta
 
 
-def electron_viscosity(T_e, n_e, ion_particle, e_particle, Z=None, B=0.0,
+def electron_viscosity(T_e, n_e, ion_particle, e_particle, Z=None,
+                       B=0.0 * units.T,
                        model='Braginskii', field_orientation='parallel',
                        coulomb_log_ei=None, V_ei=None, hall_e=None, mu=None,
                        theta=None):
