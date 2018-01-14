@@ -30,6 +30,8 @@ from ..transport import (Coulomb_logarithm,
                          _nondim_resist_ji_held,
                          _nondim_visc_e_ji_held,
                          _nondim_visc_i_ji_held,
+                         _nondim_viscosity,
+                        check_Z,
                          )
 
 
@@ -406,6 +408,9 @@ def test_nondim_te_conductivity_unrecognized_model():
         _nondim_te_conductivity(1, 1, 'e', 'this is not a model',
                                 'parallel')
 
+def test_nondim_viscosity_unrecognized_model():
+    with pytest.raises(ValueError):
+        _nondim_viscosity(1, 1, 'p', 'not a model', 'parallel')
 
 # test class for _nondim_tc_e_braginskii function:
 class Test__nondim_tc_e_braginskii:
@@ -589,6 +594,11 @@ class Test__nondim_visc_e_braginskii:
             assert np.isclose(beta_hat[idx] * self.big_hall ** 2, expected, atol=1e-2)
         elif idx == 3 or idx == 4:
             assert np.isclose(beta_hat[idx] * self.big_hall, expected, atol=1e-1)
+
+def test_fail_check_Z_nan():
+    with pytest.raises(PhysicsError):
+        check_Z([1, 2, 3], 4)
+
 
 
 @pytest.mark.parametrize("Z", [1, 2, 4, 16, np.inf])
