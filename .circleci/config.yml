@@ -14,7 +14,7 @@ latex-install: &latex-installer
 
 html-run: &doc-html
   name: Build HTML documentation
-  command: make html 
+  command: make html SPHINXOPTS='-W'
   working_directory: docs
 
 latex-run: &doc-latex

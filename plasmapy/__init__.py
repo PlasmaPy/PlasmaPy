@@ -54,9 +54,8 @@ try:
     from . import physics
     from . import diagnostics
     from . import utils
-except ImportError:  # coveralls: ignore
-    raise
-#    raise ImportError("Unable to load PlasmaPy subpackages.")
+except ImportError:
+   raise ImportError("Unable to load PlasmaPy subpackages.")
 
 try:
     from astropy import units
