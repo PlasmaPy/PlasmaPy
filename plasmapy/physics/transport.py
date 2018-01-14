@@ -501,383 +501,92 @@ class classical_transport:
             self.theta = self.T_e / self.T_i
 
     def resistivity(self):
-        return resistivity(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            ion_particle=self.ion_particle,
-            e_particle=self.e_particle,
-            Z=self.Z,
-            B=self.B,
-            model=self.model,
-            field_orientation=self.field_orientation,
-            coulomb_log_ei=self.coulomb_log_ei,
-            V_ei=self.V_ei,
-            hall_e=self.hall_e,
-        )
+        alpha_hat = _nondim_resistivity(self.hall_e, self.Z, self.e_particle,
+                                        self.model,
+                                        self.field_orientation)
+        tau_e = 1 / collision_rate_electron_ion(self.T_e, self.n_e,
+                                                self.ion_particle,
+                                                self.coulomb_log_ei,
+                                                self.V_ei)
+
+        alpha = alpha_hat / (self.n_e * e**2 * tau_e / m_e)
+        return alpha.to(units.ohm * units.m)
 
     def thermoelectric_conductivity(self):
-        return thermoelectric_conductivity(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            e_particle=self.e_particle,
-            Z=self.Z,
-            B=self.B,
-            model=self.model,
-            field_orientation=self.field_orientation,
-            coulomb_log_ei=self.coulomb_log_ei,
-            V_ei=self.V_ei,
-            hall_e=self.hall_e,
-        )
+        beta_hat = _nondim_te_conductivity(self.hall_e, self.Z, self.e_particle, self.model,
+                                           self.field_orientation)
+        beta = beta_hat * units.s / units.s  # yay! already dimensionless
+        return beta
 
     def ion_thermal_conductivity(self):
-        return ion_thermal_conductivity(
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion_particle=self.ion_particle,
-            Z=self.Z,
-            B=self.B,
-            model=self.model,
-            field_orientation=self.field_orientation,
-            coulomb_log_ii=self.coulomb_log_ii,
-            V_ii=self.V_ii,
-            hall_i=self.hall_i,
-            mu=self.mu,
-            theta=self.theta,
-        )
+        kappa_hat = _nondim_thermal_conductivity(self.hall_i, self.Z, self.ion_particle, self.model,
+                                                 self.field_orientation, self.mu, self.theta)
+        tau_i = 1 / collision_rate_ion_ion(self.T_i, self.n_i, self.ion_particle,
+                                           self.coulomb_log_ii, self.V_ii)
+        kappa = kappa_hat * (self.n_i * k_B**2 * self.T_i * tau_i / self.m_i)
+        return kappa.to(units.W / units.m / units.K)
 
     def electron_thermal_conductivity(self):
-        return electron_thermal_conductivity(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            ion_particle=self.ion_particle,
-            e_particle=self.e_particle,
-            Z=self.Z,
-            B=self.B,
-            model=self.model,
-            field_orientation=self.field_orientation,
-            coulomb_log_ei=self.coulomb_log_ei,
-            V_ei=self.V_ei,
-            hall_e=self.hall_e,
-            mu=self.mu,
-            theta=self.theta,
-        )
+        kappa_hat = _nondim_thermal_conductivity(self.hall_e, self.Z, self.e_particle, self.model,
+                                                 self.field_orientation, self.mu, self.theta)
+        tau_e = 1 / collision_rate_electron_ion(self.T_e, self.n_e, self.ion_particle,
+                                                self.coulomb_log_ei, self.V_ei)
+        kappa = kappa_hat * (self.n_e * k_B**2 * self.T_e * tau_e / m_e)
+        return kappa.to(units.W / units.m / units.K)
+
 
     def ion_viscosity(self):
-        return ion_viscosity(
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion_particle=self.ion_particle,
-            Z=self.Z,
-            B=self.B,
-            model=self.model,
-            field_orientation=self.field_orientation,
-            coulomb_log_ii=self.coulomb_log_ii,
-            V_ii=self.V_ii,
-            hall_i=self.hall_i,
-            mu=self.mu,
-            theta=self.theta,
-        )
+        eta_hat = _nondim_viscosity(self.hall_i, self.Z, self.ion_particle, self.model,
+                                    self.field_orientation, self.mu, self.theta)
+        tau_i = 1 / collision_rate_ion_ion(self.T_i, self.n_i, self.ion_particle,
+                                           self.coulomb_log_ii, self.V_ii)
+        if np.isclose(self.hall_i, 0, rtol=1e-8):
+            eta1 = (eta_hat[0] * (self.n_i * k_B * self.T_i * tau_i),
+                    eta_hat[1] * (self.n_i * k_B * self.T_i * tau_i),
+                    eta_hat[2] * (self.n_i * k_B * self.T_i * tau_i),
+                    eta_hat[3] * (self.n_i * k_B * self.T_i * tau_i),
+                    eta_hat[4] * (self.n_i * k_B * self.T_i * tau_i))
+        else:
+            eta1 = (eta_hat[0] * (self.n_i * k_B * self.T_i * tau_i),
+                    eta_hat[1] * (self.n_i * k_B * self.T_i * tau_i) / self.hall_i**2,
+                    eta_hat[2] * (self.n_i * k_B * self.T_i * tau_i) / self.hall_i**2,
+                    eta_hat[3] * (self.n_i * k_B * self.T_i * tau_i) / self.hall_i,
+                    eta_hat[4] * (self.n_i * k_B * self.T_i * tau_i) / self.hall_i)
+        if eta1[0].unit == eta1[2].unit and eta1[2].unit == eta1[4].unit:
+            unit_val = eta1[0].unit
+            eta = (np.array((eta1[0].value,
+                             eta1[1].value,
+                             eta1[2].value,
+                             eta1[3].value,
+                             eta1[4].value)) * unit_val).to(units.Pa * units.s)
+        return eta
+
 
     def electron_viscosity(self):
-        return electron_viscosity(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            ion_particle=self.ion_particle,
-            e_particle=self.e_particle,
-            Z=self.Z,
-            B=self.B,
-            model=self.model,
-            field_orientation=self.field_orientation,
-            coulomb_log_ei=self.coulomb_log_ei,
-            V_ei=self.V_ei,
-            hall_e=self.hall_e,
-            mu=self.mu,
-            theta=self.theta,
-        )
-
-
-def resistivity(T_e, n_e, ion_particle, e_particle='e',
-                Z=None, B=0.0 * units.T,
-                model='Braginskii', field_orientation='parallel',
-                coulomb_log_ei=None, V_ei=None, hall_e=None):
-    r"""
-    Braginskii-esque resistivity.
-
-    Parameters
-    ----------
-    T_e : Quantity
-        Temperature in units of temperature or energy per particle
-
-    n_e : Quantity
-        The number density in units convertible to per cubic meter.
-
-    T_i : Quantity
-        Temperature in units of temperature or energy per particle
-
-    n_i : Quantity
-        The number density in units convertible to per cubic meter.
-
-    ion_particle : string
-        Representation of the ion species (e.g., 'p' for protons,
-        'e' for electrons, 'D+' for deuterium, or 'He-4 +1' for singly
-        ionized helium-4). If no charge state information is provided,
-        then the particles are assumed to be singly charged.
-
-    Z : integer or np.inf, optional
-        The ion charge state. Overrides particle charge state if included.
-        Different theories support different values of Z.
-        For the original Braginskii model, Z can be any of [1,2,3,4,infinity].
-        The Ji-Held model supports arbitrary Z. Average ionization state
-        Zbar can be input using this input and model, but doing so may neglect
-        effects caused by multiple ion populations.
-
-    B : Quantity, optional
-        The magnetic field strength in units convertible to Tesla. Defaults
-        to zero.
-
-    model: string
-        Indication of whose formulation from literature to use. Allowed values
-        are:
-        'Braginskii',
-        'Spitzer-Harm',
-        'Epperlein-Haines' (not yet implemented),
-        'Ji-Held'.
-        See refs [1]_, [2]_, [3]_ and [4]_.
-
-    field_orientation : string
-        Either of 'parallel', 'par', 'perpendicular', 'perp', 'cross', or
-        'all', indicating the cardinal orientation of the magnetic field with
-        respect to the transport direction of interest. Note that 'perp' refers
-        to transport perpendicular to the field direction in the direction of
-        the temperature gradient, while 'cross' refers to the B X grad(T)
-        direction. The option 'all' will return a numpy array of all three,
-        np.array((par, perp, cross)).
-
-    coulomb_log_ei: float or dimensionless Quantity, optional
-        Force a particular value to be used for the Coulomb logarithm. If
-        None, the PlasmaPy function Coulomb_Logarithm() will be used. Useful
-        for comparing calculations.
-
-    V_ei: Quantity, optional
-       Supplied to coulomb_logarithm() function, not otherwise used.
-       The relative velocity between particles.  If not provided,
-       thermal velocity is assumed: :math:`\mu V^2 \sim 3 k_B T`
-       where `mu` is the reduced mass.
-
-    hall_e: float or dimensionless Quantity, optional
-        Force a particular value to be used for the e Hall parameter. If
-        None, the PlasmaPy function Hall_parameter() will be used. Useful
-        for comparing calculations.
-
-    See also
-    --------
-    classical_transport
-
-    Examples
-    --------
-    >>> from astropy import units
-    >>> resistivity(1*units.eV, 1e20/units.m**3, 'p')
-    <Quantity 0.00038845 m Ohm>
-
-    Returns
-    -------
-
-    """
-    T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
-    n_e = n_e.to(units.m**-3)
-    model = model.lower()
-    field_orientation = field_orientation.lower()
-    e_particle = 'e'
-    if hall_e is None:
-        hall_e = Hall_parameter(n_e, T_e, B, e_particle, ion_particle,
-                              coulomb_log_ei, V_ei)
-    if Z is None:
-        Z = atomic.charge_state(ion_particle)
-    alpha_hat = _nondim_resistivity(hall_e, Z, e_particle, model,
-                                    field_orientation)
-    tau_e = 1 / collision_rate_electron_ion(T_e, n_e, ion_particle,
-                                            coulomb_log_ei, V_ei)
-
-#    e_cgs = e.value * c.value * 10
-#    alpha = alpha_hat / (e_cgs**2 * n_e.value/1e6 * \
-#        tau_e.value / (m_e.value*1000)) * 1/(4*np.pi*eps0.value)
-#    return alpha * (units.ohm * units.m)
-    alpha = alpha_hat / (n_e * e**2 * tau_e / m_e)
-    return alpha.to(units.ohm * units.m)
-
-
-def thermoelectric_conductivity(T_e, n_e, e_particle, Z=None,
-                                B=0.0 * units.T, model='Braginskii',
-                                field_orientation='parallel',
-                                coulomb_log_ei=None, V_ei=None, hall_e=None):
-    r"""TODO"""
-#    T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
-#    n_e = n_e.to(units.m**-3)
-#    model = model.lower()
-#    field_orientation = field_orientation.lower()
-#    e_particle = 'e'
-#    if hall is None:
-#        hall = Hall_parameter(n_e, T_e, B, e_particle, ion_particle,
-#                              coulomb_log, V)
-#    if Z is None:
-#        Z = atomic.charge_state(ion_particle)
-    beta_hat = _nondim_te_conductivity(hall_e, Z, e_particle, model,
-                                       field_orientation)
-    beta = beta_hat * units.s / units.s  # yay! already dimensionless
-    return beta
-
-
-def ion_thermal_conductivity(T_i, n_i, ion_particle, Z=None, B=0.0 * units.T,
-                             model='Braginskii', field_orientation='parallel',
-                             coulomb_log_ii=None, V_ii=None, hall_i=None,
-                             mu=None, theta=None):
-    r"""Braginskii-esque two-fluid plasma thermal conductivities
-
-    Notes
-    -----
-    See comments on the use of classical transport theory in the
-    classical_transport function.
-
-    """
-#    T_i = T_i.to(units.K, equivalencies=units.temperature_energy())
-#    n_i = n_i.to(units.m**-3)
-#    model = model.lower()
-#    field_orientation = field_orientation.lower()
-#    if hall is None:
-#        hall = Hall_parameter(n_i, T_i, B, ion_particle, ion_particle,
-#                              coulomb_log, V)
-#    if Z is None:
-#        Z = atomic.charge_state(ion_particle)
-    m_i = atomic.ion_mass(ion_particle)
-    kappa_hat = _nondim_thermal_conductivity(hall_i, Z, ion_particle, model,
-                                             field_orientation, mu, theta)
-    tau_i = 1 / collision_rate_ion_ion(T_i, n_i, ion_particle,
-                                       coulomb_log_ii, V_ii)
-    kappa = kappa_hat * (n_i * k_B**2 * T_i * tau_i / m_i)
-    return kappa.to(units.W / units.m / units.K)
-
-
-def electron_thermal_conductivity(T_e, n_e, ion_particle, e_particle,
-                                  Z=None, B=0.0 * units.T, model='Braginskii',
-                                  field_orientation='parallel',
-                                  coulomb_log_ei=None, V_ei=None, hall_e=None,
-                                  mu=None, theta=None):
-    #    T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
-    #    n_e = n_e.to(units.m**-3)
-    #    model = model.lower()
-    #    field_orientation = field_orientation.lower()
-    #    e_particle = 'e'
-    #    if hall is None:
-    #        hall = Hall_parameter(n_e, T_e, B, e_particle,
-    #                              ion_particle, coulomb_log, V)
-    #    if Z is None:
-    #        Z = atomic.charge_state(ion_particle)
-    kappa_hat = _nondim_thermal_conductivity(hall_e, Z, e_particle, model,
-                                             field_orientation, mu, theta)
-    tau_e = 1 / collision_rate_electron_ion(T_e, n_e, ion_particle,
-                                            coulomb_log_ei, V_ei)
-    kappa = kappa_hat * (n_e * k_B**2 * T_e * tau_e / m_e)
-    return kappa.to(units.W / units.m / units.K)
-
-
-def ion_viscosity(T_i, n_i, ion_particle, Z=None, B=0.0 * units.T,
-                  model='Braginskii',
-                  field_orientation='parallel', coulomb_log_ii=None, V_ii=None,
-                  hall_i=None, mu=None, theta=None):
-    r"""TODO"""
-#    T_i = T_i.to(units.K, equivalencies=units.temperature_energy())
-#    n_i = n_i.to(units.m**-3)
-#    model = model.lower()
-#    field_orientation = field_orientation.lower()
-#    if hall is None:
-#        hall = Hall_parameter(n_i, T_i, B, ion_particle,
-#                              ion_particle, coulomb_log, V)
-#    if Z is None:
-#        Z = atomic.charge_state(ion_particle)
-    eta_hat = _nondim_viscosity(hall_i, Z, ion_particle, model,
-                                field_orientation, mu, theta)
-    tau_i = 1 / collision_rate_ion_ion(T_i, n_i, ion_particle,
-                                       coulomb_log_ii, V_ii)
-    if np.isclose(hall_i, 0, rtol=1e-8):
-        eta1 = (eta_hat[0] * (n_i * k_B * T_i * tau_i),
-                eta_hat[1] * (n_i * k_B * T_i * tau_i),
-                eta_hat[2] * (n_i * k_B * T_i * tau_i),
-                eta_hat[3] * (n_i * k_B * T_i * tau_i),
-                eta_hat[4] * (n_i * k_B * T_i * tau_i))
-    else:
-        eta1 = (eta_hat[0] * (n_i * k_B * T_i * tau_i),
-                eta_hat[1] * (n_i * k_B * T_i * tau_i) / hall_i**2,
-                eta_hat[2] * (n_i * k_B * T_i * tau_i) / hall_i**2,
-                eta_hat[3] * (n_i * k_B * T_i * tau_i) / hall_i,
-                eta_hat[4] * (n_i * k_B * T_i * tau_i) / hall_i)
-    if eta1[0].unit == eta1[2].unit and eta1[2].unit == eta1[4].unit:
-        unit_val = eta1[0].unit
-        eta = (np.array((eta1[0].value,
-                         eta1[1].value,
-                         eta1[2].value,
-                         eta1[3].value,
-                         eta1[4].value)) * unit_val).to(units.Pa * units.s)
-    return eta
-
-
-def electron_viscosity(T_e, n_e, ion_particle, e_particle, Z=None,
-                       B=0.0 * units.T,
-                       model='Braginskii', field_orientation='parallel',
-                       coulomb_log_ei=None, V_ei=None, hall_e=None, mu=None,
-                       theta=None):
-    r"""TODO"""
-#    T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
-#    n_e = n_e.to(units.m**-3)
-#    model = model.lower()
-#    field_orientation = field_orientation.lower()
-#    e_particle = 'e'
-#    if hall is None:
-#        hall = Hall_parameter(n_e, T_e, B, e_particle,
-#                              ion_particle, coulomb_log, V)
-#    if Z is None:
-#        Z = atomic.charge_state(ion_particle)
-    eta_hat = _nondim_viscosity(hall_e, Z, e_particle, model,
-                                field_orientation, mu, theta)
-    tau_e = 1 / collision_rate_electron_ion(T_e, n_e, ion_particle,
-                                            coulomb_log_ei, V_ei)
-    if np.isclose(hall_e, 0, rtol=1e-8):
-        eta1 = (eta_hat[0] * (n_e * k_B * T_e * tau_e),
-                eta_hat[1] * (n_e * k_B * T_e * tau_e),
-                eta_hat[2] * (n_e * k_B * T_e * tau_e),
-                eta_hat[3] * (n_e * k_B * T_e * tau_e),
-                eta_hat[4] * (n_e * k_B * T_e * tau_e))
-    else:
-        eta1 = (eta_hat[0] * (n_e * k_B * T_e * tau_e),
-                eta_hat[1] * (n_e * k_B * T_e * tau_e) / hall_e**2,
-                eta_hat[2] * (n_e * k_B * T_e * tau_e) / hall_e**2,
-                eta_hat[3] * (n_e * k_B * T_e * tau_e) / hall_e,
-                eta_hat[4] * (n_e * k_B * T_e * tau_e) / hall_e)
-    if eta1[0].unit == eta1[2].unit and eta1[2].unit == eta1[4].unit:
-        unit_val = eta1[0].unit
-        eta = (np.array((eta1[0].value,
-                         eta1[1].value,
-                         eta1[2].value,
-                         eta1[3].value,
-                         eta1[4].value)) * unit_val).to(units.Pa * units.s)
-    return eta
-
-
-#
-#
-#
-#
-#
-#
-#
-#                 no units allowed beyond this point!
-#
-#
-#
-#
-#
-#
-#
-#
+        eta_hat = _nondim_viscosity(self.hall_e, self.Z, self.e_particle, self.model,
+                                    self.field_orientation, self.mu, self.theta)
+        tau_e = 1 / collision_rate_electron_ion(self.T_e, self.n_e, self.ion_particle,
+                                                self.coulomb_log_ei, self.V_ei)
+        if np.isclose(self.hall_e, 0, rtol=1e-8):
+            eta1 = (eta_hat[0] * (self.n_e * k_B * self.T_e * tau_e),
+                    eta_hat[1] * (self.n_e * k_B * self.T_e * tau_e),
+                    eta_hat[2] * (self.n_e * k_B * self.T_e * tau_e),
+                    eta_hat[3] * (self.n_e * k_B * self.T_e * tau_e),
+                    eta_hat[4] * (self.n_e * k_B * self.T_e * tau_e))
+        else:
+            eta1 = (eta_hat[0] * (self.n_e * k_B * self.T_e * tau_e),
+                    eta_hat[1] * (self.n_e * k_B * self.T_e * tau_e) / self.hall_e**2,
+                    eta_hat[2] * (self.n_e * k_B * self.T_e * tau_e) / self.hall_e**2,
+                    eta_hat[3] * (self.n_e * k_B * self.T_e * tau_e) / self.hall_e,
+                    eta_hat[4] * (self.n_e * k_B * self.T_e * tau_e) / self.hall_e)
+        if eta1[0].unit == eta1[2].unit and eta1[2].unit == eta1[4].unit:
+            unit_val = eta1[0].unit
+            eta = (np.array((eta1[0].value,
+                             eta1[1].value,
+                             eta1[2].value,
+                             eta1[3].value,
+                             eta1[4].value)) * unit_val).to(units.Pa * units.s)
+        return eta
 
 
 def _nondim_thermal_conductivity(hall, Z, particle, model, field_orientation,
