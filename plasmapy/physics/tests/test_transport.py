@@ -88,7 +88,7 @@ def test_Coulomb_logarithm():
 
 
 # test class for classical_transport class:
-class Test_classical_transport(object):
+class Test_classical_transport:
 
     def setup_method(self):
         """set up some initial values for tests"""
@@ -295,7 +295,7 @@ class Test_classical_transport(object):
 
 
 
-class Test__nondim_thermal_conductivity():
+class Test__nondim_thermal_conductivity:
     @pytest.mark.parametrize(["particle"], ['e', 'p'])
     def test_unrecognized_model(self, particle):
         with pytest.raises(ValueError):
@@ -304,14 +304,14 @@ class Test__nondim_thermal_conductivity():
                                          'parallel')
 
 
-class Test__nondim_resistivity():
+class Test__nondim_resistivity:
     def test_unrecognized_model(self):
         with pytest.raises(ValueError):
             _nondim_resistivity(1, 1, 'e', 'SURPRISE SUPERSYMMETRY',
                                 'parallel')
 
 
-class Test__nondim_te_conductivity():
+class Test__nondim_te_conductivity:
     def test_unrecognized_model(self):
         with pytest.raises(ValueError):
             _nondim_te_conductivity(1, 1, 'e', 'this is not a model',
@@ -319,7 +319,7 @@ class Test__nondim_te_conductivity():
 
 
 # test class for _nondim_tc_e_braginskii function:
-class Test__nondim_tc_e_braginskii(object):
+class Test__nondim_tc_e_braginskii:
 
     def setup_method(self):
         """set up some initial values for tests"""
@@ -368,7 +368,7 @@ class Test__nondim_tc_e_braginskii(object):
 
 
 # test class for _nondim_tc_i_braginskii function:
-class Test__nondim_tc_i_braginskii(object):
+class Test__nondim_tc_i_braginskii:
 
     def setup_method(self):
         """set up some initial values for tests"""
@@ -400,7 +400,7 @@ class Test__nondim_tc_i_braginskii(object):
 
 
 # test class for _nondim_tec_braginskii function:
-class Test__nondim_tec_braginskii(object):
+class Test__nondim_tec_braginskii:
 
     def setup_method(self):
         """set up some initial values for tests"""
@@ -432,7 +432,7 @@ class Test__nondim_tec_braginskii(object):
 
 
 # test class for _nondim_resist_braginskii function:
-class Test__nondim_resist_braginskii(object):
+class Test__nondim_resist_braginskii:
 
     def setup_method(self):
         """set up some initial values for tests"""
@@ -464,7 +464,7 @@ class Test__nondim_resist_braginskii(object):
 
 
 # test class for _nondim_visc_i_braginskii function:
-class Test__nondim_visc_i_braginskii(object):
+class Test__nondim_visc_i_braginskii:
 
     def setup_method(self):
         """set up some initial values for tests"""
@@ -494,7 +494,7 @@ class Test__nondim_visc_i_braginskii(object):
 
 
 # test class for _nondim_visc_e_braginskii function:
-class Test__nondim_visc_e_braginskii(object):
+class Test__nondim_visc_e_braginskii:
 
     def setup_method(self):
         """set up some initial values for tests"""
