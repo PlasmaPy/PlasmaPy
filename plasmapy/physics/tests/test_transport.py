@@ -296,9 +296,10 @@ class Test_classical_transport:
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held", 2.77028546e-8 * u.Ohm * u.m),
-        ("spitzer", 2.78349687e-8 * u.Ohm * u.m)
+        ("spitzer", 2.78349687e-8 * u.Ohm * u.m),
+        ("braginskii", 2.78349687e-8 * u.Ohm * u.m)
         ])
-    def test_by_model(self, model, expected):
+    def test_resistivity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
                                   T_i=self.T_i,
@@ -307,6 +308,36 @@ class Test_classical_transport:
                                   model=model)
         assert np.isclose(ct2.resistivity(), expected, atol=1e-6*u.Ohm * u.m)
 
+    @pytest.mark.parametrize("model, expected", [
+        ("ji-held", 0.702 * u.s/u.s),
+        ("spitzer", 0.69944979 * u.s/u.s),
+        ("braginskii", 0.711084 * u.s/u.s)
+        ])
+    def test_thermoelectric_conductivity_by_model(self, model, expected):
+        ct2 = classical_transport(T_e=self.T_e,
+                                  n_e=self.n_e,
+                                  T_i=self.T_i,
+                                  n_i=self.n_i,
+                                  ion_particle=self.ion_particle,
+                                  model=model)
+        assert np.isclose(ct2.thermoelectric_conductivity(), expected,
+                          atol=1e-6*u.s/u.s)
+
+    @pytest.mark.parametrize("model, expected", [
+        ("ji-held", np.array([0.07582084, 0.07582084, 0.07582084, 0, 0]) * u.Pa * u.s),
+        pytest.param("spitzer", np.array([0.07582084]) * u.Pa * u.s,
+                     marks=pytest.mark.xfail(reason="Not implemented yet?")),
+        ("braginskii", np.array([0.07582084, 0.07579587, 0.07579587, 0, 0]) * u.Pa * u.s)
+        ])
+    def test_viscosity_by_model(self, model, expected):
+        ct2 = classical_transport(T_e=self.T_e,
+                                  n_e=self.n_e,
+                                  T_i=self.T_i,
+                                  n_i=self.n_i,
+                                  ion_particle=self.ion_particle,
+                                  model=model)
+        assert np.allclose(ct2.electron_viscosity(), expected,
+                           atol=1e-6*u.Pa * u.s)
 
 
 @pytest.mark.parametrize(["particle"], ['e', 'p'])
