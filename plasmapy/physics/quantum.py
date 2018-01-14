@@ -98,8 +98,7 @@ def deBroglie_wavelength(V, particle):
 
         lambda_dBr = np.ones(V.shape) * np.inf * units.m
         indices = V.value != 0
-        lambda_dBr[indices] = h / \
-            (m * V[indices] * relativity.Lorentz_factor(V[indices]))
+        lambda_dBr[indices] = h / (m * V[indices] * relativity.Lorentz_factor(V[indices]))
 
     else:
 
