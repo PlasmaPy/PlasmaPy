@@ -657,6 +657,9 @@ def _nondim_thermal_conductivity(hall, Z, particle, model, field_orientation,
         elif model == 'ji-held':
             kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta,
                                              field_orientation)
+        elif model == 'spitzer-harm' or model == 'spitzer':
+            raise NotImplementedError("Ion thermal conductivity is not "
+                                      "implemented in the Spitzer model.")
         else:
             raise ValueError(f"Unrecognized model '{model}' in "
                              "_nondim_thermal_conductivity")
@@ -687,6 +690,9 @@ def _nondim_viscosity(hall, Z, particle, model, field_orientation,
             eta_hat = _nondim_visc_i_braginskii(hall)
         elif model == 'ji-held':
             eta_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)
+        elif model == 'spitzer-harm' or model == 'spitzer':
+            raise NotImplementedError("Ion viscosity is not "
+                                      "implemented in the Spitzer model.")
         else:
             raise ValueError(f"Unrecognized model '{model}' in "
                              "_nondim_viscosity")
