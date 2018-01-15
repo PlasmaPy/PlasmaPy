@@ -360,19 +360,19 @@ class Test_classical_transport:
                            atol=1e-6*u.Pa * u.s)
 
 
-        @pytest.mark.parametrize("model, expected", [
-            ("ji-held", np.array([0.07582084, 0.07582084, 0.07582084, 0, 0]) * u.Pa * u.s),
-            ("braginskii", np.array([0.07582084, 0.07579587, 0.07579587, 0, 0]) * u.Pa * u.s)
-            ])
-        def test_ion_viscosity_by_model(self, model, expected):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      model=model)
-            assert np.allclose(ct2.ion_viscosity(), expected,
-                               atol=1e-6*u.Pa * u.s)
+    @pytest.mark.parametrize("model, expected", [
+        ("ji-held", np.array([7.36954316, 7.36954316, 7.36954316, 0, 0]) * u.Pa * u.s),
+        ("braginskii", np.array([7.74590133, 7.72235334, 7.72235334, 0, 0]) * u.Pa * u.s)
+        ])
+    def test_ion_viscosity_by_model(self, model, expected):
+        ct2 = classical_transport(T_e=self.T_e,
+                                  n_e=self.n_e,
+                                  T_i=self.T_i,
+                                  n_i=self.n_i,
+                                  ion_particle=self.ion_particle,
+                                  model=model)
+        assert np.allclose(ct2.ion_viscosity(), expected,
+                           atol=1e-6*u.Pa * u.s)
 
 
     @pytest.mark.parametrize("model, expected", [
