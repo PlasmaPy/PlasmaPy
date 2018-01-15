@@ -132,6 +132,22 @@ class Test_classical_transport:
             mu=self.mu,
             theta=self.theta,
         )
+        
+    def test_spitzer_vs_formulary(self):
+        """Spitzer resistivity should agree with approx. in NRL formulary"""
+        ct2 = classical_transport(T_e=self.T_e,
+                                  n_e=self.n_e,
+                                  T_i=self.T_i,
+                                  n_i=self.n_i,
+                                  ion_particle=self.ion_particle,
+                                  model='spitzer',
+                                  field_orientation='perp')
+        alpha_spitzer_perp_NRL = (1.03e-4 * ct2.Z *
+                                  ct2.coulomb_log_ei *
+                                  ((ct2.T_e).to(u.eV)).value ** (-3/2) *
+                                  u.Ohm * u.m)
+        assert(np.isclose(ct2.resistivity().value,
+                          alpha_spitzer_perp_NRL.value, rtol=2e-2))
 
     def test_resistivity_units(self):
         """output should be a Quantity with units of Ohm m"""
