@@ -217,15 +217,17 @@ class classical_transport:
     -----
     Classical transport theory is derived by using kinetic theory to close the
     plasma two-fluid (electron and ion fluid) equations in the collisional
-    limit. This function uses fitting functions from literature to calculate
+    limit. The first complete model in this form was done by S. I. Braginskii.
+
+    This function uses fitting functions from literature to calculate
     the transport coefficients, which are the resistivity, thermoelectric
     conductivity, thermal conductivity, and viscosity, which can be used
     to close the two-fluid equations.
 
     Note well the assumptions in the derivation of classical transport.
-    Turbulent transport does not dominate, and the velocity distribution
-    function is close to Maxwellian (no extremely strong gradients),
-    which is equivalent to the following conditions:
+    It is assumed that turbulent transport does not dominate, and the velocity
+    distribution function is close to Maxwellian (no extremely strong
+    gradients), which is equivalent to the following conditions:
 
     * collisional frequency >> gyrofrequency
     * collisional mean free path << gradient scale length along field
@@ -235,6 +237,37 @@ class classical_transport:
     gradients or turbulent transport, the transport is significantly increased
     by these other effects. Thus, classical transport often serves as a lower
     bound on the losses / transport encountered in a plasma.
+
+    Models implemented:
+
+    * Braginskii [1]
+    The original Braginskii treatment as presented in the highly cited review
+    paper from 1965. Coefficients are found from expansion of the kinetic
+    equation in Laguerre / Sonine polynomials, truncated at K = 2. This theory
+    allow for arbitrary Hall parameter and include results for Z = 1, 2, 3, 4,
+    and infinity (Lorentz gas / stationary ion approximation.)
+
+    * Spitzer-Harm [2,3]
+    These coefficients were obtained from a numerical solution of the Fokker-
+    Planck equation. They give one of the earliest and most accurate (in the
+    Fokker-Planck sense) results for electron transport in simple plasma. They
+    principally apply in the unmagnetized / parallel field case, although for
+    resistivity Spitzer also calculated a famous result for a strong
+    perpendicular magnetic field. Results are for Z = 1, 2, 4, 16,
+    and infinity (Lorentz gas / stationary ion approximation.)
+
+    * Epperlein-Haines [4]
+    Not yet implemented.
+
+    * Ji-Held [5]
+    This is a modern treatment of the classical transport problem that has been
+    carried out with laudable care. It allows for arbitrary hall parameter and
+    arbitrary Z for all coefficients. Similar to the Epperlein-Haines model,
+    it corrects some known inaccuracies in the original Braginskii results,
+    notably the asymptotic behavior of alpha-cross and beta_perp as Hall ->
+    +infinity. It also studies effects of electron collisions in the ion
+    terms, which all other treatments have not. To neglect electron-electron
+    collisions, leave mu = 0. To consider them, specify mu and theta.
 
     Parameters
     ----------
@@ -258,11 +291,11 @@ class classical_transport:
 
     Z : integer or np.inf, optional
         The ion charge state. Overrides particle charge state if included.
-        Different theories support different values of Z.
-        For the original Braginskii model, Z can be any of [1,2,3,4,infinity].
-        The Ji-Held model supports arbitrary Z. Average ionization state
-        Zbar can be input using this input and model, but doing so may neglect
-        effects caused by multiple ion populations.
+        Different theories support different values of Z. For the original 
+        Braginskii model, Z can be any of [1,2,3,4,infinity]. The Ji-Held
+        model supports arbitrary Z. Average ionization states Z_mean can be
+        input using this input and the Ji-Held model, although doing so may
+        neglect effects caused by multiple ion populations.
 
     B : Quantity, optional
         The magnetic field strength in units convertible to Tesla. Defaults
@@ -275,7 +308,7 @@ class classical_transport:
         'Spitzer-Harm',
         'Epperlein-Haines' (not yet implemented),
         'Ji-Held'.
-        See refs [1]_, [2]_, [3]_ and [4]_.
+        See refs [1], [2,3], [4] and [5].
 
     field_orientation : string
         Either of 'parallel', 'par', 'perpendicular', 'perp', 'cross', or
@@ -287,9 +320,10 @@ class classical_transport:
         np.array((par, perp, cross)).
 
     coulomb_log_ei: float or dimensionless Quantity, optional
-        Force a particular value to be used for the Coulomb logarithm. If
-        None, the PlasmaPy function Coulomb_Logarithm() will be used. Useful
-        for comparing calculations.
+        Force a particular value to be used for the electron-ion Coulomb
+        logarithm (test electrons on field ions). If None, the PlasmaPy
+        function Coulomb_Logarithm() will be used. Useful for comparing
+        calculations.
 
     V_ei: Quantity, optional
        Supplied to coulomb_logarithm() function, not otherwise used.
@@ -298,9 +332,9 @@ class classical_transport:
        where `mu` is the reduced mass.
 
     coulomb_log_ii: float or dimensionless Quantity, optional
-        Force a particular value to be used for the Coulomb logarithm. If
-        None, the PlasmaPy function Coulomb_Logarithm() will be used. Useful
-        for comparing calculations.
+        Force a particular value to be used for the ion-ion Coulomb logarithm
+        (test ions on field ions). If None, the PlasmaPy function
+        Coulomb_Logarithm() will be used. Useful for comparing calculations.
 
     V_ii: Quantity, optional
        Supplied to coulomb_logarithm() function, not otherwise used.
@@ -309,7 +343,7 @@ class classical_transport:
        where `mu` is the reduced mass.
 
     hall_e: float or dimensionless Quantity, optional
-        Force a particular value to be used for the e Hall parameter. If
+        Force a particular value to be used for the electron Hall parameter. If
         None, the PlasmaPy function Hall_parameter() will be used. Useful
         for comparing calculations.
 
@@ -359,10 +393,18 @@ class classical_transport:
 
     References
     ----------
-    .. [1] S.I. Braginskii (1965)
-    .. [2] Spitzer-Harm (1953)
-    .. [3] Epperlein-Haines (1986)
-    .. [4] Ji-Held (2013)
+    .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
+           plasma physics 1 (1965): 205. (1965)
+    .. [2] Spitzer Jr, Lyman, and Richard Härm. "Transport phenomena in a
+           completely ionized gas." Physical Review 89.5 (1953): 977. (1953)
+    .. [3] Physics of Fully Ionized Gases, L. Spitzer (1962)
+    .. [4] Epperlein, E. M., and M. G. Haines. "Plasma transport coefficients
+           in a magnetic field by direct numerical solution of the
+           Fokker–Planck equation." The Physics of fluids 29.4 (1986):
+           1029-1041.
+    .. [5] Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
+           high-collisionality electron-ion plasmas." Physics of Plasmas 20.4
+           (2013): 042114.
     """
 
     @utils.check_quantity({"T_e": {"units": units.K, "can_be_negative": False},
@@ -494,7 +536,8 @@ class classical_transport:
         if mu is not None:
             self.mu = mu
         else:
-            self.mu = m_e / self.m_i
+            self.mu = 0  # disable the JH special features by default
+#            self.mu = m_e / self.m_i  # enable the JH special features
         if theta is not None:
             self.theta = theta
         else:
@@ -590,7 +633,13 @@ class classical_transport:
 
 def _nondim_thermal_conductivity(hall, Z, particle, model, field_orientation,
                                  mu=None, theta=None):
-    """TODO"""
+    """calculate dimensionless classical thermal conductivity coefficients
+
+    This function is a switchboard / wrapper that calls the appropriate
+    model-specific functions depending on which model is specified and which
+    type of particle (electron or ion) is input. Non-electrons are assumed to
+    be ions.
+    """
     from plasmapy.atomic.atomic import _is_electron
     if _is_electron(particle):
         if model == 'spitzer-harm' or model == 'spitzer':
@@ -616,7 +665,13 @@ def _nondim_thermal_conductivity(hall, Z, particle, model, field_orientation,
 
 def _nondim_viscosity(hall, Z, particle, model, field_orientation,
                       mu=None, theta=None):
-    """TODO"""
+    """calculate dimensionless classical viscosity coefficients
+
+    This function is a switchboard / wrapper that calls the appropriate
+    model-specific functions depending on which model is specified and which
+    type of particle (electron or ion) is input. Non-electrons are assumed to
+    be ions.
+    """
 
     from plasmapy.atomic.atomic import _is_electron
     if _is_electron(particle):
@@ -639,7 +694,11 @@ def _nondim_viscosity(hall, Z, particle, model, field_orientation,
 
 
 def _nondim_resistivity(hall, Z, particle, model, field_orientation):
-    """TODO"""
+    """calculate dimensionless classical resistivity coefficients
+
+    This function is a switchboard / wrapper that calls the appropriate
+    model-specific functions depending on which model is specified.
+    """
 
     if model == 'spitzer-harm' or model == 'spitzer':
         alpha_hat = _nondim_resist_spitzer(Z, field_orientation)
@@ -654,7 +713,11 @@ def _nondim_resistivity(hall, Z, particle, model, field_orientation):
 
 
 def _nondim_te_conductivity(hall, Z, particle, model, field_orientation):
-    """TODO"""
+    """calculate dimensionless classical thermoelectric coefficients
+
+    This function is a switchboard / wrapper that calls the appropriate
+    model-specific functions depending on which model is specified.
+    """
 
     if model == 'spitzer-harm' or model == 'spitzer':
         beta_hat = _nondim_tec_spitzer(Z)
@@ -668,8 +731,8 @@ def _nondim_te_conductivity(hall, Z, particle, model, field_orientation):
     return beta_hat
 
 
-def check_Z(allowed_Z, Z):
-    """TODO"""
+def _check_Z(allowed_Z, Z):
+    """determine if the input Z value is okay given the list of allowed_Z"""
     # first, determine if arbitrary Z values are allowed in the theory
     arbitrary_Z_allowed = False
     the_arbitrary_idx = np.nan
@@ -696,8 +759,12 @@ def check_Z(allowed_Z, Z):
 
 
 def _get_spitzer_harm_coeffs(Z):
+    """return numerical coefficients from Spitzer-Harm '53
+    
+    Table III, Spitzer and Harm, Phys. Rev. Vol 89, 5, 1953
+    """
     allowed_Z = [1, 2, 4, 16, np.inf]
-    Z_idx = check_Z(allowed_Z, Z)
+    Z_idx = _check_Z(allowed_Z, Z)
     gamma_E = [0.5816, 0.6833, 0.7849, 0.9225, 1.0000]
     gamma_T = [0.2727, 0.4137, 0.5714, 0.8279, 1.0000]
     delta_E = [0.4652, 0.5787, 0.7043, 0.8870, 1.0000]
@@ -706,7 +773,10 @@ def _get_spitzer_harm_coeffs(Z):
 
 
 def _nondim_tc_e_spitzer(Z):
-    """TODO"""
+    """dimensionless electron thermal conductivity - Spitzer
+    
+    This result is for parallel field or unmagnetized plasma only.
+    """
     (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
     kappa = (64 / np.pi) * delta_T * \
             (5 / 3 - (gamma_T * delta_E) / (delta_T * gamma_E))
@@ -714,7 +784,11 @@ def _nondim_tc_e_spitzer(Z):
 
 
 def _nondim_resist_spitzer(Z, field_orientation):
-    """TODO"""
+    """dimensionless resistivity - Spitzer
+    
+    These are results for both parallel-field / unmagnetized plasmas as well
+    as perpendicular-field / strongly magnetized plasma. Summary description
+    in Physics of Fully Ionized Gases, Spitzer"""
 
     alpha_perp = 1
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
@@ -731,7 +805,10 @@ def _nondim_resist_spitzer(Z, field_orientation):
 
 
 def _nondim_tec_spitzer(Z):
-    """TODO"""
+    """dimensionless thermoelectric conductivity - Spitzer
+    
+    This result is for parallel field or unmagnetized plasma only.
+    """
     (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
     beta = 5 / 2 * (8 / 5 * (delta_E / gamma_E) - 1)
 #    beta = 0.703
@@ -739,10 +816,14 @@ def _nondim_tec_spitzer(Z):
 
 
 def _nondim_tc_e_braginskii(hall, Z, field_orientation):
-    """TODO"""
+    """dimensionless electron thermal conductivity - Braginskii
+    
+    Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
+    physics 1 (1965): 205.
+    """
 
     allowed_Z = [1, 2, 3, 4, np.inf]
-    Z_idx = check_Z(allowed_Z, Z)
+    Z_idx = _check_Z(allowed_Z, Z)
 
     delta_0 = [3.7703, 1.0465, 0.5814, 0.4106, 0.0961]
     delta_1 = [14.79, 10.80, 9.618, 9.055, 7.482]
@@ -772,7 +853,11 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
 
 
 def _nondim_tc_i_braginskii(hall, field_orientation):
-    """TODO"""
+    """dimensionless ion thermal conductivity - Braginskii
+    
+    Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
+    physics 1 (1965): 205.
+    """
 
     kappa_par_coeff_0 = 3.906
     kappa_par = kappa_par_coeff_0
@@ -801,9 +886,13 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
 
 
 def _nondim_visc_e_braginskii(hall, Z):
-    """TODO"""
+    """dimensionless electron viscosity - Braginskii
+    
+    Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
+    physics 1 (1965): 205.
+    """
     allowed_Z = [1]
-    check_Z(allowed_Z, Z)
+    _check_Z(allowed_Z, Z)
     eta_prime_0 = 0.733
     eta_doubleprime_2 = 2.05
     eta_doubleprime_0 = 8.50
@@ -829,7 +918,11 @@ def _nondim_visc_e_braginskii(hall, Z):
 
 
 def _nondim_visc_i_braginskii(hall):
-    """TODO"""
+    """dimensionless ion viscosity - Braginskii
+    
+    Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
+    physics 1 (1965): 205.
+    """
     eta_prime_0 = 0.96
     eta_doubleprime_2 = 6 / 5
     eta_doubleprime_0 = 2.23
@@ -855,10 +948,14 @@ def _nondim_visc_i_braginskii(hall):
 
 
 def _nondim_resist_braginskii(hall, Z, field_orientation):
-    """TODO"""
+    """dimensionless resistivity - Braginskii
+    
+    Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
+    physics 1 (1965): 205.
+    """
 
     allowed_Z = [1, 2, 3, 4, np.inf]
-    Z_idx = check_Z(allowed_Z, Z)
+    Z_idx = _check_Z(allowed_Z, Z)
 
 #    alpha_0 = 0.5129
     delta_0 = [3.7703, 1.0465, 0.5814, 0.4106, 0.0961]
@@ -889,10 +986,14 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
 
 
 def _nondim_tec_braginskii(hall, Z, field_orientation):
-    """TODO"""
+    """dimensionless thermoelectric conductivity - Braginskii
+    
+    Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
+    physics 1 (1965): 205.
+    """
 
     allowed_Z = [1, 2, 3, 4, np.inf]
-    Z_idx = check_Z(allowed_Z, Z)
+    Z_idx = _check_Z(allowed_Z, Z)
 
     delta_0 = [3.7703, 1.0465, 0.5814, 0.4106, 0.0961]
     delta_1 = [14.79, 10.80, 9.618, 9.055, 7.482]
@@ -964,10 +1065,15 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
 
 
 def _nondim_tc_e_ji_held(hall, Z, field_orientation):
-    """TODO"""
+    """dimensionless electron thermal conductivity - Ji-Held
+
+    Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
+    high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
+    042114.
+    """
 
     allowed_Z = [1, 2, 'arbitrary']
-    Z_idx = check_Z(allowed_Z, Z)
+    Z_idx = _check_Z(allowed_Z, Z)
     r = np.abs(Z * hall)
 
     def f_kappa_par_e(Z):
@@ -1081,10 +1187,15 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
 
 
 def _nondim_resist_ji_held(hall, Z, field_orientation):
-    """TODO"""
+    """dimensionless resistivity - Ji-Held
+
+    Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
+    high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
+    042114.
+    """
 
     allowed_Z = [1, 2, 'arbitrary']
-    Z_idx = check_Z(allowed_Z, Z)
+    Z_idx = _check_Z(allowed_Z, Z)
     r = np.abs(Z * hall)
 
     def f_alpha_par_e(Z):
@@ -1166,10 +1277,15 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
 
 
 def _nondim_tec_ji_held(hall, Z, field_orientation):
-    """TODO"""
+    """dimensionless thermoelectric conductivity - Ji-Held
+
+    Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
+    high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
+    042114.
+    """
 
     allowed_Z = [1, 2, 'arbitrary']
-    Z_idx = check_Z(allowed_Z, Z)
+    Z_idx = _check_Z(allowed_Z, Z)
     r = np.abs(Z * hall)
 
     def f_beta_par_e(Z):
@@ -1263,10 +1379,15 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
 
 
 def _nondim_visc_e_ji_held(hall, Z):
-    """TODO"""
+    """dimensionless electron viscosity - Ji-Held
+
+    Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
+    high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
+    042114.
+    """
 
     allowed_Z = [1, 2, 'arbitrary']
-    Z_idx = check_Z(allowed_Z, Z)
+    Z_idx = _check_Z(allowed_Z, Z)
     r = np.abs(Z * hall)
 
     def f_eta_0_e(Z):
@@ -1353,7 +1474,12 @@ def _nondim_visc_e_ji_held(hall, Z):
 
 
 def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
-    """TODO"""
+    """dimensionless ion thermal conductivity - Ji-Held
+
+    Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
+    high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
+    042114.
+    """
 
 #    mu = m_e / m_i
 #    theta = T_e / T_i
@@ -1412,6 +1538,12 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
 
 
 def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
+    """dimensionless ion viscosity - Ji-Held
+
+    Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
+    high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
+    042114.
+    """
 
     zeta = 1 / Z * np.sqrt(mu / theta)
     r = np.abs(hall / np.sqrt(2))

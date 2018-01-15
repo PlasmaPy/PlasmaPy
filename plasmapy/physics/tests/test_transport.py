@@ -31,7 +31,7 @@ from ..transport import (Coulomb_logarithm,
                          _nondim_visc_e_ji_held,
                          _nondim_visc_i_ji_held,
                          _nondim_viscosity,
-                        check_Z,
+                         _check_Z,
                          )
 
 
@@ -377,7 +377,7 @@ class Test_classical_transport:
 
 
     @pytest.mark.parametrize("model, expected", [
-        ("ji-held", np.array([7.36954316, 7.36954316, 7.36954316, 0, 0]) * u.Pa * u.s),
+        ("ji-held", np.array([7.78786439, 7.78786439, 7.78786439, 0, 0]) * u.Pa * u.s),
         ("braginskii", np.array([7.74590133, 7.72235334, 7.72235334, 0, 0]) * u.Pa * u.s)
         ])
     def test_ion_viscosity_by_model(self, model, expected):
@@ -407,7 +407,7 @@ class Test_classical_transport:
                            atol=1e-6*u.W / (u.K * u.m))
 
     @pytest.mark.parametrize("model, expected", [
-        ("ji-held", 115593.62970243 * u.W / (u.K * u.m)),
+        ("ji-held", 131600.515524444 * u.W / (u.K * u.m)),
         ("braginskii", 130137.93045042 * u.W / (u.K * u.m))
         ])
     def test_ion_thermal_conductivity_by_model(self, model, expected):
@@ -669,9 +669,9 @@ class Test__nondim_visc_e_braginskii:
                               atol=1e-1)
 
 
-def test_fail_check_Z_nan():
+def test_fail__check_Z_nan():
     with pytest.raises(PhysicsError):
-        check_Z([1, 2, 3], 4)
+        _check_Z([1, 2, 3], 4)
 
 
 @pytest.mark.parametrize("Z", [1, 2, 4, 16, np.inf])
