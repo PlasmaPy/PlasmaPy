@@ -1,3 +1,4 @@
+# coding=utf-8
 """Functions to calculate transport coefficients."""
 
 from astropy import units
@@ -8,6 +9,7 @@ from plasmapy.utils.checks import check_quantity, _check_relativistic
 from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar)
 from ..atomic import (ion_mass, charge_state)
+from plasmapy.atomic.atomic import _is_electron
 from .parameters import (Debye_length, Hall_parameter,
                          collision_rate_electron_ion, collision_rate_ion_ion)
 from inspect import stack
@@ -291,7 +293,7 @@ class classical_transport:
 
     Z : integer or np.inf, optional
         The ion charge state. Overrides particle charge state if included.
-        Different theories support different values of Z. For the original 
+        Different theories support different values of Z. For the original
         Braginskii model, Z can be any of [1,2,3,4,infinity]. The Ji-Held
         model supports arbitrary Z. Average ionization states Z_mean can be
         input using this input and the Ji-Held model, although doing so may
@@ -308,7 +310,7 @@ class classical_transport:
         'Spitzer-Harm',
         'Epperlein-Haines' (not yet implemented),
         'Ji-Held'.
-        See refs [1], [2,3], [4] and [5].
+        See refs [1]_, [2]_, [3]_, [4]_ and [5]_.
 
     field_orientation : string
         Either of 'parallel', 'par', 'perpendicular', 'perp', 'cross', or
@@ -354,8 +356,8 @@ class classical_transport:
 
     mu: optional, float or dimensionless Quantity
         Ji-Held model only, may be used to include ion-electron effects
-        on the ion transport coefficients. Defaults to m_e / m_i.
-        Set to zero to disable these effects.
+        on the ion transport coefficients. Defaults to zero, thus
+        disabling these effects.
 
     theta: optional, float or dimensionless Quantity
         theta = T_e / T_i
@@ -469,6 +471,7 @@ class classical_transport:
         else:
             # red alert: the user has input a Z
             self.Z = Z
+            # TODO: we need to make sure Lemmatum's z_mean is implemented here
             # if it's not available for a particular model, they'll complain
             # later
             if Z < 0:
@@ -544,6 +547,13 @@ class classical_transport:
             self.theta = self.T_e / self.T_i
 
     def resistivity(self):
+        """
+        Calculate the resistivity.
+
+        Returns
+        -------
+        astropy.units.quantity.Quantity
+        """
         alpha_hat = _nondim_resistivity(self.hall_e, self.Z, self.e_particle,
                                         self.model,
                                         self.field_orientation)
@@ -556,12 +566,26 @@ class classical_transport:
         return alpha.to(units.ohm * units.m)
 
     def thermoelectric_conductivity(self):
+        """
+        Calculate the thermoelectric conductivity.
+
+        Returns
+        -------
+        astropy.units.quantity.Quantity
+        """
         beta_hat = _nondim_te_conductivity(self.hall_e, self.Z, self.e_particle, self.model,
                                            self.field_orientation)
         beta = beta_hat * units.s / units.s  # yay! already dimensionless
         return beta
 
     def ion_thermal_conductivity(self):
+        """
+        Calculate the thermal conductivity for ions.
+
+        Returns
+        -------
+        astropy.units.quantity.Quantity
+        """
         kappa_hat = _nondim_thermal_conductivity(self.hall_i, self.Z, self.ion_particle, self.model,
                                                  self.field_orientation, self.mu, self.theta)
         tau_i = 1 / collision_rate_ion_ion(self.T_i, self.n_i, self.ion_particle,
@@ -570,6 +594,13 @@ class classical_transport:
         return kappa.to(units.W / units.m / units.K)
 
     def electron_thermal_conductivity(self):
+        """
+        Calculate the thermal conductivity for electrons.
+
+        Returns
+        -------
+        astropy.units.quantity.Quantity
+        """
         kappa_hat = _nondim_thermal_conductivity(self.hall_e, self.Z, self.e_particle, self.model,
                                                  self.field_orientation, self.mu, self.theta)
         tau_e = 1 / collision_rate_electron_ion(self.T_e, self.n_e, self.ion_particle,
@@ -578,6 +609,13 @@ class classical_transport:
         return kappa.to(units.W / units.m / units.K)
 
     def ion_viscosity(self):
+        """
+        Calculate the ion viscosity.
+
+        Returns
+        -------
+        astropy.units.quantity.Quantity
+        """
         eta_hat = _nondim_viscosity(self.hall_i, self.Z, self.ion_particle, self.model,
                                     self.field_orientation, self.mu, self.theta)
         tau_i = 1 / collision_rate_ion_ion(self.T_i, self.n_i, self.ion_particle,
@@ -605,6 +643,13 @@ class classical_transport:
 
 
     def electron_viscosity(self):
+        """
+        Calculate the electron viscosity.
+
+        Returns
+        -------
+        astropy.units.quantity.Quantity
+        """
         eta_hat = _nondim_viscosity(self.hall_e, self.Z, self.e_particle, self.model,
                                     self.field_orientation, self.mu, self.theta)
         tau_e = 1 / collision_rate_electron_ion(self.T_e, self.n_e, self.ion_particle,
@@ -640,7 +685,6 @@ def _nondim_thermal_conductivity(hall, Z, particle, model, field_orientation,
     type of particle (electron or ion) is input. Non-electrons are assumed to
     be ions.
     """
-    from plasmapy.atomic.atomic import _is_electron
     if _is_electron(particle):
         if model == 'spitzer-harm' or model == 'spitzer':
             kappa_hat = _nondim_tc_e_spitzer(Z)
@@ -676,7 +720,6 @@ def _nondim_viscosity(hall, Z, particle, model, field_orientation,
     be ions.
     """
 
-    from plasmapy.atomic.atomic import _is_electron
     if _is_electron(particle):
         if model == 'braginskii':
             eta_hat = _nondim_visc_e_braginskii(hall, Z)
@@ -766,7 +809,7 @@ def _check_Z(allowed_Z, Z):
 
 def _get_spitzer_harm_coeffs(Z):
     """return numerical coefficients from Spitzer-Harm '53
-    
+
     Table III, Spitzer and Harm, Phys. Rev. Vol 89, 5, 1953
     """
     allowed_Z = [1, 2, 4, 16, np.inf]
@@ -775,12 +818,12 @@ def _get_spitzer_harm_coeffs(Z):
     gamma_T = [0.2727, 0.4137, 0.5714, 0.8279, 1.0000]
     delta_E = [0.4652, 0.5787, 0.7043, 0.8870, 1.0000]
     delta_T = [0.2252, 0.3563, 0.5133, 0.7907, 1.0000]
-    return (gamma_E[Z_idx], gamma_T[Z_idx], delta_E[Z_idx], delta_T[Z_idx])
+    return gamma_E[Z_idx], gamma_T[Z_idx], delta_E[Z_idx], delta_T[Z_idx]
 
 
 def _nondim_tc_e_spitzer(Z):
     """dimensionless electron thermal conductivity - Spitzer
-    
+
     This result is for parallel field or unmagnetized plasma only.
     """
     (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
@@ -791,7 +834,7 @@ def _nondim_tc_e_spitzer(Z):
 
 def _nondim_resist_spitzer(Z, field_orientation):
     """dimensionless resistivity - Spitzer
-    
+
     These are results for both parallel-field / unmagnetized plasmas as well
     as perpendicular-field / strongly magnetized plasma. Summary description
     in Physics of Fully Ionized Gases, Spitzer"""
@@ -807,12 +850,12 @@ def _nondim_resist_spitzer(Z, field_orientation):
 #        alpha_par = 0.5064 # Z = 1
 
     if field_orientation == 'all':
-        return (alpha_par, alpha_perp)
+        return alpha_par, alpha_perp
 
 
 def _nondim_tec_spitzer(Z):
     """dimensionless thermoelectric conductivity - Spitzer
-    
+
     This result is for parallel field or unmagnetized plasma only.
     """
     (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
@@ -823,7 +866,7 @@ def _nondim_tec_spitzer(Z):
 
 def _nondim_tc_e_braginskii(hall, Z, field_orientation):
     """dimensionless electron thermal conductivity - Braginskii
-    
+
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
     """
@@ -860,7 +903,7 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
 
 def _nondim_tc_i_braginskii(hall, field_orientation):
     """dimensionless ion thermal conductivity - Braginskii
-    
+
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
     """
@@ -893,7 +936,7 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
 
 def _nondim_visc_e_braginskii(hall, Z):
     """dimensionless electron viscosity - Braginskii
-    
+
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
     """
@@ -925,7 +968,7 @@ def _nondim_visc_e_braginskii(hall, Z):
 
 def _nondim_visc_i_braginskii(hall):
     """dimensionless ion viscosity - Braginskii
-    
+
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
     """
@@ -955,7 +998,7 @@ def _nondim_visc_i_braginskii(hall):
 
 def _nondim_resist_braginskii(hall, Z, field_orientation):
     """dimensionless resistivity - Braginskii
-    
+
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
     """
@@ -993,7 +1036,7 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
 
 def _nondim_tec_braginskii(hall, Z, field_orientation):
     """dimensionless thermoelectric conductivity - Braginskii
-    
+
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
     """
@@ -1162,12 +1205,12 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
     def f_kappa_perp(Z_idx):
         numerator = (13 / 4 * Z + np.sqrt(2)) * r + \
             kappa_0[Z_idx] * kappa_par_e[Z_idx]
-        denominator = r**3 + \
-            kappa_4[Z_idx] * r**(7 / 3) + \
-            kappa_3[Z_idx] * r**(2) + \
-            kappa_2[Z_idx] * r**(5 / 3) + \
-            kappa_1[Z_idx] * r + \
-            kappa_0[Z_idx]
+        denominator = r ** 3 + \
+                      kappa_4[Z_idx] * r ** (7 / 3) + \
+                      kappa_3[Z_idx] * r ** 2 + \
+                      kappa_2[Z_idx] * r ** (5 / 3) + \
+                      kappa_1[Z_idx] * r + \
+                      kappa_0[Z_idx]
         return numerator / denominator
 
     kappa_perp = f_kappa_perp(Z_idx)
@@ -1176,12 +1219,12 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
 
     def f_kappa_cross(Z_idx):
         numerator = r * (5 / 2 * r + k_0[Z_idx] / k_5[Z_idx])
-        denominator = r**3 + \
-            k_4[Z_idx] * r**(7 / 3) + \
-            k_3[Z_idx] * r**(2) + \
-            k_2[Z_idx] * r**(5 / 3) + \
-            k_1[Z_idx] * r + \
-            k_0[Z_idx]
+        denominator = r ** 3 + \
+                      k_4[Z_idx] * r ** (7 / 3) + \
+                      k_3[Z_idx] * r ** 2 + \
+                      k_2[Z_idx] * r ** (5 / 3) + \
+                      k_1[Z_idx] * r + \
+                      k_0[Z_idx]
         return numerator / denominator
 
     kappa_cross = f_kappa_cross(Z_idx)
@@ -1266,12 +1309,12 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
 
     def f_alpha_cross(Z_idx):
         numerator = Z**(2 / 3) * r * (2.53 * r + a_0[Z_idx] / a_5[Z_idx])
-        denominator = r**(8 / 3) + \
-            a_4[Z_idx] * r**(7 / 3) + \
-            a_3[Z_idx] * r**(2) + \
-            a_2[Z_idx] * r**(5 / 3) + \
-            a_1[Z_idx] * r + \
-            a_0[Z_idx]
+        denominator = r ** (8 / 3) + \
+                      a_4[Z_idx] * r ** (7 / 3) + \
+                      a_3[Z_idx] * r ** 2 + \
+                      a_2[Z_idx] * r ** (5 / 3) + \
+                      a_1[Z_idx] * r + \
+                      a_0[Z_idx]
         return numerator / denominator
 
     alpha_cross = f_alpha_cross(Z_idx)
@@ -1315,7 +1358,7 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
         return 2.58 * Z**(1 / 3) + 0.17
 
     def f_b_0(Z):
-        numerator = 6.87 * Z**(3) + 78.2 * Z**2 + 623 * Z + 366
+        numerator = 6.87 * Z ** 3 + 78.2 * Z ** 2 + 623 * Z + 366
         denominator = 1000
         return numerator / denominator
 
@@ -1354,12 +1397,12 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
 
     def f_beta_perp(Z_idx):
         numerator = 6.33 * Z**(5 / 3) * r + beta_0[Z_idx] * beta_par_e[Z_idx]
-        denominator = r**(8 / 3) + \
-            beta_4[Z_idx] * r**(7 / 3) + \
-            beta_3[Z_idx] * r**(2) + \
-            beta_2[Z_idx] * r**(5 / 3) + \
-            beta_1[Z_idx] * r + \
-            beta_0[Z_idx]
+        denominator = r ** (8 / 3) + \
+                      beta_4[Z_idx] * r ** (7 / 3) + \
+                      beta_3[Z_idx] * r ** 2 + \
+                      beta_2[Z_idx] * r ** (5 / 3) + \
+                      beta_1[Z_idx] * r + \
+                      beta_0[Z_idx]
         return numerator / denominator
 
     beta_perp = f_beta_perp(Z_idx)
@@ -1368,12 +1411,12 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
 
     def f_beta_cross(Z_idx):
         numerator = Z * r * (3 / 2 * r + b_0[Z_idx] / b_5[Z_idx])
-        denominator = r**(3) + \
-            b_4[Z_idx] * r**(7 / 3) + \
-            b_3[Z_idx] * r**(2) + \
-            b_2[Z_idx] * r**(5 / 3) + \
-            b_1[Z_idx] * r + \
-            b_0[Z_idx]
+        denominator = r ** 3 + \
+                      b_4[Z_idx] * r ** (7 / 3) + \
+                      b_3[Z_idx] * r ** 2 + \
+                      b_2[Z_idx] * r ** (5 / 3) + \
+                      b_1[Z_idx] * r + \
+                      b_0[Z_idx]
         return numerator / denominator
 
     beta_cross = f_beta_cross(Z_idx)
@@ -1450,12 +1493,12 @@ def _nondim_visc_e_ji_held(hall, Z):
     def f_eta_2(Z_idx, r):
         numerator = (6 / 5 * Z + 3 / 5 * np.sqrt(2)) * r + \
             hprime_0[Z_idx] * eta_0_e[Z_idx]
-        denominator = r**(3) + \
-            hprime_4[Z_idx] * r**(7 / 3) + \
-            hprime_3[Z_idx] * r**(2) + \
-            hprime_2[Z_idx] * r**(5 / 3) + \
-            hprime_1[Z_idx] * r + \
-            hprime_0[Z_idx]
+        denominator = r ** 3 + \
+                      hprime_4[Z_idx] * r ** (7 / 3) + \
+                      hprime_3[Z_idx] * r ** 2 + \
+                      hprime_2[Z_idx] * r ** (5 / 3) + \
+                      hprime_1[Z_idx] * r + \
+                      hprime_0[Z_idx]
         return numerator / denominator
 
     eta_2 = f_eta_2(Z_idx, r)
@@ -1464,12 +1507,12 @@ def _nondim_visc_e_ji_held(hall, Z):
 
     def f_eta_4(Z_idx, r):
         numerator = r * (r + h_0[Z_idx] / h_5[Z_idx])
-        denominator = r**(3) + \
-            h_4[Z_idx] * r**(7 / 3) + \
-            h_3[Z_idx] * r**(2) + \
-            h_2[Z_idx] * r**(5 / 3) + \
-            h_1[Z_idx] * r + \
-            h_0[Z_idx]
+        denominator = r ** 3 + \
+                      h_4[Z_idx] * r ** (7 / 3) + \
+                      h_3[Z_idx] * r ** 2 + \
+                      h_2[Z_idx] * r ** (5 / 3) + \
+                      h_1[Z_idx] * r + \
+                      h_0[Z_idx]
         return numerator / denominator
 
     eta_4 = f_eta_4(Z_idx, r)
@@ -1510,17 +1553,17 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
             (1.395 + 35.64 * zeta + 344.9 * zeta**2 +
              1345 * zeta**3 + 1891 * zeta**4) * r**2 + \
             0.09163 * Delta_par_i1**2
-        kappa_perp_i = ((np.sqrt(2) + 15 / 2 * zeta) * r**4 +
+        kappa_perp_i = ((np.sqrt(2) + 15 / 2 * zeta) * r ** 4 +
                         (3.841 + 57.59 * zeta + 297.8 * zeta**2 +
-                         555 * zeta**3) * r**2 +
-                        0.09163 * kappa_par_i * (Delta_par_i1)**2
+                         555 * zeta**3) * r ** 2 +
+                        0.09163 * kappa_par_i * Delta_par_i1 ** 2
                         ) / Delta_perp_i1
     elif K == 2:
         Delta_perp_i1 = r**4 + \
             (1.352 + 12.49 * zeta + 34 * zeta**2) * r**2 + \
             0.1693 * Delta_par_i1**2
-        kappa_perp_i = ((np.sqrt(2) + 15 / 2 * zeta) * r**2 +
-                        0.1693 * kappa_par_i * (Delta_par_i1)**2
+        kappa_perp_i = ((np.sqrt(2) + 15 / 2 * zeta) * r ** 2 +
+                        0.1693 * kappa_par_i * Delta_par_i1 ** 2
                         ) / Delta_perp_i1
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
         return kappa_perp_i / np.sqrt(2)
@@ -1574,9 +1617,9 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
         Delta_perp_i2_13 = Delta_perp_i2(r13, zeta, Delta_par_i2)
 
         def f_eta_2(r, zeta, Delta_perp_i2):
-            eta_2_i = ((3 / 5 * np.sqrt(2) + 2 * zeta) * r**4 +
-                       (2.680 + 25.98 * zeta + 90.71 * zeta**2 + 104 * zeta**3) * r**2 +
-                       0.4483 * eta_0_i * (Delta_par_i2)**2
+            eta_2_i = ((3 / 5 * np.sqrt(2) + 2 * zeta) * r ** 4 +
+                       (2.680 + 25.98 * zeta + 90.71 * zeta**2 + 104 * zeta**3) * r ** 2 +
+                       0.4483 * eta_0_i * Delta_par_i2 ** 2
                        ) / Delta_perp_i2
             return eta_2_i
         
@@ -1608,8 +1651,8 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
         Delta_perp_i2_13 = Delta_perp_i2(r13, zeta, Delta_par_i2)
 
         def f_eta_2(r, zeta, Delta_perp_i2):
-            eta_2_i = ((3 / 5 * np.sqrt(2) + 2 * zeta) * r**2 +
-                       0.5820 * eta_0_i * (Delta_par_i2)**2
+            eta_2_i = ((3 / 5 * np.sqrt(2) + 2 * zeta) * r ** 2 +
+                       0.5820 * eta_0_i * Delta_par_i2 ** 2
                        ) / Delta_perp_i2
             return eta_2_i
 
