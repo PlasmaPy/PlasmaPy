@@ -534,7 +534,6 @@ class classical_transport:
         kappa = kappa_hat * (self.n_e * k_B**2 * self.T_e * tau_e / m_e)
         return kappa.to(units.W / units.m / units.K)
 
-
     def ion_viscosity(self):
         eta_hat = _nondim_viscosity(self.hall_i, self.Z, self.ion_particle, self.model,
                                     self.field_orientation, self.mu, self.theta)
@@ -1362,6 +1361,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
     r = np.abs(hall / np.sqrt(2))
 
 #    K = 2  # 2x2 moments, equivalent to original Braginskii
+#    K = 3  # 3x3 moments
 
     if K == 3:
         Delta_par_i1 = 1 + 26.90 * zeta + 187.5 * zeta**2 + 346.9 * zeta**3
@@ -1418,51 +1418,78 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
     r13 = 2 * r
 
 #    K = 2  # 2x2 moments, equivalent to original Braginskii
+#    K = 3  # 3x3 moments
 
     if K == 3:
         Delta_par_i2 = 1 + 15.79 * zeta + 63.92 * zeta**2 + 71.69 * zeta**3
-        Delta_perp_i2 = r**6 + \
-            (4.391 + 26.69 * zeta + 56 * zeta**2) * r**4 + \
-            (3.191 + 49.62 * zeta + 306.4 * zeta**2 +
-             808.1 * zeta**3 + 784 * zeta**4) * r**2 + \
-            0.4483 * Delta_par_i2**2
         eta_0_i = (1.365 + 16.75 * zeta + 35.84 * zeta**2) / Delta_par_i2
-        eta_2_i = ((3 / 5 * np.sqrt(2) + 2 * zeta) * r**4 +
-                   (2.680 + 25.98 * zeta + 90.71 * zeta**2 + 104 * zeta**3) * r**2 +
-                   0.4483 * eta_0_i * (Delta_par_i2)**2
-                   ) / Delta_perp_i2
-        eta_1_i = ((3 / 5 * np.sqrt(2) + 2 * zeta) * r13**4 +
-                   (2.680 + 25.98 * zeta + 90.71 * zeta**2 + 104 * zeta**3) * r13**2 +
-                   0.4483 * eta_0_i * (Delta_par_i2)**2
-                   ) / Delta_perp_i2
-        eta_4_i = r * (r**4 +
-                       (3.535 + 23.30 * zeta + 52 * zeta**2) * r**2 +
-                       0.9538 + 21.81 * zeta + 174.2 * zeta**2 +
-                       538.4 * zeta**3 + 576 * zeta**4
+
+        def Delta_perp_i2(r, zeta, Delta_par_i2):
+            Delta_perp_i2 = r**6 + \
+                (4.391 + 26.69 * zeta + 56 * zeta**2) * r**4 + \
+                (3.191 + 49.62 * zeta + 306.4 * zeta**2 +
+                 808.1 * zeta**3 + 784 * zeta**4) * r**2 + \
+                0.4483 * Delta_par_i2**2
+            return Delta_perp_i2
+        
+        Delta_perp_i2_24 = Delta_perp_i2(r, zeta, Delta_par_i2)
+        Delta_perp_i2_13 = Delta_perp_i2(r13, zeta, Delta_par_i2)
+
+        def f_eta_2(r, zeta, Delta_perp_i2):
+            eta_2_i = ((3 / 5 * np.sqrt(2) + 2 * zeta) * r**4 +
+                       (2.680 + 25.98 * zeta + 90.71 * zeta**2 + 104 * zeta**3) * r**2 +
+                       0.4483 * eta_0_i * (Delta_par_i2)**2
                        ) / Delta_perp_i2
-        eta_3_i = r13 * (r13**4 +
-                         (3.535 + 23.30 * zeta + 52 * zeta**2) * r13**2 +
-                         0.9538 + 21.81 * zeta + 174.2 * zeta**2 +
-                         538.4 * zeta**3 + 576 * zeta**4
-                         ) / Delta_perp_i2
+            return eta_2_i
+        
+        eta_2_i = f_eta_2(r, zeta, Delta_perp_i2_24)
+        eta_1_i = f_eta_2(r13, zeta, Delta_perp_i2_13)
+        
+        def f_eta_4(r, zeta, Delta_perp_i2):
+            eta_4_i = r * (r**4 +
+                           (3.535 + 23.30 * zeta + 52 * zeta**2) * r**2 +
+                           0.9538 + 21.81 * zeta + 174.2 * zeta**2 +
+                           538.4 * zeta**3 + 576 * zeta**4
+                           ) / Delta_perp_i2
+            return eta_4_i
+        
+        eta_4_i = f_eta_4(r, zeta, Delta_perp_i2_24)
+        eta_3_i = f_eta_4(r13, zeta, Delta_perp_i2_13)
+        
     elif K == 2:
         Delta_par_i2 = 1 + 7.164 * zeta + 10.49 * zeta**2
-        Delta_perp_i2 = r**4 + \
-            (2.023 + 11.68 * zeta + 20 * zeta**2) * r**2 + \
-            0.5820 * Delta_par_i2**2
         eta_0_i = (1.357 + 5.243 * zeta) / Delta_par_i2
-        eta_2_i = ((3 / 5 * np.sqrt(2) + 2 * zeta) * r**2 +
-                   0.5820 * eta_0_i * (Delta_par_i2)**2
-                   ) / Delta_perp_i2
-        eta_1_i = ((3 / 5 * np.sqrt(2) + 2 * zeta) * r13**2 +
-                   0.5820 * eta_0_i * (Delta_par_i2)**2
-                   ) / Delta_perp_i2
-        eta_4_i = r * (r**2 +
-                       1.188 + 8.283 * zeta + 16 * zeta**2
+        
+        def Delta_perp_i2(r, zeta, Delta_par_i2):
+            Delta_perp_i2 = r**4 + \
+                (2.023 + 11.68 * zeta + 20 * zeta**2) * r**2 + \
+                0.5820 * Delta_par_i2**2
+            return Delta_perp_i2
+        
+        Delta_perp_i2_24 = Delta_perp_i2(r, zeta, Delta_par_i2)
+        Delta_perp_i2_13 = Delta_perp_i2(r13, zeta, Delta_par_i2)
+
+        def f_eta_2(r, zeta, Delta_perp_i2):
+            eta_2_i = ((3 / 5 * np.sqrt(2) + 2 * zeta) * r**2 +
+                       0.5820 * eta_0_i * (Delta_par_i2)**2
                        ) / Delta_perp_i2
-        eta_3_i = r13 * (r13**2 +
-                         1.188 + 8.283 * zeta + 16 * zeta**2
-                         ) / Delta_perp_i2
+            return eta_2_i
+
+        eta_2_i = f_eta_2(r, zeta, Delta_perp_i2_24)
+        eta_1_i = f_eta_2(r13, zeta, Delta_perp_i2_13)
+
+        def f_eta_4(r, zeta, Delta_perp_i2):
+            Delta_perp_i2 = r**4 + \
+                (2.023 + 11.68 * zeta + 20 * zeta**2) * r**2 + \
+                0.5820 * Delta_par_i2**2
+            eta_4_i = r * (r**2 +
+                           1.188 + 8.283 * zeta + 16 * zeta**2
+                           ) / Delta_perp_i2
+            return eta_4_i
+
+        eta_4_i = f_eta_4(r, zeta, Delta_perp_i2_24)
+        eta_3_i = f_eta_4(r13, zeta, Delta_perp_i2_13)
+
     return np.array((eta_0_i / np.sqrt(2), eta_1_i / np.sqrt(2),
                      eta_2_i / np.sqrt(2), eta_3_i / np.sqrt(2),
                      eta_4_i / np.sqrt(2)))
