@@ -296,6 +296,26 @@ class Test_classical_transport:
                           2.8184954e-8 * u.Ohm * u.m,
                           atol=1e-6*u.Ohm * u.m)
 
+    @pytest.mark.parametrize("model, method, field_orientation, expected", [
+        ("ji-held", "resistivity", "all", 3),
+        ("ji-held", "thermoelectric_conductivity", "all", 3),
+        ("ji-held", "electron_thermal_conductivity", "all", 3),
+        ("ji-held", "ion_thermal_conductivity", "all", 3),
+        ("spitzer", "resistivity", "all", 2),
+        ])
+    def test_number_of_returns(self, model, method, field_orientation,
+                               expected):
+        ct2 = classical_transport(T_e=self.T_e,
+                                  n_e=self.n_e,
+                                  T_i=self.T_i,
+                                  n_i=self.n_i,
+                                  ion_particle=self.ion_particle,
+                                  model=model,
+                                  field_orientation=field_orientation)
+        method_to_call = getattr(ct2, method)
+        assert(np.size(method_to_call()) == expected)
+
+
     @pytest.mark.parametrize("model, expected", [
         ("ji-held", 2.77028546e-8 * u.Ohm * u.m),
         ("spitzer", 2.78349687e-8 * u.Ohm * u.m),
@@ -384,6 +404,7 @@ class Test_classical_transport:
         assert np.allclose(ct2.ion_thermal_conductivity(), expected,
                            atol=1e-6*u.W / (u.K * u.m))
 
+
 @pytest.mark.parametrize(["particle"], ['e', 'p'])
 def test_nondim_thermal_conductivity_unrecognized_model(particle):
     with pytest.raises(ValueError):
@@ -402,9 +423,12 @@ def test_nondim_te_conductivity_unrecognized_model():
         _nondim_te_conductivity(1, 1, 'e', 'this is not a model',
                                 'parallel')
 
-def test_nondim_viscosity_unrecognized_model():
+
+@pytest.mark.parametrize(["particle"], ['e', 'p'])
+def test_nondim_viscosity_unrecognized_model(particle):
     with pytest.raises(ValueError):
-        _nondim_viscosity(1, 1, 'p', 'not a model', 'parallel')
+        _nondim_viscosity(1, 1, particle, 'not a model', 'parallel')
+
 
 # test class for _nondim_tc_e_braginskii function:
 class Test__nondim_tc_e_braginskii:
@@ -443,7 +467,7 @@ class Test__nondim_tc_e_braginskii:
                                               Z,
                                               field_orientation)
         assert np.isclose(kappa_e_hat * self.big_hall ** 2,
-                        expected, atol=1e-1)
+                          expected, atol=1e-1)
 
     @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])
     def test_unmagnetized(self, Z):
@@ -451,6 +475,13 @@ class Test__nondim_tc_e_braginskii:
         kappa_e_hat_par = _nondim_tc_e_braginskii(self.small_hall, Z, 'par')
         kappa_e_hat_perp = _nondim_tc_e_braginskii(self.small_hall, Z, 'perp')
         assert np.isclose(kappa_e_hat_par, kappa_e_hat_perp, rtol=1e-3)
+
+    @pytest.mark.parametrize("Z", [1, 4])
+    def test_cross_vs_ji_held(self, Z):
+        """cross should roughly agree with ji-held"""
+        kappa_e_hat_cross_brag = _nondim_tc_e_braginskii(self.big_hall, Z, 'cross')
+        kappa_e_hat_cross_jh = _nondim_tc_e_ji_held(self.big_hall, Z, 'cross')
+        assert np.isclose(kappa_e_hat_cross_brag, kappa_e_hat_cross_jh, rtol=2e-2)
 
 
 # test class for _nondim_tc_i_braginskii function:
@@ -518,6 +549,14 @@ class Test__nondim_tec_braginskii:
         beta_hat_par = _nondim_tec_braginskii(self.small_hall, Z, 'par')
         beta_hat_perp = _nondim_tec_braginskii(self.small_hall, Z, 'perp')
         assert np.isclose(beta_hat_par, beta_hat_perp, rtol=1e-3)
+        
+    @pytest.mark.parametrize("Z", [1, 4])
+    def test_cross_vs_ji_held(self, Z):
+        """cross should roughly agree with ji-held"""
+        beta_hat_cross_brag = _nondim_tec_braginskii(self.big_hall, Z, 'cross')
+        beta_hat_cross_jh = _nondim_tec_ji_held(self.big_hall, Z, 'cross')
+        assert np.isclose(beta_hat_cross_brag, beta_hat_cross_jh, rtol=3e-2)
+
 
 
 # test class for _nondim_resist_braginskii function:
@@ -549,6 +588,13 @@ class Test__nondim_resist_braginskii:
         alpha_hat_par = _nondim_resist_braginskii(self.small_hall, Z, 'par')
         alpha_hat_perp = _nondim_resist_braginskii(self.small_hall, Z, 'perp')
         assert np.isclose(alpha_hat_par, alpha_hat_perp, rtol=1e-3)
+
+    @pytest.mark.parametrize("Z", [1, 4])
+    def test_cross_vs_ji_held(self, Z):
+        """cross should roughly agree with ji-held at hall 0.1"""
+        alpha_hat_cross_brag = _nondim_resist_braginskii(0.1, Z, 'cross')
+        alpha_hat_cross_jh = _nondim_resist_ji_held(0.1, Z, 'cross')
+        assert np.isclose(alpha_hat_cross_brag, alpha_hat_cross_jh, rtol=5e-2)
 
 
 # test class for _nondim_visc_i_braginskii function:
