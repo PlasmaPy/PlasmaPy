@@ -557,14 +557,15 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     else:
         raise ValueError("Method {method} not supported in thermal_speed")
 
+
 @utils.check_quantity({
     'T_e': {'units': units.K, 'can_be_negative': False},
     'n_e': {'units': units.m**-3, 'can_be_negative': False}
 })
-def collision_rate_electron_ion(T_e, 
-                                n_e, 
+def collision_rate_electron_ion(T_e,
+                                n_e,
                                 ion_particle,
-                                coulomb_log=None, 
+                                coulomb_log=None,
                                 V=None):
     r"""
     momentum relaxation electron-ion collision rate
@@ -603,7 +604,7 @@ def collision_rate_electron_ion(T_e,
     .. [1] Braginskii
 
     .. [2] Formulary
-    
+
     .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     """
@@ -668,7 +669,7 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
     .. [1] Braginskii
 
     .. [2] Formulary
-    
+
     .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     """
@@ -706,10 +707,10 @@ def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None):
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / units.radian
     if _is_electron(particle):
-        coll_rate = collision_rate_electron_ion(T, 
-                                                n, 
+        coll_rate = collision_rate_electron_ion(T,
+                                                n,
                                                 ion_particle,
-                                                coulomb_log, 
+                                                coulomb_log,
                                                 V)
     else:
         coll_rate = collision_rate_ion_ion(T, n, ion_particle, coulomb_log, V)

@@ -6,7 +6,7 @@ import numpy as np
 from astropy import units
 
 from plasmapy import atomic, utils
-from plasmapy.physics import relativity
+from plasmapy.physics.relativity import Lorentz_factor
 
 from ..constants import c, h, hbar, m_e, eps0, e, k_B
 
@@ -98,14 +98,14 @@ def deBroglie_wavelength(V, particle):
 
         lambda_dBr = np.ones(V.shape) * np.inf * units.m
         indices = V.value != 0
-        lambda_dBr[indices] = h / (m * V[indices] * relativity.Lorentz_factor(V[indices]))
+        lambda_dBr[indices] = h / (m * V[indices] * Lorentz_factor(V[indices]))
 
     else:
 
         if V == 0 * units.m / units.s:
             lambda_dBr = np.inf * units.m
         else:
-            lambda_dBr = h / (relativity.Lorentz_factor(V) * m * V)
+            lambda_dBr = h / (Lorentz_factor(V) * m * V)
 
     return lambda_dBr.to(units.m)
 
