@@ -159,8 +159,8 @@ def _create_alias_dicts(Particles: dict) -> (typing.Dict[str, str],
         (['p+'], 'p'),
         (['n-1'], 'n'),
         (['H-2'], 'D'),
-        (['H-2+', 'H-2 1+', 'H-2 +1'], 'D 1+'),
-        (['H-3+', 'H-3 1+', 'H-3 +1'], 'T 1+'),
+        (['H-2+', 'H-2 1+', 'H-2 +1', 'D+'], 'D 1+'),
+        (['H-3+', 'H-3 1+', 'H-3 +1', 'T+'], 'T 1+'),
     ]
 
     case_insensitive_aliases_for_a_symbol = [
@@ -171,7 +171,7 @@ def _create_alias_dicts(Particles: dict) -> (typing.Dict[str, str],
         (['protium'], 'H-1'),
         (['protium+', 'protium 1+', 'protium +1'], 'p'),
         (['deuterium', 'hydrogen-2'], 'D'),
-        (['deuteron', 'deuterium+', 'deuterium 1+', 'deuterium +1', 'D+'],
+        (['deuteron', 'deuterium+', 'deuterium 1+', 'deuterium +1'],
          'D 1+'),
         (['tritium', 'hydrogen-3'], 'T'),
         (['triton', 'tritium+', 'tritium 1+', 'tritium +1'], 'T 1+'),
@@ -234,10 +234,7 @@ def _is_special_particle(alias: typing.Union[str, int]) -> bool:
 
     symbol = _get_standard_symbol(alias)
 
-    if symbol in special_particles:
-        return True
-    else:
-        return False
+    return symbol in special_particles
 
 
 if __name__ == "__main__":  # coveralls: ignore
