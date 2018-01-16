@@ -230,7 +230,7 @@ def nuclear_reaction_energy(*args, **kwargs):
         for particle in particles:
             try:
                 total_charge += atomic_number(particle)
-            except Exception:
+            except InvalidElementError:
                 total_charge += charge_state(particle)
 
         return total_charge

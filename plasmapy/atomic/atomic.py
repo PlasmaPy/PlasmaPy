@@ -7,7 +7,7 @@ from astropy.units import Quantity
 import warnings
 from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
-from .particles import _Particles, _get_standard_symbol
+from .particles import _is_special_particle
 from ..utils import (AtomicWarning,
                      InvalidElementError,
                      InvalidIsotopeError,
@@ -18,6 +18,7 @@ from ..utils import (AtomicWarning,
                      InvalidParticleError,
                      ChargeError)
 from typing import (Union, Optional, Any, List, Tuple)
+
 
 # The code contained within atomic_symbol(), isotope_symbol(), and
 # _extract_charge_state() is designed to catch all of the special
@@ -114,10 +115,8 @@ def atomic_symbol(argument: Union[str, int]) -> str:
 
     """
 
-    if _is_neutron(argument):
-        raise InvalidElementError("Neutrons do not have an atomic symbol")
-    elif _is_antiproton(argument):
-        raise InvalidElementError("Antiprotons do not have an atomic symbol")
+    if _is_special_particle(argument):
+        raise InvalidElementError(f"{argument} is not a valid element.")
 
     try:
         argument, Z = _extract_charge_state(argument)
