@@ -806,10 +806,42 @@ def test_atomic_TypeErrors(func, argument):
 
 
 atomic_ParticleErrors_funcs_table = [
-    atomic_symbol, isotope_symbol, atomic_number,
-    is_isotope_stable, half_life, mass_number,
-    element_name, standard_atomic_weight]
-atomic_ParticleError_bad_arguments = [-1, 119, 'grumblemuffins']
+    atomic_symbol,
+    isotope_symbol,
+    atomic_number,
+    is_isotope_stable,
+    half_life,
+    mass_number,
+    element_name,
+    standard_atomic_weight,
+    ion_mass,
+    known_isotopes,
+    stable_isotopes,
+    common_isotopes,
+    isotopic_abundance,
+    charge_state,
+    electric_charge,
+]
+
+atomic_ParticleError_bad_arguments = [
+    -1,
+    119,
+    'grumblemuffins',
+    'H-0',
+    'Og-294b',
+    'H-934361079326356530741942970523610389',
+    'Fe 2+4',
+    'Fe+24',
+    'Fe +59',
+    'C++++++++++++++++',
+    'C-++++',
+    'h',
+    'd',
+    'he',
+    'au',
+    'alpha 1+',
+    'alpha-4',
+]
 
 
 @pytest.mark.parametrize(
@@ -1246,3 +1278,44 @@ def test_extract_charge_state_warnings(test_input, expected_warning):
     """Test that _extract_charge_state issues the expected warnings."""
     with pytest.warns(expected_warning):
         _extract_charge_state(test_input)
+
+
+
+
+
+test_atomic_ParticleErrors
+
+
+
+
+# (argument, expected_error)
+atomic_symbol_error_table = [
+    ('H-0', InvalidParticleError),
+    (3.14159, TypeError),
+    ('Og-294b', InvalidParticleError),
+    ('H-934361079326356530741942970523610389', InvalidParticleError),
+    ('Fe 2+4', InvalidParticleError),
+    ('Fe+24', InvalidParticleError),
+    ('Fe +59', InvalidParticleError),
+    ('C++++++++++++++++', InvalidParticleError),
+    ('C-++++', InvalidParticleError),
+    ('neutron', InvalidElementError),
+    ('n', InvalidElementError),
+    ('n-1', InvalidElementError),
+    ('h', InvalidParticleError),
+    ('d', InvalidParticleError),
+    ('he', InvalidParticleError),
+    ('au', InvalidParticleError),
+    ('p-', InvalidElementError),
+    (0, InvalidParticleError),
+    (119, InvalidParticleError),
+    ('antiproton', InvalidElementError)]
+
+
+@pytest.mark.parametrize(
+    'argument, expected_error', atomic_symbol_error_table)
+def test_atomic_symbol_error(argument, expected_error):
+    """Test that atomic_symbol raises the expected exceptions."""
+    with pytest.raises(expected_error, message=(
+            f"atomic_symbol({argument}) is not raising {expected_error}.")):
+        atomic_symbol(argument)
