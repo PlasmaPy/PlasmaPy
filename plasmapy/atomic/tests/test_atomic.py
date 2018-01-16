@@ -886,7 +886,7 @@ def test_isotopic_abundance():
     assert isotopic_abundance('Og', 294) == 0.0
 
     with pytest.raises(InvalidIsotopeError, message="No exception raised for "
-                                             "neutrons"):
+                                                    "neutrons"):
         isotopic_abundance('neutron')
 
     with pytest.raises(InvalidParticleError):

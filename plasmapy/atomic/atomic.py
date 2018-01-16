@@ -1415,7 +1415,6 @@ def isotopic_abundance(argument: Union[str, int],
         raise InvalidIsotopeError(
             "Neutrons do not have an isotopic abundance.")
 
-
     try:
         element = atomic_symbol(argument)
         isotope = isotope_symbol(argument, mass_numb)
