@@ -773,9 +773,8 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
 
     try:
         element = atomic_symbol(argument)
-
     except InvalidParticleError:
-        raise InvalidParticleError(f"{argument} is an invalid argument to " 
+        raise InvalidParticleError(f"{argument} is an invalid argument to "
                                    "standard_atomic_weight.")
     except InvalidElementError:
         raise InvalidElementError(f"{argument} is not a valid element in "
