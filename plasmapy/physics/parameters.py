@@ -975,7 +975,7 @@ def plasma_frequency(n, particle='e', z_mean=None):
         a macroscopic description is valid. If this quantity is not
         given then the atomic charge state (integer) of the ion
         is used. This is effectively an average plasma frequency for the
-        plasma where multiple charge states are present. 
+        plasma where multiple charge states are present.
 
     Returns
     -------
