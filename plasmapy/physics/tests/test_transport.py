@@ -1,3 +1,4 @@
+# coding=utf-8
 """Tests for functions that calculate transport coefficients."""
 
 
@@ -53,7 +54,9 @@ def test_Coulomb_logarithm():
                           Lambda[i], atol=0.01)
 
     assert np.isclose(Coulomb_logarithm(1 * u.eV, 5 * u.m**-3, ('e', 'e')),
-                      Coulomb_logarithm(11604.5220 * u.K, 5 * u.m**-3, ('e', 'e')))
+                      Coulomb_logarithm(11604.5220 * u.K,
+                                        5 * u.m**-3,
+                                        ('e', 'e')))
 
     assert np.isclose(Coulomb_logarithm(1e2 * u.K, 1e9 * u.cm**-3, ('e', 'p')),
                       5.97, atol=0.01)
@@ -61,7 +64,9 @@ def test_Coulomb_logarithm():
     assert np.isclose(Coulomb_logarithm(1e7 * u.K, 1e9 * u.cm**-3, ('e', 'p')),
                       21.6, atol=0.1)
 
-    assert np.isclose(Coulomb_logarithm(1e8 * u.K, 1e24 * u.cm**-3, ('e', 'p')),
+    assert np.isclose(Coulomb_logarithm(1e8 * u.K,
+                                        1e24 * u.cm**-3,
+                                        ('e', 'p')),
                       6.69, atol=0.01)
 
     assert np.allclose(Coulomb_logarithm(T, n_e, particles), Lambda, atol=0.01)
@@ -132,7 +137,7 @@ class Test_classical_transport:
             mu=self.mu,
             theta=self.theta,
         )
-        
+
     def test_spitzer_vs_formulary(self):
         """Spitzer resistivity should agree with approx. in NRL formulary"""
         ct2 = classical_transport(T_e=self.T_e,
@@ -144,7 +149,7 @@ class Test_classical_transport:
                                   field_orientation='perp')
         alpha_spitzer_perp_NRL = (1.03e-4 * ct2.Z *
                                   ct2.coulomb_log_ei *
-                                  ((ct2.T_e).to(u.eV)).value ** (-3/2) *
+                                  ((ct2.T_e).to(u.eV)).value ** (-3 / 2) *
                                   u.Ohm * u.m)
         assert(np.isclose(ct2.resistivity().value,
                           alpha_spitzer_perp_NRL.value, rtol=2e-2))
@@ -310,7 +315,7 @@ class Test_classical_transport:
                                   hall_e=0)
         assert np.isclose(ct2.resistivity(),
                           2.8184954e-8 * u.Ohm * u.m,
-                          atol=1e-6*u.Ohm * u.m)
+                          atol=1e-6 * u.Ohm * u.m)
 
     @pytest.mark.parametrize("model, method, field_orientation, expected", [
         ("ji-held", "resistivity", "all", 3),
@@ -318,7 +323,7 @@ class Test_classical_transport:
         ("ji-held", "electron_thermal_conductivity", "all", 3),
         ("ji-held", "ion_thermal_conductivity", "all", 3),
         ("spitzer", "resistivity", "all", 2),
-        ])
+    ])
     def test_number_of_returns(self, model, method, field_orientation,
                                expected):
         ct2 = classical_transport(T_e=self.T_e,
@@ -331,12 +336,11 @@ class Test_classical_transport:
         method_to_call = getattr(ct2, method)
         assert(np.size(method_to_call()) == expected)
 
-
     @pytest.mark.parametrize("model, expected", [
         ("ji-held", 2.77028546e-8 * u.Ohm * u.m),
         ("spitzer", 2.78349687e-8 * u.Ohm * u.m),
         ("braginskii", 2.78349687e-8 * u.Ohm * u.m)
-        ])
+    ])
     def test_resistivity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
@@ -344,13 +348,13 @@ class Test_classical_transport:
                                   n_i=self.n_i,
                                   ion_particle=self.ion_particle,
                                   model=model)
-        assert np.isclose(ct2.resistivity(), expected, atol=1e-6*u.Ohm * u.m)
+        assert np.isclose(ct2.resistivity(), expected, atol=1e-6 * u.Ohm * u.m)
 
     @pytest.mark.parametrize("model, expected", [
-        ("ji-held", 0.702 * u.s/u.s),
-        ("spitzer", 0.69944979 * u.s/u.s),
-        ("braginskii", 0.711084 * u.s/u.s)
-        ])
+        ("ji-held", 0.702 * u.s / u.s),
+        ("spitzer", 0.69944979 * u.s / u.s),
+        ("braginskii", 0.711084 * u.s / u.s)
+    ])
     def test_thermoelectric_conductivity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
@@ -359,12 +363,14 @@ class Test_classical_transport:
                                   ion_particle=self.ion_particle,
                                   model=model)
         assert np.isclose(ct2.thermoelectric_conductivity(), expected,
-                          atol=1e-6*u.s/u.s)
+                          atol=1e-6 * u.s / u.s)
 
     @pytest.mark.parametrize("model, expected", [
-        ("ji-held", np.array([0.07582084, 0.07582084, 0.07582084, 0, 0]) * u.Pa * u.s),
-        ("braginskii", np.array([0.07582084, 0.07579587, 0.07579587, 0, 0]) * u.Pa * u.s)
-        ])
+        ("ji-held",
+         np.array([0.07582084, 0.07582084, 0.07582084, 0, 0]) * u.Pa * u.s),
+        ("braginskii",
+         np.array([0.07582084, 0.07579587, 0.07579587, 0, 0]) * u.Pa * u.s)
+    ])
     def test_electron_viscosity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
@@ -373,13 +379,14 @@ class Test_classical_transport:
                                   ion_particle=self.ion_particle,
                                   model=model)
         assert np.allclose(ct2.electron_viscosity(), expected,
-                           atol=1e-6*u.Pa * u.s)
-
+                           atol=1e-6 * u.Pa * u.s)
 
     @pytest.mark.parametrize("model, expected", [
-        ("ji-held", np.array([7.78786439, 7.78786439, 7.78786439, 0, 0]) * u.Pa * u.s),
-        ("braginskii", np.array([7.74590133, 7.72235334, 7.72235334, 0, 0]) * u.Pa * u.s)
-        ])
+        ("ji-held",
+         np.array([7.78786439, 7.78786439, 7.78786439, 0, 0]) * u.Pa * u.s),
+        ("braginskii",
+         np.array([7.74590133, 7.72235334, 7.72235334, 0, 0]) * u.Pa * u.s)
+    ])
     def test_ion_viscosity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
@@ -388,14 +395,13 @@ class Test_classical_transport:
                                   ion_particle=self.ion_particle,
                                   model=model)
         assert np.allclose(ct2.ion_viscosity(), expected,
-                           atol=1e-6*u.Pa * u.s)
-
+                           atol=1e-6 * u.Pa * u.s)
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held", 5023093.49948463 * u.W / (u.K * u.m)),
         ("spitzer", 5021013.09835718 * u.W / (u.K * u.m)),
         ("braginskii", 4956545.55498178 * u.W / (u.K * u.m))
-        ])
+    ])
     def test_electron_thermal_conductivity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
@@ -404,12 +410,12 @@ class Test_classical_transport:
                                   ion_particle=self.ion_particle,
                                   model=model)
         assert np.allclose(ct2.electron_thermal_conductivity(), expected,
-                           atol=1e-6*u.W / (u.K * u.m))
+                           atol=1e-6 * u.W / (u.K * u.m))
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held", 131600.515524444 * u.W / (u.K * u.m)),
         ("braginskii", 130137.93045042 * u.W / (u.K * u.m))
-        ])
+    ])
     def test_ion_thermal_conductivity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
@@ -418,7 +424,7 @@ class Test_classical_transport:
                                   ion_particle=self.ion_particle,
                                   model=model)
         assert np.allclose(ct2.ion_thermal_conductivity(), expected,
-                           atol=1e-6*u.W / (u.K * u.m))
+                           atol=1e-6 * u.W / (u.K * u.m))
 
 
 @pytest.mark.parametrize(["particle"], ['e', 'p'])
@@ -495,9 +501,15 @@ class Test__nondim_tc_e_braginskii:
     @pytest.mark.parametrize("Z", [1, 4])
     def test_cross_vs_ji_held(self, Z):
         """cross should roughly agree with ji-held"""
-        kappa_e_hat_cross_brag = _nondim_tc_e_braginskii(self.big_hall, Z, 'cross')
-        kappa_e_hat_cross_jh = _nondim_tc_e_ji_held(self.big_hall, Z, 'cross')
-        assert np.isclose(kappa_e_hat_cross_brag, kappa_e_hat_cross_jh, rtol=2e-2)
+        kappa_e_hat_cross_brag = _nondim_tc_e_braginskii(self.big_hall,
+                                                         Z,
+                                                         'cross')
+        kappa_e_hat_cross_jh = _nondim_tc_e_ji_held(self.big_hall,
+                                                    Z,
+                                                    'cross')
+        assert np.isclose(kappa_e_hat_cross_brag,
+                          kappa_e_hat_cross_jh,
+                          rtol=2e-2)
 
 
 # test class for _nondim_tc_i_braginskii function:
@@ -520,14 +532,16 @@ class Test__nondim_tc_i_braginskii:
         kappa_i_hat = _nondim_tc_i_braginskii(self.big_hall,
                                               field_orientation='perp')
         expected = 2.0  # Braginskii '65 eq (2.16)
-        assert np.isclose(kappa_i_hat * self.big_hall ** 2, expected, atol=1e-1)
+        assert np.isclose(kappa_i_hat * self.big_hall ** 2,
+                          expected,
+                          atol=1e-1)
 
     def test_unmagnetized(self):
         """confirm perp -> par as B -> 0"""
         kappa_i_hat_par = _nondim_tc_i_braginskii(self.small_hall, 'par')
         kappa_i_hat_perp = _nondim_tc_i_braginskii(self.small_hall, 'perp')
         assert np.isclose(kappa_i_hat_par, kappa_i_hat_perp, rtol=1e-3)
-        
+
     def test_cross_vs_ji_held_K2(self):
         """confirm cross agrees with ji-held model when K=2"""
         kappa_i_hat_brag = _nondim_tc_i_braginskii(self.big_hall, 'cross')
@@ -565,14 +579,13 @@ class Test__nondim_tec_braginskii:
         beta_hat_par = _nondim_tec_braginskii(self.small_hall, Z, 'par')
         beta_hat_perp = _nondim_tec_braginskii(self.small_hall, Z, 'perp')
         assert np.isclose(beta_hat_par, beta_hat_perp, rtol=1e-3)
-        
+
     @pytest.mark.parametrize("Z", [1, 4])
     def test_cross_vs_ji_held(self, Z):
         """cross should roughly agree with ji-held"""
         beta_hat_cross_brag = _nondim_tec_braginskii(self.big_hall, Z, 'cross')
         beta_hat_cross_jh = _nondim_tec_ji_held(self.big_hall, Z, 'cross')
         assert np.isclose(beta_hat_cross_brag, beta_hat_cross_jh, rtol=3e-2)
-
 
 
 # test class for _nondim_resist_braginskii function:
@@ -630,12 +643,12 @@ class Test__nondim_visc_i_braginskii:
         eta_i_hat = _nondim_visc_i_braginskii(self.big_hall)
         eta_i_hat_with_powers = eta_i_hat * self.big_hall ** power
         assert np.allclose(eta_i_hat_with_powers, expected, atol=1e-2)
-        
+
     def test_vs_ji_held_K2(self):
         """confirm agreement with ji-held model when K=2"""
         eta_i_hat_brag = _nondim_visc_i_braginskii(self.big_hall)
         eta_i_hat_jh = _nondim_visc_i_ji_held(self.big_hall, 1, 0, 100, K=2)
-        for idx in [0,1,2,3,4]:
+        for idx in [0, 1, 2, 3, 4]:
             assert np.isclose(eta_i_hat_brag[idx], eta_i_hat_jh[idx],
                               rtol=2e-2)
 
