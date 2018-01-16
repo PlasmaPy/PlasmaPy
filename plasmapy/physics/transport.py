@@ -133,14 +133,12 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
         try:
             masses[i] = atomic.ion_mass(particles[i])
         except Exception:
-            raise ValueError("Unable to find mass of particle: " +
-                             str(particles[i]) + " in Coulomb_logarithm.")
+            raise ValueError(f"Unable to find mass of particle: {particles[i]} in Coulomb_logarithm.")
 
         try:
             charges[i] = np.abs(e * atomic.charge_state(particles[i]))
         except Exception:
-            raise ValueError("Unable to find charge of particle: " +
-                             str(particles[i]) + " in Coulomb_logarithm.")
+            raise ValueError(f"Unable to find charge of particle: {particles[i]} in Coulomb_logarithm.")
 
     reduced_mass = masses[0] * masses[1] / (masses[0] + masses[1])
 
@@ -247,7 +245,7 @@ class classical_transport:
     paper from 1965. Coefficients are found from expansion of the kinetic
     equation in Laguerre / Sonine polynomials, truncated at K = 2. This theory
     allow for arbitrary Hall parameter and include results for Z = 1, 2, 3, 4,
-    and infinity (Lorentz gas / stationary ion approximation.)
+    and infinity (Lorentz gas / stationary ion approximation).
 
     Spitzer-Harm [2]_ [3]_
     These coefficients were obtained from a numerical solution of the Fokker-
@@ -256,7 +254,7 @@ class classical_transport:
     principally apply in the unmagnetized / parallel field case, although for
     resistivity Spitzer also calculated a famous result for a strong
     perpendicular magnetic field. Results are for Z = 1, 2, 4, 16,
-    and infinity (Lorentz gas / stationary ion approximation.)
+    and infinity (Lorentz gas / stationary ion approximation).
 
     Epperlein-Haines [4]_
     Not yet implemented.
@@ -441,8 +439,7 @@ class classical_transport:
                         ]
         is_valid_field = self.field_orientation in valid_fields
         if not is_valid_field:
-            raise ValueError(
-                f"Unknown field orientation '{self.field_orientation}'")
+            raise ValueError(f"Unknown field orientation '{self.field_orientation}'")
 
         # density and temperature units have already been checked by decorator
         # so just convert
@@ -456,18 +453,14 @@ class classical_transport:
             try:
                 self.m_i = atomic.ion_mass(ion_particle)
             except Exception:
-                raise ValueError("Unable to find mass of particle: " +
-                                 str(ion_particle) + " in classical_transport")
+                raise ValueError(f"Unable to find mass of particle: {ion_particle} in classical_transport")
         else:
             self.m_i = m_i.to(units.kg)
         if Z is None:
             try:
                 self.Z = atomic.charge_state(ion_particle)
             except Exception:
-                raise ValueError(
-                    "Unable to find charge of particle: " +
-                    str(ion_particle) +
-                    " in classical_transport.")
+                raise ValueError(f"Unable to find charge of particle: {ion_particle} in classical_transport.")
         else:
             # red alert: the user has input a Z
             self.Z = Z
@@ -632,7 +625,7 @@ class classical_transport:
                     eta_hat[2] * (self.n_i * k_B * self.T_i * tau_i) / self.hall_i**2,
                     eta_hat[3] * (self.n_i * k_B * self.T_i * tau_i) / self.hall_i,
                     eta_hat[4] * (self.n_i * k_B * self.T_i * tau_i) / self.hall_i)
-        if eta1[0].unit == eta1[2].unit and eta1[2].unit == eta1[4].unit:
+        if eta1[0].unit == eta1[2].unit == eta1[4].unit:
             unit_val = eta1[0].unit
             eta = (np.array((eta1[0].value,
                              eta1[1].value,
@@ -674,6 +667,23 @@ class classical_transport:
                              eta1[3].value,
                              eta1[4].value)) * unit_val).to(units.Pa * units.s)
         return eta
+
+    def all_variables(self) -> dict:
+        """
+        Return all transport variables as a dictionary.
+
+        Returns
+        -------
+        dict
+        """
+        dictionary = {'resistivity':self.resistivity(),
+                      'thermoelectric_conductivity':self.thermoelectric_conductivity(),
+                      'electron_thermal_conductivity':self.electron_thermal_conductivity(),
+                      'electron_viscosity':self.electron_viscosity()}
+        if self.model != "spitzer":
+            dictionary += {'ion_thermal_conductivity':self.ion_thermal_conductivity(),
+                           'ion_viscosity':self.ion_viscosity()}
+        return dictionary
 
 
 def _nondim_thermal_conductivity(hall, Z, particle, model, field_orientation,

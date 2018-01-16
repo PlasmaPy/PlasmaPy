@@ -16,19 +16,19 @@ import numpy as np
 # We'll use some sample ITER data, without much regard for whether
 # the regime is even fit for classical transport theory:
 
-electron_temperature = 8.8 * u.keV
+thermal_energy_per_electron = 8.8 * u.keV
 electron_concentration = 10.1e19 / u.m**3
 
-ion_temperature = 8.0 * u.keV
+thermal_energy_per_ion = 8.0 * u.keV
 ion_concentration = electron_concentration
 ion_particle = 'D+'  # a crude approximation
 
 ######################################################
 # We now make the default classical_transport object:
 
-braginskii = physics.transport.classical_transport(electron_temperature,
+braginskii = physics.transport.classical_transport(thermal_energy_per_electron,
                                                    electron_concentration,
-                                                   ion_temperature,
+                                                   thermal_energy_per_ion,
                                                    ion_concentration,
                                                    ion_particle)
 
