@@ -221,6 +221,25 @@ def _get_standard_symbol(alias: typing.Union[str, int]) -> str:
         return alias
 
 
+def _is_special_particle(alias: typing.Union[str, int]) -> bool:
+    r"""Returns true if a particle is a special particle, and False
+    otherwise."""
+
+    special_particles = [
+        'n', 'antineutron', 'p-',
+        'e-', 'e+', 'nu_e', 'anti_nu_e',
+        'mu-', 'mu+', 'nu_mu', 'anti_nu_mu',
+        'tau-', 'tau+', 'nu_tau', 'anti_nu_tau',
+    ]
+
+    symbol = _get_standard_symbol(alias)
+
+    if symbol in special_particles:
+        return True
+    else:
+        return False
+
+
 if __name__ == "__main__":  # coveralls: ignore
     from pprint import pprint
     print("Case insensitive aliases:")
