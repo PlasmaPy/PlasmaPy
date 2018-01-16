@@ -825,7 +825,17 @@ def isotope_mass(argument: Union[str, int],
     ------
 
     InvalidIsotopeError
-        Contradictory or insufficient isotope information is provided.
+        If the argument is a valid particle but not a valid isotope.
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle.
+
+    AtomicError
+        If the charge of the particle is given, in which case ion_mass
+        should be used instead.
+
+    TypeError
+        If the argument is not a string.
 
     See also
     --------
@@ -1101,8 +1111,14 @@ def known_isotopes(argument: Union[str, int] = None) -> List[str]:
     Raises
     ------
 
-    ValueError
-        The argument cannot be used to determine an element.
+    InvalidElementError
+        If the argument is a valid particle but not a valid element.
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle.
+
+    TypeError
+        If the argument is not a string or integer.
 
     Notes
     -----
@@ -1194,8 +1210,14 @@ def common_isotopes(argument: Union[str, int] = None,
     Raises
     ------
 
-    ValueError
-        The argument cannot be used to determine an element.
+    InvalidElementError
+        If the argument is a valid particle but not a valid element.
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle.
+
+    TypeError
+        If the argument is not a string or integer.
 
     Notes
     -----
@@ -1298,6 +1320,18 @@ def stable_isotopes(argument: Union[str, int] = None,
         mass number.  If an element has no stable isotopes, this
         function returns an empty list.
 
+    Raises
+    ------
+
+    InvalidElementError
+        If the argument is a valid particle but not a valid element.
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle.
+
+    TypeError
+        If the argument is not a string or integer.
+
     Notes
     -----
 
@@ -1386,8 +1420,17 @@ def isotopic_abundance(argument: Union[str, int],
 
     Raises
     ------
-    ValueError
-        Invalid isotope input, or the input corresponded to neutrons.
+
+    InvalidIsotopeError
+        If the argument is a valid particle but not a valid isotope.
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle
+        or contradictory information is provided.
+
+    TypeError
+        If the argument is not a string or integer.
+
 
     Notes
     -----
@@ -1451,9 +1494,12 @@ def charge_state(particle: str) -> int:
     Raises
     ------
 
-    ValueError
-        If the charge state or isotope information is invalid, or the
-        charge state exceeds the atomic number.
+    InvalidParticleError
+        If the argument does not correspond to a valid particle
+        or contradictory information is provided.
+
+    ChargeError
+        If charge information for the particle is not available.
 
     AtomicWarning
         If the input represents an ion with a charge state that is
@@ -1540,9 +1586,12 @@ def electric_charge(particle: str) -> Quantity:
     Raises
     ------
 
-    ValueError
-        If the charge state or isotope information is invalid, or the
-        charge state exceeds the atomic number.
+    InvalidParticleError
+        If the argument does not correspond to a valid particle
+        or contradictory information is provided.
+
+    ChargeError
+        If charge information for the particle is not available.
 
     AtomicWarning
         If the input represents an ion with a charge state that is
@@ -1615,7 +1664,7 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
     Raises
     ------
 
-   InvalidParticleError
+    InvalidParticleError
         If invalid charge information is included.
 
     Notes
