@@ -133,12 +133,14 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
         try:
             masses[i] = atomic.ion_mass(particles[i])
         except Exception:
-            raise ValueError(f"Unable to find mass of particle: {particles[i]} in Coulomb_logarithm.")
+            raise ValueError(f"Unable to find mass of particle: {particles[i]}"
+                             f" in Coulomb_logarithm.")
 
         try:
             charges[i] = np.abs(e * atomic.charge_state(particles[i]))
         except Exception:
-            raise ValueError(f"Unable to find charge of particle: {particles[i]} in Coulomb_logarithm.")
+            raise ValueError(f"Unable to find charge of particle: "
+                             f"{particles[i]} in Coulomb_logarithm.")
 
     reduced_mass = masses[0] * masses[1] / (masses[0] + masses[1])
 
@@ -439,7 +441,8 @@ class classical_transport:
                         ]
         is_valid_field = self.field_orientation in valid_fields
         if not is_valid_field:
-            raise ValueError(f"Unknown field orientation '{self.field_orientation}'")
+            raise ValueError(f"Unknown field orientation "
+                             f"'{self.field_orientation}'")
 
         # density and temperature units have already been checked by decorator
         # so just convert
@@ -453,14 +456,16 @@ class classical_transport:
             try:
                 self.m_i = atomic.ion_mass(ion_particle)
             except Exception:
-                raise ValueError(f"Unable to find mass of particle: {ion_particle} in classical_transport")
+                raise ValueError(f"Unable to find mass of particle: "
+                                 f"{ion_particle} in classical_transport")
         else:
             self.m_i = m_i.to(units.kg)
         if Z is None:
             try:
                 self.Z = atomic.charge_state(ion_particle)
             except Exception:
-                raise ValueError(f"Unable to find charge of particle: {ion_particle} in classical_transport.")
+                raise ValueError(f"Unable to find charge of particle: "
+                                 f"{ion_particle} in classical_transport.")
         else:
             # red alert: the user has input a Z
             self.Z = Z
@@ -498,8 +503,10 @@ class classical_transport:
             self.coulomb_log_ii = coulomb_log_ii
         else:
             # TODO make comment below more clear?
-            self.coulomb_log_ii = Coulomb_logarithm(T_i, n_e,  # not a typo, but worry
-                                                    [ion_particle, ion_particle],
+            self.coulomb_log_ii = Coulomb_logarithm(T_i,
+                                                    n_e,  # this is not a typo!
+                                                    [ion_particle,
+                                                     ion_particle],
                                                     V_ii)
 
         if self.coulomb_log_ii < 4:
@@ -566,7 +573,10 @@ class classical_transport:
         -------
         astropy.units.quantity.Quantity
         """
-        beta_hat = _nondim_te_conductivity(self.hall_e, self.Z, self.e_particle, self.model,
+        beta_hat = _nondim_te_conductivity(self.hall_e,
+                                           self.Z,
+                                           self.e_particle,
+                                           self.model,
                                            self.field_orientation)
         beta = beta_hat * units.s / units.s  # yay! already dimensionless
         return beta
@@ -579,10 +589,15 @@ class classical_transport:
         -------
         astropy.units.quantity.Quantity
         """
-        kappa_hat = _nondim_thermal_conductivity(self.hall_i, self.Z, self.ion_particle, self.model,
-                                                 self.field_orientation, self.mu, self.theta)
-        tau_i = 1 / collision_rate_ion_ion(self.T_i, self.n_i, self.ion_particle,
-                                           self.coulomb_log_ii, self.V_ii)
+        kappa_hat = _nondim_thermal_conductivity(self.hall_i, self.Z,
+                                                 self.ion_particle,
+                                                 self.model,
+                                                 self.field_orientation,
+                                                 self.mu, self.theta)
+        tau_i = 1 / collision_rate_ion_ion(self.T_i, self.n_i,
+                                           self.ion_particle,
+                                           self.coulomb_log_ii,
+                                           self.V_ii)
         kappa = kappa_hat * (self.n_i * k_B**2 * self.T_i * tau_i / self.m_i)
         return kappa.to(units.W / units.m / units.K)
 
@@ -594,9 +609,12 @@ class classical_transport:
         -------
         astropy.units.quantity.Quantity
         """
-        kappa_hat = _nondim_thermal_conductivity(self.hall_e, self.Z, self.e_particle, self.model,
-                                                 self.field_orientation, self.mu, self.theta)
-        tau_e = 1 / collision_rate_electron_ion(self.T_e, self.n_e, self.ion_particle,
+        kappa_hat = _nondim_thermal_conductivity(self.hall_e, self.Z,
+                                                 self.e_particle, self.model,
+                                                 self.field_orientation,
+                                                 self.mu, self.theta)
+        tau_e = 1 / collision_rate_electron_ion(self.T_e, self.n_e,
+                                                self.ion_particle,
                                                 self.coulomb_log_ei, self.V_ei)
         kappa = kappa_hat * (self.n_e * k_B**2 * self.T_e * tau_e / m_e)
         return kappa.to(units.W / units.m / units.K)
@@ -609,22 +627,30 @@ class classical_transport:
         -------
         astropy.units.quantity.Quantity
         """
-        eta_hat = _nondim_viscosity(self.hall_i, self.Z, self.ion_particle, self.model,
-                                    self.field_orientation, self.mu, self.theta)
-        tau_i = 1 / collision_rate_ion_ion(self.T_i, self.n_i, self.ion_particle,
-                                           self.coulomb_log_ii, self.V_ii)
+        eta_hat = _nondim_viscosity(self.hall_i,
+                                    self.Z,
+                                    self.ion_particle,
+                                    self.model,
+                                    self.field_orientation,
+                                    self.mu,
+                                    self.theta)
+        tau_i = 1 / collision_rate_ion_ion(self.T_i, self.n_i,
+                                           self.ion_particle,
+                                           self.coulomb_log_ii,
+                                           self.V_ii)
+        common_factor = self.n_i * k_B * self.T_i * tau_i
         if np.isclose(self.hall_i, 0, rtol=1e-8):
-            eta1 = (eta_hat[0] * (self.n_i * k_B * self.T_i * tau_i),
-                    eta_hat[1] * (self.n_i * k_B * self.T_i * tau_i),
-                    eta_hat[2] * (self.n_i * k_B * self.T_i * tau_i),
-                    eta_hat[3] * (self.n_i * k_B * self.T_i * tau_i),
-                    eta_hat[4] * (self.n_i * k_B * self.T_i * tau_i))
+            eta1 = (eta_hat[0] * common_factor,
+                    eta_hat[1] * common_factor,
+                    eta_hat[2] * common_factor,
+                    eta_hat[3] * common_factor,
+                    eta_hat[4] * common_factor)
         else:
-            eta1 = (eta_hat[0] * (self.n_i * k_B * self.T_i * tau_i),
-                    eta_hat[1] * (self.n_i * k_B * self.T_i * tau_i) / self.hall_i**2,
-                    eta_hat[2] * (self.n_i * k_B * self.T_i * tau_i) / self.hall_i**2,
-                    eta_hat[3] * (self.n_i * k_B * self.T_i * tau_i) / self.hall_i,
-                    eta_hat[4] * (self.n_i * k_B * self.T_i * tau_i) / self.hall_i)
+            eta1 = (eta_hat[0] * common_factor,
+                    eta_hat[1] * common_factor / self.hall_i**2,
+                    eta_hat[2] * common_factor / self.hall_i**2,
+                    eta_hat[3] * common_factor / self.hall_i,
+                    eta_hat[4] * common_factor / self.hall_i)
         if eta1[0].unit == eta1[2].unit == eta1[4].unit:
             unit_val = eta1[0].unit
             eta = (np.array((eta1[0].value,
@@ -634,7 +660,6 @@ class classical_transport:
                              eta1[4].value)) * unit_val).to(units.Pa * units.s)
         return eta
 
-
     def electron_viscosity(self):
         """
         Calculate the electron viscosity.
@@ -643,22 +668,31 @@ class classical_transport:
         -------
         astropy.units.quantity.Quantity
         """
-        eta_hat = _nondim_viscosity(self.hall_e, self.Z, self.e_particle, self.model,
-                                    self.field_orientation, self.mu, self.theta)
-        tau_e = 1 / collision_rate_electron_ion(self.T_e, self.n_e, self.ion_particle,
-                                                self.coulomb_log_ei, self.V_ei)
+        eta_hat = _nondim_viscosity(self.hall_e,
+                                    self.Z,
+                                    self.e_particle,
+                                    self.model,
+                                    self.field_orientation,
+                                    self.mu,
+                                    self.theta)
+        tau_e = 1 / collision_rate_electron_ion(self.T_e,
+                                                self.n_e,
+                                                self.ion_particle,
+                                                self.coulomb_log_ei,
+                                                self.V_ei)
+        common_factor = (self.n_e * k_B * self.T_e * tau_e)
         if np.isclose(self.hall_e, 0, rtol=1e-8):
-            eta1 = (eta_hat[0] * (self.n_e * k_B * self.T_e * tau_e),
-                    eta_hat[1] * (self.n_e * k_B * self.T_e * tau_e),
-                    eta_hat[2] * (self.n_e * k_B * self.T_e * tau_e),
-                    eta_hat[3] * (self.n_e * k_B * self.T_e * tau_e),
-                    eta_hat[4] * (self.n_e * k_B * self.T_e * tau_e))
+            eta1 = (eta_hat[0] * common_factor,
+                    eta_hat[1] * common_factor,
+                    eta_hat[2] * common_factor,
+                    eta_hat[3] * common_factor,
+                    eta_hat[4] * common_factor)
         else:
-            eta1 = (eta_hat[0] * (self.n_e * k_B * self.T_e * tau_e),
-                    eta_hat[1] * (self.n_e * k_B * self.T_e * tau_e) / self.hall_e**2,
-                    eta_hat[2] * (self.n_e * k_B * self.T_e * tau_e) / self.hall_e**2,
-                    eta_hat[3] * (self.n_e * k_B * self.T_e * tau_e) / self.hall_e,
-                    eta_hat[4] * (self.n_e * k_B * self.T_e * tau_e) / self.hall_e)
+            eta1 = (eta_hat[0] * common_factor,
+                    eta_hat[1] * common_factor / self.hall_e**2,
+                    eta_hat[2] * common_factor / self.hall_e**2,
+                    eta_hat[3] * common_factor / self.hall_e,
+                    eta_hat[4] * common_factor / self.hall_e)
         if eta1[0].unit == eta1[2].unit and eta1[2].unit == eta1[4].unit:
             unit_val = eta1[0].unit
             eta = (np.array((eta1[0].value,
@@ -676,14 +710,14 @@ class classical_transport:
         -------
         dict
         """
-        dictionary = {'resistivity':self.resistivity(),
-                      'thermoelectric_conductivity':self.thermoelectric_conductivity(),
-                      'electron_thermal_conductivity':self.electron_thermal_conductivity(),
-                      'electron_viscosity':self.electron_viscosity()}
+        d = {'resistivity': self.resistivity(),
+             'thermoelectric_conductivity': self.thermoelectric_conductivity(),
+             'electron_thermal_conductivity': self.electron_thermal_conductivity(),
+             'electron_viscosity': self.electron_viscosity()}
         if self.model != "spitzer":
-            dictionary += {'ion_thermal_conductivity':self.ion_thermal_conductivity(),
-                           'ion_viscosity':self.ion_viscosity()}
-        return dictionary
+            d += {'ion_thermal_conductivity': self.ion_thermal_conductivity(),
+                  'ion_viscosity': self.ion_viscosity()}
+        return d
 
 
 def _nondim_thermal_conductivity(hall, Z, particle, model, field_orientation,
@@ -1214,7 +1248,7 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
 
     def f_kappa_perp(Z_idx):
         numerator = (13 / 4 * Z + np.sqrt(2)) * r + \
-            kappa_0[Z_idx] * kappa_par_e[Z_idx]
+                    kappa_0[Z_idx] * kappa_par_e[Z_idx]
         denominator = r ** 3 + \
                       kappa_4[Z_idx] * r ** (7 / 3) + \
                       kappa_3[Z_idx] * r ** 2 + \
