@@ -250,6 +250,15 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
 
     """
 
+    # TODO: Remove this functionality when particle_symbol comes online
+    if _is_neutron(argument, mass_numb):
+        return 'n'
+
+    if _is_special_particle(argument):
+        raise InvalidIsotopeError("The argument {argument} does not "
+                                  "correspond to a valid isotope in "
+                                  "isotope_symbol.")
+
     # If the argument is already in our standard form for an isotope,
     # return the argument.
 
@@ -288,10 +297,6 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
             raise InvalidIsotopeError("Insufficient information to determine "
                                       "isotope in isotope_symbol.")
 
-    # TODO: Remove this functionality when particle_symbol comes online
-    if _is_neutron(argument, mass_numb):
-        return 'n'
-
     try:
         element = atomic_symbol(argument)
     except InvalidParticleError:
@@ -299,8 +304,9 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
             f"The argument {argument} to isotope_symbol is not a valid "
             f"particle.")
     except InvalidElementError:
-        raise InvalidElementError(f"The argument {argument} to isotope_symbol "
-                                  f"does not correspond to a valid element.")
+        raise InvalidIsotopeError(f"The argument {argument} to isotope_symbol "
+                                  f"does not correspond to a valid element or "
+                                  f"isotope.")
     # Get mass number from argument, check for redundancies, and take
     # care of special cases.
 
