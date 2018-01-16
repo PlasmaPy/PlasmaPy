@@ -772,37 +772,34 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
     """
 
     try:
-        isotope = isotope_symbol(argument)
+        element = atomic_symbol(argument)
+
     except InvalidParticleError:
-        raise
+        raise InvalidParticleError(f"{argument} is an invalid argument to " 
+                                   "standard_atomic_weight.")
+    except InvalidElementError:
+        raise InvalidElementError(f"{argument} is not a valid element in "
+                                  "standard_atomic_weight.")
+
+    try:
+        charge_state(argument)
+    except ChargeError:
+        pass
+    else:
+        raise AtomicError("Use ion_mass to get masses of ions.")
+
+    try:
+        isotope_symbol(argument)
     except InvalidIsotopeError:
-        isotope = ''
-
-    argument, charge_state = _extract_charge_state(argument)
-
-    if charge_state is not None and charge_state != 0:
-        raise AtomicError("Use ion_mass to get masses of charged particles.")
-
-    if _is_neutron(isotope):
-        raise InvalidElementError(
-            "Use isotope_mass('n') or plasmapy.constants.m_n "
-            "instead of standard_atomic_weight to get neutron mass.")
-    elif '-' in isotope or isotope in ['D', 'T']:
+        pass
+    else:
         raise AtomicError("Use isotope_mass to get masses of isotopes.")
 
     try:
-        element = atomic_symbol(argument)
         atomic_weight = Elements[element]['atomic_mass']
     except KeyError:
         raise MissingAtomicDataError(
             f"No standard atomic weight is available for {element}.")
-    except InvalidElementError:
-        raise InvalidElementError("Invalid element in standard_atomic_weight.")
-    except InvalidParticleError:
-        raise InvalidParticleError(
-            "Invalid particle in standard_atomic_weight.")
-    except TypeError:
-        raise TypeError("The input is not a string or integer.")
 
     return atomic_weight
 
@@ -1467,14 +1464,11 @@ def isotopic_abundance(argument: Union[str, int],
             "Neutrons do not have an isotopic abundance.")
 
     try:
-        element = atomic_symbol(argument)
         isotope = isotope_symbol(argument, mass_numb)
     except InvalidParticleError:
         raise InvalidParticleError("Invalid particle in isotopic_abundance.")
     except InvalidIsotopeError:
         raise InvalidIsotopeError("Invalid isotope in isotopic_abundance.")
-    except Exception:
-        raise
 
     try:
         iso_comp = Isotopes[isotope]['isotopic_abundance']
@@ -1704,7 +1698,7 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
     if argument in ['n', 'antineutron'] or 'nu_' in argument:
         return argument, 0
     if argument in ['e-', 'mu-', 'tau-', 'p-']:
-        return  argument, -1
+        return argument, -1
     elif argument in ['e+', 'mu+', 'tau+', 'p']:
         return argument, 1
 
