@@ -7,7 +7,7 @@ from astropy.units import Quantity
 import warnings
 from .elements import atomic_symbols, atomic_symbols_dict, Elements
 from .isotopes import Isotopes
-from .particles import _is_special_particle
+from .particles import (_is_special_particle, _get_standard_symbol)
 from ..utils import (AtomicWarning,
                      InvalidElementError,
                      InvalidIsotopeError,
@@ -259,6 +259,17 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
                                   "correspond to a valid isotope in "
                                   "isotope_symbol.")
 
+    try:
+        element = atomic_symbol(argument)
+    except InvalidParticleError:
+        raise InvalidParticleError(
+            f"The argument {argument} to isotope_symbol is not a valid "
+            f"particle.")
+    except InvalidElementError:
+        raise InvalidIsotopeError(f"The argument {argument} to isotope_symbol "
+                                  f"does not correspond to a valid element or "
+                                  f"isotope.")
+
     # If the argument is already in our standard form for an isotope,
     # return the argument.
 
@@ -266,7 +277,7 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
         return argument
 
     if isinstance(argument, str):
-        argument, charge_state = _extract_charge_state(argument)
+        argument, Z = _extract_charge_state(argument)
 
     if isinstance(argument, str) and argument.isdigit():
         argument = int(argument)
@@ -297,16 +308,6 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
             raise InvalidIsotopeError("Insufficient information to determine "
                                       "isotope in isotope_symbol.")
 
-    try:
-        element = atomic_symbol(argument)
-    except InvalidParticleError:
-        raise InvalidParticleError(
-            f"The argument {argument} to isotope_symbol is not a valid "
-            f"particle.")
-    except InvalidElementError:
-        raise InvalidIsotopeError(f"The argument {argument} to isotope_symbol "
-                                  f"does not correspond to a valid element or "
-                                  f"isotope.")
     # Get mass number from argument, check for redundancies, and take
     # care of special cases.
 
@@ -770,17 +771,17 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
 
     """
 
-    argument, charge_state = _extract_charge_state(argument)
-
-    if charge_state is not None and charge_state != 0:
-        raise AtomicError("Use ion_mass to get masses of charged particles.")
-
     try:
         isotope = isotope_symbol(argument)
     except InvalidParticleError:
         raise
-    except Exception:
+    except InvalidIsotopeError:
         isotope = ''
+
+    argument, charge_state = _extract_charge_state(argument)
+
+    if charge_state is not None and charge_state != 0:
+        raise AtomicError("Use ion_mass to get masses of charged particles.")
 
     if _is_neutron(isotope):
         raise InvalidElementError(
@@ -1389,6 +1390,8 @@ def stable_isotopes(argument: Union[str, int] = None,
             element = atomic_symbol(argument)
             isotopes_list = \
                 stable_isotopes_for_element(element, not unstable)
+        except InvalidParticleError:
+            raise InvalidParticleError("Invalid particle in stable_isotopes")
         except Exception:
             raise InvalidElementError(
                 "stable_isotopes is unable to get isotopes "
@@ -1696,17 +1699,20 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
     if not isinstance(argument, str):
         return argument, None
 
-    if argument in ['n', 'neutron', 'n-1']:
+    argument = _get_standard_symbol(argument)
+
+    if argument in ['n', 'antineutron'] or 'nu_' in argument:
         return argument, 0
-    elif argument in ['p', 'p+'] or argument.lower() in \
-            ['proton', 'deuteron', 'triton']:
+    if argument in ['e-', 'mu-', 'tau-', 'p-']:
+        return  argument, -1
+    elif argument in ['e+', 'mu+', 'tau+', 'p']:
         return argument, 1
-    elif argument.lower() == 'alpha':
-        return argument, 2
-    elif argument == 'e+' or argument.lower() == 'positron':
-        return argument, 1
-    elif _is_antiproton(argument):
-        return argument, -1
+
+    if argument.lower() == 'alpha':
+        return 'He-4', 1
+    elif 'alpha' in argument.lower():
+        raise InvalidParticleError("Invalid representation of an alpha"
+                                   " particle")
 
     if argument.count(' ') == 1:  # For cases like 'Fe +2' and 'Fe-56 2+'
 
@@ -1879,6 +1885,9 @@ def _is_alpha(arg: Any) -> bool:
 
     if arg.lower() == 'alpha':
         return True
+    elif 'alpha' in arg.lower():
+        raise InvalidParticleError(
+            f"{arg} is an invalid representation of an alpha particle")
     else:
         arg, Z = _extract_charge_state(arg)
 

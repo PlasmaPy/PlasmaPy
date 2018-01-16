@@ -1243,7 +1243,7 @@ def test_is_alpha(test_input, expected):
                          [('H', 'H', None),
                           ('H+', 'H', 1),
                           ('D 1+', 'D', 1),
-                          ('alpha', 'alpha', 2),
+                          ('alpha', 'He-4', 2),
                           ('Fe', 'Fe', None),
                           ('Titanium', 'Titanium', None),
                           ('N-7+++', 'N-7', 3),
@@ -1278,44 +1278,3 @@ def test_extract_charge_state_warnings(test_input, expected_warning):
     """Test that _extract_charge_state issues the expected warnings."""
     with pytest.warns(expected_warning):
         _extract_charge_state(test_input)
-
-
-
-
-
-test_atomic_ParticleErrors
-
-
-
-
-# (argument, expected_error)
-atomic_symbol_error_table = [
-    ('H-0', InvalidParticleError),
-    (3.14159, TypeError),
-    ('Og-294b', InvalidParticleError),
-    ('H-934361079326356530741942970523610389', InvalidParticleError),
-    ('Fe 2+4', InvalidParticleError),
-    ('Fe+24', InvalidParticleError),
-    ('Fe +59', InvalidParticleError),
-    ('C++++++++++++++++', InvalidParticleError),
-    ('C-++++', InvalidParticleError),
-    ('neutron', InvalidElementError),
-    ('n', InvalidElementError),
-    ('n-1', InvalidElementError),
-    ('h', InvalidParticleError),
-    ('d', InvalidParticleError),
-    ('he', InvalidParticleError),
-    ('au', InvalidParticleError),
-    ('p-', InvalidElementError),
-    (0, InvalidParticleError),
-    (119, InvalidParticleError),
-    ('antiproton', InvalidElementError)]
-
-
-@pytest.mark.parametrize(
-    'argument, expected_error', atomic_symbol_error_table)
-def test_atomic_symbol_error(argument, expected_error):
-    """Test that atomic_symbol raises the expected exceptions."""
-    with pytest.raises(expected_error, message=(
-            f"atomic_symbol({argument}) is not raising {expected_error}.")):
-        atomic_symbol(argument)
