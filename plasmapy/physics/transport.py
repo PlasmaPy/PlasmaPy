@@ -1248,13 +1248,13 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
 
     def f_kappa_perp(Z_idx):
         numerator = (13 / 4 * Z + np.sqrt(2)) * r + \
-                    kappa_0[Z_idx] * kappa_par_e[Z_idx]
+            kappa_0[Z_idx] * kappa_par_e[Z_idx]
         denominator = r ** 3 + \
-                      kappa_4[Z_idx] * r ** (7 / 3) + \
-                      kappa_3[Z_idx] * r ** 2 + \
-                      kappa_2[Z_idx] * r ** (5 / 3) + \
-                      kappa_1[Z_idx] * r + \
-                      kappa_0[Z_idx]
+            kappa_4[Z_idx] * r ** (7 / 3) + \
+            kappa_3[Z_idx] * r ** 2 + \
+            kappa_2[Z_idx] * r ** (5 / 3) + \
+            kappa_1[Z_idx] * r + \
+            kappa_0[Z_idx]
         return numerator / denominator
 
     kappa_perp = f_kappa_perp(Z_idx)
@@ -1264,11 +1264,11 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
     def f_kappa_cross(Z_idx):
         numerator = r * (5 / 2 * r + k_0[Z_idx] / k_5[Z_idx])
         denominator = r ** 3 + \
-                      k_4[Z_idx] * r ** (7 / 3) + \
-                      k_3[Z_idx] * r ** 2 + \
-                      k_2[Z_idx] * r ** (5 / 3) + \
-                      k_1[Z_idx] * r + \
-                      k_0[Z_idx]
+            k_4[Z_idx] * r ** (7 / 3) + \
+            k_3[Z_idx] * r ** 2 + \
+            k_2[Z_idx] * r ** (5 / 3) + \
+            k_1[Z_idx] * r + \
+            k_0[Z_idx]
         return numerator / denominator
 
     kappa_cross = f_kappa_cross(Z_idx)
@@ -1354,11 +1354,11 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
     def f_alpha_cross(Z_idx):
         numerator = Z**(2 / 3) * r * (2.53 * r + a_0[Z_idx] / a_5[Z_idx])
         denominator = r ** (8 / 3) + \
-                      a_4[Z_idx] * r ** (7 / 3) + \
-                      a_3[Z_idx] * r ** 2 + \
-                      a_2[Z_idx] * r ** (5 / 3) + \
-                      a_1[Z_idx] * r + \
-                      a_0[Z_idx]
+            a_4[Z_idx] * r ** (7 / 3) + \
+            a_3[Z_idx] * r ** 2 + \
+            a_2[Z_idx] * r ** (5 / 3) + \
+            a_1[Z_idx] * r + \
+            a_0[Z_idx]
         return numerator / denominator
 
     alpha_cross = f_alpha_cross(Z_idx)
@@ -1442,11 +1442,11 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
     def f_beta_perp(Z_idx):
         numerator = 6.33 * Z**(5 / 3) * r + beta_0[Z_idx] * beta_par_e[Z_idx]
         denominator = r ** (8 / 3) + \
-                      beta_4[Z_idx] * r ** (7 / 3) + \
-                      beta_3[Z_idx] * r ** 2 + \
-                      beta_2[Z_idx] * r ** (5 / 3) + \
-                      beta_1[Z_idx] * r + \
-                      beta_0[Z_idx]
+            beta_4[Z_idx] * r ** (7 / 3) + \
+            beta_3[Z_idx] * r ** 2 + \
+            beta_2[Z_idx] * r ** (5 / 3) + \
+            beta_1[Z_idx] * r + \
+            beta_0[Z_idx]
         return numerator / denominator
 
     beta_perp = f_beta_perp(Z_idx)
@@ -1456,11 +1456,11 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
     def f_beta_cross(Z_idx):
         numerator = Z * r * (3 / 2 * r + b_0[Z_idx] / b_5[Z_idx])
         denominator = r ** 3 + \
-                      b_4[Z_idx] * r ** (7 / 3) + \
-                      b_3[Z_idx] * r ** 2 + \
-                      b_2[Z_idx] * r ** (5 / 3) + \
-                      b_1[Z_idx] * r + \
-                      b_0[Z_idx]
+            b_4[Z_idx] * r ** (7 / 3) + \
+            b_3[Z_idx] * r ** 2 + \
+            b_2[Z_idx] * r ** (5 / 3) + \
+            b_1[Z_idx] * r + \
+            b_0[Z_idx]
         return numerator / denominator
 
     beta_cross = f_beta_cross(Z_idx)
@@ -1538,11 +1538,11 @@ def _nondim_visc_e_ji_held(hall, Z):
         numerator = (6 / 5 * Z + 3 / 5 * np.sqrt(2)) * r + \
             hprime_0[Z_idx] * eta_0_e[Z_idx]
         denominator = r ** 3 + \
-                      hprime_4[Z_idx] * r ** (7 / 3) + \
-                      hprime_3[Z_idx] * r ** 2 + \
-                      hprime_2[Z_idx] * r ** (5 / 3) + \
-                      hprime_1[Z_idx] * r + \
-                      hprime_0[Z_idx]
+            hprime_4[Z_idx] * r ** (7 / 3) + \
+            hprime_3[Z_idx] * r ** 2 + \
+            hprime_2[Z_idx] * r ** (5 / 3) + \
+            hprime_1[Z_idx] * r + \
+            hprime_0[Z_idx]
         return numerator / denominator
 
     eta_2 = f_eta_2(Z_idx, r)
@@ -1552,11 +1552,11 @@ def _nondim_visc_e_ji_held(hall, Z):
     def f_eta_4(Z_idx, r):
         numerator = r * (r + h_0[Z_idx] / h_5[Z_idx])
         denominator = r ** 3 + \
-                      h_4[Z_idx] * r ** (7 / 3) + \
-                      h_3[Z_idx] * r ** 2 + \
-                      h_2[Z_idx] * r ** (5 / 3) + \
-                      h_1[Z_idx] * r + \
-                      h_0[Z_idx]
+            h_4[Z_idx] * r ** (7 / 3) + \
+            h_3[Z_idx] * r ** 2 + \
+            h_2[Z_idx] * r ** (5 / 3) + \
+            h_1[Z_idx] * r + \
+            h_0[Z_idx]
         return numerator / denominator
 
     eta_4 = f_eta_4(Z_idx, r)
@@ -1656,7 +1656,7 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
                  808.1 * zeta**3 + 784 * zeta**4) * r**2 + \
                 0.4483 * Delta_par_i2**2
             return Delta_perp_i2
-        
+
         Delta_perp_i2_24 = Delta_perp_i2(r, zeta, Delta_par_i2)
         Delta_perp_i2_13 = Delta_perp_i2(r13, zeta, Delta_par_i2)
 
@@ -1666,10 +1666,10 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
                        0.4483 * eta_0_i * Delta_par_i2 ** 2
                        ) / Delta_perp_i2
             return eta_2_i
-        
+
         eta_2_i = f_eta_2(r, zeta, Delta_perp_i2_24)
         eta_1_i = f_eta_2(r13, zeta, Delta_perp_i2_13)
-        
+
         def f_eta_4(r, zeta, Delta_perp_i2):
             eta_4_i = r * (r**4 +
                            (3.535 + 23.30 * zeta + 52 * zeta**2) * r**2 +
@@ -1677,20 +1677,20 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
                            538.4 * zeta**3 + 576 * zeta**4
                            ) / Delta_perp_i2
             return eta_4_i
-        
+
         eta_4_i = f_eta_4(r, zeta, Delta_perp_i2_24)
         eta_3_i = f_eta_4(r13, zeta, Delta_perp_i2_13)
-        
+
     elif K == 2:
         Delta_par_i2 = 1 + 7.164 * zeta + 10.49 * zeta**2
         eta_0_i = (1.357 + 5.243 * zeta) / Delta_par_i2
-        
+
         def Delta_perp_i2(r, zeta, Delta_par_i2):
             Delta_perp_i2 = r**4 + \
                 (2.023 + 11.68 * zeta + 20 * zeta**2) * r**2 + \
                 0.5820 * Delta_par_i2**2
             return Delta_perp_i2
-        
+
         Delta_perp_i2_24 = Delta_perp_i2(r, zeta, Delta_par_i2)
         Delta_perp_i2_13 = Delta_perp_i2(r13, zeta, Delta_par_i2)
 
