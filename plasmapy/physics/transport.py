@@ -716,8 +716,8 @@ class classical_transport:
              'electron_thermal_conductivity': self.electron_thermal_conductivity(),
              'electron_viscosity': self.electron_viscosity()}
         if self.model != "spitzer":
-            d += {'ion_thermal_conductivity': self.ion_thermal_conductivity(),
-                  'ion_viscosity': self.ion_viscosity()}
+            d = dict(d, **{'ion_thermal_conductivity': self.ion_thermal_conductivity(),
+                  'ion_viscosity': self.ion_viscosity()})
         return d
 
 
