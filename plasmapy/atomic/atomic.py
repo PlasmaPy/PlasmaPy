@@ -1,29 +1,37 @@
 """Functions that retrieve or are related to elemental or isotopic data."""
 
 import numpy as np
-import re
 import warnings
-from typing import (Union, Optional, Any, List, Tuple)
+from typing import (Union, Optional, List)
+
 from astropy import units as u, constants as const
 from astropy.units import Quantity
-from .elements import _atomic_symbols, _atomic_symbols_dict, _Elements
+
+from .elements import _Elements
 from .isotopes import _Isotopes
-from .particles import (_is_special_particle, _get_standard_symbol)
-from ..utils import (AtomicWarning,
-                     InvalidElementError,
-                     InvalidIsotopeError,
-                     InvalidIonError,
-                     AtomicError,
-                     MissingAtomicDataError,
-                     MissingAtomicDataWarning,
-                     InvalidParticleError,
-                     ChargeError)
 
+from ..utils import (
+    AtomicWarning,
+    InvalidElementError,
+    InvalidIsotopeError,
+    InvalidIonError,
+    AtomicError,
+    MissingAtomicDataError,
+    MissingAtomicDataWarning,
+    InvalidParticleError,
+    ChargeError)
 
-# The code contained within atomic_symbol(), isotope_symbol(), and
-# _extract_charge_state() is designed to catch all of the special
-# cases for different inputs.  Complexity is concentrated in these
-# functions so that the rest of the functions can be simpler.
+from .names import (
+    atomic_symbol,
+    isotope_symbol,
+    _extract_charge_state,
+    _is_proton,
+    _is_positron,
+    _is_antineutron,
+    _is_antiproton,
+    _is_electron,
+    _is_neutron)
+
 
 # TODO: refactor the atomic subpackage
 #  - Create a Particle class
@@ -33,330 +41,10 @@ from ..utils import (AtomicWarning,
 #     3. Checks to make sure that the inputs are of the correct types
 #     4. Returns the Particle class which would be the input to the
 #        inner function
-#    Would it be helpful to put the string parsing code into a new file
-#    called something like parsing.py?
 
-# TODO: Create an ion_symbol function
-# TODO: Create a particle_symbol function
 # TODO: Create a particle_mass function
 # TODO: Create lepton_number and baryon_number functions
 # TODO: Maybe create is_antimatter, is_lepton, is_baryon, is_boson, is_fermion
-
-
-def atomic_symbol(argument: Union[str, int]) -> str:
-    r"""Returns the atomic symbol.
-
-    Parameters
-    ----------
-
-    argument: string or integer
-        A string representing an element, isotope, or ion; or an
-        integer representing an atomic number.
-
-    Returns
-    -------
-
-    symbol: string
-        The atomic symbol of the element, isotope, or nucleon.
-
-    Raises
-    ------
-
-    InvalidElementError
-        If the argument is a valid particle but not a valid element.
-
-    InvalidParticleError
-        If the argument does not correspond to a valid particle.
-
-    TypeError
-        If the argument is not a string or integer.
-
-    See also
-    --------
-
-    isotope_symbol : returns isotope symbol instead of atomic symbol.
-
-    element_name : returns the name of an element.
-
-    Notes
-    -----
-
-    This function returns the symbol of the element rather than the
-    symbol of an isotope.  For example, 'deuterium', 'T', or
-    'hydrogen-2' will yield 'H'; 'alpha' will yield 'He'; and
-    'iron-56' or 'Fe-56' will yield 'Fe'.
-
-    This function is case insensitive when there is no ambiguity
-    associated with case.  However, this function will return 'H' for
-    hydrogen for lower case 'p' but capital 'P' if the argument is 'P'
-    for phosphorus.  This function will return 'N' for nitrogen if the
-    argument is capital 'N', but will not accept lower case 'n' for
-    neutrons.
-
-    Examples
-    --------
-
-    >>> atomic_symbol('helium')
-    'He'
-    >>> atomic_symbol(42)
-    'Mo'
-    >>> atomic_symbol('D')
-    'H'
-    >>> atomic_symbol('C-13')
-    'C'
-    >>> atomic_symbol('alpha')
-    'He'
-    >>> atomic_symbol('79')
-    'Au'
-    >>> atomic_symbol('N')  # Nitrogen
-    'N'
-    >>> atomic_symbol('P'), atomic_symbol('p')  # Phosphorus, proton
-    ('P', 'H')
-
-    """
-
-    if _is_special_particle(argument):
-        raise InvalidElementError(f"{argument} is not a valid element.")
-
-    try:
-        argument, Z = _extract_charge_state(argument)
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid charge in atomic_symbol")
-
-    if not isinstance(argument, (str, int)):
-        raise TypeError("The first argument in atomic_symbol must be either "
-                        "a string representing an element or isotope, or an "
-                        "integer representing the atomic number (or 0 for "
-                        "neutrons).")
-
-    if isinstance(argument, str) and argument.isdigit():
-        argument = int(argument)
-
-    if isinstance(argument, int):
-
-        try:
-            element = _atomic_symbols[argument]
-        except KeyError:
-            raise InvalidParticleError(f"{argument} is an invalid atomic "
-                                       "number in atomic_symbol.")
-
-    elif _is_hydrogen(argument):
-        element = 'H'
-    elif _is_alpha(argument):
-        element = 'He'
-    elif isinstance(argument, str):
-
-        if argument.count('-') == 1:
-            dash_position = argument.find('-')
-            mass_numb = argument[dash_position+1:]
-            if not mass_numb.isdigit():
-                raise InvalidParticleError("Invalid isotope format in "
-                                           "atomic_symbol")
-            argument = argument[:dash_position]
-        else:
-            mass_numb = ''
-
-        if argument.lower() in _atomic_symbols_dict.keys():
-            element = _atomic_symbols_dict[argument.lower()]
-        elif argument in _atomic_symbols.values():
-            element = argument.capitalize()
-        else:
-            raise InvalidParticleError(f"{argument} is an invalid argument "
-                                       "for atomic_symbol")
-
-        if mass_numb.isdigit():
-
-            isotope = element.capitalize() + '-' + mass_numb
-
-            if isotope not in _Isotopes.keys():
-                raise InvalidParticleError(
-                    "The input in atomic_symbol corresponding "
-                    f"to {isotope} is not a valid isotope.")
-
-    if Z is not None and \
-            Z > _Elements[element]['atomic_number']:
-        raise InvalidParticleError("Cannot have an ionization state greater "
-                                   "than the atomic number.")
-
-    return element
-
-
-def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
-    r"""Returns the symbol representing an isotope.
-
-    Parameters
-    ----------
-
-    argument: integer or string
-        A string representing an element, isotope, or ion or an
-        integer representing an atomic number
-
-    mass_numb: integer or string
-        An integer or string representing the mass number of the
-        isotope.
-
-    Returns
-    -------
-
-    symbol: string
-        The isotopic symbol. The result will generally be returned as
-        something like 'He-4' or 'Au-197', but will return 'D' for
-        deuterium and 'T' for tritium.
-
-    Raises
-    ------
-
-    InvalidIsotopeError
-        If the argument is a valid particle but not a valid isotope.
-
-    InvalidParticleError
-        If the argument does not correspond to a valid particle
-        or contradictory information is provided.
-
-    TypeError
-        If the argument is not a string or integer.
-
-    Warns
-    -----
-
-    AtomicWarning
-        If redundant isotope information is provided.
-
-    See also
-    --------
-
-    atomic_symbol : returns atomic symbol instead of isotopic symbol
-
-    Notes
-    -----
-
-    This function returns the symbol of the element rather than the
-    symbol of an isotope.  For example, 'deuterium', 'T', or
-    'hydrogen-2' will yield 'H'; 'alpha' will yield 'He'; and
-    'iron-56' or 'Fe-56' will yield 'Fe'.
-
-    Examples
-    --------
-    >>> isotope_symbol('He', 4)
-    'He-4'
-    >>> isotope_symbol(79, 197)
-    'Au-197'
-    >>> isotope_symbol('hydrogen-2')
-    'D'
-    >>> isotope_symbol('carbon-13')
-    'C-13'
-    >>> isotope_symbol('alpha')
-    'He-4'
-
-    """
-
-    # TODO: Remove this functionality when particle_symbol comes online
-    if _is_neutron(argument, mass_numb):
-        return 'n'
-
-    if _is_special_particle(argument):
-        raise InvalidIsotopeError("The argument {argument} does not "
-                                  "correspond to a valid isotope in "
-                                  "isotope_symbol.")
-
-    try:
-        element = atomic_symbol(argument)
-    except InvalidParticleError:
-        raise InvalidParticleError(
-            f"The argument {argument} to isotope_symbol is not a valid "
-            f"particle.")
-    except InvalidElementError:
-        raise InvalidIsotopeError(f"The argument {argument} to isotope_symbol "
-                                  f"does not correspond to a valid element or "
-                                  f"isotope.")
-
-    # If the argument is already in our standard form for an isotope,
-    # return the argument.
-
-    if mass_numb is None and argument in _Isotopes.keys():
-        return argument
-
-    if isinstance(argument, str):
-        argument, Z = _extract_charge_state(argument)
-
-    if isinstance(argument, str) and argument.isdigit():
-        argument = int(argument)
-
-    if isinstance(mass_numb, str) and mass_numb.isdigit():
-        mass_numb = int(mass_numb)
-
-    # This routine allows several forms of input, and must be able to handle
-    # all of the exceptions that can arise with useful error messages.
-
-    if not isinstance(argument, (str, int)):
-        raise TypeError("The first argument in isotope_symbol must be either "
-                        "a string representing an element or isotope, or an "
-                        "integer representing the atomic number (or 0 for "
-                        " neutrons).")
-
-    if not (isinstance(mass_numb, int) or
-            mass_numb is None):  # coveralls: ignore
-        raise TypeError("The second argument in isotope_symbol must be an "
-                        "integer (or a string containing an integer) that "
-                        "represents the mass number of an isotope.")
-
-    if isinstance(argument, int):
-        if not 0 <= argument <= 118:
-            raise InvalidParticleError(
-                "Invalid atomic number in isotope_symbol")
-        if mass_numb is None:
-            raise InvalidIsotopeError("Insufficient information to determine "
-                                      "isotope in isotope_symbol.")
-
-    # Get mass number from argument, check for redundancies, and take
-    # care of special cases.
-
-    if isinstance(argument, str):
-        if argument.count('-') == 1:
-            dash_position = argument.find('-')
-            mass_numb_from_arg = argument[dash_position+1:].strip()
-            mass_numb_from_arg = int(mass_numb_from_arg)
-        elif argument in ['p', 'p+'] or \
-                argument.lower() in ['protium', 'proton']:
-            mass_numb_from_arg = 1
-        elif argument.lower() in ['d', 'deuterium', 'deuteron']:
-            mass_numb_from_arg = 2
-        elif argument.lower() in ['t', 'tritium', 'triton']:
-            mass_numb_from_arg = 3
-        elif _is_alpha(argument):
-            mass_numb_from_arg = 4
-        else:
-            mass_numb_from_arg = None
-
-        if mass_numb is None and mass_numb_from_arg is None:
-            raise InvalidIsotopeError(
-                "Insufficient information to determine the mass"
-                " number from the inputs to isotope_symbol.")
-
-        if mass_numb is not None and mass_numb_from_arg is not None:
-            if mass_numb == mass_numb_from_arg:
-                warnings.warn(
-                    "Redundant mass number information in isotope_symbol "
-                    f"from inputs: {argument}, {mass_numb}", AtomicWarning)
-            else:  # coveralls: ignore
-                raise InvalidParticleError(
-                    "Contradictory mass number information in isotope_symbol.")
-
-        if mass_numb_from_arg is not None:
-            mass_numb = mass_numb_from_arg
-
-    isotope = f"{element}-{mass_numb}"
-
-    if isotope == 'H-2':
-        isotope = 'D'
-    elif isotope == 'H-3':
-        isotope = 'T'
-
-    if atomic_number(element) > mass_numb:
-        raise InvalidParticleError("The atomic number cannot exceed the mass "
-                                   "number in isotope_symbol.")
-
-    return isotope
 
 
 def atomic_number(argument: str) -> str:
@@ -423,149 +111,6 @@ def atomic_number(argument: str) -> str:
     return atomic_numb
 
 
-def is_isotope_stable(argument: Union[str, int],
-                      mass_numb: int = None) -> bool:
-    r"""Returns true for stable isotopes and false otherwise.
-
-    Parameters
-    ----------
-
-    argument: integer or string
-        A string representing an isotope or an integer representing an
-        atomic number
-
-    mass_numb: integer
-        The mass number of the isotope.
-
-    Returns
-    -------
-
-    is_stable: boolean
-        True if the isotope is stable, False if it is unstable.
-
-    Raises
-    ------
-
-    InvalidIsotopeError
-        If the arguments correspond to a valid particle but not a
-        valid isotope.
-
-    InvalidParticleError
-        If the arguments do not correspond to a valid particle.
-
-    TypeError
-        If the argument is not a string or integer.
-
-    MissingAtomicDataError
-        If stability information is not available.
-
-    Examples
-    --------
-
-    >>> is_isotope_stable("H-1")
-    True
-    >>> is_isotope_stable("tritium")
-    False
-
-    """
-
-    try:
-        isotope = isotope_symbol(argument, mass_numb)
-        is_stable = _Isotopes[isotope]['is_stable']
-    except InvalidIsotopeError:
-        raise InvalidIsotopeError("Invalid isotope in is_isotope_stable")
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid particle in is_isotope_stable")
-    except KeyError:
-        raise MissingAtomicDataError(f"No data on stability of {isotope}.")
-    except TypeError:
-        raise TypeError("The argument to is_isotope_stable must be a string.")
-
-    return is_stable
-
-
-def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
-    r"""Returns the half-life in seconds for unstable isotopes, and
-    numpy.inf for stable isotopes.
-
-    Parameters
-    ----------
-
-    argument: integer or string
-        A string representing an isotope or an integer representing an
-        atomic number
-
-    mass_numb: integer
-        The mass number of the isotope.
-
-    Returns
-    -------
-
-    half_life_sec: astropy Quantity
-        The half-life in units of seconds.
-
-    Raises:
-    -------
-
-    InvalidIsotopeError
-        If the argument is a valid particle but not a valid isotope.
-
-    InvalidParticleError
-        If the argument does not correspond to a valid particle
-        or contradictory information is provided.
-
-    MissingAtomicDataError
-        If no half-life data is available for the isotope.
-
-    TypeError
-        The argument is not an integer or string or the mass number is
-        not an integer.
-
-    AtomicWarning
-        The half-life is unavailable so the routine returns None.
-
-    Notes:
-    ------
-
-    At present there is limited half-life data available.
-
-    Examples:
-    ---------
-
-    >>> half_life('T')
-    <Quantity 3.888e+08 s>
-    >>> half_life('n')
-    <Quantity 881.5 s>
-    >>> half_life('H-1')
-    <Quantity inf s>
-
-    """
-
-    try:
-
-        isotope = isotope_symbol(argument, mass_numb)
-
-        if _Isotopes[isotope]['is_stable']:
-            half_life_sec = np.inf * u.s
-        else:
-            half_life_sec = _Isotopes[isotope].get('half_life', None)
-
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid element in isotope_symbol.")
-    except InvalidIsotopeError:
-        raise InvalidIsotopeError(
-            "Cannot determine isotope information from these inputs to "
-            f"half_life: {argument}, {mass_numb}")
-    except TypeError:
-        raise TypeError("Incorrect argument type for half_life")
-
-    if half_life_sec is None:
-        warnings.warn(f"The half-life for isotope {isotope} is not"
-                      "available; returning None.", MissingAtomicDataWarning)
-
-    return half_life_sec
-
-
 def mass_number(isotope: str) -> int:
     r"""Get the mass number (the number of protons and neutrons) of an
     isotope.
@@ -630,70 +175,6 @@ def mass_number(isotope: str) -> int:
         raise TypeError("The argument to mass_number is not a string.")
 
     return mass_numb
-
-
-def element_name(argument: Union[str, int]) -> str:
-    r"""Returns the name of an element.
-
-    Parameters
-    ----------
-
-    argument : string or integer
-        A string representing an element, isotope, or ion or an
-        integer representing an atomic number
-
-    Returns
-    -------
-
-    name : string
-        The name of the element.
-
-    Raises
-    ------
-
-    InvalidElementError
-        If the argument is a valid particle but not a valid element.
-
-    InvalidParticleError
-        If the argument does not correspond to a valid particle.
-
-    TypeError
-        If the argument is not a string or integer.
-
-    See also
-    --------
-
-    atomic_symbol : returns the atomic symbol
-
-    isotope_symbol : returns the symbol of an isotope
-
-    Examples
-    --------
-
-    >>> element_name("H")
-    'hydrogen'
-    >>> element_name("T")
-    'hydrogen'
-    >>> element_name("alpha")
-    'helium'
-    >>> element_name(42)
-    'molybdenum'
-    >>> element_name("C-12")
-    'carbon'
-
-    """
-
-    try:
-        element = atomic_symbol(argument)
-        name = _Elements[element]["name"]
-    except InvalidElementError:
-        raise InvalidElementError("Invalid element in element_name.")
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid particle in element_name.")
-    except TypeError:
-        raise TypeError("Invalid input to element_name.")
-
-    return name
 
 
 def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
@@ -1088,319 +569,6 @@ def ion_mass(argument: Union[str, int, Quantity], Z: int = None,
     return m_i
 
 
-def known_isotopes(argument: Union[str, int] = None) -> List[str]:
-    r"""Returns a list of all known isotopes of an element, or a list
-    of all known isotopes of every element if no input is provided.
-
-    Parameters
-    ----------
-
-    argument: integer or string, optional
-        A string representing an element, isotope, or ion or an
-        integer representing an atomic number
-
-    Returns
-    -------
-
-    isotopes_list: list of strings or empty list
-        List of all of the isotopes of an element that have been
-        discovered, sorted from lowest mass number to highest mass
-        number.  If no argument is provided, then a list of all known
-        isotopes of every element will be returned that is sorted by
-        atomic number, with entries for each element sorted by mass
-        number.
-
-    Raises
-    ------
-
-    InvalidElementError
-        If the argument is a valid particle but not a valid element.
-
-    InvalidParticleError
-        If the argument does not correspond to a valid particle.
-
-    TypeError
-        If the argument is not a string or integer.
-
-    Notes
-    -----
-
-    This list returns both natural and artifically produced isotopes.
-
-    See also
-    --------
-
-    common_isotopes : returns isotopes with non-zero isotopic
-        abundances
-
-    stable_isotopes : returns isotopes that are stable against
-        radioactive decay
-
-    Examples
-    --------
-    >>> known_isotopes('H')
-    ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7']
-    >>> known_isotopes('helium 1+')
-    ['He-3', 'He-4', 'He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10']
-    >>> known_isotopes()[0:10]
-    ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7', 'He-3', 'He-4', 'He-5']
-    >>> len(known_isotopes())
-    3352
-
-    """
-
-    def known_isotopes_for_element(argument):
-        element = atomic_symbol(argument)
-        isotopes = []
-        for isotope in _Isotopes.keys():
-            if element + '-' in isotope and isotope[0:len(element)] == element:
-                isotopes.append(isotope)
-        if element == 'H':
-            isotopes.insert(1, 'D')
-            isotopes.insert(2, 'T')
-        mass_numbers = [mass_number(isotope) for isotope in isotopes]
-        sorted_isotopes = [mass_number for (isotope, mass_number) in
-                           sorted(zip(mass_numbers, isotopes))]
-        return sorted_isotopes
-
-    if argument is not None:
-        try:
-            element = atomic_symbol(argument)
-            isotopes_list = known_isotopes_for_element(element)
-        except InvalidElementError:
-            raise InvalidElementError("known_isotopes is unable to get "
-                                      f"isotopes from an input of: {argument}")
-        except InvalidParticleError:
-            raise InvalidParticleError("Invalid particle in known_isotopes.")
-    elif argument is None:
-        isotopes_list = []
-        for atomic_numb in range(1, 119):
-            isotopes_list += known_isotopes_for_element(atomic_numb)
-
-    return isotopes_list
-
-
-def common_isotopes(argument: Union[str, int] = None,
-                    most_common_only: bool = False) -> List[str]:
-    r"""Returns a list of isotopes of an element with an isotopic
-    abundances greater than zero, or if no input is provided, a list
-    of all such isotopes for every element.
-
-    Parameters
-    ----------
-
-    argument: integer or string, optional
-        A string or integer representing an atomic number or element,
-        or a string represnting an isotope.
-
-    most_common_only: boolean
-        If set to True, return only the most common isotope
-
-    Returns
-    -------
-
-    isotopes_list: list of strings or empty list
-        List of all isotopes of an element with isotopic abundances
-        greater than zero, sorted from most abundant to least
-        abundant.  If no isotopes have isotopic abundances greater
-        than zero, this function will return an empty list.  If no
-        arguments are provided, then a list of all common isotopes of
-        all elements will be provided that is sorted by atomic number,
-        with entries for each element sorted from most abundant to
-        least abundant.
-
-    Raises
-    ------
-
-    InvalidElementError
-        If the argument is a valid particle but not a valid element.
-
-    InvalidParticleError
-        If the argument does not correspond to a valid particle.
-
-    TypeError
-        If the argument is not a string or integer.
-
-    Notes
-    -----
-
-    The isotopic abundances are based on the terrestrial environment
-    and may not be wholly appropriate for space and astrophysical
-    applications.
-
-    See also
-    --------
-
-    known_isotopes : returns a list of isotopes that have been
-        discovered
-
-    stable_isotopes : returns isotopes that are stable against
-        radioactive decay
-
-    isotopic_abundance : returns the relative isotopic abundance
-
-    Examples
-    --------
-
-    >>> common_isotopes('H')
-    ['H-1', 'D']
-    >>> common_isotopes(44)
-    ['Ru-102', 'Ru-104', 'Ru-101', 'Ru-99', 'Ru-100', 'Ru-96', 'Ru-98']
-    >>> common_isotopes('beryllium 2+')
-    ['Be-9']
-    >>> common_isotopes('Fe')
-    ['Fe-56', 'Fe-54', 'Fe-57', 'Fe-58']
-    >>> common_isotopes('Fe', most_common_only=True)
-    ['Fe-56']
-    >>> common_isotopes()[0:7]
-    ['H-1', 'D', 'He-4', 'He-3', 'Li-7', 'Li-6', 'Be-9']
-
-    """
-
-    def common_isotopes_for_element(argument: Union[str, int],
-                                    most_common_only: Optional[bool])\
-            -> List[str]:
-
-        isotopes = known_isotopes(argument)
-        CommonIsotopes = [isotope for isotope in isotopes if
-                          'isotopic_abundance' in _Isotopes[isotope].keys()]
-        isotopic_abundances = [_Isotopes[isotope]['isotopic_abundance']
-                               for isotope in CommonIsotopes]
-        sorted_isotopes = [iso_comp for (isotope, iso_comp) in
-                           sorted(zip(isotopic_abundances, CommonIsotopes))]
-
-        sorted_isotopes.reverse()
-
-        if most_common_only and len(sorted_isotopes) > 1:
-            sorted_isotopes = sorted_isotopes[0:1]
-
-        return sorted_isotopes
-
-    if argument is not None:
-
-        try:
-            element = atomic_symbol(argument)
-            isotopes_list = \
-                common_isotopes_for_element(element, most_common_only)
-        except InvalidParticleError:
-            raise InvalidParticleError("Invalid particle")
-        except InvalidElementError:
-            raise InvalidElementError(
-                "common_isotopes is unable to get isotopes "
-                f"from an input of: {argument}")
-
-    elif argument is None:
-        isotopes_list = []
-        for atomic_numb in range(1, 119):
-            isotopes_list += \
-                common_isotopes_for_element(atomic_numb, most_common_only)
-
-    return isotopes_list
-
-
-def stable_isotopes(argument: Union[str, int] = None,
-                    unstable: bool = False) -> List[str]:
-    r"""Returns a list of all stable isotopes of an element, or if no
-    input is provided, a list of all such isotopes for every element.
-
-    Parameters
-    ----------
-
-    argument: integer or string
-        A string or integer representing an atomic number or element,
-        or a string represnting an isotope.
-
-    unstable: boolean
-        If set to True, this function will return a list of the
-        unstable isotopes instead of the stable isotopes.
-
-    Returns
-    -------
-
-    StableIsotopes: list of strings or empty list
-        List of all stable isotopes of an element, sorted from lowest
-        mass number.  If an element has no stable isotopes, this
-        function returns an empty list.
-
-    Raises
-    ------
-
-    InvalidElementError
-        If the argument is a valid particle but not a valid element.
-
-    InvalidParticleError
-        If the argument does not correspond to a valid particle.
-
-    TypeError
-        If the argument is not a string or integer.
-
-    Notes
-    -----
-
-    There are 254 isotopes for which no radioactive decay has been
-    observed.  It is possible that some isotopes will be discovered to
-    be unstable but with extremely long half-lives.  For example,
-    bismuth-209 was recently discovered to have a half-life of about
-    1.9e19 years.  However, such isotopes can be regarded as virtually
-    stable for most applications.
-
-    See also
-    --------
-
-    known_isotopes : returns a list of isotopes that have been
-        discovered
-
-    common_isotopes : returns isotopes with non-zero isotopic
-        abundances
-
-    Examples
-    --------
-
-    >>> stable_isotopes('H')
-    ['H-1', 'D']
-    >>> stable_isotopes(44)
-    ['Ru-96', 'Ru-98', 'Ru-99', 'Ru-100', 'Ru-101', 'Ru-102', 'Ru-104']
-    >>> stable_isotopes('beryllium')
-    ['Be-9']
-    >>> stable_isotopes('Pb-209')
-    ['Pb-204', 'Pb-206', 'Pb-207', 'Pb-208']
-    >>> stable_isotopes(118)
-    []
-
-    Find unstable isotopes
-
-    >>> stable_isotopes('U', unstable=True)[:5] # only first five
-    ['U-217', 'U-218', 'U-219', 'U-220', 'U-221']
-
-    """
-
-    def stable_isotopes_for_element(argument: Union[str, int],
-                                    stable_only: Optional[bool]) -> List[str]:
-        KnownIsotopes = known_isotopes(argument)
-        StableIsotopes = [isotope for isotope in KnownIsotopes if
-                          _Isotopes[isotope]['is_stable'] == stable_only]
-        return StableIsotopes
-
-    if argument is not None:
-        try:
-            element = atomic_symbol(argument)
-            isotopes_list = \
-                stable_isotopes_for_element(element, not unstable)
-        except InvalidParticleError:
-            raise InvalidParticleError("Invalid particle in stable_isotopes")
-        except Exception:
-            raise InvalidElementError(
-                "stable_isotopes is unable to get isotopes "
-                f"from an input of: {argument}")
-    elif argument is None:
-        isotopes_list = []
-        for atomic_numb in range(1, 119):
-            isotopes_list += \
-                stable_isotopes_for_element(atomic_numb, not unstable)
-
-    return isotopes_list
-
-
 def isotopic_abundance(argument: Union[str, int],
                        mass_numb: int = None) -> Quantity:
     r"""Returns the isotopic abundances if known, and otherwise zero.
@@ -1635,257 +803,457 @@ def electric_charge(particle: str) -> Quantity:
     return charge
 
 
-def _extract_charge_state(argument: str) -> Tuple[str, int]:
-    r"""Splits strings containing element or isotope and charge state
-    information into a string without the charge state information and
-    the charge state as an integer (or None if no charge state
-    information is given).
+def is_isotope_stable(argument: Union[str, int],
+                      mass_numb: int = None) -> bool:
+    r"""Returns true for stable isotopes and false otherwise.
 
     Parameters
     ----------
 
-    argument : string
-        String containing information for an element or isotope in any
-        of the allowed formats, followed by charge state information.
+    argument: integer or string
+        A string representing an isotope or an integer representing an
+        atomic number
+
+    mass_numb: integer
+        The mass number of the isotope.
 
     Returns
     -------
 
-    argument : string
-        The original string with charge state information removed.
-
-    Z : integer
-        The charge state of an ion (e.g., this will return 1 if one
-        electron has been removed and -1 if one electron has been
-        gained)
+    is_stable: boolean
+        True if the isotope is stable, False if it is unstable.
 
     Raises
     ------
 
+    InvalidIsotopeError
+        If the arguments correspond to a valid particle but not a
+        valid isotope.
+
     InvalidParticleError
-        If invalid charge information is included.
+        If the arguments do not correspond to a valid particle.
 
-    Notes
-    -----
+    TypeError
+        If the argument is not a string or integer.
 
-    If the argument is not a string, this function will return the
-    original argument and None.
-
-    This function does not check that the charge state is valid.
+    MissingAtomicDataError
+        If stability information is not available.
 
     Examples
     --------
 
-    >>> isotope, Z = _extract_charge_state('Fe-56+++')
-    >>> print(isotope)
-    Fe-56
-    >>> print(Z)
-    3
-    >>> _extract_charge_state('D +1')
-    ('D', 1)
+    >>> is_isotope_stable("H-1")
+    True
+    >>> is_isotope_stable("tritium")
+    False
 
     """
 
-    if not isinstance(argument, str):
-        return argument, None
+    try:
+        isotope = isotope_symbol(argument, mass_numb)
+        is_stable = _Isotopes[isotope]['is_stable']
+    except InvalidIsotopeError:
+        raise InvalidIsotopeError("Invalid isotope in is_isotope_stable")
+    except InvalidParticleError:
+        raise InvalidParticleError("Invalid particle in is_isotope_stable")
+    except KeyError:
+        raise MissingAtomicDataError(f"No data on stability of {isotope}.")
+    except TypeError:
+        raise TypeError("The argument to is_isotope_stable must be a string.")
 
-    argument = _get_standard_symbol(argument)
-
-    if argument in ['n', 'antineutron'] or 'nu_' in argument:
-        return argument, 0
-    if argument in ['e-', 'mu-', 'tau-', 'p-']:
-        return argument, -1
-    elif argument in ['e+', 'mu+', 'tau+', 'p']:
-        return argument, 1
-
-    if argument.lower() == 'alpha':
-        return 'He-4', 1
-    elif 'alpha' in argument.lower():
-        raise InvalidParticleError("Invalid representation of an alpha"
-                                   " particle")
-
-    if argument.count(' ') == 1:  # For cases like 'Fe +2' and 'Fe-56 2+'
-
-        argument, ion_info = argument.split()
-
-        check1 = (ion_info.endswith(('-', '+')) ^
-                  ion_info.startswith(('-', '+')))
-
-        check2 = ((ion_info.count('-') == 1 and ion_info.count('+') == 0) or
-                  (ion_info.count('-') == 0 and ion_info.count('+') == 1))
-
-        if '-' in ion_info:
-            sign = -1
-            charge = ion_info.replace('-', '')
-        elif '+' in ion_info:
-            sign = +1
-            charge = ion_info.replace('+', '')
-
-        try:
-            charge_state = sign * int(charge)
-            check3 = True
-        except Exception:
-            check3 = False
-
-        if not (check1 and check2 and check3):
-            raise InvalidParticleError(
-                "The following input does not have valid charge: "
-                f"state information: {argument}{ion_info}")
-
-    elif argument.endswith(('-', '+')):  # For cases like 'Fe++' or 'Si-'
-
-        char = argument[-1]
-        match = re.match(r"["+char+"]*", argument[::-1])
-
-        charge_state = match.span()[1]
-
-        if char == '-':
-            charge_state = -charge_state
-
-        argument = argument[0:len(argument)-match.span()[1]]
-
-        if argument.endswith(('-', '+')):
-            raise InvalidParticleError("Invalid charge state information")
-
-    else:
-        charge_state = None
-
-    if charge_state is not None and charge_state < -3:
-        warnings.warn(f"Element {atomic_symbol(argument)} has a charge of "
-                      f"{charge_state} which is unlikely to occur in nature.",
-                      AtomicWarning)
-
-    return argument, charge_state
+    return is_stable
 
 
-def _is_neutron(argument: Any, mass_numb: int = None) -> bool:
-    r"""Returns True if the argument corresponds to a neutron, and
-    False otherwise."""
+def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
+    r"""Returns the half-life in seconds for unstable isotopes, and
+    numpy.inf for stable isotopes.
 
-    if argument == 0 and mass_numb == 1:
-        return True
-    elif isinstance(argument, str) and mass_numb is None:
-        if argument in ('n', 'n-1') or argument.lower() in ['neutron', 'n0']:
-            return True
-        else:
-            return False
-    else:
-        return False
+    Parameters
+    ----------
 
+    argument: integer or string
+        A string representing an isotope or an integer representing an
+        atomic number
 
-def _is_hydrogen(argument: Any,
-                 can_be_atomic_number: Optional[bool] = False) -> bool:
-    r"""Returns True if the argument corresponds to hydrogen, and False
-    otherwise."""
+    mass_numb: integer
+        The mass number of the isotope.
 
-    case_sensitive_aliases = ['p', 'p+', 'H', 'D', 'T']
+    Returns
+    -------
 
-    case_insensitive_aliases = ['proton', 'protium', 'deuterium',
-                                'deuteron', 'triton', 'tritium', 'hydrogen']
+    half_life_sec: astropy Quantity
+        The half-life in units of seconds.
 
-    for mass_numb in range(1, 8):
-        case_sensitive_aliases.append(f'H-{mass_numb}')
-        case_insensitive_aliases.append(f'hydrogen-{mass_numb}')
+    Raises:
+    -------
 
-    if isinstance(argument, str):
+    InvalidIsotopeError
+        If the argument is a valid particle but not a valid isotope.
 
-        argument, Z = _extract_charge_state(argument)
+    InvalidParticleError
+        If the argument does not correspond to a valid particle
+        or contradictory information is provided.
 
-        if argument in case_sensitive_aliases:
-            is_hydrogen = True
-        else:
-            is_hydrogen = argument.lower() in case_insensitive_aliases
+    MissingAtomicDataError
+        If no half-life data is available for the isotope.
 
-        if is_hydrogen and Z is not None and Z > 1:
-            raise InvalidParticleError("Invalid charge state of hydrogen")
+    TypeError
+        The argument is not an integer or string or the mass number is
+        not an integer.
 
-    elif argument == 1 and can_be_atomic_number:
-        is_hydrogen = True
-    else:
-        is_hydrogen = False
+    AtomicWarning
+        The half-life is unavailable so the routine returns None.
 
-    return is_hydrogen
+    Notes:
+    ------
 
+    At present there is limited half-life data available.
 
-def _is_electron(arg: Any) -> bool:
-    r"""Returns True if the argument corresponds to an electron, and False
-    otherwise."""
+    Examples:
+    ---------
 
-    if not isinstance(arg, str):
-        return False
+    >>> half_life('T')
+    <Quantity 3.888e+08 s>
+    >>> half_life('n')
+    <Quantity 881.5 s>
+    >>> half_life('H-1')
+    <Quantity inf s>
 
-    return arg in ['e', 'e-'] or arg.lower() == 'electron'
-
-
-def _is_positron(arg: Any) -> bool:
-    r"""Returns True if the argument corresponds to a positron, and False
-    otherwise."""
-
-    if not isinstance(arg, str):
-        return False
-
-    return arg == 'e+' or arg.lower() == 'positron'
-
-
-def _is_antiproton(arg: Any) -> bool:
-    r"""Returns True if the argument corresponds to an antiproton, and
-    False otherwise."""
-
-    if not isinstance(arg, str):
-        return False
-
-    return arg == 'p-' or arg.lower() == 'antiproton'
-
-
-def _is_antineutron(arg: Any) -> bool:
-    r"""Returns True if the argument corresponds to an antineutron, and
-    False otherwise."""
-
-    if not isinstance(arg, str):
-        return False
-
-    return arg.lower() == 'antineutron'
-
-
-def _is_proton(arg: Any, Z: int = None, mass_numb: int = None) -> bool:
-    r"""Returns True if the argument corresponds to a proton, and
-    False otherwise.  This function returns False for 'H-1' if no
-    charge state is given."""
+    """
 
     try:
 
-        isotope = isotope_symbol(arg, mass_numb)
+        isotope = isotope_symbol(argument, mass_numb)
 
-        if Z is None:
-            Z = charge_state(arg)
-
-        return isotope == 'H-1' and Z == 1
-
-    except Exception:
-
-        return False
-
-
-def _is_alpha(arg: Any) -> bool:
-    r"""Returns True if the argument corresponds to an alpha particle,
-    and False otherwise."""
-
-    if not isinstance(arg, str):
-        return False
-
-    if arg.lower() == 'alpha':
-        return True
-    elif 'alpha' in arg.lower():
-        raise InvalidParticleError(
-            f"{arg} is an invalid representation of an alpha particle")
-    else:
-        arg, Z = _extract_charge_state(arg)
-
-        if Z != 2 or arg[-2:] != '-4':
-            return False
+        if _Isotopes[isotope]['is_stable']:
+            half_life_sec = np.inf * u.s
         else:
+            half_life_sec = _Isotopes[isotope].get('half_life', None)
 
-            dash_position = arg.find('-')
-            arg = arg[:dash_position]
+    except InvalidParticleError:
+        raise InvalidParticleError("Invalid element in isotope_symbol.")
+    except InvalidIsotopeError:
+        raise InvalidIsotopeError(
+            "Cannot determine isotope information from these inputs to "
+            f"half_life: {argument}, {mass_numb}")
+    except TypeError:
+        raise TypeError("Incorrect argument type for half_life")
 
-            return arg.lower() == 'helium' or arg == 'He'
+    if half_life_sec is None:
+        warnings.warn(f"The half-life for isotope {isotope} is not"
+                      "available; returning None.", MissingAtomicDataWarning)
+
+    return half_life_sec
+
+
+def known_isotopes(argument: Union[str, int] = None) -> List[str]:
+    r"""Returns a list of all known isotopes of an element, or a list
+    of all known isotopes of every element if no input is provided.
+
+    Parameters
+    ----------
+
+    argument: integer or string, optional
+        A string representing an element, isotope, or ion or an
+        integer representing an atomic number
+
+    Returns
+    -------
+
+    isotopes_list: list of strings or empty list
+        List of all of the isotopes of an element that have been
+        discovered, sorted from lowest mass number to highest mass
+        number.  If no argument is provided, then a list of all known
+        isotopes of every element will be returned that is sorted by
+        atomic number, with entries for each element sorted by mass
+        number.
+
+    Raises
+    ------
+
+    InvalidElementError
+        If the argument is a valid particle but not a valid element.
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle.
+
+    TypeError
+        If the argument is not a string or integer.
+
+    Notes
+    -----
+
+    This list returns both natural and artifically produced isotopes.
+
+    See also
+    --------
+
+    common_isotopes : returns isotopes with non-zero isotopic
+        abundances
+
+    stable_isotopes : returns isotopes that are stable against
+        radioactive decay
+
+    Examples
+    --------
+    >>> known_isotopes('H')
+    ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7']
+    >>> known_isotopes('helium 1+')
+    ['He-3', 'He-4', 'He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10']
+    >>> known_isotopes()[0:10]
+    ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7', 'He-3', 'He-4', 'He-5']
+    >>> len(known_isotopes())
+    3352
+
+    """
+
+    def known_isotopes_for_element(argument):
+        element = atomic_symbol(argument)
+        isotopes = []
+        for isotope in _Isotopes.keys():
+            if element + '-' in isotope and isotope[0:len(element)] == element:
+                isotopes.append(isotope)
+        if element == 'H':
+            isotopes.insert(1, 'D')
+            isotopes.insert(2, 'T')
+        mass_numbers = [mass_number(isotope) for isotope in isotopes]
+        sorted_isotopes = [mass_number for (isotope, mass_number) in
+                           sorted(zip(mass_numbers, isotopes))]
+        return sorted_isotopes
+
+    if argument is not None:
+        try:
+            element = atomic_symbol(argument)
+            isotopes_list = known_isotopes_for_element(element)
+        except InvalidElementError:
+            raise InvalidElementError("known_isotopes is unable to get "
+                                      f"isotopes from an input of: {argument}")
+        except InvalidParticleError:
+            raise InvalidParticleError("Invalid particle in known_isotopes.")
+    elif argument is None:
+        isotopes_list = []
+        for atomic_numb in range(1, 119):
+            isotopes_list += known_isotopes_for_element(atomic_numb)
+
+    return isotopes_list
+
+
+def common_isotopes(argument: Union[str, int] = None,
+                    most_common_only: bool = False) -> List[str]:
+    r"""Returns a list of isotopes of an element with an isotopic
+    abundances greater than zero, or if no input is provided, a list
+    of all such isotopes for every element.
+
+    Parameters
+    ----------
+
+    argument: integer or string, optional
+        A string or integer representing an atomic number or element,
+        or a string represnting an isotope.
+
+    most_common_only: boolean
+        If set to True, return only the most common isotope
+
+    Returns
+    -------
+
+    isotopes_list: list of strings or empty list
+        List of all isotopes of an element with isotopic abundances
+        greater than zero, sorted from most abundant to least
+        abundant.  If no isotopes have isotopic abundances greater
+        than zero, this function will return an empty list.  If no
+        arguments are provided, then a list of all common isotopes of
+        all elements will be provided that is sorted by atomic number,
+        with entries for each element sorted from most abundant to
+        least abundant.
+
+    Raises
+    ------
+
+    InvalidElementError
+        If the argument is a valid particle but not a valid element.
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle.
+
+    TypeError
+        If the argument is not a string or integer.
+
+    Notes
+    -----
+
+    The isotopic abundances are based on the terrestrial environment
+    and may not be wholly appropriate for space and astrophysical
+    applications.
+
+    See also
+    --------
+
+    known_isotopes : returns a list of isotopes that have been
+        discovered
+
+    stable_isotopes : returns isotopes that are stable against
+        radioactive decay
+
+    isotopic_abundance : returns the relative isotopic abundance
+
+    Examples
+    --------
+
+    >>> common_isotopes('H')
+    ['H-1', 'D']
+    >>> common_isotopes(44)
+    ['Ru-102', 'Ru-104', 'Ru-101', 'Ru-99', 'Ru-100', 'Ru-96', 'Ru-98']
+    >>> common_isotopes('beryllium 2+')
+    ['Be-9']
+    >>> common_isotopes('Fe')
+    ['Fe-56', 'Fe-54', 'Fe-57', 'Fe-58']
+    >>> common_isotopes('Fe', most_common_only=True)
+    ['Fe-56']
+    >>> common_isotopes()[0:7]
+    ['H-1', 'D', 'He-4', 'He-3', 'Li-7', 'Li-6', 'Be-9']
+
+    """
+
+    def common_isotopes_for_element(argument: Union[str, int],
+                                    most_common_only: Optional[bool]) \
+            -> List[str]:
+
+        isotopes = known_isotopes(argument)
+        CommonIsotopes = [isotope for isotope in isotopes if
+                          'isotopic_abundance' in _Isotopes[isotope].keys()]
+        isotopic_abundances = [_Isotopes[isotope]['isotopic_abundance']
+                               for isotope in CommonIsotopes]
+        sorted_isotopes = [iso_comp for (isotope, iso_comp) in
+                           sorted(zip(isotopic_abundances, CommonIsotopes))]
+
+        sorted_isotopes.reverse()
+
+        if most_common_only and len(sorted_isotopes) > 1:
+            sorted_isotopes = sorted_isotopes[0:1]
+
+        return sorted_isotopes
+
+    if argument is not None:
+
+        try:
+            element = atomic_symbol(argument)
+            isotopes_list = \
+                common_isotopes_for_element(element, most_common_only)
+        except InvalidParticleError:
+            raise InvalidParticleError("Invalid particle")
+        except InvalidElementError:
+            raise InvalidElementError(
+                "common_isotopes is unable to get isotopes "
+                f"from an input of: {argument}")
+
+    elif argument is None:
+        isotopes_list = []
+        for atomic_numb in range(1, 119):
+            isotopes_list += \
+                common_isotopes_for_element(atomic_numb, most_common_only)
+
+    return isotopes_list
+
+
+def stable_isotopes(argument: Union[str, int] = None,
+                    unstable: bool = False) -> List[str]:
+    r"""Returns a list of all stable isotopes of an element, or if no
+    input is provided, a list of all such isotopes for every element.
+
+    Parameters
+    ----------
+
+    argument: integer or string
+        A string or integer representing an atomic number or element,
+        or a string represnting an isotope.
+
+    unstable: boolean
+        If set to True, this function will return a list of the
+        unstable isotopes instead of the stable isotopes.
+
+    Returns
+    -------
+
+    StableIsotopes: list of strings or empty list
+        List of all stable isotopes of an element, sorted from lowest
+        mass number.  If an element has no stable isotopes, this
+        function returns an empty list.
+
+    Raises
+    ------
+
+    InvalidElementError
+        If the argument is a valid particle but not a valid element.
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle.
+
+    TypeError
+        If the argument is not a string or integer.
+
+    Notes
+    -----
+
+    There are 254 isotopes for which no radioactive decay has been
+    observed.  It is possible that some isotopes will be discovered to
+    be unstable but with extremely long half-lives.  For example,
+    bismuth-209 was recently discovered to have a half-life of about
+    1.9e19 years.  However, such isotopes can be regarded as virtually
+    stable for most applications.
+
+    See also
+    --------
+
+    known_isotopes : returns a list of isotopes that have been
+        discovered
+
+    common_isotopes : returns isotopes with non-zero isotopic
+        abundances
+
+    Examples
+    --------
+
+    >>> stable_isotopes('H')
+    ['H-1', 'D']
+    >>> stable_isotopes(44)
+    ['Ru-96', 'Ru-98', 'Ru-99', 'Ru-100', 'Ru-101', 'Ru-102', 'Ru-104']
+    >>> stable_isotopes('beryllium')
+    ['Be-9']
+    >>> stable_isotopes('Pb-209')
+    ['Pb-204', 'Pb-206', 'Pb-207', 'Pb-208']
+    >>> stable_isotopes(118)
+    []
+
+    Find unstable isotopes
+
+    >>> stable_isotopes('U', unstable=True)[:5] # only first five
+    ['U-217', 'U-218', 'U-219', 'U-220', 'U-221']
+
+    """
+
+    def stable_isotopes_for_element(argument: Union[str, int],
+                                    stable_only: Optional[bool]) -> List[str]:
+        KnownIsotopes = known_isotopes(argument)
+        StableIsotopes = [isotope for isotope in KnownIsotopes if
+                          _Isotopes[isotope]['is_stable'] == stable_only]
+        return StableIsotopes
+
+    if argument is not None:
+        try:
+            element = atomic_symbol(argument)
+            isotopes_list = \
+                stable_isotopes_for_element(element, not unstable)
+        except InvalidParticleError:
+            raise InvalidParticleError("Invalid particle in stable_isotopes")
+        except Exception:
+            raise InvalidElementError(
+                "stable_isotopes is unable to get isotopes "
+                f"from an input of: {argument}")
+    elif argument is None:
+        isotopes_list = []
+        for atomic_numb in range(1, 119):
+            isotopes_list += \
+                stable_isotopes_for_element(atomic_numb, not unstable)
+
+    return isotopes_list
