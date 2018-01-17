@@ -21,7 +21,7 @@ three_species = ['e', 'D+', 'H+']
 class Test_ColdPlasmaPermittivity(object):
     def test_proton_electron_plasma(self):
         """
-        Test proton-electron plasma against the (approximate) 
+        Test proton-electron plasma against the (approximate)
         analytical formulas
         """
         B = 1*u.T

@@ -427,7 +427,7 @@ class Test_classical_transport:
         assert np.allclose(ct2.ion_thermal_conductivity(), expected,
                            atol=1e-6 * u.W / (u.K * u.m))
 
-    @pytest.mark.parametrize("key, expected",{
+    @pytest.mark.parametrize("key, expected", {
         'resistivity': [2.84304305e-08,
                         5.54447070e-08,
                         1.67853407e-12],
@@ -436,7 +436,7 @@ class Test_classical_transport:
                                         2.66496639e-05],
         'electron_thermal_conductivity': [4.91374931e+06,
                                           2.28808496e-03,
-                                          6.90324259e+01] ,
+                                          6.90324259e+01],
         'electron_viscosity': [7.51661800e-02,
                                5.23617668e-21,
                                2.09447067e-20,
@@ -444,12 +444,12 @@ class Test_classical_transport:
                                3.23682681e-11],
         'ion_thermal_conductivity': [1.41709276e+05,
                                      4.20329493e-02,
-                                     6.90323924e+01] ,
+                                     6.90323924e+01],
         'ion_viscosity': [8.43463595e+00,
                           8.84513731e-13,
                           3.53805159e-12,
                           2.54483240e-06,
-                          5.08966116e-06] }.items())
+                          5.08966116e-06]}.items())
     def test_dictionary(self, key, expected):
         calculated = self.all_variables[key]
         assert np.allclose(expected, calculated.si.value)
