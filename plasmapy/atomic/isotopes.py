@@ -26,7 +26,7 @@ def Iso(symbol, name, atomic_number, mass_number, relative_atomic_mass,
 # The atomic mass is given in units of u, and half-lives are in seconds.
 # The half-life data is presently incomplete.
 
-Isotopes = {
+_Isotopes = {
     'n': Iso('n', 'neutron', 0, 1, 1.00866491588, False, half_life=881.5),
     'H-1': Iso('H-1', 'hydrogen-1', 1, 1, 1.00782503223, True,
                isotopic_abundance=0.999885),

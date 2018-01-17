@@ -9,11 +9,11 @@ plasmapy_exceptions = [
     RelativityError,
     AtomicError,
     MissingAtomicDataError,
-    NoChargeInfoError,
-    IonError,
-    IsotopeError,
-    ElementError,
-    ParticleError,
+    ChargeError,
+    InvalidIonError,
+    InvalidIsotopeError,
+    InvalidElementError,
+    InvalidParticleError,
 ]
 
 
