@@ -8,7 +8,7 @@ from plasmapy import utils
 from plasmapy.utils.checks import check_quantity, _check_relativistic
 from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar)
-from ..atomic import (ion_mass, charge_state)
+from ..atomic import (ion_mass, integer_charge)
 from plasmapy.atomic.atomic import _is_electron
 from .parameters import (Debye_length, Hall_parameter,
                          collision_rate_electron_ion, collision_rate_ion_ion)
@@ -137,7 +137,7 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
                              f" in Coulomb_logarithm.")
 
         try:
-            charges[i] = np.abs(e * atomic.charge_state(particles[i]))
+            charges[i] = np.abs(e * atomic.integer_charge(particles[i]))
         except Exception:
             raise ValueError(f"Unable to find charge of particle: "
                              f"{particles[i]} in Coulomb_logarithm.")
@@ -463,7 +463,7 @@ class classical_transport:
             self.m_i = m_i.to(units.kg)
         if Z is None:
             try:
-                self.Z = atomic.charge_state(ion_particle)
+                self.Z = atomic.integer_charge(ion_particle)
             except Exception:
                 raise ValueError(f"Unable to find charge of particle: "
                                  f"{ion_particle} in classical_transport.")

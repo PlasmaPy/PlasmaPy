@@ -2,7 +2,7 @@
 
 from astropy import units
 
-# from plasmapy.atomic import ion_mass, charge_state
+# from plasmapy.atomic import ion_mass, integer_charge
 
 import numpy as np
 # import warnings
@@ -180,7 +180,7 @@ def Alfven_speed(B, density, ion="p", z_mean=None):
                 # warnings.warn("No z_mean given, defaulting to atomic charge",
                 #               PhysicsWarning)
                 try:
-                    Z = atomic.charge_state(ion)
+                    Z = atomic.integer_charge(ion)
                 except AtomicError:
                     Z = 1
             else:
@@ -328,7 +328,7 @@ def ion_sound_speed(*ignore,
             # warnings.warn("No z_mean given, defaulting to atomic charge",
             #               PhysicsWarning)
             try:
-                Z = atomic.charge_state(ion)
+                Z = atomic.integer_charge(ion)
             except AtomicError:
                 Z = 1
         else:
@@ -615,7 +615,7 @@ def collision_rate_electron_ion(T_e,
     else:
         particles = ['e', ion_particle]
         coulomb_log_val = Coulomb_logarithm(T_e, n_e, particles, V)
-    Z_i = atomic.charge_state(ion_particle)
+    Z_i = atomic.integer_charge(ion_particle)
     nu_e = 4 / 3 * np.sqrt(2 * np.pi / m_e) / (4 * np.pi * eps0) ** 2 * \
         e ** 4 * n_e * Z_i * coulomb_log_val / (k_B * T_e) ** 1.5
     return nu_e.to(1 / units.s)
@@ -680,7 +680,7 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
     else:
         particles = [ion_particle, ion_particle]
         coulomb_log_val = Coulomb_logarithm(T_i, n_i, particles, V)
-    Z_i = atomic.charge_state(ion_particle)
+    Z_i = atomic.integer_charge(ion_particle)
     m_i = atomic.ion_mass(ion_particle)
     nu_i = 4 / 3 * np.sqrt(np.pi / m_i) / (4 * np.pi * eps0)**2 * e**4 * \
         n_i * Z_i**4 * coulomb_log_val / (k_B * T_i)**1.5
@@ -810,7 +810,7 @@ def gyrofrequency(B, particle='e', signed=False, z_mean=None):
             # warnings.warn("No z_mean given, defaulting to atomic charge",
             #               PhysicsWarning)
             try:
-                Z = atomic.charge_state(particle)
+                Z = atomic.integer_charge(particle)
             except AtomicError:
                 Z = 1
         else:
@@ -1028,7 +1028,7 @@ def plasma_frequency(n, particle='e', z_mean=None):
             # warnings.warn("No z_mean given, defaulting to atomic charge",
             #               PhysicsWarning)
             try:
-                Z = atomic.charge_state(particle)
+                Z = atomic.integer_charge(particle)
             except Exception:
                 Z = 1
         else:
@@ -1239,7 +1239,7 @@ def inertial_length(n, particle='e'):
     """
 
     try:
-        Z = atomic.charge_state(particle)
+        Z = atomic.integer_charge(particle)
     except AtomicError:
         raise ValueError(f"Invalid particle {particle} in inertial_length.")
     if Z:
@@ -1506,7 +1506,7 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
     # We do not need a charge state here, so the sole intent is to
     # catch invalid ions.
     try:
-        atomic.charge_state(ion)
+        atomic.integer_charge(ion)
     except Exception:
         raise ValueError("Invalid ion in lower_hybrid_frequency.")
 

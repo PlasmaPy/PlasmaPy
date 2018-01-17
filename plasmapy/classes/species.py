@@ -63,7 +63,7 @@ class Species:
         if np.isinf(dt) and np.isinf(nt):  # coveralls: ignore
             raise ValueError("Both dt and nt are infinite.")
 
-        self.q = atomic.charge_state(particle_type) * constants.e.si
+        self.q = atomic.integer_charge(particle_type) * constants.e.si
         self.m = atomic.ion_mass(particle_type)
         self.N = int(n_particles)
         self.scaling = scaling

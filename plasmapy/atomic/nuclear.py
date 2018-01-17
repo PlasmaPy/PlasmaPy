@@ -7,7 +7,7 @@ from .atomic import (mass_number,
                      isotope_mass,
                      ion_mass,
                      atomic_number,
-                     charge_state)
+                     integer_charge)
 
 from .names import (isotope_symbol,
                     _is_neutron,
@@ -242,7 +242,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             try:
                 total_charge += atomic_number(particle)
             except InvalidElementError:
-                total_charge += charge_state(particle)
+                total_charge += integer_charge(particle)
 
         return total_charge
 
