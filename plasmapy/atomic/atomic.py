@@ -548,7 +548,7 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
         if _Isotopes[isotope]['is_stable']:
             half_life_sec = np.inf * u.s
         else:
-            half_life_sec = _Isotopes[isotope]['half_life']
+            half_life_sec = _Isotopes[isotope].get('half_life', None)
 
     except InvalidParticleError:
         raise InvalidParticleError("Invalid element in isotope_symbol.")
@@ -558,8 +558,8 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
             f"half_life: {argument}, {mass_numb}")
     except TypeError:
         raise TypeError("Incorrect argument type for half_life")
-    except KeyError:
-        half_life_sec = None
+
+    if half_life_sec is None:
         warnings.warn(f"The half-life for isotope {isotope} is not"
                       "available; returning None.", MissingAtomicDataWarning)
 
@@ -1469,10 +1469,7 @@ def isotopic_abundance(argument: Union[str, int],
     except InvalidIsotopeError:
         raise InvalidIsotopeError("Invalid isotope in isotopic_abundance.")
 
-    try:
-        iso_comp = _Isotopes[isotope]['isotopic_abundance']
-    except KeyError:
-        iso_comp = 0.0
+    iso_comp = _Isotopes[isotope].get('isotopic_abundance', 0.0)
 
     return iso_comp
 
