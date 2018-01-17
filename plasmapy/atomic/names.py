@@ -19,6 +19,9 @@ from ..utils import (AtomicWarning,
                      InvalidParticleError,
                      ChargeError)
 
+# TODO: Create an ion_symbol function
+# TODO: Create a particle_symbol function
+
 
 def atomic_symbol(argument: Union[str, int]) -> str:
     r"""Returns the atomic symbol.

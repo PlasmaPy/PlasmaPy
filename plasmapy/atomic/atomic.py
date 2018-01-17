@@ -3,29 +3,34 @@
 import numpy as np
 import warnings
 from typing import (Union, Optional, List)
+
 from astropy import units as u, constants as const
 from astropy.units import Quantity
+
 from .elements import _Elements
 from .isotopes import _Isotopes
-from ..utils import (AtomicWarning,
-                     InvalidElementError,
-                     InvalidIsotopeError,
-                     InvalidIonError,
-                     AtomicError,
-                     MissingAtomicDataError,
-                     MissingAtomicDataWarning,
-                     InvalidParticleError,
-                     ChargeError)
 
-from .names import (atomic_symbol,
-                    isotope_symbol,
-                    _extract_charge_state,
-                    _is_proton,
-                    _is_positron,
-                    _is_antineutron,
-                    _is_antiproton,
-                    _is_electron,
-                    _is_neutron)
+from ..utils import (
+    AtomicWarning,
+    InvalidElementError,
+    InvalidIsotopeError,
+    InvalidIonError,
+    AtomicError,
+    MissingAtomicDataError,
+    MissingAtomicDataWarning,
+    InvalidParticleError,
+    ChargeError)
+
+from .names import (
+    atomic_symbol,
+    isotope_symbol,
+    _extract_charge_state,
+    _is_proton,
+    _is_positron,
+    _is_antineutron,
+    _is_antiproton,
+    _is_electron,
+    _is_neutron)
 
 
 # TODO: refactor the atomic subpackage
@@ -37,8 +42,6 @@ from .names import (atomic_symbol,
 #     4. Returns the Particle class which would be the input to the
 #        inner function
 
-# TODO: Create an ion_symbol function
-# TODO: Create a particle_symbol function
 # TODO: Create a particle_mass function
 # TODO: Create lepton_number and baryon_number functions
 # TODO: Maybe create is_antimatter, is_lepton, is_baryon, is_boson, is_fermion
@@ -1113,7 +1116,7 @@ def common_isotopes(argument: Union[str, int] = None,
     """
 
     def common_isotopes_for_element(argument: Union[str, int],
-                                    most_common_only: Optional[bool])\
+                                    most_common_only: Optional[bool]) \
             -> List[str]:
 
         isotopes = known_isotopes(argument)
