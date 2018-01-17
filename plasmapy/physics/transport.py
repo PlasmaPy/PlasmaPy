@@ -223,13 +223,14 @@ class classical_transport:
 
     This function uses fitting functions from literature to calculate
     the transport coefficients, which are the resistivity, thermoelectric
-    conductivity, thermal conductivity, and viscosity, which can be used
-    to close the two-fluid equations.
+    conductivity, thermal conductivity, and viscosity.
 
     Note well the assumptions in the derivation of classical transport.
-    It is assumed that turbulent transport does not dominate, and the velocity
-    distribution function is close to Maxwellian (no extremely strong
-    gradients), which is equivalent to the following conditions:
+    It is assumed that the plasma is fully ionized, so only consisting of ions
+    and electrons. Neutral atoms aren't considered. It's assumed that turbulent
+    transport does not dominate, and the velocity distribution function is
+    close to Maxwellian (no extremely strong gradients), which is equivalent
+    to the following conditions:
 
     * collisional frequency >> gyrofrequency
     * collisional mean free path << gradient scale length along field
