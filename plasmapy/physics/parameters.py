@@ -13,7 +13,7 @@ from plasmapy import atomic, utils
 # TODO for future: change these into decorators.  _check_quantity does a
 # bit more than @quantity_input as it can allow
 from plasmapy.utils.checks import _check_quantity
-from plasmapy.utils.exceptions import PhysicsError, AtomicError  # , PhysicsWarning
+from plasmapy.utils.exceptions import (PhysicsError, AtomicError)
 
 
 r"""

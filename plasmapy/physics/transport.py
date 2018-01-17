@@ -713,11 +713,13 @@ class classical_transport:
         """
         d = {'resistivity': self.resistivity(),
              'thermoelectric_conductivity': self.thermoelectric_conductivity(),
-             'electron_thermal_conductivity': self.electron_thermal_conductivity(),
+             'electron_thermal_conductivity':
+                 self.electron_thermal_conductivity(),
              'electron_viscosity': self.electron_viscosity()}
         if self.model != "spitzer":
-            d = dict(d, **{'ion_thermal_conductivity': self.ion_thermal_conductivity(),
-                  'ion_viscosity': self.ion_viscosity()})
+            d = dict(d, **{'ion_thermal_conductivity':
+                           self.ion_thermal_conductivity(),
+                           'ion_viscosity': self.ion_viscosity()})
         return d
 
 
@@ -1663,7 +1665,8 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
 
         def f_eta_2(r, zeta, Delta_perp_i2):
             eta_2_i = ((3 / 5 * np.sqrt(2) + 2 * zeta) * r ** 4 +
-                       (2.680 + 25.98 * zeta + 90.71 * zeta**2 + 104 * zeta**3) * r ** 2 +
+                       (2.680 + 25.98 * zeta + 90.71 * zeta**2 + 104 * zeta**3)
+                       * r ** 2 +
                        0.4483 * eta_0_i * Delta_par_i2 ** 2
                        ) / Delta_perp_i2
             return eta_2_i
