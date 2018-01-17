@@ -329,7 +329,7 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
     elif isotope == 'H-3':
         isotope = 'T'
 
-    if atomic_number(element) > mass_numb:
+    if _Elements[element]['atomic_number'] > mass_numb:
         raise InvalidParticleError("The atomic number cannot exceed the mass "
                                    "number in isotope_symbol.")
 
@@ -400,68 +400,6 @@ def element_name(argument: Union[str, int]) -> str:
     return name
 
 
-def atomic_number(argument: str) -> str:
-    r"""Returns the number of protons in an atom, isotope, or ion.
-
-    Parameters
-    ----------
-
-    argument: string
-        A string representing an element, isotope, or ion.
-
-    Returns
-    -------
-
-    atomic_number: integer
-        An integer representing the atomic number of the element or
-        isotope.
-
-    Raises
-    ------
-
-    InvalidElementError
-        If the argument is a valid particle but not a valid element.
-
-    InvalidParticleError
-        If the argument does not correspond to a valid particle.
-
-    TypeError
-        If the argument is not a string.
-
-    See also
-    --------
-
-    mass_number : returns the mass number (the total number of protons
-        and neutrons) of an isotope.
-
-    Examples
-    --------
-    >>> atomic_number("H")
-    1
-    >>> atomic_number("tritium")
-    1
-    >>> atomic_number("alpha")
-    2
-    >>> atomic_number("oganesson")
-    118
-
-    """
-
-    try:
-        element = atomic_symbol(argument)
-        atomic_numb = _Elements[element]['atomic_number']
-    except (InvalidElementError, KeyError):
-        raise InvalidElementError(
-            f"The argument {argument} to atomic_number does not correspond to "
-            "a valid element.") from None
-    except InvalidParticleError:
-        raise InvalidParticleError(f"The argument {argument} to atomic_number "
-                                   "is not a valid particle.") from None
-    except TypeError:
-        raise TypeError(f"The argument {argument} to atomic number is not a "
-                        f"string.") from None
-
-    return atomic_numb
 
 
 def _extract_charge_state(argument: str) -> Tuple[str, int]:

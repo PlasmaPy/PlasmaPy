@@ -6,7 +6,7 @@ from astropy import units as u, constants as const
 from ..names import (atomic_symbol,
                      isotope_symbol,
                      element_name,
-                     atomic_number,
+
                      _is_neutron,
                      _is_hydrogen,
                      _is_electron,
@@ -19,7 +19,8 @@ from ..names import (atomic_symbol,
 
 from ..isotopes import _Isotopes
 
-from ..atomic import (mass_number,
+from ..atomic import (atomic_number,
+                      mass_number,
                       standard_atomic_weight,
                       isotope_mass,
                       ion_mass,

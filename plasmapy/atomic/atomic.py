@@ -19,7 +19,6 @@ from ..utils import (AtomicWarning,
 
 from .names import (atomic_symbol,
                     isotope_symbol,
-                    atomic_number,
                     _extract_charge_state,
                     _is_proton,
                     _is_positron,
@@ -44,6 +43,69 @@ from .names import (atomic_symbol,
 # TODO: Create lepton_number and baryon_number functions
 # TODO: Maybe create is_antimatter, is_lepton, is_baryon, is_boson, is_fermion
 
+
+def atomic_number(argument: str) -> str:
+    r"""Returns the number of protons in an atom, isotope, or ion.
+
+    Parameters
+    ----------
+
+    argument: string
+        A string representing an element, isotope, or ion.
+
+    Returns
+    -------
+
+    atomic_number: integer
+        An integer representing the atomic number of the element or
+        isotope.
+
+    Raises
+    ------
+
+    InvalidElementError
+        If the argument is a valid particle but not a valid element.
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle.
+
+    TypeError
+        If the argument is not a string.
+
+    See also
+    --------
+
+    mass_number : returns the mass number (the total number of protons
+        and neutrons) of an isotope.
+
+    Examples
+    --------
+    >>> atomic_number("H")
+    1
+    >>> atomic_number("tritium")
+    1
+    >>> atomic_number("alpha")
+    2
+    >>> atomic_number("oganesson")
+    118
+
+    """
+
+    try:
+        element = atomic_symbol(argument)
+        atomic_numb = _Elements[element]['atomic_number']
+    except (InvalidElementError, KeyError):
+        raise InvalidElementError(
+            f"The argument {argument} to atomic_number does not correspond to "
+            "a valid element.") from None
+    except InvalidParticleError:
+        raise InvalidParticleError(f"The argument {argument} to atomic_number "
+                                   "is not a valid particle.") from None
+    except TypeError:
+        raise TypeError(f"The argument {argument} to atomic number is not a "
+                        f"string.") from None
+
+    return atomic_numb
 
 def is_isotope_stable(argument: Union[str, int],
                       mass_numb: int = None) -> bool:
