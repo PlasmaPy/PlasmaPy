@@ -400,8 +400,6 @@ def element_name(argument: Union[str, int]) -> str:
     return name
 
 
-
-
 def _extract_charge_state(argument: str) -> Tuple[str, int]:
     r"""Splits strings containing element or isotope and charge state
     information into a string without the charge state information and

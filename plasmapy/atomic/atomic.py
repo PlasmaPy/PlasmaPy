@@ -107,148 +107,6 @@ def atomic_number(argument: str) -> str:
 
     return atomic_numb
 
-def is_isotope_stable(argument: Union[str, int],
-                      mass_numb: int = None) -> bool:
-    r"""Returns true for stable isotopes and false otherwise.
-
-    Parameters
-    ----------
-
-    argument: integer or string
-        A string representing an isotope or an integer representing an
-        atomic number
-
-    mass_numb: integer
-        The mass number of the isotope.
-
-    Returns
-    -------
-
-    is_stable: boolean
-        True if the isotope is stable, False if it is unstable.
-
-    Raises
-    ------
-
-    InvalidIsotopeError
-        If the arguments correspond to a valid particle but not a
-        valid isotope.
-
-    InvalidParticleError
-        If the arguments do not correspond to a valid particle.
-
-    TypeError
-        If the argument is not a string or integer.
-
-    MissingAtomicDataError
-        If stability information is not available.
-
-    Examples
-    --------
-
-    >>> is_isotope_stable("H-1")
-    True
-    >>> is_isotope_stable("tritium")
-    False
-
-    """
-
-    try:
-        isotope = isotope_symbol(argument, mass_numb)
-        is_stable = _Isotopes[isotope]['is_stable']
-    except InvalidIsotopeError:
-        raise InvalidIsotopeError("Invalid isotope in is_isotope_stable")
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid particle in is_isotope_stable")
-    except KeyError:
-        raise MissingAtomicDataError(f"No data on stability of {isotope}.")
-    except TypeError:
-        raise TypeError("The argument to is_isotope_stable must be a string.")
-
-    return is_stable
-
-
-def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
-    r"""Returns the half-life in seconds for unstable isotopes, and
-    numpy.inf for stable isotopes.
-
-    Parameters
-    ----------
-
-    argument: integer or string
-        A string representing an isotope or an integer representing an
-        atomic number
-
-    mass_numb: integer
-        The mass number of the isotope.
-
-    Returns
-    -------
-
-    half_life_sec: astropy Quantity
-        The half-life in units of seconds.
-
-    Raises:
-    -------
-
-    InvalidIsotopeError
-        If the argument is a valid particle but not a valid isotope.
-
-    InvalidParticleError
-        If the argument does not correspond to a valid particle
-        or contradictory information is provided.
-
-    MissingAtomicDataError
-        If no half-life data is available for the isotope.
-
-    TypeError
-        The argument is not an integer or string or the mass number is
-        not an integer.
-
-    AtomicWarning
-        The half-life is unavailable so the routine returns None.
-
-    Notes:
-    ------
-
-    At present there is limited half-life data available.
-
-    Examples:
-    ---------
-
-    >>> half_life('T')
-    <Quantity 3.888e+08 s>
-    >>> half_life('n')
-    <Quantity 881.5 s>
-    >>> half_life('H-1')
-    <Quantity inf s>
-
-    """
-
-    try:
-
-        isotope = isotope_symbol(argument, mass_numb)
-
-        if _Isotopes[isotope]['is_stable']:
-            half_life_sec = np.inf * u.s
-        else:
-            half_life_sec = _Isotopes[isotope].get('half_life', None)
-
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid element in isotope_symbol.")
-    except InvalidIsotopeError:
-        raise InvalidIsotopeError(
-            "Cannot determine isotope information from these inputs to "
-            f"half_life: {argument}, {mass_numb}")
-    except TypeError:
-        raise TypeError("Incorrect argument type for half_life")
-
-    if half_life_sec is None:
-        warnings.warn(f"The half-life for isotope {isotope} is not"
-                      "available; returning None.", MissingAtomicDataWarning)
-
-    return half_life_sec
-
 
 def mass_number(isotope: str) -> int:
     r"""Get the mass number (the number of protons and neutrons) of an
@@ -708,6 +566,383 @@ def ion_mass(argument: Union[str, int, Quantity], Z: int = None,
     return m_i
 
 
+def isotopic_abundance(argument: Union[str, int],
+                       mass_numb: int = None) -> Quantity:
+    r"""Returns the isotopic abundances if known, and otherwise zero.
+
+    Parameters
+    ----------
+
+    argument: string or integer
+        A string representing an element or isotope, or an integer
+        representing the atomic number of an element.
+
+    mass_numb: integer
+        The mass number of an isotope, which is required if and only
+        if the first argument can only be used
+
+    Returns
+    -------
+
+    iso_comp: float
+        The relative isotopic abundance in the terrestrial environment
+
+    Raises
+    ------
+
+    InvalidIsotopeError
+        If the argument is a valid particle but not a valid isotope.
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle
+        or contradictory information is provided.
+
+    TypeError
+        If the argument is not a string or integer.
+
+
+    Notes
+    -----
+
+    Isotopic composition data are most readily available for the
+    terrestrial environment, so this function may not be wholly
+    appropriate for space and astrophysical applications.
+
+    The data retrieved from this routine are those recommended by NIST
+    as of 2017.
+
+    Examples
+    --------
+
+    >>> isotopic_abundance('Pb-208')
+    0.524
+    >>> isotopic_abundance('hydrogen', 1)
+    0.999885
+    >>> isotopic_abundance(118, 294)  # Og-294
+    0.0
+
+    """
+
+    if _is_neutron(argument):
+        raise InvalidIsotopeError(
+            "Neutrons do not have an isotopic abundance.")
+
+    try:
+        isotope = isotope_symbol(argument, mass_numb)
+    except InvalidParticleError:
+        raise InvalidParticleError("Invalid particle in isotopic_abundance.")
+    except InvalidIsotopeError:
+        raise InvalidIsotopeError("Invalid isotope in isotopic_abundance.")
+
+    iso_comp = _Isotopes[isotope].get('isotopic_abundance', 0.0)
+
+    return iso_comp
+
+
+def charge_state(particle: str) -> int:
+    r"""Returns the charge state of an ion or other particle.
+
+    Parameters
+    ----------
+
+    particle : string
+        String representing a particle.
+
+    Returns
+    -------
+
+    Z : integer
+        The charge state, or None if it is not available.
+
+    Raises
+    ------
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle
+        or contradictory information is provided.
+
+    ChargeError
+        If charge information for the particle is not available.
+
+    AtomicWarning
+        If the input represents an ion with a charge state that is
+        below -3.
+
+    Notes
+    -----
+
+    This function supports two formats for the charge state
+    information.
+
+    The first format is a string that has information for the element
+    or isotope at the beginning, a space in between, and the charge
+    state information in the form of an integer followed by a plus or
+    minus sign, or a plus or minus sign followed by an integer.
+
+    The second format is a string containing element information at
+    the beginning, following by one or more plus or minus signs.
+
+    This function returns -1 for electrons, +1 for positrons, and 0
+    for neutrons.
+
+    Examples
+    --------
+
+    >>> charge_state('Fe-56 2+')
+    2
+    >>> charge_state('He -2')
+    -2
+    >>> charge_state('H+')
+    1
+    >>> charge_state('N-14++')
+    2
+
+    """
+
+    if _is_electron(particle) or _is_antiproton(particle):
+        return -1
+    elif _is_positron(particle):
+        return 1
+    elif _is_neutron(particle) or _is_antineutron(particle):
+        return 0
+
+    particle, Z = _extract_charge_state(particle)
+
+    try:
+        atomic_symbol(particle)
+    except InvalidParticleError:
+        raise InvalidParticleError("Invalid particle in charge_state")
+
+    if Z is None:
+        raise ChargeError(f"Unable to find charge of {particle}.")
+
+    atomic_numb = atomic_number(particle)
+
+    if Z > atomic_numb:
+        raise InvalidParticleError("The integer charge cannot be greater than "
+                                   "the atomic number in charge_state.")
+
+    if Z < -atomic_numb - 1 or Z < -3:
+        warnings.warn(f"Element {atomic_symbol(particle)} has a charge of {Z}"
+                      " which is unlikely to occur in nature.", AtomicWarning)
+
+    return Z
+
+
+def electric_charge(particle: str) -> Quantity:
+    r"""Returns the electric charge (in coulombs) of an ion or other
+    particle
+
+    Parameters
+    ----------
+
+    particle : string
+        String representing an element or isotope followed by charge
+        state information.
+
+    Returns
+    -------
+
+    charge: Quantity
+        The electric charge in coulombs.
+
+    Raises
+    ------
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle
+        or contradictory information is provided.
+
+    ChargeError
+        If charge information for the particle is not available.
+
+    AtomicWarning
+        If the input represents an ion with a charge state that is
+        below -3.
+
+    Notes
+    -----
+
+    This function supports two formats for the charge state
+    information.
+
+    The first format is a string that has information for the element
+    or isotope at the beginning, a space in between, and the charge
+    state information in the form of an integer followed by a plus or
+    minus sign, or a plus or minus sign followed by an integer.
+
+    The second format is a string containing element information at
+    the beginning, following by one or more plus or minus signs.
+
+    This function returns -1.6021766208e-19 C for electrons and
+    1.6021766208e-19 C for positrons.
+
+    Examples
+    --------
+
+    >>> electric_charge('p')
+    <Quantity 1.60217662e-19 C>
+    >>> electric_charge('e')
+    <Quantity -1.60217662e-19 C>
+
+    """
+
+    try:
+        charge = charge_state(particle) * const.e.to('C')
+    except InvalidParticleError:
+        raise InvalidParticleError("Invalid particle in electric_charge.")
+    except ChargeError:
+        raise ChargeError("Charge information is not being provided to "
+                          "electric_charge.")
+    except TypeError:
+        raise TypeError("Invalid type in electric_charge.")
+
+    return charge
+
+
+def is_isotope_stable(argument: Union[str, int],
+                      mass_numb: int = None) -> bool:
+    r"""Returns true for stable isotopes and false otherwise.
+
+    Parameters
+    ----------
+
+    argument: integer or string
+        A string representing an isotope or an integer representing an
+        atomic number
+
+    mass_numb: integer
+        The mass number of the isotope.
+
+    Returns
+    -------
+
+    is_stable: boolean
+        True if the isotope is stable, False if it is unstable.
+
+    Raises
+    ------
+
+    InvalidIsotopeError
+        If the arguments correspond to a valid particle but not a
+        valid isotope.
+
+    InvalidParticleError
+        If the arguments do not correspond to a valid particle.
+
+    TypeError
+        If the argument is not a string or integer.
+
+    MissingAtomicDataError
+        If stability information is not available.
+
+    Examples
+    --------
+
+    >>> is_isotope_stable("H-1")
+    True
+    >>> is_isotope_stable("tritium")
+    False
+
+    """
+
+    try:
+        isotope = isotope_symbol(argument, mass_numb)
+        is_stable = _Isotopes[isotope]['is_stable']
+    except InvalidIsotopeError:
+        raise InvalidIsotopeError("Invalid isotope in is_isotope_stable")
+    except InvalidParticleError:
+        raise InvalidParticleError("Invalid particle in is_isotope_stable")
+    except KeyError:
+        raise MissingAtomicDataError(f"No data on stability of {isotope}.")
+    except TypeError:
+        raise TypeError("The argument to is_isotope_stable must be a string.")
+
+    return is_stable
+
+
+def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
+    r"""Returns the half-life in seconds for unstable isotopes, and
+    numpy.inf for stable isotopes.
+
+    Parameters
+    ----------
+
+    argument: integer or string
+        A string representing an isotope or an integer representing an
+        atomic number
+
+    mass_numb: integer
+        The mass number of the isotope.
+
+    Returns
+    -------
+
+    half_life_sec: astropy Quantity
+        The half-life in units of seconds.
+
+    Raises:
+    -------
+
+    InvalidIsotopeError
+        If the argument is a valid particle but not a valid isotope.
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle
+        or contradictory information is provided.
+
+    MissingAtomicDataError
+        If no half-life data is available for the isotope.
+
+    TypeError
+        The argument is not an integer or string or the mass number is
+        not an integer.
+
+    AtomicWarning
+        The half-life is unavailable so the routine returns None.
+
+    Notes:
+    ------
+
+    At present there is limited half-life data available.
+
+    Examples:
+    ---------
+
+    >>> half_life('T')
+    <Quantity 3.888e+08 s>
+    >>> half_life('n')
+    <Quantity 881.5 s>
+    >>> half_life('H-1')
+    <Quantity inf s>
+
+    """
+
+    try:
+
+        isotope = isotope_symbol(argument, mass_numb)
+
+        if _Isotopes[isotope]['is_stable']:
+            half_life_sec = np.inf * u.s
+        else:
+            half_life_sec = _Isotopes[isotope].get('half_life', None)
+
+    except InvalidParticleError:
+        raise InvalidParticleError("Invalid element in isotope_symbol.")
+    except InvalidIsotopeError:
+        raise InvalidIsotopeError(
+            "Cannot determine isotope information from these inputs to "
+            f"half_life: {argument}, {mass_numb}")
+    except TypeError:
+        raise TypeError("Incorrect argument type for half_life")
+
+    if half_life_sec is None:
+        warnings.warn(f"The half-life for isotope {isotope} is not"
+                      "available; returning None.", MissingAtomicDataWarning)
+
+    return half_life_sec
+
+
 def known_isotopes(argument: Union[str, int] = None) -> List[str]:
     r"""Returns a list of all known isotopes of an element, or a list
     of all known isotopes of every element if no input is provided.
@@ -1019,237 +1254,3 @@ def stable_isotopes(argument: Union[str, int] = None,
                 stable_isotopes_for_element(atomic_numb, not unstable)
 
     return isotopes_list
-
-
-def isotopic_abundance(argument: Union[str, int],
-                       mass_numb: int = None) -> Quantity:
-    r"""Returns the isotopic abundances if known, and otherwise zero.
-
-    Parameters
-    ----------
-
-    argument: string or integer
-        A string representing an element or isotope, or an integer
-        representing the atomic number of an element.
-
-    mass_numb: integer
-        The mass number of an isotope, which is required if and only
-        if the first argument can only be used
-
-    Returns
-    -------
-
-    iso_comp: float
-        The relative isotopic abundance in the terrestrial environment
-
-    Raises
-    ------
-
-    InvalidIsotopeError
-        If the argument is a valid particle but not a valid isotope.
-
-    InvalidParticleError
-        If the argument does not correspond to a valid particle
-        or contradictory information is provided.
-
-    TypeError
-        If the argument is not a string or integer.
-
-
-    Notes
-    -----
-
-    Isotopic composition data are most readily available for the
-    terrestrial environment, so this function may not be wholly
-    appropriate for space and astrophysical applications.
-
-    The data retrieved from this routine are those recommended by NIST
-    as of 2017.
-
-    Examples
-    --------
-
-    >>> isotopic_abundance('Pb-208')
-    0.524
-    >>> isotopic_abundance('hydrogen', 1)
-    0.999885
-    >>> isotopic_abundance(118, 294)  # Og-294
-    0.0
-
-    """
-
-    if _is_neutron(argument):
-        raise InvalidIsotopeError(
-            "Neutrons do not have an isotopic abundance.")
-
-    try:
-        isotope = isotope_symbol(argument, mass_numb)
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid particle in isotopic_abundance.")
-    except InvalidIsotopeError:
-        raise InvalidIsotopeError("Invalid isotope in isotopic_abundance.")
-
-    iso_comp = _Isotopes[isotope].get('isotopic_abundance', 0.0)
-
-    return iso_comp
-
-
-def charge_state(particle: str) -> int:
-    r"""Returns the charge state of an ion or other particle.
-
-    Parameters
-    ----------
-
-    particle : string
-        String representing a particle.
-
-    Returns
-    -------
-
-    Z : integer
-        The charge state, or None if it is not available.
-
-    Raises
-    ------
-
-    InvalidParticleError
-        If the argument does not correspond to a valid particle
-        or contradictory information is provided.
-
-    ChargeError
-        If charge information for the particle is not available.
-
-    AtomicWarning
-        If the input represents an ion with a charge state that is
-        below -3.
-
-    Notes
-    -----
-
-    This function supports two formats for the charge state
-    information.
-
-    The first format is a string that has information for the element
-    or isotope at the beginning, a space in between, and the charge
-    state information in the form of an integer followed by a plus or
-    minus sign, or a plus or minus sign followed by an integer.
-
-    The second format is a string containing element information at
-    the beginning, following by one or more plus or minus signs.
-
-    This function returns -1 for electrons, +1 for positrons, and 0
-    for neutrons.
-
-    Examples
-    --------
-
-    >>> charge_state('Fe-56 2+')
-    2
-    >>> charge_state('He -2')
-    -2
-    >>> charge_state('H+')
-    1
-    >>> charge_state('N-14++')
-    2
-
-    """
-
-    if _is_electron(particle) or _is_antiproton(particle):
-        return -1
-    elif _is_positron(particle):
-        return 1
-    elif _is_neutron(particle) or _is_antineutron(particle):
-        return 0
-
-    particle, Z = _extract_charge_state(particle)
-
-    try:
-        atomic_symbol(particle)
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid particle in charge_state")
-
-    if Z is None:
-        raise ChargeError(f"Unable to find charge of {particle}.")
-
-    atomic_numb = atomic_number(particle)
-
-    if Z > atomic_numb:
-        raise InvalidParticleError("The integer charge cannot be greater than "
-                                   "the atomic number in charge_state.")
-
-    if Z < -atomic_numb - 1 or Z < -3:
-        warnings.warn(f"Element {atomic_symbol(particle)} has a charge of {Z}"
-                      " which is unlikely to occur in nature.", AtomicWarning)
-
-    return Z
-
-
-def electric_charge(particle: str) -> Quantity:
-    r"""Returns the electric charge (in coulombs) of an ion or other
-    particle
-
-    Parameters
-    ----------
-
-    particle : string
-        String representing an element or isotope followed by charge
-        state information.
-
-    Returns
-    -------
-
-    charge: Quantity
-        The electric charge in coulombs.
-
-    Raises
-    ------
-
-    InvalidParticleError
-        If the argument does not correspond to a valid particle
-        or contradictory information is provided.
-
-    ChargeError
-        If charge information for the particle is not available.
-
-    AtomicWarning
-        If the input represents an ion with a charge state that is
-        below -3.
-
-    Notes
-    -----
-
-    This function supports two formats for the charge state
-    information.
-
-    The first format is a string that has information for the element
-    or isotope at the beginning, a space in between, and the charge
-    state information in the form of an integer followed by a plus or
-    minus sign, or a plus or minus sign followed by an integer.
-
-    The second format is a string containing element information at
-    the beginning, following by one or more plus or minus signs.
-
-    This function returns -1.6021766208e-19 C for electrons and
-    1.6021766208e-19 C for positrons.
-
-    Examples
-    --------
-
-    >>> electric_charge('p')
-    <Quantity 1.60217662e-19 C>
-    >>> electric_charge('e')
-    <Quantity -1.60217662e-19 C>
-
-    """
-
-    try:
-        charge = charge_state(particle) * const.e.to('C')
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid particle in electric_charge.")
-    except ChargeError:
-        raise ChargeError("Charge information is not being provided to "
-                          "electric_charge.")
-    except TypeError:
-        raise TypeError("Invalid type in electric_charge.")
-
-    return charge
