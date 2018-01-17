@@ -36,7 +36,8 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.mathjax',
               'sphinx.ext.napoleon', 'sphinx.ext.intersphinx',
               'sphinx_automodapi.automodapi',
               'sphinx_automodapi.smart_resolver',
-              'sphinx_gallery.gen_gallery']
+              'sphinx_gallery.gen_gallery',
+              'sphinx.ext.graphviz']
 
 
 intersphinx_mapping = {

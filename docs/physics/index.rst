@@ -3,3 +3,4 @@
 .. _plasmapy-physics:
 
 .. automodapi:: plasmapy.physics
+   :no-inheritance-diagram:

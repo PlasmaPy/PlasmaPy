@@ -53,6 +53,7 @@ try:
     from . import mathematics
     from . import physics
     from . import diagnostics
+    from . import utils
 except ImportError:
     raise ImportError("Unable to load PlasmaPy subpackages.")
 

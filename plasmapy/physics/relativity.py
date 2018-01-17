@@ -2,9 +2,7 @@ import numpy as np
 from astropy import units
 
 from ..constants import c
-import plasmapy.atomic as atomic
-from plasmapy.utils.checks import _check_quantity
-from plasmapy.utils.exceptions import RelativityError
+from plasmapy import atomic, utils
 
 
 def Lorentz_factor(V):
@@ -58,11 +56,12 @@ def Lorentz_factor(V):
     inf
     """
 
-    _check_quantity(V, 'V', 'Lorentz_factor', units.m/units.s)
+    utils._check_quantity(V, 'V', 'Lorentz_factor', units.m / units.s)
 
     if not np.all(np.abs(V) <= c):
-        raise RelativityError("The Lorentz factor cannot be calculated for "
-                              "speeds faster than the speed of light. ")
+        raise utils.RelativityError(
+            "The Lorentz factor cannot be calculated for "
+            "speeds faster than the speed of light. ")
 
     if V.size > 1:
 
@@ -71,13 +70,13 @@ def Lorentz_factor(V):
         equals_c = np.abs(V) == c
         is_slow = ~equals_c
 
-        gamma[is_slow] = ((1 - (V[is_slow]/c)**2)**-0.5).value
+        gamma[is_slow] = ((1 - (V[is_slow] / c)**2)**-0.5).value
         gamma[equals_c] = np.inf
 
     else:
         if np.abs(V) == c:
             gamma = np.inf
         else:
-            gamma = ((1 - (V/c)**2)**-0.5).value
+            gamma = ((1 - (V / c)**2)**-0.5).value
 
     return gamma
