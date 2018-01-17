@@ -96,9 +96,9 @@ class Test_Maxwellian_1D(object):
         """
         Tests standard deviation of function?
         """
-        std = (Maxwellian_1D(self.v_vect,
-                             T=self.T_e,
-                             particle=self.particle) * self.v_vect**2 * self.dv).sum()
+        std = (Maxwellian_1D(
+            self.v_vect, T=self.T_e, particle=self.particle) *
+               self.v_vect**2 * self.dv).sum()
         std = np.sqrt(std)
         T_distri = (std**2 / k_B * m_e).to(u.K)
         assert np.isclose(T_distri.value, self.T_e.value)
@@ -698,7 +698,7 @@ class Test_Maxwellian_speed_3D(object):
                           atol=0.0), errStr
 
 
-#%% kappa
+# kappa
 
 # test class for kappa_velocity_1D function:
 class Test_kappa_velocity_1D(object):
@@ -722,6 +722,7 @@ class Test_kappa_velocity_1D(object):
                                        kappa=self.kappa,
                                        particle=self.particle)
         self.distFuncTrue = 6.637935187755855e-07
+
     def test_invalid_kappa(self):
         """
         Checks if function raises error when kappa <= 3/2 is passed as an
@@ -729,10 +730,11 @@ class Test_kappa_velocity_1D(object):
         """
         with pytest.raises(ValueError):
             kappa_velocity_1D(v=self.v,
-                                     T=self.T_e,
-                                     kappa=self.kappaInvalid,
-                                     particle=self.particle,
-                                     units="units")
+                              T=self.T_e,
+                              kappa=self.kappaInvalid,
+                              particle=self.particle,
+                              units="units")
+
     def test_max_noDrift(self):
         """
         Checks maximum value of distribution function is in expected place,
@@ -799,10 +801,9 @@ class Test_kappa_velocity_1D(object):
         """
         Tests standard deviation of function?
         """
-        std = (kappa_velocity_1D(self.v_vect,
-                                 T=self.T_e,
-                                 kappa=self.kappa,
-                                 particle=self.particle) * self.v_vect**2 * self.dv).sum()
+        std = (kappa_velocity_1D(
+            self.v_vect, T=self.T_e, kappa=self.kappa,
+            particle=self.particle) * self.v_vect**2 * self.dv).sum()
         std = np.sqrt(std)
         T_distri = (std**2 / k_B * m_e).to(u.K)
         assert np.isclose(T_distri.value, self.T_e.value)
@@ -949,6 +950,7 @@ class Test_kappa_velocity_3D(object):
         self.Vy_drift2 = 1e5 * u.m / u.s
         self.Vz_drift2 = 1e5 * u.m / u.s
         self.distFuncTrue = 1.1847914288918793e-22
+
     def test_invalid_kappa(self):
         """
         Checks if function raises error when kappa <= 3/2 is passed as an
@@ -956,12 +958,13 @@ class Test_kappa_velocity_3D(object):
         """
         with pytest.raises(ValueError):
             kappa_velocity_3D(vx=self.vx,
-                                     vy=self.vy,
-                                     vz=self.vz,
-                                     T=self.T,
-                                     kappa=self.kappaInvalid,
-                                     particle=self.particle,
-                                     units="units")
+                              vy=self.vy,
+                              vz=self.vz,
+                              T=self.T,
+                              kappa=self.kappaInvalid,
+                              particle=self.particle,
+                              units="units")
+
 #    def test_maxwellian_limit(self):
 #        """
 #        Tests the limit of large kappa to see if kappa distribution function
@@ -996,6 +999,7 @@ class Test_kappa_velocity_3D(object):
 #                          atol=0.0), errStr
 #
 #        return
+
     def test_norm(self):
         """
         Tests whether distribution function is normalized, and integrates to 1.
