@@ -3,8 +3,9 @@
 import numpy as np
 
 from plasmapy.diagnostics.langmuir import (swept_probe_analysis,
-                               obtain_EEDF,
-                               obtain_EEPF)
+                                           obtain_EEDF,
+                                           obtain_EEPF)
+
 
 class Test_swept_probe_analysis():
     def test_no_signal(self):
@@ -16,6 +17,7 @@ class Test_swept_probe_analysis():
                   "when zero signal is passed, but doesn't.")
         assert True, errStr
 
+
 class Test_obtain_EEDF():
     def test_no_signal(self):
         """
@@ -25,6 +27,7 @@ class Test_obtain_EEDF():
         errStr = ("Attempting to obtain the EEDF should return an error when "
                   "zero signal is passed, but doesn't.")
         assert True, errStr
+
 
 class Test_obtain_EEPF():
     def test_no_signal(self):
