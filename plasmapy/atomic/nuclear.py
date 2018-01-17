@@ -3,9 +3,20 @@
 from astropy import units, constants
 import re
 from itertools import repeat
-from .atomic import (isotope_symbol, mass_number, isotope_mass, ion_mass,
-                     atomic_number, charge_state, _is_neutron, _is_electron,
-                     _is_positron, _is_antiproton, _is_antineutron)
+from .atomic import (mass_number,
+                     isotope_mass,
+                     ion_mass,
+                     atomic_number,
+                     charge_state)
+
+from .names import (isotope_symbol,
+                    _is_neutron,
+                    _is_proton,
+                    _is_electron,
+                    _is_positron,
+                    _is_antiproton,
+                    _is_antineutron)
+
 from ..utils import (InvalidElementError, InvalidIsotopeError)
 
 

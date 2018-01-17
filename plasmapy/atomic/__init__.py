@@ -1,11 +1,13 @@
 """Physical and mathematical constants for use within PlasmaPy."""
-from .atomic import (atomic_symbol,
-                     isotope_symbol,
-                     atomic_number,
-                     is_isotope_stable,
+
+from .names import (atomic_symbol,
+                    isotope_symbol,
+                    element_name,
+                    atomic_number)
+
+from .atomic import (is_isotope_stable,
                      half_life,
                      mass_number,
-                     element_name,
                      standard_atomic_weight,
                      isotope_mass,
                      ion_mass,

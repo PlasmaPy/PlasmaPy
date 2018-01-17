@@ -3,11 +3,23 @@ import numpy as np
 from itertools import product
 from astropy import units as u, constants as const
 
-from ..atomic import (atomic_symbol,
-                      isotope_symbol,
-                      atomic_number,
-                      mass_number,
-                      element_name,
+from ..names import (atomic_symbol,
+                     isotope_symbol,
+                     element_name,
+                     atomic_number,
+                     _is_neutron,
+                     _is_hydrogen,
+                     _is_electron,
+                     _is_positron,
+                     _is_antiproton,
+                     _is_alpha,
+                     _is_proton,
+                     _is_antineutron,
+                     _extract_charge_state)
+
+from ..isotopes import _Isotopes
+
+from ..atomic import (mass_number,
                       standard_atomic_weight,
                       isotope_mass,
                       ion_mass,
@@ -18,17 +30,10 @@ from ..atomic import (atomic_symbol,
                       stable_isotopes,
                       isotopic_abundance,
                       charge_state,
-                      electric_charge,
-                      _Isotopes,
-                      _is_neutron,
-                      _is_hydrogen,
-                      _is_electron,
-                      _is_positron,
-                      _is_antiproton,
-                      _is_alpha,
-                      _extract_charge_state,
-                      _is_proton)
+                      electric_charge)
+
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
+
 from ...utils import (AtomicWarning,
                       InvalidElementError,
                       InvalidIsotopeError,
@@ -36,7 +41,6 @@ from ...utils import (AtomicWarning,
                       ChargeError,
                       AtomicError,
                       MissingAtomicDataError,
-                      MissingAtomicDataWarning,
                       InvalidParticleError)
 
 # (argument, expected)
