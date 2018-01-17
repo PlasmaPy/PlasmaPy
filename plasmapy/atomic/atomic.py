@@ -2,11 +2,12 @@
 
 import numpy as np
 import re
+import warnings
+from typing import (Union, Optional, Any, List, Tuple)
 from astropy import units as u, constants as const
 from astropy.units import Quantity
-import warnings
-from .elements import atomic_symbols, atomic_symbols_dict, Elements
-from .isotopes import Isotopes
+from .elements import _atomic_symbols, _atomic_symbols_dict, _Elements
+from .isotopes import _Isotopes
 from .particles import (_is_special_particle, _get_standard_symbol)
 from ..utils import (AtomicWarning,
                      InvalidElementError,
@@ -17,7 +18,6 @@ from ..utils import (AtomicWarning,
                      MissingAtomicDataWarning,
                      InvalidParticleError,
                      ChargeError)
-from typing import (Union, Optional, Any, List, Tuple)
 
 
 # The code contained within atomic_symbol(), isotope_symbol(), and
@@ -135,7 +135,7 @@ def atomic_symbol(argument: Union[str, int]) -> str:
     if isinstance(argument, int):
 
         try:
-            element = atomic_symbols[argument]
+            element = _atomic_symbols[argument]
         except KeyError:
             raise InvalidParticleError(f"{argument} is an invalid atomic "
                                        "number in atomic_symbol.")
@@ -156,9 +156,9 @@ def atomic_symbol(argument: Union[str, int]) -> str:
         else:
             mass_numb = ''
 
-        if argument.lower() in atomic_symbols_dict.keys():
-            element = atomic_symbols_dict[argument.lower()]
-        elif argument in atomic_symbols.values():
+        if argument.lower() in _atomic_symbols_dict.keys():
+            element = _atomic_symbols_dict[argument.lower()]
+        elif argument in _atomic_symbols.values():
             element = argument.capitalize()
         else:
             raise InvalidParticleError(f"{argument} is an invalid argument "
@@ -168,13 +168,13 @@ def atomic_symbol(argument: Union[str, int]) -> str:
 
             isotope = element.capitalize() + '-' + mass_numb
 
-            if isotope not in Isotopes.keys():
+            if isotope not in _Isotopes.keys():
                 raise InvalidParticleError(
                     "The input in atomic_symbol corresponding "
                     f"to {isotope} is not a valid isotope.")
 
     if Z is not None and \
-            Z > Elements[element]['atomic_number']:
+            Z > _Elements[element]['atomic_number']:
         raise InvalidParticleError("Cannot have an ionization state greater "
                                    "than the atomic number.")
 
@@ -273,7 +273,7 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
     # If the argument is already in our standard form for an isotope,
     # return the argument.
 
-    if mass_numb is None and argument in Isotopes.keys():
+    if mass_numb is None and argument in _Isotopes.keys():
         return argument
 
     if isinstance(argument, str):
@@ -408,7 +408,7 @@ def atomic_number(argument: str) -> str:
 
     try:
         element = atomic_symbol(argument)
-        atomic_numb = Elements[element]['atomic_number']
+        atomic_numb = _Elements[element]['atomic_number']
     except (InvalidElementError, KeyError):
         raise InvalidElementError(
             f"The argument {argument} to atomic_number does not correspond to "
@@ -471,7 +471,7 @@ def is_isotope_stable(argument: Union[str, int],
 
     try:
         isotope = isotope_symbol(argument, mass_numb)
-        is_stable = Isotopes[isotope]['is_stable']
+        is_stable = _Isotopes[isotope]['is_stable']
     except InvalidIsotopeError:
         raise InvalidIsotopeError("Invalid isotope in is_isotope_stable")
     except InvalidParticleError:
@@ -545,10 +545,10 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
 
         isotope = isotope_symbol(argument, mass_numb)
 
-        if Isotopes[isotope]['is_stable']:
+        if _Isotopes[isotope]['is_stable']:
             half_life_sec = np.inf * u.s
         else:
-            half_life_sec = Isotopes[isotope]['half_life']
+            half_life_sec = _Isotopes[isotope]['half_life']
 
     except InvalidParticleError:
         raise InvalidParticleError("Invalid element in isotope_symbol.")
@@ -619,7 +619,7 @@ def mass_number(isotope: str) -> int:
 
     try:
         isotope = isotope_symbol(isotope)
-        mass_numb = Isotopes[isotope]["mass_number"]
+        mass_numb = _Isotopes[isotope]["mass_number"]
     except InvalidIsotopeError:
         raise InvalidIsotopeError("Invalid isotope in mass_number.")
     except InvalidParticleError:
@@ -685,7 +685,7 @@ def element_name(argument: Union[str, int]) -> str:
 
     try:
         element = atomic_symbol(argument)
-        name = Elements[element]["name"]
+        name = _Elements[element]["name"]
     except InvalidElementError:
         raise InvalidElementError("Invalid element in element_name.")
     except InvalidParticleError:
@@ -795,7 +795,7 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
         raise AtomicError("Use isotope_mass to get masses of isotopes.")
 
     try:
-        atomic_weight = Elements[element]['atomic_mass']
+        atomic_weight = _Elements[element]['atomic_mass']
     except KeyError:
         raise MissingAtomicDataError(
             f"No standard atomic weight is available for {element}.")
@@ -876,7 +876,7 @@ def isotope_mass(argument: Union[str, int],
 
     try:
         isotope = isotope_symbol(argument, mass_numb)
-        atomic_mass = Isotopes[isotope]['atomic_mass']
+        atomic_mass = _Isotopes[isotope]['atomic_mass']
     except InvalidParticleError:
         raise InvalidParticleError("Invalid particle in isotope_mass.")
     except InvalidIsotopeError:
@@ -1152,7 +1152,7 @@ def known_isotopes(argument: Union[str, int] = None) -> List[str]:
     def known_isotopes_for_element(argument):
         element = atomic_symbol(argument)
         isotopes = []
-        for isotope in Isotopes.keys():
+        for isotope in _Isotopes.keys():
             if element + '-' in isotope and isotope[0:len(element)] == element:
                 isotopes.append(isotope)
         if element == 'H':
@@ -1263,8 +1263,8 @@ def common_isotopes(argument: Union[str, int] = None,
 
         isotopes = known_isotopes(argument)
         CommonIsotopes = [isotope for isotope in isotopes if
-                          'isotopic_abundance' in Isotopes[isotope].keys()]
-        isotopic_abundances = [Isotopes[isotope]['isotopic_abundance']
+                          'isotopic_abundance' in _Isotopes[isotope].keys()]
+        isotopic_abundances = [_Isotopes[isotope]['isotopic_abundance']
                                for isotope in CommonIsotopes]
         sorted_isotopes = [iso_comp for (isotope, iso_comp) in
                            sorted(zip(isotopic_abundances, CommonIsotopes))]
@@ -1378,7 +1378,7 @@ def stable_isotopes(argument: Union[str, int] = None,
                                     stable_only: Optional[bool]) -> List[str]:
         KnownIsotopes = known_isotopes(argument)
         StableIsotopes = [isotope for isotope in KnownIsotopes if
-                          Isotopes[isotope]['is_stable'] == stable_only]
+                          _Isotopes[isotope]['is_stable'] == stable_only]
         return StableIsotopes
 
     if argument is not None:
@@ -1470,7 +1470,7 @@ def isotopic_abundance(argument: Union[str, int],
         raise InvalidIsotopeError("Invalid isotope in isotopic_abundance.")
 
     try:
-        iso_comp = Isotopes[isotope]['isotopic_abundance']
+        iso_comp = _Isotopes[isotope]['isotopic_abundance']
     except KeyError:
         iso_comp = 0.0
 

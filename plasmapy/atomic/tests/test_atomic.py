@@ -19,7 +19,7 @@ from ..atomic import (atomic_symbol,
                       isotopic_abundance,
                       charge_state,
                       electric_charge,
-                      Isotopes,
+                      _Isotopes,
                       _is_neutron,
                       _is_hydrogen,
                       _is_electron,
@@ -744,9 +744,9 @@ def test_half_life():
 def test_half_life_unstable_isotopes():
     """Test that half_life returns None and issues a warning for all isotopes
     that do not yet have half-life data."""
-    for isotope in Isotopes.keys():
-        if 'half_life' not in Isotopes[isotope].keys() and \
-                not Isotopes[isotope].keys():
+    for isotope in _Isotopes.keys():
+        if 'half_life' not in _Isotopes[isotope].keys() and \
+                not _Isotopes[isotope].keys():
             with pytest.warns(AtomicWarning, message=(
                     f"No AtomicWarning issued for {isotope}")):
                 assert half_life(isotope) is None
