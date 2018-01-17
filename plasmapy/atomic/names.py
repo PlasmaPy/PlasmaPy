@@ -683,7 +683,7 @@ def _is_proton(arg: Any, Z: int = None, mass_numb: int = None) -> bool:
 
     argument, Z_from_arg = _extract_charge_state(arg)
 
-    if Z is None == Z_from_arg is None:
+    if (Z is None) == (Z_from_arg is None):
         return False
     else:
         if Z is None:
@@ -695,25 +695,6 @@ def _is_proton(arg: Any, Z: int = None, mass_numb: int = None) -> bool:
         return False
 
     return isotope == 'H-1' and Z == 1
-
-
-#    try:
-#
-#        isotope = isotope_symbol(arg, mass_numb)
-#
-#
-
-#        if isotope == 'H-1 1+':
-#            return
-
-#        if Z is None:
-#            Z = charge_state(arg)
-
-#        return isotope == 'H-1' and Z == 1
-
-#    except Exception:
-
-#        return False
 
 
 def _is_alpha(arg: Any) -> bool:

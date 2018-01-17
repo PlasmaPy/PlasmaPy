@@ -28,10 +28,6 @@ from .names import (atomic_symbol,
                     _is_electron,
                     _is_neutron)
 
-# The code contained within atomic_symbol(), isotope_symbol(), and
-# _extract_charge_state() is designed to catch all of the special
-# cases for different inputs.  Complexity is concentrated in these
-# functions so that the rest of the functions can be simpler.
 
 # TODO: refactor the atomic subpackage
 #  - Create a Particle class
@@ -41,8 +37,6 @@ from .names import (atomic_symbol,
 #     3. Checks to make sure that the inputs are of the correct types
 #     4. Returns the Particle class which would be the input to the
 #        inner function
-#    Would it be helpful to put the string parsing code into a new file
-#    called something like parsing.py?
 
 # TODO: Create an ion_symbol function
 # TODO: Create a particle_symbol function
