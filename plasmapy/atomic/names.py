@@ -9,7 +9,7 @@ from .elements import (_atomic_symbols, _atomic_symbols_dict, _Elements)
 
 from .isotopes import _Isotopes
 
-from .particles import (_is_special_particle, _get_standard_symbol)
+from .parsing import (_is_special_particle, _get_standard_symbol)
 
 from ..utils import (AtomicWarning,
                      InvalidElementError,

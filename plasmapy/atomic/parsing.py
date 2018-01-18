@@ -1,16 +1,13 @@
 import numpy as np
 import re
 import warnings
-from typing import (Union, Optional, Any, Tuple)
+from typing import (Union, Dict, Optional, Any, Tuple)
 
 from .elements import (_atomic_symbols, _atomic_symbols_dict, _Elements)
 
 from .isotopes import _Isotopes
 
-from .particles import (_is_special_particle,
-                        _get_standard_symbol,
-                        _case_sensitive_aliases,
-                        _case_insensitive_aliases)
+from .particles import _Particles, _special_particles
 
 from ..utils import (AtomicWarning,
                      InvalidElementError,
@@ -18,7 +15,99 @@ from ..utils import (AtomicWarning,
                      InvalidIonError,
                      AtomicError,
                      InvalidParticleError,
-                     ChargeError)
+                     ChargeError,
+)
+
+
+def _get_standard_symbol(alias: Union[str, int]) -> str:
+    """Returns the standard symbol for a particle or antiparticle
+    when the argument is a valid alias.  If the argument is not a
+    valid alias, then this function returns the original argument
+    (which will usually be a string but may be an int representing
+    atomic number)."""
+
+    if not isinstance(alias, str):
+        return alias
+
+    if alias in _case_sensitive_aliases.keys():
+        return _case_sensitive_aliases[alias]
+    elif alias.lower() in _case_insensitive_aliases.keys():
+        return _case_insensitive_aliases[alias.lower()]
+    else:
+        return alias
+
+
+def _is_special_particle(alias: Union[str, int]) -> bool:
+    r"""Returns true if a particle is a special particle, and False
+    otherwise."""
+
+    symbol = _get_standard_symbol(alias)
+
+    return symbol in _special_particles
+
+
+
+def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
+    """Create dictionaries for case sensitive aliases and case
+    insensitive aliases of special particles and antiparticles.
+
+    The keys of these dictionaries are the aliases, and the values
+    are the corresponding standardized symbol for the particle or
+    antiparticle."""
+
+    case_sensitive_aliases = {}
+    case_insensitive_aliases = {}
+
+    for symbol in Particles.keys():
+        name = Particles[symbol]['name']
+        case_insensitive_aliases[name.lower()] = symbol
+
+    case_sensitive_aliases_for_a_symbol = [
+        (['beta-'], 'e-'),
+        (['beta+'], 'e+'),
+        (['p+'], 'p'),
+        (['n-1'], 'n'),
+        (['H-2'], 'D'),
+        (['H-2+', 'H-2 1+', 'H-2 +1', 'D+'], 'D 1+'),
+        (['H-3+', 'H-3 1+', 'H-3 +1', 'T+'], 'T 1+'),
+    ]
+
+    case_insensitive_aliases_for_a_symbol = [
+        (['antielectron'], 'e+'),
+        (['muon-'], 'mu-'),
+        (['muon+'], 'mu+'),
+        (['tau particle'], 'tau-'),
+        (['protium'], 'H-1'),
+        (['protium+', 'protium 1+', 'protium +1'], 'p'),
+        (['deuterium', 'hydrogen-2'], 'D'),
+        (['deuteron', 'deuterium+', 'deuterium 1+', 'deuterium +1'],
+         'D 1+'),
+        (['tritium', 'hydrogen-3'], 'T'),
+        (['triton', 'tritium+', 'tritium 1+', 'tritium +1'], 'T 1+'),
+        (['alpha'], 'He-4 2+'),
+    ]
+
+    for aliases, symbol in case_sensitive_aliases_for_a_symbol:
+        for alias in aliases:
+            case_sensitive_aliases[alias] = symbol
+
+    for aliases, symbol in case_insensitive_aliases_for_a_symbol:
+        for alias in aliases:
+            case_insensitive_aliases[alias.lower()] = symbol
+
+    alias_keys = list(case_insensitive_aliases.keys())
+
+    for alias in alias_keys:
+        if 'anti' in alias and 'anti-' not in alias:
+            symbol = case_insensitive_aliases[alias].lower()
+            new_alias = alias.replace('anti', 'anti-')
+            case_insensitive_aliases[new_alias] = symbol
+
+    return case_sensitive_aliases, case_insensitive_aliases
+
+
+_case_sensitive_aliases, _case_insensitive_aliases = \
+    _create_alias_dicts(_Particles)
 
 
 def _parse_and_check_atomic_input(
@@ -28,18 +117,24 @@ def _parse_and_check_atomic_input(
     r"""Parses information about a particle into a dictionary
     containing standard symbols, while checking to make sure
     that the particle is valid.
+
     Parameters
     ----------
+
     argument : string or integer
         String containing information for an element, isotope, or ion
         in any of the allowed formats; or an integer representing an
         atomic number.
+
     mass_numb : integer, optional
         The mass number of an isotope.
+
     Z : integer, optional
         The integer charge of an ion.
+
     Returns
     -------
+
     nomenclature_dict : dict
         A dictionary containing information about the element, isotope,
         or ion.  The key 'symbol' corresponds to the particle symbol
@@ -49,14 +144,17 @@ def _parse_and_check_atomic_input(
         to the mass number, and 'Z' corresponds to the integer charge.
         The corresponding items will be given by None if the necessary
         information is not provided.
+
     Raises
     ------
+
     InvalidParticleError
         If the arguments do not correspond to a valid particle or
         antiparticle.
     InvalidElementError
         If the particle is valid but does not correspond to an element,
         ion, or isotope.
+
     """
 
     def _atomic_number_to_symbol(atomic_numb: int):
