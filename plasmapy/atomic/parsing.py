@@ -15,36 +15,7 @@ from ..utils import (AtomicWarning,
                      InvalidIonError,
                      AtomicError,
                      InvalidParticleError,
-                     ChargeError,
-)
-
-
-def _get_standard_symbol(alias: Union[str, int]) -> str:
-    """Returns the standard symbol for a particle or antiparticle
-    when the argument is a valid alias.  If the argument is not a
-    valid alias, then this function returns the original argument
-    (which will usually be a string but may be an int representing
-    atomic number)."""
-
-    if not isinstance(alias, str):
-        return alias
-
-    if alias in _case_sensitive_aliases.keys():
-        return _case_sensitive_aliases[alias]
-    elif alias.lower() in _case_insensitive_aliases.keys():
-        return _case_insensitive_aliases[alias.lower()]
-    else:
-        return alias
-
-
-def _is_special_particle(alias: Union[str, int]) -> bool:
-    r"""Returns true if a particle is a special particle, and False
-    otherwise."""
-
-    symbol = _get_standard_symbol(alias)
-
-    return symbol in _special_particles
-
+                     ChargeError,)
 
 
 def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
@@ -108,6 +79,37 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
 
 _case_sensitive_aliases, _case_insensitive_aliases = \
     _create_alias_dicts(_Particles)
+
+
+def _dealias_particle_aliases(alias: Union[str, int]) -> str:
+    """Returns the standard symbol for a particle or antiparticle
+    when the argument is a valid alias.  If the argument is not a
+    valid alias, then this function returns the original argument
+    (which will usually be a string but may be an int representing
+    atomic number)."""
+
+    if not isinstance(alias, str):
+        symbol = alias
+    elif (alias in _case_sensitive_aliases.values() or
+            alias in _case_insensitive_aliases.values()):
+        symbol = alias
+    elif alias in _case_sensitive_aliases.keys():
+        symbol = _case_sensitive_aliases[alias]
+    elif alias.lower() in _case_insensitive_aliases.keys():
+        symbol = _case_insensitive_aliases[alias.lower()]
+    else:
+        symbol = alias
+
+    return symbol
+
+
+def _is_special_particle(alias: Union[str, int]) -> bool:
+    r"""Returns true if a particle is a special particle, and False
+    otherwise."""
+
+    symbol = _dealias_particle_aliases(alias)
+
+    return symbol in _special_particles
 
 
 def _parse_and_check_atomic_input(
@@ -309,9 +311,9 @@ def _parse_and_check_atomic_input(
 
         return ion
 
-    argument = _get_standard_symbol(argument)  # Deals with aliases
+    argument = _dealias_particle_aliases(argument)  # Deals with aliases
 
-    if _is_special_particle(argument):
+    if argument in _special_particles:
         if (mass_numb is not None) or (Z is not None):
             raise InvalidParticleError
         else:
@@ -365,6 +367,10 @@ def _parse_and_check_atomic_input(
         symbol = isotope
     else:
         symbol = element
+
+    if isotope:
+        if isotope not in _Isotopes.keys():
+            raise InvalidParticleError
 
     nomenclature_dict = {
         'symbol': symbol,
