@@ -1,11 +1,5 @@
 import pytest
-
-from ..particles import (
-    _get_standard_symbol,
-    _Particles,
-    _case_sensitive_aliases,
-    _case_insensitive_aliases)
-
+from ..particles import _Particles
 
 particle_antiparticle_pairs = [
     ('e-', 'e+'),
@@ -53,58 +47,3 @@ def test_particle_antiparticle_pairs(particle, antiparticle):
             _Particles[antiparticle]['name'].replace('anti', ''), \
             (f"{particle} and {antiparticle} do not have same name except "
              "for 'anti'.")
-
-
-aliases_and_symbols = [
-    ('electron', 'e-'),
-    ('beta-', 'e-'),
-    ('beta+', 'e+'),
-    ('positron', 'e+'),
-    ('proton', 'p'),
-    ('', ''),
-    (5, 5),
-    ('deuterium+', 'D 1+'),
-    ('deuterium 1+', 'D 1+'),
-    ('tritium +1', 'T 1+'),
-    ('alpha', 'He-4 2+'),
-    ('D+', 'D 1+'),
-    ('Deuterium', 'D'),
-    ('deuteron', 'D 1+'),
-    ('triton', 'T 1+'),
-    ('muon', 'mu-'),
-    ('antimuon', 'mu+'),
-    ('tau particle', 'tau-'),
-    ('antitau', 'tau+'),
-    ('p+', 'p'),
-]
-
-
-@pytest.mark.parametrize("alias,symbol", aliases_and_symbols)
-def test_get_standard_symbol(alias, symbol):
-    """Test that _get_standard_symbol correctly takes in aliases and
-    returns the corresponding symbols, and returns the original argument
-    if the argument does not correspond to an alias."""
-    result = _get_standard_symbol(alias)
-    assert result == symbol, \
-        (f"_get_standard_symbol({alias}) returns {result}, which differs "
-         f"from the expected symbol of {symbol}.\n\n"
-         f"_case_insensitive_aliases:\n{_case_insensitive_aliases}\n\n"
-         f"_case_sensitive_aliases:\n{_case_sensitive_aliases}")
-
-
-alias_dictionaries = [_case_sensitive_aliases, _case_insensitive_aliases]
-
-
-@pytest.mark.parametrize("alias_dict", alias_dictionaries)
-def test_alias_dict_properties(alias_dict):
-    """Test properties of the alias dictionaries."""
-
-    for key in alias_dict.keys():
-        assert isinstance(key, str), \
-            (f"The following key should be a string, but isn't: {key}\n\n"
-             f"The entire dictionary is:\n\n{alias_dict}")
-
-    for value in alias_dict.values():
-        assert isinstance(value, str), \
-            (f"The following value should be a string, but isn't: {value}\n\n"
-             f"The entire dictionary is:\n\n{alias_dict}")
