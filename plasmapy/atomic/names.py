@@ -9,7 +9,7 @@ from .elements import (_atomic_symbols, _atomic_symbols_dict, _Elements)
 
 from .isotopes import _Isotopes
 
-from .parsing import (_is_special_particle, _get_standard_symbol)
+from .parsing import (_is_special_particle, _dealias_particle_aliases)
 
 from ..utils import (AtomicWarning,
                      InvalidElementError,
@@ -457,7 +457,10 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
     if not isinstance(argument, str):
         return argument, None
 
-    argument = _get_standard_symbol(argument)
+    try:
+        argument = _dealias_particle_aliases(argument)
+    except Exception:
+        pass
 
     if argument in ['n', 'antineutron'] or 'nu_' in argument:
         return argument, 0
