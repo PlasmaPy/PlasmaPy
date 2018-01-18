@@ -1,6 +1,6 @@
 import pytest
 from ..parsing import (
-    _get_standard_symbol,
+    _dealias_particle_aliases,
     _is_special_particle,
     _case_insensitive_aliases,
     _case_sensitive_aliases,
@@ -30,14 +30,14 @@ aliases_and_symbols = [
 ]
 
 
-@pytest.mark.parametrize("alias,symbol", aliases_and_symbols)
-def test_get_standard_symbol(alias, symbol):
-    """Test that _get_standard_symbol correctly takes in aliases and
+@pytest.mark.parametrize("alias, symbol", aliases_and_symbols)
+def test_dealias_particle_aliases(alias, symbol):
+    """Test that _dealias_particle_aliases correctly takes in aliases and
     returns the corresponding symbols, and returns the original argument
     if the argument does not correspond to an alias."""
-    result = _get_standard_symbol(alias)
+    result = _dealias_particle_aliases(alias)
     assert result == symbol, \
-        (f"_get_standard_symbol({alias}) returns {result}, which differs "
+        (f"_dealias_particle_aliases({alias}) returns {result}, which differs "
          f"from the expected symbol of {symbol}.\n\n"
          f"_case_insensitive_aliases:\n{_case_insensitive_aliases}\n\n"
          f"_case_sensitive_aliases:\n{_case_sensitive_aliases}")
@@ -59,7 +59,6 @@ def test_alias_dict_properties(alias_dict):
         assert isinstance(value, str), \
             (f"The following value should be a string, but isn't: {value}\n\n"
              f"The entire dictionary is:\n\n{alias_dict}")
-
 
 
 # (arg, kwargs, expected)
