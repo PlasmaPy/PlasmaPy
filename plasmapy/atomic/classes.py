@@ -77,7 +77,9 @@ class Particle():
         is_special_particle = particle in _special_particles
 
         if is_special_particle and (mass_numb is not None or Z is not None):
-            raise InvalidParticleError()
+            raise InvalidParticleError(
+                f"Particle '{argument}' with mass_numb = {mass_numb} "
+                f"and Z = {Z} is not a valid particle.")
 
         if is_special_particle:
             self._particle_symbol = particle
@@ -94,14 +96,13 @@ class Particle():
             self._half_life = _Particles[particle]['half-life']
             self._is_antimatter = _Particles[particle]['antimatter']
 
-            if particle in _leptons + _antileptons:
-                self._is_lepton = True
-                self._generation = _Particles[particle]['generation']
-            else:
-                self._is_lepton = False
+            self._is_lepton = particle in _leptons + _antileptons
 
-            if particle in _fermions:
-                self._is_fermion = True
+            if particle in _leptons + _antileptons:
+                self._generation = _Particles[particle]['generation']
+
+            self._is_fermion = particle in _fermions
+
         else:
             try:
                 particle_dict = _parse_and_check_atomic_input(
@@ -215,6 +216,10 @@ class Particle():
     @property
     def is_antimatter(self):
         return self._is_antimatter
+
+    @is_antimatter.setter
+    def is_antimatter(self, value):
+        raise AttributeError
 
     @property
     def Z(self):
