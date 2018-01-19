@@ -1,12 +1,10 @@
 import numpy as np
 import re
 import warnings
-from typing import (Union, Dict, Optional, Any, Tuple)
+from typing import (Union, Dict)
 
 from .elements import (_atomic_symbols, _atomic_symbols_dict, _Elements)
-
 from .isotopes import _Isotopes
-
 from .particles import _Particles, _special_particles
 
 from ..utils import (AtomicWarning,
@@ -178,6 +176,8 @@ def _parse_and_check_atomic_input(
         an InvalidParticleError if charge information is inputted
         incorrectly."""
 
+        errmsg = f"Invalid charge information in the particle string '{arg}'."
+
         if arg.count(' ') == 1:  # Cases like 'H 1-' and 'Fe-56 1+'
             isotope_info, charge_info = arg.split(' ')
 
@@ -192,7 +192,7 @@ def _parse_and_check_atomic_input(
                      charge_info.count('+') == 1))
 
             if not sign_indicator_only_on_one_end and just_one_sign_indicator:
-                raise InvalidParticleError
+                raise InvalidParticleError(errmsg)
 
             if '-' in charge_info:
                 sign = -1
@@ -204,7 +204,7 @@ def _parse_and_check_atomic_input(
             try:
                 Z_from_arg = sign * int(charge_str)
             except ValueError:
-                raise InvalidParticleError
+                raise InvalidParticleError(errmsg)
 
         elif arg.endswith(('-', '+')):  # Cases like 'H-' and 'Pb-209+++'
             char = arg[-1]
@@ -215,7 +215,7 @@ def _parse_and_check_atomic_input(
             if char == '-':
                 Z_from_arg = -Z_from_arg
             if isotope_info.endswith(('-', '+')):
-                raise InvalidParticleError
+                raise InvalidParticleError(errmsg)
         else:
             isotope_info = arg
             Z_from_arg = None
@@ -243,7 +243,8 @@ def _parse_and_check_atomic_input(
             try:
                 mass_numb = int(mass_numb_str)
             except ValueError:
-                raise InvalidParticleError
+                raise InvalidParticleError(
+                    f"Invalid mass number in isotope string '{isotope_info}'.")
         else:
             element_info = isotope_info
             mass_numb = None
@@ -259,7 +260,8 @@ def _parse_and_check_atomic_input(
         elif element_info in _atomic_symbols.values():
             element = element_info
         else:
-            raise InvalidParticleError
+            raise InvalidParticleError(
+                f"Element not recognized in string '{element_info}'.")
 
         return element
 
@@ -277,8 +279,8 @@ def _parse_and_check_atomic_input(
                 isotope = 'T'
 
             if isotope not in _Isotopes.keys():
-                print(isotope)
-                raise InvalidParticleError
+                raise InvalidParticleError(
+                    f"'{isotope}' is not a known isotope.")
         else:
             isotope = None
 
@@ -311,20 +313,23 @@ def _parse_and_check_atomic_input(
 
         return ion
 
-    argument = _dealias_particle_aliases(argument)  # Deals with aliases
+    arg = _dealias_particle_aliases(argument)  # Deals with aliases
 
-    if argument in _special_particles:
+    if arg in _special_particles:
         if (mass_numb is not None) or (Z is not None):
-            raise InvalidParticleError
+            raise InvalidParticleError(
+                f"The keywords mass_numb and Z should not be specified for "
+                f"particle '{argument}', which is a special particle.")
         else:
-            raise InvalidElementError
+            raise InvalidElementError(
+                f"{argument} is not a valid element.")
 
-    if isinstance(argument, int):
-        element = _atomic_number_to_symbol(argument)
+    if isinstance(arg, int):
+        element = _atomic_number_to_symbol(arg)
         Z_from_arg = None
         mass_numb_from_arg = None
-    elif isinstance(argument, str):
-        isotope_info, Z_from_arg = _extract_charge(argument)
+    elif isinstance(arg, str):
+        isotope_info, Z_from_arg = _extract_charge(arg)
         element_info, mass_numb_from_arg = _extract_mass_number(isotope_info)
         element = _get_element(element_info)
     else:
@@ -347,7 +352,9 @@ def _parse_and_check_atomic_input(
         if Z != Z_from_arg:
             raise InvalidParticleError
         else:
-            warnings.warn("Redundant...", AtomicWarning)
+            warnings.warn("Redundant charge information for particle "
+                          f"'{argument}' with Z = {Z}.",
+                          AtomicWarning)
 
     if Z_from_arg is not None:
         Z = Z_from_arg
@@ -356,7 +363,8 @@ def _parse_and_check_atomic_input(
         if Z > _Elements[element]['atomic_number']:
             raise InvalidParticleError
         elif Z < -3:
-            warnings.warn("Unrealistically negative charge state...")
+            warnings.warn(f"Particle '{argument}' has an integer charge of "
+                          "Z = {Z}, which is unlikely to occur in nature.")
 
     isotope = _reconstruct_isotope_symbol(element, mass_numb)
     ion = _reconstruct_ion_symbol(element, isotope, Z)
