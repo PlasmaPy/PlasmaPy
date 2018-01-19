@@ -641,7 +641,6 @@ def _is_proton(arg: Any, Z: int = None, mass_numb: int = None) -> bool:
 
     argument, Z_from_arg = _extract_integer_charge(arg)
 
-
     if (Z is None) == (Z_from_arg is None):
         return False
     else:
