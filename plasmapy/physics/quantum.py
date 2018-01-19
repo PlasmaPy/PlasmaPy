@@ -199,7 +199,8 @@ def Fermi_energy(n_e):
 
     .. math::
 
-       E_F = \frac{\pi^2 \hbar^2}{2 m_{e}} \left( \frac{3 n_{e}}{\pi} \right )^{2/3}
+       E_F = \frac{\pi^2 \hbar^2}{2 m_{e}}
+       \left( \frac{3 n_{e}}{\pi} \right )^{2/3}
 
     This quantity is often used in place of thermal energy for analysis
     of cold, dense plasmas (e.g. warm dense matter, condensed matter).

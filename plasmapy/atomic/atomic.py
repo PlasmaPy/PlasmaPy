@@ -24,7 +24,7 @@ from ..utils import (
 from .names import (
     atomic_symbol,
     isotope_symbol,
-    _extract_charge_state,
+    _extract_integer_charge,
     _is_proton,
     _is_positron,
     _is_antineutron,
@@ -262,7 +262,7 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
                                   "standard_atomic_weight.")
 
     try:
-        charge_state(argument)
+        integer_charge(argument)
     except ChargeError:
         pass
     else:
@@ -349,9 +349,9 @@ def isotope_mass(argument: Union[str, int],
 
     """
 
-    argument, charge_state = _extract_charge_state(argument)
+    argument, Z = _extract_integer_charge(argument)
 
-    if charge_state is not None and charge_state != 0:
+    if Z is not None and Z != 0:
         raise AtomicError("Use ion_mass instead of isotope_mass for masses of "
                           "charged particles.")
 
@@ -503,14 +503,14 @@ def ion_mass(argument: Union[str, int, Quantity], Z: int = None,
         raise InvalidIonError("Use isotope_mass or m_n to get mass of neutron")
 
     if isinstance(argument, str):
-        argument, Z_from_arg = _extract_charge_state(argument)
+        argument, Z_from_arg = _extract_integer_charge(argument)
     else:
         Z_from_arg = None
 
     if Z is None and Z_from_arg is None:
         Z = 1
     elif Z is not None and Z_from_arg is not None and Z != Z_from_arg:
-        raise InvalidIonError("Inconsistent charge state information in"
+        raise InvalidIonError("Inconsistent charge information in"
                               "ion_mass.")
     elif Z is None and Z_from_arg is not None:
         Z = Z_from_arg
@@ -642,8 +642,8 @@ def isotopic_abundance(argument: Union[str, int],
     return iso_comp
 
 
-def charge_state(particle: str) -> int:
-    r"""Returns the charge state of an ion or other particle.
+def integer_charge(particle: str) -> int:
+    r"""Returns the integer charge of an ion or other particle.
 
     Parameters
     ----------
@@ -655,7 +655,7 @@ def charge_state(particle: str) -> int:
     -------
 
     Z : integer
-        The charge state, or None if it is not available.
+        The integer charge, or None if it is not available.
 
     Raises
     ------
@@ -668,18 +668,17 @@ def charge_state(particle: str) -> int:
         If charge information for the particle is not available.
 
     AtomicWarning
-        If the input represents an ion with a charge state that is
+        If the input represents an ion with an integer charge that is
         below -3.
 
     Notes
     -----
 
-    This function supports two formats for the charge state
-    information.
+    This function supports two formats for integer charge information.
 
     The first format is a string that has information for the element
-    or isotope at the beginning, a space in between, and the charge
-    state information in the form of an integer followed by a plus or
+    or isotope at the beginning, a space in between, and the integer
+    charge information in the form of an integer followed by a plus or
     minus sign, or a plus or minus sign followed by an integer.
 
     The second format is a string containing element information at
@@ -691,13 +690,13 @@ def charge_state(particle: str) -> int:
     Examples
     --------
 
-    >>> charge_state('Fe-56 2+')
+    >>> integer_charge('Fe-56 2+')
     2
-    >>> charge_state('He -2')
+    >>> integer_charge('He -2')
     -2
-    >>> charge_state('H+')
+    >>> integer_charge('H+')
     1
-    >>> charge_state('N-14++')
+    >>> integer_charge('N-14++')
     2
 
     """
@@ -709,12 +708,12 @@ def charge_state(particle: str) -> int:
     elif _is_neutron(particle) or _is_antineutron(particle):
         return 0
 
-    particle, Z = _extract_charge_state(particle)
+    particle, Z = _extract_integer_charge(particle)
 
     try:
         atomic_symbol(particle)
     except InvalidParticleError:
-        raise InvalidParticleError("Invalid particle in charge_state")
+        raise InvalidParticleError("Invalid particle in integer_charge")
 
     if Z is None:
         raise ChargeError(f"Unable to find charge of {particle}.")
@@ -723,7 +722,7 @@ def charge_state(particle: str) -> int:
 
     if Z > atomic_numb:
         raise InvalidParticleError("The integer charge cannot be greater than "
-                                   "the atomic number in charge_state.")
+                                   "the atomic number in integer_charge.")
 
     if Z < -atomic_numb - 1 or Z < -3:
         warnings.warn(f"Element {atomic_symbol(particle)} has a charge of {Z}"
@@ -740,8 +739,8 @@ def electric_charge(particle: str) -> Quantity:
     ----------
 
     particle : string
-        String representing an element or isotope followed by charge
-        state information.
+        String representing an element or isotope followed by integer
+        charge information.
 
     Returns
     -------
@@ -760,18 +759,17 @@ def electric_charge(particle: str) -> Quantity:
         If charge information for the particle is not available.
 
     AtomicWarning
-        If the input represents an ion with a charge state that is
+        If the input represents an ion with an integer charge that is
         below -3.
 
     Notes
     -----
 
-    This function supports two formats for the charge state
-    information.
+    This function supports two formats for integer charge information.
 
     The first format is a string that has information for the element
-    or isotope at the beginning, a space in between, and the charge
-    state information in the form of an integer followed by a plus or
+    or isotope at the beginning, a space in between, and the integer
+    charge information in the form of an integer followed by a plus or
     minus sign, or a plus or minus sign followed by an integer.
 
     The second format is a string containing element information at
@@ -791,7 +789,7 @@ def electric_charge(particle: str) -> Quantity:
     """
 
     try:
-        charge = charge_state(particle) * const.e.to('C')
+        charge = integer_charge(particle) * const.e.to('C')
     except InvalidParticleError:
         raise InvalidParticleError("Invalid particle in electric_charge.")
     except ChargeError:

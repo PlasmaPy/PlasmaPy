@@ -99,7 +99,7 @@ def atomic_symbol(argument: Union[str, int]) -> str:
         raise InvalidElementError(f"{argument} is not a valid element.")
 
     try:
-        argument, Z = _extract_charge_state(argument)
+        argument, Z = _extract_integer_charge(argument)
     except InvalidParticleError:
         raise InvalidParticleError("Invalid charge in atomic_symbol")
 
@@ -257,7 +257,7 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
         return argument
 
     if isinstance(argument, str):
-        argument, Z = _extract_charge_state(argument)
+        argument, Z = _extract_integer_charge(argument)
 
     if isinstance(argument, str) and argument.isdigit():
         argument = int(argument)
@@ -403,7 +403,7 @@ def element_name(argument: Union[str, int]) -> str:
     return name
 
 
-def _extract_charge_state(argument: str) -> Tuple[str, int]:
+def _extract_integer_charge(argument: str) -> Tuple[str, int]:
     r"""Splits strings containing element or isotope and charge state
     information into a string without the charge state information and
     the charge state as an integer (or None if no charge state
@@ -444,12 +444,12 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
     Examples
     --------
 
-    >>> isotope, Z = _extract_charge_state('Fe-56+++')
+    >>> isotope, Z = _extract_integer_charge('Fe-56+++')
     >>> print(isotope)
     Fe-56
     >>> print(Z)
     3
-    >>> _extract_charge_state('D +1')
+    >>> _extract_integer_charge('D +1')
     ('D', 1)
 
     """
@@ -495,7 +495,7 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
             charge = ion_info.replace('+', '')
 
         try:
-            charge_state = sign * int(charge)
+            Z = sign * int(charge)
             check3 = True
         except Exception:
             check3 = False
@@ -510,10 +510,10 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
         char = argument[-1]
         match = re.match(r"["+char+"]*", argument[::-1])
 
-        charge_state = match.span()[1]
+        Z = match.span()[1]
 
         if char == '-':
-            charge_state = -charge_state
+            Z = -Z
 
         argument = argument[0:len(argument)-match.span()[1]]
 
@@ -521,14 +521,14 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
             raise InvalidParticleError("Invalid charge state information")
 
     else:
-        charge_state = None
+        Z = None
 
-    if charge_state is not None and charge_state < -3:
+    if Z is not None and Z < -3:
         warnings.warn(f"Element {atomic_symbol(argument)} has a charge of "
-                      f"{charge_state} which is unlikely to occur in nature.",
+                      f"{Z} which is unlikely to occur in nature.",
                       AtomicWarning)
 
-    return argument, charge_state
+    return argument, Z
 
 
 def _is_neutron(argument: Any, mass_numb: int = None) -> bool:
@@ -566,7 +566,7 @@ def _is_hydrogen(argument: Any,
 
     if isinstance(argument, str):
 
-        argument, Z = _extract_charge_state(argument)
+        argument, Z = _extract_integer_charge(argument)
 
         if argument in case_sensitive_aliases:
             is_hydrogen = True
@@ -639,7 +639,8 @@ def _is_proton(arg: Any, Z: int = None, mass_numb: int = None) -> bool:
 
     warnings.warn("_is_proton is deprecated.", DeprecationWarning)
 
-    argument, Z_from_arg = _extract_charge_state(arg)
+    argument, Z_from_arg = _extract_integer_charge(arg)
+
 
     if (Z is None) == (Z_from_arg is None):
         return False
@@ -670,7 +671,7 @@ def _is_alpha(arg: Any) -> bool:
         raise InvalidParticleError(
             f"{arg} is an invalid representation of an alpha particle")
     else:
-        arg, Z = _extract_charge_state(arg)
+        arg, Z = _extract_integer_charge(arg)
 
         if Z != 2 or arg[-2:] != '-4':
             return False

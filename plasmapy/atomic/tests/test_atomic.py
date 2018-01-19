@@ -15,7 +15,7 @@ from ..names import (atomic_symbol,
                      _is_alpha,
                      _is_proton,
                      _is_antineutron,
-                     _extract_charge_state)
+                     _extract_integer_charge)
 
 from ..isotopes import _Isotopes
 
@@ -30,7 +30,7 @@ from ..atomic import (atomic_number,
                       common_isotopes,
                       stable_isotopes,
                       isotopic_abundance,
-                      charge_state,
+                      integer_charge,
                       electric_charge)
 
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
@@ -824,7 +824,7 @@ atomic_ParticleErrors_funcs_table = [
     stable_isotopes,
     common_isotopes,
     isotopic_abundance,
-    charge_state,
+    integer_charge,
     electric_charge,
 ]
 
@@ -952,7 +952,7 @@ def test_isotopic_abundances_sum(element, isotopes):
 
 
 # (argument, expected)
-charge_state_table = [
+integer_charge_table = [
     ('H+', 1),
     ('D +1', 1),
     ('tritium 1+', 1),
@@ -976,16 +976,16 @@ charge_state_table = [
 ]
 
 
-@pytest.mark.parametrize("argument, expected", charge_state_table)
-def test_charge_state(argument, expected):
-    """Test that charge_state returns the expected results."""
-    assert charge_state(argument) == expected, \
-        (f"charge_state({argument}) is returning {charge_state(argument)} "
-         f"which differs from the expected result of {expected}.")
+@pytest.mark.parametrize("argument, expected", integer_charge_table)
+def test_integer_charge(argument, expected):
+    """Test that integer_charge returns the expected results."""
+    assert integer_charge(argument) == expected, \
+        (f"integer_charge({argument}) is returning {integer_charge(argument)}"
+         f" which differs from the expected result of {expected}.")
 
 
 # (argument, expected_error)
-charge_state_error_table = [
+integer_charge_error_table = [
     ('fads', InvalidParticleError),
     ('H++', InvalidParticleError),
     ('h+', InvalidParticleError),
@@ -996,28 +996,29 @@ charge_state_error_table = [
 ]
 
 
-@pytest.mark.parametrize("argument, expected_error", charge_state_error_table)
-def test_charge_state_error(argument, expected_error):
-    """Test that charge_state raises the expected exceptions."""
+@pytest.mark.parametrize("argument, expected_error",
+                         integer_charge_error_table)
+def test_integer_charge_error(argument, expected_error):
+    """Test that integer_charge raises the expected exceptions."""
     with pytest.raises(expected_error, message=(
-            f"charge_state({argument} is not raising a {expected_error}.")):
-        charge_state(argument)
+            f"integer_charge({argument} is not raising a {expected_error}.")):
+        integer_charge(argument)
 
 
 # (argument, expected_warning)
-charge_state_warning_table = [
+integer_charge_warning_table = [
     ('H---', AtomicWarning),
     ('Fe -26', AtomicWarning),
     ('Og 10-', AtomicWarning)]
 
 
 @pytest.mark.parametrize("argument, expected_warning",
-                         charge_state_warning_table)
-def test_charge_state_warnings(argument, expected_warning):
-    """Test that charge_state issues appropriate warnings."""
+                         integer_charge_warning_table)
+def test_integer_charge_warnings(argument, expected_warning):
+    """Test that integer_charge issues appropriate warnings."""
     with pytest.warns(expected_warning, message=(
-            f"charge_state({argument}) is not issuing a {expected_warning}")):
-        charge_state(argument)
+            f"integer_charge({argument}) is not issuing {expected_warning}")):
+        integer_charge(argument)
 
 
 def test_electric_charge():
@@ -1254,14 +1255,14 @@ def test_is_alpha(test_input, expected):
                           ('N-7+++', 'N-7', 3),
                           ('H-1-', 'H-1', -1),
                           ('He-4-', 'He-4', -1)])
-def test_extract_charge_state(test_input, expected_newarg, expected_Z):
-    """Test that _extract_charge_state returns the expected values."""
-    new_symbol, new_Z = _extract_charge_state(test_input)
+def test_extract_integer_charge(test_input, expected_newarg, expected_Z):
+    """Test that _extract_integer_charge returns the expected values."""
+    new_symbol, new_Z = _extract_integer_charge(test_input)
     assert new_symbol == expected_newarg, \
-        (f"_extract_charge_state should return {expected_newarg} as "
+        (f"_extract_integer_charge should return {expected_newarg} as "
          f" its first argument, but is instead returning {new_symbol}")
     assert new_Z == expected_Z, \
-        (f"_extract_charge_state should return {expected_Z} as its second"
+        (f"_extract_integer_charge should return {expected_Z} as its second"
          f"argument, but is instead returning {new_Z}.")
 
 
@@ -1269,17 +1270,17 @@ def test_extract_charge_state(test_input, expected_newarg, expected_Z):
                          [('H-1-+-+', InvalidParticleError),
                           ('H ++', InvalidParticleError),
                           ('Fe +21+', InvalidParticleError)])
-def test_extract_charge_state_errors(test_input, expected_error):
-    """Test that _extract_charge_state raises the expected exceptions."""
+def test_extract_integer_charge_errors(test_input, expected_error):
+    """Test that _extract_integer_charge raises the expected exceptions."""
     with pytest.raises(expected_error):
-        _extract_charge_state(test_input)
+        _extract_integer_charge(test_input)
 
 
 @pytest.mark.parametrize("test_input,expected_warning",
                          [('H-1----', AtomicWarning),
                           ('Fe -4', AtomicWarning),
                           ('lead 4-', AtomicWarning)])
-def test_extract_charge_state_warnings(test_input, expected_warning):
-    """Test that _extract_charge_state issues the expected warnings."""
+def test_extract_integer_charge_warnings(test_input, expected_warning):
+    """Test that _extract_integer_charge issues the expected warnings."""
     with pytest.warns(expected_warning):
-        _extract_charge_state(test_input)
+        _extract_integer_charge(test_input)

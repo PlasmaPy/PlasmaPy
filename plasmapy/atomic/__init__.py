@@ -18,7 +18,7 @@ from .atomic import (
     common_isotopes,
     stable_isotopes,
     isotopic_abundance,
-    charge_state,
+    integer_charge,
     electric_charge,
 )
 
