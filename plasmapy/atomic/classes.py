@@ -1,5 +1,6 @@
 from typing import Union
 from astropy import units as u, constants as const
+import numpy as np
 
 from ..utils import (
     AtomicError,
@@ -27,6 +28,7 @@ from .particles import (
 )
 
 from .elements import (_Elements, _atomic_symbols, _atomic_symbols_dict)
+from .isotopes import _Isotopes
 
 from .parsing import (
     _dealias_particle_aliases,
@@ -128,7 +130,7 @@ class Particle():
 
             if element and not isotope and not ion:
                 self._standard_atomic_weight = \
-                    _Elements[element]['atomic_mass']
+                    _Elements[element]['atomic_mass'].to(u.kg)
                 self._mass = self._standard_atomic_weight
             elif element and isotope and not ion:
                 self._isotope_mass = _Isotopes[isotope]['atomic_mass']
