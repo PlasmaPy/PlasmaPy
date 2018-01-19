@@ -1,4 +1,15 @@
 import pytest
+
+from ...utils import (
+    InvalidIonError,
+    InvalidParticleError,
+    InvalidIsotopeError,
+    InvalidElementError,
+    ChargeError,
+)
+
+from ..particles import _special_particles
+
 from ..parsing import (
     _dealias_particle_aliases,
     _is_special_particle,
@@ -182,3 +193,49 @@ def test_parse_and_check_atomic_input(arg, kwargs, expected):
         "whereas the expected dictionary is:\n\n"
         f"{expected}\n"
     )
+
+
+# (arg, kwargs)
+invalid_particles_table = [
+    ('H-0', {}),
+    ('Og-294b', {}),
+    ('H-934361', {}),
+    ('Fe 2+4', {}),
+    ('Fe+24', {}),
+    ('Fe +59', {}),
+    ('C++++++++++++++++', {}),
+    ('C-++++', {}),
+    ('h', {}),
+    ('H++', {}),
+    ('H 2+', {}),
+    ('T+++', {}),
+    ('D', {'Z': 2}),
+    ('d', {}),
+    ('he', {}),
+    ('au', {}),
+    (0, {}),
+    (119, {}),
+    (0, {'mass_numb': 1}),
+    ('p-', {'mass_numb': -1}),
+    ('e-', {'Z': -1}),
+    (0, {'mass_numb': 1}),
+    ('n', {'mass_numb': 1}),
+]
+
+
+@pytest.mark.parametrize('arg, kwargs', invalid_particles_table)
+def test_parse_InvalidParticleErrors(arg, kwargs):
+    r"""Tests that _parse_and_check_atomic_input raises an
+    InvalidParticleError when the input does not correspond
+    to a real particle."""
+    with pytest.raises(InvalidParticleError):
+        _parse_and_check_atomic_input(arg, **kwargs)
+
+
+@pytest.mark.parametrize('arg', _special_particles)
+def test_parse_InvalidElementErrors(arg):
+    r"""Tests that _parse_and_check_atomic_input raises an
+    InvalidElementError when the input corresponds to a valid
+    particle but not a valid element, isotope, or ion."""
+    with pytest.raises(InvalidElementError):
+        _parse_and_check_atomic_input(arg)
