@@ -205,26 +205,30 @@ class Particle():
         if self._integer_charge is not None:
             return self._integer_charge
         else:
-            raise ChargeError
+            raise ChargeError(
+                f"No charge information is available for particle "
+                f"'{self._particle_symbol}'.")
 
     @property
     def q(self):
         if self._electric_charge is not None:
             return self._electric_charge
         else:
-            raise ChargeError
+            raise ChargeError(
+                f"No charge information is available for particle "
+                f"'{self._particle_symbol}'.")
 
     @property
     def m(self):
         if self._mass is not None:
             return self._mass
         else:
-            raise MissingAtomicDataError
+            raise MissingAtomicDataError(
+                f"The mass of particle '{self._particle_symbol}' is "
+                f"not available.")
 
     def __repr__(self):
-        return f"<{self._particle_symbol}>"
+        return f'<Particle "{self._particle_symbol}">'
 
     def __str__(self):
         return f"{self._particle_symbol}"
-
-
