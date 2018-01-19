@@ -10,7 +10,7 @@ latex-install: &latex-installer
   name: Install Latex dependencies
   command: |
     sudo apt update
-    sudo apt install texlive texlive-xetex texlive-fonts-extra texlive-latex-extra texlive-plain-extra latexmk
+    sudo apt install texlive texlive-xetex texlive-fonts-extra texlive-latex-extra texlive-plain-extra latexmk graphviz
 
 html-run: &doc-html
   name: Build HTML documentation
