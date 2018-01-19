@@ -28,6 +28,7 @@ from .particles import (
 )
 
 from .elements import (_Elements, _atomic_symbols, _atomic_symbols_dict)
+
 from .isotopes import _Isotopes
 
 from .parsing import (
@@ -216,10 +217,6 @@ class Particle():
     @property
     def is_antimatter(self):
         return self._is_antimatter
-
-    @is_antimatter.setter
-    def is_antimatter(self, value):
-        raise AttributeError
 
     @property
     def Z(self):
