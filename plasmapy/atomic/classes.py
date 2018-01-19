@@ -75,7 +75,7 @@ class Particle():
         is_special_particle = particle in _special_particles
 
         if is_special_particle and (mass_numb is not None or Z is not None):
-            raise InvalidParticleError
+            raise InvalidParticleError()
 
         if is_special_particle:
             self._particle_symbol = particle
@@ -105,7 +105,9 @@ class Particle():
                 particle_dict = _parse_and_check_atomic_input(
                     argument, mass_numb=mass_numb, Z=Z)
             except Exception as exc:
-                raise InvalidParticleError from exc
+                raise InvalidParticleError(
+                    f"Particle '{argument}' with mass_numb = {mass_numb} "
+                    f"and Z = {Z} is not a valid particle.") from exc
 
             self._particle_symbol = particle_dict['symbol']
 
@@ -159,42 +161,54 @@ class Particle():
         if self._atomic_number is not None:
             return self._atomic_number
         else:
-            raise InvalidElementError
+            raise InvalidElementError(
+                f"Particle '{self._particle_symbol}' is not an element, "
+                f"so no atomic number is available.")
 
     @property
     def mass_number(self):
         if self._mass_number is not None:
             return self._mass_number
         else:
-            raise InvalidIsotopeError
+            raise InvalidIsotopeError(
+                f"Particle '{self._particle_symbol}' is not an isotope, so "
+                f"no mass number is available.")
 
     @property
     def lepton_number(self):
         if self._lepton_number is not None:
             return self._lepton_number
         else:
-            raise AtomicError
+            raise AtomicError(f"The leption number for "
+                              f"'{self._particle_symbol}' is not available.")
 
     @property
     def baryon_number(self):
         if self._baryon_number is not None:
             return self._baryon_number
+        elif self._mass_number is not None:
+            return self._mass_number
         else:
-            raise AtomicError
+            raise AtomicError("The baryon number for "
+                              f"'{self._particle_symbol}' is not available.")
 
     @property
     def half_life(self):
         if self._half_life is not None:
             return self._half_life
         else:
-            raise MissingAtomicDataError
+            raise MissingAtomicDataError(
+                f"Half-life data for '{self._particle_symbol}' is not "
+                "available.")
 
     @property
     def is_stable(self):
-        if self._half_life is None:
-            raise MissingAtomicDataError
-
-        return self.half_life == np.inf * u.s
+        if self._half_life is not None:
+            return self._half_life == np.inf * u.s
+        else:
+            raise MissingAtomicDataError(
+                f"Stability data for '{self._particle_symbol}' is not "
+                "available.")
 
     @property
     def is_antimatter(self):

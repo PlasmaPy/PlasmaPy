@@ -321,8 +321,7 @@ def _parse_and_check_atomic_input(
                 f"The keywords mass_numb and Z should not be specified for "
                 f"particle '{argument}', which is a special particle.")
         else:
-            raise InvalidElementError(
-                f"{argument} is not a valid element.")
+            raise InvalidElementError(f"{argument} is not a valid element.")
 
     if isinstance(arg, int):
         element = _atomic_number_to_symbol(arg)
@@ -333,7 +332,9 @@ def _parse_and_check_atomic_input(
         element_info, mass_numb_from_arg = _extract_mass_number(isotope_info)
         element = _get_element(element_info)
     else:
-        raise InvalidParticleError
+        raise TypeError("The first positional argument should be either a "
+                        "string representing a particle or an integer "
+                        "representing an atomic number.")
 
     # Check the validity and consistency of mass numbers
 
@@ -341,7 +342,9 @@ def _parse_and_check_atomic_input(
         if mass_numb != mass_numb_from_arg:
             raise InvalidParticleError
         else:
-            warnings.warn("Redundant...", AtomicWarning)
+            warnings.warn("Redundant mass number information for particle "
+                          f"'{argument}' with mass_numb = {mass_numb}.",
+                          AtomicWarning)
 
     if mass_numb_from_arg is not None:
         mass_numb = mass_numb_from_arg
