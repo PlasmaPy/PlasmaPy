@@ -454,6 +454,8 @@ def _extract_charge_state(argument: str) -> Tuple[str, int]:
 
     """
 
+    warnings.warn("_extract_integer_charge is deprecated.", DeprecationWarning)
+
     if not isinstance(argument, str):
         return argument, None
 
@@ -533,6 +535,8 @@ def _is_neutron(argument: Any, mass_numb: int = None) -> bool:
     r"""Returns True if the argument corresponds to a neutron, and
     False otherwise."""
 
+    warnings.warn("_is_neutron is deprecated.", DeprecationWarning)
+
     if argument == 0 and mass_numb == 1:
         return True
     elif isinstance(argument, str) and mass_numb is None:
@@ -548,6 +552,8 @@ def _is_hydrogen(argument: Any,
                  can_be_atomic_number: Optional[bool] = False) -> bool:
     r"""Returns True if the argument corresponds to hydrogen, and False
     otherwise."""
+
+    warnings.warn("_is_hydrogen is deprecated.", DeprecationWarning)
 
     case_sensitive_aliases = ['p', 'p+', 'H', 'D', 'T']
 
@@ -582,6 +588,8 @@ def _is_electron(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to an electron, and False
     otherwise."""
 
+    warnings.warn("_is_electron is deprecated.", DeprecationWarning)
+
     if not isinstance(arg, str):
         return False
 
@@ -591,6 +599,8 @@ def _is_electron(arg: Any) -> bool:
 def _is_positron(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to a positron, and False
     otherwise."""
+
+    warnings.warn("_is_positron is deprecated.", DeprecationWarning)
 
     if not isinstance(arg, str):
         return False
@@ -602,6 +612,8 @@ def _is_antiproton(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to an antiproton, and
     False otherwise."""
 
+    warnings.warn("_is_antiproton is deprecated.", DeprecationWarning)
+
     if not isinstance(arg, str):
         return False
 
@@ -611,6 +623,8 @@ def _is_antiproton(arg: Any) -> bool:
 def _is_antineutron(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to an antineutron, and
     False otherwise."""
+
+    warnings.warn("_is_antineutron is deprecated.", DeprecationWarning)
 
     if not isinstance(arg, str):
         return False
@@ -622,6 +636,8 @@ def _is_proton(arg: Any, Z: int = None, mass_numb: int = None) -> bool:
     r"""Returns True if the argument corresponds to a proton, and
     False otherwise.  This function returns False for 'H-1' if no
     charge state is given."""
+
+    warnings.warn("_is_proton is deprecated.", DeprecationWarning)
 
     argument, Z_from_arg = _extract_charge_state(arg)
 
@@ -642,6 +658,8 @@ def _is_proton(arg: Any, Z: int = None, mass_numb: int = None) -> bool:
 def _is_alpha(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to an alpha particle,
     and False otherwise."""
+
+    warnings.warn("_is_alpha is deprecated.", DeprecationWarning)
 
     if not isinstance(arg, str):
         return False
