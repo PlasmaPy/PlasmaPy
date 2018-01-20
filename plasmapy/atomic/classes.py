@@ -27,8 +27,7 @@ from .particles import (
     _antineutrinos,
 )
 
-from .elements import (_Elements, _atomic_symbols, _atomic_symbols_dict)
-
+from .elements import _Elements
 from .isotopes import _Isotopes
 
 from .parsing import (
@@ -152,116 +151,145 @@ class Particle():
         else:
             self._electric_charge = None
 
+        self._element_errmsg = (
+            f"The particle '{self.particle}' is not an element, so "
+            f"this attribute is not available.")
+
+        self._isotope_errmsg = (
+            f"The particle '{self.particle}' does not have an "
+            f"isotope specified, so this attribute is not available.")
+
+        self._ion_errmsg = (
+            f"The particle '{self.particle}' is not an ion, so this"
+            f"attribute is not available.")
+
     @property
-    def particle(self):
+    def particle(self) -> str:
+        r"""Returns the particle symbol."""
         return self._particle_symbol
 
     @property
-    def element(self):
+    def element(self) -> str:
+        r"""Returns the atomic symbol, or raises an InvalidElementError
+        if the particle is not an element, isotope, or ion."""
+        if not self._atomic_symbol:
+            raise InvalidElementError(self._element_errmsg)
         return self._atomic_symbol
 
     @property
-    def isotope(self):
+    def isotope(self) -> str:
+        r"""Returns the isotope symbol, or raises an InvalidIsotopeError
+        if the particle does not correspond to an isotope."""
+        if not self._isotope_symbol:
+            raise InvalidIsotopeError(self._isotope_errmsg)
         return self._isotope_symbol
 
     @property
-    def ion(self):
+    def ion(self) -> str:
+        r"""Returns the ion symbol, or raises an InvalidIonError if the
+        particle is not an ion."""
+        if not self._ion_symbol:
+            raise InvalidIonError(self._ion_errmsg)
         return self._ion_symbol
 
     @property
-    def element_name(self):
+    def element_name(self) -> str:
+        r"""Returns the name of the element, or raises an InvalidElementError
+        if the particle is not an element, isotope, or ion."""
+        if not self.element:
+            raise InvalidElementError(self._element_errmsg)
         return self._element_name
 
     @property
-    def atomic_number(self):
-        if self._atomic_number is not None:
-            return self._atomic_number
-        else:
-            raise InvalidElementError(
-                f"Particle '{self._particle_symbol}' is not an element, "
-                f"so no atomic number is available.")
+    def atomic_number(self) -> int:
+        if not self.element:
+            raise InvalidElementError(self._element_errmsg)
+        return self._atomic_number
 
     @property
-    def mass_number(self):
-        if self._mass_number is not None:
-            return self._mass_number
-        else:
-            raise InvalidIsotopeError(
-                f"Particle '{self._particle_symbol}' is not an isotope, so "
-                f"no mass number is available.")
+    def mass_number(self) -> int:
+        if not self.isotope:
+            raise InvalidIsotopeError(self._isotope_errmsg)
+        return self._mass_number
 
     @property
-    def lepton_number(self):
-        if self._lepton_number is not None:
-            return self._lepton_number
-        else:
-            raise AtomicError(f"The lepton number for "
-                              f"'{self._particle_symbol}' is not available.")
+    def lepton_number(self) -> int:
+        if self._lepton_number is None:
+            raise AtomicError(
+                f"The lepton number for {self.particle} is not available.")
+        return self._lepton_number
 
     @property
-    def baryon_number(self):
-        if self._baryon_number is not None:
-            return self._baryon_number
-        elif self._mass_number is not None:
-            return self._mass_number
-        else:
-            raise AtomicError("The baryon number for "
-                              f"'{self._particle_symbol}' is not available.")
+    def baryon_number(self) -> int:
+        r"""Returns the baryon number, or raises a MissingAtomicDataError if
+        the baryon number is unavailable."""
+        if self._baryon_number is None:
+            raise AtomicError(
+                f"The baryon number for '{self.particle}' is not "
+                f"available.")
+        return self._baryon_number
 
     @property
-    def half_life(self):
-        if self._half_life is not None:
-            return self._half_life
-        else:
+    def half_life(self) -> u.Quantity:
+        r"""Returns the half-life of the particle, or raises a
+        MissingAtomicDataError if the half-life is unavailable."""
+        if not self._half_life:
             raise MissingAtomicDataError(
-                f"Half-life data for '{self._particle_symbol}' is not "
-                "available.")
+                f"The half-life of '{self.particle}' is not available.")
+        return self._half_life
 
     @property
-    def is_stable(self):
-        if self._half_life is not None:
-            return self._half_life == np.inf * u.s
-        else:
+    def is_stable(self) -> bool:
+        r"""Returns True if the particle is stable and False if the
+        particle is unstable, or raises a MissingAtomicDataError if
+        stability information is not available."""
+        if not self._half_life:
             raise MissingAtomicDataError(
-                f"Stability data for '{self._particle_symbol}' is not "
-                "available.")
+                f"The stability of '{self.particle}' is not available.")
+        return self._half_life
 
     @property
-    def is_antimatter(self):
+    def is_antimatter(self) -> bool:
+        r"""Returns True is the particle is antimatter and False if the
+        particle is matter."""
         return self._is_antimatter
 
     @property
-    def Z(self):
-        if self._integer_charge is not None:
-            return self._integer_charge
-        else:
+    def Z(self) -> int:
+        r"""Returns the integer charge, or raises a ChargeError if the
+        charge has not been specified."""
+        if self._integer_charge is None:
             raise ChargeError(
-                f"No charge information is available for particle "
-                f"'{self._particle_symbol}'.")
+                f"The charge of particle {self.particle} has not been "
+                f"specified.")
+        return self._integer_charge
 
     @property
-    def q(self):
-        if self._electric_charge is not None:
-            return self._electric_charge
-        else:
+    def q(self) -> u.Quantity:
+        r"""Returns the electric charge as a Quantity in units of coulombs,
+        or raises a ChargeError if the charge has not been specified."""
+        if self._electric_charge is None:
             raise ChargeError(
-                f"No charge information is available for particle "
-                f"'{self._particle_symbol}'.")
+                f"The charge of particle {self.particle} has not been "
+                f"specified.")
+        return self._electric_charge
 
     @property
-    def m(self):
-        if self._mass is not None:
-            return self._mass
-        else:
+    def m(self) -> u.Quantity:
+        r"""Returns the mass of the element, isotope, ion, particle, or
+        antiparticle; or raises a MissingAtomicDataError if the mass
+        is unavailable."""
+        # TODO: Take care of the cases in isotope_mass and ion_mass
+        if self._mass is None:
             raise MissingAtomicDataError(
-                f"The mass of particle '{self._particle_symbol}' is "
-                f"unavailable.")
+                f"The mass of particle '{self.particle}' is unavailable.")
+        return self._mass
 
     @property
-    def spin(self):
-        if self._spin is not None:
-            return self._spin
-        else:
+    def spin(self) -> Union[int, float]:
+        r"""Returns the spin of the Particle, or raises a
+        MissingAtomicDataError if the spin is not available."""
+        if self._spin is None:
             raise MissingAtomicDataError(
-                f"The mass of particle '{self._particle_symbol}' "
-                "is not available.")
+                f"The spin of particle '{self.particle}' is unavailable.")
+        return self._spin
