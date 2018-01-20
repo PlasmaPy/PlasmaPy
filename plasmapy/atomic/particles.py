@@ -122,7 +122,6 @@ def _create_Particles_dict() -> typing.Dict[str, dict]:
     for thing in _neutrinos + _antineutrinos:
         Particles[thing]['mass'] = None
 
-
     for thing in ['p', 'p-']:
         Particles[thing]['mass'] = const.m_p
 
@@ -143,12 +142,6 @@ def _create_Particles_dict() -> typing.Dict[str, dict]:
 
     for antiparticle in _antiparticles:
         Particles[antiparticle]['antimatter'] = True
-
-    for thing in _everything:
-        try:
-            Particles[thing]['half-life']
-        except KeyError:
-            Particles[thing]['half-life'] = np.inf * u.s
 
     return Particles
 
