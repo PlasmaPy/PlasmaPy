@@ -38,6 +38,10 @@ aliases_and_symbols = [
     ('tau particle', 'tau-'),
     ('antitau', 'tau+'),
     ('p', 'p+'),
+    ('H-1 1+', 'p+'),
+    ('H-1+', 'p+'),
+    ('H-1 +1', 'p+'),
+    ('hydrogen-1+', 'p+'),
 ]
 
 
@@ -48,8 +52,8 @@ def test_dealias_particle_aliases(alias, symbol):
     if the argument does not correspond to an alias."""
     result = _dealias_particle_aliases(alias)
     assert result == symbol, \
-        (f"_dealias_particle_aliases({alias}) returns {result}, which differs "
-         f"from the expected symbol of {symbol}.\n\n"
+        (f"_dealias_particle_aliases({alias}) returns '{result}', which "
+         f"differs from the expected symbol of '{symbol}'.\n\n"
          f"_case_insensitive_aliases:\n{_case_insensitive_aliases}\n\n"
          f"_case_sensitive_aliases:\n{_case_sensitive_aliases}")
 
