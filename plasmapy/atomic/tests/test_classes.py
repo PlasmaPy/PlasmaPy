@@ -32,6 +32,7 @@ from ..classes import Particle
 
 # (arg, kwargs, results_dict
 test_Particle_table = [
+
     ('p+', {},
      {'particle': 'p+',
       'element': 'H',
@@ -40,13 +41,17 @@ test_Particle_table = [
       'm': m_p,
       'Z': 1,
       'spin': 1/2,
-      'half-life': np.inf * u.s,
+      'half_life': np.inf * u.s,
       'atomic_number': 1,
       'mass_number': 1,
       'lepton_number': 0,
       'baryon_number': 1,
-      }
-     )
+      }),
+
+    ('e-', {},
+        {'particle': 'e-',
+         'element': InvalidElementError,
+        })
 ]
 
 
@@ -54,32 +59,46 @@ test_Particle_table = [
 def test_Particle_class(arg, kwargs, expected_dict):
     r"""Test required properties of items in _Particles dictionary."""
 
-    particle = Particle(arg)
-
+    # To allow tests of a Particle class to continue after the first
+    # exception, error messages will be appended as new lines to errmsg.
     errmsg = ""
+
+    cls = f"Particle('{arg}')"
+
+    try:
+        particle = Particle(arg)
+    except Exception as exc:
+        raise Exception(f"Unable to create {cls}.") from exc
 
     for key in expected_dict.keys():
         expected = expected_dict[key]
 
         if inspect.isclass(expected) and issubclass(expected, Exception):
+            # Exceptions are expected to be raised when accessing certain
+            # attributes for some particles.  For example, accessing a
+            # neutrino's mass should raise a MissingAtomicDataError.
+            # If expected_dict[key] is an exception, then check to make
+            # sure that this exception is raised.
             try:
                 with pytest.raises(expected):
                     exec(f"particle.{key}")
             except pytest.fail.Exception as exc_failed_fail:
-                errmsg += f"{key} {expected}\n"
+                errmsg += f"\n{cls}.{key} does not raise {expected}."
             except Exception as exc_bad:
-                errmsg += f"{key} {expected} {exc_bad}\n"
+                errmsg += (f"\n{cls}.{key} does not raise {expected} and " \
+                           f"instead raises a different exception.")
         else:
             try:
                 result = eval(f"particle.{key}")
                 assert result == expected
             except AssertionError as exc_assert:
-                errmsg += f"{key} {result} != {expected}\n"
+                errmsg += f"\n{cls}.{key} does not equal {expected}."
             except Exception as exc_general:
-                errmsg += f"{key} {exc_general}\n"
+                errmsg += f"\n{cls}.{key} raises an unexpected exception."
 
     if len(errmsg) > 0:
-        raise Exception(errmsg)
+        raise Exception("The following problems were found for "
+                        f"Particle('{key}'):" + errmsg)
 
 
 @pytest.mark.parametrize("symbol", _special_particles)
