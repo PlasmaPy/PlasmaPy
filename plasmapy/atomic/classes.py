@@ -90,9 +90,10 @@ class Particle():
             self._lepton_number = _Particles[particle]['lepton number']
             self._baryon_number = _Particles[particle]['baryon number']
             self._integer_charge = _Particles[particle]['charge']
-            self._mass = _Particles[particle]['mass']
 
-            self._is_stable = _Particles[particle]['is_stable']
+            self._mass = _Particles[particle].get('mass', None)
+
+            self._is_stable = _Particles[particle]['half-life'] == np.inf * u.s
 
             self._half_life = _Particles[particle]['half-life']
             self._is_antimatter = _Particles[particle]['antimatter']
@@ -159,6 +160,10 @@ class Particle():
     @property
     def ion(self):
         return self._ion_symbol
+
+    @property
+    def element_name(self):
+        return self._element_name
 
     @property
     def atomic_number(self):

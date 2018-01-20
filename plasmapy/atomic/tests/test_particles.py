@@ -1,5 +1,20 @@
 import pytest
-from ..particles import _Particles
+
+from ..particles import (
+    _Particles,
+    _special_particles,
+    _leptons,
+    _antileptons,
+    _baryons,
+    _antibaryons,
+    _particles,
+    _antiparticles,
+    _fermions,
+    _bosons,
+    _neutrinos,
+    _antineutrinos,
+    _everything,
+)
 
 particle_antiparticle_pairs = [
     ('e-', 'e+'),
@@ -47,3 +62,34 @@ def test_particle_antiparticle_pairs(particle, antiparticle):
             _Particles[antiparticle]['name'].replace('anti', ''), \
             (f"{particle} and {antiparticle} do not have same name except "
              "for 'anti'.")
+
+
+required_keys = [
+    'name',
+    'spin',
+    'class',
+    'lepton number',
+    'baryon number',
+    'charge',
+    'half-life',
+    'mass',
+    'antimatter',
+]
+
+
+@pytest.mark.parametrize("particle", _everything)
+def test__Particles_required_keys(particle):
+    r"""Test that required keys are present for all particles."""
+
+    missing_keys = []
+
+    for key in required_keys:
+        try:
+            _Particles[particle][key]
+        except KeyError:
+            missing_keys.append(key)
+
+    if missing_keys:
+        raise KeyError(
+            "The following keys are missing from "
+            f"_Particles['{particle}']:\n{missing_keys}")
