@@ -40,6 +40,12 @@ from .parsing import (
 class Particle():
     r"""A class for individual particles or antiparticles."""
 
+    def __repr__(self):
+        return f'<Particle "{self._particle_symbol}">'
+
+    def __str__(self):
+        return f"{self._particle_symbol}"
+
     def __init__(self,
                  argument: Union[str, int],
                  mass_numb: int = None,
@@ -64,6 +70,7 @@ class Particle():
         self._electric_charge = None
         self._mass = None
         self._half_life = None
+        self._spin = None
         self._lepton = None
         self._antilepton = None
         self._baryon = None
@@ -248,10 +255,13 @@ class Particle():
         else:
             raise MissingAtomicDataError(
                 f"The mass of particle '{self._particle_symbol}' is "
-                f"not available.")
+                f"unavailable.")
 
-    def __repr__(self):
-        return f'<Particle "{self._particle_symbol}">'
-
-    def __str__(self):
-        return f"{self._particle_symbol}"
+    @property
+    def spin(self):
+        if self._spin is not None:
+            return self._spin
+        else:
+            raise MissingAtomicDataError(
+                f"The mass of particle '{self._particle_symbol}' "
+                "is not available.")

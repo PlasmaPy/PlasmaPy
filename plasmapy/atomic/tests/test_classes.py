@@ -2,6 +2,13 @@ import pytest
 
 from ...constants import m_p
 
+from ...utils import (
+    MissingAtomicDataError,
+    InvalidParticleError,
+    InvalidElementError,
+    AtomicError,
+)
+
 from ..particles import (
     _leptons,
     _antileptons,
@@ -20,12 +27,6 @@ from ..particles import (
 from ..classes import Particle
 
 
-def test_Particle():
-    r"""Original, temporary tests of Particle class."""
-    p = Particle('H', mass_numb=1, Z=1)
-    assert p._generation is None
-
-
 # (arg, kwargs, results_dict
 test_Particle_table = [
     ('H+', {},
@@ -33,26 +34,54 @@ test_Particle_table = [
      )
 ]
 
+
+@pytest.mark.parametrize("symbol", _everything)
+def test_Particle_everything(symbol):
+    r"""Test required properties of items in _Particles dictionary."""
+
+    particle = Particle(symbol)
+
+    if not particle.element:
+        pass
+
+
+@pytest.mark.parametrize("symbol", _special_particles)
+def test_Particle_special(symbol):
+    r"""Test the properties of special particles that do not
+    correspond to elements."""
+
+    particle = Particle(symbol)
+
+    assert particle._atomic_symbol is None, \
+        f"Particle('symbol')._atomic_symbol is not None"
+    assert particle._atomic_number is None, \
+        f"Particle('symbol')._atomic_number is not None"
+    assert particle._isotope_symbol is None, \
+        f"Particle('symbol')._isotope_symbol is not None"
+    assert particle._element_name is None, \
+        f"Particle('symbol')._element_name is not None"
+    assert particle._mass_number is None, \
+        f"Particle('symbol')._mass_number is not None"
+
+
 @pytest.mark.parametrize("symbol", _neutrinos + _antineutrinos)
 def test_Particle_neutrinos(symbol):
     r"""Test the properties of neutrinos in the Particle class."""
 
     nu = Particle(symbol)
-
     assert 'nu' in nu._particle_symbol
 
+    assert nu._mass is None, \
+        f"Particle('{symbol}')._mass should be None."
 
-    # lepton_number = 1 for neutrinos and -1 for antineutrinos
+    with pytest.raises(MissingAtomicDataError, message=(
+            f"Particle('{symbol}').m is not raising an exception")):
+        nu.m
 
 
-@pytest.mark.parametrize("symbol", _special_particles)
-def test_Particle_special(symbol):
-    r"""Test the properties of special particles."""
+@pytest.mark.parametrize("symbol", _leptons + _antileptons)
+def test_Particle_leptons(symbol):
 
-    particle = Particle(symbol)
+    lepton = Particle(symbol)
 
-    assert particle._atomic_symbol is None
-    assert particle._atomic_number is None
-    assert particle._isotope_symbol is None
-    assert particle._element_name is None
-    assert particle._mass_number is None
+    assert lepton.spin == 1/2
