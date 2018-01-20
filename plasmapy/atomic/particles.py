@@ -6,7 +6,7 @@ _leptons = ['e-', 'mu-', 'tau-', 'nu_e', 'nu_mu', 'nu_tau']
 _antileptons = ['e+', 'mu+', 'tau+', 'anti_nu_e',
                 'anti_nu_mu', 'anti_nu_tau']
 
-_baryons = ['p', 'n']
+_baryons = ['p+', 'n']
 _antibaryons = ['p-', 'antineutron']
 
 _everything = _leptons + _antileptons + _baryons + _antibaryons
@@ -52,7 +52,7 @@ def _create_Particles_dict() -> typing.Dict[str, dict]:
         ('anti_nu_mu', 'muon antineutrino'),
         ('nu_tau', 'tau neutrino'),
         ('anti_nu_tau', 'tau antineutrino'),
-        ('p', 'proton'),
+        ('p+', 'proton'),
         ('p-', 'antiproton'),
         ('n', 'neutron'),
         ('antineutron', 'antineutron'),
@@ -122,10 +122,10 @@ def _create_Particles_dict() -> typing.Dict[str, dict]:
     for thing in _neutrinos + _antineutrinos:
         Particles[thing]['mass'] = None
 
-    for thing in ['p', 'p-']:
+    for thing in ['p+', 'p-']:
         Particles[thing]['mass'] = const.m_p
 
-    Particles['p']['charge'] = 1
+    Particles['p+']['charge'] = 1
     Particles['p-']['charge'] = -1
 
     for thing in ['n', 'antineutron']:

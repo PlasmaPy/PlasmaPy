@@ -1,4 +1,7 @@
 import pytest
+import numpy as np
+from astropy import units as u
+import inspect
 
 from ...constants import m_p
 
@@ -29,20 +32,54 @@ from ..classes import Particle
 
 # (arg, kwargs, results_dict
 test_Particle_table = [
-    ('H+', {},
-     {'m': m_p}
+    ('p+', {},
+     {'particle': 'p+',
+      'element': 'H',
+      'isotope': 'H-1',
+      'ion': 'p+',
+      'm': m_p,
+      'Z': 1,
+      'spin': 1/2,
+      'half-life': np.inf * u.s,
+      'atomic_number': 1,
+      'mass_number': 1,
+      'lepton_number': 0,
+      'baryon_number': 1,
+      }
      )
 ]
 
 
-@pytest.mark.parametrize("symbol", _everything)
-def test_Particle_everything(symbol):
+@pytest.mark.parametrize("arg, kwargs, expected_dict", test_Particle_table)
+def test_Particle_class(arg, kwargs, expected_dict):
     r"""Test required properties of items in _Particles dictionary."""
 
-    particle = Particle(symbol)
+    particle = Particle(arg)
 
-    if not particle.element:
-        pass
+    errmsg = ""
+
+    for key in expected_dict.keys():
+        expected = expected_dict[key]
+
+        if inspect.isclass(expected) and issubclass(expected, Exception):
+            try:
+                with pytest.raises(expected):
+                    exec(f"particle.{key}")
+            except pytest.fail.Exception as exc_failed_fail:
+                errmsg += f"{key} {expected}\n"
+            except Exception as exc_bad:
+                errmsg += f"{key} {expected} {exc_bad}\n"
+        else:
+            try:
+                result = eval(f"particle.{key}")
+                assert result == expected
+            except AssertionError as exc_assert:
+                errmsg += f"{key} {result} != {expected}\n"
+            except Exception as exc_general:
+                errmsg += f"{key} {exc_general}\n"
+
+    if len(errmsg) > 0:
+        raise Exception(errmsg)
 
 
 @pytest.mark.parametrize("symbol", _special_particles)

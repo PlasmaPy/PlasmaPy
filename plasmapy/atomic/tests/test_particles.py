@@ -20,7 +20,7 @@ particle_antiparticle_pairs = [
     ('e-', 'e+'),
     ('mu-', 'mu+'),
     ('tau-', 'tau+'),
-    ('p', 'p-'),
+    ('p+', 'p-'),
     ('n', 'antineutron'),
     ('nu_e', 'anti_nu_e'),
     ('nu_mu', 'anti_nu_mu'),

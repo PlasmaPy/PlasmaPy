@@ -30,7 +30,7 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
     case_sensitive_aliases_for_a_symbol = [
         (['beta-'], 'e-'),
         (['beta+'], 'e+'),
-        (['p+'], 'p'),
+        (['p'], 'p+'),
         (['n-1'], 'n'),
         (['H-2'], 'D'),
         (['H-2+', 'H-2 1+', 'H-2 +1', 'D+'], 'D 1+'),
@@ -43,7 +43,7 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
         (['muon+'], 'mu+'),
         (['tau particle'], 'tau-'),
         (['protium'], 'H-1'),
-        (['protium+', 'protium 1+', 'protium +1'], 'p'),
+        (['protium+', 'protium 1+', 'protium +1'], 'p+'),
         (['deuterium', 'hydrogen-2'], 'D'),
         (['deuteron', 'deuterium+', 'deuterium 1+', 'deuterium +1'],
          'D 1+'),
@@ -244,6 +244,9 @@ def _parse_and_check_atomic_input(
         elif isotope_info == 'T':
             element_info = 'H'
             mass_numb = 3
+        elif isotope_info == 'p':
+            element_info = 'H'
+            mass_numb = 1
         elif '-' not in isotope_info:
             element_info = isotope_info
             mass_numb = None
@@ -268,6 +271,8 @@ def _parse_and_check_atomic_input(
             element = _atomic_symbols_dict[element_info.lower()]
         elif element_info in _atomic_symbols.values():
             element = element_info
+        elif element_info == 'p':
+            element = 'H'
         else:
             raise InvalidParticleError(
                 f"Element not recognized in string '{element_info}'.")
@@ -320,7 +325,7 @@ def _parse_and_check_atomic_input(
             ion = None
 
         if ion == 'H-1 1+':
-            ion = 'p'
+            ion = 'p+'
 
         return ion
 

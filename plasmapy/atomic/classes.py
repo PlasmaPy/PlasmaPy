@@ -97,20 +97,20 @@ class Particle():
             self._lepton_number = _Particles[particle]['lepton number']
             self._baryon_number = _Particles[particle]['baryon number']
             self._integer_charge = _Particles[particle]['charge']
-
             self._mass = _Particles[particle].get('mass', None)
-
             self._is_stable = _Particles[particle]['half-life'] == np.inf * u.s
-
             self._half_life = _Particles[particle]['half-life']
             self._is_antimatter = _Particles[particle]['antimatter']
+            self._is_lepton = particle in _leptons
+            self._is_antilepton = particle in _antileptons
+            self._is_fermion = particle in _fermions
+            self._is_boson = particle in _bosons
 
-            self._is_lepton = particle in _leptons + _antileptons
+            self._is_neutrino_or_antineutrino = \
+                particle in _neutrinos + _antineutrinos
 
             if particle in _leptons + _antileptons:
                 self._generation = _Particles[particle]['generation']
-
-            self._is_fermion = particle in _fermions
 
         else:
             try:
@@ -195,7 +195,7 @@ class Particle():
         if self._lepton_number is not None:
             return self._lepton_number
         else:
-            raise AtomicError(f"The leption number for "
+            raise AtomicError(f"The lepton number for "
                               f"'{self._particle_symbol}' is not available.")
 
     @property

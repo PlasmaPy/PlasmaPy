@@ -22,7 +22,7 @@ aliases_and_symbols = [
     ('beta-', 'e-'),
     ('beta+', 'e+'),
     ('positron', 'e+'),
-    ('proton', 'p'),
+    ('proton', 'p+'),
     ('', ''),
     (5, 5),
     ('deuterium+', 'D 1+'),
@@ -37,7 +37,7 @@ aliases_and_symbols = [
     ('antimuon', 'mu+'),
     ('tau particle', 'tau-'),
     ('antitau', 'tau+'),
-    ('p+', 'p'),
+    ('p', 'p+'),
 ]
 
 
@@ -178,6 +178,14 @@ parse_check_table = [
       'ion': 'Be-8 3+',
       'Z': 3,
       'mass_numb': 8}),
+
+    ('p+', {},
+     {'symbol': 'p+',
+      'element': 'H',
+      'isotope': 'H-1',
+      'ion': 'p+',
+      'Z': 1,
+      'mass_numb': 1}),
 
 ]
 
