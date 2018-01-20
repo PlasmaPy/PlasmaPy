@@ -3,12 +3,14 @@ import numpy as np
 from astropy import units as u
 import inspect
 
-from ...constants import m_p
+from ...constants import m_p, m_e
 
 from ...utils import (
     MissingAtomicDataError,
     InvalidParticleError,
     InvalidElementError,
+    InvalidIsotopeError,
+    InvalidIonError,
     AtomicError,
 )
 
@@ -48,10 +50,48 @@ test_Particle_table = [
       'baryon_number': 1,
       }),
 
+    ('p-', {},
+     {'particle': 'p-',
+      'element': InvalidElementError,
+      'isotope': InvalidIsotopeError,
+      'ion': InvalidIonError,
+      'm': m_p,
+      'Z': -1,
+      'spin': 1/2,
+      'half_life': np.inf * u.s,
+      'atomic_number': InvalidElementError,
+      'mass_number': InvalidIsotopeError,
+      'lepton_number': 0,
+      'baryon_number': -1,
+      }),
+
     ('e-', {},
         {'particle': 'e-',
          'element': InvalidElementError,
-        })
+         'isotope': InvalidIsotopeError,
+         'ion': InvalidIonError,
+         'm': m_e,
+         'Z': -1,
+         'spin': 1/2,
+         'half_life': np.inf * u.s,
+         'atomic_number': InvalidElementError,
+         'lepton_number': 1,
+         'baryon_number': 0,
+         }),
+
+    ('e+', {},
+        {'particle': 'e+',
+         'element': InvalidElementError,
+         'isotope': InvalidIsotopeError,
+         'ion': InvalidIonError,
+         'm': m_e,
+         'Z': 1,
+         'spin': 1/2,
+         'half_life': np.inf * u.s,
+         'atomic_number': InvalidElementError,
+         'lepton_number': -1,
+         'baryon_number': 0,
+         }),
 ]
 
 
@@ -85,7 +125,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
             except pytest.fail.Exception as exc_failed_fail:
                 errmsg += f"\n{cls}.{key} does not raise {expected}."
             except Exception as exc_bad:
-                errmsg += (f"\n{cls}.{key} does not raise {expected} and " \
+                errmsg += (f"\n{cls}.{key} does not raise {expected} and "
                            f"instead raises a different exception.")
         else:
             try:
@@ -99,25 +139,6 @@ def test_Particle_class(arg, kwargs, expected_dict):
     if len(errmsg) > 0:
         raise Exception("The following problems were found for "
                         f"Particle('{key}'):" + errmsg)
-
-
-@pytest.mark.parametrize("symbol", _special_particles)
-def test_Particle_special(symbol):
-    r"""Test the properties of special particles that do not
-    correspond to elements."""
-
-    particle = Particle(symbol)
-
-    assert particle._atomic_symbol is None, \
-        f"Particle('symbol')._atomic_symbol is not None"
-    assert particle._atomic_number is None, \
-        f"Particle('symbol')._atomic_number is not None"
-    assert particle._isotope_symbol is None, \
-        f"Particle('symbol')._isotope_symbol is not None"
-    assert particle._element_name is None, \
-        f"Particle('symbol')._element_name is not None"
-    assert particle._mass_number is None, \
-        f"Particle('symbol')._mass_number is not None"
 
 
 @pytest.mark.parametrize("symbol", _neutrinos + _antineutrinos)
@@ -135,9 +156,43 @@ def test_Particle_neutrinos(symbol):
         nu.m
 
 
-@pytest.mark.parametrize("symbol", _leptons + _antileptons)
-def test_Particle_leptons(symbol):
+@pytest.mark.parametrize("symbol", _fermions)
+def test_Particle_fermions(symbol):
+    r"""Test that fermions have spin = 1/2."""
+    fermion = Particle(symbol)
+    assert np.isclose(fermion.spin, 1/2, atol=1e-15)
 
-    lepton = Particle(symbol)
 
-    assert lepton.spin == 1/2
+equivalent_particles_table = [
+    ['H', 'hydrogen', 'hYdRoGeN'],
+    ['p+', 'proton', 'H-1+', 'H-1 1+', 'H-1 +1'],
+    ['D', 'H-2', 'Hydrogen-2', 'deuterium'],
+    ['T', 'H-3', 'Hydrogen-3', 'tritium'],
+    ['alpha', 'He-4++', 'He-4 2+', 'He-4 +2'],
+    ['e-', 'electron', 'e'],
+    ['e+', 'positron'],
+    ['p-', 'antiproton'],
+    ['n', 'n-1', 'neutron', 'NEUTRON'],
+    ['muon', 'mu-', 'muon-'],
+    ['tau', 'tau-'],
+]
+
+
+@pytest.mark.parametrize("equivalent_particles", equivalent_particles_table)
+def test_Particle_equivalent_cases(equivalent_particles):
+    r"""Test that all instances of a list of particles are equivalent,
+    except for the _original_* private variables which will differ."""
+
+    equivalent_Particle_classes = []
+
+    for particle in equivalent_particles:
+        equivalent_Particle_classes.append(Particle(particle))
+
+    for Q in equivalent_Particle_classes:
+        del(Q._original_argument)
+        del(Q._original_mass_number)
+        del(Q._original_integer_charge)
+
+    for Q in equivalent_Particle_classes:
+        assert Q == equivalent_Particle_classes[0], \
+            f"{equivalent_particles}"
