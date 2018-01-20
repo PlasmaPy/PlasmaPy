@@ -39,12 +39,6 @@ from .parsing import (
 class Particle():
     r"""A class for individual particles or antiparticles."""
 
-    def __repr__(self):
-        return f'<Particle "{self._particle_symbol}">'
-
-    def __str__(self):
-        return f"{self._particle_symbol}"
-
     def __init__(self,
                  argument: Union[str, int],
                  mass_numb: int = None,
@@ -130,14 +124,28 @@ class Particle():
             self._isotope_symbol = isotope
             self._ion_symbol = ion
 
-            self._mass_number = particle_dict['mass_numb']
-
             self._integer_charge = particle_dict['Z']
-
+            self._mass_number = particle_dict['mass_numb']
+            self._baryon_number = self._mass_number
             self._atomic_number = _Elements[element]['atomic_number']
             self._element_name = _Elements[element]['name']
 
-            if element and not isotope and not ion:
+            if element and not ion:
+                self._lepton_number = None
+            elif ion:
+                self._lepton_number = self._atomic_number - self.Z
+
+            try:
+                self._half_life = _Isotopes[isotope]['half-life']
+            except KeyError:
+                self._half_life = np.inf * u.s
+
+            if ion == 'p+':
+                self._mass = const.m_p
+                self._spin = 1/2
+                self._lepton_number = 0
+
+            elif element and not isotope and not ion:
                 self._standard_atomic_weight = \
                     _Elements[element]['atomic_mass'].to(u.kg)
                 self._mass = self._standard_atomic_weight
@@ -162,6 +170,49 @@ class Particle():
         self._ion_errmsg = (
             f"The particle '{self.particle}' is not an ion, so this"
             f"attribute is not available.")
+
+    def __repr__(self):
+        return f'<Particle "{self.particle}">'
+
+    def __str__(self):
+        r"""Returns a string of the particle symbol."""
+        return f"{self.particle}"
+
+    def __eq__(self, other):
+        r"""Checks that public attributes of this class and private
+        variables that do not have 'original' in them are equal to each
+        other in both classes."""
+        try:
+            if dir(self) != dir(other):
+                return False
+            for attribute in dir(self):
+                if '__' not in attribute and '_original' not in attribute:
+
+                    # TODO: CHECK THAT EXCEPTIONS RAISED ARE EQUAL
+
+                    try:
+                        this = eval(f'self.{attribute}')
+                    except Exception as exc_this:
+                        pass  # TODO: replace this
+
+                    try:
+                        that = eval(f'other.{attribute}')
+                    except Exception as exc_that:
+                        pass  # TODO: replace this
+                    try:
+                        if this != that:
+                            return False
+                    except Exception:
+                        pass  # TODO: replace this
+        except Exception:
+            return False
+        else:
+            return True
+
+    def __ne__(self, other):
+        r"""Returns False if the two classes do not evaluate to be equal
+        to each other."""
+        return not self.__eq__(other)
 
     @property
     def particle(self) -> str:
