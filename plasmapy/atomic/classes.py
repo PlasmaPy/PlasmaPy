@@ -172,7 +172,8 @@ class Particle():
             f"attribute is not available.")
 
     def __repr__(self):
-        return f'<Particle "{self.particle}">'
+        r"""Returns a string of the call that would recreate this class."""
+        return f'Particle("{self.particle}")'
 
     def __str__(self):
         r"""Returns a string of the particle symbol."""
