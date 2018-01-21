@@ -179,33 +179,49 @@ class Particle():
         return f"{self.particle}"
 
     def __eq__(self, other):
-        r"""Checks that public attributes of this class and private
-        variables that do not have 'original' in them are equal to each
-        other in both classes."""
+        r"""Checks that this instance of a Particle class represents the
+        same particle as another instance of a Particle class.
+
+        This method checks that attributes of this class and private
+        variables that do not correspond to the original arguments are
+        equal to the corresponding attributes/quantities in the class
+        that this is being compared against.  If an attribute raises an
+        exception, this method checks that the attribute of the other
+        class also raises an exception."""
+
         try:
             if dir(self) != dir(other):
                 return False
+
             for attribute in dir(self):
                 if '__' not in attribute and '_original' not in attribute:
-
-                    # TODO: CHECK THAT EXCEPTIONS RAISED ARE EQUAL
 
                     try:
                         this = eval(f'self.{attribute}')
                     except Exception as exc_this:
-                        pass  # TODO: replace this
+                        self_rose_an_exception = True
+                    else:
+                        self_rose_an_exception = False
 
                     try:
                         that = eval(f'other.{attribute}')
-                    except Exception as exc_that:
-                        pass  # TODO: replace this
-                    try:
+                    except Exception:
+                        if self_rose_an_exception:
+                            pass
+                        else:
+                            return False
+                    else:
+                        if self_rose_an_exception:
+                            return False
+
+                    if not self_rose_an_exception:
                         if this != that:
                             return False
-                    except Exception:
-                        pass  # TODO: replace this
+
         except Exception:
-            return False
+            raise RuntimeError(
+                f"Unable to compare {self} and {other} with attribute"
+                f"{attribute}.")
         else:
             return True
 
