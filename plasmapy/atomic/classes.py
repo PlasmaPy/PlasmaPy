@@ -369,3 +369,31 @@ class Particle():
             raise MissingAtomicDataError(
                 f"The spin of particle '{self.particle}' is unavailable.")
         return self._spin
+
+    @property
+    def reduced_mass(self, other) -> u.kg:
+        r"""Finds the reduced mass between two particles."""
+
+        try:
+            mass_this = self.mass
+        except MissingAtomicDataError:
+            raise MissingAtomicDataError(
+                f"Unable to find the reduced mass because the mass of "
+                f"{self.particle} is not available.")
+
+        try:
+            mass_that = other.mass
+        except MissingAtomicDataError:
+            raise MissingAtomicDataError(
+                f"Unable to find the reduced mass because the mass of "
+                f"{other.particle} is not available.")
+        except AttributeError:
+            raise
+
+        try:
+            _reduced_mass = (mass_this * mass_that) / (mass_this + mass_that)
+            _reduced_mass = _reduced_mass.to(u.kg)
+        except Exception:
+            raise
+
+        return _reduced_mass
