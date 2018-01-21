@@ -40,8 +40,8 @@ test_Particle_table = [
       'element': 'H',
       'isotope': 'H-1',
       'ion': 'p+',
-      'm': m_p,
-      'Z': 1,
+      'mass': m_p,
+      'integer_charge': 1,
       'spin': 1/2,
       'half_life': np.inf * u.s,
       'atomic_number': 1,
@@ -55,8 +55,8 @@ test_Particle_table = [
       'element': InvalidElementError,
       'isotope': InvalidIsotopeError,
       'ion': InvalidIonError,
-      'm': m_p,
-      'Z': -1,
+      'mass': m_p,
+      'integer_charge': -1,
       'spin': 1/2,
       'half_life': np.inf * u.s,
       'atomic_number': InvalidElementError,
@@ -70,8 +70,8 @@ test_Particle_table = [
          'element': InvalidElementError,
          'isotope': InvalidIsotopeError,
          'ion': InvalidIonError,
-         'm': m_e,
-         'Z': -1,
+         'mass': m_e,
+         'integer_charge': -1,
          'spin': 1/2,
          'half_life': np.inf * u.s,
          'atomic_number': InvalidElementError,
@@ -84,8 +84,8 @@ test_Particle_table = [
          'element': InvalidElementError,
          'isotope': InvalidIsotopeError,
          'ion': InvalidIonError,
-         'm': m_e,
-         'Z': 1,
+         'mass': m_e,
+         'integer_charge': 1,
          'spin': 1/2,
          'half_life': np.inf * u.s,
          'atomic_number': InvalidElementError,
@@ -153,7 +153,7 @@ def test_Particle_neutrinos(symbol):
 
     with pytest.raises(MissingAtomicDataError, message=(
             f"Particle('{symbol}').m is not raising an exception")):
-        nu.m
+        nu.mass
 
 
 @pytest.mark.parametrize("symbol", _fermions)

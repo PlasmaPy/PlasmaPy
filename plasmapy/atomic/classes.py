@@ -39,6 +39,11 @@ from .parsing import (
 class Particle():
     r"""A class for individual particles or antiparticles."""
 
+    # TODO: Write an actual docstring of wonder and amazement
+    # TODO: Add a method to get the reduced mass from this and another particle
+    # TODO: Write a decorator to turn atomic inputs (a particle string, Z,
+    #       and mass_numb) into a Particle.
+
     def __init__(self,
                  argument: Union[str, int],
                  mass_numb: int = None,
@@ -133,7 +138,7 @@ class Particle():
             if element and not ion:
                 self._lepton_number = None
             elif ion:
-                self._lepton_number = self._atomic_number - self.Z
+                self._lepton_number = self._atomic_number - self.integer_charge
 
             try:
                 self._half_life = _Isotopes[isotope]['half-life']
@@ -172,7 +177,7 @@ class Particle():
             f"attribute is not available.")
 
     def __repr__(self):
-        r"""Returns a string of the call that would recreate this class."""
+        r"""Returns a string of the call that would recreate this object."""
         return f'Particle("{self.particle}")'
 
     def __str__(self):
@@ -189,6 +194,9 @@ class Particle():
         that this is being compared against.  If an attribute raises an
         exception, this method checks that the attribute of the other
         class also raises an exception."""
+
+        # TODO: Perhaps move this general method into utils/magic.py?
+        # TODO: Check that the same class of exception is raised by both
 
         try:
             if dir(self) != dir(other):
@@ -298,7 +306,7 @@ class Particle():
         return self._baryon_number
 
     @property
-    def half_life(self) -> u.Quantity:
+    def half_life(self) -> u.s:
         r"""Returns the half-life of the particle, or raises a
         MissingAtomicDataError if the half-life is unavailable."""
         if not self._half_life:
@@ -323,7 +331,7 @@ class Particle():
         return self._is_antimatter
 
     @property
-    def Z(self) -> int:
+    def integer_charge(self) -> int:
         r"""Returns the integer charge, or raises a ChargeError if the
         charge has not been specified."""
         if self._integer_charge is None:
@@ -333,7 +341,7 @@ class Particle():
         return self._integer_charge
 
     @property
-    def q(self) -> u.Quantity:
+    def charge(self) -> u.C:
         r"""Returns the electric charge as a Quantity in units of coulombs,
         or raises a ChargeError if the charge has not been specified."""
         if self._electric_charge is None:
@@ -343,7 +351,7 @@ class Particle():
         return self._electric_charge
 
     @property
-    def m(self) -> u.Quantity:
+    def mass(self) -> u.kg:
         r"""Returns the mass of the element, isotope, ion, particle, or
         antiparticle; or raises a MissingAtomicDataError if the mass
         is unavailable."""
