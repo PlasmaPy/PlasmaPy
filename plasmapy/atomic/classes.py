@@ -17,10 +17,6 @@ from .particles import (
     _special_particles,
     _leptons,
     _antileptons,
-    _baryons,
-    _antibaryons,
-    _particles,
-    _antiparticles,
     _fermions,
     _bosons,
     _neutrinos,
@@ -40,18 +36,13 @@ class Particle():
     r"""A class for individual particles or antiparticles."""
 
     # TODO: Write an actual docstring of wonder and amazement
-    # TODO: Add a method to get the reduced mass from this and another particle
-    # TODO: Write a decorator to turn atomic inputs (a particle string, Z,
-    #       and mass_numb) into a Particle.
+    # TODO: Write a decorator to turn atomic inputs into a Particle.
 
     def __init__(self,
                  argument: Union[str, int],
                  mass_numb: int = None,
                  Z: int = None):
 
-        self._original_argument = argument
-        self._original_mass_number = mass_numb
-        self._original_integer_charge = Z
         self._particle_symbol = None
         self._atomic_symbol = None
         self._isotope_symbol = None
@@ -147,6 +138,8 @@ class Particle():
                 self._mass = const.m_p
                 self._spin = 1/2
                 self._lepton_number = 0
+            elif ion == 'He-4 2+':
+                self._spin = 0
 
             elif element and not isotope and not ion:
                 self._standard_atomic_weight = \
@@ -197,40 +190,12 @@ class Particle():
         # TODO: Check that the same class of exception is raised by both
 
         try:
-            if dir(self) != dir(other):
+            if self.__dict__ == other.__dict__:
+                return True
+            else:
                 return False
-
-            for attribute in dir(self):
-                if '__' not in attribute and '_original' not in attribute:
-
-                    try:
-                        this = eval(f'self.{attribute}')
-                    except Exception as exc_this:
-                        self_rose_an_exception = True
-                    else:
-                        self_rose_an_exception = False
-
-                    try:
-                        that = eval(f'other.{attribute}')
-                    except Exception:
-                        if self_rose_an_exception:
-                            pass
-                        else:
-                            return False
-                    else:
-                        if self_rose_an_exception:
-                            return False
-
-                    if not self_rose_an_exception:
-                        if this != that:
-                            return False
-
         except Exception:
-            raise RuntimeError(
-                f"Unable to compare {self} and {other} with attribute"
-                f"{attribute}.")
-        else:
-            return True
+            return False
 
     def __ne__(self, other):
         r"""Returns False if the two classes do not evaluate to be equal
@@ -284,32 +249,34 @@ class Particle():
 
     @property
     def mass_number(self) -> int:
-        r"""Returns the mass number of the particle if it is an isotope, or
-        raises an InvalidIsotopeError if the mass number is unavailable."""
+        r"""Returns the mass number of an isotope, or raises an
+        InvalidIsotopeError if the particle does not have a mass number."""
         if not self.isotope:
             raise InvalidIsotopeError(self._isotope_errmsg)
         return self._mass_number
 
     @property
-    def lepton_number(self) -> int:
-        r"""Returns the lepton number
-
-        Returns the lepton number, or raises an AtomicError if the
-        lepton number is not available."""
-        if self._lepton_number is None:
-            raise AtomicError(
-                f"The lepton number for {self.particle} is not available.")
-        return self._lepton_number
-
-    @property
     def baryon_number(self) -> int:
-        r"""Returns the baryon number, or raises a MissingAtomicDataError if
+        r"""Returns the baryon number of a subatomic particle or the nuclide
+        of an element or isotope,
+        or raises a
+        MissingAtomicDataError if
         the baryon number is unavailable."""
         if self._baryon_number is None:
             raise AtomicError(
                 f"The baryon number for '{self.particle}' is not "
                 f"available.")
         return self._baryon_number
+
+    @property
+    def lepton_number(self) -> int:
+        r"""Returns the lepton number of a subatomic particle or the nuclide
+        of an element or isotope, or raises an AtomicError if the lepton
+        number is not available."""
+        if self._lepton_number is None:
+            raise AtomicError(
+                f"The lepton number for {self.particle} is not available.")
+        return self._lepton_number
 
     @property
     def half_life(self) -> u.s:
@@ -376,10 +343,24 @@ class Particle():
                 f"The spin of particle '{self.particle}' is unavailable.")
         return self._spin
 
-    def reduced_mass(self, other) -> u.kg:
+    def reduced_mass(self, other, Z=None, mass_numb=None) -> u.kg:
         r"""Finds the reduced mass between two particles, or will raise a
         MissingAtomicDataError if either particle's mass is unavailable or
-        an AtomicError for any other errors."""
+        an AtomicError for any other errors.  The other particle may be
+        represented by another Particle object, a Quantity with units of,
+        mass, or a string of the other particle's symbol (in conjunction
+        with keywords Z and mass_numb)
+
+        Example
+        -------
+
+        >>> from plasmapy.atomic import Particle
+        >>> electron = Particle('e-')
+        >>> proton = Particle('p+')
+        >>> proton.reduced_mass(electron)
+        <Quantity 9.10442514e-31 kg>
+
+        """
 
         try:
             mass_this = self.mass.to(u.kg)
@@ -387,6 +368,9 @@ class Particle():
             raise MissingAtomicDataError(
                 f"Unable to find the reduced mass because the mass of "
                 f"{self.particle} is not available.")
+
+        if isinstance(other, (str, int)):
+                other = Particle(other, Z=Z, mass_numb=mass_numb)
 
         if isinstance(other, Particle):
             try:
@@ -404,10 +388,4 @@ class Particle():
                     f"Constant with units of mass in order to calculate "
                     f"reduced mass.")
 
-        try:
-            _reduced_mass = (mass_this * mass_that) / (mass_this + mass_that)
-            _reduced_mass = _reduced_mass.to(u.kg)
-        except Exception:
-            raise
-
-        return _reduced_mass
+        return (mass_this * mass_that) / (mass_this + mass_that)

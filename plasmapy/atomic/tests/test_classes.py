@@ -49,7 +49,9 @@ test_Particle_table = [
       'lepton_number': 0,
       'baryon_number': 1,
       'reduced_mass(Particle("p"))': m_p / 2,
-      'reduced_mass(m_p)': m_p / 2
+      'reduced_mass(m_p)': m_p / 2,
+      '__str__()': 'p+',
+      '__repr__()': 'Particle("p+")',
       }),
 
     ('p-', {},
@@ -80,6 +82,7 @@ test_Particle_table = [
          'lepton_number': 1,
          'baryon_number': 0,
          'reduced_mass(Particle("e+"))': m_e / 2,
+         'reduced_mass("e-")': m_e / 2,
          }),
 
     ('e+', {},
@@ -95,6 +98,8 @@ test_Particle_table = [
          'lepton_number': -1,
          'baryon_number': 0,
          }),
+
+
 ]
 
 
@@ -191,10 +196,10 @@ def test_Particle_equivalent_cases(equivalent_particles):
     for particle in equivalent_particles:
         equivalent_Particle_classes.append(Particle(particle))
 
-    for Q in equivalent_Particle_classes:
-        del(Q._original_argument)
-        del(Q._original_mass_number)
-        del(Q._original_integer_charge)
+#   for Q in equivalent_Particle_classes:
+#       del(Q._original_argument)
+#       del(Q._original_mass_number)
+#        del(Q._original_integer_charge)
 
     for Q in equivalent_Particle_classes:
         assert Q == equivalent_Particle_classes[0], \
