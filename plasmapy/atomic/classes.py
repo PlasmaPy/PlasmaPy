@@ -135,10 +135,8 @@ class Particle():
             self._atomic_number = _Elements[element]['atomic_number']
             self._element_name = _Elements[element]['name']
 
-            if element and not ion:
-                self._lepton_number = None
-            elif ion:
-                self._lepton_number = self._atomic_number - self.integer_charge
+            if element:
+                self._lepton_number = 0
 
             try:
                 self._half_life = _Isotopes[isotope]['half-life']
@@ -278,18 +276,26 @@ class Particle():
 
     @property
     def atomic_number(self) -> int:
+        r"""Returns the atomic number of the particle if it is an element,
+        ion, or isotope."""
         if not self.element:
             raise InvalidElementError(self._element_errmsg)
         return self._atomic_number
 
     @property
     def mass_number(self) -> int:
+        r"""Returns the mass number of the particle if it is an isotope, or
+        raises an InvalidIsotopeError if the mass number is unavailable."""
         if not self.isotope:
             raise InvalidIsotopeError(self._isotope_errmsg)
         return self._mass_number
 
     @property
     def lepton_number(self) -> int:
+        r"""Returns the lepton number
+
+        Returns the lepton number, or raises an AtomicError if the
+        lepton number is not available."""
         if self._lepton_number is None:
             raise AtomicError(
                 f"The lepton number for {self.particle} is not available.")
@@ -370,25 +376,33 @@ class Particle():
                 f"The spin of particle '{self.particle}' is unavailable.")
         return self._spin
 
-    @property
     def reduced_mass(self, other) -> u.kg:
-        r"""Finds the reduced mass between two particles."""
+        r"""Finds the reduced mass between two particles, or will raise a
+        MissingAtomicDataError if either particle's mass is unavailable or
+        an AtomicError for any other errors."""
 
         try:
-            mass_this = self.mass
+            mass_this = self.mass.to(u.kg)
         except MissingAtomicDataError:
             raise MissingAtomicDataError(
                 f"Unable to find the reduced mass because the mass of "
                 f"{self.particle} is not available.")
 
-        try:
-            mass_that = other.mass
-        except MissingAtomicDataError:
-            raise MissingAtomicDataError(
-                f"Unable to find the reduced mass because the mass of "
-                f"{other.particle} is not available.")
-        except AttributeError:
-            raise
+        if isinstance(other, Particle):
+            try:
+                mass_that = other.mass.to(u.kg)
+            except MissingAtomicDataError:
+                raise MissingAtomicDataError(
+                    f"Unable to find the reduced mass because the mass of "
+                    f"{other.particle} is not available.")
+        else:
+            try:
+                mass_that = other.to(u.kg)
+            except Exception:
+                raise AtomicError(
+                    f"{other} must be either a Particle or a Quantity or "
+                    f"Constant with units of mass in order to calculate "
+                    f"reduced mass.")
 
         try:
             _reduced_mass = (mass_this * mass_that) / (mass_this + mass_that)
