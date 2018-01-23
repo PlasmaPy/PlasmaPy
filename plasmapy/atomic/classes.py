@@ -32,7 +32,7 @@ from .parsing import (
 )
 
 
-class Particle():
+class Particle:
     r"""A class for individual particles or antiparticles."""
 
     # TODO: Write an actual docstring of wonder and amazement

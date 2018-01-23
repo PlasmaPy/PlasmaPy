@@ -14,22 +14,26 @@ from ...utils import (
     AtomicError,
 )
 
+from typing import Union, Dict
+
 from ..particles import (
-    _leptons,
-    _antileptons,
-    _baryons,
-    _antibaryons,
-    _everything,
-    _particles,
-    _antiparticles,
     _fermions,
-    _bosons,
     _neutrinos,
     _antineutrinos,
-    _special_particles,
 )
 
 from ..classes import Particle
+
+
+def _call_string(arg: Union[str, int], kwargs: Dict) -> str:
+    r"""Return a string that recreates the call to create a particular
+    particle from """
+    if kwargs != {}:
+        keyword_string = ", " \
+            + str(kwargs).strip(r"}{'").replace("'", "").replace(":", " =")
+    else:
+        keyword_string = ""
+    return f"Particle({repr(arg)}{keyword_string})"
 
 
 # (arg, kwargs, results_dict
@@ -67,86 +71,156 @@ test_Particle_table = [
       'mass_number': InvalidIsotopeError,
       'lepton_number': 0,
       'baryon_number': -1,
+      '__str__()': 'p-',
+      '__repr__()': 'Particle("p-")',
       }),
 
     ('e-', {},
-        {'particle': 'e-',
-         'element': InvalidElementError,
-         'isotope': InvalidIsotopeError,
-         'ion': InvalidIonError,
-         'mass': m_e,
-         'integer_charge': -1,
-         'spin': 1 / 2,
-         'half_life': np.inf * u.s,
-         'atomic_number': InvalidElementError,
-         'lepton_number': 1,
-         'baryon_number': 0,
-         'reduced_mass(Particle("e+"))': m_e / 2,
-         'reduced_mass("e-")': m_e / 2,
-         }),
+     {'particle': 'e-',
+      'element': InvalidElementError,
+      'isotope': InvalidIsotopeError,
+      'ion': InvalidIonError,
+      'mass': m_e,
+      'integer_charge': -1,
+      'spin': 1 / 2,
+      'half_life': np.inf * u.s,
+      'atomic_number': InvalidElementError,
+      'lepton_number': 1,
+      'baryon_number': 0,
+      'reduced_mass(Particle("e+"))': m_e / 2,
+      'reduced_mass("e-")': m_e / 2,
+      '__str__()': 'e-',
+      '__repr__()': 'Particle("e-")',
+      }),
 
     ('e+', {},
-        {'particle': 'e+',
-         'element': InvalidElementError,
-         'isotope': InvalidIsotopeError,
-         'ion': InvalidIonError,
-         'mass': m_e,
-         'integer_charge': 1,
-         'spin': 1 / 2,
-         'half_life': np.inf * u.s,
-         'atomic_number': InvalidElementError,
-         'lepton_number': -1,
-         'baryon_number': 0,
-         }),
+     {'particle': 'e+',
+      'element': InvalidElementError,
+      'isotope': InvalidIsotopeError,
+      'ion': InvalidIonError,
+      'mass': m_e,
+      'integer_charge': 1,
+      'spin': 1 / 2,
+      'half_life': np.inf * u.s,
+      'atomic_number': InvalidElementError,
+      'lepton_number': -1,
+      'baryon_number': 0,
+      '__str__()': 'e+',
+      '__repr__()': 'Particle("e+")',
+      }),
 
+    ('Fe', {'Z': 17, 'mass_numb': 56},
+     {'particle': 'Fe-56 17+',
+      'element': 'Fe',
+      'isotope': 'Fe-56',
+      'ion': 'Fe-56 17+',
+      'integer_charge': 17,
+      'atomic_number': 26,
+      'mass_number': 56,
+      'baryon_number': 56,
+      '__str__()': 'Fe-56 17+',
+      '__repr__()': 'Particle("Fe-56 17+")',
+      }),
 
+    ('alpha', {},
+     {'particle': 'He-4 2+',
+      'element': 'He',
+      'isotope': 'He-4',
+      'ion': 'He-4 2+',
+      'integer_charge': 2,
+      'atomic_number': 2,
+      'mass_number': 4,
+      'baryon_number': 4,
+      'lepton_number': 0,
+      }),
+
+    ('D+', {},
+     {'particle': 'D 1+',
+      'element': 'H',
+      'isotope': 'D',
+      'ion': 'D 1+',
+      'integer_charge': 1,
+      'atomic_number': 1,
+      'mass_number': 2,
+      'baryon_number': 2,
+      'lepton_number': 0,
+      }),
+
+    ('tritium', {'Z': 1},
+     {'particle': 'T 1+',
+      'element': 'H',
+      'isotope': 'T',
+      'ion': 'T 1+',
+      'integer_charge': 1,
+      'atomic_number': 1,
+      'mass_number': 3,
+      'baryon_number': 3,
+      'lepton_number': 0,
+      }),
+
+    ('muon', {},
+     {'particle': 'mu-',
+      'element': InvalidElementError,
+      'isotope': InvalidIsotopeError,
+      'ion': InvalidIonError,
+      'integer_charge': -1,
+      'atomic_number': InvalidElementError,
+      'mass_number': InvalidIsotopeError,
+      'baryon_number': 0,
+      'lepton_number': 1,
+
+      }),
 ]
 
 
 @pytest.mark.parametrize("arg, kwargs, expected_dict", test_Particle_table)
 def test_Particle_class(arg, kwargs, expected_dict):
-    r"""Test required properties of items in _Particles dictionary."""
+    r"""Test that Particle objects for different subatomic particles,
+    elements, isotopes, and ions return the expected properties.  Provide
+    a detailed error message that lists all of the inconsistencies with
+    the expected results."""
 
-    # To allow tests of a Particle class to continue after the first
-    # exception, error messages will be appended as new lines to errmsg.
+    call = _call_string(arg, kwargs)
     errmsg = ""
 
-    cls = f"Particle('{arg}')"
-
     try:
-        particle = Particle(arg)
+        particle = Particle(arg, **kwargs)
     except Exception as exc:
-        raise Exception(f"Unable to create {cls}.") from exc
+        raise AtomicError(f"Problem creating {call}") from exc
 
     for key in expected_dict.keys():
         expected = expected_dict[key]
 
         if inspect.isclass(expected) and issubclass(expected, Exception):
+
             # Exceptions are expected to be raised when accessing certain
             # attributes for some particles.  For example, accessing a
-            # neutrino's mass should raise a MissingAtomicDataError.
+            # neutrino's mass should raise a MissingAtomicDataError since
+            # only upper limits of neutrino masses are presently available.
             # If expected_dict[key] is an exception, then check to make
             # sure that this exception is raised.
+
             try:
                 with pytest.raises(expected):
                     exec(f"particle.{key}")
             except pytest.fail.Exception as exc_failed_fail:
-                errmsg += f"\n{cls}.{key} does not raise {expected}."
+                errmsg += f"\n{call}[{key}] does not raise {expected}."
             except Exception as exc_bad:
-                errmsg += (f"\n{cls}.{key} does not raise {expected} and "
-                           f"instead raises a different exception.")
+                errmsg += (f"\n{call}[{key}] does not raise {expected} but "
+                           f"raises a different exception.")
+
         else:
+
             try:
                 result = eval(f"particle.{key}")
                 assert result == expected
             except AssertionError as exc_assert:
-                errmsg += f"\n{cls}.{key} does not equal {expected}."
+                errmsg += f"\n{call}.{key} does not equal {expected}."
             except Exception as exc_general:
-                errmsg += f"\n{cls}.{key} raises an unexpected exception."
+                errmsg += f"\n{call}.{key} raises an unexpected exception."
 
     if len(errmsg) > 0:
-        raise Exception("The following problems were found for "
-                        f"Particle('{key}'):" + errmsg)
+        raise Exception(f"Problems with {call}:{errmsg}")
 
 
 @pytest.mark.parametrize("symbol", _neutrinos + _antineutrinos)
@@ -196,11 +270,6 @@ def test_Particle_equivalent_cases(equivalent_particles):
     for particle in equivalent_particles:
         equivalent_Particle_classes.append(Particle(particle))
 
-#   for Q in equivalent_Particle_classes:
-#       del(Q._original_argument)
-#       del(Q._original_mass_number)
-#        del(Q._original_integer_charge)
-
-    for Q in equivalent_Particle_classes:
+    for Q in equivalent_Particle_classes[1:]:
         assert Q == equivalent_Particle_classes[0], \
             f"{equivalent_particles}"
