@@ -264,7 +264,7 @@ class Particle:
         r"""Returns the lepton number of a subatomic particle or the nuclide
         of an element or isotope, or raises an AtomicError if the lepton
         number is not available."""
-        if self._lepton_number is None:
+        if self._lepton_number is None:  # coveralls: ignore
             raise AtomicError(
                 f"The lepton number for {self.particle} is not available.")
         return self._lepton_number
@@ -286,7 +286,7 @@ class Particle:
         if not self._half_life:  # coveralls: ignore
             raise MissingAtomicDataError(
                 f"The stability of '{self.particle}' is not available.")
-        return self._half_life
+        return self._half_life == np.inf * u.s
 
     @property
     def is_antimatter(self) -> bool:
