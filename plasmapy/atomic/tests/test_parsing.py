@@ -3,6 +3,7 @@ import pytest
 from ...utils import (
     InvalidParticleError,
     InvalidElementError,
+    AtomicWarning,
 )
 
 from ..particles import _special_particles
