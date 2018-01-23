@@ -228,6 +228,9 @@ invalid_particles_table = [
     ('e-', {'Z': -1}),
     (0, {'mass_numb': 1}),
     ('n', {'mass_numb': 1}),
+    ('He-4', {'mass_numb': 3}),
+    ('H-2+', {'Z': 0, 'mass_numb': 2}),
+    ('H-', {'Z': 1}),
 ]
 
 
@@ -247,3 +250,18 @@ def test_parse_InvalidElementErrors(arg):
     particle but not a valid element, isotope, or ion."""
     with pytest.raises(InvalidElementError):
         _parse_and_check_atomic_input(arg)
+        
+# (arg, kwargs)
+atomic_warnings_table = [
+    ('H-2 1+', {'mass_numb': 2, 'Z': 1}),
+    ('H 1+', {'Z': 1}),
+    ('H-3', {'mass_numb': 3}),
+    ('Fe-56', {'Z': -4}),
+]
+
+@pytest.mark.parametrize('arg, kwargs', atomic_warnings_table)
+def test_parse_AtomicWarnings(arg, kwargs):
+    r"""Tests that _parse_and_check_atomic_input issues
+    an AtomicWarning under the required conditions."""
+    with pytest.warns(AtomicWarning):
+        _parse_and_check_atomic_input(arg, **kwargs)
