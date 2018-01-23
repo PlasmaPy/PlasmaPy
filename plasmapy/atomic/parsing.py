@@ -268,8 +268,6 @@ def _parse_and_check_atomic_input(
             element = _atomic_symbols_dict[element_info.lower()]
         elif element_info in _atomic_symbols.values():
             element = element_info
-        elif element_info == 'p':
-            element = 'H'
         else:
             raise InvalidParticleError(
                 f"The string '{element_info}' does not correspond to "

@@ -234,7 +234,7 @@ invalid_particles_table = [
     (0, {}),
     (119, {}),
     (0, {'mass_numb': 1}),
-    ('p-', {'mass_numb': -1}),
+    ('p-', {'mass_numb': -1, 'Z': 1}),
     ('e-', {'Z': -1}),
     (0, {'mass_numb': 1}),
     ('n', {'mass_numb': 1}),
