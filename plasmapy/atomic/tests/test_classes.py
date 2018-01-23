@@ -6,12 +6,13 @@ import inspect
 from ...constants import m_p, m_e
 
 from ...utils import (
+    AtomicWarning,
+    AtomicError,
     MissingAtomicDataError,
     InvalidParticleError,
     InvalidElementError,
     InvalidIsotopeError,
     InvalidIonError,
-    AtomicError,
     ChargeError,
 )
 
@@ -295,11 +296,30 @@ test_Particle_error_table = [
 @pytest.mark.parametrize(
     "arg, kwargs, attribute, exception", test_Particle_error_table)
 def test_Particle_errors(arg, kwargs, attribute, exception):
-    r"""Test that the appropriate exceptions are raised for different inputs
-    when creating a Particle object."""
+    r"""Test that the appropriate exceptions are raised during the creation
+    and use of a Particle object."""
     call = _call_string(arg, kwargs)
     with pytest.raises(exception, message=(
             f"The following command: "
             f"\n\n >>> {_call_string(arg, kwargs)}{attribute}\n\n"
             f"did not raise a {exception.__name__} as expected")):
-        result = eval(f'Particle(arg, **kwargs){attribute}')
+        exec(f'Particle(arg, **kwargs){attribute}')
+
+
+# arg, kwargs, attribute, exception
+test_Particle_warning_table = [
+    ('H----', {}, "", AtomicWarning),
+    ('alpha', {'mass_numb': 4}, "", AtomicWarning),
+]
+
+
+@pytest.mark.parametrize(
+    "arg, kwargs, attribute, warning", test_Particle_warning_table)
+def test_Particle_warnings(arg, kwargs, attribute, warning):
+    r"""Test that the appropriate warnings are issued during the creation
+    and use of a Particle object."""
+    with pytest.warns(warning, message=(
+            f"The following command: "
+            f"\n\n >>> {_call_string(arg, kwargs)}{attribute}\n\n"
+            f"did not issue a {warning.__name__} as expected")):
+        exec(f'Particle(arg, **kwargs){attribute}')
