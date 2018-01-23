@@ -264,7 +264,7 @@ class Particle:
         or raises a
         MissingAtomicDataError if
         the baryon number is unavailable."""
-        if self._baryon_number is None:
+        if self._baryon_number is None:  # coveralls: ignore
             raise AtomicError(
                 f"The baryon number for '{self.particle}' is not "
                 f"available.")
@@ -284,7 +284,7 @@ class Particle:
     def half_life(self) -> u.s:
         r"""Returns the half-life of the particle, or raises a
         MissingAtomicDataError if the half-life is unavailable."""
-        if not self._half_life:
+        if not self._half_life:  # coveralls: ignore
             raise MissingAtomicDataError(
                 f"The half-life of '{self.particle}' is not available.")
         return self._half_life
@@ -294,7 +294,7 @@ class Particle:
         r"""Returns True if the particle is stable and False if the
         particle is unstable, or raises a MissingAtomicDataError if
         stability information is not available."""
-        if not self._half_life:
+        if not self._half_life:  # coveralls: ignore
             raise MissingAtomicDataError(
                 f"The stability of '{self.particle}' is not available.")
         return self._half_life

@@ -12,6 +12,7 @@ from ...utils import (
     InvalidIsotopeError,
     InvalidIonError,
     AtomicError,
+    ChargeError,
 )
 
 from typing import Union, Dict
@@ -168,7 +169,7 @@ test_Particle_table = [
       'mass_number': InvalidIsotopeError,
       'baryon_number': 0,
       'lepton_number': 1,
-
+      'is_antimatter': False,
       }),
 ]
 
@@ -273,3 +274,32 @@ def test_Particle_equivalent_cases(equivalent_particles):
     for Q in equivalent_Particle_classes[1:]:
         assert Q == equivalent_Particle_classes[0], \
             f"{equivalent_particles}"
+
+
+# arg, kwargs, attribute, exception
+test_Particle_error_table = [
+    ('a', {}, "", InvalidParticleError),
+    ('d+', {'mass_numb': 9}, "", InvalidParticleError),
+    ('H', {'mass_numb': 99}, "", InvalidParticleError),
+    ('e-', {'Z': -1}, "", InvalidParticleError),
+    ('nu_e', {}, '.mass', MissingAtomicDataError),
+    ('e-', {}, '.element', InvalidElementError),
+    ('H', {'Z': 0}, '.isotope', InvalidIsotopeError),
+    ('He', {'mass_numb': 3}, '.ion', InvalidIonError),
+    ('He', {'mass_numb': 4}, '.charge', ChargeError),
+    ('He', {'mass_numb': 4}, '.integer_charge', ChargeError),
+    ('Fe', {}, '.spin', MissingAtomicDataError),
+]
+
+
+@pytest.mark.parametrize(
+    "arg, kwargs, attribute, exception", test_Particle_error_table)
+def test_Particle_errors(arg, kwargs, attribute, exception):
+    r"""Test that the appropriate exceptions are raised for different inputs
+    when creating a Particle object."""
+    call = _call_string(arg, kwargs)
+    with pytest.raises(exception, message=(
+            f"The following command: "
+            f"\n\n >>> {_call_string(arg, kwargs)}{attribute}\n\n"
+            f"did not raise a {exception.__name__} as expected")):
+        result = eval(f'Particle(arg, **kwargs){attribute}')
