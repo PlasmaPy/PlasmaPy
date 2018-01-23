@@ -3,7 +3,7 @@ import numpy as np
 from astropy import units as u
 import inspect
 
-from ...constants import m_p, m_e
+from ...constants import m_p, m_e, e
 
 from ...utils import (
     AtomicWarning,
@@ -25,18 +25,7 @@ from ..particles import (
 )
 
 from ..classes import Particle
-
-
-def _call_string(arg: Union[str, int], kwargs: Dict) -> str:
-    r"""Return a string that recreates the call to create a particular
-    particle from """
-    if kwargs != {}:
-        keyword_string = ", " \
-            + str(kwargs).strip(r"}{'").replace("'", "").replace(":", " =")
-    else:
-        keyword_string = ""
-    return f"Particle({repr(arg)}{keyword_string})"
-
+from ..parsing import _call_string
 
 # (arg, kwargs, results_dict
 test_Particle_table = [
@@ -44,10 +33,12 @@ test_Particle_table = [
     ('p+', {},
      {'particle': 'p+',
       'element': 'H',
+      'element_name': 'hydrogen',
       'isotope': 'H-1',
       'ion': 'p+',
       'mass': m_p,
       'integer_charge': 1,
+      'charge': e.si,
       'spin': 1 / 2,
       'half_life': np.inf * u.s,
       'atomic_number': 1,
@@ -62,6 +53,7 @@ test_Particle_table = [
     ('p-', {},
      {'particle': 'p-',
       'element': InvalidElementError,
+      'element_name': InvalidElementError,
       'isotope': InvalidIsotopeError,
       'ion': InvalidIonError,
       'mass': m_p,
@@ -78,6 +70,7 @@ test_Particle_table = [
     ('e-', {},
      {'particle': 'e-',
       'element': InvalidElementError,
+      'element_name': InvalidElementError,
       'isotope': InvalidIsotopeError,
       'ion': InvalidIonError,
       'mass': m_e,
@@ -112,6 +105,7 @@ test_Particle_table = [
     ('Fe', {'Z': 17, 'mass_numb': 56},
      {'particle': 'Fe-56 17+',
       'element': 'Fe',
+      'element_name': 'iron',
       'isotope': 'Fe-56',
       'ion': 'Fe-56 17+',
       'integer_charge': 17,
@@ -124,6 +118,7 @@ test_Particle_table = [
     ('alpha', {},
      {'particle': 'He-4 2+',
       'element': 'He',
+      'element_name': 'helium',
       'isotope': 'He-4',
       'ion': 'He-4 2+',
       'integer_charge': 2,
@@ -137,6 +132,7 @@ test_Particle_table = [
     ('D+', {},
      {'particle': 'D 1+',
       'element': 'H',
+      'element_name': 'hydrogen',
       'isotope': 'D',
       'ion': 'D 1+',
       'integer_charge': 1,
@@ -322,6 +318,7 @@ test_Particle_error_table = [
     ('Og', {}, '.standard_atomic_weight', MissingAtomicDataError),
     ('alpha', {}, '.standard_atomic_weight', InvalidElementError),
     ('Fe-56', {}, '.standard_atomic_weight', InvalidElementError),
+    ('tau-', {}, '.element_name', InvalidElementError),
 ]
 
 

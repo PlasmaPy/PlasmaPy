@@ -12,7 +12,9 @@ from ..parsing import (
     _dealias_particle_aliases,
     _case_insensitive_aliases,
     _case_sensitive_aliases,
-    _parse_and_check_atomic_input,)
+    _parse_and_check_atomic_input,
+    _call_string,
+)
 
 aliases_and_symbols = [
     ('electron', 'e-'),
@@ -99,6 +101,14 @@ parse_check_table = [
       'ion': None,
       'Z': None,
       'mass_numb': None}),
+
+    ('p', {},
+     {'symbol': 'p+',
+      'element': 'H',
+      'isotope': 'H-1',
+      'ion': 'p+',
+      'Z': 1,
+      'mass_numb': 1}),
 
     ('H', {'mass_numb': 2},
      {'symbol': 'D',
@@ -200,8 +210,7 @@ def test_parse_and_check_atomic_input(arg, kwargs, expected):
         "The resulting dictionary is:\n\n"
         f"{result}\n\n"
         "whereas the expected dictionary is:\n\n"
-        f"{expected}\n"
-    )
+        f"{expected}\n")
 
 
 # (arg, kwargs)
@@ -230,7 +239,7 @@ invalid_particles_table = [
     (0, {'mass_numb': 1}),
     ('n', {'mass_numb': 1}),
     ('He-4', {'mass_numb': 3}),
-    ('H-2+', {'Z': 0, 'mass_numb': 2}),
+    ('H-2+', {'Z': 0}),
     ('H-', {'Z': 1}),
 ]
 
@@ -240,7 +249,9 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidParticleError when the input does not correspond
     to a real particle."""
-    with pytest.raises(InvalidParticleError):
+    with pytest.raises(InvalidParticleError, message=(
+            "An InvalidParticleError was expected to be raised by "
+            f"{_call_string(arg, kwargs)}, but no exception was raised.")):
         _parse_and_check_atomic_input(arg, **kwargs)
 
 
@@ -249,20 +260,31 @@ def test_parse_InvalidElementErrors(arg):
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidElementError when the input corresponds to a valid
     particle but not a valid element, isotope, or ion."""
-    with pytest.raises(InvalidElementError):
+    with pytest.raises(InvalidElementError, message=(
+            "An InvalidElementError was expected to be raised by "
+            f"{_call_string(arg)}, but no exception was raised.")):
         _parse_and_check_atomic_input(arg)
-        
-# (arg, kwargs)
+
+
+# (arg, kwargs, num_warnings)
 atomic_warnings_table = [
-    ('H-2 1+', {'mass_numb': 2, 'Z': 1}),
-    ('H 1+', {'Z': 1}),
-    ('H-3', {'mass_numb': 3}),
-    ('Fe-56', {'Z': -4}),
+    ('H-2 1+', {'Z': 1, 'mass_numb': 2}, 2),
+    ('H 1+', {'Z': 1}, 1),
+    ('H-3', {'mass_numb': 3}, 1),
+    ('Fe-56', {'Z': -4}, 1),
+    ('Og-294 43-', {'Z': -43, 'mass_numb': 294}, 3)
 ]
 
-@pytest.mark.parametrize('arg, kwargs', atomic_warnings_table)
-def test_parse_AtomicWarnings(arg, kwargs):
-    r"""Tests that _parse_and_check_atomic_input issues
-    an AtomicWarning under the required conditions."""
-    with pytest.warns(AtomicWarning):
+
+@pytest.mark.parametrize('arg, kwargs, num_warnings', atomic_warnings_table)
+def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
+    r"""Tests that _parse_and_check_atomic_input issues an AtomicWarning
+    under the required conditions.  """
+    with pytest.warns(AtomicWarning, message=(
+            f"No AtomicWarning was issued by {_call_string(arg, kwargs)} but "
+            f"the expected number of warnings was {num_warnings}")) as record:
         _parse_and_check_atomic_input(arg, **kwargs)
+    assert len(record) == num_warnings, (
+        f"The number of AtomicWarnings issued by {_call_string(arg, kwargs)} "
+        f"was {len(record)}, which differs from the expected number "
+        f"of {num_warnings} warnings.")

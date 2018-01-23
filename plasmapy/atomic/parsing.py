@@ -406,3 +406,14 @@ def _parse_and_check_atomic_input(
     }
 
     return nomenclature_dict
+
+
+def _call_string(arg: Union[str, int], kwargs: Dict = {}) -> str:
+    r"""Return a string that recreates the call to create a particular
+    particle from the input."""
+    if kwargs != {}:
+        keyword_string = ", " \
+            + str(kwargs).strip(r"}{'").replace("'", "").replace(":", " =")
+    else:
+        keyword_string = ""
+    return f"Particle({repr(arg)}{keyword_string})"
