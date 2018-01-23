@@ -42,8 +42,7 @@ def _call_string(arg: Union[str, int], kwargs: Dict) -> str:
 test_Particle_table = [
 
     ('p+', {},
-     {
-         'particle': 'p+',
+     {'particle': 'p+',
       'element': 'H',
       'isotope': 'H-1',
       'ion': 'p+',
@@ -167,7 +166,8 @@ test_Particle_table = [
       'mass_number': InvalidIsotopeError,
       'baryon_number': 0,
       'lepton_number': 1,
-      'is_antimatter': False}),
+      'is_antimatter': False,
+      'is_stable': False}),
 
     ('neutron', {},
      {'particle': 'n',
@@ -180,7 +180,24 @@ test_Particle_table = [
       'baryon_number': 1,
       'lepton_number': 0,
       'is_stable': False,
-      'is_antimatter': False})
+      'is_antimatter': False}),
+
+    ('H', {},
+     {'particle': 'H',
+      'element': 'H',
+      'isotope': InvalidIsotopeError,
+      'ion': InvalidIonError,
+      'charge': ChargeError,
+      'integer_charge': ChargeError,
+      'mass_number': InvalidIsotopeError,
+      'baryon_number': AtomicError,
+      'lepton_number': 0,
+      'is_stable': InvalidIsotopeError,  # or  a different error?
+      'half_life': InvalidIsotopeError,
+      'is_antimatter': False,
+      'standard_atomic_weight': (1.008 * u.u).to(u.kg),
+      'mass': (1.008 * u.u).to(u.kg),
+      })
 ]
 
 
@@ -302,6 +319,9 @@ test_Particle_error_table = [
     ('neutron', {}, '.atomic_number', InvalidElementError),
     ('neutron', {}, '.mass_number', InvalidIsotopeError),
     ('Fe', {}, '.spin', MissingAtomicDataError),
+    ('Og', {}, '.standard_atomic_weight', MissingAtomicDataError),
+    ('alpha', {}, '.standard_atomic_weight', InvalidElementError),
+    ('Fe-56', {}, '.standard_atomic_weight', InvalidElementError),
 ]
 
 

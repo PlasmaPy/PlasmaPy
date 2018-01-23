@@ -34,10 +34,90 @@ from .parsing import (
 
 
 class Particle:
-    r"""A class for individual particles or antiparticles."""
+    r"""A class for individual particles or antiparticles.
+
+    Parameters
+    ----------
+    argument : str or int
+        A string representing a particle, element, isotope, or ion; or
+        an integer representing the atomic number of an element.
+
+    mass_numb : int, optional
+        The mass number of an isotope or nuclide.
+
+    Z : int, optional
+        The integer charge of the particle.
+
+    Attributes
+    ----------
+    particle : str
+        The particle symbol.
+
+    element : str
+        The atomic symbol.
+
+    isotope : str
+        The isotope symbol.
+
+    ion : str
+        The ion symbol.
+
+    atomic_number : int
+        The atomic number of an element.
+
+    mass_number : int
+        The mass number of an isotope.
+
+    mass : Quantity
+        The mass of the particle, element, or ion
+
+    integer_charge :
+
+    charge :
+
+
+
+    half_life : Quantity
+
+    is_stable : bool
+        Returns True if the particle is stable and False if it is unstable.
+
+
+
+    Raises
+    ------
+    InvalidParticleError
+        Raised when the particle input does not correspond to a valid particle
+        or is contradictory.
+
+    InvalidElementError
+        For when an attribute is being accessed that requires information
+        about an element, but the particle is not an element, isotope, or ion.
+
+    InvalidIsotopeError
+        For when an attribute is being accessed that requires information
+        about an isotope or nuclide, but the particle is not an isotope (or
+        an ion of an isotope).
+
+    InvalidIonError
+        For when an attribute is being accessed that requires information
+        about an ion (excluding charge information), but the particle is not
+        an ion.
+
+    ChargeError
+        For when either the charge or integer_charge attributes is being
+        accessed but the charge information for the particle is not
+        available.
+
+    TypeError
+        For when any of the arguments or keywords is not of the required
+        type.
+
+    """
 
     # TODO: Write an actual docstring of wonder and amazement
     # TODO: Write a decorator to turn atomic inputs into a Particle.
+    # TODO: Add an attribute for nuclide_mass
 
     def __init__(self,
                  argument: Union[str, int],
@@ -58,6 +138,7 @@ class Particle:
         self._is_antimatter = None
         self._integer_charge = None
         self._electric_charge = None
+        self._standard_atomic_weight = None
         self._mass = None
         self._half_life = None
         self._spin = None
@@ -130,11 +211,13 @@ class Particle:
 
             if element:
                 self._lepton_number = 0
-
-            try:
-                self._half_life = _Isotopes[isotope]['half-life']
-            except KeyError:
-                self._half_life = np.inf * u.s
+            if isotope:
+                try:
+                    self._half_life = _Isotopes[isotope]['half-life']
+                except KeyError:
+                    self._half_life = np.inf * u.s
+            elif element and not isotope:
+                self._half_life = None
 
             if ion == 'p+':
                 self._mass = const.m_p
@@ -144,9 +227,12 @@ class Particle:
                 self._spin = 0
 
             elif element and not isotope and not ion:
-                self._standard_atomic_weight = \
-                    _Elements[element]['atomic_mass'].to(u.kg)
-                self._mass = self._standard_atomic_weight
+                try:
+                    self._standard_atomic_weight = \
+                        _Elements[element]['atomic_mass'].to(u.kg)
+                    self._mass = self._standard_atomic_weight
+                except KeyError:
+                    self._standard_atomic_weight = None
             elif element and isotope and not ion:
                 self._isotope_mass = _Isotopes[isotope]['atomic_mass']
 
@@ -156,6 +242,10 @@ class Particle:
             self._electric_charge = self._integer_charge * const.e.si
         else:
             self._electric_charge = None
+
+        self._is_element = self._atomic_symbol is not None
+        self._is_isotope = self._isotope_symbol is not None
+        self._is_ion = self._ion_symbol is not None
 
         self._element_errmsg = (
             f"The particle '{self.particle}' is not an element, so "
@@ -210,7 +300,7 @@ class Particle:
     def isotope(self) -> str:
         r"""Returns the isotope symbol, or raises an InvalidIsotopeError
         if the particle does not correspond to an isotope."""
-        if not self._isotope_symbol:
+        if not self._is_isotope:
             raise InvalidIsotopeError(self._isotope_errmsg)
         return self._isotope_symbol
 
@@ -226,7 +316,7 @@ class Particle:
     def element_name(self) -> str:
         r"""Returns the name of the element, or raises an InvalidElementError
         if the particle is not an element, isotope, or ion."""
-        if not self.element:
+        if not self._is_element:
             raise InvalidElementError(self._element_errmsg)
         return self._element_name
 
@@ -234,7 +324,7 @@ class Particle:
     def atomic_number(self) -> int:
         r"""Returns the atomic number of the particle if it is an element,
         ion, or isotope."""
-        if not self.element:
+        if not self._is_element:
             raise InvalidElementError(self._element_errmsg)
         return self._atomic_number
 
@@ -242,16 +332,14 @@ class Particle:
     def mass_number(self) -> int:
         r"""Returns the mass number of an isotope, or raises an
         InvalidIsotopeError if the particle does not have a mass number."""
-        if not self.isotope:
+        if not self._is_isotope:
             raise InvalidIsotopeError(self._isotope_errmsg)
         return self._mass_number
 
     @property
     def baryon_number(self) -> int:
         r"""Returns the baryon number of a subatomic particle or the nuclide
-        of an element or isotope,
-        or raises a
-        MissingAtomicDataError if
+        of an element or isotope, or raises a MissingAtomicDataError if
         the baryon number is unavailable."""
         if self._baryon_number is None:  # coveralls: ignore
             raise AtomicError(
@@ -273,7 +361,9 @@ class Particle:
     def half_life(self) -> u.s:
         r"""Returns the half-life of the particle, or raises a
         MissingAtomicDataError if the half-life is unavailable."""
-        if not self._half_life:  # coveralls: ignore
+        if self._atomic_symbol and not self._isotope_symbol:
+            raise InvalidIsotopeError(self._isotope_errmsg)
+        if not self._half_life:
             raise MissingAtomicDataError(
                 f"The half-life of '{self.particle}' is not available.")
         return self._half_life
@@ -283,7 +373,9 @@ class Particle:
         r"""Returns True if the particle is stable and False if the
         particle is unstable, or raises a MissingAtomicDataError if
         stability information is not available."""
-        if not self._half_life:  # coveralls: ignore
+        if self._atomic_symbol and not self._isotope_symbol:
+            raise InvalidIsotopeError(self._isotope_errmsg)
+        if not self._half_life:
             raise MissingAtomicDataError(
                 f"The stability of '{self.particle}' is not available.")
         return self._half_life == np.inf * u.s
@@ -326,6 +418,22 @@ class Particle:
         return self._mass
 
     @property
+    def standard_atomic_weight(self) -> u.kg:
+        r"""Returns the standard atomic weight of an element if available.
+        Raises a MissingAtomicDataError if the particle is an element for
+        which the standard_atomic_weight is unavailable.  Raises an
+        InvalidElementError if the particle is not an element."""
+        if (self._is_element and not self._is_isotope and not self._is_ion):
+            if self._standard_atomic_weight is None:
+                raise MissingAtomicDataError(
+                    f"The standard atomic weight of {self.element} is "
+                    f"unavailable.")
+            else:
+                return self._standard_atomic_weight.to(u.kg)
+        else:
+            raise InvalidElementError(self._element_errmsg)
+
+    @property
     def spin(self) -> Union[int, float]:
         r"""Returns the spin of the Particle, or raises a
         MissingAtomicDataError if the spin is not available."""
@@ -354,7 +462,7 @@ class Particle:
 
         try:
             mass_this = self.mass.to(u.kg)
-        except MissingAtomicDataError:
+        except MissingAtomicDataError:  # coveralls: ignore
             raise MissingAtomicDataError(
                 f"Unable to find the reduced mass because the mass of "
                 f"{self.particle} is not available.") from None
@@ -365,14 +473,14 @@ class Particle:
         if isinstance(other, Particle):
             try:
                 mass_that = other.mass.to(u.kg)
-            except MissingAtomicDataError:
+            except MissingAtomicDataError:  # coveralls: ignore
                 raise MissingAtomicDataError(
                     f"Unable to find the reduced mass because the mass of "
                     f"{other.particle} is not available.") from None
         else:
             try:
                 mass_that = other.to(u.kg)
-            except Exception as exc:
+            except Exception as exc:  # coveralls: ignore
                 raise AtomicError(
                     f"{other} must be either a Particle or a Quantity or "
                     f"Constant with units of mass in order to calculate "
