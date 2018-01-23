@@ -1,18 +1,14 @@
 import pytest
 
 from ...utils import (
-    InvalidIonError,
     InvalidParticleError,
-    InvalidIsotopeError,
     InvalidElementError,
-    ChargeError,
 )
 
 from ..particles import _special_particles
 
 from ..parsing import (
     _dealias_particle_aliases,
-    _is_special_particle,
     _case_insensitive_aliases,
     _case_sensitive_aliases,
     _parse_and_check_atomic_input,)

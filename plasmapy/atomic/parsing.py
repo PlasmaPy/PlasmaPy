@@ -107,13 +107,15 @@ def _is_special_particle(alias: Union[str, int]) -> bool:
 def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
     r"""Returns a string with an appropriate error message for an
     InvalidParticleError."""
-    errmsg = f"The argument {argument} "
+    errmsg = f"The argument {repr(argument)} "
+    if mass_numb is not None or Z is not None:
+        errmsg += "with "
     if mass_numb is not None:
-        errmsg += f"with mass_numb = {mass_numb} "
+        errmsg += f"mass_numb = {repr(mass_numb)} "
     if mass_numb is not None and Z is not None:
         errmsg += "and "
     if Z is not None:
-        errmsg += f"integer charge Z = {Z} "
+        errmsg += f"integer charge Z = {repr(Z)} "
     errmsg += "does not correspond to a valid particle."
     return errmsg
 
@@ -202,7 +204,7 @@ def _parse_and_check_atomic_input(
                      charge_info.count('+') == 1))
 
             if not sign_indicator_only_on_one_end and just_one_sign_indicator:
-                raise InvalidParticleError(invalid_charge_errmsg)
+                raise InvalidParticleError(invalid_charge_errmsg) from None
 
             if '-' in charge_info:
                 sign = -1
@@ -214,7 +216,7 @@ def _parse_and_check_atomic_input(
             try:
                 Z_from_arg = sign * int(charge_str)
             except ValueError:
-                raise InvalidParticleError(invalid_charge_errmsg)
+                raise InvalidParticleError(invalid_charge_errmsg) from None
 
         elif arg.endswith(('-', '+')):  # Cases like 'H-' and 'Pb-209+++'
             char = arg[-1]
@@ -225,7 +227,7 @@ def _parse_and_check_atomic_input(
             if char == '-':
                 Z_from_arg = -Z_from_arg
             if isotope_info.endswith(('-', '+')):
-                raise InvalidParticleError(invalid_charge_errmsg)
+                raise InvalidParticleError(invalid_charge_errmsg) from None
         else:
             isotope_info = arg
             Z_from_arg = None
@@ -257,7 +259,8 @@ def _parse_and_check_atomic_input(
                 mass_numb = int(mass_numb_str)
             except ValueError:
                 raise InvalidParticleError(
-                    f"Invalid mass number in isotope string '{isotope_info}'.")
+                    f"Invalid mass number in isotope string "
+                    f"'{isotope_info}'.") from None
         else:
             element_info = isotope_info
             mass_numb = None
@@ -276,7 +279,8 @@ def _parse_and_check_atomic_input(
             element = 'H'
         else:
             raise InvalidParticleError(
-                f"Element not recognized in string '{element_info}'.")
+                f"The string '{element_info}' does not correspond to "
+                f"a valid element.")
 
         return element
 
@@ -296,7 +300,8 @@ def _parse_and_check_atomic_input(
 
             if isotope not in _Isotopes.keys():
                 raise InvalidParticleError(
-                    f"{isotope} is not a valid isotope.")
+                    f"The string '{isotope}' does not correspond to "
+                    f"a valid isotope.")
 
         else:
             isotope = None
@@ -375,8 +380,7 @@ def _parse_and_check_atomic_input(
                 f"'{argument}' is inconsistent with the keyword Z = {Z}.")
         else:
             warnings.warn("Redundant charge information for particle "
-                          f"'{argument}' with Z = {Z}.",
-                          AtomicWarning)
+                          f"'{argument}' with Z = {Z}.", AtomicWarning)
 
     if Z_from_arg is not None:
         Z = Z_from_arg

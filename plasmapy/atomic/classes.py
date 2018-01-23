@@ -29,6 +29,7 @@ from .isotopes import _Isotopes
 from .parsing import (
     _dealias_particle_aliases,
     _parse_and_check_atomic_input,
+    _invalid_particle_errmsg,
 )
 
 
@@ -73,11 +74,6 @@ class Particle:
 
         is_special_particle = particle in _special_particles
 
-        if is_special_particle and (mass_numb is not None or Z is not None):
-            raise InvalidParticleError(
-                f"Particle '{argument}' with mass_numb = {mass_numb} "
-                f"and Z = {Z} is not a valid particle.")
-
         if is_special_particle:
             self._particle_symbol = particle
             self._name = _Particles[particle]['name']
@@ -101,14 +97,20 @@ class Particle:
             if particle in _leptons + _antileptons:
                 self._generation = _Particles[particle]['generation']
 
+            if mass_numb is not None or Z is not None:
+                raise InvalidParticleError(
+                    "The keywords 'mass_numb' and 'Z' cannot be used when "
+                    "creating Particle objects for special particles. To "
+                    f"create a Particle object for {self._name}s, "
+                    f"use:  Particle({repr(self._particle_symbol)})")
         else:
             try:
                 particle_dict = _parse_and_check_atomic_input(
                     argument, mass_numb=mass_numb, Z=Z)
             except Exception as exc:
-                raise InvalidParticleError(
-                    f"Particle '{argument}' with mass_numb = {mass_numb} "
-                    f"and Z = {Z} is not a valid particle.") from exc
+                errmsg = _invalid_particle_errmsg(
+                    argument, mass_numb=mass_numb, Z=Z)
+                raise InvalidParticleError(errmsg) from exc
 
             self._particle_symbol = particle_dict['symbol']
 
@@ -353,7 +355,6 @@ class Particle:
 
         Example
         -------
-
         >>> from plasmapy.atomic import Particle
         >>> electron = Particle('e-')
         >>> proton = Particle('p+')
@@ -367,7 +368,7 @@ class Particle:
         except MissingAtomicDataError:
             raise MissingAtomicDataError(
                 f"Unable to find the reduced mass because the mass of "
-                f"{self.particle} is not available.")
+                f"{self.particle} is not available.") from None
 
         if isinstance(other, (str, int)):
                 other = Particle(other, Z=Z, mass_numb=mass_numb)
@@ -378,14 +379,14 @@ class Particle:
             except MissingAtomicDataError:
                 raise MissingAtomicDataError(
                     f"Unable to find the reduced mass because the mass of "
-                    f"{other.particle} is not available.")
+                    f"{other.particle} is not available.") from None
         else:
             try:
                 mass_that = other.to(u.kg)
-            except Exception:
+            except Exception as exc:
                 raise AtomicError(
                     f"{other} must be either a Particle or a Quantity or "
                     f"Constant with units of mass in order to calculate "
-                    f"reduced mass.")
+                    f"reduced mass.") from exc
 
         return (mass_this * mass_that) / (mass_this + mass_that)
