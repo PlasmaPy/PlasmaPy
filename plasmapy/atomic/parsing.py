@@ -212,11 +212,7 @@ def _parse_and_check_atomic_input(
                 sign = 1
 
             charge_str = charge_info.strip('+-')
-
-            try:
-                Z_from_arg = sign * int(charge_str)
-            except ValueError:
-                raise InvalidParticleError(invalid_charge_errmsg) from None
+            Z_from_arg = sign * int(charge_str)
 
         elif arg.endswith(('-', '+')):  # Cases like 'H-' and 'Pb-209+++'
             char = arg[-1]
@@ -261,9 +257,6 @@ def _parse_and_check_atomic_input(
                 raise InvalidParticleError(
                     f"Invalid mass number in isotope string "
                     f"'{isotope_info}'.") from None
-        else:
-            element_info = isotope_info
-            mass_numb = None
 
         return element_info, mass_numb
 
@@ -335,7 +328,7 @@ def _parse_and_check_atomic_input(
 
         return ion
 
-    if not isinstance(argument, (str, int)):
+    if not isinstance(argument, (str, int)):  # coveralls: ignore
         raise TypeError(f"The argument {argument} is not an integer or "
                         "string.")
 
