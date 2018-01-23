@@ -69,7 +69,7 @@ def _create_Particles_dict() -> typing.Dict[str, dict]:
     for fermion in _fermions:
         Particles[fermion]['spin'] = 0.5
 
-    for boson in _bosons:
+    for boson in _bosons:  # coveralls: ignore
         Particles[boson]['spin'] = 0
 
     for lepton in _leptons:

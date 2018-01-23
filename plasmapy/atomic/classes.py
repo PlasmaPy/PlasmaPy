@@ -178,19 +178,8 @@ class Particle:
         return f"{self.particle}"
 
     def __eq__(self, other):
-        r"""Checks that this instance of a Particle class represents the
-        same particle as another instance of a Particle class.
-
-        This method checks that attributes of this class and private
-        variables that do not correspond to the original arguments are
-        equal to the corresponding attributes/quantities in the class
-        that this is being compared against.  If an attribute raises an
-        exception, this method checks that the attribute of the other
-        class also raises an exception."""
-
-        # TODO: Perhaps move this general method into utils/magic.py?
-        # TODO: Check that the same class of exception is raised by both
-
+        r"""Returns True when comparing two Particle objects that correspond
+        to the same particle, and False when the two objects differ."""
         try:
             if self.__dict__ == other.__dict__:
                 return True
@@ -200,8 +189,8 @@ class Particle:
             return False
 
     def __ne__(self, other):
-        r"""Returns False if the two classes do not evaluate to be equal
-        to each other."""
+        r"""Returns True when the two objects differ, and False when
+        comparing two Particle objects that correspond to the same particle."""
         return not self.__eq__(other)
 
     @property
