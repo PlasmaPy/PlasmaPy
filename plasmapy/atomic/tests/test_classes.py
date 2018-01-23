@@ -42,7 +42,8 @@ def _call_string(arg: Union[str, int], kwargs: Dict) -> str:
 test_Particle_table = [
 
     ('p+', {},
-     {'particle': 'p+',
+     {
+         'particle': 'p+',
       'element': 'H',
       'isotope': 'H-1',
       'ion': 'p+',
@@ -57,8 +58,7 @@ test_Particle_table = [
       'reduced_mass(Particle("p"))': m_p / 2,
       'reduced_mass(m_p)': m_p / 2,
       '__str__()': 'p+',
-      '__repr__()': 'Particle("p+")',
-      }),
+      '__repr__()': 'Particle("p+")'}),
 
     ('p-', {},
      {'particle': 'p-',
@@ -74,8 +74,7 @@ test_Particle_table = [
       'lepton_number': 0,
       'baryon_number': -1,
       '__str__()': 'p-',
-      '__repr__()': 'Particle("p-")',
-      }),
+      '__repr__()': 'Particle("p-")'}),
 
     ('e-', {},
      {'particle': 'e-',
@@ -92,8 +91,7 @@ test_Particle_table = [
       'reduced_mass(Particle("e+"))': m_e / 2,
       'reduced_mass("e-")': m_e / 2,
       '__str__()': 'e-',
-      '__repr__()': 'Particle("e-")',
-      }),
+      '__repr__()': 'Particle("e-")'}),
 
     ('e+', {},
      {'particle': 'e+',
@@ -107,9 +105,10 @@ test_Particle_table = [
       'atomic_number': InvalidElementError,
       'lepton_number': -1,
       'baryon_number': 0,
+      'is_stable': True,
+      'is_antimatter': True,
       '__str__()': 'e+',
-      '__repr__()': 'Particle("e+")',
-      }),
+      '__repr__()': 'Particle("e+")'}),
 
     ('Fe', {'Z': 17, 'mass_numb': 56},
      {'particle': 'Fe-56 17+',
@@ -121,8 +120,7 @@ test_Particle_table = [
       'mass_number': 56,
       'baryon_number': 56,
       '__str__()': 'Fe-56 17+',
-      '__repr__()': 'Particle("Fe-56 17+")',
-      }),
+      '__repr__()': 'Particle("Fe-56 17+")'}),
 
     ('alpha', {},
      {'particle': 'He-4 2+',
@@ -134,7 +132,8 @@ test_Particle_table = [
       'mass_number': 4,
       'baryon_number': 4,
       'lepton_number': 0,
-      }),
+      'half_life': np.inf * u.s,
+      'is_stable': True}),
 
     ('D+', {},
      {'particle': 'D 1+',
@@ -145,8 +144,7 @@ test_Particle_table = [
       'atomic_number': 1,
       'mass_number': 2,
       'baryon_number': 2,
-      'lepton_number': 0,
-      }),
+      'lepton_number': 0}),
 
     ('tritium', {'Z': 1},
      {'particle': 'T 1+',
@@ -157,8 +155,7 @@ test_Particle_table = [
       'atomic_number': 1,
       'mass_number': 3,
       'baryon_number': 3,
-      'lepton_number': 0,
-      }),
+      'lepton_number': 0}),
 
     ('muon', {},
      {'particle': 'mu-',
@@ -170,8 +167,20 @@ test_Particle_table = [
       'mass_number': InvalidIsotopeError,
       'baryon_number': 0,
       'lepton_number': 1,
-      'is_antimatter': False,
-      }),
+      'is_antimatter': False}),
+
+    ('neutron', {},
+     {'particle': 'n',
+      'element': InvalidElementError,
+      'isotope': InvalidIsotopeError,
+      'ion': InvalidIonError,
+      'integer_charge': 0,
+      'atomic_number': InvalidElementError,
+      'mass_number': InvalidIsotopeError,
+      'baryon_number': 1,
+      'lepton_number': 0,
+      'is_stable': False,
+      'is_antimatter': False})
 ]
 
 
@@ -289,6 +298,9 @@ test_Particle_error_table = [
     ('He', {'mass_numb': 3}, '.ion', InvalidIonError),
     ('He', {'mass_numb': 4}, '.charge', ChargeError),
     ('He', {'mass_numb': 4}, '.integer_charge', ChargeError),
+    ('tau+', {}, '.element', InvalidElementError),
+    ('neutron', {}, '.atomic_number', InvalidElementError),
+    ('neutron', {}, '.mass_number', InvalidIsotopeError),
     ('Fe', {}, '.spin', MissingAtomicDataError),
 ]
 
