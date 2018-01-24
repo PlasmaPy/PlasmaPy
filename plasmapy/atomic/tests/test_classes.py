@@ -59,10 +59,10 @@ test_Particle_table = [
 
     ('p-', {},
      {'particle': 'p-',
-      'element': InvalidElementError,
+      'element': None,
       'element_name': InvalidElementError,
-      'isotope': InvalidIsotopeError,
-      'ion': InvalidIonError,
+      'isotope': None,
+      'ion': None,
       'mass': m_p,
       'integer_charge': -1,
       'spin': 1 / 2,
@@ -76,10 +76,10 @@ test_Particle_table = [
 
     ('e-', {},
      {'particle': 'e-',
-      'element': InvalidElementError,
+      'element': None,
       'element_name': InvalidElementError,
-      'isotope': InvalidIsotopeError,
-      'ion': InvalidIonError,
+      'isotope': None,
+      'ion': None,
       'mass': m_e,
       'integer_charge': -1,
       'spin': 1 / 2,
@@ -94,9 +94,9 @@ test_Particle_table = [
 
     ('e+', {},
      {'particle': 'e+',
-      'element': InvalidElementError,
-      'isotope': InvalidIsotopeError,
-      'ion': InvalidIonError,
+      'element': None,
+      'isotope': None,
+      'ion': None,
       'mass': m_e,
       'integer_charge': 1,
       'spin': 1 / 2,
@@ -104,8 +104,6 @@ test_Particle_table = [
       'atomic_number': InvalidElementError,
       'lepton_number': -1,
       'baryon_number': 0,
-      'is_stable': True,
-      'is_antimatter': True,
       '__str__()': 'e+',
       '__repr__()': 'Particle("e+")'}),
 
@@ -133,8 +131,7 @@ test_Particle_table = [
       'mass_number': 4,
       'baryon_number': 4,
       'lepton_number': 0,
-      'half_life': np.inf * u.s,
-      'is_stable': True}),
+      'half_life': np.inf * u.s}),
 
     ('D+', {},
      {'particle': 'D 1+',
@@ -161,47 +158,62 @@ test_Particle_table = [
 
     ('muon', {},
      {'particle': 'mu-',
-      'element': InvalidElementError,
-      'isotope': InvalidIsotopeError,
-      'ion': InvalidIonError,
+      'element': None,
+      'isotope': None,
+      'ion': None,
       'integer_charge': -1,
       'atomic_number': InvalidElementError,
       'mass_number': InvalidIsotopeError,
       'baryon_number': 0,
-      'lepton_number': 1,
-      'is_antimatter': False,
-      'is_stable': False}),
+      'lepton_number': 1}),
 
     ('neutron', {},
      {'particle': 'n',
-      'element': InvalidElementError,
-      'isotope': InvalidIsotopeError,
-      'ion': InvalidIonError,
+      'element': None,
+      'isotope': None,
+      'ion': None,
       'integer_charge': 0,
       'atomic_number': InvalidElementError,
       'mass_number': InvalidIsotopeError,
       'baryon_number': 1,
-      'lepton_number': 0,
-      'is_stable': False,
-      'is_antimatter': False}),
+      'lepton_number': 0}),
 
     ('H', {},
      {'particle': 'H',
       'element': 'H',
-      'isotope': InvalidIsotopeError,
-      'ion': InvalidIonError,
+      'isotope': None,
+      'ion': None,
       'charge': ChargeError,
       'integer_charge': ChargeError,
       'mass_number': InvalidIsotopeError,
       'baryon_number': AtomicError,
       'lepton_number': 0,
-      'is_stable': InvalidIsotopeError,  # or  a different error?
       'half_life': InvalidIsotopeError,
-      'is_antimatter': False,
       'standard_atomic_weight': (1.008 * u.u).to(u.kg),
       'mass': (1.008 * u.u).to(u.kg),
+      }),
+
+    ('nu_tau', {},
+     {'particle': 'nu_tau',
+      'element': None,
+      'isotope': None,
+      'mass': MissingAtomicDataError,
+      'integer_charge': 0,
+      'mass_number': InvalidIsotopeError,
+      'element_name': InvalidElementError,
+      'baryon_number': 0,
+      'lepton_number': 1,
+      'half_life': np.inf * u.s,
+      'is_category("fermion")': True,
+      'is_category("neutrino")': True,
+      'is_category("boson")': False,
+      'is_category("matter", exclude={"antimatter"})': True,
+      'is_category("matter", "boson", any=True)': True,
       })
 ]
+
+# TODO Add nuclide_mass tests
+# TODO: Put in more is_category tests (e.g., for neutrinos, fermions, etc.)
 
 
 @pytest.mark.parametrize("arg, kwargs, expected_dict", test_Particle_table)
@@ -254,28 +266,6 @@ def test_Particle_class(arg, kwargs, expected_dict):
         raise Exception(f"Problems with {call}:{errmsg}")
 
 
-@pytest.mark.parametrize("symbol", _neutrinos + _antineutrinos)
-def test_Particle_neutrinos(symbol):
-    r"""Test the properties of neutrinos in the Particle class."""
-
-    nu = Particle(symbol)
-    assert 'nu' in nu._particle_symbol
-
-    assert nu._mass is None, \
-        f"Particle('{symbol}')._mass should be None."
-
-    with pytest.raises(MissingAtomicDataError, message=(
-            f"Particle('{symbol}').m is not raising an exception")):
-        nu.mass
-
-
-@pytest.mark.parametrize("symbol", _fermions)
-def test_Particle_fermions(symbol):
-    r"""Test that fermions have spin = 1/2."""
-    fermion = Particle(symbol)
-    assert np.isclose(fermion.spin, 1/2, atol=1e-15)
-
-
 equivalent_particles_table = [
     ['H', 'hydrogen', 'hYdRoGeN'],
     ['p+', 'proton', 'H-1+', 'H-1 1+', 'H-1 +1'],
@@ -313,12 +303,11 @@ test_Particle_error_table = [
     ('H', {'mass_numb': 99}, "", InvalidParticleError),
     ('e-', {'Z': -1}, "", InvalidParticleError),
     ('nu_e', {}, '.mass', MissingAtomicDataError),
-    ('e-', {}, '.element', InvalidElementError),
-    ('H', {'Z': 0}, '.isotope', InvalidIsotopeError),
-    ('He', {'mass_numb': 3}, '.ion', InvalidIonError),
+    ('e-', {}, '.atomic_number', InvalidElementError),
+    ('H', {'Z': 0}, '.mass_number', InvalidIsotopeError),
     ('He', {'mass_numb': 4}, '.charge', ChargeError),
     ('He', {'mass_numb': 4}, '.integer_charge', ChargeError),
-    ('tau+', {}, '.element', InvalidElementError),
+    ('tau+', {}, '.atomic_number', InvalidElementError),
     ('neutron', {}, '.atomic_number', InvalidElementError),
     ('neutron', {}, '.mass_number', InvalidIsotopeError),
     ('Fe', {}, '.spin', MissingAtomicDataError),
@@ -369,5 +358,3 @@ def test_Particle_cmp():
     assert proton1 == proton2, "Particle('p+') == Particle('proton') is False."
     assert proton1 != electron, "Particle('p+') == Particle('e-') is True."
     assert not proton1 == 1, "Particle('p+') == 1 is True."
-
-# TODO Add nuclide_mass tests
