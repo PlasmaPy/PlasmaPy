@@ -48,7 +48,14 @@ test_Particle_table = [
       'reduced_mass(Particle("p"))': m_p / 2,
       'reduced_mass(m_p)': m_p / 2,
       '__str__()': 'p+',
-      '__repr__()': 'Particle("p+")'}),
+      '__repr__()': 'Particle("p+")',
+      'is_category("fermion")': True,
+      'is_category(["fermion"])': True,
+      'is_category({"fermion"})': True,
+      'is_category("boson", "fermion", any=True)': True,
+      'is_category("boson", "fermion", any=False)': False,
+      'is_category(("element", "isotope", "ion"))': True,
+      }),
 
     ('p-', {},
      {'particle': 'p-',
@@ -339,7 +346,6 @@ def test_Particle_errors(arg, kwargs, attribute, exception):
 test_Particle_warning_table = [
     ('H----', {}, "", AtomicWarning),
     ('alpha', {'mass_numb': 4}, "", AtomicWarning),
-
 ]
 
 
@@ -363,3 +369,5 @@ def test_Particle_cmp():
     assert proton1 == proton2, "Particle('p+') == Particle('proton') is False."
     assert proton1 != electron, "Particle('p+') == Particle('e-') is True."
     assert not proton1 == 1, "Particle('p+') == 1 is True."
+
+# TODO Add nuclide_mass tests
