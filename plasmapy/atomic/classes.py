@@ -562,9 +562,12 @@ class Particle:
         particle is in any of the listed categories except for those
         inputted in the exclude keyword."""
 
-        def _setisfy(arg: Union[str, Set, Tuple, List]) -> Set:
+        def _make_into_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
                 r"""Turns the input (a string, set, tuple, or list) into
                 a set containing the items in input."""
+                if len(arg) == 0:
+                    return set()
+
                 if isinstance(arg, set):
                     return arg
 
@@ -576,32 +579,42 @@ class Particle:
                 else:
                     return set(arg)
 
+        if not isinstance(any, bool):
+            raise TypeError(
+                f"The keyword any in {self.__repr__()}.is_category must be "
+                f"set to either True or False.")
+        elif any and len(categories) == 0:
+            raise AtomicError(
+                f"The keyword 'any' to {self.__repr__()}.is_category "
+                f"cannot be set to True if no categories to be matched "
+                f"are inputted.")
+
         valid_categories = {
-            'lepton',
-            'antilepton',
-            'fermion',
-            'boson',
-            'baryon',
-            'neutrino',
-            'antineutrino',
-            'element',
-            'isotope',
-            'ion',
-            'matter',
-            'antimatter',
-            'stable',
-            'unstable',
+            'lepton', 'antilepton', 'fermion', 'boson', 'baryon', 'neutrino',
+            'antineutrino', 'element', 'isotope', 'ion', 'matter',
+            'antimatter', 'stable', 'unstable'
         }
 
-        categories = _setisfy(categories)
-        exclude = _setisfy(exclude)
+        categories = _make_into_set(categories)
+        exclude = _make_into_set(exclude)
 
         if not categories.issubset(valid_categories):
-            raise AtomicError
+            raise AtomicError(
+                f"The following categories in {self.__repr__()}.is_category "
+                "are invalid: "   
+                f"{categories - valid_categories}")
         elif not exclude.issubset(valid_categories):
-            raise AtomicError
+            raise AtomicError(
+                f"The following categories to be excluded in "
+                f"{self.__repr__()}.is_category are "
+                f"invalid: {exclude - valid_categories}")
+        elif not exclude.isdisjoint(categories):
+            raise AtomicError(
+                f"The following are duplicate categories in "
+                f"{self.__repr__()}.is_category: "
+                f"{categories.intersection(exclude)}")
 
-        if not exclude.isdisjoint(categories):
+        if not exclude.isdisjoint(self._categories):
             return False
 
         if any:
