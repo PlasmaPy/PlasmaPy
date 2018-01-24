@@ -7,29 +7,9 @@ from ..utils import (
     InvalidParticleError,
     InvalidElementError,
     InvalidIsotopeError,
-    InvalidIonError,
     ChargeError,
     MissingAtomicDataError,
 )
-
-from .particles import (
-    _Particles,
-    _particles,
-    _antiparticles,
-    _special_particles,
-    _leptons,
-    _antileptons,
-    _fermions,
-    _bosons,
-    _baryons,
-    _antibaryons,
-    _neutrinos,
-    _antineutrinos,
-    _everything,
-)
-
-from .elements import _Elements
-from .isotopes import _Isotopes
 
 from .parsing import (
     _dealias_particle_aliases,
@@ -37,34 +17,9 @@ from .parsing import (
     _invalid_particle_errmsg,
 )
 
-
-_private_variables = [
-    '_particle_symbol',
-    '_atomic_symbol',
-    '_isotope_symbol',
-    '_ion_symbol',
-    '_atomic_symbol',
-    '_isotope_symbol',
-    '_ion_symbol',
-    '_unicode_symbol',
-    '_element_name',
-    '_atomic_number',
-    '_mass_number',
-    '_lepton_number',
-    '_baryon_number',
-    '_integer_charge',
-    '_electric_charge',
-    '_standard_atomic_weight',
-    '_mass',
-    '_nuclide_mass',
-    '_half_life',
-    '_spin',
-    '_generation',
-    '_periodic_table_group',
-    '_periodic_table_period',
-    '_charge',
-    '_electric_charge',
-]
+from .elements import _Elements
+from .isotopes import _Isotopes
+from .particles import _Particles, ParticleZoo
 
 
 class Particle:
@@ -154,21 +109,54 @@ class Particle:
                  argument: Union[str, int],
                  mass_numb: int = None,
                  Z: int = None):
-        r"""Initializes a Particle object."""
+        r"""Initializes a Particle object by setting all necessary private
+        attributes."""
 
-        # If a private variable is not defined later, then the value of None
-        # lets us know that the corresponding attribute is not available.
-        for variable in _private_variables:
-            if variable not in self.__dict__:
-                exec(f'self.{variable} = None')
+        if not isinstance(argument, (int, str)):
+            raise TypeError(
+                "The first positional argument when creating a Particle "
+                "object must be either an integer or string.")
+
+        # If the data is missing, then the private attribute should still
+        # exist but just be set to None.  This initialization had previously
+        # been done in a loop using exec on a string, but this does not play
+        # well with static type checkers such as PyCharm.
+
+        self._particle_symbol = None
+        self._atomic_symbol = None
+        self._isotope_symbol = None
+        self._ion_symbol = None
+        self._atomic_symbol = None
+        self._isotope_symbol = None
+        self._ion_symbol = None
+        self._unicode_symbol = None
+        self._element_name = None
+        self._atomic_number = None
+        self._mass_number = None
+        self._lepton_number = None
+        self._baryon_number = None
+        self._integer_charge = None
+        self._electric_charge = None
+        self._standard_atomic_weight = None
+        self._mass = None
+        self._nuclide_mass = None
+        self._half_life = None
+        self._spin = None
+        self._generation = None
+        self._periodic_table_group = None
+        self._periodic_table_period = None
+        self._charge = None
+        self._electric_charge = None
 
         # Use this set to keep track of particle categories such as 'lepton'
         # for use with the is_category method later on.
+
         self._categories = set()
 
         # If the argument corresponds to one of the numerous case-sensitive or
         # case-insensitive aliases for particles, return the standard symbol.
         # Otherwise, just return the original argument.
+
         particle = _dealias_particle_aliases(argument)
 
         if particle in _Particles.keys():
@@ -182,28 +170,20 @@ class Particle:
             self._half_life = _Particles[particle]['half-life']
             self._mass = _Particles[particle].get('mass', None)
 
-            special_categories = [
-                'lepton', 'antilepton', 'baryon', 'antibaryon',
-                'fermion', 'boson', 'neutrino', 'antineutrino']
+            particle_taxonomy_dict = ParticleZoo._taxonomy_dict
+            categories = particle_taxonomy_dict.keys()
 
-            # TODO: Can this be done with a set comprehension?
-            for category in special_categories:
-                lines_to_execute = (
-                    f"if particle in _{category}s: \n"
-                    f"    self._categories.add('{category}')")
-                exec(lines_to_execute)
+            for category in categories:
+                if particle in particle_taxonomy_dict[category]:
+                    self._categories.add(category)
 
-            # TODO: put the following if/else block into the previous block
-            if particle in _particles:
-                self._categories.add('matter')
-            elif particle in _antiparticles:
-                self._categories.add('antimatter')
-
-            # Protons are a special case amongst special cases, since they
-            # are both a special particle and correspond to an element and
-            # an isotope.  Protons are not as weird as electrons, though.
-            # Electrons are weird.
             if particle == 'p+':
+
+                # Protons are a special case amongst special cases, since they
+                # are both a special particle and correspond to an element and
+                # an isotope.  Protons are not as weird as electrons, though.
+                # Electrons are weird.
+
                 self._atomic_symbol = 'H'
                 self._atomic_number = 1
                 self._mass_number = 1
@@ -401,7 +381,7 @@ class Particle:
         nuclides/isotopes; or raises an AtomicError if the lepton number is
         not available.  This attribute does not include the electrons in
         an atom or ion."""
-        if self._lepton_number is None:  # coveralls: ignore
+        if self._lepton_number is None:
             raise AtomicError(
                 f"The lepton number for {self.particle} is not available.")
         return self._lepton_number
@@ -500,7 +480,7 @@ class Particle:
                 _atomic_number = self._atomic_number
                 _isotope_mass = _Isotopes[self.isotope]['atomic_mass'].to(u.kg)
                 _nuclide_mass = _isotope_mass - _atomic_number * const.m_e
-            except KeyError:
+            except KeyError:  # coveralls:ignore
                 raise MissingAtomicDataError(
                     f"The mass of a {self.isotope} nuclide is not available.")
         else:
@@ -528,7 +508,7 @@ class Particle:
 
         try:
             mass_this = self.mass.to(u.kg)
-        except MissingAtomicDataError:  # coveralls: ignore
+        except MissingAtomicDataError:
             raise MissingAtomicDataError(
                 f"Unable to find the reduced mass because the mass of "
                 f"{self.particle} is not available.") from None
@@ -539,7 +519,7 @@ class Particle:
         if isinstance(other, Particle):
             try:
                 mass_that = other.mass.to(u.kg)
-            except MissingAtomicDataError:  # coveralls: ignore
+            except MissingAtomicDataError:
                 raise MissingAtomicDataError(
                     f"Unable to find the reduced mass because the mass of "
                     f"{other.particle} is not available.") from None
@@ -611,7 +591,7 @@ class Particle:
             raise AtomicError(
                 f"The following are duplicate categories in "
                 f"{self.__repr__()}.is_category: "
-                f"{categories.intersection(exclude)}")
+                f"{categories & exclude}")
 
         if not exclude.isdisjoint(self._categories):
             return False
