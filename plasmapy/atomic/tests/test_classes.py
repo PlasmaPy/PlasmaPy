@@ -3,7 +3,7 @@ import numpy as np
 from astropy import units as u
 import inspect
 
-from ...constants import m_p, m_e, e
+from ...constants import m_p, m_e, m_n, e
 
 from ...utils import (
     AtomicWarning,
@@ -37,6 +37,7 @@ test_Particle_table = [
       'isotope': 'H-1',
       'ion': 'p+',
       'mass': m_p,
+      'nuclide_mass': m_p,
       'integer_charge': 1,
       'charge': e.si,
       'spin': 1 / 2,
@@ -98,6 +99,7 @@ test_Particle_table = [
       'isotope': None,
       'ion': None,
       'mass': m_e,
+      'nuclide_mass': InvalidIsotopeError,
       'integer_charge': 1,
       'spin': 1 / 2,
       'half_life': np.inf * u.s,
@@ -133,6 +135,20 @@ test_Particle_table = [
       'lepton_number': 0,
       'half_life': np.inf * u.s}),
 
+    ('Li', {'mass_numb': 7},
+     {'particle': 'Li-7',
+      'element': 'Li',
+      'element_name': 'lithium',
+      'isotope': 'Li-7',
+      'ion': None,
+      'integer_charge': ChargeError,
+      'atomic_number': 3,
+      'mass_number': 7,
+      'baryon_number': 7,
+      'half_life': np.inf * u.s,
+      'nuclide_mass': 1.1647614796180465e-26 * u.kg,
+      }),
+
     ('D+', {},
      {'particle': 'D 1+',
       'element': 'H',
@@ -154,7 +170,8 @@ test_Particle_table = [
       'atomic_number': 1,
       'mass_number': 3,
       'baryon_number': 3,
-      'lepton_number': 0}),
+      'lepton_number': 0
+      }),
 
     ('muon', {},
      {'particle': 'mu-',
@@ -176,7 +193,9 @@ test_Particle_table = [
       'atomic_number': InvalidElementError,
       'mass_number': InvalidIsotopeError,
       'baryon_number': 1,
-      'lepton_number': 0}),
+      'lepton_number': 0,
+      'mass': m_n,
+      'nuclide_mass': m_n}),
 
     ('H', {},
      {'particle': 'H',
@@ -191,6 +210,7 @@ test_Particle_table = [
       'half_life': InvalidIsotopeError,
       'standard_atomic_weight': (1.008 * u.u).to(u.kg),
       'mass': (1.008 * u.u).to(u.kg),
+      'nuclide_mass': InvalidIsotopeError,
       }),
 
     ('nu_tau', {},
@@ -208,7 +228,13 @@ test_Particle_table = [
       'is_category("neutrino")': True,
       'is_category("boson")': False,
       'is_category("matter", exclude={"antimatter"})': True,
+      'is_category("matter", exclude=["antimatter"])': True,
+      'is_category("matter", exclude="antimatter")': True,
       'is_category("matter", "boson", any=True)': True,
+      'is_category(["fermion", "lepton"], exclude="matter")': False,
+      'is_category("lepton", "invalid")': AtomicError,
+      'is_category(["boson"], exclude=["lepton", "invalid"])': AtomicError,
+      'is_category("boson", exclude="boson")': AtomicError,
       })
 ]
 

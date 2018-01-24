@@ -601,8 +601,7 @@ class Particle:
         if not categories.issubset(valid_categories):
             raise AtomicError(
                 f"The following categories in {self.__repr__()}.is_category "
-                "are invalid: "   
-                f"{categories - valid_categories}")
+                f"are invalid: {categories - valid_categories}")
         elif not exclude.issubset(valid_categories):
             raise AtomicError(
                 f"The following categories to be excluded in "
