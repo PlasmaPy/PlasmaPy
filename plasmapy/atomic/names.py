@@ -5,33 +5,31 @@ import re
 import warnings
 from typing import (Union, Optional, Any, Tuple)
 
-from .elements import (_atomic_symbols, _atomic_symbols_dict, _Elements)
-
+from .elements import _atomic_symbols, _atomic_symbols_dict, _Elements
 from .isotopes import _Isotopes
+from .particles import ParticleZoo
 
-from .parsing import (_is_special_particle, _dealias_particle_aliases)
+from .parsing import _dealias_particle_aliases
+from .classes import Particle
 
 from ..utils import (AtomicWarning,
                      InvalidElementError,
                      InvalidIsotopeError,
-                     InvalidIonError,
-                     AtomicError,
-                     InvalidParticleError,
-                     ChargeError)
+                     InvalidParticleError)
 
 # TODO: Create an ion_symbol function
 # TODO: Create a particle_symbol function
 
 
-def atomic_symbol(argument: Union[str, int]) -> str:
+def atomic_symbol(element: Union[str, int]) -> str:
     r"""Returns the atomic symbol.
 
     Parameters
     ----------
 
-    argument: string or integer
+    element: string or integer
         A string representing an element, isotope, or ion; or an
-        integer representing an atomic number.
+        integer or string representing an atomic number.
 
     Returns
     -------
@@ -95,70 +93,23 @@ def atomic_symbol(argument: Union[str, int]) -> str:
 
     """
 
-    if _is_special_particle(argument):
-        raise InvalidElementError(f"{argument} is not a valid element.")
-
     try:
-        argument, Z = _extract_integer_charge(argument)
+        particle = Particle(element)
     except InvalidParticleError:
-        raise InvalidParticleError("Invalid charge in atomic_symbol")
+        raise InvalidParticleError(
+            f"The argument {repr(element)} to atomic_symbol does not "
+            f"represent a valid particle.")
+    except TypeError:
+        raise TypeError(
+            f"The argument {repr(element)} to atomic_symbol is not an "
+            f"integer or string.")
 
-    if not isinstance(argument, (str, int)):
-        raise TypeError("The first argument in atomic_symbol must be either "
-                        "a string representing an element or isotope, or an "
-                        "integer representing the atomic number (or 0 for "
-                        "neutrons).")
-
-    if isinstance(argument, str) and argument.isdigit():
-        argument = int(argument)
-
-    if isinstance(argument, int):
-
-        try:
-            element = _atomic_symbols[argument]
-        except KeyError:
-            raise InvalidParticleError(f"{argument} is an invalid atomic "
-                                       "number in atomic_symbol.")
-
-    elif _is_hydrogen(argument):
-        element = 'H'
-    elif _is_alpha(argument):
-        element = 'He'
-    elif isinstance(argument, str):
-
-        if argument.count('-') == 1:
-            dash_position = argument.find('-')
-            mass_numb = argument[dash_position+1:]
-            if not mass_numb.isdigit():
-                raise InvalidParticleError("Invalid isotope format in "
-                                           "atomic_symbol")
-            argument = argument[:dash_position]
-        else:
-            mass_numb = ''
-
-        if argument.lower() in _atomic_symbols_dict.keys():
-            element = _atomic_symbols_dict[argument.lower()]
-        elif argument in _atomic_symbols.values():
-            element = argument.capitalize()
-        else:
-            raise InvalidParticleError(f"{argument} is an invalid argument "
-                                       "for atomic_symbol")
-
-        if mass_numb.isdigit():
-
-            isotope = element.capitalize() + '-' + mass_numb
-
-            if isotope not in _Isotopes.keys():
-                raise InvalidParticleError(
-                    "The input in atomic_symbol corresponding "
-                    f"to {isotope} is not a valid isotope.")
-
-    if Z is not None and \
-            Z > _Elements[element]['atomic_number']:
-        raise InvalidParticleError("Cannot have an ionization state greater "
-                                   "than the atomic number.")
-
-    return element
+    if particle.element:
+        return particle._atomic_symbol
+    else:
+        raise InvalidElementError(
+            f"The argument {repr(element)} to atomic_symbol does not "
+            f"represent a valid element.")
 
 
 def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
@@ -234,7 +185,7 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
     if _is_neutron(argument, mass_numb):
         return 'n'
 
-    if _is_special_particle(argument):
+    if argument in ParticleZoo.everything - {'p+'}:
         raise InvalidIsotopeError("The argument {argument} does not "
                                   "correspond to a valid isotope in "
                                   "isotope_symbol.")
