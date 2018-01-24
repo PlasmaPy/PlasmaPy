@@ -1,34 +1,110 @@
-import typing
+from typing import Set, Dict, List, Optional, Union
 from astropy import units as u, constants as const
 import numpy as np
 
-_leptons = ['e-', 'mu-', 'tau-', 'nu_e', 'nu_mu', 'nu_tau']
-_antileptons = ['e+', 'mu+', 'tau+', 'anti_nu_e',
-                'anti_nu_mu', 'anti_nu_tau']
 
-_baryons = ['p+', 'n']
-_antibaryons = ['p-', 'antineutron']
+class _ParticleZooClass:
 
-_everything = _leptons + _antileptons + _baryons + _antibaryons
+    def __init__(self):
 
-_particles = _leptons + _baryons
-_antiparticles = _antileptons + _antibaryons
+        leptons = {'e-', 'mu-', 'tau-', 'nu_e', 'nu_mu', 'nu_tau'}
 
-_fermions = _leptons + _antileptons + _baryons + _antibaryons
-_bosons = []
+        antileptons = {'e+', 'mu+', 'tau+', 'anti_nu_e',
+                       'anti_nu_mu', 'anti_nu_tau'}
 
-_neutrinos = [lepton for lepton in _leptons if 'nu' in lepton]
-_antineutrinos = [antilepton for antilepton in _antileptons
-                  if 'nu' in antilepton]
+        baryons = {'p+', 'n'}
 
-_special_particles = [
-    'n', 'antineutron', 'p-',
-    'e-', 'e+', 'nu_e', 'anti_nu_e',
-    'mu-', 'mu+', 'nu_mu', 'anti_nu_mu',
-    'tau-', 'tau+', 'nu_tau', 'anti_nu_tau']
+        antibaryons = {'p-', 'antineutron'}
+
+        particles = leptons | baryons
+
+        antiparticles = antileptons | antibaryons
+
+        fermions = leptons | antileptons | baryons | antibaryons
+
+        bosons = set()
+
+        neutrinos = {lepton for lepton in leptons if 'nu' in lepton}
+
+        antineutrinos = {antilepton for antilepton in antileptons
+                         if 'nu' in antilepton}
+
+        self._taxonomy_dict = {
+            'lepton': leptons,
+            'antilepton': antileptons,
+            'baryon': baryons,
+            'antibaryon': antibaryons,
+            'fermion': fermions,
+            'boson': bosons,
+            'neutrino': neutrinos,
+            'antineutrinos': antineutrinos,
+            'matter': particles,
+            'antimatter': antiparticles,
+        }
+
+    @property
+    def leptons(self) -> Set[str]:
+        r"""Returns a set of strings representing leptons."""
+        return self._taxonomy_dict['lepton']
+
+    @property
+    def antileptons(self) -> Set[str]:
+        r"""Returns a set of strings representing antileptons."""
+        return self._taxonomy_dict['antilepton']
+
+    @property
+    def baryons(self) -> Set[str]:
+        r"""Returns a set of strings representing baryons."""
+        return self._taxonomy_dict['baryon']
+
+    @property
+    def antibaryons(self) -> Set[str]:
+        r"""Returns a set of strings representing antibaryons."""
+        return self._taxonomy_dict['antibaryon']
+
+    @property
+    def fermions(self) -> Set[str]:
+        r"""Returns a set of strings representing fermions."""
+        return self._taxonomy_dict['fermion']
+
+    @property
+    def bosons(self) -> Set[str]:
+        r"""Returns a set of strings representing bosons."""
+        return self._taxonomy_dict['boson']
+
+    @property
+    def neutrinos(self) -> Set[str]:
+        r"""Returns a set of strings representing neutrinos."""
+        return self._taxonomy_dict['neutrino']
+
+    @property
+    def antineutrinos(self) -> Set[str]:
+        r"""Returns a set of strings representing antineutrinos."""
+        return self._taxonomy_dict['antineutrinos']
+
+    @property
+    def particles(self) -> Set[str]:
+        r"""Returns a set of strings representing particles (as
+        opposed to antiparticles)."""
+        return self._taxonomy_dict['matter']
+
+    @property
+    def antiparticles(self) -> Set[str]:
+        r"""Returns a set of strings representing antiparticles."""
+        return self._taxonomy_dict['antimatter']
+
+    @property
+    def everything(self) -> Set[str]:
+        r"""Returns a set of strings representing all particles and
+        antiparticles"""
+        return \
+            self._taxonomy_dict['matter'] | self._taxonomy_dict['antimatter']
 
 
-def _create_Particles_dict() -> typing.Dict[str, dict]:
+ParticleZoo = _ParticleZooClass()
+
+
+def _create_Particles_dict() -> Dict[str, dict]:
     """Create a dictionary of dictionaries that contains physical
     information for particles and antiparticles that are not
     elements or ions.
@@ -60,47 +136,47 @@ def _create_Particles_dict() -> typing.Dict[str, dict]:
 
     Particles = dict()
 
-    for thing in _everything:
+    for thing in ParticleZoo.everything:
         Particles[thing] = dict()
 
     for symbol, name in symbols_and_names:
         Particles[symbol]['name'] = name
 
-    for fermion in _fermions:
+    for fermion in ParticleZoo.fermions:
         Particles[fermion]['spin'] = 0.5
 
-    for boson in _bosons:  # coveralls: ignore
+    for boson in ParticleZoo.bosons:  # coveralls: ignore
         Particles[boson]['spin'] = 0
 
-    for lepton in _leptons:
+    for lepton in ParticleZoo.leptons:
         Particles[lepton]['class'] = 'lepton'
         Particles[lepton]['lepton number'] = 1
         Particles[lepton]['baryon number'] = 0
-        if lepton not in _neutrinos:
+        if lepton not in ParticleZoo.neutrinos:
             Particles[lepton]['charge'] = -1
         else:
             Particles[lepton]['charge'] = 0
 
-    for antilepton in _antileptons:
+    for antilepton in ParticleZoo.antileptons:
         Particles[antilepton]['class'] = 'antilepton'
         Particles[antilepton]['lepton number'] = -1
         Particles[antilepton]['baryon number'] = 0
-        if antilepton not in _antineutrinos:
+        if antilepton not in ParticleZoo.antineutrinos:
             Particles[antilepton]['charge'] = 1
         else:
             Particles[antilepton]['charge'] = 0
 
-    for baryon in _baryons:
+    for baryon in ParticleZoo.baryons:
         Particles[baryon]['class'] = 'baryon'
         Particles[baryon]['lepton number'] = 0
         Particles[baryon]['baryon number'] = 1
 
-    for antibaryon in _antibaryons:
+    for antibaryon in ParticleZoo.antibaryons:
         Particles[antibaryon]['class'] = 'antibaryon'
         Particles[antibaryon]['lepton number'] = 0
         Particles[antibaryon]['baryon number'] = -1
 
-    for thing in _leptons + _antileptons:
+    for thing in ParticleZoo.leptons | ParticleZoo.antileptons:
         if 'e' in thing:
             Particles[thing]['generation'] = 1
         elif 'mu' in thing:
@@ -108,7 +184,7 @@ def _create_Particles_dict() -> typing.Dict[str, dict]:
         elif 'tau' in thing:
             Particles[thing]['generation'] = 3
 
-    for thing in _leptons + _antileptons:
+    for thing in ParticleZoo.leptons | ParticleZoo.antileptons:
         if 'nu' not in thing:
             if 'e' in thing:
                 Particles[thing]['mass'] = const.m_e
@@ -119,7 +195,7 @@ def _create_Particles_dict() -> typing.Dict[str, dict]:
                 Particles[thing]['mass'] = 3.167_47e-27 * u.kg
                 Particles[thing]['half-life'] = 2.906e-13 * u.s
 
-    for thing in _neutrinos + _antineutrinos:
+    for thing in ParticleZoo.neutrinos | ParticleZoo.antineutrinos:
         Particles[thing]['mass'] = None
 
     for thing in ['p+', 'p-']:
@@ -133,14 +209,14 @@ def _create_Particles_dict() -> typing.Dict[str, dict]:
         Particles[thing]['half-life'] = 881.5 * u.s
         Particles[thing]['charge'] = 0
 
-    for thing in _everything:
+    for thing in ParticleZoo.everything:
         if 'half-life' not in Particles[thing].keys():
             Particles[thing]['half-life'] = np.inf * u.s
 
-    for particle in _particles:
+    for particle in ParticleZoo.particles:
         Particles[particle]['antimatter'] = False
 
-    for antiparticle in _antiparticles:
+    for antiparticle in ParticleZoo.antiparticles:
         Particles[antiparticle]['antimatter'] = True
 
     return Particles
