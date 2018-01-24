@@ -161,9 +161,14 @@ def _parse_and_check_atomic_input(
     InvalidParticleError
         If the arguments do not correspond to a valid particle or
         antiparticle.
+
     InvalidElementError
         If the particle is valid but does not correspond to an element,
         ion, or isotope.
+
+    TypeError
+        If the argument or any of the keyword arguments is not of the
+        correct type.
 
     """
 
@@ -378,7 +383,10 @@ def _parse_and_check_atomic_input(
 
     if isinstance(Z, int):
         if Z > _Elements[element]['atomic_number']:
-            raise InvalidParticleError
+            raise InvalidParticleError(
+                f"The integer charge Z = {Z} cannot exceed the atomic number "
+                f"of {element}, which is "
+                f"{_Elements[element]['atomic_number']}.")
         elif Z < -3:
             warnings.warn(f"Particle '{argument}' has an integer charge "
                           f"of Z = {Z}, which is unlikely to occur in "
