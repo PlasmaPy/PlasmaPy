@@ -6,7 +6,7 @@ from ...utils import (
     AtomicWarning,
 )
 
-from ..particles import _special_particles
+from ..particles import ParticleZoo
 
 from ..parsing import (
     _dealias_particle_aliases,
@@ -255,7 +255,7 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
         _parse_and_check_atomic_input(arg, **kwargs)
 
 
-@pytest.mark.parametrize('arg', _special_particles)
+@pytest.mark.parametrize('arg', ParticleZoo.everything - {'p+'})
 def test_parse_InvalidElementErrors(arg):
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidElementError when the input corresponds to a valid

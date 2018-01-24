@@ -1,20 +1,6 @@
 import pytest
 
-from ..particles import (
-    _Particles,
-    _special_particles,
-    _leptons,
-    _antileptons,
-    _baryons,
-    _antibaryons,
-    _particles,
-    _antiparticles,
-    _fermions,
-    _bosons,
-    _neutrinos,
-    _antineutrinos,
-    _everything,
-)
+from ..particles import (ParticleZoo, _Particles)
 
 particle_antiparticle_pairs = [
     ('e-', 'e+'),
@@ -77,7 +63,7 @@ required_keys = [
 ]
 
 
-@pytest.mark.parametrize("particle", _everything)
+@pytest.mark.parametrize("particle", ParticleZoo.everything)
 def test__Particles_required_keys(particle):
     r"""Test that required keys are present for all particles."""
 

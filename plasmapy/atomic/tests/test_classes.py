@@ -16,14 +16,6 @@ from ...utils import (
     ChargeError,
 )
 
-from typing import Union, Dict
-
-from ..particles import (
-    _fermions,
-    _neutrinos,
-    _antineutrinos,
-)
-
 from ..classes import Particle
 from ..parsing import _call_string
 
