@@ -5,7 +5,7 @@ from typing import (Union, Dict)
 
 from .elements import (_atomic_symbols, _atomic_symbols_dict, _Elements)
 from .isotopes import _Isotopes
-from .particles import _Particles, _special_particles
+from .particles import _Particles, ParticleZoo
 
 from ..utils import (AtomicWarning,
                      InvalidElementError,
@@ -94,14 +94,6 @@ def _dealias_particle_aliases(alias: Union[str, int]) -> str:
     else:
         symbol = alias
     return symbol
-
-
-def _is_special_particle(alias: Union[str, int]) -> bool:
-    r"""Returns true if a particle is a special particle, and False
-    otherwise."""
-    warnings.warn("_is_special_particle is deprecated.", DeprecationWarning)
-    symbol = _dealias_particle_aliases(alias)
-    return symbol in _special_particles
 
 
 def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
@@ -337,13 +329,16 @@ def _parse_and_check_atomic_input(
 
     arg = _dealias_particle_aliases(argument)
 
-    if arg in _special_particles:
+    if arg in ParticleZoo.everything - {'p+'}:
         if (mass_numb is not None) or (Z is not None):
             raise InvalidParticleError(
                 f"The keywords mass_numb and Z should not be specified "
                 f"for particle '{argument}', which is a special particle.")
         else:
             raise InvalidElementError(f"{argument} is not a valid element.")
+
+    if isinstance(arg, str) and arg.isdigit():
+        arg = int(arg)
 
     if isinstance(arg, int):
         element = _atomic_number_to_symbol(arg)
