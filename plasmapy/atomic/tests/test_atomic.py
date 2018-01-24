@@ -195,6 +195,7 @@ isotope_symbol_error_table = [
     ('D', {"mass_numb": 3}, InvalidParticleError),
     ('T', {"mass_numb": 2}, InvalidParticleError),
     ('Fe', {"mass_numb": None}, InvalidIsotopeError),
+    ('He', {"mass_numb": 99}, InvalidParticleError),
     ('d', {}, InvalidParticleError),
     ('h-3', {}, InvalidParticleError),
     ('h', {}, InvalidParticleError),
