@@ -225,7 +225,7 @@ class Particle:
 
                 if particle in _particles:
                     self._categories.add('matter')
-                elif particle in antiparticles:
+                elif particle in _antiparticles:
                     self._categories.add('antimatter')
 
             if mass_numb is not None or Z is not None:
