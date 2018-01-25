@@ -290,6 +290,23 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
     return isotope
 
 
+def ion_symbol(argument: Union[str, int], mass_numb: int = None,
+               Z: int = None) -> str:
+    r"""Returns the ion symbol."""
+    particle = Particle(argument, mass_numb=mass_numb, Z=Z)
+    if particle.ion:
+        return particle.ion
+    else:
+        raise InvalidIonError
+
+
+def particle_symbol(argument: Union[str, int], mass_numb: int = None,
+                    Z: int = None) -> str:
+    r"""Returns the symbol of a particle."""
+    particle = Particle(argument, mass_numb=mass_numb, Z=Z)
+    return particle.particle
+
+
 def element_name(argument: Union[str, int]) -> str:
     r"""Returns the name of an element.
 
