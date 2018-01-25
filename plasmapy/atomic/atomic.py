@@ -277,9 +277,9 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
 
     try:
         atomic_weight = _Elements[element]['atomic_mass']
-    except KeyError:
+    except KeyError as e:
         raise MissingAtomicDataError(
-            f"No standard atomic weight is available for {element}.")
+            f"No standard atomic weight is available for {element}.") from None
 
     return atomic_weight
 

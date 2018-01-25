@@ -181,6 +181,13 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
 
     """
 
+    try:
+        particle = Particle(argument, mass_numb=mass_numb)
+    except InvalidParticleError:
+        raise InvalidParticleError
+    except Exception:
+        pass
+
     # TODO: Remove this functionality when particle_symbol comes online
     if _is_neutron(argument, mass_numb):
         return 'n'
