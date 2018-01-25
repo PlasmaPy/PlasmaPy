@@ -239,6 +239,7 @@ invalid_particles_table = [
     (0, {'mass_numb': 1}),
     ('n', {'mass_numb': 1}),
     ('He-4', {'mass_numb': 3}),
+    ('He 1+', {'mass_numb': 99}),
     ('H-2+', {'Z': 0}),
     ('H-', {'Z': 1}),
 ]

@@ -783,8 +783,8 @@ def test_half_life_u_220():
                             f"half-life data")
 
         assert half_life_isotope is None, \
-            (f"half_life should return {None} for an isotope without half-life "
-             f"data, but is returning {half_life_isotope}")
+            (f"half_life should return {None} for an isotope without half-life"
+             f" data, but is returning {half_life_isotope}")
 
 
 atomic_TypeError_funcs_table = [
