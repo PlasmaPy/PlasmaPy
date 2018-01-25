@@ -112,6 +112,13 @@ class Particle:
                 "The first positional argument when creating a Particle "
                 "object must be either an integer or string.")
 
+        if mass_numb is not None and not isinstance(mass_numb, int):
+            raise TypeError
+
+        if Z is not None and not isinstance(Z, int):
+            raise TypeError
+
+
         # If the data is missing, then the private attribute should still
         # exist but just be set to None.  This initialization had previously
         # been done in a loop using exec on a string, but this does not play
@@ -187,7 +194,12 @@ class Particle:
                 self._ion_symbol = 'p+'
                 self._categories.update({'element', 'isotope', 'ion'})
 
-            if mass_numb is not None or Z is not None:
+                if mass_numb is not None or Z is not None:
+                    warnings.warn(
+                        "Redundant mass number or charge information.",
+                        AtomicWarning)
+
+            elif mass_numb is not None or Z is not None:
                 raise InvalidParticleError(
                     "The keywords 'mass_numb' and 'Z' cannot be used when "
                     "creating Particle objects for special particles. To "
