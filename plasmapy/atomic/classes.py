@@ -113,10 +113,10 @@ class Particle:
                 "object must be either an integer or string.")
 
         if mass_numb is not None and not isinstance(mass_numb, int):
-            raise TypeError
+            raise TypeError("mass_numb is not an integer")
 
         if Z is not None and not isinstance(Z, int):
-            raise TypeError
+            raise TypeError("Z is not an integer.")
 
 
         # If the data is missing, then the private attribute should still
