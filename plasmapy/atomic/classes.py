@@ -86,11 +86,6 @@ class Particle:
         about an isotope or nuclide, but the particle is not an isotope (or
         an ion of an isotope).
 
-    InvalidIonError
-        For when an attribute is being accessed that requires information
-        about an ion (excluding charge information), but the particle is not
-        an ion.
-
     ChargeError
         For when either the charge or integer_charge attributes is being
         accessed but the charge information for the particle is not
@@ -258,11 +253,11 @@ class Particle:
                     self._standard_atomic_weight = None
             elif element and isotope and not ion:
                 self._isotope_mass = _Isotopes[isotope]['atomic_mass']
-
             if isotope:
                 self._isotope_mass = \
                     _Isotopes[isotope].get('atomic_mass', None)
                 self._standard_atomic_weight = None
+                self._mass = self._isotope_mass
             else:
                 self._standard_atomic_weight = \
                     _Elements[element].get('atomic_mass', None)
@@ -533,6 +528,33 @@ class Particle:
                     f"reduced mass.") from exc
 
         return (mass_this * mass_that) / (mass_this + mass_that)
+
+    @property
+    def binding_energy(self):
+        r"""Returns the nuclear binding energy, or raises an
+        InvalidIsotopeError if the particle is not a nucleon or isotope."""
+
+        if self._baryon_number == 1:
+            return 0 * u.J
+
+        if not self.element:
+            raise InvalidIsotopeError(
+                f"The nuclear binding energy may only be calculated for "
+                f"nucleons and isotopes.")
+
+        number_of_protons = self.atomic_number
+        number_of_neutrons = self.mass_number - self.atomic_number
+
+        mass_of_protons = number_of_protons * const.m_p
+        mass_of_neutrons = number_of_neutrons * const.m_n
+
+        mass_of_nucleons = mass_of_protons + mass_of_neutrons
+        mass_of_nuclide = self.mass - const.m_e * self.atomic_number
+
+        mass_defect = mass_of_nucleons - mass_of_nuclide
+        nuclear_binding_energy = mass_defect * const.c ** 2
+
+        return nuclear_binding_energy.to(u.J)
 
     def is_category(self, *categories, any=False,
                     exclude: Union[Set, Tuple, List] = set()) -> bool:
