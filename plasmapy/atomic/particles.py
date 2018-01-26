@@ -3,7 +3,26 @@ from astropy import units as u, constants as const
 import numpy as np
 
 
-class _ParticleZooClass:
+class _ParticleZooClass():
+    r"""Creates an object with taxonomy information for special particles.
+
+    The _taxonomy_dict attribute contains the name of each classification
+    (e.g., 'lepton', 'baryon', 'matter', etc.) as the keys and a set of
+    particle symbol strings of the particles belonging to that classification.
+
+    The attributes of this class provide sets of strings representing
+    particles in the corresponding category.
+
+    Examples
+    --------
+    >>> ParticleZoo = _ParticleZooClass()
+    >>> 'e-' in ParticleZoo.leptons
+    True
+    >>> 'nu_e' in ParticleZoo.antineutrinos
+    False
+    >>> 'mu+' in ParticleZoo.antiparticles
+    True
+    """
 
     def __init__(self):
 
