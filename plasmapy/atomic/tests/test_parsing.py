@@ -204,7 +204,6 @@ parse_check_table = [
 @pytest.mark.parametrize('arg, kwargs, expected', parse_check_table)
 def test_parse_and_check_atomic_input(arg, kwargs, expected):
     result = _parse_and_check_atomic_input(arg, **kwargs)
-
     assert result == expected, (
         "Error in _parse_and_check_atomic_input.\n"
         "The resulting dictionary is:\n\n"
@@ -240,6 +239,7 @@ invalid_particles_table = [
     ('n', {'mass_numb': 1}),
     ('He-4', {'mass_numb': 3}),
     ('He 1+', {'mass_numb': 99}),
+    ('He-99', {}),
     ('H-2+', {'Z': 0}),
     ('H-', {'Z': 1}),
 ]

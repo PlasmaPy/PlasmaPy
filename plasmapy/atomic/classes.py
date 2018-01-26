@@ -473,6 +473,24 @@ class Particle:
         antiparticle; or raises a MissingAtomicDataError if the mass
         is unavailable.
 
+        Notes
+        -----
+        For special particles, this attribute will return the standard value
+        of the mass of the particle.  The masses of neutrinos are not
+        available.
+
+        If the particle is an element and not an isotope or ion, then this
+        attribute will return the standard atomic weight if available.
+
+        If the particle is an isotope but not an ion, then this attribute
+        will return the isotopic mass.
+
+        If this particle is an ion, then this attribute will return the mass
+        of the element or isotope (as described above) minus the integer charge
+        times the electron mass.
+
+        Example
+        -------
         >>> alpha = Particle('alpha')
         >>> alpha.mass
         <Quantity 6.64647897e-27 kg>
