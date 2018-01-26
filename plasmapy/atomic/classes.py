@@ -1,4 +1,4 @@
-from typing import Union, Set, Tuple, List, Optional
+from typing import (Union, Set, Tuple, List, Optional)
 import warnings
 
 from astropy import units as u, constants as const
@@ -24,7 +24,6 @@ from .parsing import (
 from .elements import _Elements
 from .isotopes import _Isotopes
 from .particles import _Particles, ParticleZoo
-
 
 # TODO: Write a decorator to turn atomic inputs into a Particle.
 
@@ -320,15 +319,15 @@ class Particle:
             f"The particle '{self.particle}' is not an ion, so this"
             f"attribute is not available.")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         r"""Returns a string of the call that would recreate this object."""
         return f'Particle("{self.particle}")'
 
-    def __str__(self):
+    def __str__(self) -> str:
         r"""Returns a string of the particle symbol."""
         return f"{self.particle}"
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         r"""Returns True when comparing two Particle objects that correspond
         to the same particle, and False when the two objects differ."""
         try:
@@ -339,7 +338,7 @@ class Particle:
         except Exception:
             return False
 
-    def __ne__(self, other):
+    def __ne__(self, other) -> bool:
         r"""Returns True when the two objects differ, and False when
         comparing two Particle objects that correspond to the same particle."""
         return not self.__eq__(other)
@@ -595,7 +594,7 @@ class Particle:
                 _atomic_number = self._atomic_number
                 _isotope_mass = _Isotopes[self.isotope]['atomic_mass'].to(u.kg)
                 _nuclide_mass = _isotope_mass - _atomic_number * const.m_e
-            except KeyError:  # coveralls:ignore
+            except KeyError:  # coveralls: ignore
                 raise MissingAtomicDataError(
                     f"The mass of a {self.isotope} nuclide is not available.")
         else:
@@ -650,7 +649,7 @@ class Particle:
         return (mass_this * mass_that) / (mass_this + mass_that)
 
     @property
-    def binding_energy(self):
+    def binding_energy(self) -> u.J:
         r"""Returns the nuclear binding energy, or raises an
         InvalidIsotopeError if the particle is not a nucleon or isotope.
 
