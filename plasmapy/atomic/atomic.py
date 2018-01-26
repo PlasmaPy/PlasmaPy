@@ -44,7 +44,6 @@ from .names import (
 
 # TODO: Create a particle_mass function
 # TODO: Create lepton_number and baryon_number functions
-# TODO: Maybe create is_antimatter, is_lepton, is_baryon, is_boson, is_fermion
 
 
 def atomic_number(argument: str) -> str:

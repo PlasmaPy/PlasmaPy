@@ -1,8 +1,14 @@
 """Physical and mathematical constants for use within PlasmaPy."""
 
+from .particles import ParticleZoo
+
+from .classes import Particle
+
 from .names import (
     atomic_symbol,
     isotope_symbol,
+    ion_symbol,
+    particle_symbol,
     element_name,
 )
 
@@ -27,4 +33,4 @@ from .nuclear import (
     nuclear_reaction_energy,
 )
 
-from .classes import Particle
+

@@ -301,6 +301,8 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
 def ion_symbol(argument: Union[str, int], mass_numb: int = None,
                Z: int = None) -> str:
     r"""Returns the ion symbol."""
+    # TODO: Add docstring
+    # TODO: Improve exception handling
     particle = Particle(argument, mass_numb=mass_numb, Z=Z)
     if particle.ion:
         return particle.ion
@@ -311,6 +313,8 @@ def ion_symbol(argument: Union[str, int], mass_numb: int = None,
 def particle_symbol(argument: Union[str, int], mass_numb: int = None,
                     Z: int = None) -> str:
     r"""Returns the symbol of a particle."""
+    # TODO: Add docstring
+    # TODO: Improve exception handling
     particle = Particle(argument, mass_numb=mass_numb, Z=Z)
     return particle.particle
 
