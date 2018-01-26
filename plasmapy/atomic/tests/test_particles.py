@@ -1,17 +1,12 @@
 import pytest
 
-from ..particles import (
-    _get_standard_symbol,
-    _Particles,
-    _case_sensitive_aliases,
-    _case_insensitive_aliases)
-
+from ..particles import (ParticleZoo, _Particles)
 
 particle_antiparticle_pairs = [
     ('e-', 'e+'),
     ('mu-', 'mu+'),
     ('tau-', 'tau+'),
-    ('p', 'p-'),
+    ('p+', 'p-'),
     ('n', 'antineutron'),
     ('nu_e', 'anti_nu_e'),
     ('nu_mu', 'anti_nu_mu'),
@@ -55,56 +50,32 @@ def test_particle_antiparticle_pairs(particle, antiparticle):
              "for 'anti'.")
 
 
-aliases_and_symbols = [
-    ('electron', 'e-'),
-    ('beta-', 'e-'),
-    ('beta+', 'e+'),
-    ('positron', 'e+'),
-    ('proton', 'p'),
-    ('', ''),
-    (5, 5),
-    ('deuterium+', 'D 1+'),
-    ('deuterium 1+', 'D 1+'),
-    ('tritium +1', 'T 1+'),
-    ('alpha', 'He-4 2+'),
-    ('D+', 'D 1+'),
-    ('Deuterium', 'D'),
-    ('deuteron', 'D 1+'),
-    ('triton', 'T 1+'),
-    ('muon', 'mu-'),
-    ('antimuon', 'mu+'),
-    ('tau particle', 'tau-'),
-    ('antitau', 'tau+'),
-    ('p+', 'p'),
+required_keys = [
+    'name',
+    'spin',
+    'class',
+    'lepton number',
+    'baryon number',
+    'charge',
+    'half-life',
+    'mass',
+    'antimatter',
 ]
 
 
-@pytest.mark.parametrize("alias,symbol", aliases_and_symbols)
-def test_get_standard_symbol(alias, symbol):
-    """Test that _get_standard_symbol correctly takes in aliases and
-    returns the corresponding symbols, and returns the original argument
-    if the argument does not correspond to an alias."""
-    result = _get_standard_symbol(alias)
-    assert result == symbol, \
-        (f"_get_standard_symbol({alias}) returns {result}, which differs "
-         f"from the expected symbol of {symbol}.\n\n"
-         f"_case_insensitive_aliases:\n{_case_insensitive_aliases}\n\n"
-         f"_case_sensitive_aliases:\n{_case_sensitive_aliases}")
+@pytest.mark.parametrize("particle", ParticleZoo.everything)
+def test__Particles_required_keys(particle):
+    r"""Test that required keys are present for all particles."""
 
+    missing_keys = []
 
-alias_dictionaries = [_case_sensitive_aliases, _case_insensitive_aliases]
+    for key in required_keys:
+        try:
+            _Particles[particle][key]
+        except KeyError:
+            missing_keys.append(key)
 
-
-@pytest.mark.parametrize("alias_dict", alias_dictionaries)
-def test_alias_dict_properties(alias_dict):
-    """Test properties of the alias dictionaries."""
-
-    for key in alias_dict.keys():
-        assert isinstance(key, str), \
-            (f"The following key should be a string, but isn't: {key}\n\n"
-             f"The entire dictionary is:\n\n{alias_dict}")
-
-    for value in alias_dict.values():
-        assert isinstance(value, str), \
-            (f"The following value should be a string, but isn't: {value}\n\n"
-             f"The entire dictionary is:\n\n{alias_dict}")
+    if missing_keys:
+        raise KeyError(
+            "The following keys are missing from "
+            f"_Particles['{particle}']:\n{missing_keys}")

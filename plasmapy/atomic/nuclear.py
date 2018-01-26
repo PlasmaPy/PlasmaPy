@@ -17,7 +17,11 @@ from .names import (isotope_symbol,
                     _is_antiproton,
                     _is_antineutron)
 
-from ..utils import (InvalidElementError, InvalidIsotopeError)
+from ..utils import (InvalidElementError,
+                     InvalidParticleError,
+                     InvalidIsotopeError)
+
+from .classes import Particle
 
 
 def nuclear_binding_energy(argument, mass_numb=None):
@@ -41,6 +45,17 @@ def nuclear_binding_energy(argument, mass_numb=None):
     binding_energy: Quantity
         The binding energy of the nucleus in units of Joules.
 
+    Raises
+    ------
+    InvalidParticleError
+        If the inputs do not correspond to a valid particle.
+
+    InvalidIsotopeError
+        If the inputs do not correspond to a valid isotope.
+
+    TypeError
+        If the inputs are not of the correct types.
+
     See also
     --------
 
@@ -61,31 +76,22 @@ def nuclear_binding_energy(argument, mass_numb=None):
     >>> before = nuclear_binding_energy("D") + nuclear_binding_energy("T")
     >>> after = nuclear_binding_energy("alpha")
     >>> (after - before).to(u.MeV)  # released energy from D + T --> alpha + n
-    <Quantity 17.58932778 MeV>
+    <Quantity 17.58929687 MeV>
 
     """
 
-    if _is_neutron(argument) and mass_numb is None or mass_numb == 1:
-        return 0.0 * units.J
-
-    isotope = isotope_symbol(argument, mass_numb)
-
-    number_of_protons = atomic_number(argument)
-    nuclide_mass = ion_mass(isotope, Z=number_of_protons)
-
-    if mass_numb is None:
-        mass_numb = mass_number(argument)
-    number_of_neutrons = mass_numb - number_of_protons
-
-    if number_of_protons == 1 and number_of_neutrons == 0:
-        binding_energy = 0.0 * units.J
-    else:
-        mass_of_nucleons = (number_of_protons * constants.m_p +
-                            number_of_neutrons * constants.m_n)
-        mass_defect = mass_of_nucleons - nuclide_mass
-        binding_energy = mass_defect * constants.c**2
-
-    return binding_energy.to(units.J)
+    try:
+        return Particle(argument, mass_numb=mass_numb).binding_energy
+    except TypeError:
+        raise TypeError("Invalid inputs to nuclear_binding_energy")
+    except InvalidParticleError:
+        raise InvalidParticleError(
+            f"The inputs to nuclear_binding_energy do not correspond to a "
+            f"valid particle.")
+    except InvalidIsotopeError:
+        raise InvalidIsotopeError(
+            f"The inputs to nuclear_binding_energy do not correspond to a "
+            f"valid isotope.")
 
 
 def nuclear_reaction_energy(*args, **kwargs):

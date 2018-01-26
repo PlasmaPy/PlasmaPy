@@ -277,9 +277,9 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
 
     try:
         atomic_weight = _Elements[element]['atomic_mass']
-    except KeyError:
+    except KeyError as e:
         raise MissingAtomicDataError(
-            f"No standard atomic weight is available for {element}.")
+            f"No standard atomic weight is available for {element}.") from None
 
     return atomic_weight
 
@@ -480,7 +480,7 @@ def ion_mass(argument: Union[str, int, Quantity], Z: int = None,
 
         try:
             m_i = argument.to(u.kg)
-        except Exception:
+        except u.UnitConversionError:
             raise u.UnitConversionError("If the ion in given as a Quantity, "
                                         "then it must have units of mass.")
 
@@ -534,7 +534,9 @@ def ion_mass(argument: Union[str, int, Quantity], Z: int = None,
 
     try:
         isotope = isotope_symbol(argument, mass_numb)
-    except Exception:
+    except InvalidParticleError as e:
+        raise InvalidParticleError("Invalid particle in ion_mass.")
+    except InvalidIsotopeError:
         is_isotope = False
     else:
         is_isotope = True
@@ -554,7 +556,7 @@ def ion_mass(argument: Union[str, int, Quantity], Z: int = None,
 
         try:
             atomic_mass = standard_atomic_weight(argument)
-        except Exception:  # coveralls: ignore
+        except MissingAtomicDataError:  # coveralls: ignore
 
             errormessage = ("No isotope mass or standard atomic weight is "
                             f"available to get ion mass for {argument}")
@@ -1244,7 +1246,7 @@ def stable_isotopes(argument: Union[str, int] = None,
                 stable_isotopes_for_element(element, not unstable)
         except InvalidParticleError:
             raise InvalidParticleError("Invalid particle in stable_isotopes")
-        except Exception:
+        except InvalidElementError:
             raise InvalidElementError(
                 "stable_isotopes is unable to get isotopes "
                 f"from an input of: {argument}")

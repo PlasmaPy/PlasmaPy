@@ -5,33 +5,32 @@ import re
 import warnings
 from typing import (Union, Optional, Any, Tuple)
 
-from .elements import (_atomic_symbols, _atomic_symbols_dict, _Elements)
-
+from .elements import _atomic_symbols, _atomic_symbols_dict, _Elements
 from .isotopes import _Isotopes
+from .particles import ParticleZoo
 
-from .particles import (_is_special_particle, _get_standard_symbol)
+from .parsing import _dealias_particle_aliases
+from .classes import Particle
 
 from ..utils import (AtomicWarning,
                      InvalidElementError,
                      InvalidIsotopeError,
                      InvalidIonError,
-                     AtomicError,
-                     InvalidParticleError,
-                     ChargeError)
+                     InvalidParticleError)
 
 # TODO: Create an ion_symbol function
 # TODO: Create a particle_symbol function
 
 
-def atomic_symbol(argument: Union[str, int]) -> str:
+def atomic_symbol(element: Union[str, int]) -> str:
     r"""Returns the atomic symbol.
 
     Parameters
     ----------
 
-    argument: string or integer
+    element: string or integer
         A string representing an element, isotope, or ion; or an
-        integer representing an atomic number.
+        integer or string representing an atomic number.
 
     Returns
     -------
@@ -95,70 +94,23 @@ def atomic_symbol(argument: Union[str, int]) -> str:
 
     """
 
-    if _is_special_particle(argument):
-        raise InvalidElementError(f"{argument} is not a valid element.")
-
     try:
-        argument, Z = _extract_integer_charge(argument)
+        particle = Particle(element)
     except InvalidParticleError:
-        raise InvalidParticleError("Invalid charge in atomic_symbol")
+        raise InvalidParticleError(
+            f"The argument {repr(element)} to atomic_symbol does not "
+            f"represent a valid particle.")
+    except TypeError:
+        raise TypeError(
+            f"The argument {repr(element)} to atomic_symbol is not an "
+            f"integer or string.")
 
-    if not isinstance(argument, (str, int)):
-        raise TypeError("The first argument in atomic_symbol must be either "
-                        "a string representing an element or isotope, or an "
-                        "integer representing the atomic number (or 0 for "
-                        "neutrons).")
-
-    if isinstance(argument, str) and argument.isdigit():
-        argument = int(argument)
-
-    if isinstance(argument, int):
-
-        try:
-            element = _atomic_symbols[argument]
-        except KeyError:
-            raise InvalidParticleError(f"{argument} is an invalid atomic "
-                                       "number in atomic_symbol.")
-
-    elif _is_hydrogen(argument):
-        element = 'H'
-    elif _is_alpha(argument):
-        element = 'He'
-    elif isinstance(argument, str):
-
-        if argument.count('-') == 1:
-            dash_position = argument.find('-')
-            mass_numb = argument[dash_position+1:]
-            if not mass_numb.isdigit():
-                raise InvalidParticleError("Invalid isotope format in "
-                                           "atomic_symbol")
-            argument = argument[:dash_position]
-        else:
-            mass_numb = ''
-
-        if argument.lower() in _atomic_symbols_dict.keys():
-            element = _atomic_symbols_dict[argument.lower()]
-        elif argument in _atomic_symbols.values():
-            element = argument.capitalize()
-        else:
-            raise InvalidParticleError(f"{argument} is an invalid argument "
-                                       "for atomic_symbol")
-
-        if mass_numb.isdigit():
-
-            isotope = element.capitalize() + '-' + mass_numb
-
-            if isotope not in _Isotopes.keys():
-                raise InvalidParticleError(
-                    "The input in atomic_symbol corresponding "
-                    f"to {isotope} is not a valid isotope.")
-
-    if Z is not None and \
-            Z > _Elements[element]['atomic_number']:
-        raise InvalidParticleError("Cannot have an ionization state greater "
-                                   "than the atomic number.")
-
-    return element
+    if particle.element:
+        return particle._atomic_symbol
+    else:
+        raise InvalidElementError(
+            f"The argument {repr(element)} to atomic_symbol does not "
+            f"represent a valid element.")
 
 
 def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
@@ -230,11 +182,18 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
 
     """
 
+    try:
+        particle = Particle(argument, mass_numb=mass_numb)
+    except InvalidParticleError:
+        raise InvalidParticleError
+    except Exception:
+        pass
+
     # TODO: Remove this functionality when particle_symbol comes online
     if _is_neutron(argument, mass_numb):
         return 'n'
 
-    if _is_special_particle(argument):
+    if argument in ParticleZoo.everything - {'p+'}:
         raise InvalidIsotopeError("The argument {argument} does not "
                                   "correspond to a valid isotope in "
                                   "isotope_symbol.")
@@ -337,6 +296,23 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
                                    "number in isotope_symbol.")
 
     return isotope
+
+
+def ion_symbol(argument: Union[str, int], mass_numb: int = None,
+               Z: int = None) -> str:
+    r"""Returns the ion symbol."""
+    particle = Particle(argument, mass_numb=mass_numb, Z=Z)
+    if particle.ion:
+        return particle.ion
+    else:
+        raise InvalidIonError
+
+
+def particle_symbol(argument: Union[str, int], mass_numb: int = None,
+                    Z: int = None) -> str:
+    r"""Returns the symbol of a particle."""
+    particle = Particle(argument, mass_numb=mass_numb, Z=Z)
+    return particle.particle
 
 
 def element_name(argument: Union[str, int]) -> str:
@@ -454,10 +430,15 @@ def _extract_integer_charge(argument: str) -> Tuple[str, int]:
 
     """
 
+    warnings.warn("_extract_integer_charge is deprecated.", DeprecationWarning)
+
     if not isinstance(argument, str):
         return argument, None
 
-    argument = _get_standard_symbol(argument)
+    try:
+        argument = _dealias_particle_aliases(argument)
+    except Exception:
+        pass
 
     if argument in ['n', 'antineutron'] or 'nu_' in argument:
         return argument, 0
@@ -530,6 +511,8 @@ def _is_neutron(argument: Any, mass_numb: int = None) -> bool:
     r"""Returns True if the argument corresponds to a neutron, and
     False otherwise."""
 
+    warnings.warn("_is_neutron is deprecated.", DeprecationWarning)
+
     if argument == 0 and mass_numb == 1:
         return True
     elif isinstance(argument, str) and mass_numb is None:
@@ -545,6 +528,8 @@ def _is_hydrogen(argument: Any,
                  can_be_atomic_number: Optional[bool] = False) -> bool:
     r"""Returns True if the argument corresponds to hydrogen, and False
     otherwise."""
+
+    warnings.warn("_is_hydrogen is deprecated.", DeprecationWarning)
 
     case_sensitive_aliases = ['p', 'p+', 'H', 'D', 'T']
 
@@ -579,6 +564,8 @@ def _is_electron(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to an electron, and False
     otherwise."""
 
+    warnings.warn("_is_electron is deprecated.", DeprecationWarning)
+
     if not isinstance(arg, str):
         return False
 
@@ -588,6 +575,8 @@ def _is_electron(arg: Any) -> bool:
 def _is_positron(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to a positron, and False
     otherwise."""
+
+    warnings.warn("_is_positron is deprecated.", DeprecationWarning)
 
     if not isinstance(arg, str):
         return False
@@ -599,6 +588,8 @@ def _is_antiproton(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to an antiproton, and
     False otherwise."""
 
+    warnings.warn("_is_antiproton is deprecated.", DeprecationWarning)
+
     if not isinstance(arg, str):
         return False
 
@@ -608,6 +599,8 @@ def _is_antiproton(arg: Any) -> bool:
 def _is_antineutron(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to an antineutron, and
     False otherwise."""
+
+    warnings.warn("_is_antineutron is deprecated.", DeprecationWarning)
 
     if not isinstance(arg, str):
         return False
@@ -619,6 +612,8 @@ def _is_proton(arg: Any, Z: int = None, mass_numb: int = None) -> bool:
     r"""Returns True if the argument corresponds to a proton, and
     False otherwise.  This function returns False for 'H-1' if no
     charge state is given."""
+
+    warnings.warn("_is_proton is deprecated.", DeprecationWarning)
 
     argument, Z_from_arg = _extract_integer_charge(arg)
 
@@ -639,6 +634,8 @@ def _is_proton(arg: Any, Z: int = None, mass_numb: int = None) -> bool:
 def _is_alpha(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to an alpha particle,
     and False otherwise."""
+
+    warnings.warn("_is_alpha is deprecated.", DeprecationWarning)
 
     if not isinstance(arg, str):
         return False

@@ -10,11 +10,14 @@ latex-install: &latex-installer
   name: Install Latex dependencies
   command: |
     sudo apt update
-    sudo apt install texlive texlive-xetex texlive-fonts-extra texlive-latex-extra texlive-plain-extra latexmk
+    sudo apt install texlive texlive-xetex texlive-fonts-extra texlive-latex-extra texlive-plain-extra latexmk graphviz
 
 html-run: &doc-html
   name: Build HTML documentation
-  command: make html SPHINXOPTS='-W'
+  command: |
+    sudo apt update
+    sudo apt install graphviz
+    make html SPHINXOPTS='-W'
   working_directory: docs
 
 latex-run: &doc-latex
