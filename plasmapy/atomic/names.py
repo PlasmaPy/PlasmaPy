@@ -15,6 +15,7 @@ from .classes import Particle
 from ..utils import (AtomicWarning,
                      InvalidElementError,
                      InvalidIsotopeError,
+                     InvalidIonError,
                      InvalidParticleError)
 
 # TODO: Create an ion_symbol function

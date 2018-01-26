@@ -1,12 +1,16 @@
 from typing import Union, Set, Tuple, List, Optional
+import warnings
+
 from astropy import units as u, constants as const
 import numpy as np
 
 from ..utils import (
     AtomicError,
+    AtomicWarning,
     InvalidParticleError,
     InvalidElementError,
     InvalidIsotopeError,
+    InvalidIonError,
     ChargeError,
     MissingAtomicDataError,
 )
@@ -20,6 +24,7 @@ from .parsing import (
 from .elements import _Elements
 from .isotopes import _Isotopes
 from .particles import _Particles, ParticleZoo
+
 
 # TODO: Write a decorator to turn atomic inputs into a Particle.
 
