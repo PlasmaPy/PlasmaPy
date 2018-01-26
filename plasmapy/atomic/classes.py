@@ -21,6 +21,8 @@ from .elements import _Elements
 from .isotopes import _Isotopes
 from .particles import _Particles, ParticleZoo
 
+# TODO: Write a decorator to turn atomic inputs into a Particle.
+
 
 class Particle:
     r"""A class for individual particles or antiparticles.
@@ -43,13 +45,31 @@ class Particle:
         The particle symbol.
 
     element : str
-        The atomic symbol.
+        The atomic symbol, or None when the particle is not an element.
 
     isotope : str
-        The isotope symbol.
+        The isotope symbol, or None when the particle is not an isotope.
 
     ion : str
-        The ion symbol.
+        The ion symbol, or None when the particle is not an ion.
+
+    element : str
+        The name of the element.
+
+    integer_charge : int
+        The charge in units of the elementary charge.
+
+    charge : Quantity
+        The charge in units of coulombs.
+
+    mass : Quantity
+        The mass of the particle, element, isotope, or ion.
+
+    standard_atomic_weight : Quantity
+        The standard atomic weight of an element, if available.
+
+    nuclide_mass : Quantity
+        The mass of a nucleon or of the nucleus of an isotope.
 
     atomic_number : int
         The atomic number of an element.
@@ -57,19 +77,20 @@ class Particle:
     mass_number : int
         The mass number of an isotope.
 
-    mass : Quantity
-        The mass of the particle, element, or ion
-
-    integer_charge :
-
-    charge :
-
-
+    baryon_number : int
+        The number of baryons (protons and neutrons) minus the number of
+        antibaryons (antiprotons and antineutrons) in the particle.
 
     half_life : Quantity
+        The half-life of the particle or isotope in seconds.
 
+    Methods
+    -------
+    is_category
+        Tests whether or not the particle is in or not in certain categories.
 
-
+    reduced_mass
+        Returns the reduced mass of the particle and another particle.
 
     Raises
     ------
@@ -97,9 +118,6 @@ class Particle:
 
     """
 
-    # TODO: Write an actual docstring of wonder and amazement
-    # TODO: Write a decorator to turn atomic inputs into a Particle.
-
     def __init__(self,
                  argument: Union[str, int],
                  mass_numb: int = None,
@@ -117,7 +135,6 @@ class Particle:
 
         if Z is not None and not isinstance(Z, int):
             raise TypeError("Z is not an integer.")
-
 
         # If the data is missing, then the private attribute should still
         # exist but just be set to None.  This initialization had previously
@@ -161,7 +178,7 @@ class Particle:
 
         particle = _dealias_particle_aliases(argument)
 
-        if particle in _Particles.keys():
+        if particle in _Particles.keys():  # special particles
             self._particle_symbol = particle
             self._name = _Particles[particle]['name']
             self._spin = _Particles[particle]['spin']
@@ -206,7 +223,7 @@ class Particle:
                     f"create a Particle object for {self._name}s, "
                     f"use:  Particle({repr(self._particle_symbol)})")
 
-        else:
+        else:  # elements, isotopes, and ions (besides protons)
             try:
 
                 atomic_nomenclature_dict = _parse_and_check_atomic_input(
@@ -245,8 +262,10 @@ class Particle:
                 self._lepton_number = 0  # Should this be None?
 
             if isotope:
-                self._half_life = \
-                    _Isotopes[isotope].get('half_life', np.inf * u.s)
+                if _Isotopes[isotope]['is_stable']:
+                    self._half_life = np.inf * u.s
+                else:
+                    self._half_life = _Isotopes[isotope].get('half_life', None)
             elif element and not isotope:
                 self._half_life = None
 
@@ -267,7 +286,7 @@ class Particle:
                 self._isotope_mass = _Isotopes[isotope]['atomic_mass']
             if isotope:
                 self._isotope_mass = \
-                    _Isotopes[isotope].get('atomic_mass', None)
+                    _Isotopes[isotope].get('atomic_mass', None).to(u.kg)
                 self._standard_atomic_weight = None
                 self._mass = self._isotope_mass
             else:
@@ -322,32 +341,76 @@ class Particle:
 
     @property
     def particle(self) -> str:
-        r"""Returns the particle symbol."""
+        r"""Returns the particle symbol.
+
+        Examples
+        --------
+        >>> electron = Particle('electron')
+        >>> electron.particle
+        'e-'
+        >>> alpha = Particle('alpha')
+        >>> alpha.particle
+        'He-4 2+'
+        """
         return self._particle_symbol
 
     @property
     def element(self) -> Optional[str]:
         r"""Returns the atomic symbol if the particle corresponds to an
-        element, and None otherwise."""
+        element, and None otherwise.
+
+        Examples
+        --------
+        >>> alpha = Particle('He-4 2+')
+        >>> alpha.element
+        'He'
+        >>> proton = Particle('proton')
+        >>> electron = Particle('electron')
+        >>> print(electron.element)
+        None
+        >>> if proton.element: print(proton.element)  # can use as conditional
+        H
+        """
         return self._atomic_symbol
 
     @property
     def isotope(self) -> Optional[str]:
         r"""Returns the isotope symbol if the particle corresponds to an
-        isotope, and None otherwise."""
+        isotope, and None otherwise.
+
+        Example
+        -------
+        >>> alpha = Particle('alpha')
+        >>> alpha.isotope
+        'He-4'
+        """
         return self._isotope_symbol
 
     @property
     def ion(self) -> Optional[str]:
         r"""Returns the ion symbol if the particle corresponds to an ion,
-        and None otherwise."""
+        and None otherwise.
+
+        Example
+        -------
+        >>> alpha = Particle('alpha')
+        >>> alpha.ion
+        'He-4 2+'
+        """
         return self._ion_symbol
 
     @property
     def element_name(self) -> str:
         r"""Returns the name of the element corresponding to this particle,
         or raises an InvalidElementError if the particle does not correspond
-        to an element."""
+        to an element.
+
+        Example
+        -------
+        >>> deuterium = Particle('D')
+        >>> deuterium.element_name
+        'hydrogen'
+        """
         if not self.element:
             raise InvalidElementError(self._element_errmsg)
         return self._element_name
@@ -356,7 +419,14 @@ class Particle:
     def atomic_number(self) -> int:
         r"""Returns the atomic number of the element corresponding to this
         particle, or raises an InvalidElementError if the particle does not
-        correspond to an element."""
+        correspond to an element.
+
+        Example
+        -------
+        >>> iron = Particle('Fe')
+        >>> iron.atomic_number
+        26
+        """
         if not self._is_element:
             raise InvalidElementError(self._element_errmsg)
         return self._atomic_number
@@ -365,7 +435,14 @@ class Particle:
     def mass_number(self) -> int:
         r"""Returns the mass number of the isotope corresponding to this
         particle, or raises an InvalidIsotopeError if the particle does not
-        correspond to an isotope."""
+        correspond to an isotope.
+
+        Example
+        -------
+        >>> tritium = Particle('H-3')
+        >>> tritium.mass_number
+        3
+        """
         if not self._is_isotope:
             raise InvalidIsotopeError(self._isotope_errmsg)
         return self._mass_number
@@ -375,7 +452,22 @@ class Particle:
         r"""Returns the number of protons plus neutrons minus the number of
         antiprotons and antineutrons in the particle, or raises an
         AtomicError if the baryon number is unavailable.  The baryon number
-        is equivalent to the mass number for isotopes."""
+        is equivalent to the mass number for isotopes.
+
+        Example
+        -------
+        >>> antineutron = Particle('antineutron')
+        >>> electron = Particle('electron')
+        >>> alpha = Particle('He-4 2+')
+        >>> antineutron.baryon_number
+        -1
+        >>> electron.baryon_number
+        0
+        >>> alpha.baryon_number
+        4
+        >>> alpha.baryon_number == alpha.mass_number
+        True
+        """
         if self._baryon_number is None:  # coveralls: ignore
             raise AtomicError(
                 f"The baryon number for '{self.particle}' is not "
@@ -387,37 +479,36 @@ class Particle:
         r"""Returns 1 for leptons, -1 for antileptons, and 0 for
         nuclides/isotopes; or raises an AtomicError if the lepton number is
         not available.  This attribute does not include the electrons in
-        an atom or ion."""
+        an atom or ion.
+
+        Example
+        -------
+        >>> positron = Particle('e+')
+        >>> electron = Particle('e-')
+        >>> proton = Particle('p')
+        >>> positron.lepton_number
+        -1
+        >>> electron.lepton_number
+        1
+        >>> proton.lepton_number
+        0
+        """
         if self._lepton_number is None:
             raise AtomicError(
                 f"The lepton number for {self.particle} is not available.")
         return self._lepton_number
 
     @property
-    def half_life(self) -> u.s:
-        r"""Returns the half-life of the particle, or raises a
-        MissingAtomicDataError if the half-life is unavailable."""
-        if self._atomic_symbol and not self._isotope_symbol:
-            raise InvalidIsotopeError(self._isotope_errmsg)
-        if not self._half_life:
-            # TODO: Change this to a warning and return None?
-            raise MissingAtomicDataError(
-                f"The half-life of '{self.particle}' is not available.")
-        return self._half_life
-
-    @property
-    def spin(self) -> Union[int, float]:
-        r"""Returns the spin of the particle, or raises a
-        MissingAtomicDataError if the spin is not available."""
-        if self._spin is None:
-            raise MissingAtomicDataError(
-                f"The spin of particle '{self.particle}' is unavailable.")
-        return self._spin
-
-    @property
     def integer_charge(self) -> int:
         r"""Returns the integer charge of the partile, or raises a ChargeError
-        if the charge has not been specified."""
+        if the charge has not been specified.
+
+        Example
+        -------
+        >>> alpha = Particle('alpha')
+        >>> alpha.integer_charge
+        2
+        """
         if self._integer_charge is None:
             raise ChargeError(
                 f"The charge of particle {self.particle} has not been "
@@ -427,7 +518,14 @@ class Particle:
     @property
     def charge(self) -> u.C:
         r"""Returns the electric charge as a Quantity in units of coulombs,
-        or raises a ChargeError if the charge has not been specified."""
+        or raises a ChargeError if the charge has not been specified.
+
+        Example
+        -------
+        >>> alpha = Particle('alpha')
+        >>> alpha.charge
+        <Quantity 3.20435324e-19 C>
+        """
         if self._electric_charge is None:
             raise ChargeError(
                 f"The charge of particle {self.particle} has not been "
@@ -438,11 +536,16 @@ class Particle:
     def mass(self) -> u.kg:
         r"""Returns the mass of the element, isotope, ion, particle, or
         antiparticle; or raises a MissingAtomicDataError if the mass
-        is unavailable."""
+        is unavailable.
+
+        >>> alpha = Particle('alpha')
+        >>> alpha.mass
+        <Quantity 6.64647897e-27 kg>
+        """
         if self._mass is None:
             raise MissingAtomicDataError(
                 f"The mass of particle '{self.particle}' is unavailable.")
-        return self._mass
+        return self._mass.to(u.kg)
 
     @property
     def standard_atomic_weight(self) -> u.kg:
@@ -544,7 +647,14 @@ class Particle:
     @property
     def binding_energy(self):
         r"""Returns the nuclear binding energy, or raises an
-        InvalidIsotopeError if the particle is not a nucleon or isotope."""
+        InvalidIsotopeError if the particle is not a nucleon or isotope.
+
+        Example
+        -------
+        >>> iron59 = Particle('Fe-59')
+        >>> iron59.binding_energy
+        <Quantity 8.27574334e-11 J>
+        """
 
         if self._baryon_number == 1:
             return 0 * u.J
@@ -568,13 +678,73 @@ class Particle:
 
         return nuclear_binding_energy.to(u.J)
 
+    @property
+    def half_life(self) -> u.s:
+        r"""Returns the half-life of the particle, or raises a
+        MissingAtomicDataError if the half-life is unavailable.
+
+        Examples
+        --------
+        >>> from astropy import units
+        >>> neutron = Particle('n')
+        >>> neutron.half_life
+        <Quantity 881.5 s>
+        >>> carbon14 = Particle('C-14')
+        >>> carbon14.half_life.to(units.yr)
+        <Quantity 5730. yr>
+
+        """
+        if self._atomic_symbol and not self._isotope_symbol:
+            raise InvalidIsotopeError(self._isotope_errmsg)
+        if self._half_life is None:
+            raise MissingAtomicDataError(
+                f"The half-life of '{self.particle}' is not available.")
+        return self._half_life
+
+    @property
+    def spin(self) -> Union[int, float]:
+        r"""Returns the spin of the particle, or raises a
+        MissingAtomicDataError if the spin is not available.
+
+        Example
+        -------
+        >>> electron = Particle('e-')
+        >>> electron.spin
+        0.5
+        """
+        if self._spin is None:
+            raise MissingAtomicDataError(
+                f"The spin of particle '{self.particle}' is unavailable.")
+        return self._spin
+
     def is_category(self, *categories, any=False,
                     exclude: Union[Set, Tuple, List] = set()) -> bool:
-        r"""Returns True if the particle is in all of the inputted categories,
-        and is not in any of the categories inputted in the exclude keyword
-        argument.  If any is True, then this method returns True if the
-        particle is in any of the listed categories except for those
-        inputted in the exclude keyword."""
+        r"""Returns True if the particle is in all of the inputted categories.
+
+        If any is True, then the particle will return True if any of the listed
+        categories are met.
+
+        If the exclude keyword is set, then is_category will return False if
+        the particle is in any of the excluded categories, whether or not the
+        the particle matches the other criteria.
+
+        The valid categories are: 'lepton', 'antilepton', 'baryon',
+        'antibaryon', 'fermion', 'boson', 'neutrino', 'antineutrino', 'matter',
+        'antimatter', 'element', 'isotope', and 'ion'.
+
+        Examples
+        --------
+        >>> neutron = Particle('n')
+        >>> neutron.is_category({'fermion'})
+        True
+        >>> neutron.is_category('fermion', 'lepton', 'boson', any=True)
+        True
+        >>> neutron.is_category(['baryon', 'matter'], exclude=['fermion'])
+        False
+        >>> neutron.is_category([], exclude={'boson'})
+        True
+
+        """
 
         def _make_into_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
                 r"""Turns the input (a string, set, tuple, or list) into
@@ -603,34 +773,35 @@ class Particle:
                 f"cannot be set to True if no categories to be matched "
                 f"are inputted.")
 
+        categories = _make_into_set(categories)
+        exclude = _make_into_set(exclude)
+
         valid_categories = {
             'lepton', 'antilepton', 'fermion', 'boson', 'baryon', 'neutrino',
             'antineutrino', 'element', 'isotope', 'ion', 'matter',
             'antimatter', 'stable', 'unstable'
         }
 
-        categories = _make_into_set(categories)
-        exclude = _make_into_set(exclude)
-
-        if not categories.issubset(valid_categories):
+        if categories - valid_categories:
             raise AtomicError(
                 f"The following categories in {self.__repr__()}.is_category "
-                f"are invalid: {categories - valid_categories}")
-        elif not exclude.issubset(valid_categories):
+                f"are not valid categories: {categories - valid_categories}")
+
+        if exclude - valid_categories:
             raise AtomicError(
                 f"The following categories to be excluded in "
-                f"{self.__repr__()}.is_category are "
-                f"invalid: {exclude - valid_categories}")
-        elif not exclude.isdisjoint(categories):
+                f"{self.__repr__()}.is_category are not valid categories: "
+                f"{exclude - valid_categories}")
+
+        if exclude & categories:
             raise AtomicError(
                 f"The following are duplicate categories in "
-                f"{self.__repr__()}.is_category: "
-                f"{categories & exclude}")
+                f"{self.__repr__()}.is_category: {categories & exclude}")
 
-        if not exclude.isdisjoint(self._categories):
+        if exclude & self._categories:
             return False
 
-        if any:
-            return not categories.isdisjoint(self._categories)
-        else:
-            return categories.issubset(self._categories)
+        if any and categories & self._categories:
+            return True
+
+        return categories <= self._categories
