@@ -57,7 +57,7 @@ class Particle:
     ion : str
         The ion symbol, or None when the particle is not an ion.
 
-    element : str
+    element_name : str
         The name of the element.
 
     integer_charge : int
@@ -85,13 +85,27 @@ class Particle:
         The number of baryons (protons and neutrons) minus the number of
         antibaryons (antiprotons and antineutrons) in the particle.
 
+    lepton_number : int
+        The number of leptons minus the number of antileptons for special
+        particles and nuclides.
+
+    binding_energy : Quantity
+        The nuclear binding energy.
+
     half_life : Quantity
         The half-life of the particle or isotope in seconds.
 
-    Methods
-    -------
+    spin : int or float
+        The spin of the particle, if available.
+
+    reduced_mass
+        Returns the reduced mass of the particle and another particle.
+
     is_category
         Tests whether or not the particle is in or not in certain categories.
+        Possible categories include: 'lepton', 'antilepton', 'fermion',
+        'boson', 'baryon', 'neutrino', 'antineutrino', 'element', 'isotope',
+        'ion', 'matter', 'antimatter', 'stable', and 'unstable'.
 
     reduced_mass
         Returns the reduced mass of the particle and another particle.
@@ -420,89 +434,6 @@ class Particle:
         return self._element_name
 
     @property
-    def atomic_number(self) -> int:
-        r"""Returns the atomic number of the element corresponding to this
-        particle, or raises an InvalidElementError if the particle does not
-        correspond to an element.
-
-        Example
-        -------
-        >>> iron = Particle('Fe')
-        >>> iron.atomic_number
-        26
-        """
-        if not self._is_element:
-            raise InvalidElementError(self._element_errmsg)
-        return self._atomic_number
-
-    @property
-    def mass_number(self) -> int:
-        r"""Returns the mass number of the isotope corresponding to this
-        particle, or raises an InvalidIsotopeError if the particle does not
-        correspond to an isotope.
-
-        Example
-        -------
-        >>> tritium = Particle('H-3')
-        >>> tritium.mass_number
-        3
-        """
-        if not self._is_isotope:
-            raise InvalidIsotopeError(self._isotope_errmsg)
-        return self._mass_number
-
-    @property
-    def baryon_number(self) -> int:
-        r"""Returns the number of protons plus neutrons minus the number of
-        antiprotons and antineutrons in the particle, or raises an
-        AtomicError if the baryon number is unavailable.  The baryon number
-        is equivalent to the mass number for isotopes.
-
-        Example
-        -------
-        >>> antineutron = Particle('antineutron')
-        >>> electron = Particle('electron')
-        >>> alpha = Particle('He-4 2+')
-        >>> antineutron.baryon_number
-        -1
-        >>> electron.baryon_number
-        0
-        >>> alpha.baryon_number
-        4
-        >>> alpha.baryon_number == alpha.mass_number
-        True
-        """
-        if self._baryon_number is None:  # coveralls: ignore
-            raise AtomicError(
-                f"The baryon number for '{self.particle}' is not "
-                f"available.")
-        return self._baryon_number
-
-    @property
-    def lepton_number(self) -> int:
-        r"""Returns 1 for leptons, -1 for antileptons, and 0 for
-        nuclides/isotopes; or raises an AtomicError if the lepton number is
-        not available.  This attribute does not include the electrons in
-        an atom or ion.
-
-        Example
-        -------
-        >>> positron = Particle('e+')
-        >>> electron = Particle('e-')
-        >>> proton = Particle('p')
-        >>> positron.lepton_number
-        -1
-        >>> electron.lepton_number
-        1
-        >>> proton.lepton_number
-        0
-        """
-        if self._lepton_number is None:
-            raise AtomicError(
-                f"The lepton number for {self.particle} is not available.")
-        return self._lepton_number
-
-    @property
     def integer_charge(self) -> int:
         r"""Returns the integer charge of the partile, or raises a ChargeError
         if the charge has not been specified.
@@ -602,51 +533,89 @@ class Particle:
 
         return _nuclide_mass
 
-    def reduced_mass(self, other, Z=None, mass_numb=None) -> u.kg:
-        r"""Finds the reduced mass between two particles, or will raise a
-        MissingAtomicDataError if either particle's mass is unavailable or
-        an AtomicError for any other errors.  The other particle may be
-        represented by another Particle object, a Quantity with units of,
-        mass, or a string of the other particle's symbol (in conjunction
-        with keywords Z and mass_numb)
+
+    @property
+    def atomic_number(self) -> int:
+        r"""Returns the atomic number of the element corresponding to this
+        particle, or raises an InvalidElementError if the particle does not
+        correspond to an element.
 
         Example
         -------
-        >>> from plasmapy.atomic import Particle
-        >>> electron = Particle('e-')
-        >>> proton = Particle('p+')
-        >>> proton.reduced_mass(electron)
-        <Quantity 9.10442514e-31 kg>
-
+        >>> iron = Particle('Fe')
+        >>> iron.atomic_number
+        26
         """
+        if not self._is_element:
+            raise InvalidElementError(self._element_errmsg)
+        return self._atomic_number
 
-        try:
-            mass_this = self.mass.to(u.kg)
-        except MissingAtomicDataError:
-            raise MissingAtomicDataError(
-                f"Unable to find the reduced mass because the mass of "
-                f"{self.particle} is not available.") from None
+    @property
+    def mass_number(self) -> int:
+        r"""Returns the mass number of the isotope corresponding to this
+        particle, or raises an InvalidIsotopeError if the particle does not
+        correspond to an isotope.
 
-        if isinstance(other, (str, int)):
-                other = Particle(other, Z=Z, mass_numb=mass_numb)
+        Example
+        -------
+        >>> tritium = Particle('H-3')
+        >>> tritium.mass_number
+        3
+        """
+        if not self._is_isotope:
+            raise InvalidIsotopeError(self._isotope_errmsg)
+        return self._mass_number
 
-        if isinstance(other, Particle):
-            try:
-                mass_that = other.mass.to(u.kg)
-            except MissingAtomicDataError:
-                raise MissingAtomicDataError(
-                    f"Unable to find the reduced mass because the mass of "
-                    f"{other.particle} is not available.") from None
-        else:
-            try:
-                mass_that = other.to(u.kg)
-            except Exception as exc:  # coveralls: ignore
-                raise AtomicError(
-                    f"{other} must be either a Particle or a Quantity or "
-                    f"Constant with units of mass in order to calculate "
-                    f"reduced mass.") from exc
+    @property
+    def baryon_number(self) -> int:
+        r"""Returns the number of protons plus neutrons minus the number of
+        antiprotons and antineutrons in the particle, or raises an
+        AtomicError if the baryon number is unavailable.  The baryon number
+        is equivalent to the mass number for isotopes.
 
-        return (mass_this * mass_that) / (mass_this + mass_that)
+        Example
+        -------
+        >>> antineutron = Particle('antineutron')
+        >>> electron = Particle('electron')
+        >>> alpha = Particle('He-4 2+')
+        >>> antineutron.baryon_number
+        -1
+        >>> electron.baryon_number
+        0
+        >>> alpha.baryon_number
+        4
+        >>> alpha.baryon_number == alpha.mass_number
+        True
+        """
+        if self._baryon_number is None:  # coveralls: ignore
+            raise AtomicError(
+                f"The baryon number for '{self.particle}' is not "
+                f"available.")
+        return self._baryon_number
+
+    @property
+    def lepton_number(self) -> int:
+        r"""Returns 1 for leptons, -1 for antileptons, and 0 for
+        nuclides/isotopes; or raises an AtomicError if the lepton number is
+        not available.  This attribute does not include the electrons in
+        an atom or ion.
+
+        Example
+        -------
+        >>> positron = Particle('e+')
+        >>> electron = Particle('e-')
+        >>> proton = Particle('p')
+        >>> positron.lepton_number
+        -1
+        >>> electron.lepton_number
+        1
+        >>> proton.lepton_number
+        0
+        """
+        if self._lepton_number is None:
+            raise AtomicError(
+                f"The lepton number for {self.particle} is not available.")
+        return self._lepton_number
 
     @property
     def binding_energy(self) -> u.J:
@@ -721,6 +690,53 @@ class Particle:
                 f"The spin of particle '{self.particle}' is unavailable.")
         return self._spin
 
+
+    def reduced_mass(self, other, Z=None, mass_numb=None) -> u.kg:
+        r"""Finds the reduced mass between two particles, or will raise a
+        MissingAtomicDataError if either particle's mass is unavailable or
+        an AtomicError for any other errors.  The other particle may be
+        represented by another Particle object, a Quantity with units of,
+        mass, or a string of the other particle's symbol (in conjunction
+        with keywords Z and mass_numb)
+
+        Example
+        -------
+        >>> from plasmapy.atomic import Particle
+        >>> electron = Particle('e-')
+        >>> proton = Particle('p+')
+        >>> proton.reduced_mass(electron)
+        <Quantity 9.10442514e-31 kg>
+
+        """
+
+        try:
+            mass_this = self.mass.to(u.kg)
+        except MissingAtomicDataError:
+            raise MissingAtomicDataError(
+                f"Unable to find the reduced mass because the mass of "
+                f"{self.particle} is not available.") from None
+
+        if isinstance(other, (str, int)):
+                other = Particle(other, Z=Z, mass_numb=mass_numb)
+
+        if isinstance(other, Particle):
+            try:
+                mass_that = other.mass.to(u.kg)
+            except MissingAtomicDataError:
+                raise MissingAtomicDataError(
+                    f"Unable to find the reduced mass because the mass of "
+                    f"{other.particle} is not available.") from None
+        else:
+            try:
+                mass_that = other.to(u.kg)
+            except Exception as exc:  # coveralls: ignore
+                raise AtomicError(
+                    f"{other} must be either a Particle or a Quantity or "
+                    f"Constant with units of mass in order to calculate "
+                    f"reduced mass.") from exc
+
+        return (mass_this * mass_that) / (mass_this + mass_that)
+
     def is_category(self, *categories, any=False,
                     exclude: Union[Set, Tuple, List] = set()) -> bool:
         r"""Returns True if the particle is in all of the inputted categories.
@@ -779,6 +795,9 @@ class Particle:
 
         categories = _make_into_set(categories)
         exclude = _make_into_set(exclude)
+
+        # If valid_categories is changed, remember to change the docstring
+        # for the Particle class.
 
         valid_categories = {
             'lepton', 'antilepton', 'fermion', 'boson', 'baryon', 'neutrino',
