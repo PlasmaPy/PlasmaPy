@@ -22,6 +22,19 @@ from ..parsing import _call_string
 # (arg, kwargs, results_dict
 test_Particle_table = [
 
+    ('neutron', {},
+     {'particle': 'n',
+      'element': None,
+      'isotope': None,
+      'ion': None,
+      'integer_charge': 0,
+      'atomic_number': InvalidElementError,
+      'mass_number': InvalidIsotopeError,
+      'baryon_number': 1,
+      'lepton_number': 0,
+      'mass': m_n,
+      'nuclide_mass': m_n}),
+
     ('p+', {},
      {'particle': 'p+',
       'element': 'H',
@@ -101,6 +114,44 @@ test_Particle_table = [
       '__str__()': 'e+',
       '__repr__()': 'Particle("e+")'}),
 
+    ('H', {},
+     {'particle': 'H',
+      'element': 'H',
+      'isotope': None,
+      'ion': None,
+      'charge': ChargeError,
+      'integer_charge': ChargeError,
+      'mass_number': InvalidIsotopeError,
+      'baryon_number': AtomicError,
+      'lepton_number': 0,
+      'half_life': InvalidIsotopeError,
+      'standard_atomic_weight': (1.008 * u.u).to(u.kg),
+      'mass': (1.008 * u.u).to(u.kg),
+      'nuclide_mass': InvalidIsotopeError}),
+
+    ('D+', {},
+     {'particle': 'D 1+',
+      'element': 'H',
+      'element_name': 'hydrogen',
+      'isotope': 'D',
+      'ion': 'D 1+',
+      'integer_charge': 1,
+      'atomic_number': 1,
+      'mass_number': 2,
+      'baryon_number': 2,
+      'lepton_number': 0}),
+
+    ('tritium', {'Z': 1},
+     {'particle': 'T 1+',
+      'element': 'H',
+      'isotope': 'T',
+      'ion': 'T 1+',
+      'integer_charge': 1,
+      'atomic_number': 1,
+      'mass_number': 3,
+      'baryon_number': 3,
+      'lepton_number': 0}),
+
     ('Fe', {'Z': 17, 'mass_numb': 56},
      {'particle': 'Fe-56 17+',
       'element': 'Fe',
@@ -138,32 +189,7 @@ test_Particle_table = [
       'mass_number': 7,
       'baryon_number': 7,
       'half_life': np.inf * u.s,
-      'nuclide_mass': 1.1647614796180465e-26 * u.kg,
-      }),
-
-    ('D+', {},
-     {'particle': 'D 1+',
-      'element': 'H',
-      'element_name': 'hydrogen',
-      'isotope': 'D',
-      'ion': 'D 1+',
-      'integer_charge': 1,
-      'atomic_number': 1,
-      'mass_number': 2,
-      'baryon_number': 2,
-      'lepton_number': 0}),
-
-    ('tritium', {'Z': 1},
-     {'particle': 'T 1+',
-      'element': 'H',
-      'isotope': 'T',
-      'ion': 'T 1+',
-      'integer_charge': 1,
-      'atomic_number': 1,
-      'mass_number': 3,
-      'baryon_number': 3,
-      'lepton_number': 0
-      }),
+      'nuclide_mass': 1.1647614796180465e-26 * u.kg}),
 
     ('muon', {},
      {'particle': 'mu-',
@@ -175,35 +201,6 @@ test_Particle_table = [
       'mass_number': InvalidIsotopeError,
       'baryon_number': 0,
       'lepton_number': 1}),
-
-    ('neutron', {},
-     {'particle': 'n',
-      'element': None,
-      'isotope': None,
-      'ion': None,
-      'integer_charge': 0,
-      'atomic_number': InvalidElementError,
-      'mass_number': InvalidIsotopeError,
-      'baryon_number': 1,
-      'lepton_number': 0,
-      'mass': m_n,
-      'nuclide_mass': m_n}),
-
-    ('H', {},
-     {'particle': 'H',
-      'element': 'H',
-      'isotope': None,
-      'ion': None,
-      'charge': ChargeError,
-      'integer_charge': ChargeError,
-      'mass_number': InvalidIsotopeError,
-      'baryon_number': AtomicError,
-      'lepton_number': 0,
-      'half_life': InvalidIsotopeError,
-      'standard_atomic_weight': (1.008 * u.u).to(u.kg),
-      'mass': (1.008 * u.u).to(u.kg),
-      'nuclide_mass': InvalidIsotopeError,
-      }),
 
     ('nu_tau', {},
      {'particle': 'nu_tau',
@@ -229,10 +226,6 @@ test_Particle_table = [
       'is_category("boson", exclude="boson")': AtomicError,
       })
 ]
-
-# TODO Add nuclide_mass tests
-# TODO: Put in more is_category tests (e.g., for neutrinos, fermions, etc.)
-
 
 @pytest.mark.parametrize("arg, kwargs, expected_dict", test_Particle_table)
 def test_Particle_class(arg, kwargs, expected_dict):
@@ -319,24 +312,27 @@ test_Particle_error_table = [
     ('a', {}, "", InvalidParticleError),
     ('d+', {'mass_numb': 9}, "", InvalidParticleError),
     ('H', {'mass_numb': 99}, "", InvalidParticleError),
-    ('e-', {'Z': -1}, "", InvalidParticleError),
-    ('nu_e', {}, '.mass', MissingAtomicDataError),
-    ('e-', {}, '.atomic_number', InvalidElementError),
-    ('H', {'Z': 0}, '.mass_number', InvalidIsotopeError),
-    ('He', {'mass_numb': 4}, '.charge', ChargeError),
-    ('He', {'mass_numb': 4}, '.integer_charge', ChargeError),
-    ('tau+', {}, '.atomic_number', InvalidElementError),
-    ('neutron', {}, '.atomic_number', InvalidElementError),
-    ('neutron', {}, '.mass_number', InvalidIsotopeError),
-    ('Fe', {}, '.spin', MissingAtomicDataError),
-    ('Au', {'mass_numb': 921}, "", InvalidParticleError),
     ('Au-818', {}, "", InvalidParticleError),
     ('Au-12', {}, "", InvalidParticleError),
     ('Au', {'mass_numb': 13}, "", InvalidParticleError),
-    ('Og', {}, '.standard_atomic_weight', MissingAtomicDataError),
+    ('Au', {'mass_numb': 921}, "", InvalidParticleError),
+    ('e-', {'Z': -1}, "", InvalidParticleError),
+    ('e-', {}, '.atomic_number', InvalidElementError),
     ('alpha', {}, '.standard_atomic_weight', InvalidElementError),
     ('Fe-56', {}, '.standard_atomic_weight', InvalidElementError),
     ('tau-', {}, '.element_name', InvalidElementError),
+    ('tau+', {}, '.atomic_number', InvalidElementError),
+    ('neutron', {}, '.atomic_number', InvalidElementError),
+    ('H', {'Z': 0}, '.mass_number', InvalidIsotopeError),
+    ('neutron', {}, '.mass_number', InvalidIsotopeError),
+    ('He', {'mass_numb': 4}, '.charge', ChargeError),
+    ('He', {'mass_numb': 4}, '.integer_charge', ChargeError),
+    ('Fe', {}, '.spin', MissingAtomicDataError),
+    ('nu_e', {}, '.mass', MissingAtomicDataError),
+    ('Og', {}, '.standard_atomic_weight', MissingAtomicDataError),
+    ('Fe', {'Z': '1'}, "", TypeError),
+    ('Fe', {'mass_numb': '1'}, "", TypeError),
+    ([], {}, "", TypeError),
 ]
 
 
@@ -357,6 +353,7 @@ def test_Particle_errors(arg, kwargs, attribute, exception):
 test_Particle_warning_table = [
     ('H----', {}, "", AtomicWarning),
     ('alpha', {'mass_numb': 4}, "", AtomicWarning),
+    ('alpha', {'Z': 2}, "", AtomicWarning)
 ]
 
 
@@ -373,6 +370,7 @@ def test_Particle_warnings(arg, kwargs, attribute, warning):
 
 
 def test_Particle_cmp():
+    r"""Test __eq__ and __ne__ in the Particle class."""
     proton1 = Particle('p+')
     proton2 = Particle('proton')
     electron = Particle('e-')

@@ -156,12 +156,6 @@ isotope_symbol_table = [
     (('protium',), 'H-1'),
     (('N-13 2+',), 'N-13'),
     (('Hydrogen-3 +1',), 'T'),
-#    (('neutron',), 'n'),
-#    (('n',), 'n'),
-#    ((0, 1), 'n'),
-#    (('neutron',), 'n'),
-#    (('Neutron',), 'n'),
-#    (('n-1',), 'n')
 ]
 
 
@@ -678,7 +672,6 @@ is_isotope_stable_false_table = [
     ('Be-8',),
     ('n',),
     ('n-1',),
-#    (0, 1),
     ('U-235',),
     ('uranium-235',),
     ('T',),
