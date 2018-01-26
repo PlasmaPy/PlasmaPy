@@ -33,7 +33,8 @@ test_Particle_table = [
       'baryon_number': 1,
       'lepton_number': 0,
       'mass': m_n,
-      'nuclide_mass': m_n}),
+      'nuclide_mass': m_n,
+      'binding_energy': 0 * u.J}),
 
     ('p+', {},
      {'particle': 'p+',
@@ -61,6 +62,7 @@ test_Particle_table = [
       'is_category("boson", "fermion", any=True)': True,
       'is_category("boson", "fermion", any=False)': False,
       'is_category(("element", "isotope", "ion"))': True,
+      'binding_energy': 0 * u.J,
       }),
 
     ('p-', {},
@@ -96,7 +98,8 @@ test_Particle_table = [
       'reduced_mass(Particle("e+"))': m_e / 2,
       'reduced_mass("e-")': m_e / 2,
       '__str__()': 'e-',
-      '__repr__()': 'Particle("e-")'}),
+      '__repr__()': 'Particle("e-")',
+      'binding_energy': InvalidIsotopeError}),
 
     ('e+', {},
      {'particle': 'e+',
@@ -191,6 +194,19 @@ test_Particle_table = [
       'half_life': np.inf * u.s,
       'nuclide_mass': 1.1647614796180465e-26 * u.kg}),
 
+    ('Cn-276', {"Z": 22},
+     {'particle': 'Cn-276 22+',
+      'element': 'Cn',
+      'isotope': 'Cn-276',
+      'ion': 'Cn-276 22+',
+      'element_name': 'copernicium',
+      'integer_charge': 22,
+      'atomic_number': 112,
+      'mass_number': 276,
+      'baryon_number': 276,
+      'lepton_number': 0,
+      'half_life': MissingAtomicDataError}),
+
     ('muon', {},
      {'particle': 'mu-',
       'element': None,
@@ -224,8 +240,10 @@ test_Particle_table = [
       'is_category("lepton", "invalid")': AtomicError,
       'is_category(["boson"], exclude=["lepton", "invalid"])': AtomicError,
       'is_category("boson", exclude="boson")': AtomicError,
-      })
+      'reduced_mass("electron")': MissingAtomicDataError}),
+
 ]
+
 
 @pytest.mark.parametrize("arg, kwargs, expected_dict", test_Particle_table)
 def test_Particle_class(arg, kwargs, expected_dict):

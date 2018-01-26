@@ -276,8 +276,12 @@ class Particle:
             self._element_name = _Elements[element]['name']
 
             self._baryon_number = self._mass_number
-            if element:
-                self._lepton_number = 0  # Should this be None?
+
+            # For the moment, set the lepton number to zero for elements,
+            # isotopes, and ions.  The lepton number will probably come up
+            # primarily during
+
+            self._lepton_number = 0
 
             if isotope:
                 if _Isotopes[isotope]['is_stable']:
@@ -551,7 +555,6 @@ class Particle:
 
         return _nuclide_mass
 
-
     @property
     def atomic_number(self) -> int:
         r"""Returns the atomic number of the element corresponding to this
@@ -630,7 +633,7 @@ class Particle:
         >>> proton.lepton_number
         0
         """
-        if self._lepton_number is None:
+        if self._lepton_number is None:  # coveralls: ignore
             raise AtomicError(
                 f"The lepton number for {self.particle} is not available.")
         return self._lepton_number
@@ -707,7 +710,6 @@ class Particle:
             raise MissingAtomicDataError(
                 f"The spin of particle '{self.particle}' is unavailable.")
         return self._spin
-
 
     def reduced_mass(self, other, Z=None, mass_numb=None) -> u.kg:
         r"""Finds the reduced mass between two particles, or will raise a
