@@ -1,4 +1,4 @@
-"""Dictionaries containing atomic data"""
+r"""Dictionaries containing basic atomic data."""
 
 from astropy import units as u, constants as const
 

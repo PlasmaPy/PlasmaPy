@@ -1,3 +1,5 @@
+r"""The Particle class and particle_input decorator."""
+
 from typing import (Union, Set, Tuple, List, Optional)
 import warnings
 
@@ -23,7 +25,7 @@ from .parsing import (
 
 from .elements import _Elements
 from .isotopes import _Isotopes
-from .particles import _Particles, ParticleZoo
+from .special import _Particles, ParticleZoo
 
 # TODO: Write a decorator to turn atomic inputs into a Particle.
 
@@ -848,3 +850,7 @@ class Particle:
             return True
 
         return categories <= self._categories
+
+
+def particle_input():
+    pass

@@ -3,7 +3,7 @@ import numpy as np
 from itertools import product
 from astropy import units as u, constants as const
 
-from ..names import (atomic_symbol,
+from ..symbols import (atomic_symbol,
                      isotope_symbol,
                      element_name,
 

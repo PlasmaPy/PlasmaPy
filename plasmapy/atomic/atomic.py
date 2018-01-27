@@ -1,4 +1,4 @@
-"""Functions that retrieve or are related to elemental or isotopic data."""
+r"""Functions that retrieve or are related to elemental or isotopic data."""
 
 import numpy as np
 import warnings
@@ -21,9 +21,11 @@ from ..utils import (
     InvalidParticleError,
     ChargeError)
 
-from .names import (
+from .symbols import (
     atomic_symbol,
     isotope_symbol,
+    ion_symbol,
+    particle_symbol,
     _extract_integer_charge,
     _is_proton,
     _is_positron,

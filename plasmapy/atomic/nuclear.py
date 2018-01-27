@@ -9,7 +9,7 @@ from .atomic import (mass_number,
                      atomic_number,
                      integer_charge)
 
-from .names import (isotope_symbol,
+from .symbols import (isotope_symbol,
                     _is_neutron,
                     _is_proton,
                     _is_electron,
@@ -21,7 +21,7 @@ from ..utils import (InvalidElementError,
                      InvalidParticleError,
                      InvalidIsotopeError)
 
-from .classes import Particle
+from .particle import Particle
 
 
 def nuclear_binding_energy(argument, mass_numb=None):

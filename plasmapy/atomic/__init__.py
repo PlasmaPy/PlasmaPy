@@ -1,10 +1,10 @@
 """Physical and mathematical constants for use within PlasmaPy."""
 
-from .particles import ParticleZoo
+from .special import ParticleZoo
 
-from .classes import Particle
+from .particle import Particle, particle_input
 
-from .names import (
+from .symbols import (
     atomic_symbol,
     isotope_symbol,
     ion_symbol,

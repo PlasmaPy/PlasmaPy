@@ -1,3 +1,6 @@
+r"""Classes, sets, and dictionaries to store data and taxonomy
+information for special particles."""
+
 from typing import Set, Dict, List, Optional, Union
 from astropy import units as u, constants as const
 import numpy as np
