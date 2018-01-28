@@ -27,7 +27,8 @@ from ..atomic import (atomic_symbol,
                       _is_antiproton,
                       _is_alpha,
                       _extract_charge_state,
-                      _is_proton)
+                      _is_proton,
+                      periodic_table_period)
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
 
 # (argument, expected)
@@ -775,7 +776,8 @@ atomic_TypeError_funcs_table = [
     isotope_mass,
     ion_mass,
     nuclear_binding_energy,
-    nuclear_reaction_energy
+    nuclear_reaction_energy,
+    periodic_table_period,
 ]
 
 atomic_TypeError_bad_arguments = [1.1, {'cats': 'bats'}, 1 + 1j]
@@ -1233,3 +1235,70 @@ def test_extract_charge_state_warnings(test_input, expected_warning):
     """Test that _extract_charge_state issues the expected warnings."""
     with pytest.warns(expected_warning):
         _extract_charge_state(test_input)
+
+
+# argument, expected
+period_table = [
+    ("ca", 4),
+    ("Na", 3),
+    ("rf", 7),
+    ("Be", 2),
+    ("BE", 2),
+    ("bE", 2),
+    ("calcium", 4),
+    ("CALCIUM", 4),
+    ("Hydrogen", 1),
+    ("hYDROGEN", 1),
+    ("potassium", 4),
+    ("Cadmium", 5),
+    (2, 1),
+    (11, 3),
+    (39, 5),
+    (110, 7),
+    ("43", 5),
+    ("81", 6),
+    ("2", 1),
+    ("88", 7),
+    ]
+
+
+@pytest.mark.parametrize(
+    'argument, expected', period_table)
+def test_periodic_table_period(argument, expected):
+    """Test that periodic_table_period returns the expected result."""
+    assert (argument) == expected, \
+        (f"periodic_table_period({argument}) is returning "
+         f"{periodic_table_period(argument)}, which differs from the expected "
+         f"value of {expected}.")
+
+
+# (argument, expected_error)
+period_error_table = [
+    (3.14159, TypeError),
+    (['cat', 'dog'], TypeError),
+    (("foo", "bar"), TypeError),
+    ({"bob": "alice"}, TypeError),
+    (0, ValueError),
+    ("0", ValueError),
+    (512, ValueError),
+    ("1024", ValueError),
+    ('Og-294b', ValueError),
+    ('H-934361079326356530741942970523610389', ValueError),
+    ('Fe 2+4', ValueError),
+    ('Fe+24', ValueError),
+    ('Fe +59', ValueError),
+    ('C++++++++++++++++', ValueError),
+    ('C-++++', ValueError),
+    ('neutron', ValueError),
+    ('n-1', ValueError),
+    ('antiproton', ValueError)]
+
+
+@pytest.mark.parametrize(
+    'argument, expected_error', period_error_table)
+def test_periodic_table_period_error(argument, expected_error):
+    """Test that periodic_table_period raises the expected exceptions."""
+    with pytest.raises(expected_error, message=(
+            f"periodic_table_period({argument}) is not raising "
+            f"{expected_error}.")):
+        periodic_table_period(argument)
