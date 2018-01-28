@@ -1,13 +1,4 @@
-<<<<<<< HEAD
-"""
-Structures containing atomic data.
-Element categories from http://periodic.lanl.gov/index.shtml
-"""
-||||||| merged common ancestors
-"""Structures containing atomic data"""
-=======
 """Dictionaries containing atomic data"""
->>>>>>> master
 
 from astropy import units as u, constants as const
 

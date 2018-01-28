@@ -30,36 +30,10 @@ from ..atomic import (atomic_number,
                       common_isotopes,
                       stable_isotopes,
                       isotopic_abundance,
-<<<<<<< HEAD
-                      charge_state,
-                      electric_charge,
-                      Isotopes,
-                      _is_neutron,
-                      _is_hydrogen,
-                      _is_electron,
-                      _is_positron,
-                      _is_antiproton,
-                      _is_alpha,
-                      _extract_charge_state,
-                      _is_proton,
-                      periodic_table_period)
-||||||| merged common ancestors
-                      charge_state,
-                      electric_charge,
-                      Isotopes,
-                      _is_neutron,
-                      _is_hydrogen,
-                      _is_electron,
-                      _is_positron,
-                      _is_antiproton,
-                      _is_alpha,
-                      _extract_charge_state,
-                      _is_proton)
-=======
                       integer_charge,
-                      electric_charge)
+                      electric_charge,
+                      periodic_table_period)
 
->>>>>>> master
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
 
 from ...utils import (AtomicWarning,
@@ -786,7 +760,6 @@ def test_half_life_unstable_isotopes():
 def test_half_life_u_220():
     """Test that half_life returns None and issues a warning for an isotope
     without half-life data.
-
     If half-life data is added for this isotope, then this test should fail
     and a different isotope without half-life data should be chosen instead
     until all isotopes have half-life data."""
@@ -819,8 +792,7 @@ atomic_TypeError_funcs_table = [
     isotope_mass,
     ion_mass,
     nuclear_binding_energy,
-    nuclear_reaction_energy,
-    periodic_table_period,
+    nuclear_reaction_energy
 ]
 
 atomic_TypeError_bad_arguments = [1.1, {'cats': 'bats'}, 1 + 1j]
@@ -907,13 +879,10 @@ def test_known_common_stable_isotopes_cases():
 def test_known_common_stable_isotopes_len():
     """Test that known_isotopes, common_isotopes, and stable_isotopes return
     lists of the expected lengths.
-
     The number of common isotopes may change if isotopic composition data
     has any significant changes.
-
     The number of stable isotopes may decrease slightly if some isotopes are
     discovered to be unstable but with extremely long half-lives.
-
     The number of known isotopes will increase as new isotopes are discovered,
     so a buffer is included in the test."""
 
@@ -1314,3 +1283,71 @@ def test_extract_integer_charge_warnings(test_input, expected_warning):
     """Test that _extract_integer_charge issues the expected warnings."""
     with pytest.warns(expected_warning):
         _extract_integer_charge(test_input)
+
+
+# argument, expected
+period_table = [
+    ("ca", 4),
+    ("Na", 3),
+    ("rf", 7),
+    ("Be", 2),
+    ("BE", 2),
+    ("bE", 2),
+    ("calcium", 4),
+    ("CALCIUM", 4),
+    ("Hydrogen", 1),
+    ("hYDROGEN", 1),
+    ("potassium", 4),
+    ("Cadmium", 5),
+    (2, 1),
+    (11, 3),
+    (39, 5),
+    (110, 7),
+    ("43", 5),
+    ("81", 6),
+    ("2", 1),
+    ("88", 7),
+    ]
+
+
+@pytest.mark.parametrize(
+    'argument, expected', period_table)
+def test_periodic_table_period(argument, expected):
+    """Test that periodic_table_period returns the expected result."""
+    assert (argument) == expected, \
+        (f"periodic_table_period({argument}) is returning "
+         f"{periodic_table_period(argument)}, which differs from the expected "
+         f"value of {expected}.")
+
+
+# (argument, expected_error)
+period_error_table = [
+    (3.14159, TypeError),
+    (['cat', 'dog'], TypeError),
+    (("foo", "bar"), TypeError),
+    ({"bob": "alice"}, TypeError),
+    (0, ValueError),
+    ("0", ValueError),
+    (512, ValueError),
+    ("1024", ValueError),
+    ('Og-294b', ValueError),
+    ('H-934361079326356530741942970523610389', ValueError),
+    ('Fe 2+4', ValueError),
+    ('Fe+24', ValueError),
+    ('Fe +59', ValueError),
+    ('C++++++++++++++++', ValueError),
+    ('C-++++', ValueError),
+    ('neutron', ValueError),
+    ('n-1', ValueError),
+    ('antiproton', ValueError),
+    ]
+
+
+@pytest.mark.parametrize(
+    'argument, expected_error', period_error_table)
+def test_periodic_table_period_error(argument, expected_error):
+    """Test that periodic_table_period raises the expected exceptions."""
+    with pytest.raises(expected_error, message=(
+            f"periodic_table_period({argument}) is not raising "
+            f"{expected_error}.")):
+        periodic_table_period(argument)
