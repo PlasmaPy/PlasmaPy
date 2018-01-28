@@ -483,7 +483,8 @@ def Maxwellian_speed_3D(vx,
 
     .. math::
 
-       f = 4 \pi \vec{v}^2 (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} - \vec{V_{drift}})^2 / v_Th^2)
+       f = 4 \pi \vec{v}^2 (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} -
+       \vec{V_{drift}})^2 / v_Th^2)
 
     where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed.
 
@@ -643,10 +644,12 @@ def kappa_velocity_1D(v,
 
     .. math::
 
-       f = A_\kappa \left(1 + \frac{(\vec{v} - \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-\kappa}
+       f = A_\kappa \left(1 + \frac{(\vec{v} -
+       \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-\kappa}
 
     where :math:`v_Th,\kappa` is the kappa thermal speed
-    and :math:`A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_Th,\kappa^2 \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2)}}`
+    and :math:`A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_Th,\kappa^2
+    \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2)}}`
     is the normalization constant
 
     As kappa approaches infinity, the kappa distribution function converges
@@ -743,8 +746,8 @@ def kappa_velocity_3D(vx,
 
     particle: string, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for :math:`He_4^{+1}` : singly ionized helium-4),
-        which defaults to electrons.
+        for deuterium, or 'He-4 +1' for :math:`He_4^{+1}` : singly ionized
+        helium-4), which defaults to electrons.
 
     Vx_drift: Quantity, optional
         The drift velocity in x-direction units convertible to m/s.
@@ -793,10 +796,13 @@ def kappa_velocity_3D(vx,
 
     .. math::
 
-       f = A_\kappa \left(1 + \frac{(\vec{v} - \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-(\kappa + 1)}
+       f = A_\kappa \left(1 + \frac{(\vec{v} -
+       \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-(\kappa + 1)}
 
     where :math:`v_Th,\kappa` is the kappa thermal speed
-    and :math:`A_\kappa = \frac{1}{2 \pi (\kappa v_Th,\kappa^2)^{3/2}} \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)}` is the normalization constant
+    and :math:`A_\kappa = \frac{1}{2 \pi (\kappa v_Th,\kappa^2)^{3/2}}
+    \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)}` is the
+    normalization constant.
 
     As kappa approaches infinity, the kappa distribution function converges
     to the Maxwellian distribution function.

@@ -36,7 +36,8 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.mathjax',
               'sphinx.ext.napoleon', 'sphinx.ext.intersphinx',
               'sphinx_automodapi.automodapi',
               'sphinx_automodapi.smart_resolver',
-              'sphinx_gallery.gen_gallery']
+              'sphinx_gallery.gen_gallery',
+              'sphinx.ext.graphviz']
 
 
 intersphinx_mapping = {
@@ -89,6 +90,7 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+default_role = 'obj'
 
 # -- Options for HTML output ----------------------------------------------
 

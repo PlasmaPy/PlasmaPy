@@ -158,9 +158,9 @@ def test_ion_sound_speed():
                                       ion='p', gamma_e=1, gamma_i=3).value,
                       218816.06086407552)
 
-    assert np.isclose(ion_sound_speed(T_i=0.88 * u.MK, T_e=1.28 * u.MK, ion='p',
-                                      gamma_e=1.2, gamma_i=3.4).value,
-                      193328.52857788358)
+    assert np.isclose(ion_sound_speed(
+        T_i=0.88 * u.MK, T_e=1.28 * u.MK, ion='p', gamma_e=1.2,
+        gamma_i=3.4).value, 193328.52857788358)
 
     # case when Z=1 is assumed
     assert ion_sound_speed(T_i=T_i, T_e=T_e, ion='p') == \

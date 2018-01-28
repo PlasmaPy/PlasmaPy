@@ -3,9 +3,25 @@
 from astropy import units, constants
 import re
 from itertools import repeat
-from .atomic import (isotope_symbol, mass_number, isotope_mass, ion_mass,
-                     atomic_number, charge_state, _is_neutron, _is_electron,
-                     _is_positron, _is_antiproton, _is_antineutron)
+from .atomic import (mass_number,
+                     isotope_mass,
+                     ion_mass,
+                     atomic_number,
+                     integer_charge)
+
+from .names import (isotope_symbol,
+                    _is_neutron,
+                    _is_proton,
+                    _is_electron,
+                    _is_positron,
+                    _is_antiproton,
+                    _is_antineutron)
+
+from ..utils import (InvalidElementError,
+                     InvalidParticleError,
+                     InvalidIsotopeError)
+
+from .classes import Particle
 
 
 def nuclear_binding_energy(argument, mass_numb=None):
@@ -13,6 +29,7 @@ def nuclear_binding_energy(argument, mass_numb=None):
 
     Parameters
     ----------
+
     argument: string or integer
         A string representing an element or isotope, or an integer
         representing the atomic number of an element.
@@ -24,16 +41,30 @@ def nuclear_binding_energy(argument, mass_numb=None):
 
     Returns
     -------
+
     binding_energy: Quantity
         The binding energy of the nucleus in units of Joules.
 
+    Raises
+    ------
+    InvalidParticleError
+        If the inputs do not correspond to a valid particle.
+
+    InvalidIsotopeError
+        If the inputs do not correspond to a valid isotope.
+
+    TypeError
+        If the inputs are not of the correct types.
+
     See also
     --------
+
     nuclear_reaction_energy : Returns the change in binding energy
         during nuclear fusion or fission reactions.
 
     Examples
     --------
+
     >>> from astropy import units as u
     >>> nuclear_binding_energy('Fe-56').to(u.MeV)
     <Quantity 492.25957876 MeV>
@@ -45,31 +76,22 @@ def nuclear_binding_energy(argument, mass_numb=None):
     >>> before = nuclear_binding_energy("D") + nuclear_binding_energy("T")
     >>> after = nuclear_binding_energy("alpha")
     >>> (after - before).to(u.MeV)  # released energy from D + T --> alpha + n
-    <Quantity 17.58932778 MeV>
+    <Quantity 17.58929687 MeV>
 
     """
 
-    if _is_neutron(argument) and mass_numb is None or mass_numb == 1:
-        return 0.0 * units.J
-
-    isotope = isotope_symbol(argument, mass_numb)
-
-    number_of_protons = atomic_number(argument)
-    nuclide_mass = ion_mass(isotope, Z=number_of_protons)
-
-    if mass_numb is None:
-        mass_numb = mass_number(argument)
-    number_of_neutrons = mass_numb - number_of_protons
-
-    if number_of_protons == 1 and number_of_neutrons == 0:
-        binding_energy = 0.0 * units.J
-    else:
-        mass_of_nucleons = (number_of_protons * constants.m_p +
-                            number_of_neutrons * constants.m_n)
-        mass_defect = mass_of_nucleons - nuclide_mass
-        binding_energy = mass_defect * constants.c**2
-
-    return binding_energy.to(units.J)
+    try:
+        return Particle(argument, mass_numb=mass_numb).binding_energy
+    except TypeError:
+        raise TypeError("Invalid inputs to nuclear_binding_energy")
+    except InvalidParticleError:
+        raise InvalidParticleError(
+            f"The inputs to nuclear_binding_energy do not correspond to a "
+            f"valid particle.")
+    except InvalidIsotopeError:
+        raise InvalidIsotopeError(
+            f"The inputs to nuclear_binding_energy do not correspond to a "
+            f"valid isotope.")
 
 
 def nuclear_reaction_energy(*args, **kwargs):
@@ -77,6 +99,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     Parameters
     ----------
+
     reaction: string (optional, positional argument only)
         A string representing the reaction, like "D + T --> alpha + n"
         or "Be-8 --> 2*He-4"
@@ -92,6 +115,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     Returns
     -------
+
     energy: Quantity
         The difference between the mass energy of the reactants and
         the mass energy of the products in a nuclear reaction.  This
@@ -101,6 +125,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     Raises
     ------
+
     ValueError:
         If the reaction is not valid, there is insufficient
         information to determine an isotope, the baryon number is
@@ -112,10 +137,12 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     See also
     --------
+
     nuclear_binding_energy : finds the binding energy of an isotope
 
     Notes
     -----
+
     This function requires either a string containing the nuclear
     reaction, or reactants and products as two keyword-only lists
     containing strings representing the isotopes and other particles
@@ -125,6 +152,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     Examples
     --------
+
     >>> from astropy import units as u
     >>> nuclear_reaction_energy("D + T --> alpha + n")
     <Quantity 2.81812097e-12 J>
@@ -202,9 +230,11 @@ def nuclear_reaction_energy(*args, **kwargs):
         for particle in particles:
             try:
                 baryon_number += mass_number(particle)
-            except ValueError:
+            except Exception:
                 if _is_antiproton(particle) or _is_antineutron(particle):
                     baryon_number -= 1
+                elif _is_neutron(particle):
+                    baryon_number += 1
 
         return baryon_number
 
@@ -217,8 +247,8 @@ def nuclear_reaction_energy(*args, **kwargs):
         for particle in particles:
             try:
                 total_charge += atomic_number(particle)
-            except ValueError:
-                total_charge += charge_state(particle)
+            except InvalidElementError:
+                total_charge += integer_charge(particle)
 
         return total_charge
 
@@ -235,6 +265,8 @@ def nuclear_reaction_energy(*args, **kwargs):
                 total_mass += constants.m_n
             elif _is_antiproton(particle):
                 total_mass += constants.m_p
+            elif _is_neutron(particle):
+                total_mass += constants.m_n
             else:
                 atomic_numb = atomic_number(particle)
                 total_mass += ion_mass(particle, Z=atomic_numb)

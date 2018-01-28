@@ -2,7 +2,7 @@ from itertools import product
 from astropy import units as u, constants as const
 import numpy as np
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
-
+from ...utils import (InvalidParticleError, InvalidIsotopeError)
 import pytest
 
 
@@ -20,17 +20,19 @@ def test_nuclear_binding_energy_D_T():
     assert np.isclose(E_in_MeV, 17.58, rtol=0.01)
 
 
-# (argument, expected_error)
+# (argument, kwargs, expected_error)
 nuclear_binding_energy_table = [
-    ("H", ValueError),
-    (1.1, TypeError)]
+    ("H", {}, InvalidIsotopeError),
+    ('He-99', {}, InvalidParticleError),
+    ("He", {"mass_numb": 99}, InvalidParticleError),
+    (1.1, {}, TypeError)]
 
 
-@pytest.mark.parametrize("argument, expected_error",
+@pytest.mark.parametrize("argument, kwargs, expected_error",
                          nuclear_binding_energy_table)
-def test_nuclear_binding_energy_error(argument, expected_error):
+def test_nuclear_binding_energy_error(argument, kwargs, expected_error):
     with pytest.raises(expected_error):
-        nuclear_binding_energy(argument)
+        nuclear_binding_energy(argument, **kwargs)
 
 
 def test_nuclear_reaction_energy():
