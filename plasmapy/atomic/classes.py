@@ -679,12 +679,12 @@ class Particle:
 
         Examples
         --------
-        >>> from astropy import units
+        >>> from astropy import units as u
         >>> neutron = Particle('n')
         >>> neutron.half_life
         <Quantity 881.5 s>
         >>> carbon14 = Particle('C-14')
-        >>> carbon14.half_life.to(units.yr)
+        >>> carbon14.half_life.to(u.yr)
         <Quantity 5730. yr>
 
         """

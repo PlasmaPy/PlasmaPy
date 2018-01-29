@@ -58,7 +58,7 @@ except ImportError:
     raise ImportError("Unable to load PlasmaPy subpackages.")
 
 try:
-    from astropy import units
+    from astropy import units as u
 except ImportError:
     raise ImportError("Unable to import astropy.units as a PlasmaPy submodule")
 

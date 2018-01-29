@@ -4,7 +4,7 @@
 
 import numpy as np
 import pytest
-from astropy import units
+from astropy import units as u
 from ..mathematics import plasma_dispersion_func, plasma_dispersion_func_deriv
 import warnings
 from numpy import pi as π
@@ -16,7 +16,7 @@ plasma_dispersion_func_table = [
     (1, -1.076_159_013_825_536_8 + 0.652_049_332_173_292_2j),
     (1j, 0.757_872_156_141_311_87j),
     (1.2 + 4.4j, -0.054_246_157_069_223_27+0.207_960_584_359_855_62j),
-    (9.2j, plasma_dispersion_func(9.2j * units.dimensionless_unscaled)),
+    (9.2j, plasma_dispersion_func(9.2j * u.dimensionless_unscaled)),
     (5.4 - 3.1j, -0.139_224_873_051_713_11 - 0.082_067_822_640_155_802j),
     (9.9 - 10j, 2.013_835_257_947_027_6 - 25.901_274_737_989_727j),
     (4.5 - 10j, -1.367_495_046_340_094_7e35 - 6.853_923_234_842_270_6e34j)]
@@ -136,7 +136,7 @@ plasma_disp_deriv_table = [
     (1, 0.152_318 - 1.304_10j),
     (1j, -0.484_257),
     (1.2 + 4.4j, -0.397_561e-1 - 0.217_392e-1j),
-    (9j, plasma_dispersion_func_deriv(9j * units.dimensionless_unscaled)),
+    (9j, plasma_dispersion_func_deriv(9j * u.dimensionless_unscaled)),
     (5.4 - 3.1j, 0.012_449_1 + 0.023_138_3j),
     (9.9 - 10j, 476.153 + 553.121j),
     (5 + 7j, -4.591_20e-3 - 0.012_610_4j),
@@ -173,7 +173,7 @@ def test_plasma_dispersion_func_deriv(w, expected):
 # w, expected_error
 plasma_disp_func_errors_table = [
     ('', TypeError),
-    (7 * units.m, units.UnitsError),
+    (7 * u.m, u.UnitsError),
     (np.inf, ValueError),
     (np.nan, ValueError)]
 

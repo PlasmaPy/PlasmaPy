@@ -1,7 +1,7 @@
 # coding=utf-8
 """Functions to calculate transport coefficients."""
 
-from astropy import units
+from astropy import units as u
 import numpy as np
 import plasmapy.atomic as atomic
 from plasmapy import utils
@@ -17,8 +17,8 @@ from copy import copy
 import warnings
 
 
-@utils.check_quantity({"T": {"units": units.K, "can_be_negative": False},
-                       "n_e": {"units": units.m**-3}
+@utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                       "n_e": {"units": u.m**-3}
                        })
 def Coulomb_logarithm(T, n_e, particles, V=None):
     r"""
@@ -101,8 +101,8 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     Examples
     --------
     >>> from astropy import units as u
-    >>> n = 1e19*units.m**-3
-    >>> T = 1e6*units.K
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> Coulomb_logarithm(T, n, particles)
     14.748259780491056
@@ -125,8 +125,8 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
                          "or tuple containing representations of two charged "
                          "particles.")
 
-    masses = np.zeros(2) * units.kg
-    charges = np.zeros(2) * units.C
+    masses = np.zeros(2) * u.kg
+    charges = np.zeros(2) * u.C
 
     for particle, i in zip(particles, range(2)):
 
@@ -151,7 +151,7 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     # individual particles do not affect each other much.  This
     # expression neglects screening by heavier ions.
 
-    T = T.to(units.K, equivalencies=units.temperature_energy())
+    T = T.to(u.K, equivalencies=u.temperature_energy())
 
     b_max = Debye_length(T, n_e)
 
@@ -206,7 +206,7 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     # logarithm.
 
     ln_Lambda = np.log(b_max / b_min)
-    ln_Lambda = ln_Lambda.to(units.dimensionless_unscaled).value
+    ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
 
     return ln_Lambda
 
@@ -376,9 +376,9 @@ class classical_transport:
 
     Examples
     --------
-    >>> from astropy import units
-    >>> t = classical_transport(1*units.eV, 1e20/units.m**3,
-    ...                         1*units.eV, 1e20/units.m**3, 'p')
+    >>> from astropy import units as u
+    >>> t = classical_transport(1*u.eV, 1e20/u.m**3,
+    ...                         1*u.eV, 1e20/u.m**3, 'p')
     >>> t.resistivity()
     <Quantity 0.00038845 m Ohm>
     >>> t.thermoelectric_conductivity()
@@ -410,13 +410,13 @@ class classical_transport:
            (2013): 042114.
     """
 
-    @utils.check_quantity({"T_e": {"units": units.K, "can_be_negative": False},
-                           "n_e": {"units": units.m**-3},
-                           "T_i": {"units": units.K, "can_be_negative": False},
-                           "n_i": {"units": units.m**-3},
+    @utils.check_quantity({"T_e": {"units": u.K, "can_be_negative": False},
+                           "n_e": {"units": u.m**-3},
+                           "T_i": {"units": u.K, "can_be_negative": False},
+                           "n_i": {"units": u.m**-3},
                            })
     def __init__(self, T_e, n_e, T_i, n_i, ion_particle, m_i=None, Z=None,
-                 B=0.0 * units.T, model='Braginskii',
+                 B=0.0 * u.T, model='Braginskii',
                  field_orientation='parallel',
                  coulomb_log_ei=None, V_ei=None,
                  coulomb_log_ii=None, V_ii=None,
@@ -447,10 +447,10 @@ class classical_transport:
 
         # density and temperature units have already been checked by decorator
         # so just convert
-        self.T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
-        self.T_i = T_i.to(units.K, equivalencies=units.temperature_energy())
-        self.n_e = n_e.to(units.m**-3)
-        self.n_i = n_i.to(units.m**-3)
+        self.T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
+        self.T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
+        self.n_e = n_e.to(u.m**-3)
+        self.n_i = n_i.to(u.m**-3)
 
         # get ion mass and charge state
         if m_i is None:
@@ -460,7 +460,7 @@ class classical_transport:
                 raise ValueError(f"Unable to find mass of particle: "
                                  f"{ion_particle} in classical_transport")
         else:
-            self.m_i = m_i.to(units.kg)
+            self.m_i = m_i.to(u.kg)
         if Z is None:
             try:
                 self.Z = atomic.integer_charge(ion_particle)
@@ -564,7 +564,7 @@ class classical_transport:
                                                 self.V_ei)
 
         alpha = alpha_hat / (self.n_e * e**2 * tau_e / m_e)
-        return alpha.to(units.ohm * units.m)
+        return alpha.to(u.ohm * u.m)
 
     def thermoelectric_conductivity(self):
         """
@@ -579,7 +579,7 @@ class classical_transport:
                                            self.e_particle,
                                            self.model,
                                            self.field_orientation)
-        beta = beta_hat * units.s / units.s  # yay! already dimensionless
+        beta = beta_hat * u.s / u.s  # yay! already dimensionless
         return beta
 
     def ion_thermal_conductivity(self):
@@ -600,7 +600,7 @@ class classical_transport:
                                            self.coulomb_log_ii,
                                            self.V_ii)
         kappa = kappa_hat * (self.n_i * k_B**2 * self.T_i * tau_i / self.m_i)
-        return kappa.to(units.W / units.m / units.K)
+        return kappa.to(u.W / u.m / u.K)
 
     def electron_thermal_conductivity(self):
         """
@@ -618,7 +618,7 @@ class classical_transport:
                                                 self.ion_particle,
                                                 self.coulomb_log_ei, self.V_ei)
         kappa = kappa_hat * (self.n_e * k_B**2 * self.T_e * tau_e / m_e)
-        return kappa.to(units.W / units.m / units.K)
+        return kappa.to(u.W / u.m / u.K)
 
     def ion_viscosity(self):
         """
@@ -658,7 +658,7 @@ class classical_transport:
                              eta1[1].value,
                              eta1[2].value,
                              eta1[3].value,
-                             eta1[4].value)) * unit_val).to(units.Pa * units.s)
+                             eta1[4].value)) * unit_val).to(u.Pa * u.s)
         return eta
 
     def electron_viscosity(self):
@@ -700,7 +700,7 @@ class classical_transport:
                              eta1[1].value,
                              eta1[2].value,
                              eta1[3].value,
-                             eta1[4].value)) * unit_val).to(units.Pa * units.s)
+                             eta1[4].value)) * unit_val).to(u.Pa * u.s)
         return eta
 
     def all_variables(self) -> dict:

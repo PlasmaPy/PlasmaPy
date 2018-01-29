@@ -237,11 +237,11 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
     Examples
     --------
 
-    >>> from astropy import units
+    >>> from astropy import units as u
     >>> standard_atomic_weight("H")
     <Quantity 1.008 u>
     >>> # the following result accounts for small amount of deuterium
-    >>> standard_atomic_weight("H").to(units.kg)
+    >>> standard_atomic_weight("H").to(u.kg)
     <Quantity 1.67382335e-27 kg>
     >>> isotope_mass("H-1")
     <Quantity 1.00782503 u>

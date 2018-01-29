@@ -3,7 +3,7 @@ Functions for quantum parameters, including electron degenerate
 gases and warm dense matter.
 """
 import numpy as np
-from astropy import units
+from astropy import units as u
 
 from plasmapy import atomic, utils
 from plasmapy.physics.relativity import Lorentz_factor
@@ -69,7 +69,7 @@ def deBroglie_wavelength(V, particle):
     <Quantity inf m>
     """
 
-    utils._check_quantity(V, 'V', 'deBroglie_wavelength', units.m / units.s)
+    utils._check_quantity(V, 'V', 'deBroglie_wavelength', u.m / u.s)
 
     V = np.abs(V)
 
@@ -79,7 +79,7 @@ def deBroglie_wavelength(V, particle):
             "be greater than or equal to the speed of "
             "light.")
 
-    if not isinstance(particle, units.Quantity):
+    if not isinstance(particle, u.Quantity):
         try:
             # TODO: Replace with more general routine!
             m = atomic.ion_mass(particle)
@@ -87,31 +87,31 @@ def deBroglie_wavelength(V, particle):
             raise ValueError("Unable to find particle mass.")
     else:
         try:
-            m = particle.to(units.kg)
+            m = particle.to(u.kg)
         except Exception:
-            raise units.UnitConversionError("The second argument for deBroglie"
+            raise u.UnitConversionError("The second argument for deBroglie"
                                             " wavelength must be either a "
                                             "representation of a particle or a"
                                             " Quantity with units of mass.")
 
     if V.size > 1:
 
-        lambda_dBr = np.ones(V.shape) * np.inf * units.m
+        lambda_dBr = np.ones(V.shape) * np.inf * u.m
         indices = V.value != 0
         lambda_dBr[indices] = h / (m * V[indices] * Lorentz_factor(V[indices]))
 
     else:
 
-        if V == 0 * units.m / units.s:
-            lambda_dBr = np.inf * units.m
+        if V == 0 * u.m / u.s:
+            lambda_dBr = np.inf * u.m
         else:
             lambda_dBr = h / (Lorentz_factor(V) * m * V)
 
-    return lambda_dBr.to(units.m)
+    return lambda_dBr.to(u.m)
 
 
 @utils.check_quantity({
-    'T_e': {'units': units.K, 'can_be_negative': False}
+    'T_e': {'units': u.K, 'can_be_negative': False}
 })
 def thermal_deBroglie_wavelength(T_e):
     r"""
@@ -156,13 +156,13 @@ def thermal_deBroglie_wavelength(T_e):
     >>> thermal_deBroglie_wavelength(1 * u.eV)
     <Quantity 6.91936752e-10 m>
     """
-    T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
+    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
     lambda_dbTh = h / np.sqrt(2 * np.pi * m_e * k_B * T_e)
-    return lambda_dbTh.to(units.m)
+    return lambda_dbTh.to(u.m)
 
 
 @utils.check_quantity({
-    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+    'n_e': {'units': u.m**-3, 'can_be_negative': False}
 })
 def Fermi_energy(n_e):
     r"""
@@ -217,11 +217,11 @@ def Fermi_energy(n_e):
     """
     coeff = (np.pi * hbar) ** 2 / (2 * m_e)
     energy_F = coeff * (3 * n_e / np.pi) ** (2 / 3)
-    return energy_F.to(units.Joule)
+    return energy_F.to(u.Joule)
 
 
 @utils.check_quantity({
-    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+    'n_e': {'units': u.m**-3, 'can_be_negative': False}
 })
 def Thomas_Fermi_length(n_e):
     r"""
@@ -284,4 +284,4 @@ def Thomas_Fermi_length(n_e):
     """
     energy_F = Fermi_energy(n_e)
     lambda_TF = np.sqrt(2 * eps0 * energy_F / (3 * n_e * e ** 2))
-    return lambda_TF.to(units.m)
+    return lambda_TF.to(u.m)
