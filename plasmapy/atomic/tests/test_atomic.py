@@ -4,18 +4,17 @@ from itertools import product
 from astropy import units as u, constants as const
 
 from ..symbols import (atomic_symbol,
-                     isotope_symbol,
-                     element_name,
-
-                     _is_neutron,
-                     _is_hydrogen,
-                     _is_electron,
-                     _is_positron,
-                     _is_antiproton,
-                     _is_alpha,
-                     _is_proton,
-                     _is_antineutron,
-                     _extract_integer_charge)
+                       isotope_symbol,
+                       element_name,
+                       _is_neutron,
+                       _is_hydrogen,
+                       _is_electron,
+                       _is_positron,
+                       _is_antiproton,
+                       _is_alpha,
+                       _is_proton,
+                       _is_antineutron,
+                       _extract_integer_charge)
 
 from ..isotopes import _Isotopes
 

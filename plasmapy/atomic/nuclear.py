@@ -10,12 +10,12 @@ from .atomic import (mass_number,
                      integer_charge)
 
 from .symbols import (isotope_symbol,
-                    _is_neutron,
-                    _is_proton,
-                    _is_electron,
-                    _is_positron,
-                    _is_antiproton,
-                    _is_antineutron)
+                      _is_neutron,
+                      _is_proton,
+                      _is_electron,
+                      _is_positron,
+                      _is_antiproton,
+                      _is_antineutron)
 
 from ..utils import (InvalidElementError,
                      InvalidParticleError,
