@@ -1048,16 +1048,17 @@ def stable_isotopes(argument: Union[str, int] = None,
 
 
 def periodic_table_period(argument: Union[str, int]) -> int:
-    r"""Returns the Period.
+    r"""Returns the periodic table period.
     Parameters
     ----------
     argument: string or integer
-        A string representing an element, or integer representing an atomic
-        number
+        Atomic number (either integer or string), atomic symbol (e.g. "H",
+        string, case insensitive), or element name (e.g. "Francium", string,
+        case insensitive).
     Returns
     -------
     period: integer
-        The atomic period of the element.
+        The the periodic table period of the element.
     Raises
     ------
     TypeError:
@@ -1088,7 +1089,7 @@ def periodic_table_period(argument: Union[str, int]) -> int:
                         "either a string representing the element or its " +
                         "symbol, or an integer representing its atomic " +
                         "number.")
-    atomic_symbol = get_atomic_symbol(argument)
+    atomic_symbol = _get_atomic_symbol(argument)
     try:
         period = _Elements[atomic_symbol]["period"]
     except Exception:
@@ -1097,12 +1098,48 @@ def periodic_table_period(argument: Union[str, int]) -> int:
 
 
 def periodic_table_group(argument: Union[str, int]) -> int:
+    r"""Returns the periodic table group.
+    Parameters
+    ----------
+    argument: string or integer
+        Atomic number (either integer or string), atomic symbol (e.g. "H",
+        string, case insensitive), or element name (e.g. "Francium", string,
+        case insensitive).
+    Returns
+    -------
+    group: integer
+        The periodic table group of the element.
+    Raises
+    ------
+    TypeError:
+        If the argument is not a string or integer.
+    ValueError:
+        If the argument cannot be used to identify the element.
+    See also
+    --------
+        periodic_table_period : returns periodic table period of element.
+        periodic_table_block : returns periodic table block of element.
+    Examples
+    --------
+    >>> periodic_table_group(18)
+    18
+    >>> periodic_table_group("24")
+    6
+    >>> periodic_table_group("Al")
+    13
+    >>> periodic_table_group("al")
+    13
+    >>> periodic_table_group("neon")
+    18
+    >>> periodic_table_group("BARIUM")
+    2
+    """
     if not isinstance(argument, (str, int)):
         raise TypeError("The argument to periodic_table_group must be " +
                         "either a string representing the element or its " +
                         "symbol, or an integer representing its atomic " +
                         "number.")
-    atomic_symbol = get_atomic_symbol(argument)
+    atomic_symbol = _get_atomic_symbol(argument)
     try:
         group = _Elements[atomic_symbol]["group"]
     except Exception:
@@ -1111,12 +1148,48 @@ def periodic_table_group(argument: Union[str, int]) -> int:
 
 
 def periodic_table_block(argument: Union[str, int]) -> str:
+    r"""Returns the periodic table block.
+    Parameters
+    ----------
+    argument: string or integer
+        Atomic number (either integer or string), atomic symbol (e.g. "H",
+        string, case insensitive), or element name (e.g. "Francium", string,
+        case insensitive).
+    Returns
+    -------
+    block: string
+        The periodic table block of the element.
+    Raises
+    ------
+    TypeError:
+        If the argument is not a string or integer.
+    ValueError:
+        If the argument cannot be used to identify the element.
+    See also
+    --------
+        periodic_table_period: returns periodic table period of element.
+        periodic_table_group: returns periodic table group of element.
+    Examples
+    --------
+    >>> periodic_table_block(66)
+    'f'
+    >>> periodic_table_block("72")
+    'd'
+    >>> periodic_table_block("tl")
+    'p'
+    >>> periodic_table_block("thallium")
+    'p'
+    >>> periodic_table_block("FR")
+    's'
+    >>> periodic_table_block("FRANCIUM")
+    's'
+    """
     if not isinstance(argument, (str, int)):
         raise TypeError("The argument to periodic_table_block must be " +
                         "either a string representing the element or its " +
                         "symbol, or an integer representing its atomic " +
                         "number.")
-    atomic_symbol = get_atomic_symbol(argument)
+    atomic_symbol = _get_atomic_symbol(argument)
     try:
         block = _Elements[atomic_symbol]["block"]
     except Exception:
@@ -1125,12 +1198,46 @@ def periodic_table_block(argument: Union[str, int]) -> str:
 
 
 def periodic_table_category(argument: Union[str, int]) -> str:
+    r"""Returns the periodic table category.
+    Parameters
+    ----------
+    argument: string or integer
+        Atomic number (either integer or string), atomic symbol (e.g. "H",
+        string, case insensitive), or element name (e.g. "Francium", string,
+        case insensitive).
+    Returns
+    -------
+    category: string
+        The periodic table category of the element.
+    Raises
+    ------
+    TypeError:
+        If the argument is not a string or integer.
+    ValueError:
+        If the argument cannot be used to identify the element.
+    See also
+    --------
+        periodic_table_period: returns periodic table period of element.
+        periodic_table_group: returns periodic table group of element.
+    Examples
+    --------
+    >>> periodic_table_category(82)
+    'Post-transition metals'
+    >>> periodic_table_category("85")
+    'Halogens'
+    >>> periodic_table_category("Ra")
+    'Alkaline earth metals'
+    >>> periodic_table_category("AC")
+    'Actinides'
+    >>> periodic_table_category("rhodium")
+    'Transition metals'
+    """
     if not isinstance(argument, (str, int)):
         raise TypeError("The argument to periodic_table_category must be " +
                         "either a string representing the element or its " +
                         "symbol, or an integer representing its atomic " +
                         "number.")
-    atomic_symbol = get_atomic_symbol(argument)
+    atomic_symbol = _get_atomic_symbol(argument)
     try:
         category = _Elements[atomic_symbol]["category"]
     except Exception:
@@ -1138,36 +1245,132 @@ def periodic_table_category(argument: Union[str, int]) -> str:
     return category
 
 
-def get_atomic_symbol(argument: Union[str, int]) -> str:
+def _get_atomic_symbol(argument: Union[str, int]) -> str:
+    r"""Returns the Atomic symbol
+    Parameters
+    ----------
+    argument: string or integer
+        Atomic number (either integer or string), atomic symbol (e.g. "H",
+        string, case insensitive), or element name (e.g. "Francium", string,
+        case insensitive).
+    Returns
+    -------
+    atomic_symbol: string
+        The Atomic symbol of the element.
+    Raises
+    ------
+    ValueError:
+        If the argument cannot be used to identify the element.
+    See also
+    --------
+        caller: periodic_table_[period/block/category/group].
+        calls: _symbol_from_number, _symbol_from_symbol, _symbol_from_name
+    Examples
+    --------
+    >>> _get_atomic_symbol(18)
+    'Ar'
+    >>> _get_atomic_symbol("argon")
+    'Ar'
+    """
     if (isinstance(argument, str) and argument.isdigit() or
             isinstance(argument, int)):
         atomic_number = int(argument)
-        atomic_symbol = symbol_from_number(atomic_number)
+        atomic_symbol = _symbol_from_number(atomic_number)
     elif isinstance(argument, str) and len(argument) <= 2:
-        atomic_symbol = symbol_from_symbol(argument)
+        atomic_symbol = _symbol_from_symbol(argument)
     elif isinstance(argument, str):
-        atomic_symbol = symbol_from_name(argument)
+        atomic_symbol = _symbol_from_name(argument)
+    if atomic_symbol is None:
+        raise ValueError(f"Could not resolve argument ({argument}) to "
+                         f"get_atomic_symbol.")
+    else:
+        return atomic_symbol
+
+
+def _symbol_from_number(atomic_number: int) -> str:
+    r"""Returns the Atomic symbol
+    Parameters
+    ----------
+    atomic_number: integer
+
+    Returns
+    -------
+    atomic_symbol: string
+
+    Raises
+    ------
+    ValueError:
+        If the argument cannot be used to identify the element.
+    See also
+    --------
+        caller: _get_atomic_symbol
+        _symbol_from_symbol, _symbol_from_name
+    Examples
+    --------
+    >>> _symbol_from_number(56)
+    'Ba'
+    """
+    try:
+        atomic_symbol = _atomic_symbols[atomic_number]
+    except Exception:
+        raise ValueError(f"Invalid atomic number ({atomic_number}) supplied.")
     return atomic_symbol
 
 
-def symbol_from_number(atomic_number: int) -> str:
-        try:
-            atomic_symbol = _atomic_symbols[atomic_number]
-        except Exception:
-            raise ValueError(f"Invalid atomic number ({atomic_number}) supplied.")
-        return atomic_symbol
+def _symbol_from_symbol(symbol: str) -> str:
+    r"""Returns the Atomic symbol
+    Parameters
+    ----------
+    symbol: string
+        Atomic symbol (e.g "Ar")
+    Returns
+    -------
+    atomic_symbol: string
+
+    Raises
+    ------
+    ValueError:
+        If the argument cannot be used to identify the element.
+    See also
+    --------
+        caller: _get_atomic_symbol
+        _symbol_from_number, _symbol_from_name
+    Examples
+    --------
+    >>> _symbol_from_symbol("ar")
+    'Ar'
+    """
+    atomic_symbol = symbol.capitalize()
+    if atomic_symbol not in _Elements:
+        raise ValueError(f"Invalid element ({atomic_symbol}) supplied.")
+    return atomic_symbol
 
 
-def symbol_from_symbol(symbol: str) -> str:
-        atomic_symbol = symbol.capitalize()
-        if atomic_symbol not in _Elements:
-            raise ValueError(f"Invalid element ({atomic_symbol}) supplied.")
-        return atomic_symbol
+def _symbol_from_name(element_name: str) -> str:
+    r"""Returns the Atomic symbol
+    Parameters
+    ----------
+    element_name: string
 
+    Returns
+    -------
+    atomic_symbol: string
 
-def symbol_from_name(element_name: str) -> str:
-        try:
-            atomic_symbol = _atomic_symbols_dict[element_name.lower()]
-        except Exception:
-            raise ValueError(f"Invalid element ({element_name}) supplied.")
-        return atomic_symbol
+    Raises
+    ------
+    ValueError:
+        If the argument cannot be used to identify the element.
+    See also
+    --------
+        caller: _get_atomic_symbol
+        _symbol_from_number, _symbol_from_symbol
+    Examples
+    --------
+    >>> _symbol_from_name("Barium")
+    'Ba'
+    """
+    try:
+        atomic_symbol = _atomic_symbols_dict[element_name.lower()]
+    except Exception:
+        raise ValueError(f"Invalid element ({element_name}) supplied.")
+    return atomic_symbol

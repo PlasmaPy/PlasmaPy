@@ -32,7 +32,10 @@ from ..atomic import (atomic_number,
                       isotopic_abundance,
                       integer_charge,
                       electric_charge,
-                      periodic_table_period)
+                      periodic_table_period,
+                      periodic_table_block,
+                      periodic_table_category,
+                      periodic_table_group)
 
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
 
@@ -1320,9 +1323,45 @@ def test_periodic_table_period(argument, expected):
          f"value of {expected}.")
 
 
+# argument, expected
+block_table = [
+    ("ca", "s"),
+    ("Na", "s"),
+    ("rf", "d"),
+    ("Be", "s"),
+    ("BE", "s"),
+    ("bE", "s"),
+    ("calcium", "s"),
+    ("CALCIUM", "s"),
+    ("Hydrogen", "s"),
+    ("hYDROGEN", "s"),
+    ("potassium", "s"),
+    ("Cadmium", "d"),
+    (2, "s"),
+    (13, "p"),
+    (47, "d"),
+    (66, "f"),
+    ("2", "s"),
+    ("13", "p"),
+    ("47", "d"),
+    ("66", "f"),
+]
+
+
+@pytest.mark.parametrize(
+    'argument, expected', block_table)
+def test_periodic_table_block(argument, expected):
+    """Test that periodic_table_period returns the expected result."""
+    assert (argument) == expected, \
+        (f"periodic_table_block({argument}) is returning "
+         f"{periodic_table_block(argument)}, which differs from the expected "
+         f"value of {expected}.")
+
+
 # (argument, expected_error)
-period_error_table = [
+periodic_data_error_table = [
     (3.14159, TypeError),
+    (None, TypeError),
     (['cat', 'dog'], TypeError),
     (("foo", "bar"), TypeError),
     ({"bob": "alice"}, TypeError),
@@ -1344,10 +1383,28 @@ period_error_table = [
 
 
 @pytest.mark.parametrize(
-    'argument, expected_error', period_error_table)
-def test_periodic_table_period_error(argument, expected_error):
-    """Test that periodic_table_period raises the expected exceptions."""
+    'argument, expected_error', periodic_data_error_table)
+def test_periodic_table_data_error(argument, expected_error):
+    """
+    Test that periodic_table_[period/group/block/category] raises the expected
+    exceptions.
+    """
     with pytest.raises(expected_error, message=(
             f"periodic_table_period({argument}) is not raising "
             f"{expected_error}.")):
         periodic_table_period(argument)
+
+    with pytest.raises(expected_error, message=(
+            f"periodic_table_group({argument}) is not raising "
+            f"{expected_error}.")):
+        periodic_table_group(argument)
+
+    with pytest.raises(expected_error, message=(
+            f"periodic_table_block({argument}) is not raising "
+            f"{expected_error}.")):
+        periodic_table_block(argument)
+
+    with pytest.raises(expected_error, message=(
+            f"periodic_table_category({argument}) is not raising "
+            f"{expected_error}.")):
+        periodic_table_category(argument)
