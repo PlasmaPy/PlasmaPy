@@ -5,6 +5,7 @@
 # Python 2 compliance is needed to raise the correct ImportError.
 
 import sys
+from . import utils
 
 
 def _split_version(version):
@@ -31,8 +32,6 @@ if sys.version_info < _split_version(__minimum_python_version__):
         "PlasmaPy requires Python version {} or higher, but is being called "
         "from Python version {}."
         .format(__minimum_python_version__, sys.version.split()[0]))
-
-from . import utils
 
 utils.check_versions(__minimum_versions__)
 

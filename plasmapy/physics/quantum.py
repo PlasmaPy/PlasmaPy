@@ -90,9 +90,9 @@ def deBroglie_wavelength(V, particle):
             m = particle.to(u.kg)
         except Exception:
             raise u.UnitConversionError("The second argument for deBroglie"
-                                            " wavelength must be either a "
-                                            "representation of a particle or a"
-                                            " Quantity with units of mass.")
+                                        " wavelength must be either a "
+                                        "representation of a particle or a"
+                                        " Quantity with units of mass.")
 
     if V.size > 1:
 
