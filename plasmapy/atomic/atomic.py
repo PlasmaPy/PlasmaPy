@@ -786,7 +786,7 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
     return half_life_sec
 
 
-def known_isotopes(argument: Union[str, int] = None) -> List[str]:
+def known_isotopes(argument: Union[str, int]=None) -> List[str]:
     r"""Returns a list of all known isotopes of an element, or a list
     of all known isotopes of every element if no input is provided.
     Parameters
@@ -863,8 +863,8 @@ def known_isotopes(argument: Union[str, int] = None) -> List[str]:
     return isotopes_list
 
 
-def common_isotopes(argument: Union[str, int] = None,
-                    most_common_only: bool = False) -> List[str]:
+def common_isotopes(argument: Union[str, int]=None,
+                    most_common_only: bool=False) -> List[str]:
     r"""Returns a list of isotopes of an element with an isotopic
     abundances greater than zero, or if no input is provided, a list
     of all such isotopes for every element.
@@ -963,7 +963,7 @@ def common_isotopes(argument: Union[str, int] = None,
     return isotopes_list
 
 
-def stable_isotopes(argument: Union[str, int] = None,
+def stable_isotopes(argument: Union[str, int]=None,
                     unstable: bool = False) -> List[str]:
     r"""Returns a list of all stable isotopes of an element, or if no
     input is provided, a list of all such isotopes for every element.
@@ -1276,22 +1276,22 @@ def _get_atomic_symbol(argument: Union[str, int]) -> str:
             isinstance(argument, int)):
         atomic_number = int(argument)
         atomic_symbol = _symbol_from_number(atomic_number)
-    elif isinstance(argument, str) and len(argument) <= 2:
+    elif (isinstance(argument, str) and len(argument) <= 2 and
+          argument.isalpha()):
         atomic_symbol = _symbol_from_symbol(argument)
-    elif isinstance(argument, str):
+    elif isinstance(argument, str) and argument.isalpha():
         atomic_symbol = _symbol_from_name(argument)
-    if atomic_symbol is None:
+    else:
         raise ValueError(f"Could not resolve argument ({argument}) to "
                          f"get_atomic_symbol.")
-    else:
-        return atomic_symbol
+    return atomic_symbol
 
 
 def _symbol_from_number(atomic_number: int) -> str:
     r"""Returns the Atomic symbol
     Parameters
     ----------
-    atomic_number: integer
+    atomic_number: positive integer
 
     Returns
     -------
@@ -1301,6 +1301,8 @@ def _symbol_from_number(atomic_number: int) -> str:
     ------
     ValueError:
         If the argument cannot be used to identify the element.
+    TypeError:
+        If the argument is not a positive integer.
     See also
     --------
         caller: _get_atomic_symbol
@@ -1310,6 +1312,10 @@ def _symbol_from_number(atomic_number: int) -> str:
     >>> _symbol_from_number(56)
     'Ba'
     """
+    if (atomic_number is None or not isinstance(atomic_number, int) or
+            atomic_number <= 0):
+        raise TypeError("Argument to _symbol_from_number must be a positive " +
+                        "integer")
     try:
         atomic_symbol = _atomic_symbols[atomic_number]
     except Exception:
@@ -1331,6 +1337,9 @@ def _symbol_from_symbol(symbol: str) -> str:
     ------
     ValueError:
         If the argument cannot be used to identify the element.
+    TypeError:
+        If the argument is not of type str, or has len > 2, or
+        is not entirely composed of alphabetical characters.
     See also
     --------
         caller: _get_atomic_symbol
@@ -1340,6 +1349,12 @@ def _symbol_from_symbol(symbol: str) -> str:
     >>> _symbol_from_symbol("ar")
     'Ar'
     """
+    if (symbol is None or not isinstance(symbol, str) or
+            len(symbol) > 2 or
+            any(map(lambda x: x.isnumeric(), [c for c in symbol]))):
+        raise TypeError("Argument to _symbol_from_symbol must be an Atomic " +
+                        "symbol, of type str, containing only alphabetical " +
+                        "characters.")
     atomic_symbol = symbol.capitalize()
     if atomic_symbol not in _Elements:
         raise ValueError(f"Invalid element ({atomic_symbol}) supplied.")
@@ -1360,6 +1375,8 @@ def _symbol_from_name(element_name: str) -> str:
     ------
     ValueError:
         If the argument cannot be used to identify the element.
+    TypeError:
+        If the argument is not of type str, or is an Atomic Symbol (len <= 2)
     See also
     --------
         caller: _get_atomic_symbol
@@ -1369,6 +1386,10 @@ def _symbol_from_name(element_name: str) -> str:
     >>> _symbol_from_name("Barium")
     'Ba'
     """
+    if (element_name is None or not isinstance(element_name, str) or
+            len(element_name) <= 2):
+        raise TypeError("Argument to _symbol_from_name must be an element " +
+                        "name, of type str.")
     try:
         atomic_symbol = _atomic_symbols_dict[element_name.lower()]
     except Exception:
