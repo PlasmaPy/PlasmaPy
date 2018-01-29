@@ -1,6 +1,7 @@
 r"""The Particle class and particle_input decorator."""
 
 from typing import (Union, Set, Tuple, List, Optional)
+import functools
 import warnings
 
 from astropy import units as u, constants as const
@@ -852,5 +853,13 @@ class Particle:
         return categories <= self._categories
 
 
-def particle_input():
-    pass
+def particle_input(*particle_input_args, **particle_input_kwargs):
+    r"""A decorator that takes inputs related to particles and passes
+    through the corresponding instance of the Particle class."""
+    def decorator(func, *decorator_input_args, **decorator_input_kwargs):
+        @functools.wraps(func)
+        def wrapper(*wrapper_args, **wrapper_kwargs):
+            particle = Particle(*args, **kwargs)
+            return func(particle)
+        return wrapper
+    return decorator
