@@ -1,6 +1,6 @@
 """Functions to calculate plasma parameters."""
 
-from astropy import units
+from astropy import units as u
 
 # from plasmapy.atomic import ion_mass, integer_charge
 
@@ -35,18 +35,18 @@ physics while still being useful to experienced plasma physicists.
 In many cases, units are enough to tell what field a quantity
 represents.  The following line is an example.
 
->>> Alfven_speed(5*units.T, 8e-7*units.kg/units.m**3)
+>>> Alfven_speed(5*u.T, 8e-7*u.kg/u.m**3)
 
 However, some plasma parameters depend on more than one quantity with
 the same units.  In the following line, it is difficult to discern which
 is the electron temperature and which is the ion temperature.
 
->>> ion_sound_speed(1e6*units.K, 2e6*units.K)
+>>> ion_sound_speed(1e6*u.K, 2e6*u.K)
 
 Remembering that "explicit is better than implicit", it is more
 readable and less prone to errors to write:
 
->>> ion_sound_speed(T_i=1e6*units.K, T_e=2e6*units.K)
+>>> ion_sound_speed(T_i=1e6*u.K, T_e=2e6*u.K)
 
 SI units that were named after a person should be lower case except at
 the beginning of a sentence, even if their symbol is capitalized. For
@@ -62,13 +62,13 @@ factor of 2*pi that is used when converting between frequency (1 /
 s) and angular velocity (rad / s).  A clear way to do this
 conversion is to set up an equivalency between cycles/s and Hz:
 
->>> from astropy import units
->>> f_ce = omega_ce.to(units.Hz, equivalencies=[(units.cy/units.s, units.Hz)])
+>>> from astropy import units as u
+>>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
 
 However, dimensionless_angles() does work when dividing a velocity
 by an angular frequency to get a length scale:
 
->>> d_i = (c/omega_pi).to(units.m, equivalencies=units.dimensionless_angles())
+>>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())
 
 """
 
@@ -111,7 +111,7 @@ def Alfven_speed(B, density, ion="p", z_mean=None):
         The magnetic field and density arguments are not Quantities and
         cannot be converted into Quantities.
 
-    units.UnitConversionError
+    u.UnitConversionError
         If the magnetic field or density is not in appropriate units.
 
     RelativityError
@@ -165,15 +165,15 @@ def Alfven_speed(B, density, ion="p", z_mean=None):
     <Quantity 4.31738703 cm / us>
     """
 
-    utils._check_quantity(B, 'B', 'Alfven_speed', units.T)
+    utils._check_quantity(B, 'B', 'Alfven_speed', u.T)
     utils._check_quantity(density, 'density', 'Alfven_speed',
-                          [units.m**-3, units.kg / units.m**3],
+                          [u.m**-3, u.kg / u.m**3],
                           can_be_negative=False)
 
-    B = B.to(units.T)
+    B = B.to(u.T)
     density = density.si
 
-    if density.unit == units.m**-3:
+    if density.unit == u.m**-3:
         try:
             m_i = atomic.ion_mass(ion)
             if z_mean is None:
@@ -192,11 +192,11 @@ def Alfven_speed(B, density, ion="p", z_mean=None):
             raise ValueError("Invalid ion in Alfven_speed.")
         rho = density * m_i + Z * density * m_e
 
-    elif density.unit == units.kg / units.m**3:
+    elif density.unit == u.kg / u.m**3:
         rho = density
 
     try:
-        V_A = (np.abs(B) / np.sqrt(mu0 * rho)).to(units.m / units.s)
+        V_A = (np.abs(B) / np.sqrt(mu0 * rho)).to(u.m / u.s)
     except Exception:
         raise ValueError("Unable to find Alfven speed")
 
@@ -205,12 +205,12 @@ def Alfven_speed(B, density, ion="p", z_mean=None):
 
 @utils.check_relativistic
 @utils.check_quantity({
-    'T_i': {'units': units.K, 'can_be_negative': False},
-    'T_e': {'units': units.K, 'can_be_negative': False}
+    'T_i': {'units': u.K, 'can_be_negative': False},
+    'T_e': {'units': u.K, 'can_be_negative': False}
 })
 def ion_sound_speed(*ignore,
-                    T_e=0 * units.K,
-                    T_i=0 * units.K,
+                    T_e=0 * u.K,
+                    T_i=0 * u.K,
                     gamma_e=1,
                     gamma_i=3,
                     ion='p',
@@ -319,7 +319,7 @@ def ion_sound_speed(*ignore,
                         "in ion_sound_speed to prevent mixing up the electron "
                         "and ion temperatures. An example call that uses the "
                         "units subpackage from astropy is: "
-                        "ion_sound_speed(T_e=5*units.K, T_i=0*units.K, "
+                        "ion_sound_speed(T_e=5*u.K, T_i=0*u.K, "
                         "ion='D+')")
 
     try:
@@ -353,12 +353,12 @@ def ion_sound_speed(*ignore,
             "The adiabatic index for ions must be between "
             "one and infinity")
 
-    T_i = T_i.to(units.K, equivalencies=units.temperature_energy())
-    T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
+    T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
+    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
 
     try:
         V_S_squared = (gamma_e * Z * k_B * T_e + gamma_i * k_B * T_i) / m_i
-        V_S = np.sqrt(V_S_squared).to(units.m / units.s)
+        V_S = np.sqrt(V_S_squared).to(u.m / u.s)
     except Exception:
         raise ValueError("Unable to find ion sound speed.")
 
@@ -367,7 +367,7 @@ def ion_sound_speed(*ignore,
 
 @utils.check_relativistic
 @utils.check_quantity({
-    'T': {'units': units.K, 'can_be_negative': False}
+    'T': {'units': u.K, 'can_be_negative': False}
 })
 def thermal_speed(T, particle="e", method="most_probable"):
     r"""
@@ -399,7 +399,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
     TypeError
         The particle temperature is not a Quantity
 
-    units.UnitConversionError
+    u.UnitConversionError
         If the particle temperature is not in units of temperature or
         energy per particle
 
@@ -444,7 +444,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
 
     """
 
-    T = T.to(units.K, equivalencies=units.temperature_energy())
+    T = T.to(u.K, equivalencies=u.temperature_energy())
 
     try:
         m = atomic.ion_mass(particle)
@@ -453,11 +453,11 @@ def thermal_speed(T, particle="e", method="most_probable"):
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     if method == "most_probable":
-        V = (np.sqrt(2 * k_B * T / m)).to(units.m / units.s)
+        V = (np.sqrt(2 * k_B * T / m)).to(u.m / u.s)
     elif method == "rms":
-        V = (np.sqrt(3 * k_B * T / m)).to(units.m / units.s)
+        V = (np.sqrt(3 * k_B * T / m)).to(u.m / u.s)
     elif method == "mean_magnitude":
-        V = (np.sqrt(8 * k_B * T / (m * np.pi))).to(units.m / units.s)
+        V = (np.sqrt(8 * k_B * T / (m * np.pi))).to(u.m / u.s)
     else:
         raise ValueError("Method {method} not supported in thermal_speed")
 
@@ -466,7 +466,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
 
 @utils.check_relativistic
 @utils.check_quantity({
-    'T': {'units': units.K, 'can_be_negative': False}
+    'T': {'units': u.K, 'can_be_negative': False}
 })
 def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     r"""Returns the most probable speed for a particle within a Kappa
@@ -503,7 +503,7 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     TypeError
         The particle temperature is not a Quantity
 
-    units.UnitConversionError
+    u.UnitConversionError
         If the particle temperature is not in units of temperature or
         energy per particle
 
@@ -529,7 +529,7 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
     <Quantity 24467.87846359 m / s>
     """
     # Checking thermal units
-    T = T.to(units.K, equivalencies=units.temperature_energy())
+    T = T.to(u.K, equivalencies=u.temperature_energy())
     if kappa <= 3 / 2:
         raise ValueError(f"Must have kappa > 3/2, instead of {kappa}, for "
                          "kappa distribution function to be valid.")
@@ -559,8 +559,8 @@ def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
 
 
 @utils.check_quantity({
-    'T_e': {'units': units.K, 'can_be_negative': False},
-    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+    'T_e': {'units': u.K, 'can_be_negative': False},
+    'n_e': {'units': u.m**-3, 'can_be_negative': False}
 })
 def collision_rate_electron_ion(T_e,
                                 n_e,
@@ -609,7 +609,7 @@ def collision_rate_electron_ion(T_e,
 
     """
     from plasmapy.physics.transport import Coulomb_logarithm
-    T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
+    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
     if coulomb_log is not None:
         coulomb_log_val = coulomb_log
     else:
@@ -618,12 +618,12 @@ def collision_rate_electron_ion(T_e,
     Z_i = atomic.integer_charge(ion_particle)
     nu_e = 4 / 3 * np.sqrt(2 * np.pi / m_e) / (4 * np.pi * eps0) ** 2 * \
         e ** 4 * n_e * Z_i * coulomb_log_val / (k_B * T_e) ** 1.5
-    return nu_e.to(1 / units.s)
+    return nu_e.to(1 / u.s)
 
 
 @utils.check_quantity({
-    'T_i': {'units': units.K, 'can_be_negative': False},
-    'n_i': {'units': units.m**-3, 'can_be_negative': False}
+    'T_i': {'units': u.K, 'can_be_negative': False},
+    'n_i': {'units': u.m**-3, 'can_be_negative': False}
 })
 def collision_rate_ion_ion(T_i, n_i, ion_particle,
                            coulomb_log=None, V=None):
@@ -674,7 +674,7 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
 
     """
     from plasmapy.physics.transport import Coulomb_logarithm
-    T_i = T_i.to(units.K, equivalencies=units.temperature_energy())
+    T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     if coulomb_log is not None:
         coulomb_log_val = coulomb_log
     else:
@@ -684,13 +684,13 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
     m_i = atomic.ion_mass(ion_particle)
     nu_i = 4 / 3 * np.sqrt(np.pi / m_i) / (4 * np.pi * eps0)**2 * e**4 * \
         n_i * Z_i**4 * coulomb_log_val / (k_B * T_i)**1.5
-    return nu_i.to(1 / units.s)
+    return nu_i.to(1 / u.s)
 
 
 @utils.check_quantity({
-    'n': {'units': units.m**-3, 'can_be_negative': False},
-    'T': {'units': units.K, 'can_be_negative': False},
-    'B': {'units': units.T}
+    'n': {'units': u.m**-3, 'can_be_negative': False},
+    'T': {'units': u.K, 'can_be_negative': False},
+    'B': {'units': u.T}
 })
 def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None):
     r"""
@@ -705,7 +705,7 @@ def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None):
             return arg in ['e', 'e-'] or arg.lower() == 'electron'
 
     gyro_frequency = gyrofrequency(B, particle)
-    gyro_frequency = gyro_frequency / units.radian
+    gyro_frequency = gyro_frequency / u.radian
     if _is_electron(particle):
         coll_rate = collision_rate_electron_ion(T,
                                                 n,
@@ -718,7 +718,7 @@ def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None):
 
 
 @utils.check_quantity({
-    'B': {'units': units.T}
+    'B': {'units': u.T}
 })
 def gyrofrequency(B, particle='e', signed=False, z_mean=None):
     r"""Calculate the particle gyrofrequency in units of radians per second.
@@ -822,7 +822,7 @@ def gyrofrequency(B, particle='e', signed=False, z_mean=None):
     if not signed:
         Z = abs(Z)
 
-    omega_ci = units.rad * (Z * e * np.abs(B) / m_i).to(1 / units.s)
+    omega_ci = u.rad * (Z * e * np.abs(B) / m_i).to(1 / u.s)
 
     return omega_ci
 
@@ -866,7 +866,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
     TypeError
         The arguments are of an incorrect type
 
-    units.UnitConversionError
+    u.UnitConversionError
         The arguments do not have appropriate units
 
     ValueError
@@ -922,39 +922,38 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
         raise ValueError("Cannot have both Vperp and T_i as arguments to "
                          "gyroradius")
 
-    if len(args) == 1 and isinstance(args[0], units.Quantity):
+    if len(args) == 1 and isinstance(args[0], u.Quantity):
         arg = args[0].si
-        if arg.unit == units.T and B.si.unit in [units.J, units.K,
-                                                 units.m / units.s]:
+        if arg.unit == u.T and B.si.unit in [u.J, u.K, u.m / u.s]:
             B, arg = arg, B
 
-        if arg.unit == units.m / units.s:
+        if arg.unit == u.m / u.s:
             Vperp = arg
-        elif arg.unit in (units.J, units.K):
-            T_i = arg.to(units.K, equivalencies=units.temperature_energy())
+        elif arg.unit in (u.J, u.K):
+            T_i = arg.to(u.K, equivalencies=u.temperature_energy())
         else:
-            raise units.UnitConversionError("Incorrect units for positional "
-                                            "argument in gyroradius")
+            raise u.UnitConversionError("Incorrect units for positional "
+                                        "argument in gyroradius")
     elif len(args) > 0:
         raise ValueError("Incorrect inputs to gyroradius")
 
-    utils._check_quantity(B, 'B', 'gyroradius', units.T)
+    utils._check_quantity(B, 'B', 'gyroradius', u.T)
 
     if Vperp is not None:
-        utils._check_quantity(Vperp, 'Vperp', 'gyroradius', units.m / units.s)
+        utils._check_quantity(Vperp, 'Vperp', 'gyroradius', u.m / u.s)
     elif T_i is not None:
-        utils._check_quantity(T_i, 'T_i', 'gyroradius', units.K)
+        utils._check_quantity(T_i, 'T_i', 'gyroradius', u.K)
         Vperp = thermal_speed(T_i, particle=particle)
 
     omega_ci = gyrofrequency(B, particle)
 
     r_Li = np.abs(Vperp) / omega_ci
 
-    return r_Li.to(units.m, equivalencies=units.dimensionless_angles())
+    return r_Li.to(u.m, equivalencies=u.dimensionless_angles())
 
 
 @utils.check_quantity({
-    'n': {'units': units.m**-3, 'can_be_negative': False}
+    'n': {'units': u.m**-3, 'can_be_negative': False}
 })
 def plasma_frequency(n, particle='e', z_mean=None):
     r"""Calculates the particle plasma frequency.
@@ -1039,14 +1038,14 @@ def plasma_frequency(n, particle='e', z_mean=None):
         raise ValueError(f"Invalid particle, {particle}, in "
                          "plasma_frequency.")
 
-    omega_p = units.rad * Z * e * np.sqrt(n / (eps0 * m))
+    omega_p = u.rad * Z * e * np.sqrt(n / (eps0 * m))
 
     return omega_p.si
 
 
 @utils.check_quantity({
-    'T_e': {'units': units.K, 'can_be_negative': False},
-    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+    'T_e': {'units': u.K, 'can_be_negative': False},
+    'n_e': {'units': u.m**-3, 'can_be_negative': False}
 })
 def Debye_length(T_e, n_e):
     r"""Calculate the Debye length.
@@ -1107,10 +1106,10 @@ def Debye_length(T_e, n_e):
 
     """
 
-    T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
+    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
 
     try:
-        lambda_D = ((eps0 * k_B * T_e / (n_e * e ** 2)) ** 0.5).to(units.m)
+        lambda_D = ((eps0 * k_B * T_e / (n_e * e ** 2)) ** 0.5).to(u.m)
     except Exception:
         raise ValueError("Unable to find Debye length.")
 
@@ -1118,8 +1117,8 @@ def Debye_length(T_e, n_e):
 
 
 @utils.check_quantity({
-    'T_e': {'units': units.K, 'can_be_negative': False},
-    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+    'T_e': {'units': u.K, 'can_be_negative': False},
+    'n_e': {'units': u.m**-3, 'can_be_negative': False}
 })
 def Debye_number(T_e, n_e):
     r"""Returns the Debye number.
@@ -1137,7 +1136,7 @@ def Debye_number(T_e, n_e):
     TypeError
         If either argument is not a Quantity
 
-    units.UnitConversionError
+    u.UnitConversionError
         If either argument is in incorrect units
 
     ValueError
@@ -1181,11 +1180,11 @@ def Debye_number(T_e, n_e):
     except Exception:
         raise ValueError("Unable to find Debye number")
 
-    return N_D.to(units.dimensionless_unscaled)
+    return N_D.to(u.dimensionless_unscaled)
 
 
 @utils.check_quantity({
-    'n': {'units': units.m**-3, 'can_be_negative': False}
+    'n': {'units': u.m**-3, 'can_be_negative': False}
 })
 def inertial_length(n, particle='e'):
     r"""Calculate the particle inertial length,
@@ -1246,13 +1245,13 @@ def inertial_length(n, particle='e'):
         Z = abs(Z)
 
     omega_p = plasma_frequency(n, particle=particle)
-    d = (c / omega_p).to(units.m, equivalencies=units.dimensionless_angles())
+    d = (c / omega_p).to(u.m, equivalencies=u.dimensionless_angles())
 
     return d
 
 
 @utils.check_quantity({
-    'B': {'units': units.T}
+    'B': {'units': u.T}
 })
 def magnetic_pressure(B):
     r"""
@@ -1308,15 +1307,15 @@ def magnetic_pressure(B):
 
     """
 
-    p_B = (B ** 2 / (2 * mu0)).to(units.Pa)
+    p_B = (B ** 2 / (2 * mu0)).to(u.Pa)
 
     return p_B
 
 
 @utils.check_quantity({
-    'B': {'units': units.T}
+    'B': {'units': u.T}
 })
-def magnetic_energy_density(B: units.T):
+def magnetic_energy_density(B: u.T):
     r"""
     Calculate the magnetic energy density.
 
@@ -1335,7 +1334,7 @@ def magnetic_energy_density(B: units.T):
     TypeError
         If the input is not a Quantity.
 
-    units.UnitConversionError
+    u.UnitConversionError
         If the input is not in units convertible to tesla.
 
     ValueError
@@ -1370,14 +1369,14 @@ def magnetic_energy_density(B: units.T):
 
     """
 
-    E_B = (B ** 2 / (2 * mu0)).to(units.J / units.m ** 3)
+    E_B = (B ** 2 / (2 * mu0)).to(u.J / u.m ** 3)
 
     return E_B
 
 
 @utils.check_quantity({
-    'B': {'units': units.T},
-    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+    'B': {'units': u.T},
+    'n_e': {'units': u.m**-3, 'can_be_negative': False}
 })
 def upper_hybrid_frequency(B, n_e):
     r"""
@@ -1432,7 +1431,7 @@ def upper_hybrid_frequency(B, n_e):
     try:
         omega_pe = plasma_frequency(n=n_e)
         omega_ce = gyrofrequency(B)
-        omega_uh = (np.sqrt(omega_pe**2 + omega_ce**2)).to(units.rad / units.s)
+        omega_uh = (np.sqrt(omega_pe**2 + omega_ce**2)).to(u.rad / u.s)
     except Exception:
         raise ValueError("Unable to find upper hybrid frequency.")
 
@@ -1440,8 +1439,8 @@ def upper_hybrid_frequency(B, n_e):
 
 
 @utils.check_quantity({
-    'B': {'units': units.T},
-    'n_i': {'units': units.m**-3, 'can_be_negative': False}
+    'B': {'units': u.T},
+    'n_i': {'units': u.m**-3, 'can_be_negative': False}
 })
 def lower_hybrid_frequency(B, n_i, ion='p'):
     r"""
@@ -1472,7 +1471,7 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
         If either of B or n_i is not a Quantity, or ion is of an
         inappropriate type.
 
-    units.UnitConversionError
+    u.UnitConversionError
         If either of B or n_i is in incorrect units.
 
     ValueError
@@ -1515,7 +1514,7 @@ def lower_hybrid_frequency(B, n_i, ion='p'):
         omega_pi = plasma_frequency(n_i, particle=ion)
         omega_ce = gyrofrequency(B)
         omega_lh = 1 / np.sqrt((omega_ci * omega_ce) ** -1 + omega_pi ** -2)
-        omega_lh = omega_lh.to(units.rad / units.s)
+        omega_lh = omega_lh.to(u.rad / u.s)
     except Exception:
         raise ValueError("Unable to find lower hybrid frequency.")
 

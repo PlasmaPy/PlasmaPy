@@ -1,6 +1,6 @@
 """Functions to calculate plasma dielectric paramaters"""
 
-from astropy import units
+from astropy import units as u
 import plasmapy.utils as utils
 
 from ..constants import (pi, m_e, c, mu0, e, eps0)
@@ -12,8 +12,8 @@ Values should be returned as an Astropy Quantity in SI units.
 
 
 @utils.check_quantity({
-    'B': {'units': units.T, 'can_be_negative': False},
-    'omega': {'units': units.rad/units.s, 'can_be_negative': False},
+    'B': {'units': u.T, 'can_be_negative': False},
+    'omega': {'units': u.rad/u.s, 'can_be_negative': False},
 })
 def cold_plasma_permittivity_SDP(B, species, n, omega):
     r"""

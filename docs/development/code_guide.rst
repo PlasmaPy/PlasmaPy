@@ -399,7 +399,7 @@ Equations and Physical Formulae
   the physical constants.  For example, the following line of code
   obscures information about the physics being represented:
 
->>> omega_ce = 1.76e7*(B/units.G)*units.rad/units.s
+>>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s
 
   In contrast, the following line of code shows the exact formula
   which makes the code much more readable.
@@ -430,13 +430,13 @@ factor of ``2*pi`` that is used when converting between frequency (1 /
 s) and angular frequency (rad / s).  An explicit way to do this
 conversion is to set up an equivalency between cycles/s and Hz:
 
->>> from astropy import units
->>> f_ce = omega_ce.to(units.Hz, equivalencies=[(units.cy/units.s, units.Hz)])
+>>> from astropy import units as u
+>>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
 
 However, ``dimensionless_angles`` does work when dividing a velocity
 by an angular frequency to get a length scale:
 
->>> d_i = (c/omega_pi).to(units.m, equivalencies=units.dimensionless_angles())
+>>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())
 
 
 .. TODO add note on energies in K, eV

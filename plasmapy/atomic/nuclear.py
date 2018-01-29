@@ -1,6 +1,6 @@
 """Functions that are related to nuclear reactions."""
 
-from astropy import units, constants
+from astropy import units as u, constants
 import re
 from itertools import repeat
 from .atomic import (mass_number,
@@ -256,7 +256,7 @@ def nuclear_reaction_energy(*args, **kwargs):
         r"""Finds the total mass energy from a list of particles, while
         taking the masses of the fully ionized isotopes."""
 
-        total_mass = 0.0*units.kg
+        total_mass = 0.0*u.kg
 
         for particle in particles:
             if _is_electron(particle) or _is_positron(particle):
@@ -271,7 +271,7 @@ def nuclear_reaction_energy(*args, **kwargs):
                 atomic_numb = atomic_number(particle)
                 total_mass += ion_mass(particle, Z=atomic_numb)
 
-        return (total_mass * constants.c**2).to(units.J)
+        return (total_mass * constants.c**2).to(u.J)
 
     input_err_msg = ("The inputs to nuclear_reaction_energy should be either "
                      "a string representing a nuclear reaction (e.g., "
@@ -328,4 +328,4 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     released_energy = _mass_energy(reactants) - _mass_energy(products)
 
-    return released_energy.to(units.J)
+    return released_energy.to(u.J)

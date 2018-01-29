@@ -1,5 +1,5 @@
 import numpy as np
-from astropy import units
+from astropy import units as u
 
 from ..constants import c
 from plasmapy import atomic, utils
@@ -56,7 +56,7 @@ def Lorentz_factor(V):
     inf
     """
 
-    utils._check_quantity(V, 'V', 'Lorentz_factor', units.m / units.s)
+    utils._check_quantity(V, 'V', 'Lorentz_factor', u.m / u.s)
 
     if not np.all(np.abs(V) <= c):
         raise utils.RelativityError(
