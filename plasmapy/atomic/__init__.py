@@ -3,7 +3,7 @@
 from .special_particles import ParticleZoo
 
 from .particle_class import Particle
-from .particle_decorator import particle_input
+from .particle_input import particle_input
 
 from .symbols import (
     atomic_symbol,
