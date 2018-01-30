@@ -652,9 +652,9 @@ def mean_free_path(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> mean_free_path(T, n, particles)
-    14.545527226436974
+    <Quantity 7.8393631 m>
     >>> mean_free_path(T, n, particles, V=1e6*u.m/u.s)
-    11.363478214139432
+    <Quantity 1.42347709 m>
 
     References
     ----------
@@ -666,7 +666,7 @@ def mean_free_path(T,
                                                        V=V)
     # collisional frequency
     freq = collision_frequency(T=T,
-                               n_e=n_e,
+                               n=n_e,
                                particles=particles,
                                z_mean=z_mean,
                                V=V)
@@ -859,9 +859,9 @@ def mobility(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> mobility(T, n, particles)
-    14.545527226436974
+    <Quantity 250500.35318738 m2 / (s V)>
     >>> mobility(T, n, particles, V=1e6*u.m/u.s)
-    11.363478214139432
+    <Quantity 250500.35318738 m2 / (s V)>
 
     References
     ----------
@@ -872,7 +872,7 @@ def mobility(T,
                                                        particles=particles,
                                                        V=V)
     freq = collision_frequency(T=T,
-                               n_e=n_e,
+                               n=n_e,
                                particles=particles,
                                z_mean=z_mean,
                                V=V)
@@ -962,9 +962,9 @@ def knudsen(characteristic_length,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> knudsen(L, T, n, particles)
-    14.545527226436974
+    <Quantity 7839.36310417>
     >>> knudsen(L, T, n, particles, V=1e6*u.m/u.s)
-    11.363478214139432
+    <Quantity 1423.47708879>
 
     References
     ----------
