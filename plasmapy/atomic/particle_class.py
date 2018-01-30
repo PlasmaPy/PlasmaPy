@@ -26,7 +26,7 @@ from .parsing import (
 
 from .elements import _Elements
 from .isotopes import _Isotopes
-from .special import _Particles, ParticleZoo
+from .special_particles import _Particles, ParticleZoo
 
 # TODO: Write a decorator to turn atomic inputs into a Particle.
 

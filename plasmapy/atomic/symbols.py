@@ -7,10 +7,10 @@ from typing import (Union, Optional, Any, Tuple)
 
 from .elements import _atomic_symbols, _atomic_symbols_dict, _Elements
 from .isotopes import _Isotopes
-from .special import ParticleZoo
+from .special_particles import ParticleZoo
 
 from .parsing import _dealias_particle_aliases
-from .particle import Particle, particle_input
+from .particle_class import Particle, particle_input
 
 from ..utils import (AtomicWarning,
                      InvalidElementError,

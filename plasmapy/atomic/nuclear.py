@@ -21,7 +21,7 @@ from ..utils import (InvalidElementError,
                      InvalidParticleError,
                      InvalidIsotopeError)
 
-from .particle import Particle
+from .particle_class import Particle
 
 
 def nuclear_binding_energy(argument, mass_numb=None):

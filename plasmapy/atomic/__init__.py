@@ -1,8 +1,8 @@
 """Physical and mathematical constants for use within PlasmaPy."""
 
-from .special import ParticleZoo
+from .special_particles import ParticleZoo
 
-from .particle import Particle, particle_input
+from .particle_class import Particle, particle_input
 
 from .symbols import (
     atomic_symbol,

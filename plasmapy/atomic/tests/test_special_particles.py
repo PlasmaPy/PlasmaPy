@@ -1,6 +1,6 @@
 import pytest
 
-from ..special import (ParticleZoo, _Particles)
+from ..special_particles import (ParticleZoo, _Particles)
 
 particle_antiparticle_pairs = [
     ('e-', 'e+'),

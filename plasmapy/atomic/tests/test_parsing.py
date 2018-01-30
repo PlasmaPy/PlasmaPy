@@ -6,7 +6,7 @@ from ...utils import (
     AtomicWarning,
 )
 
-from ..special import ParticleZoo
+from ..special_particles import ParticleZoo
 
 from ..parsing import (
     _dealias_particle_aliases,

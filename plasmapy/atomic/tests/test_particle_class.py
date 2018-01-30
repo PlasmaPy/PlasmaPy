@@ -16,7 +16,7 @@ from ...utils import (
     ChargeError,
 )
 
-from ..particle import Particle, particle_input
+from ..particle_class import Particle, particle_input
 from ..parsing import _call_string
 
 # (arg, kwargs, results_dict

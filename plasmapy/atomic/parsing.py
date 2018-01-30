@@ -5,7 +5,7 @@ from typing import (Union, Dict)
 
 from .elements import (_atomic_symbols, _atomic_symbols_dict, _Elements)
 from .isotopes import _Isotopes
-from .special import _Particles, ParticleZoo
+from .special_particles import _Particles, ParticleZoo
 
 from ..utils import (AtomicWarning,
                      InvalidElementError,
