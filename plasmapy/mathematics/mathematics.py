@@ -155,7 +155,7 @@ def plasma_dispersion_func_deriv(zeta):
 
     return Zprime
 
-
+#%%
 def Fermi_integral(x, j):
     r"""Calculate the complete Fermi-Dirac integral.
 
@@ -212,6 +212,15 @@ def Fermi_integral(x, j):
     >>> Fermi_integral(1, 1)
     (1.8062860704447743-0j)
     """
-    arg = -np.exp(x)
-    integral = -1 * complex(polylog(j + 1, arg))
-    return integral
+    if isinstance(x, (int, float, complex)):
+        arg = -np.exp(x)
+        integral = -1 * complex(polylog(j + 1, arg))
+        return integral
+    elif isinstance(x, np.ndarray):
+        integral_arr = np.zeros_like(x, dtype='complex')
+        for idx, val in enumerate(x):
+            integral_arr[idx] = -1 * complex(polylog(j + 1, -np.exp(val)))
+        return integral_arr
+    else:
+        raise ValueError(f"Improper type {type(x)} given for argument x.")
+    

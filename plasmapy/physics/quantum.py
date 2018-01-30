@@ -8,6 +8,7 @@ gases and warm dense matter.
 import numpy as np
 from astropy import units as u
 from scipy.optimize import minimize
+from lmfit import minimize, Parameters
 
 from plasmapy import atomic, utils
 from plasmapy.utils.checks import check_quantity
@@ -408,22 +409,25 @@ def chemical_potential(n_e, T, tol=1e-6):
     # deBroglie wavelength
     lambdaDB = thermal_deBroglie_wavelength(T)
     # degeneracy parameter
-    degen = n_e * lambdaDB ** 3
-
-    def minFunc(alpha):
-        """Function to be minimized"""
-        # Note: alpha = mu / (k_B * T)
-        zeroVal = Fermi_integral(alpha, 1 / 2) - degen
-        return zeroVal
-    # optmizing minFunc to numerically obtain the ideal chemical potential
-    #!!! implement approximation for initial guess!!!
-    # https://de.wikipedia.org/wiki/Fermi-Dirac-Integral
-    alphaGuess = k_B * T / (k_B * T)
-    alphaFinal = minimize(minFunc,
-                          alphaGuess,
-                          method='Nelder-Mead',
-                          tol=tol)
-    return alphaFinal.to(u.dimensionless_unscaled)
+    degen = (n_e * lambdaDB ** 3).to(u.dimensionless_unscaled)
+    
+    # residual function for fitting parameters to Fermi_integral
+    def residual(params, data, eps_data):
+        alpha = params['alpha'].value
+        # note that alpha = mu / (k_B * T)
+        model = Fermi_integral(alpha, 0.5)
+        complexResidue = (data - model) / eps_data
+        return complexResidue.view(np.float)
+    
+    # setting parameters for fitting along with bounds
+    alphaGuess = 1 * u.dimensionless_unscaled
+    params = Parameters()
+    params.add('alpha', value=alphaGuess, min=0.0)
+    # calling minimize function from lmfit to fit by minimizing the residual
+    data = np.array([degen]) # result of Fermi_integral - degen should be zero
+    eps_data = np.array([1e-15]) # numerical error
+    minFit = minimize(residual, params, args=(data, eps_data))
+    return minFit.params['alpha'].value
 
 
 def chemical_potential_interp(n_e, T):
