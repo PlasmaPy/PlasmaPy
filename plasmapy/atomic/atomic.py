@@ -195,11 +195,12 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
     given.
     Examples
     --------
-    >>> from astropy import units
+
+    >>> from astropy import units as u
     >>> standard_atomic_weight("H")
     <Quantity 1.008 u>
     >>> # the following result accounts for small amount of deuterium
-    >>> standard_atomic_weight("H").to(units.kg)
+    >>> standard_atomic_weight("H").to(u.kg)
     <Quantity 1.67382335e-27 kg>
     >>> isotope_mass("H-1")
     <Quantity 1.00782503 u>
@@ -786,7 +787,7 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
     return half_life_sec
 
 
-def known_isotopes(argument: Union[str, int]=None) -> List[str]:
+def known_isotopes(argument: Union[str, int] = None) -> List[str]:
     r"""Returns a list of all known isotopes of an element, or a list
     of all known isotopes of every element if no input is provided.
     Parameters
@@ -863,8 +864,8 @@ def known_isotopes(argument: Union[str, int]=None) -> List[str]:
     return isotopes_list
 
 
-def common_isotopes(argument: Union[str, int]=None,
-                    most_common_only: bool=False) -> List[str]:
+def common_isotopes(argument: Union[str, int] = None,
+                    most_common_only: bool = False) -> List[str]:
     r"""Returns a list of isotopes of an element with an isotopic
     abundances greater than zero, or if no input is provided, a list
     of all such isotopes for every element.
@@ -963,7 +964,7 @@ def common_isotopes(argument: Union[str, int]=None,
     return isotopes_list
 
 
-def stable_isotopes(argument: Union[str, int]=None,
+def stable_isotopes(argument: Union[str, int] = None,
                     unstable: bool = False) -> List[str]:
     r"""Returns a list of all stable isotopes of an element, or if no
     input is provided, a list of all such isotopes for every element.

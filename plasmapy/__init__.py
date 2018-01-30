@@ -5,6 +5,7 @@
 # Python 2 compliance is needed to raise the correct ImportError.
 
 import sys
+from . import utils
 
 
 def _split_version(version):
@@ -32,8 +33,6 @@ if sys.version_info < _split_version(__minimum_python_version__):
         "from Python version {}."
         .format(__minimum_python_version__, sys.version.split()[0]))
 
-from . import utils
-
 utils.check_versions(__minimum_versions__)
 
 # The file version.py is created by installing PlasmaPy with setup.py
@@ -58,7 +57,7 @@ except ImportError:
     raise ImportError("Unable to load PlasmaPy subpackages.")
 
 try:
-    from astropy import units
+    from astropy import units as u
 except ImportError:
     raise ImportError("Unable to import astropy.units as a PlasmaPy submodule")
 
