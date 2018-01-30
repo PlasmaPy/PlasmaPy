@@ -5,7 +5,7 @@ from astropy import units as u
 import numpy as np
 import plasmapy.atomic as atomic
 from plasmapy import utils
-from plasmapy.utils.checks import check_quantity, _check_relativistic
+from plasmapy.utils.checks import check_quantity, check_relativistic
 from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar)
 from ..atomic import (ion_mass, integer_charge)
@@ -27,8 +27,8 @@ import warnings
 def Coulomb_logarithm(T,
                       n_e,
                       particles,
-                      z_mean=None,
-                      V=None,
+                      z_mean=np.nan*u.dimensionless_unscaled,
+                      V=np.nan*u.m/u.s,
                       method="classical"):
     r"""
     Estimates the Coulomb logarithm.
@@ -200,6 +200,7 @@ def Coulomb_logarithm(T,
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
     return ln_Lambda
 
+#@check_relativistic
 def _boilerPlate(T, particles, V):
     """
     Some boiler plate code for checking if inputs to functions in
@@ -235,10 +236,10 @@ def _boilerPlate(T, particles, V):
     # obtaining reduced mass of 2 particle collision system
     reduced_mass = masses[0] * masses[1] / (masses[0] + masses[1])
     # getting thermal velocity of system if no velocity is given
-    if V is None:
+    if np.isnan(V):
         V = np.sqrt(2 * k_B * T / reduced_mass)
-    else:
-        _check_relativistic(V, 'impact_parameter', betafrac=0.8)
+#    else:
+#        _check_relativistic(V, 'impact_parameter', betafrac=0.8)
     return (T, masses, charges, reduced_mass, V)
 
 
@@ -246,7 +247,7 @@ def _boilerPlate(T, particles, V):
                  })
 def b_perp(T,
            particles,
-           V=None):
+           V=np.nan*u.m/u.s):
     """
     Distance of closest approach for a 90 degree Coulomb collision
     """
@@ -269,8 +270,8 @@ def b_perp(T,
 def impact_parameter(T,
                      n_e,
                      particles,
-                     z_mean=None,
-                     V=None,
+                     z_mean=np.nan*u.dimensionless_unscaled,
+                     V=np.nan*u.m/u.s,
                      method="classical"):
     r"""Impact parameter for classical Coulomb collision
 
@@ -357,7 +358,7 @@ def impact_parameter(T,
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
     if method == "GMS-2" or method == "GMS-5" or method == "GMS-6":
-        if z_mean == None:
+        if np.isnan(z_mean):
             raise ValueError("Must provide a z_mean for GMS-2, GMS-5, and "
                              "GMS-6 methods.")
     # Debye length
@@ -436,8 +437,8 @@ def impact_parameter(T,
 def collision_frequency(T,
                         n,
                         particles,
-                        z_mean=None,
-                        V=None):
+                        z_mean=np.nan*u.dimensionless_unscaled,
+                        V=np.nan*u.m/u.s):
     r"""Collision frequency of particles in a plasma.
 
     Parameters
@@ -534,7 +535,7 @@ def collision_frequency(T,
                                     n,
                                     particles,
                                     z_mean,
-                                    V=None,
+                                    V=np.nan*u.m/u.s,
                                     method="classical")
     elif particles[0] == 'e' or particles[1] == 'e':
         # electron-ion collision
@@ -553,7 +554,7 @@ def collision_frequency(T,
                                     n,
                                     particles,
                                     z_mean,
-                                    V=None,
+                                    V=np.nan*u.m/u.s,
                                     method="classical")
     else:
         # ion-ion collision
@@ -565,7 +566,7 @@ def collision_frequency(T,
                                     n,
                                     particles,
                                     z_mean,
-                                    V=None,
+                                    V=np.nan*u.m/u.s,
                                     method="classical")
     # collisional cross section
     sigma = np.pi * (2 * bPerp) ** 2
@@ -582,8 +583,8 @@ def collision_frequency(T,
 def mean_free_path(T,
                    n_e,
                    particles,
-                   z_mean=None,
-                   V=None):
+                   z_mean=np.nan*u.dimensionless_unscaled,
+                   V=np.nan*u.m/u.s):
     r"""Collisional mean free path (m)
 
     Parameters
@@ -681,8 +682,8 @@ def mean_free_path(T,
 def Spitzer_resistivity(T,
                         n,
                         particles,
-                        z_mean=None,
-                        V=None):
+                        z_mean=np.nan*u.dimensionless_unscaled,
+                        V=np.nan*u.m/u.s):
     r"""Spitzer resistivity of a plasma
 
     Parameters
@@ -786,8 +787,8 @@ def Spitzer_resistivity(T,
 def mobility(T,
              n_e,
              particles,
-             z_mean=None,
-             V=None):
+             z_mean=np.nan*u.dimensionless_unscaled,
+             V=np.nan*u.m/u.s):
     r"""Electrical mobility (m^2/(V s))
 
     Parameters
@@ -876,7 +877,7 @@ def mobility(T,
                                particles=particles,
                                z_mean=z_mean,
                                V=V)
-    if z_mean == None:
+    if np.isnan(z_mean):
         z_val = (charges[0] + charges[1]) / 2
     else:
         z_val = z_mean
@@ -891,8 +892,8 @@ def knudsen(characteristic_length,
             T,
             n_e,
             particles,
-            z_mean=None,
-            V=None):
+            z_mean=np.nan*u.dimensionless_unscaled,
+            V=np.nan*u.m/u.s):
     r"""Knudsen number (dimless)
 
     Parameters
@@ -985,7 +986,7 @@ def knudsen(characteristic_length,
 def coupling_parameter(T,
                        n_e,
                        particles,
-                       V=None,
+                       V=np.nan*u.m/u.s,
                        method="classical"):
     r"""Coupling parameter.
     Coupling parameter compares Coulomb energy to kinetic energy (typically)

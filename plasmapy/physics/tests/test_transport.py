@@ -42,56 +42,147 @@ def count_decimal_places(digits):
     return len(fractional)
 
 
-def test_Coulomb_logarithm():
-
-    n_e = np.array([1e9, 1e9, 1e24]) * u.cm**-3
-    T = np.array([1e2, 1e7, 1e8]) * u.K
-    Lambda = np.array([5.56, 21.45, 6.48])
-    particles = ('e', 'p')
-
-    for i in range(3):
-        assert np.isclose(Coulomb_logarithm(T[i], n_e[i], particles),
-                          Lambda[i], atol=0.01)
-
-    assert np.isclose(Coulomb_logarithm(1 * u.eV, 5 * u.m**-3, ('e', 'e')),
-                      Coulomb_logarithm(11604.5220 * u.K,
-                                        5 * u.m**-3,
-                                        ('e', 'e')))
-
-    assert np.isclose(Coulomb_logarithm(1e2 * u.K, 1e9 * u.cm**-3, ('e', 'p')),
-                      5.56, atol=0.01)
-
-    assert np.isclose(Coulomb_logarithm(1e7 * u.K, 1e9 * u.cm**-3, ('e', 'p')),
-                      21.45, atol=0.1)
-
-    assert np.isclose(Coulomb_logarithm(1e8 * u.K,
-                                        1e24 * u.cm**-3,
-                                        ('e', 'p')),
-                      6.48, atol=0.01)
-
-    assert np.allclose(Coulomb_logarithm(T, n_e, particles), Lambda, atol=0.01)
-
-    assert np.isclose(Coulomb_logarithm(1e5 * u.K, 5 * u.m**-3, ('e', 'e'),
-                                        V=1e4 * u.m / u.s), 21.379082011)
-
-    with pytest.warns(RelativityWarning):
-        Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), 0.9 * c)
-
-    with pytest.raises(RelativityError):
-        Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), 1.0 * c)
-
-    with pytest.raises(u.UnitConversionError):
-        Coulomb_logarithm(1e5 * u.g, 1 * u.m**-3,
+class Test_Coulomb_logarithm(object):
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.n_e = np.array([1e9, 1e9, 1e24]) * u.cm**-3
+        self.T = np.array([1e2, 1e7, 1e8]) * u.K
+        self.Lambda = np.array([5.56, 21.45, 6.48])
+        self.particles = ('e', 'p')
+    def test_Chen_Q_machine(self):
+        """
+        Tests whether Coulomb logarithm gives value consistent with 
+        Chen's Introduction to Plasma Physics and Controlled Fusion
+        section 5.6.2 Q-machine example.
+        """
+        T = 0.2 * u.eV
+        T = T.to(u.K, equivalencies=u.temperature_energy())
+        n = 1e15 * u.m ** -3
+        # factor of np.log(2) corrects for different definitions of thermal
+        # velocity. Chen uses v**2 = k * T / m  whereas we use
+        # v ** 2 = 2 * k * T / m
+        lnLambdaChen = 9.1 + np.log(2) 
+        lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
+        testTrue = np.isclose(lnLambda,
+                              lnLambdaChen,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = ("Q-machine value of Coulomb logarithm should be "
+                  f"{lnLambdaChen} and not {lnLambda}.")
+        assert testTrue, errStr
+    def test_Chen_lab(self):
+        """
+        Tests whether Coulomb logarithm gives value consistent with 
+        Chen's Introduction to Plasma Physics and Controlled Fusion
+        section 5.6.2 lab plasma example.
+        """
+        T = 2 * u.eV
+        T = T.to(u.K, equivalencies=u.temperature_energy())
+        n = 1e17 * u.m ** -3
+        # factor of np.log(2) corrects for different definitions of thermal
+        # velocity. Chen uses v**2 = k * T / m  whereas we use
+        # v ** 2 = 2 * k * T / m
+        lnLambdaChen = 10.2 + np.log(2) 
+        lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
+        testTrue = np.isclose(lnLambda,
+                              lnLambdaChen,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = ("Lab plasma value of Coulomb logarithm should be "
+                  f"{lnLambdaChen} and not {lnLambda}.")
+        assert testTrue, errStr
+    def test_Chen_torus(self):
+        """
+        Tests whether Coulomb logarithm gives value consistent with 
+        Chen's Introduction to Plasma Physics and Controlled Fusion
+        section 5.6.2 torus example.
+        """
+        T = 100 * u.eV
+        T = T.to(u.K, equivalencies=u.temperature_energy())
+        n = 1e19 * u.m ** -3
+        # factor of np.log(2) corrects for different definitions of thermal
+        # velocity. Chen uses v**2 = k * T / m  whereas we use
+        # v ** 2 = 2 * k * T / m
+        lnLambdaChen = 13.7 + np.log(2) 
+        lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
+        testTrue = np.isclose(lnLambda,
+                              lnLambdaChen,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = ("Torus value of Coulomb logarithm should be "
+                  f"{lnLambdaChen} and not {lnLambda}.")
+        assert testTrue, errStr
+    def test_Chen_fusion(self):
+        """
+        Tests whether Coulomb logarithm gives value consistent with 
+        Chen's Introduction to Plasma Physics and Controlled Fusion
+        section 5.6.2 fusion reactor example.
+        """
+        T = 1e4 * u.eV
+        T = T.to(u.K, equivalencies=u.temperature_energy())
+        n = 1e21 * u.m ** -3
+        # factor of np.log(2) corrects for different definitions of thermal
+        # velocity. Chen uses v**2 = k * T / m  whereas we use
+        # v ** 2 = 2 * k * T / m
+        lnLambdaChen = 16 + np.log(2) 
+        lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
+        testTrue = np.isclose(lnLambda,
+                              lnLambdaChen,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = ("Fusion reactor value of Coulomb logarithm should be "
+                  f"{lnLambdaChen} and not {lnLambda}.")
+        assert testTrue, errStr
+    def test_Chen_laser(self):
+        """
+        Tests whether Coulomb logarithm gives value consistent with 
+        Chen's Introduction to Plasma Physics and Controlled Fusion
+        section 5.6.2 laser plasma example.
+        """
+        T = 1e3 * u.eV
+        T = T.to(u.K, equivalencies=u.temperature_energy())
+        n = 1e27 * u.m ** -3
+        # factor of np.log(2) corrects for different definitions of thermal
+        # velocity. Chen uses v**2 = k * T / m  whereas we use
+        # v ** 2 = 2 * k * T / m
+        lnLambdaChen = 6.8 + np.log(2) 
+        lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
+        testTrue = np.isclose(lnLambda,
+                              lnLambdaChen,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = ("Laser plasma value of Coulomb logarithm should be "
+                  f"{lnLambdaChen} and not {lnLambda}.")
+        assert testTrue, errStr
+    def test_relativity_warn(self):
+        """Tests whether relativity warning is raised at high velocity."""
+        with pytest.warns(RelativityWarning):
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), 0.9 * c)
+    def test_relativity_error(self):
+        """Tests whether relativity error is raised at light speed."""
+        with pytest.raises(RelativityError):
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), 1.1 * c)
+    def test_unit_conversion_error(self):
+        """
+        Tests whether unit conversion error is raised when arguments
+        are given with incorrect units.
+        """
+        with pytest.raises(u.UnitConversionError):
+            Coulomb_logarithm(1e5 * u.g, 1 * u.m**-3,
                           ('e', 'p'), 29979245 * u.m / u.s)
-
-    with pytest.raises(ValueError):
-        Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e'))
-
-    with pytest.raises(ValueError):
-        Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e', 'g'))
-
-    with pytest.raises(ValueError):
-        Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e', 'D'))
+    def test_single_particle_error(self):
+        """
+        Tests whether an error is raised if only a single particle is given.
+        """
+        with pytest.raises(ValueError):
+            Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e'))
+    def test_invalid_particle_error(self):
+        """
+        Tests whether an error is raised when an invalid particle name
+        is given.
+        """
+        with pytest.raises(ValueError):
+            Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e', 'g'))
 
 
 # test class for classical_transport class:
