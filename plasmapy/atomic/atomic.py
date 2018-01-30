@@ -7,7 +7,7 @@ from typing import (Union, Optional, List)
 from astropy import units as u, constants as const
 from astropy.units import Quantity
 
-from .elements import _Elements
+from .elements import _Elements, _atomic_symbols_dict, _atomic_symbols
 from .isotopes import _Isotopes
 
 from ..utils import (
