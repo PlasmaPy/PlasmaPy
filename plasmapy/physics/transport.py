@@ -197,7 +197,7 @@ def Coulomb_logarithm(T,
         # Lambda < 0 impossible.
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     # applying dimensionless units
-    ln_Lambda = ln_Lambda.to(units.dimensionless_unscaled).value
+    ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
     return ln_Lambda
 
 def _boilerPlate(T, particles, V):
@@ -207,7 +207,7 @@ def _boilerPlate(T, particles, V):
     2 particle collision system along with thermal velocity.
     """
     # checking temperature is in correct units
-    T = T.to(units.K, equivalencies=units.temperature_energy())
+    T = T.to(u.K, equivalencies=u.temperature_energy())
     # extracting particle information
     if not isinstance(particles, (list, tuple)) or len(particles) != 2:
         raise ValueError("Particles input must be a "
@@ -242,7 +242,7 @@ def _boilerPlate(T, particles, V):
     return (T, masses, charges, reduced_mass, V)
 
 
-@check_quantity({"T": {"units": units.K, "can_be_negative": False}
+@check_quantity({"T": {"units": u.K, "can_be_negative": False}
                  })
 def b_perp(T,
            particles,
@@ -260,11 +260,11 @@ def b_perp(T,
     # included here in the future
     bPerp = (charges[0] * charges[1] /
              (4 * pi * eps0 * reduced_mass * V ** 2))
-    return bPerp.to(units.m)
+    return bPerp.to(u.m)
 
 
-@check_quantity({"T": {"units": units.K, "can_be_negative": False},
-                 "n_e": {"units": units.m**-3}
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m**-3}
                  })
 def impact_parameter(T,
                      n_e,
@@ -336,12 +336,12 @@ def impact_parameter(T,
     Examples
     --------
     >>> from astropy import units as u
-    >>> n = 1e19*units.m**-3
-    >>> T = 1e6*units.K
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> impact_parameter(T, n, particles)
     (<Quantity 1.05163088e-11 m>, <Quantity 2.18225522e-05 m>)
-    >>> impact_parameter(T, n, particles, V=1e6*units.m/units.s)
+    >>> impact_parameter(T, n, particles, V=1e6*u.m/u.s)
     (<Quantity 2.53401778e-10 m>, <Quantity 2.18225522e-05 m>)
 
     References
@@ -427,11 +427,11 @@ def impact_parameter(T,
         bmin = (lambdaDB ** 2 + bPerp ** 2) ** (1 / 2)
     else:
         raise ValueError(f"Method {method} not found!")
-    return (bmin.to(units.m), bmax.to(units.m))
+    return (bmin.to(u.m), bmax.to(u.m))
 
 
-@check_quantity({"T": {"units": units.K, "can_be_negative": False},
-                 "n": {"units": units.m**-3}
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n": {"units": u.m**-3}
                  })
 def collision_frequency(T,
                         n,
@@ -508,8 +508,8 @@ def collision_frequency(T,
     Examples
     --------
     >>> from astropy import units as u
-    >>> n = 1e19*units.m**-3
-    >>> T = 1e6*units.K
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> collision_frequency(T, n, particles)
     <Quantity 702505.15998601 Hz>
@@ -573,11 +573,11 @@ def collision_frequency(T,
     # small angle collisions, which are more frequent than large
     # angle collisions.
     freq =  n * sigma * V * cou_log
-    return freq.to(units.Hz)
+    return freq.to(u.Hz)
 
 
-@check_quantity({"T": {"units": units.K, "can_be_negative": False},
-                 "n_e": {"units": units.m**-3}
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m**-3}
                  })
 def mean_free_path(T,
                    n_e,
@@ -648,12 +648,12 @@ def mean_free_path(T,
     Examples
     --------
     >>> from astropy import units as u
-    >>> n = 1e19*units.m**-3
-    >>> T = 1e6*units.K
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> mean_free_path(T, n, particles)
     14.545527226436974
-    >>> mean_free_path(T, n, particles, V=1e6*units.m/units.s)
+    >>> mean_free_path(T, n, particles, V=1e6*u.m/u.s)
     11.363478214139432
 
     References
@@ -672,11 +672,11 @@ def mean_free_path(T,
                                V=V)
     # mean free path length
     mfp = V / freq
-    return mfp.to(units.m)
+    return mfp.to(u.m)
 
 
-@check_quantity({"T": {"units": units.K, "can_be_negative": False},
-                 "n": {"units": units.m**-3}
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n": {"units": u.m**-3}
                  })
 def Spitzer_resistivity(T,
                         n,
@@ -753,12 +753,12 @@ def Spitzer_resistivity(T,
     Examples
     --------
     >>> from astropy import units as u
-    >>> n = 1e19*units.m**-3
-    >>> T = 1e6*units.K
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> Spitzer_resistivity(T, n, particles)
     <Quantity 2.4916169e-06 m Ohm>
-    >>> Spitzer_resistivity(T, n, particles, V=1e6*units.m/units.s)
+    >>> Spitzer_resistivity(T, n, particles, V=1e6*u.m/u.s)
     <Quantity 2.4916169e-06 m Ohm>
 
     References
@@ -777,11 +777,11 @@ def Spitzer_resistivity(T,
                                z_mean=z_mean,
                                V=V)
     spitzer = freq * reduced_mass / (n * charges[0] * charges[1])
-    return spitzer.to(units.Ohm * units.m)
+    return spitzer.to(u.Ohm * u.m)
 
 
-@check_quantity({"T": {"units": units.K, "can_be_negative": False},
-                 "n_e": {"units": units.m**-3}
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m**-3}
                  })
 def mobility(T,
              n_e,
@@ -855,12 +855,12 @@ def mobility(T,
     Examples
     --------
     >>> from astropy import units as u
-    >>> n = 1e19*units.m**-3
-    >>> T = 1e6*units.K
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> mobility(T, n, particles)
     14.545527226436974
-    >>> mobility(T, n, particles, V=1e6*units.m/units.s)
+    >>> mobility(T, n, particles, V=1e6*u.m/u.s)
     11.363478214139432
 
     References
@@ -881,11 +881,11 @@ def mobility(T,
     else:
         z_val = z_mean
     mobility_value = z_val / (reduced_mass * freq)
-    return mobility_value.to(units.m ** 2 / (units.V * units.s))
+    return mobility_value.to(u.m ** 2 / (u.V * u.s))
 
 
-@check_quantity({"T": {"units": units.K, "can_be_negative": False},
-                 "n_e": {"units": units.m**-3}
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m**-3}
                  })
 def knudsen(characteristic_length,
             T,
@@ -957,13 +957,13 @@ def knudsen(characteristic_length,
     Examples
     --------
     >>> from astropy import units as u
-    >>> L = 1e-3 * units.m
-    >>> n = 1e19*units.m**-3
-    >>> T = 1e6*units.K
+    >>> L = 1e-3 * u.m
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> knudsen(L, T, n, particles)
     14.545527226436974
-    >>> knudsen(L, T, n, particles, V=1e6*units.m/units.s)
+    >>> knudsen(L, T, n, particles, V=1e6*u.m/u.s)
     11.363478214139432
 
     References
@@ -976,11 +976,11 @@ def knudsen(characteristic_length,
                                  z_mean=z_mean,
                                  V=V)
     knudsen_param = path_length / characteristic_length
-    return knudsen_param.to(units.dimensionless_unscaled)
+    return knudsen_param.to(u.dimensionless_unscaled)
 
 
-@check_quantity({"T": {"units": units.K, "can_be_negative": False},
-                 "n_e": {"units": units.m**-3}
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m**-3}
                  })
 def coupling_parameter(T,
                        n_e,
@@ -1042,12 +1042,12 @@ def coupling_parameter(T,
     Examples
     --------
     >>> from astropy import units as u
-    >>> n = 1e19*units.m**-3
-    >>> T = 1e6*units.K
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> coupling_parameter(T, n, particles)
     <Quantity 5.80330315e-05>
-    >>> coupling_parameter(T, n, particles, V=1e6*units.m/units.s)
+    >>> coupling_parameter(T, n, particles, V=1e6*u.m/u.s)
     <Quantity 5.80330315e-05>
 
     References
@@ -1077,7 +1077,7 @@ def coupling_parameter(T,
         denom = (n_e * lambda_deBroglie ** 3) * fermiIntegral
         kineticEnergy = 2 * k_B * T / denom
     coupling = coulombEnergy / kineticEnergy
-    return coupling.to(units.dimensionless_unscaled)
+    return coupling.to(u.dimensionless_unscaled)
 
 
 class classical_transport:

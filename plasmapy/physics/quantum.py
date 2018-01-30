@@ -294,7 +294,7 @@ def Thomas_Fermi_length(n_e):
 
 
 @check_quantity({
-    'n': {'units': units.m**-3, 'can_be_negative': False}
+    'n': {'units': u.m**-3, 'can_be_negative': False}
 })
 def Wigner_Seitz_radius(n):
     r"""Calculate the Wigner-Seitz radius, which approximates the inter-
@@ -350,7 +350,7 @@ def Wigner_Seitz_radius(n):
 
     """
     radius = (3 / (4 * np.pi * n)) ** (1 / 3)
-    return radius.to(units.m)
+    return radius.to(u.m)
 
 
 def chemical_potential(n_e, T, tol=1e-6):
@@ -423,7 +423,7 @@ def chemical_potential(n_e, T, tol=1e-6):
                           alphaGuess,
                           method='Nelder-Mead',
                           tol=tol)
-    return alphaFinal.to(units.dimensionless_unscaled)
+    return alphaFinal.to(u.dimensionless_unscaled)
 
 
 def chemical_potential_interp(n_e, T):
@@ -449,4 +449,4 @@ def chemical_potential_interp(n_e, T):
     term3den = 1 + A * theta ** (-b)
     term3 = term3num / term3den
     mu = term1 + term2 + term3
-    return mu.to(units.dimensionless_unscaled)
+    return mu.to(u.dimensionless_unscaled)
