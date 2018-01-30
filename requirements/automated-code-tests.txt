@@ -3,5 +3,6 @@ scipy (>= 0.19)
 cython
 astropy (>= 2.0)
 mpmath (>=1.0.0)
+lmfit (>=0.9.7)
 flake8
 coveralls
