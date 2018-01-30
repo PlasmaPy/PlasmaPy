@@ -1314,10 +1314,7 @@ def periodic_table_period(argument: Union[str, int]) -> int:
                         "symbol, or an integer representing its atomic " +
                         "number.")
     atomic_symbol = _get_atomic_symbol(argument)
-    try:
-        period = _Elements[atomic_symbol]["period"]
-    except Exception:
-        raise ValueError("Invalid atomic symbol.")
+    period = _Elements[atomic_symbol]["period"]
     return period
 
 
@@ -1376,10 +1373,7 @@ def periodic_table_group(argument: Union[str, int]) -> int:
                         "symbol, or an integer representing its atomic " +
                         "number.")
     atomic_symbol = _get_atomic_symbol(argument)
-    try:
-        group = _Elements[atomic_symbol]["group"]
-    except Exception:
-        raise ValueError("Invalid atomic symbol.")
+    group = _Elements[atomic_symbol]["group"]
     return group
 
 
@@ -1438,10 +1432,7 @@ def periodic_table_block(argument: Union[str, int]) -> str:
                         "symbol, or an integer representing its atomic " +
                         "number.")
     atomic_symbol = _get_atomic_symbol(argument)
-    try:
-        block = _Elements[atomic_symbol]["block"]
-    except Exception:
-        raise ValueError("Invalid atomic symbol.")
+    block = _Elements[atomic_symbol]["block"]
     return block
 
 
@@ -1497,10 +1488,7 @@ def periodic_table_category(argument: Union[str, int]) -> str:
                         "symbol, or an integer representing its atomic " +
                         "number.")
     atomic_symbol = _get_atomic_symbol(argument)
-    try:
-        category = _Elements[atomic_symbol]["category"]
-    except Exception:
-        raise ValueError("Invalid atomic symbol.")
+    category = _Elements[atomic_symbol]["category"]
     return category
 
 
