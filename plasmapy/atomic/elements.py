@@ -1,4 +1,8 @@
-"""Dictionaries containing atomic data"""
+"""
+Dictionaries containing atomic data
+Periodic table data from http://periodic.lanl.gov/index.shtml
+
+"""
 
 from astropy import units as u, constants as const
 
