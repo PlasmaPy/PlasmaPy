@@ -10,7 +10,8 @@ from .isotopes import _Isotopes
 from .special_particles import ParticleZoo
 
 from .parsing import _dealias_particle_aliases
-from .particle_class import Particle, particle_input
+from .particle_class import Particle
+from .particle_decorator import particle_input
 
 from ..utils import (AtomicWarning,
                      InvalidElementError,
