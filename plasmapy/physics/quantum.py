@@ -440,7 +440,7 @@ def chemical_potential(n_e, T, tol=1e-6):
 def chemical_potential_interp(n_e, T):
     r"""
     Fitting formula for interpolating chemical potential between classical
-    and quantum regimes [1, 2]_.
+    and quantum regimes [1]_, [2]_.
     
     Parameters
     ----------

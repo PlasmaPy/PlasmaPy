@@ -103,7 +103,7 @@ def Coulomb_logarithm(T,
     screened out due to electrons rearranging themselves.
 
     The choice of inner impact parameter is the distance of closest
-    approach for a 90 degree Coulomb collision [2, 3]_.
+    approach for a 90 degree Coulomb collision [2]_, [3]_.
     
     Errors associated with the classical Coulomb logarithm are of order its
     inverse. If the Coulomb logarithm is of order unity, then the
