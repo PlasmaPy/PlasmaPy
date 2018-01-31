@@ -75,7 +75,7 @@ def particle_input(wrapped_function=None, **kwargs):
             for argname in argnames:
                 argval = arguments[argname]
 
-                should_be_particle = argname in annotations.keys()
+                should_be_particle = argname in args_to_become_particles
                 not_already_particle = not isinstance(argval, Particle)
 
                 if should_be_particle and not_already_particle:
