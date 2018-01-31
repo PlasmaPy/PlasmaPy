@@ -395,6 +395,10 @@ def chemical_potential(n_e, T, tol=1e-6):
     The definition for the ideal chemical potential is implicit, so it must
     be obtained numerically by solving for the Fermi integral for values
     of chemical potential approaching the degeneracy parameter.
+    
+    Warning: at present this function is limited to relatively small
+    arguments due to limitations in the mpmath package's implementation
+    of polylog, which PlasmaPy uses in calculating the Fermi integral.
 
     References
     ----------
@@ -403,8 +407,8 @@ def chemical_potential(n_e, T, tol=1e-6):
     Example
     -------
     >>> from astropy import units as u
-    >>> Wigner_Seitz_radius(1e29 * u.m**-3)
-    <Quantity 1.33650462e-10 m>
+    >>> chemical_potential(n_e=1e21*u.cm**-3, T=11000*u.K)
+    <Quantity 2.00039985e-12>
     """
     # deBroglie wavelength
     lambdaDB = thermal_deBroglie_wavelength(T)
@@ -427,21 +431,72 @@ def chemical_potential(n_e, T, tol=1e-6):
     data = np.array([degen]) # result of Fermi_integral - degen should be zero
     eps_data = np.array([1e-15]) # numerical error
     minFit = minimize(residual, params, args=(data, eps_data))
-    return minFit.params['alpha'].value
+    return minFit.params['alpha'].value * u.dimensionless_unscaled
 
 
 def chemical_potential_interp(n_e, T):
-    """
+    r"""
     Fitting formula for interpolating chemical potential between classical
-    and quantum regimes [1]_.
+    and quantum regimes [1, 2]_.
+    
+    Parameters
+    ----------
+    n_e: Quantity
+        Electron number density
+        
+    T : Quantity
+        Temperature in units of temperature or energy
 
+    Returns
+    -------
+    mu: Quantity
+        The dimensionless chemical potential, which is a ratio of
+        chemical potential energy to thermal kinetic energy.
+
+    Raises
+    ------
+    TypeError
+        If argument is not a Quantity
+
+    UnitConversionError
+        If argument is in incorrect units
+
+    ValueError
+        If argument contains invalid values
+
+    UserWarning
+        If units are not provided and SI units are assumed
+
+    Notes
+    -----
+    The ideal chemical potential is given by [1]_:
+
+    .. math::
+        \frac{\mu}{k_B T_e} = - \frac{3}{2} \ln \Theta + \ln \frac{4}{3 \sqrt{\pi}} + \frac{A \Theta^{-b - 1} + B \Theta^{-(b + 1) / 2}}{1 + A \Theta^{-b}}
+    
+    where
+    
+    .. math::
+        \Theta = \frac{k_B T_e}{E_F}
+        
+    is the degeneracy parameter, comparing the thermal energy to the Fermi
+    energy, and the coefficients for the fitting formula
+    are A=0.25945, B=0.0072, b=0.858.
+    
+    
     References
     ----------
     .. [1] Ichimaru, Statistical Plasma Physics Addison-Wesley,
        Reading, MA, 1991.
 
-    Gregori, G., et al. "Theoretical model of x-ray scattering as a
-    dense matter probe." Physical Review E 67.2 (2003): 026412.
+    .. [2] Gregori, G., et al. "Theoretical model of x-ray scattering as a
+       dense matter probe." Physical Review E 67.2 (2003): 026412.
+    
+    Example
+    -------
+    >>> from astropy import units as u
+    >>> chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
+    <Quantity 8.17649673>
     """
     A = 0.25945
     B = 0.072

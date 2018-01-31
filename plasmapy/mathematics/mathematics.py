@@ -197,6 +197,10 @@ def Fermi_integral(x, j):
 
     .. math::
         F_j (x) = -Li_{j+1}\left(-e^{x}\right)
+        
+    Warning: at present this function is limited to relatively small
+    arguments due to limitations in the mpmath package's implementation
+    of polylog.
 
     References
     ----------
