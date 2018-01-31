@@ -29,10 +29,17 @@ def particle_input(wrapped_function=None, **kwargs):
             # modified in order to work with classes.
 
             bound_args = wrapped_signature.bind(*args, **kwargs)
+            arguments = bound_args.arguments
+            argnames = bound_args.arguments.keys()
 
             annotations = wrapped_function.__annotations__
 
-            if not annotations.keys:
+            args_to_become_particles = [
+                argname for argname in annotations.keys()
+                if annotations[argname] is Particle
+            ]
+
+            if not args_to_become_particles:
                 raise AtomicError(
                     f"None of the arguments or keywords to {func.__name__} "
                     f"have been annotated with the Particle class as required "
@@ -44,13 +51,13 @@ def particle_input(wrapped_function=None, **kwargs):
             # Particle is exactly one, then the Z and mass_numb keywords
             # can be used without potential for ambiguity.
 
-            if len(annotations.keys()) == 1:
-                Z = bound_args.arguments.get('Z', None)
-                mass_numb = bound_args.arguments.get('mass_numb', None)
+            if len(args_to_become_particles) == 1:
+                Z = arguments.get('Z', None)
+                mass_numb = arguments.get('mass_numb', None)
             else:
-                if 'Z' in annotations.keys():
+                if 'Z' in argnames:
                     raise AtomicError
-                elif 'mass_numb' in annotations.keys():
+                elif 'mass_numb' in argnames:
                     raise AtomicError
                 else:
                     Z = None
@@ -65,8 +72,8 @@ def particle_input(wrapped_function=None, **kwargs):
 
             new_kwargs = {}
 
-            for argname in bound_args.arguments.keys():
-                argval = bound_args.arguments[argname]
+            for argname in argnames:
+                argval = arguments[argname]
 
                 should_be_particle = argname in annotations.keys()
                 not_already_particle = not isinstance(argval, Particle)

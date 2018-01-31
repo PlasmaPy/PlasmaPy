@@ -1,50 +1,54 @@
 import pytest
 import warnings
 
-from ...utils import AtomicError
+from ...utils import AtomicError, InvalidParticleError
 from ..particle_class import Particle
 from ..particle_input import particle_input
 
 
 @particle_input
-def simple_decorated_function(particle: Particle):
-    r"""Returns the appropriate instance of the Particle class."""
-
+def func_simple_noparens(
+        a, particle: Particle, b=None, Z: int = None, mass_numb: int = None):
     if not isinstance(particle, Particle):
-        warnings.warn(
-            f"In simple_decorated_function, the input particle = {particle} "
-            "is not an instance of the Particle class.  Instead")
-
+        raise TypeError(
+            f"The argument particle in func_simple_noparens is not a Particle")
     return particle
 
 
-def test_simple_decorated_function():
-    symbol = 'p+'
-    expected = Particle(symbol)
+@particle_input()
+def func_simple_parens(
+        a, particle: Particle, b=None, Z: int = None, mass_numb: int = None):
+    if not isinstance(particle, Particle):
+        raise TypeError(
+            f"The argument particle in func_simple_parens is not a Particle")
+    return particle
 
-    result = simple_decorated_function(symbol)
 
-    if not isinstance(result, Particle):
+particle_input_simple_table = [
+    (func_simple_noparens, (1, 'p+'), {'b': 2}, 'p+'),
+    (func_simple_parens, (1, 'p+'), {'b': 2}, 'p+'),
+    (func_simple_noparens, (1, 'Fe'), {'mass_numb': 56, 'Z': 3}, 'Fe-56 3+'),
+    (func_simple_parens, (1, 'Fe'), {'mass_numb': 56, 'Z': 3}, 'Fe-56 3+'),
+]
+
+
+@pytest.mark.parametrize(
+    'func, args, kwargs, symbol', particle_input_simple_table)
+def test_particle_input_simple(func, args, kwargs, symbol):
+
+    try:
+        expected = Particle(symbol)
+    except Exception as e:
         raise AtomicError(
-            f"The result from simple_decorated_function is {repr(result)},"
-            f" which should be an instance of the Particle class but is "
-            f"actually of type {type(result)}.")
+            f"Cannot create Particle class from symbol {symbol}") from e
 
-    assert result == expected, \
-        (f"The result = {repr(result)} is not equal to expected = "
-         f"{expected}.")
+    try:
+        result = func(*args, **kwargs)
+    except Exception as e:
+        raise AtomicError(
+            f"An exception was raised while trying to execute "
+            f"{func} with args = {args} and kwargs = {kwargs}.") from e
 
-
-def test_class_method():
-
-    class SomeClass:
-        @particle_input
-        def decorated_method(particle):
-            if not isinstance(particle, Particle):
-                warnings.warn("particle is not a Particle in "
-                              "simpled_decorated_function")
-            return particle
-
-    someclass = SomeClass()
-    symbol = 'p+'
-    assert someclass.decorated_method(symbol) == Particle(symbol)
+    assert result == expected, (
+        f"The result {repr(result)} does not equal the expected value of "
+        f"{repr(expected)}.")
