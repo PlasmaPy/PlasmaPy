@@ -394,7 +394,10 @@ def chemical_potential(n_e, T, tol=1e-6):
 
     The definition for the ideal chemical potential is implicit, so it must
     be obtained numerically by solving for the Fermi integral for values
-    of chemical potential approaching the degeneracy parameter.
+    of chemical potential approaching the degeneracy parameter. Since values
+    returned from the Fermi_integral are complex, a nonlinear
+    Levenberg-Marquardt least squares method is used to iteratively approach
+    a value of \mu which minimizes I_{1/2}(\beta \mu_a^{ideal}) - \chi_a.
     
     Warning: at present this function is limited to relatively small
     arguments due to limitations in the mpmath package's implementation
