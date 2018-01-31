@@ -155,7 +155,7 @@ def plasma_dispersion_func_deriv(zeta):
 
     return Zprime
 
-#%%
+
 def Fermi_integral(x, j):
     r"""Calculate the complete Fermi-Dirac integral.
 
