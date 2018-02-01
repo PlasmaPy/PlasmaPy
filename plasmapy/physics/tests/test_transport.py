@@ -157,11 +157,11 @@ class Test_Coulomb_logarithm(object):
     def test_relativity_warn(self):
         """Tests whether relativity warning is raised at high velocity."""
         with pytest.warns(RelativityWarning):
-            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), 0.9 * c)
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), V = 0.9 * c)
     def test_relativity_error(self):
         """Tests whether relativity error is raised at light speed."""
         with pytest.raises(RelativityError):
-            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), 1.1 * c)
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), V = 1.1 * c)
     def test_unit_conversion_error(self):
         """
         Tests whether unit conversion error is raised when arguments
@@ -169,7 +169,7 @@ class Test_Coulomb_logarithm(object):
         """
         with pytest.raises(u.UnitConversionError):
             Coulomb_logarithm(1e5 * u.g, 1 * u.m**-3,
-                          ('e', 'p'), 29979245 * u.m / u.s)
+                          ('e', 'p'), V = 29979245 * u.m / u.s)
     def test_single_particle_error(self):
         """
         Tests whether an error is raised if only a single particle is given.

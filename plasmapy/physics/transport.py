@@ -5,7 +5,7 @@ from astropy import units as u
 import numpy as np
 import plasmapy.atomic as atomic
 from plasmapy import utils
-from plasmapy.utils.checks import check_quantity, check_relativistic
+from plasmapy.utils.checks import check_quantity, check_relativistic, _check_relativistic
 from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar)
 from ..atomic import (ion_mass, integer_charge)
@@ -209,7 +209,6 @@ def Coulomb_logarithm(T,
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
     return ln_Lambda
 
-#@check_relativistic
 def _boilerPlate(T, particles, V):
     """
     Some boiler plate code for checking if inputs to functions in
@@ -246,9 +245,8 @@ def _boilerPlate(T, particles, V):
     reduced_mass = masses[0] * masses[1] / (masses[0] + masses[1])
     # getting thermal velocity of system if no velocity is given
     if np.isnan(V):
-        V = np.sqrt(2 * k_B * T / reduced_mass)
-#    else:
-#        _check_relativistic(V, 'impact_parameter', betafrac=0.8)
+        V = np.sqrt(2 * k_B * T / reduced_mass).to(u.m/u.s)
+    _check_relativistic(V, 'V')
     return (T, masses, charges, reduced_mass, V)
 
 
