@@ -9,6 +9,8 @@ from ..particle_input import particle_input
 @particle_input
 def func_simple_noparens(
         a, particle: Particle, b=None, Z: int = None, mass_numb: int = None):
+    r"""A simple function that, when decorated with `@particle_input`, returns
+    the instance of the Particle class corresponding to the inputs."""
     if not isinstance(particle, Particle):
         raise TypeError(
             f"The argument particle in func_simple_noparens is not a Particle")
@@ -18,6 +20,8 @@ def func_simple_noparens(
 @particle_input()
 def func_simple_parens(
         a, particle: Particle, b=None, Z: int = None, mass_numb: int = None):
+    r"""A simple function that, when decorated with `@particle_input()`,
+    returns the instance of the Particle class corresponding to the inputs."""
     if not isinstance(particle, Particle):
         raise TypeError(
             f"The argument particle in func_simple_parens is not a Particle")
@@ -29,13 +33,18 @@ particle_input_simple_table = [
     (func_simple_parens, (1, 'p+'), {'b': 2}, 'p+'),
     (func_simple_noparens, (1, 'Fe'), {'mass_numb': 56, 'Z': 3}, 'Fe-56 3+'),
     (func_simple_parens, (1, 'Fe'), {'mass_numb': 56, 'Z': 3}, 'Fe-56 3+'),
+    (func_simple_parens, (1,), {'particle': 'e-'}, 'e-'),
+    (func_simple_noparens, (1,), {'particle': 'e-'}, 'e-'),
+    (func_simple_noparens, (1,), {'particle': Particle('e-')}, 'e-'),
+    (func_simple_parens, (1,), {'particle': Particle('e-')}, 'e-'),
 ]
 
 
 @pytest.mark.parametrize(
     'func, args, kwargs, symbol', particle_input_simple_table)
 def test_particle_input_simple(func, args, kwargs, symbol):
-
+    r"""Test that simple functions decorated by particle_input correctly
+    return the correct Particle object."""
     try:
         expected = Particle(symbol)
     except Exception as e:
@@ -52,3 +61,19 @@ def test_particle_input_simple(func, args, kwargs, symbol):
     assert result == expected, (
         f"The result {repr(result)} does not equal the expected value of "
         f"{repr(expected)}.")
+
+
+# function, kwargs, expected_error
+particle_input_error_table = [
+    (func_simple_noparens, {'a': 1, 'particle': 'asdf'}, InvalidParticleError),
+]
+
+
+@pytest.mark.parametrize(
+    'func, kwargs, expected_error', particle_input_error_table)
+def test_particle_input_errors(func, kwargs, expected_error):
+    r"""Test that functions decorated with particle_input raise the
+    expected errors."""
+    with pytest.raises(expected_error, message=(
+            f"{func} did not raise {expected_error} with kwargs = {kwargs}")):
+        func(**kwargs)

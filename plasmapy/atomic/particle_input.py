@@ -26,7 +26,7 @@ def particle_input(wrapped_function=None, **kwargs):
         def wrapper(*args, **kwargs):
 
             # The following couple of statements will likely need to be
-            # modified in order to work with classes.
+            # modified in order to work with methods.
 
             bound_args = wrapped_signature.bind(*args, **kwargs)
             arguments = bound_args.arguments
@@ -55,13 +55,25 @@ def particle_input(wrapped_function=None, **kwargs):
                 Z = arguments.get('Z', None)
                 mass_numb = arguments.get('mass_numb', None)
             else:
-                if 'Z' in argnames:
-                    raise AtomicError
-                elif 'mass_numb' in argnames:
-                    raise AtomicError
+                if 'Z' in argnames or 'mass_numb' in argnames:
+                    raise AtomicError(
+                        f"The arguments Z and mass_numb in "
+                        f"{wrapped_function.__name__} are not allowed when "
+                        f"more than one argument or keyword is annotated "
+                        f"with Particle in order to avoid ambiguity.")
                 else:
                     Z = None
                     mass_numb = None
+
+            if Z is not None and not isinstance(Z, int):
+                raise TypeError(
+                    f"The argument Z = {repr(Z)} in "
+                    f"{wrapped_function.__name__} is not an integer.")
+
+            if mass_numb is not None and not isinstance(mass_numb, int):
+                raise TypeError(
+                    f"The argument mass_numb in = {repr(mass_numb)} "
+                    f"{wrapped_function.__name__} is not an integer.")
 
             # Go through the argument names and check whether or not they are
             # annotated with Particle.  If they aren't, include the name and
