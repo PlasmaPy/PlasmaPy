@@ -324,6 +324,9 @@ class Particle:
         if self._integer_charge is not None:
             self._electric_charge = self._integer_charge * const.e.si
 
+        if self._integer_charge:
+            self._categories.add('charged')
+
         self._is_element = self._atomic_symbol is not None
         self._is_isotope = self._isotope_symbol is not None
         self._is_ion = self._ion_symbol is not None
@@ -760,8 +763,11 @@ class Particle:
 
         return (mass_this * mass_that) / (mass_this + mass_that)
 
-    def is_category(self, *categories, any=False,
-                    exclude: Union[Set, Tuple, List] = set()) -> bool:
+    def is_category(self,
+                    *categories,
+                    any: bool = False,
+                    exclude: Union[str, Set, Tuple, List] = set()
+                    ) -> bool:
         r"""Returns True if the particle is in all of the inputted categories.
 
         If any is True, then the particle will return True if any of the listed
@@ -822,10 +828,12 @@ class Particle:
         # If valid_categories is changed, remember to change the docstring
         # for the Particle class.
 
+        # TODO: add charged category
+
         valid_categories = {
             'lepton', 'antilepton', 'fermion', 'boson', 'baryon', 'neutrino',
             'antineutrino', 'element', 'isotope', 'ion', 'matter',
-            'antimatter', 'stable', 'unstable'
+            'antimatter', 'stable', 'unstable', 'charged',
         }
 
         if categories - valid_categories:

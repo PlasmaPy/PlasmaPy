@@ -34,7 +34,8 @@ test_Particle_table = [
       'lepton_number': 0,
       'mass': m_n,
       'nuclide_mass': m_n,
-      'binding_energy': 0 * u.J}),
+      'binding_energy': 0 * u.J,
+      }),
 
     ('p+', {},
      {'particle': 'p+',
@@ -62,6 +63,7 @@ test_Particle_table = [
       'is_category("boson", "fermion", any=True)': True,
       'is_category("boson", "fermion", any=False)': False,
       'is_category(("element", "isotope", "ion"))': True,
+      'is_category("charged")': True,
       'binding_energy': 0 * u.J,
       }),
 
@@ -80,7 +82,8 @@ test_Particle_table = [
       'lepton_number': 0,
       'baryon_number': -1,
       '__str__()': 'p-',
-      '__repr__()': 'Particle("p-")'}),
+      '__repr__()': 'Particle("p-")',
+      }),
 
     ('e-', {},
      {'particle': 'e-',
@@ -99,7 +102,8 @@ test_Particle_table = [
       'reduced_mass("e-")': m_e / 2,
       '__str__()': 'e-',
       '__repr__()': 'Particle("e-")',
-      'binding_energy': InvalidIsotopeError}),
+      'binding_energy': InvalidIsotopeError,
+      }),
 
     ('e+', {},
      {'particle': 'e+',
@@ -115,7 +119,8 @@ test_Particle_table = [
       'lepton_number': -1,
       'baryon_number': 0,
       '__str__()': 'e+',
-      '__repr__()': 'Particle("e+")'}),
+      '__repr__()': 'Particle("e+")',
+      }),
 
     ('H', {},
      {'particle': 'H',
@@ -130,7 +135,9 @@ test_Particle_table = [
       'half_life': InvalidIsotopeError,
       'standard_atomic_weight': (1.008 * u.u).to(u.kg),
       'mass': (1.008 * u.u).to(u.kg),
-      'nuclide_mass': InvalidIsotopeError}),
+      'nuclide_mass': InvalidIsotopeError,
+      'is_category("charged")': False,
+      }),
 
     ('D+', {},
      {'particle': 'D 1+',
@@ -142,7 +149,8 @@ test_Particle_table = [
       'atomic_number': 1,
       'mass_number': 2,
       'baryon_number': 2,
-      'lepton_number': 0}),
+      'lepton_number': 0,
+      }),
 
     ('tritium', {'Z': 1},
      {'particle': 'T 1+',
@@ -153,7 +161,8 @@ test_Particle_table = [
       'atomic_number': 1,
       'mass_number': 3,
       'baryon_number': 3,
-      'lepton_number': 0}),
+      'lepton_number': 0,
+      }),
 
     ('Fe', {'Z': 17, 'mass_numb': 56},
      {'particle': 'Fe-56 17+',
@@ -166,7 +175,8 @@ test_Particle_table = [
       'mass_number': 56,
       'baryon_number': 56,
       '__str__()': 'Fe-56 17+',
-      '__repr__()': 'Particle("Fe-56 17+")'}),
+      '__repr__()': 'Particle("Fe-56 17+")',
+      }),
 
     ('alpha', {},
      {'particle': 'He-4 2+',
@@ -179,7 +189,8 @@ test_Particle_table = [
       'mass_number': 4,
       'baryon_number': 4,
       'lepton_number': 0,
-      'half_life': np.inf * u.s}),
+      'half_life': np.inf * u.s,
+      }),
 
     ('Li', {'mass_numb': 7},
      {'particle': 'Li-7',
@@ -192,7 +203,8 @@ test_Particle_table = [
       'mass_number': 7,
       'baryon_number': 7,
       'half_life': np.inf * u.s,
-      'nuclide_mass': 1.1647614796180465e-26 * u.kg}),
+      'nuclide_mass': 1.1647614796180465e-26 * u.kg,
+      }),
 
     ('Cn-276', {"Z": 22},
      {'particle': 'Cn-276 22+',
@@ -205,7 +217,8 @@ test_Particle_table = [
       'mass_number': 276,
       'baryon_number': 276,
       'lepton_number': 0,
-      'half_life': MissingAtomicDataError}),
+      'half_life': MissingAtomicDataError,
+      }),
 
     ('muon', {},
      {'particle': 'mu-',
@@ -216,7 +229,8 @@ test_Particle_table = [
       'atomic_number': InvalidElementError,
       'mass_number': InvalidIsotopeError,
       'baryon_number': 0,
-      'lepton_number': 1}),
+      'lepton_number': 1,
+      }),
 
     ('nu_tau', {},
      {'particle': 'nu_tau',
@@ -240,8 +254,8 @@ test_Particle_table = [
       'is_category("lepton", "invalid")': AtomicError,
       'is_category(["boson"], exclude=["lepton", "invalid"])': AtomicError,
       'is_category("boson", exclude="boson")': AtomicError,
-      'reduced_mass("electron")': MissingAtomicDataError}),
-
+      'reduced_mass("electron")': MissingAtomicDataError,
+      }),
 ]
 
 
