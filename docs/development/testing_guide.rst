@@ -9,7 +9,7 @@ PlasmaPy uses pytest for its testing needs.
 
 The simplest way to run tests on your development branch, assuming you
 submitted it as a pull request, is to just push your code to GitHub.
-Pull requests are tested using Travis CI, CircleCI, and AppVeyer to make
+Pull requests are tested using Travis CI, CircleCI, and AppVeyor to make
 sure that the code passes tests and the documentation is able to be built.
 
 To run the test suite locally, use ``pytest`` from the repository's root
@@ -23,7 +23,7 @@ A few guidelines to on writing neat, readable and useful tests:
 
 * Solved bugs should be turned into test cases.
   
-* The Travis CI, CircleCI, and AppVeyer integrations on GitHub run tests whenever pull
+* The Travis CI, CircleCI, and AppVeyor integrations on GitHub run tests whenever pull
   requests to PlasmaPy are updated.  The pytest module may used on a
   local computer.
   
