@@ -3,33 +3,30 @@ and numbers."""
 
 import re
 import warnings
-from typing import (Union, Optional, Any, Tuple)
-
-from .elements import _atomic_symbols, _atomic_symbols_dict, _Elements
-from .isotopes import _Isotopes
-from .special_particles import ParticleZoo
-
+from typing import (Optional, Any, Tuple)
 from .parsing import _dealias_particle_aliases
 from .particle_class import Particle
 from .particle_input import particle_input
+from ..utils import (AtomicWarning, InvalidParticleError)
 
-from ..utils import (AtomicWarning,
-                     InvalidElementError,
-                     InvalidIsotopeError,
-                     InvalidIonError,
-                     InvalidParticleError)
+# The @particle_input decorator takes the inputs for a function or
+# method and passes through the corresponding instance of the Particle
+# class via the argument annotated with Particle.  If the argument is
+# named element, isotope, or ion; then this decorator will raise an
+# InvalidElementError, InvalidIsotopeError, or InvalidIonError,
+# respectively.  The Particle class constructor will raise an
+# InvalidParticleError if the input does not correspond to a valid
+# particle.
 
-# TODO: Create an ion_symbol function
-# TODO: Create a particle_symbol function
 
-
-def atomic_symbol(element: Union[str, int]) -> str:
+@particle_input
+def atomic_symbol(element: Particle) -> str:
     r"""Returns the atomic symbol.
 
     Parameters
     ----------
 
-    element: string or integer
+    element: string, integer, or Particle
         A string representing an element, isotope, or ion; or an
         integer or string representing an atomic number.
 
@@ -37,7 +34,7 @@ def atomic_symbol(element: Union[str, int]) -> str:
     -------
 
     symbol: string
-        The atomic symbol of the element, isotope, or nucleon.
+        The atomic symbol of the element, isotope, or ion.
 
     Raises
     ------
@@ -54,9 +51,13 @@ def atomic_symbol(element: Union[str, int]) -> str:
     See also
     --------
 
-    isotope_symbol : returns isotope symbol instead of atomic symbol.
-
     element_name : returns the name of an element.
+
+    isotope_symbol : returns the isotope symbol instead of the atomic symbol.
+
+    ion_symbol : returns the ion symbol instead of the atomic symbol.
+
+    particle_symbol : returns the symbol of any valid particle.
 
     Notes
     -----
@@ -94,37 +95,21 @@ def atomic_symbol(element: Union[str, int]) -> str:
     ('P', 'H')
 
     """
-
-    try:
-        particle = Particle(element)
-    except InvalidParticleError:
-        raise InvalidParticleError(
-            f"The argument {repr(element)} to atomic_symbol does not "
-            f"represent a valid particle.")
-    except TypeError:
-        raise TypeError(
-            f"The argument {repr(element)} to atomic_symbol is not an "
-            f"integer or string.")
-
-    if particle.element:
-        return particle._atomic_symbol
-    else:
-        raise InvalidElementError(
-            f"The argument {repr(element)} to atomic_symbol does not "
-            f"represent a valid element.")
+    return element.element
 
 
-def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
+@particle_input
+def isotope_symbol(isotope: Particle, mass_numb: int = None) -> str:
     r"""Returns the symbol representing an isotope.
 
     Parameters
     ----------
 
-    argument: integer or string
+    isotope: string, integer, or Particle
         A string representing an element, isotope, or ion or an
         integer representing an atomic number
 
-    mass_numb: integer or string
+    mass_numb: integer or string, optional
         An integer or string representing the mass number of the
         isotope.
 
@@ -158,7 +143,12 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
     See also
     --------
 
-    atomic_symbol : returns atomic symbol instead of isotopic symbol
+    atomic_symbol : returns the atomic symbol instead of the isotope symbol
+
+    ion_symbol : returns the ion symbol instead of the isotope symbol.
+
+    particle_symbol : returns the symbol of any valid particle.
+
 
     Notes
     -----
@@ -182,151 +172,158 @@ def isotope_symbol(argument: Union[str, int], mass_numb: int = None) -> str:
     'He-4'
 
     """
-
-    try:
-        particle = Particle(argument, mass_numb=mass_numb)
-    except InvalidParticleError:
-        raise InvalidParticleError
-    except Exception:
-        pass
-
-    # TODO: Remove this functionality when particle_symbol comes online
-    if _is_neutron(argument, mass_numb):
-        return 'n'
-
-    if argument in ParticleZoo.everything - {'p+'}:
-        raise InvalidIsotopeError("The argument {argument} does not "
-                                  "correspond to a valid isotope in "
-                                  "isotope_symbol.")
-
-    try:
-        element = atomic_symbol(argument)
-    except InvalidParticleError:
-        raise InvalidParticleError(
-            f"The argument {argument} to isotope_symbol is not a valid "
-            f"particle.")
-    except InvalidElementError:
-        raise InvalidIsotopeError(f"The argument {argument} to isotope_symbol "
-                                  f"does not correspond to a valid element or "
-                                  f"isotope.")
-
-    # If the argument is already in our standard form for an isotope,
-    # return the argument.
-
-    if mass_numb is None and argument in _Isotopes.keys():
-        return argument
-
-    if isinstance(argument, str):
-        argument, Z = _extract_integer_charge(argument)
-
-    if isinstance(argument, str) and argument.isdigit():
-        argument = int(argument)
-
-    if isinstance(mass_numb, str) and mass_numb.isdigit():
-        mass_numb = int(mass_numb)
-
-    # This routine allows several forms of input, and must be able to handle
-    # all of the exceptions that can arise with useful error messages.
-
-    if not isinstance(argument, (str, int)):
-        raise TypeError("The first argument in isotope_symbol must be either "
-                        "a string representing an element or isotope, or an "
-                        "integer representing the atomic number (or 0 for "
-                        " neutrons).")
-
-    if not (isinstance(mass_numb, int) or
-            mass_numb is None):  # coveralls: ignore
-        raise TypeError("The second argument in isotope_symbol must be an "
-                        "integer (or a string containing an integer) that "
-                        "represents the mass number of an isotope.")
-
-    if isinstance(argument, int):
-        if not 0 <= argument <= 118:
-            raise InvalidParticleError(
-                "Invalid atomic number in isotope_symbol")
-        if mass_numb is None:
-            raise InvalidIsotopeError("Insufficient information to determine "
-                                      "isotope in isotope_symbol.")
-
-    # Get mass number from argument, check for redundancies, and take
-    # care of special cases.
-
-    if isinstance(argument, str):
-        if argument.count('-') == 1:
-            dash_position = argument.find('-')
-            mass_numb_from_arg = argument[dash_position+1:].strip()
-            mass_numb_from_arg = int(mass_numb_from_arg)
-        elif argument in ['p', 'p+'] or \
-                argument.lower() in ['protium', 'proton']:
-            mass_numb_from_arg = 1
-        elif argument.lower() in ['d', 'deuterium', 'deuteron']:
-            mass_numb_from_arg = 2
-        elif argument.lower() in ['t', 'tritium', 'triton']:
-            mass_numb_from_arg = 3
-        elif _is_alpha(argument):
-            mass_numb_from_arg = 4
-        else:
-            mass_numb_from_arg = None
-
-        if mass_numb is None and mass_numb_from_arg is None:
-            raise InvalidIsotopeError(
-                "Insufficient information to determine the mass"
-                " number from the inputs to isotope_symbol.")
-
-        if mass_numb is not None and mass_numb_from_arg is not None:
-            if mass_numb == mass_numb_from_arg:
-                warnings.warn(
-                    "Redundant mass number information in isotope_symbol "
-                    f"from inputs: {argument}, {mass_numb}", AtomicWarning)
-            else:  # coveralls: ignore
-                raise InvalidParticleError(
-                    "Contradictory mass number information in isotope_symbol.")
-
-        if mass_numb_from_arg is not None:
-            mass_numb = mass_numb_from_arg
-
-    isotope = f"{element}-{mass_numb}"
-
-    if isotope == 'H-2':
-        isotope = 'D'
-    elif isotope == 'H-3':
-        isotope = 'T'
-
-    if _Elements[element]['atomic_number'] > mass_numb:
-        raise InvalidParticleError("The atomic number cannot exceed the mass "
-                                   "number in isotope_symbol.")
-
-    return isotope
+    return isotope.isotope
 
 
-def ion_symbol(argument: Union[str, int], mass_numb: int = None,
-               Z: int = None) -> str:
-    r"""Returns the ion symbol."""
-    # TODO: Add docstring
-    # TODO: Improve exception handling
-    particle = Particle(argument, mass_numb=mass_numb, Z=Z)
-    if particle.ion:
-        return particle.ion
-    else:
-        raise InvalidIonError
+@particle_input
+def ion_symbol(ion: Particle, mass_numb: int = None, Z: int = None) -> str:
+    r"""Returns the symbol representing an ion.
+
+    Parameters
+    ----------
+
+    ion: int, str, or Particle
+        A string representing an element, isotope, or ion or an
+        integer representing an atomic number
+
+    mass_numb: integer or string
+        An integer or string representing the mass number of the ion.
+
+    Z: integer or string
+        An integer or string representing the integer charge of the ion.
+
+    Returns
+    -------
+
+    symbol: string
+        The ion symbol. The result will generally be returned as
+        something like 'He-4 2+', 'D 1+', or 'p+'.
+
+    Raises
+    ------
+
+    InvalidIonError
+        If the arguments correspond to a valid particle but not a valid ion.
+
+    InvalidParticleError
+        If arguments do not correspond to a valid particle or contradictory
+        information is provided.
+
+    TypeError
+        If ion is not a string, integer, or Particle; or if either of
+        mass_numb or Z is not an integer or a string representing an integer.
+
+    Warns
+    -----
+
+    AtomicWarning
+        If redundant mass number or charge information is provided.
+
+    See also
+    --------
+
+    atomic_symbol : returns the atomic symbol instead of the ion symbol
+
+    isotope_symbol : returns the isotope symbol instead of the ion symbol
+
+    particle_symbol : returns the symbol of any valid particle
+
+    Notes
+    -----
+
+    This function returns the symbol of the element rather than the
+    symbol of an isotope.  For example, 'deuterium', 'T', or
+    'hydrogen-2' will yield 'H'; 'alpha' will yield 'He'; and
+    'iron-56' or 'Fe-56' will yield 'Fe'.
+
+    Examples
+    --------
+    >>> ion_symbol('alpha')
+    'He-4 2+'
+    >>> ion_symbol(79, mass_numb=197, Z=12)
+    'Au-197 12+'
+    >>> ion_symbol('proton')
+    'p+'
+    >>> ion_symbol('D', Z=1)
+    'D 1+'
+    """
+    return ion.ion
 
 
-def particle_symbol(argument: Union[str, int], mass_numb: int = None,
+@particle_input
+def particle_symbol(particle: Particle, mass_numb: int = None,
                     Z: int = None) -> str:
-    r"""Returns the symbol of a particle."""
-    # TODO: Add docstring
-    # TODO: Improve exception handling
-    particle = Particle(argument, mass_numb=mass_numb, Z=Z)
+    r"""Returns the symbol of a particle.
+
+    Parameters
+    ----------
+
+    particle: int, str, or Particle
+        A string representing a particle, element, isotope, or ion or an
+        integer representing an atomic number
+
+    mass_numb: integer or string
+        An integer or string representing the mass number of an isotope.
+
+    Z: integer or string
+        An integer or string representing the integer charge of an ion.
+
+    Returns
+    -------
+
+    symbol: string
+        The particle symbol, containing charge and mass number information
+        when available. The result will generally be returned as
+        something like 'e-', 'Fe', 'He-4 2+', 'D', 'n', 'mu-', or 'p+'.
+
+    Raises
+    ------
+
+    InvalidParticleError
+        If arguments do not correspond to a valid particle or contradictory
+        information is provided.
+
+    TypeError
+        If ion is not a string, integer, or Particle; or if either of
+        mass_numb or Z is not an integer or a string representing an integer.
+
+    Warns
+    -----
+
+    AtomicWarning
+        If redundant mass number or charge information is provided.
+
+    See also
+    --------
+
+    atomic_symbol : returns the atomic symbol instead
+
+    isotope_symbol : returns the isotope symbol instead
+
+    ion_symbol : returns the ion symbol instead
+
+    Examples
+    --------
+    >>> particle_symbol('electron')
+    'e-'
+    >>> particle_symbol('proton')
+    'p+'
+    >>> particle_symbol('alpha')
+    'He-4 2+'
+    >>> particle_symbol('H-1', Z=-1)
+    'H-1 1-'
+    """
     return particle.particle
 
 
-def element_name(argument: Union[str, int]) -> str:
+@particle_input
+def element_name(element: Particle) -> str:
     r"""Returns the name of an element.
 
     Parameters
     ----------
 
-    argument : string or integer
+    argument : string, integer, or Particle
         A string representing an element, isotope, or ion or an
         integer representing an atomic number
 
@@ -353,7 +350,9 @@ def element_name(argument: Union[str, int]) -> str:
 
     atomic_symbol : returns the atomic symbol
 
-    isotope_symbol : returns the symbol of an isotope
+    isotope_symbol : returns the isotope symbol
+
+    particle_symbol : returns the symbol of any valid particle
 
     Examples
     --------
@@ -370,18 +369,7 @@ def element_name(argument: Union[str, int]) -> str:
     'carbon'
 
     """
-
-    try:
-        element = atomic_symbol(argument)
-        name = _Elements[element]["name"]
-    except InvalidElementError:
-        raise InvalidElementError("Invalid element in element_name.")
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid particle in element_name.")
-    except TypeError:
-        raise TypeError("Invalid input to element_name.")
-
-    return name
+    return element.element_name
 
 
 def _extract_integer_charge(argument: str) -> Tuple[str, int]:
