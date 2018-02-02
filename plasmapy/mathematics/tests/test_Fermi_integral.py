@@ -38,7 +38,7 @@ class Test_Fermi_integral(object):
                                   rtol=1e-16,
                                   atol=0.0)
         errStr = (f"Fermi integral value test gives {methodVal} and should "
-                  f"be equal to {fail1}.")
+                  f"not be equal to {fail1}.")
         assert testTrue, errStr
     def test_polog_fail(self):
         """
