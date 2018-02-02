@@ -8,7 +8,7 @@ from ...utils.exceptions import RelativityWarning, RelativityError
 from ...constants import c, k_B, m_e, e
 from ..checks import (
     _check_quantity, _check_relativistic, check_relativistic,
-    check_quantity, quantity_input
+    check_quantity, temperature_input
 )
 
 
@@ -311,18 +311,20 @@ def test_check_relativistic_decorator_errors(speed, betafrac, error):
     with pytest.raises(error):
         speed_func()
 
-def test_our_quantity_input():
-    @quantity_input()
-    def electron_thermal_velocity(T: u.K) -> u.m/u.s:
-        return np.sqrt(2 * k_B * T / m_e)
+@temperature_input
+def electron_thermal_velocity(T: u.K) -> u.m/u.s:
+    return np.sqrt(2 * k_B * T / m_e)
 
-    value = electron_thermal_velocity(2*u.K)
-    assert value.unit == u.m/u.s
+class Test_temperature_input():
+    def test_kelvin_input(self):
+        assert electron_thermal_velocity(2*u.K).unit == u.m/u.s
 
-    value2 = electron_thermal_velocity(1*u.eV)
-    assert value2.unit == u.m/u.s
+    def test_ev_input(self):
+        assert electron_thermal_velocity(1*u.eV).unit == u.m/u.s
 
+    def test_J_input(self):
+        assert  electron_thermal_velocity(1*u.J).unit == u.m/u.s
 
-
-    with pytest.raises(TypeError):
-        electron_thermal_velocity(2)
+    def test_number_input(self):
+        with pytest.raises(TypeError):
+            electron_thermal_velocity(2)

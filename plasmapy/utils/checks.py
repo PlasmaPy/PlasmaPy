@@ -365,21 +365,16 @@ def _check_relativistic(V, funcname, betafrac=0.1):
                       RelativityWarning)
 
 
-def quantity_input():
+def temperature_input(wrapped_function=None, **kwargs):
     """Wrapper on top of astropy.units.quantity_input"""
-    eq = u.temperature_energy()
-    K_to_J =(u.K, # from_unit
-              u.J, # to_unit
-              lambda x: x * (k_B.si.value), # forward conversion
-              lambda x: x / (k_B.si.value)) # backward conversion
-    eq.append(K_to_J)
-    # print(u.J.find_equivalent_units(equivalencies=eq))
-    # print(u.K.find_equivalent_units(equivalencies=eq))
-    def decorator(f):
-        @functools.wraps(f)
-        def wrapper(*args, **kwargs):
-            qi = QuantityInput(equivalencies=eq)
-            return qi(f)(*args, **kwargs)
-        return wrapper
-    return decorator
+    equiv = kwargs.pop('equivalencies', [])
+    equiv += u.temperature_energy()
+    kwargs['equivalencies'] = equiv
+    # print(u.J.find_equivalent_units(equivalencies=equiv))
+    # print(u.K.find_equivalent_units(equivalencies=equiv))
+    decorator = u.quantity_input(**kwargs)
+    if wrapped_function is not None:
+        return decorator(wrapped_function)
+    else:
+        return decorator
 
