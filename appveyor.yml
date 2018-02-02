@@ -23,12 +23,12 @@ install:
   - "powershell ci-helpers/appveyor/install-miniconda.ps1"
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "activate test"
-  - "pip install -r requirements/automated-code-tests.txt"
+  - "pip install --quiet -r requirements/automated-code-tests.txt"
 
 
 # Not a .NET project, we build plasmapy in the install step instead
 build: false
 
 test_script:
-  - "%CMD_IN_ENV% python setup.py install"
+  - "%CMD_IN_ENV% python setup.py -q install"
   - "%CMD_IN_ENV% pytest"
