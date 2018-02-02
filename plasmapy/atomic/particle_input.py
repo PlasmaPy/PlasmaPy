@@ -12,10 +12,7 @@ from ..utils import (AtomicError,
 
 from typing import Callable, Union, Any, Set, List, Tuple
 
-# TODO: make sure particle_input works with classes and class methods
-
-
-
+# TODO: make sure particle_input works with class methods
 
 
 def particle_input(wrapped_function: Callable = None,
@@ -34,7 +31,6 @@ def particle_input(wrapped_function: Callable = None,
 
     must_be : str, set, list, or tuple; optional
         The categories that the Particle must be in; otherwise the
-
 
     Notes
     -----
@@ -100,16 +96,6 @@ def particle_input(wrapped_function: Callable = None,
 
             Z = arguments.get('Z', None)
             mass_numb = arguments.get('mass_numb', None)
-
-            if Z is not None and not isinstance(Z, int):
-                raise TypeError(
-                    f"The argument Z = {repr(Z)} in {funcname} is not an "
-                    f"integer.")
-
-            if mass_numb is not None and not isinstance(mass_numb, int):
-                raise TypeError(
-                    f"The argument mass_numb = {repr(mass_numb)} in "
-                    f"{funcname} is not an integer.")
 
             # Go through the argument names and check whether or not they are
             # annotated with Particle.  If they aren't, include the name and
