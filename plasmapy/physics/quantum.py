@@ -5,15 +5,16 @@ gases and warm dense matter.
 # TODO:
     -fix ion sphere radius to use ion density
 """
+# python modules
 import numpy as np
 from astropy import units as u
 from scipy.optimize import minimize
 from lmfit import minimize, Parameters
 
+# plasmapy modules
 from plasmapy import atomic, utils
 from plasmapy.utils.checks import check_quantity
 from plasmapy.physics.relativity import Lorentz_factor
-
 from ..constants import c, h, hbar, m_e, eps0, e, k_B
 from ..mathematics import Fermi_integral
 

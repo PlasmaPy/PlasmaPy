@@ -1,8 +1,14 @@
 # coding=utf-8
 """Functions to calculate transport coefficients."""
 
+# python modules
 from astropy import units as u
 import numpy as np
+from inspect import stack
+from copy import copy
+import warnings
+
+# plasmapy modules
 import plasmapy.atomic as atomic
 from plasmapy import utils
 from plasmapy.utils.checks import check_quantity, check_relativistic, _check_relativistic
@@ -16,9 +22,6 @@ from .quantum import (Wigner_Seitz_radius,
                       thermal_deBroglie_wavelength,
                       chemical_potential)
 from ..mathematics import Fermi_integral
-from inspect import stack
-from copy import copy
-import warnings
 
 
 @utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
