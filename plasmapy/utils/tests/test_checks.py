@@ -5,10 +5,10 @@ from astropy import units as u
 import pytest
 
 from ...utils.exceptions import RelativityWarning, RelativityError
-from ...constants import c
+from ...constants import c, k_B, m_e, e
 from ..checks import (
     _check_quantity, _check_relativistic, check_relativistic,
-    check_quantity
+    check_quantity, quantity_input
 )
 
 
@@ -310,3 +310,19 @@ def test_check_relativistic_decorator_errors(speed, betafrac, error):
 
     with pytest.raises(error):
         speed_func()
+
+def test_our_quantity_input():
+    @quantity_input()
+    def electron_thermal_velocity(T: u.K) -> u.m/u.s:
+        return np.sqrt(2 * k_B * T / m_e)
+
+    value = electron_thermal_velocity(2*u.K)
+    assert value.unit == u.m/u.s
+
+    value2 = electron_thermal_velocity(1*u.eV)
+    assert value2.unit == u.m/u.s
+
+
+
+    with pytest.raises(TypeError):
+        electron_thermal_velocity(2)
