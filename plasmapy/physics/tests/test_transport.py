@@ -12,6 +12,14 @@ from plasmapy.physics.parameters import Hall_parameter
 from ...constants import c, m_p, m_e, e, mu0
 
 from ..transport import (Coulomb_logarithm,
+                         b_perp,
+                         impact_parameter,
+                         collision_frequency,
+                         mean_free_path,
+                         Spitzer_resistivity,
+                         mobility,
+                         Knudsen_number,
+                         coupling_parameter,
                          classical_transport,
                          _nondim_tc_e_braginskii,
                          _nondim_tc_i_braginskii,
@@ -45,10 +53,6 @@ def count_decimal_places(digits):
 class Test_Coulomb_logarithm(object):
     def setup_method(self):
         """initializing parameters for tests """
-        self.n_e = np.array([1e9, 1e9, 1e24]) * u.cm**-3
-        self.T = np.array([1e2, 1e7, 1e8]) * u.K
-        self.Lambda = np.array([5.56, 21.45, 6.48])
-        self.particles = ('e', 'p')
     def test_Chen_Q_machine(self):
         """
         Tests whether Coulomb logarithm gives value consistent with 
@@ -183,6 +187,382 @@ class Test_Coulomb_logarithm(object):
         """
         with pytest.raises(ValueError):
             Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e', 'g'))
+
+
+class Test_b_perp(object):
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.particles = ('e', 'p')
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 7.200146594293746e-10
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = b_perp(self.T,
+                           self.particles,
+                           V=np.nan*u.m/u.s)
+        testTrue = np.isclose(self.True1,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = ("Distance of closest approach for 90 degree Coulomb "
+                  f"collision, b_perp, should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 + 1e-15
+        methodVal = b_perp(self.T,
+                           self.particles,
+                           V=np.nan*u.m/u.s)
+        testTrue = not np.isclose(methodVal.si.value,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"b_perp value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+
+
+class Test_impact_parameter(object):
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.n_e = 1e17 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = impact_parameter(self.T,
+                                     self.n_e,
+                                     self.particles,
+                                     z_mean=np.nan*u.dimensionless_unscaled,
+                                     V=np.nan*u.m/u.s,
+                                     method="classical")
+        bmin, bmax = methodVal
+        methodVal = bmin.si.value, bmax.si.value
+        testTrue = np.allclose(self.True1,
+                               methodVal,
+                               rtol=1e-1,
+                               atol=0.0)
+        errStr = (f"Impact parameters should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = impact_parameter(self.T,
+                                     self.n_e,
+                                     self.particles,
+                                     z_mean=np.nan*u.dimensionless_unscaled,
+                                     V=np.nan*u.m/u.s,
+                                     method="classical")
+        bmin, bmax = methodVal
+        methodVal = bmin.si.value, bmax.si.value
+        testTrue = not np.allclose(methodVal,
+                                   fail1,
+                                   rtol=1e-16,
+                                   atol=0.0)
+        errStr = (f"Impact parameter value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+
+
+class Test_collision_frequency(object):
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.n = 1e17 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 1.3468281539854646e12
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = collision_frequency(self.T,
+                                        self.n,
+                                        self.particles,
+                                        z_mean=np.nan*u.dimensionless_unscaled,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = np.isclose(self.True1,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Collision frequency should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = collision_frequency(self.T,
+                                        self.n,
+                                        self.particles,
+                                        z_mean=np.nan*u.dimensionless_unscaled,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = not np.isclose(methodVal.si.value,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"Collision frequency value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+
+
+class Test_mean_free_path(object):
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.n_e = 1e17 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 4.4047571877932046e-07
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = mean_free_path(self.T,
+                                   self.n_e,
+                                   self.particles,
+                                   z_mean=np.nan*u.dimensionless_unscaled,
+                                   V=np.nan*u.m/u.s,
+                                   method="classical")
+        testTrue = np.isclose(self.True1,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Mean free path should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = mean_free_path(self.T,
+                                   self.n_e,
+                                   self.particles,
+                                   z_mean=np.nan*u.dimensionless_unscaled,
+                                   V=np.nan*u.m/u.s,
+                                   method="classical")
+        testTrue = not np.isclose(methodVal.si.value,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"Mean free path value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+
+
+class Test_Spitzer_resistivity(object):
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.n = 1e12 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 1.2665402649805445e-3
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = Spitzer_resistivity(self.T,
+                                        self.n,
+                                        self.particles,
+                                        z_mean=np.nan*u.dimensionless_unscaled,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = np.isclose(self.True1,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Spitzer resistivity should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = Spitzer_resistivity(self.T,
+                                        self.n,
+                                        self.particles,
+                                        z_mean=np.nan*u.dimensionless_unscaled,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = not np.isclose(methodVal.si.value,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"Spitzer resistivity value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+
+
+class Test_mobility(object):
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.n_e = 1e17 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 0.13066090887074902
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = mobility(self.T,
+                             self.n_e,
+                             self.particles,
+                             z_mean=np.nan*u.dimensionless_unscaled,
+                             V=np.nan*u.m/u.s,
+                             method="classical")
+        testTrue = np.isclose(self.True1,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Mobility should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = mobility(self.T,
+                             self.n_e,
+                             self.particles,
+                             z_mean=np.nan*u.dimensionless_unscaled,
+                             V=np.nan*u.m/u.s,
+                             method="classical")
+        testTrue = not np.isclose(methodVal.si.value,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"Mobility value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+
+
+class Test_Knudsen_number(object):
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.length = 1 * u.nm
+        self.T = 11604 * u.K
+        self.n_e = 1e17 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 440.4757187793204
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = Knudsen_number(self.length,
+                                   self.T,
+                                   self.n_e,
+                                   self.particles,
+                                   z_mean=np.nan*u.dimensionless_unscaled,
+                                   V=np.nan*u.m/u.s,
+                                   method="classical")
+        testTrue = np.isclose(self.True1,
+                              methodVal,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Knudsen number should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = Knudsen_number(self.length,
+                                   self.T,
+                                   self.n_e,
+                                   self.particles,
+                                   z_mean=np.nan*u.dimensionless_unscaled,
+                                   V=np.nan*u.m/u.s,
+                                   method="classical")
+        testTrue = not np.isclose(methodVal,
+                                  fail1,
+                                  rtol=0.0,
+                                  atol=1e-16)
+        errStr = (f"Knudsen number value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+
+
+class Test_coupling_parameter(object):
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.n_e = 1e21 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 2.3213156755481195
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = coupling_parameter(self.T,
+                                       self.n_e,
+                                       self.particles,
+                                       z_mean=np.nan*u.dimensionless_unscaled,
+                                       V=np.nan*u.m/u.s,
+                                       method="classical")
+        testTrue = np.isclose(self.True1,
+                              methodVal,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Coupling parameter should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = coupling_parameter(self.T,
+                                       self.n_e,
+                                       self.particles,
+                                       z_mean=np.nan*u.dimensionless_unscaled,
+                                       V=np.nan*u.m/u.s,
+                                       method="classical")
+        testTrue = not np.isclose(methodVal,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"Coupling parameter value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
 
 
 # test class for classical_transport class:

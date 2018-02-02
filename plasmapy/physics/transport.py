@@ -925,7 +925,7 @@ def mobility(T,
 @check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m**-3}
                  })
-def knudsen(characteristic_length,
+def Knudsen_number(characteristic_length,
             T,
             n_e,
             particles,
@@ -1004,9 +1004,9 @@ def knudsen(characteristic_length,
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
-    >>> knudsen(L, T, n, particles)
+    >>> Knudsen_number(L, T, n, particles)
     <Quantity 7839.36310417>
-    >>> knudsen(L, T, n, particles, V=1e6*u.m/u.s)
+    >>> Knudsen_number(L, T, n, particles, V=1e6*u.m/u.s)
     <Quantity 1423.47708879>
 
     References
@@ -1029,6 +1029,7 @@ def knudsen(characteristic_length,
 def coupling_parameter(T,
                        n_e,
                        particles,
+                       z_mean=np.nan*u.dimensionless_unscaled,
                        V=np.nan*u.m/u.s,
                        method="classical"):
     r"""Coupling parameter.
@@ -1050,6 +1051,13 @@ def coupling_parameter(T,
     particles : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
+
+    z_mean : Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
         
     V : Quantity, optional
         The relative velocity between particles.  If not provided,
@@ -1118,7 +1126,10 @@ def coupling_parameter(T,
     # Wigner-Seitz radius
     radius = Wigner_Seitz_radius(n_e)
     # Coulomb potential energy between particles
-    coulombEnergy = charges[0] * charges[1] / (4 * np.pi * eps0 * radius)
+    if np.isnan(z_mean):
+        coulombEnergy = charges[0] * charges[1] / (4 * np.pi * eps0 * radius)
+    else:
+        coulombEnergy = z_mean ** 2 / (4 * np.pi * eps0 * radius)
     if method == "classical":
         # classical thermal kinetic energy
         kineticEnergy = k_B * T
