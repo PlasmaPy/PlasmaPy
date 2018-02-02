@@ -9,14 +9,17 @@ from ...utils.exceptions import RelativityWarning, RelativityError
 from ...utils.exceptions import PhysicsError
 from ...constants import c, m_p, m_e, e, mu0
 
-from ..parameters_cython import (fib,
+from ..parameters_cython import (thermal_speed,
                                  )
-
-
-def test_fib():
-    r"""Test fibonacci dummy function to check if Cython works."""
-    fibMeth = fib(10)
-    fibTrue = 55
-    testTrue = fibMeth == fibTrue
-    exceptStr = f'fib() value is {fibMeth}, should be {fibTrue}.'
+    
+def test_thermal_speed():
+    r"""Test for cythonized version of thermal_speed()."""
+    trueVal = 593083.619464999
+    T = 11604
+    methodVal = thermal_speed(T, particle="e", method="most_probable")
+    testTrue = np.isclose(methodVal,
+                          trueVal,
+                          rtol=0.0,
+                          atol=1e-16)
+    exceptStr = f'Thermal speed value is {methodVal}, should be {trueVal}.'
     assert testTrue, exceptStr
