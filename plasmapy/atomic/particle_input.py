@@ -125,16 +125,26 @@ def particle_input(wrapped_function: Callable = None,
                         ) from e
 
                     if argname == 'element' and not particle.element:
-                        raise InvalidElementError
+                        raise InvalidElementError(
+                            f'The argument {argname} does not correspond to a'
+                            f'valid {argname}.')
                     if argname == 'isotope' and not particle.isotope:
-                        raise InvalidIsotopeError
+                        raise InvalidIsotopeError(
+                            f'The argument {argname} does not correspond to a'
+                            f'valid {argname}.')
                     if argname == 'ion' and not particle.ion:
-                        raise InvalidIonError
+                        raise InvalidIonError(
+                            f'The argument {argname} does not correspond to a'
+                            f'valid {argname}.')
                     if 'charged' in must_be and not particle._integer_charge:
-                        raise ChargeError
-                    if not particle.is_category(must_be, exclude=cannot_be):
-                        raise AtomicError
-
+                        raise ChargeError(
+                            f"A charged particle is required for {funcname}."
+                        )
+                    if not particle.is_category(
+                            must_be, exclude=cannot_be, any=any):
+                        raise AtomicError(
+                            f"The particle {self.particle} does not meet the "
+                            f"specified classification criteria.")
 
                     new_kwargs[argname] = particle
                 else:
