@@ -397,11 +397,11 @@ def _parse_and_check_atomic_input(
         symbol = element
 
     nomenclature_dict = {
-        'symbol': symbol,
+        'particle': symbol,
         'element': element,
         'isotope': isotope,
         'ion': ion,
-        'mass_numb': mass_numb,
+        'mass number': mass_numb,
         'Z': Z,
     }
 
