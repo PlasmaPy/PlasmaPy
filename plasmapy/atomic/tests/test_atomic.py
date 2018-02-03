@@ -35,11 +35,7 @@ from ..atomic import (atomic_number,
                       periodic_table_period,
                       periodic_table_block,
                       periodic_table_category,
-                      periodic_table_group,
-                      _get_atomic_symbol,
-                      _symbol_from_symbol,
-                      _symbol_from_name,
-                      _symbol_from_number)
+                      periodic_table_group)
 
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
 
@@ -1294,12 +1290,10 @@ def test_extract_integer_charge_warnings(test_input, expected_warning):
 
 # argument, expected
 period_table = [
-    ("ca", 4),
+    ("Ca", 4),
     ("Na", 3),
-    ("rf", 7),
+    ("Rf", 7),
     ("Be", 2),
-    ("BE", 2),
-    ("bE", 2),
     ("calcium", 4),
     ("CALCIUM", 4),
     ("Hydrogen", 1),
@@ -1329,12 +1323,10 @@ def test_periodic_table_period(argument, expected):
 
 # argument, expected
 block_table = [
-    ("ca", "s"),
+    ("Ca", "s"),
     ("Na", "s"),
-    ("rf", "d"),
+    ("Rf", "d"),
     ("Be", "s"),
-    ("BE", "s"),
-    ("bE", "s"),
     ("calcium", "s"),
     ("CALCIUM", "s"),
     ("Hydrogen", "s"),
@@ -1364,12 +1356,10 @@ def test_periodic_table_block(argument, expected):
 
 # argument, expected
 group_table = [
-    ("ca", 2),
+    ("Ca", 2),
     ("Na", 1),
-    ("rf", 4),
+    ("Rf", 4),
     ("Be", 2),
-    ("BE", 2),
-    ("bE", 2),
     ("calcium", 2),
     ("CALCIUM", 2),
     ("Hydrogen", 1),
@@ -1399,12 +1389,10 @@ def test_periodic_table_group(argument, expected):
 
 # argument, expected
 category_table = [
-    ("ca", "Alkaline earth metals"),
+    ("Ca", "Alkaline earth metals"),
     ("Na", "Alkali metals"),
-    ("rf", "Transition metals"),
+    ("Rf", "Transition metals"),
     ("Be", "Alkaline earth metals"),
-    ("BE", "Alkaline earth metals"),
-    ("bE", "Alkaline earth metals"),
     ("calcium", "Alkaline earth metals"),
     ("CALCIUM", "Alkaline earth metals"),
     ("Hydrogen", "Nonmetals"),
@@ -1439,16 +1427,6 @@ periodic_data_error_table = [
     (['cat', 'dog'], TypeError),
     (("foo", "bar"), TypeError),
     ({"bob": "alice"}, TypeError),
-    (0, TypeError),
-    ("0", TypeError),
-    (512, ValueError),
-    ("1024", ValueError),
-    ('H-934361079326356530741942970523610389', ValueError),
-    ('Fe 2+4', ValueError),
-    ('C-++++', ValueError),
-    ('neutron', ValueError),
-    ('n-1', ValueError),
-    ('antiproton', ValueError),
 ]
 
 
@@ -1478,194 +1456,3 @@ def test_periodic_table_data_error(argument, expected_error):
             f"periodic_table_category({argument}) is not raising "
             f"{expected_error}.")):
         periodic_table_category(argument)
-
-
-# argument, expected
-symbol_table = [
-    (2, "He"),
-    (21, "Sc"),
-    ("2", "He"),
-    ("21", "Sc"),
-    ("he", "He"),
-    ("fe", "Fe"),
-    ("iron", "Fe"),
-    ("IRON", "Fe"),
-    ("iRON", "Fe"),
-]
-
-
-@pytest.mark.parametrize(
-    'argument, expected', symbol_table)
-def test_get_atomic_symbol(argument, expected):
-    """Test that _get_atomic_symbol returns the expected result."""
-    assert _get_atomic_symbol(argument) == expected, \
-        (f"_get_atomic_symbol({argument}) is returning "
-         f"{_get_atomic_symbol(argument)}, which differs from the expected "
-         f"value of {expected}.")
-
-
-# argument, expected
-atomic_symbol_error_table = [
-    (['cat', 'dog'], TypeError),
-    (("foo", "bar"), TypeError),
-    ({"bob": "alice"}, TypeError),
-    (None, TypeError),
-    (3.1459, TypeError),
-    ("3.1459", ValueError),
-    ("It's a string", ValueError),
-    (-1, TypeError),
-    (0, TypeError),
-    (512, ValueError),
-    ("0x", ValueError),
-    ("B4rium", ValueError),
-]
-
-
-@pytest.mark.parametrize(
-    'argument, expected_error', atomic_symbol_error_table)
-def test_get_atomic_symbol_error(argument, expected_error):
-    """Test that _get_atomic_symbol raises the expected exceptions."""
-    with pytest.raises(expected_error, message=(
-            f"_get_atomic_symbol({argument}) is not raising "
-            f"{expected_error}.")):
-        _get_atomic_symbol(argument)
-
-
-# argument, expected
-symbol_symbol_table = [
-    ("ar", "Ar"),
-    ("FE", "Fe"),
-    ("tE", "Te"),
-    ("H", "H"),
-    ("h", "H"),
-    ("He", "He"),
-]
-
-
-@pytest.mark.parametrize(
-    'argument, expected', symbol_symbol_table)
-def test_symbol_from_symbol(argument, expected):
-    """Test that _symbol_from_symbol returns the expected result."""
-    assert _symbol_from_symbol(argument) == expected, \
-        (f"_symbol_from_symbol({argument}) is returning "
-         f"{_symbol_from_symbol(argument)}, which differs from the expected "
-         f"value of {expected}.")
-
-
-# argument, expected
-symbol_symbol_error_table = [
-    ("longString", TypeError),
-    ("Argon", TypeError),
-    (190, TypeError),
-    (0.16758, TypeError),
-    (['cat', 'dog'], TypeError),
-    (("foo", "bar"), TypeError),
-    ({"bob": "alice"}, TypeError),
-    (None, TypeError),
-    ("xx", ValueError),
-    ("xX", ValueError),
-    ("_", ValueError),
-    ("01", ValueError),
-    ("0x", ValueError),
-]
-
-
-@pytest.mark.parametrize(
-    'argument, expected_error', symbol_symbol_error_table)
-def test_symbol_symbol_error(argument, expected_error):
-    """Test that _symbol_from_symbol raises the expected exceptions."""
-    with pytest.raises(expected_error, message=(
-            f"_symbol_from_symbol({argument}) is not raising "
-            f"{expected_error}.")):
-        _symbol_from_symbol(argument)
-
-
-# argument, expected
-name_symbol_table = [
-    ("argon", "Ar"),
-    ("IRON", "Fe"),
-    ("Hydrogen", "H"),
-    ("hYDROGEN", "H"),
-    ("Helium", "He"),
-]
-
-
-@pytest.mark.parametrize(
-    'argument, expected', name_symbol_table)
-def test_symbol_from_symbol(argument, expected):
-    """Test that _symbol_from_name returns the expected result."""
-    assert _symbol_from_name(argument) == expected, \
-        (f"_symbol_from_name({argument}) is returning "
-         f"{_symbol_from_name(argument)}, which differs from the expected "
-         f"value of {expected}.")
-
-
-# argument, expected
-name_symbol_error_table = [
-    (190, TypeError),
-    (0.16758, TypeError),
-    (['cat', 'dog'], TypeError),
-    (("foo", "bar"), TypeError),
-    ({"bob": "alice"}, TypeError),
-    (None, TypeError),
-    ("healium", ValueError),
-    ("he", ValueError),
-    ("xx", ValueError),
-    ("xX", ValueError),
-    ("_", ValueError),
-    ("01", ValueError),
-    ("0x", ValueError),
-]
-
-
-@pytest.mark.parametrize(
-    'argument, expected_error', name_symbol_error_table)
-def test_name_symbol_error(argument, expected_error):
-    """Test that _symbol_from_symbol raises the expected exceptions."""
-    with pytest.raises(expected_error, message=(
-            f"_symbol_from_name({argument}) is not raising "
-            f"{expected_error}.")):
-        _symbol_from_name(argument)
-
-
-# argument, expected
-number_symbol_table = [
-    (18, "Ar"),
-    (26, "Fe"),
-    (1, "H"),
-    (3, "Li"),
-]
-
-
-@pytest.mark.parametrize(
-    'argument, expected', number_symbol_table)
-def test_symbol_from_number(argument, expected):
-    """Test that _symbol_from_number returns the expected result."""
-    assert _symbol_from_number(argument) == expected, \
-        (f"_symbol_from_number({argument}) is returning "
-         f"{_symbol_from_number(argument)}, which differs from the expected "
-         f"value of {expected}.")
-
-
-# argument, expected
-number_symbol_error_table = [
-    (0.16758, TypeError),
-    (-1, TypeError),
-    (0, TypeError),
-    (['cat', 'dog'], TypeError),
-    (("foo", "bar"), TypeError),
-    ({"bob": "alice"}, TypeError),
-    ("Somebody once...", TypeError),
-    (512, ValueError),
-    (1024, ValueError),
-]
-
-
-@pytest.mark.parametrize(
-    'argument, expected_error', number_symbol_error_table)
-def test_number_symbol_error(argument, expected_error):
-    """Test that _symbol_from_number raises the expected exceptions."""
-    with pytest.raises(expected_error, message=(
-            f"_symbol_from_number({argument}) is not raising "
-            f"{expected_error}.")):
-        _symbol_from_number(argument)

@@ -1267,8 +1267,7 @@ def periodic_table_period(argument: Union[str, int]) -> int:
 
     argument: string or integer
         Atomic number (either integer or string), atomic symbol (e.g. "H",
-        string, case insensitive), or element name (e.g. "Francium", string,
-        case insensitive).
+        string), or element name (e.g. "Francium", string).
 
     Returns
     -------
@@ -1281,9 +1280,6 @@ def periodic_table_period(argument: Union[str, int]) -> int:
 
     TypeError:
         If the argument is not a string or integer.
-
-    ValueError:
-        If the argument cannot be used to identify the element.
 
     See also
     --------
@@ -1298,8 +1294,6 @@ def periodic_table_period(argument: Union[str, int]) -> int:
     2
     >>> periodic_table_period("5")
     2
-    >>> periodic_table_period("au")
-    6
     >>> periodic_table_period("Au")
     6
     >>> periodic_table_period("nitrogen")
@@ -1313,8 +1307,8 @@ def periodic_table_period(argument: Union[str, int]) -> int:
                         "either a string representing the element or its " +
                         "symbol, or an integer representing its atomic " +
                         "number.")
-    atomic_symbol = _get_atomic_symbol(argument)
-    period = _Elements[atomic_symbol]["period"]
+    symbol = atomic_symbol(argument)
+    period = _Elements[symbol]["period"]
     return period
 
 
@@ -1326,8 +1320,7 @@ def periodic_table_group(argument: Union[str, int]) -> int:
 
     argument: string or integer
         Atomic number (either integer or string), atomic symbol (e.g. "H",
-        string, case insensitive), or element name (e.g. "Francium", string,
-        case insensitive).
+        string), or element name (e.g. "Francium", string).
 
     Returns
     -------
@@ -1340,9 +1333,6 @@ def periodic_table_group(argument: Union[str, int]) -> int:
 
     TypeError:
         If the argument is not a string or integer.
-
-    ValueError:
-        If the argument cannot be used to identify the element.
 
     See also
     --------
@@ -1359,8 +1349,6 @@ def periodic_table_group(argument: Union[str, int]) -> int:
     6
     >>> periodic_table_group("Al")
     13
-    >>> periodic_table_group("al")
-    13
     >>> periodic_table_group("neon")
     18
     >>> periodic_table_group("BARIUM")
@@ -1372,8 +1360,8 @@ def periodic_table_group(argument: Union[str, int]) -> int:
                         "either a string representing the element or its " +
                         "symbol, or an integer representing its atomic " +
                         "number.")
-    atomic_symbol = _get_atomic_symbol(argument)
-    group = _Elements[atomic_symbol]["group"]
+    symbol = atomic_symbol(argument)
+    group = _Elements[symbol]["group"]
     return group
 
 
@@ -1385,8 +1373,7 @@ def periodic_table_block(argument: Union[str, int]) -> str:
 
     argument: string or integer
         Atomic number (either integer or string), atomic symbol (e.g. "H",
-        string, case insensitive), or element name (e.g. "Francium", string,
-        case insensitive).
+        string), or element name (e.g. "Francium", string).
 
     Returns
     -------
@@ -1399,9 +1386,6 @@ def periodic_table_block(argument: Union[str, int]) -> str:
 
     TypeError:
         If the argument is not a string or integer.
-
-    ValueError:
-        If the argument cannot be used to identify the element.
 
     See also
     --------
@@ -1416,12 +1400,10 @@ def periodic_table_block(argument: Union[str, int]) -> str:
     'f'
     >>> periodic_table_block("72")
     'd'
-    >>> periodic_table_block("tl")
+    >>> periodic_table_block("Tl")
     'p'
     >>> periodic_table_block("thallium")
     'p'
-    >>> periodic_table_block("FR")
-    's'
     >>> periodic_table_block("FRANCIUM")
     's'
 
@@ -1431,8 +1413,8 @@ def periodic_table_block(argument: Union[str, int]) -> str:
                         "either a string representing the element or its " +
                         "symbol, or an integer representing its atomic " +
                         "number.")
-    atomic_symbol = _get_atomic_symbol(argument)
-    block = _Elements[atomic_symbol]["block"]
+    symbol = atomic_symbol(argument)
+    block = _Elements[symbol]["block"]
     return block
 
 
@@ -1444,8 +1426,7 @@ def periodic_table_category(argument: Union[str, int]) -> str:
 
     argument: string or integer
         Atomic number (either integer or string), atomic symbol (e.g. "H",
-        string, case insensitive), or element name (e.g. "Francium", string,
-        case insensitive).
+        string), or element name (e.g. "Francium", string).
 
     Returns
     -------
@@ -1458,8 +1439,6 @@ def periodic_table_category(argument: Union[str, int]) -> str:
 
     TypeError:
         If the argument is not a string or integer.
-    ValueError:
-        If the argument cannot be used to identify the element.
 
     See also
     --------
@@ -1476,8 +1455,6 @@ def periodic_table_category(argument: Union[str, int]) -> str:
     'Halogens'
     >>> periodic_table_category("Ra")
     'Alkaline earth metals'
-    >>> periodic_table_category("AC")
-    'Actinides'
     >>> periodic_table_category("rhodium")
     'Transition metals'
 
@@ -1487,208 +1464,6 @@ def periodic_table_category(argument: Union[str, int]) -> str:
                         "either a string representing the element or its " +
                         "symbol, or an integer representing its atomic " +
                         "number.")
-    atomic_symbol = _get_atomic_symbol(argument)
-    category = _Elements[atomic_symbol]["category"]
+    symbol = atomic_symbol(argument)
+    category = _Elements[symbol]["category"]
     return category
-
-
-def _get_atomic_symbol(argument: Union[str, int]) -> str:
-    r"""Returns the Atomic symbol
-
-    Parameters
-    ----------
-
-    argument: string or integer
-        Atomic number (either integer or string), atomic symbol (e.g. "H",
-        string, case insensitive), or element name (e.g. "Francium", string,
-        case insensitive).
-
-    Returns
-    -------
-
-    atomic_symbol: string
-        The Atomic symbol of the element.
-
-    Raises
-    ------
-
-    ValueError:
-        If the argument cannot be used to identify the element.
-
-    TypeError:
-        If the argument is not an Atomic symbol (string, len <=2),
-        an element name (string), or Atomic number(int, or numeric
-        string).
-
-    See also
-    --------
-
-        caller: periodic_table_[period/block/category/group].
-        calls: _symbol_from_number, _symbol_from_symbol, _symbol_from_name
-
-    Examples
-    --------
-
-    >>> _get_atomic_symbol(18)
-    'Ar'
-    >>> _get_atomic_symbol("argon")
-    'Ar'
-
-    """
-    if (isinstance(argument, str) and argument.isdigit() or
-            isinstance(argument, int)):
-        atomic_number = int(argument)
-        atomic_symbol = _symbol_from_number(atomic_number)
-    elif (isinstance(argument, str) and len(argument) <= 2 and
-          argument.isalpha()):
-        atomic_symbol = _symbol_from_symbol(argument)
-    elif isinstance(argument, str):
-        atomic_symbol = _symbol_from_name(argument)
-    else:
-        raise TypeError(f"Could not resolve argument ({argument}) to "
-                        f"get_atomic_symbol. Argument must be Element name, "
-                        f"Atomic symbol, or Atomic number.")
-    return atomic_symbol
-
-
-def _symbol_from_number(atomic_number: int) -> str:
-    r"""Returns the Atomic symbol
-
-    Parameters
-    ----------
-
-    atomic_number: positive integer
-
-    Returns
-    -------
-
-    atomic_symbol: string
-
-    Raises
-    ------
-
-    ValueError:
-        If the argument cannot be used to identify the element.
-
-    TypeError:
-        If the argument is not a positive integer.
-
-    See also
-    --------
-
-        caller: _get_atomic_symbol
-        _symbol_from_symbol, _symbol_from_name
-
-    Examples
-    --------
-
-    >>> _symbol_from_number(56)
-    'Ba'
-
-    """
-    if (atomic_number is None or not isinstance(atomic_number, int) or
-            atomic_number <= 0):
-        raise TypeError("Argument to _symbol_from_number must be a positive " +
-                        "integer")
-    atomic_symbol = _atomic_symbols.get(atomic_number, None)
-    if atomic_symbol is None:
-        raise ValueError(f"Invalid atomic number ({atomic_number}) supplied.")
-    return atomic_symbol
-
-
-def _symbol_from_symbol(symbol: str) -> str:
-    r"""Returns the Atomic symbol
-
-    Parameters
-    ----------
-
-    symbol: string
-        Atomic symbol (e.g "Ar")
-
-    Returns
-    -------
-
-    atomic_symbol: string
-
-    Raises
-    ------
-
-    ValueError:
-        If the argument cannot be used to identify the element.
-
-    TypeError:
-        If the argument is not of type str, or has len > 2, or
-        is not entirely composed of alphabetical characters.
-
-    See also
-    --------
-
-        caller: _get_atomic_symbol
-        _symbol_from_number, _symbol_from_name
-
-    Examples
-    --------
-
-    >>> _symbol_from_symbol("ar")
-    'Ar'
-
-    """
-    if (symbol is None or not isinstance(symbol, str) or
-            len(symbol) > 2):
-        raise TypeError("Argument to _symbol_from_symbol must be an Atomic " +
-                        "symbol, of type str, containing only alphabetical " +
-                        "characters.")
-    elif not symbol.isalpha():
-        raise ValueError(f"Invalid symbol ({symbol}) supplied.")
-    atomic_symbol = symbol.capitalize()
-    if atomic_symbol not in _Elements:
-        raise ValueError(f"Invalid element ({atomic_symbol}) supplied.")
-    return atomic_symbol
-
-
-def _symbol_from_name(element_name: str) -> str:
-    r"""Returns the Atomic symbol
-
-    Parameters
-    ----------
-
-    element_name: string
-
-    Returns
-    -------
-
-    atomic_symbol: string
-
-    Raises
-    ------
-
-    ValueError:
-        If the argument cannot be used to identify the element, or has
-        len <= 2 (probably an atomic symbol)
-
-    TypeError:
-        If the argument is not of type str
-
-    See also
-    --------
-
-        caller: _get_atomic_symbol
-        _symbol_from_number, _symbol_from_symbol
-
-    Examples
-    --------
-
-    >>> _symbol_from_name("Barium")
-    'Ba'
-
-    """
-    if element_name is None or not isinstance(element_name, str):
-        raise TypeError("Argument to _symbol_from_name must be an element " +
-                        "name, of type str.")
-    elif len(element_name) <= 2 or not element_name.isalpha():
-        raise ValueError("Argument to _symbol_from_name must be an element " +
-                         "name, not symbol, of type str.")
-    atomic_symbol = _atomic_symbols_dict.get(element_name.lower(), None)
-    if atomic_symbol is None:
-        raise ValueError(f"Invalid element ({element_name}) supplied.")
-    return atomic_symbol
