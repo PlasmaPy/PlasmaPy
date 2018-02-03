@@ -126,15 +126,15 @@ def particle_input(wrapped_function: Callable = None,
 
                     if argname == 'element' and not particle.element:
                         raise InvalidElementError(
-                            f'The argument {argname} does not correspond to a'
+                            f'The argument {argname} does not correspond to a '
                             f'valid {argname}.')
                     if argname == 'isotope' and not particle.isotope:
                         raise InvalidIsotopeError(
-                            f'The argument {argname} does not correspond to a'
+                            f'The argument {argname} does not correspond to a '
                             f'valid {argname}.')
                     if argname == 'ion' and not particle.ion:
                         raise InvalidIonError(
-                            f'The argument {argname} does not correspond to a'
+                            f'The argument {argname} does not correspond to a '
                             f'valid {argname}.')
                     if 'charged' in must_be and not particle._integer_charge:
                         raise ChargeError(

@@ -144,10 +144,10 @@ class Particle:
 
         particle = _dealias_particle_aliases(argument)
 
-        if particle in _Particles.keys():  # special particles
+        self._attributes['particle'] = particle
 
+        if particle in _Particles.keys():  # special particles
             special_particle_keys = [
-                'particle',
                 'name',
                 'spin',
                 'class',
@@ -176,12 +176,12 @@ class Particle:
                 # Electrons are weird.
 
                 proton_keys_and_vals = [
-                    ('atomic symbol', 'H'),
+                    ('element', 'H'),
                     ('atomic number', 1),
                     ('mass number', 1),
                     ('element name', 'hydrogen'),
                     ('isotope', 'H-1'),
-                    ('ion', 'H-1'),
+                    ('ion', 'p+'),
                 ]
 
                 for key, val in proton_keys_and_vals:
@@ -266,6 +266,9 @@ class Particle:
 
             # Set the masses
 
+            # TODO: Put the mass determinations in a separate internal function
+            # TODO: Make the mass determinations less confusing
+
             if element and not isotope:
                 try:
                     self._attributes['standard atomic weight'] = \
@@ -295,7 +298,7 @@ class Particle:
         # Set the charge
 
         if self._attributes['integer charge'] is not None:
-            self._attributes['electric charge'] = \
+            self._attributes['charge'] = \
                 self._attributes['integer charge'] * const.e.si
 
         if self._attributes['integer charge']:
@@ -346,7 +349,7 @@ class Particle:
     def element(self) -> Optional[str]:
         r"""Returns the atomic symbol if the particle corresponds to an
         element, and None otherwise."""
-        return self._attributes['atomic_symbol']
+        return self._attributes['element']
 
     @property
     def isotope(self) -> Optional[str]:
@@ -383,11 +386,11 @@ class Particle:
     def charge(self) -> u.C:
         r"""Returns the electric charge as a Quantity in units of coulombs,
         or raises a ChargeError if the charge has not been specified."""
-        if self._electric_charge is None:
+        if self._attributes['charge'] is None:
             raise ChargeError(
                 f"The charge of particle {self.particle} has not been "
                 f"specified.")
-        return self._electric_charge
+        return self._attributes['charge']
 
     @property
     def mass(self) -> u.kg:

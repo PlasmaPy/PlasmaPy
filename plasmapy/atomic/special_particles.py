@@ -175,18 +175,18 @@ def _create_Particles_dict() -> Dict[str, dict]:
         Particles[lepton]['lepton number'] = 1
         Particles[lepton]['baryon number'] = 0
         if lepton not in ParticleZoo.neutrinos:
-            Particles[lepton]['charge'] = -1
+            Particles[lepton]['integer charge'] = -1
         else:
-            Particles[lepton]['charge'] = 0
+            Particles[lepton]['integer charge'] = 0
 
     for antilepton in ParticleZoo.antileptons:
         Particles[antilepton]['class'] = 'antilepton'
         Particles[antilepton]['lepton number'] = -1
         Particles[antilepton]['baryon number'] = 0
         if antilepton not in ParticleZoo.antineutrinos:
-            Particles[antilepton]['charge'] = 1
+            Particles[antilepton]['integer charge'] = 1
         else:
-            Particles[antilepton]['charge'] = 0
+            Particles[antilepton]['integer charge'] = 0
 
     for baryon in ParticleZoo.baryons:
         Particles[baryon]['class'] = 'baryon'
@@ -227,13 +227,13 @@ def _create_Particles_dict() -> Dict[str, dict]:
     for thing in ['p+', 'p-']:
         Particles[thing]['mass'] = const.m_p
 
-    Particles['p+']['charge'] = 1
-    Particles['p-']['charge'] = -1
+    Particles['p+']['integer charge'] = 1
+    Particles['p-']['integer charge'] = -1
 
     for thing in ['n', 'antineutron']:
         Particles[thing]['mass'] = const.m_n
         Particles[thing]['half-life'] = 881.5 * u.s
-        Particles[thing]['charge'] = 0
+        Particles[thing]['integer charge'] = 0
 
     for thing in ParticleZoo.everything:
         if 'half-life' not in Particles[thing].keys():
