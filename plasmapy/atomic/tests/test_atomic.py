@@ -31,7 +31,11 @@ from ..atomic import (atomic_number,
                       stable_isotopes,
                       isotopic_abundance,
                       integer_charge,
-                      electric_charge)
+                      electric_charge,
+                      periodic_table_period,
+                      periodic_table_block,
+                      periodic_table_category,
+                      periodic_table_group)
 
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
 
@@ -759,7 +763,6 @@ def test_half_life_unstable_isotopes():
 def test_half_life_u_220():
     """Test that half_life returns None and issues a warning for an isotope
     without half-life data.
-
     If half-life data is added for this isotope, then this test should fail
     and a different isotope without half-life data should be chosen instead
     until all isotopes have half-life data."""
@@ -879,13 +882,10 @@ def test_known_common_stable_isotopes_cases():
 def test_known_common_stable_isotopes_len():
     """Test that known_isotopes, common_isotopes, and stable_isotopes return
     lists of the expected lengths.
-
     The number of common isotopes may change if isotopic composition data
     has any significant changes.
-
     The number of stable isotopes may decrease slightly if some isotopes are
     discovered to be unstable but with extremely long half-lives.
-
     The number of known isotopes will increase as new isotopes are discovered,
     so a buffer is included in the test."""
 
@@ -1286,3 +1286,173 @@ def test_extract_integer_charge_warnings(test_input, expected_warning):
     """Test that _extract_integer_charge issues the expected warnings."""
     with pytest.warns(expected_warning):
         _extract_integer_charge(test_input)
+
+
+# argument, expected
+period_table = [
+    ("Ca", 4),
+    ("Na", 3),
+    ("Rf", 7),
+    ("Be", 2),
+    ("calcium", 4),
+    ("CALCIUM", 4),
+    ("Hydrogen", 1),
+    ("hYDROGEN", 1),
+    ("potassium", 4),
+    ("Cadmium", 5),
+    (2, 1),
+    (11, 3),
+    (39, 5),
+    (110, 7),
+    ("43", 5),
+    ("81", 6),
+    ("2", 1),
+    ("88", 7),
+]
+
+
+@pytest.mark.parametrize(
+    'argument, expected', period_table)
+def test_periodic_table_period(argument, expected):
+    """Test that periodic_table_period returns the expected result."""
+    assert periodic_table_period(argument) == expected, \
+        (f"periodic_table_period({argument}) is returning "
+         f"{periodic_table_period(argument)}, which differs from the expected "
+         f"value of {expected}.")
+
+
+# argument, expected
+block_table = [
+    ("Ca", "s"),
+    ("Na", "s"),
+    ("Rf", "d"),
+    ("Be", "s"),
+    ("calcium", "s"),
+    ("CALCIUM", "s"),
+    ("Hydrogen", "s"),
+    ("hYDROGEN", "s"),
+    ("potassium", "s"),
+    ("Cadmium", "d"),
+    (2, "s"),
+    (13, "p"),
+    (47, "d"),
+    (66, "f"),
+    ("2", "s"),
+    ("13", "p"),
+    ("47", "d"),
+    ("66", "f"),
+]
+
+
+@pytest.mark.parametrize(
+    'argument, expected', block_table)
+def test_periodic_table_block(argument, expected):
+    """Test that periodic_table_block returns the expected result."""
+    assert periodic_table_block(argument) == expected, \
+        (f"periodic_table_block({argument}) is returning "
+         f"{periodic_table_block(argument)}, which differs from the expected "
+         f"value of {expected}.")
+
+
+# argument, expected
+group_table = [
+    ("Ca", 2),
+    ("Na", 1),
+    ("Rf", 4),
+    ("Be", 2),
+    ("calcium", 2),
+    ("CALCIUM", 2),
+    ("Hydrogen", 1),
+    ("hYDROGEN", 1),
+    ("argon", 18),
+    ("Iron", 8),
+    (2, 18),
+    (13, 13),
+    (47, 11),
+    (66, 3),
+    ("2", 18),
+    ("13", 13),
+    ("47", 11),
+    ("66", 3),
+]
+
+
+@pytest.mark.parametrize(
+    'argument, expected', group_table)
+def test_periodic_table_group(argument, expected):
+    """Test that periodic_table_group returns the expected result."""
+    assert periodic_table_group(argument) == expected, \
+        (f"periodic_table_group({argument}) is returning "
+         f"{periodic_table_group(argument)}, which differs from the expected "
+         f"value of {expected}.")
+
+
+# argument, expected
+category_table = [
+    ("Ca", "Alkaline earth metals"),
+    ("Na", "Alkali metals"),
+    ("Rf", "Transition metals"),
+    ("Be", "Alkaline earth metals"),
+    ("calcium", "Alkaline earth metals"),
+    ("CALCIUM", "Alkaline earth metals"),
+    ("Hydrogen", "Nonmetals"),
+    ("hYDROGEN", "Nonmetals"),
+    ("argon", "Noble gases"),
+    ("Iron", "Transition metals"),
+    (2, "Noble gases"),
+    (13, "Post-transition metals"),
+    (47, "Transition metals"),
+    (66, "Lanthanides"),
+    ("2", "Noble gases"),
+    ("13", "Post-transition metals"),
+    ("47", "Transition metals"),
+    ("66", "Lanthanides"),
+]
+
+
+@pytest.mark.parametrize(
+    'argument, expected', category_table)
+def test_periodic_table_category(argument, expected):
+    """Test that periodic_table_category returns the expected result."""
+    assert periodic_table_category(argument) == expected, \
+        (f"periodic_table_category({argument}) is returning "
+         f"{periodic_table_category(argument)}, which differs from the "
+         f"expected value of {expected}.")
+
+
+# (argument, expected_error)
+periodic_data_error_table = [
+    (3.14159, TypeError),
+    (None, TypeError),
+    (['cat', 'dog'], TypeError),
+    (("foo", "bar"), TypeError),
+    ({"bob": "alice"}, TypeError),
+]
+
+
+@pytest.mark.parametrize(
+    'argument, expected_error', periodic_data_error_table)
+def test_periodic_table_data_error(argument, expected_error):
+    """
+    Test that periodic_table_[period/group/block/category] raises the expected
+    exceptions.
+    """
+    with pytest.raises(expected_error, message=(
+            f"periodic_table_period({argument}) is not raising "
+            f"{expected_error}.")):
+        periodic_table_period(argument)
+
+    with pytest.raises(expected_error, message=(
+            f"periodic_table_group({argument}) is not raising "
+            f"{expected_error}.")):
+        periodic_table_group(argument)
+
+    with pytest.raises(expected_error, message=(
+            f"periodic_table_block({argument}) is not raising "
+            f"{expected_error}.")):
+        periodic_table_block(argument)
+
+    with pytest.raises(expected_error, message=(
+            f"periodic_table_category({argument}) is not raising "
+            f"{expected_error}.")):
+        periodic_table_category(argument)
