@@ -33,7 +33,7 @@ def test_particle_antiparticle_pairs(particle, antiparticle):
     if particle in ['e-', 'mu-', 'tau-'] or 'nu' in particle:
         identical_keys.append('generation')
 
-    opposite_keys = ['charge', 'lepton number', 'baryon number']
+    opposite_keys = ['integer charge', 'lepton number', 'baryon number']
 
     for key in identical_keys:
         assert _Particles[particle][key] == _Particles[antiparticle][key], \
@@ -56,7 +56,7 @@ required_keys = [
     'class',
     'lepton number',
     'baryon number',
-    'charge',
+    'integer charge',
     'half-life',
     'mass',
     'antimatter',
@@ -77,5 +77,5 @@ def test__Particles_required_keys(particle):
 
     if missing_keys:
         raise KeyError(
-            "The following keys are missing from "
-            f"_Particles['{particle}']:\n{missing_keys}")
+            f"_Particles[{repr(particle)}] is missing the following "
+            f"keys: {missing_keys}")
