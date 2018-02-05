@@ -402,7 +402,7 @@ def _parse_and_check_atomic_input(
         'isotope': isotope,
         'ion': ion,
         'mass number': mass_numb,
-        'Z': Z,
+        'integer charge': Z,
     }
 
     return nomenclature_dict
