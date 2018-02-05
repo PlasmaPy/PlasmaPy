@@ -217,9 +217,9 @@ def _create_Particles_dict() -> Dict[str, dict]:
                 Particles[thing]['mass'] = 3.167_47e-27 * u.kg
                 Particles[thing]['half-life'] = 2.906e-13 * u.s
 
-    # Neutrinos are now known to have a tiny but non-zero mass, but
-    # it is not known what the masses of the neutrinos actually are.
-    # Setting the neutrino mass to None here will
+    # Setting the neutrino mass to None reminds us that, while neutrinos
+    # are not massless, we only have upper limits on what the neutrino
+    # mass actually is.
 
     for thing in ParticleZoo.neutrinos | ParticleZoo.antineutrinos:
         Particles[thing]['mass'] = None

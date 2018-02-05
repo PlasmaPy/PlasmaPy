@@ -203,7 +203,7 @@ test_Particle_table = [
       'mass_number': 7,
       'baryon_number': 7,
       'half_life': np.inf * u.s,
-      'nuclide_mass': 1.1647614796180465e-26 * u.kg,
+      'nuclide_mass': 1.1647614796180463e-26 * u.kg,
       }),
 
     ('Cn-276', {"Z": 22},
@@ -301,7 +301,8 @@ def test_Particle_class(arg, kwargs, expected_dict):
                 result = eval(f"particle.{key}")
                 assert result == expected
             except AssertionError as exc_assert:
-                errmsg += f"\n{call}.{key} does not equal {expected}."
+                errmsg += (f"\n{call}.{key} returns {result} instead "
+                           f"of the expected value of {expected}.")
             except Exception as exc_general:
                 errmsg += f"\n{call}.{key} raises an unexpected exception."
 
@@ -352,6 +353,7 @@ test_Particle_error_table = [
     ('e-', {}, '.atomic_number', InvalidElementError),
     ('alpha', {}, '.standard_atomic_weight', InvalidElementError),
     ('Fe-56', {}, '.standard_atomic_weight', InvalidElementError),
+    ('e-', {}, '.standard_atomic_weight', InvalidElementError),
     ('tau-', {}, '.element_name', InvalidElementError),
     ('tau+', {}, '.atomic_number', InvalidElementError),
     ('neutron', {}, '.atomic_number', InvalidElementError),
