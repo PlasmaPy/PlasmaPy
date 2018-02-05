@@ -750,9 +750,8 @@ def test_half_life_unstable_isotopes():
     for isotope in _Isotopes.keys():
         if 'half_life' not in _Isotopes[isotope].keys() and \
                 not _Isotopes[isotope].keys():
-            with pytest.warns(AtomicWarning, message=(
-                    f"No AtomicWarning issued for {repr(isotope)}")):
-                assert half_life(isotope) is None
+            with pytest.raises(MissingAtomicDataError):
+                half_life(isotope)
 
 
 def test_half_life_u_220():
@@ -765,18 +764,8 @@ def test_half_life_u_220():
 
     isotope_without_half_life_data = "U-220"
 
-    with pytest.warns(AtomicWarning):
-
-        try:
-            half_life_isotope = half_life(isotope_without_half_life_data)
-        except Exception:
-            raise Exception(f"half_life is raising an exception instead of "
-                            f"issuing a AtomicWarning for an isotope without "
-                            f"half-life data")
-
-        assert half_life_isotope is None, \
-            (f"half_life should return {None} for an isotope without half-life"
-             f" data, but is returning {half_life_isotope}")
+    with pytest.raises(MissingAtomicDataError):
+        half_life(isotope_without_half_life_data)
 
 
 atomic_TypeError_funcs_table = [
