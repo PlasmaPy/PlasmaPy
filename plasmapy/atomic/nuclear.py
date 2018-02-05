@@ -22,17 +22,19 @@ from ..utils import (InvalidElementError,
                      InvalidIsotopeError)
 
 from .particle_class import Particle
+from .particle_input import particle_input
 
 
-def nuclear_binding_energy(argument, mass_numb=None):
+@particle_input(must_be={'isotope', 'baryon'}, any=True)
+def nuclear_binding_energy(particle: Particle, mass_numb=None):
     r"""Returns the nuclear binding energy associated with an isotope.
 
     Parameters
     ----------
 
-    argument: string or integer
-        A string representing an element or isotope, or an integer
-        representing the atomic number of an element.
+    particle: string, integer, or Particle
+        A Particle object, a string representing an element or isotope,
+        or an integer representing the atomic number of an element.
 
     mass_numb: integer, optional
         The mass number of an isotope, which is required if and only
@@ -79,19 +81,7 @@ def nuclear_binding_energy(argument, mass_numb=None):
     <Quantity 17.58929687 MeV>
 
     """
-
-    try:
-        return Particle(argument, mass_numb=mass_numb).binding_energy
-    except TypeError:
-        raise TypeError("Invalid inputs to nuclear_binding_energy")
-    except InvalidParticleError:
-        raise InvalidParticleError(
-            f"The inputs to nuclear_binding_energy do not correspond to a "
-            f"valid particle.")
-    except InvalidIsotopeError:
-        raise InvalidIsotopeError(
-            f"The inputs to nuclear_binding_energy do not correspond to a "
-            f"valid isotope.")
+    return particle.binding_energy
 
 
 def nuclear_reaction_energy(*args, **kwargs):
@@ -210,6 +200,8 @@ def nuclear_reaction_energy(*args, **kwargs):
                         particle = 'p-'
                     elif _is_antineutron(item):
                         particle = 'antineutron'
+                    elif _is_neutron(item):
+                        particle = 'neutron'
                     else:
                         raise ValueError("{item} is not a valid particle")
 
