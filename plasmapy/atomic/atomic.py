@@ -9,6 +9,8 @@ from astropy.units import Quantity
 
 from .elements import _Elements
 from .isotopes import _Isotopes
+from .particle_class import Particle
+from .particle_input import particle_input
 
 from ..utils import (
     AtomicWarning,
@@ -48,13 +50,14 @@ from .symbols import (
 # TODO: Create lepton_number and baryon_number functions
 
 
-def atomic_number(argument: str) -> str:
+@particle_input
+def atomic_number(element: Particle) -> str:
     r"""Returns the number of protons in an atom, isotope, or ion.
 
     Parameters
     ----------
 
-    argument: string
+    element: string
         A string representing an element, isotope, or ion.
 
     Returns
@@ -94,25 +97,11 @@ def atomic_number(argument: str) -> str:
     118
 
     """
-
-    try:
-        element = atomic_symbol(argument)
-        atomic_numb = _Elements[element]['atomic_number']
-    except (InvalidElementError, KeyError):
-        raise InvalidElementError(
-            f"The argument {argument} to atomic_number does not correspond to "
-            "a valid element.") from None
-    except InvalidParticleError:
-        raise InvalidParticleError(f"The argument {argument} to atomic_number "
-                                   "is not a valid particle.") from None
-    except TypeError:
-        raise TypeError(f"The argument {argument} to atomic number is not a "
-                        f"string.") from None
-
-    return atomic_numb
+    return element.atomic_number
 
 
-def mass_number(isotope: str) -> int:
+@particle_input
+def mass_number(isotope: Particle) -> int:
     r"""Get the mass number (the number of protons and neutrons) of an
     isotope.
 
@@ -156,29 +145,15 @@ def mass_number(isotope: str) -> int:
     208
     >>> mass_number("tritium")
     3
-    >>> mass_number("n")
-    1
     >>> mass_number("alpha")
     4
 
     """
-
-    try:
-        isotope = isotope_symbol(isotope)
-        mass_numb = _Isotopes[isotope]["mass_number"]
-    except InvalidIsotopeError:
-        raise InvalidIsotopeError("Invalid isotope in mass_number.")
-    except InvalidParticleError:
-        raise InvalidParticleError(
-            f"The argument {isotope} to mass_number does not "
-            "correspond to a valid isotope.") from None
-    except TypeError:
-        raise TypeError("The argument to mass_number is not a string.")
-
-    return mass_numb
+    return isotope.mass_number
 
 
-def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
+@particle_input(must_be='element', cannot_be={'isotope', 'ion'})
+def standard_atomic_weight(element: Particle) -> Quantity:
     r"""Returns the standard (conventional) atomic weight of an element
     based on the relative abundances of isotopes in terrestrial
     environments.
@@ -186,7 +161,7 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
     Parameters
     ----------
 
-    argument: string or integer
+    element: string or integer
         A string representing an element or an integer representing an
         atomic number
 
@@ -252,47 +227,18 @@ def standard_atomic_weight(argument: Union[str, int]) -> Quantity:
     <Quantity 207.2 u>
 
     """
-
-    try:
-        element = atomic_symbol(argument)
-    except InvalidParticleError:
-        raise InvalidParticleError(f"{argument} is an invalid argument to "
-                                   "standard_atomic_weight.")
-    except InvalidElementError:
-        raise InvalidElementError(f"{argument} is not a valid element in "
-                                  "standard_atomic_weight.")
-
-    try:
-        integer_charge(argument)
-    except ChargeError:
-        pass
-    else:
-        raise AtomicError("Use ion_mass to get masses of ions.")
-
-    try:
-        isotope_symbol(argument)
-    except InvalidIsotopeError:
-        pass
-    else:
-        raise AtomicError("Use isotope_mass to get masses of isotopes.")
-
-    try:
-        atomic_weight = _Elements[element]['atomic_mass']
-    except KeyError as e:
-        raise MissingAtomicDataError(
-            f"No standard atomic weight is available for {element}.") from None
-
-    return atomic_weight
+    return element.standard_atomic_weight
 
 
-def isotope_mass(argument: Union[str, int],
+@particle_input(must_be='isotope', cannot_be='ion')
+def isotope_mass(isotope: Particle,
                  mass_numb: int = None) -> Quantity:
     r"""Return the mass of an isotope.
 
     Parameters
     ----------
 
-    argument : string or integer
+    isotope : string or integer
         A string representing an element, isotope, or ion or an
         integer representing an atomic number
 
@@ -341,35 +287,15 @@ def isotope_mass(argument: Union[str, int],
     >>> from astropy import units as u
     >>> isotope_mass("H-1")
     <Quantity 1.00782503 u>
-    >>> isotope_mass("H-1").to(u.kg)
-    <Quantity 1.67353281e-27 kg>
-    >>> isotope_mass("He", 4)
-    <Quantity 4.00260325 u>
-    >>> isotope_mass(2, 4)
+    >>> isotope_mass("He", mass_numb=4)
     <Quantity 4.00260325 u>
 
     """
-
-    argument, Z = _extract_integer_charge(argument)
-
-    if Z is not None and Z != 0:
-        raise AtomicError("Use ion_mass instead of isotope_mass for masses of "
-                          "charged particles.")
-
-    try:
-        isotope = isotope_symbol(argument, mass_numb)
-        atomic_mass = _Isotopes[isotope]['atomic_mass']
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid particle in isotope_mass.")
-    except InvalidIsotopeError:
-        raise InvalidIsotopeError("Cannot identify isotope in isotope_mass.")
-    except TypeError:
-        raise TypeError("Invalid input to isotope_mass")
-
-    return atomic_mass
+    return isotope.mass
 
 
-def ion_mass(argument: Union[str, int, Quantity], Z: int = None,
+@particle_input
+def ion_mass(ion: Particle, Z: int = None,
              mass_numb: int = None) -> Quantity:
     r"""Returns the mass of an ion by finding the standard atomic
     weight of an element or the atomic mass of an isotope, and then
@@ -379,7 +305,7 @@ def ion_mass(argument: Union[str, int, Quantity], Z: int = None,
     Parameters
     ----------
 
-    argument: string, integer, or Quantity
+    ion: string, integer, or Quantity
         A string representing an element, isotope, or ion; an integer
         representing an atomic number; or a Quantity in units of mass
         within the mass range that is appropriate for an ion.
@@ -476,100 +402,7 @@ def ion_mass(argument: Union[str, int, Quantity], Z: int = None,
     <Quantity 1.67e-27 kg>
 
     """
-
-    if isinstance(argument, Quantity) and Z is None and mass_numb is None:
-
-        try:
-            m_i = argument.to(u.kg)
-        except u.UnitConversionError:
-            raise u.UnitConversionError("If the ion in given as a Quantity, "
-                                        "then it must have units of mass.")
-
-        if np.isclose(m_i.value, const.m_e.value, atol=1e-33):  # positrons
-            return const.m_e
-        elif 1.66e-27 <= m_i.value < 7e-25:  # mass range of known isotopes
-            return m_i
-        else:
-            warnings.warn(
-                "The mass that was inputted to ion_mass and is being returned"
-                " from ion_mass is outside of the range of known isotopes or "
-                "electrons/ions.", AtomicWarning)
-            return m_i
-
-    if _is_electron(argument) or _is_positron(argument):
-        return const.m_e
-    elif _is_proton(argument, Z, mass_numb) or _is_antiproton(argument):
-        return const.m_p
-    elif _is_neutron(argument, mass_numb):
-        raise InvalidIonError("Use isotope_mass or m_n to get mass of neutron")
-
-    if isinstance(argument, str):
-        argument, Z_from_arg = _extract_integer_charge(argument)
-    else:
-        Z_from_arg = None
-
-    if Z is None and Z_from_arg is None:
-        Z = 1
-    elif Z is not None and Z_from_arg is not None and Z != Z_from_arg:
-        raise InvalidIonError("Inconsistent charge information in"
-                              "ion_mass.")
-    elif Z is None and Z_from_arg is not None:
-        Z = Z_from_arg
-
-    if isinstance(Z, str) and Z.isdigit():
-        Z = int(Z)
-    if isinstance(mass_numb, str) and mass_numb.isdigit():
-        mass_numb = int(mass_numb)
-
-    if not isinstance(Z, int):
-        raise TypeError("In ion_mass, Z must be an integer representing the "
-                        "ionization state (e.g., Z=1 for singly ionized).")
-
-    if not isinstance(mass_numb, int) and mass_numb is not None:
-        raise TypeError("In ion_mass, mass_numb must be an integer "
-                        "representing the mass number of an isotope.")
-
-    if atomic_number(argument) < Z:
-        raise InvalidParticleError("The ionization state cannot exceed the "
-                                   "atomic number in ion_mass")
-
-    try:
-        isotope = isotope_symbol(argument, mass_numb)
-    except InvalidParticleError as e:
-        raise InvalidParticleError("Invalid particle in ion_mass.")
-    except InvalidIsotopeError:
-        is_isotope = False
-    else:
-        is_isotope = True
-
-    if is_isotope:
-
-        if isotope == 'H-1' and Z == 1:
-            return const.m_p
-        elif isotope == 'D' and Z == 1:
-            return 3.343583719e-27 * u.kg
-        elif isotope == 'T' and Z == 1:
-            return 5.007356665e-27 * u.kg
-
-        atomic_mass = isotope_mass(isotope)
-
-    else:
-
-        try:
-            atomic_mass = standard_atomic_weight(argument)
-        except MissingAtomicDataError:  # coveralls: ignore
-
-            errormessage = ("No isotope mass or standard atomic weight is "
-                            f"available to get ion mass for {argument}")
-
-            if isinstance(mass_numb, int):
-                errormessage += f" with mass number {mass_numb}"
-
-            raise
-
-    m_i = (atomic_mass - Z * const.m_e).to(u.kg)
-
-    return m_i
+    return ion.mass.to('kg')
 
 
 def isotopic_abundance(argument: Union[str, int],
@@ -605,7 +438,6 @@ def isotopic_abundance(argument: Union[str, int],
 
     TypeError
         If the argument is not a string or integer.
-
 
     Notes
     -----
@@ -645,7 +477,8 @@ def isotopic_abundance(argument: Union[str, int],
     return iso_comp
 
 
-def integer_charge(particle: str) -> int:
+@particle_input
+def integer_charge(particle: Particle) -> int:
     r"""Returns the integer charge of an ion or other particle.
 
     Parameters
@@ -703,38 +536,11 @@ def integer_charge(particle: str) -> int:
     2
 
     """
-
-    if _is_electron(particle) or _is_antiproton(particle):
-        return -1
-    elif _is_positron(particle):
-        return 1
-    elif _is_neutron(particle) or _is_antineutron(particle):
-        return 0
-
-    particle, Z = _extract_integer_charge(particle)
-
-    try:
-        atomic_symbol(particle)
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid particle in integer_charge")
-
-    if Z is None:
-        raise ChargeError(f"Unable to find charge of {particle}.")
-
-    atomic_numb = atomic_number(particle)
-
-    if Z > atomic_numb:
-        raise InvalidParticleError("The integer charge cannot be greater than "
-                                   "the atomic number in integer_charge.")
-
-    if Z < -atomic_numb - 1 or Z < -3:
-        warnings.warn(f"Element {atomic_symbol(particle)} has a charge of {Z}"
-                      " which is unlikely to occur in nature.", AtomicWarning)
-
-    return Z
+    return particle.integer_charge
 
 
-def electric_charge(particle: str) -> Quantity:
+@particle_input
+def electric_charge(particle: Particle) -> Quantity:
     r"""Returns the electric charge (in coulombs) of an ion or other
     particle
 
@@ -790,18 +596,7 @@ def electric_charge(particle: str) -> Quantity:
     <Quantity -1.60217662e-19 C>
 
     """
-
-    try:
-        charge = integer_charge(particle) * const.e.to('C')
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid particle in electric_charge.")
-    except ChargeError:
-        raise ChargeError("Charge information is not being provided to "
-                          "electric_charge.")
-    except TypeError:
-        raise TypeError("Invalid type in electric_charge.")
-
-    return charge
+    return particle.charge
 
 
 def is_isotope_stable(argument: Union[str, int],
@@ -865,14 +660,15 @@ def is_isotope_stable(argument: Union[str, int],
     return is_stable
 
 
-def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
+@particle_input
+def half_life(particle: Particle, mass_numb: int = None) -> Quantity:
     r"""Returns the half-life in seconds for unstable isotopes, and
     numpy.inf for stable isotopes.
 
     Parameters
     ----------
 
-    argument: integer or string
+    particle: integer or string
         A string representing an isotope or an integer representing an
         atomic number
 
@@ -921,30 +717,7 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
     <Quantity inf s>
 
     """
-
-    try:
-
-        isotope = isotope_symbol(argument, mass_numb)
-
-        if _Isotopes[isotope]['is_stable']:
-            half_life_sec = np.inf * u.s
-        else:
-            half_life_sec = _Isotopes[isotope].get('half_life', None)
-
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid element in isotope_symbol.")
-    except InvalidIsotopeError:
-        raise InvalidIsotopeError(
-            "Cannot determine isotope information from these inputs to "
-            f"half_life: {argument}, {mass_numb}")
-    except TypeError:
-        raise TypeError("Incorrect argument type for half_life")
-
-    if half_life_sec is None:
-        warnings.warn(f"The half-life for isotope {isotope} is not"
-                      "available; returning None.", MissingAtomicDataWarning)
-
-    return half_life_sec
+    return particle.half_life
 
 
 def known_isotopes(argument: Union[str, int] = None) -> List[str]:
