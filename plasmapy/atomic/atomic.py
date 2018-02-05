@@ -28,26 +28,7 @@ from .symbols import (
     isotope_symbol,
     ion_symbol,
     particle_symbol,
-    _extract_integer_charge,
-    _is_proton,
-    _is_positron,
-    _is_antineutron,
-    _is_antiproton,
-    _is_electron,
     _is_neutron)
-
-
-# TODO: refactor the atomic subpackage
-#  - Create a Particle class
-#  - Create a decorator that:
-#     1. Takes the inputs of a function corresponding to a particle
-#     2. Checks to make sure the particle is valid
-#     3. Checks to make sure that the inputs are of the correct types
-#     4. Returns the Particle class which would be the input to the
-#        inner function
-
-# TODO: Create a particle_mass function
-# TODO: Create lepton_number and baryon_number functions
 
 
 @particle_input
@@ -57,8 +38,9 @@ def atomic_number(element: Particle) -> str:
     Parameters
     ----------
 
-    element: string
-        A string representing an element, isotope, or ion.
+    element: string or Particle
+        A string representing an element, isotope, or ion; or an
+        instance of the Particle class.
 
     Returns
     -------
@@ -108,8 +90,9 @@ def mass_number(isotope: Particle) -> int:
     Parameters
     ----------
 
-    isotope : string
-        A string representing an isotope or a neutron.
+    isotope : string or Particle
+        A string representing an isotope or a neutron; or an instance of
+        the Particle class.
 
     Returns
     -------
@@ -161,9 +144,9 @@ def standard_atomic_weight(element: Particle) -> Quantity:
     Parameters
     ----------
 
-    element: string or integer
+    element: string, integer, or Particle
         A string representing an element or an integer representing an
-        atomic number
+        atomic number, or an instance of the Particle class
 
     Returns
     -------
@@ -238,9 +221,10 @@ def isotope_mass(isotope: Particle,
     Parameters
     ----------
 
-    isotope : string or integer
-        A string representing an element, isotope, or ion or an
-        integer representing an atomic number
+    isotope : string, integer, or Particle
+        A string representing an element, isotope, or ion; an integer
+        representing an atomic number; or an instance of the Particle
+        class.
 
     mass_numb : integer (optional)
         The mass number of the isotope.
@@ -305,7 +289,7 @@ def ion_mass(ion: Particle, Z: int = None,
     Parameters
     ----------
 
-    ion: string, integer, or Quantity
+    ion: string, integer, or Particle
         A string representing an element, isotope, or ion; an integer
         representing an atomic number; or a Quantity in units of mass
         within the mass range that is appropriate for an ion.
@@ -357,23 +341,17 @@ def ion_mass(ion: Particle, Z: int = None,
 
     This function in general finds the mass of an isotope (or the
     standard atomic weight based on terrestrial values if a unique
-    isotope cannot be identified), and then substracts the mass of Z
+    isotope cannot be identified), and then subtracts the mass of Z
     electrons.  If Z is not provided as an input, then this function
     assumes that the ion is singly ionized.
 
-    Specific values are returns for protons, deuterons, tritons, alpha
+    Specific values are returned for protons, deuterons, tritons, alpha
     particles, and positrons.
 
     Calling ion_mass('H') does not return the mass of a proton but
     instead uses hydrogen's standard atomic weight based on
     terrestrial values.  To get the mass of a proton, use
     ion_mass('p').
-
-    This function can accept a Quantity in units of mass.  If the
-    Quantity is close to the mass of an electron or positron, it will
-    return the mass of an electron or positron to full known
-    precision.  If the Quantity is within the mass range of known
-    isotopes, it will return the mass that is inputted to it.
 
     Examples
     --------
@@ -396,10 +374,6 @@ def ion_mass(ion: Particle, Z: int = None,
     <Quantity 9.28812345e-26 kg>
     >>> ion_mass('Fe-56 1+')
     <Quantity 9.28812345e-26 kg>
-    >>> ion_mass(9.11e-31*u.kg).si.value
-    9.10938356e-31
-    >>> ion_mass(1.67e-27*u.kg)
-    <Quantity 1.67e-27 kg>
 
     """
     return ion.mass.to('kg')
@@ -668,9 +642,9 @@ def half_life(particle: Particle, mass_numb: int = None) -> Quantity:
     Parameters
     ----------
 
-    particle: integer or string
-        A string representing an isotope or an integer representing an
-        atomic number
+    particle: integer, string, or Particle
+        A string representing an isotope, an integer representing an
+        atomic number, or an instance of the Particle class.
 
     mass_numb: integer
         The mass number of the isotope.
