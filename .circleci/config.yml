@@ -4,6 +4,7 @@ deps-run: &deps-install
     python3 -m venv venv
     . venv/bin/activate
     pip install --user -r requirements/automated-documentation-tests.txt | cat
+    pip install --user . | cat
 
 plsma-run: &plsma-install
   name: Install PlasmaPy
@@ -21,13 +22,13 @@ html-run: &doc-html
   command: |
     sudo apt update
     sudo apt install graphviz
-    make html SPHINXOPTS='-W'
+    make html
   working_directory: docs
 
 latex-run: &doc-latex
   name: Build LaTeX documentation
   command: |
-    make latexpdf SPHINXOPTS='-W'
+    make latexpdf
   working_directory: docs
 
 echo-url: &url-echo
