@@ -443,7 +443,7 @@ class Test_classical_transport:
                                   ion_particle=self.ion_particle,
                                   model=model)
         assert np.allclose(ct2.ion_thermal_conductivity(), expected,
-                           atol=1e-6 * u.W / (u.K * u.m)),
+                           atol=1e-6 * u.W / (u.K * u.m)), \
         f"\n{model} ion thermal conductivity: {ct2.ion_viscosity()} \nExpected: {expected}"
 
     @pytest.mark.parametrize("key, expected", {
