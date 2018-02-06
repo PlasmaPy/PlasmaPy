@@ -83,3 +83,33 @@ def test_particle_input_errors(func, kwargs, expected_error):
     with pytest.raises(expected_error, message=(
             f"{func} did not raise {expected_error} with kwargs = {kwargs}")):
         func(**kwargs)
+
+
+class Test_particle_input:
+
+    @particle_input
+    def method_noparens(self, particle: Particle):
+        return particle
+
+    @particle_input()
+    def method_parens(self, particle: Particle):
+        return particle
+
+
+def test_particle_input_classes():
+    instance = Test_particle_input()
+
+    symbol = 'muon'
+    expected = Particle(symbol)
+
+    try:
+        result_noparens = instance.method_noparens(symbol)
+    except Exception as e:
+        raise AtomicError("Problem with method_noparens") from e
+
+    try:
+        result_parens = instance.method_parens(symbol)
+    except Exception as e:
+        raise AtomicError("Problem with method_parens") from e
+
+    assert result_parens == result_noparens == expected

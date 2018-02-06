@@ -14,6 +14,7 @@ from typing import Callable, Union, Any, Set, List, Tuple
 # TODO: make sure particle_input works with class methods
 # TODO: change any keyword to any_of and allow it to be a list
 
+
 def particle_input(wrapped_function: Callable = None,
                    must_be: Union[str, Set, List, Tuple] = set(),
                    exclude: Union[str, Set, List, Tuple] = set(),

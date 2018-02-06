@@ -208,7 +208,6 @@ class Particle:
                         f"{attributes['name']}s, "
                         f"use:  Particle({repr(attributes['particle'])})")
 
-
         else:  # elements, isotopes, and ions (besides protons)
             try:
 

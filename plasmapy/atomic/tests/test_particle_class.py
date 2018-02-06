@@ -46,7 +46,7 @@ test_Particle_table = [
       'mass': m_p,
       'nuclide_mass': m_p,
       'integer_charge': 1,
-      'charge.value' : e.si.value,
+      'charge.value': e.si.value,
       'spin': 1 / 2,
       'half_life': np.inf * u.s,
       'atomic_number': 1,
