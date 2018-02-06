@@ -21,6 +21,7 @@ from .atomic import (
     standard_atomic_weight,
     isotope_mass,
     ion_mass,
+    particle_mass,
     known_isotopes,
     common_isotopes,
     stable_isotopes,

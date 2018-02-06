@@ -285,7 +285,9 @@ class Particle:
             if ion in _special_ion_masses.keys():
                 attributes['mass'] = _special_ion_masses[ion]
 
-        if attributes['integer charge'] is not None:
+        if attributes['integer charge'] == 1:
+            attributes['charge'] = const.e.si
+        elif attributes['integer charge'] is not None:
             attributes['charge'] = \
                 attributes['integer charge'] * const.e.si
 
@@ -390,6 +392,9 @@ class Particle:
             raise ChargeError(
                 f"The charge of particle {self.particle} has not been "
                 f"specified.")
+        if self._attributes['integer charge'] == 1:
+            return const.e
+
         return self._attributes['charge']
 
     @property

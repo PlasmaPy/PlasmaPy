@@ -379,8 +379,25 @@ def ion_mass(particle: Particle,
     """
     if particle.ion or particle.particle in {'e+'}:
         return particle.mass
+    elif particle.isotope in ['H-1']:
+        warnings.warn("Use 'p+' instead of 'H-1' to refer to protons",
+                      DeprecationWarning)
+        return const.m_p
+    elif particle.element:
+        warnings.warn("The assumption that particles are singly ionized in"
+                      "ion_mass is deprecated.", DeprecationWarning)
+        return particle.mass - const.m_e
+    elif particle.mass is not None:
+        warnings.warn('The use of ion_mass for particles besides ions and '
+                      'positrons is deprecated.', DeprecationWarning)
+        return particle.mass
     else:
         raise InvalidIonError
+
+
+@particle_input(exclude={'neutrino', 'antineutrino'})
+def particle_mass(particle: Particle, mass_numb=None, Z=None):
+    return particle.mass
 
 
 @particle_input
