@@ -50,7 +50,7 @@ def count_decimal_places(digits):
     return len(fractional)
 
 
-class Test_Coulomb_logarithm(object):
+class Test_Coulomb_logarithm:
     def setup_method(self):
         """initializing parameters for tests """
     def test_Chen_Q_machine(self):
@@ -189,7 +189,7 @@ class Test_Coulomb_logarithm(object):
             Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e', 'g'))
 
 
-class Test_b_perp(object):
+class Test_b_perp:
     def setup_method(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
@@ -229,7 +229,7 @@ class Test_b_perp(object):
         assert testTrue, errStr
 
 
-class Test_impact_parameter(object):
+class Test_impact_parameter:
     def setup_method(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
@@ -280,7 +280,7 @@ class Test_impact_parameter(object):
         assert testTrue, errStr
 
 
-class Test_collision_frequency(object):
+class Test_collision_frequency:
     def setup_method(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
@@ -327,7 +327,7 @@ class Test_collision_frequency(object):
         assert testTrue, errStr
 
 
-class Test_mean_free_path(object):
+class Test_mean_free_path:
     def setup_method(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
@@ -374,7 +374,7 @@ class Test_mean_free_path(object):
         assert testTrue, errStr
 
 
-class Test_Spitzer_resistivity(object):
+class Test_Spitzer_resistivity:
     def setup_method(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
@@ -421,7 +421,7 @@ class Test_Spitzer_resistivity(object):
         assert testTrue, errStr
 
 
-class Test_mobility(object):
+class Test_mobility:
     def setup_method(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
@@ -468,7 +468,7 @@ class Test_mobility(object):
         assert testTrue, errStr
 
 
-class Test_Knudsen_number(object):
+class Test_Knudsen_number:
     def setup_method(self):
         """initializing parameters for tests """
         self.length = 1 * u.nm
@@ -518,7 +518,7 @@ class Test_Knudsen_number(object):
         assert testTrue, errStr
 
 
-class Test_coupling_parameter(object):
+class Test_coupling_parameter:
     def setup_method(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K

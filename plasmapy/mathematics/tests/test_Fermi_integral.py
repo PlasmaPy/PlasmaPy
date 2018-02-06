@@ -7,7 +7,7 @@ import pytest
 
 from .. mathematics import Fermi_integral
 
-class Test_Fermi_integral(object):
+class Test_Fermi_integral:
     def setup_method(self):
         """initializing parameters for tests """
         self.arg1 = 3.889780
