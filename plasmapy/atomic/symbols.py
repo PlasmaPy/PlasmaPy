@@ -131,6 +131,7 @@ def _extract_integer_charge(argument: str) -> Tuple[str, int]:
 
     return argument, Z
 
+
 @particle_input
 def atomic_symbol(element: Particle) -> str:
     r"""Returns the atomic symbol.

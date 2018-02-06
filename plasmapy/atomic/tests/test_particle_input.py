@@ -86,6 +86,7 @@ def test_particle_input_errors(func, kwargs, expected_error):
 
 
 class Test_particle_input:
+    r"""A sample class with methods to make sure that """
 
     @particle_input
     def method_noparens(self, particle: Particle):

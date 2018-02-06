@@ -27,6 +27,7 @@ from ..utils import (
 from .symbols import (
     atomic_symbol,
     isotope_symbol,
+    _extract_integer_charge,
     ion_symbol,
     particle_symbol,
     _is_neutron)
@@ -290,10 +291,10 @@ def ion_mass(particle: Particle,
     Parameters
     ----------
 
-    ion: string, integer, or Particle
+    particle: string, integer, or Particle
         A string representing an element, isotope, or ion; an integer
-        representing an atomic number; or a Quantity in units of mass
-        within the mass range that is appropriate for an ion.
+        representing an atomic number; or an instance of the Particle
+        class.
 
     Z: integer (optional)
         The ionization state of the ion (defaulting to a charge of
@@ -315,22 +316,21 @@ def ion_mass(particle: Particle,
     TypeError
         The argument is not a string, integer, or Quantity.
 
+    InvalidParticleError
+        If the arguments do not correspond to a valid particle.
+
     InvalidIonError
         If the argument represents a particle other than an ion, the
         ionization state exceeds the atomic number, or no isotope mass
         or standard atomic weight is available.
 
-    AtomicWarning
-        If a mass was inputted and it is outside of the range of known
-        isotopes or electrons/positrons.
-
-    UnitConversionError
-        If the argument is a Quantity but does not have units of mass.
+    MissingAtomicDataError
+        If the standard atomic weight or isotopic mass is not known.
 
     See also
     --------
 
-    standard_atomic_mass : returns the conventional atomic mass of an
+    standard_atomic_weight : returns the conventional atomic mass of an
         element based on terrestrial values and assuming the atom is
         neutral.
 
@@ -343,11 +343,13 @@ def ion_mass(particle: Particle,
     This function in general finds the mass of an isotope (or the
     standard atomic weight based on terrestrial values if a unique
     isotope cannot be identified), and then subtracts the mass of Z
-    electrons.  If Z is not provided as an input, then this function
-    assumes that the ion is singly ionized.
+    electrons.
 
-    Specific values are returned for protons, deuterons, tritons, alpha
-    particles, and positrons.
+    If Z is not provided as an input, then ion_mass assumes that the ion
+    is singly ionized while issuing a DeprecationWarning.
+
+    Specific values are returned for some special particles such as
+    protons, deuterons, tritons, and positrons.
 
     Calling ion_mass('H') does not return the mass of a proton but
     instead uses hydrogen's standard atomic weight based on
@@ -400,7 +402,68 @@ def ion_mass(particle: Particle,
 
 
 @particle_input(exclude={'neutrino', 'antineutrino'})
-def particle_mass(particle: Particle, mass_numb=None, Z=None):
+def particle_mass(particle: Particle, *, Z: int = None,
+                  mass_numb: int = None) -> Quantity:
+    r"""Returns the mass of a particle.
+
+    Parameters
+    ----------
+
+    particle: string, integer, or Particle
+        A string representing an element, isotope, ion, or special
+        particle; an integer representing an atomic number; or an
+        instance of the Particle class.
+
+    Z: integer (optional)
+        The ionization state of the ion (defaulting to a charge of
+        Z=1)
+
+    mass_numb: integer (optional)
+        The mass number of an isotope.
+
+    Returns
+    -------
+
+    mass: Quantity
+        The mass of the particle.
+
+    Raises
+    ------
+    TypeError
+        The argument is not a string, integer, or Quantity.
+
+    InvalidParticleError
+        If the argument does not correspond to a valid particle.
+
+    MissingAtomicDataError
+        If the standard atomic weight, the isotope mass, or the particle
+        mass is not available.
+
+    See also
+    --------
+
+    standard_atomic_weight : returns the conventional atomic mass of an
+        element based on terrestrial values and assuming the atom is
+        neutral.
+
+    isotope_mass : returns the mass of an isotope (if available)
+        assuming the atom is neutral.
+
+    ion_mass : returns the mass of an ion of an element or isotope,
+        accounting for reduction of mass from the neutral state due to
+        different numbers of electrons.
+
+    Notes
+    -----
+    This function will return the ion mass for ions, the isotope mass
+    for isotopes (when available), the standard atomic weight for
+    elements (when available), or the mass of special particles, as
+    appropriate.
+
+    The masses of neutrinos are not available because primarily upper
+    limits are presently known.
+
+    """
     return particle.mass
 
 
@@ -465,7 +528,7 @@ def isotopic_abundance(isotope: Particle,
 
 @particle_input
 def integer_charge(particle: Particle) -> int:
-    r"""Returns the integer charge of an ion or other particle.
+    r"""Returns the integer charge of a particle.
 
     Parameters
     ----------
@@ -477,7 +540,7 @@ def integer_charge(particle: Particle) -> int:
     -------
 
     Z : integer
-        The integer charge, or None if it is not available.
+        The charge as a multiple of the elementary charge.
 
     Raises
     ------
@@ -491,7 +554,7 @@ def integer_charge(particle: Particle) -> int:
 
     AtomicWarning
         If the input represents an ion with an integer charge that is
-        below -3.
+        less than or equal to -3, which is unlikely to occur in nature.
 
     Notes
     -----
@@ -505,9 +568,6 @@ def integer_charge(particle: Particle) -> int:
 
     The second format is a string containing element information at
     the beginning, following by one or more plus or minus signs.
-
-    This function returns -1 for electrons, +1 for positrons, and 0
-    for neutrons.
 
     Examples
     --------
@@ -631,35 +691,34 @@ def is_isotope_stable(isotope: Particle,
     False
 
     """
+    # TODO: Replace this with a function that works for special particles too?
     return isotope.is_category('stable')
 
 
 @particle_input
 def half_life(particle: Particle, mass_numb: int = None) -> Quantity:
-    r"""Returns the half-life in seconds for unstable isotopes, and
-    numpy.inf for stable isotopes.
+    r"""Returns the half-life in seconds for unstable isotopes and
+    particles, and numpy.inf in seconds for stable isotopes and particles.
 
     Parameters
     ----------
 
     particle: integer, string, or Particle
-        A string representing an isotope, an integer representing an
-        atomic number, or an instance of the Particle class.
+        A string representing an isotope or particle, an integer
+        representing an atomic number, or an instance of the Particle
+        class.
 
     mass_numb: integer
-        The mass number of the isotope.
+        The mass number of an isotope.
 
     Returns
     -------
 
     half_life_sec: astropy Quantity
-        The half-life in units of seconds.
+        The half-life of the isotope or particle in units of seconds.
 
     Raises:
     -------
-
-    InvalidIsotopeError
-        If the argument is a valid particle but not a valid isotope.
 
     InvalidParticleError
         If the argument does not correspond to a valid particle
@@ -671,9 +730,6 @@ def half_life(particle: Particle, mass_numb: int = None) -> Quantity:
     TypeError
         The argument is not an integer or string or the mass number is
         not an integer.
-
-    AtomicWarning
-        The half-life is unavailable so the routine returns None.
 
     Notes:
     ------
