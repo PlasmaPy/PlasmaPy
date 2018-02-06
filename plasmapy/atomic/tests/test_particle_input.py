@@ -60,7 +60,13 @@ def test_particle_input_simple(func, args, kwargs, symbol):
 
     assert result == expected, (
         f"The result {repr(result)} does not equal the expected value of "
-        f"{repr(expected)}.")
+        f"{repr(expected)}.\n\n"
+        f"func = {func}\n"
+        f"args = {args}\n"
+        f"kwargs = {kwargs}\nsymbol = {symbol}\n"
+        f"{result._attributes}\n"
+        f"{expected._attributes}\n"
+    )
 
 
 # function, kwargs, expected_error

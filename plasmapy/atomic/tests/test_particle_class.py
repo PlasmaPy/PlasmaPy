@@ -364,8 +364,6 @@ test_Particle_error_table = [
     ('Fe', {}, '.spin', MissingAtomicDataError),
     ('nu_e', {}, '.mass', MissingAtomicDataError),
     ('Og', {}, '.standard_atomic_weight', MissingAtomicDataError),
-    ('Fe', {'Z': '1'}, "", TypeError),
-    ('Fe', {'mass_numb': '1'}, "", TypeError),
     ([], {}, "", TypeError),
 ]
 
