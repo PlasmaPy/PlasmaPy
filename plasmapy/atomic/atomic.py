@@ -8,7 +8,7 @@ import re
 from astropy import units as u, constants as const
 from astropy.units import Quantity
 
-from .elements import _Elements
+from .elements import _Elements, _atomic_symbols_dict, _atomic_symbols
 from .isotopes import _Isotopes
 from .particle_class import Particle
 from .particle_input import particle_input
@@ -1157,3 +1157,213 @@ def _is_alpha(arg: Any) -> bool:
             arg = arg[:dash_position]
 
             return arg.lower() == 'helium' or arg == 'He'
+
+
+def periodic_table_period(argument: Union[str, int]) -> int:
+    r"""Returns the periodic table period.
+
+    Parameters
+    ----------
+
+    argument: string or integer
+        Atomic number (either integer or string), atomic symbol (e.g. "H",
+        string), or element name (e.g. "Francium", string).
+
+    Returns
+    -------
+
+    period: integer
+        The the periodic table period of the element.
+
+    Raises
+    ------
+
+    TypeError:
+        If the argument is not a string or integer.
+
+    See also
+    --------
+
+        periodic_table_group : returns periodic table group of element.
+        periodic_table_block : returns periodic table block of element.
+
+    Examples
+    --------
+
+    >>> periodic_table_period(5)
+    2
+    >>> periodic_table_period("5")
+    2
+    >>> periodic_table_period("Au")
+    6
+    >>> periodic_table_period("nitrogen")
+    2
+    >>> periodic_table_period("Nitrogen")
+    2
+
+    """
+    if not isinstance(argument, (str, int)):
+        raise TypeError("The argument to periodic_table_period must be " +
+                        "either a string representing the element or its " +
+                        "symbol, or an integer representing its atomic " +
+                        "number.")
+    symbol = atomic_symbol(argument)
+    period = _Elements[symbol]["period"]
+    return period
+
+
+def periodic_table_group(argument: Union[str, int]) -> int:
+    r"""Returns the periodic table group.
+
+    Parameters
+    ----------
+
+    argument: string or integer
+        Atomic number (either integer or string), atomic symbol (e.g. "H",
+        string), or element name (e.g. "Francium", string).
+
+    Returns
+    -------
+
+    group: integer
+        The periodic table group of the element.
+
+    Raises
+    ------
+
+    TypeError:
+        If the argument is not a string or integer.
+
+    See also
+    --------
+
+        periodic_table_period : returns periodic table period of element.
+        periodic_table_block : returns periodic table block of element.
+
+    Examples
+    --------
+
+    >>> periodic_table_group(18)
+    18
+    >>> periodic_table_group("24")
+    6
+    >>> periodic_table_group("Al")
+    13
+    >>> periodic_table_group("neon")
+    18
+    >>> periodic_table_group("BARIUM")
+    2
+
+    """
+    if not isinstance(argument, (str, int)):
+        raise TypeError("The argument to periodic_table_group must be " +
+                        "either a string representing the element or its " +
+                        "symbol, or an integer representing its atomic " +
+                        "number.")
+    symbol = atomic_symbol(argument)
+    group = _Elements[symbol]["group"]
+    return group
+
+
+def periodic_table_block(argument: Union[str, int]) -> str:
+    r"""Returns the periodic table block.
+
+    Parameters
+    ----------
+
+    argument: string or integer
+        Atomic number (either integer or string), atomic symbol (e.g. "H",
+        string), or element name (e.g. "Francium", string).
+
+    Returns
+    -------
+
+    block: string
+        The periodic table block of the element.
+
+    Raises
+    ------
+
+    TypeError:
+        If the argument is not a string or integer.
+
+    See also
+    --------
+
+        periodic_table_period: returns periodic table period of element.
+        periodic_table_group: returns periodic table group of element.
+
+    Examples
+    --------
+
+    >>> periodic_table_block(66)
+    'f'
+    >>> periodic_table_block("72")
+    'd'
+    >>> periodic_table_block("Tl")
+    'p'
+    >>> periodic_table_block("thallium")
+    'p'
+    >>> periodic_table_block("FRANCIUM")
+    's'
+
+    """
+    if not isinstance(argument, (str, int)):
+        raise TypeError("The argument to periodic_table_block must be " +
+                        "either a string representing the element or its " +
+                        "symbol, or an integer representing its atomic " +
+                        "number.")
+    symbol = atomic_symbol(argument)
+    block = _Elements[symbol]["block"]
+    return block
+
+
+def periodic_table_category(argument: Union[str, int]) -> str:
+    r"""Returns the periodic table category.
+
+    Parameters
+    ----------
+
+    argument: string or integer
+        Atomic number (either integer or string), atomic symbol (e.g. "H",
+        string), or element name (e.g. "Francium", string).
+
+    Returns
+    -------
+
+    category: string
+        The periodic table category of the element.
+
+    Raises
+    ------
+
+    TypeError:
+        If the argument is not a string or integer.
+
+    See also
+    --------
+
+        periodic_table_period: returns periodic table period of element.
+        periodic_table_group: returns periodic table group of element.
+
+    Examples
+    --------
+
+    >>> periodic_table_category(82)
+    'Post-transition metals'
+    >>> periodic_table_category("85")
+    'Halogens'
+    >>> periodic_table_category("Ra")
+    'Alkaline earth metals'
+    >>> periodic_table_category("rhodium")
+    'Transition metals'
+
+    """
+    if not isinstance(argument, (str, int)):
+        raise TypeError("The argument to periodic_table_category must be " +
+                        "either a string representing the element or its " +
+                        "symbol, or an integer representing its atomic " +
+                        "number.")
+    symbol = atomic_symbol(argument)
+    category = _Elements[symbol]["category"]
+    return category

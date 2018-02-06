@@ -22,7 +22,11 @@ from ..atomic import (atomic_number,
                       stable_isotopes,
                       isotopic_abundance,
                       integer_charge,
-                      electric_charge)
+                      electric_charge,
+                      periodic_table_period,
+                      periodic_table_block,
+                      periodic_table_category,
+                      periodic_table_group)
 
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
 
