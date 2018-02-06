@@ -2,7 +2,8 @@ r"""Functions that retrieve or are related to elemental or isotopic data."""
 
 import numpy as np
 import warnings
-from typing import (Union, Optional, List)
+from typing import (Union, Optional, List, Tuple, Any)
+import re
 
 from astropy import units as u, constants as const
 from astropy.units import Quantity
@@ -135,7 +136,7 @@ def mass_number(isotope: Particle) -> int:
     return isotope.mass_number
 
 
-@particle_input(must_be='element', cannot_be={'isotope', 'ion'})
+@particle_input(must_be='element', exclude={'isotope', 'ion'})
 def standard_atomic_weight(element: Particle) -> Quantity:
     r"""Returns the standard (conventional) atomic weight of an element
     based on the relative abundances of isotopes in terrestrial
@@ -213,7 +214,7 @@ def standard_atomic_weight(element: Particle) -> Quantity:
     return element.standard_atomic_weight
 
 
-@particle_input(must_be='isotope', cannot_be='ion')
+@particle_input(must_be='isotope', exclude='ion')
 def isotope_mass(isotope: Particle,
                  mass_numb: int = None) -> Quantity:
     r"""Return the mass of an isotope.
@@ -279,7 +280,8 @@ def isotope_mass(isotope: Particle,
 
 
 @particle_input
-def ion_mass(ion: Particle, Z: int = None,
+def ion_mass(particle: Particle,
+             Z: int = None,
              mass_numb: int = None) -> Quantity:
     r"""Returns the mass of an ion by finding the standard atomic
     weight of an element or the atomic mass of an isotope, and then
@@ -362,8 +364,6 @@ def ion_mass(ion: Particle, Z: int = None,
     <Quantity 1.67291241e-27 kg>
     >>> ion_mass('H+') == ion_mass('p')
     False
-    >>> ion_mass('H-1') == ion_mass('p')
-    True
     >>> ion_mass('P+')  # phosphorus
     <Quantity 5.14322301e-26 kg>
     >>> ion_mass('He-4', Z=2)
@@ -374,12 +374,17 @@ def ion_mass(ion: Particle, Z: int = None,
     <Quantity 9.28812345e-26 kg>
     >>> ion_mass('Fe-56 1+')
     <Quantity 9.28812345e-26 kg>
-
+    >>> ion_mass('e+')
+    <<class 'astropy.constants.codata2014.CODATA2014'> name='Electron mass' value=9.10938356e-31 uncertainty=1.1e-38 unit='kg' reference='CODATA 2014'>
     """
-    return ion.mass.to('kg')
+    if particle.ion or particle.particle in {'e+'}:
+        return particle.mass
+    else:
+        raise InvalidIonError
 
 
-def isotopic_abundance(argument: Union[str, int],
+@particle_input
+def isotopic_abundance(isotope: Particle,
                        mass_numb: int = None) -> Quantity:
     r"""Returns the isotopic abundances if known, and otherwise zero.
 
@@ -434,21 +439,7 @@ def isotopic_abundance(argument: Union[str, int],
     0.0
 
     """
-
-    if _is_neutron(argument):
-        raise InvalidIsotopeError(
-            "Neutrons do not have an isotopic abundance.")
-
-    try:
-        isotope = isotope_symbol(argument, mass_numb)
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid particle in isotopic_abundance.")
-    except InvalidIsotopeError:
-        raise InvalidIsotopeError("Invalid isotope in isotopic_abundance.")
-
-    iso_comp = _Isotopes[isotope].get('isotopic_abundance', 0.0)
-
-    return iso_comp
+    return isotope.isotopic_abundance
 
 
 @particle_input
@@ -513,7 +504,7 @@ def integer_charge(particle: Particle) -> int:
     return particle.integer_charge
 
 
-@particle_input
+@particle_input(must_be={'charged', 'uncharged'}, any=True)
 def electric_charge(particle: Particle) -> Quantity:
     r"""Returns the electric charge (in coulombs) of an ion or other
     particle
@@ -573,14 +564,15 @@ def electric_charge(particle: Particle) -> Quantity:
     return particle.charge
 
 
-def is_isotope_stable(argument: Union[str, int],
+@particle_input
+def is_isotope_stable(isotope: Particle,
                       mass_numb: int = None) -> bool:
     r"""Returns true for stable isotopes and false otherwise.
 
     Parameters
     ----------
 
-    argument: integer or string
+    isotope: integer or string
         A string representing an isotope or an integer representing an
         atomic number
 
@@ -618,20 +610,7 @@ def is_isotope_stable(argument: Union[str, int],
     False
 
     """
-
-    try:
-        isotope = isotope_symbol(argument, mass_numb)
-        is_stable = _Isotopes[isotope]['is_stable']
-    except InvalidIsotopeError:
-        raise InvalidIsotopeError("Invalid isotope in is_isotope_stable")
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid particle in is_isotope_stable")
-    except KeyError:
-        raise MissingAtomicDataError(f"No data on stability of {isotope}.")
-    except TypeError:
-        raise TypeError("The argument to is_isotope_stable must be a string.")
-
-    return is_stable
+    return isotope.is_category('stable')
 
 
 @particle_input
@@ -1005,3 +984,154 @@ def stable_isotopes(argument: Union[str, int] = None,
                 stable_isotopes_for_element(atomic_numb, not unstable)
 
     return isotopes_list
+
+
+def _is_neutron(argument: Any, mass_numb: int = None) -> bool:
+    r"""Returns True if the argument corresponds to a neutron, and
+    False otherwise."""
+
+    warnings.warn("_is_neutron is deprecated.", DeprecationWarning)
+
+    if argument == 0 and mass_numb == 1:
+        return True
+    elif isinstance(argument, str) and mass_numb is None:
+        if argument in ('n', 'n-1') or argument.lower() in ['neutron', 'n0']:
+            return True
+        else:
+            return False
+    else:
+        return False
+
+
+def _is_hydrogen(argument: Any,
+                 can_be_atomic_number: Optional[bool] = False) -> bool:
+    r"""Returns True if the argument corresponds to hydrogen, and False
+    otherwise."""
+
+    warnings.warn("_is_hydrogen is deprecated.", DeprecationWarning)
+
+    case_sensitive_aliases = ['p', 'p+', 'H', 'D', 'T']
+
+    case_insensitive_aliases = ['proton', 'protium', 'deuterium',
+                                'deuteron', 'triton', 'tritium', 'hydrogen']
+
+    for mass_numb in range(1, 8):
+        case_sensitive_aliases.append(f'H-{mass_numb}')
+        case_insensitive_aliases.append(f'hydrogen-{mass_numb}')
+
+    if isinstance(argument, str):
+
+        argument, Z = _extract_integer_charge(argument)
+
+        if argument in case_sensitive_aliases:
+            is_hydrogen = True
+        else:
+            is_hydrogen = argument.lower() in case_insensitive_aliases
+
+        if is_hydrogen and Z is not None and Z > 1:
+            raise InvalidParticleError("Invalid charge state of hydrogen")
+
+    elif argument == 1 and can_be_atomic_number:
+        is_hydrogen = True
+    else:
+        is_hydrogen = False
+
+    return is_hydrogen
+
+
+def _is_electron(arg: Any) -> bool:
+    r"""Returns True if the argument corresponds to an electron, and False
+    otherwise."""
+
+    warnings.warn("_is_electron is deprecated.", DeprecationWarning)
+
+    if not isinstance(arg, str):
+        return False
+
+    return arg in ['e', 'e-'] or arg.lower() == 'electron'
+
+
+def _is_positron(arg: Any) -> bool:
+    r"""Returns True if the argument corresponds to a positron, and False
+    otherwise."""
+
+    warnings.warn("_is_positron is deprecated.", DeprecationWarning)
+
+    if not isinstance(arg, str):
+        return False
+
+    return arg == 'e+' or arg.lower() == 'positron'
+
+
+def _is_antiproton(arg: Any) -> bool:
+    r"""Returns True if the argument corresponds to an antiproton, and
+    False otherwise."""
+
+    warnings.warn("_is_antiproton is deprecated.", DeprecationWarning)
+
+    if not isinstance(arg, str):
+        return False
+
+    return arg == 'p-' or arg.lower() == 'antiproton'
+
+
+def _is_antineutron(arg: Any) -> bool:
+    r"""Returns True if the argument corresponds to an antineutron, and
+    False otherwise."""
+
+    warnings.warn("_is_antineutron is deprecated.", DeprecationWarning)
+
+    if not isinstance(arg, str):
+        return False
+
+    return arg.lower() == 'antineutron'
+
+
+def _is_proton(arg: Any, Z: int = None, mass_numb: int = None) -> bool:
+    r"""Returns True if the argument corresponds to a proton, and
+    False otherwise.  This function returns False for 'H-1' if no
+    charge state is given."""
+
+    warnings.warn("_is_proton is deprecated.", DeprecationWarning)
+
+    argument, Z_from_arg = _extract_integer_charge(arg)
+
+    if (Z is None) == (Z_from_arg is None):
+        return False
+    else:
+        if Z is None:
+            Z = Z_from_arg
+
+    try:
+        isotope = isotope_symbol(arg, mass_numb)
+    except Exception:
+        return False
+
+    return isotope == 'H-1' and Z == 1
+
+
+def _is_alpha(arg: Any) -> bool:
+    r"""Returns True if the argument corresponds to an alpha particle,
+    and False otherwise."""
+
+    warnings.warn("_is_alpha is deprecated.", DeprecationWarning)
+
+    if not isinstance(arg, str):
+        return False
+
+    if arg.lower() == 'alpha':
+        return True
+    elif 'alpha' in arg.lower():
+        raise InvalidParticleError(
+            f"{arg} is an invalid representation of an alpha particle")
+    else:
+        arg, Z = _extract_integer_charge(arg)
+
+        if Z != 2 or arg[-2:] != '-4':
+            return False
+        else:
+
+            dash_position = arg.find('-')
+            arg = arg[:dash_position]
+
+            return arg.lower() == 'helium' or arg == 'He'
