@@ -3,6 +3,7 @@ scipy
 astropy
 numpydoc
 pytest
+cython
 coveralls
 matplotlib
 sphinx
