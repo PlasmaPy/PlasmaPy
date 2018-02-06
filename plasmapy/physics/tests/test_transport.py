@@ -128,8 +128,9 @@ class Test_Coulomb_logarithm:
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
-        lnLambdaChen = 16 + np.log(2) 
-        lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
+        lnLambdaChen = 16 + np.log(2)
+        with pytest.warns(RelativityWarning):
+            lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
         testTrue = np.isclose(lnLambda,
                               lnLambdaChen,
                               rtol=1e-1,
