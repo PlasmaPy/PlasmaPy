@@ -62,7 +62,7 @@ def Coulomb_logarithm(T,
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
-    
+
     method: str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
@@ -107,7 +107,7 @@ def Coulomb_logarithm(T,
 
     The choice of inner impact parameter is the distance of closest
     approach for a 90 degree Coulomb collision [2]_, [3]_.
-    
+
     Errors associated with the classical Coulomb logarithm are of order its
     inverse. If the Coulomb logarithm is of order unity, then the
     assumptions made in the standard analysis of Coulomb collisions
@@ -118,13 +118,13 @@ def Coulomb_logarithm(T,
     in D.O. Gericke et al's paper, which has a table summarizing
     the methods [4]_. The GMS-1 through GMS-6 methods correspond
     to the methods found it that table.
-    
+
     It should be noted that GMS-4 thru GMS-6 modify the Coulomb
     logarithm to the form:
-        
+
     .. math::
         \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
-        
+
     This means the Coulomb logarithm will not breakdown for Lambda < 0,
     which occurs for dense, cold plasmas.
 
@@ -142,15 +142,15 @@ def Coulomb_logarithm(T,
     References
     ----------
     .. [1] Physics of Fully Ionized Gases, L. Spitzer (1962)
-    
-    .. [2] Francis, F. Chen. Introduction to plasma physics and controlled 
+
+    .. [2] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
 
     .. [3] Comparison of Coulomb Collision Rates in the Plasma Physics
        and Magnetically Confined Fusion Literature, W. Fundamenski and
        O.E. Garcia, EFDA–JET–R(07)01
        (http://www.euro-fusionscipub.org/wp-content/uploads/2014/11/EFDR07001.pdf)
-       
+
     .. [4] Dense plasma temperature equilibration in the binary collision
        approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
        DOI: 10.1103/PhysRevE.65.036418
@@ -311,7 +311,7 @@ def impact_parameter(T,
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
-    
+
     method: str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
@@ -486,7 +486,7 @@ def collision_frequency(T,
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
-    
+
     method: str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
@@ -617,7 +617,7 @@ def mean_free_path(T,
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
-    
+
     method: str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
@@ -726,7 +726,7 @@ def Spitzer_resistivity(T,
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
-    
+
     method: str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
@@ -836,7 +836,7 @@ def mobility(T,
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
-    
+
     method: str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
@@ -944,7 +944,7 @@ def Knudsen_number(characteristic_length,
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
-    
+
     method: str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
@@ -1042,12 +1042,12 @@ def coupling_parameter(T,
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
         impact parameters.
-        
+
     V : Quantity, optional
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
-    
+
     method: str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
