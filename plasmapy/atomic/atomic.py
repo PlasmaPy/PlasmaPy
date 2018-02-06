@@ -377,8 +377,13 @@ def ion_mass(particle: Particle,
     >>> ion_mass('e+')
     <<class 'astropy.constants.codata2014.CODATA2014'> name='Electron mass' value=9.10938356e-31 uncertainty=1.1e-38 unit='kg' reference='CODATA 2014'>
     """
+
+    # TODO: Remove deprecated functionality elsewhere in the code
+
     if particle.ion or particle.particle in {'e+'}:
         return particle.mass
+    elif particle.particle == 'n':
+        raise InvalidIonError
     elif particle.isotope in ['H-1']:
         warnings.warn("Use 'p+' instead of 'H-1' to refer to protons",
                       DeprecationWarning)
@@ -572,9 +577,9 @@ def electric_charge(particle: Particle) -> Quantity:
     Examples
     --------
 
-    >>> electric_charge('p')
-    <Quantity 1.60217662e-19 C>
-    >>> electric_charge('e')
+    >>> electric_charge('p+')
+    <<class 'astropy.constants.codata2014.EMCODATA2014'> name='Electron charge' value=1.6021766208e-19 uncertainty=9.8e-28 unit='C' reference='CODATA 2014'>
+    >>> electric_charge('H-')
     <Quantity -1.60217662e-19 C>
 
     """
