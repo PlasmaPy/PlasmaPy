@@ -187,13 +187,13 @@ def Fermi_integral(x, j):
 
     Notes
     -----
-    The complete Fermi-Dirac integral is defined as:
+    The complete Fermi-Dirac integral is defined as: [1]_
 
     .. math::
         F_j (x) = \frac{1}{\Gamma (j+1)} \int_0^\inf \frac{t^j}{e^{t-x} + 1} dt
         for j > 0
 
-    This is equivalent to the following polylogarithm function:
+    This is equivalent to the following polylogarithm [2]_ function:
 
     .. math::
         F_j (x) = -Li_{j+1}\left(-e^{x}\right)
@@ -204,8 +204,8 @@ def Fermi_integral(x, j):
 
     References
     ----------
-    https://en.wikipedia.org/wiki/Complete_Fermi%E2%80%93Dirac_integral
-    https://en.wikipedia.org/wiki/Polylogarithm
+    .. [1] https://en.wikipedia.org/wiki/Complete_Fermi-Dirac_integral
+    .. [2] https://en.wikipedia.org/wiki/Polylogarithm
 
     Examples
     --------
