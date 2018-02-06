@@ -8,6 +8,7 @@ from .parsing import _dealias_particle_aliases
 from .particle_class import Particle
 from .particle_input import particle_input
 from ..utils import (AtomicWarning, InvalidParticleError)
+from .names import _extract_integer_charge
 
 # The @particle_input decorator takes the inputs for a function or
 # method and passes through the corresponding instance of the Particle

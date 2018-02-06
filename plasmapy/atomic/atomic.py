@@ -31,6 +31,7 @@ from .symbols import (
     particle_symbol,
     _is_neutron)
 
+from .names import _extract_integer_charge
 
 @particle_input
 def atomic_number(element: Particle) -> str:
