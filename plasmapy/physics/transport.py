@@ -513,18 +513,6 @@ def collision_frequency(T,
     TypeError
         If the n_e, T, or V are not Quantities.
 
-    Notes
-    -----
-    The Coulomb logarithm is given by
-
-    .. math::
-        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
-
-    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
-    impact parameters for Coulomb collisions.
-
-    See eq (2.14) in [1].
-
     Examples
     --------
     >>> from astropy import units as u
@@ -533,10 +521,6 @@ def collision_frequency(T,
     >>> particles = ('e', 'p')
     >>> collision_frequency(T, n, particles)
     <Quantity 702505.15998601 Hz>
-
-    References
-    ----------
-
 
     """
     # boiler plate checks
