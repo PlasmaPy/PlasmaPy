@@ -21,7 +21,7 @@ help:
 
 clean:
 	rm -rf $(BUILDDIR)/*
-	rm -rf auto_examples/
+	rm -rf auto_examples api cache gen_modules __pycache
 
 html-noplot:
 	$(SPHINXBUILD) -D plot_gallery=0 -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
