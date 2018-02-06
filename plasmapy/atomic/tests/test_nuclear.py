@@ -2,7 +2,7 @@ from itertools import product
 from astropy import units as u, constants as const
 import numpy as np
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
-from ...utils import (InvalidParticleError, InvalidIsotopeError)
+from ...utils import (InvalidParticleError, InvalidIsotopeError, AtomicError)
 import pytest
 
 
@@ -22,7 +22,7 @@ def test_nuclear_binding_energy_D_T():
 
 # (argument, kwargs, expected_error)
 nuclear_binding_energy_table = [
-    ("H", {}, InvalidIsotopeError),
+    ("H", {}, AtomicError),
     ('He-99', {}, InvalidParticleError),
     ("He", {"mass_numb": 99}, InvalidParticleError),
     (1.1, {}, TypeError)]

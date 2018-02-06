@@ -250,6 +250,12 @@ def _create_Particles_dict() -> Dict[str, dict]:
 
 _Particles = _create_Particles_dict()
 
+_special_ion_masses = {
+    'p+': const.m_p,
+    'D 1+': 3.343583719e-27 * u.kg,
+    'T 1+': 5.007356665e-27 * u.kg,
+}
+
 
 if __name__ == "__main__":  # coveralls: ignore
     from pprint import pprint

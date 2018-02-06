@@ -18,6 +18,7 @@ from .symbols import (isotope_symbol,
                       _is_antineutron)
 
 from ..utils import (InvalidElementError,
+                     AtomicError,
                      InvalidParticleError,
                      InvalidIsotopeError)
 
@@ -52,8 +53,8 @@ def nuclear_binding_energy(particle: Particle, mass_numb=None):
     InvalidParticleError
         If the inputs do not correspond to a valid particle.
 
-    InvalidIsotopeError
-        If the inputs do not correspond to a valid isotope.
+    AtomicError
+        If the inputs do not correspond to a valid isotope or nucleon.
 
     TypeError
         If the inputs are not of the correct types.
@@ -81,7 +82,7 @@ def nuclear_binding_energy(particle: Particle, mass_numb=None):
     <Quantity 17.58929687 MeV>
 
     """
-    return particle.binding_energy
+    return particle.binding_energy.to(u.J)
 
 
 def nuclear_reaction_energy(*args, **kwargs):
@@ -154,7 +155,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     -1.4714307834388437e-14 J 1.18025735267267e-12 J
     >>> energy_triplealpha2.to(u.MeV)
     <Quantity 7.36658704 MeV>
-    >>> nuclear_reaction_energy(reactants=['n'], products=['p', 'e-'])
+    >>> nuclear_reaction_energy(reactants=['n'], products=['p+', 'e-'])
     <Quantity 1.25343511e-13 J>
 
     """

@@ -381,7 +381,7 @@ def _parse_and_check_atomic_input(
                 f"The integer charge Z = {Z} cannot exceed the atomic number "
                 f"of {element}, which is "
                 f"{_Elements[element]['atomic_number']}.")
-        elif Z < -3:
+        elif Z <= -3:
             warnings.warn(f"Particle '{argument}' has an integer charge "
                           f"of Z = {Z}, which is unlikely to occur in "
                           f"nature.", AtomicWarning)
