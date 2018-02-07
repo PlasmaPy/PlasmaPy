@@ -1013,9 +1013,12 @@ class Test__nondim_tc_e_braginskii:
         kappa_e_hat_cross_jh = _nondim_tc_e_ji_held(self.big_hall,
                                                     Z,
                                                     'cross')
-        assert np.isclose(kappa_e_hat_cross_brag,
-                          kappa_e_hat_cross_jh,
-                          rtol=2e-2)
+        testTrue = np.isclose(kappa_e_hat_cross_brag,
+                              kappa_e_hat_cross_jh,
+                              rtol=2e-2)
+        errStr = (f"braginskii cross {kappa_e_hat_cross_brag} should agree "
+                  f"with ji-held {kappa_e_hat_cross_jh}.")
+        assert testTrue, errStr
 
 
 # test class for _nondim_tc_i_braginskii function:
@@ -1287,7 +1290,10 @@ def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
     """test _nondim_tc_e_ji_held function"""
     kappa_hat = _nondim_tc_e_ji_held(hall, Z, field_orientation)
     kappa_check = expected
-    assert np.isclose(kappa_hat, kappa_check, rtol=2e-2)
+    testTrue = np.isclose(kappa_hat, kappa_check, rtol=2e-2)
+    errStr = (f"Kappa hat from ji-held should be {kappa_check} "
+              f"and not {kappa_hat}.")
+    assert testTrue, errStr
 
 
 # approximated from Ji-Held '13 figures 1 and 2 (black circles)

@@ -1892,6 +1892,11 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
     kappa_cross = (gamma_1_doubleprime[Z_idx] * hall ** 3 +
                    gamma_0_doubleprime[Z_idx] * hall) / Delta
     if field_orientation == 'cross':
+        print(f"Z_idx is {Z_idx}")
+        print(f"gamma_1_doubleprime is {gamma_1_doubleprime[Z_idx]}")
+        print(f"hall is {hall}")
+        print(f"gamma_0_doublprime is {gamma_0_doubleprime[Z_idx]}")
+        print(f"Delta is {Delta}")
         return kappa_cross
 
     if field_orientation == 'all':
@@ -2222,10 +2227,14 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
                        k_2[Z_idx] * r ** (5 / 3) +
                        k_1[Z_idx] * r +
                        k_0[Z_idx])
+        print(f"numerator is {numerator}")
+        print(f"denominator is {denominator}")
         return numerator / denominator
 
     kappa_cross = f_kappa_cross(Z_idx)
     if field_orientation == 'cross':
+        print(f"Z_idx is {Z_idx}")
+        print(f"kappa_cross is {kappa_cross}")
         return Z * kappa_cross
 
     if field_orientation == 'all':
