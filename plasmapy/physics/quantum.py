@@ -399,7 +399,7 @@ def chemical_potential(n_e, T, tol=1e-6):
     returned from the Fermi_integral are complex, a nonlinear
     Levenberg-Marquardt least squares method is used to iteratively approach
     a value of \mu which minimizes I_{1/2}(\beta \mu_a^{ideal}) - \chi_a.
-    
+
     Warning: at present this function is limited to relatively small
     arguments due to limitations in the mpmath package's implementation
     of polylog, which PlasmaPy uses in calculating the Fermi integral.
@@ -418,7 +418,7 @@ def chemical_potential(n_e, T, tol=1e-6):
     lambdaDB = thermal_deBroglie_wavelength(T)
     # degeneracy parameter
     degen = (n_e * lambdaDB ** 3).to(u.dimensionless_unscaled)
-    
+
     # residual function for fitting parameters to Fermi_integral
     def residual(params, data, eps_data):
         alpha = params['alpha'].value
@@ -426,7 +426,7 @@ def chemical_potential(n_e, T, tol=1e-6):
         model = Fermi_integral(alpha, 0.5)
         complexResidue = (data - model) / eps_data
         return complexResidue.view(np.float)
-    
+
     # setting parameters for fitting along with bounds
     alphaGuess = 1 * u.dimensionless_unscaled
     params = Parameters()
@@ -441,13 +441,15 @@ def chemical_potential(n_e, T, tol=1e-6):
 def chemical_potential_interp(n_e, T):
     r"""
     Fitting formula for interpolating chemical potential between classical
-    and quantum regimes [1]_, [2]_.
-    
+    and quantum regimes.
+
+    See [1]_, [2]_ for more information.
+
     Parameters
     ----------
     n_e: Quantity
         Electron number density
-        
+
     T : Quantity
         Temperature in units of temperature or energy
 
@@ -477,17 +479,17 @@ def chemical_potential_interp(n_e, T):
 
     .. math::
         \frac{\mu}{k_B T_e} = - \frac{3}{2} \ln \Theta + \ln \frac{4}{3 \sqrt{\pi}} + \frac{A \Theta^{-b - 1} + B \Theta^{-(b + 1) / 2}}{1 + A \Theta^{-b}}
-    
+
     where
-    
+
     .. math::
         \Theta = \frac{k_B T_e}{E_F}
-        
+
     is the degeneracy parameter, comparing the thermal energy to the Fermi
     energy, and the coefficients for the fitting formula
     are A=0.25945, B=0.0072, b=0.858.
-    
-    
+
+
     References
     ----------
     .. [1] Ichimaru, Statistical Plasma Physics Addison-Wesley,
@@ -495,7 +497,7 @@ def chemical_potential_interp(n_e, T):
 
     .. [2] Gregori, G., et al. "Theoretical model of x-ray scattering as a
        dense matter probe." Physical Review E 67.2 (2003): 026412.
-    
+
     Example
     -------
     >>> from astropy import units as u
