@@ -561,6 +561,14 @@ class Test_impact_parameter:
         errStr = (f"Impact parameter value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
+    def test_bad_method(self):
+        with pytest.raises(ValueError):
+            impact_parameter(self.T,
+                             self.n_e,
+                             self.particles,
+                             z_mean=np.nan*u.dimensionless_unscaled,
+                             V=np.nan*u.m/u.s,
+                             method="meow")
 
 
 class Test_collision_frequency:
