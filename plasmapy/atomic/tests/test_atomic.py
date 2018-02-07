@@ -3,41 +3,49 @@ import numpy as np
 from itertools import product
 from astropy import units as u, constants as const
 
-from ..symbols import (atomic_symbol,
-                       isotope_symbol,
-                       element_name,
+from ..symbols import (
+    atomic_symbol,
+    isotope_symbol,
+    element_name,
 )
 
 from ..isotopes import _Isotopes
 
-from ..atomic import (atomic_number,
-                      mass_number,
-                      standard_atomic_weight,
-                      isotope_mass,
-                      ion_mass,
-                      is_isotope_stable,
-                      half_life,
-                      known_isotopes,
-                      common_isotopes,
-                      stable_isotopes,
-                      isotopic_abundance,
-                      integer_charge,
-                      electric_charge,
-                      periodic_table_period,
-                      periodic_table_block,
-                      periodic_table_category,
-                      periodic_table_group)
+from ..atomic import (
+    atomic_number,
+    mass_number,
+    standard_atomic_weight,
+    isotope_mass,
+    ion_mass,
+    is_isotope_stable,
+    half_life,
+    known_isotopes,
+    common_isotopes,
+    stable_isotopes,
+    isotopic_abundance,
+    integer_charge,
+    electric_charge,
+    periodic_table_period,
+    periodic_table_block,
+    periodic_table_category,
+    periodic_table_group,
+)
 
-from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
+from ..nuclear import (
+    nuclear_binding_energy,
+    nuclear_reaction_energy,
+)
 
-from ...utils import (AtomicWarning,
-                      InvalidElementError,
-                      InvalidIsotopeError,
-                      InvalidIonError,
-                      ChargeError,
-                      AtomicError,
-                      MissingAtomicDataError,
-                      InvalidParticleError)
+from ...utils import (
+    AtomicWarning,
+    InvalidElementError,
+    InvalidIsotopeError,
+    InvalidIonError,
+    ChargeError,
+    AtomicError,
+    MissingAtomicDataError,
+    InvalidParticleError,
+)
 
 # (argument, expected)
 atomic_symbol_table = [

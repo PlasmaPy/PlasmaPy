@@ -1,14 +1,12 @@
 r"""Functions that retrieve or are related to elemental or isotopic data."""
 
-import numpy as np
 import warnings
-from typing import (Union, Optional, List, Tuple, Any)
-import re
+from typing import (Union, Optional, List, TAny)
 
 from astropy import units as u, constants as const
 from astropy.units import Quantity
 
-from .elements import _Elements, _atomic_symbols_dict, _atomic_symbols
+from .elements import _Elements
 from .isotopes import _Isotopes
 from .particle_class import Particle
 from .particle_input import particle_input
@@ -18,13 +16,10 @@ from ..utils import (
     InvalidParticleError,
     InvalidElementError,
     InvalidIonError,
-    InvalidIsotopeError,
-    AtomicWarning,
-    AtomicError,
-    ChargeError,
 )
 
 from .symbols import atomic_symbol
+
 
 @particle_input
 def atomic_number(element: Particle) -> str:
@@ -1094,8 +1089,9 @@ def periodic_table_period(argument: Union[str, int]) -> int:
     See also
     --------
 
-        periodic_table_group : returns periodic table group of element.
-        periodic_table_block : returns periodic table block of element.
+    periodic_table_group : returns periodic table group of element.
+
+    periodic_table_block : returns periodic table block of element.
 
     Examples
     --------
@@ -1107,8 +1103,6 @@ def periodic_table_period(argument: Union[str, int]) -> int:
     >>> periodic_table_period("Au")
     6
     >>> periodic_table_period("nitrogen")
-    2
-    >>> periodic_table_period("Nitrogen")
     2
 
     """
@@ -1155,7 +1149,7 @@ def periodic_table_group(argument: Union[str, int]) -> int:
 
     >>> periodic_table_group(18)
     18
-    >>> periodic_table_group("24")
+    >>> periodic_table_group(24)
     6
     >>> periodic_table_group("Al")
     13
@@ -1200,15 +1194,16 @@ def periodic_table_block(argument: Union[str, int]) -> str:
     See also
     --------
 
-        periodic_table_period: returns periodic table period of element.
-        periodic_table_group: returns periodic table group of element.
+    periodic_table_period : returns periodic table period of element.
+
+    periodic_table_group : returns periodic table group of element.
 
     Examples
     --------
 
     >>> periodic_table_block(66)
     'f'
-    >>> periodic_table_block("72")
+    >>> periodic_table_block(72)
     'd'
     >>> periodic_table_block("Tl")
     'p'
@@ -1253,8 +1248,9 @@ def periodic_table_category(argument: Union[str, int]) -> str:
     See also
     --------
 
-        periodic_table_period: returns periodic table period of element.
-        periodic_table_group: returns periodic table group of element.
+    periodic_table_period : returns periodic table period of element.
+
+    periodic_table_group : returns periodic table group of element.
 
     Examples
     --------

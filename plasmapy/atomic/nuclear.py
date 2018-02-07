@@ -3,10 +3,11 @@
 from astropy import units as u, constants
 import re
 
-from ..utils import (AtomicError,
-                     InvalidParticleError,
-                     InvalidIsotopeError,
-                     ChargeError,
+from ..utils import (
+    AtomicError,
+    InvalidParticleError,
+    InvalidIsotopeError,
+    ChargeError,
 )
 
 from .particle_class import Particle
