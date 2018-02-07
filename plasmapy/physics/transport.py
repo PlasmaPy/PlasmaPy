@@ -11,7 +11,9 @@ import warnings
 # plasmapy modules
 import plasmapy.atomic as atomic
 from plasmapy import utils
-from plasmapy.utils.checks import check_quantity, check_relativistic, _check_relativistic
+from plasmapy.utils.checks import (check_quantity,
+                                   check_relativistic,
+                                   _check_relativistic)
 from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar)
 from ..atomic import (ion_mass, integer_charge)
@@ -39,26 +41,26 @@ def Coulomb_logarithm(T,
     Parameters
     ----------
 
-    T : Quantity
+    T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle.
 
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         The electron density in units convertible to per cubic meter.
 
     particles : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
-    z_mean : Quantity, optional
+    z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. This is used to recover the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
         impact parameters.
 
-    V : Quantity, optional
+    V : ~astropy.units.Quantity, optional
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
@@ -288,26 +290,26 @@ def impact_parameter(T,
     Parameters
     ----------
 
-    T : Quantity
+    T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle
 
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         The electron density in units convertible to per cubic meter.
 
     particles : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
-    z_mean : Quantity, optional
+    z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. This is used to recover the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
         impact parameters.
 
-    V : Quantity, optional
+    V : ~astropy.units.Quantity, optional
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
@@ -459,14 +461,14 @@ def collision_frequency(T,
     Parameters
     ----------
 
-    T : Quantity
+    T : ~astropy.units.Quantity
         Temperature in units of temperature.
         This should be the electron temperature for electron-electron
         and electron-ion collisions, and the ion temperature for
         ion-ion collisions.
 
 
-    n : Quantity
+    n : ~astropy.units.Quantity
         The density in units convertible to per cubic meter.
         This should be the electron density for electron-electron collisions,
         and the ion density for electron-ion and ion-ion collisions.
@@ -475,14 +477,14 @@ def collision_frequency(T,
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
-    z_mean : Quantity, optional
+    z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. This is used to recover the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
         impact parameters.
 
-    V : Quantity, optional
+    V : ~astropy.units.Quantity, optional
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
@@ -594,26 +596,26 @@ def mean_free_path(T,
     Parameters
     ----------
 
-    T : Quantity
+    T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle
 
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         The electron density in units convertible to per cubic meter.
 
     particles : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
-    z_mean : Quantity, optional
+    z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. This is used to recover the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
         impact parameters.
 
-    V : Quantity, optional
+    V : ~astropy.units.Quantity, optional
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
@@ -699,19 +701,19 @@ def Spitzer_resistivity(T,
     Parameters
     ----------
 
-    T : Quantity
+    T : ~astropy.units.Quantity
         Temperature in units of temperature.
         This should be the electron temperature for electron-electron
         and electron-ion collisions, and the ion temperature for
         ion-ion collisions.
 
 
-    n : Quantity
+    n : ~astropy.units.Quantity
         The density in units convertible to per cubic meter.
         This should be the electron density for electron-electron collisions,
         and the ion density for electron-ion and ion-ion collisions.
 
-    z_mean : Quantity, optional
+    z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. This is used to recover the
         average ion density (given the average ionization and electron
@@ -722,7 +724,7 @@ def Spitzer_resistivity(T,
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
-    V : Quantity, optional
+    V : ~astropy.units.Quantity, optional
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
@@ -810,19 +812,19 @@ def mobility(T,
     Parameters
     ----------
 
-    T : Quantity
+    T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle
 
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         The electron density in units convertible to per cubic meter.
 
     particles : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
-    z_mean : Quantity, optional
+    z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. This is used to recover the
         average ion density (given the average ionization and electron
@@ -832,7 +834,7 @@ def mobility(T,
         is not given, the average charge between the two particles is
         used instead.
 
-    V : Quantity, optional
+    V : ~astropy.units.Quantity, optional
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
@@ -921,26 +923,29 @@ def Knudsen_number(characteristic_length,
     Parameters
     ----------
 
-    T : Quantity
+    characteristic_length : ~astropy.units.Quantity
+        Rough order-of-magnitude estimate of the relevant size of the system.
+
+    T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle
 
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         The electron density in units convertible to per cubic meter.
 
     particles : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
-    z_mean : Quantity, optional
+    z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. This is used to recover the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
         impact parameters.
 
-    V : Quantity, optional
+    V : ~astropy.units.Quantity, optional
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
@@ -1024,26 +1029,26 @@ def coupling_parameter(T,
     Parameters
     ----------
 
-    T : Quantity
+    T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle
 
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         The electron density in units convertible to per cubic meter.
 
     particles : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
-    z_mean : Quantity, optional
+    z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. This is used to recover the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
         impact parameters.
 
-    V : Quantity, optional
+    V : ~astropy.units.Quantity, optional
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
@@ -1191,16 +1196,16 @@ class classical_transport:
 
     Parameters
     ----------
-    T_e : Quantity
+    T_e : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle
 
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         The number density in units convertible to per cubic meter.
 
-    T_i : Quantity
+    T_i : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle
 
-    n_i : Quantity
+    n_i : ~astropy.units.Quantity
         The number density in units convertible to per cubic meter.
 
     ion_particle : string
@@ -1217,7 +1222,7 @@ class classical_transport:
         input using this input and the Ji-Held model, although doing so may
         neglect effects caused by multiple ion populations.
 
-    B : Quantity, optional
+    B : ~astropy.units.Quantity, optional
         The magnetic field strength in units convertible to Tesla. Defaults
         to zero.
 
@@ -1239,45 +1244,45 @@ class classical_transport:
         direction. The option 'all' will return a numpy array of all three,
         np.array((par, perp, cross)).
 
-    coulomb_log_ei: float or dimensionless Quantity, optional
+    coulomb_log_ei: float or dimensionless ~astropy.units.Quantity, optional
         Force a particular value to be used for the electron-ion Coulomb
         logarithm (test electrons on field ions). If None, the PlasmaPy
         function Coulomb_Logarithm() will be used. Useful for comparing
         calculations.
 
-    V_ei: Quantity, optional
+    V_ei: ~astropy.units.Quantity, optional
        Supplied to coulomb_logarithm() function, not otherwise used.
        The relative velocity between particles.  If not provided,
        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
        where `mu` is the reduced mass.
 
-    coulomb_log_ii: float or dimensionless Quantity, optional
+    coulomb_log_ii: float or dimensionless ~astropy.units.Quantity, optional
         Force a particular value to be used for the ion-ion Coulomb logarithm
         (test ions on field ions). If None, the PlasmaPy function
         Coulomb_Logarithm() will be used. Useful for comparing calculations.
 
-    V_ii: Quantity, optional
+    V_ii: ~astropy.units.Quantity, optional
        Supplied to coulomb_logarithm() function, not otherwise used.
        The relative velocity between particles.  If not provided,
        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
        where `mu` is the reduced mass.
 
-    hall_e: float or dimensionless Quantity, optional
+    hall_e: float or dimensionless ~astropy.units.Quantity, optional
         Force a particular value to be used for the electron Hall parameter. If
         None, the PlasmaPy function Hall_parameter() will be used. Useful
         for comparing calculations.
 
-    hall_i: float or dimensionless Quantity, optional
+    hall_i: float or dimensionless ~astropy.units.Quantity, optional
         Force a particular value to be used for the ion Hall parameter. If
         None, the PlasmaPy function Hall_parameter() will be used. Useful
         for comparing calculations.
 
-    mu: optional, float or dimensionless Quantity
+    mu: optional, float or dimensionless ~astropy.units.Quantity
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to zero, thus
         disabling these effects.
 
-    theta: optional, float or dimensionless Quantity
+    theta: optional, float or dimensionless ~astropy.units.Quantity
         theta = T_e / T_i
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to T_e / T_i. Only
@@ -1957,7 +1962,7 @@ def _nondim_visc_e_braginskii(hall, Z):
     delta_0 = 11.6
     eta_0_e = eta_prime_0
 
-    def f_eta_2(hall):
+    def eta_2(hall):
         Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
         return (eta_doubleprime_2 * hall ** 2 + eta_doubleprime_0) / Delta
     eta_2_e = f_eta_2(hall)

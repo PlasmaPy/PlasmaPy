@@ -25,17 +25,17 @@ def deBroglie_wavelength(V, particle):
 
     Parameters
     ----------
-    V : Quantity
+    V : ~astropy.units.Quantity
         Particle velocity in units convertible to meters per second.
 
-    particle : string or Quantity
+    particle : string or ~astropy.units.Quantity
         Representation of the particle species (e.g., 'e', 'p', 'D+',
         or 'He-4 1+', or the particle mass in units convertible to
         kilograms.
 
     Returns
     -------
-    lambda_dB : Quantity
+    lambda_dB : ~astropy.units.Quantity
         The de Broglie wavelength in units of meters.
 
     Raises
@@ -127,12 +127,12 @@ def thermal_deBroglie_wavelength(T_e):
 
     Parameters
     ----------
-    T_e: Quantity
+    T_e: ~astropy.units.Quantity
         Electron temperature.
 
     Returns
     -------
-    lambda_dbTh: Quantity
+    lambda_dbTh: ~astropy.units.Quantity
         The thermal deBroglie wavelength for electrons in meters.
 
     Raises
@@ -178,12 +178,12 @@ def Fermi_energy(n_e):
 
     Parameters
     ----------
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         Electron number density.
 
     Returns
     -------
-    energy_F : Quantity
+    energy_F : ~astropy.units.Quantity
         The Fermi energy in Joules.
 
     Raises
@@ -237,12 +237,12 @@ def Thomas_Fermi_length(n_e):
 
     Parameters
     ----------
-    n_e: Quantity
+    n_e: ~astropy.units.Quantity
         Electron number density.
 
     Returns
     -------
-    lambda_TF: Quantity
+    lambda_TF: ~astropy.units.Quantity
         The Thomas-Fermi screening length in meters.
 
     Raises
@@ -298,7 +298,7 @@ def Thomas_Fermi_length(n_e):
 @check_quantity({
     'n': {'units': u.m**-3, 'can_be_negative': False}
 })
-def Wigner_Seitz_radius(n):
+def Wigner_Seitz_radius(n: u.m**-3):
     r"""Calculate the Wigner-Seitz radius, which approximates the inter-
     particle spacing. It is the radius of a sphere whose volume is
     equal to the mean volume per atom in a solid. This parameter is
@@ -309,12 +309,12 @@ def Wigner_Seitz_radius(n):
 
     Parameters
     ----------
-    n: Quantity
+    n: ~astropy.units.Quantity
         Particle number density
 
     Returns
     -------
-    radius: Quantity
+    radius: ~astropy.units.Quantity
         The Wigner-Seitz radius in meters
 
     Raises
@@ -355,13 +355,17 @@ def Wigner_Seitz_radius(n):
     return radius.to(u.m)
 
 
-def chemical_potential(n_e, T, tol=1e-6):
+def chemical_potential(n_e: u.m ** -3, T: u.K):
     r"""Calculate the ideal chemical potential
 
     Parameters
     ----------
-    n_e: Quantity
+    n_e: ~astropy.units.Quantity
         Electron number density
+
+    T : ~astropy.units.Quantity
+        The temperature,
+
 
     Returns
     -------
@@ -411,7 +415,7 @@ def chemical_potential(n_e, T, tol=1e-6):
     Example
     -------
     >>> from astropy import units as u
-    >>> chemical_potential(n_e=1e21*u.cm**-3, T=11000*u.K)
+    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)
     <Quantity 2.00039985e-12>
     """
     # deBroglie wavelength
@@ -419,8 +423,8 @@ def chemical_potential(n_e, T, tol=1e-6):
     # degeneracy parameter
     degen = (n_e * lambdaDB ** 3).to(u.dimensionless_unscaled)
 
-    # residual function for fitting parameters to Fermi_integral
     def residual(params, data, eps_data):
+        """residual function for fitting parameters to Fermi_integral"""
         alpha = params['alpha'].value
         # note that alpha = mu / (k_B * T)
         model = Fermi_integral(alpha, 0.5)
@@ -447,15 +451,15 @@ def chemical_potential_interp(n_e, T):
 
     Parameters
     ----------
-    n_e: Quantity
+    n_e: ~astropy.units.Quantity
         Electron number density
 
-    T : Quantity
+    T : ~astropy.units.Quantity
         Temperature in units of temperature or energy
 
     Returns
     -------
-    mu: Quantity
+    mu: ~astropy.units.Quantity
         The dimensionless chemical potential, which is a ratio of
         chemical potential energy to thermal kinetic energy.
 

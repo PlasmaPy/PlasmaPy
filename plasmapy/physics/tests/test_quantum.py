@@ -150,13 +150,12 @@ class Test_chemical_potential:
         self.n_e = 1e20 * u.cm ** -3
         self.n_e_fail = 1e23 * u.cm ** -3
         self.T = 11604 * u.K
-        self.tol = 1e-6
         self.True1 = 1.234345958778249e-11
     def test_known1(self):
         """
         Tests Fermi_integral for expected value.
         """
-        methodVal = chemical_potential(self.n_e, self.T, tol=self.tol)
+        methodVal = chemical_potential(self.n_e, self.T)
         testTrue = np.isclose(methodVal,
                               self.True1,
                               rtol=1e-16,
@@ -170,7 +169,7 @@ class Test_chemical_potential:
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 + 1e-15
-        methodVal = chemical_potential(self.n_e, self.T, tol=self.tol)
+        methodVal = chemical_potential(self.n_e, self.T)
         testTrue = not np.isclose(methodVal,
                                   fail1,
                                   rtol=1e-16,
@@ -184,7 +183,7 @@ class Test_chemical_potential:
         not having an implementation for larger argument values.
         """
         with pytest.raises(NotImplementedError):
-            chemical_potential(self.n_e_fail, self.T, tol=self.tol)
+            chemical_potential(self.n_e_fail, self.T)
 
 
 class Test_chemical_potential_interp:
