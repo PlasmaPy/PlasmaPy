@@ -187,7 +187,7 @@ def Coulomb_logarithm(T,
         # Lambda < 0, therefore a clamp is placed at Lambda_min = 2
         ln_Lambda = np.log(bmax / bmin)
         if ln_Lambda < 2:
-            ln_Lambda = 2
+            ln_Lambda = 2 * u.dimensionless_unscaled
     elif method == "GMS-4":
         # 4th method listed in Table 1 of reference [3]
         # Spitzer-like extension to Coulomb logarithm by noting that

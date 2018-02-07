@@ -53,6 +53,24 @@ def count_decimal_places(digits):
 class Test_Coulomb_logarithm:
     def setup_method(self):
         """initializing parameters for tests """
+        self.temperature1 = 10 * 11604 * u.K
+        self.density1 = 1e20 * u.cm ** -3
+        self.temperature2 = 1 * 11604 * u.K
+        self.density2 = 1e23 * u.cm ** -3
+        self.z_mean = 2.5
+        self.particles = ('e', 'p')
+        self.gms1 = 3.4014290066940966
+        self.gms1_negative = -3.4310536971592493
+        self.gms2 = 3.6349941014645157
+        self.gms2_negative = -1.379394033464292
+        self.gms3 = 3.4014290066940966
+        self.gms3_negative = 2
+        self.gms4 = 3.401983996820073
+        self.gms4_negative = 0.0005230791851781715
+        self.gms5 = 3.7196690506837693
+        self.gms5_negative = 0.03126832674323108
+        self.gms6 = 3.635342040477818
+        self.gms6_negative = 0.030720859361047514
     def test_Chen_Q_machine(self):
         """
         Tests whether Coulomb logarithm gives value consistent with 
@@ -159,6 +177,262 @@ class Test_Coulomb_logarithm:
         errStr = ("Laser plasma value of Coulomb logarithm should be "
                   f"{lnLambdaChen} and not {lnLambda}.")
         assert testTrue, errStr
+    def test_GMS1(self):
+        """
+        Test for first version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        methodVal = Coulomb_logarithm(self.temperature1,
+                                      self.density1,
+                                      self.particles,
+                                      z_mean=np.nan*u.dimensionless_unscaled,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-1")
+        testTrue = np.isclose(methodVal,
+                              self.gms1,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-1 should be "
+                  f"{self.gms1} and not {methodVal}.")
+        assert testTrue, errStr
+    def test_GMS1_negative(self):
+        """
+        Test for first version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks for when
+        a negative (invalid) Coulomb logarithm is returned.
+        """
+        methodVal = Coulomb_logarithm(self.temperature2,
+                                      self.density2,
+                                      self.particles,
+                                      z_mean=np.nan*u.dimensionless_unscaled,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-1")
+        testTrue = np.isclose(methodVal,
+                              self.gms1_negative,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-1 should be "
+                  f"{self.gms1_negative} and not {methodVal}.")
+        assert testTrue, errStr
+    def test_GMS2(self):
+        """
+        Test for second version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        methodVal = Coulomb_logarithm(self.temperature1,
+                                      self.density1,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-2")
+        testTrue = np.isclose(methodVal,
+                              self.gms2,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-2 should be "
+                  f"{self.gms2} and not {methodVal}.")
+        assert testTrue, errStr
+    def test_GMS2_negative(self):
+        """
+        Test for second version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks for when
+        a negative (invalid) Coulomb logarithm is returned.
+        """
+        methodVal = Coulomb_logarithm(self.temperature2,
+                                      self.density2,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-2")
+        testTrue = np.isclose(methodVal,
+                              self.gms2_negative,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-2 should be "
+                  f"{self.gms2_negative} and not {methodVal}.")
+        assert testTrue, errStr
+    def test_GMS3(self):
+        """
+        Test for third version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        methodVal = Coulomb_logarithm(self.temperature1,
+                                      self.density1,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-3")
+        testTrue = np.isclose(methodVal,
+                              self.gms3,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-3 should be "
+                  f"{self.gms3} and not {methodVal}.")
+        assert testTrue, errStr
+    def test_GMS3_negative(self):
+        """
+        Test for third version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        a positive value is returned whereas the classical Coulomb
+        logarithm would return a negative value.
+        """
+        methodVal = Coulomb_logarithm(self.temperature2,
+                                      self.density2,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-3")
+        testTrue = np.isclose(methodVal,
+                              self.gms3_negative,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-3 should be "
+                  f"{self.gms3_negative} and not {methodVal}.")
+        assert testTrue, errStr
+    def test_GMS4(self):
+        """
+        Test for fourth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        methodVal = Coulomb_logarithm(self.temperature1,
+                                      self.density1,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-4")
+        testTrue = np.isclose(methodVal,
+                              self.gms4,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-4 should be "
+                  f"{self.gms4} and not {methodVal}.")
+        assert testTrue, errStr
+    def test_GMS4_negative(self):
+        """
+        Test for fourth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        a positive value is returned whereas the classical Coulomb
+        logarithm would return a negative value.
+        """
+        methodVal = Coulomb_logarithm(self.temperature2,
+                                      self.density2,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-4")
+        testTrue = np.isclose(methodVal,
+                              self.gms4_negative,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-4 should be "
+                  f"{self.gms4_negative} and not {methodVal}.")
+        assert testTrue, errStr
+    def test_GMS5(self):
+        """
+        Test for fifth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        methodVal = Coulomb_logarithm(self.temperature1,
+                                      self.density1,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-5")
+        testTrue = np.isclose(methodVal,
+                              self.gms5,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-5 should be "
+                  f"{self.gms5} and not {methodVal}.")
+        assert testTrue, errStr
+    def test_GMS5_negative(self):
+        """
+        Test for fifth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        a positive value is returned whereas the classical Coulomb
+        logarithm would return a negative value.
+        """
+        methodVal = Coulomb_logarithm(self.temperature2,
+                                      self.density2,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-5")
+        testTrue = np.isclose(methodVal,
+                              self.gms5_negative,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-5 should be "
+                  f"{self.gms5_negative} and not {methodVal}.")
+        assert testTrue, errStr
+    def test_GMS6(self):
+        """
+        Test for sixth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        methodVal = Coulomb_logarithm(self.temperature1,
+                                      self.density1,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-6")
+        testTrue = np.isclose(methodVal,
+                              self.gms6,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-6 should be "
+                  f"{self.gms6} and not {methodVal}.")
+        assert testTrue, errStr
+    def test_GMS6_negative(self):
+        """
+        Test for sixth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        a positive value is returned whereas the classical Coulomb
+        logarithm would return a negative value.
+        """
+        methodVal = Coulomb_logarithm(self.temperature2,
+                                      self.density2,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-6")
+        testTrue = np.isclose(methodVal,
+                              self.gms6_negative,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-6 should be "
+                  f"{self.gms6_negative} and not {methodVal}.")
+        assert testTrue, errStr
+    def test_GMS2_zmean_error(self):
+        """
+        Tests whether GMS-2 raises z_mean error when a z_mean is not
+        provided.
+        """
+        with pytest.raises(ValueError):
+            methodVal = Coulomb_logarithm(self.temperature2,
+                                          self.density2,
+                                          self.particles,
+                                          method="GMS-2")
+    def test_GMS5_zmean_error(self):
+        """
+        Tests whether GMS-5 raises z_mean error when a z_mean is not
+        provided.
+        """
+        with pytest.raises(ValueError):
+            methodVal = Coulomb_logarithm(self.temperature2,
+                                          self.density2,
+                                          self.particles,
+                                          method="GMS-5")
+    def test_GMS6_zmean_error(self):
+        """
+        Tests whether GMS-6 raises z_mean error when a z_mean is not
+        provided.
+        """
+        with pytest.raises(ValueError):
+            methodVal = Coulomb_logarithm(self.temperature2,
+                                          self.density2,
+                                          self.particles,
+                                          method="GMS-6")
     def test_relativity_warn(self):
         """Tests whether relativity warning is raised at high velocity."""
         with pytest.warns(RelativityWarning):
