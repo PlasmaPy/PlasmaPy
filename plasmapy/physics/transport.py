@@ -794,7 +794,10 @@ def Spitzer_resistivity(T,
                                z_mean=z_mean,
                                V=V,
                                method=method)
-    spitzer = freq * reduced_mass / (n * charges[0] * charges[1])
+    if np.isnan(z_mean):
+        spitzer = freq * reduced_mass / (n * charges[0] * charges[1])
+    else:
+        spitzer = freq * reduced_mass / (n * z_mean ** 2)
     return spitzer.to(u.Ohm * u.m)
 
 
@@ -903,7 +906,7 @@ def mobility(T,
     if np.isnan(z_mean):
         z_val = (charges[0] + charges[1]) / 2
     else:
-        z_val = z_mean
+        z_val = z_mean * e
     mobility_value = z_val / (reduced_mass * freq)
     return mobility_value.to(u.m ** 2 / (u.V * u.s))
 
@@ -1118,7 +1121,7 @@ def coupling_parameter(T,
     if np.isnan(z_mean):
         coulombEnergy = charges[0] * charges[1] / (4 * np.pi * eps0 * radius)
     else:
-        coulombEnergy = z_mean ** 2 / (4 * np.pi * eps0 * radius)
+        coulombEnergy = (z_mean * e) ** 2 / (4 * np.pi * eps0 * radius)
     if method == "classical":
         # classical thermal kinetic energy
         kineticEnergy = k_B * T
@@ -1126,9 +1129,14 @@ def coupling_parameter(T,
         # quantum kinetic energy for dense plasmas
         lambda_deBroglie = thermal_deBroglie_wavelength(T)
         chemicalPotential = chemical_potential(n_e, T)
-        fermiIntegral = Fermi_integral(chemicalPotential, 3 / 2)
+        fermiIntegral = Fermi_integral(chemicalPotential.si.value, 1.5)
         denom = (n_e * lambda_deBroglie ** 3) * fermiIntegral
         kineticEnergy = 2 * k_B * T / denom
+        if np.imag(kineticEnergy) == 0:
+            kineticEnergy = np.real(kineticEnergy)
+        else:
+            raise ValueError("Kinetic energy should not be imaginary."
+                             "Something went horribly wrong.")
     coupling = coulombEnergy / kineticEnergy
     return coupling.to(u.dimensionless_unscaled)
 

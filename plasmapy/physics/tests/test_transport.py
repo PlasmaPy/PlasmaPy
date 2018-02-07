@@ -562,6 +562,7 @@ class Test_impact_parameter:
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
     def test_bad_method(self):
+        """Testing failure when invalid method is passed."""
         with pytest.raises(ValueError):
             impact_parameter(self.T,
                              self.n_e,
@@ -577,9 +578,14 @@ class Test_collision_frequency:
         self.T = 11604 * u.K
         self.n = 1e17 * u.cm ** -3
         self.particles = ('e', 'p')
+        self.electrons = ('e', 'e')
+        self.protons = ('p', 'p')
         self.z_mean = 2.5
         self.V = 1e4 * u.km / u.s
         self.True1 = 1.3468281539854646e12
+        self.True_electrons = 1904702641552.1638
+        self.True_protons = 44450104815.91857
+        self.True_zmean = 1346828153985.4646
     def test_known1(self):
         """
         Test for known value.
@@ -615,6 +621,57 @@ class Test_collision_frequency:
                                   atol=0.0)
         errStr = (f"Collision frequency value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+    def test_electrons(self):
+        """
+        Testing collision frequency between electrons.
+        """
+        methodVal = collision_frequency(self.T,
+                                        self.n,
+                                        self.electrons,
+                                        z_mean=np.nan*u.dimensionless_unscaled,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = np.isclose(self.True_electrons,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Collision frequency should be {self.True_electrons} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+    def test_protons(self):
+        """
+        Testing collision frequency between protons (ions).
+        """
+        methodVal = collision_frequency(self.T,
+                                        self.n,
+                                        self.protons,
+                                        z_mean=np.nan*u.dimensionless_unscaled,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = np.isclose(self.True_protons,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Collision frequency should be {self.True_protons} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+    def test_zmean(self):
+        """
+        Test collisional frequency function when given arbitrary z_mean.
+        """
+        methodVal = collision_frequency(self.T,
+                                        self.n,
+                                        self.particles,
+                                        z_mean=self.z_mean,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = np.isclose(self.True_zmean,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Collision frequency should be {self.True_zmean} and "
+                  f"not {methodVal}.")
         assert testTrue, errStr
 
 class Test_mean_free_path:
@@ -719,6 +776,7 @@ class Test_mobility:
         self.z_mean = 2.5
         self.V = 1e4 * u.km / u.s
         self.True1 = 0.13066090887074902
+        self.True_zmean = 0.32665227217687254
     def test_known1(self):
         """
         Test for known value.
@@ -754,6 +812,21 @@ class Test_mobility:
                                   atol=0.0)
         errStr = (f"Mobility value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+    def test_zmean(self):
+        """Testing mobility when z_mean is passed."""
+        methodVal = mobility(self.T,
+                             self.n_e,
+                             self.particles,
+                             z_mean=self.z_mean,
+                             V=np.nan*u.m/u.s,
+                             method="classical")
+        testTrue = np.isclose(self.True_zmean,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Mobility should be {self.True_zmean} and "
+                  f"not {methodVal}.")
         assert testTrue, errStr
 
 
@@ -816,6 +889,8 @@ class Test_coupling_parameter:
         self.z_mean = 2.5
         self.V = 1e4 * u.km / u.s
         self.True1 = 2.3213156755481195
+        self.True_zmean = 14.508222972175743
+        self.True_quantum = 0.3334662805238162
     def test_known1(self):
         """
         Test for known value.
@@ -851,6 +926,38 @@ class Test_coupling_parameter:
                                   atol=0.0)
         errStr = (f"Coupling parameter value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+    def test_zmean(self):
+        """
+        Test value obtained when arbitrary z_mean is passed
+        """
+        methodVal = coupling_parameter(self.T,
+                                       self.n_e,
+                                       self.particles,
+                                       z_mean=self.z_mean,
+                                       V=np.nan*u.m/u.s,
+                                       method="classical")
+        testTrue = np.isclose(self.True_zmean,
+                              methodVal,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Coupling parameter should be {self.True_zmean} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+    def test_quantum(self):
+        """
+        Testing quantum method for coupling parameter.
+        """
+        methodVal = coupling_parameter(self.T,
+                                       self.n_e,
+                                       self.particles,
+                                       method="quantum")
+        testTrue = np.isclose(self.True_quantum,
+                              methodVal,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Coupling parameter should be {self.True_quantum} and "
+                  f"not {methodVal}.")
         assert testTrue, errStr
 
 
