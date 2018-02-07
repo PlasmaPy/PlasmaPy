@@ -2,25 +2,12 @@
 
 from astropy import units as u, constants
 import re
-from itertools import repeat
-from .atomic import (mass_number,
-                     isotope_mass,
-                     ion_mass,
-                     atomic_number,
-                     integer_charge)
 
-from .symbols import (isotope_symbol,
-                      _is_neutron,
-                      _is_proton,
-                      _is_electron,
-                      _is_positron,
-                      _is_antiproton,
-                      _is_antineutron)
-
-from ..utils import (InvalidElementError,
-                     AtomicError,
+from ..utils import (AtomicError,
                      InvalidParticleError,
-                     InvalidIsotopeError)
+                     InvalidIsotopeError,
+                     ChargeError,
+)
 
 from .particle_class import Particle
 from .particle_input import particle_input
@@ -79,7 +66,7 @@ def nuclear_binding_energy(particle: Particle, mass_numb=None):
     >>> before = nuclear_binding_energy("D") + nuclear_binding_energy("T")
     >>> after = nuclear_binding_energy("alpha")
     >>> (after - before).to(u.MeV)  # released energy from D + T --> alpha + n
-    <Quantity 17.58929687 MeV>
+    <Quantity 17.58932778 MeV>
 
     """
     return particle.binding_energy.to(u.J)
@@ -187,24 +174,13 @@ def nuclear_reaction_energy(*args, **kwargs):
                 else:
                     multiplier = 1
 
-                # The following clause should eventually be replaced
-                # with a particle_symbol function
-
                 try:
-                    particle = isotope_symbol(item)
-                except Exception:
-                    if _is_electron(item):
-                        particle = 'e-'
-                    elif _is_positron(item):
-                        particle = 'e+'
-                    elif _is_antiproton(item):
-                        particle = 'p-'
-                    elif _is_antineutron(item):
-                        particle = 'antineutron'
-                    elif _is_neutron(item):
-                        particle = 'neutron'
-                    else:
-                        raise ValueError("{item} is not a valid particle")
+                    particle = Particle(item)
+                except (InvalidParticleError) as exc:
+                    raise ValueError(f"{item} is not a valid particle.")
+
+                if particle.element and not particle.isotope:
+                    raise ValueError
 
                 [particles.append(particle) for i in range(multiplier)]
 
@@ -217,54 +193,35 @@ def nuclear_reaction_energy(*args, **kwargs):
     def _baryon_number(particles):
         r"""Finds the total number of baryons minus the number of
         antibaryons in a list of particles."""
-
         baryon_number = 0
-
         for particle in particles:
-            try:
-                baryon_number += mass_number(particle)
-            except Exception:
-                if _is_antiproton(particle) or _is_antineutron(particle):
-                    baryon_number -= 1
-                elif _is_neutron(particle):
-                    baryon_number += 1
-
+            baryon_number += particle.baryon_number
         return baryon_number
 
     def _total_charge(particles):
         r"""Finds the total integer charge in a list of nuclides
         (excluding bound electrons) and other particles."""
-
         total_charge = 0
-
         for particle in particles:
             try:
-                total_charge += atomic_number(particle)
-            except InvalidElementError:
-                total_charge += integer_charge(particle)
-
+                if particle.isotope:
+                    total_charge += particle.atomic_number
+                elif not particle.element:
+                    total_charge += particle.integer_charge
+            except ChargeError as ce:
+                raise ValueError
         return total_charge
 
     def _mass_energy(particles):
         r"""Finds the total mass energy from a list of particles, while
         taking the masses of the fully ionized isotopes."""
-
-        total_mass = 0.0*u.kg
-
+        total_mass = 0.0 * u.kg
         for particle in particles:
-            if _is_electron(particle) or _is_positron(particle):
-                total_mass += constants.m_e
-            elif _is_neutron(particle) or _is_antineutron(particle):
-                total_mass += constants.m_n
-            elif _is_antiproton(particle):
-                total_mass += constants.m_p
-            elif _is_neutron(particle):
-                total_mass += constants.m_n
+            if particle.isotope:
+                total_mass += particle.nuclide_mass
             else:
-                atomic_numb = atomic_number(particle)
-                total_mass += ion_mass(particle, Z=atomic_numb)
-
-        return (total_mass * constants.c**2).to(u.J)
+                total_mass += particle.mass
+        return (total_mass * constants.c ** 2).to(u.J)
 
     input_err_msg = ("The inputs to nuclear_reaction_energy should be either "
                      "a string representing a nuclear reaction (e.g., "
@@ -321,4 +278,4 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     released_energy = _mass_energy(reactants) - _mass_energy(products)
 
-    return released_energy.to(u.J)
+    return released_energy
