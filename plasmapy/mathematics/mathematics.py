@@ -190,8 +190,9 @@ def Fermi_integral(x, j):
     The complete Fermi-Dirac integral is defined as: [1]_
 
     .. math::
-        F_j (x) = \frac{1}{\Gamma (j+1)} \int_0^\inf \frac{t^j}{e^{t-x} + 1} dt
-        for j > 0
+        F_j (x) = \frac{1}{\Gamma (j+1)} \int_0^{\inf} \frac{t^j}{\exp{(t-x)} + 1} dt
+
+    for j > 0.
 
     This is equivalent to the following polylogarithm [2]_ function:
 
