@@ -74,7 +74,7 @@ by an angular frequency to get a length scale:
 
 
 @utils.check_relativistic
-def Alfven_speed(B, density, ion="p", z_mean=None):
+def Alfven_speed(B, density, ion="p+", z_mean=None):
     r"""
     Returns the Alfven speed.
 
@@ -213,7 +213,7 @@ def ion_sound_speed(*ignore,
                     T_i=0 * u.K,
                     gamma_e=1,
                     gamma_i=3,
-                    ion='p',
+                    ion='p+',
                     z_mean=None):
     r"""
     Returns the ion sound speed for an electron-ion plasma.
@@ -369,7 +369,7 @@ def ion_sound_speed(*ignore,
 @utils.check_quantity({
     'T': {'units': u.K, 'can_be_negative': False}
 })
-def thermal_speed(T, particle="e", method="most_probable"):
+def thermal_speed(T, particle="e-", method="most_probable"):
     r"""
     Returns the most probable speed for a particle within a Maxwellian
     distribution.
@@ -468,7 +468,7 @@ def thermal_speed(T, particle="e", method="most_probable"):
 @utils.check_quantity({
     'T': {'units': u.K, 'can_be_negative': False}
 })
-def kappa_thermal_speed(T, kappa, particle="e", method="most_probable"):
+def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     r"""Returns the most probable speed for a particle within a Kappa
     distribution.
 
@@ -696,17 +696,10 @@ def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None):
     r"""
     TODO
     """
-    try:
-        from ..atomic import _is_electron
-    except ImportError:
-        def _is_electron(arg):
-            if not isinstance(arg, str):
-                return False
-            return arg in ['e', 'e-'] or arg.lower() == 'electron'
 
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
-    if _is_electron(particle):
+    if atomic.Particle(particle).particle == 'e-':
         coll_rate = collision_rate_electron_ion(T,
                                                 n,
                                                 ion_particle,
@@ -720,7 +713,7 @@ def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None):
 @utils.check_quantity({
     'B': {'units': u.T}
 })
-def gyrofrequency(B, particle='e', signed=False, z_mean=None):
+def gyrofrequency(B, particle='e-', signed=False, z_mean=None):
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
@@ -827,7 +820,7 @@ def gyrofrequency(B, particle='e', signed=False, z_mean=None):
     return omega_ci
 
 
-def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
+def gyroradius(B, *args, Vperp=None, T_i=None, particle='e-'):
     r"""Returns the particle gyroradius.
 
     Parameters
@@ -897,9 +890,9 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
     Examples
     --------
     >>> from astropy import units as u
-    >>> gyroradius(0.2*u.T, 1e5*u.K, particle='p')
+    >>> gyroradius(0.2*u.T, 1e5*u.K, particle='p+')
     <Quantity 0.00212087 m>
-    >>> gyroradius(0.2*u.T, 1e5*u.K, particle='p')
+    >>> gyroradius(0.2*u.T, 1e5*u.K, particle='p+')
     <Quantity 0.00212087 m>
     >>> gyroradius(5*u.uG, 1*u.eV, particle='alpha')
     <Quantity 288002.38837768 m>
@@ -955,7 +948,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e'):
 @utils.check_quantity({
     'n': {'units': u.m**-3, 'can_be_negative': False}
 })
-def plasma_frequency(n, particle='e', z_mean=None):
+def plasma_frequency(n, particle='e-', z_mean=None):
     r"""Calculates the particle plasma frequency.
 
     Parameters
@@ -1186,7 +1179,7 @@ def Debye_number(T_e, n_e):
 @utils.check_quantity({
     'n': {'units': u.m**-3, 'can_be_negative': False}
 })
-def inertial_length(n, particle='e'):
+def inertial_length(n, particle='e-'):
     r"""Calculate the particle inertial length,
 
     Parameters
@@ -1442,7 +1435,7 @@ def upper_hybrid_frequency(B, n_e):
     'B': {'units': u.T},
     'n_i': {'units': u.m**-3, 'can_be_negative': False}
 })
-def lower_hybrid_frequency(B, n_i, ion='p'):
+def lower_hybrid_frequency(B, n_i, ion='p+'):
     r"""
     Returns the lower hybrid frequency.
 
