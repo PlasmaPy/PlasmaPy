@@ -2227,7 +2227,7 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
 #                       k_2[Z_idx] * r ** (5 / 3) +
 #                       k_1[Z_idx] * r +
 #                       k_0[Z_idx])
-        term1 = r ** 3
+        term1 = float(r ** 3)
         term2 = k_4[Z_idx] * r ** (7 / 3)
         term3 = k_3[Z_idx] * r ** 2
         term4 = k_2[Z_idx] * r ** (5 / 3)
