@@ -784,7 +784,7 @@ def known_isotopes(argument: Union[str, int] = None) -> List[str]:
     Notes
     -----
 
-    This list returns both natural and artifically produced isotopes.
+    This list returns both natural and artificially produced isotopes.
 
     See also
     --------
@@ -916,9 +916,9 @@ def common_isotopes(argument: Union[str, int] = None,
 
     """
 
-    def common_isotopes_for_element(argument: Union[str, int],
-                                    most_common_only: Optional[bool]) \
-            -> List[str]:
+    def common_isotopes_for_element(
+            argument: Union[str, int],
+            most_common_only: Optional[bool]) -> List[str]:
 
         isotopes = known_isotopes(argument)
         CommonIsotopes = [isotope for isotope in isotopes if

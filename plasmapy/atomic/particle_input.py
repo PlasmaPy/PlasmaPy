@@ -11,7 +11,6 @@ from ..utils import (AtomicError,
 
 from typing import Callable, Union, Any, Set, List, Tuple
 
-# TODO: make sure particle_input works with class methods
 # TODO: change any keyword to any_of and allow it to be a list
 
 
@@ -19,6 +18,7 @@ def particle_input(wrapped_function: Callable = None,
                    must_be: Union[str, Set, List, Tuple] = set(),
                    exclude: Union[str, Set, List, Tuple] = set(),
                    any: bool = False,
+                   none_shall_pass: bool = False,
                    **kwargs) -> Any:
     r"""A decorator to take arguments and keywords related to a particle
     and pass through the Particle class to the callable instead.
@@ -35,6 +35,11 @@ def particle_input(wrapped_function: Callable = None,
     exclude : str, set, list, or tuple; optional
 
     any : bool
+
+    none_shall_pass : bool
+        If set to True, then the decorated argument is allowed to be set
+        to None without raising an exception.  In such cases, this
+        decorator will pass through None to the decorated function.
 
     Notes
     -----
@@ -142,6 +147,13 @@ def particle_input(wrapped_function: Callable = None,
 
                 if not should_be_particle:
                     new_kwargs[argname] = argval
+                    continue
+
+                # Occasionally there will be functions where it will be useful
+                # to allow None as an argument.
+
+                if none_shall_pass and argval is None:
+                    new_kwargs[argname] = None
                     continue
 
                 # Convert the argument to a Particle object if it is not
