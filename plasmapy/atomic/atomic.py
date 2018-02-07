@@ -1,7 +1,7 @@
 r"""Functions that retrieve or are related to elemental or isotopic data."""
 
 import warnings
-from typing import (Union, Optional, List, TAny)
+from typing import (Union, Optional, List, Any)
 
 from astropy import units as u, constants as const
 from astropy.units import Quantity
@@ -15,6 +15,7 @@ from ..utils import (
     MissingAtomicDataError,
     InvalidParticleError,
     InvalidElementError,
+    InvalidIsotopeError,
     InvalidIonError,
 )
 
@@ -635,14 +636,13 @@ def electric_charge(particle: Particle) -> Quantity:
 
 
 @particle_input
-def is_isotope_stable(isotope: Particle,
-                      mass_numb: int = None) -> bool:
-    r"""Returns true for stable isotopes and false otherwise.
+def is_stable(particle: Particle, mass_numb: int = None) -> bool:
+    r"""Returns true for stable isotopes and particles and false otherwise.
 
     Parameters
     ----------
 
-    isotope: integer or string
+    particle: integer or string
         A string representing an isotope or an integer representing an
         atomic number
 
@@ -674,14 +674,22 @@ def is_isotope_stable(isotope: Particle,
     Examples
     --------
 
-    >>> is_isotope_stable("H-1")
+    >>> is_stable("H-1")
     True
-    >>> is_isotope_stable("tritium")
+    >>> is_stable("tritium")
+    False
+    >>> is_stable("e-")
+    True
+    >>> is_stable("tau+")
     False
 
     """
-    # TODO: Replace this with a function that works for special particles too?
-    return isotope.is_category('stable')
+    if particle.element and not particle.isotope:
+        raise InvalidIsotopeError(
+            "The input to is_stable must be either an isotope or a "
+            "special particle."
+        )
+    return particle.is_category('stable')
 
 
 @particle_input
@@ -1056,8 +1064,6 @@ def _is_electron(arg: Any) -> bool:
     r"""Returns True if the argument corresponds to an electron, and False
     otherwise."""
 
-    warnings.warn("_is_electron is deprecated.", DeprecationWarning)
-
     if not isinstance(arg, str):
         return False
 
@@ -1141,8 +1147,9 @@ def periodic_table_group(argument: Union[str, int]) -> int:
     See also
     --------
 
-        periodic_table_period : returns periodic table period of element.
-        periodic_table_block : returns periodic table block of element.
+    periodic_table_period : returns periodic table period of element.
+
+    periodic_table_block : returns periodic table block of element.
 
     Examples
     --------

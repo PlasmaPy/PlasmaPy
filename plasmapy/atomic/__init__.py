@@ -15,7 +15,7 @@ from .symbols import (
 
 from .atomic import (
     atomic_number,
-    is_isotope_stable,
+    is_stable,
     half_life,
     mass_number,
     standard_atomic_weight,

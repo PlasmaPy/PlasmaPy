@@ -18,7 +18,7 @@ from ..atomic import (
     isotope_mass,
     ion_mass,
     particle_mass,
-    is_isotope_stable,
+    is_stable,
     half_life,
     known_isotopes,
     common_isotopes,
@@ -628,7 +628,7 @@ def test_ion_mass_warnings(argument, kwargs, expected_warning):
 
 
 # (argument)
-is_isotope_stable_table = [
+is_stable_table = [
     ('H-1',),
     (1, 1),
     ('N-14',),
@@ -646,15 +646,15 @@ is_isotope_stable_table = [
 ]
 
 
-@pytest.mark.parametrize("argument", is_isotope_stable_table)
-def test_is_isotope_stable(argument):
-    """Test that is_isotope_stable returns True for stable isotopes."""
-    assert is_isotope_stable(*argument), \
-        f"is_isotope_stable is not returning True for {repr(argument)}"
+@pytest.mark.parametrize("argument", is_stable_table)
+def test_is_stable(argument):
+    """Test that is_stable returns True for stable isotopes."""
+    assert is_stable(*argument), \
+        f"is_stable is not returning True for {repr(argument)}"
 
 
 # (argument)
-is_isotope_stable_false_table = [
+is_stable_false_table = [
     ('Be-8',),
     ('U-235',),
     ('uranium-235',),
@@ -669,15 +669,15 @@ is_isotope_stable_false_table = [
 ]
 
 
-@pytest.mark.parametrize("argument", is_isotope_stable_false_table)
-def test_is_isotope_stable_false(argument):
-    """Test that is_isotope_stable returns False for unstable isotopes."""
-    assert not is_isotope_stable(*argument), \
-        f"is_isotope_stable is not returning False for {repr(argument)}"
+@pytest.mark.parametrize("argument", is_stable_false_table)
+def test_is_stable_false(argument):
+    """Test that is_stable returns False for unstable isotopes."""
+    assert not is_stable(*argument), \
+        f"is_stable is not returning False for {repr(argument)}"
 
 
 # (argument, expected_error)
-is_isotope_stable_error_table = [
+is_stable_error_table = [
     (('hydrogen-444444',), InvalidParticleError),
     (('hydrogen', 0), InvalidParticleError),
     (('',), InvalidParticleError),
@@ -686,13 +686,13 @@ is_isotope_stable_error_table = [
 
 
 @pytest.mark.parametrize("argument, expected_error",
-                         is_isotope_stable_error_table)
-def test_is_isotope_stable_error(argument, expected_error):
-    """Test errors that should be raised by is_isotope_stable."""
+                         is_stable_error_table)
+def test_is_stable_error(argument, expected_error):
+    """Test errors that should be raised by is_stable."""
     with pytest.raises(expected_error, message=(
-            f"is_isotope_stable({repr(argument)}) is not raising a "
+            f"is_stable({repr(argument)}) is not raising a "
             f"{expected_error}")):
-        is_isotope_stable(*argument)
+        is_stable(*argument)
 
 
 def test_known_common_stable_isotopes():
@@ -756,7 +756,7 @@ atomic_TypeError_funcs_table = [
     atomic_symbol,
     isotope_symbol,
     atomic_number,
-    is_isotope_stable,
+    is_stable,
     half_life,
     mass_number,
     element_name,
@@ -785,7 +785,7 @@ atomic_ParticleErrors_funcs_table = [
     atomic_symbol,
     isotope_symbol,
     atomic_number,
-    is_isotope_stable,
+    is_stable,
     half_life,
     mass_number,
     element_name,
