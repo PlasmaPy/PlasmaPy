@@ -1896,11 +1896,6 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
     kappa_cross = (gamma_1_doubleprime[Z_idx] * hall ** 3 +
                    gamma_0_doubleprime[Z_idx] * hall) / Delta
     if field_orientation == 'cross':
-        print(f"Z_idx is {Z_idx}")
-        print(f"gamma_1_doubleprime is {gamma_1_doubleprime[Z_idx]}")
-        print(f"hall is {hall}")
-        print(f"gamma_0_doublprime is {gamma_0_doubleprime[Z_idx]}")
-        print(f"Delta is {Delta}")
         return kappa_cross
 
     if field_orientation == 'all':
@@ -2243,32 +2238,16 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
 
     def f_kappa_cross(Z_idx):
         numerator = r * (5 / 2 * r + k_0[Z_idx] / k_5[Z_idx])
-#        denominator = (r ** 3 +
-#                       k_4[Z_idx] * r ** (7 / 3) +
-#                       k_3[Z_idx] * r ** 2 +
-#                       k_2[Z_idx] * r ** (5 / 3) +
-#                       k_1[Z_idx] * r +
-#                       k_0[Z_idx])
-        term1 = r ** 3
-        term2 = k_4[Z_idx] * r ** (7 / 3)
-        term3 = k_3[Z_idx] * r ** 2
-        term4 = k_2[Z_idx] * r ** (5 / 3)
-        term5 = k_1[Z_idx] * r
-        term6 = k_0[Z_idx]
-        denominator = term1 + term2 + term3 + term4 + term5 + term6
-        print(f"term1 is {term1}")
-        print(f"term2 is {term2}")
-        print(f"term3 is {term3}")
-        print(f"term4 is {term4}")
-        print(f"term5 is {term5}")
-        print(f"term6 is {term6}")
-        print(f"denominator is {denominator}")
+        denominator = (r ** 3 +
+                       k_4[Z_idx] * r ** (7 / 3) +
+                       k_3[Z_idx] * r ** 2 +
+                       k_2[Z_idx] * r ** (5 / 3) +
+                       k_1[Z_idx] * r +
+                       k_0[Z_idx])
         return numerator / denominator
 
     kappa_cross = f_kappa_cross(Z_idx)
     if field_orientation == 'cross':
-        print(f"Z_idx is {Z_idx}")
-        print(f"kappa_cross is {kappa_cross}")
         return Z * kappa_cross
 
     if field_orientation == 'all':
