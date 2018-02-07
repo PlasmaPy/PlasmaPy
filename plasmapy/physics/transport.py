@@ -2227,6 +2227,12 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
                        k_2[Z_idx] * r ** (5 / 3) +
                        k_1[Z_idx] * r +
                        k_0[Z_idx])
+        print(f"k_4[Z_idx] is {k_4[Z_idx]}")
+        print(f"k_3[Z_idx] is {k_3[Z_idx]}")
+        print(f"k_2[Z_idx] is {k_2[Z_idx]}")
+        print(f"k_1[Z_idx] is {k_1[Z_idx]}")
+        print(f"k_0[Z_idx] is {k_0[Z_idx]}")
+        print(f"r is {r}")
         print(f"numerator is {numerator}")
         print(f"denominator is {denominator}")
         return numerator / denominator
