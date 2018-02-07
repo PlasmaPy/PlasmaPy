@@ -303,7 +303,7 @@ def b_perp(T,
 
     Notes
     -----
-    The distance of closest approach, b_perp, is given by
+    The distance of closest approach, b_perp, is given by [1]_
 
     .. math::
         b_{\perp} = \frac{Z_1 Z_2}{4 \pi \epsilon_0 m v^2}
@@ -320,9 +320,8 @@ def b_perp(T,
 
     References
     ----------
-    .. [1] Dense plasma temperature equilibration in the binary collision
-       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
-       DOI: 10.1103/PhysRevE.65.036418
+    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
+       fusion 3rd edition. Ch 5 (Springer 2015).
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
@@ -346,7 +345,7 @@ def impact_parameter(T,
                      z_mean=np.nan*u.dimensionless_unscaled,
                      V=np.nan*u.m/u.s,
                      method="classical"):
-    r"""Impact parameter for classical Coulomb collision
+    r"""Impact parameters for classical and quantum Coulomb collision
 
     Parameters
     ----------
@@ -381,9 +380,9 @@ def impact_parameter(T,
 
     Returns
     -------
-    lnLambda : float or numpy.ndarray
-        An estimate of the Coulomb logarithm that is accurate to
-        roughly its reciprocal.
+    bmin, bmax : tuple of floats
+        The minimum and maximum impact parameters (distances) for a
+        Coulomb collision.
 
     Raises
     ------
@@ -403,13 +402,24 @@ def impact_parameter(T,
 
     Notes
     -----
-    The Coulomb logarithm is given by
+    The minimum and maximum impact parameters may be calculated in a
+    variety of ways. The maximum impact parameter is typically
+    the Debye length.
+    
+    For quantum plasmas the maximum impact parameter can be the
+    quadratic sum of the debye length and ion radius (Wigner_Seitz) [1]_
+    
+    .. math::
+        b_{max} = \left(\lambda_{De}^2 + a_i^2\right)^{1/2}
+        
+    The minimum impact parameter is typically some combination of the
+    thermal deBroglie wavelength and the distance of closest approach
+    for a 90 degree Coulomb collision. A quadratic sum is used for
+    all GMS methods, except for GMS-5, where b_min is simply set to
+    the distance of closest approach [1]_.
 
     .. math::
-        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
-
-    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
-    impact parameters for Coulomb collisions [1]_.
+        b_{min} = \left(\Lambda_{deBroglie}^2 + \rho_{\perp}^2\right)^{1/2}
 
     Examples
     --------
@@ -556,9 +566,8 @@ def collision_frequency(T,
 
     Returns
     -------
-    lnLambda : float or numpy.ndarray
-        An estimate of the Coulomb logarithm that is accurate to
-        roughly its reciprocal.
+    freq : float or numpy.ndarray
+        The collision frequency of particles in a plasma.
 
     Raises
     ------
@@ -575,6 +584,28 @@ def collision_frequency(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+    
+    Notes
+    -----
+    The collision frequency is given by [1]_
+    
+    .. math::
+        \nu = n \sigma v \ln{\Lambda}
+        
+    where n is the particle density, :math:`\sigma` is the collisional
+    cross-section, :math:`v` is the inter-particle velocity (typically 
+    taken as the thermal velocity), and :math:`\ln{\Lambda}` is the Coulomb
+    logarithm accounting for small angle collisions.
+    
+    The collisional cross-section is obtained by
+    
+    .. math::
+        \sigma = \pi \rho_{\perp}^2
+        
+    where :math:`\rho_{\perp}` is the distance of closest approach for
+    a 90 degree Coulomb collision.
+    
+    See eq (2.14) in [2]_.
 
     Examples
     --------
@@ -584,7 +615,12 @@ def collision_frequency(T,
     >>> particles = ('e', 'p')
     >>> collision_frequency(T, n, particles)
     <Quantity 702505.15998601 Hz>
-
+    
+     References
+    ----------
+    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
+       fusion 3rd edition. Ch 5 (Springer 2015).
+    .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
@@ -687,9 +723,8 @@ def mean_free_path(T,
 
     Returns
     -------
-    lnLambda : float or numpy.ndarray
-        An estimate of the Coulomb logarithm that is accurate to
-        roughly its reciprocal.
+    mfp : float or numpy.ndarray
+        The collisional mean free path for particles in a plasma.
 
     Raises
     ------
@@ -709,13 +744,13 @@ def mean_free_path(T,
 
     Notes
     -----
-    The Coulomb logarithm is given by
+    The collisional mean free path is given by [1]_
 
     .. math::
-        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
-
-    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
-    impact parameters for Coulomb collisions.
+        \lambda_{mfp} = \frac{v}{\nu}
+        
+    where :math:`v` is the inter-particle velocity (typically taken to be
+    the thermal velocity) and :math:`\nu` is the collision frequency.
 
     Examples
     --------
@@ -730,7 +765,8 @@ def mean_free_path(T,
 
     References
     ----------
-
+    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
+       fusion 3rd edition. Ch 5 (Springer 2015).
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
@@ -796,9 +832,8 @@ def Spitzer_resistivity(T,
 
     Returns
     -------
-    lnLambda : float or numpy.ndarray
-        An estimate of the Coulomb logarithm that is accurate to
-        roughly its reciprocal.
+    spitzer : float or numpy.ndarray
+        The resistivity of the plasma in Ohm meters.
 
     Raises
     ------
@@ -818,15 +853,19 @@ def Spitzer_resistivity(T,
 
     Notes
     -----
-    The Coulomb logarithm is given by
+    The Spitzer resistivity is given by [1]_ [2]_
 
     .. math::
-        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+        \eta = \frac{m}{n Z_1 Z_2 q_e^2} \nu_{1,2}
 
-    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
-    impact parameters for Coulomb collisions.
-
-    See eq (2.14) in [1]_.
+    where :math:`m` is the ion mass or the reduced mass, :math:`n` is the
+    ion density, :math:`Z` is the particle charge state, :math:`q_e` is the
+    charge of an electron, :math:`\nu_{1,2}` is the collisional frequency
+    between particle species 1 and 2.
+    
+    Typically, particle species 1 and 2 are selected to be an electron
+    and an ion, since electron-ion collisions are inelastic and therefore
+    produce resistivity in the plasma.
 
     Examples
     --------
@@ -841,7 +880,9 @@ def Spitzer_resistivity(T,
 
     References
     ----------
-    .. [1] http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
+       fusion 3rd edition. Ch 5 (Springer 2015).
+    .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     """
     # boiler plate checks
@@ -909,9 +950,8 @@ def mobility(T,
 
     Returns
     -------
-    lnLambda : float or numpy.ndarray
-        An estimate of the Coulomb logarithm that is accurate to
-        roughly its reciprocal.
+    mobility_value : float or numpy.ndarray
+        The electrical mobility of particles in a collisional plasma.
 
     Raises
     ------
@@ -931,13 +971,14 @@ def mobility(T,
 
     Notes
     -----
-    The Coulomb logarithm is given by
+    The mobility is given by [1]_
 
     .. math::
-        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+        \mu = \frac{q}{m \nu}
 
-    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
-    impact parameters for Coulomb collisions.
+    where :math:`q` is the particle charge, :math:`m` is the particle mass
+    and :math:`\nu` is the collisional frequency of the particle in the
+    plasma.
 
     Examples
     --------
@@ -952,7 +993,7 @@ def mobility(T,
 
     References
     ----------
-
+    .. [1] https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
@@ -1020,9 +1061,8 @@ def Knudsen_number(characteristic_length,
 
     Returns
     -------
-    lnLambda : float or numpy.ndarray
-        An estimate of the Coulomb logarithm that is accurate to
-        roughly its reciprocal.
+    knudsen_param : float or numpy.ndarray
+        The dimensionless Knudsen number.
 
     Raises
     ------
@@ -1042,13 +1082,19 @@ def Knudsen_number(characteristic_length,
 
     Notes
     -----
-    The Coulomb logarithm is given by
+    The Knudsen number is given by [1]_
 
     .. math::
-        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+        Kn = \frac{\lambda_{mfp}}{L}
 
-    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
-    impact parameters for Coulomb collisions.
+    where :math:`\lambda_{mfp}` is the collisional mean free path for
+    particles in a plasma and :math`L` is the characteristic scale
+    length of interest.
+    
+    Typically the characteristic scale length is the plasma size or the
+    size of a diagnostic (such a the length or radius of a Langmuir
+    probe tip). The Knudsen number tells us whether collisional effects
+    are important on this scale length.
 
     Examples
     --------
@@ -1064,6 +1110,7 @@ def Knudsen_number(characteristic_length,
 
     References
     ----------
+    .. [1] https://en.wikipedia.org/wiki/Knudsen_number
 
     """
     path_length = mean_free_path(T=T,
@@ -1123,9 +1170,8 @@ def coupling_parameter(T,
 
     Returns
     -------
-    lnLambda : float or numpy.ndarray
-        An estimate of the Coulomb logarithm that is accurate to
-        roughly its reciprocal.
+    coupling : float or numpy.ndarray
+        The coupling parameter for a plasma.
 
     Raises
     ------
@@ -1145,13 +1191,42 @@ def coupling_parameter(T,
 
     Notes
     -----
-    The Coulomb logarithm is given by
+    The coupling parameter is given by
 
     .. math::
-        \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+        \Gamma = \frac{E_{Coulomb}}{E_{Kinetic}}
+        
+    The Coulomb energy is given by
+    
+    .. math::
+        E_{Coulomb} = 
+    
+    In the classical case the kinetic energy is simply the thermal energy
+    
+    .. math::
+        E_{kinetic} = k_B T_e
+        
+    The quantum case is more complex. The kinetic energy is dominated by
+    the Fermi energy, modulated by a correction factor based on the
+    ideal chemical potential [1]_
+    
+    .. math::
+        E_{kinetic} = E_{Fermi} f_{3/2} (\mu_{ideal})
 
-    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
-    impact parameters for Coulomb collisions.
+    where :math:`E_{Fermi}` is the Fermi energy, :math:`f_{3/2}` is the
+    Fermi integral, and :math:`\mu_{ideal}` is the ideal chemical 
+    potential.
+    
+    The Fermi energy is given by
+    
+    .. math::
+        E_{Fermi} = n_e \Lambda_{deBroglie} ^ 3
+        
+    where :math:`n_e` is the electron density and :math:`\Lambda_{deBroglie}`
+    is the thermal deBroglie wavelength.
+    
+    See equations 1.2, 1.3 and footnote 5 in [2]_ for details on the ideal
+    chemical potential.
 
     Examples
     --------
@@ -1166,9 +1241,10 @@ def coupling_parameter(T,
 
     References
     ----------
-    Dense plasma temperature equilibration in the binary collision
-    approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
-    DOI: 10.1103/PhysRevE.65.036418
+    .. [1] Dense plasma temperature equilibration in the binary collision
+       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
+       DOI: 10.1103/PhysRevE.65.036418
+    .. [2] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.
 
 
     """
