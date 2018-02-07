@@ -61,3 +61,10 @@ class Test_Fermi_integral:
         errStr = (f"Fermi integral value should be {self.Trues} and not "
                   f"{methodVals}.")
         assert testTrue, errStr
+    def test_invalid_type(self):
+        """
+        Testing whether ValueError is raised when an invalid argument
+        type is passed to Fermi integral.
+        """
+        with pytest.raises(ValueError):
+            Fermi_integral([1,2,3], self.order1)
