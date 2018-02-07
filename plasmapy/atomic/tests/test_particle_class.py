@@ -422,6 +422,7 @@ nuclide_mass_and_mass_equiv_table = [
     ('Fe-56', 'Fe-56 26+'),
 ]
 
+
 @pytest.mark.parametrize('isotope, ion', nuclide_mass_and_mass_equiv_table)
 def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
     r"""Test that the mass and nuclide_mass attributes return equivalent values
@@ -460,5 +461,3 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
             f"Particle({repr(ion)}).mass = {Ion.mass}\n"
             f"Particle({repr(isotope)}).nuclide_mass = {Isotope.nuclide_mass}"
             "\n")
-
-

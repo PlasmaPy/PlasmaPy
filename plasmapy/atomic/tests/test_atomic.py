@@ -17,6 +17,7 @@ from ..atomic import (
     standard_atomic_weight,
     isotope_mass,
     ion_mass,
+    particle_mass,
     is_isotope_stable,
     half_life,
     known_isotopes,
@@ -789,7 +790,9 @@ atomic_ParticleErrors_funcs_table = [
     mass_number,
     element_name,
     standard_atomic_weight,
+    isotope_mass,
     ion_mass,
+    particle_mass,
     known_isotopes,
     stable_isotopes,
     common_isotopes,
@@ -1035,3 +1038,11 @@ def test_electric_charge_warning(argument, expected_warning):
             f"electric_charge({repr(argument)}) is not issuing a "
             f"{expected_warning}.")):
         electric_charge(argument)
+
+
+def test_particle_mass():
+    r"""Quick tests to make sure that particle_mass gives consistent results
+    with other mass functions."""
+    assert ion_mass('p+') == particle_mass('p+')
+    assert standard_atomic_weight('H') == particle_mass('H')
+    assert isotope_mass('D') == particle_mass('D')
