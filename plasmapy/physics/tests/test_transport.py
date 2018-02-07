@@ -730,6 +730,7 @@ class Test_Spitzer_resistivity:
         self.z_mean = 2.5
         self.V = 1e4 * u.km / u.s
         self.True1 = 1.2665402649805445e-3
+        self.True_zmean = 0.00020264644239688712
     def test_known1(self):
         """
         Test for known value.
@@ -765,6 +766,21 @@ class Test_Spitzer_resistivity:
                                   atol=0.0)
         errStr = (f"Spitzer resistivity value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+    def test_zmean(self):
+        """Testing Spitzer when z_mean is passed."""
+        methodVal = Spitzer_resistivity(self.T,
+                                        self.n,
+                                        self.particles,
+                                        z_mean=self.z_mean,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = np.isclose(self.True_zmean,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Spitzer resistivity should be {self.True_zmean} and "
+                  f"not {methodVal}.")
         assert testTrue, errStr
 
 class Test_mobility:

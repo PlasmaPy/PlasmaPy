@@ -899,7 +899,7 @@ def Spitzer_resistivity(T,
     if np.isnan(z_mean):
         spitzer = freq * reduced_mass / (n * charges[0] * charges[1])
     else:
-        spitzer = freq * reduced_mass / (n * z_mean ** 2)
+        spitzer = freq * reduced_mass / (n * (z_mean * e) ** 2)
     return spitzer.to(u.Ohm * u.m)
 
 
