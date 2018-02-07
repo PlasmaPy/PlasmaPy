@@ -298,7 +298,7 @@ def Thomas_Fermi_length(n_e):
 @check_quantity({
     'n': {'units': u.m**-3, 'can_be_negative': False}
 })
-def Wigner_Seitz_radius(n):
+def Wigner_Seitz_radius(n: u.m**-3):
     r"""Calculate the Wigner-Seitz radius, which approximates the inter-
     particle spacing. It is the radius of a sphere whose volume is
     equal to the mean volume per atom in a solid. This parameter is
@@ -355,13 +355,17 @@ def Wigner_Seitz_radius(n):
     return radius.to(u.m)
 
 
-def chemical_potential(n_e, T, tol=1e-6):
+def chemical_potential(n_e: u.m ** -3, T: u.K):
     r"""Calculate the ideal chemical potential
 
     Parameters
     ----------
     n_e: Quantity
         Electron number density
+
+    T : astropy.units.quantity.Quantity
+        The temperature,
+
 
     Returns
     -------
@@ -411,7 +415,7 @@ def chemical_potential(n_e, T, tol=1e-6):
     Example
     -------
     >>> from astropy import units as u
-    >>> chemical_potential(n_e=1e21*u.cm**-3, T=11000*u.K)
+    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)
     <Quantity 2.00039985e-12>
     """
     # deBroglie wavelength
@@ -419,8 +423,8 @@ def chemical_potential(n_e, T, tol=1e-6):
     # degeneracy parameter
     degen = (n_e * lambdaDB ** 3).to(u.dimensionless_unscaled)
 
-    # residual function for fitting parameters to Fermi_integral
     def residual(params, data, eps_data):
+        """residual function for fitting parameters to Fermi_integral"""
         alpha = params['alpha'].value
         # note that alpha = mu / (k_B * T)
         model = Fermi_integral(alpha, 0.5)

@@ -228,4 +228,3 @@ def Fermi_integral(x, j):
         return integral_arr
     else:
         raise ValueError(f"Improper type {type(x)} given for argument x.")
-    

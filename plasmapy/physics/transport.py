@@ -11,7 +11,9 @@ import warnings
 # plasmapy modules
 import plasmapy.atomic as atomic
 from plasmapy import utils
-from plasmapy.utils.checks import check_quantity, check_relativistic, _check_relativistic
+from plasmapy.utils.checks import (check_quantity,
+                                   check_relativistic,
+                                   _check_relativistic)
 from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar)
 from ..atomic import (ion_mass, integer_charge)
@@ -921,6 +923,9 @@ def Knudsen_number(characteristic_length,
     Parameters
     ----------
 
+    characteristic_length : Quantity
+        Rough order-of-magnitude estimate of the relevant size of the system.
+
     T : Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
@@ -997,6 +1002,7 @@ def Knudsen_number(characteristic_length,
     ----------
 
     """
+    # TODO check whether Quantity stuff does good autoreferencing
     path_length = mean_free_path(T=T,
                                  n_e=n_e,
                                  particles=particles,
@@ -1957,7 +1963,7 @@ def _nondim_visc_e_braginskii(hall, Z):
     delta_0 = 11.6
     eta_0_e = eta_prime_0
 
-    def f_eta_2(hall):
+    def eta_2(hall):
         Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
         return (eta_doubleprime_2 * hall ** 2 + eta_doubleprime_0) / Delta
     eta_2_e = f_eta_2(hall)
