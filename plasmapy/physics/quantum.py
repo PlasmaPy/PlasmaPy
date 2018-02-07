@@ -8,7 +8,6 @@ gases and warm dense matter.
 # python modules
 import numpy as np
 from astropy import units as u
-from scipy.optimize import minimize
 from lmfit import minimize, Parameters
 
 # plasmapy modules
