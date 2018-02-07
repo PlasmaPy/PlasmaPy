@@ -2221,19 +2221,25 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
 
     def f_kappa_cross(Z_idx):
         numerator = r * (5 / 2 * r + k_0[Z_idx] / k_5[Z_idx])
-        denominator = (r ** 3 +
-                       k_4[Z_idx] * r ** (7 / 3) +
-                       k_3[Z_idx] * r ** 2 +
-                       k_2[Z_idx] * r ** (5 / 3) +
-                       k_1[Z_idx] * r +
-                       k_0[Z_idx])
-        print(f"k_4[Z_idx] is {k_4[Z_idx]}")
-        print(f"k_3[Z_idx] is {k_3[Z_idx]}")
-        print(f"k_2[Z_idx] is {k_2[Z_idx]}")
-        print(f"k_1[Z_idx] is {k_1[Z_idx]}")
-        print(f"k_0[Z_idx] is {k_0[Z_idx]}")
-        print(f"r is {r}")
-        print(f"numerator is {numerator}")
+#        denominator = (r ** 3 +
+#                       k_4[Z_idx] * r ** (7 / 3) +
+#                       k_3[Z_idx] * r ** 2 +
+#                       k_2[Z_idx] * r ** (5 / 3) +
+#                       k_1[Z_idx] * r +
+#                       k_0[Z_idx])
+        term1 = r ** 3
+        term2 = k_4[Z_idx] * r ** (7 / 3)
+        term3 = k_3[Z_idx] * r ** 2
+        term4 = k_2[Z_idx] * r ** (5 / 3)
+        term5 = k_1[Z_idx] * r
+        term6 = k_0[Z_idx]
+        denominator = term1 + term2 + term3 + term4 + term5 + term6
+        print(f"term1 is {term1}")
+        print(f"term2 is {term2}")
+        print(f"term3 is {term3}")
+        print(f"term4 is {term4}")
+        print(f"term5 is {term5}")
+        print(f"term6 is {term6}")
         print(f"denominator is {denominator}")
         return numerator / denominator
 
