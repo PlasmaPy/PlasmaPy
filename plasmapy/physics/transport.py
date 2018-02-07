@@ -1870,6 +1870,10 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
 
     allowed_Z = [1, 2, 3, 4, np.inf]
     Z_idx = _check_Z(allowed_Z, Z)
+    
+    # fixing overflow errors when exponentiating hall by making a float
+    # instead of an int
+    hall = float(hall)
 
     delta_0 = [3.7703, 1.0465, 0.5814, 0.4106, 0.0961]
     delta_1 = [14.79, 10.80, 9.618, 9.055, 7.482]
@@ -1909,7 +1913,9 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
     """
-
+    # fixing overflow errors when exponentiating hall by making a float
+    # instead of an int
+    hall = float(hall)
     kappa_par_coeff_0 = 3.906
     kappa_par = kappa_par_coeff_0
     if field_orientation == 'parallel' or field_orientation == 'par':
@@ -1942,6 +1948,9 @@ def _nondim_visc_e_braginskii(hall, Z):
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
     """
+    # fixing overflow errors when exponentiating hall by making a float
+    # instead of an int
+    hall = float(hall)
     allowed_Z = [1]
     _check_Z(allowed_Z, Z)
     eta_prime_0 = 0.733
@@ -1982,6 +1991,10 @@ def _nondim_visc_i_braginskii(hall):
     delta_1 = 4.03
     delta_0 = 2.33
     eta_0_i = eta_prime_0
+    
+    # fixing overflow errors when exponentiating hall by making a float
+    # instead of an int
+    hall = float(hall)
 
     def f_eta_2(hall):
         Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
@@ -1990,7 +2003,7 @@ def _nondim_visc_i_braginskii(hall):
     eta_1_i = f_eta_2(2 * hall)
 
     def f_eta_4(hall):
-        Delta = hall**4 + delta_1 * hall ** 2 + delta_0
+        Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
         return (eta_tripleprime_2 * hall ** 3 +
                 eta_tripleprime_0 * hall) / Delta
     eta_4_i = f_eta_4(hall)
@@ -2007,6 +2020,10 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
 
     allowed_Z = [1, 2, 3, 4, np.inf]
     Z_idx = _check_Z(allowed_Z, Z)
+    
+    # fixing overflow errors when exponentiating hall by making a float
+    # instead of an int
+    hall = float(hall)
 
 #    alpha_0 = 0.5129
     delta_0 = [3.7703, 1.0465, 0.5814, 0.4106, 0.0961]
@@ -2045,6 +2062,9 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
 
     allowed_Z = [1, 2, 3, 4, np.inf]
     Z_idx = _check_Z(allowed_Z, Z)
+    # fixing overflow errors when exponentiating hall by making a float
+    # instead of an int
+    hall = float(hall)
 
     delta_0 = [3.7703, 1.0465, 0.5814, 0.4106, 0.0961]
     delta_1 = [14.79, 10.80, 9.618, 9.055, 7.482]
@@ -2053,7 +2073,7 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
     beta_1_doubleprime = [1.5, 1.5, 1.5, 1.5, 1.5]
     beta_0_doubleprime = [3.053, 1.784, 1.442, 1.285, 0.877]
 
-    Delta = hall**4 + delta_1[Z_idx] * hall**2 + delta_0[Z_idx]
+    Delta = hall ** 4 + delta_1[Z_idx] * hall ** 2 + delta_0[Z_idx]
     beta_0 = beta_0_prime[Z_idx] / delta_0[Z_idx]
 #    beta_0 = 0.7110
 
@@ -2125,6 +2145,8 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
 
     allowed_Z = [1, 2, 'arbitrary']
     Z_idx = _check_Z(allowed_Z, Z)
+    # fixing overflow errors when exponentiating r by making a float
+    # instead of an int
     r = float(np.abs(Z * hall))
 
     def f_kappa_par_e(Z):
@@ -2263,7 +2285,9 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
 
     allowed_Z = [1, 2, 'arbitrary']
     Z_idx = _check_Z(allowed_Z, Z)
-    r = np.abs(Z * hall)
+    # fixing overflow errors when exponentiating r by making a float
+    # instead of an int
+    r = float(np.abs(Z * hall))
 
     def f_alpha_par_e(Z):
         numerator = Z ** (2 / 3)
@@ -2353,7 +2377,9 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
 
     allowed_Z = [1, 2, 'arbitrary']
     Z_idx = _check_Z(allowed_Z, Z)
-    r = np.abs(Z * hall)
+    # fixing overflow errors when exponentiating r by making a float
+    # instead of an int
+    r = float(np.abs(Z * hall))
 
     def f_beta_par_e(Z):
         numerator = Z ** (5 / 3)
@@ -2455,7 +2481,9 @@ def _nondim_visc_e_ji_held(hall, Z):
 
     allowed_Z = [1, 2, 'arbitrary']
     Z_idx = _check_Z(allowed_Z, Z)
-    r = np.abs(Z * hall)
+    # fixing overflow errors when exponentiating r by making a float
+    # instead of an int
+    r = float(np.abs(Z * hall))
 
     def f_eta_0_e(Z):
         return 1 / (0.55 * Z + 0.083 * Z ** (1 / 3) + 0.732)
