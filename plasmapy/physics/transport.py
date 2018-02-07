@@ -261,7 +261,68 @@ def b_perp(T,
            particles,
            V=np.nan*u.m/u.s):
     """
-    Distance of closest approach for a 90 degree Coulomb collision
+    Distance of closest approach for a 90 degree Coulomb collision.
+    
+    Parameters
+    ----------
+
+    T : ~astropy.units.Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
+
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
+
+    V : ~astropy.units.Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
+
+    Returns
+    -------
+    b_perp : float or numpy.ndarray
+        The distance of closest approach for a 90 degree Coulomb collision.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If T, or V are not Quantities.
+
+    Notes
+    -----
+    The distance of closest approach, b_perp, is given by
+
+    .. math::
+        b_{\perp} = \frac{Z_1 Z_2}{4 \pi \epsilon_0 m v^2}
+
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> T = 1e6*u.K
+    >>> particles = ('e', 'p')
+    >>> b_perp(T, particles)
+    <Quantity 8.35505011e-12 m>
+
+
+    References
+    ----------
+    .. [1] Dense plasma temperature equilibration in the binary collision
+       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
+       DOI: 10.1103/PhysRevE.65.036418
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
@@ -1973,8 +2034,8 @@ def _nondim_visc_e_braginskii(hall, Z):
     def eta_2(hall):
         Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
         return (eta_doubleprime_2 * hall ** 2 + eta_doubleprime_0) / Delta
-    eta_2_e = f_eta_2(hall)
-    eta_1_e = f_eta_2(2 * hall)
+    eta_2_e = eta_2(hall)
+    eta_1_e = eta_2(2 * hall)
 
     def f_eta_4(hall):
         Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
