@@ -94,7 +94,7 @@ class Particle:
     >>> deuteron.mass_number
     2
     >>> deuteron.binding_energy.to('MeV')
-    <Quantity 2.22458013 MeV>
+    <Quantity 2.22456652 MeV>
     >>> alpha.charge
     <Quantity 3.20435324e-19 C>
     >>> neutron.half_life
@@ -421,6 +421,10 @@ class Particle:
             return const.m_p
         elif self.particle == 'n':
             return const.m_n
+        elif self.particle in ['D', 'D 1+']:
+            return _special_ion_masses['D 1+']
+        elif self.particle in ['T', 'T 1+']:
+            return _special_ion_masses['T 1+']
 
         if not self.isotope:
             raise InvalidIsotopeError(self._isotope_errmsg)

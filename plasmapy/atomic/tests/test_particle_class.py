@@ -410,3 +410,55 @@ def test_Particle_cmp():
     assert proton1 == proton2, "Particle('p+') == Particle('proton') is False."
     assert proton1 != electron, "Particle('p+') == Particle('e-') is True."
     assert not proton1 == 1, "Particle('p+') == 1 is True."
+
+
+nuclide_mass_and_mass_equiv_table = [
+    ('n', 'neutron'),
+    ('p+', 'proton'),
+    ('H-1', 'p+'),
+    ('D', 'D+'),
+    ('T', 'T+'),
+    ('He-4', 'alpha'),
+    ('Fe-56', 'Fe-56 26+'),
+]
+
+@pytest.mark.parametrize('isotope, ion', nuclide_mass_and_mass_equiv_table)
+def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
+    r"""Test that the mass and nuclide_mass attributes return equivalent values
+    when appropriate.  The inputs should generally be an isotope with no charge
+    information, and a fully ionized ion of that isotope, in order to make sure
+    that the nuclide mass of the isotope equals the mass of the fully ionized
+    ion.  This method may also check neutrons and protons."""
+
+    Isotope = Particle(isotope)
+    Ion = Particle(ion)
+
+    if Isotope.particle == Ion.particle and Isotope.particle in ('n', 'p+'):
+        particle = Isotope.particle
+
+        assert Isotope.nuclide_mass == Ion.mass, (
+            f"Particle({repr(particle)}).nuclide_mass does not equal "
+            f"Particle({repr(particle)}).mass")
+
+    else:
+
+        inputerrmsg = (f"isotope = {repr(isotope)} and ion = {repr(ion)} are "
+                       f"not valid inputs to this test. The inputs should be "
+                       f"an isotope with no charge information, and a fully "
+                       f"ionized ion of that isotope, in order to make sure "
+                       f"that the nuclide mass of the isotope equals the mass "
+                       f"of the ion.")
+
+        assert Isotope.isotope and not Isotope.ion, inputerrmsg
+        assert Isotope.isotope == Ion.isotope, inputerrmsg
+        assert Ion.integer_charge == Ion.atomic_number, inputerrmsg
+
+        assert Isotope.nuclide_mass == Ion.mass, (
+            f"The nuclide mass of {isotope} does not equal the mass of {ion} "
+            f"which is the fully ionized ion of that isotope. The results of "
+            f"the test are:\n\n"
+            f"Particle({repr(ion)}).mass = {Ion.mass}\n"
+            f"Particle({repr(isotope)}).nuclide_mass = {Isotope.nuclide_mass}"
+            "\n")
+
+
