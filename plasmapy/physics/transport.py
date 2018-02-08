@@ -984,6 +984,11 @@ def mobility(T,
     where :math:`q` is the particle charge, :math:`m` is the particle mass
     and :math:`\nu` is the collisional frequency of the particle in the
     plasma.
+    
+    The mobility describes the forced diffusion of a particle in a collisional
+    plasma which is under the influence of an electric field. The mobility
+    is essentially the ratio of drift velocity due to collisions and the
+    electric field driving the forced diffusion.
 
     Examples
     --------
