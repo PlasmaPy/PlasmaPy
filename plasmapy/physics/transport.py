@@ -1252,8 +1252,22 @@ def coupling_parameter(T,
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
                                                        particles=particles,
                                                        V=V)
-    # Wigner-Seitz radius
-    radius = Wigner_Seitz_radius(n_e)
+    if np.isnan(z_mean):
+        # using mean charge to get average ion density.
+        # If you are running this, you should strongly consider giving
+        # a value of z_mean as an argument instead.
+        Z1 = np.abs(atomic.integer_charge(particles[0]))
+        Z2 = np.abs(atomic.integer_charge(particles[1]))
+        Z = (Z1 + Z2) / 2
+        # getting ion density from electron density
+        n_i = n_e / Z
+        # getting Wigner-Seitz radius based on ion density
+        radius = Wigner_Seitz_radius(n_i)
+    else:
+        # getting ion density from electron density
+        n_i = n_e / z_mean
+        # getting Wigner-Seitz radius based on ion density
+        radius = Wigner_Seitz_radius(n_i)
     # Coulomb potential energy between particles
     if np.isnan(z_mean):
         coulombEnergy = charges[0] * charges[1] / (4 * np.pi * eps0 * radius)

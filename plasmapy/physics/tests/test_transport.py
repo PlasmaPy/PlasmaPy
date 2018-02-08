@@ -905,7 +905,7 @@ class Test_coupling_parameter:
         self.z_mean = 2.5
         self.V = 1e4 * u.km / u.s
         self.True1 = 2.3213156755481195
-        self.True_zmean = 14.508222972175743
+        self.True_zmean = 10.689750083758698
         self.True_quantum = 0.3334662805238162
     def test_known1(self):
         """
