@@ -367,8 +367,9 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
 
     Returns
     -------
-    radius: Quantity
-        The Wigner-Seitz radius in meters
+    beta_mu: Quantity
+        The dimensionless ideal chemical potential. That is the ratio of
+        the ideal chemical potential to the thermal energy.
 
     Raises
     ------
@@ -391,16 +392,21 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     .. math::
         \chi_a = I_{1/2}(\beta \mu_a^{ideal})
 
-    where \chi is the degeneracy parameter, I_{1/2} is the Fermi integral
-    with order 1/2, \beta is the inverse thermal energy \beta = 1/(k_B T),
-    and \mu_a^{ideal} is the ideal chemical potential.
+    where :math:`\chi` is the degeneracy parameter, :math:`I_{1/2}` is the
+    Fermi integral with order 1/2, :math:`\beta` is the inverse thermal
+    energy :math:`\beta = 1/(k_B T)`, and :math:`\mu_a^{ideal}`
+    is the ideal chemical potential.
 
     The definition for the ideal chemical potential is implicit, so it must
     be obtained numerically by solving for the Fermi integral for values
     of chemical potential approaching the degeneracy parameter. Since values
     returned from the Fermi_integral are complex, a nonlinear
     Levenberg-Marquardt least squares method is used to iteratively approach
-    a value of \mu which minimizes I_{1/2}(\beta \mu_a^{ideal}) - \chi_a.
+    a value of :math:`\mu` which minimizes
+    :math:`I_{1/2}(\beta \mu_a^{ideal}) - \chi_a`
+    
+    This function returns :math:`\beta \mu^{ideal}` the dimensionless
+    ideal chemical potential.
 
     Warning: at present this function is limited to relatively small
     arguments due to limitations in the mpmath package's implementation
@@ -437,7 +443,8 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     data = np.array([degen])  # result of Fermi_integral - degen should be zero
     eps_data = np.array([1e-15])  # numerical error
     minFit = minimize(residual, params, args=(data, eps_data))
-    return minFit.params['alpha'].value * u.dimensionless_unscaled
+    beta_mu = minFit.params['alpha'].value * u.dimensionless_unscaled
+    return beta_mu
 
 
 def chemical_potential_interp(n_e, T):
@@ -457,7 +464,7 @@ def chemical_potential_interp(n_e, T):
 
     Returns
     -------
-    mu: ~astropy.units.Quantity
+    beta_mu: ~astropy.units.Quantity
         The dimensionless chemical potential, which is a ratio of
         chemical potential energy to thermal kinetic energy.
 
@@ -515,5 +522,5 @@ def chemical_potential_interp(n_e, T):
     term3num = A * theta ** (-b - 1) + B * theta ** (-(b + 1) / 2)
     term3den = 1 + A * theta ** (-b)
     term3 = term3num / term3den
-    mu = term1 + term2 + term3
-    return mu.to(u.dimensionless_unscaled)
+    beta_mu = term1 + term2 + term3
+    return beta_mu.to(u.dimensionless_unscaled)

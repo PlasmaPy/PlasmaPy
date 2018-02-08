@@ -1200,7 +1200,11 @@ def coupling_parameter(T,
     The Coulomb energy is given by
 
     .. math::
-        E_{Coulomb} = 
+        E_{Coulomb} = \frac{Z_1 Z_2 q_e^2}{4 \pi \epsilon_0 r}
+        
+    where :math:`r` is the Wigner-Seitz radius, and 1 and 2 refer to
+    particle species 1 and 2 between which we want to determine the
+    coupling.
 
     In the classical case the kinetic energy is simply the thermal energy
 
@@ -1209,19 +1213,21 @@ def coupling_parameter(T,
 
     The quantum case is more complex. The kinetic energy is dominated by
     the Fermi energy, modulated by a correction factor based on the
-    ideal chemical potential [1]_
+    ideal chemical potential. This is obtained more precisely
+    by taking the the thermal kinetic energy and dividing by
+    the degeneracy parameter, modulated by the Fermi integral [1]_
 
     .. math::
-        E_{kinetic} = E_{Fermi} f_{3/2} (\mu_{ideal})
+        E_{kinetic} = 2 k_B T_e / \chi f_{3/2} (\mu_{ideal} / k_B T_e)
 
-    where :math:`E_{Fermi}` is the Fermi energy, :math:`f_{3/2}` is the
+    where :math:`\chi` is the degeneracy parameter, :math:`f_{3/2}` is the
     Fermi integral, and :math:`\mu_{ideal}` is the ideal chemical 
     potential.
 
-    The Fermi energy is given by
+    The degeneracy parameter is given by
 
     .. math::
-        E_{Fermi} = n_e \Lambda_{deBroglie} ^ 3
+        \chi = n_e \Lambda_{deBroglie} ^ 3
 
     where :math:`n_e` is the electron density and :math:`\Lambda_{deBroglie}`
     is the thermal deBroglie wavelength.
