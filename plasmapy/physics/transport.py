@@ -107,8 +107,12 @@ def Coulomb_logarithm(T,
     Debye length, electric fields from other particles will be
     screened out due to electrons rearranging themselves.
 
-    The choice of inner impact parameter is the distance of closest
-    approach for a 90 degree Coulomb collision [2]_, [3]_.
+    The choice of inner impact parameter is either the distance of closest
+    approach for a 90 degree Coulomb collision or the thermal deBroglie
+    wavelength, whichever is larger. This is because Coulomb-style collisions
+    cannot occur for impact parameters shorter than the deBroglie 
+    wavelength because quantum effects will change the fundamental 
+    nature of the collision [2]_, [3]_.
 
     Errors associated with the classical Coulomb logarithm are of order its
     inverse. If the Coulomb logarithm is of order unity, then the
