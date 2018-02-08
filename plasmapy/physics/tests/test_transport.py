@@ -74,7 +74,7 @@ class Test_Coulomb_logarithm:
 
     def test_Chen_Q_machine(self):
         """
-        Tests whether Coulomb logarithm gives value consistent with 
+        Tests whether Coulomb logarithm gives value consistent with
         Chen's Introduction to Plasma Physics and Controlled Fusion
         section 5.6.2 Q-machine example.
         """
@@ -96,7 +96,7 @@ class Test_Coulomb_logarithm:
 
     def test_Chen_lab(self):
         """
-        Tests whether Coulomb logarithm gives value consistent with 
+        Tests whether Coulomb logarithm gives value consistent with
         Chen's Introduction to Plasma Physics and Controlled Fusion
         section 5.6.2 lab plasma example.
         """
@@ -118,7 +118,7 @@ class Test_Coulomb_logarithm:
 
     def test_Chen_torus(self):
         """
-        Tests whether Coulomb logarithm gives value consistent with 
+        Tests whether Coulomb logarithm gives value consistent with
         Chen's Introduction to Plasma Physics and Controlled Fusion
         section 5.6.2 torus example.
         """
@@ -140,7 +140,7 @@ class Test_Coulomb_logarithm:
 
     def test_Chen_fusion(self):
         """
-        Tests whether Coulomb logarithm gives value consistent with 
+        Tests whether Coulomb logarithm gives value consistent with
         Chen's Introduction to Plasma Physics and Controlled Fusion
         section 5.6.2 fusion reactor example.
         """
@@ -163,7 +163,7 @@ class Test_Coulomb_logarithm:
 
     def test_Chen_laser(self):
         """
-        Tests whether Coulomb logarithm gives value consistent with 
+        Tests whether Coulomb logarithm gives value consistent with
         Chen's Introduction to Plasma Physics and Controlled Fusion
         section 5.6.2 laser plasma example.
         """
@@ -1088,43 +1088,62 @@ class Test_classical_transport:
                                   ct2.coulomb_log_ei *
                                   ((ct2.T_e).to(u.eV)).value ** (-3 / 2) *
                                   u.Ohm * u.m)
-        assert (np.isclose(ct2.resistivity().value,
-                           alpha_spitzer_perp_NRL.value, rtol=2e-2)), \
-        f"\nSpitzer model resistivity: {ct2.resistivity().value:.3e} \nNRL formulary value: {alpha_spitzer_perp_NRL.value:.3e}"
+        testTrue = np.isclose(ct2.resistivity().value,
+                              alpha_spitzer_perp_NRL.value,
+                              rtol=2e-2)
+        errStr = (f"Resistivity should be close to "
+                  f"{alpha_spitzer_perp_NRL.value} "
+                  f"and not {ct2.resistivity().value}.")
+        assert testTrue, errStr
 
     def test_resistivity_units(self):
         """output should be a Quantity with units of Ohm m"""
-        assert(self.ct.resistivity().unit == u.Ohm * u.m), \
-        f"Classical transport resistivity: {self.ct.resistivity().unit} \nExpected: {u.Ohm * u.m}"
+        testTrue = self.ct.resistivity().unit == u.Ohm * u.m
+        errStr = (f"Resistivity units should be {u.Ohm * u.m} and "
+                  f"not {self.ct.resistivity().unit}.")
+        assert testTrue, errStr
 
     def test_thermoelectric_conductivity_units(self):
         """output should be a Quantity with units of dimensionless"""
-        assert(self.ct.thermoelectric_conductivity().unit == u.m / u.m), \
-        f"\nClassical transport thermoelectric conductivity: {self.ct.thermoelectric_conductivity().unit} \nExpected: {u.m / u.m} (dimensionless)"
+        testTrue = self.ct.thermoelectric_conductivity().unit == u.m / u.m
+        errStr = (f"Thermoelectric conductivity units should be dimensionless "
+                  f"and not {self.ct.thermoelectric_conductivity().unit}.")
+        assert testTrue, errStr
 
     def test_ion_thermal_conductivity_units(self):
         """output should be Quantity with units of W / (m K)"""
-        assert(self.ct.ion_thermal_conductivity().unit == u.W / u.m / u.K), \
-        f"\nClassical transport ion thermal conductivity: {self.ct.ion_thermal_conductivity().unit} \nExpected: {u.W / u.m / u.K}"
+        testTrue = self.ct.ion_thermal_conductivity().unit == u.W / u.m / u.K
+        errStr = (f"Ion thermal conductivity units "
+                  f"should be {u.W / u.m / u.K} "
+                  f"and not {self.ct.ion_thermal_conductivity().unit}.")
+        assert testTrue, errStr
 
     def test_electron_thermal_conductivity_units(self):
         """output should be Quantity with units of W / (m K)"""
-        assert(self.ct.electron_thermal_conductivity().unit == u.W / u.m / u.K), \
-        f"\nClassical transport electron thermal conductivity: {self.ct.electron_thermal_conductivity().unit} \nExpected: {u.W / u.m / u.K}"
+        testTrue = (self.ct.electron_thermal_conductivity().unit ==
+                    u.W / u.m / u.K)
+        errStr = (f"Electron thermal conductivity units "
+                  f"should be {u.W / u.m / u.K} "
+                  f"and not {self.ct.electron_thermal_conductivity().unit}.")
+        assert testTrue, errStr
 
     def test_ion_viscosity_units(self):
         """output should be Quantity with units of Pa s """
-        assert(self.ct.ion_viscosity().unit == u.Pa * u.s)
-        f"\nClassical transport ion viscosity: {self.ct.ion_viscosity().unit} \nExpected: {u.Pa * u.s}"
+        testTrue = self.ct.ion_viscosity().unit == u.Pa * u.s
+        errStr = (f"Ion viscosity units should be {u.Pa * u.s} "
+                  f"and not {self.ct.ion_viscosity().unit}.")
+        assert testTrue, errStr
 
     def test_electron_viscosity_units(self):
         """output should be Quantity with units of Pa s"""
-        assert(self.ct.electron_viscosity().unit == u.Pa * u.s)
-        f"\nClassical transport electron viscosity: {self.ct.electron_viscosity().unit} \nExpected: {u.Pa * u.s}"
+        testTrue = self.ct.electron_viscosity().unit == u.Pa * u.s
+        errStr = (f"Electron viscosity units should be {u.Pa * u.s} "
+                  f"and not {self.ct.electron_viscosity().unit}.")
+        assert testTrue, errStr
 
     def test_particle_mass(self):
         """should raise ValueError if particle mass not found"""
-        with pytest.raises(ValueError, message="Expecting missing particle mass"):
+        with pytest.raises(ValueError):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,
@@ -1134,7 +1153,7 @@ class Test_classical_transport:
 
     def test_particle_charge_state(self):
         """should raise ValueError if particle charge state not found"""
-        with pytest.raises(ValueError, message="Expecting missing charge state"):
+        with pytest.raises(ValueError):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,
@@ -1144,7 +1163,7 @@ class Test_classical_transport:
 
     def test_Z_checks(self):
         """should raise ValueError if Z is negative"""
-        with pytest.raises(ValueError, message="Expecting negative Z"):
+        with pytest.raises(ValueError):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,
@@ -1172,7 +1191,7 @@ class Test_classical_transport:
 
     def test_coulomb_log_errors(self):
         """should raise PhysicsError if coulomb log is < 1"""
-        with pytest.raises(PhysicsError, message="Expecting coulomb log < 1"), pytest.warns(PhysicsWarning):
+        with pytest.raises(PhysicsError), pytest.warns(PhysicsWarning):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,
@@ -1180,7 +1199,7 @@ class Test_classical_transport:
                                       ion_particle=self.ion_particle,
                                       coulomb_log_ii=0.3)
 
-        with pytest.raises(PhysicsError, message="Expecting coulomb log < 1"), pytest.warns(PhysicsWarning):
+        with pytest.raises(PhysicsError), pytest.warns(PhysicsWarning):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,
@@ -1203,10 +1222,14 @@ class Test_classical_transport:
                                   self.n_e,
                                   ['e', self.ion_particle],
                                   self.V_ei)
-        assert(cl_ii == ct2.coulomb_log_ii), \
-        f"\nClassical transport ion-ion Coulomb logarithm: {ct2.coulomb_log_ii:.3e} \nExpected: {cl_ii:.3e}"
-        assert(cl_ei == ct2.coulomb_log_ei * 2), \
-        f"\nClassical transport electron-ion Coulomb logarithm: {ct2.coulomb_log_ei:.3e} \nExpected: {cl_ei:.3e}"
+        testTrue = cl_ii == ct2.coulomb_log_ii
+        errStr = (f"Ion-ion coulomb logarithm should be {cl_ii} "
+                  f"and not {ct2.coulomb_log_ii}.")
+        assert testTrue, errStr
+        testTrue = cl_ei == ct2.coulomb_log_ei
+        errStr = (f"Electron-ion coulomb logarithm should be {cl_ei} "
+                  f"and not {ct2.coulomb_log_ei}.")
+        assert testTrue, errStr
 
     def test_hall_calc(self):
         """if no hall parameters are input, they should be calculated"""
@@ -1222,21 +1245,24 @@ class Test_classical_transport:
                                 ct2.ion_particle,
                                 ct2.coulomb_log_ii,
                                 ct2.V_ii)
-        hall_e = Hall_parameter(
-            ct2.n_e,
-            ct2.T_e,
-            ct2.B,
-            ct2.e_particle,
-            ct2.ion_particle,
-            ct2.coulomb_log_ei,
-            ct2.V_ei)
-        assert(hall_i == ct2.hall_i)
-        f"\nClassical transport ion Hall parameter: {ct2.hall_i:.3e} \nExpected: {hall_i:.3e}"
-        assert(hall_e == ct2.hall_e)
-        f"\nClassical transport ion Hall parameter: {ct2.hall_e:.3e} \nExpected: {hall_e:.3e}"
+        hall_e = Hall_parameter(ct2.n_e,
+                                ct2.T_e,
+                                ct2.B,
+                                ct2.e_particle,
+                                ct2.ion_particle,
+                                ct2.coulomb_log_ei,
+                                ct2.V_ei)
+        testTrue = hall_i == ct2.hall_i
+        errStr = (f"Ion hall parameter should be {hall_i} "
+                  f"and not {ct2.hall_i}.")
+        assert testTrue, errStr
+        testTrue = hall_e == ct2.hall_e
+        errStr = (f"Electron hall parameter should be {hall_e} "
+                  f"and not {ct2.hall_e}.")
+        assert testTrue, errStr
 
     def test_invalid_model(self):
-        with pytest.raises(ValueError, message="Expecting invalid model name"):
+        with pytest.raises(ValueError):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,
@@ -1245,7 +1271,7 @@ class Test_classical_transport:
                                       model="standard")
 
     def test_invalid_field(self):
-        with pytest.raises(ValueError, message="Expecting incorrect field orientation"):
+        with pytest.raises(ValueError):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,
@@ -1261,10 +1287,12 @@ class Test_classical_transport:
                                   ion_particle=self.ion_particle,
                                   hall_i=0,
                                   hall_e=0)
-        assert np.isclose(ct2.resistivity(),
-                          2.8184954e-8 * u.Ohm * u.m,
-                          atol=1e-6 * u.Ohm * u.m), \
-        f"\nClassical transport resistivity: {ct2.resistivity():.3e} \nExpected: {2.8184954e-8 * u.Ohm * u.m:.3e}"
+        testTrue = np.isclose(ct2.resistivity(),
+                              2.8184954e-8 * u.Ohm * u.m,
+                              atol=1e-6 * u.Ohm * u.m)
+        errStr = (f"Resistivity should be close to "
+                  f"{2.8184954e-8 * u.Ohm * u.m} and not {ct2.resistivity()}.")
+        assert testTrue, errStr
 
     @pytest.mark.parametrize("model, method, field_orientation, expected", [
         ("ji-held", "resistivity", "all", 3),
@@ -1283,8 +1311,11 @@ class Test_classical_transport:
                                   model=model,
                                   field_orientation=field_orientation)
         method_to_call = getattr(ct2, method)
-        assert(np.size(method_to_call()) == expected), \
-        f"\nNumber of returns of {model}.{method}: {np.size(method_to_call())} \nExpected: {expected}"
+        testTrue = np.size(method_to_call()) == expected
+        errStr = (f"{method} in {model} model returns "
+                  f"{np.size(method_to_call())} objects. "
+                  f"Expected to return {expected} objects.")
+        assert testTrue, errStr
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held", 2.77028546e-8 * u.Ohm * u.m),
@@ -1298,8 +1329,12 @@ class Test_classical_transport:
                                   n_i=self.n_i,
                                   ion_particle=self.ion_particle,
                                   model=model)
-        assert np.isclose(ct2.resistivity(), expected, atol=1e-6 * u.Ohm * u.m), \
-        f"\n{model} resistivity: {ct2.resistivity()} \nExpected: {expected}"
+        testTrue = np.isclose(ct2.resistivity(),
+                              expected,
+                              atol=1e-6 * u.Ohm * u.m)
+        errStr = (f"Resistivity in {model} model should be "
+                  f"close to {expected} and not {ct2.resistivity()}.")
+        assert testTrue, errStr
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held", 0.702 * u.s / u.s),
@@ -1313,9 +1348,13 @@ class Test_classical_transport:
                                   n_i=self.n_i,
                                   ion_particle=self.ion_particle,
                                   model=model)
-        assert np.isclose(ct2.thermoelectric_conductivity(), expected,
-                          atol=1e-6 * u.s / u.s), \
-        f"\n{model} thermoelectric conductivity: {ct2.thermoelectric_conductivity()} \nExpected: {expected}"
+        testTrue = np.isclose(ct2.thermoelectric_conductivity(),
+                              expected,
+                              atol=1e-6 * u.s / u.s)
+        errStr = (f"Thermoelectric conductivity in {model} model "
+                  f"should be close {expected} and not "
+                  f"{ct2.thermoelectric_conductivity()}.")
+        assert testTrue, errStr
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held",
@@ -1330,9 +1369,12 @@ class Test_classical_transport:
                                   n_i=self.n_i,
                                   ion_particle=self.ion_particle,
                                   model=model)
-        assert np.allclose(ct2.electron_viscosity(), expected,
-                           atol=1e-6 * u.Pa * u.s), \
-        f"\n{model} electron viscosity: {ct2.electron_viscosity()} \nExpected: {expected}"
+        testTrue = np.allclose(ct2.electron_viscosity(),
+                               expected,
+                               atol=1e-6 * u.Pa * u.s)
+        errStr = (f"Electron viscosity in {model} model should be close to "
+                  f"{expected} and not {ct2.electron_viscosity()}.")
+        assert testTrue, errStr
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held",
@@ -1347,9 +1389,12 @@ class Test_classical_transport:
                                   n_i=self.n_i,
                                   ion_particle=self.ion_particle,
                                   model=model)
-        assert np.allclose(ct2.ion_viscosity(), expected,
-                           atol=1e-6 * u.Pa * u.s), \
-        f"\n{model} ion viscosity: {ct2.ion_viscosity()} \nExpected: {expected}"
+        testTrue = np.allclose(ct2.ion_viscosity(),
+                               expected,
+                               atol=1e-6 * u.Pa * u.s)
+        errStr = (f"Electron viscosity in {model} model should be close to "
+                  f"{expected} and not {ct2.electron_viscosity()}")
+        assert testTrue, errStr
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held", 5084253.556001088 * u.W / (u.K * u.m)),
@@ -1363,9 +1408,13 @@ class Test_classical_transport:
                                   n_i=self.n_i,
                                   ion_particle=self.ion_particle,
                                   model=model)
-        assert np.allclose(ct2.electron_thermal_conductivity(), expected,
-                           atol=1e-6 * u.W / (u.K * u.m)), \
-        f"\n{model} electron thermal conductivity: {ct2.ion_viscosity()} \nExpected: {expected}"
+        testTrue = np.allclose(ct2.electron_thermal_conductivity(),
+                               expected,
+                               atol=1e-6 * u.W / (u.K * u.m))
+        errStr = (f"Electron thermal conductivity in {model} model "
+                  f"should be close to {expected} and not "
+                  f"{ct2.electron_thermal_conductivity()}.")
+        assert testTrue, errStr
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held", 134547.55528106514 * u.W / (u.K * u.m)),
@@ -1378,9 +1427,13 @@ class Test_classical_transport:
                                   n_i=self.n_i,
                                   ion_particle=self.ion_particle,
                                   model=model)
-        assert np.allclose(ct2.ion_thermal_conductivity(), expected,
-                           atol=1e-6 * u.W / (u.K * u.m)), \
-        f"\n{model} ion thermal conductivity: {ct2.ion_viscosity()} \nExpected: {expected}"
+        testTrue = np.allclose(ct2.ion_thermal_conductivity(),
+                               expected,
+                               atol=1e-6 * u.W / (u.K * u.m))
+        errStr = (f"Ion thermal conductivity in {model} model "
+                  f"should be close to {expected} and not "
+                  f"{ct2.ion_thermal_conductivity()}.")
+        assert testTrue, errStr
 
     @pytest.mark.parametrize("key, expected", {
         'resistivity': [2.84304305e-08,
@@ -1407,8 +1460,10 @@ class Test_classical_transport:
                           5.08966116e-06]}.items())
     def test_dictionary(self, key, expected):
         calculated = self.all_variables[key]
-        assert np.allclose(expected, calculated.si.value), \
-        f"Expected value: {expected} \n Calculated value: {calculated.si.value}"
+        testTrue = np.allclose(expected, calculated.si.value)
+        errStr = (f"Expected values of {key} are {expected} and not"
+                  f"{calculated.si.values}.")
+        assert testTrue, errStr
 
 
 @pytest.mark.parametrize(["particle"], ['e', 'p'])
