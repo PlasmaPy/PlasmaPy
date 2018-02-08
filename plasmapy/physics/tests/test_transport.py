@@ -12,6 +12,14 @@ from plasmapy.physics.parameters import Hall_parameter
 from ...constants import c, m_p, m_e, e, mu0
 
 from ..transport import (Coulomb_logarithm,
+                         b_perp,
+                         impact_parameter,
+                         collision_frequency,
+                         mean_free_path,
+                         Spitzer_resistivity,
+                         mobility,
+                         Knudsen_number,
+                         coupling_parameter,
                          classical_transport,
                          _nondim_tc_e_braginskii,
                          _nondim_tc_i_braginskii,
@@ -42,56 +50,984 @@ def count_decimal_places(digits):
     return len(fractional)
 
 
-def test_Coulomb_logarithm():
+class Test_Coulomb_logarithm:
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.temperature1 = 10 * 11604 * u.K
+        self.density1 = 1e20 * u.cm ** -3
+        self.temperature2 = 1 * 11604 * u.K
+        self.density2 = 1e23 * u.cm ** -3
+        self.z_mean = 2.5
+        self.particles = ('e', 'p')
+        self.gms1 = 3.4014290066940966
+        self.gms1_negative = -3.4310536971592493
+        self.gms2 = 3.6349941014645157
+        self.gms2_negative = -1.379394033464292
+        self.gms3 = 3.4014290066940966
+        self.gms3_negative = 2
+        self.gms4 = 3.401983996820073
+        self.gms4_negative = 0.0005230791851781715
+        self.gms5 = 3.7196690506837693
+        self.gms5_negative = 0.03126832674323108
+        self.gms6 = 3.635342040477818
+        self.gms6_negative = 0.030720859361047514
+
+    def test_Chen_Q_machine(self):
+        """
+        Tests whether Coulomb logarithm gives value consistent with 
+        Chen's Introduction to Plasma Physics and Controlled Fusion
+        section 5.6.2 Q-machine example.
+        """
+        T = 0.2 * u.eV
+        T = T.to(u.K, equivalencies=u.temperature_energy())
+        n = 1e15 * u.m ** -3
+        # factor of np.log(2) corrects for different definitions of thermal
+        # velocity. Chen uses v**2 = k * T / m  whereas we use
+        # v ** 2 = 2 * k * T / m
+        lnLambdaChen = 9.1 + np.log(2)
+        lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
+        testTrue = np.isclose(lnLambda,
+                              lnLambdaChen,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = ("Q-machine value of Coulomb logarithm should be "
+                  f"{lnLambdaChen} and not {lnLambda}.")
+        assert testTrue, errStr
+
+    def test_Chen_lab(self):
+        """
+        Tests whether Coulomb logarithm gives value consistent with 
+        Chen's Introduction to Plasma Physics and Controlled Fusion
+        section 5.6.2 lab plasma example.
+        """
+        T = 2 * u.eV
+        T = T.to(u.K, equivalencies=u.temperature_energy())
+        n = 1e17 * u.m ** -3
+        # factor of np.log(2) corrects for different definitions of thermal
+        # velocity. Chen uses v**2 = k * T / m  whereas we use
+        # v ** 2 = 2 * k * T / m
+        lnLambdaChen = 10.2 + np.log(2)
+        lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
+        testTrue = np.isclose(lnLambda,
+                              lnLambdaChen,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = ("Lab plasma value of Coulomb logarithm should be "
+                  f"{lnLambdaChen} and not {lnLambda}.")
+        assert testTrue, errStr
+
+    def test_Chen_torus(self):
+        """
+        Tests whether Coulomb logarithm gives value consistent with 
+        Chen's Introduction to Plasma Physics and Controlled Fusion
+        section 5.6.2 torus example.
+        """
+        T = 100 * u.eV
+        T = T.to(u.K, equivalencies=u.temperature_energy())
+        n = 1e19 * u.m ** -3
+        # factor of np.log(2) corrects for different definitions of thermal
+        # velocity. Chen uses v**2 = k * T / m  whereas we use
+        # v ** 2 = 2 * k * T / m
+        lnLambdaChen = 13.7 + np.log(2)
+        lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
+        testTrue = np.isclose(lnLambda,
+                              lnLambdaChen,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = ("Torus value of Coulomb logarithm should be "
+                  f"{lnLambdaChen} and not {lnLambda}.")
+        assert testTrue, errStr
+
+    def test_Chen_fusion(self):
+        """
+        Tests whether Coulomb logarithm gives value consistent with 
+        Chen's Introduction to Plasma Physics and Controlled Fusion
+        section 5.6.2 fusion reactor example.
+        """
+        T = 1e4 * u.eV
+        T = T.to(u.K, equivalencies=u.temperature_energy())
+        n = 1e21 * u.m ** -3
+        # factor of np.log(2) corrects for different definitions of thermal
+        # velocity. Chen uses v**2 = k * T / m  whereas we use
+        # v ** 2 = 2 * k * T / m
+        lnLambdaChen = 16 + np.log(2)
+        with pytest.warns(RelativityWarning):
+            lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
+        testTrue = np.isclose(lnLambda,
+                              lnLambdaChen,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = ("Fusion reactor value of Coulomb logarithm should be "
+                  f"{lnLambdaChen} and not {lnLambda}.")
+        assert testTrue, errStr
+
+    def test_Chen_laser(self):
+        """
+        Tests whether Coulomb logarithm gives value consistent with 
+        Chen's Introduction to Plasma Physics and Controlled Fusion
+        section 5.6.2 laser plasma example.
+        """
+        T = 1e3 * u.eV
+        T = T.to(u.K, equivalencies=u.temperature_energy())
+        n = 1e27 * u.m ** -3
+        # factor of np.log(2) corrects for different definitions of thermal
+        # velocity. Chen uses v**2 = k * T / m  whereas we use
+        # v ** 2 = 2 * k * T / m
+        lnLambdaChen = 6.8 + np.log(2)
+        lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
+        testTrue = np.isclose(lnLambda,
+                              lnLambdaChen,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = ("Laser plasma value of Coulomb logarithm should be "
+                  f"{lnLambdaChen} and not {lnLambda}.")
+        assert testTrue, errStr
+
+    def test_GMS1(self):
+        """
+        Test for first version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        methodVal = Coulomb_logarithm(self.temperature1,
+                                      self.density1,
+                                      self.particles,
+                                      z_mean=np.nan*u.dimensionless_unscaled,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-1")
+        testTrue = np.isclose(methodVal,
+                              self.gms1,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-1 should be "
+                  f"{self.gms1} and not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_GMS1_negative(self):
+        """
+        Test for first version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks for when
+        a negative (invalid) Coulomb logarithm is returned.
+        """
+        methodVal = Coulomb_logarithm(self.temperature2,
+                                      self.density2,
+                                      self.particles,
+                                      z_mean=np.nan*u.dimensionless_unscaled,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-1")
+        testTrue = np.isclose(methodVal,
+                              self.gms1_negative,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-1 should be "
+                  f"{self.gms1_negative} and not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_GMS2(self):
+        """
+        Test for second version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        methodVal = Coulomb_logarithm(self.temperature1,
+                                      self.density1,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-2")
+        testTrue = np.isclose(methodVal,
+                              self.gms2,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-2 should be "
+                  f"{self.gms2} and not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_GMS2_negative(self):
+        """
+        Test for second version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks for when
+        a negative (invalid) Coulomb logarithm is returned.
+        """
+        methodVal = Coulomb_logarithm(self.temperature2,
+                                      self.density2,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-2")
+        testTrue = np.isclose(methodVal,
+                              self.gms2_negative,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-2 should be "
+                  f"{self.gms2_negative} and not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_GMS3(self):
+        """
+        Test for third version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        methodVal = Coulomb_logarithm(self.temperature1,
+                                      self.density1,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-3")
+        testTrue = np.isclose(methodVal,
+                              self.gms3,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-3 should be "
+                  f"{self.gms3} and not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_GMS3_negative(self):
+        """
+        Test for third version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        a positive value is returned whereas the classical Coulomb
+        logarithm would return a negative value.
+        """
+        methodVal = Coulomb_logarithm(self.temperature2,
+                                      self.density2,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-3")
+        testTrue = np.isclose(methodVal,
+                              self.gms3_negative,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-3 should be "
+                  f"{self.gms3_negative} and not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_GMS4(self):
+        """
+        Test for fourth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        methodVal = Coulomb_logarithm(self.temperature1,
+                                      self.density1,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-4")
+        testTrue = np.isclose(methodVal,
+                              self.gms4,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-4 should be "
+                  f"{self.gms4} and not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_GMS4_negative(self):
+        """
+        Test for fourth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        a positive value is returned whereas the classical Coulomb
+        logarithm would return a negative value.
+        """
+        methodVal = Coulomb_logarithm(self.temperature2,
+                                      self.density2,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-4")
+        testTrue = np.isclose(methodVal,
+                              self.gms4_negative,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-4 should be "
+                  f"{self.gms4_negative} and not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_GMS5(self):
+        """
+        Test for fifth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        methodVal = Coulomb_logarithm(self.temperature1,
+                                      self.density1,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-5")
+        testTrue = np.isclose(methodVal,
+                              self.gms5,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-5 should be "
+                  f"{self.gms5} and not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_GMS5_negative(self):
+        """
+        Test for fifth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        a positive value is returned whereas the classical Coulomb
+        logarithm would return a negative value.
+        """
+        methodVal = Coulomb_logarithm(self.temperature2,
+                                      self.density2,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-5")
+        testTrue = np.isclose(methodVal,
+                              self.gms5_negative,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-5 should be "
+                  f"{self.gms5_negative} and not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_GMS6(self):
+        """
+        Test for sixth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        methodVal = Coulomb_logarithm(self.temperature1,
+                                      self.density1,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-6")
+        testTrue = np.isclose(methodVal,
+                              self.gms6,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-6 should be "
+                  f"{self.gms6} and not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_GMS6_negative(self):
+        """
+        Test for sixth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        a positive value is returned whereas the classical Coulomb
+        logarithm would return a negative value.
+        """
+        methodVal = Coulomb_logarithm(self.temperature2,
+                                      self.density2,
+                                      self.particles,
+                                      z_mean=self.z_mean,
+                                      V=np.nan*u.m/u.s,
+                                      method="GMS-6")
+        testTrue = np.isclose(methodVal,
+                              self.gms6_negative,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-6 should be "
+                  f"{self.gms6_negative} and not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_GMS2_zmean_error(self):
+        """
+        Tests whether GMS-2 raises z_mean error when a z_mean is not
+        provided.
+        """
+        with pytest.raises(ValueError):
+            methodVal = Coulomb_logarithm(self.temperature2,
+                                          self.density2,
+                                          self.particles,
+                                          method="GMS-2")
+
+    def test_GMS5_zmean_error(self):
+        """
+        Tests whether GMS-5 raises z_mean error when a z_mean is not
+        provided.
+        """
+        with pytest.raises(ValueError):
+            methodVal = Coulomb_logarithm(self.temperature2,
+                                          self.density2,
+                                          self.particles,
+                                          method="GMS-5")
+
+    def test_GMS6_zmean_error(self):
+        """
+        Tests whether GMS-6 raises z_mean error when a z_mean is not
+        provided.
+        """
+        with pytest.raises(ValueError):
+            methodVal = Coulomb_logarithm(self.temperature2,
+                                          self.density2,
+                                          self.particles,
+                                          method="GMS-6")
+
+    def test_relativity_warn(self):
+        """Tests whether relativity warning is raised at high velocity."""
+        with pytest.warns(RelativityWarning):
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), V=0.9 * c)
+
+    def test_relativity_error(self):
+        """Tests whether relativity error is raised at light speed."""
+        with pytest.raises(RelativityError):
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), V=1.1 * c)
+
+    def test_unit_conversion_error(self):
+        """
+        Tests whether unit conversion error is raised when arguments
+        are given with incorrect units.
+        """
+        with pytest.raises(u.UnitConversionError):
+            Coulomb_logarithm(1e5 * u.g, 1 * u.m**-3,
+                              ('e', 'p'), V=29979245 * u.m / u.s)
+
+    def test_single_particle_error(self):
+        """
+        Tests whether an error is raised if only a single particle is given.
+        """
+        with pytest.raises(ValueError):
+            Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e'))
+
+    def test_invalid_particle_error(self):
+        """
+        Tests whether an error is raised when an invalid particle name
+        is given.
+        """
+        with pytest.raises(ValueError):
+            Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e', 'g'))
 
     n_e = np.array([1e9, 1e9, 1e24]) * u.cm**-3
     T = np.array([1e2, 1e7, 1e8]) * u.K
     Lambda = np.array([5.97, 21.66, 6.69])
     particles = ('e', 'p')
 
-    for i in range(3):
-        assert np.isclose(Coulomb_logarithm(T[i], n_e[i], particles),
-                          Lambda[i], atol=0.01)
+
+class Test_b_perp:
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.particles = ('e', 'p')
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 7.200146594293746e-10
+
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = b_perp(self.T,
+                           self.particles,
+                           V=np.nan*u.m/u.s)
+        testTrue = np.isclose(self.True1,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = ("Distance of closest approach for 90 degree Coulomb "
+                  f"collision, b_perp, should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 + 1e-15
+        methodVal = b_perp(self.T,
+                           self.particles,
+                           V=np.nan*u.m/u.s)
+        testTrue = not np.isclose(methodVal.si.value,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"b_perp value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
 
     assert np.isclose(Coulomb_logarithm(1 * u.eV, 5 * u.m**-3, ('e', 'e')),
                       Coulomb_logarithm(11604.5220 * u.K,
                                         5 * u.m**-3,
                                         ('e', 'e')))
 
-    assert np.isclose(Coulomb_logarithm(1e2 * u.K, 1e9 * u.cm**-3, ('e', 'p')),
-                      5.97, atol=0.01)
 
-    assert np.isclose(Coulomb_logarithm(1e7 * u.K, 1e9 * u.cm**-3, ('e', 'p')),
-                      21.6, atol=0.1)
+class Test_impact_parameter:
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.n_e = 1e17 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
 
-    assert np.isclose(Coulomb_logarithm(1e8 * u.K,
-                                        1e24 * u.cm**-3,
-                                        ('e', 'p')),
-                      6.69, atol=0.01)
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = impact_parameter(self.T,
+                                     self.n_e,
+                                     self.particles,
+                                     z_mean=np.nan*u.dimensionless_unscaled,
+                                     V=np.nan*u.m/u.s,
+                                     method="classical")
+        bmin, bmax = methodVal
+        methodVal = bmin.si.value, bmax.si.value
+        testTrue = np.allclose(self.True1,
+                               methodVal,
+                               rtol=1e-1,
+                               atol=0.0)
+        errStr = (f"Impact parameters should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
 
-    assert np.allclose(Coulomb_logarithm(T, n_e, particles), Lambda, atol=0.01)
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = impact_parameter(self.T,
+                                     self.n_e,
+                                     self.particles,
+                                     z_mean=np.nan*u.dimensionless_unscaled,
+                                     V=np.nan*u.m/u.s,
+                                     method="classical")
+        bmin, bmax = methodVal
+        methodVal = bmin.si.value, bmax.si.value
+        testTrue = not np.allclose(methodVal,
+                                   fail1,
+                                   rtol=1e-16,
+                                   atol=0.0)
+        errStr = (f"Impact parameter value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
 
-    assert np.isclose(Coulomb_logarithm(1e5 * u.K, 5 * u.m**-3, ('e', 'e'),
-                                        V=1e4 * u.m / u.s), 21.379082011)
+    def test_bad_method(self):
+        """Testing failure when invalid method is passed."""
+        with pytest.raises(ValueError):
+            impact_parameter(self.T,
+                             self.n_e,
+                             self.particles,
+                             z_mean=np.nan*u.dimensionless_unscaled,
+                             V=np.nan*u.m/u.s,
+                             method="meow")
 
-    with pytest.warns(RelativityWarning):
-        Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), 0.9 * c)
 
-    with pytest.raises(RelativityError):
-        Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), 1.0 * c)
+class Test_collision_frequency:
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.n = 1e17 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.electrons = ('e', 'e')
+        self.protons = ('p', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 1.3468281539854646e12
+        self.True_electrons = 1904702641552.1638
+        self.True_protons = 44450104815.91857
+        self.True_zmean = 1346828153985.4646
 
-    with pytest.raises(u.UnitConversionError):
-        Coulomb_logarithm(1e5 * u.g, 1 * u.m**-3,
-                          ('e', 'p'), 29979245 * u.m / u.s)
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = collision_frequency(self.T,
+                                        self.n,
+                                        self.particles,
+                                        z_mean=np.nan*u.dimensionless_unscaled,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = np.isclose(self.True1,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Collision frequency should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
 
-    with pytest.raises(ValueError):
-        Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e'))
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = collision_frequency(self.T,
+                                        self.n,
+                                        self.particles,
+                                        z_mean=np.nan*u.dimensionless_unscaled,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = not np.isclose(methodVal.si.value,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"Collision frequency value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
 
-    with pytest.raises(ValueError):
-        Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e', 'g'))
+    def test_electrons(self):
+        """
+        Testing collision frequency between electrons.
+        """
+        methodVal = collision_frequency(self.T,
+                                        self.n,
+                                        self.electrons,
+                                        z_mean=np.nan*u.dimensionless_unscaled,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = np.isclose(self.True_electrons,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Collision frequency should be {self.True_electrons} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
 
-    with pytest.raises(ValueError):
-        Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e', 'D'))
+    def test_protons(self):
+        """
+        Testing collision frequency between protons (ions).
+        """
+        methodVal = collision_frequency(self.T,
+                                        self.n,
+                                        self.protons,
+                                        z_mean=np.nan*u.dimensionless_unscaled,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = np.isclose(self.True_protons,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Collision frequency should be {self.True_protons} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_zmean(self):
+        """
+        Test collisional frequency function when given arbitrary z_mean.
+        """
+        methodVal = collision_frequency(self.T,
+                                        self.n,
+                                        self.particles,
+                                        z_mean=self.z_mean,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = np.isclose(self.True_zmean,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Collision frequency should be {self.True_zmean} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+
+
+class Test_mean_free_path:
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.n_e = 1e17 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 4.4047571877932046e-07
+
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = mean_free_path(self.T,
+                                   self.n_e,
+                                   self.particles,
+                                   z_mean=np.nan*u.dimensionless_unscaled,
+                                   V=np.nan*u.m/u.s,
+                                   method="classical")
+        testTrue = np.isclose(self.True1,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Mean free path should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = mean_free_path(self.T,
+                                   self.n_e,
+                                   self.particles,
+                                   z_mean=np.nan*u.dimensionless_unscaled,
+                                   V=np.nan*u.m/u.s,
+                                   method="classical")
+        testTrue = not np.isclose(methodVal.si.value,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"Mean free path value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+
+
+class Test_Spitzer_resistivity:
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.n = 1e12 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 1.2665402649805445e-3
+        self.True_zmean = 0.00020264644239688712
+
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = Spitzer_resistivity(self.T,
+                                        self.n,
+                                        self.particles,
+                                        z_mean=np.nan*u.dimensionless_unscaled,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = np.isclose(self.True1,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Spitzer resistivity should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = Spitzer_resistivity(self.T,
+                                        self.n,
+                                        self.particles,
+                                        z_mean=np.nan*u.dimensionless_unscaled,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = not np.isclose(methodVal.si.value,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"Spitzer resistivity value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+
+    def test_zmean(self):
+        """Testing Spitzer when z_mean is passed."""
+        methodVal = Spitzer_resistivity(self.T,
+                                        self.n,
+                                        self.particles,
+                                        z_mean=self.z_mean,
+                                        V=np.nan*u.m/u.s,
+                                        method="classical")
+        testTrue = np.isclose(self.True_zmean,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Spitzer resistivity should be {self.True_zmean} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+
+
+class Test_mobility:
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.n_e = 1e17 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 0.13066090887074902
+        self.True_zmean = 0.32665227217687254
+
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = mobility(self.T,
+                             self.n_e,
+                             self.particles,
+                             z_mean=np.nan*u.dimensionless_unscaled,
+                             V=np.nan*u.m/u.s,
+                             method="classical")
+        testTrue = np.isclose(self.True1,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Mobility should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = mobility(self.T,
+                             self.n_e,
+                             self.particles,
+                             z_mean=np.nan*u.dimensionless_unscaled,
+                             V=np.nan*u.m/u.s,
+                             method="classical")
+        testTrue = not np.isclose(methodVal.si.value,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"Mobility value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+
+    def test_zmean(self):
+        """Testing mobility when z_mean is passed."""
+        methodVal = mobility(self.T,
+                             self.n_e,
+                             self.particles,
+                             z_mean=self.z_mean,
+                             V=np.nan*u.m/u.s,
+                             method="classical")
+        testTrue = np.isclose(self.True_zmean,
+                              methodVal.si.value,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Mobility should be {self.True_zmean} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+
+
+class Test_Knudsen_number:
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.length = 1 * u.nm
+        self.T = 11604 * u.K
+        self.n_e = 1e17 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 440.4757187793204
+
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = Knudsen_number(self.length,
+                                   self.T,
+                                   self.n_e,
+                                   self.particles,
+                                   z_mean=np.nan*u.dimensionless_unscaled,
+                                   V=np.nan*u.m/u.s,
+                                   method="classical")
+        testTrue = np.isclose(self.True1,
+                              methodVal,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Knudsen number should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = Knudsen_number(self.length,
+                                   self.T,
+                                   self.n_e,
+                                   self.particles,
+                                   z_mean=np.nan*u.dimensionless_unscaled,
+                                   V=np.nan*u.m/u.s,
+                                   method="classical")
+        testTrue = not np.isclose(methodVal,
+                                  fail1,
+                                  rtol=0.0,
+                                  atol=1e-16)
+        errStr = (f"Knudsen number value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+
+
+class Test_coupling_parameter:
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T = 11604 * u.K
+        self.n_e = 1e21 * u.cm ** -3
+        self.particles = ('e', 'p')
+        self.z_mean = 2.5
+        self.V = 1e4 * u.km / u.s
+        self.True1 = 2.3213156755481195
+        self.True_zmean = 10.689750083758698
+        self.True_quantum = 0.3334662805238162
+
+    def test_known1(self):
+        """
+        Test for known value.
+        """
+        methodVal = coupling_parameter(self.T,
+                                       self.n_e,
+                                       self.particles,
+                                       z_mean=np.nan*u.dimensionless_unscaled,
+                                       V=np.nan*u.m/u.s,
+                                       method="classical")
+        testTrue = np.isclose(self.True1,
+                              methodVal,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Coupling parameter should be {self.True1} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 * (1 + 1e-15)
+        methodVal = coupling_parameter(self.T,
+                                       self.n_e,
+                                       self.particles,
+                                       z_mean=np.nan*u.dimensionless_unscaled,
+                                       V=np.nan*u.m/u.s,
+                                       method="classical")
+        testTrue = not np.isclose(methodVal,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"Coupling parameter value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+
+    def test_zmean(self):
+        """
+        Test value obtained when arbitrary z_mean is passed
+        """
+        methodVal = coupling_parameter(self.T,
+                                       self.n_e,
+                                       self.particles,
+                                       z_mean=self.z_mean,
+                                       V=np.nan*u.m/u.s,
+                                       method="classical")
+        testTrue = np.isclose(self.True_zmean,
+                              methodVal,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Coupling parameter should be {self.True_zmean} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
+
+    def test_quantum(self):
+        """
+        Testing quantum method for coupling parameter.
+        """
+        methodVal = coupling_parameter(self.T,
+                                       self.n_e,
+                                       self.particles,
+                                       method="quantum")
+        testTrue = np.isclose(self.True_quantum,
+                              methodVal,
+                              rtol=1e-1,
+                              atol=0.0)
+        errStr = (f"Coupling parameter should be {self.True_quantum} and "
+                  f"not {methodVal}.")
+        assert testTrue, errStr
 
 
 # test class for classical_transport class:
@@ -368,9 +1304,9 @@ class Test_classical_transport:
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held",
-         np.array([0.07582084, 0.07582084, 0.07582084, 0, 0]) * u.Pa * u.s),
+         np.array([0.07674402, 0.07674402, 0.07674402, 0, 0]) * u.Pa * u.s),
         ("braginskii",
-         np.array([0.07582084, 0.07579587, 0.07579587, 0, 0]) * u.Pa * u.s)
+         np.array([0.07674402, 0.07671874, 0.07671874, 0, 0]) * u.Pa * u.s)
     ])
     def test_electron_viscosity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
@@ -384,9 +1320,9 @@ class Test_classical_transport:
 
     @pytest.mark.parametrize("model, expected", [
         ("ji-held",
-         np.array([7.78786439, 7.78786439, 7.78786439, 0, 0]) * u.Pa * u.s),
+         np.array([7.96226452, 7.96226452, 7.96226452, 0, 0]) * u.Pa * u.s),
         ("braginskii",
-         np.array([7.74590133, 7.72235334, 7.72235334, 0, 0]) * u.Pa * u.s)
+         np.array([7.91936173, 7.89528642, 7.89528642, 0, 0]) * u.Pa * u.s)
     ])
     def test_ion_viscosity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
@@ -399,9 +1335,9 @@ class Test_classical_transport:
                            atol=1e-6 * u.Pa * u.s)
 
     @pytest.mark.parametrize("model, expected", [
-        ("ji-held", 5023093.49948463 * u.W / (u.K * u.m)),
-        ("spitzer", 5021013.09835718 * u.W / (u.K * u.m)),
-        ("braginskii", 4956545.55498178 * u.W / (u.K * u.m))
+        ("ji-held", 5084253.556001088 * u.W / (u.K * u.m)),
+        ("spitzer", 5082147.824377487 * u.W / (u.K * u.m)),
+        ("braginskii", 5016895.3386957785 * u.W / (u.K * u.m))
     ])
     def test_electron_thermal_conductivity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
@@ -414,8 +1350,8 @@ class Test_classical_transport:
                            atol=1e-6 * u.W / (u.K * u.m))
 
     @pytest.mark.parametrize("model, expected", [
-        ("ji-held", 131600.515524444 * u.W / (u.K * u.m)),
-        ("braginskii", 130137.93045042 * u.W / (u.K * u.m))
+        ("ji-held", 134547.55528106514 * u.W / (u.K * u.m)),
+        ("braginskii", 133052.21732349042 * u.W / (u.K * u.m))
     ])
     def test_ion_thermal_conductivity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
@@ -535,9 +1471,12 @@ class Test__nondim_tc_e_braginskii:
         kappa_e_hat_cross_jh = _nondim_tc_e_ji_held(self.big_hall,
                                                     Z,
                                                     'cross')
-        assert np.isclose(kappa_e_hat_cross_brag,
-                          kappa_e_hat_cross_jh,
-                          rtol=2e-2)
+        testTrue = np.isclose(kappa_e_hat_cross_brag,
+                              kappa_e_hat_cross_jh,
+                              rtol=2e-2)
+        errStr = (f"braginskii cross {kappa_e_hat_cross_brag} should agree "
+                  f"with ji-held {kappa_e_hat_cross_jh}.")
+        assert testTrue, errStr
 
 
 # test class for _nondim_tc_i_braginskii function:
@@ -809,7 +1748,10 @@ def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
     """test _nondim_tc_e_ji_held function"""
     kappa_hat = _nondim_tc_e_ji_held(hall, Z, field_orientation)
     kappa_check = expected
-    assert np.isclose(kappa_hat, kappa_check, rtol=2e-2)
+    testTrue = np.isclose(kappa_hat, kappa_check, rtol=2e-2)
+    errStr = (f"Kappa hat from ji-held should be {kappa_check} "
+              f"and not {kappa_hat}.")
+    assert testTrue, errStr
 
 
 # approximated from Ji-Held '13 figures 1 and 2 (black circles)
