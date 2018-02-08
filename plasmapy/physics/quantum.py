@@ -2,8 +2,6 @@
 Functions for quantum parameters, including electron degenerate
 gases and warm dense matter.
 
-# TODO:
-    -fix ion sphere radius to use ion density
 """
 # python modules
 import numpy as np
