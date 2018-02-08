@@ -13,6 +13,8 @@ dependencies:
     - numpydoc
     - pytest
     - coveralls
+    - mpmath
+    - lmfit
     - matplotlib
     - sphinx
     - sphinx-gallery

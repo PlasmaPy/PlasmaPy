@@ -1,48 +1,73 @@
 # coding=utf-8
 """Functions to calculate transport coefficients."""
 
+# python modules
 from astropy import units as u
 import numpy as np
+from inspect import stack
+from copy import copy
+import warnings
+
+# plasmapy modules
 import plasmapy.atomic as atomic
 from plasmapy import utils
-from plasmapy.utils.checks import check_quantity, _check_relativistic
+from plasmapy.utils.checks import (check_quantity,
+                                   check_relativistic,
+                                   _check_relativistic)
 from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar)
 from ..atomic import (ion_mass, integer_charge)
 from plasmapy.atomic.atomic import _is_electron
 from .parameters import (Debye_length, Hall_parameter,
                          collision_rate_electron_ion, collision_rate_ion_ion)
-from inspect import stack
-from copy import copy
-import warnings
+from .quantum import (Wigner_Seitz_radius,
+                      thermal_deBroglie_wavelength,
+                      chemical_potential)
+from ..mathematics import Fermi_integral
 
 
 @utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
                        "n_e": {"units": u.m**-3}
                        })
-def Coulomb_logarithm(T, n_e, particles, V=None):
+def Coulomb_logarithm(T,
+                      n_e,
+                      particles,
+                      z_mean=np.nan*u.dimensionless_unscaled,
+                      V=np.nan*u.m/u.s,
+                      method="classical"):
     r"""
     Estimates the Coulomb logarithm.
 
     Parameters
     ----------
 
-    T : Quantity
+    T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle.
 
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         The electron density in units convertible to per cubic meter.
 
     particles : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
-    V : Quantity, optional
+    z_mean : ~astropy.units.Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
+
+    V : ~astropy.units.Quantity, optional
         The relative velocity between particles.  If not provided,
-        thermal velocity is assumed: :math:`\mu V^2 \sim 3 k_B T`
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
+
+    method: str, optional
+        Selects which theory to use when calculating the Coulomb
+        logarithm. Defaults to classical method.
 
     Returns
     -------
@@ -60,7 +85,7 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
         If the units on any of the inputs are incorrect.
 
     UserWarning
-        If the inputted velocity is greater than 80% of the speed of
+        If the input velocity is greater than 80% of the speed of
         light.
 
     TypeError
@@ -68,7 +93,7 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
 
     Notes
     -----
-    The Coulomb logarithm is given by
+    The classical Coulomb logarithm is given by
 
     .. math::
         \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
@@ -82,21 +107,32 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     Debye length, electric fields from other particles will be
     screened out due to electrons rearranging themselves.
 
-    The choice of inner impact parameter is more controversial. There
-    are two main possibilities.  The first possibility is that the
-    inner impact parameter corresponds to a deflection angle of 90
-    degrees.  The second possibility is that the inner impact
-    parameter is a de Broglie wavelength, :math:`\lambda_B`
-    corresponding to the reduced mass of the two particles and the
-    relative velocity between collisions.  This function uses the
-    standard practice of choosing the inner impact parameter to be the
-    maximum of these two possibilities.  Some inconsistencies exist in
-    the literature on how to define the inner impact parameter [2]_.
+    The choice of inner impact parameter is either the distance of closest
+    approach for a 90 degree Coulomb collision or the thermal deBroglie
+    wavelength, whichever is larger. This is because Coulomb-style collisions
+    cannot occur for impact parameters shorter than the deBroglie 
+    wavelength because quantum effects will change the fundamental 
+    nature of the collision [2]_, [3]_.
 
-    Errors associated with the Coulomb logarithm are of order its
+    Errors associated with the classical Coulomb logarithm are of order its
     inverse. If the Coulomb logarithm is of order unity, then the
     assumptions made in the standard analysis of Coulomb collisions
     are invalid.
+
+    For dense plasmas where the classical Coulomb logarithm breaks
+    down there are various extended methods. These can be found
+    in D.O. Gericke et al's paper, which has a table summarizing
+    the methods [4]_. The GMS-1 through GMS-6 methods correspond
+    to the methods found it that table.
+
+    It should be noted that GMS-4 thru GMS-6 modify the Coulomb
+    logarithm to the form:
+
+    .. math::
+        \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
+
+    This means the Coulomb logarithm will not break down for Lambda < 0,
+    which occurs for dense, cold plasmas.
 
     Examples
     --------
@@ -105,25 +141,97 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> Coulomb_logarithm(T, n, particles)
-    14.748259780491056
-    >>> Coulomb_logarithm(T, n, particles, 1e6*u.m/u.s)
+    14.545527226436974
+    >>> Coulomb_logarithm(T, n, particles, V=1e6*u.m/u.s)
     11.363478214139432
 
     References
     ----------
     .. [1] Physics of Fully Ionized Gases, L. Spitzer (1962)
 
-    .. [2] Comparison of Coulomb Collision Rates in the Plasma Physics
+    .. [2] Francis, F. Chen. Introduction to plasma physics and controlled
+       fusion 3rd edition. Ch 5 (Springer 2015).
+
+    .. [3] Comparison of Coulomb Collision Rates in the Plasma Physics
        and Magnetically Confined Fusion Literature, W. Fundamenski and
        O.E. Garcia, EFDA–JET–R(07)01
        (http://www.euro-fusionscipub.org/wp-content/uploads/2014/11/EFDR07001.pdf)
 
+    .. [4] Dense plasma temperature equilibration in the binary collision
+       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
+       DOI: 10.1103/PhysRevE.65.036418
     """
+    # fetching impact min and max impact parameters
+    bmin, bmax = impact_parameter(T=T,
+                                  n_e=n_e,
+                                  particles=particles,
+                                  z_mean=z_mean,
+                                  V=V,
+                                  method=method)
+    if method == "classical":
+        # classical Landau-Spitzer approach. Fails for large coupling
+        # parameter where Lambda can become less than zero.
+        ln_Lambda = np.log(bmax / bmin)
+    elif method == "GMS-1":
+        # 1st method listed in Table 1 of reference [3]
+        # Landau-Spitzer, but with interpolated bmin instead of bmin
+        # selected between deBroglie wavelength and distance of closest
+        # approach. Fails for large coupling
+        # parameter where Lambda can become less than zero.
+        ln_Lambda = np.log(bmax / bmin)
+    elif method == "GMS-2":
+        # 2nd method listed in Table 1 of reference [3]
+        # Another Landau-Spitzer like approach, but now bmax is also
+        # being interpolated. The interpolation is between the Debye
+        # length and the ion sphere radius, allowing for descriptions
+        # of dilute plasmas. Fails for large coupling
+        # parameter where Lambda can become less than zero.
+        ln_Lambda = np.log(bmax / bmin)
+    elif method == "GMS-3":
+        # 3rd method listed in Table 1 of reference [3]
+        # classical Landau-Spitzer fails for argument of Coulomb logarithm
+        # Lambda < 0, therefore a clamp is placed at Lambda_min = 2
+        ln_Lambda = np.log(bmax / bmin)
+        if ln_Lambda < 2:
+            ln_Lambda = 2 * u.dimensionless_unscaled
+    elif method == "GMS-4":
+        # 4th method listed in Table 1 of reference [3]
+        # Spitzer-like extension to Coulomb logarithm by noting that
+        # Coulomb collisions take hyperbolic trajectories. Removes
+        # divergence for small bmin issue in classical Landau-Spitzer
+        # approach, so bmin can be zero. Also doesn't break down as
+        # Lambda < 0 is now impossible, even when coupling parameter is large.
+        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
+    elif method == "GMS-5":
+        # 5th method listed in Table 1 of reference [3]
+        # Similar to GMS-4, but setting bmin as distance of closest approach
+        # and bmax interpolated between Debye length and ion sphere radius.
+        # Lambda < 0 impossible.
+        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
+    elif method == "GMS-6":
+        # 6th method listed in Table 1 of reference [3]
+        # Similar to GMS-4 and GMS-5, but using interpolation methods
+        # for both bmin and bmax.
+        # Lambda < 0 impossible.
+        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
+    # applying dimensionless units
+    ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
+    return ln_Lambda
 
+
+def _boilerPlate(T, particles, V):
+    """
+    Some boiler plate code for checking if inputs to functions in
+    transport.py are good. Also obtains reduced in mass in a
+    2 particle collision system along with thermal velocity.
+    """
+    # checking temperature is in correct units
+    T = T.to(u.K, equivalencies=u.temperature_energy())
+    # extracting particle information
     if not isinstance(particles, (list, tuple)) or len(particles) != 2:
-        raise ValueError("The third input of Coulomb_logarithm must be a list "
-                         "or tuple containing representations of two charged "
-                         "particles.")
+        raise ValueError("Particles input must be a "
+                         "list or tuple containing representations of two  "
+                         f"charged particles. Got {particles} instead.")
 
     masses = np.zeros(2) * u.kg
     charges = np.zeros(2) * u.C
@@ -131,84 +239,1073 @@ def Coulomb_logarithm(T, n_e, particles, V=None):
     for particle, i in zip(particles, range(2)):
 
         try:
-            masses[i] = atomic.ion_mass(particles[i])
+            masses[i] = ion_mass(particles[i])
         except Exception:
-            raise ValueError(f"Unable to find mass of particle: {particles[i]}"
-                             f" in Coulomb_logarithm.")
-
+            raise ValueError("Unable to find mass of particle: "
+                             f"{particles[i]}.")
         try:
-            charges[i] = np.abs(e * atomic.integer_charge(particles[i]))
+            charges[i] = np.abs(e * integer_charge(particles[i]))
+            if charges[i] is None:
+                raise ValueError("Unable to find charge of particle: "
+                                 f"{particles[i]}.")
         except Exception:
-            raise ValueError(f"Unable to find charge of particle: "
-                             f"{particles[i]} in Coulomb_logarithm.")
-
+            raise ValueError("Unable to find charge of particle: "
+                             f"{particles[i]}.")
+    # obtaining reduced mass of 2 particle collision system
     reduced_mass = masses[0] * masses[1] / (masses[0] + masses[1])
+    # getting thermal velocity of system if no velocity is given
+    if np.isnan(V):
+        V = np.sqrt(2 * k_B * T / reduced_mass).to(u.m/u.s)
+    _check_relativistic(V, 'V')
+    return (T, masses, charges, reduced_mass, V)
 
-    # The outer impact parameter is the Debye length.  At distances
-    # greater than the Debye length, the electrostatic potential of a
-    # single particle is screened out by the electrostatic potentials
-    # of other particles.  Past this distance, the electric fields of
-    # individual particles do not affect each other much.  This
-    # expression neglects screening by heavier ions.
 
-    T = T.to(u.K, equivalencies=u.temperature_energy())
+@check_quantity({"T": {"units": u.K, "can_be_negative": False}
+                 })
+def b_perp(T,
+           particles,
+           V=np.nan*u.m/u.s):
+    """
+    Distance of closest approach for a 90 degree Coulomb collision.
 
-    b_max = Debye_length(T, n_e)
+    Parameters
+    ----------
 
-    # The choice of inner impact parameter is more controversial.
-    # There are two broad possibilities, and the expressions in the
-    # literature often differ by factors of order unity or by
-    # interchanging the reduced mass with the test particle mass.
+    T : ~astropy.units.Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
 
-    # The relative velocity is a source of uncertainty.  It is
-    # reasonable to make an assumption relating the thermal energy to
-    # the kinetic energy: reduced_mass*velocity**2 is approximately
-    # equal to 3*k_B*T.
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
 
-    # If no relative velocity is inputted, then we make an assumption
-    # that relates the thermal energy to the kinetic energy:
-    # reduced_mass*velocity**2 is approximately equal to 3*k_B*T.
+    V : ~astropy.units.Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
 
-    if V is None:
-        V = np.sqrt(3 * k_B * T / reduced_mass)
-    utils._check_relativistic(V, 'Coulomb_logarithm', betafrac=0.8)
+    Returns
+    -------
+    b_perp : float or numpy.ndarray
+        The distance of closest approach for a 90 degree Coulomb collision.
 
-    # The first possibility is that the inner impact parameter
-    # corresponds to a deflection of 90 degrees, which is valid when
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If T, or V are not Quantities.
+
+    Notes
+    -----
+    The distance of closest approach, b_perp, is given by [1]_
+
+    .. math::
+        b_{\perp} = \frac{Z_1 Z_2}{4 \pi \epsilon_0 m v^2}
+
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> T = 1e6*u.K
+    >>> particles = ('e', 'p')
+    >>> b_perp(T, particles)
+    <Quantity 8.35505011e-12 m>
+
+
+    References
+    ----------
+    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
+       fusion 3rd edition. Ch 5 (Springer 2015).
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    # Corresponds to a deflection of 90 degrees, which is valid when
     # classical effects dominate.
+    # !!!Note: an average ionization parameter will have to be
+    # included here in the future
+    bPerp = (charges[0] * charges[1] /
+             (4 * pi * eps0 * reduced_mass * V ** 2))
+    return bPerp.to(u.m)
 
-    b_perp = charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V**2)
 
-    # The second possibility is that the inner impact parameter is a
-    # de Broglie wavelength.  There remains some ambiguity as to which
-    # mass to choose to go into the de Broglie wavelength calculation.
-    # Here we use the reduced mass, which will be of the same order as
-    # mass of the smaller particle and thus the longer de Broglie
-    # wavelength.
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m**-3}
+                 })
+def impact_parameter(T,
+                     n_e,
+                     particles,
+                     z_mean=np.nan*u.dimensionless_unscaled,
+                     V=np.nan*u.m/u.s,
+                     method="classical"):
+    r"""Impact parameters for classical and quantum Coulomb collision
 
-    b_deBroglie = hbar / (2 * reduced_mass * V)
+    Parameters
+    ----------
 
-    # Coulomb-style collisions will not happen for impact parameters
-    # shorter than either of these two impact parameters, so we choose
-    # the larger of these two possibilities.
+    T : ~astropy.units.Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
 
-    b_min = np.zeros_like(b_perp)
+    n_e : ~astropy.units.Quantity
+        The electron density in units convertible to per cubic meter.
 
-    for i in range(b_min.size):
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
 
-        if b_perp.flat[i] > b_deBroglie.flat[i]:
-            b_min.flat[i] = b_perp.flat[i]
+    z_mean : ~astropy.units.Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
+
+    V : ~astropy.units.Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
+
+    method: str, optional
+        Selects which theory to use when calculating the Coulomb
+        logarithm. Defaults to classical method.
+
+    Returns
+    -------
+    bmin, bmax : tuple of floats
+        The minimum and maximum impact parameters (distances) for a
+        Coulomb collision.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The minimum and maximum impact parameters may be calculated in a
+    variety of ways. The maximum impact parameter is typically
+    the Debye length.
+
+    For quantum plasmas the maximum impact parameter can be the
+    quadratic sum of the debye length and ion radius (Wigner_Seitz) [1]_
+
+    .. math::
+        b_{max} = \left(\lambda_{De}^2 + a_i^2\right)^{1/2}
+
+    The minimum impact parameter is typically some combination of the
+    thermal deBroglie wavelength and the distance of closest approach
+    for a 90 degree Coulomb collision. A quadratic sum is used for
+    all GMS methods, except for GMS-5, where b_min is simply set to
+    the distance of closest approach [1]_.
+
+    .. math::
+        b_{min} = \left(\Lambda_{deBroglie}^2 + \rho_{\perp}^2\right)^{1/2}
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
+    >>> particles = ('e', 'p')
+    >>> impact_parameter(T, n, particles)
+    (<Quantity 1.05163088e-11 m>, <Quantity 2.18225522e-05 m>)
+    >>> impact_parameter(T, n, particles, V=1e6*u.m/u.s)
+    (<Quantity 2.53401778e-10 m>, <Quantity 2.18225522e-05 m>)
+
+    References
+    ----------
+    .. [1] Dense plasma temperature equilibration in the binary collision
+       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
+       DOI: 10.1103/PhysRevE.65.036418
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    # catching error where mean charge state is not given for non-classical
+    # methods that require the ion density
+    if method == "GMS-2" or method == "GMS-5" or method == "GMS-6":
+        if np.isnan(z_mean):
+            raise ValueError("Must provide a z_mean for GMS-2, GMS-5, and "
+                             "GMS-6 methods.")
+    # Debye length
+    lambdaDe = Debye_length(T, n_e)
+    # deBroglie wavelength
+    lambdaBroglie = hbar / (2 * reduced_mass * V)
+    # distance of closest approach in 90 degree Coulomb collision
+    bPerp = b_perp(T=T,
+                   particles=particles,
+                   V=V)
+    # obtaining minimum and maximum impact parameters depending on which
+    # method is requested
+    if method == "classical":
+        bmax = lambdaDe
+        # Coulomb-style collisions will not happen for impact parameters
+        # shorter than either of these two impact parameters, so we choose
+        # the larger of these two possibilities. That is, between the
+        # deBroglie wavelength and the distance of closest approach.
+        if bPerp > lambdaBroglie:
+            bmin = bPerp
         else:
-            b_min.flat[i] = b_deBroglie.flat[i]
+            bmin = lambdaBroglie
+    elif method == "GMS-1":
+        # 1st method listed in Table 1 of reference [1]
+        # This is just another form of the classical Landau-Spitzer
+        # approach, but bmin is interpolated between the deBroglie
+        # wavelength and distance of closest approach.
+        bmax = lambdaDe
+        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+    elif method == "GMS-2":
+        # 2nd method listed in Table 1 of reference [1]
+        # Another Landau-Spitzer like approach, but now bmax is also
+        # being interpolated. The interpolation is between the Debye
+        # length and the ion sphere radius, allowing for descriptions
+        # of dilute plasmas.
+        # Mean ion density.
+        n_i = n_e / z_mean
+        # mean ion sphere radius.
+        ionRadius = Wigner_Seitz_radius(n_i)
+        bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
+        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+    elif method == "GMS-3":
+        # 3rd method listed in Table 1 of reference [1]
+        # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
+        # where Lambda is the argument to the Coulomb logarithm.
+        bmax = lambdaDe
+        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+    elif method == "GMS-4":
+        # 4th method listed in Table 1 of reference [1]
+        bmax = lambdaDe
+        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+    elif method == "GMS-5":
+        # 5th method listed in Table 1 of reference [1]
+        # Mean ion density.
+        n_i = n_e / z_mean
+        # mean ion sphere radius.
+        ionRadius = Wigner_Seitz_radius(n_i)
+        bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
+        bmin = bPerp
+    elif method == "GMS-6":
+        # 6th method listed in Table 1 of reference [1]
+        # Mean ion density.
+        n_i = n_e / z_mean
+        # mean ion sphere radius.
+        ionRadius = Wigner_Seitz_radius(n_i)
+        bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
+        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
+    else:
+        raise ValueError(f"Method {method} not found!")
+    return (bmin.to(u.m), bmax.to(u.m))
 
-    # Now that we know how many approximations have to go into plasma
-    # transport theory, we shall celebrate by returning the Coulomb
-    # logarithm.
 
-    ln_Lambda = np.log(b_max / b_min)
-    ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n": {"units": u.m**-3}
+                 })
+def collision_frequency(T,
+                        n,
+                        particles,
+                        z_mean=np.nan*u.dimensionless_unscaled,
+                        V=np.nan*u.m/u.s,
+                        method="classical"):
+    r"""Collision frequency of particles in a plasma.
 
-    return ln_Lambda
+    Parameters
+    ----------
+
+    T : ~astropy.units.Quantity
+        Temperature in units of temperature.
+        This should be the electron temperature for electron-electron
+        and electron-ion collisions, and the ion temperature for
+        ion-ion collisions.
+
+
+    n : ~astropy.units.Quantity
+        The density in units convertible to per cubic meter.
+        This should be the electron density for electron-electron collisions,
+        and the ion density for electron-ion and ion-ion collisions.
+
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
+
+    z_mean : ~astropy.units.Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
+
+    V : ~astropy.units.Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
+
+    method: str, optional
+        Selects which theory to use when calculating the Coulomb
+        logarithm. Defaults to classical method.
+
+    Returns
+    -------
+    freq : float or numpy.ndarray
+        The collision frequency of particles in a plasma.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The collision frequency is given by [1]_
+
+    .. math::
+        \nu = n \sigma v \ln{\Lambda}
+
+    where n is the particle density, :math:`\sigma` is the collisional
+    cross-section, :math:`v` is the inter-particle velocity (typically 
+    taken as the thermal velocity), and :math:`\ln{\Lambda}` is the Coulomb
+    logarithm accounting for small angle collisions.
+
+    The collisional cross-section is obtained by
+
+    .. math::
+        \sigma = \pi \rho_{\perp}^2
+
+    where :math:`\rho_{\perp}` is the distance of closest approach for
+    a 90 degree Coulomb collision.
+
+    See eq (2.14) in [2]_.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
+    >>> particles = ('e', 'p')
+    >>> collision_frequency(T, n, particles)
+    <Quantity 702505.15998601 Hz>
+
+     References
+    ----------
+    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
+       fusion 3rd edition. Ch 5 (Springer 2015).
+    .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    if particles[0] == 'e' and particles[1] == 'e':
+        # electron-electron collision
+        # impact parameter for 90 degree collision
+        bPerp = b_perp(T=T,
+                       particles=particles,
+                       V=V)
+        # Coulomb logarithm
+        cou_log = Coulomb_logarithm(T,
+                                    n,
+                                    particles,
+                                    z_mean,
+                                    V=np.nan*u.m/u.s,
+                                    method=method)
+    elif particles[0] == 'e' or particles[1] == 'e':
+        # electron-ion collision
+        # Need to manually pass electron thermal velocity to obtain
+        # correct perpendicular collision radius
+        V = np.sqrt(2 * k_B * T / m_e)
+        # need to also correct mass in collision radius from reduced
+        # mass to electron mass
+        bPerp = b_perp(T=T,
+                       particles=particles,
+                       V=V) * reduced_mass / m_e
+        # Coulomb logarithm
+        #!!! may also need to correct Coulomb logarithm to be
+        # electron-electron version !!!
+        cou_log = Coulomb_logarithm(T,
+                                    n,
+                                    particles,
+                                    z_mean,
+                                    V=np.nan*u.m/u.s,
+                                    method=method)
+    else:
+        # ion-ion collision
+        bPerp = b_perp(T=T,
+                       particles=particles,
+                       V=V)
+        # Coulomb logarithm
+        cou_log = Coulomb_logarithm(T,
+                                    n,
+                                    particles,
+                                    z_mean,
+                                    V=np.nan*u.m/u.s,
+                                    method=method)
+    # collisional cross section
+    sigma = np.pi * (2 * bPerp) ** 2
+    # collision frequency where Coulomb logarithm accounts for
+    # small angle collisions, which are more frequent than large
+    # angle collisions.
+    freq = n * sigma * V * cou_log
+    return freq.to(u.Hz)
+
+
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m**-3}
+                 })
+def mean_free_path(T,
+                   n_e,
+                   particles,
+                   z_mean=np.nan*u.dimensionless_unscaled,
+                   V=np.nan*u.m/u.s,
+                   method="classical"):
+    r"""Collisional mean free path (m)
+
+    Parameters
+    ----------
+
+    T : ~astropy.units.Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
+
+    n_e : ~astropy.units.Quantity
+        The electron density in units convertible to per cubic meter.
+
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
+
+    z_mean : ~astropy.units.Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
+
+    V : ~astropy.units.Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
+
+    method: str, optional
+        Selects which theory to use when calculating the Coulomb
+        logarithm. Defaults to classical method.
+
+    Returns
+    -------
+    mfp : float or numpy.ndarray
+        The collisional mean free path for particles in a plasma.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The collisional mean free path is given by [1]_
+
+    .. math::
+        \lambda_{mfp} = \frac{v}{\nu}
+
+    where :math:`v` is the inter-particle velocity (typically taken to be
+    the thermal velocity) and :math:`\nu` is the collision frequency.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
+    >>> particles = ('e', 'p')
+    >>> mean_free_path(T, n, particles)
+    <Quantity 7.8393631 m>
+    >>> mean_free_path(T, n, particles, V=1e6*u.m/u.s)
+    <Quantity 1.42347709 m>
+
+    References
+    ----------
+    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
+       fusion 3rd edition. Ch 5 (Springer 2015).
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    # collisional frequency
+    freq = collision_frequency(T=T,
+                               n=n_e,
+                               particles=particles,
+                               z_mean=z_mean,
+                               V=V,
+                               method=method)
+    # mean free path length
+    mfp = V / freq
+    return mfp.to(u.m)
+
+
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n": {"units": u.m**-3}
+                 })
+def Spitzer_resistivity(T,
+                        n,
+                        particles,
+                        z_mean=np.nan*u.dimensionless_unscaled,
+                        V=np.nan*u.m/u.s,
+                        method="classical"):
+    r"""Spitzer resistivity of a plasma
+
+    Parameters
+    ----------
+
+    T : ~astropy.units.Quantity
+        Temperature in units of temperature.
+        This should be the electron temperature for electron-electron
+        and electron-ion collisions, and the ion temperature for
+        ion-ion collisions.
+
+
+    n : ~astropy.units.Quantity
+        The density in units convertible to per cubic meter.
+        This should be the electron density for electron-electron collisions,
+        and the ion density for electron-ion and ion-ion collisions.
+
+    z_mean : ~astropy.units.Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
+
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
+
+    V : ~astropy.units.Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
+
+    method: str, optional
+        Selects which theory to use when calculating the Coulomb
+        logarithm. Defaults to classical method.
+
+    Returns
+    -------
+    spitzer : float or numpy.ndarray
+        The resistivity of the plasma in Ohm meters.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The Spitzer resistivity is given by [1]_ [2]_
+
+    .. math::
+        \eta = \frac{m}{n Z_1 Z_2 q_e^2} \nu_{1,2}
+
+    where :math:`m` is the ion mass or the reduced mass, :math:`n` is the
+    ion density, :math:`Z` is the particle charge state, :math:`q_e` is the
+    charge of an electron, :math:`\nu_{1,2}` is the collisional frequency
+    between particle species 1 and 2.
+
+    Typically, particle species 1 and 2 are selected to be an electron
+    and an ion, since electron-ion collisions are inelastic and therefore
+    produce resistivity in the plasma.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
+    >>> particles = ('e', 'p')
+    >>> Spitzer_resistivity(T, n, particles)
+    <Quantity 2.4916169e-06 m Ohm>
+    >>> Spitzer_resistivity(T, n, particles, V=1e6*u.m/u.s)
+    <Quantity 2.4916169e-06 m Ohm>
+
+    References
+    ----------
+    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
+       fusion 3rd edition. Ch 5 (Springer 2015).
+    .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
+
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    # collisional frequency
+    freq = collision_frequency(T=T,
+                               n=n,
+                               particles=particles,
+                               z_mean=z_mean,
+                               V=V,
+                               method=method)
+    if np.isnan(z_mean):
+        spitzer = freq * reduced_mass / (n * charges[0] * charges[1])
+    else:
+        spitzer = freq * reduced_mass / (n * (z_mean * e) ** 2)
+    return spitzer.to(u.Ohm * u.m)
+
+
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m**-3}
+                 })
+def mobility(T,
+             n_e,
+             particles,
+             z_mean=np.nan*u.dimensionless_unscaled,
+             V=np.nan*u.m/u.s,
+             method="classical"):
+    r"""Electrical mobility (m^2/(V s))
+
+    Parameters
+    ----------
+
+    T : ~astropy.units.Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
+
+    n_e : ~astropy.units.Quantity
+        The electron density in units convertible to per cubic meter.
+
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
+
+    z_mean : ~astropy.units.Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters. It is also used the obtain the average mobility
+        of a plasma with multiple charge state species. When z_mean
+        is not given, the average charge between the two particles is
+        used instead.
+
+    V : ~astropy.units.Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
+
+    method: str, optional
+        Selects which theory to use when calculating the Coulomb
+        logarithm. Defaults to classical method.
+
+    Returns
+    -------
+    mobility_value : float or numpy.ndarray
+        The electrical mobility of particles in a collisional plasma.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The mobility is given by [1]_
+
+    .. math::
+        \mu = \frac{q}{m \nu}
+
+    where :math:`q` is the particle charge, :math:`m` is the particle mass
+    and :math:`\nu` is the collisional frequency of the particle in the
+    plasma.
+    
+    The mobility describes the forced diffusion of a particle in a collisional
+    plasma which is under the influence of an electric field. The mobility
+    is essentially the ratio of drift velocity due to collisions and the
+    electric field driving the forced diffusion.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
+    >>> particles = ('e', 'p')
+    >>> mobility(T, n, particles)
+    <Quantity 250500.35318738 m2 / (s V)>
+    >>> mobility(T, n, particles, V=1e6*u.m/u.s)
+    <Quantity 250500.35318738 m2 / (s V)>
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    freq = collision_frequency(T=T,
+                               n=n_e,
+                               particles=particles,
+                               z_mean=z_mean,
+                               V=V,
+                               method=method)
+    if np.isnan(z_mean):
+        z_val = (charges[0] + charges[1]) / 2
+    else:
+        z_val = z_mean * e
+    mobility_value = z_val / (reduced_mass * freq)
+    return mobility_value.to(u.m ** 2 / (u.V * u.s))
+
+
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m**-3}
+                 })
+def Knudsen_number(characteristic_length,
+                   T,
+                   n_e,
+                   particles,
+                   z_mean=np.nan*u.dimensionless_unscaled,
+                   V=np.nan*u.m/u.s,
+                   method="classical"):
+    r"""Knudsen number (dimless)
+
+    Parameters
+    ----------
+
+    characteristic_length : ~astropy.units.Quantity
+        Rough order-of-magnitude estimate of the relevant size of the system.
+
+    T : ~astropy.units.Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
+
+    n_e : ~astropy.units.Quantity
+        The electron density in units convertible to per cubic meter.
+
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
+
+    z_mean : ~astropy.units.Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
+
+    V : ~astropy.units.Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
+
+    method: str, optional
+        Selects which theory to use when calculating the Coulomb
+        logarithm. Defaults to classical method.
+
+    Returns
+    -------
+    knudsen_param : float or numpy.ndarray
+        The dimensionless Knudsen number.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The Knudsen number is given by [1]_
+
+    .. math::
+        Kn = \frac{\lambda_{mfp}}{L}
+
+    where :math:`\lambda_{mfp}` is the collisional mean free path for
+    particles in a plasma and :math`L` is the characteristic scale
+    length of interest.
+
+    Typically the characteristic scale length is the plasma size or the
+    size of a diagnostic (such a the length or radius of a Langmuir
+    probe tip). The Knudsen number tells us whether collisional effects
+    are important on this scale length.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> L = 1e-3 * u.m
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
+    >>> particles = ('e', 'p')
+    >>> Knudsen_number(L, T, n, particles)
+    <Quantity 7839.36310417>
+    >>> Knudsen_number(L, T, n, particles, V=1e6*u.m/u.s)
+    <Quantity 1423.47708879>
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Knudsen_number
+
+    """
+    path_length = mean_free_path(T=T,
+                                 n_e=n_e,
+                                 particles=particles,
+                                 z_mean=z_mean,
+                                 V=V,
+                                 method=method)
+    knudsen_param = path_length / characteristic_length
+    return knudsen_param.to(u.dimensionless_unscaled)
+
+
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m**-3}
+                 })
+def coupling_parameter(T,
+                       n_e,
+                       particles,
+                       z_mean=np.nan*u.dimensionless_unscaled,
+                       V=np.nan*u.m/u.s,
+                       method="classical"):
+    r"""Coupling parameter.
+    Coupling parameter compares Coulomb energy to kinetic energy (typically)
+    thermal. Classical plasmas are weakly coupled Gamma << 1, whereas dense
+    plasmas tend to have significant to strong coupling Gamma >= 1.
+
+    Parameters
+    ----------
+
+    T : ~astropy.units.Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle
+
+    n_e : ~astropy.units.Quantity
+        The electron density in units convertible to per cubic meter.
+
+    particles : tuple
+        A tuple containing string representations of the test particle
+        (listed first) and the target particle (listed second)
+
+    z_mean : ~astropy.units.Quantity, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. This is used to recover the
+        average ion density (given the average ionization and electron
+        density) for calculating the ion sphere radius for non-classical
+        impact parameters.
+
+    V : ~astropy.units.Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
+
+    method: str, optional
+        Selects which theory to use when calculating the Coulomb
+        logarithm. Defaults to classical method.
+
+    Returns
+    -------
+    coupling : float or numpy.ndarray
+        The coupling parameter for a plasma.
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect
+
+    UserWarning
+        If the inputted velocity is greater than 80% of the speed of
+        light.
+
+    TypeError
+        If the n_e, T, or V are not Quantities.
+
+    Notes
+    -----
+    The coupling parameter is given by
+
+    .. math::
+        \Gamma = \frac{E_{Coulomb}}{E_{Kinetic}}
+
+    The Coulomb energy is given by
+
+    .. math::
+        E_{Coulomb} = \frac{Z_1 Z_2 q_e^2}{4 \pi \epsilon_0 r}
+        
+    where :math:`r` is the Wigner-Seitz radius, and 1 and 2 refer to
+    particle species 1 and 2 between which we want to determine the
+    coupling.
+
+    In the classical case the kinetic energy is simply the thermal energy
+
+    .. math::
+        E_{kinetic} = k_B T_e
+
+    The quantum case is more complex. The kinetic energy is dominated by
+    the Fermi energy, modulated by a correction factor based on the
+    ideal chemical potential. This is obtained more precisely
+    by taking the the thermal kinetic energy and dividing by
+    the degeneracy parameter, modulated by the Fermi integral [1]_
+
+    .. math::
+        E_{kinetic} = 2 k_B T_e / \chi f_{3/2} (\mu_{ideal} / k_B T_e)
+
+    where :math:`\chi` is the degeneracy parameter, :math:`f_{3/2}` is the
+    Fermi integral, and :math:`\mu_{ideal}` is the ideal chemical 
+    potential.
+
+    The degeneracy parameter is given by
+
+    .. math::
+        \chi = n_e \Lambda_{deBroglie} ^ 3
+
+    where :math:`n_e` is the electron density and :math:`\Lambda_{deBroglie}`
+    is the thermal deBroglie wavelength.
+
+    See equations 1.2, 1.3 and footnote 5 in [2]_ for details on the ideal
+    chemical potential.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
+    >>> particles = ('e', 'p')
+    >>> coupling_parameter(T, n, particles)
+    <Quantity 5.80330315e-05>
+    >>> coupling_parameter(T, n, particles, V=1e6*u.m/u.s)
+    <Quantity 5.80330315e-05>
+
+    References
+    ----------
+    .. [1] Dense plasma temperature equilibration in the binary collision
+       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
+       DOI: 10.1103/PhysRevE.65.036418
+    .. [2] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.
+
+
+    """
+    # boiler plate checks
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
+    if np.isnan(z_mean):
+        # using mean charge to get average ion density.
+        # If you are running this, you should strongly consider giving
+        # a value of z_mean as an argument instead.
+        Z1 = np.abs(atomic.integer_charge(particles[0]))
+        Z2 = np.abs(atomic.integer_charge(particles[1]))
+        Z = (Z1 + Z2) / 2
+        # getting ion density from electron density
+        n_i = n_e / Z
+        # getting Wigner-Seitz radius based on ion density
+        radius = Wigner_Seitz_radius(n_i)
+    else:
+        # getting ion density from electron density
+        n_i = n_e / z_mean
+        # getting Wigner-Seitz radius based on ion density
+        radius = Wigner_Seitz_radius(n_i)
+    # Coulomb potential energy between particles
+    if np.isnan(z_mean):
+        coulombEnergy = charges[0] * charges[1] / (4 * np.pi * eps0 * radius)
+    else:
+        coulombEnergy = (z_mean * e) ** 2 / (4 * np.pi * eps0 * radius)
+    if method == "classical":
+        # classical thermal kinetic energy
+        kineticEnergy = k_B * T
+    elif method == "quantum":
+        # quantum kinetic energy for dense plasmas
+        lambda_deBroglie = thermal_deBroglie_wavelength(T)
+        chemicalPotential = chemical_potential(n_e, T)
+        fermiIntegral = Fermi_integral(chemicalPotential.si.value, 1.5)
+        denom = (n_e * lambda_deBroglie ** 3) * fermiIntegral
+        kineticEnergy = 2 * k_B * T / denom
+        if np.imag(kineticEnergy) == 0:
+            kineticEnergy = np.real(kineticEnergy)
+        else:
+            raise ValueError("Kinetic energy should not be imaginary."
+                             "Something went horribly wrong.")
+    coupling = coulombEnergy / kineticEnergy
+    return coupling.to(u.dimensionless_unscaled)
 
 
 class classical_transport:
@@ -274,16 +1371,16 @@ class classical_transport:
 
     Parameters
     ----------
-    T_e : Quantity
+    T_e : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle
 
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         The number density in units convertible to per cubic meter.
 
-    T_i : Quantity
+    T_i : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle
 
-    n_i : Quantity
+    n_i : ~astropy.units.Quantity
         The number density in units convertible to per cubic meter.
 
     ion_particle : string
@@ -300,7 +1397,7 @@ class classical_transport:
         input using this input and the Ji-Held model, although doing so may
         neglect effects caused by multiple ion populations.
 
-    B : Quantity, optional
+    B : ~astropy.units.Quantity, optional
         The magnetic field strength in units convertible to Tesla. Defaults
         to zero.
 
@@ -322,45 +1419,45 @@ class classical_transport:
         direction. The option 'all' will return a numpy array of all three,
         np.array((par, perp, cross)).
 
-    coulomb_log_ei: float or dimensionless Quantity, optional
+    coulomb_log_ei: float or dimensionless ~astropy.units.Quantity, optional
         Force a particular value to be used for the electron-ion Coulomb
         logarithm (test electrons on field ions). If None, the PlasmaPy
         function Coulomb_Logarithm() will be used. Useful for comparing
         calculations.
 
-    V_ei: Quantity, optional
+    V_ei: ~astropy.units.Quantity, optional
        Supplied to coulomb_logarithm() function, not otherwise used.
        The relative velocity between particles.  If not provided,
-       thermal velocity is assumed: :math:`\mu V^2 \sim 3 k_B T`
+       thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
        where `mu` is the reduced mass.
 
-    coulomb_log_ii: float or dimensionless Quantity, optional
+    coulomb_log_ii: float or dimensionless ~astropy.units.Quantity, optional
         Force a particular value to be used for the ion-ion Coulomb logarithm
         (test ions on field ions). If None, the PlasmaPy function
         Coulomb_Logarithm() will be used. Useful for comparing calculations.
 
-    V_ii: Quantity, optional
+    V_ii: ~astropy.units.Quantity, optional
        Supplied to coulomb_logarithm() function, not otherwise used.
        The relative velocity between particles.  If not provided,
-       thermal velocity is assumed: :math:`\mu V^2 \sim 3 k_B T`
+       thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
        where `mu` is the reduced mass.
 
-    hall_e: float or dimensionless Quantity, optional
+    hall_e: float or dimensionless ~astropy.units.Quantity, optional
         Force a particular value to be used for the electron Hall parameter. If
         None, the PlasmaPy function Hall_parameter() will be used. Useful
         for comparing calculations.
 
-    hall_i: float or dimensionless Quantity, optional
+    hall_i: float or dimensionless ~astropy.units.Quantity, optional
         Force a particular value to be used for the ion Hall parameter. If
         None, the PlasmaPy function Hall_parameter() will be used. Useful
         for comparing calculations.
 
-    mu: optional, float or dimensionless Quantity
+    mu: optional, float or dimensionless ~astropy.units.Quantity
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to zero, thus
         disabling these effects.
 
-    theta: optional, float or dimensionless Quantity
+    theta: optional, float or dimensionless ~astropy.units.Quantity
         theta = T_e / T_i
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to T_e / T_i. Only
@@ -380,18 +1477,18 @@ class classical_transport:
     >>> t = classical_transport(1*u.eV, 1e20/u.m**3,
     ...                         1*u.eV, 1e20/u.m**3, 'p')
     >>> t.resistivity()
-    <Quantity 0.00038845 m Ohm>
+    <Quantity 0.00036701 m Ohm>
     >>> t.thermoelectric_conductivity()
     <Quantity 0.711084>
     >>> t.ion_thermal_conductivity()
-    <Quantity 0.0146639 W / (K m)>
+    <Quantity 0.01552066 W / (K m)>
     >>> t.electron_thermal_conductivity()
-    <Quantity 0.35963098 W / (K m)>
+    <Quantity 0.38064293 W / (K m)>
     >>> t.ion_viscosity()
-    <Quantity [4.36619601e-07, 4.35292253e-07, 4.35292253e-07, 0.00000000e+00,
+    <Quantity [4.62129725e-07, 4.60724824e-07, 4.60724824e-07, 0.00000000e+00,
                0.00000000e+00] Pa s>
     >>> t.electron_viscosity()
-    <Quantity [5.50131582e-09, 5.49950422e-09, 5.49950422e-09, 0.00000000e+00,
+    <Quantity [5.82273805e-09, 5.82082061e-09, 5.82082061e-09, 0.00000000e+00,
                0.00000000e+00] Pa s>
 
     References
@@ -415,13 +1512,25 @@ class classical_transport:
                            "T_i": {"units": u.K, "can_be_negative": False},
                            "n_i": {"units": u.m**-3},
                            })
-    def __init__(self, T_e, n_e, T_i, n_i, ion_particle, m_i=None, Z=None,
-                 B=0.0 * u.T, model='Braginskii',
+    def __init__(self,
+                 T_e,
+                 n_e,
+                 T_i,
+                 n_i,
+                 ion_particle,
+                 m_i=None,
+                 Z=None,
+                 B=0.0 * u.T,
+                 model='Braginskii',
                  field_orientation='parallel',
-                 coulomb_log_ei=None, V_ei=None,
-                 coulomb_log_ii=None, V_ii=None,
-                 hall_e=None, hall_i=None,
-                 mu=None, theta=None):
+                 coulomb_log_ei=None,
+                 V_ei=None,
+                 coulomb_log_ii=None,
+                 V_ii=None,
+                 hall_e=None,
+                 hall_i=None,
+                 mu=None,
+                 theta=None):
         # check the model
         self.model = model.lower()  # string inputs should be case insensitive
         valid_models = ['braginskii',
@@ -555,10 +1664,13 @@ class classical_transport:
         -------
         astropy.units.quantity.Quantity
         """
-        alpha_hat = _nondim_resistivity(self.hall_e, self.Z, self.e_particle,
+        alpha_hat = _nondim_resistivity(self.hall_e,
+                                        self.Z,
+                                        self.e_particle,
                                         self.model,
                                         self.field_orientation)
-        tau_e = 1 / collision_rate_electron_ion(self.T_e, self.n_e,
+        tau_e = 1 / collision_rate_electron_ion(self.T_e,
+                                                self.n_e,
                                                 self.ion_particle,
                                                 self.coulomb_log_ei,
                                                 self.V_ei)
@@ -590,12 +1702,15 @@ class classical_transport:
         -------
         astropy.units.quantity.Quantity
         """
-        kappa_hat = _nondim_thermal_conductivity(self.hall_i, self.Z,
+        kappa_hat = _nondim_thermal_conductivity(self.hall_i,
+                                                 self.Z,
                                                  self.ion_particle,
                                                  self.model,
                                                  self.field_orientation,
-                                                 self.mu, self.theta)
-        tau_i = 1 / collision_rate_ion_ion(self.T_i, self.n_i,
+                                                 self.mu,
+                                                 self.theta)
+        tau_i = 1 / collision_rate_ion_ion(self.T_i,
+                                           self.n_i,
                                            self.ion_particle,
                                            self.coulomb_log_ii,
                                            self.V_ii)
@@ -610,13 +1725,18 @@ class classical_transport:
         -------
         astropy.units.quantity.Quantity
         """
-        kappa_hat = _nondim_thermal_conductivity(self.hall_e, self.Z,
-                                                 self.e_particle, self.model,
+        kappa_hat = _nondim_thermal_conductivity(self.hall_e,
+                                                 self.Z,
+                                                 self.e_particle,
+                                                 self.model,
                                                  self.field_orientation,
-                                                 self.mu, self.theta)
-        tau_e = 1 / collision_rate_electron_ion(self.T_e, self.n_e,
+                                                 self.mu,
+                                                 self.theta)
+        tau_e = 1 / collision_rate_electron_ion(self.T_e,
+                                                self.n_e,
                                                 self.ion_particle,
-                                                self.coulomb_log_ei, self.V_ei)
+                                                self.coulomb_log_ei,
+                                                self.V_ei)
         kappa = kappa_hat * (self.n_e * k_B**2 * self.T_e * tau_e / m_e)
         return kappa.to(u.W / u.m / u.K)
 
@@ -635,7 +1755,8 @@ class classical_transport:
                                     self.field_orientation,
                                     self.mu,
                                     self.theta)
-        tau_i = 1 / collision_rate_ion_ion(self.T_i, self.n_i,
+        tau_i = 1 / collision_rate_ion_ion(self.T_i,
+                                           self.n_i,
                                            self.ion_particle,
                                            self.coulomb_log_ii,
                                            self.V_ii)
@@ -723,8 +1844,12 @@ class classical_transport:
         return d
 
 
-def _nondim_thermal_conductivity(hall, Z, particle, model, field_orientation,
-                                 mu=None, theta=None):
+def _nondim_thermal_conductivity(hall, Z,
+                                 particle,
+                                 model,
+                                 field_orientation,
+                                 mu=None,
+                                 theta=None):
     """calculate dimensionless classical thermal conductivity coefficients
 
     This function is a switchboard / wrapper that calls the appropriate
@@ -757,8 +1882,13 @@ def _nondim_thermal_conductivity(hall, Z, particle, model, field_orientation,
     return kappa_hat
 
 
-def _nondim_viscosity(hall, Z, particle, model, field_orientation,
-                      mu=None, theta=None):
+def _nondim_viscosity(hall,
+                      Z,
+                      particle,
+                      model,
+                      field_orientation,
+                      mu=None,
+                      theta=None):
     """calculate dimensionless classical viscosity coefficients
 
     This function is a switchboard / wrapper that calls the appropriate
@@ -921,6 +2051,10 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
     allowed_Z = [1, 2, 3, 4, np.inf]
     Z_idx = _check_Z(allowed_Z, Z)
 
+    # fixing overflow errors when exponentiating hall by making a float
+    # instead of an int
+    hall = float(hall)
+
     delta_0 = [3.7703, 1.0465, 0.5814, 0.4106, 0.0961]
     delta_1 = [14.79, 10.80, 9.618, 9.055, 7.482]
     gamma_1_prime = [4.664, 3.957, 3.721, 3.604, 3.25]
@@ -929,7 +2063,7 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
     gamma_0_doubleprime = [21.67, 15.37, 13.53, 12.65, 10.23]
 
     gamma_0 = gamma_0_prime[Z_idx] / delta_0[Z_idx]
-    Delta = hall**4 + delta_1[Z_idx] * hall**2 + delta_0[Z_idx]
+    Delta = hall ** 4 + delta_1[Z_idx] * hall ** 2 + delta_0[Z_idx]
     kappa_par = gamma_0
     if field_orientation == 'parallel' or field_orientation == 'par':
         return kappa_par
@@ -939,7 +2073,7 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
         return kappa_perp
 
-    kappa_cross = (gamma_1_doubleprime[Z_idx] * hall**3 +
+    kappa_cross = (gamma_1_doubleprime[Z_idx] * hall ** 3 +
                    gamma_0_doubleprime[Z_idx] * hall) / Delta
     if field_orientation == 'cross':
         return kappa_cross
@@ -954,7 +2088,9 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
     """
-
+    # fixing overflow errors when exponentiating hall by making a float
+    # instead of an int
+    hall = float(hall)
     kappa_par_coeff_0 = 3.906
     kappa_par = kappa_par_coeff_0
     if field_orientation == 'parallel' or field_orientation == 'par':
@@ -964,15 +2100,15 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
     kappa_perp_coeff_0 = 2.645
     delta_1 = 2.70
     delta_0 = 0.677
-    Delta = hall**4 + delta_1 * hall**2 + delta_0
-    kappa_perp = (kappa_perp_coeff_2 * hall**2 +
+    Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
+    kappa_perp = (kappa_perp_coeff_2 * hall ** 2 +
                   kappa_perp_coeff_0) / Delta
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
         return kappa_perp
 
     kappa_cross_coeff_3 = 2.5
     kappa_cross_coeff_1 = 4.65
-    kappa_cross = (kappa_cross_coeff_3 * hall**3 +
+    kappa_cross = (kappa_cross_coeff_3 * hall ** 3 +
                    kappa_cross_coeff_1 * hall) / Delta
     if field_orientation == 'cross':
         return kappa_cross
@@ -987,6 +2123,9 @@ def _nondim_visc_e_braginskii(hall, Z):
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
     """
+    # fixing overflow errors when exponentiating hall by making a float
+    # instead of an int
+    hall = float(hall)
     allowed_Z = [1]
     _check_Z(allowed_Z, Z)
     eta_prime_0 = 0.733
@@ -998,15 +2137,15 @@ def _nondim_visc_e_braginskii(hall, Z):
     delta_0 = 11.6
     eta_0_e = eta_prime_0
 
-    def f_eta_2(hall):
-        Delta = hall**4 + delta_1 * hall**2 + delta_0
-        return (eta_doubleprime_2 * hall**2 + eta_doubleprime_0) / Delta
-    eta_2_e = f_eta_2(hall)
-    eta_1_e = f_eta_2(2 * hall)
+    def eta_2(hall):
+        Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
+        return (eta_doubleprime_2 * hall ** 2 + eta_doubleprime_0) / Delta
+    eta_2_e = eta_2(hall)
+    eta_1_e = eta_2(2 * hall)
 
     def f_eta_4(hall):
-        Delta = hall**4 + delta_1 * hall**2 + delta_0
-        return (eta_tripleprime_2 * hall**3 +
+        Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
+        return (eta_tripleprime_2 * hall ** 3 +
                 eta_tripleprime_0 * hall) / Delta
     eta_4_e = f_eta_4(hall)
     eta_3_e = f_eta_4(2 * hall)
@@ -1028,15 +2167,19 @@ def _nondim_visc_i_braginskii(hall):
     delta_0 = 2.33
     eta_0_i = eta_prime_0
 
+    # fixing overflow errors when exponentiating hall by making a float
+    # instead of an int
+    hall = float(hall)
+
     def f_eta_2(hall):
-        Delta = hall**4 + delta_1 * hall**2 + delta_0
-        return (eta_doubleprime_2 * hall**2 + eta_doubleprime_0) / Delta
+        Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
+        return (eta_doubleprime_2 * hall ** 2 + eta_doubleprime_0) / Delta
     eta_2_i = f_eta_2(hall)
     eta_1_i = f_eta_2(2 * hall)
 
     def f_eta_4(hall):
-        Delta = hall**4 + delta_1 * hall**2 + delta_0
-        return (eta_tripleprime_2 * hall**3 +
+        Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
+        return (eta_tripleprime_2 * hall ** 3 +
                 eta_tripleprime_0 * hall) / Delta
     eta_4_i = f_eta_4(hall)
     eta_3_i = f_eta_4(2 * hall)
@@ -1053,6 +2196,10 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
     allowed_Z = [1, 2, 3, 4, np.inf]
     Z_idx = _check_Z(allowed_Z, Z)
 
+    # fixing overflow errors when exponentiating hall by making a float
+    # instead of an int
+    hall = float(hall)
+
 #    alpha_0 = 0.5129
     delta_0 = [3.7703, 1.0465, 0.5814, 0.4106, 0.0961]
     delta_1 = [14.79, 10.80, 9.618, 9.055, 7.482]
@@ -1062,17 +2209,17 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
     alpha_0_doubleprime = [0.7796, 0.3439, 0.2400, 0.1957, 0.0940]
 
     alpha_0 = 1 - alpha_0_prime[Z_idx] / delta_0[Z_idx]
-    Delta = hall**4 + delta_1[Z_idx] * hall**2 + delta_0[Z_idx]
+    Delta = hall ** 4 + delta_1[Z_idx] * hall ** 2 + delta_0[Z_idx]
     alpha_par = alpha_0
     if field_orientation == 'parallel' or field_orientation == 'par':
         return alpha_par
 
-    alpha_perp = (1 - (alpha_1_prime[Z_idx] * hall**2 +
+    alpha_perp = (1 - (alpha_1_prime[Z_idx] * hall ** 2 +
                        alpha_0_prime[Z_idx]) / Delta)
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
         return alpha_perp
 
-    alpha_cross = (alpha_1_doubleprime[Z_idx] * hall**3 +
+    alpha_cross = (alpha_1_doubleprime[Z_idx] * hall ** 3 +
                    alpha_0_doubleprime[Z_idx] * hall) / Delta
     if field_orientation == 'cross':
         return alpha_cross
@@ -1090,6 +2237,9 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
 
     allowed_Z = [1, 2, 3, 4, np.inf]
     Z_idx = _check_Z(allowed_Z, Z)
+    # fixing overflow errors when exponentiating hall by making a float
+    # instead of an int
+    hall = float(hall)
 
     delta_0 = [3.7703, 1.0465, 0.5814, 0.4106, 0.0961]
     delta_1 = [14.79, 10.80, 9.618, 9.055, 7.482]
@@ -1098,7 +2248,7 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
     beta_1_doubleprime = [1.5, 1.5, 1.5, 1.5, 1.5]
     beta_0_doubleprime = [3.053, 1.784, 1.442, 1.285, 0.877]
 
-    Delta = hall**4 + delta_1[Z_idx] * hall**2 + delta_0[Z_idx]
+    Delta = hall ** 4 + delta_1[Z_idx] * hall ** 2 + delta_0[Z_idx]
     beta_0 = beta_0_prime[Z_idx] / delta_0[Z_idx]
 #    beta_0 = 0.7110
 
@@ -1106,12 +2256,12 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
     if field_orientation == 'parallel' or field_orientation == 'par':
         return beta_par
 
-    beta_perp = (beta_1_prime[Z_idx] * hall**2 +
+    beta_perp = (beta_1_prime[Z_idx] * hall ** 2 +
                  beta_0_prime[Z_idx]) / Delta
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
         return beta_perp
 
-    beta_cross = (beta_1_doubleprime[Z_idx] * hall**3 +
+    beta_cross = (beta_1_doubleprime[Z_idx] * hall ** 3 +
                   beta_0_doubleprime[Z_idx] * hall) / Delta
     if field_orientation == 'cross':
         return beta_cross
@@ -1170,65 +2320,67 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
 
     allowed_Z = [1, 2, 'arbitrary']
     Z_idx = _check_Z(allowed_Z, Z)
-    r = np.abs(Z * hall)
+    # fixing overflow errors when exponentiating r by making a float
+    # instead of an int
+    r = float(np.abs(Z * hall))
 
     def f_kappa_par_e(Z):
-        numerator = 13.5 * Z**2 + 54.4 * Z + 25.2
-        denominator = Z**3 + 8.35 * Z**2 + 15.2 * Z + 4.51
+        numerator = 13.5 * Z ** 2 + 54.4 * Z + 25.2
+        denominator = Z ** 3 + 8.35 * Z ** 2 + 15.2 * Z + 4.51
         return numerator / denominator
 
     def f_kappa_0(Z):
-        numerator = 9.91 * Z**3 + 75.3 * Z**2 + 518 * Z + 333
+        numerator = 9.91 * Z ** 3 + 75.3 * Z ** 2 + 518 * Z + 333
         denominator = 1000
         return numerator / denominator
 
     def f_kappa_1(Z):
-        numerator = 0.211 * Z**3 + 12.7 * Z**2 + 48.4 * Z + 6.45
+        numerator = 0.211 * Z ** 3 + 12.7 * Z ** 2 + 48.4 * Z + 6.45
         denominator = Z + 57.1
         return numerator / denominator
 
     def f_kappa_2(Z):
-        numerator = 0.932 * Z**(7 / 3) + 0.135 * Z**2 + 12.3 * Z + 8.77
+        numerator = 0.932 * Z ** (7 / 3) + 0.135 * Z ** 2 + 12.3 * Z + 8.77
         denominator = Z + 4.84
         return numerator / denominator
 
     def f_kappa_3(Z):
-        numerator = 0.246 * Z**3 + 2.65 * Z**2 - 92.8 * Z - 1.96
-        denominator = Z**2 + 19.9 * Z + 35.3
+        numerator = 0.246 * Z ** 3 + 2.65 * Z ** 2 - 92.8 * Z - 1.96
+        denominator = Z ** 2 + 19.9 * Z + 35.3
         return numerator / denominator
 
     def f_kappa_4(Z):
-        numerator = 2.76 * Z**(5 / 3) - 0.836 * Z**(2 / 3) - 0.0611
+        numerator = 2.76 * Z ** (5 / 3) - 0.836 * Z ** (2 / 3) - 0.0611
         denominator = Z - 0.214
         return numerator / denominator
 
     def f_k_0(Z):
-        numerator = 0.0396 * Z**3 + 46.3 * Z + 176
+        numerator = 0.0396 * Z ** 3 + 46.3 * Z + 176
         denominator = 1000
         return numerator / denominator
 
     def f_k_1(Z):
-        numerator = 15.4 * Z**3 + 188 * Z**2 + 240 * Z + 35.3
+        numerator = 15.4 * Z ** 3 + 188 * Z ** 2 + 240 * Z + 35.3
         denominator = 1000 * Z + 397
         return numerator / denominator
 
     def f_k_2(Z):
-        numerator = -0.159 * Z**2 - 12.5 * Z + 34.1
-        denominator = Z**(2 / 3) + 0.741 * Z**(1 / 3) + 31.0
+        numerator = -0.159 * Z ** 2 - 12.5 * Z + 34.1
+        denominator = Z ** (2 / 3) + 0.741 * Z ** (1 / 3) + 31.0
         return numerator / denominator
 
     def f_k_3(Z):
-        numerator = 0.431 * Z**2 + 3.69 * Z + 0.0314
+        numerator = 0.431 * Z ** 2 + 3.69 * Z + 0.0314
         denominator = Z + 3.62
         return numerator / denominator
 
     def f_k_4(Z):
-        numerator = 0.0258 * Z**2 - 1.63 * Z + 0.711
-        denominator = Z**(4 / 3) + 4.36 * Z**(2 / 3) + 2.75
+        numerator = 0.0258 * Z ** 2 - 1.63 * Z + 0.711
+        denominator = Z ** (4 / 3) + 4.36 * Z ** (2 / 3) + 2.75
         return numerator / denominator
 
     def f_k_5(Z):
-        numerator = Z**3 + 11.9 * Z**2 + 28.8 * Z + 9.07
+        numerator = Z ** 3 + 11.9 * Z ** 2 + 28.8 * Z + 9.07
         denominator = 173 * Z + 133
         return numerator / denominator
 
@@ -1250,14 +2402,14 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
         return Z * kappa_par
 
     def f_kappa_perp(Z_idx):
-        numerator = (13 / 4 * Z + np.sqrt(2)) * r + \
-            kappa_0[Z_idx] * kappa_par_e[Z_idx]
-        denominator = r ** 3 + \
-            kappa_4[Z_idx] * r ** (7 / 3) + \
-            kappa_3[Z_idx] * r ** 2 + \
-            kappa_2[Z_idx] * r ** (5 / 3) + \
-            kappa_1[Z_idx] * r + \
-            kappa_0[Z_idx]
+        numerator = ((13 / 4 * Z + np.sqrt(2)) * r +
+                     kappa_0[Z_idx] * kappa_par_e[Z_idx])
+        denominator = (r ** 3 +
+                       kappa_4[Z_idx] * r ** (7 / 3) +
+                       kappa_3[Z_idx] * r ** 2 +
+                       kappa_2[Z_idx] * r ** (5 / 3) +
+                       kappa_1[Z_idx] * r +
+                       kappa_0[Z_idx])
         return numerator / denominator
 
     kappa_perp = f_kappa_perp(Z_idx)
@@ -1266,12 +2418,12 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
 
     def f_kappa_cross(Z_idx):
         numerator = r * (5 / 2 * r + k_0[Z_idx] / k_5[Z_idx])
-        denominator = r ** 3 + \
-            k_4[Z_idx] * r ** (7 / 3) + \
-            k_3[Z_idx] * r ** 2 + \
-            k_2[Z_idx] * r ** (5 / 3) + \
-            k_1[Z_idx] * r + \
-            k_0[Z_idx]
+        denominator = (r ** 3 +
+                       k_4[Z_idx] * r ** (7 / 3) +
+                       k_3[Z_idx] * r ** 2 +
+                       k_2[Z_idx] * r ** (5 / 3) +
+                       k_1[Z_idx] * r +
+                       k_0[Z_idx])
         return numerator / denominator
 
     kappa_cross = f_kappa_cross(Z_idx)
@@ -1292,39 +2444,41 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
 
     allowed_Z = [1, 2, 'arbitrary']
     Z_idx = _check_Z(allowed_Z, Z)
-    r = np.abs(Z * hall)
+    # fixing overflow errors when exponentiating r by making a float
+    # instead of an int
+    r = float(np.abs(Z * hall))
 
     def f_alpha_par_e(Z):
-        numerator = Z**(2 / 3)
-        denominator = 1.46 * Z**(2 / 3) - 0.330 * Z**(1 / 3) + 0.888
+        numerator = Z ** (2 / 3)
+        denominator = 1.46 * Z ** (2 / 3) - 0.330 * Z ** (1 / 3) + 0.888
         return 1 - numerator / denominator
 
     def f_alpha_0(Z):
-        return 0.623 * Z**(5 / 3) - 2.61 * Z**(4 / 3) + 3.56 * Z + 0.557
+        return 0.623 * Z ** (5 / 3) - 2.61 * Z ** (4 / 3) + 3.56 * Z + 0.557
 
     def f_alpha_1(Z):
-        return 2.24 * Z**(2 / 3) - 1.11 * Z**(1 / 3) + 1.84
+        return 2.24 * Z ** (2 / 3) - 1.11 * Z ** (1 / 3) + 1.84
 
     def f_alpha_2(Z):
-        return -0.0983 * Z**(1 / 3) + 0.0176
+        return -0.0983 * Z ** (1 / 3) + 0.0176
 
     def f_a_0(Z):
-        return 0.0759 * Z**(8 / 3) + 0.897 * Z**2 + 2.06 * Z + 1.06
+        return 0.0759 * Z ** (8 / 3) + 0.897 * Z ** 2 + 2.06 * Z + 1.06
 
     def f_a_1(Z):
-        return 2.18 * Z**(5 / 3) + 5.31 * Z + 3.73
+        return 2.18 * Z ** (5 / 3) + 5.31 * Z + 3.73
 
     def f_a_2(Z):
-        return 7.41 * Z + 1.11 * Z**(2 / 3) - 1.17
+        return 7.41 * Z + 1.11 * Z ** (2 / 3) - 1.17
 
     def f_a_3(Z):
-        return 3.89 * Z**(2 / 3) - 4.51 * Z**(1 / 3) + 6.76
+        return 3.89 * Z ** (2 / 3) - 4.51 * Z ** (1 / 3) + 6.76
 
     def f_a_4(Z):
-        return 2.26 * Z**(1 / 3) + 0.281
+        return 2.26 * Z ** (1 / 3) + 0.281
 
     def f_a_5(Z):
-        return 1.18 * Z**(5 / 3) - 1.03 * Z**(4 / 3) + 3.60 * Z + 1.32
+        return 1.18 * Z ** (5 / 3) - 1.03 * Z ** (4 / 3) + 3.60 * Z + 1.32
 
     alpha_par_e = [0.504, 0.431, f_alpha_par_e(Z)]
     alpha_0 = [2.130, 3.078, f_alpha_0(Z)]
@@ -1342,12 +2496,12 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
         return alpha_par
 
     def f_alpha_perp(Z_idx):
-        numerator = 1.46 * Z**(2 / 3) * r + \
-            alpha_0[Z_idx] * (1 - alpha_par_e[Z_idx])
-        denominator = r**(5 / 3) + \
-            alpha_2[Z_idx] * r**(4 / 3) + \
-            alpha_1[Z_idx] * r + \
-            alpha_0[Z_idx]
+        numerator = (1.46 * Z**(2 / 3) * r +
+                     alpha_0[Z_idx] * (1 - alpha_par_e[Z_idx]))
+        denominator = (r ** (5 / 3) +
+                       alpha_2[Z_idx] * r ** (4 / 3) +
+                       alpha_1[Z_idx] * r +
+                       alpha_0[Z_idx])
         return 1 - numerator / denominator
 
     alpha_perp = f_alpha_perp(Z_idx)
@@ -1355,13 +2509,13 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
         return alpha_perp
 
     def f_alpha_cross(Z_idx):
-        numerator = Z**(2 / 3) * r * (2.53 * r + a_0[Z_idx] / a_5[Z_idx])
-        denominator = r ** (8 / 3) + \
-            a_4[Z_idx] * r ** (7 / 3) + \
-            a_3[Z_idx] * r ** 2 + \
-            a_2[Z_idx] * r ** (5 / 3) + \
-            a_1[Z_idx] * r + \
-            a_0[Z_idx]
+        numerator = Z ** (2 / 3) * r * (2.53 * r + a_0[Z_idx] / a_5[Z_idx])
+        denominator = (r ** (8 / 3) +
+                       a_4[Z_idx] * r ** (7 / 3) +
+                       a_3[Z_idx] * r ** 2 +
+                       a_2[Z_idx] * r ** (5 / 3) +
+                       a_1[Z_idx] * r +
+                       a_0[Z_idx])
         return numerator / denominator
 
     alpha_cross = f_alpha_cross(Z_idx)
@@ -1382,27 +2536,29 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
 
     allowed_Z = [1, 2, 'arbitrary']
     Z_idx = _check_Z(allowed_Z, Z)
-    r = np.abs(Z * hall)
+    # fixing overflow errors when exponentiating r by making a float
+    # instead of an int
+    r = float(np.abs(Z * hall))
 
     def f_beta_par_e(Z):
-        numerator = Z**(5 / 3)
-        denominator = 0.693 * Z**(5 / 3) - 0.279 * Z**(4 / 3) + Z + 0.01
+        numerator = Z ** (5 / 3)
+        denominator = 0.693 * Z ** (5 / 3) - 0.279 * Z ** (4 / 3) + Z + 0.01
         return numerator / denominator
 
     def f_beta_0(Z):
-        return 0.156 * Z**(8 / 3) + 0.994 * Z**2 + 3.21 * Z - 0.84
+        return 0.156 * Z ** (8 / 3) + 0.994 * Z ** 2 + 3.21 * Z - 0.84
 
     def f_beta_1(Z):
-        return 3.69 * Z**(5 / 3) + 3.77 * Z + 0.77
+        return 3.69 * Z ** (5 / 3) + 3.77 * Z + 0.77
 
     def f_beta_2(Z):
-        return 9.43 * Z + 4.22 * Z**(2 / 3) - 12.9 * Z**(1 / 3) + 4.56
+        return 9.43 * Z + 4.22 * Z ** (2 / 3) - 12.9 * Z ** (1 / 3) + 4.56
 
     def f_beta_3(Z):
-        return 2.70 * Z**(2 / 3) + 1.46 * Z**(1 / 3) - 0.17
+        return 2.70 * Z ** (2 / 3) + 1.46 * Z ** (1 / 3) - 0.17
 
     def f_beta_4(Z):
-        return 2.58 * Z**(1 / 3) + 0.17
+        return 2.58 * Z ** (1 / 3) + 0.17
 
     def f_b_0(Z):
         numerator = 6.87 * Z ** 3 + 78.2 * Z ** 2 + 623 * Z + 366
@@ -1413,17 +2569,17 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
         return 0.134 * Z**2 + 0.977 * Z + 0.17
 
     def f_b_2(Z):
-        return 0.689 * Z**(4 / 3) - 0.377 * Z**(2 / 3) + \
-            3.94 * Z**(1 / 3) + 0.644
+        return (0.689 * Z ** (4 / 3) - 0.377 * Z ** (2 / 3) +
+                3.94 * Z**(1 / 3) + 0.644)
 
     def f_b_3(Z):
-        return -0.109 * Z + 1.33 * Z**(2 / 3) - 3.80 * Z**(1 / 3) + 0.289
+        return -0.109 * Z + 1.33 * Z ** (2 / 3) - 3.80 * Z ** (1 / 3) + 0.289
 
     def f_b_4(Z):
-        return 2.46 * Z**(2 / 3) + 0.522
+        return 2.46 * Z ** (2 / 3) + 0.522
 
     def f_b_5(Z):
-        return 0.102 * Z**2 + 0.746 * Z + 0.072 * Z**(1 / 3) + 0.211
+        return 0.102 * Z ** 2 + 0.746 * Z + 0.072 * Z ** (1 / 3) + 0.211
 
     beta_par_e = [0.702, 0.905, f_beta_par_e(Z)]
     beta_0 = [3.520, 10.55, f_beta_0(Z)]
@@ -1443,13 +2599,13 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
         return beta_par
 
     def f_beta_perp(Z_idx):
-        numerator = 6.33 * Z**(5 / 3) * r + beta_0[Z_idx] * beta_par_e[Z_idx]
-        denominator = r ** (8 / 3) + \
-            beta_4[Z_idx] * r ** (7 / 3) + \
-            beta_3[Z_idx] * r ** 2 + \
-            beta_2[Z_idx] * r ** (5 / 3) + \
-            beta_1[Z_idx] * r + \
-            beta_0[Z_idx]
+        numerator = 6.33 * Z ** (5 / 3) * r + beta_0[Z_idx] * beta_par_e[Z_idx]
+        denominator = (r ** (8 / 3) +
+                       beta_4[Z_idx] * r ** (7 / 3) +
+                       beta_3[Z_idx] * r ** 2 +
+                       beta_2[Z_idx] * r ** (5 / 3) +
+                       beta_1[Z_idx] * r +
+                       beta_0[Z_idx])
         return numerator / denominator
 
     beta_perp = f_beta_perp(Z_idx)
@@ -1458,12 +2614,12 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
 
     def f_beta_cross(Z_idx):
         numerator = Z * r * (3 / 2 * r + b_0[Z_idx] / b_5[Z_idx])
-        denominator = r ** 3 + \
-            b_4[Z_idx] * r ** (7 / 3) + \
-            b_3[Z_idx] * r ** 2 + \
-            b_2[Z_idx] * r ** (5 / 3) + \
-            b_1[Z_idx] * r + \
-            b_0[Z_idx]
+        denominator = (r ** 3 +
+                       b_4[Z_idx] * r ** (7 / 3) +
+                       b_3[Z_idx] * r ** 2 +
+                       b_2[Z_idx] * r ** (5 / 3) +
+                       b_1[Z_idx] * r +
+                       b_0[Z_idx])
         return numerator / denominator
 
     beta_cross = f_beta_cross(Z_idx)
@@ -1484,43 +2640,45 @@ def _nondim_visc_e_ji_held(hall, Z):
 
     allowed_Z = [1, 2, 'arbitrary']
     Z_idx = _check_Z(allowed_Z, Z)
-    r = np.abs(Z * hall)
+    # fixing overflow errors when exponentiating r by making a float
+    # instead of an int
+    r = float(np.abs(Z * hall))
 
     def f_eta_0_e(Z):
-        return 1 / (0.55 * Z + 0.083 * Z**(1 / 3) + 0.732)
+        return 1 / (0.55 * Z + 0.083 * Z ** (1 / 3) + 0.732)
 
     def f_hprime_0(Z):
-        return 0.0699 * Z**3 + 0.558 * Z**2 + 1.66 * Z + 1.06
+        return 0.0699 * Z ** 3 + 0.558 * Z ** 2 + 1.66 * Z + 1.06
 
     def f_hprime_1(Z):
-        return 0.657 * Z**2 + 1.42 * Z + 0.416
+        return 0.657 * Z ** 2 + 1.42 * Z + 0.416
 
     def f_hprime_2(Z):
-        return -0.369 * Z**(4 / 3) + 0.379 * Z + 0.339 * Z**(1 / 3) + 2.17
+        return -0.369 * Z ** (4 / 3) + 0.379 * Z + 0.339 * Z ** (1 / 3) + 2.17
 
     def f_hprime_3(Z):
-        return 2.16 * Z - 0.657 * Z**(1 / 3) + 0.0347
+        return 2.16 * Z - 0.657 * Z ** (1 / 3) + 0.0347
 
     def f_hprime_4(Z):
-        return -0.0703 * Z**(2 / 3) - 0.224 * Z**(1 / 3) + 0.333
+        return -0.0703 * Z ** (2 / 3) - 0.224 * Z ** (1 / 3) + 0.333
 
     def f_h_0(Z):
-        return 0.0473 * Z**3 + 0.323 * Z**2 + 0.951 * Z + 0.407
+        return 0.0473 * Z ** 3 + 0.323 * Z ** 2 + 0.951 * Z + 0.407
 
     def f_h_1(Z):
-        return 0.171 * Z**2 + 0.523 * Z + 0.336
+        return 0.171 * Z ** 2 + 0.523 * Z + 0.336
 
     def f_h_2(Z):
-        return 0.362 * Z**(4 / 3) + 0.178 * Z + 1.06 * Z**(1 / 3) + 1.26
+        return 0.362 * Z ** (4 / 3) + 0.178 * Z + 1.06 * Z ** (1 / 3) + 1.26
 
     def f_h_3(Z):
-        return 0.599 * Z + 0.106 * Z**(2 / 3) - 0.444 * Z**(1 / 3) - 0.161
+        return 0.599 * Z + 0.106 * Z ** (2 / 3) - 0.444 * Z ** (1 / 3) - 0.161
 
     def f_h_4(Z):
-        return -0.16 * Z**(2 / 3) + 0.06 * Z**(1 / 3) + 0.232
+        return -0.16 * Z ** (2 / 3) + 0.06 * Z ** (1 / 3) + 0.232
 
     def f_h_5(Z):
-        return 0.183 * Z**2 + 0.714 * Z + 0.0375 * Z**(1 / 3) + 0.47
+        return 0.183 * Z ** 2 + 0.714 * Z + 0.0375 * Z ** (1 / 3) + 0.47
 
     eta_0_e = [0.733, 0.516, f_eta_0_e(Z)]
     hprime_0 = [3.348, 7.171, f_hprime_0(Z)]
@@ -1538,14 +2696,14 @@ def _nondim_visc_e_ji_held(hall, Z):
     eta_0 = eta_0_e[Z_idx]
 
     def f_eta_2(Z_idx, r):
-        numerator = (6 / 5 * Z + 3 / 5 * np.sqrt(2)) * r + \
-            hprime_0[Z_idx] * eta_0_e[Z_idx]
-        denominator = r ** 3 + \
-            hprime_4[Z_idx] * r ** (7 / 3) + \
-            hprime_3[Z_idx] * r ** 2 + \
-            hprime_2[Z_idx] * r ** (5 / 3) + \
-            hprime_1[Z_idx] * r + \
-            hprime_0[Z_idx]
+        numerator = ((6 / 5 * Z + 3 / 5 * np.sqrt(2)) * r +
+                     hprime_0[Z_idx] * eta_0_e[Z_idx])
+        denominator = (r ** 3 +
+                       hprime_4[Z_idx] * r ** (7 / 3) +
+                       hprime_3[Z_idx] * r ** 2 +
+                       hprime_2[Z_idx] * r ** (5 / 3) +
+                       hprime_1[Z_idx] * r +
+                       hprime_0[Z_idx])
         return numerator / denominator
 
     eta_2 = f_eta_2(Z_idx, r)
@@ -1554,12 +2712,12 @@ def _nondim_visc_e_ji_held(hall, Z):
 
     def f_eta_4(Z_idx, r):
         numerator = r * (r + h_0[Z_idx] / h_5[Z_idx])
-        denominator = r ** 3 + \
-            h_4[Z_idx] * r ** (7 / 3) + \
-            h_3[Z_idx] * r ** 2 + \
-            h_2[Z_idx] * r ** (5 / 3) + \
-            h_1[Z_idx] * r + \
-            h_0[Z_idx]
+        denominator = (r ** 3 +
+                       h_4[Z_idx] * r ** (7 / 3) +
+                       h_3[Z_idx] * r ** 2 +
+                       h_2[Z_idx] * r ** (5 / 3) +
+                       h_1[Z_idx] * r +
+                       h_0[Z_idx])
         return numerator / denominator
 
     eta_4 = f_eta_4(Z_idx, r)
@@ -1586,29 +2744,29 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
 #    K = 3  # 3x3 moments
 
     if K == 3:
-        Delta_par_i1 = 1 + 26.90 * zeta + 187.5 * zeta**2 + 346.9 * zeta**3
-        kappa_par_i = (5.586 + 101.7 * zeta + 289.1 * zeta**2) / Delta_par_i1
+        Delta_par_i1 = 1 + 26.90 * zeta + 187.5 * zeta ** 2 + 346.9 * zeta ** 3
+        kappa_par_i = (5.586 + 101.7 * zeta + 289.1 * zeta ** 2) / Delta_par_i1
     elif K == 2:
-        Delta_par_i1 = 1 + 13.50 * zeta + 36.46 * zeta**2
+        Delta_par_i1 = 1 + 13.50 * zeta + 36.46 * zeta ** 2
         kappa_par_i = (5.524 + 30.38 * zeta) / Delta_par_i1
     if field_orientation == 'parallel' or field_orientation == 'par':
         return kappa_par_i / np.sqrt(2)
 
     if K == 3:
-        Delta_perp_i1 = r**6 + \
-            (3.635 + 29.15 * zeta + 83 * zeta**2) * r**4 + \
-            (1.395 + 35.64 * zeta + 344.9 * zeta**2 +
-             1345 * zeta**3 + 1891 * zeta**4) * r**2 + \
-            0.09163 * Delta_par_i1**2
+        Delta_perp_i1 = (r ** 6 +
+                         (3.635 + 29.15 * zeta + 83 * zeta ** 2) * r ** 4 +
+                         (1.395 + 35.64 * zeta + 344.9 * zeta ** 2 +
+                          1345 * zeta**3 + 1891 * zeta ** 4) * r ** 2 +
+                         0.09163 * Delta_par_i1 ** 2)
         kappa_perp_i = ((np.sqrt(2) + 15 / 2 * zeta) * r ** 4 +
-                        (3.841 + 57.59 * zeta + 297.8 * zeta**2 +
-                         555 * zeta**3) * r ** 2 +
+                        (3.841 + 57.59 * zeta + 297.8 * zeta ** 2 +
+                         555 * zeta ** 3) * r ** 2 +
                         0.09163 * kappa_par_i * Delta_par_i1 ** 2
                         ) / Delta_perp_i1
     elif K == 2:
-        Delta_perp_i1 = r**4 + \
-            (1.352 + 12.49 * zeta + 34 * zeta**2) * r**2 + \
-            0.1693 * Delta_par_i1**2
+        Delta_perp_i1 = (r ** 4 +
+                         (1.352 + 12.49 * zeta + 34 * zeta ** 2) * r ** 2 +
+                         0.1693 * Delta_par_i1 ** 2)
         kappa_perp_i = ((np.sqrt(2) + 15 / 2 * zeta) * r ** 2 +
                         0.1693 * kappa_par_i * Delta_par_i1 ** 2
                         ) / Delta_perp_i1
@@ -1616,20 +2774,21 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
         return kappa_perp_i / np.sqrt(2)
 
     if K == 3:
-        kappa_cross_i = r * (5 / 2 * r**4 +
-                             (7.963 + 64.40 * zeta + 185 * zeta**2) * r**2 +
-                             1.344 + 44.54 * zeta + 511.9 * zeta**2 +
-                             2155 * zeta**3 + 3063 * zeta**4
-                             ) / Delta_perp_i1
+        kappa_cross_i = (r * (5 / 2 * r ** 4 +
+                              (7.963 + 64.40 * zeta + 185 * zeta ** 2) * r ** 2 +
+                              1.344 + 44.54 * zeta + 511.9 * zeta ** 2 +
+                              2155 * zeta ** 3 + 3063 * zeta ** 4
+                              ) / Delta_perp_i1)
     elif K == 2:
-        kappa_cross_i = r * (5 / 2 * r**2 +
-                             2.323 + 22.73 * zeta + 62.5 * zeta**2
+        kappa_cross_i = r * (5 / 2 * r ** 2 +
+                             2.323 + 22.73 * zeta + 62.5 * zeta ** 2
                              ) / Delta_perp_i1
     if field_orientation == 'cross':
         return kappa_cross_i / np.sqrt(2)
 
     if field_orientation == 'all':
-        return np.array((kappa_par_i / np.sqrt(2), kappa_perp_i / np.sqrt(2),
+        return np.array((kappa_par_i / np.sqrt(2),
+                         kappa_perp_i / np.sqrt(2),
                          kappa_cross_i / np.sqrt(2)))
 
 
@@ -1649,26 +2808,26 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
 #    K = 3  # 3x3 moments
 
     if K == 3:
-        Delta_par_i2 = 1 + 15.79 * zeta + 63.92 * zeta**2 + 71.69 * zeta**3
-        eta_0_i = (1.365 + 16.75 * zeta + 35.84 * zeta**2) / Delta_par_i2
+        Delta_par_i2 = 1 + 15.79 * zeta + 63.92 * zeta ** 2 + 71.69 * zeta ** 3
+        eta_0_i = (1.365 + 16.75 * zeta + 35.84 * zeta ** 2) / Delta_par_i2
 
         def Delta_perp_i2(r, zeta, Delta_par_i2):
-            Delta_perp_i2 = r**6 + \
-                (4.391 + 26.69 * zeta + 56 * zeta**2) * r**4 + \
-                (3.191 + 49.62 * zeta + 306.4 * zeta**2 +
-                 808.1 * zeta**3 + 784 * zeta**4) * r**2 + \
-                0.4483 * Delta_par_i2**2
+            Delta_perp_i2 = (r ** 6 +
+                             (4.391 + 26.69 * zeta + 56 * zeta ** 2) * r ** 4 +
+                             (3.191 + 49.62 * zeta + 306.4 * zeta ** 2 +
+                              808.1 * zeta ** 3 + 784 * zeta ** 4) * r ** 2 +
+                             0.4483 * Delta_par_i2 ** 2)
             return Delta_perp_i2
 
         Delta_perp_i2_24 = Delta_perp_i2(r, zeta, Delta_par_i2)
         Delta_perp_i2_13 = Delta_perp_i2(r13, zeta, Delta_par_i2)
 
         def f_eta_2(r, zeta, Delta_perp_i2):
-            eta_2_i = ((3 / 5 * np.sqrt(2) + 2 * zeta) * r ** 4 +
-                       (2.680 + 25.98 * zeta + 90.71 * zeta**2 + 104 * zeta**3)
-                       * r ** 2 +
-                       0.4483 * eta_0_i * Delta_par_i2 ** 2
-                       ) / Delta_perp_i2
+            eta_2_i = (((3 / 5 * np.sqrt(2) + 2 * zeta) * r ** 4 +
+                        (2.680 + 25.98 * zeta + 90.71 * zeta ** 2 +
+                         104 * zeta ** 3) * r ** 2 +
+                        0.4483 * eta_0_i * Delta_par_i2 ** 2
+                        ) / Delta_perp_i2)
             return eta_2_i
 
         eta_2_i = f_eta_2(r, zeta, Delta_perp_i2_24)
@@ -1676,9 +2835,9 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
 
         def f_eta_4(r, zeta, Delta_perp_i2):
             eta_4_i = r * (r**4 +
-                           (3.535 + 23.30 * zeta + 52 * zeta**2) * r**2 +
-                           0.9538 + 21.81 * zeta + 174.2 * zeta**2 +
-                           538.4 * zeta**3 + 576 * zeta**4
+                           (3.535 + 23.30 * zeta + 52 * zeta ** 2) * r ** 2 +
+                           0.9538 + 21.81 * zeta + 174.2 * zeta ** 2 +
+                           538.4 * zeta ** 3 + 576 * zeta ** 4
                            ) / Delta_perp_i2
             return eta_4_i
 
@@ -1690,9 +2849,9 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
         eta_0_i = (1.357 + 5.243 * zeta) / Delta_par_i2
 
         def Delta_perp_i2(r, zeta, Delta_par_i2):
-            Delta_perp_i2 = r**4 + \
-                (2.023 + 11.68 * zeta + 20 * zeta**2) * r**2 + \
-                0.5820 * Delta_par_i2**2
+            Delta_perp_i2 = (r ** 4 +
+                             (2.023 + 11.68 * zeta + 20 * zeta ** 2) * r ** 2 +
+                             0.5820 * Delta_par_i2 ** 2)
             return Delta_perp_i2
 
         Delta_perp_i2_24 = Delta_perp_i2(r, zeta, Delta_par_i2)
@@ -1708,11 +2867,11 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
         eta_1_i = f_eta_2(r13, zeta, Delta_perp_i2_13)
 
         def f_eta_4(r, zeta, Delta_perp_i2):
-            Delta_perp_i2 = r**4 + \
-                (2.023 + 11.68 * zeta + 20 * zeta**2) * r**2 + \
-                0.5820 * Delta_par_i2**2
-            eta_4_i = r * (r**2 +
-                           1.188 + 8.283 * zeta + 16 * zeta**2
+            Delta_perp_i2 = (r ** 4 +
+                             (2.023 + 11.68 * zeta + 20 * zeta**2) * r ** 2 +
+                             0.5820 * Delta_par_i2 ** 2)
+            eta_4_i = r * (r ** 2 +
+                           1.188 + 8.283 * zeta + 16 * zeta ** 2
                            ) / Delta_perp_i2
             return eta_4_i
 

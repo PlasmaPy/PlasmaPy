@@ -6,52 +6,55 @@ from ...utils.exceptions import RelativityError
 from ..quantum import (deBroglie_wavelength,
                        thermal_deBroglie_wavelength,
                        Fermi_energy,
-                       Thomas_Fermi_length)
+                       Thomas_Fermi_length,
+                       Wigner_Seitz_radius,
+                       chemical_potential,
+                       chemical_potential_interp)
 
 
 def test_deBroglie_wavelength():
 
-    dbwavelength1 = deBroglie_wavelength(2e7*u.cm/u.s, 'e')
+    dbwavelength1 = deBroglie_wavelength(2e7 * u.cm / u.s, 'e')
     assert np.isclose(dbwavelength1.value, 3.628845222852886e-11)
     assert dbwavelength1.unit == u.m
 
-    dbwavelength2 = deBroglie_wavelength(0*u.m/u.s, 'e')
-    assert dbwavelength2 == np.inf*u.m
+    dbwavelength2 = deBroglie_wavelength(0 * u.m / u.s, 'e')
+    assert dbwavelength2 == np.inf * u.m
 
-    V_array = np.array([2e5, 0])*u.m/u.s
+    V_array = np.array([2e5, 0]) * u.m / u.s
     dbwavelength_arr = deBroglie_wavelength(V_array, 'e')
 
     assert np.isclose(dbwavelength_arr.value[0], 3.628845222852886e-11)
     assert dbwavelength_arr.value[1] == np.inf
     assert dbwavelength_arr.unit == u.m
 
-    V_array = np.array([2e5, 2e5])*u.m/u.s
+    V_array = np.array([2e5, 2e5]) * u.m / u.s
     dbwavelength_arr = deBroglie_wavelength(V_array, 'e')
 
     assert np.isclose(dbwavelength_arr.value[0], 3.628845222852886e-11)
     assert np.isclose(dbwavelength_arr.value[1], 3.628845222852886e-11)
     assert dbwavelength_arr.unit == u.m
 
-    assert deBroglie_wavelength(-5e5*u.m/u.s, 'p') == \
-        deBroglie_wavelength(5e5*u.m/u.s, 'p')
+    assert deBroglie_wavelength(-5e5 * u.m / u.s, 'p') == \
+        deBroglie_wavelength(5e5 * u.m / u.s, 'p')
 
-    assert deBroglie_wavelength(-5e5*u.m/u.s, 'e+') == \
-        deBroglie_wavelength(5e5*u.m/u.s, 'e')
+    assert deBroglie_wavelength(-5e5 * u.m / u.s, 'e+') == \
+        deBroglie_wavelength(5e5 * u.m / u.s, 'e')
 
-    assert deBroglie_wavelength(1*u.m/u.s, 5*u.kg) == \
-        deBroglie_wavelength(100*u.cm/u.s, 5000*u.g)
+    assert deBroglie_wavelength(1 * u.m / u.s, 5 * u.kg) == \
+        deBroglie_wavelength(100 * u.cm / u.s, 5000 * u.g)
 
     with pytest.raises(RelativityError):
-        deBroglie_wavelength(c*1.000000001, 'e')
+        deBroglie_wavelength(c * 1.000000001, 'e')
 
     with pytest.raises(UserWarning):
         deBroglie_wavelength(0.79450719277, 'Be-7 1+')
 
     with pytest.raises(u.UnitConversionError):
-        deBroglie_wavelength(8*u.m/u.s, 5*u.m)
+        deBroglie_wavelength(8 * u.m / u.s, 5 * u.m)
 
     with pytest.raises(ValueError):
-        deBroglie_wavelength(8*u.m/u.s, 'sddsf')
+        deBroglie_wavelength(8 * u.m / u.s, 'sddsf')
 
 
 # defining some plasma parameters for tests
@@ -80,7 +83,7 @@ def test_thermal_deBroglie_wavelength():
     with pytest.raises(TypeError):
         thermal_deBroglie_wavelength("Bad Input")
     with pytest.raises(ValueError):
-        thermal_deBroglie_wavelength(T_e=-1*u.eV)
+        thermal_deBroglie_wavelength(T_e=-1 * u.eV)
 
 
 def test_Fermi_energy():
@@ -101,7 +104,7 @@ def test_Fermi_energy():
     with pytest.raises(TypeError):
         Fermi_energy("Bad Input")
     with pytest.raises(ValueError):
-        Fermi_energy(n_e=-1*u.m**-3)
+        Fermi_energy(n_e=-1 * u.m**-3)
 
 
 def test_Thomas_Fermi_length():
@@ -122,4 +125,101 @@ def test_Thomas_Fermi_length():
     with pytest.raises(TypeError):
         Thomas_Fermi_length("Bad Input")
     with pytest.raises(ValueError):
-        Thomas_Fermi_length(n_e=-1*u.m**-3)
+        Thomas_Fermi_length(n_e=-1 * u.m**-3)
+
+
+def test_Wigner_Seitz_radius():
+    """
+    Checks Wigner-Seitz radius for a known value.
+    """
+    n_e = 1e23 * u.cm ** -3
+    radiusTrue = 1.3365046175719772e-10 * u.m
+    radiusMeth = Wigner_Seitz_radius(n_e)
+    testTrue = np.isclose(radiusMeth,
+                          radiusTrue,
+                          rtol=0.0,
+                          atol=1e-15 * u.m)
+    errStr = (f"Error in Wigner_Seitz_radius(), got {radiusMeth}, "
+              f"should be {radiusTrue}")
+    assert testTrue, errStr
+
+
+class Test_chemical_potential:
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.n_e = 1e20 * u.cm ** -3
+        self.n_e_fail = 1e23 * u.cm ** -3
+        self.T = 11604 * u.K
+        self.True1 = 1.234345958778249e-11
+
+    def test_known1(self):
+        """
+        Tests Fermi_integral for expected value.
+        """
+        methodVal = chemical_potential(self.n_e, self.T)
+        testTrue = np.isclose(methodVal,
+                              self.True1,
+                              rtol=1e-16,
+                              atol=0.0)
+        errStr = (f"Chemical potential value should be {self.True1} and not "
+                  f"{methodVal}.")
+        assert testTrue, errStr
+
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 + 1e-15
+        methodVal = chemical_potential(self.n_e, self.T)
+        testTrue = not np.isclose(methodVal,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"Chemical potential value test gives {methodVal} and "
+                  f"should not be equal to {fail1}.")
+        assert testTrue, errStr
+
+    def test_polog_fail(self):
+        """
+        Tests whether Fermi_integral() fails due to polylog from mpmath
+        not having an implementation for larger argument values.
+        """
+        with pytest.raises(NotImplementedError):
+            chemical_potential(self.n_e_fail, self.T)
+
+
+class Test_chemical_potential_interp:
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.n_e = 1e23 * u.cm ** -3
+        self.T = 11604 * u.K
+        self.True1 = 7.741256653579105
+
+    def test_known1(self):
+        """
+        Tests Fermi_integral for expected value.
+        """
+        methodVal = chemical_potential_interp(self.n_e, self.T)
+        testTrue = np.isclose(methodVal,
+                              self.True1,
+                              rtol=1e-16,
+                              atol=0.0)
+        errStr = (f"Chemical potential value should be {self.True1} and not "
+                  f"{methodVal}.")
+        assert testTrue, errStr
+
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 + 1e-15
+        methodVal = chemical_potential_interp(self.n_e, self.T)
+        testTrue = not np.isclose(methodVal,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"Chemical potential value test gives {methodVal} "
+                  f"and should not be equal to {fail1}.")
+        assert testTrue, errStr
