@@ -434,8 +434,8 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     params = Parameters()
     params.add('alpha', value=alphaGuess, min=0.0)
     # calling minimize function from lmfit to fit by minimizing the residual
-    data = np.array([degen]) # result of Fermi_integral - degen should be zero
-    eps_data = np.array([1e-15]) # numerical error
+    data = np.array([degen])  # result of Fermi_integral - degen should be zero
+    eps_data = np.array([1e-15])  # numerical error
     minFit = minimize(residual, params, args=(data, eps_data))
     return minFit.params['alpha'].value * u.dimensionless_unscaled
 

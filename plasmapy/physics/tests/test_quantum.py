@@ -151,6 +151,7 @@ class Test_chemical_potential:
         self.n_e_fail = 1e23 * u.cm ** -3
         self.T = 11604 * u.K
         self.True1 = 1.234345958778249e-11
+
     def test_known1(self):
         """
         Tests Fermi_integral for expected value.
@@ -163,6 +164,7 @@ class Test_chemical_potential:
         errStr = (f"Chemical potential value should be {self.True1} and not "
                   f"{methodVal}.")
         assert testTrue, errStr
+
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -177,6 +179,7 @@ class Test_chemical_potential:
         errStr = (f"Chemical potential value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
+
     def test_polog_fail(self):
         """
         Tests whether Fermi_integral() fails due to polylog from mpmath
@@ -192,6 +195,7 @@ class Test_chemical_potential_interp:
         self.n_e = 1e23 * u.cm ** -3
         self.T = 11604 * u.K
         self.True1 = 7.741256653579105
+
     def test_known1(self):
         """
         Tests Fermi_integral for expected value.
@@ -204,6 +208,7 @@ class Test_chemical_potential_interp:
         errStr = (f"Chemical potential value should be {self.True1} and not "
                   f"{methodVal}.")
         assert testTrue, errStr
+
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the

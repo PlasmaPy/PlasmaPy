@@ -7,6 +7,7 @@ import pytest
 
 from .. mathematics import Fermi_integral
 
+
 class Test_Fermi_integral:
     def setup_method(self):
         """initializing parameters for tests """
@@ -18,6 +19,7 @@ class Test_Fermi_integral:
         self.Trues = np.array([(1.1173314873128224-0j),
                                (1.5756407761513003-0j),
                                (2.8237212774015843-2.6020852139652106e-18j)])
+
     def test_known1(self):
         """
         Tests Fermi_integral for expected value.
@@ -30,6 +32,7 @@ class Test_Fermi_integral:
         errStr = (f"Fermi integral value should be {self.True1} and not "
                   f"{methodVal}.")
         assert testTrue, errStr
+
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -44,6 +47,7 @@ class Test_Fermi_integral:
         errStr = (f"Fermi integral value test gives {methodVal} and should "
                   f"not be equal to {fail1}.")
         assert testTrue, errStr
+
     def test_polog_fail(self):
         """
         Tests whether Fermi_integral() fails due to polylog from mpmath
@@ -51,6 +55,7 @@ class Test_Fermi_integral:
         """
         with pytest.raises(NotImplementedError):
             Fermi_integral(self.argFail1, self.order1)
+
     def test_array(self):
         """Testing Fermi_integral where argument is an array of inputs."""
         methodVals = Fermi_integral(self.args, self.order1)
@@ -61,10 +66,11 @@ class Test_Fermi_integral:
         errStr = (f"Fermi integral value should be {self.Trues} and not "
                   f"{methodVals}.")
         assert testTrue, errStr
+
     def test_invalid_type(self):
         """
         Testing whether ValueError is raised when an invalid argument
         type is passed to Fermi integral.
         """
         with pytest.raises(ValueError):
-            Fermi_integral([1,2,3], self.order1)
+            Fermi_integral([1, 2, 3], self.order1)

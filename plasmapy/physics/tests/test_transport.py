@@ -71,6 +71,7 @@ class Test_Coulomb_logarithm:
         self.gms5_negative = 0.03126832674323108
         self.gms6 = 3.635342040477818
         self.gms6_negative = 0.030720859361047514
+
     def test_Chen_Q_machine(self):
         """
         Tests whether Coulomb logarithm gives value consistent with 
@@ -83,7 +84,7 @@ class Test_Coulomb_logarithm:
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
-        lnLambdaChen = 9.1 + np.log(2) 
+        lnLambdaChen = 9.1 + np.log(2)
         lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
         testTrue = np.isclose(lnLambda,
                               lnLambdaChen,
@@ -92,6 +93,7 @@ class Test_Coulomb_logarithm:
         errStr = ("Q-machine value of Coulomb logarithm should be "
                   f"{lnLambdaChen} and not {lnLambda}.")
         assert testTrue, errStr
+
     def test_Chen_lab(self):
         """
         Tests whether Coulomb logarithm gives value consistent with 
@@ -104,7 +106,7 @@ class Test_Coulomb_logarithm:
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
-        lnLambdaChen = 10.2 + np.log(2) 
+        lnLambdaChen = 10.2 + np.log(2)
         lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
         testTrue = np.isclose(lnLambda,
                               lnLambdaChen,
@@ -113,6 +115,7 @@ class Test_Coulomb_logarithm:
         errStr = ("Lab plasma value of Coulomb logarithm should be "
                   f"{lnLambdaChen} and not {lnLambda}.")
         assert testTrue, errStr
+
     def test_Chen_torus(self):
         """
         Tests whether Coulomb logarithm gives value consistent with 
@@ -125,7 +128,7 @@ class Test_Coulomb_logarithm:
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
-        lnLambdaChen = 13.7 + np.log(2) 
+        lnLambdaChen = 13.7 + np.log(2)
         lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
         testTrue = np.isclose(lnLambda,
                               lnLambdaChen,
@@ -134,6 +137,7 @@ class Test_Coulomb_logarithm:
         errStr = ("Torus value of Coulomb logarithm should be "
                   f"{lnLambdaChen} and not {lnLambda}.")
         assert testTrue, errStr
+
     def test_Chen_fusion(self):
         """
         Tests whether Coulomb logarithm gives value consistent with 
@@ -156,6 +160,7 @@ class Test_Coulomb_logarithm:
         errStr = ("Fusion reactor value of Coulomb logarithm should be "
                   f"{lnLambdaChen} and not {lnLambda}.")
         assert testTrue, errStr
+
     def test_Chen_laser(self):
         """
         Tests whether Coulomb logarithm gives value consistent with 
@@ -168,7 +173,7 @@ class Test_Coulomb_logarithm:
         # factor of np.log(2) corrects for different definitions of thermal
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
-        lnLambdaChen = 6.8 + np.log(2) 
+        lnLambdaChen = 6.8 + np.log(2)
         lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
         testTrue = np.isclose(lnLambda,
                               lnLambdaChen,
@@ -177,6 +182,7 @@ class Test_Coulomb_logarithm:
         errStr = ("Laser plasma value of Coulomb logarithm should be "
                   f"{lnLambdaChen} and not {lnLambda}.")
         assert testTrue, errStr
+
     def test_GMS1(self):
         """
         Test for first version of Coulomb logarithm from Gericke,
@@ -195,6 +201,7 @@ class Test_Coulomb_logarithm:
         errStr = (f"Coulomb logarithm for GMS-1 should be "
                   f"{self.gms1} and not {methodVal}.")
         assert testTrue, errStr
+
     def test_GMS1_negative(self):
         """
         Test for first version of Coulomb logarithm from Gericke,
@@ -214,6 +221,7 @@ class Test_Coulomb_logarithm:
         errStr = (f"Coulomb logarithm for GMS-1 should be "
                   f"{self.gms1_negative} and not {methodVal}.")
         assert testTrue, errStr
+
     def test_GMS2(self):
         """
         Test for second version of Coulomb logarithm from Gericke,
@@ -232,6 +240,7 @@ class Test_Coulomb_logarithm:
         errStr = (f"Coulomb logarithm for GMS-2 should be "
                   f"{self.gms2} and not {methodVal}.")
         assert testTrue, errStr
+
     def test_GMS2_negative(self):
         """
         Test for second version of Coulomb logarithm from Gericke,
@@ -251,6 +260,7 @@ class Test_Coulomb_logarithm:
         errStr = (f"Coulomb logarithm for GMS-2 should be "
                   f"{self.gms2_negative} and not {methodVal}.")
         assert testTrue, errStr
+
     def test_GMS3(self):
         """
         Test for third version of Coulomb logarithm from Gericke,
@@ -269,6 +279,7 @@ class Test_Coulomb_logarithm:
         errStr = (f"Coulomb logarithm for GMS-3 should be "
                   f"{self.gms3} and not {methodVal}.")
         assert testTrue, errStr
+
     def test_GMS3_negative(self):
         """
         Test for third version of Coulomb logarithm from Gericke,
@@ -289,6 +300,7 @@ class Test_Coulomb_logarithm:
         errStr = (f"Coulomb logarithm for GMS-3 should be "
                   f"{self.gms3_negative} and not {methodVal}.")
         assert testTrue, errStr
+
     def test_GMS4(self):
         """
         Test for fourth version of Coulomb logarithm from Gericke,
@@ -307,6 +319,7 @@ class Test_Coulomb_logarithm:
         errStr = (f"Coulomb logarithm for GMS-4 should be "
                   f"{self.gms4} and not {methodVal}.")
         assert testTrue, errStr
+
     def test_GMS4_negative(self):
         """
         Test for fourth version of Coulomb logarithm from Gericke,
@@ -327,6 +340,7 @@ class Test_Coulomb_logarithm:
         errStr = (f"Coulomb logarithm for GMS-4 should be "
                   f"{self.gms4_negative} and not {methodVal}.")
         assert testTrue, errStr
+
     def test_GMS5(self):
         """
         Test for fifth version of Coulomb logarithm from Gericke,
@@ -345,6 +359,7 @@ class Test_Coulomb_logarithm:
         errStr = (f"Coulomb logarithm for GMS-5 should be "
                   f"{self.gms5} and not {methodVal}.")
         assert testTrue, errStr
+
     def test_GMS5_negative(self):
         """
         Test for fifth version of Coulomb logarithm from Gericke,
@@ -365,6 +380,7 @@ class Test_Coulomb_logarithm:
         errStr = (f"Coulomb logarithm for GMS-5 should be "
                   f"{self.gms5_negative} and not {methodVal}.")
         assert testTrue, errStr
+
     def test_GMS6(self):
         """
         Test for sixth version of Coulomb logarithm from Gericke,
@@ -383,6 +399,7 @@ class Test_Coulomb_logarithm:
         errStr = (f"Coulomb logarithm for GMS-6 should be "
                   f"{self.gms6} and not {methodVal}.")
         assert testTrue, errStr
+
     def test_GMS6_negative(self):
         """
         Test for sixth version of Coulomb logarithm from Gericke,
@@ -403,6 +420,7 @@ class Test_Coulomb_logarithm:
         errStr = (f"Coulomb logarithm for GMS-6 should be "
                   f"{self.gms6_negative} and not {methodVal}.")
         assert testTrue, errStr
+
     def test_GMS2_zmean_error(self):
         """
         Tests whether GMS-2 raises z_mean error when a z_mean is not
@@ -413,6 +431,7 @@ class Test_Coulomb_logarithm:
                                           self.density2,
                                           self.particles,
                                           method="GMS-2")
+
     def test_GMS5_zmean_error(self):
         """
         Tests whether GMS-5 raises z_mean error when a z_mean is not
@@ -423,6 +442,7 @@ class Test_Coulomb_logarithm:
                                           self.density2,
                                           self.particles,
                                           method="GMS-5")
+
     def test_GMS6_zmean_error(self):
         """
         Tests whether GMS-6 raises z_mean error when a z_mean is not
@@ -433,14 +453,17 @@ class Test_Coulomb_logarithm:
                                           self.density2,
                                           self.particles,
                                           method="GMS-6")
+
     def test_relativity_warn(self):
         """Tests whether relativity warning is raised at high velocity."""
         with pytest.warns(RelativityWarning):
-            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), V = 0.9 * c)
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), V=0.9 * c)
+
     def test_relativity_error(self):
         """Tests whether relativity error is raised at light speed."""
         with pytest.raises(RelativityError):
-            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), V = 1.1 * c)
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), V=1.1 * c)
+
     def test_unit_conversion_error(self):
         """
         Tests whether unit conversion error is raised when arguments
@@ -448,13 +471,15 @@ class Test_Coulomb_logarithm:
         """
         with pytest.raises(u.UnitConversionError):
             Coulomb_logarithm(1e5 * u.g, 1 * u.m**-3,
-                          ('e', 'p'), V = 29979245 * u.m / u.s)
+                              ('e', 'p'), V=29979245 * u.m / u.s)
+
     def test_single_particle_error(self):
         """
         Tests whether an error is raised if only a single particle is given.
         """
         with pytest.raises(ValueError):
             Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e'))
+
     def test_invalid_particle_error(self):
         """
         Tests whether an error is raised when an invalid particle name
@@ -468,6 +493,7 @@ class Test_Coulomb_logarithm:
     Lambda = np.array([5.97, 21.66, 6.69])
     particles = ('e', 'p')
 
+
 class Test_b_perp:
     def setup_method(self):
         """initializing parameters for tests """
@@ -475,6 +501,7 @@ class Test_b_perp:
         self.particles = ('e', 'p')
         self.V = 1e4 * u.km / u.s
         self.True1 = 7.200146594293746e-10
+
     def test_known1(self):
         """
         Test for known value.
@@ -490,6 +517,7 @@ class Test_b_perp:
                   f"collision, b_perp, should be {self.True1} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -512,6 +540,7 @@ class Test_b_perp:
                                         5 * u.m**-3,
                                         ('e', 'e')))
 
+
 class Test_impact_parameter:
     def setup_method(self):
         """initializing parameters for tests """
@@ -521,6 +550,7 @@ class Test_impact_parameter:
         self.z_mean = 2.5
         self.V = 1e4 * u.km / u.s
         self.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
+
     def test_known1(self):
         """
         Test for known value.
@@ -540,6 +570,7 @@ class Test_impact_parameter:
         errStr = (f"Impact parameters should be {self.True1} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -561,6 +592,7 @@ class Test_impact_parameter:
         errStr = (f"Impact parameter value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
+
     def test_bad_method(self):
         """Testing failure when invalid method is passed."""
         with pytest.raises(ValueError):
@@ -586,6 +618,7 @@ class Test_collision_frequency:
         self.True_electrons = 1904702641552.1638
         self.True_protons = 44450104815.91857
         self.True_zmean = 1346828153985.4646
+
     def test_known1(self):
         """
         Test for known value.
@@ -603,6 +636,7 @@ class Test_collision_frequency:
         errStr = (f"Collision frequency should be {self.True1} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -622,6 +656,7 @@ class Test_collision_frequency:
         errStr = (f"Collision frequency value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
+
     def test_electrons(self):
         """
         Testing collision frequency between electrons.
@@ -639,6 +674,7 @@ class Test_collision_frequency:
         errStr = (f"Collision frequency should be {self.True_electrons} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
     def test_protons(self):
         """
         Testing collision frequency between protons (ions).
@@ -656,6 +692,7 @@ class Test_collision_frequency:
         errStr = (f"Collision frequency should be {self.True_protons} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
     def test_zmean(self):
         """
         Test collisional frequency function when given arbitrary z_mean.
@@ -674,6 +711,7 @@ class Test_collision_frequency:
                   f"not {methodVal}.")
         assert testTrue, errStr
 
+
 class Test_mean_free_path:
     def setup_method(self):
         """initializing parameters for tests """
@@ -683,6 +721,7 @@ class Test_mean_free_path:
         self.z_mean = 2.5
         self.V = 1e4 * u.km / u.s
         self.True1 = 4.4047571877932046e-07
+
     def test_known1(self):
         """
         Test for known value.
@@ -700,6 +739,7 @@ class Test_mean_free_path:
         errStr = (f"Mean free path should be {self.True1} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -731,6 +771,7 @@ class Test_Spitzer_resistivity:
         self.V = 1e4 * u.km / u.s
         self.True1 = 1.2665402649805445e-3
         self.True_zmean = 0.00020264644239688712
+
     def test_known1(self):
         """
         Test for known value.
@@ -748,6 +789,7 @@ class Test_Spitzer_resistivity:
         errStr = (f"Spitzer resistivity should be {self.True1} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -767,6 +809,7 @@ class Test_Spitzer_resistivity:
         errStr = (f"Spitzer resistivity value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
+
     def test_zmean(self):
         """Testing Spitzer when z_mean is passed."""
         methodVal = Spitzer_resistivity(self.T,
@@ -783,6 +826,7 @@ class Test_Spitzer_resistivity:
                   f"not {methodVal}.")
         assert testTrue, errStr
 
+
 class Test_mobility:
     def setup_method(self):
         """initializing parameters for tests """
@@ -793,6 +837,7 @@ class Test_mobility:
         self.V = 1e4 * u.km / u.s
         self.True1 = 0.13066090887074902
         self.True_zmean = 0.32665227217687254
+
     def test_known1(self):
         """
         Test for known value.
@@ -810,6 +855,7 @@ class Test_mobility:
         errStr = (f"Mobility should be {self.True1} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -829,6 +875,7 @@ class Test_mobility:
         errStr = (f"Mobility value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
+
     def test_zmean(self):
         """Testing mobility when z_mean is passed."""
         methodVal = mobility(self.T,
@@ -856,6 +903,7 @@ class Test_Knudsen_number:
         self.z_mean = 2.5
         self.V = 1e4 * u.km / u.s
         self.True1 = 440.4757187793204
+
     def test_known1(self):
         """
         Test for known value.
@@ -874,6 +922,7 @@ class Test_Knudsen_number:
         errStr = (f"Knudsen number should be {self.True1} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -907,6 +956,7 @@ class Test_coupling_parameter:
         self.True1 = 2.3213156755481195
         self.True_zmean = 10.689750083758698
         self.True_quantum = 0.3334662805238162
+
     def test_known1(self):
         """
         Test for known value.
@@ -924,6 +974,7 @@ class Test_coupling_parameter:
         errStr = (f"Coupling parameter should be {self.True1} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -943,6 +994,7 @@ class Test_coupling_parameter:
         errStr = (f"Coupling parameter value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
+
     def test_zmean(self):
         """
         Test value obtained when arbitrary z_mean is passed
@@ -960,6 +1012,7 @@ class Test_coupling_parameter:
         errStr = (f"Coupling parameter should be {self.True_zmean} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
     def test_quantum(self):
         """
         Testing quantum method for coupling parameter.

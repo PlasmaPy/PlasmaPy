@@ -214,6 +214,7 @@ def Coulomb_logarithm(T,
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
     return ln_Lambda
 
+
 def _boilerPlate(T, particles, V):
     """
     Some boiler plate code for checking if inputs to functions in
@@ -262,7 +263,7 @@ def b_perp(T,
            V=np.nan*u.m/u.s):
     """
     Distance of closest approach for a 90 degree Coulomb collision.
-    
+
     Parameters
     ----------
 
@@ -405,13 +406,13 @@ def impact_parameter(T,
     The minimum and maximum impact parameters may be calculated in a
     variety of ways. The maximum impact parameter is typically
     the Debye length.
-    
+
     For quantum plasmas the maximum impact parameter can be the
     quadratic sum of the debye length and ion radius (Wigner_Seitz) [1]_
-    
+
     .. math::
         b_{max} = \left(\lambda_{De}^2 + a_i^2\right)^{1/2}
-        
+
     The minimum impact parameter is typically some combination of the
     thermal deBroglie wavelength and the distance of closest approach
     for a 90 degree Coulomb collision. A quadratic sum is used for
@@ -584,27 +585,27 @@ def collision_frequency(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
-    
+
     Notes
     -----
     The collision frequency is given by [1]_
-    
+
     .. math::
         \nu = n \sigma v \ln{\Lambda}
-        
+
     where n is the particle density, :math:`\sigma` is the collisional
     cross-section, :math:`v` is the inter-particle velocity (typically 
     taken as the thermal velocity), and :math:`\ln{\Lambda}` is the Coulomb
     logarithm accounting for small angle collisions.
-    
+
     The collisional cross-section is obtained by
-    
+
     .. math::
         \sigma = \pi \rho_{\perp}^2
-        
+
     where :math:`\rho_{\perp}` is the distance of closest approach for
     a 90 degree Coulomb collision.
-    
+
     See eq (2.14) in [2]_.
 
     Examples
@@ -615,7 +616,7 @@ def collision_frequency(T,
     >>> particles = ('e', 'p')
     >>> collision_frequency(T, n, particles)
     <Quantity 702505.15998601 Hz>
-    
+
      References
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
@@ -675,7 +676,7 @@ def collision_frequency(T,
     # collision frequency where Coulomb logarithm accounts for
     # small angle collisions, which are more frequent than large
     # angle collisions.
-    freq =  n * sigma * V * cou_log
+    freq = n * sigma * V * cou_log
     return freq.to(u.Hz)
 
 
@@ -748,7 +749,7 @@ def mean_free_path(T,
 
     .. math::
         \lambda_{mfp} = \frac{v}{\nu}
-        
+
     where :math:`v` is the inter-particle velocity (typically taken to be
     the thermal velocity) and :math:`\nu` is the collision frequency.
 
@@ -862,7 +863,7 @@ def Spitzer_resistivity(T,
     ion density, :math:`Z` is the particle charge state, :math:`q_e` is the
     charge of an electron, :math:`\nu_{1,2}` is the collisional frequency
     between particle species 1 and 2.
-    
+
     Typically, particle species 1 and 2 are selected to be an electron
     and an ion, since electron-ion collisions are inelastic and therefore
     produce resistivity in the plasma.
@@ -1017,12 +1018,12 @@ def mobility(T,
                  "n_e": {"units": u.m**-3}
                  })
 def Knudsen_number(characteristic_length,
-            T,
-            n_e,
-            particles,
-            z_mean=np.nan*u.dimensionless_unscaled,
-            V=np.nan*u.m/u.s,
-            method="classical"):
+                   T,
+                   n_e,
+                   particles,
+                   z_mean=np.nan*u.dimensionless_unscaled,
+                   V=np.nan*u.m/u.s,
+                   method="classical"):
     r"""Knudsen number (dimless)
 
     Parameters
@@ -1090,7 +1091,7 @@ def Knudsen_number(characteristic_length,
     where :math:`\lambda_{mfp}` is the collisional mean free path for
     particles in a plasma and :math`L` is the characteristic scale
     length of interest.
-    
+
     Typically the characteristic scale length is the plasma size or the
     size of a diagnostic (such a the length or radius of a Langmuir
     probe tip). The Knudsen number tells us whether collisional effects
@@ -1195,36 +1196,36 @@ def coupling_parameter(T,
 
     .. math::
         \Gamma = \frac{E_{Coulomb}}{E_{Kinetic}}
-        
+
     The Coulomb energy is given by
-    
+
     .. math::
         E_{Coulomb} = 
-    
+
     In the classical case the kinetic energy is simply the thermal energy
-    
+
     .. math::
         E_{kinetic} = k_B T_e
-        
+
     The quantum case is more complex. The kinetic energy is dominated by
     the Fermi energy, modulated by a correction factor based on the
     ideal chemical potential [1]_
-    
+
     .. math::
         E_{kinetic} = E_{Fermi} f_{3/2} (\mu_{ideal})
 
     where :math:`E_{Fermi}` is the Fermi energy, :math:`f_{3/2}` is the
     Fermi integral, and :math:`\mu_{ideal}` is the ideal chemical 
     potential.
-    
+
     The Fermi energy is given by
-    
+
     .. math::
         E_{Fermi} = n_e \Lambda_{deBroglie} ^ 3
-        
+
     where :math:`n_e` is the electron density and :math:`\Lambda_{deBroglie}`
     is the thermal deBroglie wavelength.
-    
+
     See equations 1.2, 1.3 and footnote 5 in [2]_ for details on the ideal
     chemical potential.
 
@@ -2034,7 +2035,7 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
 
     allowed_Z = [1, 2, 3, 4, np.inf]
     Z_idx = _check_Z(allowed_Z, Z)
-    
+
     # fixing overflow errors when exponentiating hall by making a float
     # instead of an int
     hall = float(hall)
@@ -2150,7 +2151,7 @@ def _nondim_visc_i_braginskii(hall):
     delta_1 = 4.03
     delta_0 = 2.33
     eta_0_i = eta_prime_0
-    
+
     # fixing overflow errors when exponentiating hall by making a float
     # instead of an int
     hall = float(hall)
@@ -2179,7 +2180,7 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
 
     allowed_Z = [1, 2, 3, 4, np.inf]
     Z_idx = _check_Z(allowed_Z, Z)
-    
+
     # fixing overflow errors when exponentiating hall by making a float
     # instead of an int
     hall = float(hall)
@@ -2447,7 +2448,7 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
         return -0.0983 * Z ** (1 / 3) + 0.0176
 
     def f_a_0(Z):
-        return 0.0759 * Z **( 8 / 3) + 0.897 * Z ** 2 + 2.06 * Z + 1.06
+        return 0.0759 * Z ** (8 / 3) + 0.897 * Z ** 2 + 2.06 * Z + 1.06
 
     def f_a_1(Z):
         return 2.18 * Z ** (5 / 3) + 5.31 * Z + 3.73
@@ -2741,7 +2742,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
                          (3.635 + 29.15 * zeta + 83 * zeta ** 2) * r ** 4 +
                          (1.395 + 35.64 * zeta + 344.9 * zeta ** 2 +
                           1345 * zeta**3 + 1891 * zeta ** 4) * r ** 2 +
-                          0.09163 * Delta_par_i1 ** 2)
+                         0.09163 * Delta_par_i1 ** 2)
         kappa_perp_i = ((np.sqrt(2) + 15 / 2 * zeta) * r ** 4 +
                         (3.841 + 57.59 * zeta + 297.8 * zeta ** 2 +
                          555 * zeta ** 3) * r ** 2 +
@@ -2759,10 +2760,10 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
 
     if K == 3:
         kappa_cross_i = (r * (5 / 2 * r ** 4 +
-                         (7.963 + 64.40 * zeta + 185 * zeta ** 2) * r ** 2 +
-                         1.344 + 44.54 * zeta + 511.9 * zeta ** 2 +
-                         2155 * zeta ** 3 + 3063 * zeta ** 4
-                         ) / Delta_perp_i1)
+                              (7.963 + 64.40 * zeta + 185 * zeta ** 2) * r ** 2 +
+                              1.344 + 44.54 * zeta + 511.9 * zeta ** 2 +
+                              2155 * zeta ** 3 + 3063 * zeta ** 4
+                              ) / Delta_perp_i1)
     elif K == 2:
         kappa_cross_i = r * (5 / 2 * r ** 2 +
                              2.323 + 22.73 * zeta + 62.5 * zeta ** 2
@@ -2800,7 +2801,7 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
                              (4.391 + 26.69 * zeta + 56 * zeta ** 2) * r ** 4 +
                              (3.191 + 49.62 * zeta + 306.4 * zeta ** 2 +
                               808.1 * zeta ** 3 + 784 * zeta ** 4) * r ** 2 +
-                              0.4483 * Delta_par_i2 ** 2)
+                             0.4483 * Delta_par_i2 ** 2)
             return Delta_perp_i2
 
         Delta_perp_i2_24 = Delta_perp_i2(r, zeta, Delta_par_i2)
@@ -2810,8 +2811,8 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
             eta_2_i = (((3 / 5 * np.sqrt(2) + 2 * zeta) * r ** 4 +
                         (2.680 + 25.98 * zeta + 90.71 * zeta ** 2 +
                          104 * zeta ** 3) * r ** 2 +
-                         0.4483 * eta_0_i * Delta_par_i2 ** 2
-                       ) / Delta_perp_i2)
+                        0.4483 * eta_0_i * Delta_par_i2 ** 2
+                        ) / Delta_perp_i2)
             return eta_2_i
 
         eta_2_i = f_eta_2(r, zeta, Delta_perp_i2_24)
