@@ -131,7 +131,7 @@ def Coulomb_logarithm(T,
     .. math::
         \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
 
-    This means the Coulomb logarithm will not breakdown for Lambda < 0,
+    This means the Coulomb logarithm will not break down for Lambda < 0,
     which occurs for dense, cold plasmas.
 
     Examples
@@ -199,7 +199,7 @@ def Coulomb_logarithm(T,
         # Spitzer-like extension to Coulomb logarithm by noting that
         # Coulomb collisions take hyperbolic trajectories. Removes
         # divergence for small bmin issue in classical Landau-Spitzer
-        # approach, so bmin can be zero. Also doesn't breakdown as
+        # approach, so bmin can be zero. Also doesn't break down as
         # Lambda < 0 is now impossible, even when coupling parameter is large.
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     elif method == "GMS-5":
@@ -456,7 +456,7 @@ def impact_parameter(T,
     # Debye length
     lambdaDe = Debye_length(T, n_e)
     # deBroglie wavelength
-    lambdaDB = hbar / (2 * reduced_mass * V)
+    lambdaBroglie = hbar / (2 * reduced_mass * V)
     # distance of closest approach in 90 degree Coulomb collision
     bPerp = b_perp(T=T,
                    particles=particles,
@@ -469,17 +469,17 @@ def impact_parameter(T,
         # shorter than either of these two impact parameters, so we choose
         # the larger of these two possibilities. That is, between the
         # deBroglie wavelength and the distance of closest approach.
-        if bPerp > lambdaDB:
+        if bPerp > lambdaBroglie:
             bmin = bPerp
         else:
-            bmin = lambdaDB
+            bmin = lambdaBroglie
     elif method == "GMS-1":
         # 1st method listed in Table 1 of reference [1]
         # This is just another form of the classical Landau-Spitzer
         # approach, but bmin is interpolated between the deBroglie
         # wavelength and distance of closest approach.
         bmax = lambdaDe
-        bmin = (lambdaDB ** 2 + bPerp ** 2) ** (1 / 2)
+        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
     elif method == "GMS-2":
         # 2nd method listed in Table 1 of reference [1]
         # Another Landau-Spitzer like approach, but now bmax is also
@@ -491,17 +491,17 @@ def impact_parameter(T,
         # mean ion sphere radius.
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
-        bmin = (lambdaDB ** 2 + bPerp ** 2) ** (1 / 2)
+        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
     elif method == "GMS-3":
         # 3rd method listed in Table 1 of reference [1]
         # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
         # where Lambda is the argument to the Coulomb logarithm.
         bmax = lambdaDe
-        bmin = (lambdaDB ** 2 + bPerp ** 2) ** (1 / 2)
+        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
     elif method == "GMS-4":
         # 4th method listed in Table 1 of reference [1]
         bmax = lambdaDe
-        bmin = (lambdaDB ** 2 + bPerp ** 2) ** (1 / 2)
+        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
     elif method == "GMS-5":
         # 5th method listed in Table 1 of reference [1]
         # Mean ion density.
@@ -517,7 +517,7 @@ def impact_parameter(T,
         # mean ion sphere radius.
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
-        bmin = (lambdaDB ** 2 + bPerp ** 2) ** (1 / 2)
+        bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
     else:
         raise ValueError(f"Method {method} not found!")
     return (bmin.to(u.m), bmax.to(u.m))
