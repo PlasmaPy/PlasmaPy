@@ -16,8 +16,8 @@ from typing import Callable, Union, Any, Set, List, Tuple
 
 def particle_input(wrapped_function: Callable = None,
                    must_be: Union[str, Set, List, Tuple] = set(),
+                   any_of: Union[str, Set, List, Tuple] = set(),
                    exclude: Union[str, Set, List, Tuple] = set(),
-                   any: bool = False,
                    none_shall_pass: bool = False,
                    **kwargs) -> Any:
     r"""A decorator to take arguments and keywords related to a particle
@@ -32,9 +32,9 @@ def particle_input(wrapped_function: Callable = None,
     must_be : str, set, list, or tuple; optional
         A list of categories
 
-    exclude : str, set, list, or tuple; optional
+    any_of : str, set, list, or tuple; optional
 
-    any : bool
+    exclude : str, set, list, or tuple; optional
 
     none_shall_pass : bool
         If set to True, then the decorated argument is allowed to be set
@@ -72,17 +72,16 @@ def particle_input(wrapped_function: Callable = None,
             f"The particle {particle} does not meet the required "
             f"classification criteria to be a valid input to {funcname}. ")
 
-        determiner = "any of" if any else "all of"
+        errmsg_table = [
+            (must_be, "must belong to all"),
+            (any_of, "must belong to any"),
+            (cannot_be, "cannot belong to any")]
 
-        if must_be:
-            category_errmsg += (
-                f"The particle must belong to {determiner} of the following "
-                f"categories: {must_be}. ")
-
-        if cannot_be:
-            category_errmsg += (
-                f"The particle cannot belong to any of the following "
-                f"categories: {exclude}.")
+        for condition, phrase in errmsg_table:
+            if condition:
+                category_errmsg += (
+                    f"The particle {phrase} of the following categories: "
+                    f"{condition}. ")
 
         return category_errmsg
 
@@ -197,18 +196,16 @@ def particle_input(wrapped_function: Callable = None,
                             f"{funcname} does not correspond to a valid "
                             f"{argname}.")
 
-                # Some functions require charged particles, or at least
-                # particles that have charge information.
+                # Some functions require that particles be charged, or at least
+                # that particles have charge information.
 
-                must_be_charged = 'charged' in must_be and not any
+                _integer_charge = particle._attributes['integer charge']
 
-                must_have_charge_info = \
-                    must_be == {'charged', 'uncharged'} and any
+                must_be_charged = 'charged' in must_be
+                must_have_charge_info = any_of == {'charged', 'uncharged'}
 
-                uncharged = particle._attributes['integer charge'] in {0, None}
-
-                lacks_charge_info = \
-                    particle._attributes['integer charge'] is None
+                uncharged = _integer_charge == 0
+                lacks_charge_info = _integer_charge is None
 
                 if must_be_charged and not uncharged:
                     raise ChargeError(
@@ -223,9 +220,9 @@ def particle_input(wrapped_function: Callable = None,
                 # maximally useful error message.
 
                 if not particle.is_category(
-                        must_be, exclude=exclude, any=any):
+                        must_be, exclude=exclude, any_of=any_of):
                     raise AtomicError(_category_errmsg(
-                        particle, must_be, exclude, any, funcname))
+                        particle, must_be, exclude, any_of, funcname))
 
                 new_kwargs[argname] = particle
 

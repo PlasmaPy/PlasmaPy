@@ -622,8 +622,9 @@ class Particle:
 
     def is_category(self,
                     *categories,
-                    any: bool = False,
-                    exclude: Union[str, Set, Tuple, List] = set()
+                    must_be: Union[str, Set, Tuple, List] = set(),
+                    any_of:: Union[str, Set, Tuple, List] = set(),
+                    exclude: Union[str, Set, Tuple, List] = set(),
                     ) -> bool:
         r"""Returns True if the particle is in all of the inputted
         categories.
@@ -639,8 +640,6 @@ class Particle:
         'antibaryon', 'fermion', 'boson', 'neutrino', 'antineutrino',
         'matter', 'antimatter', 'element', 'isotope', 'ion', 'charged',
         and 'uncharged'."""
-
-        # TODO: Change any to any_of and allow it to be a set, etc.
 
         def _make_into_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
                 r"""Turns the input (a string, set, tuple, or list) into
@@ -659,18 +658,9 @@ class Particle:
                 else:
                     return set(arg)
 
-        if not isinstance(any, bool):
-            raise TypeError(
-                f"The keyword any in {self.__repr__()}.is_category must be "
-                f"set to either True or False.")
-        elif any and len(categories) == 0:
-            raise AtomicError(
-                f"The keyword 'any' to {self.__repr__()}.is_category "
-                f"cannot be set to True if no categories to be matched "
-                f"are inputted.")
-
         categories = _make_into_set(categories)
         exclude = _make_into_set(exclude)
+        any_of = _make_into_set(any_of)
 
         # If valid_categories is changed, remember to change the
         # docstring for the Particle class.
@@ -680,6 +670,11 @@ class Particle:
             'antineutrino', 'element', 'isotope', 'ion', 'matter',
             'antimatter', 'stable', 'unstable', 'charged', 'uncharged',
         }
+
+        valid_categories.add(self.particle)
+
+        if self._attributes['name'] is not None:
+            valid_categories.add(self._attributes['name'])
 
         if categories - valid_categories:
             raise AtomicError(
