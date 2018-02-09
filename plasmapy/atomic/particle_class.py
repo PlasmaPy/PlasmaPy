@@ -3,8 +3,10 @@ r"""The Particle class."""
 import numpy as np
 import warnings
 from typing import (Union, Set, Tuple, List, Optional)
-from astropy import units as u, constants as const
 import collections
+
+import astropy.units as u
+import astropy.constants as const
 
 from ..utils import (
     AtomicError,
@@ -620,10 +622,12 @@ class Particle:
 
         return (mass_this * mass_that) / (mass_this + mass_that)
 
+    # change must_be to require
+
     def is_category(self,
                     *categories,
-                    must_be: Union[str, Set, Tuple, List] = set(),
-                    any_of:: Union[str, Set, Tuple, List] = set(),
+                    require: Union[str, Set, Tuple, List] = set(),
+                    any_of: Union[str, Set, Tuple, List] = set(),
                     exclude: Union[str, Set, Tuple, List] = set(),
                     ) -> bool:
         r"""Returns True if the particle is in all of the inputted
@@ -641,61 +645,53 @@ class Particle:
         'matter', 'antimatter', 'element', 'isotope', 'ion', 'charged',
         and 'uncharged'."""
 
-        def _make_into_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
+        def become_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
                 r"""Turns the input (a string, set, tuple, or list) into
                 a set containing the items in input."""
                 if len(arg) == 0:
                     return set()
-
                 if isinstance(arg, set):
                     return arg
-
                 if isinstance(arg, str):
                     return {arg}
-
                 if isinstance(arg[0], (tuple, list, set)):
                     return set(arg[0])
                 else:
                     return set(arg)
 
-        categories = _make_into_set(categories)
-        exclude = _make_into_set(exclude)
-        any_of = _make_into_set(any_of)
+        if categories != () and require != set():
+            raise AtomicError(
+                "No positional arguments are allowed if the require keyword "
+                "is set in is_category.")
 
-        # If valid_categories is changed, remember to change the
-        # docstring for the Particle class.
+        require = become_set(categories) if categories else become_set(require)
+        exclude = become_set(exclude)
+        any_of = become_set(any_of)
 
         valid_categories = {
             'lepton', 'antilepton', 'fermion', 'boson', 'baryon', 'neutrino',
             'antineutrino', 'element', 'isotope', 'ion', 'matter',
-            'antimatter', 'stable', 'unstable', 'charged', 'uncharged',
-        }
+            'antimatter', 'stable', 'unstable', 'charged', 'uncharged'}
 
-        valid_categories.add(self.particle)
+        invalid_categories = (require | exclude | any_of) - valid_categories
 
-        if self._attributes['name'] is not None:
-            valid_categories.add(self._attributes['name'])
+        duplicate_categories = \
+            require & exclude | exclude & any_of | require & any_of
 
-        if categories - valid_categories:
-            raise AtomicError(
-                f"The following categories in {self.__repr__()}.is_category "
-                f"are not valid categories: {categories - valid_categories}")
+        categories_and_adjectives = [
+            (invalid_categories, 'invalid'),
+            (duplicate_categories, 'duplicated')]
 
-        if exclude - valid_categories:
-            raise AtomicError(
-                f"The following categories to be excluded in "
-                f"{self.__repr__()}.is_category are not valid categories: "
-                f"{exclude - valid_categories}")
-
-        if exclude & categories:
-            raise AtomicError(
-                f"The following are duplicate categories in "
-                f"{self.__repr__()}.is_category: {categories & exclude}")
+        for problem_categories, adjective in categories_and_adjectives:
+            if problem_categories:
+                raise AtomicError(
+                    f"The following categories in {self.__repr__()}"
+                    f".is_category are {adjective}: {problem_categories}")
 
         if exclude & self._categories:
             return False
 
-        if any and categories & self._categories:
-            return True
+        if not any_of & self._categories:
+            return False
 
-        return categories <= self._categories
+        return require <= self._categories

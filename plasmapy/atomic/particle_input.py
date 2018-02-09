@@ -1,7 +1,9 @@
 import functools
 import inspect
+from typing import Callable, Union, Any, Set, List, Tuple
 
 from .particle_class import Particle
+
 from ..utils import (AtomicError,
                      InvalidParticleError,
                      InvalidElementError,
@@ -9,13 +11,10 @@ from ..utils import (AtomicError,
                      InvalidIsotopeError,
                      ChargeError)
 
-from typing import Callable, Union, Any, Set, List, Tuple
-
-# TODO: change any keyword to any_of and allow it to be a list
 
 
 def particle_input(wrapped_function: Callable = None,
-                   must_be: Union[str, Set, List, Tuple] = set(),
+                   require: Union[str, Set, List, Tuple] = set(),
                    any_of: Union[str, Set, List, Tuple] = set(),
                    exclude: Union[str, Set, List, Tuple] = set(),
                    none_shall_pass: bool = False,
@@ -29,7 +28,7 @@ def particle_input(wrapped_function: Callable = None,
     wrapped_function : callable
         The function to be decorated.
 
-    must_be : str, set, list, or tuple; optional
+    require : str, set, list, or tuple; optional
         A list of categories
 
     any_of : str, set, list, or tuple; optional
@@ -65,7 +64,7 @@ def particle_input(wrapped_function: Callable = None,
         errmsg += "does not correspond to a valid particle."
         return errmsg
 
-    def _category_errmsg(particle, must_be, cannot_be, any, funcname):
+    def _category_errmsg(particle, require, exclude, any_of, funcname):
         r"""Returns an error message for when a particle does not meet
         the required conditions."""
         category_errmsg = (
@@ -73,9 +72,9 @@ def particle_input(wrapped_function: Callable = None,
             f"classification criteria to be a valid input to {funcname}. ")
 
         errmsg_table = [
-            (must_be, "must belong to all"),
+            (require, "must belong to all"),
             (any_of, "must belong to any"),
-            (cannot_be, "cannot belong to any")]
+            (exclude, "cannot belong to any")]
 
         for condition, phrase in errmsg_table:
             if condition:
@@ -220,9 +219,9 @@ def particle_input(wrapped_function: Callable = None,
                 # maximally useful error message.
 
                 if not particle.is_category(
-                        must_be, exclude=exclude, any_of=any_of):
+                        require=require, exclude=exclude, any_of=any_of):
                     raise AtomicError(_category_errmsg(
-                        particle, must_be, exclude, any_of, funcname))
+                        particle, require, exclude, any_of, funcname))
 
                 new_kwargs[argname] = particle
 
