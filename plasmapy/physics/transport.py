@@ -129,8 +129,7 @@ def Coulomb_logarithm(T,
     logarithm to the form:
 
     .. math::
-        \ln{\Lambda} \equiv 0.5 \ln\left(1 +
-        \frac{b_{max}^2}{b_{min}^2} \right)
+        \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
 
     This means the Coulomb logarithm will not break down for Lambda < 0,
     which occurs for dense, cold plasmas.
@@ -1004,8 +1003,7 @@ def mobility(T,
 
     References
     ----------
-    .. [1] https://en.wikipedia.org/wiki/
-           Electrical_mobility#Mobility_in_gas_phase
+    .. [1] https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
