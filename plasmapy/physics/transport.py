@@ -110,8 +110,8 @@ def Coulomb_logarithm(T,
     The choice of inner impact parameter is either the distance of closest
     approach for a 90 degree Coulomb collision or the thermal deBroglie
     wavelength, whichever is larger. This is because Coulomb-style collisions
-    cannot occur for impact parameters shorter than the deBroglie 
-    wavelength because quantum effects will change the fundamental 
+    cannot occur for impact parameters shorter than the deBroglie
+    wavelength because quantum effects will change the fundamental
     nature of the collision [2]_, [3]_.
 
     Errors associated with the classical Coulomb logarithm are of order its
@@ -129,7 +129,8 @@ def Coulomb_logarithm(T,
     logarithm to the form:
 
     .. math::
-        \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
+        \ln{\Lambda} \equiv 0.5 \ln\left(1 +
+        \frac{b_{max}^2}{b_{min}^2} \right)
 
     This means the Coulomb logarithm will not break down for Lambda < 0,
     which occurs for dense, cold plasmas.
@@ -598,7 +599,7 @@ def collision_frequency(T,
         \nu = n \sigma v \ln{\Lambda}
 
     where n is the particle density, :math:`\sigma` is the collisional
-    cross-section, :math:`v` is the inter-particle velocity (typically 
+    cross-section, :math:`v` is the inter-particle velocity (typically
     taken as the thermal velocity), and :math:`\ln{\Lambda}` is the Coulomb
     logarithm accounting for small angle collisions.
 
@@ -655,7 +656,7 @@ def collision_frequency(T,
                        particles=particles,
                        V=V) * reduced_mass / m_e
         # Coulomb logarithm
-        #!!! may also need to correct Coulomb logarithm to be
+        # !!! may also need to correct Coulomb logarithm to be
         # electron-electron version !!!
         cou_log = Coulomb_logarithm(T,
                                     n,
@@ -984,7 +985,7 @@ def mobility(T,
     where :math:`q` is the particle charge, :math:`m` is the particle mass
     and :math:`\nu` is the collisional frequency of the particle in the
     plasma.
-    
+
     The mobility describes the forced diffusion of a particle in a collisional
     plasma which is under the influence of an electric field. The mobility
     is essentially the ratio of drift velocity due to collisions and the
@@ -1003,7 +1004,8 @@ def mobility(T,
 
     References
     ----------
-    .. [1] https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase
+    .. [1] https://en.wikipedia.org/wiki/
+           Electrical_mobility#Mobility_in_gas_phase
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
@@ -1210,7 +1212,7 @@ def coupling_parameter(T,
 
     .. math::
         E_{Coulomb} = \frac{Z_1 Z_2 q_e^2}{4 \pi \epsilon_0 r}
-        
+
     where :math:`r` is the Wigner-Seitz radius, and 1 and 2 refer to
     particle species 1 and 2 between which we want to determine the
     coupling.
@@ -1230,7 +1232,7 @@ def coupling_parameter(T,
         E_{kinetic} = 2 k_B T_e / \chi f_{3/2} (\mu_{ideal} / k_B T_e)
 
     where :math:`\chi` is the degeneracy parameter, :math:`f_{3/2}` is the
-    Fermi integral, and :math:`\mu_{ideal}` is the ideal chemical 
+    Fermi integral, and :math:`\mu_{ideal}` is the ideal chemical
     potential.
 
     The degeneracy parameter is given by
@@ -2064,29 +2066,29 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
 
     gamma_0 = gamma_0_prime[Z_idx] / delta_0[Z_idx]
     Delta = hall ** 4 + delta_1[Z_idx] * hall ** 2 + delta_0[Z_idx]
-    
+
     if field_orientation == 'parallel' or field_orientation == 'par':
         kappa_par = gamma_0
         return kappa_par
 
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
         kappa_perp = (gamma_1_prime[Z_idx] * hall **
-                  2 + gamma_0_prime[Z_idx]) / Delta
+                      2 + gamma_0_prime[Z_idx]) / Delta
         return kappa_perp
 
     if field_orientation == 'cross':
         kappa_cross = (gamma_1_doubleprime[Z_idx] * hall ** 3 +
-                   gamma_0_doubleprime[Z_idx] * hall) / Delta
+                       gamma_0_doubleprime[Z_idx] * hall) / Delta
         return kappa_cross
 
     if field_orientation == 'all':
         kappa_par = gamma_0
-        
+
         kappa_perp = (gamma_1_prime[Z_idx] * hall **
-                  2 + gamma_0_prime[Z_idx]) / Delta
-                      
+                      2 + gamma_0_prime[Z_idx]) / Delta
+
         kappa_cross = (gamma_1_doubleprime[Z_idx] * hall ** 3 +
-                   gamma_0_doubleprime[Z_idx] * hall) / Delta
+                       gamma_0_doubleprime[Z_idx] * hall) / Delta
         return np.array((kappa_par, kappa_perp, kappa_cross))
 
 
@@ -2099,7 +2101,7 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
     # fixing overflow errors when exponentiating hall by making a float
     # instead of an int
     hall = float(hall)
-    
+
     if field_orientation == 'parallel' or field_orientation == 'par':
         kappa_par_coeff_0 = 3.906
         kappa_par = kappa_par_coeff_0
@@ -2108,34 +2110,34 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
     delta_1 = 2.70
     delta_0 = 0.677
     Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
-    
+
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
         kappa_perp_coeff_2 = 2.0
         kappa_perp_coeff_0 = 2.645
         kappa_perp = (kappa_perp_coeff_2 * hall ** 2 +
-                  kappa_perp_coeff_0) / Delta
+                      kappa_perp_coeff_0) / Delta
         return kappa_perp
 
     if field_orientation == 'cross':
         kappa_cross_coeff_3 = 2.5
         kappa_cross_coeff_1 = 4.65
         kappa_cross = (kappa_cross_coeff_3 * hall ** 3 +
-                   kappa_cross_coeff_1 * hall) / Delta
+                       kappa_cross_coeff_1 * hall) / Delta
         return kappa_cross
 
     if field_orientation == 'all':
         kappa_par_coeff_0 = 3.906
         kappa_par = kappa_par_coeff_0
-        
+
         kappa_perp_coeff_2 = 2.0
         kappa_perp_coeff_0 = 2.645
         kappa_perp = (kappa_perp_coeff_2 * hall ** 2 +
-                  kappa_perp_coeff_0) / Delta
-                      
+                      kappa_perp_coeff_0) / Delta
+
         kappa_cross_coeff_3 = 2.5
         kappa_cross_coeff_1 = 4.65
         kappa_cross = (kappa_cross_coeff_3 * hall ** 3 +
-                   kappa_cross_coeff_1 * hall) / Delta
+                       kappa_cross_coeff_1 * hall) / Delta
         return np.array((kappa_par, kappa_perp, kappa_cross))
 
 
@@ -2232,29 +2234,29 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
 
     alpha_0 = 1 - alpha_0_prime[Z_idx] / delta_0[Z_idx]
     Delta = hall ** 4 + delta_1[Z_idx] * hall ** 2 + delta_0[Z_idx]
-    
+
     if field_orientation == 'parallel' or field_orientation == 'par':
         alpha_par = alpha_0
         return alpha_par
 
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
         alpha_perp = (1 - (alpha_1_prime[Z_idx] * hall ** 2 +
-                       alpha_0_prime[Z_idx]) / Delta)
+                           alpha_0_prime[Z_idx]) / Delta)
         return alpha_perp
 
     if field_orientation == 'cross':
         alpha_cross = (alpha_1_doubleprime[Z_idx] * hall ** 3 +
-                   alpha_0_doubleprime[Z_idx] * hall) / Delta
+                       alpha_0_doubleprime[Z_idx] * hall) / Delta
         return alpha_cross
 
     if field_orientation == 'all':
         alpha_par = alpha_0
-        
+
         alpha_perp = (1 - (alpha_1_prime[Z_idx] * hall ** 2 +
-                       alpha_0_prime[Z_idx]) / Delta)
-        
+                           alpha_0_prime[Z_idx]) / Delta)
+
         alpha_cross = (alpha_1_doubleprime[Z_idx] * hall ** 3 +
-                   alpha_0_doubleprime[Z_idx] * hall) / Delta
+                       alpha_0_doubleprime[Z_idx] * hall) / Delta
         return np.array((alpha_par, alpha_perp, alpha_cross))
 
 
@@ -2281,29 +2283,29 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
     Delta = hall ** 4 + delta_1[Z_idx] * hall ** 2 + delta_0[Z_idx]
     beta_0 = beta_0_prime[Z_idx] / delta_0[Z_idx]
 #    beta_0 = 0.7110
-    
+
     if field_orientation == 'parallel' or field_orientation == 'par':
         beta_par = beta_0
         return beta_par
- 
+
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
         beta_perp = (beta_1_prime[Z_idx] * hall ** 2 +
-                 beta_0_prime[Z_idx]) / Delta
+                     beta_0_prime[Z_idx]) / Delta
         return beta_perp
 
     if field_orientation == 'cross':
         beta_cross = (beta_1_doubleprime[Z_idx] * hall ** 3 +
-                  beta_0_doubleprime[Z_idx] * hall) / Delta
+                      beta_0_doubleprime[Z_idx] * hall) / Delta
         return beta_cross
 
     if field_orientation == 'all':
         beta_par = beta_0
-        
+
         beta_perp = (beta_1_prime[Z_idx] * hall ** 2 +
-                 beta_0_prime[Z_idx]) / Delta
-                     
+                     beta_0_prime[Z_idx]) / Delta
+
         beta_cross = (beta_1_doubleprime[Z_idx] * hall ** 3 +
-                  beta_0_doubleprime[Z_idx] * hall) / Delta
+                      beta_0_doubleprime[Z_idx] * hall) / Delta
         return np.array((beta_par, beta_perp, beta_cross))
 
 
@@ -2812,7 +2814,8 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
 
     if K == 3:
         kappa_cross_i = (r * (5 / 2 * r ** 4 +
-                              (7.963 + 64.40 * zeta + 185 * zeta ** 2) * r ** 2 +
+                              (7.963 + 64.40 * zeta +
+                               185 * zeta ** 2) * r ** 2 +
                               1.344 + 44.54 * zeta + 511.9 * zeta ** 2 +
                               2155 * zeta ** 3 + 3063 * zeta ** 4
                               ) / Delta_perp_i1)
