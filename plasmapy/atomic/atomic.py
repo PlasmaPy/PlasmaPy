@@ -2,10 +2,12 @@ r"""Functions that retrieve or are related to elemental or isotopic data."""
 
 import warnings
 from typing import (Union, Optional, List, Any)
+import numpy as np
 
 from astropy import units as u, constants as const
 from astropy.units import Quantity
 
+from .symbols import isotope_symbol
 from .elements import _Elements
 from .isotopes import _Isotopes
 from .particle_class import Particle
@@ -576,7 +578,7 @@ def integer_charge(particle: Particle) -> int:
     return particle.integer_charge
 
 
-@particle_input(must_be={'charged', 'uncharged'}, any=True)
+@particle_input(any_of={'charged', 'uncharged'})
 def electric_charge(particle: Particle) -> Quantity:
     r"""Returns the electric charge (in coulombs) of an ion or other
     particle
@@ -693,7 +695,7 @@ def is_stable(particle: Particle, mass_numb: int = None) -> bool:
     return particle.is_category('stable')
 
 
-@particle_input
+@particle_input(any_of={'stable', 'unstable', 'isotope'})
 def half_life(particle: Particle, mass_numb: int = None) -> Quantity:
     r"""Returns the half-life in seconds for unstable isotopes and
     particles, and numpy.inf in seconds for stable isotopes and particles.
@@ -745,37 +747,7 @@ def half_life(particle: Particle, mass_numb: int = None) -> Quantity:
     <Quantity inf s>
 
     """
-    try:
-
-        isotope = isotope_symbol(argument, mass_numb)
-
-        if _Isotopes[isotope]['is_stable']:
-            half_life_sec = np.inf * u.s
-        else:
-            half_life_sec = _Isotopes[isotope].get('half_life', None)
-
-    except InvalidParticleError:
-        raise InvalidParticleError("Invalid element in isotope_symbol.")
-    except InvalidIsotopeError:
-        raise InvalidIsotopeError(
-            "Cannot determine isotope information from these inputs to "
-            f"half_life: {argument}, {mass_numb}")
-    except TypeError:
-        raise TypeError("Incorrect argument type for half_life")
-
-    if half_life_sec is None:
-        warnings.warn(
-            f"The half-life for isotope {isotope} is not"
-            "available; returning None.", MissingAtomicDataWarning)
-
-    if isinstance(half_life_sec, str):
-        warnings.warn(
-            f"The half-life for isotope {isotope} is not"
-            "known precisely; returning string with estimate value.",
-            MissingAtomicDataWarning)
-
-    return half_life_sec
-
+    return particle.half_life
 
 
 def known_isotopes(argument: Union[str, int] = None) -> List[str]:

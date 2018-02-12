@@ -3,26 +3,11 @@ import numpy as np
 from itertools import product
 from astropy import units as u, constants as const
 
-<<<<<<< HEAD
 from ..symbols import (
     atomic_symbol,
     isotope_symbol,
     element_name,
 )
-=======
-from ..names import (atomic_symbol,
-                     isotope_symbol,
-                     element_name,
-                     _is_neutron,
-                     _is_hydrogen,
-                     _is_electron,
-                     _is_positron,
-                     _is_antiproton,
-                     _is_alpha,
-                     _is_proton,
-                     _is_antineutron,
-                     _extract_integer_charge)
->>>>>>> plasmapy/master
 
 from ..isotopes import _Isotopes
 
@@ -757,7 +742,7 @@ def test_half_life_u_220():
     """Test that half_life returns None and issues a warning for an isotope
     without half-life data."""
 
-    isotope_without_half_life_data = "Os-187"
+    isotope_without_half_life_data = "No-248"
 
     with pytest.raises(MissingAtomicDataError, message=(
             f"This test assumes that {isotope_without_half_life_data} does "

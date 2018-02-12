@@ -300,7 +300,7 @@ class Particle:
         if attributes['half-life'] is not None:
             if attributes['half-life'] == np.inf * u.s:
                 self._categories.add('stable')
-            elif attributes['half-life'] < np.inf * u.s:
+            else:
                 self._categories.add('unstable')
 
         self._element_errmsg = (
@@ -572,6 +572,13 @@ class Particle:
         MissingAtomicDataError if the half-life is unavailable."""
         if self.element and not self.isotope:
             raise InvalidIsotopeError(self._isotope_errmsg)
+
+        if isinstance(self._attributes['half-life'], str):
+            warnings.warn(
+                f"The half-life for {self.particle} is not known precisely; "
+                "returning string with estimated value.",
+                MissingAtomicDataWarning)
+
         if self._attributes['half-life'] is None:
             raise MissingAtomicDataError(
                 f"The half-life of '{self.particle}' is not available.")
@@ -688,10 +695,10 @@ class Particle:
                     f"The following categories in {self.__repr__()}"
                     f".is_category are {adjective}: {problem_categories}")
 
-        if exclude & self._categories:
+        if exclude and exclude & self._categories:
             return False
 
-        if not any_of & self._categories:
+        if any_of and not any_of & self._categories:
             return False
 
         return require <= self._categories

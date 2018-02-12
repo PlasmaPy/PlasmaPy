@@ -12,7 +12,6 @@ from ..utils import (AtomicError,
                      ChargeError)
 
 
-
 def particle_input(wrapped_function: Callable = None,
                    require: Union[str, Set, List, Tuple] = set(),
                    any_of: Union[str, Set, List, Tuple] = set(),
@@ -200,7 +199,7 @@ def particle_input(wrapped_function: Callable = None,
 
                 _integer_charge = particle._attributes['integer charge']
 
-                must_be_charged = 'charged' in must_be
+                must_be_charged = 'charged' in require
                 must_have_charge_info = any_of == {'charged', 'uncharged'}
 
                 uncharged = _integer_charge == 0
@@ -220,6 +219,7 @@ def particle_input(wrapped_function: Callable = None,
 
                 if not particle.is_category(
                         require=require, exclude=exclude, any_of=any_of):
+
                     raise AtomicError(_category_errmsg(
                         particle, require, exclude, any_of, funcname))
 
