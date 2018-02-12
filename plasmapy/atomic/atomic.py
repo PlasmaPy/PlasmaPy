@@ -942,6 +942,12 @@ def half_life(argument: Union[int, str], mass_numb: int = None) -> Quantity:
     if half_life_sec is None:
         warnings.warn(f"The half-life for isotope {isotope} is not"
                       "available; returning None.", MissingAtomicDataWarning)
+	
+    if isinstance(half_life_sec, str):
+        warnings.warn(f"The half-life for isotope {isotope} is not"
+                      "known precisely; returning string with estimate value.", MissingAtomicDataWarning)
+	
+	
 
     return half_life_sec
 
