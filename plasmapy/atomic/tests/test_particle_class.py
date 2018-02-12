@@ -216,9 +216,7 @@ test_Particle_table = [
       'atomic_number': 112,
       'mass_number': 276,
       'baryon_number': 276,
-      'lepton_number': 0,
-      'half_life': MissingAtomicDataError,
-      }),
+      'lepton_number': 0}),
 
     ('muon', {},
      {'particle': 'mu-',

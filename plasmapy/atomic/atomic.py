@@ -13,6 +13,7 @@ from .particle_input import particle_input
 
 from ..utils import (
     MissingAtomicDataError,
+    MissingAtomicDataWarning,
     InvalidParticleError,
     InvalidElementError,
     InvalidIsotopeError,
@@ -744,7 +745,37 @@ def half_life(particle: Particle, mass_numb: int = None) -> Quantity:
     <Quantity inf s>
 
     """
-    return particle.half_life
+    try:
+
+        isotope = isotope_symbol(argument, mass_numb)
+
+        if _Isotopes[isotope]['is_stable']:
+            half_life_sec = np.inf * u.s
+        else:
+            half_life_sec = _Isotopes[isotope].get('half_life', None)
+
+    except InvalidParticleError:
+        raise InvalidParticleError("Invalid element in isotope_symbol.")
+    except InvalidIsotopeError:
+        raise InvalidIsotopeError(
+            "Cannot determine isotope information from these inputs to "
+            f"half_life: {argument}, {mass_numb}")
+    except TypeError:
+        raise TypeError("Incorrect argument type for half_life")
+
+    if half_life_sec is None:
+        warnings.warn(
+            f"The half-life for isotope {isotope} is not"
+            "available; returning None.", MissingAtomicDataWarning)
+
+    if isinstance(half_life_sec, str):
+        warnings.warn(
+            f"The half-life for isotope {isotope} is not"
+            "known precisely; returning string with estimate value.",
+            MissingAtomicDataWarning)
+
+    return half_life_sec
+
 
 
 def known_isotopes(argument: Union[str, int] = None) -> List[str]:
