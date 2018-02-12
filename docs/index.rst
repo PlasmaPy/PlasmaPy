@@ -18,7 +18,7 @@ Getting Started
 * `Contributing to PlasmaPy
   <https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTING.md>`_
 * `Code of conduct
-  <https://github.com/PlasmaPy/PlasmaPy/blob/master/vision_statement.md#plasmapy-community-code-of-conduct>`_
+  <https://github.com/PlasmaPy/PlasmaPy/blob/master/CODE_OF_CONDUCT.md>`_
 * `PlasmaPy on GitHub
   <https://github.com/PlasmaPy/plasmapy>`_
 * `PlasmaPy website

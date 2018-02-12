@@ -19,7 +19,7 @@ We are in the process of writing [online
 documentation](http://plasmapy.readthedocs.io/en/latest/).
 
 We created a guide on
-[contributing to PlasmaPy](CONTRIBUTING.md) and have a [Code of Conduct](vision_statement.md#plasmapy-community-code-of-conduct).
+[contributing to PlasmaPy](CONTRIBUTING.md) and have a [Code of Conduct](CODE_OF_CONDUCT.md).
 New contributors are very welcome!
 
 If you have any questions, please send us a message at our
