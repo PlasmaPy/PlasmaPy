@@ -7,7 +7,6 @@ import numpy as np
 from astropy import units as u, constants as const
 from astropy.units import Quantity
 
-from .symbols import isotope_symbol
 from .elements import _Elements
 from .isotopes import _Isotopes
 from .particle_class import Particle
@@ -15,7 +14,6 @@ from .particle_input import particle_input
 
 from ..utils import (
     MissingAtomicDataError,
-    MissingAtomicDataWarning,
     InvalidParticleError,
     InvalidElementError,
     InvalidIsotopeError,
@@ -262,7 +260,6 @@ def isotope_mass(isotope: Particle,
     Examples
     --------
 
-    >>> from astropy import units as u
     >>> isotope_mass("H-1")
     <Quantity 1.00782503 u>
     >>> isotope_mass("He", mass_numb=4)

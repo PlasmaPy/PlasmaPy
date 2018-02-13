@@ -386,7 +386,7 @@ class Particle:
         return self._attributes['integer charge']
 
     @property
-    def charge(self) -> u.C:
+    def charge(self) -> u.Quantity:
         r"""Returns the electric charge as a Quantity in units of coulombs,
         or raises a ChargeError if the charge has not been specified."""
         if self._attributes['charge'] is None:
@@ -399,7 +399,7 @@ class Particle:
         return self._attributes['charge']
 
     @property
-    def standard_atomic_weight(self) -> u.u:
+    def standard_atomic_weight(self) -> u.Quantity:
         r"""Returns the standard atomic weight of an element if available.
         Raises a MissingAtomicDataError if the particle is an element for
         which the standard_atomic_weight is unavailable.  Raises an
@@ -413,7 +413,7 @@ class Particle:
         return self._attributes['standard atomic weight']
 
     @property
-    def nuclide_mass(self) -> u.kg:
+    def nuclide_mass(self) -> u.Quantity:
         r"""Returns the mass of the nucleus of an isotope.  This attribute
         raises an InvalidIsotopeError if the particle is not an isotope or
         neutron, or a MissingAtomicDataError if the isotope mass is
@@ -443,7 +443,7 @@ class Particle:
         return _nuclide_mass.to(u.kg)
 
     @property
-    def mass(self) -> u.kg:
+    def mass(self) -> u.Quantity:
         r"""Returns the mass of the element, isotope, ion, particle, or
         antiparticle; or raises a MissingAtomicDataError if the mass
         is unavailable (e.g., if the particle is a neutrino).
@@ -541,7 +541,7 @@ class Particle:
         return self._attributes['lepton number']
 
     @property
-    def binding_energy(self) -> u.J:
+    def binding_energy(self) -> u.Quantity:
         r"""Returns the nuclear binding energy, or raises an
         InvalidIsotopeError if the particle is not a nucleon or isotope."""
 
@@ -567,7 +567,7 @@ class Particle:
         return nuclear_binding_energy.to(u.J)
 
     @property
-    def half_life(self) -> u.s:
+    def half_life(self) -> u.Quantity:
         r"""Returns the half-life of the particle, or raises a
         MissingAtomicDataError if the half-life is unavailable."""
         if self.element and not self.isotope:
@@ -593,7 +593,7 @@ class Particle:
                 f"The spin of particle '{self.particle}' is unavailable.")
         return self._attributes['spin']
 
-    def reduced_mass(self, other, Z=None, mass_numb=None) -> u.kg:
+    def reduced_mass(self, other, Z=None, mass_numb=None) -> u.Quantity:
         r"""Finds the reduced mass between two particles, or will raise
         a MissingAtomicDataError if either particle's mass is
         unavailable or an AtomicError for any other errors.  The other

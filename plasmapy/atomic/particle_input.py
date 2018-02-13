@@ -12,6 +12,44 @@ from ..utils import (AtomicError,
                      ChargeError)
 
 
+def _particle_errmsg(argname: str, argval: str, Z: int = None,
+                     mass_numb: int = None, funcname: str = None) -> str:
+    r"""Returns a string with an appropriate error message for an
+    InvalidParticleError."""
+    errmsg = f"In {funcname}, {argname} = {repr(argval)} "
+    if mass_numb is not None or Z is not None:
+        errmsg += "with "
+    if mass_numb is not None:
+        errmsg += f"mass_numb = {repr(mass_numb)} "
+    if mass_numb is not None and Z is not None:
+        errmsg += "and "
+    if Z is not None:
+        errmsg += f"integer charge Z = {repr(Z)} "
+    errmsg += "does not correspond to a valid particle."
+    return errmsg
+
+
+def _category_errmsg(particle, require, exclude, any_of, funcname):
+    r"""Returns an error message for when a particle does not meet
+    the required conditions."""
+    category_errmsg = (
+        f"The particle {particle} does not meet the required "
+        f"classification criteria to be a valid input to {funcname}. ")
+
+    errmsg_table = [
+        (require, "must belong to all"),
+        (any_of, "must belong to any"),
+        (exclude, "cannot belong to any")]
+
+    for condition, phrase in errmsg_table:
+        if condition:
+            category_errmsg += (
+                f"The particle {phrase} of the following categories: "
+                f"{condition}. ")
+
+    return category_errmsg
+
+
 def particle_input(wrapped_function: Callable = None,
                    require: Union[str, Set, List, Tuple] = set(),
                    any_of: Union[str, Set, List, Tuple] = set(),
@@ -46,42 +84,6 @@ def particle_input(wrapped_function: Callable = None,
     be extended to work with classes and methods.
 
     """
-
-    def _particle_errmsg(argname: str, argval: str, Z: int = None,
-                         mass_numb: int = None, funcname: str = None) -> str:
-        r"""Returns a string with an appropriate error message for an
-        InvalidParticleError."""
-        errmsg = f"In {funcname}, {argname} = {repr(argval)} "
-        if mass_numb is not None or Z is not None:
-            errmsg += "with "
-        if mass_numb is not None:
-            errmsg += f"mass_numb = {repr(mass_numb)} "
-        if mass_numb is not None and Z is not None:
-            errmsg += "and "
-        if Z is not None:
-            errmsg += f"integer charge Z = {repr(Z)} "
-        errmsg += "does not correspond to a valid particle."
-        return errmsg
-
-    def _category_errmsg(particle, require, exclude, any_of, funcname):
-        r"""Returns an error message for when a particle does not meet
-        the required conditions."""
-        category_errmsg = (
-            f"The particle {particle} does not meet the required "
-            f"classification criteria to be a valid input to {funcname}. ")
-
-        errmsg_table = [
-            (require, "must belong to all"),
-            (any_of, "must belong to any"),
-            (exclude, "cannot belong to any")]
-
-        for condition, phrase in errmsg_table:
-            if condition:
-                category_errmsg += (
-                    f"The particle {phrase} of the following categories: "
-                    f"{condition}. ")
-
-        return category_errmsg
 
     def decorator(wrapped_function: Callable):
         wrapped_signature = inspect.signature(wrapped_function)
