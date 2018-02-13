@@ -91,7 +91,7 @@ atomic_symbol_table = [
 @pytest.mark.parametrize(
     'argument, expected', atomic_symbol_table)
 def test_atomic_symbol(argument, expected):
-    """Test that atomic_symbol returns the expected result."""
+    """Test that `atomic_symbol` returns the expected result."""
     assert atomic_symbol(argument) == expected, \
         (f"atomic_symbol({repr(argument)}) is returning "
          f"{atomic_symbol(argument)} "
@@ -125,7 +125,7 @@ atomic_symbol_error_table = [
 @pytest.mark.parametrize(
     'argument, expected_error', atomic_symbol_error_table)
 def test_atomic_symbol_error(argument, expected_error):
-    """Test that atomic_symbol raises the expected exceptions."""
+    """Test that `atomic_symbol` raises the expected exceptions."""
     with pytest.raises(expected_error, message=(
             f"atomic_symbol({repr(argument)}) is not raising "
             f"{expected_error}.")):
@@ -166,7 +166,7 @@ isotope_symbol_table = [
 @pytest.mark.parametrize(
     "arguments, expected", isotope_symbol_table)
 def test_isotope_symbol(arguments, expected):
-    """Test that isotope_symbol returns the expected results."""
+    """Test that `isotope_symbol` returns the expected results."""
     assert isotope_symbol(*arguments) == expected, \
         (f"isotope_symbol is returning {isotope_symbol(*arguments)} "
          f"for arguments of {repr(arguments)}, which differs from the "
@@ -205,7 +205,7 @@ isotope_symbol_error_table = [
 @pytest.mark.parametrize(
     "argument, kwargs, expected_error", isotope_symbol_error_table)
 def test_isotope_symbol_error(argument, kwargs, expected_error):
-    """Test that isotope_symbol raises the expected exceptions."""
+    """Test that `isotope_symbol` raises the expected exceptions."""
     with pytest.raises(expected_error, message=(
             f"isotope_symbol({repr(argument)}, **{kwargs}) is not raising a "
             f"{expected_error}.")):
@@ -226,7 +226,7 @@ isotope_symbol_warning_table = [
 @pytest.mark.parametrize(
     "argument, kwargs, expected_warning", isotope_symbol_warning_table)
 def test_isotope_symbol_warnings(argument, kwargs, expected_warning):
-    """Test that isotope_symbol issues the expected warnings."""
+    """Test that `isotope_symbol` issues the expected warnings."""
     with pytest.warns(expected_warning, message=(
             f"isotope_symbol({repr(argument)}, **{kwargs}) is not issuing a "
             f"{expected_warning}.")):
@@ -257,7 +257,7 @@ atomic_number_table = [
 
 @pytest.mark.parametrize("argument, expected", atomic_number_table)
 def test_atomic_number(argument, expected):
-    """Test that atomic_number returns the expected results."""
+    """Test that `atomic_number` returns the expected results."""
     assert atomic_number(argument) == expected, \
         (f"atomic_number({repr(argument)}) is expecting a result of "
          f"{repr(expected)} but "
@@ -281,7 +281,7 @@ atomic_number_error_table = [
 @pytest.mark.parametrize(
     "argument, expected_error", atomic_number_error_table)
 def test_atomic_number_error(argument, expected_error):
-    """Test that atomic_number raises the expected exceptions."""
+    """Test that `atomic_number` raises the expected exceptions."""
     with pytest.raises(expected_error, warning=(
             f"atomic_number({repr(argument)}) is not raising a "
             f"{expected_error}")):
@@ -308,7 +308,7 @@ mass_number_table = [
 
 @pytest.mark.parametrize("isotope, expected", mass_number_table)
 def test_mass_number(isotope, expected):
-    """Test that mass_number returns the expected results."""
+    """Test that `mass_number` returns the expected results."""
     assert mass_number(isotope) == expected, \
         (f"mass_number({repr(isotope)}) is returning a value of "
          f"{mass_number(isotope)}, which differs from the expected "
@@ -330,7 +330,7 @@ mass_number_error_table = [
 @pytest.mark.parametrize(
     "argument, expected_error", mass_number_error_table)
 def test_mass_number_error(argument, expected_error):
-    """Test that mass_number raises the expected exceptions."""
+    """Test that `mass_number` raises the expected exceptions."""
     with pytest.raises(expected_error):
         mass_number(argument)
 
@@ -364,7 +364,7 @@ element_name_table = [
 
 @pytest.mark.parametrize("argument, expected", element_name_table)
 def test_element_name(argument, expected):
-    """Test that element_name returns the expected results."""
+    """Test that `element_name` returns the expected results."""
     assert element_name(argument) == expected, \
         (f"element_name({repr(argument)}) is returning a value of "
          f"{element_name(argument)}, which differs from the expected "
@@ -391,21 +391,21 @@ element_name_error_table = [
 
 @pytest.mark.parametrize("argument, expected_error", element_name_error_table)
 def test_element_name_error(argument, expected_error):
-    """Test that element_name raises the expected exceptions."""
+    """Test that `element_name` raises the expected exceptions."""
     with pytest.raises(expected_error):
         element_name(argument)
 
 
 def test_standard_atomic_weight_value_between():
-    """Test that standard_atomic_weight returns approximately the correct
-    value for phosphorus."""
+    """Test that `standard_atomic_weight` returns approximately the
+    correct value for phosphorus."""
     assert 30.973 < standard_atomic_weight('P').value < 30.974, \
         "Incorrect standard atomic weight for phosphorus."
 
 
 def test_standard_atomic_weight_unit():
-    """Test that standard_atomic_weight returns a Quantity with the
-    expected units."""
+    """Test that `standard_atomic_weight` returns a
+    `~astropy.units.Quantity` with the expected units."""
     assert standard_atomic_weight('Au').unit == u.u, \
         "Incorrect units from standard_atomic_weight for gold."
 
@@ -419,8 +419,8 @@ standard_atomic_weight_table = [
 
 @pytest.mark.parametrize("argument, expected", standard_atomic_weight_table)
 def test_standard_atomic_weight(argument, expected):
-    """Test that standard_atomic_weight returns the expected values for
-    hydrogen."""
+    """Test that `standard_atomic_weight` returns the expected values
+    for hydrogen."""
     assert standard_atomic_weight(argument).value == expected, \
         f"Incorrect standard_atomic_weight for {repr(argument)}."
 
@@ -445,7 +445,8 @@ standard_atomic_weight_error_table = [
 @pytest.mark.parametrize("argument, expected_error",
                          standard_atomic_weight_error_table)
 def test_standard_atomic_weight_error(argument, expected_error):
-    """Test that standard_atomic_weight raises the expected exceptions."""
+    """Test that `standard_atomic_weight` raises the expected
+    exceptions."""
     with pytest.raises(expected_error, message=(
             f"standard_atomic_weight({repr(argument)}) is not raising a "
             "{expected_error}.")):
@@ -453,14 +454,14 @@ def test_standard_atomic_weight_error(argument, expected_error):
 
 
 def test_isotope_mass_berkelium_249():
-    """Test that isotope_mass returns the correct value for Bk-249."""
+    """Test that `isotope_mass` returns the correct value for Bk-249."""
     assert np.isclose(isotope_mass('berkelium-249').value, 249.0749877), \
         "Incorrect isotope mass for berkelium."
 
 
 def test_isotope_mass_si_30_units():
-    """Test that isotope_mass returns a Quantity with the correct unit
-    for Si-30."""
+    """Test that `isotope_mass` returns a `~astropy.units.Quantity` with
+    the correct unit for Si-30."""
     assert isotope_mass('Si-30').unit == u.u, \
         "Incorrect unit for isotope mass for Si-30."
 
@@ -479,8 +480,8 @@ isotope_mass_table = [
 
 @pytest.mark.parametrize("arg1, arg2", isotope_mass_table)
 def test_isotope_mass(arg1, arg2):
-    """Test that isotope_mass returns equivalent results for equivalent
-    arguments."""
+    """Test that `isotope_mass` returns equivalent results for
+    equivalent arguments."""
     assert isotope_mass(*arg1) == isotope_mass(*arg2), \
         f"isotope_mass(*{arg1}) is not equivalent to isotope_mass(*{arg2})"
 
@@ -502,7 +503,7 @@ isotope_mass_error_table = [
 
 @pytest.mark.parametrize("argument, expected_error", isotope_mass_error_table)
 def test_isotope_mass_error(argument, expected_error):
-    """Test that isotope_mass raises the expected exceptions."""
+    """Test that `isotope_mass` raises the expected exceptions."""
     with pytest.raises(expected_error, warning=(
             f"isotope_mass({repr(argument)}) is not raising a "
             f"{expected_error}")):
@@ -510,7 +511,7 @@ def test_isotope_mass_error(argument, expected_error):
 
 
 def test_ion_mass_for_hydrogen_with_no_mass_number():
-    """Test that ion_mass does not return the proton mass when no
+    """Test that `ion_mass` does not return the proton mass when no
     mass number is specified for hydrogen.  In this case, the
     standard atomic weight should be used to account for the small
     fraction of deuterium."""
@@ -519,7 +520,8 @@ def test_ion_mass_for_hydrogen_with_no_mass_number():
 
 
 def test_ion_mass_unit():
-    """Test that ion_mass returns a Quantity with the correct units."""
+    """Test that `ion_mass` returns a `~astropy.units.Quantity` with the
+    correct units."""
     assert ion_mass('F-19', Z=3).unit == u.kg
 
 
@@ -537,6 +539,8 @@ inputs_that_should_return_proton_mass = [
 
 @pytest.mark.parametrize("arg, kwargs", inputs_that_should_return_proton_mass)
 def test_ion_mass_proton_mass(arg, kwargs):
+    """Test that `ion_mass` returns the proton mass
+    `~astropy.constants.Constant` for appropriate inputs."""
     should_be_proton_mass = ion_mass(arg, **kwargs)
     assert should_be_proton_mass == const.m_p, \
         (f"ion_mass({repr(arg)}, **{kwargs}) should be returning the proton "
@@ -544,7 +548,7 @@ def test_ion_mass_proton_mass(arg, kwargs):
 
 
 def test_ion_mass_miscellaneous_cases():
-    """Test miscellaneous cases for ion_mass."""
+    """Test miscellaneous cases for `ion_mass`."""
     assert ion_mass('alpha') > ion_mass('He-3 2+')
 
 
@@ -570,7 +574,8 @@ equivalent_ion_mass_args = [
 @pytest.mark.parametrize(
     "arg1, kwargs1, arg2, kwargs2, expected", equivalent_ion_mass_args)
 def test_ion_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
-    """Test that """
+    """Test that `ion_mass` returns equivalent results for equivalent
+    positional and keyword arguments."""
 
     result1 = ion_mass(arg1, **kwargs1)
     result2 = ion_mass(arg2, **kwargs2)
@@ -604,7 +609,7 @@ ion_mass_error_table = [
 @pytest.mark.parametrize("argument, kwargs, expected_error",
                          ion_mass_error_table)
 def test_ion_mass_error(argument, kwargs, expected_error):
-    """Test errors that should be raised by ion_mass."""
+    """Test exceptions that should be raised by `ion_mass`."""
     with pytest.raises(expected_error, message=(
             f"ion_mass({repr(argument)}, **{kwargs}) is not raising a "
             f"{repr(expected_error)}.")):
@@ -620,7 +625,7 @@ ion_mass_warning_table = [
 @pytest.mark.parametrize("argument, kwargs, expected_warning",
                          ion_mass_warning_table)
 def test_ion_mass_warnings(argument, kwargs, expected_warning):
-    """Test that ion_mass issues the expected warnings."""
+    """Test that `ion_mass` issues the expected warnings."""
     with pytest.warns(expected_warning, message=(
             f"ion_mass({repr(argument)}, **{kwargs}) is not issuing a "
             f"{expected_warning}.")):
@@ -648,7 +653,7 @@ is_stable_table = [
 
 @pytest.mark.parametrize("argument", is_stable_table)
 def test_is_stable(argument):
-    """Test that is_stable returns True for stable isotopes."""
+    """Test that `is_stable` returns `True` for stable isotopes."""
     assert is_stable(*argument), \
         f"is_stable is not returning True for {repr(argument)}"
 
@@ -671,7 +676,7 @@ is_stable_false_table = [
 
 @pytest.mark.parametrize("argument", is_stable_false_table)
 def test_is_stable_false(argument):
-    """Test that is_stable returns False for unstable isotopes."""
+    """Test that `is_stable` returns `False` for unstable isotopes."""
     assert not is_stable(*argument), \
         f"is_stable is not returning False for {repr(argument)}"
 
@@ -688,7 +693,7 @@ is_stable_error_table = [
 @pytest.mark.parametrize("argument, expected_error",
                          is_stable_error_table)
 def test_is_stable_error(argument, expected_error):
-    """Test errors that should be raised by is_stable."""
+    """Test exceptions that should be raised by `is_stable`."""
     with pytest.raises(expected_error, message=(
             f"is_stable({repr(argument)}) is not raising a "
             f"{expected_error}")):
@@ -696,8 +701,8 @@ def test_is_stable_error(argument, expected_error):
 
 
 def test_known_common_stable_isotopes():
-    """Test that known_isotopes, common_isotopes, and stable_isotopes return
-    the correct values for hydrogen."""
+    """Test that `known_isotopes`, `common_isotopes`, and
+    `stable_isotopes` return the correct values for hydrogen."""
 
     known_should_be = ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7']
     common_should_be = ['H-1', 'D']
@@ -717,20 +722,19 @@ def test_known_common_stable_isotopes():
 
 
 def test_half_life():
-    """Test that half_life returns the correct values for various isotopes."""
+    """Test that `half_life` returns the correct values for various
+    isotopes."""
     assert half_life('H-1') == np.inf * u.s, "Incorrect half-life for H-1'."
-
     assert np.isclose(half_life('tritium').to(u.s).value,
                       (12.32 * u.yr).to(u.s).value, rtol=2e-4), \
         "Incorrect half-life for tritium."
-
     assert half_life('H-1').unit == 's', "Incorrect unit for H-1."
     assert half_life('tritium').unit == 's', "Incorrect unit for tritium."
 
 
 def test_half_life_unstable_isotopes():
-    """Test that half_life returns None and issues a warning for all isotopes
-    that do not yet have half-life data."""
+    """Test that `half_life` returns `None` and raises an exception for
+    all isotopes that do not yet have half-life data."""
     for isotope in _Isotopes.keys():
         if 'half_life' not in _Isotopes[isotope].keys() and \
                 not _Isotopes[isotope].keys():
@@ -739,8 +743,8 @@ def test_half_life_unstable_isotopes():
 
 
 def test_half_life_u_220():
-    """Test that half_life returns None and issues a warning for an isotope
-    without half-life data."""
+    """Test that `half_life` returns `None` and issues a warning for an
+    isotope without half-life data."""
 
     isotope_without_half_life_data = "No-248"
 
@@ -776,8 +780,8 @@ atomic_TypeError_bad_arguments = [1.1, {'cats': 'bats'}, 1 + 1j]
     product(atomic_TypeError_funcs_table,
             atomic_TypeError_bad_arguments))
 def test_atomic_TypeErrors(func, argument):
-    """Test that atomic functions raise TypeErrors when arguments of the
-    incorrect time are provided."""
+    """Test that atomic functions raise a `TypeError` when arguments of
+    the incorrect type are provided."""
     with pytest.raises(TypeError):
         func(argument)
 
@@ -828,8 +832,9 @@ atomic_ParticleError_bad_arguments = [
     product(atomic_ParticleErrors_funcs_table,
             atomic_ParticleError_bad_arguments))
 def test_atomic_ParticleErrors(func, argument):
-    """Test that atomic functions raise ElementErrors when incorrect
-    arguments are provided."""
+    """Test that atomic functions raise an
+    `~plasmapy.utils.InvalidParticleErrors` when incorrect arguments are
+    provided."""
     with pytest.raises(InvalidParticleError):
         func(argument)
 
@@ -852,17 +857,17 @@ def test_known_common_stable_isotopes_cases():
 
 
 def test_known_common_stable_isotopes_len():
-    """Test that known_isotopes, common_isotopes, and stable_isotopes return
-    lists of the expected lengths.
+    """Test that `known_isotopes`, `common_isotopes`, and
+    `stable_isotopes` each return a `list` of the expected length.
 
-    The number of common isotopes may change if isotopic composition data
-    has any significant changes.
+    The number of common isotopes may change if isotopic composition
+    data has any significant changes.
 
-    The number of stable isotopes may decrease slightly if some isotopes are
-    discovered to be unstable but with extremely long half-lives.
+    The number of stable isotopes may decrease slightly if some isotopes
+    are discovered to be unstable but with extremely long half-lives.
 
-    The number of known isotopes will increase as new isotopes are discovered,
-    so a buffer is included in the test."""
+    The number of known isotopes will increase as new isotopes are
+    discovered, so a buffer is included in the test."""
 
     assert len(common_isotopes()) == 288, \
         ("The length of the list returned by common_isotopes() is "
@@ -880,15 +885,16 @@ def test_known_common_stable_isotopes_len():
 @pytest.mark.parametrize(
     "func", [common_isotopes, stable_isotopes, known_isotopes])
 def test_known_common_stable_isotopes_error(func):
-    """Test that known_isotopes, common_isotopes, and stable_isotopes
-    raise ElementErrors for neutrons."""
+    """Test that `known_isotopes`, `common_isotopes`, and
+    `stable_isotopes` raise an `~plasmapy.utils.InvalidElementError` for
+    neutrons."""
     with pytest.raises(InvalidElementError, message=(
             f"{func} is not raising a ElementError for neutrons.")):
         func('n')
 
 
 def test_isotopic_abundance():
-    """Test that isotopic_abundance returns the appropriate values or
+    """Test that `isotopic_abundance` returns the appropriate values or
     raises appropriate errors for various isotopes."""
     assert isotopic_abundance('H', 1) == isotopic_abundance('protium')
     assert np.isclose(isotopic_abundance('D'), 0.000115)
@@ -952,7 +958,7 @@ integer_charge_table = [
 
 @pytest.mark.parametrize("argument, expected", integer_charge_table)
 def test_integer_charge(argument, expected):
-    """Test that integer_charge returns the expected results."""
+    """Test that `integer_charge` returns the expected results."""
     assert integer_charge(argument) == expected, \
         (f"integer_charge({repr(argument)}) is returning "
          f"{integer_charge(argument)} which differs from the expected result "
@@ -974,7 +980,7 @@ integer_charge_error_table = [
 @pytest.mark.parametrize("argument, expected_error",
                          integer_charge_error_table)
 def test_integer_charge_error(argument, expected_error):
-    """Test that integer_charge raises the expected exceptions."""
+    """Test that `integer_charge` raises the expected exceptions."""
     with pytest.raises(expected_error, message=(
             f"integer_charge({repr(argument)} is not raising a "
             f"{expected_error}.")):
@@ -991,7 +997,7 @@ integer_charge_warning_table = [
 @pytest.mark.parametrize("argument, expected_warning",
                          integer_charge_warning_table)
 def test_integer_charge_warnings(argument, expected_warning):
-    """Test that integer_charge issues appropriate warnings."""
+    """Test that `integer_charge` issues appropriate warnings."""
     with pytest.warns(expected_warning, message=(
             f"integer_charge({repr(argument)}) is not issuing "
             f"{expected_warning}")):
@@ -999,7 +1005,7 @@ def test_integer_charge_warnings(argument, expected_warning):
 
 
 def test_electric_charge():
-    """Test that the results from electric_charge provide the correct
+    """Test that the results from `electric_charge` provide the correct
     values that have the correct characteristics."""
     assert electric_charge('p').value == 1.6021766208e-19
     assert electric_charge('p').unit == 'C'
@@ -1018,7 +1024,7 @@ electric_charge_error_table = [
 @pytest.mark.parametrize("argument, expected_error",
                          electric_charge_error_table)
 def test_electric_charge_error(argument, expected_error):
-    """Test that electric_charge raises the expected exceptions."""
+    """Test that `electric_charge` raises the expected exceptions."""
     with pytest.raises(expected_error, message=(
             f"electric_charge({repr(argument)}) is not raising a "
             f"{expected_error}.")):
@@ -1034,7 +1040,7 @@ electric_charge_warning_table = [
 @pytest.mark.parametrize("argument, expected_warning",
                          electric_charge_warning_table)
 def test_electric_charge_warning(argument, expected_warning):
-    """Test that electric_charge issues the expected warnings."""
+    """Test that `electric_charge` issues the expected warnings."""
     with pytest.warns(expected_warning, message=(
             f"electric_charge({repr(argument)}) is not issuing a "
             f"{expected_warning}.")):
@@ -1042,8 +1048,8 @@ def test_electric_charge_warning(argument, expected_warning):
 
 
 def test_particle_mass():
-    r"""Quick tests to make sure that particle_mass gives consistent results
-    with other mass functions."""
+    r"""Quick tests to make sure that `particle_mass` gives consistent
+    results with other mass functions."""
     assert ion_mass('p+') == particle_mass('p+')
     assert standard_atomic_weight('H') == particle_mass('H')
     assert isotope_mass('D') == particle_mass('D')

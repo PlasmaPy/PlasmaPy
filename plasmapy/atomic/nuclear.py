@@ -21,11 +21,11 @@ def nuclear_binding_energy(particle: Particle, mass_numb=None):
     Parameters
     ----------
 
-    particle: string, integer, or Particle
+    particle: `str`, `int`, or `~plasmapy.atomic.Particle`
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
-    mass_numb: integer, optional
+    mass_numb: `int` (optional)
         The mass number of an isotope, which is required if and only
         if the first argument can only be used to determine the
         element and not the isotope.
@@ -33,25 +33,25 @@ def nuclear_binding_energy(particle: Particle, mass_numb=None):
     Returns
     -------
 
-    binding_energy: Quantity
+    binding_energy: `~astropy.units.Quantity`
         The binding energy of the nucleus in units of Joules.
 
     Raises
     ------
-    InvalidParticleError
+    `~plasmapy.utils.InvalidParticleError`
         If the inputs do not correspond to a valid particle.
 
-    AtomicError
+    `~plasmapy.utils.AtomicError`
         If the inputs do not correspond to a valid isotope or nucleon.
 
-    TypeError
+    `TypeError`
         If the inputs are not of the correct types.
 
     See also
     --------
 
-    nuclear_reaction_energy : Returns the change in binding energy
-        during nuclear fusion or fission reactions.
+    `~plasmapy.atomic.nuclear_reaction_energy` : Returns the change in
+        binding energy during nuclear fusion or fission reactions.
 
     Examples
     --------
@@ -79,15 +79,15 @@ def nuclear_reaction_energy(*args, **kwargs):
     Parameters
     ----------
 
-    reaction: string (optional, positional argument only)
+    reaction: `str` (optional, positional argument only)
         A string representing the reaction, like "D + T --> alpha + n"
         or "Be-8 --> 2*He-4"
 
-    reactants: list, tuple, or string (optional, keyword argument only)
-        A list or tuple containing the reactants of a nuclear reaction
+    reactants: `list`, `tuple`, or `str` (optional, keyword argument only)
+        A `list` or `tuple` containing the reactants of a nuclear reaction
         (e.g., ['D', 'T']), or a string representing the sole reactant.
 
-    products: list, tuple, or string (optional, keyword argument only)
+    products: `list`, `tuple`, or `str` (optional, keyword argument only)
         A list or tuple containing the products of a nuclear reaction
         (e.g., ['alpha', 'n']), or a string representing the sole
         product.
@@ -95,7 +95,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     Returns
     -------
 
-    energy: Quantity
+    energy: `~astropy.units.Quantity`
         The difference between the mass energy of the reactants and
         the mass energy of the products in a nuclear reaction.  This
         quantity will be positive if the reaction is exothermic
@@ -105,19 +105,20 @@ def nuclear_reaction_energy(*args, **kwargs):
     Raises
     ------
 
-    ValueError:
+    `ValueError`:
         If the reaction is not valid, there is insufficient
         information to determine an isotope, the baryon number is
         not conserved, or the charge is not conserved.
 
-    TypeError:
+    `TypeError`:
         If the positional input for the reaction is not a string, or
         reactants and/or products is not of an appropriate type.
 
     See also
     --------
 
-    nuclear_binding_energy : finds the binding energy of an isotope
+    `~plasmapy.atomic.nuclear_binding_energy` : finds the binding energy
+        of an isotope
 
     Notes
     -----
@@ -126,8 +127,6 @@ def nuclear_reaction_energy(*args, **kwargs):
     reaction, or reactants and products as two keyword-only lists
     containing strings representing the isotopes and other particles
     participating in the reaction.
-
-    An integer immediately preceding a species acts as a multiplier.
 
     Examples
     --------

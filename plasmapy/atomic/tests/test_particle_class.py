@@ -12,7 +12,6 @@ from ...utils import (
     InvalidParticleError,
     InvalidElementError,
     InvalidIsotopeError,
-    InvalidIonError,
     ChargeError,
 )
 
@@ -259,10 +258,10 @@ test_Particle_table = [
 
 @pytest.mark.parametrize("arg, kwargs, expected_dict", test_Particle_table)
 def test_Particle_class(arg, kwargs, expected_dict):
-    r"""Test that Particle objects for different subatomic particles,
-    elements, isotopes, and ions return the expected properties.  Provide
-    a detailed error message that lists all of the inconsistencies with
-    the expected results."""
+    r"""Test that `~plasmapy.atomic.Particle` objects for different
+    subatomic particles, elements, isotopes, and ions return the
+    expected properties.  Provide a detailed error message that lists
+    all of the inconsistencies with the expected results."""
 
     call = _call_string(arg, kwargs)
     errmsg = ""
@@ -325,8 +324,7 @@ equivalent_particles_table = [
 
 @pytest.mark.parametrize("equivalent_particles", equivalent_particles_table)
 def test_Particle_equivalent_cases(equivalent_particles):
-    r"""Test that all instances of a list of particles are equivalent,
-    except for the _original_* private variables which will differ."""
+    r"""Test that all instances of a list of particles are equivalent."""
 
     equivalent_Particle_classes = []
 
@@ -370,7 +368,7 @@ test_Particle_error_table = [
     "arg, kwargs, attribute, exception", test_Particle_error_table)
 def test_Particle_errors(arg, kwargs, attribute, exception):
     r"""Test that the appropriate exceptions are raised during the creation
-    and use of a Particle object."""
+    and use of a `~plasmapy.atomic.Particle` object."""
     call = _call_string(arg, kwargs)
     with pytest.raises(exception, message=(
             f"The following command: "
@@ -391,7 +389,7 @@ test_Particle_warning_table = [
     "arg, kwargs, attribute, warning", test_Particle_warning_table)
 def test_Particle_warnings(arg, kwargs, attribute, warning):
     r"""Test that the appropriate warnings are issued during the creation
-    and use of a Particle object."""
+    and use of a `~plasmapy.atomic.Particle` object."""
     with pytest.warns(warning, message=(
             f"The following command: "
             f"\n\n >>> {_call_string(arg, kwargs)}{attribute}\n\n"
@@ -423,11 +421,12 @@ nuclide_mass_and_mass_equiv_table = [
 
 @pytest.mark.parametrize('isotope, ion', nuclide_mass_and_mass_equiv_table)
 def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
-    r"""Test that the mass and nuclide_mass attributes return equivalent values
-    when appropriate.  The inputs should generally be an isotope with no charge
-    information, and a fully ionized ion of that isotope, in order to make sure
-    that the nuclide mass of the isotope equals the mass of the fully ionized
-    ion.  This method may also check neutrons and protons."""
+    r"""Test that the `mass` and `nuclide_mass` attributes return
+    equivalent values when appropriate.  The inputs should generally be
+    an isotope with no charge information, and a fully ionized ion of
+    that isotope, in order to make sure that the nuclide mass of the
+    isotope equals the mass of the fully ionized ion.  This method may
+    also check neutrons and protons."""
 
     Isotope = Particle(isotope)
     Ion = Particle(ion)

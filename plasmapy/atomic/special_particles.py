@@ -7,11 +7,13 @@ import numpy as np
 
 
 class _ParticleZooClass():
-    r"""Creates an object with taxonomy information for special particles.
+    r"""Creates an object with taxonomy information for special
+    particles.
 
-    The _taxonomy_dict attribute contains the name of each classification
-    (e.g., 'lepton', 'baryon', 'matter', etc.) as the keys and a set of
-    particle symbol strings of the particles belonging to that classification.
+    The `_taxonomy_dict` attribute contains the name of each
+    classification (e.g., 'lepton', 'baryon', 'matter', etc.) as the
+    keys and a set of particle symbol strings of the particles belonging
+    to that classification.
 
     The attributes of this class provide sets of strings representing
     particles in the corresponding category.
@@ -66,58 +68,58 @@ class _ParticleZooClass():
 
     @property
     def leptons(self) -> Set[str]:
-        r"""Returns a set of strings representing leptons."""
+        r"""Returns a `set` of strings representing leptons."""
         return self._taxonomy_dict['lepton']
 
     @property
     def antileptons(self) -> Set[str]:
-        r"""Returns a set of strings representing antileptons."""
+        r"""Returns a `set` of strings representing antileptons."""
         return self._taxonomy_dict['antilepton']
 
     @property
     def baryons(self) -> Set[str]:
-        r"""Returns a set of strings representing baryons."""
+        r"""Returns a `set` of strings representing baryons."""
         return self._taxonomy_dict['baryon']
 
     @property
     def antibaryons(self) -> Set[str]:
-        r"""Returns a set of strings representing antibaryons."""
+        r"""Returns a `set` of strings representing antibaryons."""
         return self._taxonomy_dict['antibaryon']
 
     @property
     def fermions(self) -> Set[str]:
-        r"""Returns a set of strings representing fermions."""
+        r"""Returns a `set` of strings representing fermions."""
         return self._taxonomy_dict['fermion']
 
     @property
     def bosons(self) -> Set[str]:
-        r"""Returns a set of strings representing bosons."""
+        r"""Returns a `set` of strings representing bosons."""
         return self._taxonomy_dict['boson']
 
     @property
     def neutrinos(self) -> Set[str]:
-        r"""Returns a set of strings representing neutrinos."""
+        r"""Returns a `set` of strings representing neutrinos."""
         return self._taxonomy_dict['neutrino']
 
     @property
     def antineutrinos(self) -> Set[str]:
-        r"""Returns a set of strings representing antineutrinos."""
+        r"""Returns a `set` of strings representing antineutrinos."""
         return self._taxonomy_dict['antineutrinos']
 
     @property
     def particles(self) -> Set[str]:
-        r"""Returns a set of strings representing particles (as
+        r"""Returns a `set` of strings representing particles (as
         opposed to antiparticles)."""
         return self._taxonomy_dict['matter']
 
     @property
     def antiparticles(self) -> Set[str]:
-        r"""Returns a set of strings representing antiparticles."""
+        r"""Returns a `set` of strings representing antiparticles."""
         return self._taxonomy_dict['antimatter']
 
     @property
     def everything(self) -> Set[str]:
-        r"""Returns a set of strings representing all particles and
+        r"""Returns a `set` of strings representing all particles and
         antiparticles"""
         return \
             self._taxonomy_dict['matter'] | self._taxonomy_dict['antimatter']
@@ -128,14 +130,14 @@ ParticleZoo = _ParticleZooClass()
 
 def _create_Particles_dict() -> Dict[str, dict]:
     """Create a dictionary of dictionaries that contains physical
-    information for particles and antiparticles that are not
-    elements or ions.
+    information for particles and antiparticles that are not elements or
+    ions.
 
-    The keys of the top-level dictionary are the standard
-    particle symbols. The values of the top-level dictionary
-    are dictionaries for each particle or antiparticle with
-    strings such as 'name', 'mass', and 'spin' as the keys
-    and the corresponding atomic properties as symbols."""
+    The keys of the top-level dictionary are the standard particle
+    symbols. The values of the top-level dictionary are dictionaries for
+    each particle or antiparticle with strings such as `'name'`,
+    `'mass'`, and `'spin'` as the keys and the corresponding atomic
+    properties as symbols."""
 
     symbols_and_names = [
         ('e-', 'electron'),
