@@ -36,38 +36,38 @@ class Particle:
 
     Parameters
     ----------
-    argument : str or int
+    argument : `str` or `int`
         A string representing a particle, element, isotope, or ion; or
         an integer representing the atomic number of an element.
 
-    mass_numb : int, optional
+    mass_numb : `int`, optional
         The mass number of an isotope or nuclide.
 
-    Z : int, optional
+    Z : `int`, optional
         The integer charge of the particle.
 
     Raises
     ------
-    InvalidParticleError
+    `~plasmapy.utils.InvalidParticleError`
         Raised when the particle input does not correspond to a valid
         particle or is contradictory.
 
-    InvalidElementError
+    `~plasmapy.utils.InvalidElementError`
         For when an attribute is being accessed that requires
         information about an element, but the particle is not an
         element, isotope, or ion.
 
-    InvalidIsotopeError
+    `~plasmapy.utils.InvalidIsotopeError`
         For when an attribute is being accessed that requires
         information about an isotope or nuclide, but the particle is not
         an isotope (or an ion of an isotope).
 
-    ChargeError
+    `~plasmapy.utils.ChargeError`
         For when either the charge or integer_charge attributes is being
         accessed but the charge information for the particle is not
         available.
 
-    TypeError
+    `TypeError`
         For when any of the arguments or keywords is not of the required
         type.
 
