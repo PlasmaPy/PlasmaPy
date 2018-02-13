@@ -1462,7 +1462,7 @@ class Test_classical_transport:
         calculated = self.all_variables[key]
         testTrue = np.allclose(expected, calculated.si.value)
         errStr = (f"Expected values of {key} are {expected} and not"
-                  f"{calculated.si.values}.")
+                  f"{calculated.si.value}.")
         assert testTrue, errStr
 
 
