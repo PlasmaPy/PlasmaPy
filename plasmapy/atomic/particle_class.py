@@ -16,6 +16,7 @@ from ..utils import (
     InvalidIsotopeError,
     ChargeError,
     MissingAtomicDataError,
+    MissingAtomicDataWarning,
 )
 
 from .parsing import (
