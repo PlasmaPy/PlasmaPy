@@ -27,7 +27,10 @@ def _iso(symbol, name, atomic_number, mass_number, relative_atomic_mass,
 
 # Most of the following data is from NIST retrieved in early 2017.
 # The atomic mass is given in units of u, and half-lives are in seconds.
-# The half-life data is presently incomplete.
+
+# The half-life data is presently incomplete.  Much of the half-life
+# data comes from NUBASE 2016 as retrieved in #260 in early 2018:
+#     https://www-nds.iaea.org/amdc/ame2016/nubase2016.txt
 
 _Isotopes = {
     'n': _iso('n', 'neutron', 0, 1, 1.00866491588, False, half_life=881.5),

@@ -4,7 +4,7 @@ Periodic table data from http://periodic.lanl.gov/index.shtml
 
 """
 
-from astropy import units as u, constants as const
+from astropy import units as u
 
 _atomic_symbols = {
     1: "H",
