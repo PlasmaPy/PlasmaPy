@@ -61,13 +61,13 @@ def particle_input(wrapped_function: Callable = None,
                    **kwargs) -> Any:
     r"""A decorator to take arguments and keywords related to a particle
     and pass through the `~plasmapy.atomic.Particle` class to the
-    callable instead.
+    function or method instead.
 
     Parameters
     ----------
 
     wrapped_function : `callable`
-        The function to be decorated.
+        The function or method to be decorated.
 
     require : `str`, `set`, `list`, or `tuple` (optional)
         Categories that a particle must be in.  If a particle is not in
@@ -89,6 +89,46 @@ def particle_input(wrapped_function: Callable = None,
         set to `None` without raising an exception.  In such cases, this
         decorator will pass `None` through to the decorated function or
         method.
+
+    Notes
+    -----
+
+    If the annotated argument is named `element`, `isotope`, or `ion`,
+    then the decorator will raise an `~
+
+    Raises
+    ------
+
+    `TypeError`
+        If the annotated argument is not a `str`, `int`, or
+        `~plasmapy.atomic.Particle`; or if `Z` and/or `mass_numb` are
+        not integers.
+
+    `~plasmapy/utils/InvalidParticleError`
+        If the annotated argument does not correspond to a valid
+        particle.
+
+    `~plasmapy/utils/InvalidElementError`
+        If an annotated argument is named `element`, and the input does
+        not correspond to an element.
+
+    `~plasmapy/utils/InvalidIsotopeError`
+        If an annotated argument is named `isotope`, and the input does
+        not correspond to an isotope.
+
+    `~plasmapy/utils/InvalidIonError`
+        If an annotated argument is named `ion`, and the input does not
+        correspond to an ion.
+
+    `~plasmapy/utils/ChargeError`
+        If `'charged'` is in the `require` argument and the particle
+        is not explicitly charged, or if `any_of = {'charged',
+        'uncharged'}` and the particle does not have charge information
+        associated with it.
+
+    `~plasmapy/utils/AtomicError`
+        If an annotated argument does not meet the criteria set by the
+        categories in the `require`, `any_of`, and `exclude` keywords.
 
     Examples
     --------
