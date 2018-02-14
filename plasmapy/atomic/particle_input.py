@@ -2,9 +2,6 @@ import functools
 import inspect
 from typing import Callable, Union, Any, Set, List, Tuple
 
-import astropy.units as u
-import astropy.constants as const
-
 from .particle_class import Particle
 
 from ..utils import (AtomicError,
@@ -94,7 +91,16 @@ def particle_input(wrapped_function: Callable = None,
     -----
 
     If the annotated argument is named `element`, `isotope`, or `ion`,
-    then the decorator will raise an `~
+    then the decorator will raise an `~plasmapy.utils.InvalidElementError`,
+    `~plasmapy.utils.InvalidIsotopeError`, or `~plasmapy.utils.InvalidIonError`
+    if the particle does not correspond to an element, isotope, or ion,
+    respectively.
+
+    If only one argument is annotated with `~plasmapy.atomic.Particle`,
+    then the keywords `Z` and `mass_numb` may be used to specify the
+    integer charge and/or mass number of an ion or isotope.  However,
+    the decorated function must allow `Z` and/or `mass_numb` as keywords
+    in order to enable this functionality.
 
     Raises
     ------
@@ -128,7 +134,10 @@ def particle_input(wrapped_function: Callable = None,
 
     `~plasmapy/utils/AtomicError`
         If an annotated argument does not meet the criteria set by the
-        categories in the `require`, `any_of`, and `exclude` keywords.
+        categories in the `require`, `any_of`, and `exclude` keywords;
+        if more than one argument is annotated and `Z` or `mass_numb`
+        are used as arguments; or if none of the arguments have been
+        annotated with `~plasmapy.atomic.Particle`.
 
     Examples
     --------

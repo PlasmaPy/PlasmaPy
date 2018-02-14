@@ -336,7 +336,7 @@ class Particle:
                 return True
             else:
                 return False
-        except Exception:
+        except Exception:  # coveralls: ignore
             return False
 
     def __ne__(self, other) -> bool:
