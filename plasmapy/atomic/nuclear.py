@@ -105,7 +105,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     Raises
     ------
 
-    `ValueError`:
+    `AtomicError`:
         If the reaction is not valid, there is insufficient
         information to determine an isotope, the baryon number is
         not conserved, or the charge is not conserved.
@@ -147,6 +147,8 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     """
 
+    errmsg = f"Invalid nuclear reaction."
+
     def _process_particles_list(unformatted_particles_list):
         """Takes an unformatted list of particles and puts each
         particle into standard form, while allowing an integer and
@@ -177,16 +179,17 @@ def nuclear_reaction_energy(*args, **kwargs):
                 try:
                     particle = Particle(item)
                 except (InvalidParticleError) as exc:
-                    raise ValueError(f"{item} is not a valid particle.")
+                    raise AtomicError(errmsg) from exc
 
                 if particle.element and not particle.isotope:
-                    raise ValueError
+                    raise AtomicError(errmsg) from exc
 
                 [particles.append(particle) for i in range(multiplier)]
 
             except Exception:
-                raise ValueError(f"{original_item} is not a valid reactant or "
-                                 "product in a nuclear reaction.") from None
+                raise AtomicError(
+                    f"{original_item} is not a valid reactant or "
+                    "product in a nuclear reaction.") from None
 
         return particles
 
@@ -209,7 +212,7 @@ def nuclear_reaction_energy(*args, **kwargs):
                 elif not particle.element:
                     total_charge += particle.integer_charge
             except ChargeError as ce:
-                raise ValueError
+                raise AtomicError("Charge is not conserved.")
         return total_charge
 
     def _mass_energy(particles):
@@ -235,7 +238,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     reactants_products_are_inputs = kwargs and not args and len(kwargs) == 2
 
     if reaction_string_is_input == reactants_products_are_inputs:
-        raise ValueError(input_err_msg)
+        raise AtomicError(input_err_msg)
 
     if reaction_string_is_input:
 
@@ -244,8 +247,8 @@ def nuclear_reaction_energy(*args, **kwargs):
         if not isinstance(reaction, str):
             raise TypeError(input_err_msg)
         elif '->' not in reaction:
-            raise ValueError(f"The reaction '{reaction}' is missing a '->'"
-                             " or '-->' between the reactants and products.")
+            raise AtomicError(f"The reaction '{reaction}' is missing a '->'"
+                              " or '-->' between the reactants and products.")
 
         try:
             LHS_string, RHS_string = re.split('-+>', reaction)
@@ -254,7 +257,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             reactants = _process_particles_list(LHS_list)
             products = _process_particles_list(RHS_list)
         except Exception as ex:
-            raise ValueError(f"{reaction} is not a valid nuclear reaction.") \
+            raise AtomicError(f"{reaction} is not a valid nuclear reaction.") \
                 from ex
 
     elif reactants_products_are_inputs:
@@ -265,16 +268,16 @@ def nuclear_reaction_energy(*args, **kwargs):
         except TypeError as t:
             raise TypeError(input_err_msg) from t
         except Exception as e:
-            raise ValueError("Invalid reactants and/or products in "
-                             "nuclear_reaction_energy.") from e
+            raise AtomicError(errmsg) from e
 
     if _baryon_number(reactants) != _baryon_number(products):
-        raise ValueError("The baryon number not conserved for "
-                         f"reactants = {reactants} and products = {products}.")
+        raise AtomicError(
+            "The baryon number is not conserved for "
+            f"reactants = {reactants} and products = {products}.")
 
     if _total_charge(reactants) != _total_charge(products):
-        raise ValueError("Total charge is not conserved for "
-                         f"reactants = {reactants} and products = {products}.")
+        raise AtomicError("Total charge is not conserved for reactants = "
+                          f"{reactants} and products = {products}.")
 
     released_energy = _mass_energy(reactants) - _mass_energy(products)
 
