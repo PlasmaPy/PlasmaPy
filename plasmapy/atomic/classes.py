@@ -27,6 +27,44 @@ from .particles import _Particles, ParticleZoo
 
 # TODO: Write a decorator to turn atomic inputs into a Particle.
 
+def get_reduced_mass(mass_this, other, Z=None, mass_numb=None) -> u.kg:
+    r"""Finds the reduced mass between two particles, or will raise a
+    MissingAtomicDataError if either particle's mass is unavailable or
+    an AtomicError for any other errors.  The other particle may be
+    represented by another Particle object, a Quantity with units of,
+    mass, or a string of the other particle's symbol (in conjunction
+    with keywords Z and mass_numb)
+
+    Example
+    -------
+    >>> from plasmapy.atomic import classes, atomic
+    >>> ion = atomic.ion_mass(10)
+    >>> classes.get_reduced_mass(ion, 2)
+    <Quantity 5.54634154e-27 kg>
+
+    """
+
+    if isinstance(other, (str, int)):
+            other = Particle(other, Z=Z, mass_numb=mass_numb)
+
+    if isinstance(other, Particle):
+        try:
+            mass_that = other.mass.to(u.kg)
+        except MissingAtomicDataError:
+            raise MissingAtomicDataError(
+                f"Unable to find the reduced mass because the mass of "
+                f"{other.particle} is not available.") from None
+    else:
+        try:
+            mass_that = other.to(u.kg)
+        except Exception as exc:  # coveralls: ignore
+            raise AtomicError(
+                f"{other} must be either a Particle or a Quantity or "
+                f"Constant with units of mass in order to calculate "
+                f"reduced mass.") from exc
+
+    return (mass_this * mass_that) / (mass_this + mass_that)
+
 
 class Particle:
     r"""A class for individual particles or antiparticles.
@@ -712,12 +750,12 @@ class Particle:
         return self._spin
 
     def reduced_mass(self, other, Z=None, mass_numb=None) -> u.kg:
-        r"""Finds the reduced mass between two particles, or will raise a
-        MissingAtomicDataError if either particle's mass is unavailable or
-        an AtomicError for any other errors.  The other particle may be
-        represented by another Particle object, a Quantity with units of,
-        mass, or a string of the other particle's symbol (in conjunction
-        with keywords Z and mass_numb)
+        r"""Finds the reduced mass between two particles by calling
+        `get_reduced_mass()`, or will raise a MissingAtomicDataError
+        if particle's mass is unavailable.  The other particle may
+        be represented by another Particle object, a Quantity with
+        units of, mass, or a string of the other particle's symbol
+        (in conjunction with keywords Z and mass_numb)
 
         Example
         -------
@@ -736,26 +774,8 @@ class Particle:
                 f"Unable to find the reduced mass because the mass of "
                 f"{self.particle} is not available.") from None
 
-        if isinstance(other, (str, int)):
-                other = Particle(other, Z=Z, mass_numb=mass_numb)
+        return get_reduced_mass(mass_this, other, Z=Z, mass_numb=mass_numb)
 
-        if isinstance(other, Particle):
-            try:
-                mass_that = other.mass.to(u.kg)
-            except MissingAtomicDataError:
-                raise MissingAtomicDataError(
-                    f"Unable to find the reduced mass because the mass of "
-                    f"{other.particle} is not available.") from None
-        else:
-            try:
-                mass_that = other.to(u.kg)
-            except Exception as exc:  # coveralls: ignore
-                raise AtomicError(
-                    f"{other} must be either a Particle or a Quantity or "
-                    f"Constant with units of mass in order to calculate "
-                    f"reduced mass.") from exc
-
-        return (mass_this * mass_that) / (mass_this + mass_that)
 
     def is_category(self, *categories, any=False,
                     exclude: Union[Set, Tuple, List] = set()) -> bool:
