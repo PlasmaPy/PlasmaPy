@@ -182,7 +182,7 @@ def nuclear_reaction_energy(*args, **kwargs):
                     raise AtomicError(errmsg) from exc
 
                 if particle.element and not particle.isotope:
-                    raise AtomicError(errmsg) from exc
+                    raise AtomicError(errmsg)
 
                 [particles.append(particle) for i in range(multiplier)]
 
