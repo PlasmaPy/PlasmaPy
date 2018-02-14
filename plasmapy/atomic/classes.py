@@ -27,6 +27,7 @@ from .particles import _Particles, ParticleZoo
 
 # TODO: Write a decorator to turn atomic inputs into a Particle.
 
+
 def get_reduced_mass(mass_this, other, Z=None, mass_numb=None) -> u.kg:
     r"""Finds the reduced mass between two particles, or will raise a
     MissingAtomicDataError if either particle's mass is unavailable or
@@ -775,7 +776,6 @@ class Particle:
                 f"{self.particle} is not available.") from None
 
         return get_reduced_mass(mass_this, other, Z=Z, mass_numb=mass_numb)
-
 
     def is_category(self, *categories, any=False,
                     exclude: Union[Set, Tuple, List] = set()) -> bool:
