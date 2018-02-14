@@ -247,6 +247,7 @@ test_Particle_table = [
       'is_category("matter", exclude=["antimatter"])': True,
       'is_category("matter", exclude="antimatter")': True,
       'is_category(any_of={"matter", "boson"})': True,
+      'is_category(any_of=["antimatter", "boson", "charged"])': False,
       'is_category(["fermion", "lepton"], exclude="matter")': False,
       'is_category("lepton", "invalid")': AtomicError,
       'is_category(["boson"], exclude=["lepton", "invalid"])': AtomicError,
