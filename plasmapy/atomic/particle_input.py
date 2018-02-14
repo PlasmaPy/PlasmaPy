@@ -2,6 +2,9 @@ import functools
 import inspect
 from typing import Callable, Union, Any, Set, List, Tuple
 
+import astropy.units as u
+import astropy.constants as const
+
 from .particle_class import Particle
 
 from ..utils import (AtomicError,
@@ -57,48 +60,98 @@ def particle_input(wrapped_function: Callable = None,
                    none_shall_pass: bool = False,
                    **kwargs) -> Any:
     r"""A decorator to take arguments and keywords related to a particle
-    and pass through the Particle class to the callable instead.
+    and pass through the `~plasmapy.atomic.Particle` class to the
+    callable instead.
 
     Parameters
     ----------
 
-    wrapped_function : callable
+    wrapped_function : `callable`
         The function to be decorated.
 
-    require : str, set, list, or tuple; optional
-        A list of categories
+    require : `str`, `set`, `list`, or `tuple` (optional)
+        Categories that a particle must be in.  If a particle is not in
+        all of these categories, then an `~plasmapy.utils.AtomicError`
+        will be raised.
 
-    any_of : str, set, list, or tuple; optional
+    any_of : `str`, `set`, `list`, or `tuple` (optional)
+        Categories that a particle may be in.  If a particle is not in
+        any of these categories, then an `~plasmapy.utils.AtomicError`
+        will be raised.
 
-    exclude : str, set, list, or tuple; optional
+    exclude : `str`, `set`, `list`, or `tuple` (optional)
+        Categories that a particle cannot be in.  If a particle is in
+        any of these categories, then an `~plasmapy.utils.AtomicError`
+        will be raised.
 
-    none_shall_pass : bool
-        If set to True, then the decorated argument is allowed to be set
-        to None without raising an exception.  In such cases, this
-        decorator will pass through None to the decorated function.
+    none_shall_pass : `bool`
+        If set to `True`, then the decorated argument is allowed to be
+        set to `None` without raising an exception.  In such cases, this
+        decorator will pass `None` through to the decorated function or
+        method.
 
-    Notes
-    -----
+    Examples
+    --------
 
-    This version of particle_input only works with functions, but should
-    be extended to work with classes and methods.
+    The `particle_input` decorator takes positional and keyword
+    arguments that are annotated with `~plasmapy.atomic.Particle`, and
+    passes through the corresponding instance of the
+    `~plasmapy.atomic.Particle` class to the decorated function or
+    method.  The following simple function returns the
+    `~plasmapy.atomic.Particle` object created from the function's
+    argument:
+
+    .. code-block:: python
+
+        from plasmapy.atomic import particle_input, Particle
+        @particle_input
+        def decorated_function(particle: Particle):
+            return particle
+
+    This decorator may be used for methods in instances of classes, as
+    in the following example:
+
+    .. code-block:: python
+
+        from plasmapy.atomic import particle_input, Particle
+        class SampleClass:
+            @particle_input
+            def decorated_method(self, particle: Particle):
+                return particle
+        sample_instance = SampleClass()
+        sample_instance.decorated_method('Fe')
+
+    Some functions may intended to be used with only certain categories
+    of particles.  The `require`, `any_of`, and `exclude` keyword
+    arguments enable this functionality.
+
+    .. code-block:: python
+
+        from plasmapy.atomic import particle_input, Particle
+        @particle_input(
+            require={'matter'},
+            any_of={'charged', 'uncharged},
+            exclude={'neutrino', 'antineutrino'},
+        )
+        def selective_function(particle: Particle):
+            return particle
 
     """
 
     def decorator(wrapped_function: Callable):
+
         wrapped_signature = inspect.signature(wrapped_function)
 
         @functools.wraps(wrapped_function)
         def wrapper(*args, **kwargs):
 
-            # The following couple of statements will likely need to be
-            # modified in order to work with methods.
-
+            annotations = wrapped_function.__annotations__
             bound_args = wrapped_signature.bind(*args, **kwargs)
+
             arguments = bound_args.arguments
             argnames = bound_args.arguments.keys()
+
             funcname = wrapped_function.__name__
-            annotations = wrapped_function.__annotations__
 
             args_to_become_particles = [
                 argname for argname in annotations.keys()
@@ -216,12 +269,11 @@ def particle_input(wrapped_function: Callable = None,
                         f"Charge information is required for {funcname}.")
 
                 # Some functions require particles that belong to more complex
-                # classification schemes.  Again, be use to provide a
+                # classification schemes.  Again, be sure to provide a
                 # maximally useful error message.
 
                 if not particle.is_category(
                         require=require, exclude=exclude, any_of=any_of):
-
                     raise AtomicError(_category_errmsg(
                         particle, require, exclude, any_of, funcname))
 
@@ -229,12 +281,14 @@ def particle_input(wrapped_function: Callable = None,
 
             return wrapped_function(**new_kwargs)
 
+        # TODO: Should we include type/units checking here?
+
         return wrapper
 
-    # The following code helps allow the decorator to be used either with
-    # or without arguments.  In particular, this helps allow us to invoke
-    # the decorator either as `@particle_input` or as `@particle_input()`,
-    # where the latter call allows the decorator to have keyword arguments.
+    # The following code allows the decorator to be used either with or
+    # without arguments.  This allows us to invoke the decorator either
+    # as `@particle_input` or as `@particle_input()`, where the latter
+    # call allows the decorator to have keyword arguments.
 
     if wrapped_function is not None:
         return decorator(wrapped_function)
