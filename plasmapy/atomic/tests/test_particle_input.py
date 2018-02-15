@@ -168,6 +168,7 @@ decorator_categories_table = [
     ({'any_of': {'charged', 'uncharged'}}, 'Fe', ChargeError),
     ({'any_of': ['charged', 'uncharged']}, 'Fe', ChargeError),
     ({'any_of': ('charged', 'uncharged')}, 'Fe', ChargeError),
+    ({'require': 'charged'}, 'Fe 0+', ChargeError),
 
     ({'require': ['fermion', 'charged'],
       'any_of': ['lepton', 'baryon'],
@@ -210,6 +211,33 @@ def test_decorator_categories(decorator_kwargs, particle, expected_exception):
         decorated_function(particle)
 
 
+def test_none_shall_pass():
+    """Tests the `none_shall_pass` keyword argument in is_particle.  If
+    `none_shall_pass=True`, then an annotated argument should allow
+    `None` to be passed through to the decorated function.  If
+    `none_shall_pass=False`, then particle_input should raise a
+    `~plasmapy.utils.AtomicError` if an annotated argument is assigned
+    the value of `None`.
+    """
+    @particle_input(none_shall_pass=True)
+    def func_none_shall_pass(particle: Particle):
+        return particle
+
+    @particle_input(none_shall_pass=False)
+    def func_none_shall_not_pass(particle: Particle):
+        return particle
+
+    assert func_none_shall_pass(None) == None, \
+        ("The none_shall_pass keyword in the particle_input decorator is set "
+         "to True, but is not passing through None.")
+
+    with pytest.raises(TypeError, message=(
+            "The none_shall_pass keyword in the particle_input decorator is "
+            "set to False, but is not raising a TypeError.")):
+        func_none_shall_not_pass(None)
+
+
+
 is_element = ['H', 'Fe-56', 'p+', 'alpha', 'Fe', 'D+', 'T 1-']
 not_element = ['e-', 'e+', 'n', 'mu-', 'tau+']
 
@@ -222,47 +250,97 @@ not_ion = ['D', 'T', 'H-1', 'He-4', 'e-', 'e+', 'n']
 
 @particle_input
 def function_with_element_argument(element: Particle):
+    """A function decorated with `~plasmapy.atomic.particle_input`
+    where the argument annotated with `~plasmapy.atomic.Particle`
+    is named `element`.  This function should raise an
+    `~plasmapy.utils.InvalidElementError` when the argument is not
+    an element, isotope, or ion."""
     return element
 
 
 @particle_input
 def function_with_isotope_argument(isotope: Particle):
+    """A function decorated with `~plasmapy.atomic.particle_input`
+    where the argument annotated with `~plasmapy.atomic.Particle`
+    is named `isotope`.  This function should raise an
+    `~plasmapy.utils.InvalidIsotopeError` when the argument is not an
+    isotope or an ion of an isotope."""
     return isotope
 
 
 @particle_input
 def function_with_ion_argument(ion: Particle):
+    """A function decorated with `~plasmapy.atomic.particle_input`
+    where the argument annotated with `~plasmapy.atomic.Particle`
+    is named `ion`.  This function should raise an
+    `~plasmapy.utils.InvalidIonError` when the argument is not an
+    ion."""
     return ion
 
 
 @pytest.mark.parametrize('element', is_element)
 def test_is_element(element):
+    """Test that particle_input will not raise an
+    `~plasmapy.utils.InvalidElementError` if the annotated argument is
+    named 'element' and is assigned values that are elements, isotopes,
+    or ions."""
     function_with_element_argument(element)
 
 
 @pytest.mark.parametrize('particle', not_element)
 def test_not_element(particle):
-    with pytest.raises(InvalidElementError):
+    """Test that particle_input will raise an
+    `~plasmapy.utils.InvalidElementError` if an argument decorated with
+    `~plasmapy.atomic.Particle` is named 'element', but the annotated
+    argument ends up not being an element, isotope, or ion."""
+    with pytest.raises(InvalidElementError, message=(
+            "@particle_input is not raising an InvalidElementError for "
+            f"{repr(particle)} even though the annotated argument is named "
+            "'element'.")):
         function_with_element_argument(particle)
 
 
 @pytest.mark.parametrize('isotope', is_isotope)
 def test_is_isotope(isotope):
+    """Test that particle_input will not raise an
+    `~plasmapy.utils.InvalidIsotopeError` if the annotated argument is
+    named 'isotope' and is assigned values that are isotopes or
+    ions of isotopes."""
     function_with_isotope_argument(isotope)
 
 
 @pytest.mark.parametrize('particle', not_isotope)
 def test_not_element(particle):
-    with pytest.raises(InvalidIsotopeError):
+    """Test that particle_input will raise an
+    `~plasmapy.utils.InvalidIsotopeError` if an argument decorated with
+    `~plasmapy.atomic.Particle` is named 'isotope', but the annotated
+    argument ends up not being an isotope or an ion of an isotope."""
+    with pytest.raises(InvalidIsotopeError, message=(
+            "@particle_input is not raising an InvalidIsotopeError for "
+            f"{repr(particle)} even though the annotated argument is named "
+            "'isotope'.")):
         function_with_isotope_argument(particle)
 
 
 @pytest.mark.parametrize('ion', is_ion)
 def test_is_ion(ion):
+    """Test that particle_input will not raise an
+    `~plasmapy.utils.InvalidIonError` if the annotated argument is
+    named 'ion' and is assigned values that are ions."""
     function_with_ion_argument(ion)
 
 
 @pytest.mark.parametrize('particle', not_ion)
 def test_not_ion(particle):
-    with pytest.raises(InvalidIonError):
+    """Test that particle_input will raise an
+    `~plasmapy.utils.InvalidIonError` if an argument decorated with
+    `~plasmapy.atomic.Particle` is named 'ion', but the annotated
+    argument ends up not being an ion."""
+    with pytest.raises(InvalidIonError, message=(
+            "@particle_input is not raising an InvalidIonError for "
+            f"{repr(particle)} even though the annotated argument is named "
+            "'ion'.")):
         function_with_ion_argument(particle)
+
+
+

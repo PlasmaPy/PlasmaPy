@@ -82,10 +82,11 @@ def particle_input(wrapped_function: Callable = None,
         will be raised.
 
     none_shall_pass : `bool`
-        If set to `True`, then the decorated argument is allowed to be
-        set to `None` without raising an exception.  In such cases, this
+        If set to `True`, then the decorated argument may be set to
+        `None` without raising an exception.  In such cases, this
         decorator will pass `None` through to the decorated function or
-        method.
+        method.  If set to `False` and the annotated argument is given
+        a value of `None`, then this decorator will raise a `TypeError`.
 
     Notes
     -----
@@ -96,7 +97,7 @@ def particle_input(wrapped_function: Callable = None,
     if the particle does not correspond to an element, isotope, or ion,
     respectively.
 
-    If only one argument is annotated with `~plasmapy.atomic.Particle`,
+    If exactly one argument is annotated with `~plasmapy.atomic.Particle`,
     then the keywords `Z` and `mass_numb` may be used to specify the
     integer charge and/or mass number of an ion or isotope.  However,
     the decorated function must allow `Z` and/or `mass_numb` as keywords
@@ -107,8 +108,8 @@ def particle_input(wrapped_function: Callable = None,
 
     `TypeError`
         If the annotated argument is not a `str`, `int`, or
-        `~plasmapy.atomic.Particle`; or if `Z` and/or `mass_numb` are
-        not integers.
+        `~plasmapy.atomic.Particle`; or if `Z` or `mass_numb` is
+        not an `int`.
 
     `~plasmapy/utils/InvalidParticleError`
         If the annotated argument does not correspond to a valid
@@ -116,11 +117,11 @@ def particle_input(wrapped_function: Callable = None,
 
     `~plasmapy/utils/InvalidElementError`
         If an annotated argument is named `element`, and the input does
-        not correspond to an element.
+        not correspond to an element, isotope, or ion.
 
     `~plasmapy/utils/InvalidIsotopeError`
         If an annotated argument is named `isotope`, and the input does
-        not correspond to an isotope.
+        not correspond to an isotope or an ion of an isotope.
 
     `~plasmapy/utils/InvalidIonError`
         If an annotated argument is named `ion`, and the input does not

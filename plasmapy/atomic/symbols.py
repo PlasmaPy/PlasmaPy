@@ -387,7 +387,7 @@ def element_name(element: Particle) -> str:
     return element.element_name
 
 
-def _is_electron(arg: Any) -> bool:
+def _is_electron(arg: Any) -> bool:  # coveralls: ignore
     r"""Returns `True` if the argument corresponds to an electron, and
     `False` otherwise."""
 
