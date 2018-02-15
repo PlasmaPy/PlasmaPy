@@ -21,6 +21,7 @@ from ..utils import (
     InvalidElementError,
     InvalidIsotopeError,
     InvalidIonError,
+    MissingAtomicDataError,
 )
 
 from .symbols import atomic_symbol
@@ -1298,14 +1299,13 @@ def periodic_table_category(argument: Union[str, int]) -> str:
     return category
 
 
-def reduced_mass(mass_this, other, Z=None, mass_numb=None) -> u.kg:
+def reduced_mass(mass_this, other) -> u.Quantity:
     r"""Finds the reduced mass between two particles, or will raise a
     `~plasmapy.utils.MissingAtomicDataError` if either particle's mass
     is unavailable or an `~plasmapy.utils.AtomicError` for any other
     errors.  The other particle may be represented by another
     `~plasmapy.atomic.Particle` object, a `~astropy.units.Quantity`
-    with units of mass, or a string of the other particle's symbol
-    (in conjunction with keywords `Z` and `mass_numb`).
+    with units of mass, or a string of the other particle's symbol.
 
     Example
     -------
@@ -1317,7 +1317,7 @@ def reduced_mass(mass_this, other, Z=None, mass_numb=None) -> u.kg:
     """
 
     if isinstance(other, (str, int)):
-            other = Particle(other, Z=Z, mass_numb=mass_numb)
+            other = Particle(other)
 
     if isinstance(other, Particle):
         try:
