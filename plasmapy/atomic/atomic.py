@@ -22,6 +22,7 @@ from ..utils import (
     InvalidIsotopeError,
     InvalidIonError,
     MissingAtomicDataError,
+    AtomicError,
 )
 
 from .symbols import atomic_symbol
@@ -1299,40 +1300,69 @@ def periodic_table_category(argument: Union[str, int]) -> str:
     return category
 
 
-def reduced_mass(mass_this, other) -> u.Quantity:
-    r"""Finds the reduced mass between two particles, or will raise a
-    `~plasmapy.utils.MissingAtomicDataError` if either particle's mass
-    is unavailable or an `~plasmapy.utils.AtomicError` for any other
-    errors.  The other particle may be represented by another
-    `~plasmapy.atomic.Particle` object, a `~astropy.units.Quantity`
-    with units of mass, or a string of the other particle's symbol.
+def reduced_mass(test_particle, target_particle) -> u.Quantity:
+    r"""Finds the reduced mass between two particles.
+
+    Parameters
+    ----------
+
+    test_particle, target_particle : `str`, `int`, `~plasmapy.atomic.Particle`,
+    `~astropy.units.Quantity`, or `~astropy.constants.Constant`
+
+        The test particle as represented by a string, an integer representing
+        atomic number, a `~plasmapy.atomic.Particle` object, or a
+        `~astropy.units.Quantity` or `~astropy.constants.Constant` with
+        units of mass.
+
+    Returns
+    -------
+
+    reduced_mass : `~astropy.units.Quantity`
+        The reduced mass between the test particle and target particle
+
+    Raises
+    ------
+
+    `~plasmapy.utils.InvalidParticleError`
+        If either particle is invalid.
+
+    `~astropy.units.UnitConversionError`
+        If an argument is a `~astropy.units.Quantity` or
+        `~astropy.units.Constant` but does not have units of mass.
+
+    `~plasmapy.utils.MissingAtomicDataError`
+        If the mass of either particle is not known.
+
+    `TypeError`
+        If either argument is not a `str`, `int`, `~plasmapy.atomic.Particle`,
+        `~astropy.units.Quantity`, or `~astropy.constants.Constant`
 
     Example
     -------
-    >>> from plasmapy.atomic import reduced_mass, ion_mass
-    >>> ion = ion_mass(10)
-    >>> reduced_mass(ion, 2)
-    <Quantity 5.54634154e-27 kg>
+    >>> from astropy import units as u
+    >>> reduced_mass('p+', 'e-')
+    <Quantity 9.10442514e-31 kg>
+    >>> reduced_mass(5.4e-27 * u.kg, 8.6e-27 * u.kg)
+    <Quantity 3.31714286e-27 kg>
 
     """
 
-    if isinstance(other, (str, int)):
-            other = Particle(other)
-
-    if isinstance(other, Particle):
+    def get_particle_mass(particle):
         try:
-            mass_that = other.mass.to(u.kg)
+            if isinstance(particle, (u.Quantity, const.Constant)):
+                return particle.to(u.kg)
+            if not isinstance(particle, Particle):
+                particle = Particle(particle)
+            return particle.mass.to(u.kg)
+        except u.UnitConversionError as exc1:
+            raise u.UnitConversionError(
+                f"Incorrect units in reduced_mass.") from exc1
         except MissingAtomicDataError:
             raise MissingAtomicDataError(
                 f"Unable to find the reduced mass because the mass of "
                 f"{other.particle} is not available.") from None
-    else:
-        try:
-            mass_that = other.to(u.kg)
-        except Exception as exc:  # coveralls: ignore
-            raise AtomicError(
-                f"{other} must be either a Particle or a Quantity or "
-                f"Constant with units of mass in order to calculate "
-                f"reduced mass.") from exc
 
-    return (mass_this * mass_that) / (mass_this + mass_that)
+    test_mass = get_particle_mass(test_particle)
+    target_mass = get_particle_mass(target_particle)
+
+    return (test_mass * target_mass) / (test_mass + target_mass)
