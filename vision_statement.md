@@ -58,7 +58,7 @@ central platform. This is where PlasmaPy comes in.
 
 ## PlasmaPy Community Code of Conduct
 
-Please read the [Code of Conduct](CODE_OF_CONDUCT.md).
+Please see the attached [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Organizational structure
 
