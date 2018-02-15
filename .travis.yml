@@ -2,13 +2,14 @@
 language: python
 python:
         - "3.6"
-	- "nightly"
+	- "3.7-dev"
 
 git:
     submodules: false
 
 # Install dependencies
 install:
+        - ./requirements/dev_version_hack.sh
         - git clone git://github.com/astropy/ci-helpers.git --depth 1
         - source ci-helpers/travis/setup_conda.sh
         - "pip install -r requirements/automated-code-tests.txt"
