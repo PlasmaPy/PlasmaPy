@@ -124,6 +124,40 @@ def test_particle_input_classes():
     assert result_parens == result_noparens == expected
 
 
+@particle_input
+def function_with_no_annotations():
+    """A trivial function that is incorrectly decorated with
+    particle_input because no arguments are annotated with Particle."""
+    pass
+
+
+def test_no_annotations_exception():
+    """Test that a function decorated with particle_input that has no
+    annotated arguments will raise an AtomicError."""
+    with pytest.raises(AtomicError):
+        function_with_no_annotations()
+
+
+@particle_input
+def ambiguous_keywords(p1: Particle, p2: Particle, Z=None, mass_numb=None):
+    """A trivial function with two annotated arguments plus the keyword
+    arguments `Z` and `mass_numb`."""
+    pass
+
+
+def test_function_with_ambiguity():
+    """Test that a function decorated with particle_input that has two
+    annotated arguments"""
+    with pytest.raises(AtomicError):
+        ambiguous_keywords('H', 'He', Z=1, mass_numb=4)
+    with pytest.raises(AtomicError):
+        ambiguous_keywords('H', 'He', Z=1)
+    with pytest.raises(AtomicError):
+        ambiguous_keywords('H', 'He', mass_numb=4)
+    # TODO: should particle_input raise an exception when Z and mass_numb
+    # are given as keyword arguments but are not explicitly set?
+
+
 # decorator_kwargs, particle, expected_exception
 decorator_categories_table = [
     ({'exclude': {'element'}}, 'Fe', AtomicError),
