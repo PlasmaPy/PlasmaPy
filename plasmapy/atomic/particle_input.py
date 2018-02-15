@@ -304,7 +304,7 @@ def particle_input(wrapped_function: Callable = None,
                 _integer_charge = particle._attributes['integer charge']
 
                 must_be_charged = 'charged' in require
-                must_have_charge_info = any_of == {'charged', 'uncharged'}
+                must_have_charge_info = set(any_of) == {'charged', 'uncharged'}
 
                 uncharged = _integer_charge == 0
                 lacks_charge_info = _integer_charge is None
