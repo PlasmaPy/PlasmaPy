@@ -309,7 +309,7 @@ def particle_input(wrapped_function: Callable = None,
                 uncharged = _integer_charge == 0
                 lacks_charge_info = _integer_charge is None
 
-                if must_be_charged and not uncharged:
+                if must_be_charged and (uncharged or must_have_charge_info):
                     raise ChargeError(
                         f"A charged particle is required for {funcname}.")
 
