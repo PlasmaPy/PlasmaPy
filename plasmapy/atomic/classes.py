@@ -28,7 +28,7 @@ from .particles import _Particles, ParticleZoo
 # TODO: Write a decorator to turn atomic inputs into a Particle.
 
 
-def get_reduced_mass(mass_this, other, Z=None, mass_numb=None) -> u.kg:
+def reduced_mass(mass_this, other, Z=None, mass_numb=None) -> u.kg:
     r"""Finds the reduced mass between two particles, or will raise a
     MissingAtomicDataError if either particle's mass is unavailable or
     an AtomicError for any other errors.  The other particle may be
@@ -40,7 +40,7 @@ def get_reduced_mass(mass_this, other, Z=None, mass_numb=None) -> u.kg:
     -------
     >>> from plasmapy.atomic import classes, atomic
     >>> ion = atomic.ion_mass(10)
-    >>> classes.get_reduced_mass(ion, 2)
+    >>> classes.reduced_mass(ion, 2)
     <Quantity 5.54634154e-27 kg>
 
     """
@@ -752,7 +752,7 @@ class Particle:
 
     def reduced_mass(self, other, Z=None, mass_numb=None) -> u.kg:
         r"""Finds the reduced mass between two particles by calling
-        `get_reduced_mass()`, or will raise a MissingAtomicDataError
+        `reduced_mass()`, or will raise a MissingAtomicDataError
         if particle's mass is unavailable.  The other particle may
         be represented by another Particle object, a Quantity with
         units of, mass, or a string of the other particle's symbol
@@ -775,7 +775,7 @@ class Particle:
                 f"Unable to find the reduced mass because the mass of "
                 f"{self.particle} is not available.") from None
 
-        return get_reduced_mass(mass_this, other, Z=Z, mass_numb=mass_numb)
+        return reduced_mass(mass_this, other, Z=Z, mass_numb=mass_numb)
 
     def is_category(self, *categories, any=False,
                     exclude: Union[Set, Tuple, List] = set()) -> bool:
