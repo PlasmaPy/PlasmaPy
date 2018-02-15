@@ -1360,7 +1360,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
         except MissingAtomicDataError:
             raise MissingAtomicDataError(
                 f"Unable to find the reduced mass because the mass of "
-                f"{other.particle} is not available.") from None
+                f"{particle} is not available.") from None
 
     test_mass = get_particle_mass(test_particle)
     target_mass = get_particle_mass(target_particle)

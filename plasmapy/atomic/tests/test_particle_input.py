@@ -227,7 +227,7 @@ def test_none_shall_pass():
     def func_none_shall_not_pass(particle: Particle):
         return particle
 
-    assert func_none_shall_pass(None) == None, \
+    assert func_none_shall_pass(None) is None, \
         ("The none_shall_pass keyword in the particle_input decorator is set "
          "to True, but is not passing through None.")
 
@@ -235,7 +235,6 @@ def test_none_shall_pass():
             "The none_shall_pass keyword in the particle_input decorator is "
             "set to False, but is not raising a TypeError.")):
         func_none_shall_not_pass(None)
-
 
 
 is_element = ['H', 'Fe-56', 'p+', 'alpha', 'Fe', 'D+', 'T 1-']
@@ -341,6 +340,3 @@ def test_not_ion(particle):
             f"{repr(particle)} even though the annotated argument is named "
             "'ion'.")):
         function_with_ion_argument(particle)
-
-
-

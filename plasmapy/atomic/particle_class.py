@@ -641,8 +641,6 @@ class Particle:
 
         return (mass_this * mass_that) / (mass_this + mass_that)
 
-    # change must_be to require
-
     def is_category(self,
                     *categories,
                     require: Union[str, Set, Tuple, List] = set(),
@@ -670,7 +668,7 @@ class Particle:
         `'antibaryon'`, `'fermion'`, `'boson'`, `'neutrino'`,
         `'antineutrino'`, `'matter'`, `'antimatter'`, `'element'`,
         `'isotope'`, `'ion'`, `'charged'`, `'uncharged'`, and any of the
-        full names of special particles (e.g., `'positron'`)."""
+        symbols of special particles (e.g., `'e+'`)."""
 
         def become_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
                 r"""Turns the input (a `str`, `set`, `tuple`, or `list`)
@@ -698,10 +696,8 @@ class Particle:
         valid_categories = {
             'lepton', 'antilepton', 'fermion', 'boson', 'baryon', 'neutrino',
             'antineutrino', 'element', 'isotope', 'ion', 'matter',
-            'antimatter', 'stable', 'unstable', 'charged', 'uncharged'}
-
-        # TODO: make sure that valid_categories includes the names of
-        # special particles.
+            'antimatter', 'stable', 'unstable', 'charged', 'uncharged'
+        } | ParticleZoo.everything
 
         invalid_categories = (require | exclude | any_of) - valid_categories
 
