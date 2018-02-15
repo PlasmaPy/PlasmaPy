@@ -1296,3 +1296,43 @@ def periodic_table_category(argument: Union[str, int]) -> str:
     symbol = atomic_symbol(argument)
     category = _Elements[symbol]["category"]
     return category
+
+
+def reduced_mass(mass_this, other, Z=None, mass_numb=None) -> u.kg:
+    r"""Finds the reduced mass between two particles, or will raise a
+    `~plasmapy.utils.MissingAtomicDataError` if either particle's mass
+    is unavailable or an `~plasmapy.utils.AtomicError` for any other
+    errors.  The other particle may be represented by another
+    `~plasmapy.atomic.Particle` object, a `~astropy.units.Quantity`
+    with units of mass, or a string of the other particle's symbol
+    (in conjunction with keywords `Z` and `mass_numb`).
+
+    Example
+    -------
+    >>> from plasmapy.atomic import reduced_mass, ion_mass
+    >>> ion = ion_mass(10)
+    >>> reduced_mass(ion, 2)
+    <Quantity 5.54634154e-27 kg>
+
+    """
+
+    if isinstance(other, (str, int)):
+            other = Particle(other, Z=Z, mass_numb=mass_numb)
+
+    if isinstance(other, Particle):
+        try:
+            mass_that = other.mass.to(u.kg)
+        except MissingAtomicDataError:
+            raise MissingAtomicDataError(
+                f"Unable to find the reduced mass because the mass of "
+                f"{other.particle} is not available.") from None
+    else:
+        try:
+            mass_that = other.to(u.kg)
+        except Exception as exc:  # coveralls: ignore
+            raise AtomicError(
+                f"{other} must be either a Particle or a Quantity or "
+                f"Constant with units of mass in order to calculate "
+                f"reduced mass.") from exc
+
+    return (mass_this * mass_that) / (mass_this + mass_that)

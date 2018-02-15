@@ -28,6 +28,7 @@ from .atomic import (
     isotopic_abundance,
     integer_charge,
     electric_charge,
+    reduced_mass,
 )
 
 from .nuclear import (
