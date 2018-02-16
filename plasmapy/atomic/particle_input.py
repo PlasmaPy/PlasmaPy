@@ -208,7 +208,7 @@ def particle_input(wrapped_function: Callable = None,
 
             args_to_become_particles = [
                 argname for argname in annotations.keys()
-                if annotations[argname] is Particle
+                if annotations[argname] is Particle and argname != 'return'
             ]
 
             if not args_to_become_particles:
