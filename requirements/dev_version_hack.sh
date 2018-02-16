@@ -1,4 +1,11 @@
 #!/bin/bash
+
+# verbose printing of executed commands for debugging
+if [[ $DEBUG == True ]]; then
+    set -x
+fi
+
+# checking if PYTHON_VERSION variable is set
 if [[ -z $PYTHON_VERSION ]]; then
     # fetches python --version output
     version="$(python --version 2>&1)"
