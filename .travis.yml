@@ -12,6 +12,7 @@ install:
         - chmod u+x requirements/dev_version_hack.sh
         - source requirements/dev_version_hack.sh
         - git clone git://github.com/astropy/ci-helpers.git --depth 1
+        - export DEBUG=True
         - source ci-helpers/travis/setup_conda.sh
         - "pip install -r requirements/automated-code-tests.txt"
         # building so that we have cython files compiled for tests
