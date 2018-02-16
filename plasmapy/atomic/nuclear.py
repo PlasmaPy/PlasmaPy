@@ -1,6 +1,7 @@
 """Functions that are related to nuclear reactions."""
 
 from astropy import units as u, constants
+from typing import List, Union
 import re
 
 from ..utils import (
@@ -14,8 +15,9 @@ from .particle_class import Particle
 from .particle_input import particle_input
 
 
-@particle_input(must_be={'isotope', 'baryon'}, any=True)
-def nuclear_binding_energy(particle: Particle, mass_numb=None):
+@particle_input(any_of={'isotope', 'baryon'})
+def nuclear_binding_energy(
+        particle: Particle, mass_numb: int = None) -> u.Quantity:
     r"""Returns the nuclear binding energy associated with an isotope.
 
     Parameters
@@ -147,9 +149,18 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     """
 
+    # TODO: Allow for neutrinos, under the assumption that they have no mass.
+
+    # TODO: Add check for lepton number conservation; however, we might wish
+    # to have violation of lepton number issuing a warning since these are
+    # often omitted from nuclear reactions when calculating the energy since
+    # the mass is tiny.
+
     errmsg = f"Invalid nuclear reaction."
 
-    def _process_particles_list(unformatted_particles_list):
+    def process_particles_list(
+            unformatted_particles_list: List[Union[str, Particle]]) \
+            -> List[Particle]:
         """Takes an unformatted list of particles and puts each
         particle into standard form, while allowing an integer and
         asterisk immediately preceding a particle to act as a
@@ -160,7 +171,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             unformatted_particles_list = [unformatted_particles_list]
 
         if not isinstance(unformatted_particles_list, (list, tuple)):
-            raise TypeError("The input to _process_particles_list should be a "
+            raise TypeError("The input to process_particles_list should be a "
                             "string, list, or tuple.")
 
         particles = []
@@ -193,15 +204,15 @@ def nuclear_reaction_energy(*args, **kwargs):
 
         return particles
 
-    def _baryon_number(particles):
+    def total_baryon_number(particles: List[Particle]) -> int:
         r"""Finds the total number of baryons minus the number of
         antibaryons in a list of particles."""
-        baryon_number = 0
+        total_baryon_number = 0
         for particle in particles:
-            baryon_number += particle.baryon_number
-        return baryon_number
+            total_baryon_number += particle.baryon_number
+        return total_baryon_number
 
-    def _total_charge(particles):
+    def total_charge(particles: List[Particle]) -> int:
         r"""Finds the total integer charge in a list of nuclides
         (excluding bound electrons) and other particles."""
         total_charge = 0
@@ -212,7 +223,7 @@ def nuclear_reaction_energy(*args, **kwargs):
                 total_charge += particle.integer_charge
         return total_charge
 
-    def _mass_energy(particles):
+    def add_mass_energy(particles: List[Particle]) -> u.Quantity:
         r"""Finds the total mass energy from a list of particles, while
         taking the masses of the fully ionized isotopes."""
         total_mass = 0.0 * u.kg
@@ -251,8 +262,8 @@ def nuclear_reaction_energy(*args, **kwargs):
             LHS_string, RHS_string = re.split('-+>', reaction)
             LHS_list = re.split(' \+ ', LHS_string)
             RHS_list = re.split(' \+ ', RHS_string)
-            reactants = _process_particles_list(LHS_list)
-            products = _process_particles_list(RHS_list)
+            reactants = process_particles_list(LHS_list)
+            products = process_particles_list(RHS_list)
         except Exception as ex:
             raise AtomicError(f"{reaction} is not a valid nuclear reaction.") \
                 from ex
@@ -260,22 +271,22 @@ def nuclear_reaction_energy(*args, **kwargs):
     elif reactants_products_are_inputs:
 
         try:
-            reactants = _process_particles_list(kwargs['reactants'])
-            products = _process_particles_list(kwargs['products'])
+            reactants = process_particles_list(kwargs['reactants'])
+            products = process_particles_list(kwargs['products'])
         except TypeError as t:
             raise TypeError(input_err_msg) from t
         except Exception as e:
             raise AtomicError(errmsg) from e
 
-    if _baryon_number(reactants) != _baryon_number(products):
+    if total_baryon_number(reactants) != total_baryon_number(products):
         raise AtomicError(
             "The baryon number is not conserved for "
             f"reactants = {reactants} and products = {products}.")
 
-    if _total_charge(reactants) != _total_charge(products):
+    if total_charge(reactants) != total_charge(products):
         raise AtomicError("Total charge is not conserved for reactants = "
                           f"{reactants} and products = {products}.")
 
-    released_energy = _mass_energy(reactants) - _mass_energy(products)
+    released_energy = add_mass_energy(reactants) - add_mass_energy(products)
 
     return released_energy

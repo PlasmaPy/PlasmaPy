@@ -188,6 +188,9 @@ def particle_input(wrapped_function: Callable = None,
 
     """
 
+    # TODO: Make sure this all works for functions with Particle return
+    # annotations.
+
     def decorator(wrapped_function: Callable):
 
         wrapped_signature = inspect.signature(wrapped_function)

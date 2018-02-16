@@ -27,6 +27,8 @@ from ..utils import (
 
 from .symbols import atomic_symbol
 
+# TODO: Put periodic_table_* into Particle class
+
 
 @particle_input
 def atomic_number(element: Particle) -> str:
@@ -1347,7 +1349,11 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     """
 
-    def get_particle_mass(particle):
+    def get_particle_mass(particle) -> u.Quantity:
+        """Takes a representation of a particle and returns the mass in
+        kg.  If the input is a `~astropy.units.Quantity` or
+        `~astropy.constants.Constant` with units of mass already, then
+        this returns that mass converted to kg."""
         try:
             if isinstance(particle, (u.Quantity, const.Constant)):
                 return particle.to(u.kg)

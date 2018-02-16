@@ -1,5 +1,5 @@
 import pytest
-import warnings
+from typing import Optional
 
 from ...utils import (
     AtomicError,
@@ -97,11 +97,11 @@ class Test_particle_input:
     r"""A sample class with methods to make sure that """
 
     @particle_input
-    def method_noparens(self, particle: Particle):
+    def method_noparens(self, particle: Particle) -> Particle:
         return particle
 
     @particle_input()
-    def method_parens(self, particle: Particle):
+    def method_parens(self, particle: Particle) -> Particle:
         return particle
 
 
@@ -201,7 +201,7 @@ def test_decorator_categories(decorator_kwargs, particle, expected_exception):
     inputted particle matches the criteria."""
 
     @particle_input(**decorator_kwargs)
-    def decorated_function(argument: Particle):
+    def decorated_function(argument: Particle) -> Particle:
         return argument
 
     if expected_exception:
@@ -220,11 +220,11 @@ def test_none_shall_pass():
     the value of `None`.
     """
     @particle_input(none_shall_pass=True)
-    def func_none_shall_pass(particle: Particle):
+    def func_none_shall_pass(particle: Particle) -> Optional[Particle]:
         return particle
 
     @particle_input(none_shall_pass=False)
-    def func_none_shall_not_pass(particle: Particle):
+    def func_none_shall_not_pass(particle: Particle) -> Particle:
         return particle
 
     assert func_none_shall_pass(None) is None, \
@@ -237,6 +237,9 @@ def test_none_shall_pass():
         func_none_shall_not_pass(None)
 
 
+# TODO: The following tests might be able to be cleaned up and/or
+# further parametrized since there's a fair bit of repetition.
+
 is_element = ['H', 'Fe-56', 'p+', 'alpha', 'Fe', 'D+', 'T 1-']
 not_element = ['e-', 'e+', 'n', 'mu-', 'tau+']
 
@@ -248,7 +251,7 @@ not_ion = ['D', 'T', 'H-1', 'He-4', 'e-', 'e+', 'n']
 
 
 @particle_input
-def function_with_element_argument(element: Particle):
+def function_with_element_argument(element: Particle) -> Particle:
     """A function decorated with `~plasmapy.atomic.particle_input`
     where the argument annotated with `~plasmapy.atomic.Particle`
     is named `element`.  This function should raise an
@@ -258,7 +261,7 @@ def function_with_element_argument(element: Particle):
 
 
 @particle_input
-def function_with_isotope_argument(isotope: Particle):
+def function_with_isotope_argument(isotope: Particle) -> Particle:
     """A function decorated with `~plasmapy.atomic.particle_input`
     where the argument annotated with `~plasmapy.atomic.Particle`
     is named `isotope`.  This function should raise an
@@ -268,7 +271,7 @@ def function_with_isotope_argument(isotope: Particle):
 
 
 @particle_input
-def function_with_ion_argument(ion: Particle):
+def function_with_ion_argument(ion: Particle) -> Particle:
     """A function decorated with `~plasmapy.atomic.particle_input`
     where the argument annotated with `~plasmapy.atomic.Particle`
     is named `ion`.  This function should raise an

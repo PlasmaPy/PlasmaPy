@@ -389,9 +389,7 @@ def element_name(element: Particle) -> str:
 
 def _is_electron(arg: Any) -> bool:  # coveralls: ignore
     r"""Returns `True` if the argument corresponds to an electron, and
-    `False` otherwise."""
-
-    warnings.warn("_is_electron is deprecated.", DeprecationWarning)
+    `False` otherwise.  This function is deprecated."""
 
     if not isinstance(arg, str):
         return False
