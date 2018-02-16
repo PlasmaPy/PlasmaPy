@@ -25,12 +25,19 @@ from .parsing import (
     _invalid_particle_errmsg,
 )
 
-from .elements import _Elements
+from .elements import _Elements, _periodic_table_categories
 from .isotopes import _Isotopes
 
 from .special_particles import (_Particles, ParticleZoo, _special_ion_masses)
 
-# TODO: Add periodic table block, group, period, and category functionality
+_valid_categories = {
+    'lepton', 'antilepton', 'fermion', 'boson', 'baryon', 'neutrino',
+    'antineutrino', 'element', 'isotope', 'ion', 'matter', 'antimatter',
+    'stable', 'unstable', 'charged', 'uncharged'
+} | ParticleZoo.everything | _periodic_table_categories
+
+_PeriodicTable = collections.namedtuple(
+    "periodic_table", ['group', 'category', 'block', 'period'])
 
 
 class Particle:
@@ -106,6 +113,19 @@ class Particle:
     <Quantity 881.5 s>
     >>> Particle('C-14').half_life.to(u.year)
     <Quantity 5730. yr>
+
+    The `periodic_table` attribute provides category, period, block, and
+    group information if the particle corresponds to an element.
+
+    >>> sulfur = Particle('S')
+    >>> sulfur.periodic_table.category
+    'nonmetal'
+    >>> sulfur.periodic_table.block
+    'p'
+    >>> sulfur.periodic_table.period
+    3
+    >>> sulfur.periodic_table.group
+    16
 
     The `is_category` attribute may be used to determine whether or not
     a certain particle is or is not a member of a certain category.
@@ -194,6 +214,13 @@ class Particle:
                     ('mass', const.m_p),
                     ('integer charge', 1),
                 ]
+
+                self._periodic_table = _PeriodicTable(
+                    group=_Elements['H']['group'],
+                    period=_Elements['H']['period'],
+                    block=_Elements['H']['block'],
+                    category=_Elements['H']['category'],
+                )
 
                 for key, val in proton_keys_and_vals:
                     attributes[key] = val
@@ -288,6 +315,13 @@ class Particle:
 
             if ion in _special_ion_masses.keys():
                 attributes['mass'] = _special_ion_masses[ion]
+
+            self._periodic_table = _PeriodicTable(
+                group=_Elements[element]['group'],
+                period=_Elements[element]['period'],
+                block=_Elements[element]['block'],
+                category=_Elements[element]['category'],
+            )
 
         if attributes['integer charge'] == 1:
             attributes['charge'] = const.e.si
@@ -606,6 +640,17 @@ class Particle:
                 f"The spin of particle '{self.particle}' is unavailable.")
         return self._attributes['spin']
 
+    @property
+    def periodic_table(self):
+        r"""A ~collections.namedtuple` to access category, period,
+        group, and block information about elements.  If the particle is
+        not an element, isotope, or ion, then this method will raise an
+        `~plasmapy.utils.InvalidElementError`."""
+        if self.element:
+            return self._periodic_table
+        else:
+            raise InvalidElementError(self._element_errmsg)
+
     def reduced_mass(self, other, Z=None, mass_numb=None) -> u.Quantity:
         r"""Finds the reduced mass between two particles, or will raise
         a `~plasmapy.utils.MissingAtomicDataError` if either particle's
@@ -695,13 +740,7 @@ class Particle:
         exclude = become_set(exclude)
         any_of = become_set(any_of)
 
-        valid_categories = {
-            'lepton', 'antilepton', 'fermion', 'boson', 'baryon', 'neutrino',
-            'antineutrino', 'element', 'isotope', 'ion', 'matter',
-            'antimatter', 'stable', 'unstable', 'charged', 'uncharged'
-        } | ParticleZoo.everything
-
-        invalid_categories = (require | exclude | any_of) - valid_categories
+        invalid_categories = (require | exclude | any_of) - _valid_categories
 
         duplicate_categories = \
             require & exclude | exclude & any_of | require & any_of

@@ -606,3 +606,17 @@ _Elements = {
            "name": "oganesson", "period": 7,
            "group": 18, "block": "p", "category": "noble gas"},
     }
+
+_periodic_table_categories = {
+    'nonmetal',
+    'metal',
+    'alkali metal',
+    'alkaline earth metal',
+    'metalloid',
+    'transition metal',
+    'post-transition metal',
+    'halogen',
+    'noble gas',
+    'actinide',
+    'lanthanide',
+}

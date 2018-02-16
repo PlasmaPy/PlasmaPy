@@ -1394,4 +1394,3 @@ def _is_electron(arg: Any) -> bool:
         return False
 
     return arg in ['e', 'e-'] or arg.lower() == 'electron'
-

@@ -66,6 +66,10 @@ test_Particle_table = [
       'is_category(require=["boson", "fermion"])': False,
       'is_category(("element", "isotope", "ion"))': True,
       'is_category("charged")': True,
+      'periodic_table.group': 1,
+      'periodic_table.block': 's',
+      'periodic_table.period': 1,
+      'periodic_table.category': 'nonmetal',
       'binding_energy': 0 * u.J,
       }),
 
@@ -105,7 +109,11 @@ test_Particle_table = [
       '__str__()': 'e-',
       '__repr__()': 'Particle("e-")',
       'binding_energy': InvalidIsotopeError,
-      }),
+      'periodic_table.group': InvalidElementError,
+      'periodic_table.block': InvalidElementError,
+      'periodic_table.period': InvalidElementError,
+      'periodic_table.category': InvalidElementError,
+     }),
 
     ('e+', {},
      {'particle': 'e+',
