@@ -277,8 +277,7 @@ def isotope_mass(isotope: Particle,
 
 
 @particle_input
-def ion_mass(particle: Particle,
-             Z: int = None,
+def ion_mass(particle: Particle, *, Z: int = None,
              mass_numb: int = None) -> u.Quantity:
     r"""Returns the mass of an ion by finding the standard atomic
     weight of an element or the atomic mass of an isotope, and then
@@ -395,7 +394,7 @@ def ion_mass(particle: Particle,
                       'positrons is deprecated.', DeprecationWarning)
         return particle.mass
     else:
-        raise InvalidIonError
+        raise InvalidIonError(f"The particle {particle} is not a valid ion.")
 
 
 @particle_input(exclude={'neutrino', 'antineutrino'})
@@ -411,10 +410,10 @@ def particle_mass(particle: Particle, *, Z: int = None,
         particle; an integer representing an atomic number; or an
         instance of the Particle class.
 
-    Z: `int` (optional)
+    Z: `int` (optional, keyword-only)
         The ionization state of the ion.
 
-    mass_numb: `int` (optional)
+    mass_numb: `int` (optional, keyword-only)
         The mass number of an isotope.
 
     Returns
@@ -522,7 +521,7 @@ def isotopic_abundance(isotope: Particle,
     return isotope.isotopic_abundance
 
 
-@particle_input
+@particle_input(any_of={'charged', 'uncharged'})
 def integer_charge(particle: Particle) -> int:
     r"""Returns the integer charge of a particle.
 
@@ -643,7 +642,8 @@ def electric_charge(particle: Particle) -> u.Quantity:
 
 @particle_input
 def is_stable(particle: Particle, mass_numb: int = None) -> bool:
-    r"""Returns true for stable isotopes and particles and false otherwise.
+    r"""Returns `True` for stable isotopes and particles and `False`
+    for unstable isotopes.
 
     Parameters
     ----------
@@ -665,7 +665,7 @@ def is_stable(particle: Particle, mass_numb: int = None) -> bool:
     ------
 
     `~plasmapy.utils.InvalidIsotopeError`
-        If the arguments correspond to a valid particle but not a
+        If the arguments correspond to a valid element but not a
         valid isotope.
 
     `~plasmapy.utils.InvalidParticleError`
@@ -801,10 +801,10 @@ def known_isotopes(argument: Union[str, int] = None) -> List[str]:
     --------
 
     `~plasmapy.atomic.common_isotopes` : returns isotopes with non-zero
-        isotopic abundances
+        isotopic abundances.
 
     `~plasmapy.atomic.stable_isotopes` : returns isotopes that are
-        stable against radioactive decay
+        stable against radioactive decay.
 
     Examples
     --------
@@ -818,6 +818,8 @@ def known_isotopes(argument: Union[str, int] = None) -> List[str]:
     3352
 
     """
+
+    # TODO: Allow Particle objects representing elements to be inputs
 
     def known_isotopes_for_element(argument):
         element = atomic_symbol(argument)
@@ -895,20 +897,19 @@ def common_isotopes(argument: Union[str, int] = None,
     -----
 
     The isotopic abundances are based on the terrestrial environment
-    and may not be wholly appropriate for space and astrophysical
-    applications.
+    and may not be appropriate for space and astrophysical applications.
 
     See also
     --------
 
     `~plasmapy.utils.known_isotopes` : returns a list of isotopes that
-        have been discovered
+        have been discovered.
 
     `~plasmapy.utils.stable_isotopes` : returns isotopes that are stable
-        against radioactive decay
+        against radioactive decay.
 
     `~plasmapy.utils.isotopic_abundance` : returns the relative isotopic
-         abundance
+         abundance.
 
     Examples
     --------
@@ -927,6 +928,8 @@ def common_isotopes(argument: Union[str, int] = None,
     ['H-1', 'D', 'He-4', 'He-3', 'Li-7', 'Li-6', 'Be-9']
 
     """
+
+    # TODO: Allow Particle objects representing elements to be inputs
 
     def common_isotopes_for_element(
             argument: Union[str, int],
@@ -1045,6 +1048,8 @@ def stable_isotopes(argument: Union[str, int] = None,
 
     """
 
+    # TODO: Allow Particle objects representing elements to be inputs
+
     def stable_isotopes_for_element(argument: Union[str, int],
                                     stable_only: Optional[bool]) -> List[str]:
         KnownIsotopes = known_isotopes(argument)
@@ -1072,14 +1077,79 @@ def stable_isotopes(argument: Union[str, int] = None,
     return isotopes_list
 
 
-def _is_electron(arg: Any) -> bool:
-    r"""Returns `True` if the argument corresponds to an electron, and
-    `False` otherwise."""
+def reduced_mass(test_particle, target_particle) -> u.Quantity:
+    r"""Finds the reduced mass between two particles.
 
-    if not isinstance(arg, str):
-        return False
+    Parameters
+    ----------
 
-    return arg in ['e', 'e-'] or arg.lower() == 'electron'
+    test_particle, target_particle : `str`, `int`, `~plasmapy.atomic.Particle`,
+    `~astropy.units.Quantity`, or `~astropy.constants.Constant`
+
+        The test particle as represented by a string, an integer representing
+        atomic number, a `~plasmapy.atomic.Particle` object, or a
+        `~astropy.units.Quantity` or `~astropy.constants.Constant` with
+        units of mass.
+
+    Returns
+    -------
+
+    reduced_mass : `~astropy.units.Quantity`
+        The reduced mass between the test particle and target particle.
+
+    Raises
+    ------
+
+    `~plasmapy.utils.InvalidParticleError`
+        If either particle is invalid.
+
+    `~astropy.units.UnitConversionError`
+        If an argument is a `~astropy.units.Quantity` or
+        `~astropy.units.Constant` but does not have units of mass.
+
+    `~plasmapy.utils.MissingAtomicDataError`
+        If the mass of either particle is not known.
+
+    `TypeError`
+        If either argument is not a `str`, `int`, `~plasmapy.atomic.Particle`,
+        `~astropy.units.Quantity`, or `~astropy.constants.Constant`.
+
+    Example
+    -------
+    >>> from astropy import units as u
+    >>> reduced_mass('p+', 'e-')
+    <Quantity 9.10442514e-31 kg>
+    >>> reduced_mass(5.4e-27 * u.kg, 8.6e-27 * u.kg)
+    <Quantity 3.31714286e-27 kg>
+
+    """
+
+    # TODO: Add discussion on reduced mass and its importance to docstring
+    # TODO: Add equation for reduced mass to docstring
+
+    def get_particle_mass(particle) -> u.Quantity:
+        """Takes a representation of a particle and returns the mass in
+        kg.  If the input is a `~astropy.units.Quantity` or
+        `~astropy.constants.Constant` with units of mass already, then
+        this returns that mass converted to kg."""
+        try:
+            if isinstance(particle, (u.Quantity, const.Constant)):
+                return particle.to(u.kg)
+            if not isinstance(particle, Particle):
+                particle = Particle(particle)
+            return particle.mass.to(u.kg)
+        except u.UnitConversionError as exc1:
+            raise u.UnitConversionError(
+                f"Incorrect units in reduced_mass.") from exc1
+        except MissingAtomicDataError:
+            raise MissingAtomicDataError(
+                f"Unable to find the reduced mass because the mass of "
+                f"{particle} is not available.") from None
+
+    test_mass = get_particle_mass(test_particle)
+    target_mass = get_particle_mass(target_particle)
+
+    return (test_mass * target_mass) / (test_mass + target_mass)
 
 
 def periodic_table_period(argument: Union[str, int]) -> int:
@@ -1126,6 +1196,7 @@ def periodic_table_period(argument: Union[str, int]) -> int:
     2
 
     """
+    # TODO: Implement @particle_input
     if not isinstance(argument, (str, int)):
         raise TypeError("The argument to periodic_table_period must be " +
                         "either a string representing the element or its " +
@@ -1143,8 +1214,8 @@ def periodic_table_group(argument: Union[str, int]) -> int:
     ----------
 
     argument: `str` or `int`
-        Atomic number (either integer or string), atomic symbol (e.g. "H",
-        string), or element name (e.g. "Francium", string).
+        Atomic number (either integer or string), atomic symbol (e.g.,
+        "H", string), or element name (e.g., "francium", string).
 
     Returns
     -------
@@ -1167,6 +1238,9 @@ def periodic_table_group(argument: Union[str, int]) -> int:
     `~plasmapy.atomic.periodic_table_block` : returns periodic table
         block of element.
 
+    `~plasmapy.atomic.periodic_table_category` : returns periodic table
+        category of element.
+
     Examples
     --------
 
@@ -1178,10 +1252,11 @@ def periodic_table_group(argument: Union[str, int]) -> int:
     13
     >>> periodic_table_group("neon")
     18
-    >>> periodic_table_group("BARIUM")
+    >>> periodic_table_group("barium")
     2
 
     """
+    # TODO: Implement @particle_input
     if not isinstance(argument, (str, int)):
         raise TypeError("The argument to periodic_table_group must be " +
                         "either a string representing the element or its " +
@@ -1200,7 +1275,7 @@ def periodic_table_block(argument: Union[str, int]) -> str:
 
     argument: `str` or `int`
         Atomic number (either integer or string), atomic symbol (e.g. "H",
-        string), or element name (e.g. "Francium", string).
+        string), or element name (e.g. "francium", string).
 
     Returns
     -------
@@ -1218,10 +1293,13 @@ def periodic_table_block(argument: Union[str, int]) -> str:
     --------
 
     `~plasmapy.atomic.periodic_table_period` : returns periodic table
-         period of element.
+        period of element.
 
     `~plasmapy.atomic.periodic_table_group` : returns periodic table
-         group of element.
+        group of element.
+
+    `~plasmapy.atomic.periodic_table_category` : returns periodic table
+        category of element.
 
     Examples
     --------
@@ -1234,10 +1312,11 @@ def periodic_table_block(argument: Union[str, int]) -> str:
     'p'
     >>> periodic_table_block("thallium")
     'p'
-    >>> periodic_table_block("FRANCIUM")
+    >>> periodic_table_block("francium")
     's'
 
     """
+    # TODO: Implement @particle_input
     if not isinstance(argument, (str, int)):
         raise TypeError("The argument to periodic_table_block must be " +
                         "either a string representing the element or its " +
@@ -1256,7 +1335,7 @@ def periodic_table_category(argument: Union[str, int]) -> str:
 
     argument: `str` or `int`
         Atomic number (either integer or string), atomic symbol (e.g. "H",
-        string), or element name (e.g. "Francium", string).
+        string), or element name (e.g. "francium", string).
 
     Returns
     -------
@@ -1279,19 +1358,23 @@ def periodic_table_category(argument: Union[str, int]) -> str:
     `~plasmapy.atomic.periodic_table_group` : returns periodic table
         group of element.
 
+    `~plasmapy.atomic.periodic_table_block` : returns periodic table
+        block of element.
+
     Examples
     --------
 
     >>> periodic_table_category(82)
-    'Post-transition metals'
+    'post-transition metal'
     >>> periodic_table_category("85")
-    'Halogens'
+    'halogen'
     >>> periodic_table_category("Ra")
-    'Alkaline earth metals'
+    'alkaline earth metal'
     >>> periodic_table_category("rhodium")
-    'Transition metals'
+    'transition metal'
 
     """
+    # TODO: Implement @particle_input
     if not isinstance(argument, (str, int)):
         raise TypeError("The argument to periodic_table_category must be " +
                         "either a string representing the element or its " +
@@ -1302,73 +1385,13 @@ def periodic_table_category(argument: Union[str, int]) -> str:
     return category
 
 
-def reduced_mass(test_particle, target_particle) -> u.Quantity:
-    r"""Finds the reduced mass between two particles.
+def _is_electron(arg: Any) -> bool:
+    r"""Returns `True` if the argument corresponds to an electron, and
+    `False` otherwise."""
+    # TODO: Remove _is_electron from all parts of code.
 
-    Parameters
-    ----------
+    if not isinstance(arg, str):
+        return False
 
-    test_particle, target_particle : `str`, `int`, `~plasmapy.atomic.Particle`,
-    `~astropy.units.Quantity`, or `~astropy.constants.Constant`
+    return arg in ['e', 'e-'] or arg.lower() == 'electron'
 
-        The test particle as represented by a string, an integer representing
-        atomic number, a `~plasmapy.atomic.Particle` object, or a
-        `~astropy.units.Quantity` or `~astropy.constants.Constant` with
-        units of mass.
-
-    Returns
-    -------
-
-    reduced_mass : `~astropy.units.Quantity`
-        The reduced mass between the test particle and target particle
-
-    Raises
-    ------
-
-    `~plasmapy.utils.InvalidParticleError`
-        If either particle is invalid.
-
-    `~astropy.units.UnitConversionError`
-        If an argument is a `~astropy.units.Quantity` or
-        `~astropy.units.Constant` but does not have units of mass.
-
-    `~plasmapy.utils.MissingAtomicDataError`
-        If the mass of either particle is not known.
-
-    `TypeError`
-        If either argument is not a `str`, `int`, `~plasmapy.atomic.Particle`,
-        `~astropy.units.Quantity`, or `~astropy.constants.Constant`
-
-    Example
-    -------
-    >>> from astropy import units as u
-    >>> reduced_mass('p+', 'e-')
-    <Quantity 9.10442514e-31 kg>
-    >>> reduced_mass(5.4e-27 * u.kg, 8.6e-27 * u.kg)
-    <Quantity 3.31714286e-27 kg>
-
-    """
-
-    def get_particle_mass(particle) -> u.Quantity:
-        """Takes a representation of a particle and returns the mass in
-        kg.  If the input is a `~astropy.units.Quantity` or
-        `~astropy.constants.Constant` with units of mass already, then
-        this returns that mass converted to kg."""
-        try:
-            if isinstance(particle, (u.Quantity, const.Constant)):
-                return particle.to(u.kg)
-            if not isinstance(particle, Particle):
-                particle = Particle(particle)
-            return particle.mass.to(u.kg)
-        except u.UnitConversionError as exc1:
-            raise u.UnitConversionError(
-                f"Incorrect units in reduced_mass.") from exc1
-        except MissingAtomicDataError:
-            raise MissingAtomicDataError(
-                f"Unable to find the reduced mass because the mass of "
-                f"{particle} is not available.") from None
-
-    test_mass = get_particle_mass(test_particle)
-    target_mass = get_particle_mass(target_particle)
-
-    return (test_mass * target_mass) / (test_mass + target_mass)

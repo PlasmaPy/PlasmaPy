@@ -30,6 +30,8 @@ from .isotopes import _Isotopes
 
 from .special_particles import (_Particles, ParticleZoo, _special_ion_masses)
 
+# TODO: Add periodic table block, group, period, and category functionality
+
 
 class Particle:
     r"""A class for individual particles or antiparticles.
