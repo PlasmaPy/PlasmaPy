@@ -25,19 +25,59 @@ from .parsing import (
     _invalid_particle_errmsg,
 )
 
-from .elements import _Elements, _periodic_table_categories
+from .elements import _Elements
 from .isotopes import _Isotopes
 
 from .special_particles import (_Particles, ParticleZoo, _special_ion_masses)
 
-_valid_categories = {
-    'lepton', 'antilepton', 'fermion', 'boson', 'baryon', 'neutrino',
-    'antineutrino', 'element', 'isotope', 'ion', 'matter', 'antimatter',
-    'stable', 'unstable', 'charged', 'uncharged'
-} | ParticleZoo.everything | _periodic_table_categories
-
 _PeriodicTable = collections.namedtuple(
     "periodic_table", ['group', 'category', 'block', 'period'])
+
+_classification_categories = {
+    'lepton',
+    'antilepton',
+    'fermion',
+    'boson',
+    'baryon',
+    'neutrino',
+    'antineutrino',
+    'matter',
+    'antimatter',
+    'stable',
+    'unstable',
+    'charged',
+    'uncharged',
+}
+
+_periodic_table_categories = {
+    'nonmetal',
+    'metal',
+    'alkali metal',
+    'alkaline earth metal',
+    'metalloid',
+    'transition metal',
+    'post-transition metal',
+    'halogen',
+    'noble gas',
+    'actinide',
+    'lanthanide',
+}
+
+_atomic_property_categories = {
+    'element',
+    'isotope',
+    'ion',
+}
+
+_specific_particle_categories = {
+    'electron',
+    'positron',
+    'proton',
+    'neutron',
+}
+
+_valid_categories = _periodic_table_categories | _classification_categories \
+    | _atomic_property_categories | _specific_particle_categories
 
 
 class Particle:
@@ -139,6 +179,15 @@ class Particle:
     >>> positron.is_category('antilepton', exclude='baryon')
     True
 
+    Valid categories include `'lepton'`, `'antilepton'`, `'fermion'`,
+    `'boson'`, `'baryon'`, `'neutrino'`, `'antineutrino'`, `'element'`,
+    `'isotope'`, `'ion'`, `'matter'`, `'antimatter'`, `'nonmetal'`,
+    `'metal'`, `'alkali metal'`, `'alkaline earth metal'`,
+    `'metalloid'`, `'transition metal'`, `'post-transition metal',
+    `'halogen'`, `'noble gas'`, `'actinide'`, `'lanthanide'`, 'stable'`,
+    `'unstable'`, `'charged'`, `'uncharged'`, `'electron'`,
+    `'positron'`, `'proton'`, and `'neutron'`.
+
     """
 
     def __init__(self,
@@ -196,6 +245,9 @@ class Particle:
             for category in categories:
                 if particle in particle_taxonomy_dict[category]:
                     self._categories.add(category)
+
+            if attributes['name'] in _specific_particle_categories:
+                self._categories.add(attributes['name'])
 
             if particle == 'p+':
 
@@ -322,6 +374,8 @@ class Particle:
                 block=_Elements[element]['block'],
                 category=_Elements[element]['category'],
             )
+
+            self._categories.add(self._periodic_table.category)
 
         if attributes['integer charge'] == 1:
             attributes['charge'] = const.e.si
@@ -688,8 +742,14 @@ class Particle:
 
         return (mass_this * mass_that) / (mass_this + mass_that)
 
+    @property
+    def categories(self) -> Set[str]:
+        """Returns a `set` containing the categories that the particle
+        belongs to."""
+        return self._categories
+
     def is_category(self,
-                    *categories,
+                    *category_tuple,
                     require: Union[str, Set, Tuple, List] = set(),
                     any_of: Union[str, Set, Tuple, List] = set(),
                     exclude: Union[str, Set, Tuple, List] = set(),
@@ -711,11 +771,7 @@ class Particle:
         `False` if the particle is in any of the excluded categories,
         whether or not the particle matches the other criteria.
 
-        The valid categories are: `'lepton'`, `'antilepton'`, `'baryon'`,
-        `'antibaryon'`, `'fermion'`, `'boson'`, `'neutrino'`,
-        `'antineutrino'`, `'matter'`, `'antimatter'`, `'element'`,
-        `'isotope'`, `'ion'`, `'charged'`, `'uncharged'`, and any of the
-        symbols of special particles (e.g., `'e+'`)."""
+        """
 
         def become_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
                 r"""Turns the input (a `str`, `set`, `tuple`, or `list`)
@@ -731,14 +787,19 @@ class Particle:
                 else:
                     return set(arg)
 
-        if categories != () and require != set():
+        if category_tuple != () and require != set():
             raise AtomicError(
-                "No positional arguments are allowed if the require keyword "
+                "No positional arguments are allowed if the `require` keyword "
                 "is set in is_category.")
 
-        require = become_set(categories) if categories else become_set(require)
+        require = become_set(category_tuple) if category_tuple else \
+            become_set(require)
+
         exclude = become_set(exclude)
         any_of = become_set(any_of)
+
+        if not require and not exclude and not any_of:
+            return _valid_categories
 
         invalid_categories = (require | exclude | any_of) - _valid_categories
 

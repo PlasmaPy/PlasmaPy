@@ -37,6 +37,7 @@ test_Particle_table = [
       'mass': m_n,
       'nuclide_mass': m_n,
       'binding_energy': 0 * u.J,
+      'periodic_table.group': InvalidElementError,
       }),
 
     ('p+', {},
@@ -89,6 +90,7 @@ test_Particle_table = [
       'baryon_number': -1,
       '__str__()': 'p-',
       '__repr__()': 'Particle("p-")',
+      'periodic_table.group': InvalidElementError,
       }),
 
     ('e-', {},
@@ -128,8 +130,15 @@ test_Particle_table = [
       'atomic_number': InvalidElementError,
       'lepton_number': -1,
       'baryon_number': 0,
+      'is_category(require="positron")': True,
+      'is_category(any_of={"positron"})': True,
+      'is_category(exclude="positron")': False,
       '__str__()': 'e+',
       '__repr__()': 'Particle("e+")',
+      'periodic_table.group': InvalidElementError,
+      'periodic_table.block': InvalidElementError,
+      'periodic_table.period': InvalidElementError,
+      'periodic_table.category': InvalidElementError,
       }),
 
     ('H', {},
@@ -147,6 +156,8 @@ test_Particle_table = [
       'mass': (1.008 * u.u).to(u.kg),
       'nuclide_mass': InvalidIsotopeError,
       'is_category("charged")': False,
+      'is_category("nonmetal")': True,
+      'is_category("proton")': False,
       }),
 
     ('D+', {},
@@ -160,6 +171,11 @@ test_Particle_table = [
       'mass_number': 2,
       'baryon_number': 2,
       'lepton_number': 0,
+      'is_category(require=("ion", "isotope"))': True,
+      'periodic_table.group': 1,
+      'periodic_table.block': 's',
+      'periodic_table.period': 1,
+      'periodic_table.category': 'nonmetal',
       }),
 
     ('tritium', {'Z': 1},
@@ -172,6 +188,9 @@ test_Particle_table = [
       'mass_number': 3,
       'baryon_number': 3,
       'lepton_number': 0,
+      'is_category("ion", "isotope")': True,
+      'is_category(require="uncharged")': False,
+      'periodic_table.group': 1,
       }),
 
     ('Fe', {'Z': 17, 'mass_numb': 56},
@@ -186,6 +205,9 @@ test_Particle_table = [
       'baryon_number': 56,
       '__str__()': 'Fe-56 17+',
       '__repr__()': 'Particle("Fe-56 17+")',
+      'is_category("element")': True,
+      'is_category("ion")': True,
+      'is_category("isotope")': True,
       }),
 
     ('alpha', {},
@@ -263,6 +285,7 @@ test_Particle_table = [
       'is_category("lepton", "invalid")': AtomicError,
       'is_category(["boson"], exclude=["lepton", "invalid"])': AtomicError,
       'is_category("boson", exclude="boson")': AtomicError,
+      'is_category(any_of="boson", exclude="boson")': AtomicError,
       'reduced_mass("electron")': MissingAtomicDataError,
       }),
 ]
