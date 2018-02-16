@@ -206,13 +206,10 @@ def nuclear_reaction_energy(*args, **kwargs):
         (excluding bound electrons) and other particles."""
         total_charge = 0
         for particle in particles:
-            try:
-                if particle.isotope:
-                    total_charge += particle.atomic_number
-                elif not particle.element:
-                    total_charge += particle.integer_charge
-            except ChargeError as ce:
-                raise AtomicError("Charge is not conserved.")
+            if particle.isotope:
+                total_charge += particle.atomic_number
+            elif not particle.element:
+                total_charge += particle.integer_charge
         return total_charge
 
     def _mass_energy(particles):

@@ -9,12 +9,15 @@ from ...utils import (
     AtomicWarning,
     AtomicError,
     MissingAtomicDataError,
+    MissingAtomicDataWarning,
     InvalidParticleError,
     InvalidElementError,
     InvalidIsotopeError,
     ChargeError,
 )
 
+from ..atomic import known_isotopes
+from ..isotopes import _Isotopes
 from ..particle_class import Particle
 from ..parsing import _call_string
 
@@ -459,3 +462,18 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
             f"Particle({repr(ion)}).mass = {Ion.mass}\n"
             f"Particle({repr(isotope)}).nuclide_mass = {Isotope.nuclide_mass}"
             "\n")
+
+
+def test_particle_half_life_string():
+    """Finds the first isotope where the half-life is stored as a string
+    (because the uncertainties are too great), and tests that requesting
+    the half-life of that isotope causes a MissingAtomicDataWarning
+    whilst returning a string."""
+
+    for isotope in known_isotopes():
+        half_life = _Isotopes[isotope].get('half_life', None)
+        if isinstance(half_life, str):
+            break
+
+    with pytest.warns(MissingAtomicDataWarning):
+        assert isinstance(Particle(isotope).half_life, str)
