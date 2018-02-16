@@ -9,6 +9,7 @@ git:
 
 # Install dependencies
 install:
+        - chmod u+x /requirements/dev_version_hack.sh
         - ./requirements/dev_version_hack.sh
         - git clone git://github.com/astropy/ci-helpers.git --depth 1
         - source ci-helpers/travis/setup_conda.sh
