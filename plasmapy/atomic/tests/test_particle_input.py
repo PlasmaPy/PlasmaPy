@@ -16,7 +16,8 @@ from ..particle_input import particle_input
 
 @particle_input
 def func_simple_noparens(
-        a, particle: Particle, b=None, Z: int = None, mass_numb: int = None):
+        a, particle: Particle, b=None, Z: int = None,
+        mass_numb: int = None) -> Particle:
     r"""A simple function that, when decorated with `@particle_input`, returns
     the instance of the Particle class corresponding to the inputs."""
     if not isinstance(particle, Particle):
@@ -27,7 +28,8 @@ def func_simple_noparens(
 
 @particle_input()
 def func_simple_parens(
-        a, particle: Particle, b=None, Z: int = None, mass_numb: int = None):
+        a, particle: Particle, b=None, Z: int = None,
+        mass_numb: int = None) -> Particle:
     r"""A simple function that, when decorated with `@particle_input()`,
     returns the instance of the Particle class corresponding to the inputs."""
     if not isinstance(particle, Particle):
