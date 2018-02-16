@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# message for when hack starts executing
+echo "================ Starting execution of dev_version_hack script ================="
+
 # verbose printing of executed commands for debugging
 if [[ $DEBUG == True ]]; then
     set -x
@@ -17,3 +20,6 @@ fi
 
 # disables debug if it was set
 set +x
+
+# message for when script is done
+echo "================ Finished execution of dev_version_hack script ================="
