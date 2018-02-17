@@ -39,14 +39,13 @@ def atomic_number(element: Particle) -> str:
 
     element: `str` or `~plasmapy.atomic.Particle`
         A string representing an element, isotope, or ion; or an
-        instance of the Particle class.
+        instance of the `~plasmapy.atomic.Particle` class.
 
     Returns
     -------
 
     atomic_number: `int`
-        An integer representing the atomic number of the element or
-        isotope.
+        The atomic number of an element.
 
     Raises
     ------
@@ -145,14 +144,14 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
     element: `str`, `int`, or `~plasmapy.atomic.Particle`
         A string representing an element or an integer representing an
-        atomic number, or an instance of the Particle class
+        atomic number, or an instance of the Particle class.
 
     Returns
     -------
 
     atomic_weight: `~astropy.units.Quantity`
         The standard atomic weight of an element based on values from
-        NIST
+        NIST.
 
     Raises
     ------
@@ -254,10 +253,10 @@ def isotope_mass(isotope: Particle,
     --------
 
     `~plasmapy.atomic.standard_atomic_weight` : returns atomic weight of
-        an element based on terrestrial abundances of isotopes
+        an element based on terrestrial abundances of isotopes.
 
     `~plasmapy.atomic.ion_mass` : returns the mass of an ion of an
-        element or isotope, accounting for loss of electrons
+        element or isotope, accounting for loss of electrons.
 
     Notes
     -----
@@ -294,7 +293,7 @@ def ion_mass(particle: Particle, *, Z: int = None,
 
     Z: `int` (optional)
         The ionization state of the ion (defaulting to a charge of
-        Z=1)
+        `Z = 1`)
 
     mass_numb: `int` (optional)
         The mass number of an isotope.
@@ -304,7 +303,7 @@ def ion_mass(particle: Particle, *, Z: int = None,
 
     m_i: `~astropy.units.Quantity`
         The mass of a single ion of the isotope or element with charge
-        state Z.
+        state `Z`.
 
     Raises
     ------
@@ -814,7 +813,7 @@ def known_isotopes(argument: Union[str, int] = None) -> List[str]:
     ['He-3', 'He-4', 'He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10']
     >>> known_isotopes()[0:10]
     ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7', 'He-3', 'He-4', 'He-5']
-    >>> len(known_isotopes())
+    >>> len(known_isotopes())  # the number of known isotopes
     3352
 
     """
@@ -846,7 +845,7 @@ def known_isotopes(argument: Union[str, int] = None) -> List[str]:
             raise InvalidParticleError("Invalid particle in known_isotopes.")
     elif argument is None:
         isotopes_list = []
-        for atomic_numb in range(1, 119):
+        for atomic_numb in range(1, len(_Elements.keys()) + 1):
             isotopes_list += known_isotopes_for_element(atomic_numb)
 
     return isotopes_list

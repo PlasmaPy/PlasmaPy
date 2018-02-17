@@ -115,7 +115,7 @@ test_Particle_table = [
       'periodic_table.block': InvalidElementError,
       'periodic_table.period': InvalidElementError,
       'periodic_table.category': InvalidElementError,
-     }),
+      }),
 
     ('e+', {},
      {'particle': 'e+',
