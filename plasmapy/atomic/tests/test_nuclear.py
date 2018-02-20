@@ -2,7 +2,7 @@ from itertools import product
 from astropy import units as u, constants as const
 import numpy as np
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
-from ...utils import (InvalidParticleError, InvalidIsotopeError)
+from ...utils import (InvalidParticleError, InvalidIsotopeError, AtomicError)
 import pytest
 
 
@@ -22,7 +22,7 @@ def test_nuclear_binding_energy_D_T():
 
 # (argument, kwargs, expected_error)
 nuclear_binding_energy_table = [
-    ("H", {}, InvalidIsotopeError),
+    ("H", {}, AtomicError),
     ('He-99', {}, InvalidParticleError),
     ("He", {"mass_numb": 99}, InvalidParticleError),
     (1.1, {}, TypeError)]
@@ -84,12 +84,12 @@ def test_nuclear_reaction_energy_beta():
 
 # (reaction, kwargs, expected_error)
 nuclear_reaction_energy_error_table = [
-    ('H + H --> H', {}, ValueError),
+    ('H + H --> H', {}, AtomicError),
     (1, {}, TypeError),
-    ('H-1 + H-1 --> H-1', {}, ValueError),
-    ("invalid input", {}, ValueError),
-    ('p --> n', {}, ValueError),
-    ('p --> p', {'reactants': ['p'], 'products': ['p']}, ValueError),
+    ('H-1 + H-1 --> H-1', {}, AtomicError),
+    ("invalid input", {}, AtomicError),
+    ('p --> n', {}, AtomicError),
+    ('p --> p', {'reactants': ['p'], 'products': ['p']}, AtomicError),
 ]
 
 
@@ -126,15 +126,15 @@ def test_nuclear_reaction_energy_kwargs(reactants, products, expectedMeV, tol):
 # (reactants, products, expected_error)
 nuclear_reaction_energy_kwerrors_table = [
     ('n', 3, TypeError),
-    ('n', [3], ValueError),
-    (['n'], ['p'], ValueError),
-    (['n'], ['He-4'], ValueError),
-    (['h'], ['H-1'], ValueError),
-    (['e-', 'n'], 'p', ValueError),
-    (['e+', 'n'], ['p-'], ValueError),
-    (['kljsdf'], 'H-3', ValueError),
-    (['H'], ['H-1'], ValueError),
-    (['p'], ['n', 'n', 'e+'], ValueError),
+    ('n', [3], AtomicError),
+    (['n'], ['p'], AtomicError),
+    (['n'], ['He-4'], AtomicError),
+    (['h'], ['H-1'], AtomicError),
+    (['e-', 'n'], 'p', AtomicError),
+    (['e+', 'n'], ['p-'], AtomicError),
+    (['kljsdf'], 'H-3', AtomicError),
+    (['H'], ['H-1'], AtomicError),
+    (['p'], ['n', 'n', 'e+'], AtomicError),
 ]
 
 

@@ -5,7 +5,7 @@ from typing import (Union, Dict)
 
 from .elements import (_atomic_symbols, _atomic_symbols_dict, _Elements)
 from .isotopes import _Isotopes
-from .particles import _Particles, ParticleZoo
+from .special_particles import _Particles, ParticleZoo
 
 from ..utils import (AtomicWarning,
                      InvalidElementError,
@@ -46,8 +46,7 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
         (['protium+', 'protium 1+', 'protium +1', 'hydrogen-1+',
           'hydrogen-1 1+', 'hydrogen-1 +1'], 'p+'),
         (['deuterium', 'hydrogen-2'], 'D'),
-        (['deuteron', 'deuterium+', 'deuterium 1+', 'deuterium +1'],
-         'D 1+'),
+        (['deuteron', 'deuterium+', 'deuterium 1+', 'deuterium +1'], 'D 1+'),
         (['tritium', 'hydrogen-3'], 'T'),
         (['triton', 'tritium+', 'tritium 1+', 'tritium +1'], 'T 1+'),
         (['alpha'], 'He-4 2+'),
@@ -80,7 +79,7 @@ def _dealias_particle_aliases(alias: Union[str, int]) -> str:
     """Returns the standard symbol for a particle or antiparticle
     when the argument is a valid alias.  If the argument is not a
     valid alias, then this function returns the original argument
-    (which will usually be a string but may be an int representing
+    (which will usually be a `str` but may be an `int` representing
     atomic number)."""
     if not isinstance(alias, str):
         symbol = alias
@@ -97,8 +96,8 @@ def _dealias_particle_aliases(alias: Union[str, int]) -> str:
 
 
 def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
-    r"""Returns a string with an appropriate error message for an
-    InvalidParticleError."""
+    r"""Returns a `str` with an appropriate error message for an
+    `~plasmapy.utils.InvalidParticleError`."""
     errmsg = f"The argument {repr(argument)} "
     if mass_numb is not None or Z is not None:
         errmsg += "with "
@@ -123,21 +122,21 @@ def _parse_and_check_atomic_input(
     Parameters
     ----------
 
-    argument : string or integer
+    argument : `str` or `int`
         String containing information for an element, isotope, or ion
         in any of the allowed formats; or an integer representing an
         atomic number.
 
-    mass_numb : integer, optional
+    mass_numb : `int` (optional)
         The mass number of an isotope.
 
-    Z : integer, optional
+    Z : `int` (optional)
         The integer charge of an ion.
 
     Returns
     -------
 
-    nomenclature_dict : dict
+    nomenclature_dict : `dict`
         A dictionary containing information about the element, isotope,
         or ion.  The key 'symbol' corresponds to the particle symbol
         containing the most information, 'element' corresponds to the
@@ -150,15 +149,15 @@ def _parse_and_check_atomic_input(
     Raises
     ------
 
-    InvalidParticleError
+    `~plasmapy.utils.InvalidParticleError`
         If the arguments do not correspond to a valid particle or
         antiparticle.
 
-    InvalidElementError
+    `~plasmapy.utils.InvalidElementError`
         If the particle is valid but does not correspond to an element,
         ion, or isotope.
 
-    TypeError
+    `TypeError`
         If the argument or any of the keyword arguments is not of the
         correct type.
 
@@ -166,8 +165,9 @@ def _parse_and_check_atomic_input(
 
     def _atomic_number_to_symbol(atomic_numb: int):
         r"""Returns the atomic symbol associated with an integer
-        representing an atomic number, or raises an InvalidParticleError
-        if the atomic number does not represent a known element."""
+        representing an atomic number, or raises an
+        `~plasmapy.utils.InvalidParticleError` if the atomic number does
+        not represent a known element."""
 
         if atomic_numb in _atomic_symbols.keys():
             element = _atomic_symbols[atomic_numb]
@@ -177,12 +177,12 @@ def _parse_and_check_atomic_input(
                 f"{atomic_numb} is not a valid atomic number.")
 
     def _extract_charge(arg: str):
-        r"""Receives a string representing an element, isotope, or ion.
-        Returns a tuple containing a string that should represent an
-        element or isotope, and either an integer representing the
-        charge or None if no charge information is provided.  Raises
-        an InvalidParticleError if charge information is inputted
-        incorrectly."""
+        r"""Receives a `str` representing an element, isotope, or ion.
+        Returns a `tuple` containing a `str` that should represent an
+        element or isotope, and either an `int` representing the
+        charge or `None` if no charge information is provided.  Raises
+        an `~plasmapy.utils.InvalidParticleError` if charge information
+        is inputted incorrectly."""
 
         invalid_charge_errmsg = (
             f"Invalid charge information in the particle string '{arg}'.")
@@ -258,8 +258,8 @@ def _parse_and_check_atomic_input(
         return element_info, mass_numb
 
     def _get_element(element_info: str) -> str:
-        r"""Receives a string representing an element's symbol or
-        name, and returns a string representing the atomic symbol."""
+        r"""Receives a `str` representing an element's symbol or
+        name, and returns a `str` representing the atomic symbol."""
 
         if element_info.lower() in _atomic_symbols_dict.keys():
             element = _atomic_symbols_dict[element_info.lower()]
@@ -273,10 +273,11 @@ def _parse_and_check_atomic_input(
         return element
 
     def _reconstruct_isotope_symbol(element: str, mass_numb: int) -> str:
-        r"""Receives a string representing an atomic symbol and an
-        integer representing a mass number.  Returns the isotope symbol
-        or None if no mass number information is available.  Raises an
-        InvalidParticleError for isotopes that have not been discovered."""
+        r"""Receives a `str` representing an atomic symbol and an
+        `int` representing a mass number.  Returns the isotope symbol
+        or `None` if no mass number information is available.  Raises an
+        `~plasmapy.utils.InvalidParticleError` for isotopes that have
+        not yet been discovered."""
 
         if mass_numb is not None:
             isotope = f"{element}-{mass_numb}"
@@ -298,10 +299,10 @@ def _parse_and_check_atomic_input(
 
     def _reconstruct_ion_symbol(
             element: str, isotope: int = None, Z: int = None):
-        r"""Receives a string representing an atomic symbol and/or a
-        string representing an isotope, and an integer representing the
-        integer charge.  Returns a string representing the ion symbol,
-        or None if no charge information is available."""
+        r"""Receives a `str` representing an atomic symbol and/or a
+        string representing an isotope, and an `int` representing the
+        integer charge.  Returns a `str` representing the ion symbol,
+        or `None` if no charge information is available."""
 
         if Z is not None:
             if Z < 0:
@@ -382,7 +383,7 @@ def _parse_and_check_atomic_input(
                 f"The integer charge Z = {Z} cannot exceed the atomic number "
                 f"of {element}, which is "
                 f"{_Elements[element]['atomic_number']}.")
-        elif Z < -3:
+        elif Z <= -3:
             warnings.warn(f"Particle '{argument}' has an integer charge "
                           f"of Z = {Z}, which is unlikely to occur in "
                           f"nature.", AtomicWarning)
@@ -398,19 +399,19 @@ def _parse_and_check_atomic_input(
         symbol = element
 
     nomenclature_dict = {
-        'symbol': symbol,
+        'particle': symbol,
         'element': element,
         'isotope': isotope,
         'ion': ion,
-        'mass_numb': mass_numb,
-        'Z': Z,
+        'mass number': mass_numb,
+        'integer charge': Z,
     }
 
     return nomenclature_dict
 
 
 def _call_string(arg: Union[str, int], kwargs: Dict = {}) -> str:
-    r"""Return a string that recreates the call to create a particular
+    r"""Return a `str` that recreates the call to create a particular
     particle from the input."""
     if kwargs != {}:
         keyword_string = ", " \
