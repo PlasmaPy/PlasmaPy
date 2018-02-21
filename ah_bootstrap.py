@@ -47,9 +47,14 @@ except ImportError:
     from configparser import ConfigParser, RawConfigParser
 
 
-_str_types = (str, bytes)
-_text_type = str
-PY3 = True
+if sys.version_info[0] < 3:
+    _str_types = (str, unicode)
+    _text_type = unicode
+    PY3 = False
+else:
+    _str_types = (str, bytes)
+    _text_type = str
+    PY3 = True
 
 
 # What follows are several import statements meant to deal with install-time
