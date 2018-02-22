@@ -324,10 +324,11 @@ code, you may delete the branch you created for that pull request.
 
 Commit Messages
 ---------------
+Good commit messages communicate context and intention to other
+developers and to our future selves.  They provide insight into why we
+chose a particular implementation, and help us avoid past mistakes.
 
-Commit messages should be 
-
-From `How to Write a Git Commit Message
+Suggestions on `how to write a git commit message
 <https://chris.beams.io/posts/git-commit/>`_:
 
 * Separate subject from body with a blank line
