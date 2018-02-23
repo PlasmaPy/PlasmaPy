@@ -878,8 +878,8 @@ def common_isotopes(argument: Union[str, int] = None,
 
         isotopes = known_isotopes(argument)
         CommonIsotopes = [isotope for isotope in isotopes if
-                          'isotopic_abundance' in _Isotopes[isotope].keys()]
-        isotopic_abundances = [_Isotopes[isotope]['isotopic_abundance']
+                          'abundance' in _Isotopes[isotope].keys()]
+        isotopic_abundances = [_Isotopes[isotope]['abundance']
                                for isotope in CommonIsotopes]
         sorted_isotopes = [iso_comp for (isotope, iso_comp) in
                            sorted(zip(isotopic_abundances, CommonIsotopes))]
@@ -990,7 +990,7 @@ def stable_isotopes(argument: Union[str, int] = None,
                                     stable_only: Optional[bool]) -> List[str]:
         KnownIsotopes = known_isotopes(argument)
         StableIsotopes = [isotope for isotope in KnownIsotopes if
-                          _Isotopes[isotope]['is_stable'] == stable_only]
+                          _Isotopes[isotope]['stable'] == stable_only]
         return StableIsotopes
 
     if argument is not None:

@@ -343,11 +343,11 @@ class Particle:
             attributes['lepton number'] = 0
 
             if isotope:
-                if _Isotopes[isotope]['is_stable']:
+                if _Isotopes[isotope]['stable']:
                     attributes['half-life'] = np.inf * u.s
                 else:
                     attributes['half-life'] = \
-                        _Isotopes[isotope].get('half_life', None)
+                        _Isotopes[isotope].get('half-life', None)
             elif element and not isotope:
                 attributes['half-life'] = None
 
@@ -361,9 +361,9 @@ class Particle:
 
             if isotope:
                 attributes['isotope mass'] = \
-                    _Isotopes[isotope].get('atomic_mass', None)
+                    _Isotopes[isotope].get('mass', None)
                 attributes['isotopic abundance'] = \
-                    _Isotopes[isotope].get('isotopic_abundance', 0.0)
+                    _Isotopes[isotope].get('abundance', 0.0)
 
             if ion in _special_ion_masses.keys():
                 attributes['mass'] = _special_ion_masses[ion]

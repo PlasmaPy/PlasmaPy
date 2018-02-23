@@ -502,7 +502,7 @@ def test_particle_half_life_string():
     whilst returning a string."""
 
     for isotope in known_isotopes():
-        half_life = _Isotopes[isotope].get('half_life', None)
+        half_life = _Isotopes[isotope].get('half-life', None)
         if isinstance(half_life, str):
             break
 
