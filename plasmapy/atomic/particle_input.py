@@ -1,3 +1,9 @@
+"""
+A decorator to take string and/or integer representations of particles
+as arguments and pass through the corresponding instance of the
+`~plasmapy.atomic.Particle` class.
+"""
+
 import functools
 import inspect
 from typing import Callable, Union, Any, Set, List, Tuple
@@ -12,10 +18,15 @@ from ..utils import (AtomicError,
                      ChargeError)
 
 
-def _particle_errmsg(argname: str, argval: str, Z: int = None,
-                     mass_numb: int = None, funcname: str = None) -> str:
-    r"""Returns a string with an appropriate error message for an
-    InvalidParticleError."""
+def _particle_errmsg(argname: str,
+                     argval: str,
+                     Z: int = None,
+                     mass_numb: int = None,
+                     funcname: str = None) -> str:
+    """
+    Return a string with an appropriate error message for an
+    `~plasmapy.utils.InvalidParticleError`.
+    """
     errmsg = f"In {funcname}, {argname} = {repr(argval)} "
     if mass_numb is not None or Z is not None:
         errmsg += "with "
@@ -29,9 +40,11 @@ def _particle_errmsg(argname: str, argval: str, Z: int = None,
     return errmsg
 
 
-def _category_errmsg(particle, require, exclude, any_of, funcname):
-    r"""Returns an error message for when a particle does not meet
-    the required conditions."""
+def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
+    """
+    Return an appropriate error message for when a particle does not
+    meet the required categorical specifications.
+    """
     category_errmsg = (
         f"The particle {particle} does not meet the required "
         f"classification criteria to be a valid input to {funcname}. ")
@@ -54,34 +67,40 @@ def particle_input(wrapped_function: Callable = None,
                    require: Union[str, Set, List, Tuple] = set(),
                    any_of: Union[str, Set, List, Tuple] = set(),
                    exclude: Union[str, Set, List, Tuple] = set(),
-                   none_shall_pass: bool = False,
-                   **kwargs) -> Any:
-    r"""A decorator to take arguments and keywords related to a particle
-    and pass through the `~plasmapy.atomic.Particle` class to the
-    function or method instead.
+                   none_shall_pass: bool = False) -> Any:
+    """
+    Convert arguments to methods and functions to
+    `~plasmapy.atomic.Particle` objects.
+
+    Take positional and keyword arguments that are annotated with
+    `~plasmapy.atomic.Particle`, and pass through the
+    `~plasmapy.atomic.Particle` object corresponding to those arguments
+    to the decorated function or method.
+
+    Optionally, raise an exception if the particle does not satisfy the
+    specified categorical criteria.
 
     Parameters
     ----------
-
     wrapped_function : `callable`
         The function or method to be decorated.
 
-    require : `str`, `set`, `list`, or `tuple` (optional)
+    require : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle must be in.  If a particle is not in
         all of these categories, then an `~plasmapy.utils.AtomicError`
         will be raised.
 
-    any_of : `str`, `set`, `list`, or `tuple` (optional)
+    any_of : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle may be in.  If a particle is not in
         any of these categories, then an `~plasmapy.utils.AtomicError`
         will be raised.
 
-    exclude : `str`, `set`, `list`, or `tuple` (optional)
+    exclude : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle cannot be in.  If a particle is in
         any of these categories, then an `~plasmapy.utils.AtomicError`
         will be raised.
 
-    none_shall_pass : `bool`
+    none_shall_pass : `bool`, optional
         If set to `True`, then the decorated argument may be set to
         `None` without raising an exception.  In such cases, this
         decorator will pass `None` through to the decorated function or
@@ -90,7 +109,6 @@ def particle_input(wrapped_function: Callable = None,
 
     Notes
     -----
-
     If the annotated argument is named `element`, `isotope`, or `ion`,
     then the decorator will raise an `~plasmapy.utils.InvalidElementError`,
     `~plasmapy.utils.InvalidIsotopeError`, or `~plasmapy.utils.InvalidIonError`
@@ -105,7 +123,6 @@ def particle_input(wrapped_function: Callable = None,
 
     Raises
     ------
-
     `TypeError`
         If the annotated argument is not a `str`, `int`, or
         `~plasmapy.atomic.Particle`; or if `Z` or `mass_numb` is
@@ -142,14 +159,9 @@ def particle_input(wrapped_function: Callable = None,
 
     Examples
     --------
-
-    The `particle_input` decorator takes positional and keyword
-    arguments that are annotated with `~plasmapy.atomic.Particle`, and
-    passes through the corresponding instance of the
-    `~plasmapy.atomic.Particle` class to the decorated function or
-    method.  The following simple function returns the
+    The following simple decorated function returns the
     `~plasmapy.atomic.Particle` object created from the function's
-    argument:
+    sole argument:
 
     .. code-block:: python
 
@@ -187,9 +199,6 @@ def particle_input(wrapped_function: Callable = None,
             return particle
 
     """
-
-    # TODO: Make sure this all works for functions with Particle return
-    # annotations.
 
     def decorator(wrapped_function: Callable):
 
@@ -333,8 +342,6 @@ def particle_input(wrapped_function: Callable = None,
                 new_kwargs[argname] = particle
 
             return wrapped_function(**new_kwargs)
-
-        # TODO: Should we include type/units checking here?
 
         return wrapper
 

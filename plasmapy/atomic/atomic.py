@@ -123,7 +123,7 @@ def mass_number(isotope: Particle) -> int:
     return isotope.mass_number
 
 
-@particle_input(must_be='element', exclude={'isotope', 'ion'})
+@particle_input(exclude={'isotope', 'ion'})
 def standard_atomic_weight(element: Particle) -> u.Quantity:
     """Return the standard (conventional) atomic weight of an element
     based on the relative abundances of isotopes in terrestrial
@@ -195,7 +195,7 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
     return element.standard_atomic_weight
 
 
-@particle_input(must_be='isotope', exclude='ion')
+@particle_input(exclude='ion')
 def isotope_mass(isotope: Particle,
                  mass_numb: int = None) -> u.Quantity:
     """
