@@ -49,9 +49,9 @@ def check_quantity(validations):
     ... def func(x: u.m, y: u.s=1*u.s):
     ...     return x
     ...
-    >>> func(1*u.m)
+    >>> func(1 * u.m)
     <Quantity 1. m>
-    >>> func(1*u.m, 2*u.m)
+    >>> func(1 * u.m, 2 * u.m)
     Traceback (most recent call last):
       ...
     astropy.units.core.UnitConversionError: The argument y to func should be a Quantity with the following units: s
@@ -258,7 +258,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
             raise TypeError(typeerror_message)
         else:
             try:
-                arg = arg*units[0]
+                arg = arg * units[0]
             except Exception:
                 raise TypeError(typeerror_message)
             else:
@@ -343,13 +343,13 @@ def _check_relativistic(V, funcname, betafrac=0.1):
     if not isinstance(V, u.Quantity):
         raise TypeError(errmsg)
 
-    if V.si.unit != u.m/u.s:
+    if V.si.unit != u.m / u.s:
         raise u.UnitConversionError(errmsg)
 
     if np.any(np.isnan(V.value)):
         raise ValueError("V includes NaNs in " + funcname)
 
-    beta = np.max(np.abs((V.si/c).value))
+    beta = np.max(np.abs((V.si / c).value))
 
     if beta == np.inf:
         raise RelativityError(funcname + " is yielding an infinite velocity.")
@@ -359,6 +359,6 @@ def _check_relativistic(V, funcname, betafrac=0.1):
                               "light.")
     elif beta >= betafrac:
         warnings.warn(funcname + " is yielding a velocity that is " +
-                      str(round(beta*100, 3)) + "% of the speed of " +
+                      str(round(beta * 100, 3)) + "% of the speed of " +
                       "light. Relativistic effects may be important.",
                       RelativityWarning)
