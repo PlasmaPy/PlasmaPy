@@ -126,11 +126,11 @@ from Cython.Build import cythonize
 # trying to fetch extensions
 #exts = package_info['ext_modules']
 cython_exts = package_info.pop('ext_modules', [])
-print('*'*40)
+print('*' * 40)
 print(cython_exts)
-print('*'*40)
+print('*' * 40)
 print(package_info)
-print('*'*40)
+print('*' * 40)
 # when extensions are getting built it seems that the .pyx files
 # aren't getting cythonized, unless setuptools know to automatically
 # do this somehow, but I doubt it.
