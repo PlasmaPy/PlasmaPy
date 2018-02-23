@@ -56,8 +56,11 @@ try:
 except ImportError:
     raise ImportError("Unable to load PlasmaPy subpackages.")
 
+# Allow astropy.units to be imported from PlasmaPy. This is the 
+# only place in the code where units should not be abbreviated as u.
+
 try:
-    from astropy import units as u
+    from astropy import units
 except ImportError:
     raise ImportError("Unable to import astropy.units as a PlasmaPy submodule")
 
