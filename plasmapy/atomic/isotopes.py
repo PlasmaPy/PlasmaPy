@@ -1,3 +1,8 @@
+"""
+Create a dictionary containing basic information for isotopes and
+neutrons.
+"""
+
 import astropy.units as u
 
 _Isotopes = {
