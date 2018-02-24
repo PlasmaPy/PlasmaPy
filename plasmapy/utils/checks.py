@@ -367,4 +367,4 @@ def _check_relativistic(V, funcname, betafrac=0.1):
             f"{funcname} is yielding a velocity that is "
             f"{str(round(beta * 100, 3))}% of the speed of "
             f"light. Relativistic effects may be important.",
-        RelativityWarning)
+            RelativityWarning)
