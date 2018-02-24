@@ -21,4 +21,4 @@ from .exceptions import (PlasmaPyError,
 
 from .import_helpers import check_versions
 
-from .pytest_helpers import run_test_of_function
+from .pytest_helpers import run_test, call_string
