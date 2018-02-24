@@ -65,7 +65,7 @@ def run_test(f: Callable,
     if not isinstance(args, tuple):
         args = (args,)
 
-    call_string = _function_call_string(f, args, kwargs)
+    call_str = call_string(f, args, kwargs)
 
     if inspect.isclass(expected) and issubclass(expected, Exception):
 
@@ -73,7 +73,7 @@ def run_test(f: Callable,
 
         missing_exception_errmsg = (
             f"When testing {f.__module__}, the command\n\n"
-            f"    {call_string}\n\n"
+            f"    {call_str}\n\n"
             f"did not raise {article} {expected.__name__} as expected. "
         )
 
