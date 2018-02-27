@@ -875,3 +875,9 @@ class Particle:
             return False
 
         return require <= self._categories
+
+    def is_electron(self) -> bool:
+        """
+        Returns True if the particle is an electron.
+        """
+        return self.particle == "e-"
