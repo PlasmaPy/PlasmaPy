@@ -347,8 +347,6 @@ class Particle:
                 else:
                     attributes['half-life'] = \
                         _Isotopes[isotope].get('half-life', None)
-            elif element and not isotope:
-                attributes['half-life'] = None
 
             if ion == 'He-4 2+':
                 attributes['spin'] = 0
@@ -632,6 +630,15 @@ class Particle:
         return self._attributes['mass number']
 
     @property
+    def neutron_number(self) -> int:
+        """
+        Return the number of neutrons of the isotope corresponding
+        to this particle, or raises an `~plasmapy.utils.InvalidIsotopeError` if
+        the particle does not correspond to an isotope.
+        """
+        return self.mass_number - self.atomic_number
+
+    @property
     def isotopic_abundance(self) -> u.Quantity:
         """
         Return the isotopic abundance of an isotope if available,
@@ -735,7 +742,7 @@ class Particle:
     @property
     def periodic_table(self):
         """
-        Return a ~collections.namedtuple` to access category, period,
+        Return a `~collections.namedtuple` to access category, period,
         group, and block information about an element.
 
         If the particle is not an element, isotope, or ion, then this
@@ -868,3 +875,9 @@ class Particle:
             return False
 
         return require <= self._categories
+
+    def is_electron(self) -> bool:
+        """
+        Returns True if the particle is an electron.
+        """
+        return self.particle == "e-"
