@@ -171,6 +171,7 @@ test_Particle_table = [
       'mass_number': 2,
       'baryon_number': 2,
       'lepton_number': 0,
+      'neutron_number': 1,
       'is_category(require=("ion", "isotope"))': True,
       'periodic_table.group': 1,
       'periodic_table.block': 's',
@@ -188,6 +189,7 @@ test_Particle_table = [
       'mass_number': 3,
       'baryon_number': 3,
       'lepton_number': 0,
+      'neutron_number': 2,
       'is_category("ion", "isotope")': True,
       'is_category(require="uncharged")': False,
       'periodic_table.group': 1,
@@ -233,6 +235,7 @@ test_Particle_table = [
       'integer_charge': ChargeError,
       'atomic_number': 3,
       'mass_number': 7,
+      'neutron_number': 4,
       'baryon_number': 7,
       'half_life': np.inf * u.s,
       'nuclide_mass': 1.1647614796180463e-26 * u.kg,
@@ -247,6 +250,7 @@ test_Particle_table = [
       'integer_charge': 22,
       'atomic_number': 112,
       'mass_number': 276,
+      'neutron_number': 164,
       'baryon_number': 276,
       'lepton_number': 0}),
 
@@ -512,6 +516,7 @@ def test_particle_half_life_string():
 
     with pytest.warns(MissingAtomicDataWarning):
         assert isinstance(Particle(isotope).half_life, str)
+
 
 @pytest.mark.parametrize("p, is_one", [(Particle('e-'), True),
                                        (Particle('p+'), False)])
