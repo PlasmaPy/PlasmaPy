@@ -6,6 +6,7 @@ information for special particles.
 from typing import Set, Dict, List, Optional, Union
 from astropy import units as u, constants as const
 import numpy as np
+from .elements import _PeriodicTable
 
 
 class _ParticleZooClass():
@@ -232,7 +233,22 @@ def _create_Particles_dict() -> Dict[str, dict]:
     for thing in ['p+', 'p-']:
         Particles[thing]['mass'] = const.m_p
 
+    Particles['p+']['element'] = 'H'
+    Particles['p+']['atomic number'] = 1
+    Particles['p+']['mass number'] = 1
+    Particles['p+']['element name'] = 'hydrogen'
+    Particles['p+']['isotope'] = 'H-1'
+    Particles['p+']['ion'] = 'p+'
+    Particles['p+']['mass'] = const.m_p
     Particles['p+']['integer charge'] = 1
+
+    Particles['p+']['periodic table'] = _PeriodicTable(
+        group = 1,
+        period = 1,
+        block = 's',
+        category = 'nonmetal',
+    )
+
     Particles['p-']['integer charge'] = -1
 
     for thing in ['n', 'antineutron']:

@@ -4,7 +4,12 @@ Dictionaries containing basic atomic data.
 The periodic tabla data is from: http://periodic.lanl.gov/index.shtml
 """
 
-from astropy import units as u
+import collections
+import astropy.units as u
+
+_PeriodicTable = collections.namedtuple(
+    "periodic_table", ['group', 'category', 'block', 'period']
+)
 
 _atomic_symbols = {
     1: "H",

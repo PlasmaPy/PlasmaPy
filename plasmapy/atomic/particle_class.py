@@ -14,6 +14,7 @@ from ..utils import (
     InvalidParticleError,
     InvalidElementError,
     InvalidIsotopeError,
+    InvalidIonError,
     ChargeError,
     MissingAtomicDataError,
     MissingAtomicDataWarning,
@@ -25,13 +26,10 @@ from .parsing import (
     _invalid_particle_errmsg,
 )
 
-from .elements import _Elements
+from .elements import _Elements, _PeriodicTable
 from .isotopes import _Isotopes
 
 from .special_particles import (_Particles, ParticleZoo, _special_ion_masses)
-
-_PeriodicTable = collections.namedtuple(
-    "periodic_table", ['group', 'category', 'block', 'period'])
 
 _classification_categories = {
     'lepton',
@@ -76,8 +74,12 @@ _specific_particle_categories = {
     'neutron',
 }
 
-_valid_categories = _periodic_table_categories | _classification_categories \
-    | _atomic_property_categories | _specific_particle_categories
+_valid_categories = (
+    _periodic_table_categories
+    | _classification_categories
+    | _atomic_property_categories
+    | _specific_particle_categories
+)
 
 
 class Particle:
@@ -153,6 +155,10 @@ class Particle:
     <Quantity 881.5 s>
     >>> Particle('C-14').half_life.to(u.year)
     <Quantity 5730. yr>
+    >>> deuteron.electron_number
+    0
+    >>> alpha.neutron_number
+    2
 
     The `periodic_table` attribute provides category, period, block, and
     group information if the particle corresponds to an element.
@@ -214,6 +220,7 @@ class Particle:
         # 'lepton' for use with the is_category method later on.
 
         self._categories = set()
+        categories = self._categories
 
         # If the argument corresponds to one of the case-sensitive or
         # case-insensitive aliases for particles, return the standard
@@ -221,62 +228,25 @@ class Particle:
 
         particle = _dealias_particle_aliases(argument)
 
-        attributes['particle'] = particle
-
         if particle in _Particles.keys():  # special particles
-            special_particle_keys = [
-                'name',
-                'spin',
-                'class',
-                'lepton number',
-                'baryon number',
-                'integer charge',
-                'half-life',
-                'mass',
-            ]
 
-            for key in special_particle_keys:
-                attributes[key] = _Particles[particle].get(key, None)
+            attributes['particle'] = particle
 
-            particle_taxonomy_dict = ParticleZoo._taxonomy_dict
-            categories = particle_taxonomy_dict.keys()
+            for attribute in _Particles[particle].keys():
+                attributes[attribute] = _Particles[particle][attribute]
 
-            for category in categories:
-                if particle in particle_taxonomy_dict[category]:
-                    self._categories.add(category)
+            particle_taxonomy = ParticleZoo._taxonomy_dict
+            all_categories = particle_taxonomy.keys()
+
+            for category in all_categories:
+                if particle in particle_taxonomy[category]:
+                    categories.add(category)
 
             if attributes['name'] in _specific_particle_categories:
-                self._categories.add(attributes['name'])
+                categories.add(attributes['name'])
 
             if particle == 'p+':
-
-                # Protons are a special case amongst special cases, since they
-                # are both a special particle and correspond to an element and
-                # an isotope.  Protons are not as weird as electrons, though.
-                # Electrons are weird.
-
-                proton_keys_and_vals = [
-                    ('element', 'H'),
-                    ('atomic number', 1),
-                    ('mass number', 1),
-                    ('element name', 'hydrogen'),
-                    ('isotope', 'H-1'),
-                    ('ion', 'p+'),
-                    ('mass', const.m_p),
-                    ('integer charge', 1),
-                ]
-
-                self._periodic_table = _PeriodicTable(
-                    group=_Elements['H']['group'],
-                    period=_Elements['H']['period'],
-                    block=_Elements['H']['block'],
-                    category=_Elements['H']['category'],
-                )
-
-                for key, val in proton_keys_and_vals:
-                    attributes[key] = val
-
-                self._categories.update({'element', 'isotope', 'ion'})
+                categories.update({'element', 'isotope', 'ion'})
 
             if mass_numb is not None or Z is not None:
                 if particle == 'p+' and (mass_numb == 1 or Z == 1):
@@ -293,38 +263,25 @@ class Particle:
 
         else:  # elements, isotopes, and ions (besides protons)
             try:
-
                 atomic_nomenclature_dict = _parse_and_check_atomic_input(
                     argument, mass_numb=mass_numb, Z=Z)
-
-                element_keys = [
-                    'particle',
-                    'element',
-                    'isotope',
-                    'ion',
-                    'mass number',
-                    'integer charge',
-                ]
-
-                for key in element_keys:
-                    attributes[key] = \
-                        atomic_nomenclature_dict.get(key, None)
-
             except Exception as exc:
-                errmsg = _invalid_particle_errmsg(
-                    argument, mass_numb=mass_numb, Z=Z)
+                errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
                 raise InvalidParticleError(errmsg) from exc
+
+            for key in atomic_nomenclature_dict.keys():
+                attributes[key] = atomic_nomenclature_dict[key]
 
             element = attributes['element']
             isotope = attributes['isotope']
             ion = attributes['ion']
 
             if element:
-                self._categories.add('element')
+                categories.add('element')
             if isotope:
-                self._categories.add('isotope')
+                categories.add('isotope')
             if ion:
-                self._categories.add('ion')
+                categories.add('ion')
 
             # Element properties
 
@@ -335,9 +292,9 @@ class Particle:
             attributes['element name'] = _Elements[element]['name']
             attributes['baryon number'] = attributes['mass number']
 
-            # For the moment, set the lepton number to zero for elements,
-            # isotopes, and ions.  The lepton number will probably come up
-            # primarily during nuclear reactions.
+            # Set the lepton number to zero for elements, isotopes, and
+            # ions.  The lepton number will probably come up primarily
+            # during nuclear reactions.
 
             attributes['lepton number'] = 0
 
@@ -347,10 +304,6 @@ class Particle:
                 else:
                     attributes['half-life'] = \
                         _Isotopes[isotope].get('half-life', None)
-
-            if ion == 'He-4 2+':
-                attributes['spin'] = 0
-                self._categories.add('boson')
 
             if element and not isotope:
                 attributes['standard atomic weight'] = \
@@ -365,14 +318,14 @@ class Particle:
             if ion in _special_ion_masses.keys():
                 attributes['mass'] = _special_ion_masses[ion]
 
-            self._periodic_table = _PeriodicTable(
+            self._attributes['periodic table'] = _PeriodicTable(
                 group=_Elements[element]['group'],
                 period=_Elements[element]['period'],
                 block=_Elements[element]['block'],
                 category=_Elements[element]['category'],
             )
 
-            self._categories.add(self._periodic_table.category)
+            categories.add(_Elements[element]['category'])
 
         if attributes['integer charge'] == 1:
             attributes['charge'] = const.e.si
@@ -381,15 +334,17 @@ class Particle:
                 attributes['integer charge'] * const.e.si
 
         if attributes['integer charge']:
-            self._categories.add('charged')
+            categories.add('charged')
         elif attributes['integer charge'] == 0:
-            self._categories.add('uncharged')
+            categories.add('uncharged')
 
         if attributes['half-life'] is not None:
             if attributes['half-life'] == np.inf * u.s:
-                self._categories.add('stable')
+                categories.add('stable')
             else:
-                self._categories.add('unstable')
+                categories.add('unstable')
+
+        # TODO: Move these into functions outside of the class
 
         self._element_errmsg = (
             f"The particle '{self.particle}' is not an element, so "
@@ -501,7 +456,7 @@ class Particle:
                 f"The charge of particle {self.particle} has not been "
                 f"specified.")
         if self._attributes['integer charge'] == 1:
-            return const.e
+            return const.e.si
 
         return self._attributes['charge']
 
@@ -632,11 +587,29 @@ class Particle:
     @property
     def neutron_number(self) -> int:
         """
-        Return the number of neutrons of the isotope corresponding
-        to this particle, or raises an `~plasmapy.utils.InvalidIsotopeError` if
-        the particle does not correspond to an isotope.
+        Return the number of neutrons in the isotope corresponding
+        to this particle, or raise an
+        `~plasmapy.utils.InvalidIsotopeError` if the particle does not
+        correspond to an isotope or neutron.
         """
-        return self.mass_number - self.atomic_number
+        if self.particle == 'n':
+            return 1
+        elif self.isotope:
+            return self.mass_number - self.atomic_number
+        else:
+            raise InvalidIsotopeError(self._isotope_errmsg)
+
+    @property
+    def electron_number(self) -> int:
+        """
+        Return the number of electrons in an ion
+        """
+        if self.particle == 'e-':
+            return 1
+        elif self.ion:
+            return self.atomic_number - self.integer_charge
+        else:
+            raise InvalidIonError(self._ion_errmsg)
 
     @property
     def isotopic_abundance(self) -> u.Quantity:
@@ -749,7 +722,7 @@ class Particle:
         method will raise an `~plasmapy.utils.InvalidElementError`.
         """
         if self.element:
-            return self._periodic_table
+            return self._attributes['periodic table']
         else:
             raise InvalidElementError(self._element_errmsg)
 
