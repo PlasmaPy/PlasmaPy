@@ -258,10 +258,9 @@ _atomic_symbols_dict = {
 _Elements = {
 
     "H": {
-        "atomic_number": 1,
-        "symbol": "H",
-        "atomic_mass": 1.008 * u.u,
-        "name": "hydrogen",
+        "atomic number": 1,
+        "atomic mass": 1.008 * u.u,
+        "element name": "hydrogen",
         "period": 1,
         "group": 1,
         "block": "s",
@@ -269,10 +268,9 @@ _Elements = {
     },
 
     "He": {
-        "atomic_number": 2,
-        "symbol": "He",
-        "atomic_mass": 4.002602 * u.u,
-        "name": "helium",
+        "atomic number": 2,
+        "atomic mass": 4.002602 * u.u,
+        "element name": "helium",
         "period": 1,
         "group": 18,
         "block": "s",
@@ -280,10 +278,9 @@ _Elements = {
     },
 
     "Li": {
-        "atomic_number": 3,
-        "symbol": "Li",
-        "atomic_mass": 6.94 * u.u,
-        "name": "lithium",
+        "atomic number": 3,
+        "atomic mass": 6.94 * u.u,
+        "element name": "lithium",
         "period": 2,
         "group": 1,
         "block": "s",
@@ -291,10 +288,9 @@ _Elements = {
     },
 
     "Be": {
-        "atomic_number": 4,
-        "symbol": "Be",
-        "atomic_mass": 9.0121831 * u.u,
-        "name": "beryllium",
+        "atomic number": 4,
+        "atomic mass": 9.0121831 * u.u,
+        "element name": "beryllium",
         "period": 2,
         "group": 2,
         "block": "s",
@@ -302,10 +298,9 @@ _Elements = {
     },
 
     "B": {
-        "atomic_number": 5,
-        "symbol": "B",
-        "atomic_mass": 10.806 * u.u,
-        "name": "boron",
+        "atomic number": 5,
+        "atomic mass": 10.806 * u.u,
+        "element name": "boron",
         "period": 2,
         "group": 13,
         "block": "p",
@@ -313,10 +308,9 @@ _Elements = {
     },
 
     "C": {
-        "atomic_number": 6,
-        "symbol": "C",
-        "atomic_mass": 12.011 * u.u,
-        "name": "carbon",
+        "atomic number": 6,
+        "atomic mass": 12.011 * u.u,
+        "element name": "carbon",
         "period": 2,
         "group": 14,
         "block": "p",
@@ -324,10 +318,9 @@ _Elements = {
     },
 
     "N": {
-        "atomic_number": 7,
-        "symbol": "N",
-        "atomic_mass": 14.007 * u.u,
-        "name": "nitrogen",
+        "atomic number": 7,
+        "atomic mass": 14.007 * u.u,
+        "element name": "nitrogen",
         "period": 2,
         "group": 15,
         "block": "p",
@@ -335,10 +328,9 @@ _Elements = {
     },
 
     "O": {
-        "atomic_number": 8,
-        "symbol": "O",
-        "atomic_mass": 15.999 * u.u,
-        "name": "oxygen",
+        "atomic number": 8,
+        "atomic mass": 15.999 * u.u,
+        "element name": "oxygen",
         "period": 2,
         "group": 16,
         "block": "p",
@@ -346,10 +338,9 @@ _Elements = {
     },
 
     "F": {
-        "atomic_number": 9,
-        "symbol": "F",
-        "atomic_mass": 18.998403163 * u.u,
-        "name": "fluorine",
+        "atomic number": 9,
+        "atomic mass": 18.998403163 * u.u,
+        "element name": "fluorine",
         "period": 2,
         "group": 17,
         "block": "p",
@@ -357,10 +348,9 @@ _Elements = {
     },
 
     "Ne": {
-        "atomic_number": 10,
-        "symbol": "Ne",
-        "atomic_mass": 20.1797 * u.u,
-        "name": "neon",
+        "atomic number": 10,
+        "atomic mass": 20.1797 * u.u,
+        "element name": "neon",
         "period": 2,
         "group": 18,
         "block": "p",
@@ -368,10 +358,9 @@ _Elements = {
     },
 
     "Na": {
-        "atomic_number": 11,
-        "symbol": "Na",
-        "atomic_mass": 22.98976928 * u.u,
-        "name": "sodium",
+        "atomic number": 11,
+        "atomic mass": 22.98976928 * u.u,
+        "element name": "sodium",
         "period": 3,
         "group": 1,
         "block": "s",
@@ -379,10 +368,9 @@ _Elements = {
     },
 
     "Mg": {
-        "atomic_number": 12,
-        "symbol": "Mg",
-        "atomic_mass": 24.305 * u.u,
-        "name": "magnesium",
+        "atomic number": 12,
+        "atomic mass": 24.305 * u.u,
+        "element name": "magnesium",
         "period": 3,
         "group": 2,
         "block": "s",
@@ -390,10 +378,9 @@ _Elements = {
     },
 
     "Al": {
-        "atomic_number": 13,
-        "symbol": "Al",
-        "atomic_mass": 26.9815385 * u.u,
-        "name": "aluminium",
+        "atomic number": 13,
+        "atomic mass": 26.9815385 * u.u,
+        "element name": "aluminium",
         "period": 3,
         "group": 13,
         "block": "p",
@@ -401,10 +388,9 @@ _Elements = {
     },
 
     "Si": {
-        "atomic_number": 14,
-        "symbol": "Si",
-        "atomic_mass": 28.085 * u.u,
-        "name": "silicon",
+        "atomic number": 14,
+        "atomic mass": 28.085 * u.u,
+        "element name": "silicon",
         "period": 3,
         "group": 14,
         "block": "p",
@@ -412,10 +398,9 @@ _Elements = {
     },
 
     "P": {
-        "atomic_number": 15,
-        "symbol": "P",
-        "atomic_mass": 30.973761998 * u.u,
-        "name": "phosphorus",
+        "atomic number": 15,
+        "atomic mass": 30.973761998 * u.u,
+        "element name": "phosphorus",
         "period": 3,
         "group": 15,
         "block": "p",
@@ -423,10 +408,10 @@ _Elements = {
     },
 
     "S": {
-        "atomic_number": 16,
+        "atomic number": 16,
         "symbol": "S",
-        "atomic_mass": 32.06 * u.u,
-        "name": "sulfur",
+        "atomic mass": 32.06 * u.u,
+        "element name": "sulfur",
         "period": 3,
         "group": 16,
         "block": "p",
@@ -434,10 +419,9 @@ _Elements = {
     },
 
     "Cl": {
-        "atomic_number": 17,
-        "symbol": "Cl",
-        "atomic_mass": 35.45 * u.u,
-        "name": "chlorine",
+        "atomic number": 17,
+        "atomic mass": 35.45 * u.u,
+        "element name": "chlorine",
         "period": 3,
         "group": 17,
         "block": "p",
@@ -445,10 +429,9 @@ _Elements = {
     },
 
     "Ar": {
-        "atomic_number": 18,
-        "symbol": "Ar",
-        "atomic_mass": 39.948 * u.u,
-        "name": "argon",
+        "atomic number": 18,
+        "atomic mass": 39.948 * u.u,
+        "element name": "argon",
         "period": 3,
         "group": 18,
         "block": "p",
@@ -456,10 +439,9 @@ _Elements = {
     },
 
     "K": {
-        "atomic_number": 19,
-        "symbol": "K",
-        "atomic_mass": 39.0983 * u.u,
-        "name": "potassium",
+        "atomic number": 19,
+        "atomic mass": 39.0983 * u.u,
+        "element name": "potassium",
         "period": 4,
         "group": 1,
         "block": "s",
@@ -467,10 +449,9 @@ _Elements = {
     },
 
     "Ca": {
-        "atomic_number": 20,
-        "symbol": "Ca",
-        "atomic_mass": 40.078 * u.u,
-        "name": "calcium",
+        "atomic number": 20,
+        "atomic mass": 40.078 * u.u,
+        "element name": "calcium",
         "period": 4,
         "group": 2,
         "block": "s",
@@ -478,10 +459,9 @@ _Elements = {
     },
 
     "Sc": {
-        "atomic_number": 21,
-        "symbol": "Sc",
-        "atomic_mass": 44.955908 * u.u,
-        "name": "scandium",
+        "atomic number": 21,
+        "atomic mass": 44.955908 * u.u,
+        "element name": "scandium",
         "period": 4,
         "group": 3,
         "block": "d",
@@ -489,10 +469,9 @@ _Elements = {
     },
 
     "Ti": {
-        "atomic_number": 22,
-        "symbol": "Ti",
-        "atomic_mass": 47.867 * u.u,
-        "name": "titanium",
+        "atomic number": 22,
+        "atomic mass": 47.867 * u.u,
+        "element name": "titanium",
         "period": 4,
         "group": 4,
         "block": "d",
@@ -500,10 +479,9 @@ _Elements = {
     },
 
     "V": {
-        "atomic_number": 23,
-        "symbol": "V",
-        "atomic_mass": 50.9415 * u.u,
-        "name": "vanadium",
+        "atomic number": 23,
+        "atomic mass": 50.9415 * u.u,
+        "element name": "vanadium",
         "period": 4,
         "group": 5,
         "block": "d",
@@ -511,10 +489,9 @@ _Elements = {
     },
 
     "Cr": {
-        "atomic_number": 24,
-        "symbol": "Cr",
-        "atomic_mass": 51.9961 * u.u,
-        "name": "chromium",
+        "atomic number": 24,
+        "atomic mass": 51.9961 * u.u,
+        "element name": "chromium",
         "period": 4,
         "group": 6,
         "block": "d",
@@ -522,10 +499,9 @@ _Elements = {
     },
 
     "Mn": {
-        "atomic_number": 25,
-        "symbol": "Mn",
-        "atomic_mass": 54.938044 * u.u,
-        "name": "manganese",
+        "atomic number": 25,
+        "atomic mass": 54.938044 * u.u,
+        "element name": "manganese",
         "period": 4,
         "group": 7,
         "block": "d",
@@ -533,10 +509,9 @@ _Elements = {
     },
 
     "Fe": {
-        "atomic_number": 26,
-        "symbol": "Fe",
-        "atomic_mass": 55.845 * u.u,
-        "name": "iron",
+        "atomic number": 26,
+        "atomic mass": 55.845 * u.u,
+        "element name": "iron",
         "period": 4,
         "group": 8,
         "block": "d",
@@ -544,10 +519,9 @@ _Elements = {
     },
 
     "Co": {
-        "atomic_number": 27,
-        "symbol": "Co",
-        "atomic_mass": 58.933 * u.u,
-        "name": "cobalt",
+        "atomic number": 27,
+        "atomic mass": 58.933 * u.u,
+        "element name": "cobalt",
         "period": 4,
         "group": 9,
         "block": "d",
@@ -555,10 +529,9 @@ _Elements = {
     },
 
     "Ni": {
-        "atomic_number": 28,
-        "symbol": "Ni",
-        "atomic_mass": 58.6934 * u.u,
-        "name": "nickel",
+        "atomic number": 28,
+        "atomic mass": 58.6934 * u.u,
+        "element name": "nickel",
         "period": 4,
         "group": 10,
         "block": "d",
@@ -566,10 +539,9 @@ _Elements = {
     },
 
     "Cu": {
-        "atomic_number": 29,
-        "symbol": "Cu",
-        "atomic_mass": 63.546 * u.u,
-        "name": "copper",
+        "atomic number": 29,
+        "atomic mass": 63.546 * u.u,
+        "element name": "copper",
         "period": 4,
         "group": 11,
         "block": "d",
@@ -577,10 +549,9 @@ _Elements = {
     },
 
     "Zn": {
-        "atomic_number": 30,
-        "symbol": "Zn",
-        "atomic_mass": 65.38 * u.u,
-        "name": "zinc",
+        "atomic number": 30,
+        "atomic mass": 65.38 * u.u,
+        "element name": "zinc",
         "period": 4,
         "group": 12,
         "block": "d",
@@ -588,10 +559,9 @@ _Elements = {
     },
 
     "Ga": {
-        "atomic_number": 31,
-        "symbol": "Ga",
-        "atomic_mass": 69.723 * u.u,
-        "name": "gallium",
+        "atomic number": 31,
+        "atomic mass": 69.723 * u.u,
+        "element name": "gallium",
         "period": 4,
         "group": 13,
         "block": "p",
@@ -599,10 +569,9 @@ _Elements = {
     },
 
     "Ge": {
-        "atomic_number": 32,
-        "symbol": "Ge",
-        "atomic_mass": 72.630 * u.u,
-        "name": "germanium",
+        "atomic number": 32,
+        "atomic mass": 72.630 * u.u,
+        "element name": "germanium",
         "period": 4,
         "group": 14,
         "block": "p",
@@ -610,10 +579,9 @@ _Elements = {
     },
 
     "As": {
-        "atomic_number": 33,
-        "symbol": "As",
-        "atomic_mass": 74.921595 * u.u,
-        "name": "arsenic",
+        "atomic number": 33,
+        "atomic mass": 74.921595 * u.u,
+        "element name": "arsenic",
         "period": 4,
         "group": 15,
         "block": "p",
@@ -621,10 +589,9 @@ _Elements = {
     },
 
     "Se": {
-        "atomic_number": 34,
-        "symbol": "Se",
-        "atomic_mass": 78.971 * u.u,
-        "name": "selenium",
+        "atomic number": 34,
+        "atomic mass": 78.971 * u.u,
+        "element name": "selenium",
         "period": 4,
         "group": 16,
         "block": "p",
@@ -632,10 +599,9 @@ _Elements = {
     },
 
     "Br": {
-        "atomic_number": 35,
-        "symbol": "Br",
-        "atomic_mass": 79.904 * u.u,
-        "name": "bromine",
+        "atomic number": 35,
+        "atomic mass": 79.904 * u.u,
+        "element name": "bromine",
         "period": 4,
         "group": 17,
         "block": "p",
@@ -643,10 +609,9 @@ _Elements = {
     },
 
     "Kr": {
-        "atomic_number": 36,
-        "symbol": "Kr",
-        "atomic_mass": 83.798 * u.u,
-        "name": "krypton",
+        "atomic number": 36,
+        "atomic mass": 83.798 * u.u,
+        "element name": "krypton",
         "period": 4,
         "group": 18,
         "block": "p",
@@ -654,10 +619,9 @@ _Elements = {
     },
 
     "Rb": {
-        "atomic_number": 37,
-        "symbol": "Rb",
-        "atomic_mass": 85.4678 * u.u,
-        "name": "rubidium",
+        "atomic number": 37,
+        "atomic mass": 85.4678 * u.u,
+        "element name": "rubidium",
         "period": 5,
         "group": 1,
         "block": "s",
@@ -665,10 +629,9 @@ _Elements = {
     },
 
     "Sr": {
-        "atomic_number": 38,
-        "symbol": "Sr",
-        "atomic_mass": 87.62 * u.u,
-        "name": "strontium",
+        "atomic number": 38,
+        "atomic mass": 87.62 * u.u,
+        "element name": "strontium",
         "period": 5,
         "group": 2,
         "block": "s",
@@ -676,10 +639,9 @@ _Elements = {
     },
 
     "Y": {
-        "atomic_number": 39,
-        "symbol": "Y",
-        "atomic_mass": 88.90584 * u.u,
-        "name": "yttrium",
+        "atomic number": 39,
+        "atomic mass": 88.90584 * u.u,
+        "element name": "yttrium",
         "period": 5,
         "group": 3,
         "block": "d",
@@ -687,10 +649,9 @@ _Elements = {
     },
 
     "Zr": {
-        "atomic_number": 40,
-        "symbol": "Zr",
-        "atomic_mass": 91.224 * u.u,
-        "name": "zirconium",
+        "atomic number": 40,
+        "atomic mass": 91.224 * u.u,
+        "element name": "zirconium",
         "period": 5,
         "group": 4,
         "block": "d",
@@ -698,10 +659,9 @@ _Elements = {
     },
 
     "Nb": {
-        "atomic_number": 41,
-        "symbol": "Nb",
-        "atomic_mass": 92.90637 * u.u,
-        "name": "niobium",
+        "atomic number": 41,
+        "atomic mass": 92.90637 * u.u,
+        "element name": "niobium",
         "period": 5,
         "group": 5,
         "block": "d",
@@ -709,10 +669,9 @@ _Elements = {
     },
 
     "Mo": {
-        "atomic_number": 42,
-        "symbol": "Mo",
-        "atomic_mass": 95.95 * u.u,
-        "name": "molybdenum",
+        "atomic number": 42,
+        "atomic mass": 95.95 * u.u,
+        "element name": "molybdenum",
         "period": 5,
         "group": 6,
         "block": "d",
@@ -720,9 +679,8 @@ _Elements = {
     },
 
     "Tc": {
-        "atomic_number": 43,
-        "symbol": "Tc",
-        "name": "technetium",
+        "atomic number": 43,
+        "element name": "technetium",
         "period": 5,
         "group": 7,
         "block": "d",
@@ -730,10 +688,9 @@ _Elements = {
     },
 
     "Ru": {
-        "atomic_number": 44,
-        "symbol": "Ru",
-        "atomic_mass": 101.07 * u.u,
-        "name": "ruthenium",
+        "atomic number": 44,
+        "atomic mass": 101.07 * u.u,
+        "element name": "ruthenium",
         "period": 5,
         "group": 8,
         "block": "d",
@@ -741,10 +698,9 @@ _Elements = {
     },
 
     "Rh": {
-        "atomic_number": 45,
-        "symbol": "Rh",
-        "atomic_mass": 102.90550 * u.u,
-        "name": "rhodium",
+        "atomic number": 45,
+        "atomic mass": 102.90550 * u.u,
+        "element name": "rhodium",
         "period": 5,
         "group": 9,
         "block": "d",
@@ -752,10 +708,9 @@ _Elements = {
     },
 
     "Pd": {
-        "atomic_number": 46,
-        "symbol": "Pd",
-        "atomic_mass": 106.42 * u.u,
-        "name": "palladium",
+        "atomic number": 46,
+        "atomic mass": 106.42 * u.u,
+        "element name": "palladium",
         "period": 5,
         "group": 10,
         "block": "d",
@@ -763,10 +718,9 @@ _Elements = {
     },
 
     "Ag": {
-        "atomic_number": 47,
-        "symbol": "Ag",
-        "atomic_mass": 107.8682 * u.u,
-        "name": "silver",
+        "atomic number": 47,
+        "atomic mass": 107.8682 * u.u,
+        "element name": "silver",
         "period": 5,
         "group": 11,
         "block": "d",
@@ -774,10 +728,9 @@ _Elements = {
     },
 
     "Cd": {
-        "atomic_number": 48,
-        "symbol": "Cd",
-        "atomic_mass": 112.414 * u.u,
-        "name": "cadmium",
+        "atomic number": 48,
+        "atomic mass": 112.414 * u.u,
+        "element name": "cadmium",
         "period": 5,
         "group": 12,
         "block": "d",
@@ -785,10 +738,9 @@ _Elements = {
     },
 
     "In": {
-        "atomic_number": 49,
-        "symbol": "In",
-        "atomic_mass": 114.818 * u.u,
-        "name": "indium",
+        "atomic number": 49,
+        "atomic mass": 114.818 * u.u,
+        "element name": "indium",
         "period": 5,
         "group": 13,
         "block": "p",
@@ -796,10 +748,9 @@ _Elements = {
     },
 
     "Sn": {
-        "atomic_number": 50,
-        "symbol": "Sn",
-        "atomic_mass": 118.710 * u.u,
-        "name": "tin",
+        "atomic number": 50,
+        "atomic mass": 118.710 * u.u,
+        "element name": "tin",
         "period": 5,
         "group": 14,
         "block": "p",
@@ -807,10 +758,9 @@ _Elements = {
     },
 
     "Sb": {
-        "atomic_number": 51,
-        "symbol": "Sb",
-        "atomic_mass": 121.760 * u.u,
-        "name": "antimony",
+        "atomic number": 51,
+        "atomic mass": 121.760 * u.u,
+        "element name": "antimony",
         "period": 5,
         "group": 15,
         "block": "p",
@@ -818,10 +768,9 @@ _Elements = {
     },
 
     "Te": {
-        "atomic_number": 52,
-        "symbol": "Te",
-        "atomic_mass": 127.60 * u.u,
-        "name": "tellurium",
+        "atomic number": 52,
+        "atomic mass": 127.60 * u.u,
+        "element name": "tellurium",
         "period": 5,
         "group": 16,
         "block": "p",
@@ -829,10 +778,9 @@ _Elements = {
     },
 
     "I": {
-        "atomic_number": 53,
-        "symbol": "I",
-        "atomic_mass": 126.90447 * u.u,
-        "name": "iodine",
+        "atomic number": 53,
+        "atomic mass": 126.90447 * u.u,
+        "element name": "iodine",
         "period": 5,
         "group": 17,
         "block": "p",
@@ -840,10 +788,9 @@ _Elements = {
     },
 
     "Xe": {
-        "atomic_number": 54,
-        "symbol": "Xe",
-        "atomic_mass": 131.293 * u.u,
-        "name": "xenon",
+        "atomic number": 54,
+        "atomic mass": 131.293 * u.u,
+        "element name": "xenon",
         "period": 5,
         "group": 18,
         "block": "p",
@@ -851,10 +798,9 @@ _Elements = {
     },
 
     "Cs": {
-        "atomic_number": 55,
-        "symbol": "Cs",
-        "atomic_mass": 132.90545196 * u.u,
-        "name": "caesium",
+        "atomic number": 55,
+        "atomic mass": 132.90545196 * u.u,
+        "element name": "caesium",
         "period": 6,
         "group": 1,
         "block": "s",
@@ -862,10 +808,9 @@ _Elements = {
     },
 
     "Ba": {
-        "atomic_number": 56,
-        "symbol": "Ba",
-        "atomic_mass": 137.327 * u.u,
-        "name": "barium",
+        "atomic number": 56,
+        "atomic mass": 137.327 * u.u,
+        "element name": "barium",
         "period": 6,
         "group": 2,
         "block": "s",
@@ -873,10 +818,9 @@ _Elements = {
     },
 
     "La": {
-        "atomic_number": 57,
-        "symbol": "La",
-        "atomic_mass": 138.90547 * u.u,
-        "name": "lanthanum",
+        "atomic number": 57,
+        "atomic mass": 138.90547 * u.u,
+        "element name": "lanthanum",
         "period": 6,
         "group": 3,
         "block": "d",
@@ -884,10 +828,9 @@ _Elements = {
     },
 
     "Ce": {
-        "atomic_number": 58,
-        "symbol": "Ce",
-        "atomic_mass": 140.116 * u.u,
-        "name": "cerium",
+        "atomic number": 58,
+        "atomic mass": 140.116 * u.u,
+        "element name": "cerium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -895,10 +838,9 @@ _Elements = {
     },
 
     "Pr": {
-        "atomic_number": 59,
-        "symbol": "Pr",
-        "atomic_mass": 140.90766 * u.u,
-        "name": "praseodymium",
+        "atomic number": 59,
+        "atomic mass": 140.90766 * u.u,
+        "element name": "praseodymium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -906,10 +848,9 @@ _Elements = {
     },
 
     "Nd": {
-        "atomic_number": 60,
-        "symbol": "Nd",
-        "atomic_mass": 144.242 * u.u,
-        "name": "neodymium",
+        "atomic number": 60,
+        "atomic mass": 144.242 * u.u,
+        "element name": "neodymium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -917,9 +858,8 @@ _Elements = {
     },
 
     "Pm": {
-        "atomic_number": 61,
-        "symbol": "Pm",
-        "name": "promethium",
+        "atomic number": 61,
+        "element name": "promethium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -927,10 +867,9 @@ _Elements = {
     },
 
     "Sm": {
-        "atomic_number": 62,
-        "symbol": "Sm",
-        "atomic_mass": 150.36 * u.u,
-        "name": "samarium",
+        "atomic number": 62,
+        "atomic mass": 150.36 * u.u,
+        "element name": "samarium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -938,10 +877,9 @@ _Elements = {
     },
 
     "Eu": {
-        "atomic_number": 63,
-        "symbol": "Eu",
-        "atomic_mass": 151.964 * u.u,
-        "name": "europium",
+        "atomic number": 63,
+        "atomic mass": 151.964 * u.u,
+        "element name": "europium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -949,10 +887,9 @@ _Elements = {
     },
 
     "Gd": {
-        "atomic_number": 64,
-        "symbol": "Gd",
-        "atomic_mass": 157.25 * u.u,
-        "name": "gadolinium",
+        "atomic number": 64,
+        "atomic mass": 157.25 * u.u,
+        "element name": "gadolinium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -960,10 +897,9 @@ _Elements = {
     },
 
     "Tb": {
-        "atomic_number": 65,
-        "symbol": "Tb",
-        "atomic_mass": 158.92535 * u.u,
-        "name": "terbium",
+        "atomic number": 65,
+        "atomic mass": 158.92535 * u.u,
+        "element name": "terbium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -971,10 +907,9 @@ _Elements = {
     },
 
     "Dy": {
-        "atomic_number": 66,
-        "symbol": "Dy",
-        "atomic_mass": 162.500 * u.u,
-        "name": "dysprosium",
+        "atomic number": 66,
+        "atomic mass": 162.500 * u.u,
+        "element name": "dysprosium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -982,10 +917,9 @@ _Elements = {
     },
 
     "Ho": {
-        "atomic_number": 67,
-        "symbol": "Ho",
-        "atomic_mass": 164.93033 * u.u,
-        "name": "holmium",
+        "atomic number": 67,
+        "atomic mass": 164.93033 * u.u,
+        "element name": "holmium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -993,10 +927,9 @@ _Elements = {
     },
 
     "Er": {
-        "atomic_number": 68,
-        "symbol": "Er",
-        "atomic_mass": 167.259 * u.u,
-        "name": "erbium",
+        "atomic number": 68,
+        "atomic mass": 167.259 * u.u,
+        "element name": "erbium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -1004,10 +937,9 @@ _Elements = {
     },
 
     "Tm": {
-        "atomic_number": 69,
-        "symbol": "Tm",
-        "atomic_mass": 168.93422 * u.u,
-        "name": "thulium",
+        "atomic number": 69,
+        "atomic mass": 168.93422 * u.u,
+        "element name": "thulium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -1015,10 +947,9 @@ _Elements = {
     },
 
     "Yb": {
-        "atomic_number": 70,
-        "symbol": "Yb",
-        "atomic_mass": 173.045 * u.u,
-        "name": "ytterbium",
+        "atomic number": 70,
+        "atomic mass": 173.045 * u.u,
+        "element name": "ytterbium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -1026,10 +957,9 @@ _Elements = {
     },
 
     "Lu": {
-        "atomic_number": 71,
-        "symbol": "Lu",
-        "atomic_mass": 174.9668 * u.u,
-        "name": "lutetium",
+        "atomic number": 71,
+        "atomic mass": 174.9668 * u.u,
+        "element name": "lutetium",
         "period": 6,
         "group": 3,
         "block": "f",
@@ -1037,10 +967,9 @@ _Elements = {
     },
 
     "Hf": {
-        "atomic_number": 72,
-        "symbol": "Hf",
-        "atomic_mass": 178.49 * u.u,
-        "name": "hafnium",
+        "atomic number": 72,
+        "atomic mass": 178.49 * u.u,
+        "element name": "hafnium",
         "period": 6,
         "group": 4,
         "block": "d",
@@ -1048,10 +977,9 @@ _Elements = {
     },
 
     "Ta": {
-        "atomic_number": 73,
-        "symbol": "Ta",
-        "atomic_mass": 180.94788 * u.u,
-        "name": "tantalum",
+        "atomic number": 73,
+        "atomic mass": 180.94788 * u.u,
+        "element name": "tantalum",
         "period": 6,
         "group": 5,
         "block": "d",
@@ -1059,10 +987,9 @@ _Elements = {
     },
 
     "W": {
-        "atomic_number": 74,
-        "symbol": "W",
-        "atomic_mass": 183.84 * u.u,
-        "name": "tungsten",
+        "atomic number": 74,
+        "atomic mass": 183.84 * u.u,
+        "element name": "tungsten",
         "period": 6,
         "group": 6,
         "block": "d",
@@ -1070,10 +997,9 @@ _Elements = {
     },
 
     "Re": {
-        "atomic_number": 75,
-        "symbol": "Re",
-        "atomic_mass": 186.207 * u.u,
-        "name": "rhenium",
+        "atomic number": 75,
+        "atomic mass": 186.207 * u.u,
+        "element name": "rhenium",
         "period": 6,
         "group": 7,
         "block": "d",
@@ -1081,10 +1007,9 @@ _Elements = {
     },
 
     "Os": {
-        "atomic_number": 76,
-        "symbol": "Os",
-        "atomic_mass": 190.23 * u.u,
-        "name": "osmium",
+        "atomic number": 76,
+        "atomic mass": 190.23 * u.u,
+        "element name": "osmium",
         "period": 6,
         "group": 8,
         "block": "d",
@@ -1092,10 +1017,9 @@ _Elements = {
     },
 
     "Ir": {
-        "atomic_number": 77,
-        "symbol": "Ir",
-        "atomic_mass": 192.217 * u.u,
-        "name": "iridium",
+        "atomic number": 77,
+        "atomic mass": 192.217 * u.u,
+        "element name": "iridium",
         "period": 6,
         "group": 9,
         "block": "d",
@@ -1103,10 +1027,9 @@ _Elements = {
     },
 
     "Pt": {
-        "atomic_number": 78,
-        "symbol": "Pt",
-        "atomic_mass": 195.084 * u.u,
-        "name": "platinum",
+        "atomic number": 78,
+        "atomic mass": 195.084 * u.u,
+        "element name": "platinum",
         "period": 6,
         "group": 10,
         "block": "d",
@@ -1114,10 +1037,9 @@ _Elements = {
     },
 
     "Au": {
-        "atomic_number": 79,
-        "symbol": "Au",
-        "atomic_mass": 196.966569 * u.u,
-        "name": "gold",
+        "atomic number": 79,
+        "atomic mass": 196.966569 * u.u,
+        "element name": "gold",
         "period": 6,
         "group": 11,
         "block": "d",
@@ -1125,10 +1047,9 @@ _Elements = {
     },
 
     "Hg": {
-        "atomic_number": 80,
-        "symbol": "Hg",
-        "atomic_mass": 200.592 * u.u,
-        "name": "mercury",
+        "atomic number": 80,
+        "atomic mass": 200.592 * u.u,
+        "element name": "mercury",
         "period": 6,
         "group": 12,
         "block": "d",
@@ -1136,10 +1057,9 @@ _Elements = {
     },
 
     "Tl": {
-        "atomic_number": 81,
-        "symbol": "Tl",
-        "atomic_mass": 204.38 * u.u,
-        "name": "thallium",
+        "atomic number": 81,
+        "atomic mass": 204.38 * u.u,
+        "element name": "thallium",
         "period": 6,
         "group": 13,
         "block": "p",
@@ -1147,10 +1067,9 @@ _Elements = {
     },
 
     "Pb": {
-        "atomic_number": 82,
-        "symbol": "Pb",
-        "atomic_mass": 207.2 * u.u,
-        "name": "lead",
+        "atomic number": 82,
+        "atomic mass": 207.2 * u.u,
+        "element name": "lead",
         "period": 6,
         "group": 14,
         "block": "p",
@@ -1158,10 +1077,9 @@ _Elements = {
     },
 
     "Bi": {
-        "atomic_number": 83,
-        "symbol": "Bi",
-        "atomic_mass": 208.98040 * u.u,
-        "name": "bismuth",
+        "atomic number": 83,
+        "atomic mass": 208.98040 * u.u,
+        "element name": "bismuth",
         "period": 6,
         "group": 15,
         "block": "p",
@@ -1169,9 +1087,8 @@ _Elements = {
     },
 
     "Po": {
-        "atomic_number": 84,
-        "symbol": "Po",
-        "name": "polonium",
+        "atomic number": 84,
+        "element name": "polonium",
         "period": 6,
         "group": 16,
         "block": "p",
@@ -1179,9 +1096,8 @@ _Elements = {
     },
 
     "At": {
-        "atomic_number": 85,
-        "symbol": "At",
-        "name": "astatine",
+        "atomic number": 85,
+        "element name": "astatine",
         "period": 6,
         "group": 17,
         "block": "p",
@@ -1189,9 +1105,8 @@ _Elements = {
     },
 
     "Rn": {
-        "atomic_number": 86,
-        "symbol": "Rn",
-        "name": "radon",
+        "atomic number": 86,
+        "element name": "radon",
         "period": 6,
         "group": 18,
         "block": "p",
@@ -1199,9 +1114,8 @@ _Elements = {
     },
 
     "Fr": {
-        "atomic_number": 87,
-        "symbol": "Fr",
-        "name": "francium",
+        "atomic number": 87,
+        "element name": "francium",
         "period": 7,
         "group": 1,
         "block": "s",
@@ -1209,9 +1123,8 @@ _Elements = {
     },
 
     "Ra": {
-        "atomic_number": 88,
-        "symbol": "Ra",
-        "name": "radium",
+        "atomic number": 88,
+        "element name": "radium",
         "period": 7,
         "group": 2,
         "block": "s",
@@ -1219,9 +1132,8 @@ _Elements = {
     },
 
     "Ac": {
-        "atomic_number": 89,
-        "symbol": "Ac",
-        "name": "actinium",
+        "atomic number": 89,
+        "element name": "actinium",
         "period": 7,
         "group": 3,
         "block": "d",
@@ -1229,10 +1141,9 @@ _Elements = {
     },
 
     "Th": {
-        "atomic_number": 90,
-        "symbol": "Th",
-        "atomic_mass": 232.0377 * u.u,
-        "name": "thorium",
+        "atomic number": 90,
+        "atomic mass": 232.0377 * u.u,
+        "element name": "thorium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1240,10 +1151,9 @@ _Elements = {
     },
 
     "Pa": {
-        "atomic_number": 91,
-        "symbol": "Pa",
-        "atomic_mass": 231.03588 * u.u,
-        "name": "protactinium",
+        "atomic number": 91,
+        "atomic mass": 231.03588 * u.u,
+        "element name": "protactinium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1251,10 +1161,9 @@ _Elements = {
     },
 
     "U": {
-        "atomic_number": 92,
-        "symbol": "U",
-        "atomic_mass": 238.02891 * u.u,
-        "name": "uranium",
+        "atomic number": 92,
+        "atomic mass": 238.02891 * u.u,
+        "element name": "uranium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1262,9 +1171,8 @@ _Elements = {
     },
 
     "Np": {
-        "atomic_number": 93,
-        "symbol": "Np",
-        "name": "neptunium",
+        "atomic number": 93,
+        "element name": "neptunium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1272,9 +1180,8 @@ _Elements = {
     },
 
     "Pu": {
-        "atomic_number": 94,
-        "symbol": "Pu",
-        "name": "plutonium",
+        "atomic number": 94,
+        "element name": "plutonium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1282,9 +1189,8 @@ _Elements = {
     },
 
     "Am": {
-        "atomic_number": 95,
-        "symbol": "Am",
-        "name": "americium",
+        "atomic number": 95,
+        "element name": "americium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1292,9 +1198,8 @@ _Elements = {
     },
 
     "Cm": {
-        "atomic_number": 96,
-        "symbol": "Cm",
-        "name": "curium",
+        "atomic number": 96,
+        "element name": "curium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1302,9 +1207,8 @@ _Elements = {
     },
 
     "Bk": {
-        "atomic_number": 97,
-        "symbol": "Bk",
-        "name": "berkelium",
+        "atomic number": 97,
+        "element name": "berkelium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1312,9 +1216,8 @@ _Elements = {
     },
 
     "Cf": {
-        "atomic_number": 98,
-        "symbol": "Cf",
-        "name": "californium",
+        "atomic number": 98,
+        "element name": "californium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1322,9 +1225,8 @@ _Elements = {
     },
 
     "Es": {
-        "atomic_number": 99,
-        "symbol": "Es",
-        "name": "einsteinium",
+        "atomic number": 99,
+        "element name": "einsteinium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1332,9 +1234,8 @@ _Elements = {
     },
 
     "Fm": {
-        "atomic_number": 100,
-        "symbol": "Fm",
-        "name": "fermium",
+        "atomic number": 100,
+        "element name": "fermium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1342,9 +1243,8 @@ _Elements = {
     },
 
     "Md": {
-        "atomic_number": 101,
-        "symbol": "Md",
-        "name": "mendelevium",
+        "atomic number": 101,
+        "element name": "mendelevium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1352,9 +1252,8 @@ _Elements = {
     },
 
     "No": {
-        "atomic_number": 102,
-        "symbol": "No",
-        "name": "nobelium",
+        "atomic number": 102,
+        "element name": "nobelium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1362,9 +1261,8 @@ _Elements = {
     },
 
     "Lr": {
-        "atomic_number": 103,
-        "symbol": "Lr",
-        "name": "lawrencium",
+        "atomic number": 103,
+        "element name": "lawrencium",
         "period": 7,
         "group": 3,
         "block": "f",
@@ -1372,9 +1270,8 @@ _Elements = {
     },
 
     "Rf": {
-        "atomic_number": 104,
-        "symbol": "Rf",
-        "name": "rutherfordium",
+        "atomic number": 104,
+        "element name": "rutherfordium",
         "period": 7,
         "group": 4,
         "block": "d",
@@ -1382,9 +1279,8 @@ _Elements = {
     },
 
     "Db": {
-        "atomic_number": 105,
-        "symbol": "Db",
-        "name": "dubnium",
+        "atomic number": 105,
+        "element name": "dubnium",
         "period": 7,
         "group": 5,
         "block": "d",
@@ -1392,9 +1288,8 @@ _Elements = {
     },
 
     "Sg": {
-        "atomic_number": 106,
-        "symbol": "Sg",
-        "name": "seaborgium",
+        "atomic number": 106,
+        "element name": "seaborgium",
         "period": 7,
         "group": 6,
         "block": "d",
@@ -1402,9 +1297,8 @@ _Elements = {
     },
 
     "Bh": {
-        "atomic_number": 107,
-        "symbol": "Bh",
-        "name": "bohrium",
+        "atomic number": 107,
+        "element name": "bohrium",
         "period": 7,
         "group": 7,
         "block": "d",
@@ -1412,9 +1306,8 @@ _Elements = {
     },
 
     "Hs": {
-        "atomic_number": 108,
-        "symbol": "Hs",
-        "name": "hassium",
+        "atomic number": 108,
+        "element name": "hassium",
         "period": 7,
         "group": 8,
         "block": "d",
@@ -1422,9 +1315,8 @@ _Elements = {
     },
 
     "Mt": {
-        "atomic_number": 109,
-        "symbol": "Mt",
-        "name": "meitnerium",
+        "atomic number": 109,
+        "element name": "meitnerium",
         "period": 7,
         "group": 9,
         "block": "d",
@@ -1432,9 +1324,8 @@ _Elements = {
     },
 
     "Ds": {
-        "atomic_number": 110,
-        "symbol": "Ds",
-        "name": "darmstadtium",
+        "atomic number": 110,
+        "element name": "darmstadtium",
         "period": 7,
         "group": 10,
         "block": "d",
@@ -1442,9 +1333,8 @@ _Elements = {
     },
 
     "Rg": {
-        "atomic_number": 111,
-        "symbol": "Rg",
-        "name": "roentgenium",
+        "atomic number": 111,
+        "element name": "roentgenium",
         "period": 7,
         "group": 11,
         "block": "d",
@@ -1452,9 +1342,8 @@ _Elements = {
     },
 
     "Cn": {
-        "atomic_number": 112,
-        "symbol": "Cn",
-        "name": "copernicium",
+        "atomic number": 112,
+        "element name": "copernicium",
         "period": 7,
         "group": 12,
         "block": "d",
@@ -1462,9 +1351,8 @@ _Elements = {
     },
 
     "Nh": {
-        "atomic_number": 113,
-        "symbol": "Nh",
-        "name": "nihonium",
+        "atomic number": 113,
+        "element name": "nihonium",
         "period": 7,
         "group": 13,
         "block": "p",
@@ -1472,9 +1360,8 @@ _Elements = {
     },
 
     "Fl": {
-        "atomic_number": 114,
-        "symbol": "Fl",
-        "name": "flerovium",
+        "atomic number": 114,
+        "element name": "flerovium",
         "period": 7,
         "group": 14,
         "block": "p",
@@ -1482,9 +1369,8 @@ _Elements = {
     },
 
     "Mc": {
-        "atomic_number": 115,
-        "symbol": "Mc",
-        "name": "moscovium",
+        "atomic number": 115,
+        "element name": "moscovium",
         "period": 7,
         "group": 15,
         "block": "p",
@@ -1492,9 +1378,8 @@ _Elements = {
     },
 
     "Lv": {
-        "atomic_number": 116,
-        "symbol": "Lv",
-        "name": "livermorium",
+        "atomic number": 116,
+        "element name": "livermorium",
         "period": 7,
         "group": 16,
         "block": "p",
@@ -1502,9 +1387,8 @@ _Elements = {
     },
 
     "Ts": {
-        "atomic_number": 117,
-        "symbol": "Ts",
-        "name": "tennessine",
+        "atomic number": 117,
+        "element name": "tennessine",
         "period": 7,
         "group": 17,
         "block": "p",
@@ -1512,9 +1396,8 @@ _Elements = {
     },
 
     "Og": {
-        "atomic_number": 118,
-        "symbol": "Og",
-        "name": "oganesson",
+        "atomic number": 118,
+        "element name": "oganesson",
         "period": 7,
         "group": 18,
         "block": "p",

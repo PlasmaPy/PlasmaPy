@@ -395,11 +395,11 @@ def _parse_and_check_atomic_input(
         Z = Z_from_arg
 
     if isinstance(Z, int):
-        if Z > _Elements[element]['atomic_number']:
+        if Z > _Elements[element]['atomic number']:
             raise InvalidParticleError(
                 f"The integer charge Z = {Z} cannot exceed the atomic number "
                 f"of {element}, which is "
-                f"{_Elements[element]['atomic_number']}.")
+                f"{_Elements[element]['atomic number']}.")
         elif Z <= -3:
             warnings.warn(f"Particle '{argument}' has an integer charge "
                           f"of Z = {Z}, which is unlikely to occur in "
