@@ -56,8 +56,6 @@ test_Particle_table = [
       'mass_number': 1,
       'lepton_number': 0,
       'baryon_number': 1,
-      'reduced_mass(Particle("p"))': m_p / 2,
-      'reduced_mass(m_p)': m_p / 2,
       '__str__()': 'p+',
       '__repr__()': 'Particle("p+")',
       'is_category("fermion")': True,
@@ -106,8 +104,6 @@ test_Particle_table = [
       'atomic_number': InvalidElementError,
       'lepton_number': 1,
       'baryon_number': 0,
-      'reduced_mass(Particle("e+"))': m_e / 2,
-      'reduced_mass("e-")': m_e / 2,
       '__str__()': 'e-',
       '__repr__()': 'Particle("e-")',
       'binding_energy': InvalidIsotopeError,
@@ -290,7 +286,6 @@ test_Particle_table = [
       'is_category(["boson"], exclude=["lepton", "invalid"])': AtomicError,
       'is_category("boson", exclude="boson")': AtomicError,
       'is_category(any_of="boson", exclude="boson")': AtomicError,
-      'reduced_mass("electron")': MissingAtomicDataError,
       }),
 ]
 

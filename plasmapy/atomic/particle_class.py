@@ -726,46 +726,6 @@ class Particle:
         else:
             raise InvalidElementError(self._element_errmsg)
 
-    def reduced_mass(self, other, Z=None, mass_numb=None) -> u.Quantity:
-        """
-        Find the reduced mass between two particles, or will raise
-        a `~plasmapy.utils.MissingAtomicDataError` if either particle's
-        mass is unavailable or an `~plasmapy.utils.AtomicError` for any
-        other errors.  The other particle may be represented by another
-        Particle object, a `~astropy.units.Quantity` with units of mass,
-        or a string of the other particle's symbol (in conjunction with
-        keywords `Z` and `mass_numb`).
-
-        """
-
-        try:
-            mass_this = self.mass.to(u.kg)
-        except MissingAtomicDataError:
-            raise MissingAtomicDataError(
-                f"Unable to find the reduced mass because the mass of "
-                f"{self.particle} is not available.") from None
-
-        if isinstance(other, (str, int)):
-                other = Particle(other, Z=Z, mass_numb=mass_numb)
-
-        if isinstance(other, Particle):
-            try:
-                mass_that = other.mass.to(u.kg)
-            except MissingAtomicDataError:
-                raise MissingAtomicDataError(
-                    f"Unable to find the reduced mass because the mass of "
-                    f"{other.particle} is not available.") from None
-        else:
-            try:
-                mass_that = other.to(u.kg)
-            except Exception as exc:  # coveralls: ignore
-                raise AtomicError(
-                    f"{other} must be either a Particle or a Quantity or "
-                    f"Constant with units of mass in order to calculate "
-                    f"reduced mass.") from exc
-
-        return (mass_this * mass_that) / (mass_this + mass_that)
-
     @property
     def categories(self) -> Set[str]:
         """Return the particle's categories."""
