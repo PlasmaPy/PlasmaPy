@@ -811,6 +811,7 @@ class Particle:
 
     def is_electron(self) -> bool:
         """
-        Returns True if the particle is an electron.
+        Return `True` if the particle is an electron, and `False`
+        otherwise.
         """
         return self.particle == "e-"
