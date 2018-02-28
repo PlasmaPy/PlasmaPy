@@ -513,7 +513,6 @@ def test_particle_half_life_string():
         assert isinstance(Particle(isotope).half_life, str)
 
 
-@pytest.mark.parametrize("p, is_one", [(Particle('e-'), True),
-                                       (Particle('p+'), False)])
+@pytest.mark.parametrize("p, is_one", [(Particle('e-'), True), (Particle('p+'), False)])
 def test_particle_is_electron(p, is_one):
     assert p.is_electron() == is_one

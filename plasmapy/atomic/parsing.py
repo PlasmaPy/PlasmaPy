@@ -89,7 +89,7 @@ def _dealias_particle_aliases(alias: Union[str, int]) -> str:
     if not isinstance(alias, str):
         symbol = alias
     elif (alias in _case_sensitive_aliases.values() or
-            alias in _case_insensitive_aliases.values()):
+          alias in _case_insensitive_aliases.values()):
         symbol = alias
     elif alias in _case_sensitive_aliases.keys():
         symbol = _case_sensitive_aliases[alias]
@@ -173,11 +173,9 @@ def _parse_and_check_atomic_input(argument: Union[str, int], mass_numb: int = No
         """
 
         if atomic_numb in _atomic_numbers_to_symbols.keys():
-            element = _atomic_numbers_to_symbols[atomic_numb]
-            return element
+            return _atomic_numbers_to_symbols[atomic_numb]
         else:
-            raise InvalidParticleError(
-                f"{atomic_numb} is not a valid atomic number.")
+            raise InvalidParticleError(f"{atomic_numb} is not a valid atomic number.")
 
     def _extract_charge(arg: str):
         """
@@ -189,8 +187,7 @@ def _parse_and_check_atomic_input(argument: Union[str, int], mass_numb: int = No
         is inputted incorrectly.
         """
 
-        invalid_charge_errmsg = (
-            f"Invalid charge information in the particle string '{arg}'.")
+        invalid_charge_errmsg = (f"Invalid charge information in the particle string '{arg}'.")
 
         if arg.count(' ') == 1:  # Cases like 'H 1-' and 'Fe-56 1+'
             isotope_info, charge_info = arg.split(' ')

@@ -53,7 +53,7 @@ def atomic_number(element: Particle) -> str:
         If the argument does not correspond to a valid particle.
 
     `TypeError`
-        If the argument is not a string.
+        If the argument is not a `str`.
 
     See Also
     --------
@@ -100,7 +100,7 @@ def mass_number(isotope: Particle) -> int:
         If the argument does not correspond to a valid isotope.
 
     `TypeError`
-        The argument is not a string.
+        The argument is not a `str`.
 
 
     See Also
@@ -150,7 +150,7 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
         If the argument does not correspond to a valid particle.
 
     `TypeError`
-        If the argument is not a string or integer.
+        If the argument is not a `str` or `int`.
 
     See Also
     --------
@@ -196,8 +196,7 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
 
 @particle_input(exclude='ion')
-def isotope_mass(isotope: Particle,
-                 mass_numb: int = None) -> u.Quantity:
+def isotope_mass(isotope: Particle, mass_numb: int = None) -> u.Quantity:
     """
     Return the mass of an isotope.
 
@@ -225,11 +224,12 @@ def isotope_mass(isotope: Particle,
         If the argument does not correspond to a valid particle.
 
     `~plasmapy.utils.AtomicError`
-        If the charge of the particle is given, in which case ion_mass
-        should be used instead.
+        If the charge of the particle is given, in which case
+        `~plasmapy.atomic.ion_mass` should be used instead.
 
     `TypeError`
-        If `isotope` is not a string, integer, or particle.
+        If `isotope` is not a `str`, `int`, or
+        `~plasmapy.atomic.Particle`.
 
     See Also
     --------
@@ -255,8 +255,7 @@ def isotope_mass(isotope: Particle,
 
 
 @particle_input
-def ion_mass(particle: Particle, *, Z: int = None,
-             mass_numb: int = None) -> u.Quantity:
+def ion_mass(particle: Particle, *, Z: int = None, mass_numb: int = None) -> u.Quantity:
     """
     Return the mass of an ion by finding the standard atomic
     weight of an element or the atomic mass of an isotope, and then
@@ -286,7 +285,8 @@ def ion_mass(particle: Particle, *, Z: int = None,
     Raises
     ------
     `TypeError`
-        The argument is not a string, integer, or Particle.
+        The argument is not a `str`, `int`, or
+        `plasmapy.utils.~Particle`.
 
     `~plasmapy.utils.InvalidParticleError`
         If the arguments do not correspond to a valid particle.
@@ -356,8 +356,7 @@ def ion_mass(particle: Particle, *, Z: int = None,
     elif particle.particle == 'n':
         raise InvalidIonError
     elif particle.isotope in ['H-1']:
-        warnings.warn("Use 'p+' instead of 'H-1' to refer to protons",
-                      DeprecationWarning)
+        warnings.warn("Use 'p+' instead of 'H-1' to refer to protons", DeprecationWarning)
         return const.m_p
     elif particle.element:
         warnings.warn("The assumption that particles are singly ionized in"
@@ -372,8 +371,7 @@ def ion_mass(particle: Particle, *, Z: int = None,
 
 
 @particle_input(exclude={'neutrino', 'antineutrino'})
-def particle_mass(particle: Particle, *, Z: int = None,
-                  mass_numb: int = None) -> u.Quantity:
+def particle_mass(particle: Particle, *, Z: int = None, mass_numb: int = None) -> u.Quantity:
     """
     Return the mass of a particle.
 
@@ -435,8 +433,7 @@ def particle_mass(particle: Particle, *, Z: int = None,
 
 
 @particle_input
-def isotopic_abundance(isotope: Particle,
-                       mass_numb: int = None) -> u.Quantity:
+def isotopic_abundance(isotope: Particle, mass_numb: int = None) -> u.Quantity:
     """
     Return the isotopic abundances if known, and otherwise zero.
 
@@ -465,7 +462,7 @@ def isotopic_abundance(isotope: Particle,
         or contradictory information is provided.
 
     `TypeError`
-        If the argument is not a string or integer.
+        If the argument is not a `str` or `int`.
 
     Notes
     -----
@@ -628,7 +625,7 @@ def is_stable(particle: Particle, mass_numb: int = None) -> bool:
         If the arguments do not correspond to a valid particle.
 
     `TypeError`
-        If the argument is not a string or integer.
+        If the argument is not a `str` or `int`.
 
     `~plasmapy.utils.MissingAtomicDataError`
         If stability information is not available.
@@ -647,8 +644,7 @@ def is_stable(particle: Particle, mass_numb: int = None) -> bool:
     """
     if particle.element and not particle.isotope:
         raise InvalidIsotopeError(
-            "The input to is_stable must be either an isotope or a "
-            "special particle."
+            "The input to is_stable must be either an isotope or a special particle."
         )
     return particle.is_category('stable')
 
@@ -684,8 +680,8 @@ def half_life(particle: Particle, mass_numb: int = None) -> u.Quantity:
         If no half-life data is available for the isotope.
 
     `TypeError`
-        The argument is not an integer or string or the mass number is
-        not an integer.
+        The argument is not an `int` or `str` or the mass number is
+        not an `int`.
 
     Notes
     -----
@@ -738,7 +734,7 @@ def known_isotopes(argument: Union[str, int] = None) -> List[str]:
         If the argument does not correspond to a valid particle.
 
     `TypeError`
-        If the argument is not a string or integer.
+        If the argument is not a `str` or `int`.
 
     Notes
     -----
@@ -798,8 +794,7 @@ def known_isotopes(argument: Union[str, int] = None) -> List[str]:
     return isotopes_list
 
 
-def common_isotopes(argument: Union[str, int] = None,
-                    most_common_only: bool = False) -> List[str]:
+def common_isotopes(argument: Union[str, int] = None, most_common_only: bool = False) -> List[str]:
     """
     Return a list of isotopes of an element with an isotopic abundances
     greater than zero, or if no input is provided, a list of all such
@@ -816,7 +811,7 @@ def common_isotopes(argument: Union[str, int] = None,
 
     Returns
     -------
-    isotopes_list: list of strings or empty list
+    isotopes_list: `list` of `str` or empty `list`
         List of all isotopes of an element with isotopic abundances
         greater than zero, sorted from most abundant to least
         abundant.  If no isotopes have isotopic abundances greater
@@ -877,12 +872,16 @@ def common_isotopes(argument: Union[str, int] = None,
             most_common_only: Optional[bool]) -> List[str]:
 
         isotopes = known_isotopes(argument)
-        CommonIsotopes = [isotope for isotope in isotopes if
-                          'abundance' in _Isotopes[isotope].keys()]
-        isotopic_abundances = [_Isotopes[isotope]['abundance']
-                               for isotope in CommonIsotopes]
-        sorted_isotopes = [iso_comp for (isotope, iso_comp) in
-                           sorted(zip(isotopic_abundances, CommonIsotopes))]
+
+        CommonIsotopes = [
+            isotope for isotope in isotopes if 'abundance' in _Isotopes[isotope].keys()
+        ]
+
+        isotopic_abundances = [_Isotopes[isotope]['abundance'] for isotope in CommonIsotopes]
+
+        sorted_isotopes = [
+            iso_comp for (isotope, iso_comp) in sorted(zip(isotopic_abundances, CommonIsotopes))
+        ]
 
         sorted_isotopes.reverse()
 
@@ -895,8 +894,7 @@ def common_isotopes(argument: Union[str, int] = None,
 
         try:
             element = atomic_symbol(argument)
-            isotopes_list = \
-                common_isotopes_for_element(element, most_common_only)
+            isotopes_list = common_isotopes_for_element(element, most_common_only)
         except InvalidParticleError:
             raise InvalidParticleError("Invalid particle")
         except InvalidElementError:
@@ -907,8 +905,7 @@ def common_isotopes(argument: Union[str, int] = None,
     elif argument is None:
         isotopes_list = []
         for atomic_numb in range(1, 119):
-            isotopes_list += \
-                common_isotopes_for_element(atomic_numb, most_common_only)
+            isotopes_list += common_isotopes_for_element(atomic_numb, most_common_only)
 
     return isotopes_list
 
@@ -996,8 +993,7 @@ def stable_isotopes(argument: Union[str, int] = None,
     if argument is not None:
         try:
             element = atomic_symbol(argument)
-            isotopes_list = \
-                stable_isotopes_for_element(element, not unstable)
+            isotopes_list = stable_isotopes_for_element(element, not unstable)
         except InvalidParticleError:
             raise InvalidParticleError("Invalid particle in stable_isotopes")
         except InvalidElementError:
@@ -1007,8 +1003,7 @@ def stable_isotopes(argument: Union[str, int] = None,
     elif argument is None:
         isotopes_list = []
         for atomic_numb in range(1, 119):
-            isotopes_list += \
-                stable_isotopes_for_element(atomic_numb, not unstable)
+            isotopes_list += stable_isotopes_for_element(atomic_numb, not unstable)
 
     return isotopes_list
 
@@ -1022,10 +1017,10 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
     test_particle, target_particle : `str`, `int`, `~plasmapy.atomic.Particle`,
     `~astropy.units.Quantity`, or `~astropy.constants.Constant`
 
-        The test particle as represented by a string, an integer representing
-        atomic number, a `~plasmapy.atomic.Particle` object, or a
-        `~astropy.units.Quantity` or `~astropy.constants.Constant` with
-        units of mass.
+        The test particle as represented by a string, an integer
+        representing atomic number, a `~plasmapy.atomic.Particle`
+        object, or a `~astropy.units.Quantity` or
+        `~astropy.constants.Constant` with units of mass.
 
     Return
     -------
@@ -1045,8 +1040,9 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
         If the mass of either particle is not known.
 
     `TypeError`
-        If either argument is not a `str`, `int`, `~plasmapy.atomic.Particle`,
-        `~astropy.units.Quantity`, or `~astropy.constants.Constant`.
+        If either argument is not a `str`, `int`,
+        `~plasmapy.atomic.Particle`, `~astropy.units.Quantity`, or
+        `~astropy.constants.Constant`.
 
     Example
     -------
@@ -1076,8 +1072,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
                 particle = Particle(particle)
             return particle.mass.to(u.kg)
         except u.UnitConversionError as exc1:
-            raise u.UnitConversionError(
-                f"Incorrect units in reduced_mass.") from exc1
+            raise u.UnitConversionError(f"Incorrect units in reduced_mass.") from exc1
         except MissingAtomicDataError:
             raise MissingAtomicDataError(
                 f"Unable to find the reduced mass because the mass of "
@@ -1107,7 +1102,7 @@ def periodic_table_period(argument: Union[str, int]) -> int:
     Raises
     ------
     `TypeError`
-        If the argument is not a string or integer.
+        If the argument is not a `str` or `int`.
 
     See Also
     --------
@@ -1131,10 +1126,10 @@ def periodic_table_period(argument: Union[str, int]) -> int:
     """
     # TODO: Implement @particle_input
     if not isinstance(argument, (str, int)):
-        raise TypeError("The argument to periodic_table_period must be " +
-                        "either a string representing the element or its " +
-                        "symbol, or an integer representing its atomic " +
-                        "number.")
+        raise TypeError(
+            "The argument to periodic_table_period must be either a "
+            "string representing the element or its symbol, or an "
+            "integer representing its atomic number.")
     symbol = atomic_symbol(argument)
     period = _Elements[symbol]["period"]
     return period
@@ -1158,7 +1153,7 @@ def periodic_table_group(argument: Union[str, int]) -> int:
     Raises
     ------
     `TypeError`
-        If the argument is not a string or integer.
+        If the argument is not a `str` or `int`.
 
     See Also
     --------
@@ -1187,10 +1182,10 @@ def periodic_table_group(argument: Union[str, int]) -> int:
     """
     # TODO: Implement @particle_input
     if not isinstance(argument, (str, int)):
-        raise TypeError("The argument to periodic_table_group must be " +
-                        "either a string representing the element or its " +
-                        "symbol, or an integer representing its atomic " +
-                        "number.")
+        raise TypeError(
+            "The argument to periodic_table_group must be "
+            "either a string representing the element or its "
+            "symbol, or an integer representing its atomic number.")
     symbol = atomic_symbol(argument)
     group = _Elements[symbol]["group"]
     return group
@@ -1214,7 +1209,7 @@ def periodic_table_block(argument: Union[str, int]) -> str:
     Raises
     ------
     `TypeError`
-        If the argument is not a string or integer.
+        If the argument is not a `str` or `int`.
 
     See Also
     --------
@@ -1243,10 +1238,10 @@ def periodic_table_block(argument: Union[str, int]) -> str:
     """
     # TODO: Implement @particle_input
     if not isinstance(argument, (str, int)):
-        raise TypeError("The argument to periodic_table_block must be " +
-                        "either a string representing the element or its " +
-                        "symbol, or an integer representing its atomic " +
-                        "number.")
+        raise TypeError(
+            "The argument to periodic_table_block must be "
+            "either a string representing the element or its "
+            "symbol, or an integer representing its atomic number.")
     symbol = atomic_symbol(argument)
     block = _Elements[symbol]["block"]
     return block
@@ -1270,7 +1265,7 @@ def periodic_table_category(argument: Union[str, int]) -> str:
     Raises
     ------
     `TypeError`
-        If the argument is not a string or integer.
+        If the argument is not a `str` or `int`.
 
     See Also
     --------
@@ -1297,10 +1292,10 @@ def periodic_table_category(argument: Union[str, int]) -> str:
     """
     # TODO: Implement @particle_input
     if not isinstance(argument, (str, int)):
-        raise TypeError("The argument to periodic_table_category must be " +
-                        "either a string representing the element or its " +
-                        "symbol, or an integer representing its atomic " +
-                        "number.")
+        raise TypeError(
+            "The argument to periodic_table_category must be "
+            "either a string representing the element or its "
+            "symbol, or an integer representing its atomic number.")
     symbol = atomic_symbol(argument)
     category = _Elements[symbol]["category"]
     return category
