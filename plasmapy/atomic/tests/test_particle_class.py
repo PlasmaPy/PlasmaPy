@@ -367,8 +367,7 @@ def test_Particle_equivalent_cases(equivalent_particles):
         equivalent_Particle_classes.append(Particle(particle))
 
     for Q in equivalent_Particle_classes[1:]:
-        assert Q == equivalent_Particle_classes[0], \
-            f"{equivalent_particles}"
+        assert Q == equivalent_Particle_classes[0], f"{equivalent_particles}"
 
 
 # arg, kwargs, attribute, exception
@@ -405,7 +404,6 @@ def test_Particle_errors(arg, kwargs, attribute, exception):
     """Test that the appropriate exceptions are raised during the creation
     and use of a `~plasmapy.atomic.Particle` object.
     """
-    call = _call_string(arg, kwargs)
     with pytest.raises(exception, message=(
             f"The following command: "
             f"\n\n >>> {_call_string(arg, kwargs)}{attribute}\n\n"

@@ -877,7 +877,9 @@ def common_isotopes(argument: Union[str, int] = None, most_common_only: bool = F
             isotope for isotope in isotopes if 'abundance' in _Isotopes[isotope].keys()
         ]
 
-        isotopic_abundances = [_Isotopes[isotope]['abundance'] for isotope in CommonIsotopes]
+        isotopic_abundances = [
+            _Isotopes[isotope]['abundance'] for isotope in CommonIsotopes
+        ]
 
         sorted_isotopes = [
             iso_comp for (isotope, iso_comp) in sorted(zip(isotopic_abundances, CommonIsotopes))
