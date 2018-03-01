@@ -597,10 +597,20 @@ class Particle:
         Return the isotopic abundance of an isotope if available,
         or raise a `~plasmapy.utils.MissingAtomicDataError`.
         """
+        from .atomic import common_isotopes
+
         if not self.isotope:
             raise InvalidIsotopeError(_category_errmsg(self.particle, 'isotope'))
-        # TODO: Issue warning when element doesn't occur naturally
-        return self._attributes.get('isotopic abundance', 0.0)
+
+        abundance = self._attributes.get('isotopic abundance', 0.0)
+
+        if not common_isotopes(self.element):
+            warnings.warn(
+                f'No isotopes of {self.element} have an isotopic abundance. '
+                f'The isotopic abundance of {self.isotope} is being returned as 0.0',
+                AtomicWarning)
+
+        return abundance
 
     @property
     def baryon_number(self) -> int:

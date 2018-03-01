@@ -900,7 +900,9 @@ def test_isotopic_abundance():
     assert np.isclose(isotopic_abundance('D'), 0.000115)
     assert isotopic_abundance('Be-8') == 0.0, 'Be-8'
     assert isotopic_abundance('Li-8') == 0.0, 'Li-8'
-    assert isotopic_abundance('Og', 294) == 0.0
+
+    with pytest.warns(AtomicWarning):
+        assert isotopic_abundance('Og', 294) == 0.0
 
     with pytest.raises(InvalidIsotopeError, message="No exception raised for "
                                                     "neutrons"):
