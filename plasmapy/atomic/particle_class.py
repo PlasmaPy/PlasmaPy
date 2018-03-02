@@ -389,12 +389,29 @@ class Particle:
                 f"The equality of a Particle object with a {type(other)} is undefined.")
 
         same_particle = self.particle == other.particle
+
+        # The following two loops are a hack to enable comparisons
+        # between defaultdicts.  By accessing all of the defined keys in
+        # each of the defaultdicts, this makes sure that
+        # self._attributes and other._attributes have the same keys.
+
+        # TODO: create function in utils to account for equality between
+        # defaultdicts, and implement it here
+
+        for attribute in self._attributes.keys():
+            other._attributes[attribute]
+
+        for attribute in other._attributes.keys():
+            self._attributes[attribute]
+
         same_attributes = self._attributes == other._attributes
 
         if same_particle and not same_attributes:  # coveralls: ignore
             raise AtomicError(
                 f"{self} and {other} should be the same Particle, but "
-                f"have differing attributes.")
+                f"have differing attributes.\n\n"
+                f"The attributes of {self} are:\n\n{self._attributes}\n\n"
+                f"The attributes of {other} are:\n\n{other._attributes}\n")
 
         return same_particle
 
