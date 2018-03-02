@@ -439,7 +439,12 @@ def test_Particle_cmp():
 
     assert proton1 == proton2, "Particle('p+') == Particle('proton') is False."
     assert proton1 != electron, "Particle('p+') == Particle('e-') is True."
-    assert not proton1 == 1, "Particle('p+') == 1 is True."
+
+    with pytest.raises(TypeError):
+        electron == 1
+
+    with pytest.raises(AtomicError):
+        electron == 'dfasdf'
 
 
 nuclide_mass_and_mass_equiv_table = [
