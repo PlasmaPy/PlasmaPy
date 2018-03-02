@@ -82,7 +82,7 @@ _valid_categories = (
 )
 
 
-def _category_errmsg(particle: str, category: str) -> str:
+def _category_errmsg(particle, category: str) -> str:
     """
     Return an error message when an attribute raises an
     `~plasmapy.utils.InvalidElementError`,
@@ -91,7 +91,7 @@ def _category_errmsg(particle: str, category: str) -> str:
     """
     article = 'an' if category[0] in 'aeiouAEIOU' else 'a'
     errmsg = (
-        f"The particle '{particle}' is not {article} {category}, "
+        f"The particle {particle} is not {article} {category}, "
         f"so this attribute is not available.")
     return errmsg
 
@@ -360,23 +360,68 @@ class Particle:
 
     def __eq__(self, other) -> bool:
         """
-        Return `True` when comparing two `~plasmapy.atomic.Particle`
-        objects that correspond to the same particle, and `False` when
-        the two objects differ.
-        """
+        Test whether or not two objects correspond to the same particle.
 
-        try:
-            return self.particle == other.particle
-        except Exception:  # coveralls: ignore
-            return False
+        This method will return `True` if `other` is an identical
+        `~plasmapy.atomic.Particle` instance or a `str` representing the
+        same particle, and return `False` if `other` is a different
+        `~plasmapy.atomic.Particle` or a `str` representing a different
+        particle.
+
+        If `other` is not a `str` or `~plasmapy.atomic.Particle`
+        instance, then this method will raise a `TypeError`.  If
+        `other.particle` equals `self.particle` but the attributes
+        differ, then this method will raise a
+        `~plasmapy.utils.AtomicError`.
+
+        """
+        if isinstance(other, str):
+            try:
+                other_particle = Particle(other)
+                return self.particle == other_particle.particle
+            except InvalidParticleError as exc:
+                raise InvalidParticleError(
+                    f"{other} is not a particle and cannot be "
+                    f"compared to {self}.")
+
+        if not isinstance(other, self.__class__):
+            raise TypeError(
+                f"The equality of a Particle object with a {type(other)} is undefined.")
+
+        same_particle = self.particle == other.particle
+        same_attributes = self._attributes == other._attributes
+
+        if same_particle and not same_attributes:  # coveralls: ignore
+            raise AtomicError(
+                f"{self} and {other} should be the same Particle, but "
+                f"have differing attributes.")
+
+        return same_particle
 
     def __ne__(self, other) -> bool:
         """
-        Return `True` when the two objects differ, and `False` when
-        comparing two `~plasmapy.atomic.Particle` objects that
-        correspond to the same particle.
+        Test whether or not two objects are different particles.
+
+        This method will return `False` if `other` is an identical
+        `~plasmapy.atomic.Particle` instance or a `str` representing the
+        same particle, and return `True` if `other` is a different
+        `~plasmapy.atomic.Particle` or a `str` representing a different
+        particle.
+
+        If `other` is not a `str` or `~plasmapy.atomic.Particle`
+        instance, then this method will raise a `TypeError`.  If
+        `other.particle` equals `self.particle` but the attributes
+        differ, then this method will raise a
+        `~plasmapy.utils.AtomicError`.
+
         """
         return not self.__eq__(other)
+
+    def __bool__(self):
+        """
+        Raise an `~plasmapy.utils.AtomicError.`
+        """
+        raise AtomicError("The truthiness of a Particle object is not defined.")
 
     @property
     def particle(self) -> str:
@@ -415,7 +460,7 @@ class Particle:
         the particle does not correspond to an element.
         """
         if not self.element:
-            raise InvalidElementError(_category_errmsg(self.particle, 'element'))
+            raise InvalidElementError(_category_errmsg(self, 'element'))
         return self._attributes['element name']
 
     @property
@@ -426,7 +471,7 @@ class Particle:
         specified.
         """
         if self._attributes['integer charge'] is None:
-            raise ChargeError(f"The charge of particle {self.particle} has not been specified.")
+            raise ChargeError(f"The charge of particle {self} has not been specified.")
         return self._attributes['integer charge']
 
     @property
@@ -437,7 +482,7 @@ class Particle:
         if the charge has not been specified.
         """
         if self._attributes['charge'] is None:
-            raise ChargeError(f"The charge of particle {self.particle} has not been specified.")
+            raise ChargeError(f"The charge of particle {self} has not been specified.")
         if self._attributes['integer charge'] == 1:
             return const.e.si
 
@@ -453,10 +498,10 @@ class Particle:
         if the particle is not an element.
         """
         if self.isotope or self.ion or not self.element:
-            raise InvalidElementError(_category_errmsg(self.particle, 'element'))
+            raise InvalidElementError(_category_errmsg(self, 'element'))
         if self._attributes['standard atomic weight'] is None:
             raise MissingAtomicDataError(
-                f"The standard atomic weight of {self.element} is unavailable.")
+                f"The standard atomic weight of {self} is unavailable.")
         return self._attributes['standard atomic weight']
 
     @property
@@ -479,7 +524,7 @@ class Particle:
             return _special_ion_masses['T 1+']
 
         if not self.isotope:
-            raise InvalidIsotopeError(_category_errmsg(self.particle, 'isotope'))
+            raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
 
         base_mass = self._attributes['isotope mass']
 
@@ -538,7 +583,7 @@ class Particle:
             if mass is not None:
                 return mass
 
-        raise MissingAtomicDataError(f"The mass of {self.particle} is not available.")
+        raise MissingAtomicDataError(f"The mass of {self} is not available.")
 
     @property
     def atomic_number(self) -> int:
@@ -548,7 +593,7 @@ class Particle:
         if the particle does not correspond to an element.
         """
         if not self.element:
-            raise InvalidElementError(_category_errmsg(self.particle, 'element'))
+            raise InvalidElementError(_category_errmsg(self, 'element'))
         return self._attributes['atomic number']
 
     @property
@@ -559,7 +604,7 @@ class Particle:
         the particle does not correspond to an isotope.
         """
         if not self.isotope:
-            raise InvalidIsotopeError(_category_errmsg(self.particle, 'isotope'))
+            raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
         return self._attributes['mass number']
 
     @property
@@ -575,7 +620,7 @@ class Particle:
         elif self.isotope:
             return self.mass_number - self.atomic_number
         else:
-            raise InvalidIsotopeError(_category_errmsg(self.particle, 'isotope'))
+            raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
 
     @property
     def electron_number(self) -> int:
@@ -589,7 +634,7 @@ class Particle:
         elif self.ion:
             return self.atomic_number - self.integer_charge
         else:
-            raise InvalidIonError(_category_errmsg(self.particle, 'ion'))
+            raise InvalidIonError(_category_errmsg(self, 'ion'))
 
     @property
     def isotopic_abundance(self) -> u.Quantity:
