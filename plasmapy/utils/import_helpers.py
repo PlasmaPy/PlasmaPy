@@ -1,12 +1,16 @@
 import importlib
 import warnings
 import distutils.version as dv
+from .exceptions import PlasmaPyWarning
 
 
 def check_versions(minimum_versions):
-    """Raises an ImportError if a dependent package is not installed
-    and at the required version number, or provides a warning if the
-    version of the dependent package cannot be found."""
+    """
+    Raise an `ImportError` if a dependent package is not installed and
+    at the required version number, or issue a
+    `~plasmapy.utils.PlasmaPyWarning` if the version of the dependent
+    package cannot be found.
+    """
 
     for module_name in minimum_versions.keys():
         minimum_version = dv.LooseVersion(minimum_versions[module_name])
@@ -15,13 +19,14 @@ def check_versions(minimum_versions):
             module = importlib.import_module(module_name)
             module_version = dv.LooseVersion(module.__version__)
         except ImportError:
-            raise ImportError(f"Unable to import {module_name} while "
-                              "importing PlasmaPy.") from None
+            raise ImportError(
+                f"Unable to import {module_name} while importing PlasmaPy.") from None
         except AttributeError:  # coveralls: ignore
-            warnings.warn(f"{module_name} version {minimum_version.vstring} "
-                          "is required for PlasmaPy.  However, the version of "
-                          f"{module_name} could not be determined to check if "
-                          "this requirement is met.")
+            warnings.warn(
+                f"{module_name} version {minimum_version.vstring} "
+                "is required for PlasmaPy.  However, the version of "
+                f"{module_name} could not be determined to check if "
+                "this requirement is met.", PlasmaPyWarning)
         else:
             if minimum_version > module_version:
                 raise ImportError(

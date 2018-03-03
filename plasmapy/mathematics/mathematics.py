@@ -6,6 +6,8 @@ from astropy import units as u
 from mpmath import polylog
 from scipy.special import wofz as Faddeeva_function
 
+# TODO: Add type hint annotations to this module.
+
 
 def plasma_dispersion_func(zeta):
     r"""
@@ -13,24 +15,27 @@ def plasma_dispersion_func(zeta):
 
     Parameters
     ----------
-    zeta : complex, int, float, ndarray, or Quantity
+    zeta : complex, int, float, ~numpy.ndarray, or ~astropy.units.Quantity
         Argument of plasma dispersion function.
 
     Returns
     -------
-    Z : complex, float, or ndarray
+    Z : complex, float, or ~numpy.ndarray
         Value of plasma dispersion function.
 
     Raises
     ------
     TypeError
-        If the argument is invalid.
-    UnitsError
-        If the argument is a Quantity but is not dimensionless
-    ValueError
-        If the argument is not entirely finite
+        If the argument is of an invalid type.
 
-    See also
+    ~astropy.units.UnitsError
+        If the argument is a `~astropy.units.Quantity` but is not
+        dimensionless.
+
+    ValueError
+        If the argument is not entirely finite.
+
+    See Also
     --------
     plasma_dispersion_func_deriv
 
@@ -88,28 +93,32 @@ def plasma_dispersion_func(zeta):
 
 
 def plasma_dispersion_func_deriv(zeta):
-    r"""Calculate the derivative of the plasma dispersion function
+    r"""
+    Calculate the derivative of the plasma dispersion function.
 
     Parameters
     ----------
-    zeta : complex, int, float, ndarray, or Quantity
+    zeta : complex, int, float, ~numpy.ndarray, or ~astropy.units.Quantity
         Argument of plasma dispersion function.
 
     Returns
     -------
-    Zprime : complex, int, float, or ndarray
+    Zprime : complex, int, float, or ~numpy.ndarray
         First derivative of plasma dispersion function.
 
     Raises
     ------
     TypeError
         If the argument is invalid.
-    UnitsError
-        If the argument is a Quantity but is not dimensionless
-    ValueError
-        If the argument is not entirely finite
 
-    See also
+    ~astropy.units.UnitsError
+        If the argument is a `~astropy.units.Quantity` but is not
+        dimensionless.
+
+    ValueError
+        If the argument is not entirely finite.
+
+    See Also
     --------
     plasma_dispersion_func
 
@@ -157,29 +166,33 @@ def plasma_dispersion_func_deriv(zeta):
 
 
 def Fermi_integral(x, j):
-    r"""Calculate the complete Fermi-Dirac integral.
+    r"""
+    Calculate the complete Fermi-Dirac integral.
 
     Parameters
     ----------
-    x : Quantity
+    x : ~astropy.units.Quantity
         Argument of the Fermi-Dirac integral function.
 
-    j : Quantity
+    j : ~astropy.units.Quantity
         Order/index of the Fermi-Dirac integral function.
 
     Returns
     -------
-    integral : Quantity, complex
+    integral : ~astropy.units.Quantity, complex
         Complete Fermi-Dirac integral for given argument and order.
 
     Raises
     ------
     TypeError
         If the argument is invalid.
-    UnitsError
-        If the argument is a Quantity but is not dimensionless
+
+    ~astropy.units.UnitsError
+        If the argument is a `~astropy.units.Quantity` but is not
+        dimensionless.
+
     ValueError
-        If the argument is not entirely finite
+        If the argument is not entirely finite.
 
     See also
     --------

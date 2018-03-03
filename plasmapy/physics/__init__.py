@@ -1,6 +1,3 @@
-# 'physics' is a tentative name for this subpackage.  Another
-# possibility is 'plasma'.  The organization is to be decided by v0.1.
-
 from .parameters import (Alfven_speed,
                          ion_sound_speed,
                          thermal_speed,
