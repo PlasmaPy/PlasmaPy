@@ -600,7 +600,7 @@ class Particle:
         """
         if self.isotope or self.ion or not self.element:
             raise InvalidElementError(_category_errmsg(self, 'element'))
-        if self._attributes['standard atomic weight'] is None:
+        if self._attributes['standard atomic weight'] is None:  # coveralls: ignore
             raise MissingAtomicDataError(
                 f"The standard atomic weight of {self} is unavailable.")
         return self._attributes['standard atomic weight'].to(u.kg)
@@ -638,7 +638,7 @@ class Particle:
 
         base_mass = self._attributes['isotope mass']
 
-        if base_mass is None:
+        if base_mass is None:  # coveralls: ignore
             raise MissingAtomicDataError(f"The mass of a {self.isotope} nuclide is not available.")
 
         _nuclide_mass = self._attributes['isotope mass'] - self.atomic_number * const.m_e
@@ -771,13 +771,15 @@ class Particle:
         >>> alpha = Particle('He-4++')
         >>> alpha.neutron_number
         2
+        >>> Particle('n').neutron_number
+        1
 
         """
         if self.particle == 'n':
             return 1
         elif self.isotope:
             return self.mass_number - self.atomic_number
-        else:
+        else:  # coveralls: ignore
             raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
 
     @property
@@ -803,10 +805,8 @@ class Particle:
             return 1
         elif self.ion:
             return self.atomic_number - self.integer_charge
-        elif self.element:
+        else:  # coveralls: ignore
             raise InvalidIonError(_category_errmsg(self, 'ion'))
-        else:
-            return 0
 
     @property
     def isotopic_abundance(self) -> u.Quantity:
@@ -827,7 +827,7 @@ class Particle:
         """
         from .atomic import common_isotopes
 
-        if not self.isotope or self.ion:
+        if not self.isotope or self.ion:  # coveralls: ignore
             raise InvalidIsotopeError(_category_errmsg(self.particle, 'isotope'))
 
         abundance = self._attributes.get('isotopic abundance', 0.0)
@@ -1003,7 +1003,7 @@ class Particle:
         """
         if self.element:
             return self._attributes['periodic table']
-        else:
+        else:  # coveralls: ignore
             raise InvalidElementError(_category_errmsg(self.particle, 'element'))
 
     @property
