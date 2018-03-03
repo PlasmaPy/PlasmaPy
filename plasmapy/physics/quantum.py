@@ -50,6 +50,8 @@ def deBroglie_wavelength(V, particle):
     ~plasmapy.utils.RelativityError
         If the magnitude of `V` is faster than the speed of light.
 
+    Warns
+    -----
     UserWarning
         If `V` is not a `~astropy.units.Quantity`, then a `UserWarning`
         will be raised and units of meters per second will be assumed.
@@ -146,6 +148,8 @@ def thermal_deBroglie_wavelength(T_e):
     ValueError
         If argument contains invalid values.
 
+    Warns
+    -----
     UserWarning
         If units are not provided and SI units are assumed.
 
@@ -197,6 +201,8 @@ def Fermi_energy(n_e):
     ValueError
         If argument contains invalid values.
 
+    Warns
+    -----
     UserWarning
         If units are not provided and SI units are assumed.
 
@@ -256,6 +262,8 @@ def Thomas_Fermi_length(n_e):
     ValueError
         If argument contains invalid values.
 
+    Warns
+    -----
     UserWarning
         If units are not provided and SI units are assumed.
 
@@ -311,26 +319,28 @@ def Wigner_Seitz_radius(n: u.m**-3):
     Parameters
     ----------
     n: ~astropy.units.Quantity
-        Particle number density
+        Particle number density.
 
     Returns
     -------
     radius: ~astropy.units.Quantity
-        The Wigner-Seitz radius in meters
+        The Wigner-Seitz radius in meters.
 
     Raises
     ------
     TypeError
-        If argument is not a ~astropy.units.Quantity
+        If argument is not a ~astropy.units.Quantity.
 
     ~astropy.units.UnitConversionError
-        If argument is in incorrect units
+        If argument is in incorrect units.
 
     ValueError
-        If argument contains invalid values
+        If argument contains invalid values.
 
+    Warns
+    -----
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -363,10 +373,10 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     Parameters
     ----------
     n_e: ~astropy.units.Quantity
-        Electron number density
+        Electron number density.
 
     T : ~astropy.units.Quantity
-        The temperature,
+        The temperature.
 
 
     Returns
@@ -386,6 +396,8 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     ValueError
         If argument contains invalid values.
 
+    Warns
+    -----
     UserWarning
         If units are not provided and SI units are assumed.
 
@@ -414,7 +426,8 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
 
     Warning: at present this function is limited to relatively small
     arguments due to limitations in the `~mpmath` package's implementation
-    of polylog, which PlasmaPy uses in calculating the Fermi integral.
+    of `~mpmath.polylog`, which PlasmaPy uses in calculating the Fermi
+    integral.
 
     References
     ----------
@@ -476,23 +489,27 @@ def chemical_potential_interp(n_e, T):
     Raises
     ------
     TypeError
-        If argument is not a Quantity
+        If argument is not a ~astropy.units.Quantity.
 
     ~astropy.units.UnitConversionError
-        If argument is in incorrect units
+        If argument is in incorrect units.
 
     ValueError
-        If argument contains invalid values
+        If argument contains invalid values.
 
+    Warnings
+    --------
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
     The ideal chemical potential is given by [1]_:
 
     .. math::
-        \frac{\mu}{k_B T_e} = - \frac{3}{2} \ln \Theta + \ln \frac{4}{3 \sqrt{\pi}} + \frac{A \Theta^{-b - 1} + B \Theta^{-(b + 1) / 2}}{1 + A \Theta^{-b}}
+        \frac{\mu}{k_B T_e} = - \frac{3}{2} \ln \Theta + \ln
+        \frac{4}{3 \sqrt{\pi}} +
+        \frac{A \Theta^{-b - 1} + B \Theta^{-(b + 1) / 2}}{1 + A \Theta^{-b}}
 
     where
 
@@ -502,7 +519,6 @@ def chemical_potential_interp(n_e, T):
     is the degeneracy parameter, comparing the thermal energy to the Fermi
     energy, and the coefficients for the fitting formula
     are A=0.25945, B=0.0072, b=0.858.
-
 
     References
     ----------
