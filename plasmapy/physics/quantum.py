@@ -378,7 +378,6 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     T : ~astropy.units.Quantity
         The temperature.
 
-
     Returns
     -------
     beta_mu: ~astropy.units.Quantity

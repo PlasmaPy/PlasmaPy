@@ -9,7 +9,8 @@ mu0 = np.pi * 4.0e-7 * (u.newton / (u.amp**2))
 
 
 class Plasma():
-    """Core class for describing and calculating plasma parameters.
+    """
+    Core class for describing and calculating plasma parameters.
 
     Attributes
     ----------
@@ -49,6 +50,7 @@ class Plasma():
     domain_z : `astropy.units.Quantity`
         1D array of z-coordinates for the plasma domain. Must have
         units convertable to length.
+
     """
     @u.quantity_input(domain_x=u.m, domain_y=u.m, domain_z=u.m)
     def __init__(self, domain_x, domain_y, domain_z):
