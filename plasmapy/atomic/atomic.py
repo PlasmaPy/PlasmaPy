@@ -178,18 +178,12 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
     Examples
     --------
-    >>> from astropy import units as u
     >>> standard_atomic_weight("H")
-    <Quantity 1.008 u>
-    >>> # the following result accounts for small amount of deuterium
-    >>> standard_atomic_weight("H").to(u.kg)
     <Quantity 1.67382335e-27 kg>
     >>> isotope_mass("H-1")
-    <Quantity 1.00782503 u>
-    >>> standard_atomic_weight(82)
-    <Quantity 207.2 u>
+    <Quantity 1.67353281e-27 kg>
     >>> standard_atomic_weight("lead")
-    <Quantity 207.2 u>
+    <Quantity 3.44063689e-25 kg>
 
     """
     return element.standard_atomic_weight
@@ -198,7 +192,7 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 @particle_input(exclude='ion')
 def isotope_mass(isotope: Particle, mass_numb: int = None) -> u.Quantity:
     """
-    Return the mass of an isotope.
+    Return the mass of an isotope in kg.
 
     Parameters
     ----------
@@ -246,9 +240,9 @@ def isotope_mass(isotope: Particle, mass_numb: int = None) -> u.Quantity:
     Examples
     --------
     >>> isotope_mass("H-1")
-    <Quantity 1.00782503 u>
+    <Quantity 1.67353281e-27 kg>
     >>> isotope_mass("He", mass_numb=4)
-    <Quantity 4.00260325 u>
+    <Quantity 6.64647897e-27 kg>
 
     """
     return isotope.mass
@@ -328,8 +322,6 @@ def ion_mass(particle: Particle, *, Z: int = None, mass_numb: int = None) -> u.Q
 
     Examples
     --------
-    >>> print(ion_mass('p').si.value)
-    1.672621898e-27
     >>> ion_mass('H+')  # assumes terrestrial abundance of D
     <Quantity 1.67291241e-27 kg>
     >>> ion_mass('H+') == ion_mass('p')
@@ -344,8 +336,6 @@ def ion_mass(particle: Particle, *, Z: int = None, mass_numb: int = None) -> u.Q
     <Quantity 9.28812345e-26 kg>
     >>> ion_mass('Fe-56 1+')
     <Quantity 9.28812345e-26 kg>
-    >>> ion_mass('e+')
-    <<class 'astropy.constants.codata2014.CODATA2014'> name='Electron mass' value=9.10938356e-31 uncertainty=1.1e-38 unit='kg' reference='CODATA 2014'>
 
     """
 
@@ -479,8 +469,6 @@ def isotopic_abundance(isotope: Particle, mass_numb: int = None) -> u.Quantity:
     0.524
     >>> isotopic_abundance('hydrogen', 1)
     0.999885
-    >>> isotopic_abundance(118, 294)  # Og-294
-    0.0
 
     """
     return isotope.isotopic_abundance

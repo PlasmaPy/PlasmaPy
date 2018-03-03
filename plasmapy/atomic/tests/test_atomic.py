@@ -399,14 +399,14 @@ def test_element_name_error(argument, expected_error):
 def test_standard_atomic_weight_value_between():
     """Test that `standard_atomic_weight` returns approximately the
     correct value for phosphorus."""
-    assert 30.973 < standard_atomic_weight('P').value < 30.974, \
+    assert 30.973 < standard_atomic_weight('P').to(u.u).value < 30.974, \
         "Incorrect standard atomic weight for phosphorus."
 
 
 def test_standard_atomic_weight_unit():
     """Test that `standard_atomic_weight` returns a
     `~astropy.units.Quantity` with the expected units."""
-    assert standard_atomic_weight('Au').unit == u.u, \
+    assert standard_atomic_weight('Au').unit == u.kg, \
         "Incorrect units from standard_atomic_weight for gold."
 
 
@@ -421,7 +421,7 @@ standard_atomic_weight_table = [
 def test_standard_atomic_weight(argument, expected):
     """Test that `standard_atomic_weight` returns the expected values
     for hydrogen."""
-    assert standard_atomic_weight(argument).value == expected, \
+    assert (standard_atomic_weight(argument).to(u.u)).value == expected, \
         f"Incorrect standard_atomic_weight for {repr(argument)}."
 
 
@@ -455,14 +455,14 @@ def test_standard_atomic_weight_error(argument, expected_error):
 
 def test_isotope_mass_berkelium_249():
     """Test that `isotope_mass` returns the correct value for Bk-249."""
-    assert np.isclose(isotope_mass('berkelium-249').value, 249.0749877), \
+    assert np.isclose(isotope_mass('berkelium-249').to(u.u).value, 249.0749877), \
         "Incorrect isotope mass for berkelium."
 
 
 def test_isotope_mass_si_30_units():
     """Test that `isotope_mass` returns a `~astropy.units.Quantity` with
     the correct unit for Si-30."""
-    assert isotope_mass('Si-30').unit == u.u, \
+    assert isotope_mass('Si-30').unit == u.kg, \
         "Incorrect unit for isotope mass for Si-30."
 
 
@@ -902,7 +902,7 @@ def test_isotopic_abundance():
     assert isotopic_abundance('Li-8') == 0.0, 'Li-8'
 
     with pytest.warns(AtomicWarning):
-        assert isotopic_abundance('Og', 294) == 0.0
+        isotopic_abundance('Og', 294)
 
     with pytest.raises(InvalidIsotopeError, message="No exception raised for "
                                                     "neutrons"):
