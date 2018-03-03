@@ -133,9 +133,13 @@ class Particle:
         an isotope (or an ion of an isotope).
 
     `~plasmapy.utils.ChargeError`
-        For when either the charge or integer_charge attributes is being
-        accessed but the charge information for the particle is not
-        available.
+        For when either the `~plasmapy.atomic.Particle.charge` or
+        `~plasmapy.atomic.Particle.integer_charge` attributes is
+        being accessed but the charge information for the particle is
+        not available.
+
+    `~plasmapy.utils.AtomicError`
+        Raised for attempts at converting a Particle object to a `bool`.
 
     Examples
     --------
