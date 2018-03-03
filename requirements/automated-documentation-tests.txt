@@ -1,0 +1,13 @@
+astropy
+coveralls
+mpmath
+lmfit
+matplotlib
+numpy
+cython
+numpydoc
+pillow
+scipy
+sphinx
+sphinx-automodapi
+sphinx-gallery

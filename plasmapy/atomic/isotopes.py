@@ -1,3732 +1,26770 @@
-"""Sets up a dictionary containing basic data about isotopes."""
+"""
+Create a dictionary containing basic information for isotopes and
+neutrons.
+"""
 
-from numpy import inf, nan
-from astropy.units import u, s
+import astropy.units as u
 
+_Isotopes = {
+    'n': {
+        'name': 'neutron',
+        'atomic number': 0,
+        'mass number': 1,
+        'mass': 1.00866491588 * u.u,
+        'stable': False,
+        'half-life': 881.5 * u.s,
+    },
 
-def Iso(symbol, name, atomic_number, mass_number, relative_atomic_mass,
-        is_stable, isotopic_abundance=None, half_life=None):
-    """Create a dictionary containing isotope information."""
-    Isotope = {'name': name,
-               'atomic_number': atomic_number,
-               'mass_number': mass_number,
-               'atomic_mass': relative_atomic_mass*u,
-               'is_stable': is_stable}
+    'H-1': {
+        'name': 'protium',
+        'atomic number': 1,
+        'mass number': 1,
+        'mass': 1.00782503223 * u.u,
+        'stable': True,
+        'abundance': 0.999885,
+    },
 
-    if isotopic_abundance is not None:
-        assert isotopic_abundance <= 1
-        Isotope['isotopic_abundance'] = isotopic_abundance
-    if half_life is not None:
-        Isotope['half_life'] = half_life*s
+    'D': {
+        'name': 'deuterium',
+        'atomic number': 1,
+        'mass number': 2,
+        'mass': 2.01410177812 * u.u,
+        'stable': True,
+        'abundance': 0.000115,
+    },
 
-    return Isotope
+    'T': {
+        'name': 'tritium',
+        'atomic number': 1,
+        'mass number': 3,
+        'mass': 3.0160492779 * u.u,
+        'stable': False,
+        'half-life': 388800000.0 * u.s,
+    },
 
+    'H-4': {
+        'atomic number': 1,
+        'mass number': 4,
+        'mass': 4.02643 * u.u,
+        'stable': False,
+        'half-life': 1.39e-22 * u.s,
+    },
 
-# Most of the following data is from NIST retrieved in early 2017.
-# The atomic mass is given in units of u, and half-lives are in seconds.
-# The half-life data is presently incomplete.
+    'H-5': {
+        'atomic number': 1,
+        'mass number': 5,
+        'mass': 5.035311 * u.u,
+        'stable': False,
+        'half-life': '>910 ys',
+    },
 
-Isotopes = {
-    'n': Iso('n', 'neutron', 0, 1, 1.00866491588, False, half_life=881.5),
-    'H-1': Iso('H-1', 'hydrogen-1', 1, 1, 1.00782503223, True,
-               isotopic_abundance=0.999885),
-    'D': Iso('D', 'deuterium', 1, 2, 2.01410177812, True,
-             isotopic_abundance=0.000115),
-    'T': Iso('T', 'tritium', 1, 3, 3.0160492779, False,
-             half_life=388800000.0),
-    'H-4': Iso('H-4', 'hydrogen-4', 1, 4, 4.02643, False),
-    'H-5': Iso('H-5', 'hydrogen-5', 1, 5, 5.035311, False),
-    'H-6': Iso('H-6', 'hydrogen-6', 1, 6, 6.04496, False),
-    'H-7': Iso('H-7', 'hydrogen-7', 1, 7, 7.0527, False),
-    'He-3': Iso('He-3', 'helium-3', 2, 3, 3.0160293201, True,
-                isotopic_abundance=0.00000134),
-    'He-4': Iso('He-4', 'helium-4', 2, 4, 4.00260325413, True,
-                isotopic_abundance=0.99999866),
-    'He-5': Iso('He-5', 'helium-5', 2, 5, 5.012057, False),
-    'He-6': Iso('He-6', 'helium-6', 2, 6, 6.018885891, False),
-    'He-7': Iso('He-7', 'helium-7', 2, 7, 7.0279907, False),
-    'He-8': Iso('He-8', 'helium-8', 2, 8, 8.033934390, False),
-    'He-9': Iso('He-9', 'helium-9', 2, 9, 9.043946, False),
-    'He-10': Iso('He-10', 'helium-10', 2, 10, 10.05279, False),
-    'Li-3': Iso('Li-3', 'lithium-3', 3, 3, 3.0308, False),
-    'Li-4': Iso('Li-4', 'lithium-4', 3, 4, 4.02719, False),
-    'Li-5': Iso('Li-5', 'lithium-5', 3, 5, 5.012538, False),
-    'Li-6': Iso('Li-6', 'lithium-6', 3, 6, 6.0151228874, True,
-                isotopic_abundance=0.0759),
-    'Li-7': Iso('Li-7', 'lithium-7', 3, 7, 7.0160034366, True,
-                isotopic_abundance=0.9241),
-    'Li-8': Iso('Li-8', 'lithium-8', 3, 8, 8.022486246, False),
-    'Li-9': Iso('Li-9', 'lithium-9', 3, 9, 9.02679019, False),
-    'Li-10': Iso('Li-10', 'lithium-10', 3, 10, 10.035483, False),
-    'Li-11': Iso('Li-11', 'lithium-11', 3, 11, 11.04372358, False),
-    'Li-12': Iso('Li-12', 'lithium-12', 3, 12, 12.052517, False),
-    'Li-13': Iso('Li-13', 'lithium-13', 3, 13, 13.06263, False),
-    'Be-5': Iso('Be-5', 'beryllium-5', 4, 5, 5.0399, False),
-    'Be-6': Iso('Be-6', 'beryllium-6', 4, 6, 6.0197264, False),
-    'Be-7': Iso('Be-7', 'beryllium-7', 4, 7, 7.016928717, False),
-    'Be-8': Iso('Be-8', 'beryllium-8', 4, 8, 8.005305102, False,
-                half_life=6.7e-17),
-    'Be-9': Iso('Be-9', 'beryllium-9', 4, 9, 9.012183065, True,
-                isotopic_abundance=1),
-    'Be-10': Iso('Be-10', 'beryllium-10', 4, 10, 10.013534695, False),
-    'Be-11': Iso('Be-11', 'beryllium-11', 4, 11, 11.02166108, False),
-    'Be-12': Iso('Be-12', 'beryllium-12', 4, 12, 12.0269221, False),
-    'Be-13': Iso('Be-13', 'beryllium-13', 4, 13, 13.036135, False),
-    'Be-14': Iso('Be-14', 'beryllium-14', 4, 14, 14.04289, False),
-    'Be-15': Iso('Be-15', 'beryllium-15', 4, 15, 15.05342, False),
-    'Be-16': Iso('Be-16', 'beryllium-16', 4, 16, 16.06167, False),
-    'B-6': Iso('B-6', 'boron-6', 5, 6, 6.0508, False),
-    'B-7': Iso('B-7', 'boron-7', 5, 7, 7.029712, False),
-    'B-8': Iso('B-8', 'boron-8', 5, 8, 8.0246073, False),
-    'B-9': Iso('B-9', 'boron-9', 5, 9, 9.01332965, False),
-    'B-10': Iso('B-10', 'boron-10', 5, 10, 10.01293695, True,
-                isotopic_abundance=0.199),
-    'B-11': Iso('B-11', 'boron-11', 5, 11, 11.00930536, True,
-                isotopic_abundance=0.801),
-    'B-12': Iso('B-12', 'boron-12', 5, 12, 12.0143527, False),
-    'B-13': Iso('B-13', 'boron-13', 5, 13, 13.0177802, False),
-    'B-14': Iso('B-14', 'boron-14', 5, 14, 14.025404, False),
-    'B-15': Iso('B-15', 'boron-15', 5, 15, 15.031088, False),
-    'B-16': Iso('B-16', 'boron-16', 5, 16, 16.039842, False),
-    'B-17': Iso('B-17', 'boron-17', 5, 17, 17.04699, False),
-    'B-18': Iso('B-18', 'boron-18', 5, 18, 18.05566, False),
-    'B-19': Iso('B-19', 'boron-19', 5, 19, 19.06310, False),
-    'B-20': Iso('B-20', 'boron-20', 5, 20, 20.07207, False),
-    'B-21': Iso('B-21', 'boron-21', 5, 21, 21.08129, False),
-    'C-8': Iso('C-8', 'carbon-8', 6, 8, 8.037643, False),
-    'C-9': Iso('C-9', 'carbon-9', 6, 9, 9.0310372, False),
-    'C-10': Iso('C-10', 'carbon-10', 6, 10, 10.01685331, False),
-    'C-11': Iso('C-11', 'carbon-11', 6, 11, 11.0114336, False),
-    'C-12': Iso('C-12', 'carbon-12', 6, 12, 12.0000000, True,
-                isotopic_abundance=0.9893),
-    'C-13': Iso('C-13', 'carbon-13', 6, 13, 13.00335483507, True,
-                isotopic_abundance=0.0107),
-    'C-14': Iso('C-14', 'carbon-14', 6, 14, 14.0032419884, False),
-    'C-15': Iso('C-15', 'carbon-15', 6, 15, 15.01059926, False),
-    'C-16': Iso('C-16', 'carbon-16', 6, 16, 16.0147013, False),
-    'C-17': Iso('C-17', 'carbon-17', 6, 17, 17.022577, False),
-    'C-18': Iso('C-18', 'carbon-18', 6, 18, 18.026751, False),
-    'C-19': Iso('C-19', 'carbon-19', 6, 19, 19.03480, False),
-    'C-20': Iso('C-20', 'carbon-20', 6, 20, 20.04032, False),
-    'C-21': Iso('C-21', 'carbon-21', 6, 21, 21.04900, False),
-    'C-22': Iso('C-22', 'carbon-22', 6, 22, 22.05753, False),
-    'C-23': Iso('C-23', 'carbon-23', 6, 23, 23.0689, False),
-    'N-10': Iso('N-10', 'nitrogen-10', 7, 10, 10.04165, False),
-    'N-11': Iso('N-11', 'nitrogen-11', 7, 11, 11.026091, False),
-    'N-12': Iso('N-12', 'nitrogen-12', 7, 12, 12.0186132, False),
-    'N-13': Iso('N-13', 'nitrogen-13', 7, 13, 13.00573861, False),
-    'N-14': Iso('N-14', 'nitrogen-14', 7, 14, 14.00307400443, True,
-                isotopic_abundance=0.99636),
-    'N-15': Iso('N-15', 'nitrogen-15', 7, 15, 15.00010889888, True,
-                isotopic_abundance=0.00364),
-    'N-16': Iso('N-16', 'nitrogen-16', 7, 16, 16.0061019, False),
-    'N-17': Iso('N-17', 'nitrogen-17', 7, 17, 17.008449, False),
-    'N-18': Iso('N-18', 'nitrogen-18', 7, 18, 18.014078, False),
-    'N-19': Iso('N-19', 'nitrogen-19', 7, 19, 19.017022, False),
-    'N-20': Iso('N-20', 'nitrogen-20', 7, 20, 20.023366, False),
-    'N-21': Iso('N-21', 'nitrogen-21', 7, 21, 21.02711, False),
-    'N-22': Iso('N-22', 'nitrogen-22', 7, 22, 22.03439, False),
-    'N-23': Iso('N-23', 'nitrogen-23', 7, 23, 23.04114, False),
-    'N-24': Iso('N-24', 'nitrogen-24', 7, 24, 24.05039, False),
-    'N-25': Iso('N-25', 'nitrogen-25', 7, 25, 25.06010, False),
-    'O-12': Iso('O-12', 'oxygen-12', 8, 12, 12.034262, False),
-    'O-13': Iso('O-13', 'oxygen-13', 8, 13, 13.024815, False),
-    'O-14': Iso('O-14', 'oxygen-14', 8, 14, 14.00859636, False),
-    'O-15': Iso('O-15', 'oxygen-15', 8, 15, 15.00306562, False),
-    'O-16': Iso('O-16', 'oxygen-16', 8, 16, 15.99491461957, True,
-                isotopic_abundance=0.99757),
-    'O-17': Iso('O-17', 'oxygen-17', 8, 17, 16.99913175650, True,
-                isotopic_abundance=0.00038),
-    'O-18': Iso('O-18', 'oxygen-18', 8, 18, 17.99915961286, True,
-                isotopic_abundance=0.00205),
-    'O-19': Iso('O-19', 'oxygen-19', 8, 19, 19.0035780, False),
-    'O-20': Iso('O-20', 'oxygen-20', 8, 20, 20.00407535, False),
-    'O-21': Iso('O-21', 'oxygen-21', 8, 21, 21.008655, False),
-    'O-22': Iso('O-22', 'oxygen-22', 8, 22, 22.009966, False),
-    'O-23': Iso('O-23', 'oxygen-23', 8, 23, 23.015696, False),
-    'O-24': Iso('O-24', 'oxygen-24', 8, 24, 24.01986, False),
-    'O-25': Iso('O-25', 'oxygen-25', 8, 25, 25.02936, False),
-    'O-26': Iso('O-26', 'oxygen-26', 8, 26, 26.03729, False),
-    'O-27': Iso('O-27', 'oxygen-27', 8, 27, 27.04772, False),
-    'O-28': Iso('O-28', 'oxygen-28', 8, 28, 28.05591, False),
-    'F-14': Iso('F-14', 'fluorine-14', 9, 14, 14.034315, False),
-    'F-15': Iso('F-15', 'fluorine-15', 9, 15, 15.018043, False),
-    'F-16': Iso('F-16', 'fluorine-16', 9, 16, 16.0114657, False),
-    'F-17': Iso('F-17', 'fluorine-17', 9, 17, 17.00209524, False),
-    'F-18': Iso('F-18', 'fluorine-18', 9, 18, 18.00093733, False,
-                half_life=6586.236),
-    'F-19': Iso('F-19', 'fluorine-19', 9, 19, 18.99840316273, True,
-                isotopic_abundance=1),
-    'F-20': Iso('F-20', 'fluorine-20', 9, 20, 19.999981252, False),
-    'F-21': Iso('F-21', 'fluorine-21', 9, 21, 20.9999489, False),
-    'F-22': Iso('F-22', 'fluorine-22', 9, 22, 22.002999, False),
-    'F-23': Iso('F-23', 'fluorine-23', 9, 23, 23.003557, False),
-    'F-24': Iso('F-24', 'fluorine-24', 9, 24, 24.008115, False),
-    'F-25': Iso('F-25', 'fluorine-25', 9, 25, 25.012199, False),
-    'F-26': Iso('F-26', 'fluorine-26', 9, 26, 26.020038, False),
-    'F-27': Iso('F-27', 'fluorine-27', 9, 27, 27.02644, False),
-    'F-28': Iso('F-28', 'fluorine-28', 9, 28, 28.03534, False),
-    'F-29': Iso('F-29', 'fluorine-29', 9, 29, 29.04254, False),
-    'F-30': Iso('F-30', 'fluorine-30', 9, 30, 30.05165, False),
-    'F-31': Iso('F-31', 'fluorine-31', 9, 31, 31.05971, False),
-    'Ne-16': Iso('Ne-16', 'neon-16', 10, 16, 16.025750, False),
-    'Ne-17': Iso('Ne-17', 'neon-17', 10, 17, 17.01771396, False),
-    'Ne-18': Iso('Ne-18', 'neon-18', 10, 18, 18.00570870, False),
-    'Ne-19': Iso('Ne-19', 'neon-19', 10, 19, 19.00188091, False),
-    'Ne-20': Iso('Ne-20', 'neon-20', 10, 20, 19.9924401762, True,
-                 isotopic_abundance=0.9048),
-    'Ne-21': Iso('Ne-21', 'neon-21', 10, 21, 20.993846685, True,
-                 isotopic_abundance=0.0027),
-    'Ne-22': Iso('Ne-22', 'neon-22', 10, 22, 21.991385114, True,
-                 isotopic_abundance=0.0925),
-    'Ne-23': Iso('Ne-23', 'neon-23', 10, 23, 22.99446691, False),
-    'Ne-24': Iso('Ne-24', 'neon-24', 10, 24, 23.99361065, False),
-    'Ne-25': Iso('Ne-25', 'neon-25', 10, 25, 24.997789, False),
-    'Ne-26': Iso('Ne-26', 'neon-26', 10, 26, 26.000515, False),
-    'Ne-27': Iso('Ne-27', 'neon-27', 10, 27, 27.007553, False),
-    'Ne-28': Iso('Ne-28', 'neon-28', 10, 28, 28.01212, False),
-    'Ne-29': Iso('Ne-29', 'neon-29', 10, 29, 29.01975, False),
-    'Ne-30': Iso('Ne-30', 'neon-30', 10, 30, 30.02473, False),
-    'Ne-31': Iso('Ne-31', 'neon-31', 10, 31, 31.0331, False),
-    'Ne-32': Iso('Ne-32', 'neon-32', 10, 32, 32.03972, False),
-    'Ne-33': Iso('Ne-33', 'neon-33', 10, 33, 33.04938, False),
-    'Ne-34': Iso('Ne-34', 'neon-34', 10, 34, 34.05673, False),
-    'Na-18': Iso('Na-18', 'sodium-18', 11, 18, 18.02688, False),
-    'Na-19': Iso('Na-19', 'sodium-19', 11, 19, 19.013880, False),
-    'Na-20': Iso('Na-20', 'sodium-20', 11, 20, 20.0073544, False),
-    'Na-21': Iso('Na-21', 'sodium-21', 11, 21, 20.99765469, False),
-    'Na-22': Iso('Na-22', 'sodium-22', 11, 22, 21.99443741, False,
-                 half_life=82163808.0),
-    'Na-23': Iso('Na-23', 'sodium-23', 11, 23, 22.9897692820, True,
-                 isotopic_abundance=1),
-    'Na-24': Iso('Na-24', 'sodium-24', 11, 24, 23.990962950, False,
-                 half_life=53824.32),
-    'Na-25': Iso('Na-25', 'sodium-25', 11, 25, 24.9899540, False),
-    'Na-26': Iso('Na-26', 'sodium-26', 11, 26, 25.9926346, False),
-    'Na-27': Iso('Na-27', 'sodium-27', 11, 27, 26.9940765, False),
-    'Na-28': Iso('Na-28', 'sodium-28', 11, 28, 27.998939, False),
-    'Na-29': Iso('Na-29', 'sodium-29', 11, 29, 29.0028771, False),
-    'Na-30': Iso('Na-30', 'sodium-30', 11, 30, 30.0090979, False),
-    'Na-31': Iso('Na-31', 'sodium-31', 11, 31, 31.013163, False),
-    'Na-32': Iso('Na-32', 'sodium-32', 11, 32, 32.02019, False),
-    'Na-33': Iso('Na-33', 'sodium-33', 11, 33, 33.02573, False),
-    'Na-34': Iso('Na-34', 'sodium-34', 11, 34, 34.03359, False),
-    'Na-35': Iso('Na-35', 'sodium-35', 11, 35, 35.04062, False),
-    'Na-36': Iso('Na-36', 'sodium-36', 11, 36, 36.04929, False),
-    'Na-37': Iso('Na-37', 'sodium-37', 11, 37, 37.05705, False),
-    'Mg-19': Iso('Mg-19', 'magnesium-19', 12, 19, 19.034169, False),
-    'Mg-20': Iso('Mg-20', 'magnesium-20', 12, 20, 20.018850, False),
-    'Mg-21': Iso('Mg-21', 'magnesium-21', 12, 21, 21.011716, False),
-    'Mg-22': Iso('Mg-22', 'magnesium-22', 12, 22, 21.99957065, False),
-    'Mg-23': Iso('Mg-23', 'magnesium-23', 12, 23, 22.99412421, False),
-    'Mg-24': Iso('Mg-24', 'magnesium-24', 12, 24, 23.985041697, True,
-                 isotopic_abundance=0.7899),
-    'Mg-25': Iso('Mg-25', 'magnesium-25', 12, 25, 24.985836976, True,
-                 isotopic_abundance=0.1000),
-    'Mg-26': Iso('Mg-26', 'magnesium-26', 12, 26, 25.982592968, True,
-                 isotopic_abundance=0.1101),
-    'Mg-27': Iso('Mg-27', 'magnesium-27', 12, 27, 26.984340624, False),
-    'Mg-28': Iso('Mg-28', 'magnesium-28', 12, 28, 27.9838767, False),
-    'Mg-29': Iso('Mg-29', 'magnesium-29', 12, 29, 28.988617, False),
-    'Mg-30': Iso('Mg-30', 'magnesium-30', 12, 30, 29.9904629, False),
-    'Mg-31': Iso('Mg-31', 'magnesium-31', 12, 31, 30.9966480, False),
-    'Mg-32': Iso('Mg-32', 'magnesium-32', 12, 32, 31.9991102, False),
-    'Mg-33': Iso('Mg-33', 'magnesium-33', 12, 33, 33.0053271, False),
-    'Mg-34': Iso('Mg-34', 'magnesium-34', 12, 34, 34.008935, False),
-    'Mg-35': Iso('Mg-35', 'magnesium-35', 12, 35, 35.01679, False),
-    'Mg-36': Iso('Mg-36', 'magnesium-36', 12, 36, 36.02188, False),
-    'Mg-37': Iso('Mg-37', 'magnesium-37', 12, 37, 37.03037, False),
-    'Mg-38': Iso('Mg-38', 'magnesium-38', 12, 38, 38.03658, False),
-    'Mg-39': Iso('Mg-39', 'magnesium-39', 12, 39, 39.04538, False),
-    'Mg-40': Iso('Mg-40', 'magnesium-40', 12, 40, 40.05218, False),
-    'Al-21': Iso('Al-21', 'aluminium-21', 13, 21, 21.02897, False),
-    'Al-22': Iso('Al-22', 'aluminium-22', 13, 22, 22.01954, False),
-    'Al-23': Iso('Al-23', 'aluminium-23', 13, 23, 23.00724435, False),
-    'Al-24': Iso('Al-24', 'aluminium-24', 13, 24, 23.9999489, False),
-    'Al-25': Iso('Al-25', 'aluminium-25', 13, 25, 24.99042810, False),
-    'Al-26': Iso('Al-26', 'aluminium-26', 13, 26, 25.986891904, False),
-    'Al-27': Iso('Al-27', 'aluminium-27', 13, 27, 26.98153853, True,
-                 isotopic_abundance=1),
-    'Al-28': Iso('Al-28', 'aluminium-28', 13, 28, 27.98191021, False),
-    'Al-29': Iso('Al-29', 'aluminium-29', 13, 29, 28.9804565, False),
-    'Al-30': Iso('Al-30', 'aluminium-30', 13, 30, 29.982960, False),
-    'Al-31': Iso('Al-31', 'aluminium-31', 13, 31, 30.983945, False),
-    'Al-32': Iso('Al-32', 'aluminium-32', 13, 32, 31.988085, False),
-    'Al-33': Iso('Al-33', 'aluminium-33', 13, 33, 32.990909, False),
-    'Al-34': Iso('Al-34', 'aluminium-34', 13, 34, 33.996705, False),
-    'Al-35': Iso('Al-35', 'aluminium-35', 13, 35, 34.999764, False),
-    'Al-36': Iso('Al-36', 'aluminium-36', 13, 36, 36.00639, False),
-    'Al-37': Iso('Al-37', 'aluminium-37', 13, 37, 37.01053, False),
-    'Al-38': Iso('Al-38', 'aluminium-38', 13, 38, 38.01740, False),
-    'Al-39': Iso('Al-39', 'aluminium-39', 13, 39, 39.02254, False),
-    'Al-40': Iso('Al-40', 'aluminium-40', 13, 40, 40.03003, False),
-    'Al-41': Iso('Al-41', 'aluminium-41', 13, 41, 41.03638, False),
-    'Al-42': Iso('Al-42', 'aluminium-42', 13, 42, 42.04384, False),
-    'Al-43': Iso('Al-43', 'aluminium-43', 13, 43, 43.05147, False),
-    'Si-22': Iso('Si-22', 'silicon-22', 14, 22, 22.03579, False),
-    'Si-23': Iso('Si-23', 'silicon-23', 14, 23, 23.02544, False),
-    'Si-24': Iso('Si-24', 'silicon-24', 14, 24, 24.011535, False),
-    'Si-25': Iso('Si-25', 'silicon-25', 14, 25, 25.004109, False),
-    'Si-26': Iso('Si-26', 'silicon-26', 14, 26, 25.99233384, False),
-    'Si-27': Iso('Si-27', 'silicon-27', 14, 27, 26.98670481, False),
-    'Si-28': Iso('Si-28', 'silicon-28', 14, 28, 27.97692653465, True,
-                 isotopic_abundance=0.92223),
-    'Si-29': Iso('Si-29', 'silicon-29', 14, 29, 28.97649466490, True,
-                 isotopic_abundance=0.04685),
-    'Si-30': Iso('Si-30', 'silicon-30', 14, 30, 29.973770136, True,
-                 isotopic_abundance=0.03092),
-    'Si-31': Iso('Si-31', 'silicon-31', 14, 31, 30.975363194, False),
-    'Si-32': Iso('Si-32', 'silicon-32', 14, 32, 31.97415154, False),
-    'Si-33': Iso('Si-33', 'silicon-33', 14, 33, 32.97797696, False),
-    'Si-34': Iso('Si-34', 'silicon-34', 14, 34, 33.978576, False),
-    'Si-35': Iso('Si-35', 'silicon-35', 14, 35, 34.984583, False),
-    'Si-36': Iso('Si-36', 'silicon-36', 14, 36, 35.986695, False),
-    'Si-37': Iso('Si-37', 'silicon-37', 14, 37, 36.992921, False),
-    'Si-38': Iso('Si-38', 'silicon-38', 14, 38, 37.995523, False),
-    'Si-39': Iso('Si-39', 'silicon-39', 14, 39, 39.002491, False),
-    'Si-40': Iso('Si-40', 'silicon-40', 14, 40, 40.00583, False),
-    'Si-41': Iso('Si-41', 'silicon-41', 14, 41, 41.01301, False),
-    'Si-42': Iso('Si-42', 'silicon-42', 14, 42, 42.01778, False),
-    'Si-43': Iso('Si-43', 'silicon-43', 14, 43, 43.02480, False),
-    'Si-44': Iso('Si-44', 'silicon-44', 14, 44, 44.03061, False),
-    'Si-45': Iso('Si-45', 'silicon-45', 14, 45, 45.03995, False),
-    'P-24': Iso('P-24', 'phosphorus-24', 15, 24, 24.03577, False),
-    'P-25': Iso('P-25', 'phosphorus-25', 15, 25, 25.02119, False),
-    'P-26': Iso('P-26', 'phosphorus-26', 15, 26, 26.01178, False),
-    'P-27': Iso('P-27', 'phosphorus-27', 15, 27, 26.999224, False),
-    'P-28': Iso('P-28', 'phosphorus-28', 15, 28, 27.9923266, False),
-    'P-29': Iso('P-29', 'phosphorus-29', 15, 29, 28.98180079, False),
-    'P-30': Iso('P-30', 'phosphorus-30', 15, 30, 29.97831375, False),
-    'P-31': Iso('P-31', 'phosphorus-31', 15, 31, 30.97376199842, True,
-                isotopic_abundance=1),
-    'P-32': Iso('P-32', 'phosphorus-32', 15, 32, 31.973907643, False,
-                half_life=1232323.2),
-    'P-33': Iso('P-33', 'phosphorus-33', 15, 33, 32.9717257, False),
-    'P-34': Iso('P-34', 'phosphorus-34', 15, 34, 33.97364589, False),
-    'P-35': Iso('P-35', 'phosphorus-35', 15, 35, 34.9733141, False),
-    'P-36': Iso('P-36', 'phosphorus-36', 15, 36, 35.978260, False),
-    'P-37': Iso('P-37', 'phosphorus-37', 15, 37, 36.979607, False),
-    'P-38': Iso('P-38', 'phosphorus-38', 15, 38, 37.984252, False),
-    'P-39': Iso('P-39', 'phosphorus-39', 15, 39, 38.986227, False),
-    'P-40': Iso('P-40', 'phosphorus-40', 15, 40, 39.99133, False),
-    'P-41': Iso('P-41', 'phosphorus-41', 15, 41, 40.994654, False),
-    'P-42': Iso('P-42', 'phosphorus-42', 15, 42, 42.00108, False),
-    'P-43': Iso('P-43', 'phosphorus-43', 15, 43, 43.00502, False),
-    'P-44': Iso('P-44', 'phosphorus-44', 15, 44, 44.01121, False),
-    'P-45': Iso('P-45', 'phosphorus-45', 15, 45, 45.01645, False),
-    'P-46': Iso('P-46', 'phosphorus-46', 15, 46, 46.02446, False),
-    'P-47': Iso('P-47', 'phosphorus-47', 15, 47, 47.03139, False),
-    'S-26': Iso('S-26', 'sulfur-26', 16, 26, 26.02907, False),
-    'S-27': Iso('S-27', 'sulfur-27', 16, 27, 27.01828, False),
-    'S-28': Iso('S-28', 'sulfur-28', 16, 28, 28.00437, False),
-    'S-29': Iso('S-29', 'sulfur-29', 16, 29, 28.996611, False),
-    'S-30': Iso('S-30', 'sulfur-30', 16, 30, 29.98490703, False),
-    'S-31': Iso('S-31', 'sulfur-31', 16, 31, 30.97955701, False),
-    'S-32': Iso('S-32', 'sulfur-32', 16, 32, 31.9720711744, True,
-                isotopic_abundance=0.9499),
-    'S-33': Iso('S-33', 'sulfur-33', 16, 33, 32.9714589098, True,
-                isotopic_abundance=0.0075),
-    'S-34': Iso('S-34', 'sulfur-34', 16, 34, 33.967867004, True,
-                isotopic_abundance=0.0425),
-    'S-35': Iso('S-35', 'sulfur-35', 16, 35, 34.969032310, False),
-    'S-36': Iso('S-36', 'sulfur-36', 16, 36, 35.96708071, True,
-                isotopic_abundance=0.0001),
-    'S-37': Iso('S-37', 'sulfur-37', 16, 37, 36.97112551, False),
-    'S-38': Iso('S-38', 'sulfur-38', 16, 38, 37.9711633, False),
-    'S-39': Iso('S-39', 'sulfur-39', 16, 39, 38.975134, False),
-    'S-40': Iso('S-40', 'sulfur-40', 16, 40, 39.9754826, False),
-    'S-41': Iso('S-41', 'sulfur-41', 16, 41, 40.9795935, False),
-    'S-42': Iso('S-42', 'sulfur-42', 16, 42, 41.9810651, False),
-    'S-43': Iso('S-43', 'sulfur-43', 16, 43, 42.9869076, False),
-    'S-44': Iso('S-44', 'sulfur-44', 16, 44, 43.9901188, False),
-    'S-45': Iso('S-45', 'sulfur-45', 16, 45, 44.99572, False),
-    'S-46': Iso('S-46', 'sulfur-46', 16, 46, 46.00004, False),
-    'S-47': Iso('S-47', 'sulfur-47', 16, 47, 47.00795, False),
-    'S-48': Iso('S-48', 'sulfur-48', 16, 48, 48.01370, False),
-    'S-49': Iso('S-49', 'sulfur-49', 16, 49, 49.02276, False),
-    'Cl-28': Iso('Cl-28', 'chlorine-28', 17, 28, 28.02954, False),
-    'Cl-29': Iso('Cl-29', 'chlorine-29', 17, 29, 29.01478, False),
-    'Cl-30': Iso('Cl-30', 'chlorine-30', 17, 30, 30.00477, False),
-    'Cl-31': Iso('Cl-31', 'chlorine-31', 17, 31, 30.992414, False),
-    'Cl-32': Iso('Cl-32', 'chlorine-32', 17, 32, 31.98568464, False),
-    'Cl-33': Iso('Cl-33', 'chlorine-33', 17, 33, 32.97745199, False),
-    'Cl-34': Iso('Cl-34', 'chlorine-34', 17, 34, 33.973762485, False),
-    'Cl-35': Iso('Cl-35', 'chlorine-35', 17, 35, 34.968852682, True,
-                 isotopic_abundance=0.7576),
-    'Cl-36': Iso('Cl-36', 'chlorine-36', 17, 36, 35.968306809, False),
-    'Cl-37': Iso('Cl-37', 'chlorine-37', 17, 37, 36.965902602, True,
-                 isotopic_abundance=0.2424),
-    'Cl-38': Iso('Cl-38', 'chlorine-38', 17, 38, 37.96801044, False),
-    'Cl-39': Iso('Cl-39', 'chlorine-39', 17, 39, 38.9680082, False),
-    'Cl-40': Iso('Cl-40', 'chlorine-40', 17, 40, 39.970415, False),
-    'Cl-41': Iso('Cl-41', 'chlorine-41', 17, 41, 40.970685, False),
-    'Cl-42': Iso('Cl-42', 'chlorine-42', 17, 42, 41.97325, False),
-    'Cl-43': Iso('Cl-43', 'chlorine-43', 17, 43, 42.97389, False),
-    'Cl-44': Iso('Cl-44', 'chlorine-44', 17, 44, 43.97787, False),
-    'Cl-45': Iso('Cl-45', 'chlorine-45', 17, 45, 44.98029, False),
-    'Cl-46': Iso('Cl-46', 'chlorine-46', 17, 46, 45.98517, False),
-    'Cl-47': Iso('Cl-47', 'chlorine-47', 17, 47, 46.98916, False),
-    'Cl-48': Iso('Cl-48', 'chlorine-48', 17, 48, 47.99564, False),
-    'Cl-49': Iso('Cl-49', 'chlorine-49', 17, 49, 49.00123, False),
-    'Cl-50': Iso('Cl-50', 'chlorine-50', 17, 50, 50.00905, False),
-    'Cl-51': Iso('Cl-51', 'chlorine-51', 17, 51, 51.01554, False),
-    'Ar-30': Iso('Ar-30', 'argon-30', 18, 30, 30.02307, False),
-    'Ar-31': Iso('Ar-31', 'argon-31', 18, 31, 31.01212, False),
-    'Ar-32': Iso('Ar-32', 'argon-32', 18, 32, 31.9976378, False),
-    'Ar-33': Iso('Ar-33', 'argon-33', 18, 33, 32.98992555, False),
-    'Ar-34': Iso('Ar-34', 'argon-34', 18, 34, 33.980270090, False),
-    'Ar-35': Iso('Ar-35', 'argon-35', 18, 35, 34.97525759, False),
-    'Ar-36': Iso('Ar-36', 'argon-36', 18, 36, 35.967545105, True,
-                 isotopic_abundance=0.003336),
-    'Ar-37': Iso('Ar-37', 'argon-37', 18, 37, 36.96677633, False),
-    'Ar-38': Iso('Ar-38', 'argon-38', 18, 38, 37.96273211, True,
-                 isotopic_abundance=0.000629),
-    'Ar-39': Iso('Ar-39', 'argon-39', 18, 39, 38.9643130, False),
-    'Ar-40': Iso('Ar-40', 'argon-40', 18, 40, 39.9623831237, True,
-                 isotopic_abundance=0.996035),
-    'Ar-41': Iso('Ar-41', 'argon-41', 18, 41, 40.96450057, False),
-    'Ar-42': Iso('Ar-42', 'argon-42', 18, 42, 41.9630457, False),
-    'Ar-43': Iso('Ar-43', 'argon-43', 18, 43, 42.9656361, False),
-    'Ar-44': Iso('Ar-44', 'argon-44', 18, 44, 43.9649238, False),
-    'Ar-45': Iso('Ar-45', 'argon-45', 18, 45, 44.96803973, False),
-    'Ar-46': Iso('Ar-46', 'argon-46', 18, 46, 45.968083, False),
-    'Ar-47': Iso('Ar-47', 'argon-47', 18, 47, 46.972935, False),
-    'Ar-48': Iso('Ar-48', 'argon-48', 18, 48, 47.97591, False),
-    'Ar-49': Iso('Ar-49', 'argon-49', 18, 49, 48.98190, False),
-    'Ar-50': Iso('Ar-50', 'argon-50', 18, 50, 49.98613, False),
-    'Ar-51': Iso('Ar-51', 'argon-51', 18, 51, 50.99370, False),
-    'Ar-52': Iso('Ar-52', 'argon-52', 18, 52, 51.99896, False),
-    'Ar-53': Iso('Ar-53', 'argon-53', 18, 53, 53.00729, False),
-    'K-32': Iso('K-32', 'potassium-32', 19, 32, 32.02265, False),
-    'K-33': Iso('K-33', 'potassium-33', 19, 33, 33.00756, False),
-    'K-34': Iso('K-34', 'potassium-34', 19, 34, 33.99869, False),
-    'K-35': Iso('K-35', 'potassium-35', 19, 35, 34.98800541, False),
-    'K-36': Iso('K-36', 'potassium-36', 19, 36, 35.98130201, False),
-    'K-37': Iso('K-37', 'potassium-37', 19, 37, 36.97337589, False),
-    'K-38': Iso('K-38', 'potassium-38', 19, 38, 37.96908112, False),
-    'K-39': Iso('K-39', 'potassium-39', 19, 39, 38.9637064864, True,
-                isotopic_abundance=0.932581),
-    'K-40': Iso('K-40', 'potassium-40', 19, 40, 39.963998166, False,
-                isotopic_abundance=0.000117),
-    'K-41': Iso('K-41', 'potassium-41', 19, 41, 40.9618252579, True,
-                isotopic_abundance=0.067302),
-    'K-42': Iso('K-42', 'potassium-42', 19, 42, 41.96240231, False),
-    'K-43': Iso('K-43', 'potassium-43', 19, 43, 42.96073470, False),
-    'K-44': Iso('K-44', 'potassium-44', 19, 44, 43.96158699, False),
-    'K-45': Iso('K-45', 'potassium-45', 19, 45, 44.96069149, False),
-    'K-46': Iso('K-46', 'potassium-46', 19, 46, 45.96198159, False),
-    'K-47': Iso('K-47', 'potassium-47', 19, 47, 46.9616616, False),
-    'K-48': Iso('K-48', 'potassium-48', 19, 48, 47.96534119, False),
-    'K-49': Iso('K-49', 'potassium-49', 19, 49, 48.96821075, False),
-    'K-50': Iso('K-50', 'potassium-50', 19, 50, 49.9723800, False),
-    'K-51': Iso('K-51', 'potassium-51', 19, 51, 50.975828, False),
-    'K-52': Iso('K-52', 'potassium-52', 19, 52, 51.98224, False),
-    'K-53': Iso('K-53', 'potassium-53', 19, 53, 52.98746, False),
-    'K-54': Iso('K-54', 'potassium-54', 19, 54, 53.99463, False),
-    'K-55': Iso('K-55', 'potassium-55', 19, 55, 55.00076, False),
-    'K-56': Iso('K-56', 'potassium-56', 19, 56, 56.00851, False),
-    'Ca-34': Iso('Ca-34', 'calcium-34', 20, 34, 34.01487, False),
-    'Ca-35': Iso('Ca-35', 'calcium-35', 20, 35, 35.00514, False),
-    'Ca-36': Iso('Ca-36', 'calcium-36', 20, 36, 35.993074, False),
-    'Ca-37': Iso('Ca-37', 'calcium-37', 20, 37, 36.98589785, False),
-    'Ca-38': Iso('Ca-38', 'calcium-38', 20, 38, 37.97631922, False),
-    'Ca-39': Iso('Ca-39', 'calcium-39', 20, 39, 38.97071081, False),
-    'Ca-40': Iso('Ca-40', 'calcium-40', 20, 40, 39.962590863, True,
-                 isotopic_abundance=0.96941),
-    'Ca-41': Iso('Ca-41', 'calcium-41', 20, 41, 40.96227792, False),
-    'Ca-42': Iso('Ca-42', 'calcium-42', 20, 42, 41.95861783, True,
-                 isotopic_abundance=0.00647),
-    'Ca-43': Iso('Ca-43', 'calcium-43', 20, 43, 42.95876644, True,
-                 isotopic_abundance=0.00135),
-    'Ca-44': Iso('Ca-44', 'calcium-44', 20, 44, 43.95548156, True,
-                 isotopic_abundance=0.02086),
-    'Ca-45': Iso('Ca-45', 'calcium-45', 20, 45, 44.95618635, False),
-    'Ca-46': Iso('Ca-46', 'calcium-46', 20, 46, 45.9536890, True,
-                 isotopic_abundance=0.00004),
-    'Ca-47': Iso('Ca-47', 'calcium-47', 20, 47, 46.9545424, False),
-    'Ca-48': Iso('Ca-48', 'calcium-48', 20, 48, 47.95252276, False,
-                 isotopic_abundance=0.00187),
-    'Ca-49': Iso('Ca-49', 'calcium-49', 20, 49, 48.95566274, False),
-    'Ca-50': Iso('Ca-50', 'calcium-50', 20, 50, 49.9574992, False),
-    'Ca-51': Iso('Ca-51', 'calcium-51', 20, 51, 50.960989, False),
-    'Ca-52': Iso('Ca-52', 'calcium-52', 20, 52, 51.963217, False),
-    'Ca-53': Iso('Ca-53', 'calcium-53', 20, 53, 52.96945, False),
-    'Ca-54': Iso('Ca-54', 'calcium-54', 20, 54, 53.97340, False),
-    'Ca-55': Iso('Ca-55', 'calcium-55', 20, 55, 54.98030, False),
-    'Ca-56': Iso('Ca-56', 'calcium-56', 20, 56, 55.98508, False),
-    'Ca-57': Iso('Ca-57', 'calcium-57', 20, 57, 56.99262, False),
-    'Ca-58': Iso('Ca-58', 'calcium-58', 20, 58, 57.99794, False),
-    'Sc-36': Iso('Sc-36', 'scandium-36', 21, 36, 36.01648, False),
-    'Sc-37': Iso('Sc-37', 'scandium-37', 21, 37, 37.00374, False),
-    'Sc-38': Iso('Sc-38', 'scandium-38', 21, 38, 37.99512, False),
-    'Sc-39': Iso('Sc-39', 'scandium-39', 21, 39, 38.984785, False),
-    'Sc-40': Iso('Sc-40', 'scandium-40', 21, 40, 39.9779673, False),
-    'Sc-41': Iso('Sc-41', 'scandium-41', 21, 41, 40.969251105, False),
-    'Sc-42': Iso('Sc-42', 'scandium-42', 21, 42, 41.96551653, False),
-    'Sc-43': Iso('Sc-43', 'scandium-43', 21, 43, 42.9611505, False),
-    'Sc-44': Iso('Sc-44', 'scandium-44', 21, 44, 43.9594029, False),
-    'Sc-45': Iso('Sc-45', 'scandium-45', 21, 45, 44.95590828, True,
-                 isotopic_abundance=1),
-    'Sc-46': Iso('Sc-46', 'scandium-46', 21, 46, 45.95516826, False,
-                 half_life=7242998.4),
-    'Sc-47': Iso('Sc-47', 'scandium-47', 21, 47, 46.9524037, False),
-    'Sc-48': Iso('Sc-48', 'scandium-48', 21, 48, 47.9522236, False),
-    'Sc-49': Iso('Sc-49', 'scandium-49', 21, 49, 48.9500146, False),
-    'Sc-50': Iso('Sc-50', 'scandium-50', 21, 50, 49.952176, False),
-    'Sc-51': Iso('Sc-51', 'scandium-51', 21, 51, 50.953592, False),
-    'Sc-52': Iso('Sc-52', 'scandium-52', 21, 52, 51.95688, False),
-    'Sc-53': Iso('Sc-53', 'scandium-53', 21, 53, 52.95909, False),
-    'Sc-54': Iso('Sc-54', 'scandium-54', 21, 54, 53.96393, False),
-    'Sc-55': Iso('Sc-55', 'scandium-55', 21, 55, 54.96782, False),
-    'Sc-56': Iso('Sc-56', 'scandium-56', 21, 56, 55.97345, False),
-    'Sc-57': Iso('Sc-57', 'scandium-57', 21, 57, 56.97777, False),
-    'Sc-58': Iso('Sc-58', 'scandium-58', 21, 58, 57.98403, False),
-    'Sc-59': Iso('Sc-59', 'scandium-59', 21, 59, 58.98894, False),
-    'Sc-60': Iso('Sc-60', 'scandium-60', 21, 60, 59.99565, False),
-    'Sc-61': Iso('Sc-61', 'scandium-61', 21, 61, 61.00100, False),
-    'Ti-38': Iso('Ti-38', 'titanium-38', 22, 38, 38.01145, False),
-    'Ti-39': Iso('Ti-39', 'titanium-39', 22, 39, 39.00236, False),
-    'Ti-40': Iso('Ti-40', 'titanium-40', 22, 40, 39.99050, False),
-    'Ti-41': Iso('Ti-41', 'titanium-41', 22, 41, 40.983148, False),
-    'Ti-42': Iso('Ti-42', 'titanium-42', 22, 42, 41.97304903, False),
-    'Ti-43': Iso('Ti-43', 'titanium-43', 22, 43, 42.9685225, False),
-    'Ti-44': Iso('Ti-44', 'titanium-44', 22, 44, 43.95968995, False,
-                 half_life=1914105600.0),
-    'Ti-45': Iso('Ti-45', 'titanium-45', 22, 45, 44.95812198, False),
-    'Ti-46': Iso('Ti-46', 'titanium-46', 22, 46, 45.95262772, True,
-                 isotopic_abundance=0.0825),
-    'Ti-47': Iso('Ti-47', 'titanium-47', 22, 47, 46.95175879, True,
-                 isotopic_abundance=0.0744),
-    'Ti-48': Iso('Ti-48', 'titanium-48', 22, 48, 47.94794198, True,
-                 isotopic_abundance=0.7372),
-    'Ti-49': Iso('Ti-49', 'titanium-49', 22, 49, 48.94786568, True,
-                 isotopic_abundance=0.0541),
-    'Ti-50': Iso('Ti-50', 'titanium-50', 22, 50, 49.94478689, True,
-                 isotopic_abundance=0.0518),
-    'Ti-51': Iso('Ti-51', 'titanium-51', 22, 51, 50.94661065, False),
-    'Ti-52': Iso('Ti-52', 'titanium-52', 22, 52, 51.9468930, False),
-    'Ti-53': Iso('Ti-53', 'titanium-53', 22, 53, 52.94973, False),
-    'Ti-54': Iso('Ti-54', 'titanium-54', 22, 54, 53.95105, False),
-    'Ti-55': Iso('Ti-55', 'titanium-55', 22, 55, 54.95527, False),
-    'Ti-56': Iso('Ti-56', 'titanium-56', 22, 56, 55.95791, False),
-    'Ti-57': Iso('Ti-57', 'titanium-57', 22, 57, 56.96364, False),
-    'Ti-58': Iso('Ti-58', 'titanium-58', 22, 58, 57.96660, False),
-    'Ti-59': Iso('Ti-59', 'titanium-59', 22, 59, 58.97247, False),
-    'Ti-60': Iso('Ti-60', 'titanium-60', 22, 60, 59.97603, False),
-    'Ti-61': Iso('Ti-61', 'titanium-61', 22, 61, 60.98245, False),
-    'Ti-62': Iso('Ti-62', 'titanium-62', 22, 62, 61.98651, False),
-    'Ti-63': Iso('Ti-63', 'titanium-63', 22, 63, 62.99375, False),
-    'V-40': Iso('V-40', 'vanadium-40', 23, 40, 40.01276, False),
-    'V-41': Iso('V-41', 'vanadium-41', 23, 41, 41.00021, False),
-    'V-42': Iso('V-42', 'vanadium-42', 23, 42, 41.99182, False),
-    'V-43': Iso('V-43', 'vanadium-43', 23, 43, 42.980766, False),
-    'V-44': Iso('V-44', 'vanadium-44', 23, 44, 43.97411, False),
-    'V-45': Iso('V-45', 'vanadium-45', 23, 45, 44.9657748, False),
-    'V-46': Iso('V-46', 'vanadium-46', 23, 46, 45.96019878, False),
-    'V-47': Iso('V-47', 'vanadium-47', 23, 47, 46.95490491, False),
-    'V-48': Iso('V-48', 'vanadium-48', 23, 48, 47.9522522, False),
-    'V-49': Iso('V-49', 'vanadium-49', 23, 49, 48.94851180, False),
-    'V-50': Iso('V-50', 'vanadium-50', 23, 50, 49.94715601, False,
-                isotopic_abundance=0.00250),
-    'V-51': Iso('V-51', 'vanadium-51', 23, 51, 50.94395704, True,
-                isotopic_abundance=0.99750),
-    'V-52': Iso('V-52', 'vanadium-52', 23, 52, 51.94477301, False),
-    'V-53': Iso('V-53', 'vanadium-53', 23, 53, 52.9443367, False),
-    'V-54': Iso('V-54', 'vanadium-54', 23, 54, 53.946439, False),
-    'V-55': Iso('V-55', 'vanadium-55', 23, 55, 54.94724, False),
-    'V-56': Iso('V-56', 'vanadium-56', 23, 56, 55.95048, False),
-    'V-57': Iso('V-57', 'vanadium-57', 23, 57, 56.95252, False),
-    'V-58': Iso('V-58', 'vanadium-58', 23, 58, 57.95672, False),
-    'V-59': Iso('V-59', 'vanadium-59', 23, 59, 58.95939, False),
-    'V-60': Iso('V-60', 'vanadium-60', 23, 60, 59.96431, False),
-    'V-61': Iso('V-61', 'vanadium-61', 23, 61, 60.96725, False),
-    'V-62': Iso('V-62', 'vanadium-62', 23, 62, 61.97265, False),
-    'V-63': Iso('V-63', 'vanadium-63', 23, 63, 62.97639, False),
-    'V-64': Iso('V-64', 'vanadium-64', 23, 64, 63.98264, False),
-    'V-65': Iso('V-65', 'vanadium-65', 23, 65, 64.98750, False),
-    'V-66': Iso('V-66', 'vanadium-66', 23, 66, 65.99398, False),
-    'Cr-42': Iso('Cr-42', 'chromium-42', 24, 42, 42.00670, False),
-    'Cr-43': Iso('Cr-43', 'chromium-43', 24, 43, 42.99753, False),
-    'Cr-44': Iso('Cr-44', 'chromium-44', 24, 44, 43.98536, False),
-    'Cr-45': Iso('Cr-45', 'chromium-45', 24, 45, 44.979050, False),
-    'Cr-46': Iso('Cr-46', 'chromium-46', 24, 46, 45.968359, False),
-    'Cr-47': Iso('Cr-47', 'chromium-47', 24, 47, 46.9628974, False),
-    'Cr-48': Iso('Cr-48', 'chromium-48', 24, 48, 47.9540291, False),
-    'Cr-49': Iso('Cr-49', 'chromium-49', 24, 49, 48.9513333, False),
-    'Cr-50': Iso('Cr-50', 'chromium-50', 24, 50, 49.94604183, True,
-                 isotopic_abundance=0.04345),
-    'Cr-51': Iso('Cr-51', 'chromium-51', 24, 51, 50.94476502, False,
-                 half_life=2393366.4),
-    'Cr-52': Iso('Cr-52', 'chromium-52', 24, 52, 51.94050623, True,
-                 isotopic_abundance=0.83789),
-    'Cr-53': Iso('Cr-53', 'chromium-53', 24, 53, 52.94064815, True,
-                 isotopic_abundance=0.09501),
-    'Cr-54': Iso('Cr-54', 'chromium-54', 24, 54, 53.93887916, True,
-                 isotopic_abundance=0.02365),
-    'Cr-55': Iso('Cr-55', 'chromium-55', 24, 55, 54.94083843, False),
-    'Cr-56': Iso('Cr-56', 'chromium-56', 24, 56, 55.9406531, False),
-    'Cr-57': Iso('Cr-57', 'chromium-57', 24, 57, 56.9436130, False),
-    'Cr-58': Iso('Cr-58', 'chromium-58', 24, 58, 57.94435, False),
-    'Cr-59': Iso('Cr-59', 'chromium-59', 24, 59, 58.94859, False),
-    'Cr-60': Iso('Cr-60', 'chromium-60', 24, 60, 59.95008, False),
-    'Cr-61': Iso('Cr-61', 'chromium-61', 24, 61, 60.95442, False),
-    'Cr-62': Iso('Cr-62', 'chromium-62', 24, 62, 61.95610, False),
-    'Cr-63': Iso('Cr-63', 'chromium-63', 24, 63, 62.96165, False),
-    'Cr-64': Iso('Cr-64', 'chromium-64', 24, 64, 63.96408, False),
-    'Cr-65': Iso('Cr-65', 'chromium-65', 24, 65, 64.96996, False),
-    'Cr-66': Iso('Cr-66', 'chromium-66', 24, 66, 65.97366, False),
-    'Cr-67': Iso('Cr-67', 'chromium-67', 24, 67, 66.98016, False),
-    'Cr-68': Iso('Cr-68', 'chromium-68', 24, 68, 67.98403, False),
-    'Mn-44': Iso('Mn-44', 'manganese-44', 25, 44, 44.00715, False),
-    'Mn-45': Iso('Mn-45', 'manganese-45', 25, 45, 44.99449, False),
-    'Mn-46': Iso('Mn-46', 'manganese-46', 25, 46, 45.98609, False),
-    'Mn-47': Iso('Mn-47', 'manganese-47', 25, 47, 46.975775, False),
-    'Mn-48': Iso('Mn-48', 'manganese-48', 25, 48, 47.96852, False),
-    'Mn-49': Iso('Mn-49', 'manganese-49', 25, 49, 48.959595, False),
-    'Mn-50': Iso('Mn-50', 'manganese-50', 25, 50, 49.95423778, False),
-    'Mn-51': Iso('Mn-51', 'manganese-51', 25, 51, 50.94820847, False),
-    'Mn-52': Iso('Mn-52', 'manganese-52', 25, 52, 51.9455639, False),
-    'Mn-53': Iso('Mn-53', 'manganese-53', 25, 53, 52.94128889, False),
-    'Mn-54': Iso('Mn-54', 'manganese-54', 25, 54, 53.9403576, False,
-                 half_life=26959219.200000003),
-    'Mn-55': Iso('Mn-55', 'manganese-55', 25, 55, 54.93804391, True,
-                 isotopic_abundance=1),
-    'Mn-56': Iso('Mn-56', 'manganese-56', 25, 56, 55.93890369, False),
-    'Mn-57': Iso('Mn-57', 'manganese-57', 25, 57, 56.9382861, False),
-    'Mn-58': Iso('Mn-58', 'manganese-58', 25, 58, 57.9400666, False),
-    'Mn-59': Iso('Mn-59', 'manganese-59', 25, 59, 58.9403911, False),
-    'Mn-60': Iso('Mn-60', 'manganese-60', 25, 60, 59.9431366, False),
-    'Mn-61': Iso('Mn-61', 'manganese-61', 25, 61, 60.9444525, False),
-    'Mn-62': Iso('Mn-62', 'manganese-62', 25, 62, 61.94795, False),
-    'Mn-63': Iso('Mn-63', 'manganese-63', 25, 63, 62.9496647, False),
-    'Mn-64': Iso('Mn-64', 'manganese-64', 25, 64, 63.9538494, False),
-    'Mn-65': Iso('Mn-65', 'manganese-65', 25, 65, 64.9560198, False),
-    'Mn-66': Iso('Mn-66', 'manganese-66', 25, 66, 65.960547, False),
-    'Mn-67': Iso('Mn-67', 'manganese-67', 25, 67, 66.96424, False),
-    'Mn-68': Iso('Mn-68', 'manganese-68', 25, 68, 67.96962, False),
-    'Mn-69': Iso('Mn-69', 'manganese-69', 25, 69, 68.97366, False),
-    'Mn-70': Iso('Mn-70', 'manganese-70', 25, 70, 69.97937, False),
-    'Mn-71': Iso('Mn-71', 'manganese-71', 25, 71, 70.98368, False),
-    'Fe-45': Iso('Fe-45', 'iron-45', 26, 45, 45.01442, False),
-    'Fe-46': Iso('Fe-46', 'iron-46', 26, 46, 46.00063, False),
-    'Fe-47': Iso('Fe-47', 'iron-47', 26, 47, 46.99185, False),
-    'Fe-48': Iso('Fe-48', 'iron-48', 26, 48, 47.98023, False),
-    'Fe-49': Iso('Fe-49', 'iron-49', 26, 49, 48.973429, False),
-    'Fe-50': Iso('Fe-50', 'iron-50', 26, 50, 49.962975, False),
-    'Fe-51': Iso('Fe-51', 'iron-51', 26, 51, 50.9568410, False),
-    'Fe-52': Iso('Fe-52', 'iron-52', 26, 52, 51.9481131, False),
-    'Fe-53': Iso('Fe-53', 'iron-53', 26, 53, 52.9453064, False),
-    'Fe-54': Iso('Fe-54', 'iron-54', 26, 54, 53.93960899, True,
-                 isotopic_abundance=0.05845),
-    'Fe-55': Iso('Fe-55', 'iron-55', 26, 55, 54.93829199, False),
-    'Fe-56': Iso('Fe-56', 'iron-56', 26, 56, 55.93493633, True,
-                 isotopic_abundance=0.91754),
-    'Fe-57': Iso('Fe-57', 'iron-57', 26, 57, 56.93539284, True,
-                 isotopic_abundance=0.02119),
-    'Fe-58': Iso('Fe-58', 'iron-58', 26, 58, 57.93327443, True,
-                 isotopic_abundance=0.00282),
-    'Fe-59': Iso('Fe-59', 'iron-59', 26, 59, 58.93487434, False,
-                 half_life=3845439.36),
-    'Fe-60': Iso('Fe-60', 'iron-60', 26, 60, 59.9340711, False),
-    'Fe-61': Iso('Fe-61', 'iron-61', 26, 61, 60.9367462, False),
-    'Fe-62': Iso('Fe-62', 'iron-62', 26, 62, 61.9367918, False),
-    'Fe-63': Iso('Fe-63', 'iron-63', 26, 63, 62.9402727, False),
-    'Fe-64': Iso('Fe-64', 'iron-64', 26, 64, 63.9409878, False),
-    'Fe-65': Iso('Fe-65', 'iron-65', 26, 65, 64.9450115, False),
-    'Fe-66': Iso('Fe-66', 'iron-66', 26, 66, 65.9462500, False),
-    'Fe-67': Iso('Fe-67', 'iron-67', 26, 67, 66.95054, False),
-    'Fe-68': Iso('Fe-68', 'iron-68', 26, 68, 67.95295, False),
-    'Fe-69': Iso('Fe-69', 'iron-69', 26, 69, 68.95807, False),
-    'Fe-70': Iso('Fe-70', 'iron-70', 26, 70, 69.96102, False),
-    'Fe-71': Iso('Fe-71', 'iron-71', 26, 71, 70.96672, False),
-    'Fe-72': Iso('Fe-72', 'iron-72', 26, 72, 71.96983, False),
-    'Fe-73': Iso('Fe-73', 'iron-73', 26, 73, 72.97572, False),
-    'Fe-74': Iso('Fe-74', 'iron-74', 26, 74, 73.97935, False),
-    'Co-47': Iso('Co-47', 'cobalt-47', 27, 47, 47.01057, False),
-    'Co-48': Iso('Co-48', 'cobalt-48', 27, 48, 48.00093, False),
-    'Co-49': Iso('Co-49', 'cobalt-49', 27, 49, 48.98891, False),
-    'Co-50': Iso('Co-50', 'cobalt-50', 27, 50, 49.98091, False),
-    'Co-51': Iso('Co-51', 'cobalt-51', 27, 51, 50.970647, False),
-    'Co-52': Iso('Co-52', 'cobalt-52', 27, 52, 51.96351, False),
-    'Co-53': Iso('Co-53', 'cobalt-53', 27, 53, 52.9542041, False),
-    'Co-54': Iso('Co-54', 'cobalt-54', 27, 54, 53.94845987, False),
-    'Co-55': Iso('Co-55', 'cobalt-55', 27, 55, 54.94199720, False),
-    'Co-56': Iso('Co-56', 'cobalt-56', 27, 56, 55.93983880, False),
-    'Co-57': Iso('Co-57', 'cobalt-57', 27, 57, 56.93629057, False,
-                 half_life=23510304.0),
-    'Co-58': Iso('Co-58', 'cobalt-58', 27, 58, 57.9357521, False,
-                 half_life=6114528.0),
-    'Co-59': Iso('Co-59', 'cobalt-59', 27, 59, 58.93319429, True,
-                 isotopic_abundance=1),
-    'Co-60': Iso('Co-60', 'cobalt-60', 27, 60, 59.93381630, False,
-                 half_life=166337280.0),
-    'Co-61': Iso('Co-61', 'cobalt-61', 27, 61, 60.93247662, False),
-    'Co-62': Iso('Co-62', 'cobalt-62', 27, 62, 61.934059, False),
-    'Co-63': Iso('Co-63', 'cobalt-63', 27, 63, 62.933600, False),
-    'Co-64': Iso('Co-64', 'cobalt-64', 27, 64, 63.935811, False),
-    'Co-65': Iso('Co-65', 'cobalt-65', 27, 65, 64.9364621, False),
-    'Co-66': Iso('Co-66', 'cobalt-66', 27, 66, 65.939443, False),
-    'Co-67': Iso('Co-67', 'cobalt-67', 27, 67, 66.9406096, False),
-    'Co-68': Iso('Co-68', 'cobalt-68', 27, 68, 67.94426, False),
-    'Co-69': Iso('Co-69', 'cobalt-69', 27, 69, 68.94614, False),
-    'Co-70': Iso('Co-70', 'cobalt-70', 27, 70, 69.94963, False),
-    'Co-71': Iso('Co-71', 'cobalt-71', 27, 71, 70.95237, False),
-    'Co-72': Iso('Co-72', 'cobalt-72', 27, 72, 71.95729, False),
-    'Co-73': Iso('Co-73', 'cobalt-73', 27, 73, 72.96039, False),
-    'Co-74': Iso('Co-74', 'cobalt-74', 27, 74, 73.96515, False),
-    'Co-75': Iso('Co-75', 'cobalt-75', 27, 75, 74.96876, False),
-    'Co-76': Iso('Co-76', 'cobalt-76', 27, 76, 75.97413, False),
-    'Ni-48': Iso('Ni-48', 'nickel-48', 28, 48, 48.01769, False),
-    'Ni-49': Iso('Ni-49', 'nickel-49', 28, 49, 49.00770, False),
-    'Ni-50': Iso('Ni-50', 'nickel-50', 28, 50, 49.99474, False),
-    'Ni-51': Iso('Ni-51', 'nickel-51', 28, 51, 50.98611, False),
-    'Ni-52': Iso('Ni-52', 'nickel-52', 28, 52, 51.97480, False),
-    'Ni-53': Iso('Ni-53', 'nickel-53', 28, 53, 52.968190, False),
-    'Ni-54': Iso('Ni-54', 'nickel-54', 28, 54, 53.957892, False),
-    'Ni-55': Iso('Ni-55', 'nickel-55', 28, 55, 54.95133063, False),
-    'Ni-56': Iso('Ni-56', 'nickel-56', 28, 56, 55.94212855, False),
-    'Ni-57': Iso('Ni-57', 'nickel-57', 28, 57, 56.93979218, False),
-    'Ni-58': Iso('Ni-58', 'nickel-58', 28, 58, 57.93534241, True,
-                 isotopic_abundance=0.68077),
-    'Ni-59': Iso('Ni-59', 'nickel-59', 28, 59, 58.93434620, False),
-    'Ni-60': Iso('Ni-60', 'nickel-60', 28, 60, 59.93078588, True,
-                 isotopic_abundance=0.26223),
-    'Ni-61': Iso('Ni-61', 'nickel-61', 28, 61, 60.93105557, True,
-                 isotopic_abundance=0.011399),
-    'Ni-62': Iso('Ni-62', 'nickel-62', 28, 62, 61.92834537, True,
-                 isotopic_abundance=0.036346),
-    'Ni-63': Iso('Ni-63', 'nickel-63', 28, 63, 62.92966963, False),
-    'Ni-64': Iso('Ni-64', 'nickel-64', 28, 64, 63.92796682, True,
-                 isotopic_abundance=0.009255),
-    'Ni-65': Iso('Ni-65', 'nickel-65', 28, 65, 64.93008517, False),
-    'Ni-66': Iso('Ni-66', 'nickel-66', 28, 66, 65.9291393, False),
-    'Ni-67': Iso('Ni-67', 'nickel-67', 28, 67, 66.9315694, False),
-    'Ni-68': Iso('Ni-68', 'nickel-68', 28, 68, 67.9318688, False),
-    'Ni-69': Iso('Ni-69', 'nickel-69', 28, 69, 68.9356103, False),
-    'Ni-70': Iso('Ni-70', 'nickel-70', 28, 70, 69.9364313, False),
-    'Ni-71': Iso('Ni-71', 'nickel-71', 28, 71, 70.9405190, False),
-    'Ni-72': Iso('Ni-72', 'nickel-72', 28, 72, 71.9417859, False),
-    'Ni-73': Iso('Ni-73', 'nickel-73', 28, 73, 72.9462067, False),
-    'Ni-74': Iso('Ni-74', 'nickel-74', 28, 74, 73.94798, False),
-    'Ni-75': Iso('Ni-75', 'nickel-75', 28, 75, 74.95250, False),
-    'Ni-76': Iso('Ni-76', 'nickel-76', 28, 76, 75.95533, False),
-    'Ni-77': Iso('Ni-77', 'nickel-77', 28, 77, 76.96055, False),
-    'Ni-78': Iso('Ni-78', 'nickel-78', 28, 78, 77.96336, False),
-    'Ni-79': Iso('Ni-79', 'nickel-79', 28, 79, 78.97025, False),
-    'Cu-52': Iso('Cu-52', 'copper-52', 29, 52, 51.99671, False),
-    'Cu-53': Iso('Cu-53', 'copper-53', 29, 53, 52.98459, False),
-    'Cu-54': Iso('Cu-54', 'copper-54', 29, 54, 53.97666, False),
-    'Cu-55': Iso('Cu-55', 'copper-55', 29, 55, 54.96604, False),
-    'Cu-56': Iso('Cu-56', 'copper-56', 29, 56, 55.95895, False),
-    'Cu-57': Iso('Cu-57', 'copper-57', 29, 57, 56.94921250, False),
-    'Cu-58': Iso('Cu-58', 'copper-58', 29, 58, 57.94453305, False),
-    'Cu-59': Iso('Cu-59', 'copper-59', 29, 59, 58.93949748, False),
-    'Cu-60': Iso('Cu-60', 'copper-60', 29, 60, 59.9373645, False),
-    'Cu-61': Iso('Cu-61', 'copper-61', 29, 61, 60.9334576, False),
-    'Cu-62': Iso('Cu-62', 'copper-62', 29, 62, 61.93259541, False),
-    'Cu-63': Iso('Cu-63', 'copper-63', 29, 63, 62.92959772, True,
-                 isotopic_abundance=0.6915),
-    'Cu-64': Iso('Cu-64', 'copper-64', 29, 64, 63.92976434, False),
-    'Cu-65': Iso('Cu-65', 'copper-65', 29, 65, 64.92778970, True,
-                 isotopic_abundance=0.3085),
-    'Cu-66': Iso('Cu-66', 'copper-66', 29, 66, 65.92886903, False),
-    'Cu-67': Iso('Cu-67', 'copper-67', 29, 67, 66.9277303, False),
-    'Cu-68': Iso('Cu-68', 'copper-68', 29, 68, 67.9296109, False),
-    'Cu-69': Iso('Cu-69', 'copper-69', 29, 69, 68.9294293, False),
-    'Cu-70': Iso('Cu-70', 'copper-70', 29, 70, 69.9323921, False),
-    'Cu-71': Iso('Cu-71', 'copper-71', 29, 71, 70.9326768, False),
-    'Cu-72': Iso('Cu-72', 'copper-72', 29, 72, 71.9358203, False),
-    'Cu-73': Iso('Cu-73', 'copper-73', 29, 73, 72.9366744, False),
-    'Cu-74': Iso('Cu-74', 'copper-74', 29, 74, 73.9398749, False),
-    'Cu-75': Iso('Cu-75', 'copper-75', 29, 75, 74.9415226, False),
-    'Cu-76': Iso('Cu-76', 'copper-76', 29, 76, 75.9452750, False),
-    'Cu-77': Iso('Cu-77', 'copper-77', 29, 77, 76.94792, False),
-    'Cu-78': Iso('Cu-78', 'copper-78', 29, 78, 77.95223, False),
-    'Cu-79': Iso('Cu-79', 'copper-79', 29, 79, 78.95502, False),
-    'Cu-80': Iso('Cu-80', 'copper-80', 29, 80, 79.96089, False),
-    'Cu-81': Iso('Cu-81', 'copper-81', 29, 81, 80.96587, False),
-    'Cu-82': Iso('Cu-82', 'copper-82', 29, 82, 81.97244, False),
-    'Zn-54': Iso('Zn-54', 'zinc-54', 30, 54, 53.99204, False),
-    'Zn-55': Iso('Zn-55', 'zinc-55', 30, 55, 54.98398, False),
-    'Zn-56': Iso('Zn-56', 'zinc-56', 30, 56, 55.97254, False),
-    'Zn-57': Iso('Zn-57', 'zinc-57', 30, 57, 56.96506, False),
-    'Zn-58': Iso('Zn-58', 'zinc-58', 30, 58, 57.954591, False),
-    'Zn-59': Iso('Zn-59', 'zinc-59', 30, 59, 58.94931266, False),
-    'Zn-60': Iso('Zn-60', 'zinc-60', 30, 60, 59.94184210, False),
-    'Zn-61': Iso('Zn-61', 'zinc-61', 30, 61, 60.939507, False),
-    'Zn-62': Iso('Zn-62', 'zinc-62', 30, 62, 61.93433397, False),
-    'Zn-63': Iso('Zn-63', 'zinc-63', 30, 63, 62.9332115, False),
-    'Zn-64': Iso('Zn-64', 'zinc-64', 30, 64, 63.92914201, True,
-                 isotopic_abundance=0.4917),
-    'Zn-65': Iso('Zn-65', 'zinc-65', 30, 65, 64.92924077, False,
-                 half_life=21095769.599999998),
-    'Zn-66': Iso('Zn-66', 'zinc-66', 30, 66, 65.92603381, True,
-                 isotopic_abundance=0.2773),
-    'Zn-67': Iso('Zn-67', 'zinc-67', 30, 67, 66.92712775, True,
-                 isotopic_abundance=0.0404),
-    'Zn-68': Iso('Zn-68', 'zinc-68', 30, 68, 67.92484455, True,
-                 isotopic_abundance=0.1845),
-    'Zn-69': Iso('Zn-69', 'zinc-69', 30, 69, 68.9265507, False),
-    'Zn-70': Iso('Zn-70', 'zinc-70', 30, 70, 69.9253192, True,
-                 isotopic_abundance=0.0061),
-    'Zn-71': Iso('Zn-71', 'zinc-71', 30, 71, 70.9277196, False),
-    'Zn-72': Iso('Zn-72', 'zinc-72', 30, 72, 71.9268428, False),
-    'Zn-73': Iso('Zn-73', 'zinc-73', 30, 73, 72.9295826, False),
-    'Zn-74': Iso('Zn-74', 'zinc-74', 30, 74, 73.9294073, False),
-    'Zn-75': Iso('Zn-75', 'zinc-75', 30, 75, 74.9328402, False),
-    'Zn-76': Iso('Zn-76', 'zinc-76', 30, 76, 75.9331150, False),
-    'Zn-77': Iso('Zn-77', 'zinc-77', 30, 77, 76.9368872, False),
-    'Zn-78': Iso('Zn-78', 'zinc-78', 30, 78, 77.9382892, False),
-    'Zn-79': Iso('Zn-79', 'zinc-79', 30, 79, 78.9426381, False),
-    'Zn-80': Iso('Zn-80', 'zinc-80', 30, 80, 79.9445529, False),
-    'Zn-81': Iso('Zn-81', 'zinc-81', 30, 81, 80.9504026, False),
-    'Zn-82': Iso('Zn-82', 'zinc-82', 30, 82, 81.95426, False),
-    'Zn-83': Iso('Zn-83', 'zinc-83', 30, 83, 82.96056, False),
-    'Zn-84': Iso('Zn-84', 'zinc-84', 30, 84, 83.96521, False),
-    'Zn-85': Iso('Zn-85', 'zinc-85', 30, 85, 84.97226, False),
-    'Ga-56': Iso('Ga-56', 'gallium-56', 31, 56, 55.99536, False),
-    'Ga-57': Iso('Ga-57', 'gallium-57', 31, 57, 56.98320, False),
-    'Ga-58': Iso('Ga-58', 'gallium-58', 31, 58, 57.97478, False),
-    'Ga-59': Iso('Ga-59', 'gallium-59', 31, 59, 58.96353, False),
-    'Ga-60': Iso('Ga-60', 'gallium-60', 31, 60, 59.95729, False),
-    'Ga-61': Iso('Ga-61', 'gallium-61', 31, 61, 60.949399, False),
-    'Ga-62': Iso('Ga-62', 'gallium-62', 31, 62, 61.94419025, False),
-    'Ga-63': Iso('Ga-63', 'gallium-63', 31, 63, 62.9392942, False),
-    'Ga-64': Iso('Ga-64', 'gallium-64', 31, 64, 63.9368404, False),
-    'Ga-65': Iso('Ga-65', 'gallium-65', 31, 65, 64.93273459, False),
-    'Ga-66': Iso('Ga-66', 'gallium-66', 31, 66, 65.9315894, False),
-    'Ga-67': Iso('Ga-67', 'gallium-67', 31, 67, 66.9282025, False,
-                 half_life=281797.056),
-    'Ga-68': Iso('Ga-68', 'gallium-68', 31, 68, 67.9279805, False),
-    'Ga-69': Iso('Ga-69', 'gallium-69', 31, 69, 68.9255735, True,
-                 isotopic_abundance=0.60108),
-    'Ga-70': Iso('Ga-70', 'gallium-70', 31, 70, 69.9260219, False),
-    'Ga-71': Iso('Ga-71', 'gallium-71', 31, 71, 70.92470258, True,
-                 isotopic_abundance=0.39892),
-    'Ga-72': Iso('Ga-72', 'gallium-72', 31, 72, 71.92636747, False),
-    'Ga-73': Iso('Ga-73', 'gallium-73', 31, 73, 72.9251747, False),
-    'Ga-74': Iso('Ga-74', 'gallium-74', 31, 74, 73.9269457, False),
-    'Ga-75': Iso('Ga-75', 'gallium-75', 31, 75, 74.9265002, False),
-    'Ga-76': Iso('Ga-76', 'gallium-76', 31, 76, 75.9288276, False),
-    'Ga-77': Iso('Ga-77', 'gallium-77', 31, 77, 76.9291543, False),
-    'Ga-78': Iso('Ga-78', 'gallium-78', 31, 78, 77.9316088, False),
-    'Ga-79': Iso('Ga-79', 'gallium-79', 31, 79, 78.9328523, False),
-    'Ga-80': Iso('Ga-80', 'gallium-80', 31, 80, 79.9364208, False),
-    'Ga-81': Iso('Ga-81', 'gallium-81', 31, 81, 80.9381338, False),
-    'Ga-82': Iso('Ga-82', 'gallium-82', 31, 82, 81.9431765, False),
-    'Ga-83': Iso('Ga-83', 'gallium-83', 31, 83, 82.9471203, False),
-    'Ga-84': Iso('Ga-84', 'gallium-84', 31, 84, 83.95246, False),
-    'Ga-85': Iso('Ga-85', 'gallium-85', 31, 85, 84.95699, False),
-    'Ga-86': Iso('Ga-86', 'gallium-86', 31, 86, 85.96301, False),
-    'Ga-87': Iso('Ga-87', 'gallium-87', 31, 87, 86.96824, False),
-    'Ge-58': Iso('Ge-58', 'germanium-58', 32, 58, 57.99172, False),
-    'Ge-59': Iso('Ge-59', 'germanium-59', 32, 59, 58.98249, False),
-    'Ge-60': Iso('Ge-60', 'germanium-60', 32, 60, 59.97036, False),
-    'Ge-61': Iso('Ge-61', 'germanium-61', 32, 61, 60.96379, False),
-    'Ge-62': Iso('Ge-62', 'germanium-62', 32, 62, 61.95502, False),
-    'Ge-63': Iso('Ge-63', 'germanium-63', 32, 63, 62.949628, False),
-    'Ge-64': Iso('Ge-64', 'germanium-64', 32, 64, 63.9416899, False),
-    'Ge-65': Iso('Ge-65', 'germanium-65', 32, 65, 64.9393681, False),
-    'Ge-66': Iso('Ge-66', 'germanium-66', 32, 66, 65.9338621, False),
-    'Ge-67': Iso('Ge-67', 'germanium-67', 32, 67, 66.9327339, False),
-    'Ge-68': Iso('Ge-68', 'germanium-68', 32, 68, 67.9280953, False),
-    'Ge-69': Iso('Ge-69', 'germanium-69', 32, 69, 68.9279645, False),
-    'Ge-70': Iso('Ge-70', 'germanium-70', 32, 70, 69.92424875, True,
-                 isotopic_abundance=0.2057),
-    'Ge-71': Iso('Ge-71', 'germanium-71', 32, 71, 70.92495233, False),
-    'Ge-72': Iso('Ge-72', 'germanium-72', 32, 72, 71.922075826, True,
-                 isotopic_abundance=0.2745),
-    'Ge-73': Iso('Ge-73', 'germanium-73', 32, 73, 72.923458956, True,
-                 isotopic_abundance=0.0775),
-    'Ge-74': Iso('Ge-74', 'germanium-74', 32, 74, 73.921177761, True,
-                 isotopic_abundance=0.3650),
-    'Ge-75': Iso('Ge-75', 'germanium-75', 32, 75, 74.922858370, False),
-    'Ge-76': Iso('Ge-76', 'germanium-76', 32, 76, 75.921402726, False,
-                 isotopic_abundance=0.0773),
-    'Ge-77': Iso('Ge-77', 'germanium-77', 32, 77, 76.923549843, False),
-    'Ge-78': Iso('Ge-78', 'germanium-78', 32, 78, 77.9228529, False),
-    'Ge-79': Iso('Ge-79', 'germanium-79', 32, 79, 78.925360, False),
-    'Ge-80': Iso('Ge-80', 'germanium-80', 32, 80, 79.9253508, False),
-    'Ge-81': Iso('Ge-81', 'germanium-81', 32, 81, 80.9288329, False),
-    'Ge-82': Iso('Ge-82', 'germanium-82', 32, 82, 81.9297740, False),
-    'Ge-83': Iso('Ge-83', 'germanium-83', 32, 83, 82.9345391, False),
-    'Ge-84': Iso('Ge-84', 'germanium-84', 32, 84, 83.9375751, False),
-    'Ge-85': Iso('Ge-85', 'germanium-85', 32, 85, 84.9429697, False),
-    'Ge-86': Iso('Ge-86', 'germanium-86', 32, 86, 85.94658, False),
-    'Ge-87': Iso('Ge-87', 'germanium-87', 32, 87, 86.95268, False),
-    'Ge-88': Iso('Ge-88', 'germanium-88', 32, 88, 87.95691, False),
-    'Ge-89': Iso('Ge-89', 'germanium-89', 32, 89, 88.96379, False),
-    'Ge-90': Iso('Ge-90', 'germanium-90', 32, 90, 89.96863, False),
-    'As-60': Iso('As-60', 'arsenic-60', 33, 60, 59.99388, False),
-    'As-61': Iso('As-61', 'arsenic-61', 33, 61, 60.98112, False),
-    'As-62': Iso('As-62', 'arsenic-62', 33, 62, 61.97361, False),
-    'As-63': Iso('As-63', 'arsenic-63', 33, 63, 62.96390, False),
-    'As-64': Iso('As-64', 'arsenic-64', 33, 64, 63.95743, False),
-    'As-65': Iso('As-65', 'arsenic-65', 33, 65, 64.949611, False),
-    'As-66': Iso('As-66', 'arsenic-66', 33, 66, 65.9441488, False),
-    'As-67': Iso('As-67', 'arsenic-67', 33, 67, 66.93925111, False),
-    'As-68': Iso('As-68', 'arsenic-68', 33, 68, 67.9367741, False),
-    'As-69': Iso('As-69', 'arsenic-69', 33, 69, 68.932246, False),
-    'As-70': Iso('As-70', 'arsenic-70', 33, 70, 69.930926, False),
-    'As-71': Iso('As-71', 'arsenic-71', 33, 71, 70.9271138, False),
-    'As-72': Iso('As-72', 'arsenic-72', 33, 72, 71.9267523, False),
-    'As-73': Iso('As-73', 'arsenic-73', 33, 73, 72.9238291, False),
-    'As-74': Iso('As-74', 'arsenic-74', 33, 74, 73.9239286, False),
-    'As-75': Iso('As-75', 'arsenic-75', 33, 75, 74.92159457, True,
-                 isotopic_abundance=1),
-    'As-76': Iso('As-76', 'arsenic-76', 33, 76, 75.92239202, False),
-    'As-77': Iso('As-77', 'arsenic-77', 33, 77, 76.9206476, False),
-    'As-78': Iso('As-78', 'arsenic-78', 33, 78, 77.921828, False),
-    'As-79': Iso('As-79', 'arsenic-79', 33, 79, 78.9209484, False),
-    'As-80': Iso('As-80', 'arsenic-80', 33, 80, 79.9224746, False),
-    'As-81': Iso('As-81', 'arsenic-81', 33, 81, 80.9221323, False),
-    'As-82': Iso('As-82', 'arsenic-82', 33, 82, 81.9247412, False),
-    'As-83': Iso('As-83', 'arsenic-83', 33, 83, 82.9252069, False),
-    'As-84': Iso('As-84', 'arsenic-84', 33, 84, 83.9293033, False),
-    'As-85': Iso('As-85', 'arsenic-85', 33, 85, 84.9321637, False),
-    'As-86': Iso('As-86', 'arsenic-86', 33, 86, 85.9367015, False),
-    'As-87': Iso('As-87', 'arsenic-87', 33, 87, 86.9402917, False),
-    'As-88': Iso('As-88', 'arsenic-88', 33, 88, 87.94555, False),
-    'As-89': Iso('As-89', 'arsenic-89', 33, 89, 88.94976, False),
-    'As-90': Iso('As-90', 'arsenic-90', 33, 90, 89.95563, False),
-    'As-91': Iso('As-91', 'arsenic-91', 33, 91, 90.96039, False),
-    'As-92': Iso('As-92', 'arsenic-92', 33, 92, 91.96674, False),
-    'Se-64': Iso('Se-64', 'selenium-64', 34, 64, 63.97109, False),
-    'Se-65': Iso('Se-65', 'selenium-65', 34, 65, 64.96440, False),
-    'Se-66': Iso('Se-66', 'selenium-66', 34, 66, 65.95559, False),
-    'Se-67': Iso('Se-67', 'selenium-67', 34, 67, 66.949994, False),
-    'Se-68': Iso('Se-68', 'selenium-68', 34, 68, 67.94182524, False),
-    'Se-69': Iso('Se-69', 'selenium-69', 34, 69, 68.9394148, False),
-    'Se-70': Iso('Se-70', 'selenium-70', 34, 70, 69.9335155, False),
-    'Se-71': Iso('Se-71', 'selenium-71', 34, 71, 70.9322094, False),
-    'Se-72': Iso('Se-72', 'selenium-72', 34, 72, 71.9271405, False),
-    'Se-73': Iso('Se-73', 'selenium-73', 34, 73, 72.9267549, False),
-    'Se-74': Iso('Se-74', 'selenium-74', 34, 74, 73.922475934, True,
-                 isotopic_abundance=0.0089),
-    'Se-75': Iso('Se-75', 'selenium-75', 34, 75, 74.922522870, False,
-                 half_life=10351497.6),
-    'Se-76': Iso('Se-76', 'selenium-76', 34, 76, 75.919213704, True,
-                 isotopic_abundance=0.0937),
-    'Se-77': Iso('Se-77', 'selenium-77', 34, 77, 76.919914154, True,
-                 isotopic_abundance=0.0763),
-    'Se-78': Iso('Se-78', 'selenium-78', 34, 78, 77.91730928, True,
-                 isotopic_abundance=0.2377),
-    'Se-79': Iso('Se-79', 'selenium-79', 34, 79, 78.91849929, False),
-    'Se-80': Iso('Se-80', 'selenium-80', 34, 80, 79.9165218, True,
-                 isotopic_abundance=0.4961),
-    'Se-81': Iso('Se-81', 'selenium-81', 34, 81, 80.9179930, False),
-    'Se-82': Iso('Se-82', 'selenium-82', 34, 82, 81.9166995, False,
-                 isotopic_abundance=0.0873),
-    'Se-83': Iso('Se-83', 'selenium-83', 34, 83, 82.9191186, False),
-    'Se-84': Iso('Se-84', 'selenium-84', 34, 84, 83.9184668, False),
-    'Se-85': Iso('Se-85', 'selenium-85', 34, 85, 84.9222608, False),
-    'Se-86': Iso('Se-86', 'selenium-86', 34, 86, 85.9243117, False),
-    'Se-87': Iso('Se-87', 'selenium-87', 34, 87, 86.9286886, False),
-    'Se-88': Iso('Se-88', 'selenium-88', 34, 88, 87.9314175, False),
-    'Se-89': Iso('Se-89', 'selenium-89', 34, 89, 88.9366691, False),
-    'Se-90': Iso('Se-90', 'selenium-90', 34, 90, 89.94010, False),
-    'Se-91': Iso('Se-91', 'selenium-91', 34, 91, 90.94596, False),
-    'Se-92': Iso('Se-92', 'selenium-92', 34, 92, 91.94984, False),
-    'Se-93': Iso('Se-93', 'selenium-93', 34, 93, 92.95629, False),
-    'Se-94': Iso('Se-94', 'selenium-94', 34, 94, 93.96049, False),
-    'Se-95': Iso('Se-95', 'selenium-95', 34, 95, 94.96730, False),
-    'Br-67': Iso('Br-67', 'bromine-67', 35, 67, 66.96465, False),
-    'Br-68': Iso('Br-68', 'bromine-68', 35, 68, 67.95873, False),
-    'Br-69': Iso('Br-69', 'bromine-69', 35, 69, 68.950497, False),
-    'Br-70': Iso('Br-70', 'bromine-70', 35, 70, 69.944792, False),
-    'Br-71': Iso('Br-71', 'bromine-71', 35, 71, 70.9393422, False),
-    'Br-72': Iso('Br-72', 'bromine-72', 35, 72, 71.9365886, False),
-    'Br-73': Iso('Br-73', 'bromine-73', 35, 73, 72.9316715, False),
-    'Br-74': Iso('Br-74', 'bromine-74', 35, 74, 73.9299102, False),
-    'Br-75': Iso('Br-75', 'bromine-75', 35, 75, 74.9258105, False),
-    'Br-76': Iso('Br-76', 'bromine-76', 35, 76, 75.924542, False),
-    'Br-77': Iso('Br-77', 'bromine-77', 35, 77, 76.9213792, False),
-    'Br-78': Iso('Br-78', 'bromine-78', 35, 78, 77.9211459, False),
-    'Br-79': Iso('Br-79', 'bromine-79', 35, 79, 78.9183376, True,
-                 isotopic_abundance=0.5069),
-    'Br-80': Iso('Br-80', 'bromine-80', 35, 80, 79.9185298, False),
-    'Br-81': Iso('Br-81', 'bromine-81', 35, 81, 80.9162897, True,
-                 isotopic_abundance=0.4931),
-    'Br-82': Iso('Br-82', 'bromine-82', 35, 82, 81.9168032, False),
-    'Br-83': Iso('Br-83', 'bromine-83', 35, 83, 82.9151756, False),
-    'Br-84': Iso('Br-84', 'bromine-84', 35, 84, 83.916496, False),
-    'Br-85': Iso('Br-85', 'bromine-85', 35, 85, 84.9156458, False),
-    'Br-86': Iso('Br-86', 'bromine-86', 35, 86, 85.9188054, False),
-    'Br-87': Iso('Br-87', 'bromine-87', 35, 87, 86.9206740, False),
-    'Br-88': Iso('Br-88', 'bromine-88', 35, 88, 87.9240833, False),
-    'Br-89': Iso('Br-89', 'bromine-89', 35, 89, 88.9267046, False),
-    'Br-90': Iso('Br-90', 'bromine-90', 35, 90, 89.9312928, False),
-    'Br-91': Iso('Br-91', 'bromine-91', 35, 91, 90.9343986, False),
-    'Br-92': Iso('Br-92', 'bromine-92', 35, 92, 91.9396316, False),
-    'Br-93': Iso('Br-93', 'bromine-93', 35, 93, 92.94313, False),
-    'Br-94': Iso('Br-94', 'bromine-94', 35, 94, 93.94890, False),
-    'Br-95': Iso('Br-95', 'bromine-95', 35, 95, 94.95301, False),
-    'Br-96': Iso('Br-96', 'bromine-96', 35, 96, 95.95903, False),
-    'Br-97': Iso('Br-97', 'bromine-97', 35, 97, 96.96344, False),
-    'Br-98': Iso('Br-98', 'bromine-98', 35, 98, 97.96946, False),
-    'Kr-69': Iso('Kr-69', 'krypton-69', 36, 69, 68.96518, False),
-    'Kr-70': Iso('Kr-70', 'krypton-70', 36, 70, 69.95604, False),
-    'Kr-71': Iso('Kr-71', 'krypton-71', 36, 71, 70.95027, False),
-    'Kr-72': Iso('Kr-72', 'krypton-72', 36, 72, 71.9420924, False),
-    'Kr-73': Iso('Kr-73', 'krypton-73', 36, 73, 72.9392892, False),
-    'Kr-74': Iso('Kr-74', 'krypton-74', 36, 74, 73.9330840, False),
-    'Kr-75': Iso('Kr-75', 'krypton-75', 36, 75, 74.9309457, False),
-    'Kr-76': Iso('Kr-76', 'krypton-76', 36, 76, 75.9259103, False),
-    'Kr-77': Iso('Kr-77', 'krypton-77', 36, 77, 76.9246700, False),
-    'Kr-78': Iso('Kr-78', 'krypton-78', 36, 78, 77.92036494, True,
-                 isotopic_abundance=0.00355),
-    'Kr-79': Iso('Kr-79', 'krypton-79', 36, 79, 78.9200829, False),
-    'Kr-80': Iso('Kr-80', 'krypton-80', 36, 80, 79.91637808, True,
-                 isotopic_abundance=0.02286),
-    'Kr-81': Iso('Kr-81', 'krypton-81', 36, 81, 80.9165912, False),
-    'Kr-82': Iso('Kr-82', 'krypton-82', 36, 82, 81.91348273, True,
-                 isotopic_abundance=0.11593),
-    'Kr-83': Iso('Kr-83', 'krypton-83', 36, 83, 82.91412716, True,
-                 isotopic_abundance=0.11500),
-    'Kr-84': Iso('Kr-84', 'krypton-84', 36, 84, 83.9114977282, True,
-                 isotopic_abundance=0.56987),
-    'Kr-85': Iso('Kr-85', 'krypton-85', 36, 85, 84.9125273, False,
-                 half_life=340044480.0),
-    'Kr-86': Iso('Kr-86', 'krypton-86', 36, 86, 85.9106106269, True,
-                 isotopic_abundance=0.17279),
-    'Kr-87': Iso('Kr-87', 'krypton-87', 36, 87, 86.91335476, False),
-    'Kr-88': Iso('Kr-88', 'krypton-88', 36, 88, 87.9144479, False),
-    'Kr-89': Iso('Kr-89', 'krypton-89', 36, 89, 88.9178355, False),
-    'Kr-90': Iso('Kr-90', 'krypton-90', 36, 90, 89.9195279, False),
-    'Kr-91': Iso('Kr-91', 'krypton-91', 36, 91, 90.9238063, False),
-    'Kr-92': Iso('Kr-92', 'krypton-92', 36, 92, 91.9261731, False),
-    'Kr-93': Iso('Kr-93', 'krypton-93', 36, 93, 92.9311472, False),
-    'Kr-94': Iso('Kr-94', 'krypton-94', 36, 94, 93.934140, False),
-    'Kr-95': Iso('Kr-95', 'krypton-95', 36, 95, 94.939711, False),
-    'Kr-96': Iso('Kr-96', 'krypton-96', 36, 96, 95.943017, False),
-    'Kr-97': Iso('Kr-97', 'krypton-97', 36, 97, 96.94909, False),
-    'Kr-98': Iso('Kr-98', 'krypton-98', 36, 98, 97.95243, False),
-    'Kr-99': Iso('Kr-99', 'krypton-99', 36, 99, 98.95839, False),
-    'Kr-100': Iso('Kr-100', 'krypton-100', 36, 100, 99.96237, False),
-    'Kr-101': Iso('Kr-101', 'krypton-101', 36, 101, 100.96873, False),
-    'Rb-71': Iso('Rb-71', 'rubidium-71', 37, 71, 70.96532, False),
-    'Rb-72': Iso('Rb-72', 'rubidium-72', 37, 72, 71.95908, False),
-    'Rb-73': Iso('Rb-73', 'rubidium-73', 37, 73, 72.95053, False),
-    'Rb-74': Iso('Rb-74', 'rubidium-74', 37, 74, 73.9442659, False),
-    'Rb-75': Iso('Rb-75', 'rubidium-75', 37, 75, 74.9385732, False),
-    'Rb-76': Iso('Rb-76', 'rubidium-76', 37, 76, 75.9350730, False),
-    'Rb-77': Iso('Rb-77', 'rubidium-77', 37, 77, 76.9304016, False),
-    'Rb-78': Iso('Rb-78', 'rubidium-78', 37, 78, 77.9281419, False),
-    'Rb-79': Iso('Rb-79', 'rubidium-79', 37, 79, 78.9239899, False),
-    'Rb-80': Iso('Rb-80', 'rubidium-80', 37, 80, 79.9225164, False),
-    'Rb-81': Iso('Rb-81', 'rubidium-81', 37, 81, 80.9189939, False),
-    'Rb-82': Iso('Rb-82', 'rubidium-82', 37, 82, 81.9182090, False),
-    'Rb-83': Iso('Rb-83', 'rubidium-83', 37, 83, 82.9151142, False),
-    'Rb-84': Iso('Rb-84', 'rubidium-84', 37, 84, 83.9143752, False),
-    'Rb-85': Iso('Rb-85', 'rubidium-85', 37, 85, 84.9117897379, True,
-                 isotopic_abundance=0.7217),
-    'Rb-86': Iso('Rb-86', 'rubidium-86', 37, 86, 85.91116743, False),
-    'Rb-87': Iso('Rb-87', 'rubidium-87', 37, 87, 86.9091805310, False,
-                 isotopic_abundance=0.2783),
-    'Rb-88': Iso('Rb-88', 'rubidium-88', 37, 88, 87.91131559, False),
-    'Rb-89': Iso('Rb-89', 'rubidium-89', 37, 89, 88.9122783, False),
-    'Rb-90': Iso('Rb-90', 'rubidium-90', 37, 90, 89.9147985, False),
-    'Rb-91': Iso('Rb-91', 'rubidium-91', 37, 91, 90.9165372, False),
-    'Rb-92': Iso('Rb-92', 'rubidium-92', 37, 92, 91.9197284, False),
-    'Rb-93': Iso('Rb-93', 'rubidium-93', 37, 93, 92.9220393, False),
-    'Rb-94': Iso('Rb-94', 'rubidium-94', 37, 94, 93.9263948, False),
-    'Rb-95': Iso('Rb-95', 'rubidium-95', 37, 95, 94.929260, False),
-    'Rb-96': Iso('Rb-96', 'rubidium-96', 37, 96, 95.9341334, False),
-    'Rb-97': Iso('Rb-97', 'rubidium-97', 37, 97, 96.9371771, False),
-    'Rb-98': Iso('Rb-98', 'rubidium-98', 37, 98, 97.9416869, False),
-    'Rb-99': Iso('Rb-99', 'rubidium-99', 37, 99, 98.94503, False),
-    'Rb-100': Iso('Rb-100', 'rubidium-100', 37, 100, 99.95003, False),
-    'Rb-101': Iso('Rb-101', 'rubidium-101', 37, 101, 100.95404, False),
-    'Rb-102': Iso('Rb-102', 'rubidium-102', 37, 102, 101.95952, False),
-    'Rb-103': Iso('Rb-103', 'rubidium-103', 37, 103, 102.96392, False),
-    'Sr-73': Iso('Sr-73', 'strontium-73', 38, 73, 72.96570, False),
-    'Sr-74': Iso('Sr-74', 'strontium-74', 38, 74, 73.95617, False),
-    'Sr-75': Iso('Sr-75', 'strontium-75', 38, 75, 74.94995, False),
-    'Sr-76': Iso('Sr-76', 'strontium-76', 38, 76, 75.941763, False),
-    'Sr-77': Iso('Sr-77', 'strontium-77', 38, 77, 76.9379455, False),
-    'Sr-78': Iso('Sr-78', 'strontium-78', 38, 78, 77.9321800, False),
-    'Sr-79': Iso('Sr-79', 'strontium-79', 38, 79, 78.9297077, False),
-    'Sr-80': Iso('Sr-80', 'strontium-80', 38, 80, 79.9245175, False),
-    'Sr-81': Iso('Sr-81', 'strontium-81', 38, 81, 80.9232114, False),
-    'Sr-82': Iso('Sr-82', 'strontium-82', 38, 82, 81.9183999, False),
-    'Sr-83': Iso('Sr-83', 'strontium-83', 38, 83, 82.9175544, False),
-    'Sr-84': Iso('Sr-84', 'strontium-84', 38, 84, 83.9134191, True,
-                 isotopic_abundance=0.0056),
-    'Sr-85': Iso('Sr-85', 'strontium-85', 38, 85, 84.9129320, False,
-                 half_life=5603299.199999999),
-    'Sr-86': Iso('Sr-86', 'strontium-86', 38, 86, 85.9092606, True,
-                 isotopic_abundance=0.0986),
-    'Sr-87': Iso('Sr-87', 'strontium-87', 38, 87, 86.9088775, True,
-                 isotopic_abundance=0.0700),
-    'Sr-88': Iso('Sr-88', 'strontium-88', 38, 88, 87.9056125, True,
-                 isotopic_abundance=0.8258),
-    'Sr-89': Iso('Sr-89', 'strontium-89', 38, 89, 88.9074511, False),
-    'Sr-90': Iso('Sr-90', 'strontium-90', 38, 90, 89.9077300, False),
-    'Sr-91': Iso('Sr-91', 'strontium-91', 38, 91, 90.9101954, False),
-    'Sr-92': Iso('Sr-92', 'strontium-92', 38, 92, 91.9110382, False),
-    'Sr-93': Iso('Sr-93', 'strontium-93', 38, 93, 92.9140242, False),
-    'Sr-94': Iso('Sr-94', 'strontium-94', 38, 94, 93.9153556, False),
-    'Sr-95': Iso('Sr-95', 'strontium-95', 38, 95, 94.9193529, False),
-    'Sr-96': Iso('Sr-96', 'strontium-96', 38, 96, 95.9217066, False),
-    'Sr-97': Iso('Sr-97', 'strontium-97', 38, 97, 96.9263740, False),
-    'Sr-98': Iso('Sr-98', 'strontium-98', 38, 98, 97.9286888, False),
-    'Sr-99': Iso('Sr-99', 'strontium-99', 38, 99, 98.9328907, False),
-    'Sr-100': Iso('Sr-100', 'strontium-100', 38, 100, 99.935770, False),
-    'Sr-101': Iso('Sr-101', 'strontium-101', 38, 101, 100.940352, False),
-    'Sr-102': Iso('Sr-102', 'strontium-102', 38, 102, 101.943791, False),
-    'Sr-103': Iso('Sr-103', 'strontium-103', 38, 103, 102.94909, False),
-    'Sr-104': Iso('Sr-104', 'strontium-104', 38, 104, 103.95265, False),
-    'Sr-105': Iso('Sr-105', 'strontium-105', 38, 105, 104.95855, False),
-    'Sr-106': Iso('Sr-106', 'strontium-106', 38, 106, 105.96265, False),
-    'Sr-107': Iso('Sr-107', 'strontium-107', 38, 107, 106.96897, False),
-    'Y-76': Iso('Y-76', 'yttrium-76', 39, 76, 75.95856, False),
-    'Y-77': Iso('Y-77', 'yttrium-77', 39, 77, 76.949781, False),
-    'Y-78': Iso('Y-78', 'yttrium-78', 39, 78, 77.94361, False),
-    'Y-79': Iso('Y-79', 'yttrium-79', 39, 79, 78.93735, False),
-    'Y-80': Iso('Y-80', 'yttrium-80', 39, 80, 79.9343561, False),
-    'Y-81': Iso('Y-81', 'yttrium-81', 39, 81, 80.9294556, False),
-    'Y-82': Iso('Y-82', 'yttrium-82', 39, 82, 81.9269314, False),
-    'Y-83': Iso('Y-83', 'yttrium-83', 39, 83, 82.922485, False),
-    'Y-84': Iso('Y-84', 'yttrium-84', 39, 84, 83.9206721, False),
-    'Y-85': Iso('Y-85', 'yttrium-85', 39, 85, 84.916433, False),
-    'Y-86': Iso('Y-86', 'yttrium-86', 39, 86, 85.914886, False),
-    'Y-87': Iso('Y-87', 'yttrium-87', 39, 87, 86.9108761, False),
-    'Y-88': Iso('Y-88', 'yttrium-88', 39, 88, 87.9095016, False,
-                half_life=9212486.4),
-    'Y-89': Iso('Y-89', 'yttrium-89', 39, 89, 88.9058403, True,
-                isotopic_abundance=1),
-    'Y-90': Iso('Y-90', 'yttrium-90', 39, 90, 89.9071439, False),
-    'Y-91': Iso('Y-91', 'yttrium-91', 39, 91, 90.9072974, False),
-    'Y-92': Iso('Y-92', 'yttrium-92', 39, 92, 91.9089451, False),
-    'Y-93': Iso('Y-93', 'yttrium-93', 39, 93, 92.909578, False),
-    'Y-94': Iso('Y-94', 'yttrium-94', 39, 94, 93.9115906, False),
-    'Y-95': Iso('Y-95', 'yttrium-95', 39, 95, 94.9128161, False),
-    'Y-96': Iso('Y-96', 'yttrium-96', 39, 96, 95.9158968, False),
-    'Y-97': Iso('Y-97', 'yttrium-97', 39, 97, 96.9182741, False),
-    'Y-98': Iso('Y-98', 'yttrium-98', 39, 98, 97.9223821, False),
-    'Y-99': Iso('Y-99', 'yttrium-99', 39, 99, 98.9241480, False),
-    'Y-100': Iso('Y-100', 'yttrium-100', 39, 100, 99.927715, False),
-    'Y-101': Iso('Y-101', 'yttrium-101', 39, 101, 100.9301477, False),
-    'Y-102': Iso('Y-102', 'yttrium-102', 39, 102, 101.9343277, False),
-    'Y-103': Iso('Y-103', 'yttrium-103', 39, 103, 102.937243, False),
-    'Y-104': Iso('Y-104', 'yttrium-104', 39, 104, 103.94196, False),
-    'Y-105': Iso('Y-105', 'yttrium-105', 39, 105, 104.94544, False),
-    'Y-106': Iso('Y-106', 'yttrium-106', 39, 106, 105.95056, False),
-    'Y-107': Iso('Y-107', 'yttrium-107', 39, 107, 106.95452, False),
-    'Y-108': Iso('Y-108', 'yttrium-108', 39, 108, 107.95996, False),
-    'Y-109': Iso('Y-109', 'yttrium-109', 39, 109, 108.96436, False),
-    'Zr-78': Iso('Zr-78', 'zirconium-78', 40, 78, 77.95566, False),
-    'Zr-79': Iso('Zr-79', 'zirconium-79', 40, 79, 78.94948, False),
-    'Zr-80': Iso('Zr-80', 'zirconium-80', 40, 80, 79.9404, False),
-    'Zr-81': Iso('Zr-81', 'zirconium-81', 40, 81, 80.93731, False),
-    'Zr-82': Iso('Zr-82', 'zirconium-82', 40, 82, 81.93135, False),
-    'Zr-83': Iso('Zr-83', 'zirconium-83', 40, 83, 82.9292421, False),
-    'Zr-84': Iso('Zr-84', 'zirconium-84', 40, 84, 83.9233269, False),
-    'Zr-85': Iso('Zr-85', 'zirconium-85', 40, 85, 84.9214444, False),
-    'Zr-86': Iso('Zr-86', 'zirconium-86', 40, 86, 85.9162972, False),
-    'Zr-87': Iso('Zr-87', 'zirconium-87', 40, 87, 86.9148180, False),
-    'Zr-88': Iso('Zr-88', 'zirconium-88', 40, 88, 87.9102213, False),
-    'Zr-89': Iso('Zr-89', 'zirconium-89', 40, 89, 88.9088814, False),
-    'Zr-90': Iso('Zr-90', 'zirconium-90', 40, 90, 89.9046977, True,
-                 isotopic_abundance=0.5145),
-    'Zr-91': Iso('Zr-91', 'zirconium-91', 40, 91, 90.9056396, True,
-                 isotopic_abundance=0.1122),
-    'Zr-92': Iso('Zr-92', 'zirconium-92', 40, 92, 91.9050347, True,
-                 isotopic_abundance=0.1715),
-    'Zr-93': Iso('Zr-93', 'zirconium-93', 40, 93, 92.9064699, False),
-    'Zr-94': Iso('Zr-94', 'zirconium-94', 40, 94, 93.9063108, True,
-                 isotopic_abundance=0.1738),
-    'Zr-95': Iso('Zr-95', 'zirconium-95', 40, 95, 94.9080385, False),
-    'Zr-96': Iso('Zr-96', 'zirconium-96', 40, 96, 95.9082714, False,
-                 isotopic_abundance=0.0280),
-    'Zr-97': Iso('Zr-97', 'zirconium-97', 40, 97, 96.9109512, False),
-    'Zr-98': Iso('Zr-98', 'zirconium-98', 40, 98, 97.9127289, False),
-    'Zr-99': Iso('Zr-99', 'zirconium-99', 40, 99, 98.916667, False),
-    'Zr-100': Iso('Zr-100', 'zirconium-100', 40, 100, 99.9180006, False),
-    'Zr-101': Iso('Zr-101', 'zirconium-101', 40, 101, 100.9214480, False),
-    'Zr-102': Iso('Zr-102', 'zirconium-102', 40, 102, 101.9231409, False),
-    'Zr-103': Iso('Zr-103', 'zirconium-103', 40, 103, 102.927191, False),
-    'Zr-104': Iso('Zr-104', 'zirconium-104', 40, 104, 103.929436, False),
-    'Zr-105': Iso('Zr-105', 'zirconium-105', 40, 105, 104.934008, False),
-    'Zr-106': Iso('Zr-106', 'zirconium-106', 40, 106, 105.93676, False),
-    'Zr-107': Iso('Zr-107', 'zirconium-107', 40, 107, 106.94174, False),
-    'Zr-108': Iso('Zr-108', 'zirconium-108', 40, 108, 107.94487, False),
-    'Zr-109': Iso('Zr-109', 'zirconium-109', 40, 109, 108.95041, False),
-    'Zr-110': Iso('Zr-110', 'zirconium-110', 40, 110, 109.95396, False),
-    'Zr-111': Iso('Zr-111', 'zirconium-111', 40, 111, 110.95968, False),
-    'Zr-112': Iso('Zr-112', 'zirconium-112', 40, 112, 111.96370, False),
-    'Nb-81': Iso('Nb-81', 'niobium-81', 41, 81, 80.94960, False),
-    'Nb-82': Iso('Nb-82', 'niobium-82', 41, 82, 81.94396, False),
-    'Nb-83': Iso('Nb-83', 'niobium-83', 41, 83, 82.93729, False),
-    'Nb-84': Iso('Nb-84', 'niobium-84', 41, 84, 83.93449, False),
-    'Nb-85': Iso('Nb-85', 'niobium-85', 41, 85, 84.9288458, False),
-    'Nb-86': Iso('Nb-86', 'niobium-86', 41, 86, 85.9257828, False),
-    'Nb-87': Iso('Nb-87', 'niobium-87', 41, 87, 86.9206937, False),
-    'Nb-88': Iso('Nb-88', 'niobium-88', 41, 88, 87.918222, False),
-    'Nb-89': Iso('Nb-89', 'niobium-89', 41, 89, 88.913445, False),
-    'Nb-90': Iso('Nb-90', 'niobium-90', 41, 90, 89.9112584, False),
-    'Nb-91': Iso('Nb-91', 'niobium-91', 41, 91, 90.9069897, False),
-    'Nb-92': Iso('Nb-92', 'niobium-92', 41, 92, 91.9071881, False),
-    'Nb-93': Iso('Nb-93', 'niobium-93', 41, 93, 92.9063730, True,
-                 isotopic_abundance=1),
-    'Nb-94': Iso('Nb-94', 'niobium-94', 41, 94, 93.9072788, False),
-    'Nb-95': Iso('Nb-95', 'niobium-95', 41, 95, 94.90683240, False),
-    'Nb-96': Iso('Nb-96', 'niobium-96', 41, 96, 95.9080973, False),
-    'Nb-97': Iso('Nb-97', 'niobium-97', 41, 97, 96.9080959, False),
-    'Nb-98': Iso('Nb-98', 'niobium-98', 41, 98, 97.9103265, False),
-    'Nb-99': Iso('Nb-99', 'niobium-99', 41, 99, 98.911613, False),
-    'Nb-100': Iso('Nb-100', 'niobium-100', 41, 100, 99.9143276, False),
-    'Nb-101': Iso('Nb-101', 'niobium-101', 41, 101, 100.9153103, False),
-    'Nb-102': Iso('Nb-102', 'niobium-102', 41, 102, 101.9180772, False),
-    'Nb-103': Iso('Nb-103', 'niobium-103', 41, 103, 102.9194572, False),
-    'Nb-104': Iso('Nb-104', 'niobium-104', 41, 104, 103.9228925, False),
-    'Nb-105': Iso('Nb-105', 'niobium-105', 41, 105, 104.9249465, False),
-    'Nb-106': Iso('Nb-106', 'niobium-106', 41, 106, 105.9289317, False),
-    'Nb-107': Iso('Nb-107', 'niobium-107', 41, 107, 106.9315937, False),
-    'Nb-108': Iso('Nb-108', 'niobium-108', 41, 108, 107.9360748, False),
-    'Nb-109': Iso('Nb-109', 'niobium-109', 41, 109, 108.93922, False),
-    'Nb-110': Iso('Nb-110', 'niobium-110', 41, 110, 109.94403, False),
-    'Nb-111': Iso('Nb-111', 'niobium-111', 41, 111, 110.94753, False),
-    'Nb-112': Iso('Nb-112', 'niobium-112', 41, 112, 111.95247, False),
-    'Nb-113': Iso('Nb-113', 'niobium-113', 41, 113, 112.95651, False),
-    'Nb-114': Iso('Nb-114', 'niobium-114', 41, 114, 113.96201, False),
-    'Nb-115': Iso('Nb-115', 'niobium-115', 41, 115, 114.96634, False),
-    'Mo-83': Iso('Mo-83', 'molybdenum-83', 42, 83, 82.94988, False),
-    'Mo-84': Iso('Mo-84', 'molybdenum-84', 42, 84, 83.94149, False),
-    'Mo-85': Iso('Mo-85', 'molybdenum-85', 42, 85, 84.938261, False),
-    'Mo-86': Iso('Mo-86', 'molybdenum-86', 42, 86, 85.9311748, False),
-    'Mo-87': Iso('Mo-87', 'molybdenum-87', 42, 87, 86.9281962, False),
-    'Mo-88': Iso('Mo-88', 'molybdenum-88', 42, 88, 87.9219678, False),
-    'Mo-89': Iso('Mo-89', 'molybdenum-89', 42, 89, 88.9194682, False),
-    'Mo-90': Iso('Mo-90', 'molybdenum-90', 42, 90, 89.9139309, False),
-    'Mo-91': Iso('Mo-91', 'molybdenum-91', 42, 91, 90.9117453, False),
-    'Mo-92': Iso('Mo-92', 'molybdenum-92', 42, 92, 91.90680796, True,
-                 isotopic_abundance=0.1453),
-    'Mo-93': Iso('Mo-93', 'molybdenum-93', 42, 93, 92.90680958, False),
-    'Mo-94': Iso('Mo-94', 'molybdenum-94', 42, 94, 93.90508490, True,
-                 isotopic_abundance=0.0915),
-    'Mo-95': Iso('Mo-95', 'molybdenum-95', 42, 95, 94.90583877, True,
-                 isotopic_abundance=0.1584),
-    'Mo-96': Iso('Mo-96', 'molybdenum-96', 42, 96, 95.90467612, True,
-                 isotopic_abundance=0.1667),
-    'Mo-97': Iso('Mo-97', 'molybdenum-97', 42, 97, 96.90601812, True,
-                 isotopic_abundance=0.0960),
-    'Mo-98': Iso('Mo-98', 'molybdenum-98', 42, 98, 97.90540482, True,
-                 isotopic_abundance=0.2439),
-    'Mo-99': Iso('Mo-99', 'molybdenum-99', 42, 99, 98.90770851, False,
-                 half_life=237326.04),
-    'Mo-100': Iso('Mo-100', 'molybdenum-100', 42, 100, 99.9074718, False,
-                  isotopic_abundance=0.0982),
-    'Mo-101': Iso('Mo-101', 'molybdenum-101', 42, 101, 100.9103414, False),
-    'Mo-102': Iso('Mo-102', 'molybdenum-102', 42, 102, 101.9102834, False),
-    'Mo-103': Iso('Mo-103', 'molybdenum-103', 42, 103, 102.913079, False),
-    'Mo-104': Iso('Mo-104', 'molybdenum-104', 42, 104, 103.9137344, False),
-    'Mo-105': Iso('Mo-105', 'molybdenum-105', 42, 105, 104.916969, False),
-    'Mo-106': Iso('Mo-106', 'molybdenum-106', 42, 106, 105.918259, False),
-    'Mo-107': Iso('Mo-107', 'molybdenum-107', 42, 107, 106.922106, False),
-    'Mo-108': Iso('Mo-108', 'molybdenum-108', 42, 108, 107.924033, False),
-    'Mo-109': Iso('Mo-109', 'molybdenum-109', 42, 109, 108.928424, False),
-    'Mo-110': Iso('Mo-110', 'molybdenum-110', 42, 110, 109.930704, False),
-    'Mo-111': Iso('Mo-111', 'molybdenum-111', 42, 111, 110.935654, False),
-    'Mo-112': Iso('Mo-112', 'molybdenum-112', 42, 112, 111.93831, False),
-    'Mo-113': Iso('Mo-113', 'molybdenum-113', 42, 113, 112.94335, False),
-    'Mo-114': Iso('Mo-114', 'molybdenum-114', 42, 114, 113.94653, False),
-    'Mo-115': Iso('Mo-115', 'molybdenum-115', 42, 115, 114.95196, False),
-    'Mo-116': Iso('Mo-116', 'molybdenum-116', 42, 116, 115.95545, False),
-    'Mo-117': Iso('Mo-117', 'molybdenum-117', 42, 117, 116.96117, False),
-    'Tc-85': Iso('Tc-85', 'technetium-85', 43, 85, 84.95058, False),
-    'Tc-86': Iso('Tc-86', 'technetium-86', 43, 86, 85.94493, False),
-    'Tc-87': Iso('Tc-87', 'technetium-87', 43, 87, 86.9380672, False),
-    'Tc-88': Iso('Tc-88', 'technetium-88', 43, 88, 87.93378, False),
-    'Tc-89': Iso('Tc-89', 'technetium-89', 43, 89, 88.9276487, False),
-    'Tc-90': Iso('Tc-90', 'technetium-90', 43, 90, 89.9240739, False),
-    'Tc-91': Iso('Tc-91', 'technetium-91', 43, 91, 90.9184254, False),
-    'Tc-92': Iso('Tc-92', 'technetium-92', 43, 92, 91.9152698, False),
-    'Tc-93': Iso('Tc-93', 'technetium-93', 43, 93, 92.9102460, False),
-    'Tc-94': Iso('Tc-94', 'technetium-94', 43, 94, 93.9096536, False),
-    'Tc-95': Iso('Tc-95', 'technetium-95', 43, 95, 94.9076536, False),
-    'Tc-96': Iso('Tc-96', 'technetium-96', 43, 96, 95.9078680, False),
-    'Tc-97': Iso('Tc-97', 'technetium-97', 43, 97, 96.9063667, False),
-    'Tc-98': Iso('Tc-98', 'technetium-98', 43, 98, 97.9072124, False),
-    'Tc-99': Iso('Tc-99', 'technetium-99', 43, 99, 98.9062508, False,
-                 half_life=21636.0),
-    'Tc-100': Iso('Tc-100', 'technetium-100', 43, 100, 99.9076539, False),
-    'Tc-101': Iso('Tc-101', 'technetium-101', 43, 101, 100.907309, False),
-    'Tc-102': Iso('Tc-102', 'technetium-102', 43, 102, 101.9092097, False),
-    'Tc-103': Iso('Tc-103', 'technetium-103', 43, 103, 102.909176, False),
-    'Tc-104': Iso('Tc-104', 'technetium-104', 43, 104, 103.911425, False),
-    'Tc-105': Iso('Tc-105', 'technetium-105', 43, 105, 104.911655, False),
-    'Tc-106': Iso('Tc-106', 'technetium-106', 43, 106, 105.914358, False),
-    'Tc-107': Iso('Tc-107', 'technetium-107', 43, 107, 106.9154606, False),
-    'Tc-108': Iso('Tc-108', 'technetium-108', 43, 108, 107.9184957, False),
-    'Tc-109': Iso('Tc-109', 'technetium-109', 43, 109, 108.920256, False),
-    'Tc-110': Iso('Tc-110', 'technetium-110', 43, 110, 109.923744, False),
-    'Tc-111': Iso('Tc-111', 'technetium-111', 43, 111, 110.925901, False),
-    'Tc-112': Iso('Tc-112', 'technetium-112', 43, 112, 111.9299458, False),
-    'Tc-113': Iso('Tc-113', 'technetium-113', 43, 113, 112.9325690, False),
-    'Tc-114': Iso('Tc-114', 'technetium-114', 43, 114, 113.93691, False),
-    'Tc-115': Iso('Tc-115', 'technetium-115', 43, 115, 114.93998, False),
-    'Tc-116': Iso('Tc-116', 'technetium-116', 43, 116, 115.94476, False),
-    'Tc-117': Iso('Tc-117', 'technetium-117', 43, 117, 116.94806, False),
-    'Tc-118': Iso('Tc-118', 'technetium-118', 43, 118, 117.95299, False),
-    'Tc-119': Iso('Tc-119', 'technetium-119', 43, 119, 118.95666, False),
-    'Tc-120': Iso('Tc-120', 'technetium-120', 43, 120, 119.96187, False),
-    'Ru-87': Iso('Ru-87', 'ruthenium-87', 44, 87, 86.95069, False),
-    'Ru-88': Iso('Ru-88', 'ruthenium-88', 44, 88, 87.94160, False),
-    'Ru-89': Iso('Ru-89', 'ruthenium-89', 44, 89, 88.93762, False),
-    'Ru-90': Iso('Ru-90', 'ruthenium-90', 44, 90, 89.9303444, False),
-    'Ru-91': Iso('Ru-91', 'ruthenium-91', 44, 91, 90.9267419, False),
-    'Ru-92': Iso('Ru-92', 'ruthenium-92', 44, 92, 91.9202344, False),
-    'Ru-93': Iso('Ru-93', 'ruthenium-93', 44, 93, 92.9171044, False),
-    'Ru-94': Iso('Ru-94', 'ruthenium-94', 44, 94, 93.9113429, False),
-    'Ru-95': Iso('Ru-95', 'ruthenium-95', 44, 95, 94.910406, False),
-    'Ru-96': Iso('Ru-96', 'ruthenium-96', 44, 96, 95.90759025, True,
-                 isotopic_abundance=0.0554),
-    'Ru-97': Iso('Ru-97', 'ruthenium-97', 44, 97, 96.9075471, False),
-    'Ru-98': Iso('Ru-98', 'ruthenium-98', 44, 98, 97.9052868, True,
-                 isotopic_abundance=0.0187),
-    'Ru-99': Iso('Ru-99', 'ruthenium-99', 44, 99, 98.9059341, True,
-                 isotopic_abundance=0.1276),
-    'Ru-100': Iso('Ru-100', 'ruthenium-100', 44, 100, 99.9042143, True,
-                  isotopic_abundance=0.1260),
-    'Ru-101': Iso('Ru-101', 'ruthenium-101', 44, 101, 100.9055769, True,
-                  isotopic_abundance=0.1706),
-    'Ru-102': Iso('Ru-102', 'ruthenium-102', 44, 102, 101.9043441, True,
-                  isotopic_abundance=0.3155),
-    'Ru-103': Iso('Ru-103', 'ruthenium-103', 44, 103, 102.9063186, False,
-                  half_life=3396384.0),
-    'Ru-104': Iso('Ru-104', 'ruthenium-104', 44, 104, 103.9054275, True,
-                  isotopic_abundance=0.1862),
-    'Ru-105': Iso('Ru-105', 'ruthenium-105', 44, 105, 104.9077476, False),
-    'Ru-106': Iso('Ru-106', 'ruthenium-106', 44, 106, 105.9073291, False),
-    'Ru-107': Iso('Ru-107', 'ruthenium-107', 44, 107, 106.9099720, False),
-    'Ru-108': Iso('Ru-108', 'ruthenium-108', 44, 108, 107.9101880, False),
-    'Ru-109': Iso('Ru-109', 'ruthenium-109', 44, 109, 108.9133260, False),
-    'Ru-110': Iso('Ru-110', 'ruthenium-110', 44, 110, 109.9140407, False),
-    'Ru-111': Iso('Ru-111', 'ruthenium-111', 44, 111, 110.917570, False),
-    'Ru-112': Iso('Ru-112', 'ruthenium-112', 44, 112, 111.918809, False),
-    'Ru-113': Iso('Ru-113', 'ruthenium-113', 44, 113, 112.922844, False),
-    'Ru-114': Iso('Ru-114', 'ruthenium-114', 44, 114, 113.9246136, False),
-    'Ru-115': Iso('Ru-115', 'ruthenium-115', 44, 115, 114.928820, False),
-    'Ru-116': Iso('Ru-116', 'ruthenium-116', 44, 116, 115.9312192, False),
-    'Ru-117': Iso('Ru-117', 'ruthenium-117', 44, 117, 116.93610, False),
-    'Ru-118': Iso('Ru-118', 'ruthenium-118', 44, 118, 117.93853, False),
-    'Ru-119': Iso('Ru-119', 'ruthenium-119', 44, 119, 118.94357, False),
-    'Ru-120': Iso('Ru-120', 'ruthenium-120', 44, 120, 119.94631, False),
-    'Ru-121': Iso('Ru-121', 'ruthenium-121', 44, 121, 120.95164, False),
-    'Ru-122': Iso('Ru-122', 'ruthenium-122', 44, 122, 121.95447, False),
-    'Ru-123': Iso('Ru-123', 'ruthenium-123', 44, 123, 122.95989, False),
-    'Ru-124': Iso('Ru-124', 'ruthenium-124', 44, 124, 123.96305, False),
-    'Rh-89': Iso('Rh-89', 'rhodium-89', 45, 89, 88.95058, False),
-    'Rh-90': Iso('Rh-90', 'rhodium-90', 45, 90, 89.94422, False),
-    'Rh-91': Iso('Rh-91', 'rhodium-91', 45, 91, 90.93688, False),
-    'Rh-92': Iso('Rh-92', 'rhodium-92', 45, 92, 91.9323677, False),
-    'Rh-93': Iso('Rh-93', 'rhodium-93', 45, 93, 92.9259128, False),
-    'Rh-94': Iso('Rh-94', 'rhodium-94', 45, 94, 93.9217305, False),
-    'Rh-95': Iso('Rh-95', 'rhodium-95', 45, 95, 94.9158979, False),
-    'Rh-96': Iso('Rh-96', 'rhodium-96', 45, 96, 95.914453, False),
-    'Rh-97': Iso('Rh-97', 'rhodium-97', 45, 97, 96.911329, False),
-    'Rh-98': Iso('Rh-98', 'rhodium-98', 45, 98, 97.910708, False),
-    'Rh-99': Iso('Rh-99', 'rhodium-99', 45, 99, 98.9081282, False),
-    'Rh-100': Iso('Rh-100', 'rhodium-100', 45, 100, 99.908117, False),
-    'Rh-101': Iso('Rh-101', 'rhodium-101', 45, 101, 100.9061606, False),
-    'Rh-102': Iso('Rh-102', 'rhodium-102', 45, 102, 101.9068374, False),
-    'Rh-103': Iso('Rh-103', 'rhodium-103', 45, 103, 102.9054980, True,
-                  isotopic_abundance=1),
-    'Rh-104': Iso('Rh-104', 'rhodium-104', 45, 104, 103.9066492, False),
-    'Rh-105': Iso('Rh-105', 'rhodium-105', 45, 105, 104.9056885, False),
-    'Rh-106': Iso('Rh-106', 'rhodium-106', 45, 106, 105.9072868, False),
-    'Rh-107': Iso('Rh-107', 'rhodium-107', 45, 107, 106.906748, False),
-    'Rh-108': Iso('Rh-108', 'rhodium-108', 45, 108, 107.908714, False),
-    'Rh-109': Iso('Rh-109', 'rhodium-109', 45, 109, 108.9087488, False),
-    'Rh-110': Iso('Rh-110', 'rhodium-110', 45, 110, 109.911079, False),
-    'Rh-111': Iso('Rh-111', 'rhodium-111', 45, 111, 110.9116423, False),
-    'Rh-112': Iso('Rh-112', 'rhodium-112', 45, 112, 111.914403, False),
-    'Rh-113': Iso('Rh-113', 'rhodium-113', 45, 113, 112.9154393, False),
-    'Rh-114': Iso('Rh-114', 'rhodium-114', 45, 114, 113.918718, False),
-    'Rh-115': Iso('Rh-115', 'rhodium-115', 45, 115, 114.9203116, False),
-    'Rh-116': Iso('Rh-116', 'rhodium-116', 45, 116, 115.924059, False),
-    'Rh-117': Iso('Rh-117', 'rhodium-117', 45, 117, 116.9260354, False),
-    'Rh-118': Iso('Rh-118', 'rhodium-118', 45, 118, 117.930340, False),
-    'Rh-119': Iso('Rh-119', 'rhodium-119', 45, 119, 118.932557, False),
-    'Rh-120': Iso('Rh-120', 'rhodium-120', 45, 120, 119.93686, False),
-    'Rh-121': Iso('Rh-121', 'rhodium-121', 45, 121, 120.93942, False),
-    'Rh-122': Iso('Rh-122', 'rhodium-122', 45, 122, 121.94399, False),
-    'Rh-123': Iso('Rh-123', 'rhodium-123', 45, 123, 122.94685, False),
-    'Rh-124': Iso('Rh-124', 'rhodium-124', 45, 124, 123.95151, False),
-    'Rh-125': Iso('Rh-125', 'rhodium-125', 45, 125, 124.95469, False),
-    'Rh-126': Iso('Rh-126', 'rhodium-126', 45, 126, 125.95946, False),
-    'Pd-91': Iso('Pd-91', 'palladium-91', 46, 91, 90.95032, False),
-    'Pd-92': Iso('Pd-92', 'palladium-92', 46, 92, 91.94088, False),
-    'Pd-93': Iso('Pd-93', 'palladium-93', 46, 93, 92.93651, False),
-    'Pd-94': Iso('Pd-94', 'palladium-94', 46, 94, 93.9290376, False),
-    'Pd-95': Iso('Pd-95', 'palladium-95', 46, 95, 94.9248898, False),
-    'Pd-96': Iso('Pd-96', 'palladium-96', 46, 96, 95.9182151, False),
-    'Pd-97': Iso('Pd-97', 'palladium-97', 46, 97, 96.9164720, False),
-    'Pd-98': Iso('Pd-98', 'palladium-98', 46, 98, 97.9126983, False),
-    'Pd-99': Iso('Pd-99', 'palladium-99', 46, 99, 98.9117748, False),
-    'Pd-100': Iso('Pd-100', 'palladium-100', 46, 100, 99.908505, False),
-    'Pd-101': Iso('Pd-101', 'palladium-101', 46, 101, 100.9082864, False),
-    'Pd-102': Iso('Pd-102', 'palladium-102', 46, 102, 101.9056022, True,
-                  isotopic_abundance=0.0102),
-    'Pd-103': Iso('Pd-103', 'palladium-103', 46, 103, 102.9060809, False),
-    'Pd-104': Iso('Pd-104', 'palladium-104', 46, 104, 103.9040305, True,
-                  isotopic_abundance=0.1114),
-    'Pd-105': Iso('Pd-105', 'palladium-105', 46, 105, 104.9050796, True,
-                  isotopic_abundance=0.2233),
-    'Pd-106': Iso('Pd-106', 'palladium-106', 46, 106, 105.9034804, True,
-                  isotopic_abundance=0.2733),
-    'Pd-107': Iso('Pd-107', 'palladium-107', 46, 107, 106.9051282, False),
-    'Pd-108': Iso('Pd-108', 'palladium-108', 46, 108, 107.9038916, True,
-                  isotopic_abundance=0.2646),
-    'Pd-109': Iso('Pd-109', 'palladium-109', 46, 109, 108.9059504, False),
-    'Pd-110': Iso('Pd-110', 'palladium-110', 46, 110, 109.90517220, True,
-                  isotopic_abundance=0.1172),
-    'Pd-111': Iso('Pd-111', 'palladium-111', 46, 111, 110.90768968, False),
-    'Pd-112': Iso('Pd-112', 'palladium-112', 46, 112, 111.9073297, False),
-    'Pd-113': Iso('Pd-113', 'palladium-113', 46, 113, 112.9102610, False),
-    'Pd-114': Iso('Pd-114', 'palladium-114', 46, 114, 113.9103686, False),
-    'Pd-115': Iso('Pd-115', 'palladium-115', 46, 115, 114.913659, False),
-    'Pd-116': Iso('Pd-116', 'palladium-116', 46, 116, 115.9142970, False),
-    'Pd-117': Iso('Pd-117', 'palladium-117', 46, 117, 116.9179547, False),
-    'Pd-118': Iso('Pd-118', 'palladium-118', 46, 118, 117.9190667, False),
-    'Pd-119': Iso('Pd-119', 'palladium-119', 46, 119, 118.9233402, False),
-    'Pd-120': Iso('Pd-120', 'palladium-120', 46, 120, 119.9245511, False),
-    'Pd-121': Iso('Pd-121', 'palladium-121', 46, 121, 120.9289503, False),
-    'Pd-122': Iso('Pd-122', 'palladium-122', 46, 122, 121.930632, False),
-    'Pd-123': Iso('Pd-123', 'palladium-123', 46, 123, 122.93514, False),
-    'Pd-124': Iso('Pd-124', 'palladium-124', 46, 124, 123.93714, False),
-    'Pd-125': Iso('Pd-125', 'palladium-125', 46, 125, 124.94179, False),
-    'Pd-126': Iso('Pd-126', 'palladium-126', 46, 126, 125.94416, False),
-    'Pd-127': Iso('Pd-127', 'palladium-127', 46, 127, 126.94907, False),
-    'Pd-128': Iso('Pd-128', 'palladium-128', 46, 128, 127.95183, False),
-    'Ag-93': Iso('Ag-93', 'silver-93', 47, 93, 92.95033, False),
-    'Ag-94': Iso('Ag-94', 'silver-94', 47, 94, 93.94373, False),
-    'Ag-95': Iso('Ag-95', 'silver-95', 47, 95, 94.93602, False),
-    'Ag-96': Iso('Ag-96', 'silver-96', 47, 96, 95.930744, False),
-    'Ag-97': Iso('Ag-97', 'silver-97', 47, 97, 96.92397, False),
-    'Ag-98': Iso('Ag-98', 'silver-98', 47, 98, 97.921560, False),
-    'Ag-99': Iso('Ag-99', 'silver-99', 47, 99, 98.9176458, False),
-    'Ag-100': Iso('Ag-100', 'silver-100', 47, 100, 99.9161154, False),
-    'Ag-101': Iso('Ag-101', 'silver-101', 47, 101, 100.9126840, False),
-    'Ag-102': Iso('Ag-102', 'silver-102', 47, 102, 101.9117047, False),
-    'Ag-103': Iso('Ag-103', 'silver-103', 47, 103, 102.9089631, False),
-    'Ag-104': Iso('Ag-104', 'silver-104', 47, 104, 103.9086239, False),
-    'Ag-105': Iso('Ag-105', 'silver-105', 47, 105, 104.9065256, False),
-    'Ag-106': Iso('Ag-106', 'silver-106', 47, 106, 105.9066636, False),
-    'Ag-107': Iso('Ag-107', 'silver-107', 47, 107, 106.9050916, True,
-                  isotopic_abundance=0.51839),
-    'Ag-108': Iso('Ag-108', 'silver-108', 47, 108, 107.9059503, False),
-    'Ag-109': Iso('Ag-109', 'silver-109', 47, 109, 108.9047553, True,
-                  isotopic_abundance=0.48161),
-    'Ag-110': Iso('Ag-110', 'silver-110', 47, 110, 109.9061102, False),
-    'Ag-111': Iso('Ag-111', 'silver-111', 47, 111, 110.9052959, False),
-    'Ag-112': Iso('Ag-112', 'silver-112', 47, 112, 111.9070486, False),
-    'Ag-113': Iso('Ag-113', 'silver-113', 47, 113, 112.906573, False),
-    'Ag-114': Iso('Ag-114', 'silver-114', 47, 114, 113.9088230, False),
-    'Ag-115': Iso('Ag-115', 'silver-115', 47, 115, 114.908767, False),
-    'Ag-116': Iso('Ag-116', 'silver-116', 47, 116, 115.9113868, False),
-    'Ag-117': Iso('Ag-117', 'silver-117', 47, 117, 116.911774, False),
-    'Ag-118': Iso('Ag-118', 'silver-118', 47, 118, 117.9145955, False),
-    'Ag-119': Iso('Ag-119', 'silver-119', 47, 119, 118.915570, False),
-    'Ag-120': Iso('Ag-120', 'silver-120', 47, 120, 119.9187848, False),
-    'Ag-121': Iso('Ag-121', 'silver-121', 47, 121, 120.920125, False),
-    'Ag-122': Iso('Ag-122', 'silver-122', 47, 122, 121.923664, False),
-    'Ag-123': Iso('Ag-123', 'silver-123', 47, 123, 122.925337, False),
-    'Ag-124': Iso('Ag-124', 'silver-124', 47, 124, 123.92893, False),
-    'Ag-125': Iso('Ag-125', 'silver-125', 47, 125, 124.93105, False),
-    'Ag-126': Iso('Ag-126', 'silver-126', 47, 126, 125.93475, False),
-    'Ag-127': Iso('Ag-127', 'silver-127', 47, 127, 126.93711, False),
-    'Ag-128': Iso('Ag-128', 'silver-128', 47, 128, 127.94106, False),
-    'Ag-129': Iso('Ag-129', 'silver-129', 47, 129, 128.94395, False),
-    'Ag-130': Iso('Ag-130', 'silver-130', 47, 130, 129.95070, False),
-    'Cd-95': Iso('Cd-95', 'cadmium-95', 48, 95, 94.94994, False),
-    'Cd-96': Iso('Cd-96', 'cadmium-96', 48, 96, 95.94034, False),
-    'Cd-97': Iso('Cd-97', 'cadmium-97', 48, 97, 96.93510, False),
-    'Cd-98': Iso('Cd-98', 'cadmium-98', 48, 98, 97.927389, False),
-    'Cd-99': Iso('Cd-99', 'cadmium-99', 48, 99, 98.9249258, False),
-    'Cd-100': Iso('Cd-100', 'cadmium-100', 48, 100, 99.9203488, False),
-    'Cd-101': Iso('Cd-101', 'cadmium-101', 48, 101, 100.9185862, False),
-    'Cd-102': Iso('Cd-102', 'cadmium-102', 48, 102, 101.9144820, False),
-    'Cd-103': Iso('Cd-103', 'cadmium-103', 48, 103, 102.9134165, False),
-    'Cd-104': Iso('Cd-104', 'cadmium-104', 48, 104, 103.9098564, False),
-    'Cd-105': Iso('Cd-105', 'cadmium-105', 48, 105, 104.9094639, False),
-    'Cd-106': Iso('Cd-106', 'cadmium-106', 48, 106, 105.9064599, True,
-                  isotopic_abundance=0.0125),
-    'Cd-107': Iso('Cd-107', 'cadmium-107', 48, 107, 106.9066121, False),
-    'Cd-108': Iso('Cd-108', 'cadmium-108', 48, 108, 107.9041834, True,
-                  isotopic_abundance=0.0089),
-    'Cd-109': Iso('Cd-109', 'cadmium-109', 48, 109, 108.9049867, False,
-                  half_life=40025664.0),
-    'Cd-110': Iso('Cd-110', 'cadmium-110', 48, 110, 109.90300661, True,
-                  isotopic_abundance=0.1249),
-    'Cd-111': Iso('Cd-111', 'cadmium-111', 48, 111, 110.90418287, True,
-                  isotopic_abundance=0.1280),
-    'Cd-112': Iso('Cd-112', 'cadmium-112', 48, 112, 111.90276287, True,
-                  isotopic_abundance=0.2413),
-    'Cd-113': Iso('Cd-113', 'cadmium-113', 48, 113, 112.90440813, False,
-                  isotopic_abundance=0.1222),
-    'Cd-114': Iso('Cd-114', 'cadmium-114', 48, 114, 113.90336509, True,
-                  isotopic_abundance=0.2873),
-    'Cd-115': Iso('Cd-115', 'cadmium-115', 48, 115, 114.90543751, False),
-    'Cd-116': Iso('Cd-116', 'cadmium-116', 48, 116, 115.90476315, False,
-                  isotopic_abundance=0.0749),
-    'Cd-117': Iso('Cd-117', 'cadmium-117', 48, 117, 116.9072260, False),
-    'Cd-118': Iso('Cd-118', 'cadmium-118', 48, 118, 117.906922, False),
-    'Cd-119': Iso('Cd-119', 'cadmium-119', 48, 119, 118.909847, False),
-    'Cd-120': Iso('Cd-120', 'cadmium-120', 48, 120, 119.9098681, False),
-    'Cd-121': Iso('Cd-121', 'cadmium-121', 48, 121, 120.9129637, False),
-    'Cd-122': Iso('Cd-122', 'cadmium-122', 48, 122, 121.9134591, False),
-    'Cd-123': Iso('Cd-123', 'cadmium-123', 48, 123, 122.9168925, False),
-    'Cd-124': Iso('Cd-124', 'cadmium-124', 48, 124, 123.9176574, False),
-    'Cd-125': Iso('Cd-125', 'cadmium-125', 48, 125, 124.9212576, False),
-    'Cd-126': Iso('Cd-126', 'cadmium-126', 48, 126, 125.9224291, False),
-    'Cd-127': Iso('Cd-127', 'cadmium-127', 48, 127, 126.926472, False),
-    'Cd-128': Iso('Cd-128', 'cadmium-128', 48, 128, 127.9278129, False),
-    'Cd-129': Iso('Cd-129', 'cadmium-129', 48, 129, 128.93182, False),
-    'Cd-130': Iso('Cd-130', 'cadmium-130', 48, 130, 129.93394, False),
-    'Cd-131': Iso('Cd-131', 'cadmium-131', 48, 131, 130.94060, False),
-    'Cd-132': Iso('Cd-132', 'cadmium-132', 48, 132, 131.94604, False),
-    'Cd-133': Iso('Cd-133', 'cadmium-133', 48, 133, 132.95285, False),
-    'In-97': Iso('In-97', 'indium-97', 49, 97, 96.94934, False),
-    'In-98': Iso('In-98', 'indium-98', 49, 98, 97.94214, False),
-    'In-99': Iso('In-99', 'indium-99', 49, 99, 98.93411, False),
-    'In-100': Iso('In-100', 'indium-100', 49, 100, 99.93096, False),
-    'In-101': Iso('In-101', 'indium-101', 49, 101, 100.92634, False),
-    'In-102': Iso('In-102', 'indium-102', 49, 102, 101.9241071, False),
-    'In-103': Iso('In-103', 'indium-103', 49, 103, 102.9198819, False),
-    'In-104': Iso('In-104', 'indium-104', 49, 104, 103.9182145, False),
-    'In-105': Iso('In-105', 'indium-105', 49, 105, 104.914502, False),
-    'In-106': Iso('In-106', 'indium-106', 49, 106, 105.913464, False),
-    'In-107': Iso('In-107', 'indium-107', 49, 107, 106.910290, False),
-    'In-108': Iso('In-108', 'indium-108', 49, 108, 107.9096935, False),
-    'In-109': Iso('In-109', 'indium-109', 49, 109, 108.9071514, False),
-    'In-110': Iso('In-110', 'indium-110', 49, 110, 109.907170, False),
-    'In-111': Iso('In-111', 'indium-111', 49, 111, 110.9051085, False,
-                  half_life=242332.128),
-    'In-112': Iso('In-112', 'indium-112', 49, 112, 111.9055377, False),
-    'In-113': Iso('In-113', 'indium-113', 49, 113, 112.90406184, True,
-                  isotopic_abundance=0.0429),
-    'In-114': Iso('In-114', 'indium-114', 49, 114, 113.90491791, False),
-    'In-115': Iso('In-115', 'indium-115', 49, 115, 114.903878776, False,
-                  isotopic_abundance=0.9571),
-    'In-116': Iso('In-116', 'indium-116', 49, 116, 115.90525999, False),
-    'In-117': Iso('In-117', 'indium-117', 49, 117, 116.9045157, False),
-    'In-118': Iso('In-118', 'indium-118', 49, 118, 117.9063566, False),
-    'In-119': Iso('In-119', 'indium-119', 49, 119, 118.9058507, False),
-    'In-120': Iso('In-120', 'indium-120', 49, 120, 119.907967, False),
-    'In-121': Iso('In-121', 'indium-121', 49, 121, 120.907851, False),
-    'In-122': Iso('In-122', 'indium-122', 49, 122, 121.910281, False),
-    'In-123': Iso('In-123', 'indium-123', 49, 123, 122.910434, False),
-    'In-124': Iso('In-124', 'indium-124', 49, 124, 123.913182, False),
-    'In-125': Iso('In-125', 'indium-125', 49, 125, 124.913605, False),
-    'In-126': Iso('In-126', 'indium-126', 49, 126, 125.916507, False),
-    'In-127': Iso('In-127', 'indium-127', 49, 127, 126.917446, False),
-    'In-128': Iso('In-128', 'indium-128', 49, 128, 127.92040, False),
-    'In-129': Iso('In-129', 'indium-129', 49, 129, 128.9218053, False),
-    'In-130': Iso('In-130', 'indium-130', 49, 130, 129.924977, False),
-    'In-131': Iso('In-131', 'indium-131', 49, 131, 130.9269715, False),
-    'In-132': Iso('In-132', 'indium-132', 49, 132, 131.933001, False),
-    'In-133': Iso('In-133', 'indium-133', 49, 133, 132.93831, False),
-    'In-134': Iso('In-134', 'indium-134', 49, 134, 133.94454, False),
-    'In-135': Iso('In-135', 'indium-135', 49, 135, 134.95005, False),
-    'Sn-99': Iso('Sn-99', 'tin-99', 50, 99, 98.94853, False),
-    'Sn-100': Iso('Sn-100', 'tin-100', 50, 100, 99.93850, False),
-    'Sn-101': Iso('Sn-101', 'tin-101', 50, 101, 100.93526, False),
-    'Sn-102': Iso('Sn-102', 'tin-102', 50, 102, 101.93029, False),
-    'Sn-103': Iso('Sn-103', 'tin-103', 50, 103, 102.928105, False),
-    'Sn-104': Iso('Sn-104', 'tin-104', 50, 104, 103.9231052, False),
-    'Sn-105': Iso('Sn-105', 'tin-105', 50, 105, 104.9212684, False),
-    'Sn-106': Iso('Sn-106', 'tin-106', 50, 106, 105.9169574, False),
-    'Sn-107': Iso('Sn-107', 'tin-107', 50, 107, 106.9157137, False),
-    'Sn-108': Iso('Sn-108', 'tin-108', 50, 108, 107.9118943, False),
-    'Sn-109': Iso('Sn-109', 'tin-109', 50, 109, 108.9112921, False),
-    'Sn-110': Iso('Sn-110', 'tin-110', 50, 110, 109.907845, False),
-    'Sn-111': Iso('Sn-111', 'tin-111', 50, 111, 110.9077401, False),
-    'Sn-112': Iso('Sn-112', 'tin-112', 50, 112, 111.90482387, True,
-                  isotopic_abundance=0.0097),
-    'Sn-113': Iso('Sn-113', 'tin-113', 50, 113, 112.9051757, False,
-                  half_life=9942825.6),
-    'Sn-114': Iso('Sn-114', 'tin-114', 50, 114, 113.9027827, True,
-                  isotopic_abundance=0.0066),
-    'Sn-115': Iso('Sn-115', 'tin-115', 50, 115, 114.903344699, True,
-                  isotopic_abundance=0.0034),
-    'Sn-116': Iso('Sn-116', 'tin-116', 50, 116, 115.90174280, True,
-                  isotopic_abundance=0.1454),
-    'Sn-117': Iso('Sn-117', 'tin-117', 50, 117, 116.90295398, True,
-                  isotopic_abundance=0.0768),
-    'Sn-118': Iso('Sn-118', 'tin-118', 50, 118, 117.90160657, True,
-                  isotopic_abundance=0.2422),
-    'Sn-119': Iso('Sn-119', 'tin-119', 50, 119, 118.90331117, True,
-                  isotopic_abundance=0.0859),
-    'Sn-120': Iso('Sn-120', 'tin-120', 50, 120, 119.90220163, True,
-                  isotopic_abundance=0.3258),
-    'Sn-121': Iso('Sn-121', 'tin-121', 50, 121, 120.9042426, False),
-    'Sn-122': Iso('Sn-122', 'tin-122', 50, 122, 121.9034438, True,
-                  isotopic_abundance=0.0463),
-    'Sn-123': Iso('Sn-123', 'tin-123', 50, 123, 122.9057252, False),
-    'Sn-124': Iso('Sn-124', 'tin-124', 50, 124, 123.9052766, True,
-                  isotopic_abundance=0.0579),
-    'Sn-125': Iso('Sn-125', 'tin-125', 50, 125, 124.9077864, False),
-    'Sn-126': Iso('Sn-126', 'tin-126', 50, 126, 125.907659, False),
-    'Sn-127': Iso('Sn-127', 'tin-127', 50, 127, 126.910390, False),
-    'Sn-128': Iso('Sn-128', 'tin-128', 50, 128, 127.910507, False),
-    'Sn-129': Iso('Sn-129', 'tin-129', 50, 129, 128.913465, False),
-    'Sn-130': Iso('Sn-130', 'tin-130', 50, 130, 129.9139738, False),
-    'Sn-131': Iso('Sn-131', 'tin-131', 50, 131, 130.9170450, False),
-    'Sn-132': Iso('Sn-132', 'tin-132', 50, 132, 131.9178267, False),
-    'Sn-133': Iso('Sn-133', 'tin-133', 50, 133, 132.9239134, False),
-    'Sn-134': Iso('Sn-134', 'tin-134', 50, 134, 133.9286821, False),
-    'Sn-135': Iso('Sn-135', 'tin-135', 50, 135, 134.9349086, False),
-    'Sn-136': Iso('Sn-136', 'tin-136', 50, 136, 135.93999, False),
-    'Sn-137': Iso('Sn-137', 'tin-137', 50, 137, 136.94655, False),
-    'Sn-138': Iso('Sn-138', 'tin-138', 50, 138, 137.95184, False),
-    'Sb-103': Iso('Sb-103', 'antimony-103', 51, 103, 102.93969, False),
-    'Sb-104': Iso('Sb-104', 'antimony-104', 51, 104, 103.93648, False),
-    'Sb-105': Iso('Sb-105', 'antimony-105', 51, 105, 104.931276, False),
-    'Sb-106': Iso('Sb-106', 'antimony-106', 51, 106, 105.9286380, False),
-    'Sb-107': Iso('Sb-107', 'antimony-107', 51, 107, 106.9241506, False),
-    'Sb-108': Iso('Sb-108', 'antimony-108', 51, 108, 107.9222267, False),
-    'Sb-109': Iso('Sb-109', 'antimony-109', 51, 109, 108.9181411, False),
-    'Sb-110': Iso('Sb-110', 'antimony-110', 51, 110, 109.9168543, False),
-    'Sb-111': Iso('Sb-111', 'antimony-111', 51, 111, 110.9132182, False),
-    'Sb-112': Iso('Sb-112', 'antimony-112', 51, 112, 111.912400, False),
-    'Sb-113': Iso('Sb-113', 'antimony-113', 51, 113, 112.909375, False),
-    'Sb-114': Iso('Sb-114', 'antimony-114', 51, 114, 113.909290, False),
-    'Sb-115': Iso('Sb-115', 'antimony-115', 51, 115, 114.906598, False),
-    'Sb-116': Iso('Sb-116', 'antimony-116', 51, 116, 115.9067931, False),
-    'Sb-117': Iso('Sb-117', 'antimony-117', 51, 117, 116.9048415, False),
-    'Sb-118': Iso('Sb-118', 'antimony-118', 51, 118, 117.9055321, False),
-    'Sb-119': Iso('Sb-119', 'antimony-119', 51, 119, 118.9039455, False),
-    'Sb-120': Iso('Sb-120', 'antimony-120', 51, 120, 119.9050794, False),
-    'Sb-121': Iso('Sb-121', 'antimony-121', 51, 121, 120.9038120, True,
-                  isotopic_abundance=0.5721),
-    'Sb-122': Iso('Sb-122', 'antimony-122', 51, 122, 121.9051699, False),
-    'Sb-123': Iso('Sb-123', 'antimony-123', 51, 123, 122.9042132, True,
-                  isotopic_abundance=0.4279),
-    'Sb-124': Iso('Sb-124', 'antimony-124', 51, 124, 123.9059350, False),
-    'Sb-125': Iso('Sb-125', 'antimony-125', 51, 125, 124.9052530, False,
-                  half_life=87053184.0),
-    'Sb-126': Iso('Sb-126', 'antimony-126', 51, 126, 125.907253, False),
-    'Sb-127': Iso('Sb-127', 'antimony-127', 51, 127, 126.9069243, False),
-    'Sb-128': Iso('Sb-128', 'antimony-128', 51, 128, 127.909146, False),
-    'Sb-129': Iso('Sb-129', 'antimony-129', 51, 129, 128.909147, False),
-    'Sb-130': Iso('Sb-130', 'antimony-130', 51, 130, 129.911662, False),
-    'Sb-131': Iso('Sb-131', 'antimony-131', 51, 131, 130.9119888, False),
-    'Sb-132': Iso('Sb-132', 'antimony-132', 51, 132, 131.9145077, False),
-    'Sb-133': Iso('Sb-133', 'antimony-133', 51, 133, 132.9152732, False),
-    'Sb-134': Iso('Sb-134', 'antimony-134', 51, 134, 133.9205357, False),
-    'Sb-135': Iso('Sb-135', 'antimony-135', 51, 135, 134.9251851, False),
-    'Sb-136': Iso('Sb-136', 'antimony-136', 51, 136, 135.9307459, False),
-    'Sb-137': Iso('Sb-137', 'antimony-137', 51, 137, 136.93555, False),
-    'Sb-138': Iso('Sb-138', 'antimony-138', 51, 138, 137.94145, False),
-    'Sb-139': Iso('Sb-139', 'antimony-139', 51, 139, 138.94655, False),
-    'Sb-140': Iso('Sb-140', 'antimony-140', 51, 140, 139.95283, False),
-    'Te-105': Iso('Te-105', 'tellurium-105', 52, 105, 104.94330, False),
-    'Te-106': Iso('Te-106', 'tellurium-106', 52, 106, 105.93750, False),
-    'Te-107': Iso('Te-107', 'tellurium-107', 52, 107, 106.935012, False),
-    'Te-108': Iso('Te-108', 'tellurium-108', 52, 108, 107.9293805, False),
-    'Te-109': Iso('Te-109', 'tellurium-109', 52, 109, 108.9273045, False),
-    'Te-110': Iso('Te-110', 'tellurium-110', 52, 110, 109.9224581, False),
-    'Te-111': Iso('Te-111', 'tellurium-111', 52, 111, 110.9210006, False),
-    'Te-112': Iso('Te-112', 'tellurium-112', 52, 112, 111.9167279, False),
-    'Te-113': Iso('Te-113', 'tellurium-113', 52, 113, 112.915891, False),
-    'Te-114': Iso('Te-114', 'tellurium-114', 52, 114, 113.912089, False),
-    'Te-115': Iso('Te-115', 'tellurium-115', 52, 115, 114.911902, False),
-    'Te-116': Iso('Te-116', 'tellurium-116', 52, 116, 115.908460, False),
-    'Te-117': Iso('Te-117', 'tellurium-117', 52, 117, 116.908646, False),
-    'Te-118': Iso('Te-118', 'tellurium-118', 52, 118, 117.905854, False),
-    'Te-119': Iso('Te-119', 'tellurium-119', 52, 119, 118.9064071, False),
-    'Te-120': Iso('Te-120', 'tellurium-120', 52, 120, 119.9040593, True,
-                  isotopic_abundance=0.0009),
-    'Te-121': Iso('Te-121', 'tellurium-121', 52, 121, 120.904944, False),
-    'Te-122': Iso('Te-122', 'tellurium-122', 52, 122, 121.9030435, True,
-                  isotopic_abundance=0.0255),
-    'Te-123': Iso('Te-123', 'tellurium-123', 52, 123, 122.9042698, True,
-                  isotopic_abundance=0.0089),
-    'Te-124': Iso('Te-124', 'tellurium-124', 52, 124, 123.9028171, True,
-                  isotopic_abundance=0.0474),
-    'Te-125': Iso('Te-125', 'tellurium-125', 52, 125, 124.9044299, True,
-                  isotopic_abundance=0.0707),
-    'Te-126': Iso('Te-126', 'tellurium-126', 52, 126, 125.9033109, True,
-                  isotopic_abundance=0.1884),
-    'Te-127': Iso('Te-127', 'tellurium-127', 52, 127, 126.9052257, False),
-    'Te-128': Iso('Te-128', 'tellurium-128', 52, 128, 127.90446128, False,
-                  isotopic_abundance=0.3174),
-    'Te-129': Iso('Te-129', 'tellurium-129', 52, 129, 128.90659646, False),
-    'Te-130': Iso('Te-130', 'tellurium-130', 52, 130, 129.906222748, False,
-                  isotopic_abundance=0.3408),
-    'Te-131': Iso('Te-131', 'tellurium-131', 52, 131, 130.908522213, False),
-    'Te-132': Iso('Te-132', 'tellurium-132', 52, 132, 131.9085467, False),
-    'Te-133': Iso('Te-133', 'tellurium-133', 52, 133, 132.9109688, False),
-    'Te-134': Iso('Te-134', 'tellurium-134', 52, 134, 133.9113940, False),
-    'Te-135': Iso('Te-135', 'tellurium-135', 52, 135, 134.9165557, False),
-    'Te-136': Iso('Te-136', 'tellurium-136', 52, 136, 135.9201006, False),
-    'Te-137': Iso('Te-137', 'tellurium-137', 52, 137, 136.9255989, False),
-    'Te-138': Iso('Te-138', 'tellurium-138', 52, 138, 137.9294722, False),
-    'Te-139': Iso('Te-139', 'tellurium-139', 52, 139, 138.9353672, False),
-    'Te-140': Iso('Te-140', 'tellurium-140', 52, 140, 139.939499, False),
-    'Te-141': Iso('Te-141', 'tellurium-141', 52, 141, 140.94580, False),
-    'Te-142': Iso('Te-142', 'tellurium-142', 52, 142, 141.95022, False),
-    'Te-143': Iso('Te-143', 'tellurium-143', 52, 143, 142.95676, False),
-    'I-107': Iso('I-107', 'iodine-107', 53, 107, 106.94678, False),
-    'I-108': Iso('I-108', 'iodine-108', 53, 108, 107.94348, False),
-    'I-109': Iso('I-109', 'iodine-109', 53, 109, 108.9380853, False),
-    'I-110': Iso('I-110', 'iodine-110', 53, 110, 109.935089, False),
-    'I-111': Iso('I-111', 'iodine-111', 53, 111, 110.9302692, False),
-    'I-112': Iso('I-112', 'iodine-112', 53, 112, 111.928005, False),
-    'I-113': Iso('I-113', 'iodine-113', 53, 113, 112.9236501, False),
-    'I-114': Iso('I-114', 'iodine-114', 53, 114, 113.92185, False),
-    'I-115': Iso('I-115', 'iodine-115', 53, 115, 114.918048, False),
-    'I-116': Iso('I-116', 'iodine-116', 53, 116, 115.91681, False),
-    'I-117': Iso('I-117', 'iodine-117', 53, 117, 116.913648, False),
-    'I-118': Iso('I-118', 'iodine-118', 53, 118, 117.913074, False),
-    'I-119': Iso('I-119', 'iodine-119', 53, 119, 118.910074, False),
-    'I-120': Iso('I-120', 'iodine-120', 53, 120, 119.910087, False),
-    'I-121': Iso('I-121', 'iodine-121', 53, 121, 120.9074051, False),
-    'I-122': Iso('I-122', 'iodine-122', 53, 122, 121.9075888, False),
-    'I-123': Iso('I-123', 'iodine-123', 53, 123, 122.9055885, False,
-                 half_life=47604.6),
-    'I-124': Iso('I-124', 'iodine-124', 53, 124, 123.9062090, False),
-    'I-125': Iso('I-125', 'iodine-125', 53, 125, 124.9046294, False,
-                 half_life=5139936.0),
-    'I-126': Iso('I-126', 'iodine-126', 53, 126, 125.9056233, False),
-    'I-127': Iso('I-127', 'iodine-127', 53, 127, 126.9044719, True,
-                 isotopic_abundance=1),
-    'I-128': Iso('I-128', 'iodine-128', 53, 128, 127.9058086, False),
-    'I-129': Iso('I-129', 'iodine-129', 53, 129, 128.9049837, False),
-    'I-130': Iso('I-130', 'iodine-130', 53, 130, 129.9066702, False),
-    'I-131': Iso('I-131', 'iodine-131', 53, 131, 130.90612630, False,
-                 half_life=692902.0800000001),
-    'I-132': Iso('I-132', 'iodine-132', 53, 132, 131.9079935, False),
-    'I-133': Iso('I-133', 'iodine-133', 53, 133, 132.9077970, False),
-    'I-134': Iso('I-134', 'iodine-134', 53, 134, 133.9097588, False),
-    'I-135': Iso('I-135', 'iodine-135', 53, 135, 134.9100488, False),
-    'I-136': Iso('I-136', 'iodine-136', 53, 136, 135.914604, False),
-    'I-137': Iso('I-137', 'iodine-137', 53, 137, 136.9180282, False),
-    'I-138': Iso('I-138', 'iodine-138', 53, 138, 137.9227264, False),
-    'I-139': Iso('I-139', 'iodine-139', 53, 139, 138.926506, False),
-    'I-140': Iso('I-140', 'iodine-140', 53, 140, 139.93173, False),
-    'I-141': Iso('I-141', 'iodine-141', 53, 141, 140.93569, False),
-    'I-142': Iso('I-142', 'iodine-142', 53, 142, 141.94120, False),
-    'I-143': Iso('I-143', 'iodine-143', 53, 143, 142.94565, False),
-    'I-144': Iso('I-144', 'iodine-144', 53, 144, 143.95139, False),
-    'I-145': Iso('I-145', 'iodine-145', 53, 145, 144.95605, False),
-    'Xe-109': Iso('Xe-109', 'xenon-109', 54, 109, 108.95043, False),
-    'Xe-110': Iso('Xe-110', 'xenon-110', 54, 110, 109.94426, False),
-    'Xe-111': Iso('Xe-111', 'xenon-111', 54, 111, 110.941607, False),
-    'Xe-112': Iso('Xe-112', 'xenon-112', 54, 112, 111.9355590, False),
-    'Xe-113': Iso('Xe-113', 'xenon-113', 54, 113, 112.9332217, False),
-    'Xe-114': Iso('Xe-114', 'xenon-114', 54, 114, 113.927980, False),
-    'Xe-115': Iso('Xe-115', 'xenon-115', 54, 115, 114.926294, False),
-    'Xe-116': Iso('Xe-116', 'xenon-116', 54, 116, 115.921581, False),
-    'Xe-117': Iso('Xe-117', 'xenon-117', 54, 117, 116.920359, False),
-    'Xe-118': Iso('Xe-118', 'xenon-118', 54, 118, 117.916179, False),
-    'Xe-119': Iso('Xe-119', 'xenon-119', 54, 119, 118.915411, False),
-    'Xe-120': Iso('Xe-120', 'xenon-120', 54, 120, 119.911784, False),
-    'Xe-121': Iso('Xe-121', 'xenon-121', 54, 121, 120.911453, False),
-    'Xe-122': Iso('Xe-122', 'xenon-122', 54, 122, 121.908368, False),
-    'Xe-123': Iso('Xe-123', 'xenon-123', 54, 123, 122.908482, False),
-    'Xe-124': Iso('Xe-124', 'xenon-124', 54, 124, 123.9058920, True,
-                  isotopic_abundance=0.000952),
-    'Xe-125': Iso('Xe-125', 'xenon-125', 54, 125, 124.9063944, False),
-    'Xe-126': Iso('Xe-126', 'xenon-126', 54, 126, 125.9042983, True,
-                  isotopic_abundance=0.000890),
-    'Xe-127': Iso('Xe-127', 'xenon-127', 54, 127, 126.9051829, False,
-                  half_life=3140173.44),
-    'Xe-128': Iso('Xe-128', 'xenon-128', 54, 128, 127.9035310, True,
-                  isotopic_abundance=0.019102),
-    'Xe-129': Iso('Xe-129', 'xenon-129', 54, 129, 128.9047808611, True,
-                  isotopic_abundance=0.264006),
-    'Xe-130': Iso('Xe-130', 'xenon-130', 54, 130, 129.903509349, True,
-                  isotopic_abundance=0.040710),
-    'Xe-131': Iso('Xe-131', 'xenon-131', 54, 131, 130.90508406, True,
-                  isotopic_abundance=0.212324),
-    'Xe-132': Iso('Xe-132', 'xenon-132', 54, 132, 131.9041550856, True,
-                  isotopic_abundance=0.269086),
-    'Xe-133': Iso('Xe-133', 'xenon-133', 54, 133, 132.9059108, False,
-                  half_life=453381.408),
-    'Xe-134': Iso('Xe-134', 'xenon-134', 54, 134, 133.90539466, True,
-                  isotopic_abundance=0.104357),
-    'Xe-135': Iso('Xe-135', 'xenon-135', 54, 135, 134.9072278, False),
-    'Xe-136': Iso('Xe-136', 'xenon-136', 54, 136, 135.907214484, False,
-                  isotopic_abundance=0.088573),
-    'Xe-137': Iso('Xe-137', 'xenon-137', 54, 137, 136.91155778, False),
-    'Xe-138': Iso('Xe-138', 'xenon-138', 54, 138, 137.9141463, False),
-    'Xe-139': Iso('Xe-139', 'xenon-139', 54, 139, 138.9187922, False),
-    'Xe-140': Iso('Xe-140', 'xenon-140', 54, 140, 139.9216458, False),
-    'Xe-141': Iso('Xe-141', 'xenon-141', 54, 141, 140.9267872, False),
-    'Xe-142': Iso('Xe-142', 'xenon-142', 54, 142, 141.9299731, False),
-    'Xe-143': Iso('Xe-143', 'xenon-143', 54, 143, 142.9353696, False),
-    'Xe-144': Iso('Xe-144', 'xenon-144', 54, 144, 143.9389451, False),
-    'Xe-145': Iso('Xe-145', 'xenon-145', 54, 145, 144.944720, False),
-    'Xe-146': Iso('Xe-146', 'xenon-146', 54, 146, 145.948518, False),
-    'Xe-147': Iso('Xe-147', 'xenon-147', 54, 147, 146.95426, False),
-    'Xe-148': Iso('Xe-148', 'xenon-148', 54, 148, 147.95813, False),
-    'Cs-112': Iso('Cs-112', 'caesium-112', 55, 112, 111.950309, False),
-    'Cs-113': Iso('Cs-113', 'caesium-113', 55, 113, 112.9444291, False),
-    'Cs-114': Iso('Cs-114', 'caesium-114', 55, 114, 113.941296, False),
-    'Cs-115': Iso('Cs-115', 'caesium-115', 55, 115, 114.93591, False),
-    'Cs-116': Iso('Cs-116', 'caesium-116', 55, 116, 115.93337, False),
-    'Cs-117': Iso('Cs-117', 'caesium-117', 55, 117, 116.928617, False),
-    'Cs-118': Iso('Cs-118', 'caesium-118', 55, 118, 117.926560, False),
-    'Cs-119': Iso('Cs-119', 'caesium-119', 55, 119, 118.922377, False),
-    'Cs-120': Iso('Cs-120', 'caesium-120', 55, 120, 119.920677, False),
-    'Cs-121': Iso('Cs-121', 'caesium-121', 55, 121, 120.917227, False),
-    'Cs-122': Iso('Cs-122', 'caesium-122', 55, 122, 121.916108, False),
-    'Cs-123': Iso('Cs-123', 'caesium-123', 55, 123, 122.912996, False),
-    'Cs-124': Iso('Cs-124', 'caesium-124', 55, 124, 123.9122578, False),
-    'Cs-125': Iso('Cs-125', 'caesium-125', 55, 125, 124.9097280, False),
-    'Cs-126': Iso('Cs-126', 'caesium-126', 55, 126, 125.909446, False),
-    'Cs-127': Iso('Cs-127', 'caesium-127', 55, 127, 126.9074174, False),
-    'Cs-128': Iso('Cs-128', 'caesium-128', 55, 128, 127.9077487, False),
-    'Cs-129': Iso('Cs-129', 'caesium-129', 55, 129, 128.9060657, False),
-    'Cs-130': Iso('Cs-130', 'caesium-130', 55, 130, 129.9067093, False),
-    'Cs-131': Iso('Cs-131', 'caesium-131', 55, 131, 130.9054649, False),
-    'Cs-132': Iso('Cs-132', 'caesium-132', 55, 132, 131.9064339, False),
-    'Cs-133': Iso('Cs-133', 'caesium-133', 55, 133, 132.9054519610, True,
-                  isotopic_abundance=1),
-    'Cs-134': Iso('Cs-134', 'caesium-134', 55, 134, 133.906718503, False,
-                  half_life=65135232.0),
-    'Cs-135': Iso('Cs-135', 'caesium-135', 55, 135, 134.9059770, False),
-    'Cs-136': Iso('Cs-136', 'caesium-136', 55, 136, 135.9073114, False),
-    'Cs-137': Iso('Cs-137', 'caesium-137', 55, 137, 136.90708923, False,
-                  half_life=951981119.9999999),
-    'Cs-138': Iso('Cs-138', 'caesium-138', 55, 138, 137.9110171, False),
-    'Cs-139': Iso('Cs-139', 'caesium-139', 55, 139, 138.9133638, False),
-    'Cs-140': Iso('Cs-140', 'caesium-140', 55, 140, 139.9172831, False),
-    'Cs-141': Iso('Cs-141', 'caesium-141', 55, 141, 140.9200455, False),
-    'Cs-142': Iso('Cs-142', 'caesium-142', 55, 142, 141.9242960, False),
-    'Cs-143': Iso('Cs-143', 'caesium-143', 55, 143, 142.927349, False),
-    'Cs-144': Iso('Cs-144', 'caesium-144', 55, 144, 143.932076, False),
-    'Cs-145': Iso('Cs-145', 'caesium-145', 55, 145, 144.935527, False),
-    'Cs-146': Iso('Cs-146', 'caesium-146', 55, 146, 145.940344, False),
-    'Cs-147': Iso('Cs-147', 'caesium-147', 55, 147, 146.944156, False),
-    'Cs-148': Iso('Cs-148', 'caesium-148', 55, 148, 147.94923, False),
-    'Cs-149': Iso('Cs-149', 'caesium-149', 55, 149, 148.95302, False),
-    'Cs-150': Iso('Cs-150', 'caesium-150', 55, 150, 149.95833, False),
-    'Cs-151': Iso('Cs-151', 'caesium-151', 55, 151, 150.96258, False),
-    'Ba-114': Iso('Ba-114', 'barium-114', 56, 114, 113.95066, False),
-    'Ba-115': Iso('Ba-115', 'barium-115', 56, 115, 114.94737, False),
-    'Ba-116': Iso('Ba-116', 'barium-116', 56, 116, 115.94128, False),
-    'Ba-117': Iso('Ba-117', 'barium-117', 56, 117, 116.93814, False),
-    'Ba-118': Iso('Ba-118', 'barium-118', 56, 118, 117.93306, False),
-    'Ba-119': Iso('Ba-119', 'barium-119', 56, 119, 118.93066, False),
-    'Ba-120': Iso('Ba-120', 'barium-120', 56, 120, 119.92605, False),
-    'Ba-121': Iso('Ba-121', 'barium-121', 56, 121, 120.92405, False),
-    'Ba-122': Iso('Ba-122', 'barium-122', 56, 122, 121.919904, False),
-    'Ba-123': Iso('Ba-123', 'barium-123', 56, 123, 122.918781, False),
-    'Ba-124': Iso('Ba-124', 'barium-124', 56, 124, 123.915094, False),
-    'Ba-125': Iso('Ba-125', 'barium-125', 56, 125, 124.914472, False),
-    'Ba-126': Iso('Ba-126', 'barium-126', 56, 126, 125.911250, False),
-    'Ba-127': Iso('Ba-127', 'barium-127', 56, 127, 126.911091, False),
-    'Ba-128': Iso('Ba-128', 'barium-128', 56, 128, 127.9083420, False),
-    'Ba-129': Iso('Ba-129', 'barium-129', 56, 129, 128.908681, False),
-    'Ba-130': Iso('Ba-130', 'barium-130', 56, 130, 129.9063207, False,
-                  isotopic_abundance=0.00106),
-    'Ba-131': Iso('Ba-131', 'barium-131', 56, 131, 130.9069410, False),
-    'Ba-132': Iso('Ba-132', 'barium-132', 56, 132, 131.9050611, True,
-                  isotopic_abundance=0.00101),
-    'Ba-133': Iso('Ba-133', 'barium-133', 56, 133, 132.9060074, False,
-                  half_life=333046080.0),
-    'Ba-134': Iso('Ba-134', 'barium-134', 56, 134, 133.90450818, True,
-                  isotopic_abundance=0.02417),
-    'Ba-135': Iso('Ba-135', 'barium-135', 56, 135, 134.90568838, True,
-                  isotopic_abundance=0.06592),
-    'Ba-136': Iso('Ba-136', 'barium-136', 56, 136, 135.90457573, True,
-                  isotopic_abundance=0.07854),
-    'Ba-137': Iso('Ba-137', 'barium-137', 56, 137, 136.90582714, True,
-                  isotopic_abundance=0.11232),
-    'Ba-138': Iso('Ba-138', 'barium-138', 56, 138, 137.90524700, True,
-                  isotopic_abundance=0.71698),
-    'Ba-139': Iso('Ba-139', 'barium-139', 56, 139, 138.90884110, False),
-    'Ba-140': Iso('Ba-140', 'barium-140', 56, 140, 139.9106057, False,
-                  half_life=1101833.28),
-    'Ba-141': Iso('Ba-141', 'barium-141', 56, 141, 140.9144033, False),
-    'Ba-142': Iso('Ba-142', 'barium-142', 56, 142, 141.9164324, False),
-    'Ba-143': Iso('Ba-143', 'barium-143', 56, 143, 142.9206253, False),
-    'Ba-144': Iso('Ba-144', 'barium-144', 56, 144, 143.9229549, False),
-    'Ba-145': Iso('Ba-145', 'barium-145', 56, 145, 144.9275184, False),
-    'Ba-146': Iso('Ba-146', 'barium-146', 56, 146, 145.930284, False),
-    'Ba-147': Iso('Ba-147', 'barium-147', 56, 147, 146.935304, False),
-    'Ba-148': Iso('Ba-148', 'barium-148', 56, 148, 147.938171, False),
-    'Ba-149': Iso('Ba-149', 'barium-149', 56, 149, 148.94308, False),
-    'Ba-150': Iso('Ba-150', 'barium-150', 56, 150, 149.94605, False),
-    'Ba-151': Iso('Ba-151', 'barium-151', 56, 151, 150.95127, False),
-    'Ba-152': Iso('Ba-152', 'barium-152', 56, 152, 151.95481, False),
-    'Ba-153': Iso('Ba-153', 'barium-153', 56, 153, 152.96036, False),
-    'La-116': Iso('La-116', 'lanthanum-116', 57, 116, 115.95630, False),
-    'La-117': Iso('La-117', 'lanthanum-117', 57, 117, 116.94999, False),
-    'La-118': Iso('La-118', 'lanthanum-118', 57, 118, 117.94673, False),
-    'La-119': Iso('La-119', 'lanthanum-119', 57, 119, 118.94099, False),
-    'La-120': Iso('La-120', 'lanthanum-120', 57, 120, 119.93807, False),
-    'La-121': Iso('La-121', 'lanthanum-121', 57, 121, 120.93315, False),
-    'La-122': Iso('La-122', 'lanthanum-122', 57, 122, 121.93071, False),
-    'La-123': Iso('La-123', 'lanthanum-123', 57, 123, 122.92630, False),
-    'La-124': Iso('La-124', 'lanthanum-124', 57, 124, 123.924574, False),
-    'La-125': Iso('La-125', 'lanthanum-125', 57, 125, 124.920816, False),
-    'La-126': Iso('La-126', 'lanthanum-126', 57, 126, 125.919513, False),
-    'La-127': Iso('La-127', 'lanthanum-127', 57, 127, 126.916375, False),
-    'La-128': Iso('La-128', 'lanthanum-128', 57, 128, 127.915592, False),
-    'La-129': Iso('La-129', 'lanthanum-129', 57, 129, 128.912694, False),
-    'La-130': Iso('La-130', 'lanthanum-130', 57, 130, 129.912369, False),
-    'La-131': Iso('La-131', 'lanthanum-131', 57, 131, 130.910070, False),
-    'La-132': Iso('La-132', 'lanthanum-132', 57, 132, 131.910119, False),
-    'La-133': Iso('La-133', 'lanthanum-133', 57, 133, 132.908218, False),
-    'La-134': Iso('La-134', 'lanthanum-134', 57, 134, 133.908514, False),
-    'La-135': Iso('La-135', 'lanthanum-135', 57, 135, 134.906984, False),
-    'La-136': Iso('La-136', 'lanthanum-136', 57, 136, 135.907635, False),
-    'La-137': Iso('La-137', 'lanthanum-137', 57, 137, 136.9064504, False),
-    'La-138': Iso('La-138', 'lanthanum-138', 57, 138, 137.9071149, False,
-                  isotopic_abundance=0.0008881),
-    'La-139': Iso('La-139', 'lanthanum-139', 57, 139, 138.9063563, True,
-                  isotopic_abundance=0.9991119),
-    'La-140': Iso('La-140', 'lanthanum-140', 57, 140, 139.9094806, False,
-                  half_life=145054.8),
-    'La-141': Iso('La-141', 'lanthanum-141', 57, 141, 140.9109660, False),
-    'La-142': Iso('La-142', 'lanthanum-142', 57, 142, 141.9140909, False),
-    'La-143': Iso('La-143', 'lanthanum-143', 57, 143, 142.9160795, False),
-    'La-144': Iso('La-144', 'lanthanum-144', 57, 144, 143.919646, False),
-    'La-145': Iso('La-145', 'lanthanum-145', 57, 145, 144.921808, False),
-    'La-146': Iso('La-146', 'lanthanum-146', 57, 146, 145.925875, False),
-    'La-147': Iso('La-147', 'lanthanum-147', 57, 147, 146.928418, False),
-    'La-148': Iso('La-148', 'lanthanum-148', 57, 148, 147.932679, False),
-    'La-149': Iso('La-149', 'lanthanum-149', 57, 149, 148.93535, False),
-    'La-150': Iso('La-150', 'lanthanum-150', 57, 150, 149.93947, False),
-    'La-151': Iso('La-151', 'lanthanum-151', 57, 151, 150.94232, False),
-    'La-152': Iso('La-152', 'lanthanum-152', 57, 152, 151.94682, False),
-    'La-153': Iso('La-153', 'lanthanum-153', 57, 153, 152.95036, False),
-    'La-154': Iso('La-154', 'lanthanum-154', 57, 154, 153.95517, False),
-    'La-155': Iso('La-155', 'lanthanum-155', 57, 155, 154.95901, False),
-    'Ce-119': Iso('Ce-119', 'cerium-119', 58, 119, 118.95271, False),
-    'Ce-120': Iso('Ce-120', 'cerium-120', 58, 120, 119.94654, False),
-    'Ce-121': Iso('Ce-121', 'cerium-121', 58, 121, 120.94335, False),
-    'Ce-122': Iso('Ce-122', 'cerium-122', 58, 122, 121.93787, False),
-    'Ce-123': Iso('Ce-123', 'cerium-123', 58, 123, 122.93528, False),
-    'Ce-124': Iso('Ce-124', 'cerium-124', 58, 124, 123.93031, False),
-    'Ce-125': Iso('Ce-125', 'cerium-125', 58, 125, 124.92844, False),
-    'Ce-126': Iso('Ce-126', 'cerium-126', 58, 126, 125.923971, False),
-    'Ce-127': Iso('Ce-127', 'cerium-127', 58, 127, 126.922727, False),
-    'Ce-128': Iso('Ce-128', 'cerium-128', 58, 128, 127.918911, False),
-    'Ce-129': Iso('Ce-129', 'cerium-129', 58, 129, 128.918102, False),
-    'Ce-130': Iso('Ce-130', 'cerium-130', 58, 130, 129.914736, False),
-    'Ce-131': Iso('Ce-131', 'cerium-131', 58, 131, 130.914429, False),
-    'Ce-132': Iso('Ce-132', 'cerium-132', 58, 132, 131.911464, False),
-    'Ce-133': Iso('Ce-133', 'cerium-133', 58, 133, 132.911520, False),
-    'Ce-134': Iso('Ce-134', 'cerium-134', 58, 134, 133.908928, False),
-    'Ce-135': Iso('Ce-135', 'cerium-135', 58, 135, 134.909161, False),
-    'Ce-136': Iso('Ce-136', 'cerium-136', 58, 136, 135.90712921, True,
-                  isotopic_abundance=0.00185),
-    'Ce-137': Iso('Ce-137', 'cerium-137', 58, 137, 136.90776236, False),
-    'Ce-138': Iso('Ce-138', 'cerium-138', 58, 138, 137.905991, True,
-                  isotopic_abundance=0.00251),
-    'Ce-139': Iso('Ce-139', 'cerium-139', 58, 139, 138.9066551, False,
-                  half_life=11900217.600000001),
-    'Ce-140': Iso('Ce-140', 'cerium-140', 58, 140, 139.9054431, True,
-                  isotopic_abundance=0.88450),
-    'Ce-141': Iso('Ce-141', 'cerium-141', 58, 141, 140.9082807, False,
-                  half_life=2808864.0),
-    'Ce-142': Iso('Ce-142', 'cerium-142', 58, 142, 141.9092504, True,
-                  isotopic_abundance=0.11114),
-    'Ce-143': Iso('Ce-143', 'cerium-143', 58, 143, 142.9123921, False),
-    'Ce-144': Iso('Ce-144', 'cerium-144', 58, 144, 143.9136529, False,
-                  half_life=24583737.599999998),
-    'Ce-145': Iso('Ce-145', 'cerium-145', 58, 145, 144.917265, False),
-    'Ce-146': Iso('Ce-146', 'cerium-146', 58, 146, 145.918802, False),
-    'Ce-147': Iso('Ce-147', 'cerium-147', 58, 147, 146.9226899, False),
-    'Ce-148': Iso('Ce-148', 'cerium-148', 58, 148, 147.924424, False),
-    'Ce-149': Iso('Ce-149', 'cerium-149', 58, 149, 148.928427, False),
-    'Ce-150': Iso('Ce-150', 'cerium-150', 58, 150, 149.930384, False),
-    'Ce-151': Iso('Ce-151', 'cerium-151', 58, 151, 150.934272, False),
-    'Ce-152': Iso('Ce-152', 'cerium-152', 58, 152, 151.93660, False),
-    'Ce-153': Iso('Ce-153', 'cerium-153', 58, 153, 152.94093, False),
-    'Ce-154': Iso('Ce-154', 'cerium-154', 58, 154, 153.94380, False),
-    'Ce-155': Iso('Ce-155', 'cerium-155', 58, 155, 154.94855, False),
-    'Ce-156': Iso('Ce-156', 'cerium-156', 58, 156, 155.95183, False),
-    'Ce-157': Iso('Ce-157', 'cerium-157', 58, 157, 156.95705, False),
-    'Pr-121': Iso('Pr-121', 'praseodymium-121', 59, 121, 120.95532, False),
-    'Pr-122': Iso('Pr-122', 'praseodymium-122', 59, 122, 121.95175, False),
-    'Pr-123': Iso('Pr-123', 'praseodymium-123', 59, 123, 122.94596, False),
-    'Pr-124': Iso('Pr-124', 'praseodymium-124', 59, 124, 123.94294, False),
-    'Pr-125': Iso('Pr-125', 'praseodymium-125', 59, 125, 124.93770, False),
-    'Pr-126': Iso('Pr-126', 'praseodymium-126', 59, 126, 125.93524, False),
-    'Pr-127': Iso('Pr-127', 'praseodymium-127', 59, 127, 126.93071, False),
-    'Pr-128': Iso('Pr-128', 'praseodymium-128', 59, 128, 127.928791, False),
-    'Pr-129': Iso('Pr-129', 'praseodymium-129', 59, 129, 128.925095, False),
-    'Pr-130': Iso('Pr-130', 'praseodymium-130', 59, 130, 129.923590, False),
-    'Pr-131': Iso('Pr-131', 'praseodymium-131', 59, 131, 130.920235, False),
-    'Pr-132': Iso('Pr-132', 'praseodymium-132', 59, 132, 131.919255, False),
-    'Pr-133': Iso('Pr-133', 'praseodymium-133', 59, 133, 132.916331, False),
-    'Pr-134': Iso('Pr-134', 'praseodymium-134', 59, 134, 133.915697, False),
-    'Pr-135': Iso('Pr-135', 'praseodymium-135', 59, 135, 134.913112, False),
-    'Pr-136': Iso('Pr-136', 'praseodymium-136', 59, 136, 135.912677, False),
-    'Pr-137': Iso('Pr-137', 'praseodymium-137', 59, 137, 136.9106792, False),
-    'Pr-138': Iso('Pr-138', 'praseodymium-138', 59, 138, 137.910754, False),
-    'Pr-139': Iso('Pr-139', 'praseodymium-139', 59, 139, 138.9089408, False),
-    'Pr-140': Iso('Pr-140', 'praseodymium-140', 59, 140, 139.9090803, False),
-    'Pr-141': Iso('Pr-141', 'praseodymium-141', 59, 141, 140.9076576, True,
-                  isotopic_abundance=1),
-    'Pr-142': Iso('Pr-142', 'praseodymium-142', 59, 142, 141.9100496, False),
-    'Pr-143': Iso('Pr-143', 'praseodymium-143', 59, 143, 142.9108228, False),
-    'Pr-144': Iso('Pr-144', 'praseodymium-144', 59, 144, 143.9133109, False),
-    'Pr-145': Iso('Pr-145', 'praseodymium-145', 59, 145, 144.9145182, False),
-    'Pr-146': Iso('Pr-146', 'praseodymium-146', 59, 146, 145.917680, False),
-    'Pr-147': Iso('Pr-147', 'praseodymium-147', 59, 147, 146.919008, False),
-    'Pr-148': Iso('Pr-148', 'praseodymium-148', 59, 148, 147.922130, False),
-    'Pr-149': Iso('Pr-149', 'praseodymium-149', 59, 149, 148.923736, False),
-    'Pr-150': Iso('Pr-150', 'praseodymium-150', 59, 150, 149.9266765, False),
-    'Pr-151': Iso('Pr-151', 'praseodymium-151', 59, 151, 150.928309, False),
-    'Pr-152': Iso('Pr-152', 'praseodymium-152', 59, 152, 151.931553, False),
-    'Pr-153': Iso('Pr-153', 'praseodymium-153', 59, 153, 152.933904, False),
-    'Pr-154': Iso('Pr-154', 'praseodymium-154', 59, 154, 153.93753, False),
-    'Pr-155': Iso('Pr-155', 'praseodymium-155', 59, 155, 154.940509, False),
-    'Pr-156': Iso('Pr-156', 'praseodymium-156', 59, 156, 155.94464, False),
-    'Pr-157': Iso('Pr-157', 'praseodymium-157', 59, 157, 156.94789, False),
-    'Pr-158': Iso('Pr-158', 'praseodymium-158', 59, 158, 157.95241, False),
-    'Pr-159': Iso('Pr-159', 'praseodymium-159', 59, 159, 158.95589, False),
-    'Nd-124': Iso('Nd-124', 'neodymium-124', 60, 124, 123.95220, False),
-    'Nd-125': Iso('Nd-125', 'neodymium-125', 60, 125, 124.94890, False),
-    'Nd-126': Iso('Nd-126', 'neodymium-126', 60, 126, 125.94311, False),
-    'Nd-127': Iso('Nd-127', 'neodymium-127', 60, 127, 126.94038, False),
-    'Nd-128': Iso('Nd-128', 'neodymium-128', 60, 128, 127.93525, False),
-    'Nd-129': Iso('Nd-129', 'neodymium-129', 60, 129, 128.93310, False),
-    'Nd-130': Iso('Nd-130', 'neodymium-130', 60, 130, 129.928506, False),
-    'Nd-131': Iso('Nd-131', 'neodymium-131', 60, 131, 130.927248, False),
-    'Nd-132': Iso('Nd-132', 'neodymium-132', 60, 132, 131.923321, False),
-    'Nd-133': Iso('Nd-133', 'neodymium-133', 60, 133, 132.922348, False),
-    'Nd-134': Iso('Nd-134', 'neodymium-134', 60, 134, 133.918790, False),
-    'Nd-135': Iso('Nd-135', 'neodymium-135', 60, 135, 134.918181, False),
-    'Nd-136': Iso('Nd-136', 'neodymium-136', 60, 136, 135.914976, False),
-    'Nd-137': Iso('Nd-137', 'neodymium-137', 60, 137, 136.914562, False),
-    'Nd-138': Iso('Nd-138', 'neodymium-138', 60, 138, 137.911950, False),
-    'Nd-139': Iso('Nd-139', 'neodymium-139', 60, 139, 138.911954, False),
-    'Nd-140': Iso('Nd-140', 'neodymium-140', 60, 140, 139.909550, False),
-    'Nd-141': Iso('Nd-141', 'neodymium-141', 60, 141, 140.9096147, False),
-    'Nd-142': Iso('Nd-142', 'neodymium-142', 60, 142, 141.9077290, True,
-                  isotopic_abundance=0.27152),
-    'Nd-143': Iso('Nd-143', 'neodymium-143', 60, 143, 142.9098200, True,
-                  isotopic_abundance=0.12174),
-    'Nd-144': Iso('Nd-144', 'neodymium-144', 60, 144, 143.9100930, False,
-                  isotopic_abundance=0.23798),
-    'Nd-145': Iso('Nd-145', 'neodymium-145', 60, 145, 144.9125793, True,
-                  isotopic_abundance=0.08293),
-    'Nd-146': Iso('Nd-146', 'neodymium-146', 60, 146, 145.9131226, True,
-                  isotopic_abundance=0.17189),
-    'Nd-147': Iso('Nd-147', 'neodymium-147', 60, 147, 146.9161061, False),
-    'Nd-148': Iso('Nd-148', 'neodymium-148', 60, 148, 147.9168993, True,
-                  isotopic_abundance=0.05756),
-    'Nd-149': Iso('Nd-149', 'neodymium-149', 60, 149, 148.9201548, False),
-    'Nd-150': Iso('Nd-150', 'neodymium-150', 60, 150, 149.9209022, False,
-                  isotopic_abundance=0.05638),
-    'Nd-151': Iso('Nd-151', 'neodymium-151', 60, 151, 150.9238403, False),
-    'Nd-152': Iso('Nd-152', 'neodymium-152', 60, 152, 151.924692, False),
-    'Nd-153': Iso('Nd-153', 'neodymium-153', 60, 153, 152.9277180, False),
-    'Nd-154': Iso('Nd-154', 'neodymium-154', 60, 154, 153.92948, False),
-    'Nd-155': Iso('Nd-155', 'neodymium-155', 60, 155, 154.9331357, False),
-    'Nd-156': Iso('Nd-156', 'neodymium-156', 60, 156, 155.93508, False),
-    'Nd-157': Iso('Nd-157', 'neodymium-157', 60, 157, 156.939386, False),
-    'Nd-158': Iso('Nd-158', 'neodymium-158', 60, 158, 157.94197, False),
-    'Nd-159': Iso('Nd-159', 'neodymium-159', 60, 159, 158.94653, False),
-    'Nd-160': Iso('Nd-160', 'neodymium-160', 60, 160, 159.94940, False),
-    'Nd-161': Iso('Nd-161', 'neodymium-161', 60, 161, 160.95428, False),
-    'Pm-126': Iso('Pm-126', 'promethium-126', 61, 126, 125.95792, False),
-    'Pm-127': Iso('Pm-127', 'promethium-127', 61, 127, 126.95192, False),
-    'Pm-128': Iso('Pm-128', 'promethium-128', 61, 128, 127.94870, False),
-    'Pm-129': Iso('Pm-129', 'promethium-129', 61, 129, 128.94323, False),
-    'Pm-130': Iso('Pm-130', 'promethium-130', 61, 130, 129.94053, False),
-    'Pm-131': Iso('Pm-131', 'promethium-131', 61, 131, 130.93567, False),
-    'Pm-132': Iso('Pm-132', 'promethium-132', 61, 132, 131.93384, False),
-    'Pm-133': Iso('Pm-133', 'promethium-133', 61, 133, 132.929782, False),
-    'Pm-134': Iso('Pm-134', 'promethium-134', 61, 134, 133.928353, False),
-    'Pm-135': Iso('Pm-135', 'promethium-135', 61, 135, 134.924823, False),
-    'Pm-136': Iso('Pm-136', 'promethium-136', 61, 136, 135.923585, False),
-    'Pm-137': Iso('Pm-137', 'promethium-137', 61, 137, 136.920480, False),
-    'Pm-138': Iso('Pm-138', 'promethium-138', 61, 138, 137.919548, False),
-    'Pm-139': Iso('Pm-139', 'promethium-139', 61, 139, 138.916800, False),
-    'Pm-140': Iso('Pm-140', 'promethium-140', 61, 140, 139.916040, False),
-    'Pm-141': Iso('Pm-141', 'promethium-141', 61, 141, 140.913555, False),
-    'Pm-142': Iso('Pm-142', 'promethium-142', 61, 142, 141.912890, False),
-    'Pm-143': Iso('Pm-143', 'promethium-143', 61, 143, 142.9109383, False),
-    'Pm-144': Iso('Pm-144', 'promethium-144', 61, 144, 143.9125964, False),
-    'Pm-145': Iso('Pm-145', 'promethium-145', 61, 145, 144.9127559, False),
-    'Pm-146': Iso('Pm-146', 'promethium-146', 61, 146, 145.9147024, False),
-    'Pm-147': Iso('Pm-147', 'promethium-147', 61, 147, 146.9151450, False),
-    'Pm-148': Iso('Pm-148', 'promethium-148', 61, 148, 147.9174819, False),
-    'Pm-149': Iso('Pm-149', 'promethium-149', 61, 149, 148.9183423, False),
-    'Pm-150': Iso('Pm-150', 'promethium-150', 61, 150, 149.920991, False),
-    'Pm-151': Iso('Pm-151', 'promethium-151', 61, 151, 150.9212175, False),
-    'Pm-152': Iso('Pm-152', 'promethium-152', 61, 152, 151.923506, False),
-    'Pm-153': Iso('Pm-153', 'promethium-153', 61, 153, 152.9241567, False),
-    'Pm-154': Iso('Pm-154', 'promethium-154', 61, 154, 153.926472, False),
-    'Pm-155': Iso('Pm-155', 'promethium-155', 61, 155, 154.9281370, False),
-    'Pm-156': Iso('Pm-156', 'promethium-156', 61, 156, 155.9311175, False),
-    'Pm-157': Iso('Pm-157', 'promethium-157', 61, 157, 156.9331214, False),
-    'Pm-158': Iso('Pm-158', 'promethium-158', 61, 158, 157.936565, False),
-    'Pm-159': Iso('Pm-159', 'promethium-159', 61, 159, 158.939287, False),
-    'Pm-160': Iso('Pm-160', 'promethium-160', 61, 160, 159.94310, False),
-    'Pm-161': Iso('Pm-161', 'promethium-161', 61, 161, 160.94607, False),
-    'Pm-162': Iso('Pm-162', 'promethium-162', 61, 162, 161.95022, False),
-    'Pm-163': Iso('Pm-163', 'promethium-163', 61, 163, 162.95357, False),
-    'Sm-128': Iso('Sm-128', 'samarium-128', 62, 128, 127.95842, False),
-    'Sm-129': Iso('Sm-129', 'samarium-129', 62, 129, 128.95476, False),
-    'Sm-130': Iso('Sm-130', 'samarium-130', 62, 130, 129.94900, False),
-    'Sm-131': Iso('Sm-131', 'samarium-131', 62, 131, 130.94618, False),
-    'Sm-132': Iso('Sm-132', 'samarium-132', 62, 132, 131.94087, False),
-    'Sm-133': Iso('Sm-133', 'samarium-133', 62, 133, 132.93856, False),
-    'Sm-134': Iso('Sm-134', 'samarium-134', 62, 134, 133.93411, False),
-    'Sm-135': Iso('Sm-135', 'samarium-135', 62, 135, 134.93252, False),
-    'Sm-136': Iso('Sm-136', 'samarium-136', 62, 136, 135.928276, False),
-    'Sm-137': Iso('Sm-137', 'samarium-137', 62, 137, 136.926971, False),
-    'Sm-138': Iso('Sm-138', 'samarium-138', 62, 138, 137.923244, False),
-    'Sm-139': Iso('Sm-139', 'samarium-139', 62, 139, 138.922297, False),
-    'Sm-140': Iso('Sm-140', 'samarium-140', 62, 140, 139.918995, False),
-    'Sm-141': Iso('Sm-141', 'samarium-141', 62, 141, 140.9184816, False),
-    'Sm-142': Iso('Sm-142', 'samarium-142', 62, 142, 141.9152044, False),
-    'Sm-143': Iso('Sm-143', 'samarium-143', 62, 143, 142.9146353, False),
-    'Sm-144': Iso('Sm-144', 'samarium-144', 62, 144, 143.9120065, True,
-                  isotopic_abundance=0.0307),
-    'Sm-145': Iso('Sm-145', 'samarium-145', 62, 145, 144.9134173, False),
-    'Sm-146': Iso('Sm-146', 'samarium-146', 62, 146, 145.9130470, False),
-    'Sm-147': Iso('Sm-147', 'samarium-147', 62, 147, 146.9149044, False,
-                  isotopic_abundance=0.1499),
-    'Sm-148': Iso('Sm-148', 'samarium-148', 62, 148, 147.9148292, False,
-                  isotopic_abundance=0.1124),
-    'Sm-149': Iso('Sm-149', 'samarium-149', 62, 149, 148.9171921, True,
-                  isotopic_abundance=0.1382),
-    'Sm-150': Iso('Sm-150', 'samarium-150', 62, 150, 149.9172829, True,
-                  isotopic_abundance=0.0738),
-    'Sm-151': Iso('Sm-151', 'samarium-151', 62, 151, 150.9199398, False),
-    'Sm-152': Iso('Sm-152', 'samarium-152', 62, 152, 151.9197397, True,
-                  isotopic_abundance=0.2675),
-    'Sm-153': Iso('Sm-153', 'samarium-153', 62, 153, 152.9221047, False,
-                  half_life=166627.08),
-    'Sm-154': Iso('Sm-154', 'samarium-154', 62, 154, 153.9222169, True,
-                  isotopic_abundance=0.2275),
-    'Sm-155': Iso('Sm-155', 'samarium-155', 62, 155, 154.9246477, False),
-    'Sm-156': Iso('Sm-156', 'samarium-156', 62, 156, 155.925536, False),
-    'Sm-157': Iso('Sm-157', 'samarium-157', 62, 157, 156.9284187, False),
-    'Sm-158': Iso('Sm-158', 'samarium-158', 62, 158, 157.9299510, False),
-    'Sm-159': Iso('Sm-159', 'samarium-159', 62, 159, 158.9332172, False),
-    'Sm-160': Iso('Sm-160', 'samarium-160', 62, 160, 159.9353353, False),
-    'Sm-161': Iso('Sm-161', 'samarium-161', 62, 161, 160.9391602, False),
-    'Sm-162': Iso('Sm-162', 'samarium-162', 62, 162, 161.94146, False),
-    'Sm-163': Iso('Sm-163', 'samarium-163', 62, 163, 162.94555, False),
-    'Sm-164': Iso('Sm-164', 'samarium-164', 62, 164, 163.94836, False),
-    'Sm-165': Iso('Sm-165', 'samarium-165', 62, 165, 164.95297, False),
-    'Eu-130': Iso('Eu-130', 'europium-130', 63, 130, 129.96369, False),
-    'Eu-131': Iso('Eu-131', 'europium-131', 63, 131, 130.95784, False),
-    'Eu-132': Iso('Eu-132', 'europium-132', 63, 132, 131.95467, False),
-    'Eu-133': Iso('Eu-133', 'europium-133', 63, 133, 132.94929, False),
-    'Eu-134': Iso('Eu-134', 'europium-134', 63, 134, 133.94640, False),
-    'Eu-135': Iso('Eu-135', 'europium-135', 63, 135, 134.94187, False),
-    'Eu-136': Iso('Eu-136', 'europium-136', 63, 136, 135.93962, False),
-    'Eu-137': Iso('Eu-137', 'europium-137', 63, 137, 136.93546, False),
-    'Eu-138': Iso('Eu-138', 'europium-138', 63, 138, 137.933709, False),
-    'Eu-139': Iso('Eu-139', 'europium-139', 63, 139, 138.929792, False),
-    'Eu-140': Iso('Eu-140', 'europium-140', 63, 140, 139.928088, False),
-    'Eu-141': Iso('Eu-141', 'europium-141', 63, 141, 140.924932, False),
-    'Eu-142': Iso('Eu-142', 'europium-142', 63, 142, 141.923442, False),
-    'Eu-143': Iso('Eu-143', 'europium-143', 63, 143, 142.920299, False),
-    'Eu-144': Iso('Eu-144', 'europium-144', 63, 144, 143.918820, False),
-    'Eu-145': Iso('Eu-145', 'europium-145', 63, 145, 144.9162726, False),
-    'Eu-146': Iso('Eu-146', 'europium-146', 63, 146, 145.9172110, False),
-    'Eu-147': Iso('Eu-147', 'europium-147', 63, 147, 146.9167527, False),
-    'Eu-148': Iso('Eu-148', 'europium-148', 63, 148, 147.918089, False),
-    'Eu-149': Iso('Eu-149', 'europium-149', 63, 149, 148.9179378, False),
-    'Eu-150': Iso('Eu-150', 'europium-150', 63, 150, 149.9197077, False),
-    'Eu-151': Iso('Eu-151', 'europium-151', 63, 151, 150.9198578, False,
-                  isotopic_abundance=0.4781),
-    'Eu-152': Iso('Eu-152', 'europium-152', 63, 152, 151.9217522, False,
-                  half_life=427438080.0),
-    'Eu-153': Iso('Eu-153', 'europium-153', 63, 153, 152.9212380, True,
-                  isotopic_abundance=0.5219),
-    'Eu-154': Iso('Eu-154', 'europium-154', 63, 154, 153.9229870, False,
-                  half_life=271745280.0),
-    'Eu-155': Iso('Eu-155', 'europium-155', 63, 155, 154.9229011, False,
-                  half_life=150254784.0),
-    'Eu-156': Iso('Eu-156', 'europium-156', 63, 156, 155.9247605, False),
-    'Eu-157': Iso('Eu-157', 'europium-157', 63, 157, 156.9254334, False),
-    'Eu-158': Iso('Eu-158', 'europium-158', 63, 158, 157.927799, False),
-    'Eu-159': Iso('Eu-159', 'europium-159', 63, 159, 158.9291001, False),
-    'Eu-160': Iso('Eu-160', 'europium-160', 63, 160, 159.931851, False),
-    'Eu-161': Iso('Eu-161', 'europium-161', 63, 161, 160.933664, False),
-    'Eu-162': Iso('Eu-162', 'europium-162', 63, 162, 161.936989, False),
-    'Eu-163': Iso('Eu-163', 'europium-163', 63, 163, 162.939196, False),
-    'Eu-164': Iso('Eu-164', 'europium-164', 63, 164, 163.94274, False),
-    'Eu-165': Iso('Eu-165', 'europium-165', 63, 165, 164.94559, False),
-    'Eu-166': Iso('Eu-166', 'europium-166', 63, 166, 165.94962, False),
-    'Eu-167': Iso('Eu-167', 'europium-167', 63, 167, 166.95289, False),
-    'Gd-133': Iso('Gd-133', 'gadolinium-133', 64, 133, 132.96133, False),
-    'Gd-134': Iso('Gd-134', 'gadolinium-134', 64, 134, 133.95566, False),
-    'Gd-135': Iso('Gd-135', 'gadolinium-135', 64, 135, 134.95245, False),
-    'Gd-136': Iso('Gd-136', 'gadolinium-136', 64, 136, 135.94730, False),
-    'Gd-137': Iso('Gd-137', 'gadolinium-137', 64, 137, 136.94502, False),
-    'Gd-138': Iso('Gd-138', 'gadolinium-138', 64, 138, 137.94025, False),
-    'Gd-139': Iso('Gd-139', 'gadolinium-139', 64, 139, 138.93813, False),
-    'Gd-140': Iso('Gd-140', 'gadolinium-140', 64, 140, 139.933674, False),
-    'Gd-141': Iso('Gd-141', 'gadolinium-141', 64, 141, 140.932126, False),
-    'Gd-142': Iso('Gd-142', 'gadolinium-142', 64, 142, 141.928116, False),
-    'Gd-143': Iso('Gd-143', 'gadolinium-143', 64, 143, 142.92675, False),
-    'Gd-144': Iso('Gd-144', 'gadolinium-144', 64, 144, 143.922963, False),
-    'Gd-145': Iso('Gd-145', 'gadolinium-145', 64, 145, 144.921713, False),
-    'Gd-146': Iso('Gd-146', 'gadolinium-146', 64, 146, 145.9183188, False),
-    'Gd-147': Iso('Gd-147', 'gadolinium-147', 64, 147, 146.9191014, False),
-    'Gd-148': Iso('Gd-148', 'gadolinium-148', 64, 148, 147.9181215, False),
-    'Gd-149': Iso('Gd-149', 'gadolinium-149', 64, 149, 148.9193481, False),
-    'Gd-150': Iso('Gd-150', 'gadolinium-150', 64, 150, 149.9186644, False),
-    'Gd-151': Iso('Gd-151', 'gadolinium-151', 64, 151, 150.9203560, False),
-    'Gd-152': Iso('Gd-152', 'gadolinium-152', 64, 152, 151.9197995, False,
-                  isotopic_abundance=0.0020),
-    'Gd-153': Iso('Gd-153', 'gadolinium-153', 64, 153, 152.9217580, False,
-                  half_life=20690380.8),
-    'Gd-154': Iso('Gd-154', 'gadolinium-154', 64, 154, 153.9208741, True,
-                  isotopic_abundance=0.0218),
-    'Gd-155': Iso('Gd-155', 'gadolinium-155', 64, 155, 154.9226305, True,
-                  isotopic_abundance=0.1480),
-    'Gd-156': Iso('Gd-156', 'gadolinium-156', 64, 156, 155.9221312, True,
-                  isotopic_abundance=0.2047),
-    'Gd-157': Iso('Gd-157', 'gadolinium-157', 64, 157, 156.9239686, True,
-                  isotopic_abundance=0.1565),
-    'Gd-158': Iso('Gd-158', 'gadolinium-158', 64, 158, 157.9241123, True,
-                  isotopic_abundance=0.2484),
-    'Gd-159': Iso('Gd-159', 'gadolinium-159', 64, 159, 158.9263970, False),
-    'Gd-160': Iso('Gd-160', 'gadolinium-160', 64, 160, 159.9270624, True,
-                  isotopic_abundance=0.2186),
-    'Gd-161': Iso('Gd-161', 'gadolinium-161', 64, 161, 160.9296775, False),
-    'Gd-162': Iso('Gd-162', 'gadolinium-162', 64, 162, 161.9309930, False),
-    'Gd-163': Iso('Gd-163', 'gadolinium-163', 64, 163, 162.9341769, False),
-    'Gd-164': Iso('Gd-164', 'gadolinium-164', 64, 164, 163.93583, False),
-    'Gd-165': Iso('Gd-165', 'gadolinium-165', 64, 165, 164.93936, False),
-    'Gd-166': Iso('Gd-166', 'gadolinium-166', 64, 166, 165.94146, False),
-    'Gd-167': Iso('Gd-167', 'gadolinium-167', 64, 167, 166.94545, False),
-    'Gd-168': Iso('Gd-168', 'gadolinium-168', 64, 168, 167.94808, False),
-    'Gd-169': Iso('Gd-169', 'gadolinium-169', 64, 169, 168.95260, False),
-    'Tb-135': Iso('Tb-135', 'terbium-135', 65, 135, 134.96476, False),
-    'Tb-136': Iso('Tb-136', 'terbium-136', 65, 136, 135.96129, False),
-    'Tb-137': Iso('Tb-137', 'terbium-137', 65, 137, 136.95602, False),
-    'Tb-138': Iso('Tb-138', 'terbium-138', 65, 138, 137.95312, False),
-    'Tb-139': Iso('Tb-139', 'terbium-139', 65, 139, 138.94833, False),
-    'Tb-140': Iso('Tb-140', 'terbium-140', 65, 140, 139.94581, False),
-    'Tb-141': Iso('Tb-141', 'terbium-141', 65, 141, 140.94145, False),
-    'Tb-142': Iso('Tb-142', 'terbium-142', 65, 142, 141.93928, False),
-    'Tb-143': Iso('Tb-143', 'terbium-143', 65, 143, 142.935137, False),
-    'Tb-144': Iso('Tb-144', 'terbium-144', 65, 144, 143.933045, False),
-    'Tb-145': Iso('Tb-145', 'terbium-145', 65, 145, 144.92882, False),
-    'Tb-146': Iso('Tb-146', 'terbium-146', 65, 146, 145.927253, False),
-    'Tb-147': Iso('Tb-147', 'terbium-147', 65, 147, 146.9240548, False),
-    'Tb-148': Iso('Tb-148', 'terbium-148', 65, 148, 147.924282, False),
-    'Tb-149': Iso('Tb-149', 'terbium-149', 65, 149, 148.9232535, False),
-    'Tb-150': Iso('Tb-150', 'terbium-150', 65, 150, 149.9236649, False),
-    'Tb-151': Iso('Tb-151', 'terbium-151', 65, 151, 150.9231096, False),
-    'Tb-152': Iso('Tb-152', 'terbium-152', 65, 152, 151.924083, False),
-    'Tb-153': Iso('Tb-153', 'terbium-153', 65, 153, 152.9234424, False),
-    'Tb-154': Iso('Tb-154', 'terbium-154', 65, 154, 153.924685, False),
-    'Tb-155': Iso('Tb-155', 'terbium-155', 65, 155, 154.923511, False),
-    'Tb-156': Iso('Tb-156', 'terbium-156', 65, 156, 155.9247552, False),
-    'Tb-157': Iso('Tb-157', 'terbium-157', 65, 157, 156.9240330, False),
-    'Tb-158': Iso('Tb-158', 'terbium-158', 65, 158, 157.9254209, False),
-    'Tb-159': Iso('Tb-159', 'terbium-159', 65, 159, 158.9253547, True,
-                  isotopic_abundance=1),
-    'Tb-160': Iso('Tb-160', 'terbium-160', 65, 160, 159.9271756, False),
-    'Tb-161': Iso('Tb-161', 'terbium-161', 65, 161, 160.9275778, False),
-    'Tb-162': Iso('Tb-162', 'terbium-162', 65, 162, 161.929495, False),
-    'Tb-163': Iso('Tb-163', 'terbium-163', 65, 163, 162.9306547, False),
-    'Tb-164': Iso('Tb-164', 'terbium-164', 65, 164, 163.93336, False),
-    'Tb-165': Iso('Tb-165', 'terbium-165', 65, 165, 164.93498, False),
-    'Tb-166': Iso('Tb-166', 'terbium-166', 65, 166, 165.937860, False),
-    'Tb-167': Iso('Tb-167', 'terbium-167', 65, 167, 166.93996, False),
-    'Tb-168': Iso('Tb-168', 'terbium-168', 65, 168, 167.94340, False),
-    'Tb-169': Iso('Tb-169', 'terbium-169', 65, 169, 168.94597, False),
-    'Tb-170': Iso('Tb-170', 'terbium-170', 65, 170, 169.94984, False),
-    'Tb-171': Iso('Tb-171', 'terbium-171', 65, 171, 170.95273, False),
-    'Dy-138': Iso('Dy-138', 'dysprosium-138', 66, 138, 137.96250, False),
-    'Dy-139': Iso('Dy-139', 'dysprosium-139', 66, 139, 138.95959, False),
-    'Dy-140': Iso('Dy-140', 'dysprosium-140', 66, 140, 139.95402, False),
-    'Dy-141': Iso('Dy-141', 'dysprosium-141', 66, 141, 140.95128, False),
-    'Dy-142': Iso('Dy-142', 'dysprosium-142', 66, 142, 141.94619, False),
-    'Dy-143': Iso('Dy-143', 'dysprosium-143', 66, 143, 142.943994, False),
-    'Dy-144': Iso('Dy-144', 'dysprosium-144', 66, 144, 143.9392695, False),
-    'Dy-145': Iso('Dy-145', 'dysprosium-145', 66, 145, 144.9374740, False),
-    'Dy-146': Iso('Dy-146', 'dysprosium-146', 66, 146, 145.9328445, False),
-    'Dy-147': Iso('Dy-147', 'dysprosium-147', 66, 147, 146.9310827, False),
-    'Dy-148': Iso('Dy-148', 'dysprosium-148', 66, 148, 147.927157, False),
-    'Dy-149': Iso('Dy-149', 'dysprosium-149', 66, 149, 148.927322, False),
-    'Dy-150': Iso('Dy-150', 'dysprosium-150', 66, 150, 149.9255933, False),
-    'Dy-151': Iso('Dy-151', 'dysprosium-151', 66, 151, 150.9261916, False),
-    'Dy-152': Iso('Dy-152', 'dysprosium-152', 66, 152, 151.9247253, False),
-    'Dy-153': Iso('Dy-153', 'dysprosium-153', 66, 153, 152.9257724, False),
-    'Dy-154': Iso('Dy-154', 'dysprosium-154', 66, 154, 153.9244293, False),
-    'Dy-155': Iso('Dy-155', 'dysprosium-155', 66, 155, 154.925759, False),
-    'Dy-156': Iso('Dy-156', 'dysprosium-156', 66, 156, 155.9242847, True,
-                  isotopic_abundance=0.00056),
-    'Dy-157': Iso('Dy-157', 'dysprosium-157', 66, 157, 156.9254707, False),
-    'Dy-158': Iso('Dy-158', 'dysprosium-158', 66, 158, 157.9244159, True,
-                  isotopic_abundance=0.00095),
-    'Dy-159': Iso('Dy-159', 'dysprosium-159', 66, 159, 158.9257470, False),
-    'Dy-160': Iso('Dy-160', 'dysprosium-160', 66, 160, 159.9252046, True,
-                  isotopic_abundance=0.02329),
-    'Dy-161': Iso('Dy-161', 'dysprosium-161', 66, 161, 160.9269405, True,
-                  isotopic_abundance=0.18889),
-    'Dy-162': Iso('Dy-162', 'dysprosium-162', 66, 162, 161.9268056, True,
-                  isotopic_abundance=0.25475),
-    'Dy-163': Iso('Dy-163', 'dysprosium-163', 66, 163, 162.9287383, True,
-                  isotopic_abundance=0.24896),
-    'Dy-164': Iso('Dy-164', 'dysprosium-164', 66, 164, 163.9291819, True,
-                  isotopic_abundance=0.28260),
-    'Dy-165': Iso('Dy-165', 'dysprosium-165', 66, 165, 164.9317105, False),
-    'Dy-166': Iso('Dy-166', 'dysprosium-166', 66, 166, 165.9328139, False),
-    'Dy-167': Iso('Dy-167', 'dysprosium-167', 66, 167, 166.935661, False),
-    'Dy-168': Iso('Dy-168', 'dysprosium-168', 66, 168, 167.93713, False),
-    'Dy-169': Iso('Dy-169', 'dysprosium-169', 66, 169, 168.94031, False),
-    'Dy-170': Iso('Dy-170', 'dysprosium-170', 66, 170, 169.94239, False),
-    'Dy-171': Iso('Dy-171', 'dysprosium-171', 66, 171, 170.94612, False),
-    'Dy-172': Iso('Dy-172', 'dysprosium-172', 66, 172, 171.94846, False),
-    'Dy-173': Iso('Dy-173', 'dysprosium-173', 66, 173, 172.95283, False),
-    'Ho-140': Iso('Ho-140', 'holmium-140', 67, 140, 139.96859, False),
-    'Ho-141': Iso('Ho-141', 'holmium-141', 67, 141, 140.96311, False),
-    'Ho-142': Iso('Ho-142', 'holmium-142', 67, 142, 141.96001, False),
-    'Ho-143': Iso('Ho-143', 'holmium-143', 67, 143, 142.95486, False),
-    'Ho-144': Iso('Ho-144', 'holmium-144', 67, 144, 143.9521097, False),
-    'Ho-145': Iso('Ho-145', 'holmium-145', 67, 145, 144.9472674, False),
-    'Ho-146': Iso('Ho-146', 'holmium-146', 67, 146, 145.9449935, False),
-    'Ho-147': Iso('Ho-147', 'holmium-147', 67, 147, 146.9401423, False),
-    'Ho-148': Iso('Ho-148', 'holmium-148', 67, 148, 147.937744, False),
-    'Ho-149': Iso('Ho-149', 'holmium-149', 67, 149, 148.933803, False),
-    'Ho-150': Iso('Ho-150', 'holmium-150', 67, 150, 149.933498, False),
-    'Ho-151': Iso('Ho-151', 'holmium-151', 67, 151, 150.9316983, False),
-    'Ho-152': Iso('Ho-152', 'holmium-152', 67, 152, 151.931724, False),
-    'Ho-153': Iso('Ho-153', 'holmium-153', 67, 153, 152.9302064, False),
-    'Ho-154': Iso('Ho-154', 'holmium-154', 67, 154, 153.9306068, False),
-    'Ho-155': Iso('Ho-155', 'holmium-155', 67, 155, 154.929104, False),
-    'Ho-156': Iso('Ho-156', 'holmium-156', 67, 156, 155.929706, False),
-    'Ho-157': Iso('Ho-157', 'holmium-157', 67, 157, 156.928254, False),
-    'Ho-158': Iso('Ho-158', 'holmium-158', 67, 158, 157.928946, False),
-    'Ho-159': Iso('Ho-159', 'holmium-159', 67, 159, 158.9277197, False),
-    'Ho-160': Iso('Ho-160', 'holmium-160', 67, 160, 159.928737, False),
-    'Ho-161': Iso('Ho-161', 'holmium-161', 67, 161, 160.9278615, False),
-    'Ho-162': Iso('Ho-162', 'holmium-162', 67, 162, 161.9291023, False),
-    'Ho-163': Iso('Ho-163', 'holmium-163', 67, 163, 162.9287410, False),
-    'Ho-164': Iso('Ho-164', 'holmium-164', 67, 164, 163.9302403, False),
-    'Ho-165': Iso('Ho-165', 'holmium-165', 67, 165, 164.9303288, True,
-                  isotopic_abundance=1),
-    'Ho-166': Iso('Ho-166', 'holmium-166', 67, 166, 165.9322909, False,
-                  half_life=96458.40000000001),
-    'Ho-167': Iso('Ho-167', 'holmium-167', 67, 167, 166.9331385, False),
-    'Ho-168': Iso('Ho-168', 'holmium-168', 67, 168, 167.935522, False),
-    'Ho-169': Iso('Ho-169', 'holmium-169', 67, 169, 168.936878, False),
-    'Ho-170': Iso('Ho-170', 'holmium-170', 67, 170, 169.939625, False),
-    'Ho-171': Iso('Ho-171', 'holmium-171', 67, 171, 170.94147, False),
-    'Ho-172': Iso('Ho-172', 'holmium-172', 67, 172, 171.94473, False),
-    'Ho-173': Iso('Ho-173', 'holmium-173', 67, 173, 172.94702, False),
-    'Ho-174': Iso('Ho-174', 'holmium-174', 67, 174, 173.95095, False),
-    'Ho-175': Iso('Ho-175', 'holmium-175', 67, 175, 174.95362, False),
-    'Er-142': Iso('Er-142', 'erbium-142', 68, 142, 141.97010, False),
-    'Er-143': Iso('Er-143', 'erbium-143', 68, 143, 142.96662, False),
-    'Er-144': Iso('Er-144', 'erbium-144', 68, 144, 143.96070, False),
-    'Er-145': Iso('Er-145', 'erbium-145', 68, 145, 144.95805, False),
-    'Er-146': Iso('Er-146', 'erbium-146', 68, 146, 145.9524184, False),
-    'Er-147': Iso('Er-147', 'erbium-147', 68, 147, 146.949964, False),
-    'Er-148': Iso('Er-148', 'erbium-148', 68, 148, 147.944735, False),
-    'Er-149': Iso('Er-149', 'erbium-149', 68, 149, 148.942306, False),
-    'Er-150': Iso('Er-150', 'erbium-150', 68, 150, 149.937916, False),
-    'Er-151': Iso('Er-151', 'erbium-151', 68, 151, 150.937449, False),
-    'Er-152': Iso('Er-152', 'erbium-152', 68, 152, 151.935057, False),
-    'Er-153': Iso('Er-153', 'erbium-153', 68, 153, 152.935080, False),
-    'Er-154': Iso('Er-154', 'erbium-154', 68, 154, 153.9327908, False),
-    'Er-155': Iso('Er-155', 'erbium-155', 68, 155, 154.9332159, False),
-    'Er-156': Iso('Er-156', 'erbium-156', 68, 156, 155.931067, False),
-    'Er-157': Iso('Er-157', 'erbium-157', 68, 157, 156.931949, False),
-    'Er-158': Iso('Er-158', 'erbium-158', 68, 158, 157.929893, False),
-    'Er-159': Iso('Er-159', 'erbium-159', 68, 159, 158.9306918, False),
-    'Er-160': Iso('Er-160', 'erbium-160', 68, 160, 159.929077, False),
-    'Er-161': Iso('Er-161', 'erbium-161', 68, 161, 160.9300046, False),
-    'Er-162': Iso('Er-162', 'erbium-162', 68, 162, 161.9287884, True,
-                  isotopic_abundance=0.00139),
-    'Er-163': Iso('Er-163', 'erbium-163', 68, 163, 162.9300408, False),
-    'Er-164': Iso('Er-164', 'erbium-164', 68, 164, 163.9292088, True,
-                  isotopic_abundance=0.01601),
-    'Er-165': Iso('Er-165', 'erbium-165', 68, 165, 164.9307345, False),
-    'Er-166': Iso('Er-166', 'erbium-166', 68, 166, 165.9302995, True,
-                  isotopic_abundance=0.33503),
-    'Er-167': Iso('Er-167', 'erbium-167', 68, 167, 166.9320546, True,
-                  isotopic_abundance=0.22869),
-    'Er-168': Iso('Er-168', 'erbium-168', 68, 168, 167.9323767, True,
-                  isotopic_abundance=0.26978),
-    'Er-169': Iso('Er-169', 'erbium-169', 68, 169, 168.9345968, False),
-    'Er-170': Iso('Er-170', 'erbium-170', 68, 170, 169.9354702, True,
-                  isotopic_abundance=0.14910),
-    'Er-171': Iso('Er-171', 'erbium-171', 68, 171, 170.9380357, False),
-    'Er-172': Iso('Er-172', 'erbium-172', 68, 172, 171.9393619, False),
-    'Er-173': Iso('Er-173', 'erbium-173', 68, 173, 172.94240, False),
-    'Er-174': Iso('Er-174', 'erbium-174', 68, 174, 173.94423, False),
-    'Er-175': Iso('Er-175', 'erbium-175', 68, 175, 174.94777, False),
-    'Er-176': Iso('Er-176', 'erbium-176', 68, 176, 175.94994, False),
-    'Er-177': Iso('Er-177', 'erbium-177', 68, 177, 176.95399, False),
-    'Tm-144': Iso('Tm-144', 'thulium-144', 69, 144, 143.97628, False),
-    'Tm-145': Iso('Tm-145', 'thulium-145', 69, 145, 144.97039, False),
-    'Tm-146': Iso('Tm-146', 'thulium-146', 69, 146, 145.96684, False),
-    'Tm-147': Iso('Tm-147', 'thulium-147', 69, 147, 146.9613799, False),
-    'Tm-148': Iso('Tm-148', 'thulium-148', 69, 148, 147.958384, False),
-    'Tm-149': Iso('Tm-149', 'thulium-149', 69, 149, 148.95289, False),
-    'Tm-150': Iso('Tm-150', 'thulium-150', 69, 150, 149.95009, False),
-    'Tm-151': Iso('Tm-151', 'thulium-151', 69, 151, 150.945488, False),
-    'Tm-152': Iso('Tm-152', 'thulium-152', 69, 152, 151.944422, False),
-    'Tm-153': Iso('Tm-153', 'thulium-153', 69, 153, 152.942040, False),
-    'Tm-154': Iso('Tm-154', 'thulium-154', 69, 154, 153.941570, False),
-    'Tm-155': Iso('Tm-155', 'thulium-155', 69, 155, 154.939210, False),
-    'Tm-156': Iso('Tm-156', 'thulium-156', 69, 156, 155.938992, False),
-    'Tm-157': Iso('Tm-157', 'thulium-157', 69, 157, 156.936944, False),
-    'Tm-158': Iso('Tm-158', 'thulium-158', 69, 158, 157.936980, False),
-    'Tm-159': Iso('Tm-159', 'thulium-159', 69, 159, 158.934975, False),
-    'Tm-160': Iso('Tm-160', 'thulium-160', 69, 160, 159.935263, False),
-    'Tm-161': Iso('Tm-161', 'thulium-161', 69, 161, 160.933549, False),
-    'Tm-162': Iso('Tm-162', 'thulium-162', 69, 162, 161.934002, False),
-    'Tm-163': Iso('Tm-163', 'thulium-163', 69, 163, 162.9326592, False),
-    'Tm-164': Iso('Tm-164', 'thulium-164', 69, 164, 163.933544, False),
-    'Tm-165': Iso('Tm-165', 'thulium-165', 69, 165, 164.9324431, False),
-    'Tm-166': Iso('Tm-166', 'thulium-166', 69, 166, 165.933561, False),
-    'Tm-167': Iso('Tm-167', 'thulium-167', 69, 167, 166.9328562, False),
-    'Tm-168': Iso('Tm-168', 'thulium-168', 69, 168, 167.9341774, False),
-    'Tm-169': Iso('Tm-169', 'thulium-169', 69, 169, 168.9342179, True,
-                  isotopic_abundance=1),
-    'Tm-170': Iso('Tm-170', 'thulium-170', 69, 170, 169.9358060, False),
-    'Tm-171': Iso('Tm-171', 'thulium-171', 69, 171, 170.9364339, False),
-    'Tm-172': Iso('Tm-172', 'thulium-172', 69, 172, 171.9384055, False),
-    'Tm-173': Iso('Tm-173', 'thulium-173', 69, 173, 172.9396084, False),
-    'Tm-174': Iso('Tm-174', 'thulium-174', 69, 174, 173.942173, False),
-    'Tm-175': Iso('Tm-175', 'thulium-175', 69, 175, 174.943841, False),
-    'Tm-176': Iso('Tm-176', 'thulium-176', 69, 176, 175.94700, False),
-    'Tm-177': Iso('Tm-177', 'thulium-177', 69, 177, 176.94904, False),
-    'Tm-178': Iso('Tm-178', 'thulium-178', 69, 178, 177.95264, False),
-    'Tm-179': Iso('Tm-179', 'thulium-179', 69, 179, 178.95534, False),
-    'Yb-148': Iso('Yb-148', 'ytterbium-148', 70, 148, 147.96758, False),
-    'Yb-149': Iso('Yb-149', 'ytterbium-149', 70, 149, 148.96436, False),
-    'Yb-150': Iso('Yb-150', 'ytterbium-150', 70, 150, 149.95852, False),
-    'Yb-151': Iso('Yb-151', 'ytterbium-151', 70, 151, 150.95540, False),
-    'Yb-152': Iso('Yb-152', 'ytterbium-152', 70, 152, 151.95027, False),
-    'Yb-153': Iso('Yb-153', 'ytterbium-153', 70, 153, 152.94932, False),
-    'Yb-154': Iso('Yb-154', 'ytterbium-154', 70, 154, 153.946396, False),
-    'Yb-155': Iso('Yb-155', 'ytterbium-155', 70, 155, 154.945783, False),
-    'Yb-156': Iso('Yb-156', 'ytterbium-156', 70, 156, 155.942825, False),
-    'Yb-157': Iso('Yb-157', 'ytterbium-157', 70, 157, 156.942645, False),
-    'Yb-158': Iso('Yb-158', 'ytterbium-158', 70, 158, 157.9398705, False),
-    'Yb-159': Iso('Yb-159', 'ytterbium-159', 70, 159, 158.940055, False),
-    'Yb-160': Iso('Yb-160', 'ytterbium-160', 70, 160, 159.937557, False),
-    'Yb-161': Iso('Yb-161', 'ytterbium-161', 70, 161, 160.937907, False),
-    'Yb-162': Iso('Yb-162', 'ytterbium-162', 70, 162, 161.935774, False),
-    'Yb-163': Iso('Yb-163', 'ytterbium-163', 70, 163, 162.936340, False),
-    'Yb-164': Iso('Yb-164', 'ytterbium-164', 70, 164, 163.934495, False),
-    'Yb-165': Iso('Yb-165', 'ytterbium-165', 70, 165, 164.935270, False),
-    'Yb-166': Iso('Yb-166', 'ytterbium-166', 70, 166, 165.9338747, False),
-    'Yb-167': Iso('Yb-167', 'ytterbium-167', 70, 167, 166.9349530, False),
-    'Yb-168': Iso('Yb-168', 'ytterbium-168', 70, 168, 167.9338896, True,
-                  isotopic_abundance=0.00123),
-    'Yb-169': Iso('Yb-169', 'ytterbium-169', 70, 169, 168.9351825, False,
-                  half_life=2766070.0799999996),
-    'Yb-170': Iso('Yb-170', 'ytterbium-170', 70, 170, 169.9347664, True,
-                  isotopic_abundance=0.02982),
-    'Yb-171': Iso('Yb-171', 'ytterbium-171', 70, 171, 170.9363302, True,
-                  isotopic_abundance=0.1409),
-    'Yb-172': Iso('Yb-172', 'ytterbium-172', 70, 172, 171.9363859, True,
-                  isotopic_abundance=0.2168),
-    'Yb-173': Iso('Yb-173', 'ytterbium-173', 70, 173, 172.9382151, True,
-                  isotopic_abundance=0.16103),
-    'Yb-174': Iso('Yb-174', 'ytterbium-174', 70, 174, 173.9388664, True,
-                  isotopic_abundance=0.32026),
-    'Yb-175': Iso('Yb-175', 'ytterbium-175', 70, 175, 174.9412808, False),
-    'Yb-176': Iso('Yb-176', 'ytterbium-176', 70, 176, 175.9425764, True,
-                  isotopic_abundance=0.12996),
-    'Yb-177': Iso('Yb-177', 'ytterbium-177', 70, 177, 176.9452656, False),
-    'Yb-178': Iso('Yb-178', 'ytterbium-178', 70, 178, 177.946651, False),
-    'Yb-179': Iso('Yb-179', 'ytterbium-179', 70, 179, 178.95004, False),
-    'Yb-180': Iso('Yb-180', 'ytterbium-180', 70, 180, 179.95212, False),
-    'Yb-181': Iso('Yb-181', 'ytterbium-181', 70, 181, 180.95589, False),
-    'Lu-150': Iso('Lu-150', 'lutetium-150', 71, 150, 149.97355, False),
-    'Lu-151': Iso('Lu-151', 'lutetium-151', 71, 151, 150.96768, False),
-    'Lu-152': Iso('Lu-152', 'lutetium-152', 71, 152, 151.96412, False),
-    'Lu-153': Iso('Lu-153', 'lutetium-153', 71, 153, 152.95875, False),
-    'Lu-154': Iso('Lu-154', 'lutetium-154', 71, 154, 153.95736, False),
-    'Lu-155': Iso('Lu-155', 'lutetium-155', 71, 155, 154.954321, False),
-    'Lu-156': Iso('Lu-156', 'lutetium-156', 71, 156, 155.953033, False),
-    'Lu-157': Iso('Lu-157', 'lutetium-157', 71, 157, 156.950127, False),
-    'Lu-158': Iso('Lu-158', 'lutetium-158', 71, 158, 157.949316, False),
-    'Lu-159': Iso('Lu-159', 'lutetium-159', 71, 159, 158.946636, False),
-    'Lu-160': Iso('Lu-160', 'lutetium-160', 71, 160, 159.946033, False),
-    'Lu-161': Iso('Lu-161', 'lutetium-161', 71, 161, 160.943572, False),
-    'Lu-162': Iso('Lu-162', 'lutetium-162', 71, 162, 161.943283, False),
-    'Lu-163': Iso('Lu-163', 'lutetium-163', 71, 163, 162.941179, False),
-    'Lu-164': Iso('Lu-164', 'lutetium-164', 71, 164, 163.941339, False),
-    'Lu-165': Iso('Lu-165', 'lutetium-165', 71, 165, 164.939407, False),
-    'Lu-166': Iso('Lu-166', 'lutetium-166', 71, 166, 165.939859, False),
-    'Lu-167': Iso('Lu-167', 'lutetium-167', 71, 167, 166.938270, False),
-    'Lu-168': Iso('Lu-168', 'lutetium-168', 71, 168, 167.938736, False),
-    'Lu-169': Iso('Lu-169', 'lutetium-169', 71, 169, 168.9376441, False),
-    'Lu-170': Iso('Lu-170', 'lutetium-170', 71, 170, 169.938478, False),
-    'Lu-171': Iso('Lu-171', 'lutetium-171', 71, 171, 170.9379170, False),
-    'Lu-172': Iso('Lu-172', 'lutetium-172', 71, 172, 171.9390891, False),
-    'Lu-173': Iso('Lu-173', 'lutetium-173', 71, 173, 172.9389340, False),
-    'Lu-174': Iso('Lu-174', 'lutetium-174', 71, 174, 173.9403409, False),
-    'Lu-175': Iso('Lu-175', 'lutetium-175', 71, 175, 174.9407752, True,
-                  isotopic_abundance=0.97401),
-    'Lu-176': Iso('Lu-176', 'lutetium-176', 71, 176, 175.9426897, False,
-                  isotopic_abundance=0.02599),
-    'Lu-177': Iso('Lu-177', 'lutetium-177', 71, 177, 176.9437615, False,
-                  half_life=573696.0),
-    'Lu-178': Iso('Lu-178', 'lutetium-178', 71, 178, 177.9459580, False),
-    'Lu-179': Iso('Lu-179', 'lutetium-179', 71, 179, 178.9473309, False),
-    'Lu-180': Iso('Lu-180', 'lutetium-180', 71, 180, 179.949888, False),
-    'Lu-181': Iso('Lu-181', 'lutetium-181', 71, 181, 180.95191, False),
-    'Lu-182': Iso('Lu-182', 'lutetium-182', 71, 182, 181.95504, False),
-    'Lu-183': Iso('Lu-183', 'lutetium-183', 71, 183, 182.957363, False),
-    'Lu-184': Iso('Lu-184', 'lutetium-184', 71, 184, 183.96091, False),
-    'Lu-185': Iso('Lu-185', 'lutetium-185', 71, 185, 184.96362, False),
-    'Hf-153': Iso('Hf-153', 'hafnium-153', 72, 153, 152.97069, False),
-    'Hf-154': Iso('Hf-154', 'hafnium-154', 72, 154, 153.96486, False),
-    'Hf-155': Iso('Hf-155', 'hafnium-155', 72, 155, 154.96311, False),
-    'Hf-156': Iso('Hf-156', 'hafnium-156', 72, 156, 155.95935, False),
-    'Hf-157': Iso('Hf-157', 'hafnium-157', 72, 157, 156.95824, False),
-    'Hf-158': Iso('Hf-158', 'hafnium-158', 72, 158, 157.954801, False),
-    'Hf-159': Iso('Hf-159', 'hafnium-159', 72, 159, 158.953996, False),
-    'Hf-160': Iso('Hf-160', 'hafnium-160', 72, 160, 159.950691, False),
-    'Hf-161': Iso('Hf-161', 'hafnium-161', 72, 161, 160.950278, False),
-    'Hf-162': Iso('Hf-162', 'hafnium-162', 72, 162, 161.9472148, False),
-    'Hf-163': Iso('Hf-163', 'hafnium-163', 72, 163, 162.947113, False),
-    'Hf-164': Iso('Hf-164', 'hafnium-164', 72, 164, 163.944371, False),
-    'Hf-165': Iso('Hf-165', 'hafnium-165', 72, 165, 164.944567, False),
-    'Hf-166': Iso('Hf-166', 'hafnium-166', 72, 166, 165.942180, False),
-    'Hf-167': Iso('Hf-167', 'hafnium-167', 72, 167, 166.942600, False),
-    'Hf-168': Iso('Hf-168', 'hafnium-168', 72, 168, 167.940568, False),
-    'Hf-169': Iso('Hf-169', 'hafnium-169', 72, 169, 168.941259, False),
-    'Hf-170': Iso('Hf-170', 'hafnium-170', 72, 170, 169.939609, False),
-    'Hf-171': Iso('Hf-171', 'hafnium-171', 72, 171, 170.940492, False),
-    'Hf-172': Iso('Hf-172', 'hafnium-172', 72, 172, 171.939450, False),
-    'Hf-173': Iso('Hf-173', 'hafnium-173', 72, 173, 172.940513, False),
-    'Hf-174': Iso('Hf-174', 'hafnium-174', 72, 174, 173.9400461, False,
-                  isotopic_abundance=0.0016),
-    'Hf-175': Iso('Hf-175', 'hafnium-175', 72, 175, 174.9415092, False),
-    'Hf-176': Iso('Hf-176', 'hafnium-176', 72, 176, 175.9414076, True,
-                  isotopic_abundance=0.0526),
-    'Hf-177': Iso('Hf-177', 'hafnium-177', 72, 177, 176.9432277, True,
-                  isotopic_abundance=0.1860),
-    'Hf-178': Iso('Hf-178', 'hafnium-178', 72, 178, 177.9437058, True,
-                  isotopic_abundance=0.2728),
-    'Hf-179': Iso('Hf-179', 'hafnium-179', 72, 179, 178.9458232, True,
-                  isotopic_abundance=0.1362),
-    'Hf-180': Iso('Hf-180', 'hafnium-180', 72, 180, 179.9465570, True,
-                  isotopic_abundance=0.3508),
-    'Hf-181': Iso('Hf-181', 'hafnium-181', 72, 181, 180.9491083, False),
-    'Hf-182': Iso('Hf-182', 'hafnium-182', 72, 182, 181.9505612, False),
-    'Hf-183': Iso('Hf-183', 'hafnium-183', 72, 183, 182.953530, False),
-    'Hf-184': Iso('Hf-184', 'hafnium-184', 72, 184, 183.955446, False),
-    'Hf-185': Iso('Hf-185', 'hafnium-185', 72, 185, 184.958862, False),
-    'Hf-186': Iso('Hf-186', 'hafnium-186', 72, 186, 185.960897, False),
-    'Hf-187': Iso('Hf-187', 'hafnium-187', 72, 187, 186.96477, False),
-    'Hf-188': Iso('Hf-188', 'hafnium-188', 72, 188, 187.96685, False),
-    'Hf-189': Iso('Hf-189', 'hafnium-189', 72, 189, 188.97084, False),
-    'Ta-155': Iso('Ta-155', 'tantalum-155', 73, 155, 154.97424, False),
-    'Ta-156': Iso('Ta-156', 'tantalum-156', 73, 156, 155.97203, False),
-    'Ta-157': Iso('Ta-157', 'tantalum-157', 73, 157, 156.96818, False),
-    'Ta-158': Iso('Ta-158', 'tantalum-158', 73, 158, 157.96654, False),
-    'Ta-159': Iso('Ta-159', 'tantalum-159', 73, 159, 158.963023, False),
-    'Ta-160': Iso('Ta-160', 'tantalum-160', 73, 160, 159.961488, False),
-    'Ta-161': Iso('Ta-161', 'tantalum-161', 73, 161, 160.958452, False),
-    'Ta-162': Iso('Ta-162', 'tantalum-162', 73, 162, 161.957294, False),
-    'Ta-163': Iso('Ta-163', 'tantalum-163', 73, 163, 162.954337, False),
-    'Ta-164': Iso('Ta-164', 'tantalum-164', 73, 164, 163.953534, False),
-    'Ta-165': Iso('Ta-165', 'tantalum-165', 73, 165, 164.950781, False),
-    'Ta-166': Iso('Ta-166', 'tantalum-166', 73, 166, 165.950512, False),
-    'Ta-167': Iso('Ta-167', 'tantalum-167', 73, 167, 166.948093, False),
-    'Ta-168': Iso('Ta-168', 'tantalum-168', 73, 168, 167.948047, False),
-    'Ta-169': Iso('Ta-169', 'tantalum-169', 73, 169, 168.946011, False),
-    'Ta-170': Iso('Ta-170', 'tantalum-170', 73, 170, 169.946175, False),
-    'Ta-171': Iso('Ta-171', 'tantalum-171', 73, 171, 170.944476, False),
-    'Ta-172': Iso('Ta-172', 'tantalum-172', 73, 172, 171.944895, False),
-    'Ta-173': Iso('Ta-173', 'tantalum-173', 73, 173, 172.943750, False),
-    'Ta-174': Iso('Ta-174', 'tantalum-174', 73, 174, 173.944454, False),
-    'Ta-175': Iso('Ta-175', 'tantalum-175', 73, 175, 174.943737, False),
-    'Ta-176': Iso('Ta-176', 'tantalum-176', 73, 176, 175.944857, False),
-    'Ta-177': Iso('Ta-177', 'tantalum-177', 73, 177, 176.9444795, False),
-    'Ta-178': Iso('Ta-178', 'tantalum-178', 73, 178, 177.945678, False),
-    'Ta-179': Iso('Ta-179', 'tantalum-179', 73, 179, 178.9459366, False),
-    'Ta-180': Iso('Ta-180', 'tantalum-180', 73, 180, 179.9474648, True,
-                  isotopic_abundance=0.0001201),
-    'Ta-181': Iso('Ta-181', 'tantalum-181', 73, 181, 180.9479958, True,
-                  isotopic_abundance=0.9998799),
-    'Ta-182': Iso('Ta-182', 'tantalum-182', 73, 182, 181.9501519, False),
-    'Ta-183': Iso('Ta-183', 'tantalum-183', 73, 183, 182.9513726, False),
-    'Ta-184': Iso('Ta-184', 'tantalum-184', 73, 184, 183.954008, False),
-    'Ta-185': Iso('Ta-185', 'tantalum-185', 73, 185, 184.955559, False),
-    'Ta-186': Iso('Ta-186', 'tantalum-186', 73, 186, 185.958551, False),
-    'Ta-187': Iso('Ta-187', 'tantalum-187', 73, 187, 186.960386, False),
-    'Ta-188': Iso('Ta-188', 'tantalum-188', 73, 188, 187.963916, False),
-    'Ta-189': Iso('Ta-189', 'tantalum-189', 73, 189, 188.96583, False),
-    'Ta-190': Iso('Ta-190', 'tantalum-190', 73, 190, 189.96939, False),
-    'Ta-191': Iso('Ta-191', 'tantalum-191', 73, 191, 190.97156, False),
-    'Ta-192': Iso('Ta-192', 'tantalum-192', 73, 192, 191.97514, False),
-    'W-157': Iso('W-157', 'tungsten-157', 74, 157, 156.97884, False),
-    'W-158': Iso('W-158', 'tungsten-158', 74, 158, 157.97456, False),
-    'W-159': Iso('W-159', 'tungsten-159', 74, 159, 158.97264, False),
-    'W-160': Iso('W-160', 'tungsten-160', 74, 160, 159.96846, False),
-    'W-161': Iso('W-161', 'tungsten-161', 74, 161, 160.96720, False),
-    'W-162': Iso('W-162', 'tungsten-162', 74, 162, 161.963499, False),
-    'W-163': Iso('W-163', 'tungsten-163', 74, 163, 162.962524, False),
-    'W-164': Iso('W-164', 'tungsten-164', 74, 164, 163.958961, False),
-    'W-165': Iso('W-165', 'tungsten-165', 74, 165, 164.958281, False),
-    'W-166': Iso('W-166', 'tungsten-166', 74, 166, 165.955031, False),
-    'W-167': Iso('W-167', 'tungsten-167', 74, 167, 166.954805, False),
-    'W-168': Iso('W-168', 'tungsten-168', 74, 168, 167.951806, False),
-    'W-169': Iso('W-169', 'tungsten-169', 74, 169, 168.951779, False),
-    'W-170': Iso('W-170', 'tungsten-170', 74, 170, 169.949232, False),
-    'W-171': Iso('W-171', 'tungsten-171', 74, 171, 170.949451, False),
-    'W-172': Iso('W-172', 'tungsten-172', 74, 172, 171.947292, False),
-    'W-173': Iso('W-173', 'tungsten-173', 74, 173, 172.947689, False),
-    'W-174': Iso('W-174', 'tungsten-174', 74, 174, 173.946079, False),
-    'W-175': Iso('W-175', 'tungsten-175', 74, 175, 174.946717, False),
-    'W-176': Iso('W-176', 'tungsten-176', 74, 176, 175.945634, False),
-    'W-177': Iso('W-177', 'tungsten-177', 74, 177, 176.946643, False),
-    'W-178': Iso('W-178', 'tungsten-178', 74, 178, 177.945883, False),
-    'W-179': Iso('W-179', 'tungsten-179', 74, 179, 178.947077, False),
-    'W-180': Iso('W-180', 'tungsten-180', 74, 180, 179.9467108, False,
-                 isotopic_abundance=0.0012),
-    'W-181': Iso('W-181', 'tungsten-181', 74, 181, 180.9481978, False,
-                 half_life=10462608.0),
-    'W-182': Iso('W-182', 'tungsten-182', 74, 182, 181.94820394, True,
-                 isotopic_abundance=0.2650),
-    'W-183': Iso('W-183', 'tungsten-183', 74, 183, 182.95022275, True,
-                 isotopic_abundance=0.1431),
-    'W-184': Iso('W-184', 'tungsten-184', 74, 184, 183.95093092, True,
-                 isotopic_abundance=0.3064),
-    'W-185': Iso('W-185', 'tungsten-185', 74, 185, 184.95341897, False),
-    'W-186': Iso('W-186', 'tungsten-186', 74, 186, 185.9543628, True,
-                 isotopic_abundance=0.2843),
-    'W-187': Iso('W-187', 'tungsten-187', 74, 187, 186.9571588, False),
-    'W-188': Iso('W-188', 'tungsten-188', 74, 188, 187.9584862, False,
-                 half_life=6029251.2),
-    'W-189': Iso('W-189', 'tungsten-189', 74, 189, 188.961763, False),
-    'W-190': Iso('W-190', 'tungsten-190', 74, 190, 189.963091, False),
-    'W-191': Iso('W-191', 'tungsten-191', 74, 191, 190.966531, False),
-    'W-192': Iso('W-192', 'tungsten-192', 74, 192, 191.96817, False),
-    'W-193': Iso('W-193', 'tungsten-193', 74, 193, 192.97178, False),
-    'W-194': Iso('W-194', 'tungsten-194', 74, 194, 193.97367, False),
-    'Re-159': Iso('Re-159', 'rhenium-159', 75, 159, 158.98418, False),
-    'Re-160': Iso('Re-160', 'rhenium-160', 75, 160, 159.98182, False),
-    'Re-161': Iso('Re-161', 'rhenium-161', 75, 161, 160.97757, False),
-    'Re-162': Iso('Re-162', 'rhenium-162', 75, 162, 161.97584, False),
-    'Re-163': Iso('Re-163', 'rhenium-163', 75, 163, 162.972080, False),
-    'Re-164': Iso('Re-164', 'rhenium-164', 75, 164, 163.970453, False),
-    'Re-165': Iso('Re-165', 'rhenium-165', 75, 165, 164.967103, False),
-    'Re-166': Iso('Re-166', 'rhenium-166', 75, 166, 165.965761, False),
-    'Re-167': Iso('Re-167', 'rhenium-167', 75, 167, 166.962595, False),
-    'Re-168': Iso('Re-168', 'rhenium-168', 75, 168, 167.961573, False),
-    'Re-169': Iso('Re-169', 'rhenium-169', 75, 169, 168.958766, False),
-    'Re-170': Iso('Re-170', 'rhenium-170', 75, 170, 169.958220, False),
-    'Re-171': Iso('Re-171', 'rhenium-171', 75, 171, 170.955716, False),
-    'Re-172': Iso('Re-172', 'rhenium-172', 75, 172, 171.955420, False),
-    'Re-173': Iso('Re-173', 'rhenium-173', 75, 173, 172.953243, False),
-    'Re-174': Iso('Re-174', 'rhenium-174', 75, 174, 173.953115, False),
-    'Re-175': Iso('Re-175', 'rhenium-175', 75, 175, 174.951381, False),
-    'Re-176': Iso('Re-176', 'rhenium-176', 75, 176, 175.951623, False),
-    'Re-177': Iso('Re-177', 'rhenium-177', 75, 177, 176.950328, False),
-    'Re-178': Iso('Re-178', 'rhenium-178', 75, 178, 177.950989, False),
-    'Re-179': Iso('Re-179', 'rhenium-179', 75, 179, 178.949989, False),
-    'Re-180': Iso('Re-180', 'rhenium-180', 75, 180, 179.950792, False),
-    'Re-181': Iso('Re-181', 'rhenium-181', 75, 181, 180.950058, False),
-    'Re-182': Iso('Re-182', 'rhenium-182', 75, 182, 181.95121, False),
-    'Re-183': Iso('Re-183', 'rhenium-183', 75, 183, 182.9508196, False),
-    'Re-184': Iso('Re-184', 'rhenium-184', 75, 184, 183.9525228, False),
-    'Re-185': Iso('Re-185', 'rhenium-185', 75, 185, 184.9529545, True,
-                  isotopic_abundance=0.3740),
-    'Re-186': Iso('Re-186', 'rhenium-186', 75, 186, 185.9549856, False,
-                  half_life=321292.8),
-    'Re-187': Iso('Re-187', 'rhenium-187', 75, 187, 186.9557501, False,
-                  isotopic_abundance=0.6260),
-    'Re-188': Iso('Re-188', 'rhenium-188', 75, 188, 187.9581115, False,
-                  half_life=61203.600000000006),
-    'Re-189': Iso('Re-189', 'rhenium-189', 75, 189, 188.9592260, False),
-    'Re-190': Iso('Re-190', 'rhenium-190', 75, 190, 189.961744, False),
-    'Re-191': Iso('Re-191', 'rhenium-191', 75, 191, 190.963122, False),
-    'Re-192': Iso('Re-192', 'rhenium-192', 75, 192, 191.966088, False),
-    'Re-193': Iso('Re-193', 'rhenium-193', 75, 193, 192.967541, False),
-    'Re-194': Iso('Re-194', 'rhenium-194', 75, 194, 193.97076, False),
-    'Re-195': Iso('Re-195', 'rhenium-195', 75, 195, 194.97254, False),
-    'Re-196': Iso('Re-196', 'rhenium-196', 75, 196, 195.97580, False),
-    'Re-197': Iso('Re-197', 'rhenium-197', 75, 197, 196.97799, False),
-    'Re-198': Iso('Re-198', 'rhenium-198', 75, 198, 197.98160, False),
-    'Os-161': Iso('Os-161', 'osmium-161', 76, 161, 160.98903, False),
-    'Os-162': Iso('Os-162', 'osmium-162', 76, 162, 161.98443, False),
-    'Os-163': Iso('Os-163', 'osmium-163', 76, 163, 162.98241, False),
-    'Os-164': Iso('Os-164', 'osmium-164', 76, 164, 163.97802, False),
-    'Os-165': Iso('Os-165', 'osmium-165', 76, 165, 164.97660, False),
-    'Os-166': Iso('Os-166', 'osmium-166', 76, 166, 165.972692, False),
-    'Os-167': Iso('Os-167', 'osmium-167', 76, 167, 166.971549, False),
-    'Os-168': Iso('Os-168', 'osmium-168', 76, 168, 167.967808, False),
-    'Os-169': Iso('Os-169', 'osmium-169', 76, 169, 168.967018, False),
-    'Os-170': Iso('Os-170', 'osmium-170', 76, 170, 169.963578, False),
-    'Os-171': Iso('Os-171', 'osmium-171', 76, 171, 170.963174, False),
-    'Os-172': Iso('Os-172', 'osmium-172', 76, 172, 171.960017, False),
-    'Os-173': Iso('Os-173', 'osmium-173', 76, 173, 172.959808, False),
-    'Os-174': Iso('Os-174', 'osmium-174', 76, 174, 173.957064, False),
-    'Os-175': Iso('Os-175', 'osmium-175', 76, 175, 174.956945, False),
-    'Os-176': Iso('Os-176', 'osmium-176', 76, 176, 175.954806, False),
-    'Os-177': Iso('Os-177', 'osmium-177', 76, 177, 176.954966, False),
-    'Os-178': Iso('Os-178', 'osmium-178', 76, 178, 177.953254, False),
-    'Os-179': Iso('Os-179', 'osmium-179', 76, 179, 178.953817, False),
-    'Os-180': Iso('Os-180', 'osmium-180', 76, 180, 179.952375, False),
-    'Os-181': Iso('Os-181', 'osmium-181', 76, 181, 180.953247, False),
-    'Os-182': Iso('Os-182', 'osmium-182', 76, 182, 181.952110, False),
-    'Os-183': Iso('Os-183', 'osmium-183', 76, 183, 182.953125, False),
-    'Os-184': Iso('Os-184', 'osmium-184', 76, 184, 183.9524885, True,
-                  isotopic_abundance=0.0002),
-    'Os-185': Iso('Os-185', 'osmium-185', 76, 185, 184.9540417, False),
-    'Os-186': Iso('Os-186', 'osmium-186', 76, 186, 185.9538350, False,
-                  isotopic_abundance=0.0159),
-    'Os-187': Iso('Os-187', 'osmium-187', 76, 187, 186.9557474, True,
-                  isotopic_abundance=0.0196),
-    'Os-188': Iso('Os-188', 'osmium-188', 76, 188, 187.9558352, True,
-                  isotopic_abundance=0.1324),
-    'Os-189': Iso('Os-189', 'osmium-189', 76, 189, 188.9581442, True,
-                  isotopic_abundance=0.1615),
-    'Os-190': Iso('Os-190', 'osmium-190', 76, 190, 189.9584437, True,
-                  isotopic_abundance=0.2626),
-    'Os-191': Iso('Os-191', 'osmium-191', 76, 191, 190.9609264, False),
-    'Os-192': Iso('Os-192', 'osmium-192', 76, 192, 191.9614770, True,
-                  isotopic_abundance=0.4078),
-    'Os-193': Iso('Os-193', 'osmium-193', 76, 193, 192.9641479, False),
-    'Os-194': Iso('Os-194', 'osmium-194', 76, 194, 193.9651772, False),
-    'Os-195': Iso('Os-195', 'osmium-195', 76, 195, 194.968318, False),
-    'Os-196': Iso('Os-196', 'osmium-196', 76, 196, 195.969641, False),
-    'Os-197': Iso('Os-197', 'osmium-197', 76, 197, 196.97283, False),
-    'Os-198': Iso('Os-198', 'osmium-198', 76, 198, 197.97441, False),
-    'Os-199': Iso('Os-199', 'osmium-199', 76, 199, 198.97801, False),
-    'Os-200': Iso('Os-200', 'osmium-200', 76, 200, 199.97984, False),
-    'Os-201': Iso('Os-201', 'osmium-201', 76, 201, 200.98364, False),
-    'Os-202': Iso('Os-202', 'osmium-202', 76, 202, 201.98595, False),
-    'Ir-164': Iso('Ir-164', 'iridium-164', 77, 164, 163.99191, False),
-    'Ir-165': Iso('Ir-165', 'iridium-165', 77, 165, 164.98750, False),
-    'Ir-166': Iso('Ir-166', 'iridium-166', 77, 166, 165.98566, False),
-    'Ir-167': Iso('Ir-167', 'iridium-167', 77, 167, 166.981666, False),
-    'Ir-168': Iso('Ir-168', 'iridium-168', 77, 168, 167.979907, False),
-    'Ir-169': Iso('Ir-169', 'iridium-169', 77, 169, 168.976298, False),
-    'Ir-170': Iso('Ir-170', 'iridium-170', 77, 170, 169.974922, False),
-    'Ir-171': Iso('Ir-171', 'iridium-171', 77, 171, 170.971640, False),
-    'Ir-172': Iso('Ir-172', 'iridium-172', 77, 172, 171.970607, False),
-    'Ir-173': Iso('Ir-173', 'iridium-173', 77, 173, 172.967506, False),
-    'Ir-174': Iso('Ir-174', 'iridium-174', 77, 174, 173.966861, False),
-    'Ir-175': Iso('Ir-175', 'iridium-175', 77, 175, 174.964150, False),
-    'Ir-176': Iso('Ir-176', 'iridium-176', 77, 176, 175.963650, False),
-    'Ir-177': Iso('Ir-177', 'iridium-177', 77, 177, 176.961301, False),
-    'Ir-178': Iso('Ir-178', 'iridium-178', 77, 178, 177.961082, False),
-    'Ir-179': Iso('Ir-179', 'iridium-179', 77, 179, 178.959120, False),
-    'Ir-180': Iso('Ir-180', 'iridium-180', 77, 180, 179.959229, False),
-    'Ir-181': Iso('Ir-181', 'iridium-181', 77, 181, 180.957625, False),
-    'Ir-182': Iso('Ir-182', 'iridium-182', 77, 182, 181.958076, False),
-    'Ir-183': Iso('Ir-183', 'iridium-183', 77, 183, 182.956840, False),
-    'Ir-184': Iso('Ir-184', 'iridium-184', 77, 184, 183.957476, False),
-    'Ir-185': Iso('Ir-185', 'iridium-185', 77, 185, 184.956698, False),
-    'Ir-186': Iso('Ir-186', 'iridium-186', 77, 186, 185.957944, False),
-    'Ir-187': Iso('Ir-187', 'iridium-187', 77, 187, 186.957542, False),
-    'Ir-188': Iso('Ir-188', 'iridium-188', 77, 188, 187.958828, False),
-    'Ir-189': Iso('Ir-189', 'iridium-189', 77, 189, 188.958715, False),
-    'Ir-190': Iso('Ir-190', 'iridium-190', 77, 190, 189.9605412, False),
-    'Ir-191': Iso('Ir-191', 'iridium-191', 77, 191, 190.9605893, True,
-                  isotopic_abundance=0.373),
-    'Ir-192': Iso('Ir-192', 'iridium-192', 77, 192, 191.9626002, False,
-                  half_life=6377184.0),
-    'Ir-193': Iso('Ir-193', 'iridium-193', 77, 193, 192.9629216, True,
-                  isotopic_abundance=0.627),
-    'Ir-194': Iso('Ir-194', 'iridium-194', 77, 194, 193.9650735, False),
-    'Ir-195': Iso('Ir-195', 'iridium-195', 77, 195, 194.9659747, False),
-    'Ir-196': Iso('Ir-196', 'iridium-196', 77, 196, 195.968397, False),
-    'Ir-197': Iso('Ir-197', 'iridium-197', 77, 197, 196.969655, False),
-    'Ir-198': Iso('Ir-198', 'iridium-198', 77, 198, 197.97228, False),
-    'Ir-199': Iso('Ir-199', 'iridium-199', 77, 199, 198.973805, False),
-    'Ir-200': Iso('Ir-200', 'iridium-200', 77, 200, 199.97680, False),
-    'Ir-201': Iso('Ir-201', 'iridium-201', 77, 201, 200.97864, False),
-    'Ir-202': Iso('Ir-202', 'iridium-202', 77, 202, 201.98199, False),
-    'Ir-203': Iso('Ir-203', 'iridium-203', 77, 203, 202.98423, False),
-    'Ir-204': Iso('Ir-204', 'iridium-204', 77, 204, 203.98960, False),
-    'Pt-166': Iso('Pt-166', 'platinum-166', 78, 166, 165.99486, False),
-    'Pt-167': Iso('Pt-167', 'platinum-167', 78, 167, 166.99269, False),
-    'Pt-168': Iso('Pt-168', 'platinum-168', 78, 168, 167.98813, False),
-    'Pt-169': Iso('Pt-169', 'platinum-169', 78, 169, 168.98657, False),
-    'Pt-170': Iso('Pt-170', 'platinum-170', 78, 170, 169.982496, False),
-    'Pt-171': Iso('Pt-171', 'platinum-171', 78, 171, 170.981245, False),
-    'Pt-172': Iso('Pt-172', 'platinum-172', 78, 172, 171.977351, False),
-    'Pt-173': Iso('Pt-173', 'platinum-173', 78, 173, 172.976443, False),
-    'Pt-174': Iso('Pt-174', 'platinum-174', 78, 174, 173.972820, False),
-    'Pt-175': Iso('Pt-175', 'platinum-175', 78, 175, 174.972410, False),
-    'Pt-176': Iso('Pt-176', 'platinum-176', 78, 176, 175.968938, False),
-    'Pt-177': Iso('Pt-177', 'platinum-177', 78, 177, 176.968470, False),
-    'Pt-178': Iso('Pt-178', 'platinum-178', 78, 178, 177.965650, False),
-    'Pt-179': Iso('Pt-179', 'platinum-179', 78, 179, 178.9653590, False),
-    'Pt-180': Iso('Pt-180', 'platinum-180', 78, 180, 179.963032, False),
-    'Pt-181': Iso('Pt-181', 'platinum-181', 78, 181, 180.963098, False),
-    'Pt-182': Iso('Pt-182', 'platinum-182', 78, 182, 181.961172, False),
-    'Pt-183': Iso('Pt-183', 'platinum-183', 78, 183, 182.961597, False),
-    'Pt-184': Iso('Pt-184', 'platinum-184', 78, 184, 183.959915, False),
-    'Pt-185': Iso('Pt-185', 'platinum-185', 78, 185, 184.960614, False),
-    'Pt-186': Iso('Pt-186', 'platinum-186', 78, 186, 185.959351, False),
-    'Pt-187': Iso('Pt-187', 'platinum-187', 78, 187, 186.960617, False),
-    'Pt-188': Iso('Pt-188', 'platinum-188', 78, 188, 187.9593889, False),
-    'Pt-189': Iso('Pt-189', 'platinum-189', 78, 189, 188.960831, False),
-    'Pt-190': Iso('Pt-190', 'platinum-190', 78, 190, 189.9599297, False,
-                  isotopic_abundance=0.00012),
-    'Pt-191': Iso('Pt-191', 'platinum-191', 78, 191, 190.9616729, False),
-    'Pt-192': Iso('Pt-192', 'platinum-192', 78, 192, 191.9610387, True,
-                  isotopic_abundance=0.00782),
-    'Pt-193': Iso('Pt-193', 'platinum-193', 78, 193, 192.9629824, False),
-    'Pt-194': Iso('Pt-194', 'platinum-194', 78, 194, 193.9626809, True,
-                  isotopic_abundance=0.3286),
-    'Pt-195': Iso('Pt-195', 'platinum-195', 78, 195, 194.9647917, True,
-                  isotopic_abundance=0.3378),
-    'Pt-196': Iso('Pt-196', 'platinum-196', 78, 196, 195.96495209, True,
-                  isotopic_abundance=0.2521),
-    'Pt-197': Iso('Pt-197', 'platinum-197', 78, 197, 196.96734069, False),
-    'Pt-198': Iso('Pt-198', 'platinum-198', 78, 198, 197.9678949, True,
-                  isotopic_abundance=0.07356),
-    'Pt-199': Iso('Pt-199', 'platinum-199', 78, 199, 198.9705952, False),
-    'Pt-200': Iso('Pt-200', 'platinum-200', 78, 200, 199.971443, False),
-    'Pt-201': Iso('Pt-201', 'platinum-201', 78, 201, 200.974513, False),
-    'Pt-202': Iso('Pt-202', 'platinum-202', 78, 202, 201.975639, False),
-    'Pt-203': Iso('Pt-203', 'platinum-203', 78, 203, 202.97893, False),
-    'Pt-204': Iso('Pt-204', 'platinum-204', 78, 204, 203.98076, False),
-    'Pt-205': Iso('Pt-205', 'platinum-205', 78, 205, 204.98608, False),
-    'Pt-206': Iso('Pt-206', 'platinum-206', 78, 206, 205.98966, False),
-    'Au-169': Iso('Au-169', 'gold-169', 79, 169, 168.99808, False),
-    'Au-170': Iso('Au-170', 'gold-170', 79, 170, 169.99597, False),
-    'Au-171': Iso('Au-171', 'gold-171', 79, 171, 170.991876, False),
-    'Au-172': Iso('Au-172', 'gold-172', 79, 172, 171.989942, False),
-    'Au-173': Iso('Au-173', 'gold-173', 79, 173, 172.986241, False),
-    'Au-174': Iso('Au-174', 'gold-174', 79, 174, 173.984717, False),
-    'Au-175': Iso('Au-175', 'gold-175', 79, 175, 174.981304, False),
-    'Au-176': Iso('Au-176', 'gold-176', 79, 176, 175.980250, False),
-    'Au-177': Iso('Au-177', 'gold-177', 79, 177, 176.976870, False),
-    'Au-178': Iso('Au-178', 'gold-178', 79, 178, 177.976032, False),
-    'Au-179': Iso('Au-179', 'gold-179', 79, 179, 178.973174, False),
-    'Au-180': Iso('Au-180', 'gold-180', 79, 180, 179.972523, False),
-    'Au-181': Iso('Au-181', 'gold-181', 79, 181, 180.970079, False),
-    'Au-182': Iso('Au-182', 'gold-182', 79, 182, 181.969618, False),
-    'Au-183': Iso('Au-183', 'gold-183', 79, 183, 182.967591, False),
-    'Au-184': Iso('Au-184', 'gold-184', 79, 184, 183.967452, False),
-    'Au-185': Iso('Au-185', 'gold-185', 79, 185, 184.965790, False),
-    'Au-186': Iso('Au-186', 'gold-186', 79, 186, 185.965953, False),
-    'Au-187': Iso('Au-187', 'gold-187', 79, 187, 186.964543, False),
-    'Au-188': Iso('Au-188', 'gold-188', 79, 188, 187.965349, False),
-    'Au-189': Iso('Au-189', 'gold-189', 79, 189, 188.963948, False),
-    'Au-190': Iso('Au-190', 'gold-190', 79, 190, 189.964698, False),
-    'Au-191': Iso('Au-191', 'gold-191', 79, 191, 190.963702, False),
-    'Au-192': Iso('Au-192', 'gold-192', 79, 192, 191.964814, False),
-    'Au-193': Iso('Au-193', 'gold-193', 79, 193, 192.9641373, False),
-    'Au-194': Iso('Au-194', 'gold-194', 79, 194, 193.9654178, False),
-    'Au-195': Iso('Au-195', 'gold-195', 79, 195, 194.9650352, False,
-                  half_life=16078867.200000001),
-    'Au-196': Iso('Au-196', 'gold-196', 79, 196, 195.9665699, False),
-    'Au-197': Iso('Au-197', 'gold-197', 79, 197, 196.96656879, True,
-                  isotopic_abundance=1),
-    'Au-198': Iso('Au-198', 'gold-198', 79, 198, 197.96824242, False,
-                  half_life=232862.688),
-    'Au-199': Iso('Au-199', 'gold-199', 79, 199, 198.96876528, False),
-    'Au-200': Iso('Au-200', 'gold-200', 79, 200, 199.970756, False),
-    'Au-201': Iso('Au-201', 'gold-201', 79, 201, 200.9716575, False),
-    'Au-202': Iso('Au-202', 'gold-202', 79, 202, 201.973856, False),
-    'Au-203': Iso('Au-203', 'gold-203', 79, 203, 202.9751544, False),
-    'Au-204': Iso('Au-204', 'gold-204', 79, 204, 203.97783, False),
-    'Au-205': Iso('Au-205', 'gold-205', 79, 205, 204.97985, False),
-    'Au-206': Iso('Au-206', 'gold-206', 79, 206, 205.98474, False),
-    'Au-207': Iso('Au-207', 'gold-207', 79, 207, 206.98840, False),
-    'Au-208': Iso('Au-208', 'gold-208', 79, 208, 207.99345, False),
-    'Au-209': Iso('Au-209', 'gold-209', 79, 209, 208.99735, False),
-    'Au-210': Iso('Au-210', 'gold-210', 79, 210, 210.00250, False),
-    'Hg-171': Iso('Hg-171', 'mercury-171', 80, 171, 171.00353, False),
-    'Hg-172': Iso('Hg-172', 'mercury-172', 80, 172, 171.99881, False),
-    'Hg-173': Iso('Hg-173', 'mercury-173', 80, 173, 172.99709, False),
-    'Hg-174': Iso('Hg-174', 'mercury-174', 80, 174, 173.992865, False),
-    'Hg-175': Iso('Hg-175', 'mercury-175', 80, 175, 174.991441, False),
-    'Hg-176': Iso('Hg-176', 'mercury-176', 80, 176, 175.987361, False),
-    'Hg-177': Iso('Hg-177', 'mercury-177', 80, 177, 176.986277, False),
-    'Hg-178': Iso('Hg-178', 'mercury-178', 80, 178, 177.982484, False),
-    'Hg-179': Iso('Hg-179', 'mercury-179', 80, 179, 178.981831, False),
-    'Hg-180': Iso('Hg-180', 'mercury-180', 80, 180, 179.978260, False),
-    'Hg-181': Iso('Hg-181', 'mercury-181', 80, 181, 180.977819, False),
-    'Hg-182': Iso('Hg-182', 'mercury-182', 80, 182, 181.974689, False),
-    'Hg-183': Iso('Hg-183', 'mercury-183', 80, 183, 182.9744448, False),
-    'Hg-184': Iso('Hg-184', 'mercury-184', 80, 184, 183.971714, False),
-    'Hg-185': Iso('Hg-185', 'mercury-185', 80, 185, 184.971899, False),
-    'Hg-186': Iso('Hg-186', 'mercury-186', 80, 186, 185.969362, False),
-    'Hg-187': Iso('Hg-187', 'mercury-187', 80, 187, 186.969814, False),
-    'Hg-188': Iso('Hg-188', 'mercury-188', 80, 188, 187.967567, False),
-    'Hg-189': Iso('Hg-189', 'mercury-189', 80, 189, 188.968195, False),
-    'Hg-190': Iso('Hg-190', 'mercury-190', 80, 190, 189.966323, False),
-    'Hg-191': Iso('Hg-191', 'mercury-191', 80, 191, 190.967157, False),
-    'Hg-192': Iso('Hg-192', 'mercury-192', 80, 192, 191.965635, False),
-    'Hg-193': Iso('Hg-193', 'mercury-193', 80, 193, 192.966653, False),
-    'Hg-194': Iso('Hg-194', 'mercury-194', 80, 194, 193.9654491, False),
-    'Hg-195': Iso('Hg-195', 'mercury-195', 80, 195, 194.966721, False),
-    'Hg-196': Iso('Hg-196', 'mercury-196', 80, 196, 195.9658326, True,
-                  isotopic_abundance=0.0015),
-    'Hg-197': Iso('Hg-197', 'mercury-197', 80, 197, 196.9672128, False),
-    'Hg-198': Iso('Hg-198', 'mercury-198', 80, 198, 197.96676860, True,
-                  isotopic_abundance=0.0997),
-    'Hg-199': Iso('Hg-199', 'mercury-199', 80, 199, 198.96828064, True,
-                  isotopic_abundance=0.1687),
-    'Hg-200': Iso('Hg-200', 'mercury-200', 80, 200, 199.96832659, True,
-                  isotopic_abundance=0.2310),
-    'Hg-201': Iso('Hg-201', 'mercury-201', 80, 201, 200.97030284, True,
-                  isotopic_abundance=0.1318),
-    'Hg-202': Iso('Hg-202', 'mercury-202', 80, 202, 201.97064340, True,
-                  isotopic_abundance=0.2986),
-    'Hg-203': Iso('Hg-203', 'mercury-203', 80, 203, 202.9728728, False,
-                  half_life=4027881.6),
-    'Hg-204': Iso('Hg-204', 'mercury-204', 80, 204, 203.97349398, True,
-                  isotopic_abundance=0.0687),
-    'Hg-205': Iso('Hg-205', 'mercury-205', 80, 205, 204.9760734, False),
-    'Hg-206': Iso('Hg-206', 'mercury-206', 80, 206, 205.977514, False),
-    'Hg-207': Iso('Hg-207', 'mercury-207', 80, 207, 206.982300, False),
-    'Hg-208': Iso('Hg-208', 'mercury-208', 80, 208, 207.985759, False),
-    'Hg-209': Iso('Hg-209', 'mercury-209', 80, 209, 208.99072, False),
-    'Hg-210': Iso('Hg-210', 'mercury-210', 80, 210, 209.99424, False),
-    'Hg-211': Iso('Hg-211', 'mercury-211', 80, 211, 210.99933, False),
-    'Hg-212': Iso('Hg-212', 'mercury-212', 80, 212, 212.00296, False),
-    'Hg-213': Iso('Hg-213', 'mercury-213', 80, 213, 213.00823, False),
-    'Hg-214': Iso('Hg-214', 'mercury-214', 80, 214, 214.01200, False),
-    'Hg-215': Iso('Hg-215', 'mercury-215', 80, 215, 215.01740, False),
-    'Hg-216': Iso('Hg-216', 'mercury-216', 80, 216, 216.02132, False),
-    'Tl-176': Iso('Tl-176', 'thallium-176', 81, 176, 176.000624, False),
-    'Tl-177': Iso('Tl-177', 'thallium-177', 81, 177, 176.996431, False),
-    'Tl-178': Iso('Tl-178', 'thallium-178', 81, 178, 177.99485, False),
-    'Tl-179': Iso('Tl-179', 'thallium-179', 81, 179, 178.991111, False),
-    'Tl-180': Iso('Tl-180', 'thallium-180', 81, 180, 179.990057, False),
-    'Tl-181': Iso('Tl-181', 'thallium-181', 81, 181, 180.9862600, False),
-    'Tl-182': Iso('Tl-182', 'thallium-182', 81, 182, 181.985713, False),
-    'Tl-183': Iso('Tl-183', 'thallium-183', 81, 183, 182.982193, False),
-    'Tl-184': Iso('Tl-184', 'thallium-184', 81, 184, 183.981886, False),
-    'Tl-185': Iso('Tl-185', 'thallium-185', 81, 185, 184.978789, False),
-    'Tl-186': Iso('Tl-186', 'thallium-186', 81, 186, 185.978651, False),
-    'Tl-187': Iso('Tl-187', 'thallium-187', 81, 187, 186.9759063, False),
-    'Tl-188': Iso('Tl-188', 'thallium-188', 81, 188, 187.976021, False),
-    'Tl-189': Iso('Tl-189', 'thallium-189', 81, 189, 188.973588, False),
-    'Tl-190': Iso('Tl-190', 'thallium-190', 81, 190, 189.973828, False),
-    'Tl-191': Iso('Tl-191', 'thallium-191', 81, 191, 190.9717842, False),
-    'Tl-192': Iso('Tl-192', 'thallium-192', 81, 192, 191.972225, False),
-    'Tl-193': Iso('Tl-193', 'thallium-193', 81, 193, 192.9705020, False),
-    'Tl-194': Iso('Tl-194', 'thallium-194', 81, 194, 193.971081, False),
-    'Tl-195': Iso('Tl-195', 'thallium-195', 81, 195, 194.969774, False),
-    'Tl-196': Iso('Tl-196', 'thallium-196', 81, 196, 195.970481, False),
-    'Tl-197': Iso('Tl-197', 'thallium-197', 81, 197, 196.969576, False),
-    'Tl-198': Iso('Tl-198', 'thallium-198', 81, 198, 197.970483, False),
-    'Tl-199': Iso('Tl-199', 'thallium-199', 81, 199, 198.969877, False),
-    'Tl-200': Iso('Tl-200', 'thallium-200', 81, 200, 199.9709633, False),
-    'Tl-201': Iso('Tl-201', 'thallium-201', 81, 201, 200.970822, False,
-                  half_life=263139.83999999997),
-    'Tl-202': Iso('Tl-202', 'thallium-202', 81, 202, 201.972102, False,
-                  half_life=1077062.4),
-    'Tl-203': Iso('Tl-203', 'thallium-203', 81, 203, 202.9723446, True,
-                  isotopic_abundance=0.2952),
-    'Tl-204': Iso('Tl-204', 'thallium-204', 81, 204, 203.9738639, False),
-    'Tl-205': Iso('Tl-205', 'thallium-205', 81, 205, 204.9744278, True,
-                  isotopic_abundance=0.7048),
-    'Tl-206': Iso('Tl-206', 'thallium-206', 81, 206, 205.9761106, False),
-    'Tl-207': Iso('Tl-207', 'thallium-207', 81, 207, 206.9774197, False),
-    'Tl-208': Iso('Tl-208', 'thallium-208', 81, 208, 207.9820190, False),
-    'Tl-209': Iso('Tl-209', 'thallium-209', 81, 209, 208.9853594, False),
-    'Tl-210': Iso('Tl-210', 'thallium-210', 81, 210, 209.990074, False),
-    'Tl-211': Iso('Tl-211', 'thallium-211', 81, 211, 210.993475, False),
-    'Tl-212': Iso('Tl-212', 'thallium-212', 81, 212, 211.99834, False),
-    'Tl-213': Iso('Tl-213', 'thallium-213', 81, 213, 213.001915, False),
-    'Tl-214': Iso('Tl-214', 'thallium-214', 81, 214, 214.00694, False),
-    'Tl-215': Iso('Tl-215', 'thallium-215', 81, 215, 215.01064, False),
-    'Tl-216': Iso('Tl-216', 'thallium-216', 81, 216, 216.01580, False),
-    'Tl-217': Iso('Tl-217', 'thallium-217', 81, 217, 217.01966, False),
-    'Tl-218': Iso('Tl-218', 'thallium-218', 81, 218, 218.02479, False),
-    'Pb-178': Iso('Pb-178', 'lead-178', 82, 178, 178.003831, False),
-    'Pb-179': Iso('Pb-179', 'lead-179', 82, 179, 179.002201, False),
-    'Pb-180': Iso('Pb-180', 'lead-180', 82, 180, 179.997928, False),
-    'Pb-181': Iso('Pb-181', 'lead-181', 82, 181, 180.996653, False),
-    'Pb-182': Iso('Pb-182', 'lead-182', 82, 182, 181.992672, False),
-    'Pb-183': Iso('Pb-183', 'lead-183', 82, 183, 182.991872, False),
-    'Pb-184': Iso('Pb-184', 'lead-184', 82, 184, 183.988136, False),
-    'Pb-185': Iso('Pb-185', 'lead-185', 82, 185, 184.987610, False),
-    'Pb-186': Iso('Pb-186', 'lead-186', 82, 186, 185.984238, False),
-    'Pb-187': Iso('Pb-187', 'lead-187', 82, 187, 186.9839109, False),
-    'Pb-188': Iso('Pb-188', 'lead-188', 82, 188, 187.980875, False),
-    'Pb-189': Iso('Pb-189', 'lead-189', 82, 189, 188.980807, False),
-    'Pb-190': Iso('Pb-190', 'lead-190', 82, 190, 189.978082, False),
-    'Pb-191': Iso('Pb-191', 'lead-191', 82, 191, 190.978276, False),
-    'Pb-192': Iso('Pb-192', 'lead-192', 82, 192, 191.975775, False),
-    'Pb-193': Iso('Pb-193', 'lead-193', 82, 193, 192.976173, False),
-    'Pb-194': Iso('Pb-194', 'lead-194', 82, 194, 193.974012, False),
-    'Pb-195': Iso('Pb-195', 'lead-195', 82, 195, 194.974543, False),
-    'Pb-196': Iso('Pb-196', 'lead-196', 82, 196, 195.972774, False),
-    'Pb-197': Iso('Pb-197', 'lead-197', 82, 197, 196.9734312, False),
-    'Pb-198': Iso('Pb-198', 'lead-198', 82, 198, 197.972034, False),
-    'Pb-199': Iso('Pb-199', 'lead-199', 82, 199, 198.972913, False),
-    'Pb-200': Iso('Pb-200', 'lead-200', 82, 200, 199.971819, False),
-    'Pb-201': Iso('Pb-201', 'lead-201', 82, 201, 200.972883, False),
-    'Pb-202': Iso('Pb-202', 'lead-202', 82, 202, 201.9721520, False),
-    'Pb-203': Iso('Pb-203', 'lead-203', 82, 203, 202.9733911, False,
-                  half_life=186922.80000000002),
-    'Pb-204': Iso('Pb-204', 'lead-204', 82, 204, 203.9730440, True,
-                  isotopic_abundance=0.014),
-    'Pb-205': Iso('Pb-205', 'lead-205', 82, 205, 204.9744822, False),
-    'Pb-206': Iso('Pb-206', 'lead-206', 82, 206, 205.9744657, True,
-                  isotopic_abundance=0.241),
-    'Pb-207': Iso('Pb-207', 'lead-207', 82, 207, 206.9758973, True,
-                  isotopic_abundance=0.221),
-    'Pb-208': Iso('Pb-208', 'lead-208', 82, 208, 207.9766525, True,
-                  isotopic_abundance=0.524),
-    'Pb-209': Iso('Pb-209', 'lead-209', 82, 209, 208.9810905, False),
-    'Pb-210': Iso('Pb-210', 'lead-210', 82, 210, 209.9841889, False),
-    'Pb-211': Iso('Pb-211', 'lead-211', 82, 211, 210.9887371, False),
-    'Pb-212': Iso('Pb-212', 'lead-212', 82, 212, 211.9918977, False),
-    'Pb-213': Iso('Pb-213', 'lead-213', 82, 213, 212.9965629, False),
-    'Pb-214': Iso('Pb-214', 'lead-214', 82, 214, 213.9998059, False),
-    'Pb-215': Iso('Pb-215', 'lead-215', 82, 215, 215.00474, False),
-    'Pb-216': Iso('Pb-216', 'lead-216', 82, 216, 216.00803, False),
-    'Pb-217': Iso('Pb-217', 'lead-217', 82, 217, 217.01314, False),
-    'Pb-218': Iso('Pb-218', 'lead-218', 82, 218, 218.01659, False),
-    'Pb-219': Iso('Pb-219', 'lead-219', 82, 219, 219.02177, False),
-    'Pb-220': Iso('Pb-220', 'lead-220', 82, 220, 220.02541, False),
-    'Bi-184': Iso('Bi-184', 'bismuth-184', 83, 184, 184.001275, False),
-    'Bi-185': Iso('Bi-185', 'bismuth-185', 83, 185, 184.997600, False),
-    'Bi-186': Iso('Bi-186', 'bismuth-186', 83, 186, 185.996644, False),
-    'Bi-187': Iso('Bi-187', 'bismuth-187', 83, 187, 186.993147, False),
-    'Bi-188': Iso('Bi-188', 'bismuth-188', 83, 188, 187.992287, False),
-    'Bi-189': Iso('Bi-189', 'bismuth-189', 83, 189, 188.989195, False),
-    'Bi-190': Iso('Bi-190', 'bismuth-190', 83, 190, 189.988622, False),
-    'Bi-191': Iso('Bi-191', 'bismuth-191', 83, 191, 190.9857866, False),
-    'Bi-192': Iso('Bi-192', 'bismuth-192', 83, 192, 191.985469, False),
-    'Bi-193': Iso('Bi-193', 'bismuth-193', 83, 193, 192.982960, False),
-    'Bi-194': Iso('Bi-194', 'bismuth-194', 83, 194, 193.982785, False),
-    'Bi-195': Iso('Bi-195', 'bismuth-195', 83, 195, 194.9806488, False),
-    'Bi-196': Iso('Bi-196', 'bismuth-196', 83, 196, 195.980667, False),
-    'Bi-197': Iso('Bi-197', 'bismuth-197', 83, 197, 196.9788651, False),
-    'Bi-198': Iso('Bi-198', 'bismuth-198', 83, 198, 197.979206, False),
-    'Bi-199': Iso('Bi-199', 'bismuth-199', 83, 199, 198.977673, False),
-    'Bi-200': Iso('Bi-200', 'bismuth-200', 83, 200, 199.978131, False),
-    'Bi-201': Iso('Bi-201', 'bismuth-201', 83, 201, 200.977010, False),
-    'Bi-202': Iso('Bi-202', 'bismuth-202', 83, 202, 201.977734, False),
-    'Bi-203': Iso('Bi-203', 'bismuth-203', 83, 203, 202.976893, False),
-    'Bi-204': Iso('Bi-204', 'bismuth-204', 83, 204, 203.9778361, False),
-    'Bi-205': Iso('Bi-205', 'bismuth-205', 83, 205, 204.9773867, False),
-    'Bi-206': Iso('Bi-206', 'bismuth-206', 83, 206, 205.9784993, False),
-    'Bi-207': Iso('Bi-207', 'bismuth-207', 83, 207, 206.9784710, False,
-                  half_life=995587200.0),
-    'Bi-208': Iso('Bi-208', 'bismuth-208', 83, 208, 207.9797425, False),
-    'Bi-209': Iso('Bi-209', 'bismuth-209', 83, 209, 208.9803991, False,
-                  isotopic_abundance=1),
-    'Bi-210': Iso('Bi-210', 'bismuth-210', 83, 210, 209.9841207, False),
-    'Bi-211': Iso('Bi-211', 'bismuth-211', 83, 211, 210.9872697, False),
-    'Bi-212': Iso('Bi-212', 'bismuth-212', 83, 212, 211.9912860, False),
-    'Bi-213': Iso('Bi-213', 'bismuth-213', 83, 213, 212.9943851, False),
-    'Bi-214': Iso('Bi-214', 'bismuth-214', 83, 214, 213.998712, False),
-    'Bi-215': Iso('Bi-215', 'bismuth-215', 83, 215, 215.001770, False),
-    'Bi-216': Iso('Bi-216', 'bismuth-216', 83, 216, 216.006306, False),
-    'Bi-217': Iso('Bi-217', 'bismuth-217', 83, 217, 217.009372, False),
-    'Bi-218': Iso('Bi-218', 'bismuth-218', 83, 218, 218.014188, False),
-    'Bi-219': Iso('Bi-219', 'bismuth-219', 83, 219, 219.01748, False),
-    'Bi-220': Iso('Bi-220', 'bismuth-220', 83, 220, 220.02235, False),
-    'Bi-221': Iso('Bi-221', 'bismuth-221', 83, 221, 221.02587, False),
-    'Bi-222': Iso('Bi-222', 'bismuth-222', 83, 222, 222.03078, False),
-    'Bi-223': Iso('Bi-223', 'bismuth-223', 83, 223, 223.03450, False),
-    'Bi-224': Iso('Bi-224', 'bismuth-224', 83, 224, 224.03947, False),
-    'Po-186': Iso('Po-186', 'polonium-186', 84, 186, 186.004393, False),
-    'Po-187': Iso('Po-187', 'polonium-187', 84, 187, 187.003041, False),
-    'Po-188': Iso('Po-188', 'polonium-188', 84, 188, 187.999416, False),
-    'Po-189': Iso('Po-189', 'polonium-189', 84, 189, 188.998473, False),
-    'Po-190': Iso('Po-190', 'polonium-190', 84, 190, 189.995101, False),
-    'Po-191': Iso('Po-191', 'polonium-191', 84, 191, 190.9945585, False),
-    'Po-192': Iso('Po-192', 'polonium-192', 84, 192, 191.991336, False),
-    'Po-193': Iso('Po-193', 'polonium-193', 84, 193, 192.991026, False),
-    'Po-194': Iso('Po-194', 'polonium-194', 84, 194, 193.988186, False),
-    'Po-195': Iso('Po-195', 'polonium-195', 84, 195, 194.988126, False),
-    'Po-196': Iso('Po-196', 'polonium-196', 84, 196, 195.985526, False),
-    'Po-197': Iso('Po-197', 'polonium-197', 84, 197, 196.985660, False),
-    'Po-198': Iso('Po-198', 'polonium-198', 84, 198, 197.983389, False),
-    'Po-199': Iso('Po-199', 'polonium-199', 84, 199, 198.983667, False),
-    'Po-200': Iso('Po-200', 'polonium-200', 84, 200, 199.981799, False),
-    'Po-201': Iso('Po-201', 'polonium-201', 84, 201, 200.9822598, False),
-    'Po-202': Iso('Po-202', 'polonium-202', 84, 202, 201.980758, False),
-    'Po-203': Iso('Po-203', 'polonium-203', 84, 203, 202.9814161, False),
-    'Po-204': Iso('Po-204', 'polonium-204', 84, 204, 203.980310, False),
-    'Po-205': Iso('Po-205', 'polonium-205', 84, 205, 204.981203, False),
-    'Po-206': Iso('Po-206', 'polonium-206', 84, 206, 205.9804740, False),
-    'Po-207': Iso('Po-207', 'polonium-207', 84, 207, 206.9815938, False),
-    'Po-208': Iso('Po-208', 'polonium-208', 84, 208, 207.9812461, False),
-    'Po-209': Iso('Po-209', 'polonium-209', 84, 209, 208.9824308, False),
-    'Po-210': Iso('Po-210', 'polonium-210', 84, 210, 209.9828741, False),
-    'Po-211': Iso('Po-211', 'polonium-211', 84, 211, 210.9866536, False),
-    'Po-212': Iso('Po-212', 'polonium-212', 84, 212, 211.9888684, False),
-    'Po-213': Iso('Po-213', 'polonium-213', 84, 213, 212.9928576, False),
-    'Po-214': Iso('Po-214', 'polonium-214', 84, 214, 213.9952017, False),
-    'Po-215': Iso('Po-215', 'polonium-215', 84, 215, 214.9994201, False),
-    'Po-216': Iso('Po-216', 'polonium-216', 84, 216, 216.0019152, False),
-    'Po-217': Iso('Po-217', 'polonium-217', 84, 217, 217.0063182, False),
-    'Po-218': Iso('Po-218', 'polonium-218', 84, 218, 218.0089735, False),
-    'Po-219': Iso('Po-219', 'polonium-219', 84, 219, 219.013614, False),
-    'Po-220': Iso('Po-220', 'polonium-220', 84, 220, 220.016386, False),
-    'Po-221': Iso('Po-221', 'polonium-221', 84, 221, 221.021228, False),
-    'Po-222': Iso('Po-222', 'polonium-222', 84, 222, 222.024140, False),
-    'Po-223': Iso('Po-223', 'polonium-223', 84, 223, 223.02907, False),
-    'Po-224': Iso('Po-224', 'polonium-224', 84, 224, 224.03211, False),
-    'Po-225': Iso('Po-225', 'polonium-225', 84, 225, 225.03707, False),
-    'Po-226': Iso('Po-226', 'polonium-226', 84, 226, 226.04031, False),
-    'Po-227': Iso('Po-227', 'polonium-227', 84, 227, 227.04539, False),
-    'At-191': Iso('At-191', 'astatine-191', 85, 191, 191.004148, False),
-    'At-192': Iso('At-192', 'astatine-192', 85, 192, 192.003152, False),
-    'At-193': Iso('At-193', 'astatine-193', 85, 193, 192.999927, False),
-    'At-194': Iso('At-194', 'astatine-194', 85, 194, 193.999236, False),
-    'At-195': Iso('At-195', 'astatine-195', 85, 195, 194.9962685, False),
-    'At-196': Iso('At-196', 'astatine-196', 85, 196, 195.995800, False),
-    'At-197': Iso('At-197', 'astatine-197', 85, 197, 196.993189, False),
-    'At-198': Iso('At-198', 'astatine-198', 85, 198, 197.992784, False),
-    'At-199': Iso('At-199', 'astatine-199', 85, 199, 198.9905277, False),
-    'At-200': Iso('At-200', 'astatine-200', 85, 200, 199.990351, False),
-    'At-201': Iso('At-201', 'astatine-201', 85, 201, 200.9884171, False),
-    'At-202': Iso('At-202', 'astatine-202', 85, 202, 201.988630, False),
-    'At-203': Iso('At-203', 'astatine-203', 85, 203, 202.986943, False),
-    'At-204': Iso('At-204', 'astatine-204', 85, 204, 203.987251, False),
-    'At-205': Iso('At-205', 'astatine-205', 85, 205, 204.986076, False),
-    'At-206': Iso('At-206', 'astatine-206', 85, 206, 205.986657, False),
-    'At-207': Iso('At-207', 'astatine-207', 85, 207, 206.985800, False),
-    'At-208': Iso('At-208', 'astatine-208', 85, 208, 207.9866133, False),
-    'At-209': Iso('At-209', 'astatine-209', 85, 209, 208.9861702, False),
-    'At-210': Iso('At-210', 'astatine-210', 85, 210, 209.9871479, False),
-    'At-211': Iso('At-211', 'astatine-211', 85, 211, 210.9874966, False),
-    'At-212': Iso('At-212', 'astatine-212', 85, 212, 211.9907377, False),
-    'At-213': Iso('At-213', 'astatine-213', 85, 213, 212.9929370, False),
-    'At-214': Iso('At-214', 'astatine-214', 85, 214, 213.9963721, False),
-    'At-215': Iso('At-215', 'astatine-215', 85, 215, 214.9986528, False),
-    'At-216': Iso('At-216', 'astatine-216', 85, 216, 216.0024236, False),
-    'At-217': Iso('At-217', 'astatine-217', 85, 217, 217.0047192, False),
-    'At-218': Iso('At-218', 'astatine-218', 85, 218, 218.008695, False),
-    'At-219': Iso('At-219', 'astatine-219', 85, 219, 219.0111618, False),
-    'At-220': Iso('At-220', 'astatine-220', 85, 220, 220.015433, False),
-    'At-221': Iso('At-221', 'astatine-221', 85, 221, 221.018017, False),
-    'At-222': Iso('At-222', 'astatine-222', 85, 222, 222.022494, False),
-    'At-223': Iso('At-223', 'astatine-223', 85, 223, 223.025151, False),
-    'At-224': Iso('At-224', 'astatine-224', 85, 224, 224.029749, False),
-    'At-225': Iso('At-225', 'astatine-225', 85, 225, 225.03263, False),
-    'At-226': Iso('At-226', 'astatine-226', 85, 226, 226.03716, False),
-    'At-227': Iso('At-227', 'astatine-227', 85, 227, 227.04024, False),
-    'At-228': Iso('At-228', 'astatine-228', 85, 228, 228.04475, False),
-    'At-229': Iso('At-229', 'astatine-229', 85, 229, 229.04812, False),
-    'Rn-193': Iso('Rn-193', 'radon-193', 86, 193, 193.009708, False),
-    'Rn-194': Iso('Rn-194', 'radon-194', 86, 194, 194.006144, False),
-    'Rn-195': Iso('Rn-195', 'radon-195', 86, 195, 195.005422, False),
-    'Rn-196': Iso('Rn-196', 'radon-196', 86, 196, 196.002116, False),
-    'Rn-197': Iso('Rn-197', 'radon-197', 86, 197, 197.001585, False),
-    'Rn-198': Iso('Rn-198', 'radon-198', 86, 198, 197.998679, False),
-    'Rn-199': Iso('Rn-199', 'radon-199', 86, 199, 198.998390, False),
-    'Rn-200': Iso('Rn-200', 'radon-200', 86, 200, 199.995690, False),
-    'Rn-201': Iso('Rn-201', 'radon-201', 86, 201, 200.995628, False),
-    'Rn-202': Iso('Rn-202', 'radon-202', 86, 202, 201.993264, False),
-    'Rn-203': Iso('Rn-203', 'radon-203', 86, 203, 202.993388, False),
-    'Rn-204': Iso('Rn-204', 'radon-204', 86, 204, 203.991430, False),
-    'Rn-205': Iso('Rn-205', 'radon-205', 86, 205, 204.991719, False),
-    'Rn-206': Iso('Rn-206', 'radon-206', 86, 206, 205.990214, False),
-    'Rn-207': Iso('Rn-207', 'radon-207', 86, 207, 206.9907303, False),
-    'Rn-208': Iso('Rn-208', 'radon-208', 86, 208, 207.989635, False),
-    'Rn-209': Iso('Rn-209', 'radon-209', 86, 209, 208.990415, False),
-    'Rn-210': Iso('Rn-210', 'radon-210', 86, 210, 209.9896891, False),
-    'Rn-211': Iso('Rn-211', 'radon-211', 86, 211, 210.9906011, False),
-    'Rn-212': Iso('Rn-212', 'radon-212', 86, 212, 211.9907039, False),
-    'Rn-213': Iso('Rn-213', 'radon-213', 86, 213, 212.9938831, False),
-    'Rn-214': Iso('Rn-214', 'radon-214', 86, 214, 213.9953630, False),
-    'Rn-215': Iso('Rn-215', 'radon-215', 86, 215, 214.9987459, False),
-    'Rn-216': Iso('Rn-216', 'radon-216', 86, 216, 216.0002719, False),
-    'Rn-217': Iso('Rn-217', 'radon-217', 86, 217, 217.0039280, False),
-    'Rn-218': Iso('Rn-218', 'radon-218', 86, 218, 218.0056016, False),
-    'Rn-219': Iso('Rn-219', 'radon-219', 86, 219, 219.0094804, False),
-    'Rn-220': Iso('Rn-220', 'radon-220', 86, 220, 220.0113941, False),
-    'Rn-221': Iso('Rn-221', 'radon-221', 86, 221, 221.0155371, False),
-    'Rn-222': Iso('Rn-222', 'radon-222', 86, 222, 222.0175782, False),
-    'Rn-223': Iso('Rn-223', 'radon-223', 86, 223, 223.0218893, False),
-    'Rn-224': Iso('Rn-224', 'radon-224', 86, 224, 224.024096, False),
-    'Rn-225': Iso('Rn-225', 'radon-225', 86, 225, 225.028486, False),
-    'Rn-226': Iso('Rn-226', 'radon-226', 86, 226, 226.030861, False),
-    'Rn-227': Iso('Rn-227', 'radon-227', 86, 227, 227.035304, False),
-    'Rn-228': Iso('Rn-228', 'radon-228', 86, 228, 228.037835, False),
-    'Rn-229': Iso('Rn-229', 'radon-229', 86, 229, 229.042257, False),
-    'Rn-230': Iso('Rn-230', 'radon-230', 86, 230, 230.04514, False),
-    'Rn-231': Iso('Rn-231', 'radon-231', 86, 231, 231.04987, False),
-    'Fr-199': Iso('Fr-199', 'francium-199', 87, 199, 199.007259, False),
-    'Fr-200': Iso('Fr-200', 'francium-200', 87, 200, 200.006586, False),
-    'Fr-201': Iso('Fr-201', 'francium-201', 87, 201, 201.003867, False),
-    'Fr-202': Iso('Fr-202', 'francium-202', 87, 202, 202.003320, False),
-    'Fr-203': Iso('Fr-203', 'francium-203', 87, 203, 203.0009407, False),
-    'Fr-204': Iso('Fr-204', 'francium-204', 87, 204, 204.000652, False),
-    'Fr-205': Iso('Fr-205', 'francium-205', 87, 205, 204.9985939, False),
-    'Fr-206': Iso('Fr-206', 'francium-206', 87, 206, 205.998666, False),
-    'Fr-207': Iso('Fr-207', 'francium-207', 87, 207, 206.996946, False),
-    'Fr-208': Iso('Fr-208', 'francium-208', 87, 208, 207.997138, False),
-    'Fr-209': Iso('Fr-209', 'francium-209', 87, 209, 208.995955, False),
-    'Fr-210': Iso('Fr-210', 'francium-210', 87, 210, 209.996422, False),
-    'Fr-211': Iso('Fr-211', 'francium-211', 87, 211, 210.995556, False),
-    'Fr-212': Iso('Fr-212', 'francium-212', 87, 212, 211.9962257, False),
-    'Fr-213': Iso('Fr-213', 'francium-213', 87, 213, 212.9961860, False),
-    'Fr-214': Iso('Fr-214', 'francium-214', 87, 214, 213.9989713, False),
-    'Fr-215': Iso('Fr-215', 'francium-215', 87, 215, 215.0003418, False),
-    'Fr-216': Iso('Fr-216', 'francium-216', 87, 216, 216.0031899, False),
-    'Fr-217': Iso('Fr-217', 'francium-217', 87, 217, 217.0046323, False),
-    'Fr-218': Iso('Fr-218', 'francium-218', 87, 218, 218.0075787, False),
-    'Fr-219': Iso('Fr-219', 'francium-219', 87, 219, 219.0092524, False),
-    'Fr-220': Iso('Fr-220', 'francium-220', 87, 220, 220.0123277, False),
-    'Fr-221': Iso('Fr-221', 'francium-221', 87, 221, 221.0142552, False),
-    'Fr-222': Iso('Fr-222', 'francium-222', 87, 222, 222.017552, False),
-    'Fr-223': Iso('Fr-223', 'francium-223', 87, 223, 223.0197360, False),
-    'Fr-224': Iso('Fr-224', 'francium-224', 87, 224, 224.023398, False),
-    'Fr-225': Iso('Fr-225', 'francium-225', 87, 225, 225.025573, False),
-    'Fr-226': Iso('Fr-226', 'francium-226', 87, 226, 226.029566, False),
-    'Fr-227': Iso('Fr-227', 'francium-227', 87, 227, 227.031869, False),
-    'Fr-228': Iso('Fr-228', 'francium-228', 87, 228, 228.035823, False),
-    'Fr-229': Iso('Fr-229', 'francium-229', 87, 229, 229.038298, False),
-    'Fr-230': Iso('Fr-230', 'francium-230', 87, 230, 230.042416, False),
-    'Fr-231': Iso('Fr-231', 'francium-231', 87, 231, 231.045158, False),
-    'Fr-232': Iso('Fr-232', 'francium-232', 87, 232, 232.04937, False),
-    'Fr-233': Iso('Fr-233', 'francium-233', 87, 233, 233.05264, False),
-    'Ra-201': Iso('Ra-201', 'radium-201', 88, 201, 201.01271, False),
-    'Ra-202': Iso('Ra-202', 'radium-202', 88, 202, 202.009760, False),
-    'Ra-203': Iso('Ra-203', 'radium-203', 88, 203, 203.009304, False),
-    'Ra-204': Iso('Ra-204', 'radium-204', 88, 204, 204.006492, False),
-    'Ra-205': Iso('Ra-205', 'radium-205', 88, 205, 205.006268, False),
-    'Ra-206': Iso('Ra-206', 'radium-206', 88, 206, 206.003828, False),
-    'Ra-207': Iso('Ra-207', 'radium-207', 88, 207, 207.003799, False),
-    'Ra-208': Iso('Ra-208', 'radium-208', 88, 208, 208.001841, False),
-    'Ra-209': Iso('Ra-209', 'radium-209', 88, 209, 209.001990, False),
-    'Ra-210': Iso('Ra-210', 'radium-210', 88, 210, 210.000494, False),
-    'Ra-211': Iso('Ra-211', 'radium-211', 88, 211, 211.0008932, False),
-    'Ra-212': Iso('Ra-212', 'radium-212', 88, 212, 211.999787, False),
-    'Ra-213': Iso('Ra-213', 'radium-213', 88, 213, 213.000384, False),
-    'Ra-214': Iso('Ra-214', 'radium-214', 88, 214, 214.0000997, False),
-    'Ra-215': Iso('Ra-215', 'radium-215', 88, 215, 215.0027204, False),
-    'Ra-216': Iso('Ra-216', 'radium-216', 88, 216, 216.0035334, False),
-    'Ra-217': Iso('Ra-217', 'radium-217', 88, 217, 217.0063207, False),
-    'Ra-218': Iso('Ra-218', 'radium-218', 88, 218, 218.007141, False),
-    'Ra-219': Iso('Ra-219', 'radium-219', 88, 219, 219.0100855, False),
-    'Ra-220': Iso('Ra-220', 'radium-220', 88, 220, 220.0110259, False),
-    'Ra-221': Iso('Ra-221', 'radium-221', 88, 221, 221.0139177, False),
-    'Ra-222': Iso('Ra-222', 'radium-222', 88, 222, 222.0153748, False),
-    'Ra-223': Iso('Ra-223', 'radium-223', 88, 223, 223.0185023, False),
-    'Ra-224': Iso('Ra-224', 'radium-224', 88, 224, 224.0202120, False),
-    'Ra-225': Iso('Ra-225', 'radium-225', 88, 225, 225.0236119, False),
-    'Ra-226': Iso('Ra-226', 'radium-226', 88, 226, 226.0254103, False),
-    'Ra-227': Iso('Ra-227', 'radium-227', 88, 227, 227.0291783, False),
-    'Ra-228': Iso('Ra-228', 'radium-228', 88, 228, 228.0310707, False),
-    'Ra-229': Iso('Ra-229', 'radium-229', 88, 229, 229.034942, False),
-    'Ra-230': Iso('Ra-230', 'radium-230', 88, 230, 230.037055, False),
-    'Ra-231': Iso('Ra-231', 'radium-231', 88, 231, 231.041027, False),
-    'Ra-232': Iso('Ra-232', 'radium-232', 88, 232, 232.0434753, False),
-    'Ra-233': Iso('Ra-233', 'radium-233', 88, 233, 233.047582, False),
-    'Ra-234': Iso('Ra-234', 'radium-234', 88, 234, 234.050342, False),
-    'Ra-235': Iso('Ra-235', 'radium-235', 88, 235, 235.05497, False),
-    'Ac-206': Iso('Ac-206', 'actinium-206', 89, 206, 206.014452, False),
-    'Ac-207': Iso('Ac-207', 'actinium-207', 89, 207, 207.011966, False),
-    'Ac-208': Iso('Ac-208', 'actinium-208', 89, 208, 208.011550, False),
-    'Ac-209': Iso('Ac-209', 'actinium-209', 89, 209, 209.009495, False),
-    'Ac-210': Iso('Ac-210', 'actinium-210', 89, 210, 210.009436, False),
-    'Ac-211': Iso('Ac-211', 'actinium-211', 89, 211, 211.007732, False),
-    'Ac-212': Iso('Ac-212', 'actinium-212', 89, 212, 212.007813, False),
-    'Ac-213': Iso('Ac-213', 'actinium-213', 89, 213, 213.006609, False),
-    'Ac-214': Iso('Ac-214', 'actinium-214', 89, 214, 214.006918, False),
-    'Ac-215': Iso('Ac-215', 'actinium-215', 89, 215, 215.006475, False),
-    'Ac-216': Iso('Ac-216', 'actinium-216', 89, 216, 216.008743, False),
-    'Ac-217': Iso('Ac-217', 'actinium-217', 89, 217, 217.009344, False),
-    'Ac-218': Iso('Ac-218', 'actinium-218', 89, 218, 218.011642, False),
-    'Ac-219': Iso('Ac-219', 'actinium-219', 89, 219, 219.012421, False),
-    'Ac-220': Iso('Ac-220', 'actinium-220', 89, 220, 220.0147549, False),
-    'Ac-221': Iso('Ac-221', 'actinium-221', 89, 221, 221.015592, False),
-    'Ac-222': Iso('Ac-222', 'actinium-222', 89, 222, 222.0178442, False),
-    'Ac-223': Iso('Ac-223', 'actinium-223', 89, 223, 223.0191377, False),
-    'Ac-224': Iso('Ac-224', 'actinium-224', 89, 224, 224.0217232, False),
-    'Ac-225': Iso('Ac-225', 'actinium-225', 89, 225, 225.0232300, False),
-    'Ac-226': Iso('Ac-226', 'actinium-226', 89, 226, 226.0260984, False),
-    'Ac-227': Iso('Ac-227', 'actinium-227', 89, 227, 227.0277523, False),
-    'Ac-228': Iso('Ac-228', 'actinium-228', 89, 228, 228.0310215, False),
-    'Ac-229': Iso('Ac-229', 'actinium-229', 89, 229, 229.032956, False),
-    'Ac-230': Iso('Ac-230', 'actinium-230', 89, 230, 230.036327, False),
-    'Ac-231': Iso('Ac-231', 'actinium-231', 89, 231, 231.038393, False),
-    'Ac-232': Iso('Ac-232', 'actinium-232', 89, 232, 232.042034, False),
-    'Ac-233': Iso('Ac-233', 'actinium-233', 89, 233, 233.044346, False),
-    'Ac-234': Iso('Ac-234', 'actinium-234', 89, 234, 234.048139, False),
-    'Ac-235': Iso('Ac-235', 'actinium-235', 89, 235, 235.050840, False),
-    'Ac-236': Iso('Ac-236', 'actinium-236', 89, 236, 236.054988, False),
-    'Ac-237': Iso('Ac-237', 'actinium-237', 89, 237, 237.05827, False),
-    'Th-208': Iso('Th-208', 'thorium-208', 90, 208, 208.017900, False),
-    'Th-209': Iso('Th-209', 'thorium-209', 90, 209, 209.017753, False),
-    'Th-210': Iso('Th-210', 'thorium-210', 90, 210, 210.015094, False),
-    'Th-211': Iso('Th-211', 'thorium-211', 90, 211, 211.014929, False),
-    'Th-212': Iso('Th-212', 'thorium-212', 90, 212, 212.012988, False),
-    'Th-213': Iso('Th-213', 'thorium-213', 90, 213, 213.013009, False),
-    'Th-214': Iso('Th-214', 'thorium-214', 90, 214, 214.011500, False),
-    'Th-215': Iso('Th-215', 'thorium-215', 90, 215, 215.0117248, False),
-    'Th-216': Iso('Th-216', 'thorium-216', 90, 216, 216.011056, False),
-    'Th-217': Iso('Th-217', 'thorium-217', 90, 217, 217.013117, False),
-    'Th-218': Iso('Th-218', 'thorium-218', 90, 218, 218.013276, False),
-    'Th-219': Iso('Th-219', 'thorium-219', 90, 219, 219.015537, False),
-    'Th-220': Iso('Th-220', 'thorium-220', 90, 220, 220.015748, False),
-    'Th-221': Iso('Th-221', 'thorium-221', 90, 221, 221.018184, False),
-    'Th-222': Iso('Th-222', 'thorium-222', 90, 222, 222.018469, False),
-    'Th-223': Iso('Th-223', 'thorium-223', 90, 223, 223.0208119, False),
-    'Th-224': Iso('Th-224', 'thorium-224', 90, 224, 224.021464, False),
-    'Th-225': Iso('Th-225', 'thorium-225', 90, 225, 225.0239514, False),
-    'Th-226': Iso('Th-226', 'thorium-226', 90, 226, 226.0249034, False),
-    'Th-227': Iso('Th-227', 'thorium-227', 90, 227, 227.0277042, False),
-    'Th-228': Iso('Th-228', 'thorium-228', 90, 228, 228.0287413, False,
-                  half_life=60359040.0),
-    'Th-229': Iso('Th-229', 'thorium-229', 90, 229, 229.0317627, False),
-    'Th-230': Iso('Th-230', 'thorium-230', 90, 230, 230.0331341, False),
-    'Th-231': Iso('Th-231', 'thorium-231', 90, 231, 231.0363046, False),
-    'Th-232': Iso('Th-232', 'thorium-232', 90, 232, 232.0380558, False,
-                  isotopic_abundance=1),
-    'Th-233': Iso('Th-233', 'thorium-233', 90, 233, 233.0415823, False),
-    'Th-234': Iso('Th-234', 'thorium-234', 90, 234, 234.0436014, False),
-    'Th-235': Iso('Th-235', 'thorium-235', 90, 235, 235.047255, False),
-    'Th-236': Iso('Th-236', 'thorium-236', 90, 236, 236.049657, False),
-    'Th-237': Iso('Th-237', 'thorium-237', 90, 237, 237.053629, False),
-    'Th-238': Iso('Th-238', 'thorium-238', 90, 238, 238.05650, False),
-    'Th-239': Iso('Th-239', 'thorium-239', 90, 239, 239.06077, False),
-    'Pa-212': Iso('Pa-212', 'protactinium-212', 91, 212, 212.023203, False),
-    'Pa-213': Iso('Pa-213', 'protactinium-213', 91, 213, 213.021109, False),
-    'Pa-214': Iso('Pa-214', 'protactinium-214', 91, 214, 214.020918, False),
-    'Pa-215': Iso('Pa-215', 'protactinium-215', 91, 215, 215.019183, False),
-    'Pa-216': Iso('Pa-216', 'protactinium-216', 91, 216, 216.019109, False),
-    'Pa-217': Iso('Pa-217', 'protactinium-217', 91, 217, 217.018325, False),
-    'Pa-218': Iso('Pa-218', 'protactinium-218', 91, 218, 218.020059, False),
-    'Pa-219': Iso('Pa-219', 'protactinium-219', 91, 219, 219.019904, False),
-    'Pa-220': Iso('Pa-220', 'protactinium-220', 91, 220, 220.021705, False),
-    'Pa-221': Iso('Pa-221', 'protactinium-221', 91, 221, 221.021875, False),
-    'Pa-222': Iso('Pa-222', 'protactinium-222', 91, 222, 222.023784, False),
-    'Pa-223': Iso('Pa-223', 'protactinium-223', 91, 223, 223.023963, False),
-    'Pa-224': Iso('Pa-224', 'protactinium-224', 91, 224, 224.0256176, False),
-    'Pa-225': Iso('Pa-225', 'protactinium-225', 91, 225, 225.026131, False),
-    'Pa-226': Iso('Pa-226', 'protactinium-226', 91, 226, 226.027948, False),
-    'Pa-227': Iso('Pa-227', 'protactinium-227', 91, 227, 227.0288054, False),
-    'Pa-228': Iso('Pa-228', 'protactinium-228', 91, 228, 228.0310517, False),
-    'Pa-229': Iso('Pa-229', 'protactinium-229', 91, 229, 229.0320972, False),
-    'Pa-230': Iso('Pa-230', 'protactinium-230', 91, 230, 230.0345410, False),
-    'Pa-231': Iso('Pa-231', 'protactinium-231', 91, 231, 231.0358842, False,
-                  isotopic_abundance=1),
-    'Pa-232': Iso('Pa-232', 'protactinium-232', 91, 232, 232.0385917, False),
-    'Pa-233': Iso('Pa-233', 'protactinium-233', 91, 233, 233.0402472, False),
-    'Pa-234': Iso('Pa-234', 'protactinium-234', 91, 234, 234.0433072, False),
-    'Pa-235': Iso('Pa-235', 'protactinium-235', 91, 235, 235.045399, False),
-    'Pa-236': Iso('Pa-236', 'protactinium-236', 91, 236, 236.048668, False),
-    'Pa-237': Iso('Pa-237', 'protactinium-237', 91, 237, 237.051023, False),
-    'Pa-238': Iso('Pa-238', 'protactinium-238', 91, 238, 238.054637, False),
-    'Pa-239': Iso('Pa-239', 'protactinium-239', 91, 239, 239.05726, False),
-    'Pa-240': Iso('Pa-240', 'protactinium-240', 91, 240, 240.06098, False),
-    'Pa-241': Iso('Pa-241', 'protactinium-241', 91, 241, 241.06408, False),
-    'U-217': Iso('U-217', 'uranium-217', 92, 217, 217.02466, False),
-    'U-218': Iso('U-218', 'uranium-218', 92, 218, 218.023523, False),
-    'U-219': Iso('U-219', 'uranium-219', 92, 219, 219.024999, False),
-    'U-220': Iso('U-220', 'uranium-220', 92, 220, 220.02462, False),
-    'U-221': Iso('U-221', 'uranium-221', 92, 221, 221.02628, False),
-    'U-222': Iso('U-222', 'uranium-222', 92, 222, 222.02600, False),
-    'U-223': Iso('U-223', 'uranium-223', 92, 223, 223.027739, False),
-    'U-224': Iso('U-224', 'uranium-224', 92, 224, 224.027605, False),
-    'U-225': Iso('U-225', 'uranium-225', 92, 225, 225.029391, False),
-    'U-226': Iso('U-226', 'uranium-226', 92, 226, 226.029339, False),
-    'U-227': Iso('U-227', 'uranium-227', 92, 227, 227.031157, False),
-    'U-228': Iso('U-228', 'uranium-228', 92, 228, 228.031371, False),
-    'U-229': Iso('U-229', 'uranium-229', 92, 229, 229.0335063, False),
-    'U-230': Iso('U-230', 'uranium-230', 92, 230, 230.0339401, False),
-    'U-231': Iso('U-231', 'uranium-231', 92, 231, 231.0362939, False),
-    'U-232': Iso('U-232', 'uranium-232', 92, 232, 232.0371563, False),
-    'U-233': Iso('U-233', 'uranium-233', 92, 233, 233.0396355, False),
-    'U-234': Iso('U-234', 'uranium-234', 92, 234, 234.0409523, False,
-                 isotopic_abundance=0.000054),
-    'U-235': Iso('U-235', 'uranium-235', 92, 235, 235.0439301, False,
-                 isotopic_abundance=0.007204),
-    'U-236': Iso('U-236', 'uranium-236', 92, 236, 236.0455682, False),
-    'U-237': Iso('U-237', 'uranium-237', 92, 237, 237.0487304, False),
-    'U-238': Iso('U-238', 'uranium-238', 92, 238, 238.0507884, False,
-                 isotopic_abundance=0.992742),
-    'U-239': Iso('U-239', 'uranium-239', 92, 239, 239.0542935, False),
-    'U-240': Iso('U-240', 'uranium-240', 92, 240, 240.0565934, False),
-    'U-241': Iso('U-241', 'uranium-241', 92, 241, 241.06033, False),
-    'U-242': Iso('U-242', 'uranium-242', 92, 242, 242.06293, False),
-    'U-243': Iso('U-243', 'uranium-243', 92, 243, 243.06699, False),
-    'Np-219': Iso('Np-219', 'neptunium-219', 93, 219, 219.03143, False),
-    'Np-220': Iso('Np-220', 'neptunium-220', 93, 220, 220.03254, False),
-    'Np-221': Iso('Np-221', 'neptunium-221', 93, 221, 221.03204, False),
-    'Np-222': Iso('Np-222', 'neptunium-222', 93, 222, 222.03330, False),
-    'Np-223': Iso('Np-223', 'neptunium-223', 93, 223, 223.03285, False),
-    'Np-224': Iso('Np-224', 'neptunium-224', 93, 224, 224.03422, False),
-    'Np-225': Iso('Np-225', 'neptunium-225', 93, 225, 225.033911, False),
-    'Np-226': Iso('Np-226', 'neptunium-226', 93, 226, 226.035188, False),
-    'Np-227': Iso('Np-227', 'neptunium-227', 93, 227, 227.034957, False),
-    'Np-228': Iso('Np-228', 'neptunium-228', 93, 228, 228.036067, False),
-    'Np-229': Iso('Np-229', 'neptunium-229', 93, 229, 229.036264, False),
-    'Np-230': Iso('Np-230', 'neptunium-230', 93, 230, 230.037828, False),
-    'Np-231': Iso('Np-231', 'neptunium-231', 93, 231, 231.038245, False),
-    'Np-232': Iso('Np-232', 'neptunium-232', 93, 232, 232.04011, False),
-    'Np-233': Iso('Np-233', 'neptunium-233', 93, 233, 233.040741, False),
-    'Np-234': Iso('Np-234', 'neptunium-234', 93, 234, 234.0428953, False),
-    'Np-235': Iso('Np-235', 'neptunium-235', 93, 235, 235.0440635, False),
-    'Np-236': Iso('Np-236', 'neptunium-236', 93, 236, 236.046570, False),
-    'Np-237': Iso('Np-237', 'neptunium-237', 93, 237, 237.0481736, False),
-    'Np-238': Iso('Np-238', 'neptunium-238', 93, 238, 238.0509466, False),
-    'Np-239': Iso('Np-239', 'neptunium-239', 93, 239, 239.0529392, False),
-    'Np-240': Iso('Np-240', 'neptunium-240', 93, 240, 240.056165, False),
-    'Np-241': Iso('Np-241', 'neptunium-241', 93, 241, 241.058253, False),
-    'Np-242': Iso('Np-242', 'neptunium-242', 93, 242, 242.06164, False),
-    'Np-243': Iso('Np-243', 'neptunium-243', 93, 243, 243.064280, False),
-    'Np-244': Iso('Np-244', 'neptunium-244', 93, 244, 244.06785, False),
-    'Np-245': Iso('Np-245', 'neptunium-245', 93, 245, 245.07080, False),
-    'Pu-228': Iso('Pu-228', 'plutonium-228', 94, 228, 228.038732, False),
-    'Pu-229': Iso('Pu-229', 'plutonium-229', 94, 229, 229.040144, False),
-    'Pu-230': Iso('Pu-230', 'plutonium-230', 94, 230, 230.039650, False),
-    'Pu-231': Iso('Pu-231', 'plutonium-231', 94, 231, 231.041102, False),
-    'Pu-232': Iso('Pu-232', 'plutonium-232', 94, 232, 232.041185, False),
-    'Pu-233': Iso('Pu-233', 'plutonium-233', 94, 233, 233.042998, False),
-    'Pu-234': Iso('Pu-234', 'plutonium-234', 94, 234, 234.0433174, False),
-    'Pu-235': Iso('Pu-235', 'plutonium-235', 94, 235, 235.045286, False),
-    'Pu-236': Iso('Pu-236', 'plutonium-236', 94, 236, 236.0460581, False),
-    'Pu-237': Iso('Pu-237', 'plutonium-237', 94, 237, 237.0484098, False),
-    'Pu-238': Iso('Pu-238', 'plutonium-238', 94, 238, 238.0495601, False),
-    'Pu-239': Iso('Pu-239', 'plutonium-239', 94, 239, 239.0521636, False),
-    'Pu-240': Iso('Pu-240', 'plutonium-240', 94, 240, 240.0538138, False),
-    'Pu-241': Iso('Pu-241', 'plutonium-241', 94, 241, 241.0568517, False),
-    'Pu-242': Iso('Pu-242', 'plutonium-242', 94, 242, 242.0587428, False),
-    'Pu-243': Iso('Pu-243', 'plutonium-243', 94, 243, 243.0620036, False),
-    'Pu-244': Iso('Pu-244', 'plutonium-244', 94, 244, 244.0642053, False),
-    'Pu-245': Iso('Pu-245', 'plutonium-245', 94, 245, 245.067826, False),
-    'Pu-246': Iso('Pu-246', 'plutonium-246', 94, 246, 246.070205, False),
-    'Pu-247': Iso('Pu-247', 'plutonium-247', 94, 247, 247.07419, False),
-    'Am-230': Iso('Am-230', 'americium-230', 95, 230, 230.04609, False),
-    'Am-231': Iso('Am-231', 'americium-231', 95, 231, 231.04556, False),
-    'Am-232': Iso('Am-232', 'americium-232', 95, 232, 232.04645, False),
-    'Am-233': Iso('Am-233', 'americium-233', 95, 233, 233.04644, False),
-    'Am-234': Iso('Am-234', 'americium-234', 95, 234, 234.04773, False),
-    'Am-235': Iso('Am-235', 'americium-235', 95, 235, 235.047908, False),
-    'Am-236': Iso('Am-236', 'americium-236', 95, 236, 236.04943, False),
-    'Am-237': Iso('Am-237', 'americium-237', 95, 237, 237.049996, False),
-    'Am-238': Iso('Am-238', 'americium-238', 95, 238, 238.051985, False),
-    'Am-239': Iso('Am-239', 'americium-239', 95, 239, 239.0530247, False),
-    'Am-240': Iso('Am-240', 'americium-240', 95, 240, 240.055300, False),
-    'Am-241': Iso('Am-241', 'americium-241', 95, 241, 241.0568293, False),
-    'Am-242': Iso('Am-242', 'americium-242', 95, 242, 242.0595494, False),
-    'Am-243': Iso('Am-243', 'americium-243', 95, 243, 243.0613813, False),
-    'Am-244': Iso('Am-244', 'americium-244', 95, 244, 244.0642851, False),
-    'Am-245': Iso('Am-245', 'americium-245', 95, 245, 245.0664548, False),
-    'Am-246': Iso('Am-246', 'americium-246', 95, 246, 246.069775, False),
-    'Am-247': Iso('Am-247', 'americium-247', 95, 247, 247.07209, False),
-    'Am-248': Iso('Am-248', 'americium-248', 95, 248, 248.07575, False),
-    'Am-249': Iso('Am-249', 'americium-249', 95, 249, 249.07848, False),
-    'Cm-232': Iso('Cm-232', 'curium-232', 96, 232, 232.04982, False),
-    'Cm-233': Iso('Cm-233', 'curium-233', 96, 233, 233.050770, False),
-    'Cm-234': Iso('Cm-234', 'curium-234', 96, 234, 234.050160, False),
-    'Cm-235': Iso('Cm-235', 'curium-235', 96, 235, 235.05154, False),
-    'Cm-236': Iso('Cm-236', 'curium-236', 96, 236, 236.051374, False),
-    'Cm-237': Iso('Cm-237', 'curium-237', 96, 237, 237.052869, False),
-    'Cm-238': Iso('Cm-238', 'curium-238', 96, 238, 238.053081, False),
-    'Cm-239': Iso('Cm-239', 'curium-239', 96, 239, 239.054910, False),
-    'Cm-240': Iso('Cm-240', 'curium-240', 96, 240, 240.0555297, False),
-    'Cm-241': Iso('Cm-241', 'curium-241', 96, 241, 241.0576532, False),
-    'Cm-242': Iso('Cm-242', 'curium-242', 96, 242, 242.0588360, False),
-    'Cm-243': Iso('Cm-243', 'curium-243', 96, 243, 243.0613893, False),
-    'Cm-244': Iso('Cm-244', 'curium-244', 96, 244, 244.0627528, False),
-    'Cm-245': Iso('Cm-245', 'curium-245', 96, 245, 245.0654915, False),
-    'Cm-246': Iso('Cm-246', 'curium-246', 96, 246, 246.0672238, False),
-    'Cm-247': Iso('Cm-247', 'curium-247', 96, 247, 247.0703541, False),
-    'Cm-248': Iso('Cm-248', 'curium-248', 96, 248, 248.0723499, False),
-    'Cm-249': Iso('Cm-249', 'curium-249', 96, 249, 249.0759548, False),
-    'Cm-250': Iso('Cm-250', 'curium-250', 96, 250, 250.078358, False),
-    'Cm-251': Iso('Cm-251', 'curium-251', 96, 251, 251.082286, False),
-    'Cm-252': Iso('Cm-252', 'curium-252', 96, 252, 252.08487, False),
-    'Bk-234': Iso('Bk-234', 'berkelium-234', 97, 234, 234.05727, False),
-    'Bk-235': Iso('Bk-235', 'berkelium-235', 97, 235, 235.05658, False),
-    'Bk-236': Iso('Bk-236', 'berkelium-236', 97, 236, 236.05748, False),
-    'Bk-237': Iso('Bk-237', 'berkelium-237', 97, 237, 237.05710, False),
-    'Bk-238': Iso('Bk-238', 'berkelium-238', 97, 238, 238.05820, False),
-    'Bk-239': Iso('Bk-239', 'berkelium-239', 97, 239, 239.05824, False),
-    'Bk-240': Iso('Bk-240', 'berkelium-240', 97, 240, 240.05976, False),
-    'Bk-241': Iso('Bk-241', 'berkelium-241', 97, 241, 241.06016, False),
-    'Bk-242': Iso('Bk-242', 'berkelium-242', 97, 242, 242.06198, False),
-    'Bk-243': Iso('Bk-243', 'berkelium-243', 97, 243, 243.0630078, False),
-    'Bk-244': Iso('Bk-244', 'berkelium-244', 97, 244, 244.065181, False),
-    'Bk-245': Iso('Bk-245', 'berkelium-245', 97, 245, 245.0663618, False),
-    'Bk-246': Iso('Bk-246', 'berkelium-246', 97, 246, 246.068673, False),
-    'Bk-247': Iso('Bk-247', 'berkelium-247', 97, 247, 247.0703073, False),
-    'Bk-248': Iso('Bk-248', 'berkelium-248', 97, 248, 248.073088, False),
-    'Bk-249': Iso('Bk-249', 'berkelium-249', 97, 249, 249.0749877, False),
-    'Bk-250': Iso('Bk-250', 'berkelium-250', 97, 250, 250.0783167, False),
-    'Bk-251': Iso('Bk-251', 'berkelium-251', 97, 251, 251.080762, False),
-    'Bk-252': Iso('Bk-252', 'berkelium-252', 97, 252, 252.08431, False),
-    'Bk-253': Iso('Bk-253', 'berkelium-253', 97, 253, 253.08688, False),
-    'Bk-254': Iso('Bk-254', 'berkelium-254', 97, 254, 254.09060, False),
-    'Cf-237': Iso('Cf-237', 'californium-237', 98, 237, 237.062198, False),
-    'Cf-238': Iso('Cf-238', 'californium-238', 98, 238, 238.06149, False),
-    'Cf-239': Iso('Cf-239', 'californium-239', 98, 239, 239.06253, False),
-    'Cf-240': Iso('Cf-240', 'californium-240', 98, 240, 240.062256, False),
-    'Cf-241': Iso('Cf-241', 'californium-241', 98, 241, 241.06369, False),
-    'Cf-242': Iso('Cf-242', 'californium-242', 98, 242, 242.063754, False),
-    'Cf-243': Iso('Cf-243', 'californium-243', 98, 243, 243.06548, False),
-    'Cf-244': Iso('Cf-244', 'californium-244', 98, 244, 244.0660008, False),
-    'Cf-245': Iso('Cf-245', 'californium-245', 98, 245, 245.0680487, False),
-    'Cf-246': Iso('Cf-246', 'californium-246', 98, 246, 246.0688055, False),
-    'Cf-247': Iso('Cf-247', 'californium-247', 98, 247, 247.070965, False),
-    'Cf-248': Iso('Cf-248', 'californium-248', 98, 248, 248.0721851, False),
-    'Cf-249': Iso('Cf-249', 'californium-249', 98, 249, 249.0748539, False),
-    'Cf-250': Iso('Cf-250', 'californium-250', 98, 250, 250.0764062, False),
-    'Cf-251': Iso('Cf-251', 'californium-251', 98, 251, 251.0795886, False),
-    'Cf-252': Iso('Cf-252', 'californium-252', 98, 252, 252.0816272, False),
-    'Cf-253': Iso('Cf-253', 'californium-253', 98, 253, 253.0851345, False),
-    'Cf-254': Iso('Cf-254', 'californium-254', 98, 254, 254.087324, False),
-    'Cf-255': Iso('Cf-255', 'californium-255', 98, 255, 255.09105, False),
-    'Cf-256': Iso('Cf-256', 'californium-256', 98, 256, 256.09344, False),
-    'Es-239': Iso('Es-239', 'einsteinium-239', 99, 239, 239.06823, False),
-    'Es-240': Iso('Es-240', 'einsteinium-240', 99, 240, 240.06892, False),
-    'Es-241': Iso('Es-241', 'einsteinium-241', 99, 241, 241.06856, False),
-    'Es-242': Iso('Es-242', 'einsteinium-242', 99, 242, 242.06957, False),
-    'Es-243': Iso('Es-243', 'einsteinium-243', 99, 243, 243.06951, False),
-    'Es-244': Iso('Es-244', 'einsteinium-244', 99, 244, 244.07088, False),
-    'Es-245': Iso('Es-245', 'einsteinium-245', 99, 245, 245.07125, False),
-    'Es-246': Iso('Es-246', 'einsteinium-246', 99, 246, 246.07290, False),
-    'Es-247': Iso('Es-247', 'einsteinium-247', 99, 247, 247.073622, False),
-    'Es-248': Iso('Es-248', 'einsteinium-248', 99, 248, 248.075471, False),
-    'Es-249': Iso('Es-249', 'einsteinium-249', 99, 249, 249.076411, False),
-    'Es-250': Iso('Es-250', 'einsteinium-250', 99, 250, 250.07861, False),
-    'Es-251': Iso('Es-251', 'einsteinium-251', 99, 251, 251.0799936, False),
-    'Es-252': Iso('Es-252', 'einsteinium-252', 99, 252, 252.082980, False),
-    'Es-253': Iso('Es-253', 'einsteinium-253', 99, 253, 253.0848257, False),
-    'Es-254': Iso('Es-254', 'einsteinium-254', 99, 254, 254.0880222, False),
-    'Es-255': Iso('Es-255', 'einsteinium-255', 99, 255, 255.090275, False),
-    'Es-256': Iso('Es-256', 'einsteinium-256', 99, 256, 256.09360, False),
-    'Es-257': Iso('Es-257', 'einsteinium-257', 99, 257, 257.09598, False),
-    'Es-258': Iso('Es-258', 'einsteinium-258', 99, 258, 258.09952, False),
-    'Fm-241': Iso('Fm-241', 'fermium-241', 100, 241, 241.07421, False),
-    'Fm-242': Iso('Fm-242', 'fermium-242', 100, 242, 242.07343, False),
-    'Fm-243': Iso('Fm-243', 'fermium-243', 100, 243, 243.07446, False),
-    'Fm-244': Iso('Fm-244', 'fermium-244', 100, 244, 244.07404, False),
-    'Fm-245': Iso('Fm-245', 'fermium-245', 100, 245, 245.07535, False),
-    'Fm-246': Iso('Fm-246', 'fermium-246', 100, 246, 246.075350, False),
-    'Fm-247': Iso('Fm-247', 'fermium-247', 100, 247, 247.07694, False),
-    'Fm-248': Iso('Fm-248', 'fermium-248', 100, 248, 248.0771865, False),
-    'Fm-249': Iso('Fm-249', 'fermium-249', 100, 249, 249.0789275, False),
-    'Fm-250': Iso('Fm-250', 'fermium-250', 100, 250, 250.0795210, False),
-    'Fm-251': Iso('Fm-251', 'fermium-251', 100, 251, 251.081540, False),
-    'Fm-252': Iso('Fm-252', 'fermium-252', 100, 252, 252.0824671, False),
-    'Fm-253': Iso('Fm-253', 'fermium-253', 100, 253, 253.0851846, False),
-    'Fm-254': Iso('Fm-254', 'fermium-254', 100, 254, 254.0868544, False),
-    'Fm-255': Iso('Fm-255', 'fermium-255', 100, 255, 255.0899640, False),
-    'Fm-256': Iso('Fm-256', 'fermium-256', 100, 256, 256.0917745, False),
-    'Fm-257': Iso('Fm-257', 'fermium-257', 100, 257, 257.0951061, False),
-    'Fm-258': Iso('Fm-258', 'fermium-258', 100, 258, 258.09708, False),
-    'Fm-259': Iso('Fm-259', 'fermium-259', 100, 259, 259.10060, False),
-    'Fm-260': Iso('Fm-260', 'fermium-260', 100, 260, 260.10281, False),
-    'Md-245': Iso('Md-245', 'mendelevium-245', 101, 245, 245.08081, False),
-    'Md-246': Iso('Md-246', 'mendelevium-246', 101, 246, 246.08171, False),
-    'Md-247': Iso('Md-247', 'mendelevium-247', 101, 247, 247.08152, False),
-    'Md-248': Iso('Md-248', 'mendelevium-248', 101, 248, 248.08282, False),
-    'Md-249': Iso('Md-249', 'mendelevium-249', 101, 249, 249.08291, False),
-    'Md-250': Iso('Md-250', 'mendelevium-250', 101, 250, 250.08441, False),
-    'Md-251': Iso('Md-251', 'mendelevium-251', 101, 251, 251.084774, False),
-    'Md-252': Iso('Md-252', 'mendelevium-252', 101, 252, 252.08643, False),
-    'Md-253': Iso('Md-253', 'mendelevium-253', 101, 253, 253.087144, False),
-    'Md-254': Iso('Md-254', 'mendelevium-254', 101, 254, 254.08959, False),
-    'Md-255': Iso('Md-255', 'mendelevium-255', 101, 255, 255.0910841, False),
-    'Md-256': Iso('Md-256', 'mendelevium-256', 101, 256, 256.09389, False),
-    'Md-257': Iso('Md-257', 'mendelevium-257', 101, 257, 257.0955424, False),
-    'Md-258': Iso('Md-258', 'mendelevium-258', 101, 258, 258.0984315, False),
-    'Md-259': Iso('Md-259', 'mendelevium-259', 101, 259, 259.10051, False),
-    'Md-260': Iso('Md-260', 'mendelevium-260', 101, 260, 260.10365, False),
-    'Md-261': Iso('Md-261', 'mendelevium-261', 101, 261, 261.10583, False),
-    'Md-262': Iso('Md-262', 'mendelevium-262', 101, 262, 262.10910, False),
-    'No-248': Iso('No-248', 'nobelium-248', 102, 248, 248.08655, False),
-    'No-249': Iso('No-249', 'nobelium-249', 102, 249, 249.08780, False),
-    'No-250': Iso('No-250', 'nobelium-250', 102, 250, 250.08756, False),
-    'No-251': Iso('No-251', 'nobelium-251', 102, 251, 251.08894, False),
-    'No-252': Iso('No-252', 'nobelium-252', 102, 252, 252.088967, False),
-    'No-253': Iso('No-253', 'nobelium-253', 102, 253, 253.0905641, False),
-    'No-254': Iso('No-254', 'nobelium-254', 102, 254, 254.090956, False),
-    'No-255': Iso('No-255', 'nobelium-255', 102, 255, 255.093191, False),
-    'No-256': Iso('No-256', 'nobelium-256', 102, 256, 256.0942829, False),
-    'No-257': Iso('No-257', 'nobelium-257', 102, 257, 257.0968878, False),
-    'No-258': Iso('No-258', 'nobelium-258', 102, 258, 258.09821, False),
-    'No-259': Iso('No-259', 'nobelium-259', 102, 259, 259.10103, False),
-    'No-260': Iso('No-260', 'nobelium-260', 102, 260, 260.10264, False),
-    'No-261': Iso('No-261', 'nobelium-261', 102, 261, 261.10570, False),
-    'No-262': Iso('No-262', 'nobelium-262', 102, 262, 262.10746, False),
-    'No-263': Iso('No-263', 'nobelium-263', 102, 263, 263.11071, False),
-    'No-264': Iso('No-264', 'nobelium-264', 102, 264, 264.11273, False),
-    'Lr-251': Iso('Lr-251', 'lawrencium-251', 103, 251, 251.09418, False),
-    'Lr-252': Iso('Lr-252', 'lawrencium-252', 103, 252, 252.09526, False),
-    'Lr-253': Iso('Lr-253', 'lawrencium-253', 103, 253, 253.09509, False),
-    'Lr-254': Iso('Lr-254', 'lawrencium-254', 103, 254, 254.09648, False),
-    'Lr-255': Iso('Lr-255', 'lawrencium-255', 103, 255, 255.096562, False),
-    'Lr-256': Iso('Lr-256', 'lawrencium-256', 103, 256, 256.098494, False),
-    'Lr-257': Iso('Lr-257', 'lawrencium-257', 103, 257, 257.099418, False),
-    'Lr-258': Iso('Lr-258', 'lawrencium-258', 103, 258, 258.10176, False),
-    'Lr-259': Iso('Lr-259', 'lawrencium-259', 103, 259, 259.102902, False),
-    'Lr-260': Iso('Lr-260', 'lawrencium-260', 103, 260, 260.10550, False),
-    'Lr-261': Iso('Lr-261', 'lawrencium-261', 103, 261, 261.10688, False),
-    'Lr-262': Iso('Lr-262', 'lawrencium-262', 103, 262, 262.10961, False),
-    'Lr-263': Iso('Lr-263', 'lawrencium-263', 103, 263, 263.11136, False),
-    'Lr-264': Iso('Lr-264', 'lawrencium-264', 103, 264, 264.11420, False),
-    'Lr-265': Iso('Lr-265', 'lawrencium-265', 103, 265, 265.11619, False),
-    'Lr-266': Iso('Lr-266', 'lawrencium-266', 103, 266, 266.11983, False),
-    'Rf-253': Iso('Rf-253', 'rutherfordium-253', 104, 253, 253.10044, False),
-    'Rf-254': Iso('Rf-254', 'rutherfordium-254', 104, 254, 254.10005, False),
-    'Rf-255': Iso('Rf-255', 'rutherfordium-255', 104, 255, 255.10127, False),
-    'Rf-256': Iso('Rf-256', 'rutherfordium-256', 104, 256, 256.101152, False),
-    'Rf-257': Iso('Rf-257', 'rutherfordium-257', 104, 257, 257.102918, False),
-    'Rf-258': Iso('Rf-258', 'rutherfordium-258', 104, 258, 258.103428, False),
-    'Rf-259': Iso('Rf-259', 'rutherfordium-259', 104, 259, 259.105596, False),
-    'Rf-260': Iso('Rf-260', 'rutherfordium-260', 104, 260, 260.10644, False),
-    'Rf-261': Iso('Rf-261', 'rutherfordium-261', 104, 261, 261.108773, False),
-    'Rf-262': Iso('Rf-262', 'rutherfordium-262', 104, 262, 262.10992, False),
-    'Rf-263': Iso('Rf-263', 'rutherfordium-263', 104, 263, 263.11249, False),
-    'Rf-264': Iso('Rf-264', 'rutherfordium-264', 104, 264, 264.11388, False),
-    'Rf-265': Iso('Rf-265', 'rutherfordium-265', 104, 265, 265.11668, False),
-    'Rf-266': Iso('Rf-266', 'rutherfordium-266', 104, 266, 266.11817, False),
-    'Rf-267': Iso('Rf-267', 'rutherfordium-267', 104, 267, 267.12179, False),
-    'Rf-268': Iso('Rf-268', 'rutherfordium-268', 104, 268, 268.12397, False),
-    'Db-255': Iso('Db-255', 'dubnium-255', 105, 255, 255.10707, False),
-    'Db-256': Iso('Db-256', 'dubnium-256', 105, 256, 256.10789, False),
-    'Db-257': Iso('Db-257', 'dubnium-257', 105, 257, 257.10758, False),
-    'Db-258': Iso('Db-258', 'dubnium-258', 105, 258, 258.10928, False),
-    'Db-259': Iso('Db-259', 'dubnium-259', 105, 259, 259.109492, False),
-    'Db-260': Iso('Db-260', 'dubnium-260', 105, 260, 260.11130, False),
-    'Db-261': Iso('Db-261', 'dubnium-261', 105, 261, 261.11192, False),
-    'Db-262': Iso('Db-262', 'dubnium-262', 105, 262, 262.11407, False),
-    'Db-263': Iso('Db-263', 'dubnium-263', 105, 263, 263.11499, False),
-    'Db-264': Iso('Db-264', 'dubnium-264', 105, 264, 264.11741, False),
-    'Db-265': Iso('Db-265', 'dubnium-265', 105, 265, 265.11861, False),
-    'Db-266': Iso('Db-266', 'dubnium-266', 105, 266, 266.12103, False),
-    'Db-267': Iso('Db-267', 'dubnium-267', 105, 267, 267.12247, False),
-    'Db-268': Iso('Db-268', 'dubnium-268', 105, 268, 268.12567, False),
-    'Db-269': Iso('Db-269', 'dubnium-269', 105, 269, 269.12791, False),
-    'Db-270': Iso('Db-270', 'dubnium-270', 105, 270, 270.13136, False),
-    'Sg-258': Iso('Sg-258', 'seaborgium-258', 106, 258, 258.11298, False),
-    'Sg-259': Iso('Sg-259', 'seaborgium-259', 106, 259, 259.11440, False),
-    'Sg-260': Iso('Sg-260', 'seaborgium-260', 106, 260, 260.114384, False),
-    'Sg-261': Iso('Sg-261', 'seaborgium-261', 106, 261, 261.115949, False),
-    'Sg-262': Iso('Sg-262', 'seaborgium-262', 106, 262, 262.116337, False),
-    'Sg-263': Iso('Sg-263', 'seaborgium-263', 106, 263, 263.11829, False),
-    'Sg-264': Iso('Sg-264', 'seaborgium-264', 106, 264, 264.11893, False),
-    'Sg-265': Iso('Sg-265', 'seaborgium-265', 106, 265, 265.12109, False),
-    'Sg-266': Iso('Sg-266', 'seaborgium-266', 106, 266, 266.12198, False),
-    'Sg-267': Iso('Sg-267', 'seaborgium-267', 106, 267, 267.12436, False),
-    'Sg-268': Iso('Sg-268', 'seaborgium-268', 106, 268, 268.12539, False),
-    'Sg-269': Iso('Sg-269', 'seaborgium-269', 106, 269, 269.12863, False),
-    'Sg-270': Iso('Sg-270', 'seaborgium-270', 106, 270, 270.13043, False),
-    'Sg-271': Iso('Sg-271', 'seaborgium-271', 106, 271, 271.13393, False),
-    'Sg-272': Iso('Sg-272', 'seaborgium-272', 106, 272, 272.13589, False),
-    'Sg-273': Iso('Sg-273', 'seaborgium-273', 106, 273, 273.13958, False),
-    'Bh-260': Iso('Bh-260', 'bohrium-260', 107, 260, 260.12166, False),
-    'Bh-261': Iso('Bh-261', 'bohrium-261', 107, 261, 261.12145, False),
-    'Bh-262': Iso('Bh-262', 'bohrium-262', 107, 262, 262.12297, False),
-    'Bh-263': Iso('Bh-263', 'bohrium-263', 107, 263, 263.12292, False),
-    'Bh-264': Iso('Bh-264', 'bohrium-264', 107, 264, 264.12459, False),
-    'Bh-265': Iso('Bh-265', 'bohrium-265', 107, 265, 265.12491, False),
-    'Bh-266': Iso('Bh-266', 'bohrium-266', 107, 266, 266.12679, False),
-    'Bh-267': Iso('Bh-267', 'bohrium-267', 107, 267, 267.12750, False),
-    'Bh-268': Iso('Bh-268', 'bohrium-268', 107, 268, 268.12969, False),
-    'Bh-269': Iso('Bh-269', 'bohrium-269', 107, 269, 269.13042, False),
-    'Bh-270': Iso('Bh-270', 'bohrium-270', 107, 270, 270.13336, False),
-    'Bh-271': Iso('Bh-271', 'bohrium-271', 107, 271, 271.13526, False),
-    'Bh-272': Iso('Bh-272', 'bohrium-272', 107, 272, 272.13826, False),
-    'Bh-273': Iso('Bh-273', 'bohrium-273', 107, 273, 273.14024, False),
-    'Bh-274': Iso('Bh-274', 'bohrium-274', 107, 274, 274.14355, False),
-    'Bh-275': Iso('Bh-275', 'bohrium-275', 107, 275, 275.14567, False),
-    'Hs-263': Iso('Hs-263', 'hassium-263', 108, 263, 263.12852, False),
-    'Hs-264': Iso('Hs-264', 'hassium-264', 108, 264, 264.128357, False),
-    'Hs-265': Iso('Hs-265', 'hassium-265', 108, 265, 265.129793, False),
-    'Hs-266': Iso('Hs-266', 'hassium-266', 108, 266, 266.130046, False),
-    'Hs-267': Iso('Hs-267', 'hassium-267', 108, 267, 267.13167, False),
-    'Hs-268': Iso('Hs-268', 'hassium-268', 108, 268, 268.13186, False),
-    'Hs-269': Iso('Hs-269', 'hassium-269', 108, 269, 269.13375, False),
-    'Hs-270': Iso('Hs-270', 'hassium-270', 108, 270, 270.13429, False),
-    'Hs-271': Iso('Hs-271', 'hassium-271', 108, 271, 271.13717, False),
-    'Hs-272': Iso('Hs-272', 'hassium-272', 108, 272, 272.13850, False),
-    'Hs-273': Iso('Hs-273', 'hassium-273', 108, 273, 273.14168, False),
-    'Hs-274': Iso('Hs-274', 'hassium-274', 108, 274, 274.14330, False),
-    'Hs-275': Iso('Hs-275', 'hassium-275', 108, 275, 275.14667, False),
-    'Hs-276': Iso('Hs-276', 'hassium-276', 108, 276, 276.14846, False),
-    'Hs-277': Iso('Hs-277', 'hassium-277', 108, 277, 277.15190, False),
-    'Mt-265': Iso('Mt-265', 'meitnerium-265', 109, 265, 265.13600, False),
-    'Mt-266': Iso('Mt-266', 'meitnerium-266', 109, 266, 266.13737, False),
-    'Mt-267': Iso('Mt-267', 'meitnerium-267', 109, 267, 267.13719, False),
-    'Mt-268': Iso('Mt-268', 'meitnerium-268', 109, 268, 268.13865, False),
-    'Mt-269': Iso('Mt-269', 'meitnerium-269', 109, 269, 269.13882, False),
-    'Mt-270': Iso('Mt-270', 'meitnerium-270', 109, 270, 270.14033, False),
-    'Mt-271': Iso('Mt-271', 'meitnerium-271', 109, 271, 271.14074, False),
-    'Mt-272': Iso('Mt-272', 'meitnerium-272', 109, 272, 272.14341, False),
-    'Mt-273': Iso('Mt-273', 'meitnerium-273', 109, 273, 273.14440, False),
-    'Mt-274': Iso('Mt-274', 'meitnerium-274', 109, 274, 274.14724, False),
-    'Mt-275': Iso('Mt-275', 'meitnerium-275', 109, 275, 275.14882, False),
-    'Mt-276': Iso('Mt-276', 'meitnerium-276', 109, 276, 276.15159, False),
-    'Mt-277': Iso('Mt-277', 'meitnerium-277', 109, 277, 277.15327, False),
-    'Mt-278': Iso('Mt-278', 'meitnerium-278', 109, 278, 278.15631, False),
-    'Mt-279': Iso('Mt-279', 'meitnerium-279', 109, 279, 279.15808, False),
-    'Ds-267': Iso('Ds-267', 'darmstadtium-267', 110, 267, 267.14377, False),
-    'Ds-268': Iso('Ds-268', 'darmstadtium-268', 110, 268, 268.14348, False),
-    'Ds-269': Iso('Ds-269', 'darmstadtium-269', 110, 269, 269.144752, False),
-    'Ds-270': Iso('Ds-270', 'darmstadtium-270', 110, 270, 270.144584, False),
-    'Ds-271': Iso('Ds-271', 'darmstadtium-271', 110, 271, 271.14595, False),
-    'Ds-272': Iso('Ds-272', 'darmstadtium-272', 110, 272, 272.14602, False),
-    'Ds-273': Iso('Ds-273', 'darmstadtium-273', 110, 273, 273.14856, False),
-    'Ds-274': Iso('Ds-274', 'darmstadtium-274', 110, 274, 274.14941, False),
-    'Ds-275': Iso('Ds-275', 'darmstadtium-275', 110, 275, 275.15203, False),
-    'Ds-276': Iso('Ds-276', 'darmstadtium-276', 110, 276, 276.15303, False),
-    'Ds-277': Iso('Ds-277', 'darmstadtium-277', 110, 277, 277.15591, False),
-    'Ds-278': Iso('Ds-278', 'darmstadtium-278', 110, 278, 278.15704, False),
-    'Ds-279': Iso('Ds-279', 'darmstadtium-279', 110, 279, 279.16010, False),
-    'Ds-280': Iso('Ds-280', 'darmstadtium-280', 110, 280, 280.16131, False),
-    'Ds-281': Iso('Ds-281', 'darmstadtium-281', 110, 281, 281.16451, False),
-    'Rg-272': Iso('Rg-272', 'roentgenium-272', 111, 272, 272.15327, False),
-    'Rg-273': Iso('Rg-273', 'roentgenium-273', 111, 273, 273.15313, False),
-    'Rg-274': Iso('Rg-274', 'roentgenium-274', 111, 274, 274.15525, False),
-    'Rg-275': Iso('Rg-275', 'roentgenium-275', 111, 275, 275.15594, False),
-    'Rg-276': Iso('Rg-276', 'roentgenium-276', 111, 276, 276.15833, False),
-    'Rg-277': Iso('Rg-277', 'roentgenium-277', 111, 277, 277.15907, False),
-    'Rg-278': Iso('Rg-278', 'roentgenium-278', 111, 278, 278.16149, False),
-    'Rg-279': Iso('Rg-279', 'roentgenium-279', 111, 279, 279.16272, False),
-    'Rg-280': Iso('Rg-280', 'roentgenium-280', 111, 280, 280.16514, False),
-    'Rg-281': Iso('Rg-281', 'roentgenium-281', 111, 281, 281.16636, False),
-    'Rg-282': Iso('Rg-282', 'roentgenium-282', 111, 282, 282.16912, False),
-    'Rg-283': Iso('Rg-283', 'roentgenium-283', 111, 283, 283.17054, False),
-    'Cn-276': Iso('Cn-276', 'copernicium-276', 112, 276, 276.16141, False),
-    'Cn-277': Iso('Cn-277', 'copernicium-277', 112, 277, 277.16364, False),
-    'Cn-278': Iso('Cn-278', 'copernicium-278', 112, 278, 278.16416, False),
-    'Cn-279': Iso('Cn-279', 'copernicium-279', 112, 279, 279.16654, False),
-    'Cn-280': Iso('Cn-280', 'copernicium-280', 112, 280, 280.16715, False),
-    'Cn-281': Iso('Cn-281', 'copernicium-281', 112, 281, 281.16975, False),
-    'Cn-282': Iso('Cn-282', 'copernicium-282', 112, 282, 282.17050, False),
-    'Cn-283': Iso('Cn-283', 'copernicium-283', 112, 283, 283.17327, False),
-    'Cn-284': Iso('Cn-284', 'copernicium-284', 112, 284, 284.17416, False),
-    'Cn-285': Iso('Cn-285', 'copernicium-285', 112, 285, 285.17712, False),
-    'Nh-278': Iso('Nh-278', 'nihonium-278', 113, 278, 278.17058, False),
-    'Nh-279': Iso('Nh-279', 'nihonium-279', 113, 279, 279.17095, False),
-    'Nh-280': Iso('Nh-280', 'nihonium-280', 113, 280, 280.17293, False),
-    'Nh-281': Iso('Nh-281', 'nihonium-281', 113, 281, 281.17348, False),
-    'Nh-282': Iso('Nh-282', 'nihonium-282', 113, 282, 282.17567, False),
-    'Nh-283': Iso('Nh-283', 'nihonium-283', 113, 283, 283.17657, False),
-    'Nh-284': Iso('Nh-284', 'nihonium-284', 113, 284, 284.17873, False),
-    'Nh-285': Iso('Nh-285', 'nihonium-285', 113, 285, 285.17973, False),
-    'Nh-286': Iso('Nh-286', 'nihonium-286', 113, 286, 286.18221, False),
-    'Nh-287': Iso('Nh-287', 'nihonium-287', 113, 287, 287.18339, False),
-    'Fl-285': Iso('Fl-285', 'flerovium-285', 114, 285, 285.18364, False),
-    'Fl-286': Iso('Fl-286', 'flerovium-286', 114, 286, 286.18423, False),
-    'Fl-287': Iso('Fl-287', 'flerovium-287', 114, 287, 287.18678, False),
-    'Fl-288': Iso('Fl-288', 'flerovium-288', 114, 288, 288.18757, False),
-    'Fl-289': Iso('Fl-289', 'flerovium-289', 114, 289, 289.19042, False),
-    'Mc-287': Iso('Mc-287', 'moscovium-287', 115, 287, 287.19070, False),
-    'Mc-288': Iso('Mc-288', 'moscovium-288', 115, 288, 288.19274, False),
-    'Mc-289': Iso('Mc-289', 'moscovium-289', 115, 289, 289.19363, False),
-    'Mc-290': Iso('Mc-290', 'moscovium-290', 115, 290, 290.19598, False),
-    'Mc-291': Iso('Mc-291', 'moscovium-291', 115, 291, 291.19707, False),
-    'Lv-289': Iso('Lv-289', 'livermorium-289', 116, 289, 289.19816, False),
-    'Lv-290': Iso('Lv-290', 'livermorium-290', 116, 290, 290.19864, False),
-    'Lv-291': Iso('Lv-291', 'livermorium-291', 116, 291, 291.20108, False),
-    'Lv-292': Iso('Lv-292', 'livermorium-292', 116, 292, 292.20174, False),
-    'Lv-293': Iso('Lv-293', 'livermorium-293', 116, 293, 293.20449, False),
-    'Ts-291': Iso('Ts-291', 'tennessine-291', 117, 291, 291.20553, False),
-    'Ts-292': Iso('Ts-292', 'tennessine-292', 117, 292, 292.20746, False),
-    'Ts-293': Iso('Ts-293', 'tennessine-293', 117, 293, 293.20824, False),
-    'Ts-294': Iso('Ts-294', 'tennessine-294', 117, 294, 294.21046, False),
-    'Og-293': Iso('Og-293', 'oganesson-293', 118, 293, 293.21356, False),
-    'Og-294': Iso('Og-294', 'oganesson-294', 118, 294, 294.21392, False),
-    'Og-295': Iso('Og-295', 'oganesson-295', 118, 295, 295.21624, False),
-    }
+    'H-6': {
+        'atomic number': 1,
+        'mass number': 6,
+        'mass': 6.04496 * u.u,
+        'stable': False,
+        'half-life': 2.9e-22 * u.s,
+    },
+
+    'H-7': {
+        'atomic number': 1,
+        'mass number': 7,
+        'mass': 7.0527 * u.u,
+        'stable': False,
+        'half-life': '500# ys',
+    },
+
+    'He-3': {
+        'atomic number': 2,
+        'mass number': 3,
+        'mass': 3.0160293201 * u.u,
+        'stable': True,
+        'abundance': 1.34e-06,
+    },
+
+    'He-4': {
+        'atomic number': 2,
+        'mass number': 4,
+        'mass': 4.00260325413 * u.u,
+        'stable': True,
+        'abundance': 0.99999866,
+    },
+
+    'He-5': {
+        'atomic number': 2,
+        'mass number': 5,
+        'mass': 5.012057 * u.u,
+        'stable': False,
+        'half-life': 7e-22 * u.s,
+    },
+
+    'He-6': {
+        'atomic number': 2,
+        'mass number': 6,
+        'mass': 6.018885891 * u.u,
+        'stable': False,
+        'half-life': 0.80692 * u.s,
+    },
+
+    'He-7': {
+        'atomic number': 2,
+        'mass number': 7,
+        'mass': 7.0279907 * u.u,
+        'stable': False,
+        'half-life': 2.51e-21 * u.s,
+    },
+
+    'He-8': {
+        'atomic number': 2,
+        'mass number': 8,
+        'mass': 8.03393439 * u.u,
+        'stable': False,
+        'half-life': 0.1191 * u.s,
+    },
+
+    'He-9': {
+        'atomic number': 2,
+        'mass number': 9,
+        'mass': 9.043946 * u.u,
+        'stable': False,
+        'half-life': 2.5e-21 * u.s,
+    },
+
+    'He-10': {
+        'atomic number': 2,
+        'mass number': 10,
+        'mass': 10.05279 * u.u,
+        'stable': False,
+        'half-life': 3.1e-21 * u.s,
+    },
+
+    'Li-3': {
+        'atomic number': 3,
+        'mass number': 3,
+        'mass': 3.0308 * u.u,
+        'stable': False,
+    },
+
+    'Li-4': {
+        'atomic number': 3,
+        'mass number': 4,
+        'mass': 4.02719 * u.u,
+        'stable': False,
+        'half-life': 9.1e-23 * u.s,
+    },
+
+    'Li-5': {
+        'atomic number': 3,
+        'mass number': 5,
+        'mass': 5.012538 * u.u,
+        'stable': False,
+        'half-life': 3.7e-22 * u.s,
+    },
+
+    'Li-6': {
+        'atomic number': 3,
+        'mass number': 6,
+        'mass': 6.0151228874 * u.u,
+        'stable': True,
+        'abundance': 0.0759,
+    },
+
+    'Li-7': {
+        'atomic number': 3,
+        'mass number': 7,
+        'mass': 7.0160034366 * u.u,
+        'stable': True,
+        'abundance': 0.9241,
+    },
+
+    'Li-8': {
+        'atomic number': 3,
+        'mass number': 8,
+        'mass': 8.022486246 * u.u,
+        'stable': False,
+        'half-life': 0.8394 * u.s,
+    },
+
+    'Li-9': {
+        'atomic number': 3,
+        'mass number': 9,
+        'mass': 9.02679019 * u.u,
+        'stable': False,
+        'half-life': 0.1783 * u.s,
+    },
+
+    'Li-10': {
+        'atomic number': 3,
+        'mass number': 10,
+        'mass': 10.035483 * u.u,
+        'stable': False,
+        'half-life': 2e-21 * u.s,
+    },
+
+    'Li-11': {
+        'atomic number': 3,
+        'mass number': 11,
+        'mass': 11.04372358 * u.u,
+        'stable': False,
+        'half-life': 0.00875 * u.s,
+    },
+
+    'Li-12': {
+        'atomic number': 3,
+        'mass number': 12,
+        'mass': 12.052517 * u.u,
+        'stable': False,
+        'half-life': '<10 ns',
+    },
+
+    'Li-13': {
+        'atomic number': 3,
+        'mass number': 13,
+        'mass': 13.06263 * u.u,
+        'stable': False,
+        'half-life': 3.3e-21 * u.s,
+    },
+
+    'Be-5': {
+        'atomic number': 4,
+        'mass number': 5,
+        'mass': 5.0399 * u.u,
+        'stable': False,
+    },
+
+    'Be-6': {
+        'atomic number': 4,
+        'mass number': 6,
+        'mass': 6.0197264 * u.u,
+        'stable': False,
+        'half-life': 5e-21 * u.s,
+    },
+
+    'Be-7': {
+        'atomic number': 4,
+        'mass number': 7,
+        'mass': 7.016928717 * u.u,
+        'stable': False,
+        'half-life': 4598208.0 * u.s,
+    },
+
+    'Be-8': {
+        'atomic number': 4,
+        'mass number': 8,
+        'mass': 8.005305102 * u.u,
+        'stable': False,
+        'half-life': 6.7e-17 * u.s,
+    },
+
+    'Be-9': {
+        'atomic number': 4,
+        'mass number': 9,
+        'mass': 9.012183065 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Be-10': {
+        'atomic number': 4,
+        'mass number': 10,
+        'mass': 10.013534695 * u.u,
+        'stable': False,
+        'half-life': 47650958260000.0 * u.s,
+    },
+
+    'Be-11': {
+        'atomic number': 4,
+        'mass number': 11,
+        'mass': 11.02166108 * u.u,
+        'stable': False,
+        'half-life': 13.76 * u.s,
+    },
+
+    'Be-12': {
+        'atomic number': 4,
+        'mass number': 12,
+        'mass': 12.0269221 * u.u,
+        'stable': False,
+        'half-life': 0.0215 * u.s,
+    },
+
+    'Be-13': {
+        'atomic number': 4,
+        'mass number': 13,
+        'mass': 13.036135 * u.u,
+        'stable': False,
+        'half-life': 1e-21 * u.s,
+    },
+
+    'Be-14': {
+        'atomic number': 4,
+        'mass number': 14,
+        'mass': 14.04289 * u.u,
+        'stable': False,
+        'half-life': 0.00435 * u.s,
+    },
+
+    'Be-15': {
+        'atomic number': 4,
+        'mass number': 15,
+        'mass': 15.05342 * u.u,
+        'stable': False,
+        'half-life': 7.9e-22 * u.s,
+    },
+
+    'Be-16': {
+        'atomic number': 4,
+        'mass number': 16,
+        'mass': 16.06167 * u.u,
+        'stable': False,
+        'half-life': 6.5e-22 * u.s,
+    },
+
+    'B-6': {
+        'atomic number': 5,
+        'mass number': 6,
+        'mass': 6.0508 * u.u,
+        'stable': False,
+    },
+
+    'B-7': {
+        'atomic number': 5,
+        'mass number': 7,
+        'mass': 7.029712 * u.u,
+        'stable': False,
+        'half-life': 5.7e-22 * u.s,
+    },
+
+    'B-8': {
+        'atomic number': 5,
+        'mass number': 8,
+        'mass': 8.0246073 * u.u,
+        'stable': False,
+        'half-life': 0.77 * u.s,
+    },
+
+    'B-9': {
+        'atomic number': 5,
+        'mass number': 9,
+        'mass': 9.01332965 * u.u,
+        'stable': False,
+        'half-life': 8e-19 * u.s,
+    },
+
+    'B-10': {
+        'atomic number': 5,
+        'mass number': 10,
+        'mass': 10.01293695 * u.u,
+        'stable': True,
+        'abundance': 0.199,
+    },
+
+    'B-11': {
+        'atomic number': 5,
+        'mass number': 11,
+        'mass': 11.00930536 * u.u,
+        'stable': True,
+        'abundance': 0.801,
+    },
+
+    'B-12': {
+        'atomic number': 5,
+        'mass number': 12,
+        'mass': 12.0143527 * u.u,
+        'stable': False,
+        'half-life': 0.0202 * u.s,
+    },
+
+    'B-13': {
+        'atomic number': 5,
+        'mass number': 13,
+        'mass': 13.0177802 * u.u,
+        'stable': False,
+        'half-life': 0.01733 * u.s,
+    },
+
+    'B-14': {
+        'atomic number': 5,
+        'mass number': 14,
+        'mass': 14.025404 * u.u,
+        'stable': False,
+        'half-life': 0.0125 * u.s,
+    },
+
+    'B-15': {
+        'atomic number': 5,
+        'mass number': 15,
+        'mass': 15.031088 * u.u,
+        'stable': False,
+        'half-life': 0.00993 * u.s,
+    },
+
+    'B-16': {
+        'atomic number': 5,
+        'mass number': 16,
+        'mass': 16.039842 * u.u,
+        'stable': False,
+        'half-life': '>4.6 zs',
+    },
+
+    'B-17': {
+        'atomic number': 5,
+        'mass number': 17,
+        'mass': 17.04699 * u.u,
+        'stable': False,
+        'half-life': 0.00508 * u.s,
+    },
+
+    'B-18': {
+        'atomic number': 5,
+        'mass number': 18,
+        'mass': 18.05566 * u.u,
+        'stable': False,
+        'half-life': '<26 ns',
+    },
+
+    'B-19': {
+        'atomic number': 5,
+        'mass number': 19,
+        'mass': 19.0631 * u.u,
+        'stable': False,
+        'half-life': 0.00292 * u.s,
+    },
+
+    'B-20': {
+        'atomic number': 5,
+        'mass number': 20,
+        'mass': 20.07207 * u.u,
+        'stable': False,
+    },
+
+    'B-21': {
+        'atomic number': 5,
+        'mass number': 21,
+        'mass': 21.08129 * u.u,
+        'stable': False,
+    },
+
+    'C-8': {
+        'atomic number': 6,
+        'mass number': 8,
+        'mass': 8.037643 * u.u,
+        'stable': False,
+        'half-life': 3.5e-21 * u.s,
+    },
+
+    'C-9': {
+        'atomic number': 6,
+        'mass number': 9,
+        'mass': 9.0310372 * u.u,
+        'stable': False,
+        'half-life': 0.1265 * u.s,
+    },
+
+    'C-10': {
+        'atomic number': 6,
+        'mass number': 10,
+        'mass': 10.01685331 * u.u,
+        'stable': False,
+        'half-life': 19.3009 * u.s,
+    },
+
+    'C-11': {
+        'atomic number': 6,
+        'mass number': 11,
+        'mass': 11.0114336 * u.u,
+        'stable': False,
+        'half-life': 1221.84 * u.s,
+    },
+
+    'C-12': {
+        'atomic number': 6,
+        'mass number': 12,
+        'mass': 12.0 * u.u,
+        'stable': True,
+        'abundance': 0.9893,
+    },
+
+    'C-13': {
+        'atomic number': 6,
+        'mass number': 13,
+        'mass': 13.00335483507 * u.u,
+        'stable': True,
+        'abundance': 0.0107,
+    },
+
+    'C-14': {
+        'atomic number': 6,
+        'mass number': 14,
+        'mass': 14.0032419884 * u.u,
+        'stable': False,
+        'half-life': 180825048000.0 * u.s,
+    },
+
+    'C-15': {
+        'atomic number': 6,
+        'mass number': 15,
+        'mass': 15.01059926 * u.u,
+        'stable': False,
+        'half-life': 2.449 * u.s,
+    },
+
+    'C-16': {
+        'atomic number': 6,
+        'mass number': 16,
+        'mass': 16.0147013 * u.u,
+        'stable': False,
+        'half-life': 0.747 * u.s,
+    },
+
+    'C-17': {
+        'atomic number': 6,
+        'mass number': 17,
+        'mass': 17.022577 * u.u,
+        'stable': False,
+        'half-life': 0.193 * u.s,
+    },
+
+    'C-18': {
+        'atomic number': 6,
+        'mass number': 18,
+        'mass': 18.026751 * u.u,
+        'stable': False,
+        'half-life': 0.092 * u.s,
+    },
+
+    'C-19': {
+        'atomic number': 6,
+        'mass number': 19,
+        'mass': 19.0348 * u.u,
+        'stable': False,
+        'half-life': 0.0462 * u.s,
+    },
+
+    'C-20': {
+        'atomic number': 6,
+        'mass number': 20,
+        'mass': 20.04032 * u.u,
+        'stable': False,
+        'half-life': 0.016 * u.s,
+    },
+
+    'C-21': {
+        'atomic number': 6,
+        'mass number': 21,
+        'mass': 21.049 * u.u,
+        'stable': False,
+    },
+
+    'C-22': {
+        'atomic number': 6,
+        'mass number': 22,
+        'mass': 22.05753 * u.u,
+        'stable': False,
+        'half-life': 0.0062 * u.s,
+    },
+
+    'C-23': {
+        'atomic number': 6,
+        'mass number': 23,
+        'mass': 23.0689 * u.u,
+        'stable': False,
+    },
+
+    'N-10': {
+        'atomic number': 7,
+        'mass number': 10,
+        'mass': 10.04165 * u.u,
+        'stable': False,
+        'half-life': 2e-22 * u.s,
+    },
+
+    'N-11': {
+        'atomic number': 7,
+        'mass number': 11,
+        'mass': 11.026091 * u.u,
+        'stable': False,
+        'half-life': 5.5e-22 * u.s,
+    },
+
+    'N-12': {
+        'atomic number': 7,
+        'mass number': 12,
+        'mass': 12.0186132 * u.u,
+        'stable': False,
+        'half-life': 0.011 * u.s,
+    },
+
+    'N-13': {
+        'atomic number': 7,
+        'mass number': 13,
+        'mass': 13.00573861 * u.u,
+        'stable': False,
+        'half-life': 597.9 * u.s,
+    },
+
+    'N-14': {
+        'atomic number': 7,
+        'mass number': 14,
+        'mass': 14.00307400443 * u.u,
+        'stable': True,
+        'abundance': 0.99636,
+    },
+
+    'N-15': {
+        'atomic number': 7,
+        'mass number': 15,
+        'mass': 15.00010889888 * u.u,
+        'stable': True,
+        'abundance': 0.00364,
+    },
+
+    'N-16': {
+        'atomic number': 7,
+        'mass number': 16,
+        'mass': 16.0061019 * u.u,
+        'stable': False,
+        'half-life': 7.13 * u.s,
+    },
+
+    'N-17': {
+        'atomic number': 7,
+        'mass number': 17,
+        'mass': 17.008449 * u.u,
+        'stable': False,
+        'half-life': 4.173 * u.s,
+    },
+
+    'N-18': {
+        'atomic number': 7,
+        'mass number': 18,
+        'mass': 18.014078 * u.u,
+        'stable': False,
+        'half-life': 0.6192 * u.s,
+    },
+
+    'N-19': {
+        'atomic number': 7,
+        'mass number': 19,
+        'mass': 19.017022 * u.u,
+        'stable': False,
+        'half-life': 0.336 * u.s,
+    },
+
+    'N-20': {
+        'atomic number': 7,
+        'mass number': 20,
+        'mass': 20.023366 * u.u,
+        'stable': False,
+        'half-life': 0.136 * u.s,
+    },
+
+    'N-21': {
+        'atomic number': 7,
+        'mass number': 21,
+        'mass': 21.02711 * u.u,
+        'stable': False,
+        'half-life': 0.084 * u.s,
+    },
+
+    'N-22': {
+        'atomic number': 7,
+        'mass number': 22,
+        'mass': 22.03439 * u.u,
+        'stable': False,
+        'half-life': 0.023 * u.s,
+    },
+
+    'N-23': {
+        'atomic number': 7,
+        'mass number': 23,
+        'mass': 23.04114 * u.u,
+        'stable': False,
+        'half-life': 0.0139 * u.s,
+    },
+
+    'N-24': {
+        'atomic number': 7,
+        'mass number': 24,
+        'mass': 24.05039 * u.u,
+        'stable': False,
+    },
+
+    'N-25': {
+        'atomic number': 7,
+        'mass number': 25,
+        'mass': 25.0601 * u.u,
+        'stable': False,
+    },
+
+    'O-12': {
+        'atomic number': 8,
+        'mass number': 12,
+        'mass': 12.034262 * u.u,
+        'stable': False,
+        'half-life': '>6.3 zs',
+    },
+
+    'O-13': {
+        'atomic number': 8,
+        'mass number': 13,
+        'mass': 13.024815 * u.u,
+        'stable': False,
+        'half-life': 0.00858 * u.s,
+    },
+
+    'O-14': {
+        'atomic number': 8,
+        'mass number': 14,
+        'mass': 14.00859636 * u.u,
+        'stable': False,
+        'half-life': 70.62 * u.s,
+    },
+
+    'O-15': {
+        'atomic number': 8,
+        'mass number': 15,
+        'mass': 15.00306562 * u.u,
+        'stable': False,
+        'half-life': 122.24 * u.s,
+    },
+
+    'O-16': {
+        'atomic number': 8,
+        'mass number': 16,
+        'mass': 15.99491461957 * u.u,
+        'stable': True,
+        'abundance': 0.99757,
+    },
+
+    'O-17': {
+        'atomic number': 8,
+        'mass number': 17,
+        'mass': 16.9991317565 * u.u,
+        'stable': True,
+        'abundance': 0.00038,
+    },
+
+    'O-18': {
+        'atomic number': 8,
+        'mass number': 18,
+        'mass': 17.99915961286 * u.u,
+        'stable': True,
+        'abundance': 0.00205,
+    },
+
+    'O-19': {
+        'atomic number': 8,
+        'mass number': 19,
+        'mass': 19.003578 * u.u,
+        'stable': False,
+        'half-life': 26.47 * u.s,
+    },
+
+    'O-20': {
+        'atomic number': 8,
+        'mass number': 20,
+        'mass': 20.00407535 * u.u,
+        'stable': False,
+        'half-life': 13.51 * u.s,
+    },
+
+    'O-21': {
+        'atomic number': 8,
+        'mass number': 21,
+        'mass': 21.008655 * u.u,
+        'stable': False,
+        'half-life': 3.42 * u.s,
+    },
+
+    'O-22': {
+        'atomic number': 8,
+        'mass number': 22,
+        'mass': 22.009966 * u.u,
+        'stable': False,
+        'half-life': 2.25 * u.s,
+    },
+
+    'O-23': {
+        'atomic number': 8,
+        'mass number': 23,
+        'mass': 23.015696 * u.u,
+        'stable': False,
+        'half-life': 0.097 * u.s,
+    },
+
+    'O-24': {
+        'atomic number': 8,
+        'mass number': 24,
+        'mass': 24.01986 * u.u,
+        'stable': False,
+        'half-life': 0.0774 * u.s,
+    },
+
+    'O-25': {
+        'atomic number': 8,
+        'mass number': 25,
+        'mass': 25.02936 * u.u,
+        'stable': False,
+        'half-life': 5.18e-21 * u.s,
+    },
+
+    'O-26': {
+        'atomic number': 8,
+        'mass number': 26,
+        'mass': 26.03729 * u.u,
+        'stable': False,
+        'half-life': 4.2e-12 * u.s,
+    },
+
+    'O-27': {
+        'atomic number': 8,
+        'mass number': 27,
+        'mass': 27.04772 * u.u,
+        'stable': False,
+    },
+
+    'O-28': {
+        'atomic number': 8,
+        'mass number': 28,
+        'mass': 28.05591 * u.u,
+        'stable': False,
+    },
+
+    'F-14': {
+        'atomic number': 9,
+        'mass number': 14,
+        'mass': 14.034315 * u.u,
+        'stable': False,
+        'half-life': 5e-22 * u.s,
+    },
+
+    'F-15': {
+        'atomic number': 9,
+        'mass number': 15,
+        'mass': 15.018043 * u.u,
+        'stable': False,
+        'half-life': 1.1e-21 * u.s,
+    },
+
+    'F-16': {
+        'atomic number': 9,
+        'mass number': 16,
+        'mass': 16.0114657 * u.u,
+        'stable': False,
+        'half-life': 1.1e-20 * u.s,
+    },
+
+    'F-17': {
+        'atomic number': 9,
+        'mass number': 17,
+        'mass': 17.00209524 * u.u,
+        'stable': False,
+        'half-life': 64.37 * u.s,
+    },
+
+    'F-18': {
+        'atomic number': 9,
+        'mass number': 18,
+        'mass': 18.00093733 * u.u,
+        'stable': False,
+        'half-life': 6586.236 * u.s,
+    },
+
+    'F-19': {
+        'atomic number': 9,
+        'mass number': 19,
+        'mass': 18.99840316273 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'F-20': {
+        'atomic number': 9,
+        'mass number': 20,
+        'mass': 19.999981252 * u.u,
+        'stable': False,
+        'half-life': 11.163 * u.s,
+    },
+
+    'F-21': {
+        'atomic number': 9,
+        'mass number': 21,
+        'mass': 20.9999489 * u.u,
+        'stable': False,
+        'half-life': 4.158 * u.s,
+    },
+
+    'F-22': {
+        'atomic number': 9,
+        'mass number': 22,
+        'mass': 22.002999 * u.u,
+        'stable': False,
+        'half-life': 4.23 * u.s,
+    },
+
+    'F-23': {
+        'atomic number': 9,
+        'mass number': 23,
+        'mass': 23.003557 * u.u,
+        'stable': False,
+        'half-life': 2.23 * u.s,
+    },
+
+    'F-24': {
+        'atomic number': 9,
+        'mass number': 24,
+        'mass': 24.008115 * u.u,
+        'stable': False,
+        'half-life': 0.384 * u.s,
+    },
+
+    'F-25': {
+        'atomic number': 9,
+        'mass number': 25,
+        'mass': 25.012199 * u.u,
+        'stable': False,
+        'half-life': 0.08 * u.s,
+    },
+
+    'F-26': {
+        'atomic number': 9,
+        'mass number': 26,
+        'mass': 26.020038 * u.u,
+        'stable': False,
+        'half-life': 0.0082 * u.s,
+    },
+
+    'F-27': {
+        'atomic number': 9,
+        'mass number': 27,
+        'mass': 27.02644 * u.u,
+        'stable': False,
+        'half-life': 0.0049 * u.s,
+    },
+
+    'F-28': {
+        'atomic number': 9,
+        'mass number': 28,
+        'mass': 28.03534 * u.u,
+        'stable': False,
+        'half-life': 4.6e-20 * u.s,
+    },
+
+    'F-29': {
+        'atomic number': 9,
+        'mass number': 29,
+        'mass': 29.04254 * u.u,
+        'stable': False,
+        'half-life': 0.0025 * u.s,
+    },
+
+    'F-30': {
+        'atomic number': 9,
+        'mass number': 30,
+        'mass': 30.05165 * u.u,
+        'stable': False,
+    },
+
+    'F-31': {
+        'atomic number': 9,
+        'mass number': 31,
+        'mass': 31.05971 * u.u,
+        'stable': False,
+        'half-life': '1# ms',
+    },
+
+    'Ne-16': {
+        'atomic number': 10,
+        'mass number': 16,
+        'mass': 16.02575 * u.u,
+        'stable': False,
+        'half-life': '>5.7 zs',
+    },
+
+    'Ne-17': {
+        'atomic number': 10,
+        'mass number': 17,
+        'mass': 17.01771396 * u.u,
+        'stable': False,
+        'half-life': 0.1092 * u.s,
+    },
+
+    'Ne-18': {
+        'atomic number': 10,
+        'mass number': 18,
+        'mass': 18.0057087 * u.u,
+        'stable': False,
+        'half-life': 1.6642 * u.s,
+    },
+
+    'Ne-19': {
+        'atomic number': 10,
+        'mass number': 19,
+        'mass': 19.00188091 * u.u,
+        'stable': False,
+        'half-life': 17.274 * u.s,
+    },
+
+    'Ne-20': {
+        'atomic number': 10,
+        'mass number': 20,
+        'mass': 19.9924401762 * u.u,
+        'stable': True,
+        'abundance': 0.9048,
+    },
+
+    'Ne-21': {
+        'atomic number': 10,
+        'mass number': 21,
+        'mass': 20.993846685 * u.u,
+        'stable': True,
+        'abundance': 0.0027,
+    },
+
+    'Ne-22': {
+        'atomic number': 10,
+        'mass number': 22,
+        'mass': 21.991385114 * u.u,
+        'stable': True,
+        'abundance': 0.0925,
+    },
+
+    'Ne-23': {
+        'atomic number': 10,
+        'mass number': 23,
+        'mass': 22.99446691 * u.u,
+        'stable': False,
+        'half-life': 37.14 * u.s,
+    },
+
+    'Ne-24': {
+        'atomic number': 10,
+        'mass number': 24,
+        'mass': 23.99361065 * u.u,
+        'stable': False,
+        'half-life': 202.8 * u.s,
+    },
+
+    'Ne-25': {
+        'atomic number': 10,
+        'mass number': 25,
+        'mass': 24.997789 * u.u,
+        'stable': False,
+        'half-life': 0.602 * u.s,
+    },
+
+    'Ne-26': {
+        'atomic number': 10,
+        'mass number': 26,
+        'mass': 26.000515 * u.u,
+        'stable': False,
+        'half-life': 0.197 * u.s,
+    },
+
+    'Ne-27': {
+        'atomic number': 10,
+        'mass number': 27,
+        'mass': 27.007553 * u.u,
+        'stable': False,
+        'half-life': 0.0315 * u.s,
+    },
+
+    'Ne-28': {
+        'atomic number': 10,
+        'mass number': 28,
+        'mass': 28.01212 * u.u,
+        'stable': False,
+        'half-life': 0.02 * u.s,
+    },
+
+    'Ne-29': {
+        'atomic number': 10,
+        'mass number': 29,
+        'mass': 29.01975 * u.u,
+        'stable': False,
+        'half-life': 0.0147 * u.s,
+    },
+
+    'Ne-30': {
+        'atomic number': 10,
+        'mass number': 30,
+        'mass': 30.02473 * u.u,
+        'stable': False,
+        'half-life': 0.00722 * u.s,
+    },
+
+    'Ne-31': {
+        'atomic number': 10,
+        'mass number': 31,
+        'mass': 31.0331 * u.u,
+        'stable': False,
+        'half-life': 0.0034 * u.s,
+    },
+
+    'Ne-32': {
+        'atomic number': 10,
+        'mass number': 32,
+        'mass': 32.03972 * u.u,
+        'stable': False,
+        'half-life': 0.0035 * u.s,
+    },
+
+    'Ne-33': {
+        'atomic number': 10,
+        'mass number': 33,
+        'mass': 33.04938 * u.u,
+        'stable': False,
+    },
+
+    'Ne-34': {
+        'atomic number': 10,
+        'mass number': 34,
+        'mass': 34.05673 * u.u,
+        'stable': False,
+        'half-life': '1# ms',
+    },
+
+    'Na-18': {
+        'atomic number': 11,
+        'mass number': 18,
+        'mass': 18.02688 * u.u,
+        'stable': False,
+        'half-life': 1.3e-21 * u.s,
+    },
+
+    'Na-19': {
+        'atomic number': 11,
+        'mass number': 19,
+        'mass': 19.01388 * u.u,
+        'stable': False,
+        'half-life': '>1 as',
+    },
+
+    'Na-20': {
+        'atomic number': 11,
+        'mass number': 20,
+        'mass': 20.0073544 * u.u,
+        'stable': False,
+        'half-life': 0.4479 * u.s,
+    },
+
+    'Na-21': {
+        'atomic number': 11,
+        'mass number': 21,
+        'mass': 20.99765469 * u.u,
+        'stable': False,
+        'half-life': 22.422 * u.s,
+    },
+
+    'Na-22': {
+        'atomic number': 11,
+        'mass number': 22,
+        'mass': 21.99443741 * u.u,
+        'stable': False,
+        'half-life': 82163808.0 * u.s,
+    },
+
+    'Na-23': {
+        'atomic number': 11,
+        'mass number': 23,
+        'mass': 22.989769282 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Na-24': {
+        'atomic number': 11,
+        'mass number': 24,
+        'mass': 23.99096295 * u.u,
+        'stable': False,
+        'half-life': 53824.32 * u.s,
+    },
+
+    'Na-25': {
+        'atomic number': 11,
+        'mass number': 25,
+        'mass': 24.989954 * u.u,
+        'stable': False,
+        'half-life': 59.1 * u.s,
+    },
+
+    'Na-26': {
+        'atomic number': 11,
+        'mass number': 26,
+        'mass': 25.9926346 * u.u,
+        'stable': False,
+        'half-life': 1.07128 * u.s,
+    },
+
+    'Na-27': {
+        'atomic number': 11,
+        'mass number': 27,
+        'mass': 26.9940765 * u.u,
+        'stable': False,
+        'half-life': 0.301 * u.s,
+    },
+
+    'Na-28': {
+        'atomic number': 11,
+        'mass number': 28,
+        'mass': 27.998939 * u.u,
+        'stable': False,
+        'half-life': 0.0305 * u.s,
+    },
+
+    'Na-29': {
+        'atomic number': 11,
+        'mass number': 29,
+        'mass': 29.0028771 * u.u,
+        'stable': False,
+        'half-life': 0.0441 * u.s,
+    },
+
+    'Na-30': {
+        'atomic number': 11,
+        'mass number': 30,
+        'mass': 30.0090979 * u.u,
+        'stable': False,
+        'half-life': 0.0484 * u.s,
+    },
+
+    'Na-31': {
+        'atomic number': 11,
+        'mass number': 31,
+        'mass': 31.013163 * u.u,
+        'stable': False,
+        'half-life': 0.01735 * u.s,
+    },
+
+    'Na-32': {
+        'atomic number': 11,
+        'mass number': 32,
+        'mass': 32.02019 * u.u,
+        'stable': False,
+        'half-life': 0.0129 * u.s,
+    },
+
+    'Na-33': {
+        'atomic number': 11,
+        'mass number': 33,
+        'mass': 33.02573 * u.u,
+        'stable': False,
+        'half-life': 0.0082 * u.s,
+    },
+
+    'Na-34': {
+        'atomic number': 11,
+        'mass number': 34,
+        'mass': 34.03359 * u.u,
+        'stable': False,
+        'half-life': 0.0055 * u.s,
+    },
+
+    'Na-35': {
+        'atomic number': 11,
+        'mass number': 35,
+        'mass': 35.04062 * u.u,
+        'stable': False,
+        'half-life': 0.0015 * u.s,
+    },
+
+    'Na-36': {
+        'atomic number': 11,
+        'mass number': 36,
+        'mass': 36.04929 * u.u,
+        'stable': False,
+    },
+
+    'Na-37': {
+        'atomic number': 11,
+        'mass number': 37,
+        'mass': 37.05705 * u.u,
+        'stable': False,
+        'half-life': '1# ms',
+    },
+
+    'Mg-19': {
+        'atomic number': 12,
+        'mass number': 19,
+        'mass': 19.034169 * u.u,
+        'stable': False,
+        'half-life': 5e-12 * u.s,
+    },
+
+    'Mg-20': {
+        'atomic number': 12,
+        'mass number': 20,
+        'mass': 20.01885 * u.u,
+        'stable': False,
+        'half-life': 0.093 * u.s,
+    },
+
+    'Mg-21': {
+        'atomic number': 12,
+        'mass number': 21,
+        'mass': 21.011716 * u.u,
+        'stable': False,
+        'half-life': 0.1186 * u.s,
+    },
+
+    'Mg-22': {
+        'atomic number': 12,
+        'mass number': 22,
+        'mass': 21.99957065 * u.u,
+        'stable': False,
+        'half-life': 3.8755 * u.s,
+    },
+
+    'Mg-23': {
+        'atomic number': 12,
+        'mass number': 23,
+        'mass': 22.99412421 * u.u,
+        'stable': False,
+        'half-life': 11.317 * u.s,
+    },
+
+    'Mg-24': {
+        'atomic number': 12,
+        'mass number': 24,
+        'mass': 23.985041697 * u.u,
+        'stable': True,
+        'abundance': 0.7899,
+    },
+
+    'Mg-25': {
+        'atomic number': 12,
+        'mass number': 25,
+        'mass': 24.985836976 * u.u,
+        'stable': True,
+        'abundance': 0.1,
+    },
+
+    'Mg-26': {
+        'atomic number': 12,
+        'mass number': 26,
+        'mass': 25.982592968 * u.u,
+        'stable': True,
+        'abundance': 0.1101,
+    },
+
+    'Mg-27': {
+        'atomic number': 12,
+        'mass number': 27,
+        'mass': 26.984340624 * u.u,
+        'stable': False,
+        'half-life': 566.1 * u.s,
+    },
+
+    'Mg-28': {
+        'atomic number': 12,
+        'mass number': 28,
+        'mass': 27.9838767 * u.u,
+        'stable': False,
+        'half-life': 75294.0 * u.s,
+    },
+
+    'Mg-29': {
+        'atomic number': 12,
+        'mass number': 29,
+        'mass': 28.988617 * u.u,
+        'stable': False,
+        'half-life': 1.3 * u.s,
+    },
+
+    'Mg-30': {
+        'atomic number': 12,
+        'mass number': 30,
+        'mass': 29.9904629 * u.u,
+        'stable': False,
+        'half-life': 0.313 * u.s,
+    },
+
+    'Mg-31': {
+        'atomic number': 12,
+        'mass number': 31,
+        'mass': 30.996648 * u.u,
+        'stable': False,
+        'half-life': 0.236 * u.s,
+    },
+
+    'Mg-32': {
+        'atomic number': 12,
+        'mass number': 32,
+        'mass': 31.9991102 * u.u,
+        'stable': False,
+        'half-life': 0.086 * u.s,
+    },
+
+    'Mg-33': {
+        'atomic number': 12,
+        'mass number': 33,
+        'mass': 33.0053271 * u.u,
+        'stable': False,
+        'half-life': 0.0905 * u.s,
+    },
+
+    'Mg-34': {
+        'atomic number': 12,
+        'mass number': 34,
+        'mass': 34.008935 * u.u,
+        'stable': False,
+        'half-life': 0.02 * u.s,
+    },
+
+    'Mg-35': {
+        'atomic number': 12,
+        'mass number': 35,
+        'mass': 35.01679 * u.u,
+        'stable': False,
+        'half-life': 0.07 * u.s,
+    },
+
+    'Mg-36': {
+        'atomic number': 12,
+        'mass number': 36,
+        'mass': 36.02188 * u.u,
+        'stable': False,
+        'half-life': 0.0039 * u.s,
+    },
+
+    'Mg-37': {
+        'atomic number': 12,
+        'mass number': 37,
+        'mass': 37.03037 * u.u,
+        'stable': False,
+        'half-life': 0.008 * u.s,
+    },
+
+    'Mg-38': {
+        'atomic number': 12,
+        'mass number': 38,
+        'mass': 38.03658 * u.u,
+        'stable': False,
+        'half-life': '1# ms',
+    },
+
+    'Mg-39': {
+        'atomic number': 12,
+        'mass number': 39,
+        'mass': 39.04538 * u.u,
+        'stable': False,
+    },
+
+    'Mg-40': {
+        'atomic number': 12,
+        'mass number': 40,
+        'mass': 40.05218 * u.u,
+        'stable': False,
+        'half-life': '1# ms',
+    },
+
+    'Al-21': {
+        'atomic number': 13,
+        'mass number': 21,
+        'mass': 21.02897 * u.u,
+        'stable': False,
+    },
+
+    'Al-22': {
+        'atomic number': 13,
+        'mass number': 22,
+        'mass': 22.01954 * u.u,
+        'stable': False,
+        'half-life': 0.0911 * u.s,
+    },
+
+    'Al-23': {
+        'atomic number': 13,
+        'mass number': 23,
+        'mass': 23.00724435 * u.u,
+        'stable': False,
+        'half-life': 0.47 * u.s,
+    },
+
+    'Al-24': {
+        'atomic number': 13,
+        'mass number': 24,
+        'mass': 23.9999489 * u.u,
+        'stable': False,
+        'half-life': 2.053 * u.s,
+    },
+
+    'Al-25': {
+        'atomic number': 13,
+        'mass number': 25,
+        'mass': 24.9904281 * u.u,
+        'stable': False,
+        'half-life': 7.183 * u.s,
+    },
+
+    'Al-26': {
+        'atomic number': 13,
+        'mass number': 26,
+        'mass': 25.986891904 * u.u,
+        'stable': False,
+        'half-life': 22626315942000.0 * u.s,
+    },
+
+    'Al-27': {
+        'atomic number': 13,
+        'mass number': 27,
+        'mass': 26.98153853 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Al-28': {
+        'atomic number': 13,
+        'mass number': 28,
+        'mass': 27.98191021 * u.u,
+        'stable': False,
+        'half-life': 134.7 * u.s,
+    },
+
+    'Al-29': {
+        'atomic number': 13,
+        'mass number': 29,
+        'mass': 28.9804565 * u.u,
+        'stable': False,
+        'half-life': 393.6 * u.s,
+    },
+
+    'Al-30': {
+        'atomic number': 13,
+        'mass number': 30,
+        'mass': 29.98296 * u.u,
+        'stable': False,
+        'half-life': 3.62 * u.s,
+    },
+
+    'Al-31': {
+        'atomic number': 13,
+        'mass number': 31,
+        'mass': 30.983945 * u.u,
+        'stable': False,
+        'half-life': 0.644 * u.s,
+    },
+
+    'Al-32': {
+        'atomic number': 13,
+        'mass number': 32,
+        'mass': 31.988085 * u.u,
+        'stable': False,
+        'half-life': 0.033 * u.s,
+    },
+
+    'Al-33': {
+        'atomic number': 13,
+        'mass number': 33,
+        'mass': 32.990909 * u.u,
+        'stable': False,
+        'half-life': 0.0417 * u.s,
+    },
+
+    'Al-34': {
+        'atomic number': 13,
+        'mass number': 34,
+        'mass': 33.996705 * u.u,
+        'stable': False,
+        'half-life': 0.0563 * u.s,
+    },
+
+    'Al-35': {
+        'atomic number': 13,
+        'mass number': 35,
+        'mass': 34.999764 * u.u,
+        'stable': False,
+        'half-life': 0.0372 * u.s,
+    },
+
+    'Al-36': {
+        'atomic number': 13,
+        'mass number': 36,
+        'mass': 36.00639 * u.u,
+        'stable': False,
+        'half-life': 0.09 * u.s,
+    },
+
+    'Al-37': {
+        'atomic number': 13,
+        'mass number': 37,
+        'mass': 37.01053 * u.u,
+        'stable': False,
+        'half-life': 0.0115 * u.s,
+    },
+
+    'Al-38': {
+        'atomic number': 13,
+        'mass number': 38,
+        'mass': 38.0174 * u.u,
+        'stable': False,
+        'half-life': 0.009 * u.s,
+    },
+
+    'Al-39': {
+        'atomic number': 13,
+        'mass number': 39,
+        'mass': 39.02254 * u.u,
+        'stable': False,
+        'half-life': 0.0076 * u.s,
+    },
+
+    'Al-40': {
+        'atomic number': 13,
+        'mass number': 40,
+        'mass': 40.03003 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Al-41': {
+        'atomic number': 13,
+        'mass number': 41,
+        'mass': 41.03638 * u.u,
+        'stable': False,
+        'half-life': '2# ms',
+    },
+
+    'Al-42': {
+        'atomic number': 13,
+        'mass number': 42,
+        'mass': 42.04384 * u.u,
+        'stable': False,
+        'half-life': '1# ms',
+    },
+
+    'Al-43': {
+        'atomic number': 13,
+        'mass number': 43,
+        'mass': 43.05147 * u.u,
+        'stable': False,
+        'half-life': '1# ms',
+    },
+
+    'Si-22': {
+        'atomic number': 14,
+        'mass number': 22,
+        'mass': 22.03579 * u.u,
+        'stable': False,
+        'half-life': 0.029 * u.s,
+    },
+
+    'Si-23': {
+        'atomic number': 14,
+        'mass number': 23,
+        'mass': 23.02544 * u.u,
+        'stable': False,
+        'half-life': 0.0423 * u.s,
+    },
+
+    'Si-24': {
+        'atomic number': 14,
+        'mass number': 24,
+        'mass': 24.011535 * u.u,
+        'stable': False,
+        'half-life': 0.14 * u.s,
+    },
+
+    'Si-25': {
+        'atomic number': 14,
+        'mass number': 25,
+        'mass': 25.004109 * u.u,
+        'stable': False,
+        'half-life': 0.22 * u.s,
+    },
+
+    'Si-26': {
+        'atomic number': 14,
+        'mass number': 26,
+        'mass': 25.99233384 * u.u,
+        'stable': False,
+        'half-life': 2.2453 * u.s,
+    },
+
+    'Si-27': {
+        'atomic number': 14,
+        'mass number': 27,
+        'mass': 26.98670481 * u.u,
+        'stable': False,
+        'half-life': 4.15 * u.s,
+    },
+
+    'Si-28': {
+        'atomic number': 14,
+        'mass number': 28,
+        'mass': 27.97692653465 * u.u,
+        'stable': True,
+        'abundance': 0.92223,
+    },
+
+    'Si-29': {
+        'atomic number': 14,
+        'mass number': 29,
+        'mass': 28.9764946649 * u.u,
+        'stable': True,
+        'abundance': 0.04685,
+    },
+
+    'Si-30': {
+        'atomic number': 14,
+        'mass number': 30,
+        'mass': 29.973770136 * u.u,
+        'stable': True,
+        'abundance': 0.03092,
+    },
+
+    'Si-31': {
+        'atomic number': 14,
+        'mass number': 31,
+        'mass': 30.975363194 * u.u,
+        'stable': False,
+        'half-life': 9441.6 * u.s,
+    },
+
+    'Si-32': {
+        'atomic number': 14,
+        'mass number': 32,
+        'mass': 31.97415154 * u.u,
+        'stable': False,
+        'half-life': 4828209678.0 * u.s,
+    },
+
+    'Si-33': {
+        'atomic number': 14,
+        'mass number': 33,
+        'mass': 32.97797696 * u.u,
+        'stable': False,
+        'half-life': 6.18 * u.s,
+    },
+
+    'Si-34': {
+        'atomic number': 14,
+        'mass number': 34,
+        'mass': 33.978576 * u.u,
+        'stable': False,
+        'half-life': 2.77 * u.s,
+    },
+
+    'Si-35': {
+        'atomic number': 14,
+        'mass number': 35,
+        'mass': 34.984583 * u.u,
+        'stable': False,
+        'half-life': 0.78 * u.s,
+    },
+
+    'Si-36': {
+        'atomic number': 14,
+        'mass number': 36,
+        'mass': 35.986695 * u.u,
+        'stable': False,
+        'half-life': 0.45 * u.s,
+    },
+
+    'Si-37': {
+        'atomic number': 14,
+        'mass number': 37,
+        'mass': 36.992921 * u.u,
+        'stable': False,
+        'half-life': 0.09 * u.s,
+    },
+
+    'Si-38': {
+        'atomic number': 14,
+        'mass number': 38,
+        'mass': 37.995523 * u.u,
+        'stable': False,
+        'half-life': '90# ms',
+    },
+
+    'Si-39': {
+        'atomic number': 14,
+        'mass number': 39,
+        'mass': 39.002491 * u.u,
+        'stable': False,
+        'half-life': 0.0475 * u.s,
+    },
+
+    'Si-40': {
+        'atomic number': 14,
+        'mass number': 40,
+        'mass': 40.00583 * u.u,
+        'stable': False,
+        'half-life': 0.033 * u.s,
+    },
+
+    'Si-41': {
+        'atomic number': 14,
+        'mass number': 41,
+        'mass': 41.01301 * u.u,
+        'stable': False,
+        'half-life': 0.02 * u.s,
+    },
+
+    'Si-42': {
+        'atomic number': 14,
+        'mass number': 42,
+        'mass': 42.01778 * u.u,
+        'stable': False,
+        'half-life': 0.0125 * u.s,
+    },
+
+    'Si-43': {
+        'atomic number': 14,
+        'mass number': 43,
+        'mass': 43.0248 * u.u,
+        'stable': False,
+        'half-life': '15# ms',
+    },
+
+    'Si-44': {
+        'atomic number': 14,
+        'mass number': 44,
+        'mass': 44.03061 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Si-45': {
+        'atomic number': 14,
+        'mass number': 45,
+        'mass': 45.03995 * u.u,
+        'stable': False,
+        'half-life': '1# ms',
+    },
+
+    'P-24': {
+        'atomic number': 15,
+        'mass number': 24,
+        'mass': 24.03577 * u.u,
+        'stable': False,
+    },
+
+    'P-25': {
+        'atomic number': 15,
+        'mass number': 25,
+        'mass': 25.02119 * u.u,
+        'stable': False,
+    },
+
+    'P-26': {
+        'atomic number': 15,
+        'mass number': 26,
+        'mass': 26.01178 * u.u,
+        'stable': False,
+        'half-life': 0.0437 * u.s,
+    },
+
+    'P-27': {
+        'atomic number': 15,
+        'mass number': 27,
+        'mass': 26.999224 * u.u,
+        'stable': False,
+        'half-life': 0.26 * u.s,
+    },
+
+    'P-28': {
+        'atomic number': 15,
+        'mass number': 28,
+        'mass': 27.9923266 * u.u,
+        'stable': False,
+        'half-life': 0.2703 * u.s,
+    },
+
+    'P-29': {
+        'atomic number': 15,
+        'mass number': 29,
+        'mass': 28.98180079 * u.u,
+        'stable': False,
+        'half-life': 4.142 * u.s,
+    },
+
+    'P-30': {
+        'atomic number': 15,
+        'mass number': 30,
+        'mass': 29.97831375 * u.u,
+        'stable': False,
+        'half-life': 149.88 * u.s,
+    },
+
+    'P-31': {
+        'atomic number': 15,
+        'mass number': 31,
+        'mass': 30.97376199842 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'P-32': {
+        'atomic number': 15,
+        'mass number': 32,
+        'mass': 31.973907643 * u.u,
+        'stable': False,
+        'half-life': 1232323.2 * u.s,
+    },
+
+    'P-33': {
+        'atomic number': 15,
+        'mass number': 33,
+        'mass': 32.9717257 * u.u,
+        'stable': False,
+        'half-life': 2190240.0 * u.s,
+    },
+
+    'P-34': {
+        'atomic number': 15,
+        'mass number': 34,
+        'mass': 33.97364589 * u.u,
+        'stable': False,
+        'half-life': 12.43 * u.s,
+    },
+
+    'P-35': {
+        'atomic number': 15,
+        'mass number': 35,
+        'mass': 34.9733141 * u.u,
+        'stable': False,
+        'half-life': 47.3 * u.s,
+    },
+
+    'P-36': {
+        'atomic number': 15,
+        'mass number': 36,
+        'mass': 35.97826 * u.u,
+        'stable': False,
+        'half-life': 5.6 * u.s,
+    },
+
+    'P-37': {
+        'atomic number': 15,
+        'mass number': 37,
+        'mass': 36.979607 * u.u,
+        'stable': False,
+        'half-life': 2.31 * u.s,
+    },
+
+    'P-38': {
+        'atomic number': 15,
+        'mass number': 38,
+        'mass': 37.984252 * u.u,
+        'stable': False,
+        'half-life': 0.64 * u.s,
+    },
+
+    'P-39': {
+        'atomic number': 15,
+        'mass number': 39,
+        'mass': 38.986227 * u.u,
+        'stable': False,
+        'half-life': 0.282 * u.s,
+    },
+
+    'P-40': {
+        'atomic number': 15,
+        'mass number': 40,
+        'mass': 39.99133 * u.u,
+        'stable': False,
+        'half-life': 0.15 * u.s,
+    },
+
+    'P-41': {
+        'atomic number': 15,
+        'mass number': 41,
+        'mass': 40.994654 * u.u,
+        'stable': False,
+        'half-life': 0.101 * u.s,
+    },
+
+    'P-42': {
+        'atomic number': 15,
+        'mass number': 42,
+        'mass': 42.00108 * u.u,
+        'stable': False,
+        'half-life': 0.0485 * u.s,
+    },
+
+    'P-43': {
+        'atomic number': 15,
+        'mass number': 43,
+        'mass': 43.00502 * u.u,
+        'stable': False,
+        'half-life': 0.0358 * u.s,
+    },
+
+    'P-44': {
+        'atomic number': 15,
+        'mass number': 44,
+        'mass': 44.01121 * u.u,
+        'stable': False,
+        'half-life': 0.0185 * u.s,
+    },
+
+    'P-45': {
+        'atomic number': 15,
+        'mass number': 45,
+        'mass': 45.01645 * u.u,
+        'stable': False,
+        'half-life': '8# ms',
+    },
+
+    'P-46': {
+        'atomic number': 15,
+        'mass number': 46,
+        'mass': 46.02446 * u.u,
+        'stable': False,
+        'half-life': '4# ms',
+    },
+
+    'P-47': {
+        'atomic number': 15,
+        'mass number': 47,
+        'mass': 47.03139 * u.u,
+        'stable': False,
+        'half-life': '2# ms',
+    },
+
+    'S-26': {
+        'atomic number': 16,
+        'mass number': 26,
+        'mass': 26.02907 * u.u,
+        'stable': False,
+    },
+
+    'S-27': {
+        'atomic number': 16,
+        'mass number': 27,
+        'mass': 27.01828 * u.u,
+        'stable': False,
+        'half-life': 0.0155 * u.s,
+    },
+
+    'S-28': {
+        'atomic number': 16,
+        'mass number': 28,
+        'mass': 28.00437 * u.u,
+        'stable': False,
+        'half-life': 0.125 * u.s,
+    },
+
+    'S-29': {
+        'atomic number': 16,
+        'mass number': 29,
+        'mass': 28.996611 * u.u,
+        'stable': False,
+        'half-life': 0.188 * u.s,
+    },
+
+    'S-30': {
+        'atomic number': 16,
+        'mass number': 30,
+        'mass': 29.98490703 * u.u,
+        'stable': False,
+        'half-life': 1.1759 * u.s,
+    },
+
+    'S-31': {
+        'atomic number': 16,
+        'mass number': 31,
+        'mass': 30.97955701 * u.u,
+        'stable': False,
+        'half-life': 2.5534 * u.s,
+    },
+
+    'S-32': {
+        'atomic number': 16,
+        'mass number': 32,
+        'mass': 31.9720711744 * u.u,
+        'stable': True,
+        'abundance': 0.9499,
+    },
+
+    'S-33': {
+        'atomic number': 16,
+        'mass number': 33,
+        'mass': 32.9714589098 * u.u,
+        'stable': True,
+        'abundance': 0.0075,
+    },
+
+    'S-34': {
+        'atomic number': 16,
+        'mass number': 34,
+        'mass': 33.967867004 * u.u,
+        'stable': True,
+        'abundance': 0.0425,
+    },
+
+    'S-35': {
+        'atomic number': 16,
+        'mass number': 35,
+        'mass': 34.96903231 * u.u,
+        'stable': False,
+        'half-life': 7548768.0 * u.s,
+    },
+
+    'S-36': {
+        'atomic number': 16,
+        'mass number': 36,
+        'mass': 35.96708071 * u.u,
+        'stable': True,
+        'abundance': 0.0001,
+    },
+
+    'S-37': {
+        'atomic number': 16,
+        'mass number': 37,
+        'mass': 36.97112551 * u.u,
+        'stable': False,
+        'half-life': 303.0 * u.s,
+    },
+
+    'S-38': {
+        'atomic number': 16,
+        'mass number': 38,
+        'mass': 37.9711633 * u.u,
+        'stable': False,
+        'half-life': 10218.0 * u.s,
+    },
+
+    'S-39': {
+        'atomic number': 16,
+        'mass number': 39,
+        'mass': 38.975134 * u.u,
+        'stable': False,
+        'half-life': 11.5 * u.s,
+    },
+
+    'S-40': {
+        'atomic number': 16,
+        'mass number': 40,
+        'mass': 39.9754826 * u.u,
+        'stable': False,
+        'half-life': 8.8 * u.s,
+    },
+
+    'S-41': {
+        'atomic number': 16,
+        'mass number': 41,
+        'mass': 40.9795935 * u.u,
+        'stable': False,
+        'half-life': 1.99 * u.s,
+    },
+
+    'S-42': {
+        'atomic number': 16,
+        'mass number': 42,
+        'mass': 41.9810651 * u.u,
+        'stable': False,
+        'half-life': 1.016 * u.s,
+    },
+
+    'S-43': {
+        'atomic number': 16,
+        'mass number': 43,
+        'mass': 42.9869076 * u.u,
+        'stable': False,
+        'half-life': 0.265 * u.s,
+    },
+
+    'S-44': {
+        'atomic number': 16,
+        'mass number': 44,
+        'mass': 43.9901188 * u.u,
+        'stable': False,
+        'half-life': 0.1 * u.s,
+    },
+
+    'S-45': {
+        'atomic number': 16,
+        'mass number': 45,
+        'mass': 44.99572 * u.u,
+        'stable': False,
+        'half-life': 0.068 * u.s,
+    },
+
+    'S-46': {
+        'atomic number': 16,
+        'mass number': 46,
+        'mass': 46.00004 * u.u,
+        'stable': False,
+        'half-life': 0.05 * u.s,
+    },
+
+    'S-47': {
+        'atomic number': 16,
+        'mass number': 47,
+        'mass': 47.00795 * u.u,
+        'stable': False,
+        'half-life': '20# ms',
+    },
+
+    'S-48': {
+        'atomic number': 16,
+        'mass number': 48,
+        'mass': 48.0137 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'S-49': {
+        'atomic number': 16,
+        'mass number': 49,
+        'mass': 49.02276 * u.u,
+        'stable': False,
+    },
+
+    'Cl-28': {
+        'atomic number': 17,
+        'mass number': 28,
+        'mass': 28.02954 * u.u,
+        'stable': False,
+    },
+
+    'Cl-29': {
+        'atomic number': 17,
+        'mass number': 29,
+        'mass': 29.01478 * u.u,
+        'stable': False,
+    },
+
+    'Cl-30': {
+        'atomic number': 17,
+        'mass number': 30,
+        'mass': 30.00477 * u.u,
+        'stable': False,
+    },
+
+    'Cl-31': {
+        'atomic number': 17,
+        'mass number': 31,
+        'mass': 30.992414 * u.u,
+        'stable': False,
+        'half-life': 0.19 * u.s,
+    },
+
+    'Cl-32': {
+        'atomic number': 17,
+        'mass number': 32,
+        'mass': 31.98568464 * u.u,
+        'stable': False,
+        'half-life': 0.298 * u.s,
+    },
+
+    'Cl-33': {
+        'atomic number': 17,
+        'mass number': 33,
+        'mass': 32.97745199 * u.u,
+        'stable': False,
+        'half-life': 2.5038 * u.s,
+    },
+
+    'Cl-34': {
+        'atomic number': 17,
+        'mass number': 34,
+        'mass': 33.973762485 * u.u,
+        'stable': False,
+        'half-life': 1.5266 * u.s,
+    },
+
+    'Cl-35': {
+        'atomic number': 17,
+        'mass number': 35,
+        'mass': 34.968852682 * u.u,
+        'stable': True,
+        'abundance': 0.7576,
+    },
+
+    'Cl-36': {
+        'atomic number': 17,
+        'mass number': 36,
+        'mass': 35.968306809 * u.u,
+        'stable': False,
+        'half-life': 9508101803800.0 * u.s,
+    },
+
+    'Cl-37': {
+        'atomic number': 17,
+        'mass number': 37,
+        'mass': 36.965902602 * u.u,
+        'stable': True,
+        'abundance': 0.2424,
+    },
+
+    'Cl-38': {
+        'atomic number': 17,
+        'mass number': 38,
+        'mass': 37.96801044 * u.u,
+        'stable': False,
+        'half-life': 2234.4 * u.s,
+    },
+
+    'Cl-39': {
+        'atomic number': 17,
+        'mass number': 39,
+        'mass': 38.9680082 * u.u,
+        'stable': False,
+        'half-life': 3372.0 * u.s,
+    },
+
+    'Cl-40': {
+        'atomic number': 17,
+        'mass number': 40,
+        'mass': 39.970415 * u.u,
+        'stable': False,
+        'half-life': 81.0 * u.s,
+    },
+
+    'Cl-41': {
+        'atomic number': 17,
+        'mass number': 41,
+        'mass': 40.970685 * u.u,
+        'stable': False,
+        'half-life': 38.4 * u.s,
+    },
+
+    'Cl-42': {
+        'atomic number': 17,
+        'mass number': 42,
+        'mass': 41.97325 * u.u,
+        'stable': False,
+        'half-life': 6.8 * u.s,
+    },
+
+    'Cl-43': {
+        'atomic number': 17,
+        'mass number': 43,
+        'mass': 42.97389 * u.u,
+        'stable': False,
+        'half-life': 3.13 * u.s,
+    },
+
+    'Cl-44': {
+        'atomic number': 17,
+        'mass number': 44,
+        'mass': 43.97787 * u.u,
+        'stable': False,
+        'half-life': 0.56 * u.s,
+    },
+
+    'Cl-45': {
+        'atomic number': 17,
+        'mass number': 45,
+        'mass': 44.98029 * u.u,
+        'stable': False,
+        'half-life': 0.413 * u.s,
+    },
+
+    'Cl-46': {
+        'atomic number': 17,
+        'mass number': 46,
+        'mass': 45.98517 * u.u,
+        'stable': False,
+        'half-life': 0.232 * u.s,
+    },
+
+    'Cl-47': {
+        'atomic number': 17,
+        'mass number': 47,
+        'mass': 46.98916 * u.u,
+        'stable': False,
+        'half-life': 0.101 * u.s,
+    },
+
+    'Cl-48': {
+        'atomic number': 17,
+        'mass number': 48,
+        'mass': 47.99564 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'Cl-49': {
+        'atomic number': 17,
+        'mass number': 49,
+        'mass': 49.00123 * u.u,
+        'stable': False,
+        'half-life': '50# ms',
+    },
+
+    'Cl-50': {
+        'atomic number': 17,
+        'mass number': 50,
+        'mass': 50.00905 * u.u,
+        'stable': False,
+        'half-life': '20# ms',
+    },
+
+    'Cl-51': {
+        'atomic number': 17,
+        'mass number': 51,
+        'mass': 51.01554 * u.u,
+        'stable': False,
+        'half-life': '2# ms',
+    },
+
+    'Ar-30': {
+        'atomic number': 18,
+        'mass number': 30,
+        'mass': 30.02307 * u.u,
+        'stable': False,
+    },
+
+    'Ar-31': {
+        'atomic number': 18,
+        'mass number': 31,
+        'mass': 31.01212 * u.u,
+        'stable': False,
+        'half-life': 0.0151 * u.s,
+    },
+
+    'Ar-32': {
+        'atomic number': 18,
+        'mass number': 32,
+        'mass': 31.9976378 * u.u,
+        'stable': False,
+        'half-life': 0.098 * u.s,
+    },
+
+    'Ar-33': {
+        'atomic number': 18,
+        'mass number': 33,
+        'mass': 32.98992555 * u.u,
+        'stable': False,
+        'half-life': 0.173 * u.s,
+    },
+
+    'Ar-34': {
+        'atomic number': 18,
+        'mass number': 34,
+        'mass': 33.98027009 * u.u,
+        'stable': False,
+        'half-life': 0.8438 * u.s,
+    },
+
+    'Ar-35': {
+        'atomic number': 18,
+        'mass number': 35,
+        'mass': 34.97525759 * u.u,
+        'stable': False,
+        'half-life': 1.7756 * u.s,
+    },
+
+    'Ar-36': {
+        'atomic number': 18,
+        'mass number': 36,
+        'mass': 35.967545105 * u.u,
+        'stable': True,
+        'abundance': 0.003336,
+    },
+
+    'Ar-37': {
+        'atomic number': 18,
+        'mass number': 37,
+        'mass': 36.96677633 * u.u,
+        'stable': False,
+        'half-life': 3024950.4 * u.s,
+    },
+
+    'Ar-38': {
+        'atomic number': 18,
+        'mass number': 38,
+        'mass': 37.96273211 * u.u,
+        'stable': True,
+        'abundance': 0.000629,
+    },
+
+    'Ar-39': {
+        'atomic number': 18,
+        'mass number': 39,
+        'mass': 38.964313 * u.u,
+        'stable': False,
+        'half-life': 8488813094.0 * u.s,
+    },
+
+    'Ar-40': {
+        'atomic number': 18,
+        'mass number': 40,
+        'mass': 39.9623831237 * u.u,
+        'stable': True,
+        'abundance': 0.996035,
+    },
+
+    'Ar-41': {
+        'atomic number': 18,
+        'mass number': 41,
+        'mass': 40.96450057 * u.u,
+        'stable': False,
+        'half-life': 6576.6 * u.s,
+    },
+
+    'Ar-42': {
+        'atomic number': 18,
+        'mass number': 42,
+        'mass': 41.9630457 * u.u,
+        'stable': False,
+        'half-life': 1038222865.4 * u.s,
+    },
+
+    'Ar-43': {
+        'atomic number': 18,
+        'mass number': 43,
+        'mass': 42.9656361 * u.u,
+        'stable': False,
+        'half-life': 322.2 * u.s,
+    },
+
+    'Ar-44': {
+        'atomic number': 18,
+        'mass number': 44,
+        'mass': 43.9649238 * u.u,
+        'stable': False,
+        'half-life': 712.2 * u.s,
+    },
+
+    'Ar-45': {
+        'atomic number': 18,
+        'mass number': 45,
+        'mass': 44.96803973 * u.u,
+        'stable': False,
+        'half-life': 21.48 * u.s,
+    },
+
+    'Ar-46': {
+        'atomic number': 18,
+        'mass number': 46,
+        'mass': 45.968083 * u.u,
+        'stable': False,
+        'half-life': 8.4 * u.s,
+    },
+
+    'Ar-47': {
+        'atomic number': 18,
+        'mass number': 47,
+        'mass': 46.972935 * u.u,
+        'stable': False,
+        'half-life': 1.23 * u.s,
+    },
+
+    'Ar-48': {
+        'atomic number': 18,
+        'mass number': 48,
+        'mass': 47.97591 * u.u,
+        'stable': False,
+        'half-life': 0.415 * u.s,
+    },
+
+    'Ar-49': {
+        'atomic number': 18,
+        'mass number': 49,
+        'mass': 48.9819 * u.u,
+        'stable': False,
+        'half-life': 0.236 * u.s,
+    },
+
+    'Ar-50': {
+        'atomic number': 18,
+        'mass number': 50,
+        'mass': 49.98613 * u.u,
+        'stable': False,
+        'half-life': 0.106 * u.s,
+    },
+
+    'Ar-51': {
+        'atomic number': 18,
+        'mass number': 51,
+        'mass': 50.9937 * u.u,
+        'stable': False,
+        'half-life': '60# ms',
+    },
+
+    'Ar-52': {
+        'atomic number': 18,
+        'mass number': 52,
+        'mass': 51.99896 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Ar-53': {
+        'atomic number': 18,
+        'mass number': 53,
+        'mass': 53.00729 * u.u,
+        'stable': False,
+        'half-life': '3# ms',
+    },
+
+    'K-32': {
+        'atomic number': 19,
+        'mass number': 32,
+        'mass': 32.02265 * u.u,
+        'stable': False,
+    },
+
+    'K-33': {
+        'atomic number': 19,
+        'mass number': 33,
+        'mass': 33.00756 * u.u,
+        'stable': False,
+    },
+
+    'K-34': {
+        'atomic number': 19,
+        'mass number': 34,
+        'mass': 33.99869 * u.u,
+        'stable': False,
+    },
+
+    'K-35': {
+        'atomic number': 19,
+        'mass number': 35,
+        'mass': 34.98800541 * u.u,
+        'stable': False,
+        'half-life': 0.178 * u.s,
+    },
+
+    'K-36': {
+        'atomic number': 19,
+        'mass number': 36,
+        'mass': 35.98130201 * u.u,
+        'stable': False,
+        'half-life': 0.341 * u.s,
+    },
+
+    'K-37': {
+        'atomic number': 19,
+        'mass number': 37,
+        'mass': 36.97337589 * u.u,
+        'stable': False,
+        'half-life': 1.2365 * u.s,
+    },
+
+    'K-38': {
+        'atomic number': 19,
+        'mass number': 38,
+        'mass': 37.96908112 * u.u,
+        'stable': False,
+        'half-life': 458.16 * u.s,
+    },
+
+    'K-39': {
+        'atomic number': 19,
+        'mass number': 39,
+        'mass': 38.9637064864 * u.u,
+        'stable': True,
+        'abundance': 0.932581,
+    },
+
+    'K-40': {
+        'atomic number': 19,
+        'mass number': 40,
+        'mass': 39.963998166 * u.u,
+        'stable': False,
+        'abundance': 0.000117,
+    },
+
+    'K-41': {
+        'atomic number': 19,
+        'mass number': 41,
+        'mass': 40.9618252579 * u.u,
+        'stable': True,
+        'abundance': 0.067302,
+    },
+
+    'K-42': {
+        'atomic number': 19,
+        'mass number': 42,
+        'mass': 41.96240231 * u.u,
+        'stable': False,
+        'half-life': 44478.0 * u.s,
+    },
+
+    'K-43': {
+        'atomic number': 19,
+        'mass number': 43,
+        'mass': 42.9607347 * u.u,
+        'stable': False,
+        'half-life': 80280.0 * u.s,
+    },
+
+    'K-44': {
+        'atomic number': 19,
+        'mass number': 44,
+        'mass': 43.96158699 * u.u,
+        'stable': False,
+        'half-life': 1327.8 * u.s,
+    },
+
+    'K-45': {
+        'atomic number': 19,
+        'mass number': 45,
+        'mass': 44.96069149 * u.u,
+        'stable': False,
+        'half-life': 1068.0 * u.s,
+    },
+
+    'K-46': {
+        'atomic number': 19,
+        'mass number': 46,
+        'mass': 45.96198159 * u.u,
+        'stable': False,
+        'half-life': 105.0 * u.s,
+    },
+
+    'K-47': {
+        'atomic number': 19,
+        'mass number': 47,
+        'mass': 46.9616616 * u.u,
+        'stable': False,
+        'half-life': 17.5 * u.s,
+    },
+
+    'K-48': {
+        'atomic number': 19,
+        'mass number': 48,
+        'mass': 47.96534119 * u.u,
+        'stable': False,
+        'half-life': 6.8 * u.s,
+    },
+
+    'K-49': {
+        'atomic number': 19,
+        'mass number': 49,
+        'mass': 48.96821075 * u.u,
+        'stable': False,
+        'half-life': 1.26 * u.s,
+    },
+
+    'K-50': {
+        'atomic number': 19,
+        'mass number': 50,
+        'mass': 49.97238 * u.u,
+        'stable': False,
+        'half-life': 0.472 * u.s,
+    },
+
+    'K-51': {
+        'atomic number': 19,
+        'mass number': 51,
+        'mass': 50.975828 * u.u,
+        'stable': False,
+        'half-life': 0.365 * u.s,
+    },
+
+    'K-52': {
+        'atomic number': 19,
+        'mass number': 52,
+        'mass': 51.98224 * u.u,
+        'stable': False,
+        'half-life': 0.11 * u.s,
+    },
+
+    'K-53': {
+        'atomic number': 19,
+        'mass number': 53,
+        'mass': 52.98746 * u.u,
+        'stable': False,
+        'half-life': 0.03 * u.s,
+    },
+
+    'K-54': {
+        'atomic number': 19,
+        'mass number': 54,
+        'mass': 53.99463 * u.u,
+        'stable': False,
+        'half-life': 0.01 * u.s,
+    },
+
+    'K-55': {
+        'atomic number': 19,
+        'mass number': 55,
+        'mass': 55.00076 * u.u,
+        'stable': False,
+        'half-life': '3# ms',
+    },
+
+    'K-56': {
+        'atomic number': 19,
+        'mass number': 56,
+        'mass': 56.00851 * u.u,
+        'stable': False,
+        'half-life': '1# ms',
+    },
+
+    'Ca-34': {
+        'atomic number': 20,
+        'mass number': 34,
+        'mass': 34.01487 * u.u,
+        'stable': False,
+    },
+
+    'Ca-35': {
+        'atomic number': 20,
+        'mass number': 35,
+        'mass': 35.00514 * u.u,
+        'stable': False,
+        'half-life': 0.0257 * u.s,
+    },
+
+    'Ca-36': {
+        'atomic number': 20,
+        'mass number': 36,
+        'mass': 35.993074 * u.u,
+        'stable': False,
+        'half-life': 0.1012 * u.s,
+    },
+
+    'Ca-37': {
+        'atomic number': 20,
+        'mass number': 37,
+        'mass': 36.98589785 * u.u,
+        'stable': False,
+        'half-life': 0.1811 * u.s,
+    },
+
+    'Ca-38': {
+        'atomic number': 20,
+        'mass number': 38,
+        'mass': 37.97631922 * u.u,
+        'stable': False,
+        'half-life': 0.4437 * u.s,
+    },
+
+    'Ca-39': {
+        'atomic number': 20,
+        'mass number': 39,
+        'mass': 38.97071081 * u.u,
+        'stable': False,
+        'half-life': 0.8603 * u.s,
+    },
+
+    'Ca-40': {
+        'atomic number': 20,
+        'mass number': 40,
+        'mass': 39.962590863 * u.u,
+        'stable': True,
+        'abundance': 0.96941,
+    },
+
+    'Ca-41': {
+        'atomic number': 20,
+        'mass number': 41,
+        'mass': 40.96227792 * u.u,
+        'stable': False,
+        'half-life': 3136758444400.0 * u.s,
+    },
+
+    'Ca-42': {
+        'atomic number': 20,
+        'mass number': 42,
+        'mass': 41.95861783 * u.u,
+        'stable': True,
+        'abundance': 0.00647,
+    },
+
+    'Ca-43': {
+        'atomic number': 20,
+        'mass number': 43,
+        'mass': 42.95876644 * u.u,
+        'stable': True,
+        'abundance': 0.00135,
+    },
+
+    'Ca-44': {
+        'atomic number': 20,
+        'mass number': 44,
+        'mass': 43.95548156 * u.u,
+        'stable': True,
+        'abundance': 0.02086,
+    },
+
+    'Ca-45': {
+        'atomic number': 20,
+        'mass number': 45,
+        'mass': 44.95618635 * u.u,
+        'stable': False,
+        'half-life': 14049504.0 * u.s,
+    },
+
+    'Ca-46': {
+        'atomic number': 20,
+        'mass number': 46,
+        'mass': 45.953689 * u.u,
+        'stable': True,
+        'abundance': 4e-05,
+    },
+
+    'Ca-47': {
+        'atomic number': 20,
+        'mass number': 47,
+        'mass': 46.9545424 * u.u,
+        'stable': False,
+        'half-life': 391910.4 * u.s,
+    },
+
+    'Ca-48': {
+        'atomic number': 20,
+        'mass number': 48,
+        'mass': 47.95252276 * u.u,
+        'stable': False,
+        'abundance': 0.00187,
+    },
+
+    'Ca-49': {
+        'atomic number': 20,
+        'mass number': 49,
+        'mass': 48.95566274 * u.u,
+        'stable': False,
+        'half-life': 523.08 * u.s,
+    },
+
+    'Ca-50': {
+        'atomic number': 20,
+        'mass number': 50,
+        'mass': 49.9574992 * u.u,
+        'stable': False,
+        'half-life': 13.9 * u.s,
+    },
+
+    'Ca-51': {
+        'atomic number': 20,
+        'mass number': 51,
+        'mass': 50.960989 * u.u,
+        'stable': False,
+        'half-life': 10.0 * u.s,
+    },
+
+    'Ca-52': {
+        'atomic number': 20,
+        'mass number': 52,
+        'mass': 51.963217 * u.u,
+        'stable': False,
+        'half-life': 4.6 * u.s,
+    },
+
+    'Ca-53': {
+        'atomic number': 20,
+        'mass number': 53,
+        'mass': 52.96945 * u.u,
+        'stable': False,
+        'half-life': 0.461 * u.s,
+    },
+
+    'Ca-54': {
+        'atomic number': 20,
+        'mass number': 54,
+        'mass': 53.9734 * u.u,
+        'stable': False,
+        'half-life': 0.09 * u.s,
+    },
+
+    'Ca-55': {
+        'atomic number': 20,
+        'mass number': 55,
+        'mass': 54.9803 * u.u,
+        'stable': False,
+        'half-life': 0.022 * u.s,
+    },
+
+    'Ca-56': {
+        'atomic number': 20,
+        'mass number': 56,
+        'mass': 55.98508 * u.u,
+        'stable': False,
+        'half-life': 0.011 * u.s,
+    },
+
+    'Ca-57': {
+        'atomic number': 20,
+        'mass number': 57,
+        'mass': 56.99262 * u.u,
+        'stable': False,
+        'half-life': '5# ms',
+    },
+
+    'Ca-58': {
+        'atomic number': 20,
+        'mass number': 58,
+        'mass': 57.99794 * u.u,
+        'stable': False,
+        'half-life': '3# ms',
+    },
+
+    'Sc-36': {
+        'atomic number': 21,
+        'mass number': 36,
+        'mass': 36.01648 * u.u,
+        'stable': False,
+    },
+
+    'Sc-37': {
+        'atomic number': 21,
+        'mass number': 37,
+        'mass': 37.00374 * u.u,
+        'stable': False,
+    },
+
+    'Sc-38': {
+        'atomic number': 21,
+        'mass number': 38,
+        'mass': 37.99512 * u.u,
+        'stable': False,
+    },
+
+    'Sc-39': {
+        'atomic number': 21,
+        'mass number': 39,
+        'mass': 38.984785 * u.u,
+        'stable': False,
+        'half-life': '<300 ns',
+    },
+
+    'Sc-40': {
+        'atomic number': 21,
+        'mass number': 40,
+        'mass': 39.9779673 * u.u,
+        'stable': False,
+        'half-life': 0.1823 * u.s,
+    },
+
+    'Sc-41': {
+        'atomic number': 21,
+        'mass number': 41,
+        'mass': 40.969251105 * u.u,
+        'stable': False,
+        'half-life': 0.5963 * u.s,
+    },
+
+    'Sc-42': {
+        'atomic number': 21,
+        'mass number': 42,
+        'mass': 41.96551653 * u.u,
+        'stable': False,
+        'half-life': 0.68079 * u.s,
+    },
+
+    'Sc-43': {
+        'atomic number': 21,
+        'mass number': 43,
+        'mass': 42.9611505 * u.u,
+        'stable': False,
+        'half-life': 14007.6 * u.s,
+    },
+
+    'Sc-44': {
+        'atomic number': 21,
+        'mass number': 44,
+        'mass': 43.9594029 * u.u,
+        'stable': False,
+        'half-life': 14551.2 * u.s,
+    },
+
+    'Sc-45': {
+        'atomic number': 21,
+        'mass number': 45,
+        'mass': 44.95590828 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Sc-46': {
+        'atomic number': 21,
+        'mass number': 46,
+        'mass': 45.95516826 * u.u,
+        'stable': False,
+        'half-life': 7242998.4 * u.s,
+    },
+
+    'Sc-47': {
+        'atomic number': 21,
+        'mass number': 47,
+        'mass': 46.9524037 * u.u,
+        'stable': False,
+        'half-life': 289370.88 * u.s,
+    },
+
+    'Sc-48': {
+        'atomic number': 21,
+        'mass number': 48,
+        'mass': 47.9522236 * u.u,
+        'stable': False,
+        'half-life': 157212.0 * u.s,
+    },
+
+    'Sc-49': {
+        'atomic number': 21,
+        'mass number': 49,
+        'mass': 48.9500146 * u.u,
+        'stable': False,
+        'half-life': 3430.8 * u.s,
+    },
+
+    'Sc-50': {
+        'atomic number': 21,
+        'mass number': 50,
+        'mass': 49.952176 * u.u,
+        'stable': False,
+        'half-life': 102.5 * u.s,
+    },
+
+    'Sc-51': {
+        'atomic number': 21,
+        'mass number': 51,
+        'mass': 50.953592 * u.u,
+        'stable': False,
+        'half-life': 12.4 * u.s,
+    },
+
+    'Sc-52': {
+        'atomic number': 21,
+        'mass number': 52,
+        'mass': 51.95688 * u.u,
+        'stable': False,
+        'half-life': 8.2 * u.s,
+    },
+
+    'Sc-53': {
+        'atomic number': 21,
+        'mass number': 53,
+        'mass': 52.95909 * u.u,
+        'stable': False,
+        'half-life': 2.4 * u.s,
+    },
+
+    'Sc-54': {
+        'atomic number': 21,
+        'mass number': 54,
+        'mass': 53.96393 * u.u,
+        'stable': False,
+        'half-life': 0.526 * u.s,
+    },
+
+    'Sc-55': {
+        'atomic number': 21,
+        'mass number': 55,
+        'mass': 54.96782 * u.u,
+        'stable': False,
+        'half-life': 0.096 * u.s,
+    },
+
+    'Sc-56': {
+        'atomic number': 21,
+        'mass number': 56,
+        'mass': 55.97345 * u.u,
+        'stable': False,
+        'half-life': 0.026 * u.s,
+    },
+
+    'Sc-57': {
+        'atomic number': 21,
+        'mass number': 57,
+        'mass': 56.97777 * u.u,
+        'stable': False,
+        'half-life': 0.022 * u.s,
+    },
+
+    'Sc-58': {
+        'atomic number': 21,
+        'mass number': 58,
+        'mass': 57.98403 * u.u,
+        'stable': False,
+        'half-life': 0.012 * u.s,
+    },
+
+    'Sc-59': {
+        'atomic number': 21,
+        'mass number': 59,
+        'mass': 58.98894 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Sc-60': {
+        'atomic number': 21,
+        'mass number': 60,
+        'mass': 59.99565 * u.u,
+        'stable': False,
+        'half-life': '3# ms',
+    },
+
+    'Sc-61': {
+        'atomic number': 21,
+        'mass number': 61,
+        'mass': 61.001 * u.u,
+        'stable': False,
+        'half-life': '2# ms',
+    },
+
+    'Ti-38': {
+        'atomic number': 22,
+        'mass number': 38,
+        'mass': 38.01145 * u.u,
+        'stable': False,
+    },
+
+    'Ti-39': {
+        'atomic number': 22,
+        'mass number': 39,
+        'mass': 39.00236 * u.u,
+        'stable': False,
+        'half-life': 0.0285 * u.s,
+    },
+
+    'Ti-40': {
+        'atomic number': 22,
+        'mass number': 40,
+        'mass': 39.9905 * u.u,
+        'stable': False,
+        'half-life': 0.0524 * u.s,
+    },
+
+    'Ti-41': {
+        'atomic number': 22,
+        'mass number': 41,
+        'mass': 40.983148 * u.u,
+        'stable': False,
+        'half-life': 0.0819 * u.s,
+    },
+
+    'Ti-42': {
+        'atomic number': 22,
+        'mass number': 42,
+        'mass': 41.97304903 * u.u,
+        'stable': False,
+        'half-life': 0.20865 * u.s,
+    },
+
+    'Ti-43': {
+        'atomic number': 22,
+        'mass number': 43,
+        'mass': 42.9685225 * u.u,
+        'stable': False,
+        'half-life': 0.509 * u.s,
+    },
+
+    'Ti-44': {
+        'atomic number': 22,
+        'mass number': 44,
+        'mass': 43.95968995 * u.u,
+        'stable': False,
+        'half-life': 1914105600.0 * u.s,
+    },
+
+    'Ti-45': {
+        'atomic number': 22,
+        'mass number': 45,
+        'mass': 44.95812198 * u.u,
+        'stable': False,
+        'half-life': 11088.0 * u.s,
+    },
+
+    'Ti-46': {
+        'atomic number': 22,
+        'mass number': 46,
+        'mass': 45.95262772 * u.u,
+        'stable': True,
+        'abundance': 0.0825,
+    },
+
+    'Ti-47': {
+        'atomic number': 22,
+        'mass number': 47,
+        'mass': 46.95175879 * u.u,
+        'stable': True,
+        'abundance': 0.0744,
+    },
+
+    'Ti-48': {
+        'atomic number': 22,
+        'mass number': 48,
+        'mass': 47.94794198 * u.u,
+        'stable': True,
+        'abundance': 0.7372,
+    },
+
+    'Ti-49': {
+        'atomic number': 22,
+        'mass number': 49,
+        'mass': 48.94786568 * u.u,
+        'stable': True,
+        'abundance': 0.0541,
+    },
+
+    'Ti-50': {
+        'atomic number': 22,
+        'mass number': 50,
+        'mass': 49.94478689 * u.u,
+        'stable': True,
+        'abundance': 0.0518,
+    },
+
+    'Ti-51': {
+        'atomic number': 22,
+        'mass number': 51,
+        'mass': 50.94661065 * u.u,
+        'stable': False,
+        'half-life': 345.6 * u.s,
+    },
+
+    'Ti-52': {
+        'atomic number': 22,
+        'mass number': 52,
+        'mass': 51.946893 * u.u,
+        'stable': False,
+        'half-life': 102.0 * u.s,
+    },
+
+    'Ti-53': {
+        'atomic number': 22,
+        'mass number': 53,
+        'mass': 52.94973 * u.u,
+        'stable': False,
+        'half-life': 32.7 * u.s,
+    },
+
+    'Ti-54': {
+        'atomic number': 22,
+        'mass number': 54,
+        'mass': 53.95105 * u.u,
+        'stable': False,
+        'half-life': 2.1 * u.s,
+    },
+
+    'Ti-55': {
+        'atomic number': 22,
+        'mass number': 55,
+        'mass': 54.95527 * u.u,
+        'stable': False,
+        'half-life': 1.3 * u.s,
+    },
+
+    'Ti-56': {
+        'atomic number': 22,
+        'mass number': 56,
+        'mass': 55.95791 * u.u,
+        'stable': False,
+        'half-life': 0.2 * u.s,
+    },
+
+    'Ti-57': {
+        'atomic number': 22,
+        'mass number': 57,
+        'mass': 56.96364 * u.u,
+        'stable': False,
+        'half-life': 0.095 * u.s,
+    },
+
+    'Ti-58': {
+        'atomic number': 22,
+        'mass number': 58,
+        'mass': 57.9666 * u.u,
+        'stable': False,
+        'half-life': 0.055 * u.s,
+    },
+
+    'Ti-59': {
+        'atomic number': 22,
+        'mass number': 59,
+        'mass': 58.97247 * u.u,
+        'stable': False,
+        'half-life': 0.0285 * u.s,
+    },
+
+    'Ti-60': {
+        'atomic number': 22,
+        'mass number': 60,
+        'mass': 59.97603 * u.u,
+        'stable': False,
+        'half-life': 0.0222 * u.s,
+    },
+
+    'Ti-61': {
+        'atomic number': 22,
+        'mass number': 61,
+        'mass': 60.98245 * u.u,
+        'stable': False,
+        'half-life': 0.015 * u.s,
+    },
+
+    'Ti-62': {
+        'atomic number': 22,
+        'mass number': 62,
+        'mass': 61.98651 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Ti-63': {
+        'atomic number': 22,
+        'mass number': 63,
+        'mass': 62.99375 * u.u,
+        'stable': False,
+        'half-life': '3# ms',
+    },
+
+    'V-40': {
+        'atomic number': 23,
+        'mass number': 40,
+        'mass': 40.01276 * u.u,
+        'stable': False,
+    },
+
+    'V-41': {
+        'atomic number': 23,
+        'mass number': 41,
+        'mass': 41.00021 * u.u,
+        'stable': False,
+    },
+
+    'V-42': {
+        'atomic number': 23,
+        'mass number': 42,
+        'mass': 41.99182 * u.u,
+        'stable': False,
+    },
+
+    'V-43': {
+        'atomic number': 23,
+        'mass number': 43,
+        'mass': 42.980766 * u.u,
+        'stable': False,
+        'half-life': 0.0793 * u.s,
+    },
+
+    'V-44': {
+        'atomic number': 23,
+        'mass number': 44,
+        'mass': 43.97411 * u.u,
+        'stable': False,
+        'half-life': 0.111 * u.s,
+    },
+
+    'V-45': {
+        'atomic number': 23,
+        'mass number': 45,
+        'mass': 44.9657748 * u.u,
+        'stable': False,
+        'half-life': 0.547 * u.s,
+    },
+
+    'V-46': {
+        'atomic number': 23,
+        'mass number': 46,
+        'mass': 45.96019878 * u.u,
+        'stable': False,
+        'half-life': 0.42264 * u.s,
+    },
+
+    'V-47': {
+        'atomic number': 23,
+        'mass number': 47,
+        'mass': 46.95490491 * u.u,
+        'stable': False,
+        'half-life': 1956.0 * u.s,
+    },
+
+    'V-48': {
+        'atomic number': 23,
+        'mass number': 48,
+        'mass': 47.9522522 * u.u,
+        'stable': False,
+        'half-life': 1380110.4 * u.s,
+    },
+
+    'V-49': {
+        'atomic number': 23,
+        'mass number': 49,
+        'mass': 48.9485118 * u.u,
+        'stable': False,
+        'half-life': 28512000.0 * u.s,
+    },
+
+    'V-50': {
+        'atomic number': 23,
+        'mass number': 50,
+        'mass': 49.94715601 * u.u,
+        'stable': False,
+        'abundance': 0.0025,
+    },
+
+    'V-51': {
+        'atomic number': 23,
+        'mass number': 51,
+        'mass': 50.94395704 * u.u,
+        'stable': True,
+        'abundance': 0.9975,
+    },
+
+    'V-52': {
+        'atomic number': 23,
+        'mass number': 52,
+        'mass': 51.94477301 * u.u,
+        'stable': False,
+        'half-life': 224.58 * u.s,
+    },
+
+    'V-53': {
+        'atomic number': 23,
+        'mass number': 53,
+        'mass': 52.9443367 * u.u,
+        'stable': False,
+        'half-life': 92.58 * u.s,
+    },
+
+    'V-54': {
+        'atomic number': 23,
+        'mass number': 54,
+        'mass': 53.946439 * u.u,
+        'stable': False,
+        'half-life': 49.8 * u.s,
+    },
+
+    'V-55': {
+        'atomic number': 23,
+        'mass number': 55,
+        'mass': 54.94724 * u.u,
+        'stable': False,
+        'half-life': 6.54 * u.s,
+    },
+
+    'V-56': {
+        'atomic number': 23,
+        'mass number': 56,
+        'mass': 55.95048 * u.u,
+        'stable': False,
+        'half-life': 0.216 * u.s,
+    },
+
+    'V-57': {
+        'atomic number': 23,
+        'mass number': 57,
+        'mass': 56.95252 * u.u,
+        'stable': False,
+        'half-life': 0.35 * u.s,
+    },
+
+    'V-58': {
+        'atomic number': 23,
+        'mass number': 58,
+        'mass': 57.95672 * u.u,
+        'stable': False,
+        'half-life': 0.191 * u.s,
+    },
+
+    'V-59': {
+        'atomic number': 23,
+        'mass number': 59,
+        'mass': 58.95939 * u.u,
+        'stable': False,
+        'half-life': 0.095 * u.s,
+    },
+
+    'V-60': {
+        'atomic number': 23,
+        'mass number': 60,
+        'mass': 59.96431 * u.u,
+        'stable': False,
+        'half-life': 0.122 * u.s,
+    },
+
+    'V-61': {
+        'atomic number': 23,
+        'mass number': 61,
+        'mass': 60.96725 * u.u,
+        'stable': False,
+        'half-life': 0.0482 * u.s,
+    },
+
+    'V-62': {
+        'atomic number': 23,
+        'mass number': 62,
+        'mass': 61.97265 * u.u,
+        'stable': False,
+        'half-life': 0.0336 * u.s,
+    },
+
+    'V-63': {
+        'atomic number': 23,
+        'mass number': 63,
+        'mass': 62.97639 * u.u,
+        'stable': False,
+        'half-life': 0.0196 * u.s,
+    },
+
+    'V-64': {
+        'atomic number': 23,
+        'mass number': 64,
+        'mass': 63.98264 * u.u,
+        'stable': False,
+        'half-life': 0.015 * u.s,
+    },
+
+    'V-65': {
+        'atomic number': 23,
+        'mass number': 65,
+        'mass': 64.9875 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'V-66': {
+        'atomic number': 23,
+        'mass number': 66,
+        'mass': 65.99398 * u.u,
+        'stable': False,
+        'half-life': '5# ms',
+    },
+
+    'Cr-42': {
+        'atomic number': 24,
+        'mass number': 42,
+        'mass': 42.0067 * u.u,
+        'stable': False,
+        'half-life': 0.0133 * u.s,
+    },
+
+    'Cr-43': {
+        'atomic number': 24,
+        'mass number': 43,
+        'mass': 42.99753 * u.u,
+        'stable': False,
+        'half-life': 0.0211 * u.s,
+    },
+
+    'Cr-44': {
+        'atomic number': 24,
+        'mass number': 44,
+        'mass': 43.98536 * u.u,
+        'stable': False,
+        'half-life': 0.0428 * u.s,
+    },
+
+    'Cr-45': {
+        'atomic number': 24,
+        'mass number': 45,
+        'mass': 44.97905 * u.u,
+        'stable': False,
+        'half-life': 0.0609 * u.s,
+    },
+
+    'Cr-46': {
+        'atomic number': 24,
+        'mass number': 46,
+        'mass': 45.968359 * u.u,
+        'stable': False,
+        'half-life': 0.2243 * u.s,
+    },
+
+    'Cr-47': {
+        'atomic number': 24,
+        'mass number': 47,
+        'mass': 46.9628974 * u.u,
+        'stable': False,
+        'half-life': 0.5 * u.s,
+    },
+
+    'Cr-48': {
+        'atomic number': 24,
+        'mass number': 48,
+        'mass': 47.9540291 * u.u,
+        'stable': False,
+        'half-life': 77616.0 * u.s,
+    },
+
+    'Cr-49': {
+        'atomic number': 24,
+        'mass number': 49,
+        'mass': 48.9513333 * u.u,
+        'stable': False,
+        'half-life': 2538.0 * u.s,
+    },
+
+    'Cr-50': {
+        'atomic number': 24,
+        'mass number': 50,
+        'mass': 49.94604183 * u.u,
+        'stable': True,
+        'abundance': 0.04345,
+    },
+
+    'Cr-51': {
+        'atomic number': 24,
+        'mass number': 51,
+        'mass': 50.94476502 * u.u,
+        'stable': False,
+        'half-life': 2393366.4 * u.s,
+    },
+
+    'Cr-52': {
+        'atomic number': 24,
+        'mass number': 52,
+        'mass': 51.94050623 * u.u,
+        'stable': True,
+        'abundance': 0.83789,
+    },
+
+    'Cr-53': {
+        'atomic number': 24,
+        'mass number': 53,
+        'mass': 52.94064815 * u.u,
+        'stable': True,
+        'abundance': 0.09501,
+    },
+
+    'Cr-54': {
+        'atomic number': 24,
+        'mass number': 54,
+        'mass': 53.93887916 * u.u,
+        'stable': True,
+        'abundance': 0.02365,
+    },
+
+    'Cr-55': {
+        'atomic number': 24,
+        'mass number': 55,
+        'mass': 54.94083843 * u.u,
+        'stable': False,
+        'half-life': 209.82 * u.s,
+    },
+
+    'Cr-56': {
+        'atomic number': 24,
+        'mass number': 56,
+        'mass': 55.9406531 * u.u,
+        'stable': False,
+        'half-life': 356.4 * u.s,
+    },
+
+    'Cr-57': {
+        'atomic number': 24,
+        'mass number': 57,
+        'mass': 56.943613 * u.u,
+        'stable': False,
+        'half-life': 21.1 * u.s,
+    },
+
+    'Cr-58': {
+        'atomic number': 24,
+        'mass number': 58,
+        'mass': 57.94435 * u.u,
+        'stable': False,
+        'half-life': 7.0 * u.s,
+    },
+
+    'Cr-59': {
+        'atomic number': 24,
+        'mass number': 59,
+        'mass': 58.94859 * u.u,
+        'stable': False,
+        'half-life': 1.05 * u.s,
+    },
+
+    'Cr-60': {
+        'atomic number': 24,
+        'mass number': 60,
+        'mass': 59.95008 * u.u,
+        'stable': False,
+        'half-life': 0.49 * u.s,
+    },
+
+    'Cr-61': {
+        'atomic number': 24,
+        'mass number': 61,
+        'mass': 60.95442 * u.u,
+        'stable': False,
+        'half-life': 0.243 * u.s,
+    },
+
+    'Cr-62': {
+        'atomic number': 24,
+        'mass number': 62,
+        'mass': 61.9561 * u.u,
+        'stable': False,
+        'half-life': 0.206 * u.s,
+    },
+
+    'Cr-63': {
+        'atomic number': 24,
+        'mass number': 63,
+        'mass': 62.96165 * u.u,
+        'stable': False,
+        'half-life': 0.129 * u.s,
+    },
+
+    'Cr-64': {
+        'atomic number': 24,
+        'mass number': 64,
+        'mass': 63.96408 * u.u,
+        'stable': False,
+        'half-life': 0.043 * u.s,
+    },
+
+    'Cr-65': {
+        'atomic number': 24,
+        'mass number': 65,
+        'mass': 64.96996 * u.u,
+        'stable': False,
+        'half-life': 0.0275 * u.s,
+    },
+
+    'Cr-66': {
+        'atomic number': 24,
+        'mass number': 66,
+        'mass': 65.97366 * u.u,
+        'stable': False,
+        'half-life': 0.0238 * u.s,
+    },
+
+    'Cr-67': {
+        'atomic number': 24,
+        'mass number': 67,
+        'mass': 66.98016 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Cr-68': {
+        'atomic number': 24,
+        'mass number': 68,
+        'mass': 67.98403 * u.u,
+        'stable': False,
+        'half-life': '5# ms',
+    },
+
+    'Mn-44': {
+        'atomic number': 25,
+        'mass number': 44,
+        'mass': 44.00715 * u.u,
+        'stable': False,
+    },
+
+    'Mn-45': {
+        'atomic number': 25,
+        'mass number': 45,
+        'mass': 44.99449 * u.u,
+        'stable': False,
+    },
+
+    'Mn-46': {
+        'atomic number': 25,
+        'mass number': 46,
+        'mass': 45.98609 * u.u,
+        'stable': False,
+        'half-life': 0.0362 * u.s,
+    },
+
+    'Mn-47': {
+        'atomic number': 25,
+        'mass number': 47,
+        'mass': 46.975775 * u.u,
+        'stable': False,
+        'half-life': 0.088 * u.s,
+    },
+
+    'Mn-48': {
+        'atomic number': 25,
+        'mass number': 48,
+        'mass': 47.96852 * u.u,
+        'stable': False,
+        'half-life': 0.1581 * u.s,
+    },
+
+    'Mn-49': {
+        'atomic number': 25,
+        'mass number': 49,
+        'mass': 48.959595 * u.u,
+        'stable': False,
+        'half-life': 0.382 * u.s,
+    },
+
+    'Mn-50': {
+        'atomic number': 25,
+        'mass number': 50,
+        'mass': 49.95423778 * u.u,
+        'stable': False,
+        'half-life': 0.28319 * u.s,
+    },
+
+    'Mn-51': {
+        'atomic number': 25,
+        'mass number': 51,
+        'mass': 50.94820847 * u.u,
+        'stable': False,
+        'half-life': 2772.0 * u.s,
+    },
+
+    'Mn-52': {
+        'atomic number': 25,
+        'mass number': 52,
+        'mass': 51.9455639 * u.u,
+        'stable': False,
+        'half-life': 483062.4 * u.s,
+    },
+
+    'Mn-53': {
+        'atomic number': 25,
+        'mass number': 53,
+        'mass': 52.94128889 * u.u,
+        'stable': False,
+        'half-life': 116760626200000.0 * u.s,
+    },
+
+    'Mn-54': {
+        'atomic number': 25,
+        'mass number': 54,
+        'mass': 53.9403576 * u.u,
+        'stable': False,
+        'half-life': 26959219.200000003 * u.s,
+    },
+
+    'Mn-55': {
+        'atomic number': 25,
+        'mass number': 55,
+        'mass': 54.93804391 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Mn-56': {
+        'atomic number': 25,
+        'mass number': 56,
+        'mass': 55.93890369 * u.u,
+        'stable': False,
+        'half-life': 9284.04 * u.s,
+    },
+
+    'Mn-57': {
+        'atomic number': 25,
+        'mass number': 57,
+        'mass': 56.9382861 * u.u,
+        'stable': False,
+        'half-life': 85.4 * u.s,
+    },
+
+    'Mn-58': {
+        'atomic number': 25,
+        'mass number': 58,
+        'mass': 57.9400666 * u.u,
+        'stable': False,
+        'half-life': 3.0 * u.s,
+    },
+
+    'Mn-59': {
+        'atomic number': 25,
+        'mass number': 59,
+        'mass': 58.9403911 * u.u,
+        'stable': False,
+        'half-life': 4.59 * u.s,
+    },
+
+    'Mn-60': {
+        'atomic number': 25,
+        'mass number': 60,
+        'mass': 59.9431366 * u.u,
+        'stable': False,
+        'half-life': 0.28 * u.s,
+    },
+
+    'Mn-61': {
+        'atomic number': 25,
+        'mass number': 61,
+        'mass': 60.9444525 * u.u,
+        'stable': False,
+        'half-life': 0.709 * u.s,
+    },
+
+    'Mn-62': {
+        'atomic number': 25,
+        'mass number': 62,
+        'mass': 61.94795 * u.u,
+        'stable': False,
+        'half-life': 0.092 * u.s,
+    },
+
+    'Mn-63': {
+        'atomic number': 25,
+        'mass number': 63,
+        'mass': 62.9496647 * u.u,
+        'stable': False,
+        'half-life': 0.275 * u.s,
+    },
+
+    'Mn-64': {
+        'atomic number': 25,
+        'mass number': 64,
+        'mass': 63.9538494 * u.u,
+        'stable': False,
+        'half-life': 0.0888 * u.s,
+    },
+
+    'Mn-65': {
+        'atomic number': 25,
+        'mass number': 65,
+        'mass': 64.9560198 * u.u,
+        'stable': False,
+        'half-life': 0.0919 * u.s,
+    },
+
+    'Mn-66': {
+        'atomic number': 25,
+        'mass number': 66,
+        'mass': 65.960547 * u.u,
+        'stable': False,
+        'half-life': 0.0642 * u.s,
+    },
+
+    'Mn-67': {
+        'atomic number': 25,
+        'mass number': 67,
+        'mass': 66.96424 * u.u,
+        'stable': False,
+        'half-life': 0.0467 * u.s,
+    },
+
+    'Mn-68': {
+        'atomic number': 25,
+        'mass number': 68,
+        'mass': 67.96962 * u.u,
+        'stable': False,
+        'half-life': 0.0337 * u.s,
+    },
+
+    'Mn-69': {
+        'atomic number': 25,
+        'mass number': 69,
+        'mass': 68.97366 * u.u,
+        'stable': False,
+        'half-life': 0.0221 * u.s,
+    },
+
+    'Mn-70': {
+        'atomic number': 25,
+        'mass number': 70,
+        'mass': 69.97937 * u.u,
+        'stable': False,
+        'half-life': 0.0199 * u.s,
+    },
+
+    'Mn-71': {
+        'atomic number': 25,
+        'mass number': 71,
+        'mass': 70.98368 * u.u,
+        'stable': False,
+        'half-life': '5# ms',
+    },
+
+    'Fe-45': {
+        'atomic number': 26,
+        'mass number': 45,
+        'mass': 45.01442 * u.u,
+        'stable': False,
+        'half-life': 0.0022 * u.s,
+    },
+
+    'Fe-46': {
+        'atomic number': 26,
+        'mass number': 46,
+        'mass': 46.00063 * u.u,
+        'stable': False,
+        'half-life': 0.013 * u.s,
+    },
+
+    'Fe-47': {
+        'atomic number': 26,
+        'mass number': 47,
+        'mass': 46.99185 * u.u,
+        'stable': False,
+        'half-life': 0.0219 * u.s,
+    },
+
+    'Fe-48': {
+        'atomic number': 26,
+        'mass number': 48,
+        'mass': 47.98023 * u.u,
+        'stable': False,
+        'half-life': 0.0453 * u.s,
+    },
+
+    'Fe-49': {
+        'atomic number': 26,
+        'mass number': 49,
+        'mass': 48.973429 * u.u,
+        'stable': False,
+        'half-life': 0.0647 * u.s,
+    },
+
+    'Fe-50': {
+        'atomic number': 26,
+        'mass number': 50,
+        'mass': 49.962975 * u.u,
+        'stable': False,
+        'half-life': 0.1521 * u.s,
+    },
+
+    'Fe-51': {
+        'atomic number': 26,
+        'mass number': 51,
+        'mass': 50.956841 * u.u,
+        'stable': False,
+        'half-life': 0.3054 * u.s,
+    },
+
+    'Fe-52': {
+        'atomic number': 26,
+        'mass number': 52,
+        'mass': 51.9481131 * u.u,
+        'stable': False,
+        'half-life': 29790.0 * u.s,
+    },
+
+    'Fe-53': {
+        'atomic number': 26,
+        'mass number': 53,
+        'mass': 52.9453064 * u.u,
+        'stable': False,
+        'half-life': 510.6 * u.s,
+    },
+
+    'Fe-54': {
+        'atomic number': 26,
+        'mass number': 54,
+        'mass': 53.93960899 * u.u,
+        'stable': True,
+        'abundance': 0.05845,
+    },
+
+    'Fe-55': {
+        'atomic number': 26,
+        'mass number': 55,
+        'mass': 54.93829199 * u.u,
+        'stable': False,
+        'half-life': 86592204.944 * u.s,
+    },
+
+    'Fe-56': {
+        'atomic number': 26,
+        'mass number': 56,
+        'mass': 55.93493633 * u.u,
+        'stable': True,
+        'abundance': 0.91754,
+    },
+
+    'Fe-57': {
+        'atomic number': 26,
+        'mass number': 57,
+        'mass': 56.93539284 * u.u,
+        'stable': True,
+        'abundance': 0.02119,
+    },
+
+    'Fe-58': {
+        'atomic number': 26,
+        'mass number': 58,
+        'mass': 57.93327443 * u.u,
+        'stable': True,
+        'abundance': 0.00282,
+    },
+
+    'Fe-59': {
+        'atomic number': 26,
+        'mass number': 59,
+        'mass': 58.93487434 * u.u,
+        'stable': False,
+        'half-life': 3845439.36 * u.s,
+    },
+
+    'Fe-60': {
+        'atomic number': 26,
+        'mass number': 60,
+        'mass': 59.9340711 * u.u,
+        'stable': False,
+        'half-life': 82679146120000.0 * u.s,
+    },
+
+    'Fe-61': {
+        'atomic number': 26,
+        'mass number': 61,
+        'mass': 60.9367462 * u.u,
+        'stable': False,
+        'half-life': 358.8 * u.s,
+    },
+
+    'Fe-62': {
+        'atomic number': 26,
+        'mass number': 62,
+        'mass': 61.9367918 * u.u,
+        'stable': False,
+        'half-life': 68.0 * u.s,
+    },
+
+    'Fe-63': {
+        'atomic number': 26,
+        'mass number': 63,
+        'mass': 62.9402727 * u.u,
+        'stable': False,
+        'half-life': 6.1 * u.s,
+    },
+
+    'Fe-64': {
+        'atomic number': 26,
+        'mass number': 64,
+        'mass': 63.9409878 * u.u,
+        'stable': False,
+        'half-life': 2.0 * u.s,
+    },
+
+    'Fe-65': {
+        'atomic number': 26,
+        'mass number': 65,
+        'mass': 64.9450115 * u.u,
+        'stable': False,
+        'half-life': 0.81 * u.s,
+    },
+
+    'Fe-66': {
+        'atomic number': 26,
+        'mass number': 66,
+        'mass': 65.94625 * u.u,
+        'stable': False,
+        'half-life': 0.351 * u.s,
+    },
+
+    'Fe-67': {
+        'atomic number': 26,
+        'mass number': 67,
+        'mass': 66.95054 * u.u,
+        'stable': False,
+        'half-life': 0.394 * u.s,
+    },
+
+    'Fe-68': {
+        'atomic number': 26,
+        'mass number': 68,
+        'mass': 67.95295 * u.u,
+        'stable': False,
+        'half-life': 0.188 * u.s,
+    },
+
+    'Fe-69': {
+        'atomic number': 26,
+        'mass number': 69,
+        'mass': 68.95807 * u.u,
+        'stable': False,
+        'half-life': 0.1082 * u.s,
+    },
+
+    'Fe-70': {
+        'atomic number': 26,
+        'mass number': 70,
+        'mass': 69.96102 * u.u,
+        'stable': False,
+        'half-life': 0.063 * u.s,
+    },
+
+    'Fe-71': {
+        'atomic number': 26,
+        'mass number': 71,
+        'mass': 70.96672 * u.u,
+        'stable': False,
+        'half-life': 0.0337 * u.s,
+    },
+
+    'Fe-72': {
+        'atomic number': 26,
+        'mass number': 72,
+        'mass': 71.96983 * u.u,
+        'stable': False,
+        'half-life': 0.019 * u.s,
+    },
+
+    'Fe-73': {
+        'atomic number': 26,
+        'mass number': 73,
+        'mass': 72.97572 * u.u,
+        'stable': False,
+        'half-life': 0.0129 * u.s,
+    },
+
+    'Fe-74': {
+        'atomic number': 26,
+        'mass number': 74,
+        'mass': 73.97935 * u.u,
+        'stable': False,
+        'half-life': '2# ms',
+    },
+
+    'Co-47': {
+        'atomic number': 27,
+        'mass number': 47,
+        'mass': 47.01057 * u.u,
+        'stable': False,
+    },
+
+    'Co-48': {
+        'atomic number': 27,
+        'mass number': 48,
+        'mass': 48.00093 * u.u,
+        'stable': False,
+    },
+
+    'Co-49': {
+        'atomic number': 27,
+        'mass number': 49,
+        'mass': 48.98891 * u.u,
+        'stable': False,
+    },
+
+    'Co-50': {
+        'atomic number': 27,
+        'mass number': 50,
+        'mass': 49.98091 * u.u,
+        'stable': False,
+        'half-life': 0.0388 * u.s,
+    },
+
+    'Co-51': {
+        'atomic number': 27,
+        'mass number': 51,
+        'mass': 50.970647 * u.u,
+        'stable': False,
+        'half-life': 0.0688 * u.s,
+    },
+
+    'Co-52': {
+        'atomic number': 27,
+        'mass number': 52,
+        'mass': 51.96351 * u.u,
+        'stable': False,
+        'half-life': 0.1111 * u.s,
+    },
+
+    'Co-53': {
+        'atomic number': 27,
+        'mass number': 53,
+        'mass': 52.9542041 * u.u,
+        'stable': False,
+        'half-life': 0.242 * u.s,
+    },
+
+    'Co-54': {
+        'atomic number': 27,
+        'mass number': 54,
+        'mass': 53.94845987 * u.u,
+        'stable': False,
+        'half-life': 0.19328 * u.s,
+    },
+
+    'Co-55': {
+        'atomic number': 27,
+        'mass number': 55,
+        'mass': 54.9419972 * u.u,
+        'stable': False,
+        'half-life': 63108.0 * u.s,
+    },
+
+    'Co-56': {
+        'atomic number': 27,
+        'mass number': 56,
+        'mass': 55.9398388 * u.u,
+        'stable': False,
+        'half-life': 6673190.4 * u.s,
+    },
+
+    'Co-57': {
+        'atomic number': 27,
+        'mass number': 57,
+        'mass': 56.93629057 * u.u,
+        'stable': False,
+        'half-life': 23510304.0 * u.s,
+    },
+
+    'Co-58': {
+        'atomic number': 27,
+        'mass number': 58,
+        'mass': 57.9357521 * u.u,
+        'stable': False,
+        'half-life': 6114528.0 * u.s,
+    },
+
+    'Co-59': {
+        'atomic number': 27,
+        'mass number': 59,
+        'mass': 58.93319429 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Co-60': {
+        'atomic number': 27,
+        'mass number': 60,
+        'mass': 59.9338163 * u.u,
+        'stable': False,
+        'half-life': 166337280.0 * u.s,
+    },
+
+    'Co-61': {
+        'atomic number': 27,
+        'mass number': 61,
+        'mass': 60.93247662 * u.u,
+        'stable': False,
+        'half-life': 5936.4 * u.s,
+    },
+
+    'Co-62': {
+        'atomic number': 27,
+        'mass number': 62,
+        'mass': 61.934059 * u.u,
+        'stable': False,
+        'half-life': 92.4 * u.s,
+    },
+
+    'Co-63': {
+        'atomic number': 27,
+        'mass number': 63,
+        'mass': 62.9336 * u.u,
+        'stable': False,
+        'half-life': 26.9 * u.s,
+    },
+
+    'Co-64': {
+        'atomic number': 27,
+        'mass number': 64,
+        'mass': 63.935811 * u.u,
+        'stable': False,
+        'half-life': 0.3 * u.s,
+    },
+
+    'Co-65': {
+        'atomic number': 27,
+        'mass number': 65,
+        'mass': 64.9364621 * u.u,
+        'stable': False,
+        'half-life': 1.16 * u.s,
+    },
+
+    'Co-66': {
+        'atomic number': 27,
+        'mass number': 66,
+        'mass': 65.939443 * u.u,
+        'stable': False,
+        'half-life': 0.194 * u.s,
+    },
+
+    'Co-67': {
+        'atomic number': 27,
+        'mass number': 67,
+        'mass': 66.9406096 * u.u,
+        'stable': False,
+        'half-life': 0.329 * u.s,
+    },
+
+    'Co-68': {
+        'atomic number': 27,
+        'mass number': 68,
+        'mass': 67.94426 * u.u,
+        'stable': False,
+        'half-life': 0.2 * u.s,
+    },
+
+    'Co-69': {
+        'atomic number': 27,
+        'mass number': 69,
+        'mass': 68.94614 * u.u,
+        'stable': False,
+        'half-life': 0.18 * u.s,
+    },
+
+    'Co-70': {
+        'atomic number': 27,
+        'mass number': 70,
+        'mass': 69.94963 * u.u,
+        'stable': False,
+        'half-life': 0.112 * u.s,
+    },
+
+    'Co-71': {
+        'atomic number': 27,
+        'mass number': 71,
+        'mass': 70.95237 * u.u,
+        'stable': False,
+        'half-life': 0.08 * u.s,
+    },
+
+    'Co-72': {
+        'atomic number': 27,
+        'mass number': 72,
+        'mass': 71.95729 * u.u,
+        'stable': False,
+        'half-life': 0.0525 * u.s,
+    },
+
+    'Co-73': {
+        'atomic number': 27,
+        'mass number': 73,
+        'mass': 72.96039 * u.u,
+        'stable': False,
+        'half-life': 0.0407 * u.s,
+    },
+
+    'Co-74': {
+        'atomic number': 27,
+        'mass number': 74,
+        'mass': 73.96515 * u.u,
+        'stable': False,
+        'half-life': 0.0313 * u.s,
+    },
+
+    'Co-75': {
+        'atomic number': 27,
+        'mass number': 75,
+        'mass': 74.96876 * u.u,
+        'stable': False,
+        'half-life': 0.0265 * u.s,
+    },
+
+    'Co-76': {
+        'atomic number': 27,
+        'mass number': 76,
+        'mass': 75.97413 * u.u,
+        'stable': False,
+        'half-life': 0.023 * u.s,
+    },
+
+    'Ni-48': {
+        'atomic number': 28,
+        'mass number': 48,
+        'mass': 48.01769 * u.u,
+        'stable': False,
+        'half-life': 0.0028 * u.s,
+    },
+
+    'Ni-49': {
+        'atomic number': 28,
+        'mass number': 49,
+        'mass': 49.0077 * u.u,
+        'stable': False,
+        'half-life': 0.0075 * u.s,
+    },
+
+    'Ni-50': {
+        'atomic number': 28,
+        'mass number': 50,
+        'mass': 49.99474 * u.u,
+        'stable': False,
+        'half-life': 0.0185 * u.s,
+    },
+
+    'Ni-51': {
+        'atomic number': 28,
+        'mass number': 51,
+        'mass': 50.98611 * u.u,
+        'stable': False,
+        'half-life': 0.0238 * u.s,
+    },
+
+    'Ni-52': {
+        'atomic number': 28,
+        'mass number': 52,
+        'mass': 51.9748 * u.u,
+        'stable': False,
+        'half-life': 0.0418 * u.s,
+    },
+
+    'Ni-53': {
+        'atomic number': 28,
+        'mass number': 53,
+        'mass': 52.96819 * u.u,
+        'stable': False,
+        'half-life': 0.0552 * u.s,
+    },
+
+    'Ni-54': {
+        'atomic number': 28,
+        'mass number': 54,
+        'mass': 53.957892 * u.u,
+        'stable': False,
+        'half-life': 0.1142 * u.s,
+    },
+
+    'Ni-55': {
+        'atomic number': 28,
+        'mass number': 55,
+        'mass': 54.95133063 * u.u,
+        'stable': False,
+        'half-life': 0.2047 * u.s,
+    },
+
+    'Ni-56': {
+        'atomic number': 28,
+        'mass number': 56,
+        'mass': 55.94212855 * u.u,
+        'stable': False,
+        'half-life': 524880.0 * u.s,
+    },
+
+    'Ni-57': {
+        'atomic number': 28,
+        'mass number': 57,
+        'mass': 56.93979218 * u.u,
+        'stable': False,
+        'half-life': 128160.0 * u.s,
+    },
+
+    'Ni-58': {
+        'atomic number': 28,
+        'mass number': 58,
+        'mass': 57.93534241 * u.u,
+        'stable': True,
+        'abundance': 0.68077,
+    },
+
+    'Ni-59': {
+        'atomic number': 28,
+        'mass number': 59,
+        'mass': 58.9343462 * u.u,
+        'stable': False,
+        'half-life': 2556111006000.0 * u.s,
+    },
+
+    'Ni-60': {
+        'atomic number': 28,
+        'mass number': 60,
+        'mass': 59.93078588 * u.u,
+        'stable': True,
+        'abundance': 0.26223,
+    },
+
+    'Ni-61': {
+        'atomic number': 28,
+        'mass number': 61,
+        'mass': 60.93105557 * u.u,
+        'stable': True,
+        'abundance': 0.011399,
+    },
+
+    'Ni-62': {
+        'atomic number': 28,
+        'mass number': 62,
+        'mass': 61.92834537 * u.u,
+        'stable': True,
+        'abundance': 0.036346,
+    },
+
+    'Ni-63': {
+        'atomic number': 28,
+        'mass number': 63,
+        'mass': 62.92966963 * u.u,
+        'stable': False,
+        'half-life': 3193560911.2 * u.s,
+    },
+
+    'Ni-64': {
+        'atomic number': 28,
+        'mass number': 64,
+        'mass': 63.92796682 * u.u,
+        'stable': True,
+        'abundance': 0.009255,
+    },
+
+    'Ni-65': {
+        'atomic number': 28,
+        'mass number': 65,
+        'mass': 64.93008517 * u.u,
+        'stable': False,
+        'half-life': 9063.0 * u.s,
+    },
+
+    'Ni-66': {
+        'atomic number': 28,
+        'mass number': 66,
+        'mass': 65.9291393 * u.u,
+        'stable': False,
+        'half-life': 196560.0 * u.s,
+    },
+
+    'Ni-67': {
+        'atomic number': 28,
+        'mass number': 67,
+        'mass': 66.9315694 * u.u,
+        'stable': False,
+        'half-life': 21.0 * u.s,
+    },
+
+    'Ni-68': {
+        'atomic number': 28,
+        'mass number': 68,
+        'mass': 67.9318688 * u.u,
+        'stable': False,
+        'half-life': 29.0 * u.s,
+    },
+
+    'Ni-69': {
+        'atomic number': 28,
+        'mass number': 69,
+        'mass': 68.9356103 * u.u,
+        'stable': False,
+        'half-life': 11.4 * u.s,
+    },
+
+    'Ni-70': {
+        'atomic number': 28,
+        'mass number': 70,
+        'mass': 69.9364313 * u.u,
+        'stable': False,
+        'half-life': 6.0 * u.s,
+    },
+
+    'Ni-71': {
+        'atomic number': 28,
+        'mass number': 71,
+        'mass': 70.940519 * u.u,
+        'stable': False,
+        'half-life': 2.56 * u.s,
+    },
+
+    'Ni-72': {
+        'atomic number': 28,
+        'mass number': 72,
+        'mass': 71.9417859 * u.u,
+        'stable': False,
+        'half-life': 1.57 * u.s,
+    },
+
+    'Ni-73': {
+        'atomic number': 28,
+        'mass number': 73,
+        'mass': 72.9462067 * u.u,
+        'stable': False,
+        'half-life': 0.84 * u.s,
+    },
+
+    'Ni-74': {
+        'atomic number': 28,
+        'mass number': 74,
+        'mass': 73.94798 * u.u,
+        'stable': False,
+        'half-life': 0.5077 * u.s,
+    },
+
+    'Ni-75': {
+        'atomic number': 28,
+        'mass number': 75,
+        'mass': 74.9525 * u.u,
+        'stable': False,
+        'half-life': 0.3316 * u.s,
+    },
+
+    'Ni-76': {
+        'atomic number': 28,
+        'mass number': 76,
+        'mass': 75.95533 * u.u,
+        'stable': False,
+        'half-life': 0.2346 * u.s,
+    },
+
+    'Ni-77': {
+        'atomic number': 28,
+        'mass number': 77,
+        'mass': 76.96055 * u.u,
+        'stable': False,
+        'half-life': 0.1589 * u.s,
+    },
+
+    'Ni-78': {
+        'atomic number': 28,
+        'mass number': 78,
+        'mass': 77.96336 * u.u,
+        'stable': False,
+        'half-life': 0.1222 * u.s,
+    },
+
+    'Ni-79': {
+        'atomic number': 28,
+        'mass number': 79,
+        'mass': 78.97025 * u.u,
+        'stable': False,
+        'half-life': 0.044 * u.s,
+    },
+
+    'Cu-52': {
+        'atomic number': 29,
+        'mass number': 52,
+        'mass': 51.99671 * u.u,
+        'stable': False,
+    },
+
+    'Cu-53': {
+        'atomic number': 29,
+        'mass number': 53,
+        'mass': 52.98459 * u.u,
+        'stable': False,
+    },
+
+    'Cu-54': {
+        'atomic number': 29,
+        'mass number': 54,
+        'mass': 53.97666 * u.u,
+        'stable': False,
+    },
+
+    'Cu-55': {
+        'atomic number': 29,
+        'mass number': 55,
+        'mass': 54.96604 * u.u,
+        'stable': False,
+        'half-life': 0.057 * u.s,
+    },
+
+    'Cu-56': {
+        'atomic number': 29,
+        'mass number': 56,
+        'mass': 55.95895 * u.u,
+        'stable': False,
+        'half-life': 0.093 * u.s,
+    },
+
+    'Cu-57': {
+        'atomic number': 29,
+        'mass number': 57,
+        'mass': 56.9492125 * u.u,
+        'stable': False,
+        'half-life': 0.1963 * u.s,
+    },
+
+    'Cu-58': {
+        'atomic number': 29,
+        'mass number': 58,
+        'mass': 57.94453305 * u.u,
+        'stable': False,
+        'half-life': 3.204 * u.s,
+    },
+
+    'Cu-59': {
+        'atomic number': 29,
+        'mass number': 59,
+        'mass': 58.93949748 * u.u,
+        'stable': False,
+        'half-life': 81.5 * u.s,
+    },
+
+    'Cu-60': {
+        'atomic number': 29,
+        'mass number': 60,
+        'mass': 59.9373645 * u.u,
+        'stable': False,
+        'half-life': 1422.0 * u.s,
+    },
+
+    'Cu-61': {
+        'atomic number': 29,
+        'mass number': 61,
+        'mass': 60.9334576 * u.u,
+        'stable': False,
+        'half-life': 12020.4 * u.s,
+    },
+
+    'Cu-62': {
+        'atomic number': 29,
+        'mass number': 62,
+        'mass': 61.93259541 * u.u,
+        'stable': False,
+        'half-life': 580.2 * u.s,
+    },
+
+    'Cu-63': {
+        'atomic number': 29,
+        'mass number': 63,
+        'mass': 62.92959772 * u.u,
+        'stable': True,
+        'abundance': 0.6915,
+    },
+
+    'Cu-64': {
+        'atomic number': 29,
+        'mass number': 64,
+        'mass': 63.92976434 * u.u,
+        'stable': False,
+        'half-life': 45721.44 * u.s,
+    },
+
+    'Cu-65': {
+        'atomic number': 29,
+        'mass number': 65,
+        'mass': 64.9277897 * u.u,
+        'stable': True,
+        'abundance': 0.3085,
+    },
+
+    'Cu-66': {
+        'atomic number': 29,
+        'mass number': 66,
+        'mass': 65.92886903 * u.u,
+        'stable': False,
+        'half-life': 307.2 * u.s,
+    },
+
+    'Cu-67': {
+        'atomic number': 29,
+        'mass number': 67,
+        'mass': 66.9277303 * u.u,
+        'stable': False,
+        'half-life': 222588.0 * u.s,
+    },
+
+    'Cu-68': {
+        'atomic number': 29,
+        'mass number': 68,
+        'mass': 67.9296109 * u.u,
+        'stable': False,
+        'half-life': 30.9 * u.s,
+    },
+
+    'Cu-69': {
+        'atomic number': 29,
+        'mass number': 69,
+        'mass': 68.9294293 * u.u,
+        'stable': False,
+        'half-life': 171.0 * u.s,
+    },
+
+    'Cu-70': {
+        'atomic number': 29,
+        'mass number': 70,
+        'mass': 69.9323921 * u.u,
+        'stable': False,
+        'half-life': 44.5 * u.s,
+    },
+
+    'Cu-71': {
+        'atomic number': 29,
+        'mass number': 71,
+        'mass': 70.9326768 * u.u,
+        'stable': False,
+        'half-life': 19.4 * u.s,
+    },
+
+    'Cu-72': {
+        'atomic number': 29,
+        'mass number': 72,
+        'mass': 71.9358203 * u.u,
+        'stable': False,
+        'half-life': 6.63 * u.s,
+    },
+
+    'Cu-73': {
+        'atomic number': 29,
+        'mass number': 73,
+        'mass': 72.9366744 * u.u,
+        'stable': False,
+        'half-life': 4.2 * u.s,
+    },
+
+    'Cu-74': {
+        'atomic number': 29,
+        'mass number': 74,
+        'mass': 73.9398749 * u.u,
+        'stable': False,
+        'half-life': 1.63 * u.s,
+    },
+
+    'Cu-75': {
+        'atomic number': 29,
+        'mass number': 75,
+        'mass': 74.9415226 * u.u,
+        'stable': False,
+        'half-life': 1.224 * u.s,
+    },
+
+    'Cu-76': {
+        'atomic number': 29,
+        'mass number': 76,
+        'mass': 75.945275 * u.u,
+        'stable': False,
+        'half-life': 0.6377 * u.s,
+    },
+
+    'Cu-77': {
+        'atomic number': 29,
+        'mass number': 77,
+        'mass': 76.94792 * u.u,
+        'stable': False,
+        'half-life': 0.4679 * u.s,
+    },
+
+    'Cu-78': {
+        'atomic number': 29,
+        'mass number': 78,
+        'mass': 77.95223 * u.u,
+        'stable': False,
+        'half-life': 0.3307 * u.s,
+    },
+
+    'Cu-79': {
+        'atomic number': 29,
+        'mass number': 79,
+        'mass': 78.95502 * u.u,
+        'stable': False,
+        'half-life': 0.241 * u.s,
+    },
+
+    'Cu-80': {
+        'atomic number': 29,
+        'mass number': 80,
+        'mass': 79.96089 * u.u,
+        'stable': False,
+        'half-life': 0.1133 * u.s,
+    },
+
+    'Cu-81': {
+        'atomic number': 29,
+        'mass number': 81,
+        'mass': 80.96587 * u.u,
+        'stable': False,
+        'half-life': 0.0732 * u.s,
+    },
+
+    'Cu-82': {
+        'atomic number': 29,
+        'mass number': 82,
+        'mass': 81.97244 * u.u,
+        'stable': False,
+        'half-life': '50# ms',
+    },
+
+    'Zn-54': {
+        'atomic number': 30,
+        'mass number': 54,
+        'mass': 53.99204 * u.u,
+        'stable': False,
+        'half-life': 0.0018 * u.s,
+    },
+
+    'Zn-55': {
+        'atomic number': 30,
+        'mass number': 55,
+        'mass': 54.98398 * u.u,
+        'stable': False,
+        'half-life': 0.0198 * u.s,
+    },
+
+    'Zn-56': {
+        'atomic number': 30,
+        'mass number': 56,
+        'mass': 55.97254 * u.u,
+        'stable': False,
+        'half-life': 0.0329 * u.s,
+    },
+
+    'Zn-57': {
+        'atomic number': 30,
+        'mass number': 57,
+        'mass': 56.96506 * u.u,
+        'stable': False,
+        'half-life': 0.038 * u.s,
+    },
+
+    'Zn-58': {
+        'atomic number': 30,
+        'mass number': 58,
+        'mass': 57.954591 * u.u,
+        'stable': False,
+        'half-life': 0.0867 * u.s,
+    },
+
+    'Zn-59': {
+        'atomic number': 30,
+        'mass number': 59,
+        'mass': 58.94931266 * u.u,
+        'stable': False,
+        'half-life': 0.182 * u.s,
+    },
+
+    'Zn-60': {
+        'atomic number': 30,
+        'mass number': 60,
+        'mass': 59.9418421 * u.u,
+        'stable': False,
+        'half-life': 142.8 * u.s,
+    },
+
+    'Zn-61': {
+        'atomic number': 30,
+        'mass number': 61,
+        'mass': 60.939507 * u.u,
+        'stable': False,
+        'half-life': 89.1 * u.s,
+    },
+
+    'Zn-62': {
+        'atomic number': 30,
+        'mass number': 62,
+        'mass': 61.93433397 * u.u,
+        'stable': False,
+        'half-life': 33094.8 * u.s,
+    },
+
+    'Zn-63': {
+        'atomic number': 30,
+        'mass number': 63,
+        'mass': 62.9332115 * u.u,
+        'stable': False,
+        'half-life': 2308.2 * u.s,
+    },
+
+    'Zn-64': {
+        'atomic number': 30,
+        'mass number': 64,
+        'mass': 63.92914201 * u.u,
+        'stable': True,
+        'abundance': 0.4917,
+    },
+
+    'Zn-65': {
+        'atomic number': 30,
+        'mass number': 65,
+        'mass': 64.92924077 * u.u,
+        'stable': False,
+        'half-life': 21095769.599999998 * u.s,
+    },
+
+    'Zn-66': {
+        'atomic number': 30,
+        'mass number': 66,
+        'mass': 65.92603381 * u.u,
+        'stable': True,
+        'abundance': 0.2773,
+    },
+
+    'Zn-67': {
+        'atomic number': 30,
+        'mass number': 67,
+        'mass': 66.92712775 * u.u,
+        'stable': True,
+        'abundance': 0.0404,
+    },
+
+    'Zn-68': {
+        'atomic number': 30,
+        'mass number': 68,
+        'mass': 67.92484455 * u.u,
+        'stable': True,
+        'abundance': 0.1845,
+    },
+
+    'Zn-69': {
+        'atomic number': 30,
+        'mass number': 69,
+        'mass': 68.9265507 * u.u,
+        'stable': False,
+        'half-life': 3384.0 * u.s,
+    },
+
+    'Zn-70': {
+        'atomic number': 30,
+        'mass number': 70,
+        'mass': 69.9253192 * u.u,
+        'stable': True,
+        'abundance': 0.0061,
+    },
+
+    'Zn-71': {
+        'atomic number': 30,
+        'mass number': 71,
+        'mass': 70.9277196 * u.u,
+        'stable': False,
+        'half-life': 147.0 * u.s,
+    },
+
+    'Zn-72': {
+        'atomic number': 30,
+        'mass number': 72,
+        'mass': 71.9268428 * u.u,
+        'stable': False,
+        'half-life': 167400.0 * u.s,
+    },
+
+    'Zn-73': {
+        'atomic number': 30,
+        'mass number': 73,
+        'mass': 72.9295826 * u.u,
+        'stable': False,
+        'half-life': 23.5 * u.s,
+    },
+
+    'Zn-74': {
+        'atomic number': 30,
+        'mass number': 74,
+        'mass': 73.9294073 * u.u,
+        'stable': False,
+        'half-life': 95.6 * u.s,
+    },
+
+    'Zn-75': {
+        'atomic number': 30,
+        'mass number': 75,
+        'mass': 74.9328402 * u.u,
+        'stable': False,
+        'half-life': 10.2 * u.s,
+    },
+
+    'Zn-76': {
+        'atomic number': 30,
+        'mass number': 76,
+        'mass': 75.933115 * u.u,
+        'stable': False,
+        'half-life': 5.7 * u.s,
+    },
+
+    'Zn-77': {
+        'atomic number': 30,
+        'mass number': 77,
+        'mass': 76.9368872 * u.u,
+        'stable': False,
+        'half-life': 2.08 * u.s,
+    },
+
+    'Zn-78': {
+        'atomic number': 30,
+        'mass number': 78,
+        'mass': 77.9382892 * u.u,
+        'stable': False,
+        'half-life': 1.47 * u.s,
+    },
+
+    'Zn-79': {
+        'atomic number': 30,
+        'mass number': 79,
+        'mass': 78.9426381 * u.u,
+        'stable': False,
+        'half-life': 0.746 * u.s,
+    },
+
+    'Zn-80': {
+        'atomic number': 30,
+        'mass number': 80,
+        'mass': 79.9445529 * u.u,
+        'stable': False,
+        'half-life': 0.5622 * u.s,
+    },
+
+    'Zn-81': {
+        'atomic number': 30,
+        'mass number': 81,
+        'mass': 80.9504026 * u.u,
+        'stable': False,
+        'half-life': 0.3032 * u.s,
+    },
+
+    'Zn-82': {
+        'atomic number': 30,
+        'mass number': 82,
+        'mass': 81.95426 * u.u,
+        'stable': False,
+        'half-life': 0.1779 * u.s,
+    },
+
+    'Zn-83': {
+        'atomic number': 30,
+        'mass number': 83,
+        'mass': 82.96056 * u.u,
+        'stable': False,
+        'half-life': 0.119 * u.s,
+    },
+
+    'Zn-84': {
+        'atomic number': 30,
+        'mass number': 84,
+        'mass': 83.96521 * u.u,
+        'stable': False,
+        'half-life': '50# ms',
+    },
+
+    'Zn-85': {
+        'atomic number': 30,
+        'mass number': 85,
+        'mass': 84.97226 * u.u,
+        'stable': False,
+        'half-life': '50# ms',
+    },
+
+    'Ga-56': {
+        'atomic number': 31,
+        'mass number': 56,
+        'mass': 55.99536 * u.u,
+        'stable': False,
+    },
+
+    'Ga-57': {
+        'atomic number': 31,
+        'mass number': 57,
+        'mass': 56.9832 * u.u,
+        'stable': False,
+    },
+
+    'Ga-58': {
+        'atomic number': 31,
+        'mass number': 58,
+        'mass': 57.97478 * u.u,
+        'stable': False,
+    },
+
+    'Ga-59': {
+        'atomic number': 31,
+        'mass number': 59,
+        'mass': 58.96353 * u.u,
+        'stable': False,
+    },
+
+    'Ga-60': {
+        'atomic number': 31,
+        'mass number': 60,
+        'mass': 59.95729 * u.u,
+        'stable': False,
+        'half-life': 0.07 * u.s,
+    },
+
+    'Ga-61': {
+        'atomic number': 31,
+        'mass number': 61,
+        'mass': 60.949399 * u.u,
+        'stable': False,
+        'half-life': 0.167 * u.s,
+    },
+
+    'Ga-62': {
+        'atomic number': 31,
+        'mass number': 62,
+        'mass': 61.94419025 * u.u,
+        'stable': False,
+        'half-life': 0.116121 * u.s,
+    },
+
+    'Ga-63': {
+        'atomic number': 31,
+        'mass number': 63,
+        'mass': 62.9392942 * u.u,
+        'stable': False,
+        'half-life': 32.4 * u.s,
+    },
+
+    'Ga-64': {
+        'atomic number': 31,
+        'mass number': 64,
+        'mass': 63.9368404 * u.u,
+        'stable': False,
+        'half-life': 157.62 * u.s,
+    },
+
+    'Ga-65': {
+        'atomic number': 31,
+        'mass number': 65,
+        'mass': 64.93273459 * u.u,
+        'stable': False,
+        'half-life': 912.0 * u.s,
+    },
+
+    'Ga-66': {
+        'atomic number': 31,
+        'mass number': 66,
+        'mass': 65.9315894 * u.u,
+        'stable': False,
+        'half-life': 33494.4 * u.s,
+    },
+
+    'Ga-67': {
+        'atomic number': 31,
+        'mass number': 67,
+        'mass': 66.9282025 * u.u,
+        'stable': False,
+        'half-life': 281797.056 * u.s,
+    },
+
+    'Ga-68': {
+        'atomic number': 31,
+        'mass number': 68,
+        'mass': 67.9279805 * u.u,
+        'stable': False,
+        'half-life': 4070.7 * u.s,
+    },
+
+    'Ga-69': {
+        'atomic number': 31,
+        'mass number': 69,
+        'mass': 68.9255735 * u.u,
+        'stable': True,
+        'abundance': 0.60108,
+    },
+
+    'Ga-70': {
+        'atomic number': 31,
+        'mass number': 70,
+        'mass': 69.9260219 * u.u,
+        'stable': False,
+        'half-life': 1268.4 * u.s,
+    },
+
+    'Ga-71': {
+        'atomic number': 31,
+        'mass number': 71,
+        'mass': 70.92470258 * u.u,
+        'stable': True,
+        'abundance': 0.39892,
+    },
+
+    'Ga-72': {
+        'atomic number': 31,
+        'mass number': 72,
+        'mass': 71.92636747 * u.u,
+        'stable': False,
+        'half-life': 50490.0 * u.s,
+    },
+
+    'Ga-73': {
+        'atomic number': 31,
+        'mass number': 73,
+        'mass': 72.9251747 * u.u,
+        'stable': False,
+        'half-life': 17496.0 * u.s,
+    },
+
+    'Ga-74': {
+        'atomic number': 31,
+        'mass number': 74,
+        'mass': 73.9269457 * u.u,
+        'stable': False,
+        'half-life': 487.2 * u.s,
+    },
+
+    'Ga-75': {
+        'atomic number': 31,
+        'mass number': 75,
+        'mass': 74.9265002 * u.u,
+        'stable': False,
+        'half-life': 126.0 * u.s,
+    },
+
+    'Ga-76': {
+        'atomic number': 31,
+        'mass number': 76,
+        'mass': 75.9288276 * u.u,
+        'stable': False,
+        'half-life': 32.6 * u.s,
+    },
+
+    'Ga-77': {
+        'atomic number': 31,
+        'mass number': 77,
+        'mass': 76.9291543 * u.u,
+        'stable': False,
+        'half-life': 13.2 * u.s,
+    },
+
+    'Ga-78': {
+        'atomic number': 31,
+        'mass number': 78,
+        'mass': 77.9316088 * u.u,
+        'stable': False,
+        'half-life': 5.09 * u.s,
+    },
+
+    'Ga-79': {
+        'atomic number': 31,
+        'mass number': 79,
+        'mass': 78.9328523 * u.u,
+        'stable': False,
+        'half-life': 2.848 * u.s,
+    },
+
+    'Ga-80': {
+        'atomic number': 31,
+        'mass number': 80,
+        'mass': 79.9364208 * u.u,
+        'stable': False,
+        'half-life': 1.9 * u.s,
+    },
+
+    'Ga-81': {
+        'atomic number': 31,
+        'mass number': 81,
+        'mass': 80.9381338 * u.u,
+        'stable': False,
+        'half-life': 1.217 * u.s,
+    },
+
+    'Ga-82': {
+        'atomic number': 31,
+        'mass number': 82,
+        'mass': 81.9431765 * u.u,
+        'stable': False,
+        'half-life': 0.599 * u.s,
+    },
+
+    'Ga-83': {
+        'atomic number': 31,
+        'mass number': 83,
+        'mass': 82.9471203 * u.u,
+        'stable': False,
+        'half-life': 0.3081 * u.s,
+    },
+
+    'Ga-84': {
+        'atomic number': 31,
+        'mass number': 84,
+        'mass': 83.95246 * u.u,
+        'stable': False,
+        'half-life': 0.085 * u.s,
+    },
+
+    'Ga-85': {
+        'atomic number': 31,
+        'mass number': 85,
+        'mass': 84.95699 * u.u,
+        'stable': False,
+        'half-life': 0.0922 * u.s,
+    },
+
+    'Ga-86': {
+        'atomic number': 31,
+        'mass number': 86,
+        'mass': 85.96301 * u.u,
+        'stable': False,
+        'half-life': 0.047 * u.s,
+    },
+
+    'Ga-87': {
+        'atomic number': 31,
+        'mass number': 87,
+        'mass': 86.96824 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Ge-58': {
+        'atomic number': 32,
+        'mass number': 58,
+        'mass': 57.99172 * u.u,
+        'stable': False,
+    },
+
+    'Ge-59': {
+        'atomic number': 32,
+        'mass number': 59,
+        'mass': 58.98249 * u.u,
+        'stable': False,
+        'half-life': '8# ms',
+    },
+
+    'Ge-60': {
+        'atomic number': 32,
+        'mass number': 60,
+        'mass': 59.97036 * u.u,
+        'stable': False,
+        'half-life': '30# ms',
+    },
+
+    'Ge-61': {
+        'atomic number': 32,
+        'mass number': 61,
+        'mass': 60.96379 * u.u,
+        'stable': False,
+        'half-life': 0.044 * u.s,
+    },
+
+    'Ge-62': {
+        'atomic number': 32,
+        'mass number': 62,
+        'mass': 61.95502 * u.u,
+        'stable': False,
+        'half-life': 0.129 * u.s,
+    },
+
+    'Ge-63': {
+        'atomic number': 32,
+        'mass number': 63,
+        'mass': 62.949628 * u.u,
+        'stable': False,
+        'half-life': 0.142 * u.s,
+    },
+
+    'Ge-64': {
+        'atomic number': 32,
+        'mass number': 64,
+        'mass': 63.9416899 * u.u,
+        'stable': False,
+        'half-life': 63.7 * u.s,
+    },
+
+    'Ge-65': {
+        'atomic number': 32,
+        'mass number': 65,
+        'mass': 64.9393681 * u.u,
+        'stable': False,
+        'half-life': 30.9 * u.s,
+    },
+
+    'Ge-66': {
+        'atomic number': 32,
+        'mass number': 66,
+        'mass': 65.9338621 * u.u,
+        'stable': False,
+        'half-life': 8136.0 * u.s,
+    },
+
+    'Ge-67': {
+        'atomic number': 32,
+        'mass number': 67,
+        'mass': 66.9327339 * u.u,
+        'stable': False,
+        'half-life': 1134.0 * u.s,
+    },
+
+    'Ge-68': {
+        'atomic number': 32,
+        'mass number': 68,
+        'mass': 67.9280953 * u.u,
+        'stable': False,
+        'half-life': 23408352.0 * u.s,
+    },
+
+    'Ge-69': {
+        'atomic number': 32,
+        'mass number': 69,
+        'mass': 68.9279645 * u.u,
+        'stable': False,
+        'half-life': 140580.0 * u.s,
+    },
+
+    'Ge-70': {
+        'atomic number': 32,
+        'mass number': 70,
+        'mass': 69.92424875 * u.u,
+        'stable': True,
+        'abundance': 0.2057,
+    },
+
+    'Ge-71': {
+        'atomic number': 32,
+        'mass number': 71,
+        'mass': 70.92495233 * u.u,
+        'stable': False,
+        'half-life': 987552.0 * u.s,
+    },
+
+    'Ge-72': {
+        'atomic number': 32,
+        'mass number': 72,
+        'mass': 71.922075826 * u.u,
+        'stable': True,
+        'abundance': 0.2745,
+    },
+
+    'Ge-73': {
+        'atomic number': 32,
+        'mass number': 73,
+        'mass': 72.923458956 * u.u,
+        'stable': True,
+        'abundance': 0.0775,
+    },
+
+    'Ge-74': {
+        'atomic number': 32,
+        'mass number': 74,
+        'mass': 73.921177761 * u.u,
+        'stable': True,
+        'abundance': 0.365,
+    },
+
+    'Ge-75': {
+        'atomic number': 32,
+        'mass number': 75,
+        'mass': 74.92285837 * u.u,
+        'stable': False,
+        'half-life': 4966.8 * u.s,
+    },
+
+    'Ge-76': {
+        'atomic number': 32,
+        'mass number': 76,
+        'mass': 75.921402726 * u.u,
+        'stable': False,
+        'abundance': 0.0773,
+    },
+
+    'Ge-77': {
+        'atomic number': 32,
+        'mass number': 77,
+        'mass': 76.923549843 * u.u,
+        'stable': False,
+        'half-life': 40359.6 * u.s,
+    },
+
+    'Ge-78': {
+        'atomic number': 32,
+        'mass number': 78,
+        'mass': 77.9228529 * u.u,
+        'stable': False,
+        'half-life': 5280.0 * u.s,
+    },
+
+    'Ge-79': {
+        'atomic number': 32,
+        'mass number': 79,
+        'mass': 78.92536 * u.u,
+        'stable': False,
+        'half-life': 18.98 * u.s,
+    },
+
+    'Ge-80': {
+        'atomic number': 32,
+        'mass number': 80,
+        'mass': 79.9253508 * u.u,
+        'stable': False,
+        'half-life': 29.5 * u.s,
+    },
+
+    'Ge-81': {
+        'atomic number': 32,
+        'mass number': 81,
+        'mass': 80.9288329 * u.u,
+        'stable': False,
+        'half-life': 8.0 * u.s,
+    },
+
+    'Ge-82': {
+        'atomic number': 32,
+        'mass number': 82,
+        'mass': 81.929774 * u.u,
+        'stable': False,
+        'half-life': 4.56 * u.s,
+    },
+
+    'Ge-83': {
+        'atomic number': 32,
+        'mass number': 83,
+        'mass': 82.9345391 * u.u,
+        'stable': False,
+        'half-life': 1.85 * u.s,
+    },
+
+    'Ge-84': {
+        'atomic number': 32,
+        'mass number': 84,
+        'mass': 83.9375751 * u.u,
+        'stable': False,
+        'half-life': 0.951 * u.s,
+    },
+
+    'Ge-85': {
+        'atomic number': 32,
+        'mass number': 85,
+        'mass': 84.9429697 * u.u,
+        'stable': False,
+        'half-life': 0.494 * u.s,
+    },
+
+    'Ge-86': {
+        'atomic number': 32,
+        'mass number': 86,
+        'mass': 85.94658 * u.u,
+        'stable': False,
+        'half-life': 0.226 * u.s,
+    },
+
+    'Ge-87': {
+        'atomic number': 32,
+        'mass number': 87,
+        'mass': 86.95268 * u.u,
+        'stable': False,
+        'half-life': '150# ms',
+    },
+
+    'Ge-88': {
+        'atomic number': 32,
+        'mass number': 88,
+        'mass': 87.95691 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'Ge-89': {
+        'atomic number': 32,
+        'mass number': 89,
+        'mass': 88.96379 * u.u,
+        'stable': False,
+        'half-life': '50# ms',
+    },
+
+    'Ge-90': {
+        'atomic number': 32,
+        'mass number': 90,
+        'mass': 89.96863 * u.u,
+        'stable': False,
+        'half-life': '50# ms',
+    },
+
+    'As-60': {
+        'atomic number': 33,
+        'mass number': 60,
+        'mass': 59.99388 * u.u,
+        'stable': False,
+    },
+
+    'As-61': {
+        'atomic number': 33,
+        'mass number': 61,
+        'mass': 60.98112 * u.u,
+        'stable': False,
+    },
+
+    'As-62': {
+        'atomic number': 33,
+        'mass number': 62,
+        'mass': 61.97361 * u.u,
+        'stable': False,
+    },
+
+    'As-63': {
+        'atomic number': 33,
+        'mass number': 63,
+        'mass': 62.9639 * u.u,
+        'stable': False,
+    },
+
+    'As-64': {
+        'atomic number': 33,
+        'mass number': 64,
+        'mass': 63.95743 * u.u,
+        'stable': False,
+        'half-life': 0.04 * u.s,
+    },
+
+    'As-65': {
+        'atomic number': 33,
+        'mass number': 65,
+        'mass': 64.949611 * u.u,
+        'stable': False,
+        'half-life': 0.17 * u.s,
+    },
+
+    'As-66': {
+        'atomic number': 33,
+        'mass number': 66,
+        'mass': 65.9441488 * u.u,
+        'stable': False,
+        'half-life': 0.09577 * u.s,
+    },
+
+    'As-67': {
+        'atomic number': 33,
+        'mass number': 67,
+        'mass': 66.93925111 * u.u,
+        'stable': False,
+        'half-life': 42.5 * u.s,
+    },
+
+    'As-68': {
+        'atomic number': 33,
+        'mass number': 68,
+        'mass': 67.9367741 * u.u,
+        'stable': False,
+        'half-life': 151.6 * u.s,
+    },
+
+    'As-69': {
+        'atomic number': 33,
+        'mass number': 69,
+        'mass': 68.932246 * u.u,
+        'stable': False,
+        'half-life': 912.0 * u.s,
+    },
+
+    'As-70': {
+        'atomic number': 33,
+        'mass number': 70,
+        'mass': 69.930926 * u.u,
+        'stable': False,
+        'half-life': 3156.0 * u.s,
+    },
+
+    'As-71': {
+        'atomic number': 33,
+        'mass number': 71,
+        'mass': 70.9271138 * u.u,
+        'stable': False,
+        'half-life': 235080.0 * u.s,
+    },
+
+    'As-72': {
+        'atomic number': 33,
+        'mass number': 72,
+        'mass': 71.9267523 * u.u,
+        'stable': False,
+        'half-life': 93600.0 * u.s,
+    },
+
+    'As-73': {
+        'atomic number': 33,
+        'mass number': 73,
+        'mass': 72.9238291 * u.u,
+        'stable': False,
+        'half-life': 6937920.0 * u.s,
+    },
+
+    'As-74': {
+        'atomic number': 33,
+        'mass number': 74,
+        'mass': 73.9239286 * u.u,
+        'stable': False,
+        'half-life': 1535328.0 * u.s,
+    },
+
+    'As-75': {
+        'atomic number': 33,
+        'mass number': 75,
+        'mass': 74.92159457 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'As-76': {
+        'atomic number': 33,
+        'mass number': 76,
+        'mass': 75.92239202 * u.u,
+        'stable': False,
+        'half-life': 93121.92 * u.s,
+    },
+
+    'As-77': {
+        'atomic number': 33,
+        'mass number': 77,
+        'mass': 76.9206476 * u.u,
+        'stable': False,
+        'half-life': 139644.0 * u.s,
+    },
+
+    'As-78': {
+        'atomic number': 33,
+        'mass number': 78,
+        'mass': 77.921828 * u.u,
+        'stable': False,
+        'half-life': 5442.0 * u.s,
+    },
+
+    'As-79': {
+        'atomic number': 33,
+        'mass number': 79,
+        'mass': 78.9209484 * u.u,
+        'stable': False,
+        'half-life': 540.6 * u.s,
+    },
+
+    'As-80': {
+        'atomic number': 33,
+        'mass number': 80,
+        'mass': 79.9224746 * u.u,
+        'stable': False,
+        'half-life': 15.2 * u.s,
+    },
+
+    'As-81': {
+        'atomic number': 33,
+        'mass number': 81,
+        'mass': 80.9221323 * u.u,
+        'stable': False,
+        'half-life': 33.3 * u.s,
+    },
+
+    'As-82': {
+        'atomic number': 33,
+        'mass number': 82,
+        'mass': 81.9247412 * u.u,
+        'stable': False,
+        'half-life': 19.1 * u.s,
+    },
+
+    'As-83': {
+        'atomic number': 33,
+        'mass number': 83,
+        'mass': 82.9252069 * u.u,
+        'stable': False,
+        'half-life': 13.4 * u.s,
+    },
+
+    'As-84': {
+        'atomic number': 33,
+        'mass number': 84,
+        'mass': 83.9293033 * u.u,
+        'stable': False,
+        'half-life': 4.02 * u.s,
+    },
+
+    'As-85': {
+        'atomic number': 33,
+        'mass number': 85,
+        'mass': 84.9321637 * u.u,
+        'stable': False,
+        'half-life': 2.021 * u.s,
+    },
+
+    'As-86': {
+        'atomic number': 33,
+        'mass number': 86,
+        'mass': 85.9367015 * u.u,
+        'stable': False,
+        'half-life': 0.945 * u.s,
+    },
+
+    'As-87': {
+        'atomic number': 33,
+        'mass number': 87,
+        'mass': 86.9402917 * u.u,
+        'stable': False,
+        'half-life': 0.492 * u.s,
+    },
+
+    'As-88': {
+        'atomic number': 33,
+        'mass number': 88,
+        'mass': 87.94555 * u.u,
+        'stable': False,
+        'half-life': 0.27 * u.s,
+    },
+
+    'As-89': {
+        'atomic number': 33,
+        'mass number': 89,
+        'mass': 88.94976 * u.u,
+        'stable': False,
+        'half-life': '200# ms',
+    },
+
+    'As-90': {
+        'atomic number': 33,
+        'mass number': 90,
+        'mass': 89.95563 * u.u,
+        'stable': False,
+        'half-life': '80# ms',
+    },
+
+    'As-91': {
+        'atomic number': 33,
+        'mass number': 91,
+        'mass': 90.96039 * u.u,
+        'stable': False,
+        'half-life': '50# ms',
+    },
+
+    'As-92': {
+        'atomic number': 33,
+        'mass number': 92,
+        'mass': 91.96674 * u.u,
+        'stable': False,
+        'half-life': '30# ms',
+    },
+
+    'Se-64': {
+        'atomic number': 34,
+        'mass number': 64,
+        'mass': 63.97109 * u.u,
+        'stable': False,
+        'half-life': '30# ms',
+    },
+
+    'Se-65': {
+        'atomic number': 34,
+        'mass number': 65,
+        'mass': 64.9644 * u.u,
+        'stable': False,
+        'half-life': 0.033 * u.s,
+    },
+
+    'Se-66': {
+        'atomic number': 34,
+        'mass number': 66,
+        'mass': 65.95559 * u.u,
+        'stable': False,
+        'half-life': 0.033 * u.s,
+    },
+
+    'Se-67': {
+        'atomic number': 34,
+        'mass number': 67,
+        'mass': 66.949994 * u.u,
+        'stable': False,
+        'half-life': 0.133 * u.s,
+    },
+
+    'Se-68': {
+        'atomic number': 34,
+        'mass number': 68,
+        'mass': 67.94182524 * u.u,
+        'stable': False,
+        'half-life': 35.5 * u.s,
+    },
+
+    'Se-69': {
+        'atomic number': 34,
+        'mass number': 69,
+        'mass': 68.9394148 * u.u,
+        'stable': False,
+        'half-life': 27.4 * u.s,
+    },
+
+    'Se-70': {
+        'atomic number': 34,
+        'mass number': 70,
+        'mass': 69.9335155 * u.u,
+        'stable': False,
+        'half-life': 2466.0 * u.s,
+    },
+
+    'Se-71': {
+        'atomic number': 34,
+        'mass number': 71,
+        'mass': 70.9322094 * u.u,
+        'stable': False,
+        'half-life': 284.4 * u.s,
+    },
+
+    'Se-72': {
+        'atomic number': 34,
+        'mass number': 72,
+        'mass': 71.9271405 * u.u,
+        'stable': False,
+        'half-life': 725760.0 * u.s,
+    },
+
+    'Se-73': {
+        'atomic number': 34,
+        'mass number': 73,
+        'mass': 72.9267549 * u.u,
+        'stable': False,
+        'half-life': 25740.0 * u.s,
+    },
+
+    'Se-74': {
+        'atomic number': 34,
+        'mass number': 74,
+        'mass': 73.922475934 * u.u,
+        'stable': True,
+        'abundance': 0.0089,
+    },
+
+    'Se-75': {
+        'atomic number': 34,
+        'mass number': 75,
+        'mass': 74.92252287 * u.u,
+        'stable': False,
+        'half-life': 10351497.6 * u.s,
+    },
+
+    'Se-76': {
+        'atomic number': 34,
+        'mass number': 76,
+        'mass': 75.919213704 * u.u,
+        'stable': True,
+        'abundance': 0.0937,
+    },
+
+    'Se-77': {
+        'atomic number': 34,
+        'mass number': 77,
+        'mass': 76.919914154 * u.u,
+        'stable': True,
+        'abundance': 0.0763,
+    },
+
+    'Se-78': {
+        'atomic number': 34,
+        'mass number': 78,
+        'mass': 77.91730928 * u.u,
+        'stable': True,
+        'abundance': 0.2377,
+    },
+
+    'Se-79': {
+        'atomic number': 34,
+        'mass number': 79,
+        'mass': 78.91849929 * u.u,
+        'stable': False,
+        'half-life': 10319114802000.0 * u.s,
+    },
+
+    'Se-80': {
+        'atomic number': 34,
+        'mass number': 80,
+        'mass': 79.9165218 * u.u,
+        'stable': True,
+        'abundance': 0.4961,
+    },
+
+    'Se-81': {
+        'atomic number': 34,
+        'mass number': 81,
+        'mass': 80.917993 * u.u,
+        'stable': False,
+        'half-life': 1107.0 * u.s,
+    },
+
+    'Se-82': {
+        'atomic number': 34,
+        'mass number': 82,
+        'mass': 81.9166995 * u.u,
+        'stable': False,
+        'abundance': 0.0873,
+    },
+
+    'Se-83': {
+        'atomic number': 34,
+        'mass number': 83,
+        'mass': 82.9191186 * u.u,
+        'stable': False,
+        'half-life': 1335.0 * u.s,
+    },
+
+    'Se-84': {
+        'atomic number': 34,
+        'mass number': 84,
+        'mass': 83.9184668 * u.u,
+        'stable': False,
+        'half-life': 195.6 * u.s,
+    },
+
+    'Se-85': {
+        'atomic number': 34,
+        'mass number': 85,
+        'mass': 84.9222608 * u.u,
+        'stable': False,
+        'half-life': 32.9 * u.s,
+    },
+
+    'Se-86': {
+        'atomic number': 34,
+        'mass number': 86,
+        'mass': 85.9243117 * u.u,
+        'stable': False,
+        'half-life': 14.3 * u.s,
+    },
+
+    'Se-87': {
+        'atomic number': 34,
+        'mass number': 87,
+        'mass': 86.9286886 * u.u,
+        'stable': False,
+        'half-life': 5.5 * u.s,
+    },
+
+    'Se-88': {
+        'atomic number': 34,
+        'mass number': 88,
+        'mass': 87.9314175 * u.u,
+        'stable': False,
+        'half-life': 1.53 * u.s,
+    },
+
+    'Se-89': {
+        'atomic number': 34,
+        'mass number': 89,
+        'mass': 88.9366691 * u.u,
+        'stable': False,
+        'half-life': 0.43 * u.s,
+    },
+
+    'Se-90': {
+        'atomic number': 34,
+        'mass number': 90,
+        'mass': 89.9401 * u.u,
+        'stable': False,
+        'half-life': 0.21 * u.s,
+    },
+
+    'Se-91': {
+        'atomic number': 34,
+        'mass number': 91,
+        'mass': 90.94596 * u.u,
+        'stable': False,
+        'half-life': 0.27 * u.s,
+    },
+
+    'Se-92': {
+        'atomic number': 34,
+        'mass number': 92,
+        'mass': 91.94984 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'Se-93': {
+        'atomic number': 34,
+        'mass number': 93,
+        'mass': 92.95629 * u.u,
+        'stable': False,
+        'half-life': '50# ms',
+    },
+
+    'Se-94': {
+        'atomic number': 34,
+        'mass number': 94,
+        'mass': 93.96049 * u.u,
+        'stable': False,
+        'half-life': '20# ms',
+    },
+
+    'Se-95': {
+        'atomic number': 34,
+        'mass number': 95,
+        'mass': 94.9673 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Br-67': {
+        'atomic number': 35,
+        'mass number': 67,
+        'mass': 66.96465 * u.u,
+        'stable': False,
+    },
+
+    'Br-68': {
+        'atomic number': 35,
+        'mass number': 68,
+        'mass': 67.95873 * u.u,
+        'stable': False,
+    },
+
+    'Br-69': {
+        'atomic number': 35,
+        'mass number': 69,
+        'mass': 68.950497 * u.u,
+        'stable': False,
+        'half-life': '<24 ns',
+    },
+
+    'Br-70': {
+        'atomic number': 35,
+        'mass number': 70,
+        'mass': 69.944792 * u.u,
+        'stable': False,
+        'half-life': 0.0791 * u.s,
+    },
+
+    'Br-71': {
+        'atomic number': 35,
+        'mass number': 71,
+        'mass': 70.9393422 * u.u,
+        'stable': False,
+        'half-life': 21.4 * u.s,
+    },
+
+    'Br-72': {
+        'atomic number': 35,
+        'mass number': 72,
+        'mass': 71.9365886 * u.u,
+        'stable': False,
+        'half-life': 78.6 * u.s,
+    },
+
+    'Br-73': {
+        'atomic number': 35,
+        'mass number': 73,
+        'mass': 72.9316715 * u.u,
+        'stable': False,
+        'half-life': 204.0 * u.s,
+    },
+
+    'Br-74': {
+        'atomic number': 35,
+        'mass number': 74,
+        'mass': 73.9299102 * u.u,
+        'stable': False,
+        'half-life': 1524.0 * u.s,
+    },
+
+    'Br-75': {
+        'atomic number': 35,
+        'mass number': 75,
+        'mass': 74.9258105 * u.u,
+        'stable': False,
+        'half-life': 5802.0 * u.s,
+    },
+
+    'Br-76': {
+        'atomic number': 35,
+        'mass number': 76,
+        'mass': 75.924542 * u.u,
+        'stable': False,
+        'half-life': 58320.0 * u.s,
+    },
+
+    'Br-77': {
+        'atomic number': 35,
+        'mass number': 77,
+        'mass': 76.9213792 * u.u,
+        'stable': False,
+        'half-life': 205344.0 * u.s,
+    },
+
+    'Br-78': {
+        'atomic number': 35,
+        'mass number': 78,
+        'mass': 77.9211459 * u.u,
+        'stable': False,
+        'half-life': 387.0 * u.s,
+    },
+
+    'Br-79': {
+        'atomic number': 35,
+        'mass number': 79,
+        'mass': 78.9183376 * u.u,
+        'stable': True,
+        'abundance': 0.5069,
+    },
+
+    'Br-80': {
+        'atomic number': 35,
+        'mass number': 80,
+        'mass': 79.9185298 * u.u,
+        'stable': False,
+        'half-life': 1060.8 * u.s,
+    },
+
+    'Br-81': {
+        'atomic number': 35,
+        'mass number': 81,
+        'mass': 80.9162897 * u.u,
+        'stable': True,
+        'abundance': 0.4931,
+    },
+
+    'Br-82': {
+        'atomic number': 35,
+        'mass number': 82,
+        'mass': 81.9168032 * u.u,
+        'stable': False,
+        'half-life': 127015.2 * u.s,
+    },
+
+    'Br-83': {
+        'atomic number': 35,
+        'mass number': 83,
+        'mass': 82.9151756 * u.u,
+        'stable': False,
+        'half-life': 8546.4 * u.s,
+    },
+
+    'Br-84': {
+        'atomic number': 35,
+        'mass number': 84,
+        'mass': 83.916496 * u.u,
+        'stable': False,
+        'half-life': 1905.6 * u.s,
+    },
+
+    'Br-85': {
+        'atomic number': 35,
+        'mass number': 85,
+        'mass': 84.9156458 * u.u,
+        'stable': False,
+        'half-life': 174.0 * u.s,
+    },
+
+    'Br-86': {
+        'atomic number': 35,
+        'mass number': 86,
+        'mass': 85.9188054 * u.u,
+        'stable': False,
+        'half-life': 55.1 * u.s,
+    },
+
+    'Br-87': {
+        'atomic number': 35,
+        'mass number': 87,
+        'mass': 86.920674 * u.u,
+        'stable': False,
+        'half-life': 55.65 * u.s,
+    },
+
+    'Br-88': {
+        'atomic number': 35,
+        'mass number': 88,
+        'mass': 87.9240833 * u.u,
+        'stable': False,
+        'half-life': 16.34 * u.s,
+    },
+
+    'Br-89': {
+        'atomic number': 35,
+        'mass number': 89,
+        'mass': 88.9267046 * u.u,
+        'stable': False,
+        'half-life': 4.357 * u.s,
+    },
+
+    'Br-90': {
+        'atomic number': 35,
+        'mass number': 90,
+        'mass': 89.9312928 * u.u,
+        'stable': False,
+        'half-life': 1.91 * u.s,
+    },
+
+    'Br-91': {
+        'atomic number': 35,
+        'mass number': 91,
+        'mass': 90.9343986 * u.u,
+        'stable': False,
+        'half-life': 0.543 * u.s,
+    },
+
+    'Br-92': {
+        'atomic number': 35,
+        'mass number': 92,
+        'mass': 91.9396316 * u.u,
+        'stable': False,
+        'half-life': 0.314 * u.s,
+    },
+
+    'Br-93': {
+        'atomic number': 35,
+        'mass number': 93,
+        'mass': 92.94313 * u.u,
+        'stable': False,
+        'half-life': 0.152 * u.s,
+    },
+
+    'Br-94': {
+        'atomic number': 35,
+        'mass number': 94,
+        'mass': 93.9489 * u.u,
+        'stable': False,
+        'half-life': 0.07 * u.s,
+    },
+
+    'Br-95': {
+        'atomic number': 35,
+        'mass number': 95,
+        'mass': 94.95301 * u.u,
+        'stable': False,
+        'half-life': '50# ms',
+    },
+
+    'Br-96': {
+        'atomic number': 35,
+        'mass number': 96,
+        'mass': 95.95903 * u.u,
+        'stable': False,
+        'half-life': '20# ms',
+    },
+
+    'Br-97': {
+        'atomic number': 35,
+        'mass number': 97,
+        'mass': 96.96344 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Br-98': {
+        'atomic number': 35,
+        'mass number': 98,
+        'mass': 97.96946 * u.u,
+        'stable': False,
+        'half-life': '5# ms',
+    },
+
+    'Kr-69': {
+        'atomic number': 36,
+        'mass number': 69,
+        'mass': 68.96518 * u.u,
+        'stable': False,
+        'half-life': 0.028 * u.s,
+    },
+
+    'Kr-70': {
+        'atomic number': 36,
+        'mass number': 70,
+        'mass': 69.95604 * u.u,
+        'stable': False,
+        'half-life': 0.052 * u.s,
+    },
+
+    'Kr-71': {
+        'atomic number': 36,
+        'mass number': 71,
+        'mass': 70.95027 * u.u,
+        'stable': False,
+        'half-life': 0.1 * u.s,
+    },
+
+    'Kr-72': {
+        'atomic number': 36,
+        'mass number': 72,
+        'mass': 71.9420924 * u.u,
+        'stable': False,
+        'half-life': 17.16 * u.s,
+    },
+
+    'Kr-73': {
+        'atomic number': 36,
+        'mass number': 73,
+        'mass': 72.9392892 * u.u,
+        'stable': False,
+        'half-life': 27.3 * u.s,
+    },
+
+    'Kr-74': {
+        'atomic number': 36,
+        'mass number': 74,
+        'mass': 73.933084 * u.u,
+        'stable': False,
+        'half-life': 690.0 * u.s,
+    },
+
+    'Kr-75': {
+        'atomic number': 36,
+        'mass number': 75,
+        'mass': 74.9309457 * u.u,
+        'stable': False,
+        'half-life': 276.0 * u.s,
+    },
+
+    'Kr-76': {
+        'atomic number': 36,
+        'mass number': 76,
+        'mass': 75.9259103 * u.u,
+        'stable': False,
+        'half-life': 53280.0 * u.s,
+    },
+
+    'Kr-77': {
+        'atomic number': 36,
+        'mass number': 77,
+        'mass': 76.92467 * u.u,
+        'stable': False,
+        'half-life': 4464.0 * u.s,
+    },
+
+    'Kr-78': {
+        'atomic number': 36,
+        'mass number': 78,
+        'mass': 77.92036494 * u.u,
+        'stable': True,
+        'abundance': 0.00355,
+    },
+
+    'Kr-79': {
+        'atomic number': 36,
+        'mass number': 79,
+        'mass': 78.9200829 * u.u,
+        'stable': False,
+        'half-life': 126144.0 * u.s,
+    },
+
+    'Kr-80': {
+        'atomic number': 36,
+        'mass number': 80,
+        'mass': 79.91637808 * u.u,
+        'stable': True,
+        'abundance': 0.02286,
+    },
+
+    'Kr-81': {
+        'atomic number': 36,
+        'mass number': 81,
+        'mass': 80.9165912 * u.u,
+        'stable': False,
+        'half-life': 7226536054000.0 * u.s,
+    },
+
+    'Kr-82': {
+        'atomic number': 36,
+        'mass number': 82,
+        'mass': 81.91348273 * u.u,
+        'stable': True,
+        'abundance': 0.11593,
+    },
+
+    'Kr-83': {
+        'atomic number': 36,
+        'mass number': 83,
+        'mass': 82.91412716 * u.u,
+        'stable': True,
+        'abundance': 0.115,
+    },
+
+    'Kr-84': {
+        'atomic number': 36,
+        'mass number': 84,
+        'mass': 83.9114977282 * u.u,
+        'stable': True,
+        'abundance': 0.56987,
+    },
+
+    'Kr-85': {
+        'atomic number': 36,
+        'mass number': 85,
+        'mass': 84.9125273 * u.u,
+        'stable': False,
+        'half-life': 340044480.0 * u.s,
+    },
+
+    'Kr-86': {
+        'atomic number': 36,
+        'mass number': 86,
+        'mass': 85.9106106269 * u.u,
+        'stable': True,
+        'abundance': 0.17279,
+    },
+
+    'Kr-87': {
+        'atomic number': 36,
+        'mass number': 87,
+        'mass': 86.91335476 * u.u,
+        'stable': False,
+        'half-life': 4578.0 * u.s,
+    },
+
+    'Kr-88': {
+        'atomic number': 36,
+        'mass number': 88,
+        'mass': 87.9144479 * u.u,
+        'stable': False,
+        'half-life': 10170.0 * u.s,
+    },
+
+    'Kr-89': {
+        'atomic number': 36,
+        'mass number': 89,
+        'mass': 88.9178355 * u.u,
+        'stable': False,
+        'half-life': 189.0 * u.s,
+    },
+
+    'Kr-90': {
+        'atomic number': 36,
+        'mass number': 90,
+        'mass': 89.9195279 * u.u,
+        'stable': False,
+        'half-life': 32.32 * u.s,
+    },
+
+    'Kr-91': {
+        'atomic number': 36,
+        'mass number': 91,
+        'mass': 90.9238063 * u.u,
+        'stable': False,
+        'half-life': 8.57 * u.s,
+    },
+
+    'Kr-92': {
+        'atomic number': 36,
+        'mass number': 92,
+        'mass': 91.9261731 * u.u,
+        'stable': False,
+        'half-life': 1.84 * u.s,
+    },
+
+    'Kr-93': {
+        'atomic number': 36,
+        'mass number': 93,
+        'mass': 92.9311472 * u.u,
+        'stable': False,
+        'half-life': 1.286 * u.s,
+    },
+
+    'Kr-94': {
+        'atomic number': 36,
+        'mass number': 94,
+        'mass': 93.93414 * u.u,
+        'stable': False,
+        'half-life': 0.212 * u.s,
+    },
+
+    'Kr-95': {
+        'atomic number': 36,
+        'mass number': 95,
+        'mass': 94.939711 * u.u,
+        'stable': False,
+        'half-life': 0.114 * u.s,
+    },
+
+    'Kr-96': {
+        'atomic number': 36,
+        'mass number': 96,
+        'mass': 95.943017 * u.u,
+        'stable': False,
+        'half-life': 0.08 * u.s,
+    },
+
+    'Kr-97': {
+        'atomic number': 36,
+        'mass number': 97,
+        'mass': 96.94909 * u.u,
+        'stable': False,
+        'half-life': 0.0622 * u.s,
+    },
+
+    'Kr-98': {
+        'atomic number': 36,
+        'mass number': 98,
+        'mass': 97.95243 * u.u,
+        'stable': False,
+        'half-life': 0.0428 * u.s,
+    },
+
+    'Kr-99': {
+        'atomic number': 36,
+        'mass number': 99,
+        'mass': 98.95839 * u.u,
+        'stable': False,
+        'half-life': 0.04 * u.s,
+    },
+
+    'Kr-100': {
+        'atomic number': 36,
+        'mass number': 100,
+        'mass': 99.96237 * u.u,
+        'stable': False,
+        'half-life': 0.012 * u.s,
+    },
+
+    'Kr-101': {
+        'atomic number': 36,
+        'mass number': 101,
+        'mass': 100.96873 * u.u,
+        'stable': False,
+        'half-life': '5# ms',
+    },
+
+    'Rb-71': {
+        'atomic number': 37,
+        'mass number': 71,
+        'mass': 70.96532 * u.u,
+        'stable': False,
+    },
+
+    'Rb-72': {
+        'atomic number': 37,
+        'mass number': 72,
+        'mass': 71.95908 * u.u,
+        'stable': False,
+    },
+
+    'Rb-73': {
+        'atomic number': 37,
+        'mass number': 73,
+        'mass': 72.95053 * u.u,
+        'stable': False,
+    },
+
+    'Rb-74': {
+        'atomic number': 37,
+        'mass number': 74,
+        'mass': 73.9442659 * u.u,
+        'stable': False,
+        'half-life': 0.064776 * u.s,
+    },
+
+    'Rb-75': {
+        'atomic number': 37,
+        'mass number': 75,
+        'mass': 74.9385732 * u.u,
+        'stable': False,
+        'half-life': 19.0 * u.s,
+    },
+
+    'Rb-76': {
+        'atomic number': 37,
+        'mass number': 76,
+        'mass': 75.935073 * u.u,
+        'stable': False,
+        'half-life': 36.5 * u.s,
+    },
+
+    'Rb-77': {
+        'atomic number': 37,
+        'mass number': 77,
+        'mass': 76.9304016 * u.u,
+        'stable': False,
+        'half-life': 226.8 * u.s,
+    },
+
+    'Rb-78': {
+        'atomic number': 37,
+        'mass number': 78,
+        'mass': 77.9281419 * u.u,
+        'stable': False,
+        'half-life': 1059.6 * u.s,
+    },
+
+    'Rb-79': {
+        'atomic number': 37,
+        'mass number': 79,
+        'mass': 78.9239899 * u.u,
+        'stable': False,
+        'half-life': 1374.0 * u.s,
+    },
+
+    'Rb-80': {
+        'atomic number': 37,
+        'mass number': 80,
+        'mass': 79.9225164 * u.u,
+        'stable': False,
+        'half-life': 33.4 * u.s,
+    },
+
+    'Rb-81': {
+        'atomic number': 37,
+        'mass number': 81,
+        'mass': 80.9189939 * u.u,
+        'stable': False,
+        'half-life': 16459.2 * u.s,
+    },
+
+    'Rb-82': {
+        'atomic number': 37,
+        'mass number': 82,
+        'mass': 81.918209 * u.u,
+        'stable': False,
+        'half-life': 76.38 * u.s,
+    },
+
+    'Rb-83': {
+        'atomic number': 37,
+        'mass number': 83,
+        'mass': 82.9151142 * u.u,
+        'stable': False,
+        'half-life': 7447680.0 * u.s,
+    },
+
+    'Rb-84': {
+        'atomic number': 37,
+        'mass number': 84,
+        'mass': 83.9143752 * u.u,
+        'stable': False,
+        'half-life': 2835648.0 * u.s,
+    },
+
+    'Rb-85': {
+        'atomic number': 37,
+        'mass number': 85,
+        'mass': 84.9117897379 * u.u,
+        'stable': True,
+        'abundance': 0.7217,
+    },
+
+    'Rb-86': {
+        'atomic number': 37,
+        'mass number': 86,
+        'mass': 85.91116743 * u.u,
+        'stable': False,
+        'half-life': 1610668.8 * u.s,
+    },
+
+    'Rb-87': {
+        'atomic number': 37,
+        'mass number': 87,
+        'mass': 86.909180531 * u.u,
+        'stable': False,
+        'abundance': 0.2783,
+    },
+
+    'Rb-88': {
+        'atomic number': 37,
+        'mass number': 88,
+        'mass': 87.91131559 * u.u,
+        'stable': False,
+        'half-life': 1066.38 * u.s,
+    },
+
+    'Rb-89': {
+        'atomic number': 37,
+        'mass number': 89,
+        'mass': 88.9122783 * u.u,
+        'stable': False,
+        'half-life': 919.2 * u.s,
+    },
+
+    'Rb-90': {
+        'atomic number': 37,
+        'mass number': 90,
+        'mass': 89.9147985 * u.u,
+        'stable': False,
+        'half-life': 158.0 * u.s,
+    },
+
+    'Rb-91': {
+        'atomic number': 37,
+        'mass number': 91,
+        'mass': 90.9165372 * u.u,
+        'stable': False,
+        'half-life': 58.2 * u.s,
+    },
+
+    'Rb-92': {
+        'atomic number': 37,
+        'mass number': 92,
+        'mass': 91.9197284 * u.u,
+        'stable': False,
+        'half-life': 4.48 * u.s,
+    },
+
+    'Rb-93': {
+        'atomic number': 37,
+        'mass number': 93,
+        'mass': 92.9220393 * u.u,
+        'stable': False,
+        'half-life': 5.84 * u.s,
+    },
+
+    'Rb-94': {
+        'atomic number': 37,
+        'mass number': 94,
+        'mass': 93.9263948 * u.u,
+        'stable': False,
+        'half-life': 2.702 * u.s,
+    },
+
+    'Rb-95': {
+        'atomic number': 37,
+        'mass number': 95,
+        'mass': 94.92926 * u.u,
+        'stable': False,
+        'half-life': 0.3777 * u.s,
+    },
+
+    'Rb-96': {
+        'atomic number': 37,
+        'mass number': 96,
+        'mass': 95.9341334 * u.u,
+        'stable': False,
+        'half-life': 0.201 * u.s,
+    },
+
+    'Rb-97': {
+        'atomic number': 37,
+        'mass number': 97,
+        'mass': 96.9371771 * u.u,
+        'stable': False,
+        'half-life': 0.1691 * u.s,
+    },
+
+    'Rb-98': {
+        'atomic number': 37,
+        'mass number': 98,
+        'mass': 97.9416869 * u.u,
+        'stable': False,
+        'half-life': 0.114 * u.s,
+    },
+
+    'Rb-99': {
+        'atomic number': 37,
+        'mass number': 99,
+        'mass': 98.94503 * u.u,
+        'stable': False,
+        'half-life': 0.0564 * u.s,
+    },
+
+    'Rb-100': {
+        'atomic number': 37,
+        'mass number': 100,
+        'mass': 99.95003 * u.u,
+        'stable': False,
+        'half-life': 0.048 * u.s,
+    },
+
+    'Rb-101': {
+        'atomic number': 37,
+        'mass number': 101,
+        'mass': 100.95404 * u.u,
+        'stable': False,
+        'half-life': 0.0318 * u.s,
+    },
+
+    'Rb-102': {
+        'atomic number': 37,
+        'mass number': 102,
+        'mass': 101.95952 * u.u,
+        'stable': False,
+        'half-life': 0.037 * u.s,
+    },
+
+    'Rb-103': {
+        'atomic number': 37,
+        'mass number': 103,
+        'mass': 102.96392 * u.u,
+        'stable': False,
+        'half-life': 0.026 * u.s,
+    },
+
+    'Sr-73': {
+        'atomic number': 38,
+        'mass number': 73,
+        'mass': 72.9657 * u.u,
+        'stable': False,
+        'half-life': '>25 ms',
+    },
+
+    'Sr-74': {
+        'atomic number': 38,
+        'mass number': 74,
+        'mass': 73.95617 * u.u,
+        'stable': False,
+        'half-life': 0.027 * u.s,
+    },
+
+    'Sr-75': {
+        'atomic number': 38,
+        'mass number': 75,
+        'mass': 74.94995 * u.u,
+        'stable': False,
+        'half-life': 0.088 * u.s,
+    },
+
+    'Sr-76': {
+        'atomic number': 38,
+        'mass number': 76,
+        'mass': 75.941763 * u.u,
+        'stable': False,
+        'half-life': 7.89 * u.s,
+    },
+
+    'Sr-77': {
+        'atomic number': 38,
+        'mass number': 77,
+        'mass': 76.9379455 * u.u,
+        'stable': False,
+        'half-life': 9.0 * u.s,
+    },
+
+    'Sr-78': {
+        'atomic number': 38,
+        'mass number': 78,
+        'mass': 77.93218 * u.u,
+        'stable': False,
+        'half-life': 156.1 * u.s,
+    },
+
+    'Sr-79': {
+        'atomic number': 38,
+        'mass number': 79,
+        'mass': 78.9297077 * u.u,
+        'stable': False,
+        'half-life': 135.0 * u.s,
+    },
+
+    'Sr-80': {
+        'atomic number': 38,
+        'mass number': 80,
+        'mass': 79.9245175 * u.u,
+        'stable': False,
+        'half-life': 6378.0 * u.s,
+    },
+
+    'Sr-81': {
+        'atomic number': 38,
+        'mass number': 81,
+        'mass': 80.9232114 * u.u,
+        'stable': False,
+        'half-life': 1338.0 * u.s,
+    },
+
+    'Sr-82': {
+        'atomic number': 38,
+        'mass number': 82,
+        'mass': 81.9183999 * u.u,
+        'stable': False,
+        'half-life': 2191104.0 * u.s,
+    },
+
+    'Sr-83': {
+        'atomic number': 38,
+        'mass number': 83,
+        'mass': 82.9175544 * u.u,
+        'stable': False,
+        'half-life': 116676.0 * u.s,
+    },
+
+    'Sr-84': {
+        'atomic number': 38,
+        'mass number': 84,
+        'mass': 83.9134191 * u.u,
+        'stable': True,
+        'abundance': 0.0056,
+    },
+
+    'Sr-85': {
+        'atomic number': 38,
+        'mass number': 85,
+        'mass': 84.912932 * u.u,
+        'stable': False,
+        'half-life': 5603299.199999999 * u.s,
+    },
+
+    'Sr-86': {
+        'atomic number': 38,
+        'mass number': 86,
+        'mass': 85.9092606 * u.u,
+        'stable': True,
+        'abundance': 0.0986,
+    },
+
+    'Sr-87': {
+        'atomic number': 38,
+        'mass number': 87,
+        'mass': 86.9088775 * u.u,
+        'stable': True,
+        'abundance': 0.07,
+    },
+
+    'Sr-88': {
+        'atomic number': 38,
+        'mass number': 88,
+        'mass': 87.9056125 * u.u,
+        'stable': True,
+        'abundance': 0.8258,
+    },
+
+    'Sr-89': {
+        'atomic number': 38,
+        'mass number': 89,
+        'mass': 88.9074511 * u.u,
+        'stable': False,
+        'half-life': 4368643.2 * u.s,
+    },
+
+    'Sr-90': {
+        'atomic number': 38,
+        'mass number': 90,
+        'mass': 89.90773 * u.u,
+        'stable': False,
+        'half-life': 908523899.54 * u.s,
+    },
+
+    'Sr-91': {
+        'atomic number': 38,
+        'mass number': 91,
+        'mass': 90.9101954 * u.u,
+        'stable': False,
+        'half-life': 34740.0 * u.s,
+    },
+
+    'Sr-92': {
+        'atomic number': 38,
+        'mass number': 92,
+        'mass': 91.9110382 * u.u,
+        'stable': False,
+        'half-life': 9399.6 * u.s,
+    },
+
+    'Sr-93': {
+        'atomic number': 38,
+        'mass number': 93,
+        'mass': 92.9140242 * u.u,
+        'stable': False,
+        'half-life': 445.8 * u.s,
+    },
+
+    'Sr-94': {
+        'atomic number': 38,
+        'mass number': 94,
+        'mass': 93.9153556 * u.u,
+        'stable': False,
+        'half-life': 75.3 * u.s,
+    },
+
+    'Sr-95': {
+        'atomic number': 38,
+        'mass number': 95,
+        'mass': 94.9193529 * u.u,
+        'stable': False,
+        'half-life': 23.9 * u.s,
+    },
+
+    'Sr-96': {
+        'atomic number': 38,
+        'mass number': 96,
+        'mass': 95.9217066 * u.u,
+        'stable': False,
+        'half-life': 1.07 * u.s,
+    },
+
+    'Sr-97': {
+        'atomic number': 38,
+        'mass number': 97,
+        'mass': 96.926374 * u.u,
+        'stable': False,
+        'half-life': 0.429 * u.s,
+    },
+
+    'Sr-98': {
+        'atomic number': 38,
+        'mass number': 98,
+        'mass': 97.9286888 * u.u,
+        'stable': False,
+        'half-life': 0.653 * u.s,
+    },
+
+    'Sr-99': {
+        'atomic number': 38,
+        'mass number': 99,
+        'mass': 98.9328907 * u.u,
+        'stable': False,
+        'half-life': 0.269 * u.s,
+    },
+
+    'Sr-100': {
+        'atomic number': 38,
+        'mass number': 100,
+        'mass': 99.93577 * u.u,
+        'stable': False,
+        'half-life': 0.202 * u.s,
+    },
+
+    'Sr-101': {
+        'atomic number': 38,
+        'mass number': 101,
+        'mass': 100.940352 * u.u,
+        'stable': False,
+        'half-life': 0.1138 * u.s,
+    },
+
+    'Sr-102': {
+        'atomic number': 38,
+        'mass number': 102,
+        'mass': 101.943791 * u.u,
+        'stable': False,
+        'half-life': 0.069 * u.s,
+    },
+
+    'Sr-103': {
+        'atomic number': 38,
+        'mass number': 103,
+        'mass': 102.94909 * u.u,
+        'stable': False,
+        'half-life': 0.053 * u.s,
+    },
+
+    'Sr-104': {
+        'atomic number': 38,
+        'mass number': 104,
+        'mass': 103.95265 * u.u,
+        'stable': False,
+        'half-life': 0.0506 * u.s,
+    },
+
+    'Sr-105': {
+        'atomic number': 38,
+        'mass number': 105,
+        'mass': 104.95855 * u.u,
+        'stable': False,
+        'half-life': 0.039 * u.s,
+    },
+
+    'Sr-106': {
+        'atomic number': 38,
+        'mass number': 106,
+        'mass': 105.96265 * u.u,
+        'stable': False,
+        'half-life': 0.021 * u.s,
+    },
+
+    'Sr-107': {
+        'atomic number': 38,
+        'mass number': 107,
+        'mass': 106.96897 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Y-76': {
+        'atomic number': 39,
+        'mass number': 76,
+        'mass': 75.95856 * u.u,
+        'stable': False,
+        'half-life': '120# us',
+    },
+
+    'Y-77': {
+        'atomic number': 39,
+        'mass number': 77,
+        'mass': 76.949781 * u.u,
+        'stable': False,
+        'half-life': 0.063 * u.s,
+    },
+
+    'Y-78': {
+        'atomic number': 39,
+        'mass number': 78,
+        'mass': 77.94361 * u.u,
+        'stable': False,
+        'half-life': 0.054 * u.s,
+    },
+
+    'Y-79': {
+        'atomic number': 39,
+        'mass number': 79,
+        'mass': 78.93735 * u.u,
+        'stable': False,
+        'half-life': 14.8 * u.s,
+    },
+
+    'Y-80': {
+        'atomic number': 39,
+        'mass number': 80,
+        'mass': 79.9343561 * u.u,
+        'stable': False,
+        'half-life': 30.1 * u.s,
+    },
+
+    'Y-81': {
+        'atomic number': 39,
+        'mass number': 81,
+        'mass': 80.9294556 * u.u,
+        'stable': False,
+        'half-life': 70.4 * u.s,
+    },
+
+    'Y-82': {
+        'atomic number': 39,
+        'mass number': 82,
+        'mass': 81.9269314 * u.u,
+        'stable': False,
+        'half-life': 8.3 * u.s,
+    },
+
+    'Y-83': {
+        'atomic number': 39,
+        'mass number': 83,
+        'mass': 82.922485 * u.u,
+        'stable': False,
+        'half-life': 424.8 * u.s,
+    },
+
+    'Y-84': {
+        'atomic number': 39,
+        'mass number': 84,
+        'mass': 83.9206721 * u.u,
+        'stable': False,
+        'half-life': 2370.0 * u.s,
+    },
+
+    'Y-85': {
+        'atomic number': 39,
+        'mass number': 85,
+        'mass': 84.916433 * u.u,
+        'stable': False,
+        'half-life': 9648.0 * u.s,
+    },
+
+    'Y-86': {
+        'atomic number': 39,
+        'mass number': 86,
+        'mass': 85.914886 * u.u,
+        'stable': False,
+        'half-life': 53064.0 * u.s,
+    },
+
+    'Y-87': {
+        'atomic number': 39,
+        'mass number': 87,
+        'mass': 86.9108761 * u.u,
+        'stable': False,
+        'half-life': 287280.0 * u.s,
+    },
+
+    'Y-88': {
+        'atomic number': 39,
+        'mass number': 88,
+        'mass': 87.9095016 * u.u,
+        'stable': False,
+        'half-life': 9212486.4 * u.s,
+    },
+
+    'Y-89': {
+        'atomic number': 39,
+        'mass number': 89,
+        'mass': 88.9058403 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Y-90': {
+        'atomic number': 39,
+        'mass number': 90,
+        'mass': 89.9071439 * u.u,
+        'stable': False,
+        'half-life': 230400.0 * u.s,
+    },
+
+    'Y-91': {
+        'atomic number': 39,
+        'mass number': 91,
+        'mass': 90.9072974 * u.u,
+        'stable': False,
+        'half-life': 5055264.0 * u.s,
+    },
+
+    'Y-92': {
+        'atomic number': 39,
+        'mass number': 92,
+        'mass': 91.9089451 * u.u,
+        'stable': False,
+        'half-life': 12744.0 * u.s,
+    },
+
+    'Y-93': {
+        'atomic number': 39,
+        'mass number': 93,
+        'mass': 92.909578 * u.u,
+        'stable': False,
+        'half-life': 36648.0 * u.s,
+    },
+
+    'Y-94': {
+        'atomic number': 39,
+        'mass number': 94,
+        'mass': 93.9115906 * u.u,
+        'stable': False,
+        'half-life': 1122.0 * u.s,
+    },
+
+    'Y-95': {
+        'atomic number': 39,
+        'mass number': 95,
+        'mass': 94.9128161 * u.u,
+        'stable': False,
+        'half-life': 618.0 * u.s,
+    },
+
+    'Y-96': {
+        'atomic number': 39,
+        'mass number': 96,
+        'mass': 95.9158968 * u.u,
+        'stable': False,
+        'half-life': 5.34 * u.s,
+    },
+
+    'Y-97': {
+        'atomic number': 39,
+        'mass number': 97,
+        'mass': 96.9182741 * u.u,
+        'stable': False,
+        'half-life': 3.75 * u.s,
+    },
+
+    'Y-98': {
+        'atomic number': 39,
+        'mass number': 98,
+        'mass': 97.9223821 * u.u,
+        'stable': False,
+        'half-life': 0.548 * u.s,
+    },
+
+    'Y-99': {
+        'atomic number': 39,
+        'mass number': 99,
+        'mass': 98.924148 * u.u,
+        'stable': False,
+        'half-life': 1.484 * u.s,
+    },
+
+    'Y-100': {
+        'atomic number': 39,
+        'mass number': 100,
+        'mass': 99.927715 * u.u,
+        'stable': False,
+        'half-life': 0.735 * u.s,
+    },
+
+    'Y-101': {
+        'atomic number': 39,
+        'mass number': 101,
+        'mass': 100.9301477 * u.u,
+        'stable': False,
+        'half-life': 0.426 * u.s,
+    },
+
+    'Y-102': {
+        'atomic number': 39,
+        'mass number': 102,
+        'mass': 101.9343277 * u.u,
+        'stable': False,
+        'half-life': 0.298 * u.s,
+    },
+
+    'Y-103': {
+        'atomic number': 39,
+        'mass number': 103,
+        'mass': 102.937243 * u.u,
+        'stable': False,
+        'half-life': 0.239 * u.s,
+    },
+
+    'Y-104': {
+        'atomic number': 39,
+        'mass number': 104,
+        'mass': 103.94196 * u.u,
+        'stable': False,
+        'half-life': 0.197 * u.s,
+    },
+
+    'Y-105': {
+        'atomic number': 39,
+        'mass number': 105,
+        'mass': 104.94544 * u.u,
+        'stable': False,
+        'half-life': 0.095 * u.s,
+    },
+
+    'Y-106': {
+        'atomic number': 39,
+        'mass number': 106,
+        'mass': 105.95056 * u.u,
+        'stable': False,
+        'half-life': 0.074 * u.s,
+    },
+
+    'Y-107': {
+        'atomic number': 39,
+        'mass number': 107,
+        'mass': 106.95452 * u.u,
+        'stable': False,
+        'half-life': 0.0335 * u.s,
+    },
+
+    'Y-108': {
+        'atomic number': 39,
+        'mass number': 108,
+        'mass': 107.95996 * u.u,
+        'stable': False,
+        'half-life': 0.03 * u.s,
+    },
+
+    'Y-109': {
+        'atomic number': 39,
+        'mass number': 109,
+        'mass': 108.96436 * u.u,
+        'stable': False,
+        'half-life': 0.025 * u.s,
+    },
+
+    'Zr-78': {
+        'atomic number': 40,
+        'mass number': 78,
+        'mass': 77.95566 * u.u,
+        'stable': False,
+        'half-life': '50# ms',
+    },
+
+    'Zr-79': {
+        'atomic number': 40,
+        'mass number': 79,
+        'mass': 78.94948 * u.u,
+        'stable': False,
+        'half-life': 0.056 * u.s,
+    },
+
+    'Zr-80': {
+        'atomic number': 40,
+        'mass number': 80,
+        'mass': 79.9404 * u.u,
+        'stable': False,
+        'half-life': 4.6 * u.s,
+    },
+
+    'Zr-81': {
+        'atomic number': 40,
+        'mass number': 81,
+        'mass': 80.93731 * u.u,
+        'stable': False,
+        'half-life': 5.5 * u.s,
+    },
+
+    'Zr-82': {
+        'atomic number': 40,
+        'mass number': 82,
+        'mass': 81.93135 * u.u,
+        'stable': False,
+        'half-life': 32.0 * u.s,
+    },
+
+    'Zr-83': {
+        'atomic number': 40,
+        'mass number': 83,
+        'mass': 82.9292421 * u.u,
+        'stable': False,
+        'half-life': 42.0 * u.s,
+    },
+
+    'Zr-84': {
+        'atomic number': 40,
+        'mass number': 84,
+        'mass': 83.9233269 * u.u,
+        'stable': False,
+        'half-life': 1548.0 * u.s,
+    },
+
+    'Zr-85': {
+        'atomic number': 40,
+        'mass number': 85,
+        'mass': 84.9214444 * u.u,
+        'stable': False,
+        'half-life': 471.6 * u.s,
+    },
+
+    'Zr-86': {
+        'atomic number': 40,
+        'mass number': 86,
+        'mass': 85.9162972 * u.u,
+        'stable': False,
+        'half-life': 59400.0 * u.s,
+    },
+
+    'Zr-87': {
+        'atomic number': 40,
+        'mass number': 87,
+        'mass': 86.914818 * u.u,
+        'stable': False,
+        'half-life': 6048.0 * u.s,
+    },
+
+    'Zr-88': {
+        'atomic number': 40,
+        'mass number': 88,
+        'mass': 87.9102213 * u.u,
+        'stable': False,
+        'half-life': 7205760.0 * u.s,
+    },
+
+    'Zr-89': {
+        'atomic number': 40,
+        'mass number': 89,
+        'mass': 88.9088814 * u.u,
+        'stable': False,
+        'half-life': 282276.0 * u.s,
+    },
+
+    'Zr-90': {
+        'atomic number': 40,
+        'mass number': 90,
+        'mass': 89.9046977 * u.u,
+        'stable': True,
+        'abundance': 0.5145,
+    },
+
+    'Zr-91': {
+        'atomic number': 40,
+        'mass number': 91,
+        'mass': 90.9056396 * u.u,
+        'stable': True,
+        'abundance': 0.1122,
+    },
+
+    'Zr-92': {
+        'atomic number': 40,
+        'mass number': 92,
+        'mass': 91.9050347 * u.u,
+        'stable': True,
+        'abundance': 0.1715,
+    },
+
+    'Zr-93': {
+        'atomic number': 40,
+        'mass number': 93,
+        'mass': 92.9064699 * u.u,
+        'stable': False,
+        'half-life': 50806650860000.0 * u.s,
+    },
+
+    'Zr-94': {
+        'atomic number': 40,
+        'mass number': 94,
+        'mass': 93.9063108 * u.u,
+        'stable': True,
+        'abundance': 0.1738,
+    },
+
+    'Zr-95': {
+        'atomic number': 40,
+        'mass number': 95,
+        'mass': 94.9080385 * u.u,
+        'stable': False,
+        'half-life': 5532364.8 * u.s,
+    },
+
+    'Zr-96': {
+        'atomic number': 40,
+        'mass number': 96,
+        'mass': 95.9082714 * u.u,
+        'stable': False,
+        'abundance': 0.028,
+    },
+
+    'Zr-97': {
+        'atomic number': 40,
+        'mass number': 97,
+        'mass': 96.9109512 * u.u,
+        'stable': False,
+        'half-life': 60296.4 * u.s,
+    },
+
+    'Zr-98': {
+        'atomic number': 40,
+        'mass number': 98,
+        'mass': 97.9127289 * u.u,
+        'stable': False,
+        'half-life': 30.7 * u.s,
+    },
+
+    'Zr-99': {
+        'atomic number': 40,
+        'mass number': 99,
+        'mass': 98.916667 * u.u,
+        'stable': False,
+        'half-life': 2.1 * u.s,
+    },
+
+    'Zr-100': {
+        'atomic number': 40,
+        'mass number': 100,
+        'mass': 99.9180006 * u.u,
+        'stable': False,
+        'half-life': 7.1 * u.s,
+    },
+
+    'Zr-101': {
+        'atomic number': 40,
+        'mass number': 101,
+        'mass': 100.921448 * u.u,
+        'stable': False,
+        'half-life': 2.3 * u.s,
+    },
+
+    'Zr-102': {
+        'atomic number': 40,
+        'mass number': 102,
+        'mass': 101.9231409 * u.u,
+        'stable': False,
+        'half-life': 2.9 * u.s,
+    },
+
+    'Zr-103': {
+        'atomic number': 40,
+        'mass number': 103,
+        'mass': 102.927191 * u.u,
+        'stable': False,
+        'half-life': 1.38 * u.s,
+    },
+
+    'Zr-104': {
+        'atomic number': 40,
+        'mass number': 104,
+        'mass': 103.929436 * u.u,
+        'stable': False,
+        'half-life': 0.92 * u.s,
+    },
+
+    'Zr-105': {
+        'atomic number': 40,
+        'mass number': 105,
+        'mass': 104.934008 * u.u,
+        'stable': False,
+        'half-life': 0.67 * u.s,
+    },
+
+    'Zr-106': {
+        'atomic number': 40,
+        'mass number': 106,
+        'mass': 105.93676 * u.u,
+        'stable': False,
+        'half-life': 0.1786 * u.s,
+    },
+
+    'Zr-107': {
+        'atomic number': 40,
+        'mass number': 107,
+        'mass': 106.94174 * u.u,
+        'stable': False,
+        'half-life': 0.1457 * u.s,
+    },
+
+    'Zr-108': {
+        'atomic number': 40,
+        'mass number': 108,
+        'mass': 107.94487 * u.u,
+        'stable': False,
+        'half-life': 0.0785 * u.s,
+    },
+
+    'Zr-109': {
+        'atomic number': 40,
+        'mass number': 109,
+        'mass': 108.95041 * u.u,
+        'stable': False,
+        'half-life': 0.056 * u.s,
+    },
+
+    'Zr-110': {
+        'atomic number': 40,
+        'mass number': 110,
+        'mass': 109.95396 * u.u,
+        'stable': False,
+        'half-life': 0.0375 * u.s,
+    },
+
+    'Zr-111': {
+        'atomic number': 40,
+        'mass number': 111,
+        'mass': 110.95968 * u.u,
+        'stable': False,
+        'half-life': 0.024 * u.s,
+    },
+
+    'Zr-112': {
+        'atomic number': 40,
+        'mass number': 112,
+        'mass': 111.9637 * u.u,
+        'stable': False,
+        'half-life': 0.043 * u.s,
+    },
+
+    'Nb-81': {
+        'atomic number': 41,
+        'mass number': 81,
+        'mass': 80.9496 * u.u,
+        'stable': False,
+        'half-life': '<44 ns',
+    },
+
+    'Nb-82': {
+        'atomic number': 41,
+        'mass number': 82,
+        'mass': 81.94396 * u.u,
+        'stable': False,
+        'half-life': 0.05 * u.s,
+    },
+
+    'Nb-83': {
+        'atomic number': 41,
+        'mass number': 83,
+        'mass': 82.93729 * u.u,
+        'stable': False,
+        'half-life': 3.9 * u.s,
+    },
+
+    'Nb-84': {
+        'atomic number': 41,
+        'mass number': 84,
+        'mass': 83.93449 * u.u,
+        'stable': False,
+        'half-life': 9.8 * u.s,
+    },
+
+    'Nb-85': {
+        'atomic number': 41,
+        'mass number': 85,
+        'mass': 84.9288458 * u.u,
+        'stable': False,
+        'half-life': 20.5 * u.s,
+    },
+
+    'Nb-86': {
+        'atomic number': 41,
+        'mass number': 86,
+        'mass': 85.9257828 * u.u,
+        'stable': False,
+        'half-life': 88.0 * u.s,
+    },
+
+    'Nb-87': {
+        'atomic number': 41,
+        'mass number': 87,
+        'mass': 86.9206937 * u.u,
+        'stable': False,
+        'half-life': 222.0 * u.s,
+    },
+
+    'Nb-88': {
+        'atomic number': 41,
+        'mass number': 88,
+        'mass': 87.918222 * u.u,
+        'stable': False,
+        'half-life': 870.0 * u.s,
+    },
+
+    'Nb-89': {
+        'atomic number': 41,
+        'mass number': 89,
+        'mass': 88.913445 * u.u,
+        'stable': False,
+        'half-life': 7308.0 * u.s,
+    },
+
+    'Nb-90': {
+        'atomic number': 41,
+        'mass number': 90,
+        'mass': 89.9112584 * u.u,
+        'stable': False,
+        'half-life': 52560.0 * u.s,
+    },
+
+    'Nb-91': {
+        'atomic number': 41,
+        'mass number': 91,
+        'mass': 90.9069897 * u.u,
+        'stable': False,
+        'half-life': 21458709680.0 * u.s,
+    },
+
+    'Nb-92': {
+        'atomic number': 41,
+        'mass number': 92,
+        'mass': 91.9071881 * u.u,
+        'stable': False,
+        'half-life': 1095025332200000.0 * u.s,
+    },
+
+    'Nb-93': {
+        'atomic number': 41,
+        'mass number': 93,
+        'mass': 92.906373 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Nb-94': {
+        'atomic number': 41,
+        'mass number': 94,
+        'mass': 93.9072788 * u.u,
+        'stable': False,
+        'half-life': 643761290400.0 * u.s,
+    },
+
+    'Nb-95': {
+        'atomic number': 41,
+        'mass number': 95,
+        'mass': 94.9068324 * u.u,
+        'stable': False,
+        'half-life': 3023222.4 * u.s,
+    },
+
+    'Nb-96': {
+        'atomic number': 41,
+        'mass number': 96,
+        'mass': 95.9080973 * u.u,
+        'stable': False,
+        'half-life': 84060.0 * u.s,
+    },
+
+    'Nb-97': {
+        'atomic number': 41,
+        'mass number': 97,
+        'mass': 96.9080959 * u.u,
+        'stable': False,
+        'half-life': 4326.0 * u.s,
+    },
+
+    'Nb-98': {
+        'atomic number': 41,
+        'mass number': 98,
+        'mass': 97.9103265 * u.u,
+        'stable': False,
+        'half-life': 2.86 * u.s,
+    },
+
+    'Nb-99': {
+        'atomic number': 41,
+        'mass number': 99,
+        'mass': 98.911613 * u.u,
+        'stable': False,
+        'half-life': 15.0 * u.s,
+    },
+
+    'Nb-100': {
+        'atomic number': 41,
+        'mass number': 100,
+        'mass': 99.9143276 * u.u,
+        'stable': False,
+        'half-life': 1.5 * u.s,
+    },
+
+    'Nb-101': {
+        'atomic number': 41,
+        'mass number': 101,
+        'mass': 100.9153103 * u.u,
+        'stable': False,
+        'half-life': 7.1 * u.s,
+    },
+
+    'Nb-102': {
+        'atomic number': 41,
+        'mass number': 102,
+        'mass': 101.9180772 * u.u,
+        'stable': False,
+        'half-life': 4.3 * u.s,
+    },
+
+    'Nb-103': {
+        'atomic number': 41,
+        'mass number': 103,
+        'mass': 102.9194572 * u.u,
+        'stable': False,
+        'half-life': 1.5 * u.s,
+    },
+
+    'Nb-104': {
+        'atomic number': 41,
+        'mass number': 104,
+        'mass': 103.9228925 * u.u,
+        'stable': False,
+        'half-life': 4.9 * u.s,
+    },
+
+    'Nb-105': {
+        'atomic number': 41,
+        'mass number': 105,
+        'mass': 104.9249465 * u.u,
+        'stable': False,
+        'half-life': 2.95 * u.s,
+    },
+
+    'Nb-106': {
+        'atomic number': 41,
+        'mass number': 106,
+        'mass': 105.9289317 * u.u,
+        'stable': False,
+        'half-life': 1.05 * u.s,
+    },
+
+    'Nb-107': {
+        'atomic number': 41,
+        'mass number': 107,
+        'mass': 106.9315937 * u.u,
+        'stable': False,
+        'half-life': 0.289 * u.s,
+    },
+
+    'Nb-108': {
+        'atomic number': 41,
+        'mass number': 108,
+        'mass': 107.9360748 * u.u,
+        'stable': False,
+        'half-life': 0.198 * u.s,
+    },
+
+    'Nb-109': {
+        'atomic number': 41,
+        'mass number': 109,
+        'mass': 108.93922 * u.u,
+        'stable': False,
+        'half-life': 0.1069 * u.s,
+    },
+
+    'Nb-110': {
+        'atomic number': 41,
+        'mass number': 110,
+        'mass': 109.94403 * u.u,
+        'stable': False,
+        'half-life': 0.082 * u.s,
+    },
+
+    'Nb-111': {
+        'atomic number': 41,
+        'mass number': 111,
+        'mass': 110.94753 * u.u,
+        'stable': False,
+        'half-life': 0.054 * u.s,
+    },
+
+    'Nb-112': {
+        'atomic number': 41,
+        'mass number': 112,
+        'mass': 111.95247 * u.u,
+        'stable': False,
+        'half-life': 0.038 * u.s,
+    },
+
+    'Nb-113': {
+        'atomic number': 41,
+        'mass number': 113,
+        'mass': 112.95651 * u.u,
+        'stable': False,
+        'half-life': 0.032 * u.s,
+    },
+
+    'Nb-114': {
+        'atomic number': 41,
+        'mass number': 114,
+        'mass': 113.96201 * u.u,
+        'stable': False,
+        'half-life': 0.017 * u.s,
+    },
+
+    'Nb-115': {
+        'atomic number': 41,
+        'mass number': 115,
+        'mass': 114.96634 * u.u,
+        'stable': False,
+        'half-life': 0.023 * u.s,
+    },
+
+    'Mo-83': {
+        'atomic number': 42,
+        'mass number': 83,
+        'mass': 82.94988 * u.u,
+        'stable': False,
+        'half-life': 0.023 * u.s,
+    },
+
+    'Mo-84': {
+        'atomic number': 42,
+        'mass number': 84,
+        'mass': 83.94149 * u.u,
+        'stable': False,
+        'half-life': 2.3 * u.s,
+    },
+
+    'Mo-85': {
+        'atomic number': 42,
+        'mass number': 85,
+        'mass': 84.938261 * u.u,
+        'stable': False,
+        'half-life': 3.2 * u.s,
+    },
+
+    'Mo-86': {
+        'atomic number': 42,
+        'mass number': 86,
+        'mass': 85.9311748 * u.u,
+        'stable': False,
+        'half-life': 19.1 * u.s,
+    },
+
+    'Mo-87': {
+        'atomic number': 42,
+        'mass number': 87,
+        'mass': 86.9281962 * u.u,
+        'stable': False,
+        'half-life': 14.1 * u.s,
+    },
+
+    'Mo-88': {
+        'atomic number': 42,
+        'mass number': 88,
+        'mass': 87.9219678 * u.u,
+        'stable': False,
+        'half-life': 480.0 * u.s,
+    },
+
+    'Mo-89': {
+        'atomic number': 42,
+        'mass number': 89,
+        'mass': 88.9194682 * u.u,
+        'stable': False,
+        'half-life': 126.6 * u.s,
+    },
+
+    'Mo-90': {
+        'atomic number': 42,
+        'mass number': 90,
+        'mass': 89.9139309 * u.u,
+        'stable': False,
+        'half-life': 20016.0 * u.s,
+    },
+
+    'Mo-91': {
+        'atomic number': 42,
+        'mass number': 91,
+        'mass': 90.9117453 * u.u,
+        'stable': False,
+        'half-life': 929.4 * u.s,
+    },
+
+    'Mo-92': {
+        'atomic number': 42,
+        'mass number': 92,
+        'mass': 91.90680796 * u.u,
+        'stable': True,
+        'abundance': 0.1453,
+    },
+
+    'Mo-93': {
+        'atomic number': 42,
+        'mass number': 93,
+        'mass': 92.90680958 * u.u,
+        'stable': False,
+        'half-life': 126227704000.0 * u.s,
+    },
+
+    'Mo-94': {
+        'atomic number': 42,
+        'mass number': 94,
+        'mass': 93.9050849 * u.u,
+        'stable': True,
+        'abundance': 0.0915,
+    },
+
+    'Mo-95': {
+        'atomic number': 42,
+        'mass number': 95,
+        'mass': 94.90583877 * u.u,
+        'stable': True,
+        'abundance': 0.1584,
+    },
+
+    'Mo-96': {
+        'atomic number': 42,
+        'mass number': 96,
+        'mass': 95.90467612 * u.u,
+        'stable': True,
+        'abundance': 0.1667,
+    },
+
+    'Mo-97': {
+        'atomic number': 42,
+        'mass number': 97,
+        'mass': 96.90601812 * u.u,
+        'stable': True,
+        'abundance': 0.096,
+    },
+
+    'Mo-98': {
+        'atomic number': 42,
+        'mass number': 98,
+        'mass': 97.90540482 * u.u,
+        'stable': True,
+        'abundance': 0.2439,
+    },
+
+    'Mo-99': {
+        'atomic number': 42,
+        'mass number': 99,
+        'mass': 98.90770851 * u.u,
+        'stable': False,
+        'half-life': 237326.04 * u.s,
+    },
+
+    'Mo-100': {
+        'atomic number': 42,
+        'mass number': 100,
+        'mass': 99.9074718 * u.u,
+        'stable': False,
+        'abundance': 0.0982,
+    },
+
+    'Mo-101': {
+        'atomic number': 42,
+        'mass number': 101,
+        'mass': 100.9103414 * u.u,
+        'stable': False,
+        'half-life': 876.6 * u.s,
+    },
+
+    'Mo-102': {
+        'atomic number': 42,
+        'mass number': 102,
+        'mass': 101.9102834 * u.u,
+        'stable': False,
+        'half-life': 678.0 * u.s,
+    },
+
+    'Mo-103': {
+        'atomic number': 42,
+        'mass number': 103,
+        'mass': 102.913079 * u.u,
+        'stable': False,
+        'half-life': 67.5 * u.s,
+    },
+
+    'Mo-104': {
+        'atomic number': 42,
+        'mass number': 104,
+        'mass': 103.9137344 * u.u,
+        'stable': False,
+        'half-life': 60.0 * u.s,
+    },
+
+    'Mo-105': {
+        'atomic number': 42,
+        'mass number': 105,
+        'mass': 104.916969 * u.u,
+        'stable': False,
+        'half-life': 35.6 * u.s,
+    },
+
+    'Mo-106': {
+        'atomic number': 42,
+        'mass number': 106,
+        'mass': 105.918259 * u.u,
+        'stable': False,
+        'half-life': 8.73 * u.s,
+    },
+
+    'Mo-107': {
+        'atomic number': 42,
+        'mass number': 107,
+        'mass': 106.922106 * u.u,
+        'stable': False,
+        'half-life': 3.5 * u.s,
+    },
+
+    'Mo-108': {
+        'atomic number': 42,
+        'mass number': 108,
+        'mass': 107.924033 * u.u,
+        'stable': False,
+        'half-life': 1.105 * u.s,
+    },
+
+    'Mo-109': {
+        'atomic number': 42,
+        'mass number': 109,
+        'mass': 108.928424 * u.u,
+        'stable': False,
+        'half-life': 0.7 * u.s,
+    },
+
+    'Mo-110': {
+        'atomic number': 42,
+        'mass number': 110,
+        'mass': 109.930704 * u.u,
+        'stable': False,
+        'half-life': 0.292 * u.s,
+    },
+
+    'Mo-111': {
+        'atomic number': 42,
+        'mass number': 111,
+        'mass': 110.935654 * u.u,
+        'stable': False,
+        'half-life': 0.1936 * u.s,
+    },
+
+    'Mo-112': {
+        'atomic number': 42,
+        'mass number': 112,
+        'mass': 111.93831 * u.u,
+        'stable': False,
+        'half-life': 0.125 * u.s,
+    },
+
+    'Mo-113': {
+        'atomic number': 42,
+        'mass number': 113,
+        'mass': 112.94335 * u.u,
+        'stable': False,
+        'half-life': 0.08 * u.s,
+    },
+
+    'Mo-114': {
+        'atomic number': 42,
+        'mass number': 114,
+        'mass': 113.94653 * u.u,
+        'stable': False,
+        'half-life': 0.058 * u.s,
+    },
+
+    'Mo-115': {
+        'atomic number': 42,
+        'mass number': 115,
+        'mass': 114.95196 * u.u,
+        'stable': False,
+        'half-life': 0.0455 * u.s,
+    },
+
+    'Mo-116': {
+        'atomic number': 42,
+        'mass number': 116,
+        'mass': 115.95545 * u.u,
+        'stable': False,
+        'half-life': 0.032 * u.s,
+    },
+
+    'Mo-117': {
+        'atomic number': 42,
+        'mass number': 117,
+        'mass': 116.96117 * u.u,
+        'stable': False,
+        'half-life': 0.022 * u.s,
+    },
+
+    'Tc-85': {
+        'atomic number': 43,
+        'mass number': 85,
+        'mass': 84.95058 * u.u,
+        'stable': False,
+    },
+
+    'Tc-86': {
+        'atomic number': 43,
+        'mass number': 86,
+        'mass': 85.94493 * u.u,
+        'stable': False,
+        'half-life': 0.055 * u.s,
+    },
+
+    'Tc-87': {
+        'atomic number': 43,
+        'mass number': 87,
+        'mass': 86.9380672 * u.u,
+        'stable': False,
+        'half-life': 2.2 * u.s,
+    },
+
+    'Tc-88': {
+        'atomic number': 43,
+        'mass number': 88,
+        'mass': 87.93378 * u.u,
+        'stable': False,
+        'half-life': 6.4 * u.s,
+    },
+
+    'Tc-89': {
+        'atomic number': 43,
+        'mass number': 89,
+        'mass': 88.9276487 * u.u,
+        'stable': False,
+        'half-life': 12.8 * u.s,
+    },
+
+    'Tc-90': {
+        'atomic number': 43,
+        'mass number': 90,
+        'mass': 89.9240739 * u.u,
+        'stable': False,
+        'half-life': 49.2 * u.s,
+    },
+
+    'Tc-91': {
+        'atomic number': 43,
+        'mass number': 91,
+        'mass': 90.9184254 * u.u,
+        'stable': False,
+        'half-life': 188.4 * u.s,
+    },
+
+    'Tc-92': {
+        'atomic number': 43,
+        'mass number': 92,
+        'mass': 91.9152698 * u.u,
+        'stable': False,
+        'half-life': 255.0 * u.s,
+    },
+
+    'Tc-93': {
+        'atomic number': 43,
+        'mass number': 93,
+        'mass': 92.910246 * u.u,
+        'stable': False,
+        'half-life': 9900.0 * u.s,
+    },
+
+    'Tc-94': {
+        'atomic number': 43,
+        'mass number': 94,
+        'mass': 93.9096536 * u.u,
+        'stable': False,
+        'half-life': 17580.0 * u.s,
+    },
+
+    'Tc-95': {
+        'atomic number': 43,
+        'mass number': 95,
+        'mass': 94.9076536 * u.u,
+        'stable': False,
+        'half-life': 72000.0 * u.s,
+    },
+
+    'Tc-96': {
+        'atomic number': 43,
+        'mass number': 96,
+        'mass': 95.907868 * u.u,
+        'stable': False,
+        'half-life': 369792.0 * u.s,
+    },
+
+    'Tc-97': {
+        'atomic number': 43,
+        'mass number': 97,
+        'mass': 96.9063667 * u.u,
+        'stable': False,
+        'half-life': 132854658460000.0 * u.s,
+    },
+
+    'Tc-98': {
+        'atomic number': 43,
+        'mass number': 98,
+        'mass': 97.9072124 * u.u,
+        'stable': False,
+        'half-life': 132539089200000.0 * u.s,
+    },
+
+    'Tc-99': {
+        'atomic number': 43,
+        'mass number': 99,
+        'mass': 98.9062508 * u.u,
+        'stable': False,
+        'half-life': 21636.0 * u.s,
+    },
+
+    'Tc-100': {
+        'atomic number': 43,
+        'mass number': 100,
+        'mass': 99.9076539 * u.u,
+        'stable': False,
+        'half-life': 15.46 * u.s,
+    },
+
+    'Tc-101': {
+        'atomic number': 43,
+        'mass number': 101,
+        'mass': 100.907309 * u.u,
+        'stable': False,
+        'half-life': 853.2 * u.s,
+    },
+
+    'Tc-102': {
+        'atomic number': 43,
+        'mass number': 102,
+        'mass': 101.9092097 * u.u,
+        'stable': False,
+        'half-life': 5.28 * u.s,
+    },
+
+    'Tc-103': {
+        'atomic number': 43,
+        'mass number': 103,
+        'mass': 102.909176 * u.u,
+        'stable': False,
+        'half-life': 54.2 * u.s,
+    },
+
+    'Tc-104': {
+        'atomic number': 43,
+        'mass number': 104,
+        'mass': 103.911425 * u.u,
+        'stable': False,
+        'half-life': 1098.0 * u.s,
+    },
+
+    'Tc-105': {
+        'atomic number': 43,
+        'mass number': 105,
+        'mass': 104.911655 * u.u,
+        'stable': False,
+        'half-life': 456.0 * u.s,
+    },
+
+    'Tc-106': {
+        'atomic number': 43,
+        'mass number': 106,
+        'mass': 105.914358 * u.u,
+        'stable': False,
+        'half-life': 35.6 * u.s,
+    },
+
+    'Tc-107': {
+        'atomic number': 43,
+        'mass number': 107,
+        'mass': 106.9154606 * u.u,
+        'stable': False,
+        'half-life': 21.2 * u.s,
+    },
+
+    'Tc-108': {
+        'atomic number': 43,
+        'mass number': 108,
+        'mass': 107.9184957 * u.u,
+        'stable': False,
+        'half-life': 5.17 * u.s,
+    },
+
+    'Tc-109': {
+        'atomic number': 43,
+        'mass number': 109,
+        'mass': 108.920256 * u.u,
+        'stable': False,
+        'half-life': 1.14 * u.s,
+    },
+
+    'Tc-110': {
+        'atomic number': 43,
+        'mass number': 110,
+        'mass': 109.923744 * u.u,
+        'stable': False,
+        'half-life': 0.9 * u.s,
+    },
+
+    'Tc-111': {
+        'atomic number': 43,
+        'mass number': 111,
+        'mass': 110.925901 * u.u,
+        'stable': False,
+        'half-life': 0.35 * u.s,
+    },
+
+    'Tc-112': {
+        'atomic number': 43,
+        'mass number': 112,
+        'mass': 111.9299458 * u.u,
+        'stable': False,
+        'half-life': 0.323 * u.s,
+    },
+
+    'Tc-113': {
+        'atomic number': 43,
+        'mass number': 113,
+        'mass': 112.932569 * u.u,
+        'stable': False,
+        'half-life': 0.152 * u.s,
+    },
+
+    'Tc-114': {
+        'atomic number': 43,
+        'mass number': 114,
+        'mass': 113.93691 * u.u,
+        'stable': False,
+        'half-life': 0.09 * u.s,
+    },
+
+    'Tc-115': {
+        'atomic number': 43,
+        'mass number': 115,
+        'mass': 114.93998 * u.u,
+        'stable': False,
+        'half-life': 0.078 * u.s,
+    },
+
+    'Tc-116': {
+        'atomic number': 43,
+        'mass number': 116,
+        'mass': 115.94476 * u.u,
+        'stable': False,
+        'half-life': 0.057 * u.s,
+    },
+
+    'Tc-117': {
+        'atomic number': 43,
+        'mass number': 117,
+        'mass': 116.94806 * u.u,
+        'stable': False,
+        'half-life': 0.0445 * u.s,
+    },
+
+    'Tc-118': {
+        'atomic number': 43,
+        'mass number': 118,
+        'mass': 117.95299 * u.u,
+        'stable': False,
+        'half-life': 0.03 * u.s,
+    },
+
+    'Tc-119': {
+        'atomic number': 43,
+        'mass number': 119,
+        'mass': 118.95666 * u.u,
+        'stable': False,
+        'half-life': 0.022 * u.s,
+    },
+
+    'Tc-120': {
+        'atomic number': 43,
+        'mass number': 120,
+        'mass': 119.96187 * u.u,
+        'stable': False,
+        'half-life': 0.021 * u.s,
+    },
+
+    'Ru-87': {
+        'atomic number': 44,
+        'mass number': 87,
+        'mass': 86.95069 * u.u,
+        'stable': False,
+        'half-life': '50# ms',
+    },
+
+    'Ru-88': {
+        'atomic number': 44,
+        'mass number': 88,
+        'mass': 87.9416 * u.u,
+        'stable': False,
+        'half-life': 1.3 * u.s,
+    },
+
+    'Ru-89': {
+        'atomic number': 44,
+        'mass number': 89,
+        'mass': 88.93762 * u.u,
+        'stable': False,
+        'half-life': 1.5 * u.s,
+    },
+
+    'Ru-90': {
+        'atomic number': 44,
+        'mass number': 90,
+        'mass': 89.9303444 * u.u,
+        'stable': False,
+        'half-life': 11.0 * u.s,
+    },
+
+    'Ru-91': {
+        'atomic number': 44,
+        'mass number': 91,
+        'mass': 90.9267419 * u.u,
+        'stable': False,
+        'half-life': 8.0 * u.s,
+    },
+
+    'Ru-92': {
+        'atomic number': 44,
+        'mass number': 92,
+        'mass': 91.9202344 * u.u,
+        'stable': False,
+        'half-life': 219.0 * u.s,
+    },
+
+    'Ru-93': {
+        'atomic number': 44,
+        'mass number': 93,
+        'mass': 92.9171044 * u.u,
+        'stable': False,
+        'half-life': 59.7 * u.s,
+    },
+
+    'Ru-94': {
+        'atomic number': 44,
+        'mass number': 94,
+        'mass': 93.9113429 * u.u,
+        'stable': False,
+        'half-life': 3108.0 * u.s,
+    },
+
+    'Ru-95': {
+        'atomic number': 44,
+        'mass number': 95,
+        'mass': 94.910406 * u.u,
+        'stable': False,
+        'half-life': 5914.8 * u.s,
+    },
+
+    'Ru-96': {
+        'atomic number': 44,
+        'mass number': 96,
+        'mass': 95.90759025 * u.u,
+        'stable': True,
+        'abundance': 0.0554,
+    },
+
+    'Ru-97': {
+        'atomic number': 44,
+        'mass number': 97,
+        'mass': 96.9075471 * u.u,
+        'stable': False,
+        'half-life': 245116.8 * u.s,
+    },
+
+    'Ru-98': {
+        'atomic number': 44,
+        'mass number': 98,
+        'mass': 97.9052868 * u.u,
+        'stable': True,
+        'abundance': 0.0187,
+    },
+
+    'Ru-99': {
+        'atomic number': 44,
+        'mass number': 99,
+        'mass': 98.9059341 * u.u,
+        'stable': True,
+        'abundance': 0.1276,
+    },
+
+    'Ru-100': {
+        'atomic number': 44,
+        'mass number': 100,
+        'mass': 99.9042143 * u.u,
+        'stable': True,
+        'abundance': 0.126,
+    },
+
+    'Ru-101': {
+        'atomic number': 44,
+        'mass number': 101,
+        'mass': 100.9055769 * u.u,
+        'stable': True,
+        'abundance': 0.1706,
+    },
+
+    'Ru-102': {
+        'atomic number': 44,
+        'mass number': 102,
+        'mass': 101.9043441 * u.u,
+        'stable': True,
+        'abundance': 0.3155,
+    },
+
+    'Ru-103': {
+        'atomic number': 44,
+        'mass number': 103,
+        'mass': 102.9063186 * u.u,
+        'stable': False,
+        'half-life': 3396384.0 * u.s,
+    },
+
+    'Ru-104': {
+        'atomic number': 44,
+        'mass number': 104,
+        'mass': 103.9054275 * u.u,
+        'stable': True,
+        'abundance': 0.1862,
+    },
+
+    'Ru-105': {
+        'atomic number': 44,
+        'mass number': 105,
+        'mass': 104.9077476 * u.u,
+        'stable': False,
+        'half-life': 15984.0 * u.s,
+    },
+
+    'Ru-106': {
+        'atomic number': 44,
+        'mass number': 106,
+        'mass': 105.9073291 * u.u,
+        'stable': False,
+        'half-life': 32123520.0 * u.s,
+    },
+
+    'Ru-107': {
+        'atomic number': 44,
+        'mass number': 107,
+        'mass': 106.909972 * u.u,
+        'stable': False,
+        'half-life': 225.0 * u.s,
+    },
+
+    'Ru-108': {
+        'atomic number': 44,
+        'mass number': 108,
+        'mass': 107.910188 * u.u,
+        'stable': False,
+        'half-life': 273.0 * u.s,
+    },
+
+    'Ru-109': {
+        'atomic number': 44,
+        'mass number': 109,
+        'mass': 108.913326 * u.u,
+        'stable': False,
+        'half-life': 34.5 * u.s,
+    },
+
+    'Ru-110': {
+        'atomic number': 44,
+        'mass number': 110,
+        'mass': 109.9140407 * u.u,
+        'stable': False,
+        'half-life': 12.04 * u.s,
+    },
+
+    'Ru-111': {
+        'atomic number': 44,
+        'mass number': 111,
+        'mass': 110.91757 * u.u,
+        'stable': False,
+        'half-life': 2.12 * u.s,
+    },
+
+    'Ru-112': {
+        'atomic number': 44,
+        'mass number': 112,
+        'mass': 111.918809 * u.u,
+        'stable': False,
+        'half-life': 1.75 * u.s,
+    },
+
+    'Ru-113': {
+        'atomic number': 44,
+        'mass number': 113,
+        'mass': 112.922844 * u.u,
+        'stable': False,
+        'half-life': 0.8 * u.s,
+    },
+
+    'Ru-114': {
+        'atomic number': 44,
+        'mass number': 114,
+        'mass': 113.9246136 * u.u,
+        'stable': False,
+        'half-life': 0.54 * u.s,
+    },
+
+    'Ru-115': {
+        'atomic number': 44,
+        'mass number': 115,
+        'mass': 114.92882 * u.u,
+        'stable': False,
+        'half-life': 0.318 * u.s,
+    },
+
+    'Ru-116': {
+        'atomic number': 44,
+        'mass number': 116,
+        'mass': 115.9312192 * u.u,
+        'stable': False,
+        'half-life': 0.204 * u.s,
+    },
+
+    'Ru-117': {
+        'atomic number': 44,
+        'mass number': 117,
+        'mass': 116.9361 * u.u,
+        'stable': False,
+        'half-life': 0.151 * u.s,
+    },
+
+    'Ru-118': {
+        'atomic number': 44,
+        'mass number': 118,
+        'mass': 117.93853 * u.u,
+        'stable': False,
+        'half-life': 0.099 * u.s,
+    },
+
+    'Ru-119': {
+        'atomic number': 44,
+        'mass number': 119,
+        'mass': 118.94357 * u.u,
+        'stable': False,
+        'half-life': 0.0695 * u.s,
+    },
+
+    'Ru-120': {
+        'atomic number': 44,
+        'mass number': 120,
+        'mass': 119.94631 * u.u,
+        'stable': False,
+        'half-life': 0.045 * u.s,
+    },
+
+    'Ru-121': {
+        'atomic number': 44,
+        'mass number': 121,
+        'mass': 120.95164 * u.u,
+        'stable': False,
+        'half-life': 0.029 * u.s,
+    },
+
+    'Ru-122': {
+        'atomic number': 44,
+        'mass number': 122,
+        'mass': 121.95447 * u.u,
+        'stable': False,
+        'half-life': 0.025 * u.s,
+    },
+
+    'Ru-123': {
+        'atomic number': 44,
+        'mass number': 123,
+        'mass': 122.95989 * u.u,
+        'stable': False,
+        'half-life': 0.019 * u.s,
+    },
+
+    'Ru-124': {
+        'atomic number': 44,
+        'mass number': 124,
+        'mass': 123.96305 * u.u,
+        'stable': False,
+        'half-life': 0.015 * u.s,
+    },
+
+    'Rh-89': {
+        'atomic number': 45,
+        'mass number': 89,
+        'mass': 88.95058 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Rh-90': {
+        'atomic number': 45,
+        'mass number': 90,
+        'mass': 89.94422 * u.u,
+        'stable': False,
+        'half-life': 0.015 * u.s,
+    },
+
+    'Rh-91': {
+        'atomic number': 45,
+        'mass number': 91,
+        'mass': 90.93688 * u.u,
+        'stable': False,
+        'half-life': 1.6 * u.s,
+    },
+
+    'Rh-92': {
+        'atomic number': 45,
+        'mass number': 92,
+        'mass': 91.9323677 * u.u,
+        'stable': False,
+        'half-life': 4.66 * u.s,
+    },
+
+    'Rh-93': {
+        'atomic number': 45,
+        'mass number': 93,
+        'mass': 92.9259128 * u.u,
+        'stable': False,
+        'half-life': 13.9 * u.s,
+    },
+
+    'Rh-94': {
+        'atomic number': 45,
+        'mass number': 94,
+        'mass': 93.9217305 * u.u,
+        'stable': False,
+        'half-life': 70.6 * u.s,
+    },
+
+    'Rh-95': {
+        'atomic number': 45,
+        'mass number': 95,
+        'mass': 94.9158979 * u.u,
+        'stable': False,
+        'half-life': 301.2 * u.s,
+    },
+
+    'Rh-96': {
+        'atomic number': 45,
+        'mass number': 96,
+        'mass': 95.914453 * u.u,
+        'stable': False,
+        'half-life': 594.0 * u.s,
+    },
+
+    'Rh-97': {
+        'atomic number': 45,
+        'mass number': 97,
+        'mass': 96.911329 * u.u,
+        'stable': False,
+        'half-life': 1842.0 * u.s,
+    },
+
+    'Rh-98': {
+        'atomic number': 45,
+        'mass number': 98,
+        'mass': 97.910708 * u.u,
+        'stable': False,
+        'half-life': 523.2 * u.s,
+    },
+
+    'Rh-99': {
+        'atomic number': 45,
+        'mass number': 99,
+        'mass': 98.9081282 * u.u,
+        'stable': False,
+        'half-life': 1391040.0 * u.s,
+    },
+
+    'Rh-100': {
+        'atomic number': 45,
+        'mass number': 100,
+        'mass': 99.908117 * u.u,
+        'stable': False,
+        'half-life': 74880.0 * u.s,
+    },
+
+    'Rh-101': {
+        'atomic number': 45,
+        'mass number': 101,
+        'mass': 100.9061606 * u.u,
+        'stable': False,
+        'half-life': 104137855.8 * u.s,
+    },
+
+    'Rh-102': {
+        'atomic number': 45,
+        'mass number': 102,
+        'mass': 101.9068374 * u.u,
+        'stable': False,
+        'half-life': 17884800.0 * u.s,
+    },
+
+    'Rh-103': {
+        'atomic number': 45,
+        'mass number': 103,
+        'mass': 102.905498 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Rh-104': {
+        'atomic number': 45,
+        'mass number': 104,
+        'mass': 103.9066492 * u.u,
+        'stable': False,
+        'half-life': 42.3 * u.s,
+    },
+
+    'Rh-105': {
+        'atomic number': 45,
+        'mass number': 105,
+        'mass': 104.9056885 * u.u,
+        'stable': False,
+        'half-life': 127285.2 * u.s,
+    },
+
+    'Rh-106': {
+        'atomic number': 45,
+        'mass number': 106,
+        'mass': 105.9072868 * u.u,
+        'stable': False,
+        'half-life': 30.07 * u.s,
+    },
+
+    'Rh-107': {
+        'atomic number': 45,
+        'mass number': 107,
+        'mass': 106.906748 * u.u,
+        'stable': False,
+        'half-life': 1302.0 * u.s,
+    },
+
+    'Rh-108': {
+        'atomic number': 45,
+        'mass number': 108,
+        'mass': 107.908714 * u.u,
+        'stable': False,
+        'half-life': 16.8 * u.s,
+    },
+
+    'Rh-109': {
+        'atomic number': 45,
+        'mass number': 109,
+        'mass': 108.9087488 * u.u,
+        'stable': False,
+        'half-life': 80.0 * u.s,
+    },
+
+    'Rh-110': {
+        'atomic number': 45,
+        'mass number': 110,
+        'mass': 109.911079 * u.u,
+        'stable': False,
+        'half-life': 3.35 * u.s,
+    },
+
+    'Rh-111': {
+        'atomic number': 45,
+        'mass number': 111,
+        'mass': 110.9116423 * u.u,
+        'stable': False,
+        'half-life': 11.0 * u.s,
+    },
+
+    'Rh-112': {
+        'atomic number': 45,
+        'mass number': 112,
+        'mass': 111.914403 * u.u,
+        'stable': False,
+        'half-life': 3.4 * u.s,
+    },
+
+    'Rh-113': {
+        'atomic number': 45,
+        'mass number': 113,
+        'mass': 112.9154393 * u.u,
+        'stable': False,
+        'half-life': 2.8 * u.s,
+    },
+
+    'Rh-114': {
+        'atomic number': 45,
+        'mass number': 114,
+        'mass': 113.918718 * u.u,
+        'stable': False,
+        'half-life': 1.85 * u.s,
+    },
+
+    'Rh-115': {
+        'atomic number': 45,
+        'mass number': 115,
+        'mass': 114.9203116 * u.u,
+        'stable': False,
+        'half-life': 0.99 * u.s,
+    },
+
+    'Rh-116': {
+        'atomic number': 45,
+        'mass number': 116,
+        'mass': 115.924059 * u.u,
+        'stable': False,
+        'half-life': 0.685 * u.s,
+    },
+
+    'Rh-117': {
+        'atomic number': 45,
+        'mass number': 117,
+        'mass': 116.9260354 * u.u,
+        'stable': False,
+        'half-life': 0.421 * u.s,
+    },
+
+    'Rh-118': {
+        'atomic number': 45,
+        'mass number': 118,
+        'mass': 117.93034 * u.u,
+        'stable': False,
+        'half-life': 0.284 * u.s,
+    },
+
+    'Rh-119': {
+        'atomic number': 45,
+        'mass number': 119,
+        'mass': 118.932557 * u.u,
+        'stable': False,
+        'half-life': 0.19 * u.s,
+    },
+
+    'Rh-120': {
+        'atomic number': 45,
+        'mass number': 120,
+        'mass': 119.93686 * u.u,
+        'stable': False,
+        'half-life': 0.1296 * u.s,
+    },
+
+    'Rh-121': {
+        'atomic number': 45,
+        'mass number': 121,
+        'mass': 120.93942 * u.u,
+        'stable': False,
+        'half-life': 0.076 * u.s,
+    },
+
+    'Rh-122': {
+        'atomic number': 45,
+        'mass number': 122,
+        'mass': 121.94399 * u.u,
+        'stable': False,
+        'half-life': 0.051 * u.s,
+    },
+
+    'Rh-123': {
+        'atomic number': 45,
+        'mass number': 123,
+        'mass': 122.94685 * u.u,
+        'stable': False,
+        'half-life': 0.042 * u.s,
+    },
+
+    'Rh-124': {
+        'atomic number': 45,
+        'mass number': 124,
+        'mass': 123.95151 * u.u,
+        'stable': False,
+        'half-life': 0.03 * u.s,
+    },
+
+    'Rh-125': {
+        'atomic number': 45,
+        'mass number': 125,
+        'mass': 124.95469 * u.u,
+        'stable': False,
+        'half-life': 0.0265 * u.s,
+    },
+
+    'Rh-126': {
+        'atomic number': 45,
+        'mass number': 126,
+        'mass': 125.95946 * u.u,
+        'stable': False,
+        'half-life': 0.019 * u.s,
+    },
+
+    'Pd-91': {
+        'atomic number': 46,
+        'mass number': 91,
+        'mass': 90.95032 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Pd-92': {
+        'atomic number': 46,
+        'mass number': 92,
+        'mass': 91.94088 * u.u,
+        'stable': False,
+        'half-life': 1.1 * u.s,
+    },
+
+    'Pd-93': {
+        'atomic number': 46,
+        'mass number': 93,
+        'mass': 92.93651 * u.u,
+        'stable': False,
+        'half-life': 1.15 * u.s,
+    },
+
+    'Pd-94': {
+        'atomic number': 46,
+        'mass number': 94,
+        'mass': 93.9290376 * u.u,
+        'stable': False,
+        'half-life': 9.0 * u.s,
+    },
+
+    'Pd-95': {
+        'atomic number': 46,
+        'mass number': 95,
+        'mass': 94.9248898 * u.u,
+        'stable': False,
+        'half-life': 7.5 * u.s,
+    },
+
+    'Pd-96': {
+        'atomic number': 46,
+        'mass number': 96,
+        'mass': 95.9182151 * u.u,
+        'stable': False,
+        'half-life': 122.0 * u.s,
+    },
+
+    'Pd-97': {
+        'atomic number': 46,
+        'mass number': 97,
+        'mass': 96.916472 * u.u,
+        'stable': False,
+        'half-life': 186.0 * u.s,
+    },
+
+    'Pd-98': {
+        'atomic number': 46,
+        'mass number': 98,
+        'mass': 97.9126983 * u.u,
+        'stable': False,
+        'half-life': 1062.0 * u.s,
+    },
+
+    'Pd-99': {
+        'atomic number': 46,
+        'mass number': 99,
+        'mass': 98.9117748 * u.u,
+        'stable': False,
+        'half-life': 1284.0 * u.s,
+    },
+
+    'Pd-100': {
+        'atomic number': 46,
+        'mass number': 100,
+        'mass': 99.908505 * u.u,
+        'stable': False,
+        'half-life': 313632.0 * u.s,
+    },
+
+    'Pd-101': {
+        'atomic number': 46,
+        'mass number': 101,
+        'mass': 100.9082864 * u.u,
+        'stable': False,
+        'half-life': 30492.0 * u.s,
+    },
+
+    'Pd-102': {
+        'atomic number': 46,
+        'mass number': 102,
+        'mass': 101.9056022 * u.u,
+        'stable': True,
+        'abundance': 0.0102,
+    },
+
+    'Pd-103': {
+        'atomic number': 46,
+        'mass number': 103,
+        'mass': 102.9060809 * u.u,
+        'stable': False,
+        'half-life': 1468022.4 * u.s,
+    },
+
+    'Pd-104': {
+        'atomic number': 46,
+        'mass number': 104,
+        'mass': 103.9040305 * u.u,
+        'stable': True,
+        'abundance': 0.1114,
+    },
+
+    'Pd-105': {
+        'atomic number': 46,
+        'mass number': 105,
+        'mass': 104.9050796 * u.u,
+        'stable': True,
+        'abundance': 0.2233,
+    },
+
+    'Pd-106': {
+        'atomic number': 46,
+        'mass number': 106,
+        'mass': 105.9034804 * u.u,
+        'stable': True,
+        'abundance': 0.2733,
+    },
+
+    'Pd-107': {
+        'atomic number': 46,
+        'mass number': 107,
+        'mass': 106.9051282 * u.u,
+        'stable': False,
+        'half-life': 205120019000000.0 * u.s,
+    },
+
+    'Pd-108': {
+        'atomic number': 46,
+        'mass number': 108,
+        'mass': 107.9038916 * u.u,
+        'stable': True,
+        'abundance': 0.2646,
+    },
+
+    'Pd-109': {
+        'atomic number': 46,
+        'mass number': 109,
+        'mass': 108.9059504 * u.u,
+        'stable': False,
+        'half-life': 49324.32 * u.s,
+    },
+
+    'Pd-110': {
+        'atomic number': 46,
+        'mass number': 110,
+        'mass': 109.9051722 * u.u,
+        'stable': True,
+        'abundance': 0.1172,
+    },
+
+    'Pd-111': {
+        'atomic number': 46,
+        'mass number': 111,
+        'mass': 110.90768968 * u.u,
+        'stable': False,
+        'half-life': 1404.0 * u.s,
+    },
+
+    'Pd-112': {
+        'atomic number': 46,
+        'mass number': 112,
+        'mass': 111.9073297 * u.u,
+        'stable': False,
+        'half-life': 75744.0 * u.s,
+    },
+
+    'Pd-113': {
+        'atomic number': 46,
+        'mass number': 113,
+        'mass': 112.910261 * u.u,
+        'stable': False,
+        'half-life': 93.0 * u.s,
+    },
+
+    'Pd-114': {
+        'atomic number': 46,
+        'mass number': 114,
+        'mass': 113.9103686 * u.u,
+        'stable': False,
+        'half-life': 145.2 * u.s,
+    },
+
+    'Pd-115': {
+        'atomic number': 46,
+        'mass number': 115,
+        'mass': 114.913659 * u.u,
+        'stable': False,
+        'half-life': 25.0 * u.s,
+    },
+
+    'Pd-116': {
+        'atomic number': 46,
+        'mass number': 116,
+        'mass': 115.914297 * u.u,
+        'stable': False,
+        'half-life': 11.8 * u.s,
+    },
+
+    'Pd-117': {
+        'atomic number': 46,
+        'mass number': 117,
+        'mass': 116.9179547 * u.u,
+        'stable': False,
+        'half-life': 4.3 * u.s,
+    },
+
+    'Pd-118': {
+        'atomic number': 46,
+        'mass number': 118,
+        'mass': 117.9190667 * u.u,
+        'stable': False,
+        'half-life': 1.9 * u.s,
+    },
+
+    'Pd-119': {
+        'atomic number': 46,
+        'mass number': 119,
+        'mass': 118.9233402 * u.u,
+        'stable': False,
+        'half-life': 0.92 * u.s,
+    },
+
+    'Pd-120': {
+        'atomic number': 46,
+        'mass number': 120,
+        'mass': 119.9245511 * u.u,
+        'stable': False,
+        'half-life': 0.492 * u.s,
+    },
+
+    'Pd-121': {
+        'atomic number': 46,
+        'mass number': 121,
+        'mass': 120.9289503 * u.u,
+        'stable': False,
+        'half-life': 0.29 * u.s,
+    },
+
+    'Pd-122': {
+        'atomic number': 46,
+        'mass number': 122,
+        'mass': 121.930632 * u.u,
+        'stable': False,
+        'half-life': 0.195 * u.s,
+    },
+
+    'Pd-123': {
+        'atomic number': 46,
+        'mass number': 123,
+        'mass': 122.93514 * u.u,
+        'stable': False,
+        'half-life': 0.108 * u.s,
+    },
+
+    'Pd-124': {
+        'atomic number': 46,
+        'mass number': 124,
+        'mass': 123.93714 * u.u,
+        'stable': False,
+        'half-life': 0.088 * u.s,
+    },
+
+    'Pd-125': {
+        'atomic number': 46,
+        'mass number': 125,
+        'mass': 124.94179 * u.u,
+        'stable': False,
+        'half-life': 0.057 * u.s,
+    },
+
+    'Pd-126': {
+        'atomic number': 46,
+        'mass number': 126,
+        'mass': 125.94416 * u.u,
+        'stable': False,
+        'half-life': 0.0486 * u.s,
+    },
+
+    'Pd-127': {
+        'atomic number': 46,
+        'mass number': 127,
+        'mass': 126.94907 * u.u,
+        'stable': False,
+        'half-life': 0.038 * u.s,
+    },
+
+    'Pd-128': {
+        'atomic number': 46,
+        'mass number': 128,
+        'mass': 127.95183 * u.u,
+        'stable': False,
+        'half-life': 0.035 * u.s,
+    },
+
+    'Ag-93': {
+        'atomic number': 47,
+        'mass number': 93,
+        'mass': 92.95033 * u.u,
+        'stable': False,
+        'half-life': '20# ms',
+    },
+
+    'Ag-94': {
+        'atomic number': 47,
+        'mass number': 94,
+        'mass': 93.94373 * u.u,
+        'stable': False,
+        'half-life': 0.037 * u.s,
+    },
+
+    'Ag-95': {
+        'atomic number': 47,
+        'mass number': 95,
+        'mass': 94.93602 * u.u,
+        'stable': False,
+        'half-life': 1.76 * u.s,
+    },
+
+    'Ag-96': {
+        'atomic number': 47,
+        'mass number': 96,
+        'mass': 95.930744 * u.u,
+        'stable': False,
+        'half-life': 4.44 * u.s,
+    },
+
+    'Ag-97': {
+        'atomic number': 47,
+        'mass number': 97,
+        'mass': 96.92397 * u.u,
+        'stable': False,
+        'half-life': 25.5 * u.s,
+    },
+
+    'Ag-98': {
+        'atomic number': 47,
+        'mass number': 98,
+        'mass': 97.92156 * u.u,
+        'stable': False,
+        'half-life': 47.5 * u.s,
+    },
+
+    'Ag-99': {
+        'atomic number': 47,
+        'mass number': 99,
+        'mass': 98.9176458 * u.u,
+        'stable': False,
+        'half-life': 124.2 * u.s,
+    },
+
+    'Ag-100': {
+        'atomic number': 47,
+        'mass number': 100,
+        'mass': 99.9161154 * u.u,
+        'stable': False,
+        'half-life': 120.6 * u.s,
+    },
+
+    'Ag-101': {
+        'atomic number': 47,
+        'mass number': 101,
+        'mass': 100.912684 * u.u,
+        'stable': False,
+        'half-life': 666.0 * u.s,
+    },
+
+    'Ag-102': {
+        'atomic number': 47,
+        'mass number': 102,
+        'mass': 101.9117047 * u.u,
+        'stable': False,
+        'half-life': 774.0 * u.s,
+    },
+
+    'Ag-103': {
+        'atomic number': 47,
+        'mass number': 103,
+        'mass': 102.9089631 * u.u,
+        'stable': False,
+        'half-life': 3942.0 * u.s,
+    },
+
+    'Ag-104': {
+        'atomic number': 47,
+        'mass number': 104,
+        'mass': 103.9086239 * u.u,
+        'stable': False,
+        'half-life': 4152.0 * u.s,
+    },
+
+    'Ag-105': {
+        'atomic number': 47,
+        'mass number': 105,
+        'mass': 104.9065256 * u.u,
+        'stable': False,
+        'half-life': 3567456.0 * u.s,
+    },
+
+    'Ag-106': {
+        'atomic number': 47,
+        'mass number': 106,
+        'mass': 105.9066636 * u.u,
+        'stable': False,
+        'half-life': 1437.6 * u.s,
+    },
+
+    'Ag-107': {
+        'atomic number': 47,
+        'mass number': 107,
+        'mass': 106.9050916 * u.u,
+        'stable': True,
+        'abundance': 0.51839,
+    },
+
+    'Ag-108': {
+        'atomic number': 47,
+        'mass number': 108,
+        'mass': 107.9059503 * u.u,
+        'stable': False,
+        'half-life': 142.92 * u.s,
+    },
+
+    'Ag-109': {
+        'atomic number': 47,
+        'mass number': 109,
+        'mass': 108.9047553 * u.u,
+        'stable': True,
+        'abundance': 0.48161,
+    },
+
+    'Ag-110': {
+        'atomic number': 47,
+        'mass number': 110,
+        'mass': 109.9061102 * u.u,
+        'stable': False,
+        'half-life': 24.56 * u.s,
+    },
+
+    'Ag-111': {
+        'atomic number': 47,
+        'mass number': 111,
+        'mass': 110.9052959 * u.u,
+        'stable': False,
+        'half-life': 642211.2 * u.s,
+    },
+
+    'Ag-112': {
+        'atomic number': 47,
+        'mass number': 112,
+        'mass': 111.9070486 * u.u,
+        'stable': False,
+        'half-life': 11268.0 * u.s,
+    },
+
+    'Ag-113': {
+        'atomic number': 47,
+        'mass number': 113,
+        'mass': 112.906573 * u.u,
+        'stable': False,
+        'half-life': 19332.0 * u.s,
+    },
+
+    'Ag-114': {
+        'atomic number': 47,
+        'mass number': 114,
+        'mass': 113.908823 * u.u,
+        'stable': False,
+        'half-life': 4.6 * u.s,
+    },
+
+    'Ag-115': {
+        'atomic number': 47,
+        'mass number': 115,
+        'mass': 114.908767 * u.u,
+        'stable': False,
+        'half-life': 1200.0 * u.s,
+    },
+
+    'Ag-116': {
+        'atomic number': 47,
+        'mass number': 116,
+        'mass': 115.9113868 * u.u,
+        'stable': False,
+        'half-life': 229.8 * u.s,
+    },
+
+    'Ag-117': {
+        'atomic number': 47,
+        'mass number': 117,
+        'mass': 116.911774 * u.u,
+        'stable': False,
+        'half-life': 73.6 * u.s,
+    },
+
+    'Ag-118': {
+        'atomic number': 47,
+        'mass number': 118,
+        'mass': 117.9145955 * u.u,
+        'stable': False,
+        'half-life': 3.76 * u.s,
+    },
+
+    'Ag-119': {
+        'atomic number': 47,
+        'mass number': 119,
+        'mass': 118.91557 * u.u,
+        'stable': False,
+        'half-life': 6.0 * u.s,
+    },
+
+    'Ag-120': {
+        'atomic number': 47,
+        'mass number': 120,
+        'mass': 119.9187848 * u.u,
+        'stable': False,
+        'half-life': 1.52 * u.s,
+    },
+
+    'Ag-121': {
+        'atomic number': 47,
+        'mass number': 121,
+        'mass': 120.920125 * u.u,
+        'stable': False,
+        'half-life': 0.78 * u.s,
+    },
+
+    'Ag-122': {
+        'atomic number': 47,
+        'mass number': 122,
+        'mass': 121.923664 * u.u,
+        'stable': False,
+        'half-life': 0.529 * u.s,
+    },
+
+    'Ag-123': {
+        'atomic number': 47,
+        'mass number': 123,
+        'mass': 122.925337 * u.u,
+        'stable': False,
+        'half-life': 0.3 * u.s,
+    },
+
+    'Ag-124': {
+        'atomic number': 47,
+        'mass number': 124,
+        'mass': 123.92893 * u.u,
+        'stable': False,
+        'half-life': 0.1779 * u.s,
+    },
+
+    'Ag-125': {
+        'atomic number': 47,
+        'mass number': 125,
+        'mass': 124.93105 * u.u,
+        'stable': False,
+        'half-life': 0.159 * u.s,
+    },
+
+    'Ag-126': {
+        'atomic number': 47,
+        'mass number': 126,
+        'mass': 125.93475 * u.u,
+        'stable': False,
+        'half-life': 0.0993 * u.s,
+    },
+
+    'Ag-127': {
+        'atomic number': 47,
+        'mass number': 127,
+        'mass': 126.93711 * u.u,
+        'stable': False,
+        'half-life': 0.089 * u.s,
+    },
+
+    'Ag-128': {
+        'atomic number': 47,
+        'mass number': 128,
+        'mass': 127.94106 * u.u,
+        'stable': False,
+        'half-life': 0.059 * u.s,
+    },
+
+    'Ag-129': {
+        'atomic number': 47,
+        'mass number': 129,
+        'mass': 128.94395 * u.u,
+        'stable': False,
+        'half-life': 0.0499 * u.s,
+    },
+
+    'Ag-130': {
+        'atomic number': 47,
+        'mass number': 130,
+        'mass': 129.9507 * u.u,
+        'stable': False,
+        'half-life': 0.0406 * u.s,
+    },
+
+    'Cd-95': {
+        'atomic number': 48,
+        'mass number': 95,
+        'mass': 94.94994 * u.u,
+        'stable': False,
+        'half-life': 0.09 * u.s,
+    },
+
+    'Cd-96': {
+        'atomic number': 48,
+        'mass number': 96,
+        'mass': 95.94034 * u.u,
+        'stable': False,
+        'half-life': 0.88 * u.s,
+    },
+
+    'Cd-97': {
+        'atomic number': 48,
+        'mass number': 97,
+        'mass': 96.9351 * u.u,
+        'stable': False,
+        'half-life': 1.1 * u.s,
+    },
+
+    'Cd-98': {
+        'atomic number': 48,
+        'mass number': 98,
+        'mass': 97.927389 * u.u,
+        'stable': False,
+        'half-life': 9.2 * u.s,
+    },
+
+    'Cd-99': {
+        'atomic number': 48,
+        'mass number': 99,
+        'mass': 98.9249258 * u.u,
+        'stable': False,
+        'half-life': 16.0 * u.s,
+    },
+
+    'Cd-100': {
+        'atomic number': 48,
+        'mass number': 100,
+        'mass': 99.9203488 * u.u,
+        'stable': False,
+        'half-life': 49.1 * u.s,
+    },
+
+    'Cd-101': {
+        'atomic number': 48,
+        'mass number': 101,
+        'mass': 100.9185862 * u.u,
+        'stable': False,
+        'half-life': 81.6 * u.s,
+    },
+
+    'Cd-102': {
+        'atomic number': 48,
+        'mass number': 102,
+        'mass': 101.914482 * u.u,
+        'stable': False,
+        'half-life': 330.0 * u.s,
+    },
+
+    'Cd-103': {
+        'atomic number': 48,
+        'mass number': 103,
+        'mass': 102.9134165 * u.u,
+        'stable': False,
+        'half-life': 438.0 * u.s,
+    },
+
+    'Cd-104': {
+        'atomic number': 48,
+        'mass number': 104,
+        'mass': 103.9098564 * u.u,
+        'stable': False,
+        'half-life': 3462.0 * u.s,
+    },
+
+    'Cd-105': {
+        'atomic number': 48,
+        'mass number': 105,
+        'mass': 104.9094639 * u.u,
+        'stable': False,
+        'half-life': 3330.0 * u.s,
+    },
+
+    'Cd-106': {
+        'atomic number': 48,
+        'mass number': 106,
+        'mass': 105.9064599 * u.u,
+        'stable': True,
+        'abundance': 0.0125,
+    },
+
+    'Cd-107': {
+        'atomic number': 48,
+        'mass number': 107,
+        'mass': 106.9066121 * u.u,
+        'stable': False,
+        'half-life': 23400.0 * u.s,
+    },
+
+    'Cd-108': {
+        'atomic number': 48,
+        'mass number': 108,
+        'mass': 107.9041834 * u.u,
+        'stable': True,
+        'abundance': 0.0089,
+    },
+
+    'Cd-109': {
+        'atomic number': 48,
+        'mass number': 109,
+        'mass': 108.9049867 * u.u,
+        'stable': False,
+        'half-life': 40025664.0 * u.s,
+    },
+
+    'Cd-110': {
+        'atomic number': 48,
+        'mass number': 110,
+        'mass': 109.90300661 * u.u,
+        'stable': True,
+        'abundance': 0.1249,
+    },
+
+    'Cd-111': {
+        'atomic number': 48,
+        'mass number': 111,
+        'mass': 110.90418287 * u.u,
+        'stable': True,
+        'abundance': 0.128,
+    },
+
+    'Cd-112': {
+        'atomic number': 48,
+        'mass number': 112,
+        'mass': 111.90276287 * u.u,
+        'stable': True,
+        'abundance': 0.2413,
+    },
+
+    'Cd-113': {
+        'atomic number': 48,
+        'mass number': 113,
+        'mass': 112.90440813 * u.u,
+        'stable': False,
+        'abundance': 0.1222,
+    },
+
+    'Cd-114': {
+        'atomic number': 48,
+        'mass number': 114,
+        'mass': 113.90336509 * u.u,
+        'stable': True,
+        'abundance': 0.2873,
+    },
+
+    'Cd-115': {
+        'atomic number': 48,
+        'mass number': 115,
+        'mass': 114.90543751 * u.u,
+        'stable': False,
+        'half-life': 192456.0 * u.s,
+    },
+
+    'Cd-116': {
+        'atomic number': 48,
+        'mass number': 116,
+        'mass': 115.90476315 * u.u,
+        'stable': False,
+        'abundance': 0.0749,
+    },
+
+    'Cd-117': {
+        'atomic number': 48,
+        'mass number': 117,
+        'mass': 116.907226 * u.u,
+        'stable': False,
+        'half-life': 8964.0 * u.s,
+    },
+
+    'Cd-118': {
+        'atomic number': 48,
+        'mass number': 118,
+        'mass': 117.906922 * u.u,
+        'stable': False,
+        'half-life': 3018.0 * u.s,
+    },
+
+    'Cd-119': {
+        'atomic number': 48,
+        'mass number': 119,
+        'mass': 118.909847 * u.u,
+        'stable': False,
+        'half-life': 161.4 * u.s,
+    },
+
+    'Cd-120': {
+        'atomic number': 48,
+        'mass number': 120,
+        'mass': 119.9098681 * u.u,
+        'stable': False,
+        'half-life': 50.8 * u.s,
+    },
+
+    'Cd-121': {
+        'atomic number': 48,
+        'mass number': 121,
+        'mass': 120.9129637 * u.u,
+        'stable': False,
+        'half-life': 13.5 * u.s,
+    },
+
+    'Cd-122': {
+        'atomic number': 48,
+        'mass number': 122,
+        'mass': 121.9134591 * u.u,
+        'stable': False,
+        'half-life': 5.24 * u.s,
+    },
+
+    'Cd-123': {
+        'atomic number': 48,
+        'mass number': 123,
+        'mass': 122.9168925 * u.u,
+        'stable': False,
+        'half-life': 2.1 * u.s,
+    },
+
+    'Cd-124': {
+        'atomic number': 48,
+        'mass number': 124,
+        'mass': 123.9176574 * u.u,
+        'stable': False,
+        'half-life': 1.25 * u.s,
+    },
+
+    'Cd-125': {
+        'atomic number': 48,
+        'mass number': 125,
+        'mass': 124.9212576 * u.u,
+        'stable': False,
+        'half-life': 0.68 * u.s,
+    },
+
+    'Cd-126': {
+        'atomic number': 48,
+        'mass number': 126,
+        'mass': 125.9224291 * u.u,
+        'stable': False,
+        'half-life': 0.513 * u.s,
+    },
+
+    'Cd-127': {
+        'atomic number': 48,
+        'mass number': 127,
+        'mass': 126.926472 * u.u,
+        'stable': False,
+        'half-life': 0.33 * u.s,
+    },
+
+    'Cd-128': {
+        'atomic number': 48,
+        'mass number': 128,
+        'mass': 127.9278129 * u.u,
+        'stable': False,
+        'half-life': 0.246 * u.s,
+    },
+
+    'Cd-129': {
+        'atomic number': 48,
+        'mass number': 129,
+        'mass': 128.93182 * u.u,
+        'stable': False,
+        'half-life': 0.1515 * u.s,
+    },
+
+    'Cd-130': {
+        'atomic number': 48,
+        'mass number': 130,
+        'mass': 129.93394 * u.u,
+        'stable': False,
+        'half-life': 0.1268 * u.s,
+    },
+
+    'Cd-131': {
+        'atomic number': 48,
+        'mass number': 131,
+        'mass': 130.9406 * u.u,
+        'stable': False,
+        'half-life': 0.098 * u.s,
+    },
+
+    'Cd-132': {
+        'atomic number': 48,
+        'mass number': 132,
+        'mass': 131.94604 * u.u,
+        'stable': False,
+        'half-life': 0.082 * u.s,
+    },
+
+    'Cd-133': {
+        'atomic number': 48,
+        'mass number': 133,
+        'mass': 132.95285 * u.u,
+        'stable': False,
+        'half-life': 0.061 * u.s,
+    },
+
+    'In-97': {
+        'atomic number': 49,
+        'mass number': 97,
+        'mass': 96.94934 * u.u,
+        'stable': False,
+        'half-life': 0.05 * u.s,
+    },
+
+    'In-98': {
+        'atomic number': 49,
+        'mass number': 98,
+        'mass': 97.94214 * u.u,
+        'stable': False,
+        'half-life': 0.037 * u.s,
+    },
+
+    'In-99': {
+        'atomic number': 49,
+        'mass number': 99,
+        'mass': 98.93411 * u.u,
+        'stable': False,
+        'half-life': 3.1 * u.s,
+    },
+
+    'In-100': {
+        'atomic number': 49,
+        'mass number': 100,
+        'mass': 99.93096 * u.u,
+        'stable': False,
+        'half-life': 5.83 * u.s,
+    },
+
+    'In-101': {
+        'atomic number': 49,
+        'mass number': 101,
+        'mass': 100.92634 * u.u,
+        'stable': False,
+        'half-life': 15.1 * u.s,
+    },
+
+    'In-102': {
+        'atomic number': 49,
+        'mass number': 102,
+        'mass': 101.9241071 * u.u,
+        'stable': False,
+        'half-life': 23.3 * u.s,
+    },
+
+    'In-103': {
+        'atomic number': 49,
+        'mass number': 103,
+        'mass': 102.9198819 * u.u,
+        'stable': False,
+        'half-life': 60.0 * u.s,
+    },
+
+    'In-104': {
+        'atomic number': 49,
+        'mass number': 104,
+        'mass': 103.9182145 * u.u,
+        'stable': False,
+        'half-life': 108.0 * u.s,
+    },
+
+    'In-105': {
+        'atomic number': 49,
+        'mass number': 105,
+        'mass': 104.914502 * u.u,
+        'stable': False,
+        'half-life': 304.2 * u.s,
+    },
+
+    'In-106': {
+        'atomic number': 49,
+        'mass number': 106,
+        'mass': 105.913464 * u.u,
+        'stable': False,
+        'half-life': 372.0 * u.s,
+    },
+
+    'In-107': {
+        'atomic number': 49,
+        'mass number': 107,
+        'mass': 106.91029 * u.u,
+        'stable': False,
+        'half-life': 1944.0 * u.s,
+    },
+
+    'In-108': {
+        'atomic number': 49,
+        'mass number': 108,
+        'mass': 107.9096935 * u.u,
+        'stable': False,
+        'half-life': 3480.0 * u.s,
+    },
+
+    'In-109': {
+        'atomic number': 49,
+        'mass number': 109,
+        'mass': 108.9071514 * u.u,
+        'stable': False,
+        'half-life': 15001.2 * u.s,
+    },
+
+    'In-110': {
+        'atomic number': 49,
+        'mass number': 110,
+        'mass': 109.90717 * u.u,
+        'stable': False,
+        'half-life': 17712.0 * u.s,
+    },
+
+    'In-111': {
+        'atomic number': 49,
+        'mass number': 111,
+        'mass': 110.9051085 * u.u,
+        'stable': False,
+        'half-life': 242332.128 * u.s,
+    },
+
+    'In-112': {
+        'atomic number': 49,
+        'mass number': 112,
+        'mass': 111.9055377 * u.u,
+        'stable': False,
+        'half-life': 892.8 * u.s,
+    },
+
+    'In-113': {
+        'atomic number': 49,
+        'mass number': 113,
+        'mass': 112.90406184 * u.u,
+        'stable': True,
+        'abundance': 0.0429,
+    },
+
+    'In-114': {
+        'atomic number': 49,
+        'mass number': 114,
+        'mass': 113.90491791 * u.u,
+        'stable': False,
+        'half-life': 71.9 * u.s,
+    },
+
+    'In-115': {
+        'atomic number': 49,
+        'mass number': 115,
+        'mass': 114.903878776 * u.u,
+        'stable': False,
+        'abundance': 0.9571,
+    },
+
+    'In-116': {
+        'atomic number': 49,
+        'mass number': 116,
+        'mass': 115.90525999 * u.u,
+        'stable': False,
+        'half-life': 14.1 * u.s,
+    },
+
+    'In-117': {
+        'atomic number': 49,
+        'mass number': 117,
+        'mass': 116.9045157 * u.u,
+        'stable': False,
+        'half-life': 2592.0 * u.s,
+    },
+
+    'In-118': {
+        'atomic number': 49,
+        'mass number': 118,
+        'mass': 117.9063566 * u.u,
+        'stable': False,
+        'half-life': 5.0 * u.s,
+    },
+
+    'In-119': {
+        'atomic number': 49,
+        'mass number': 119,
+        'mass': 118.9058507 * u.u,
+        'stable': False,
+        'half-life': 144.0 * u.s,
+    },
+
+    'In-120': {
+        'atomic number': 49,
+        'mass number': 120,
+        'mass': 119.907967 * u.u,
+        'stable': False,
+        'half-life': 3.08 * u.s,
+    },
+
+    'In-121': {
+        'atomic number': 49,
+        'mass number': 121,
+        'mass': 120.907851 * u.u,
+        'stable': False,
+        'half-life': 23.1 * u.s,
+    },
+
+    'In-122': {
+        'atomic number': 49,
+        'mass number': 122,
+        'mass': 121.910281 * u.u,
+        'stable': False,
+        'half-life': 1.5 * u.s,
+    },
+
+    'In-123': {
+        'atomic number': 49,
+        'mass number': 123,
+        'mass': 122.910434 * u.u,
+        'stable': False,
+        'half-life': 6.17 * u.s,
+    },
+
+    'In-124': {
+        'atomic number': 49,
+        'mass number': 124,
+        'mass': 123.913182 * u.u,
+        'stable': False,
+        'half-life': 3.12 * u.s,
+    },
+
+    'In-125': {
+        'atomic number': 49,
+        'mass number': 125,
+        'mass': 124.913605 * u.u,
+        'stable': False,
+        'half-life': 2.36 * u.s,
+    },
+
+    'In-126': {
+        'atomic number': 49,
+        'mass number': 126,
+        'mass': 125.916507 * u.u,
+        'stable': False,
+        'half-life': 1.53 * u.s,
+    },
+
+    'In-127': {
+        'atomic number': 49,
+        'mass number': 127,
+        'mass': 126.917446 * u.u,
+        'stable': False,
+        'half-life': 1.09 * u.s,
+    },
+
+    'In-128': {
+        'atomic number': 49,
+        'mass number': 128,
+        'mass': 127.9204 * u.u,
+        'stable': False,
+        'half-life': 0.816 * u.s,
+    },
+
+    'In-129': {
+        'atomic number': 49,
+        'mass number': 129,
+        'mass': 128.9218053 * u.u,
+        'stable': False,
+        'half-life': 0.57 * u.s,
+    },
+
+    'In-130': {
+        'atomic number': 49,
+        'mass number': 130,
+        'mass': 129.924977 * u.u,
+        'stable': False,
+        'half-life': 0.284 * u.s,
+    },
+
+    'In-131': {
+        'atomic number': 49,
+        'mass number': 131,
+        'mass': 130.9269715 * u.u,
+        'stable': False,
+        'half-life': 0.261 * u.s,
+    },
+
+    'In-132': {
+        'atomic number': 49,
+        'mass number': 132,
+        'mass': 131.933001 * u.u,
+        'stable': False,
+        'half-life': 0.198 * u.s,
+    },
+
+    'In-133': {
+        'atomic number': 49,
+        'mass number': 133,
+        'mass': 132.93831 * u.u,
+        'stable': False,
+        'half-life': 0.165 * u.s,
+    },
+
+    'In-134': {
+        'atomic number': 49,
+        'mass number': 134,
+        'mass': 133.94454 * u.u,
+        'stable': False,
+        'half-life': 0.14 * u.s,
+    },
+
+    'In-135': {
+        'atomic number': 49,
+        'mass number': 135,
+        'mass': 134.95005 * u.u,
+        'stable': False,
+        'half-life': 0.101 * u.s,
+    },
+
+    'Sn-99': {
+        'atomic number': 50,
+        'mass number': 99,
+        'mass': 98.94853 * u.u,
+        'stable': False,
+        'half-life': '5# ms',
+    },
+
+    'Sn-100': {
+        'atomic number': 50,
+        'mass number': 100,
+        'mass': 99.9385 * u.u,
+        'stable': False,
+        'half-life': 1.16 * u.s,
+    },
+
+    'Sn-101': {
+        'atomic number': 50,
+        'mass number': 101,
+        'mass': 100.93526 * u.u,
+        'stable': False,
+        'half-life': 1.97 * u.s,
+    },
+
+    'Sn-102': {
+        'atomic number': 50,
+        'mass number': 102,
+        'mass': 101.93029 * u.u,
+        'stable': False,
+        'half-life': 3.8 * u.s,
+    },
+
+    'Sn-103': {
+        'atomic number': 50,
+        'mass number': 103,
+        'mass': 102.928105 * u.u,
+        'stable': False,
+        'half-life': 7.0 * u.s,
+    },
+
+    'Sn-104': {
+        'atomic number': 50,
+        'mass number': 104,
+        'mass': 103.9231052 * u.u,
+        'stable': False,
+        'half-life': 20.8 * u.s,
+    },
+
+    'Sn-105': {
+        'atomic number': 50,
+        'mass number': 105,
+        'mass': 104.9212684 * u.u,
+        'stable': False,
+        'half-life': 34.0 * u.s,
+    },
+
+    'Sn-106': {
+        'atomic number': 50,
+        'mass number': 106,
+        'mass': 105.9169574 * u.u,
+        'stable': False,
+        'half-life': 115.2 * u.s,
+    },
+
+    'Sn-107': {
+        'atomic number': 50,
+        'mass number': 107,
+        'mass': 106.9157137 * u.u,
+        'stable': False,
+        'half-life': 174.0 * u.s,
+    },
+
+    'Sn-108': {
+        'atomic number': 50,
+        'mass number': 108,
+        'mass': 107.9118943 * u.u,
+        'stable': False,
+        'half-life': 618.0 * u.s,
+    },
+
+    'Sn-109': {
+        'atomic number': 50,
+        'mass number': 109,
+        'mass': 108.9112921 * u.u,
+        'stable': False,
+        'half-life': 1080.0 * u.s,
+    },
+
+    'Sn-110': {
+        'atomic number': 50,
+        'mass number': 110,
+        'mass': 109.907845 * u.u,
+        'stable': False,
+        'half-life': 14954.4 * u.s,
+    },
+
+    'Sn-111': {
+        'atomic number': 50,
+        'mass number': 111,
+        'mass': 110.9077401 * u.u,
+        'stable': False,
+        'half-life': 2118.0 * u.s,
+    },
+
+    'Sn-112': {
+        'atomic number': 50,
+        'mass number': 112,
+        'mass': 111.90482387 * u.u,
+        'stable': True,
+        'abundance': 0.0097,
+    },
+
+    'Sn-113': {
+        'atomic number': 50,
+        'mass number': 113,
+        'mass': 112.9051757 * u.u,
+        'stable': False,
+        'half-life': 9942825.6 * u.s,
+    },
+
+    'Sn-114': {
+        'atomic number': 50,
+        'mass number': 114,
+        'mass': 113.9027827 * u.u,
+        'stable': True,
+        'abundance': 0.0066,
+    },
+
+    'Sn-115': {
+        'atomic number': 50,
+        'mass number': 115,
+        'mass': 114.903344699 * u.u,
+        'stable': True,
+        'abundance': 0.0034,
+    },
+
+    'Sn-116': {
+        'atomic number': 50,
+        'mass number': 116,
+        'mass': 115.9017428 * u.u,
+        'stable': True,
+        'abundance': 0.1454,
+    },
+
+    'Sn-117': {
+        'atomic number': 50,
+        'mass number': 117,
+        'mass': 116.90295398 * u.u,
+        'stable': True,
+        'abundance': 0.0768,
+    },
+
+    'Sn-118': {
+        'atomic number': 50,
+        'mass number': 118,
+        'mass': 117.90160657 * u.u,
+        'stable': True,
+        'abundance': 0.2422,
+    },
+
+    'Sn-119': {
+        'atomic number': 50,
+        'mass number': 119,
+        'mass': 118.90331117 * u.u,
+        'stable': True,
+        'abundance': 0.0859,
+    },
+
+    'Sn-120': {
+        'atomic number': 50,
+        'mass number': 120,
+        'mass': 119.90220163 * u.u,
+        'stable': True,
+        'abundance': 0.3258,
+    },
+
+    'Sn-121': {
+        'atomic number': 50,
+        'mass number': 121,
+        'mass': 120.9042426 * u.u,
+        'stable': False,
+        'half-life': 97308.0 * u.s,
+    },
+
+    'Sn-122': {
+        'atomic number': 50,
+        'mass number': 122,
+        'mass': 121.9034438 * u.u,
+        'stable': True,
+        'abundance': 0.0463,
+    },
+
+    'Sn-123': {
+        'atomic number': 50,
+        'mass number': 123,
+        'mass': 122.9057252 * u.u,
+        'stable': False,
+        'half-life': 11162880.0 * u.s,
+    },
+
+    'Sn-124': {
+        'atomic number': 50,
+        'mass number': 124,
+        'mass': 123.9052766 * u.u,
+        'stable': True,
+        'abundance': 0.0579,
+    },
+
+    'Sn-125': {
+        'atomic number': 50,
+        'mass number': 125,
+        'mass': 124.9077864 * u.u,
+        'stable': False,
+        'half-life': 832896.0 * u.s,
+    },
+
+    'Sn-126': {
+        'atomic number': 50,
+        'mass number': 126,
+        'mass': 125.907659 * u.u,
+        'stable': False,
+        'half-life': 7258092980000.0 * u.s,
+    },
+
+    'Sn-127': {
+        'atomic number': 50,
+        'mass number': 127,
+        'mass': 126.91039 * u.u,
+        'stable': False,
+        'half-life': 7560.0 * u.s,
+    },
+
+    'Sn-128': {
+        'atomic number': 50,
+        'mass number': 128,
+        'mass': 127.910507 * u.u,
+        'stable': False,
+        'half-life': 3544.2 * u.s,
+    },
+
+    'Sn-129': {
+        'atomic number': 50,
+        'mass number': 129,
+        'mass': 128.913465 * u.u,
+        'stable': False,
+        'half-life': 133.8 * u.s,
+    },
+
+    'Sn-130': {
+        'atomic number': 50,
+        'mass number': 130,
+        'mass': 129.9139738 * u.u,
+        'stable': False,
+        'half-life': 223.2 * u.s,
+    },
+
+    'Sn-131': {
+        'atomic number': 50,
+        'mass number': 131,
+        'mass': 130.917045 * u.u,
+        'stable': False,
+        'half-life': 56.0 * u.s,
+    },
+
+    'Sn-132': {
+        'atomic number': 50,
+        'mass number': 132,
+        'mass': 131.9178267 * u.u,
+        'stable': False,
+        'half-life': 39.7 * u.s,
+    },
+
+    'Sn-133': {
+        'atomic number': 50,
+        'mass number': 133,
+        'mass': 132.9239134 * u.u,
+        'stable': False,
+        'half-life': 1.46 * u.s,
+    },
+
+    'Sn-134': {
+        'atomic number': 50,
+        'mass number': 134,
+        'mass': 133.9286821 * u.u,
+        'stable': False,
+        'half-life': 0.89 * u.s,
+    },
+
+    'Sn-135': {
+        'atomic number': 50,
+        'mass number': 135,
+        'mass': 134.9349086 * u.u,
+        'stable': False,
+        'half-life': 0.515 * u.s,
+    },
+
+    'Sn-136': {
+        'atomic number': 50,
+        'mass number': 136,
+        'mass': 135.93999 * u.u,
+        'stable': False,
+        'half-life': 0.35 * u.s,
+    },
+
+    'Sn-137': {
+        'atomic number': 50,
+        'mass number': 137,
+        'mass': 136.94655 * u.u,
+        'stable': False,
+        'half-life': 0.273 * u.s,
+    },
+
+    'Sn-138': {
+        'atomic number': 50,
+        'mass number': 138,
+        'mass': 137.95184 * u.u,
+        'stable': False,
+        'half-life': 0.15 * u.s,
+    },
+
+    'Sb-103': {
+        'atomic number': 51,
+        'mass number': 103,
+        'mass': 102.93969 * u.u,
+        'stable': False,
+    },
+
+    'Sb-104': {
+        'atomic number': 51,
+        'mass number': 104,
+        'mass': 103.93648 * u.u,
+        'stable': False,
+        'half-life': 0.47 * u.s,
+    },
+
+    'Sb-105': {
+        'atomic number': 51,
+        'mass number': 105,
+        'mass': 104.931276 * u.u,
+        'stable': False,
+        'half-life': 1.12 * u.s,
+    },
+
+    'Sb-106': {
+        'atomic number': 51,
+        'mass number': 106,
+        'mass': 105.928638 * u.u,
+        'stable': False,
+        'half-life': 0.6 * u.s,
+    },
+
+    'Sb-107': {
+        'atomic number': 51,
+        'mass number': 107,
+        'mass': 106.9241506 * u.u,
+        'stable': False,
+        'half-life': 4.0 * u.s,
+    },
+
+    'Sb-108': {
+        'atomic number': 51,
+        'mass number': 108,
+        'mass': 107.9222267 * u.u,
+        'stable': False,
+        'half-life': 7.4 * u.s,
+    },
+
+    'Sb-109': {
+        'atomic number': 51,
+        'mass number': 109,
+        'mass': 108.9181411 * u.u,
+        'stable': False,
+        'half-life': 17.0 * u.s,
+    },
+
+    'Sb-110': {
+        'atomic number': 51,
+        'mass number': 110,
+        'mass': 109.9168543 * u.u,
+        'stable': False,
+        'half-life': 23.6 * u.s,
+    },
+
+    'Sb-111': {
+        'atomic number': 51,
+        'mass number': 111,
+        'mass': 110.9132182 * u.u,
+        'stable': False,
+        'half-life': 75.0 * u.s,
+    },
+
+    'Sb-112': {
+        'atomic number': 51,
+        'mass number': 112,
+        'mass': 111.9124 * u.u,
+        'stable': False,
+        'half-life': 53.5 * u.s,
+    },
+
+    'Sb-113': {
+        'atomic number': 51,
+        'mass number': 113,
+        'mass': 112.909375 * u.u,
+        'stable': False,
+        'half-life': 400.2 * u.s,
+    },
+
+    'Sb-114': {
+        'atomic number': 51,
+        'mass number': 114,
+        'mass': 113.90929 * u.u,
+        'stable': False,
+        'half-life': 209.4 * u.s,
+    },
+
+    'Sb-115': {
+        'atomic number': 51,
+        'mass number': 115,
+        'mass': 114.906598 * u.u,
+        'stable': False,
+        'half-life': 1926.0 * u.s,
+    },
+
+    'Sb-116': {
+        'atomic number': 51,
+        'mass number': 116,
+        'mass': 115.9067931 * u.u,
+        'stable': False,
+        'half-life': 948.0 * u.s,
+    },
+
+    'Sb-117': {
+        'atomic number': 51,
+        'mass number': 117,
+        'mass': 116.9048415 * u.u,
+        'stable': False,
+        'half-life': 10080.0 * u.s,
+    },
+
+    'Sb-118': {
+        'atomic number': 51,
+        'mass number': 118,
+        'mass': 117.9055321 * u.u,
+        'stable': False,
+        'half-life': 216.0 * u.s,
+    },
+
+    'Sb-119': {
+        'atomic number': 51,
+        'mass number': 119,
+        'mass': 118.9039455 * u.u,
+        'stable': False,
+        'half-life': 137484.0 * u.s,
+    },
+
+    'Sb-120': {
+        'atomic number': 51,
+        'mass number': 120,
+        'mass': 119.9050794 * u.u,
+        'stable': False,
+        'half-life': 953.4 * u.s,
+    },
+
+    'Sb-121': {
+        'atomic number': 51,
+        'mass number': 121,
+        'mass': 120.903812 * u.u,
+        'stable': True,
+        'abundance': 0.5721,
+    },
+
+    'Sb-122': {
+        'atomic number': 51,
+        'mass number': 122,
+        'mass': 121.9051699 * u.u,
+        'stable': False,
+        'half-life': 235336.32 * u.s,
+    },
+
+    'Sb-123': {
+        'atomic number': 51,
+        'mass number': 123,
+        'mass': 122.9042132 * u.u,
+        'stable': True,
+        'abundance': 0.4279,
+    },
+
+    'Sb-124': {
+        'atomic number': 51,
+        'mass number': 124,
+        'mass': 123.905935 * u.u,
+        'stable': False,
+        'half-life': 5201280.0 * u.s,
+    },
+
+    'Sb-125': {
+        'atomic number': 51,
+        'mass number': 125,
+        'mass': 124.905253 * u.u,
+        'stable': False,
+        'half-life': 87053184.0 * u.s,
+    },
+
+    'Sb-126': {
+        'atomic number': 51,
+        'mass number': 126,
+        'mass': 125.907253 * u.u,
+        'stable': False,
+        'half-life': 1067040.0 * u.s,
+    },
+
+    'Sb-127': {
+        'atomic number': 51,
+        'mass number': 127,
+        'mass': 126.9069243 * u.u,
+        'stable': False,
+        'half-life': 332640.0 * u.s,
+    },
+
+    'Sb-128': {
+        'atomic number': 51,
+        'mass number': 128,
+        'mass': 127.909146 * u.u,
+        'stable': False,
+        'half-life': 32580.0 * u.s,
+    },
+
+    'Sb-129': {
+        'atomic number': 51,
+        'mass number': 129,
+        'mass': 128.909147 * u.u,
+        'stable': False,
+        'half-life': 15717.6 * u.s,
+    },
+
+    'Sb-130': {
+        'atomic number': 51,
+        'mass number': 130,
+        'mass': 129.911662 * u.u,
+        'stable': False,
+        'half-life': 2370.0 * u.s,
+    },
+
+    'Sb-131': {
+        'atomic number': 51,
+        'mass number': 131,
+        'mass': 130.9119888 * u.u,
+        'stable': False,
+        'half-life': 1381.8 * u.s,
+    },
+
+    'Sb-132': {
+        'atomic number': 51,
+        'mass number': 132,
+        'mass': 131.9145077 * u.u,
+        'stable': False,
+        'half-life': 167.4 * u.s,
+    },
+
+    'Sb-133': {
+        'atomic number': 51,
+        'mass number': 133,
+        'mass': 132.9152732 * u.u,
+        'stable': False,
+        'half-life': 140.4 * u.s,
+    },
+
+    'Sb-134': {
+        'atomic number': 51,
+        'mass number': 134,
+        'mass': 133.9205357 * u.u,
+        'stable': False,
+        'half-life': 0.78 * u.s,
+    },
+
+    'Sb-135': {
+        'atomic number': 51,
+        'mass number': 135,
+        'mass': 134.9251851 * u.u,
+        'stable': False,
+        'half-life': 1.679 * u.s,
+    },
+
+    'Sb-136': {
+        'atomic number': 51,
+        'mass number': 136,
+        'mass': 135.9307459 * u.u,
+        'stable': False,
+        'half-life': 0.923 * u.s,
+    },
+
+    'Sb-137': {
+        'atomic number': 51,
+        'mass number': 137,
+        'mass': 136.93555 * u.u,
+        'stable': False,
+        'half-life': 0.484 * u.s,
+    },
+
+    'Sb-138': {
+        'atomic number': 51,
+        'mass number': 138,
+        'mass': 137.94145 * u.u,
+        'stable': False,
+        'half-life': 0.348 * u.s,
+    },
+
+    'Sb-139': {
+        'atomic number': 51,
+        'mass number': 139,
+        'mass': 138.94655 * u.u,
+        'stable': False,
+        'half-life': 0.093 * u.s,
+    },
+
+    'Sb-140': {
+        'atomic number': 51,
+        'mass number': 140,
+        'mass': 139.95283 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'Te-105': {
+        'atomic number': 52,
+        'mass number': 105,
+        'mass': 104.9433 * u.u,
+        'stable': False,
+        'half-life': 6.33e-07 * u.s,
+    },
+
+    'Te-106': {
+        'atomic number': 52,
+        'mass number': 106,
+        'mass': 105.9375 * u.u,
+        'stable': False,
+        'half-life': 7.8e-05 * u.s,
+    },
+
+    'Te-107': {
+        'atomic number': 52,
+        'mass number': 107,
+        'mass': 106.935012 * u.u,
+        'stable': False,
+        'half-life': 0.0031 * u.s,
+    },
+
+    'Te-108': {
+        'atomic number': 52,
+        'mass number': 108,
+        'mass': 107.9293805 * u.u,
+        'stable': False,
+        'half-life': 2.1 * u.s,
+    },
+
+    'Te-109': {
+        'atomic number': 52,
+        'mass number': 109,
+        'mass': 108.9273045 * u.u,
+        'stable': False,
+        'half-life': 4.6 * u.s,
+    },
+
+    'Te-110': {
+        'atomic number': 52,
+        'mass number': 110,
+        'mass': 109.9224581 * u.u,
+        'stable': False,
+        'half-life': 18.6 * u.s,
+    },
+
+    'Te-111': {
+        'atomic number': 52,
+        'mass number': 111,
+        'mass': 110.9210006 * u.u,
+        'stable': False,
+        'half-life': 26.2 * u.s,
+    },
+
+    'Te-112': {
+        'atomic number': 52,
+        'mass number': 112,
+        'mass': 111.9167279 * u.u,
+        'stable': False,
+        'half-life': 120.0 * u.s,
+    },
+
+    'Te-113': {
+        'atomic number': 52,
+        'mass number': 113,
+        'mass': 112.915891 * u.u,
+        'stable': False,
+        'half-life': 102.0 * u.s,
+    },
+
+    'Te-114': {
+        'atomic number': 52,
+        'mass number': 114,
+        'mass': 113.912089 * u.u,
+        'stable': False,
+        'half-life': 912.0 * u.s,
+    },
+
+    'Te-115': {
+        'atomic number': 52,
+        'mass number': 115,
+        'mass': 114.911902 * u.u,
+        'stable': False,
+        'half-life': 348.0 * u.s,
+    },
+
+    'Te-116': {
+        'atomic number': 52,
+        'mass number': 116,
+        'mass': 115.90846 * u.u,
+        'stable': False,
+        'half-life': 8964.0 * u.s,
+    },
+
+    'Te-117': {
+        'atomic number': 52,
+        'mass number': 117,
+        'mass': 116.908646 * u.u,
+        'stable': False,
+        'half-life': 3720.0 * u.s,
+    },
+
+    'Te-118': {
+        'atomic number': 52,
+        'mass number': 118,
+        'mass': 117.905854 * u.u,
+        'stable': False,
+        'half-life': 518400.0 * u.s,
+    },
+
+    'Te-119': {
+        'atomic number': 52,
+        'mass number': 119,
+        'mass': 118.9064071 * u.u,
+        'stable': False,
+        'half-life': 57780.0 * u.s,
+    },
+
+    'Te-120': {
+        'atomic number': 52,
+        'mass number': 120,
+        'mass': 119.9040593 * u.u,
+        'stable': True,
+        'abundance': 0.0009,
+    },
+
+    'Te-121': {
+        'atomic number': 52,
+        'mass number': 121,
+        'mass': 120.904944 * u.u,
+        'stable': False,
+        'half-life': 1656288.0 * u.s,
+    },
+
+    'Te-122': {
+        'atomic number': 52,
+        'mass number': 122,
+        'mass': 121.9030435 * u.u,
+        'stable': True,
+        'abundance': 0.0255,
+    },
+
+    'Te-123': {
+        'atomic number': 52,
+        'mass number': 123,
+        'mass': 122.9042698 * u.u,
+        'stable': True,
+        'abundance': 0.0089,
+    },
+
+    'Te-124': {
+        'atomic number': 52,
+        'mass number': 124,
+        'mass': 123.9028171 * u.u,
+        'stable': True,
+        'abundance': 0.0474,
+    },
+
+    'Te-125': {
+        'atomic number': 52,
+        'mass number': 125,
+        'mass': 124.9044299 * u.u,
+        'stable': True,
+        'abundance': 0.0707,
+    },
+
+    'Te-126': {
+        'atomic number': 52,
+        'mass number': 126,
+        'mass': 125.9033109 * u.u,
+        'stable': True,
+        'abundance': 0.1884,
+    },
+
+    'Te-127': {
+        'atomic number': 52,
+        'mass number': 127,
+        'mass': 126.9052257 * u.u,
+        'stable': False,
+        'half-life': 33660.0 * u.s,
+    },
+
+    'Te-128': {
+        'atomic number': 52,
+        'mass number': 128,
+        'mass': 127.90446128 * u.u,
+        'stable': False,
+        'abundance': 0.3174,
+    },
+
+    'Te-129': {
+        'atomic number': 52,
+        'mass number': 129,
+        'mass': 128.90659646 * u.u,
+        'stable': False,
+        'half-life': 4176.0 * u.s,
+    },
+
+    'Te-130': {
+        'atomic number': 52,
+        'mass number': 130,
+        'mass': 129.906222748 * u.u,
+        'stable': False,
+        'abundance': 0.3408,
+    },
+
+    'Te-131': {
+        'atomic number': 52,
+        'mass number': 131,
+        'mass': 130.908522213 * u.u,
+        'stable': False,
+        'half-life': 1500.0 * u.s,
+    },
+
+    'Te-132': {
+        'atomic number': 52,
+        'mass number': 132,
+        'mass': 131.9085467 * u.u,
+        'stable': False,
+        'half-life': 276825.6 * u.s,
+    },
+
+    'Te-133': {
+        'atomic number': 52,
+        'mass number': 133,
+        'mass': 132.9109688 * u.u,
+        'stable': False,
+        'half-life': 750.0 * u.s,
+    },
+
+    'Te-134': {
+        'atomic number': 52,
+        'mass number': 134,
+        'mass': 133.911394 * u.u,
+        'stable': False,
+        'half-life': 2508.0 * u.s,
+    },
+
+    'Te-135': {
+        'atomic number': 52,
+        'mass number': 135,
+        'mass': 134.9165557 * u.u,
+        'stable': False,
+        'half-life': 19.0 * u.s,
+    },
+
+    'Te-136': {
+        'atomic number': 52,
+        'mass number': 136,
+        'mass': 135.9201006 * u.u,
+        'stable': False,
+        'half-life': 17.63 * u.s,
+    },
+
+    'Te-137': {
+        'atomic number': 52,
+        'mass number': 137,
+        'mass': 136.9255989 * u.u,
+        'stable': False,
+        'half-life': 2.49 * u.s,
+    },
+
+    'Te-138': {
+        'atomic number': 52,
+        'mass number': 138,
+        'mass': 137.9294722 * u.u,
+        'stable': False,
+        'half-life': 1.4 * u.s,
+    },
+
+    'Te-139': {
+        'atomic number': 52,
+        'mass number': 139,
+        'mass': 138.9353672 * u.u,
+        'stable': False,
+        'half-life': '500# ms',
+    },
+
+    'Te-140': {
+        'atomic number': 52,
+        'mass number': 140,
+        'mass': 139.939499 * u.u,
+        'stable': False,
+        'half-life': '300# ms',
+    },
+
+    'Te-141': {
+        'atomic number': 52,
+        'mass number': 141,
+        'mass': 140.9458 * u.u,
+        'stable': False,
+        'half-life': '150# ms',
+    },
+
+    'Te-142': {
+        'atomic number': 52,
+        'mass number': 142,
+        'mass': 141.95022 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'Te-143': {
+        'atomic number': 52,
+        'mass number': 143,
+        'mass': 142.95676 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'I-107': {
+        'atomic number': 53,
+        'mass number': 107,
+        'mass': 106.94678 * u.u,
+        'stable': False,
+        'half-life': '20# us',
+    },
+
+    'I-108': {
+        'atomic number': 53,
+        'mass number': 108,
+        'mass': 107.94348 * u.u,
+        'stable': False,
+        'half-life': 0.036 * u.s,
+    },
+
+    'I-109': {
+        'atomic number': 53,
+        'mass number': 109,
+        'mass': 108.9380853 * u.u,
+        'stable': False,
+        'half-life': 0.000103 * u.s,
+    },
+
+    'I-110': {
+        'atomic number': 53,
+        'mass number': 110,
+        'mass': 109.935089 * u.u,
+        'stable': False,
+        'half-life': 0.664 * u.s,
+    },
+
+    'I-111': {
+        'atomic number': 53,
+        'mass number': 111,
+        'mass': 110.9302692 * u.u,
+        'stable': False,
+        'half-life': 2.5 * u.s,
+    },
+
+    'I-112': {
+        'atomic number': 53,
+        'mass number': 112,
+        'mass': 111.928005 * u.u,
+        'stable': False,
+        'half-life': 3.34 * u.s,
+    },
+
+    'I-113': {
+        'atomic number': 53,
+        'mass number': 113,
+        'mass': 112.9236501 * u.u,
+        'stable': False,
+        'half-life': 6.6 * u.s,
+    },
+
+    'I-114': {
+        'atomic number': 53,
+        'mass number': 114,
+        'mass': 113.92185 * u.u,
+        'stable': False,
+        'half-life': 2.1 * u.s,
+    },
+
+    'I-115': {
+        'atomic number': 53,
+        'mass number': 115,
+        'mass': 114.918048 * u.u,
+        'stable': False,
+        'half-life': 78.0 * u.s,
+    },
+
+    'I-116': {
+        'atomic number': 53,
+        'mass number': 116,
+        'mass': 115.91681 * u.u,
+        'stable': False,
+        'half-life': 2.91 * u.s,
+    },
+
+    'I-117': {
+        'atomic number': 53,
+        'mass number': 117,
+        'mass': 116.913648 * u.u,
+        'stable': False,
+        'half-life': 133.2 * u.s,
+    },
+
+    'I-118': {
+        'atomic number': 53,
+        'mass number': 118,
+        'mass': 117.913074 * u.u,
+        'stable': False,
+        'half-life': 822.0 * u.s,
+    },
+
+    'I-119': {
+        'atomic number': 53,
+        'mass number': 119,
+        'mass': 118.910074 * u.u,
+        'stable': False,
+        'half-life': 1146.0 * u.s,
+    },
+
+    'I-120': {
+        'atomic number': 53,
+        'mass number': 120,
+        'mass': 119.910087 * u.u,
+        'stable': False,
+        'half-life': 4900.2 * u.s,
+    },
+
+    'I-121': {
+        'atomic number': 53,
+        'mass number': 121,
+        'mass': 120.9074051 * u.u,
+        'stable': False,
+        'half-life': 7632.0 * u.s,
+    },
+
+    'I-122': {
+        'atomic number': 53,
+        'mass number': 122,
+        'mass': 121.9075888 * u.u,
+        'stable': False,
+        'half-life': 217.8 * u.s,
+    },
+
+    'I-123': {
+        'atomic number': 53,
+        'mass number': 123,
+        'mass': 122.9055885 * u.u,
+        'stable': False,
+        'half-life': 47604.6 * u.s,
+    },
+
+    'I-124': {
+        'atomic number': 53,
+        'mass number': 124,
+        'mass': 123.906209 * u.u,
+        'stable': False,
+        'half-life': 360806.4 * u.s,
+    },
+
+    'I-125': {
+        'atomic number': 53,
+        'mass number': 125,
+        'mass': 124.9046294 * u.u,
+        'stable': False,
+        'half-life': 5139936.0 * u.s,
+    },
+
+    'I-126': {
+        'atomic number': 53,
+        'mass number': 126,
+        'mass': 125.9056233 * u.u,
+        'stable': False,
+        'half-life': 1117152.0 * u.s,
+    },
+
+    'I-127': {
+        'atomic number': 53,
+        'mass number': 127,
+        'mass': 126.9044719 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'I-128': {
+        'atomic number': 53,
+        'mass number': 128,
+        'mass': 127.9058086 * u.u,
+        'stable': False,
+        'half-life': 1499.4 * u.s,
+    },
+
+    'I-129': {
+        'atomic number': 53,
+        'mass number': 129,
+        'mass': 128.9049837 * u.u,
+        'stable': False,
+        'half-life': 495443738200000.0 * u.s,
+    },
+
+    'I-130': {
+        'atomic number': 53,
+        'mass number': 130,
+        'mass': 129.9066702 * u.u,
+        'stable': False,
+        'half-life': 44496.0 * u.s,
+    },
+
+    'I-131': {
+        'atomic number': 53,
+        'mass number': 131,
+        'mass': 130.9061263 * u.u,
+        'stable': False,
+        'half-life': 692902.0800000001 * u.s,
+    },
+
+    'I-132': {
+        'atomic number': 53,
+        'mass number': 132,
+        'mass': 131.9079935 * u.u,
+        'stable': False,
+        'half-life': 8262.0 * u.s,
+    },
+
+    'I-133': {
+        'atomic number': 53,
+        'mass number': 133,
+        'mass': 132.907797 * u.u,
+        'stable': False,
+        'half-life': 74988.0 * u.s,
+    },
+
+    'I-134': {
+        'atomic number': 53,
+        'mass number': 134,
+        'mass': 133.9097588 * u.u,
+        'stable': False,
+        'half-life': 3150.0 * u.s,
+    },
+
+    'I-135': {
+        'atomic number': 53,
+        'mass number': 135,
+        'mass': 134.9100488 * u.u,
+        'stable': False,
+        'half-life': 23688.0 * u.s,
+    },
+
+    'I-136': {
+        'atomic number': 53,
+        'mass number': 136,
+        'mass': 135.914604 * u.u,
+        'stable': False,
+        'half-life': 83.4 * u.s,
+    },
+
+    'I-137': {
+        'atomic number': 53,
+        'mass number': 137,
+        'mass': 136.9180282 * u.u,
+        'stable': False,
+        'half-life': 24.13 * u.s,
+    },
+
+    'I-138': {
+        'atomic number': 53,
+        'mass number': 138,
+        'mass': 137.9227264 * u.u,
+        'stable': False,
+        'half-life': 6.23 * u.s,
+    },
+
+    'I-139': {
+        'atomic number': 53,
+        'mass number': 139,
+        'mass': 138.926506 * u.u,
+        'stable': False,
+        'half-life': 2.282 * u.s,
+    },
+
+    'I-140': {
+        'atomic number': 53,
+        'mass number': 140,
+        'mass': 139.93173 * u.u,
+        'stable': False,
+        'half-life': 0.86 * u.s,
+    },
+
+    'I-141': {
+        'atomic number': 53,
+        'mass number': 141,
+        'mass': 140.93569 * u.u,
+        'stable': False,
+        'half-life': 0.43 * u.s,
+    },
+
+    'I-142': {
+        'atomic number': 53,
+        'mass number': 142,
+        'mass': 141.9412 * u.u,
+        'stable': False,
+        'half-life': 0.222 * u.s,
+    },
+
+    'I-143': {
+        'atomic number': 53,
+        'mass number': 143,
+        'mass': 142.94565 * u.u,
+        'stable': False,
+        'half-life': 0.13 * u.s,
+    },
+
+    'I-144': {
+        'atomic number': 53,
+        'mass number': 144,
+        'mass': 143.95139 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'I-145': {
+        'atomic number': 53,
+        'mass number': 145,
+        'mass': 144.95605 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'Xe-109': {
+        'atomic number': 54,
+        'mass number': 109,
+        'mass': 108.95043 * u.u,
+        'stable': False,
+        'half-life': 0.013 * u.s,
+    },
+
+    'Xe-110': {
+        'atomic number': 54,
+        'mass number': 110,
+        'mass': 109.94426 * u.u,
+        'stable': False,
+        'half-life': 0.093 * u.s,
+    },
+
+    'Xe-111': {
+        'atomic number': 54,
+        'mass number': 111,
+        'mass': 110.941607 * u.u,
+        'stable': False,
+        'half-life': 0.74 * u.s,
+    },
+
+    'Xe-112': {
+        'atomic number': 54,
+        'mass number': 112,
+        'mass': 111.935559 * u.u,
+        'stable': False,
+        'half-life': 2.7 * u.s,
+    },
+
+    'Xe-113': {
+        'atomic number': 54,
+        'mass number': 113,
+        'mass': 112.9332217 * u.u,
+        'stable': False,
+        'half-life': 2.74 * u.s,
+    },
+
+    'Xe-114': {
+        'atomic number': 54,
+        'mass number': 114,
+        'mass': 113.92798 * u.u,
+        'stable': False,
+        'half-life': 10.0 * u.s,
+    },
+
+    'Xe-115': {
+        'atomic number': 54,
+        'mass number': 115,
+        'mass': 114.926294 * u.u,
+        'stable': False,
+        'half-life': 18.0 * u.s,
+    },
+
+    'Xe-116': {
+        'atomic number': 54,
+        'mass number': 116,
+        'mass': 115.921581 * u.u,
+        'stable': False,
+        'half-life': 59.0 * u.s,
+    },
+
+    'Xe-117': {
+        'atomic number': 54,
+        'mass number': 117,
+        'mass': 116.920359 * u.u,
+        'stable': False,
+        'half-life': 61.0 * u.s,
+    },
+
+    'Xe-118': {
+        'atomic number': 54,
+        'mass number': 118,
+        'mass': 117.916179 * u.u,
+        'stable': False,
+        'half-life': 228.0 * u.s,
+    },
+
+    'Xe-119': {
+        'atomic number': 54,
+        'mass number': 119,
+        'mass': 118.915411 * u.u,
+        'stable': False,
+        'half-life': 348.0 * u.s,
+    },
+
+    'Xe-120': {
+        'atomic number': 54,
+        'mass number': 120,
+        'mass': 119.911784 * u.u,
+        'stable': False,
+        'half-life': 2760.0 * u.s,
+    },
+
+    'Xe-121': {
+        'atomic number': 54,
+        'mass number': 121,
+        'mass': 120.911453 * u.u,
+        'stable': False,
+        'half-life': 2406.0 * u.s,
+    },
+
+    'Xe-122': {
+        'atomic number': 54,
+        'mass number': 122,
+        'mass': 121.908368 * u.u,
+        'stable': False,
+        'half-life': 72360.0 * u.s,
+    },
+
+    'Xe-123': {
+        'atomic number': 54,
+        'mass number': 123,
+        'mass': 122.908482 * u.u,
+        'stable': False,
+        'half-life': 7488.0 * u.s,
+    },
+
+    'Xe-124': {
+        'atomic number': 54,
+        'mass number': 124,
+        'mass': 123.905892 * u.u,
+        'stable': True,
+        'abundance': 0.000952,
+    },
+
+    'Xe-125': {
+        'atomic number': 54,
+        'mass number': 125,
+        'mass': 124.9063944 * u.u,
+        'stable': False,
+        'half-life': 60840.0 * u.s,
+    },
+
+    'Xe-126': {
+        'atomic number': 54,
+        'mass number': 126,
+        'mass': 125.9042983 * u.u,
+        'stable': True,
+        'abundance': 0.00089,
+    },
+
+    'Xe-127': {
+        'atomic number': 54,
+        'mass number': 127,
+        'mass': 126.9051829 * u.u,
+        'stable': False,
+        'half-life': 3140173.44 * u.s,
+    },
+
+    'Xe-128': {
+        'atomic number': 54,
+        'mass number': 128,
+        'mass': 127.903531 * u.u,
+        'stable': True,
+        'abundance': 0.019102,
+    },
+
+    'Xe-129': {
+        'atomic number': 54,
+        'mass number': 129,
+        'mass': 128.9047808611 * u.u,
+        'stable': True,
+        'abundance': 0.264006,
+    },
+
+    'Xe-130': {
+        'atomic number': 54,
+        'mass number': 130,
+        'mass': 129.903509349 * u.u,
+        'stable': True,
+        'abundance': 0.04071,
+    },
+
+    'Xe-131': {
+        'atomic number': 54,
+        'mass number': 131,
+        'mass': 130.90508406 * u.u,
+        'stable': True,
+        'abundance': 0.212324,
+    },
+
+    'Xe-132': {
+        'atomic number': 54,
+        'mass number': 132,
+        'mass': 131.9041550856 * u.u,
+        'stable': True,
+        'abundance': 0.269086,
+    },
+
+    'Xe-133': {
+        'atomic number': 54,
+        'mass number': 133,
+        'mass': 132.9059108 * u.u,
+        'stable': False,
+        'half-life': 453381.408 * u.s,
+    },
+
+    'Xe-134': {
+        'atomic number': 54,
+        'mass number': 134,
+        'mass': 133.90539466 * u.u,
+        'stable': True,
+        'abundance': 0.104357,
+    },
+
+    'Xe-135': {
+        'atomic number': 54,
+        'mass number': 135,
+        'mass': 134.9072278 * u.u,
+        'stable': False,
+        'half-life': 32904.0 * u.s,
+    },
+
+    'Xe-136': {
+        'atomic number': 54,
+        'mass number': 136,
+        'mass': 135.907214484 * u.u,
+        'stable': False,
+        'abundance': 0.088573,
+    },
+
+    'Xe-137': {
+        'atomic number': 54,
+        'mass number': 137,
+        'mass': 136.91155778 * u.u,
+        'stable': False,
+        'half-life': 229.08 * u.s,
+    },
+
+    'Xe-138': {
+        'atomic number': 54,
+        'mass number': 138,
+        'mass': 137.9141463 * u.u,
+        'stable': False,
+        'half-life': 848.4 * u.s,
+    },
+
+    'Xe-139': {
+        'atomic number': 54,
+        'mass number': 139,
+        'mass': 138.9187922 * u.u,
+        'stable': False,
+        'half-life': 39.68 * u.s,
+    },
+
+    'Xe-140': {
+        'atomic number': 54,
+        'mass number': 140,
+        'mass': 139.9216458 * u.u,
+        'stable': False,
+        'half-life': 13.6 * u.s,
+    },
+
+    'Xe-141': {
+        'atomic number': 54,
+        'mass number': 141,
+        'mass': 140.9267872 * u.u,
+        'stable': False,
+        'half-life': 1.73 * u.s,
+    },
+
+    'Xe-142': {
+        'atomic number': 54,
+        'mass number': 142,
+        'mass': 141.9299731 * u.u,
+        'stable': False,
+        'half-life': 1.23 * u.s,
+    },
+
+    'Xe-143': {
+        'atomic number': 54,
+        'mass number': 143,
+        'mass': 142.9353696 * u.u,
+        'stable': False,
+        'half-life': 0.511 * u.s,
+    },
+
+    'Xe-144': {
+        'atomic number': 54,
+        'mass number': 144,
+        'mass': 143.9389451 * u.u,
+        'stable': False,
+        'half-life': 0.388 * u.s,
+    },
+
+    'Xe-145': {
+        'atomic number': 54,
+        'mass number': 145,
+        'mass': 144.94472 * u.u,
+        'stable': False,
+        'half-life': 0.188 * u.s,
+    },
+
+    'Xe-146': {
+        'atomic number': 54,
+        'mass number': 146,
+        'mass': 145.948518 * u.u,
+        'stable': False,
+        'half-life': 0.146 * u.s,
+    },
+
+    'Xe-147': {
+        'atomic number': 54,
+        'mass number': 147,
+        'mass': 146.95426 * u.u,
+        'stable': False,
+        'half-life': 0.13 * u.s,
+    },
+
+    'Xe-148': {
+        'atomic number': 54,
+        'mass number': 148,
+        'mass': 147.95813 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'Cs-112': {
+        'atomic number': 55,
+        'mass number': 112,
+        'mass': 111.950309 * u.u,
+        'stable': False,
+        'half-life': 0.00049 * u.s,
+    },
+
+    'Cs-113': {
+        'atomic number': 55,
+        'mass number': 113,
+        'mass': 112.9444291 * u.u,
+        'stable': False,
+        'half-life': 1.77e-05 * u.s,
+    },
+
+    'Cs-114': {
+        'atomic number': 55,
+        'mass number': 114,
+        'mass': 113.941296 * u.u,
+        'stable': False,
+        'half-life': 0.57 * u.s,
+    },
+
+    'Cs-115': {
+        'atomic number': 55,
+        'mass number': 115,
+        'mass': 114.93591 * u.u,
+        'stable': False,
+        'half-life': 1.4 * u.s,
+    },
+
+    'Cs-116': {
+        'atomic number': 55,
+        'mass number': 116,
+        'mass': 115.93337 * u.u,
+        'stable': False,
+        'half-life': 0.7 * u.s,
+    },
+
+    'Cs-117': {
+        'atomic number': 55,
+        'mass number': 117,
+        'mass': 116.928617 * u.u,
+        'stable': False,
+        'half-life': 8.4 * u.s,
+    },
+
+    'Cs-118': {
+        'atomic number': 55,
+        'mass number': 118,
+        'mass': 117.92656 * u.u,
+        'stable': False,
+        'half-life': 14.0 * u.s,
+    },
+
+    'Cs-119': {
+        'atomic number': 55,
+        'mass number': 119,
+        'mass': 118.922377 * u.u,
+        'stable': False,
+        'half-life': 43.0 * u.s,
+    },
+
+    'Cs-120': {
+        'atomic number': 55,
+        'mass number': 120,
+        'mass': 119.920677 * u.u,
+        'stable': False,
+        'half-life': 60.4 * u.s,
+    },
+
+    'Cs-121': {
+        'atomic number': 55,
+        'mass number': 121,
+        'mass': 120.917227 * u.u,
+        'stable': False,
+        'half-life': 155.0 * u.s,
+    },
+
+    'Cs-122': {
+        'atomic number': 55,
+        'mass number': 122,
+        'mass': 121.916108 * u.u,
+        'stable': False,
+        'half-life': 21.18 * u.s,
+    },
+
+    'Cs-123': {
+        'atomic number': 55,
+        'mass number': 123,
+        'mass': 122.912996 * u.u,
+        'stable': False,
+        'half-life': 352.8 * u.s,
+    },
+
+    'Cs-124': {
+        'atomic number': 55,
+        'mass number': 124,
+        'mass': 123.9122578 * u.u,
+        'stable': False,
+        'half-life': 30.9 * u.s,
+    },
+
+    'Cs-125': {
+        'atomic number': 55,
+        'mass number': 125,
+        'mass': 124.909728 * u.u,
+        'stable': False,
+        'half-life': 2802.0 * u.s,
+    },
+
+    'Cs-126': {
+        'atomic number': 55,
+        'mass number': 126,
+        'mass': 125.909446 * u.u,
+        'stable': False,
+        'half-life': 98.4 * u.s,
+    },
+
+    'Cs-127': {
+        'atomic number': 55,
+        'mass number': 127,
+        'mass': 126.9074174 * u.u,
+        'stable': False,
+        'half-life': 22500.0 * u.s,
+    },
+
+    'Cs-128': {
+        'atomic number': 55,
+        'mass number': 128,
+        'mass': 127.9077487 * u.u,
+        'stable': False,
+        'half-life': 218.4 * u.s,
+    },
+
+    'Cs-129': {
+        'atomic number': 55,
+        'mass number': 129,
+        'mass': 128.9060657 * u.u,
+        'stable': False,
+        'half-life': 115416.0 * u.s,
+    },
+
+    'Cs-130': {
+        'atomic number': 55,
+        'mass number': 130,
+        'mass': 129.9067093 * u.u,
+        'stable': False,
+        'half-life': 1752.6 * u.s,
+    },
+
+    'Cs-131': {
+        'atomic number': 55,
+        'mass number': 131,
+        'mass': 130.9054649 * u.u,
+        'stable': False,
+        'half-life': 837129.6 * u.s,
+    },
+
+    'Cs-132': {
+        'atomic number': 55,
+        'mass number': 132,
+        'mass': 131.9064339 * u.u,
+        'stable': False,
+        'half-life': 559872.0 * u.s,
+    },
+
+    'Cs-133': {
+        'atomic number': 55,
+        'mass number': 133,
+        'mass': 132.905451961 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Cs-134': {
+        'atomic number': 55,
+        'mass number': 134,
+        'mass': 133.906718503 * u.u,
+        'stable': False,
+        'half-life': 65135232.0 * u.s,
+    },
+
+    'Cs-135': {
+        'atomic number': 55,
+        'mass number': 135,
+        'mass': 134.905977 * u.u,
+        'stable': False,
+        'half-life': 41970711580000.0 * u.s,
+    },
+
+    'Cs-136': {
+        'atomic number': 55,
+        'mass number': 136,
+        'mass': 135.9073114 * u.u,
+        'stable': False,
+        'half-life': 1137024.0 * u.s,
+    },
+
+    'Cs-137': {
+        'atomic number': 55,
+        'mass number': 137,
+        'mass': 136.90708923 * u.u,
+        'stable': False,
+        'half-life': 951981119.9999999 * u.s,
+    },
+
+    'Cs-138': {
+        'atomic number': 55,
+        'mass number': 138,
+        'mass': 137.9110171 * u.u,
+        'stable': False,
+        'half-life': 2004.6 * u.s,
+    },
+
+    'Cs-139': {
+        'atomic number': 55,
+        'mass number': 139,
+        'mass': 138.9133638 * u.u,
+        'stable': False,
+        'half-life': 556.2 * u.s,
+    },
+
+    'Cs-140': {
+        'atomic number': 55,
+        'mass number': 140,
+        'mass': 139.9172831 * u.u,
+        'stable': False,
+        'half-life': 63.7 * u.s,
+    },
+
+    'Cs-141': {
+        'atomic number': 55,
+        'mass number': 141,
+        'mass': 140.9200455 * u.u,
+        'stable': False,
+        'half-life': 24.84 * u.s,
+    },
+
+    'Cs-142': {
+        'atomic number': 55,
+        'mass number': 142,
+        'mass': 141.924296 * u.u,
+        'stable': False,
+        'half-life': 1.684 * u.s,
+    },
+
+    'Cs-143': {
+        'atomic number': 55,
+        'mass number': 143,
+        'mass': 142.927349 * u.u,
+        'stable': False,
+        'half-life': 1.791 * u.s,
+    },
+
+    'Cs-144': {
+        'atomic number': 55,
+        'mass number': 144,
+        'mass': 143.932076 * u.u,
+        'stable': False,
+        'half-life': 0.994 * u.s,
+    },
+
+    'Cs-145': {
+        'atomic number': 55,
+        'mass number': 145,
+        'mass': 144.935527 * u.u,
+        'stable': False,
+        'half-life': 0.582 * u.s,
+    },
+
+    'Cs-146': {
+        'atomic number': 55,
+        'mass number': 146,
+        'mass': 145.940344 * u.u,
+        'stable': False,
+        'half-life': 0.323 * u.s,
+    },
+
+    'Cs-147': {
+        'atomic number': 55,
+        'mass number': 147,
+        'mass': 146.944156 * u.u,
+        'stable': False,
+        'half-life': 0.23 * u.s,
+    },
+
+    'Cs-148': {
+        'atomic number': 55,
+        'mass number': 148,
+        'mass': 147.94923 * u.u,
+        'stable': False,
+        'half-life': 0.145 * u.s,
+    },
+
+    'Cs-149': {
+        'atomic number': 55,
+        'mass number': 149,
+        'mass': 148.95302 * u.u,
+        'stable': False,
+        'half-life': 0.113 * u.s,
+    },
+
+    'Cs-150': {
+        'atomic number': 55,
+        'mass number': 150,
+        'mass': 149.95833 * u.u,
+        'stable': False,
+        'half-life': 0.0844 * u.s,
+    },
+
+    'Cs-151': {
+        'atomic number': 55,
+        'mass number': 151,
+        'mass': 150.96258 * u.u,
+        'stable': False,
+        'half-life': 0.069 * u.s,
+    },
+
+    'Ba-114': {
+        'atomic number': 56,
+        'mass number': 114,
+        'mass': 113.95066 * u.u,
+        'stable': False,
+        'half-life': 0.46 * u.s,
+    },
+
+    'Ba-115': {
+        'atomic number': 56,
+        'mass number': 115,
+        'mass': 114.94737 * u.u,
+        'stable': False,
+        'half-life': 0.45 * u.s,
+    },
+
+    'Ba-116': {
+        'atomic number': 56,
+        'mass number': 116,
+        'mass': 115.94128 * u.u,
+        'stable': False,
+        'half-life': 1.3 * u.s,
+    },
+
+    'Ba-117': {
+        'atomic number': 56,
+        'mass number': 117,
+        'mass': 116.93814 * u.u,
+        'stable': False,
+        'half-life': 1.75 * u.s,
+    },
+
+    'Ba-118': {
+        'atomic number': 56,
+        'mass number': 118,
+        'mass': 117.93306 * u.u,
+        'stable': False,
+        'half-life': 5.2 * u.s,
+    },
+
+    'Ba-119': {
+        'atomic number': 56,
+        'mass number': 119,
+        'mass': 118.93066 * u.u,
+        'stable': False,
+        'half-life': 5.4 * u.s,
+    },
+
+    'Ba-120': {
+        'atomic number': 56,
+        'mass number': 120,
+        'mass': 119.92605 * u.u,
+        'stable': False,
+        'half-life': 24.0 * u.s,
+    },
+
+    'Ba-121': {
+        'atomic number': 56,
+        'mass number': 121,
+        'mass': 120.92405 * u.u,
+        'stable': False,
+        'half-life': 29.7 * u.s,
+    },
+
+    'Ba-122': {
+        'atomic number': 56,
+        'mass number': 122,
+        'mass': 121.919904 * u.u,
+        'stable': False,
+        'half-life': 117.0 * u.s,
+    },
+
+    'Ba-123': {
+        'atomic number': 56,
+        'mass number': 123,
+        'mass': 122.918781 * u.u,
+        'stable': False,
+        'half-life': 162.0 * u.s,
+    },
+
+    'Ba-124': {
+        'atomic number': 56,
+        'mass number': 124,
+        'mass': 123.915094 * u.u,
+        'stable': False,
+        'half-life': 660.0 * u.s,
+    },
+
+    'Ba-125': {
+        'atomic number': 56,
+        'mass number': 125,
+        'mass': 124.914472 * u.u,
+        'stable': False,
+        'half-life': 198.0 * u.s,
+    },
+
+    'Ba-126': {
+        'atomic number': 56,
+        'mass number': 126,
+        'mass': 125.91125 * u.u,
+        'stable': False,
+        'half-life': 6000.0 * u.s,
+    },
+
+    'Ba-127': {
+        'atomic number': 56,
+        'mass number': 127,
+        'mass': 126.911091 * u.u,
+        'stable': False,
+        'half-life': 762.0 * u.s,
+    },
+
+    'Ba-128': {
+        'atomic number': 56,
+        'mass number': 128,
+        'mass': 127.908342 * u.u,
+        'stable': False,
+        'half-life': 209952.0 * u.s,
+    },
+
+    'Ba-129': {
+        'atomic number': 56,
+        'mass number': 129,
+        'mass': 128.908681 * u.u,
+        'stable': False,
+        'half-life': 8028.0 * u.s,
+    },
+
+    'Ba-130': {
+        'atomic number': 56,
+        'mass number': 130,
+        'mass': 129.9063207 * u.u,
+        'stable': False,
+        'abundance': 0.00106,
+    },
+
+    'Ba-131': {
+        'atomic number': 56,
+        'mass number': 131,
+        'mass': 130.906941 * u.u,
+        'stable': False,
+        'half-life': 995328.0 * u.s,
+    },
+
+    'Ba-132': {
+        'atomic number': 56,
+        'mass number': 132,
+        'mass': 131.9050611 * u.u,
+        'stable': True,
+        'abundance': 0.00101,
+    },
+
+    'Ba-133': {
+        'atomic number': 56,
+        'mass number': 133,
+        'mass': 132.9060074 * u.u,
+        'stable': False,
+        'half-life': 333046080.0 * u.s,
+    },
+
+    'Ba-134': {
+        'atomic number': 56,
+        'mass number': 134,
+        'mass': 133.90450818 * u.u,
+        'stable': True,
+        'abundance': 0.02417,
+    },
+
+    'Ba-135': {
+        'atomic number': 56,
+        'mass number': 135,
+        'mass': 134.90568838 * u.u,
+        'stable': True,
+        'abundance': 0.06592,
+    },
+
+    'Ba-136': {
+        'atomic number': 56,
+        'mass number': 136,
+        'mass': 135.90457573 * u.u,
+        'stable': True,
+        'abundance': 0.07854,
+    },
+
+    'Ba-137': {
+        'atomic number': 56,
+        'mass number': 137,
+        'mass': 136.90582714 * u.u,
+        'stable': True,
+        'abundance': 0.11232,
+    },
+
+    'Ba-138': {
+        'atomic number': 56,
+        'mass number': 138,
+        'mass': 137.905247 * u.u,
+        'stable': True,
+        'abundance': 0.71698,
+    },
+
+    'Ba-139': {
+        'atomic number': 56,
+        'mass number': 139,
+        'mass': 138.9088411 * u.u,
+        'stable': False,
+        'half-life': 4987.8 * u.s,
+    },
+
+    'Ba-140': {
+        'atomic number': 56,
+        'mass number': 140,
+        'mass': 139.9106057 * u.u,
+        'stable': False,
+        'half-life': 1101833.28 * u.s,
+    },
+
+    'Ba-141': {
+        'atomic number': 56,
+        'mass number': 141,
+        'mass': 140.9144033 * u.u,
+        'stable': False,
+        'half-life': 1096.2 * u.s,
+    },
+
+    'Ba-142': {
+        'atomic number': 56,
+        'mass number': 142,
+        'mass': 141.9164324 * u.u,
+        'stable': False,
+        'half-life': 636.0 * u.s,
+    },
+
+    'Ba-143': {
+        'atomic number': 56,
+        'mass number': 143,
+        'mass': 142.9206253 * u.u,
+        'stable': False,
+        'half-life': 14.5 * u.s,
+    },
+
+    'Ba-144': {
+        'atomic number': 56,
+        'mass number': 144,
+        'mass': 143.9229549 * u.u,
+        'stable': False,
+        'half-life': 11.5 * u.s,
+    },
+
+    'Ba-145': {
+        'atomic number': 56,
+        'mass number': 145,
+        'mass': 144.9275184 * u.u,
+        'stable': False,
+        'half-life': 4.31 * u.s,
+    },
+
+    'Ba-146': {
+        'atomic number': 56,
+        'mass number': 146,
+        'mass': 145.930284 * u.u,
+        'stable': False,
+        'half-life': 2.22 * u.s,
+    },
+
+    'Ba-147': {
+        'atomic number': 56,
+        'mass number': 147,
+        'mass': 146.935304 * u.u,
+        'stable': False,
+        'half-life': 0.894 * u.s,
+    },
+
+    'Ba-148': {
+        'atomic number': 56,
+        'mass number': 148,
+        'mass': 147.938171 * u.u,
+        'stable': False,
+        'half-life': 0.62 * u.s,
+    },
+
+    'Ba-149': {
+        'atomic number': 56,
+        'mass number': 149,
+        'mass': 148.94308 * u.u,
+        'stable': False,
+        'half-life': 0.348 * u.s,
+    },
+
+    'Ba-150': {
+        'atomic number': 56,
+        'mass number': 150,
+        'mass': 149.94605 * u.u,
+        'stable': False,
+        'half-life': 0.259 * u.s,
+    },
+
+    'Ba-151': {
+        'atomic number': 56,
+        'mass number': 151,
+        'mass': 150.95127 * u.u,
+        'stable': False,
+        'half-life': 0.167 * u.s,
+    },
+
+    'Ba-152': {
+        'atomic number': 56,
+        'mass number': 152,
+        'mass': 151.95481 * u.u,
+        'stable': False,
+        'half-life': 0.139 * u.s,
+    },
+
+    'Ba-153': {
+        'atomic number': 56,
+        'mass number': 153,
+        'mass': 152.96036 * u.u,
+        'stable': False,
+        'half-life': 0.116 * u.s,
+    },
+
+    'La-116': {
+        'atomic number': 57,
+        'mass number': 116,
+        'mass': 115.9563 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'La-117': {
+        'atomic number': 57,
+        'mass number': 117,
+        'mass': 116.94999 * u.u,
+        'stable': False,
+        'half-life': 0.0217 * u.s,
+    },
+
+    'La-118': {
+        'atomic number': 57,
+        'mass number': 118,
+        'mass': 117.94673 * u.u,
+        'stable': False,
+        'half-life': '200# ms',
+    },
+
+    'La-119': {
+        'atomic number': 57,
+        'mass number': 119,
+        'mass': 118.94099 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'La-120': {
+        'atomic number': 57,
+        'mass number': 120,
+        'mass': 119.93807 * u.u,
+        'stable': False,
+        'half-life': 2.8 * u.s,
+    },
+
+    'La-121': {
+        'atomic number': 57,
+        'mass number': 121,
+        'mass': 120.93315 * u.u,
+        'stable': False,
+        'half-life': 5.3 * u.s,
+    },
+
+    'La-122': {
+        'atomic number': 57,
+        'mass number': 122,
+        'mass': 121.93071 * u.u,
+        'stable': False,
+        'half-life': 8.6 * u.s,
+    },
+
+    'La-123': {
+        'atomic number': 57,
+        'mass number': 123,
+        'mass': 122.9263 * u.u,
+        'stable': False,
+        'half-life': 17.0 * u.s,
+    },
+
+    'La-124': {
+        'atomic number': 57,
+        'mass number': 124,
+        'mass': 123.924574 * u.u,
+        'stable': False,
+        'half-life': 29.21 * u.s,
+    },
+
+    'La-125': {
+        'atomic number': 57,
+        'mass number': 125,
+        'mass': 124.920816 * u.u,
+        'stable': False,
+        'half-life': 64.8 * u.s,
+    },
+
+    'La-126': {
+        'atomic number': 57,
+        'mass number': 126,
+        'mass': 125.919513 * u.u,
+        'stable': False,
+        'half-life': 54.0 * u.s,
+    },
+
+    'La-127': {
+        'atomic number': 57,
+        'mass number': 127,
+        'mass': 126.916375 * u.u,
+        'stable': False,
+        'half-life': 306.0 * u.s,
+    },
+
+    'La-128': {
+        'atomic number': 57,
+        'mass number': 128,
+        'mass': 127.915592 * u.u,
+        'stable': False,
+        'half-life': 310.8 * u.s,
+    },
+
+    'La-129': {
+        'atomic number': 57,
+        'mass number': 129,
+        'mass': 128.912694 * u.u,
+        'stable': False,
+        'half-life': 696.0 * u.s,
+    },
+
+    'La-130': {
+        'atomic number': 57,
+        'mass number': 130,
+        'mass': 129.912369 * u.u,
+        'stable': False,
+        'half-life': 522.0 * u.s,
+    },
+
+    'La-131': {
+        'atomic number': 57,
+        'mass number': 131,
+        'mass': 130.91007 * u.u,
+        'stable': False,
+        'half-life': 3540.0 * u.s,
+    },
+
+    'La-132': {
+        'atomic number': 57,
+        'mass number': 132,
+        'mass': 131.910119 * u.u,
+        'stable': False,
+        'half-life': 17280.0 * u.s,
+    },
+
+    'La-133': {
+        'atomic number': 57,
+        'mass number': 133,
+        'mass': 132.908218 * u.u,
+        'stable': False,
+        'half-life': 14083.2 * u.s,
+    },
+
+    'La-134': {
+        'atomic number': 57,
+        'mass number': 134,
+        'mass': 133.908514 * u.u,
+        'stable': False,
+        'half-life': 387.0 * u.s,
+    },
+
+    'La-135': {
+        'atomic number': 57,
+        'mass number': 135,
+        'mass': 134.906984 * u.u,
+        'stable': False,
+        'half-life': 70200.0 * u.s,
+    },
+
+    'La-136': {
+        'atomic number': 57,
+        'mass number': 136,
+        'mass': 135.907635 * u.u,
+        'stable': False,
+        'half-life': 592.2 * u.s,
+    },
+
+    'La-137': {
+        'atomic number': 57,
+        'mass number': 137,
+        'mass': 136.9064504 * u.u,
+        'stable': False,
+        'half-life': 1893415560000.0 * u.s,
+    },
+
+    'La-138': {
+        'atomic number': 57,
+        'mass number': 138,
+        'mass': 137.9071149 * u.u,
+        'stable': False,
+        'abundance': 0.0008881,
+    },
+
+    'La-139': {
+        'atomic number': 57,
+        'mass number': 139,
+        'mass': 138.9063563 * u.u,
+        'stable': True,
+        'abundance': 0.9991119,
+    },
+
+    'La-140': {
+        'atomic number': 57,
+        'mass number': 140,
+        'mass': 139.9094806 * u.u,
+        'stable': False,
+        'half-life': 145054.8 * u.s,
+    },
+
+    'La-141': {
+        'atomic number': 57,
+        'mass number': 141,
+        'mass': 140.910966 * u.u,
+        'stable': False,
+        'half-life': 14112.0 * u.s,
+    },
+
+    'La-142': {
+        'atomic number': 57,
+        'mass number': 142,
+        'mass': 141.9140909 * u.u,
+        'stable': False,
+        'half-life': 5466.0 * u.s,
+    },
+
+    'La-143': {
+        'atomic number': 57,
+        'mass number': 143,
+        'mass': 142.9160795 * u.u,
+        'stable': False,
+        'half-life': 852.0 * u.s,
+    },
+
+    'La-144': {
+        'atomic number': 57,
+        'mass number': 144,
+        'mass': 143.919646 * u.u,
+        'stable': False,
+        'half-life': 40.8 * u.s,
+    },
+
+    'La-145': {
+        'atomic number': 57,
+        'mass number': 145,
+        'mass': 144.921808 * u.u,
+        'stable': False,
+        'half-life': 24.8 * u.s,
+    },
+
+    'La-146': {
+        'atomic number': 57,
+        'mass number': 146,
+        'mass': 145.925875 * u.u,
+        'stable': False,
+        'half-life': 6.27 * u.s,
+    },
+
+    'La-147': {
+        'atomic number': 57,
+        'mass number': 147,
+        'mass': 146.928418 * u.u,
+        'stable': False,
+        'half-life': 4.06 * u.s,
+    },
+
+    'La-148': {
+        'atomic number': 57,
+        'mass number': 148,
+        'mass': 147.932679 * u.u,
+        'stable': False,
+        'half-life': 1.35 * u.s,
+    },
+
+    'La-149': {
+        'atomic number': 57,
+        'mass number': 149,
+        'mass': 148.93535 * u.u,
+        'stable': False,
+        'half-life': 1.07 * u.s,
+    },
+
+    'La-150': {
+        'atomic number': 57,
+        'mass number': 150,
+        'mass': 149.93947 * u.u,
+        'stable': False,
+        'half-life': 0.504 * u.s,
+    },
+
+    'La-151': {
+        'atomic number': 57,
+        'mass number': 151,
+        'mass': 150.94232 * u.u,
+        'stable': False,
+        'half-life': 0.465 * u.s,
+    },
+
+    'La-152': {
+        'atomic number': 57,
+        'mass number': 152,
+        'mass': 151.94682 * u.u,
+        'stable': False,
+        'half-life': 0.287 * u.s,
+    },
+
+    'La-153': {
+        'atomic number': 57,
+        'mass number': 153,
+        'mass': 152.95036 * u.u,
+        'stable': False,
+        'half-life': 0.245 * u.s,
+    },
+
+    'La-154': {
+        'atomic number': 57,
+        'mass number': 154,
+        'mass': 153.95517 * u.u,
+        'stable': False,
+        'half-life': 0.161 * u.s,
+    },
+
+    'La-155': {
+        'atomic number': 57,
+        'mass number': 155,
+        'mass': 154.95901 * u.u,
+        'stable': False,
+        'half-life': 0.101 * u.s,
+    },
+
+    'Ce-119': {
+        'atomic number': 58,
+        'mass number': 119,
+        'mass': 118.95271 * u.u,
+        'stable': False,
+        'half-life': '200# ms',
+    },
+
+    'Ce-120': {
+        'atomic number': 58,
+        'mass number': 120,
+        'mass': 119.94654 * u.u,
+        'stable': False,
+        'half-life': '250# ms',
+    },
+
+    'Ce-121': {
+        'atomic number': 58,
+        'mass number': 121,
+        'mass': 120.94335 * u.u,
+        'stable': False,
+        'half-life': 1.1 * u.s,
+    },
+
+    'Ce-122': {
+        'atomic number': 58,
+        'mass number': 122,
+        'mass': 121.93787 * u.u,
+        'stable': False,
+        'half-life': '2# s',
+    },
+
+    'Ce-123': {
+        'atomic number': 58,
+        'mass number': 123,
+        'mass': 122.93528 * u.u,
+        'stable': False,
+        'half-life': 3.8 * u.s,
+    },
+
+    'Ce-124': {
+        'atomic number': 58,
+        'mass number': 124,
+        'mass': 123.93031 * u.u,
+        'stable': False,
+        'half-life': 9.1 * u.s,
+    },
+
+    'Ce-125': {
+        'atomic number': 58,
+        'mass number': 125,
+        'mass': 124.92844 * u.u,
+        'stable': False,
+        'half-life': 9.7 * u.s,
+    },
+
+    'Ce-126': {
+        'atomic number': 58,
+        'mass number': 126,
+        'mass': 125.923971 * u.u,
+        'stable': False,
+        'half-life': 51.0 * u.s,
+    },
+
+    'Ce-127': {
+        'atomic number': 58,
+        'mass number': 127,
+        'mass': 126.922727 * u.u,
+        'stable': False,
+        'half-life': 34.0 * u.s,
+    },
+
+    'Ce-128': {
+        'atomic number': 58,
+        'mass number': 128,
+        'mass': 127.918911 * u.u,
+        'stable': False,
+        'half-life': 235.8 * u.s,
+    },
+
+    'Ce-129': {
+        'atomic number': 58,
+        'mass number': 129,
+        'mass': 128.918102 * u.u,
+        'stable': False,
+        'half-life': 210.0 * u.s,
+    },
+
+    'Ce-130': {
+        'atomic number': 58,
+        'mass number': 130,
+        'mass': 129.914736 * u.u,
+        'stable': False,
+        'half-life': 1374.0 * u.s,
+    },
+
+    'Ce-131': {
+        'atomic number': 58,
+        'mass number': 131,
+        'mass': 130.914429 * u.u,
+        'stable': False,
+        'half-life': 618.0 * u.s,
+    },
+
+    'Ce-132': {
+        'atomic number': 58,
+        'mass number': 132,
+        'mass': 131.911464 * u.u,
+        'stable': False,
+        'half-life': 12636.0 * u.s,
+    },
+
+    'Ce-133': {
+        'atomic number': 58,
+        'mass number': 133,
+        'mass': 132.91152 * u.u,
+        'stable': False,
+        'half-life': 5820.0 * u.s,
+    },
+
+    'Ce-134': {
+        'atomic number': 58,
+        'mass number': 134,
+        'mass': 133.908928 * u.u,
+        'stable': False,
+        'half-life': 273024.0 * u.s,
+    },
+
+    'Ce-135': {
+        'atomic number': 58,
+        'mass number': 135,
+        'mass': 134.909161 * u.u,
+        'stable': False,
+        'half-life': 63720.0 * u.s,
+    },
+
+    'Ce-136': {
+        'atomic number': 58,
+        'mass number': 136,
+        'mass': 135.90712921 * u.u,
+        'stable': True,
+        'abundance': 0.00185,
+    },
+
+    'Ce-137': {
+        'atomic number': 58,
+        'mass number': 137,
+        'mass': 136.90776236 * u.u,
+        'stable': False,
+        'half-life': 32400.0 * u.s,
+    },
+
+    'Ce-138': {
+        'atomic number': 58,
+        'mass number': 138,
+        'mass': 137.905991 * u.u,
+        'stable': True,
+        'abundance': 0.00251,
+    },
+
+    'Ce-139': {
+        'atomic number': 58,
+        'mass number': 139,
+        'mass': 138.9066551 * u.u,
+        'stable': False,
+        'half-life': 11900217.600000001 * u.s,
+    },
+
+    'Ce-140': {
+        'atomic number': 58,
+        'mass number': 140,
+        'mass': 139.9054431 * u.u,
+        'stable': True,
+        'abundance': 0.8845,
+    },
+
+    'Ce-141': {
+        'atomic number': 58,
+        'mass number': 141,
+        'mass': 140.9082807 * u.u,
+        'stable': False,
+        'half-life': 2808864.0 * u.s,
+    },
+
+    'Ce-142': {
+        'atomic number': 58,
+        'mass number': 142,
+        'mass': 141.9092504 * u.u,
+        'stable': True,
+        'abundance': 0.11114,
+    },
+
+    'Ce-143': {
+        'atomic number': 58,
+        'mass number': 143,
+        'mass': 142.9123921 * u.u,
+        'stable': False,
+        'half-life': 118940.4 * u.s,
+    },
+
+    'Ce-144': {
+        'atomic number': 58,
+        'mass number': 144,
+        'mass': 143.9136529 * u.u,
+        'stable': False,
+        'half-life': 24583737.599999998 * u.s,
+    },
+
+    'Ce-145': {
+        'atomic number': 58,
+        'mass number': 145,
+        'mass': 144.917265 * u.u,
+        'stable': False,
+        'half-life': 180.6 * u.s,
+    },
+
+    'Ce-146': {
+        'atomic number': 58,
+        'mass number': 146,
+        'mass': 145.918802 * u.u,
+        'stable': False,
+        'half-life': 811.2 * u.s,
+    },
+
+    'Ce-147': {
+        'atomic number': 58,
+        'mass number': 147,
+        'mass': 146.9226899 * u.u,
+        'stable': False,
+        'half-life': 56.4 * u.s,
+    },
+
+    'Ce-148': {
+        'atomic number': 58,
+        'mass number': 148,
+        'mass': 147.924424 * u.u,
+        'stable': False,
+        'half-life': 56.8 * u.s,
+    },
+
+    'Ce-149': {
+        'atomic number': 58,
+        'mass number': 149,
+        'mass': 148.928427 * u.u,
+        'stable': False,
+        'half-life': 4.94 * u.s,
+    },
+
+    'Ce-150': {
+        'atomic number': 58,
+        'mass number': 150,
+        'mass': 149.930384 * u.u,
+        'stable': False,
+        'half-life': 6.05 * u.s,
+    },
+
+    'Ce-151': {
+        'atomic number': 58,
+        'mass number': 151,
+        'mass': 150.934272 * u.u,
+        'stable': False,
+        'half-life': 1.76 * u.s,
+    },
+
+    'Ce-152': {
+        'atomic number': 58,
+        'mass number': 152,
+        'mass': 151.9366 * u.u,
+        'stable': False,
+        'half-life': 1.42 * u.s,
+    },
+
+    'Ce-153': {
+        'atomic number': 58,
+        'mass number': 153,
+        'mass': 152.94093 * u.u,
+        'stable': False,
+        'half-life': 0.865 * u.s,
+    },
+
+    'Ce-154': {
+        'atomic number': 58,
+        'mass number': 154,
+        'mass': 153.9438 * u.u,
+        'stable': False,
+        'half-life': 0.722 * u.s,
+    },
+
+    'Ce-155': {
+        'atomic number': 58,
+        'mass number': 155,
+        'mass': 154.94855 * u.u,
+        'stable': False,
+        'half-life': 0.313 * u.s,
+    },
+
+    'Ce-156': {
+        'atomic number': 58,
+        'mass number': 156,
+        'mass': 155.95183 * u.u,
+        'stable': False,
+        'half-life': 0.233 * u.s,
+    },
+
+    'Ce-157': {
+        'atomic number': 58,
+        'mass number': 157,
+        'mass': 156.95705 * u.u,
+        'stable': False,
+        'half-life': 0.175 * u.s,
+    },
+
+    'Pr-121': {
+        'atomic number': 59,
+        'mass number': 121,
+        'mass': 120.95532 * u.u,
+        'stable': False,
+        'half-life': 0.012 * u.s,
+    },
+
+    'Pr-122': {
+        'atomic number': 59,
+        'mass number': 122,
+        'mass': 121.95175 * u.u,
+        'stable': False,
+        'half-life': '500# ms',
+    },
+
+    'Pr-123': {
+        'atomic number': 59,
+        'mass number': 123,
+        'mass': 122.94596 * u.u,
+        'stable': False,
+        'half-life': '800# ms',
+    },
+
+    'Pr-124': {
+        'atomic number': 59,
+        'mass number': 124,
+        'mass': 123.94294 * u.u,
+        'stable': False,
+        'half-life': 1.2 * u.s,
+    },
+
+    'Pr-125': {
+        'atomic number': 59,
+        'mass number': 125,
+        'mass': 124.9377 * u.u,
+        'stable': False,
+        'half-life': 3.3 * u.s,
+    },
+
+    'Pr-126': {
+        'atomic number': 59,
+        'mass number': 126,
+        'mass': 125.93524 * u.u,
+        'stable': False,
+        'half-life': 3.12 * u.s,
+    },
+
+    'Pr-127': {
+        'atomic number': 59,
+        'mass number': 127,
+        'mass': 126.93071 * u.u,
+        'stable': False,
+        'half-life': 4.2 * u.s,
+    },
+
+    'Pr-128': {
+        'atomic number': 59,
+        'mass number': 128,
+        'mass': 127.928791 * u.u,
+        'stable': False,
+        'half-life': 2.85 * u.s,
+    },
+
+    'Pr-129': {
+        'atomic number': 59,
+        'mass number': 129,
+        'mass': 128.925095 * u.u,
+        'stable': False,
+        'half-life': 30.0 * u.s,
+    },
+
+    'Pr-130': {
+        'atomic number': 59,
+        'mass number': 130,
+        'mass': 129.92359 * u.u,
+        'stable': False,
+        'half-life': 40.0 * u.s,
+    },
+
+    'Pr-131': {
+        'atomic number': 59,
+        'mass number': 131,
+        'mass': 130.920235 * u.u,
+        'stable': False,
+        'half-life': 90.0 * u.s,
+    },
+
+    'Pr-132': {
+        'atomic number': 59,
+        'mass number': 132,
+        'mass': 131.919255 * u.u,
+        'stable': False,
+        'half-life': 89.4 * u.s,
+    },
+
+    'Pr-133': {
+        'atomic number': 59,
+        'mass number': 133,
+        'mass': 132.916331 * u.u,
+        'stable': False,
+        'half-life': 390.0 * u.s,
+    },
+
+    'Pr-134': {
+        'atomic number': 59,
+        'mass number': 134,
+        'mass': 133.915697 * u.u,
+        'stable': False,
+        'half-life': 1020.0 * u.s,
+    },
+
+    'Pr-135': {
+        'atomic number': 59,
+        'mass number': 135,
+        'mass': 134.913112 * u.u,
+        'stable': False,
+        'half-life': 1440.0 * u.s,
+    },
+
+    'Pr-136': {
+        'atomic number': 59,
+        'mass number': 136,
+        'mass': 135.912677 * u.u,
+        'stable': False,
+        'half-life': 786.0 * u.s,
+    },
+
+    'Pr-137': {
+        'atomic number': 59,
+        'mass number': 137,
+        'mass': 136.9106792 * u.u,
+        'stable': False,
+        'half-life': 4608.0 * u.s,
+    },
+
+    'Pr-138': {
+        'atomic number': 59,
+        'mass number': 138,
+        'mass': 137.910754 * u.u,
+        'stable': False,
+        'half-life': 87.0 * u.s,
+    },
+
+    'Pr-139': {
+        'atomic number': 59,
+        'mass number': 139,
+        'mass': 138.9089408 * u.u,
+        'stable': False,
+        'half-life': 15876.0 * u.s,
+    },
+
+    'Pr-140': {
+        'atomic number': 59,
+        'mass number': 140,
+        'mass': 139.9090803 * u.u,
+        'stable': False,
+        'half-life': 203.4 * u.s,
+    },
+
+    'Pr-141': {
+        'atomic number': 59,
+        'mass number': 141,
+        'mass': 140.9076576 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Pr-142': {
+        'atomic number': 59,
+        'mass number': 142,
+        'mass': 141.9100496 * u.u,
+        'stable': False,
+        'half-life': 68832.0 * u.s,
+    },
+
+    'Pr-143': {
+        'atomic number': 59,
+        'mass number': 143,
+        'mass': 142.9108228 * u.u,
+        'stable': False,
+        'half-life': 1172448.0 * u.s,
+    },
+
+    'Pr-144': {
+        'atomic number': 59,
+        'mass number': 144,
+        'mass': 143.9133109 * u.u,
+        'stable': False,
+        'half-life': 1036.8 * u.s,
+    },
+
+    'Pr-145': {
+        'atomic number': 59,
+        'mass number': 145,
+        'mass': 144.9145182 * u.u,
+        'stable': False,
+        'half-life': 21542.4 * u.s,
+    },
+
+    'Pr-146': {
+        'atomic number': 59,
+        'mass number': 146,
+        'mass': 145.91768 * u.u,
+        'stable': False,
+        'half-life': 1449.0 * u.s,
+    },
+
+    'Pr-147': {
+        'atomic number': 59,
+        'mass number': 147,
+        'mass': 146.919008 * u.u,
+        'stable': False,
+        'half-life': 804.0 * u.s,
+    },
+
+    'Pr-148': {
+        'atomic number': 59,
+        'mass number': 148,
+        'mass': 147.92213 * u.u,
+        'stable': False,
+        'half-life': 137.4 * u.s,
+    },
+
+    'Pr-149': {
+        'atomic number': 59,
+        'mass number': 149,
+        'mass': 148.923736 * u.u,
+        'stable': False,
+        'half-life': 135.6 * u.s,
+    },
+
+    'Pr-150': {
+        'atomic number': 59,
+        'mass number': 150,
+        'mass': 149.9266765 * u.u,
+        'stable': False,
+        'half-life': 6.19 * u.s,
+    },
+
+    'Pr-151': {
+        'atomic number': 59,
+        'mass number': 151,
+        'mass': 150.928309 * u.u,
+        'stable': False,
+        'half-life': 18.9 * u.s,
+    },
+
+    'Pr-152': {
+        'atomic number': 59,
+        'mass number': 152,
+        'mass': 151.931553 * u.u,
+        'stable': False,
+        'half-life': 3.57 * u.s,
+    },
+
+    'Pr-153': {
+        'atomic number': 59,
+        'mass number': 153,
+        'mass': 152.933904 * u.u,
+        'stable': False,
+        'half-life': 4.28 * u.s,
+    },
+
+    'Pr-154': {
+        'atomic number': 59,
+        'mass number': 154,
+        'mass': 153.93753 * u.u,
+        'stable': False,
+        'half-life': 2.3 * u.s,
+    },
+
+    'Pr-155': {
+        'atomic number': 59,
+        'mass number': 155,
+        'mass': 154.940509 * u.u,
+        'stable': False,
+        'half-life': 1.47 * u.s,
+    },
+
+    'Pr-156': {
+        'atomic number': 59,
+        'mass number': 156,
+        'mass': 155.94464 * u.u,
+        'stable': False,
+        'half-life': 0.444 * u.s,
+    },
+
+    'Pr-157': {
+        'atomic number': 59,
+        'mass number': 157,
+        'mass': 156.94789 * u.u,
+        'stable': False,
+        'half-life': 0.307 * u.s,
+    },
+
+    'Pr-158': {
+        'atomic number': 59,
+        'mass number': 158,
+        'mass': 157.95241 * u.u,
+        'stable': False,
+        'half-life': 0.181 * u.s,
+    },
+
+    'Pr-159': {
+        'atomic number': 59,
+        'mass number': 159,
+        'mass': 158.95589 * u.u,
+        'stable': False,
+        'half-life': 0.134 * u.s,
+    },
+
+    'Nd-124': {
+        'atomic number': 60,
+        'mass number': 124,
+        'mass': 123.9522 * u.u,
+        'stable': False,
+        'half-life': '500# ms',
+    },
+
+    'Nd-125': {
+        'atomic number': 60,
+        'mass number': 125,
+        'mass': 124.9489 * u.u,
+        'stable': False,
+        'half-life': 0.65 * u.s,
+    },
+
+    'Nd-126': {
+        'atomic number': 60,
+        'mass number': 126,
+        'mass': 125.94311 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Nd-127': {
+        'atomic number': 60,
+        'mass number': 127,
+        'mass': 126.94038 * u.u,
+        'stable': False,
+        'half-life': 1.8 * u.s,
+    },
+
+    'Nd-128': {
+        'atomic number': 60,
+        'mass number': 128,
+        'mass': 127.93525 * u.u,
+        'stable': False,
+        'half-life': '5# s',
+    },
+
+    'Nd-129': {
+        'atomic number': 60,
+        'mass number': 129,
+        'mass': 128.9331 * u.u,
+        'stable': False,
+        'half-life': 6.8 * u.s,
+    },
+
+    'Nd-130': {
+        'atomic number': 60,
+        'mass number': 130,
+        'mass': 129.928506 * u.u,
+        'stable': False,
+        'half-life': 21.0 * u.s,
+    },
+
+    'Nd-131': {
+        'atomic number': 60,
+        'mass number': 131,
+        'mass': 130.927248 * u.u,
+        'stable': False,
+        'half-life': 25.4 * u.s,
+    },
+
+    'Nd-132': {
+        'atomic number': 60,
+        'mass number': 132,
+        'mass': 131.923321 * u.u,
+        'stable': False,
+        'half-life': 93.6 * u.s,
+    },
+
+    'Nd-133': {
+        'atomic number': 60,
+        'mass number': 133,
+        'mass': 132.922348 * u.u,
+        'stable': False,
+        'half-life': 70.0 * u.s,
+    },
+
+    'Nd-134': {
+        'atomic number': 60,
+        'mass number': 134,
+        'mass': 133.91879 * u.u,
+        'stable': False,
+        'half-life': 510.0 * u.s,
+    },
+
+    'Nd-135': {
+        'atomic number': 60,
+        'mass number': 135,
+        'mass': 134.918181 * u.u,
+        'stable': False,
+        'half-life': 744.0 * u.s,
+    },
+
+    'Nd-136': {
+        'atomic number': 60,
+        'mass number': 136,
+        'mass': 135.914976 * u.u,
+        'stable': False,
+        'half-life': 3042.0 * u.s,
+    },
+
+    'Nd-137': {
+        'atomic number': 60,
+        'mass number': 137,
+        'mass': 136.914562 * u.u,
+        'stable': False,
+        'half-life': 2310.0 * u.s,
+    },
+
+    'Nd-138': {
+        'atomic number': 60,
+        'mass number': 138,
+        'mass': 137.91195 * u.u,
+        'stable': False,
+        'half-life': 18144.0 * u.s,
+    },
+
+    'Nd-139': {
+        'atomic number': 60,
+        'mass number': 139,
+        'mass': 138.911954 * u.u,
+        'stable': False,
+        'half-life': 1782.0 * u.s,
+    },
+
+    'Nd-140': {
+        'atomic number': 60,
+        'mass number': 140,
+        'mass': 139.90955 * u.u,
+        'stable': False,
+        'half-life': 291168.0 * u.s,
+    },
+
+    'Nd-141': {
+        'atomic number': 60,
+        'mass number': 141,
+        'mass': 140.9096147 * u.u,
+        'stable': False,
+        'half-life': 8964.0 * u.s,
+    },
+
+    'Nd-142': {
+        'atomic number': 60,
+        'mass number': 142,
+        'mass': 141.907729 * u.u,
+        'stable': True,
+        'abundance': 0.27152,
+    },
+
+    'Nd-143': {
+        'atomic number': 60,
+        'mass number': 143,
+        'mass': 142.90982 * u.u,
+        'stable': True,
+        'abundance': 0.12174,
+    },
+
+    'Nd-144': {
+        'atomic number': 60,
+        'mass number': 144,
+        'mass': 143.910093 * u.u,
+        'stable': False,
+        'abundance': 0.23798,
+    },
+
+    'Nd-145': {
+        'atomic number': 60,
+        'mass number': 145,
+        'mass': 144.9125793 * u.u,
+        'stable': True,
+        'abundance': 0.08293,
+    },
+
+    'Nd-146': {
+        'atomic number': 60,
+        'mass number': 146,
+        'mass': 145.9131226 * u.u,
+        'stable': True,
+        'abundance': 0.17189,
+    },
+
+    'Nd-147': {
+        'atomic number': 60,
+        'mass number': 147,
+        'mass': 146.9161061 * u.u,
+        'stable': False,
+        'half-life': 948672.0 * u.s,
+    },
+
+    'Nd-148': {
+        'atomic number': 60,
+        'mass number': 148,
+        'mass': 147.9168993 * u.u,
+        'stable': True,
+        'abundance': 0.05756,
+    },
+
+    'Nd-149': {
+        'atomic number': 60,
+        'mass number': 149,
+        'mass': 148.9201548 * u.u,
+        'stable': False,
+        'half-life': 6220.8 * u.s,
+    },
+
+    'Nd-150': {
+        'atomic number': 60,
+        'mass number': 150,
+        'mass': 149.9209022 * u.u,
+        'stable': False,
+        'abundance': 0.05638,
+    },
+
+    'Nd-151': {
+        'atomic number': 60,
+        'mass number': 151,
+        'mass': 150.9238403 * u.u,
+        'stable': False,
+        'half-life': 746.4 * u.s,
+    },
+
+    'Nd-152': {
+        'atomic number': 60,
+        'mass number': 152,
+        'mass': 151.924692 * u.u,
+        'stable': False,
+        'half-life': 684.0 * u.s,
+    },
+
+    'Nd-153': {
+        'atomic number': 60,
+        'mass number': 153,
+        'mass': 152.927718 * u.u,
+        'stable': False,
+        'half-life': 31.6 * u.s,
+    },
+
+    'Nd-154': {
+        'atomic number': 60,
+        'mass number': 154,
+        'mass': 153.92948 * u.u,
+        'stable': False,
+        'half-life': 25.9 * u.s,
+    },
+
+    'Nd-155': {
+        'atomic number': 60,
+        'mass number': 155,
+        'mass': 154.9331357 * u.u,
+        'stable': False,
+        'half-life': 8.9 * u.s,
+    },
+
+    'Nd-156': {
+        'atomic number': 60,
+        'mass number': 156,
+        'mass': 155.93508 * u.u,
+        'stable': False,
+        'half-life': 5.06 * u.s,
+    },
+
+    'Nd-157': {
+        'atomic number': 60,
+        'mass number': 157,
+        'mass': 156.939386 * u.u,
+        'stable': False,
+        'half-life': 1.15 * u.s,
+    },
+
+    'Nd-158': {
+        'atomic number': 60,
+        'mass number': 158,
+        'mass': 157.94197 * u.u,
+        'stable': False,
+        'half-life': 0.81 * u.s,
+    },
+
+    'Nd-159': {
+        'atomic number': 60,
+        'mass number': 159,
+        'mass': 158.94653 * u.u,
+        'stable': False,
+        'half-life': 0.5 * u.s,
+    },
+
+    'Nd-160': {
+        'atomic number': 60,
+        'mass number': 160,
+        'mass': 159.9494 * u.u,
+        'stable': False,
+        'half-life': 0.439 * u.s,
+    },
+
+    'Nd-161': {
+        'atomic number': 60,
+        'mass number': 161,
+        'mass': 160.95428 * u.u,
+        'stable': False,
+        'half-life': 0.215 * u.s,
+    },
+
+    'Pm-126': {
+        'atomic number': 61,
+        'mass number': 126,
+        'mass': 125.95792 * u.u,
+        'stable': False,
+        'half-life': '500# ms',
+    },
+
+    'Pm-127': {
+        'atomic number': 61,
+        'mass number': 127,
+        'mass': 126.95192 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Pm-128': {
+        'atomic number': 61,
+        'mass number': 128,
+        'mass': 127.9487 * u.u,
+        'stable': False,
+        'half-life': 1.0 * u.s,
+    },
+
+    'Pm-129': {
+        'atomic number': 61,
+        'mass number': 129,
+        'mass': 128.94323 * u.u,
+        'stable': False,
+        'half-life': 2.4 * u.s,
+    },
+
+    'Pm-130': {
+        'atomic number': 61,
+        'mass number': 130,
+        'mass': 129.94053 * u.u,
+        'stable': False,
+        'half-life': 2.6 * u.s,
+    },
+
+    'Pm-131': {
+        'atomic number': 61,
+        'mass number': 131,
+        'mass': 130.93567 * u.u,
+        'stable': False,
+        'half-life': 6.3 * u.s,
+    },
+
+    'Pm-132': {
+        'atomic number': 61,
+        'mass number': 132,
+        'mass': 131.93384 * u.u,
+        'stable': False,
+        'half-life': 6.2 * u.s,
+    },
+
+    'Pm-133': {
+        'atomic number': 61,
+        'mass number': 133,
+        'mass': 132.929782 * u.u,
+        'stable': False,
+        'half-life': 13.5 * u.s,
+    },
+
+    'Pm-134': {
+        'atomic number': 61,
+        'mass number': 134,
+        'mass': 133.928353 * u.u,
+        'stable': False,
+        'half-life': 22.0 * u.s,
+    },
+
+    'Pm-135': {
+        'atomic number': 61,
+        'mass number': 135,
+        'mass': 134.924823 * u.u,
+        'stable': False,
+        'half-life': 49.0 * u.s,
+    },
+
+    'Pm-136': {
+        'atomic number': 61,
+        'mass number': 136,
+        'mass': 135.923585 * u.u,
+        'stable': False,
+        'half-life': 107.0 * u.s,
+    },
+
+    'Pm-137': {
+        'atomic number': 61,
+        'mass number': 137,
+        'mass': 136.92048 * u.u,
+        'stable': False,
+        'half-life': '2# m',
+    },
+
+    'Pm-138': {
+        'atomic number': 61,
+        'mass number': 138,
+        'mass': 137.919548 * u.u,
+        'stable': False,
+        'half-life': 10.0 * u.s,
+    },
+
+    'Pm-139': {
+        'atomic number': 61,
+        'mass number': 139,
+        'mass': 138.9168 * u.u,
+        'stable': False,
+        'half-life': 249.0 * u.s,
+    },
+
+    'Pm-140': {
+        'atomic number': 61,
+        'mass number': 140,
+        'mass': 139.91604 * u.u,
+        'stable': False,
+        'half-life': 9.2 * u.s,
+    },
+
+    'Pm-141': {
+        'atomic number': 61,
+        'mass number': 141,
+        'mass': 140.913555 * u.u,
+        'stable': False,
+        'half-life': 1254.0 * u.s,
+    },
+
+    'Pm-142': {
+        'atomic number': 61,
+        'mass number': 142,
+        'mass': 141.91289 * u.u,
+        'stable': False,
+        'half-life': 40.5 * u.s,
+    },
+
+    'Pm-143': {
+        'atomic number': 61,
+        'mass number': 143,
+        'mass': 142.9109383 * u.u,
+        'stable': False,
+        'half-life': 22896000.0 * u.s,
+    },
+
+    'Pm-144': {
+        'atomic number': 61,
+        'mass number': 144,
+        'mass': 143.9125964 * u.u,
+        'stable': False,
+        'half-life': 31363200.0 * u.s,
+    },
+
+    'Pm-145': {
+        'atomic number': 61,
+        'mass number': 145,
+        'mass': 144.9127559 * u.u,
+        'stable': False,
+        'half-life': 558557590.2 * u.s,
+    },
+
+    'Pm-146': {
+        'atomic number': 61,
+        'mass number': 146,
+        'mass': 145.9147024 * u.u,
+        'stable': False,
+        'half-life': 174509800.78 * u.s,
+    },
+
+    'Pm-147': {
+        'atomic number': 61,
+        'mass number': 147,
+        'mass': 146.915145 * u.u,
+        'stable': False,
+        'half-life': 82786439.6684 * u.s,
+    },
+
+    'Pm-148': {
+        'atomic number': 61,
+        'mass number': 148,
+        'mass': 147.9174819 * u.u,
+        'stable': False,
+        'half-life': 463795.2 * u.s,
+    },
+
+    'Pm-149': {
+        'atomic number': 61,
+        'mass number': 149,
+        'mass': 148.9183423 * u.u,
+        'stable': False,
+        'half-life': 191088.0 * u.s,
+    },
+
+    'Pm-150': {
+        'atomic number': 61,
+        'mass number': 150,
+        'mass': 149.920991 * u.u,
+        'stable': False,
+        'half-life': 9712.8 * u.s,
+    },
+
+    'Pm-151': {
+        'atomic number': 61,
+        'mass number': 151,
+        'mass': 150.9212175 * u.u,
+        'stable': False,
+        'half-life': 102240.0 * u.s,
+    },
+
+    'Pm-152': {
+        'atomic number': 61,
+        'mass number': 152,
+        'mass': 151.923506 * u.u,
+        'stable': False,
+        'half-life': 247.2 * u.s,
+    },
+
+    'Pm-153': {
+        'atomic number': 61,
+        'mass number': 153,
+        'mass': 152.9241567 * u.u,
+        'stable': False,
+        'half-life': 315.0 * u.s,
+    },
+
+    'Pm-154': {
+        'atomic number': 61,
+        'mass number': 154,
+        'mass': 153.926472 * u.u,
+        'stable': False,
+        'half-life': 160.8 * u.s,
+    },
+
+    'Pm-155': {
+        'atomic number': 61,
+        'mass number': 155,
+        'mass': 154.928137 * u.u,
+        'stable': False,
+        'half-life': 41.5 * u.s,
+    },
+
+    'Pm-156': {
+        'atomic number': 61,
+        'mass number': 156,
+        'mass': 155.9311175 * u.u,
+        'stable': False,
+        'half-life': 27.2 * u.s,
+    },
+
+    'Pm-157': {
+        'atomic number': 61,
+        'mass number': 157,
+        'mass': 156.9331214 * u.u,
+        'stable': False,
+        'half-life': 10.56 * u.s,
+    },
+
+    'Pm-158': {
+        'atomic number': 61,
+        'mass number': 158,
+        'mass': 157.936565 * u.u,
+        'stable': False,
+        'half-life': 4.8 * u.s,
+    },
+
+    'Pm-159': {
+        'atomic number': 61,
+        'mass number': 159,
+        'mass': 158.939287 * u.u,
+        'stable': False,
+        'half-life': 1.49 * u.s,
+    },
+
+    'Pm-160': {
+        'atomic number': 61,
+        'mass number': 160,
+        'mass': 159.9431 * u.u,
+        'stable': False,
+        'half-life': 0.725 * u.s,
+    },
+
+    'Pm-161': {
+        'atomic number': 61,
+        'mass number': 161,
+        'mass': 160.94607 * u.u,
+        'stable': False,
+        'half-life': 1.05 * u.s,
+    },
+
+    'Pm-162': {
+        'atomic number': 61,
+        'mass number': 162,
+        'mass': 161.95022 * u.u,
+        'stable': False,
+        'half-life': 0.63 * u.s,
+    },
+
+    'Pm-163': {
+        'atomic number': 61,
+        'mass number': 163,
+        'mass': 162.95357 * u.u,
+        'stable': False,
+        'half-life': 0.43 * u.s,
+    },
+
+    'Sm-128': {
+        'atomic number': 62,
+        'mass number': 128,
+        'mass': 127.95842 * u.u,
+        'stable': False,
+        'half-life': '500# ms',
+    },
+
+    'Sm-129': {
+        'atomic number': 62,
+        'mass number': 129,
+        'mass': 128.95476 * u.u,
+        'stable': False,
+        'half-life': 0.55 * u.s,
+    },
+
+    'Sm-130': {
+        'atomic number': 62,
+        'mass number': 130,
+        'mass': 129.949 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Sm-131': {
+        'atomic number': 62,
+        'mass number': 131,
+        'mass': 130.94618 * u.u,
+        'stable': False,
+        'half-life': 1.2 * u.s,
+    },
+
+    'Sm-132': {
+        'atomic number': 62,
+        'mass number': 132,
+        'mass': 131.94087 * u.u,
+        'stable': False,
+        'half-life': 4.0 * u.s,
+    },
+
+    'Sm-133': {
+        'atomic number': 62,
+        'mass number': 133,
+        'mass': 132.93856 * u.u,
+        'stable': False,
+        'half-life': 2.89 * u.s,
+    },
+
+    'Sm-134': {
+        'atomic number': 62,
+        'mass number': 134,
+        'mass': 133.93411 * u.u,
+        'stable': False,
+        'half-life': 9.5 * u.s,
+    },
+
+    'Sm-135': {
+        'atomic number': 62,
+        'mass number': 135,
+        'mass': 134.93252 * u.u,
+        'stable': False,
+        'half-life': 10.3 * u.s,
+    },
+
+    'Sm-136': {
+        'atomic number': 62,
+        'mass number': 136,
+        'mass': 135.928276 * u.u,
+        'stable': False,
+        'half-life': 47.0 * u.s,
+    },
+
+    'Sm-137': {
+        'atomic number': 62,
+        'mass number': 137,
+        'mass': 136.926971 * u.u,
+        'stable': False,
+        'half-life': 45.0 * u.s,
+    },
+
+    'Sm-138': {
+        'atomic number': 62,
+        'mass number': 138,
+        'mass': 137.923244 * u.u,
+        'stable': False,
+        'half-life': 186.0 * u.s,
+    },
+
+    'Sm-139': {
+        'atomic number': 62,
+        'mass number': 139,
+        'mass': 138.922297 * u.u,
+        'stable': False,
+        'half-life': 154.2 * u.s,
+    },
+
+    'Sm-140': {
+        'atomic number': 62,
+        'mass number': 140,
+        'mass': 139.918995 * u.u,
+        'stable': False,
+        'half-life': 889.2 * u.s,
+    },
+
+    'Sm-141': {
+        'atomic number': 62,
+        'mass number': 141,
+        'mass': 140.9184816 * u.u,
+        'stable': False,
+        'half-life': 612.0 * u.s,
+    },
+
+    'Sm-142': {
+        'atomic number': 62,
+        'mass number': 142,
+        'mass': 141.9152044 * u.u,
+        'stable': False,
+        'half-life': 4349.4 * u.s,
+    },
+
+    'Sm-143': {
+        'atomic number': 62,
+        'mass number': 143,
+        'mass': 142.9146353 * u.u,
+        'stable': False,
+        'half-life': 525.0 * u.s,
+    },
+
+    'Sm-144': {
+        'atomic number': 62,
+        'mass number': 144,
+        'mass': 143.9120065 * u.u,
+        'stable': True,
+        'abundance': 0.0307,
+    },
+
+    'Sm-145': {
+        'atomic number': 62,
+        'mass number': 145,
+        'mass': 144.9134173 * u.u,
+        'stable': False,
+        'half-life': 29376000.0 * u.s,
+    },
+
+    'Sm-146': {
+        'atomic number': 62,
+        'mass number': 146,
+        'mass': 145.913047 * u.u,
+        'stable': False,
+        'half-life': 2145870968000000.0 * u.s,
+    },
+
+    'Sm-147': {
+        'atomic number': 62,
+        'mass number': 147,
+        'mass': 146.9149044 * u.u,
+        'stable': False,
+        'abundance': 0.1499,
+    },
+
+    'Sm-148': {
+        'atomic number': 62,
+        'mass number': 148,
+        'mass': 147.9148292 * u.u,
+        'stable': False,
+        'abundance': 0.1124,
+    },
+
+    'Sm-149': {
+        'atomic number': 62,
+        'mass number': 149,
+        'mass': 148.9171921 * u.u,
+        'stable': True,
+        'abundance': 0.1382,
+    },
+
+    'Sm-150': {
+        'atomic number': 62,
+        'mass number': 150,
+        'mass': 149.9172829 * u.u,
+        'stable': True,
+        'abundance': 0.0738,
+    },
+
+    'Sm-151': {
+        'atomic number': 62,
+        'mass number': 151,
+        'mass': 150.9199398 * u.u,
+        'stable': False,
+        'half-life': 2840123340.0 * u.s,
+    },
+
+    'Sm-152': {
+        'atomic number': 62,
+        'mass number': 152,
+        'mass': 151.9197397 * u.u,
+        'stable': True,
+        'abundance': 0.2675,
+    },
+
+    'Sm-153': {
+        'atomic number': 62,
+        'mass number': 153,
+        'mass': 152.9221047 * u.u,
+        'stable': False,
+        'half-life': 166627.08 * u.s,
+    },
+
+    'Sm-154': {
+        'atomic number': 62,
+        'mass number': 154,
+        'mass': 153.9222169 * u.u,
+        'stable': True,
+        'abundance': 0.2275,
+    },
+
+    'Sm-155': {
+        'atomic number': 62,
+        'mass number': 155,
+        'mass': 154.9246477 * u.u,
+        'stable': False,
+        'half-life': 1338.0 * u.s,
+    },
+
+    'Sm-156': {
+        'atomic number': 62,
+        'mass number': 156,
+        'mass': 155.925536 * u.u,
+        'stable': False,
+        'half-life': 33840.0 * u.s,
+    },
+
+    'Sm-157': {
+        'atomic number': 62,
+        'mass number': 157,
+        'mass': 156.9284187 * u.u,
+        'stable': False,
+        'half-life': 481.8 * u.s,
+    },
+
+    'Sm-158': {
+        'atomic number': 62,
+        'mass number': 158,
+        'mass': 157.929951 * u.u,
+        'stable': False,
+        'half-life': 318.0 * u.s,
+    },
+
+    'Sm-159': {
+        'atomic number': 62,
+        'mass number': 159,
+        'mass': 158.9332172 * u.u,
+        'stable': False,
+        'half-life': 11.37 * u.s,
+    },
+
+    'Sm-160': {
+        'atomic number': 62,
+        'mass number': 160,
+        'mass': 159.9353353 * u.u,
+        'stable': False,
+        'half-life': 9.6 * u.s,
+    },
+
+    'Sm-161': {
+        'atomic number': 62,
+        'mass number': 161,
+        'mass': 160.9391602 * u.u,
+        'stable': False,
+        'half-life': 4.8 * u.s,
+    },
+
+    'Sm-162': {
+        'atomic number': 62,
+        'mass number': 162,
+        'mass': 161.94146 * u.u,
+        'stable': False,
+        'half-life': 2.7 * u.s,
+    },
+
+    'Sm-163': {
+        'atomic number': 62,
+        'mass number': 163,
+        'mass': 162.94555 * u.u,
+        'stable': False,
+        'half-life': 1.3 * u.s,
+    },
+
+    'Sm-164': {
+        'atomic number': 62,
+        'mass number': 164,
+        'mass': 163.94836 * u.u,
+        'stable': False,
+        'half-life': 1.43 * u.s,
+    },
+
+    'Sm-165': {
+        'atomic number': 62,
+        'mass number': 165,
+        'mass': 164.95297 * u.u,
+        'stable': False,
+        'half-life': 0.98 * u.s,
+    },
+
+    'Eu-130': {
+        'atomic number': 63,
+        'mass number': 130,
+        'mass': 129.96369 * u.u,
+        'stable': False,
+        'half-life': 0.001 * u.s,
+    },
+
+    'Eu-131': {
+        'atomic number': 63,
+        'mass number': 131,
+        'mass': 130.95784 * u.u,
+        'stable': False,
+        'half-life': 0.0178 * u.s,
+    },
+
+    'Eu-132': {
+        'atomic number': 63,
+        'mass number': 132,
+        'mass': 131.95467 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'Eu-133': {
+        'atomic number': 63,
+        'mass number': 133,
+        'mass': 132.94929 * u.u,
+        'stable': False,
+        'half-life': '200# ms',
+    },
+
+    'Eu-134': {
+        'atomic number': 63,
+        'mass number': 134,
+        'mass': 133.9464 * u.u,
+        'stable': False,
+        'half-life': 0.5 * u.s,
+    },
+
+    'Eu-135': {
+        'atomic number': 63,
+        'mass number': 135,
+        'mass': 134.94187 * u.u,
+        'stable': False,
+        'half-life': 1.5 * u.s,
+    },
+
+    'Eu-136': {
+        'atomic number': 63,
+        'mass number': 136,
+        'mass': 135.93962 * u.u,
+        'stable': False,
+        'half-life': 3.3 * u.s,
+    },
+
+    'Eu-137': {
+        'atomic number': 63,
+        'mass number': 137,
+        'mass': 136.93546 * u.u,
+        'stable': False,
+        'half-life': 8.4 * u.s,
+    },
+
+    'Eu-138': {
+        'atomic number': 63,
+        'mass number': 138,
+        'mass': 137.933709 * u.u,
+        'stable': False,
+        'half-life': 12.1 * u.s,
+    },
+
+    'Eu-139': {
+        'atomic number': 63,
+        'mass number': 139,
+        'mass': 138.929792 * u.u,
+        'stable': False,
+        'half-life': 17.9 * u.s,
+    },
+
+    'Eu-140': {
+        'atomic number': 63,
+        'mass number': 140,
+        'mass': 139.928088 * u.u,
+        'stable': False,
+        'half-life': 1.51 * u.s,
+    },
+
+    'Eu-141': {
+        'atomic number': 63,
+        'mass number': 141,
+        'mass': 140.924932 * u.u,
+        'stable': False,
+        'half-life': 40.7 * u.s,
+    },
+
+    'Eu-142': {
+        'atomic number': 63,
+        'mass number': 142,
+        'mass': 141.923442 * u.u,
+        'stable': False,
+        'half-life': 2.36 * u.s,
+    },
+
+    'Eu-143': {
+        'atomic number': 63,
+        'mass number': 143,
+        'mass': 142.920299 * u.u,
+        'stable': False,
+        'half-life': 155.4 * u.s,
+    },
+
+    'Eu-144': {
+        'atomic number': 63,
+        'mass number': 144,
+        'mass': 143.91882 * u.u,
+        'stable': False,
+        'half-life': 10.2 * u.s,
+    },
+
+    'Eu-145': {
+        'atomic number': 63,
+        'mass number': 145,
+        'mass': 144.9162726 * u.u,
+        'stable': False,
+        'half-life': 512352.0 * u.s,
+    },
+
+    'Eu-146': {
+        'atomic number': 63,
+        'mass number': 146,
+        'mass': 145.917211 * u.u,
+        'stable': False,
+        'half-life': 398304.0 * u.s,
+    },
+
+    'Eu-147': {
+        'atomic number': 63,
+        'mass number': 147,
+        'mass': 146.9167527 * u.u,
+        'stable': False,
+        'half-life': 2082240.0 * u.s,
+    },
+
+    'Eu-148': {
+        'atomic number': 63,
+        'mass number': 148,
+        'mass': 147.918089 * u.u,
+        'stable': False,
+        'half-life': 4708800.0 * u.s,
+    },
+
+    'Eu-149': {
+        'atomic number': 63,
+        'mass number': 149,
+        'mass': 148.9179378 * u.u,
+        'stable': False,
+        'half-life': 8043840.0 * u.s,
+    },
+
+    'Eu-150': {
+        'atomic number': 63,
+        'mass number': 150,
+        'mass': 149.9197077 * u.u,
+        'stable': False,
+        'half-life': 1164450569.4 * u.s,
+    },
+
+    'Eu-151': {
+        'atomic number': 63,
+        'mass number': 151,
+        'mass': 150.9198578 * u.u,
+        'stable': False,
+        'abundance': 0.4781,
+    },
+
+    'Eu-152': {
+        'atomic number': 63,
+        'mass number': 152,
+        'mass': 151.9217522 * u.u,
+        'stable': False,
+        'half-life': 427438080.0 * u.s,
+    },
+
+    'Eu-153': {
+        'atomic number': 63,
+        'mass number': 153,
+        'mass': 152.921238 * u.u,
+        'stable': True,
+        'abundance': 0.5219,
+    },
+
+    'Eu-154': {
+        'atomic number': 63,
+        'mass number': 154,
+        'mass': 153.922987 * u.u,
+        'stable': False,
+        'half-life': 271745280.0 * u.s,
+    },
+
+    'Eu-155': {
+        'atomic number': 63,
+        'mass number': 155,
+        'mass': 154.9229011 * u.u,
+        'stable': False,
+        'half-life': 150254784.0 * u.s,
+    },
+
+    'Eu-156': {
+        'atomic number': 63,
+        'mass number': 156,
+        'mass': 155.9247605 * u.u,
+        'stable': False,
+        'half-life': 1312416.0 * u.s,
+    },
+
+    'Eu-157': {
+        'atomic number': 63,
+        'mass number': 157,
+        'mass': 156.9254334 * u.u,
+        'stable': False,
+        'half-life': 54648.0 * u.s,
+    },
+
+    'Eu-158': {
+        'atomic number': 63,
+        'mass number': 158,
+        'mass': 157.927799 * u.u,
+        'stable': False,
+        'half-life': 2754.0 * u.s,
+    },
+
+    'Eu-159': {
+        'atomic number': 63,
+        'mass number': 159,
+        'mass': 158.9291001 * u.u,
+        'stable': False,
+        'half-life': 1086.0 * u.s,
+    },
+
+    'Eu-160': {
+        'atomic number': 63,
+        'mass number': 160,
+        'mass': 159.931851 * u.u,
+        'stable': False,
+        'half-life': 42.4 * u.s,
+    },
+
+    'Eu-161': {
+        'atomic number': 63,
+        'mass number': 161,
+        'mass': 160.933664 * u.u,
+        'stable': False,
+        'half-life': 26.2 * u.s,
+    },
+
+    'Eu-162': {
+        'atomic number': 63,
+        'mass number': 162,
+        'mass': 161.936989 * u.u,
+        'stable': False,
+        'half-life': '~11 s',
+    },
+
+    'Eu-163': {
+        'atomic number': 63,
+        'mass number': 163,
+        'mass': 162.939196 * u.u,
+        'stable': False,
+        'half-life': 7.7 * u.s,
+    },
+
+    'Eu-164': {
+        'atomic number': 63,
+        'mass number': 164,
+        'mass': 163.94274 * u.u,
+        'stable': False,
+        'half-life': 4.15 * u.s,
+    },
+
+    'Eu-165': {
+        'atomic number': 63,
+        'mass number': 165,
+        'mass': 164.94559 * u.u,
+        'stable': False,
+        'half-life': 2.53 * u.s,
+    },
+
+    'Eu-166': {
+        'atomic number': 63,
+        'mass number': 166,
+        'mass': 165.94962 * u.u,
+        'stable': False,
+        'half-life': 1.24 * u.s,
+    },
+
+    'Eu-167': {
+        'atomic number': 63,
+        'mass number': 167,
+        'mass': 166.95289 * u.u,
+        'stable': False,
+        'half-life': 1.33 * u.s,
+    },
+
+    'Gd-133': {
+        'atomic number': 64,
+        'mass number': 133,
+        'mass': 132.96133 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Gd-134': {
+        'atomic number': 64,
+        'mass number': 134,
+        'mass': 133.95566 * u.u,
+        'stable': False,
+        'half-life': '400# ms',
+    },
+
+    'Gd-135': {
+        'atomic number': 64,
+        'mass number': 135,
+        'mass': 134.95245 * u.u,
+        'stable': False,
+        'half-life': 1.1 * u.s,
+    },
+
+    'Gd-136': {
+        'atomic number': 64,
+        'mass number': 136,
+        'mass': 135.9473 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Gd-137': {
+        'atomic number': 64,
+        'mass number': 137,
+        'mass': 136.94502 * u.u,
+        'stable': False,
+        'half-life': 2.2 * u.s,
+    },
+
+    'Gd-138': {
+        'atomic number': 64,
+        'mass number': 138,
+        'mass': 137.94025 * u.u,
+        'stable': False,
+        'half-life': 4.7 * u.s,
+    },
+
+    'Gd-139': {
+        'atomic number': 64,
+        'mass number': 139,
+        'mass': 138.93813 * u.u,
+        'stable': False,
+        'half-life': 5.7 * u.s,
+    },
+
+    'Gd-140': {
+        'atomic number': 64,
+        'mass number': 140,
+        'mass': 139.933674 * u.u,
+        'stable': False,
+        'half-life': 15.8 * u.s,
+    },
+
+    'Gd-141': {
+        'atomic number': 64,
+        'mass number': 141,
+        'mass': 140.932126 * u.u,
+        'stable': False,
+        'half-life': 14.0 * u.s,
+    },
+
+    'Gd-142': {
+        'atomic number': 64,
+        'mass number': 142,
+        'mass': 141.928116 * u.u,
+        'stable': False,
+        'half-life': 70.2 * u.s,
+    },
+
+    'Gd-143': {
+        'atomic number': 64,
+        'mass number': 143,
+        'mass': 142.92675 * u.u,
+        'stable': False,
+        'half-life': 39.0 * u.s,
+    },
+
+    'Gd-144': {
+        'atomic number': 64,
+        'mass number': 144,
+        'mass': 143.922963 * u.u,
+        'stable': False,
+        'half-life': 268.2 * u.s,
+    },
+
+    'Gd-145': {
+        'atomic number': 64,
+        'mass number': 145,
+        'mass': 144.921713 * u.u,
+        'stable': False,
+        'half-life': 1380.0 * u.s,
+    },
+
+    'Gd-146': {
+        'atomic number': 64,
+        'mass number': 146,
+        'mass': 145.9183188 * u.u,
+        'stable': False,
+        'half-life': 4170528.0 * u.s,
+    },
+
+    'Gd-147': {
+        'atomic number': 64,
+        'mass number': 147,
+        'mass': 146.9191014 * u.u,
+        'stable': False,
+        'half-life': 137016.0 * u.s,
+    },
+
+    'Gd-148': {
+        'atomic number': 64,
+        'mass number': 148,
+        'mass': 147.9181215 * u.u,
+        'stable': False,
+        'half-life': 2237386053.4 * u.s,
+    },
+
+    'Gd-149': {
+        'atomic number': 64,
+        'mass number': 149,
+        'mass': 148.9193481 * u.u,
+        'stable': False,
+        'half-life': 801792.0 * u.s,
+    },
+
+    'Gd-150': {
+        'atomic number': 64,
+        'mass number': 150,
+        'mass': 149.9186644 * u.u,
+        'stable': False,
+        'half-life': 56486897540000.0 * u.s,
+    },
+
+    'Gd-151': {
+        'atomic number': 64,
+        'mass number': 151,
+        'mass': 150.920356 * u.u,
+        'stable': False,
+        'half-life': 10704960.0 * u.s,
+    },
+
+    'Gd-152': {
+        'atomic number': 64,
+        'mass number': 152,
+        'mass': 151.9197995 * u.u,
+        'stable': False,
+        'abundance': 0.002,
+    },
+
+    'Gd-153': {
+        'atomic number': 64,
+        'mass number': 153,
+        'mass': 152.921758 * u.u,
+        'stable': False,
+        'half-life': 20690380.8 * u.s,
+    },
+
+    'Gd-154': {
+        'atomic number': 64,
+        'mass number': 154,
+        'mass': 153.9208741 * u.u,
+        'stable': True,
+        'abundance': 0.0218,
+    },
+
+    'Gd-155': {
+        'atomic number': 64,
+        'mass number': 155,
+        'mass': 154.9226305 * u.u,
+        'stable': True,
+        'abundance': 0.148,
+    },
+
+    'Gd-156': {
+        'atomic number': 64,
+        'mass number': 156,
+        'mass': 155.9221312 * u.u,
+        'stable': True,
+        'abundance': 0.2047,
+    },
+
+    'Gd-157': {
+        'atomic number': 64,
+        'mass number': 157,
+        'mass': 156.9239686 * u.u,
+        'stable': True,
+        'abundance': 0.1565,
+    },
+
+    'Gd-158': {
+        'atomic number': 64,
+        'mass number': 158,
+        'mass': 157.9241123 * u.u,
+        'stable': True,
+        'abundance': 0.2484,
+    },
+
+    'Gd-159': {
+        'atomic number': 64,
+        'mass number': 159,
+        'mass': 158.926397 * u.u,
+        'stable': False,
+        'half-life': 66524.4 * u.s,
+    },
+
+    'Gd-160': {
+        'atomic number': 64,
+        'mass number': 160,
+        'mass': 159.9270624 * u.u,
+        'stable': True,
+        'abundance': 0.2186,
+    },
+
+    'Gd-161': {
+        'atomic number': 64,
+        'mass number': 161,
+        'mass': 160.9296775 * u.u,
+        'stable': False,
+        'half-life': 218.76 * u.s,
+    },
+
+    'Gd-162': {
+        'atomic number': 64,
+        'mass number': 162,
+        'mass': 161.930993 * u.u,
+        'stable': False,
+        'half-life': 504.0 * u.s,
+    },
+
+    'Gd-163': {
+        'atomic number': 64,
+        'mass number': 163,
+        'mass': 162.9341769 * u.u,
+        'stable': False,
+        'half-life': 68.0 * u.s,
+    },
+
+    'Gd-164': {
+        'atomic number': 64,
+        'mass number': 164,
+        'mass': 163.93583 * u.u,
+        'stable': False,
+        'half-life': 45.0 * u.s,
+    },
+
+    'Gd-165': {
+        'atomic number': 64,
+        'mass number': 165,
+        'mass': 164.93936 * u.u,
+        'stable': False,
+        'half-life': 11.0 * u.s,
+    },
+
+    'Gd-166': {
+        'atomic number': 64,
+        'mass number': 166,
+        'mass': 165.94146 * u.u,
+        'stable': False,
+        'half-life': 5.1 * u.s,
+    },
+
+    'Gd-167': {
+        'atomic number': 64,
+        'mass number': 167,
+        'mass': 166.94545 * u.u,
+        'stable': False,
+        'half-life': 4.2 * u.s,
+    },
+
+    'Gd-168': {
+        'atomic number': 64,
+        'mass number': 168,
+        'mass': 167.94808 * u.u,
+        'stable': False,
+        'half-life': 3.03 * u.s,
+    },
+
+    'Gd-169': {
+        'atomic number': 64,
+        'mass number': 169,
+        'mass': 168.9526 * u.u,
+        'stable': False,
+        'half-life': 0.75 * u.s,
+    },
+
+    'Tb-135': {
+        'atomic number': 65,
+        'mass number': 135,
+        'mass': 134.96476 * u.u,
+        'stable': False,
+        'half-life': 0.00101 * u.s,
+    },
+
+    'Tb-136': {
+        'atomic number': 65,
+        'mass number': 136,
+        'mass': 135.96129 * u.u,
+        'stable': False,
+        'half-life': '200# ms',
+    },
+
+    'Tb-137': {
+        'atomic number': 65,
+        'mass number': 137,
+        'mass': 136.95602 * u.u,
+        'stable': False,
+        'half-life': '600# ms',
+    },
+
+    'Tb-138': {
+        'atomic number': 65,
+        'mass number': 138,
+        'mass': 137.95312 * u.u,
+        'stable': False,
+        'half-life': '800# ms',
+    },
+
+    'Tb-139': {
+        'atomic number': 65,
+        'mass number': 139,
+        'mass': 138.94833 * u.u,
+        'stable': False,
+        'half-life': 1.6 * u.s,
+    },
+
+    'Tb-140': {
+        'atomic number': 65,
+        'mass number': 140,
+        'mass': 139.94581 * u.u,
+        'stable': False,
+        'half-life': 2.32 * u.s,
+    },
+
+    'Tb-141': {
+        'atomic number': 65,
+        'mass number': 141,
+        'mass': 140.94145 * u.u,
+        'stable': False,
+        'half-life': 3.5 * u.s,
+    },
+
+    'Tb-142': {
+        'atomic number': 65,
+        'mass number': 142,
+        'mass': 141.93928 * u.u,
+        'stable': False,
+        'half-life': 0.597 * u.s,
+    },
+
+    'Tb-143': {
+        'atomic number': 65,
+        'mass number': 143,
+        'mass': 142.935137 * u.u,
+        'stable': False,
+        'half-life': 12.0 * u.s,
+    },
+
+    'Tb-144': {
+        'atomic number': 65,
+        'mass number': 144,
+        'mass': 143.933045 * u.u,
+        'stable': False,
+        'half-life': '~1 s',
+    },
+
+    'Tb-145': {
+        'atomic number': 65,
+        'mass number': 145,
+        'mass': 144.92882 * u.u,
+        'stable': False,
+        'half-life': 30.9 * u.s,
+    },
+
+    'Tb-146': {
+        'atomic number': 65,
+        'mass number': 146,
+        'mass': 145.927253 * u.u,
+        'stable': False,
+        'half-life': 8.0 * u.s,
+    },
+
+    'Tb-147': {
+        'atomic number': 65,
+        'mass number': 147,
+        'mass': 146.9240548 * u.u,
+        'stable': False,
+        'half-life': 5904.0 * u.s,
+    },
+
+    'Tb-148': {
+        'atomic number': 65,
+        'mass number': 148,
+        'mass': 147.924282 * u.u,
+        'stable': False,
+        'half-life': 3600.0 * u.s,
+    },
+
+    'Tb-149': {
+        'atomic number': 65,
+        'mass number': 149,
+        'mass': 148.9232535 * u.u,
+        'stable': False,
+        'half-life': 14824.8 * u.s,
+    },
+
+    'Tb-150': {
+        'atomic number': 65,
+        'mass number': 150,
+        'mass': 149.9236649 * u.u,
+        'stable': False,
+        'half-life': 12528.0 * u.s,
+    },
+
+    'Tb-151': {
+        'atomic number': 65,
+        'mass number': 151,
+        'mass': 150.9231096 * u.u,
+        'stable': False,
+        'half-life': 63392.4 * u.s,
+    },
+
+    'Tb-152': {
+        'atomic number': 65,
+        'mass number': 152,
+        'mass': 151.924083 * u.u,
+        'stable': False,
+        'half-life': 63000.0 * u.s,
+    },
+
+    'Tb-153': {
+        'atomic number': 65,
+        'mass number': 153,
+        'mass': 152.9234424 * u.u,
+        'stable': False,
+        'half-life': 202176.0 * u.s,
+    },
+
+    'Tb-154': {
+        'atomic number': 65,
+        'mass number': 154,
+        'mass': 153.924685 * u.u,
+        'stable': False,
+        'half-life': 77400.0 * u.s,
+    },
+
+    'Tb-155': {
+        'atomic number': 65,
+        'mass number': 155,
+        'mass': 154.923511 * u.u,
+        'stable': False,
+        'half-life': 459648.0 * u.s,
+    },
+
+    'Tb-156': {
+        'atomic number': 65,
+        'mass number': 156,
+        'mass': 155.9247552 * u.u,
+        'stable': False,
+        'half-life': 462240.0 * u.s,
+    },
+
+    'Tb-157': {
+        'atomic number': 65,
+        'mass number': 157,
+        'mass': 156.924033 * u.u,
+        'stable': False,
+        'half-life': 2240541746.0 * u.s,
+    },
+
+    'Tb-158': {
+        'atomic number': 65,
+        'mass number': 158,
+        'mass': 157.9254209 * u.u,
+        'stable': False,
+        'half-life': 5680246680.0 * u.s,
+    },
+
+    'Tb-159': {
+        'atomic number': 65,
+        'mass number': 159,
+        'mass': 158.9253547 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Tb-160': {
+        'atomic number': 65,
+        'mass number': 160,
+        'mass': 159.9271756 * u.u,
+        'stable': False,
+        'half-life': 6246720.0 * u.s,
+    },
+
+    'Tb-161': {
+        'atomic number': 65,
+        'mass number': 161,
+        'mass': 160.9275778 * u.u,
+        'stable': False,
+        'half-life': 595296.0 * u.s,
+    },
+
+    'Tb-162': {
+        'atomic number': 65,
+        'mass number': 162,
+        'mass': 161.929495 * u.u,
+        'stable': False,
+        'half-life': 456.0 * u.s,
+    },
+
+    'Tb-163': {
+        'atomic number': 65,
+        'mass number': 163,
+        'mass': 162.9306547 * u.u,
+        'stable': False,
+        'half-life': 1170.0 * u.s,
+    },
+
+    'Tb-164': {
+        'atomic number': 65,
+        'mass number': 164,
+        'mass': 163.93336 * u.u,
+        'stable': False,
+        'half-life': 180.0 * u.s,
+    },
+
+    'Tb-165': {
+        'atomic number': 65,
+        'mass number': 165,
+        'mass': 164.93498 * u.u,
+        'stable': False,
+        'half-life': 126.6 * u.s,
+    },
+
+    'Tb-166': {
+        'atomic number': 65,
+        'mass number': 166,
+        'mass': 165.93786 * u.u,
+        'stable': False,
+        'half-life': 27.1 * u.s,
+    },
+
+    'Tb-167': {
+        'atomic number': 65,
+        'mass number': 167,
+        'mass': 166.93996 * u.u,
+        'stable': False,
+        'half-life': 18.9 * u.s,
+    },
+
+    'Tb-168': {
+        'atomic number': 65,
+        'mass number': 168,
+        'mass': 167.9434 * u.u,
+        'stable': False,
+        'half-life': 9.4 * u.s,
+    },
+
+    'Tb-169': {
+        'atomic number': 65,
+        'mass number': 169,
+        'mass': 168.94597 * u.u,
+        'stable': False,
+        'half-life': 5.13 * u.s,
+    },
+
+    'Tb-170': {
+        'atomic number': 65,
+        'mass number': 170,
+        'mass': 169.94984 * u.u,
+        'stable': False,
+        'half-life': 0.96 * u.s,
+    },
+
+    'Tb-171': {
+        'atomic number': 65,
+        'mass number': 171,
+        'mass': 170.95273 * u.u,
+        'stable': False,
+        'half-life': 1.23 * u.s,
+    },
+
+    'Dy-138': {
+        'atomic number': 66,
+        'mass number': 138,
+        'mass': 137.9625 * u.u,
+        'stable': False,
+        'half-life': '200# ms',
+    },
+
+    'Dy-139': {
+        'atomic number': 66,
+        'mass number': 139,
+        'mass': 138.95959 * u.u,
+        'stable': False,
+        'half-life': 0.6 * u.s,
+    },
+
+    'Dy-140': {
+        'atomic number': 66,
+        'mass number': 140,
+        'mass': 139.95402 * u.u,
+        'stable': False,
+        'half-life': '700# ms',
+    },
+
+    'Dy-141': {
+        'atomic number': 66,
+        'mass number': 141,
+        'mass': 140.95128 * u.u,
+        'stable': False,
+        'half-life': 0.9 * u.s,
+    },
+
+    'Dy-142': {
+        'atomic number': 66,
+        'mass number': 142,
+        'mass': 141.94619 * u.u,
+        'stable': False,
+        'half-life': 2.3 * u.s,
+    },
+
+    'Dy-143': {
+        'atomic number': 66,
+        'mass number': 143,
+        'mass': 142.943994 * u.u,
+        'stable': False,
+        'half-life': 5.6 * u.s,
+    },
+
+    'Dy-144': {
+        'atomic number': 66,
+        'mass number': 144,
+        'mass': 143.9392695 * u.u,
+        'stable': False,
+        'half-life': 9.1 * u.s,
+    },
+
+    'Dy-145': {
+        'atomic number': 66,
+        'mass number': 145,
+        'mass': 144.937474 * u.u,
+        'stable': False,
+        'half-life': 9.5 * u.s,
+    },
+
+    'Dy-146': {
+        'atomic number': 66,
+        'mass number': 146,
+        'mass': 145.9328445 * u.u,
+        'stable': False,
+        'half-life': 33.2 * u.s,
+    },
+
+    'Dy-147': {
+        'atomic number': 66,
+        'mass number': 147,
+        'mass': 146.9310827 * u.u,
+        'stable': False,
+        'half-life': 67.0 * u.s,
+    },
+
+    'Dy-148': {
+        'atomic number': 66,
+        'mass number': 148,
+        'mass': 147.927157 * u.u,
+        'stable': False,
+        'half-life': 198.0 * u.s,
+    },
+
+    'Dy-149': {
+        'atomic number': 66,
+        'mass number': 149,
+        'mass': 148.927322 * u.u,
+        'stable': False,
+        'half-life': 252.0 * u.s,
+    },
+
+    'Dy-150': {
+        'atomic number': 66,
+        'mass number': 150,
+        'mass': 149.9255933 * u.u,
+        'stable': False,
+        'half-life': 430.2 * u.s,
+    },
+
+    'Dy-151': {
+        'atomic number': 66,
+        'mass number': 151,
+        'mass': 150.9261916 * u.u,
+        'stable': False,
+        'half-life': 1074.0 * u.s,
+    },
+
+    'Dy-152': {
+        'atomic number': 66,
+        'mass number': 152,
+        'mass': 151.9247253 * u.u,
+        'stable': False,
+        'half-life': 8568.0 * u.s,
+    },
+
+    'Dy-153': {
+        'atomic number': 66,
+        'mass number': 153,
+        'mass': 152.9257724 * u.u,
+        'stable': False,
+        'half-life': 23040.0 * u.s,
+    },
+
+    'Dy-154': {
+        'atomic number': 66,
+        'mass number': 154,
+        'mass': 153.9244293 * u.u,
+        'stable': False,
+        'half-life': 94670778000000.0 * u.s,
+    },
+
+    'Dy-155': {
+        'atomic number': 66,
+        'mass number': 155,
+        'mass': 154.925759 * u.u,
+        'stable': False,
+        'half-life': 35640.0 * u.s,
+    },
+
+    'Dy-156': {
+        'atomic number': 66,
+        'mass number': 156,
+        'mass': 155.9242847 * u.u,
+        'stable': True,
+        'abundance': 0.00056,
+    },
+
+    'Dy-157': {
+        'atomic number': 66,
+        'mass number': 157,
+        'mass': 156.9254707 * u.u,
+        'stable': False,
+        'half-life': 29304.0 * u.s,
+    },
+
+    'Dy-158': {
+        'atomic number': 66,
+        'mass number': 158,
+        'mass': 157.9244159 * u.u,
+        'stable': True,
+        'abundance': 0.00095,
+    },
+
+    'Dy-159': {
+        'atomic number': 66,
+        'mass number': 159,
+        'mass': 158.925747 * u.u,
+        'stable': False,
+        'half-life': 12476160.0 * u.s,
+    },
+
+    'Dy-160': {
+        'atomic number': 66,
+        'mass number': 160,
+        'mass': 159.9252046 * u.u,
+        'stable': True,
+        'abundance': 0.02329,
+    },
+
+    'Dy-161': {
+        'atomic number': 66,
+        'mass number': 161,
+        'mass': 160.9269405 * u.u,
+        'stable': True,
+        'abundance': 0.18889,
+    },
+
+    'Dy-162': {
+        'atomic number': 66,
+        'mass number': 162,
+        'mass': 161.9268056 * u.u,
+        'stable': True,
+        'abundance': 0.25475,
+    },
+
+    'Dy-163': {
+        'atomic number': 66,
+        'mass number': 163,
+        'mass': 162.9287383 * u.u,
+        'stable': True,
+        'abundance': 0.24896,
+    },
+
+    'Dy-164': {
+        'atomic number': 66,
+        'mass number': 164,
+        'mass': 163.9291819 * u.u,
+        'stable': True,
+        'abundance': 0.2826,
+    },
+
+    'Dy-165': {
+        'atomic number': 66,
+        'mass number': 165,
+        'mass': 164.9317105 * u.u,
+        'stable': False,
+        'half-life': 8402.4 * u.s,
+    },
+
+    'Dy-166': {
+        'atomic number': 66,
+        'mass number': 166,
+        'mass': 165.9328139 * u.u,
+        'stable': False,
+        'half-life': 293760.0 * u.s,
+    },
+
+    'Dy-167': {
+        'atomic number': 66,
+        'mass number': 167,
+        'mass': 166.935661 * u.u,
+        'stable': False,
+        'half-life': 372.0 * u.s,
+    },
+
+    'Dy-168': {
+        'atomic number': 66,
+        'mass number': 168,
+        'mass': 167.93713 * u.u,
+        'stable': False,
+        'half-life': 522.0 * u.s,
+    },
+
+    'Dy-169': {
+        'atomic number': 66,
+        'mass number': 169,
+        'mass': 168.94031 * u.u,
+        'stable': False,
+        'half-life': 39.0 * u.s,
+    },
+
+    'Dy-170': {
+        'atomic number': 66,
+        'mass number': 170,
+        'mass': 169.94239 * u.u,
+        'stable': False,
+        'half-life': 54.9 * u.s,
+    },
+
+    'Dy-171': {
+        'atomic number': 66,
+        'mass number': 171,
+        'mass': 170.94612 * u.u,
+        'stable': False,
+        'half-life': 4.07 * u.s,
+    },
+
+    'Dy-172': {
+        'atomic number': 66,
+        'mass number': 172,
+        'mass': 171.94846 * u.u,
+        'stable': False,
+        'half-life': 3.4 * u.s,
+    },
+
+    'Dy-173': {
+        'atomic number': 66,
+        'mass number': 173,
+        'mass': 172.95283 * u.u,
+        'stable': False,
+        'half-life': 1.43 * u.s,
+    },
+
+    'Ho-140': {
+        'atomic number': 67,
+        'mass number': 140,
+        'mass': 139.96859 * u.u,
+        'stable': False,
+        'half-life': 0.006 * u.s,
+    },
+
+    'Ho-141': {
+        'atomic number': 67,
+        'mass number': 141,
+        'mass': 140.96311 * u.u,
+        'stable': False,
+        'half-life': 0.0041 * u.s,
+    },
+
+    'Ho-142': {
+        'atomic number': 67,
+        'mass number': 142,
+        'mass': 141.96001 * u.u,
+        'stable': False,
+        'half-life': 0.4 * u.s,
+    },
+
+    'Ho-143': {
+        'atomic number': 67,
+        'mass number': 143,
+        'mass': 142.95486 * u.u,
+        'stable': False,
+        'half-life': '300# ms',
+    },
+
+    'Ho-144': {
+        'atomic number': 67,
+        'mass number': 144,
+        'mass': 143.9521097 * u.u,
+        'stable': False,
+        'half-life': 0.7 * u.s,
+    },
+
+    'Ho-145': {
+        'atomic number': 67,
+        'mass number': 145,
+        'mass': 144.9472674 * u.u,
+        'stable': False,
+        'half-life': 2.4 * u.s,
+    },
+
+    'Ho-146': {
+        'atomic number': 67,
+        'mass number': 146,
+        'mass': 145.9449935 * u.u,
+        'stable': False,
+        'half-life': 2.8 * u.s,
+    },
+
+    'Ho-147': {
+        'atomic number': 67,
+        'mass number': 147,
+        'mass': 146.9401423 * u.u,
+        'stable': False,
+        'half-life': 5.8 * u.s,
+    },
+
+    'Ho-148': {
+        'atomic number': 67,
+        'mass number': 148,
+        'mass': 147.937744 * u.u,
+        'stable': False,
+        'half-life': 2.2 * u.s,
+    },
+
+    'Ho-149': {
+        'atomic number': 67,
+        'mass number': 149,
+        'mass': 148.933803 * u.u,
+        'stable': False,
+        'half-life': 21.1 * u.s,
+    },
+
+    'Ho-150': {
+        'atomic number': 67,
+        'mass number': 150,
+        'mass': 149.933498 * u.u,
+        'stable': False,
+        'half-life': 76.8 * u.s,
+    },
+
+    'Ho-151': {
+        'atomic number': 67,
+        'mass number': 151,
+        'mass': 150.9316983 * u.u,
+        'stable': False,
+        'half-life': 35.2 * u.s,
+    },
+
+    'Ho-152': {
+        'atomic number': 67,
+        'mass number': 152,
+        'mass': 151.931724 * u.u,
+        'stable': False,
+        'half-life': 161.8 * u.s,
+    },
+
+    'Ho-153': {
+        'atomic number': 67,
+        'mass number': 153,
+        'mass': 152.9302064 * u.u,
+        'stable': False,
+        'half-life': 120.6 * u.s,
+    },
+
+    'Ho-154': {
+        'atomic number': 67,
+        'mass number': 154,
+        'mass': 153.9306068 * u.u,
+        'stable': False,
+        'half-life': 705.6 * u.s,
+    },
+
+    'Ho-155': {
+        'atomic number': 67,
+        'mass number': 155,
+        'mass': 154.929104 * u.u,
+        'stable': False,
+        'half-life': 2880.0 * u.s,
+    },
+
+    'Ho-156': {
+        'atomic number': 67,
+        'mass number': 156,
+        'mass': 155.929706 * u.u,
+        'stable': False,
+        'half-life': 3360.0 * u.s,
+    },
+
+    'Ho-157': {
+        'atomic number': 67,
+        'mass number': 157,
+        'mass': 156.928254 * u.u,
+        'stable': False,
+        'half-life': 756.0 * u.s,
+    },
+
+    'Ho-158': {
+        'atomic number': 67,
+        'mass number': 158,
+        'mass': 157.928946 * u.u,
+        'stable': False,
+        'half-life': 678.0 * u.s,
+    },
+
+    'Ho-159': {
+        'atomic number': 67,
+        'mass number': 159,
+        'mass': 158.9277197 * u.u,
+        'stable': False,
+        'half-life': 1983.0 * u.s,
+    },
+
+    'Ho-160': {
+        'atomic number': 67,
+        'mass number': 160,
+        'mass': 159.928737 * u.u,
+        'stable': False,
+        'half-life': 1536.0 * u.s,
+    },
+
+    'Ho-161': {
+        'atomic number': 67,
+        'mass number': 161,
+        'mass': 160.9278615 * u.u,
+        'stable': False,
+        'half-life': 8928.0 * u.s,
+    },
+
+    'Ho-162': {
+        'atomic number': 67,
+        'mass number': 162,
+        'mass': 161.9291023 * u.u,
+        'stable': False,
+        'half-life': 900.0 * u.s,
+    },
+
+    'Ho-163': {
+        'atomic number': 67,
+        'mass number': 163,
+        'mass': 162.928741 * u.u,
+        'stable': False,
+        'half-life': 144215151820.0 * u.s,
+    },
+
+    'Ho-164': {
+        'atomic number': 67,
+        'mass number': 164,
+        'mass': 163.9302403 * u.u,
+        'stable': False,
+        'half-life': 1740.0 * u.s,
+    },
+
+    'Ho-165': {
+        'atomic number': 67,
+        'mass number': 165,
+        'mass': 164.9303288 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Ho-166': {
+        'atomic number': 67,
+        'mass number': 166,
+        'mass': 165.9322909 * u.u,
+        'stable': False,
+        'half-life': 96458.40000000001 * u.s,
+    },
+
+    'Ho-167': {
+        'atomic number': 67,
+        'mass number': 167,
+        'mass': 166.9331385 * u.u,
+        'stable': False,
+        'half-life': 11160.0 * u.s,
+    },
+
+    'Ho-168': {
+        'atomic number': 67,
+        'mass number': 168,
+        'mass': 167.935522 * u.u,
+        'stable': False,
+        'half-life': 179.4 * u.s,
+    },
+
+    'Ho-169': {
+        'atomic number': 67,
+        'mass number': 169,
+        'mass': 168.936878 * u.u,
+        'stable': False,
+        'half-life': 283.2 * u.s,
+    },
+
+    'Ho-170': {
+        'atomic number': 67,
+        'mass number': 170,
+        'mass': 169.939625 * u.u,
+        'stable': False,
+        'half-life': 165.6 * u.s,
+    },
+
+    'Ho-171': {
+        'atomic number': 67,
+        'mass number': 171,
+        'mass': 170.94147 * u.u,
+        'stable': False,
+        'half-life': 53.0 * u.s,
+    },
+
+    'Ho-172': {
+        'atomic number': 67,
+        'mass number': 172,
+        'mass': 171.94473 * u.u,
+        'stable': False,
+        'half-life': 25.0 * u.s,
+    },
+
+    'Ho-173': {
+        'atomic number': 67,
+        'mass number': 173,
+        'mass': 172.94702 * u.u,
+        'stable': False,
+        'half-life': 6.9 * u.s,
+    },
+
+    'Ho-174': {
+        'atomic number': 67,
+        'mass number': 174,
+        'mass': 173.95095 * u.u,
+        'stable': False,
+        'half-life': 3.2 * u.s,
+    },
+
+    'Ho-175': {
+        'atomic number': 67,
+        'mass number': 175,
+        'mass': 174.95362 * u.u,
+        'stable': False,
+        'half-life': 1.88 * u.s,
+    },
+
+    'Er-142': {
+        'atomic number': 68,
+        'mass number': 142,
+        'mass': 141.9701 * u.u,
+        'stable': False,
+        'half-life': '10# us',
+    },
+
+    'Er-143': {
+        'atomic number': 68,
+        'mass number': 143,
+        'mass': 142.96662 * u.u,
+        'stable': False,
+        'half-life': '200# ms',
+    },
+
+    'Er-144': {
+        'atomic number': 68,
+        'mass number': 144,
+        'mass': 143.9607 * u.u,
+        'stable': False,
+        'half-life': '400# ms',
+    },
+
+    'Er-145': {
+        'atomic number': 68,
+        'mass number': 145,
+        'mass': 144.95805 * u.u,
+        'stable': False,
+        'half-life': 0.9 * u.s,
+    },
+
+    'Er-146': {
+        'atomic number': 68,
+        'mass number': 146,
+        'mass': 145.9524184 * u.u,
+        'stable': False,
+        'half-life': 1.7 * u.s,
+    },
+
+    'Er-147': {
+        'atomic number': 68,
+        'mass number': 147,
+        'mass': 146.949964 * u.u,
+        'stable': False,
+        'half-life': 3.2 * u.s,
+    },
+
+    'Er-148': {
+        'atomic number': 68,
+        'mass number': 148,
+        'mass': 147.944735 * u.u,
+        'stable': False,
+        'half-life': 4.6 * u.s,
+    },
+
+    'Er-149': {
+        'atomic number': 68,
+        'mass number': 149,
+        'mass': 148.942306 * u.u,
+        'stable': False,
+        'half-life': 4.0 * u.s,
+    },
+
+    'Er-150': {
+        'atomic number': 68,
+        'mass number': 150,
+        'mass': 149.937916 * u.u,
+        'stable': False,
+        'half-life': 18.5 * u.s,
+    },
+
+    'Er-151': {
+        'atomic number': 68,
+        'mass number': 151,
+        'mass': 150.937449 * u.u,
+        'stable': False,
+        'half-life': 23.5 * u.s,
+    },
+
+    'Er-152': {
+        'atomic number': 68,
+        'mass number': 152,
+        'mass': 151.935057 * u.u,
+        'stable': False,
+        'half-life': 10.3 * u.s,
+    },
+
+    'Er-153': {
+        'atomic number': 68,
+        'mass number': 153,
+        'mass': 152.93508 * u.u,
+        'stable': False,
+        'half-life': 37.1 * u.s,
+    },
+
+    'Er-154': {
+        'atomic number': 68,
+        'mass number': 154,
+        'mass': 153.9327908 * u.u,
+        'stable': False,
+        'half-life': 223.8 * u.s,
+    },
+
+    'Er-155': {
+        'atomic number': 68,
+        'mass number': 155,
+        'mass': 154.9332159 * u.u,
+        'stable': False,
+        'half-life': 318.0 * u.s,
+    },
+
+    'Er-156': {
+        'atomic number': 68,
+        'mass number': 156,
+        'mass': 155.931067 * u.u,
+        'stable': False,
+        'half-life': 1170.0 * u.s,
+    },
+
+    'Er-157': {
+        'atomic number': 68,
+        'mass number': 157,
+        'mass': 156.931949 * u.u,
+        'stable': False,
+        'half-life': 1119.0 * u.s,
+    },
+
+    'Er-158': {
+        'atomic number': 68,
+        'mass number': 158,
+        'mass': 157.929893 * u.u,
+        'stable': False,
+        'half-life': 8244.0 * u.s,
+    },
+
+    'Er-159': {
+        'atomic number': 68,
+        'mass number': 159,
+        'mass': 158.9306918 * u.u,
+        'stable': False,
+        'half-life': 2160.0 * u.s,
+    },
+
+    'Er-160': {
+        'atomic number': 68,
+        'mass number': 160,
+        'mass': 159.929077 * u.u,
+        'stable': False,
+        'half-life': 102888.0 * u.s,
+    },
+
+    'Er-161': {
+        'atomic number': 68,
+        'mass number': 161,
+        'mass': 160.9300046 * u.u,
+        'stable': False,
+        'half-life': 11556.0 * u.s,
+    },
+
+    'Er-162': {
+        'atomic number': 68,
+        'mass number': 162,
+        'mass': 161.9287884 * u.u,
+        'stable': True,
+        'abundance': 0.00139,
+    },
+
+    'Er-163': {
+        'atomic number': 68,
+        'mass number': 163,
+        'mass': 162.9300408 * u.u,
+        'stable': False,
+        'half-life': 4500.0 * u.s,
+    },
+
+    'Er-164': {
+        'atomic number': 68,
+        'mass number': 164,
+        'mass': 163.9292088 * u.u,
+        'stable': True,
+        'abundance': 0.01601,
+    },
+
+    'Er-165': {
+        'atomic number': 68,
+        'mass number': 165,
+        'mass': 164.9307345 * u.u,
+        'stable': False,
+        'half-life': 37296.0 * u.s,
+    },
+
+    'Er-166': {
+        'atomic number': 68,
+        'mass number': 166,
+        'mass': 165.9302995 * u.u,
+        'stable': True,
+        'abundance': 0.33503,
+    },
+
+    'Er-167': {
+        'atomic number': 68,
+        'mass number': 167,
+        'mass': 166.9320546 * u.u,
+        'stable': True,
+        'abundance': 0.22869,
+    },
+
+    'Er-168': {
+        'atomic number': 68,
+        'mass number': 168,
+        'mass': 167.9323767 * u.u,
+        'stable': True,
+        'abundance': 0.26978,
+    },
+
+    'Er-169': {
+        'atomic number': 68,
+        'mass number': 169,
+        'mass': 168.9345968 * u.u,
+        'stable': False,
+        'half-life': 811468.8 * u.s,
+    },
+
+    'Er-170': {
+        'atomic number': 68,
+        'mass number': 170,
+        'mass': 169.9354702 * u.u,
+        'stable': True,
+        'abundance': 0.1491,
+    },
+
+    'Er-171': {
+        'atomic number': 68,
+        'mass number': 171,
+        'mass': 170.9380357 * u.u,
+        'stable': False,
+        'half-life': 27057.6 * u.s,
+    },
+
+    'Er-172': {
+        'atomic number': 68,
+        'mass number': 172,
+        'mass': 171.9393619 * u.u,
+        'stable': False,
+        'half-life': 177480.0 * u.s,
+    },
+
+    'Er-173': {
+        'atomic number': 68,
+        'mass number': 173,
+        'mass': 172.9424 * u.u,
+        'stable': False,
+        'half-life': 86.04 * u.s,
+    },
+
+    'Er-174': {
+        'atomic number': 68,
+        'mass number': 174,
+        'mass': 173.94423 * u.u,
+        'stable': False,
+        'half-life': 192.0 * u.s,
+    },
+
+    'Er-175': {
+        'atomic number': 68,
+        'mass number': 175,
+        'mass': 174.94777 * u.u,
+        'stable': False,
+        'half-life': 72.0 * u.s,
+    },
+
+    'Er-176': {
+        'atomic number': 68,
+        'mass number': 176,
+        'mass': 175.94994 * u.u,
+        'stable': False,
+        'half-life': '20# s',
+    },
+
+    'Er-177': {
+        'atomic number': 68,
+        'mass number': 177,
+        'mass': 176.95399 * u.u,
+        'stable': False,
+        'half-life': '3# s',
+    },
+
+    'Tm-144': {
+        'atomic number': 69,
+        'mass number': 144,
+        'mass': 143.97628 * u.u,
+        'stable': False,
+        'half-life': 2.3e-06 * u.s,
+    },
+
+    'Tm-145': {
+        'atomic number': 69,
+        'mass number': 145,
+        'mass': 144.97039 * u.u,
+        'stable': False,
+        'half-life': 3.17e-06 * u.s,
+    },
+
+    'Tm-146': {
+        'atomic number': 69,
+        'mass number': 146,
+        'mass': 145.96684 * u.u,
+        'stable': False,
+        'half-life': 0.155 * u.s,
+    },
+
+    'Tm-147': {
+        'atomic number': 69,
+        'mass number': 147,
+        'mass': 146.9613799 * u.u,
+        'stable': False,
+        'half-life': 0.58 * u.s,
+    },
+
+    'Tm-148': {
+        'atomic number': 69,
+        'mass number': 148,
+        'mass': 147.958384 * u.u,
+        'stable': False,
+        'half-life': 0.7 * u.s,
+    },
+
+    'Tm-149': {
+        'atomic number': 69,
+        'mass number': 149,
+        'mass': 148.95289 * u.u,
+        'stable': False,
+        'half-life': 0.9 * u.s,
+    },
+
+    'Tm-150': {
+        'atomic number': 69,
+        'mass number': 150,
+        'mass': 149.95009 * u.u,
+        'stable': False,
+        'half-life': '3# s',
+    },
+
+    'Tm-151': {
+        'atomic number': 69,
+        'mass number': 151,
+        'mass': 150.945488 * u.u,
+        'stable': False,
+        'half-life': 4.17 * u.s,
+    },
+
+    'Tm-152': {
+        'atomic number': 69,
+        'mass number': 152,
+        'mass': 151.944422 * u.u,
+        'stable': False,
+        'half-life': 8.0 * u.s,
+    },
+
+    'Tm-153': {
+        'atomic number': 69,
+        'mass number': 153,
+        'mass': 152.94204 * u.u,
+        'stable': False,
+        'half-life': 1.48 * u.s,
+    },
+
+    'Tm-154': {
+        'atomic number': 69,
+        'mass number': 154,
+        'mass': 153.94157 * u.u,
+        'stable': False,
+        'half-life': 8.1 * u.s,
+    },
+
+    'Tm-155': {
+        'atomic number': 69,
+        'mass number': 155,
+        'mass': 154.93921 * u.u,
+        'stable': False,
+        'half-life': 21.6 * u.s,
+    },
+
+    'Tm-156': {
+        'atomic number': 69,
+        'mass number': 156,
+        'mass': 155.938992 * u.u,
+        'stable': False,
+        'half-life': 83.8 * u.s,
+    },
+
+    'Tm-157': {
+        'atomic number': 69,
+        'mass number': 157,
+        'mass': 156.936944 * u.u,
+        'stable': False,
+        'half-life': 217.8 * u.s,
+    },
+
+    'Tm-158': {
+        'atomic number': 69,
+        'mass number': 158,
+        'mass': 157.93698 * u.u,
+        'stable': False,
+        'half-life': 238.8 * u.s,
+    },
+
+    'Tm-159': {
+        'atomic number': 69,
+        'mass number': 159,
+        'mass': 158.934975 * u.u,
+        'stable': False,
+        'half-life': 547.8 * u.s,
+    },
+
+    'Tm-160': {
+        'atomic number': 69,
+        'mass number': 160,
+        'mass': 159.935263 * u.u,
+        'stable': False,
+        'half-life': 564.0 * u.s,
+    },
+
+    'Tm-161': {
+        'atomic number': 69,
+        'mass number': 161,
+        'mass': 160.933549 * u.u,
+        'stable': False,
+        'half-life': 1812.0 * u.s,
+    },
+
+    'Tm-162': {
+        'atomic number': 69,
+        'mass number': 162,
+        'mass': 161.934002 * u.u,
+        'stable': False,
+        'half-life': 1302.0 * u.s,
+    },
+
+    'Tm-163': {
+        'atomic number': 69,
+        'mass number': 163,
+        'mass': 162.9326592 * u.u,
+        'stable': False,
+        'half-life': 6516.0 * u.s,
+    },
+
+    'Tm-164': {
+        'atomic number': 69,
+        'mass number': 164,
+        'mass': 163.933544 * u.u,
+        'stable': False,
+        'half-life': 120.0 * u.s,
+    },
+
+    'Tm-165': {
+        'atomic number': 69,
+        'mass number': 165,
+        'mass': 164.9324431 * u.u,
+        'stable': False,
+        'half-life': 108216.0 * u.s,
+    },
+
+    'Tm-166': {
+        'atomic number': 69,
+        'mass number': 166,
+        'mass': 165.933561 * u.u,
+        'stable': False,
+        'half-life': 27720.0 * u.s,
+    },
+
+    'Tm-167': {
+        'atomic number': 69,
+        'mass number': 167,
+        'mass': 166.9328562 * u.u,
+        'stable': False,
+        'half-life': 799200.0 * u.s,
+    },
+
+    'Tm-168': {
+        'atomic number': 69,
+        'mass number': 168,
+        'mass': 167.9341774 * u.u,
+        'stable': False,
+        'half-life': 8043840.0 * u.s,
+    },
+
+    'Tm-169': {
+        'atomic number': 69,
+        'mass number': 169,
+        'mass': 168.9342179 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Tm-170': {
+        'atomic number': 69,
+        'mass number': 170,
+        'mass': 169.935806 * u.u,
+        'stable': False,
+        'half-life': 11111040.0 * u.s,
+    },
+
+    'Tm-171': {
+        'atomic number': 69,
+        'mass number': 171,
+        'mass': 170.9364339 * u.u,
+        'stable': False,
+        'half-life': 60589297.92 * u.s,
+    },
+
+    'Tm-172': {
+        'atomic number': 69,
+        'mass number': 172,
+        'mass': 171.9384055 * u.u,
+        'stable': False,
+        'half-life': 228960.0 * u.s,
+    },
+
+    'Tm-173': {
+        'atomic number': 69,
+        'mass number': 173,
+        'mass': 172.9396084 * u.u,
+        'stable': False,
+        'half-life': 29664.0 * u.s,
+    },
+
+    'Tm-174': {
+        'atomic number': 69,
+        'mass number': 174,
+        'mass': 173.942173 * u.u,
+        'stable': False,
+        'half-life': 324.0 * u.s,
+    },
+
+    'Tm-175': {
+        'atomic number': 69,
+        'mass number': 175,
+        'mass': 174.943841 * u.u,
+        'stable': False,
+        'half-life': 912.0 * u.s,
+    },
+
+    'Tm-176': {
+        'atomic number': 69,
+        'mass number': 176,
+        'mass': 175.947 * u.u,
+        'stable': False,
+        'half-life': 111.0 * u.s,
+    },
+
+    'Tm-177': {
+        'atomic number': 69,
+        'mass number': 177,
+        'mass': 176.94904 * u.u,
+        'stable': False,
+        'half-life': 90.0 * u.s,
+    },
+
+    'Tm-178': {
+        'atomic number': 69,
+        'mass number': 178,
+        'mass': 177.95264 * u.u,
+        'stable': False,
+        'half-life': '30# s',
+    },
+
+    'Tm-179': {
+        'atomic number': 69,
+        'mass number': 179,
+        'mass': 178.95534 * u.u,
+        'stable': False,
+        'half-life': '20# s',
+    },
+
+    'Yb-148': {
+        'atomic number': 70,
+        'mass number': 148,
+        'mass': 147.96758 * u.u,
+        'stable': False,
+        'half-life': '250# ms',
+    },
+
+    'Yb-149': {
+        'atomic number': 70,
+        'mass number': 149,
+        'mass': 148.96436 * u.u,
+        'stable': False,
+        'half-life': 0.7 * u.s,
+    },
+
+    'Yb-150': {
+        'atomic number': 70,
+        'mass number': 150,
+        'mass': 149.95852 * u.u,
+        'stable': False,
+        'half-life': '700# ms',
+    },
+
+    'Yb-151': {
+        'atomic number': 70,
+        'mass number': 151,
+        'mass': 150.9554 * u.u,
+        'stable': False,
+        'half-life': 1.6 * u.s,
+    },
+
+    'Yb-152': {
+        'atomic number': 70,
+        'mass number': 152,
+        'mass': 151.95027 * u.u,
+        'stable': False,
+        'half-life': 3.03 * u.s,
+    },
+
+    'Yb-153': {
+        'atomic number': 70,
+        'mass number': 153,
+        'mass': 152.94932 * u.u,
+        'stable': False,
+        'half-life': 4.2 * u.s,
+    },
+
+    'Yb-154': {
+        'atomic number': 70,
+        'mass number': 154,
+        'mass': 153.946396 * u.u,
+        'stable': False,
+        'half-life': 0.409 * u.s,
+    },
+
+    'Yb-155': {
+        'atomic number': 70,
+        'mass number': 155,
+        'mass': 154.945783 * u.u,
+        'stable': False,
+        'half-life': 1.793 * u.s,
+    },
+
+    'Yb-156': {
+        'atomic number': 70,
+        'mass number': 156,
+        'mass': 155.942825 * u.u,
+        'stable': False,
+        'half-life': 26.1 * u.s,
+    },
+
+    'Yb-157': {
+        'atomic number': 70,
+        'mass number': 157,
+        'mass': 156.942645 * u.u,
+        'stable': False,
+        'half-life': 38.6 * u.s,
+    },
+
+    'Yb-158': {
+        'atomic number': 70,
+        'mass number': 158,
+        'mass': 157.9398705 * u.u,
+        'stable': False,
+        'half-life': 89.4 * u.s,
+    },
+
+    'Yb-159': {
+        'atomic number': 70,
+        'mass number': 159,
+        'mass': 158.940055 * u.u,
+        'stable': False,
+        'half-life': 100.2 * u.s,
+    },
+
+    'Yb-160': {
+        'atomic number': 70,
+        'mass number': 160,
+        'mass': 159.937557 * u.u,
+        'stable': False,
+        'half-life': 288.0 * u.s,
+    },
+
+    'Yb-161': {
+        'atomic number': 70,
+        'mass number': 161,
+        'mass': 160.937907 * u.u,
+        'stable': False,
+        'half-life': 252.0 * u.s,
+    },
+
+    'Yb-162': {
+        'atomic number': 70,
+        'mass number': 162,
+        'mass': 161.935774 * u.u,
+        'stable': False,
+        'half-life': 1132.2 * u.s,
+    },
+
+    'Yb-163': {
+        'atomic number': 70,
+        'mass number': 163,
+        'mass': 162.93634 * u.u,
+        'stable': False,
+        'half-life': 663.0 * u.s,
+    },
+
+    'Yb-164': {
+        'atomic number': 70,
+        'mass number': 164,
+        'mass': 163.934495 * u.u,
+        'stable': False,
+        'half-life': 4548.0 * u.s,
+    },
+
+    'Yb-165': {
+        'atomic number': 70,
+        'mass number': 165,
+        'mass': 164.93527 * u.u,
+        'stable': False,
+        'half-life': 594.0 * u.s,
+    },
+
+    'Yb-166': {
+        'atomic number': 70,
+        'mass number': 166,
+        'mass': 165.9338747 * u.u,
+        'stable': False,
+        'half-life': 204120.0 * u.s,
+    },
+
+    'Yb-167': {
+        'atomic number': 70,
+        'mass number': 167,
+        'mass': 166.934953 * u.u,
+        'stable': False,
+        'half-life': 1050.0 * u.s,
+    },
+
+    'Yb-168': {
+        'atomic number': 70,
+        'mass number': 168,
+        'mass': 167.9338896 * u.u,
+        'stable': True,
+        'abundance': 0.00123,
+    },
+
+    'Yb-169': {
+        'atomic number': 70,
+        'mass number': 169,
+        'mass': 168.9351825 * u.u,
+        'stable': False,
+        'half-life': 2766070.0799999996 * u.s,
+    },
+
+    'Yb-170': {
+        'atomic number': 70,
+        'mass number': 170,
+        'mass': 169.9347664 * u.u,
+        'stable': True,
+        'abundance': 0.02982,
+    },
+
+    'Yb-171': {
+        'atomic number': 70,
+        'mass number': 171,
+        'mass': 170.9363302 * u.u,
+        'stable': True,
+        'abundance': 0.1409,
+    },
+
+    'Yb-172': {
+        'atomic number': 70,
+        'mass number': 172,
+        'mass': 171.9363859 * u.u,
+        'stable': True,
+        'abundance': 0.2168,
+    },
+
+    'Yb-173': {
+        'atomic number': 70,
+        'mass number': 173,
+        'mass': 172.9382151 * u.u,
+        'stable': True,
+        'abundance': 0.16103,
+    },
+
+    'Yb-174': {
+        'atomic number': 70,
+        'mass number': 174,
+        'mass': 173.9388664 * u.u,
+        'stable': True,
+        'abundance': 0.32026,
+    },
+
+    'Yb-175': {
+        'atomic number': 70,
+        'mass number': 175,
+        'mass': 174.9412808 * u.u,
+        'stable': False,
+        'half-life': 361584.0 * u.s,
+    },
+
+    'Yb-176': {
+        'atomic number': 70,
+        'mass number': 176,
+        'mass': 175.9425764 * u.u,
+        'stable': True,
+        'abundance': 0.12996,
+    },
+
+    'Yb-177': {
+        'atomic number': 70,
+        'mass number': 177,
+        'mass': 176.9452656 * u.u,
+        'stable': False,
+        'half-life': 6879.6 * u.s,
+    },
+
+    'Yb-178': {
+        'atomic number': 70,
+        'mass number': 178,
+        'mass': 177.946651 * u.u,
+        'stable': False,
+        'half-life': 4440.0 * u.s,
+    },
+
+    'Yb-179': {
+        'atomic number': 70,
+        'mass number': 179,
+        'mass': 178.95004 * u.u,
+        'stable': False,
+        'half-life': 480.0 * u.s,
+    },
+
+    'Yb-180': {
+        'atomic number': 70,
+        'mass number': 180,
+        'mass': 179.95212 * u.u,
+        'stable': False,
+        'half-life': 144.0 * u.s,
+    },
+
+    'Yb-181': {
+        'atomic number': 70,
+        'mass number': 181,
+        'mass': 180.95589 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Lu-150': {
+        'atomic number': 71,
+        'mass number': 150,
+        'mass': 149.97355 * u.u,
+        'stable': False,
+        'half-life': 0.045 * u.s,
+    },
+
+    'Lu-151': {
+        'atomic number': 71,
+        'mass number': 151,
+        'mass': 150.96768 * u.u,
+        'stable': False,
+        'half-life': 0.0784 * u.s,
+    },
+
+    'Lu-152': {
+        'atomic number': 71,
+        'mass number': 152,
+        'mass': 151.96412 * u.u,
+        'stable': False,
+        'half-life': 0.65 * u.s,
+    },
+
+    'Lu-153': {
+        'atomic number': 71,
+        'mass number': 153,
+        'mass': 152.95875 * u.u,
+        'stable': False,
+        'half-life': 0.9 * u.s,
+    },
+
+    'Lu-154': {
+        'atomic number': 71,
+        'mass number': 154,
+        'mass': 153.95736 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Lu-155': {
+        'atomic number': 71,
+        'mass number': 155,
+        'mass': 154.954321 * u.u,
+        'stable': False,
+        'half-life': 0.0686 * u.s,
+    },
+
+    'Lu-156': {
+        'atomic number': 71,
+        'mass number': 156,
+        'mass': 155.953033 * u.u,
+        'stable': False,
+        'half-life': 0.494 * u.s,
+    },
+
+    'Lu-157': {
+        'atomic number': 71,
+        'mass number': 157,
+        'mass': 156.950127 * u.u,
+        'stable': False,
+        'half-life': 6.8 * u.s,
+    },
+
+    'Lu-158': {
+        'atomic number': 71,
+        'mass number': 158,
+        'mass': 157.949316 * u.u,
+        'stable': False,
+        'half-life': 10.6 * u.s,
+    },
+
+    'Lu-159': {
+        'atomic number': 71,
+        'mass number': 159,
+        'mass': 158.946636 * u.u,
+        'stable': False,
+        'half-life': 12.1 * u.s,
+    },
+
+    'Lu-160': {
+        'atomic number': 71,
+        'mass number': 160,
+        'mass': 159.946033 * u.u,
+        'stable': False,
+        'half-life': 36.1 * u.s,
+    },
+
+    'Lu-161': {
+        'atomic number': 71,
+        'mass number': 161,
+        'mass': 160.943572 * u.u,
+        'stable': False,
+        'half-life': 77.0 * u.s,
+    },
+
+    'Lu-162': {
+        'atomic number': 71,
+        'mass number': 162,
+        'mass': 161.943283 * u.u,
+        'stable': False,
+        'half-life': 82.2 * u.s,
+    },
+
+    'Lu-163': {
+        'atomic number': 71,
+        'mass number': 163,
+        'mass': 162.941179 * u.u,
+        'stable': False,
+        'half-life': 238.2 * u.s,
+    },
+
+    'Lu-164': {
+        'atomic number': 71,
+        'mass number': 164,
+        'mass': 163.941339 * u.u,
+        'stable': False,
+        'half-life': 188.4 * u.s,
+    },
+
+    'Lu-165': {
+        'atomic number': 71,
+        'mass number': 165,
+        'mass': 164.939407 * u.u,
+        'stable': False,
+        'half-life': 644.4 * u.s,
+    },
+
+    'Lu-166': {
+        'atomic number': 71,
+        'mass number': 166,
+        'mass': 165.939859 * u.u,
+        'stable': False,
+        'half-life': 159.0 * u.s,
+    },
+
+    'Lu-167': {
+        'atomic number': 71,
+        'mass number': 167,
+        'mass': 166.93827 * u.u,
+        'stable': False,
+        'half-life': 3090.0 * u.s,
+    },
+
+    'Lu-168': {
+        'atomic number': 71,
+        'mass number': 168,
+        'mass': 167.938736 * u.u,
+        'stable': False,
+        'half-life': 330.0 * u.s,
+    },
+
+    'Lu-169': {
+        'atomic number': 71,
+        'mass number': 169,
+        'mass': 168.9376441 * u.u,
+        'stable': False,
+        'half-life': 122616.0 * u.s,
+    },
+
+    'Lu-170': {
+        'atomic number': 71,
+        'mass number': 170,
+        'mass': 169.938478 * u.u,
+        'stable': False,
+        'half-life': 173836.8 * u.s,
+    },
+
+    'Lu-171': {
+        'atomic number': 71,
+        'mass number': 171,
+        'mass': 170.937917 * u.u,
+        'stable': False,
+        'half-life': 711936.0 * u.s,
+    },
+
+    'Lu-172': {
+        'atomic number': 71,
+        'mass number': 172,
+        'mass': 171.9390891 * u.u,
+        'stable': False,
+        'half-life': 578880.0 * u.s,
+    },
+
+    'Lu-173': {
+        'atomic number': 71,
+        'mass number': 173,
+        'mass': 172.938934 * u.u,
+        'stable': False,
+        'half-life': 43232988.62 * u.s,
+    },
+
+    'Lu-174': {
+        'atomic number': 71,
+        'mass number': 174,
+        'mass': 173.9403409 * u.u,
+        'stable': False,
+        'half-life': 104453425.06 * u.s,
+    },
+
+    'Lu-175': {
+        'atomic number': 71,
+        'mass number': 175,
+        'mass': 174.9407752 * u.u,
+        'stable': True,
+        'abundance': 0.97401,
+    },
+
+    'Lu-176': {
+        'atomic number': 71,
+        'mass number': 176,
+        'mass': 175.9426897 * u.u,
+        'stable': False,
+        'abundance': 0.02599,
+    },
+
+    'Lu-177': {
+        'atomic number': 71,
+        'mass number': 177,
+        'mass': 176.9437615 * u.u,
+        'stable': False,
+        'half-life': 573696.0 * u.s,
+    },
+
+    'Lu-178': {
+        'atomic number': 71,
+        'mass number': 178,
+        'mass': 177.945958 * u.u,
+        'stable': False,
+        'half-life': 1704.0 * u.s,
+    },
+
+    'Lu-179': {
+        'atomic number': 71,
+        'mass number': 179,
+        'mass': 178.9473309 * u.u,
+        'stable': False,
+        'half-life': 16524.0 * u.s,
+    },
+
+    'Lu-180': {
+        'atomic number': 71,
+        'mass number': 180,
+        'mass': 179.949888 * u.u,
+        'stable': False,
+        'half-life': 342.0 * u.s,
+    },
+
+    'Lu-181': {
+        'atomic number': 71,
+        'mass number': 181,
+        'mass': 180.95191 * u.u,
+        'stable': False,
+        'half-life': 210.0 * u.s,
+    },
+
+    'Lu-182': {
+        'atomic number': 71,
+        'mass number': 182,
+        'mass': 181.95504 * u.u,
+        'stable': False,
+        'half-life': 120.0 * u.s,
+    },
+
+    'Lu-183': {
+        'atomic number': 71,
+        'mass number': 183,
+        'mass': 182.957363 * u.u,
+        'stable': False,
+        'half-life': 58.0 * u.s,
+    },
+
+    'Lu-184': {
+        'atomic number': 71,
+        'mass number': 184,
+        'mass': 183.96091 * u.u,
+        'stable': False,
+        'half-life': 20.0 * u.s,
+    },
+
+    'Lu-185': {
+        'atomic number': 71,
+        'mass number': 185,
+        'mass': 184.96362 * u.u,
+        'stable': False,
+        'half-life': '6# s',
+    },
+
+    'Hf-153': {
+        'atomic number': 72,
+        'mass number': 153,
+        'mass': 152.97069 * u.u,
+        'stable': False,
+        'half-life': '400# ms',
+    },
+
+    'Hf-154': {
+        'atomic number': 72,
+        'mass number': 154,
+        'mass': 153.96486 * u.u,
+        'stable': False,
+        'half-life': 2.0 * u.s,
+    },
+
+    'Hf-155': {
+        'atomic number': 72,
+        'mass number': 155,
+        'mass': 154.96311 * u.u,
+        'stable': False,
+        'half-life': 0.84 * u.s,
+    },
+
+    'Hf-156': {
+        'atomic number': 72,
+        'mass number': 156,
+        'mass': 155.95935 * u.u,
+        'stable': False,
+        'half-life': 0.023 * u.s,
+    },
+
+    'Hf-157': {
+        'atomic number': 72,
+        'mass number': 157,
+        'mass': 156.95824 * u.u,
+        'stable': False,
+        'half-life': 0.115 * u.s,
+    },
+
+    'Hf-158': {
+        'atomic number': 72,
+        'mass number': 158,
+        'mass': 157.954801 * u.u,
+        'stable': False,
+        'half-life': 0.99 * u.s,
+    },
+
+    'Hf-159': {
+        'atomic number': 72,
+        'mass number': 159,
+        'mass': 158.953996 * u.u,
+        'stable': False,
+        'half-life': 5.2 * u.s,
+    },
+
+    'Hf-160': {
+        'atomic number': 72,
+        'mass number': 160,
+        'mass': 159.950691 * u.u,
+        'stable': False,
+        'half-life': 13.6 * u.s,
+    },
+
+    'Hf-161': {
+        'atomic number': 72,
+        'mass number': 161,
+        'mass': 160.950278 * u.u,
+        'stable': False,
+        'half-life': 18.4 * u.s,
+    },
+
+    'Hf-162': {
+        'atomic number': 72,
+        'mass number': 162,
+        'mass': 161.9472148 * u.u,
+        'stable': False,
+        'half-life': 39.4 * u.s,
+    },
+
+    'Hf-163': {
+        'atomic number': 72,
+        'mass number': 163,
+        'mass': 162.947113 * u.u,
+        'stable': False,
+        'half-life': 40.0 * u.s,
+    },
+
+    'Hf-164': {
+        'atomic number': 72,
+        'mass number': 164,
+        'mass': 163.944371 * u.u,
+        'stable': False,
+        'half-life': 111.0 * u.s,
+    },
+
+    'Hf-165': {
+        'atomic number': 72,
+        'mass number': 165,
+        'mass': 164.944567 * u.u,
+        'stable': False,
+        'half-life': 76.0 * u.s,
+    },
+
+    'Hf-166': {
+        'atomic number': 72,
+        'mass number': 166,
+        'mass': 165.94218 * u.u,
+        'stable': False,
+        'half-life': 406.2 * u.s,
+    },
+
+    'Hf-167': {
+        'atomic number': 72,
+        'mass number': 167,
+        'mass': 166.9426 * u.u,
+        'stable': False,
+        'half-life': 123.0 * u.s,
+    },
+
+    'Hf-168': {
+        'atomic number': 72,
+        'mass number': 168,
+        'mass': 167.940568 * u.u,
+        'stable': False,
+        'half-life': 1557.0 * u.s,
+    },
+
+    'Hf-169': {
+        'atomic number': 72,
+        'mass number': 169,
+        'mass': 168.941259 * u.u,
+        'stable': False,
+        'half-life': 194.4 * u.s,
+    },
+
+    'Hf-170': {
+        'atomic number': 72,
+        'mass number': 170,
+        'mass': 169.939609 * u.u,
+        'stable': False,
+        'half-life': 57636.0 * u.s,
+    },
+
+    'Hf-171': {
+        'atomic number': 72,
+        'mass number': 171,
+        'mass': 170.940492 * u.u,
+        'stable': False,
+        'half-life': 43560.0 * u.s,
+    },
+
+    'Hf-172': {
+        'atomic number': 72,
+        'mass number': 172,
+        'mass': 171.93945 * u.u,
+        'stable': False,
+        'half-life': 59011451.62 * u.s,
+    },
+
+    'Hf-173': {
+        'atomic number': 72,
+        'mass number': 173,
+        'mass': 172.940513 * u.u,
+        'stable': False,
+        'half-life': 84960.0 * u.s,
+    },
+
+    'Hf-174': {
+        'atomic number': 72,
+        'mass number': 174,
+        'mass': 173.9400461 * u.u,
+        'stable': False,
+        'abundance': 0.0016,
+    },
+
+    'Hf-175': {
+        'atomic number': 72,
+        'mass number': 175,
+        'mass': 174.9415092 * u.u,
+        'stable': False,
+        'half-life': 6104160.0 * u.s,
+    },
+
+    'Hf-176': {
+        'atomic number': 72,
+        'mass number': 176,
+        'mass': 175.9414076 * u.u,
+        'stable': True,
+        'abundance': 0.0526,
+    },
+
+    'Hf-177': {
+        'atomic number': 72,
+        'mass number': 177,
+        'mass': 176.9432277 * u.u,
+        'stable': True,
+        'abundance': 0.186,
+    },
+
+    'Hf-178': {
+        'atomic number': 72,
+        'mass number': 178,
+        'mass': 177.9437058 * u.u,
+        'stable': True,
+        'abundance': 0.2728,
+    },
+
+    'Hf-179': {
+        'atomic number': 72,
+        'mass number': 179,
+        'mass': 178.9458232 * u.u,
+        'stable': True,
+        'abundance': 0.1362,
+    },
+
+    'Hf-180': {
+        'atomic number': 72,
+        'mass number': 180,
+        'mass': 179.946557 * u.u,
+        'stable': True,
+        'abundance': 0.3508,
+    },
+
+    'Hf-181': {
+        'atomic number': 72,
+        'mass number': 181,
+        'mass': 180.9491083 * u.u,
+        'stable': False,
+        'half-life': 3662496.0 * u.s,
+    },
+
+    'Hf-182': {
+        'atomic number': 72,
+        'mass number': 182,
+        'mass': 181.9505612 * u.u,
+        'stable': False,
+        'half-life': 280856641400000.0 * u.s,
+    },
+
+    'Hf-183': {
+        'atomic number': 72,
+        'mass number': 183,
+        'mass': 182.95353 * u.u,
+        'stable': False,
+        'half-life': 3664.8 * u.s,
+    },
+
+    'Hf-184': {
+        'atomic number': 72,
+        'mass number': 184,
+        'mass': 183.955446 * u.u,
+        'stable': False,
+        'half-life': 14832.0 * u.s,
+    },
+
+    'Hf-185': {
+        'atomic number': 72,
+        'mass number': 185,
+        'mass': 184.958862 * u.u,
+        'stable': False,
+        'half-life': 210.0 * u.s,
+    },
+
+    'Hf-186': {
+        'atomic number': 72,
+        'mass number': 186,
+        'mass': 185.960897 * u.u,
+        'stable': False,
+        'half-life': 156.0 * u.s,
+    },
+
+    'Hf-187': {
+        'atomic number': 72,
+        'mass number': 187,
+        'mass': 186.96477 * u.u,
+        'stable': False,
+        'half-life': '30# s',
+    },
+
+    'Hf-188': {
+        'atomic number': 72,
+        'mass number': 188,
+        'mass': 187.96685 * u.u,
+        'stable': False,
+        'half-life': '20# s',
+    },
+
+    'Hf-189': {
+        'atomic number': 72,
+        'mass number': 189,
+        'mass': 188.97084 * u.u,
+        'stable': False,
+        'half-life': '2# s',
+    },
+
+    'Ta-155': {
+        'atomic number': 73,
+        'mass number': 155,
+        'mass': 154.97424 * u.u,
+        'stable': False,
+        'half-life': 0.0032 * u.s,
+    },
+
+    'Ta-156': {
+        'atomic number': 73,
+        'mass number': 156,
+        'mass': 155.97203 * u.u,
+        'stable': False,
+        'half-life': 0.106 * u.s,
+    },
+
+    'Ta-157': {
+        'atomic number': 73,
+        'mass number': 157,
+        'mass': 156.96818 * u.u,
+        'stable': False,
+        'half-life': 0.0101 * u.s,
+    },
+
+    'Ta-158': {
+        'atomic number': 73,
+        'mass number': 158,
+        'mass': 157.96654 * u.u,
+        'stable': False,
+        'half-life': 0.049 * u.s,
+    },
+
+    'Ta-159': {
+        'atomic number': 73,
+        'mass number': 159,
+        'mass': 158.963023 * u.u,
+        'stable': False,
+        'half-life': 1.04 * u.s,
+    },
+
+    'Ta-160': {
+        'atomic number': 73,
+        'mass number': 160,
+        'mass': 159.961488 * u.u,
+        'stable': False,
+        'half-life': 1.7 * u.s,
+    },
+
+    'Ta-161': {
+        'atomic number': 73,
+        'mass number': 161,
+        'mass': 160.958452 * u.u,
+        'stable': False,
+        'half-life': '3# s',
+    },
+
+    'Ta-162': {
+        'atomic number': 73,
+        'mass number': 162,
+        'mass': 161.957294 * u.u,
+        'stable': False,
+        'half-life': 3.57 * u.s,
+    },
+
+    'Ta-163': {
+        'atomic number': 73,
+        'mass number': 163,
+        'mass': 162.954337 * u.u,
+        'stable': False,
+        'half-life': 10.6 * u.s,
+    },
+
+    'Ta-164': {
+        'atomic number': 73,
+        'mass number': 164,
+        'mass': 163.953534 * u.u,
+        'stable': False,
+        'half-life': 14.2 * u.s,
+    },
+
+    'Ta-165': {
+        'atomic number': 73,
+        'mass number': 165,
+        'mass': 164.950781 * u.u,
+        'stable': False,
+        'half-life': 31.0 * u.s,
+    },
+
+    'Ta-166': {
+        'atomic number': 73,
+        'mass number': 166,
+        'mass': 165.950512 * u.u,
+        'stable': False,
+        'half-life': 34.4 * u.s,
+    },
+
+    'Ta-167': {
+        'atomic number': 73,
+        'mass number': 167,
+        'mass': 166.948093 * u.u,
+        'stable': False,
+        'half-life': 79.8 * u.s,
+    },
+
+    'Ta-168': {
+        'atomic number': 73,
+        'mass number': 168,
+        'mass': 167.948047 * u.u,
+        'stable': False,
+        'half-life': 120.0 * u.s,
+    },
+
+    'Ta-169': {
+        'atomic number': 73,
+        'mass number': 169,
+        'mass': 168.946011 * u.u,
+        'stable': False,
+        'half-life': 294.0 * u.s,
+    },
+
+    'Ta-170': {
+        'atomic number': 73,
+        'mass number': 170,
+        'mass': 169.946175 * u.u,
+        'stable': False,
+        'half-life': 405.6 * u.s,
+    },
+
+    'Ta-171': {
+        'atomic number': 73,
+        'mass number': 171,
+        'mass': 170.944476 * u.u,
+        'stable': False,
+        'half-life': 1398.0 * u.s,
+    },
+
+    'Ta-172': {
+        'atomic number': 73,
+        'mass number': 172,
+        'mass': 171.944895 * u.u,
+        'stable': False,
+        'half-life': 2208.0 * u.s,
+    },
+
+    'Ta-173': {
+        'atomic number': 73,
+        'mass number': 173,
+        'mass': 172.94375 * u.u,
+        'stable': False,
+        'half-life': 11304.0 * u.s,
+    },
+
+    'Ta-174': {
+        'atomic number': 73,
+        'mass number': 174,
+        'mass': 173.944454 * u.u,
+        'stable': False,
+        'half-life': 4104.0 * u.s,
+    },
+
+    'Ta-175': {
+        'atomic number': 73,
+        'mass number': 175,
+        'mass': 174.943737 * u.u,
+        'stable': False,
+        'half-life': 37800.0 * u.s,
+    },
+
+    'Ta-176': {
+        'atomic number': 73,
+        'mass number': 176,
+        'mass': 175.944857 * u.u,
+        'stable': False,
+        'half-life': 29124.0 * u.s,
+    },
+
+    'Ta-177': {
+        'atomic number': 73,
+        'mass number': 177,
+        'mass': 176.9444795 * u.u,
+        'stable': False,
+        'half-life': 203616.0 * u.s,
+    },
+
+    'Ta-178': {
+        'atomic number': 73,
+        'mass number': 178,
+        'mass': 177.945678 * u.u,
+        'stable': False,
+        'half-life': 8496.0 * u.s,
+    },
+
+    'Ta-179': {
+        'atomic number': 73,
+        'mass number': 179,
+        'mass': 178.9459366 * u.u,
+        'stable': False,
+        'half-life': 57433605.32 * u.s,
+    },
+
+    'Ta-180': {
+        'atomic number': 73,
+        'mass number': 180,
+        'mass': 179.9474648 * u.u,
+        'stable': True,
+        'abundance': 0.0001201,
+    },
+
+    'Ta-181': {
+        'atomic number': 73,
+        'mass number': 181,
+        'mass': 180.9479958 * u.u,
+        'stable': True,
+        'abundance': 0.9998799,
+    },
+
+    'Ta-182': {
+        'atomic number': 73,
+        'mass number': 182,
+        'mass': 181.9501519 * u.u,
+        'stable': False,
+        'half-life': 9913536.0 * u.s,
+    },
+
+    'Ta-183': {
+        'atomic number': 73,
+        'mass number': 183,
+        'mass': 182.9513726 * u.u,
+        'stable': False,
+        'half-life': 440640.0 * u.s,
+    },
+
+    'Ta-184': {
+        'atomic number': 73,
+        'mass number': 184,
+        'mass': 183.954008 * u.u,
+        'stable': False,
+        'half-life': 31320.0 * u.s,
+    },
+
+    'Ta-185': {
+        'atomic number': 73,
+        'mass number': 185,
+        'mass': 184.955559 * u.u,
+        'stable': False,
+        'half-life': 2964.0 * u.s,
+    },
+
+    'Ta-186': {
+        'atomic number': 73,
+        'mass number': 186,
+        'mass': 185.958551 * u.u,
+        'stable': False,
+        'half-life': 630.0 * u.s,
+    },
+
+    'Ta-187': {
+        'atomic number': 73,
+        'mass number': 187,
+        'mass': 186.960386 * u.u,
+        'stable': False,
+        'half-life': 138.0 * u.s,
+    },
+
+    'Ta-188': {
+        'atomic number': 73,
+        'mass number': 188,
+        'mass': 187.963916 * u.u,
+        'stable': False,
+        'half-life': 19.6 * u.s,
+    },
+
+    'Ta-189': {
+        'atomic number': 73,
+        'mass number': 189,
+        'mass': 188.96583 * u.u,
+        'stable': False,
+        'half-life': '3# s',
+    },
+
+    'Ta-190': {
+        'atomic number': 73,
+        'mass number': 190,
+        'mass': 189.96939 * u.u,
+        'stable': False,
+        'half-life': 5.3 * u.s,
+    },
+
+    'Ta-191': {
+        'atomic number': 73,
+        'mass number': 191,
+        'mass': 190.97156 * u.u,
+        'stable': False,
+        'half-life': '3# s',
+    },
+
+    'Ta-192': {
+        'atomic number': 73,
+        'mass number': 192,
+        'mass': 191.97514 * u.u,
+        'stable': False,
+        'half-life': 2.2 * u.s,
+    },
+
+    'W-157': {
+        'atomic number': 74,
+        'mass number': 157,
+        'mass': 156.97884 * u.u,
+        'stable': False,
+        'half-life': 0.275 * u.s,
+    },
+
+    'W-158': {
+        'atomic number': 74,
+        'mass number': 158,
+        'mass': 157.97456 * u.u,
+        'stable': False,
+        'half-life': 0.00125 * u.s,
+    },
+
+    'W-159': {
+        'atomic number': 74,
+        'mass number': 159,
+        'mass': 158.97264 * u.u,
+        'stable': False,
+        'half-life': 0.0082 * u.s,
+    },
+
+    'W-160': {
+        'atomic number': 74,
+        'mass number': 160,
+        'mass': 159.96846 * u.u,
+        'stable': False,
+        'half-life': 0.09 * u.s,
+    },
+
+    'W-161': {
+        'atomic number': 74,
+        'mass number': 161,
+        'mass': 160.9672 * u.u,
+        'stable': False,
+        'half-life': 0.409 * u.s,
+    },
+
+    'W-162': {
+        'atomic number': 74,
+        'mass number': 162,
+        'mass': 161.963499 * u.u,
+        'stable': False,
+        'half-life': 1.19 * u.s,
+    },
+
+    'W-163': {
+        'atomic number': 74,
+        'mass number': 163,
+        'mass': 162.962524 * u.u,
+        'stable': False,
+        'half-life': 2.63 * u.s,
+    },
+
+    'W-164': {
+        'atomic number': 74,
+        'mass number': 164,
+        'mass': 163.958961 * u.u,
+        'stable': False,
+        'half-life': 6.3 * u.s,
+    },
+
+    'W-165': {
+        'atomic number': 74,
+        'mass number': 165,
+        'mass': 164.958281 * u.u,
+        'stable': False,
+        'half-life': 5.1 * u.s,
+    },
+
+    'W-166': {
+        'atomic number': 74,
+        'mass number': 166,
+        'mass': 165.955031 * u.u,
+        'stable': False,
+        'half-life': 19.2 * u.s,
+    },
+
+    'W-167': {
+        'atomic number': 74,
+        'mass number': 167,
+        'mass': 166.954805 * u.u,
+        'stable': False,
+        'half-life': 19.9 * u.s,
+    },
+
+    'W-168': {
+        'atomic number': 74,
+        'mass number': 168,
+        'mass': 167.951806 * u.u,
+        'stable': False,
+        'half-life': 50.9 * u.s,
+    },
+
+    'W-169': {
+        'atomic number': 74,
+        'mass number': 169,
+        'mass': 168.951779 * u.u,
+        'stable': False,
+        'half-life': 74.0 * u.s,
+    },
+
+    'W-170': {
+        'atomic number': 74,
+        'mass number': 170,
+        'mass': 169.949232 * u.u,
+        'stable': False,
+        'half-life': 145.2 * u.s,
+    },
+
+    'W-171': {
+        'atomic number': 74,
+        'mass number': 171,
+        'mass': 170.949451 * u.u,
+        'stable': False,
+        'half-life': 142.8 * u.s,
+    },
+
+    'W-172': {
+        'atomic number': 74,
+        'mass number': 172,
+        'mass': 171.947292 * u.u,
+        'stable': False,
+        'half-life': 396.0 * u.s,
+    },
+
+    'W-173': {
+        'atomic number': 74,
+        'mass number': 173,
+        'mass': 172.947689 * u.u,
+        'stable': False,
+        'half-life': 456.0 * u.s,
+    },
+
+    'W-174': {
+        'atomic number': 74,
+        'mass number': 174,
+        'mass': 173.946079 * u.u,
+        'stable': False,
+        'half-life': 1992.0 * u.s,
+    },
+
+    'W-175': {
+        'atomic number': 74,
+        'mass number': 175,
+        'mass': 174.946717 * u.u,
+        'stable': False,
+        'half-life': 2112.0 * u.s,
+    },
+
+    'W-176': {
+        'atomic number': 74,
+        'mass number': 176,
+        'mass': 175.945634 * u.u,
+        'stable': False,
+        'half-life': 9000.0 * u.s,
+    },
+
+    'W-177': {
+        'atomic number': 74,
+        'mass number': 177,
+        'mass': 176.946643 * u.u,
+        'stable': False,
+        'half-life': 7920.0 * u.s,
+    },
+
+    'W-178': {
+        'atomic number': 74,
+        'mass number': 178,
+        'mass': 177.945883 * u.u,
+        'stable': False,
+        'half-life': 1866240.0 * u.s,
+    },
+
+    'W-179': {
+        'atomic number': 74,
+        'mass number': 179,
+        'mass': 178.947077 * u.u,
+        'stable': False,
+        'half-life': 2223.0 * u.s,
+    },
+
+    'W-180': {
+        'atomic number': 74,
+        'mass number': 180,
+        'mass': 179.9467108 * u.u,
+        'stable': False,
+        'abundance': 0.0012,
+    },
+
+    'W-181': {
+        'atomic number': 74,
+        'mass number': 181,
+        'mass': 180.9481978 * u.u,
+        'stable': False,
+        'half-life': 10462608.0 * u.s,
+    },
+
+    'W-182': {
+        'atomic number': 74,
+        'mass number': 182,
+        'mass': 181.94820394 * u.u,
+        'stable': True,
+        'abundance': 0.265,
+    },
+
+    'W-183': {
+        'atomic number': 74,
+        'mass number': 183,
+        'mass': 182.95022275 * u.u,
+        'stable': True,
+        'abundance': 0.1431,
+    },
+
+    'W-184': {
+        'atomic number': 74,
+        'mass number': 184,
+        'mass': 183.95093092 * u.u,
+        'stable': True,
+        'abundance': 0.3064,
+    },
+
+    'W-185': {
+        'atomic number': 74,
+        'mass number': 185,
+        'mass': 184.95341897 * u.u,
+        'stable': False,
+        'half-life': 6488640.0 * u.s,
+    },
+
+    'W-186': {
+        'atomic number': 74,
+        'mass number': 186,
+        'mass': 185.9543628 * u.u,
+        'stable': True,
+        'abundance': 0.2843,
+    },
+
+    'W-187': {
+        'atomic number': 74,
+        'mass number': 187,
+        'mass': 186.9571588 * u.u,
+        'stable': False,
+        'half-life': 86400.0 * u.s,
+    },
+
+    'W-188': {
+        'atomic number': 74,
+        'mass number': 188,
+        'mass': 187.9584862 * u.u,
+        'stable': False,
+        'half-life': 6029251.2 * u.s,
+    },
+
+    'W-189': {
+        'atomic number': 74,
+        'mass number': 189,
+        'mass': 188.961763 * u.u,
+        'stable': False,
+        'half-life': 642.0 * u.s,
+    },
+
+    'W-190': {
+        'atomic number': 74,
+        'mass number': 190,
+        'mass': 189.963091 * u.u,
+        'stable': False,
+        'half-life': 1800.0 * u.s,
+    },
+
+    'W-191': {
+        'atomic number': 74,
+        'mass number': 191,
+        'mass': 190.966531 * u.u,
+        'stable': False,
+        'half-life': '45# s',
+    },
+
+    'W-192': {
+        'atomic number': 74,
+        'mass number': 192,
+        'mass': 191.96817 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'W-193': {
+        'atomic number': 74,
+        'mass number': 193,
+        'mass': 192.97178 * u.u,
+        'stable': False,
+        'half-life': '3# s',
+    },
+
+    'W-194': {
+        'atomic number': 74,
+        'mass number': 194,
+        'mass': 193.97367 * u.u,
+        'stable': False,
+        'half-life': '5# s',
+    },
+
+    'Re-159': {
+        'atomic number': 75,
+        'mass number': 159,
+        'mass': 158.98418 * u.u,
+        'stable': False,
+        'half-life': '40# us',
+    },
+
+    'Re-160': {
+        'atomic number': 75,
+        'mass number': 160,
+        'mass': 159.98182 * u.u,
+        'stable': False,
+        'half-life': 0.000611 * u.s,
+    },
+
+    'Re-161': {
+        'atomic number': 75,
+        'mass number': 161,
+        'mass': 160.97757 * u.u,
+        'stable': False,
+        'half-life': 0.00044 * u.s,
+    },
+
+    'Re-162': {
+        'atomic number': 75,
+        'mass number': 162,
+        'mass': 161.97584 * u.u,
+        'stable': False,
+        'half-life': 0.107 * u.s,
+    },
+
+    'Re-163': {
+        'atomic number': 75,
+        'mass number': 163,
+        'mass': 162.97208 * u.u,
+        'stable': False,
+        'half-life': 0.39 * u.s,
+    },
+
+    'Re-164': {
+        'atomic number': 75,
+        'mass number': 164,
+        'mass': 163.970453 * u.u,
+        'stable': False,
+        'half-life': 0.719 * u.s,
+    },
+
+    'Re-165': {
+        'atomic number': 75,
+        'mass number': 165,
+        'mass': 164.967103 * u.u,
+        'stable': False,
+        'half-life': 2.62 * u.s,
+    },
+
+    'Re-166': {
+        'atomic number': 75,
+        'mass number': 166,
+        'mass': 165.965761 * u.u,
+        'stable': False,
+        'half-life': 2.25 * u.s,
+    },
+
+    'Re-167': {
+        'atomic number': 75,
+        'mass number': 167,
+        'mass': 166.962595 * u.u,
+        'stable': False,
+        'half-life': 3.4 * u.s,
+    },
+
+    'Re-168': {
+        'atomic number': 75,
+        'mass number': 168,
+        'mass': 167.961573 * u.u,
+        'stable': False,
+        'half-life': 4.4 * u.s,
+    },
+
+    'Re-169': {
+        'atomic number': 75,
+        'mass number': 169,
+        'mass': 168.958766 * u.u,
+        'stable': False,
+        'half-life': 8.1 * u.s,
+    },
+
+    'Re-170': {
+        'atomic number': 75,
+        'mass number': 170,
+        'mass': 169.95822 * u.u,
+        'stable': False,
+        'half-life': 9.2 * u.s,
+    },
+
+    'Re-171': {
+        'atomic number': 75,
+        'mass number': 171,
+        'mass': 170.955716 * u.u,
+        'stable': False,
+        'half-life': 15.2 * u.s,
+    },
+
+    'Re-172': {
+        'atomic number': 75,
+        'mass number': 172,
+        'mass': 171.95542 * u.u,
+        'stable': False,
+        'half-life': 15.0 * u.s,
+    },
+
+    'Re-173': {
+        'atomic number': 75,
+        'mass number': 173,
+        'mass': 172.953243 * u.u,
+        'stable': False,
+        'half-life': 120.0 * u.s,
+    },
+
+    'Re-174': {
+        'atomic number': 75,
+        'mass number': 174,
+        'mass': 173.953115 * u.u,
+        'stable': False,
+        'half-life': 144.0 * u.s,
+    },
+
+    'Re-175': {
+        'atomic number': 75,
+        'mass number': 175,
+        'mass': 174.951381 * u.u,
+        'stable': False,
+        'half-life': 353.4 * u.s,
+    },
+
+    'Re-176': {
+        'atomic number': 75,
+        'mass number': 176,
+        'mass': 175.951623 * u.u,
+        'stable': False,
+        'half-life': 318.0 * u.s,
+    },
+
+    'Re-177': {
+        'atomic number': 75,
+        'mass number': 177,
+        'mass': 176.950328 * u.u,
+        'stable': False,
+        'half-life': 840.0 * u.s,
+    },
+
+    'Re-178': {
+        'atomic number': 75,
+        'mass number': 178,
+        'mass': 177.950989 * u.u,
+        'stable': False,
+        'half-life': 792.0 * u.s,
+    },
+
+    'Re-179': {
+        'atomic number': 75,
+        'mass number': 179,
+        'mass': 178.949989 * u.u,
+        'stable': False,
+        'half-life': 1170.0 * u.s,
+    },
+
+    'Re-180': {
+        'atomic number': 75,
+        'mass number': 180,
+        'mass': 179.950792 * u.u,
+        'stable': False,
+        'half-life': 147.6 * u.s,
+    },
+
+    'Re-181': {
+        'atomic number': 75,
+        'mass number': 181,
+        'mass': 180.950058 * u.u,
+        'stable': False,
+        'half-life': 71640.0 * u.s,
+    },
+
+    'Re-182': {
+        'atomic number': 75,
+        'mass number': 182,
+        'mass': 181.95121 * u.u,
+        'stable': False,
+        'half-life': 231120.0 * u.s,
+    },
+
+    'Re-183': {
+        'atomic number': 75,
+        'mass number': 183,
+        'mass': 182.9508196 * u.u,
+        'stable': False,
+        'half-life': 6048000.0 * u.s,
+    },
+
+    'Re-184': {
+        'atomic number': 75,
+        'mass number': 184,
+        'mass': 183.9525228 * u.u,
+        'stable': False,
+        'half-life': 3058560.0 * u.s,
+    },
+
+    'Re-185': {
+        'atomic number': 75,
+        'mass number': 185,
+        'mass': 184.9529545 * u.u,
+        'stable': True,
+        'abundance': 0.374,
+    },
+
+    'Re-186': {
+        'atomic number': 75,
+        'mass number': 186,
+        'mass': 185.9549856 * u.u,
+        'stable': False,
+        'half-life': 321292.8 * u.s,
+    },
+
+    'Re-187': {
+        'atomic number': 75,
+        'mass number': 187,
+        'mass': 186.9557501 * u.u,
+        'stable': False,
+        'abundance': 0.626,
+    },
+
+    'Re-188': {
+        'atomic number': 75,
+        'mass number': 188,
+        'mass': 187.9581115 * u.u,
+        'stable': False,
+        'half-life': 61203.600000000006 * u.s,
+    },
+
+    'Re-189': {
+        'atomic number': 75,
+        'mass number': 189,
+        'mass': 188.959226 * u.u,
+        'stable': False,
+        'half-life': 87480.0 * u.s,
+    },
+
+    'Re-190': {
+        'atomic number': 75,
+        'mass number': 190,
+        'mass': 189.961744 * u.u,
+        'stable': False,
+        'half-life': 186.0 * u.s,
+    },
+
+    'Re-191': {
+        'atomic number': 75,
+        'mass number': 191,
+        'mass': 190.963122 * u.u,
+        'stable': False,
+        'half-life': 588.0 * u.s,
+    },
+
+    'Re-192': {
+        'atomic number': 75,
+        'mass number': 192,
+        'mass': 191.966088 * u.u,
+        'stable': False,
+        'half-life': 16.0 * u.s,
+    },
+
+    'Re-193': {
+        'atomic number': 75,
+        'mass number': 193,
+        'mass': 192.967541 * u.u,
+        'stable': False,
+        'half-life': '20# s',
+    },
+
+    'Re-194': {
+        'atomic number': 75,
+        'mass number': 194,
+        'mass': 193.97076 * u.u,
+        'stable': False,
+        'half-life': 5.0 * u.s,
+    },
+
+    'Re-195': {
+        'atomic number': 75,
+        'mass number': 195,
+        'mass': 194.97254 * u.u,
+        'stable': False,
+        'half-life': 6.0 * u.s,
+    },
+
+    'Re-196': {
+        'atomic number': 75,
+        'mass number': 196,
+        'mass': 195.9758 * u.u,
+        'stable': False,
+        'half-life': 2.4 * u.s,
+    },
+
+    'Re-197': {
+        'atomic number': 75,
+        'mass number': 197,
+        'mass': 196.97799 * u.u,
+        'stable': False,
+        'half-life': '300# ms',
+    },
+
+    'Re-198': {
+        'atomic number': 75,
+        'mass number': 198,
+        'mass': 197.9816 * u.u,
+        'stable': False,
+        'half-life': '300# ms',
+    },
+
+    'Os-161': {
+        'atomic number': 76,
+        'mass number': 161,
+        'mass': 160.98903 * u.u,
+        'stable': False,
+        'half-life': 0.00064 * u.s,
+    },
+
+    'Os-162': {
+        'atomic number': 76,
+        'mass number': 162,
+        'mass': 161.98443 * u.u,
+        'stable': False,
+        'half-life': 0.0021 * u.s,
+    },
+
+    'Os-163': {
+        'atomic number': 76,
+        'mass number': 163,
+        'mass': 162.98241 * u.u,
+        'stable': False,
+        'half-life': 0.0055 * u.s,
+    },
+
+    'Os-164': {
+        'atomic number': 76,
+        'mass number': 164,
+        'mass': 163.97802 * u.u,
+        'stable': False,
+        'half-life': 0.021 * u.s,
+    },
+
+    'Os-165': {
+        'atomic number': 76,
+        'mass number': 165,
+        'mass': 164.9766 * u.u,
+        'stable': False,
+        'half-life': 0.071 * u.s,
+    },
+
+    'Os-166': {
+        'atomic number': 76,
+        'mass number': 166,
+        'mass': 165.972692 * u.u,
+        'stable': False,
+        'half-life': 0.213 * u.s,
+    },
+
+    'Os-167': {
+        'atomic number': 76,
+        'mass number': 167,
+        'mass': 166.971549 * u.u,
+        'stable': False,
+        'half-life': 0.839 * u.s,
+    },
+
+    'Os-168': {
+        'atomic number': 76,
+        'mass number': 168,
+        'mass': 167.967808 * u.u,
+        'stable': False,
+        'half-life': 2.1 * u.s,
+    },
+
+    'Os-169': {
+        'atomic number': 76,
+        'mass number': 169,
+        'mass': 168.967018 * u.u,
+        'stable': False,
+        'half-life': 3.46 * u.s,
+    },
+
+    'Os-170': {
+        'atomic number': 76,
+        'mass number': 170,
+        'mass': 169.963578 * u.u,
+        'stable': False,
+        'half-life': 7.37 * u.s,
+    },
+
+    'Os-171': {
+        'atomic number': 76,
+        'mass number': 171,
+        'mass': 170.963174 * u.u,
+        'stable': False,
+        'half-life': 8.3 * u.s,
+    },
+
+    'Os-172': {
+        'atomic number': 76,
+        'mass number': 172,
+        'mass': 171.960017 * u.u,
+        'stable': False,
+        'half-life': 19.2 * u.s,
+    },
+
+    'Os-173': {
+        'atomic number': 76,
+        'mass number': 173,
+        'mass': 172.959808 * u.u,
+        'stable': False,
+        'half-life': 22.4 * u.s,
+    },
+
+    'Os-174': {
+        'atomic number': 76,
+        'mass number': 174,
+        'mass': 173.957064 * u.u,
+        'stable': False,
+        'half-life': 44.0 * u.s,
+    },
+
+    'Os-175': {
+        'atomic number': 76,
+        'mass number': 175,
+        'mass': 174.956945 * u.u,
+        'stable': False,
+        'half-life': 84.0 * u.s,
+    },
+
+    'Os-176': {
+        'atomic number': 76,
+        'mass number': 176,
+        'mass': 175.954806 * u.u,
+        'stable': False,
+        'half-life': 216.0 * u.s,
+    },
+
+    'Os-177': {
+        'atomic number': 76,
+        'mass number': 177,
+        'mass': 176.954966 * u.u,
+        'stable': False,
+        'half-life': 180.0 * u.s,
+    },
+
+    'Os-178': {
+        'atomic number': 76,
+        'mass number': 178,
+        'mass': 177.953254 * u.u,
+        'stable': False,
+        'half-life': 300.0 * u.s,
+    },
+
+    'Os-179': {
+        'atomic number': 76,
+        'mass number': 179,
+        'mass': 178.953817 * u.u,
+        'stable': False,
+        'half-life': 390.0 * u.s,
+    },
+
+    'Os-180': {
+        'atomic number': 76,
+        'mass number': 180,
+        'mass': 179.952375 * u.u,
+        'stable': False,
+        'half-life': 1290.0 * u.s,
+    },
+
+    'Os-181': {
+        'atomic number': 76,
+        'mass number': 181,
+        'mass': 180.953247 * u.u,
+        'stable': False,
+        'half-life': 6300.0 * u.s,
+    },
+
+    'Os-182': {
+        'atomic number': 76,
+        'mass number': 182,
+        'mass': 181.95211 * u.u,
+        'stable': False,
+        'half-life': 78624.0 * u.s,
+    },
+
+    'Os-183': {
+        'atomic number': 76,
+        'mass number': 183,
+        'mass': 182.953125 * u.u,
+        'stable': False,
+        'half-life': 46800.0 * u.s,
+    },
+
+    'Os-184': {
+        'atomic number': 76,
+        'mass number': 184,
+        'mass': 183.9524885 * u.u,
+        'stable': True,
+        'abundance': 0.0002,
+    },
+
+    'Os-185': {
+        'atomic number': 76,
+        'mass number': 185,
+        'mass': 184.9540417 * u.u,
+        'stable': False,
+        'half-life': 8030880.0 * u.s,
+    },
+
+    'Os-186': {
+        'atomic number': 76,
+        'mass number': 186,
+        'mass': 185.953835 * u.u,
+        'stable': False,
+        'abundance': 0.0159,
+    },
+
+    'Os-187': {
+        'atomic number': 76,
+        'mass number': 187,
+        'mass': 186.9557474 * u.u,
+        'stable': True,
+        'abundance': 0.0196,
+    },
+
+    'Os-188': {
+        'atomic number': 76,
+        'mass number': 188,
+        'mass': 187.9558352 * u.u,
+        'stable': True,
+        'abundance': 0.1324,
+    },
+
+    'Os-189': {
+        'atomic number': 76,
+        'mass number': 189,
+        'mass': 188.9581442 * u.u,
+        'stable': True,
+        'abundance': 0.1615,
+    },
+
+    'Os-190': {
+        'atomic number': 76,
+        'mass number': 190,
+        'mass': 189.9584437 * u.u,
+        'stable': True,
+        'abundance': 0.2626,
+    },
+
+    'Os-191': {
+        'atomic number': 76,
+        'mass number': 191,
+        'mass': 190.9609264 * u.u,
+        'stable': False,
+        'half-life': 1295136.0 * u.s,
+    },
+
+    'Os-192': {
+        'atomic number': 76,
+        'mass number': 192,
+        'mass': 191.961477 * u.u,
+        'stable': True,
+        'abundance': 0.4078,
+    },
+
+    'Os-193': {
+        'atomic number': 76,
+        'mass number': 193,
+        'mass': 192.9641479 * u.u,
+        'stable': False,
+        'half-life': 107388.0 * u.s,
+    },
+
+    'Os-194': {
+        'atomic number': 76,
+        'mass number': 194,
+        'mass': 193.9651772 * u.u,
+        'stable': False,
+        'half-life': 189341556.0 * u.s,
+    },
+
+    'Os-195': {
+        'atomic number': 76,
+        'mass number': 195,
+        'mass': 194.968318 * u.u,
+        'stable': False,
+        'half-life': 390.0 * u.s,
+    },
+
+    'Os-196': {
+        'atomic number': 76,
+        'mass number': 196,
+        'mass': 195.969641 * u.u,
+        'stable': False,
+        'half-life': 2094.0 * u.s,
+    },
+
+    'Os-197': {
+        'atomic number': 76,
+        'mass number': 197,
+        'mass': 196.97283 * u.u,
+        'stable': False,
+        'half-life': 168.0 * u.s,
+    },
+
+    'Os-198': {
+        'atomic number': 76,
+        'mass number': 198,
+        'mass': 197.97441 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Os-199': {
+        'atomic number': 76,
+        'mass number': 199,
+        'mass': 198.97801 * u.u,
+        'stable': False,
+        'half-life': 6.0 * u.s,
+    },
+
+    'Os-200': {
+        'atomic number': 76,
+        'mass number': 200,
+        'mass': 199.97984 * u.u,
+        'stable': False,
+        'half-life': 7.0 * u.s,
+    },
+
+    'Os-201': {
+        'atomic number': 76,
+        'mass number': 201,
+        'mass': 200.98364 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Os-202': {
+        'atomic number': 76,
+        'mass number': 202,
+        'mass': 201.98595 * u.u,
+        'stable': False,
+        'half-life': '200# ms',
+    },
+
+    'Ir-164': {
+        'atomic number': 77,
+        'mass number': 164,
+        'mass': 163.99191 * u.u,
+        'stable': False,
+        'half-life': '1# ms',
+    },
+
+    'Ir-165': {
+        'atomic number': 77,
+        'mass number': 165,
+        'mass': 164.9875 * u.u,
+        'stable': False,
+        'half-life': '50# ns',
+    },
+
+    'Ir-166': {
+        'atomic number': 77,
+        'mass number': 166,
+        'mass': 165.98566 * u.u,
+        'stable': False,
+        'half-life': 0.0105 * u.s,
+    },
+
+    'Ir-167': {
+        'atomic number': 77,
+        'mass number': 167,
+        'mass': 166.981666 * u.u,
+        'stable': False,
+        'half-life': 0.0293 * u.s,
+    },
+
+    'Ir-168': {
+        'atomic number': 77,
+        'mass number': 168,
+        'mass': 167.979907 * u.u,
+        'stable': False,
+        'half-life': 0.23 * u.s,
+    },
+
+    'Ir-169': {
+        'atomic number': 77,
+        'mass number': 169,
+        'mass': 168.976298 * u.u,
+        'stable': False,
+        'half-life': 0.353 * u.s,
+    },
+
+    'Ir-170': {
+        'atomic number': 77,
+        'mass number': 170,
+        'mass': 169.974922 * u.u,
+        'stable': False,
+        'half-life': 0.91 * u.s,
+    },
+
+    'Ir-171': {
+        'atomic number': 77,
+        'mass number': 171,
+        'mass': 170.97164 * u.u,
+        'stable': False,
+        'half-life': 3.1 * u.s,
+    },
+
+    'Ir-172': {
+        'atomic number': 77,
+        'mass number': 172,
+        'mass': 171.970607 * u.u,
+        'stable': False,
+        'half-life': 4.4 * u.s,
+    },
+
+    'Ir-173': {
+        'atomic number': 77,
+        'mass number': 173,
+        'mass': 172.967506 * u.u,
+        'stable': False,
+        'half-life': 9.0 * u.s,
+    },
+
+    'Ir-174': {
+        'atomic number': 77,
+        'mass number': 174,
+        'mass': 173.966861 * u.u,
+        'stable': False,
+        'half-life': 7.9 * u.s,
+    },
+
+    'Ir-175': {
+        'atomic number': 77,
+        'mass number': 175,
+        'mass': 174.96415 * u.u,
+        'stable': False,
+        'half-life': 9.0 * u.s,
+    },
+
+    'Ir-176': {
+        'atomic number': 77,
+        'mass number': 176,
+        'mass': 175.96365 * u.u,
+        'stable': False,
+        'half-life': 8.7 * u.s,
+    },
+
+    'Ir-177': {
+        'atomic number': 77,
+        'mass number': 177,
+        'mass': 176.961301 * u.u,
+        'stable': False,
+        'half-life': 30.0 * u.s,
+    },
+
+    'Ir-178': {
+        'atomic number': 77,
+        'mass number': 178,
+        'mass': 177.961082 * u.u,
+        'stable': False,
+        'half-life': 12.0 * u.s,
+    },
+
+    'Ir-179': {
+        'atomic number': 77,
+        'mass number': 179,
+        'mass': 178.95912 * u.u,
+        'stable': False,
+        'half-life': 79.0 * u.s,
+    },
+
+    'Ir-180': {
+        'atomic number': 77,
+        'mass number': 180,
+        'mass': 179.959229 * u.u,
+        'stable': False,
+        'half-life': 90.0 * u.s,
+    },
+
+    'Ir-181': {
+        'atomic number': 77,
+        'mass number': 181,
+        'mass': 180.957625 * u.u,
+        'stable': False,
+        'half-life': 294.0 * u.s,
+    },
+
+    'Ir-182': {
+        'atomic number': 77,
+        'mass number': 182,
+        'mass': 181.958076 * u.u,
+        'stable': False,
+        'half-life': 900.0 * u.s,
+    },
+
+    'Ir-183': {
+        'atomic number': 77,
+        'mass number': 183,
+        'mass': 182.95684 * u.u,
+        'stable': False,
+        'half-life': 3480.0 * u.s,
+    },
+
+    'Ir-184': {
+        'atomic number': 77,
+        'mass number': 184,
+        'mass': 183.957476 * u.u,
+        'stable': False,
+        'half-life': 11124.0 * u.s,
+    },
+
+    'Ir-185': {
+        'atomic number': 77,
+        'mass number': 185,
+        'mass': 184.956698 * u.u,
+        'stable': False,
+        'half-life': 51840.0 * u.s,
+    },
+
+    'Ir-186': {
+        'atomic number': 77,
+        'mass number': 186,
+        'mass': 185.957944 * u.u,
+        'stable': False,
+        'half-life': 59904.0 * u.s,
+    },
+
+    'Ir-187': {
+        'atomic number': 77,
+        'mass number': 187,
+        'mass': 186.957542 * u.u,
+        'stable': False,
+        'half-life': 37800.0 * u.s,
+    },
+
+    'Ir-188': {
+        'atomic number': 77,
+        'mass number': 188,
+        'mass': 187.958828 * u.u,
+        'stable': False,
+        'half-life': 149400.0 * u.s,
+    },
+
+    'Ir-189': {
+        'atomic number': 77,
+        'mass number': 189,
+        'mass': 188.958715 * u.u,
+        'stable': False,
+        'half-life': 1140480.0 * u.s,
+    },
+
+    'Ir-190': {
+        'atomic number': 77,
+        'mass number': 190,
+        'mass': 189.9605412 * u.u,
+        'stable': False,
+        'half-life': 1017792.0 * u.s,
+    },
+
+    'Ir-191': {
+        'atomic number': 77,
+        'mass number': 191,
+        'mass': 190.9605893 * u.u,
+        'stable': True,
+        'abundance': 0.373,
+    },
+
+    'Ir-192': {
+        'atomic number': 77,
+        'mass number': 192,
+        'mass': 191.9626002 * u.u,
+        'stable': False,
+        'half-life': 6377184.0 * u.s,
+    },
+
+    'Ir-193': {
+        'atomic number': 77,
+        'mass number': 193,
+        'mass': 192.9629216 * u.u,
+        'stable': True,
+        'abundance': 0.627,
+    },
+
+    'Ir-194': {
+        'atomic number': 77,
+        'mass number': 194,
+        'mass': 193.9650735 * u.u,
+        'stable': False,
+        'half-life': 69408.0 * u.s,
+    },
+
+    'Ir-195': {
+        'atomic number': 77,
+        'mass number': 195,
+        'mass': 194.9659747 * u.u,
+        'stable': False,
+        'half-life': 8244.0 * u.s,
+    },
+
+    'Ir-196': {
+        'atomic number': 77,
+        'mass number': 196,
+        'mass': 195.968397 * u.u,
+        'stable': False,
+        'half-life': 52.0 * u.s,
+    },
+
+    'Ir-197': {
+        'atomic number': 77,
+        'mass number': 197,
+        'mass': 196.969655 * u.u,
+        'stable': False,
+        'half-life': 348.0 * u.s,
+    },
+
+    'Ir-198': {
+        'atomic number': 77,
+        'mass number': 198,
+        'mass': 197.97228 * u.u,
+        'stable': False,
+        'half-life': 8.0 * u.s,
+    },
+
+    'Ir-199': {
+        'atomic number': 77,
+        'mass number': 199,
+        'mass': 198.973805 * u.u,
+        'stable': False,
+        'half-life': 7.0 * u.s,
+    },
+
+    'Ir-200': {
+        'atomic number': 77,
+        'mass number': 200,
+        'mass': 199.9768 * u.u,
+        'stable': False,
+        'half-life': 43.0 * u.s,
+    },
+
+    'Ir-201': {
+        'atomic number': 77,
+        'mass number': 201,
+        'mass': 200.97864 * u.u,
+        'stable': False,
+        'half-life': 21.0 * u.s,
+    },
+
+    'Ir-202': {
+        'atomic number': 77,
+        'mass number': 202,
+        'mass': 201.98199 * u.u,
+        'stable': False,
+        'half-life': 11.0 * u.s,
+    },
+
+    'Ir-203': {
+        'atomic number': 77,
+        'mass number': 203,
+        'mass': 202.98423 * u.u,
+        'stable': False,
+        'half-life': '6# s',
+    },
+
+    'Ir-204': {
+        'atomic number': 77,
+        'mass number': 204,
+        'mass': 203.9896 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Pt-166': {
+        'atomic number': 78,
+        'mass number': 166,
+        'mass': 165.99486 * u.u,
+        'stable': False,
+        'half-life': 0.0003 * u.s,
+    },
+
+    'Pt-167': {
+        'atomic number': 78,
+        'mass number': 167,
+        'mass': 166.99269 * u.u,
+        'stable': False,
+        'half-life': 0.0008 * u.s,
+    },
+
+    'Pt-168': {
+        'atomic number': 78,
+        'mass number': 168,
+        'mass': 167.98813 * u.u,
+        'stable': False,
+        'half-life': 0.00202 * u.s,
+    },
+
+    'Pt-169': {
+        'atomic number': 78,
+        'mass number': 169,
+        'mass': 168.98657 * u.u,
+        'stable': False,
+        'half-life': 0.00699 * u.s,
+    },
+
+    'Pt-170': {
+        'atomic number': 78,
+        'mass number': 170,
+        'mass': 169.982496 * u.u,
+        'stable': False,
+        'half-life': 0.01393 * u.s,
+    },
+
+    'Pt-171': {
+        'atomic number': 78,
+        'mass number': 171,
+        'mass': 170.981245 * u.u,
+        'stable': False,
+        'half-life': 0.0455 * u.s,
+    },
+
+    'Pt-172': {
+        'atomic number': 78,
+        'mass number': 172,
+        'mass': 171.977351 * u.u,
+        'stable': False,
+        'half-life': 0.0976 * u.s,
+    },
+
+    'Pt-173': {
+        'atomic number': 78,
+        'mass number': 173,
+        'mass': 172.976443 * u.u,
+        'stable': False,
+        'half-life': 0.382 * u.s,
+    },
+
+    'Pt-174': {
+        'atomic number': 78,
+        'mass number': 174,
+        'mass': 173.97282 * u.u,
+        'stable': False,
+        'half-life': 0.889 * u.s,
+    },
+
+    'Pt-175': {
+        'atomic number': 78,
+        'mass number': 175,
+        'mass': 174.97241 * u.u,
+        'stable': False,
+        'half-life': 2.43 * u.s,
+    },
+
+    'Pt-176': {
+        'atomic number': 78,
+        'mass number': 176,
+        'mass': 175.968938 * u.u,
+        'stable': False,
+        'half-life': 6.33 * u.s,
+    },
+
+    'Pt-177': {
+        'atomic number': 78,
+        'mass number': 177,
+        'mass': 176.96847 * u.u,
+        'stable': False,
+        'half-life': 10.6 * u.s,
+    },
+
+    'Pt-178': {
+        'atomic number': 78,
+        'mass number': 178,
+        'mass': 177.96565 * u.u,
+        'stable': False,
+        'half-life': 20.7 * u.s,
+    },
+
+    'Pt-179': {
+        'atomic number': 78,
+        'mass number': 179,
+        'mass': 178.965359 * u.u,
+        'stable': False,
+        'half-life': 21.2 * u.s,
+    },
+
+    'Pt-180': {
+        'atomic number': 78,
+        'mass number': 180,
+        'mass': 179.963032 * u.u,
+        'stable': False,
+        'half-life': 56.0 * u.s,
+    },
+
+    'Pt-181': {
+        'atomic number': 78,
+        'mass number': 181,
+        'mass': 180.963098 * u.u,
+        'stable': False,
+        'half-life': 52.0 * u.s,
+    },
+
+    'Pt-182': {
+        'atomic number': 78,
+        'mass number': 182,
+        'mass': 181.961172 * u.u,
+        'stable': False,
+        'half-life': 160.2 * u.s,
+    },
+
+    'Pt-183': {
+        'atomic number': 78,
+        'mass number': 183,
+        'mass': 182.961597 * u.u,
+        'stable': False,
+        'half-life': 390.0 * u.s,
+    },
+
+    'Pt-184': {
+        'atomic number': 78,
+        'mass number': 184,
+        'mass': 183.959915 * u.u,
+        'stable': False,
+        'half-life': 1038.0 * u.s,
+    },
+
+    'Pt-185': {
+        'atomic number': 78,
+        'mass number': 185,
+        'mass': 184.960614 * u.u,
+        'stable': False,
+        'half-life': 4254.0 * u.s,
+    },
+
+    'Pt-186': {
+        'atomic number': 78,
+        'mass number': 186,
+        'mass': 185.959351 * u.u,
+        'stable': False,
+        'half-life': 7488.0 * u.s,
+    },
+
+    'Pt-187': {
+        'atomic number': 78,
+        'mass number': 187,
+        'mass': 186.960617 * u.u,
+        'stable': False,
+        'half-life': 8460.0 * u.s,
+    },
+
+    'Pt-188': {
+        'atomic number': 78,
+        'mass number': 188,
+        'mass': 187.9593889 * u.u,
+        'stable': False,
+        'half-life': 881280.0 * u.s,
+    },
+
+    'Pt-189': {
+        'atomic number': 78,
+        'mass number': 189,
+        'mass': 188.960831 * u.u,
+        'stable': False,
+        'half-life': 39132.0 * u.s,
+    },
+
+    'Pt-190': {
+        'atomic number': 78,
+        'mass number': 190,
+        'mass': 189.9599297 * u.u,
+        'stable': False,
+        'abundance': 0.00012,
+    },
+
+    'Pt-191': {
+        'atomic number': 78,
+        'mass number': 191,
+        'mass': 190.9616729 * u.u,
+        'stable': False,
+        'half-life': 244512.0 * u.s,
+    },
+
+    'Pt-192': {
+        'atomic number': 78,
+        'mass number': 192,
+        'mass': 191.9610387 * u.u,
+        'stable': True,
+        'abundance': 0.00782,
+    },
+
+    'Pt-193': {
+        'atomic number': 78,
+        'mass number': 193,
+        'mass': 192.9629824 * u.u,
+        'stable': False,
+        'half-life': 1577846300.0 * u.s,
+    },
+
+    'Pt-194': {
+        'atomic number': 78,
+        'mass number': 194,
+        'mass': 193.9626809 * u.u,
+        'stable': True,
+        'abundance': 0.3286,
+    },
+
+    'Pt-195': {
+        'atomic number': 78,
+        'mass number': 195,
+        'mass': 194.9647917 * u.u,
+        'stable': True,
+        'abundance': 0.3378,
+    },
+
+    'Pt-196': {
+        'atomic number': 78,
+        'mass number': 196,
+        'mass': 195.96495209 * u.u,
+        'stable': True,
+        'abundance': 0.2521,
+    },
+
+    'Pt-197': {
+        'atomic number': 78,
+        'mass number': 197,
+        'mass': 196.96734069 * u.u,
+        'stable': False,
+        'half-life': 71609.4 * u.s,
+    },
+
+    'Pt-198': {
+        'atomic number': 78,
+        'mass number': 198,
+        'mass': 197.9678949 * u.u,
+        'stable': True,
+        'abundance': 0.07356,
+    },
+
+    'Pt-199': {
+        'atomic number': 78,
+        'mass number': 199,
+        'mass': 198.9705952 * u.u,
+        'stable': False,
+        'half-life': 1848.0 * u.s,
+    },
+
+    'Pt-200': {
+        'atomic number': 78,
+        'mass number': 200,
+        'mass': 199.971443 * u.u,
+        'stable': False,
+        'half-life': 45360.0 * u.s,
+    },
+
+    'Pt-201': {
+        'atomic number': 78,
+        'mass number': 201,
+        'mass': 200.974513 * u.u,
+        'stable': False,
+        'half-life': 150.0 * u.s,
+    },
+
+    'Pt-202': {
+        'atomic number': 78,
+        'mass number': 202,
+        'mass': 201.975639 * u.u,
+        'stable': False,
+        'half-life': 158400.0 * u.s,
+    },
+
+    'Pt-203': {
+        'atomic number': 78,
+        'mass number': 203,
+        'mass': 202.97893 * u.u,
+        'stable': False,
+        'half-life': 22.0 * u.s,
+    },
+
+    'Pt-204': {
+        'atomic number': 78,
+        'mass number': 204,
+        'mass': 203.98076 * u.u,
+        'stable': False,
+        'half-life': 10.3 * u.s,
+    },
+
+    'Pt-205': {
+        'atomic number': 78,
+        'mass number': 205,
+        'mass': 204.98608 * u.u,
+        'stable': False,
+        'half-life': '5# s',
+    },
+
+    'Pt-206': {
+        'atomic number': 78,
+        'mass number': 206,
+        'mass': 205.98966 * u.u,
+        'stable': False,
+        'half-life': '5# s',
+    },
+
+    'Au-169': {
+        'atomic number': 79,
+        'mass number': 169,
+        'mass': 168.99808 * u.u,
+        'stable': False,
+        'half-life': '150# us',
+    },
+
+    'Au-170': {
+        'atomic number': 79,
+        'mass number': 170,
+        'mass': 169.99597 * u.u,
+        'stable': False,
+        'half-life': 0.00029 * u.s,
+    },
+
+    'Au-171': {
+        'atomic number': 79,
+        'mass number': 171,
+        'mass': 170.991876 * u.u,
+        'stable': False,
+        'half-life': 2.23e-05 * u.s,
+    },
+
+    'Au-172': {
+        'atomic number': 79,
+        'mass number': 172,
+        'mass': 171.989942 * u.u,
+        'stable': False,
+        'half-life': 0.028 * u.s,
+    },
+
+    'Au-173': {
+        'atomic number': 79,
+        'mass number': 173,
+        'mass': 172.986241 * u.u,
+        'stable': False,
+        'half-life': 0.0255 * u.s,
+    },
+
+    'Au-174': {
+        'atomic number': 79,
+        'mass number': 174,
+        'mass': 173.984717 * u.u,
+        'stable': False,
+        'half-life': 0.139 * u.s,
+    },
+
+    'Au-175': {
+        'atomic number': 79,
+        'mass number': 175,
+        'mass': 174.981304 * u.u,
+        'stable': False,
+        'half-life': 0.202 * u.s,
+    },
+
+    'Au-176': {
+        'atomic number': 79,
+        'mass number': 176,
+        'mass': 175.98025 * u.u,
+        'stable': False,
+        'half-life': 1.05 * u.s,
+    },
+
+    'Au-177': {
+        'atomic number': 79,
+        'mass number': 177,
+        'mass': 176.97687 * u.u,
+        'stable': False,
+        'half-life': 1.46 * u.s,
+    },
+
+    'Au-178': {
+        'atomic number': 79,
+        'mass number': 178,
+        'mass': 177.976032 * u.u,
+        'stable': False,
+        'half-life': 2.6 * u.s,
+    },
+
+    'Au-179': {
+        'atomic number': 79,
+        'mass number': 179,
+        'mass': 178.973174 * u.u,
+        'stable': False,
+        'half-life': 7.1 * u.s,
+    },
+
+    'Au-180': {
+        'atomic number': 79,
+        'mass number': 180,
+        'mass': 179.972523 * u.u,
+        'stable': False,
+        'half-life': 8.4 * u.s,
+    },
+
+    'Au-181': {
+        'atomic number': 79,
+        'mass number': 181,
+        'mass': 180.970079 * u.u,
+        'stable': False,
+        'half-life': 13.7 * u.s,
+    },
+
+    'Au-182': {
+        'atomic number': 79,
+        'mass number': 182,
+        'mass': 181.969618 * u.u,
+        'stable': False,
+        'half-life': 15.5 * u.s,
+    },
+
+    'Au-183': {
+        'atomic number': 79,
+        'mass number': 183,
+        'mass': 182.967591 * u.u,
+        'stable': False,
+        'half-life': 42.8 * u.s,
+    },
+
+    'Au-184': {
+        'atomic number': 79,
+        'mass number': 184,
+        'mass': 183.967452 * u.u,
+        'stable': False,
+        'half-life': 20.6 * u.s,
+    },
+
+    'Au-185': {
+        'atomic number': 79,
+        'mass number': 185,
+        'mass': 184.96579 * u.u,
+        'stable': False,
+        'half-life': 255.0 * u.s,
+    },
+
+    'Au-186': {
+        'atomic number': 79,
+        'mass number': 186,
+        'mass': 185.965953 * u.u,
+        'stable': False,
+        'half-life': 642.0 * u.s,
+    },
+
+    'Au-187': {
+        'atomic number': 79,
+        'mass number': 187,
+        'mass': 186.964543 * u.u,
+        'stable': False,
+        'half-life': 498.0 * u.s,
+    },
+
+    'Au-188': {
+        'atomic number': 79,
+        'mass number': 188,
+        'mass': 187.965349 * u.u,
+        'stable': False,
+        'half-life': 530.4 * u.s,
+    },
+
+    'Au-189': {
+        'atomic number': 79,
+        'mass number': 189,
+        'mass': 188.963948 * u.u,
+        'stable': False,
+        'half-life': 1722.0 * u.s,
+    },
+
+    'Au-190': {
+        'atomic number': 79,
+        'mass number': 190,
+        'mass': 189.964698 * u.u,
+        'stable': False,
+        'half-life': 2568.0 * u.s,
+    },
+
+    'Au-191': {
+        'atomic number': 79,
+        'mass number': 191,
+        'mass': 190.963702 * u.u,
+        'stable': False,
+        'half-life': 11448.0 * u.s,
+    },
+
+    'Au-192': {
+        'atomic number': 79,
+        'mass number': 192,
+        'mass': 191.964814 * u.u,
+        'stable': False,
+        'half-life': 17784.0 * u.s,
+    },
+
+    'Au-193': {
+        'atomic number': 79,
+        'mass number': 193,
+        'mass': 192.9641373 * u.u,
+        'stable': False,
+        'half-life': 63540.0 * u.s,
+    },
+
+    'Au-194': {
+        'atomic number': 79,
+        'mass number': 194,
+        'mass': 193.9654178 * u.u,
+        'stable': False,
+        'half-life': 136872.0 * u.s,
+    },
+
+    'Au-195': {
+        'atomic number': 79,
+        'mass number': 195,
+        'mass': 194.9650352 * u.u,
+        'stable': False,
+        'half-life': 16078867.200000001 * u.s,
+    },
+
+    'Au-196': {
+        'atomic number': 79,
+        'mass number': 196,
+        'mass': 195.9665699 * u.u,
+        'stable': False,
+        'half-life': 532820.16 * u.s,
+    },
+
+    'Au-197': {
+        'atomic number': 79,
+        'mass number': 197,
+        'mass': 196.96656879 * u.u,
+        'stable': True,
+        'abundance': 1,
+    },
+
+    'Au-198': {
+        'atomic number': 79,
+        'mass number': 198,
+        'mass': 197.96824242 * u.u,
+        'stable': False,
+        'half-life': 232862.688 * u.s,
+    },
+
+    'Au-199': {
+        'atomic number': 79,
+        'mass number': 199,
+        'mass': 198.96876528 * u.u,
+        'stable': False,
+        'half-life': 271209.6 * u.s,
+    },
+
+    'Au-200': {
+        'atomic number': 79,
+        'mass number': 200,
+        'mass': 199.970756 * u.u,
+        'stable': False,
+        'half-life': 2904.0 * u.s,
+    },
+
+    'Au-201': {
+        'atomic number': 79,
+        'mass number': 201,
+        'mass': 200.9716575 * u.u,
+        'stable': False,
+        'half-life': 1560.0 * u.s,
+    },
+
+    'Au-202': {
+        'atomic number': 79,
+        'mass number': 202,
+        'mass': 201.973856 * u.u,
+        'stable': False,
+        'half-life': 28.4 * u.s,
+    },
+
+    'Au-203': {
+        'atomic number': 79,
+        'mass number': 203,
+        'mass': 202.9751544 * u.u,
+        'stable': False,
+        'half-life': 60.0 * u.s,
+    },
+
+    'Au-204': {
+        'atomic number': 79,
+        'mass number': 204,
+        'mass': 203.97783 * u.u,
+        'stable': False,
+        'half-life': 38.3 * u.s,
+    },
+
+    'Au-205': {
+        'atomic number': 79,
+        'mass number': 205,
+        'mass': 204.97985 * u.u,
+        'stable': False,
+        'half-life': 32.5 * u.s,
+    },
+
+    'Au-206': {
+        'atomic number': 79,
+        'mass number': 206,
+        'mass': 205.98474 * u.u,
+        'stable': False,
+        'half-life': 47.0 * u.s,
+    },
+
+    'Au-207': {
+        'atomic number': 79,
+        'mass number': 207,
+        'mass': 206.9884 * u.u,
+        'stable': False,
+        'half-life': '10# s',
+    },
+
+    'Au-208': {
+        'atomic number': 79,
+        'mass number': 208,
+        'mass': 207.99345 * u.u,
+        'stable': False,
+        'half-life': '10# s',
+    },
+
+    'Au-209': {
+        'atomic number': 79,
+        'mass number': 209,
+        'mass': 208.99735 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Au-210': {
+        'atomic number': 79,
+        'mass number': 210,
+        'mass': 210.0025 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Hg-171': {
+        'atomic number': 80,
+        'mass number': 171,
+        'mass': 171.00353 * u.u,
+        'stable': False,
+        'half-life': 7e-05 * u.s,
+    },
+
+    'Hg-172': {
+        'atomic number': 80,
+        'mass number': 172,
+        'mass': 171.99881 * u.u,
+        'stable': False,
+        'half-life': 0.000231 * u.s,
+    },
+
+    'Hg-173': {
+        'atomic number': 80,
+        'mass number': 173,
+        'mass': 172.99709 * u.u,
+        'stable': False,
+        'half-life': 0.0008 * u.s,
+    },
+
+    'Hg-174': {
+        'atomic number': 80,
+        'mass number': 174,
+        'mass': 173.992865 * u.u,
+        'stable': False,
+        'half-life': 0.002 * u.s,
+    },
+
+    'Hg-175': {
+        'atomic number': 80,
+        'mass number': 175,
+        'mass': 174.991441 * u.u,
+        'stable': False,
+        'half-life': 0.0106 * u.s,
+    },
+
+    'Hg-176': {
+        'atomic number': 80,
+        'mass number': 176,
+        'mass': 175.987361 * u.u,
+        'stable': False,
+        'half-life': 0.0203 * u.s,
+    },
+
+    'Hg-177': {
+        'atomic number': 80,
+        'mass number': 177,
+        'mass': 176.986277 * u.u,
+        'stable': False,
+        'half-life': 0.1273 * u.s,
+    },
+
+    'Hg-178': {
+        'atomic number': 80,
+        'mass number': 178,
+        'mass': 177.982484 * u.u,
+        'stable': False,
+        'half-life': 0.2665 * u.s,
+    },
+
+    'Hg-179': {
+        'atomic number': 80,
+        'mass number': 179,
+        'mass': 178.981831 * u.u,
+        'stable': False,
+        'half-life': 1.05 * u.s,
+    },
+
+    'Hg-180': {
+        'atomic number': 80,
+        'mass number': 180,
+        'mass': 179.97826 * u.u,
+        'stable': False,
+        'half-life': 2.59 * u.s,
+    },
+
+    'Hg-181': {
+        'atomic number': 80,
+        'mass number': 181,
+        'mass': 180.977819 * u.u,
+        'stable': False,
+        'half-life': 3.6 * u.s,
+    },
+
+    'Hg-182': {
+        'atomic number': 80,
+        'mass number': 182,
+        'mass': 181.974689 * u.u,
+        'stable': False,
+        'half-life': 10.83 * u.s,
+    },
+
+    'Hg-183': {
+        'atomic number': 80,
+        'mass number': 183,
+        'mass': 182.9744448 * u.u,
+        'stable': False,
+        'half-life': 9.4 * u.s,
+    },
+
+    'Hg-184': {
+        'atomic number': 80,
+        'mass number': 184,
+        'mass': 183.971714 * u.u,
+        'stable': False,
+        'half-life': 30.87 * u.s,
+    },
+
+    'Hg-185': {
+        'atomic number': 80,
+        'mass number': 185,
+        'mass': 184.971899 * u.u,
+        'stable': False,
+        'half-life': 49.1 * u.s,
+    },
+
+    'Hg-186': {
+        'atomic number': 80,
+        'mass number': 186,
+        'mass': 185.969362 * u.u,
+        'stable': False,
+        'half-life': 82.8 * u.s,
+    },
+
+    'Hg-187': {
+        'atomic number': 80,
+        'mass number': 187,
+        'mass': 186.969814 * u.u,
+        'stable': False,
+        'half-life': 114.0 * u.s,
+    },
+
+    'Hg-188': {
+        'atomic number': 80,
+        'mass number': 188,
+        'mass': 187.967567 * u.u,
+        'stable': False,
+        'half-life': 195.0 * u.s,
+    },
+
+    'Hg-189': {
+        'atomic number': 80,
+        'mass number': 189,
+        'mass': 188.968195 * u.u,
+        'stable': False,
+        'half-life': 456.0 * u.s,
+    },
+
+    'Hg-190': {
+        'atomic number': 80,
+        'mass number': 190,
+        'mass': 189.966323 * u.u,
+        'stable': False,
+        'half-life': 1200.0 * u.s,
+    },
+
+    'Hg-191': {
+        'atomic number': 80,
+        'mass number': 191,
+        'mass': 190.967157 * u.u,
+        'stable': False,
+        'half-life': 2940.0 * u.s,
+    },
+
+    'Hg-192': {
+        'atomic number': 80,
+        'mass number': 192,
+        'mass': 191.965635 * u.u,
+        'stable': False,
+        'half-life': 17460.0 * u.s,
+    },
+
+    'Hg-193': {
+        'atomic number': 80,
+        'mass number': 193,
+        'mass': 192.966653 * u.u,
+        'stable': False,
+        'half-life': 13680.0 * u.s,
+    },
+
+    'Hg-194': {
+        'atomic number': 80,
+        'mass number': 194,
+        'mass': 193.9654491 * u.u,
+        'stable': False,
+        'half-life': 14105945922.0 * u.s,
+    },
+
+    'Hg-195': {
+        'atomic number': 80,
+        'mass number': 195,
+        'mass': 194.966721 * u.u,
+        'stable': False,
+        'half-life': 38484.0 * u.s,
+    },
+
+    'Hg-196': {
+        'atomic number': 80,
+        'mass number': 196,
+        'mass': 195.9658326 * u.u,
+        'stable': True,
+        'abundance': 0.0015,
+    },
+
+    'Hg-197': {
+        'atomic number': 80,
+        'mass number': 197,
+        'mass': 196.9672128 * u.u,
+        'stable': False,
+        'half-life': 233784.0 * u.s,
+    },
+
+    'Hg-198': {
+        'atomic number': 80,
+        'mass number': 198,
+        'mass': 197.9667686 * u.u,
+        'stable': True,
+        'abundance': 0.0997,
+    },
+
+    'Hg-199': {
+        'atomic number': 80,
+        'mass number': 199,
+        'mass': 198.96828064 * u.u,
+        'stable': True,
+        'abundance': 0.1687,
+    },
+
+    'Hg-200': {
+        'atomic number': 80,
+        'mass number': 200,
+        'mass': 199.96832659 * u.u,
+        'stable': True,
+        'abundance': 0.231,
+    },
+
+    'Hg-201': {
+        'atomic number': 80,
+        'mass number': 201,
+        'mass': 200.97030284 * u.u,
+        'stable': True,
+        'abundance': 0.1318,
+    },
+
+    'Hg-202': {
+        'atomic number': 80,
+        'mass number': 202,
+        'mass': 201.9706434 * u.u,
+        'stable': True,
+        'abundance': 0.2986,
+    },
+
+    'Hg-203': {
+        'atomic number': 80,
+        'mass number': 203,
+        'mass': 202.9728728 * u.u,
+        'stable': False,
+        'half-life': 4027881.6 * u.s,
+    },
+
+    'Hg-204': {
+        'atomic number': 80,
+        'mass number': 204,
+        'mass': 203.97349398 * u.u,
+        'stable': True,
+        'abundance': 0.0687,
+    },
+
+    'Hg-205': {
+        'atomic number': 80,
+        'mass number': 205,
+        'mass': 204.9760734 * u.u,
+        'stable': False,
+        'half-life': 308.4 * u.s,
+    },
+
+    'Hg-206': {
+        'atomic number': 80,
+        'mass number': 206,
+        'mass': 205.977514 * u.u,
+        'stable': False,
+        'half-life': 499.2 * u.s,
+    },
+
+    'Hg-207': {
+        'atomic number': 80,
+        'mass number': 207,
+        'mass': 206.9823 * u.u,
+        'stable': False,
+        'half-life': 174.0 * u.s,
+    },
+
+    'Hg-208': {
+        'atomic number': 80,
+        'mass number': 208,
+        'mass': 207.985759 * u.u,
+        'stable': False,
+        'half-life': 2520.0 * u.s,
+    },
+
+    'Hg-209': {
+        'atomic number': 80,
+        'mass number': 209,
+        'mass': 208.99072 * u.u,
+        'stable': False,
+        'half-life': 38.0 * u.s,
+    },
+
+    'Hg-210': {
+        'atomic number': 80,
+        'mass number': 210,
+        'mass': 209.99424 * u.u,
+        'stable': False,
+        'half-life': 64.0 * u.s,
+    },
+
+    'Hg-211': {
+        'atomic number': 80,
+        'mass number': 211,
+        'mass': 210.99933 * u.u,
+        'stable': False,
+        'half-life': 26.0 * u.s,
+    },
+
+    'Hg-212': {
+        'atomic number': 80,
+        'mass number': 212,
+        'mass': 212.00296 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Hg-213': {
+        'atomic number': 80,
+        'mass number': 213,
+        'mass': 213.00823 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Hg-214': {
+        'atomic number': 80,
+        'mass number': 214,
+        'mass': 214.012 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Hg-215': {
+        'atomic number': 80,
+        'mass number': 215,
+        'mass': 215.0174 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Hg-216': {
+        'atomic number': 80,
+        'mass number': 216,
+        'mass': 216.02132 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'Tl-176': {
+        'atomic number': 81,
+        'mass number': 176,
+        'mass': 176.000624 * u.u,
+        'stable': False,
+        'half-life': 0.0062 * u.s,
+    },
+
+    'Tl-177': {
+        'atomic number': 81,
+        'mass number': 177,
+        'mass': 176.996431 * u.u,
+        'stable': False,
+        'half-life': 0.018 * u.s,
+    },
+
+    'Tl-178': {
+        'atomic number': 81,
+        'mass number': 178,
+        'mass': 177.99485 * u.u,
+        'stable': False,
+        'half-life': 0.255 * u.s,
+    },
+
+    'Tl-179': {
+        'atomic number': 81,
+        'mass number': 179,
+        'mass': 178.991111 * u.u,
+        'stable': False,
+        'half-life': 0.265 * u.s,
+    },
+
+    'Tl-180': {
+        'atomic number': 81,
+        'mass number': 180,
+        'mass': 179.990057 * u.u,
+        'stable': False,
+        'half-life': 1.09 * u.s,
+    },
+
+    'Tl-181': {
+        'atomic number': 81,
+        'mass number': 181,
+        'mass': 180.98626 * u.u,
+        'stable': False,
+        'half-life': 3.2 * u.s,
+    },
+
+    'Tl-182': {
+        'atomic number': 81,
+        'mass number': 182,
+        'mass': 181.985713 * u.u,
+        'stable': False,
+        'half-life': 1.9 * u.s,
+    },
+
+    'Tl-183': {
+        'atomic number': 81,
+        'mass number': 183,
+        'mass': 182.982193 * u.u,
+        'stable': False,
+        'half-life': 6.9 * u.s,
+    },
+
+    'Tl-184': {
+        'atomic number': 81,
+        'mass number': 184,
+        'mass': 183.981886 * u.u,
+        'stable': False,
+        'half-life': 9.5 * u.s,
+    },
+
+    'Tl-185': {
+        'atomic number': 81,
+        'mass number': 185,
+        'mass': 184.978789 * u.u,
+        'stable': False,
+        'half-life': 19.5 * u.s,
+    },
+
+    'Tl-186': {
+        'atomic number': 81,
+        'mass number': 186,
+        'mass': 185.978651 * u.u,
+        'stable': False,
+        'half-life': '40# s',
+    },
+
+    'Tl-187': {
+        'atomic number': 81,
+        'mass number': 187,
+        'mass': 186.9759063 * u.u,
+        'stable': False,
+        'half-life': '~51 s',
+    },
+
+    'Tl-188': {
+        'atomic number': 81,
+        'mass number': 188,
+        'mass': 187.976021 * u.u,
+        'stable': False,
+        'half-life': 71.0 * u.s,
+    },
+
+    'Tl-189': {
+        'atomic number': 81,
+        'mass number': 189,
+        'mass': 188.973588 * u.u,
+        'stable': False,
+        'half-life': 138.0 * u.s,
+    },
+
+    'Tl-190': {
+        'atomic number': 81,
+        'mass number': 190,
+        'mass': 189.973828 * u.u,
+        'stable': False,
+        'half-life': 156.0 * u.s,
+    },
+
+    'Tl-191': {
+        'atomic number': 81,
+        'mass number': 191,
+        'mass': 190.9717842 * u.u,
+        'stable': False,
+        'half-life': '20# m',
+    },
+
+    'Tl-192': {
+        'atomic number': 81,
+        'mass number': 192,
+        'mass': 191.972225 * u.u,
+        'stable': False,
+        'half-life': 576.0 * u.s,
+    },
+
+    'Tl-193': {
+        'atomic number': 81,
+        'mass number': 193,
+        'mass': 192.970502 * u.u,
+        'stable': False,
+        'half-life': 1296.0 * u.s,
+    },
+
+    'Tl-194': {
+        'atomic number': 81,
+        'mass number': 194,
+        'mass': 193.971081 * u.u,
+        'stable': False,
+        'half-life': 1980.0 * u.s,
+    },
+
+    'Tl-195': {
+        'atomic number': 81,
+        'mass number': 195,
+        'mass': 194.969774 * u.u,
+        'stable': False,
+        'half-life': 4176.0 * u.s,
+    },
+
+    'Tl-196': {
+        'atomic number': 81,
+        'mass number': 196,
+        'mass': 195.970481 * u.u,
+        'stable': False,
+        'half-life': 6624.0 * u.s,
+    },
+
+    'Tl-197': {
+        'atomic number': 81,
+        'mass number': 197,
+        'mass': 196.969576 * u.u,
+        'stable': False,
+        'half-life': 10224.0 * u.s,
+    },
+
+    'Tl-198': {
+        'atomic number': 81,
+        'mass number': 198,
+        'mass': 197.970483 * u.u,
+        'stable': False,
+        'half-life': 19080.0 * u.s,
+    },
+
+    'Tl-199': {
+        'atomic number': 81,
+        'mass number': 199,
+        'mass': 198.969877 * u.u,
+        'stable': False,
+        'half-life': 26712.0 * u.s,
+    },
+
+    'Tl-200': {
+        'atomic number': 81,
+        'mass number': 200,
+        'mass': 199.9709633 * u.u,
+        'stable': False,
+        'half-life': 93960.0 * u.s,
+    },
+
+    'Tl-201': {
+        'atomic number': 81,
+        'mass number': 201,
+        'mass': 200.970822 * u.u,
+        'stable': False,
+        'half-life': 263139.83999999997 * u.s,
+    },
+
+    'Tl-202': {
+        'atomic number': 81,
+        'mass number': 202,
+        'mass': 201.972102 * u.u,
+        'stable': False,
+        'half-life': 1077062.4 * u.s,
+    },
+
+    'Tl-203': {
+        'atomic number': 81,
+        'mass number': 203,
+        'mass': 202.9723446 * u.u,
+        'stable': True,
+        'abundance': 0.2952,
+    },
+
+    'Tl-204': {
+        'atomic number': 81,
+        'mass number': 204,
+        'mass': 203.9738639 * u.u,
+        'stable': False,
+        'half-life': 119379851.058 * u.s,
+    },
+
+    'Tl-205': {
+        'atomic number': 81,
+        'mass number': 205,
+        'mass': 204.9744278 * u.u,
+        'stable': True,
+        'abundance': 0.7048,
+    },
+
+    'Tl-206': {
+        'atomic number': 81,
+        'mass number': 206,
+        'mass': 205.9761106 * u.u,
+        'stable': False,
+        'half-life': 252.12 * u.s,
+    },
+
+    'Tl-207': {
+        'atomic number': 81,
+        'mass number': 207,
+        'mass': 206.9774197 * u.u,
+        'stable': False,
+        'half-life': 286.2 * u.s,
+    },
+
+    'Tl-208': {
+        'atomic number': 81,
+        'mass number': 208,
+        'mass': 207.982019 * u.u,
+        'stable': False,
+        'half-life': 183.18 * u.s,
+    },
+
+    'Tl-209': {
+        'atomic number': 81,
+        'mass number': 209,
+        'mass': 208.9853594 * u.u,
+        'stable': False,
+        'half-life': 129.72 * u.s,
+    },
+
+    'Tl-210': {
+        'atomic number': 81,
+        'mass number': 210,
+        'mass': 209.990074 * u.u,
+        'stable': False,
+        'half-life': 78.0 * u.s,
+    },
+
+    'Tl-211': {
+        'atomic number': 81,
+        'mass number': 211,
+        'mass': 210.993475 * u.u,
+        'stable': False,
+        'half-life': 80.0 * u.s,
+    },
+
+    'Tl-212': {
+        'atomic number': 81,
+        'mass number': 212,
+        'mass': 211.99834 * u.u,
+        'stable': False,
+        'half-life': 31.0 * u.s,
+    },
+
+    'Tl-213': {
+        'atomic number': 81,
+        'mass number': 213,
+        'mass': 213.001915 * u.u,
+        'stable': False,
+        'half-life': 24.0 * u.s,
+    },
+
+    'Tl-214': {
+        'atomic number': 81,
+        'mass number': 214,
+        'mass': 214.00694 * u.u,
+        'stable': False,
+        'half-life': 11.0 * u.s,
+    },
+
+    'Tl-215': {
+        'atomic number': 81,
+        'mass number': 215,
+        'mass': 215.01064 * u.u,
+        'stable': False,
+        'half-life': 10.0 * u.s,
+    },
+
+    'Tl-216': {
+        'atomic number': 81,
+        'mass number': 216,
+        'mass': 216.0158 * u.u,
+        'stable': False,
+        'half-life': 6.0 * u.s,
+    },
+
+    'Tl-217': {
+        'atomic number': 81,
+        'mass number': 217,
+        'mass': 217.01966 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Tl-218': {
+        'atomic number': 81,
+        'mass number': 218,
+        'mass': 218.02479 * u.u,
+        'stable': False,
+        'half-life': '200# ms',
+    },
+
+    'Pb-178': {
+        'atomic number': 82,
+        'mass number': 178,
+        'mass': 178.003831 * u.u,
+        'stable': False,
+        'half-life': 0.00023 * u.s,
+    },
+
+    'Pb-179': {
+        'atomic number': 82,
+        'mass number': 179,
+        'mass': 179.002201 * u.u,
+        'stable': False,
+        'half-life': 0.0039 * u.s,
+    },
+
+    'Pb-180': {
+        'atomic number': 82,
+        'mass number': 180,
+        'mass': 179.997928 * u.u,
+        'stable': False,
+        'half-life': 0.0041 * u.s,
+    },
+
+    'Pb-181': {
+        'atomic number': 82,
+        'mass number': 181,
+        'mass': 180.996653 * u.u,
+        'stable': False,
+        'half-life': 0.039 * u.s,
+    },
+
+    'Pb-182': {
+        'atomic number': 82,
+        'mass number': 182,
+        'mass': 181.992672 * u.u,
+        'stable': False,
+        'half-life': 0.055 * u.s,
+    },
+
+    'Pb-183': {
+        'atomic number': 82,
+        'mass number': 183,
+        'mass': 182.991872 * u.u,
+        'stable': False,
+        'half-life': 0.535 * u.s,
+    },
+
+    'Pb-184': {
+        'atomic number': 82,
+        'mass number': 184,
+        'mass': 183.988136 * u.u,
+        'stable': False,
+        'half-life': 0.49 * u.s,
+    },
+
+    'Pb-185': {
+        'atomic number': 82,
+        'mass number': 185,
+        'mass': 184.98761 * u.u,
+        'stable': False,
+        'half-life': 6.3 * u.s,
+    },
+
+    'Pb-186': {
+        'atomic number': 82,
+        'mass number': 186,
+        'mass': 185.984238 * u.u,
+        'stable': False,
+        'half-life': 4.82 * u.s,
+    },
+
+    'Pb-187': {
+        'atomic number': 82,
+        'mass number': 187,
+        'mass': 186.9839109 * u.u,
+        'stable': False,
+        'half-life': 15.2 * u.s,
+    },
+
+    'Pb-188': {
+        'atomic number': 82,
+        'mass number': 188,
+        'mass': 187.980875 * u.u,
+        'stable': False,
+        'half-life': 25.1 * u.s,
+    },
+
+    'Pb-189': {
+        'atomic number': 82,
+        'mass number': 189,
+        'mass': 188.980807 * u.u,
+        'stable': False,
+        'half-life': 39.0 * u.s,
+    },
+
+    'Pb-190': {
+        'atomic number': 82,
+        'mass number': 190,
+        'mass': 189.978082 * u.u,
+        'stable': False,
+        'half-life': 71.0 * u.s,
+    },
+
+    'Pb-191': {
+        'atomic number': 82,
+        'mass number': 191,
+        'mass': 190.978276 * u.u,
+        'stable': False,
+        'half-life': 79.8 * u.s,
+    },
+
+    'Pb-192': {
+        'atomic number': 82,
+        'mass number': 192,
+        'mass': 191.975775 * u.u,
+        'stable': False,
+        'half-life': 210.0 * u.s,
+    },
+
+    'Pb-193': {
+        'atomic number': 82,
+        'mass number': 193,
+        'mass': 192.976173 * u.u,
+        'stable': False,
+        'half-life': '5# m',
+    },
+
+    'Pb-194': {
+        'atomic number': 82,
+        'mass number': 194,
+        'mass': 193.974012 * u.u,
+        'stable': False,
+        'half-life': 642.0 * u.s,
+    },
+
+    'Pb-195': {
+        'atomic number': 82,
+        'mass number': 195,
+        'mass': 194.974543 * u.u,
+        'stable': False,
+        'half-life': '~15 m',
+    },
+
+    'Pb-196': {
+        'atomic number': 82,
+        'mass number': 196,
+        'mass': 195.972774 * u.u,
+        'stable': False,
+        'half-life': 2220.0 * u.s,
+    },
+
+    'Pb-197': {
+        'atomic number': 82,
+        'mass number': 197,
+        'mass': 196.9734312 * u.u,
+        'stable': False,
+        'half-life': 486.0 * u.s,
+    },
+
+    'Pb-198': {
+        'atomic number': 82,
+        'mass number': 198,
+        'mass': 197.972034 * u.u,
+        'stable': False,
+        'half-life': 8640.0 * u.s,
+    },
+
+    'Pb-199': {
+        'atomic number': 82,
+        'mass number': 199,
+        'mass': 198.972913 * u.u,
+        'stable': False,
+        'half-life': 5400.0 * u.s,
+    },
+
+    'Pb-200': {
+        'atomic number': 82,
+        'mass number': 200,
+        'mass': 199.971819 * u.u,
+        'stable': False,
+        'half-life': 77400.0 * u.s,
+    },
+
+    'Pb-201': {
+        'atomic number': 82,
+        'mass number': 201,
+        'mass': 200.972883 * u.u,
+        'stable': False,
+        'half-life': 33588.0 * u.s,
+    },
+
+    'Pb-202': {
+        'atomic number': 82,
+        'mass number': 202,
+        'mass': 201.972152 * u.u,
+        'stable': False,
+        'half-life': 1656738615000.0 * u.s,
+    },
+
+    'Pb-203': {
+        'atomic number': 82,
+        'mass number': 203,
+        'mass': 202.9733911 * u.u,
+        'stable': False,
+        'half-life': 186922.80000000002 * u.s,
+    },
+
+    'Pb-204': {
+        'atomic number': 82,
+        'mass number': 204,
+        'mass': 203.973044 * u.u,
+        'stable': True,
+        'abundance': 0.014,
+    },
+
+    'Pb-205': {
+        'atomic number': 82,
+        'mass number': 205,
+        'mass': 204.9744822 * u.u,
+        'stable': False,
+        'half-life': 545934819800000.0 * u.s,
+    },
+
+    'Pb-206': {
+        'atomic number': 82,
+        'mass number': 206,
+        'mass': 205.9744657 * u.u,
+        'stable': True,
+        'abundance': 0.241,
+    },
+
+    'Pb-207': {
+        'atomic number': 82,
+        'mass number': 207,
+        'mass': 206.9758973 * u.u,
+        'stable': True,
+        'abundance': 0.221,
+    },
+
+    'Pb-208': {
+        'atomic number': 82,
+        'mass number': 208,
+        'mass': 207.9766525 * u.u,
+        'stable': True,
+        'abundance': 0.524,
+    },
+
+    'Pb-209': {
+        'atomic number': 82,
+        'mass number': 209,
+        'mass': 208.9810905 * u.u,
+        'stable': False,
+        'half-life': 11642.4 * u.s,
+    },
+
+    'Pb-210': {
+        'atomic number': 82,
+        'mass number': 210,
+        'mass': 209.9841889 * u.u,
+        'stable': False,
+        'half-life': 700563757.2 * u.s,
+    },
+
+    'Pb-211': {
+        'atomic number': 82,
+        'mass number': 211,
+        'mass': 210.9887371 * u.u,
+        'stable': False,
+        'half-life': 2169.84 * u.s,
+    },
+
+    'Pb-212': {
+        'atomic number': 82,
+        'mass number': 212,
+        'mass': 211.9918977 * u.u,
+        'stable': False,
+        'half-life': 38304.0 * u.s,
+    },
+
+    'Pb-213': {
+        'atomic number': 82,
+        'mass number': 213,
+        'mass': 212.9965629 * u.u,
+        'stable': False,
+        'half-life': 612.0 * u.s,
+    },
+
+    'Pb-214': {
+        'atomic number': 82,
+        'mass number': 214,
+        'mass': 213.9998059 * u.u,
+        'stable': False,
+        'half-life': 1623.6 * u.s,
+    },
+
+    'Pb-215': {
+        'atomic number': 82,
+        'mass number': 215,
+        'mass': 215.00474 * u.u,
+        'stable': False,
+        'half-life': 140.4 * u.s,
+    },
+
+    'Pb-216': {
+        'atomic number': 82,
+        'mass number': 216,
+        'mass': 216.00803 * u.u,
+        'stable': False,
+        'half-life': 99.0 * u.s,
+    },
+
+    'Pb-217': {
+        'atomic number': 82,
+        'mass number': 217,
+        'mass': 217.01314 * u.u,
+        'stable': False,
+        'half-life': 20.0 * u.s,
+    },
+
+    'Pb-218': {
+        'atomic number': 82,
+        'mass number': 218,
+        'mass': 218.01659 * u.u,
+        'stable': False,
+        'half-life': 15.0 * u.s,
+    },
+
+    'Pb-219': {
+        'atomic number': 82,
+        'mass number': 219,
+        'mass': 219.02177 * u.u,
+        'stable': False,
+        'half-life': '10# s',
+    },
+
+    'Pb-220': {
+        'atomic number': 82,
+        'mass number': 220,
+        'mass': 220.02541 * u.u,
+        'stable': False,
+        'half-life': '30# s',
+    },
+
+    'Bi-184': {
+        'atomic number': 83,
+        'mass number': 184,
+        'mass': 184.001275 * u.u,
+        'stable': False,
+        'half-life': 0.0066 * u.s,
+    },
+
+    'Bi-185': {
+        'atomic number': 83,
+        'mass number': 185,
+        'mass': 184.9976 * u.u,
+        'stable': False,
+        'half-life': '2# ms',
+    },
+
+    'Bi-186': {
+        'atomic number': 83,
+        'mass number': 186,
+        'mass': 185.996644 * u.u,
+        'stable': False,
+        'half-life': 0.0148 * u.s,
+    },
+
+    'Bi-187': {
+        'atomic number': 83,
+        'mass number': 187,
+        'mass': 186.993147 * u.u,
+        'stable': False,
+        'half-life': 0.037 * u.s,
+    },
+
+    'Bi-188': {
+        'atomic number': 83,
+        'mass number': 188,
+        'mass': 187.992287 * u.u,
+        'stable': False,
+        'half-life': 0.06 * u.s,
+    },
+
+    'Bi-189': {
+        'atomic number': 83,
+        'mass number': 189,
+        'mass': 188.989195 * u.u,
+        'stable': False,
+        'half-life': 0.658 * u.s,
+    },
+
+    'Bi-190': {
+        'atomic number': 83,
+        'mass number': 190,
+        'mass': 189.988622 * u.u,
+        'stable': False,
+        'half-life': 6.3 * u.s,
+    },
+
+    'Bi-191': {
+        'atomic number': 83,
+        'mass number': 191,
+        'mass': 190.9857866 * u.u,
+        'stable': False,
+        'half-life': 11.7 * u.s,
+    },
+
+    'Bi-192': {
+        'atomic number': 83,
+        'mass number': 192,
+        'mass': 191.985469 * u.u,
+        'stable': False,
+        'half-life': 34.6 * u.s,
+    },
+
+    'Bi-193': {
+        'atomic number': 83,
+        'mass number': 193,
+        'mass': 192.98296 * u.u,
+        'stable': False,
+        'half-life': 63.6 * u.s,
+    },
+
+    'Bi-194': {
+        'atomic number': 83,
+        'mass number': 194,
+        'mass': 193.982785 * u.u,
+        'stable': False,
+        'half-life': 95.0 * u.s,
+    },
+
+    'Bi-195': {
+        'atomic number': 83,
+        'mass number': 195,
+        'mass': 194.9806488 * u.u,
+        'stable': False,
+        'half-life': 183.0 * u.s,
+    },
+
+    'Bi-196': {
+        'atomic number': 83,
+        'mass number': 196,
+        'mass': 195.980667 * u.u,
+        'stable': False,
+        'half-life': 306.0 * u.s,
+    },
+
+    'Bi-197': {
+        'atomic number': 83,
+        'mass number': 197,
+        'mass': 196.9788651 * u.u,
+        'stable': False,
+        'half-life': 559.8 * u.s,
+    },
+
+    'Bi-198': {
+        'atomic number': 83,
+        'mass number': 198,
+        'mass': 197.979206 * u.u,
+        'stable': False,
+        'half-life': 618.0 * u.s,
+    },
+
+    'Bi-199': {
+        'atomic number': 83,
+        'mass number': 199,
+        'mass': 198.977673 * u.u,
+        'stable': False,
+        'half-life': 1620.0 * u.s,
+    },
+
+    'Bi-200': {
+        'atomic number': 83,
+        'mass number': 200,
+        'mass': 199.978131 * u.u,
+        'stable': False,
+        'half-life': 2184.0 * u.s,
+    },
+
+    'Bi-201': {
+        'atomic number': 83,
+        'mass number': 201,
+        'mass': 200.97701 * u.u,
+        'stable': False,
+        'half-life': 6180.0 * u.s,
+    },
+
+    'Bi-202': {
+        'atomic number': 83,
+        'mass number': 202,
+        'mass': 201.977734 * u.u,
+        'stable': False,
+        'half-life': 6192.0 * u.s,
+    },
+
+    'Bi-203': {
+        'atomic number': 83,
+        'mass number': 203,
+        'mass': 202.976893 * u.u,
+        'stable': False,
+        'half-life': 42336.0 * u.s,
+    },
+
+    'Bi-204': {
+        'atomic number': 83,
+        'mass number': 204,
+        'mass': 203.9778361 * u.u,
+        'stable': False,
+        'half-life': 40392.0 * u.s,
+    },
+
+    'Bi-205': {
+        'atomic number': 83,
+        'mass number': 205,
+        'mass': 204.9773867 * u.u,
+        'stable': False,
+        'half-life': 1322784.0 * u.s,
+    },
+
+    'Bi-206': {
+        'atomic number': 83,
+        'mass number': 206,
+        'mass': 205.9784993 * u.u,
+        'stable': False,
+        'half-life': 539395.2 * u.s,
+    },
+
+    'Bi-207': {
+        'atomic number': 83,
+        'mass number': 207,
+        'mass': 206.978471 * u.u,
+        'stable': False,
+        'half-life': 995587200.0 * u.s,
+    },
+
+    'Bi-208': {
+        'atomic number': 83,
+        'mass number': 208,
+        'mass': 207.9797425 * u.u,
+        'stable': False,
+        'half-life': 11612948768000.0 * u.s,
+    },
+
+    'Bi-209': {
+        'atomic number': 83,
+        'mass number': 209,
+        'mass': 208.9803991 * u.u,
+        'stable': False,
+        'abundance': 1,
+    },
+
+    'Bi-210': {
+        'atomic number': 83,
+        'mass number': 210,
+        'mass': 209.9841207 * u.u,
+        'stable': False,
+        'half-life': 433036.8 * u.s,
+    },
+
+    'Bi-211': {
+        'atomic number': 83,
+        'mass number': 211,
+        'mass': 210.9872697 * u.u,
+        'stable': False,
+        'half-life': 128.4 * u.s,
+    },
+
+    'Bi-212': {
+        'atomic number': 83,
+        'mass number': 212,
+        'mass': 211.991286 * u.u,
+        'stable': False,
+        'half-life': 3633.0 * u.s,
+    },
+
+    'Bi-213': {
+        'atomic number': 83,
+        'mass number': 213,
+        'mass': 212.9943851 * u.u,
+        'stable': False,
+        'half-life': 2736.6 * u.s,
+    },
+
+    'Bi-214': {
+        'atomic number': 83,
+        'mass number': 214,
+        'mass': 213.998712 * u.u,
+        'stable': False,
+        'half-life': 1194.0 * u.s,
+    },
+
+    'Bi-215': {
+        'atomic number': 83,
+        'mass number': 215,
+        'mass': 215.00177 * u.u,
+        'stable': False,
+        'half-life': 456.0 * u.s,
+    },
+
+    'Bi-216': {
+        'atomic number': 83,
+        'mass number': 216,
+        'mass': 216.006306 * u.u,
+        'stable': False,
+        'half-life': 135.0 * u.s,
+    },
+
+    'Bi-217': {
+        'atomic number': 83,
+        'mass number': 217,
+        'mass': 217.009372 * u.u,
+        'stable': False,
+        'half-life': 98.5 * u.s,
+    },
+
+    'Bi-218': {
+        'atomic number': 83,
+        'mass number': 218,
+        'mass': 218.014188 * u.u,
+        'stable': False,
+        'half-life': 33.0 * u.s,
+    },
+
+    'Bi-219': {
+        'atomic number': 83,
+        'mass number': 219,
+        'mass': 219.01748 * u.u,
+        'stable': False,
+        'half-life': 8.7 * u.s,
+    },
+
+    'Bi-220': {
+        'atomic number': 83,
+        'mass number': 220,
+        'mass': 220.02235 * u.u,
+        'stable': False,
+        'half-life': 9.5 * u.s,
+    },
+
+    'Bi-221': {
+        'atomic number': 83,
+        'mass number': 221,
+        'mass': 221.02587 * u.u,
+        'stable': False,
+        'half-life': '5# s',
+    },
+
+    'Bi-222': {
+        'atomic number': 83,
+        'mass number': 222,
+        'mass': 222.03078 * u.u,
+        'stable': False,
+        'half-life': '2# s',
+    },
+
+    'Bi-223': {
+        'atomic number': 83,
+        'mass number': 223,
+        'mass': 223.0345 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Bi-224': {
+        'atomic number': 83,
+        'mass number': 224,
+        'mass': 224.03947 * u.u,
+        'stable': False,
+        'half-life': '300# ms',
+    },
+
+    'Po-186': {
+        'atomic number': 84,
+        'mass number': 186,
+        'mass': 186.004393 * u.u,
+        'stable': False,
+        'half-life': 3.4e-05 * u.s,
+    },
+
+    'Po-187': {
+        'atomic number': 84,
+        'mass number': 187,
+        'mass': 187.003041 * u.u,
+        'stable': False,
+        'half-life': 0.0014 * u.s,
+    },
+
+    'Po-188': {
+        'atomic number': 84,
+        'mass number': 188,
+        'mass': 187.999416 * u.u,
+        'stable': False,
+        'half-life': 0.000275 * u.s,
+    },
+
+    'Po-189': {
+        'atomic number': 84,
+        'mass number': 189,
+        'mass': 188.998473 * u.u,
+        'stable': False,
+        'half-life': 0.0038 * u.s,
+    },
+
+    'Po-190': {
+        'atomic number': 84,
+        'mass number': 190,
+        'mass': 189.995101 * u.u,
+        'stable': False,
+        'half-life': 0.00246 * u.s,
+    },
+
+    'Po-191': {
+        'atomic number': 84,
+        'mass number': 191,
+        'mass': 190.9945585 * u.u,
+        'stable': False,
+        'half-life': 0.022 * u.s,
+    },
+
+    'Po-192': {
+        'atomic number': 84,
+        'mass number': 192,
+        'mass': 191.991336 * u.u,
+        'stable': False,
+        'half-life': 0.0322 * u.s,
+    },
+
+    'Po-193': {
+        'atomic number': 84,
+        'mass number': 193,
+        'mass': 192.991026 * u.u,
+        'stable': False,
+        'half-life': 0.388 * u.s,
+    },
+
+    'Po-194': {
+        'atomic number': 84,
+        'mass number': 194,
+        'mass': 193.988186 * u.u,
+        'stable': False,
+        'half-life': 0.392 * u.s,
+    },
+
+    'Po-195': {
+        'atomic number': 84,
+        'mass number': 195,
+        'mass': 194.988126 * u.u,
+        'stable': False,
+        'half-life': 4.64 * u.s,
+    },
+
+    'Po-196': {
+        'atomic number': 84,
+        'mass number': 196,
+        'mass': 195.985526 * u.u,
+        'stable': False,
+        'half-life': 5.56 * u.s,
+    },
+
+    'Po-197': {
+        'atomic number': 84,
+        'mass number': 197,
+        'mass': 196.98566 * u.u,
+        'stable': False,
+        'half-life': 53.6 * u.s,
+    },
+
+    'Po-198': {
+        'atomic number': 84,
+        'mass number': 198,
+        'mass': 197.983389 * u.u,
+        'stable': False,
+        'half-life': 105.6 * u.s,
+    },
+
+    'Po-199': {
+        'atomic number': 84,
+        'mass number': 199,
+        'mass': 198.983667 * u.u,
+        'stable': False,
+        'half-life': 328.2 * u.s,
+    },
+
+    'Po-200': {
+        'atomic number': 84,
+        'mass number': 200,
+        'mass': 199.981799 * u.u,
+        'stable': False,
+        'half-life': 690.6 * u.s,
+    },
+
+    'Po-201': {
+        'atomic number': 84,
+        'mass number': 201,
+        'mass': 200.9822598 * u.u,
+        'stable': False,
+        'half-life': 936.0 * u.s,
+    },
+
+    'Po-202': {
+        'atomic number': 84,
+        'mass number': 202,
+        'mass': 201.980758 * u.u,
+        'stable': False,
+        'half-life': 2676.0 * u.s,
+    },
+
+    'Po-203': {
+        'atomic number': 84,
+        'mass number': 203,
+        'mass': 202.9814161 * u.u,
+        'stable': False,
+        'half-life': 2202.0 * u.s,
+    },
+
+    'Po-204': {
+        'atomic number': 84,
+        'mass number': 204,
+        'mass': 203.98031 * u.u,
+        'stable': False,
+        'half-life': 12668.4 * u.s,
+    },
+
+    'Po-205': {
+        'atomic number': 84,
+        'mass number': 205,
+        'mass': 204.981203 * u.u,
+        'stable': False,
+        'half-life': 6264.0 * u.s,
+    },
+
+    'Po-206': {
+        'atomic number': 84,
+        'mass number': 206,
+        'mass': 205.980474 * u.u,
+        'stable': False,
+        'half-life': 760320.0 * u.s,
+    },
+
+    'Po-207': {
+        'atomic number': 84,
+        'mass number': 207,
+        'mass': 206.9815938 * u.u,
+        'stable': False,
+        'half-life': 20880.0 * u.s,
+    },
+
+    'Po-208': {
+        'atomic number': 84,
+        'mass number': 208,
+        'mass': 207.9812461 * u.u,
+        'stable': False,
+        'half-life': 91451971.548 * u.s,
+    },
+
+    'Po-209': {
+        'atomic number': 84,
+        'mass number': 209,
+        'mass': 208.9824308 * u.u,
+        'stable': False,
+        'half-life': 3913058824.0 * u.s,
+    },
+
+    'Po-210': {
+        'atomic number': 84,
+        'mass number': 210,
+        'mass': 209.9828741 * u.u,
+        'stable': False,
+        'half-life': 11955686.4 * u.s,
+    },
+
+    'Po-211': {
+        'atomic number': 84,
+        'mass number': 211,
+        'mass': 210.9866536 * u.u,
+        'stable': False,
+        'half-life': 0.516 * u.s,
+    },
+
+    'Po-212': {
+        'atomic number': 84,
+        'mass number': 212,
+        'mass': 211.9888684 * u.u,
+        'stable': False,
+        'half-life': 2.947e-07 * u.s,
+    },
+
+    'Po-213': {
+        'atomic number': 84,
+        'mass number': 213,
+        'mass': 212.9928576 * u.u,
+        'stable': False,
+        'half-life': 3.708e-06 * u.s,
+    },
+
+    'Po-214': {
+        'atomic number': 84,
+        'mass number': 214,
+        'mass': 213.9952017 * u.u,
+        'stable': False,
+        'half-life': 0.00016372 * u.s,
+    },
+
+    'Po-215': {
+        'atomic number': 84,
+        'mass number': 215,
+        'mass': 214.9994201 * u.u,
+        'stable': False,
+        'half-life': 0.001781 * u.s,
+    },
+
+    'Po-216': {
+        'atomic number': 84,
+        'mass number': 216,
+        'mass': 216.0019152 * u.u,
+        'stable': False,
+        'half-life': 0.145 * u.s,
+    },
+
+    'Po-217': {
+        'atomic number': 84,
+        'mass number': 217,
+        'mass': 217.0063182 * u.u,
+        'stable': False,
+        'half-life': 1.514 * u.s,
+    },
+
+    'Po-218': {
+        'atomic number': 84,
+        'mass number': 218,
+        'mass': 218.0089735 * u.u,
+        'stable': False,
+        'half-life': 185.88 * u.s,
+    },
+
+    'Po-219': {
+        'atomic number': 84,
+        'mass number': 219,
+        'mass': 219.013614 * u.u,
+        'stable': False,
+        'half-life': 618.0 * u.s,
+    },
+
+    'Po-220': {
+        'atomic number': 84,
+        'mass number': 220,
+        'mass': 220.016386 * u.u,
+        'stable': False,
+        'half-life': '40# s',
+    },
+
+    'Po-221': {
+        'atomic number': 84,
+        'mass number': 221,
+        'mass': 221.021228 * u.u,
+        'stable': False,
+        'half-life': 132.0 * u.s,
+    },
+
+    'Po-222': {
+        'atomic number': 84,
+        'mass number': 222,
+        'mass': 222.02414 * u.u,
+        'stable': False,
+        'half-life': 546.0 * u.s,
+    },
+
+    'Po-223': {
+        'atomic number': 84,
+        'mass number': 223,
+        'mass': 223.02907 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Po-224': {
+        'atomic number': 84,
+        'mass number': 224,
+        'mass': 224.03211 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Po-225': {
+        'atomic number': 84,
+        'mass number': 225,
+        'mass': 225.03707 * u.u,
+        'stable': False,
+        'half-life': '20# s',
+    },
+
+    'Po-226': {
+        'atomic number': 84,
+        'mass number': 226,
+        'mass': 226.04031 * u.u,
+        'stable': False,
+        'half-life': '20# s',
+    },
+
+    'Po-227': {
+        'atomic number': 84,
+        'mass number': 227,
+        'mass': 227.04539 * u.u,
+        'stable': False,
+        'half-life': '5# s',
+    },
+
+    'At-191': {
+        'atomic number': 85,
+        'mass number': 191,
+        'mass': 191.004148 * u.u,
+        'stable': False,
+        'half-life': 0.0021 * u.s,
+    },
+
+    'At-192': {
+        'atomic number': 85,
+        'mass number': 192,
+        'mass': 192.003152 * u.u,
+        'stable': False,
+        'half-life': 0.0115 * u.s,
+    },
+
+    'At-193': {
+        'atomic number': 85,
+        'mass number': 193,
+        'mass': 192.999927 * u.u,
+        'stable': False,
+        'half-life': 0.029 * u.s,
+    },
+
+    'At-194': {
+        'atomic number': 85,
+        'mass number': 194,
+        'mass': 193.999236 * u.u,
+        'stable': False,
+        'half-life': 0.286 * u.s,
+    },
+
+    'At-195': {
+        'atomic number': 85,
+        'mass number': 195,
+        'mass': 194.9962685 * u.u,
+        'stable': False,
+        'half-life': 0.29 * u.s,
+    },
+
+    'At-196': {
+        'atomic number': 85,
+        'mass number': 196,
+        'mass': 195.9958 * u.u,
+        'stable': False,
+        'half-life': 0.388 * u.s,
+    },
+
+    'At-197': {
+        'atomic number': 85,
+        'mass number': 197,
+        'mass': 196.993189 * u.u,
+        'stable': False,
+        'half-life': 0.3882 * u.s,
+    },
+
+    'At-198': {
+        'atomic number': 85,
+        'mass number': 198,
+        'mass': 197.992784 * u.u,
+        'stable': False,
+        'half-life': 3.0 * u.s,
+    },
+
+    'At-199': {
+        'atomic number': 85,
+        'mass number': 199,
+        'mass': 198.9905277 * u.u,
+        'stable': False,
+        'half-life': 7.02 * u.s,
+    },
+
+    'At-200': {
+        'atomic number': 85,
+        'mass number': 200,
+        'mass': 199.990351 * u.u,
+        'stable': False,
+        'half-life': 43.2 * u.s,
+    },
+
+    'At-201': {
+        'atomic number': 85,
+        'mass number': 201,
+        'mass': 200.9884171 * u.u,
+        'stable': False,
+        'half-life': 85.2 * u.s,
+    },
+
+    'At-202': {
+        'atomic number': 85,
+        'mass number': 202,
+        'mass': 201.98863 * u.u,
+        'stable': False,
+        'half-life': 184.0 * u.s,
+    },
+
+    'At-203': {
+        'atomic number': 85,
+        'mass number': 203,
+        'mass': 202.986943 * u.u,
+        'stable': False,
+        'half-life': 444.0 * u.s,
+    },
+
+    'At-204': {
+        'atomic number': 85,
+        'mass number': 204,
+        'mass': 203.987251 * u.u,
+        'stable': False,
+        'half-life': 547.2 * u.s,
+    },
+
+    'At-205': {
+        'atomic number': 85,
+        'mass number': 205,
+        'mass': 204.986076 * u.u,
+        'stable': False,
+        'half-life': 2028.0 * u.s,
+    },
+
+    'At-206': {
+        'atomic number': 85,
+        'mass number': 206,
+        'mass': 205.986657 * u.u,
+        'stable': False,
+        'half-life': 1836.0 * u.s,
+    },
+
+    'At-207': {
+        'atomic number': 85,
+        'mass number': 207,
+        'mass': 206.9858 * u.u,
+        'stable': False,
+        'half-life': 6516.0 * u.s,
+    },
+
+    'At-208': {
+        'atomic number': 85,
+        'mass number': 208,
+        'mass': 207.9866133 * u.u,
+        'stable': False,
+        'half-life': 5868.0 * u.s,
+    },
+
+    'At-209': {
+        'atomic number': 85,
+        'mass number': 209,
+        'mass': 208.9861702 * u.u,
+        'stable': False,
+        'half-life': 19512.0 * u.s,
+    },
+
+    'At-210': {
+        'atomic number': 85,
+        'mass number': 210,
+        'mass': 209.9871479 * u.u,
+        'stable': False,
+        'half-life': 29160.0 * u.s,
+    },
+
+    'At-211': {
+        'atomic number': 85,
+        'mass number': 211,
+        'mass': 210.9874966 * u.u,
+        'stable': False,
+        'half-life': 25970.4 * u.s,
+    },
+
+    'At-212': {
+        'atomic number': 85,
+        'mass number': 212,
+        'mass': 211.9907377 * u.u,
+        'stable': False,
+        'half-life': 0.314 * u.s,
+    },
+
+    'At-213': {
+        'atomic number': 85,
+        'mass number': 213,
+        'mass': 212.992937 * u.u,
+        'stable': False,
+        'half-life': 1.25e-07 * u.s,
+    },
+
+    'At-214': {
+        'atomic number': 85,
+        'mass number': 214,
+        'mass': 213.9963721 * u.u,
+        'stable': False,
+        'half-life': 5.58e-07 * u.s,
+    },
+
+    'At-215': {
+        'atomic number': 85,
+        'mass number': 215,
+        'mass': 214.9986528 * u.u,
+        'stable': False,
+        'half-life': 0.0001 * u.s,
+    },
+
+    'At-216': {
+        'atomic number': 85,
+        'mass number': 216,
+        'mass': 216.0024236 * u.u,
+        'stable': False,
+        'half-life': 0.0003 * u.s,
+    },
+
+    'At-217': {
+        'atomic number': 85,
+        'mass number': 217,
+        'mass': 217.0047192 * u.u,
+        'stable': False,
+        'half-life': 0.03262 * u.s,
+    },
+
+    'At-218': {
+        'atomic number': 85,
+        'mass number': 218,
+        'mass': 218.008695 * u.u,
+        'stable': False,
+        'half-life': 1.5 * u.s,
+    },
+
+    'At-219': {
+        'atomic number': 85,
+        'mass number': 219,
+        'mass': 219.0111618 * u.u,
+        'stable': False,
+        'half-life': 56.0 * u.s,
+    },
+
+    'At-220': {
+        'atomic number': 85,
+        'mass number': 220,
+        'mass': 220.015433 * u.u,
+        'stable': False,
+        'half-life': 222.6 * u.s,
+    },
+
+    'At-221': {
+        'atomic number': 85,
+        'mass number': 221,
+        'mass': 221.018017 * u.u,
+        'stable': False,
+        'half-life': 138.0 * u.s,
+    },
+
+    'At-222': {
+        'atomic number': 85,
+        'mass number': 222,
+        'mass': 222.022494 * u.u,
+        'stable': False,
+        'half-life': 54.0 * u.s,
+    },
+
+    'At-223': {
+        'atomic number': 85,
+        'mass number': 223,
+        'mass': 223.025151 * u.u,
+        'stable': False,
+        'half-life': 50.0 * u.s,
+    },
+
+    'At-224': {
+        'atomic number': 85,
+        'mass number': 224,
+        'mass': 224.029749 * u.u,
+        'stable': False,
+        'half-life': 150.0 * u.s,
+    },
+
+    'At-225': {
+        'atomic number': 85,
+        'mass number': 225,
+        'mass': 225.03263 * u.u,
+        'stable': False,
+        'half-life': '2# m',
+    },
+
+    'At-226': {
+        'atomic number': 85,
+        'mass number': 226,
+        'mass': 226.03716 * u.u,
+        'stable': False,
+        'half-life': '20# s',
+    },
+
+    'At-227': {
+        'atomic number': 85,
+        'mass number': 227,
+        'mass': 227.04024 * u.u,
+        'stable': False,
+        'half-life': '20# s',
+    },
+
+    'At-228': {
+        'atomic number': 85,
+        'mass number': 228,
+        'mass': 228.04475 * u.u,
+        'stable': False,
+        'half-life': '5# s',
+    },
+
+    'At-229': {
+        'atomic number': 85,
+        'mass number': 229,
+        'mass': 229.04812 * u.u,
+        'stable': False,
+        'half-life': '5# s',
+    },
+
+    'Rn-193': {
+        'atomic number': 86,
+        'mass number': 193,
+        'mass': 193.009708 * u.u,
+        'stable': False,
+        'half-life': 0.00115 * u.s,
+    },
+
+    'Rn-194': {
+        'atomic number': 86,
+        'mass number': 194,
+        'mass': 194.006144 * u.u,
+        'stable': False,
+        'half-life': 0.00078 * u.s,
+    },
+
+    'Rn-195': {
+        'atomic number': 86,
+        'mass number': 195,
+        'mass': 195.005422 * u.u,
+        'stable': False,
+        'half-life': 0.007 * u.s,
+    },
+
+    'Rn-196': {
+        'atomic number': 86,
+        'mass number': 196,
+        'mass': 196.002116 * u.u,
+        'stable': False,
+        'half-life': 0.0047 * u.s,
+    },
+
+    'Rn-197': {
+        'atomic number': 86,
+        'mass number': 197,
+        'mass': 197.001585 * u.u,
+        'stable': False,
+        'half-life': 0.054 * u.s,
+    },
+
+    'Rn-198': {
+        'atomic number': 86,
+        'mass number': 198,
+        'mass': 197.998679 * u.u,
+        'stable': False,
+        'half-life': 0.065 * u.s,
+    },
+
+    'Rn-199': {
+        'atomic number': 86,
+        'mass number': 199,
+        'mass': 198.99839 * u.u,
+        'stable': False,
+        'half-life': 0.59 * u.s,
+    },
+
+    'Rn-200': {
+        'atomic number': 86,
+        'mass number': 200,
+        'mass': 199.99569 * u.u,
+        'stable': False,
+        'half-life': 1.09 * u.s,
+    },
+
+    'Rn-201': {
+        'atomic number': 86,
+        'mass number': 201,
+        'mass': 200.995628 * u.u,
+        'stable': False,
+        'half-life': 7.0 * u.s,
+    },
+
+    'Rn-202': {
+        'atomic number': 86,
+        'mass number': 202,
+        'mass': 201.993264 * u.u,
+        'stable': False,
+        'half-life': 9.7 * u.s,
+    },
+
+    'Rn-203': {
+        'atomic number': 86,
+        'mass number': 203,
+        'mass': 202.993388 * u.u,
+        'stable': False,
+        'half-life': 44.0 * u.s,
+    },
+
+    'Rn-204': {
+        'atomic number': 86,
+        'mass number': 204,
+        'mass': 203.99143 * u.u,
+        'stable': False,
+        'half-life': 74.52 * u.s,
+    },
+
+    'Rn-205': {
+        'atomic number': 86,
+        'mass number': 205,
+        'mass': 204.991719 * u.u,
+        'stable': False,
+        'half-life': 169.8 * u.s,
+    },
+
+    'Rn-206': {
+        'atomic number': 86,
+        'mass number': 206,
+        'mass': 205.990214 * u.u,
+        'stable': False,
+        'half-life': 340.2 * u.s,
+    },
+
+    'Rn-207': {
+        'atomic number': 86,
+        'mass number': 207,
+        'mass': 206.9907303 * u.u,
+        'stable': False,
+        'half-life': 555.0 * u.s,
+    },
+
+    'Rn-208': {
+        'atomic number': 86,
+        'mass number': 208,
+        'mass': 207.989635 * u.u,
+        'stable': False,
+        'half-life': 1461.0 * u.s,
+    },
+
+    'Rn-209': {
+        'atomic number': 86,
+        'mass number': 209,
+        'mass': 208.990415 * u.u,
+        'stable': False,
+        'half-life': 1728.0 * u.s,
+    },
+
+    'Rn-210': {
+        'atomic number': 86,
+        'mass number': 210,
+        'mass': 209.9896891 * u.u,
+        'stable': False,
+        'half-life': 8640.0 * u.s,
+    },
+
+    'Rn-211': {
+        'atomic number': 86,
+        'mass number': 211,
+        'mass': 210.9906011 * u.u,
+        'stable': False,
+        'half-life': 52560.0 * u.s,
+    },
+
+    'Rn-212': {
+        'atomic number': 86,
+        'mass number': 212,
+        'mass': 211.9907039 * u.u,
+        'stable': False,
+        'half-life': 1434.0 * u.s,
+    },
+
+    'Rn-213': {
+        'atomic number': 86,
+        'mass number': 213,
+        'mass': 212.9938831 * u.u,
+        'stable': False,
+        'half-life': 0.0195 * u.s,
+    },
+
+    'Rn-214': {
+        'atomic number': 86,
+        'mass number': 214,
+        'mass': 213.995363 * u.u,
+        'stable': False,
+        'half-life': 2.7e-07 * u.s,
+    },
+
+    'Rn-215': {
+        'atomic number': 86,
+        'mass number': 215,
+        'mass': 214.9987459 * u.u,
+        'stable': False,
+        'half-life': 2.3e-06 * u.s,
+    },
+
+    'Rn-216': {
+        'atomic number': 86,
+        'mass number': 216,
+        'mass': 216.0002719 * u.u,
+        'stable': False,
+        'half-life': 4.5e-05 * u.s,
+    },
+
+    'Rn-217': {
+        'atomic number': 86,
+        'mass number': 217,
+        'mass': 217.003928 * u.u,
+        'stable': False,
+        'half-life': 0.00054 * u.s,
+    },
+
+    'Rn-218': {
+        'atomic number': 86,
+        'mass number': 218,
+        'mass': 218.0056016 * u.u,
+        'stable': False,
+        'half-life': 0.03375 * u.s,
+    },
+
+    'Rn-219': {
+        'atomic number': 86,
+        'mass number': 219,
+        'mass': 219.0094804 * u.u,
+        'stable': False,
+        'half-life': 3.96 * u.s,
+    },
+
+    'Rn-220': {
+        'atomic number': 86,
+        'mass number': 220,
+        'mass': 220.0113941 * u.u,
+        'stable': False,
+        'half-life': 55.6 * u.s,
+    },
+
+    'Rn-221': {
+        'atomic number': 86,
+        'mass number': 221,
+        'mass': 221.0155371 * u.u,
+        'stable': False,
+        'half-life': 1542.0 * u.s,
+    },
+
+    'Rn-222': {
+        'atomic number': 86,
+        'mass number': 222,
+        'mass': 222.0175782 * u.u,
+        'stable': False,
+        'half-life': 330177.6 * u.s,
+    },
+
+    'Rn-223': {
+        'atomic number': 86,
+        'mass number': 223,
+        'mass': 223.0218893 * u.u,
+        'stable': False,
+        'half-life': 1458.0 * u.s,
+    },
+
+    'Rn-224': {
+        'atomic number': 86,
+        'mass number': 224,
+        'mass': 224.024096 * u.u,
+        'stable': False,
+        'half-life': 6420.0 * u.s,
+    },
+
+    'Rn-225': {
+        'atomic number': 86,
+        'mass number': 225,
+        'mass': 225.028486 * u.u,
+        'stable': False,
+        'half-life': 279.6 * u.s,
+    },
+
+    'Rn-226': {
+        'atomic number': 86,
+        'mass number': 226,
+        'mass': 226.030861 * u.u,
+        'stable': False,
+        'half-life': 444.0 * u.s,
+    },
+
+    'Rn-227': {
+        'atomic number': 86,
+        'mass number': 227,
+        'mass': 227.035304 * u.u,
+        'stable': False,
+        'half-life': 20.2 * u.s,
+    },
+
+    'Rn-228': {
+        'atomic number': 86,
+        'mass number': 228,
+        'mass': 228.037835 * u.u,
+        'stable': False,
+        'half-life': 65.0 * u.s,
+    },
+
+    'Rn-229': {
+        'atomic number': 86,
+        'mass number': 229,
+        'mass': 229.042257 * u.u,
+        'stable': False,
+        'half-life': 11.9 * u.s,
+    },
+
+    'Rn-230': {
+        'atomic number': 86,
+        'mass number': 230,
+        'mass': 230.04514 * u.u,
+        'stable': False,
+        'half-life': '10# s',
+    },
+
+    'Rn-231': {
+        'atomic number': 86,
+        'mass number': 231,
+        'mass': 231.04987 * u.u,
+        'stable': False,
+        'half-life': '300# ms',
+    },
+
+    'Fr-199': {
+        'atomic number': 87,
+        'mass number': 199,
+        'mass': 199.007259 * u.u,
+        'stable': False,
+        'half-life': 0.0066 * u.s,
+    },
+
+    'Fr-200': {
+        'atomic number': 87,
+        'mass number': 200,
+        'mass': 200.006586 * u.u,
+        'stable': False,
+        'half-life': 0.0475 * u.s,
+    },
+
+    'Fr-201': {
+        'atomic number': 87,
+        'mass number': 201,
+        'mass': 201.003867 * u.u,
+        'stable': False,
+        'half-life': 0.0628 * u.s,
+    },
+
+    'Fr-202': {
+        'atomic number': 87,
+        'mass number': 202,
+        'mass': 202.00332 * u.u,
+        'stable': False,
+        'half-life': 0.372 * u.s,
+    },
+
+    'Fr-203': {
+        'atomic number': 87,
+        'mass number': 203,
+        'mass': 203.0009407 * u.u,
+        'stable': False,
+        'half-life': 0.55 * u.s,
+    },
+
+    'Fr-204': {
+        'atomic number': 87,
+        'mass number': 204,
+        'mass': 204.000652 * u.u,
+        'stable': False,
+        'half-life': 1.75 * u.s,
+    },
+
+    'Fr-205': {
+        'atomic number': 87,
+        'mass number': 205,
+        'mass': 204.9985939 * u.u,
+        'stable': False,
+        'half-life': 3.82 * u.s,
+    },
+
+    'Fr-206': {
+        'atomic number': 87,
+        'mass number': 206,
+        'mass': 205.998666 * u.u,
+        'stable': False,
+        'half-life': '~16 s',
+    },
+
+    'Fr-207': {
+        'atomic number': 87,
+        'mass number': 207,
+        'mass': 206.996946 * u.u,
+        'stable': False,
+        'half-life': 14.8 * u.s,
+    },
+
+    'Fr-208': {
+        'atomic number': 87,
+        'mass number': 208,
+        'mass': 207.997138 * u.u,
+        'stable': False,
+        'half-life': 59.1 * u.s,
+    },
+
+    'Fr-209': {
+        'atomic number': 87,
+        'mass number': 209,
+        'mass': 208.995955 * u.u,
+        'stable': False,
+        'half-life': 50.5 * u.s,
+    },
+
+    'Fr-210': {
+        'atomic number': 87,
+        'mass number': 210,
+        'mass': 209.996422 * u.u,
+        'stable': False,
+        'half-life': 190.8 * u.s,
+    },
+
+    'Fr-211': {
+        'atomic number': 87,
+        'mass number': 211,
+        'mass': 210.995556 * u.u,
+        'stable': False,
+        'half-life': 186.0 * u.s,
+    },
+
+    'Fr-212': {
+        'atomic number': 87,
+        'mass number': 212,
+        'mass': 211.9962257 * u.u,
+        'stable': False,
+        'half-life': 1200.0 * u.s,
+    },
+
+    'Fr-213': {
+        'atomic number': 87,
+        'mass number': 213,
+        'mass': 212.996186 * u.u,
+        'stable': False,
+        'half-life': 34.14 * u.s,
+    },
+
+    'Fr-214': {
+        'atomic number': 87,
+        'mass number': 214,
+        'mass': 213.9989713 * u.u,
+        'stable': False,
+        'half-life': 0.00518 * u.s,
+    },
+
+    'Fr-215': {
+        'atomic number': 87,
+        'mass number': 215,
+        'mass': 215.0003418 * u.u,
+        'stable': False,
+        'half-life': 8.6e-08 * u.s,
+    },
+
+    'Fr-216': {
+        'atomic number': 87,
+        'mass number': 216,
+        'mass': 216.0031899 * u.u,
+        'stable': False,
+        'half-life': 7e-07 * u.s,
+    },
+
+    'Fr-217': {
+        'atomic number': 87,
+        'mass number': 217,
+        'mass': 217.0046323 * u.u,
+        'stable': False,
+        'half-life': 1.68e-05 * u.s,
+    },
+
+    'Fr-218': {
+        'atomic number': 87,
+        'mass number': 218,
+        'mass': 218.0075787 * u.u,
+        'stable': False,
+        'half-life': 0.001 * u.s,
+    },
+
+    'Fr-219': {
+        'atomic number': 87,
+        'mass number': 219,
+        'mass': 219.0092524 * u.u,
+        'stable': False,
+        'half-life': 0.02 * u.s,
+    },
+
+    'Fr-220': {
+        'atomic number': 87,
+        'mass number': 220,
+        'mass': 220.0123277 * u.u,
+        'stable': False,
+        'half-life': 27.4 * u.s,
+    },
+
+    'Fr-221': {
+        'atomic number': 87,
+        'mass number': 221,
+        'mass': 221.0142552 * u.u,
+        'stable': False,
+        'half-life': 288.06 * u.s,
+    },
+
+    'Fr-222': {
+        'atomic number': 87,
+        'mass number': 222,
+        'mass': 222.017552 * u.u,
+        'stable': False,
+        'half-life': 852.0 * u.s,
+    },
+
+    'Fr-223': {
+        'atomic number': 87,
+        'mass number': 223,
+        'mass': 223.019736 * u.u,
+        'stable': False,
+        'half-life': 1320.0 * u.s,
+    },
+
+    'Fr-224': {
+        'atomic number': 87,
+        'mass number': 224,
+        'mass': 224.023398 * u.u,
+        'stable': False,
+        'half-life': 199.8 * u.s,
+    },
+
+    'Fr-225': {
+        'atomic number': 87,
+        'mass number': 225,
+        'mass': 225.025573 * u.u,
+        'stable': False,
+        'half-life': 237.0 * u.s,
+    },
+
+    'Fr-226': {
+        'atomic number': 87,
+        'mass number': 226,
+        'mass': 226.029566 * u.u,
+        'stable': False,
+        'half-life': 49.0 * u.s,
+    },
+
+    'Fr-227': {
+        'atomic number': 87,
+        'mass number': 227,
+        'mass': 227.031869 * u.u,
+        'stable': False,
+        'half-life': 148.2 * u.s,
+    },
+
+    'Fr-228': {
+        'atomic number': 87,
+        'mass number': 228,
+        'mass': 228.035823 * u.u,
+        'stable': False,
+        'half-life': 38.0 * u.s,
+    },
+
+    'Fr-229': {
+        'atomic number': 87,
+        'mass number': 229,
+        'mass': 229.038298 * u.u,
+        'stable': False,
+        'half-life': 50.2 * u.s,
+    },
+
+    'Fr-230': {
+        'atomic number': 87,
+        'mass number': 230,
+        'mass': 230.042416 * u.u,
+        'stable': False,
+        'half-life': 19.1 * u.s,
+    },
+
+    'Fr-231': {
+        'atomic number': 87,
+        'mass number': 231,
+        'mass': 231.045158 * u.u,
+        'stable': False,
+        'half-life': 17.6 * u.s,
+    },
+
+    'Fr-232': {
+        'atomic number': 87,
+        'mass number': 232,
+        'mass': 232.04937 * u.u,
+        'stable': False,
+        'half-life': 5.5 * u.s,
+    },
+
+    'Fr-233': {
+        'atomic number': 87,
+        'mass number': 233,
+        'mass': 233.05264 * u.u,
+        'stable': False,
+        'half-life': 0.9 * u.s,
+    },
+
+    'Ra-201': {
+        'atomic number': 88,
+        'mass number': 201,
+        'mass': 201.01271 * u.u,
+        'stable': False,
+        'half-life': 0.02 * u.s,
+    },
+
+    'Ra-202': {
+        'atomic number': 88,
+        'mass number': 202,
+        'mass': 202.00976 * u.u,
+        'stable': False,
+        'half-life': 0.0041 * u.s,
+    },
+
+    'Ra-203': {
+        'atomic number': 88,
+        'mass number': 203,
+        'mass': 203.009304 * u.u,
+        'stable': False,
+        'half-life': 0.036 * u.s,
+    },
+
+    'Ra-204': {
+        'atomic number': 88,
+        'mass number': 204,
+        'mass': 204.006492 * u.u,
+        'stable': False,
+        'half-life': 0.06 * u.s,
+    },
+
+    'Ra-205': {
+        'atomic number': 88,
+        'mass number': 205,
+        'mass': 205.006268 * u.u,
+        'stable': False,
+        'half-life': 0.22 * u.s,
+    },
+
+    'Ra-206': {
+        'atomic number': 88,
+        'mass number': 206,
+        'mass': 206.003828 * u.u,
+        'stable': False,
+        'half-life': 0.24 * u.s,
+    },
+
+    'Ra-207': {
+        'atomic number': 88,
+        'mass number': 207,
+        'mass': 207.003799 * u.u,
+        'stable': False,
+        'half-life': 1.38 * u.s,
+    },
+
+    'Ra-208': {
+        'atomic number': 88,
+        'mass number': 208,
+        'mass': 208.001841 * u.u,
+        'stable': False,
+        'half-life': 1.11 * u.s,
+    },
+
+    'Ra-209': {
+        'atomic number': 88,
+        'mass number': 209,
+        'mass': 209.00199 * u.u,
+        'stable': False,
+        'half-life': 4.71 * u.s,
+    },
+
+    'Ra-210': {
+        'atomic number': 88,
+        'mass number': 210,
+        'mass': 210.000494 * u.u,
+        'stable': False,
+        'half-life': 4.0 * u.s,
+    },
+
+    'Ra-211': {
+        'atomic number': 88,
+        'mass number': 211,
+        'mass': 211.0008932 * u.u,
+        'stable': False,
+        'half-life': 13.2 * u.s,
+    },
+
+    'Ra-212': {
+        'atomic number': 88,
+        'mass number': 212,
+        'mass': 211.999787 * u.u,
+        'stable': False,
+        'half-life': 13.0 * u.s,
+    },
+
+    'Ra-213': {
+        'atomic number': 88,
+        'mass number': 213,
+        'mass': 213.000384 * u.u,
+        'stable': False,
+        'half-life': 163.8 * u.s,
+    },
+
+    'Ra-214': {
+        'atomic number': 88,
+        'mass number': 214,
+        'mass': 214.0000997 * u.u,
+        'stable': False,
+        'half-life': 2.437 * u.s,
+    },
+
+    'Ra-215': {
+        'atomic number': 88,
+        'mass number': 215,
+        'mass': 215.0027204 * u.u,
+        'stable': False,
+        'half-life': 0.00167 * u.s,
+    },
+
+    'Ra-216': {
+        'atomic number': 88,
+        'mass number': 216,
+        'mass': 216.0035334 * u.u,
+        'stable': False,
+        'half-life': 1.82e-07 * u.s,
+    },
+
+    'Ra-217': {
+        'atomic number': 88,
+        'mass number': 217,
+        'mass': 217.0063207 * u.u,
+        'stable': False,
+        'half-life': 1.63e-06 * u.s,
+    },
+
+    'Ra-218': {
+        'atomic number': 88,
+        'mass number': 218,
+        'mass': 218.007141 * u.u,
+        'stable': False,
+        'half-life': 2.52e-05 * u.s,
+    },
+
+    'Ra-219': {
+        'atomic number': 88,
+        'mass number': 219,
+        'mass': 219.0100855 * u.u,
+        'stable': False,
+        'half-life': 0.01 * u.s,
+    },
+
+    'Ra-220': {
+        'atomic number': 88,
+        'mass number': 220,
+        'mass': 220.0110259 * u.u,
+        'stable': False,
+        'half-life': 0.0179 * u.s,
+    },
+
+    'Ra-221': {
+        'atomic number': 88,
+        'mass number': 221,
+        'mass': 221.0139177 * u.u,
+        'stable': False,
+        'half-life': 28.0 * u.s,
+    },
+
+    'Ra-222': {
+        'atomic number': 88,
+        'mass number': 222,
+        'mass': 222.0153748 * u.u,
+        'stable': False,
+        'half-life': 33.6 * u.s,
+    },
+
+    'Ra-223': {
+        'atomic number': 88,
+        'mass number': 223,
+        'mass': 223.0185023 * u.u,
+        'stable': False,
+        'half-life': 988217.28 * u.s,
+    },
+
+    'Ra-224': {
+        'atomic number': 88,
+        'mass number': 224,
+        'mass': 224.020212 * u.u,
+        'stable': False,
+        'half-life': 313796.16 * u.s,
+    },
+
+    'Ra-225': {
+        'atomic number': 88,
+        'mass number': 225,
+        'mass': 225.0236119 * u.u,
+        'stable': False,
+        'half-life': 1287360.0 * u.s,
+    },
+
+    'Ra-226': {
+        'atomic number': 88,
+        'mass number': 226,
+        'mass': 226.0254103 * u.u,
+        'stable': False,
+        'half-life': 50491081600.0 * u.s,
+    },
+
+    'Ra-227': {
+        'atomic number': 88,
+        'mass number': 227,
+        'mass': 227.0291783 * u.u,
+        'stable': False,
+        'half-life': 2532.0 * u.s,
+    },
+
+    'Ra-228': {
+        'atomic number': 88,
+        'mass number': 228,
+        'mass': 228.0310707 * u.u,
+        'stable': False,
+        'half-life': 181452324.5 * u.s,
+    },
+
+    'Ra-229': {
+        'atomic number': 88,
+        'mass number': 229,
+        'mass': 229.034942 * u.u,
+        'stable': False,
+        'half-life': 240.0 * u.s,
+    },
+
+    'Ra-230': {
+        'atomic number': 88,
+        'mass number': 230,
+        'mass': 230.037055 * u.u,
+        'stable': False,
+        'half-life': 5580.0 * u.s,
+    },
+
+    'Ra-231': {
+        'atomic number': 88,
+        'mass number': 231,
+        'mass': 231.041027 * u.u,
+        'stable': False,
+        'half-life': 104.0 * u.s,
+    },
+
+    'Ra-232': {
+        'atomic number': 88,
+        'mass number': 232,
+        'mass': 232.0434753 * u.u,
+        'stable': False,
+        'half-life': 240.0 * u.s,
+    },
+
+    'Ra-233': {
+        'atomic number': 88,
+        'mass number': 233,
+        'mass': 233.047582 * u.u,
+        'stable': False,
+        'half-life': 30.0 * u.s,
+    },
+
+    'Ra-234': {
+        'atomic number': 88,
+        'mass number': 234,
+        'mass': 234.050342 * u.u,
+        'stable': False,
+        'half-life': 30.0 * u.s,
+    },
+
+    'Ra-235': {
+        'atomic number': 88,
+        'mass number': 235,
+        'mass': 235.05497 * u.u,
+        'stable': False,
+        'half-life': '3# s',
+    },
+
+    'Ac-206': {
+        'atomic number': 89,
+        'mass number': 206,
+        'mass': 206.014452 * u.u,
+        'stable': False,
+        'half-life': 0.025 * u.s,
+    },
+
+    'Ac-207': {
+        'atomic number': 89,
+        'mass number': 207,
+        'mass': 207.011966 * u.u,
+        'stable': False,
+        'half-life': 0.031 * u.s,
+    },
+
+    'Ac-208': {
+        'atomic number': 89,
+        'mass number': 208,
+        'mass': 208.01155 * u.u,
+        'stable': False,
+        'half-life': 0.097 * u.s,
+    },
+
+    'Ac-209': {
+        'atomic number': 89,
+        'mass number': 209,
+        'mass': 209.009495 * u.u,
+        'stable': False,
+        'half-life': 0.094 * u.s,
+    },
+
+    'Ac-210': {
+        'atomic number': 89,
+        'mass number': 210,
+        'mass': 210.009436 * u.u,
+        'stable': False,
+        'half-life': 0.35 * u.s,
+    },
+
+    'Ac-211': {
+        'atomic number': 89,
+        'mass number': 211,
+        'mass': 211.007732 * u.u,
+        'stable': False,
+        'half-life': 0.213 * u.s,
+    },
+
+    'Ac-212': {
+        'atomic number': 89,
+        'mass number': 212,
+        'mass': 212.007813 * u.u,
+        'stable': False,
+        'half-life': 0.895 * u.s,
+    },
+
+    'Ac-213': {
+        'atomic number': 89,
+        'mass number': 213,
+        'mass': 213.006609 * u.u,
+        'stable': False,
+        'half-life': 0.738 * u.s,
+    },
+
+    'Ac-214': {
+        'atomic number': 89,
+        'mass number': 214,
+        'mass': 214.006918 * u.u,
+        'stable': False,
+        'half-life': 8.2 * u.s,
+    },
+
+    'Ac-215': {
+        'atomic number': 89,
+        'mass number': 215,
+        'mass': 215.006475 * u.u,
+        'stable': False,
+        'half-life': 0.17 * u.s,
+    },
+
+    'Ac-216': {
+        'atomic number': 89,
+        'mass number': 216,
+        'mass': 216.008743 * u.u,
+        'stable': False,
+        'half-life': 0.00044 * u.s,
+    },
+
+    'Ac-217': {
+        'atomic number': 89,
+        'mass number': 217,
+        'mass': 217.009344 * u.u,
+        'stable': False,
+        'half-life': 6.9e-08 * u.s,
+    },
+
+    'Ac-218': {
+        'atomic number': 89,
+        'mass number': 218,
+        'mass': 218.011642 * u.u,
+        'stable': False,
+        'half-life': 1e-06 * u.s,
+    },
+
+    'Ac-219': {
+        'atomic number': 89,
+        'mass number': 219,
+        'mass': 219.012421 * u.u,
+        'stable': False,
+        'half-life': 1.18e-05 * u.s,
+    },
+
+    'Ac-220': {
+        'atomic number': 89,
+        'mass number': 220,
+        'mass': 220.0147549 * u.u,
+        'stable': False,
+        'half-life': 0.02636 * u.s,
+    },
+
+    'Ac-221': {
+        'atomic number': 89,
+        'mass number': 221,
+        'mass': 221.015592 * u.u,
+        'stable': False,
+        'half-life': 0.052 * u.s,
+    },
+
+    'Ac-222': {
+        'atomic number': 89,
+        'mass number': 222,
+        'mass': 222.0178442 * u.u,
+        'stable': False,
+        'half-life': 5.0 * u.s,
+    },
+
+    'Ac-223': {
+        'atomic number': 89,
+        'mass number': 223,
+        'mass': 223.0191377 * u.u,
+        'stable': False,
+        'half-life': 126.0 * u.s,
+    },
+
+    'Ac-224': {
+        'atomic number': 89,
+        'mass number': 224,
+        'mass': 224.0217232 * u.u,
+        'stable': False,
+        'half-life': 10008.0 * u.s,
+    },
+
+    'Ac-225': {
+        'atomic number': 89,
+        'mass number': 225,
+        'mass': 225.02323 * u.u,
+        'stable': False,
+        'half-life': 857088.0 * u.s,
+    },
+
+    'Ac-226': {
+        'atomic number': 89,
+        'mass number': 226,
+        'mass': 226.0260984 * u.u,
+        'stable': False,
+        'half-life': 105732.0 * u.s,
+    },
+
+    'Ac-227': {
+        'atomic number': 89,
+        'mass number': 227,
+        'mass': 227.0277523 * u.u,
+        'stable': False,
+        'half-life': 687057392.872 * u.s,
+    },
+
+    'Ac-228': {
+        'atomic number': 89,
+        'mass number': 228,
+        'mass': 228.0310215 * u.u,
+        'stable': False,
+        'half-life': 22140.0 * u.s,
+    },
+
+    'Ac-229': {
+        'atomic number': 89,
+        'mass number': 229,
+        'mass': 229.032956 * u.u,
+        'stable': False,
+        'half-life': 3762.0 * u.s,
+    },
+
+    'Ac-230': {
+        'atomic number': 89,
+        'mass number': 230,
+        'mass': 230.036327 * u.u,
+        'stable': False,
+        'half-life': 122.0 * u.s,
+    },
+
+    'Ac-231': {
+        'atomic number': 89,
+        'mass number': 231,
+        'mass': 231.038393 * u.u,
+        'stable': False,
+        'half-life': 450.0 * u.s,
+    },
+
+    'Ac-232': {
+        'atomic number': 89,
+        'mass number': 232,
+        'mass': 232.042034 * u.u,
+        'stable': False,
+        'half-life': 118.8 * u.s,
+    },
+
+    'Ac-233': {
+        'atomic number': 89,
+        'mass number': 233,
+        'mass': 233.044346 * u.u,
+        'stable': False,
+        'half-life': 145.0 * u.s,
+    },
+
+    'Ac-234': {
+        'atomic number': 89,
+        'mass number': 234,
+        'mass': 234.048139 * u.u,
+        'stable': False,
+        'half-life': 45.0 * u.s,
+    },
+
+    'Ac-235': {
+        'atomic number': 89,
+        'mass number': 235,
+        'mass': 235.05084 * u.u,
+        'stable': False,
+        'half-life': 62.0 * u.s,
+    },
+
+    'Ac-236': {
+        'atomic number': 89,
+        'mass number': 236,
+        'mass': 236.054988 * u.u,
+        'stable': False,
+        'half-life': 270.0 * u.s,
+    },
+
+    'Ac-237': {
+        'atomic number': 89,
+        'mass number': 237,
+        'mass': 237.05827 * u.u,
+        'stable': False,
+        'half-life': '4# m',
+    },
+
+    'Th-208': {
+        'atomic number': 90,
+        'mass number': 208,
+        'mass': 208.0179 * u.u,
+        'stable': False,
+        'half-life': 0.0024 * u.s,
+    },
+
+    'Th-209': {
+        'atomic number': 90,
+        'mass number': 209,
+        'mass': 209.017753 * u.u,
+        'stable': False,
+        'half-life': '60# ms',
+    },
+
+    'Th-210': {
+        'atomic number': 90,
+        'mass number': 210,
+        'mass': 210.015094 * u.u,
+        'stable': False,
+        'half-life': 0.016 * u.s,
+    },
+
+    'Th-211': {
+        'atomic number': 90,
+        'mass number': 211,
+        'mass': 211.014929 * u.u,
+        'stable': False,
+        'half-life': 0.048 * u.s,
+    },
+
+    'Th-212': {
+        'atomic number': 90,
+        'mass number': 212,
+        'mass': 212.012988 * u.u,
+        'stable': False,
+        'half-life': 0.0317 * u.s,
+    },
+
+    'Th-213': {
+        'atomic number': 90,
+        'mass number': 213,
+        'mass': 213.013009 * u.u,
+        'stable': False,
+        'half-life': 0.144 * u.s,
+    },
+
+    'Th-214': {
+        'atomic number': 90,
+        'mass number': 214,
+        'mass': 214.0115 * u.u,
+        'stable': False,
+        'half-life': 0.087 * u.s,
+    },
+
+    'Th-215': {
+        'atomic number': 90,
+        'mass number': 215,
+        'mass': 215.0117248 * u.u,
+        'stable': False,
+        'half-life': 1.2 * u.s,
+    },
+
+    'Th-216': {
+        'atomic number': 90,
+        'mass number': 216,
+        'mass': 216.011056 * u.u,
+        'stable': False,
+        'half-life': 0.026 * u.s,
+    },
+
+    'Th-217': {
+        'atomic number': 90,
+        'mass number': 217,
+        'mass': 217.013117 * u.u,
+        'stable': False,
+        'half-life': 0.000247 * u.s,
+    },
+
+    'Th-218': {
+        'atomic number': 90,
+        'mass number': 218,
+        'mass': 218.013276 * u.u,
+        'stable': False,
+        'half-life': 1.17e-07 * u.s,
+    },
+
+    'Th-219': {
+        'atomic number': 90,
+        'mass number': 219,
+        'mass': 219.015537 * u.u,
+        'stable': False,
+        'half-life': 1.021e-06 * u.s,
+    },
+
+    'Th-220': {
+        'atomic number': 90,
+        'mass number': 220,
+        'mass': 220.015748 * u.u,
+        'stable': False,
+        'half-life': 9.7e-06 * u.s,
+    },
+
+    'Th-221': {
+        'atomic number': 90,
+        'mass number': 221,
+        'mass': 221.018184 * u.u,
+        'stable': False,
+        'half-life': 0.00178 * u.s,
+    },
+
+    'Th-222': {
+        'atomic number': 90,
+        'mass number': 222,
+        'mass': 222.018469 * u.u,
+        'stable': False,
+        'half-life': 0.00224 * u.s,
+    },
+
+    'Th-223': {
+        'atomic number': 90,
+        'mass number': 223,
+        'mass': 223.0208119 * u.u,
+        'stable': False,
+        'half-life': 0.6 * u.s,
+    },
+
+    'Th-224': {
+        'atomic number': 90,
+        'mass number': 224,
+        'mass': 224.021464 * u.u,
+        'stable': False,
+        'half-life': 1.04 * u.s,
+    },
+
+    'Th-225': {
+        'atomic number': 90,
+        'mass number': 225,
+        'mass': 225.0239514 * u.u,
+        'stable': False,
+        'half-life': 525.0 * u.s,
+    },
+
+    'Th-226': {
+        'atomic number': 90,
+        'mass number': 226,
+        'mass': 226.0249034 * u.u,
+        'stable': False,
+        'half-life': 1842.0 * u.s,
+    },
+
+    'Th-227': {
+        'atomic number': 90,
+        'mass number': 227,
+        'mass': 227.0277042 * u.u,
+        'stable': False,
+        'half-life': 1615420.8 * u.s,
+    },
+
+    'Th-228': {
+        'atomic number': 90,
+        'mass number': 228,
+        'mass': 228.0287413 * u.u,
+        'stable': False,
+        'half-life': 60359040.0 * u.s,
+    },
+
+    'Th-229': {
+        'atomic number': 90,
+        'mass number': 229,
+        'mass': 229.0317627 * u.u,
+        'stable': False,
+        'half-life': 249930853920.0 * u.s,
+    },
+
+    'Th-230': {
+        'atomic number': 90,
+        'mass number': 230,
+        'mass': 230.0331341 * u.u,
+        'stable': False,
+        'half-life': 2379392220400.0 * u.s,
+    },
+
+    'Th-231': {
+        'atomic number': 90,
+        'mass number': 231,
+        'mass': 231.0363046 * u.u,
+        'stable': False,
+        'half-life': 91872.0 * u.s,
+    },
+
+    'Th-232': {
+        'atomic number': 90,
+        'mass number': 232,
+        'mass': 232.0380558 * u.u,
+        'stable': False,
+        'abundance': 1,
+    },
+
+    'Th-233': {
+        'atomic number': 90,
+        'mass number': 233,
+        'mass': 233.0415823 * u.u,
+        'stable': False,
+        'half-life': 1309.8 * u.s,
+    },
+
+    'Th-234': {
+        'atomic number': 90,
+        'mass number': 234,
+        'mass': 234.0436014 * u.u,
+        'stable': False,
+        'half-life': 2082240.0 * u.s,
+    },
+
+    'Th-235': {
+        'atomic number': 90,
+        'mass number': 235,
+        'mass': 235.047255 * u.u,
+        'stable': False,
+        'half-life': 432.0 * u.s,
+    },
+
+    'Th-236': {
+        'atomic number': 90,
+        'mass number': 236,
+        'mass': 236.049657 * u.u,
+        'stable': False,
+        'half-life': 2238.0 * u.s,
+    },
+
+    'Th-237': {
+        'atomic number': 90,
+        'mass number': 237,
+        'mass': 237.053629 * u.u,
+        'stable': False,
+        'half-life': 288.0 * u.s,
+    },
+
+    'Th-238': {
+        'atomic number': 90,
+        'mass number': 238,
+        'mass': 238.0565 * u.u,
+        'stable': False,
+        'half-life': 564.0 * u.s,
+    },
+
+    'Th-239': {
+        'atomic number': 90,
+        'mass number': 239,
+        'mass': 239.06077 * u.u,
+        'stable': False,
+        'half-life': '2# m',
+    },
+
+    'Pa-212': {
+        'atomic number': 91,
+        'mass number': 212,
+        'mass': 212.023203 * u.u,
+        'stable': False,
+        'half-life': 0.0075 * u.s,
+    },
+
+    'Pa-213': {
+        'atomic number': 91,
+        'mass number': 213,
+        'mass': 213.021109 * u.u,
+        'stable': False,
+        'half-life': 0.007 * u.s,
+    },
+
+    'Pa-214': {
+        'atomic number': 91,
+        'mass number': 214,
+        'mass': 214.020918 * u.u,
+        'stable': False,
+        'half-life': 0.017 * u.s,
+    },
+
+    'Pa-215': {
+        'atomic number': 91,
+        'mass number': 215,
+        'mass': 215.019183 * u.u,
+        'stable': False,
+        'half-life': 0.014 * u.s,
+    },
+
+    'Pa-216': {
+        'atomic number': 91,
+        'mass number': 216,
+        'mass': 216.019109 * u.u,
+        'stable': False,
+        'half-life': 0.105 * u.s,
+    },
+
+    'Pa-217': {
+        'atomic number': 91,
+        'mass number': 217,
+        'mass': 217.018325 * u.u,
+        'stable': False,
+        'half-life': 0.00348 * u.s,
+    },
+
+    'Pa-218': {
+        'atomic number': 91,
+        'mass number': 218,
+        'mass': 218.020059 * u.u,
+        'stable': False,
+        'half-life': 0.000113 * u.s,
+    },
+
+    'Pa-219': {
+        'atomic number': 91,
+        'mass number': 219,
+        'mass': 219.019904 * u.u,
+        'stable': False,
+        'half-life': 5.3e-08 * u.s,
+    },
+
+    'Pa-220': {
+        'atomic number': 91,
+        'mass number': 220,
+        'mass': 220.021705 * u.u,
+        'stable': False,
+        'half-life': 7.8e-07 * u.s,
+    },
+
+    'Pa-221': {
+        'atomic number': 91,
+        'mass number': 221,
+        'mass': 221.021875 * u.u,
+        'stable': False,
+        'half-life': 5.9e-06 * u.s,
+    },
+
+    'Pa-222': {
+        'atomic number': 91,
+        'mass number': 222,
+        'mass': 222.023784 * u.u,
+        'stable': False,
+        'half-life': 0.0032 * u.s,
+    },
+
+    'Pa-223': {
+        'atomic number': 91,
+        'mass number': 223,
+        'mass': 223.023963 * u.u,
+        'stable': False,
+        'half-life': 0.0051 * u.s,
+    },
+
+    'Pa-224': {
+        'atomic number': 91,
+        'mass number': 224,
+        'mass': 224.0256176 * u.u,
+        'stable': False,
+        'half-life': 0.846 * u.s,
+    },
+
+    'Pa-225': {
+        'atomic number': 91,
+        'mass number': 225,
+        'mass': 225.026131 * u.u,
+        'stable': False,
+        'half-life': 1.7 * u.s,
+    },
+
+    'Pa-226': {
+        'atomic number': 91,
+        'mass number': 226,
+        'mass': 226.027948 * u.u,
+        'stable': False,
+        'half-life': 108.0 * u.s,
+    },
+
+    'Pa-227': {
+        'atomic number': 91,
+        'mass number': 227,
+        'mass': 227.0288054 * u.u,
+        'stable': False,
+        'half-life': 2298.0 * u.s,
+    },
+
+    'Pa-228': {
+        'atomic number': 91,
+        'mass number': 228,
+        'mass': 228.0310517 * u.u,
+        'stable': False,
+        'half-life': 79200.0 * u.s,
+    },
+
+    'Pa-229': {
+        'atomic number': 91,
+        'mass number': 229,
+        'mass': 229.0320972 * u.u,
+        'stable': False,
+        'half-life': 129600.0 * u.s,
+    },
+
+    'Pa-230': {
+        'atomic number': 91,
+        'mass number': 230,
+        'mass': 230.034541 * u.u,
+        'stable': False,
+        'half-life': 1503360.0 * u.s,
+    },
+
+    'Pa-231': {
+        'atomic number': 91,
+        'mass number': 231,
+        'mass': 231.0358842 * u.u,
+        'stable': False,
+        'abundance': 1,
+    },
+
+    'Pa-232': {
+        'atomic number': 91,
+        'mass number': 232,
+        'mass': 232.0385917 * u.u,
+        'stable': False,
+        'half-life': 114048.0 * u.s,
+    },
+
+    'Pa-233': {
+        'atomic number': 91,
+        'mass number': 233,
+        'mass': 233.0402472 * u.u,
+        'stable': False,
+        'half-life': 2330640.0 * u.s,
+    },
+
+    'Pa-234': {
+        'atomic number': 91,
+        'mass number': 234,
+        'mass': 234.0433072 * u.u,
+        'stable': False,
+        'half-life': 24120.0 * u.s,
+    },
+
+    'Pa-235': {
+        'atomic number': 91,
+        'mass number': 235,
+        'mass': 235.045399 * u.u,
+        'stable': False,
+        'half-life': 1464.0 * u.s,
+    },
+
+    'Pa-236': {
+        'atomic number': 91,
+        'mass number': 236,
+        'mass': 236.048668 * u.u,
+        'stable': False,
+        'half-life': 546.0 * u.s,
+    },
+
+    'Pa-237': {
+        'atomic number': 91,
+        'mass number': 237,
+        'mass': 237.051023 * u.u,
+        'stable': False,
+        'half-life': 522.0 * u.s,
+    },
+
+    'Pa-238': {
+        'atomic number': 91,
+        'mass number': 238,
+        'mass': 238.054637 * u.u,
+        'stable': False,
+        'half-life': 136.8 * u.s,
+    },
+
+    'Pa-239': {
+        'atomic number': 91,
+        'mass number': 239,
+        'mass': 239.05726 * u.u,
+        'stable': False,
+        'half-life': 6480.0 * u.s,
+    },
+
+    'Pa-240': {
+        'atomic number': 91,
+        'mass number': 240,
+        'mass': 240.06098 * u.u,
+        'stable': False,
+        'half-life': '2# m',
+    },
+
+    'Pa-241': {
+        'atomic number': 91,
+        'mass number': 241,
+        'mass': 241.06408 * u.u,
+        'stable': False,
+        'half-life': '2# m',
+    },
+
+    'U-217': {
+        'atomic number': 92,
+        'mass number': 217,
+        'mass': 217.02466 * u.u,
+        'stable': False,
+        'half-life': 0.0008 * u.s,
+    },
+
+    'U-218': {
+        'atomic number': 92,
+        'mass number': 218,
+        'mass': 218.023523 * u.u,
+        'stable': False,
+        'half-life': 0.00055 * u.s,
+    },
+
+    'U-219': {
+        'atomic number': 92,
+        'mass number': 219,
+        'mass': 219.024999 * u.u,
+        'stable': False,
+        'half-life': 5.5e-05 * u.s,
+    },
+
+    'U-220': {
+        'atomic number': 92,
+        'mass number': 220,
+        'mass': 220.02462 * u.u,
+        'stable': False,
+        'half-life': '60# ns',
+    },
+
+    'U-221': {
+        'atomic number': 92,
+        'mass number': 221,
+        'mass': 221.02628 * u.u,
+        'stable': False,
+        'half-life': 6.6e-07 * u.s,
+    },
+
+    'U-222': {
+        'atomic number': 92,
+        'mass number': 222,
+        'mass': 222.026 * u.u,
+        'stable': False,
+        'half-life': 4.7e-06 * u.s,
+    },
+
+    'U-223': {
+        'atomic number': 92,
+        'mass number': 223,
+        'mass': 223.027739 * u.u,
+        'stable': False,
+        'half-life': 2.1e-05 * u.s,
+    },
+
+    'U-224': {
+        'atomic number': 92,
+        'mass number': 224,
+        'mass': 224.027605 * u.u,
+        'stable': False,
+        'half-life': 0.000396 * u.s,
+    },
+
+    'U-225': {
+        'atomic number': 92,
+        'mass number': 225,
+        'mass': 225.029391 * u.u,
+        'stable': False,
+        'half-life': 0.061 * u.s,
+    },
+
+    'U-226': {
+        'atomic number': 92,
+        'mass number': 226,
+        'mass': 226.029339 * u.u,
+        'stable': False,
+        'half-life': 0.269 * u.s,
+    },
+
+    'U-227': {
+        'atomic number': 92,
+        'mass number': 227,
+        'mass': 227.031157 * u.u,
+        'stable': False,
+        'half-life': 66.0 * u.s,
+    },
+
+    'U-228': {
+        'atomic number': 92,
+        'mass number': 228,
+        'mass': 228.031371 * u.u,
+        'stable': False,
+        'half-life': 546.0 * u.s,
+    },
+
+    'U-229': {
+        'atomic number': 92,
+        'mass number': 229,
+        'mass': 229.0335063 * u.u,
+        'stable': False,
+        'half-life': 3468.0 * u.s,
+    },
+
+    'U-230': {
+        'atomic number': 92,
+        'mass number': 230,
+        'mass': 230.0339401 * u.u,
+        'stable': False,
+        'half-life': 1747872.0 * u.s,
+    },
+
+    'U-231': {
+        'atomic number': 92,
+        'mass number': 231,
+        'mass': 231.0362939 * u.u,
+        'stable': False,
+        'half-life': 362880.0 * u.s,
+    },
+
+    'U-232': {
+        'atomic number': 92,
+        'mass number': 232,
+        'mass': 232.0371563 * u.u,
+        'stable': False,
+        'half-life': 2174272201.4 * u.s,
+    },
+
+    'U-233': {
+        'atomic number': 92,
+        'mass number': 233,
+        'mass': 233.0396355 * u.u,
+        'stable': False,
+        'half-life': 5023862619200.0 * u.s,
+    },
+
+    'U-234': {
+        'atomic number': 92,
+        'mass number': 234,
+        'mass': 234.0409523 * u.u,
+        'stable': False,
+        'abundance': 5.4e-05,
+    },
+
+    'U-235': {
+        'atomic number': 92,
+        'mass number': 235,
+        'mass': 235.0439301 * u.u,
+        'stable': False,
+        'abundance': 0.007204,
+    },
+
+    'U-236': {
+        'atomic number': 92,
+        'mass number': 236,
+        'mass': 236.0455682 * u.u,
+        'stable': False,
+        'half-life': 739063206920000.0 * u.s,
+    },
+
+    'U-237': {
+        'atomic number': 92,
+        'mass number': 237,
+        'mass': 237.0487304 * u.u,
+        'stable': False,
+        'half-life': 583372.8 * u.s,
+    },
+
+    'U-238': {
+        'atomic number': 92,
+        'mass number': 238,
+        'mass': 238.0507884 * u.u,
+        'stable': False,
+        'abundance': 0.992742,
+    },
+
+    'U-239': {
+        'atomic number': 92,
+        'mass number': 239,
+        'mass': 239.0542935 * u.u,
+        'stable': False,
+        'half-life': 1407.0 * u.s,
+    },
+
+    'U-240': {
+        'atomic number': 92,
+        'mass number': 240,
+        'mass': 240.0565934 * u.u,
+        'stable': False,
+        'half-life': 50760.0 * u.s,
+    },
+
+    'U-241': {
+        'atomic number': 92,
+        'mass number': 241,
+        'mass': 241.06033 * u.u,
+        'stable': False,
+        'half-life': '5# m',
+    },
+
+    'U-242': {
+        'atomic number': 92,
+        'mass number': 242,
+        'mass': 242.06293 * u.u,
+        'stable': False,
+        'half-life': 1008.0 * u.s,
+    },
+
+    'U-243': {
+        'atomic number': 92,
+        'mass number': 243,
+        'mass': 243.06699 * u.u,
+        'stable': False,
+        'half-life': '10# m',
+    },
+
+    'Np-219': {
+        'atomic number': 93,
+        'mass number': 219,
+        'mass': 219.03143 * u.u,
+        'stable': False,
+        'half-life': '<5 us',
+    },
+
+    'Np-220': {
+        'atomic number': 93,
+        'mass number': 220,
+        'mass': 220.03254 * u.u,
+        'stable': False,
+        'half-life': '30# ns',
+    },
+
+    'Np-221': {
+        'atomic number': 93,
+        'mass number': 221,
+        'mass': 221.03204 * u.u,
+        'stable': False,
+        'half-life': '30# ns',
+    },
+
+    'Np-222': {
+        'atomic number': 93,
+        'mass number': 222,
+        'mass': 222.0333 * u.u,
+        'stable': False,
+        'half-life': '700# ns',
+    },
+
+    'Np-223': {
+        'atomic number': 93,
+        'mass number': 223,
+        'mass': 223.03285 * u.u,
+        'stable': False,
+        'half-life': '1# us',
+    },
+
+    'Np-224': {
+        'atomic number': 93,
+        'mass number': 224,
+        'mass': 224.03422 * u.u,
+        'stable': False,
+        'half-life': '100# us',
+    },
+
+    'Np-225': {
+        'atomic number': 93,
+        'mass number': 225,
+        'mass': 225.033911 * u.u,
+        'stable': False,
+        'half-life': 0.006 * u.s,
+    },
+
+    'Np-226': {
+        'atomic number': 93,
+        'mass number': 226,
+        'mass': 226.035188 * u.u,
+        'stable': False,
+        'half-life': 0.035 * u.s,
+    },
+
+    'Np-227': {
+        'atomic number': 93,
+        'mass number': 227,
+        'mass': 227.034957 * u.u,
+        'stable': False,
+        'half-life': 0.51 * u.s,
+    },
+
+    'Np-228': {
+        'atomic number': 93,
+        'mass number': 228,
+        'mass': 228.036067 * u.u,
+        'stable': False,
+        'half-life': 61.4 * u.s,
+    },
+
+    'Np-229': {
+        'atomic number': 93,
+        'mass number': 229,
+        'mass': 229.036264 * u.u,
+        'stable': False,
+        'half-life': 240.0 * u.s,
+    },
+
+    'Np-230': {
+        'atomic number': 93,
+        'mass number': 230,
+        'mass': 230.037828 * u.u,
+        'stable': False,
+        'half-life': 276.0 * u.s,
+    },
+
+    'Np-231': {
+        'atomic number': 93,
+        'mass number': 231,
+        'mass': 231.038245 * u.u,
+        'stable': False,
+        'half-life': 2928.0 * u.s,
+    },
+
+    'Np-232': {
+        'atomic number': 93,
+        'mass number': 232,
+        'mass': 232.04011 * u.u,
+        'stable': False,
+        'half-life': 882.0 * u.s,
+    },
+
+    'Np-233': {
+        'atomic number': 93,
+        'mass number': 233,
+        'mass': 233.040741 * u.u,
+        'stable': False,
+        'half-life': 2172.0 * u.s,
+    },
+
+    'Np-234': {
+        'atomic number': 93,
+        'mass number': 234,
+        'mass': 234.0428953 * u.u,
+        'stable': False,
+        'half-life': 380160.0 * u.s,
+    },
+
+    'Np-235': {
+        'atomic number': 93,
+        'mass number': 235,
+        'mass': 235.0440635 * u.u,
+        'stable': False,
+        'half-life': 34223040.0 * u.s,
+    },
+
+    'Np-236': {
+        'atomic number': 93,
+        'mass number': 236,
+        'mass': 236.04657 * u.u,
+        'stable': False,
+        'half-life': 4828209678000.0 * u.s,
+    },
+
+    'Np-237': {
+        'atomic number': 93,
+        'mass number': 237,
+        'mass': 237.0481736 * u.u,
+        'stable': False,
+        'half-life': 67658049344000.0 * u.s,
+    },
+
+    'Np-238': {
+        'atomic number': 93,
+        'mass number': 238,
+        'mass': 238.0509466 * u.u,
+        'stable': False,
+        'half-life': 181353.6 * u.s,
+    },
+
+    'Np-239': {
+        'atomic number': 93,
+        'mass number': 239,
+        'mass': 239.0529392 * u.u,
+        'stable': False,
+        'half-life': 203558.4 * u.s,
+    },
+
+    'Np-240': {
+        'atomic number': 93,
+        'mass number': 240,
+        'mass': 240.056165 * u.u,
+        'stable': False,
+        'half-life': 3714.0 * u.s,
+    },
+
+    'Np-241': {
+        'atomic number': 93,
+        'mass number': 241,
+        'mass': 241.058253 * u.u,
+        'stable': False,
+        'half-life': 834.0 * u.s,
+    },
+
+    'Np-242': {
+        'atomic number': 93,
+        'mass number': 242,
+        'mass': 242.06164 * u.u,
+        'stable': False,
+        'half-life': 132.0 * u.s,
+    },
+
+    'Np-243': {
+        'atomic number': 93,
+        'mass number': 243,
+        'mass': 243.06428 * u.u,
+        'stable': False,
+        'half-life': 111.0 * u.s,
+    },
+
+    'Np-244': {
+        'atomic number': 93,
+        'mass number': 244,
+        'mass': 244.06785 * u.u,
+        'stable': False,
+        'half-life': 137.4 * u.s,
+    },
+
+    'Np-245': {
+        'atomic number': 93,
+        'mass number': 245,
+        'mass': 245.0708 * u.u,
+        'stable': False,
+        'half-life': '2# m',
+    },
+
+    'Pu-228': {
+        'atomic number': 94,
+        'mass number': 228,
+        'mass': 228.038732 * u.u,
+        'stable': False,
+        'half-life': 2.1 * u.s,
+    },
+
+    'Pu-229': {
+        'atomic number': 94,
+        'mass number': 229,
+        'mass': 229.040144 * u.u,
+        'stable': False,
+        'half-life': 91.0 * u.s,
+    },
+
+    'Pu-230': {
+        'atomic number': 94,
+        'mass number': 230,
+        'mass': 230.03965 * u.u,
+        'stable': False,
+        'half-life': 102.0 * u.s,
+    },
+
+    'Pu-231': {
+        'atomic number': 94,
+        'mass number': 231,
+        'mass': 231.041102 * u.u,
+        'stable': False,
+        'half-life': 516.0 * u.s,
+    },
+
+    'Pu-232': {
+        'atomic number': 94,
+        'mass number': 232,
+        'mass': 232.041185 * u.u,
+        'stable': False,
+        'half-life': 2022.0 * u.s,
+    },
+
+    'Pu-233': {
+        'atomic number': 94,
+        'mass number': 233,
+        'mass': 233.042998 * u.u,
+        'stable': False,
+        'half-life': 1254.0 * u.s,
+    },
+
+    'Pu-234': {
+        'atomic number': 94,
+        'mass number': 234,
+        'mass': 234.0433174 * u.u,
+        'stable': False,
+        'half-life': 31680.0 * u.s,
+    },
+
+    'Pu-235': {
+        'atomic number': 94,
+        'mass number': 235,
+        'mass': 235.045286 * u.u,
+        'stable': False,
+        'half-life': 1518.0 * u.s,
+    },
+
+    'Pu-236': {
+        'atomic number': 94,
+        'mass number': 236,
+        'mass': 236.0460581 * u.u,
+        'stable': False,
+        'half-life': 90189694.508 * u.s,
+    },
+
+    'Pu-237': {
+        'atomic number': 94,
+        'mass number': 237,
+        'mass': 237.0484098 * u.u,
+        'stable': False,
+        'half-life': 3943296.0 * u.s,
+    },
+
+    'Pu-238': {
+        'atomic number': 94,
+        'mass number': 238,
+        'mass': 238.0495601 * u.u,
+        'stable': False,
+        'half-life': 2767542410.2 * u.s,
+    },
+
+    'Pu-239': {
+        'atomic number': 94,
+        'mass number': 239,
+        'mass': 239.0521636 * u.u,
+        'stable': False,
+        'half-life': 760837485860.0 * u.s,
+    },
+
+    'Pu-240': {
+        'atomic number': 94,
+        'mass number': 240,
+        'mass': 240.0538138 * u.u,
+        'stable': False,
+        'half-life': 207044991486.0 * u.s,
+    },
+
+    'Pu-241': {
+        'atomic number': 94,
+        'mass number': 241,
+        'mass': 241.0568517 * u.u,
+        'stable': False,
+        'half-life': 452179192.654 * u.s,
+    },
+
+    'Pu-242': {
+        'atomic number': 94,
+        'mass number': 242,
+        'mass': 242.0587428 * u.u,
+        'stable': False,
+        'half-life': 11833847250000.0 * u.s,
+    },
+
+    'Pu-243': {
+        'atomic number': 94,
+        'mass number': 243,
+        'mass': 243.0620036 * u.u,
+        'stable': False,
+        'half-life': 17841.6 * u.s,
+    },
+
+    'Pu-244': {
+        'atomic number': 94,
+        'mass number': 244,
+        'mass': 244.0642053 * u.u,
+        'stable': False,
+        'half-life': 2524554080000000.0 * u.s,
+    },
+
+    'Pu-245': {
+        'atomic number': 94,
+        'mass number': 245,
+        'mass': 245.067826 * u.u,
+        'stable': False,
+        'half-life': 37800.0 * u.s,
+    },
+
+    'Pu-246': {
+        'atomic number': 94,
+        'mass number': 246,
+        'mass': 246.070205 * u.u,
+        'stable': False,
+        'half-life': 936576.0 * u.s,
+    },
+
+    'Pu-247': {
+        'atomic number': 94,
+        'mass number': 247,
+        'mass': 247.07419 * u.u,
+        'stable': False,
+        'half-life': 196128.0 * u.s,
+    },
+
+    'Am-230': {
+        'atomic number': 95,
+        'mass number': 230,
+        'mass': 230.04609 * u.u,
+        'stable': False,
+        'half-life': 40.0 * u.s,
+    },
+
+    'Am-231': {
+        'atomic number': 95,
+        'mass number': 231,
+        'mass': 231.04556 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Am-232': {
+        'atomic number': 95,
+        'mass number': 232,
+        'mass': 232.04645 * u.u,
+        'stable': False,
+        'half-life': 78.6 * u.s,
+    },
+
+    'Am-233': {
+        'atomic number': 95,
+        'mass number': 233,
+        'mass': 233.04644 * u.u,
+        'stable': False,
+        'half-life': 192.0 * u.s,
+    },
+
+    'Am-234': {
+        'atomic number': 95,
+        'mass number': 234,
+        'mass': 234.04773 * u.u,
+        'stable': False,
+        'half-life': 139.2 * u.s,
+    },
+
+    'Am-235': {
+        'atomic number': 95,
+        'mass number': 235,
+        'mass': 235.047908 * u.u,
+        'stable': False,
+        'half-life': 618.0 * u.s,
+    },
+
+    'Am-236': {
+        'atomic number': 95,
+        'mass number': 236,
+        'mass': 236.04943 * u.u,
+        'stable': False,
+        'half-life': 216.0 * u.s,
+    },
+
+    'Am-237': {
+        'atomic number': 95,
+        'mass number': 237,
+        'mass': 237.049996 * u.u,
+        'stable': False,
+        'half-life': 4416.0 * u.s,
+    },
+
+    'Am-238': {
+        'atomic number': 95,
+        'mass number': 238,
+        'mass': 238.051985 * u.u,
+        'stable': False,
+        'half-life': 5880.0 * u.s,
+    },
+
+    'Am-239': {
+        'atomic number': 95,
+        'mass number': 239,
+        'mass': 239.0530247 * u.u,
+        'stable': False,
+        'half-life': 42840.0 * u.s,
+    },
+
+    'Am-240': {
+        'atomic number': 95,
+        'mass number': 240,
+        'mass': 240.0553 * u.u,
+        'stable': False,
+        'half-life': 182880.0 * u.s,
+    },
+
+    'Am-241': {
+        'atomic number': 95,
+        'mass number': 241,
+        'mass': 241.0568293 * u.u,
+        'stable': False,
+        'half-life': 13651526187.6 * u.s,
+    },
+
+    'Am-242': {
+        'atomic number': 95,
+        'mass number': 242,
+        'mass': 242.0595494 * u.u,
+        'stable': False,
+        'half-life': 57672.0 * u.s,
+    },
+
+    'Am-243': {
+        'atomic number': 95,
+        'mass number': 243,
+        'mass': 243.0613813 * u.u,
+        'stable': False,
+        'half-life': 232385203064.0 * u.s,
+    },
+
+    'Am-244': {
+        'atomic number': 95,
+        'mass number': 244,
+        'mass': 244.0642851 * u.u,
+        'stable': False,
+        'half-life': 36360.0 * u.s,
+    },
+
+    'Am-245': {
+        'atomic number': 95,
+        'mass number': 245,
+        'mass': 245.0664548 * u.u,
+        'stable': False,
+        'half-life': 7380.0 * u.s,
+    },
+
+    'Am-246': {
+        'atomic number': 95,
+        'mass number': 246,
+        'mass': 246.069775 * u.u,
+        'stable': False,
+        'half-life': 2340.0 * u.s,
+    },
+
+    'Am-247': {
+        'atomic number': 95,
+        'mass number': 247,
+        'mass': 247.07209 * u.u,
+        'stable': False,
+        'half-life': 1380.0 * u.s,
+    },
+
+    'Am-248': {
+        'atomic number': 95,
+        'mass number': 248,
+        'mass': 248.07575 * u.u,
+        'stable': False,
+        'half-life': '3# m',
+    },
+
+    'Am-249': {
+        'atomic number': 95,
+        'mass number': 249,
+        'mass': 249.07848 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Cm-232': {
+        'atomic number': 96,
+        'mass number': 232,
+        'mass': 232.04982 * u.u,
+        'stable': False,
+        'half-life': '10# s',
+    },
+
+    'Cm-233': {
+        'atomic number': 96,
+        'mass number': 233,
+        'mass': 233.05077 * u.u,
+        'stable': False,
+        'half-life': 27.0 * u.s,
+    },
+
+    'Cm-234': {
+        'atomic number': 96,
+        'mass number': 234,
+        'mass': 234.05016 * u.u,
+        'stable': False,
+        'half-life': 52.0 * u.s,
+    },
+
+    'Cm-235': {
+        'atomic number': 96,
+        'mass number': 235,
+        'mass': 235.05154 * u.u,
+        'stable': False,
+        'half-life': '5# m',
+    },
+
+    'Cm-236': {
+        'atomic number': 96,
+        'mass number': 236,
+        'mass': 236.051374 * u.u,
+        'stable': False,
+        'half-life': 408.0 * u.s,
+    },
+
+    'Cm-237': {
+        'atomic number': 96,
+        'mass number': 237,
+        'mass': 237.052869 * u.u,
+        'stable': False,
+        'half-life': '20# m',
+    },
+
+    'Cm-238': {
+        'atomic number': 96,
+        'mass number': 238,
+        'mass': 238.053081 * u.u,
+        'stable': False,
+        'half-life': 7920.0 * u.s,
+    },
+
+    'Cm-239': {
+        'atomic number': 96,
+        'mass number': 239,
+        'mass': 239.05491 * u.u,
+        'stable': False,
+        'half-life': 9000.0 * u.s,
+    },
+
+    'Cm-240': {
+        'atomic number': 96,
+        'mass number': 240,
+        'mass': 240.0555297 * u.u,
+        'stable': False,
+        'half-life': 2332800.0 * u.s,
+    },
+
+    'Cm-241': {
+        'atomic number': 96,
+        'mass number': 241,
+        'mass': 241.0576532 * u.u,
+        'stable': False,
+        'half-life': 2833920.0 * u.s,
+    },
+
+    'Cm-242': {
+        'atomic number': 96,
+        'mass number': 242,
+        'mass': 242.058836 * u.u,
+        'stable': False,
+        'half-life': 14065920.0 * u.s,
+    },
+
+    'Cm-243': {
+        'atomic number': 96,
+        'mass number': 243,
+        'mass': 243.0613893 * u.u,
+        'stable': False,
+        'half-life': 918306546.6 * u.s,
+    },
+
+    'Cm-244': {
+        'atomic number': 96,
+        'mass number': 244,
+        'mass': 244.0627528 * u.u,
+        'stable': False,
+        'half-life': 571180360.6 * u.s,
+    },
+
+    'Cm-245': {
+        'atomic number': 96,
+        'mass number': 245,
+        'mass': 245.0654915 * u.u,
+        'stable': False,
+        'half-life': 260344639500.0 * u.s,
+    },
+
+    'Cm-246': {
+        'atomic number': 96,
+        'mass number': 246,
+        'mass': 246.0672238 * u.u,
+        'stable': False,
+        'half-life': 148506893756.0 * u.s,
+    },
+
+    'Cm-247': {
+        'atomic number': 96,
+        'mass number': 247,
+        'mass': 247.0703541 * u.u,
+        'stable': False,
+        'half-life': 492288045600000.0 * u.s,
+    },
+
+    'Cm-248': {
+        'atomic number': 96,
+        'mass number': 248,
+        'mass': 248.0723499 * u.u,
+        'stable': False,
+        'half-life': 10981810248000.0 * u.s,
+    },
+
+    'Cm-249': {
+        'atomic number': 96,
+        'mass number': 249,
+        'mass': 249.0759548 * u.u,
+        'stable': False,
+        'half-life': 3849.0 * u.s,
+    },
+
+    'Cm-250': {
+        'atomic number': 96,
+        'mass number': 250,
+        'mass': 250.078358 * u.u,
+        'stable': False,
+        'half-life': '8300# y',
+    },
+
+    'Cm-251': {
+        'atomic number': 96,
+        'mass number': 251,
+        'mass': 251.082286 * u.u,
+        'stable': False,
+        'half-life': 1008.0 * u.s,
+    },
+
+    'Cm-252': {
+        'atomic number': 96,
+        'mass number': 252,
+        'mass': 252.08487 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Bk-234': {
+        'atomic number': 97,
+        'mass number': 234,
+        'mass': 234.05727 * u.u,
+        'stable': False,
+        'half-life': 20.0 * u.s,
+    },
+
+    'Bk-235': {
+        'atomic number': 97,
+        'mass number': 235,
+        'mass': 235.05658 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Bk-236': {
+        'atomic number': 97,
+        'mass number': 236,
+        'mass': 236.05748 * u.u,
+        'stable': False,
+        'half-life': '2# m',
+    },
+
+    'Bk-237': {
+        'atomic number': 97,
+        'mass number': 237,
+        'mass': 237.0571 * u.u,
+        'stable': False,
+        'half-life': '2# m',
+    },
+
+    'Bk-238': {
+        'atomic number': 97,
+        'mass number': 238,
+        'mass': 238.0582 * u.u,
+        'stable': False,
+        'half-life': 144.0 * u.s,
+    },
+
+    'Bk-239': {
+        'atomic number': 97,
+        'mass number': 239,
+        'mass': 239.05824 * u.u,
+        'stable': False,
+        'half-life': '4# m',
+    },
+
+    'Bk-240': {
+        'atomic number': 97,
+        'mass number': 240,
+        'mass': 240.05976 * u.u,
+        'stable': False,
+        'half-life': 288.0 * u.s,
+    },
+
+    'Bk-241': {
+        'atomic number': 97,
+        'mass number': 241,
+        'mass': 241.06016 * u.u,
+        'stable': False,
+        'half-life': 276.0 * u.s,
+    },
+
+    'Bk-242': {
+        'atomic number': 97,
+        'mass number': 242,
+        'mass': 242.06198 * u.u,
+        'stable': False,
+        'half-life': 420.0 * u.s,
+    },
+
+    'Bk-243': {
+        'atomic number': 97,
+        'mass number': 243,
+        'mass': 243.0630078 * u.u,
+        'stable': False,
+        'half-life': 16560.0 * u.s,
+    },
+
+    'Bk-244': {
+        'atomic number': 97,
+        'mass number': 244,
+        'mass': 244.065181 * u.u,
+        'stable': False,
+        'half-life': 18072.0 * u.s,
+    },
+
+    'Bk-245': {
+        'atomic number': 97,
+        'mass number': 245,
+        'mass': 245.0663618 * u.u,
+        'stable': False,
+        'half-life': 427680.0 * u.s,
+    },
+
+    'Bk-246': {
+        'atomic number': 97,
+        'mass number': 246,
+        'mass': 246.068673 * u.u,
+        'stable': False,
+        'half-life': 155520.0 * u.s,
+    },
+
+    'Bk-247': {
+        'atomic number': 97,
+        'mass number': 247,
+        'mass': 247.0703073 * u.u,
+        'stable': False,
+        'half-life': 43548557880.0 * u.s,
+    },
+
+    'Bk-248': {
+        'atomic number': 97,
+        'mass number': 248,
+        'mass': 248.073088 * u.u,
+        'stable': False,
+        'half-life': '>9 y',
+    },
+
+    'Bk-249': {
+        'atomic number': 97,
+        'mass number': 249,
+        'mass': 249.0749877 * u.u,
+        'stable': False,
+        'half-life': 28270080.0 * u.s,
+    },
+
+    'Bk-250': {
+        'atomic number': 97,
+        'mass number': 250,
+        'mass': 250.0783167 * u.u,
+        'stable': False,
+        'half-life': 11563.2 * u.s,
+    },
+
+    'Bk-251': {
+        'atomic number': 97,
+        'mass number': 251,
+        'mass': 251.080762 * u.u,
+        'stable': False,
+        'half-life': 3336.0 * u.s,
+    },
+
+    'Bk-252': {
+        'atomic number': 97,
+        'mass number': 252,
+        'mass': 252.08431 * u.u,
+        'stable': False,
+        'half-life': 108.0 * u.s,
+    },
+
+    'Bk-253': {
+        'atomic number': 97,
+        'mass number': 253,
+        'mass': 253.08688 * u.u,
+        'stable': False,
+        'half-life': '10# m',
+    },
+
+    'Bk-254': {
+        'atomic number': 97,
+        'mass number': 254,
+        'mass': 254.0906 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Cf-237': {
+        'atomic number': 98,
+        'mass number': 237,
+        'mass': 237.062198 * u.u,
+        'stable': False,
+        'half-life': 0.8 * u.s,
+    },
+
+    'Cf-238': {
+        'atomic number': 98,
+        'mass number': 238,
+        'mass': 238.06149 * u.u,
+        'stable': False,
+        'half-life': 0.0211 * u.s,
+    },
+
+    'Cf-239': {
+        'atomic number': 98,
+        'mass number': 239,
+        'mass': 239.06253 * u.u,
+        'stable': False,
+        'half-life': 60.0 * u.s,
+    },
+
+    'Cf-240': {
+        'atomic number': 98,
+        'mass number': 240,
+        'mass': 240.062256 * u.u,
+        'stable': False,
+        'half-life': 40.3 * u.s,
+    },
+
+    'Cf-241': {
+        'atomic number': 98,
+        'mass number': 241,
+        'mass': 241.06369 * u.u,
+        'stable': False,
+        'half-life': 141.0 * u.s,
+    },
+
+    'Cf-242': {
+        'atomic number': 98,
+        'mass number': 242,
+        'mass': 242.063754 * u.u,
+        'stable': False,
+        'half-life': 209.4 * u.s,
+    },
+
+    'Cf-243': {
+        'atomic number': 98,
+        'mass number': 243,
+        'mass': 243.06548 * u.u,
+        'stable': False,
+        'half-life': 642.0 * u.s,
+    },
+
+    'Cf-244': {
+        'atomic number': 98,
+        'mass number': 244,
+        'mass': 244.0660008 * u.u,
+        'stable': False,
+        'half-life': 1164.0 * u.s,
+    },
+
+    'Cf-245': {
+        'atomic number': 98,
+        'mass number': 245,
+        'mass': 245.0680487 * u.u,
+        'stable': False,
+        'half-life': 2700.0 * u.s,
+    },
+
+    'Cf-246': {
+        'atomic number': 98,
+        'mass number': 246,
+        'mass': 246.0688055 * u.u,
+        'stable': False,
+        'half-life': 128520.0 * u.s,
+    },
+
+    'Cf-247': {
+        'atomic number': 98,
+        'mass number': 247,
+        'mass': 247.070965 * u.u,
+        'stable': False,
+        'half-life': 11196.0 * u.s,
+    },
+
+    'Cf-248': {
+        'atomic number': 98,
+        'mass number': 248,
+        'mass': 248.0721851 * u.u,
+        'stable': False,
+        'half-life': 28814400.0 * u.s,
+    },
+
+    'Cf-249': {
+        'atomic number': 98,
+        'mass number': 249,
+        'mass': 249.0748539 * u.u,
+        'stable': False,
+        'half-life': 11076481026.0 * u.s,
+    },
+
+    'Cf-250': {
+        'atomic number': 98,
+        'mass number': 250,
+        'mass': 250.0764062 * u.u,
+        'stable': False,
+        'half-life': 412764592.08 * u.s,
+    },
+
+    'Cf-251': {
+        'atomic number': 98,
+        'mass number': 251,
+        'mass': 251.0795886 * u.u,
+        'stable': False,
+        'half-life': 28401233400.0 * u.s,
+    },
+
+    'Cf-252': {
+        'atomic number': 98,
+        'mass number': 252,
+        'mass': 252.0816272 * u.u,
+        'stable': False,
+        'half-life': 83468069.27 * u.s,
+    },
+
+    'Cf-253': {
+        'atomic number': 98,
+        'mass number': 253,
+        'mass': 253.0851345 * u.u,
+        'stable': False,
+        'half-life': 1538784.0 * u.s,
+    },
+
+    'Cf-254': {
+        'atomic number': 98,
+        'mass number': 254,
+        'mass': 254.087324 * u.u,
+        'stable': False,
+        'half-life': 5227200.0 * u.s,
+    },
+
+    'Cf-255': {
+        'atomic number': 98,
+        'mass number': 255,
+        'mass': 255.09105 * u.u,
+        'stable': False,
+        'half-life': 5100.0 * u.s,
+    },
+
+    'Cf-256': {
+        'atomic number': 98,
+        'mass number': 256,
+        'mass': 256.09344 * u.u,
+        'stable': False,
+        'half-life': 738.0 * u.s,
+    },
+
+    'Es-239': {
+        'atomic number': 99,
+        'mass number': 239,
+        'mass': 239.06823 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Es-240': {
+        'atomic number': 99,
+        'mass number': 240,
+        'mass': 240.06892 * u.u,
+        'stable': False,
+        'half-life': '1# s',
+    },
+
+    'Es-241': {
+        'atomic number': 99,
+        'mass number': 241,
+        'mass': 241.06856 * u.u,
+        'stable': False,
+        'half-life': 10.0 * u.s,
+    },
+
+    'Es-242': {
+        'atomic number': 99,
+        'mass number': 242,
+        'mass': 242.06957 * u.u,
+        'stable': False,
+        'half-life': 17.8 * u.s,
+    },
+
+    'Es-243': {
+        'atomic number': 99,
+        'mass number': 243,
+        'mass': 243.06951 * u.u,
+        'stable': False,
+        'half-life': 21.6 * u.s,
+    },
+
+    'Es-244': {
+        'atomic number': 99,
+        'mass number': 244,
+        'mass': 244.07088 * u.u,
+        'stable': False,
+        'half-life': 37.0 * u.s,
+    },
+
+    'Es-245': {
+        'atomic number': 99,
+        'mass number': 245,
+        'mass': 245.07125 * u.u,
+        'stable': False,
+        'half-life': 66.0 * u.s,
+    },
+
+    'Es-246': {
+        'atomic number': 99,
+        'mass number': 246,
+        'mass': 246.0729 * u.u,
+        'stable': False,
+        'half-life': 450.0 * u.s,
+    },
+
+    'Es-247': {
+        'atomic number': 99,
+        'mass number': 247,
+        'mass': 247.073622 * u.u,
+        'stable': False,
+        'half-life': 273.0 * u.s,
+    },
+
+    'Es-248': {
+        'atomic number': 99,
+        'mass number': 248,
+        'mass': 248.075471 * u.u,
+        'stable': False,
+        'half-life': 1440.0 * u.s,
+    },
+
+    'Es-249': {
+        'atomic number': 99,
+        'mass number': 249,
+        'mass': 249.076411 * u.u,
+        'stable': False,
+        'half-life': 6132.0 * u.s,
+    },
+
+    'Es-250': {
+        'atomic number': 99,
+        'mass number': 250,
+        'mass': 250.07861 * u.u,
+        'stable': False,
+        'half-life': 30960.0 * u.s,
+    },
+
+    'Es-251': {
+        'atomic number': 99,
+        'mass number': 251,
+        'mass': 251.0799936 * u.u,
+        'stable': False,
+        'half-life': 118800.0 * u.s,
+    },
+
+    'Es-252': {
+        'atomic number': 99,
+        'mass number': 252,
+        'mass': 252.08298 * u.u,
+        'stable': False,
+        'half-life': 40754880.0 * u.s,
+    },
+
+    'Es-253': {
+        'atomic number': 99,
+        'mass number': 253,
+        'mass': 253.0848257 * u.u,
+        'stable': False,
+        'half-life': 1768608.0 * u.s,
+    },
+
+    'Es-254': {
+        'atomic number': 99,
+        'mass number': 254,
+        'mass': 254.0880222 * u.u,
+        'stable': False,
+        'half-life': 23820480.0 * u.s,
+    },
+
+    'Es-255': {
+        'atomic number': 99,
+        'mass number': 255,
+        'mass': 255.090275 * u.u,
+        'stable': False,
+        'half-life': 3438720.0 * u.s,
+    },
+
+    'Es-256': {
+        'atomic number': 99,
+        'mass number': 256,
+        'mass': 256.0936 * u.u,
+        'stable': False,
+        'half-life': 1524.0 * u.s,
+    },
+
+    'Es-257': {
+        'atomic number': 99,
+        'mass number': 257,
+        'mass': 257.09598 * u.u,
+        'stable': False,
+        'half-life': 665280.0 * u.s,
+    },
+
+    'Es-258': {
+        'atomic number': 99,
+        'mass number': 258,
+        'mass': 258.09952 * u.u,
+        'stable': False,
+        'half-life': '3# m',
+    },
+
+    'Fm-241': {
+        'atomic number': 100,
+        'mass number': 241,
+        'mass': 241.07421 * u.u,
+        'stable': False,
+        'half-life': 0.00073 * u.s,
+    },
+
+    'Fm-242': {
+        'atomic number': 100,
+        'mass number': 242,
+        'mass': 242.07343 * u.u,
+        'stable': False,
+        'half-life': 0.0008 * u.s,
+    },
+
+    'Fm-243': {
+        'atomic number': 100,
+        'mass number': 243,
+        'mass': 243.07446 * u.u,
+        'stable': False,
+        'half-life': 0.231 * u.s,
+    },
+
+    'Fm-244': {
+        'atomic number': 100,
+        'mass number': 244,
+        'mass': 244.07404 * u.u,
+        'stable': False,
+        'half-life': 0.00312 * u.s,
+    },
+
+    'Fm-245': {
+        'atomic number': 100,
+        'mass number': 245,
+        'mass': 245.07535 * u.u,
+        'stable': False,
+        'half-life': 4.2 * u.s,
+    },
+
+    'Fm-246': {
+        'atomic number': 100,
+        'mass number': 246,
+        'mass': 246.07535 * u.u,
+        'stable': False,
+        'half-life': 1.54 * u.s,
+    },
+
+    'Fm-247': {
+        'atomic number': 100,
+        'mass number': 247,
+        'mass': 247.07694 * u.u,
+        'stable': False,
+        'half-life': 31.0 * u.s,
+    },
+
+    'Fm-248': {
+        'atomic number': 100,
+        'mass number': 248,
+        'mass': 248.0771865 * u.u,
+        'stable': False,
+        'half-life': 34.5 * u.s,
+    },
+
+    'Fm-249': {
+        'atomic number': 100,
+        'mass number': 249,
+        'mass': 249.0789275 * u.u,
+        'stable': False,
+        'half-life': 96.0 * u.s,
+    },
+
+    'Fm-250': {
+        'atomic number': 100,
+        'mass number': 250,
+        'mass': 250.079521 * u.u,
+        'stable': False,
+        'half-life': 1824.0 * u.s,
+    },
+
+    'Fm-251': {
+        'atomic number': 100,
+        'mass number': 251,
+        'mass': 251.08154 * u.u,
+        'stable': False,
+        'half-life': 19080.0 * u.s,
+    },
+
+    'Fm-252': {
+        'atomic number': 100,
+        'mass number': 252,
+        'mass': 252.0824671 * u.u,
+        'stable': False,
+        'half-life': 91404.0 * u.s,
+    },
+
+    'Fm-253': {
+        'atomic number': 100,
+        'mass number': 253,
+        'mass': 253.0851846 * u.u,
+        'stable': False,
+        'half-life': 259200.0 * u.s,
+    },
+
+    'Fm-254': {
+        'atomic number': 100,
+        'mass number': 254,
+        'mass': 254.0868544 * u.u,
+        'stable': False,
+        'half-life': 11664.0 * u.s,
+    },
+
+    'Fm-255': {
+        'atomic number': 100,
+        'mass number': 255,
+        'mass': 255.089964 * u.u,
+        'stable': False,
+        'half-life': 72252.0 * u.s,
+    },
+
+    'Fm-256': {
+        'atomic number': 100,
+        'mass number': 256,
+        'mass': 256.0917745 * u.u,
+        'stable': False,
+        'half-life': 9456.0 * u.s,
+    },
+
+    'Fm-257': {
+        'atomic number': 100,
+        'mass number': 257,
+        'mass': 257.0951061 * u.u,
+        'stable': False,
+        'half-life': 8683200.0 * u.s,
+    },
+
+    'Fm-258': {
+        'atomic number': 100,
+        'mass number': 258,
+        'mass': 258.09708 * u.u,
+        'stable': False,
+        'half-life': 0.00037 * u.s,
+    },
+
+    'Fm-259': {
+        'atomic number': 100,
+        'mass number': 259,
+        'mass': 259.1006 * u.u,
+        'stable': False,
+        'half-life': 1.5 * u.s,
+    },
+
+    'Fm-260': {
+        'atomic number': 100,
+        'mass number': 260,
+        'mass': 260.10281 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Md-245': {
+        'atomic number': 101,
+        'mass number': 245,
+        'mass': 245.08081 * u.u,
+        'stable': False,
+        'half-life': 0.4 * u.s,
+    },
+
+    'Md-246': {
+        'atomic number': 101,
+        'mass number': 246,
+        'mass': 246.08171 * u.u,
+        'stable': False,
+        'half-life': 0.92 * u.s,
+    },
+
+    'Md-247': {
+        'atomic number': 101,
+        'mass number': 247,
+        'mass': 247.08152 * u.u,
+        'stable': False,
+        'half-life': 1.2 * u.s,
+    },
+
+    'Md-248': {
+        'atomic number': 101,
+        'mass number': 248,
+        'mass': 248.08282 * u.u,
+        'stable': False,
+        'half-life': 7.0 * u.s,
+    },
+
+    'Md-249': {
+        'atomic number': 101,
+        'mass number': 249,
+        'mass': 249.08291 * u.u,
+        'stable': False,
+        'half-life': 23.4 * u.s,
+    },
+
+    'Md-250': {
+        'atomic number': 101,
+        'mass number': 250,
+        'mass': 250.08441 * u.u,
+        'stable': False,
+        'half-life': 52.0 * u.s,
+    },
+
+    'Md-251': {
+        'atomic number': 101,
+        'mass number': 251,
+        'mass': 251.084774 * u.u,
+        'stable': False,
+        'half-life': 252.6 * u.s,
+    },
+
+    'Md-252': {
+        'atomic number': 101,
+        'mass number': 252,
+        'mass': 252.08643 * u.u,
+        'stable': False,
+        'half-life': 138.0 * u.s,
+    },
+
+    'Md-253': {
+        'atomic number': 101,
+        'mass number': 253,
+        'mass': 253.087144 * u.u,
+        'stable': False,
+        'half-life': 720.0 * u.s,
+    },
+
+    'Md-254': {
+        'atomic number': 101,
+        'mass number': 254,
+        'mass': 254.08959 * u.u,
+        'stable': False,
+        'half-life': 600.0 * u.s,
+    },
+
+    'Md-255': {
+        'atomic number': 101,
+        'mass number': 255,
+        'mass': 255.0910841 * u.u,
+        'stable': False,
+        'half-life': 1620.0 * u.s,
+    },
+
+    'Md-256': {
+        'atomic number': 101,
+        'mass number': 256,
+        'mass': 256.09389 * u.u,
+        'stable': False,
+        'half-life': '30# m',
+    },
+
+    'Md-257': {
+        'atomic number': 101,
+        'mass number': 257,
+        'mass': 257.0955424 * u.u,
+        'stable': False,
+        'half-life': 19872.0 * u.s,
+    },
+
+    'Md-258': {
+        'atomic number': 101,
+        'mass number': 258,
+        'mass': 258.0984315 * u.u,
+        'stable': False,
+        'half-life': 4449600.0 * u.s,
+    },
+
+    'Md-259': {
+        'atomic number': 101,
+        'mass number': 259,
+        'mass': 259.10051 * u.u,
+        'stable': False,
+        'half-life': 5760.0 * u.s,
+    },
+
+    'Md-260': {
+        'atomic number': 101,
+        'mass number': 260,
+        'mass': 260.10365 * u.u,
+        'stable': False,
+        'half-life': 2401920.0 * u.s,
+    },
+
+    'Md-261': {
+        'atomic number': 101,
+        'mass number': 261,
+        'mass': 261.10583 * u.u,
+        'stable': False,
+        'half-life': '40# m',
+    },
+
+    'Md-262': {
+        'atomic number': 101,
+        'mass number': 262,
+        'mass': 262.1091 * u.u,
+        'stable': False,
+        'half-life': '3# m',
+    },
+
+    'No-248': {
+        'atomic number': 102,
+        'mass number': 248,
+        'mass': 248.08655 * u.u,
+        'stable': False,
+    },
+
+    'No-249': {
+        'atomic number': 102,
+        'mass number': 249,
+        'mass': 249.0878 * u.u,
+        'stable': False,
+        'half-life': 5.7e-05 * u.s,
+    },
+
+    'No-250': {
+        'atomic number': 102,
+        'mass number': 250,
+        'mass': 250.08756 * u.u,
+        'stable': False,
+        'half-life': 5e-06 * u.s,
+    },
+
+    'No-251': {
+        'atomic number': 102,
+        'mass number': 251,
+        'mass': 251.08894 * u.u,
+        'stable': False,
+        'half-life': 0.8 * u.s,
+    },
+
+    'No-252': {
+        'atomic number': 102,
+        'mass number': 252,
+        'mass': 252.088967 * u.u,
+        'stable': False,
+        'half-life': 2.45 * u.s,
+    },
+
+    'No-253': {
+        'atomic number': 102,
+        'mass number': 253,
+        'mass': 253.0905641 * u.u,
+        'stable': False,
+        'half-life': 93.6 * u.s,
+    },
+
+    'No-254': {
+        'atomic number': 102,
+        'mass number': 254,
+        'mass': 254.090956 * u.u,
+        'stable': False,
+        'half-life': 51.2 * u.s,
+    },
+
+    'No-255': {
+        'atomic number': 102,
+        'mass number': 255,
+        'mass': 255.093191 * u.u,
+        'stable': False,
+        'half-life': 211.2 * u.s,
+    },
+
+    'No-256': {
+        'atomic number': 102,
+        'mass number': 256,
+        'mass': 256.0942829 * u.u,
+        'stable': False,
+        'half-life': 2.91 * u.s,
+    },
+
+    'No-257': {
+        'atomic number': 102,
+        'mass number': 257,
+        'mass': 257.0968878 * u.u,
+        'stable': False,
+        'half-life': 24.5 * u.s,
+    },
+
+    'No-258': {
+        'atomic number': 102,
+        'mass number': 258,
+        'mass': 258.09821 * u.u,
+        'stable': False,
+        'half-life': 0.0012 * u.s,
+    },
+
+    'No-259': {
+        'atomic number': 102,
+        'mass number': 259,
+        'mass': 259.10103 * u.u,
+        'stable': False,
+        'half-life': 3480.0 * u.s,
+    },
+
+    'No-260': {
+        'atomic number': 102,
+        'mass number': 260,
+        'mass': 260.10264 * u.u,
+        'stable': False,
+        'half-life': 0.106 * u.s,
+    },
+
+    'No-261': {
+        'atomic number': 102,
+        'mass number': 261,
+        'mass': 261.1057 * u.u,
+        'stable': False,
+        'half-life': '3# h',
+    },
+
+    'No-262': {
+        'atomic number': 102,
+        'mass number': 262,
+        'mass': 262.10746 * u.u,
+        'stable': False,
+        'half-life': '~5 ms',
+    },
+
+    'No-263': {
+        'atomic number': 102,
+        'mass number': 263,
+        'mass': 263.11071 * u.u,
+        'stable': False,
+        'half-life': '20# m',
+    },
+
+    'No-264': {
+        'atomic number': 102,
+        'mass number': 264,
+        'mass': 264.11273 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Lr-251': {
+        'atomic number': 103,
+        'mass number': 251,
+        'mass': 251.09418 * u.u,
+        'stable': False,
+        'half-life': '150# us',
+    },
+
+    'Lr-252': {
+        'atomic number': 103,
+        'mass number': 252,
+        'mass': 252.09526 * u.u,
+        'stable': False,
+        'half-life': 0.369 * u.s,
+    },
+
+    'Lr-253': {
+        'atomic number': 103,
+        'mass number': 253,
+        'mass': 253.09509 * u.u,
+        'stable': False,
+        'half-life': 0.632 * u.s,
+    },
+
+    'Lr-254': {
+        'atomic number': 103,
+        'mass number': 254,
+        'mass': 254.09648 * u.u,
+        'stable': False,
+        'half-life': 17.1 * u.s,
+    },
+
+    'Lr-255': {
+        'atomic number': 103,
+        'mass number': 255,
+        'mass': 255.096562 * u.u,
+        'stable': False,
+        'half-life': 31.1 * u.s,
+    },
+
+    'Lr-256': {
+        'atomic number': 103,
+        'mass number': 256,
+        'mass': 256.098494 * u.u,
+        'stable': False,
+        'half-life': 27.0 * u.s,
+    },
+
+    'Lr-257': {
+        'atomic number': 103,
+        'mass number': 257,
+        'mass': 257.099418 * u.u,
+        'stable': False,
+        'half-life': 6.0 * u.s,
+    },
+
+    'Lr-258': {
+        'atomic number': 103,
+        'mass number': 258,
+        'mass': 258.10176 * u.u,
+        'stable': False,
+        'half-life': 3.6 * u.s,
+    },
+
+    'Lr-259': {
+        'atomic number': 103,
+        'mass number': 259,
+        'mass': 259.102902 * u.u,
+        'stable': False,
+        'half-life': 6.2 * u.s,
+    },
+
+    'Lr-260': {
+        'atomic number': 103,
+        'mass number': 260,
+        'mass': 260.1055 * u.u,
+        'stable': False,
+        'half-life': 180.0 * u.s,
+    },
+
+    'Lr-261': {
+        'atomic number': 103,
+        'mass number': 261,
+        'mass': 261.10688 * u.u,
+        'stable': False,
+        'half-life': 2340.0 * u.s,
+    },
+
+    'Lr-262': {
+        'atomic number': 103,
+        'mass number': 262,
+        'mass': 262.10961 * u.u,
+        'stable': False,
+        'half-life': '~4 h',
+    },
+
+    'Lr-263': {
+        'atomic number': 103,
+        'mass number': 263,
+        'mass': 263.11136 * u.u,
+        'stable': False,
+        'half-life': '5# h',
+    },
+
+    'Lr-264': {
+        'atomic number': 103,
+        'mass number': 264,
+        'mass': 264.1142 * u.u,
+        'stable': False,
+        'half-life': '10# h',
+    },
+
+    'Lr-265': {
+        'atomic number': 103,
+        'mass number': 265,
+        'mass': 265.11619 * u.u,
+        'stable': False,
+        'half-life': '10# h',
+    },
+
+    'Lr-266': {
+        'atomic number': 103,
+        'mass number': 266,
+        'mass': 266.11983 * u.u,
+        'stable': False,
+        'half-life': 75600.0 * u.s,
+    },
+
+    'Rf-253': {
+        'atomic number': 104,
+        'mass number': 253,
+        'mass': 253.10044 * u.u,
+        'stable': False,
+        'half-life': 0.013 * u.s,
+    },
+
+    'Rf-254': {
+        'atomic number': 104,
+        'mass number': 254,
+        'mass': 254.10005 * u.u,
+        'stable': False,
+        'half-life': 2.32e-05 * u.s,
+    },
+
+    'Rf-255': {
+        'atomic number': 104,
+        'mass number': 255,
+        'mass': 255.10127 * u.u,
+        'stable': False,
+        'half-life': 1.66 * u.s,
+    },
+
+    'Rf-256': {
+        'atomic number': 104,
+        'mass number': 256,
+        'mass': 256.101152 * u.u,
+        'stable': False,
+        'half-life': 0.00667 * u.s,
+    },
+
+    'Rf-257': {
+        'atomic number': 104,
+        'mass number': 257,
+        'mass': 257.102918 * u.u,
+        'stable': False,
+        'half-life': 4.82 * u.s,
+    },
+
+    'Rf-258': {
+        'atomic number': 104,
+        'mass number': 258,
+        'mass': 258.103428 * u.u,
+        'stable': False,
+        'half-life': 0.0138 * u.s,
+    },
+
+    'Rf-259': {
+        'atomic number': 104,
+        'mass number': 259,
+        'mass': 259.105596 * u.u,
+        'stable': False,
+        'half-life': 2.63 * u.s,
+    },
+
+    'Rf-260': {
+        'atomic number': 104,
+        'mass number': 260,
+        'mass': 260.10644 * u.u,
+        'stable': False,
+        'half-life': 0.021 * u.s,
+    },
+
+    'Rf-261': {
+        'atomic number': 104,
+        'mass number': 261,
+        'mass': 261.108773 * u.u,
+        'stable': False,
+        'half-life': 2.2 * u.s,
+    },
+
+    'Rf-262': {
+        'atomic number': 104,
+        'mass number': 262,
+        'mass': 262.10992 * u.u,
+        'stable': False,
+        'half-life': 0.25 * u.s,
+    },
+
+    'Rf-263': {
+        'atomic number': 104,
+        'mass number': 263,
+        'mass': 263.11249 * u.u,
+        'stable': False,
+        'half-life': 660.0 * u.s,
+    },
+
+    'Rf-264': {
+        'atomic number': 104,
+        'mass number': 264,
+        'mass': 264.11388 * u.u,
+        'stable': False,
+        'half-life': '1# h',
+    },
+
+    'Rf-265': {
+        'atomic number': 104,
+        'mass number': 265,
+        'mass': 265.11668 * u.u,
+        'stable': False,
+        'half-life': 96.0 * u.s,
+    },
+
+    'Rf-266': {
+        'atomic number': 104,
+        'mass number': 266,
+        'mass': 266.11817 * u.u,
+        'stable': False,
+        'half-life': '4# h',
+    },
+
+    'Rf-267': {
+        'atomic number': 104,
+        'mass number': 267,
+        'mass': 267.12179 * u.u,
+        'stable': False,
+        'half-life': 9000.0 * u.s,
+    },
+
+    'Rf-268': {
+        'atomic number': 104,
+        'mass number': 268,
+        'mass': 268.12397 * u.u,
+        'stable': False,
+        'half-life': '1# h',
+    },
+
+    'Db-255': {
+        'atomic number': 105,
+        'mass number': 255,
+        'mass': 255.10707 * u.u,
+        'stable': False,
+        'half-life': 1.7 * u.s,
+    },
+
+    'Db-256': {
+        'atomic number': 105,
+        'mass number': 256,
+        'mass': 256.10789 * u.u,
+        'stable': False,
+        'half-life': 1.7 * u.s,
+    },
+
+    'Db-257': {
+        'atomic number': 105,
+        'mass number': 257,
+        'mass': 257.10758 * u.u,
+        'stable': False,
+        'half-life': 2.3 * u.s,
+    },
+
+    'Db-258': {
+        'atomic number': 105,
+        'mass number': 258,
+        'mass': 258.10928 * u.u,
+        'stable': False,
+        'half-life': 4.5 * u.s,
+    },
+
+    'Db-259': {
+        'atomic number': 105,
+        'mass number': 259,
+        'mass': 259.109492 * u.u,
+        'stable': False,
+        'half-life': 0.51 * u.s,
+    },
+
+    'Db-260': {
+        'atomic number': 105,
+        'mass number': 260,
+        'mass': 260.1113 * u.u,
+        'stable': False,
+        'half-life': 1.52 * u.s,
+    },
+
+    'Db-261': {
+        'atomic number': 105,
+        'mass number': 261,
+        'mass': 261.11192 * u.u,
+        'stable': False,
+        'half-life': 4.7 * u.s,
+    },
+
+    'Db-262': {
+        'atomic number': 105,
+        'mass number': 262,
+        'mass': 262.11407 * u.u,
+        'stable': False,
+        'half-life': 34.0 * u.s,
+    },
+
+    'Db-263': {
+        'atomic number': 105,
+        'mass number': 263,
+        'mass': 263.11499 * u.u,
+        'stable': False,
+        'half-life': 29.0 * u.s,
+    },
+
+    'Db-264': {
+        'atomic number': 105,
+        'mass number': 264,
+        'mass': 264.11741 * u.u,
+        'stable': False,
+        'half-life': '3# m',
+    },
+
+    'Db-265': {
+        'atomic number': 105,
+        'mass number': 265,
+        'mass': 265.11861 * u.u,
+        'stable': False,
+        'half-life': '15# m',
+    },
+
+    'Db-266': {
+        'atomic number': 105,
+        'mass number': 266,
+        'mass': 266.12103 * u.u,
+        'stable': False,
+        'half-life': 4800.0 * u.s,
+    },
+
+    'Db-267': {
+        'atomic number': 105,
+        'mass number': 267,
+        'mass': 267.12247 * u.u,
+        'stable': False,
+        'half-life': 6000.0 * u.s,
+    },
+
+    'Db-268': {
+        'atomic number': 105,
+        'mass number': 268,
+        'mass': 268.12567 * u.u,
+        'stable': False,
+        'half-life': 104400.0 * u.s,
+    },
+
+    'Db-269': {
+        'atomic number': 105,
+        'mass number': 269,
+        'mass': 269.12791 * u.u,
+        'stable': False,
+        'half-life': '3# h',
+    },
+
+    'Db-270': {
+        'atomic number': 105,
+        'mass number': 270,
+        'mass': 270.13136 * u.u,
+        'stable': False,
+        'half-life': 7200.0 * u.s,
+    },
+
+    'Sg-258': {
+        'atomic number': 106,
+        'mass number': 258,
+        'mass': 258.11298 * u.u,
+        'stable': False,
+        'half-life': 0.0027 * u.s,
+    },
+
+    'Sg-259': {
+        'atomic number': 106,
+        'mass number': 259,
+        'mass': 259.1144 * u.u,
+        'stable': False,
+        'half-life': 0.402 * u.s,
+    },
+
+    'Sg-260': {
+        'atomic number': 106,
+        'mass number': 260,
+        'mass': 260.114384 * u.u,
+        'stable': False,
+        'half-life': 0.00495 * u.s,
+    },
+
+    'Sg-261': {
+        'atomic number': 106,
+        'mass number': 261,
+        'mass': 261.115949 * u.u,
+        'stable': False,
+        'half-life': 0.183 * u.s,
+    },
+
+    'Sg-262': {
+        'atomic number': 106,
+        'mass number': 262,
+        'mass': 262.116337 * u.u,
+        'stable': False,
+        'half-life': 0.0109 * u.s,
+    },
+
+    'Sg-263': {
+        'atomic number': 106,
+        'mass number': 263,
+        'mass': 263.11829 * u.u,
+        'stable': False,
+        'half-life': 0.94 * u.s,
+    },
+
+    'Sg-264': {
+        'atomic number': 106,
+        'mass number': 264,
+        'mass': 264.11893 * u.u,
+        'stable': False,
+        'half-life': 0.047 * u.s,
+    },
+
+    'Sg-265': {
+        'atomic number': 106,
+        'mass number': 265,
+        'mass': 265.12109 * u.u,
+        'stable': False,
+        'half-life': 9.2 * u.s,
+    },
+
+    'Sg-266': {
+        'atomic number': 106,
+        'mass number': 266,
+        'mass': 266.12198 * u.u,
+        'stable': False,
+        'half-life': 0.39 * u.s,
+    },
+
+    'Sg-267': {
+        'atomic number': 106,
+        'mass number': 267,
+        'mass': 267.12436 * u.u,
+        'stable': False,
+        'half-life': 108.0 * u.s,
+    },
+
+    'Sg-268': {
+        'atomic number': 106,
+        'mass number': 268,
+        'mass': 268.12539 * u.u,
+        'stable': False,
+        'half-life': '2# m',
+    },
+
+    'Sg-269': {
+        'atomic number': 106,
+        'mass number': 269,
+        'mass': 269.12863 * u.u,
+        'stable': False,
+        'half-life': 300.0 * u.s,
+    },
+
+    'Sg-270': {
+        'atomic number': 106,
+        'mass number': 270,
+        'mass': 270.13043 * u.u,
+        'stable': False,
+        'half-life': '3# m',
+    },
+
+    'Sg-271': {
+        'atomic number': 106,
+        'mass number': 271,
+        'mass': 271.13393 * u.u,
+        'stable': False,
+        'half-life': 186.0 * u.s,
+    },
+
+    'Sg-272': {
+        'atomic number': 106,
+        'mass number': 272,
+        'mass': 272.13589 * u.u,
+        'stable': False,
+        'half-life': '4# m',
+    },
+
+    'Sg-273': {
+        'atomic number': 106,
+        'mass number': 273,
+        'mass': 273.13958 * u.u,
+        'stable': False,
+        'half-life': '5# m',
+    },
+
+    'Bh-260': {
+        'atomic number': 107,
+        'mass number': 260,
+        'mass': 260.12166 * u.u,
+        'stable': False,
+        'half-life': 0.041 * u.s,
+    },
+
+    'Bh-261': {
+        'atomic number': 107,
+        'mass number': 261,
+        'mass': 261.12145 * u.u,
+        'stable': False,
+        'half-life': 0.0128 * u.s,
+    },
+
+    'Bh-262': {
+        'atomic number': 107,
+        'mass number': 262,
+        'mass': 262.12297 * u.u,
+        'stable': False,
+        'half-life': 0.084 * u.s,
+    },
+
+    'Bh-263': {
+        'atomic number': 107,
+        'mass number': 263,
+        'mass': 263.12292 * u.u,
+        'stable': False,
+        'half-life': '200# ms',
+    },
+
+    'Bh-264': {
+        'atomic number': 107,
+        'mass number': 264,
+        'mass': 264.12459 * u.u,
+        'stable': False,
+        'half-life': 1.07 * u.s,
+    },
+
+    'Bh-265': {
+        'atomic number': 107,
+        'mass number': 265,
+        'mass': 265.12491 * u.u,
+        'stable': False,
+        'half-life': 1.19 * u.s,
+    },
+
+    'Bh-266': {
+        'atomic number': 107,
+        'mass number': 266,
+        'mass': 266.12679 * u.u,
+        'stable': False,
+        'half-life': 2.5 * u.s,
+    },
+
+    'Bh-267': {
+        'atomic number': 107,
+        'mass number': 267,
+        'mass': 267.1275 * u.u,
+        'stable': False,
+        'half-life': 22.0 * u.s,
+    },
+
+    'Bh-268': {
+        'atomic number': 107,
+        'mass number': 268,
+        'mass': 268.12969 * u.u,
+        'stable': False,
+        'half-life': '25# s',
+    },
+
+    'Bh-269': {
+        'atomic number': 107,
+        'mass number': 269,
+        'mass': 269.13042 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Bh-270': {
+        'atomic number': 107,
+        'mass number': 270,
+        'mass': 270.13336 * u.u,
+        'stable': False,
+        'half-life': 228.0 * u.s,
+    },
+
+    'Bh-271': {
+        'atomic number': 107,
+        'mass number': 271,
+        'mass': 271.13526 * u.u,
+        'stable': False,
+        'half-life': 600.0 * u.s,
+    },
+
+    'Bh-272': {
+        'atomic number': 107,
+        'mass number': 272,
+        'mass': 272.13826 * u.u,
+        'stable': False,
+        'half-life': 11.3 * u.s,
+    },
+
+    'Bh-273': {
+        'atomic number': 107,
+        'mass number': 273,
+        'mass': 273.14024 * u.u,
+        'stable': False,
+        'half-life': '1# m',
+    },
+
+    'Bh-274': {
+        'atomic number': 107,
+        'mass number': 274,
+        'mass': 274.14355 * u.u,
+        'stable': False,
+        'half-life': 60.0 * u.s,
+    },
+
+    'Bh-275': {
+        'atomic number': 107,
+        'mass number': 275,
+        'mass': 275.14567 * u.u,
+        'stable': False,
+        'half-life': '5# m',
+    },
+
+    'Hs-263': {
+        'atomic number': 108,
+        'mass number': 263,
+        'mass': 263.12852 * u.u,
+        'stable': False,
+        'half-life': 0.00076 * u.s,
+    },
+
+    'Hs-264': {
+        'atomic number': 108,
+        'mass number': 264,
+        'mass': 264.128357 * u.u,
+        'stable': False,
+        'half-life': 0.00054 * u.s,
+    },
+
+    'Hs-265': {
+        'atomic number': 108,
+        'mass number': 265,
+        'mass': 265.129793 * u.u,
+        'stable': False,
+        'half-life': 0.00196 * u.s,
+    },
+
+    'Hs-266': {
+        'atomic number': 108,
+        'mass number': 266,
+        'mass': 266.130046 * u.u,
+        'stable': False,
+        'half-life': 0.00302 * u.s,
+    },
+
+    'Hs-267': {
+        'atomic number': 108,
+        'mass number': 267,
+        'mass': 267.13167 * u.u,
+        'stable': False,
+        'half-life': 0.055 * u.s,
+    },
+
+    'Hs-268': {
+        'atomic number': 108,
+        'mass number': 268,
+        'mass': 268.13186 * u.u,
+        'stable': False,
+        'half-life': 1.42 * u.s,
+    },
+
+    'Hs-269': {
+        'atomic number': 108,
+        'mass number': 269,
+        'mass': 269.13375 * u.u,
+        'stable': False,
+        'half-life': 16.0 * u.s,
+    },
+
+    'Hs-270': {
+        'atomic number': 108,
+        'mass number': 270,
+        'mass': 270.13429 * u.u,
+        'stable': False,
+        'half-life': 9.0 * u.s,
+    },
+
+    'Hs-271': {
+        'atomic number': 108,
+        'mass number': 271,
+        'mass': 271.13717 * u.u,
+        'stable': False,
+        'half-life': '10# s',
+    },
+
+    'Hs-272': {
+        'atomic number': 108,
+        'mass number': 272,
+        'mass': 272.1385 * u.u,
+        'stable': False,
+        'half-life': '10# s',
+    },
+
+    'Hs-273': {
+        'atomic number': 108,
+        'mass number': 273,
+        'mass': 273.14168 * u.u,
+        'stable': False,
+        'half-life': 1.06 * u.s,
+    },
+
+    'Hs-274': {
+        'atomic number': 108,
+        'mass number': 274,
+        'mass': 274.1433 * u.u,
+        'stable': False,
+        'half-life': '500# ms',
+    },
+
+    'Hs-275': {
+        'atomic number': 108,
+        'mass number': 275,
+        'mass': 275.14667 * u.u,
+        'stable': False,
+        'half-life': 0.29 * u.s,
+    },
+
+    'Hs-276': {
+        'atomic number': 108,
+        'mass number': 276,
+        'mass': 276.14846 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'Hs-277': {
+        'atomic number': 108,
+        'mass number': 277,
+        'mass': 277.1519 * u.u,
+        'stable': False,
+        'half-life': 0.011 * u.s,
+    },
+
+    'Mt-265': {
+        'atomic number': 109,
+        'mass number': 265,
+        'mass': 265.136 * u.u,
+        'stable': False,
+        'half-life': '2# ms',
+    },
+
+    'Mt-266': {
+        'atomic number': 109,
+        'mass number': 266,
+        'mass': 266.13737 * u.u,
+        'stable': False,
+        'half-life': 0.0012 * u.s,
+    },
+
+    'Mt-267': {
+        'atomic number': 109,
+        'mass number': 267,
+        'mass': 267.13719 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Mt-268': {
+        'atomic number': 109,
+        'mass number': 268,
+        'mass': 268.13865 * u.u,
+        'stable': False,
+        'half-life': 0.027 * u.s,
+    },
+
+    'Mt-269': {
+        'atomic number': 109,
+        'mass number': 269,
+        'mass': 269.13882 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'Mt-270': {
+        'atomic number': 109,
+        'mass number': 270,
+        'mass': 270.14033 * u.u,
+        'stable': False,
+        'half-life': 0.0063 * u.s,
+    },
+
+    'Mt-271': {
+        'atomic number': 109,
+        'mass number': 271,
+        'mass': 271.14074 * u.u,
+        'stable': False,
+        'half-life': '400# ms',
+    },
+
+    'Mt-272': {
+        'atomic number': 109,
+        'mass number': 272,
+        'mass': 272.14341 * u.u,
+        'stable': False,
+        'half-life': '400# ms',
+    },
+
+    'Mt-273': {
+        'atomic number': 109,
+        'mass number': 273,
+        'mass': 273.1444 * u.u,
+        'stable': False,
+        'half-life': '800# ms',
+    },
+
+    'Mt-274': {
+        'atomic number': 109,
+        'mass number': 274,
+        'mass': 274.14724 * u.u,
+        'stable': False,
+        'half-life': 0.85 * u.s,
+    },
+
+    'Mt-275': {
+        'atomic number': 109,
+        'mass number': 275,
+        'mass': 275.14882 * u.u,
+        'stable': False,
+        'half-life': 0.117 * u.s,
+    },
+
+    'Mt-276': {
+        'atomic number': 109,
+        'mass number': 276,
+        'mass': 276.15159 * u.u,
+        'stable': False,
+        'half-life': 0.63 * u.s,
+    },
+
+    'Mt-277': {
+        'atomic number': 109,
+        'mass number': 277,
+        'mass': 277.15327 * u.u,
+        'stable': False,
+        'half-life': 9.0 * u.s,
+    },
+
+    'Mt-278': {
+        'atomic number': 109,
+        'mass number': 278,
+        'mass': 278.15631 * u.u,
+        'stable': False,
+        'half-life': 7.0 * u.s,
+    },
+
+    'Mt-279': {
+        'atomic number': 109,
+        'mass number': 279,
+        'mass': 279.15808 * u.u,
+        'stable': False,
+        'half-life': '30# s',
+    },
+
+    'Ds-267': {
+        'atomic number': 110,
+        'mass number': 267,
+        'mass': 267.14377 * u.u,
+        'stable': False,
+        'half-life': 1e-05 * u.s,
+    },
+
+    'Ds-268': {
+        'atomic number': 110,
+        'mass number': 268,
+        'mass': 268.14348 * u.u,
+        'stable': False,
+        'half-life': '100# us',
+    },
+
+    'Ds-269': {
+        'atomic number': 110,
+        'mass number': 269,
+        'mass': 269.144752 * u.u,
+        'stable': False,
+        'half-life': 0.00023 * u.s,
+    },
+
+    'Ds-270': {
+        'atomic number': 110,
+        'mass number': 270,
+        'mass': 270.144584 * u.u,
+        'stable': False,
+        'half-life': 0.000205 * u.s,
+    },
+
+    'Ds-271': {
+        'atomic number': 110,
+        'mass number': 271,
+        'mass': 271.14595 * u.u,
+        'stable': False,
+        'half-life': 0.09 * u.s,
+    },
+
+    'Ds-272': {
+        'atomic number': 110,
+        'mass number': 272,
+        'mass': 272.14602 * u.u,
+        'stable': False,
+        'half-life': '200# ms',
+    },
+
+    'Ds-273': {
+        'atomic number': 110,
+        'mass number': 273,
+        'mass': 273.14856 * u.u,
+        'stable': False,
+        'half-life': 0.00024 * u.s,
+    },
+
+    'Ds-274': {
+        'atomic number': 110,
+        'mass number': 274,
+        'mass': 274.14941 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Ds-275': {
+        'atomic number': 110,
+        'mass number': 275,
+        'mass': 275.15203 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Ds-276': {
+        'atomic number': 110,
+        'mass number': 276,
+        'mass': 276.15303 * u.u,
+        'stable': False,
+        'half-life': '100# ms',
+    },
+
+    'Ds-277': {
+        'atomic number': 110,
+        'mass number': 277,
+        'mass': 277.15591 * u.u,
+        'stable': False,
+        'half-life': 0.006 * u.s,
+    },
+
+    'Ds-278': {
+        'atomic number': 110,
+        'mass number': 278,
+        'mass': 278.15704 * u.u,
+        'stable': False,
+        'half-life': '270# ms',
+    },
+
+    'Ds-279': {
+        'atomic number': 110,
+        'mass number': 279,
+        'mass': 279.1601 * u.u,
+        'stable': False,
+        'half-life': 0.21 * u.s,
+    },
+
+    'Ds-280': {
+        'atomic number': 110,
+        'mass number': 280,
+        'mass': 280.16131 * u.u,
+        'stable': False,
+        'half-life': 11.0 * u.s,
+    },
+
+    'Ds-281': {
+        'atomic number': 110,
+        'mass number': 281,
+        'mass': 281.16451 * u.u,
+        'stable': False,
+        'half-life': 14.0 * u.s,
+    },
+
+    'Rg-272': {
+        'atomic number': 111,
+        'mass number': 272,
+        'mass': 272.15327 * u.u,
+        'stable': False,
+        'half-life': 0.0045 * u.s,
+    },
+
+    'Rg-273': {
+        'atomic number': 111,
+        'mass number': 273,
+        'mass': 273.15313 * u.u,
+        'stable': False,
+        'half-life': '2# ms',
+    },
+
+    'Rg-274': {
+        'atomic number': 111,
+        'mass number': 274,
+        'mass': 274.15525 * u.u,
+        'stable': False,
+        'half-life': 0.029 * u.s,
+    },
+
+    'Rg-275': {
+        'atomic number': 111,
+        'mass number': 275,
+        'mass': 275.15594 * u.u,
+        'stable': False,
+        'half-life': '5# ms',
+    },
+
+    'Rg-276': {
+        'atomic number': 111,
+        'mass number': 276,
+        'mass': 276.15833 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Rg-277': {
+        'atomic number': 111,
+        'mass number': 277,
+        'mass': 277.15907 * u.u,
+        'stable': False,
+        'half-life': '10# ms',
+    },
+
+    'Rg-278': {
+        'atomic number': 111,
+        'mass number': 278,
+        'mass': 278.16149 * u.u,
+        'stable': False,
+        'half-life': 0.008 * u.s,
+    },
+
+    'Rg-279': {
+        'atomic number': 111,
+        'mass number': 279,
+        'mass': 279.16272 * u.u,
+        'stable': False,
+        'half-life': 0.18 * u.s,
+    },
+
+    'Rg-280': {
+        'atomic number': 111,
+        'mass number': 280,
+        'mass': 280.16514 * u.u,
+        'stable': False,
+        'half-life': 4.3 * u.s,
+    },
+
+    'Rg-281': {
+        'atomic number': 111,
+        'mass number': 281,
+        'mass': 281.16636 * u.u,
+        'stable': False,
+        'half-life': 24.0 * u.s,
+    },
+
+    'Rg-282': {
+        'atomic number': 111,
+        'mass number': 282,
+        'mass': 282.16912 * u.u,
+        'stable': False,
+        'half-life': 96.0 * u.s,
+    },
+
+    'Rg-283': {
+        'atomic number': 111,
+        'mass number': 283,
+        'mass': 283.17054 * u.u,
+        'stable': False,
+        'half-life': '30# s',
+    },
+
+    'Cn-276': {
+        'atomic number': 112,
+        'mass number': 276,
+        'mass': 276.16141 * u.u,
+        'stable': False,
+        'half-life': '100# us',
+    },
+
+    'Cn-277': {
+        'atomic number': 112,
+        'mass number': 277,
+        'mass': 277.16364 * u.u,
+        'stable': False,
+        'half-life': 0.00085 * u.s,
+    },
+
+    'Cn-278': {
+        'atomic number': 112,
+        'mass number': 278,
+        'mass': 278.16416 * u.u,
+        'stable': False,
+        'half-life': '2# ms',
+    },
+
+    'Cn-279': {
+        'atomic number': 112,
+        'mass number': 279,
+        'mass': 279.16654 * u.u,
+        'stable': False,
+        'half-life': '5# ms',
+    },
+
+    'Cn-280': {
+        'atomic number': 112,
+        'mass number': 280,
+        'mass': 280.16715 * u.u,
+        'stable': False,
+        'half-life': '5# ms',
+    },
+
+    'Cn-281': {
+        'atomic number': 112,
+        'mass number': 281,
+        'mass': 281.16975 * u.u,
+        'stable': False,
+        'half-life': 0.18 * u.s,
+    },
+
+    'Cn-282': {
+        'atomic number': 112,
+        'mass number': 282,
+        'mass': 282.1705 * u.u,
+        'stable': False,
+        'half-life': 0.0009 * u.s,
+    },
+
+    'Cn-283': {
+        'atomic number': 112,
+        'mass number': 283,
+        'mass': 283.17327 * u.u,
+        'stable': False,
+        'half-life': 4.1 * u.s,
+    },
+
+    'Cn-284': {
+        'atomic number': 112,
+        'mass number': 284,
+        'mass': 284.17416 * u.u,
+        'stable': False,
+        'half-life': 0.104 * u.s,
+    },
+
+    'Cn-285': {
+        'atomic number': 112,
+        'mass number': 285,
+        'mass': 285.17712 * u.u,
+        'stable': False,
+        'half-life': 32.0 * u.s,
+    },
+
+    'Nh-278': {
+        'atomic number': 113,
+        'mass number': 278,
+        'mass': 278.17058 * u.u,
+        'stable': False,
+        'half-life': 0.00034 * u.s,
+    },
+
+    'Nh-279': {
+        'atomic number': 113,
+        'mass number': 279,
+        'mass': 279.17095 * u.u,
+        'stable': False,
+    },
+
+    'Nh-280': {
+        'atomic number': 113,
+        'mass number': 280,
+        'mass': 280.17293 * u.u,
+        'stable': False,
+    },
+
+    'Nh-281': {
+        'atomic number': 113,
+        'mass number': 281,
+        'mass': 281.17348 * u.u,
+        'stable': False,
+    },
+
+    'Nh-282': {
+        'atomic number': 113,
+        'mass number': 282,
+        'mass': 282.17567 * u.u,
+        'stable': False,
+        'half-life': 0.073 * u.s,
+    },
+
+    'Nh-283': {
+        'atomic number': 113,
+        'mass number': 283,
+        'mass': 283.17657 * u.u,
+        'stable': False,
+        'half-life': 0.1 * u.s,
+    },
+
+    'Nh-284': {
+        'atomic number': 113,
+        'mass number': 284,
+        'mass': 284.17873 * u.u,
+        'stable': False,
+        'half-life': 0.48 * u.s,
+    },
+
+    'Nh-285': {
+        'atomic number': 113,
+        'mass number': 285,
+        'mass': 285.17973 * u.u,
+        'stable': False,
+        'half-life': 5.5 * u.s,
+    },
+
+    'Nh-286': {
+        'atomic number': 113,
+        'mass number': 286,
+        'mass': 286.18221 * u.u,
+        'stable': False,
+        'half-life': 19.6 * u.s,
+    },
+
+    'Nh-287': {
+        'atomic number': 113,
+        'mass number': 287,
+        'mass': 287.18339 * u.u,
+        'stable': False,
+        'half-life': 5.5 * u.s,
+    },
+
+    'Fl-285': {
+        'atomic number': 114,
+        'mass number': 285,
+        'mass': 285.18364 * u.u,
+        'stable': False,
+        'half-life': 0.21 * u.s,
+    },
+
+    'Fl-286': {
+        'atomic number': 114,
+        'mass number': 286,
+        'mass': 286.18423 * u.u,
+        'stable': False,
+        'half-life': 0.14 * u.s,
+    },
+
+    'Fl-287': {
+        'atomic number': 114,
+        'mass number': 287,
+        'mass': 287.18678 * u.u,
+        'stable': False,
+        'half-life': 0.52 * u.s,
+    },
+
+    'Fl-288': {
+        'atomic number': 114,
+        'mass number': 288,
+        'mass': 288.18757 * u.u,
+        'stable': False,
+        'half-life': 0.75 * u.s,
+    },
+
+    'Fl-289': {
+        'atomic number': 114,
+        'mass number': 289,
+        'mass': 289.19042 * u.u,
+        'stable': False,
+        'half-life': 2.4 * u.s,
+    },
+
+    'Mc-287': {
+        'atomic number': 115,
+        'mass number': 287,
+        'mass': 287.1907 * u.u,
+        'stable': False,
+        'half-life': 0.037 * u.s,
+    },
+
+    'Mc-288': {
+        'atomic number': 115,
+        'mass number': 288,
+        'mass': 288.19274 * u.u,
+        'stable': False,
+        'half-life': 0.164 * u.s,
+    },
+
+    'Mc-289': {
+        'atomic number': 115,
+        'mass number': 289,
+        'mass': 289.19363 * u.u,
+        'stable': False,
+        'half-life': 0.33 * u.s,
+    },
+
+    'Mc-290': {
+        'atomic number': 115,
+        'mass number': 290,
+        'mass': 290.19598 * u.u,
+        'stable': False,
+        'half-life': 0.65 * u.s,
+    },
+
+    'Mc-291': {
+        'atomic number': 115,
+        'mass number': 291,
+        'mass': 291.19707 * u.u,
+        'stable': False,
+    },
+
+    'Lv-289': {
+        'atomic number': 116,
+        'mass number': 289,
+        'mass': 289.19816 * u.u,
+        'stable': False,
+        'half-life': '2# ms',
+    },
+
+    'Lv-290': {
+        'atomic number': 116,
+        'mass number': 290,
+        'mass': 290.19864 * u.u,
+        'stable': False,
+        'half-life': 0.008 * u.s,
+    },
+
+    'Lv-291': {
+        'atomic number': 116,
+        'mass number': 291,
+        'mass': 291.20108 * u.u,
+        'stable': False,
+        'half-life': 0.028 * u.s,
+    },
+
+    'Lv-292': {
+        'atomic number': 116,
+        'mass number': 292,
+        'mass': 292.20174 * u.u,
+        'stable': False,
+        'half-life': 0.024 * u.s,
+    },
+
+    'Lv-293': {
+        'atomic number': 116,
+        'mass number': 293,
+        'mass': 293.20449 * u.u,
+        'stable': False,
+        'half-life': 0.08 * u.s,
+    },
+
+    'Ts-291': {
+        'atomic number': 117,
+        'mass number': 291,
+        'mass': 291.20553 * u.u,
+        'stable': False,
+    },
+
+    'Ts-292': {
+        'atomic number': 117,
+        'mass number': 292,
+        'mass': 292.20746 * u.u,
+        'stable': False,
+    },
+
+    'Ts-293': {
+        'atomic number': 117,
+        'mass number': 293,
+        'mass': 293.20824 * u.u,
+        'stable': False,
+        'half-life': 0.022 * u.s,
+    },
+
+    'Ts-294': {
+        'atomic number': 117,
+        'mass number': 294,
+        'mass': 294.21046 * u.u,
+        'stable': False,
+        'half-life': 0.051 * u.s,
+    },
+
+    'Og-293': {
+        'atomic number': 118,
+        'mass number': 293,
+        'mass': 293.21356 * u.u,
+        'stable': False,
+    },
+
+    'Og-294': {
+        'atomic number': 118,
+        'mass number': 294,
+        'mass': 294.21392 * u.u,
+        'stable': False,
+        'half-life': 0.0007 * u.s,
+    },
+
+    'Og-295': {
+        'atomic number': 118,
+        'mass number': 295,
+        'mass': 295.21624 * u.u,
+        'stable': False,
+        'half-life': 0.181 * u.s,
+    },
+
+}

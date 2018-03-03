@@ -2,7 +2,7 @@ from itertools import product
 from astropy import units as u, constants as const
 import numpy as np
 from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
-
+from ...utils import (InvalidParticleError, InvalidIsotopeError, AtomicError)
 import pytest
 
 
@@ -20,17 +20,19 @@ def test_nuclear_binding_energy_D_T():
     assert np.isclose(E_in_MeV, 17.58, rtol=0.01)
 
 
-# (argument, expected_error)
+# (argument, kwargs, expected_error)
 nuclear_binding_energy_table = [
-    ("H", ValueError),
-    (1.1, TypeError)]
+    ("H", {}, AtomicError),
+    ('He-99', {}, InvalidParticleError),
+    ("He", {"mass_numb": 99}, InvalidParticleError),
+    (1.1, {}, TypeError)]
 
 
-@pytest.mark.parametrize("argument, expected_error",
+@pytest.mark.parametrize("argument, kwargs, expected_error",
                          nuclear_binding_energy_table)
-def test_nuclear_binding_energy_error(argument, expected_error):
+def test_nuclear_binding_energy_error(argument, kwargs, expected_error):
     with pytest.raises(expected_error):
-        nuclear_binding_energy(argument)
+        nuclear_binding_energy(argument, **kwargs)
 
 
 def test_nuclear_reaction_energy():
@@ -40,7 +42,8 @@ def test_nuclear_reaction_energy():
     released_energy2 = nuclear_reaction_energy(reaction2)
     assert np.isclose((released_energy1.to(u.MeV)).value, 17.58, rtol=0.01)
     assert released_energy1 == released_energy2
-    nuclear_reaction_energy('n + p+ --> n + p+ + p- + p+')
+    assert nuclear_reaction_energy('n + p+ --> n + p+ + p- + p+') == \
+        nuclear_reaction_energy('n + p+ --> n + 2*p+ + p-')
     nuclear_reaction_energy('neutron + antineutron --> neutron + antineutron')
 
 
@@ -65,7 +68,7 @@ def test_nuclear_reaction_energy_alpha_decay():
 
 
 def test_nuclear_reaction_energy_triple_alpha_r():
-    triple_alpha1_r = '4He-4 --> 2Be-8'
+    triple_alpha1_r = '4*He-4 --> 2*Be-8'
     energy_triplealpha1_r = nuclear_reaction_energy(triple_alpha1_r)
     assert np.isclose(energy_triplealpha1_r.to(u.keV).value,
                       -91.8 * 2, atol=0.1)
@@ -81,12 +84,12 @@ def test_nuclear_reaction_energy_beta():
 
 # (reaction, kwargs, expected_error)
 nuclear_reaction_energy_error_table = [
-    ('H + H --> H', {}, ValueError),
+    ('H + H --> H', {}, AtomicError),
     (1, {}, TypeError),
-    ('H-1 + H-1 --> H-1', {}, ValueError),
-    ("invalid input", {}, ValueError),
-    ('p --> n', {}, ValueError),
-    ('p --> p', {'reactants': ['p'], 'products': ['p']}, ValueError),
+    ('H-1 + H-1 --> H-1', {}, AtomicError),
+    ("invalid input", {}, AtomicError),
+    ('p --> n', {}, AtomicError),
+    ('p --> p', {'reactants': ['p'], 'products': ['p']}, AtomicError),
 ]
 
 
@@ -101,7 +104,7 @@ def test_nuclear_reaction_energy_error(reaction, kwargs, expected_error):
 nuclear_reaction_energy_kwargs_table = [
     ('H-1', 'p', 0.0, 0.0),
     (['B-10', 'n'], ['Li-7', 'He-4'], 2.8, 0.06),
-    (['Li-6', 'D'], ['2alpha'], 22.2, 0.06),
+    (['Li-6', 'D'], ['2*alpha'], 22.2, 0.06),
     (['C-12', 'p'], 'N-13', 1.95, 0.006),
     (['N-13'], ['C-13', 'e+'], 1.20, 0.006),
     (['C-13', 'hydrogen-1'], ['Nitrogen-14'], 7.54, 0.006),
@@ -116,22 +119,22 @@ nuclear_reaction_energy_kwargs_table = [
     nuclear_reaction_energy_kwargs_table)
 def test_nuclear_reaction_energy_kwargs(reactants, products, expectedMeV, tol):
     energy = nuclear_reaction_energy(reactants=reactants, products=products).si
-    expected = (expectedMeV*u.MeV).si
+    expected = (expectedMeV * u.MeV).si
     assert np.isclose(expected.value, energy.value, atol=tol)
 
 
 # (reactants, products, expected_error)
 nuclear_reaction_energy_kwerrors_table = [
     ('n', 3, TypeError),
-    ('n', [3], ValueError),
-    (['n'], ['p'], ValueError),
-    (['n'], ['He-4'], ValueError),
-    (['h'], ['H-1'], ValueError),
-    (['e-', 'n'], 'p', ValueError),
-    (['e+', 'n'], ['p-'], ValueError),
-    (['kljsdf'], 'H-3', ValueError),
-    (['H'], ['H-1'], ValueError),
-    (['p'], ['n', 'n', 'e+'], ValueError),
+    ('n', [3], AtomicError),
+    (['n'], ['p'], AtomicError),
+    (['n'], ['He-4'], AtomicError),
+    (['h'], ['H-1'], AtomicError),
+    (['e-', 'n'], 'p', AtomicError),
+    (['e+', 'n'], ['p-'], AtomicError),
+    (['kljsdf'], 'H-3', AtomicError),
+    (['H'], ['H-1'], AtomicError),
+    (['p'], ['n', 'n', 'e+'], AtomicError),
 ]
 
 

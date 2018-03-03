@@ -9,18 +9,26 @@ requests](https://github.com/PlasmaPy/plasmapy/pulls), and
 
 ## Features to be included in Version 0.1 release
 
+This is to be a preview/prototype release.
+
+- Code and documentation infrastructure
 - Plasma parameter calculations
-- Base plasma class
+- Transport coefficient functions
+   - Braginskii theory
+- Base PlasmaBlob class
+- Dimensionless numbers functionality
+
+## Features to be included in Version 0.2 release
+
 - MHD simulation capability (finite difference & spectral)
 - PIC simulation capability (only 1D for v0.1?)
 - Simulation visualization/analysis tools
   - Basic turbulence analysis functionality from
     [TurbPlasma](https://github.com/tulasinandan/TurbPlasma) (to be
     speeded up via Numba/Cython)
+    
+## Features to be included in Version 0.3 release or at an indefinite time in future
 - Magnetic topology analysis tools (data cube)
-
-## Features to be included in Version 0.2 release
-
 - Grad-Shafranov solver
 - Dispersion solver
 - Magnetic topology analysis tools (cylindrical geometry)
@@ -28,9 +36,6 @@ requests](https://github.com/PlasmaPy/plasmapy/pulls), and
 - PIC simulation capability (2D)
 - Spacecraft data analysis
 - Experimental analysis tools
-
-## Features to be included at indefinite time in future
-
 - Analytical plasma physics tools (with SymPy)
 - Capability to read in CDF files (separate package?)
 

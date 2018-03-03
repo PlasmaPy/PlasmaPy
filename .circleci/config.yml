@@ -1,0 +1,65 @@
+deps-run: &deps-install
+  name: Install Python dependencies
+  command: |
+    python3 -m venv venv
+    . venv/bin/activate
+    pip install --user -r requirements/automated-documentation-tests.txt | cat
+
+plsma-run: &plsma-install
+  name: Install PlasmaPy
+  command: |
+    pip install --user . | cat
+
+latex-install: &latex-installer
+  name: Install Latex dependencies
+  command: |
+    sudo apt update
+    sudo apt install texlive texlive-xetex texlive-fonts-extra texlive-latex-extra texlive-plain-extra latexmk graphviz
+
+html-run: &doc-html
+  name: Build HTML documentation
+  command: |
+    sudo apt update
+    sudo apt install graphviz
+    make html
+  working_directory: docs
+
+latex-run: &doc-latex
+  name: Build LaTeX documentation
+  command: |
+    make latexpdf
+  working_directory: docs
+
+echo-url: &url-echo
+  name: "Built documentation is available at:"
+  command: echo "${CIRCLE_BUILD_URL}/artifacts/${CIRCLE_NODE_INDEX}/${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}/docs/_build/html/index.html"
+
+
+version: 2
+jobs:
+  test-latex:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run: *deps-install
+      - run: *latex-installer
+      - run: *doc-latex
+  test-html:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run: *deps-install
+      - run: *plsma-install
+      - run: *doc-html
+      - store_artifacts:
+          path: docs/_build/html
+      - run: *url-echo
+
+workflows:
+  version: 2
+  test-documentation:
+    jobs:
+      - test-latex
+      - test-html

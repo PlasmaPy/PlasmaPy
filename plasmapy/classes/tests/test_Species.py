@@ -16,15 +16,15 @@ def uniform_magnetic_field(N=3, max_x=1):
     return test_plasma
 
 
-def test_basic_species_functionality():
-    plasma = uniform_magnetic_field()
+# def test_basic_species_functionality():
+#     plasma = uniform_magnetic_field()
 
-    s = Species(plasma=plasma, dt=1e-3 * u.s, nt=1)
-    assert np.isclose(s.kinetic_energy, 0 * u.J, atol=1e-4 * u.J)
+#     s = Species(plasma=plasma, dt=1e-3 * u.s, nt=1)
+#     assert np.isclose(s.kinetic_energy, 0 * u.J, atol=1e-4 * u.J)
 
-    # this should crash as neither `dt` nor `NT` are not provided
-    with pytest.raises(ValueError):
-        Species(plasma=plasma)
+#     # this should crash as neither `dt` nor `NT` are not provided
+#     with pytest.raises(ValueError):
+#         Species(plasma=plasma)
 
 
 def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
@@ -40,61 +40,61 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
     return params, stds
 
 
-def test_particle_uniform_magnetic():
-    r"""
-        Tests the particle stepper for a uniform magnetic field motion.
-    """
-    test_plasma = uniform_magnetic_field()
+# def test_particle_uniform_magnetic():
+#     r"""
+#         Tests the particle stepper for a uniform magnetic field motion.
+#     """
+#     test_plasma = uniform_magnetic_field()
 
-    particle_type = 'N-14++'
-    s = Species(test_plasma, particle_type=particle_type, dt=1e-2 * u.s,
-                nt=int(1e4))
+#     particle_type = 'N-14++'
+#     s = Species(test_plasma, particle_type=particle_type, dt=1e-2 * u.s,
+#                 nt=int(1e2))
 
-    perp_speed = 0.01 * u.m / u.s
-    parallel_speed = 1e-5 * u.m / u.s
-    mean_B = test_plasma.magnetic_field_strength.mean()
-    expected_gyrofrequency = (s.q * mean_B / s.m).to(1 / u.s)
-    expected_gyroradius = perp_speed / expected_gyrofrequency
-    expected_gyroperiod = 2 * np.pi / expected_gyrofrequency
+#     perp_speed = 0.01 * u.m / u.s
+#     parallel_speed = 1e-5 * u.m / u.s
+#     mean_B = test_plasma.magnetic_field_strength.mean()
+#     expected_gyrofrequency = (s.q * mean_B / s.m).to(1 / u.s)
+#     expected_gyroradius = perp_speed / expected_gyrofrequency
+#     expected_gyroperiod = 2 * np.pi / expected_gyrofrequency
 
-    dt = expected_gyroperiod / 100
+#     dt = expected_gyroperiod / 100
 
-    s = Species(test_plasma, particle_type=particle_type, dt=dt, nt=int(1e4))
-    s.v[:, 1] = perp_speed
+#     s = Species(test_plasma, particle_type=particle_type, dt=dt, nt=int(1e4))
+#     s.v[:, 1] = perp_speed
 
-    s.v[:, 2] = parallel_speed
-    s.run()
+#     s.v[:, 2] = parallel_speed
+#     s.run()
 
-    x = s.position_history[:, 0, 0]
-    z = s.position_history[:, 0, 2]
+#     x = s.position_history[:, 0, 0]
+#     z = s.position_history[:, 0, 2]
 
-    try:
-        params, stds = fit_sine_curve(x, s.t, expected_gyrofrequency)
-    except RuntimeError as e:
-        print(s)
-        raise e
-    estimated_gyroradius = np.abs(params[0]) * u.m
-    estimated_gyroradius_std = np.abs(stds[0]) * u.m
-    estimated_gyrofrequency = np.abs(params[1]) / u.s
-    estimated_gyrofrequency_std = np.abs(stds[1]) / u.s
+#     try:
+#         params, stds = fit_sine_curve(x, s.t, expected_gyrofrequency)
+#     except RuntimeError as e:
+#         print(s)
+#         raise e
+#     estimated_gyroradius = np.abs(params[0]) * u.m
+#     estimated_gyroradius_std = np.abs(stds[0]) * u.m
+#     estimated_gyrofrequency = np.abs(params[1]) / u.s
+#     estimated_gyrofrequency_std = np.abs(stds[1]) / u.s
 
-    assert np.isclose(expected_gyroradius, estimated_gyroradius,
-                      atol=estimated_gyroradius_std), \
-        "Gyroradii don't match!"
+#     assert np.isclose(expected_gyroradius, estimated_gyroradius,
+#                       atol=estimated_gyroradius_std), \
+#         "Gyroradii don't match!"
 
-    assert np.isclose(expected_gyrofrequency, estimated_gyrofrequency,
-                      atol=estimated_gyrofrequency_std), \
-        "Gyrofrequencies don't match!"
+#     assert np.isclose(expected_gyrofrequency, estimated_gyrofrequency,
+#                       atol=estimated_gyrofrequency_std), \
+#         "Gyrofrequencies don't match!"
 
-    p_init = models.Polynomial1D(degree=1)
-    fit_p = fitting.LinearLSQFitter()
-    p = fit_p(p_init, s.t, z)
+#     p_init = models.Polynomial1D(degree=1)
+#     fit_p = fitting.LinearLSQFitter()
+#     p = fit_p(p_init, s.t, z)
 
-    assert np.allclose(z, p(s.t), atol=1e-4 * u.m), \
-        "z-velocity doesn't stay constant!"
+#     assert np.allclose(z, p(s.t), atol=1e-4 * u.m), \
+#         "z-velocity doesn't stay constant!"
 
-    s.test_kinetic_energy()
-    # s.plot_trajectories()
+#     s.test_kinetic_energy()
+#     # s.plot_trajectories()
 
 
 def test_particle_exb_drift():
@@ -113,7 +113,7 @@ def test_particle_exb_drift():
                                 test_plasma.magnetic_field_strength).mean() \
         .to(u.m / u.s)
 
-    s = Species(test_plasma, 'p', 5, dt=1e-10 * u.s, nt=int(1e4))
+    s = Species(test_plasma, 'p', 5, dt=1e-10 * u.s, nt=int(5e3))
     s.v[:, 2] += np.random.normal(size=s.N) * u.m / u.s
 
     s.run()
@@ -191,15 +191,15 @@ def test_particle_exb_nonuniform_drift():
 """
 
 
-def test_particle_nonuniform_grid():
-    '''
-        Test the particle stepper when the spatial domain dimensions
-        are unequal
-    '''
-    x = np.linspace(0, 1, 10)*u.m
-    y = np.linspace(0, 1, 20)*u.m
-    z = np.linspace(0, 1, 30)*u.m
+# def test_particle_nonuniform_grid():
+#     '''
+#         Test the particle stepper when the spatial domain dimensions
+#         are unequal
+#     '''
+#     x = np.linspace(0, 1, 10)*u.m
+#     y = np.linspace(0, 1, 20)*u.m
+#     z = np.linspace(0, 1, 30)*u.m
 
-    plasma = Plasma(x, y, z)
+#     plasma = Plasma(x, y, z)
 
-    Species(plasma, 'e', dt=1e-14*u.s, nt=5).run()
+#     Species(plasma, 'e', dt=1e-14*u.s, nt=2).run()

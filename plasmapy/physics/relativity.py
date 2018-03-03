@@ -1,40 +1,39 @@
 import numpy as np
-from astropy import units
+from astropy import units as u
 
 from ..constants import c
-from ..atomic import (ion_mass, charge_state)
-from ..utils import _check_quantity
-from ..utils.exceptions import RelativityError
+from plasmapy import atomic, utils
 
 
 def Lorentz_factor(V):
-    r"""Returns the Lorentz factor.
+    r"""
+    Return the Lorentz factor.
 
     Parameters
     ----------
-    V : Quantity
+    V : ~astropy.units.Quantity
         The velocity in units convertible to meters per second.
 
     Returns
     -------
-    gamma : float or ndarray
-        The Lorentz factor associated with the inputted velocities
+    gamma : float or ~numpy.ndarray
+        The Lorentz factor associated with the inputted velocities.
 
     Raises
     ------
     TypeError
-        The velocity is not a Quantity and cannot be converted into a
-        Quantity.
+        The `V` is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
 
-    UnitConversionError
-        If the velocity is not in appropriate units.
+    ~astropy.units.UnitConversionError
+        If the `V` is not in appropriate units.
 
     ValueError
-        If the magnitude of V is faster than the speed of light.
+        If the magnitude of `V` is faster than the speed of light.
 
     UserWarning
-        If V is not a Quantity, then a UserWarning will be raised and
-        units of meters per second will be assumed.
+        If `V` is not a `~astropy.units.Quantity`, then a `UserWarning`
+        will be raised and units of meters per second will be assumed.
 
     Notes
     -----
@@ -57,11 +56,12 @@ def Lorentz_factor(V):
     inf
     """
 
-    _check_quantity(V, 'V', 'Lorentz_factor', units.m/units.s)
+    utils._check_quantity(V, 'V', 'Lorentz_factor', u.m / u.s)
 
     if not np.all(np.abs(V) <= c):
-        raise RelativityError("The Lorentz factor cannot be calculated for "
-                              "speeds faster than the speed of light. ")
+        raise utils.RelativityError(
+            "The Lorentz factor cannot be calculated for "
+            "speeds faster than the speed of light. ")
 
     if V.size > 1:
 
@@ -70,13 +70,13 @@ def Lorentz_factor(V):
         equals_c = np.abs(V) == c
         is_slow = ~equals_c
 
-        gamma[is_slow] = ((1 - (V[is_slow]/c)**2)**-0.5).value
+        gamma[is_slow] = ((1 - (V[is_slow] / c)**2)**-0.5).value
         gamma[equals_c] = np.inf
 
     else:
         if np.abs(V) == c:
             gamma = np.inf
         else:
-            gamma = ((1 - (V/c)**2)**-0.5).value
+            gamma = ((1 - (V / c)**2)**-0.5).value
 
     return gamma

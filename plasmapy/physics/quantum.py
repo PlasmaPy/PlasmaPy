@@ -1,60 +1,72 @@
 """
 Functions for quantum parameters, including electron degenerate
 gases and warm dense matter.
-"""
-import numpy as np
-from astropy import units
-from ..constants import c, h, hbar, m_e, eps0, e, k_B
-from ..atomic import ion_mass
-from ..utils import _check_quantity, _check_relativistic, check_quantity
-from ..utils.exceptions import RelativityError
-from .relativity import Lorentz_factor
 
+"""
+# python modules
+import numpy as np
+from astropy import units as u
+from lmfit import minimize, Parameters
+
+# plasmapy modules
+from plasmapy import atomic, utils
+from plasmapy.utils.checks import check_quantity
+from plasmapy.physics.relativity import Lorentz_factor
+
+from ..constants import c, h, hbar, m_e, eps0, e, k_B
+from ..mathematics import Fermi_integral
+
+
+# TODO: Use @check_relativistic and @particle_input
 
 def deBroglie_wavelength(V, particle):
-    r"""Calculates the de Broglie wavelength.
+    r"""
+    Calculates the de Broglie wavelength.
 
     Parameters
     ----------
-    V : Quantity
+    V : ~astropy.units.Quantity
         Particle velocity in units convertible to meters per second.
 
-    particle : string or Quantity
-        Representation of the particle species (e.g., 'e', 'p', 'D+',
-        or 'He-4 1+', or the particle mass in units convertible to
+    particle : str or ~astropy.units.Quantity
+        Representation of the particle species (e.g., `'e'`, `'p'`, `'D+'`,
+        or `'He-4 1+'`, or the particle mass in units convertible to
         kilograms.
 
     Returns
     -------
-    lambda_dB : Quantity
+    lambda_dB : ~astropy.units.Quantity
         The de Broglie wavelength in units of meters.
 
     Raises
     ------
     TypeError
-        The velocity is not a Quantity and cannot be converted into a
-        Quantity.
+        The velocity is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
 
-    UnitConversionError
+    ~astropy.units.UnitConversionError
         If the velocity is not in appropriate units.
 
-    RelativityError
-        If the magnitude of V is faster than the speed of light.
+    ~plasmapy.utils.RelativityError
+        If the magnitude of `V` is faster than the speed of light.
 
+    Warns
+    -----
     UserWarning
-        If V is not a Quantity, then a UserWarning will be raised and
-        units of meters per second will be assumed.
+        If `V` is not a `~astropy.units.Quantity`, then a `UserWarning`
+        will be raised and units of meters per second will be assumed.
 
     Notes
     -----
     The de Broglie wavelength is given by
 
     .. math::
+
         \lambda_{dB} = \frac{h}{p} = \frac{h}{\gamma m V}
 
     where :math:`h` is the Planck constant, :math:`p` is the
     relativistic momentum of the particle, :math:`gamma` is the
-    Lorentz factor, `m` is the particle's mass, and :math:`V` is the
+    Lorentz factor, :math:`m` is the particle's mass, and :math:`V` is the
     particle's velocity.
 
     Examples
@@ -62,80 +74,84 @@ def deBroglie_wavelength(V, particle):
     >>> from astropy import units as u
     >>> velocity = 1.4e7*u.m/u.s
     >>> deBroglie_wavelength(velocity, 'e')
-    <Quantity 5.1899709519786425e-11 m>
+    <Quantity 5.18997095e-11 m>
     >>> deBroglie_wavelength(V = 0*u.m/u.s, particle = 'D+')
     <Quantity inf m>
-
     """
 
-    _check_quantity(V, 'V', 'deBroglie_wavelength', units.m/units.s)
+    utils._check_quantity(V, 'V', 'deBroglie_wavelength', u.m / u.s)
 
     V = np.abs(V)
 
     if np.any(V >= c):
-        raise RelativityError("Velocity input in deBroglie_wavelength cannot "
-                              "be greater than or equal to the speed of "
-                              "light.")
+        raise utils.RelativityError(
+            "Velocity input in deBroglie_wavelength cannot "
+            "be greater than or equal to the speed of "
+            "light.")
 
-    if not isinstance(particle, units.Quantity):
+    if not isinstance(particle, u.Quantity):
         try:
-            m = ion_mass(particle)  # TODO: Replace with more general routine!
+            # TODO: Replace with more general routine!
+            m = atomic.ion_mass(particle)
         except Exception:
             raise ValueError("Unable to find particle mass.")
     else:
         try:
-            m = particle.to(units.kg)
+            m = particle.to(u.kg)
         except Exception:
-            raise units.UnitConversionError("The second argument for deBroglie"
-                                            " wavelength must be either a "
-                                            "representation of a particle or a"
-                                            " Quantity with units of mass.")
+            raise u.UnitConversionError("The second argument for deBroglie"
+                                        " wavelength must be either a "
+                                        "representation of a particle or a"
+                                        " Quantity with units of mass.")
 
     if V.size > 1:
 
-        lambda_dBr = np.ones(V.shape) * np.inf * units.m
+        lambda_dBr = np.ones(V.shape) * np.inf * u.m
         indices = V.value != 0
-        lambda_dBr[indices] = h / (m*V[indices]*Lorentz_factor(V[indices]))
+        lambda_dBr[indices] = h / (m * V[indices] * Lorentz_factor(V[indices]))
 
     else:
 
-        if V == 0*units.m/units.s:
-            lambda_dBr = np.inf*units.m
+        if V == 0 * u.m / u.s:
+            lambda_dBr = np.inf * u.m
         else:
             lambda_dBr = h / (Lorentz_factor(V) * m * V)
 
-    return lambda_dBr.to(units.m)
+    return lambda_dBr.to(u.m)
 
 
-@check_quantity({
-    'T_e': {'units': units.K, 'can_be_negative': False}
+@utils.check_quantity({
+    'T_e': {'units': u.K, 'can_be_negative': False}
 })
 def thermal_deBroglie_wavelength(T_e):
-    r"""Calculate the thermal deBroglie wavelength for electrons.
+    r"""
+    Calculate the thermal deBroglie wavelength for electrons.
 
     Parameters
     ----------
-    T_e: Quantity
-        Electron temperature
+    T_e: ~astropy.units.Quantity
+        Electron temperature.
 
     Returns
     -------
-    lambda_dbTh: Quantity
-        The thermal deBroglie wavelength for electrons in meters
+    lambda_dbTh: ~astropy.units.Quantity
+        The thermal deBroglie wavelength for electrons in meters.
 
     Raises
     ------
     TypeError
-        If argument is not a Quantity
+        If argument is not a `~astropy.units.Quantity`.
 
-    UnitConversionError
-        If argument is in incorrect units
+    ~astropy.units.UnitConversionError
+        If argument is in incorrect units.
 
     ValueError
-        If argument contains invalid values
+        If argument contains invalid values.
 
+    Warns
+    -----
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -143,53 +159,52 @@ def thermal_deBroglie_wavelength(T_e):
     wavelength for electrons in an ideal gas and is given by
 
     .. math::
-    \lambda_dbTh = \frac{h}{\sqrt{2 \pi m_e k_B T_e}}
 
-    See also
-    --------
-
+       \lambda_dbTh = \frac{h}{\sqrt{2 \pi m_e k_B T_e}}
 
     Example
     -------
     >>> from astropy import units as u
     >>> thermal_deBroglie_wavelength(1 * u.eV)
-    <Quantity 6.919367518364532e-10 m>
-
+    <Quantity 6.91936752e-10 m>
     """
-    T_e = T_e.to(units.K, equivalencies=units.temperature_energy())
+    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
     lambda_dbTh = h / np.sqrt(2 * np.pi * m_e * k_B * T_e)
-    return lambda_dbTh.to(units.m)
+    return lambda_dbTh.to(u.m)
 
 
-@check_quantity({
-    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+@utils.check_quantity({
+    'n_e': {'units': u.m**-3, 'can_be_negative': False}
 })
 def Fermi_energy(n_e):
-    r"""Calculate the Fermi energy.
+    r"""
+    Calculate the kinetic energy in a degenerate electron gas.
 
     Parameters
     ----------
-    n_e: Quantity
-        Electron number density
+    n_e : ~astropy.units.Quantity
+        Electron number density.
 
     Returns
     -------
-    energy_F: Quantity
-        The Fermi energy in Joules
+    energy_F : ~astropy.units.Quantity
+        The Fermi energy in Joules.
 
     Raises
     ------
     TypeError
-        If argument is not a Quantity
+        If argument is not a `~astropy.units.Quantity`.
 
-    UnitConversionError
-        If argument is in incorrect units
+    ~astropy.units.UnitConversionError
+        If argument is in incorrect units.
 
     ValueError
-        If argument contains invalid values
+        If argument contains invalid values.
 
+    Warns
+    -----
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -197,7 +212,9 @@ def Fermi_energy(n_e):
     and is given by
 
     .. math::
-    E_F = \frac{\pi^2 \hbar^2}{2 m_e}\left(\frac{3 n_e}{\pi}\right)^{2/3}
+
+       E_F = \frac{\pi^2 \hbar^2}{2 m_{e}}
+       \left( \frac{3 n_{e}}{\pi} \right )^{2/3}
 
     This quantity is often used in place of thermal energy for analysis
     of cold, dense plasmas (e.g. warm dense matter, condensed matter).
@@ -210,43 +227,45 @@ def Fermi_energy(n_e):
     -------
     >>> from astropy import units as u
     >>> Fermi_energy(1e23 * u.cm**-3)
-    <Quantity 1.2586761116196002e-18 J>
-
+    <Quantity 1.25867611e-18 J>
     """
     coeff = (np.pi * hbar) ** 2 / (2 * m_e)
-    energy_F = coeff * (3 * n_e / np.pi) ** (2/3)
-    return energy_F.to(units.Joule)
+    energy_F = coeff * (3 * n_e / np.pi) ** (2 / 3)
+    return energy_F.to(u.Joule)
 
 
-@check_quantity({
-    'n_e': {'units': units.m**-3, 'can_be_negative': False}
+@utils.check_quantity({
+    'n_e': {'units': u.m**-3, 'can_be_negative': False}
 })
 def Thomas_Fermi_length(n_e):
-    r"""Calculate the Thomas-Fermi screening length.
+    r"""
+    Calculate the exponential scale length for charge screening.
 
     Parameters
     ----------
-    n_e: Quantity
-        Electron number density
+    n_e: ~astropy.units.Quantity
+        Electron number density.
 
     Returns
     -------
-    lambda_TF: Quantity
-        The Thomas-Fermi screening length in meters
+    lambda_TF: ~astropy.units.Quantity
+        The Thomas-Fermi screening length in meters.
 
     Raises
     ------
     TypeError
-        If argument is not a Quantity
+        If argument is not a `~astropy.units.Quantity`.
 
-    UnitConversionError
-        If argument is in incorrect units
+    ~astropy.units.UnitConversionError
+        If argument is in incorrect units.
 
     ValueError
-        If argument contains invalid values
+        If argument contains invalid values.
 
+    Warns
+    -----
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -254,7 +273,8 @@ def Thomas_Fermi_length(n_e):
     charge screening and is given by
 
     .. math::
-    \lambda_TF = \sqrt{\frac{2 \epsilon_0 E_F}{3 n_e e^2}}
+
+       \lambda_TF = \sqrt{\frac{2 \epsilon_0 E_F}{3 n_e e^2}}
 
     for an electron degenerate gas.
 
@@ -275,9 +295,253 @@ def Thomas_Fermi_length(n_e):
     -------
     >>> from astropy import units as u
     >>> Thomas_Fermi_length(1e23 * u.cm**-3)
-    <Quantity 5.379914085596706e-11 m>
+    <Quantity 5.37991409e-11 m>
 
     """
     energy_F = Fermi_energy(n_e)
     lambda_TF = np.sqrt(2 * eps0 * energy_F / (3 * n_e * e ** 2))
-    return lambda_TF.to(units.m)
+    return lambda_TF.to(u.m)
+
+
+@check_quantity({
+    'n': {'units': u.m**-3, 'can_be_negative': False}
+})
+def Wigner_Seitz_radius(n: u.m**-3):
+    r"""
+    Calculate the Wigner-Seitz radius, which approximates the inter-
+    particle spacing. It is the radius of a sphere whose volume is
+    equal to the mean volume per atom in a solid. This parameter is
+    often used to calculate the coupling parameter.
+    When ion density is used, this is the ion sphere radius, i.e., the
+    space occupied by a single ion with no other ions in that space. Higher
+    density means less space for each ion, so the radius is smaller.
+
+    Parameters
+    ----------
+    n: ~astropy.units.Quantity
+        Particle number density.
+
+    Returns
+    -------
+    radius: ~astropy.units.Quantity
+        The Wigner-Seitz radius in meters.
+
+    Raises
+    ------
+    TypeError
+        If argument is not a ~astropy.units.Quantity.
+
+    ~astropy.units.UnitConversionError
+        If argument is in incorrect units.
+
+    ValueError
+        If argument contains invalid values.
+
+    Warns
+    -----
+    UserWarning
+        If units are not provided and SI units are assumed.
+
+    Notes
+    -----
+    The Wigner-Seitz radius approximates the interparticle spacing.
+    It is the radius of a sphere whose volume is equal to the mean
+    volume per atom in a solid:
+
+    .. math::
+        r = \left(\frac{3}{4 \pi n}\right)^{1/3}
+
+    See also
+    --------
+    Fermi_energy
+
+    Example
+    -------
+    >>> from astropy import units as u
+    >>> Wigner_Seitz_radius(1e29 * u.m**-3)
+    <Quantity 1.33650462e-10 m>
+
+    """
+    radius = (3 / (4 * np.pi * n)) ** (1 / 3)
+    return radius.to(u.m)
+
+
+def chemical_potential(n_e: u.m ** -3, T: u.K):
+    r"""
+    Calculate the ideal chemical potential.
+
+    Parameters
+    ----------
+    n_e: ~astropy.units.Quantity
+        Electron number density.
+
+    T : ~astropy.units.Quantity
+        The temperature.
+
+    Returns
+    -------
+    beta_mu: ~astropy.units.Quantity
+        The dimensionless ideal chemical potential. That is the ratio of
+        the ideal chemical potential to the thermal energy.
+
+    Raises
+    ------
+    TypeError
+        If argument is not a `~astropy.units.Quantity`.
+
+    ~astropy.units.UnitConversionError
+        If argument is in incorrect units.
+
+    ValueError
+        If argument contains invalid values.
+
+    Warns
+    -----
+    UserWarning
+        If units are not provided and SI units are assumed.
+
+    Notes
+    -----
+    The ideal chemical potential is given by [1]_:
+
+    .. math::
+        \chi_a = I_{1/2}(\beta \mu_a^{ideal})
+
+    where :math:`\chi` is the degeneracy parameter, :math:`I_{1/2}` is the
+    Fermi integral with order 1/2, :math:`\beta` is the inverse thermal
+    energy :math:`\beta = 1/(k_B T)`, and :math:`\mu_a^{ideal}`
+    is the ideal chemical potential.
+
+    The definition for the ideal chemical potential is implicit, so it must
+    be obtained numerically by solving for the Fermi integral for values
+    of chemical potential approaching the degeneracy parameter. Since values
+    returned from the Fermi_integral are complex, a nonlinear
+    Levenberg-Marquardt least squares method is used to iteratively approach
+    a value of :math:`\mu` which minimizes
+    :math:`I_{1/2}(\beta \mu_a^{ideal}) - \chi_a`
+    
+    This function returns :math:`\beta \mu^{ideal}` the dimensionless
+    ideal chemical potential.
+
+    Warning: at present this function is limited to relatively small
+    arguments due to limitations in the `~mpmath` package's implementation
+    of `~mpmath.polylog`, which PlasmaPy uses in calculating the Fermi
+    integral.
+
+    References
+    ----------
+    .. [1] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.
+
+    Example
+    -------
+    >>> from astropy import units as u
+    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)
+    <Quantity 2.00039985e-12>
+
+    """
+    # deBroglie wavelength
+    lambdaDB = thermal_deBroglie_wavelength(T)
+    # degeneracy parameter
+    degen = (n_e * lambdaDB ** 3).to(u.dimensionless_unscaled)
+
+    def residual(params, data, eps_data):
+        """Residual function for fitting parameters to Fermi_integral."""
+        alpha = params['alpha'].value
+        # note that alpha = mu / (k_B * T)
+        model = Fermi_integral(alpha, 0.5)
+        complexResidue = (data - model) / eps_data
+        return complexResidue.view(np.float)
+
+    # setting parameters for fitting along with bounds
+    alphaGuess = 1 * u.dimensionless_unscaled
+    params = Parameters()
+    params.add('alpha', value=alphaGuess, min=0.0)
+    # calling minimize function from lmfit to fit by minimizing the residual
+    data = np.array([degen])  # result of Fermi_integral - degen should be zero
+    eps_data = np.array([1e-15])  # numerical error
+    minFit = minimize(residual, params, args=(data, eps_data))
+    beta_mu = minFit.params['alpha'].value * u.dimensionless_unscaled
+    return beta_mu
+
+
+def chemical_potential_interp(n_e, T):
+    r"""
+    Fitting formula for interpolating chemical potential between classical
+    and quantum regimes.
+
+    See [1]_, [2]_ for more information.
+
+    Parameters
+    ----------
+    n_e: ~astropy.units.Quantity
+        Electron number density.
+
+    T : ~astropy.units.Quantity
+        Temperature in units of temperature or energy.
+
+    Returns
+    -------
+    beta_mu: ~astropy.units.Quantity
+        The dimensionless chemical potential, which is a ratio of
+        chemical potential energy to thermal kinetic energy.
+
+    Raises
+    ------
+    TypeError
+        If argument is not a ~astropy.units.Quantity.
+
+    ~astropy.units.UnitConversionError
+        If argument is in incorrect units.
+
+    ValueError
+        If argument contains invalid values.
+
+    Warnings
+    --------
+    UserWarning
+        If units are not provided and SI units are assumed.
+
+    Notes
+    -----
+    The ideal chemical potential is given by [1]_:
+
+    .. math::
+        \frac{\mu}{k_B T_e} = - \frac{3}{2} \ln \Theta + \ln
+        \frac{4}{3 \sqrt{\pi}} +
+        \frac{A \Theta^{-b - 1} + B \Theta^{-(b + 1) / 2}}{1 + A \Theta^{-b}}
+
+    where
+
+    .. math::
+        \Theta = \frac{k_B T_e}{E_F}
+
+    is the degeneracy parameter, comparing the thermal energy to the Fermi
+    energy, and the coefficients for the fitting formula
+    are A=0.25945, B=0.0072, b=0.858.
+
+    References
+    ----------
+    .. [1] Ichimaru, Statistical Plasma Physics Addison-Wesley,
+       Reading, MA, 1991.
+
+    .. [2] Gregori, G., et al. "Theoretical model of x-ray scattering as a
+       dense matter probe." Physical Review E 67.2 (2003): 026412.
+
+    Example
+    -------
+    >>> from astropy import units as u
+    >>> chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
+    <Quantity 8.17649673>
+
+    """
+    A = 0.25945
+    B = 0.072
+    b = 0.858
+    theta = k_B * T / Fermi_energy(n_e)
+    term1 = -3 / 2 * np.log(theta)
+    term2 = np.log(4 / (3 * np.sqrt(np.pi)))
+    term3num = A * theta ** (-b - 1) + B * theta ** (-(b + 1) / 2)
+    term3den = 1 + A * theta ** (-b)
+    term3 = term3num / term3den
+    beta_mu = term1 + term2 + term3
+    return beta_mu.to(u.dimensionless_unscaled)

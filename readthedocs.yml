@@ -1,5 +1,5 @@
 conda:
-  file: .rtd-environment.yml
+  file: requirements/environment.yml
 
 python:
    setup_py_install: true

@@ -32,12 +32,20 @@ sys.path.insert(0, os.path.abspath('..'))
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-# Warning: I installed numpydoc on my local machine to get this to work
-#          but I am not sure if there is supposed to be a requirements
-#          page for the docs section. So you might need to install this
-#          to use sphinx here. ~Colby
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.mathjax', 'numpydoc']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.mathjax',
+              'sphinx.ext.napoleon', 'sphinx.ext.intersphinx',
+              'sphinx_automodapi.automodapi',
+              'sphinx_automodapi.smart_resolver',
+              'sphinx_gallery.gen_gallery',
+              'sphinx.ext.graphviz']
 
+
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'numpy': ('https://docs.scipy.org/doc/numpy', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
+    'pandas': ('http://pandas.pydata.org/pandas-docs/stable/', None),
+    'astropy': ('http://docs.astropy.org/en/stable/', None)}
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -82,15 +90,16 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+default_role = 'obj'
 
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-#html_theme = 'alabaster'
-#html_theme = 'traditional'
-#html_theme = 'agogo'
+# html_theme = 'alabaster'
+# html_theme = 'traditional'
+# html_theme = 'agogo'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -101,7 +110,7 @@ todo_include_todos = False
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 
 # -- Options for HTMLHelp output ------------------------------------------
@@ -159,3 +168,13 @@ texinfo_documents = [
      author, 'PlasmaPy', 'Python package for plasma physics',
      'Miscellaneous'),
 ]
+
+
+# -- Options for Sphinx Gallery -----------------
+
+sphinx_gallery_conf = {
+    # path to your examples scripts
+    'examples_dirs': '../plasmapy/examples',
+    # path where to save gallery generated examples
+    'backreferences_dir': 'gen_modules/backreferences',
+    'gallery_dirs': 'auto_examples'}
