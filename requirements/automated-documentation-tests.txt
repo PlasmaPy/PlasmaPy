@@ -1,6 +1,7 @@
 astropy
 coveralls
 mpmath
+roman
 lmfit
 matplotlib
 numpy
