@@ -23,13 +23,13 @@ A few guidelines to on writing neat, readable and useful tests:
 
 * Solved bugs should be turned into test cases.
   
-* The Travis CI, CircleCI, and AppVeyor integrations on GitHub run tests whenever pull
-  requests to PlasmaPy are updated.  The pytest module may used on a
-  local computer.
+* The Travis CI, CircleCI, and AppVeyor integrations on GitHub run
+  tests whenever pull requests to PlasmaPy are updated.  The pytest
+  module may used on a local computer.
   
 * Tests are run frequently during code development, and slow tests may
-  interrupt the flow of a contributor.  Tests should be minimal, sufficient enough to
-  be complete and as efficient as possible.
+  interrupt the flow of a contributor.  Tests should be minimal,
+  sufficient enough to be complete, and as efficient as possible.
 
 
 Assert statements
@@ -58,8 +58,10 @@ pytest should display the value of the ``2 + 2`` expression, but the value can b
 A note on test independence and parametrization
 ===============================================
 
-In this section, we'll discuss the issue of parametrization based on an example
-of a `proof <https://en.wikipedia.org/wiki/Riemann\_hypothesis#Excluded\_middle>`_ of Gauss's class number conjecture.
+In this section, we'll discuss the issue of parametrization based on
+an example of a `proof
+<https://en.wikipedia.org/wiki/Riemann\_hypothesis#Excluded\_middle>`_
+of Gauss's class number conjecture.
 
 The proof goes along these lines: 
 * If the generalized Riemann hypothesis is true, the conjecture is true.
@@ -76,7 +78,8 @@ One way to use pytest for testing is to write continuous assertions:
        # and you have to run this again
        assert proof_by_riemann(True) 
 
-To do this the right way, what you technically should do to make the tests independent:
+To do this the right way, what you technically should do to make the
+tests independent:
 
 .. code-block:: python
 
@@ -93,9 +96,12 @@ but that's a lot of typing so what you actually do is use pytest parametrization
   def test_proof_if_riemann(truth):
        assert proof_by_riemann(truth)
 
-And both of these are going to run regardless of failures, which is awesome!
+And both of these are going to run regardless of failures, which is
+awesome!
 
-Of course, with qualitatively different tests you would use either separate functions or you'd pass in pairs of inputs and expected values:
+Of course, with qualitatively different tests you would use either
+separate functions or you'd pass in pairs of inputs and expected
+values:
 
 .. code-block:: python
 
@@ -106,22 +112,22 @@ Of course, with qualitatively different tests you would use either separate func
 Code coverage
 =============
 
-PlasmaPy uses the coverage.py addon via Coveralls.io. At the end of every
-Travis CI testing session, information on which lines were executed in the test
-is sent to Coveralls.io. At the very least, try to avoid test coverage
-decreasing if possible.
+PlasmaPy uses the coverage.py addon via Coveralls.io. At the end of
+every Travis CI testing session, information on which lines were
+executed in the test is sent to Coveralls.io. At the very least, try
+to avoid test coverage decreasing if possible.
 
-To run coverage.py locally, run ``coverage run -m pytest``, then generate a HTML
-description with ``coverage html``.
+To run coverage.py locally, run ``coverage run -m pytest``, then
+generate a HTML description with ``coverage html``.
 
 At the time of writing this, coverage.py has a known issue with being
 unable to check lines executed in Numba JIT compiled functions.
   
-Occasionally there will be some lines that do not require testing.  For
-example, testing exception handling for an `ImportError` when importing an
-external package would usually be impractical.  In these instances, we may end
-a line with `# coveralls: ignore` to indicate that these lines should be
-excluded from coverage reports (or add a line to `.coveragerc`).  This strategy
-should be used sparingly, since it is often better to explicitly test
-exceptions and warnings and to show the lines of code that are not tested.  
-
+Occasionally there will be some lines that do not require testing.
+For example, testing exception handling for an `ImportError` when
+importing an external package would usually be impractical.  In these
+instances, we may end a line with `# coveralls: ignore` to indicate
+that these lines should be excluded from coverage reports (or add a
+line to `.coveragerc`).  This strategy should be used sparingly, since
+it is often better to explicitly test exceptions and warnings and to
+show the lines of code that are not tested.

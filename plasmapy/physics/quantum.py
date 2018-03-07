@@ -17,6 +17,8 @@ from ..constants import c, h, hbar, m_e, eps0, e, k_B
 from ..mathematics import Fermi_integral
 
 
+# TODO: Use @check_relativistic and @particle_input
+
 def deBroglie_wavelength(V, particle):
     r"""
     Calculates the de Broglie wavelength.
@@ -26,9 +28,9 @@ def deBroglie_wavelength(V, particle):
     V : ~astropy.units.Quantity
         Particle velocity in units convertible to meters per second.
 
-    particle : string or ~astropy.units.Quantity
-        Representation of the particle species (e.g., 'e', 'p', 'D+',
-        or 'He-4 1+', or the particle mass in units convertible to
+    particle : str or ~astropy.units.Quantity
+        Representation of the particle species (e.g., `'e'`, `'p'`, `'D+'`,
+        or `'He-4 1+'`, or the particle mass in units convertible to
         kilograms.
 
     Returns
@@ -39,18 +41,20 @@ def deBroglie_wavelength(V, particle):
     Raises
     ------
     TypeError
-        The velocity is not a Quantity and cannot be converted into a
-        Quantity.
+        The velocity is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
 
-    UnitConversionError
+    ~astropy.units.UnitConversionError
         If the velocity is not in appropriate units.
 
-    utils.RelativityError
-        If the magnitude of V is faster than the speed of light.
+    ~plasmapy.utils.RelativityError
+        If the magnitude of `V` is faster than the speed of light.
 
+    Warns
+    -----
     UserWarning
-        If V is not a Quantity, then a UserWarning will be raised and
-        units of meters per second will be assumed.
+        If `V` is not a `~astropy.units.Quantity`, then a `UserWarning`
+        will be raised and units of meters per second will be assumed.
 
     Notes
     -----
@@ -136,14 +140,16 @@ def thermal_deBroglie_wavelength(T_e):
     Raises
     ------
     TypeError
-        If argument is not a Quantity.
+        If argument is not a `~astropy.units.Quantity`.
 
-    UnitConversionError
+    ~astropy.units.UnitConversionError
         If argument is in incorrect units.
 
     ValueError
         If argument contains invalid values.
 
+    Warns
+    -----
     UserWarning
         If units are not provided and SI units are assumed.
 
@@ -172,7 +178,7 @@ def thermal_deBroglie_wavelength(T_e):
 })
 def Fermi_energy(n_e):
     r"""
-    Calculate the Fermi energy.
+    Calculate the kinetic energy in a degenerate electron gas.
 
     Parameters
     ----------
@@ -187,14 +193,16 @@ def Fermi_energy(n_e):
     Raises
     ------
     TypeError
-        If argument is not a Quantity.
+        If argument is not a `~astropy.units.Quantity`.
 
-    UnitConversionError
+    ~astropy.units.UnitConversionError
         If argument is in incorrect units.
 
     ValueError
         If argument contains invalid values.
 
+    Warns
+    -----
     UserWarning
         If units are not provided and SI units are assumed.
 
@@ -231,7 +239,7 @@ def Fermi_energy(n_e):
 })
 def Thomas_Fermi_length(n_e):
     r"""
-    Calculate the Thomas-Fermi screening length.
+    Calculate the exponential scale length for charge screening.
 
     Parameters
     ----------
@@ -246,14 +254,16 @@ def Thomas_Fermi_length(n_e):
     Raises
     ------
     TypeError
-        If argument is not a Quantity.
+        If argument is not a `~astropy.units.Quantity`.
 
-    UnitConversionError
+    ~astropy.units.UnitConversionError
         If argument is in incorrect units.
 
     ValueError
         If argument contains invalid values.
 
+    Warns
+    -----
     UserWarning
         If units are not provided and SI units are assumed.
 
@@ -297,7 +307,8 @@ def Thomas_Fermi_length(n_e):
     'n': {'units': u.m**-3, 'can_be_negative': False}
 })
 def Wigner_Seitz_radius(n: u.m**-3):
-    r"""Calculate the Wigner-Seitz radius, which approximates the inter-
+    r"""
+    Calculate the Wigner-Seitz radius, which approximates the inter-
     particle spacing. It is the radius of a sphere whose volume is
     equal to the mean volume per atom in a solid. This parameter is
     often used to calculate the coupling parameter.
@@ -308,26 +319,28 @@ def Wigner_Seitz_radius(n: u.m**-3):
     Parameters
     ----------
     n: ~astropy.units.Quantity
-        Particle number density
+        Particle number density.
 
     Returns
     -------
     radius: ~astropy.units.Quantity
-        The Wigner-Seitz radius in meters
+        The Wigner-Seitz radius in meters.
 
     Raises
     ------
     TypeError
-        If argument is not a Quantity
+        If argument is not a ~astropy.units.Quantity.
 
-    UnitConversionError
-        If argument is in incorrect units
+    ~astropy.units.UnitConversionError
+        If argument is in incorrect units.
 
     ValueError
-        If argument contains invalid values
+        If argument contains invalid values.
 
+    Warns
+    -----
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -354,36 +367,38 @@ def Wigner_Seitz_radius(n: u.m**-3):
 
 
 def chemical_potential(n_e: u.m ** -3, T: u.K):
-    r"""Calculate the ideal chemical potential
+    r"""
+    Calculate the ideal chemical potential.
 
     Parameters
     ----------
     n_e: ~astropy.units.Quantity
-        Electron number density
+        Electron number density.
 
     T : ~astropy.units.Quantity
-        The temperature,
-
+        The temperature.
 
     Returns
     -------
-    beta_mu: Quantity
+    beta_mu: ~astropy.units.Quantity
         The dimensionless ideal chemical potential. That is the ratio of
         the ideal chemical potential to the thermal energy.
 
     Raises
     ------
     TypeError
-        If argument is not a Quantity
+        If argument is not a `~astropy.units.Quantity`.
 
-    UnitConversionError
-        If argument is in incorrect units
+    ~astropy.units.UnitConversionError
+        If argument is in incorrect units.
 
     ValueError
-        If argument contains invalid values
+        If argument contains invalid values.
 
+    Warns
+    -----
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -409,8 +424,9 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     ideal chemical potential.
 
     Warning: at present this function is limited to relatively small
-    arguments due to limitations in the mpmath package's implementation
-    of polylog, which PlasmaPy uses in calculating the Fermi integral.
+    arguments due to limitations in the `~mpmath` package's implementation
+    of `~mpmath.polylog`, which PlasmaPy uses in calculating the Fermi
+    integral.
 
     References
     ----------
@@ -421,6 +437,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     >>> from astropy import units as u
     >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)
     <Quantity 2.00039985e-12>
+
     """
     # deBroglie wavelength
     lambdaDB = thermal_deBroglie_wavelength(T)
@@ -428,7 +445,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     degen = (n_e * lambdaDB ** 3).to(u.dimensionless_unscaled)
 
     def residual(params, data, eps_data):
-        """residual function for fitting parameters to Fermi_integral"""
+        """Residual function for fitting parameters to Fermi_integral."""
         alpha = params['alpha'].value
         # note that alpha = mu / (k_B * T)
         model = Fermi_integral(alpha, 0.5)
@@ -457,10 +474,10 @@ def chemical_potential_interp(n_e, T):
     Parameters
     ----------
     n_e: ~astropy.units.Quantity
-        Electron number density
+        Electron number density.
 
     T : ~astropy.units.Quantity
-        Temperature in units of temperature or energy
+        Temperature in units of temperature or energy.
 
     Returns
     -------
@@ -471,23 +488,27 @@ def chemical_potential_interp(n_e, T):
     Raises
     ------
     TypeError
-        If argument is not a Quantity
+        If argument is not a ~astropy.units.Quantity.
 
-    UnitConversionError
-        If argument is in incorrect units
+    ~astropy.units.UnitConversionError
+        If argument is in incorrect units.
 
     ValueError
-        If argument contains invalid values
+        If argument contains invalid values.
 
+    Warnings
+    --------
     UserWarning
-        If units are not provided and SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
     The ideal chemical potential is given by [1]_:
 
     .. math::
-        \frac{\mu}{k_B T_e} = - \frac{3}{2} \ln \Theta + \ln \frac{4}{3 \sqrt{\pi}} + \frac{A \Theta^{-b - 1} + B \Theta^{-(b + 1) / 2}}{1 + A \Theta^{-b}}
+        \frac{\mu}{k_B T_e} = - \frac{3}{2} \ln \Theta + \ln
+        \frac{4}{3 \sqrt{\pi}} +
+        \frac{A \Theta^{-b - 1} + B \Theta^{-(b + 1) / 2}}{1 + A \Theta^{-b}}
 
     where
 
@@ -497,7 +518,6 @@ def chemical_potential_interp(n_e, T):
     is the degeneracy parameter, comparing the thermal energy to the Fermi
     energy, and the coefficients for the fitting formula
     are A=0.25945, B=0.0072, b=0.858.
-
 
     References
     ----------
@@ -512,6 +532,7 @@ def chemical_potential_interp(n_e, T):
     >>> from astropy import units as u
     >>> chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
     <Quantity 8.17649673>
+
     """
     A = 0.25945
     B = 0.072
