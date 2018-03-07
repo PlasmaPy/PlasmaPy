@@ -1,5 +1,6 @@
 """Functionality to parse representations of particles into standard form."""
 
+import roman
 import numpy as np
 import re
 import warnings
@@ -205,13 +206,19 @@ def _parse_and_check_atomic_input(argument: Union[str, int], mass_numb: int = No
             if not sign_indicator_only_on_one_end and just_one_sign_indicator:
                 raise InvalidParticleError(invalid_charge_errmsg) from None
 
-            if '-' in charge_info:
-                sign = -1
-            elif '+' in charge_info:
-                sign = 1
-
             charge_str = charge_info.strip('+-')
-            Z_from_arg = sign * int(charge_str)
+
+            try:
+                if roman.romanNumeralPattern.match(charge_info):
+                    Z_from_arg = roman.fromRoman(charge_info) - 1
+                elif '-' in charge_info:
+                    Z_from_arg = - int(charge_str)
+                elif '+' in charge_info:
+                    Z_from_arg = int(charge_str)
+                else:
+                    raise InvalidParticleError(invalid_charge_errmsg) from None
+            except ValueError:
+                raise InvalidParticleError(invalid_charge_errmsg) from None
 
         elif arg.endswith(('-', '+')):  # Cases like 'H-' and 'Pb-209+++'
             char = arg[-1]
