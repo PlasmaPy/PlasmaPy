@@ -211,41 +211,18 @@ class Particle:
     and `~plasmapy.atomic.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
 
-    >>> sorted(neutron.is_category())  # list all valid categories
-    ['actinide',
-     'alkali metal',
-     'alkaline earth metal',
-     'antibaryon',
-     'antilepton',
-     'antimatter',
-     'antineutrino',
-     'baryon',
-     'boson',
-     'charged',
-     'electron',
-     'element',
-     'fermion',
-     'halogen',
-     'ion',
-     'isotope',
-     'lanthanide',
-     'lepton',
-     'matter',
-     'metal',
-     'metalloid',
-     'neutrino',
-     'neutron',
-     'noble gas',
-     'nonmetal',
-     'positron',
-     'post-transition metal',
-     'proton',
-     'stable',
-     'transition metal',
-     'uncharged',
-     'unstable']
+    Valid particle categories include: `'actinide'`, `'alkali
+    metal'`, `'alkaline earth metal'`, `'antibaryon'`,
+    `'antilepton'`, `'antimatter'`, `'antineutrino'`, `'baryon'`,
+    `'boson'`, `'charged'`, `'electron'`, `'element'`,
+    `'fermion'`, `'halogen'`, `'ion'`, `'isotope'`,
+    `'lanthanide'`, `'lepton'`, `'matter'`, `'metal'`,
+    `'metalloid'`, `'neutrino'`, `'neutron'`, `'noble gas'`,
+    `'nonmetal'`, `'positron'`, `'post-transition metal'`,
+    `'proton'`, `'stable'`, `'transition metal'`, `'uncharged'`,
+    and `'unstable'`.
 
-    """
+"""
 
     def __init__(self, argument: Union[str, int], mass_numb: int = None, Z: int = None):
         """
