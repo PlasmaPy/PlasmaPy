@@ -11,9 +11,14 @@ Particle Class
 --------------
 
 The `~plasmapy.atomic.Particle` class provides an object-oriented
-interface to particle information. The simplest way to create an
-instance of the `~plasmapy.atomic.Particle` class is to pass it a `str`
-representing a particle.
+interface to particle information.
+
+Creating a Particle Instance
+----------------------------
+
+The simplest way to create an instance of the
+`~plasmapy.atomic.Particle` class is to pass it a `str` representing a
+particle.
 
 >>> from plasmapy.atomic import Particle
 >>> electron = Particle('e-')
@@ -37,6 +42,9 @@ and ions, the mass number may be represented with the `mass_numb`
 keyword and the integer charge may be represented with the `Z` keyword.
 
 >>> proton = Particle(1, mass_numb=1, Z=1)
+
+Accessing Particle Properties
+-----------------------------
 
 The properties of each particle may be accessed using attributes of the
 `~plasmapy.atomic.Particle` instance.
@@ -72,41 +80,8 @@ Strings representing particles may be accessed using the `particle`,
 >>> deuteron.ion
 'D 1+'
 
-Equality between particles may be tested either between two
-`~plasmapy.atomic.Particle` instances, or between a
-`~plasmapy.atomic.Particle` instance and a `str`.
-
->>> Particle('H-1') == Particle('protium 1+')
-True
->>> alpha == 'He-4 1+'
-False
-
-The `is_electron` attribute provides a quick way to check whether or not
-a particle is an electron.
-
->>> electron.is_electron
-True
->>> hydride.is_electron
-False
-
-The `element`, `isotope`, and `ion` return `None` when the particle is
-not the respective category.  Because non-empty strings evaluate to
-`True` and `None` evaluates to `False` when converted to a `bool`, these
-attributes may be used in conditional statements to test whether or not
-a particle is in one of these categories.
-
-.. code-block:: python
-
-    particles = [Particle('e-'), Particle('Fe-56'), Particle('alpha')]
-
-    for particle in particles:
-        if particle.element:
-            print(f"{particle} corresponds to element {particle.element}")
-        if particle.isotope:
-            print(f"{particle} corresponds to isotope {particle.isotope}")
-        if particle.ion:
-            print(f"{particle} corresponds to ion {particle.ion}")
-
+Categories
+----------
 
 The `categories` attribute returns a `set` with the classification
 categories corresponding to the particle.
@@ -145,3 +120,41 @@ categories include: `'actinide'`, `'alkali metal'`,
 `'metalloid'`, `'neutrino'`, `'neutron'`, `'noble gas'`, `'nonmetal'`,
 `'positron'`, `'post-transition metal'`, `'proton'`, `'stable'`,
 `'transition metal'`, `'uncharged'`, and `'unstable'`.
+
+Particle Conditionals and Equality Properties
+---------------------------------------------
+
+Equality between particles may be tested either between two
+`~plasmapy.atomic.Particle` instances, or between a
+`~plasmapy.atomic.Particle` instance and a `str`.
+
+>>> Particle('H-1') == Particle('protium 1+')
+True
+>>> alpha == 'He-4 1+'
+False
+
+The `is_electron` attribute provides a quick way to check whether or not
+a particle is an electron.
+
+>>> electron.is_electron
+True
+>>> hydride.is_electron
+False
+
+The `element`, `isotope`, and `ion` return `None` when the particle is
+not the respective category.  Because non-empty strings evaluate to
+`True` and `None` evaluates to `False` when converted to a `bool`, these
+attributes may be used in conditional statements to test whether or not
+a particle is in one of these categories.
+
+.. code-block:: python
+
+    particles = [Particle('e-'), Particle('Fe-56'), Particle('alpha')]
+
+    for particle in particles:
+        if particle.element:
+            print(f"{particle} corresponds to element {particle.element}")
+        if particle.isotope:
+            print(f"{particle} corresponds to isotope {particle.isotope}")
+        if particle.ion:
+            print(f"{particle} corresponds to ion {particle.ion}")
