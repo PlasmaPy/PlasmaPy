@@ -19,27 +19,27 @@ def Maxwellian_1D(v,
 
     Parameters
     ----------
-    v: Quantity
+    v: ~astropy.units.Quantity
         The velocity in units convertible to m/s.
 
-    T: Quantity
+    T: ~astropy.units.Quantity
         The temperature in Kelvin.
 
-    particle: string, optional
-        Representation of the particle species(e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for :math:`He_4^{+1}`
+    particle: str, optional
+        Representation of the particle species(e.g., `'p'` for protons, `'D+'`
+        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
         (singly ionized helium-4),
         which defaults to electrons.
 
-    V_drift: Quantity, optional
+    V_drift: ~astropy.units.Quantity, optional
         The drift velocity in units convertible to m/s.
 
-    vTh: Quantity, optional
+    vTh: ~astropy.units.Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
         optimization purposes to avoid re-calculating vTh, for example
         when integrating over velocity-space.
 
-    units: string, optional
+    units: str, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -47,7 +47,7 @@ def Maxwellian_1D(v,
 
     Returns
     -------
-    f : Quantity
+    f : ~astropy.units.Quantity
         Probability in Velocity^-1, normalized so that
         :math:`\int_{-\infty}^{+\infty} f(v) dv = 1`.
 
@@ -57,7 +57,7 @@ def Maxwellian_1D(v,
         The parameter arguments are not Quantities and
         cannot be converted into Quantities.
 
-    UnitConversionError
+    ~astropy.units.UnitConversionError
         If the parameters are not in appropriate units.
 
     ValueError
@@ -136,44 +136,44 @@ def Maxwellian_velocity_3D(vx,
                            units="units"):
     r"""
     Return the probability of finding a particle with velocity components
-    `v_x`, `v_y`, and `v_z`in m/s in an equilibrium plasma of temperature
+    `vx`, `vy`, and `vz`in m/s in an equilibrium plasma of temperature
     `T` which follows the 3D Maxwellian distribution function. This
     function assumes Cartesian coordinates.
 
     Parameters
     ----------
-    vx: Quantity
-        The velocity in x-direction units convertible to m/s
+    vx: ~astropy.units.Quantity
+        The velocity in x-direction units convertible to m/s.
 
-    vy: Quantity
-        The velocity in y-direction units convertible to m/s
+    vy: ~astropy.units.Quantity
+        The velocity in y-direction units convertible to m/s.
 
-    vz: Quantity
-        The velocity in z-direction units convertible to m/s
+    vz: ~astropy.units.Quantity
+        The velocity in z-direction units convertible to m/s.
 
-    T: Quantity
-        The temperature, preferably in Kelvin
+    T: ~astropy.units.Quantity
+        The temperature, preferably in Kelvin.
 
-    particle: string, optional
-        Representation of the particle species (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for :math:`He_4^{+1}`
+    particle: str, optional
+        Representation of the particle species (e.g., `'p'` for protons, `'D+'`
+        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
         (singly ionized helium-4), which defaults to electrons.
 
-    Vx_drift: Quantity, optional
-        The drift velocity in x-direction units convertible to m/s
+    Vx_drift: ~astropy.units.Quantity, optional
+        The drift velocity in x-direction units convertible to m/s.
 
-    Vy_drift: Quantity, optional
-        The drift velocity in y-direction units convertible to m/s
+    Vy_drift: ~astropy.units.Quantity, optional
+        The drift velocity in y-direction units convertible to m/s.
 
-    Vz_drift: Quantity, optional
-        The drift velocity in z-direction units convertible to m/s
+    Vz_drift: ~astropy.units.Quantity, optional
+        The drift velocity in z-direction units convertible to m/s.
 
-    vTh: Quantity, optional
+    vTh: ~astropy.units.Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating vTh, for example
+        optimization purposes to avoid re-calculating `vTh`, for example
         when integrating over velocity-space.
 
-    units: string, optional
+    units: str, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -181,17 +181,17 @@ def Maxwellian_velocity_3D(vx,
 
     Returns
     -------
-    f : Quantity
-        probability in Velocity^-1, normalized so that
+    f : ~astropy.units.Quantity
+        Probability in Velocity^-1, normalized so that
         :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`.
 
     Raises
     ------
     TypeError
-        The parameter arguments are not Quantities and
-        cannot be converted into Quantities.
+        A parameter argument is not a `~astropy.units.Quantity` and
+        cannot be converted into a `~astropy.units.Quantity`.
 
-    UnitConversionError
+    ~astropy.units.UnitConversionError
         If the parameters is not in appropriate units.
 
     ValueError
@@ -201,8 +201,8 @@ def Maxwellian_velocity_3D(vx,
     Notes
     -----
     In one dimension, the Maxwellian speed distribution function describing
-    the distribution of particles with speed v in a plasma with temperature T
-    is given by:
+    the distribution of particles with speed :math:`v` in a plasma with
+    temperature :math:`T` is given by:
 
     .. math::
 
@@ -294,26 +294,26 @@ def Maxwellian_speed_1D(v,
 
     Parameters
     ----------
-    v: Quantity
+    v: ~astropy.units.Quantity
         The speed in units convertible to m/s.
 
-    T: Quantity
+    T: ~astropy.units.Quantity
         The temperature, preferably in Kelvin.
 
-    particle: string, optional
-        Representation of the particle species(e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for :math:`He_4^{+1}`
+    particle: str, optional
+        Representation of the particle species(e.g., `'p'` for protons, `'D+'`
+        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
         (singly ionized helium-4), which defaults to electrons.
 
-    V_drift: Quantity
+    V_drift: ~astropy.units.Quantity
         The drift speed in units convertible to m/s.
 
-    vTh: Quantity, optional
+    vTh: ~astropy.units.Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
         optimization purposes to avoid re-calculating vTh, for example
         when integrating over velocity-space.
 
-    units: string, optional
+    units: str, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -321,7 +321,7 @@ def Maxwellian_speed_1D(v,
 
     Returns
     -------
-    f : Quantity
+    f : ~astropy.units.Quantity
         Probability in speed^-1, normalized so that
         :math:`\int_{0}^{\infty} f(v) dv = 1`.
 
@@ -331,7 +331,7 @@ def Maxwellian_speed_1D(v,
         The parameter arguments are not Quantities and
         cannot be converted into Quantities.
 
-    UnitConversionError
+    ~astropy.units.UnitConversionError
         If the parameters is not in appropriate units.
 
     ValueError
@@ -349,7 +349,6 @@ def Maxwellian_speed_1D(v,
        f(v) = 4 \pi v^2 (\pi * v_Th^2)^{-3/2} \exp(-(v - V_{drift})^2 / v_Th^2)
 
     where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed.
-
 
     Example
     -------
@@ -413,44 +412,44 @@ def Maxwellian_speed_3D(vx,
                         units="units"):
     r"""
     Return the probability of finding a particle with speed components
-    `v_x`, `v_y`, and `v_z`in m/s in an equilibrium plasma of temperature
+    `vx`, `vy`, and `vz`in m/s in an equilibrium plasma of temperature
     `T` which follows the 3D Maxwellian distribution function. This
     function assumes Cartesian coordinates.
 
     Parameters
     ----------
-    vx: Quantity
+    vx: ~astropy.units.Quantity
         The speed in x-direction units convertible to m/s.
 
-    vy: Quantity
+    vy: ~astropy.units.Quantity
         The speed in y-direction units convertible to m/s.
 
-    vz: Quantity
+    vz: ~astropy.units.Quantity
         The speed in z-direction units convertible to m/s.
 
-    T: Quantity
+    T: ~astropy.units.Quantity
         The temperature, preferably in Kelvin.
 
-    particle: string, optional
+    particle: str, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for :math:`He_4^{+1}`
         (singly ionized helium-4), which defaults to electrons.
 
-    Vx_drift: Quantity
+    Vx_drift: ~astropy.units.Quantity
         The drift speed in x-direction units convertible to m/s.
 
-    Vy_drift: Quantity
+    Vy_drift: ~astropy.units.Quantity
         The drift speed in y-direction units convertible to m/s.
 
-    Vz_drift: Quantity
+    Vz_drift: ~astropy.units.Quantity
         The drift speed in z-direction units convertible to m/s.
 
-    vTh: Quantity, optional
+    vTh: ~astropy.units.Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
         optimization purposes to avoid re-calculating vTh, for example
         when integrating over velocity-space.
 
-    units: string, optional
+    units: str, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -458,17 +457,17 @@ def Maxwellian_speed_3D(vx,
 
     Returns
     -------
-    f : Quantity
+    f : ~astropy.units.Quantity
         Probability in speed^-1, normalized so that:
         :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`.
 
     Raises
     ------
     TypeError
-        The parameter arguments are not Quantities and
-        cannot be converted into Quantities.
+        A parameter argument is not a `~astropy.units.Quantity` and
+        cannot be converted into a `~astropy.units.Quantity`.
 
-    UnitConversionError
+    ~astropy.units.UnitConversionError
         If the parameters is not in appropriate units.
 
     ValueError
@@ -478,8 +477,8 @@ def Maxwellian_speed_3D(vx,
     Notes
     -----
     In one dimension, the Maxwellian speed distribution function describing
-    the distribution of particles with speed v in a plasma with temperature T
-    is given by:
+    the distribution of particles with speed :math:`v` in a plasma with
+    temperature :math:`T` is given by:
 
     .. math::
 
@@ -578,40 +577,40 @@ def kappa_velocity_1D(v,
                       vTh=np.nan,
                       units="units"):
     r"""
-    Returns the probability at the velocity `v` in m/s
+    Return the probability at the velocity `v` in m/s
     to find a particle `particle` in a plasma of temperature `T`
     following the Kappa distribution function. The slope of the
     tail of the Kappa distribution function is set by 'kappa', which
-    must be greater than 1/2.
+    must be greater than :math:`1/2`.
 
     Parameters
     ----------
-    v: Quantity
+    v: ~astropy.units.Quantity
         The velocity in units convertible to m/s.
 
-    T: Quantity
+    T: ~astropy.units.Quantity
         The temperature in Kelvin.
 
-    kappa: Quantity
+    kappa: ~astropy.units.Quantity
         The kappa parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
         of the Kappa velocity distribution function. Kappa must be greater
-        than 3/2.
+        than :math:`3/2`.
 
-    particle: string, optional
-        Representation of the particle species(e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for :math:`He_4^{+1}`
+    particle: str, optional
+        Representation of the particle species(e.g., `'p` for protons, `'D+'`
+        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
         (singly ionized helium-4), which defaults to electrons.
 
-    V_drift: Quantity, optional
-        The drift velocity in units convertible to m/s
+    V_drift: ~astropy.units.Quantity, optional
+        The drift velocity in units convertible to m/s.
 
-    vTh: Quantity, optional
+    vTh: ~astropy.units.Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating vTh, for example
+        optimization purposes to avoid re-calculating `vTh`, for example
         when integrating over velocity-space.
 
-    units: string, optional
+    units: str, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -619,17 +618,17 @@ def kappa_velocity_1D(v,
 
     Returns
     -------
-    f : Quantity
+    f : ~astropy.units.Quantity
         probability in Velocity^-1, normalized so that
         :math:`\int_{-\infty}^{+\infty} f(v) dv = 1`.
 
     Raises
     ------
     TypeError
-        The parameter arguments are not Quantities and
-        cannot be converted into Quantities.
+        A parameter argument is not a `~astropy.units.Quantity` and
+        cannot be converted into a `~astropy.units.Quantity`.
 
-    UnitConversionError
+    ~astropy.units.UnitConversionError
         If the parameters is not in appropriate units.
 
     ValueError
@@ -639,8 +638,9 @@ def kappa_velocity_1D(v,
     Notes
     -----
     In one dimension, the Kappa velocity distribution function describing
-    the distribution of particles with speed v in a plasma with temperature T
-    and suprathermal parameter kappa is given by:
+    the distribution of particles with speed :math:`v` in a plasma with
+    temperature :math:`T` and suprathermal parameter :math:`\kappa` is
+    given by:
 
     .. math::
 
@@ -650,10 +650,10 @@ def kappa_velocity_1D(v,
     where :math:`v_Th,\kappa` is the kappa thermal speed
     and :math:`A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_Th,\kappa^2
     \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2)}}`
-    is the normalization constant
+    is the normalization constant.
 
-    As kappa approaches infinity, the kappa distribution function converges
-    to the Maxwellian distribution function.
+    As :math:`\kappa` approaches infinity, the kappa distribution function
+    converges to the Maxwellian distribution function.
 
     Examples
     --------
@@ -726,44 +726,44 @@ def kappa_velocity_3D(vx,
 
     Parameters
     ----------
-    vx: Quantity
+    vx: ~astropy.units.Quantity
         The velocity in x-direction units convertible to m/s.
 
-    vy: Quantity
+    vy: ~astropy.units.Quantity
         The velocity in y-direction units convertible to m/s.
 
-    vz: Quantity
+    vz: ~astropy.units.Quantity
         The velocity in z-direction units convertible to m/s.
 
-    T: Quantity
+    T: ~astropy.units.Quantity
         The temperature, preferably in Kelvin.
 
-    kappa: Quantity
+    kappa: ~astropy.units.Quantity
         The kappa parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
         of the Kappa velocity distribution function. Kappa must be greater
-        than 3/2.
+        than :math:`3/2`.
 
-    particle: string, optional
+    particle: str, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for :math:`He_4^{+1}` : singly ionized
         helium-4), which defaults to electrons.
 
-    Vx_drift: Quantity, optional
+    Vx_drift: ~astropy.units.Quantity, optional
         The drift velocity in x-direction units convertible to m/s.
 
-    Vy_drift: Quantity, optional
+    Vy_drift: ~astropy.units.Quantity, optional
         The drift velocity in y-direction units convertible to m/s.
 
-    Vz_drift: Quantity, optional
+    Vz_drift: ~astropy.units.Quantity, optional
         The drift velocity in z-direction units convertible to m/s.
 
-    vTh: Quantity, optional
+    vTh: ~astropy.units.Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating vTh, for example
+        optimization purposes to avoid re-calculating `vTh`, for example
         when integrating over velocity-space.
 
-    units: string, optional
+    units: str, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -771,7 +771,7 @@ def kappa_velocity_3D(vx,
 
     Returns
     -------
-    f : Quantity
+    f : ~astropy.units.Quantity
         probability in Velocity^-1, normalized so that:
         :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`
 
@@ -781,7 +781,7 @@ def kappa_velocity_3D(vx,
         The parameter arguments are not Quantities and
         cannot be converted into Quantities.
 
-    UnitConversionError
+    ~astropy.units.UnitConversionError
         If the parameters is not in appropriate units.
 
     ValueError
@@ -791,8 +791,8 @@ def kappa_velocity_3D(vx,
     Notes
     -----
     In three dimensions, the Kappa velocity distribution function describing
-    the distribution of particles with speed v in a plasma with temperature T
-    and suprathermal parameter kappa is given by:
+    the distribution of particles with speed :math:`v` in a plasma with
+    temperature :math:`T` and suprathermal parameter :math:`\kappa` is given by:
 
     .. math::
 
@@ -804,8 +804,8 @@ def kappa_velocity_3D(vx,
     \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)}` is the
     normalization constant.
 
-    As kappa approaches infinity, the kappa distribution function converges
-    to the Maxwellian distribution function.
+    As :math:`\kappa` approaches infinity, the kappa distribution function
+    converges to the Maxwellian distribution function.
 
     See also
     --------

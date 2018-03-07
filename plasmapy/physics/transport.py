@@ -2102,21 +2102,29 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
 
     gamma_0 = gamma_0_prime[Z_idx] / delta_0[Z_idx]
     Delta = hall ** 4 + delta_1[Z_idx] * hall ** 2 + delta_0[Z_idx]
-    kappa_par = gamma_0
+
     if field_orientation == 'parallel' or field_orientation == 'par':
+        kappa_par = gamma_0
         return kappa_par
 
-    kappa_perp = (gamma_1_prime[Z_idx] * hall **
-                  2 + gamma_0_prime[Z_idx]) / Delta
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
+        kappa_perp = (gamma_1_prime[Z_idx] * hall **
+                      2 + gamma_0_prime[Z_idx]) / Delta
         return kappa_perp
 
-    kappa_cross = (gamma_1_doubleprime[Z_idx] * hall ** 3 +
-                   gamma_0_doubleprime[Z_idx] * hall) / Delta
     if field_orientation == 'cross':
+        kappa_cross = (gamma_1_doubleprime[Z_idx] * hall ** 3 +
+                       gamma_0_doubleprime[Z_idx] * hall) / Delta
         return kappa_cross
 
     if field_orientation == 'all':
+        kappa_par = gamma_0
+
+        kappa_perp = (gamma_1_prime[Z_idx] * hall **
+                      2 + gamma_0_prime[Z_idx]) / Delta
+
+        kappa_cross = (gamma_1_doubleprime[Z_idx] * hall ** 3 +
+                       gamma_0_doubleprime[Z_idx] * hall) / Delta
         return np.array((kappa_par, kappa_perp, kappa_cross))
 
 
@@ -2129,29 +2137,43 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
     # fixing overflow errors when exponentiating hall by making a float
     # instead of an int
     hall = float(hall)
-    kappa_par_coeff_0 = 3.906
-    kappa_par = kappa_par_coeff_0
+
     if field_orientation == 'parallel' or field_orientation == 'par':
+        kappa_par_coeff_0 = 3.906
+        kappa_par = kappa_par_coeff_0
         return kappa_par
 
-    kappa_perp_coeff_2 = 2.0
-    kappa_perp_coeff_0 = 2.645
     delta_1 = 2.70
     delta_0 = 0.677
     Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
-    kappa_perp = (kappa_perp_coeff_2 * hall ** 2 +
-                  kappa_perp_coeff_0) / Delta
+
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
+        kappa_perp_coeff_2 = 2.0
+        kappa_perp_coeff_0 = 2.645
+        kappa_perp = (kappa_perp_coeff_2 * hall ** 2 +
+                      kappa_perp_coeff_0) / Delta
         return kappa_perp
 
-    kappa_cross_coeff_3 = 2.5
-    kappa_cross_coeff_1 = 4.65
-    kappa_cross = (kappa_cross_coeff_3 * hall ** 3 +
-                   kappa_cross_coeff_1 * hall) / Delta
     if field_orientation == 'cross':
+        kappa_cross_coeff_3 = 2.5
+        kappa_cross_coeff_1 = 4.65
+        kappa_cross = (kappa_cross_coeff_3 * hall ** 3 +
+                       kappa_cross_coeff_1 * hall) / Delta
         return kappa_cross
 
     if field_orientation == 'all':
+        kappa_par_coeff_0 = 3.906
+        kappa_par = kappa_par_coeff_0
+
+        kappa_perp_coeff_2 = 2.0
+        kappa_perp_coeff_0 = 2.645
+        kappa_perp = (kappa_perp_coeff_2 * hall ** 2 +
+                      kappa_perp_coeff_0) / Delta
+
+        kappa_cross_coeff_3 = 2.5
+        kappa_cross_coeff_1 = 4.65
+        kappa_cross = (kappa_cross_coeff_3 * hall ** 3 +
+                       kappa_cross_coeff_1 * hall) / Delta
         return np.array((kappa_par, kappa_perp, kappa_cross))
 
 
@@ -2248,21 +2270,29 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
 
     alpha_0 = 1 - alpha_0_prime[Z_idx] / delta_0[Z_idx]
     Delta = hall ** 4 + delta_1[Z_idx] * hall ** 2 + delta_0[Z_idx]
-    alpha_par = alpha_0
+
     if field_orientation == 'parallel' or field_orientation == 'par':
+        alpha_par = alpha_0
         return alpha_par
 
-    alpha_perp = (1 - (alpha_1_prime[Z_idx] * hall ** 2 +
-                       alpha_0_prime[Z_idx]) / Delta)
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
+        alpha_perp = (1 - (alpha_1_prime[Z_idx] * hall ** 2 +
+                           alpha_0_prime[Z_idx]) / Delta)
         return alpha_perp
 
-    alpha_cross = (alpha_1_doubleprime[Z_idx] * hall ** 3 +
-                   alpha_0_doubleprime[Z_idx] * hall) / Delta
     if field_orientation == 'cross':
+        alpha_cross = (alpha_1_doubleprime[Z_idx] * hall ** 3 +
+                       alpha_0_doubleprime[Z_idx] * hall) / Delta
         return alpha_cross
 
     if field_orientation == 'all':
+        alpha_par = alpha_0
+
+        alpha_perp = (1 - (alpha_1_prime[Z_idx] * hall ** 2 +
+                           alpha_0_prime[Z_idx]) / Delta)
+
+        alpha_cross = (alpha_1_doubleprime[Z_idx] * hall ** 3 +
+                       alpha_0_doubleprime[Z_idx] * hall) / Delta
         return np.array((alpha_par, alpha_perp, alpha_cross))
 
 
@@ -2290,21 +2320,28 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
     beta_0 = beta_0_prime[Z_idx] / delta_0[Z_idx]
 #    beta_0 = 0.7110
 
-    beta_par = beta_0
     if field_orientation == 'parallel' or field_orientation == 'par':
+        beta_par = beta_0
         return beta_par
 
-    beta_perp = (beta_1_prime[Z_idx] * hall ** 2 +
-                 beta_0_prime[Z_idx]) / Delta
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
+        beta_perp = (beta_1_prime[Z_idx] * hall ** 2 +
+                     beta_0_prime[Z_idx]) / Delta
         return beta_perp
 
-    beta_cross = (beta_1_doubleprime[Z_idx] * hall ** 3 +
-                  beta_0_doubleprime[Z_idx] * hall) / Delta
     if field_orientation == 'cross':
+        beta_cross = (beta_1_doubleprime[Z_idx] * hall ** 3 +
+                      beta_0_doubleprime[Z_idx] * hall) / Delta
         return beta_cross
 
     if field_orientation == 'all':
+        beta_par = beta_0
+
+        beta_perp = (beta_1_prime[Z_idx] * hall ** 2 +
+                     beta_0_prime[Z_idx]) / Delta
+
+        beta_cross = (beta_1_doubleprime[Z_idx] * hall ** 3 +
+                      beta_0_doubleprime[Z_idx] * hall) / Delta
         return np.array((beta_par, beta_perp, beta_cross))
 
 

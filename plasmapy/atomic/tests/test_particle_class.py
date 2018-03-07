@@ -9,14 +9,16 @@ from ...utils import (
     AtomicWarning,
     AtomicError,
     MissingAtomicDataError,
+    MissingAtomicDataWarning,
     InvalidParticleError,
     InvalidElementError,
     InvalidIsotopeError,
-    InvalidIonError,
     ChargeError,
 )
 
-from ..classes import Particle
+from ..atomic import known_isotopes
+from ..isotopes import _Isotopes
+from ..particle_class import Particle
 from ..parsing import _call_string
 
 # (arg, kwargs, results_dict
@@ -34,7 +36,9 @@ test_Particle_table = [
       'lepton_number': 0,
       'mass': m_n,
       'nuclide_mass': m_n,
-      'binding_energy': 0 * u.J}),
+      'binding_energy': 0 * u.J,
+      'periodic_table.group': InvalidElementError,
+      }),
 
     ('p+', {},
      {'particle': 'p+',
@@ -45,23 +49,26 @@ test_Particle_table = [
       'mass': m_p,
       'nuclide_mass': m_p,
       'integer_charge': 1,
-      'charge': e.si,
+      'charge.value': e.si.value,
       'spin': 1 / 2,
       'half_life': np.inf * u.s,
       'atomic_number': 1,
       'mass_number': 1,
       'lepton_number': 0,
       'baryon_number': 1,
-      'reduced_mass(Particle("p"))': m_p / 2,
-      'reduced_mass(m_p)': m_p / 2,
       '__str__()': 'p+',
       '__repr__()': 'Particle("p+")',
       'is_category("fermion")': True,
       'is_category(["fermion"])': True,
       'is_category({"fermion"})': True,
-      'is_category("boson", "fermion", any=True)': True,
-      'is_category("boson", "fermion", any=False)': False,
+      'is_category(any_of=("boson", "fermion"))': True,
+      'is_category(require=["boson", "fermion"])': False,
       'is_category(("element", "isotope", "ion"))': True,
+      'is_category("charged")': True,
+      'periodic_table.group': 1,
+      'periodic_table.block': 's',
+      'periodic_table.period': 1,
+      'periodic_table.category': 'nonmetal',
       'binding_energy': 0 * u.J,
       }),
 
@@ -80,7 +87,9 @@ test_Particle_table = [
       'lepton_number': 0,
       'baryon_number': -1,
       '__str__()': 'p-',
-      '__repr__()': 'Particle("p-")'}),
+      '__repr__()': 'Particle("p-")',
+      'periodic_table.group': InvalidElementError,
+      }),
 
     ('e-', {},
      {'particle': 'e-',
@@ -95,11 +104,14 @@ test_Particle_table = [
       'atomic_number': InvalidElementError,
       'lepton_number': 1,
       'baryon_number': 0,
-      'reduced_mass(Particle("e+"))': m_e / 2,
-      'reduced_mass("e-")': m_e / 2,
       '__str__()': 'e-',
       '__repr__()': 'Particle("e-")',
-      'binding_energy': InvalidIsotopeError}),
+      'binding_energy': InvalidIsotopeError,
+      'periodic_table.group': InvalidElementError,
+      'periodic_table.block': InvalidElementError,
+      'periodic_table.period': InvalidElementError,
+      'periodic_table.category': InvalidElementError,
+      }),
 
     ('e+', {},
      {'particle': 'e+',
@@ -114,8 +126,16 @@ test_Particle_table = [
       'atomic_number': InvalidElementError,
       'lepton_number': -1,
       'baryon_number': 0,
+      'is_category(require="positron")': True,
+      'is_category(any_of={"positron"})': True,
+      'is_category(exclude="positron")': False,
       '__str__()': 'e+',
-      '__repr__()': 'Particle("e+")'}),
+      '__repr__()': 'Particle("e+")',
+      'periodic_table.group': InvalidElementError,
+      'periodic_table.block': InvalidElementError,
+      'periodic_table.period': InvalidElementError,
+      'periodic_table.category': InvalidElementError,
+      }),
 
     ('H', {},
      {'particle': 'H',
@@ -130,7 +150,11 @@ test_Particle_table = [
       'half_life': InvalidIsotopeError,
       'standard_atomic_weight': (1.008 * u.u).to(u.kg),
       'mass': (1.008 * u.u).to(u.kg),
-      'nuclide_mass': InvalidIsotopeError}),
+      'nuclide_mass': InvalidIsotopeError,
+      'is_category("charged")': False,
+      'is_category("nonmetal")': True,
+      'is_category("proton")': False,
+      }),
 
     ('D+', {},
      {'particle': 'D 1+',
@@ -142,7 +166,14 @@ test_Particle_table = [
       'atomic_number': 1,
       'mass_number': 2,
       'baryon_number': 2,
-      'lepton_number': 0}),
+      'lepton_number': 0,
+      'neutron_number': 1,
+      'is_category(require=("ion", "isotope"))': True,
+      'periodic_table.group': 1,
+      'periodic_table.block': 's',
+      'periodic_table.period': 1,
+      'periodic_table.category': 'nonmetal',
+      }),
 
     ('tritium', {'Z': 1},
      {'particle': 'T 1+',
@@ -153,7 +184,12 @@ test_Particle_table = [
       'atomic_number': 1,
       'mass_number': 3,
       'baryon_number': 3,
-      'lepton_number': 0}),
+      'lepton_number': 0,
+      'neutron_number': 2,
+      'is_category("ion", "isotope")': True,
+      'is_category(require="uncharged")': False,
+      'periodic_table.group': 1,
+      }),
 
     ('Fe', {'Z': 17, 'mass_numb': 56},
      {'particle': 'Fe-56 17+',
@@ -166,7 +202,11 @@ test_Particle_table = [
       'mass_number': 56,
       'baryon_number': 56,
       '__str__()': 'Fe-56 17+',
-      '__repr__()': 'Particle("Fe-56 17+")'}),
+      '__repr__()': 'Particle("Fe-56 17+")',
+      'is_category("element")': True,
+      'is_category("ion")': True,
+      'is_category("isotope")': True,
+      }),
 
     ('alpha', {},
      {'particle': 'He-4 2+',
@@ -179,7 +219,8 @@ test_Particle_table = [
       'mass_number': 4,
       'baryon_number': 4,
       'lepton_number': 0,
-      'half_life': np.inf * u.s}),
+      'half_life': np.inf * u.s,
+      }),
 
     ('Li', {'mass_numb': 7},
      {'particle': 'Li-7',
@@ -190,9 +231,11 @@ test_Particle_table = [
       'integer_charge': ChargeError,
       'atomic_number': 3,
       'mass_number': 7,
+      'neutron_number': 4,
       'baryon_number': 7,
       'half_life': np.inf * u.s,
-      'nuclide_mass': 1.1647614796180465e-26 * u.kg}),
+      'nuclide_mass': 1.1647614796180463e-26 * u.kg,
+      }),
 
     ('Cn-276', {"Z": 22},
      {'particle': 'Cn-276 22+',
@@ -203,9 +246,9 @@ test_Particle_table = [
       'integer_charge': 22,
       'atomic_number': 112,
       'mass_number': 276,
+      'neutron_number': 164,
       'baryon_number': 276,
-      'lepton_number': 0,
-      'half_life': MissingAtomicDataError}),
+      'lepton_number': 0}),
 
     ('muon', {},
      {'particle': 'mu-',
@@ -216,7 +259,8 @@ test_Particle_table = [
       'atomic_number': InvalidElementError,
       'mass_number': InvalidIsotopeError,
       'baryon_number': 0,
-      'lepton_number': 1}),
+      'lepton_number': 1,
+      }),
 
     ('nu_tau', {},
      {'particle': 'nu_tau',
@@ -235,22 +279,25 @@ test_Particle_table = [
       'is_category("matter", exclude={"antimatter"})': True,
       'is_category("matter", exclude=["antimatter"])': True,
       'is_category("matter", exclude="antimatter")': True,
-      'is_category("matter", "boson", any=True)': True,
+      'is_category(any_of={"matter", "boson"})': True,
+      'is_category(any_of=["antimatter", "boson", "charged"])': False,
       'is_category(["fermion", "lepton"], exclude="matter")': False,
       'is_category("lepton", "invalid")': AtomicError,
       'is_category(["boson"], exclude=["lepton", "invalid"])': AtomicError,
       'is_category("boson", exclude="boson")': AtomicError,
-      'reduced_mass("electron")': MissingAtomicDataError}),
-
+      'is_category(any_of="boson", exclude="boson")': AtomicError,
+      }),
 ]
 
 
 @pytest.mark.parametrize("arg, kwargs, expected_dict", test_Particle_table)
 def test_Particle_class(arg, kwargs, expected_dict):
-    r"""Test that Particle objects for different subatomic particles,
-    elements, isotopes, and ions return the expected properties.  Provide
-    a detailed error message that lists all of the inconsistencies with
-    the expected results."""
+    """
+    Test that `~plasmapy.atomic.Particle` objects for different
+    subatomic particles, elements, isotopes, and ions return the
+    expected properties.  Provide a detailed error message that lists
+    all of the inconsistencies with the expected results.
+    """
 
     call = _call_string(arg, kwargs)
     errmsg = ""
@@ -287,7 +334,8 @@ def test_Particle_class(arg, kwargs, expected_dict):
                 result = eval(f"particle.{key}")
                 assert result == expected
             except AssertionError as exc_assert:
-                errmsg += f"\n{call}.{key} does not equal {expected}."
+                errmsg += (f"\n{call}.{key} returns {result} instead "
+                           f"of the expected value of {expected}.")
             except Exception as exc_general:
                 errmsg += f"\n{call}.{key} raises an unexpected exception."
 
@@ -312,8 +360,7 @@ equivalent_particles_table = [
 
 @pytest.mark.parametrize("equivalent_particles", equivalent_particles_table)
 def test_Particle_equivalent_cases(equivalent_particles):
-    r"""Test that all instances of a list of particles are equivalent,
-    except for the _original_* private variables which will differ."""
+    """Test that all instances of a list of particles are equivalent."""
 
     equivalent_Particle_classes = []
 
@@ -321,8 +368,7 @@ def test_Particle_equivalent_cases(equivalent_particles):
         equivalent_Particle_classes.append(Particle(particle))
 
     for Q in equivalent_Particle_classes[1:]:
-        assert Q == equivalent_Particle_classes[0], \
-            f"{equivalent_particles}"
+        assert Q == equivalent_Particle_classes[0], f"{equivalent_particles}"
 
 
 # arg, kwargs, attribute, exception
@@ -338,6 +384,7 @@ test_Particle_error_table = [
     ('e-', {}, '.atomic_number', InvalidElementError),
     ('alpha', {}, '.standard_atomic_weight', InvalidElementError),
     ('Fe-56', {}, '.standard_atomic_weight', InvalidElementError),
+    ('e-', {}, '.standard_atomic_weight', InvalidElementError),
     ('tau-', {}, '.element_name', InvalidElementError),
     ('tau+', {}, '.atomic_number', InvalidElementError),
     ('neutron', {}, '.atomic_number', InvalidElementError),
@@ -348,8 +395,6 @@ test_Particle_error_table = [
     ('Fe', {}, '.spin', MissingAtomicDataError),
     ('nu_e', {}, '.mass', MissingAtomicDataError),
     ('Og', {}, '.standard_atomic_weight', MissingAtomicDataError),
-    ('Fe', {'Z': '1'}, "", TypeError),
-    ('Fe', {'mass_numb': '1'}, "", TypeError),
     ([], {}, "", TypeError),
 ]
 
@@ -357,9 +402,10 @@ test_Particle_error_table = [
 @pytest.mark.parametrize(
     "arg, kwargs, attribute, exception", test_Particle_error_table)
 def test_Particle_errors(arg, kwargs, attribute, exception):
-    r"""Test that the appropriate exceptions are raised during the creation
-    and use of a Particle object."""
-    call = _call_string(arg, kwargs)
+    """
+    Test that the appropriate exceptions are raised during the creation
+    and use of a `~plasmapy.atomic.Particle` object.
+    """
     with pytest.raises(exception, message=(
             f"The following command: "
             f"\n\n >>> {_call_string(arg, kwargs)}{attribute}\n\n"
@@ -378,8 +424,10 @@ test_Particle_warning_table = [
 @pytest.mark.parametrize(
     "arg, kwargs, attribute, warning", test_Particle_warning_table)
 def test_Particle_warnings(arg, kwargs, attribute, warning):
-    r"""Test that the appropriate warnings are issued during the creation
-    and use of a Particle object."""
+    """
+    Test that the appropriate warnings are issued during the creation
+    and use of a `~plasmapy.atomic.Particle` object.
+    """
     with pytest.warns(warning, message=(
             f"The following command: "
             f"\n\n >>> {_call_string(arg, kwargs)}{attribute}\n\n"
@@ -388,11 +436,97 @@ def test_Particle_warnings(arg, kwargs, attribute, warning):
 
 
 def test_Particle_cmp():
-    r"""Test __eq__ and __ne__ in the Particle class."""
+    """Test __eq__ and __ne__ in the Particle class."""
     proton1 = Particle('p+')
     proton2 = Particle('proton')
     electron = Particle('e-')
 
     assert proton1 == proton2, "Particle('p+') == Particle('proton') is False."
     assert proton1 != electron, "Particle('p+') == Particle('e-') is True."
-    assert not proton1 == 1, "Particle('p+') == 1 is True."
+
+    with pytest.raises(TypeError):
+        electron == 1
+
+    with pytest.raises(AtomicError):
+        electron == 'dfasdf'
+
+
+nuclide_mass_and_mass_equiv_table = [
+    ('n', 'neutron'),
+    ('p+', 'proton'),
+    ('H-1', 'p+'),
+    ('D', 'D+'),
+    ('T', 'T+'),
+    ('He-4', 'alpha'),
+    ('Fe-56', 'Fe-56 26+'),
+]
+
+
+@pytest.mark.parametrize('isotope, ion', nuclide_mass_and_mass_equiv_table)
+def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
+    """
+    Test that the `mass` and `nuclide_mass` attributes return
+    equivalent values when appropriate.  The inputs should generally be
+    an isotope with no charge information, and a fully ionized ion of
+    that isotope, in order to make sure that the nuclide mass of the
+    isotope equals the mass of the fully ionized ion.  This method may
+    also check neutrons and protons.
+    """
+
+    Isotope = Particle(isotope)
+    Ion = Particle(ion)
+
+    if Isotope.particle == Ion.particle and Isotope.particle in ('n', 'p+'):
+        particle = Isotope.particle
+
+        assert Isotope.nuclide_mass == Ion.mass, (
+            f"Particle({repr(particle)}).nuclide_mass does not equal "
+            f"Particle({repr(particle)}).mass")
+
+    else:
+
+        inputerrmsg = (f"isotope = {repr(isotope)} and ion = {repr(ion)} are "
+                       f"not valid inputs to this test. The inputs should be "
+                       f"an isotope with no charge information, and a fully "
+                       f"ionized ion of that isotope, in order to make sure "
+                       f"that the nuclide mass of the isotope equals the mass "
+                       f"of the ion.")
+
+        assert Isotope.isotope and not Isotope.ion, inputerrmsg
+        assert Isotope.isotope == Ion.isotope, inputerrmsg
+        assert Ion.integer_charge == Ion.atomic_number, inputerrmsg
+
+        assert Isotope.nuclide_mass == Ion.mass, (
+            f"The nuclide mass of {isotope} does not equal the mass of {ion} "
+            f"which is the fully ionized ion of that isotope. The results of "
+            f"the test are:\n\n"
+            f"Particle({repr(ion)}).mass = {Ion.mass}\n"
+            f"Particle({repr(isotope)}).nuclide_mass = {Isotope.nuclide_mass}"
+            "\n")
+
+
+def test_particle_half_life_string():
+    """
+    Find the first isotope where the half-life is stored as a string
+    (because the uncertainties are too great), and tests that requesting
+    the half-life of that isotope causes a MissingAtomicDataWarning
+    whilst returning a string.
+    """
+
+    for isotope in known_isotopes():
+        half_life = _Isotopes[isotope].get('half-life', None)
+        if isinstance(half_life, str):
+            break
+
+    with pytest.warns(MissingAtomicDataWarning):
+        assert isinstance(Particle(isotope).half_life, str)
+
+
+@pytest.mark.parametrize("p, is_one", [(Particle('e-'), True), (Particle('p+'), False)])
+def test_particle_is_electron(p, is_one):
+    assert p.is_electron == is_one
+
+
+def test_particle_bool_error():
+    with pytest.raises(AtomicError):
+        bool(Particle('e-'))

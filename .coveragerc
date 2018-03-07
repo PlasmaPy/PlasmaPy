@@ -1,11 +1,12 @@
 [report]
-omit = 
+omit =
 	ci-helpers/*
 	*/tests/*
 	astropy_helpers/*
 	ah_bootstrap.py
 	plasmapy/setup_package.py
-exclude_lines = 
+	plasmapy/version.py
+exclude_lines =
 	coveralls: ignore
 	def __repr__
 	raise NotImplementedError

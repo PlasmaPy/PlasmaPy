@@ -1,0 +1,14 @@
+message:
+    opened:
+        header: "Hello @{name}! Thanks for submitting your pull request."
+        footer: "PlasmaPy follows the [PEP8 style guide](https://www.python.org/dev/peps/pep-0008/), which may be checked locally using [pycodestyle](http://pycodestyle.pycqa.org/en/latest/intro.html)"
+    updated:
+        header: "Hello @{name}! Thanks for updating your pull request."
+        footer: ""
+    no_errors: "Congratulations! There are no PEP8 issues in this pull request. :smile_cat:"
+
+scanner:
+    diff_only: True
+
+only_mention_files_with_errors: True
+descending_issues_order: False
