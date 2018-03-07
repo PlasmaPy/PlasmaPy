@@ -211,7 +211,7 @@ class Particle:
     and `~plasmapy.atomic.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
 
-    >>> sorted(neutron.is_categories())  # list all valid categories
+    >>> sorted(neutron.is_category())  # list all valid categories
     ['actinide',
      'alkali metal',
      'alkaline earth metal',
