@@ -124,59 +124,24 @@ True
 >>> iron56.is_category(['element', 'isotope'])
 True
 
-The `require` keyword specifies categories that a particle must
-belong to in order for `is_category` to return `True`.
+The particle must be in all of the categories in the `require` keyword,
+at least one of the categories in the `any_of` keyword, and none of the
+categories in the `exclude` in order for it to return `True`.
 
 >>> deuteron.is_category(require={'element', 'isotope', 'ion'})
 True
-
-The particle must belong to at least one of the categories specified
-with the `any_of` keyword
-
-The `any_of` keyword specifies categories of which the particle must
-belong to at least one in order for `is_category` to return `True`.
-
 >>> Fe56.is_category(any_of=['charged', 'uncharged'])
 False
-
-The particle
-
-The `any_of` keyword specifies categories of which the particle must
-belong to
+>>> alpha.is_category(exclude='lepton')
+True
 
 Calling the `is_category` method with no arguments returns a set
-containing all of the valid categories for any particle.
-
->>> sorted(proton.is_category())  # all valid categories
-['actinide',
- 'alkali metal',
- 'alkaline earth metal',
- 'antibaryon',
- 'antilepton',
- 'antimatter',
- 'antineutrino',
- 'baryon',
- 'boson',
- 'charged',
- 'electron',
- 'element',
- 'fermion',
- 'halogen',
- 'ion',
- 'isotope',
- 'lanthanide',
- 'lepton',
- 'matter',
- 'metal',
- 'metalloid',
- 'neutrino',
- 'neutron',
- 'noble gas',
- 'nonmetal',
- 'positron',
- 'post-transition metal',
- 'proton',
- 'stable',
- 'transition metal',
- 'uncharged',
- 'unstable']
+containing all of the valid categories for any particle.  Valid
+categories include: `'actinide'`, `'alkali metal'`,
+`'alkaline earth metal'`, `'antibaryon'`, `'antilepton'`,
+`'antimatter'`, `'antineutrino'`, `'baryon'`, `'boson'`, `'charged'`,
+`'electron'`, `'element'`, `'fermion'`, `'halogen'`, `'ion'`,
+`'isotope'`, `'lanthanide'`, `'lepton'`, `'matter'`, `'metal'`,
+`'metalloid'`, `'neutrino'`, `'neutron'`, `'noble gas'`, `'nonmetal'`,
+`'positron'`, `'post-transition metal'`, `'proton'`, `'stable'`,
+`'transition metal'`, `'uncharged'`, and `'unstable'`.
