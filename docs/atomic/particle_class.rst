@@ -1,11 +1,3 @@
-=================
-Atomic Subpackage
-=================
-
-The physics of plasmas depends heavily on the properties of the
-particles that make up the plasma.  The `~plasmapy.atomic` subpackage
-allows us to access necessary particle information.
-
 --------------
 Particle Class
 --------------
