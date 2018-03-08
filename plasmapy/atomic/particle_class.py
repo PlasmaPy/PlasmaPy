@@ -36,6 +36,7 @@ _classification_categories = {
     'antilepton',
     'fermion',
     'boson',
+    'antibaryon',
     'baryon',
     'neutrino',
     'antineutrino',
@@ -162,19 +163,21 @@ class Particle:
     The `element`, `isotope`, and `ion` attributes return the symbols
     for each of these different types of particles.
 
-
     >>> proton.element
     'H'
     >>> alpha.isotope
     'He-4'
     >>> deuteron.ion
     'D 1+'
+
+    If the particle doesn't belong to one of those categories, then
+    these attributes return `None`.
+
     >>> positron.element is None
     True
 
-    Because these attributes return `None` if the particle does not
-    belong to that type of particle, these attributes can be used to
-    test whether or not a particle is an element, isotope, or ion.
+    These attributes may therefore be used to test whether or not a
+    particle is an element, isotope, or ion.
 
     >>> True if Particle('e-').element else False
     False
@@ -207,16 +210,19 @@ class Particle:
     The `~plasmapy.atomic.particle_class.Particle.categories` attribute
     and `~plasmapy.atomic.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
-    Valid categories include `'lepton'`, `'antilepton'`, `'fermion'`,
-    `'boson'`, `'baryon'`, `'neutrino'`, `'antineutrino'`, `'element'`,
-    `'isotope'`, `'ion'`, `'matter'`, `'antimatter'`, `'nonmetal'`,
-    `'metal'`, `'alkali metal'`, `'alkaline earth metal'`,
-    `'metalloid'`, `'transition metal'`, `'post-transition metal',
-    `'halogen'`, `'noble gas'`, `'actinide'`, `'lanthanide'`, 'stable'`,
-    `'unstable'`, `'charged'`, `'uncharged'`, `'electron'`,
-    `'positron'`, `'proton'`, and `'neutron'`.
 
-    """
+    Valid particle categories include: `'actinide'`, `'alkali
+    metal'`, `'alkaline earth metal'`, `'antibaryon'`,
+    `'antilepton'`, `'antimatter'`, `'antineutrino'`, `'baryon'`,
+    `'boson'`, `'charged'`, `'electron'`, `'element'`,
+    `'fermion'`, `'halogen'`, `'ion'`, `'isotope'`,
+    `'lanthanide'`, `'lepton'`, `'matter'`, `'metal'`,
+    `'metalloid'`, `'neutrino'`, `'neutron'`, `'noble gas'`,
+    `'nonmetal'`, `'positron'`, `'post-transition metal'`,
+    `'proton'`, `'stable'`, `'transition metal'`, `'uncharged'`,
+    and `'unstable'`.
+
+"""
 
     def __init__(self, argument: Union[str, int], mass_numb: int = None, Z: int = None):
         """
