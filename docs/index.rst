@@ -7,15 +7,16 @@
 PlasmaPy Documentation
 ######################
 
-PlasmaPy is an open source community-developed core Python package for
-plasma physics in the early stages of development.  The documentation
-contained on this page is in the process of being written.
+`PlasmaPy <http://www.plasmapy.org/`_ is an open source
+community-developed core `Python <https://www.python.org/>`_ 3.6+
+package for plasma physics in the early stages of development. The
+documentation contained on this page is in the process of being written.
 
 ***************
 Getting Started
 ***************
 
-* `Installation instructions
+* `Installing PlasmaPy
   <https://github.com/PlasmaPy/PlasmaPy/blob/master/INSTALL.md>`_
 * `Contributing to PlasmaPy
   <https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTING.md>`_
@@ -32,10 +33,10 @@ Getting Started
 User Documentation
 ******************
 
-.. representing-particles
+.. particles
 
-Representing Particles
-----------------------
+Particles
+---------
 
 .. toctree::
    :maxdepth: 2
@@ -136,6 +137,9 @@ Project Details
 
 .. toctree::
    :maxdepth: 2
+
+* `Vision Statement
+  <https://github.com/PlasmaPy/PlasmaPy/blob/master/VISION.md>`_
 
 .. _index:
 
