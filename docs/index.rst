@@ -51,7 +51,7 @@ Plasma Parameters
 -----------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    physics/index
 
@@ -77,7 +77,7 @@ The `plasmapy.mathematics` package contains mathematical functions
 commonly used by plasma physicists.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    mathematics/index
 
@@ -98,7 +98,7 @@ Utilities
 ---------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    utils/index
 
@@ -107,7 +107,7 @@ Utilities
 Examples
 --------
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 3
 
     auto_examples/index
 
