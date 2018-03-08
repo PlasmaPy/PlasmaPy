@@ -51,7 +51,7 @@ Plasma Parameters
 -----------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    physics/index
 
@@ -59,6 +59,9 @@ Plasma Parameters
 
 Diagnostics
 -----------
+
+The `~plasmapy.diagnostics` package is in the early stages of
+development.
 
 .. toctree::
    :maxdepth: 1
@@ -70,8 +73,11 @@ Diagnostics
 Mathematics
 -----------
 
+The `plasmapy.mathematics` package contains mathematical functions
+commonly used by plasma physicists.
+
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    mathematics/index
 
@@ -92,7 +98,7 @@ Utilities
 ---------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    utils/index
 
@@ -101,21 +107,21 @@ Utilities
 Examples
 --------
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     auto_examples/index
 
 .. _development-guide
 
-=================
+*****************
 Development Guide
-=================
+*****************
 
 The development guide contains information on how to contribute to
 PlasmaPy, along with guidelines for code, testing, and documentation.
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     development/code_guide
     development/testing_guide
@@ -129,7 +135,7 @@ Project Details
 ***************
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
 .. _index:
 
