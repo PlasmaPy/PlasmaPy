@@ -1,6 +1,12 @@
------------------------------------------------
-The `~plasmapy.atomic.particle_input` Decorator
------------------------------------------------
+.. _atomic-decorators
+
+Decorators
+**********
+
+.. _atomic-decorators
+
+`plasmapy.atomic.particle_input`
+================================
 
 When calculating plasma parameters, we very frequently need to access
 the properties of the particles that make up that plasma. The

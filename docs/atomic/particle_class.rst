@@ -1,12 +1,13 @@
---------------
+.. _particle-class
+
 Particle Class
---------------
+**************
 
 The `~plasmapy.atomic.Particle` class provides an object-oriented
 interface to particle information.
 
 Creating a Particle Instance
-----------------------------
+============================
 
 The simplest way to create an instance of the
 `~plasmapy.atomic.Particle` class is to pass it a `str` representing a
@@ -36,7 +37,7 @@ keyword and the integer charge may be represented with the `Z` keyword.
 >>> proton = Particle(1, mass_numb=1, Z=1)
 
 Accessing Particle Properties
------------------------------
+=============================
 
 The properties of each particle may be accessed using attributes of the
 `~plasmapy.atomic.Particle` instance.
@@ -72,8 +73,10 @@ Strings representing particles may be accessed using the `particle`,
 >>> deuteron.ion
 'D 1+'
 
+.. _particle-class-categories
+
 Categories
-----------
+==========
 
 The `categories` attribute returns a `set` with the classification
 categories corresponding to the particle.
@@ -113,8 +116,10 @@ categories include: `'actinide'`, `'alkali metal'`,
 `'positron'`, `'post-transition metal'`, `'proton'`, `'stable'`,
 `'transition metal'`, `'uncharged'`, and `'unstable'`.
 
-Particle Conditionals and Equality Properties
----------------------------------------------
+.. _particle-class-conditionals
+
+Conditionals and Equality Properties
+====================================
 
 Equality between particles may be tested either between two
 `~plasmapy.atomic.Particle` instances, or between a

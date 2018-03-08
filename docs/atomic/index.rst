@@ -2,14 +2,15 @@
 
 .. _plasmapy-atomic:
 
-******************************************
-Representing Particles (`plasmapy.atomic`)
-******************************************
+**************************************
+The Atomic Package (`plasmapy.atomic`)
+**************************************
 
 .. currentmodule:: plasmapy.atomic
 
 Introduction
 ============
+
 `plasmapy.atomic` provides access to information about atoms, ions,
 isotopes, and other particles.
 

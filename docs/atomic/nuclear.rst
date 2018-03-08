@@ -1,6 +1,8 @@
------------------
 Nuclear Reactions
------------------
+*****************
+
+Binding Energy
+==============
 
 The binding energy of a nuclide may be accessed either as an
 attribute of a `~plasmapy.atomic.Particle` instance, or by using the
@@ -12,6 +14,9 @@ attribute of a `~plasmapy.atomic.Particle` instance, or by using the
 <Quantity 3.56414847e-13 J>
 >>> nuclear_binding_energy('D').to('GeV')
 <Quantity 2.22456652 MeV>
+
+Nuclear Reactions
+=================
 
 The energy released from a nuclear reaction may be found using the
 `~plasmapy.atomic.nuclear_reaction_energy` function.  The input may be

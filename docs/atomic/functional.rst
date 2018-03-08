@@ -1,12 +1,15 @@
----------
+.. _atomic-functions
+
 Functions
----------
+*********
 
 In addition to the `~plasmapy.atomic.Particle` class, the
 `~plasmapy.atomic` subpackage has a functional interface.
 
+.. _atomic-func-symbols
+
 Symbols and Names
------------------
+=================
 
 Several functions in `~plasmapy.atomic` return string representations
 of particles, including `~plasmapy.atomic.atomic_symbol`,
@@ -30,8 +33,10 @@ The full symbol of the particle can be found using
 >>> particle_symbol('electron')
 'e-'
 
+.. _atomic-func-properties
+
 Particle Properties
--------------------
+===================
 
 The `~plasmapy.atomic.atomic_number` and `~plasmapy.atomic.mass_number`
 functions are analogous to the corresponding attributes in the
@@ -68,8 +73,10 @@ The mass of a particle may be accessed through the
 >>> particle_mass('deuteron')
 <Quantity 3.34358372e-27 kg>
 
+.. atomic-func-isotopes
+
 Isotopes
---------
+========
 
 The relative isotopic abundance of each isotope in the terrestrial
 environment may be found using `~plasmapy.atomic.isotopic_abundance`.
@@ -97,8 +104,10 @@ All stable isotopes of an element may be found with
 >>> stable_isotopes('Pb')
 ['Pb-204', 'Pb-206', 'Pb-207', 'Pb-208']
 
+.. _atomic-func-stability
+
 Stability
----------
+=========
 
 The `~plasmapy.atomic.is_stable` function returns `True` for stable
 particles and `False` for unstable particles.
@@ -124,8 +133,8 @@ If the particle's half-life is not known to sufficient precision, then
 `~plasmapy.atomic.half_life` returns a `str` with the estimated value
 while issuing a `~plasmapy.utils.MissingAtomicDataWarning`.
 
-Reduced Mass
-------------
+Additional Properties
+=====================
 
 The `~plasmapy.atomic.reduced_mass` function is useful in cases of
 two-body collisions.
