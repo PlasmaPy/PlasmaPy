@@ -3,15 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+######################
 PlasmaPy Documentation
-======================
+######################
 
 PlasmaPy is an open source community-developed core Python package for
 plasma physics in the early stages of development.  The documentation
 contained on this page is in the process of being written.
 
+***************
 Getting Started
-===============
+***************
 
 * `Installation instructions
   <https://github.com/PlasmaPy/PlasmaPy/blob/master/INSTALL.md>`_
@@ -24,26 +26,55 @@ Getting Started
 * `PlasmaPy website
   <http://www.plasmapy.org/>`_
 
-Examples
-========
+.. user-documentation
+
+******************
+User Documentation
+******************
+
+.. representing-particles
+
+Representing Particles
+----------------------
+
 .. toctree::
-    :maxdepth: 1
+   :maxdepth: 1
 
-    auto_examples/index
+   atomic/index
 
-Modules
-=======
+.. plasma-parameters
+
+Plasma Parameters
+-----------------
 
 .. toctree::
-    :maxdepth: 1
 
-    atomic/index
-    diagnostics/index
-    mathematics/index
-    physics/index
+   physics/index
 
-Classes
-=======
+.. _diagnostics
+
+Diagnostics
+-----------
+
+.. toctree::
+   :maxdepth: 1
+
+   diagnostics/index
+
+.. _mathematics
+
+Mathematics
+-----------
+
+.. toctree::
+   :maxdepth: 1
+
+   mathematics/index
+
+.. _data-structures
+
+Data Structures
+---------------
 
 .. toctree::
     :maxdepth: 1
@@ -51,16 +82,33 @@ Classes
     plasma/index
     species/index
 
+.. _utilities
+
 Utilities
-=========
+---------
 
 .. toctree::
    :maxdepth: 1
 
    utils/index
 
-Development
-===========
+.. _examples
+
+Examples
+--------
+.. toctree::
+    :maxdepth: 1
+
+    auto_examples/index
+
+.. _development-guide
+
+=================
+Development Guide
+=================
+
+The development guide contains information on how to contribute to
+PlasmaPy, along with guidelines for code, testing, and documentation.
 
 .. toctree::
     :maxdepth: 1
@@ -70,11 +118,26 @@ Development
     development/doc_guide
     development/release_guide
 
-Indices and tables
-==================
+.. _project_details:
+
+***************
+Project Details
+***************
+
+.. toctree::
+   :maxdepth: 1
+
+.. _index:
+
+*****
+Index
+*****
 
 * :ref:`genindex`
 * :ref:`modindex`
+* :ref:`search`
 
 .. Did not include one for `search` since that page didn't show up
    satisfactorily
+
+.. TODO: Add feedback link: .. _feedback@plasmapy.org: mailto:feedback@plasmapy.org
