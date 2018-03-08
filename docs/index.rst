@@ -38,7 +38,7 @@ Representing Particles
 ----------------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    atomic/index
 
@@ -48,6 +48,7 @@ Plasma Parameters
 -----------------
 
 .. toctree::
+   :maxdepth: 1
 
    physics/index
 
