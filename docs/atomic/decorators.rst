@@ -85,7 +85,7 @@ These keywords are used as in `~plasmapy.atomic.Particle.is_category`.
 
   @particle_input(any_of=['charged', 'uncharged'])
   def integer_charge(particle: Particle) -> int:
-      """Accepts only particles with charge information."""
+      """Accept only particles with charge information."""
       return particle.integer_charge
 
   @particle_input(exclude={'antineutrino', 'neutrino'})
