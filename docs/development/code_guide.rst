@@ -8,7 +8,7 @@ followed during the development of PlasmaPy and affiliated packages.
 Code written for PlasmaPy must be compatible with Python 3.6 and
 later. Python 2 is not supported by PlasmaPy.
 
-PlasmaPy requires 
+PlasmaPy requires
 
 * Python 3.6 or later
 * Astropy 2.0 or later
@@ -104,7 +104,7 @@ You may now enter the environment via
 .. code-block:: bash
 
     source activate plasmapy
-  
+
 On Windows, skip the `source` part of the previous command.
 
 Virtualenv
@@ -214,14 +214,14 @@ Coding Style
   * PEP 8 compliance may be checked locally using
     [pycodestyle](http://pycodestyle.pycqa.org/en/latest/).
 
-  * Departures from PEP 8 compliance should be used sparingly and only
-    if there is a good reason.  A physics formula might be most
-    readable if the line exceeds the 79 character limit, for example,
-    if there are inconveniently placed parentheses that complicated
-    indenting.  However, departures from PEP 8 compliance should be
-    considered a last resort.
+  * Line lengths should be chosen to maximize the readability and
+    elegance of the code.  The maximum line length for Python code in
+    PlasmaPy is 99 characters.
 
-* Follow the existing coding style within a subpackage.  
+  * Docstrings and comments should generally be limited to
+    72 characters.
+
+* Follow the existing coding style within a subpackage.
 
 * Use standard abbreviations for imported packages when possible, such
   as ``import numpy as np``, ``import matplotlib as mpl``, ``import
@@ -231,7 +231,7 @@ Coding Style
   implementation code, but it can contain a docstring describing the
   module and code related to importing the module.  Any substantial
   functionality should be put into a separate file.
-  
+
 * There should be at most one pun per 1284 lines of code.
 
 Branches, commits, and pull requests
@@ -304,7 +304,7 @@ GitHub fork of PlasmaPy using
 
 .. code-block:: bash
 
-  git push origin *your-new-feature* 
+  git push origin *your-new-feature*
 
 or, more simply,
 
@@ -344,7 +344,7 @@ Suggestions on `how to write a git commit message
 * Wrap the body at 72 characters
 
 * Use the body to explain what and why vs. how
-  
+
 Documentation
 =============
 
@@ -381,7 +381,7 @@ Units
 
   * Functions should not accept floats when an Astropy Quantity is
     expected.  In particular, functions should not accept floats and
-    make the assumption that the value will be in SI units.  
+    make the assumption that the value will be in SI units.
 
   * A common convention among plasma physicists is to use
     electron-volts (eV) as a unit of temperature.  Strictly speaking,
@@ -391,7 +391,7 @@ Units
     ambiguity.
 
 * PlasmaPy uses the astropy.units package to give physical units to
-  values.  
+  values.
 
   * All units packages available in Python presently have some
     limitations, including incompatibility with some NumPy and SciPy

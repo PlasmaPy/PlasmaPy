@@ -1,11 +1,12 @@
 """Functionality to parse representations of particles into standard form."""
 
+import roman
 import numpy as np
 import re
 import warnings
 from typing import (Union, Dict)
 
-from .elements import (_atomic_symbols, _atomic_symbols_dict, _Elements)
+from .elements import (_atomic_numbers_to_symbols, _element_names_to_symbols, _Elements)
 from .isotopes import _Isotopes
 from .special_particles import _Particles, ParticleZoo
 
@@ -75,8 +76,7 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
     return case_sensitive_aliases, case_insensitive_aliases
 
 
-_case_sensitive_aliases, _case_insensitive_aliases = \
-    _create_alias_dicts(_Particles)
+_case_sensitive_aliases, _case_insensitive_aliases = _create_alias_dicts(_Particles)
 
 
 def _dealias_particle_aliases(alias: Union[str, int]) -> str:
@@ -90,7 +90,7 @@ def _dealias_particle_aliases(alias: Union[str, int]) -> str:
     if not isinstance(alias, str):
         symbol = alias
     elif (alias in _case_sensitive_aliases.values() or
-            alias in _case_insensitive_aliases.values()):
+          alias in _case_insensitive_aliases.values()):
         symbol = alias
     elif alias in _case_sensitive_aliases.keys():
         symbol = _case_sensitive_aliases[alias]
@@ -119,10 +119,7 @@ def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
     return errmsg
 
 
-def _parse_and_check_atomic_input(
-        argument: Union[str, int],
-        mass_numb: int = None,
-        Z: int = None):
+def _parse_and_check_atomic_input(argument: Union[str, int], mass_numb: int = None, Z: int = None):
     """
     Parse information about a particle into a dictionary of standard
     symbols, and check the validity of the particle.
@@ -176,12 +173,10 @@ def _parse_and_check_atomic_input(
         not represent a known element.
         """
 
-        if atomic_numb in _atomic_symbols.keys():
-            element = _atomic_symbols[atomic_numb]
-            return element
+        if atomic_numb in _atomic_numbers_to_symbols.keys():
+            return _atomic_numbers_to_symbols[atomic_numb]
         else:
-            raise InvalidParticleError(
-                f"{atomic_numb} is not a valid atomic number.")
+            raise InvalidParticleError(f"{atomic_numb} is not a valid atomic number.")
 
     def _extract_charge(arg: str):
         """
@@ -193,8 +188,7 @@ def _parse_and_check_atomic_input(
         is inputted incorrectly.
         """
 
-        invalid_charge_errmsg = (
-            f"Invalid charge information in the particle string '{arg}'.")
+        invalid_charge_errmsg = (f"Invalid charge information in the particle string '{arg}'.")
 
         if arg.count(' ') == 1:  # Cases like 'H 1-' and 'Fe-56 1+'
             isotope_info, charge_info = arg.split(' ')
@@ -212,13 +206,19 @@ def _parse_and_check_atomic_input(
             if not sign_indicator_only_on_one_end and just_one_sign_indicator:
                 raise InvalidParticleError(invalid_charge_errmsg) from None
 
-            if '-' in charge_info:
-                sign = -1
-            elif '+' in charge_info:
-                sign = 1
-
             charge_str = charge_info.strip('+-')
-            Z_from_arg = sign * int(charge_str)
+
+            try:
+                if roman.romanNumeralPattern.match(charge_info):
+                    Z_from_arg = roman.fromRoman(charge_info) - 1
+                elif '-' in charge_info:
+                    Z_from_arg = - int(charge_str)
+                elif '+' in charge_info:
+                    Z_from_arg = int(charge_str)
+                else:
+                    raise InvalidParticleError(invalid_charge_errmsg) from None
+            except ValueError:
+                raise InvalidParticleError(invalid_charge_errmsg) from None
 
         elif arg.endswith(('-', '+')):  # Cases like 'H-' and 'Pb-209+++'
             char = arg[-1]
@@ -274,9 +274,9 @@ def _parse_and_check_atomic_input(
         name, and returns a `str` representing the atomic symbol.
         """
 
-        if element_info.lower() in _atomic_symbols_dict.keys():
-            element = _atomic_symbols_dict[element_info.lower()]
-        elif element_info in _atomic_symbols.values():
+        if element_info.lower() in _element_names_to_symbols.keys():
+            element = _element_names_to_symbols[element_info.lower()]
+        elif element_info in _atomic_numbers_to_symbols.values():
             element = element_info
         else:
             raise InvalidParticleError(
@@ -342,8 +342,7 @@ def _parse_and_check_atomic_input(
         return ion
 
     if not isinstance(argument, (str, int)):  # coveralls: ignore
-        raise TypeError(f"The argument {argument} is not an integer or "
-                        "string.")
+        raise TypeError(f"The argument {argument} is not an integer or string.")
 
     arg = _dealias_particle_aliases(argument)
 
@@ -395,11 +394,10 @@ def _parse_and_check_atomic_input(
         Z = Z_from_arg
 
     if isinstance(Z, int):
-        if Z > _Elements[element]['atomic_number']:
+        if Z > _Elements[element]['atomic number']:
             raise InvalidParticleError(
                 f"The integer charge Z = {Z} cannot exceed the atomic number "
-                f"of {element}, which is "
-                f"{_Elements[element]['atomic_number']}.")
+                f"of {element}, which is {_Elements[element]['atomic number']}.")
         elif Z <= -3:
             warnings.warn(f"Particle '{argument}' has an integer charge "
                           f"of Z = {Z}, which is unlikely to occur in "
@@ -433,8 +431,7 @@ def _call_string(arg: Union[str, int], kwargs: Dict = {}) -> str:
     particle from the input.
     """
     if kwargs != {}:
-        keyword_string = ", " \
-            + str(kwargs).strip(r"}{'").replace("'", "").replace(":", " =")
+        keyword_string = ", " + str(kwargs).strip(r"}{'").replace("'", "").replace(":", " =")
     else:
         keyword_string = ""
     return f"Particle({repr(arg)}{keyword_string})"

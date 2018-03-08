@@ -9,7 +9,7 @@ from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 
 
 def check_quantity(validations):
-    r"""
+    """
     Raise an exception if an annotated argument in a decorated function
     is not a `~astropy.units.Quantity` with correct units and valid
     numerical values.
@@ -22,14 +22,14 @@ def check_quantity(validations):
     Raises
     ------
     `TypeError`
-        If the argument is not a Quantity, units is not entirely units or
-        `argname` does not have a type annotation.
+        If the argument is not a `~astropy.units.Quantity`, units is not
+        entirely units or `argname` does not have a type annotation.
 
     `~astropy.units.UnitConversionError`
         If the argument is not in acceptable units.
 
     `ValueError`
-        If the argument contains NaNs or other invalid values as
+        If the argument contains `~numpy.nan` or other invalid values as
         determined by the keywords.
 
     Returns
@@ -115,9 +115,10 @@ def check_relativistic(func=None, betafrac=0.1):
     ----------
     func : `function`, optional
         The function to decorate.
-    betafrac : `float`, optional
+
+    betafrac : float, optional
         The minimum fraction of the speed of light that will raise a
-        `UserWarning`. Defaults to 0.1.
+        `~plasmapy.utils.RelativityWarning`. Defaults to 0.1.
 
     Returns
     -------
@@ -126,36 +127,36 @@ def check_relativistic(func=None, betafrac=0.1):
 
     Raises
     ------
-    `TypeError`
+    TypeError
         If `V` is not a `~astropy.units.Quantity`.
 
-    `~astropy.units.UnitConversionError`
+    ~astropy.units.UnitConversionError
         If `V` is not in units of velocity.
 
-    `ValueError`
-        If `V` contains any `NaN` values.
+    ValueError
+        If `V` contains any `~numpy.nan` values.
 
-    `RelativityError`
-        If V is greater than or equal to the speed of light.
+    ~plasmapy.utils.RelativityError
+        If `V` is greater than or equal to the speed of light.
 
     Warns
     -----
-    `plasmapy.utils.RelativityWarning`
-        If `V` is greater than or equal to `betafrac` times the speed of
-        light, but less than the speed of light.
+    ~plasmapy.utils.RelativityWarning
+        If `V` is greater than or equal to `betafrac` times the speed of light,
+        but less than the speed of light.
 
     Examples
     --------
     >>> from astropy import units as u
     >>> @check_relativistic
     ... def speed():
-    ...     return 1*u.m/u.s
+    ...     return 1 * u.m / u.s
 
-    Passing in a custom `betafrac`
+    Passing in a custom `betafrac`:
 
     >>> @check_relativistic(betafrac=0.01)
     ... def speed():
-    ...     return 1*u.m/u.s
+    ...     return 1 * u.m / u.s
 
     """
     def decorator(f):
@@ -178,44 +179,46 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
     Parameters
     ----------
-    arg : `~astropy.units.Quantity`
+    arg : ~astropy.units.Quantity
         The object to be tested.
 
-    argname : `str`
+    argname : str
         The name of the argument to be printed in error messages.
 
-    funcname : `str`
+    funcname : str
         The name of the original function to be printed in error messages.
 
-    units : `~astropy.units.Unit` or `list` of `~astropy.unit.Unit`s
+    units : `~astropy.units.Unit` or list of `~astropy.unit.Unit`
         Acceptable units for `arg`.
 
-    can_be_negative : `bool`, optional
+    can_be_negative : bool, optional
         `True` if the `~astropy.units.Quantity` can be negative,
         `False` otherwise.  Defaults to `True`.
 
-    can_be_complex : `bool`, optional
+    can_be_complex : bool, optional
         `True` if the `~astropy.units.Quantity` can be a complex number,
         `False` otherwise.  Defaults to `False`.
 
-    can_be_inf : `bool`, optional
+    can_be_inf : bool, optional
         `True` if the `~astropy.units.Quantity` can contain infinite
         values, `False` otherwise.  Defaults to `True`.
 
     Raises
     ------
-    `TypeError`
-        If the argument is not a `~astropy.units.Quantity` or `units` is
+    TypeError
+        If the argument is not a `~astropy.units.Quantity` or units is
         not entirely units.
 
-    `~astropy.units.UnitConversionError`
+    ~astropy.units.UnitConversionError
         If the argument is not in acceptable units.
 
-    `ValueError`
-        If the argument contains NaNs or other invalid values as
-        determined by the keywords.
+    ValueError
+        If the argument contains any `~numpy.nan` or other invalid
+        values as determined by the keywords.
 
-    `UserWarning`
+    Warns
+    -----
+    UserWarning
         If a `~astropy.units.Quantity` is not provided and unique units
         are provided, a `UserWarning` will be raised and the inputted
         units will be assumed.
@@ -226,6 +229,8 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
     >>> _check_quantity(4*u.T, 'B', 'f', u.T)
 
     """
+
+    # TODO: Replace `funcname` with func.__name__?
 
     if not isinstance(units, list):
         units = [units]
@@ -301,37 +306,39 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
 def _check_relativistic(V, funcname, betafrac=0.1):
     r"""
-    Warn or raise error if a velocity is relativistic or superrelativistic
+    Warn or raise error for relativistic or superrelativistic
+    velocities.
 
     Parameters
     ----------
-    V : `~astropy.units.Quantity`
+    V : ~astropy.units.Quantity
         A velocity.
 
-    funcname : `str`
-        The name of the original function to be printed in the error messages.
+    funcname : str
+        The name of the original function to be printed in the error
+        messages.
 
-    betafrac : `float`
+    betafrac : float
         The minimum fraction of the speed of light that will generate
         a warning.
 
     Raises
     ------
-    `TypeError`
+    TypeError
         If `V` is not a `~astropy.units.Quantity`.
 
-    `~astropy.units.UnitConversionError`
+    ~astropy.units.UnitConversionError
         If `V` is not in units of velocity.
 
-    `ValueError`
-        If `V` contains any NaNs.
+    ValueError
+        If `V` contains any `~numpy.nan` values.
 
-    `~plasmapy.utils.RelativityError`
+    RelativityError
         If `V` is greater than or equal to the speed of light.
 
     Warns
     -----
-    `~plasmapy.utils.RelativityWarning`
+    ~plasmapy.utils.RelativityWarning
         If `V` is greater than or equal to the specified fraction of the
         speed of light.
 
@@ -341,6 +348,8 @@ def _check_relativistic(V, funcname, betafrac=0.1):
     >>> _check_relativistic(1*u.m/u.s, 'function_calling_this')
 
     """
+
+    # TODO: Replace `funcname` with func.__name__?
 
     errmsg = ("V must be a Quantity with units of velocity in"
               "_check_relativistic")
