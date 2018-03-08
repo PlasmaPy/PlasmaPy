@@ -40,7 +40,10 @@ Representing Particles
 .. toctree::
    :maxdepth: 2
 
-   atomic/index
+   atomic/particle_class
+   atomic/functional
+   atomic/nuclear
+   atomic/decorators
 
 .. plasma-parameters
 
