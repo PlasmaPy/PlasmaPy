@@ -54,43 +54,44 @@ def adams_number(*args, **kwargs):
     return 42
 
 
-f_args_kwargs_expected_shouldpass = [
+f_args_kwargs_expected_whaterror = [
 
-    (adams_number, 0, {'y': 1}, 42, True),
-    (adams_number, (1,), {'y': 1}, 42, True),
-    (adams_number, (2, 1), {}, 42, True),
+    (adams_number, 0, {'y': 1}, 42, None),
+    (adams_number, (1,), {'y': 1}, 42, None),
+    (adams_number, (2, 1), {}, 42, None),
 
-    (adams_number, 3, {'y': 1}, 6 * 9, False),
-    (adams_number, (4,), {'y': 1}, 6 * 9, False),
-    (adams_number, (5, 1), {}, 6 * 9, False),
+    (adams_number, 3, {'y': 1}, 6 * 9, AssertionError),
+    (adams_number, (4,), {'y': 1}, 6 * 9, AssertionError),
+    (adams_number, (5, 1), {}, 6 * 9, AssertionError),
 
-    (raise_exception, 6, {'y': 1}, PlasmaPyError, True),
-    (raise_exception, (7,), {'y': 1}, PlasmaPyError, True),
-    (raise_exception, (8, 1), {}, PlasmaPyError, True),
+    (raise_exception, 6, {'y': 1}, PlasmaPyError, None),
+    (raise_exception, (7,), {'y': 1}, PlasmaPyError, None),
+    (raise_exception, (8, 1), {}, PlasmaPyError, None),
 
-    (raise_exception, 9, {'y': 1}, TypeError, False),
-    (raise_exception, (10,), {'y': 1}, TypeError, False),
-    (raise_exception, (11, 1), {}, TypeError, False),
+    (raise_exception, 9, {'y': 1}, TypeError, UnexpectedExceptionError),
+    (raise_exception, (10,), {'y': 1}, TypeError, UnexpectedExceptionError),
+    (raise_exception, (11, 1), {}, TypeError, UnexpectedExceptionError),
 
-    (issue_warning, 12, {'y': 1}, PlasmaPyWarning, True),
-    (issue_warning, (13,), {'y': 1}, PlasmaPyWarning, True),
-    (issue_warning, (14, 1), {}, PlasmaPyWarning, True),
+    (issue_warning, 12, {'y': 1}, PlasmaPyWarning, None),
+    (issue_warning, (13,), {'y': 1}, PlasmaPyWarning, None),
+    (issue_warning, (14, 1), {}, PlasmaPyWarning, None),
 
-    (issue_warning, 0, {'y': 1}, (42, UserWarning), False),
-    (issue_warning, (0,), {'y': 1}, (42, UserWarning), False),
-    (issue_warning, (0, 1), {}, (42, UserWarning), False),
+    (issue_warning, 0, {'y': 1}, (42, UserWarning), MissingWarningError),
+    (issue_warning, (0,), {'y': 1}, (42, UserWarning), MissingWarningError),
+    (issue_warning, (0, 1), {}, (42, UserWarning), MissingWarningError),
 
 ]
 
+
 @pytest.mark.parametrize(
-    "f, args, kwargs, expected, should_pass",
-    f_args_kwargs_expected_shouldpass,
+    "f, args, kwargs, expected, whaterror",
+    f_args_kwargs_expected_whaterror,
 )
-def test_run_test(f, args, kwargs, expected, should_pass):
-    if should_pass:
+def test_run_test(f, args, kwargs, expected, whaterror):
+    if whaterror is None:
         run_test(f, args, kwargs, expected)
     else:
-        with pytest.raises(RunTestError, message = (
+        with pytest.raises(whaterror, message = (
                 f"run_test did not raise an exception for:\n\n"
                 f"  {call_string(f, args, kwargs)}\n\n"
                 f"with expected = {expected}")):
