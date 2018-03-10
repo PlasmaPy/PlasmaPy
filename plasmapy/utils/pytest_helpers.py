@@ -2,24 +2,25 @@
 import pytest
 from typing import Callable, Dict, Tuple, Any, Union, Optional
 import inspect
+import warnings
 from inspect import isclass
 import astropy.units as u
 from collections import defaultdict
 
 
-class TestError(Exception):
+class RunTestError(Exception):
     pass
 
 
-class MissingExceptionError(TestError):
+class MissingExceptionError(RunTestError):
     pass
 
 
-class UnexpectedExceptionError(TestError):
+class UnexpectedExceptionError(RunTestError):
     pass
 
 
-class MissingWarningError(TestError):
+class MissingWarningError(RunTestError):
     pass
 
 
@@ -109,15 +110,19 @@ def run_test(f: Callable,
             expected['exception'] = expected_outcome
         elif issubclass(expected, Warning):
             expected['warning'] = expected_outcome
-        elif issubclass(expected, u.Unit):
-            expected['unit'] = expected_outcome
+# TODO       elif issubclass(expected, u.Unit):
+# TODO            expected['unit'] = expected_outcome
 
     # If a warning is issued, then there may also be an expected result.
 
     if isinstance(expected_outcome, tuple):
+        if len(expected_outcome) > 2:
+            raise RuntimeError
         tuple_contains_warning = inspect.isclass(expected_outcome[1])
         expected['warning'] = expected_outcome[1] if tuple_contains_warning else None
-        expected['result'] = expected_outcome[0]
+        expected['result'] = expected_outcome[0] if tuple_contains_warning else None
+        if not tuple_contains_warning:
+            raise RuntimeError
 
     if not expected['exception'] and not expected['result']:
         expected['result'] = expected_outcome
@@ -133,7 +138,10 @@ def run_test(f: Callable,
     # should be.
 
     if expected['exception']:
+
         exception = expected['exception']
+
+        print(exception)
 
         try:
             result = f(*args, **kwargs)
@@ -153,4 +161,24 @@ def run_test(f: Callable,
                 f"  {call_str}\n\n"
                 f"did not raise a {exc_str(exception)} as "
                 f"expected, but instead returned the value:\n\n"
-                f"  {result}\n")
+                f"  {result}\n") from exc
+    else:
+
+        print(expected)
+
+        try:
+            if expected['warning']:
+                with pytest.warns(expected['warning']):
+                    result = f(*args, **kwargs)
+            else:
+                result = f(*args, **kwargs)
+        except pytest.raises.Exception as exc:
+            raise MissingWarningError(
+                f"Running the command:\n\n"
+                f"  {call_str}\n\n"
+                f"was supposed to issue a {exc_str(expected['warning'])}, "
+                f"but instead returned the value:\n\n"
+                f"  {result}\n") from exc
+
+        if expected['result'] is not None and result != expected['result']:
+            raise RunTestError("")
