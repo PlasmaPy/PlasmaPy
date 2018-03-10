@@ -1,9 +1,17 @@
 import pytest
 
-from ..pytest_helpers import call_string, run_test
+from ..pytest_helpers import (
+    call_string,
+    run_test,
+    RunTestError,
+    UnexpectedExceptionError,
+    MissingWarningError,
+    MissingExceptionError,
+)
 
 from ..exceptions import PlasmaPyWarning, PlasmaPyError
 
+import warnings
 
 def f(*args, **kwargs):
     return None
@@ -25,49 +33,52 @@ call_string_table = [
 
 @pytest.mark.parametrize("f,args,kwargs,expected", call_string_table)
 def test_call_string(f, args, kwargs, expected):
-    """Tests that _function_call_string returns a string that is
+    """Tests that call_string returns a string that is
     equivalent to the function call."""
     assert expected == call_string(f, args, kwargs)
 
 
-def raise_exception(x, y=None):
-    raise PlasmaPyError("I'm sorry, Dave. I'm afraid I can't do that.")
+def raise_exception(*args, **kwargs):
+    raise PlasmaPyError(
+        f"This exception was raised by raise_exception with:\n\n"
+        f"  args = {args}\n"
+        f"kwargs = {kwargs}\n")
 
 
-def warn_warning(x, y=None):
-    warnings.warn("Danger, Will Robinson!", PlasmaPyWarning)
+def issue_warning(*args, **kwargs) -> int:
+    warnings.warn(f"\n{args}\n{kwargs}", PlasmaPyWarning)
     return 42
 
 
-def adams_number(x, y=None):
+def adams_number(*args, **kwargs):
     return 42
 
 
 f_args_kwargs_expected_shouldpass = [
 
     (adams_number, 0, {'y': 1}, 42, True),
-    (adams_number, (0,), {'y': 1}, 42, True),
-    (adams_number, (0, 1), {}, 42, True),
+    (adams_number, (1,), {'y': 1}, 42, True),
+    (adams_number, (2, 1), {}, 42, True),
 
-    (adams_number, 0, {'y': 1}, 6 * 9, False),
-    (adams_number, (0,), {'y': 1}, 6 * 9, False),
-    (adams_number, (0, 1), {}, 6 * 9, False),
+    (adams_number, 3, {'y': 1}, 6 * 9, False),
+    (adams_number, (4,), {'y': 1}, 6 * 9, False),
+    (adams_number, (5, 1), {}, 6 * 9, False),
 
-    (raise_exception, 0, {'y': 1}, PlasmaPyError, True),
-    (raise_exception, (0,), {'y': 1}, PlasmaPyError, True),
-    (raise_exception, (0, 1), {}, PlasmaPyError, True),
+    (raise_exception, 6, {'y': 1}, PlasmaPyError, True),
+    (raise_exception, (7,), {'y': 1}, PlasmaPyError, True),
+    (raise_exception, (8, 1), {}, PlasmaPyError, True),
 
-    (raise_exception, 0, {'y': 1}, TypeError, False),
-    (raise_exception, (0,), {'y': 1}, TypeError, False),
-    (raise_exception, (0, 1), {}, TypeError, False),
+    (raise_exception, 9, {'y': 1}, TypeError, False),
+    (raise_exception, (10,), {'y': 1}, TypeError, False),
+    (raise_exception, (11, 1), {}, TypeError, False),
 
-    (warn_warning, 0, {'y': 1}, PlasmaPyWarning, True),
-    (warn_warning, (0,), {'y': 1}, PlasmaPyWarning, True),
-    (warn_warning, (0, 1), {}, PlasmaPyWarning, True),
+    (issue_warning, 12, {'y': 1}, PlasmaPyWarning, True),
+    (issue_warning, (13,), {'y': 1}, PlasmaPyWarning, True),
+    (issue_warning, (14, 1), {}, PlasmaPyWarning, True),
 
-    (warn_warning, 0, {'y': 1}, (42, UserWarning), False),
-    (warn_warning, (0,), {'y': 1}, (42, UserWarning), False),
-    (warn_warning, (0, 1), {}, (42, UserWarning), False),
+    (issue_warning, 0, {'y': 1}, (42, UserWarning), False),
+    (issue_warning, (0,), {'y': 1}, (42, UserWarning), False),
+    (issue_warning, (0, 1), {}, (42, UserWarning), False),
 
 ]
 
@@ -75,17 +86,14 @@ f_args_kwargs_expected_shouldpass = [
     "f, args, kwargs, expected, should_pass",
     f_args_kwargs_expected_shouldpass,
 )
-def test_passing_tests(f, args, kwargs, expected, should_pass):
+def test_run_test(f, args, kwargs, expected, should_pass):
     if should_pass:
         run_test(f, args, kwargs, expected)
     else:
-        with pytest.raises(Exception, message=
-            f"run_test did not raise an exception with:\n"
-            f"f        = {f.__name__}\n"
-            f"args     = {args}\n"
-            f"kwargs   = {kwargs}\n"
-            f"expected = {expected}"
-        ):
+        with pytest.raises(RunTestError, message = (
+                f"run_test did not raise an exception for:\n\n"
+                f"  {call_string(f, args, kwargs)}\n\n"
+                f"with expected = {expected}")):
             run_test(f, args, kwargs, expected)
 
 
