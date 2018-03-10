@@ -1,4 +1,5 @@
-"""Utilities for """
+"""Test helper utilities."""
+
 import pytest
 from typing import Callable, Dict, Tuple, Any, Union, Optional
 import inspect
@@ -9,18 +10,36 @@ from collections import defaultdict
 
 
 class RunTestError(Exception):
+    """Base exception for test failures. Derived from `Exception`."""
+
     pass
 
 
 class MissingExceptionError(RunTestError):
+    """
+    Exception for when an expected exception is not raised.  Derived
+    from `~plasmapy.utils.RunTestError`.
+    """
+
     pass
 
 
 class UnexpectedExceptionError(RunTestError):
+    """
+    Exception for when an exception is expected, but a different
+    exception is raised instead.  Derived from
+    `~plasmapy.utils.RunTestError`.
+    """
+
     pass
 
 
 class MissingWarningError(RunTestError):
+    """
+    Exception for when a warning is expected to be issued, but isn't.
+    Derived from `~plasmapy.utils.RunTestError`.
+    """
+
     pass
 
 
@@ -82,7 +101,6 @@ def run_test(func: Callable, args: Any = (), kwargs: Dict = {}, expected_outcome
     --------
     >>> from warnings import warn
     >>> run_test(lambda: 42, tuple(), dict(), 42)
-    >>> run_test(lambda: raise ValueError, tuple(), dict(), ValueError)
     >>> run_test(lambda: warn("", UserWarning), tuple(), dict(), UserWarning)
 
     """
@@ -136,9 +154,6 @@ def run_test(func: Callable, args: Any = (), kwargs: Dict = {}, expected_outcome
         expected['result'] = expected_outcome
 
     expected['type'] = type(expected['result']) if expected['result'] is not None else None
-
-    for key in expected.keys():
-        print(f"expected[{key}] = {expected[key]}")
 
     # First we go through all of the possibilities for when an exception
     # is expected to be raised.  If no exception is raised, then we want
