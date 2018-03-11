@@ -174,6 +174,10 @@ class PlasmaBlob():
         are important. This compares Coulomb potential energy to thermal
         kinetic energy.
         """
+        return coupling_parameter(self.T_e,
+                                  self.n_e,
+                                  (self.particle, self.particle),
+                                  self.Z)
 
     def quantum_theta(self):
         """
