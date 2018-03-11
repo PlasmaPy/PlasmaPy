@@ -11,7 +11,7 @@ from astropy import units
 
 from ..constants import (k_B,
                          )
-from ..quantum import (Fermi_energy,
+from .quantum import (Fermi_energy,
                        )
 
 def quantum_theta(T, n_e):

@@ -10,16 +10,16 @@ from plasmapy.classes import plasma
     ((128, 128, 1), 16384),  # 2D
     ((64, 64, 64), 262144),  # 3D
 ])
-def test_Plasma_setup(grid_dimensions, expected_size):
-    r"""Function to test basic setup of the Plasma object.
+def test_Plasma3D_setup(grid_dimensions, expected_size):
+    r"""Function to test basic setup of the Plasma3D object.
 
-    Tests that a Plasma object initiated with a particular
+    Tests that a Plasma3D object initiated with a particular
     specification behaves in the correct way.
 
     Parameters
     ----------
     grid_dimensions : tuple of ints
-        Grid size of the Plasma object to test. Must be a tuple of
+        Grid size of the Plasma3D object to test. Must be a tuple of
         length 3, indicating length of the grid in x, y, and z
         directions respectively. Directions not needed should have a
         length of 1.
@@ -29,13 +29,13 @@ def test_Plasma_setup(grid_dimensions, expected_size):
 
     Examples
     --------
-    >>> test_Plasma_setup((10, 10, 10), 1000)
-    >>> test_Plasma_setup((100, 10, 1), 1000)
+    >>> test_Plasma3D_setup((10, 10, 10), 1000)
+    >>> test_Plasma3D_setup((100, 10, 1), 1000)
     """
     x, y, z = grid_dimensions
-    test_plasma = plasma.Plasma(domain_x=np.linspace(0, 1, x)*u.m,
-                                domain_y=np.linspace(0, 1, y)*u.m,
-                                domain_z=np.linspace(0, 1, z)*u.m)
+    test_plasma = plasma.Plasma3D(domain_x=np.linspace(0, 1, x)*u.m,
+                                  domain_y=np.linspace(0, 1, y)*u.m,
+                                  domain_z=np.linspace(0, 1, z)*u.m)
 
     # Basic grid setup
     assert test_plasma.x.size == x
@@ -61,16 +61,16 @@ def test_Plasma_setup(grid_dimensions, expected_size):
 
 
 # @pytest.mark.parametrize([()])
-def test_Plasma_derived_vars():
-    r"""Function to test derived variables of the Plasma class.
+def test_Plasma3D_derived_vars():
+    r"""Function to test derived variables of the Plasma3D class.
 
     Tests the shapes, units and values of variables derived from core
     variables.  The core variables are set with arbitrary uniform
     values.
     """
-    test_plasma = plasma.Plasma(domain_x=np.linspace(0, 1, 64)*u.m,
-                                domain_y=np.linspace(0, 1, 64)*u.m,
-                                domain_z=np.linspace(0, 1, 1)*u.m)
+    test_plasma = plasma.Plasma3D(domain_x=np.linspace(0, 1, 64)*u.m,
+                                  domain_y=np.linspace(0, 1, 64)*u.m,
+                                  domain_z=np.linspace(0, 1, 1)*u.m)
 
     # Set an arbitrary uniform values throughout the plasma
     test_plasma.density[...] = 2.0 * u.kg / u.m**3

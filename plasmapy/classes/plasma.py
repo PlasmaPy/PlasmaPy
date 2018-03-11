@@ -10,9 +10,9 @@ from ..physics.dimensionless import (quantum_theta,
                                      )
 from ..physics.transport import (coupling_parameter,
                                  )
-from ..atomic import (ion_mass,
-                      charge_state,
-                      )
+from plasmapy.atomic import (ion_mass,
+                             integer_charge,
+                             )
 
 class Plasma3D():
     """
@@ -114,7 +114,7 @@ class PlasmaBlob():
         self.particle = particle
         if Z == None:
             # extracting charge state from particle
-            self.Z = charge_state(self.particle)
+            self.Z = integer_charge(self.particle)
         else:
             self.Z = Z
         # extract mass from particle
@@ -167,12 +167,14 @@ class PlasmaBlob():
                          ]
         print(aggregateStrs)
         return aggregateStrs
+
     def coupling(self):
         """
         Ion-ion coupling parameter to determine if quantum/coupling effects
         are important. This compares Coulomb potential energy to thermal
         kinetic energy.
         """
+
     def quantum_theta(self):
         """
         Quantum theta parameter, which compares Fermi kinetic energy to
