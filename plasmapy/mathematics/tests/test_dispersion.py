@@ -15,7 +15,7 @@ plasma_dispersion_func_table = [
     (0, 1j * np.sqrt(π)),
     (1, -1.076_159_013_825_536_8 + 0.652_049_332_173_292_2j),
     (1j, 0.757_872_156_141_311_87j),
-    (1.2 + 4.4j, -0.054_246_157_069_223_27+0.207_960_584_359_855_62j),
+    (1.2 + 4.4j, -0.054_246_157_069_223_27 + 0.207_960_584_359_855_62j),
     (9.2j, plasma_dispersion_func(9.2j * u.dimensionless_unscaled)),
     (5.4 - 3.1j, -0.139_224_873_051_713_11 - 0.082_067_822_640_155_802j),
     (9.9 - 10j, 2.013_835_257_947_027_6 - 25.901_274_737_989_727j),
@@ -92,7 +92,7 @@ def test_plasma_dispersion_func_power_series_expansion():
     Z_power_series = np.zeros_like(w_array)
 
     for n in range(0, 200):
-        Z_power_series += 1j * np.sqrt(π) * (1j * w_array)**n / Γ(n / 2 + 1)
+        Z_power_series += 1j * np.sqrt(π) * (1j * w_array) ** n / Γ(n / 2 + 1)
 
     assert np.allclose(Z_of_w_array, Z_power_series,
                        atol=1e-15 * (1 + 1j), rtol=1e-15), \
@@ -154,7 +154,7 @@ def test_plasma_dispersion_func_deriv(w, expected):
 
     Z_deriv = plasma_dispersion_func_deriv(w)
 
-    assert np.isclose(Z_deriv, expected, atol=5e-5*(1+1j), rtol=5e-6), \
+    assert np.isclose(Z_deriv, expected, atol=5e-5 * (1 + 1j), rtol=5e-6), \
         (f"The derivative of the plasma dispersion function does not match "
          f"the expected value for w = {w}.  The value of "
          f"plasma_dispersion_func_deriv({w}) equals {Z_deriv} whereas the "

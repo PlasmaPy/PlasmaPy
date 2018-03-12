@@ -29,7 +29,7 @@ from .symbols import atomic_symbol
 
 
 @particle_input
-def atomic_number(element: Particle) -> str:
+def atomic_number(element: Particle) -> int:
     """
     Return the number of protons in an atom, isotope, or ion.
 
@@ -423,7 +423,7 @@ def particle_mass(particle: Particle, *, Z: int = None, mass_numb: int = None) -
 
 
 @particle_input
-def isotopic_abundance(isotope: Particle, mass_numb: int = None) -> u.Quantity:
+def isotopic_abundance(isotope: Particle, mass_numb: int = None) -> float:
     """
     Return the isotopic abundances if known, and otherwise zero.
 

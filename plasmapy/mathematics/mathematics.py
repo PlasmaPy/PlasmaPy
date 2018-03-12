@@ -1,17 +1,16 @@
 """Functions related to the plasma dispersion function"""
 
 import numpy as np
-from scipy import special
 from astropy import units as u
 from mpmath import polylog
 from scipy.special import wofz as Faddeeva_function
+from typing import Union
 
-# TODO: Add type hint annotations to this module.
 
-
-def plasma_dispersion_func(zeta):
+def plasma_dispersion_func(zeta: Union[complex, int, float, np.ndarray, u.Quantity]
+                           ) -> Union[complex, float, np.ndarray, u.Quantity]:
     r"""
-    Calculate the plasma dispersion function
+    Calculate the plasma dispersion function.
 
     Parameters
     ----------
@@ -92,7 +91,8 @@ def plasma_dispersion_func(zeta):
     return Z
 
 
-def plasma_dispersion_func_deriv(zeta):
+def plasma_dispersion_func_deriv(zeta: Union[complex, int, float, np.ndarray, u.Quantity]
+                                 ) -> Union[complex, float, np.ndarray, u.Quantity]:
     r"""
     Calculate the derivative of the plasma dispersion function.
 
@@ -103,7 +103,7 @@ def plasma_dispersion_func_deriv(zeta):
 
     Returns
     -------
-    Zprime : complex, int, float, or ~numpy.ndarray
+    Zprime : complex, float, or ~numpy.ndarray
         First derivative of plasma dispersion function.
 
     Raises
@@ -127,7 +127,7 @@ def plasma_dispersion_func_deriv(zeta):
     The derivative of the plasma dispersion function is defined as:
 
     .. math::
-        Z'(\zeta) = \pi^{-0.5} \int_{-\infty}^{+\infty}
+        Z'(\zeta) = \pi^{-1/2} \int_{-\infty}^{+\infty}
         \frac{e^{-x^2}}{(x-\zeta)^2} dx
 
     where the argument is a complex number [fried.conte-1961]_.
@@ -152,34 +152,34 @@ def plasma_dispersion_func_deriv(zeta):
         if zeta.unit == u.dimensionless_unscaled:
             zeta = zeta.value
         else:
-            raise u.UnitsError("The argument to "
-                               "plasma_dispersion_function_deriv "
-                               "must be dimensionless if it is a Quantity")
+            raise u.UnitsError("The argument to plasma_dispersion_function_deriv "
+                               "must be dimensionless if it is a Quantity.")
 
     if not np.all(np.isfinite(zeta)):
-        raise ValueError("The argument to plasma_dispersion_function_deriv is "
-                         "not finite.")
+        raise ValueError("The argument to plasma_dispersion_function_deriv is not finite.")
 
     Zprime = -2 * (1 + zeta * plasma_dispersion_func(zeta))
 
     return Zprime
 
 
-def Fermi_integral(x, j):
+def Fermi_integral(
+        x: Union[float, int, complex, np.ndarray],
+        j: Union[float, int, complex, np.ndarray]) -> Union[float, complex, np.ndarray]:
     r"""
     Calculate the complete Fermi-Dirac integral.
 
     Parameters
     ----------
-    x : ~astropy.units.Quantity
+    x : float, int, complex, or ~numpy.ndarray
         Argument of the Fermi-Dirac integral function.
 
-    j : ~astropy.units.Quantity
+    j : float, int, complex, or ~numpy.ndarray
         Order/index of the Fermi-Dirac integral function.
 
     Returns
     -------
-    integral : ~astropy.units.Quantity, complex
+    integral : float, complex, or ~numpy.ndarray
         Complete Fermi-Dirac integral for given argument and order.
 
     Raises
@@ -194,32 +194,30 @@ def Fermi_integral(x, j):
     ValueError
         If the argument is not entirely finite.
 
-    See also
+    See Also
     --------
     plasma_dispersion_func
 
     Notes
     -----
-    The complete Fermi-Dirac integral is defined as: [1]_
+    The `complete Fermi-Dirac integral
+    <https://en.wikipedia.org/wiki/Complete_Fermi-Dirac_integral>`_ is
+    defined as:
 
     .. math::
-        F_j (x) = \frac{1}{\Gamma (j+1)} \int_0^{\inf} \frac{t^j}{\exp{(t-x)} + 1} dt
+        F_j (x) = \frac{1}{\Gamma (j+1)} \int_0^{\infty} \frac{t^j}{\exp{(t-x)} + 1} dt
 
     for j > 0.
 
-    This is equivalent to the following polylogarithm [2]_ function:
+    This is equivalent to the following `polylogarithm
+    <https://en.wikipedia.org/wiki/Polylogarithm>`_ function:
 
     .. math::
         F_j (x) = -Li_{j+1}\left(-e^{x}\right)
 
     Warning: at present this function is limited to relatively small
-    arguments due to limitations in the mpmath package's implementation
-    of polylog.
-
-    References
-    ----------
-    .. [1] https://en.wikipedia.org/wiki/Complete_Fermi-Dirac_integral
-    .. [2] https://en.wikipedia.org/wiki/Polylogarithm
+    arguments due to limitations in the `~mpmath` package's
+    implementation of `~mpmath.polylog`.
 
     Examples
     --------
@@ -229,6 +227,7 @@ def Fermi_integral(x, j):
     (1.3132616875182228-0j)
     >>> Fermi_integral(1, 1)
     (1.8062860704447743-0j)
+
     """
     if isinstance(x, (int, float, complex)):
         arg = -np.exp(x)
@@ -240,4 +239,4 @@ def Fermi_integral(x, j):
             integral_arr[idx] = -1 * complex(polylog(j + 1, -np.exp(val)))
         return integral_arr
     else:
-        raise ValueError(f"Improper type {type(x)} given for argument x.")
+        raise TypeError(f"Improper type {type(x)} given for argument x.")
