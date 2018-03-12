@@ -5,6 +5,9 @@ import warnings
 
 import numpy as np
 import astropy.units as u
+import itertools
+
+from ...physics.magnetostatics import MagnetoStatics
 
 from plasmapy.constants import (m_p,
                                 m_e,
@@ -115,3 +118,13 @@ class Plasma3D(GenericPlasma):
         else:
             match = False
         return match
+
+    def add_magnetostatic(self, *mstats: MagnetoStatics):
+        # for each MagnetoStatic argument
+        for mstat in mstats:
+            # loop over 3D-index (ix,iy,iz)
+            for point_index in itertools.product(*[list(range(n)) for n in self.domain_shape]):
+                # get coordinate
+                p = self.grid[(slice(None),)+point_index]  # function as [:, *index]
+                # calculate magnetic field at this point and add back
+                self.magnetic_field[(slice(None),)+point_index] += mstat.magnetic_field(p)
