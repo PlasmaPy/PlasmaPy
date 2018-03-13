@@ -160,14 +160,14 @@ def test_run_test(f, args, kwargs, expected, whaterror):
                     f"  {call_string(f, args, kwargs)}\n\n"
                     f"with expected = {str(expected)}")):
                 run_test(f, args, kwargs, expected)
-    except Exception as exc:
+    except Exception:
         raise Exception(
             f"An unexpected exception was raised for:\n"
             f"f = {f.__name__}\n"
             f"args = {args}\n"
             f"kwargs = {kwargs}\n"
             f"expected = {expected}\n"
-            f"whaterror = {whaterror}") from exc
+            f"whaterror = {whaterror}")
 
 
 def test_run_test_tolerances():
