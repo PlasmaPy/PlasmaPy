@@ -6,8 +6,10 @@ import inspect
 import warnings
 from inspect import isclass
 import astropy.units as u
+import astropy.constants as const
 from collections import defaultdict
-
+from textwrap import fill
+import numpy as np
 
 class RunTestError(Exception):
     """Base exception for test failures. Derived from `Exception`."""
@@ -43,6 +45,11 @@ class MissingWarningError(RunTestError):
     pass
 
 
+class IncorrectResultError(RunTestError):
+    """
+    Exception for when the result is
+    """
+
 def call_string(f: Callable, args: Any=tuple(), kwargs: Dict={}) -> str:
     """Return a string with the equivalent call of a function."""
 
@@ -74,7 +81,14 @@ def call_string(f: Callable, args: Any=tuple(), kwargs: Dict={}) -> str:
     return f"{f.__name__}({args_and_kwargs})"
 
 
-def run_test(func: Callable, args: Any = (), kwargs: Dict = {}, expected_outcome: Any = None):
+def run_test(
+        func: Callable,
+        args: Any = (),
+        kwargs: Dict = {},
+        expected_outcome: Any = None,
+        rtol: float = 0.0,
+        atol: float = 0.0,
+        ):
     """
     Test that a function or class returns the expected result, raises
     the expected exception, or issues an expected warning for the
@@ -96,6 +110,10 @@ def run_test(func: Callable, args: Any = (), kwargs: Dict = {}, expected_outcome
         `func(*args, **kwargs)`. This may also be a tuple of length two
         that contains the expected result as the first item and the
         expected warning as the second item.
+
+    rtol : float
+
+    atol : float
 
     Examples
     --------
@@ -165,43 +183,113 @@ def run_test(func: Callable, args: Any = (), kwargs: Dict = {}, expected_outcome
 
     if expected['exception']:
 
-        exception = expected['exception']
+        expected_exception = expected['exception']
 
         try:
             result = func(*args, **kwargs)
-        except exception:
-            pass
-        except Exception as exc:
-            unexpected_exception = exc.__reduce__()[0]
-            raise UnexpectedExceptionError(f"\nRunning the command:\n\n"
-                                           f"  {call_str}\n\n"
-                                           f"did not raise {exc_str(exception)} as expected, "
-                                           f"but instead raised {exc_str(unexpected_exception)}.\n") from exc
+        except expected_exception:
+            return None
+        except Exception as exc_unexpected_exception:
+            unexpected_exception = exc_unexpected_exception.__reduce__()[0]
+            raise UnexpectedExceptionError(
+                f"Running the command:\n\n"
+                f"  {call_str}\n\n"
+                f"did not raise {exc_str(expected_exception)} as expected, "
+                f"but instead raised {exc_str(unexpected_exception)}."
+            ) from exc_unexpected_exception
         else:
-            raise MissingExceptionError(f"\nRunning the command:\n\n"
-                                        f"  {call_str}\n\n"
-                                        f"did not raise {exc_str(exception)} as "
-                                        f"expected, but instead returned the value:\n\n"
-                                        f"  {result}\n")
-    else:
+            raise MissingExceptionError(
+                f"Running the command:\n\n"
+                f"  {call_str}\n\n"
+                f"did not raise {exc_str(expected_exception)} as "
+                f"expected, but instead returned the value:\n\n"
+                f"  {result}\n"
+            )
 
-        try:
-            with pytest.warns(expected['warning']):
-                result = func(*args, **kwargs)
-        except pytest.raises.Exception as exc:
-            raise MissingWarningError(f"\nRunning the command:\n"
-                                      f"  {call_str}\n"
-                                      f"should issue {exc_str(expected['warning'])}, "
-                                      f"but instead returned the value:\n"
-                                      f"  {result}\n")
-        except Exception as exc:
+    try:
+        with pytest.warns(expected['warning']):
+            result = func(*args, **kwargs)
+    except pytest.raises.Exception as missing_warning:
 
-            raise UnexpectedExceptionError(f"Running the command {call_str} "
-                                           f"unexpectedly raised {exc_str(exc.__reduce__()[0])} "
-                                           f"instead of returning the expected value of {expected['result']}.")
+        raise MissingWarningError(
+            f"Running the command:\n\n"
+            f"  {call_str}\n\n"
+            f"should issue {exc_str(expected['warning'])}, "
+            f"but instead returned:\n\n"
+            f"  {result}\n"
+        ) from missing_warning
 
-        if expected['result'] is not None:
-            assert result == expected['result'], (
-                f"Running the command {call_str} yielded a result of "
-                f"{result} instead of returning the expected value of "
+    except Exception as exception_no_warning:
+
+        raise UnexpectedExceptionError(
+            f"Running the command:\n\n"
+            f"  {call_str}\n\n"
+            f"unexpectedly raised {exc_str(exc.__reduce__()[0])} "
+            f"instead of returning the expected value of:\n\n"
+            f"  {expected['result']}\n") from exception_no_warning
+
+    if expected['result'] is None:
+        return None
+
+    try:
+        if result == expected['result']:
+            return None
+    except NotImplemented as exc_equality:
+        raise RunTestError(
+            f"The equality of {result} and {expected['result']} "
+            f"cannot be evaluated.") from exc_equality
+
+    if isinstance(expected['result'], u.UnitBase):
+
+        if isinstance(result, u.UnitBase):
+            if result != expected['result']:
+                raise u.UnitsError(
+                    f"Running the command:\n\n"
+                    f"  {call_str}\n\n"
+                    f"returned {repr(result)} instead of the expected "
+                    f"value of {repr(expected['result'])}.")
+            return None
+
+        if not isinstance(result, (u.Quantity, const.Constant, const.EMConstant)):
+            raise u.UnitsError(
+                f"Running the command:\n\n"
+                f"  {call_str}\n\n"
+                f"returned a value of:\n\n"
+                f"  {result}\n\n"
+                f"instead of a quantity or constant with units of "
                 f"{expected['result']}.")
+
+        if result.unit != expected['result']:
+            raise u.UnitsError(
+                f"Running the command:\n\n"
+                f"  {call_str}\n\n"
+                f"returned the result:\n\n"
+                f"  {result}\n\n"
+                f"which has units of {result.unit} instead of the"
+                f"expected units of {expected['result']}.")
+
+        return None
+
+    if isinstance(expected['result'], (u.Quantity, const.Constant, const.EMConstant)):
+        if not result.unit == expected['result'].unit:
+            raise u.UnitsError(
+                f"Running the command:\n\n"
+                f"  {call_str}\n\n"
+                f"returned the result:\n\n"
+                f"  {result}\n\n"
+                f"which has different units than the expected result of:\n\n"
+                f"  {expected['result']}\n")
+
+        if np.allclose(result.value, expected['result'].value):
+            return None
+
+    if np.allclose(result, expected['result'], rtol=rtol, atol=atol):
+        return None
+
+    raise RunTestError(
+        f"Running the command:\n\n"
+        f"  {call_str}\n\n"
+        f"returned the result:\n\n"
+        f"  {result}\n\n"
+        f"instead of the expected value of:\n\n"
+        f"  {expected['result']}\n")
