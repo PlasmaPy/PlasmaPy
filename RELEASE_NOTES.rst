@@ -27,7 +27,31 @@ We are pleased to announce the first development release of PlasmaPy:
 a community-developed fully open source core Python package for plasma
 physics.
 
-Version 0.1.0 is a preview and a prototype, and is not feature
-complete or recommended to be used for production work.  Significant
-changes to the API are expected to occur between version 0.1.0 and
-0.2.0.
+Version 0.1.0 is a preview and a prototype.  It is not yet feature
+complete or recommended for production work.  Rather, version 0.1.0
+serves as an invitation to plasma scientists to participate in the
+development of shared software for our community.
+
+PlasmaPy uses the `astropy.units` package for compatibility with
+Astropy and SunPy.
+
+Significant changes to the API are expected to occur between
+versions 0.1.0 and 0.2.0 and through the development phase.
+
+.. What needs to be included still?
+   Link to vision statement and code of conduct.
+   Requirements
+   Link to how to install
+   Link to doc page for each subpackage
+
+PlasmaPy is being designed to be compatible with Python 3.6. The
+required packages include...
+
+If there is functionality that you would like future versions of
+PlasmaPy to include, we encourage you to raise an issue on GitHub with
+your ideas or even contribute code directly.
+
+This release includes roughly 1400 commits by 31 different
+contributors. The people who have contributed to this release are:
+
+ * ...
