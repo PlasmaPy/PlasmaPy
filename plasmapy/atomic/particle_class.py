@@ -419,6 +419,12 @@ class Particle:
             raise TypeError(
                 f"The equality of a Particle object with a {type(other)} is undefined.")
 
+        no_particle_attr = 'particle' not in dir(self) or 'particle' not in dir(other)
+        no_attributes_attr = '_attributes' not in dir(self) or '_attributes' not in dir(other)
+
+        if no_particle_attr or no_attributes_attr:
+            raise TypeError(f"The equality of {self} with {other} is undefined.")
+
         same_particle = self.particle == other.particle
 
         # The following two loops are a hack to enable comparisons
