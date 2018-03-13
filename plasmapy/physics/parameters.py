@@ -10,8 +10,6 @@ import inspect
 from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
 from plasmapy import atomic, utils
 
-# TODO for future: change these into decorators.  _check_quantity does a
-# bit more than @quantity_input as it can allow
 from plasmapy.utils.checks import _check_quantity
 from plasmapy.utils.exceptions import (PhysicsError, AtomicError)
 
@@ -109,8 +107,8 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     Raises
     ------
     TypeError
-        The magnetic field and density arguments are not Quantities and
-        cannot be converted into Quantities.
+        The magnetic field and density arguments are not instances of
+        `~astropy.units.Quantity` and cannot be converted into those.
 
     ~astropy.units.UnitConversionError
         If the magnetic field or density is not in appropriate units.
@@ -129,7 +127,6 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     -----
     ~plasmapy.utils.RelativityWarning
         If the Alfven velocity exceeds 10% of the speed of light
-
 
     Notes
     -----
@@ -209,9 +206,8 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     'T_i': {'units': u.K, 'can_be_negative': False},
     'T_e': {'units': u.K, 'can_be_negative': False}
 })
-def ion_sound_speed(*ignore,
-                    T_e=0 * u.K,
-                    T_i=0 * u.K,
+def ion_sound_speed(T_e,
+                    T_i,
                     gamma_e=1,
                     gamma_i=3,
                     ion='p+',
@@ -221,35 +217,35 @@ def ion_sound_speed(*ignore,
 
     Parameters
     ----------
-    T_e : ~astropy.units.Quantity, optional, keyword-only
+    T_e : ~astropy.units.Quantity
         Electron temperature in units of temperature or energy per
-        particle.  If this is not given, then the electron temperature
+        particle.
         is assumed to be zero.
 
-    T_i : ~astropy.units.Quantity, optional, keyword-only
+    T_i : ~astropy.units.Quantity
         Ion temperature in units of temperature or energy per
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
 
-    gamma_e : float or int, keyword-only
+    gamma_e : float or int
         The adiabatic index for electrons, which defaults to 1.  This
         value assumes that the electrons are able to equalize their
         temperature rapidly enough that the electrons are effectively
         isothermal.
 
-    gamma_i : float or int, keyword-only
+    gamma_i : float or int
         The adiabatic index for ions, which defaults to 3.  This value
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
 
-    ion : str, optional, keyword-only
+    ion : str, optional
         Representation of the ion species (e.g., `'p'` for protons,
         `'D+'` for deuterium, or 'He-4 +1' for singly ionized
         helium-4), which defaults to protons.  If no charge state
         information is provided, then the ions are assumed to be
         singly charged.
 
-    z_mean : ~astropy.units.Quantity, optional, keyword-only
+    z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
         given then the atomic charge state (integer) of the ion
@@ -296,7 +292,7 @@ def ion_sound_speed(*ignore,
 
     This function assumes that the product of the wavenumber and the
     Debye length is small. In this limit, the ion sound speed is not
-    dispersive (e.g., frequency independent).
+    dispersive. In other words, it is frequency independent.
 
     When the electron temperature is much greater than the ion
     temperature, the ion sound velocity reduces to
@@ -308,20 +304,12 @@ def ion_sound_speed(*ignore,
     >>> from astropy import units as u
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, ion='p', gamma_e=1, gamma_i=3)
     <Quantity 203155.0764042 m / s>
-    >>> ion_sound_speed(T_e=5e6*u.K)
+    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K)
     <Quantity 203155.0764042 m / s>
     >>> ion_sound_speed(T_e=500*u.eV, T_i=200*u.eV, ion='D+')
     <Quantity 229586.01860212 m / s>
 
     """
-
-    if ignore:
-        raise TypeError("All arguments are required to be keyword arguments "
-                        "in ion_sound_speed to prevent mixing up the electron "
-                        "and ion temperatures. An example call that uses the "
-                        "units subpackage from astropy is: "
-                        "ion_sound_speed(T_e=5*u.K, T_i=0*u.K, "
-                        "ion='D+')")
 
     try:
         m_i = atomic.ion_mass(ion)
@@ -478,7 +466,7 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     T : ~astropy.units.Quantity
         The particle temperature in either kelvin or energy per particle
 
-    kappa: ~astropy.units.Quantity
+    kappa: float
         The kappa parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
         of the Kappa velocity distribution function. Kappa must be greater
@@ -523,11 +511,22 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     .. math::
         V_{th,i} = \sqrt{(2 \kappa - 3)\frac{2 k_B T_i}{\kappa m_i}}
 
+    For more discussion on the mean_magnitude calculation method, see [1]_.
+
+
     Examples
     --------
     >>> from astropy import units as u
-    >>> kappa_thermal_speed(5*u.eV, 4, 'p')
+    >>> kappa_thermal_speed(5*u.eV, 4, 'p') # most probable is a default
     <Quantity 24467.87846359 m / s>
+    >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'rms')
+    <Quantity 37905.47432261 m / s>
+    >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'mean_magnitude')
+    <Quantity 34922.9856304 m / s>
+
+    References
+    ----------
+    .. [1] PlasmaPy Issue #186, https://github.com/PlasmaPy/PlasmaPy/issues/186
     """
     # Checking thermal units
     T = T.to(u.K, equivalencies=u.temperature_energy())
@@ -535,28 +534,20 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
         raise ValueError(f"Must have kappa > 3/2, instead of {kappa}, for "
                          "kappa distribution function to be valid.")
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
+    vTh = thermal_speed(T=T,
+                        particle=particle,
+                        method=method)
+
     if method == "most_probable":
         # thermal velocity of Kappa distribution function is just Maxwellian
         # thermal speed modulated by the following factor.
         # This is only true for "most probable" case. RMS and mean
         # magnitude velocities are same as Maxwellian.
         coeff = np.sqrt((kappa - 3 / 2) / kappa)
-        vTh = thermal_speed(T=T,
-                            particle=particle,
-                            method="most_probable")
-        return coeff * vTh
-    elif method == "rms":
-        vTh = thermal_speed(T=T,
-                            particle=particle,
-                            method="rms")
-        return vTh
-    elif method == "mean_magnitude":
-        vTh = thermal_speed(T=T,
-                            particle=particle,
-                            method="mean_magnitude")
-        return vTh
     else:
-        raise ValueError("Method {method} not supported in thermal_speed")
+        coeff = 1
+
+    return vTh * coeff
 
 
 @utils.check_quantity({
@@ -1133,7 +1124,7 @@ def Debye_number(T_e, n_e):
     TypeError
         If either argument is not a `~astropy.units.Quantity`
 
-    `astropy.units.UnitConversionError
+    astropy.units.UnitConversionError
         If either argument is in incorrect units
 
     ValueError
@@ -1184,11 +1175,12 @@ def Debye_number(T_e, n_e):
     'n': {'units': u.m**-3, 'can_be_negative': False}
 })
 def inertial_length(n, particle='e-'):
-    r"""Calculate the particle inertial length,
+    r"""Calculate the particle inertial length. At this length, the Hall effect
+    becomes important.
 
     Parameters
     ----------
-    n_i : ~astropy.units.Quantity
+    n : ~astropy.units.Quantity
         Particle number density in units convertible to m**-3.
 
     particle : str, optional
@@ -1199,16 +1191,16 @@ def inertial_length(n, particle='e-'):
 
     Returns
     -------
-    d_i : ~astropy.units.Quantity
+    d : ~astropy.units.Quantity
         Particles inertial length in meters.
 
     Raises
     ------
     TypeError
-        If n_i not a Quantity or particle is not a string.
+        If n not a `~astropy.units.Quantity` or particle is not a string.
 
     ~astropy.units.UnitConversionError
-        If n_i is not in units of a number density.
+        If n is not in units of a number density.
 
     ValueError
         The particle density does not have an appropriate value.
@@ -1222,7 +1214,7 @@ def inertial_length(n, particle='e-'):
     given by:
 
     .. math::
-        d_i = \frac{c}{\omega_{pi}}
+        d = \frac{c}{\omega_{pi}}
 
     Example
     -------
