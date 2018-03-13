@@ -224,7 +224,7 @@ def run_test(
         raise UnexpectedExceptionError(
             f"Running the command:\n\n"
             f"  {call_str}\n\n"
-            f"unexpectedly raised {exc_str(exc.__reduce__()[0])} "
+            f"unexpectedly raised {exc_str(exception_no_warning.__reduce__()[0])} "
             f"instead of returning the expected value of:\n\n"
             f"  {expected['result']}\n") from exception_no_warning
 
