@@ -166,14 +166,11 @@ def test_ion_sound_speed():
     assert ion_sound_speed(T_i=T_i, T_e=T_e, ion='p') == \
         ion_sound_speed(T_i=T_i, T_e=T_e, ion='H-1')
 
-    assert ion_sound_speed(T_i=T_i, ion='p').unit == u.m / u.s
+    assert ion_sound_speed(T_i=T_i, T_e = 0 * u.K, ion='p').unit == u.m / u.s
 
-    assert ion_sound_speed(T_i=T_i, gamma_i=3) == ion_sound_speed(T_i=T_i)
-
-    assert ion_sound_speed(T_e=T_e, gamma_e=1) == ion_sound_speed(T_e=T_e)
 
     with pytest.raises(RelativityError):
-        ion_sound_speed(T_i=T_i, gamma_i=np.inf)
+        ion_sound_speed(T_i=T_i, T_e=T_e, gamma_i=np.inf)
 
     with pytest.raises(ValueError):
         ion_sound_speed(T_i=np.array([5, 6, 5])
@@ -186,53 +183,53 @@ def test_ion_sound_speed():
         ion_sound_speed('p')
 
     with pytest.raises(PhysicsError):
-        ion_sound_speed(T_i=T_i, gamma_i=0.9999)
+        ion_sound_speed(T_i=T_i, T_e=0*u.K, gamma_i=0.9999)
 
     with pytest.raises(PhysicsError):
-        ion_sound_speed(T_i=T_i, gamma_e=0.9999)
+        ion_sound_speed(T_i=T_i, T_e=0*u.K, gamma_e=0.9999)
 
     with pytest.raises(TypeError):
-        ion_sound_speed(T_i=T_i, gamma_e='sdjklsf')
+        ion_sound_speed(T_i=T_i, T_e=0*u.K, gamma_e='sdjklsf')
 
     with pytest.raises(TypeError):
-        ion_sound_speed(T_i=T_i, gamma_i='fsdfas')
+        ion_sound_speed(T_i=T_i, T_e=0*u.K, gamma_i='fsdfas')
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i=T_i, ion='cupcakes')
+        ion_sound_speed(T_i=T_i, T_e=0*u.K, ion='cupcakes')
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i=-np.abs(T_i))
+        ion_sound_speed(T_i=-np.abs(T_i), T_e=0*u.K,)
 
     with pytest.warns(RelativityWarning):
-        ion_sound_speed(T_i=5e11 * u.K)
+        ion_sound_speed(T_i=5e11 * u.K, T_e = 0*u.K)
 
     with pytest.raises(RelativityError):
-        ion_sound_speed(T_i=5e19 * u.K)
+        ion_sound_speed(T_i=5e19 * u.K, T_e = 0*u.K)
 
     with pytest.raises(u.UnitConversionError):
-        ion_sound_speed(T_i=5 * u.A)
+        ion_sound_speed(T_i=5 * u.A, T_e = 0*u.K)
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i=T_nanarr)
+        ion_sound_speed(T_i=T_nanarr, T_e = 0*u.K)
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_e=T_nanarr)
+        ion_sound_speed(T_e=T_nanarr, T_i=0*u.K)
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i=T_negarr)
+        ion_sound_speed(T_i=T_negarr, T_e = 0*u.K)
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_e=T_negarr)
+        ion_sound_speed(T_e=T_negarr, T_i=0*u.K)
 
     with pytest.raises(UserWarning):
-        assert ion_sound_speed(T_e=1.2e6) == ion_sound_speed(T_e=1.2e6 * u.K)
+        assert ion_sound_speed(T_e=1.2e6, T_i=0*u.K) == ion_sound_speed(T_e=1.2e6 * u.K, T_i = 0*u.K)
 
     with pytest.raises(UserWarning):
-        assert ion_sound_speed(T_i=1.3e6) == ion_sound_speed(T_i=1.3e6 * u.K)
+        assert ion_sound_speed(T_i=1.3e6, T_e = 0*u.K) == ion_sound_speed(T_i=1.3e6 * u.K, T_e = 0*u.K)
 
-    ion_sound_speed(T_e=1.2e6 * u.K)
+    ion_sound_speed(T_e=1.2e6 * u.K, T_i=0*u.K)
     # testing for user input z_mean
-    testMeth1 = ion_sound_speed(T_e=1.2e6 * u.K, z_mean=0.8).si.value
+    testMeth1 = ion_sound_speed(T_e=1.2e6 * u.K, T_i=0*u.K, z_mean=0.8).si.value
     testTrue1 = 89018.0944146141
     errStr = (f"ion_sound_speed() gave {testMeth1}, should be {testTrue1}.")
     assert np.isclose(testMeth1,
