@@ -10,7 +10,6 @@ import inspect
 from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
 from plasmapy import atomic, utils
 
-from plasmapy.utils.checks import _check_quantity
 from plasmapy.utils.exceptions import (PhysicsError, AtomicError)
 
 
@@ -72,6 +71,8 @@ by an angular frequency to get a length scale:
 
 
 @utils.check_relativistic
+@utils.check_quantity({'B': {'units': u.T},
+                       'density': {'units': [u.m**-3, u.kg / u.m**3], 'can_be_negative': False}})
 def Alfven_speed(B, density, ion="p+", z_mean=None):
     r"""
     Returns the Alfven speed.
@@ -163,10 +164,6 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     <Quantity 4.31738703 cm / us>
     """
 
-    utils._check_quantity(B, 'B', 'Alfven_speed', u.T)
-    utils._check_quantity(density, 'density', 'Alfven_speed',
-                          [u.m**-3, u.kg / u.m**3],
-                          can_be_negative=False)
 
     B = B.to(u.T)
     density = density.si
@@ -812,6 +809,9 @@ def gyrofrequency(B, particle='e-', signed=False, z_mean=None):
     return omega_ci
 
 
+@utils.check_quantity({'B': {'units': u.T},
+                       'Vperp': {'units': u.m/u.s},
+                       'T_i': {'units': u.K}})
 def gyroradius(B, *args, Vperp=None, T_i=None, particle='e-'):
     r"""Returns the particle gyroradius.
 
@@ -924,12 +924,8 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e-'):
     elif len(args) > 0:
         raise ValueError("Incorrect inputs to gyroradius")
 
-    utils._check_quantity(B, 'B', 'gyroradius', u.T)
 
-    if Vperp is not None:
-        utils._check_quantity(Vperp, 'Vperp', 'gyroradius', u.m / u.s)
-    elif T_i is not None:
-        utils._check_quantity(T_i, 'T_i', 'gyroradius', u.K)
+    if Vperp is None and T_i is not None:
         Vperp = thermal_speed(T_i, particle=particle)
 
     omega_ci = gyrofrequency(B, particle)
