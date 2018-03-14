@@ -600,7 +600,7 @@ def collision_rate_electron_ion(T_e,
     .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     """
-    from plasmapy.physics.transport import Coulomb_logarithm
+    from plasmapy.physics.transport.transport import Coulomb_logarithm
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
     if coulomb_log is not None:
         coulomb_log_val = coulomb_log
@@ -665,7 +665,7 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
     .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     """
-    from plasmapy.physics.transport import Coulomb_logarithm
+    from plasmapy.physics.transport.transport import Coulomb_logarithm
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     if coulomb_log is not None:
         coulomb_log_val = coulomb_log

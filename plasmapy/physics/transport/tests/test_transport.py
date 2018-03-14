@@ -9,9 +9,9 @@ from plasmapy.atomic.atomic import ion_mass, integer_charge
 from plasmapy.utils.exceptions import (PhysicsError, PhysicsWarning,
                                        RelativityWarning, RelativityError)
 from plasmapy.physics.parameters import Hall_parameter
-from ...constants import c, m_p, m_e, e, mu0
+from plasmapy.constants import c, m_p, m_e, e, mu0
 
-from ..transport import (Coulomb_logarithm,
+from plasmapy.physics.transport.transport import (Coulomb_logarithm,
                          b_perp,
                          impact_parameter,
                          collision_frequency,

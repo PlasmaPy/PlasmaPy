@@ -16,14 +16,14 @@ from plasmapy.utils.checks import (check_quantity,
                                    _check_relativistic)
 from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, h, hbar)
-from ..atomic import (ion_mass, integer_charge)
+from plasmapy.atomic import (ion_mass, integer_charge)
 from plasmapy.atomic.atomic import _is_electron
-from .parameters import (Debye_length, Hall_parameter,
+from plasmapy.physics.parameters import (Debye_length, Hall_parameter,
                          collision_rate_electron_ion, collision_rate_ion_ion)
-from .quantum import (Wigner_Seitz_radius,
+from plasmapy.physics.quantum import (Wigner_Seitz_radius,
                       thermal_deBroglie_wavelength,
                       chemical_potential)
-from ..mathematics import Fermi_integral
+from plasmapy.mathematics import Fermi_integral
 
 
 @utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
