@@ -20,28 +20,16 @@ from plasmapy.physics.transport.transport import (Coulomb_logarithm,
                          mobility,
                          Knudsen_number,
                          coupling_parameter,
-                         classical_transport,
-                         _nondim_tc_e_braginskii,
-                         _nondim_tc_i_braginskii,
-                         _nondim_tec_braginskii,
-                         _nondim_resist_braginskii,
-                         _nondim_visc_i_braginskii,
-                         _nondim_visc_e_braginskii,
-                         _nondim_tc_e_spitzer,
-                         _nondim_tec_spitzer,
-                         _nondim_resist_spitzer,
-                         _nondim_thermal_conductivity,
-                         _nondim_resistivity,
-                         _nondim_te_conductivity,
-                         _nondim_tc_e_ji_held,
-                         _nondim_tc_i_ji_held,
-                         _nondim_tec_ji_held,
-                         _nondim_resist_ji_held,
-                         _nondim_visc_e_ji_held,
-                         _nondim_visc_i_ji_held,
-                         _nondim_viscosity,
-                         _check_Z,
-                         )
+                                                  )
+from plasmapy.physics.transport.braginskii import _nondim_thermal_conductivity, \
+    _nondim_viscosity, \
+    _nondim_resistivity, _nondim_te_conductivity, _check_Z, _nondim_tc_e_spitzer, \
+    _nondim_resist_spitzer, _nondim_tec_spitzer, _nondim_tc_e_braginskii, \
+    _nondim_tc_i_braginskii, \
+    _nondim_visc_e_braginskii, _nondim_visc_i_braginskii, _nondim_resist_braginskii, \
+    _nondim_tec_braginskii, _nondim_tc_e_ji_held, _nondim_resist_ji_held, _nondim_tec_ji_held, \
+    _nondim_visc_e_ji_held, _nondim_tc_i_ji_held, _nondim_visc_i_ji_held
+from plasmapy.physics import classical_transport
 
 
 def count_decimal_places(digits):
