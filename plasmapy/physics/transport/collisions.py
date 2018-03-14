@@ -215,7 +215,7 @@ def Coulomb_logarithm(T,
 def _boilerPlate(T, particles, V):
     """
     Some boiler plate code for checking if inputs to functions in
-    transport.py are good. Also obtains reduced in mass in a
+    collisions.py are good. Also obtains reduced in mass in a
     2 particle collision system along with thermal velocity.
     """
     # checking temperature is in correct units

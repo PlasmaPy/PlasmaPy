@@ -11,16 +11,16 @@ from plasmapy.utils.exceptions import (PhysicsError, PhysicsWarning,
 from plasmapy.physics.parameters import Hall_parameter
 from plasmapy.constants import c, m_p, m_e, e, mu0
 
-from plasmapy.physics.transport.transport import (Coulomb_logarithm,
-                         b_perp,
-                         impact_parameter,
-                         collision_frequency,
-                         mean_free_path,
-                         Spitzer_resistivity,
-                         mobility,
-                         Knudsen_number,
-                         coupling_parameter,
-                                                  )
+from plasmapy.physics.transport.collisions import (Coulomb_logarithm,
+                                                   b_perp,
+                                                   impact_parameter,
+                                                   collision_frequency,
+                                                   mean_free_path,
+                                                   Spitzer_resistivity,
+                                                   mobility,
+                                                   Knudsen_number,
+                                                   coupling_parameter,
+                                                   )
 from plasmapy.physics.transport.braginskii import _nondim_thermal_conductivity, \
     _nondim_viscosity, \
     _nondim_resistivity, _nondim_te_conductivity, _check_Z, _nondim_tc_e_spitzer, \

@@ -33,12 +33,12 @@ from .quantum import (deBroglie_wavelength,
 
 from .relativity import Lorentz_factor
 
-from .transport.transport import (Coulomb_logarithm,
-                                  b_perp,
-                       impact_parameter,
-                       collision_frequency,
-                       mean_free_path,
-                       mobility,
-                       Knudsen_number,
-                       coupling_parameter)
+from .transport.collisions import (Coulomb_logarithm,
+                                   b_perp,
+                                   impact_parameter,
+                                   collision_frequency,
+                                   mean_free_path,
+                                   mobility,
+                                   Knudsen_number,
+                                   coupling_parameter)
 from plasmapy.physics.transport.braginskii import classical_transport
