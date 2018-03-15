@@ -165,17 +165,17 @@ def test_run_test(f, args, kwargs, expected, whaterror):
             run_test(f, args, kwargs, expected)
         else:
             with pytest.raises(whaterror, message = (
-                    f"run_test did not raise an exception for:\n\n"
-                    f"  {call_string(f, args, kwargs)}\n\n"
-                    f"with expected = {str(expected)}")):
+                    f"run_test did not raise an exception for "
+                    f"{call_string(f, args, kwargs)} "
+                    f"with expected = {repr(expected)} and "
+                    f"whaterror = {repr(whaterror)}.")):
                 run_test(f, args, kwargs, expected)
     except Exception as spectacular_exception:
         raise Exception(
-            f"An unexpected exception was raised while running:\n\n"
-            f"  {call_string(f, args, kwargs)}\n\n"
-            f"with:\n\n"
-            f"  expected = {repr(expected)}\n"
-            f" whaterror = {repr(whaterror)}") from spectacular_exception
+            f"An unexpected exception was raised while running "
+            f"{call_string(f, args, kwargs)} with "
+            f"expected = {repr(expected)} and "
+            f"whaterror = {repr(whaterror)}.") from spectacular_exception
 
 
 def test_run_test_rtol():
