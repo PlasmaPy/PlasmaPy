@@ -16,6 +16,24 @@ class RunTestError(Exception):
 
     pass
 
+class UnexpectedResultError(RunTestError):
+    """
+    Exception for when the actual result differs from the expected
+    result.  Derived from `~plasmapy.utils.RunTestError`.
+    """
+
+    pass
+
+
+class InconsistentTypeError(RunTestError):
+    """
+    Exception for when the type of the actual result differs from the
+    type of the expected result.  Derived from
+    `~plasmapy.utils.RunTestError`.
+    """
+
+    pass
+
 
 class MissingExceptionError(RunTestError):
     """
@@ -112,8 +130,43 @@ def run_test(
         expected warning as the second item.
 
     rtol : float
+        The relative tolerance to be used by `~numpy.allclose` in an
+        element-wise comparison, defaulting to `0`.
 
     atol : float
+        The absolute tolerance to be used by `~numpy.allclose` in an
+        element-wise comparison, defaulting to `0`.
+
+    Returns
+    -------
+    `None`
+
+    Raises
+    ------
+    ~plasmapy.utils.UnexpectedResultError
+        If the test returns a result that is different from the expected
+        result.
+
+    ~plasmapy.utils.InconsistentTypeError
+        If the actual result is of a different type than the expected
+        result.
+
+    ~plasmapy.utils.UnexpectedExceptionError
+        If an exception occurs when no exception or a different
+        exception is expected.
+
+    ~plasmapy.utils.MissingExceptionError
+        If no exception is raised when an exception is expected.
+
+    ~plasmapy.utils.MissingWarningError
+        An expected warning is not issued.
+
+    ~astropy.units.UnitsError
+        If the result has different units than expected.
+
+    TypeError
+        If the equality of the actual result and expected result cannot
+        be determined (e.g., for a class lacking an `__eq__` method.
 
     Examples
     --------
@@ -134,12 +187,11 @@ def run_test(
     if not isinstance(args, tuple):
         args = (args,)
 
-    # We will want to include a string that can reproduce the test for
-    # all error messages.
+    # By including the function call that is run during a test in error
+    # messages, we can make it easier to reproduce the error in an
+    # interactive session.
 
     call_str = call_string(func, args, kwargs)
-
-    # print(f"call_str = {call_str}")
 
     # There are many possibilities for expected outcomes that we must
     # keep track of, including exceptions being raised and warnings
@@ -150,28 +202,24 @@ def run_test(
     if inspect.isclass(expected_outcome):
         subclass_of_Exception = issubclass(expected_outcome, Exception)
         subclass_of_Warning = issubclass(expected_outcome, Warning)
-
         if subclass_of_Warning:
             expected['warning'] = expected_outcome
-        if subclass_of_Exception and not subclass_of_Warning:
+        elif subclass_of_Exception and not subclass_of_Warning:
             expected['exception'] = expected_outcome
 
     # If a warning is issued, then there may also be an expected result.
 
     if isinstance(expected_outcome, tuple):
-        if len(expected_outcome) > 2 or not inspect.isclass(expected_outcome[1]):
-            raise ValueError
-        if issubclass(expected_outcome[1], Warning):
-            expected['result'] = expected_outcome[0]
-            expected['warning'] = expected_outcome[1]
-
-        else:
-            raise ValueError
+        length_not_two = len(expected_outcome) != 2
+        is_not_class = not inspect.isclass(expected_outcome[1])
+        is_not_warning = True if is_not_class else not issubclass(expected_outcome[1], Warning)
+        if length_not_two or is_not_warning:
+            raise ValueError("Invalid expected outcome in run_test.")
+        expected['result'] = expected_outcome[0]
+        expected['warning'] = expected_outcome[1]
 
     if expected['exception'] is None and expected['warning'] is None:
         expected['result'] = expected_outcome
-
-    expected['type'] = type(expected['result']) if expected['result'] is not None else None
 
     # First we go through all of the possibilities for when an exception
     # is expected to be raised.  If no exception is raised, then we want
@@ -203,41 +251,26 @@ def run_test(
                 f"  {call_str}\n\n"
                 f"did not raise {exc_str(expected_exception)} as "
                 f"expected, but instead returned the value:\n\n"
-                f"  {result}\n"
-            )
+                f"  {result}\n")
 
     try:
         with pytest.warns(expected['warning']):
             result = func(*args, **kwargs)
     except pytest.raises.Exception as missing_warning:
-
         raise MissingWarningError(
             f"Running the command:\n\n"
             f"  {call_str}\n\n"
             f"should issue {exc_str(expected['warning'])}, "
             f"but instead returned:\n\n"
-            f"  {result}\n"
+            f"  {repr(result)}\n"
         ) from missing_warning
-
     except Exception as exception_no_warning:
-
         raise UnexpectedExceptionError(
             f"Running the command:\n\n"
             f"  {call_str}\n\n"
             f"unexpectedly raised {exc_str(exception_no_warning.__reduce__()[0])} "
             f"instead of returning the expected value of:\n\n"
-            f"  {expected['result']}\n") from exception_no_warning
-
-    if expected['result'] is None:
-        return None
-
-    try:
-        if result == expected['result']:
-            return None
-    except NotImplemented as exc_equality:
-        raise RunTestError(
-            f"The equality of {result} and {expected['result']} "
-            f"cannot be evaluated.") from exc_equality
+            f"  {repr(expected['result'])}\n") from exception_no_warning
 
     if isinstance(expected['result'], u.UnitBase):
 
@@ -255,7 +288,7 @@ def run_test(
                 f"Running the command:\n\n"
                 f"  {call_str}\n\n"
                 f"returned a value of:\n\n"
-                f"  {result}\n\n"
+                f"  {repr(result)}\n\n"
                 f"instead of a quantity or constant with units of "
                 f"{expected['result']}.")
 
@@ -264,7 +297,7 @@ def run_test(
                 f"Running the command:\n\n"
                 f"  {call_str}\n\n"
                 f"returned the result:\n\n"
-                f"  {result}\n\n"
+                f"  {repr(result)}\n\n"
                 f"which has units of {result.unit} instead of the"
                 f"expected units of {expected['result']}.")
 
@@ -276,20 +309,52 @@ def run_test(
                 f"Running the command:\n\n"
                 f"  {call_str}\n\n"
                 f"returned the result:\n\n"
-                f"  {result}\n\n"
+                f"  {repr(result)}\n\n"
                 f"which has different units than the expected result of:\n\n"
-                f"  {expected['result']}\n")
+                f"  {repr(expected['result'])}\n")
 
         if np.allclose(result.value, expected['result'].value):
             return None
 
-    if np.allclose(result, expected['result'], rtol=rtol, atol=atol):
+    if expected['result'] is None:
         return None
 
-    raise RunTestError(
+    if type(result) != type(expected['result']):
+        raise InconsistentTypeError(
+            f"Running the command:\n\n"
+            f"  {call_str}\n\n"
+            f"returned the result:\n\n"
+            f"  {repr(result)}\n\n"
+            f"which has type {repr(type(result))}, instead of the "
+            f"expected value of:\n\n"
+            f"  {repr(expected['result'])}\n\n"
+            f"which has type {repr(type(result))}."
+        )
+
+    try:
+        if result == expected['result']:
+            return None
+    except Exception as exc_equality:  # coveralls: ignore
+        raise TypeError(
+            f"The equality of {repr(result)} and {repr(expected['result'])} "
+            f"cannot be evaluated.") from exc_equality
+
+    try:
+        different_length = len(result) != len(expected['result'])
+    except Exception:
+        different_length = False
+
+    try:
+        all_close = np.allclose(expected['result'], result, rtol=rtol, atol=atol)
+        if all_close and not different_length:
+            return None
+    except Exception:
+        pass
+
+    raise UnexpectedResultError(
         f"Running the command:\n\n"
         f"  {call_str}\n\n"
         f"returned the result:\n\n"
-        f"  {result}\n\n"
+        f"  {repr(result)}\n\n"
         f"instead of the expected value of:\n\n"
-        f"  {expected['result']}\n")
+        f"  {repr(expected['result'])}\n")
