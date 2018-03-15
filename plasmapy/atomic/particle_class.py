@@ -364,6 +364,8 @@ class Particle:
             else:
                 categories.add('unstable')
 
+        self.__name__ = self.__repr__()
+
     def __repr__(self) -> str:
         """Return a call string that would recreate this object.
 
