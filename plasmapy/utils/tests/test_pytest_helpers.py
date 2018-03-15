@@ -6,13 +6,16 @@ from typing import Any
 from ..pytest_helpers import (
     call_string,
     run_test,
-    RunTestError,
+    UnexpectedResultError,
+    InconsistentTypeError,
     UnexpectedExceptionError,
     MissingWarningError,
     MissingExceptionError,
 )
+
 from ..exceptions import PlasmaPyWarning, PlasmaPyError
 
+from ...atomic import Particle
 
 def f(*args, **kwargs):
     return None
@@ -34,7 +37,7 @@ def adams_number(*args, **kwargs):
     return 42
 
 
-def return_quantity(should_warn: bool = False):
+def return_quantity(*args, should_warn: bool = False):
     if should_warn:
         warnings.warn("It was the best of times, it was the worst of times", UserWarning)
     return 5 * u.m / u.s
@@ -73,9 +76,9 @@ f_args_kwargs_expected_whaterror = [
     (adams_number, (1,), {'y': 1}, 42, None),
     (adams_number, (2, 1), {}, 42, None),
 
-    (adams_number, 3, {'y': 1}, 6 * 9, RunTestError),
-    (adams_number, (4,), {'y': 1}, 6 * 9, RunTestError),
-    (adams_number, (5, 1), {}, 6 * 9, RunTestError),
+    (adams_number, 3, {'y': 1}, 6 * 9, UnexpectedResultError),
+    (adams_number, (4,), {'y': 1}, 6 * 9, UnexpectedResultError),
+    (adams_number, (5, 1), {}, 6 * 9, UnexpectedResultError),
 
     (raise_exception, 6, {'y': 1}, PlasmaPyError, None),
     (raise_exception, (7,), {'y': 1}, PlasmaPyError, None),
@@ -89,25 +92,31 @@ f_args_kwargs_expected_whaterror = [
     (issue_warning, (13,), {'y': 1}, PlasmaPyWarning, None),
     (issue_warning, (14, 1), {}, PlasmaPyWarning, None),
 
-    (issue_warning, 0, {'y': 1}, (42, UserWarning), MissingWarningError),
-    (issue_warning, (0,), {'y': 1}, (42, UserWarning), MissingWarningError),
-    (issue_warning, (0, 1), {}, (42, UserWarning), MissingWarningError),
+    (issue_warning, 15, {'y': 1}, (42, UserWarning), MissingWarningError),
+    (issue_warning, (16,), {'y': 1}, (42, UserWarning), MissingWarningError),
+    (issue_warning, (17, 1), {}, (42, UserWarning), MissingWarningError),
 
-    (return_quantity, (), {}, 5 * u.m / u.s, None),
-    (return_quantity, (), {}, u.m / u.s, None),
-    (return_quantity, (), {}, u.barn * u.Mpc, u.UnitsError),
-    (return_quantity, (), {}, 4 * u.m / u.s, RunTestError),
-    (return_quantity, (), {}, 5 * u.kg / u.s, u.UnitsError),
-    (return_quantity, (), {'should_warn': True}, (5 * u.m / u.s, UserWarning), None),
-    (return_quantity, (), {'should_warn': False}, (5 * u.m / u.s, UserWarning), MissingWarningError),
+    (return_quantity, (18), {}, 5 * u.m / u.s, None),
+    (return_quantity, (19), {}, u.m / u.s, None),
+    (return_quantity, (20), {}, u.barn * u.Mpc, u.UnitsError),
+    (return_quantity, (21), {}, 4 * u.m / u.s, UnexpectedResultError),
+    (return_quantity, (22), {}, 5 * u.kg / u.s, u.UnitsError),
+    (return_quantity, (23), {'should_warn': True}, (5 * u.m / u.s, UserWarning), None),
+
+    (return_quantity, (24), {'should_warn': False}, (5 * u.m / u.s, UserWarning),
+     MissingWarningError),
 
     (return_arg, u.kg / u.K, {}, u.kg / u.K, None),
     (return_arg, u.kg / u.K, {}, u.kg / u.N, u.UnitsError),
     (return_arg, u.kg, {}, u.g, u.UnitsError),
     (return_arg, u.C, {'should_warn': True}, (u.C, UserWarning), None),
 
-]
+    (return_arg, Particle('p+'), {}, Particle('proton'), None),
+    (return_arg, Particle('e+'), {}, Particle('e-'), UnexpectedResultError),
 
+    (return_arg, Particle('mu+'), {}, type, InconsistentTypeError),
+
+]
 
 
 @pytest.mark.parametrize(
@@ -170,14 +179,19 @@ def test_run_test(f, args, kwargs, expected, whaterror):
             f"whaterror = {whaterror}") from spectacular_exception
 
 
-def test_run_test_tolerances():
-
-    with pytest.raises(RunTestError, message="No exception raised for rtol test."):
-        run_test(return_arg, 1.0, {}, 0.999999, rtol=1e-7)
-
+def test_run_test_rtol():
     run_test(return_arg, 1.0, {}, 0.999999, rtol=1.1e-6)
 
-    with pytest.raises(RunTestError, message="No exception raised for atol test."):
-        run_test(return_arg, (1.0,), {}, 0.999999, atol=1e-7)
 
+def test_run_test_rtol_failure():
+    with pytest.raises(UnexpectedResultError, message="No exception raised for rtol test."):
+        run_test(return_arg, 1.0, {}, 0.999999, rtol=1e-7)
+
+
+def test_run_test_atol():
     run_test(return_arg, 1.0, {}, 0.999999, atol=1.1e-6)
+
+
+def test_run_test_atol_failure():
+    with pytest.raises(UnexpectedResultError, message="No exception raised for atol test."):
+        run_test(return_arg, (1.0,), {}, 0.999999, atol=1e-7)
