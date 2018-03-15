@@ -121,7 +121,7 @@ f_args_kwargs_expected_whaterror = [
 # The following code when activated allows easier inspection of the
 # error messages issued by run_test.
 
-throw_a_wrench_in_everything = True
+throw_a_wrench_in_everything = False
 
 exceptions_and_warnings = [
     InconsistentTypeError,
