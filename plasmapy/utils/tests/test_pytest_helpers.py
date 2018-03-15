@@ -1,7 +1,8 @@
 import pytest
 import warnings
-import astropy.units as u
 from typing import Any
+import numpy as np
+import astropy.units as u
 
 from ..pytest_helpers import (
     call_string,
@@ -72,51 +73,80 @@ def test_call_string(f, args, kwargs, expected):
 
 f_args_kwargs_expected_whaterror = [
 
-    (adams_number, 0, {'y': 1}, 42, None),
-    (adams_number, (1,), {'y': 1}, 42, None),
-    (adams_number, (2, 1), {}, 42, None),
+    [adams_number, 0, {'y': 1}, 42, None],
+    [adams_number, (1,), {'y': 1}, 42, None],
+    [adams_number, (2, 1), {}, 42, None],
 
-    (adams_number, 3, {'y': 1}, 6 * 9, UnexpectedResultError),
-    (adams_number, (4,), {'y': 1}, 6 * 9, UnexpectedResultError),
-    (adams_number, (5, 1), {}, 6 * 9, UnexpectedResultError),
+    [adams_number, 3, {'y': 1}, 6 * 9, UnexpectedResultError],
+    [adams_number, (4,), {'y': 1}, 6 * 9, UnexpectedResultError],
+    [adams_number, (5, 1), {}, 6 * 9, UnexpectedResultError],
 
-    (raise_exception, 6, {'y': 1}, PlasmaPyError, None),
-    (raise_exception, (7,), {'y': 1}, PlasmaPyError, None),
-    (raise_exception, (8, 1), {}, PlasmaPyError, None),
+    [raise_exception, 6, {'y': 1}, PlasmaPyError, None],
+    [raise_exception, (7,), {'y': 1}, PlasmaPyError, None],
+    [raise_exception, (8, 1), {}, PlasmaPyError, None],
 
-    (raise_exception, 9, {'y': 1}, TypeError, UnexpectedExceptionError),
-    (raise_exception, (10,), {'y': 1}, TypeError, UnexpectedExceptionError),
-    (raise_exception, (11, 1), {}, TypeError, UnexpectedExceptionError),
+    [raise_exception, 9, {'y': 1}, TypeError, UnexpectedExceptionError],
+    [raise_exception, (10,), {'y': 1}, TypeError, UnexpectedExceptionError],
+    [raise_exception, (11, 1), {}, TypeError, UnexpectedExceptionError],
 
-    (issue_warning, 12, {'y': 1}, PlasmaPyWarning, None),
-    (issue_warning, (13,), {'y': 1}, PlasmaPyWarning, None),
-    (issue_warning, (14, 1), {}, PlasmaPyWarning, None),
+    [issue_warning, 12, {'y': 1}, PlasmaPyWarning, None],
+    [issue_warning, (13,), {'y': 1}, PlasmaPyWarning, None],
+    [issue_warning, (14, 1), {}, PlasmaPyWarning, None],
 
-    (issue_warning, 15, {'y': 1}, (42, UserWarning), MissingWarningError),
-    (issue_warning, (16,), {'y': 1}, (42, UserWarning), MissingWarningError),
-    (issue_warning, (17, 1), {}, (42, UserWarning), MissingWarningError),
+    [issue_warning, 15, {'y': 1}, (42, UserWarning), MissingWarningError],
+    [issue_warning, (16,), {'y': 1}, (42, UserWarning), MissingWarningError],
+    [issue_warning, (17, 1), {}, (42, UserWarning), MissingWarningError],
 
-    (return_quantity, (18), {}, 5 * u.m / u.s, None),
-    (return_quantity, (19), {}, u.m / u.s, None),
-    (return_quantity, (20), {}, u.barn * u.Mpc, u.UnitsError),
-    (return_quantity, (21), {}, 4 * u.m / u.s, UnexpectedResultError),
-    (return_quantity, (22), {}, 5 * u.kg / u.s, u.UnitsError),
-    (return_quantity, (23), {'should_warn': True}, (5 * u.m / u.s, UserWarning), None),
+    [return_quantity, (18), {}, 5 * u.m / u.s, None],
+    [return_quantity, (19), {}, u.m / u.s, None],
+    [return_quantity, (20), {}, u.barn * u.Mpc, u.UnitsError],
+    [return_quantity, (21), {}, 4 * u.m / u.s, UnexpectedResultError],
+    [return_quantity, (22), {}, 5 * u.kg / u.s, u.UnitsError],
+    [return_quantity, (23), {'should_warn': True}, (5 * u.m / u.s, UserWarning), None],
 
-    (return_quantity, (24), {'should_warn': False}, (5 * u.m / u.s, UserWarning),
-     MissingWarningError),
+    [return_quantity, (24), {'should_warn': False}, (5 * u.m / u.s, UserWarning),
+     MissingWarningError],
 
-    (return_arg, u.kg / u.K, {}, u.kg / u.K, None),
-    (return_arg, u.kg / u.K, {}, u.kg / u.N, u.UnitsError),
-    (return_arg, u.kg, {}, u.g, u.UnitsError),
-    (return_arg, u.C, {'should_warn': True}, (u.C, UserWarning), None),
+    [return_arg, u.kg / u.K, {}, u.kg / u.K, None],
+    [return_arg, u.kg / u.K, {}, u.kg / u.N, u.UnitsError],
+    [return_arg, u.kg, {}, u.g, u.UnitsError],
+    [return_arg, u.C, {'should_warn': True}, (u.C, UserWarning), None],
 
-    (return_arg, Particle('p+'), {}, Particle('proton'), None),
-    (return_arg, Particle('e+'), {}, Particle('e-'), UnexpectedResultError),
-
-    (return_arg, Particle('mu+'), {}, type, InconsistentTypeError),
+    [return_arg, Particle('p+'), {}, Particle('proton'), None],
+    [return_arg, Particle('e+'), {}, Particle('e-'), UnexpectedResultError],
+    [return_arg, Particle('mu+'), {}, type, InconsistentTypeError],
 
 ]
+
+# The following code when activated allows easier inspection of the
+# error messages issued by run_test.
+
+throw_a_wrench_in_everything = False
+
+exceptions_and_warnings = [
+    InconsistentTypeError,
+    UnexpectedResultError,
+    UserWarning,
+    TypeError,
+    RuntimeError,
+    RuntimeWarning,
+    u.UnitsError,
+    MissingWarningError,
+    MissingExceptionError,
+    InconsistentTypeError,
+    UnexpectedResultError,
+    IndexError,
+    DeprecationWarning,
+    None,
+]
+
+if throw_a_wrench_in_everything:
+    for inputs in f_args_kwargs_expected_whaterror:
+        if inputs[4] is None:
+            rand = np.random.randint(0, len(exceptions_and_warnings))
+            inputs[4] = exceptions_and_warnings[rand]
+        else:
+            inputs[4] = None
 
 
 @pytest.mark.parametrize(
@@ -166,14 +196,14 @@ def test_run_test(f, args, kwargs, expected, whaterror):
         else:
             with pytest.raises(whaterror, message = (
                     f"run_test did not raise an exception for "
-                    f"{call_string(f, args, kwargs)} "
+                    f"{call_string(f, args, kwargs, color=None)} "
                     f"with expected = {repr(expected)} and "
                     f"whaterror = {repr(whaterror)}.")):
                 run_test(f, args, kwargs, expected)
     except Exception as spectacular_exception:
         raise Exception(
             f"An unexpected exception was raised while running "
-            f"{call_string(f, args, kwargs)} with "
+            f"{call_string(f, args, kwargs, color=None)} with "
             f"expected = {repr(expected)} and "
             f"whaterror = {repr(whaterror)}.") from spectacular_exception
 
