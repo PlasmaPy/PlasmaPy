@@ -171,12 +171,11 @@ def test_run_test(f, args, kwargs, expected, whaterror):
                 run_test(f, args, kwargs, expected)
     except Exception as spectacular_exception:
         raise Exception(
-            f"An unexpected exception was raised for:\n"
-            f"f = {f.__name__}\n"
-            f"args = {args}\n"
-            f"kwargs = {kwargs}\n"
-            f"expected = {expected}\n"
-            f"whaterror = {whaterror}") from spectacular_exception
+            f"An unexpected exception was raised while running:\n\n"
+            f"  {call_string(f, args, kwargs)}\n\n"
+            f"with:\n\n"
+            f"  expected = {repr(expected)}\n"
+            f" whaterror = {repr(whaterror)}") from spectacular_exception
 
 
 def test_run_test_rtol():
