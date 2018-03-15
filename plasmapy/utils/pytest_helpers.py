@@ -99,6 +99,23 @@ def call_string(f: Callable, args: Any=tuple(), kwargs: Dict={}) -> str:
     return f"{f.__name__}({args_and_kwargs})"
 
 
+
+def _exc_str(ex: Exception) -> str:
+    """
+    Return a string with an indefinite article and the name of
+    exception `ex`.
+    """
+    article = 'an' if ex.__name__[0] in 'aeiouAEIOU' else 'a'
+    return f"{article} {ex.__name__}"
+
+
+def _represent_result(result: Any) -> str:
+    if hasattr(result, '__name__'):
+        return result.__name__
+    else:
+        return repr(result)
+
+
 def run_test(
         func: Callable,
         args: Any = (),
@@ -176,14 +193,6 @@ def run_test(
 
     """
 
-    def exc_str(ex: Exception) -> str:
-        """
-        Return a string with an indefinite article and the name of
-        exception `ex`.
-        """
-        article = 'an' if ex.__name__[0] in 'aeiouAEIOU' else 'a'
-        return f"{article} {ex.__name__}"
-
     if not isinstance(args, tuple):
         args = (args,)
 
@@ -242,14 +251,14 @@ def run_test(
             raise UnexpectedExceptionError(
                 f"Running the command:\n\n"
                 f"  {call_str}\n\n"
-                f"did not raise {exc_str(expected_exception)} as expected, "
-                f"but instead raised {exc_str(unexpected_exception)}."
+                f"did not raise {_exc_str(expected_exception)} as expected, "
+                f"but instead raised {_exc_str(unexpected_exception)}."
             ) from exc_unexpected_exception
         else:
             raise MissingExceptionError(
                 f"Running the command:\n\n"
                 f"  {call_str}\n\n"
-                f"did not raise {exc_str(expected_exception)} as "
+                f"did not raise {_exc_str(expected_exception)} as "
                 f"expected, but instead returned the value:\n\n"
                 f"  {result}\n")
 
@@ -260,17 +269,17 @@ def run_test(
         raise MissingWarningError(
             f"Running the command:\n\n"
             f"  {call_str}\n\n"
-            f"should issue {exc_str(expected['warning'])}, "
+            f"should issue {_exc_str(expected['warning'])}, "
             f"but instead returned:\n\n"
-            f"  {repr(result)}\n"
+            f"  {_represent_result(result)}\n"
         ) from missing_warning
     except Exception as exception_no_warning:
         raise UnexpectedExceptionError(
             f"Running the command:\n\n"
             f"  {call_str}\n\n"
-            f"unexpectedly raised {exc_str(exception_no_warning.__reduce__()[0])} "
+            f"unexpectedly raised {_exc_str(exception_no_warning.__reduce__()[0])} "
             f"instead of returning the expected value of:\n\n"
-            f"  {repr(expected['result'])}\n") from exception_no_warning
+            f"  {_represent_result(expected['result'])}\n") from exception_no_warning
 
     if isinstance(expected['result'], u.UnitBase):
 
@@ -279,8 +288,8 @@ def run_test(
                 raise u.UnitsError(
                     f"Running the command:\n\n"
                     f"  {call_str}\n\n"
-                    f"returned {repr(result)} instead of the expected "
-                    f"value of {repr(expected['result'])}.")
+                    f"returned {_represent_result(result)} instead of the expected "
+                    f"value of {_represent_result(expected['result'])}.")
             return None
 
         if not isinstance(result, (u.Quantity, const.Constant, const.EMConstant)):
@@ -288,18 +297,18 @@ def run_test(
                 f"Running the command:\n\n"
                 f"  {call_str}\n\n"
                 f"returned a value of:\n\n"
-                f"  {repr(result)}\n\n"
+                f"  {_represent_result(result)}\n\n"
                 f"instead of a quantity or constant with units of "
-                f"{expected['result']}.")
+                f"{_represent_result(expected['result'])}.")
 
         if result.unit != expected['result']:
             raise u.UnitsError(
                 f"Running the command:\n\n"
                 f"  {call_str}\n\n"
                 f"returned the result:\n\n"
-                f"  {repr(result)}\n\n"
-                f"which has units of {result.unit} instead of the"
-                f"expected units of {expected['result']}.")
+                f"  {_represent_result(result)}\n\n"
+                f"which has units of {result.unit} instead of the "
+                f"expected units of {_represent_result(expected['result'])}.")
 
         return None
 
@@ -309,9 +318,9 @@ def run_test(
                 f"Running the command:\n\n"
                 f"  {call_str}\n\n"
                 f"returned the result:\n\n"
-                f"  {repr(result)}\n\n"
+                f"  {_represent_result(result)}\n\n"
                 f"which has different units than the expected result of:\n\n"
-                f"  {repr(expected['result'])}\n")
+                f"  {_represent_result(expected['result'])}\n")
 
         if np.allclose(result.value, expected['result'].value):
             return None
@@ -324,11 +333,11 @@ def run_test(
             f"Running the command:\n\n"
             f"  {call_str}\n\n"
             f"returned the result:\n\n"
-            f"  {repr(result)}\n\n"
-            f"which has type {repr(type(result))}, instead of the "
+            f"  {_represent_result(result)}\n\n"
+            f"which has type {_represent_result(type(result))}, instead of the "
             f"expected value of:\n\n"
-            f"  {repr(expected['result'])}\n\n"
-            f"which has type {repr(type(result))}."
+            f"  {_represent_result(expected['result'])}\n\n"
+            f"which has type {_represent_result(type(expected['result']))}."
         )
 
     try:
@@ -336,7 +345,7 @@ def run_test(
             return None
     except Exception as exc_equality:  # coveralls: ignore
         raise TypeError(
-            f"The equality of {repr(result)} and {repr(expected['result'])} "
+            f"The equality of {_represent_result(result)} and {_represent_result(expected['result'])} "
             f"cannot be evaluated.") from exc_equality
 
     try:
@@ -355,6 +364,6 @@ def run_test(
         f"Running the command:\n\n"
         f"  {call_str}\n\n"
         f"returned the result:\n\n"
-        f"  {repr(result)}\n\n"
+        f"  {_represent_result(result)}\n\n"
         f"instead of the expected value of:\n\n"
-        f"  {repr(expected['result'])}\n")
+        f"  {_represent_result(expected['result'])}\n")
