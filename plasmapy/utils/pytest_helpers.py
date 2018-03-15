@@ -1,28 +1,39 @@
 """Test helper utilities."""
 
 import pytest
-from typing import Callable, Dict, Tuple, Any, Union, Optional
 import inspect
-import warnings
-from inspect import isclass
+from collections import defaultdict
+from typing import Callable, Dict, Any
+import numpy as np
 import astropy.units as u
 import astropy.constants as const
-from collections import defaultdict
-from textwrap import fill
-import numpy as np
+import colorama
+
+# These colors/styles are used to highlight certain parts of the error
+# messages in consistent ways.
+
+_bold = colorama.Style.BRIGHT
+_magenta = colorama.Fore.MAGENTA
+_blue = colorama.Fore.BLUE
+_cyan = colorama.Fore.CYAN
+_red = colorama.Fore.RED
+
+_exception_color = f"{_magenta}{_bold}"
+_type_color = f"{_magenta}{_bold}"
+_func_color = f"{_cyan}{_bold}"
+_result_color = f"{_blue}{_bold}"
+_message_color = f"{_red}{_bold}"
+
 
 class RunTestError(Exception):
     """Base exception for test failures. Derived from `Exception`."""
 
-    pass
 
 class UnexpectedResultError(RunTestError):
     """
     Exception for when the actual result differs from the expected
     result.  Derived from `~plasmapy.utils.RunTestError`.
     """
-
-    pass
 
 
 class InconsistentTypeError(RunTestError):
@@ -32,16 +43,12 @@ class InconsistentTypeError(RunTestError):
     `~plasmapy.utils.RunTestError`.
     """
 
-    pass
-
 
 class MissingExceptionError(RunTestError):
     """
     Exception for when an expected exception is not raised.  Derived
     from `~plasmapy.utils.RunTestError`.
     """
-
-    pass
 
 
 class UnexpectedExceptionError(RunTestError):
@@ -51,8 +58,6 @@ class UnexpectedExceptionError(RunTestError):
     `~plasmapy.utils.RunTestError`.
     """
 
-    pass
-
 
 class MissingWarningError(RunTestError):
     """
@@ -60,15 +65,21 @@ class MissingWarningError(RunTestError):
     Derived from `~plasmapy.utils.RunTestError`.
     """
 
-    pass
-
 
 class IncorrectResultError(RunTestError):
     """
-    Exception for when the result is
+    Exception for when the actual result differs from the expected
+    result by more than the allowed tolerance.  Derived from
+    `~plasmapy.utils.RunTestError`.
     """
 
-def call_string(f: Callable, args: Any=tuple(), kwargs: Dict={}) -> str:
+
+def call_string(f: Callable,
+                args: Any=tuple(),
+                kwargs: Dict={},
+                color="",
+                return_color="",
+                ) -> str:
     """Return a string with the equivalent call of a function."""
 
     def format_arg(arg):
@@ -81,6 +92,9 @@ def call_string(f: Callable, args: Any=tuple(), kwargs: Dict={}) -> str:
             return keyword.__name__
         else:
             return repr(keyword)
+
+    if color and not return_color:
+        return_color = _reg
 
     if not isinstance(args, tuple):
         args = (args,)
@@ -96,24 +110,36 @@ def call_string(f: Callable, args: Any=tuple(), kwargs: Dict={}) -> str:
     if args_and_kwargs[-2:] == ", ":
         args_and_kwargs = args_and_kwargs[:-2]
 
-    return f"{f.__name__}({args_and_kwargs})"
+    return f"{color}{f.__name__}({args_and_kwargs}){return_color}"
 
 
-
-def _exc_str(ex: Exception) -> str:
+def _exc_str(ex: Exception, color=_exception_color) -> str:
     """
     Return a string with an indefinite article and the name of
     exception `ex`.
     """
-    article = 'an' if ex.__name__[0] in 'aeiouAEIOU' else 'a'
-    return f"{article} {ex.__name__}"
-
-
-def _represent_result(result: Any) -> str:
-    if hasattr(result, '__name__'):
-        return result.__name__
+    if color is None:
+        color = ""
+        return_color = ""
     else:
-        return repr(result)
+        return_color = _message_color
+    exception_name = ex.__name__
+    use_an = exception_name[0] in 'aeiouAEIOU' and exception_name[0:4] != "User"
+    article = 'an' if use_an else 'a'
+    return f"{article} {color}{exception_name}{return_color}"
+
+
+def _represent_result(result: Any, color=_result_color) -> str:
+    if color is None:
+        color = ""
+        return_color = ""
+    else:
+        return_color = _message_color
+
+    if hasattr(result, '__name__'):
+        return f"{color}{result.__name__}{return_color}"
+    else:
+        return f"{color}{repr(result)}{return_color}"
 
 
 def run_test(
@@ -142,8 +168,8 @@ def run_test(
 
     expected_outcome: object
         The expected result, exception, or warning from
-        `func(*args, **kwargs)`. This may also be a tuple of length two
-        that contains the expected result as the first item and the
+        `func(*args, **kwargs)`. This may also be a `tuple` of length
+        two that contains the expected result as the first item and the
         expected warning as the second item.
 
     rtol : float
@@ -200,7 +226,7 @@ def run_test(
     # messages, we can make it easier to reproduce the error in an
     # interactive session.
 
-    call_str = call_string(func, args, kwargs)
+    call_str = call_string(func, args, kwargs, color=_func_color, return_color=_message_color)
 
     # There are many possibilities for expected outcomes that we must
     # keep track of, including exceptions being raised and warnings
@@ -244,83 +270,78 @@ def run_test(
 
         try:
             result = func(*args, **kwargs)
-        except expected_exception:
-            return None
+        except expected_exception as resulting_exception:
+            if resulting_exception.__reduce__()[0].__name__ == expected_exception.__name__:
+                return None
+            else:
+                raise UnexpectedExceptionError(
+                    f"The command {call_str} did not specifically raise "
+                    f"{_exc_str(expected_exception)} as expected, but "
+                    f"instead raised {_exc_str(unexpected_exception)} "
+                    f"which is a subclass of the expected exception.")
         except Exception as exc_unexpected_exception:
             unexpected_exception = exc_unexpected_exception.__reduce__()[0]
             raise UnexpectedExceptionError(
-                f"Running the command:\n\n"
-                f"  {call_str}\n\n"
-                f"did not raise {_exc_str(expected_exception)} as expected, "
+                f"The command {call_str} did not raise "
+                f"{_exc_str(expected_exception)} as expected, "
                 f"but instead raised {_exc_str(unexpected_exception)}."
             ) from exc_unexpected_exception
         else:
             raise MissingExceptionError(
-                f"Running the command:\n\n"
-                f"  {call_str}\n\n"
-                f"did not raise {_exc_str(expected_exception)} as "
-                f"expected, but instead returned the value:\n\n"
-                f"  {result}\n")
+                f"The command {call_str} did not raise "
+                f"{_exc_str(expected_exception)} as expected, but instead "
+                f"returned {_represent_result(result)}.")
 
     try:
         with pytest.warns(expected['warning']):
             result = func(*args, **kwargs)
     except pytest.raises.Exception as missing_warning:
         raise MissingWarningError(
-            f"Running the command:\n\n"
-            f"  {call_str}\n\n"
-            f"should issue {_exc_str(expected['warning'])}, "
-            f"but instead returned:\n\n"
-            f"  {_represent_result(result)}\n"
+            f"The command {call_str} should issue "
+            f"{_exc_str(expected['warning'])}, but instead returned "
+            f"{_represent_result(result)}."
         ) from missing_warning
     except Exception as exception_no_warning:
         raise UnexpectedExceptionError(
-            f"Running the command:\n\n"
-            f"  {call_str}\n\n"
-            f"unexpectedly raised {_exc_str(exception_no_warning.__reduce__()[0])} "
-            f"instead of returning the expected value of:\n\n"
-            f"  {_represent_result(expected['result'])}\n") from exception_no_warning
+            f"The command {call_str} unexpectedly raised "
+            f"{_exc_str(exception_no_warning.__reduce__()[0])} "
+            f"instead of returning the expected value of "
+            f"{_represent_result(expected['result'])}."
+        ) from exception_no_warning
 
     if isinstance(expected['result'], u.UnitBase):
 
         if isinstance(result, u.UnitBase):
             if result != expected['result']:
                 raise u.UnitsError(
-                    f"Running the command:\n\n"
-                    f"  {call_str}\n\n"
-                    f"returned {_represent_result(result)} instead of the expected "
+                    f"The command {call_str} returned "
+                    f"{_represent_result(result)} instead of the expected "
                     f"value of {_represent_result(expected['result'])}.")
             return None
 
         if not isinstance(result, (u.Quantity, const.Constant, const.EMConstant)):
             raise u.UnitsError(
-                f"Running the command:\n\n"
-                f"  {call_str}\n\n"
-                f"returned a value of:\n\n"
-                f"  {_represent_result(result)}\n\n"
-                f"instead of a quantity or constant with units of "
+                f"The command {call_str} returned "
+                f"{_represent_result(result)} instead of a quantity or "
+                f"constant with units of "
                 f"{_represent_result(expected['result'])}.")
 
         if result.unit != expected['result']:
             raise u.UnitsError(
-                f"Running the command:\n\n"
-                f"  {call_str}\n\n"
-                f"returned the result:\n\n"
-                f"  {_represent_result(result)}\n\n"
-                f"which has units of {result.unit} instead of the "
-                f"expected units of {_represent_result(expected['result'])}.")
+                f"The command {call_str} returned "
+                f"{_represent_result(result)}, which has units of "
+                f"{result.unit} instead of the expected units of "
+                f"{_represent_result(expected['result'])}.")
 
         return None
 
     if isinstance(expected['result'], (u.Quantity, const.Constant, const.EMConstant)):
         if not result.unit == expected['result'].unit:
             raise u.UnitsError(
-                f"Running the command:\n\n"
-                f"  {call_str}\n\n"
-                f"returned the result:\n\n"
-                f"  {_represent_result(result)}\n\n"
-                f"which has different units than the expected result of:\n\n"
-                f"  {_represent_result(expected['result'])}\n")
+                f"The command {call_str} returned "
+                f"{_represent_result(result)} which has different units "
+                f"than the expected result of "
+                f"{_represent_result(expected['result'])}.")
 
         if np.allclose(result.value, expected['result'].value):
             return None
@@ -330,14 +351,12 @@ def run_test(
 
     if type(result) != type(expected['result']):
         raise InconsistentTypeError(
-            f"Running the command:\n\n"
-            f"  {call_str}\n\n"
-            f"returned the result:\n\n"
-            f"  {_represent_result(result)}\n\n"
-            f"which has type {_represent_result(type(result))}, instead of the "
-            f"expected value of:\n\n"
-            f"  {_represent_result(expected['result'])}\n\n"
-            f"which has type {_represent_result(type(expected['result']))}."
+            f"The command {call_str} returned "
+            f"{_represent_result(result)} which has type "
+            f"{_represent_result(type(result), color=_type_color)}, "
+            f"instead of the expected value of "
+            f"{_represent_result(expected['result'])} which has type "
+            f"{_represent_result(type(expected['result']), color=_type_color)}."
         )
 
     try:
@@ -345,7 +364,8 @@ def run_test(
             return None
     except Exception as exc_equality:  # coveralls: ignore
         raise TypeError(
-            f"The equality of {_represent_result(result)} and {_represent_result(expected['result'])} "
+            f"The equality of {_represent_result(result)} and "
+            f"{_represent_result(expected['result'])} "
             f"cannot be evaluated.") from exc_equality
 
     try:
@@ -360,10 +380,20 @@ def run_test(
     except Exception:
         pass
 
-    raise UnexpectedResultError(
-        f"Running the command:\n\n"
-        f"  {call_str}\n\n"
-        f"returned the result:\n\n"
-        f"  {_represent_result(result)}\n\n"
-        f"instead of the expected value of:\n\n"
-        f"  {_represent_result(expected['result'])}\n")
+    errmsg = (
+        f"The command {call_str} returned "
+        f"{_represent_result(result)} instead of the expected "
+        f"value of {_represent_result(expected['result'])}"
+    )
+
+    if atol or rtol:
+        errmsg += " with "
+        if atol:
+            errmsg += f"atol = {atol}"
+        if atol and rtol:
+            errmsg += " and "
+        if rtol:
+            errmsg += f"rtol = {rtol}"
+    errmsg += "."
+
+    raise UnexpectedResultError(errmsg)
