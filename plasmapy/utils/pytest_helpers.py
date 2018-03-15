@@ -94,7 +94,7 @@ def call_string(f: Callable,
             return repr(keyword)
 
     if color and not return_color:
-        return_color = _reg
+        return_color = _message_color
 
     if not isinstance(args, tuple):
         args = (args,)
