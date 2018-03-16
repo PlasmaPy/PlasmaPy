@@ -257,14 +257,39 @@ def run_test(
 
     Examples
     --------
-    >>> from warnings import warn
-    >>> run_test(lambda: 42, tuple(), dict(), 42)
-    >>> run_test(lambda: warn("", UserWarning), tuple(), dict(), UserWarning)
+    The simplest way to use `~plasmapy.utils.run_test` is with inputs
+    for the function to be tests, the positional arguments in a `tuple`
+    or `list`, the keyword arguments in a `dict`, and then finally the
+    expected result or outcome.
 
-    >>> inputs = (lambda: 42, 42, {}, 42)
+    >>> args = tuple()
+    >>> kwargs = dict()
+    >>> run_test(lambda: 0, args, kwargs, 0)
+
+    If `expected` is a an exception or warning, then
+    `~plasmapy.atomic.run_test` will raise an exception if the expected
+    exception is not raised or the expected warning is not issued.
+
+    >>> from warnings import warn
+
+    >>> issue_warning = lambda: warn("Electrons are weird!", UserWarning)
+    >>> run_test(issue_warning, args, kwargs, UserWarning)
+
+    >>> def raise_exception(): raise RuntimeError
+    >>> run_test(raise_exception, args, kwargs, RuntimeError)
+
+    This function is also flexible enough that it can accept a `tuple`
+    or `list` as its sole argument, with the arguments in the same
+    order as in the function signature.
+
+    >>> return_arg = lambda x: x
+    >>> inputs = (return_arg, 42, {}, 42)
     >>> run_test(inputs)
 
-    >>> inputs_without_kwargs = [lambda: 42, 42, 42]
+    If the `tuple` or `list` has a length of `3`, then
+    `~plasmapy.utils.run_test` assumes that `kwargs` is missing.
+
+    >>> inputs_without_kwargs = [return_arg, 42, 42]
     >>> run_test(inputs_without_kwargs)
 
     """
