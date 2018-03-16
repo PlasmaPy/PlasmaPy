@@ -231,7 +231,7 @@ def func(x, raise_exception=False, issue_warning=False):
     if raise_exception:
         raise ValueError("I'm sorry, Dave. I'm afraid I can't do that.")
     elif issue_warning:
-        warn("Open the pod bay doors, HAL.", UserWarning)
+        warnings.warn("Open the pod bay doors, HAL.", UserWarning)
     return x
 
 
