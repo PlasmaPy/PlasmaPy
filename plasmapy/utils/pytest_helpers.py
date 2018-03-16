@@ -163,8 +163,7 @@ def _process_input(wrapped_function: Callable):
                 inputs = args[0]
                 if len(inputs) not in (3, 4):
                     raise RuntimeError(f"{args} is an invalid input to run_test.")
-                new_kwargs['func'] = inputs[0]
-                new_kwargs['args'] = inputs[1]
+                new_kwargs = {'func': inputs[0], 'args': inputs[1]}
                 new_kwargs['kwargs'] = inputs[2] if len(inputs) == 4 else {}
                 new_kwargs['expected'] = inputs[3] if len(inputs) == 4 else inputs[2]
             else:
