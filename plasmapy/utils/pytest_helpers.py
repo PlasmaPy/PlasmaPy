@@ -229,22 +229,22 @@ def run_test(
 
     Raises
     ------
-    ~plasmapy.utils.UnexpectedResultError
+    UnexpectedResultError
         If the test returns a result that is different from the expected
         result.
 
-    ~plasmapy.utils.InconsistentTypeError
+    InconsistentTypeError
         If the actual result is of a different type than the expected
         result.
 
-    ~plasmapy.utils.UnexpectedExceptionError
+    UnexpectedExceptionError
         If an exception occurs when no exception or a different
         exception is expected.
 
-    ~plasmapy.utils.MissingExceptionError
+    MissingExceptionError
         If no exception is raised when an exception is expected.
 
-    ~plasmapy.utils.MissingWarningError
+    MissingWarningError
         An expected warning is not issued.
 
     ~astropy.units.UnitsError
