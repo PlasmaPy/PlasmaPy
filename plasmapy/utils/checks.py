@@ -3,7 +3,8 @@ import inspect
 
 import numpy as np
 from astropy import units as u
-from ..constants import c
+from astropy.units.decorators import QuantityInput
+from ..constants import c, e, k_B
 import warnings
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 
@@ -369,3 +370,18 @@ def _check_relativistic(V, funcname, betafrac=0.1):
                       str(round(beta*100, 3)) + "% of the speed of " +
                       "light. Relativistic effects may be important.",
                       RelativityWarning)
+
+
+def temperature_input(wrapped_function=None, **kwargs):
+    """Wrapper on top of astropy.units.quantity_input"""
+    equiv = kwargs.pop('equivalencies', [])
+    equiv += u.temperature_energy()
+    kwargs['equivalencies'] = equiv
+    # print(u.J.find_equivalent_units(equivalencies=equiv))
+    # print(u.K.find_equivalent_units(equivalencies=equiv))
+    decorator = u.quantity_input(**kwargs)
+    if wrapped_function is not None:
+        return decorator(wrapped_function)
+    else:
+        return decorator
+
