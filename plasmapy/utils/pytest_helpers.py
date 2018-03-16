@@ -277,6 +277,18 @@ def run_test(
     >>> def raise_exception(): raise RuntimeError
     >>> run_test(raise_exception, args, kwargs, RuntimeError)
 
+    For warnings, `~plasmapy.utils.run_test` can accept a `tuple` of two
+    items where the first item is the expected result and the second
+    item is the expected warning.
+
+    .. code-block:: python
+
+        def return_arg_and_warn(x):
+            warn("", UserWarning)
+            return x
+
+        run_test(return_arg_and_warn, 1, {}, (1, UserWarning))
+
     This function is also flexible enough that it can accept a `tuple`
     or `list` as its sole argument, with the arguments in the same
     order as in the function signature.
@@ -290,6 +302,29 @@ def run_test(
 
     >>> inputs_without_kwargs = [return_arg, 42, 42]
     >>> run_test(inputs_without_kwargs)
+
+    .. code-block:: python
+
+        import pytest
+
+        def func(x, raise_exception=False, issue_warning=False):
+            if raise_exception:
+                raise ValueError("I'm sorry, Dave. I'm afraid I can't do that.")
+            elif issue_warning:
+                warn("Open the pod bay doors, HAL.", UserWarning)
+            return x
+
+        inputs_table = [
+            (func, 1, 1),
+            (func, (2,), {}, 2),
+            (func, 3, {'raise_exception': True}, ValueError),
+            (func, 4, {'issue_warning': True}, UserWarning),
+            (func, 5, {'issue_warning': True}, (5, UserWarning)),
+        ]
+
+        @pytest.mark.parametrize('inputs', inputs_table)
+        def test_func(inputs):
+            run_test(inputs)
 
     """
 
