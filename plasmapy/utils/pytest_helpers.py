@@ -370,14 +370,15 @@ def run_test(
 
         try:
             result = func(*args, **kwargs)
-        except expected_exception as unexpected_exception:
-            if unexpected_exception.__reduce__()[0].__name__ == expected_exception.__name__:
+        except expected_exception as exc_result:
+            resulting_exception = exc_result.__reduce__()[0]
+            if resulting_exception.__name__ == expected_exception.__name__:
                 return None
             else:
                 raise UnexpectedExceptionError(
                     f"The command {call_str} did not specifically raise "
                     f"{_exc_str(expected_exception)} as expected, but "
-                    f"instead raised {_exc_str(unexpected_exception)} "
+                    f"instead raised {_exc_str(resulting_exception)} "
                     f"which is a subclass of the expected exception.")
         except Exception as exc_unexpected_exception:
             unexpected_exception = exc_unexpected_exception.__reduce__()[0]
