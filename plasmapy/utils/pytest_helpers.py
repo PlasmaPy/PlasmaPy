@@ -144,21 +144,18 @@ def _represent_result(result: Any, color=_result_color) -> str:
 
 def _process_input(wrapped_function: Callable):
     """
-    Allow run_test to take a single positional argument that is a `list`
-    or `tuple` in lieu of using all positional and keyword arguments as
-    usual.  If `len` of this solitary argument is `3`, then it assumes
-    that `kwargs` is an empty `dict` and that the expected
+    Allow `run_test` to take a single positional argument that is a
+    `list` or `tuple` in lieu of using multiple positional/keyword
+    arguments as usual.  If `len` of this argument returns `3`, then
+    it assumes that `kwargs` is an empty `dict` and that the expected
     result/outcome is the last item.
     """
     def decorator(wrapped_function: Callable):
-        """"""
         wrapped_signature = inspect.signature(wrapped_function)
 
         @functools.wraps(wrapped_function)
         def wrapper(*args, **kwargs):
-
             arguments = wrapped_signature.bind(*args, **kwargs).arguments
-
             if len(args) == 1 and len(kwargs) == 0 and isinstance(args[0], (list, tuple)):
                 inputs = args[0]
                 if len(inputs) not in (3, 4):
@@ -168,17 +165,11 @@ def _process_input(wrapped_function: Callable):
                 new_kwargs['expected_outcome'] = inputs[3] if len(inputs) == 4 else inputs[2]
             else:
                 new_kwargs = {argname: argval for argname, argval in arguments.items()}
-
             return wrapped_function(**new_kwargs)
 
         return wrapper
 
-    # Allow the decorator to be used either with or without arguments
-
-    if wrapped_function is not None:
-        return decorator(wrapped_function)
-    else:
-        return decorator
+    return decorator(wrapped_function)
 
 
 @_process_input
@@ -197,7 +188,7 @@ def run_test(
 
     Parameters
     ----------
-    func
+    func: callable, list, or tuple
         The `callable` to be tested.  The first (and sole) argument to
         `~plasmapy.utils.run_test` may alternatively be a list or tuple
         containing these arguments (optionally omitting `kwargs` if the
