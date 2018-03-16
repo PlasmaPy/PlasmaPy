@@ -224,3 +224,26 @@ def test_run_test_atol():
 def test_run_test_atol_failure():
     with pytest.raises(UnexpectedResultError, message="No exception raised for atol test."):
         run_test(return_arg, (1.0,), {}, 0.999999, atol=1e-7)
+
+# The following is a test of a code block in the docstring.
+
+def func(x, raise_exception=False, issue_warning=False):
+    if raise_exception:
+        raise ValueError("I'm sorry, Dave. I'm afraid I can't do that.")
+    elif issue_warning:
+        warn("Open the pod bay doors, HAL.", UserWarning)
+    return x
+
+
+    inputs_table = [
+        (func, 1, 1),
+        (func, (2,), {}, 2),
+        (func, 3, {'raise_exception': True}, ValueError),
+        (func, 4, {'issue_warning': True}, UserWarning),
+        (func, 5, {'issue_warning': True}, (5, UserWarning)),
+    ]
+
+
+    @pytest.mark.parametrize('inputs', inputs_table)
+    def test_func(inputs):
+        run_test(inputs)
