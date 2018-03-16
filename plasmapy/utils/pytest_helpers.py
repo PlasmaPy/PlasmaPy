@@ -1,5 +1,5 @@
 """Test helper utilities."""
-
+import functools
 import pytest
 import inspect
 from collections import defaultdict
@@ -142,8 +142,49 @@ def _represent_result(result: Any, color=_result_color) -> str:
         return f"{color}{repr(result)}{return_color}"
 
 
+def _process_input(wrapped_function: Callable):
+    """
+    Allow run_test to take a single positional argument that is a `list`
+    or `tuple` in lieu of using all positional and keyword arguments as
+    usual.  If `len` of this solitary argument is `3`, then it assumes
+    that `kwargs` is an empty `dict` and that the expected
+    result/outcome is the last item.
+    """
+    def decorator(wrapped_function: Callable):
+        """"""
+        wrapped_signature = inspect.signature(wrapped_function)
+
+        @functools.wraps(wrapped_function)
+        def wrapper(*args, **kwargs):
+
+            arguments = wrapped_signature.bind(*args, **kwargs).arguments
+
+            if len(args) == 1 and len(kwargs) == 0 and isinstance(args[0], (list, tuple)):
+                inputs = args[0]
+                if len(inputs) not in (3, 4):
+                    raise RuntimeError(f"{args} is an invalid input to run_test.")
+                new_kwargs['func'] = inputs[0]
+                new_kwargs['args'] = inputs[1]
+                new_kwargs['kwargs'] = inputs[2] if len(inputs) == 4 else {}
+                new_kwargs['expected'] = inputs[3] if len(inputs) == 4 else inputs[2]
+            else:
+                new_kwargs = {argname: argval for argname, argval in arguments.items()}
+
+            return wrapped_function(**new_kwargs)
+
+        return wrapper
+
+    # Allow the decorator to be used either with or without arguments
+
+    if wrapped_function is not None:
+        return decorator(wrapped_function)
+    else:
+        return decorator
+
+
+@_process_input
 def run_test(
-        func: Callable,
+        func,
         args: Any = (),
         kwargs: Dict = {},
         expected_outcome: Any = None,
@@ -157,8 +198,11 @@ def run_test(
 
     Parameters
     ----------
-    func: callable
-        The callable to be tested.
+    func
+        The `callable` to be tested.  The first (and sole) argument to
+        `~plasmapy.utils.run_test` may alternatively be a list or tuple
+        containing these arguments (optionally omitting `kwargs` if the
+        `len` returns 3).
 
     args: tuple or object
         The positional arguments to `func`.
@@ -216,6 +260,12 @@ def run_test(
     >>> from warnings import warn
     >>> run_test(lambda: 42, tuple(), dict(), 42)
     >>> run_test(lambda: warn("", UserWarning), tuple(), dict(), UserWarning)
+
+    >>> inputs = (lambda: 42, 42, {}, 42)
+    >>> run_test(inputs)
+
+    >>> inputs_without_kwargs = [lambda: 42, 42, 42]
+    >>> run_test(inputs_without_kwargs)
 
     """
 
@@ -383,7 +433,7 @@ def run_test(
     errmsg = (
         f"The command {call_str} returned "
         f"{_represent_result(result)} instead of the expected "
-        f"value of {_represent_result(expected['result'])}"
+        f"value of {_represent_result(expected['result'])}."
     )
 
     if atol or rtol:
