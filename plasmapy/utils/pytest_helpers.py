@@ -165,7 +165,7 @@ def _process_input(wrapped_function: Callable):
                     raise RuntimeError(f"{args} is an invalid input to run_test.")
                 new_kwargs = {'func': inputs[0], 'args': inputs[1]}
                 new_kwargs['kwargs'] = inputs[2] if len(inputs) == 4 else {}
-                new_kwargs['expected'] = inputs[3] if len(inputs) == 4 else inputs[2]
+                new_kwargs['expected_outcome'] = inputs[3] if len(inputs) == 4 else inputs[2]
             else:
                 new_kwargs = {argname: argval for argname, argval in arguments.items()}
 
