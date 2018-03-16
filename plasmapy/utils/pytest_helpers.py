@@ -344,8 +344,8 @@ def run_test(
 
         try:
             result = func(*args, **kwargs)
-        except expected_exception as resulting_exception:
-            if resulting_exception.__reduce__()[0].__name__ == expected_exception.__name__:
+        except expected_exception as unexpected_exception:
+            if unexpected_exception.__reduce__()[0].__name__ == expected_exception.__name__:
                 return None
             else:
                 raise UnexpectedExceptionError(
