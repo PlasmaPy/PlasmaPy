@@ -14,7 +14,7 @@ from ..pytest_helpers import (
     MissingExceptionError,
 )
 
-from ..exceptions import PlasmaPyWarning, PlasmaPyError
+from ..exceptions import PlasmaPyWarning, PlasmaPyError, AtomicError
 
 from ...atomic import Particle
 
@@ -87,7 +87,7 @@ f_args_kwargs_expected_whaterror = [
 
     [raise_exception, 9, {'y': 1}, TypeError, UnexpectedExceptionError],
     [raise_exception, (10,), {'y': 1}, TypeError, UnexpectedExceptionError],
-    [raise_exception, (11, 1), {}, TypeError, UnexpectedExceptionError],
+    [raise_exception, (11, 1), {}, Exception, UnexpectedExceptionError],
 
     [issue_warning, 12, {'y': 1}, PlasmaPyWarning, None],
     [issue_warning, (13,), {'y': 1}, PlasmaPyWarning, None],
@@ -111,6 +111,7 @@ f_args_kwargs_expected_whaterror = [
     [return_arg, u.kg / u.K, {}, u.kg / u.N, u.UnitsError],
     [return_arg, u.kg, {}, u.g, u.UnitsError],
     [return_arg, u.C, {'should_warn': True}, (u.C, UserWarning), None],
+    [adams_number, 1, {'x': 1}, u.pc, u.UnitsError],
 
     [return_arg, Particle('p+'), {}, Particle('proton'), None],
     [return_arg, Particle('e+'), {}, Particle('e-'), UnexpectedResultError],
