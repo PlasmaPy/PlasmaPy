@@ -1,4 +1,7 @@
-"""Physical and mathematical constants for use within PlasmaPy."""
+"""
+The `plasmapy.atomic` subpackage provides access to information about
+atoms, isotopes, ions, and other particles.
+"""
 
 from .special_particles import ParticleZoo
 

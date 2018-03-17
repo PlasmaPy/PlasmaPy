@@ -7,33 +7,33 @@ from plasmapy import atomic, utils
 
 def Lorentz_factor(V):
     r"""
-    Returns the Lorentz factor.
+    Return the Lorentz factor.
 
     Parameters
     ----------
-    V : Quantity
+    V : ~astropy.units.Quantity
         The velocity in units convertible to meters per second.
 
     Returns
     -------
-    gamma : float or ndarray
+    gamma : float or ~numpy.ndarray
         The Lorentz factor associated with the inputted velocities.
 
     Raises
     ------
     TypeError
-        The velocity is not a Quantity and cannot be converted into a
-        Quantity.
+        The `V` is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
 
-    UnitConversionError
-        If the velocity is not in appropriate units.
+    ~astropy.units.UnitConversionError
+        If the `V` is not in appropriate units.
 
     ValueError
-        If the magnitude of V is faster than the speed of light.
+        If the magnitude of `V` is faster than the speed of light.
 
     UserWarning
-        If V is not a Quantity, then a UserWarning will be raised and
-        units of meters per second will be assumed.
+        If `V` is not a `~astropy.units.Quantity`, then a `UserWarning`
+        will be raised and units of meters per second will be assumed.
 
     Notes
     -----

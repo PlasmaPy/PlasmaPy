@@ -6,6 +6,7 @@ information for special particles.
 from typing import Set, Dict, List, Optional, Union
 from astropy import units as u, constants as const
 import numpy as np
+from .elements import _PeriodicTable
 
 
 class _ParticleZooClass():
@@ -163,8 +164,8 @@ def _create_Particles_dict() -> Dict[str, dict]:
 
     Particles = dict()
 
-    for thing in ParticleZoo.everything:
-        Particles[thing] = dict()
+    for particle in ParticleZoo.everything:
+        Particles[particle] = dict()
 
     for symbol, name in symbols_and_names:
         Particles[symbol]['name'] = name
@@ -203,46 +204,71 @@ def _create_Particles_dict() -> Dict[str, dict]:
         Particles[antibaryon]['lepton number'] = 0
         Particles[antibaryon]['baryon number'] = -1
 
-    for thing in ParticleZoo.leptons | ParticleZoo.antileptons:
-        if 'e' in thing:
-            Particles[thing]['generation'] = 1
-        elif 'mu' in thing:
-            Particles[thing]['generation'] = 2
-        elif 'tau' in thing:
-            Particles[thing]['generation'] = 3
+    for particle in ParticleZoo.leptons | ParticleZoo.antileptons:
+        if 'e' in particle:
+            Particles[particle]['generation'] = 1
+        elif 'mu' in particle:
+            Particles[particle]['generation'] = 2
+        elif 'tau' in particle:
+            Particles[particle]['generation'] = 3
 
-    for thing in ParticleZoo.leptons | ParticleZoo.antileptons:
-        if 'nu' not in thing:
-            if 'e' in thing:
-                Particles[thing]['mass'] = const.m_e
-            elif 'mu' in thing:
-                Particles[thing]['mass'] = 1.883_531_594e-28 * u.kg
-                Particles[thing]['half-life'] = 2.1969811e-6 * u.s
-            elif 'tau' in thing:
-                Particles[thing]['mass'] = 3.167_47e-27 * u.kg
-                Particles[thing]['half-life'] = 2.906e-13 * u.s
+    for particle in ParticleZoo.leptons | ParticleZoo.antileptons:
+        if 'nu' not in particle:
+            if 'e' in particle:
+                Particles[particle]['mass'] = const.m_e
+            elif 'mu' in particle:
+                Particles[particle]['mass'] = 1.883_531_594e-28 * u.kg
+                Particles[particle]['half-life'] = 2.1969811e-6 * u.s
+            elif 'tau' in particle:
+                Particles[particle]['mass'] = 3.167_47e-27 * u.kg
+                Particles[particle]['half-life'] = 2.906e-13 * u.s
 
     # Setting the neutrino mass to None reminds us that, while neutrinos
     # are not massless, we only have upper limits on what the neutrino
     # mass actually is.
 
-    for thing in ParticleZoo.neutrinos | ParticleZoo.antineutrinos:
-        Particles[thing]['mass'] = None
+    for particle in ParticleZoo.neutrinos | ParticleZoo.antineutrinos:
+        Particles[particle]['mass'] = None
 
-    for thing in ['p+', 'p-']:
-        Particles[thing]['mass'] = const.m_p
+    special_attributes = {
 
-    Particles['p+']['integer charge'] = 1
-    Particles['p-']['integer charge'] = -1
+        'p+': {
+            'element': 'H',
+            'atomic number': 1,
+            'mass number': 1,
+            'element name': 'hydrogen',
+            'isotope': 'H-1',
+            'ion': 'p+',
+            'mass': const.m_p,
+            'integer charge': 1,
+            'periodic table': _PeriodicTable(group=1, period=1, block='s', category='nonmetal'),
+        },
 
-    for thing in ['n', 'antineutron']:
-        Particles[thing]['mass'] = const.m_n
-        Particles[thing]['half-life'] = 881.5 * u.s
-        Particles[thing]['integer charge'] = 0
+        'p-': {
+            'mass': const.m_p,
+            'integer charge': -1,
+        },
 
-    for thing in ParticleZoo.everything:
-        if 'half-life' not in Particles[thing].keys():
-            Particles[thing]['half-life'] = np.inf * u.s
+        'n': {
+            'mass': const.m_n,
+            'half-life': 881.5 * u.s,
+            'integer charge': 0,
+        },
+
+        'antineutron': {
+            'mass': const.m_n,
+            'half-life': 881.5 * u.s,
+            'integer charge': 0,
+        },
+
+    }
+
+    for particle in special_attributes.keys():
+        Particles[particle] = {**special_attributes[particle], **Particles[particle]}
+
+    for particle in ParticleZoo.everything:
+        if 'half-life' not in Particles[particle].keys():
+            Particles[particle]['half-life'] = np.inf * u.s
 
     for particle in ParticleZoo.particles:
         Particles[particle]['antimatter'] = False

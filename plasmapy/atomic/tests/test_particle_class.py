@@ -56,8 +56,6 @@ test_Particle_table = [
       'mass_number': 1,
       'lepton_number': 0,
       'baryon_number': 1,
-      'reduced_mass(Particle("p"))': m_p / 2,
-      'reduced_mass(m_p)': m_p / 2,
       '__str__()': 'p+',
       '__repr__()': 'Particle("p+")',
       'is_category("fermion")': True,
@@ -106,8 +104,6 @@ test_Particle_table = [
       'atomic_number': InvalidElementError,
       'lepton_number': 1,
       'baryon_number': 0,
-      'reduced_mass(Particle("e+"))': m_e / 2,
-      'reduced_mass("e-")': m_e / 2,
       '__str__()': 'e-',
       '__repr__()': 'Particle("e-")',
       'binding_energy': InvalidIsotopeError,
@@ -171,6 +167,7 @@ test_Particle_table = [
       'mass_number': 2,
       'baryon_number': 2,
       'lepton_number': 0,
+      'neutron_number': 1,
       'is_category(require=("ion", "isotope"))': True,
       'periodic_table.group': 1,
       'periodic_table.block': 's',
@@ -188,6 +185,7 @@ test_Particle_table = [
       'mass_number': 3,
       'baryon_number': 3,
       'lepton_number': 0,
+      'neutron_number': 2,
       'is_category("ion", "isotope")': True,
       'is_category(require="uncharged")': False,
       'periodic_table.group': 1,
@@ -233,6 +231,7 @@ test_Particle_table = [
       'integer_charge': ChargeError,
       'atomic_number': 3,
       'mass_number': 7,
+      'neutron_number': 4,
       'baryon_number': 7,
       'half_life': np.inf * u.s,
       'nuclide_mass': 1.1647614796180463e-26 * u.kg,
@@ -247,6 +246,7 @@ test_Particle_table = [
       'integer_charge': 22,
       'atomic_number': 112,
       'mass_number': 276,
+      'neutron_number': 164,
       'baryon_number': 276,
       'lepton_number': 0}),
 
@@ -286,14 +286,14 @@ test_Particle_table = [
       'is_category(["boson"], exclude=["lepton", "invalid"])': AtomicError,
       'is_category("boson", exclude="boson")': AtomicError,
       'is_category(any_of="boson", exclude="boson")': AtomicError,
-      'reduced_mass("electron")': MissingAtomicDataError,
       }),
 ]
 
 
 @pytest.mark.parametrize("arg, kwargs, expected_dict", test_Particle_table)
 def test_Particle_class(arg, kwargs, expected_dict):
-    """Test that `~plasmapy.atomic.Particle` objects for different
+    """
+    Test that `~plasmapy.atomic.Particle` objects for different
     subatomic particles, elements, isotopes, and ions return the
     expected properties.  Provide a detailed error message that lists
     all of the inconsistencies with the expected results.
@@ -368,8 +368,7 @@ def test_Particle_equivalent_cases(equivalent_particles):
         equivalent_Particle_classes.append(Particle(particle))
 
     for Q in equivalent_Particle_classes[1:]:
-        assert Q == equivalent_Particle_classes[0], \
-            f"{equivalent_particles}"
+        assert Q == equivalent_Particle_classes[0], f"{equivalent_particles}"
 
 
 # arg, kwargs, attribute, exception
@@ -403,10 +402,10 @@ test_Particle_error_table = [
 @pytest.mark.parametrize(
     "arg, kwargs, attribute, exception", test_Particle_error_table)
 def test_Particle_errors(arg, kwargs, attribute, exception):
-    """Test that the appropriate exceptions are raised during the creation
+    """
+    Test that the appropriate exceptions are raised during the creation
     and use of a `~plasmapy.atomic.Particle` object.
     """
-    call = _call_string(arg, kwargs)
     with pytest.raises(exception, message=(
             f"The following command: "
             f"\n\n >>> {_call_string(arg, kwargs)}{attribute}\n\n"
@@ -425,8 +424,10 @@ test_Particle_warning_table = [
 @pytest.mark.parametrize(
     "arg, kwargs, attribute, warning", test_Particle_warning_table)
 def test_Particle_warnings(arg, kwargs, attribute, warning):
-    """Test that the appropriate warnings are issued during the creation
-    and use of a `~plasmapy.atomic.Particle` object."""
+    """
+    Test that the appropriate warnings are issued during the creation
+    and use of a `~plasmapy.atomic.Particle` object.
+    """
     with pytest.warns(warning, message=(
             f"The following command: "
             f"\n\n >>> {_call_string(arg, kwargs)}{attribute}\n\n"
@@ -442,7 +443,12 @@ def test_Particle_cmp():
 
     assert proton1 == proton2, "Particle('p+') == Particle('proton') is False."
     assert proton1 != electron, "Particle('p+') == Particle('e-') is True."
-    assert not proton1 == 1, "Particle('p+') == 1 is True."
+
+    with pytest.raises(TypeError):
+        electron == 1
+
+    with pytest.raises(AtomicError):
+        electron == 'dfasdf'
 
 
 nuclide_mass_and_mass_equiv_table = [
@@ -458,7 +464,8 @@ nuclide_mass_and_mass_equiv_table = [
 
 @pytest.mark.parametrize('isotope, ion', nuclide_mass_and_mass_equiv_table)
 def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
-    """Test that the `mass` and `nuclide_mass` attributes return
+    """
+    Test that the `mass` and `nuclide_mass` attributes return
     equivalent values when appropriate.  The inputs should generally be
     an isotope with no charge information, and a fully ionized ion of
     that isotope, in order to make sure that the nuclide mass of the
@@ -499,7 +506,8 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
 
 
 def test_particle_half_life_string():
-    """Find the first isotope where the half-life is stored as a string
+    """
+    Find the first isotope where the half-life is stored as a string
     (because the uncertainties are too great), and tests that requesting
     the half-life of that isotope causes a MissingAtomicDataWarning
     whilst returning a string.
@@ -512,3 +520,13 @@ def test_particle_half_life_string():
 
     with pytest.warns(MissingAtomicDataWarning):
         assert isinstance(Particle(isotope).half_life, str)
+
+
+@pytest.mark.parametrize("p, is_one", [(Particle('e-'), True), (Particle('p+'), False)])
+def test_particle_is_electron(p, is_one):
+    assert p.is_electron == is_one
+
+
+def test_particle_bool_error():
+    with pytest.raises(AtomicError):
+        bool(Particle('e-'))

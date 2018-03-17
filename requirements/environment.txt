@@ -6,9 +6,11 @@ pytest
 cython
 coveralls
 mpmath
+roman
 lmfit
 matplotlib
 sphinx
 sphinx-gallery
 sphinx-automodapi
 pillow
+colorama

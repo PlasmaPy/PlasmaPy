@@ -21,4 +21,14 @@ from .exceptions import (PlasmaPyError,
 
 from .import_helpers import check_versions
 
-from .pytest_helpers import run_test, call_string
+from .pytest_helpers import (
+    run_test,
+    call_string,
+    InconsistentTypeError,
+    UnexpectedResultError,
+    UnexpectedExceptionError,
+    RunTestError,
+    IncorrectResultError,
+    MissingExceptionError,
+    MissingWarningError,
+)

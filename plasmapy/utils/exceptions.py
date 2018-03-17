@@ -1,77 +1,80 @@
-"""
-Custom Error and Warning names to improve readability
-"""
+"""Exceptions and warnings specific to PlasmaPy."""
 
 
 # ----------
-# Exceptions:
+# Exceptions
 # ----------
 
 class PlasmaPyError(Exception):
-    r"""
+    """
     Base class of PlasmaPy custom errors.
 
     All custom exceptions raised by PlasmaPy should inherit from this
     class and be defined in this module.
-
-    Custom exceptions can inherit from other exception types too.
-    Thus, if code already knows how to handle a ValueError, it won't
-    need any specific modification.
     """
     pass
 
 
 class PhysicsError(PlasmaPyError, ValueError):
-    r"""Error for use of a physics value outside PlasmaPy theoretical
-    bounds"""
+    """
+    The base exception for physics-related errors.
+    """
     pass
 
 
 class RelativityError(PhysicsError):
-    r"""Error for use of a speed greater than or equal to the speed of
-    light"""
+    """
+    An exception for speeds greater than the speed of light.
+    """
     pass
 
 
 class AtomicError(PlasmaPyError):
-    r"""An exception for errors occurring in the atomic subpackage."""
+    """An exception for errors in the `~plasmapy.atomic` subpackage."""
     pass
 
 
 class MissingAtomicDataError(AtomicError):
-    r"""An exception for when atomic data is missing."""
+    """An exception for missing atomic or particle data."""
     pass
 
 
 class ChargeError(AtomicError):
-    r"""An exception for when charge information is incorrect or
-    missing."""
+    """An exception for incorrect or missing charge information."""
     pass
 
 
 class UnexpectedParticleError(AtomicError):
-    r"""An exception for when a particle is not of the expected
-    category."""
+    """An exception for when a particle is not of the expected category."""
     pass
 
 
 class InvalidIonError(UnexpectedParticleError):
-    r"""An exception for when an argument is not an ion."""
+    """
+    An exception for when an argument is a valid particle but not a
+    valid ion.
+    """
     pass
 
 
 class InvalidIsotopeError(UnexpectedParticleError):
-    r"""An exception for when an argument is not an isotope."""
+    """
+    An exception for when an argument is a valid particle but not a
+    valid isotope.
+    """
     pass
 
 
 class InvalidElementError(UnexpectedParticleError):
-    r"""An exception for when an argument is not an element."""
+    """
+    An exception for when an argument is a valid particle is not a
+    valid element.
+    """
     pass
 
 
 class InvalidParticleError(AtomicError):
-    r"""An exception for when a particle is invalid."""
+    """An exception for when a particle is invalid."""
     pass
 
 
@@ -80,32 +83,37 @@ class InvalidParticleError(AtomicError):
 # ----------
 
 class PlasmaPyWarning(Warning):
-    r"""Base class of PlasmaPy custom warnings.
+    """
+    Base class of PlasmaPy custom warnings.
 
-    All PlasmaPy custom warnings should inherit from this class and be defined
-    in this module.
+    All PlasmaPy custom warnings should inherit from this class and be
+    defined in this module.
 
-    Warnings should be issued using warnings.warn, which will not break
+    Warnings should be issued using `~warnings.warn`, which will not break
     execution if unhandled.
+
     """
     pass
 
 
 class PhysicsWarning(PlasmaPyWarning):
-    r"""Warning for using a mildly worrisome physics value"""
+    """The base warning for `~plasmapy.physics` related warnings."""
     pass
 
 
 class RelativityWarning(PhysicsWarning):
-    r"""Warning for use of a speed quantity approaching the speed of light"""
+    """
+    A warning for when relativistic velocities are being used in or are
+    returned by non-relativistic functionality.
+    """
     pass
 
 
 class AtomicWarning(PlasmaPyWarning):
-    r"""Warnings for use in the atomic subpackage."""
+    """The base warning for the `~plasmapy.atomic` subpackage."""
     pass
 
 
 class MissingAtomicDataWarning(AtomicWarning):
-    r"""Warning for use when atomic data is missing."""
+    """Warning for use when atomic or particle data is missing."""
     pass
