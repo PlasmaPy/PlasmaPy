@@ -7,6 +7,7 @@ import astropy.units as u
 from ..pytest_helpers import (
     call_string,
     run_test,
+    run_test_equivalent_calls,
     UnexpectedResultError,
     InconsistentTypeError,
     UnexpectedExceptionError,
@@ -218,3 +219,80 @@ inputs_table = [
 def test_func(inputs):
     """Test cases originally put in the docstring."""
     run_test(inputs)
+
+
+run_tests_equivalent_calls_table = [
+
+    # cases like inputs = (func, (args, kwargs), (args, kwargs), (args, kwargs))
+
+    [
+        (
+            return_arg,
+            [(1,), {}],
+            [(1,), {}],
+        ),
+        None,
+    ],
+
+    [
+        (
+            return_arg,
+            [(1,), {}],
+            [(1,), {}],
+            [(1,), {}],
+            [(1,), {}],
+            [(1,), {}],
+        ),
+        None,
+    ],
+
+    # cases like inputs = [(func, args, kwargs), (func, args, kwargs))
+    (
+        (
+            (return_arg, (1,), {}),
+            (return_arg, (1,), {}),
+        ),
+        None,
+    ),
+
+    (
+        (
+            (return_arg, (1,), {}),
+            (return_arg, (1,), {}),
+            (return_arg, (1,), {}),
+            (return_arg, (1,), {}),
+        ),
+        None,
+    ),
+
+
+    # cases where there are no kwargs
+
+    (
+        (return_arg, [1], [1]),
+        None,
+    ),
+
+    # cases where there are no kwargs and the args are not in tuples or lists
+
+    (
+        (return_arg, 1, 1),
+        None
+    ),
+
+]
+
+
+@pytest.mark.parametrize('inputs, error', run_test_equivalent_calls_table)
+def test_run_test_equivalent_calls(inputs, error):
+    if error is None:
+        try:
+            run_tests_equivalent_calls(inputs)
+        except Exception as exc:
+            raise Exception(
+                f"Unexpected exception for run_tests_equivalent_calls with "
+                f"the following inputs =\n\n  {inputs}"
+            ) from exc
+    elif issubclass(error, Exception):
+        with pytest.raises(error):
+            run_test_equivalent_calls(inputs)
