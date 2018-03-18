@@ -74,6 +74,11 @@ class IncorrectResultError(RunTestError):
     """
 
 
+class InvalidTestError(RunTestError):
+    """
+    Exception for when the inputs to a test are not valid.
+    """
+
 def call_string(f: Callable,
                 args: Any=tuple(),
                 kwargs: Dict={},
@@ -322,6 +327,9 @@ def run_test(
     if not isinstance(args, tuple):
         args = (args,)
 
+    if not callable(func):
+        raise InvalidTestError(f"The argument func = {func} to run_test must be callable.")
+
     # By including the function call that is run during a test in error
     # messages, we can make it easier to reproduce the error in an
     # interactive session.
@@ -349,7 +357,7 @@ def run_test(
         is_not_class = not inspect.isclass(expected_outcome[1])
         is_not_warning = True if is_not_class else not issubclass(expected_outcome[1], Warning)
         if length_not_two or is_not_warning:
-            raise ValueError("Invalid expected outcome in run_test.")
+            raise InvalidTestError("Invalid expected outcome in run_test.")
         expected['result'] = expected_outcome[0]
         expected['warning'] = expected_outcome[1]
 
@@ -498,3 +506,120 @@ def run_test(
     errmsg += "."
 
     raise UnexpectedResultError(errmsg)
+
+
+def run_test_equivalent_calls(test_inputs):
+    """
+
+    Parameters
+    ----------
+    test_cases: tuple or list
+
+
+
+
+    Examples
+    --------
+
+    >>> run_test_equivalent_calls([lambda x: x, 1, 1])
+
+    >>> def f(x, y): return x + y
+    >>> run_test_equivalent_calls([f, [(1, 2), {}], [(), {'x': 2, 'y': 1}]])
+
+    >>> def g(x, y): return x * y
+    >>> run_test_equivalent_calls([[f, (1, 0), {}], [g, (1, 1)]])
+
+
+
+    """
+
+    if not isinstance(test_inputs, (tuple, list)):
+        raise TypeError(
+            f"The argument to run_test_equivalent_calls must be a tuple "
+            f"or list.  The provided inputs are: {test_inputs}"
+        )
+
+    if callable(test_inputs[0]):
+        func = test_inputs[0]
+        test_inputs = test_inputs[1:]
+    else:
+        func = None
+
+    # Make sure everything is a list to allow f(*args)
+
+    test_inputs = [test_input if isinstance(test_input, (list, tuple)) else [test_input]
+                  for test_input in test_inputs]
+
+    # Construct a list of dicts, of which each dict contains the
+    # function, positional arguments, and keyword arguments for each
+    # test case.
+
+    test_cases = []
+
+    for inputs in test_inputs:
+        test_case = {}
+
+        test_case['function'] = func if func else inputs[0]
+        test_case['args'] = inputs[0] if func else inputs[1]
+
+        if not isinstance(test_case['args'], (list, tuple)):
+            test_case['args'] = [test_case['args']]
+
+        if func:
+            test_case['kwargs'] = inputs[1] if len(inputs) == 2 else {}
+        else:
+            test_case['kwargs'] = inputs[2] if len(inputs) == 3 else {}
+
+        try:
+            test_case['call string'] = call_string(
+                test_case['function'], test_case['args'], test_case['kwargs'])
+        except Exception:
+            test_case['call string'] = (
+                f"function = {test_case['function']}, "
+                f"args = {test_case['args']}, and "
+                f"kwargs = {test_case['kwargs']}")
+
+        test_cases.append(test_case)
+
+    if len(test_cases) < 2:
+        raise Exception("At least two tests are needed for run_test_equivalent_calls")
+
+    # Check to make sure that each function is callable, each set of
+    # args is a list or tuple, and each set of kwargs is a dict.  Make
+    # sure that the error message contains all of the problems.
+
+    bad_inputs_errmsg = ""
+
+    for test_case in test_cases:
+        if not callable(test_case['function']):
+            bad_inputs_errmsg += f"\n{test_case['function']} is not callable "
+        if not isinstance(test_case['args'], (tuple, list)):
+            bad_inputs_errmsg += f"\n{test_case['args']} is not a list or tuple "
+        if not isinstance(test_case['kwargs'], dict):
+            bad_inputs_errmsg += f"\n{test_case['kwargs']} is not a dict "
+
+    if bad_inputs_errmsg:
+        raise Exception(bad_inputs_errmsg)
+
+    # Now we can get the results for each test case.
+
+    for test_case in test_cases:
+        try:
+            f, args, kwargs = test_case['function'], test_case['args'], test_case['kwargs']
+            test_case['result'] = f(*args, **kwargs)
+        except Exception as exc:
+            raise UnexpectedExceptionError(
+                f"Unable to evaluate {test_case['call string']}.")
+
+    # If there is more than one element
+
+    results = {test_case['result'] for test_case in test_cases}
+    there_be_duplicates_here =  len(results) != 1
+
+    if there_be_duplicates_here:
+        errmsg = f"The following test cases did not all produce identical results:\n"
+
+        for test_case in test_cases:
+            errmsg += f"  {test_case['call string']} yielded {test_case['result']}\n"
+
+        raise UnexpectedResultError(errmsg)
