@@ -221,7 +221,7 @@ def test_func(inputs):
     run_test(inputs)
 
 
-run_tests_equivalent_calls_table = [
+run_test_equivalent_calls_table = [
 
     # cases like inputs = (func, (args, kwargs), (args, kwargs), (args, kwargs))
 
@@ -280,6 +280,14 @@ run_tests_equivalent_calls_table = [
         None
     ),
 
+
+    (
+        (
+            (lambda x, y: x + y, (1, 0), {}),
+            (lambda x, y: x * y, (1, 1), {}),
+        ),
+        None,
+    ),
 ]
 
 
@@ -287,7 +295,7 @@ run_tests_equivalent_calls_table = [
 def test_run_test_equivalent_calls(inputs, error):
     if error is None:
         try:
-            run_tests_equivalent_calls(inputs)
+            run_test_equivalent_calls(inputs)
         except Exception as exc:
             raise Exception(
                 f"Unexpected exception for run_tests_equivalent_calls with "
