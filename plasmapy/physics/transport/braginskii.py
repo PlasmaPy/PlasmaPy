@@ -6,8 +6,9 @@ from astropy import units as u
 from plasmapy import utils, atomic as atomic
 from plasmapy.atomic.atomic import _is_electron
 from plasmapy.physics import Coulomb_logarithm
-from plasmapy.physics.parameters import Hall_parameter, collision_rate_electron_ion, \
-    collision_rate_ion_ion
+from plasmapy.physics.parameters import (Hall_parameter,
+                                         collision_rate_electron_ion,
+                                         collision_rate_ion_ion)
 from plasmapy.constants import e, m_e, k_B
 
 
@@ -1009,6 +1010,10 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
                       beta_0_doubleprime[Z_idx] * hall) / Delta
         return np.array((beta_par, beta_perp, beta_cross))
 
+
+#
+#               Abandon all hope, ye who enter here
+#
 
 def _nondim_tc_e_ji_held(hall, Z, field_orientation):
     """dimensionless electron thermal conductivity - Ji-Held
