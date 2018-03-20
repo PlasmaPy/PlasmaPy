@@ -478,12 +478,6 @@ def test_gyroradius():
 
     assert gyroradius(B, 25 * u.m / u.s).unit == u.m
 
-    assert gyroradius(T_e, B) == gyroradius(B, T_e)
-
-    assert gyroradius(V, B) == gyroradius(B, V)
-
-    assert gyroradius(B, V) == gyroradius(B, -V)
-
     Vperp = 1e6 * u.m / u.s
     Bmag = 1 * u.T
     omega_ce = gyrofrequency(Bmag)
@@ -529,10 +523,6 @@ def test_gyroradius():
     # Case when Z=1 is assumed
     assert gyroradius(B, T_i, particle='p') == \
         gyroradius(B, T_i, particle='H-1')
-
-    assert gyroradius(T_i, B, particle="p") == gyroradius(B, T_i, particle="p")
-
-    assert gyroradius(V, B, particle="p") == gyroradius(B, V, particle="p")
 
     assert gyroradius(B, V, particle="p") == gyroradius(B, -V, particle="p")
 
