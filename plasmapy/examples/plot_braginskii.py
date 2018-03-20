@@ -8,7 +8,7 @@ from Bragiński's theory.
 """
 
 from astropy import units as u
-from plasmapy import physics
+from plasmapy.physics.transport.braginskii import classical_transport
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -26,11 +26,11 @@ ion_particle = 'D+'  # a crude approximation
 ######################################################
 # We now make the default classical_transport object:
 
-braginskii = physics.transport.classical_transport(thermal_energy_per_electron,
-                                                   electron_concentration,
-                                                   thermal_energy_per_ion,
-                                                   ion_concentration,
-                                                   ion_particle)
+braginskii = classical_transport(thermal_energy_per_electron,
+                                 electron_concentration,
+                                 thermal_energy_per_ion,
+                                 ion_concentration,
+                                 ion_particle)
 
 ######################################################
 # These variables are calculated during initialization and can be
