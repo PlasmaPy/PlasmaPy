@@ -47,17 +47,15 @@ class classical_transport:
 
     Models implemented:
 
-    Braginskii
-    ==========
+    Braginskii [1]_
     The original Braginskii treatment as presented in the highly cited review
-    paper [1]_ from 1965. Coefficients are found from expansion of the kinetic
+    paper from 1965. Coefficients are found from expansion of the kinetic
     equation in Laguerre / Sonine polynomials, truncated at K = 2. This theory
     allow for arbitrary Hall parameter and include results for Z = 1, 2, 3, 4,
     and infinity (Lorentz gas / stationary ion approximation).
 
-    Spitzer-Harm
-    ============
-    These coefficients were obtained [2]_ [3]_from a numerical solution of the Fokker-
+    Spitzer-Harm [2]_ [3]_
+    These coefficients were obtained from a numerical solution of the Fokker-
     Planck equation. They give one of the earliest and most accurate (in the
     Fokker-Planck sense) results for electron transport in simple plasma. They
     principally apply in the unmagnetized / parallel field case, although for
@@ -65,12 +63,10 @@ class classical_transport:
     perpendicular magnetic field. Results are for Z = 1, 2, 4, 16,
     and infinity (Lorentz gas / stationary ion approximation).
 
-    Epperlein-Haines
-    ================
+    Epperlein-Haines [4]_
     Not yet implemented.
 
     Ji-Held [5]_
-    ============
     This is a modern treatment of the classical transport problem that has been
     carried out with laudable care. It allows for arbitrary hall parameter and
     arbitrary Z for all coefficients. Similar to the Epperlein-Haines model,
