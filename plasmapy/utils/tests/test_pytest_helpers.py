@@ -238,6 +238,15 @@ run_test_equivalent_calls_table = [
         (
             return_arg,
             [(1,), {}],
+            [(86,), {}],
+        ),
+        UnexpectedResultError,
+    ],
+
+    [
+        (
+            return_arg,
+            [(1,), {}],
             [(1,), {}],
             [(1,), {}],
             [(1,), {}],
@@ -265,6 +274,15 @@ run_test_equivalent_calls_table = [
         None,
     ),
 
+    (
+        (
+            (return_arg, (1,), {}),
+            (return_arg, (2,), {}),
+            (return_arg, (3,), {}),
+            (return_arg, (4,)),
+        ),
+        UnexpectedResultError,
+    ),
 
     # cases where there are no kwargs
 
@@ -273,13 +291,27 @@ run_test_equivalent_calls_table = [
         None,
     ),
 
+    (
+        (return_arg, ['this'], ['that']),
+        UnexpectedResultError,
+    ),
+
+    (
+        [(return_arg, [1], [1])],
+        None,
+    ),
+
     # cases where there are no kwargs and the args are not in tuples or lists
 
     (
-        (return_arg, 1, 1),
+        (return_arg, 1, 1, 1, 1),
         None
     ),
 
+    (
+        (return_arg, 1, 1, 1, 87948794580745),
+        UnexpectedResultError,
+    ),
 
     (
         (
@@ -288,6 +320,22 @@ run_test_equivalent_calls_table = [
         ),
         None,
     ),
+
+    (
+        (
+            (lambda x, y: x + y, (1, 0), {}),
+            (lambda x, y: x * y, (1, 1), {}),
+        ),
+        None,
+    ),
+
+    (
+        (
+            (lambda x, y: x + y, (1, 0), {}),
+            (lambda x, y: x * y, (1, 59), {}),
+        ),
+        UnexpectedResultError,
+    ),
 ]
 
 
@@ -295,7 +343,7 @@ run_test_equivalent_calls_table = [
 def test_run_test_equivalent_calls(inputs, error):
     if error is None:
         try:
-            run_test_equivalent_calls(inputs)
+            run_test_equivalent_calls(*inputs)
         except Exception as exc:
             raise Exception(
                 f"Unexpected exception for run_tests_equivalent_calls with "
