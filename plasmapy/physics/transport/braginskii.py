@@ -79,16 +79,16 @@ class classical_transport:
     Parameters
     ----------
     T_e : ~astropy.units.Quantity
-        Temperature in units of temperature or energy per particle
+        Electron temperature in units of temperature or energy per particle
 
     n_e : ~astropy.units.Quantity
-        The number density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic meter.
 
     T_i : ~astropy.units.Quantity
-        Temperature in units of temperature or energy per particle
+        Ion temperature in units of temperature or energy per particle
 
     n_i : ~astropy.units.Quantity
-        The number density in units convertible to per cubic meter.
+        The ion number density in units convertible to per cubic meter.
 
     ion_particle : string
         Representation of the ion species (e.g., 'p' for protons,
@@ -96,16 +96,16 @@ class classical_transport:
         ionized helium-4). If no charge state information is provided,
         then the particles are assumed to be singly charged.
 
-    Z : integer or np.inf, optional
+    Z : `int` or `np.inf`, optional
         The ion charge state. Overrides particle charge state if included.
         Different theories support different values of Z. For the original
-        Braginskii model, Z can be any of [1,2,3,4,infinity]. The Ji-Held
+        Braginskii model, Z can be any of [1, 2, 3, 4, infinity]. The Ji-Held
         model supports arbitrary Z. Average ionization states Z_mean can be
         input using this input and the Ji-Held model, although doing so may
         neglect effects caused by multiple ion populations.
 
     B : ~astropy.units.Quantity, optional
-        The magnetic field strength in units convertible to Tesla. Defaults
+        The magnetic field strength in units convertible to tesla. Defaults
         to zero.
 
     model: string
@@ -121,8 +121,9 @@ class classical_transport:
         Either of 'parallel', 'par', 'perpendicular', 'perp', 'cross', or
         'all', indicating the cardinal orientation of the magnetic field with
         respect to the transport direction of interest. Note that 'perp' refers
-        to transport perpendicular to the field direction in the direction of
-        the temperature gradient, while 'cross' refers to the B X grad(T)
+        to transport perpendicular to the field direction (in the direction of
+        the temperature gradient), while 'cross' refers to the
+        :math:`B \cross \grad(T)`
         direction. The option 'all' will return a numpy array of all three,
         np.array((par, perp, cross)).
 
@@ -154,17 +155,17 @@ class classical_transport:
         None, the PlasmaPy function Hall_parameter() will be used. Useful
         for comparing calculations.
 
-    hall_i: float or dimensionless ~astropy.units.Quantity, optional
+    hall_i: float or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion Hall parameter. If
         None, the PlasmaPy function Hall_parameter() will be used. Useful
         for comparing calculations.
 
-    mu: optional, float or dimensionless ~astropy.units.Quantity
+    mu: optional, float or dimensionless `astropy.units.Quantity`
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to zero, thus
         disabling these effects.
 
-    theta: optional, float or dimensionless ~astropy.units.Quantity
+    theta: optional, float or dimensionless `~astropy.units.Quantity`
         theta = T_e / T_i
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to T_e / T_i. Only
