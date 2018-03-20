@@ -74,6 +74,11 @@ class IncorrectResultError(RunTestError):
     """
 
 
+class InvalidTestError(RunTestError):
+    """
+    Exception for when the inputs to a test are not valid.
+    """
+
 def call_string(f: Callable,
                 args: Any=tuple(),
                 kwargs: Dict={},
@@ -322,6 +327,9 @@ def run_test(
     if not isinstance(args, tuple):
         args = (args,)
 
+    if not callable(func):
+        raise InvalidTestError(f"The argument func = {func} to run_test must be callable.")
+
     # By including the function call that is run during a test in error
     # messages, we can make it easier to reproduce the error in an
     # interactive session.
@@ -349,7 +357,7 @@ def run_test(
         is_not_class = not inspect.isclass(expected_outcome[1])
         is_not_warning = True if is_not_class else not issubclass(expected_outcome[1], Warning)
         if length_not_two or is_not_warning:
-            raise ValueError("Invalid expected outcome in run_test.")
+            raise InvalidTestError("Invalid expected outcome in run_test.")
         expected['result'] = expected_outcome[0]
         expected['warning'] = expected_outcome[1]
 
@@ -498,3 +506,200 @@ def run_test(
     errmsg += "."
 
     raise UnexpectedResultError(errmsg)
+
+
+def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
+    """
+    Test that different functions/inputs return equivalent results.
+
+    Parameters
+    ----------
+    test_inputs
+        The functions and inputs to the tests in an allowed format, as
+        described below.
+
+    require_same_type: bool
+        If `True` (the default), then all of the results are required to
+        be of the same type.  If `False`, results do not need to be of
+        the same type (e.g., cases like `1.0 == 1` will not raise an
+        exception).
+
+    Raises
+    ------
+    ~plasmapy.utils.UnexpectedResultError
+        If not all of the results are equivalent, or not all of the
+        results are of the same type and `require_same_type` evaluates
+        to `True`.
+
+    ~plasmapy.utils.UnexpectedExceptionError
+        If an exception is raised whilst attempting to run one of the
+        test cases.
+
+    ~plasmapy.utils.InvalidTestError
+        If there is an error associated with the inputs or the test is
+        set up incorrectly.
+
+    Examples
+    --------
+    There are several possible formats that can be accepted by this
+    `~plasmapy.utils.run_test_equivalent_calls` to test that different
+    combinations of functions (or other `callable` objects), positional
+    arguments, and keyword arguments return equivalent results.
+
+    To test a single function that takes a single positional argument,
+    then `test_inputs` may be the function followed by an arbitrary
+    number of positional arguments to be included into the function.
+
+    >>> def f(x): return x ** 2
+    >>> run_test_equivalent_calls(f, -1, 1)
+
+    To test a single function with an arbitrary number of positional and
+    keyword arguments, the first argument should be the function,
+    followed by an arbitrary number of `tuple` or `list` objects that
+    contain a `tuple` or `list` containing the positional arguments, and
+    a `dict` containing the keyword arguments.
+
+    >>> def g(x, y, z): return x + y + z
+    >>> run_test_equivalent_calls(g, ((1, 2, 3), {}), ((3, 2), {'z': 1}))
+
+    If there is only one positional argument, then it is not necessary
+    to include it in a `tuple` or `list`.
+
+    >>> run_test_equivalent_calls(f, ([1], {}), ([1], {}))
+    >>> run_test_equivalent_calls(f, (1, {}), (1, {}))
+
+    To test multiple functions with an arbitrary number of positional
+    and keyword arguments, use a series of `tuple` or `list` objects
+    that contain the function for each test, a `tuple` or `list` with
+    the positional arguments, and a `dict` with the keyword arguments.
+
+    >>> def p(x, y=None): return x + y if y else x
+    >>> def q(x, y=None): return x + 1 if y else x
+
+    >>> run_test_equivalent_calls([p, (1,), {'y': 1}], [q, (2,), {'y': False}])
+
+    The inputs may also be passed in as a whole as a `tuple` or `list`.
+
+    >>> run_test_equivalent_calls(f, -1, 1)
+    >>> run_test_equivalent_calls([f, -1, 1])
+
+    If `require_same_type` is `False`, then an exception will not be
+    raised if the results are of different types.
+
+    >>> run_test_equivalent_calls(f, -1, 1.0, require_same_type=False)
+
+    """
+
+    if len(test_inputs) == 1:
+        test_inputs = test_inputs[0]
+
+    if not isinstance(test_inputs, (tuple, list)):
+        raise InvalidTestError(
+            f"The argument to run_test_equivalent_calls must be a tuple "
+            f"or list.  The provided inputs are: {test_inputs}"
+        )
+
+    if callable(test_inputs[0]):
+        func = test_inputs[0]
+        test_inputs = test_inputs[1:]
+    else:
+        func = None
+
+    # Make sure everything is a list to allow f(*args)
+
+    test_inputs = [test_input if isinstance(test_input, (list, tuple)) else [test_input]
+                  for test_input in test_inputs]
+
+    # Construct a list of dicts, of which each dict contains the
+    # function, positional arguments, and keyword arguments for each
+    # test case.
+
+    test_cases = []
+
+    for inputs in test_inputs:
+        test_case = {}
+
+        test_case['function'] = func if func else inputs[0]
+        test_case['args'] = inputs[0] if func else inputs[1]
+
+        if not isinstance(test_case['args'], (list, tuple)):
+            test_case['args'] = [test_case['args']]
+
+        if func:
+            test_case['kwargs'] = inputs[1] if len(inputs) == 2 else {}
+        else:
+            test_case['kwargs'] = inputs[2] if len(inputs) == 3 else {}
+
+        try:
+            test_case['call string'] = call_string(
+                test_case['function'], test_case['args'], test_case['kwargs'])
+        except Exception:
+            test_case['call string'] = (
+                f"function = {test_case['function']}, "
+                f"args = {test_case['args']}, and "
+                f"kwargs = {test_case['kwargs']}")
+
+        test_cases.append(test_case)
+
+    if len(test_cases) < 2:
+        raise InvalidTestError("At least two tests are needed for run_test_equivalent_calls")
+
+    # Check to make sure that each function is callable, each set of
+    # args is a list or tuple, and each set of kwargs is a dict.  Make
+    # sure that the error message contains all of the problems.
+
+    bad_inputs_errmsg = ""
+
+    for test_case in test_cases:
+        if not callable(test_case['function']):
+            bad_inputs_errmsg += f"\n{test_case['function']} is not callable "
+        if not isinstance(test_case['args'], (tuple, list)):
+            bad_inputs_errmsg += f"\n{test_case['args']} is not a list or tuple "
+        if not isinstance(test_case['kwargs'], dict):
+            bad_inputs_errmsg += f"\n{test_case['kwargs']} is not a dict "
+
+    if bad_inputs_errmsg:
+        raise InvalidTestError(bad_inputs_errmsg)
+
+    # Now we can get the results for each test case.
+
+    for test_case in test_cases:
+        try:
+            f, args, kwargs = test_case['function'], test_case['args'], test_case['kwargs']
+            test_case['result'] = f(*args, **kwargs)
+            test_case['type'] = type(test_case['result'])
+        except Exception as exc:
+            raise UnexpectedExceptionError(
+                f"Unable to evaluate {test_case['call string']}.")
+
+    # Make sure that all of the results evaluate as equal to the first
+    # result.
+
+    results = [test_case['result'] for test_case in test_cases]
+    types = [test_case['type'] for test_case in test_cases]
+
+    try:
+        equals_first_result = [result == results[0] for result in results]
+    except Exception as exc:  # coveralls: ignore
+        raise UnexpectedExceptionError(
+            f"Unable to determine equality properties of results."
+        ) from exc
+
+    equals_first_type = [result_type == types[0] for result_type in types]
+
+    not_all_equal = not all(equals_first_result)
+    not_all_same_type = not all(equals_first_type)
+
+    if not_all_equal:
+        errmsg = f"The following tests did not all produce identical results:"
+    elif not_all_same_type and require_same_type:
+        errmsg = f"The following tests did not all produce results of the same type:"
+
+    if not_all_equal or (not_all_same_type and require_same_type):
+
+        for test_case in test_cases:
+            errmsg += (
+                f"\n  {test_case['call string']} yielded {test_case['result']} "
+                f"of type {test_case['type']}")
+
+        raise UnexpectedResultError(errmsg)
