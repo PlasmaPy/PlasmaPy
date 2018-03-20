@@ -118,6 +118,8 @@ f_args_kwargs_expected_whaterror = [
     [return_arg, Particle('e+'), {}, Particle('e-'), UnexpectedResultError],
     [return_arg, Particle('mu+'), {}, type, InconsistentTypeError],
 
+    [return_arg, (2,), {}, IOError, MissingExceptionError],
+
 ]
 
 
@@ -352,3 +354,11 @@ def test_run_test_equivalent_calls(inputs, error):
     elif issubclass(error, Exception):
         with pytest.raises(error):
             run_test_equivalent_calls(inputs)
+
+
+def test_run_test_equivalent_calls_types():
+
+    run_test_equivalent_calls(return_arg, 1, 1.0, require_same_type=False)
+
+    with pytest.raises(UnexpectedResultError):
+        run_test_equivalent_calls(return_arg, 1, 1.0)
