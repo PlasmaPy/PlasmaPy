@@ -7,7 +7,7 @@ from astropy import units as u
 import numpy as np
 # import warnings
 import inspect
-from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
+from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
 from plasmapy import atomic, utils
 
 from plasmapy.utils.exceptions import (PhysicsError, AtomicError)
@@ -810,8 +810,10 @@ def gyrofrequency(B, particle='e-', signed=False, z_mean=None):
 
 
 @utils.check_quantity({'B': {'units': u.T},
-                       'Vperp': {'units': u.m/u.s},
-                       'T_i': {'units': u.K}})
+                       # TODO find way to reenable without errors
+                       # 'Vperp': {'units': u.m/u.s},
+                       # 'T_i': {'units': u.K},
+                       })
 def gyroradius(B, *args, Vperp=None, T_i=None, particle='e-'):
     r"""Returns the particle gyroradius.
 
@@ -884,23 +886,23 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e-'):
     Examples
     --------
     >>> from astropy import units as u
-    >>> gyroradius(0.2*u.T, 1e5*u.K, particle='p+')
+    >>> gyroradius(0.2*u.T, T_i=1e5*u.K, particle='p+')
     <Quantity 0.00212087 m>
-    >>> gyroradius(0.2*u.T, 1e5*u.K, particle='p+')
+    >>> gyroradius(0.2*u.T, T_i=1e5*u.K, particle='p+')
     <Quantity 0.00212087 m>
-    >>> gyroradius(5*u.uG, 1*u.eV, particle='alpha')
+    >>> gyroradius(5*u.uG, T_i=1*u.eV, particle='alpha')
     <Quantity 288002.38837768 m>
-    >>> gyroradius(400*u.G, 1e7*u.m/u.s, particle='Fe+++')
+    >>> gyroradius(400*u.G, Vperp = 1e7*u.m/u.s, particle='Fe+++')
     <Quantity 48.23129811 m>
     >>> gyroradius(B = 0.01*u.T, T_i = 1e6*u.K)
     <Quantity 0.00313033 m>
     >>> gyroradius(B = 0.01*u.T, Vperp = 1e6*u.m/u.s)
     <Quantity 0.00056856 m>
-    >>> gyroradius(0.2*u.T, 1e5*u.K)
+    >>> gyroradius(0.2*u.T, T_i=1e5*u.K)
     <Quantity 4.94949252e-05 m>
-    >>> gyroradius(5*u.uG, 1*u.eV)
+    >>> gyroradius(5*u.uG, T_i = 1*u.eV)
     <Quantity 6744.2598183 m>
-    >>> gyroradius(400*u.G, 1e7*u.m/u.s)
+    >>> gyroradius(400*u.G, Vperp = 1e7*u.m/u.s)
     <Quantity 0.00142141 m>
 
     """
