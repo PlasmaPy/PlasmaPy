@@ -14,7 +14,7 @@ from plasmapy.constants import e, m_e, k_B
 
 class classical_transport:
     r"""
-    Braginskii-esque classical transport coefficients
+    Classical transport coefficients (e.g. Braginskii, 1965)
 
     Notes
     -----
@@ -26,12 +26,15 @@ class classical_transport:
     the transport coefficients, which are the resistivity, thermoelectric
     conductivity, thermal conductivity, and viscosity.
 
-    Note well the assumptions in the derivation of classical transport.
-    It is assumed that the plasma is fully ionized, so only consisting of ions
-    and electrons. Neutral atoms aren't considered. It's assumed that turbulent
-    transport does not dominate, and the velocity distribution function is
-    close to Maxwellian (no extremely strong gradients), which is equivalent
-    to the following conditions:
+    Keep in mind the following assumptions under which the transport equations
+    are derived.
+    * the plasma is fully ionized, only consisting of ions and electrons
+    * neutral atoms are neglected
+    * turbulent transport does not dominate
+    * the velocity diistribution is close to Maxwellian
+        (no extremely strong gradients)
+
+    These are equivalent to the following conditions:
 
     * collisional frequency >> gyrofrequency
     * collisional mean free path << gradient scale length along field
@@ -44,15 +47,17 @@ class classical_transport:
 
     Models implemented:
 
-    Braginskii [1]_
+    Braginskii
+    ==========
     The original Braginskii treatment as presented in the highly cited review
-    paper from 1965. Coefficients are found from expansion of the kinetic
+    paper [1]_ from 1965. Coefficients are found from expansion of the kinetic
     equation in Laguerre / Sonine polynomials, truncated at K = 2. This theory
     allow for arbitrary Hall parameter and include results for Z = 1, 2, 3, 4,
     and infinity (Lorentz gas / stationary ion approximation).
 
-    Spitzer-Harm [2]_ [3]_
-    These coefficients were obtained from a numerical solution of the Fokker-
+    Spitzer-Harm
+    ============
+    These coefficients were obtained [2]_ [3]_from a numerical solution of the Fokker-
     Planck equation. They give one of the earliest and most accurate (in the
     Fokker-Planck sense) results for electron transport in simple plasma. They
     principally apply in the unmagnetized / parallel field case, although for
@@ -60,10 +65,12 @@ class classical_transport:
     perpendicular magnetic field. Results are for Z = 1, 2, 4, 16,
     and infinity (Lorentz gas / stationary ion approximation).
 
-    Epperlein-Haines [4]_
+    Epperlein-Haines
+    ================
     Not yet implemented.
 
     Ji-Held [5]_
+    ============
     This is a modern treatment of the classical transport problem that has been
     carried out with laudable care. It allows for arbitrary hall parameter and
     arbitrary Z for all coefficients. Similar to the Epperlein-Haines model,
