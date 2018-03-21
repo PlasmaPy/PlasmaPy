@@ -5,7 +5,7 @@ from astropy import units as u
 
 from plasmapy import utils, atomic as atomic
 from plasmapy.atomic.atomic import _is_electron
-from plasmapy.physics import Coulomb_logarithm
+from .collisions import Coulomb_logarithm
 from plasmapy.physics.parameters import (Hall_parameter,
                                          collision_rate_electron_ion,
                                          collision_rate_ion_ion)
@@ -98,9 +98,9 @@ class classical_transport:
 
     Z : `int` or `np.inf`, optional
         The ion charge state. Overrides particle charge state if included.
-        Different theories support different values of Z. For the original
-        Braginskii model, Z can be any of [1, 2, 3, 4, infinity]. The Ji-Held
-        model supports arbitrary Z. Average ionization states Z_mean can be
+        Different theories support different values of `Z`. For the original
+        Braginskii model, `Z` can be any of [1, 2, 3, 4, infinity]. The Ji-Held
+        model supports arbitrary `Z`. Average ionization states `Z_mean` can be
         input using this input and the Ji-Held model, although doing so may
         neglect effects caused by multiple ion populations.
 

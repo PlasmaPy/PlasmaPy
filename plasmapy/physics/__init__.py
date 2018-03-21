@@ -42,4 +42,4 @@ from .transport.collisions import (Coulomb_logarithm,
                                    Knudsen_number,
                                    coupling_parameter)
 from plasmapy.physics.transport.braginskii import classical_transport
-import transport
+from . import transport
