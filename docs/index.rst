@@ -55,6 +55,7 @@ Plasma Parameters
    :maxdepth: 3
 
    physics/index
+   physics/transport/index
 
 .. _diagnostics
 
