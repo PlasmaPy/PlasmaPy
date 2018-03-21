@@ -129,9 +129,9 @@ class classical_transport:
 
     coulomb_log_ei: float or dimensionless ~astropy.units.Quantity, optional
         Force a particular value to be used for the electron-ion Coulomb
-        logarithm (test electrons on field ions). If None, the PlasmaPy
-        function Coulomb_Logarithm() will be used. Useful for comparing
-        calculations.
+        logarithm (test electrons on field ions). If `None`,
+        `plasmapy.physics.transport.Coulomb_logarithm` will be used.
+        Useful for comparing calculations.
 
     V_ei: ~astropy.units.Quantity, optional
        Supplied to coulomb_logarithm() function, not otherwise used.
@@ -141,7 +141,7 @@ class classical_transport:
 
     coulomb_log_ii: float or dimensionless ~astropy.units.Quantity, optional
         Force a particular value to be used for the ion-ion Coulomb logarithm
-        (test ions on field ions). If None, the PlasmaPy function
+        (test ions on field ions). If `None`, the PlasmaPy function
         Coulomb_Logarithm() will be used. Useful for comparing calculations.
 
     V_ii: ~astropy.units.Quantity, optional
@@ -152,12 +152,12 @@ class classical_transport:
 
     hall_e: float or dimensionless ~astropy.units.Quantity, optional
         Force a particular value to be used for the electron Hall parameter. If
-        None, the PlasmaPy function Hall_parameter() will be used. Useful
+        `None`, the PlasmaPy function Hall_parameter() will be used. Useful
         for comparing calculations.
 
     hall_i: float or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion Hall parameter. If
-        None, the PlasmaPy function Hall_parameter() will be used. Useful
+        `None`, `plasmapy.transport.Hall_parameter` will be used. Useful
         for comparing calculations.
 
     mu: optional, float or dimensionless `astropy.units.Quantity`
