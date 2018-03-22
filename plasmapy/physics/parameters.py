@@ -190,10 +190,7 @@ def Alfven_speed(B, density, ion, z_mean=None):
     elif density.unit == u.kg / u.m**3:
         rho = density
 
-    try:
-        V_A = (np.abs(B) / np.sqrt(mu0 * rho)).to(u.m / u.s)
-    except Exception:
-        raise ValueError("Unable to find Alfven speed")
+    V_A = (np.abs(B) / np.sqrt(mu0 * rho)).to(u.m / u.s)
 
     return V_A
 
@@ -342,11 +339,8 @@ def ion_sound_speed(T_e,
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
 
-    try:
-        V_S_squared = (gamma_e * Z * k_B * T_e + gamma_i * k_B * T_i) / m_i
-        V_S = np.sqrt(V_S_squared).to(u.m / u.s)
-    except Exception:
-        raise ValueError("Unable to find ion sound speed.")
+    V_S_squared = (gamma_e * Z * k_B * T_e + gamma_i * k_B * T_i) / m_i
+    V_S = np.sqrt(V_S_squared).to(u.m / u.s)
 
     return V_S
 
