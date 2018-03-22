@@ -1034,7 +1034,7 @@ def plasma_frequency(n, particle='e-', z_mean=None):
     'n_e': {'units': u.m**-3, 'can_be_negative': False}
 })
 def Debye_length(T_e, n_e):
-    r"""Calculate the Debye length.
+    r"""Calculate the exponential scale length for charge screening.
 
     Parameters
     ----------
@@ -1052,7 +1052,7 @@ def Debye_length(T_e, n_e):
     Raises
     ------
     TypeError
-        If either argument is not a ~astropy.units.Quantity
+        If either argument is not a `~astropy.units.Quantity`
 
     ~astropy.units.UnitConversionError
         If either argument is in incorrect units
@@ -1093,12 +1093,7 @@ def Debye_length(T_e, n_e):
     """
 
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
-
-    try:
-        lambda_D = ((eps0 * k_B * T_e / (n_e * e ** 2)) ** 0.5).to(u.m)
-    except Exception:
-        raise ValueError("Unable to find Debye length.")
-
+    lambda_D = (np.sqrt(eps0 * k_B * T_e / (n_e * e ** 2))).to(u.m)
     return lambda_D
 
 
@@ -1107,7 +1102,8 @@ def Debye_length(T_e, n_e):
     'n_e': {'units': u.m**-3, 'can_be_negative': False}
 })
 def Debye_number(T_e, n_e):
-    r"""Returns the Debye number.
+    r"""Returns the number of electrons within a sphere with a radius
+    of the Debye length.
 
     Parameters
     ----------
@@ -1160,11 +1156,8 @@ def Debye_number(T_e, n_e):
 
     """
 
-    try:
-        lambda_D = Debye_length(T_e, n_e)
-        N_D = (4 / 3) * np.pi * n_e * lambda_D ** 3
-    except Exception:
-        raise ValueError("Unable to find Debye number")
+    lambda_D = Debye_length(T_e, n_e)
+    N_D = (4 / 3) * np.pi * n_e * lambda_D ** 3
 
     return N_D.to(u.dimensionless_unscaled)
 
@@ -1415,12 +1408,9 @@ def upper_hybrid_frequency(B, n_e):
 
     """
 
-    try:
-        omega_pe = plasma_frequency(n=n_e)
-        omega_ce = gyrofrequency(B)
-        omega_uh = (np.sqrt(omega_pe**2 + omega_ce**2)).to(u.rad / u.s)
-    except Exception:
-        raise ValueError("Unable to find upper hybrid frequency.")
+    omega_pe = plasma_frequency(n=n_e)
+    omega_ce = gyrofrequency(B)
+    omega_uh = (np.sqrt(omega_pe**2 + omega_ce**2)).to(u.rad / u.s)
 
     return omega_uh
 
@@ -1496,13 +1486,10 @@ def lower_hybrid_frequency(B, n_i, ion='p+'):
     except Exception:
         raise ValueError("Invalid ion in lower_hybrid_frequency.")
 
-    try:
-        omega_ci = gyrofrequency(B, particle=ion)
-        omega_pi = plasma_frequency(n_i, particle=ion)
-        omega_ce = gyrofrequency(B)
-        omega_lh = 1 / np.sqrt((omega_ci * omega_ce) ** -1 + omega_pi ** -2)
-        omega_lh = omega_lh.to(u.rad / u.s)
-    except Exception:
-        raise ValueError("Unable to find lower hybrid frequency.")
+    omega_ci = gyrofrequency(B, particle=ion)
+    omega_pi = plasma_frequency(n_i, particle=ion)
+    omega_ce = gyrofrequency(B)
+    omega_lh = 1 / np.sqrt((omega_ci * omega_ce) ** -1 + omega_pi ** -2)
+    omega_lh = omega_lh.to(u.rad / u.s)
 
     return omega_lh
