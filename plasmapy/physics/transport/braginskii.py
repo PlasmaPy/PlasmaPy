@@ -122,37 +122,38 @@ class classical_transport:
         'all', indicating the cardinal orientation of the magnetic field with
         respect to the transport direction of interest. Note that 'perp' refers
         to transport perpendicular to the field direction (in the direction of
-        the temperature gradient), while 'cross' refers to the
-        :math:`B \cross \grad(T)`
-        direction. The option 'all' will return a numpy array of all three,
-        np.array((par, perp, cross)).
+        the temperature gradient), while 'cross' refers to the direction
+        perpendicular to B and the gradient of temperature
+        (:math:`B \times \grad(T)`). The option 'all' will return a Numpy array
+        of all three, `np.array((par, perp, cross))`.
 
-    coulomb_log_ei: float or dimensionless ~astropy.units.Quantity, optional
+    coulomb_log_ei: float or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron-ion Coulomb
         logarithm (test electrons on field ions). If `None`,
         `plasmapy.physics.transport.Coulomb_logarithm` will be used.
         Useful for comparing calculations.
 
     V_ei: ~astropy.units.Quantity, optional
-       Supplied to coulomb_logarithm() function, not otherwise used.
-       The relative velocity between particles.  If not provided,
-       thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+       Supplied to `plasmapy.physics.transport.Coulomb_logarithm` function, not
+       otherwise used.  The relative velocity between particles.  If not
+       provided, thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
        where `mu` is the reduced mass.
 
-    coulomb_log_ii: float or dimensionless ~astropy.units.Quantity, optional
+    coulomb_log_ii: float or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion-ion Coulomb logarithm
         (test ions on field ions). If `None`, the PlasmaPy function
-        Coulomb_Logarithm() will be used. Useful for comparing calculations.
+        `plasmapy.physics.transport.Coulomb_logarithm` will be used. Useful for
+        comparing calculations.
 
     V_ii: ~astropy.units.Quantity, optional
-       Supplied to coulomb_logarithm() function, not otherwise used.
-       The relative velocity between particles.  If not provided,
-       thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
-       where `mu` is the reduced mass.
+       The relative velocity between particles.  Supplied to
+       `plasmapy.physics.transport.Coulomb_logarithm` function, not
+       otherwise used. If not provided, thermal velocity is assumed: 
+       :math:`\mu V^2 \sim 2 k_B T` where `mu` is the reduced mass.
 
-    hall_e: float or dimensionless ~astropy.units.Quantity, optional
+    hall_e: float or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron Hall parameter. If
-        `None`, the PlasmaPy function Hall_parameter() will be used. Useful
+        `None`, `plasmapy.transport.Hall_parameter` will be used. Useful
         for comparing calculations.
 
     hall_i: float or dimensionless `~astropy.units.Quantity`, optional
@@ -306,8 +307,11 @@ class classical_transport:
         if coulomb_log_ei:
             self.coulomb_log_ei = coulomb_log_ei
         else:
-            self.coulomb_log_ei = Coulomb_logarithm(
-                T_e, n_e, [self.e_particle, ion_particle], V_ei)
+            self.coulomb_log_ei = Coulomb_logarithm(T_e,
+                                                    n_e,
+                                                    [self.e_particle,
+                                                     ion_particle],
+                                                    V_ei)
         if self.coulomb_log_ei < 4:
             warnings.warn(
                 f"coulomb_log_ei is {self.coulomb_log_ei}, you might "
