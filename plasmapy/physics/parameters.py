@@ -73,9 +73,9 @@ by an angular frequency to get a length scale:
 @utils.check_relativistic
 @utils.check_quantity({'B': {'units': u.T},
                        'density': {'units': [u.m**-3, u.kg / u.m**3], 'can_be_negative': False}})
-def Alfven_speed(B, density, ion, z_mean=None):
+def Alfven_speed(B, density, ion="p+", z_mean=None):
     r"""
-    Returns the Alfven speed.
+    Return the Alfven speed.
 
     Parameters
     ----------
@@ -162,6 +162,7 @@ def Alfven_speed(B, density, ion, z_mean=None):
     <Quantity 43173.87029559 m / s>
     >>> Alfven_speed(B, rho, ion).to(u.cm/u.us)
     <Quantity 4.31738703 cm / us>
+
     """
 
 
@@ -190,7 +191,10 @@ def Alfven_speed(B, density, ion, z_mean=None):
     elif density.unit == u.kg / u.m**3:
         rho = density
 
-    V_A = (np.abs(B) / np.sqrt(mu0 * rho)).to(u.m / u.s)
+    try:
+        V_A = (np.abs(B) / np.sqrt(mu0 * rho)).to(u.m / u.s)
+    except Exception:
+        raise ValueError("Unable to find Alfven speed")
 
     return V_A
 
@@ -202,12 +206,12 @@ def Alfven_speed(B, density, ion, z_mean=None):
 })
 def ion_sound_speed(T_e,
                     T_i,
-                    ion,
                     gamma_e=1,
                     gamma_i=3,
+                    ion='p+',
                     z_mean=None):
     r"""
-    Returns the ion sound speed for an electron-ion plasma.
+    Return the ion sound speed for an electron-ion plasma.
 
     Parameters
     ----------
@@ -339,8 +343,11 @@ def ion_sound_speed(T_e,
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
 
-    V_S_squared = (gamma_e * Z * k_B * T_e + gamma_i * k_B * T_i) / m_i
-    V_S = np.sqrt(V_S_squared).to(u.m / u.s)
+    try:
+        V_S_squared = (gamma_e * Z * k_B * T_e + gamma_i * k_B * T_i) / m_i
+        V_S = np.sqrt(V_S_squared).to(u.m / u.s)
+    except Exception:
+        raise ValueError("Unable to find ion sound speed.")
 
     return V_S
 
@@ -351,7 +358,7 @@ def ion_sound_speed(T_e,
 })
 def thermal_speed(T, particle="e-", method="most_probable"):
     r"""
-    Returns the most probable speed for a particle within a Maxwellian
+    Return the most probable speed for a particle within a Maxwellian
     distribution.
 
     Parameters
@@ -449,7 +456,7 @@ def thermal_speed(T, particle="e-", method="most_probable"):
     'T': {'units': u.K, 'can_be_negative': False}
 })
 def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
-    r"""Returns the most probable speed for a particle within a Kappa
+    r"""Return the most probable speed for a particle within a Kappa
     distribution.
 
     Parameters
@@ -518,6 +525,7 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     References
     ----------
     .. [1] PlasmaPy Issue #186, https://github.com/PlasmaPy/PlasmaPy/issues/186
+
     """
     # Checking thermal units
     T = T.to(u.K, equivalencies=u.temperature_energy())
@@ -566,7 +574,6 @@ def collision_rate_electron_ion(T_e,
 
     Parameters
     ----------
-
     T_e : ~astropy.units.Quantity
         The electron temperature of the Maxwellian test electrons
 
@@ -630,7 +637,6 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
 
     Parameters
     ----------
-
     T_i : ~astropy.units.Quantity
         The electron temperature of the Maxwellian test ions
 
@@ -676,9 +682,7 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
     'B': {'units': u.T}
 })
 def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None):
-    r"""
-    TODO
-    """
+    r"""TODO"""
 
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
@@ -809,7 +813,7 @@ def gyrofrequency(B, particle='e-', signed=False, z_mean=None):
                        # 'T_i': {'units': u.K},
                        })
 def gyroradius(B, *args, Vperp=None, T_i=None, particle='e-'):
-    r"""Returns the particle gyroradius.
+    r"""Return the particle gyroradius.
 
     Parameters
     ----------
@@ -935,7 +939,7 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e-'):
     'n': {'units': u.m**-3, 'can_be_negative': False}
 })
 def plasma_frequency(n, particle='e-', z_mean=None):
-    r"""Calculates the particle plasma frequency.
+    r"""Calculate the particle plasma frequency.
 
     Parameters
     ----------
@@ -999,6 +1003,7 @@ def plasma_frequency(n, particle='e-', z_mean=None):
     <Quantity 2.94462452e+09 rad / s>
     >>> plasma_frequency(1e19*u.m**-3)
     <Quantity 1.78398636e+11 rad / s>
+
     """
 
     try:
@@ -1059,7 +1064,6 @@ def Debye_length(T_e, n_e):
 
     Notes
     -----
-
     The Debye length is the exponential scale length for charge
     screening and is given by
 
@@ -1074,7 +1078,7 @@ def Debye_length(T_e, n_e):
     Plasmas will generally be quasineutral on length scales significantly
     larger than the Debye length.
 
-    See also
+    See Also
     --------
     Debye_number
 
@@ -1096,7 +1100,7 @@ def Debye_length(T_e, n_e):
     'n_e': {'units': u.m**-3, 'can_be_negative': False}
 })
 def Debye_number(T_e, n_e):
-    r"""Returns the number of electrons within a sphere with a radius
+    r"""Return the number of electrons within a sphere with a radius
     of the Debye length.
 
     Parameters
@@ -1138,7 +1142,7 @@ def Debye_number(T_e, n_e):
 
     Collective behavior requires a Debye number significantly larger than one.
 
-    See also
+    See Also
     --------
     Debye_length
 
@@ -1268,7 +1272,7 @@ def magnetic_pressure(B):
     insight into the physics that are being considered by the user and
     thus more readable code.
 
-    See also
+    See Also
     --------
     magnetic_energy_density : returns an equivalent `~astropy.units.Quantity`,
         except in units of joules per cubic meter.
@@ -1330,7 +1334,7 @@ def magnetic_energy_density(B: u.T):
     insight into the physics that are being considered by the user and
     thus more readable code.
 
-    See also
+    See Also
     --------
     magnetic_pressure : Returns an equivalent Quantity, except in units
         of pascals.
@@ -1354,7 +1358,7 @@ def magnetic_energy_density(B: u.T):
 })
 def upper_hybrid_frequency(B, n_e):
     r"""
-    Returns the upper hybrid frequency.
+    Return the upper hybrid frequency.
 
     Parameters
     ----------
@@ -1413,9 +1417,9 @@ def upper_hybrid_frequency(B, n_e):
     'B': {'units': u.T},
     'n_i': {'units': u.m**-3, 'can_be_negative': False}
 })
-def lower_hybrid_frequency(B, n_i, ion):
+def lower_hybrid_frequency(B, n_i, ion='p+'):
     r"""
-    Returns the lower hybrid frequency.
+    Return the lower hybrid frequency.
 
     Parameters
     ----------

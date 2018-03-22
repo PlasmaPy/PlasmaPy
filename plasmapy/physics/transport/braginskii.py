@@ -1,3 +1,4 @@
+"""Functions to calculate classical transport coefficients."""
 import warnings
 
 import numpy as np
@@ -214,6 +215,7 @@ class classical_transport:
     .. [5] Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
            high-collisionality electron-ion plasmas." Physics of Plasmas 20.4
            (2013): 042114.
+
     """
 
     @utils.check_quantity({"T_e": {"units": u.K, "can_be_negative": False},
@@ -376,6 +378,7 @@ class classical_transport:
         Returns
         -------
         astropy.units.quantity.Quantity
+
         """
         alpha_hat = _nondim_resistivity(self.hall_e,
                                         self.Z,
@@ -398,6 +401,7 @@ class classical_transport:
         Returns
         -------
         astropy.units.quantity.Quantity
+
         """
         beta_hat = _nondim_te_conductivity(self.hall_e,
                                            self.Z,
@@ -414,6 +418,7 @@ class classical_transport:
         Returns
         -------
         astropy.units.quantity.Quantity
+
         """
         kappa_hat = _nondim_thermal_conductivity(self.hall_i,
                                                  self.Z,
@@ -437,6 +442,7 @@ class classical_transport:
         Returns
         -------
         astropy.units.quantity.Quantity
+
         """
         kappa_hat = _nondim_thermal_conductivity(self.hall_e,
                                                  self.Z,
@@ -460,6 +466,7 @@ class classical_transport:
         Returns
         -------
         astropy.units.quantity.Quantity
+
         """
         eta_hat = _nondim_viscosity(self.hall_i,
                                     self.Z,
@@ -502,6 +509,7 @@ class classical_transport:
         Returns
         -------
         astropy.units.quantity.Quantity
+
         """
         eta_hat = _nondim_viscosity(self.hall_e,
                                     self.Z,
@@ -544,6 +552,7 @@ class classical_transport:
         Returns
         -------
         dict
+
         """
         d = {}
         d['resistivity'] = self.resistivity()
@@ -562,7 +571,7 @@ def _nondim_thermal_conductivity(hall, Z,
                                  field_orientation,
                                  mu=None,
                                  theta=None):
-    """calculate dimensionless classical thermal conductivity coefficients
+    """Calculate dimensionless classical thermal conductivity coefficients
 
     This function is a switchboard / wrapper that calls the appropriate
     model-specific functions depending on which model is specified and which
@@ -601,7 +610,7 @@ def _nondim_viscosity(hall,
                       field_orientation,
                       mu=None,
                       theta=None):
-    """calculate dimensionless classical viscosity coefficients
+    """Calculate dimensionless classical viscosity coefficients
 
     This function is a switchboard / wrapper that calls the appropriate
     model-specific functions depending on which model is specified and which
@@ -632,7 +641,7 @@ def _nondim_viscosity(hall,
 
 
 def _nondim_resistivity(hall, Z, particle, model, field_orientation):
-    """calculate dimensionless classical resistivity coefficients
+    """Calculate dimensionless classical resistivity coefficients
 
     This function is a switchboard / wrapper that calls the appropriate
     model-specific functions depending on which model is specified.
@@ -651,7 +660,7 @@ def _nondim_resistivity(hall, Z, particle, model, field_orientation):
 
 
 def _nondim_te_conductivity(hall, Z, particle, model, field_orientation):
-    """calculate dimensionless classical thermoelectric coefficients
+    """Calculate dimensionless classical thermoelectric coefficients
 
     This function is a switchboard / wrapper that calls the appropriate
     model-specific functions depending on which model is specified.
@@ -670,7 +679,7 @@ def _nondim_te_conductivity(hall, Z, particle, model, field_orientation):
 
 
 def _check_Z(allowed_Z, Z):
-    """determine if the input Z value is okay given the list of allowed_Z"""
+    """Determine if the input Z value is okay given the list of allowed_Z"""
     # first, determine if arbitrary Z values are allowed in the theory
     arbitrary_Z_allowed = False
     the_arbitrary_idx = np.nan
@@ -697,7 +706,7 @@ def _check_Z(allowed_Z, Z):
 
 
 def _get_spitzer_harm_coeffs(Z):
-    """return numerical coefficients from Spitzer-Harm '53
+    """Return numerical coefficients from Spitzer-Harm '53
 
     Table III, Spitzer and Harm, Phys. Rev. Vol 89, 5, 1953
     """
@@ -711,7 +720,7 @@ def _get_spitzer_harm_coeffs(Z):
 
 
 def _nondim_tc_e_spitzer(Z):
-    """dimensionless electron thermal conductivity - Spitzer
+    """Dimensionless electron thermal conductivity - Spitzer
 
     This result is for parallel field or unmagnetized plasma only.
     """
@@ -722,11 +731,13 @@ def _nondim_tc_e_spitzer(Z):
 
 
 def _nondim_resist_spitzer(Z, field_orientation):
-    """dimensionless resistivity - Spitzer
+    """
+    Dimensionless resistivity - Spitzer
 
     These are results for both parallel-field / unmagnetized plasmas as well
     as perpendicular-field / strongly magnetized plasma. Summary description
-    in Physics of Fully Ionized Gases, Spitzer"""
+    in Physics of Fully Ionized Gases, Spitzer
+    """
 
     alpha_perp = 1
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
@@ -743,7 +754,7 @@ def _nondim_resist_spitzer(Z, field_orientation):
 
 
 def _nondim_tec_spitzer(Z):
-    """dimensionless thermoelectric conductivity - Spitzer
+    """Dimensionless thermoelectric conductivity - Spitzer
 
     This result is for parallel field or unmagnetized plasma only.
     """
@@ -754,7 +765,7 @@ def _nondim_tec_spitzer(Z):
 
 
 def _nondim_tc_e_braginskii(hall, Z, field_orientation):
-    """dimensionless electron thermal conductivity - Braginskii
+    """Dimensionless electron thermal conductivity - Braginskii
 
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
@@ -803,7 +814,7 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
 
 
 def _nondim_tc_i_braginskii(hall, field_orientation):
-    """dimensionless ion thermal conductivity - Braginskii
+    """Dimensionless ion thermal conductivity - Braginskii
 
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
@@ -852,7 +863,7 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
 
 
 def _nondim_visc_e_braginskii(hall, Z):
-    """dimensionless electron viscosity - Braginskii
+    """Dimensionless electron viscosity - Braginskii
 
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
@@ -887,7 +898,7 @@ def _nondim_visc_e_braginskii(hall, Z):
 
 
 def _nondim_visc_i_braginskii(hall):
-    """dimensionless ion viscosity - Braginskii
+    """Dimensionless ion viscosity - Braginskii
 
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
@@ -921,7 +932,7 @@ def _nondim_visc_i_braginskii(hall):
 
 
 def _nondim_resist_braginskii(hall, Z, field_orientation):
-    """dimensionless resistivity - Braginskii
+    """Dimensionless resistivity - Braginskii
 
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
@@ -971,7 +982,7 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
 
 
 def _nondim_tec_braginskii(hall, Z, field_orientation):
-    """dimensionless thermoelectric conductivity - Braginskii
+    """Dimensionless thermoelectric conductivity - Braginskii
 
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
@@ -1024,7 +1035,7 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
 #
 
 def _nondim_tc_e_ji_held(hall, Z, field_orientation):
-    """dimensionless electron thermal conductivity - Ji-Held
+    """Dimensionless electron thermal conductivity - Ji-Held
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
@@ -1148,7 +1159,7 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
 
 
 def _nondim_resist_ji_held(hall, Z, field_orientation):
-    """dimensionless resistivity - Ji-Held
+    """Dimensionless resistivity - Ji-Held
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
@@ -1240,7 +1251,7 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
 
 
 def _nondim_tec_ji_held(hall, Z, field_orientation):
-    """dimensionless thermoelectric conductivity - Ji-Held
+    """Dimensionless thermoelectric conductivity - Ji-Held
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
@@ -1344,7 +1355,7 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
 
 
 def _nondim_visc_e_ji_held(hall, Z):
-    """dimensionless electron viscosity - Ji-Held
+    """Dimensionless electron viscosity - Ji-Held
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
@@ -1441,7 +1452,7 @@ def _nondim_visc_e_ji_held(hall, Z):
 
 
 def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
-    """dimensionless ion thermal conductivity - Ji-Held
+    """Dimensionless ion thermal conductivity - Ji-Held
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
@@ -1507,7 +1518,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
 
 
 def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
-    """dimensionless ion viscosity - Ji-Held
+    """Dimensionless ion viscosity - Ji-Held
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
