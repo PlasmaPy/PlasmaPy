@@ -247,14 +247,15 @@ class classical_transport:
                         'spitzer-harm',
                         'ji-held',
                         ]
-        is_valid_model = self.model in valid_models
-        if not is_valid_model:
+        if self.model not in valid_models:
             raise ValueError(f"Unknown transport model '{self.model}'")
 
         # check the field orientation
         self.field_orientation = field_orientation.lower()
-        valid_fields = ['parallel', 'par',
-                        'perpendicular', 'perp',
+        valid_fields = ['parallel',
+                        'par',
+                        'perpendicular',
+                        'perp',
                         'cross',
                         'all',
                         ]

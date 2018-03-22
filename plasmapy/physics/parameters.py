@@ -73,7 +73,7 @@ by an angular frequency to get a length scale:
 @utils.check_relativistic
 @utils.check_quantity({'B': {'units': u.T},
                        'density': {'units': [u.m**-3, u.kg / u.m**3], 'can_be_negative': False}})
-def Alfven_speed(B, density, ion="p+", z_mean=None):
+def Alfven_speed(B, density, ion, z_mean=None):
     r"""
     Returns the Alfven speed.
 
@@ -205,9 +205,9 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
 })
 def ion_sound_speed(T_e,
                     T_i,
+                    ion,
                     gamma_e=1,
                     gamma_i=3,
-                    ion='p+',
                     z_mean=None):
     r"""
     Returns the ion sound speed for an electron-ion plasma.
@@ -1419,7 +1419,7 @@ def upper_hybrid_frequency(B, n_e):
     'B': {'units': u.T},
     'n_i': {'units': u.m**-3, 'can_be_negative': False}
 })
-def lower_hybrid_frequency(B, n_i, ion='p+'):
+def lower_hybrid_frequency(B, n_i, ion):
     r"""
     Returns the lower hybrid frequency.
 
