@@ -906,22 +906,6 @@ def gyroradius(B, *args, Vperp=None, T_i=None, particle='e-'):
         raise ValueError("Cannot have both Vperp and T_i as arguments to "
                          "gyroradius")
 
-    if len(args) == 1 and isinstance(args[0], u.Quantity):
-        arg = args[0].si
-        if arg.unit == u.T and B.si.unit in [u.J, u.K, u.m / u.s]:
-            B, arg = arg, B
-
-        if arg.unit == u.m / u.s:
-            Vperp = arg
-        elif arg.unit in (u.J, u.K):
-            T_i = arg.to(u.K, equivalencies=u.temperature_energy())
-        else:
-            raise u.UnitConversionError("Incorrect units for positional "
-                                        "argument in gyroradius")
-    elif len(args) > 0:
-        raise ValueError("Incorrect inputs to gyroradius")
-
-
     if Vperp is None and T_i is not None:
         Vperp = thermal_speed(T_i, particle=particle)
 
