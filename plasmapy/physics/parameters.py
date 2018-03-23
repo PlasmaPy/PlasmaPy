@@ -732,7 +732,7 @@ def gyrofrequency(B, particle='e-', signed=False, z_mean=None):
     Raises
     ------
     TypeError
-        If the magnetic field is not a Quantity or particle is not of an
+        If the magnetic field is not a `Quantity` or particle is not of an
         appropriate type
 
     ValueError
@@ -755,9 +755,9 @@ def gyrofrequency(B, particle='e-', signed=False, z_mean=None):
 
     The recommended way to convert from angular frequency to frequency
     is to use an equivalency between cycles per second and Hertz, as
-    Astropy's dimensionles_angles() equivalency does not account for
+    Astropy's `dimensionles_angles` equivalency does not account for
     the factor of 2*pi needed during this conversion.  The
-    dimensionless_angles() equivalency is appropriate when dividing a
+    `dimensionless_angles` equivalency is appropriate when dividing a
     velocity by an angular frequency to get a length scale.
 
     Examples
