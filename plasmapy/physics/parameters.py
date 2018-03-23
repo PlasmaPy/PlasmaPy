@@ -175,10 +175,7 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
             if z_mean is None:
                 # warnings.warn("No z_mean given, defaulting to atomic charge",
                 #               PhysicsWarning)
-                try:
-                    Z = atomic.integer_charge(ion)
-                except AtomicError:
-                    Z = 1
+                Z = atomic.integer_charge(ion)
             else:
                 # using average ionization provided by user
                 Z = z_mean
