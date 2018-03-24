@@ -417,6 +417,12 @@ electric_charge_table = [
     ['H---', AtomicWarning],
 ]
 
+half_life_table = [
+    ['H-1', u.s],
+    ['tritium', u.s],
+    ['H-1', np.inf * u.s],
+]
+
 # The tables above do not include the function to be tested in order to
 # avoid cluttering up the code.  The following block of code prepends
 # the correct function to each list containing args, kwargs, and the
@@ -435,6 +441,7 @@ tables_and_functions = [
     (particle_mass, particle_mass_table),
     (integer_charge, integer_charge_table),
     (electric_charge, electric_charge_table),
+    (half_life, half_life_table),
 ]
 
 all_tests = []
@@ -446,6 +453,8 @@ for func, table in tables_and_functions:
             inputs.insert(2, {})
     all_tests += table
 
+# Set up tests for a variety of atomic functions to make sure that bad
+# inputs lead to the expected errors.
 
 atomic_TypeError_funcs_table = [
     atomic_symbol,
@@ -615,12 +624,9 @@ def test_known_common_stable_isotopes():
 def test_half_life():
     """Test that `half_life` returns the correct values for various
     isotopes."""
-    assert half_life('H-1') == np.inf * u.s, "Incorrect half-life for H-1'."
     assert np.isclose(half_life('tritium').to(u.s).value,
                       (12.32 * u.yr).to(u.s).value, rtol=2e-4), \
         "Incorrect half-life for tritium."
-    assert half_life('H-1').unit == 's', "Incorrect unit for H-1."
-    assert half_life('tritium').unit == 's', "Incorrect unit for tritium."
 
 
 def test_half_life_unstable_isotopes():
