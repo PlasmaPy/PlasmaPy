@@ -1,16 +1,51 @@
-from itertools import product
-from astropy import units as u, constants as const
+from astropy import units as u
 import numpy as np
-from ..nuclear import (nuclear_binding_energy, nuclear_reaction_energy)
-from ...utils import (InvalidParticleError, InvalidIsotopeError, AtomicError)
+from ..nuclear import nuclear_binding_energy, nuclear_reaction_energy
+from ...utils import (
+    InvalidParticleError,
+    AtomicError,
+    run_test,
+    run_test_equivalent_calls,
+)
 import pytest
 
+test_nuclear_table = [
+    [nuclear_binding_energy, 'p', {}, 0 * u.J],
+    [nuclear_binding_energy, 'n', {}, 0 * u.J],
+    [nuclear_binding_energy, 'p', {}, 0 * u.J],
+    [nuclear_binding_energy, "H", {}, AtomicError],
+    [nuclear_binding_energy, 'He-99', {}, InvalidParticleError],
+    [nuclear_binding_energy, "He", {"mass_numb": 99}, InvalidParticleError],
+    [nuclear_binding_energy, 3.1415926535j, {}, TypeError],
+    [nuclear_reaction_energy, (), {'reactants': ['n'], 'products': 3}, TypeError],
+    [nuclear_reaction_energy, (), {'reactants': ['n'], 'products': ['He-4']}, AtomicError],
+    [nuclear_reaction_energy, (), {'reactants': ['h'], 'products': ['H-1']}, AtomicError],
+    [nuclear_reaction_energy, (), {'reactants': ['e-', 'n'], 'products': ['p+']}, AtomicError],
+    [nuclear_reaction_energy, (), {'reactants': ['e+', 'n'], 'products': ['p-']}, AtomicError],
+    [nuclear_reaction_energy, (), {'reactants': ['ksdf'], 'products': ['H-3']}, AtomicError],
+    [nuclear_reaction_energy, (), {'reactants': ['H'], 'products': ['H-1']}, AtomicError],
+    [nuclear_reaction_energy, (), {'reactants': ['p'], 'products': ['n', 'n', 'e-']}, AtomicError],
+    [nuclear_reaction_energy, 'H + H --> H', {}, AtomicError],
+    [nuclear_reaction_energy, 1, {}, TypeError],
+    [nuclear_reaction_energy, 'H-1 + H-1 --> H-1', {}, AtomicError],
+    [nuclear_reaction_energy, 'p --> n', {}, AtomicError],
+    [nuclear_reaction_energy, 'p --> p', {'reactants': 'p', 'products': 'p'}, AtomicError],
+]
 
-def test_nuclear_binding_energy():
-    assert nuclear_binding_energy('p') == 0
-    assert nuclear_binding_energy('n') == 0
-    assert nuclear_binding_energy('He-4') == nuclear_binding_energy('alpha') \
-        == nuclear_binding_energy('He', 4)
+
+@pytest.mark.parametrize('test_inputs', test_nuclear_table)
+def test_nuclear(test_inputs):
+    run_test(*test_inputs, rtol=1e-3)
+
+
+test_nuclear_equivalent_calls = [
+    [nuclear_binding_energy, ['He-4', {}], ['alpha', {}], ['He', {'mass_numb': 4}]],
+
+]
+
+@pytest.mark.parametrize('test_inputs', test_nuclear_equivalent_calls)
+def test_nuclear_equivalent_calls(test_inputs):
+    run_test_equivalent_calls(test_inputs)
 
 
 def test_nuclear_binding_energy_D_T():
@@ -18,21 +53,6 @@ def test_nuclear_binding_energy_D_T():
     after = nuclear_binding_energy("alpha")
     E_in_MeV = (after - before).to(u.MeV).value  # D + T --> alpha + n + E
     assert np.isclose(E_in_MeV, 17.58, rtol=0.01)
-
-
-# (argument, kwargs, expected_error)
-nuclear_binding_energy_table = [
-    ("H", {}, AtomicError),
-    ('He-99', {}, InvalidParticleError),
-    ("He", {"mass_numb": 99}, InvalidParticleError),
-    (1.1, {}, TypeError)]
-
-
-@pytest.mark.parametrize("argument, kwargs, expected_error",
-                         nuclear_binding_energy_table)
-def test_nuclear_binding_energy_error(argument, kwargs, expected_error):
-    with pytest.raises(expected_error):
-        nuclear_binding_energy(argument, **kwargs)
 
 
 def test_nuclear_reaction_energy():
@@ -54,7 +74,6 @@ def test_nuclear_reaction_energy_triple_alpha():
     energy_triplealpha2 = nuclear_reaction_energy(triple_alpha2)
     assert np.isclose(energy_triplealpha1.to(u.keV).value, -91.8, atol=0.1)
     assert np.isclose(energy_triplealpha2.to(u.MeV).value, 7.367, atol=0.1)
-
     reactants = ['He-4', 'alpha']
     products = ['Be-8']
     energy = nuclear_reaction_energy(reactants=reactants, products=products)
@@ -82,24 +101,6 @@ def test_nuclear_reaction_energy_beta():
     assert np.isclose(energy2.to(u.MeV).value, 3.034591, atol=1e-5)
 
 
-# (reaction, kwargs, expected_error)
-nuclear_reaction_energy_error_table = [
-    ('H + H --> H', {}, AtomicError),
-    (1, {}, TypeError),
-    ('H-1 + H-1 --> H-1', {}, AtomicError),
-    ("invalid input", {}, AtomicError),
-    ('p --> n', {}, AtomicError),
-    ('p --> p', {'reactants': ['p'], 'products': ['p']}, AtomicError),
-]
-
-
-@pytest.mark.parametrize(
-    "reaction, kwargs, expected_error", nuclear_reaction_energy_error_table)
-def test_nuclear_reaction_energy_error(reaction, kwargs, expected_error):
-    with pytest.raises(expected_error):
-        nuclear_reaction_energy(reaction, **kwargs)
-
-
 # (reactants, products, expectedMeV, tol)
 nuclear_reaction_energy_kwargs_table = [
     ('H-1', 'p', 0.0, 0.0),
@@ -122,24 +123,3 @@ def test_nuclear_reaction_energy_kwargs(reactants, products, expectedMeV, tol):
     expected = (expectedMeV * u.MeV).si
     assert np.isclose(expected.value, energy.value, atol=tol)
 
-
-# (reactants, products, expected_error)
-nuclear_reaction_energy_kwerrors_table = [
-    ('n', 3, TypeError),
-    ('n', [3], AtomicError),
-    (['n'], ['p'], AtomicError),
-    (['n'], ['He-4'], AtomicError),
-    (['h'], ['H-1'], AtomicError),
-    (['e-', 'n'], 'p', AtomicError),
-    (['e+', 'n'], ['p-'], AtomicError),
-    (['kljsdf'], 'H-3', AtomicError),
-    (['H'], ['H-1'], AtomicError),
-    (['p'], ['n', 'n', 'e+'], AtomicError),
-]
-
-
-@pytest.mark.parametrize("reactants, products, expected_error",
-                         nuclear_reaction_energy_kwerrors_table)
-def test_nuclear_reaction_energy_kwerrors(reactants, products, expected_error):
-    with pytest.raises(expected_error):
-        nuclear_reaction_energy(reactants=reactants, products=products)
