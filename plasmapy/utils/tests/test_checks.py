@@ -15,41 +15,41 @@ from ..checks import (
 # (value, units, error)
 quantity_error_examples_default = [
     # exceptions associated with the units keyword
-    (5*u.T, 5*u.T, TypeError),
-    (5*u.T, 5, TypeError),
-    (5*u.T, [u.T, 1], TypeError),
-    (5*u.T, [1, u.m], TypeError),
+    (5 * u.T, 5 * u.T, TypeError),
+    (5 * u.T, 5, TypeError),
+    (5 * u.T, [u.T, 1], TypeError),
+    (5 * u.T, [1, u.m], TypeError),
     (u.T, u.J, TypeError),
     (5.0, u.m, UserWarning),
-    (3*u.m/u.s, u.m, u.UnitConversionError),
-    (5j*u.K, u.K, ValueError),
+    (3 * u.m / u.s, u.m, u.UnitConversionError),
+    (5j * u.K, u.K, ValueError),
 ]
 
 # (value, units, can_be_negative, can_be_complex, can_be_inf, error)
 quantity_error_examples_non_default = [
-    (-5*u.K, u.K, False, False, True, ValueError),
-    (np.inf*u.K, u.K, True, False, False, ValueError)
+    (-5 * u.K, u.K, False, False, True, ValueError),
+    (np.inf * u.K, u.K, True, False, False, ValueError)
 ]
 
 # (value, units)
 quantity_valid_examples_default = [
     # check basic functionality
-    (5*u.T, u.T),
-    (3*u.m/u.s, u.m/u.s),
-    (3*u.m/u.s, [u.m/u.s]),
-    (3*u.m/u.s**2, [u.m/u.s, u.m/(u.s**2)]),
-    (3*u.km/u.yr, u.m/u.s),
+    (5 * u.T, u.T),
+    (3 * u.m / u.s, u.m / u.s),
+    (3 * u.m / u.s, [u.m / u.s]),
+    (3 * u.m / u.s ** 2, [u.m / u.s, u.m / (u.s ** 2)]),
+    (3 * u.km / u.yr, u.m / u.s),
     # check temperature in units of energy per particle (e.g., eV)
-    (5*u.eV, u.K),
-    (5*u.K, u.eV),
-    (5*u.keV, [u.m, u.K]),
+    (5 * u.eV, u.K),
+    (5 * u.K, u.eV),
+    (5 * u.keV, [u.m, u.K]),
     # check keywords relating to numerical values
-    (np.inf*u.T, u.T)
+    (np.inf * u.T, u.T)
 ]
 
 # (value, units, can_be_negative, can_be_complex, can_be_inf)
 quantity_valid_examples_non_default = [
-    (5j*u.m, u.m, True, True, True)
+    (5j * u.m, u.m, True, True, True)
 ]
 
 
@@ -159,7 +159,7 @@ def test_check_quantity_decorator_missing_validated_params():
         return x
 
     with pytest.raises(TypeError) as e:
-        func(1*u.m)
+        func(1 * u.m)
 
     assert "Call to func is missing validated params y" == str(e.value)
 
@@ -171,9 +171,9 @@ def test_check_quantity_decorator_two_args_default():
         "y": {"units": u.s}
     })
     def func(x, y):
-        return x/y
+        return x / y
 
-    func(1*u.m, 1*u.s)
+    func(1 * u.m, 1 * u.s)
 
 
 def test_check_quantity_decorator_two_args_not_default():
@@ -183,10 +183,10 @@ def test_check_quantity_decorator_two_args_not_default():
         "y": {"units": u.s}
     })
     def func(x, y):
-        return x/y
+        return x / y
 
     with pytest.raises(ValueError):
-        func(-1*u.m, 2*u.s)
+        func(-1 * u.m, 2 * u.s)
 
 
 def test_check_quantity_decorator_two_args_one_kwargs_default():
@@ -196,10 +196,10 @@ def test_check_quantity_decorator_two_args_one_kwargs_default():
         "y": {"units": u.s},
         "z": {"units": u.eV}
     })
-    def func(x, y, another, z=10*u.eV):
-        return x*y*z
+    def func(x, y, another, z=10 * u.eV):
+        return x * y * z
 
-    func(1*u.m, 1*u.s, 10*u.T)
+    func(1 * u.m, 1 * u.s, 10 * u.T)
 
 
 def test_check_quantity_decorator_two_args_one_kwargs_not_default():
@@ -209,41 +209,41 @@ def test_check_quantity_decorator_two_args_one_kwargs_not_default():
         "y": {"units": u.s, "can_be_negative": False},
         "z": {"units": u.eV, "can_be_inf": False}
     })
-    def func(x, y, z=10*u.eV):
-        return x*y*z
+    def func(x, y, z=10 * u.eV):
+        return x * y * z
 
     with pytest.raises(ValueError):
-        func(1*u.m, 1*u.s, z=np.inf*u.eV)
+        func(1 * u.m, 1 * u.s, z=np.inf * u.eV)
 
 
 # (speed, betafrac)
 non_relativistic_speed_examples = [
-    (0*u.m/u.s, 0.1),
-    (0.099999*c, 0.1),
-    (-0.09*c, 0.1),
-    (5*u.AA/u.Gyr, 0.1)
+    (0 * u.m / u.s, 0.1),
+    (0.099999 * c, 0.1),
+    (-0.09 * c, 0.1),
+    (5 * u.AA / u.Gyr, 0.1)
 ]
 
 # (speed, betafrac, error)
 relativistic_error_examples = [
-    (u.m/u.s, 0.1, TypeError),
+    (u.m / u.s, 0.1, TypeError),
     (51513.35, 0.1, TypeError),
-    (5*u.m, 0.1, u.UnitConversionError),
-    (np.nan*u.m/u.s, 0.1, ValueError),
-    (1.0*c, 0.1, RelativityError),
-    (1.1*c, 0.1, RelativityError),
-    (np.inf*u.cm/u.s, 0.1, RelativityError),
-    (-1.0*c, 0.1, RelativityError),
-    (-1.1*c, 0.1, RelativityError),
-    (-np.inf*u.cm/u.s, 0.1, RelativityError),
+    (5 * u.m, 0.1, u.UnitConversionError),
+    (np.nan * u.m / u.s, 0.1, ValueError),
+    (1.0 * c, 0.1, RelativityError),
+    (1.1 * c, 0.1, RelativityError),
+    (np.inf * u.cm / u.s, 0.1, RelativityError),
+    (-1.0 * c, 0.1, RelativityError),
+    (-1.1 * c, 0.1, RelativityError),
+    (-np.inf * u.cm / u.s, 0.1, RelativityError),
 ]
 
 # (speed, betafrac, warning)
 relativistic_warning_examples = [
-    (0.11*c, 0.1),
-    (-0.11*c, 0.1),
-    (2997924581*u.cm/u.s, 0.1),
-    (0.02*c, 0.01),
+    (0.11 * c, 0.1),
+    (-0.11 * c, 0.1),
+    (2997924581 * u.cm / u.s, 0.1),
+    (0.02 * c, 0.01),
 ]
 
 

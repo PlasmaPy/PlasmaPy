@@ -12,3 +12,5 @@ scipy
 sphinx
 sphinx-automodapi
 sphinx-gallery
+pytest
+colorama

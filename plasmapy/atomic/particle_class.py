@@ -364,6 +364,8 @@ class Particle:
             else:
                 categories.add('unstable')
 
+        self.__name__ = self.__repr__()
+
     def __repr__(self) -> str:
         """Return a call string that would recreate this object.
 
@@ -418,6 +420,12 @@ class Particle:
         if not isinstance(other, self.__class__):
             raise TypeError(
                 f"The equality of a Particle object with a {type(other)} is undefined.")
+
+        no_particle_attr = 'particle' not in dir(self) or 'particle' not in dir(other)
+        no_attributes_attr = '_attributes' not in dir(self) or '_attributes' not in dir(other)
+
+        if no_particle_attr or no_attributes_attr:  # coveralls: ignore
+            raise TypeError(f"The equality of {self} with {other} is undefined.")
 
         same_particle = self.particle == other.particle
 
@@ -1083,7 +1091,7 @@ class Particle:
                 else:
                     return set(arg)
 
-        if category_tuple != () and require != set():
+        if category_tuple != () and require != set():  # coveralls: ignore
             raise AtomicError(
                 "No positional arguments are allowed if the `require` keyword "
                 "is set in is_category.")
