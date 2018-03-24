@@ -51,9 +51,10 @@ class classical_transport:
     * Braginskii [1]_
     The original Braginskii treatment as presented in the highly cited review
     paper from 1965. Coefficients are found from expansion of the kinetic
-    equation in Laguerre / Sonine polynomials, truncated at K = 2. This theory
-    allow for arbitrary Hall parameter and include results for Z = 1, 2, 3, 4,
-    and infinity (Lorentz gas / stationary ion approximation).
+    equation in Laguerre polynomials, truncated at the second term in their
+    series expansion (k = 2). This theory allows for arbitrary Hall parameter
+    and include results for Z = 1, 2, 3, 4, and infinity (the case of Lorentz
+    gas completely stripped of electrons, and the stationary ion approximation).
 
     * Spitzer-Harm [2]_ [3]_
     These coefficients were obtained from a numerical solution of the Fokker-
@@ -125,42 +126,38 @@ class classical_transport:
         to transport perpendicular to the field direction (in the direction of
         the temperature gradient), while 'cross' refers to the direction
         perpendicular to B and the gradient of temperature
-        (:math:`B \times \grad(T)`). The option 'all' will return a Numpy array
+        (:math:`B \times \nabla(T)`). The option 'all' will return a Numpy array
         of all three, `np.array((par, perp, cross))`.
 
     coulomb_log_ei: float or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron-ion Coulomb
         logarithm (test electrons on field ions). If `None`,
-        `plasmapy.physics.transport.Coulomb_logarithm` will be used.
-        Useful for comparing calculations.
+        `Coulomb_logarithm` will be used. Useful for comparing calculations.
 
     V_ei: ~astropy.units.Quantity, optional
-       Supplied to `plasmapy.physics.transport.Coulomb_logarithm` function, not
-       otherwise used.  The relative velocity between particles.  If not
-       provided, thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
-       where `mu` is the reduced mass.
+       The relative velocity between particles.  Supplied to `Coulomb_logarithm`
+       function, not otherwise used.  If not provided, thermal velocity is
+       assumed: :math:`\mu V^2 \sim 2 k_B T` where `mu` is the reduced mass.
 
     coulomb_log_ii: float or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion-ion Coulomb logarithm
         (test ions on field ions). If `None`, the PlasmaPy function
-        `plasmapy.physics.transport.Coulomb_logarithm` will be used. Useful for
-        comparing calculations.
+        `Coulomb_logarithm` will be used. Useful for comparing calculations.
 
     V_ii: ~astropy.units.Quantity, optional
        The relative velocity between particles.  Supplied to
-       `plasmapy.physics.transport.Coulomb_logarithm` function, not
-       otherwise used. If not provided, thermal velocity is assumed: 
-       :math:`\mu V^2 \sim 2 k_B T` where `mu` is the reduced mass.
+       `Coulomb_logarithm` function, not otherwise used. If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
 
     hall_e: float or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron Hall parameter. If
-        `None`, `plasmapy.transport.Hall_parameter` will be used. Useful
-        for comparing calculations.
+        `None`, `Hall_parameter` will be used. Useful for comparing calculations.
 
     hall_i: float or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion Hall parameter. If
-        `None`, `plasmapy.transport.Hall_parameter` will be used. Useful
-        for comparing calculations.
+        `None`, `Hall_parameter` will be used. Useful for comparing
+        calculations.
 
     mu: optional, float or dimensionless `astropy.units.Quantity`
         Ji-Held model only, may be used to include ion-electron effects
@@ -172,7 +169,6 @@ class classical_transport:
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to T_e / T_i. Only
         has effect if mu is non-zero.
-
 
     Raises
     ------
@@ -327,7 +323,6 @@ class classical_transport:
         if coulomb_log_ii is not None:
             self.coulomb_log_ii = coulomb_log_ii
         else:
-            # TODO make comment below more clear?
             self.coulomb_log_ii = Coulomb_logarithm(T_i,
                                                     n_e,  # this is not a typo!
                                                     [ion_particle,
@@ -366,7 +361,7 @@ class classical_transport:
         else:
             self.mu = 0  # disable the JH special features by default
 #            self.mu = m_e / self.m_i  # enable the JH special features
-        if theta is not None:
+        if theta is not None:  # theta can be zero, thus no "if theta:" here
             self.theta = theta
         else:
             self.theta = self.T_e / self.T_i
@@ -391,7 +386,7 @@ class classical_transport:
                                                 self.coulomb_log_ei,
                                                 self.V_ei)
 
-        alpha = alpha_hat / (self.n_e * e**2 * tau_e / m_e)
+        alpha = alpha_hat / (self.n_e * e ** 2 * tau_e / m_e)
         return alpha.to(u.ohm * u.m)
 
     def thermoelectric_conductivity(self):
