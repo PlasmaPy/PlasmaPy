@@ -72,8 +72,10 @@ def test_Alfven_speed():
     assert Alfven_speed(2 * B, rho) == 2 * Alfven_speed(B, rho)
 
     # Case when Z=1 is assumed
-    assert Alfven_speed(5 * u.T, 5e19 * u.m**-3, ion='H-1') == \
-        Alfven_speed(5 * u.T, 5e19 * u.m**-3, ion='p')
+    assert np.isclose(Alfven_speed(5 * u.T, 5e19 * u.m**-3, ion='H+'),
+                      Alfven_speed(5 * u.T, 5e19 * u.m**-3, ion='p'),
+                      atol = 0*u.m/u.s,
+                      rtol = 1e-3)
 
     # Case where magnetic field and density are Quantity arrays
     V_A_arr = Alfven_speed(B_arr, rho_arr)
@@ -183,53 +185,53 @@ def test_ion_sound_speed():
         ion_sound_speed('p')
 
     with pytest.raises(PhysicsError):
-        ion_sound_speed(T_i=T_i, T_e=0*u.K, gamma_i=0.9999)
+        ion_sound_speed(T_i=T_i, T_e=0 *u.K, gamma_i=0.9999)
 
     with pytest.raises(PhysicsError):
-        ion_sound_speed(T_i=T_i, T_e=0*u.K, gamma_e=0.9999)
+        ion_sound_speed(T_i=T_i, T_e=0 *u.K, gamma_e=0.9999)
 
     with pytest.raises(TypeError):
-        ion_sound_speed(T_i=T_i, T_e=0*u.K, gamma_e='sdjklsf')
+        ion_sound_speed(T_i=T_i, T_e=0 *u.K, gamma_e='sdjklsf')
 
     with pytest.raises(TypeError):
-        ion_sound_speed(T_i=T_i, T_e=0*u.K, gamma_i='fsdfas')
+        ion_sound_speed(T_i=T_i, T_e=0 *u.K, gamma_i='fsdfas')
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i=T_i, T_e=0*u.K, ion='cupcakes')
+        ion_sound_speed(T_i=T_i, T_e=0 *u.K, ion='cupcakes')
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i=-np.abs(T_i), T_e=0*u.K,)
+        ion_sound_speed(T_i=-np.abs(T_i), T_e=0 *u.K,)
 
     with pytest.warns(RelativityWarning):
-        ion_sound_speed(T_i=5e11 * u.K, T_e = 0*u.K)
+        ion_sound_speed(T_i=5e11 * u.K, T_e = 0 *u.K)
 
     with pytest.raises(RelativityError):
-        ion_sound_speed(T_i=5e19 * u.K, T_e = 0*u.K)
+        ion_sound_speed(T_i=5e19 * u.K, T_e = 0 *u.K)
 
     with pytest.raises(u.UnitConversionError):
-        ion_sound_speed(T_i=5 * u.A, T_e = 0*u.K)
+        ion_sound_speed(T_i=5 * u.A, T_e = 0 *u.K)
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i=T_nanarr, T_e = 0*u.K)
+        ion_sound_speed(T_i=T_nanarr, T_e = 0 *u.K)
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_e=T_nanarr, T_i=0*u.K)
+        ion_sound_speed(T_e=T_nanarr, T_i=0 *u.K)
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i=T_negarr, T_e = 0*u.K)
+        ion_sound_speed(T_i=T_negarr, T_e = 0 *u.K)
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_e=T_negarr, T_i=0*u.K)
+        ion_sound_speed(T_e=T_negarr, T_i=0 *u.K)
 
     with pytest.raises(UserWarning):
-        assert ion_sound_speed(T_e=1.2e6, T_i=0*u.K) == ion_sound_speed(T_e=1.2e6 * u.K, T_i = 0*u.K)
+        assert ion_sound_speed(T_e=1.2e6, T_i=0 *u.K) == ion_sound_speed(T_e=1.2e6 * u.K, T_i = 0 *u.K)
 
     with pytest.raises(UserWarning):
-        assert ion_sound_speed(T_i=1.3e6, T_e = 0*u.K) == ion_sound_speed(T_i=1.3e6 * u.K, T_e = 0*u.K)
+        assert ion_sound_speed(T_i=1.3e6, T_e = 0 *u.K) == ion_sound_speed(T_i=1.3e6 * u.K, T_e = 0 *u.K)
 
-    ion_sound_speed(T_e=1.2e6 * u.K, T_i=0*u.K)
+    ion_sound_speed(T_e=1.2e6 * u.K, T_i=0 *u.K)
     # testing for user input z_mean
-    testMeth1 = ion_sound_speed(T_e=1.2e6 * u.K, T_i=0*u.K, z_mean=0.8).si.value
+    testMeth1 = ion_sound_speed(T_e=1.2e6 * u.K, T_i=0 *u.K, z_mean=0.8).si.value
     testTrue1 = 89018.0944146141
     errStr = (f"ion_sound_speed() gave {testMeth1}, should be {testTrue1}.")
     assert np.isclose(testMeth1,
@@ -474,33 +476,33 @@ def test_gyrofrequency():
 def test_gyroradius():
     r"""Test the gyroradius function in parameters.py."""
 
-    assert gyroradius(B, T_e).unit == u.m
+    assert gyroradius(B, T_i=T_e).unit == u.m
 
-    assert gyroradius(B, 25 * u.m / u.s).unit == u.m
+    assert gyroradius(B, Vperp=25 * u.m / u.s).unit == u.m
 
     Vperp = 1e6 * u.m / u.s
     Bmag = 1 * u.T
     omega_ce = gyrofrequency(Bmag)
-    assert gyroradius(Bmag, Vperp) == \
+    assert gyroradius(Bmag, Vperp=Vperp) == \
         (Vperp / omega_ce).to(u.m, equivalencies=u.dimensionless_angles())
 
     with pytest.raises(TypeError):
         gyroradius(u.T, 8 * u.m / u.s)
 
     with pytest.raises(u.UnitConversionError):
-        gyroradius(5 * u.A, 8 * u.m / u.s)
+        gyroradius(5 * u.A, Vperp=8 * u.m / u.s)
 
     with pytest.raises(u.UnitConversionError):
-        gyroradius(5 * u.T, 8 * u.m)
+        gyroradius(5 * u.T, Vperp=8 * u.m)
 
     with pytest.raises(ValueError):
-        gyroradius(np.array([5, 6]) * u.T, np.array([5, 6, 7]) * u.m / u.s)
+        gyroradius(np.array([5, 6]) * u.T, Vperp=np.array([5, 6, 7]) * u.m / u.s)
 
     with pytest.raises(ValueError):
-        gyroradius(np.nan * u.T, 1 * u.m / u.s)
+        gyroradius(np.nan * u.T, Vperp=1 * u.m / u.s)
 
     with pytest.raises(ValueError):
-        gyroradius(3.14159 * u.T, -1 * u.K)
+        gyroradius(3.14159 * u.T, T_i=-1 * u.K)
 
     with pytest.raises(UserWarning):
         assert gyroradius(1.0, Vperp=1.0) == \
@@ -514,22 +516,27 @@ def test_gyroradius():
         gyroradius(1.1 * u.T, T_i=1.2 * u.K, Vperp=1 * u.m / u.s)
 
     with pytest.raises(ValueError):
-        gyroradius(1.1 * u.T, 1.2 * u.K, 1.1 * u.m)
+        gyroradius(1.1 * u.T, T_i=1.2 * u.K, Vperp=1.1 * u.m)
 
-    assert gyroradius(B, T_i, particle="p").unit == u.m
+    assert gyroradius(B, T_i=T_i, particle="p").unit == u.m
 
-    assert gyroradius(B, 25 * u.m / u.s, particle="p").unit == u.m
+    assert gyroradius(B, Vperp=25 * u.m / u.s, particle="p").unit == u.m
 
     # Case when Z=1 is assumed
-    assert gyroradius(B, T_i, particle='p') == \
-        gyroradius(B, T_i, particle='H-1')
+    assert np.isclose(gyroradius(B, T_i=T_i, particle='p'),
+                      gyroradius(B, T_i=T_i, particle='H+'),
+                      atol=1e-6*u.m)
 
-    assert gyroradius(B, V, particle="p") == gyroradius(B, -V, particle="p")
+    assert gyroradius(B,
+                      Vperp=V,
+                      particle="p") == gyroradius(B,
+                                                  Vperp=-V,
+                                                  particle="p")
 
     Vperp = 1e6 * u.m / u.s
     Bmag = 1 * u.T
     omega_ci = gyrofrequency(Bmag, particle='p')
-    assert gyroradius(Bmag, Vperp, particle="p") == \
+    assert gyroradius(Bmag, Vperp=Vperp, particle="p") == \
         (Vperp / omega_ci).to(u.m, equivalencies=u.dimensionless_angles())
 
     T2 = 1.2 * u.MK
@@ -539,17 +546,17 @@ def test_gyroradius():
     assert gyroradius(B2, Vperp=Vperp2, particle='alpha') == \
         gyroradius(B2, T_i=T2, particle='alpha')
 
-    assert gyroradius(1 * u.T, 1 * u.MK, particle='positron') == \
-        gyroradius(1 * u.T, 1 * u.MK)
+    assert gyroradius(1 * u.T, T_i=1 * u.MK, particle='positron') == \
+        gyroradius(1 * u.T, T_i=1 * u.MK)
 
     with pytest.raises(TypeError):
-        gyroradius(u.T, 8 * u.m / u.s, particle="p")
+        gyroradius(u.T, Vperp=8 * u.m / u.s, particle="p")
 
     with pytest.raises(ValueError):
-        gyroradius(B, T_i, particle='asfdas')
+        gyroradius(B, T_i=T_i, particle='asfdas')
 
     with pytest.raises(ValueError):
-        gyroradius(B, -1 * u.K, particle='p')
+        gyroradius(B, T_i=-1 * u.K, particle='p')
 
     with pytest.raises(UserWarning):
         assert gyroradius(1.0, Vperp=1.0, particle="p") == \
@@ -563,10 +570,10 @@ def test_gyroradius():
         gyroradius(1.1 * u.T, T_i=1.2 * u.K, Vperp=1 * u.m / u.s, particle="p")
 
     with pytest.raises(ValueError):
-        gyroradius(1.1 * u.T, 1.2 * u.K, 1.1 * u.m, particle="p")
+        gyroradius(1.1 * u.T, T_i=1.2 * u.K, Vperp=1.1 * u.m, particle="p")
 
     with pytest.raises(ValueError):
-        gyroradius(1.1 * u.T, 1.2 * u.m, 1.1 * u.K, particle="p")
+        gyroradius(1.1 * u.T, Vperp=1.2 * u.m, T_i=1.1 * u.K, particle="p")
 
 
 def test_plasma_frequency():

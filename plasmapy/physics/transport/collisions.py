@@ -14,8 +14,8 @@ from plasmapy.constants import (m_e, k_B, e, eps0, pi, hbar)
 from plasmapy.atomic import (ion_mass, integer_charge)
 from plasmapy.physics.parameters import (Debye_length)
 from plasmapy.physics.quantum import (Wigner_Seitz_radius,
-                      thermal_deBroglie_wavelength,
-                      chemical_potential)
+                                      thermal_deBroglie_wavelength,
+                                      chemical_potential)
 from plasmapy.mathematics import Fermi_integral
 
 

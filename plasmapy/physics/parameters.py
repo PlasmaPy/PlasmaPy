@@ -181,8 +181,8 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
                 Z = z_mean
             # ensuring positive value of Z
             Z = np.abs(Z)
-        except AtomicError:
-            raise ValueError("Invalid ion in Alfven_speed.")
+        except AtomicError as e:
+            raise ValueError("Invalid ion in Alfven_speed.") from e
         rho = density * m_i + Z * density * m_e
 
     elif density.unit == u.kg / u.m**3:
@@ -809,7 +809,7 @@ def gyrofrequency(B, particle='e-', signed=False, z_mean=None):
                        # 'Vperp': {'units': u.m/u.s},
                        # 'T_i': {'units': u.K},
                        })
-def gyroradius(B, *args, Vperp=None, T_i=None, particle='e-'):
+def gyroradius(B, *, Vperp=None, T_i=None, particle='e-'):
     r"""Return the particle gyroradius.
 
     Parameters
