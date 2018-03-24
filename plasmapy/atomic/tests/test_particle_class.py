@@ -14,12 +14,13 @@ from ...utils import (
     InvalidElementError,
     InvalidIsotopeError,
     ChargeError,
+    call_string,
+    run_test_equivalent_calls,
 )
 
 from ..atomic import known_isotopes
 from ..isotopes import _Isotopes
 from ..particle_class import Particle
-from ..parsing import _call_string
 
 # (arg, kwargs, results_dict
 test_Particle_table = [
@@ -299,7 +300,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
     all of the inconsistencies with the expected results.
     """
 
-    call = _call_string(arg, kwargs)
+    call = call_string(Particle, arg, kwargs)
     errmsg = ""
 
     try:
@@ -348,7 +349,7 @@ equivalent_particles_table = [
     ['p+', 'proton', 'H-1+', 'H-1 1+', 'H-1 +1'],
     ['D', 'H-2', 'Hydrogen-2', 'deuterium'],
     ['T', 'H-3', 'Hydrogen-3', 'tritium'],
-    ['alpha', 'He-4++', 'He-4 2+', 'He-4 +2'],
+    ['alpha', 'He-4++', 'He-4 2+', 'He-4 +2', 'He-4 III'],
     ['e-', 'electron', 'e'],
     ['e+', 'positron'],
     ['p-', 'antiproton'],
@@ -361,14 +362,7 @@ equivalent_particles_table = [
 @pytest.mark.parametrize("equivalent_particles", equivalent_particles_table)
 def test_Particle_equivalent_cases(equivalent_particles):
     """Test that all instances of a list of particles are equivalent."""
-
-    equivalent_Particle_classes = []
-
-    for particle in equivalent_particles:
-        equivalent_Particle_classes.append(Particle(particle))
-
-    for Q in equivalent_Particle_classes[1:]:
-        assert Q == equivalent_Particle_classes[0], f"{equivalent_particles}"
+    run_test_equivalent_calls(Particle, *equivalent_particles)
 
 
 # arg, kwargs, attribute, exception
@@ -408,7 +402,7 @@ def test_Particle_errors(arg, kwargs, attribute, exception):
     """
     with pytest.raises(exception, message=(
             f"The following command: "
-            f"\n\n >>> {_call_string(arg, kwargs)}{attribute}\n\n"
+            f"\n\n  {call_string(Particle, arg, kwargs)}{attribute}\n\n"
             f"did not raise a {exception.__name__} as expected")):
         exec(f'Particle(arg, **kwargs){attribute}')
 
@@ -430,7 +424,7 @@ def test_Particle_warnings(arg, kwargs, attribute, warning):
     """
     with pytest.warns(warning, message=(
             f"The following command: "
-            f"\n\n >>> {_call_string(arg, kwargs)}{attribute}\n\n"
+            f"\n\n >>> {call_string(Particle, arg, kwargs)}{attribute}\n\n"
             f"did not issue a {warning.__name__} as expected")):
         exec(f'Particle(arg, **kwargs){attribute}')
 
