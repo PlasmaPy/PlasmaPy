@@ -35,11 +35,11 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
     case_sensitive_aliases_for_a_symbol = [
         (['beta-', 'e'], 'e-'),
         (['beta+'], 'e+'),
-        (['p', 'H-1+', 'H-1 1+', 'H-1 +1'], 'p+'),
+        (['p', 'H-1+', 'H-1 1+', 'H-1 +1', 'H-1 II'], 'p+'),
         (['n-1'], 'n'),
         (['H-2'], 'D'),
-        (['H-2+', 'H-2 1+', 'H-2 +1', 'D+'], 'D 1+'),
-        (['H-3+', 'H-3 1+', 'H-3 +1', 'T+'], 'T 1+'),
+        (['H-2+', 'H-2 1+', 'H-2 +1', 'D+', 'D II'], 'D 1+'),
+        (['H-3+', 'H-3 1+', 'H-3 +1', 'T+', 'T II'], 'T 1+'),
     ]
 
     case_insensitive_aliases_for_a_symbol = [
