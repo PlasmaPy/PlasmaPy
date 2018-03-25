@@ -77,8 +77,6 @@ def grab_charge(ion, z_mean=None):
     else:
         # using average ionization provided by user
         Z = z_mean
-    # ensuring positive value of Z
-    Z = np.abs(Z)
     return Z
 
 def grab_density(density, ion, z_mean = None):
@@ -759,7 +757,7 @@ def gyrofrequency(B, particle='e-', signed=False, z_mean=None):
     <Quantity -1.75882002e+10 rad / s>
     >>> gyrofrequency(0.01*u.T, 'p')
     <Quantity 957883.32241481 rad / s>
-    >>> gyrofrequency(0.01*u.T, 'p')
+    >>> gyrofrequency(0.01*u.T, 'p', signed=True)
     <Quantity 957883.32241481 rad / s>
     >>> gyrofrequency(0.01*u.T, particle='T+')
     <Quantity 319964.54975911 rad / s>
@@ -771,21 +769,8 @@ def gyrofrequency(B, particle='e-', signed=False, z_mean=None):
     2799249007.6528206 Hz
 
     """
-    try:
-        m_i = atomic.ion_mass(particle)
-        if z_mean is None:
-            # warnings.warn("No z_mean given, defaulting to atomic charge",
-            #               PhysicsWarning)
-            try:
-                Z = atomic.integer_charge(particle)
-            except AtomicError:
-                Z = 1
-        else:
-            # using user provided average ionization
-            Z = z_mean
-    except Exception:
-        raise ValueError("Invalid particle {} in gyrofrequency"
-                         .format(particle))
+    m_i = atomic.ion_mass(particle)
+    Z = grab_charge(particle, z_mean)
     if not signed:
         Z = abs(Z)
 
