@@ -191,11 +191,7 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     B = B.to(u.T)
     rho = grab_density(density, ion, z_mean)
 
-    try:
-        V_A = (np.abs(B) / np.sqrt(mu0 * rho)).to(u.m / u.s)
-    except Exception:
-        raise ValueError("Unable to find Alfven speed")
-
+    V_A = (np.abs(B) / np.sqrt(mu0 * rho)).to(u.m / u.s)
     return V_A
 
 
@@ -311,16 +307,7 @@ def ion_sound_speed(T_e,
 
     try:
         m_i = atomic.ion_mass(ion)
-        if z_mean is None:
-            # warnings.warn("No z_mean given, defaulting to atomic charge",
-            #               PhysicsWarning)
-            try:
-                Z = atomic.integer_charge(ion)
-            except AtomicError:
-                Z = 1
-        else:
-            # using average ionization provided by user
-            Z = z_mean
+        Z = grab_charge(ion, z_mean)
     except AtomicError:
         raise ValueError("Invalid ion in ion_sound_speed.")
 
@@ -1075,7 +1062,7 @@ def Debye_length(T_e, n_e):
     """
 
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
-    lambda_D = (np.sqrt(eps0 * k_B * T_e / (n_e * e ** 2))).to(u.m)
+    lambda_D = np.sqrt(eps0 * k_B * T_e / (n_e * e ** 2)).to(u.m)
     return lambda_D
 
 

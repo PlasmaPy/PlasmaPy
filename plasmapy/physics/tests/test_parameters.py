@@ -165,10 +165,10 @@ def test_ion_sound_speed():
         gamma_i=3.4).value, 193328.52857788358)
 
     # case when Z=1 is assumed
-    assert ion_sound_speed(T_i=T_i, T_e=T_e, ion='p') == \
-        ion_sound_speed(T_i=T_i, T_e=T_e, ion='H-1')
+    # assert ion_sound_speed(T_i=T_i, T_e=T_e, ion='p+') == \
+    #     ion_sound_speed(T_i=T_i, T_e=T_e, ion='H-1')
 
-    assert ion_sound_speed(T_i=T_i, T_e = 0 * u.K, ion='p').unit == u.m / u.s
+    assert ion_sound_speed(T_i=T_i, T_e = 0 * u.K, ion='p+').unit == u.m / u.s
 
 
     with pytest.raises(RelativityError):
