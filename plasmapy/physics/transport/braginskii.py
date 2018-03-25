@@ -215,9 +215,9 @@ class classical_transport:
     """
 
     @utils.check_quantity({"T_e": {"units": u.K, "can_be_negative": False},
-                           "n_e": {"units": u.m**-3},
+                           "n_e": {"units": u.m ** -3},
                            "T_i": {"units": u.K, "can_be_negative": False},
-                           "n_i": {"units": u.m**-3},
+                           "n_i": {"units": u.m ** -3},
                            })
     def __init__(self,
                  T_e,
@@ -266,8 +266,8 @@ class classical_transport:
         # so just convert
         self.T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
         self.T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
-        self.n_e = n_e.to(u.m**-3)
-        self.n_i = n_i.to(u.m**-3)
+        self.n_e = n_e.to(u.m ** -3)
+        self.n_i = n_i.to(u.m ** -3)
 
         # get ion mass and charge state
         if m_i is None:
@@ -360,7 +360,7 @@ class classical_transport:
             self.mu = mu
         else:
             self.mu = 0  # disable the JH special features by default
-#            self.mu = m_e / self.m_i  # enable the JH special features
+        #            self.mu = m_e / self.m_i  # enable the JH special features
         if theta is not None:  # theta can be zero, thus no "if theta:" here
             self.theta = theta
         else:
@@ -427,7 +427,7 @@ class classical_transport:
                                            self.ion_particle,
                                            self.coulomb_log_ii,
                                            self.V_ii)
-        kappa = kappa_hat * (self.n_i * k_B**2 * self.T_i * tau_i / self.m_i)
+        kappa = kappa_hat * (self.n_i * k_B ** 2 * self.T_i * tau_i / self.m_i)
         return kappa.to(u.W / u.m / u.K)
 
     def electron_thermal_conductivity(self):
@@ -451,7 +451,7 @@ class classical_transport:
                                                 self.ion_particle,
                                                 self.coulomb_log_ei,
                                                 self.V_ei)
-        kappa = kappa_hat * (self.n_e * k_B**2 * self.T_e * tau_e / m_e)
+        kappa = kappa_hat * (self.n_e * k_B ** 2 * self.T_e * tau_e / m_e)
         return kappa.to(u.W / u.m / u.K)
 
     def ion_viscosity(self):
@@ -484,8 +484,8 @@ class classical_transport:
                     eta_hat[4] * common_factor)
         else:
             eta1 = (eta_hat[0] * common_factor,
-                    eta_hat[1] * common_factor / self.hall_i**2,
-                    eta_hat[2] * common_factor / self.hall_i**2,
+                    eta_hat[1] * common_factor / self.hall_i ** 2,
+                    eta_hat[2] * common_factor / self.hall_i ** 2,
                     eta_hat[3] * common_factor / self.hall_i,
                     eta_hat[4] * common_factor / self.hall_i)
         if eta1[0].unit == eta1[2].unit == eta1[4].unit:
@@ -527,8 +527,8 @@ class classical_transport:
                     eta_hat[4] * common_factor)
         else:
             eta1 = (eta_hat[0] * common_factor,
-                    eta_hat[1] * common_factor / self.hall_e**2,
-                    eta_hat[2] * common_factor / self.hall_e**2,
+                    eta_hat[1] * common_factor / self.hall_e ** 2,
+                    eta_hat[2] * common_factor / self.hall_e ** 2,
                     eta_hat[3] * common_factor / self.hall_e,
                     eta_hat[4] * common_factor / self.hall_e)
         if eta1[0].unit == eta1[2].unit and eta1[2].unit == eta1[4].unit:
@@ -558,6 +558,71 @@ class classical_transport:
             d['ion thermal conductivity'] = self.ion_thermal_conductivity()
             d['ion viscosity'] = self.ion_viscosity()
         return d
+
+
+def resistivity(T_e, n_e, T_i, n_i, ion_particle, m_i=None, Z=None, B=0.0 * u.T,
+                model='Braginskii', field_orientation='parallel',
+                mu=None, theta=None):
+    ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
+                             Z=Z, B=B, model=model,
+                             field_orientation=field_orientation,
+                             mu=mu, theta=theta)
+    return ct.resistivity()
+
+
+def thermoelectric_conductivity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
+                                Z=None, B=0.0 * u.T, model='Braginskii',
+                                field_orientation='parallel', mu=None,
+                                theta=None):
+    ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
+                             Z=Z, B=B, model=model,
+                             field_orientation=field_orientation,
+                             mu=mu, theta=theta)
+    return ct.thermoelectric_conductivity()
+
+
+def ion_thermal_conductivity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
+                             Z=None, B=0.0 * u.T, model='Braginskii',
+                             field_orientation='parallel', mu=None,
+                             theta=None):
+    ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
+                             Z=Z, B=B, model=model,
+                             field_orientation=field_orientation,
+                             mu=mu, theta=theta)
+    return ct.ion_thermal_conductivity()
+
+
+def electron_thermal_conductivity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
+                                  Z=None, B=0.0 * u.T, model='Braginskii',
+                                  field_orientation='parallel', mu=None,
+                                  theta=None):
+    ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
+                             Z=Z, B=B, model=model,
+                             field_orientation=field_orientation,
+                             mu=mu, theta=theta)
+    return ct.electron_thermal_conductivity()
+
+
+def ion_viscosity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
+                  Z=None, B=0.0 * u.T, model='Braginskii',
+                  field_orientation='parallel', mu=None,
+                  theta=None):
+    ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
+                             Z=Z, B=B, model=model,
+                             field_orientation=field_orientation,
+                             mu=mu, theta=theta)
+    return ct.ion_viscosity()
+
+
+def electron_viscosity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
+                       Z=None, B=0.0 * u.T, model='Braginskii',
+                       field_orientation='parallel', mu=None,
+                       theta=None):
+    ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
+                             Z=Z, B=B, model=model,
+                             field_orientation=field_orientation,
+                             mu=mu, theta=theta)
+    return ct.electron_viscosity()
 
 
 def _nondim_thermal_conductivity(hall, Z,
@@ -738,7 +803,7 @@ def _nondim_resist_spitzer(Z, field_orientation):
     alpha_par = (3 * np.pi / 32) * (1 / gamma_E)
     if field_orientation == 'parallel' or field_orientation == 'par':
         return alpha_par
-#        alpha_par = 0.5064 # Z = 1
+    #        alpha_par = 0.5064 # Z = 1
 
     if field_orientation == 'all':
         return alpha_par, alpha_perp
@@ -751,7 +816,7 @@ def _nondim_tec_spitzer(Z):
     """
     (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
     beta = 5 / 2 * (8 / 5 * (delta_E / gamma_E) - 1)
-#    beta = 0.703
+    #    beta = 0.703
     return beta
 
 
@@ -875,6 +940,7 @@ def _nondim_visc_e_braginskii(hall, Z):
     def eta_2(hall):
         Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
         return (eta_doubleprime_2 * hall ** 2 + eta_doubleprime_0) / Delta
+
     eta_2_e = eta_2(hall)
     eta_1_e = eta_2(2 * hall)
 
@@ -882,6 +948,7 @@ def _nondim_visc_e_braginskii(hall, Z):
         Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
         return (eta_tripleprime_2 * hall ** 3 +
                 eta_tripleprime_0 * hall) / Delta
+
     eta_4_e = f_eta_4(hall)
     eta_3_e = f_eta_4(2 * hall)
     return np.array((eta_0_e, eta_1_e, eta_2_e, eta_3_e, eta_4_e))
@@ -909,6 +976,7 @@ def _nondim_visc_i_braginskii(hall):
     def f_eta_2(hall):
         Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
         return (eta_doubleprime_2 * hall ** 2 + eta_doubleprime_0) / Delta
+
     eta_2_i = f_eta_2(hall)
     eta_1_i = f_eta_2(2 * hall)
 
@@ -916,6 +984,7 @@ def _nondim_visc_i_braginskii(hall):
         Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
         return (eta_tripleprime_2 * hall ** 3 +
                 eta_tripleprime_0 * hall) / Delta
+
     eta_4_i = f_eta_4(hall)
     eta_3_i = f_eta_4(2 * hall)
     return np.array((eta_0_i, eta_1_i, eta_2_i, eta_3_i, eta_4_i))
@@ -934,7 +1003,7 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
     # instead of an int
     hall = float(hall)
 
-#    alpha_0 = 0.5129
+    #    alpha_0 = 0.5129
     delta_0 = [3.7703, 1.0465, 0.5814, 0.4106, 0.0961]
     delta_1 = [14.79, 10.80, 9.618, 9.055, 7.482]
     alpha_1_prime = [6.416, 5.523, 5.226, 5.077, 4.63]
@@ -991,7 +1060,7 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
 
     Delta = hall ** 4 + delta_1[Z_idx] * hall ** 2 + delta_0[Z_idx]
     beta_0 = beta_0_prime[Z_idx] / delta_0[Z_idx]
-#    beta_0 = 0.7110
+    #    beta_0 = 0.7110
 
     if field_orientation == 'parallel' or field_orientation == 'par':
         beta_par = beta_0
@@ -1206,7 +1275,7 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
         return alpha_par
 
     def f_alpha_perp(Z_idx):
-        numerator = (1.46 * Z**(2 / 3) * r +
+        numerator = (1.46 * Z ** (2 / 3) * r +
                      alpha_0[Z_idx] * (1 - alpha_par_e[Z_idx]))
         denominator = (r ** (5 / 3) +
                        alpha_2[Z_idx] * r ** (4 / 3) +
@@ -1275,11 +1344,11 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
         return numerator / denominator
 
     def f_b_1(Z):
-        return 0.134 * Z**2 + 0.977 * Z + 0.17
+        return 0.134 * Z ** 2 + 0.977 * Z + 0.17
 
     def f_b_2(Z):
         return (0.689 * Z ** (4 / 3) - 0.377 * Z ** (2 / 3) +
-                3.94 * Z**(1 / 3) + 0.644)
+                3.94 * Z ** (1 / 3) + 0.644)
 
     def f_b_3(Z):
         return -0.109 * Z + 1.33 * Z ** (2 / 3) - 3.80 * Z ** (1 / 3) + 0.289
@@ -1442,13 +1511,13 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
     042114.
     """
-#    mu = m_e / m_i
-#    theta = T_e / T_i
+    #    mu = m_e / m_i
+    #    theta = T_e / T_i
     zeta = 1 / Z * np.sqrt(mu / theta)
     r = np.abs(hall / np.sqrt(2))
 
-#    K = 2  # 2x2 moments, equivalent to original Braginskii
-#    K = 3  # 3x3 moments
+    #    K = 2  # 2x2 moments, equivalent to original Braginskii
+    #    K = 3  # 3x3 moments
 
     if K == 3:
         Delta_par_i1 = 1 + 26.90 * zeta + 187.5 * zeta ** 2 + 346.9 * zeta ** 3
@@ -1463,7 +1532,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
         Delta_perp_i1 = (r ** 6 +
                          (3.635 + 29.15 * zeta + 83 * zeta ** 2) * r ** 4 +
                          (1.395 + 35.64 * zeta + 344.9 * zeta ** 2 +
-                          1345 * zeta**3 + 1891 * zeta ** 4) * r ** 2 +
+                          1345 * zeta ** 3 + 1891 * zeta ** 4) * r ** 2 +
                          0.09163 * Delta_par_i1 ** 2)
         kappa_perp_i = ((np.sqrt(2) + 15 / 2 * zeta) * r ** 4 +
                         (3.841 + 57.59 * zeta + 297.8 * zeta ** 2 +
@@ -1511,8 +1580,8 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
     r = np.abs(hall / np.sqrt(2))
     r13 = 2 * r
 
-#    K = 2  # 2x2 moments, equivalent to original Braginskii
-#    K = 3  # 3x3 moments
+    #    K = 2  # 2x2 moments, equivalent to original Braginskii
+    #    K = 3  # 3x3 moments
 
     if K == 3:
         Delta_par_i2 = 1 + 15.79 * zeta + 63.92 * zeta ** 2 + 71.69 * zeta ** 3
@@ -1541,7 +1610,7 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
         eta_1_i = f_eta_2(r13, zeta, Delta_perp_i2_13)
 
         def f_eta_4(r, zeta, Delta_perp_i2):
-            eta_4_i = r * (r**4 +
+            eta_4_i = r * (r ** 4 +
                            (3.535 + 23.30 * zeta + 52 * zeta ** 2) * r ** 2 +
                            0.9538 + 21.81 * zeta + 174.2 * zeta ** 2 +
                            538.4 * zeta ** 3 + 576 * zeta ** 4
@@ -1552,7 +1621,7 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
         eta_3_i = f_eta_4(r13, zeta, Delta_perp_i2_13)
 
     elif K == 2:
-        Delta_par_i2 = 1 + 7.164 * zeta + 10.49 * zeta**2
+        Delta_par_i2 = 1 + 7.164 * zeta + 10.49 * zeta ** 2
         eta_0_i = (1.357 + 5.243 * zeta) / Delta_par_i2
 
         def Delta_perp_i2(r, zeta, Delta_par_i2):
@@ -1575,7 +1644,7 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
 
         def f_eta_4(r, zeta, Delta_perp_i2):
             Delta_perp_i2 = (r ** 4 +
-                             (2.023 + 11.68 * zeta + 20 * zeta**2) * r ** 2 +
+                             (2.023 + 11.68 * zeta + 20 * zeta ** 2) * r ** 2 +
                              0.5820 * Delta_par_i2 ** 2)
             eta_4_i = r * (r ** 2 +
                            1.188 + 8.283 * zeta + 16 * zeta ** 2
