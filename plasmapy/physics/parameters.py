@@ -69,6 +69,28 @@ by an angular frequency to get a length scale:
 
 """
 
+def grab_charge(ion, z_mean=None):
+    if z_mean is None:
+        # warnings.warn("No z_mean given, defaulting to atomic charge",
+        #               PhysicsWarning)
+        Z = atomic.integer_charge(ion)
+    else:
+        # using average ionization provided by user
+        Z = z_mean
+    # ensuring positive value of Z
+    Z = np.abs(Z)
+    return Z
+
+def grab_density(density, ion, z_mean = None):
+    density = density.si
+    if density.unit == u.m**-3:
+        m_i = atomic.ion_mass(ion)
+        Z = grab_charge(ion, z_mean)
+        rho = density * m_i + Z * density * m_e
+    elif density.unit == u.kg / u.m**3:
+        rho = density
+
+    return rho
 
 @utils.check_relativistic
 @utils.check_quantity({'B': {'units': u.T},
@@ -167,26 +189,7 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
 
 
     B = B.to(u.T)
-    density = density.si
-
-    if density.unit == u.m**-3:
-        try:
-            m_i = atomic.ion_mass(ion)
-            if z_mean is None:
-                # warnings.warn("No z_mean given, defaulting to atomic charge",
-                #               PhysicsWarning)
-                Z = atomic.integer_charge(ion)
-            else:
-                # using average ionization provided by user
-                Z = z_mean
-            # ensuring positive value of Z
-            Z = np.abs(Z)
-        except AtomicError as e:
-            raise ValueError("Invalid ion in Alfven_speed.") from e
-        rho = density * m_i + Z * density * m_e
-
-    elif density.unit == u.kg / u.m**3:
-        rho = density
+    rho = grab_density(density, ion, z_mean)
 
     try:
         V_A = (np.abs(B) / np.sqrt(mu0 * rho)).to(u.m / u.s)

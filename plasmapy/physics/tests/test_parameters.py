@@ -6,7 +6,7 @@ from astropy import units as u
 from warnings import simplefilter
 
 from ...utils.exceptions import RelativityWarning, RelativityError
-from ...utils.exceptions import PhysicsError
+from ...utils.exceptions import PhysicsError, InvalidParticleError
 from ...constants import c, m_p, m_e, e, mu0
 
 from ..parameters import (Alfven_speed,
@@ -110,7 +110,7 @@ def test_Alfven_speed():
     with pytest.raises(u.UnitsError):
         Alfven_speed(B, 5 * u.m**-2, ion='p')
 
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidParticleError):
         Alfven_speed(B, n_i, ion='spacecats')
 
     with pytest.warns(RelativityWarning):  # relativistic
