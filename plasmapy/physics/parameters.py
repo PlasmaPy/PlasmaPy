@@ -542,7 +542,8 @@ def collision_rate_electron_ion(T_e,
                                 n_e,
                                 ion_particle,
                                 coulomb_log=None,
-                                V=None):
+                                V=None,
+                                coulomb_log_method="classical"):
     r"""
     Momentum relaxation electron-ion collision rate
 
@@ -589,7 +590,11 @@ def collision_rate_electron_ion(T_e,
         coulomb_log_val = coulomb_log
     else:
         particles = ['e', ion_particle]
-        coulomb_log_val = Coulomb_logarithm(T_e, n_e, particles, V)
+        coulomb_log_val = Coulomb_logarithm(T_e,
+                                            n_e,
+                                            particles,
+                                            V,
+                                            method=coulomb_log_method)
     Z_i = atomic.integer_charge(ion_particle)
     nu_e = 4 / 3 * np.sqrt(2 * np.pi / m_e) / (4 * np.pi * eps0) ** 2 * \
         e ** 4 * n_e * Z_i * coulomb_log_val / (k_B * T_e) ** 1.5
@@ -601,7 +606,8 @@ def collision_rate_electron_ion(T_e,
     'n_i': {'units': u.m**-3, 'can_be_negative': False}
 })
 def collision_rate_ion_ion(T_i, n_i, ion_particle,
-                           coulomb_log=None, V=None):
+                           coulomb_log=None, V=None,
+                           coulomb_log_method="classical"):
     r"""
     Momentum relaxation ion-ion collision rate
 
@@ -653,7 +659,7 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
         coulomb_log_val = coulomb_log
     else:
         particles = [ion_particle, ion_particle]
-        coulomb_log_val = Coulomb_logarithm(T_i, n_i, particles, V)
+        coulomb_log_val = Coulomb_logarithm(T_i, n_i, particles, V, method=coulomb_log_method)
     Z_i = atomic.integer_charge(ion_particle)
     m_i = atomic.ion_mass(ion_particle)
     nu_i = 4 / 3 * np.sqrt(np.pi / m_i) / (4 * np.pi * eps0)**2 * e**4 * \
@@ -666,7 +672,8 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
     'T': {'units': u.K, 'can_be_negative': False},
     'B': {'units': u.T}
 })
-def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None):
+def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None,
+                   coulomb_log_method="classical"):
     r"""TODO"""
 
     gyro_frequency = gyrofrequency(B, particle)
@@ -676,7 +683,8 @@ def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None):
                                                 n,
                                                 ion_particle,
                                                 coulomb_log,
-                                                V)
+                                                V,
+                                                coulomb_log_method=coulomb_log_method)
     else:
         coll_rate = collision_rate_ion_ion(T, n, ion_particle, coulomb_log, V)
     return gyro_frequency / coll_rate

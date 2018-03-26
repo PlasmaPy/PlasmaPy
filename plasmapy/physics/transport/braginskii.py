@@ -240,7 +240,8 @@ class classical_transport:
                  hall_e=None,
                  hall_i=None,
                  mu=None,
-                 theta=None):
+                 theta=None,
+                 coulomb_log_method="classical"):
         # check the model
         self.model = model.lower()  # string inputs should be case insensitive
         valid_models = ['braginskii',
@@ -306,7 +307,8 @@ class classical_transport:
                                                     n_e,
                                                     [self.e_particle,
                                                      self.ion_particle],
-                                                    V_ei)
+                                                    V_ei,
+                                                    method=coulomb_log_method)
         if coulomb_log_ii is not None:
             self.coulomb_log_ii = coulomb_log_ii
             if self.coulomb_log_ii < 4:
@@ -318,21 +320,22 @@ class classical_transport:
                                                     n_e,  # this is not a typo!
                                                     [self.ion_particle,
                                                      self.ion_particle],
-                                                    V_ii)
+                                                    V_ii,
+                                                    method=coulomb_log_method)
 
 
         # calculate Hall parameters if not forced in input
         if hall_e is not None:
             self.hall_e = hall_e
         else:
-            self.hall_e = Hall_parameter(
-                n_e,
-                T_e,
-                B,
-                self.e_particle,
-                self.ion_particle,
-                coulomb_log_ei,
-                V_ei)
+            self.hall_e = Hall_parameter(n_e,
+                                         T_e,
+                                         B,
+                                         self.e_particle,
+                                         self.ion_particle,
+                                         coulomb_log_ei,
+                                         V_ei,
+                                         coulomb_log_method=coulomb_log_method)
         if hall_i is not None:
             self.hall_i = hall_i
         else:
@@ -342,7 +345,8 @@ class classical_transport:
                                          self.ion_particle,
                                          self.ion_particle,
                                          coulomb_log_ii,
-                                         V_ii)
+                                         V_ii,
+                                         coulomb_log_method=coulomb_log_method)
         # set up the ion non-dimensional coefficients for the Ji-Held model
         if mu is not None:  # mu can be 0, so not just if mu
             self.mu = mu
@@ -391,8 +395,7 @@ class classical_transport:
                                            self.e_particle,
                                            self.model,
                                            self.field_orientation)
-        beta = beta_hat * u.s / u.s  # yay! already dimensionless
-        return beta
+        return u.Quantity(beta_hat)
 
     def ion_thermal_conductivity(self):
         """
@@ -550,66 +553,66 @@ class classical_transport:
 
 def resistivity(T_e, n_e, T_i, n_i, ion_particle, m_i=None, Z=None, B=0.0 * u.T,
                 model='Braginskii', field_orientation='parallel',
-                mu=None, theta=None):
+                mu=None, theta=None, coulomb_log_method="classical"):
     ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
                              Z=Z, B=B, model=model,
                              field_orientation=field_orientation,
-                             mu=mu, theta=theta)
+                             mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
     return ct.resistivity()
 
 
 def thermoelectric_conductivity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
                                 Z=None, B=0.0 * u.T, model='Braginskii',
                                 field_orientation='parallel', mu=None,
-                                theta=None):
+                                theta=None, coulomb_log_method="classical"):
     ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
                              Z=Z, B=B, model=model,
                              field_orientation=field_orientation,
-                             mu=mu, theta=theta)
+                             mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
     return ct.thermoelectric_conductivity()
 
 
 def ion_thermal_conductivity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
                              Z=None, B=0.0 * u.T, model='Braginskii',
                              field_orientation='parallel', mu=None,
-                             theta=None):
+                             theta=None, coulomb_log_method="classical"):
     ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
                              Z=Z, B=B, model=model,
                              field_orientation=field_orientation,
-                             mu=mu, theta=theta)
+                             mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
     return ct.ion_thermal_conductivity()
 
 
 def electron_thermal_conductivity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
                                   Z=None, B=0.0 * u.T, model='Braginskii',
                                   field_orientation='parallel', mu=None,
-                                  theta=None):
+                                  theta=None, coulomb_log_method="classical"):
     ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
                              Z=Z, B=B, model=model,
                              field_orientation=field_orientation,
-                             mu=mu, theta=theta)
+                             mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
     return ct.electron_thermal_conductivity()
 
 
 def ion_viscosity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
                   Z=None, B=0.0 * u.T, model='Braginskii',
                   field_orientation='parallel', mu=None,
-                  theta=None):
+                  theta=None, coulomb_log_method="classical"):
     ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
                              Z=Z, B=B, model=model,
                              field_orientation=field_orientation,
-                             mu=mu, theta=theta)
+                             mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
     return ct.ion_viscosity()
 
 
 def electron_viscosity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
                        Z=None, B=0.0 * u.T, model='Braginskii',
                        field_orientation='parallel', mu=None,
-                       theta=None):
+                       theta=None, coulomb_log_method="classical"):
     ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
                              Z=Z, B=B, model=model,
                              field_orientation=field_orientation,
-                             mu=mu, theta=theta)
+                             mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
     return ct.electron_viscosity()
 
 
