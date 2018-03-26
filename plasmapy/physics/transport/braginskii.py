@@ -348,15 +348,9 @@ class classical_transport:
                                          V_ii,
                                          coulomb_log_method=coulomb_log_method)
         # set up the ion non-dimensional coefficients for the Ji-Held model
-        if mu is not None:  # mu can be 0, so not just if mu
-            self.mu = mu
-        else:
-            self.mu = 0  # disable the JH special features by default
-        #            self.mu = m_e / self.m_i  # enable the JH special features
-        if theta is not None:  # theta can be zero, thus no "if theta:" here
-            self.theta = theta
-        else:
-            self.theta = self.T_e / self.T_i
+        self.mu = 0 if mu is None else mu  # disable the JH special features by default
+        # self.mu = m_e / self.m_i  # enable the JH special features
+        self.theta = self.T_e / self.T_i if theta is None else theta
 
     def resistivity(self):
         """
