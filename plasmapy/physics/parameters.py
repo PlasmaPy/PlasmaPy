@@ -254,21 +254,13 @@ def ion_sound_speed(T_e,
     except AtomicError:
         raise ValueError("Invalid ion in ion_sound_speed.")
 
-    if not isinstance(gamma_e, (float, int)):
-        raise TypeError("The adiabatic index for electrons (gamma_e) must be "
-                        "a float or int in ion_sound_speed")
-    if not isinstance(gamma_i, (float, int)):
-        raise TypeError("The adiabatic index for ions (gamma_i) must be "
-                        "a float or int in ion_sound_speed")
-
-    if not 1 <= gamma_e <= np.inf:
-        raise utils.PhysicsError(
-            "The adiabatic index for electrons must be between "
-            "one and infinity")
-    if not 1 <= gamma_i <= np.inf:
-        raise utils.PhysicsError(
-            "The adiabatic index for ions must be between "
-            "one and infinity")
+    for gamma, particles in zip([gamma_e, gamma_i], ["electrons", "ions"]):
+        if not isinstance(gamma, (float, int)):
+            raise TypeError(f"The adiabatic index gamma for {particles} must be "
+                            "a float or int")
+        if not 1 <= gamma <= np.inf:
+            raise utils.PhysicsError(f"The adiabatic index for {particles} must be between "
+                                     "one and infinity")
 
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
