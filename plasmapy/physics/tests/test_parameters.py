@@ -463,8 +463,8 @@ def test_gyrofrequency():
         assert gyrofrequency(5.0, 'p') == gyrofrequency(5.0 * u.T, 'p')
 
     gyrofrequency(1 * u.T, particle='p')
-    # testing for user input z_mean
-    testMeth1 = gyrofrequency(1 * u.T, particle='p', z_mean=0.8).si.value
+    # testing for user input Z
+    testMeth1 = gyrofrequency(1 * u.T, particle='p', Z=0.8).si.value
     testTrue1 = 76630665.79318453
     errStr = (f"gyrofrequency() gave {testMeth1}, should be {testTrue1}.")
     assert np.isclose(testMeth1,

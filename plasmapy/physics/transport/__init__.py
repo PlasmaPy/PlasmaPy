@@ -1,4 +1,15 @@
 from .collisions import (Coulomb_logarithm,
                          collision_frequency,
-                         )
-from .braginskii import classical_transport, Hall_parameter
+                         b_perp,
+                         impact_parameter,
+                         mean_free_path,
+                         mobility,
+                         Knudsen_number,
+                         coupling_parameter)
+from .braginskii import (classical_transport,
+                         resistivity,
+                         thermoelectric_conductivity,
+                         electron_thermal_conductivity,
+                         ion_thermal_conductivity,
+                         electron_viscosity,
+                         ion_viscosity)

@@ -30,7 +30,7 @@ from plasmapy.physics.transport.braginskii import _nondim_thermal_conductivity, 
     _nondim_visc_e_braginskii, _nondim_visc_i_braginskii, _nondim_resist_braginskii, \
     _nondim_tec_braginskii, _nondim_tc_e_ji_held, _nondim_resist_ji_held, _nondim_tec_ji_held, \
     _nondim_visc_e_ji_held, _nondim_tc_i_ji_held, _nondim_visc_i_ji_held
-from plasmapy.physics import classical_transport
+from plasmapy.physics.transport import classical_transport
 
 
 def count_decimal_places(digits):

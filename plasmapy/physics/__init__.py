@@ -14,11 +14,6 @@ physics associated with these quantities in ways that are
 understandable to students who are taking their first course in plasma
 physics while still being useful to experienced plasma physicists.
 
-In many cases, units are enough to tell what field a quantity
-represents.  The following line is an example.
-
->>> Alfven_speed(5*u.T, 8e-7*u.kg/u.m**3)
-
 """
 from .parameters import (Alfven_speed,
                          ion_sound_speed,
@@ -55,13 +50,4 @@ from .quantum import (deBroglie_wavelength,
 
 from .relativity import Lorentz_factor
 
-from .transport.collisions import (Coulomb_logarithm,
-                                   b_perp,
-                                   impact_parameter,
-                                   collision_frequency,
-                                   mean_free_path,
-                                   mobility,
-                                   Knudsen_number,
-                                   coupling_parameter)
-from plasmapy.physics.transport.braginskii import classical_transport
 from . import transport
