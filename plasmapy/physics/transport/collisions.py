@@ -4,6 +4,7 @@
 # python modules
 from astropy import units as u
 import numpy as np
+import warnings
 
 # plasmapy modules
 import plasmapy.atomic as atomic
@@ -83,6 +84,9 @@ def Coulomb_logarithm(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    PhysicsError
+        If the result is smaller than 1.
 
     Notes
     -----
@@ -209,6 +213,11 @@ def Coulomb_logarithm(T,
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
+    if ln_Lambda < 4:
+        warnings.warn(f"Coulomb logarithm is {ln_Lambda}, you might have strong coupling effects",
+            utils.PhysicsWarning)
+    # if ln_Lambda < 1:
+    #     raise utils.PhysicsError(f"Coulomb logarithm is {ln_Lambda}, less than 1")
     return ln_Lambda
 
 

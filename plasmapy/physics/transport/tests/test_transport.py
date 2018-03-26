@@ -7,7 +7,8 @@ import pytest
 from astropy import units as u
 from plasmapy.atomic.atomic import ion_mass, integer_charge
 from plasmapy.utils.exceptions import (PhysicsError, PhysicsWarning,
-                                       RelativityWarning, RelativityError)
+                                       RelativityWarning, RelativityError,
+                                       InvalidParticleError)
 from plasmapy.physics.parameters import Hall_parameter
 from plasmapy.constants import c, m_p, m_e, e, mu0
 
@@ -1141,7 +1142,7 @@ class Test_classical_transport:
 
     def test_particle_charge_state(self):
         """should raise ValueError if particle charge state not found"""
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidParticleError):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,
@@ -1179,7 +1180,7 @@ class Test_classical_transport:
 
     def test_coulomb_log_errors(self):
         """should raise PhysicsError if coulomb log is < 1"""
-        with pytest.raises(PhysicsError), pytest.warns(PhysicsWarning):
+        with  pytest.warns(PhysicsWarning):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,
@@ -1187,7 +1188,7 @@ class Test_classical_transport:
                                       ion_particle=self.ion_particle,
                                       coulomb_log_ii=0.3)
 
-        with pytest.raises(PhysicsError), pytest.warns(PhysicsWarning):
+        with  pytest.warns(PhysicsWarning):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,
