@@ -9,8 +9,10 @@ from plasmapy.atomic.atomic import _is_electron
 from .collisions import Coulomb_logarithm
 from plasmapy.physics.parameters import (Hall_parameter,
                                          collision_rate_electron_ion,
-                                         collision_rate_ion_ion)
+                                         collision_rate_ion_ion,
+                                         grab_charge)
 from plasmapy.constants import e, m_e, k_B
+
 
 
 class classical_transport:
@@ -278,20 +280,9 @@ class classical_transport:
                                  f"{ion_particle} in classical_transport")
         else:
             self.m_i = m_i.to(u.kg)
-        if Z is None:
-            try:
-                self.Z = atomic.integer_charge(ion_particle)
-            except Exception:
-                raise ValueError(f"Unable to find charge of particle: "
-                                 f"{ion_particle} in classical_transport.")
-        else:
-            # red alert: the user has input a Z
-            self.Z = Z
-            # TODO: we need to make sure Lemmatum's z_mean is implemented here
-            # if it's not available for a particular model, they'll complain
-            # later
-            if Z < 0:
-                raise ValueError("Z not allowed to be negative")
+        self.Z = grab_charge(ion_particle, Z)
+        if self.Z < 0:
+            raise ValueError("Z is not allowed to be negative!")  # TODO remove?
 
         # decide on the particle string for the electrons
         self.e_particle = 'e'
@@ -309,7 +300,7 @@ class classical_transport:
             self.coulomb_log_ei = Coulomb_logarithm(T_e,
                                                     n_e,
                                                     [self.e_particle,
-                                                     ion_particle],
+                                                     self.ion_particle],
                                                     V_ei)
         if self.coulomb_log_ei < 4:
             warnings.warn(
@@ -325,8 +316,8 @@ class classical_transport:
         else:
             self.coulomb_log_ii = Coulomb_logarithm(T_i,
                                                     n_e,  # this is not a typo!
-                                                    [ion_particle,
-                                                     ion_particle],
+                                                    [self.ion_particle,
+                                                     self.ion_particle],
                                                     V_ii)
 
         if self.coulomb_log_ii < 4:
@@ -347,16 +338,21 @@ class classical_transport:
                 T_e,
                 B,
                 self.e_particle,
-                ion_particle,
+                self.ion_particle,
                 coulomb_log_ei,
                 V_ei)
         if hall_i is not None:
             self.hall_i = hall_i
         else:
-            self.hall_i = Hall_parameter(
-                n_i, T_i, B, ion_particle, ion_particle, coulomb_log_ii, V_ii)
+            self.hall_i = Hall_parameter(n_i,
+                                         T_i,
+                                         B,
+                                         self.ion_particle,
+                                         self.ion_particle,
+                                         coulomb_log_ii,
+                                         V_ii)
         # set up the ion non-dimensional coefficients for the Ji-Held model
-        if mu is not None:
+        if mu is not None:  # mu can be 0, so not just if mu
             self.mu = mu
         else:
             self.mu = 0  # disable the JH special features by default
