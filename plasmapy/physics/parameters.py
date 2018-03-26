@@ -630,7 +630,7 @@ def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None,
 @utils.check_quantity({
     'B': {'units': u.T}
 })
-def gyrofrequency(B, particle='e-', signed=False, z_mean=None):
+def gyrofrequency(B, particle='e-', signed=False, Z=None):
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
@@ -644,7 +644,7 @@ def gyrofrequency(B, particle='e-', signed=False, z_mean=None):
         which defaults to electrons.  If no charge state information is
         provided, then the particles are assumed to be singly charged.
 
-    z_mean : float or ~astropy.units.Quantity, optional
+    Z : float or ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
         given then the atomic charge state (integer) of the ion
@@ -715,7 +715,7 @@ def gyrofrequency(B, particle='e-', signed=False, z_mean=None):
 
     """
     m_i = atomic.ion_mass(particle)
-    Z = grab_charge(particle, z_mean)
+    Z = grab_charge(particle, Z)
     if not signed:
         Z = abs(Z)
 
