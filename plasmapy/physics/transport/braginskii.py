@@ -467,25 +467,13 @@ class classical_transport:
                                            self.coulomb_log_ii,
                                            self.V_ii)
         common_factor = self.n_i * k_B * self.T_i * tau_i
-        if np.isclose(self.hall_i, 0, rtol=1e-8):
-            eta1 = (eta_hat[0] * common_factor,
-                    eta_hat[1] * common_factor,
-                    eta_hat[2] * common_factor,
-                    eta_hat[3] * common_factor,
-                    eta_hat[4] * common_factor)
-        else:
-            eta1 = (eta_hat[0] * common_factor,
-                    eta_hat[1] * common_factor / self.hall_i ** 2,
-                    eta_hat[2] * common_factor / self.hall_i ** 2,
-                    eta_hat[3] * common_factor / self.hall_i,
-                    eta_hat[4] * common_factor / self.hall_i)
+        eta1 = np.array(eta_hat) * common_factor
+        if not np.isclose(self.hall_i, 0, rtol=1e-8):
+            eta1[1:3] /= self.hall_i ** 2
+            eta1[3:] /= self.hall_i
         if eta1[0].unit == eta1[2].unit == eta1[4].unit:
             unit_val = eta1[0].unit
-            eta = (np.array((eta1[0].value,
-                             eta1[1].value,
-                             eta1[2].value,
-                             eta1[3].value,
-                             eta1[4].value)) * unit_val).to(u.Pa * u.s)
+            eta = (eta1.value * unit_val).to(u.Pa * u.s)
         return eta
 
     def electron_viscosity(self):
