@@ -1,4 +1,6 @@
-"""Functions to calculate plasma parameters."""
+r"""
+Functions to calculate plasma parameters.
+"""
 
 from astropy import units as u
 
@@ -11,63 +13,6 @@ from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
 from plasmapy import atomic, utils
 
 from plasmapy.utils.exceptions import (PhysicsError, AtomicError)
-
-
-r"""
-Values should be returned as an Astropy Quantity in SI units.
-
-If a quantity has several names, then the function name should be the
-one that provides the most physical insight into what the quantity
-represents.  For example, 'gyrofrequency' indicates gyration, while
-Larmor frequency indicates that this frequency is somehow related to a
-human (or perhaps a cat?) named Larmor.  Similarly, using omega_ce as
-a function name for this quantity will make the code less readable to
-people who are unfamiliar with the notation or use a different symbol.
-
-The docstrings for plasma parameter methods should describe the
-physics associated with these quantities in ways that are
-understandable to students who are taking their first course in plasma
-physics while still being useful to experienced plasma physicists.
-
-In many cases, units are enough to tell what field a quantity
-represents.  The following line is an example.
-
->>> Alfven_speed(5*u.T, 8e-7*u.kg/u.m**3)
-
-However, some plasma parameters depend on more than one quantity with
-the same units.  In the following line, it is difficult to discern which
-is the electron temperature and which is the ion temperature.
-
->>> ion_sound_speed(1e6*u.K, 2e6*u.K)
-
-Remembering that "explicit is better than implicit", it is more
-readable and less prone to errors to write:
-
->>> ion_sound_speed(T_i=1e6*u.K, T_e=2e6*u.K)
-
-SI units that were named after a person should be lower case except at
-the beginning of a sentence, even if their symbol is capitalized. For
-example, kelvin is a unit while Kelvin was a scientist.
-
-Unit conversions involving angles must be treated with care.  Angles
-are dimensionless but do have units.  Angular velocity is often
-given in units of radians per second, though dimensionally this is
-equivalent to inverse seconds.  Astropy will treat radians
-dimensionlessly when using the dimensionless_angles() equivalency,
-but dimensionless_angles() does not account for multiplicative
-factor of 2*pi that is used when converting between frequency (1 /
-s) and angular velocity (rad / s).  A clear way to do this
-conversion is to set up an equivalency between cycles/s and Hz:
-
->>> from astropy import units as u
->>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
-
-However, dimensionless_angles() does work when dividing a velocity
-by an angular frequency to get a length scale:
-
->>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())
-
-"""
 
 def grab_charge(ion, z_mean=None):
     if z_mean is None:

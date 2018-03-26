@@ -436,6 +436,22 @@ Equations and Physical Formulae
 * SI units that were named after a person should not be capitalized
   except at the beginning of a sentence.
 
+* Some plasma parameters depend on more than one quantity with
+  the same units.  In the following line, it is difficult to discern which
+  is the electron temperature and which is the ion temperature.
+
+  >>> ion_sound_speed(1e6*u.K, 2e6*u.K)
+
+  Remembering that "explicit is better than implicit", it is more
+  readable and less prone to errors to write:
+
+  >>> ion_sound_speed(T_i=1e6*u.K, T_e=2e6*u.K)
+
+* SI units that were named after a person should be lower case except at
+  the beginning of a sentence, even if their symbol is capitalized. For
+  example, kelvin is a unit while Kelvin was a scientist.
+
+
 Angular Frequencies
 ===================
 
