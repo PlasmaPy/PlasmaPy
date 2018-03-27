@@ -9,10 +9,10 @@ in. (e.g., turbulent, quantum, collisional, etc.).
 import numpy as np
 from astropy import units
 
-from ..constants import (k_B,
-                         )
-from .quantum import (Fermi_energy,
-                       )
+from plasmapy.constants import (k_B,
+                                )
+from plasmapy.physics.quantum import (Fermi_energy,
+                                      )
 
 def quantum_theta(T, n_e):
     """
