@@ -3,7 +3,7 @@ import numpy as np
 import astropy.units as u
 
 from plasmapy.classes import plasma
-
+from plasmapy.utils.exceptions import InvalidParticleError
 
 @pytest.mark.parametrize('grid_dimensions, expected_size', [
     ((100, 1, 1), 100),  # Test 1D setup
@@ -95,3 +95,93 @@ def test_Plasma3D_derived_vars():
     assert test_plasma.alfven_speed.shape == test_plasma.density.shape
     assert test_plasma.alfven_speed.unit.si == u.m / u.s
     assert np.allclose(test_plasma.alfven_speed.value, 10.92548431)
+
+
+class Test_PlasmaBlob(object):
+    def setup_method(self):
+        """initializing parameters for tests """
+        self.T_e = 5 * 11e3 * u.K
+        self.n_e = 1e23 * u.cm ** -3
+        self.Z = 2.5
+        self.particle = 'p'
+        self.blob = plasma.PlasmaBlob(T_e=self.T_e, 
+                                      n_e=self.n_e,
+                                      Z=self.Z,
+                                      particle=self.particle)
+        self.couplingVal = 10.468374460435724
+        self.thetaVal = 0.6032979246923964
+
+    def test_invalid_particle(self):
+        """
+        Checks if function raises error for invalid particle.
+        """
+        with pytest.raises(InvalidParticleError):
+            plasma.PlasmaBlob(T_e=self.T_e, 
+                              n_e=self.n_e,
+                              Z=self.Z,
+                              particle="cupcakes")
+        return
+    
+    def test_electron_temperature(self):
+        """Testing if we get the same electron temperature we put in """
+        testTrue = self.T_e == self.blob.electron_temperature
+        errStr = (f"Input electron temperature {self.T_e} should be equal to "
+                  f"electron temperature of class "
+                  f"{self.blob.electron_temperature}.")
+        assert testTrue, errStr
+        return
+        
+    def test_electron_density(self):
+        """Testing if we get the same electron density we put in """
+        testTrue = self.n_e == self.blob.electron_density
+        errStr = (f"Input electron density {self.n_e} should be equal to "
+                  f"electron density of class "
+                  f"{self.blob.electron_density}.")
+        assert testTrue, errStr
+        return
+    
+    def test_ionization(self):
+        """Testing if we get the same ionization we put in """
+        testTrue = self.Z == self.blob.ionization
+        errStr = (f"Input ionization {self.Z} should be equal to "
+                  f"ionization of class "
+                  f"{self.blob.ionization}.")
+        assert testTrue, errStr
+        return
+    
+    def test_composition(self):
+        """Testing if we get the same composition (particle) we put in """
+        testTrue = self.particle == self.blob.composition
+        errStr = (f"Input particle {self.particle} should be equal to "
+                  f"composition of class "
+                  f"{self.blob.composition}.")
+        assert testTrue, errStr
+        return
+
+    def test_coupling(self):
+        """
+        Tests if coupling  method value meets expected value.
+        """
+        methodVal = self.blob.coupling()
+        errStr = (f"Coupling parameter should be {self.couplingVal} "
+                  f"and not {methodVal.si.value}.")
+        testTrue = np.isclose(methodVal.value,
+                              self.couplingVal,
+                              rtol=1e-8,
+                              atol=0.0)
+        assert testTrue, errStr
+        return
+    
+    def test_quantum_theta(self):
+        """
+        Tests if degeneracy parameter method value meets expected value.
+        """
+        methodVal = self.blob.quantum_theta()
+        errStr = (f"Degeneracy parameter should be {self.thetaVal} "
+                  f"and not {methodVal.si.value}.")
+        testTrue = np.isclose(methodVal.value,
+                              self.thetaVal,
+                              rtol=1e-8,
+                              atol=0.0)
+        assert testTrue, errStr
+        return
