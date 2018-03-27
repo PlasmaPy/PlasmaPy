@@ -734,11 +734,10 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
 
 
 @utils.check_quantity({'B': {'units': u.T},
-                       # TODO find way to reenable without errors
-                       # 'Vperp': {'units': u.m/u.s},
-                       # 'T_i': {'units': u.K},
+                       'Vperp': {'units': u.m/u.s, 'can_be_nan': True},
+                       'T_i': {'units': u.K, 'can_be_nan': True},
                        })
-def gyroradius(B, *, Vperp=None, T_i=None, particle='e-'):
+def gyroradius(B, *, Vperp=np.nan*u.m/u.s, T_i=np.nan*u.K, particle='e-'):
     r"""Return the particle gyroradius.
 
     Parameters
@@ -831,11 +830,11 @@ def gyroradius(B, *, Vperp=None, T_i=None, particle='e-'):
 
     """
 
-    if Vperp is not None and T_i is not None:
+    if np.isfinite(Vperp) and np.isfinite(T_i):
         raise ValueError("Cannot have both Vperp and T_i as arguments to "
                          "gyroradius")
 
-    if Vperp is None and T_i is not None:
+    if not np.isfinite(Vperp) and np.isfinite(T_i):
         Vperp = thermal_speed(T_i, particle=particle)
 
     omega_ci = gyrofrequency(B, particle)
