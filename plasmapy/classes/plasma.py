@@ -111,6 +111,7 @@ class PlasmaBlob():
     Class for describing and calculating plasma parameters without
     spatial/temporal description.
     """
+    @u.quantity_input(T_e=u.K, n_e=u.m**-3)
     def __init__(self, T_e, n_e, Z=None, particle='p'):
         """
         Initialize plasma paramters.
@@ -127,14 +128,25 @@ class PlasmaBlob():
             self.Z = Z
         # extract mass from particle
         self.ionMass = ion_mass(self.particle)
+        
+    def __str__(self):
+        """
+        Fetches regimes for easy printing
+        """
+        return self.regimes()
+    
     def electron_temperature(self):
         return self.T_e
+    
     def electron_density(self):
         return self.n_e
+    
     def ionization(self):
         return self.Z
+    
     def composition(self):
         return self.particle
+    
     def regimes(self):
         """
         Generate a comprehensive description of the plasma regimes
@@ -173,7 +185,6 @@ class PlasmaBlob():
         aggregateStrs = [coupling_str,
                          quantum_theta_str,
                          ]
-        print(aggregateStrs)
         return aggregateStrs
 
     def coupling(self):
