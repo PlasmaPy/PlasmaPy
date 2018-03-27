@@ -5,11 +5,19 @@ Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 import numpy as np
 import astropy.units as u
 
-from ..constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
-from ..physics.dimensionless import (quantum_theta,
-                                     )
-from ..physics.transport import (coupling_parameter,
-                                 )
+from plasmapy.constants import (m_p,
+                                m_e,
+                                c,
+                                mu0,
+                                k_B,
+                                e,
+                                eps0,
+                                pi,
+                                )
+from plasmapy.physics.dimensionless import (quantum_theta,
+                                            )
+from plasmapy.physics.transport import (coupling_parameter,
+                                        )
 from plasmapy.atomic import (ion_mass,
                              integer_charge,
                              )
