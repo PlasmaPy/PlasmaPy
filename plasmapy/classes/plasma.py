@@ -135,15 +135,19 @@ class PlasmaBlob():
         """
         return self.regimes()
     
+    @property
     def electron_temperature(self):
         return self.T_e
     
+    @property
     def electron_density(self):
         return self.n_e
     
+    @property
     def ionization(self):
         return self.Z
     
+    @property
     def composition(self):
         return self.particle
     
