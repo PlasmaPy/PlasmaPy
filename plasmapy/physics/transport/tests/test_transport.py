@@ -22,14 +22,26 @@ from plasmapy.physics.transport.collisions import (Coulomb_logarithm,
                                                    Knudsen_number,
                                                    coupling_parameter,
                                                    )
-from plasmapy.physics.transport.braginskii import _nondim_thermal_conductivity, \
-    _nondim_viscosity, \
-    _nondim_resistivity, _nondim_te_conductivity, _check_Z, _nondim_tc_e_spitzer, \
-    _nondim_resist_spitzer, _nondim_tec_spitzer, _nondim_tc_e_braginskii, \
-    _nondim_tc_i_braginskii, \
-    _nondim_visc_e_braginskii, _nondim_visc_i_braginskii, _nondim_resist_braginskii, \
-    _nondim_tec_braginskii, _nondim_tc_e_ji_held, _nondim_resist_ji_held, _nondim_tec_ji_held, \
-    _nondim_visc_e_ji_held, _nondim_tc_i_ji_held, _nondim_visc_i_ji_held
+from plasmapy.physics.transport.braginskii import (_nondim_thermal_conductivity,
+                                                   _nondim_viscosity,
+                                                   _nondim_resistivity,
+                                                   _nondim_te_conductivity,
+                                                   _check_Z,
+                                                   _nondim_tc_e_spitzer,
+                                                   _nondim_resist_spitzer,
+                                                   _nondim_tec_spitzer,
+                                                   _nondim_tc_e_braginskii,
+                                                   _nondim_tc_i_braginskii,
+                                                   _nondim_visc_e_braginskii,
+                                                   _nondim_visc_i_braginskii,
+                                                   _nondim_resist_braginskii,
+                                                   _nondim_tec_braginskii,
+                                                   _nondim_tc_e_ji_held,
+                                                   _nondim_resist_ji_held,
+                                                   _nondim_tec_ji_held,
+                                                   _nondim_visc_e_ji_held,
+                                                   _nondim_tc_i_ji_held,
+                                                   _nondim_visc_i_ji_held)
 from plasmapy.physics.transport import classical_transport
 
 

@@ -15,6 +15,7 @@ from plasmapy import atomic, utils
 from plasmapy.utils.exceptions import (PhysicsError, AtomicError)
 
 def grab_charge(ion, z_mean=None):
+    # TODO docstring
     if z_mean is None:
         # warnings.warn("No z_mean given, defaulting to atomic charge",
         #               PhysicsWarning)
@@ -24,13 +25,13 @@ def grab_charge(ion, z_mean=None):
         Z = z_mean
     return Z
 
-def grab_density(density, ion, z_mean = None):
-    density = density.si
-    if density.unit == u.m**-3:
+def grab_mass_density(density, ion, z_mean = None):
+    # TODO docstring
+    if density.unit.is_equivalent(u.m**-3):
         m_i = atomic.ion_mass(ion)
         Z = grab_charge(ion, z_mean)
         rho = density * m_i + Z * density * m_e
-    elif density.unit == u.kg / u.m**3:
+    elif density.unit.is_equivalent(u.kg / u.m**3):
         rho = density
 
     return rho
@@ -132,7 +133,7 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
 
 
     B = B.to(u.T)
-    rho = grab_density(density, ion, z_mean)
+    rho = grab_mass_density(density, ion, z_mean)
 
     V_A = (np.abs(B) / np.sqrt(mu0 * rho)).to(u.m / u.s)
     return V_A
@@ -156,7 +157,7 @@ def ion_sound_speed(T_e,
     ----------
     T_e : ~astropy.units.Quantity
         Electron temperature in units of temperature or energy per
-        particle.
+        particle. If this is not given, then the electron temperature
         is assumed to be zero.
 
     T_i : ~astropy.units.Quantity
@@ -248,17 +249,14 @@ def ion_sound_speed(T_e,
 
     """
 
-    try:
-        m_i = atomic.ion_mass(ion)
-        Z = grab_charge(ion, z_mean)
-    except AtomicError:
-        raise ValueError("Invalid ion in ion_sound_speed.")
+    m_i = atomic.ion_mass(ion)
+    Z = grab_charge(ion, z_mean)
 
     for gamma, particles in zip([gamma_e, gamma_i], ["electrons", "ions"]):
         if not isinstance(gamma, (float, int)):
             raise TypeError(f"The adiabatic index gamma for {particles} must be "
                             "a float or int")
-        if not 1 <= gamma <= np.inf:
+        if gamma < 1:
             raise utils.PhysicsError(f"The adiabatic index for {particles} must be between "
                                      "one and infinity")
 
@@ -437,7 +435,7 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     Examples
     --------
     >>> from astropy import units as u
-    >>> kappa_thermal_speed(5*u.eV, 4, 'p') # most probable is a default
+    >>> kappa_thermal_speed(5*u.eV, 4, 'p') # defaults to most probable
     <Quantity 24467.87846359 m / s>
     >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'rms')
     <Quantity 37905.47432261 m / s>
@@ -448,6 +446,10 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     ----------
     .. [1] PlasmaPy Issue #186, https://github.com/PlasmaPy/PlasmaPy/issues/186
 
+    See Also
+    --------
+    plasmapy.physics.kappa_thermal_speed
+    plasmapy.physics.kappa_velocity_1D
     """
     # Checking thermal units
     T = T.to(u.K, equivalencies=u.temperature_energy())
@@ -609,7 +611,13 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
     'T': {'units': u.K, 'can_be_negative': False},
     'B': {'units': u.T}
 })
-def Hall_parameter(n, T, B, particle, ion_particle, coulomb_log=None, V=None,
+def Hall_parameter(n,
+                   T,
+                   B,
+                   particle,
+                   ion_particle,
+                   coulomb_log=None,
+                   V=None,
                    coulomb_log_method="classical"):
     r"""TODO"""
 
@@ -651,6 +659,7 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
         is used. This is effectively an average gyrofrequency for the
         plasma where multiple charge states are present, and should
         not be interpreted as the gyrofrequency for any single particle.
+        If not provided, it defaults to the integer charge of the `particle`.
 
     signed : bool, optional
         The gyrofrequency can be defined as signed (negative for electron,
@@ -934,7 +943,8 @@ def plasma_frequency(n, particle='e-', z_mean=None):
     'n_e': {'units': u.m**-3, 'can_be_negative': False}
 })
 def Debye_length(T_e, n_e):
-    r"""Calculate the exponential scale length for charge screening.
+    r"""Calculate the characteristic decay length for electric fields,
+     due to charge screening.
 
     Parameters
     ----------
@@ -992,8 +1002,8 @@ def Debye_length(T_e, n_e):
     """
 
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
-    lambda_D = np.sqrt(eps0 * k_B * T_e / (n_e * e ** 2)).to(u.m)
-    return lambda_D
+    lambda_D = np.sqrt(eps0 * k_B * T_e / (n_e * e ** 2))
+    return lambda_D.to(u.m)
 
 
 @utils.check_quantity({
@@ -1309,9 +1319,9 @@ def upper_hybrid_frequency(B, n_e):
 
     omega_pe = plasma_frequency(n=n_e)
     omega_ce = gyrofrequency(B)
-    omega_uh = (np.sqrt(omega_pe**2 + omega_ce**2)).to(u.rad / u.s)
+    omega_uh = (np.sqrt(omega_pe**2 + omega_ce**2))
 
-    return omega_uh
+    return omega_uh.to(u.rad / u.s)
 
 
 @utils.check_quantity({
@@ -1388,7 +1398,8 @@ def lower_hybrid_frequency(B, n_i, ion='p+'):
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n_i, particle=ion)
     omega_ce = gyrofrequency(B)
-    omega_lh = 1 / np.sqrt((omega_ci * omega_ce) ** -1 + omega_pi ** -2)
-    omega_lh = omega_lh.to(u.rad / u.s)
+    omega_lh = ((omega_ci * omega_ce) ** -1 + omega_pi ** -2)**-0.5
+    # TODO possibly optimize the above line via np.sqrt
+    omega_lh = omega_lh
 
-    return omega_lh
+    return omega_lh.to(u.rad / u.s)

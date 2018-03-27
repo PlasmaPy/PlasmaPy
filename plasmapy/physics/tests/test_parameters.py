@@ -63,7 +63,7 @@ def test_Alfven_speed():
 
     assert Alfven_speed(B, rho) == Alfven_speed(B, n_i)
 
-    assert Alfven_speed(B, rho).unit == u.m / u.s
+    assert Alfven_speed(B, rho).unit.is_equivalent(u.m / u.s)
 
     assert Alfven_speed(B, rho) == Alfven_speed(-B, rho)
 
@@ -165,10 +165,9 @@ def test_ion_sound_speed():
         gamma_i=3.4).value, 193328.52857788358)
 
     # case when Z=1 is assumed
-    # assert ion_sound_speed(T_i=T_i, T_e=T_e, ion='p+') == \
-    #     ion_sound_speed(T_i=T_i, T_e=T_e, ion='H-1')
+    # assert ion_sound_speed(T_i=T_i, T_e=T_e, ion='p+') == ion_sound_speed(T_i=T_i, T_e=T_e, ion='H-1')
 
-    assert ion_sound_speed(T_i=T_i, T_e = 0 * u.K, ion='p+').unit == u.m / u.s
+    assert ion_sound_speed(T_i=T_i, T_e = 0 * u.K, ion='p+').unit.is_equivalent(u.m / u.s)
 
 
     with pytest.raises(RelativityError):
@@ -242,7 +241,7 @@ def test_ion_sound_speed():
 
 def test_thermal_speed():
     r"""Test the thermal_speed function in parameters.py"""
-    assert thermal_speed(T_e).unit == u.m / u.s
+    assert thermal_speed(T_e).unit.is_equivalent(u.m / u.s)
 
     assert thermal_speed(T_e) > thermal_speed(T_e, 'p')
 
@@ -266,7 +265,7 @@ def test_thermal_speed():
     with pytest.raises(UserWarning):
         assert thermal_speed(1e5) == thermal_speed(1e5 * u.K)
 
-    assert thermal_speed(T_i, particle='p').unit == u.m / u.s
+    assert thermal_speed(T_i, particle='p').unit.is_equivalent(u.m / u.s)
 
     # The NRL Plasma Formulary uses a definition of the particle thermal
     # speed that differs by a factor of sqrt(2).
@@ -274,11 +273,9 @@ def test_thermal_speed():
                       128486.56960876315)
 
     # Case when Z=1 is assumed
-    assert thermal_speed(T_i, particle='p') == \
-        thermal_speed(T_i, particle='H-1')
+    assert thermal_speed(T_i, particle='p') == thermal_speed(T_i, particle='H-1')
 
-    assert thermal_speed(1 * u.MK, particle='e+') == \
-        thermal_speed(1 * u.MK)
+    assert thermal_speed(1 * u.MK, particle='e+') == thermal_speed(1 * u.MK)
 
     with pytest.raises(u.UnitConversionError):
         thermal_speed(5 * u.m, particle='p')
@@ -296,8 +293,7 @@ def test_thermal_speed():
         thermal_speed(T_i, particle='asdfasd')
 
     with pytest.raises(UserWarning):
-        assert thermal_speed(1e6, particle='p') ==\
-            thermal_speed(1e6 * u.K, particle='p')
+        assert thermal_speed(1e6, particle='p') == thermal_speed(1e6 * u.K, particle='p')
 
     assert np.isclose(thermal_speed(1e6 * u.K,
                                     method="mean_magnitude").si.value,
@@ -398,7 +394,7 @@ class Test_kappa_thermal_speed(object):
 def test_gyrofrequency():
     r"""Test the gyrofrequency function in parameters.py."""
 
-    assert gyrofrequency(B).unit == u.rad / u.s
+    assert gyrofrequency(B).unit.is_equivalent(u.rad / u.s)
 
     assert np.isclose(gyrofrequency(1 * u.T).value, 175882008784.72018)
 
@@ -430,7 +426,7 @@ def test_gyrofrequency():
     with pytest.raises(UserWarning):
         assert gyrofrequency(5.0) == gyrofrequency(5.0 * u.T)
 
-    assert gyrofrequency(B, particle=ion).unit == u.rad / u.s
+    assert gyrofrequency(B, particle=ion).unit.is_equivalent(u.rad / u.s)
 
     assert np.isclose(gyrofrequency(1 * u.T, particle='p').value,
                       95788335.834874)
@@ -444,11 +440,9 @@ def test_gyrofrequency():
     assert gyrofrequency(-5 * u.T, 'p') == gyrofrequency(5 * u.T, 'p')
 
     # Case when Z=1 is assumed
-    # assert gyrofrequency(B, particle='p+') == \
-    #     gyrofrequency(B, particle='H-1')
+    # assert gyrofrequency(B, particle='p+') == gyrofrequency(B, particle='H-1')
 
-    assert gyrofrequency(B, particle='e+') == \
-        gyrofrequency(B)
+    assert gyrofrequency(B, particle='e+') == gyrofrequency(B)
 
     with pytest.raises(UserWarning):
         gyrofrequency(8, 'p')
@@ -476,15 +470,15 @@ def test_gyrofrequency():
 def test_gyroradius():
     r"""Test the gyroradius function in parameters.py."""
 
-    assert gyroradius(B, T_i=T_e).unit == u.m
+    assert gyroradius(B, T_i=T_e).unit.is_equivalent(u.m)
 
-    assert gyroradius(B, Vperp=25 * u.m / u.s).unit == u.m
+    assert gyroradius(B, Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
 
     Vperp = 1e6 * u.m / u.s
     Bmag = 1 * u.T
     omega_ce = gyrofrequency(Bmag)
-    assert gyroradius(Bmag, Vperp=Vperp) == \
-        (Vperp / omega_ce).to(u.m, equivalencies=u.dimensionless_angles())
+    analytical_result = (Vperp / omega_ce).to(u.m, equivalencies=u.dimensionless_angles())
+    assert gyroradius(Bmag, Vperp=Vperp) == analytical_result
 
     with pytest.raises(TypeError):
         gyroradius(u.T, 8 * u.m / u.s)
@@ -505,12 +499,10 @@ def test_gyroradius():
         gyroradius(3.14159 * u.T, T_i=-1 * u.K)
 
     with pytest.raises(UserWarning):
-        assert gyroradius(1.0, Vperp=1.0) == \
-            gyroradius(1.0 * u.T, Vperp=1.0 * u.m / u.s)
+        assert gyroradius(1.0, Vperp=1.0) == gyroradius(1.0 * u.T, Vperp=1.0 * u.m / u.s)
 
     with pytest.raises(UserWarning):
-        assert gyroradius(1.1, T_i=1.2) == \
-            gyroradius(1.1 * u.T, T_i=1.2 * u.K)
+        assert gyroradius(1.1, T_i=1.2) == gyroradius(1.1 * u.T, T_i=1.2 * u.K)
 
     with pytest.raises(ValueError):
         gyroradius(1.1 * u.T, T_i=1.2 * u.K, Vperp=1 * u.m / u.s)
@@ -518,36 +510,32 @@ def test_gyroradius():
     with pytest.raises(ValueError):
         gyroradius(1.1 * u.T, T_i=1.2 * u.K, Vperp=1.1 * u.m)
 
-    assert gyroradius(B, T_i=T_i, particle="p").unit == u.m
+    assert gyroradius(B, T_i=T_i, particle="p").unit.is_equivalent(u.m)
 
-    assert gyroradius(B, Vperp=25 * u.m / u.s, particle="p").unit == u.m
+    assert gyroradius(B, Vperp=25 * u.m / u.s, particle="p").unit.is_equivalent(u.m)
 
     # Case when Z=1 is assumed
     assert np.isclose(gyroradius(B, T_i=T_i, particle='p'),
                       gyroradius(B, T_i=T_i, particle='H+'),
                       atol=1e-6*u.m)
 
-    assert gyroradius(B,
-                      Vperp=V,
-                      particle="p") == gyroradius(B,
-                                                  Vperp=-V,
-                                                  particle="p")
+    gyroPos = gyroradius(B, Vperp=V, particle="p")
+    gyroNeg = gyroradius(B, Vperp=-V, particle="p")
+    assert gyroPos == gyroNeg
 
     Vperp = 1e6 * u.m / u.s
     Bmag = 1 * u.T
     omega_ci = gyrofrequency(Bmag, particle='p')
-    assert gyroradius(Bmag, Vperp=Vperp, particle="p") == \
-        (Vperp / omega_ci).to(u.m, equivalencies=u.dimensionless_angles())
+    analytical_result = (Vperp / omega_ci).to(u.m, equivalencies=u.dimensionless_angles())
+    assert gyroradius(Bmag, Vperp=Vperp, particle="p") == analytical_result
 
     T2 = 1.2 * u.MK
     B2 = 123 * u.G
     particle2 = 'alpha'
     Vperp2 = thermal_speed(T2, particle=particle2)
-    assert gyroradius(B2, Vperp=Vperp2, particle='alpha') == \
-        gyroradius(B2, T_i=T2, particle='alpha')
+    assert gyroradius(B2, Vperp=Vperp2, particle='alpha') == gyroradius(B2, T_i=T2, particle='alpha')
 
-    assert gyroradius(1 * u.T, T_i=1 * u.MK, particle='positron') == \
-        gyroradius(1 * u.T, T_i=1 * u.MK)
+    assert gyroradius(1 * u.T, T_i=1 * u.MK, particle='positron') == gyroradius(1 * u.T, T_i=1 * u.MK)
 
     with pytest.raises(TypeError):
         gyroradius(u.T, Vperp=8 * u.m / u.s, particle="p")
@@ -559,12 +547,10 @@ def test_gyroradius():
         gyroradius(B, T_i=-1 * u.K, particle='p')
 
     with pytest.raises(UserWarning):
-        assert gyroradius(1.0, Vperp=1.0, particle="p") == \
-            gyroradius(1.0 * u.T, Vperp=1.0 * u.m / u.s, particle="p")
+        assert gyroradius(1.0, Vperp=1.0, particle="p") == gyroradius(1.0 * u.T, Vperp=1.0 * u.m / u.s, particle="p")
 
     with pytest.raises(UserWarning):
-        assert gyroradius(1.1, T_i=1.2, particle="p") == \
-            gyroradius(1.1 * u.T, T_i=1.2 * u.K, particle="p")
+        assert gyroradius(1.1, T_i=1.2, particle="p") == gyroradius(1.1 * u.T, T_i=1.2 * u.K, particle="p")
 
     with pytest.raises(ValueError):
         gyroradius(1.1 * u.T, T_i=1.2 * u.K, Vperp=1 * u.m / u.s, particle="p")
@@ -579,7 +565,7 @@ def test_gyroradius():
 def test_plasma_frequency():
     r"""Test the plasma_frequency function in parameters.py."""
 
-    assert plasma_frequency(n_e).unit == u.rad / u.s
+    assert plasma_frequency(n_e).unit.is_equivalent(u.rad / u.s)
 
     assert np.isclose(plasma_frequency(1 * u.cm**-3).value,
                       5.64e4, rtol=1e-2)
@@ -594,14 +580,12 @@ def test_plasma_frequency():
         plasma_frequency(np.nan * u.m**-3)
 
     with pytest.raises(UserWarning):
-        assert plasma_frequency(1e19) == \
-            plasma_frequency(1e19 * u.m**-3)
+        assert plasma_frequency(1e19) == plasma_frequency(1e19 * u.m**-3)
 
-        assert plasma_frequency(n_i, particle='p').unit == u.rad / u.s
+        assert plasma_frequency(n_i, particle='p').unit.is_equivalent(u.rad / u.s)
 
     # Case where Z=1 is assumed
-    assert plasma_frequency(n_i, particle='H-1') == \
-        plasma_frequency(n_i, particle='p')
+    assert plasma_frequency(n_i, particle='H-1') == plasma_frequency(n_i, particle='p')
 
     assert np.isclose(plasma_frequency(mu * u.cm**-3, particle='p').value,
                       1.32e3, rtol=1e-2)
@@ -610,8 +594,7 @@ def test_plasma_frequency():
         plasma_frequency(n=5 * u.m**-3, particle='sdfas')
 
     with pytest.raises(UserWarning):
-        assert plasma_frequency(1e19, particle='p') ==\
-            plasma_frequency(1e19 * u.m**-3, particle='p')
+        assert plasma_frequency(1e19, particle='p') == plasma_frequency(1e19 * u.m**-3, particle='p')
 
     plasma_frequency(1e17 * u.cm**-3, particle='p')
     # testing for user input z_mean
@@ -629,7 +612,7 @@ def test_plasma_frequency():
 def test_Debye_length():
     r"""Test the Debye_length function in parameters.py."""
 
-    assert Debye_length(T_e, n_e).unit == u.m
+    assert Debye_length(T_e, n_e).unit.is_equivalent(u.m)
 
     assert np.isclose(Debye_length(
         1 * u.eV, 1 * u.cm**-3).value, 7.43, atol=0.005)
@@ -661,7 +644,7 @@ def test_Debye_length():
 def test_Debye_number():
     r"""Test the Debye_number function in parameters.py."""
 
-    assert Debye_number(T_e, n_e).unit == u.dimensionless_unscaled
+    assert Debye_number(T_e, n_e).unit.is_equivalent(u.dimensionless_unscaled)
 
     T_e_eV = T_e.to(u.eV, equivalencies=u.temperature_energy())
     assert np.isclose(Debye_number(T_e, n_e).value,
@@ -700,16 +683,14 @@ def test_Debye_number():
 def test_inertial_length():
     r"""Test the inertial_length function in parameters.py."""
 
-    assert inertial_length(n_i, particle='p').unit == u.m
+    assert inertial_length(n_i, particle='p').unit.is_equivalent(u.m)
 
     assert np.isclose(inertial_length(mu * u.cm**-3, particle='p').cgs.value,
                       2.28e7, rtol=0.01)
 
-    assert inertial_length(5.351 * u.m**-3, particle='e+') == \
-        inertial_length(5.351 * u.m**-3, particle='e')
+    assert inertial_length(5.351 * u.m**-3, particle='e+') == inertial_length(5.351 * u.m**-3, particle='e')
 
-    assert inertial_length(n_i, particle='p') == \
-        inertial_length(n_i, particle='p')
+    assert inertial_length(n_i, particle='p') == inertial_length(n_i, particle='p')
 
     with pytest.raises(UserWarning):
         inertial_length(4, particle='p')
@@ -724,10 +705,9 @@ def test_inertial_length():
         inertial_length(n_i, particle=-135)
 
     with pytest.raises(UserWarning):
-        assert inertial_length(1e19, particle='p') ==\
-            inertial_length(1e19 * u.m**-3, particle='p')
+        assert inertial_length(1e19, particle='p') == inertial_length(1e19 * u.m**-3, particle='p')
 
-    assert inertial_length(n_e).unit == u.m
+    assert inertial_length(n_e).unit.is_equivalent(u.m)
 
     assert np.isclose(inertial_length(1 * u.cm**-3).cgs.value,
                       5.31e5, rtol=1e-3)
@@ -742,16 +722,15 @@ def test_inertial_length():
         inertial_length(-5 * u.m**-3)
 
     with pytest.raises(UserWarning):
-        assert inertial_length(1e19) == \
-            inertial_length(1e19 * u.m**-3)
+        assert inertial_length(1e19) == inertial_length(1e19 * u.m**-3)
 
 
 def test_magnetic_pressure():
     r"""Test the magnetic_pressure function in parameters.py."""
 
-    assert magnetic_pressure(B_arr).unit == u.Pa
+    assert magnetic_pressure(B_arr).unit.is_equivalent(u.Pa)
 
-    assert magnetic_pressure(B).unit == u.Pa
+    assert magnetic_pressure(B).unit.is_equivalent(u.Pa)
 
     assert magnetic_pressure(B).unit.name == 'Pa'
 
@@ -783,7 +762,7 @@ def test_magnetic_pressure():
 def test_magnetic_energy_density():
     r"""Test the magnetic_energy_density function in parameters.py."""
 
-    assert magnetic_energy_density(B_arr).unit == u.J / u.m**3
+    assert magnetic_energy_density(B_arr).unit.is_equivalent(u.J / u.m**3)
 
     assert str(magnetic_energy_density(B).unit) == 'J / m3'
 
@@ -815,8 +794,7 @@ def test_magnetic_energy_density():
         magnetic_energy_density(B_nanarr)
 
     with pytest.raises(UserWarning):
-        assert magnetic_energy_density(22.2) == \
-            magnetic_energy_density(22.2 * u.T)
+        assert magnetic_energy_density(22.2) == magnetic_energy_density(22.2 * u.T)
 
 
 def test_upper_hybrid_frequency():
@@ -825,9 +803,9 @@ def test_upper_hybrid_frequency():
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
     omega_ce = gyrofrequency(B)
     omega_pe = plasma_frequency(n=n_e)
-    assert omega_ce.unit == u.rad / u.s
-    assert omega_pe.unit == u.rad / u.s
-    assert omega_uh.unit == u.rad / u.s
+    assert omega_ce.unit.is_equivalent(u.rad / u.s)
+    assert omega_pe.unit.is_equivalent(u.rad / u.s)
+    assert omega_uh.unit.is_equivalent(u.rad / u.s)
     LHS = omega_uh**2
     RHS = omega_ce**2 + omega_pe**2
     assert np.isclose(LHS.value, RHS.value)
@@ -836,12 +814,10 @@ def test_upper_hybrid_frequency():
         upper_hybrid_frequency(5 * u.T, n_e=-1 * u.m**-3)
 
     with pytest.raises(UserWarning):
-        assert upper_hybrid_frequency(1.2, 1.3) == \
-            upper_hybrid_frequency(1.2 * u.T, 1.3 * u.m**-3)
+        assert upper_hybrid_frequency(1.2, 1.3) == upper_hybrid_frequency(1.2 * u.T, 1.3 * u.m**-3)
 
     with pytest.raises(UserWarning):
-        assert upper_hybrid_frequency(1.4 * u.T, 1.3) == \
-            upper_hybrid_frequency(1.4, 1.3 * u.m**-3)
+        assert upper_hybrid_frequency(1.4 * u.T, 1.3) == upper_hybrid_frequency(1.4, 1.3 * u.m**-3)
 
 
 def test_lower_hybrid_frequency():
@@ -852,10 +828,10 @@ def test_lower_hybrid_frequency():
     omega_pi = plasma_frequency(n=n_i, particle=ion)
     omega_ce = gyrofrequency(B)
     omega_lh = lower_hybrid_frequency(B, n_i=n_i, ion=ion)
-    assert omega_ci.unit == u.rad / u.s
-    assert omega_pi.unit == u.rad / u.s
-    assert omega_ce.unit == u.rad / u.s
-    assert omega_lh.unit == u.rad / u.s
+    assert omega_ci.unit.is_equivalent(u.rad / u.s)
+    assert omega_pi.unit.is_equivalent(u.rad / u.s)
+    assert omega_ce.unit.is_equivalent(u.rad / u.s)
+    assert omega_lh.unit.is_equivalent(u.rad / u.s)
     LHS = omega_lh**-2
     RHS = 1 / (omega_ci**2 + omega_pi**2) + omega_ci**-1 * omega_ce**-1
     assert np.isclose(LHS.value, RHS.value)
@@ -871,5 +847,4 @@ def test_lower_hybrid_frequency():
             np.nan * u.T, n_i=-5e19 * u.m**-3, ion='asdfasd')
 
     with pytest.raises(UserWarning):
-        assert lower_hybrid_frequency(1.3, 1e19) == \
-            lower_hybrid_frequency(1.3 * u.T, 1e19 * u.m**-3)
+        assert lower_hybrid_frequency(1.3, 1e19) == lower_hybrid_frequency(1.3 * u.T, 1e19 * u.m**-3)
