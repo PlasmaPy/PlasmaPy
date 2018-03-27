@@ -195,7 +195,7 @@ def test_ion_sound_speed():
     with pytest.raises(TypeError):
         ion_sound_speed(T_i=T_i, T_e=0 *u.K, gamma_i='fsdfas')
 
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidParticleError):
         ion_sound_speed(T_i=T_i, T_e=0 *u.K, ion='cupcakes')
 
     with pytest.raises(ValueError):

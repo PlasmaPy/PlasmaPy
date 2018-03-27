@@ -232,6 +232,14 @@ Coding Style
   module and code related to importing the module.  Any substantial
   functionality should be put into a separate file.
 
+* Use absolute imports, such as
+  ``from plasmapy.mathematics import Fermi_integral``,
+  rather than relative imports such as
+  ``from ..mathematics import Fermi_integral``.
+
+* For multiline imports, instead of using ``\`` to break lines, wrap the
+  imported names in ``()`` parentheses and use consistent whitespace.
+
 * There should be at most one pun per 1284 lines of code.
 
 Branches, commits, and pull requests
