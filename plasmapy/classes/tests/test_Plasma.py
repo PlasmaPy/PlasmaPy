@@ -97,7 +97,7 @@ def test_Plasma3D_derived_vars():
     assert np.allclose(test_plasma.alfven_speed.value, 10.92548431)
 
 
-class Test_PlasmaBlob(object):
+class Test_PlasmaBlob():
     def setup_method(self):
         """initializing parameters for tests """
         self.T_e = 5 * 11e3 * u.K
@@ -120,7 +120,6 @@ class Test_PlasmaBlob(object):
                               n_e=self.n_e,
                               Z=self.Z,
                               particle="cupcakes")
-        return
     
     def test_electron_temperature(self):
         """Testing if we get the same electron temperature we put in """
@@ -129,7 +128,6 @@ class Test_PlasmaBlob(object):
                   f"electron temperature of class "
                   f"{self.blob.electron_temperature}.")
         assert testTrue, errStr
-        return
         
     def test_electron_density(self):
         """Testing if we get the same electron density we put in """
@@ -138,7 +136,6 @@ class Test_PlasmaBlob(object):
                   f"electron density of class "
                   f"{self.blob.electron_density}.")
         assert testTrue, errStr
-        return
     
     def test_ionization(self):
         """Testing if we get the same ionization we put in """
@@ -147,7 +144,6 @@ class Test_PlasmaBlob(object):
                   f"ionization of class "
                   f"{self.blob.ionization}.")
         assert testTrue, errStr
-        return
     
     def test_composition(self):
         """Testing if we get the same composition (particle) we put in """
@@ -156,7 +152,6 @@ class Test_PlasmaBlob(object):
                   f"composition of class "
                   f"{self.blob.composition}.")
         assert testTrue, errStr
-        return
 
     def test_coupling(self):
         """
@@ -170,7 +165,6 @@ class Test_PlasmaBlob(object):
                               rtol=1e-8,
                               atol=0.0)
         assert testTrue, errStr
-        return
     
     def test_quantum_theta(self):
         """
@@ -184,4 +178,3 @@ class Test_PlasmaBlob(object):
                               rtol=1e-8,
                               atol=0.0)
         assert testTrue, errStr
-        return
