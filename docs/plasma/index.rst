@@ -15,8 +15,9 @@ create an instance of the :class:`Plasma3D` class and then set the
 
 This feature is currently under development.
 
-The :class:`PlasmaBlob` class is a basic structure to contain spatial
-information about a plasma.  To initialize a PlasmaBlob system, call
+The :class:`PlasmaBlob` class is a basic structure to contain just
+plasma parameter information about a plasma with no associated
+spatial or temporal scales.  To initialize a PlasmaBlob system, call
 it with arguments: electron temperature :attr:`PlasmaBlob.T_e`, 
 and electron density :attr:`PlasmaBlob.n_e`. You may also optionally
 define the ionization, :attr:`PlasmaBlob.Z`, and relevant plasma 
