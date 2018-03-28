@@ -52,6 +52,7 @@ class classical_transport:
     Models implemented:
 
     * Braginskii [1]_
+
     The original Braginskii treatment as presented in the highly cited review
     paper from 1965. Coefficients are found from expansion of the kinetic
     equation in Laguerre polynomials, truncated at the second term in their
@@ -60,6 +61,7 @@ class classical_transport:
     gas completely stripped of electrons, and the stationary ion approximation).
 
     * Spitzer-Harm [2]_ [3]_
+
     These coefficients were obtained from a numerical solution of the Fokker-
     Planck equation. They give one of the earliest and most accurate (in the
     Fokker-Planck sense) results for electron transport in simple plasma. They
@@ -69,9 +71,11 @@ class classical_transport:
     and infinity (Lorentz gas / stationary ion approximation).
 
     * Epperlein-Haines [4]_
+
     Not yet implemented.
 
     * Ji-Held [5]_
+
     This is a modern treatment of the classical transport problem that has been
     carried out with laudable care. It allows for arbitrary hall parameter and
     arbitrary Z for all coefficients. Similar to the Epperlein-Haines model,
@@ -114,12 +118,13 @@ class classical_transport:
         to zero.
 
     model: string
-        Indication of whose formulation from literature to use. Allowed values
-        are:
-        'Braginskii',
-        'Spitzer-Harm',
-        'Epperlein-Haines' (not yet implemented),
-        'Ji-Held'.
+        Indication of whose formulation from literature to use. Allowed values are:
+
+        * 'Braginskii',
+        * 'Spitzer-Harm',
+        * 'Epperlein-Haines' (not yet implemented),
+        * 'Ji-Held'.
+
         See refs [1]_, [2]_, [3]_, [4]_ and [5]_.
 
     field_orientation : string
@@ -150,8 +155,8 @@ class classical_transport:
     V_ii: ~astropy.units.Quantity, optional
        The relative velocity between particles.  Supplied to
        `Coulomb_logarithm` function, not otherwise used. If not provided,
-        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
-        where `mu` is the reduced mass.
+       thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+       where `mu` is the reduced mass.
 
     hall_e: float or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron Hall parameter. If
@@ -168,7 +173,6 @@ class classical_transport:
         disabling these effects.
 
     theta: optional, float or dimensionless `~astropy.units.Quantity`
-        theta = T_e / T_i
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to T_e / T_i. Only
         has effect if mu is non-zero.

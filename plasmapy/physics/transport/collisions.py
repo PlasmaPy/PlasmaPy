@@ -331,6 +331,7 @@ def b_perp(T,
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
+
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
