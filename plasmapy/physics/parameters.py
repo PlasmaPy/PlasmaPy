@@ -17,7 +17,24 @@ from plasmapy.utils.exceptions import (PhysicsError, AtomicError)
 
 
 def grab_charge(ion, z_mean=None):
-    # TODO docstring
+    """Utility function to merge two possible inputs for particle charge.
+
+    Parameters
+    ----------
+    ion : str or `plasmapy.atomic.Particle`
+        a string representing a charged particle, or a Particle object.
+
+    z_mean : float
+        An optional float describing the average ionization of a particle
+        species.
+
+    Returns
+    -------
+    float
+        if `z_mean` was passed, `z_mean`, otherwise, the integer charge
+        of the `ion`.
+
+    """
     if z_mean is None:
         # warnings.warn("No z_mean given, defaulting to atomic charge",
         #               PhysicsWarning)
@@ -28,15 +45,49 @@ def grab_charge(ion, z_mean=None):
     return Z
 
 
-def grab_mass_density(density, ion, z_mean=None):
-    # TODO docstring
-    if density.unit.is_equivalent(u.m ** -3):
-        m_i = atomic.ion_mass(ion)
-        Z = grab_charge(ion, z_mean)
-        rho = density * m_i + Z * density * m_e
-    elif density.unit.is_equivalent(u.kg / u.m ** 3):
-        rho = density
+def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg/u.m**3:
+    """Utility function to merge two possible inputs for particle charge.
 
+    Parameters
+    ----------
+    density : ~astropy.units.Quantity
+        Either a particle density (number of particles per density, in units
+        of 1/m^3) or a mass density (in units of kg/m^3 or equivalent).
+
+    particle : str, optional
+        Representation of the particle species (e.g., `'p'` for protons, `'D+'`
+        for deuterium, or `'He-4 +1'` for singly ionized helium-4),
+        which defaults to electrons.  If no charge state information is
+        provided, then the particles are assumed to be singly charged.
+
+    z_mean : float
+        An optional float describing the average ionization of a particle
+        species.
+
+    Raises
+    ------
+    ValueError
+        If the `density` has units incovertible to either a particle density
+        or a mass density, or if you pass in a number density without a particle.
+
+    Returns
+    -------
+    ~astropy.units.Quantity
+        The mass density calculated from all the provided sources of information.
+
+    """
+    if density.unit.is_equivalent(u.kg / u.m ** 3):
+        rho = density
+    elif density.unit.is_equivalent(u.m ** -3):
+        if particle:
+            m_i = atomic.ion_mass(particle)
+            Z = grab_charge(particle, z_mean)
+            rho = density * m_i + Z * density * m_e
+        else:
+            raise ValueError("You must pass a particle to calculate the mass density!")
+    else:
+        raise ValueError("mass_density accepts either particle (m**-3)"
+                         " or mass (kg * m**-3) density!")
     return rho
 
 
@@ -137,7 +188,7 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     """
 
     B = B.to(u.T)
-    rho = grab_mass_density(density, ion, z_mean)
+    rho = mass_density(density, ion, z_mean)
 
     V_A = (np.abs(B) / np.sqrt(mu0 * rho)).to(u.m / u.s)
     return V_A
@@ -513,11 +564,19 @@ def collision_rate_electron_ion(T_e,
         String signifying a particle type of the field ions, including charge
         state information.
 
+    V : ~astropy.units.Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
+
     coulomb_log : float or dimensionless ~astropy.units.Quantity, optional
         Option to specify a Coulomb logarithm of the electrons on the ions.
         If not specified, the Coulomb log will is calculated using the
         `~plasmapy.physics.transport.Coulomb_logarithm` function.
 
+    coulomb_log_method : string, optional
+        Method used for Coulomb logarithm calculation (see that function
+        for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
     References
     ----------
     .. [1] Braginskii
@@ -582,10 +641,19 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
         including charge state information. This function assumes the test
         and field ions are the same species.
 
+    V : ~astropy.units.Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
+
     coulomb_log : float or dimensionless ~astropy.units.Quantity, optional
         Option to specify a Coulomb logarithm of the electrons on the ions.
         If not specified, the Coulomb log will is calculated using the
         ~plasmapy.physics.transport.Coulomb_logarithm function.
+
+    coulomb_log_method : string, optional
+        Method used for Coulomb logarithm calculation (see that function
+        for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
 
     References
     ----------
@@ -741,7 +809,7 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
                        'Vperp': {'units': u.m / u.s, 'can_be_nan': True},
                        'T_i':   {'units': u.K, 'can_be_nan': True},
                        })
-def gyroradius(B, *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K, particle='e-'):
+def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
     r"""Return the particle gyroradius.
 
     Parameters
@@ -749,23 +817,20 @@ def gyroradius(B, *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K, particle='e-'):
     B : ~astropy.units.Quantity
         The magnetic field magnitude in units convertible to tesla.
 
-    Vperp : ~astropy.units.Quantity, optional
-        The component of particle velocity that is perpendicular to the
-        magnetic field in units convertible to meters per second.
-
-    T_i : ~astropy.units.Quantity, optional
-        The particle temperature in units convertible to kelvin.
-
     particle : str, optional
         Representation of the particle species (e.g., `'p'` for protons, `'D+'`
         for deuterium, or `'He-4 +1'` for singly ionized helium-4),
         which defaults to electrons.  If no charge state information is
         provided, then the particles are assumed to be singly charged.
 
-    args : ~astropy.units.Quantity
-        If the second positional argument is a ~astropy.units.Quantity
-        with units appropriate to `Vperp` or `T_i`, then this argument
-        will take the place of that keyword argument.
+    Vperp : ~astropy.units.Quantity, optional
+        The component of particle velocity that is perpendicular to the
+        magnetic field in units convertible to meters per second.
+        Must be input as a keyword argument.
+
+    T_i : ~astropy.units.Quantity, optional
+        The particle temperature in units convertible to kelvin.
+        Must be input as a keyword argument.
 
     Returns
     -------
@@ -813,23 +878,23 @@ def gyroradius(B, *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K, particle='e-'):
     Examples
     --------
     >>> from astropy import units as u
-    >>> gyroradius(0.2*u.T, T_i=1e5*u.K, particle='p+')
+    >>> gyroradius(0.2*u.T,particle='p+',T_i=1e5*u.K)
     <Quantity 0.00212087 m>
-    >>> gyroradius(0.2*u.T, T_i=1e5*u.K, particle='p+')
+    >>> gyroradius(0.2*u.T,particle='p+',T_i=1e5*u.K)
     <Quantity 0.00212087 m>
-    >>> gyroradius(5*u.uG, T_i=1*u.eV, particle='alpha')
+    >>> gyroradius(5*u.uG,particle='alpha',T_i=1*u.eV)
     <Quantity 288002.38837768 m>
-    >>> gyroradius(400*u.G, Vperp = 1e7*u.m/u.s, particle='Fe+++')
+    >>> gyroradius(400*u.G,particle='Fe+++',Vperp=1e7*u.m/u.s)
     <Quantity 48.23129811 m>
-    >>> gyroradius(B = 0.01*u.T, T_i = 1e6*u.K)
+    >>> gyroradius(B=0.01*u.T,T_i=1e6*u.K)
     <Quantity 0.00313033 m>
-    >>> gyroradius(B = 0.01*u.T, Vperp = 1e6*u.m/u.s)
+    >>> gyroradius(B=0.01*u.T,Vperp=1e6*u.m/u.s)
     <Quantity 0.00056856 m>
-    >>> gyroradius(0.2*u.T, T_i=1e5*u.K)
+    >>> gyroradius(0.2*u.T,T_i=1e5*u.K)
     <Quantity 4.94949252e-05 m>
-    >>> gyroradius(5*u.uG, T_i = 1*u.eV)
+    >>> gyroradius(5*u.uG,T_i=1*u.eV)
     <Quantity 6744.2598183 m>
-    >>> gyroradius(400*u.G, Vperp = 1e7*u.m/u.s)
+    >>> gyroradius(400*u.G,Vperp=1e7*u.m/u.s)
     <Quantity 0.00142141 m>
 
     """
@@ -1129,13 +1194,6 @@ def inertial_length(n, particle='e-'):
     <Quantity 2376534.75601976 m>
 
     """
-
-    try:
-        Z = atomic.integer_charge(particle)
-    except AtomicError:
-        raise ValueError(f"Invalid particle {particle} in inertial_length.")
-    if Z:
-        Z = abs(Z)
 
     omega_p = plasma_frequency(n, particle=particle)
     d = (c / omega_p).to(u.m, equivalencies=u.dimensionless_angles())

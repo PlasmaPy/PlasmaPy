@@ -487,7 +487,7 @@ def test_gyroradius():
     assert gyroradius(Bmag, Vperp=Vperp) == analytical_result
 
     with pytest.raises(TypeError):
-        gyroradius(u.T, 8 * u.m / u.s)
+        gyroradius(u.T)
 
     with pytest.raises(u.UnitConversionError):
         gyroradius(5 * u.A, Vperp=8 * u.m / u.s)
@@ -511,67 +511,67 @@ def test_gyroradius():
         assert gyroradius(1.1, T_i=1.2) == gyroradius(1.1 * u.T, T_i=1.2 * u.K)
 
     with pytest.raises(ValueError):
-        gyroradius(1.1 * u.T, T_i=1.2 * u.K, Vperp=1 * u.m / u.s)
+        gyroradius(1.1 * u.T, Vperp=1 * u.m / u.s, T_i=1.2 * u.K)
 
     with pytest.raises(ValueError):
-        gyroradius(1.1 * u.T, T_i=1.2 * u.K, Vperp=1.1 * u.m)
+        gyroradius(1.1 * u.T, Vperp=1.1 * u.m, T_i=1.2 * u.K)
 
-    assert gyroradius(B, T_i=T_i, particle="p").unit.is_equivalent(u.m)
+    assert gyroradius(B, particle="p", T_i=T_i).unit.is_equivalent(u.m)
 
-    assert gyroradius(B, Vperp=25 * u.m / u.s, particle="p").unit.is_equivalent(u.m)
+    assert gyroradius(B, particle="p", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
 
     # Case when Z=1 is assumed
-    assert np.isclose(gyroradius(B, T_i=T_i, particle='p'),
-                      gyroradius(B, T_i=T_i, particle='H+'),
+    assert np.isclose(gyroradius(B, particle='p', T_i=T_i),
+                      gyroradius(B, particle='H+', T_i=T_i),
                       atol=1e-6 * u.m)
 
-    gyroPos = gyroradius(B, Vperp=V, particle="p")
-    gyroNeg = gyroradius(B, Vperp=-V, particle="p")
+    gyroPos = gyroradius(B, particle="p", Vperp=V)
+    gyroNeg = gyroradius(B, particle="p", Vperp=-V)
     assert gyroPos == gyroNeg
 
     Vperp = 1e6 * u.m / u.s
     Bmag = 1 * u.T
     omega_ci = gyrofrequency(Bmag, particle='p')
     analytical_result = (Vperp / omega_ci).to(u.m, equivalencies=u.dimensionless_angles())
-    assert gyroradius(Bmag, Vperp=Vperp, particle="p") == analytical_result
+    assert gyroradius(Bmag, particle="p", Vperp=Vperp) == analytical_result
 
     T2 = 1.2 * u.MK
     B2 = 123 * u.G
     particle2 = 'alpha'
     Vperp2 = thermal_speed(T2, particle=particle2)
-    gyro_by_vperp = gyroradius(B2, Vperp=Vperp2, particle='alpha')
-    assert gyro_by_vperp == gyroradius(B2, T_i=T2, particle='alpha')
+    gyro_by_vperp = gyroradius(B2, particle='alpha', Vperp=Vperp2)
+    assert gyro_by_vperp == gyroradius(B2, particle='alpha', T_i=T2)
 
-    explicit_positron_gyro = gyroradius(1 * u.T, T_i=1 * u.MK, particle='positron')
+    explicit_positron_gyro = gyroradius(1 * u.T, particle='positron', T_i=1 * u.MK)
     assert explicit_positron_gyro == gyroradius(1 * u.T, T_i=1 * u.MK)
 
     with pytest.raises(TypeError):
-        gyroradius(u.T, Vperp=8 * u.m / u.s, particle="p")
+        gyroradius(u.T, particle="p", Vperp=8 * u.m / u.s)
 
     with pytest.raises(ValueError):
-        gyroradius(B, T_i=T_i, particle='asfdas')
+        gyroradius(B, particle='asfdas', T_i=T_i)
 
     with pytest.raises(ValueError):
-        gyroradius(B, T_i=-1 * u.K, particle='p')
+        gyroradius(B, particle='p', T_i=-1 * u.K)
 
     with pytest.raises(UserWarning):
-        gyro_without_units = gyroradius(1.0, Vperp=1.0, particle="p")
-        gyro_with_units = gyroradius(1.0 * u.T, Vperp=1.0 * u.m / u.s, particle="p")
+        gyro_without_units = gyroradius(1.0, particle="p", Vperp=1.0)
+        gyro_with_units = gyroradius(1.0 * u.T, particle="p", Vperp=1.0 * u.m / u.s)
         assert gyro_without_units == gyro_with_units
 
     with pytest.raises(UserWarning):
-        gyro_t_without_units = gyroradius(1.1, T_i=1.2, particle="p")
-        gyro_t_with_units = gyroradius(1.1 * u.T, T_i=1.2 * u.K, particle="p")
+        gyro_t_without_units = gyroradius(1.1, particle="p", T_i=1.2)
+        gyro_t_with_units = gyroradius(1.1 * u.T, particle="p", T_i=1.2 * u.K)
         assert gyro_t_with_units == gyro_t_without_units
 
     with pytest.raises(ValueError):
-        gyroradius(1.1 * u.T, T_i=1.2 * u.K, Vperp=1 * u.m / u.s, particle="p")
+        gyroradius(1.1 * u.T, particle="p", Vperp=1 * u.m / u.s, T_i=1.2 * u.K)
 
     with pytest.raises(ValueError):
-        gyroradius(1.1 * u.T, T_i=1.2 * u.K, Vperp=1.1 * u.m, particle="p")
+        gyroradius(1.1 * u.T, particle="p", Vperp=1.1 * u.m, T_i=1.2 * u.K)
 
     with pytest.raises(ValueError):
-        gyroradius(1.1 * u.T, Vperp=1.2 * u.m, T_i=1.1 * u.K, particle="p")
+        gyroradius(1.1 * u.T, particle="p", Vperp=1.2 * u.m, T_i=1.1 * u.K)
 
 
 def test_plasma_frequency():
