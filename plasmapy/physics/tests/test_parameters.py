@@ -10,7 +10,8 @@ from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 from plasmapy.utils.exceptions import PhysicsError, InvalidParticleError
 from astropy.constants import c, m_p, m_e, e, mu0
 
-from plasmapy.physics.parameters import (Alfven_speed,
+from plasmapy.physics.parameters import (mass_density,
+                                         Alfven_speed,
                                          gyrofrequency,
                                          gyroradius,
                                          thermal_speed,
@@ -47,6 +48,15 @@ T_negarr = np.array([1e6, -5151.]) * u.K
 mu = m_p.to(u.u).value
 
 V = 25.2 * u.m / u.s
+
+
+class Test_mass_density:
+    def test_particleless(self):
+        with pytest.raises(ValueError):
+            mass_density(1*u.m**-3)
+    def test_wrong_units(self):
+        with pytest.raises(ValueError):
+            mass_density(u.J)
 
 
 # Assertions below that are in CGS units with 2-3 significant digits
