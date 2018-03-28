@@ -1,7 +1,6 @@
 # coding=utf-8
 """Tests for functions that calculate transport coefficients."""
 
-
 import numpy as np
 import pytest
 from astropy import units as u
@@ -192,8 +191,8 @@ class Test_Coulomb_logarithm:
         methodVal = Coulomb_logarithm(self.temperature1,
                                       self.density1,
                                       self.particles,
-                                      z_mean=np.nan*u.dimensionless_unscaled,
-                                      V=np.nan*u.m/u.s,
+                                      z_mean=np.nan * u.dimensionless_unscaled,
+                                      V=np.nan * u.m / u.s,
                                       method="GMS-1")
         testTrue = np.isclose(methodVal,
                               self.gms1,
@@ -212,8 +211,8 @@ class Test_Coulomb_logarithm:
         methodVal = Coulomb_logarithm(self.temperature2,
                                       self.density2,
                                       self.particles,
-                                      z_mean=np.nan*u.dimensionless_unscaled,
-                                      V=np.nan*u.m/u.s,
+                                      z_mean=np.nan * u.dimensionless_unscaled,
+                                      V=np.nan * u.m / u.s,
                                       method="GMS-1")
         testTrue = np.isclose(methodVal,
                               self.gms1_negative,
@@ -232,7 +231,7 @@ class Test_Coulomb_logarithm:
                                       self.density1,
                                       self.particles,
                                       z_mean=self.z_mean,
-                                      V=np.nan*u.m/u.s,
+                                      V=np.nan * u.m / u.s,
                                       method="GMS-2")
         testTrue = np.isclose(methodVal,
                               self.gms2,
@@ -252,7 +251,7 @@ class Test_Coulomb_logarithm:
                                       self.density2,
                                       self.particles,
                                       z_mean=self.z_mean,
-                                      V=np.nan*u.m/u.s,
+                                      V=np.nan * u.m / u.s,
                                       method="GMS-2")
         testTrue = np.isclose(methodVal,
                               self.gms2_negative,
@@ -271,7 +270,7 @@ class Test_Coulomb_logarithm:
                                       self.density1,
                                       self.particles,
                                       z_mean=self.z_mean,
-                                      V=np.nan*u.m/u.s,
+                                      V=np.nan * u.m / u.s,
                                       method="GMS-3")
         testTrue = np.isclose(methodVal,
                               self.gms3,
@@ -292,7 +291,7 @@ class Test_Coulomb_logarithm:
                                       self.density2,
                                       self.particles,
                                       z_mean=self.z_mean,
-                                      V=np.nan*u.m/u.s,
+                                      V=np.nan * u.m / u.s,
                                       method="GMS-3")
         testTrue = np.isclose(methodVal,
                               self.gms3_negative,
@@ -311,7 +310,7 @@ class Test_Coulomb_logarithm:
                                       self.density1,
                                       self.particles,
                                       z_mean=self.z_mean,
-                                      V=np.nan*u.m/u.s,
+                                      V=np.nan * u.m / u.s,
                                       method="GMS-4")
         testTrue = np.isclose(methodVal,
                               self.gms4,
@@ -332,7 +331,7 @@ class Test_Coulomb_logarithm:
                                       self.density2,
                                       self.particles,
                                       z_mean=self.z_mean,
-                                      V=np.nan*u.m/u.s,
+                                      V=np.nan * u.m / u.s,
                                       method="GMS-4")
         testTrue = np.isclose(methodVal,
                               self.gms4_negative,
@@ -351,7 +350,7 @@ class Test_Coulomb_logarithm:
                                       self.density1,
                                       self.particles,
                                       z_mean=self.z_mean,
-                                      V=np.nan*u.m/u.s,
+                                      V=np.nan * u.m / u.s,
                                       method="GMS-5")
         testTrue = np.isclose(methodVal,
                               self.gms5,
@@ -372,7 +371,7 @@ class Test_Coulomb_logarithm:
                                       self.density2,
                                       self.particles,
                                       z_mean=self.z_mean,
-                                      V=np.nan*u.m/u.s,
+                                      V=np.nan * u.m / u.s,
                                       method="GMS-5")
         testTrue = np.isclose(methodVal,
                               self.gms5_negative,
@@ -391,7 +390,7 @@ class Test_Coulomb_logarithm:
                                       self.density1,
                                       self.particles,
                                       z_mean=self.z_mean,
-                                      V=np.nan*u.m/u.s,
+                                      V=np.nan * u.m / u.s,
                                       method="GMS-6")
         testTrue = np.isclose(methodVal,
                               self.gms6,
@@ -412,7 +411,7 @@ class Test_Coulomb_logarithm:
                                       self.density2,
                                       self.particles,
                                       z_mean=self.z_mean,
-                                      V=np.nan*u.m/u.s,
+                                      V=np.nan * u.m / u.s,
                                       method="GMS-6")
         testTrue = np.isclose(methodVal,
                               self.gms6_negative,
@@ -458,12 +457,12 @@ class Test_Coulomb_logarithm:
     def test_relativity_warn(self):
         """Tests whether relativity warning is raised at high velocity."""
         with pytest.warns(RelativityWarning):
-            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), V=0.9 * c)
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m ** -3, ('e', 'p'), V=0.9 * c)
 
     def test_relativity_error(self):
         """Tests whether relativity error is raised at light speed."""
         with pytest.raises(RelativityError):
-            Coulomb_logarithm(1e5 * u.K, 1 * u.m**-3, ('e', 'p'), V=1.1 * c)
+            Coulomb_logarithm(1e5 * u.K, 1 * u.m ** -3, ('e', 'p'), V=1.1 * c)
 
     def test_unit_conversion_error(self):
         """
@@ -471,7 +470,7 @@ class Test_Coulomb_logarithm:
         are given with incorrect units.
         """
         with pytest.raises(u.UnitConversionError):
-            Coulomb_logarithm(1e5 * u.g, 1 * u.m**-3,
+            Coulomb_logarithm(1e5 * u.g, 1 * u.m ** -3,
                               ('e', 'p'), V=29979245 * u.m / u.s)
 
     def test_single_particle_error(self):
@@ -479,7 +478,7 @@ class Test_Coulomb_logarithm:
         Tests whether an error is raised if only a single particle is given.
         """
         with pytest.raises(ValueError):
-            Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e'))
+            Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, ('e'))
 
     def test_invalid_particle_error(self):
         """
@@ -487,9 +486,9 @@ class Test_Coulomb_logarithm:
         is given.
         """
         with pytest.raises(ValueError):
-            Coulomb_logarithm(1 * u.K, 5 * u.m**-3, ('e', 'g'))
+            Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, ('e', 'g'))
 
-    n_e = np.array([1e9, 1e9, 1e24]) * u.cm**-3
+    n_e = np.array([1e9, 1e9, 1e24]) * u.cm ** -3
     T = np.array([1e2, 1e7, 1e8]) * u.K
     Lambda = np.array([5.97, 21.66, 6.69])
     particles = ('e', 'p')
@@ -509,7 +508,7 @@ class Test_b_perp:
         """
         methodVal = b_perp(self.T,
                            self.particles,
-                           V=np.nan*u.m/u.s)
+                           V=np.nan * u.m / u.s)
         testTrue = np.isclose(self.True1,
                               methodVal.si.value,
                               rtol=1e-1,
@@ -527,7 +526,7 @@ class Test_b_perp:
         fail1 = self.True1 + 1e-15
         methodVal = b_perp(self.T,
                            self.particles,
-                           V=np.nan*u.m/u.s)
+                           V=np.nan * u.m / u.s)
         testTrue = not np.isclose(methodVal.si.value,
                                   fail1,
                                   rtol=1e-16,
@@ -536,9 +535,9 @@ class Test_b_perp:
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
 
-    assert np.isclose(Coulomb_logarithm(1 * u.eV, 5 * u.m**-3, ('e', 'e')),
+    assert np.isclose(Coulomb_logarithm(1 * u.eV, 5 * u.m ** -3, ('e', 'e')),
                       Coulomb_logarithm(11604.5220 * u.K,
-                                        5 * u.m**-3,
+                                        5 * u.m ** -3,
                                         ('e', 'e')))
 
 
@@ -559,8 +558,8 @@ class Test_impact_parameter:
         methodVal = impact_parameter(self.T,
                                      self.n_e,
                                      self.particles,
-                                     z_mean=np.nan*u.dimensionless_unscaled,
-                                     V=np.nan*u.m/u.s,
+                                     z_mean=np.nan * u.dimensionless_unscaled,
+                                     V=np.nan * u.m / u.s,
                                      method="classical")
         bmin, bmax = methodVal
         methodVal = bmin.si.value, bmax.si.value
@@ -581,8 +580,8 @@ class Test_impact_parameter:
         methodVal = impact_parameter(self.T,
                                      self.n_e,
                                      self.particles,
-                                     z_mean=np.nan*u.dimensionless_unscaled,
-                                     V=np.nan*u.m/u.s,
+                                     z_mean=np.nan * u.dimensionless_unscaled,
+                                     V=np.nan * u.m / u.s,
                                      method="classical")
         bmin, bmax = methodVal
         methodVal = bmin.si.value, bmax.si.value
@@ -600,8 +599,8 @@ class Test_impact_parameter:
             impact_parameter(self.T,
                              self.n_e,
                              self.particles,
-                             z_mean=np.nan*u.dimensionless_unscaled,
-                             V=np.nan*u.m/u.s,
+                             z_mean=np.nan * u.dimensionless_unscaled,
+                             V=np.nan * u.m / u.s,
                              method="meow")
 
 
@@ -627,8 +626,8 @@ class Test_collision_frequency:
         methodVal = collision_frequency(self.T,
                                         self.n,
                                         self.particles,
-                                        z_mean=np.nan*u.dimensionless_unscaled,
-                                        V=np.nan*u.m/u.s,
+                                        z_mean=np.nan * u.dimensionless_unscaled,
+                                        V=np.nan * u.m / u.s,
                                         method="classical")
         testTrue = np.isclose(self.True1,
                               methodVal.si.value,
@@ -647,8 +646,8 @@ class Test_collision_frequency:
         methodVal = collision_frequency(self.T,
                                         self.n,
                                         self.particles,
-                                        z_mean=np.nan*u.dimensionless_unscaled,
-                                        V=np.nan*u.m/u.s,
+                                        z_mean=np.nan * u.dimensionless_unscaled,
+                                        V=np.nan * u.m / u.s,
                                         method="classical")
         testTrue = not np.isclose(methodVal.si.value,
                                   fail1,
@@ -665,8 +664,8 @@ class Test_collision_frequency:
         methodVal = collision_frequency(self.T,
                                         self.n,
                                         self.electrons,
-                                        z_mean=np.nan*u.dimensionless_unscaled,
-                                        V=np.nan*u.m/u.s,
+                                        z_mean=np.nan * u.dimensionless_unscaled,
+                                        V=np.nan * u.m / u.s,
                                         method="classical")
         testTrue = np.isclose(self.True_electrons,
                               methodVal.si.value,
@@ -683,8 +682,8 @@ class Test_collision_frequency:
         methodVal = collision_frequency(self.T,
                                         self.n,
                                         self.protons,
-                                        z_mean=np.nan*u.dimensionless_unscaled,
-                                        V=np.nan*u.m/u.s,
+                                        z_mean=np.nan * u.dimensionless_unscaled,
+                                        V=np.nan * u.m / u.s,
                                         method="classical")
         testTrue = np.isclose(self.True_protons,
                               methodVal.si.value,
@@ -702,7 +701,7 @@ class Test_collision_frequency:
                                         self.n,
                                         self.particles,
                                         z_mean=self.z_mean,
-                                        V=np.nan*u.m/u.s,
+                                        V=np.nan * u.m / u.s,
                                         method="classical")
         testTrue = np.isclose(self.True_zmean,
                               methodVal.si.value,
@@ -730,8 +729,8 @@ class Test_mean_free_path:
         methodVal = mean_free_path(self.T,
                                    self.n_e,
                                    self.particles,
-                                   z_mean=np.nan*u.dimensionless_unscaled,
-                                   V=np.nan*u.m/u.s,
+                                   z_mean=np.nan * u.dimensionless_unscaled,
+                                   V=np.nan * u.m / u.s,
                                    method="classical")
         testTrue = np.isclose(self.True1,
                               methodVal.si.value,
@@ -750,8 +749,8 @@ class Test_mean_free_path:
         methodVal = mean_free_path(self.T,
                                    self.n_e,
                                    self.particles,
-                                   z_mean=np.nan*u.dimensionless_unscaled,
-                                   V=np.nan*u.m/u.s,
+                                   z_mean=np.nan * u.dimensionless_unscaled,
+                                   V=np.nan * u.m / u.s,
                                    method="classical")
         testTrue = not np.isclose(methodVal.si.value,
                                   fail1,
@@ -780,8 +779,8 @@ class Test_Spitzer_resistivity:
         methodVal = Spitzer_resistivity(self.T,
                                         self.n,
                                         self.particles,
-                                        z_mean=np.nan*u.dimensionless_unscaled,
-                                        V=np.nan*u.m/u.s,
+                                        z_mean=np.nan * u.dimensionless_unscaled,
+                                        V=np.nan * u.m / u.s,
                                         method="classical")
         testTrue = np.isclose(self.True1,
                               methodVal.si.value,
@@ -800,8 +799,8 @@ class Test_Spitzer_resistivity:
         methodVal = Spitzer_resistivity(self.T,
                                         self.n,
                                         self.particles,
-                                        z_mean=np.nan*u.dimensionless_unscaled,
-                                        V=np.nan*u.m/u.s,
+                                        z_mean=np.nan * u.dimensionless_unscaled,
+                                        V=np.nan * u.m / u.s,
                                         method="classical")
         testTrue = not np.isclose(methodVal.si.value,
                                   fail1,
@@ -817,7 +816,7 @@ class Test_Spitzer_resistivity:
                                         self.n,
                                         self.particles,
                                         z_mean=self.z_mean,
-                                        V=np.nan*u.m/u.s,
+                                        V=np.nan * u.m / u.s,
                                         method="classical")
         testTrue = np.isclose(self.True_zmean,
                               methodVal.si.value,
@@ -846,8 +845,8 @@ class Test_mobility:
         methodVal = mobility(self.T,
                              self.n_e,
                              self.particles,
-                             z_mean=np.nan*u.dimensionless_unscaled,
-                             V=np.nan*u.m/u.s,
+                             z_mean=np.nan * u.dimensionless_unscaled,
+                             V=np.nan * u.m / u.s,
                              method="classical")
         testTrue = np.isclose(self.True1,
                               methodVal.si.value,
@@ -866,8 +865,8 @@ class Test_mobility:
         methodVal = mobility(self.T,
                              self.n_e,
                              self.particles,
-                             z_mean=np.nan*u.dimensionless_unscaled,
-                             V=np.nan*u.m/u.s,
+                             z_mean=np.nan * u.dimensionless_unscaled,
+                             V=np.nan * u.m / u.s,
                              method="classical")
         testTrue = not np.isclose(methodVal.si.value,
                                   fail1,
@@ -883,7 +882,7 @@ class Test_mobility:
                              self.n_e,
                              self.particles,
                              z_mean=self.z_mean,
-                             V=np.nan*u.m/u.s,
+                             V=np.nan * u.m / u.s,
                              method="classical")
         testTrue = np.isclose(self.True_zmean,
                               methodVal.si.value,
@@ -913,8 +912,8 @@ class Test_Knudsen_number:
                                    self.T,
                                    self.n_e,
                                    self.particles,
-                                   z_mean=np.nan*u.dimensionless_unscaled,
-                                   V=np.nan*u.m/u.s,
+                                   z_mean=np.nan * u.dimensionless_unscaled,
+                                   V=np.nan * u.m / u.s,
                                    method="classical")
         testTrue = np.isclose(self.True1,
                               methodVal,
@@ -934,8 +933,8 @@ class Test_Knudsen_number:
                                    self.T,
                                    self.n_e,
                                    self.particles,
-                                   z_mean=np.nan*u.dimensionless_unscaled,
-                                   V=np.nan*u.m/u.s,
+                                   z_mean=np.nan * u.dimensionless_unscaled,
+                                   V=np.nan * u.m / u.s,
                                    method="classical")
         testTrue = not np.isclose(methodVal,
                                   fail1,
@@ -965,8 +964,8 @@ class Test_coupling_parameter:
         methodVal = coupling_parameter(self.T,
                                        self.n_e,
                                        self.particles,
-                                       z_mean=np.nan*u.dimensionless_unscaled,
-                                       V=np.nan*u.m/u.s,
+                                       z_mean=np.nan * u.dimensionless_unscaled,
+                                       V=np.nan * u.m / u.s,
                                        method="classical")
         testTrue = np.isclose(self.True1,
                               methodVal,
@@ -985,8 +984,8 @@ class Test_coupling_parameter:
         methodVal = coupling_parameter(self.T,
                                        self.n_e,
                                        self.particles,
-                                       z_mean=np.nan*u.dimensionless_unscaled,
-                                       V=np.nan*u.m/u.s,
+                                       z_mean=np.nan * u.dimensionless_unscaled,
+                                       V=np.nan * u.m / u.s,
                                        method="classical")
         testTrue = not np.isclose(methodVal,
                                   fail1,
@@ -1004,7 +1003,7 @@ class Test_coupling_parameter:
                                        self.n_e,
                                        self.particles,
                                        z_mean=self.z_mean,
-                                       V=np.nan*u.m/u.s,
+                                       V=np.nan * u.m / u.s,
                                        method="classical")
         testTrue = np.isclose(self.True_zmean,
                               methodVal,
@@ -1073,7 +1072,7 @@ class Test_classical_transport:
             hall_i=self.hall_i,
             mu=self.mu,
             theta=self.theta,
-        )
+            )
         self.all_variables = self.ct.all_variables()
 
     def test_spitzer_vs_formulary(self):
@@ -1301,7 +1300,7 @@ class Test_classical_transport:
         ("ji-held", "electron_thermal_conductivity", "all", 3),
         ("ji-held", "ion_thermal_conductivity", "all", 3),
         ("spitzer", "resistivity", "all", 2),
-    ])
+        ])
     def test_number_of_returns(self, model, method, field_orientation,
                                expected):
         ct2 = classical_transport(T_e=self.T_e,
@@ -1322,7 +1321,7 @@ class Test_classical_transport:
         ("ji-held", 2.77028546e-8 * u.Ohm * u.m),
         ("spitzer", 2.78349687e-8 * u.Ohm * u.m),
         ("braginskii", 2.78349687e-8 * u.Ohm * u.m)
-    ])
+        ])
     def test_resistivity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
@@ -1341,7 +1340,7 @@ class Test_classical_transport:
         ("ji-held", 0.702 * u.s / u.s),
         ("spitzer", 0.69944979 * u.s / u.s),
         ("braginskii", 0.711084 * u.s / u.s)
-    ])
+        ])
     def test_thermoelectric_conductivity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
@@ -1362,7 +1361,7 @@ class Test_classical_transport:
          np.array([0.07674402, 0.07674402, 0.07674402, 0, 0]) * u.Pa * u.s),
         ("braginskii",
          np.array([0.07674402, 0.07671874, 0.07671874, 0, 0]) * u.Pa * u.s)
-    ])
+        ])
     def test_electron_viscosity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
@@ -1382,7 +1381,7 @@ class Test_classical_transport:
          np.array([7.96226452, 7.96226452, 7.96226452, 0, 0]) * u.Pa * u.s),
         ("braginskii",
          np.array([7.91936173, 7.89528642, 7.89528642, 0, 0]) * u.Pa * u.s)
-    ])
+        ])
     def test_ion_viscosity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
@@ -1401,7 +1400,7 @@ class Test_classical_transport:
         ("ji-held", 5084253.556001088 * u.W / (u.K * u.m)),
         ("spitzer", 5082147.824377487 * u.W / (u.K * u.m)),
         ("braginskii", 5016895.3386957785 * u.W / (u.K * u.m))
-    ])
+        ])
     def test_electron_thermal_conductivity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
@@ -1420,7 +1419,7 @@ class Test_classical_transport:
     @pytest.mark.parametrize("model, expected", [
         ("ji-held", 134547.55528106514 * u.W / (u.K * u.m)),
         ("braginskii", 133052.21732349042 * u.W / (u.K * u.m))
-    ])
+        ])
     def test_ion_thermal_conductivity_by_model(self, model, expected):
         ct2 = classical_transport(T_e=self.T_e,
                                   n_e=self.n_e,
@@ -1437,28 +1436,28 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize("key, expected", {
-        'resistivity': [2.84304305e-08,
-                        5.54447070e-08,
-                        1.67853407e-12],
-        'thermoelectric conductivity': [7.11083999e-01,
-                                        1.61011272e-09,
-                                        2.66496639e-05],
+        'resistivity':                   [2.84304305e-08,
+                                          5.54447070e-08,
+                                          1.67853407e-12],
+        'thermoelectric conductivity':   [7.11083999e-01,
+                                          1.61011272e-09,
+                                          2.66496639e-05],
         'electron thermal conductivity': [4.91374931e+06,
                                           2.28808496e-03,
                                           6.90324259e+01],
-        'electron viscosity': [7.51661800e-02,
-                               5.23617668e-21,
-                               2.09447067e-20,
-                               1.61841341e-11,
-                               3.23682681e-11],
-        'ion thermal conductivity': [1.41709276e+05,
-                                     4.20329493e-02,
-                                     6.90323924e+01],
-        'ion viscosity': [8.43463595e+00,
-                          8.84513731e-13,
-                          3.53805159e-12,
-                          2.54483240e-06,
-                          5.08966116e-06]}.items())
+        'electron viscosity':            [7.51661800e-02,
+                                          5.23617668e-21,
+                                          2.09447067e-20,
+                                          1.61841341e-11,
+                                          3.23682681e-11],
+        'ion thermal conductivity':      [1.41709276e+05,
+                                          4.20329493e-02,
+                                          6.90323924e+01],
+        'ion viscosity':                 [8.43463595e+00,
+                                          8.84513731e-13,
+                                          3.53805159e-12,
+                                          2.54483240e-06,
+                                          5.08966116e-06]}.items())
     def test_dictionary(self, key, expected):
         calculated = self.all_variables[key]
         testTrue = np.allclose(expected, calculated.si.value)
@@ -1507,7 +1506,7 @@ class Test__nondim_tc_e_braginskii:
         (3, 'par', 6.1),  # eq (2.12), table 1
         (4, 'par', 6.9),  # eq (2.12), table 1
         (np.inf, 'par', 12.5),  # eq (2.12), table 1
-    ])
+        ])
     def test_known_values_par(self, Z, field_orientation, expected):
         """check some known values"""
         kappa_e_hat = _nondim_tc_e_braginskii(self.big_hall,
@@ -1522,7 +1521,7 @@ class Test__nondim_tc_e_braginskii:
         (3, 'perp', 3.7),  # eq (2.13), table 1
         (4, 'perp', 3.6),  # eq (2.13), table 1
         (np.inf, 'perp', 3.2),  # eq (2.13),table 1
-    ])
+        ])
     def test_known_values_perp(self, Z, field_orientation, expected):
         """check some known values"""
         kappa_e_hat = _nondim_tc_e_braginskii(self.big_hall,
@@ -1608,7 +1607,7 @@ class Test__nondim_tec_braginskii:
         (3, 'par', 1.0),  # eq (2.9), table 1
         (4, 'par', 1.1),  # eq (2.9), table 1
         (np.inf, 'par', 1.5),  # eq (2.9),table 1
-    ])
+        ])
     def test_known_values_par(self, Z, field_orientation, expected):
         """check some known values"""
         beta_hat = _nondim_tec_braginskii(self.big_hall,
@@ -1646,7 +1645,7 @@ class Test__nondim_resist_braginskii:
         (3, 'par', 0.40),  # eq (2.8), table 1
         (4, 'par', 0.38),  # eq (2.8), table 1
         (np.inf, 'par', 0.29),  # eq (2.8),table 1
-    ])
+        ])
     def test_known_values_par(self, Z, field_orientation, expected):
         """check some known values"""
         beta_hat = _nondim_resist_braginskii(self.big_hall,
@@ -1680,7 +1679,7 @@ class Test__nondim_visc_i_braginskii:
     # values from Braginskii '65, eqs. 2.22 to 2.24
     @pytest.mark.parametrize("expected, power", [
         (np.array((0.96, 0.3, 1.2, 0.5, 1.0)), np.array((0, 2, 2, 1, 1)))
-    ])
+        ])
     def test_known_values(self, expected, power):
         """check some known values"""
         eta_i_hat = _nondim_visc_i_braginskii(self.big_hall)
@@ -1711,12 +1710,12 @@ class Test__nondim_visc_e_braginskii:
         (1, 2.04, 2),  # eq (2.26)
         (1, 0.5, 3),  # eq (2.27)
         (1, 1.0, 4),  # eq (2.27)
-    ])
+        ])
     def test_known_values(self, Z, expected, idx):
         """check some known values"""
         beta_hat = _nondim_visc_e_braginskii(self.big_hall, Z)
         if idx == 0:
-            assert(np.isclose(beta_hat[idx], expected, atol=1e-2))
+            assert (np.isclose(beta_hat[idx], expected, atol=1e-2))
         elif idx == 1 or idx == 2:
             assert np.isclose(beta_hat[idx] * self.big_hall ** 2, expected,
                               atol=1e-2)
@@ -1819,7 +1818,7 @@ def test__nondim_tec_spitzer(Z):
     (50.24, 100, 'cross', 0.04949),
     (158.1, 100, 'cross', 0.01572),
     (500.8, 100, 'cross', 0.004972),
-])
+    ])
 def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
     """test _nondim_tc_e_ji_held function"""
     kappa_hat = _nondim_tc_e_ji_held(hall, Z, field_orientation)
@@ -1873,7 +1872,7 @@ def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
     (100.2, 100, 'cross', 0.01332),
     (250.3, 100, 'cross', 0.00562),
     (629.8, 100, 'cross', 0.002308),
-])
+    ])
 def test__nondim_tec_ji_held(hall, Z, field_orientation, expected):
     """test _nondim_tec_ji_held function"""
     beta_hat = _nondim_tec_ji_held(hall, Z, field_orientation)
@@ -1921,7 +1920,7 @@ def test__nondim_tec_ji_held(hall, Z, field_orientation, expected):
     (786.3, 100, 'cross', 0.02278),
     (2504, 100, 'cross', 0.01152),
     (7879, 100, 'cross', 0.005652),
-])
+    ])
 def test__nondim_resist_ji_held(hall, Z, field_orientation, expected):
     """test _nondim_resist_ji_held function"""
     alpha_hat = _nondim_resist_ji_held(hall, Z, field_orientation)
@@ -1949,7 +1948,7 @@ def test__nondim_resist_ji_held(hall, Z, field_orientation, expected):
     (16.68, 1, 4, 0.05845),
     (39.82, 1, 4, 0.02501),
     (77.82, 1, 4, 0.01288),
-])
+    ])
 def test__nondim_visc_e_ji_held(hall, Z, index, expected):
     """test _nondim_visc_e_ji_held function"""
     alpha_hat = _nondim_visc_e_ji_held(hall, Z)
@@ -1978,7 +1977,7 @@ def test__nondim_visc_e_ji_held(hall, Z, index, expected):
     (2.96843, 1, 0, 100, 'cross', 0.77216061),
     (12.42528, 1, 0, 100, 'cross', 0.19968696),
     (77.11707, 1, 0, 100, 'cross', 0.03235721),
-])
+    ])
 def test__nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, expected):
     """test _nondim_tc_i_ji_held function"""
     kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)
@@ -2003,7 +2002,7 @@ def test__nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, expected):
     (4.35295, 1, 0, 100, 4, 0.21036427),
     (22.74055, 1, 0, 100, 4, 0.04358606),
     (80.42633, 1, 0, 100, 4, 0.01238144),
-])
+    ])
 def test__nondim_visc_i_ji_held(hall, Z, mu, theta, index, expected):
     """test _nondim_visc_i_ji_held function"""
     kappa_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)

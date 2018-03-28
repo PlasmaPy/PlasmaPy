@@ -20,14 +20,14 @@ from plasmapy.physics.quantum import (Wigner_Seitz_radius,
 from plasmapy.mathematics import Fermi_integral
 
 
-@utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                       "n_e": {"units": u.m**-3}
+@utils.check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+                       "n_e": {"units": u.m ** -3}
                        })
 def Coulomb_logarithm(T,
                       n_e,
                       particles,
-                      z_mean=np.nan*u.dimensionless_unscaled,
-                      V=np.nan*u.m/u.s,
+                      z_mean=np.nan * u.dimensionless_unscaled,
+                      V=np.nan * u.m / u.s,
                       method="classical"):
     r"""
     Estimates the Coulomb logarithm.
@@ -215,7 +215,7 @@ def Coulomb_logarithm(T,
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
     if ln_Lambda < 4:
         warnings.warn(f"Coulomb logarithm is {ln_Lambda}, you might have strong coupling effects",
-            utils.PhysicsWarning)
+                      utils.PhysicsWarning)
     # if ln_Lambda < 1:
     #     raise utils.PhysicsError(f"Coulomb logarithm is {ln_Lambda}, less than 1")
     return ln_Lambda
@@ -257,7 +257,7 @@ def _boilerPlate(T, particles, V):
     reduced_mass = masses[0] * masses[1] / (masses[0] + masses[1])
     # getting thermal velocity of system if no velocity is given
     if np.isnan(V):
-        V = np.sqrt(2 * k_B * T / reduced_mass).to(u.m/u.s)
+        V = np.sqrt(2 * k_B * T / reduced_mass).to(u.m / u.s)
     _check_relativistic(V, 'V')
     return (T, masses, charges, reduced_mass, V)
 
@@ -266,7 +266,7 @@ def _boilerPlate(T, particles, V):
                  })
 def b_perp(T,
            particles,
-           V=np.nan*u.m/u.s):
+           V=np.nan * u.m / u.s):
     """
     Distance of closest approach for a 90 degree Coulomb collision.
 
@@ -343,14 +343,14 @@ def b_perp(T,
     return bPerp.to(u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m**-3}
+@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m ** -3}
                  })
 def impact_parameter(T,
                      n_e,
                      particles,
-                     z_mean=np.nan*u.dimensionless_unscaled,
-                     V=np.nan*u.m/u.s,
+                     z_mean=np.nan * u.dimensionless_unscaled,
+                     V=np.nan * u.m / u.s,
                      method="classical"):
     r"""Impact parameters for classical and quantum Coulomb collision
 
@@ -526,13 +526,13 @@ def impact_parameter(T,
 
 
 @check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n": {"units": u.m**-3}
+                 "n": {"units": u.m ** -3}
                  })
 def collision_frequency(T,
                         n,
                         particles,
-                        z_mean=np.nan*u.dimensionless_unscaled,
-                        V=np.nan*u.m/u.s,
+                        z_mean=np.nan * u.dimensionless_unscaled,
+                        V=np.nan * u.m / u.s,
                         method="classical"):
     r"""Collision frequency of particles in a plasma.
 
@@ -644,7 +644,7 @@ def collision_frequency(T,
                                     n,
                                     particles,
                                     z_mean,
-                                    V=np.nan*u.m/u.s,
+                                    V=np.nan * u.m / u.s,
                                     method=method)
     elif particles[0] == 'e' or particles[1] == 'e':
         # electron-ion collision
@@ -663,7 +663,7 @@ def collision_frequency(T,
                                     n,
                                     particles,
                                     z_mean,
-                                    V=np.nan*u.m/u.s,
+                                    V=np.nan * u.m / u.s,
                                     method=method)
     else:
         # ion-ion collision
@@ -675,7 +675,7 @@ def collision_frequency(T,
                                     n,
                                     particles,
                                     z_mean,
-                                    V=np.nan*u.m/u.s,
+                                    V=np.nan * u.m / u.s,
                                     method=method)
     # collisional cross section
     sigma = np.pi * (2 * bPerp) ** 2
@@ -686,14 +686,14 @@ def collision_frequency(T,
     return freq.to(u.Hz)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m**-3}
+@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m ** -3}
                  })
 def mean_free_path(T,
                    n_e,
                    particles,
-                   z_mean=np.nan*u.dimensionless_unscaled,
-                   V=np.nan*u.m/u.s,
+                   z_mean=np.nan * u.dimensionless_unscaled,
+                   V=np.nan * u.m / u.s,
                    method="classical"):
     r"""Collisional mean free path (m)
 
@@ -792,13 +792,13 @@ def mean_free_path(T,
 
 
 @check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n": {"units": u.m**-3}
+                 "n": {"units": u.m ** -3}
                  })
 def Spitzer_resistivity(T,
                         n,
                         particles,
-                        z_mean=np.nan*u.dimensionless_unscaled,
-                        V=np.nan*u.m/u.s,
+                        z_mean=np.nan * u.dimensionless_unscaled,
+                        V=np.nan * u.m / u.s,
                         method="classical"):
     r"""Spitzer resistivity of a plasma
 
@@ -910,14 +910,14 @@ def Spitzer_resistivity(T,
     return spitzer.to(u.Ohm * u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m**-3}
+@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m ** -3}
                  })
 def mobility(T,
              n_e,
              particles,
-             z_mean=np.nan*u.dimensionless_unscaled,
-             V=np.nan*u.m/u.s,
+             z_mean=np.nan * u.dimensionless_unscaled,
+             V=np.nan * u.m / u.s,
              method="classical"):
     r"""Electrical mobility (m^2/(V s))
 
@@ -1025,15 +1025,15 @@ def mobility(T,
     return mobility_value.to(u.m ** 2 / (u.V * u.s))
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m**-3}
+@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m ** -3}
                  })
 def Knudsen_number(characteristic_length,
                    T,
                    n_e,
                    particles,
-                   z_mean=np.nan*u.dimensionless_unscaled,
-                   V=np.nan*u.m/u.s,
+                   z_mean=np.nan * u.dimensionless_unscaled,
+                   V=np.nan * u.m / u.s,
                    method="classical"):
     r"""Knudsen number (dimless)
 
@@ -1135,14 +1135,14 @@ def Knudsen_number(characteristic_length,
     return knudsen_param.to(u.dimensionless_unscaled)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m**-3}
+@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+                 "n_e": {"units": u.m ** -3}
                  })
 def coupling_parameter(T,
                        n_e,
                        particles,
-                       z_mean=np.nan*u.dimensionless_unscaled,
-                       V=np.nan*u.m/u.s,
+                       z_mean=np.nan * u.dimensionless_unscaled,
+                       V=np.nan * u.m / u.s,
                        method="classical"):
     r"""Coupling parameter.
     Coupling parameter compares Coulomb energy to kinetic energy (typically)

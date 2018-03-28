@@ -15,6 +15,7 @@ from plasmapy import atomic, utils
 
 from plasmapy.utils.exceptions import (PhysicsError, AtomicError)
 
+
 def grab_charge(ion, z_mean=None):
     # TODO docstring
     if z_mean is None:
@@ -26,20 +27,23 @@ def grab_charge(ion, z_mean=None):
         Z = z_mean
     return Z
 
-def grab_mass_density(density, ion, z_mean = None):
+
+def grab_mass_density(density, ion, z_mean=None):
     # TODO docstring
-    if density.unit.is_equivalent(u.m**-3):
+    if density.unit.is_equivalent(u.m ** -3):
         m_i = atomic.ion_mass(ion)
         Z = grab_charge(ion, z_mean)
         rho = density * m_i + Z * density * m_e
-    elif density.unit.is_equivalent(u.kg / u.m**3):
+    elif density.unit.is_equivalent(u.kg / u.m ** 3):
         rho = density
 
     return rho
 
+
 @utils.check_relativistic
-@utils.check_quantity({'B': {'units': u.T},
-                       'density': {'units': [u.m**-3, u.kg / u.m**3], 'can_be_negative': False}})
+@utils.check_quantity({'B':       {'units': u.T},
+                       'density': {'units':           [u.m ** -3, u.kg / u.m ** 3],
+                                   'can_be_negative': False}})
 def Alfven_speed(B, density, ion="p+", z_mean=None):
     r"""
     Return the Alfven speed.
@@ -132,7 +136,6 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
 
     """
 
-
     B = B.to(u.T)
     rho = grab_mass_density(density, ion, z_mean)
 
@@ -144,7 +147,7 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
 @utils.check_quantity({
     'T_i': {'units': u.K, 'can_be_negative': False},
     'T_e': {'units': u.K, 'can_be_negative': False}
-})
+    })
 def ion_sound_speed(T_e,
                     T_i,
                     gamma_e=1,
@@ -276,7 +279,7 @@ def ion_sound_speed(T_e,
 @utils.check_relativistic
 @utils.check_quantity({
     'T': {'units': u.K, 'can_be_negative': False}
-})
+    })
 def thermal_speed(T, particle="e-", method="most_probable"):
     r"""
     Return the most probable speed for a particle within a Maxwellian
@@ -375,7 +378,7 @@ def thermal_speed(T, particle="e-", method="most_probable"):
 @utils.check_relativistic
 @utils.check_quantity({
     'T': {'units': u.K, 'can_be_negative': False}
-})
+    })
 def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
@@ -476,8 +479,8 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
 
 @utils.check_quantity({
     'T_e': {'units': u.K, 'can_be_negative': False},
-    'n_e': {'units': u.m**-3, 'can_be_negative': False}
-})
+    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
+    })
 def collision_rate_electron_ion(T_e,
                                 n_e,
                                 ion_particle,
@@ -537,14 +540,14 @@ def collision_rate_electron_ion(T_e,
                                             method=coulomb_log_method)
     Z_i = atomic.integer_charge(ion_particle)
     nu_e = 4 / 3 * np.sqrt(2 * np.pi / m_e) / (4 * np.pi * eps0) ** 2 * \
-        e ** 4 * n_e * Z_i * coulomb_log_val / (k_B * T_e) ** 1.5
+           e ** 4 * n_e * Z_i * coulomb_log_val / (k_B * T_e) ** 1.5
     return nu_e.to(1 / u.s)
 
 
 @utils.check_quantity({
     'T_i': {'units': u.K, 'can_be_negative': False},
-    'n_i': {'units': u.m**-3, 'can_be_negative': False}
-})
+    'n_i': {'units': u.m ** -3, 'can_be_negative': False}
+    })
 def collision_rate_ion_ion(T_i, n_i, ion_particle,
                            coulomb_log=None, V=None,
                            coulomb_log_method="classical"):
@@ -602,16 +605,16 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
         coulomb_log_val = Coulomb_logarithm(T_i, n_i, particles, V, method=coulomb_log_method)
     Z_i = atomic.integer_charge(ion_particle)
     m_i = atomic.ion_mass(ion_particle)
-    nu_i = 4 / 3 * np.sqrt(np.pi / m_i) / (4 * np.pi * eps0)**2 * e**4 * \
-        n_i * Z_i**4 * coulomb_log_val / (k_B * T_i)**1.5
+    nu_i = 4 / 3 * np.sqrt(np.pi / m_i) / (4 * np.pi * eps0) ** 2 * e ** 4 * \
+           n_i * Z_i ** 4 * coulomb_log_val / (k_B * T_i) ** 1.5
     return nu_i.to(1 / u.s)
 
 
 @utils.check_quantity({
-    'n': {'units': u.m**-3, 'can_be_negative': False},
+    'n': {'units': u.m ** -3, 'can_be_negative': False},
     'T': {'units': u.K, 'can_be_negative': False},
     'B': {'units': u.T}
-})
+    })
 def Hall_parameter(n,
                    T,
                    B,
@@ -638,7 +641,7 @@ def Hall_parameter(n,
 
 @utils.check_quantity({
     'B': {'units': u.T}
-})
+    })
 def gyrofrequency(B, particle='e-', signed=False, Z=None):
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
@@ -734,11 +737,11 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
     return omega_ci
 
 
-@utils.check_quantity({'B': {'units': u.T},
-                       'Vperp': {'units': u.m/u.s, 'can_be_nan': True},
-                       'T_i': {'units': u.K, 'can_be_nan': True},
+@utils.check_quantity({'B':     {'units': u.T},
+                       'Vperp': {'units': u.m / u.s, 'can_be_nan': True},
+                       'T_i':   {'units': u.K, 'can_be_nan': True},
                        })
-def gyroradius(B, *, Vperp=np.nan*u.m/u.s, T_i=np.nan*u.K, particle='e-'):
+def gyroradius(B, *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K, particle='e-'):
     r"""Return the particle gyroradius.
 
     Parameters
@@ -846,8 +849,8 @@ def gyroradius(B, *, Vperp=np.nan*u.m/u.s, T_i=np.nan*u.K, particle='e-'):
 
 
 @utils.check_quantity({
-    'n': {'units': u.m**-3, 'can_be_negative': False}
-})
+    'n': {'units': u.m ** -3, 'can_be_negative': False}
+    })
 def plasma_frequency(n, particle='e-', z_mean=None):
     r"""Calculate the particle plasma frequency.
 
@@ -940,8 +943,8 @@ def plasma_frequency(n, particle='e-', z_mean=None):
 
 @utils.check_quantity({
     'T_e': {'units': u.K, 'can_be_negative': False},
-    'n_e': {'units': u.m**-3, 'can_be_negative': False}
-})
+    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
+    })
 def Debye_length(T_e, n_e):
     r"""Calculate the characteristic decay length for electric fields,
      due to charge screening.
@@ -1008,8 +1011,8 @@ def Debye_length(T_e, n_e):
 
 @utils.check_quantity({
     'T_e': {'units': u.K, 'can_be_negative': False},
-    'n_e': {'units': u.m**-3, 'can_be_negative': False}
-})
+    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
+    })
 def Debye_number(T_e, n_e):
     r"""Return the number of electrons within a sphere with a radius
     of the Debye length.
@@ -1072,8 +1075,8 @@ def Debye_number(T_e, n_e):
 
 
 @utils.check_quantity({
-    'n': {'units': u.m**-3, 'can_be_negative': False}
-})
+    'n': {'units': u.m ** -3, 'can_be_negative': False}
+    })
 def inertial_length(n, particle='e-'):
     r"""Calculate the particle inertial length. At this length, the Hall effect
     becomes important.
@@ -1141,7 +1144,7 @@ def inertial_length(n, particle='e-'):
 
 @utils.check_quantity({
     'B': {'units': u.T}
-})
+    })
 def magnetic_pressure(B):
     r"""
     Calculate the magnetic pressure.
@@ -1203,7 +1206,7 @@ def magnetic_pressure(B):
 
 @utils.check_quantity({
     'B': {'units': u.T}
-})
+    })
 def magnetic_energy_density(B: u.T):
     r"""
     Calculate the magnetic energy density.
@@ -1264,9 +1267,9 @@ def magnetic_energy_density(B: u.T):
 
 
 @utils.check_quantity({
-    'B': {'units': u.T},
-    'n_e': {'units': u.m**-3, 'can_be_negative': False}
-})
+    'B':   {'units': u.T},
+    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
+    })
 def upper_hybrid_frequency(B, n_e):
     r"""
     Return the upper hybrid frequency.
@@ -1319,15 +1322,15 @@ def upper_hybrid_frequency(B, n_e):
 
     omega_pe = plasma_frequency(n=n_e)
     omega_ce = gyrofrequency(B)
-    omega_uh = (np.sqrt(omega_pe**2 + omega_ce**2))
+    omega_uh = (np.sqrt(omega_pe ** 2 + omega_ce ** 2))
 
     return omega_uh.to(u.rad / u.s)
 
 
 @utils.check_quantity({
-    'B': {'units': u.T},
-    'n_i': {'units': u.m**-3, 'can_be_negative': False}
-})
+    'B':   {'units': u.T},
+    'n_i': {'units': u.m ** -3, 'can_be_negative': False}
+    })
 def lower_hybrid_frequency(B, n_i, ion='p+'):
     r"""
     Return the lower hybrid frequency.
@@ -1398,7 +1401,7 @@ def lower_hybrid_frequency(B, n_i, ion='p+'):
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n_i, particle=ion)
     omega_ce = gyrofrequency(B)
-    omega_lh = ((omega_ci * omega_ce) ** -1 + omega_pi ** -2)**-0.5
+    omega_lh = ((omega_ci * omega_ce) ** -1 + omega_pi ** -2) ** -0.5
     # TODO possibly optimize the above line via np.sqrt
     omega_lh = omega_lh
 

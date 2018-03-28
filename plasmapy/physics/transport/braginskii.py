@@ -16,7 +16,6 @@ from plasmapy.physics.parameters import (Hall_parameter,
 from plasmapy.constants import e, m_e, k_B
 
 
-
 class classical_transport:
     r"""
     Classical transport coefficients (e.g. Braginskii, 1965).
@@ -323,7 +322,6 @@ class classical_transport:
                                                      self.ion_particle],
                                                     V_ii,
                                                     method=coulomb_log_method)
-
 
         # calculate Hall parameters if not forced in input
         if hall_e is not None:
