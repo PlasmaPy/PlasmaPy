@@ -53,10 +53,10 @@ V = 25.2 * u.m / u.s
 class Test_mass_density:
     def test_particleless(self):
         with pytest.raises(ValueError):
-            mass_density(1*u.m**-3)
+            mass_density(1 * u.m ** -3)
     def test_wrong_units(self):
         with pytest.raises(ValueError):
-            mass_density(u.J)
+            mass_density(1 * u.J)
 
 
 # Assertions below that are in CGS units with 2-3 significant digits
