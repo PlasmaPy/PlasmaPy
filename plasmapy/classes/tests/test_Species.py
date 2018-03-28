@@ -4,13 +4,13 @@ from astropy import units as u
 from astropy.modeling import models, fitting
 from scipy.optimize import curve_fit
 
-from plasmapy.classes import Plasma, Species
+from plasmapy.classes import Plasma3D, Species
 
 
 @pytest.fixture()
 def uniform_magnetic_field(N=3, max_x=1):
     x = np.linspace(-max_x, max_x, N) * u.m
-    test_plasma = Plasma(x, x, x)
+    test_plasma = Plasma3D(x, x, x)
     magfieldstr = 1 * u.T
     test_plasma.magnetic_field[2] = magfieldstr
     return test_plasma
@@ -200,6 +200,6 @@ def test_particle_exb_nonuniform_drift():
 #     y = np.linspace(0, 1, 20)*u.m
 #     z = np.linspace(0, 1, 30)*u.m
 
-#     plasma = Plasma(x, y, z)
+#     plasma = Plasma3D(x, y, z)
 
 #     Species(plasma, 'e', dt=1e-14*u.s, nt=2).run()
