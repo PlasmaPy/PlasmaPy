@@ -45,7 +45,7 @@ from plasmapy.physics.transport import classical_transport
 
 
 def count_decimal_places(digits):
-    '''Return the number of decimal places of the input digit string'''
+    """Return the number of decimal places of the input digit string"""
     integral, _, fractional = digits.partition(".")
     return len(fractional)
 
@@ -478,7 +478,7 @@ class Test_Coulomb_logarithm:
         Tests whether an error is raised if only a single particle is given.
         """
         with pytest.raises(ValueError):
-            Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, ('e'))
+            Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, 'e')
 
     def test_invalid_particle_error(self):
         """
@@ -1086,7 +1086,7 @@ class Test_classical_transport:
                                   field_orientation='perp')
         alpha_spitzer_perp_NRL = (1.03e-4 * ct2.Z *
                                   ct2.coulomb_log_ei *
-                                  ((ct2.T_e).to(u.eV)).value ** (-3 / 2) *
+                                  (ct2.T_e.to(u.eV)).value ** (-3 / 2) *
                                   u.Ohm * u.m)
         testTrue = np.isclose(ct2.resistivity().value,
                               alpha_spitzer_perp_NRL.value,
@@ -1191,7 +1191,7 @@ class Test_classical_transport:
 
     def test_coulomb_log_errors(self):
         """should raise PhysicsError if coulomb log is < 1"""
-        with  pytest.warns(PhysicsWarning):
+        with pytest.warns(PhysicsWarning):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,
@@ -1199,7 +1199,7 @@ class Test_classical_transport:
                                       ion_particle=self.ion_particle,
                                       coulomb_log_ii=0.3)
 
-        with  pytest.warns(PhysicsWarning):
+        with pytest.warns(PhysicsWarning):
             ct2 = classical_transport(T_e=self.T_e,
                                       n_e=self.n_e,
                                       T_i=self.T_i,

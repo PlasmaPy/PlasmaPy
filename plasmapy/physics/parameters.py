@@ -932,6 +932,7 @@ def plasma_frequency(n, particle='e-', z_mean=None):
             # using user provided average ionization
             Z = z_mean
         Z = np.abs(Z)
+        # TODO REPLACE WITH Z = np.abs(grab_charge(particle, z_mean)), some bugs atm
     except Exception:
         raise ValueError(f"Invalid particle, {particle}, in "
                          "plasma_frequency.")

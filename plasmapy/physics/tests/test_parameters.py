@@ -148,7 +148,7 @@ def test_Alfven_speed():
                              ion='p',
                              z_mean=0.8).si.value
     testTrue1 = 3084015.75214846
-    errStr = (f"Alfven_speed() gave {testMeth1}, should be {testTrue1}.")
+    errStr = f"Alfven_speed() gave {testMeth1}, should be {testTrue1}."
     assert np.isclose(testMeth1,
                       testTrue1,
                       atol=0.0,
@@ -236,7 +236,7 @@ def test_ion_sound_speed():
     # testing for user input z_mean
     testMeth1 = ion_sound_speed(T_e=1.2e6 * u.K, T_i=0 * u.K, z_mean=0.8).si.value
     testTrue1 = 89018.0944146141
-    errStr = (f"ion_sound_speed() gave {testMeth1}, should be {testTrue1}.")
+    errStr = f"ion_sound_speed() gave {testMeth1}, should be {testTrue1}."
     assert np.isclose(testMeth1,
                       testTrue1,
                       atol=0.0,
@@ -458,7 +458,7 @@ def test_gyrofrequency():
     with pytest.raises(InvalidParticleError):
         gyrofrequency(8 * u.T, particle='asdfasd')
 
-    with pytest.raises( UserWarning):
+    with pytest.raises(UserWarning):
         # TODO this should be WARNS, not RAISES. and it's probably still raised
         assert gyrofrequency(5.0, 'p') == gyrofrequency(5.0 * u.T, 'p')
 
@@ -466,7 +466,7 @@ def test_gyrofrequency():
     # testing for user input Z
     testMeth1 = gyrofrequency(1 * u.T, particle='p', Z=0.8).si.value
     testTrue1 = 76630665.79318453
-    errStr = (f"gyrofrequency() gave {testMeth1}, should be {testTrue1}.")
+    errStr = f"gyrofrequency() gave {testMeth1}, should be {testTrue1}."
     assert np.isclose(testMeth1,
                       testTrue1,
                       atol=0.0,
@@ -614,7 +614,7 @@ def test_plasma_frequency():
                                  particle='p',
                                  z_mean=0.8).si.value
     testTrue1 = 333063562455.4028
-    errStr = (f"plasma_frequency() gave {testMeth1}, should be {testTrue1}.")
+    errStr = f"plasma_frequency() gave {testMeth1}, should be {testTrue1}."
     assert np.isclose(testMeth1,
                       testTrue1,
                       atol=0.0,
@@ -826,10 +826,12 @@ def test_upper_hybrid_frequency():
         upper_hybrid_frequency(5 * u.T, n_e=-1 * u.m ** -3)
 
     with pytest.raises(UserWarning):
-        assert upper_hybrid_frequency(1.2, 1.3) == upper_hybrid_frequency(1.2 * u.T, 1.3 * u.m ** -3)
+        assert upper_hybrid_frequency(1.2, 1.3) == upper_hybrid_frequency(1.2 * u.T,
+                                                                          1.3 * u.m ** -3)
 
     with pytest.raises(UserWarning):
-        assert upper_hybrid_frequency(1.4 * u.T, 1.3) == upper_hybrid_frequency(1.4, 1.3 * u.m ** -3)
+        assert upper_hybrid_frequency(1.4 * u.T, 1.3) == upper_hybrid_frequency(1.4,
+                                                                                1.3 * u.m ** -3)
 
 
 def test_lower_hybrid_frequency():

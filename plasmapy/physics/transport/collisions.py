@@ -211,6 +211,8 @@ def Coulomb_logarithm(T,
         # for both bmin and bmax.
         # Lambda < 0 impossible.
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
+    else:
+        raise ValueError("Unknown method! Choose from 'classical' and 'GMS-N', N from 1 to 6.")
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
     if ln_Lambda < 4:
@@ -259,7 +261,7 @@ def _boilerPlate(T, particles, V):
     if np.isnan(V):
         V = np.sqrt(2 * k_B * T / reduced_mass).to(u.m / u.s)
     _check_relativistic(V, 'V')
-    return (T, masses, charges, reduced_mass, V)
+    return T, masses, charges, reduced_mass, V
 
 
 @check_quantity({"T": {"units": u.K, "can_be_negative": False}
@@ -522,7 +524,7 @@ def impact_parameter(T,
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
     else:
         raise ValueError(f"Method {method} not found!")
-    return (bmin.to(u.m), bmax.to(u.m))
+    return bmin.to(u.m), bmax.to(u.m)
 
 
 @check_quantity({"T": {"units": u.K, "can_be_negative": False},
