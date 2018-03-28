@@ -1,3 +1,4 @@
+# coding=utf-8
 r"""
 Functions to calculate plasma parameters.
 """
