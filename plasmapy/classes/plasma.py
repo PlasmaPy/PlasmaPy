@@ -14,6 +14,7 @@ from plasmapy.constants import (m_p,
                                 eps0,
                                 pi,
                                 )
+from plasmapy.physics.parameters import grab_charge
 from plasmapy.physics.dimensionless import (quantum_theta,
                                             )
 from plasmapy.physics.transport import (coupling_parameter,
@@ -121,11 +122,7 @@ class PlasmaBlob():
         self.T_e = T_e
         self.n_e = n_e
         self.particle = particle
-        if Z == None:
-            # extracting charge state from particle
-            self.Z = integer_charge(self.particle)
-        else:
-            self.Z = Z
+        self.Z = grab_charge(particle, Z)
         # extract mass from particle
         self.ionMass = ion_mass(self.particle)
         
