@@ -3,7 +3,7 @@ import inspect
 
 import numpy as np
 from astropy import units as u
-from ..constants import c
+from plasmapy.constants import c
 import warnings
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 
@@ -219,6 +219,10 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
     ~astropy.units.UnitConversionError
         If the argument is not in acceptable units.
 
+    ~astropy.units.UnitsError
+        If after the assumption checks, the argument is still not in acceptable
+        units.
+
     ValueError
         If the argument contains any `~numpy.nan` or other invalid
         values as determined by the keywords.
@@ -273,7 +277,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
             raise TypeError(typeerror_message)
         else:
             try:
-                arg = arg*units[0]  # TODO should this maybe use .to?
+                arg = arg*units[0]
             except Exception:
                 raise TypeError(typeerror_message)
             else:
@@ -281,6 +285,8 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
                     f"No units are specified for {argname} in {funcname}. "
                     f"Assuming units of {str(units[0])}."
                 )
+    if not isinstance(arg, u.Quantity):
+        raise u.UnitsError("{} is still not a Quantity after checks!".format(arg))
 
     in_acceptable_units = []
 
