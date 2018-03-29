@@ -92,6 +92,19 @@ class Test_classical_transport:
             mu=self.mu,
             theta=self.theta,
             )
+        self.ct_wrapper = classical_transport(
+            T_e=self.T_e,
+            n_e=self.n_e,
+            T_i=self.T_i,
+            n_i=self.n_i,
+            ion_particle=self.ion_particle,
+            Z=self.Z,
+            B=self.B,
+            model=self.model,
+            field_orientation=self.field_orientation,
+            mu=self.mu,
+            theta=self.theta,
+            )
         self.all_variables = self.ct.all_variables()
 
     def test_spitzer_vs_formulary(self):
@@ -497,22 +510,23 @@ class Test_classical_transport:
                                              mu=self.mu,
                                              theta=self.theta,
                                              ),
-                                 self.ct.resistivity())
+                                 self.ct_wrapper.resistivity())
 
     def test_thermoelectric_conductivity_wrapper(self):
-        assert_quantity_allclose(thermoelectric_conductivity(T_e=self.T_e,
-                                                             n_e=self.n_e,
-                                                             T_i=self.T_i,
-                                                             n_i=self.n_i,
-                                                             ion_particle=self.ion_particle,
-                                                             Z=self.Z,
-                                                             B=self.B,
-                                                             model=self.model,
-                                                             field_orientation=self.field_orientation,
-                                                             mu=self.mu,
-                                                             theta=self.theta,
-                                                             ),
-                                 self.ct.thermoelectric_conductivity())
+        val1 = thermoelectric_conductivity(T_e=self.T_e,
+                                           n_e=self.n_e,
+                                           T_i=self.T_i,
+                                           n_i=self.n_i,
+                                           ion_particle=self.ion_particle,
+                                           Z=self.Z,
+                                           B=self.B,
+                                           model=self.model,
+                                           field_orientation=self.field_orientation,
+                                           mu=self.mu,
+                                           theta=self.theta,
+                                           )
+        val2 = self.ct_wrapper.thermoelectric_conductivity()
+        assert_quantity_allclose(val1, val2)
 
     def test_ion_thermal_conductivity_wrapper(self):
         assert_quantity_allclose(ion_thermal_conductivity(T_e=self.T_e,
@@ -527,7 +541,7 @@ class Test_classical_transport:
                                                           mu=self.mu,
                                                           theta=self.theta,
                                                           ),
-                                 self.ct.ion_thermal_conductivity())
+                                 self.ct_wrapper.ion_thermal_conductivity())
 
 
     def test_electron_thermal_conductivity_wrapper(self):
@@ -543,7 +557,7 @@ class Test_classical_transport:
                                                                mu=self.mu,
                                                                theta=self.theta,
                                                                ),
-                                 self.ct.electron_thermal_conductivity())
+                                 self.ct_wrapper.electron_thermal_conductivity())
 
 
     def test_ion_viscosity_wrapper(self):
@@ -559,7 +573,7 @@ class Test_classical_transport:
                                                mu=self.mu,
                                                theta=self.theta,
                                                ),
-                                 self.ct.ion_viscosity())
+                                 self.ct_wrapper.ion_viscosity())
 
     def test_electron_viscosity_wrapper(self):
         assert_quantity_allclose(electron_viscosity(T_e=self.T_e,
@@ -574,7 +588,7 @@ class Test_classical_transport:
                                                     mu=self.mu,
                                                     theta=self.theta,
                                                     ),
-                                 self.ct.electron_viscosity())
+                                 self.ct_wrapper.electron_viscosity())
 
 @pytest.mark.parametrize(["particle"], ['e', 'p'])
 def test_nondim_thermal_conductivity_unrecognized_model(particle):
