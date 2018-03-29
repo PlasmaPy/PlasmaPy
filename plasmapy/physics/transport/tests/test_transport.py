@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 from astropy import units as u
 from plasmapy.atomic.atomic import ion_mass, integer_charge
+from astropy.tests.helper import assert_quantity_allclose
 from plasmapy.utils.exceptions import (PhysicsError, PhysicsWarning,
                                        RelativityWarning, RelativityError,
                                        InvalidParticleError)
@@ -40,7 +41,14 @@ from plasmapy.physics.transport.braginskii import (_nondim_thermal_conductivity,
                                                    _nondim_tec_ji_held,
                                                    _nondim_visc_e_ji_held,
                                                    _nondim_tc_i_ji_held,
-                                                   _nondim_visc_i_ji_held)
+                                                   _nondim_visc_i_ji_held,
+                                                   resistivity,
+                                                   electron_thermal_conductivity,
+                                                   ion_thermal_conductivity,
+                                                   electron_viscosity,
+                                                   ion_viscosity,
+                                                   thermoelectric_conductivity,
+                                                   )
 from plasmapy.physics.transport import classical_transport
 
 
@@ -1465,6 +1473,55 @@ class Test_classical_transport:
                   f"{calculated.si.value}.")
         assert testTrue, errStr
 
+    def test_resistivity_wrapper(self):
+        assert_quantity_allclose(resistivity(self.T_e,
+                                             self.n_e,
+                                             self.T_i,
+                                             self.n_i,
+                                             self.ion_particle),
+                                 self.ct.resistivity())
+
+    def test_thermoelectric_conductivity_wrapper(self):
+        assert_quantity_allclose(thermoelectric_conductivity(self.T_e,
+                                                             self.n_e,
+                                                             self.T_i,
+                                                             self.n_i,
+                                                             self.ion_particle),
+                                 self.ct.thermoelectric_conductivity())
+
+    def test_ion_thermal_conductivity_wrapper(self):
+        assert_quantity_allclose(ion_thermal_conductivity(self.T_e,
+                                                          self.n_e,
+                                                          self.T_i,
+                                                          self.n_i,
+                                                          self.ion_particle),
+                                 self.ct.ion_thermal_conductivity())
+
+
+    def test_electron_thermal_conductivity_wrapper(self):
+        assert_quantity_allclose(electron_thermal_conductivity(self.T_e,
+                                                               self.n_e,
+                                                               self.T_i,
+                                                               self.n_i,
+                                                               self.ion_particle),
+                                 self.ct.electron_thermal_conductivity())
+
+
+    def test_ion_viscosity_wrapper(self):
+        assert_quantity_allclose(ion_viscosity(self.T_e,
+                                               self.n_e,
+                                               self.T_i,
+                                               self.n_i,
+                                               self.ion_particle),
+                                 self.ct.ion_viscosity())
+
+    def test_electron_viscosity_wrapper(self):
+        assert_quantity_allclose(electron_viscosity(self.T_e,
+                                                    self.n_e,
+                                                    self.T_i,
+                                                    self.n_i,
+                                                    self.ion_particle),
+                                 self.ct.electron_viscosity())
 
 @pytest.mark.parametrize(["particle"], ['e', 'p'])
 def test_nondim_thermal_conductivity_unrecognized_model(particle):
