@@ -12,6 +12,7 @@ from plasmapy.physics.transport import (Coulomb_logarithm,
                                         coupling_parameter)
 from plasmapy.physics.transport.collisions import Spitzer_resistivity
 from plasmapy.utils import RelativityWarning, RelativityError
+from plasmapy.constants import m_p, m_e, c
 
 
 class Test_Coulomb_logarithm:
