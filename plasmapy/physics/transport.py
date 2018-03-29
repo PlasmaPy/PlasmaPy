@@ -219,25 +219,34 @@ def Coulomb_logarithm(T,
     return ln_Lambda
 
 
-def _boilerPlate(T, particles, V):
-    """
-    Some boiler plate code for checking if inputs to functions in
-    transport.py are good. Also obtains reduced in mass in a
-    2 particle collision system along with thermal velocity.
-    """
+"""
+  Some code for checking if inputs to functions in
+  transport.py are good and for obtaining reduced mass in a
+  2 particle collision system along with thermal velocity.
+"""
+
+
+def checkTemperature(T):
     # checking temperature is in correct units
     T = T.to(u.K, equivalencies=u.temperature_energy())
-    # extracting particle information
+    return T
+
+
+def checkParticleSystem(particles):
+    # checking particles input
     if not isinstance(particles, (list, tuple)) or len(particles) != 2:
         raise ValueError("Particles input must be a "
                          "list or tuple containing representations of two  "
                          f"charged particles. Got {particles} instead.")
+    return particles
 
+
+def getParticleSystemInfo(particles):
+    # extracting particles system information (their masses and charges)
     masses = np.zeros(2) * u.kg
     charges = np.zeros(2) * u.C
 
     for particle, i in zip(particles, range(2)):
-
         try:
             masses[i] = ion_mass(particles[i])
         except Exception:
@@ -251,13 +260,21 @@ def _boilerPlate(T, particles, V):
         except Exception:
             raise ValueError("Unable to find charge of particle: "
                              f"{particles[i]}.")
+    return (masses, charges)
+
+
+def getReducedMass(masses):
     # obtaining reduced mass of 2 particle collision system
     reduced_mass = masses[0] * masses[1] / (masses[0] + masses[1])
+    return reduced_mass
+
+
+def getVelocity(T, reduced_mass, V):
     # getting thermal velocity of system if no velocity is given
     if np.isnan(V):
         V = np.sqrt(2 * k_B * T / reduced_mass).to(u.m/u.s)
     _check_relativistic(V, 'V')
-    return (T, masses, charges, reduced_mass, V)
+    return V
 
 
 @check_quantity({"T": {"units": u.K, "can_be_negative": False}
@@ -328,10 +345,13 @@ def b_perp(T,
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
+    # Some checks and getting parameters
+    T = checkTemperature(T=T)
+    particles = checkParticleSystem(particles=particles)
+    masses, charges = getParticleSystemInfo(particles=particles)
+    reduced_mass = getReducedMass(masses=masses)
+    V = getVelocity(T=T, reduced_mass=reduced_mass, V=V)
+
     # Corresponds to a deflection of 90 degrees, which is valid when
     # classical effects dominate.
     # !!!Note: an average ionization parameter will have to be
@@ -443,10 +463,13 @@ def impact_parameter(T,
        approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
        DOI: 10.1103/PhysRevE.65.036418
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
+    # Some checks and getting parameters
+    T = checkTemperature(T=T)
+    particles = checkParticleSystem(particles=particles)
+    masses, charges = getParticleSystemInfo(particles=particles)
+    reduced_mass = getReducedMass(masses=masses)
+    V = getVelocity(T=T, reduced_mass=reduced_mass, V=V)
+
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
     if method == "GMS-2" or method == "GMS-5" or method == "GMS-6":
@@ -627,10 +650,13 @@ def collision_frequency(T,
        fusion 3rd edition. Ch 5 (Springer 2015).
     .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
+    # Some checks and getting parameters
+    T = checkTemperature(T=T)
+    particles = checkParticleSystem(particles=particles)
+    masses, charges = getParticleSystemInfo(particles=particles)
+    reduced_mass = getReducedMass(masses=masses)
+    V = getVelocity(T=T, reduced_mass=reduced_mass, V=V)
+
     if particles[0] == 'e' and particles[1] == 'e':
         # electron-electron collision
         # impact parameter for 90 degree collision
@@ -773,10 +799,13 @@ def mean_free_path(T,
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
+    # Some checks and getting parameters
+    T = checkTemperature(T=T)
+    particles = checkParticleSystem(particles=particles)
+    masses, charges = getParticleSystemInfo(particles=particles)
+    reduced_mass = getReducedMass(masses=masses)
+    V = getVelocity(T=T, reduced_mass=reduced_mass, V=V)
+
     # collisional frequency
     freq = collision_frequency(T=T,
                                n=n_e,
@@ -890,10 +919,13 @@ def Spitzer_resistivity(T,
     .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
+    # Some checks and getting parameters
+    T = checkTemperature(T=T)
+    particles = checkParticleSystem(particles=particles)
+    masses, charges = getParticleSystemInfo(particles=particles)
+    reduced_mass = getReducedMass(masses=masses)
+    V = getVelocity(T=T, reduced_mass=reduced_mass, V=V)
+
     # collisional frequency
     freq = collision_frequency(T=T,
                                n=n,
@@ -1005,10 +1037,13 @@ def mobility(T,
     ----------
     .. [1] https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
+    # Some checks and getting parameters
+    T = checkTemperature(T=T)
+    particles = checkParticleSystem(particles=particles)
+    masses, charges = getParticleSystemInfo(particles=particles)
+    reduced_mass = getReducedMass(masses=masses)
+    V = getVelocity(T=T, reduced_mass=reduced_mass, V=V)
+
     freq = collision_frequency(T=T,
                                n=n_e,
                                particles=particles,
@@ -1264,10 +1299,13 @@ def coupling_parameter(T,
 
 
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
+    # Some checks and getting parameters
+    T = checkTemperature(T=T)
+    particles = checkParticleSystem(particles=particles)
+    masses, charges = getParticleSystemInfo(particles=particles)
+    reduced_mass = getReducedMass(masses=masses)
+    V = getVelocity(T=T, reduced_mass=reduced_mass, V=V)
+
     if np.isnan(z_mean):
         # using mean charge to get average ion density.
         # If you are running this, you should strongly consider giving
