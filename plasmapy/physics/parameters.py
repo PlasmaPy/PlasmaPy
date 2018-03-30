@@ -87,8 +87,8 @@ def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg/u.
             raise ValueError(f"You must pass a particle (not {particle}) to calculate the "
                              f"mass density!")
     else:
-        raise ValueError("mass_density accepts either particle (m**-3)"
-                         " or mass (kg * m**-3) density!")
+        raise ValueError(f"mass_density accepts either particle (m**-3)"
+                         " or mass (kg * m**-3) density, not {density.unit}!")
     return rho
 
 
