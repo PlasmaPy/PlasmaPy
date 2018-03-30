@@ -688,12 +688,42 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
 def Hall_parameter(n,
                    T,
                    B,
-                   particle,
                    ion_particle,
+                   particle='e-',
                    coulomb_log=None,
                    V=None,
                    coulomb_log_method="classical"):
-    r"""TODO"""
+    r"""Calculate the ratio between the `particle` gyrofrequency and the
+    `particle-`ion_particle` collision rate.
+
+    Parameters
+    ----------
+    n : ~astropy.units.quantity.Quantity
+        The density of `particle`s
+    T : ~astropy.units.quantity.Quantity
+        The temperature of `particle`s
+    B : ~astropy.units.quantity.Quantity
+        The magnetic field
+    ion_particle : str
+        String signifying the type of ion.
+    particle : str, optional
+        String signifying the type of `particle`s. Defaults to electrons.
+    coulomb_log : float, optional
+        Preset value for the Coulomb logarithm. Used mostly for testing purposes.
+    V : The relative velocity between `particle`s and `ion_particle`s.
+    coulomb_log_method : str, optional
+        Method used for Coulomb logarithm calculation. Refer to its documentation.
+
+    See Also
+    --------
+    plasmapy.physics.parameters.gyrofrequency
+    plasmapy.physics.parameters.collision_rate_electron_ion
+    plasmapy.physics.transport.Coulomb_logarithm
+
+    Returns
+    -------
+    astropy.units.quantity.Quantity
+    """
 
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian

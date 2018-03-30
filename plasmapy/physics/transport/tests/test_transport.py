@@ -280,8 +280,8 @@ class Test_classical_transport:
         hall_e = Hall_parameter(ct2.n_e,
                                 ct2.T_e,
                                 ct2.B,
-                                ct2.e_particle,
                                 ct2.ion_particle,
+                                ct2.e_particle,
                                 ct2.coulomb_log_ei,
                                 ct2.V_ei)
         testTrue = hall_i == ct2.hall_i

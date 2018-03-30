@@ -334,8 +334,8 @@ class classical_transport:
             self.hall_e = Hall_parameter(n_e,
                                          T_e,
                                          B,
-                                         self.e_particle,
                                          self.ion_particle,
+                                         self.e_particle,
                                          coulomb_log_ei,
                                          V_ei,
                                          coulomb_log_method=coulomb_log_method)
