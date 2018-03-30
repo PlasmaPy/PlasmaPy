@@ -93,8 +93,8 @@ def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg/u.
 
 
 @utils.check_relativistic
-@utils.check_quantity({'B':       {'units': u.T},
-                       'density': {'units':           [u.m ** -3, u.kg / u.m ** 3],
+@utils.check_quantity({'B': {'units': u.T},
+                       'density': {'units': [u.m ** -3, u.kg / u.m ** 3],
                                    'can_be_negative': False}})
 def Alfven_speed(B, density, ion="p+", z_mean=None):
     r"""
