@@ -599,9 +599,20 @@ def collision_rate_electron_ion(T_e,
                                             particles,
                                             V,
                                             method=coulomb_log_method)
-    Z_i = atomic.integer_charge(ion_particle)
-    nu_e = 4 / 3 * np.sqrt(2 * np.pi / m_e) / (4 * np.pi * eps0) ** 2 * \
-           e ** 4 * n_e * Z_i * coulomb_log_val / (k_B * T_e) ** 1.5
+    # electron thermal velocity (most probable)
+    v_the = np.sqrt(2 * k_B * T_e / m_e)
+    # this is the same as b_perp in collisions.py, using most probable thermal velocity for V
+    # and using ion mass instead of reduced mass
+    bperp = e ** 2 / (4 * np.pi * eps0 * m_e * v_the ** 2)
+    # collisional cross-section
+    sigma = np.pi * (2 * bperp) ** 2
+    # collisional frequency with Coulomb logarithm to correct for small angle collisions
+    nu = n_e * sigma * v_the * coulomb_log_val
+    # this coefficient is the constant that pops out when comparing this definition of
+    # collisional frequency to the one in collisions.py
+    coeff = 4 / np.sqrt(np.pi) / 3
+    # collisional frequency modified by the constant difference
+    nu_e = coeff * nu
     return nu_e.to(1 / u.s)
 
 
