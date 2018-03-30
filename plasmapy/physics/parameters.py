@@ -578,6 +578,7 @@ def collision_rate_electron_ion(T_e,
     coulomb_log_method : string, optional
         Method used for Coulomb logarithm calculation (see that function
         for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
+
     References
     ----------
     .. [1] Braginskii
