@@ -905,7 +905,7 @@ def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
         raise ValueError("Cannot have both Vperp and T_i as arguments to "
                          "gyroradius")
 
-    if not np.isfinite(Vperp) and np.isfinite(T_i):
+    elif not np.isfinite(Vperp) and np.isfinite(T_i):
         Vperp = thermal_speed(T_i, particle=particle)
 
     omega_ci = gyrofrequency(B, particle)
