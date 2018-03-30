@@ -828,9 +828,9 @@ def test_upper_hybrid_frequency():
     assert omega_ce.unit.is_equivalent(u.rad / u.s)
     assert omega_pe.unit.is_equivalent(u.rad / u.s)
     assert omega_uh.unit.is_equivalent(u.rad / u.s)
-    LHS = omega_uh ** 2
-    RHS = omega_ce ** 2 + omega_pe ** 2
-    assert np.isclose(LHS.value, RHS.value)
+    left_hand_side = omega_uh ** 2
+    right_hand_side = omega_ce ** 2 + omega_pe ** 2
+    assert np.isclose(left_hand_side.value, right_hand_side.value)
 
     with pytest.raises(ValueError):
         upper_hybrid_frequency(5 * u.T, n_e=-1 * u.m ** -3)
@@ -856,9 +856,9 @@ def test_lower_hybrid_frequency():
     assert omega_pi.unit.is_equivalent(u.rad / u.s)
     assert omega_ce.unit.is_equivalent(u.rad / u.s)
     assert omega_lh.unit.is_equivalent(u.rad / u.s)
-    LHS = omega_lh ** -2
-    RHS = 1 / (omega_ci ** 2 + omega_pi ** 2) + omega_ci ** -1 * omega_ce ** -1
-    assert np.isclose(LHS.value, RHS.value)
+    left_hand_side = omega_lh ** -2
+    right_hand_side = 1 / (omega_ci ** 2 + omega_pi ** 2) + omega_ci ** -1 * omega_ce ** -1
+    assert np.isclose(left_hand_side.value, right_hand_side.value)
 
     with pytest.raises(ValueError):
         lower_hybrid_frequency(0.2 * u.T, n_i=5e19 * u.m ** -3, ion='asdfasd')
