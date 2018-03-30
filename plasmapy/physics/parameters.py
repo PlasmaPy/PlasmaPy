@@ -191,8 +191,8 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     B = B.to(u.T)
     rho = mass_density(density, ion, z_mean)
 
-    V_A = (np.abs(B) / np.sqrt(mu0 * rho)).to(u.m / u.s)
-    return V_A
+    V_A = (np.abs(B) / np.sqrt(mu0 * rho))
+    return V_A.to(u.m / u.s)
 
 
 @utils.check_relativistic
