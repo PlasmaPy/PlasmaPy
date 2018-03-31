@@ -7,7 +7,7 @@
 PlasmaPy Documentation
 ######################
 
-`PlasmaPy <http://www.plasmapy.org/`_ is an open source
+`PlasmaPy <http://www.plasmapy.org/>`_ is an open source
 community-developed core `Python <https://www.python.org/>`_ 3.6+
 package for plasma physics in the early stages of development. The
 documentation contained on this page is in the process of being written.
@@ -55,6 +55,7 @@ Plasma Parameters
    :maxdepth: 3
 
    physics/index
+   physics/transport/index
 
 .. _diagnostics
 

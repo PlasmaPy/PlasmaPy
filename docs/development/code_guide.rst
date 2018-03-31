@@ -232,6 +232,14 @@ Coding Style
   module and code related to importing the module.  Any substantial
   functionality should be put into a separate file.
 
+* Use absolute imports, such as
+  ``from plasmapy.mathematics import Fermi_integral``,
+  rather than relative imports such as
+  ``from ..mathematics import Fermi_integral``.
+
+* For multiline imports, instead of using ``\`` to break lines, wrap the
+  imported names in ``()`` parentheses and use consistent whitespace.
+
 * There should be at most one pun per 1284 lines of code.
 
 Branches, commits, and pull requests
@@ -435,6 +443,22 @@ Equations and Physical Formulae
 
 * SI units that were named after a person should not be capitalized
   except at the beginning of a sentence.
+
+* Some plasma parameters depend on more than one quantity with
+  the same units.  In the following line, it is difficult to discern which
+  is the electron temperature and which is the ion temperature.
+
+  >>> ion_sound_speed(1e6*u.K, 2e6*u.K)
+
+  Remembering that "explicit is better than implicit", it is more
+  readable and less prone to errors to write:
+
+  >>> ion_sound_speed(T_i=1e6*u.K, T_e=2e6*u.K)
+
+* SI units that were named after a person should be lower case except at
+  the beginning of a sentence, even if their symbol is capitalized. For
+  example, kelvin is a unit while Kelvin was a scientist.
+
 
 Angular Frequencies
 ===================

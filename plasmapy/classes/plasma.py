@@ -14,6 +14,7 @@ from plasmapy.constants import (m_p,
                                 eps0,
                                 pi,
                                 )
+from plasmapy.physics.parameters import grab_charge
 from plasmapy.physics.dimensionless import (quantum_theta,
                                             )
 from plasmapy.physics.transport import (coupling_parameter,
@@ -121,19 +122,38 @@ class PlasmaBlob():
         self.T_e = T_e
         self.n_e = n_e
         self.particle = particle
-        if Z == None:
-            # extracting charge state from particle
-            self.Z = integer_charge(self.particle)
-        else:
-            self.Z = Z
+        self.Z = grab_charge(particle, Z)
         # extract mass from particle
         self.ionMass = ion_mass(self.particle)
         
     def __str__(self):
         """
         Fetches regimes for easy printing
+
+        Examples
+        --------
+        >>> print(PlasmaBlob(1e4*u.K, 1e20/u.m**3, particle='p'))
+        PlasmaBlob(T_e=10000.0 K, n_e=1e+20 1 / m3, particle=p, Z=1)
+        Intermediate coupling regime: Gamma = 0.012502837623108332.
+        Thermal kinetic energy dominant: Theta = 109690.53176225389
+
         """
-        return self.regimes()
+        return self.__repr__() + "\n" + "\n".join(self.regimes())
+
+    def __repr__(self):
+        """
+
+        Returns
+        -------
+        str
+
+        Examples
+        --------
+        >>> from astropy import units as u
+        >>> PlasmaBlob(1e4*u.K, 1e20/u.m**3, particle='p')
+        PlasmaBlob(T_e=10000.0 K, n_e=1e+20 1 / m3, particle=p, Z=1)
+        """
+        return f"PlasmaBlob(T_e={self.T_e}, n_e={self.n_e}, particle={self.particle}, Z={self.Z})"
     
     @property
     def electron_temperature(self):

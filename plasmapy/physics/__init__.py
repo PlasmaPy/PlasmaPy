@@ -1,3 +1,20 @@
+r"""
+Values should be returned as an Astropy Quantity in SI units.
+
+If a quantity has several names, then the function name should be the
+one that provides the most physical insight into what the quantity
+represents.  For example, 'gyrofrequency' indicates gyration, while
+Larmor frequency indicates that this frequency is somehow related to a
+human (or perhaps a cat?) named Larmor.  Similarly, using omega_ce as
+a function name for this quantity will make the code less readable to
+people who are unfamiliar with the notation or use a different symbol.
+
+The docstrings for plasma parameter methods should describe the
+physics associated with these quantities in ways that are
+understandable to students who are taking their first course in plasma
+physics while still being useful to experienced plasma physicists.
+
+"""
 from .parameters import (Alfven_speed,
                          ion_sound_speed,
                          thermal_speed,
@@ -33,12 +50,4 @@ from .quantum import (deBroglie_wavelength,
 
 from .relativity import Lorentz_factor
 
-from .transport import (Coulomb_logarithm,
-                        classical_transport,
-                        b_perp,
-                        impact_parameter,
-                        collision_frequency,
-                        mean_free_path,
-                        mobility,
-                        Knudsen_number,
-                        coupling_parameter)
+from . import transport

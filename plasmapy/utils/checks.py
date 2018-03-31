@@ -3,7 +3,7 @@ import inspect
 
 import numpy as np
 from astropy import units as u
-from ..constants import c
+from plasmapy.constants import c
 import warnings
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 
@@ -92,6 +92,8 @@ def check_quantity(validations):
                     'can_be_complex', False)
                 can_be_inf = validation_settings.get(
                     'can_be_inf', True)
+                can_be_nan = validation_settings.get(
+                    'can_be_nan', False)
 
                 _check_quantity(value_to_check,
                                 param_to_check,
@@ -99,7 +101,8 @@ def check_quantity(validations):
                                 validation_settings['units'],
                                 can_be_negative=can_be_negative,
                                 can_be_complex=can_be_complex,
-                                can_be_inf=can_be_inf)
+                                can_be_inf=can_be_inf,
+                                can_be_nan=can_be_nan)
 
             return f(*args, **kwargs)
         return wrapper
@@ -172,7 +175,7 @@ def check_relativistic(func=None, betafrac=0.1):
 
 
 def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
-                    can_be_complex=False, can_be_inf=True):
+                    can_be_complex=False, can_be_inf=True, can_be_nan=False):
     """
     Raise an exception if an object is not a `~astropy.units.Quantity`
     with correct units and valid numerical values.
@@ -203,6 +206,10 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         `True` if the `~astropy.units.Quantity` can contain infinite
         values, `False` otherwise.  Defaults to `True`.
 
+    can_be_inf : bool, optional
+        `True` if the `~astropy.units.Quantity` can contain NaN
+        values, `False` otherwise.  Defaults to `True`.
+
     Raises
     ------
     TypeError
@@ -211,6 +218,10 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
     ~astropy.units.UnitConversionError
         If the argument is not in acceptable units.
+
+    ~astropy.units.UnitsError
+        If after the assumption checks, the argument is still not in acceptable
+        units.
 
     ValueError
         If the argument contains any `~numpy.nan` or other invalid
@@ -266,7 +277,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
             raise TypeError(typeerror_message)
         else:
             try:
-                arg = arg * units[0]
+                arg = arg*units[0]
             except Exception:
                 raise TypeError(typeerror_message)
             else:
@@ -274,6 +285,8 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
                     f"No units are specified for {argname} in {funcname}. "
                     f"Assuming units of {str(units[0])}."
                 )
+    if not isinstance(arg, u.Quantity):
+        raise u.UnitsError("{} is still not a Quantity after checks!".format(arg))
 
     in_acceptable_units = []
 
@@ -294,7 +307,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         f"The argument {argname} to function {funcname} cannot contain"
     )
 
-    if np.any(np.isnan(arg.value)):
+    if np.any(np.isnan(arg.value)) and not can_be_nan:
         raise ValueError(f"{valueerror_message} NaNs.")
     elif np.any(np.iscomplex(arg.value)) and not can_be_complex:
         raise ValueError(f"{valueerror_message} complex numbers.")
