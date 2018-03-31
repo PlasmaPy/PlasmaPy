@@ -696,25 +696,44 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
 
     .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> collision_rate_ion_ion(0.1*u.eV, 1e6/u.m**3, 'p')
+    <Quantity 2.97315582e-05 1 / s>
+    >>> collision_rate_ion_ion(100*u.eV, 1e6/u.m**3, 'p')
+    <Quantity 1.43713193e-09 1 / s>
+    >>> collision_rate_ion_ion(100*u.eV, 1e20/u.m**3, 'p')
+    <Quantity 66411.80316364 1 / s>
+    >>> collision_rate_ion_ion(100*u.eV, 1e20/u.m**3, 'p', coulomb_log_method='GMS-1')
+    <Quantity 66407.00859126 1 / s>
+    >>> collision_rate_ion_ion(100*u.eV, 1e20/u.m**3, 'p', V = c/100)
+    <Quantity 6.53577473 1 / s>
+    >>> collision_rate_ion_ion(100*u.eV, 1e20/u.m**3, 'p', coulomb_log=20)
+    <Quantity 95918.76240877 1 / s>
+
     """
     from plasmapy.physics.transport.collisions import Coulomb_logarithm
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
+    m_i = atomic.ion_mass(ion_particle)
+    if V is not None:
+        V = V
+    else:
+        # ion thermal velocity (most probable)
+        V = np.sqrt(2 * k_B * T_i / m_i)
     if coulomb_log is not None:
         coulomb_log_val = coulomb_log
     else:
         particles = [ion_particle, ion_particle]
         coulomb_log_val = Coulomb_logarithm(T_i, n_i, particles, V, method=coulomb_log_method)
     Z_i = atomic.integer_charge(ion_particle)
-    m_i = atomic.ion_mass(ion_particle)
-    # ion thermal velocity (most probable)
-    v_thi = np.sqrt(2 * k_B * T_i / m_i)
     # this is the same as b_perp in collisions.py, using most probable thermal velocity for V
     # and using ion mass instead of reduced mass
-    bperp = (Z_i * e) ** 2 / (4 * np.pi * eps0 * m_i * v_thi ** 2)
+    bperp = (Z_i * e) ** 2 / (4 * np.pi * eps0 * m_i * V ** 2)
     # collisional cross-section
     sigma = np.pi * (2 * bperp) ** 2
     # collisional frequency with Coulomb logarithm to correct for small angle collisions
-    nu = n_i * sigma * v_thi * coulomb_log_val
+    nu = n_i * sigma * V * coulomb_log_val
     # this coefficient is the constant that pops out when comparing this definition of
     # collisional frequency to the one in collisions.py
     coeff = np.sqrt(8 / np.pi) / 3
