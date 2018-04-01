@@ -99,6 +99,16 @@ def test_Plasma3D_derived_vars():
 
 class Test_PlasmaBlobRegimes():
     def test_intermediate_and_both_energies(self):
+        r"""
+        Method to test Gamma and Theta values on PlasmaBlob.regimes()
+
+        Tests that input values return an intermediate coupling regime
+        where both Fermi and thermal energy are important.
+
+        The input values in this case have no special significance
+        and are just to get the desired output.
+        """
+
         T_e = 25 * 15e3 * u.K
         n_e = 1e26 * u.cm ** -3
         Z = 2.0
@@ -111,10 +121,23 @@ class Test_PlasmaBlobRegimes():
         regimes = ['Intermediate coupling regime: Gamma = 10.585076050938532.',
                    'Both Fermi and thermal energy important: Theta = 0.04113394941084522']
 
-        assert blob.regimes() == regimes
+        testTrue = blob.regimes() == regimes
 
+        errStr = (f"Regimes \n{regimes}\n should be equal to that of class\n"
+                  f"{blob.regimes()}.")
+        assert testTrue, errStr
 
     def test_strong_and_fermi(self):
+        r"""
+        Method to test Gamma and Theta values on PlasmaBlob.regimes()
+
+        Tests that input values return a strongly coupled regime
+        where Fermi energy is dominant.
+
+        The input values in this case have no special significance
+        and are just to get the desired output.
+        """
+
         T_e = 5 * 15e3 * u.K
         n_e = 1e26 * u.cm ** -3
         Z = 3.0
@@ -127,9 +150,23 @@ class Test_PlasmaBlobRegimes():
         regimes = ['Strongly coupled regime: Gamma = 104.02780112828943.',
                    'Fermi quantum energy dominant: Theta = 0.008226789882169044']
 
-        assert blob.regimes() == regimes
+        testTrue = blob.regimes() == regimes
+
+        errStr = (f"Regimes \n{regimes}\n should be equal to that of class\n"
+                  f"{blob.regimes()}.")
+        assert testTrue, errStr
 
     def test_weak_and_thermal(self):
+        r"""
+        Method to test Gamma and Theta values on PlasmaBlob.regimes()
+
+        Tests that input values return a weakly coupled regime
+        where thermal kinetic energy is dominant.
+
+        The input values in this case have no special significance
+        and are just to get the desired output.
+        """
+
         T_e = 15 * 11e3 * u.K
         n_e = 1e15 * u.cm ** -3
         Z = 2.5
@@ -142,9 +179,22 @@ class Test_PlasmaBlobRegimes():
         regimes = ['Weakly coupled regime: Gamma = 0.0075178096952688445.',
                    'Thermal kinetic energy dominant: Theta = 389929.7932144623']
 
-        assert blob.regimes() == regimes
+        testTrue = blob.regimes() == regimes
+
+        errStr = (f"Regimes \n{regimes}\n should be equal to that of class\n"
+                  f"{blob.regimes()}.")
+        assert testTrue, errStr
 
     def test_intermediate_and_thermal(self):
+        r"""
+        Method to test Gamma and Theta values on PlasmaBlob.regimes()
+
+        Tests that input values return a intermediate coupling regime
+        where thermal kinetic energy is dominant.
+        The input values in this case have no special significance
+        and are just to get the desired output.
+        """
+
         T_e = 10 * 11e3 * u.K
         n_e = 1e20 * u.cm ** -3
         Z = 2.5
@@ -157,9 +207,23 @@ class Test_PlasmaBlobRegimes():
         regimes = ['Intermediate coupling regime: Gamma = 0.5234187230217864.',
                    'Thermal kinetic energy dominant: Theta = 120.65958493847927']
 
-        assert blob.regimes() == regimes
+        testTrue = blob.regimes() == regimes
+
+        errStr = (f"Regimes \n{regimes}\n should be equal to that of class\n"
+                  f"{blob.regimes()}.")
+        assert testTrue, errStr
 
     def test_intermediate_and_fermi(self):
+        r"""
+        Method to test Gamma and Theta values on PlasmaBlob.regimes()
+
+        Tests that input values return a intermediate coupling regime
+        where fermi energy is dominant.
+
+        The input values in this case have no special significance
+        and are just to get the desired output.
+        """
+
         T_e = 6 * 15e3 * u.K
         n_e = 1e26 * u.cm ** -3
         Z = 3.0
@@ -171,8 +235,11 @@ class Test_PlasmaBlobRegimes():
 
         regimes = ['Intermediate coupling regime: Gamma = 86.68983427357452.',
                    'Fermi quantum energy dominant: Theta = 0.009872147858602853']
+        testTrue = blob.regimes() == regimes
 
-        assert blob.regimes() == regimes
+        errStr = (f"Regimes \n{regimes}\n should be equal to that of class\n"
+                  f"{blob.regimes()}.")
+        assert testTrue, errStr
 
 
 class Test_PlasmaBlob():
