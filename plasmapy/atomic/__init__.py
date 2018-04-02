@@ -38,3 +38,11 @@ from .nuclear import (
     nuclear_binding_energy,
     nuclear_reaction_energy,
 )
+
+proton = Particle("p+")
+electron = Particle("e-")
+neutron = Particle("n")
+positron = Particle("e+")
+deuteron = Particle("D 1+")
+triton = Particle("T 1+")
+alpha = Particle("He-4 2+")
