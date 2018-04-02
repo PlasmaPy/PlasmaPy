@@ -36,6 +36,15 @@ keyword and the integer charge may be represented with the `Z` keyword.
 
 >>> proton = Particle(1, mass_numb=1, Z=1)
 
+The most frequently used `~plasmapy.atomic.Particle` instances may be
+imported directly from the atomic subpackage.  
+
+>>> from plasmapy.atomic import proton, electron
+
+The `~plasmapy.atomic.Particle` instances that may be imported
+directly are: `proton`, `electron`, `neutron`, `positron`, `deuteron`,
+`triton`, and `alpha`.
+
 Accessing Particle Properties
 =============================
 
