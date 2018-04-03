@@ -640,8 +640,11 @@ def collision_rate_electron_ion(T_e,
     'T_i': {'units': u.K, 'can_be_negative': False},
     'n_i': {'units': u.m ** -3, 'can_be_negative': False}
     })
-def collision_rate_ion_ion(T_i, n_i, ion_particle,
-                           coulomb_log=None, V=None,
+def collision_rate_ion_ion(T_i,
+                           n_i,
+                           ion_particle,
+                           coulomb_log=None,
+                           V=None,
                            coulomb_log_method="classical"):
     r"""
     Momentum relaxation ion-ion collision rate
@@ -713,32 +716,42 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
     <Quantity 95918.76240877 1 / s>
 
     """
-    from plasmapy.physics.transport.collisions import Coulomb_logarithm
+    from plasmapy.physics.transport.collisions import (Coulomb_logarithm,
+                                                       collision_frequency)
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     m_i = atomic.ion_mass(ion_particle)
-    if V is not None:
-        V = V
+    particles = [ion_particle, ion_particle]
+    if V:
+        pass
     else:
         # ion thermal velocity (most probable)
         V = np.sqrt(2 * k_B * T_i / m_i)
-    if coulomb_log is not None:
-        coulomb_log_val = coulomb_log
-    else:
-        particles = [ion_particle, ion_particle]
-        coulomb_log_val = Coulomb_logarithm(T_i, n_i, particles, V, method=coulomb_log_method)
     Z_i = atomic.integer_charge(ion_particle)
-    # this is the same as b_perp in collisions.py, using most probable thermal velocity for V
-    # and using ion mass instead of reduced mass
-    bperp = (Z_i * e) ** 2 / (4 * np.pi * eps0 * m_i * V ** 2)
-    # collisional cross-section
-    sigma = np.pi * (2 * bperp) ** 2
-    # collisional frequency with Coulomb logarithm to correct for small angle collisions
-    nu = n_i * sigma * V * coulomb_log_val
-    # this coefficient is the constant that pops out when comparing this definition of
-    # collisional frequency to the one in collisions.py
-    coeff = np.sqrt(8 / np.pi) / 3
-    # collisional frequency modified by the constant difference
-    nu_i = coeff * nu
+    nu = collision_frequency(T_i,
+                             n_i,
+                             particles,
+                             z_mean=Z_i,
+                             V=V,
+                             method=coulomb_log_method)
+    # factor of 4 due to reduced mass in bperp and the rest is
+    # due to differences in definitions of collisional frequency
+    coeff = np.sqrt(8 / np.pi) / 3 / 4
+    
+    # accounting for when a Coulomb logarithm value is passed
+    if coulomb_log:
+        cLog = Coulomb_logarithm(T_i,
+                                 n_i,
+                                 particles,
+                                 z_mean=Z_i,
+                                 V=np.nan * u.m / u.s,
+                                 method=coulomb_log_method)
+        # dividing out by typical Coulomb logarithm value implicit in
+        # the collision frequency calculation and replacing with
+        # the user defined Coulomb logarithm value
+        nu_mod = nu * coulomb_log / cLog
+        nu_i = coeff * nu_mod
+    else:
+        nu_i = coeff * nu
     return nu_i.to(1 / u.s)
 
 
