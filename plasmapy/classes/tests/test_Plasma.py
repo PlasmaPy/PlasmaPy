@@ -98,12 +98,12 @@ def test_Plasma3D_derived_vars():
 
 
 class Test_PlasmaBlobRegimes():
-    def test_intermediate_and_both_energies(self):
+    def test_intermediate_coupling(self):
         r"""
-        Method to test Gamma and Theta values on PlasmaBlob.regimes()
+        Method to test for coupling parameter for a plasma.
 
-        Tests that input values return an intermediate coupling regime
-        where both Fermi and thermal energy are important.
+        Tests against expected value for coupling parameter for a
+        plasma in the intermediate coupling regime.
 
         The input values in this case have no special significance
         and are just to get the desired output.
@@ -118,21 +118,19 @@ class Test_PlasmaBlobRegimes():
                                  Z=Z,
                                  particle=particle)
 
-        regimes = ['Intermediate coupling regime: Gamma = 10.585076050938532.',
-                   'Both Fermi and thermal energy important: Theta = 0.04113394941084522']
+        expect_regime = 'Intermediate coupling regime: Gamma = 10.585076050938532.'
+        regime, _ = blob.regimes()
+        testTrue = regime == expect_regime
 
-        testTrue = blob.regimes() == regimes
-
-        errStr = (f"Regimes \n{regimes}\n should be equal to that of class\n"
-                  f"{blob.regimes()}.")
+        errStr = f"Regime should be {expect_regime}, but got {regime} instead."
         assert testTrue, errStr
 
-    def test_strong_and_fermi(self):
+    def test_strongly_coupled(self):
         r"""
-        Method to test Gamma and Theta values on PlasmaBlob.regimes()
+        Method to test for coupling parameter for a plasma.
 
-        Tests that input values return a strongly coupled regime
-        where Fermi energy is dominant.
+        Tests against expected value for coupling parameter for a
+        plasma in the strongly coupled regime.
 
         The input values in this case have no special significance
         and are just to get the desired output.
@@ -147,21 +145,20 @@ class Test_PlasmaBlobRegimes():
                                  Z=Z,
                                  particle=particle)
 
-        regimes = ['Strongly coupled regime: Gamma = 104.02780112828943.',
-                   'Fermi quantum energy dominant: Theta = 0.008226789882169044']
+        expect_regime = 'Strongly coupled regime: Gamma = 104.02780112828943.'
 
-        testTrue = blob.regimes() == regimes
+        regime, _ = blob.regimes()
+        testTrue = regime == expect_regime
 
-        errStr = (f"Regimes \n{regimes}\n should be equal to that of class\n"
-                  f"{blob.regimes()}.")
+        errStr = f"Regime should be {expect_regime}, but got {regime} instead."
         assert testTrue, errStr
 
-    def test_weak_and_thermal(self):
+    def test_weakly_coupled(self):
         r"""
-        Method to test Gamma and Theta values on PlasmaBlob.regimes()
+        Method to test for coupling parameter for a plasma.
 
-        Tests that input values return a weakly coupled regime
-        where thermal kinetic energy is dominant.
+        Tests against expected value for coupling parameter for a
+        plasma in the weakly coupled regime.
 
         The input values in this case have no special significance
         and are just to get the desired output.
@@ -176,21 +173,21 @@ class Test_PlasmaBlobRegimes():
                                  Z=Z,
                                  particle=particle)
 
-        regimes = ['Weakly coupled regime: Gamma = 0.0075178096952688445.',
-                   'Thermal kinetic energy dominant: Theta = 389929.7932144623']
+        expect_regime = 'Weakly coupled regime: Gamma = 0.0075178096952688445.'
 
-        testTrue = blob.regimes() == regimes
+        regime, _ = blob.regimes()
+        testTrue = regime == expect_regime
 
-        errStr = (f"Regimes \n{regimes}\n should be equal to that of class\n"
-                  f"{blob.regimes()}.")
+        errStr = f"Regime should be {expect_regime}, but got {regime} instead."
         assert testTrue, errStr
 
-    def test_intermediate_and_thermal(self):
+    def test_thermal_kinetic_energy_dominant(self):
         r"""
-        Method to test Gamma and Theta values on PlasmaBlob.regimes()
+        Method to test for degeneracy parameter for a plasma.
 
-        Tests that input values return a intermediate coupling regime
-        where thermal kinetic energy is dominant.
+        Tests against expected value for degeneracy parameter for a
+        plasma in the thermal degenerate regime.
+
         The input values in this case have no special significance
         and are just to get the desired output.
         """
@@ -204,21 +201,20 @@ class Test_PlasmaBlobRegimes():
                                  Z=Z,
                                  particle=particle)
 
-        regimes = ['Intermediate coupling regime: Gamma = 0.5234187230217864.',
-                   'Thermal kinetic energy dominant: Theta = 120.65958493847927']
+        expect_regime = 'Thermal kinetic energy dominant: Theta = 120.65958493847927'
 
-        testTrue = blob.regimes() == regimes
+        _, regime = blob.regimes()
+        testTrue = regime == expect_regime
 
-        errStr = (f"Regimes \n{regimes}\n should be equal to that of class\n"
-                  f"{blob.regimes()}.")
+        errStr = f"Regime should be {expect_regime}, but got {regime} instead."
         assert testTrue, errStr
 
-    def test_intermediate_and_fermi(self):
+    def test_fermi_quantum_energy_dominant(self):
         r"""
-        Method to test Gamma and Theta values on PlasmaBlob.regimes()
+        Method to test for degeneracy parameter for a plasma.
 
-        Tests that input values return a intermediate coupling regime
-        where fermi energy is dominant.
+        Tests against expected value for degeneracy parameter for a
+        plasma in the Fermi degenerate regime.
 
         The input values in this case have no special significance
         and are just to get the desired output.
@@ -233,12 +229,40 @@ class Test_PlasmaBlobRegimes():
                                  Z=Z,
                                  particle=particle)
 
-        regimes = ['Intermediate coupling regime: Gamma = 86.68983427357452.',
-                   'Fermi quantum energy dominant: Theta = 0.009872147858602853']
-        testTrue = blob.regimes() == regimes
+        expect_regime = 'Fermi quantum energy dominant: Theta = 0.009872147858602853'
 
-        errStr = (f"Regimes \n{regimes}\n should be equal to that of class\n"
-                  f"{blob.regimes()}.")
+        _, regime = blob.regimes()
+        testTrue = regime == expect_regime
+
+        errStr = f"Regime should be {expect_regime}, but got {regime} instead."
+        assert testTrue, errStr
+
+    def test_both_fermi_and_thermal_energy_important(self):
+        r"""
+        Method to test for degeneracy parameter for a plasma.
+
+        Tests against expected value for degeneracy parameter for a
+        plasma whose both Fermi and thermal energy are important.
+
+        The input values in this case have no special significance
+        and are just to get the desired output.
+        """
+
+        T_e = 5 * 15e3 * u.K
+        n_e = 1e25 * u.cm ** -3
+        Z = 2.0
+        particle = 'p'
+        blob = plasma.PlasmaBlob(T_e=T_e,
+                                 n_e=n_e,
+                                 Z=Z,
+                                 particle=particle)
+
+        expect_regime = 'Both Fermi and thermal energy important: Theta = 0.03818537605355442'
+
+        _, regime = blob.regimes()
+        testTrue = regime == expect_regime
+
+        errStr = f"Regime should be {expect_regime}, but got {regime} instead."
         assert testTrue, errStr
 
 
