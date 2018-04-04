@@ -341,8 +341,7 @@ def b_perp(T,
     # classical effects dominate.
     # !!!Note: an average ionization parameter will have to be
     # included here in the future
-    bPerp = (charges[0] * charges[1] /
-             (4 * pi * eps0 * reduced_mass * V ** 2))
+    bPerp = (charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V ** 2))
     return bPerp.to(u.m)
 
 

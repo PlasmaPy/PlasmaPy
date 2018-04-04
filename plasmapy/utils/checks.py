@@ -86,14 +86,10 @@ def check_quantity(validations):
             for param_to_check, validation_settings in validations.items():
                 value_to_check = given_params_values[param_to_check]
 
-                can_be_negative = validation_settings.get(
-                    'can_be_negative', True)
-                can_be_complex = validation_settings.get(
-                    'can_be_complex', False)
-                can_be_inf = validation_settings.get(
-                    'can_be_inf', True)
-                can_be_nan = validation_settings.get(
-                    'can_be_nan', False)
+                can_be_negative = validation_settings.get('can_be_negative', True)
+                can_be_complex = validation_settings.get('can_be_complex', False)
+                can_be_inf = validation_settings.get('can_be_inf', True)
+                can_be_nan = validation_settings.get('can_be_nan', False)
 
                 _check_quantity(value_to_check,
                                 param_to_check,
@@ -108,70 +104,6 @@ def check_quantity(validations):
         return wrapper
     return decorator
 
-
-def check_relativistic(func=None, betafrac=0.1):
-    r"""
-    Warns or raises an exception when the output of the decorated
-    function is greater than `betafrac` times the speed of light.
-
-    Parameters
-    ----------
-    func : `function`, optional
-        The function to decorate.
-
-    betafrac : float, optional
-        The minimum fraction of the speed of light that will raise a
-        `~plasmapy.utils.RelativityWarning`. Defaults to 0.1.
-
-    Returns
-    -------
-    function
-        Decorated function.
-
-    Raises
-    ------
-    TypeError
-        If `V` is not a `~astropy.units.Quantity`.
-
-    ~astropy.units.UnitConversionError
-        If `V` is not in units of velocity.
-
-    ValueError
-        If `V` contains any `~numpy.nan` values.
-
-    ~plasmapy.utils.RelativityError
-        If `V` is greater than or equal to the speed of light.
-
-    Warns
-    -----
-    ~plasmapy.utils.RelativityWarning
-        If `V` is greater than or equal to `betafrac` times the speed of light,
-        but less than the speed of light.
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> @check_relativistic
-    ... def speed():
-    ...     return 1 * u.m / u.s
-
-    Passing in a custom `betafrac`:
-
-    >>> @check_relativistic(betafrac=0.01)
-    ... def speed():
-    ...     return 1 * u.m / u.s
-
-    """
-    def decorator(f):
-        @functools.wraps(f)
-        def wrapper(*args, **kwargs):
-            return_ = f(*args, **kwargs)
-            _check_relativistic(return_, f.__name__, betafrac=betafrac)
-            return return_
-        return wrapper
-    if func:
-        return decorator(func)
-    return decorator
 
 
 def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
@@ -281,10 +213,10 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
             except Exception:
                 raise TypeError(typeerror_message)
             else:
-                raise UserWarning(
-                    f"No units are specified for {argname} in {funcname}. "
-                    f"Assuming units of {str(units[0])}."
-                )
+                warnings.warn(UserWarning(
+                        f"No units are specified for {argname} in {funcname}. "
+                        f"Assuming units of {str(units[0])}."
+                        ))
     if not isinstance(arg, u.Quantity):
         raise u.UnitsError("{} is still not a Quantity after checks!".format(arg))
 
@@ -315,6 +247,70 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         raise ValueError(f"{valueerror_message} negative numbers.")
     elif not can_be_inf and np.any(np.isinf(arg.value)):
         raise ValueError(f"{valueerror_message} infs.")
+
+def check_relativistic(func=None, betafrac=0.1):
+    r"""
+    Warns or raises an exception when the output of the decorated
+    function is greater than `betafrac` times the speed of light.
+
+    Parameters
+    ----------
+    func : `function`, optional
+        The function to decorate.
+
+    betafrac : float, optional
+        The minimum fraction of the speed of light that will raise a
+        `~plasmapy.utils.RelativityWarning`. Defaults to 0.1.
+
+    Returns
+    -------
+    function
+        Decorated function.
+
+    Raises
+    ------
+    TypeError
+        If `V` is not a `~astropy.units.Quantity`.
+
+    ~astropy.units.UnitConversionError
+        If `V` is not in units of velocity.
+
+    ValueError
+        If `V` contains any `~numpy.nan` values.
+
+    ~plasmapy.utils.RelativityError
+        If `V` is greater than or equal to the speed of light.
+
+    Warns
+    -----
+    ~plasmapy.utils.RelativityWarning
+        If `V` is greater than or equal to `betafrac` times the speed of light,
+        but less than the speed of light.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> @check_relativistic
+    ... def speed():
+    ...     return 1 * u.m / u.s
+
+    Passing in a custom `betafrac`:
+
+    >>> @check_relativistic(betafrac=0.01)
+    ... def speed():
+    ...     return 1 * u.m / u.s
+
+    """
+    def decorator(f):
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            return_ = f(*args, **kwargs)
+            _check_relativistic(return_, f.__name__, betafrac=betafrac)
+            return return_
+        return wrapper
+    if func:
+        return decorator(func)
+    return decorator
 
 
 def _check_relativistic(V, funcname, betafrac=0.1):
