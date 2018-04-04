@@ -93,20 +93,19 @@ def check_quantity(validations):
                 can_be_inf = validation_settings.get('can_be_inf', True)
                 can_be_nan = validation_settings.get('can_be_nan', False)
 
-                given_params_values[param_to_check] = _check_quantity(value_to_check,
-                                                                      param_to_check,
-                                                                      fname,
-                                                                      validation_settings['units'],
-                                                                      can_be_negative=can_be_negative,
-                                                                      can_be_complex=can_be_complex,
-                                                                      can_be_inf=can_be_inf,
-                                                                      can_be_nan=can_be_nan)
-
+                validated_value = _check_quantity(value_to_check,
+                                                  param_to_check,
+                                                  fname,
+                                                  validation_settings['units'],
+                                                  can_be_negative=can_be_negative,
+                                                  can_be_complex=can_be_complex,
+                                                  can_be_inf=can_be_inf,
+                                                  can_be_nan=can_be_nan)
+                given_params_values[param_to_check] = validated_value
 
             return f(**given_params_values)
         return wrapper
     return decorator
-
 
 
 def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
