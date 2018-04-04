@@ -149,7 +149,7 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     ~plasmapy.utils.RelativityWarning
         If the Alfven velocity exceeds 10% of the speed of light
 
-    UserWarning
+    ~astropy.units.UnitsWarning
         if units are not provided and SI units are assumed.
 
     Notes
@@ -271,7 +271,7 @@ def ion_sound_speed(T_e,
     RelativityWarning
         If the ion sound speed exceeds 10% of the speed of light, or
 
-    UserWarning
+    ~astropy.units.UnitsWarning
         If units are not provided and SI units are assumed.
 
     Notes
@@ -379,9 +379,8 @@ def thermal_speed(T, particle="e-", method="most_probable"):
     RelativityWarning
         If the ion sound speed exceeds 10% of the speed of light, or
 
-    UserWarning
+    ~astropy.units.UnitsWarning
         If units are not provided and SI units are assumed.
-       if units are not provided and SI units are assumed.
 
     Notes
     -----
@@ -483,9 +482,13 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
         The particle temperature is invalid or particle cannot be used to
         identify an isotope or particle.
 
-    UserWarning
+    Warns
+    -----
+    RelativityWarning
         If the particle thermal speed exceeds 10% of the speed of light, or
-        if units are not provided and SI units are assumed.
+
+    UserWarning
+        If units are not provided and SI units are assumed.
 
     Notes
     -----

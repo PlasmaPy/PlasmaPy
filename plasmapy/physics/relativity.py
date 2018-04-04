@@ -5,7 +5,10 @@ from ..constants import c
 from plasmapy import atomic, utils
 
 
-def Lorentz_factor(V):
+@utils.check_quantity({
+    'V': {'units': u.m/u.s, 'can_be_negative': True}
+    })
+def Lorentz_factor(V: u.m/u.s):
     r"""
     Return the Lorentz factor.
 

@@ -173,6 +173,9 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
     --------
     >>> from astropy import units as u
     >>> _check_quantity(4*u.T, 'B', 'f', u.T)
+    <Quantity 4. T>
+    >>> _check_quantity(4, 'B', 'f', u.T)
+    <Quantity 4. T>
 
     """
 

@@ -19,6 +19,9 @@ from ..mathematics import Fermi_integral
 
 # TODO: Use @check_relativistic and @particle_input
 
+@utils.check_quantity({
+    'V': {'units': u.m/u.s, 'can_be_negative': True}
+    })
 def deBroglie_wavelength(V, particle):
     r"""
     Calculates the de Broglie wavelength.
@@ -52,7 +55,7 @@ def deBroglie_wavelength(V, particle):
 
     Warns
     -----
-    UserWarning
+    ~astropy.units.UnitsWarning
         If `V` is not a `~astropy.units.Quantity`, then a `UserWarning`
         will be raised and units of meters per second will be assumed.
 
