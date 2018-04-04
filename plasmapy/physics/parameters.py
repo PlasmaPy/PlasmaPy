@@ -487,7 +487,7 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     RelativityWarning
         If the particle thermal speed exceeds 10% of the speed of light, or
 
-    UserWarning
+    ~astropy.units.UnitsWarning
         If units are not provided and SI units are assumed.
 
     Notes
@@ -859,7 +859,9 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
         If the magnetic field contains invalid values or particle cannot be
         used to identify an particle or isotope
 
-    UserWarning
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
         If units are not provided and SI units are assumed
 
     Notes
@@ -958,7 +960,9 @@ def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
     ValueError
         If any argument contains invalid values
 
-    UserWarning
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
         If units are not provided and SI units are assumed
 
     Notes
@@ -1061,7 +1065,9 @@ def plasma_frequency(n, particle='e-', z_mean=None):
         If `n_i` contains invalid values or particle cannot be used to
         identify an particle or isotope.
 
-    UserWarning
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
         If units are not provided and SI units are assumed
 
     Notes
@@ -1145,7 +1151,9 @@ def Debye_length(T_e, n_e):
     ValueError
         If either argument contains invalid values
 
-    UserWarning
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
         If units are not provided and SI units are assumed
 
     Notes
@@ -1208,7 +1216,9 @@ def Debye_number(T_e, n_e):
     ValueError
         If either argument contains invalid values
 
-    UserWarning
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
         If units are not provided and SI units are assumed
 
     Returns
@@ -1280,8 +1290,10 @@ def inertial_length(n, particle='e-'):
     ValueError
         The particle density does not have an appropriate value.
 
-    UserWarning
-        If units are not provided and SI units are assumed.
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
 
     Notes
     -----
@@ -1336,8 +1348,10 @@ def magnetic_pressure(B):
         If the magnetic field strength is not a real number between
         +/- infinity.
 
-    UserWarning
-        If units are not provided and SI units are assumed.
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
 
     Notes
     -----
@@ -1398,8 +1412,10 @@ def magnetic_energy_density(B: u.T):
         If the magnetic field strength does not have an appropriate.
         value.
 
-    UserWarning
-        If units are not provided and SI units are assumed.
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
 
     Notes
     -----
@@ -1464,8 +1480,10 @@ def upper_hybrid_frequency(B, n_e):
         If either of B or n_e contains invalid values or are of
         incompatible dimensions.
 
-    UserWarning
-        If units are not provided and SI units are assumed.
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
 
     Notes
     -----
@@ -1533,8 +1551,10 @@ def lower_hybrid_frequency(B, n_i, ion='p+'):
         incompatible dimensions, or ion cannot be used to identify an
         ion or isotope.
 
-    UserWarning
-        If units are not provided and SI units are assumed.
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
 
     Notes
     -----

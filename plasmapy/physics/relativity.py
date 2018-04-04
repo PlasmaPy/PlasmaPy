@@ -34,9 +34,10 @@ def Lorentz_factor(V: u.m/u.s):
     ValueError
         If the magnitude of `V` is faster than the speed of light.
 
-    UserWarning
-        If `V` is not a `~astropy.units.Quantity`, then a `UserWarning`
-        will be raised and units of meters per second will be assumed.
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
 
     Notes
     -----

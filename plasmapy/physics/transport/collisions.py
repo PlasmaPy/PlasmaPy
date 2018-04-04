@@ -78,15 +78,19 @@ def Coulomb_logarithm(T,
     UnitConversionError
         If the units on any of the inputs are incorrect.
 
-    UserWarning
-        If the input velocity is greater than 80% of the speed of
-        light.
-
-    TypeError
         If the n_e, T, or V are not Quantities.
 
     PhysicsError
         If the result is smaller than 1.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
+
+    ~plasmapy.utils.RelativityWarning
+        If the input velocity is greater than 80% of the speed of
+        light.
 
     Notes
     -----
@@ -303,12 +307,17 @@ def b_perp(T,
     UnitConversionError
         If the units on any of the inputs are incorrect
 
-    UserWarning
-        If the inputted velocity is greater than 80% of the speed of
-        light.
-
     TypeError
         If T, or V are not Quantities.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
+
+    ~plasmapy.utils.RelativityWarning
+        If the input velocity is greater than 80% of the speed of
+        light.
 
     Notes
     -----
@@ -402,12 +411,17 @@ def impact_parameter(T,
     UnitConversionError
         If the units on any of the inputs are incorrect
 
-    UserWarning
-        If the inputted velocity is greater than 80% of the speed of
-        light.
-
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
+
+    ~plasmapy.utils.RelativityWarning
+        If the input velocity is greater than 80% of the speed of
+        light.
 
     Notes
     -----
@@ -587,12 +601,17 @@ def collision_frequency(T,
     UnitConversionError
         If the units on any of the inputs are incorrect
 
-    UserWarning
-        If the inputted velocity is greater than 80% of the speed of
-        light.
-
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
+
+    ~plasmapy.utils.RelativityWarning
+        If the input velocity is greater than 80% of the speed of
+        light.
 
     Notes
     -----
@@ -744,12 +763,17 @@ def mean_free_path(T,
     UnitConversionError
         If the units on any of the inputs are incorrect
 
-    UserWarning
-        If the inputted velocity is greater than 80% of the speed of
-        light.
-
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
+
+    ~plasmapy.utils.RelativityWarning
+        If the input velocity is greater than 80% of the speed of
+        light.
 
     Notes
     -----
@@ -853,12 +877,17 @@ def Spitzer_resistivity(T,
     UnitConversionError
         If the units on any of the inputs are incorrect
 
-    UserWarning
-        If the inputted velocity is greater than 80% of the speed of
-        light.
-
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
+
+    ~plasmapy.utils.RelativityWarning
+        If the input velocity is greater than 80% of the speed of
+        light.
 
     Notes
     -----
@@ -971,12 +1000,17 @@ def mobility(T,
     UnitConversionError
         If the units on any of the inputs are incorrect
 
-    UserWarning
-        If the inputted velocity is greater than 80% of the speed of
-        light.
-
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
+
+    ~plasmapy.utils.RelativityWarning
+        If the input velocity is greater than 80% of the speed of
+        light.
 
     Notes
     -----
@@ -1087,12 +1121,17 @@ def Knudsen_number(characteristic_length,
     UnitConversionError
         If the units on any of the inputs are incorrect
 
-    UserWarning
-        If the inputted velocity is greater than 80% of the speed of
-        light.
-
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
+
+    ~plasmapy.utils.RelativityWarning
+        If the input velocity is greater than 80% of the speed of
+        light.
 
     Notes
     -----
@@ -1196,12 +1235,17 @@ def coupling_parameter(T,
     UnitConversionError
         If the units on any of the inputs are incorrect
 
-    UserWarning
-        If the inputted velocity is greater than 80% of the speed of
-        light.
-
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided and SI units are assumed
+
+    ~plasmapy.utils.RelativityWarning
+        If the input velocity is greater than 80% of the speed of
+        light.
 
     Notes
     -----

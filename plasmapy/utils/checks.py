@@ -164,9 +164,9 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
     Warns
     -----
-    UserWarning
+    ~astropy.units.UnitsWarning
         If a `~astropy.units.Quantity` is not provided and unique units
-        are provided, a `UserWarning` will be raised and the inputted
+        are provided, a `UnitsWarning` will be raised and the inputted
         units will be assumed.
 
     Examples
