@@ -3,9 +3,11 @@ import inspect
 
 import numpy as np
 from astropy import units as u
+from astropy.units import UnitsWarning
 from plasmapy.constants import c
 import warnings
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
+from textwrap import dedent
 
 
 def check_quantity(validations):
@@ -91,16 +93,17 @@ def check_quantity(validations):
                 can_be_inf = validation_settings.get('can_be_inf', True)
                 can_be_nan = validation_settings.get('can_be_nan', False)
 
-                _check_quantity(value_to_check,
-                                param_to_check,
-                                fname,
-                                validation_settings['units'],
-                                can_be_negative=can_be_negative,
-                                can_be_complex=can_be_complex,
-                                can_be_inf=can_be_inf,
-                                can_be_nan=can_be_nan)
+                given_params_values[param_to_check] = _check_quantity(value_to_check,
+                                                                      param_to_check,
+                                                                      fname,
+                                                                      validation_settings['units'],
+                                                                      can_be_negative=can_be_negative,
+                                                                      can_be_complex=can_be_complex,
+                                                                      can_be_inf=can_be_inf,
+                                                                      can_be_nan=can_be_nan)
 
-            return f(*args, **kwargs)
+
+            return f(**given_params_values)
         return wrapper
     return decorator
 
@@ -204,6 +207,13 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
     # Make sure arg is a quantity with correct units
 
+    unit_casting_warning = dedent(
+            f"""No units are specified for {argname} = {arg} in {funcname}. Assuming units of {str(units[0])}.
+                To silence this warning, explicitly pass in an Astropy Quantity (from astropy.units)
+                (see http://docs.astropy.org/en/stable/units/)""")
+
+    # TODO include explicit note on how to pass in Astropy Quantity
+
     if not isinstance(arg, (u.Quantity)):
         if len(units) != 1:
             raise TypeError(typeerror_message)
@@ -213,10 +223,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
             except Exception:
                 raise TypeError(typeerror_message)
             else:
-                warnings.warn(UserWarning(
-                        f"No units are specified for {argname} in {funcname}. "
-                        f"Assuming units of {str(units[0])}."
-                        ))
+                warnings.warn(UnitsWarning(unit_casting_warning))
     if not isinstance(arg, u.Quantity):
         raise u.UnitsError("{} is still not a Quantity after checks!".format(arg))
 
@@ -247,6 +254,9 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         raise ValueError(f"{valueerror_message} negative numbers.")
     elif not can_be_inf and np.any(np.isinf(arg.value)):
         raise ValueError(f"{valueerror_message} infs.")
+
+    return arg
+
 
 def check_relativistic(func=None, betafrac=0.1):
     r"""
