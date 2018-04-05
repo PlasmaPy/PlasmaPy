@@ -13,37 +13,8 @@ Symbols and Names
 
 Several functions in `~plasmapy.atomic` return string representations
 of particles, including `~plasmapy.atomic.atomic_symbol`,
-`~plasmapy.atomic.isotope_symbol`, and `~plasmapy.atomic.element_name`.
-
->>> from plasmapy.atomic import *
->>> atomic_symbol('alpha')
-'He'
->>> isotope_symbol('alpha')
-'He-4'
->>> ionic_symbol('alpha')
-'He-4 2+'
->>> particle_symbol('alpha')
-'He-4 2+
->>> element_name('alpha')
-'helium'
-
-The full symbol of the particle can be found using
-
-
->>> from plasmapy.atomic import *
->>> atomic_symbol('alpha')
-'He'
->>> isotope_symbol('alpha')
-'He-4'
->>> ionic_symbol('alpha')
-'He-4 2+'
->>> particle_symbol('alpha')
-'He-4 2+
->>> element_name('alpha')
-'helium'
-
-The full symbol of the particle can be found using
-
+`~plasmapy.atomic.isotope_symbol`, `~plasmapy.atomic.ionic_symbol`,
+and `~plasmapy.atomic.element_name`.
 
 >>> from plasmapy.atomic import *
 >>> atomic_symbol('alpha')
