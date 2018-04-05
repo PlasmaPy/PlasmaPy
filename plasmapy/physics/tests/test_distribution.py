@@ -221,7 +221,7 @@ class Test_Maxwellian_speed_1D(object):
     def setup_method(self):
         """initializing parameters for tests """
         self.T = 1.0 * u.eV
-        self.particle = 'H'
+        self.particle = 'H+'
         # get thermal velocity and thermal velocity squared
         self.vTh = thermal_speed(self.T,
                                  particle=self.particle,
@@ -352,7 +352,7 @@ class Test_Maxwellian_velocity_3D(object):
     def setup_method(self):
         """initializing parameters for tests """
         self.T = 1.0 * u.eV
-        self.particle = 'H'
+        self.particle = 'H+'
         # get thermal velocity and thermal velocity squared
         self.vTh = thermal_speed(self.T,
                                  particle=self.particle,
@@ -528,7 +528,7 @@ class Test_Maxwellian_speed_3D(object):
     def setup_method(self):
         """initializing parameters for tests """
         self.T = 1.0 * u.eV
-        self.particle = 'H'
+        self.particle = 'H+'
         # get thermal velocity and thermal velocity squared
         self.vTh = thermal_speed(self.T,
                                  particle=self.particle,
@@ -935,7 +935,7 @@ class Test_kappa_velocity_3D(object):
         self.T = 1.0 * u.eV
         self.kappa = 4
         self.kappaInvalid = 3 / 2
-        self.particle = 'H'
+        self.particle = 'H+'
         # get thermal velocity and thermal velocity squared
         self.vTh = kappa_thermal_speed(self.T,
                                        kappa=self.kappa,
