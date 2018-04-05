@@ -260,7 +260,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
     return arg
 
 
-def check_relativistic(func=None, betafrac=0.1):
+def check_relativistic(func=None, betafrac=0.05):
     r"""
     Warns or raises an exception when the output of the decorated
     function is greater than `betafrac` times the speed of light.
@@ -272,7 +272,7 @@ def check_relativistic(func=None, betafrac=0.1):
 
     betafrac : float, optional
         The minimum fraction of the speed of light that will raise a
-        `~plasmapy.utils.RelativityWarning`. Defaults to 0.1.
+        `~plasmapy.utils.RelativityWarning`. Defaults to 5%.
 
     Returns
     -------
@@ -325,7 +325,7 @@ def check_relativistic(func=None, betafrac=0.1):
     return decorator
 
 
-def _check_relativistic(V, funcname, betafrac=0.1):
+def _check_relativistic(V, funcname, betafrac=0.05):
     r"""
     Warn or raise error for relativistic or superrelativistic
     velocities.
@@ -339,9 +339,9 @@ def _check_relativistic(V, funcname, betafrac=0.1):
         The name of the original function to be printed in the error
         messages.
 
-    betafrac : float
+    betafrac : float, optional
         The minimum fraction of the speed of light that will generate
-        a warning.
+        a warning. Defaults to 5%.
 
     Raises
     ------
