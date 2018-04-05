@@ -20,7 +20,37 @@ of particles, including `~plasmapy.atomic.atomic_symbol`,
 'He'
 >>> isotope_symbol('alpha')
 'He-4'
->>> ion_symbol('alpha')
+>>> ionic_symbol('alpha')
+'He-4 2+'
+>>> particle_symbol('alpha')
+'He-4 2+
+>>> element_name('alpha')
+'helium'
+
+The full symbol of the particle can be found using
+
+
+>>> from plasmapy.atomic import *
+>>> atomic_symbol('alpha')
+'He'
+>>> isotope_symbol('alpha')
+'He-4'
+>>> ionic_symbol('alpha')
+'He-4 2+'
+>>> particle_symbol('alpha')
+'He-4 2+
+>>> element_name('alpha')
+'helium'
+
+The full symbol of the particle can be found using
+
+
+>>> from plasmapy.atomic import *
+>>> atomic_symbol('alpha')
+'He'
+>>> isotope_symbol('alpha')
+'He-4'
+>>> ionic_symbol('alpha')
 'He-4 2+'
 >>> particle_symbol('alpha')
 'He-4 2+

@@ -55,7 +55,7 @@ def atomic_symbol(element: Particle) -> str:
     `~plasmapy.atomic. isotope_symbol` : returns the isotope symbol
         instead of the atomic symbol.
 
-    `~plasmapy.atomic.ion_symbol` : returns the ion symbol instead of
+    `~plasmapy.atomic.ionic_symbol` : returns the ion symbol instead of
         the atomic symbol.
 
     `~plasmapy.atomic.particle_symbol` : returns the symbol of any valid
@@ -142,7 +142,7 @@ def isotope_symbol(isotope: Particle, mass_numb: int = None) -> str:
     `~plasmapy.atomic.atomic_symbol` : returns the atomic symbol instead
         of the isotope symbol
 
-    `~plasmapy.atomic.ion_symbol` : returns the ion symbol instead of
+    `~plasmapy.atomic.ionic_symbol` : returns the ion symbol instead of
         the isotope symbol.
 
     `~plasmapy.atomic.particle_symbol` : returns the symbol of any valid
@@ -173,7 +173,7 @@ def isotope_symbol(isotope: Particle, mass_numb: int = None) -> str:
 
 
 @particle_input
-def ion_symbol(ion: Particle, mass_numb: int = None, Z: int = None) -> str:
+def ionic_symbol(ion: Particle, mass_numb: int = None, Z: int = None) -> str:
     """
     Return the symbol representing an ion.
 
@@ -235,13 +235,13 @@ def ion_symbol(ion: Particle, mass_numb: int = None, Z: int = None) -> str:
 
     Examples
     --------
-    >>> ion_symbol('alpha')
+    >>> ionic_symbol('alpha')
     'He-4 2+'
-    >>> ion_symbol(79, mass_numb=197, Z=12)
+    >>> ionic_symbol(79, mass_numb=197, Z=12)
     'Au-197 12+'
-    >>> ion_symbol('proton')
+    >>> ionic_symbol('proton')
     'p+'
-    >>> ion_symbol('D', Z=1)
+    >>> ionic_symbol('D', Z=1)
     'D 1+'
 
     """
@@ -297,7 +297,7 @@ def particle_symbol(particle: Particle, mass_numb: int = None,
     `~plasmapy.atomic.isotope_symbol` : returns the isotope symbol
         instead
 
-    `~plasmapy.atomic.ion_symbol` : returns the ion symbol instead
+    `~plasmapy.atomic.ionic_symbol` : returns the ion symbol instead
 
     Examples
     --------
