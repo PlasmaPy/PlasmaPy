@@ -12,7 +12,7 @@ from plasmapy import utils
 from plasmapy.utils.checks import (check_quantity,
                                    _check_relativistic)
 from plasmapy.constants import (m_e, k_B, e, eps0, pi, hbar)
-from plasmapy.atomic import (ion_mass, integer_charge)
+from plasmapy.atomic import (particle_mass, integer_charge)
 from plasmapy.physics.parameters import (Debye_length)
 from plasmapy.physics.quantum import (Wigner_Seitz_radius,
                                       thermal_deBroglie_wavelength,
@@ -247,7 +247,7 @@ def _boilerPlate(T, particles, V):
     for particle, i in zip(particles, range(2)):
 
         try:
-            masses[i] = ion_mass(particles[i])
+            masses[i] = particle_mass(particles[i])
         except Exception:
             raise ValueError("Unable to find mass of particle: "
                              f"{particles[i]}.")
