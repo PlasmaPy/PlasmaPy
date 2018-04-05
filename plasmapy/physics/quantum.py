@@ -94,7 +94,7 @@ def deBroglie_wavelength(V, particle):
     if not isinstance(particle, u.Quantity):
         try:
             # TODO: Replace with more general routine!
-            m = atomic.ion_mass(particle)
+            m = atomic.particle_mass(particle)
         except Exception:
             raise ValueError("Unable to find particle mass.")
     else:
@@ -421,7 +421,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     Levenberg-Marquardt least squares method is used to iteratively approach
     a value of :math:`\mu` which minimizes
     :math:`I_{1/2}(\beta \mu_a^{ideal}) - \chi_a`
-    
+
     This function returns :math:`\beta \mu^{ideal}` the dimensionless
     ideal chemical potential.
 
