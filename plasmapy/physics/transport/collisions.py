@@ -89,7 +89,7 @@ def Coulomb_logarithm(T,
         If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
-        If the input velocity is greater than 80% of the speed of
+        If the input velocity is greater than 5% of the speed of
         light.
 
     Notes
@@ -316,7 +316,7 @@ def b_perp(T,
         If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
-        If the input velocity is greater than 80% of the speed of
+        If the input velocity is greater than 5% of the speed of
         light.
 
     Notes
@@ -420,7 +420,7 @@ def impact_parameter(T,
         If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
-        If the input velocity is greater than 80% of the speed of
+        If the input velocity is greater than 5% of the speed of
         light.
 
     Notes
@@ -610,7 +610,7 @@ def collision_frequency(T,
         If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
-        If the input velocity is greater than 80% of the speed of
+        If the input velocity is greater than 5% of the speed of
         light.
 
     Notes
@@ -772,7 +772,7 @@ def mean_free_path(T,
         If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
-        If the input velocity is greater than 80% of the speed of
+        If the input velocity is greater than 5% of the speed of
         light.
 
     Notes
@@ -886,7 +886,7 @@ def Spitzer_resistivity(T,
         If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
-        If the input velocity is greater than 80% of the speed of
+        If the input velocity is greater than 5% of the speed of
         light.
 
     Notes
@@ -1009,7 +1009,7 @@ def mobility(T,
         If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
-        If the input velocity is greater than 80% of the speed of
+        If the input velocity is greater than 5% of the speed of
         light.
 
     Notes
@@ -1130,7 +1130,7 @@ def Knudsen_number(characteristic_length,
         If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
-        If the input velocity is greater than 80% of the speed of
+        If the input velocity is greater than 5% of the speed of
         light.
 
     Notes
@@ -1244,7 +1244,7 @@ def coupling_parameter(T,
         If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
-        If the input velocity is greater than 80% of the speed of
+        If the input velocity is greater than 5% of the speed of
         light.
 
     Notes
