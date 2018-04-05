@@ -4,7 +4,7 @@
 import numpy as np
 import pytest
 from astropy import units as u
-from plasmapy.atomic.atomic import ion_mass, integer_charge
+from plasmapy.atomic.atomic import particle_mass, integer_charge
 from astropy.tests.helper import assert_quantity_allclose
 from plasmapy.utils.exceptions import (PhysicsError, PhysicsWarning,
                                        InvalidParticleError)
@@ -58,7 +58,7 @@ class Test_classical_transport:
         self.T_e = 1000 * u.eV
         self.n_e = 2e13 / u.cm ** 3
         self.ion_particle = 'D +1'
-        self.m_i = ion_mass(self.ion_particle)
+        self.m_i = particle_mass(self.ion_particle)
         self.Z = integer_charge(self.ion_particle)
         self.T_i = self.T_e
         self.n_i = self.n_e / self.Z
