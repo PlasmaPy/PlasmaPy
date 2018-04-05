@@ -52,10 +52,9 @@ Plasma Parameters
 -----------------
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    physics/index
-   physics/transport/index
 
 .. _diagnostics
 
