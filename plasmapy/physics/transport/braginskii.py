@@ -280,7 +280,7 @@ class classical_transport:
         # get ion mass and charge state
         if m_i is None:
             try:
-                self.m_i = atomic.ion_mass(ion_particle)
+                self.m_i = atomic.particle_mass(ion_particle)
             except Exception:
                 raise ValueError(f"Unable to find mass of particle: "
                                  f"{ion_particle} in classical_transport")
