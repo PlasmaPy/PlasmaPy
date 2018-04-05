@@ -14,8 +14,6 @@ from ..atomic import (
     atomic_number,
     mass_number,
     standard_atomic_weight,
-    isotope_mass,
-    ion_mass,
     particle_mass,
     is_stable,
     half_life,
@@ -287,30 +285,7 @@ standard_atomic_weight_table = [
     ['fe', InvalidParticleError],
 ]
 
-isotope_mass_table = [
-    [('H-1',), isotope_mass('protium')],
-    [('H-1',), isotope_mass(1, 1)],
-    [('D',), isotope_mass('H-2')],
-    [('H-2',), isotope_mass('deuterium',)],
-    [('deuterium',), isotope_mass(1, 2)],
-    [('T',), isotope_mass('H-3',)],
-    [('H-3',), isotope_mass('tritium',)],
-    [('tritium',), isotope_mass(1, 3)],
-    ["H", InvalidIsotopeError],
-    [1.1, TypeError],
-    ['alpha', AtomicError],
-    ['He-4 2+', AtomicError],
-    ['he-4', InvalidParticleError],
-    ['Fe 2+', InvalidIsotopeError],
-    ['Fe -2', InvalidIsotopeError],
-    ['deuteron', AtomicError],
-    ['triton', AtomicError],
-    ['H-1 +1', AtomicError],
-    ['H-1+', AtomicError],
-    ['Si-30', u.kg],
-]
-
-ion_mass_table = [
+particle_mass_table = [
     ['proton', const.m_p],
     ['H-1+', const.m_p],
     ['H-1 +1', const.m_p],
@@ -321,7 +296,6 @@ ion_mass_table = [
     ['F-19', {'Z': 3}, u.kg],
     ['Og 1+', {}, MissingAtomicDataError],
     ['Fe-56', {"Z": 1.4}, TypeError],
-    ['n', {}, InvalidIonError],
     ['H-1 +1', {"Z": 0}, InvalidParticleError],
     [26, {"Z": 1, "mass_numb": 'a'}, TypeError],
     [26, {"Z": 27, "mass_numb": 56}, InvalidParticleError],
@@ -330,12 +304,7 @@ ion_mass_table = [
     ['He 1+', {"mass_numb": 99}, InvalidParticleError],
     ['fe-56 1+', {}, InvalidParticleError],
     ['H-1', {'mass_numb': 1, 'Z': 1}, AtomicWarning],
-]
-
-particle_mass_table = [
-    ['p+', ion_mass('p+')],
     ['H', standard_atomic_weight('H')],
-    ['D', isotope_mass('D')],
 ]
 
 is_stable_table = [
@@ -435,8 +404,6 @@ tables_and_functions = [
     (mass_number, mass_number_table),
     (element_name, element_name_table),
     (standard_atomic_weight, standard_atomic_weight_table),
-    (isotope_mass, isotope_mass_table),
-    (ion_mass, ion_mass_table),
     (is_stable, is_stable_table),
     (particle_mass, particle_mass_table),
     (integer_charge, integer_charge_table),
@@ -465,8 +432,6 @@ atomic_TypeError_funcs_table = [
     mass_number,
     element_name,
     standard_atomic_weight,
-    isotope_mass,
-    ion_mass,
     nuclear_binding_energy,
     nuclear_reaction_energy
 ]
@@ -482,8 +447,6 @@ atomic_ParticleErrors_funcs_table = [
     mass_number,
     element_name,
     standard_atomic_weight,
-    isotope_mass,
-    ion_mass,
     particle_mass,
     known_isotopes,
     stable_isotopes,
@@ -540,28 +503,28 @@ def test_standard_atomic_weight_value_between():
         "Incorrect standard atomic weight for phosphorus."
 
 
-def test_isotope_mass_berkelium_249():
-    """Test that `isotope_mass` returns the correct value for Bk-249."""
-    assert np.isclose(isotope_mass('berkelium-249').to(u.u).value, 249.0749877), \
+def test_particle_mass_berkelium_249():
+    """Test that `particle_mass` returns the correct value for Bk-249."""
+    assert np.isclose(particle_mass('berkelium-249').to(u.u).value, 249.0749877), \
         "Incorrect isotope mass for berkelium."
 
 
-def test_ion_mass_for_hydrogen_with_no_mass_number():
-    """Test that `ion_mass` does not return the proton mass when no
+def test_particle_mass_for_hydrogen_with_no_mass_number():
+    """Test that `particle_mass` does not return the proton mass when no
     mass number is specified for hydrogen.  In this case, the
     standard atomic weight should be used to account for the small
     fraction of deuterium."""
-    assert ion_mass('H', Z=1) > const.m_p
-    assert ion_mass('hydrogen', Z=1) > const.m_p
+    assert particle_mass('H', Z=1) > const.m_p
+    assert particle_mass('hydrogen', Z=1) > const.m_p
 
 
-def test_ion_mass_helium():
-    """Test miscellaneous cases for `ion_mass`."""
-    assert ion_mass('alpha') > ion_mass('He-3 2+')
+def test_particle_mass_helium():
+    """Test miscellaneous cases for `particle_mass`."""
+    assert particle_mass('alpha') > particle_mass('He-3 2+')
 
 
 # (arg1, kwargs1, arg2, kwargs2, expected)
-equivalent_ion_mass_args = [
+equivalent_particle_mass_args = [
     ['e+', {}, 'positron', {}, const.m_e],
     ['alpha', {}, 'He-4++', {}, None],
     ['alpha', {}, 'helium-4 2+', {}, None],
@@ -574,29 +537,29 @@ equivalent_ion_mass_args = [
     ['T+', {}, 'T 1+', {}, None],
     ['Tritium+', {}, 'T', {'Z': 1}, None],
     ['Fe-56 1+', {}, 'Fe', {'mass_numb': 56, 'Z': 1},
-     ion_mass('Fe-56 1-') - 2 * const.m_e],
+     particle_mass('Fe-56 1-') - 2 * const.m_e],
     ['Fe-56 +1', {}, 26, {'mass_numb': 56, 'Z': 1}, None],
 ]
 
 
 @pytest.mark.parametrize(
-    "arg1, kwargs1, arg2, kwargs2, expected", equivalent_ion_mass_args)
-def test_ion_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
-    """Test that `ion_mass` returns equivalent results for equivalent
-    positional and keyword arguments."""
+    "arg1, kwargs1, arg2, kwargs2, expected", equivalent_particle_mass_args)
+def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
+    """Test that `particle_mass` returns equivalent results for
+    equivalent positional and keyword arguments."""
 
-    result1 = ion_mass(arg1, **kwargs1)
-    result2 = ion_mass(arg2, **kwargs2)
+    result1 = particle_mass(arg1, **kwargs1)
+    result2 = particle_mass(arg2, **kwargs2)
 
     assert result1 == result2, \
-        (f"ion_mass({repr(arg1)}, **{kwargs1}) = {repr(result1)}, whereas "
-         f"ion_mass({repr(arg2)}, **{kwargs2}) = {repr(result2)}.  "
+        (f"particle_mass({repr(arg1)}, **{kwargs1}) = {repr(result1)}, whereas "
+         f"particle_mass({repr(arg2)}, **{kwargs2}) = {repr(result2)}.  "
          f"These results are not equivalent as expected.")
 
     if expected is not None:
         assert result1 == result2 == expected, \
-            (f"ion_mass({repr(arg1)}, **{kwargs1}) = {repr(result1)} and "
-             f"ion_mass({repr(arg2)}, **{kwargs2}) = {repr(result2)}, but  "
+            (f"particle_mass({repr(arg1)}, **{kwargs1}) = {repr(result1)} and "
+             f"particle_mass({repr(arg2)}, **{kwargs2}) = {repr(result2)}, but  "
              f"these results are not equal to {repr(expected)} as expected.")
 
 
