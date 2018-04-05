@@ -147,10 +147,10 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     Warns
     -----
     ~plasmapy.utils.RelativityWarning
-        If the Alfven velocity exceeds 10% of the speed of light
+        If the Alfven velocity exceeds 5% of the speed of light
 
     ~astropy.units.UnitsWarning
-        if units are not provided and SI units are assumed.
+        if units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -269,10 +269,10 @@ def ion_sound_speed(T_e,
     Warns
     -----
     RelativityWarning
-        If the ion sound speed exceeds 10% of the speed of light, or
+        If the ion sound speed exceeds 5% of the speed of light.
 
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed.
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -377,10 +377,10 @@ def thermal_speed(T, particle="e-", method="most_probable"):
     Warns
     -----
     RelativityWarning
-        If the ion sound speed exceeds 10% of the speed of light, or
+        If the ion sound speed exceeds 5% of the speed of light, or
 
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed.
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -485,10 +485,10 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     Warns
     -----
     RelativityWarning
-        If the particle thermal speed exceeds 10% of the speed of light, or
+        If the particle thermal speed exceeds 5% of the speed of light, or
 
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed.
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -862,7 +862,7 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -963,7 +963,7 @@ def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1068,7 +1068,7 @@ def plasma_frequency(n, particle='e-', z_mean=None):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1154,7 +1154,7 @@ def Debye_length(T_e, n_e):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1219,7 +1219,7 @@ def Debye_number(T_e, n_e):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     Returns
     -------
@@ -1293,7 +1293,7 @@ def inertial_length(n, particle='e-'):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1351,7 +1351,7 @@ def magnetic_pressure(B):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1415,7 +1415,7 @@ def magnetic_energy_density(B: u.T):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1483,7 +1483,7 @@ def upper_hybrid_frequency(B, n_e):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1554,7 +1554,7 @@ def lower_hybrid_frequency(B, n_i, ion='p+'):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     Notes
     -----

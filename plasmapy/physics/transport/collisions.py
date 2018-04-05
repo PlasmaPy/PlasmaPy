@@ -86,7 +86,7 @@ def Coulomb_logarithm(T,
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 80% of the speed of
@@ -313,7 +313,7 @@ def b_perp(T,
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 80% of the speed of
@@ -417,7 +417,7 @@ def impact_parameter(T,
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 80% of the speed of
@@ -607,7 +607,7 @@ def collision_frequency(T,
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 80% of the speed of
@@ -769,7 +769,7 @@ def mean_free_path(T,
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 80% of the speed of
@@ -883,7 +883,7 @@ def Spitzer_resistivity(T,
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 80% of the speed of
@@ -1006,7 +1006,7 @@ def mobility(T,
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 80% of the speed of
@@ -1127,7 +1127,7 @@ def Knudsen_number(characteristic_length,
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 80% of the speed of
@@ -1241,7 +1241,7 @@ def coupling_parameter(T,
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 80% of the speed of

@@ -56,7 +56,7 @@ def deBroglie_wavelength(V, particle):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -153,7 +153,7 @@ def thermal_deBroglie_wavelength(T_e):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed.
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -206,7 +206,7 @@ def Fermi_energy(n_e):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed.
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -267,7 +267,7 @@ def Thomas_Fermi_length(n_e):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed.
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -342,7 +342,7 @@ def Wigner_Seitz_radius(n: u.m**-3):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed.
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -400,7 +400,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed.
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -501,7 +501,7 @@ def chemical_potential_interp(n_e, T):
     Warnings
     --------
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed.
+        If units are not provided, SI units are assumed.
 
     Notes
     -----

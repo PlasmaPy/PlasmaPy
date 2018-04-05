@@ -37,7 +37,7 @@ def Lorentz_factor(V: u.m/u.s):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided and SI units are assumed
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
