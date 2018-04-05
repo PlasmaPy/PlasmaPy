@@ -1471,13 +1471,13 @@ def upper_hybrid_frequency(B, n_e):
     Raises
     ------
     TypeError
-        If either of B or n_e is not a Quantity.
+        If either of `B` or `n_e` is not a Quantity.
 
     ~astropy.units.UnitConversionError
-        If either of B or n_e is in incorrect units.
+        If either of `B` or `n_e` is in incorrect units.
 
     ValueError
-        If either of B or n_e contains invalid values or are of
+        If either of `B` or `n_e` contains invalid values or are of
         incompatible dimensions.
 
     Warns
