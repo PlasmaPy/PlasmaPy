@@ -20,7 +20,6 @@ quantity_error_examples_default = [
     (5 * u.T, [u.T, 1], TypeError),
     (5 * u.T, [1, u.m], TypeError),
     (u.T, u.J, TypeError),
-    (5.0, u.m, UserWarning),
     (3 * u.m / u.s, u.m, u.UnitConversionError),
     (5j * u.K, u.K, ValueError),
 ]
@@ -65,6 +64,10 @@ def test__check_quantity_errors_non_default(
                         can_be_complex=can_be_complex,
                         can_be_inf=can_be_inf)
 
+
+def test__check_quantity_warns_on_casting():
+    with pytest.warns(u.UnitsWarning):
+        _check_quantity(5, 'arg', 'funcname', u.m,)
 
 @pytest.mark.parametrize(
     "value, units, error", quantity_error_examples_default)

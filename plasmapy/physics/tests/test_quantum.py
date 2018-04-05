@@ -47,7 +47,7 @@ def test_deBroglie_wavelength():
     with pytest.raises(RelativityError):
         deBroglie_wavelength(c * 1.000000001, 'e')
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(u.UnitsWarning):
         deBroglie_wavelength(0.79450719277, 'Be-7 1+')
 
     with pytest.raises(u.UnitConversionError):

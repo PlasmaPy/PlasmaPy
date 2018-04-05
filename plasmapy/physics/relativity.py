@@ -5,7 +5,10 @@ from ..constants import c
 from plasmapy import atomic, utils
 
 
-def Lorentz_factor(V):
+@utils.check_quantity({
+    'V': {'units': u.m/u.s, 'can_be_negative': True}
+    })
+def Lorentz_factor(V: u.m/u.s):
     r"""
     Return the Lorentz factor.
 
@@ -31,9 +34,10 @@ def Lorentz_factor(V):
     ValueError
         If the magnitude of `V` is faster than the speed of light.
 
-    UserWarning
-        If `V` is not a `~astropy.units.Quantity`, then a `UserWarning`
-        will be raised and units of meters per second will be assumed.
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
 
     Notes
     -----

@@ -144,13 +144,13 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
         If the density is negative, or the ion mass or charge state
         cannot be found.
 
-    UserWarning
-        if units are not provided and SI units are assumed.
-
     Warns
     -----
     ~plasmapy.utils.RelativityWarning
-        If the Alfven velocity exceeds 10% of the speed of light
+        If the Alfven velocity exceeds 5% of the speed of light
+
+    ~astropy.units.UnitsWarning
+        if units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -266,9 +266,13 @@ def ion_sound_speed(T_e,
     ~astropy.units.UnitConversionError
         If the temperature is in incorrect units.
 
-    UserWarning
-        If the ion sound speed exceeds 10% of the speed of light, or
-        if units are not provided and SI units are assumed.
+    Warns
+    -----
+    RelativityWarning
+        If the ion sound speed exceeds 5% of the speed of light.
+
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -370,9 +374,13 @@ def thermal_speed(T, particle="e-", method="most_probable"):
         The particle temperature is invalid or particle cannot be used to
         identify an isotope or particle
 
-    UserWarning
-        If the particle thermal speed exceeds 10% of the speed of light, or
-        if units are not provided and SI units are assumed.
+    Warns
+    -----
+    RelativityWarning
+        If the ion sound speed exceeds 5% of the speed of light, or
+
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -474,9 +482,13 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
         The particle temperature is invalid or particle cannot be used to
         identify an isotope or particle.
 
-    UserWarning
-        If the particle thermal speed exceeds 10% of the speed of light, or
-        if units are not provided and SI units are assumed.
+    Warns
+    -----
+    RelativityWarning
+        If the particle thermal speed exceeds 5% of the speed of light, or
+
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -847,8 +859,10 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
         If the magnetic field contains invalid values or particle cannot be
         used to identify an particle or isotope
 
-    UserWarning
-        If units are not provided and SI units are assumed
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -946,8 +960,10 @@ def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
     ValueError
         If any argument contains invalid values
 
-    UserWarning
-        If units are not provided and SI units are assumed
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1049,8 +1065,10 @@ def plasma_frequency(n, particle='e-', z_mean=None):
         If `n_i` contains invalid values or particle cannot be used to
         identify an particle or isotope.
 
-    UserWarning
-        If units are not provided and SI units are assumed
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1133,8 +1151,10 @@ def Debye_length(T_e, n_e):
     ValueError
         If either argument contains invalid values
 
-    UserWarning
-        If units are not provided and SI units are assumed
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1196,8 +1216,10 @@ def Debye_number(T_e, n_e):
     ValueError
         If either argument contains invalid values
 
-    UserWarning
-        If units are not provided and SI units are assumed
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed
 
     Returns
     -------
@@ -1268,8 +1290,10 @@ def inertial_length(n, particle='e-'):
     ValueError
         The particle density does not have an appropriate value.
 
-    UserWarning
-        If units are not provided and SI units are assumed.
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1324,8 +1348,10 @@ def magnetic_pressure(B):
         If the magnetic field strength is not a real number between
         +/- infinity.
 
-    UserWarning
-        If units are not provided and SI units are assumed.
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1386,8 +1412,10 @@ def magnetic_energy_density(B: u.T):
         If the magnetic field strength does not have an appropriate.
         value.
 
-    UserWarning
-        If units are not provided and SI units are assumed.
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1443,17 +1471,19 @@ def upper_hybrid_frequency(B, n_e):
     Raises
     ------
     TypeError
-        If either of B or n_e is not a Quantity.
+        If either of `B` or `n_e` is not a Quantity.
 
     ~astropy.units.UnitConversionError
-        If either of B or n_e is in incorrect units.
+        If either of `B` or `n_e` is in incorrect units.
 
     ValueError
-        If either of B or n_e contains invalid values or are of
+        If either of `B` or `n_e` contains invalid values or are of
         incompatible dimensions.
 
-    UserWarning
-        If units are not provided and SI units are assumed.
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -1521,8 +1551,10 @@ def lower_hybrid_frequency(B, n_i, ion='p+'):
         incompatible dimensions, or ion cannot be used to identify an
         ion or isotope.
 
-    UserWarning
-        If units are not provided and SI units are assumed.
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed
 
     Notes
     -----
