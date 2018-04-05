@@ -188,14 +188,7 @@ def ionic_symbol(particle: Particle, mass_numb: int = None, Z: int = None) -> st
 
     See Also
     --------
-    `~plasmapy.atomic.atomic_symbol` : returns the atomic symbol instead
-        of the ionic symbol.
-
-    `~plasmapy.atomic.isotope_symbol` : returns the isotope symbol
-        instead of the ionic symbol.
-
-    `~plasmapy.atomic.particle_symbol` : returns the symbol of any valid
-        particle.
+    atomic_symbol, isotope_symbol, particle_symbol
 
     Examples
     --------
