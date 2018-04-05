@@ -5,7 +5,7 @@ Functions to calculate plasma parameters.
 
 from astropy import units as u
 
-# from plasmapy.atomic import ion_mass, integer_charge
+# from plasmapy.atomic import particle_mass, integer_charge
 
 import numpy as np
 # import warnings
@@ -80,7 +80,7 @@ def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg/u.
         rho = density
     elif density.unit.is_equivalent(u.m ** -3):
         if particle:
-            m_i = atomic.ion_mass(particle)
+            m_i = atomic.particle_mass(particle)
             Z = grab_charge(particle, z_mean)
             rho = density * m_i + Z * density * m_e
         else:
@@ -309,7 +309,7 @@ def ion_sound_speed(T_e,
 
     """
 
-    m_i = atomic.ion_mass(ion)
+    m_i = atomic.particle_mass(ion)
     Z = grab_charge(ion, z_mean)
 
     for gamma, particles in zip([gamma_e, gamma_i], ["electrons", "ions"]):
@@ -418,7 +418,7 @@ def thermal_speed(T, particle="e-", method="most_probable"):
     T = T.to(u.K, equivalencies=u.temperature_energy())
 
     try:
-        m = atomic.ion_mass(particle)
+        m = atomic.particle_mass(particle)
     except AtomicError:
         raise ValueError("Unable to find {particle} mass in thermal_speed")
 
@@ -727,7 +727,7 @@ def collision_rate_ion_ion(T_i, n_i, ion_particle,
     """
     from plasmapy.physics.transport.collisions import Coulomb_logarithm
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
-    m_i = atomic.ion_mass(ion_particle)
+    m_i = atomic.particle_mass(ion_particle)
     if V is not None:
         V = V
     else:
@@ -903,7 +903,7 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
     2799249007.6528206 Hz
 
     """
-    m_i = atomic.ion_mass(particle)
+    m_i = atomic.particle_mass(particle)
     Z = grab_charge(particle, Z)
     if not signed:
         Z = abs(Z)
@@ -1097,7 +1097,7 @@ def plasma_frequency(n, particle='e-', z_mean=None):
     """
 
     try:
-        m = atomic.ion_mass(particle)
+        m = atomic.particle_mass(particle)
         if z_mean is None:
             # warnings.warn("No z_mean given, defaulting to atomic charge",
             #               PhysicsWarning)
