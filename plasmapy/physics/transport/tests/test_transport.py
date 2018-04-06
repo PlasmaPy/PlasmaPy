@@ -546,37 +546,35 @@ class Test_classical_transport:
 
     def test_ion_thermal_conductivity_wrapper(self):
         with pytest.warns(RelativityWarning):
-            assert_quantity_allclose(ion_thermal_conductivity(T_e=self.T_e,
-                                                              n_e=self.n_e,
-                                                              T_i=self.T_i,
-                                                              n_i=self.n_i,
-                                                              ion_particle=self.ion_particle,
-                                                              Z=self.Z,
-                                                              B=self.B,
-                                                              model=self.model,
-                                                              field_orientation=self.field_orientation,
-                                                              mu=self.mu,
-                                                              theta=self.theta,
-                                                              ),
-                                     self.ct_wrapper.ion_thermal_conductivity())
-
+            wrapped = ion_thermal_conductivity(T_e=self.T_e,
+                                               n_e=self.n_e,
+                                               T_i=self.T_i,
+                                               n_i=self.n_i,
+                                               ion_particle=self.ion_particle,
+                                               Z=self.Z,
+                                               B=self.B,
+                                               model=self.model,
+                                               field_orientation=self.field_orientation,
+                                               mu=self.mu,
+                                               theta=self.theta,
+                                               )
+            assert_quantity_allclose(wrapped, self.ct_wrapper.ion_thermal_conductivity())
 
     def test_electron_thermal_conductivity_wrapper(self):
         with pytest.warns(RelativityWarning):
-            assert_quantity_allclose(electron_thermal_conductivity(T_e=self.T_e,
-                                                                   n_e=self.n_e,
-                                                                   T_i=self.T_i,
-                                                                   n_i=self.n_i,
-                                                                   ion_particle=self.ion_particle,
-                                                                   Z=self.Z,
-                                                                   B=self.B,
-                                                                   model=self.model,
-                                                                   field_orientation=self.field_orientation,
-                                                                   mu=self.mu,
-                                                                   theta=self.theta,
-                                                                   ),
-                                     self.ct_wrapper.electron_thermal_conductivity())
-
+            wrapped = electron_thermal_conductivity(T_e=self.T_e,
+                                                    n_e=self.n_e,
+                                                    T_i=self.T_i,
+                                                    n_i=self.n_i,
+                                                    ion_particle=self.ion_particle,
+                                                    Z=self.Z,
+                                                    B=self.B,
+                                                    model=self.model,
+                                                    field_orientation=self.field_orientation,
+                                                    mu=self.mu,
+                                                    theta=self.theta,
+                                                    )
+            assert_quantity_allclose(wrapped, self.ct_wrapper.electron_thermal_conductivity())
 
     def test_ion_viscosity_wrapper(self):
         with pytest.warns(RelativityWarning):
