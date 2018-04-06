@@ -604,35 +604,43 @@ def collision_rate_electron_ion(T_e,
     <Quantity 5812633.74935004 1 / s>
 
     """
-    from plasmapy.physics.transport.collisions import Coulomb_logarithm
+    from plasmapy.physics.transport.collisions import (Coulomb_logarithm,
+                                                       collision_frequency)
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
-    if V is not None:
-        V = V
+    if V:
+        pass
     else:
         # electron thermal velocity (most probable)
         V = np.sqrt(2 * k_B * T_e / m_e)
 
-    if coulomb_log is not None:
-        coulomb_log_val = coulomb_log
-    else:
-        particles = ['e', ion_particle]
-        coulomb_log_val = Coulomb_logarithm(T_e,
-                                            n_e,
-                                            particles,
-                                            V,
-                                            method=coulomb_log_method)
-    # this is the same as b_perp in collisions.py, using most probable thermal velocity for V
-    # and using ion mass instead of reduced mass
-    bperp = e ** 2 / (4 * np.pi * eps0 * m_e * V ** 2)
-    # collisional cross-section
-    sigma = np.pi * (2 * bperp) ** 2
-    # collisional frequency with Coulomb logarithm to correct for small angle collisions
-    nu = n_e * sigma * V * coulomb_log_val
-    # this coefficient is the constant that pops out when comparing this definition of
-    # collisional frequency to the one in collisions.py
+#    particles = [ion_particle, 'e-']
+    particles = [ion_particle, 'e']
+    Z_i = atomic.integer_charge(ion_particle)
+    nu = collision_frequency(T_e,
+                             n_e,
+                             particles,
+                             z_mean=Z_i,
+                             V=V,
+                             method=coulomb_log_method
+                             )
     coeff = 4 / np.sqrt(np.pi) / 3
-    # collisional frequency modified by the constant difference
-    nu_e = coeff * nu
+
+
+    # accounting for when a Coulomb logarithm value is passed
+    if coulomb_log is not None:
+        cLog = Coulomb_logarithm(T_e,
+                                 n_e,
+                                 particles,
+                                 z_mean=Z_i,
+                                 V=V, # probably needs to be enabled!
+                                 method=coulomb_log_method)
+        # dividing out by typical Coulomb logarithm value implicit in
+        # the collision frequency calculation and replacing with
+        # the user defined Coulomb logarithm value
+        nu_mod = nu * coulomb_log / cLog
+        nu_e = coeff * nu_mod
+    else:
+        nu_e = coeff * nu
     return nu_e.to(1 / u.s)
 
 
