@@ -1142,3 +1142,25 @@ class Particle:
 
         """
         return self == "e-"
+
+
+    @property
+    def is_ion(self) -> bool:
+        """
+        Return `True` if the particle is an ion, and `False`
+        otherwise.
+
+        Examples
+        --------
+        >>> Particle('D+').is_ion
+        True
+        >>> Particle('H-1 0+').is_ion
+        False
+        >>> Particle('e+').is_ion
+        False
+
+        """
+        if self.element and self._attributes['integer charge']:
+            return True
+        else:
+            return False
