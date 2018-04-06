@@ -601,7 +601,7 @@ def collision_rate_electron_ion(T_e,
     >>> collision_rate_electron_ion(0.1*u.eV, 1e6/u.m**3, 'p', V = c/100)
     <Quantity 4.41166015e-07 1 / s>
     >>> collision_rate_electron_ion(100*u.eV, 1e20/u.m**3, 'p', coulomb_log = 20)
-    <Quantity 5812633.74935004 1 / s>
+    <Quantity 5812633.74935003 1 / s>
 
     """
     from plasmapy.physics.transport.collisions import (Coulomb_logarithm,
@@ -627,12 +627,12 @@ def collision_rate_electron_ion(T_e,
 
 
     # accounting for when a Coulomb logarithm value is passed
-    if coulomb_log is not None:
+    if coulomb_log:
         cLog = Coulomb_logarithm(T_e,
                                  n_e,
                                  particles,
                                  z_mean=Z_i,
-                                 V=V, # probably needs to be enabled!
+                                 V=np.nan, # probably needs to be enabled!
                                  method=coulomb_log_method)
         # dividing out by typical Coulomb logarithm value implicit in
         # the collision frequency calculation and replacing with
