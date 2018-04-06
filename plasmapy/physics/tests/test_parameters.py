@@ -4,6 +4,7 @@
 import numpy as np
 import pytest
 from astropy import units as u
+from astropy.tests.helper import assert_quantity_allclose
 from warnings import simplefilter
 
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
@@ -786,15 +787,15 @@ def test_magnetic_energy_density():
 
     assert magnetic_energy_density(B_arr).unit.is_equivalent(u.J / u.m ** 3)
 
-    assert str(magnetic_energy_density(B).unit) == 'J / m3'
+    assert magnetic_energy_density(B).unit.is_equivalent('J / m3')
 
     assert magnetic_energy_density(B).value == magnetic_pressure(B).value
 
-    assert magnetic_energy_density(2 * B) == 4 * magnetic_energy_density(B)
+    assert_quantity_allclose(magnetic_energy_density(2 * B), 4 * magnetic_energy_density(B))
 
-    assert np.isclose(magnetic_energy_density(B).value, 397887.35772973835)
+    assert_quantity_allclose(magnetic_energy_density(B).value, 397887.35772973835)
 
-    assert magnetic_energy_density(B) == magnetic_energy_density(B.to(u.G))
+    assert_quantity_allclose(magnetic_energy_density(B), magnetic_energy_density(B.to(u.G)))
 
     # TODO Add an array test!
 
