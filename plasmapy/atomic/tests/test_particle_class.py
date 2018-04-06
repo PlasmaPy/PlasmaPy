@@ -487,6 +487,7 @@ nuclide_mass_and_mass_equiv_table = [
     ('n', 'neutron'),
     ('p+', 'proton'),
     ('H-1', 'p+'),
+    ('H-1 0+', 'p+'),
     ('D', 'D+'),
     ('T', 'T+'),
     ('He-4', 'alpha'),
@@ -508,7 +509,8 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
     Isotope = Particle(isotope)
     Ion = Particle(ion)
 
-    if Isotope.particle == Ion.particle and Isotope.particle in ('n', 'p+'):
+    if Isotope.categories & {'isotope', 'baryon'} and Ion.categories & {'ion', 'baryon'}:
+
         particle = Isotope.particle
 
         assert Isotope.nuclide_mass == Ion.mass, (

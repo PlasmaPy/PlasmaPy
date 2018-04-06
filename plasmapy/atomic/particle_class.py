@@ -642,14 +642,14 @@ class Particle:
 
         """
 
-        if self.particle in ['H-1', 'p+']:
+        if self.isotope == 'H-1':
             return const.m_p
+        elif self.isotope == 'D':
+            return _special_ion_masses['D 1+']
+        elif self.isotope == 'T':
+            return _special_ion_masses['T 1+']
         elif self.particle == 'n':
             return const.m_n
-        elif self.particle in ['D', 'D 1+']:
-            return _special_ion_masses['D 1+']
-        elif self.particle in ['T', 'T 1+']:
-            return _special_ion_masses['T 1+']
 
         if not self.isotope:
             raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
