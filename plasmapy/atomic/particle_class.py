@@ -1156,7 +1156,6 @@ class Particle:
         """
         return self == "e-"
 
-
     @property
     def is_ion(self) -> bool:
         """
