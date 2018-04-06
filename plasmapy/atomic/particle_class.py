@@ -140,7 +140,8 @@ class Particle:
         not available.
 
     `~plasmapy.utils.AtomicError`
-        Raised for attempts at converting a Particle object to a `bool`.
+        Raised for attempts at converting a
+        `~plasmapy.atomic.Particle` object to a `bool`.
 
     Examples
     --------
@@ -154,21 +155,28 @@ class Particle:
     >>> positron = Particle('positron')
     >>> hydrogen = Particle(1)  # atomic number
 
-    The `particle` attribute returns the particle's symbol in
-    the standard form.
+    The `particle` attribute returns the particle's symbol in the
+    standard form.
 
-    >>> positron.particle
+    >>> positron.particle_symbol
     'e+'
 
-    The `element`, `isotope`, and `ion` attributes return the symbols
-    for each of these different types of particles.
+    The `atomic_symbol`, `isotope_symbol`, and `ionic_symbol` attributes
+    return the symbols for each of these different types of particles.
 
-    >>> proton.element
+    >>> proton.atomic_symbol
     'H'
-    >>> alpha.isotope
+    >>> alpha.isotope_symbol
     'He-4'
-    >>> deuteron.ion
+    >>> deuteron.ionic_symbol
     'D 1+'
+
+    The `ionic_symbol` attribute works for neutral atoms if charge
+    information is available.
+
+    >>> deuterium = Particle("D", Z=0)
+    >>> deuterium.ionic_symbol
+    'D 0+'
 
     If the particle doesn't belong to one of those categories, then
     these attributes return `None`.
@@ -181,7 +189,7 @@ class Particle:
 
     >>> True if Particle('e-').element else False
     False
-    >>> True if Particle('alpha').ion else False
+    >>> True if Particle('alpha').ionic_symbol else False
     True
 
     Many of the attributes return physical properties of a particle.
@@ -524,16 +532,19 @@ class Particle:
         return self._attributes['isotope']
 
     @property
-    def ion(self) -> Optional[str]:
+    def ionic_symbol(self) -> Optional[str]:
         """
-        Return the ion symbol if the particle corresponds to an ion,
-        and `None` otherwise.
+        Return the ionic symbol if the particle corresponds to an ion or
+        neutral atom, and `None` otherwise.
 
         Examples
         --------
         >>> deuteron = Particle('deuteron')
-        >>> deuteron.ion
+        >>> deuteron.ionic_symbol
         'D 1+'
+        >>> hydrogen_atom = Particle('H', Z=0)
+        >>> hydrogen_atom.ionic_symbol
+        'H 0+'
 
         """
         return self._attributes['ion']
@@ -616,7 +627,7 @@ class Particle:
         <Quantity 2.65669641e-26 kg>
 
         """
-        if self.isotope or self.ion or not self.element:
+        if self.isotope or self.is_ion or not self.element:
             raise InvalidElementError(_category_errmsg(self, 'element'))
         if self._attributes['standard atomic weight'] is None:  # coveralls: ignore
             raise MissingAtomicDataError(
@@ -703,7 +714,7 @@ class Particle:
         if self._attributes['mass'] is not None:
             return self._attributes['mass'].to(u.kg)
 
-        if self.ion:
+        if self.is_ion:
 
             if self.isotope:
                 base_mass = self._attributes['isotope mass']
