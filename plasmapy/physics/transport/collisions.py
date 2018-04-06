@@ -633,15 +633,19 @@ def collision_frequency(T,
     .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
     """
     # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
+    T, masses, charges, reduced_mass, V_red = _boilerPlate(T=T,
+                                                           particles=particles,
+                                                           V=V)
     if particles[0] in ('e','e-') and particles[1] in ('e','e-'):
+        # if a velocity was passed, we use that instead of the reduced
+        # thermal velocity
+        if np.isnan(V):
+            V = V_red
         # electron-electron collision
         # impact parameter for 90 degree collision
         bPerp = b_perp(T=T,
                        particles=particles,
-                       V=V)
+                       V=V_red)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T,
                                     n,
@@ -653,10 +657,9 @@ def collision_frequency(T,
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
-        if V:
-            # making sure that user definted velocity is correctly passed
-            pass
-        else:
+        if np.isnan(V):
+            # we ignore the reduced velocity and use the electron thermal
+            # velocity instead
             V = np.sqrt(2 * k_B * T / m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
@@ -673,6 +676,10 @@ def collision_frequency(T,
                                     V=np.nan * u.m / u.s,
                                     method=method)
     else:
+        # if a velocity was passed, we use that instead of the reduced
+        # thermal velocity
+        if np.isnan(V):
+            V = V_red
         # ion-ion collision
         bPerp = b_perp(T=T,
                        particles=particles,
@@ -775,17 +782,13 @@ def mean_free_path(T,
     >>> mean_free_path(T, n, particles)
     <Quantity 7.8393631 m>
     >>> mean_free_path(T, n, particles, V=1e6*u.m/u.s)
-    <Quantity 1.42347709 m>
+    <Quantity 0.00852932 m>
 
     References
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
     # collisional frequency
     freq = collision_frequency(T=T,
                                n=n_e,
@@ -793,6 +796,14 @@ def mean_free_path(T,
                                z_mean=z_mean,
                                V=V,
                                method=method)
+    # boiler plate to fetch velocity
+    # this has been moved to after collision_frequency to avoid use of
+    # reduced mass thermal velocity in electron-ion collision case.
+    # Should be fine since collision_frequency has its own boiler_plate
+    # check, and we are only using this here to get the velocity.
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
     # mean free path length
     mfp = V / freq
     return mfp.to(u.m)
@@ -890,7 +901,7 @@ def Spitzer_resistivity(T,
     >>> Spitzer_resistivity(T, n, particles)
     <Quantity 2.4916169e-06 m Ohm>
     >>> Spitzer_resistivity(T, n, particles, V=1e6*u.m/u.s)
-    <Quantity 2.4916169e-06 m Ohm>
+    <Quantity 0.00041583 m Ohm>
 
     References
     ----------
@@ -899,10 +910,6 @@ def Spitzer_resistivity(T,
     .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
     # collisional frequency
     freq = collision_frequency(T=T,
                                n=n,
@@ -910,6 +917,11 @@ def Spitzer_resistivity(T,
                                z_mean=z_mean,
                                V=V,
                                method=method)
+    # boiler plate checks
+    # fetching additional parameters
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
     if np.isnan(z_mean):
         spitzer = freq * reduced_mass / (n * charges[0] * charges[1])
     else:
@@ -1008,22 +1020,25 @@ def mobility(T,
     >>> mobility(T, n, particles)
     <Quantity 250500.35318738 m2 / (s V)>
     >>> mobility(T, n, particles, V=1e6*u.m/u.s)
-    <Quantity 250500.35318738 m2 / (s V)>
+    <Quantity 1500.97042427 m2 / (s V)>
 
     References
     ----------
     .. [1] https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
     freq = collision_frequency(T=T,
                                n=n_e,
                                particles=particles,
                                z_mean=z_mean,
                                V=V,
                                method=method)
+    # boiler plate checks
+    # we do this after collision_frequency since collision_frequency
+    # already has a boiler_plate check and we are doing this just
+    # to recover the charges, mass, etc.
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
     if np.isnan(z_mean):
         z_val = (charges[0] + charges[1]) / 2
     else:
@@ -1125,7 +1140,7 @@ def Knudsen_number(characteristic_length,
     >>> Knudsen_number(L, T, n, particles)
     <Quantity 7839.36310417>
     >>> Knudsen_number(L, T, n, particles, V=1e6*u.m/u.s)
-    <Quantity 1423.47708879>
+    <Quantity 8.52931736>
 
     References
     ----------
