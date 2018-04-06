@@ -23,7 +23,6 @@ We thus have:
 * `plasmapy.physics.quantum` contains functionality for degenerate, cold and dense plasmas for which quantum effects are important
 * `plasmapy.physics.relativity` provides ample room for the Lorentz factor.
 
-waht iz upp
 We also have a `plasmapy.physics.transport` subpackage, as transport and collision theory turn out to be large enough and sufficiently 
 self-contained to warrant their own modules.
 
