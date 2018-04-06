@@ -9,7 +9,8 @@ from .. mathematics import Fermi_integral
 
 
 class Test_Fermi_integral:
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """Initialize parameters for tests."""
         self.arg1 = 3.889780
         self.True1 = (6.272518847136373 - 8.673617379884035e-19j)

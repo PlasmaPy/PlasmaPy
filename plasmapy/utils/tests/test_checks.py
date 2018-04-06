@@ -222,8 +222,8 @@ def test_check_quantity_decorator_two_args_one_kwargs_not_default():
 # (speed, betafrac)
 non_relativistic_speed_examples = [
     (0 * u.m / u.s, 0.1),
-    (0.099999 * c, 0.1),
-    (-0.09 * c, 0.1),
+    (0.0099999 * c, 0.1),
+    (-0.009 * c, 0.1),
     (5 * u.AA / u.Gyr, 0.1)
 ]
 

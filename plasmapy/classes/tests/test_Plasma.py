@@ -98,7 +98,8 @@ def test_Plasma3D_derived_vars():
 
 
 class Test_PlasmaBlob():
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T_e = 5 * 11e3 * u.K
         self.n_e = 1e23 * u.cm ** -3

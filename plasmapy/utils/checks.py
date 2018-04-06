@@ -171,10 +171,11 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
     Examples
     --------
     >>> from astropy import units as u
+    >>> import pytest
     >>> _check_quantity(4*u.T, 'B', 'f', u.T)
     <Quantity 4. T>
-    >>> _check_quantity(4, 'B', 'f', u.T)
-    <Quantity 4. T>
+    >>> with pytest.warns(u.UnitsWarning, match="No units are specified"):
+    ...     assert _check_quantity(4, 'B', 'f', u.T) == 4 * u.T
 
     """
 
