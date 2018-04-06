@@ -21,6 +21,7 @@ from ...utils import (
 from ..atomic import known_isotopes
 from ..isotopes import _Isotopes
 from ..particle_class import Particle
+from ..special_particles import ParticleZoo
 
 # (arg, kwargs, results_dict
 test_Particle_table = [
@@ -564,3 +565,32 @@ def test_particle_is_electron(p, is_one):
 def test_particle_bool_error():
     with pytest.raises(AtomicError):
         bool(Particle('e-'))
+
+
+def test_particle_inversion():
+    """
+    Test that the unary operator finds the antiparticle of all special
+    particles and antiparticles.
+    """
+
+    for particle_symb in ParticleZoo.everything:
+
+        particle = Particle(particle_symb)
+
+        try:
+            opposite = ~particle
+        except Exception:
+            raise InvalidParticleError(
+                "The unary operator is unable to find the antiparticle "
+                f"of {particle}.")
+
+        assert particle.integer_charge == -opposite.integer_charge, \
+            (f"The charges of {particle} and {opposite} are not "
+             f"opposites, which indicates that there is a problem "
+             f"using the unary operator to find the antiparticle of "
+             f"{particle}.")
+
+        assert particle._attributes['mass'] == opposite._attributes['mass'], \
+            (f"The masses of {particle} and {opposite} are not equal, "
+             f"which indicates that there is a problem using the unary "
+             f"operator to find the antiparticle of {particle}.")

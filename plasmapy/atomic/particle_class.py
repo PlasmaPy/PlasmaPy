@@ -184,12 +184,14 @@ class Particle:
     >>> positron.element is None
     True
 
-    These attributes may therefore be used to test whether or not a
-    particle is an element, isotope, or ion.
+    The attributes of a `~plasmapy.atomic.Particle` instance may be used
+    to test whether or not a particle is an element, isotope, or ion.
 
-    >>> True if Particle('e-').element else False
+    >>> True if positron.element else False
     False
-    >>> True if Particle('alpha').ionic_symbol else False
+    >>> True if deuterium.isotope else False
+    True
+    >>> True if Particle('alpha').is_ion else False
     True
 
     Many of the attributes return physical properties of a particle.
@@ -214,6 +216,14 @@ class Particle:
     0
     >>> alpha.neutron_number
     2
+
+    The unary operator `~` may be used to return the antiparticle of a
+    `~plasmapy.atomic.Particle` instance.
+
+    >>> ~electron
+    Particle('e+')
+    >>> ~proton
+    Particle('p-')
 
     The `~plasmapy.atomic.particle_class.Particle.categories` attribute
     and `~plasmapy.atomic.particle_class.Particle.is_category` method
@@ -487,6 +497,35 @@ class Particle:
         do not have a truth value.
         """
         raise AtomicError("The truthiness of a Particle object is not defined.")
+
+    def __invert__(self):
+        """
+        Return the corresponding antiparticle, or raise an
+        `~plasmapy.utils.AtomicError` if the particle is not an
+        elementary particle.
+        """
+        if self.element and self != 'p+':
+            raise AtomicError(
+                "The unary operator can only be used for elementary particles and antiparticles.")
+
+        old_particle = self.particle
+
+        if old_particle == 'n':
+            return Particle('antineutron')
+
+        elif '-' in old_particle:
+            return Particle(old_particle.replace('-', '+'))
+        elif '+' in old_particle:
+            return Particle(old_particle.replace('+', '-'))
+        elif 'anti_' in old_particle:
+            return Particle(old_particle.replace('anti_', ''))
+        elif 'anti' in old_particle:
+            return Particle(old_particle.replace('anti', ''))
+        else:
+            try:
+                return Particle('anti' + old_particle)
+            except InvalidParticleError:
+                return Particle('anti_' + old_particle)
 
     @property
     def particle(self) -> str:
