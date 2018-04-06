@@ -16,7 +16,8 @@ from plasmapy.constants import m_p, m_e, c
 
 
 class Test_Coulomb_logarithm:
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.temperature1 = 10 * 11604 * u.K
         self.density1 = 1e20 * u.cm ** -3
@@ -473,7 +474,8 @@ class Test_Coulomb_logarithm:
 
 
 class Test_b_perp:
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
         self.particles = ('e', 'p')
@@ -520,7 +522,8 @@ class Test_b_perp:
 
 
 class Test_impact_parameter:
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
@@ -583,7 +586,8 @@ class Test_impact_parameter:
 
 
 class Test_collision_frequency:
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
         self.n = 1e17 * u.cm ** -3
@@ -696,7 +700,8 @@ class Test_collision_frequency:
 
 
 class Test_mean_free_path:
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
@@ -747,7 +752,8 @@ class Test_mean_free_path:
 
 
 class Test_Spitzer_resistivity:
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
         self.n = 1e12 * u.cm ** -3
@@ -813,7 +819,8 @@ class Test_Spitzer_resistivity:
 
 
 class Test_mobility:
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
@@ -882,7 +889,8 @@ class Test_mobility:
 
 
 class Test_Knudsen_number:
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.length = 1 * u.nm
         self.T = 11604 * u.K
@@ -936,7 +944,8 @@ class Test_Knudsen_number:
 
 
 class Test_coupling_parameter:
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
         self.n_e = 1e21 * u.cm ** -3

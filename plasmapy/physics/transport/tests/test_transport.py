@@ -53,8 +53,8 @@ def count_decimal_places(digits):
 
 # test class for classical_transport class:
 class Test_classical_transport:
-
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """set up some initial values for tests"""
         u.set_enabled_equivalencies(u.temperature_energy())
         self.T_e = 1000 * u.eV
@@ -75,39 +75,40 @@ class Test_classical_transport:
         self.theta = self.T_e / self.T_i
         self.model = 'Braginskii'
         self.field_orientation = 'all'
-        self.ct = classical_transport(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion_particle=self.ion_particle,
-            Z=self.Z,
-            B=self.B,
-            model=self.model,
-            field_orientation=self.field_orientation,
-            coulomb_log_ei=self.coulomb_log_val_ei,
-            coulomb_log_ii=self.coulomb_log_val_ii,
-            V_ei=self.V_ei,
-            V_ii=self.V_ii,
-            hall_e=self.hall_e,
-            hall_i=self.hall_i,
-            mu=self.mu,
-            theta=self.theta,
-            )
-        self.ct_wrapper = classical_transport(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion_particle=self.ion_particle,
-            Z=self.Z,
-            B=self.B,
-            model=self.model,
-            field_orientation=self.field_orientation,
-            mu=self.mu,
-            theta=self.theta,
-            )
-        self.all_variables = self.ct.all_variables()
+        with pytest.warns(RelativityWarning):
+            self.ct = classical_transport(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion_particle=self.ion_particle,
+                Z=self.Z,
+                B=self.B,
+                model=self.model,
+                field_orientation=self.field_orientation,
+                coulomb_log_ei=self.coulomb_log_val_ei,
+                coulomb_log_ii=self.coulomb_log_val_ii,
+                V_ei=self.V_ei,
+                V_ii=self.V_ii,
+                hall_e=self.hall_e,
+                hall_i=self.hall_i,
+                mu=self.mu,
+                theta=self.theta,
+                )
+            self.ct_wrapper = classical_transport(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion_particle=self.ion_particle,
+                Z=self.Z,
+                B=self.B,
+                model=self.model,
+                field_orientation=self.field_orientation,
+                mu=self.mu,
+                theta=self.theta,
+                )
+            self.all_variables = self.ct.all_variables()
 
     def test_spitzer_vs_formulary(self):
         """Spitzer resistivity should agree with approx. in NRL formulary"""
@@ -636,8 +637,8 @@ def test_nondim_viscosity_unrecognized_model(particle):
 
 # test class for _nondim_tc_e_braginskii function:
 class Test__nondim_tc_e_braginskii:
-
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """set up some initial values for tests"""
         self.big_hall = 1000
         self.small_hall = 0
@@ -699,8 +700,8 @@ class Test__nondim_tc_e_braginskii:
 
 # test class for _nondim_tc_i_braginskii function:
 class Test__nondim_tc_i_braginskii:
-
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """set up some initial values for tests"""
         self.big_hall = 1000
         self.small_hall = 0
@@ -737,8 +738,8 @@ class Test__nondim_tc_i_braginskii:
 
 # test class for _nondim_tec_braginskii function:
 class Test__nondim_tec_braginskii:
-
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """set up some initial values for tests"""
         self.big_hall = 1000
         self.small_hall = 0
@@ -775,8 +776,8 @@ class Test__nondim_tec_braginskii:
 
 # test class for _nondim_resist_braginskii function:
 class Test__nondim_resist_braginskii:
-
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """set up some initial values for tests"""
         self.big_hall = 1000
         self.small_hall = 0
@@ -813,8 +814,8 @@ class Test__nondim_resist_braginskii:
 
 # test class for _nondim_visc_i_braginskii function:
 class Test__nondim_visc_i_braginskii:
-
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """set up some initial values for tests"""
         self.big_hall = 1000
         self.small_hall = 0
@@ -840,8 +841,8 @@ class Test__nondim_visc_i_braginskii:
 
 # test class for _nondim_visc_e_braginskii function:
 class Test__nondim_visc_e_braginskii:
-
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """set up some initial values for tests"""
         self.big_hall = 1000
         self.small_hall = 0

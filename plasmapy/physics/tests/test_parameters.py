@@ -326,7 +326,8 @@ def test_thermal_speed():
 
 
 class Test_kappa_thermal_speed(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T_e = 5 * u.eV
         self.kappaInvalid = 3 / 2

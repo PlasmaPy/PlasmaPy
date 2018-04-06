@@ -19,7 +19,8 @@ from ..parameters import (thermal_speed,
 
 
 class Test_Maxwellian_1D(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T_e = 30000 * u.K
         self.v = 1e5 * u.m / u.s
@@ -218,7 +219,8 @@ class Test_Maxwellian_1D(object):
 
 # test class for Maxwellian_speed_1D function
 class Test_Maxwellian_speed_1D(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 1.0 * u.eV
         self.particle = 'H'
@@ -349,7 +351,8 @@ class Test_Maxwellian_speed_1D(object):
 
 # test class for Maxwellian_velocity_3D function
 class Test_Maxwellian_velocity_3D(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 1.0 * u.eV
         self.particle = 'H'
@@ -525,7 +528,8 @@ class Test_Maxwellian_velocity_3D(object):
 
 # test class for Maxwellian_speed_3D function
 class Test_Maxwellian_speed_3D(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 1.0 * u.eV
         self.particle = 'H'
@@ -702,7 +706,8 @@ class Test_Maxwellian_speed_3D(object):
 
 # test class for kappa_velocity_1D function:
 class Test_kappa_velocity_1D(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T_e = 30000 * u.K
         self.kappa = 4
@@ -930,7 +935,8 @@ class Test_kappa_velocity_1D(object):
 
 # test class for kappa_velocity_3D function
 class Test_kappa_velocity_3D(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 1.0 * u.eV
         self.kappa = 4
