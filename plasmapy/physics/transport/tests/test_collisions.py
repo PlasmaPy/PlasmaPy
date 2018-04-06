@@ -11,7 +11,7 @@ from plasmapy.physics.transport import (Coulomb_logarithm,
                                         Knudsen_number,
                                         coupling_parameter)
 from plasmapy.physics.transport.collisions import Spitzer_resistivity
-from plasmapy.utils import RelativityWarning, RelativityError
+from plasmapy.utils import RelativityWarning, RelativityError, PhysicsWarning
 from plasmapy.constants import m_p, m_e, c
 
 
@@ -139,7 +139,8 @@ class Test_Coulomb_logarithm:
         # velocity. Chen uses v**2 = k * T / m  whereas we use
         # v ** 2 = 2 * k * T / m
         lnLambdaChen = 6.8 + np.log(2)
-        lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
+        with pytest.warns(RelativityWarning):
+            lnLambda = Coulomb_logarithm(T, n, ('e', 'p'))
         testTrue = np.isclose(lnLambda,
                               lnLambdaChen,
                               rtol=1e-1,
@@ -153,12 +154,13 @@ class Test_Coulomb_logarithm:
         Test for first version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        methodVal = Coulomb_logarithm(self.temperature1,
-                                      self.density1,
-                                      self.particles,
-                                      z_mean=np.nan * u.dimensionless_unscaled,
-                                      V=np.nan * u.m / u.s,
-                                      method="GMS-1")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(self.temperature1,
+                                          self.density1,
+                                          self.particles,
+                                          z_mean=np.nan * u.dimensionless_unscaled,
+                                          V=np.nan * u.m / u.s,
+                                          method="GMS-1")
         testTrue = np.isclose(methodVal,
                               self.gms1,
                               rtol=1e-15,
@@ -173,12 +175,13 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        methodVal = Coulomb_logarithm(self.temperature2,
-                                      self.density2,
-                                      self.particles,
-                                      z_mean=np.nan * u.dimensionless_unscaled,
-                                      V=np.nan * u.m / u.s,
-                                      method="GMS-1")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(self.temperature2,
+                                          self.density2,
+                                          self.particles,
+                                          z_mean=np.nan * u.dimensionless_unscaled,
+                                          V=np.nan * u.m / u.s,
+                                          method="GMS-1")
         testTrue = np.isclose(methodVal,
                               self.gms1_negative,
                               rtol=1e-15,
@@ -192,12 +195,13 @@ class Test_Coulomb_logarithm:
         Test for second version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        methodVal = Coulomb_logarithm(self.temperature1,
-                                      self.density1,
-                                      self.particles,
-                                      z_mean=self.z_mean,
-                                      V=np.nan * u.m / u.s,
-                                      method="GMS-2")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(self.temperature1,
+                                          self.density1,
+                                          self.particles,
+                                          z_mean=self.z_mean,
+                                          V=np.nan * u.m / u.s,
+                                          method="GMS-2")
         testTrue = np.isclose(methodVal,
                               self.gms2,
                               rtol=1e-15,
@@ -212,12 +216,13 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        methodVal = Coulomb_logarithm(self.temperature2,
-                                      self.density2,
-                                      self.particles,
-                                      z_mean=self.z_mean,
-                                      V=np.nan * u.m / u.s,
-                                      method="GMS-2")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(self.temperature2,
+                                          self.density2,
+                                          self.particles,
+                                          z_mean=self.z_mean,
+                                          V=np.nan * u.m / u.s,
+                                          method="GMS-2")
         testTrue = np.isclose(methodVal,
                               self.gms2_negative,
                               rtol=1e-15,
@@ -231,12 +236,13 @@ class Test_Coulomb_logarithm:
         Test for third version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        methodVal = Coulomb_logarithm(self.temperature1,
-                                      self.density1,
-                                      self.particles,
-                                      z_mean=self.z_mean,
-                                      V=np.nan * u.m / u.s,
-                                      method="GMS-3")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(self.temperature1,
+                                          self.density1,
+                                          self.particles,
+                                          z_mean=self.z_mean,
+                                          V=np.nan * u.m / u.s,
+                                          method="GMS-3")
         testTrue = np.isclose(methodVal,
                               self.gms3,
                               rtol=1e-15,
@@ -252,12 +258,13 @@ class Test_Coulomb_logarithm:
         a positive value is returned whereas the classical Coulomb
         logarithm would return a negative value.
         """
-        methodVal = Coulomb_logarithm(self.temperature2,
-                                      self.density2,
-                                      self.particles,
-                                      z_mean=self.z_mean,
-                                      V=np.nan * u.m / u.s,
-                                      method="GMS-3")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(self.temperature2,
+                                          self.density2,
+                                          self.particles,
+                                          z_mean=self.z_mean,
+                                          V=np.nan * u.m / u.s,
+                                          method="GMS-3")
         testTrue = np.isclose(methodVal,
                               self.gms3_negative,
                               rtol=1e-15,
@@ -271,12 +278,13 @@ class Test_Coulomb_logarithm:
         Test for fourth version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        methodVal = Coulomb_logarithm(self.temperature1,
-                                      self.density1,
-                                      self.particles,
-                                      z_mean=self.z_mean,
-                                      V=np.nan * u.m / u.s,
-                                      method="GMS-4")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(self.temperature1,
+                                          self.density1,
+                                          self.particles,
+                                          z_mean=self.z_mean,
+                                          V=np.nan * u.m / u.s,
+                                          method="GMS-4")
         testTrue = np.isclose(methodVal,
                               self.gms4,
                               rtol=1e-15,
@@ -292,12 +300,13 @@ class Test_Coulomb_logarithm:
         a positive value is returned whereas the classical Coulomb
         logarithm would return a negative value.
         """
-        methodVal = Coulomb_logarithm(self.temperature2,
-                                      self.density2,
-                                      self.particles,
-                                      z_mean=self.z_mean,
-                                      V=np.nan * u.m / u.s,
-                                      method="GMS-4")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(self.temperature2,
+                                          self.density2,
+                                          self.particles,
+                                          z_mean=self.z_mean,
+                                          V=np.nan * u.m / u.s,
+                                          method="GMS-4")
         testTrue = np.isclose(methodVal,
                               self.gms4_negative,
                               rtol=1e-15,
@@ -311,12 +320,13 @@ class Test_Coulomb_logarithm:
         Test for fifth version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        methodVal = Coulomb_logarithm(self.temperature1,
-                                      self.density1,
-                                      self.particles,
-                                      z_mean=self.z_mean,
-                                      V=np.nan * u.m / u.s,
-                                      method="GMS-5")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(self.temperature1,
+                                          self.density1,
+                                          self.particles,
+                                          z_mean=self.z_mean,
+                                          V=np.nan * u.m / u.s,
+                                          method="GMS-5")
         testTrue = np.isclose(methodVal,
                               self.gms5,
                               rtol=1e-15,
@@ -332,12 +342,13 @@ class Test_Coulomb_logarithm:
         a positive value is returned whereas the classical Coulomb
         logarithm would return a negative value.
         """
-        methodVal = Coulomb_logarithm(self.temperature2,
-                                      self.density2,
-                                      self.particles,
-                                      z_mean=self.z_mean,
-                                      V=np.nan * u.m / u.s,
-                                      method="GMS-5")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(self.temperature2,
+                                          self.density2,
+                                          self.particles,
+                                          z_mean=self.z_mean,
+                                          V=np.nan * u.m / u.s,
+                                          method="GMS-5")
         testTrue = np.isclose(methodVal,
                               self.gms5_negative,
                               rtol=1e-15,
@@ -351,12 +362,13 @@ class Test_Coulomb_logarithm:
         Test for sixth version of Coulomb logarithm from Gericke,
         Murillo, and Schlanges PRE (2002).
         """
-        methodVal = Coulomb_logarithm(self.temperature1,
-                                      self.density1,
-                                      self.particles,
-                                      z_mean=self.z_mean,
-                                      V=np.nan * u.m / u.s,
-                                      method="GMS-6")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(self.temperature1,
+                                          self.density1,
+                                          self.particles,
+                                          z_mean=self.z_mean,
+                                          V=np.nan * u.m / u.s,
+                                          method="GMS-6")
         testTrue = np.isclose(methodVal,
                               self.gms6,
                               rtol=1e-15,
@@ -372,12 +384,13 @@ class Test_Coulomb_logarithm:
         a positive value is returned whereas the classical Coulomb
         logarithm would return a negative value.
         """
-        methodVal = Coulomb_logarithm(self.temperature2,
-                                      self.density2,
-                                      self.particles,
-                                      z_mean=self.z_mean,
-                                      V=np.nan * u.m / u.s,
-                                      method="GMS-6")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(self.temperature2,
+                                          self.density2,
+                                          self.particles,
+                                          z_mean=self.z_mean,
+                                          V=np.nan * u.m / u.s,
+                                          method="GMS-6")
         testTrue = np.isclose(methodVal,
                               self.gms6_negative,
                               rtol=1e-15,
@@ -588,12 +601,13 @@ class Test_collision_frequency:
         """
         Test for known value.
         """
-        methodVal = collision_frequency(self.T,
-                                        self.n,
-                                        self.particles,
-                                        z_mean=np.nan * u.dimensionless_unscaled,
-                                        V=np.nan * u.m / u.s,
-                                        method="classical")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = collision_frequency(self.T,
+                                            self.n,
+                                            self.particles,
+                                            z_mean=np.nan * u.dimensionless_unscaled,
+                                            V=np.nan * u.m / u.s,
+                                            method="classical")
         testTrue = np.isclose(self.True1,
                               methodVal.si.value,
                               rtol=1e-1,
@@ -608,12 +622,13 @@ class Test_collision_frequency:
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 * (1 + 1e-15)
-        methodVal = collision_frequency(self.T,
-                                        self.n,
-                                        self.particles,
-                                        z_mean=np.nan * u.dimensionless_unscaled,
-                                        V=np.nan * u.m / u.s,
-                                        method="classical")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = collision_frequency(self.T,
+                                            self.n,
+                                            self.particles,
+                                            z_mean=np.nan * u.dimensionless_unscaled,
+                                            V=np.nan * u.m / u.s,
+                                            method="classical")
         testTrue = not np.isclose(methodVal.si.value,
                                   fail1,
                                   rtol=1e-16,
@@ -626,12 +641,13 @@ class Test_collision_frequency:
         """
         Testing collision frequency between electrons.
         """
-        methodVal = collision_frequency(self.T,
-                                        self.n,
-                                        self.electrons,
-                                        z_mean=np.nan * u.dimensionless_unscaled,
-                                        V=np.nan * u.m / u.s,
-                                        method="classical")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = collision_frequency(self.T,
+                                            self.n,
+                                            self.electrons,
+                                            z_mean=np.nan * u.dimensionless_unscaled,
+                                            V=np.nan * u.m / u.s,
+                                            method="classical")
         testTrue = np.isclose(self.True_electrons,
                               methodVal.si.value,
                               rtol=1e-1,
@@ -644,12 +660,13 @@ class Test_collision_frequency:
         """
         Testing collision frequency between protons (ions).
         """
-        methodVal = collision_frequency(self.T,
-                                        self.n,
-                                        self.protons,
-                                        z_mean=np.nan * u.dimensionless_unscaled,
-                                        V=np.nan * u.m / u.s,
-                                        method="classical")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = collision_frequency(self.T,
+                                            self.n,
+                                            self.protons,
+                                            z_mean=np.nan * u.dimensionless_unscaled,
+                                            V=np.nan * u.m / u.s,
+                                            method="classical")
         testTrue = np.isclose(self.True_protons,
                               methodVal.si.value,
                               rtol=1e-1,
@@ -662,12 +679,13 @@ class Test_collision_frequency:
         """
         Test collisional frequency function when given arbitrary z_mean.
         """
-        methodVal = collision_frequency(self.T,
-                                        self.n,
-                                        self.particles,
-                                        z_mean=self.z_mean,
-                                        V=np.nan * u.m / u.s,
-                                        method="classical")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = collision_frequency(self.T,
+                                            self.n,
+                                            self.particles,
+                                            z_mean=self.z_mean,
+                                            V=np.nan * u.m / u.s,
+                                            method="classical")
         testTrue = np.isclose(self.True_zmean,
                               methodVal.si.value,
                               rtol=1e-1,
@@ -691,12 +709,13 @@ class Test_mean_free_path:
         """
         Test for known value.
         """
-        methodVal = mean_free_path(self.T,
-                                   self.n_e,
-                                   self.particles,
-                                   z_mean=np.nan * u.dimensionless_unscaled,
-                                   V=np.nan * u.m / u.s,
-                                   method="classical")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = mean_free_path(self.T,
+                                       self.n_e,
+                                       self.particles,
+                                       z_mean=np.nan * u.dimensionless_unscaled,
+                                       V=np.nan * u.m / u.s,
+                                       method="classical")
         testTrue = np.isclose(self.True1,
                               methodVal.si.value,
                               rtol=1e-1,
@@ -711,12 +730,13 @@ class Test_mean_free_path:
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 * (1 + 1e-15)
-        methodVal = mean_free_path(self.T,
-                                   self.n_e,
-                                   self.particles,
-                                   z_mean=np.nan * u.dimensionless_unscaled,
-                                   V=np.nan * u.m / u.s,
-                                   method="classical")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = mean_free_path(self.T,
+                                       self.n_e,
+                                       self.particles,
+                                       z_mean=np.nan * u.dimensionless_unscaled,
+                                       V=np.nan * u.m / u.s,
+                                       method="classical")
         testTrue = not np.isclose(methodVal.si.value,
                                   fail1,
                                   rtol=1e-16,
@@ -807,12 +827,13 @@ class Test_mobility:
         """
         Test for known value.
         """
-        methodVal = mobility(self.T,
-                             self.n_e,
-                             self.particles,
-                             z_mean=np.nan * u.dimensionless_unscaled,
-                             V=np.nan * u.m / u.s,
-                             method="classical")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = mobility(self.T,
+                                 self.n_e,
+                                 self.particles,
+                                 z_mean=np.nan * u.dimensionless_unscaled,
+                                 V=np.nan * u.m / u.s,
+                                 method="classical")
         testTrue = np.isclose(self.True1,
                               methodVal.si.value,
                               rtol=1e-1,
@@ -827,12 +848,13 @@ class Test_mobility:
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 * (1 + 1e-15)
-        methodVal = mobility(self.T,
-                             self.n_e,
-                             self.particles,
-                             z_mean=np.nan * u.dimensionless_unscaled,
-                             V=np.nan * u.m / u.s,
-                             method="classical")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = mobility(self.T,
+                                 self.n_e,
+                                 self.particles,
+                                 z_mean=np.nan * u.dimensionless_unscaled,
+                                 V=np.nan * u.m / u.s,
+                                 method="classical")
         testTrue = not np.isclose(methodVal.si.value,
                                   fail1,
                                   rtol=1e-16,
@@ -843,12 +865,13 @@ class Test_mobility:
 
     def test_zmean(self):
         """Testing mobility when z_mean is passed."""
-        methodVal = mobility(self.T,
-                             self.n_e,
-                             self.particles,
-                             z_mean=self.z_mean,
-                             V=np.nan * u.m / u.s,
-                             method="classical")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = mobility(self.T,
+                                 self.n_e,
+                                 self.particles,
+                                 z_mean=self.z_mean,
+                                 V=np.nan * u.m / u.s,
+                                 method="classical")
         testTrue = np.isclose(self.True_zmean,
                               methodVal.si.value,
                               rtol=1e-1,
@@ -873,13 +896,14 @@ class Test_Knudsen_number:
         """
         Test for known value.
         """
-        methodVal = Knudsen_number(self.length,
-                                   self.T,
-                                   self.n_e,
-                                   self.particles,
-                                   z_mean=np.nan * u.dimensionless_unscaled,
-                                   V=np.nan * u.m / u.s,
-                                   method="classical")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Knudsen_number(self.length,
+                                       self.T,
+                                       self.n_e,
+                                       self.particles,
+                                       z_mean=np.nan * u.dimensionless_unscaled,
+                                       V=np.nan * u.m / u.s,
+                                       method="classical")
         testTrue = np.isclose(self.True1,
                               methodVal,
                               rtol=1e-1,
@@ -894,13 +918,14 @@ class Test_Knudsen_number:
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 * (1 + 1e-15)
-        methodVal = Knudsen_number(self.length,
-                                   self.T,
-                                   self.n_e,
-                                   self.particles,
-                                   z_mean=np.nan * u.dimensionless_unscaled,
-                                   V=np.nan * u.m / u.s,
-                                   method="classical")
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
+            methodVal = Knudsen_number(self.length,
+                                       self.T,
+                                       self.n_e,
+                                       self.particles,
+                                       z_mean=np.nan * u.dimensionless_unscaled,
+                                       V=np.nan * u.m / u.s,
+                                       method="classical")
         testTrue = not np.isclose(methodVal,
                                   fail1,
                                   rtol=0.0,
