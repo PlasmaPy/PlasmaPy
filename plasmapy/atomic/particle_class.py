@@ -304,7 +304,7 @@ class Particle:
                 categories.add('element')
             if isotope:
                 categories.add('isotope')
-            if ion:
+            if self.element and self._attributes['integer charge']:
                 categories.add('ion')
 
             # Element properties
@@ -1160,7 +1160,4 @@ class Particle:
         False
 
         """
-        if self.element and self._attributes['integer charge']:
-            return True
-        else:
-            return False
+        return self.is_category('ion')
