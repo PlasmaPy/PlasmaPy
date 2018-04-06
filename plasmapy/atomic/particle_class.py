@@ -158,15 +158,15 @@ class Particle:
     The `particle` attribute returns the particle's symbol in the
     standard form.
 
-    >>> positron.particle_symbol
+    >>> positron.particle
     'e+'
 
     The `atomic_symbol`, `isotope_symbol`, and `ionic_symbol` attributes
     return the symbols for each of these different types of particles.
 
-    >>> proton.atomic_symbol
+    >>> proton.element
     'H'
-    >>> alpha.isotope_symbol
+    >>> alpha.isotope
     'He-4'
     >>> deuteron.ionic_symbol
     'D 1+'
@@ -722,7 +722,9 @@ class Particle:
                 base_mass = self._attributes['standard atomic weight']
 
             if base_mass is None:
-                raise MissingAtomicDataError(f"The mass of ion '{self.ion}' is not available.")
+                raise MissingAtomicDataError(
+                    f"The mass of ion '{self.ionic_symbol}' is not available."
+                )
 
             mass = base_mass - self.integer_charge * const.m_e
 
@@ -832,7 +834,7 @@ class Particle:
         """
         if self.particle == 'e-':
             return 1
-        elif self.ion:
+        elif self.ionic_symbol:
             return self.atomic_number - self.integer_charge
         else:  # coveralls: ignore
             raise InvalidIonError(_category_errmsg(self, 'ion'))
@@ -856,7 +858,7 @@ class Particle:
         """
         from .atomic import common_isotopes
 
-        if not self.isotope or self.ion:  # coveralls: ignore
+        if not self.isotope or self.is_ion:  # coveralls: ignore
             raise InvalidIsotopeError(_category_errmsg(self.particle, 'isotope'))
 
         abundance = self._attributes.get('isotopic abundance', 0.0)

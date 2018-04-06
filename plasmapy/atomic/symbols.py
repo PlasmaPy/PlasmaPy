@@ -245,7 +245,7 @@ def ion_symbol(ion: Particle, mass_numb: int = None, Z: int = None) -> str:
     'D 1+'
 
     """
-    return ion.ion
+    return ion.ionic_symbol
 
 
 @particle_input
