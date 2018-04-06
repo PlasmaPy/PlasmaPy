@@ -85,10 +85,11 @@ def test_Alfven_speed():
     assert Alfven_speed(2 * B, rho) == 2 * Alfven_speed(B, rho)
 
     # Case when Z=1 is assumed
-    assert np.isclose(Alfven_speed(5 * u.T, 5e19 * u.m ** -3, ion='H+'),
-                      Alfven_speed(5 * u.T, 5e19 * u.m ** -3, ion='p'),
-                      atol=0 * u.m / u.s,
-                      rtol=1e-3)
+    with pytest.warns(RelativityWarning):
+        assert np.isclose(Alfven_speed(5 * u.T, 5e19 * u.m ** -3, ion='H+'),
+                          Alfven_speed(5 * u.T, 5e19 * u.m ** -3, ion='p'),
+                          atol=0 * u.m / u.s,
+                          rtol=1e-3)
 
     # Case where magnetic field and density are Quantity arrays
     V_A_arr = Alfven_speed(B_arr, rho_arr)

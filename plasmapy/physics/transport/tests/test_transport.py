@@ -119,16 +119,16 @@ class Test_classical_transport:
                                       ion_particle=self.ion_particle,
                                       model='spitzer',
                                       field_orientation='perp')
-        alpha_spitzer_perp_NRL = (1.03e-4 * ct2.Z *
-                                  ct2.coulomb_log_ei *
-                                  (ct2.T_e.to(u.eV)).value ** (-3 / 2) *
-                                  u.Ohm * u.m)
-        testTrue = np.isclose(ct2.resistivity().value,
-                              alpha_spitzer_perp_NRL.value,
-                              rtol=2e-2)
-        errStr = (f"Resistivity should be close to "
-                  f"{alpha_spitzer_perp_NRL.value} "
-                  f"and not {ct2.resistivity().value}.")
+            alpha_spitzer_perp_NRL = (1.03e-4 * ct2.Z *
+                                      ct2.coulomb_log_ei *
+                                      (ct2.T_e.to(u.eV)).value ** (-3 / 2) *
+                                      u.Ohm * u.m)
+            testTrue = np.isclose(ct2.resistivity().value,
+                                  alpha_spitzer_perp_NRL.value,
+                                  rtol=2e-2)
+            errStr = (f"Resistivity should be close to "
+                      f"{alpha_spitzer_perp_NRL.value} "
+                      f"and not {ct2.resistivity().value}.")
         assert testTrue, errStr
 
     def test_resistivity_units(self):
