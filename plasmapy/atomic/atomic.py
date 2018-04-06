@@ -341,7 +341,7 @@ def ion_mass(particle: Particle, *, Z: int = None, mass_numb: int = None) -> u.Q
 
     # TODO: Remove deprecated functionality elsewhere in the code
 
-    if particle.ion or particle.particle in {'e+'}:
+    if particle.is_ion or particle.particle in {'e+'}:
         return particle.mass
     elif particle.particle == 'n':
         raise InvalidIonError
