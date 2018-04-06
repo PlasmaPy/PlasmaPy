@@ -10,8 +10,8 @@ from ..dielectric import (cold_plasma_permittivity_LRP,
 from ..parameters import (plasma_frequency, gyrofrequency)
 
 B = 1.0 * u.T
-n = [1e18/u.m**3]
-omega = 55e6*u.rad/u.s
+n = [1e18 / u.m ** 3]
+omega = 55e6 * u.rad / u.s
 
 single_species = ['e']
 two_species = ['e', 'D+']
@@ -24,13 +24,13 @@ class Test_ColdPlasmaPermittivity(object):
         Test proton-electron plasma against the (approximate)
         analytical formulas
         """
-        B = 1*u.T
-        n = [1, 1]*1/u.m**3
-        omega = 1*u.rad/u.s
+        B = 1 * u.T
+        n = [1, 1] * 1 / u.m ** 3
+        omega = 1 * u.rad / u.s
         omega_ce = gyrofrequency(B, particle='e', signed=True)
         omega_pe = plasma_frequency(n[0], particle='e')
-        omega_cp = abs(omega_ce)/1860
-        omega_pp = omega_pe/43
+        omega_cp = abs(omega_ce) / 1860
+        omega_pp = omega_pe / 43
 
         S_analytical = 1 \
             - omega_pe ** 2 / (omega ** 2 - omega_ce ** 2) \
@@ -53,7 +53,7 @@ class Test_ColdPlasmaPermittivity(object):
         """
         Test with three species (2 ions): D plasma with 5%H minority fraction
         """
-        n_3 = np.array([1, 1, 5/100])*1e19/u.m**3
+        n_3 = np.array([1, 1, 5 / 100]) * 1e19 / u.m ** 3
         S, D, P = cold_plasma_permittivity_SDP(B, three_species, n_3, omega)
         assert np.isclose(S, -11753.3)
         assert np.isclose(D, 13408.99181054283)
@@ -71,7 +71,7 @@ class Test_ColdPlasmaPermittivity(object):
         S, D, _ = cold_plasma_permittivity_SDP(B, single_species, n, omega)
         L, R, _ = cold_plasma_permittivity_LRP(B, single_species, n, omega)
 
-        assert np.isclose(R, S+D)
-        assert np.isclose(L, S-D)
-        assert np.isclose(S, (R+L)/2)
-        assert np.isclose(D, (R-L)/2)
+        assert np.isclose(R, S + D)
+        assert np.isclose(L, S - D)
+        assert np.isclose(S, (R + L) / 2)
+        assert np.isclose(D, (R - L) / 2)

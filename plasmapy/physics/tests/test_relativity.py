@@ -11,7 +11,7 @@ from ...utils.exceptions import RelativityError
 def test_Lorentz_factor():
     r"""Test Lorentz_factor in relativity.py"""
 
-    V = 123456789*u.m/u.s
+    V = 123456789 * u.m / u.s
     assert np.isclose(Lorentz_factor(V), (1 / np.sqrt(1 - V ** 2 / c ** 2)).value)
     assert Lorentz_factor(-V) == Lorentz_factor(V)
 
@@ -24,7 +24,7 @@ def test_Lorentz_factor():
     assert gamma_arr[1] == np.inf
 
     assert (Lorentz_factor(3 * u.m / u.s) * u.dimensionless_unscaled).unit == \
-           u.dimensionless_unscaled
+        u.dimensionless_unscaled
 
     with pytest.raises(RelativityError):
         Lorentz_factor(1.0000000001 * c)
