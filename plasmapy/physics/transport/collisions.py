@@ -653,7 +653,11 @@ def collision_frequency(T,
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
-        V = np.sqrt(2 * k_B * T / m_e)
+        if V:
+            # making sure that user definted velocity is correctly passed
+            pass
+        else:
+            V = np.sqrt(2 * k_B * T / m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
         bPerp = b_perp(T=T,
