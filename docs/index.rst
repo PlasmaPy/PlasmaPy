@@ -57,7 +57,7 @@ Plasma Parameters
 
    physics/index
 
-.. _diagnostics
+.. diagnostics
 
 Diagnostics
 -----------
@@ -70,7 +70,7 @@ development.
 
    diagnostics/index
 
-.. _mathematics
+.. mathematics
 
 Mathematics
 -----------
@@ -83,7 +83,7 @@ commonly used by plasma physicists.
 
    mathematics/index
 
-.. _data-structures
+.. data-structures
 
 Data Structures
 ---------------
@@ -94,7 +94,7 @@ Data Structures
     plasma/index
     species/index
 
-.. _utilities
+.. utilities
 
 Utilities
 ---------
@@ -104,7 +104,7 @@ Utilities
 
    utils/index
 
-.. _examples
+.. examples
 
 Examples
 --------
@@ -113,7 +113,7 @@ Examples
 
     auto_examples/index
 
-.. _development-guide
+.. development-guide
 
 *****************
 Development Guide
@@ -130,7 +130,7 @@ PlasmaPy, along with guidelines for code, testing, and documentation.
     development/doc_guide
     development/release_guide
 
-.. _project_details:
+.. project_details:
 
 ***************
 Project Details
