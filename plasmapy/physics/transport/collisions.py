@@ -636,7 +636,7 @@ def collision_frequency(T,
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
                                                        particles=particles,
                                                        V=V)
-    if particles[0] == 'e' and particles[1] == 'e':
+    if particles[0] in ('e','e-') and particles[1] in ('e','e-'):
         # electron-electron collision
         # impact parameter for 90 degree collision
         bPerp = b_perp(T=T,
@@ -649,7 +649,7 @@ def collision_frequency(T,
                                     z_mean,
                                     V=np.nan * u.m / u.s,
                                     method=method)
-    elif particles[0] == 'e' or particles[1] == 'e':
+    elif particles[0] in ('e','e-') or particles[1] in ('e','e-'):
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius

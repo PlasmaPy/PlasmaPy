@@ -613,8 +613,7 @@ def collision_rate_electron_ion(T_e,
         # electron thermal velocity (most probable)
         V = np.sqrt(2 * k_B * T_e / m_e)
 
-#    particles = [ion_particle, 'e-']
-    particles = [ion_particle, 'e']
+    particles = [ion_particle, 'e-']
     Z_i = atomic.integer_charge(ion_particle)
     nu = collision_frequency(T_e,
                              n_e,
