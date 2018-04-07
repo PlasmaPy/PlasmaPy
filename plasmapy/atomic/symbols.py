@@ -205,7 +205,7 @@ def ionic_symbol(particle: Particle, mass_numb: int = None, Z: int = None) -> st
 
     """
 
-    return ion.ionic_symbol
+    return particle.ionic_symbol
 
 
 

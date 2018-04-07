@@ -221,9 +221,9 @@ class Particle:
     `~plasmapy.atomic.Particle` instance.
 
     >>> ~electron
-    Particle('e+')
+    Particle("e+")
     >>> ~proton
-    Particle('p-')
+    Particle("p-")
 
     The `~plasmapy.atomic.particle_class.Particle.categories` attribute
     and `~plasmapy.atomic.particle_class.Particle.is_category` method
