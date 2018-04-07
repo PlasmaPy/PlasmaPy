@@ -217,13 +217,16 @@ class Particle:
     >>> alpha.neutron_number
     2
 
-    The unary operator `~` may be used to return the antiparticle of a
-    `~plasmapy.atomic.Particle` instance.
+    If a `~plasmapy.atomic.Particle` instance represents an elementary
+    particle, then the unary operator `~` may be used to return the 
+    particle's antiparticle.
 
     >>> ~electron
     Particle("e+")
     >>> ~proton
     Particle("p-")
+    >>> ~positron
+    Particle("e-")
 
     The `~plasmapy.atomic.particle_class.Particle.categories` attribute
     and `~plasmapy.atomic.particle_class.Particle.is_category` method
