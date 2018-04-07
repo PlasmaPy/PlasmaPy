@@ -4,6 +4,7 @@
 import numpy as np
 import pytest
 from astropy import units as u
+from astropy.tests.helper import assert_quantity_allclose
 from warnings import simplefilter
 
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
@@ -84,10 +85,11 @@ def test_Alfven_speed():
     assert Alfven_speed(2 * B, rho) == 2 * Alfven_speed(B, rho)
 
     # Case when Z=1 is assumed
-    assert np.isclose(Alfven_speed(5 * u.T, 5e19 * u.m ** -3, ion='H+'),
-                      Alfven_speed(5 * u.T, 5e19 * u.m ** -3, ion='p'),
-                      atol=0 * u.m / u.s,
-                      rtol=1e-3)
+    with pytest.warns(RelativityWarning):
+        assert np.isclose(Alfven_speed(5 * u.T, 5e19 * u.m ** -3, ion='H+'),
+                          Alfven_speed(5 * u.T, 5e19 * u.m ** -3, ion='p'),
+                          atol=0 * u.m / u.s,
+                          rtol=1e-3)
 
     # Case where magnetic field and density are Quantity arrays
     V_A_arr = Alfven_speed(B_arr, rho_arr)
@@ -324,7 +326,8 @@ def test_thermal_speed():
 
 
 class Test_kappa_thermal_speed(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T_e = 5 * u.eV
         self.kappaInvalid = 3 / 2
@@ -786,15 +789,15 @@ def test_magnetic_energy_density():
 
     assert magnetic_energy_density(B_arr).unit.is_equivalent(u.J / u.m ** 3)
 
-    assert str(magnetic_energy_density(B).unit) == 'J / m3'
+    assert magnetic_energy_density(B).unit.is_equivalent('J / m3')
 
     assert magnetic_energy_density(B).value == magnetic_pressure(B).value
 
-    assert magnetic_energy_density(2 * B) == 4 * magnetic_energy_density(B)
+    assert_quantity_allclose(magnetic_energy_density(2 * B), 4 * magnetic_energy_density(B))
 
-    assert np.isclose(magnetic_energy_density(B).value, 397887.35772973835)
+    assert_quantity_allclose(magnetic_energy_density(B).value, 397887.35772973835)
 
-    assert magnetic_energy_density(B) == magnetic_energy_density(B.to(u.G))
+    assert_quantity_allclose(magnetic_energy_density(B), magnetic_energy_density(B.to(u.G)))
 
     # TODO Add an array test!
 
