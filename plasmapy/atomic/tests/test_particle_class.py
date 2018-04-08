@@ -566,30 +566,33 @@ def test_particle_bool_error():
     with pytest.raises(AtomicError):
         bool(Particle('e-'))
 
+@pytest.fixture(params=ParticleZoo.everything)
+def particle(request):
+    return Particle(request.param)
 
-def test_particle_inversion():
+@pytest.fixture()
+def opposite(particle):
+    try:
+        opposite_particle = ~particle
+    except Exception:
+        raise InvalidParticleError(
+                "The unary operator is unable to find the antiparticle "
+                f"of {particle}.")
+    return opposite_particle
+
+class Test__particle_inversion():
     """
     Test that the unary operator finds the antiparticle of all special
     particles and antiparticles.
     """
-
-    for particle_symb in ParticleZoo.everything:
-
-        particle = Particle(particle_symb)
-
-        try:
-            opposite = ~particle
-        except Exception:
-            raise InvalidParticleError(
-                "The unary operator is unable to find the antiparticle "
-                f"of {particle}.")
-
+    def test_opposite_charge(self, particle, opposite):
         assert particle.integer_charge == -opposite.integer_charge, \
             (f"The charges of {particle} and {opposite} are not "
              f"opposites, which indicates that there is a problem "
              f"using the unary operator to find the antiparticle of "
              f"{particle}.")
 
+    def test_equal_mass(self, particle, opposite):
         assert particle._attributes['mass'] == opposite._attributes['mass'], \
             (f"The masses of {particle} and {opposite} are not equal, "
              f"which indicates that there is a problem using the unary "
