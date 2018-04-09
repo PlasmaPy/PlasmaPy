@@ -30,41 +30,37 @@ New Features
   software patents.
 
 * Set up continuous integration testing with Travis CI, CircleCI, and
-  AppVeyor.  Set up test coverage checks with Coveralls.  Automated
-  code style checks with pep8speaks.  Decided upon code and docstring
-  style conventions.
+  AppVeyor, along with test coverage checks with Coveralls.  
+  
+* Decided upon code and docstring style conventions and set up 
+  automated code style checks with pep8speaks.  
 
-* Set up automated documentation builds with sphinx that are hosted on
+* Set up automated documentation builds with Sphinx that are hosted on
   Read the Docs.
 
-* Adopted use of `astropy.units` as a units package.  Allow import of
-  units as ``import plasmapy.units`` as u.
+* Adopted use of `astropy.units` as a units package.  Allowed import of
+  units as ``import plasmapy.units as u``.
 
 * Created the `atomic` subpackage to provide easy access to commonly
   used atomic data.
 
-  - Created ``Particle`` class
+  - Created functional interface to access particle properties and find
+    the energy released from nuclear reactions.
 
-  - Created ``@particle_input`` decorator
+  - Created ``Particle`` class.
 
-* Created `classes` subpackage.
+  - Created ``@particle_input`` decorator.
 
-  - ``Plasma`` class
+* Created `classes` subpackage with the ``Plasma`` and ``Species`` classes.
 
 * Created `constants` subpackage.
 
 * Created `mathematics` subpackage with functionality commonly used in
   plasma physics.
 
-* Created `physics` subpackage 
-
-  - Plasma parameters
-
-  - Transport parameters
-
-  - Relativity and quantum physics parameters related to plasma
-    physics
-
+* Created `physics` subpackage to calculate plasma parameters, transport
+  coefficients, collision rates, and relativity/quantum physics parameters
+  used in plasma physics.
 
 * Created `utils` subpackage.
 
@@ -73,10 +69,12 @@ New Features
 
   - Added custom exceptions, including several for the `atomic`
     subpackage.
+    
+  - Added import helper and test helper functionality.
 
 * Created basic framework for `diagnostics` subpackage.
 
-* Created a repository for 
+* Created a repository for PlasmaPy Enhancement Proposals.
 
 * Included astropy-helpers as a submodule.
 
