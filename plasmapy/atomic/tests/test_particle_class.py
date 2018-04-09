@@ -362,9 +362,9 @@ def test_Particle_class(arg, kwargs, expected_dict):
             try:
                 with pytest.raises(expected):
                     exec(f"particle.{key}")
-            except pytest.fail.Exception as exc_failed_fail:
+            except pytest.fail.Exception:
                 errmsg += f"\n{call}[{key}] does not raise {expected}."
-            except Exception as exc_bad:
+            except Exception:
                 errmsg += (f"\n{call}[{key}] does not raise {expected} but "
                            f"raises a different exception.")
 
@@ -373,10 +373,10 @@ def test_Particle_class(arg, kwargs, expected_dict):
             try:
                 result = eval(f"particle.{key}")
                 assert result == expected
-            except AssertionError as exc_assert:
+            except AssertionError:
                 errmsg += (f"\n{call}.{key} returns {result} instead "
                            f"of the expected value of {expected}.")
-            except Exception as exc_general:
+            except Exception:
                 errmsg += f"\n{call}.{key} raises an unexpected exception."
 
     if len(errmsg) > 0:
@@ -566,34 +566,89 @@ def test_particle_bool_error():
     with pytest.raises(AtomicError):
         bool(Particle('e-'))
 
+
+particle_antiparticle_pairs = [
+    ('p+', 'p-'),
+    ('n', 'antineutron'),
+    ('e-', 'e+'),
+    ('mu-', 'mu+'),
+    ('tau-', 'tau+'),
+    ('nu_e', 'anti_nu_e'),
+    ('nu_mu', 'anti_nu_mu'),
+    ('nu_tau', 'anti_nu_tau'),
+]
+
+
+@pytest.mark.parametrize("particle, antiparticle", particle_antiparticle_pairs)
+def test_particle_inversion(particle, antiparticle):
+    """Test that particles have the correct antiparticles."""
+    assert Particle(particle).antiparticle == Particle(antiparticle), \
+        (f"The antiparticle of {particle} is found to be "
+         f"{~Particle(particle)} instead of {antiparticle}.")
+
+
+@pytest.mark.parametrize("particle, antiparticle", particle_antiparticle_pairs)
+def test_antiparticle_inversion(particle, antiparticle):
+    """Test that antiparticles have the correct antiparticles."""
+    assert Particle(antiparticle).antiparticle == Particle(particle), \
+        (f"The antiparticle of {antiparticle} is found to be "
+         f"{~Particle(antiparticle)} instead of {particle}.")
+
+
 @pytest.fixture(params=ParticleZoo.everything)
 def particle(request):
     return Particle(request.param)
+
 
 @pytest.fixture()
 def opposite(particle):
     try:
         opposite_particle = ~particle
-    except Exception:
+    except Exception as exc:
         raise InvalidParticleError(
-                "The unary operator is unable to find the antiparticle "
-                f"of {particle}.")
+                f"The unary ~ (invert) operator is unable to find the "
+                f"antiparticle of {particle}.") from exc
     return opposite_particle
 
-class Test__particle_inversion():
+
+class Test_antiparticle_properties_inversion:
     """
-    Test that the unary operator finds the antiparticle of all special
-    particles and antiparticles.
+    Test particle and antiparticle inversion and properties for Particle
+    instances.
     """
+    def test_inverted_inversion(self, particle):
+        """
+        Test that the antiparticle of the antiparticle of a particle is
+        the original particle.
+        """
+        assert particle == ~~particle, \
+            (f"~~{repr(particle)} equals {repr(~~particle)} instead of "
+             f"{repr(particle)}.")
+
     def test_opposite_charge(self, particle, opposite):
+        """
+        Test that a particle and its antiparticle have the opposite
+        charge.
+        """
         assert particle.integer_charge == -opposite.integer_charge, \
             (f"The charges of {particle} and {opposite} are not "
-             f"opposites, which indicates that there is a problem "
-             f"using the unary operator to find the antiparticle of "
-             f"{particle}.")
+             f"opposites, as expected of a particle/antiparticle pair.")
 
     def test_equal_mass(self, particle, opposite):
+        """
+        Test that a particle and its antiparticle have the same mass.
+        """
         assert particle._attributes['mass'] == opposite._attributes['mass'], \
             (f"The masses of {particle} and {opposite} are not equal, "
-             f"which indicates that there is a problem using the unary "
-             f"operator to find the antiparticle of {particle}.")
+             f"as expected of a particle/antiparticle pair.")
+
+    def test_antiparticle_attribute_and_operator(self, particle, opposite):
+        """
+        Test that the Particle.antiparticle attribute returns the same
+        value as the unary ~ (invert) operator acting on the same
+        Particle instance.
+        """
+        assert particle.antiparticle == ~particle, \
+            (f"{repr(particle)}.antiparticle returned "
+             f"{particle.antiparticle}, whereas ~{repr(particle)} "
+             f"returned {~particle}.")
