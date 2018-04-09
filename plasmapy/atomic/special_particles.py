@@ -303,7 +303,7 @@ _antiparticles = {
     'tau+': 'tau-',
     'anti_nu_e': 'nu_e',
     'anti_nu_mu': 'nu_mu',
-    'anti_nu_tau': 'anti_nu_tau',
+    'anti_nu_tau': 'nu_tau',
 }
 
 if __name__ == "__main__":  # coveralls: ignore
