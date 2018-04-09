@@ -29,7 +29,12 @@ from .parsing import (
 from .elements import _Elements, _PeriodicTable
 from .isotopes import _Isotopes
 
-from .special_particles import (_Particles, ParticleZoo, _special_ion_masses)
+from .special_particles import (
+    _Particles,
+    ParticleZoo,
+    _special_ion_masses,
+    _antiparticles,
+)
 
 _classification_categories = {
     'lepton',
@@ -436,7 +441,7 @@ class Particle:
             except InvalidParticleError as exc:
                 raise InvalidParticleError(
                     f"{other} is not a particle and cannot be "
-                    f"compared to {self}.")
+                    f"compared to {self}.") from exc
 
         if not isinstance(other, self.__class__):
             raise TypeError(
@@ -507,32 +512,12 @@ class Particle:
         `~plasmapy.utils.AtomicError` if the particle is not an
         elementary particle.
         """
-        if self.element and self != 'p+':
-            raise AtomicError(
-                "The unary operator can only be used for elementary particles and antiparticles.")
-
-        old_particle = self.particle
-
-        if old_particle == 'n':
-            return Particle('antineutron')
-
-        elif '-' in old_particle:
-            return Particle(old_particle.replace('-', '+'))
-        elif '+' in old_particle:
-            return Particle(old_particle.replace('+', '-'))
-        elif 'anti_' in old_particle:
-            return Particle(old_particle.replace('anti_', ''))
-        elif 'anti' in old_particle:
-            return Particle(old_particle.replace('anti', ''))
-        else:
-            try:
-                return Particle('anti' + old_particle)
-            except InvalidParticleError:
-                return Particle('anti_' + old_particle)
+        return self.antiparticle
 
     @property
-    def particle(self) -> str:
-        """Return the particle's symbol.
+    def particle(self) -> Optional[str]:
+        """
+        Return the particle's symbol.
 
         Examples
         --------
@@ -542,6 +527,34 @@ class Particle:
 
         """
         return self._attributes['particle']
+
+    @property
+    def antiparticle(self):
+        """
+        Return the corresponding antiparticle, or raise an
+        `~plasmapy.utils.AtomicError` if the particle is not an
+        elementary particle.
+
+        This attribute may be accessed by using the unary operator `~`
+        acting on a `~plasma.atomic.Particle` instance.
+
+        Examples
+        --------
+        >>> electron = Particle('e-')
+        >>> electron.antiparticle
+        Particle("e+")
+
+        >>> antineutron = Particle('antineutron')
+        >>> ~antineutron
+        Particle("n")
+
+        """
+        if self.particle in _antiparticles.keys():
+            return Particle(_antiparticles[self.particle])
+        else:
+            raise AtomicError(
+                "The unary operator can only be used for elementary "
+                "particles and antiparticles.")
 
     @property
     def element(self) -> Optional[str]:
@@ -1053,7 +1066,7 @@ class Particle:
         return self._attributes['spin']
 
     @property
-    def periodic_table(self):
+    def periodic_table(self) -> collections.namedtuple:
         """
         Return a `~collections.namedtuple` to access category, period,
         group, and block information about an element.

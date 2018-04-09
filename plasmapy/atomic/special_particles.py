@@ -287,6 +287,24 @@ _special_ion_masses = {
     'T 1+': 5.007356665e-27 * u.kg,
 }
 
+_antiparticles = {
+    'p+': 'p-',
+    'n': 'antineutron',
+    'e-': 'e+',
+    'mu-': 'mu+',
+    'tau-': 'tau+',
+    'nu_e': 'anti_nu_e',
+    'nu_mu': 'anti_nu_mu',
+    'nu_tau': 'anti_nu_tau',
+    'p-': 'p+',
+    'antineutron': 'n',
+    'e+': 'e-',
+    'mu+': 'mu-',
+    'tau+': 'tau-',
+    'anti_nu_e': 'nu_e',
+    'anti_nu_mu': 'nu_mu',
+    'anti_nu_tau': 'anti_nu_tau',
+}
 
 if __name__ == "__main__":  # coveralls: ignore
     from pprint import pprint
