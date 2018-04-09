@@ -223,8 +223,8 @@ class Particle:
     2
 
     If a `~plasmapy.atomic.Particle` instance represents an elementary
-    particle, then the unary operator `~` may be used to return the 
-    particle's antiparticle.
+    particle, then the unary `~` (invert) operator may be used to return
+    the particle's antiparticle.
 
     >>> ~electron
     Particle("e+")
