@@ -44,14 +44,15 @@ versions 0.1.0 and 0.2.0 and through the development phase.
    Link to how to install
    Link to doc page for each subpackage
 
-PlasmaPy is being designed to be compatible with Python 3.6. The
-required packages include...
+PlasmaPy is being designed to be compatible with Python 3.6.  If
+any incompatibilities arise with Python 3.7 after it is released,
+we will make a patch release.
 
 If there is functionality that you would like future versions of
 PlasmaPy to include, we encourage you to raise an issue on GitHub with
 your ideas or even contribute code directly.
 
-This release includes roughly 1400 commits by 31 different
+This release includes roughly 1600 commits by 31 different
 contributors. The people who have contributed to this release are:
 
  * ...
