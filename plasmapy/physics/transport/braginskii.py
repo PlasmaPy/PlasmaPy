@@ -10,9 +10,9 @@ from plasmapy import atomic
 from plasmapy.atomic.atomic import _is_electron
 from .collisions import Coulomb_logarithm
 from plasmapy.physics.parameters import (Hall_parameter,
-                                         collision_rate_electron_ion,
-                                         collision_rate_ion_ion,
                                          grab_charge)
+from plasmapy.physics.transport.collisions import (collision_rate_electron_ion,
+                                                   collision_rate_ion_ion)
 from plasmapy.constants import e, m_e, k_B
 
 
