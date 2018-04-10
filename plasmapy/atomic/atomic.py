@@ -15,6 +15,7 @@ from .elements import _Elements
 from .isotopes import _Isotopes
 from .particle_class import Particle
 from .particle_input import particle_input
+from .symbols import atomic_symbol
 
 from ..utils import (
     InvalidParticleError,
@@ -22,10 +23,7 @@ from ..utils import (
     InvalidIsotopeError,
     InvalidIonError,
     MissingAtomicDataError,
-    AtomicError,
 )
-
-from .symbols import atomic_symbol
 
 
 @particle_input

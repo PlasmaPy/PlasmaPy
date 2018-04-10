@@ -43,7 +43,8 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
     ]
 
     case_insensitive_aliases_for_a_symbol = [
-        (['antielectron'], 'e+'),
+        (['antielectron', 'anti_electron'], 'e+'),
+        (['antipositron', 'anti_positron'], 'e-'),
         (['muon-'], 'mu-'),
         (['muon+'], 'mu+'),
         (['tau particle'], 'tau-'),

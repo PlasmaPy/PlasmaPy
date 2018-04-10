@@ -29,8 +29,8 @@ def test_Lorentz_factor():
     with pytest.raises(RelativityError):
         Lorentz_factor(1.0000000001 * c)
 
-    with pytest.raises(ValueError):
-        Lorentz_factor(299792459)
+    with pytest.raises(ValueError), pytest.warns(u.UnitsWarning):
+            Lorentz_factor(299792459)
 
     with pytest.warns(u.UnitsWarning):
         Lorentz_factor(2.2)

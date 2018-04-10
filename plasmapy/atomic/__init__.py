@@ -11,7 +11,7 @@ from .particle_input import particle_input
 from .symbols import (
     atomic_symbol,
     isotope_symbol,
-    ion_symbol,
+    ionic_symbol,
     particle_symbol,
     element_name,
 )

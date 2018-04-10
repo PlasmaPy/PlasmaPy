@@ -301,7 +301,7 @@ def particle_input(wrapped_function: Callable = None,
                 cat_table = [
                     ('element', particle.element, InvalidElementError),
                     ('isotope', particle.isotope, InvalidIsotopeError),
-                    ('ion', particle.ion, InvalidIonError),
+                    ('ion', particle.ionic_symbol, InvalidIonError),
                 ]
 
                 for category_name, category_symbol, CategoryError in cat_table:

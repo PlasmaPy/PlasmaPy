@@ -241,7 +241,8 @@ def Fermi_energy(n_e):
 })
 def Thomas_Fermi_length(n_e):
     r"""
-    Calculate the exponential scale length for charge screening.
+    Calculate the exponential scale length for charge screening
+    for cold and dense plasmas.
 
     Parameters
     ----------
@@ -292,6 +293,7 @@ def Thomas_Fermi_length(n_e):
     See also
     --------
     Fermi_energy
+    plasmapy.physics.Debye_length
 
     Example
     -------

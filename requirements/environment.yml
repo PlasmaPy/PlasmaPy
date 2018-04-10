@@ -22,3 +22,4 @@ dependencies:
     - sphinx-automodapi
     - pillow
     - colorama
+    - sphinx_rtd_theme
