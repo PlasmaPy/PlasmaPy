@@ -1,12 +1,12 @@
-.. py:module:: utils
+.. py:module:: exceptions
 
-.. _plasmapy-utils:
+.. _plasmapy-utils-exceptions:
 
 ************************************
-The Utils Package (`plasmapy.Utils`)
+The Utils Package (`plasmapy.utils.exceptions`)
 ************************************
 
-.. currentmodule:: plasmapy.utils
+.. currentmodule:: plasmapy.utils.exceptions
 
 Introduction
 ============
@@ -22,17 +22,7 @@ try to think of as) clean, readable and informative code. This means:
  * Some helper utilities for importing and testing packages such as
    `plasmapy.utils.call_string`
 
-Using `plasmapy.atomic`
-=======================
-
-.. toctree::
-   :maxdepth: 2
-
-   checks
-   exceptions
-   helpers
-
 Reference/API
 =============
 
-.. automodapi:: plasmapy.utils
+.. automodapi:: plasmapy.utils.exceptions
