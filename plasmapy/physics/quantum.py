@@ -20,7 +20,7 @@ from ..mathematics import Fermi_integral
 # TODO: Use @check_relativistic and @particle_input
 
 @utils.check_quantity({
-    'V': {'units': u.m/u.s, 'can_be_negative': True}
+    'V': {'units': u.m / u.s, 'can_be_negative': True}
     })
 def deBroglie_wavelength(V, particle):
     r"""
@@ -74,10 +74,10 @@ def deBroglie_wavelength(V, particle):
     Examples
     --------
     >>> from astropy import units as u
-    >>> velocity = 1.4e7*u.m/u.s
+    >>> velocity = 1.4e7 * u.m / u.s
     >>> deBroglie_wavelength(velocity, 'e')
     <Quantity 5.18997095e-11 m>
-    >>> deBroglie_wavelength(V = 0*u.m/u.s, particle = 'D+')
+    >>> deBroglie_wavelength(V = 0 * u.m / u.s, particle = 'D+')
     <Quantity inf m>
     """
 
