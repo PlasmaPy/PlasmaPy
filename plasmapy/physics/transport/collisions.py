@@ -861,7 +861,7 @@ def collision_rate_ion_ion(T_i,
         If not specified, the Coulomb log will is calculated using the
         ~plasmapy.physics.transport.Coulomb_logarithm function.
 
-    coulomb_log_method : string, optional
+    coulomb_log_method : str, optional
         Method used for Coulomb logarithm calculation (see that function
         for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
 
