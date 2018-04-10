@@ -776,9 +776,7 @@ def collision_rate_electron_ion(T_e,
 
     """
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
-    if V:
-        pass
-    else:
+    if not V:
         # electron thermal velocity (most probable)
         V = np.sqrt(2 * k_B * T_e / m_e)
 
@@ -895,9 +893,7 @@ def collision_rate_ion_ion(T_i,
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     m_i = atomic.ion_mass(ion_particle)
     particles = [ion_particle, ion_particle]
-    if V:
-        pass
-    else:
+    if not V:
         # ion thermal velocity (most probable)
         V = np.sqrt(2 * k_B * T_i / m_i)
     Z_i = atomic.integer_charge(ion_particle)
