@@ -752,9 +752,12 @@ def collision_rate_electron_ion(T_e,
 
     References
     ----------
-    .. [1] Braginskii
+    .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of 
+       plasma physics 1 (1965): 205.
 
-    .. [2] Formulary
+    .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary, 
+       revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
+       https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
     .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
@@ -867,9 +870,12 @@ def collision_rate_ion_ion(T_i,
 
     References
     ----------
-    .. [1] Braginskii
+    .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of 
+       plasma physics 1 (1965): 205.
 
-    .. [2] Formulary
+    .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary, 
+       revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
+       https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
     .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
