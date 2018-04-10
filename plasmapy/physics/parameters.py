@@ -5,7 +5,7 @@ Functions to calculate plasma parameters.
 
 from astropy import units as u
 
-# from plasmapy.atomic import ion_mass, integer_charge
+# from plasmapy.atomic import particle_mass, integer_charge
 
 import numpy as np
 # import warnings
@@ -45,7 +45,7 @@ def grab_charge(ion, z_mean=None):
     return Z
 
 
-def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg/u.m**3:
+def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg / u.m ** 3:
     """Utility function to merge two possible inputs for particle charge.
 
     Parameters
@@ -80,7 +80,7 @@ def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg/u.
         rho = density
     elif density.unit.is_equivalent(u.m ** -3):
         if particle:
-            m_i = atomic.ion_mass(particle)
+            m_i = atomic.particle_mass(particle)
             Z = grab_charge(particle, z_mean)
             rho = density * m_i + Z * density * m_e
         else:
@@ -309,7 +309,7 @@ def ion_sound_speed(T_e,
 
     """
 
-    m_i = atomic.ion_mass(ion)
+    m_i = atomic.particle_mass(ion)
     Z = grab_charge(ion, z_mean)
 
     for gamma, particles in zip([gamma_e, gamma_i], ["electrons", "ions"]):
@@ -418,7 +418,7 @@ def thermal_speed(T, particle="e-", method="most_probable"):
     T = T.to(u.K, equivalencies=u.temperature_energy())
 
     try:
-        m = atomic.ion_mass(particle)
+        m = atomic.particle_mass(particle)
     except AtomicError:
         raise ValueError("Unable to find {particle} mass in thermal_speed")
 
@@ -691,7 +691,7 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
     2799249007.6528206 Hz
 
     """
-    m_i = atomic.ion_mass(particle)
+    m_i = atomic.particle_mass(particle)
     Z = grab_charge(particle, Z)
     if not signed:
         Z = abs(Z)
@@ -701,9 +701,9 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
     return omega_ci
 
 
-@utils.check_quantity({'B':     {'units': u.T},
+@utils.check_quantity({'B': {'units': u.T},
                        'Vperp': {'units': u.m / u.s, 'can_be_nan': True},
-                       'T_i':   {'units': u.K, 'can_be_nan': True},
+                       'T_i': {'units': u.K, 'can_be_nan': True},
                        })
 def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
     r"""Return the particle gyroradius.
@@ -885,7 +885,7 @@ def plasma_frequency(n, particle='e-', z_mean=None):
     """
 
     try:
-        m = atomic.ion_mass(particle)
+        m = atomic.particle_mass(particle)
         if z_mean is None:
             # warnings.warn("No z_mean given, defaulting to atomic charge",
             #               PhysicsWarning)
@@ -1236,7 +1236,7 @@ def magnetic_energy_density(B: u.T):
 
 
 @utils.check_quantity({
-    'B':   {'units': u.T},
+    'B': {'units': u.T},
     'n_e': {'units': u.m ** -3, 'can_be_negative': False}
     })
 def upper_hybrid_frequency(B, n_e):
@@ -1299,7 +1299,7 @@ def upper_hybrid_frequency(B, n_e):
 
 
 @utils.check_quantity({
-    'B':   {'units': u.T},
+    'B': {'units': u.T},
     'n_i': {'units': u.m ** -3, 'can_be_negative': False}
     })
 def lower_hybrid_frequency(B, n_i, ion='p+'):

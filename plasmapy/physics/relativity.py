@@ -6,9 +6,9 @@ from plasmapy import atomic, utils
 
 
 @utils.check_quantity({
-    'V': {'units': u.m/u.s, 'can_be_negative': True}
+    'V': {'units': u.m / u.s, 'can_be_negative': True}
     })
-def Lorentz_factor(V: u.m/u.s):
+def Lorentz_factor(V: u.m / u.s):
     r"""
     Return the Lorentz factor.
 
@@ -53,7 +53,7 @@ def Lorentz_factor(V: u.m/u.s):
     Examples
     --------
     >>> from astropy import units as u
-    >>> velocity = 1.4e8*u.m/u.s
+    >>> velocity = 1.4e8 * u.m / u.s
     >>> Lorentz_factor(velocity)
     1.130885603948959
     >>> Lorentz_factor(299792458*u.m/u.s)

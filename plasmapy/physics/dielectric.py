@@ -13,7 +13,7 @@ Values should be returned as a `~astropy.units.Quantity` in SI units.
 
 @utils.check_quantity({
     'B': {'units': u.T, 'can_be_negative': False},
-    'omega': {'units': u.rad/u.s, 'can_be_negative': False},
+    'omega': {'units': u.rad / u.s, 'can_be_negative': False},
 })
 def cold_plasma_permittivity_SDP(B, species, n, omega):
     r"""
@@ -103,7 +103,7 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
         omega_p = plasma_frequency(n=n_s, particle=s)
 
         S += - omega_p ** 2 / (omega ** 2 - omega_c ** 2)
-        D += omega_c/omega * omega_p ** 2 / (omega ** 2 - omega_c ** 2)
+        D += omega_c / omega * omega_p ** 2 / (omega ** 2 - omega_c ** 2)
         P += - omega_p ** 2 / omega ** 2
     return S, D, P
 
@@ -191,7 +191,7 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
         omega_c = gyrofrequency(B=B, particle=s, signed=True)
         omega_p = plasma_frequency(n=n_s, particle=s)
 
-        L += - omega_p ** 2 / (omega*(omega - omega_c))
-        R += - omega_p ** 2 / (omega*(omega + omega_c))
+        L += - omega_p ** 2 / (omega * (omega - omega_c))
+        R += - omega_p ** 2 / (omega * (omega + omega_c))
         P += - omega_p ** 2 / omega ** 2
     return L, R, P

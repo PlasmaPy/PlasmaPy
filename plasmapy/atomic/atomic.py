@@ -15,6 +15,7 @@ from .elements import _Elements
 from .isotopes import _Isotopes
 from .particle_class import Particle
 from .particle_input import particle_input
+from .symbols import atomic_symbol
 
 from ..utils import (
     InvalidParticleError,
@@ -22,10 +23,7 @@ from ..utils import (
     InvalidIsotopeError,
     InvalidIonError,
     MissingAtomicDataError,
-    AtomicError,
 )
-
-from .symbols import atomic_symbol
 
 
 @particle_input
@@ -154,11 +152,7 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
     See Also
     --------
-    isotope_mass : returns the atomic mass of an isotope.
-
-    ion_mass : returns the mass of an ion of an element or isotope,
-        accounting for reduction of mass from the neutral state due to
-        different numbers of electrons.
+    particle_mass
 
     Notes
     -----
@@ -180,184 +174,11 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
     --------
     >>> standard_atomic_weight("H")
     <Quantity 1.67382335e-27 kg>
-    >>> isotope_mass("H-1")
-    <Quantity 1.67353281e-27 kg>
     >>> standard_atomic_weight("lead")
     <Quantity 3.44063689e-25 kg>
 
     """
     return element.standard_atomic_weight
-
-
-@particle_input(exclude='ion')
-def isotope_mass(isotope: Particle, mass_numb: int = None) -> u.Quantity:
-    """
-    Return the mass of an isotope in kg.
-
-    Parameters
-    ----------
-    isotope : `str`, `int`, or `~plasmapy.atomic.Particle`
-        A string representing an element, isotope, or ion; an integer
-        representing an atomic number; or an instance of the Particle
-        class.
-
-    mass_numb : `int`, optional
-        The mass number of the isotope.
-
-    Returns
-    -------
-    isotope_mass : `~astropy.units.Quantity`
-        The atomic mass of a neutral atom of an isotope.
-
-    Raises
-    ------
-    `~plasmapy.utils.InvalidIsotopeError`
-        If the argument is a valid particle but not a valid isotope.
-
-    `~plasmapy.utils.InvalidParticleError`
-        If the argument does not correspond to a valid particle.
-
-    `~plasmapy.utils.AtomicError`
-        If the charge of the particle is given, in which case
-        `~plasmapy.atomic.ion_mass` should be used instead.
-
-    `TypeError`
-        If `isotope` is not a `str`, `int`, or
-        `~plasmapy.atomic.Particle`.
-
-    See Also
-    --------
-    `~plasmapy.atomic.standard_atomic_weight` : returns atomic weight of
-        an element based on terrestrial abundances of isotopes.
-
-    `~plasmapy.atomic.ion_mass` : returns the mass of an ion of an
-        element or isotope, accounting for loss of electrons.
-
-    Notes
-    -----
-    The masses of rare isotopes may be unavailable.
-
-    Examples
-    --------
-    >>> isotope_mass("H-1")
-    <Quantity 1.67353281e-27 kg>
-    >>> isotope_mass("He", mass_numb=4)
-    <Quantity 6.64647897e-27 kg>
-
-    """
-    return isotope.mass
-
-
-@particle_input
-def ion_mass(particle: Particle, *, Z: int = None, mass_numb: int = None) -> u.Quantity:
-    """
-    Return the mass of an ion by finding the standard atomic
-    weight of an element or the atomic mass of an isotope, and then
-    accounting for the change in mass due to loss of electrons from
-    ionization.
-
-    Parameters
-    ----------
-    particle: `str`, `int`, or `~plasmapy.atomic.Particle`
-        A string representing an element, isotope, or ion; an integer
-        representing an atomic number; or an instance of the Particle
-        class.
-
-    Z: `int`, optional
-        The ionization state of the ion (defaulting to a charge of
-        `Z = 1`)
-
-    mass_numb: `int`, optional
-        The mass number of an isotope.
-
-    Returns
-    -------
-    m_i: `~astropy.units.Quantity`
-        The mass of a single ion of the isotope or element with charge
-        state `Z`.
-
-    Raises
-    ------
-    `TypeError`
-        The argument is not a `str`, `int`, or
-        `plasmapy.utils.~Particle`.
-
-    `~plasmapy.utils.InvalidParticleError`
-        If the arguments do not correspond to a valid particle.
-
-    `~plasmapy.utils.InvalidIonError`
-        If the argument represents a particle other than an ion, the
-        ionization state exceeds the atomic number, or no isotope mass
-        or standard atomic weight is available.
-
-    `~plasmapy.utils.MissingAtomicDataError`
-        If the standard atomic weight or isotopic mass is not known.
-
-    See Also
-    --------
-    `~plasmapy.atomic.standard_atomic_weight` : returns the conventional
-        atomic mass of an element based on terrestrial values and
-        assuming the atom is neutral.
-
-    `~plasmapy.atomic.isotope_mass` : returns the mass of an isotope (if
-        available) assuming the atom is neutral.
-
-    Notes
-    -----
-    This function in general finds the mass of an isotope (or the
-    standard atomic weight based on terrestrial values if a unique
-    isotope cannot be identified), and then subtracts the mass of `Z`
-    electrons.
-
-    If `Z` is not provided as an input, then `ion_mass` assumes that the
-    ion is singly ionized while issuing a `DeprecationWarning`.
-
-    Specific values are returned for some special particles such as
-    protons, deuterons, tritons, and positrons.
-
-    Calling `ion_mass('H')` does not return the mass of a proton but
-    instead uses hydrogen's standard atomic weight based on
-    terrestrial values.  To get the mass of a proton, use
-    `ion_mass('p')`.
-
-    Examples
-    --------
-    >>> ion_mass('H+')  # assumes terrestrial abundance of D
-    <Quantity 1.67291241e-27 kg>
-    >>> ion_mass('H+') == ion_mass('p')
-    False
-    >>> ion_mass('P+')  # phosphorus
-    <Quantity 5.14322301e-26 kg>
-    >>> ion_mass('He-4', Z=2)
-    <Quantity 6.64465709e-27 kg>
-    >>> ion_mass('T+')
-    <Quantity 5.00735666e-27 kg>
-    >>> ion_mass(26, Z=1, mass_numb=56)
-    <Quantity 9.28812345e-26 kg>
-    >>> ion_mass('Fe-56 1+')
-    <Quantity 9.28812345e-26 kg>
-
-    """
-
-    # TODO: Remove deprecated functionality elsewhere in the code
-
-    if particle.is_ion or particle.particle in {'e+'}:
-        return particle.mass
-    elif particle.particle == 'n':
-        raise InvalidIonError
-    elif particle.isotope in ['H-1']:
-        warnings.warn("Use 'p+' instead of 'H-1' to refer to protons", DeprecationWarning)
-        return const.m_p
-    elif particle.element:
-        warnings.warn("The assumption that particles are singly ionized in"
-                      "ion_mass is deprecated.", DeprecationWarning)
-        return particle.mass - const.m_e
-    elif particle.mass is not None:
-        warnings.warn('The use of ion_mass for particles besides ions and '
-                      'positrons is deprecated.', DeprecationWarning)
-        return particle.mass
-    else:
-        raise InvalidIonError(f"The particle {particle} is not a valid ion.")
 
 
 @particle_input(exclude={'neutrino', 'antineutrino'})
@@ -397,16 +218,7 @@ def particle_mass(particle: Particle, *, Z: int = None, mass_numb: int = None) -
 
     See Also
     --------
-    `~plasmapy.atomic.standard_atomic_weight` : returns the conventional
-        atomic mass of an element based on terrestrial values and
-        assuming the atom is neutral.
-
-    `~plasmapy.atomic.isotope_mass` : returns the mass of an isotope (if
-        available) assuming the atom is neutral.
-
-    `~plasmapy.atomic.ion_mass` : returns the mass of an ion of an
-        element or isotope, accounting for reduction of mass from the
-        neutral state due to different numbers of electrons.
+    ~plasmapy.atomic.standard_atomic_weight
 
     Notes
     -----

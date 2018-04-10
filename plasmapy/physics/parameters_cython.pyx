@@ -3,7 +3,7 @@ Optimized versions of functions in test_parameters.py.
 The optimization is mainly due to static typing.
 Be careful when using these function as they do have fixed precision, due
 to using C types.
-""" 
+"""
 
 # python modules
 import numpy as np
@@ -12,7 +12,7 @@ from astropy import units
 # plasmapy modules
 from ..constants import (k_B)
 import plasmapy.atomic as atomic
-# from plasmapy.atomic import ion_mass, charge_state
+# from plasmapy.atomic import particle_mass, charge_state
 # For future: change these into decorators.  _check_quantity does a
 # bit more than @quantity_input as it can allow
 import plasmapy.utils as utils
@@ -103,7 +103,7 @@ def thermal_speed(double T, particle="e", method="most_probable"):
 #    T = T.to(units.K, equivalencies=units.temperature_energy())
 
     try:
-        m = atomic.ion_mass(particle).si.value
+        m = atomic.particle_mass(particle).si.value
     except Exception:
         raise ValueError("Unable to find {particle} mass in thermal_speed")
 

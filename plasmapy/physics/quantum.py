@@ -20,7 +20,7 @@ from ..mathematics import Fermi_integral
 # TODO: Use @check_relativistic and @particle_input
 
 @utils.check_quantity({
-    'V': {'units': u.m/u.s, 'can_be_negative': True}
+    'V': {'units': u.m / u.s, 'can_be_negative': True}
     })
 def deBroglie_wavelength(V, particle):
     r"""
@@ -74,10 +74,10 @@ def deBroglie_wavelength(V, particle):
     Examples
     --------
     >>> from astropy import units as u
-    >>> velocity = 1.4e7*u.m/u.s
+    >>> velocity = 1.4e7 * u.m / u.s
     >>> deBroglie_wavelength(velocity, 'e')
     <Quantity 5.18997095e-11 m>
-    >>> deBroglie_wavelength(V = 0*u.m/u.s, particle = 'D+')
+    >>> deBroglie_wavelength(V = 0 * u.m / u.s, particle = 'D+')
     <Quantity inf m>
     """
 
@@ -94,7 +94,7 @@ def deBroglie_wavelength(V, particle):
     if not isinstance(particle, u.Quantity):
         try:
             # TODO: Replace with more general routine!
-            m = atomic.ion_mass(particle)
+            m = atomic.particle_mass(particle)
         except Exception:
             raise ValueError("Unable to find particle mass.")
     else:
@@ -423,7 +423,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     Levenberg-Marquardt least squares method is used to iteratively approach
     a value of :math:`\mu` which minimizes
     :math:`I_{1/2}(\beta \mu_a^{ideal}) - \chi_a`
-    
+
     This function returns :math:`\beta \mu^{ideal}` the dimensionless
     ideal chemical potential.
 

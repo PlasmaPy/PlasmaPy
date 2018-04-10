@@ -19,7 +19,7 @@ from plasmapy.physics.dimensionless import (quantum_theta,
                                             )
 from plasmapy.physics.transport import (coupling_parameter,
                                         )
-from plasmapy.atomic import (ion_mass,
+from plasmapy.atomic import (particle_mass,
                              integer_charge,
                              )
 
@@ -124,8 +124,8 @@ class PlasmaBlob():
         self.particle = particle
         self.Z = grab_charge(particle, Z)
         # extract mass from particle
-        self.ionMass = ion_mass(self.particle)
-        
+        self.ionMass = particle_mass(self.particle)
+
     def __str__(self):
         """
         Fetches regimes for easy printing
@@ -154,23 +154,23 @@ class PlasmaBlob():
         PlasmaBlob(T_e=10000.0 K, n_e=1e+20 1 / m3, particle=p, Z=1)
         """
         return f"PlasmaBlob(T_e={self.T_e}, n_e={self.n_e}, particle={self.particle}, Z={self.Z})"
-    
+
     @property
     def electron_temperature(self):
         return self.T_e
-    
+
     @property
     def electron_density(self):
         return self.n_e
-    
+
     @property
     def ionization(self):
         return self.Z
-    
+
     @property
     def composition(self):
         return self.particle
-    
+
     def regimes(self):
         """
         Generate a comprehensive description of the plasma regimes

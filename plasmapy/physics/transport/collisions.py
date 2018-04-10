@@ -11,8 +11,9 @@ import plasmapy.atomic as atomic
 from plasmapy import utils
 from plasmapy.utils.checks import (check_quantity,
                                    _check_relativistic)
+
 from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
-from plasmapy.atomic import (ion_mass, integer_charge)
+from plasmapy.atomic import (particle_mass, integer_charge)
 from plasmapy.physics.parameters import (Debye_length)
 from plasmapy.physics.quantum import (Wigner_Seitz_radius,
                                       thermal_deBroglie_wavelength,
@@ -247,7 +248,7 @@ def _boilerPlate(T, particles, V):
     for particle, i in zip(particles, range(2)):
 
         try:
-            masses[i] = ion_mass(particles[i])
+            masses[i] = particle_mass(particles[i])
         except Exception:
             raise ValueError("Unable to find mass of particle: "
                              f"{particles[i]}.")
@@ -773,10 +774,10 @@ def collision_rate_electron_ion(T_e,
 
     References
     ----------
-    .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of 
+    .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
        plasma physics 1 (1965): 205.
 
-    .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary, 
+    .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
        https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
@@ -891,10 +892,10 @@ def collision_rate_ion_ion(T_i,
 
     References
     ----------
-    .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of 
+    .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
        plasma physics 1 (1965): 205.
 
-    .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary, 
+    .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
        https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
@@ -918,7 +919,7 @@ def collision_rate_ion_ion(T_i,
 
     """
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
-    m_i = atomic.ion_mass(ion_particle)
+    m_i = atomic.particle_mass(ion_particle)
     particles = [ion_particle, ion_particle]
     if not V:
         # ion thermal velocity (most probable)
@@ -933,7 +934,7 @@ def collision_rate_ion_ion(T_i,
     # factor of 4 due to reduced mass in bperp and the rest is
     # due to differences in definitions of collisional frequency
     coeff = np.sqrt(8 / np.pi) / 3 / 4
-    
+
     # accounting for when a Coulomb logarithm value is passed
     if coulomb_log:
         cLog = Coulomb_logarithm(T_i,
