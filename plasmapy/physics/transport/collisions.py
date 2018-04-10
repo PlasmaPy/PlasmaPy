@@ -139,7 +139,7 @@ def Coulomb_logarithm(T,
     >>> particles = ('e', 'p')
     >>> Coulomb_logarithm(T, n, particles)
     14.545527226436974
-    >>> Coulomb_logarithm(T, n, particles, V=1e6*u.m/u.s)
+    >>> Coulomb_logarithm(T, n, particles, V=1e6 * u.m / u.s)
     11.363478214139432
 
     References
@@ -439,7 +439,7 @@ def impact_parameter(T,
     >>> particles = ('e', 'p')
     >>> impact_parameter(T, n, particles)
     (<Quantity 1.05163088e-11 m>, <Quantity 2.18225522e-05 m>)
-    >>> impact_parameter(T, n, particles, V=1e6*u.m/u.s)
+    >>> impact_parameter(T, n, particles, V=1e6 * u.m / u.s)
     (<Quantity 2.53401778e-10 m>, <Quantity 2.18225522e-05 m>)
 
     References
@@ -761,17 +761,17 @@ def collision_rate_electron_ion(T_e,
     Examples
     --------
     >>> from astropy import units as u
-    >>> collision_rate_electron_ion(0.1*u.eV, 1e6/u.m**3, 'p')
+    >>> collision_rate_electron_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 0.00180172 1 / s>
-    >>> collision_rate_electron_ion(100*u.eV, 1e6/u.m**3, 'p')
+    >>> collision_rate_electron_ion(100 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 8.6204672e-08 1 / s>
-    >>> collision_rate_electron_ion(100*u.eV, 1e20/u.m**3, 'p')
+    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p')
     <Quantity 3936037.8595928 1 / s>
-    >>> collision_rate_electron_ion(100*u.eV, 1e20/u.m**3, 'p', coulomb_log_method = 'GMS-1')
+    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
     <Quantity 3872922.52743562 1 / s>
-    >>> collision_rate_electron_ion(0.1*u.eV, 1e6/u.m**3, 'p', V = c/100)
+    >>> collision_rate_electron_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
     <Quantity 4.41166015e-07 1 / s>
-    >>> collision_rate_electron_ion(100*u.eV, 1e20/u.m**3, 'p', coulomb_log = 20)
+    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
     <Quantity 5812633.74935003 1 / s>
 
     """
@@ -876,17 +876,17 @@ def collision_rate_ion_ion(T_i,
     Examples
     --------
     >>> from astropy import units as u
-    >>> collision_rate_ion_ion(0.1*u.eV, 1e6/u.m**3, 'p')
+    >>> collision_rate_ion_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 2.97315582e-05 1 / s>
-    >>> collision_rate_ion_ion(100*u.eV, 1e6/u.m**3, 'p')
+    >>> collision_rate_ion_ion(100 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 1.43713193e-09 1 / s>
-    >>> collision_rate_ion_ion(100*u.eV, 1e20/u.m**3, 'p')
+    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p')
     <Quantity 66411.80316364 1 / s>
-    >>> collision_rate_ion_ion(100*u.eV, 1e20/u.m**3, 'p', coulomb_log_method='GMS-1')
+    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
     <Quantity 66407.00859126 1 / s>
-    >>> collision_rate_ion_ion(100*u.eV, 1e20/u.m**3, 'p', V = c/100)
+    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
     <Quantity 6.53577473 1 / s>
-    >>> collision_rate_ion_ion(100*u.eV, 1e20/u.m**3, 'p', coulomb_log=20)
+    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
     <Quantity 95918.76240877 1 / s>
 
     """
@@ -1006,7 +1006,7 @@ def mean_free_path(T,
     >>> particles = ('e', 'p')
     >>> mean_free_path(T, n, particles)
     <Quantity 7.8393631 m>
-    >>> mean_free_path(T, n, particles, V=1e6*u.m/u.s)
+    >>> mean_free_path(T, n, particles, V=1e6 * u.m / u.s)
     <Quantity 0.00852932 m>
 
     References
@@ -1125,7 +1125,7 @@ def Spitzer_resistivity(T,
     >>> particles = ('e', 'p')
     >>> Spitzer_resistivity(T, n, particles)
     <Quantity 2.4916169e-06 m Ohm>
-    >>> Spitzer_resistivity(T, n, particles, V=1e6*u.m/u.s)
+    >>> Spitzer_resistivity(T, n, particles, V=1e6 * u.m / u.s)
     <Quantity 0.00041583 m Ohm>
 
     References
@@ -1244,7 +1244,7 @@ def mobility(T,
     >>> particles = ('e', 'p')
     >>> mobility(T, n, particles)
     <Quantity 250500.35318738 m2 / (s V)>
-    >>> mobility(T, n, particles, V=1e6*u.m/u.s)
+    >>> mobility(T, n, particles, V=1e6 * u.m / u.s)
     <Quantity 1500.97042427 m2 / (s V)>
 
     References
@@ -1364,7 +1364,7 @@ def Knudsen_number(characteristic_length,
     >>> particles = ('e', 'p')
     >>> Knudsen_number(L, T, n, particles)
     <Quantity 7839.36310417>
-    >>> Knudsen_number(L, T, n, particles, V=1e6*u.m/u.s)
+    >>> Knudsen_number(L, T, n, particles, V=1e6 * u.m / u.s)
     <Quantity 8.52931736>
 
     References
@@ -1501,7 +1501,7 @@ def coupling_parameter(T,
     >>> particles = ('e', 'p')
     >>> coupling_parameter(T, n, particles)
     <Quantity 5.80330315e-05>
-    >>> coupling_parameter(T, n, particles, V=1e6*u.m/u.s)
+    >>> coupling_parameter(T, n, particles, V=1e6 * u.m / u.s)
     <Quantity 5.80330315e-05>
 
     References
