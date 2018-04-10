@@ -26,4 +26,3 @@ Reference/API
 =============
 
 .. automodapi:: plasmapy.utils
-:no-inheritance-diagram:
