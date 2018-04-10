@@ -633,19 +633,22 @@ def collision_frequency(T,
     .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
     """
     # boiler plate checks
-    T, masses, charges, reduced_mass, V_red = _boilerPlate(T=T,
-                                                           particles=particles,
-                                                           V=V)
+    T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T,
+                                                         particles=particles,
+                                                         V=V)
+    # using a more descriptive name for the thermal velocity using
+    # reduced mass
+    V_reduced = V_r
     if particles[0] in ('e','e-') and particles[1] in ('e','e-'):
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
         if np.isnan(V):
-            V = V_red
+            V = V_reduced
         # electron-electron collision
         # impact parameter for 90 degree collision
         bPerp = b_perp(T=T,
                        particles=particles,
-                       V=V_red)
+                       V=V_reduced)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T,
                                     n,
@@ -679,7 +682,7 @@ def collision_frequency(T,
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
         if np.isnan(V):
-            V = V_red
+            V = V_reduced
         # ion-ion collision
         bPerp = b_perp(T=T,
                        particles=particles,
