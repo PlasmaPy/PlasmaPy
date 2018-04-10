@@ -10,9 +10,9 @@ from plasmapy import atomic
 from plasmapy.atomic.atomic import _is_electron
 from .collisions import Coulomb_logarithm
 from plasmapy.physics.parameters import (Hall_parameter,
-                                         collision_rate_electron_ion,
-                                         collision_rate_ion_ion,
                                          grab_charge)
+from plasmapy.physics.transport.collisions import (collision_rate_electron_ion,
+                                                   collision_rate_ion_ion)
 from plasmapy.constants import e, m_e, k_B
 
 
@@ -280,7 +280,7 @@ class classical_transport:
         # get ion mass and charge state
         if m_i is None:
             try:
-                self.m_i = atomic.ion_mass(ion_particle)
+                self.m_i = atomic.particle_mass(ion_particle)
             except Exception:
                 raise ValueError(f"Unable to find mass of particle: "
                                  f"{ion_particle} in classical_transport")

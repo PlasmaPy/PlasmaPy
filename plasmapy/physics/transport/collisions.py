@@ -11,8 +11,9 @@ import plasmapy.atomic as atomic
 from plasmapy import utils
 from plasmapy.utils.checks import (check_quantity,
                                    _check_relativistic)
-from plasmapy.constants import (m_e, k_B, e, eps0, pi, hbar)
-from plasmapy.atomic import (ion_mass, integer_charge)
+
+from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
+from plasmapy.atomic import (particle_mass, integer_charge)
 from plasmapy.physics.parameters import (Debye_length)
 from plasmapy.physics.quantum import (Wigner_Seitz_radius,
                                       thermal_deBroglie_wavelength,
@@ -143,7 +144,7 @@ def Coulomb_logarithm(T,
     >>> particles = ('e', 'p')
     >>> Coulomb_logarithm(T, n, particles)
     14.545527226436974
-    >>> Coulomb_logarithm(T, n, particles, V=1e6*u.m/u.s)
+    >>> Coulomb_logarithm(T, n, particles, V=1e6 * u.m / u.s)
     11.363478214139432
 
     References
@@ -247,7 +248,7 @@ def _boilerPlate(T, particles, V):
     for particle, i in zip(particles, range(2)):
 
         try:
-            masses[i] = ion_mass(particles[i])
+            masses[i] = particle_mass(particles[i])
         except Exception:
             raise ValueError("Unable to find mass of particle: "
                              f"{particles[i]}.")
@@ -452,7 +453,7 @@ def impact_parameter(T,
     >>> particles = ('e', 'p')
     >>> impact_parameter(T, n, particles)
     (<Quantity 1.05163088e-11 m>, <Quantity 2.18225522e-05 m>)
-    >>> impact_parameter(T, n, particles, V=1e6*u.m/u.s)
+    >>> impact_parameter(T, n, particles, V=1e6 * u.m / u.s)
     (<Quantity 2.53401778e-10 m>, <Quantity 2.18225522e-05 m>)
 
     References
@@ -651,15 +652,22 @@ def collision_frequency(T,
     .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
     """
     # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
-    if particles[0] == 'e' and particles[1] == 'e':
+    T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T,
+                                                         particles=particles,
+                                                         V=V)
+    # using a more descriptive name for the thermal velocity using
+    # reduced mass
+    V_reduced = V_r
+    if particles[0] in ('e','e-') and particles[1] in ('e','e-'):
+        # if a velocity was passed, we use that instead of the reduced
+        # thermal velocity
+        if np.isnan(V):
+            V = V_reduced
         # electron-electron collision
         # impact parameter for 90 degree collision
         bPerp = b_perp(T=T,
                        particles=particles,
-                       V=V)
+                       V=V_reduced)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T,
                                     n,
@@ -667,11 +675,14 @@ def collision_frequency(T,
                                     z_mean,
                                     V=np.nan * u.m / u.s,
                                     method=method)
-    elif particles[0] == 'e' or particles[1] == 'e':
+    elif particles[0] in ('e','e-') or particles[1] in ('e','e-'):
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
-        V = np.sqrt(2 * k_B * T / m_e)
+        if np.isnan(V):
+            # we ignore the reduced velocity and use the electron thermal
+            # velocity instead
+            V = np.sqrt(2 * k_B * T / m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
         bPerp = b_perp(T=T,
@@ -687,6 +698,10 @@ def collision_frequency(T,
                                     V=np.nan * u.m / u.s,
                                     method=method)
     else:
+        # if a velocity was passed, we use that instead of the reduced
+        # thermal velocity
+        if np.isnan(V):
+            V = V_reduced
         # ion-ion collision
         bPerp = b_perp(T=T,
                        particles=particles,
@@ -705,6 +720,237 @@ def collision_frequency(T,
     # angle collisions.
     freq = n * sigma * V * cou_log
     return freq.to(u.Hz)
+
+
+@utils.check_quantity({
+    'T_e': {'units': u.K, 'can_be_negative': False},
+    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
+    })
+def collision_rate_electron_ion(T_e,
+                                n_e,
+                                ion_particle,
+                                coulomb_log=None,
+                                V=None,
+                                coulomb_log_method="classical"):
+    r"""
+    Momentum relaxation electron-ion collision rate
+
+    From [3]_, equations (2.17) and (2.120)
+
+    Considering a Maxwellian distribution of "test" electrons colliding with
+    a Maxwellian distribution of "field" ions.
+
+    This result is an electron momentum relaxation rate, and is used in many
+    classical transport expressions. It is equivalent to:
+    * 1/tau_e from ref [1]_ eqn (1) pp. #,
+    * 1/tau_e from ref [2]_ eqn (1) pp. #,
+    * nu_e\i_S from ref [2]_ eqn (1) pp. #,
+
+    Parameters
+    ----------
+    T_e : ~astropy.units.Quantity
+        The electron temperature of the Maxwellian test electrons
+
+    n_e : ~astropy.units.Quantity
+        The number density of the Maxwellian test electrons
+
+    ion_particle: str
+        String signifying a particle type of the field ions, including charge
+        state information.
+
+    V : ~astropy.units.Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
+
+    coulomb_log : float or dimensionless ~astropy.units.Quantity, optional
+        Option to specify a Coulomb logarithm of the electrons on the ions.
+        If not specified, the Coulomb log will is calculated using the
+        `~plasmapy.physics.transport.Coulomb_logarithm` function.
+
+    coulomb_log_method : string, optional
+        Method used for Coulomb logarithm calculation (see that function
+        for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
+
+    References
+    ----------
+    .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
+       plasma physics 1 (1965): 205.
+
+    .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
+       revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
+       https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
+
+    .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> collision_rate_electron_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
+    <Quantity 0.00180172 1 / s>
+    >>> collision_rate_electron_ion(100 * u.eV, 1e6 / u.m ** 3, 'p')
+    <Quantity 8.6204672e-08 1 / s>
+    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p')
+    <Quantity 3936037.8595928 1 / s>
+    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
+    <Quantity 3872922.52743562 1 / s>
+    >>> collision_rate_electron_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
+    <Quantity 4.41166015e-07 1 / s>
+    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
+    <Quantity 5812633.74935003 1 / s>
+
+    """
+    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
+    if not V:
+        # electron thermal velocity (most probable)
+        V = np.sqrt(2 * k_B * T_e / m_e)
+
+    particles = [ion_particle, 'e-']
+    Z_i = atomic.integer_charge(ion_particle)
+    nu = collision_frequency(T_e,
+                             n_e,
+                             particles,
+                             z_mean=Z_i,
+                             V=V,
+                             method=coulomb_log_method
+                             )
+    coeff = 4 / np.sqrt(np.pi) / 3
+
+
+    # accounting for when a Coulomb logarithm value is passed
+    if coulomb_log:
+        cLog = Coulomb_logarithm(T_e,
+                                 n_e,
+                                 particles,
+                                 z_mean=Z_i,
+                                 V=np.nan, # probably needs to be enabled!
+                                 method=coulomb_log_method)
+        # dividing out by typical Coulomb logarithm value implicit in
+        # the collision frequency calculation and replacing with
+        # the user defined Coulomb logarithm value
+        nu_mod = nu * coulomb_log / cLog
+        nu_e = coeff * nu_mod
+    else:
+        nu_e = coeff * nu
+    return nu_e.to(1 / u.s)
+
+
+@utils.check_quantity({
+    'T_i': {'units': u.K, 'can_be_negative': False},
+    'n_i': {'units': u.m ** -3, 'can_be_negative': False}
+    })
+def collision_rate_ion_ion(T_i,
+                           n_i,
+                           ion_particle,
+                           coulomb_log=None,
+                           V=None,
+                           coulomb_log_method="classical"):
+    r"""
+    Momentum relaxation ion-ion collision rate
+
+    From [3]_, equations (2.36) and (2.122)
+
+    Considering a Maxwellian distribution of "test" ions colliding with
+    a Maxwellian distribution of "field" ions.
+
+    Note, it is assumed that electrons are present in such numbers as to
+    establish quasineutrality, but the effects of the test ions colliding
+    with them are not considered here.
+
+    This result is an ion momentum relaxation rate, and is used in many
+    classical transport expressions. It is equivalent to:
+    * 1/tau_i from ref [1]_ eqn (1) pp. #,
+    * 1/tau_i from ref [2]_ eqn (1) pp. #,
+    * nu_i\i_S from ref [2]_ eqn (1) pp. #,
+
+    Parameters
+    ----------
+    T_i : ~astropy.units.Quantity
+        The electron temperature of the Maxwellian test ions
+
+    n_i : ~astropy.units.Quantity
+        The number density of the Maxwellian test ions
+
+    ion_particle: str
+        String signifying a particle type of the test and field ions,
+        including charge state information. This function assumes the test
+        and field ions are the same species.
+
+    V : ~astropy.units.Quantity, optional
+        The relative velocity between particles.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
+
+    coulomb_log : float or dimensionless ~astropy.units.Quantity, optional
+        Option to specify a Coulomb logarithm of the electrons on the ions.
+        If not specified, the Coulomb log will is calculated using the
+        ~plasmapy.physics.transport.Coulomb_logarithm function.
+
+    coulomb_log_method : str, optional
+        Method used for Coulomb logarithm calculation (see that function
+        for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
+
+    References
+    ----------
+    .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
+       plasma physics 1 (1965): 205.
+
+    .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
+       revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
+       https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
+
+    .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> collision_rate_ion_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
+    <Quantity 2.97315582e-05 1 / s>
+    >>> collision_rate_ion_ion(100 * u.eV, 1e6 / u.m ** 3, 'p')
+    <Quantity 1.43713193e-09 1 / s>
+    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p')
+    <Quantity 66411.80316364 1 / s>
+    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
+    <Quantity 66407.00859126 1 / s>
+    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
+    <Quantity 6.53577473 1 / s>
+    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
+    <Quantity 95918.76240877 1 / s>
+
+    """
+    T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
+    m_i = atomic.particle_mass(ion_particle)
+    particles = [ion_particle, ion_particle]
+    if not V:
+        # ion thermal velocity (most probable)
+        V = np.sqrt(2 * k_B * T_i / m_i)
+    Z_i = atomic.integer_charge(ion_particle)
+    nu = collision_frequency(T_i,
+                             n_i,
+                             particles,
+                             z_mean=Z_i,
+                             V=V,
+                             method=coulomb_log_method)
+    # factor of 4 due to reduced mass in bperp and the rest is
+    # due to differences in definitions of collisional frequency
+    coeff = np.sqrt(8 / np.pi) / 3 / 4
+
+    # accounting for when a Coulomb logarithm value is passed
+    if coulomb_log:
+        cLog = Coulomb_logarithm(T_i,
+                                 n_i,
+                                 particles,
+                                 z_mean=Z_i,
+                                 V=np.nan * u.m / u.s,
+                                 method=coulomb_log_method)
+        # dividing out by typical Coulomb logarithm value implicit in
+        # the collision frequency calculation and replacing with
+        # the user defined Coulomb logarithm value
+        nu_mod = nu * coulomb_log / cLog
+        nu_i = coeff * nu_mod
+    else:
+        nu_i = coeff * nu
+    return nu_i.to(1 / u.s)
 
 
 @check_quantity({"T":   {"units": u.K, "can_be_negative": False},
@@ -793,18 +1039,14 @@ def mean_free_path(T,
     >>> particles = ('e', 'p')
     >>> mean_free_path(T, n, particles)
     <Quantity 7.8393631 m>
-    >>> mean_free_path(T, n, particles, V=1e6*u.m/u.s)
-    <Quantity 1.42347709 m>
+    >>> mean_free_path(T, n, particles, V=1e6 * u.m / u.s)
+    <Quantity 0.00852932 m>
 
     References
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
     # collisional frequency
     freq = collision_frequency(T=T,
                                n=n_e,
@@ -812,6 +1054,14 @@ def mean_free_path(T,
                                z_mean=z_mean,
                                V=V,
                                method=method)
+    # boiler plate to fetch velocity
+    # this has been moved to after collision_frequency to avoid use of
+    # reduced mass thermal velocity in electron-ion collision case.
+    # Should be fine since collision_frequency has its own boiler_plate
+    # check, and we are only using this here to get the velocity.
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
     # mean free path length
     mfp = V / freq
     return mfp.to(u.m)
@@ -913,8 +1163,8 @@ def Spitzer_resistivity(T,
     >>> particles = ('e', 'p')
     >>> Spitzer_resistivity(T, n, particles)
     <Quantity 2.4916169e-06 m Ohm>
-    >>> Spitzer_resistivity(T, n, particles, V=1e6*u.m/u.s)
-    <Quantity 2.4916169e-06 m Ohm>
+    >>> Spitzer_resistivity(T, n, particles, V=1e6 * u.m / u.s)
+    <Quantity 0.00041583 m Ohm>
 
     References
     ----------
@@ -923,10 +1173,6 @@ def Spitzer_resistivity(T,
     .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
     # collisional frequency
     freq = collision_frequency(T=T,
                                n=n,
@@ -934,6 +1180,11 @@ def Spitzer_resistivity(T,
                                z_mean=z_mean,
                                V=V,
                                method=method)
+    # boiler plate checks
+    # fetching additional parameters
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
     if np.isnan(z_mean):
         spitzer = freq * reduced_mass / (n * charges[0] * charges[1])
     else:
@@ -1036,23 +1287,26 @@ def mobility(T,
     >>> particles = ('e', 'p')
     >>> mobility(T, n, particles)
     <Quantity 250500.35318738 m2 / (s V)>
-    >>> mobility(T, n, particles, V=1e6*u.m/u.s)
-    <Quantity 250500.35318738 m2 / (s V)>
+    >>> mobility(T, n, particles, V=1e6 * u.m / u.s)
+    <Quantity 1500.97042427 m2 / (s V)>
 
     References
     ----------
     .. [1] https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase
     """
-    # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
-                                                       V=V)
     freq = collision_frequency(T=T,
                                n=n_e,
                                particles=particles,
                                z_mean=z_mean,
                                V=V,
                                method=method)
+    # boiler plate checks
+    # we do this after collision_frequency since collision_frequency
+    # already has a boiler_plate check and we are doing this just
+    # to recover the charges, mass, etc.
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
+                                                       particles=particles,
+                                                       V=V)
     if np.isnan(z_mean):
         z_val = (charges[0] + charges[1]) / 2
     else:
@@ -1158,8 +1412,8 @@ def Knudsen_number(characteristic_length,
     >>> particles = ('e', 'p')
     >>> Knudsen_number(L, T, n, particles)
     <Quantity 7839.36310417>
-    >>> Knudsen_number(L, T, n, particles, V=1e6*u.m/u.s)
-    <Quantity 1423.47708879>
+    >>> Knudsen_number(L, T, n, particles, V=1e6 * u.m / u.s)
+    <Quantity 8.52931736>
 
     References
     ----------
@@ -1300,7 +1554,7 @@ def coupling_parameter(T,
     >>> particles = ('e', 'p')
     >>> coupling_parameter(T, n, particles)
     <Quantity 5.80330315e-05>
-    >>> coupling_parameter(T, n, particles, V=1e6*u.m/u.s)
+    >>> coupling_parameter(T, n, particles, V=1e6 * u.m / u.s)
     <Quantity 5.80330315e-05>
 
     References

@@ -289,7 +289,7 @@ def test_thermal_speed():
                       128486.56960876315)
 
     # Case when Z=1 is assumed
-    assert thermal_speed(T_i, particle='p') == thermal_speed(T_i, particle='H-1')
+    assert thermal_speed(T_i, particle='p') == thermal_speed(T_i, particle='H-1+')
 
     assert thermal_speed(1 * u.MK, particle='e+') == thermal_speed(1 * u.MK)
 
@@ -609,7 +609,7 @@ def test_plasma_frequency():
         assert plasma_frequency(n_i, particle='p').unit.is_equivalent(u.rad / u.s)
 
     # Case where Z=1 is assumed
-    assert plasma_frequency(n_i, particle='H-1') == plasma_frequency(n_i, particle='p')
+    assert plasma_frequency(n_i, particle='H-1+') == plasma_frequency(n_i, particle='p')
 
     assert np.isclose(plasma_frequency(mu * u.cm ** -3, particle='p').value,
                       1.32e3, rtol=1e-2)

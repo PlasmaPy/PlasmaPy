@@ -22,8 +22,6 @@ from .atomic import (
     half_life,
     mass_number,
     standard_atomic_weight,
-    isotope_mass,
-    ion_mass,
     particle_mass,
     known_isotopes,
     common_isotopes,

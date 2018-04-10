@@ -5,7 +5,7 @@ Functions to calculate plasma parameters.
 
 from astropy import units as u
 
-# from plasmapy.atomic import ion_mass, integer_charge
+# from plasmapy.atomic import particle_mass, integer_charge
 
 import numpy as np
 # import warnings
@@ -45,7 +45,7 @@ def grab_charge(ion, z_mean=None):
     return Z
 
 
-def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg/u.m**3:
+def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg / u.m ** 3:
     """Utility function to merge two possible inputs for particle charge.
 
     Parameters
@@ -80,7 +80,7 @@ def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg/u.
         rho = density
     elif density.unit.is_equivalent(u.m ** -3):
         if particle:
-            m_i = atomic.ion_mass(particle)
+            m_i = atomic.particle_mass(particle)
             Z = grab_charge(particle, z_mean)
             rho = density * m_i + Z * density * m_e
         else:
@@ -309,7 +309,7 @@ def ion_sound_speed(T_e,
 
     """
 
-    m_i = atomic.ion_mass(ion)
+    m_i = atomic.particle_mass(ion)
     Z = grab_charge(ion, z_mean)
 
     for gamma, particles in zip([gamma_e, gamma_i], ["electrons", "ions"]):
@@ -418,7 +418,7 @@ def thermal_speed(T, particle="e-", method="most_probable"):
     T = T.to(u.K, equivalencies=u.temperature_energy())
 
     try:
-        m = atomic.ion_mass(particle)
+        m = atomic.particle_mass(particle)
     except AtomicError:
         raise ValueError("Unable to find {particle} mass in thermal_speed")
 
@@ -542,219 +542,6 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
 
 
 @utils.check_quantity({
-    'T_e': {'units': u.K, 'can_be_negative': False},
-    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def collision_rate_electron_ion(T_e,
-                                n_e,
-                                ion_particle,
-                                coulomb_log=None,
-                                V=None,
-                                coulomb_log_method="classical"):
-    r"""
-    Momentum relaxation electron-ion collision rate
-
-    From [3]_, equations (2.17) and (2.120)
-
-    Considering a Maxwellian distribution of "test" electrons colliding with
-    a Maxwellian distribution of "field" ions.
-
-    This result is an electron momentum relaxation rate, and is used in many
-    classical transport expressions. It is equivalent to:
-    * 1/tau_e from ref [1]_ eqn (1) pp. #,
-    * 1/tau_e from ref [2]_ eqn (1) pp. #,
-    * nu_e\i_S from ref [2]_ eqn (1) pp. #,
-
-    Parameters
-    ----------
-    T_e : ~astropy.units.Quantity
-        The electron temperature of the Maxwellian test electrons
-
-    n_e : ~astropy.units.Quantity
-        The number density of the Maxwellian test electrons
-
-    ion_particle: str
-        String signifying a particle type of the field ions, including charge
-        state information.
-
-    V : ~astropy.units.Quantity, optional
-        The relative velocity between particles.  If not provided,
-        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
-        where `mu` is the reduced mass.
-
-    coulomb_log : float or dimensionless ~astropy.units.Quantity, optional
-        Option to specify a Coulomb logarithm of the electrons on the ions.
-        If not specified, the Coulomb log will is calculated using the
-        `~plasmapy.physics.transport.Coulomb_logarithm` function.
-
-    coulomb_log_method : string, optional
-        Method used for Coulomb logarithm calculation (see that function
-        for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
-
-    References
-    ----------
-    .. [1] Braginskii
-
-    .. [2] Formulary
-
-    .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> collision_rate_electron_ion(0.1*u.eV, 1e6/u.m**3, 'p')
-    <Quantity 0.00180172 1 / s>
-    >>> collision_rate_electron_ion(100*u.eV, 1e6/u.m**3, 'p')
-    <Quantity 8.6204672e-08 1 / s>
-    >>> collision_rate_electron_ion(100*u.eV, 1e20/u.m**3, 'p')
-    <Quantity 3936037.8595928 1 / s>
-    >>> collision_rate_electron_ion(100*u.eV, 1e20/u.m**3, 'p', coulomb_log_method = 'GMS-1')
-    <Quantity 3872922.52743562 1 / s>
-    >>> collision_rate_electron_ion(0.1*u.eV, 1e6/u.m**3, 'p', V = c/100)
-    <Quantity 4.41166015e-07 1 / s>
-    >>> collision_rate_electron_ion(100*u.eV, 1e20/u.m**3, 'p', coulomb_log = 20)
-    <Quantity 5812633.74935004 1 / s>
-
-    """
-    from plasmapy.physics.transport.collisions import Coulomb_logarithm
-    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
-    if V is not None:
-        V = V
-    else:
-        # electron thermal velocity (most probable)
-        V = np.sqrt(2 * k_B * T_e / m_e)
-
-    if coulomb_log is not None:
-        coulomb_log_val = coulomb_log
-    else:
-        particles = ['e', ion_particle]
-        coulomb_log_val = Coulomb_logarithm(T_e,
-                                            n_e,
-                                            particles,
-                                            V,
-                                            method=coulomb_log_method)
-    # this is the same as b_perp in collisions.py, using most probable thermal velocity for V
-    # and using ion mass instead of reduced mass
-    bperp = e ** 2 / (4 * np.pi * eps0 * m_e * V ** 2)
-    # collisional cross-section
-    sigma = np.pi * (2 * bperp) ** 2
-    # collisional frequency with Coulomb logarithm to correct for small angle collisions
-    nu = n_e * sigma * V * coulomb_log_val
-    # this coefficient is the constant that pops out when comparing this definition of
-    # collisional frequency to the one in collisions.py
-    coeff = 4 / np.sqrt(np.pi) / 3
-    # collisional frequency modified by the constant difference
-    nu_e = coeff * nu
-    return nu_e.to(1 / u.s)
-
-
-@utils.check_quantity({
-    'T_i': {'units': u.K, 'can_be_negative': False},
-    'n_i': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def collision_rate_ion_ion(T_i, n_i, ion_particle,
-                           coulomb_log=None, V=None,
-                           coulomb_log_method="classical"):
-    r"""
-    Momentum relaxation ion-ion collision rate
-
-    From [3]_, equations (2.36) and (2.122)
-
-    Considering a Maxwellian distribution of "test" ions colliding with
-    a Maxwellian distribution of "field" ions.
-
-    Note, it is assumed that electrons are present in such numbers as to
-    establish quasineutrality, but the effects of the test ions colliding
-    with them are not considered here.
-
-    This result is an ion momentum relaxation rate, and is used in many
-    classical transport expressions. It is equivalent to:
-    * 1/tau_i from ref [1]_ eqn (1) pp. #,
-    * 1/tau_i from ref [2]_ eqn (1) pp. #,
-    * nu_i\i_S from ref [2]_ eqn (1) pp. #,
-
-    Parameters
-    ----------
-    T_i : ~astropy.units.Quantity
-        The electron temperature of the Maxwellian test ions
-
-    n_i : ~astropy.units.Quantity
-        The number density of the Maxwellian test ions
-
-    ion_particle: str
-        String signifying a particle type of the test and field ions,
-        including charge state information. This function assumes the test
-        and field ions are the same species.
-
-    V : ~astropy.units.Quantity, optional
-        The relative velocity between particles.  If not provided,
-        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
-        where `mu` is the reduced mass.
-
-    coulomb_log : float or dimensionless ~astropy.units.Quantity, optional
-        Option to specify a Coulomb logarithm of the electrons on the ions.
-        If not specified, the Coulomb log will is calculated using the
-        ~plasmapy.physics.transport.Coulomb_logarithm function.
-
-    coulomb_log_method : string, optional
-        Method used for Coulomb logarithm calculation (see that function
-        for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
-
-    References
-    ----------
-    .. [1] Braginskii
-
-    .. [2] Formulary
-
-    .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> collision_rate_ion_ion(0.1*u.eV, 1e6/u.m**3, 'p')
-    <Quantity 2.97315582e-05 1 / s>
-    >>> collision_rate_ion_ion(100*u.eV, 1e6/u.m**3, 'p')
-    <Quantity 1.43713193e-09 1 / s>
-    >>> collision_rate_ion_ion(100*u.eV, 1e20/u.m**3, 'p')
-    <Quantity 66411.80316364 1 / s>
-    >>> collision_rate_ion_ion(100*u.eV, 1e20/u.m**3, 'p', coulomb_log_method='GMS-1')
-    <Quantity 66407.00859126 1 / s>
-    >>> collision_rate_ion_ion(100*u.eV, 1e20/u.m**3, 'p', V = c/100)
-    <Quantity 6.53577473 1 / s>
-    >>> collision_rate_ion_ion(100*u.eV, 1e20/u.m**3, 'p', coulomb_log=20)
-    <Quantity 95918.76240877 1 / s>
-
-    """
-    from plasmapy.physics.transport.collisions import Coulomb_logarithm
-    T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
-    m_i = atomic.ion_mass(ion_particle)
-    if V is not None:
-        V = V
-    else:
-        # ion thermal velocity (most probable)
-        V = np.sqrt(2 * k_B * T_i / m_i)
-    if coulomb_log is not None:
-        coulomb_log_val = coulomb_log
-    else:
-        particles = [ion_particle, ion_particle]
-        coulomb_log_val = Coulomb_logarithm(T_i, n_i, particles, V, method=coulomb_log_method)
-    Z_i = atomic.integer_charge(ion_particle)
-    # this is the same as b_perp in collisions.py, using most probable thermal velocity for V
-    # and using ion mass instead of reduced mass
-    bperp = (Z_i * e) ** 2 / (4 * np.pi * eps0 * m_i * V ** 2)
-    # collisional cross-section
-    sigma = np.pi * (2 * bperp) ** 2
-    # collisional frequency with Coulomb logarithm to correct for small angle collisions
-    nu = n_i * sigma * V * coulomb_log_val
-    # this coefficient is the constant that pops out when comparing this definition of
-    # collisional frequency to the one in collisions.py
-    coeff = np.sqrt(8 / np.pi) / 3
-    # collisional frequency modified by the constant difference
-    nu_i = coeff * nu
-    return nu_i.to(1 / u.s)
-
-
-@utils.check_quantity({
     'n': {'units': u.m ** -3, 'can_be_negative': False},
     'T': {'units': u.K, 'can_be_negative': False},
     'B': {'units': u.T}
@@ -798,7 +585,8 @@ def Hall_parameter(n,
     -------
     astropy.units.quantity.Quantity
     """
-
+    from plasmapy.physics.transport.collisions import (collision_rate_ion_ion,
+                                                       collision_rate_electron_ion)
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
     if atomic.Particle(particle).particle == 'e-':
@@ -903,7 +691,7 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
     2799249007.6528206 Hz
 
     """
-    m_i = atomic.ion_mass(particle)
+    m_i = atomic.particle_mass(particle)
     Z = grab_charge(particle, Z)
     if not signed:
         Z = abs(Z)
@@ -913,9 +701,9 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
     return omega_ci
 
 
-@utils.check_quantity({'B':     {'units': u.T},
+@utils.check_quantity({'B': {'units': u.T},
                        'Vperp': {'units': u.m / u.s, 'can_be_nan': True},
-                       'T_i':   {'units': u.K, 'can_be_nan': True},
+                       'T_i': {'units': u.K, 'can_be_nan': True},
                        })
 def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
     r"""Return the particle gyroradius.
@@ -1097,7 +885,7 @@ def plasma_frequency(n, particle='e-', z_mean=None):
     """
 
     try:
-        m = atomic.ion_mass(particle)
+        m = atomic.particle_mass(particle)
         if z_mean is None:
             # warnings.warn("No z_mean given, defaulting to atomic charge",
             #               PhysicsWarning)
@@ -1448,7 +1236,7 @@ def magnetic_energy_density(B: u.T):
 
 
 @utils.check_quantity({
-    'B':   {'units': u.T},
+    'B': {'units': u.T},
     'n_e': {'units': u.m ** -3, 'can_be_negative': False}
     })
 def upper_hybrid_frequency(B, n_e):
@@ -1511,7 +1299,7 @@ def upper_hybrid_frequency(B, n_e):
 
 
 @utils.check_quantity({
-    'B':   {'units': u.T},
+    'B': {'units': u.T},
     'n_i': {'units': u.m ** -3, 'can_be_negative': False}
     })
 def lower_hybrid_frequency(B, n_i, ion='p+'):

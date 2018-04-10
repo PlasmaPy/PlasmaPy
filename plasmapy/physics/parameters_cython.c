@@ -1044,12 +1044,12 @@ static const char __pyx_k_atomic[] = "atomic";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_method[] = "method";
 static const char __pyx_k_astropy[] = "astropy";
-static const char __pyx_k_ion_mass[] = "ion_mass";
 static const char __pyx_k_particle[] = "particle";
 static const char __pyx_k_constants[] = "constants";
 static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_PhysicsError[] = "PhysicsError";
 static const char __pyx_k_most_probable[] = "most_probable";
+static const char __pyx_k_particle_mass[] = "particle_mass";
 static const char __pyx_k_thermal_speed[] = "thermal_speed";
 static const char __pyx_k_check_quantity[] = "_check_quantity";
 static const char __pyx_k_mean_magnitude[] = "mean_magnitude";
@@ -1080,7 +1080,6 @@ static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_constants;
 static PyObject *__pyx_n_s_e;
 static PyObject *__pyx_n_s_import;
-static PyObject *__pyx_n_s_ion_mass;
 static PyObject *__pyx_n_s_k_B;
 static PyObject *__pyx_n_s_m;
 static PyObject *__pyx_n_s_main;
@@ -1090,6 +1089,7 @@ static PyObject *__pyx_n_s_most_probable;
 static PyObject *__pyx_n_s_np;
 static PyObject *__pyx_n_s_numpy;
 static PyObject *__pyx_n_s_particle;
+static PyObject *__pyx_n_s_particle_mass;
 static PyObject *__pyx_n_s_pi;
 static PyObject *__pyx_n_s_plasmapy_atomic;
 static PyObject *__pyx_kp_s_plasmapy_physics_parameters_cyth;
@@ -1226,7 +1226,7 @@ static PyObject *__pyx_pf_8plasmapy_7physics_17parameters_cython_thermal_speed(C
  * #    T = T.to(units.K, equivalencies=units.temperature_energy())
  * 
  *     try:             # <<<<<<<<<<<<<<
- *         m = atomic.ion_mass(particle).si.value
+ *         m = atomic.particle_mass(particle).si.value
  *     except Exception:
  */
   {
@@ -1241,13 +1241,13 @@ static PyObject *__pyx_pf_8plasmapy_7physics_17parameters_cython_thermal_speed(C
       /* "plasmapy/physics/parameters_cython.pyx":106
  * 
  *     try:
- *         m = atomic.ion_mass(particle).si.value             # <<<<<<<<<<<<<<
+ *         m = atomic.particle_mass(particle).si.value             # <<<<<<<<<<<<<<
  *     except Exception:
  *         raise ValueError("Unable to find {particle} mass in thermal_speed")
  */
       __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_atomic); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 106, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_ion_mass); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 106, __pyx_L3_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_particle_mass); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 106, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_5 = NULL;
@@ -1307,7 +1307,7 @@ static PyObject *__pyx_pf_8plasmapy_7physics_17parameters_cython_thermal_speed(C
  * #    T = T.to(units.K, equivalencies=units.temperature_energy())
  * 
  *     try:             # <<<<<<<<<<<<<<
- *         m = atomic.ion_mass(particle).si.value
+ *         m = atomic.particle_mass(particle).si.value
  *     except Exception:
  */
     }
@@ -1323,7 +1323,7 @@ static PyObject *__pyx_pf_8plasmapy_7physics_17parameters_cython_thermal_speed(C
 
     /* "plasmapy/physics/parameters_cython.pyx":107
  *     try:
- *         m = atomic.ion_mass(particle).si.value
+ *         m = atomic.particle_mass(particle).si.value
  *     except Exception:             # <<<<<<<<<<<<<<
  *         raise ValueError("Unable to find {particle} mass in thermal_speed")
  * 
@@ -1337,7 +1337,7 @@ static PyObject *__pyx_pf_8plasmapy_7physics_17parameters_cython_thermal_speed(C
       __Pyx_GOTREF(__pyx_t_7);
 
       /* "plasmapy/physics/parameters_cython.pyx":108
- *         m = atomic.ion_mass(particle).si.value
+ *         m = atomic.particle_mass(particle).si.value
  *     except Exception:
  *         raise ValueError("Unable to find {particle} mass in thermal_speed")             # <<<<<<<<<<<<<<
  * 
@@ -1356,7 +1356,7 @@ static PyObject *__pyx_pf_8plasmapy_7physics_17parameters_cython_thermal_speed(C
  * #    T = T.to(units.K, equivalencies=units.temperature_energy())
  * 
  *     try:             # <<<<<<<<<<<<<<
- *         m = atomic.ion_mass(particle).si.value
+ *         m = atomic.particle_mass(particle).si.value
  *     except Exception:
  */
     __Pyx_XGIVEREF(__pyx_t_1);
@@ -1795,7 +1795,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_constants, __pyx_k_constants, sizeof(__pyx_k_constants), 0, 0, 1, 1},
   {&__pyx_n_s_e, __pyx_k_e, sizeof(__pyx_k_e), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
-  {&__pyx_n_s_ion_mass, __pyx_k_ion_mass, sizeof(__pyx_k_ion_mass), 0, 0, 1, 1},
   {&__pyx_n_s_k_B, __pyx_k_k_B, sizeof(__pyx_k_k_B), 0, 0, 1, 1},
   {&__pyx_n_s_m, __pyx_k_m, sizeof(__pyx_k_m), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
@@ -1805,6 +1804,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_np, __pyx_k_np, sizeof(__pyx_k_np), 0, 0, 1, 1},
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
   {&__pyx_n_s_particle, __pyx_k_particle, sizeof(__pyx_k_particle), 0, 0, 1, 1},
+  {&__pyx_n_s_particle_mass, __pyx_k_particle_mass, sizeof(__pyx_k_particle_mass), 0, 0, 1, 1},
   {&__pyx_n_s_pi, __pyx_k_pi, sizeof(__pyx_k_pi), 0, 0, 1, 1},
   {&__pyx_n_s_plasmapy_atomic, __pyx_k_plasmapy_atomic, sizeof(__pyx_k_plasmapy_atomic), 0, 0, 1, 1},
   {&__pyx_kp_s_plasmapy_physics_parameters_cyth, __pyx_k_plasmapy_physics_parameters_cyth, sizeof(__pyx_k_plasmapy_physics_parameters_cyth), 0, 0, 1, 0},
@@ -1835,7 +1835,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
   /* "plasmapy/physics/parameters_cython.pyx":108
- *         m = atomic.ion_mass(particle).si.value
+ *         m = atomic.particle_mass(particle).si.value
  *     except Exception:
  *         raise ValueError("Unable to find {particle} mass in thermal_speed")             # <<<<<<<<<<<<<<
  * 
@@ -2068,7 +2068,7 @@ static int __pyx_pymod_exec_parameters_cython(PyObject *__pyx_pyinit_module)
  * # plasmapy modules
  * from ..constants import (k_B)             # <<<<<<<<<<<<<<
  * import plasmapy.atomic as atomic
- * # from plasmapy.atomic import ion_mass, charge_state
+ * # from plasmapy.atomic import particle_mass, charge_state
  */
   __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -2088,7 +2088,7 @@ static int __pyx_pymod_exec_parameters_cython(PyObject *__pyx_pyinit_module)
  * # plasmapy modules
  * from ..constants import (k_B)
  * import plasmapy.atomic as atomic             # <<<<<<<<<<<<<<
- * # from plasmapy.atomic import ion_mass, charge_state
+ * # from plasmapy.atomic import particle_mass, charge_state
  * # For future: change these into decorators.  _check_quantity does a
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
