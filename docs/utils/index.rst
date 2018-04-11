@@ -22,7 +22,7 @@ try to think of as) clean, readable and informative code. This means:
  * Some helper utilities for importing and testing packages such as
    `plasmapy.utils.call_string`
 
-Using `plasmapy.atomic`
+Submodules
 =======================
 
 .. toctree::
@@ -30,9 +30,5 @@ Using `plasmapy.atomic`
 
    checks
    exceptions
-   helpers
+   pytest_helpers
 
-Reference/API
-=============
-
-.. automodapi:: plasmapy.utils
