@@ -145,7 +145,7 @@ class Characteristic:
                                       'can_be_nan': False}})
 def swept_probe_analysis(probe_characteristic, probe_area, gas,
                          bimaxwellian=False, visualize=False,
-                         plot_EEDF=False):
+                         plot_electron_fit=False, plot_EEDF=False):
     r"""Attempt to perform a basic swept probe analysis based on the provided
     characteristic and probe data. Suitable for single cylindrical probes in
     low-pressure DC plasmas, since OML is applied.
@@ -164,6 +164,10 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
     visualize : bool, Optional
         Can be used to plot the characteristic and the obtained parameters.
         Default is False.
+
+    plot_electron_fit : bool, Optional
+        If True, the fit of the electron current in the exponential section is
+        shown. Default is False.
 
     plot_EEDF : bool, Optional
         If True, the EEDF is computed and shown. Default is False.
@@ -217,21 +221,6 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
     # Check (unit) validity of the probe characteristic
     probe_characteristic.check_validity()
 
-    if(visualize):
-        with quantity_support():
-            fig, (ax1, ax2) = plt.subplots(2, 1)
-            ax1.plot(probe_characteristic.bias,
-                     probe_characteristic.current,
-                     marker='.', color='k', linestyle='')
-            ax1.set_title("Probe characteristic")
-            ax2.set_ylim(probe_characteristic.get_padded_limit(0.1))
-
-            ax2.plot(probe_characteristic.bias,
-                     np.abs(probe_characteristic.current),
-                     marker='.', color='k', linestyle='')
-            ax2.set_title("Logarithmic")
-            ax2.set_ylim(probe_characteristic.get_padded_limit(0.1, log=True))
-
     # Obtain the plasma and floating potentials
     V_P = get_plasma_potential(probe_characteristic)
     V_F = get_floating_potential(probe_characteristic)
@@ -263,6 +252,7 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
     T_e, hot_fraction, fit = get_electron_temperature(
         exponential_section,
         bimaxwellian=bimaxwellian,
+        visualize=plot_electron_fit,
         return_fit=True,
         return_hot_fraction=True)
 
@@ -282,6 +272,19 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
 
     if(visualize):
         with quantity_support():
+            fig, (ax1, ax2) = plt.subplots(2, 1)
+            ax1.plot(probe_characteristic.bias,
+                     probe_characteristic.current,
+                     marker='.', color='k', linestyle='')
+            ax1.set_title("Probe characteristic")
+            ax2.set_ylim(probe_characteristic.get_padded_limit(0.1))
+
+            ax2.plot(probe_characteristic.bias,
+                     np.abs(probe_characteristic.current),
+                     marker='.', color='k', linestyle='')
+            ax2.set_title("Logarithmic")
+            ax2.set_ylim(probe_characteristic.get_padded_limit(0.1, log=True))
+
             ax1.axvline(x=V_P.value, color='gray', linestyle='--')
             ax1.axhline(y=I_e.value, color='grey', linestyle='--')
             ax1.axvline(x=V_F.value, color='k', linestyle='--')
