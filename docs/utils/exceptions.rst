@@ -2,9 +2,9 @@
 
 .. _plasmapy-utils-exceptions:
 
-************************************
+***********************************************
 Custom exceptions (`plasmapy.utils.exceptions`)
-************************************
+***********************************************
 
 .. currentmodule:: plasmapy.utils.exceptions
 

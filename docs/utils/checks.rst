@@ -22,3 +22,4 @@ Reference/API
 .. automodapi:: plasmapy.utils.checks
    :no-heading:
    :no-main-docstr:
+   :skip: dedent
