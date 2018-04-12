@@ -2,22 +2,23 @@
 
 .. _plasmapy-utils-checks:
 
-************************************
-The Utils Package (`plasmapy.utils.checks`)
-************************************
+***********************************************
+Validation decorators (`plasmapy.utils.checks`)
+***********************************************
 
 .. currentmodule:: plasmapy.utils.checks
 
 Introduction
 ============
 
-`PlasmaPy.utils` is where we store functionality that helps us write (what we
-try to think of as) clean, readable and informative code. This means:
-
- * decorators we use for reusable physical quantity computation and checking,
-   such as `plasmapy.utils.check_quantity` and `plasmapy.utils.check_relativistic`
+`plasmapy.utils` is where we store functionality that helps us write (what we
+try to think of as) clean, readable and informative code. This means decorators
+we use for reusable physical quantity computation and checking, such as
+`check_quantity` and `check_relativistic`.
 
 Reference/API
 =============
 
 .. automodapi:: plasmapy.utils.checks
+   :no-heading:
+   :no-main-docstr:

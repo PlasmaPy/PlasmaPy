@@ -3,7 +3,7 @@
 .. _plasmapy-utils:
 
 ************************************
-The Utils Package (`plasmapy.Utils`)
+The Utils Package (`plasmapy.utils`)
 ************************************
 
 .. currentmodule:: plasmapy.utils
@@ -31,4 +31,5 @@ Submodules
    checks
    exceptions
    pytest_helpers
+   import_helpers
 

@@ -19,3 +19,5 @@ Reference/API
 =============
 
 .. automodapi:: plasmapy.utils.exceptions
+   :no-heading:
+   :no-main-docstr:
