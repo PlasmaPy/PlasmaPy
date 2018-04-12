@@ -22,3 +22,5 @@ Reference/API
 =============
 
 .. automodapi:: plasmapy.mathematics
+   :no-heading:
+   :no-main-docstr:
