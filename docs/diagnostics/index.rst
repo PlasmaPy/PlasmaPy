@@ -2,6 +2,13 @@
 
 .. _plasmapy-diagnostics:
 
+***********************
+The Diagnostics Package
+***********************
+
+.. currentmodule:: plasmapy.diagnostics
+
+
 Introduction
 ============
 The `diagnostics` subpackage contains tools for experimental research.

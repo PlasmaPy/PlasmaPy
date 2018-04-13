@@ -2,9 +2,9 @@
 
 .. _plasmapy-physics:
 
-****************************************
-The Physics Package (`plasmapy.physics`)
-****************************************
+*******************
+The Physics Package
+*******************
 
 .. currentmodule:: plasmapy.physics
 
