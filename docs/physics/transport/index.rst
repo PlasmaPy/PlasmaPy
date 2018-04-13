@@ -2,5 +2,11 @@
 
 .. _plasmapy-physics-transport:
 
+Transport and collisional theory.
+
+Reference/API
+=============
+
 .. automodapi:: plasmapy.physics.transport
-   :no-inheritance-diagram:
+   :no-heading:
+   :no-main-docstr:

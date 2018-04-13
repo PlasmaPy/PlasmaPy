@@ -2,9 +2,9 @@
 
 .. _plasmapy-mathematics:
 
-************************************************
-The Mathematics Package (`plasmapy.mathematics`)
-************************************************
+***********
+Mathematics
+***********
 
 Introduction
 ============

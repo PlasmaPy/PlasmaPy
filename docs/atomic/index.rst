@@ -2,9 +2,9 @@
 
 .. _plasmapy-atomic:
 
-**************************************
-The Atomic Package (`plasmapy.atomic`)
-**************************************
+******************
+The Atomic Package
+******************
 
 .. currentmodule:: plasmapy.atomic
 
@@ -36,3 +36,5 @@ Reference/API
 =============
 
 .. automodapi:: plasmapy.atomic
+   :no-heading:
+   :no-main-docstr:

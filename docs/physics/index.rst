@@ -38,7 +38,7 @@ Subpackages
 ===========
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    transport/index
 
@@ -47,6 +47,8 @@ Reference/API
 
 .. automodapi:: plasmapy.physics
    :no-inheritance-diagram:
+   :no-heading:
+   :no-main-docstr:
 
 Notes for developers
 ====================
