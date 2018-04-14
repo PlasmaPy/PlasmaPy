@@ -23,3 +23,4 @@ Reference/API
    :no-heading:
    :no-main-docstr:
    :allowed-package-names: dielectric
+   :skip: gyrofrequency
