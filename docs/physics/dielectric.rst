@@ -2,11 +2,11 @@
 
 .. _plasmapy-physics-dielectric:
 
-******************************************
-Dielectric tensors (`plasmapy.dielectric`)
-******************************************
+**************************************************
+Dielectric tensors (`plasmapy.physics.dielectric`)
+**************************************************
 
-.. currentmodule:: plasmapy.dielectric
+.. currentmodule:: plasmapy.physics.dielectric
 
 Introduction
 ============
@@ -18,7 +18,7 @@ Introduction
 Reference/API
 =============
 
-.. automodapi:: plasmapy.physics.distribution
+.. automodapi:: plasmapy.physics.dielectric
    :no-inheritance-diagram:
    :no-heading:
    :no-main-docstr:
