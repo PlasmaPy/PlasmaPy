@@ -1,4 +1,3 @@
-# coding=utf-8
 """Tests for functions that calculate transport coefficients."""
 
 import numpy as np
@@ -482,28 +481,34 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize("key, expected", {
-        'resistivity':                   [2.84304305e-08,
-                                          5.54447070e-08,
-                                          1.67853407e-12],
-        'thermoelectric conductivity':   [7.11083999e-01,
-                                          1.61011272e-09,
-                                          2.66496639e-05],
-        'electron thermal conductivity': [4.91374931e+06,
-                                          2.28808496e-03,
-                                          6.90324259e+01],
-        'electron viscosity':            [7.51661800e-02,
-                                          5.23617668e-21,
-                                          2.09447067e-20,
-                                          1.61841341e-11,
-                                          3.23682681e-11],
-        'ion thermal conductivity':      [1.41709276e+05,
-                                          4.20329493e-02,
-                                          6.90323924e+01],
-        'ion viscosity':                 [8.43463595e+00,
-                                          8.84513731e-13,
-                                          3.53805159e-12,
-                                          2.54483240e-06,
-                                          5.08966116e-06]}.items())
+        'resistivity': [
+            2.84304305e-08,
+            5.54447070e-08,
+            1.67853407e-12],
+        'thermoelectric conductivity': [
+            7.11083999e-01,
+            1.61011272e-09,
+            2.66496639e-05],
+        'electron thermal conductivity': [
+            4.91374931e+06,
+            2.28808496e-03,
+            6.90324259e+01],
+        'electron viscosity': [
+            7.51661800e-02,
+            5.23617668e-21,
+            2.09447067e-20,
+            1.61841341e-11,
+            3.23682681e-11],
+        'ion thermal conductivity': [
+            1.41709276e+05,
+            4.20329493e-02,
+            6.90323924e+01],
+        'ion viscosity': [
+            8.43463595e+00,
+            8.84513731e-13,
+            3.53805159e-12,
+            2.54483240e-06,
+            5.08966116e-06]}.items())
     def test_dictionary(self, key, expected):
         calculated = self.all_variables[key]
         testTrue = np.allclose(expected, calculated.si.value)

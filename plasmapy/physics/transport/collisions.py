@@ -21,7 +21,7 @@ from plasmapy.physics.quantum import (Wigner_Seitz_radius,
 from plasmapy.mathematics import Fermi_integral
 
 
-@utils.check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
                        "n_e": {"units": u.m ** -3}
                        })
 def Coulomb_logarithm(T,
@@ -355,7 +355,7 @@ def b_perp(T,
     return bPerp.to(u.m)
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def impact_parameter(T,
@@ -953,7 +953,7 @@ def collision_rate_ion_ion(T_i,
     return nu_i.to(1 / u.s)
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def mean_free_path(T,
@@ -1192,7 +1192,7 @@ def Spitzer_resistivity(T,
     return spitzer.to(u.Ohm * u.m)
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def mobility(T,
@@ -1315,7 +1315,7 @@ def mobility(T,
     return mobility_value.to(u.m ** 2 / (u.V * u.s))
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def Knudsen_number(characteristic_length,
@@ -1430,7 +1430,7 @@ def Knudsen_number(characteristic_length,
     return knudsen_param.to(u.dimensionless_unscaled)
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def coupling_parameter(T,
