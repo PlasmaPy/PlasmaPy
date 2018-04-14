@@ -22,5 +22,5 @@ Reference/API
    :no-inheritance-diagram:
    :no-heading:
    :no-main-docstr:
-   :allowed-package-names: dielectric
    :skip: gyrofrequency
+   :skip: plasma-frequency

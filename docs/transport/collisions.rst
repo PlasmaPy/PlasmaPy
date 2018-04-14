@@ -20,4 +20,11 @@ Reference/API
    :no-heading:
    :no-main-docstr:
    :skip: Debye_length
-   :allowed-package-names: collisions
+   :skip: Fermi_integral
+   :skip: Wigner_Seitz_raidus
+   :skip: thermal_deBroglie_wavelength
+   :skip: chemical_potential
+   :skip: particle_mass
+   :skip: integer_charge
+   :skip: check_quantity
+

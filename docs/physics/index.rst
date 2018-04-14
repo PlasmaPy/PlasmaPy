@@ -47,6 +47,8 @@ Reference/API
    :no-inheritance-diagram:
    :no-heading:
    :no-main-docstr:
+   :skip: cold_plasma_permittivity_LRP
+   :skip: cold_plasma_permittivity_SDP
 
 Notes for developers
 ====================
