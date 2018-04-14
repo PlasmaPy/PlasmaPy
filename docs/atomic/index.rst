@@ -2,9 +2,9 @@
 
 .. _plasmapy-atomic:
 
-******************
-The Atomic Package
-******************
+**************************************
+The Atomic Package (`plasmapy.atomic`)
+**************************************
 
 .. currentmodule:: plasmapy.atomic
 
@@ -14,8 +14,8 @@ Introduction
 `plasmapy.atomic` provides access to information about atoms, ions,
 isotopes, and other particles.
 
-Using `plasmapy.atomic`
-=======================
+Submodules
+==========
 
 .. toctree::
    :maxdepth: 2
