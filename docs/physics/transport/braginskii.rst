@@ -2,9 +2,9 @@
 
 .. _plasmapy-physics-transport-braginskii:
 
-****************
-Braginskii transport theory (`plasmapy.physics.transport.braginskii
-****************
+*********************************************************************
+Braginskii transport theory (`plasmapy.physics.transport.braginskii`)
+*********************************************************************
 
 .. currentmodule:: plasmapy.physics.transport.braginskii
 

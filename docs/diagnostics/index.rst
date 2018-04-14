@@ -1,6 +1,6 @@
-.. py:module:: diagnostics
+.. py:module:: plasmapy.diagnostics
 
-.. _plasmapy-diagnostics:
+.. _diagnostics:
 
 *******************************************
 Plasma diagnostics (`plasmapy.diagnostics`)

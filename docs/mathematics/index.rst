@@ -1,18 +1,18 @@
 .. py:module:: mathematics
 
-.. _plasmapy-mathematics:
+.. _mathematics:
 
-***********
-Mathematics
-***********
+************************************
+Mathematics (`plasmapy.mathematics`)
+************************************
 
 Introduction
 ============
 
-`plasmapy.mathematics` gathers highly theoretical mathematical formulas relevant to plasma
-physics. Usually, those are used somewhere else in the code but were deemed
-general enough for the mathematical apparatus to be abstracted from the main
-function interface.
+`plasmapy.mathematics` gathers highly theoretical mathematical formulas
+relevant to plasma physics. Usually, those are used somewhere else in
+the code but were deemed general enough for the mathematical apparatus
+to be abstracted from the main function interface.
 
 .. topic:: Examples:
 
