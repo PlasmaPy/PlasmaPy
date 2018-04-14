@@ -88,7 +88,12 @@ def call_string(f: Callable,
     """Return a string with the equivalent call of a function."""
 
     def format_arg(arg):
-        return arg.__name__ if hasattr(arg, '__name__') else repr(arg)
+        if hasattr(arg, '__name__'):
+            return arg.__name__
+        elif isinstance(arg, u.quantity.Quantity):
+            return f"{arg.value} * u.{arg.unit}"
+        else:
+            return repr(arg)
 
     def format_kw(keyword):
         if isinstance(keyword, str):
