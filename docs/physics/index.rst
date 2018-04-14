@@ -34,6 +34,12 @@ it is technically a unit of energy.
 Most functions expect `astropy.units.Quantity` as input, however some will use the `plasmapy.utils.check_quantity` decorator
 to automatically cast arguments to Quantities. If that happens, you will be notified via an `astropy.units.UnitsWarning`.
 
+.. topic:: Examples:
+
+   * :ref:`sphx_glr_auto_examples_plot_physics.py`
+   * :ref:`sphx_glr_auto_examples_plot_distribution.py`
+   * :ref:`sphx_glr_auto_examples_plot_cold_plasma_tensor_elements.py`
+
 Reference/API
 =============
 

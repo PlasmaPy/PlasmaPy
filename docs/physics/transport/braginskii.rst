@@ -12,6 +12,9 @@ Introduction
 ============
 The `plasmapy.physics.transport.braginskii` module covers the difficult area of transport theory.
 
+.. topic:: Examples:
+
+   * :ref:`sphx_glr_auto_examples_plot_braginskii.py`
 Reference/API
 =============
 
