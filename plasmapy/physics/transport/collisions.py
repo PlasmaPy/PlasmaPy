@@ -84,6 +84,10 @@ def Coulomb_logarithm(T,
     PhysicsError
         If the result is smaller than 1.
 
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
+
     Warns
     -----
     ~astropy.units.UnitsWarning
@@ -311,6 +315,10 @@ def b_perp(T,
     TypeError
         If T, or V are not Quantities.
 
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
+
     Warns
     -----
     ~astropy.units.UnitsWarning
@@ -414,6 +422,10 @@ def impact_parameter(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -604,6 +616,10 @@ def collision_frequency(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -1012,6 +1028,10 @@ def mean_free_path(T,
     TypeError
         If the n_e, T, or V are not Quantities.
 
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
+
     Warns
     -----
     ~astropy.units.UnitsWarning
@@ -1087,7 +1107,6 @@ def Spitzer_resistivity(T,
         and electron-ion collisions, and the ion temperature for
         ion-ion collisions.
 
-
     n : ~astropy.units.Quantity
         The density in units convertible to per cubic meter.
         This should be the electron density for electron-electron collisions,
@@ -1129,6 +1148,10 @@ def Spitzer_resistivity(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -1254,6 +1277,10 @@ def mobility(T,
     TypeError
         If the n_e, T, or V are not Quantities.
 
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
+
     Warns
     -----
     ~astropy.units.UnitsWarning
@@ -1378,6 +1405,10 @@ def Knudsen_number(characteristic_length,
     TypeError
         If the n_e, T, or V are not Quantities.
 
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
+
     Warns
     -----
     ~astropy.units.UnitsWarning
@@ -1491,6 +1522,10 @@ def coupling_parameter(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
