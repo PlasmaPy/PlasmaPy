@@ -1,4 +1,4 @@
-.. py:module:: pytest_helpers
+.. py:module:: utils.pytest_helpers
 
 .. _plasmapy-utils-pytest-helpers:
 

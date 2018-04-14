@@ -1,4 +1,4 @@
-.. py:module:: import_helpers
+.. py:module:: utils.import_helpers
 
 .. _plasmapy-utils-import-helpers:
 

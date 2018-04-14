@@ -1,6 +1,6 @@
-.. py:module:: plasmaclass
+.. py:module:: classes.plasma
 
-.. _mathematics:
+.. _plasma:
 
 ****************************************
 Plasma class (`plasmapy.classes.plasma`)

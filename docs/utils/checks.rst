@@ -1,4 +1,4 @@
-.. py:module:: checks
+.. py:module:: utils.checks
 
 .. _plasmapy-utils-checks:
 

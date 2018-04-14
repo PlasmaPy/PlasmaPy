@@ -1,4 +1,4 @@
-.. py:module:: exceptions
+.. py:module:: utils.exceptions
 
 .. _plasmapy-utils-exceptions:
 
