@@ -44,6 +44,7 @@ Theoretical analysis
    :maxdepth: 1
 
    physics/index
+   physics/dielectric
    transport/braginskii
    transport/collisions
    mathematics/index
