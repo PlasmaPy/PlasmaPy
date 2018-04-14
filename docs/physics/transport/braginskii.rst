@@ -21,3 +21,4 @@ Reference/API
 .. automodapi:: plasmapy.physics.transport.braginskii
    :no-heading:
    :no-main-docstr:
+   :skip: Coulomb_logarithm grab_charge
