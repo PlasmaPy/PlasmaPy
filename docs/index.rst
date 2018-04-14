@@ -33,29 +33,22 @@ Getting Started
 User Documentation
 ******************
 
-.. particles
-
-Particles
----------
-
-.. toctree::
-   :maxdepth: 2
-
-   atomic/index
-
 .. plasma-parameters
 
-Plasma Parameters
------------------
+Theoretical analysis
+--------------------
 
 .. toctree::
    :maxdepth: 2
 
    physics/index
+   physics/transport/braginskii
+   physics/transport/collisions
+   mathematics/index
 
 .. diagnostics
 
-Diagnostics
+Experimental tools
 -----------
 
 The `~plasmapy.diagnostics` package is in the early stages of
@@ -66,27 +59,15 @@ development.
 
    diagnostics/index
 
-.. mathematics
-
-Mathematics
------------
-
-The `plasmapy.mathematics` package contains mathematical functions
-commonly used by plasma physicists.
-
-.. toctree::
-   :maxdepth: 2
-
-   mathematics/index
-
 .. data-structures
 
-Data Structures
----------------
+Data Structures and simulation
+------------------------------
 
 .. toctree::
     :maxdepth: 2
 
+    atomic/index
     plasma/index
     species/index
 

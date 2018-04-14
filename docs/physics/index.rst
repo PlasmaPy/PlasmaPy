@@ -2,9 +2,9 @@
 
 .. _plasmapy-physics:
 
-*******************
-The Physics Package
-*******************
+*****************************************
+Plasma parameters (`plasmapy.parameters`)
+*****************************************
 
 .. currentmodule:: plasmapy.physics
 
@@ -33,14 +33,6 @@ it is technically a unit of energy.
 
 Most functions expect `astropy.units.Quantity` as input, however some will use the `plasmapy.utils.check_quantity` decorator
 to automatically cast arguments to Quantities. If that happens, you will be notified via an `astropy.units.UnitsWarning`.
-
-Subpackages
-===========
-
-.. toctree::
-   :maxdepth: 1
-
-   transport/index
 
 Reference/API
 =============

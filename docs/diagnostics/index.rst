@@ -2,12 +2,11 @@
 
 .. _plasmapy-diagnostics:
 
-***********************
-The Diagnostics Package
-***********************
+*******************************************
+Plasma diagnostics (`plasmapy.diagnostics`)
+*******************************************
 
 .. currentmodule:: plasmapy.diagnostics
-
 
 Introduction
 ============
