@@ -41,10 +41,9 @@ Theoretical analysis
 --------------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    physics/index
-   physics/dielectric
    transport/braginskii
    transport/collisions
    mathematics/index
