@@ -21,7 +21,7 @@ from plasmapy.physics.quantum import (Wigner_Seitz_radius,
 from plasmapy.mathematics import Fermi_integral
 
 
-@utils.check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
                        "n_e": {"units": u.m ** -3}
                        })
 def Coulomb_logarithm(T,
@@ -83,6 +83,10 @@ def Coulomb_logarithm(T,
 
     PhysicsError
         If the result is smaller than 1.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -311,6 +315,10 @@ def b_perp(T,
     TypeError
         If T, or V are not Quantities.
 
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
+
     Warns
     -----
     ~astropy.units.UnitsWarning
@@ -355,7 +363,7 @@ def b_perp(T,
     return bPerp.to(u.m)
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def impact_parameter(T,
@@ -414,6 +422,10 @@ def impact_parameter(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -604,6 +616,10 @@ def collision_frequency(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -953,7 +969,7 @@ def collision_rate_ion_ion(T_i,
     return nu_i.to(1 / u.s)
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def mean_free_path(T,
@@ -1011,6 +1027,10 @@ def mean_free_path(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -1087,7 +1107,6 @@ def Spitzer_resistivity(T,
         and electron-ion collisions, and the ion temperature for
         ion-ion collisions.
 
-
     n : ~astropy.units.Quantity
         The density in units convertible to per cubic meter.
         This should be the electron density for electron-electron collisions,
@@ -1129,6 +1148,10 @@ def Spitzer_resistivity(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -1192,7 +1215,7 @@ def Spitzer_resistivity(T,
     return spitzer.to(u.Ohm * u.m)
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def mobility(T,
@@ -1253,6 +1276,10 @@ def mobility(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -1315,7 +1342,7 @@ def mobility(T,
     return mobility_value.to(u.m ** 2 / (u.V * u.s))
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def Knudsen_number(characteristic_length,
@@ -1378,6 +1405,10 @@ def Knudsen_number(characteristic_length,
     TypeError
         If the n_e, T, or V are not Quantities.
 
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
+
     Warns
     -----
     ~astropy.units.UnitsWarning
@@ -1430,7 +1461,7 @@ def Knudsen_number(characteristic_length,
     return knudsen_param.to(u.dimensionless_unscaled)
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def coupling_parameter(T,
@@ -1491,6 +1522,10 @@ def coupling_parameter(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
