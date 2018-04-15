@@ -2,9 +2,9 @@
 
 .. _plasmapy-physics-dielectric:
 
-**************************************************
-Dielectric tensors (`plasmapy.physics.dielectric`)
-**************************************************
+****************************************************
+Dielectric functions (`plasmapy.physics.dielectric`)
+****************************************************
 
 .. currentmodule:: plasmapy.physics.dielectric
 
