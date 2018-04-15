@@ -1,4 +1,4 @@
-"""Functions to calculate plasma dielectric paramaters"""
+"""Functions to calculate plasma dielectric parameters"""
 
 from astropy import units as u
 import plasmapy.utils as utils
