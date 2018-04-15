@@ -21,3 +21,6 @@ Reference/API
    :no-inheritance-diagram:
    :no-heading:
    :no-main-docstr:
+   :skip: Lorentz_factor
+   :skip: Fermi_integral
+   :skip: check_quantity

@@ -22,5 +22,3 @@ Reference/API
    :no-inheritance-diagram:
    :no-heading:
    :no-main-docstr:
-   :skip: gyrofrequency
-   :skip: plasma-frequency
