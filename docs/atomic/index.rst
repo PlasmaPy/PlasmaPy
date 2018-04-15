@@ -14,8 +14,8 @@ Introduction
 `plasmapy.atomic` provides access to information about atoms, ions,
 isotopes, and other particles.
 
-Using `plasmapy.atomic`
-=======================
+Submodules
+==========
 
 .. toctree::
    :maxdepth: 2
@@ -36,3 +36,5 @@ Reference/API
 =============
 
 .. automodapi:: plasmapy.atomic
+   :no-heading:
+   :no-main-docstr:

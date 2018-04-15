@@ -10,7 +10,7 @@ from plasmapy import atomic
 from plasmapy.atomic.atomic import _is_electron
 from .collisions import Coulomb_logarithm
 from plasmapy.physics.parameters import (Hall_parameter,
-                                         grab_charge)
+                                         _grab_charge)
 from plasmapy.physics.transport.collisions import (collision_rate_electron_ion,
                                                    collision_rate_ion_ion)
 from plasmapy.constants import e, m_e, k_B
@@ -286,7 +286,7 @@ class ClassicalTransport:
                                  f"{ion_particle} in ClassicalTransport")
         else:
             self.m_i = m_i.to(u.kg)
-        self.Z = grab_charge(ion_particle, Z)
+        self.Z = _grab_charge(ion_particle, Z)
         if self.Z < 0:
             raise ValueError("Z is not allowed to be negative!")  # TODO remove?
 
