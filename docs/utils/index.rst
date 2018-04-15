@@ -22,14 +22,11 @@ try to think of as) clean, readable and informative code. This means:
  * Some helper utilities for importing and testing packages such as
    `plasmapy.utils.call_string`
 
-Submodules
-=======================
+Reference/API
+=============
 
-.. toctree::
-   :maxdepth: 1
-
-   checks
-   exceptions
-   pytest_helpers
-   import_helpers
-
+.. automodapi:: plasmapy.utils.checks
+   :skip: dedent
+.. automodapi:: plasmapy.utils.exceptions
+.. automodapi:: plasmapy.utils.import_helpers
+.. automodapi:: plasmapy.utils.pytest_helpers

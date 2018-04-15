@@ -44,8 +44,7 @@ Theoretical analysis
    :maxdepth: 1
 
    physics/index
-   transport/braginskii
-   transport/collisions
+   transport/index
    mathematics/index
 
 .. diagnostics

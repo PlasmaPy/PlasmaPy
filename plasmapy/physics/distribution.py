@@ -861,17 +861,17 @@ def kappa_velocity_3D(vx,
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
-            vTh = kappa_thermal_speed(T,
-                                      kappa,
-                                      particle=particle)
+            vTh = parameters.kappa_thermal_speed(T,
+                                                 kappa,
+                                                 particle=particle)
         elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m / u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = (kappa_thermal_speed(T * u.K,
-                                   kappa,
-                                   particle=particle)).si.value
+        vTh = parameters.kappa_thermal_speed(T * u.K,
+                                             kappa,
+                                             particle=particle).si.value
     # getting square of thermal velocity
     vThSq = vTh ** 2
     # Get square of relative particle velocity
