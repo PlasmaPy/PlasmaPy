@@ -41,7 +41,7 @@ Theoretical analysis
 --------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    physics/index
    transport/braginskii

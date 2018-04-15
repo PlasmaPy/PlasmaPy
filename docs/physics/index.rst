@@ -2,9 +2,9 @@
 
 .. _plasmapy-physics:
 
-**************************************
-Plasma parameters (`plasmapy.physics`)
-**************************************
+********************************************
+Plasma physics formulas (`plasmapy.physics`)
+********************************************
 
 .. currentmodule:: plasmapy.physics
 
@@ -12,19 +12,18 @@ Introduction
 ============
 
 `plasmapy.physics` provides theoretical formulas for calculation of physical quantities helpful for plasma physics.
-The layout of the subpackage is still in flux, but for now we have settled on providing a single `plasmapy.physics` namespace
-for some of the most common functions. The actual functions are located in modules, subjectively grouped by topic,
-with sub-namespaces for larger sub-packages.
-
-We thus have:
+The layout of the subpackage is still in flux.
+`physics` has the following subpackages:
 
 .. toctree::
    :maxdepth: 1
-   physics/parameters
-   physics/dielectric
-   physics/distribution
-   physics/quantum
-   physics/relativity
+
+   parameters
+   dielectric
+   dimensionless
+   distribution
+   quantum
+   relativity
 
 The subpackage makes heavy use of `astropy.units.Quantity` for handling conversions between different unit systems.
 This is especially important for electron volts, commonly used in plasma physics to denote temperature, although
