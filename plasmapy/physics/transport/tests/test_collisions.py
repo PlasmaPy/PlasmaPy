@@ -12,6 +12,7 @@ from plasmapy.physics.transport import (Coulomb_logarithm,
                                         coupling_parameter)
 from plasmapy.physics.transport.collisions import Spitzer_resistivity
 from plasmapy.utils import RelativityWarning, RelativityError, PhysicsWarning
+from plasmapy.utils import exceptions
 from plasmapy.constants import m_p, m_e, c
 
 
@@ -464,7 +465,7 @@ class Test_Coulomb_logarithm:
         Tests whether an error is raised when an invalid particle name
         is given.
         """
-        with pytest.raises(ValueError):
+        with pytest.raises(exceptions.InvalidParticleError):
             Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, ('e', 'g'))
 
     n_e = np.array([1e9, 1e9, 1e24]) * u.cm ** -3
