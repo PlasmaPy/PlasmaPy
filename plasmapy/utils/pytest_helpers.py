@@ -87,11 +87,22 @@ def call_string(f: Callable,
                 ) -> str:
     """Return a string with the equivalent call of a function."""
 
+    def format_quantity(arg):
+        formatted = f'{arg.value}'
+        for base, power in zip(arg.unit.bases, arg.unit.powers):
+            if power == -1:
+                formatted += f"/u.{base}"
+            elif power == 1:
+                formatted += f"*u.{base}"
+            else:
+                formatted += f"*u.{base}**{power}"
+        return formatted
+
     def format_arg(arg):
         if hasattr(arg, '__name__'):
             return arg.__name__
         elif isinstance(arg, u.quantity.Quantity):
-            return f"{arg.value} * u.{arg.unit}"
+            return format_quantity(arg)
         else:
             return repr(arg)
 
