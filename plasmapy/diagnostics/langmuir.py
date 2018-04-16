@@ -6,7 +6,7 @@ import numpy as np
 import astropy.units as u
 
 
-class Probe:
+class Probe():
     r"""
     Class containing various Langmuir probe properties.
 
