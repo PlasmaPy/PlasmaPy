@@ -7,16 +7,13 @@ import numpy as np
 import warnings
 
 # plasmapy modules
-import plasmapy.atomic as atomic
 from plasmapy import utils
 from plasmapy.utils.checks import (check_quantity,
                                    _check_relativistic)
 
 from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
-from plasmapy.atomic import (particle_mass, integer_charge)
 from plasmapy import atomic
 from plasmapy.physics import parameters
-from plasmapy.physics.parameters import (Debye_length)
 from plasmapy.physics.quantum import (Wigner_Seitz_radius,
                                       thermal_deBroglie_wavelength,
                                       chemical_potential)
@@ -474,7 +471,7 @@ def impact_parameter(T,
             raise ValueError("Must provide a z_mean for GMS-2, GMS-5, and "
                              "GMS-6 methods.")
     # Debye length
-    lambdaDe = Debye_length(T, n_e)
+    lambdaDe = parameters.Debye_length(T, n_e)
     # deBroglie wavelength
     lambdaBroglie = hbar / (2 * reduced_mass * V)
     # distance of closest approach in 90 degree Coulomb collision

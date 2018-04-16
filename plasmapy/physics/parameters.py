@@ -359,8 +359,9 @@ def thermal_speed(T, particle: atomic.Particle="e-", method="most_probable", mas
         `'most_probable'` (default), `'rms'`, and `'mean_magnitude'`.
 
     mass : ~astropy.units.Quantity
-        The particle's mass. Defaults to None, but if set, overrides
-        mass acquired from `particle`. Useful with relative velocities.
+        The particle's mass override. Defaults to NaN and if so, doesn't do
+        anything, but if set, overrides mass acquired from `particle`. Useful
+        with relative velocities of particles.
 
     Returns
     -------
