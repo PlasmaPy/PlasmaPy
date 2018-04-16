@@ -16,7 +16,7 @@ from plasmapy import atomic, utils
 from plasmapy.utils.exceptions import (PhysicsError, AtomicError)
 
 
-def grab_charge(ion, z_mean=None):
+def _grab_charge(ion, z_mean=None):
     """Utility function to merge two possible inputs for particle charge.
 
     Parameters
@@ -81,7 +81,7 @@ def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg / 
     elif density.unit.is_equivalent(u.m ** -3):
         if particle:
             m_i = atomic.particle_mass(particle)
-            Z = grab_charge(particle, z_mean)
+            Z = _grab_charge(particle, z_mean)
             rho = density * m_i + Z * density * m_e
         else:
             raise ValueError(f"You must pass a particle (not {particle}) to calculate the "
@@ -310,7 +310,7 @@ def ion_sound_speed(T_e,
     """
 
     m_i = atomic.particle_mass(ion)
-    Z = grab_charge(ion, z_mean)
+    Z = _grab_charge(ion, z_mean)
 
     for gamma, particles in zip([gamma_e, gamma_i], ["electrons", "ions"]):
         if not isinstance(gamma, (float, int)):
@@ -695,7 +695,7 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
 
     """
     m_i = atomic.particle_mass(particle)
-    Z = grab_charge(particle, Z)
+    Z = _grab_charge(particle, Z)
     if not signed:
         Z = abs(Z)
 
@@ -900,7 +900,7 @@ def plasma_frequency(n, particle='e-', z_mean=None):
             # using user provided average ionization
             Z = z_mean
         Z = np.abs(Z)
-        # TODO REPLACE WITH Z = np.abs(grab_charge(particle, z_mean)), some bugs atm
+        # TODO REPLACE WITH Z = np.abs(_grab_charge(particle, z_mean)), some bugs atm
     except Exception:
         raise ValueError(f"Invalid particle, {particle}, in "
                          "plasma_frequency.")
