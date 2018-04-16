@@ -23,6 +23,8 @@ from plasmapy.atomic import (particle_mass,
                              integer_charge,
                              )
 
+from plasmapy.utils import call_string
+
 class Plasma3D():
     """
     Core class for describing and calculating plasma parameters with
@@ -133,7 +135,7 @@ class PlasmaBlob():
         Examples
         --------
         >>> print(PlasmaBlob(1e4*u.K, 1e20/u.m**3, particle='p'))
-        PlasmaBlob(T_e=10000.0 K, n_e=1e+20 1 / m3, particle=p, Z=1)
+        PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p', Z=1)
         Intermediate coupling regime: Gamma = 0.012502837623108332.
         Thermal kinetic energy dominant: Theta = 109690.53176225389
 
@@ -151,9 +153,14 @@ class PlasmaBlob():
         --------
         >>> from astropy import units as u
         >>> PlasmaBlob(1e4*u.K, 1e20/u.m**3, particle='p')
-        PlasmaBlob(T_e=10000.0 K, n_e=1e+20 1 / m3, particle=p, Z=1)
+        PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p', Z=1)
         """
-        return f"PlasmaBlob(T_e={self.T_e}, n_e={self.n_e}, particle={self.particle}, Z={self.Z})"
+        argument_dict = {'T_e': self.T_e,
+                         'n_e': self.n_e,
+                         'particle': self.particle,
+                         'Z': self.Z}
+
+        return call_string(PlasmaBlob, (), argument_dict)
 
     @property
     def electron_temperature(self):
