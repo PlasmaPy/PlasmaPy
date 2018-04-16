@@ -33,9 +33,9 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
     >>> test_Plasma3D_setup((100, 10, 1), 1000)
     """
     x, y, z = grid_dimensions
-    test_plasma = plasma.Plasma3D(domain_x=np.linspace(0, 1, x)*u.m,
-                                  domain_y=np.linspace(0, 1, y)*u.m,
-                                  domain_z=np.linspace(0, 1, z)*u.m)
+    test_plasma = plasma.Plasma3D(domain_x=np.linspace(0, 1, x) * u.m,
+                                  domain_y=np.linspace(0, 1, y) * u.m,
+                                  domain_z=np.linspace(0, 1, z) * u.m)
 
     # Basic grid setup
     assert test_plasma.x.size == x
@@ -45,10 +45,10 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
 
     # Core variable units and shapes
     assert test_plasma.density.size == expected_size
-    assert test_plasma.density.si.unit == u.kg / u.m**3
+    assert test_plasma.density.si.unit == u.kg / u.m ** 3
 
     assert test_plasma.momentum.size == 3 * expected_size
-    assert test_plasma.momentum.si.unit == u.kg / (u.m**2 * u.s)
+    assert test_plasma.momentum.si.unit == u.kg / (u.m ** 2 * u.s)
 
     assert test_plasma.pressure.size == expected_size
     assert test_plasma.pressure.si.unit == u.Pa
@@ -68,13 +68,13 @@ def test_Plasma3D_derived_vars():
     variables.  The core variables are set with arbitrary uniform
     values.
     """
-    test_plasma = plasma.Plasma3D(domain_x=np.linspace(0, 1, 64)*u.m,
-                                  domain_y=np.linspace(0, 1, 64)*u.m,
-                                  domain_z=np.linspace(0, 1, 1)*u.m)
+    test_plasma = plasma.Plasma3D(domain_x=np.linspace(0, 1, 64) * u.m,
+                                  domain_y=np.linspace(0, 1, 64) * u.m,
+                                  domain_z=np.linspace(0, 1, 1) * u.m)
 
     # Set an arbitrary uniform values throughout the plasma
-    test_plasma.density[...] = 2.0 * u.kg / u.m**3
-    test_plasma.momentum[...] = 10.0 * u.kg / (u.m**2 * u.s)
+    test_plasma.density[...] = 2.0 * u.kg / u.m ** 3
+    test_plasma.momentum[...] = 10.0 * u.kg / (u.m ** 2 * u.s)
     test_plasma.pressure[...] = 1 * u.Pa
     test_plasma.magnetic_field[...] = 0.01 * u.T
     test_plasma.electric_field[...] = 0.01 * u.V / u.m
@@ -90,7 +90,7 @@ def test_Plasma3D_derived_vars():
 
     assert test_plasma.electric_field_strength.shape == \
         test_plasma.electric_field.shape[1:]
-    assert test_plasma.electric_field_strength.si.unit == u.V/u.m
+    assert test_plasma.electric_field_strength.si.unit == u.V / u.m
 
     assert test_plasma.alfven_speed.shape == test_plasma.density.shape
     assert test_plasma.alfven_speed.unit.si == u.m / u.s

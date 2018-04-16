@@ -233,7 +233,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
             raise TypeError(typeerror_message)
         else:
             try:
-                arg = arg*units[0]
+                arg = arg * units[0]
             except Exception:
                 raise TypeError(typeerror_message)
             else:

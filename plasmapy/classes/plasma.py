@@ -25,6 +25,7 @@ from plasmapy.atomic import (particle_mass,
 
 from plasmapy.utils import call_string
 
+
 class Plasma3D:
     """
     Core class for describing and calculating plasma parameters with
@@ -83,7 +84,7 @@ class Plasma3D:
 
         # Initiate core plasma variables
         self.density = np.zeros(self.domain_shape) * u.kg / u.m**3
-        self.momentum = np.zeros((3, *self.domain_shape)) * u.kg / (u.m**2*u.s)
+        self.momentum = np.zeros((3, *self.domain_shape)) * u.kg / (u.m ** 2 * u.s)
         self.pressure = np.zeros(self.domain_shape) * u.Pa
         self.magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
         self.electric_field = np.zeros((3, *self.domain_shape)) * u.V / u.m
@@ -106,7 +107,7 @@ class Plasma3D:
     def alfven_speed(self):
         B = self.magnetic_field
         rho = self.density
-        return np.sqrt(np.sum(B * B, axis=0) / (mu0*rho))
+        return np.sqrt(np.sum(B * B, axis=0) / (mu0 * rho))
 
 
 class PlasmaBlob:
