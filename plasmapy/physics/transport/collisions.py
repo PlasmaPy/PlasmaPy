@@ -1,4 +1,3 @@
-# coding=utf-8
 """Functions to calculate transport coefficients."""
 
 # python modules

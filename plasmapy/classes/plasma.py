@@ -25,7 +25,7 @@ from plasmapy.atomic import (particle_mass,
 
 from plasmapy.utils import call_string
 
-class Plasma3D():
+class Plasma3D:
     """
     Core class for describing and calculating plasma parameters with
     spatial dimensions.
@@ -109,7 +109,7 @@ class Plasma3D():
         return np.sqrt(np.sum(B * B, axis=0) / (mu0*rho))
 
 
-class PlasmaBlob():
+class PlasmaBlob:
     """
     Class for describing and calculating plasma parameters without
     spatial/temporal description.

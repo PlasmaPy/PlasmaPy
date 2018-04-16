@@ -97,7 +97,7 @@ def test_Plasma3D_derived_vars():
     assert np.allclose(test_plasma.alfven_speed.value, 10.92548431)
 
 
-class Test_PlasmaBlobRegimes():
+class Test_PlasmaBlobRegimes:
     def test_intermediate_coupling(self):
         r"""
         Method to test for coupling parameter for a plasma.
@@ -266,7 +266,7 @@ class Test_PlasmaBlobRegimes():
         assert testTrue, errStr
 
 
-class Test_PlasmaBlob():
+class Test_PlasmaBlob:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests """
@@ -274,7 +274,7 @@ class Test_PlasmaBlob():
         self.n_e = 1e23 * u.cm ** -3
         self.Z = 2.5
         self.particle = 'p'
-        self.blob = plasma.PlasmaBlob(T_e=self.T_e, 
+        self.blob = plasma.PlasmaBlob(T_e=self.T_e,
                                       n_e=self.n_e,
                                       Z=self.Z,
                                       particle=self.particle)
@@ -286,11 +286,11 @@ class Test_PlasmaBlob():
         Checks if function raises error for invalid particle.
         """
         with pytest.raises(InvalidParticleError):
-            plasma.PlasmaBlob(T_e=self.T_e, 
+            plasma.PlasmaBlob(T_e=self.T_e,
                               n_e=self.n_e,
                               Z=self.Z,
                               particle="cupcakes")
-    
+
     def test_electron_temperature(self):
         """Testing if we get the same electron temperature we put in """
         testTrue = self.T_e == self.blob.electron_temperature
@@ -298,7 +298,7 @@ class Test_PlasmaBlob():
                   f"electron temperature of class "
                   f"{self.blob.electron_temperature}.")
         assert testTrue, errStr
-        
+
     def test_electron_density(self):
         """Testing if we get the same electron density we put in """
         testTrue = self.n_e == self.blob.electron_density
@@ -306,7 +306,7 @@ class Test_PlasmaBlob():
                   f"electron density of class "
                   f"{self.blob.electron_density}.")
         assert testTrue, errStr
-    
+
     def test_ionization(self):
         """Testing if we get the same ionization we put in """
         testTrue = self.Z == self.blob.ionization
@@ -314,7 +314,7 @@ class Test_PlasmaBlob():
                   f"ionization of class "
                   f"{self.blob.ionization}.")
         assert testTrue, errStr
-    
+
     def test_composition(self):
         """Testing if we get the same composition (particle) we put in """
         testTrue = self.particle == self.blob.composition
@@ -335,7 +335,7 @@ class Test_PlasmaBlob():
                               rtol=1e-8,
                               atol=0.0)
         assert testTrue, errStr
-    
+
     def test_quantum_theta(self):
         """
         Tests if degeneracy parameter method value meets expected value.

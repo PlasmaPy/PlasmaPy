@@ -1,4 +1,3 @@
-# coding: utf-8
 """
 Cold Magnetized Plasma Waves Tensor Elements (S, D, P in Stix's notation)
 =========================================================================

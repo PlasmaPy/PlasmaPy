@@ -1,5 +1,3 @@
-# coding: utf-8
-
 """
 1D Maxwellian distribution function
 ===================================
