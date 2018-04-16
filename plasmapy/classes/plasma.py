@@ -155,10 +155,10 @@ class PlasmaBlob():
         >>> PlasmaBlob(1e4*u.K, 1e20/u.m**3, particle='p')
         PlasmaBlob(T_e=10000.0 K, n_e=1e+20 1 / m3, particle=p, Z=1)
         """
-        argument_dict = { 'T_e'      : self.T_e,
-                          'n_e'      : self.n_e,
-                          'particle' : self.particle,
-                          'Z'        : self.Z }
+        argument_dict = {'T_e': self.T_e,
+                         'n_e': self.n_e,
+                         'particle': self.particle,
+                         'Z': self.Z}
 
         return call_string(PlasmaBlob, (), argument_dict)
 
