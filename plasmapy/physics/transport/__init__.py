@@ -8,7 +8,7 @@ from .collisions import (Coulomb_logarithm,
                          mobility,
                          Knudsen_number,
                          coupling_parameter)
-from .braginskii import (classical_transport,
+from .braginskii import (ClassicalTransport,
                          resistivity,
                          thermoelectric_conductivity,
                          electron_thermal_conductivity,

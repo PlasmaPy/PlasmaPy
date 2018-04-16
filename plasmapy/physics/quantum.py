@@ -9,12 +9,11 @@ from astropy import units as u
 from lmfit import minimize, Parameters
 
 # plasmapy modules
-from plasmapy import atomic, utils
+from plasmapy import atomic, utils, mathematics
 from plasmapy.utils.checks import check_quantity
 from plasmapy.physics.relativity import Lorentz_factor
 
 from ..constants import c, h, hbar, m_e, eps0, e, k_B
-from ..mathematics import Fermi_integral
 
 
 # TODO: Use @check_relativistic and @particle_input
@@ -80,8 +79,6 @@ def deBroglie_wavelength(V, particle):
     >>> deBroglie_wavelength(V = 0 * u.m / u.s, particle = 'D+')
     <Quantity inf m>
     """
-
-    utils._check_quantity(V, 'V', 'deBroglie_wavelength', u.m / u.s)
 
     V = np.abs(V)
 
@@ -452,7 +449,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
         """Residual function for fitting parameters to Fermi_integral."""
         alpha = params['alpha'].value
         # note that alpha = mu / (k_B * T)
-        model = Fermi_integral(alpha, 0.5)
+        model = mathematics.Fermi_integral(alpha, 0.5)
         complexResidue = (data - model) / eps_data
         return complexResidue.view(np.float)
 

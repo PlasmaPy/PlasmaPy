@@ -2,8 +2,8 @@
 import functools
 import pytest
 import inspect
-from collections import defaultdict
-from typing import Callable, Dict, Any
+import collections
+import typing
 import numpy as np
 import astropy.units as u
 import astropy.constants as const
@@ -79,9 +79,9 @@ class InvalidTestError(RunTestError):
     Exception for when the inputs to a test are not valid.
     """
 
-def call_string(f: Callable,
-                args: Any=tuple(),
-                kwargs: Dict={},
+def call_string(f: typing.Callable,
+                args: typing.Any=tuple(),
+                kwargs: typing.Dict={},
                 color="",
                 return_color="",
                 ) -> str:
@@ -150,7 +150,7 @@ def _exc_str(ex: Exception, color=_exception_color) -> str:
     return f"{article} {color}{exception_name}{return_color}"
 
 
-def _represent_result(result: Any, color=_result_color) -> str:
+def _represent_result(result: typing.Any, color=_result_color) -> str:
     if color is None:
         color = ""
         return_color = ""
@@ -163,7 +163,7 @@ def _represent_result(result: Any, color=_result_color) -> str:
         return f"{color}{repr(result)}{return_color}"
 
 
-def _process_input(wrapped_function: Callable):
+def _process_input(wrapped_function: typing.Callable):
     """
     Allow `run_test` to take a single positional argument that is a
     `list` or `tuple` in lieu of using multiple positional/keyword
@@ -171,7 +171,7 @@ def _process_input(wrapped_function: Callable):
     it assumes that `kwargs` is an empty `dict` and that the expected
     result/outcome is the last item.
     """
-    def decorator(wrapped_function: Callable):
+    def decorator(wrapped_function: typing.Callable):
         wrapped_signature = inspect.signature(wrapped_function)
 
         @functools.wraps(wrapped_function)
@@ -196,9 +196,9 @@ def _process_input(wrapped_function: Callable):
 @_process_input
 def run_test(
         func,
-        args: Any = (),
-        kwargs: Dict = {},
-        expected_outcome: Any = None,
+        args: typing.Any = (),
+        kwargs: typing.Dict = {},
+        expected_outcome: typing.Any = None,
         rtol: float = 0.0,
         atol: float = 0.0,
         ):
@@ -356,7 +356,7 @@ def run_test(
     # keep track of, including exceptions being raised and warnings
     # being issued.
 
-    expected = defaultdict(lambda: None)
+    expected = collections.defaultdict(lambda: None)
 
     if inspect.isclass(expected_outcome):
         subclass_of_Exception = issubclass(expected_outcome, Exception)

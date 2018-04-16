@@ -194,10 +194,6 @@ def Fermi_integral(
     ValueError
         If the argument is not entirely finite.
 
-    See Also
-    --------
-    plasma_dispersion_func
-
     Notes
     -----
     The `complete Fermi-Dirac integral

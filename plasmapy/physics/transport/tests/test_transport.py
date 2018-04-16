@@ -1,4 +1,3 @@
-# coding=utf-8
 """Tests for functions that calculate transport coefficients."""
 
 import numpy as np
@@ -42,7 +41,7 @@ from plasmapy.physics.transport.braginskii import (_nondim_thermal_conductivity,
                                                    ion_viscosity,
                                                    thermoelectric_conductivity,
                                                    )
-from plasmapy.physics.transport import classical_transport
+from plasmapy.physics.transport import ClassicalTransport
 
 
 def count_decimal_places(digits):
@@ -51,7 +50,7 @@ def count_decimal_places(digits):
     return len(fractional)
 
 
-# test class for classical_transport class:
+# test class for ClassicalTransport class:
 class Test_classical_transport:
     @classmethod
     def setup_class(self):
@@ -76,7 +75,7 @@ class Test_classical_transport:
         self.model = 'Braginskii'
         self.field_orientation = 'all'
         with pytest.warns(RelativityWarning):
-            self.ct = classical_transport(
+            self.ct = ClassicalTransport(
                 T_e=self.T_e,
                 n_e=self.n_e,
                 T_i=self.T_i,
@@ -95,7 +94,7 @@ class Test_classical_transport:
                 mu=self.mu,
                 theta=self.theta,
                 )
-            self.ct_wrapper = classical_transport(
+            self.ct_wrapper = ClassicalTransport(
                 T_e=self.T_e,
                 n_e=self.n_e,
                 T_i=self.T_i,
@@ -113,13 +112,13 @@ class Test_classical_transport:
     def test_spitzer_vs_formulary(self):
         """Spitzer resistivity should agree with approx. in NRL formulary"""
         with pytest.warns(RelativityWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      model='spitzer',
-                                      field_orientation='perp')
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     model='spitzer',
+                                     field_orientation='perp')
             alpha_spitzer_perp_NRL = (1.03e-4 * ct2.Z *
                                       ct2.coulomb_log_ei *
                                       (ct2.T_e.to(u.eV)).value ** (-3 / 2) *
@@ -180,77 +179,77 @@ class Test_classical_transport:
     def test_particle_mass(self):
         """should raise ValueError if particle mass not found"""
         with pytest.raises(ValueError):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle='empty moment',
-                                      Z=1)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle='empty moment',
+                                     Z=1)
 
     def test_particle_charge_state(self):
         """should raise ValueError if particle charge state not found"""
         with pytest.raises(InvalidParticleError):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle='empty moment',
-                                      m_i=m_p)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle='empty moment',
+                                     m_i=m_p)
 
     def test_Z_checks(self):
         """should raise ValueError if Z is negative"""
         with pytest.raises(ValueError):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      Z=-1)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     Z=-1)
 
     def test_coulomb_log_warnings(self):
         """should warn PhysicsWarning if coulomb log is near 1"""
         with pytest.warns(PhysicsWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      coulomb_log_ii=1.3)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     coulomb_log_ii=1.3)
 
         with pytest.warns(PhysicsWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      coulomb_log_ei=1.3)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     coulomb_log_ei=1.3)
 
     def test_coulomb_log_errors(self):
         """should raise PhysicsError if coulomb log is < 1"""
         with pytest.warns(PhysicsWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      coulomb_log_ii=0.3)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     coulomb_log_ii=0.3)
 
         with pytest.warns(PhysicsWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      coulomb_log_ei=0.3)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     coulomb_log_ei=0.3)
 
     def test_coulomb_log_calc(self):
         """if no coulomb logs are input, they should be calculated"""
         with pytest.warns(RelativityWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle)
             cl_ii = Coulomb_logarithm(self.T_i,
                                       self.n_e,
                                       [self.ion_particle, self.ion_particle],
@@ -271,11 +270,11 @@ class Test_classical_transport:
     def test_hall_calc(self):
         """if no hall parameters are input, they should be calculated"""
         with pytest.warns(RelativityWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle)
             hall_i = Hall_parameter(ct2.n_i,
                                     ct2.T_i,
                                     ct2.B,
@@ -301,31 +300,31 @@ class Test_classical_transport:
 
     def test_invalid_model(self):
         with pytest.raises(ValueError):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      model="standard")
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     model="standard")
 
     def test_invalid_field(self):
         with pytest.raises(ValueError):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      field_orientation='to the left')
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     field_orientation='to the left')
 
     def test_precalculated_parameters(self):
         with pytest.warns(RelativityWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      hall_i=0,
-                                      hall_e=0)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     hall_i=0,
+                                     hall_e=0)
             testTrue = np.isclose(ct2.resistivity(),
                                   2.8184954e-8 * u.Ohm * u.m,
                                   atol=1e-6 * u.Ohm * u.m)
@@ -343,13 +342,13 @@ class Test_classical_transport:
     def test_number_of_returns(self, model, method, field_orientation,
                                expected):
         with pytest.warns(RelativityWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      model=model,
-                                      field_orientation=field_orientation)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     model=model,
+                                     field_orientation=field_orientation)
             method_to_call = getattr(ct2, method)
             testTrue = np.size(method_to_call()) == expected
             errStr = (f"{method} in {model} model returns "
@@ -364,12 +363,12 @@ class Test_classical_transport:
         ])
     def test_resistivity_by_model(self, model, expected):
         with pytest.warns(RelativityWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      model=model)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     model=model)
             testTrue = np.isclose(ct2.resistivity(),
                                   expected,
                                   atol=1e-6 * u.Ohm * u.m)
@@ -384,12 +383,12 @@ class Test_classical_transport:
         ])
     def test_thermoelectric_conductivity_by_model(self, model, expected):
         with pytest.warns(RelativityWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      model=model)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     model=model)
             testTrue = np.isclose(ct2.thermoelectric_conductivity(),
                                   expected,
                                   atol=1e-6 * u.s / u.s)
@@ -406,12 +405,12 @@ class Test_classical_transport:
         ])
     def test_electron_viscosity_by_model(self, model, expected):
         with pytest.warns(RelativityWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      model=model)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     model=model)
             testTrue = np.allclose(ct2.electron_viscosity(),
                                    expected,
                                    atol=1e-6 * u.Pa * u.s)
@@ -427,12 +426,12 @@ class Test_classical_transport:
         ])
     def test_ion_viscosity_by_model(self, model, expected):
         with pytest.warns(RelativityWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      model=model)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     model=model)
             testTrue = np.allclose(ct2.ion_viscosity(),
                                    expected,
                                    atol=1e-6 * u.Pa * u.s)
@@ -447,12 +446,12 @@ class Test_classical_transport:
         ])
     def test_electron_thermal_conductivity_by_model(self, model, expected):
         with pytest.warns(RelativityWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      model=model)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     model=model)
             testTrue = np.allclose(ct2.electron_thermal_conductivity(),
                                    expected,
                                    atol=1e-6 * u.W / (u.K * u.m))
@@ -467,12 +466,12 @@ class Test_classical_transport:
         ])
     def test_ion_thermal_conductivity_by_model(self, model, expected):
         with pytest.warns(RelativityWarning):
-            ct2 = classical_transport(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      T_i=self.T_i,
-                                      n_i=self.n_i,
-                                      ion_particle=self.ion_particle,
-                                      model=model)
+            ct2 = ClassicalTransport(T_e=self.T_e,
+                                     n_e=self.n_e,
+                                     T_i=self.T_i,
+                                     n_i=self.n_i,
+                                     ion_particle=self.ion_particle,
+                                     model=model)
             testTrue = np.allclose(ct2.ion_thermal_conductivity(),
                                    expected,
                                    atol=1e-6 * u.W / (u.K * u.m))
@@ -482,28 +481,34 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     @pytest.mark.parametrize("key, expected", {
-        'resistivity':                   [2.84304305e-08,
-                                          5.54447070e-08,
-                                          1.67853407e-12],
-        'thermoelectric conductivity':   [7.11083999e-01,
-                                          1.61011272e-09,
-                                          2.66496639e-05],
-        'electron thermal conductivity': [4.91374931e+06,
-                                          2.28808496e-03,
-                                          6.90324259e+01],
-        'electron viscosity':            [7.51661800e-02,
-                                          5.23617668e-21,
-                                          2.09447067e-20,
-                                          1.61841341e-11,
-                                          3.23682681e-11],
-        'ion thermal conductivity':      [1.41709276e+05,
-                                          4.20329493e-02,
-                                          6.90323924e+01],
-        'ion viscosity':                 [8.43463595e+00,
-                                          8.84513731e-13,
-                                          3.53805159e-12,
-                                          2.54483240e-06,
-                                          5.08966116e-06]}.items())
+        'resistivity': [
+            2.84304305e-08,
+            5.54447070e-08,
+            1.67853407e-12],
+        'thermoelectric conductivity': [
+            7.11083999e-01,
+            1.61011272e-09,
+            2.66496639e-05],
+        'electron thermal conductivity': [
+            4.91374931e+06,
+            2.28808496e-03,
+            6.90324259e+01],
+        'electron viscosity': [
+            7.51661800e-02,
+            5.23617668e-21,
+            2.09447067e-20,
+            1.61841341e-11,
+            3.23682681e-11],
+        'ion thermal conductivity': [
+            1.41709276e+05,
+            4.20329493e-02,
+            6.90323924e+01],
+        'ion viscosity': [
+            8.43463595e+00,
+            8.84513731e-13,
+            3.53805159e-12,
+            2.54483240e-06,
+            5.08966116e-06]}.items())
     def test_dictionary(self, key, expected):
         calculated = self.all_variables[key]
         testTrue = np.allclose(expected, calculated.si.value)
