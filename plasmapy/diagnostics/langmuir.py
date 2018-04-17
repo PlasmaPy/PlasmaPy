@@ -2,8 +2,8 @@
 
 import numpy as np
 import astropy.units as u
-import plasmapy.constants as const
 from plasmapy import utils
+import plasmapy.constants as const
 import copy
 from astropy.visualization import quantity_support
 import matplotlib.pyplot as plt
@@ -49,6 +49,16 @@ class Characteristic:
 
     """
 
+    @utils.check_quantity({'bias': {'units': u.V,
+                                    'can_be_negative': True,
+                                    'can_be_complex': False,
+                                    'can_be_inf': False,
+                                    'can_be_nan': True},
+                           'current': {'units': u.A,
+                                       'can_be_negative': True,
+                                       'can_be_complex': False,
+                                       'can_be_inf': False,
+                                       'can_be_nan': True}})
     def __init__(self, bias, current):
         self.bias = bias
         self.current = current
