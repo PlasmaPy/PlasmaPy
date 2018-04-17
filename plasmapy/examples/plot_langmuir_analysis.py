@@ -1,7 +1,7 @@
 # coding: utf-8
 """
 Langmuir probe data analysis
-=========================
+============================
 
 Let's analyze a few Langmuir probe characteristics using the
 `diagnostics.langmuir` subpackage.
