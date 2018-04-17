@@ -53,7 +53,7 @@ class Characteristic:
         self.bias = bias
         self.current = current
 
-        self.get_unique_bias()
+        self.get_unique_bias(True)
 
         self.check_validity()
 
@@ -87,7 +87,7 @@ class Characteristic:
         self.current = self.current[_sort]
         self.bias = self.bias[_sort]
 
-    def get_unique_bias(self):
+    def get_unique_bias(self, inplace=False):
         r"""Remove any duplicate bias values through averaging."""
 
         if(len(self.bias) != len(self.current)):
@@ -102,8 +102,11 @@ class Characteristic:
                     self.current[self.bias == bias].to(u.A).value))
         current_unique *= u.A
 
-        self.bias = bias_unique
-        self.current = current_unique
+        if inplace:
+            self.bias = bias_unique
+            self.current = current_unique
+        else:
+            return Characteristic(bias_unique, current_unique)
 
     def check_validity(self):
         r"""Check the unit and value validity of the characteristic."""
@@ -547,9 +550,6 @@ def get_ion_density_LM(ion_saturation_current, T_e,
 
     """
 
-    utils._check_quantity(T_e, 'T_e', 'extract_exponential_section', u.eV,
-                          can_be_negative=False)
-
     # Calculate the acoustic (Bohm) velocity
     c_s = np.sqrt(T_e / gas)
 
@@ -604,9 +604,6 @@ def get_electron_density_LM(electron_saturation_current, T_e,
 
     """
 
-    utils._check_quantity(T_e, 'T_e', 'extract_exponential_section', u.eV,
-                          can_be_negative=False)
-
     # Calculate the thermal electron velocity
     v_th = np.sqrt(8 * T_e / (np.pi * const.m_e))
 
@@ -655,8 +652,6 @@ def extract_exponential_section(probe_characteristic, T_e=None,
     V_P = get_plasma_potential(probe_characteristic)
 
     if(T_e is not None):
-        utils._check_quantity(T_e, 'T_e', 'extract_exponential_section', u.eV,
-                              can_be_negative=False)
 
         # If a bi-Maxwellian electron temperature is supplied grab the first
         # (cold) temperature
