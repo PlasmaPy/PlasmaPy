@@ -24,6 +24,8 @@ class Test__characteristic_errors:
     bias_longarr = np.random.rand(N + 1) * u.V
     current_longarr = np.random.rand(N + 1) * u.A
 
+    current_arr2 = np.random.rand(N) * u.A
+
     def test_infinite_I(self):
         r"""Test error upon an infinite current value"""
 
@@ -44,6 +46,32 @@ class Test__characteristic_errors:
 
         with pytest.raises(ValueError):
             Characteristic(bias_arr, self.current_longarr)
+
+    def test_addition(self):
+        r"""Test addition of characteristic objects"""
+
+        a = Characteristic(bias_arr, current_arr)
+
+        b = Characteristic(bias_arr, self.current_arr2)
+
+        ab_sum = Characteristic(bias_arr, current_arr + self.current_arr2)
+
+        errStr = (f"Addition of characteristic objects is not behaving as it "
+                  f"should.")
+        assert a + b == ab_sum, errStr
+
+    def test_subtraction(self):
+        r"""Test addition of characteristic objects"""
+
+        a = Characteristic(bias_arr, current_arr)
+
+        b = Characteristic(bias_arr, self.current_arr2)
+
+        ab_sub = Characteristic(bias_arr, current_arr - self.current_arr2)
+
+        errStr = (f"Subtraction of characteristic objects is not behaving as "
+                  f"it should.")
+        assert a - b == ab_sub, errStr
 
 
 @pytest.fixture
@@ -132,16 +160,19 @@ class Test__swept_probe_analysis:
         assert sim_result1 == sim_result2, errStr
 
     @staticmethod
-    def test_ordering_invariance():
+    @pytest.mark.parametrize("bimaxwellian", [True, False])
+    def test_ordering_invariance(bimaxwellian):
         r"""Test invariance to ordering of the bias and current values"""
 
         sim = characteristic_simulated()
 
         sim_result = swept_probe_analysis(
-            sim, 4*u.m**2, 40 * u.u)
+            sim, 4*u.m**2, 40 * u.u,
+            bimaxwellian=bimaxwellian)
 
         sim_result_shuffled = swept_probe_analysis(
-            shuffle_characteristic(sim), 4*u.m**2, 40 * u.u)
+            shuffle_characteristic(sim), 4*u.m**2, 40 * u.u,
+            bimaxwellian=bimaxwellian)
 
         errStr = (f"Analysis should be invariant to the ordering of the "
                   f"input data.")
