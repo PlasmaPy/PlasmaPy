@@ -55,10 +55,10 @@ class Test__characteristic_errors:
         b = Characteristic(bias_arr, self.current_arr2)
 
         ab_sum = Characteristic(bias_arr, current_arr + self.current_arr2)
-
+    
         errStr = (f"Addition of characteristic objects is not behaving as it "
                   f"should.")
-        assert a + b == ab_sum, errStr
+        assert (a.current + b.current == ab_sum.current).all(), errStr
 
     def test_subtraction(self):
         r"""Test addition of characteristic objects"""
@@ -71,7 +71,7 @@ class Test__characteristic_errors:
 
         errStr = (f"Subtraction of characteristic objects is not behaving as "
                   f"it should.")
-        assert a - b == ab_sub, errStr
+        assert (a.current - b.current == ab_sub.current).all(), errStr
 
 
 @pytest.fixture
