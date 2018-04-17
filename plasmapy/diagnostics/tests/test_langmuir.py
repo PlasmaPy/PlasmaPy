@@ -157,7 +157,8 @@ class Test__swept_probe_analysis:
 
         errStr = (f"`swept_probe_analysis` should accept both floats and "
                   f"a.m.u. Quantities as atomic gas mass input.")
-        assert sim_result1 == sim_result2, errStr
+        for key in sim_result1:
+            assert (sim_result1[key] == sim_result2[key]).all(), errStr
 
     @staticmethod
     @pytest.mark.parametrize("bimaxwellian", [True, False])
@@ -176,4 +177,5 @@ class Test__swept_probe_analysis:
 
         errStr = (f"Analysis should be invariant to the ordering of the "
                   f"input data.")
-        assert sim_result == sim_result_shuffled, errStr
+        for key in sim_result:
+            assert (sim_result[key] == sim_result_shuffled[key]).all(), errStr
