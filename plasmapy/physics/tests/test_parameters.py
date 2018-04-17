@@ -304,7 +304,7 @@ def test_thermal_speed():
     with pytest.raises(RelativityError):
         thermal_speed(1e14 * u.K, particle='p')
 
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidParticleError):
         thermal_speed(T_i, particle='asdfasd')
 
     with pytest.warns(u.UnitsWarning):
@@ -559,9 +559,6 @@ def test_gyroradius():
 
     with pytest.raises(TypeError):
         gyroradius(u.T, particle="p", Vperp=8 * u.m / u.s)
-
-    with pytest.raises(ValueError):
-        gyroradius(B, particle='asfdas', T_i=T_i)
 
     with pytest.raises(ValueError):
         gyroradius(B, particle='p', T_i=-1 * u.K)

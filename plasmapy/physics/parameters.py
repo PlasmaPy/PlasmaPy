@@ -333,9 +333,11 @@ def ion_sound_speed(T_e,
 
 @utils.check_relativistic
 @utils.check_quantity({
-    'T': {'units': u.K, 'can_be_negative': False}
+    'T': {'units': u.K, 'can_be_negative': False},
+    'mass': {'units': u.kg, 'can_be_negative': False, 'can_be_nan': True}
     })
-def thermal_speed(T, particle="e-", method="most_probable"):
+@atomic.particle_input
+def thermal_speed(T, particle: atomic.Particle="e-", method="most_probable", mass=np.nan*u.kg):
     r"""
     Return the most probable speed for a particle within a Maxwellian
     distribution.
@@ -354,6 +356,11 @@ def thermal_speed(T, particle="e-", method="most_probable"):
     method : str, optional
         Method to be used for calculating the thermal speed. Options are
         `'most_probable'` (default), `'rms'`, and `'mean_magnitude'`.
+
+    mass : ~astropy.units.Quantity
+        The particle's mass override. Defaults to NaN and if so, doesn't do
+        anything, but if set, overrides mass acquired from `particle`. Useful
+        with relative velocities of particles.
 
     Returns
     -------
@@ -416,10 +423,7 @@ def thermal_speed(T, particle="e-", method="most_probable"):
 
     T = T.to(u.K, equivalencies=u.temperature_energy())
 
-    try:
-        m = atomic.particle_mass(particle)
-    except AtomicError:
-        raise ValueError("Unable to find {particle} mass in thermal_speed")
+    m = mass if np.isfinite(mass) else atomic.particle_mass(particle)
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     if method == "most_probable":
