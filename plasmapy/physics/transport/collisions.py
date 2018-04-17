@@ -1,4 +1,3 @@
-# coding=utf-8
 """Functions to calculate transport coefficients."""
 
 # python modules
@@ -7,21 +6,20 @@ import numpy as np
 import warnings
 
 # plasmapy modules
-import plasmapy.atomic as atomic
 from plasmapy import utils
 from plasmapy.utils.checks import (check_quantity,
                                    _check_relativistic)
 
 from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
-from plasmapy.atomic import (particle_mass, integer_charge)
-from plasmapy.physics.parameters import (Debye_length)
+from plasmapy import atomic
+from plasmapy.physics import parameters
 from plasmapy.physics.quantum import (Wigner_Seitz_radius,
                                       thermal_deBroglie_wavelength,
                                       chemical_potential)
 from plasmapy.mathematics import Fermi_integral
 
 
-@utils.check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
                        "n_e": {"units": u.m ** -3}
                        })
 def Coulomb_logarithm(T,
@@ -83,6 +81,10 @@ def Coulomb_logarithm(T,
 
     PhysicsError
         If the result is smaller than 1.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -242,29 +244,16 @@ def _boilerPlate(T, particles, V):
                          "list or tuple containing representations of two  "
                          f"charged particles. Got {particles} instead.")
 
-    masses = np.zeros(2) * u.kg
-    charges = np.zeros(2) * u.C
+    particles = [atomic.Particle(p) for p in particles]
+    masses = [p.mass for p in particles]
+    charges = [np.abs(p.charge) for p in particles]
 
-    for particle, i in zip(particles, range(2)):
-
-        try:
-            masses[i] = particle_mass(particles[i])
-        except Exception:
-            raise ValueError("Unable to find mass of particle: "
-                             f"{particles[i]}.")
-        try:
-            charges[i] = np.abs(e * integer_charge(particles[i]))
-            if charges[i] is None:
-                raise ValueError("Unable to find charge of particle: "
-                                 f"{particles[i]}.")
-        except Exception:
-            raise ValueError("Unable to find charge of particle: "
-                             f"{particles[i]}.")
     # obtaining reduced mass of 2 particle collision system
-    reduced_mass = masses[0] * masses[1] / (masses[0] + masses[1])
+    reduced_mass = atomic.reduced_mass(*particles)
+
     # getting thermal velocity of system if no velocity is given
     if np.isnan(V):
-        V = np.sqrt(2 * k_B * T / reduced_mass).to(u.m / u.s)
+        V = parameters.thermal_speed(T, mass=reduced_mass)
     _check_relativistic(V, 'V')
     return T, masses, charges, reduced_mass, V
 
@@ -311,6 +300,10 @@ def b_perp(T,
     TypeError
         If T, or V are not Quantities.
 
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
+
     Warns
     -----
     ~astropy.units.UnitsWarning
@@ -355,7 +348,7 @@ def b_perp(T,
     return bPerp.to(u.m)
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def impact_parameter(T,
@@ -415,6 +408,10 @@ def impact_parameter(T,
     TypeError
         If the n_e, T, or V are not Quantities.
 
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
+
     Warns
     -----
     ~astropy.units.UnitsWarning
@@ -473,7 +470,7 @@ def impact_parameter(T,
             raise ValueError("Must provide a z_mean for GMS-2, GMS-5, and "
                              "GMS-6 methods.")
     # Debye length
-    lambdaDe = Debye_length(T, n_e)
+    lambdaDe = parameters.Debye_length(T, n_e)
     # deBroglie wavelength
     lambdaBroglie = hbar / (2 * reduced_mass * V)
     # distance of closest approach in 90 degree Coulomb collision
@@ -604,6 +601,10 @@ def collision_frequency(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -953,7 +954,7 @@ def collision_rate_ion_ion(T_i,
     return nu_i.to(1 / u.s)
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def mean_free_path(T,
@@ -1011,6 +1012,10 @@ def mean_free_path(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -1087,7 +1092,6 @@ def Spitzer_resistivity(T,
         and electron-ion collisions, and the ion temperature for
         ion-ion collisions.
 
-
     n : ~astropy.units.Quantity
         The density in units convertible to per cubic meter.
         This should be the electron density for electron-electron collisions,
@@ -1129,6 +1133,10 @@ def Spitzer_resistivity(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -1192,7 +1200,7 @@ def Spitzer_resistivity(T,
     return spitzer.to(u.Ohm * u.m)
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def mobility(T,
@@ -1253,6 +1261,10 @@ def mobility(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
@@ -1315,7 +1327,7 @@ def mobility(T,
     return mobility_value.to(u.m ** 2 / (u.V * u.s))
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def Knudsen_number(characteristic_length,
@@ -1378,6 +1390,10 @@ def Knudsen_number(characteristic_length,
     TypeError
         If the n_e, T, or V are not Quantities.
 
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
+
     Warns
     -----
     ~astropy.units.UnitsWarning
@@ -1430,7 +1446,7 @@ def Knudsen_number(characteristic_length,
     return knudsen_param.to(u.dimensionless_unscaled)
 
 
-@check_quantity({"T":   {"units": u.K, "can_be_negative": False},
+@check_quantity({"T": {"units": u.K, "can_be_negative": False},
                  "n_e": {"units": u.m ** -3}
                  })
 def coupling_parameter(T,
@@ -1491,6 +1507,10 @@ def coupling_parameter(T,
 
     TypeError
         If the n_e, T, or V are not Quantities.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
 
     Warns
     -----
