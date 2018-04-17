@@ -1,4 +1,3 @@
-# coding=utf-8
 """Tests for functions that calculate plasma parameters."""
 
 import numpy as np

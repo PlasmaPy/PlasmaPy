@@ -1,7 +1,7 @@
 """
 Class representing a group of particles.
 """
-# coding=utf-8
+
 import numpy as np
 import scipy.interpolate as interp
 from ..atomic import atomic

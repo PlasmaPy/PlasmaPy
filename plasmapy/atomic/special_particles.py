@@ -9,7 +9,7 @@ import numpy as np
 from .elements import _PeriodicTable
 
 
-class _ParticleZooClass():
+class _ParticleZooClass:
     """
     Create an object with taxonomy information for special particles.
 
