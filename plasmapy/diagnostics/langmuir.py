@@ -502,9 +502,9 @@ def get_ion_saturation_current(probe_characteristic):
 
     Notes
     -----
-    The method implemented in this function takes the ion saturation current
-    as the smallest probe current in the characteristic. This assumes the bias
-    range in the ion region is sufficiently negative for the ion current to
+    The method implemented in this function assumes the ion saturation current
+    to be the smallest probe current in the characteristic. This assumes the
+    bias range in the ion region is sufficiently negative for the ion current to
     saturate.
 
     """
@@ -565,6 +565,11 @@ def get_ion_density_LM(ion_saturation_current, T_e,
     probe is equal to the Bohm loss. The acoustic Bohm velocity is obtained
     from the electron temperature and the ion mass.
 
+    The ion saturation current is given by
+
+    .. math::
+        I_{is}=0.6eAn_i\sqrt{\frac{T_e}{m_i}}.
+
     """
 
     # Calculate the acoustic (Bohm) velocity
@@ -614,7 +619,12 @@ def get_electron_density_LM(electron_saturation_current, T_e,
     Notes
     -----
     The method implemented in this function obtains the electron density from
-    the electron saturation current density, assuming a low plasma density.
+    the electron saturation current density, assuming a low plasma density. The
+    electron saturation current is given by
+
+    .. math::
+        I_{es}=\frac{1}{4}en_eA\sqrt{\frac{8T_e}{\pi m_e}}.
+
     Please note that the electron saturation current density is a hard
     parameter to acquire and it is usually better to measure the ion density,
     which should be identical to the electron density in quasineutral plasmas.
@@ -754,10 +764,20 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
 
     Notes
     -----
-    The exponential section of the probe characteristic should be a straight
-    line if the plasma electrons are fully Maxwellian, or exhibit a knee in a
+    In the electron growth region of the probe characteristic the electron
+    current grows exponentially with bias voltage:
+
+    .. math::
+        I_e = I_{es}\textrm{exp}\left(-\frac{e\left(V_P -
+        V\right)}{T_e} \right ).
+
+    In log space the current in this region should be a straight line if the
+    plasma electrons are fully Maxwellian, or exhibit a knee in a
     bi-Maxwellian case. The slope is inversely proportional to the
-    temperature of the respective electron population.
+    temperature of the respective electron population:
+
+    .. math::
+        \textrm{log}\left(I_e \right )\propto \frac{1}{T_e}.
 
     """
 
@@ -950,7 +970,10 @@ def reduce_bimaxwellian_temperature(T_e, hot_fraction):
     -----
     This function aids methods that take a single electron temperature in
     situations where the electron population is bi-Maxwellian. The reduced
-    temperature is obtained as the weighted mean.
+    temperature is obtained as the weighted mean:
+
+    .. math::
+        T_{e,red}=T_c\left(1-f_h \right )+T_h f_h
 
     """
 
@@ -1005,11 +1028,16 @@ def get_ion_density_OML(probe_characteristic, probe_area, gas,
     The method implemented in this function holds for cylindrical probes in a
     cold ion plasma, ie. T_i = 0 eV. With OML theory an expression is found
     for the ion current as function of probe bias independent of the electron
-    temperature:
+    temperature [mott-smith.langmuir-1926]_:
 
     .. math::
-        I = A_p n e \frac{\sqrt{2}}{\pi} \left( \frac{|eV_b|}{m_i}
-        \right)^{1/2}
+        I_i = A_p n_i e \frac{\sqrt{2}}{\pi}
+        \sqrt{\frac{e\left(V_F-V\right)}{m_i}}
+
+    References
+    ----------
+    .. [mott-smith.langmuir-1926] H. M. Mott-Smith, I. Langmuir,
+        Phys. Rev. 28, 727-763 (Oct. 1926)
 
     """
 
@@ -1126,6 +1154,17 @@ def get_EEDF(probe_characteristic, visualize=False):
     Therefore it is advisable to smooth the I-V prior to the use of this
     function.
 
+    The Druyvesteyn analysis results in the following equation
+    [druyvesteyn-1930]_:
+
+    .. math::
+        N_e(\epsilon)=\frac{2}{Ae^2}\sqrt{\frac{2m\epsilon}{e}}
+        \frac{\textrm{d}^2I}{\textrm{d}V^2}
+
+    References
+    ----------
+    .. [druyvesteyn-1930] Druyvesteyn, M.J. Z. Physik (1930) 64: 781
+
     """
 
     probe_characteristic.check_validity()
@@ -1151,16 +1190,18 @@ def get_EEDF(probe_characteristic, visualize=False):
 
     # Division by the Druyvesteyn factor. Since the result will be normalized
     # all constant values are irrelevant.
-    probability = dIdV2[_filter] / energy.to(u.eV).value
+    probability = dIdV2[_filter] * np.sqrt(energy.to(u.eV).value)
 
     # Integration of the EEDF for the purpose of normalization.
-    integral = np.trapz(probability, x=energy.to(u.eV).value)
-    probability = np.abs(probability / integral)
+    integral = np.abs(np.trapz(probability, x=energy.to(u.eV).value))
+    probability = probability / integral
 
     if visualize:  # coveralls: ignore
         with quantity_support():
             plt.figure()
             plt.semilogy(energy, probability, c='k')
-            plt.title("EEDF")
+            plt.title("Electron Energy Distribution Function")
+            plt.xlabel("Energy (eV)")
+            plt.ylabel("Probability")
 
     return energy, probability
