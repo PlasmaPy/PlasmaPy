@@ -11,12 +11,16 @@ Plasma diagnostics (`plasmapy.diagnostics`)
 Introduction
 ============
 The `diagnostics` subpackage contains tools for experimental research.
-Currently, we have some functionality for Langmuir probes which
-will be heavily changing in a soon-to-be-completed pull request.
+Currently, we have functionality for analyzing data from Langmuir probes
+located in `plasmapy.diagnostics.langmuir`.
+
+.. topic:: Examples:
+
+   * :ref:`sphx_glr_auto_examples_plot_langmuir_analysis.py`
 
 Reference/API
 =============
 
-.. automodapi:: plasmapy.diagnostics
-   :no-heading:
-   :no-main-docstr:
+.. automodapi:: plasmapy.diagnostics.langmuir
+   :skip: curve_fit
+   :skip: quantity_support

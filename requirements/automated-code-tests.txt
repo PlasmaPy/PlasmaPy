@@ -8,3 +8,4 @@ lmfit (>=0.9.7)
 flake8
 coveralls
 colorama
+matplotlib
