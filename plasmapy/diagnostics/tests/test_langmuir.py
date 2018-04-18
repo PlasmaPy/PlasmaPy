@@ -56,7 +56,7 @@ class Test__characteristic_errors:
         b = Characteristic(bias_arr, self.current_arr2)
 
         ab_sum = Characteristic(bias_arr, current_arr + self.current_arr2)
-    
+
         errStr = (f"Addition of characteristic objects is not behaving as it "
                   f"should.")
         assert (a.current + b.current == ab_sum.current).all(), errStr
@@ -87,24 +87,24 @@ def characteristic_simulated():
 
     T_e_sim = 1 * u.eV
     n_e_sim = 1e18 * u.m**-3
-    probe_area_sim = 1 * u.mm**2
-    I_e_sim = (n_e_sim * probe_area_sim * const.e *
-               np.sqrt(T_e_sim / (2 * np.pi * const.m_e)))
+    probe_area_sim = 1 * u.cm**2
+    I_es_sim = (n_e_sim * probe_area_sim * const.e *
+                np.sqrt(T_e_sim / (2 * np.pi * const.m_e)))
 
     # Create bias array
     bias_simarr = np.arange(-20, 15, 0.1) * u.V
 
     # Calculate electron current and limit to electron saturation current
     current_simarr = np.exp(const.e * bias_simarr / T_e_sim) * u.A
-    current_simarr[current_simarr > I_e_sim] = I_e_sim
+    current_simarr[current_simarr > I_es_sim] = I_es_sim
 
     # Add simulated linear sheath expansion current
-    current_simarr[current_simarr == I_e_sim] += (
-        bias_simarr[current_simarr == I_e_sim] * 5e-4 * u.A/u.V)
+    current_simarr[current_simarr == I_es_sim] += (
+        bias_simarr[current_simarr == I_es_sim] * 5e-4 * u.A/u.V)
 
     # Add simulated linear ion collection current
-    current_simarr[current_simarr < I_e_sim] += (
-        bias_simarr[current_simarr < I_e_sim] * 1e-4 * u.A/u.V)
+    current_simarr[current_simarr < I_es_sim] += (
+        bias_simarr[current_simarr < I_es_sim] * 1e-4 * u.A/u.V)
 
     return Characteristic(bias_simarr, current_simarr)
 
@@ -128,21 +128,21 @@ class Test__swept_probe_analysis:
         r"""Test error upon NaN area"""
 
         with pytest.raises(ValueError):
-            swept_probe_analysis(characteristic, np.nan * u.m**2, 40 * u.u)
+            swept_probe_analysis(characteristic, np.nan * u.cm**2, 40 * u.u)
 
     @staticmethod
     def test_unit_conversion_error():
         r"""Test error upon incorrect probe area unit"""
 
         with pytest.raises(u.UnitConversionError):
-            swept_probe_analysis(characteristic, 1*u.m, 40 * u.u)
+            swept_probe_analysis(characteristic, 1 * u.cm, 40 * u.u)
 
     @staticmethod
     def test_negative_area():
         r"""Test error upon negative probe area"""
 
         with pytest.raises(ValueError):
-            swept_probe_analysis(characteristic, -1 * u.m**2, 40 * u.u)
+            swept_probe_analysis(characteristic, -1 * u.cm**2, 40 * u.u)
 
     @staticmethod
     def test_ion_mass_unit():
@@ -151,10 +151,10 @@ class Test__swept_probe_analysis:
         sim = characteristic_simulated()
 
         sim_result1 = swept_probe_analysis(
-            sim, 4*u.m**2, 40)
+            sim, 1 * u.cm**2, 40)
 
         sim_result2 = swept_probe_analysis(
-            sim, 4*u.m**2, 40 * u.u)
+            sim, 1 * u.cm**2, 40 * u.u)
 
         errStr = (f"`swept_probe_analysis` should accept both floats and "
                   f"a.m.u. Quantities as atomic gas mass input.")
@@ -169,11 +169,15 @@ class Test__swept_probe_analysis:
         sim = characteristic_simulated()
 
         sim_result = swept_probe_analysis(
-            sim, 4*u.m**2, 40 * u.u,
+            sim,
+            1 * u.cm**2,
+            40 * u.u,
             bimaxwellian=bimaxwellian)
 
         sim_result_shuffled = swept_probe_analysis(
-            shuffle_characteristic(sim), 4*u.m**2, 40 * u.u,
+            shuffle_characteristic(sim),
+            1 * u.cm**2,
+            40 * u.u,
             bimaxwellian=bimaxwellian)
 
         errStr = (f"Analysis should be invariant to the ordering of the "
