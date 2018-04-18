@@ -31,8 +31,9 @@ def _fit_func_double_lin_inverse(x, x0, y0, T0, Delta_T):
     with T0 and T0 + Delta_T being the cold and hot temperatures, respectively.
     """
 
-    return np.piecewise(x, x < x0, [lambda x: y0 + (x - x0) / (T0 + Delta_T),
-                                    lambda x: y0 + (x - x0) / T0])
+    hot_T_func = lambda x: y0 + (x - x0) / (T0 + Delta_T)
+    cold_T_func = lambda x: y0 + (x - x0) / T0
+    return np.piecewise(x, x < x0, [hot_T_func, cold_T_func])
 
 
 class Characteristic:
@@ -100,7 +101,7 @@ class Characteristic:
     def get_unique_bias(self, inplace=False):
         r"""Remove any duplicate bias values through averaging."""
 
-        if(len(self.bias) != len(self.current)):
+        if len(self.bias) != len(self.current):
             raise ValueError(f"Unequal array lengths of bias "
                              f"({len(self.bias)}) and current "
                              f"({len(self.current)}).")
@@ -121,12 +122,18 @@ class Characteristic:
     def check_validity(self):
         r"""Check the unit and value validity of the characteristic."""
 
-        if(len(self.bias) != len(self.current)):
+        if len(self.bias.shape) != 1:
+            raise ValueError("Non-1D array for voltage!")
+
+        if len(self.current.shape) != 1:
+            raise ValueError("Non-1D array for current!")
+
+        if len(self.bias) != len(self.current):
             raise ValueError(f"Unequal array lengths of bias "
                              f"({len(self.bias)}) and current "
                              f"({len(self.current)}).")
 
-        if(len(np.unique(self.bias)) != len(self.bias)):
+        if len(np.unique(self.bias)) != len(self.bias):
             raise ValueError(f"Bias array contains duplicate values.")
 
         utils._check_quantity(self.bias, 'bias', str(self), u.V,
@@ -154,7 +161,7 @@ class Characteristic:
 
         ymax = np.max(self.current).to(u.A).value
 
-        if(log):
+        if log:
             ymin = np.min(np.abs(
                     self.current[self.current != 0])).to(u.A).value
             return [ymin * 10**(-padding * np.log10(ymax / ymin)),
@@ -239,10 +246,10 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
     'V_P' : Quantity
         Estimate of the plasma potential in units of V.
 
-    'I_e' : Quantity
+    'I_es' : Quantity
         Estimate of the electron saturation current in units of Am^-2.
 
-    'I_i' : Quantity
+    'I_is' : Quantity
         Estimate of the ion saturation current in units of Am^-2.
 
     'hot_fraction' : float
@@ -351,20 +358,20 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
 
     # Obtain and show the EEDF. This is only useful if the characteristic data
     # has been preprocessed to be sufficiently smooth and noiseless.
-    if(plot_EEDF):
+    if plot_EEDF:
         get_EEDF(probe_characteristic, visualize=True)
 
     # Compile the results dictionary
     results = {'V_P': V_P,
                'V_F': V_F,
-               'I_e': I_es,
-               'I_i': I_is,
+               'I_es': I_es,
+               'I_is': I_is,
                'n_e': n_e,
                'n_i': n_i,
                'T_e': T_e,
                'n_i_OML': n_i_OML}
 
-    if(bimaxwellian):
+    if bimaxwellian:
         results['hot_fraction'] = hot_fraction
 
     return results
@@ -408,7 +415,7 @@ def get_plasma_potential(probe_characteristic, return_arg=False):
 
     arg_V_P = np.argmax(dIdV)
 
-    if(return_arg):
+    if return_arg:
         return probe_characteristic.bias[arg_V_P], arg_V_P
 
     return probe_characteristic.bias[arg_V_P]
@@ -444,7 +451,7 @@ def get_floating_potential(probe_characteristic, return_arg=False):
 
     arg_V_F = np.argmin(np.abs(probe_characteristic.current))
 
-    if(return_arg):
+    if return_arg:
         return probe_characteristic.bias[arg_V_F], arg_V_F
 
     return probe_characteristic.bias[arg_V_F]
@@ -461,7 +468,7 @@ def get_electron_saturation_current(probe_characteristic):
 
     Returns
     -------
-    I_e : Quantity
+    I_es: Quantity
         Estimate of the electron saturation current in units convertible to A.
 
     Notes
@@ -490,7 +497,7 @@ def get_ion_saturation_current(probe_characteristic):
 
     Returns
     -------
-    I_i : Quantity
+    I_is : Quantity
         Estimate of the ion saturation current in units convertible to A.
 
     Notes
@@ -661,11 +668,11 @@ def extract_exponential_section(probe_characteristic, T_e=None,
 
     V_P = get_plasma_potential(probe_characteristic)
 
-    if(T_e is not None):
+    if T_e is not None:
 
         # If a bi-Maxwellian electron temperature is supplied grab the first
         # (cold) temperature
-        if(np.array(T_e).size > 1):
+        if np.array(T_e).size > 1:
             T_e = np.min(T_e)
 
         _filter = (probe_characteristic.bias > V_F + 1.5 * T_e / const.e) & (
@@ -676,7 +683,7 @@ def extract_exponential_section(probe_characteristic, T_e=None,
 
     exponential_section = probe_characteristic[_filter]
 
-    if(ion_current is not None):
+    if ion_current is not None:
         exponential_section = exponential_section - ion_current[_filter]
 
     return exponential_section
@@ -761,17 +768,17 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
     exponential_section = exponential_section[
             exponential_section.current.to(u.A).value > 0]
 
-    p0 = None
+    initial_guess = None  # for fitting
 
     bounds = (-np.inf, np.inf)
 
     # Instantiate the correct fitting equation, initial values and bounds.
-    if(bimaxwellian):
-        x0 = np.min(exponential_section.bias) + \
-            + 2/3 * (np.max(exponential_section.bias) -
-                     np.min(exponential_section.bias))
+    if bimaxwellian:
+        max_exp_bias = np.max(exponential_section.bias)
+        min_exp_bias = np.min(exponential_section.bias)
+        x0 = min_exp_bias + 2/3 * (max_exp_bias - max_exp_bias)
 
-        p0 = [x0.to(u.V).value, 0.6, 2, 1]
+        initial_guess = [x0.to(u.V).value, 0.6, 2, 1]
 
         bounds = ([-np.inf, -np.inf, 0, 0], np.inf)
 
@@ -782,7 +789,7 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
     # Perform the actual fit of the data
     fit, _ = curve_fit(fit_func, exponential_section.bias.to(u.V).value,
                        np.log(exponential_section.current.to(u.A).value),
-                       p0=p0,
+                       p0=initial_guess,
                        bounds=bounds)
 
     hot_fraction = None
@@ -824,7 +831,7 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
                         color='k',
                         marker='.')
 
-            if(bimaxwellian):
+            if bimaxwellian:
                 plt.scatter(x0, y0, marker='o', c='g')
                 plt.plot(exponential_section.bias.to(u.V),
                          _fit_func_lin_inverse(
@@ -844,10 +851,10 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
 
     k = [T_e]
 
-    if(return_hot_fraction):
+    if return_hot_fraction:
         k.append(hot_fraction)
 
-    if(return_fit):
+    if return_fit:
         k.append(fit)
 
     return k
@@ -889,7 +896,7 @@ def extrapolate_electron_current(probe_characteristic, fit,
 
     probe_characteristic.check_validity()
 
-    if(bimaxwellian):
+    if bimaxwellian:
         fit_func = _fit_func_double_lin_inverse
     else:
         fit_func = _fit_func_lin_inverse
@@ -949,7 +956,7 @@ def reduce_bimaxwellian_temperature(T_e, hot_fraction):
 
     # Return the electron temperature itself if it is not bi-Maxwellian
     # in the first place.
-    if(hot_fraction is None or not np.array(T_e).size > 1):
+    if hot_fraction is None or not np.array(T_e).size > 1:
         return T_e
 
     return T_e[0] * (1 - hot_fraction) + T_e[1] * hot_fraction
@@ -1017,8 +1024,8 @@ def get_ion_density_OML(probe_characteristic, probe_area, gas,
 
     slope = fit[0]
 
-    n_i_OML = np.sqrt(-slope*u.mA**2/u.V * np.pi**2 * gas /
-                      (probe_area**2 * const.e**3 * 2))
+    n_i_OML = np.sqrt(-slope * u.mA ** 2 / u.V * np.pi ** 2 * gas /
+                      (probe_area ** 2 * const.e ** 3 * 2))
 
     if visualize:  # coveralls: ignore
         with quantity_support():
@@ -1032,7 +1039,7 @@ def get_ion_density_OML(probe_characteristic, probe_area, gas,
             plt.title("OML fit")
             plt.tight_layout()
 
-    if(return_fit):
+    if return_fit:
         return n_i_OML.to(u.m**-3), fit
 
     return n_i_OML.to(u.m**-3)
@@ -1129,17 +1136,18 @@ def get_EEDF(probe_characteristic, visualize=False):
 
     V_P = get_plasma_potential(probe_characteristic)
 
+    probe_bias = probe_characteristic.bias
+    probe_current = probe_characteristic.current
+
     # Obtain the correct EEDF energy range from the probe characteristic.
-    _filter = (probe_characteristic.bias > V_F) & \
-        (probe_characteristic.bias < V_P)
-    energy = const.e * (V_P - probe_characteristic.bias[_filter])
+    _filter = (probe_bias > V_F) & (probe_bias < V_P)
+    energy = const.e * (V_P - probe_bias[_filter])
     energy = energy.to(u.eV)
 
     # Obtain the second derivative of the I-V curve.
-    dIdV = np.gradient(probe_characteristic.current.to(u.A).value,
-                       probe_characteristic.bias.to(u.V).value)
-    dIdV2 = np.gradient(dIdV,
-                        probe_characteristic.bias.to(u.V).value)
+    dIdV = np.gradient(probe_current.to(u.A).value,
+                       probe_bias.to(u.V).value)
+    dIdV2 = np.gradient(dIdV, probe_bias.to(u.V).value)
 
     # Division by the Druyvesteyn factor. Since the result will be normalized
     # all constant values are irrelevant.

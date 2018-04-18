@@ -99,11 +99,11 @@ def characteristic_simulated():
 
     # Add simulated linear sheath expansion current
     current_simarr[current_simarr == I_e_sim] += (
-        bias_simarr[current_simarr == I_e_sim] * 0.0005 * u.A/u.V)
+        bias_simarr[current_simarr == I_e_sim] * 5e-4 * u.A/u.V)
 
     # Add simulated linear ion collection current
     current_simarr[current_simarr < I_e_sim] += (
-        bias_simarr[current_simarr < I_e_sim] * 0.0001 * u.A/u.V)
+        bias_simarr[current_simarr < I_e_sim] * 1e-4 * u.A/u.V)
 
     return Characteristic(bias_simarr, current_simarr)
 
