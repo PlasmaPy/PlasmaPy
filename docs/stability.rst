@@ -91,7 +91,7 @@ PlasmaPy's planned and existing subpackages are:
             <td>
                 plasmapy.atomic
             </td>
-            <td align='dev'>
+            <td align='center'>
                 <span class="dev"></span>
             </td>
             <td>
@@ -103,7 +103,7 @@ PlasmaPy's planned and existing subpackages are:
             <td>
                 plasmapy.classes
             </td>
-            <td align='planned'>
+            <td align='center'>
                 <span class="dev"></span>
             </td>
             <td>
@@ -116,7 +116,7 @@ PlasmaPy's planned and existing subpackages are:
             <td>
                 plasmapy.constants
             </td>
-            <td align='mature'>
+            <td align='center'>
                 <span class="stable"></span>
             </td>
             <td>
@@ -131,8 +131,8 @@ PlasmaPy's planned and existing subpackages are:
             <td>
                 plasmapy.diagnostics
             </td>
-            <td align='dev'>
-                <span class="planned"></span>
+            <td align='center'>
+                <span class="dev"></span>
             </td>
             <td>
                 This subpackage is in the early stages of development.
@@ -142,7 +142,7 @@ PlasmaPy's planned and existing subpackages are:
             <td>
                 plasmapy.mathematics
             </td>
-            <td align='dev'>
+            <td align='center'>
                 <span class="dev"></span>
             </td>
             <td>
@@ -155,7 +155,7 @@ PlasmaPy's planned and existing subpackages are:
             <td>
                 plasmapy.parameters
             </td>
-            <td align='dev'>
+            <td align='center'>
                 <span class="dev"></span>
             </td>
             <td>
@@ -170,7 +170,7 @@ PlasmaPy's planned and existing subpackages are:
             <td>
                 plasmapy.parameters.transport
             </td>
-            <td align='dev'>
+            <td align='center'>
                 <span class="dev"></span>
             </td>
             <td>
@@ -184,7 +184,7 @@ PlasmaPy's planned and existing subpackages are:
             <td>
                 plasmapy.utils
             </td>
-            <td align='dev'>
+            <td align='center'>
                 <span class="dev"></span>
             </td>
             <td>
