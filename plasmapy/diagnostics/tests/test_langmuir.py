@@ -9,6 +9,7 @@ import plasmapy.constants as const
 from plasmapy.diagnostics.langmuir import (Characteristic,
                                            swept_probe_analysis)
 
+np.random.seed(42)
 N = 30  # array length of dummy probe characteristic
 
 current_arr = np.random.rand(N) * u.A
