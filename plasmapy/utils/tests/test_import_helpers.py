@@ -1,12 +1,9 @@
 """Tests for import_helpers.py"""
 
 import pytest
-import sys
 import numpy
 
-from ..import_helpers import check_versions
-
-from ... import _split_version
+from ...import_helpers import _check_versions, _split_version
 
 
 def _create_distinct_versions(current_version, time):
@@ -50,7 +47,7 @@ def test_check_versions_newer(newer_version):
 
     newer_minimum_versions = {'numpy': newer_version}
     with pytest.raises(ImportError):
-        check_versions(newer_minimum_versions)
+        _check_versions(newer_minimum_versions)
         raise Exception(
             "check_versions is not raising an exception when it should be "
             f"raising one, with numpy.__version__ = {numpy.__version__} "
@@ -66,7 +63,7 @@ def test_check_versions_older(older_version):
 
     older_minimum_versions = {'numpy': older_version}
     try:
-        check_versions(older_minimum_versions)
+        _check_versions(older_minimum_versions)
     except ImportError as e:
         raise ImportError(
             "check_versions is raising an exception when it should not be "

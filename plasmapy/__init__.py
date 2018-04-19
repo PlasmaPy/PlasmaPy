@@ -17,10 +17,10 @@ if sys.version_info < (3, 6):
         "PlasmaPy requires Python version 3.6 or higher, but is being "
         "called from Python version {}.".format(sys.version.split()[0]))
 
-# All imports that require Python 3.6+ should be placed after the Python
+# Place all imports that require Python 3.6+ **after** the Python
 # version check.
 
-from . import utils
+from . import import_helpers
 
 __name__ = "plasmapy"
 
@@ -33,7 +33,7 @@ _minimum_versions = {
     'scipy': '0.19',
     }
 
-utils.check_versions(_minimum_versions)
+import_helpers._check_versions(_minimum_versions)
 
 # The file version.py is created by installing PlasmaPy with setup.py
 # using functionality from astropy_helpers.  If this has not been run,
@@ -67,4 +67,4 @@ except ImportError:
 
 # Clean up PlasmaPy's top-level namespace
 
-del _minimum_versions, sys
+del _minimum_versions, sys, import_helpers

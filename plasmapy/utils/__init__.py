@@ -19,8 +19,6 @@ from .exceptions import (PlasmaPyError,
                          AtomicWarning,
                          MissingAtomicDataWarning)
 
-from .import_helpers import check_versions
-
 from .pytest_helpers import (
     run_test,
     run_test_equivalent_calls,
