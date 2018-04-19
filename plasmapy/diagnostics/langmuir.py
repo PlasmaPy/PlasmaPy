@@ -200,13 +200,13 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
 
     Parameters
     ----------
-    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
+    probe_characteristic : `Characteristic`
         The swept probe characteristic that is to be analyzed.
 
     probe_area : ~astropy.units.Quantity
         The area of the probe exposed to plasma in units convertible to m^2.
 
-    gas : ~astropy.units.Quantity
+    gas : `Quantity`
         The (mean) mass of the background gas in atomic mass units.
 
     visualize : bool, Optional
@@ -220,36 +220,35 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
     plot_EEDF : bool, Optional
         If True, the EEDF is computed and shown. Default is False.
 
-    Returns
-    -------
-    A dictionary with the following entries:
+    Returns (as dictionary)
+    -----------------------
 
-    'T_e' : ~astropy.units.Quantity
+    "T_e" : `Quantity`
         Best estimate of the electron temperature in units of eV. Contains
         two values if bimaxwellian is True.
 
-    'n_e' : ~astropy.units.Quantity
+    'n_e' : `astropy.units.Quantity`
         Estimate of the electron density in units of m^-3. See the Notes on
         plasma densities.
 
-    'n_i' : ~astropy.units.Quantity
+    'n_i' : `astropy.units.Quantity`
         Estimate of the ion density in units of m^-3. See the Notes on
         plasma densities.
 
-    'n_i_OML' : ~astropy.units.Quantity
+    'n_i_OML' : `astropy.units.Quantity`
         OML-theory estimate of the ion density in units of m^-3. See the Notes
         on plasma densities.
 
-    'V_F' : ~astropy.units.Quantity
+    'V_F' : `astropy.units.Quantity`
         Estimate of the floating potential in units of V.
 
-    'V_P' : ~astropy.units.Quantity
+    'V_P' : `astropy.units.Quantity`
         Estimate of the plasma potential in units of V.
 
-    'I_es' : ~astropy.units.Quantity
+    'I_es' : `astropy.units.Quantity`
         Estimate of the electron saturation current in units of Am^-2.
 
-    'I_is' : ~astropy.units.Quantity
+    'I_is' : `astropy.units.Quantity`
         Estimate of the ion saturation current in units of Am^-2.
 
     'hot_fraction' : float
@@ -568,7 +567,7 @@ def get_ion_density_LM(ion_saturation_current, T_e,
     The ion saturation current is given by
 
     .. math::
-        I_{is}=0.6eA_pn_i\sqrt{\frac{T_e}{m_i}}.
+        I_{is} = 0.6 e A_p n_i \sqrt{\frac{T_e}{m_i}}.
 
     """
 
@@ -623,7 +622,7 @@ def get_electron_density_LM(electron_saturation_current, T_e,
     electron saturation current is given by
 
     .. math::
-        I_{es}=\frac{1}{4}en_eA_p\sqrt{\frac{8T_e}{\pi m_e}}.
+        I_{es} = \frac{1}{4} e n_e A_p \sqrt{\frac{8 T_e}{\pi m_e}}.
 
     Please note that the electron saturation current density is a hard
     parameter to acquire and it is usually better to measure the ion density,
@@ -768,8 +767,8 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
     current grows exponentially with bias voltage:
 
     .. math::
-        I_e = I_{es}\textrm{exp}\left(-\frac{e\left(V_P -
-        V\right)}{T_e} \right ).
+        I_e = I_{es} \textrm{exp} \left( 
+        -\frac{e\left(V_P - V \right)}{T_e} \right).
 
     In log space the current in this region should be a straight line if the
     plasma electrons are fully Maxwellian, or exhibit a knee in a
@@ -777,7 +776,7 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
     temperature of the respective electron population:
 
     .. math::
-        \textrm{log}\left(I_e \right )\propto \frac{1}{T_e}.
+        \textrm{log} \left(I_e \right ) \propto \frac{1}{T_e}.
 
     """
 
@@ -973,7 +972,7 @@ def reduce_bimaxwellian_temperature(T_e, hot_fraction):
     temperature is obtained as the weighted mean:
 
     .. math::
-        T_{e,red}=T_c\left(1-f_h \right )+T_h f_h
+        T_{e,red} = T_c \left( 1 - f_h \right) + T_h f_h
 
     """
 
@@ -1031,8 +1030,8 @@ def get_ion_density_OML(probe_characteristic, probe_area, gas,
     temperature [mott-smith.langmuir-1926]_:
 
     .. math::
-        I_i \xrightarrow[T_i=0]{} A_p n_i e \frac{\sqrt{2}}{\pi}
-        \sqrt{\frac{e\left(V_F-V\right)}{m_i}}
+        I_i \xrightarrow[T_i = 0]{} A_p n_i e \frac{\sqrt{2}}{\pi}
+        \sqrt{\frac{e \left( V_F - V \right)}{m_i}}
 
     References
     ----------
@@ -1140,7 +1139,7 @@ def get_EEDF(probe_characteristic, visualize=False):
 
     Returns
     -------
-    energy : ~astropy.units.Quantity, ndarray
+    energy : `astropy.units.Quantity`, ndarray
         Array of potentials in V.
 
     probability : float, ndarray
@@ -1158,8 +1157,9 @@ def get_EEDF(probe_characteristic, visualize=False):
     [druyvesteyn-1930]_:
 
     .. math::
-        N_e(\epsilon)=\frac{2}{A_pe^2}\sqrt{\frac{2m\epsilon}{e}}
-        \frac{\textrm{d}^2I}{\textrm{d}V^2}
+        N_e \left( \epsilon \right) = 
+        \frac{2}{A_pe^2} \sqrt{\frac{2 m \epsilon}{e}} 
+        \frac{\textrm{d}^2 I}{\textrm{d} V^2}
 
     References
     ----------
