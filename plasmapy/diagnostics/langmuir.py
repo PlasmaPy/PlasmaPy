@@ -42,10 +42,10 @@ class Characteristic:
 
     Attributes
     ----------
-    bias : Quantity, ndarray
+    bias : ~astropy.units.Quantity, ndarray
         Array of applied probe biases in units convertible to V.
 
-    current : Quantity, ndarray
+    current : ~astropy.units.Quantity, ndarray
         Array of applied probe currents in units convertible to A.
 
     """
@@ -200,13 +200,13 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
 
     Parameters
     ----------
-    probe_characteristic : Characteristic
+    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
         The swept probe characteristic that is to be analyzed.
 
-    probe_area : Quantity
+    probe_area : ~astropy.units.Quantity
         The area of the probe exposed to plasma in units convertible to m^2.
 
-    gas : Quantity
+    gas : ~astropy.units.Quantity
         The (mean) mass of the background gas in atomic mass units.
 
     visualize : bool, Optional
@@ -224,32 +224,32 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
     -------
     A dictionary with the following entries:
 
-    'T_e' : Quantity
+    'T_e' : ~astropy.units.Quantity
         Best estimate of the electron temperature in units of eV. Contains
         two values if bimaxwellian is True.
 
-    'n_e' : Quantity
+    'n_e' : ~astropy.units.Quantity
         Estimate of the electron density in units of m^-3. See the Notes on
         plasma densities.
 
-    'n_i' : Quantity
+    'n_i' : ~astropy.units.Quantity
         Estimate of the ion density in units of m^-3. See the Notes on
         plasma densities.
 
-    'n_i_OML' : Quantity
+    'n_i_OML' : ~astropy.units.Quantity
         OML-theory estimate of the ion density in units of m^-3. See the Notes
         on plasma densities.
 
-    'V_F' : Quantity
+    'V_F' : ~astropy.units.Quantity
         Estimate of the floating potential in units of V.
 
-    'V_P' : Quantity
+    'V_P' : ~astropy.units.Quantity
         Estimate of the plasma potential in units of V.
 
-    'I_es' : Quantity
+    'I_es' : ~astropy.units.Quantity
         Estimate of the electron saturation current in units of Am^-2.
 
-    'I_is' : Quantity
+    'I_is' : ~astropy.units.Quantity
         Estimate of the ion saturation current in units of Am^-2.
 
     'hot_fraction' : float
@@ -393,7 +393,7 @@ def get_plasma_potential(probe_characteristic, return_arg=False):
 
     Returns
     -------
-    V_P : Quantity
+    V_P : ~astropy.units.Quantity
         Estimate of the plasma potential in units convertible to V.
 
     Notes
@@ -437,7 +437,7 @@ def get_floating_potential(probe_characteristic, return_arg=False):
 
     Returns
     -------
-    V_F : Quantity
+    V_F : ~astropy.units.Quantity
         Estimate of the floating potential in units convertible to V.
 
     Notes
@@ -468,7 +468,7 @@ def get_electron_saturation_current(probe_characteristic):
 
     Returns
     -------
-    I_es: Quantity
+    I_es: ~astropy.units.Quantity
         Estimate of the electron saturation current in units convertible to A.
 
     Notes
@@ -497,7 +497,7 @@ def get_ion_saturation_current(probe_characteristic):
 
     Returns
     -------
-    I_is : Quantity
+    I_is : ~astropy.units.Quantity
         Estimate of the ion saturation current in units convertible to A.
 
     Notes
@@ -541,21 +541,21 @@ def get_ion_density_LM(ion_saturation_current, T_e,
 
     Parameters
     ----------
-    ion_saturation_current : Quantity
+    ion_saturation_current : ~astropy.units.Quantity
         The ion saturation current in units convertible to A.
 
-    T_e : Quantity
+    T_e : ~astropy.units.Quantity
         The electron temperature in units convertible to eV.
 
-    probe_area : Quantity
+    probe_area : ~astropy.units.Quantity
         The area of the probe exposed to plasma in units convertible to m^2.
 
-    gas : Quantity
+    gas : ~astropy.units.Quantity
         The (mean) mass of the background gas in atomic mass units.
 
     Returns
     -------
-    n_i : Quantity
+    n_i : ~astropy.units.Quantity
         Estimate of the ion density in units convertible to m^-3.
 
     Notes
@@ -568,7 +568,7 @@ def get_ion_density_LM(ion_saturation_current, T_e,
     The ion saturation current is given by
 
     .. math::
-        I_{is}=0.6eAn_i\sqrt{\frac{T_e}{m_i}}.
+        I_{is}=0.6eA_pn_i\sqrt{\frac{T_e}{m_i}}.
 
     """
 
@@ -602,18 +602,18 @@ def get_electron_density_LM(electron_saturation_current, T_e,
 
     Parameters
     ----------
-    electron_saturation_current : Quantity
+    electron_saturation_current : ~astropy.units.Quantity
         The electron saturation current in units convertible to A.
 
-    T_e : Quantity
+    T_e : ~astropy.units.Quantity
         The electron temperature in units convertible to eV.
 
-    probe_area : Quantity
+    probe_area : ~astropy.units.Quantity
         The area of the probe exposed to plasma in units convertible to m^2.
 
     Returns
     -------
-    n_e : Quantity
+    n_e : ~astropy.units.Quantity
         Estimate of the electron density in units convertible to m^-3.
 
     Notes
@@ -623,7 +623,7 @@ def get_electron_density_LM(electron_saturation_current, T_e,
     electron saturation current is given by
 
     .. math::
-        I_{es}=\frac{1}{4}en_eA\sqrt{\frac{8T_e}{\pi m_e}}.
+        I_{es}=\frac{1}{4}en_eA_p\sqrt{\frac{8T_e}{\pi m_e}}.
 
     Please note that the electron saturation current density is a hard
     parameter to acquire and it is usually better to measure the ion density,
@@ -649,7 +649,7 @@ def extract_exponential_section(probe_characteristic, T_e=None,
     probe_characteristic : Characteristic
         The probe characteristic that is being analyzed.
 
-    T_e : Quantity, optional
+    T_e : ~astropy.units.Quantity, optional
         If given, the electron temperature can improve the accuracy of the
         bounds of the exponential region.
 
@@ -758,7 +758,7 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
 
     Returns
     -------
-    T_e : Quantity, (ndarray)
+    T_e : ~astropy.units.Quantity, (ndarray)
         The estimated electron temperature in eV. In case of a bi-Maxwellian
         plasma an array containing two Quantities is returned.
 
@@ -953,7 +953,7 @@ def reduce_bimaxwellian_temperature(T_e, hot_fraction):
 
     Parameters
     ----------
-    T_e : Quantity, ndarray
+    T_e : ~astropy.units.Quantity, ndarray
         The bi-Maxwellian temperatures in eV. If a single temperature is
         provided, this is returned.
 
@@ -963,7 +963,7 @@ def reduce_bimaxwellian_temperature(T_e, hot_fraction):
 
     Returns
     -------
-    T_e : Quantity
+    T_e : ~astropy.units.Quantity
         The reduced (mean) temperature in units of eV.
 
     Notes
@@ -1005,10 +1005,10 @@ def get_ion_density_OML(probe_characteristic, probe_area, gas,
     probe_characteristic : Characteristic
         The swept probe characteristic that is to be analyzed.
 
-    probe_area : Quantity
+    probe_area : ~astropy.units.Quantity
         The area of the probe exposed to plasma in units convertible to m^2.
 
-    gas : Quantity
+    gas : ~astropy.units.Quantity
         The (mean) mass of the background gas in atomic mass units.
 
     visualize : bool, optional
@@ -1020,7 +1020,7 @@ def get_ion_density_OML(probe_characteristic, probe_area, gas,
 
     Returns
     -------
-    n_i_OML : Quantity
+    n_i_OML : ~astropy.units.Quantity
         Estimated ion density in m^-3.
 
     Notes
@@ -1031,7 +1031,7 @@ def get_ion_density_OML(probe_characteristic, probe_area, gas,
     temperature [mott-smith.langmuir-1926]_:
 
     .. math::
-        I_i = A_p n_i e \frac{\sqrt{2}}{\pi}
+        I_i \xrightarrow[T_i=0]{} A_p n_i e \frac{\sqrt{2}}{\pi}
         \sqrt{\frac{e\left(V_F-V\right)}{m_i}}
 
     References
@@ -1140,7 +1140,7 @@ def get_EEDF(probe_characteristic, visualize=False):
 
     Returns
     -------
-    energy : Quantity, ndarray
+    energy : ~astropy.units.Quantity, ndarray
         Array of potentials in V.
 
     probability : float, ndarray
@@ -1149,16 +1149,16 @@ def get_EEDF(probe_characteristic, visualize=False):
 
     Notes
     -----
-    The Druyvesteyn method requires the second derivative of the probe I-V
-    characteristic, which inherently amplifies noise and measurement errors.
-    Therefore it is advisable to smooth the I-V prior to the use of this
-    function.
+    The Druyvesteyn method requires the second derivative of the probe
+    :math:`I-V` characteristic, which inherently amplifies noise and
+    measurement errors. Therefore it is advisable to smooth the :math:`V_A`
+    prior to the use of this function.
 
     The Druyvesteyn analysis results in the following equation
     [druyvesteyn-1930]_:
 
     .. math::
-        N_e(\epsilon)=\frac{2}{Ae^2}\sqrt{\frac{2m\epsilon}{e}}
+        N_e(\epsilon)=\frac{2}{A_pe^2}\sqrt{\frac{2m\epsilon}{e}}
         \frac{\textrm{d}^2I}{\textrm{d}V^2}
 
     References
