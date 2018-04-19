@@ -26,7 +26,13 @@ _minimum_versions = {
     'numpy': '1.13',
     'astropy': '2.0',
     'scipy': '0.19',
-    }
+    'matplotlib': '2.0',
+    'mpmath': '1.0',
+    'lmfit': '0.9.7',
+    'roman': '1.4',
+    'colorama': '0.3.4',
+    'cython': '0.26',
+}
 
 import_helpers._check_versions(_minimum_versions)
 
@@ -42,9 +48,8 @@ __doc__ = ("A community-developed and community-driven open source core "
 try:
     from .version import version as __version__
     from .version import githash as _githash
-    del version
 except ImportError:
-    pass
+    __version__ = ""
 
 try:
     from . import atomic
