@@ -20,12 +20,7 @@ if sys.version_info < (3, 6):
 # Place all imports that require Python 3.6+ **after** the Python
 # version check.
 
-from . import import_helpers
-
-__name__ = "plasmapy"
-
-__doc__ = ("A community-developed and community-driven open source core "
-           "Python package for plasma physics.")
+from . import import_helpers  # noqa
 
 _minimum_versions = {
     'numpy': '1.13',
@@ -35,14 +30,19 @@ _minimum_versions = {
 
 import_helpers._check_versions(_minimum_versions)
 
+__name__ = "plasmapy"
+
+__doc__ = ("A community-developed and community-driven open source core "
+           "Python package for plasma physics.")
+
 # The file version.py is created by installing PlasmaPy with setup.py
 # using functionality from astropy_helpers.  If this has not been run,
-# then we will not create the __version__ attribute.
+# then we do not need to create these attributes.
 
 try:
     from .version import version as __version__
     from .version import githash as _githash
-    from .version import cython_version as _cython_version
+    del version
 except ImportError:
     pass
 
@@ -65,6 +65,6 @@ try:
 except ImportError:
     raise ImportError("Unable to import astropy.units as a PlasmaPy submodule")
 
-# Clean up PlasmaPy's top-level namespace
+# Clean up the top-level namespace
 
 del _minimum_versions, sys, import_helpers
