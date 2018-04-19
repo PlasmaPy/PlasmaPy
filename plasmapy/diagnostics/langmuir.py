@@ -224,32 +224,32 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
     -------
     A dictionary with the following entries:
 
-    'T_e' : ~astropy.units.Quantity
+    "T_e" : `astropy.units.Quantity`
         Best estimate of the electron temperature in units of eV. Contains
         two values if bimaxwellian is True.
 
-    'n_e' : ~astropy.units.Quantity
+    'n_e' : `astropy.units.Quantity`
         Estimate of the electron density in units of m^-3. See the Notes on
         plasma densities.
 
-    'n_i' : ~astropy.units.Quantity
+    'n_i' : `astropy.units.Quantity`
         Estimate of the ion density in units of m^-3. See the Notes on
         plasma densities.
 
-    'n_i_OML' : ~astropy.units.Quantity
+    'n_i_OML' : `astropy.units.Quantity`
         OML-theory estimate of the ion density in units of m^-3. See the Notes
         on plasma densities.
 
-    'V_F' : ~astropy.units.Quantity
+    'V_F' : `astropy.units.Quantity`
         Estimate of the floating potential in units of V.
 
-    'V_P' : ~astropy.units.Quantity
+    'V_P' : `astropy.units.Quantity`
         Estimate of the plasma potential in units of V.
 
-    'I_es' : ~astropy.units.Quantity
+    'I_es' : `astropy.units.Quantity`
         Estimate of the electron saturation current in units of Am^-2.
 
-    'I_is' : ~astropy.units.Quantity
+    'I_is' : `astropy.units.Quantity`
         Estimate of the ion saturation current in units of Am^-2.
 
     'hot_fraction' : float
@@ -1140,7 +1140,7 @@ def get_EEDF(probe_characteristic, visualize=False):
 
     Returns
     -------
-    energy : ~astropy.units.Quantity, ndarray
+    energy : `astropy.units.Quantity`, ndarray
         Array of potentials in V.
 
     probability : float, ndarray
