@@ -42,10 +42,10 @@ class Characteristic:
 
     Attributes
     ----------
-    bias : ~astropy.units.Quantity, ndarray
+    bias : `astropy.units.Quantity`, ndarray
         Array of applied probe biases in units convertible to V.
 
-    current : ~astropy.units.Quantity, ndarray
+    current : `astropy.units.Quantity`, ndarray
         Array of applied probe currents in units convertible to A.
 
     """
@@ -383,7 +383,7 @@ def get_plasma_potential(probe_characteristic, return_arg=False):
 
     Parameters
     ----------
-    probe_characteristic : Characteristic
+    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
         The probe characteristic that is being analyzed.
 
     return_arg : bool, optional
@@ -427,7 +427,7 @@ def get_floating_potential(probe_characteristic, return_arg=False):
 
     Parameters
     ----------
-    probe_characteristic : Characteristic
+    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
         The probe characteristic that is being analyzed.
 
     return_arg : bool, optional
@@ -463,7 +463,7 @@ def get_electron_saturation_current(probe_characteristic):
 
     Parameters
     ----------
-    probe_characteristic : Characteristic
+    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
         The probe characteristic that is being analyzed.
 
     Returns
@@ -492,7 +492,7 @@ def get_ion_saturation_current(probe_characteristic):
 
     Parameters
     ----------
-    probe_characteristic : Characteristic
+    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
         The probe characteristic that is being analyzed.
 
     Returns
@@ -646,21 +646,21 @@ def extract_exponential_section(probe_characteristic, T_e=None,
 
     Parameters
     ----------
-    probe_characteristic : Characteristic
+    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
         The probe characteristic that is being analyzed.
 
     T_e : ~astropy.units.Quantity, optional
         If given, the electron temperature can improve the accuracy of the
         bounds of the exponential region.
 
-    ion_current : Characteristic, optional
+    ion_current : ~plasmapy.diagnostics.langmuir.Characteristic, optional
         If given, the ion current will be subtracted from the probe
         characteristic to yield a better estimate of the electron current in
         the exponential region.
 
     Returns
     -------
-    exponential_section : Characteristic
+    exponential_section : ~plasmapy.diagnostics.langmuir.Characteristic
         The exponential electron current growth section.
 
     Notes
@@ -705,12 +705,12 @@ def extract_ion_section(probe_characteristic):
 
     Parameters
     ----------
-    probe_characteristic : Characteristic
+    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
         The probe characteristic that is being analyzed.
 
     Returns
     -------
-    ion_section : Characteristic
+    ion_section : ~plasmapy.diagnostics.langmuir.Characteristic
         The exponential electron current growth section.
 
     Notes
@@ -738,7 +738,7 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
 
     Parameters
     ----------
-    probe_characteristic : Characteristic
+    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
         The probe characteristic that is being analyzed.
 
     bimaxwellian : bool, optional
@@ -887,7 +887,7 @@ def extrapolate_electron_current(probe_characteristic, fit,
 
     Parameters
     ----------
-    probe_characteristic : Characteristic
+    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
         The probe characteristic that is being analyzed.
 
     fit : ndarray
@@ -903,7 +903,7 @@ def extrapolate_electron_current(probe_characteristic, fit,
 
     Returns
     -------
-    electron_current : Characteristic
+    electron_current : ~plasmapy.diagnostics.langmuir.Characteristic
         The extrapolated electron current characteristic.
 
     Notes
@@ -1002,7 +1002,7 @@ def get_ion_density_OML(probe_characteristic, probe_area, gas,
 
     Parameters
     ----------
-    probe_characteristic : Characteristic
+    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
         The swept probe characteristic that is to be analyzed.
 
     probe_area : ~astropy.units.Quantity
@@ -1026,7 +1026,7 @@ def get_ion_density_OML(probe_characteristic, probe_area, gas,
     Notes
     -----
     The method implemented in this function holds for cylindrical probes in a
-    cold ion plasma, ie. T_i = 0 eV. With OML theory an expression is found
+    cold ion plasma, ie. :math:T_i=0` eV. With OML theory an expression is found
     for the ion current as function of probe bias independent of the electron
     temperature [mott-smith.langmuir-1926]_:
 
@@ -1080,7 +1080,7 @@ def extrapolate_ion_current_OML(probe_characteristic, fit,
 
     Parameters
     ----------
-    probe_characteristic : Characteristic
+    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
         The probe characteristic that is being analyzed.
 
     fit : ndarray
@@ -1092,7 +1092,7 @@ def extrapolate_ion_current_OML(probe_characteristic, fit,
 
     Returns
     -------
-    ion_section : Characteristic
+    ion_section : ~plasmapy.diagnostics.langmuir.Characteristic
         The exponential electron current growth section.
 
     Notes
@@ -1131,7 +1131,7 @@ def get_EEDF(probe_characteristic, visualize=False):
 
     Parameters
     ----------
-    probe_characteristic : Characteristic
+    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
         The swept probe characteristic that is to be analyzed.
 
     visualize : bool, optional
