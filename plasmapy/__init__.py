@@ -43,13 +43,16 @@ __doc__ = ("A community-developed and community-driven open source core "
 
 # The file version.py is created by installing PlasmaPy with setup.py
 # using functionality from astropy_helpers.  If this has not been run,
-# then we do not need to create these attributes.
+# then we can set the default values to None.
 
 try:
     from .version import version as __version__
     from .version import githash as _githash
-except ImportError:
-    __version__ = ""
+except (ImportError, ModuleNotFoundError):
+    __version__ = None
+    _githash = None
+else:
+    del version
 
 try:
     from . import atomic

@@ -4,8 +4,10 @@ import distutils.version as dv
 
 
 def _split_version(version):
-    """Separate a string including digits separated by periods into a
-    tuple of integers."""
+    """
+    Separate a string including digits separated by periods into a
+    tuple of integers.
+    """
     return tuple(int(ver) for ver in version.split('.'))
 
 
