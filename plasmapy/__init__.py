@@ -34,7 +34,7 @@ _minimum_versions = {
     'lmfit': '0.9.7',
     'roman': '1.4',
     'colorama': '0.3',
-    'cython': '0.26',
+    'cython': '0.23',
 }
 
 import_helpers._check_versions(_minimum_versions)
