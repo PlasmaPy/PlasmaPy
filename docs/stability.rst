@@ -51,11 +51,11 @@ The classification is as follows:
       </tr>
       <tr>
         <td align='center'><span class="dev"></span></td>
-        <td>Actively developed, be prepared for possible significant changes.</td>
+        <td>Actively being developed. Be prepared for possible significant changes.</td>
       </tr>
       <tr>
         <td align='center'><span class="stable"></span></td>
-        <td>Reasonably stable, any significant changes/additions will generally include backwards-compatiblity.</td>
+        <td>Reasonably stable. Any significant changes/additions will generally include backwards-compatiblity.</td>
       </tr>
       <tr>
         <td align='center'><span class="mature"></span></td>
@@ -153,14 +153,14 @@ PlasmaPy's planned and existing subpackages are:
         </tr>
         <tr>
             <td>
-                plasmapy.parameters
+                plasmapy.physics
             </td>
             <td align='center'>
                 <span class="dev"></span>
             </td>
             <td>
                 The
-                <tt class="docutils literal"><span class="pre">parameters</span></tt>
+                <tt class="docutils literal"><span class="pre">physics</span></tt>
                 subpackage may undergo significant reorganization with potentially
                 major changes to the API.  We anticipate that there will be major
                 additions to this package.
@@ -168,7 +168,7 @@ PlasmaPy's planned and existing subpackages are:
         </tr>
         <tr>
             <td>
-                plasmapy.parameters.transport
+                plasmapy.physics.transport
             </td>
             <td align='center'>
                 <span class="dev"></span>
