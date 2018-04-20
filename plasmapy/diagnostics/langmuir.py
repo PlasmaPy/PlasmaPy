@@ -767,7 +767,7 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
     current grows exponentially with bias voltage:
 
     .. math::
-        I_e = I_{es} \textrm{exp} \left( 
+        I_e = I_{es} \textrm{exp} \left(
         -\frac{e\left(V_P - V \right)}{T_e} \right).
 
     In log space the current in this region should be a straight line if the
@@ -1157,8 +1157,8 @@ def get_EEDF(probe_characteristic, visualize=False):
     [druyvesteyn-1930]_:
 
     .. math::
-        N_e \left( \epsilon \right) = 
-        \frac{2}{A_pe^2} \sqrt{\frac{2 m \epsilon}{e}} 
+        N_e \left( \epsilon \right) =
+        \frac{2}{A_pe^2} \sqrt{\frac{2 m \epsilon}{e}}
         \frac{\textrm{d}^2 I}{\textrm{d} V^2}
 
     References
