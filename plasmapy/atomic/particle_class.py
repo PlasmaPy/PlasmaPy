@@ -1043,7 +1043,6 @@ class Particle:
 
         return nuclear_mass_energy.to(u.J)
 
-
     @property
     def half_life(self) -> Union[u.Quantity, str]:
         """

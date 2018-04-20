@@ -71,6 +71,7 @@ def nuclear_binding_energy(
     """
     return particle.binding_energy.to(u.J)
 
+
 @particle_input(any_of={'isotope', 'baryon'})
 def nuclear_mass_energy(
         particle: Particle, mass_numb: int = None) -> u.Quantity:
@@ -106,7 +107,6 @@ def nuclear_mass_energy(
 
     """
     return particle.mass_energy.to(u.J)
-
 
 
 def nuclear_reaction_energy(*args, **kwargs):
