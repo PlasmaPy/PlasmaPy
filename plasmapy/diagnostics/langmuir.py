@@ -37,7 +37,7 @@ def _fit_func_double_lin_inverse(x, x0, y0, T0, Delta_T):
 
 
 class Characteristic:
-    r"""Class representing a single :math:`I-V` probe characteristic for convenient
+    r"""Class representing a single I-V probe characteristic for convenient
     experimental data access and computation. Supports units.
 
     Attributes
@@ -1151,8 +1151,8 @@ def get_EEDF(probe_characteristic, visualize=False):
     Notes
     -----
     The Druyvesteyn method requires the second derivative of the probe
-    :math:`I-V` characteristic, which inherently amplifies noise and
-    measurement errors. Therefore it is advisable to smooth the :math:`I-V`
+    I-V characteristic, which inherently amplifies noise and
+    measurement errors. Therefore it is advisable to smooth the I-V
     prior to the use of this function.
 
     The Druyvesteyn analysis results in the following equation
