@@ -37,7 +37,7 @@ def _fit_func_double_lin_inverse(x, x0, y0, T0, Delta_T):
 
 
 class Characteristic:
-    r"""Class representing a single I-V probe characteristic for convenient
+    r"""Class representing a single :math:`I-V` probe characteristic for convenient
     experimental data access and computation. Supports units.
 
     Attributes
@@ -200,58 +200,60 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
 
     Parameters
     ----------
-    probe_characteristic : `Characteristic`
+    probe_characteristic : ~plasmapy.diagnostics.langmuir.Characteristic
         The swept probe characteristic that is to be analyzed.
 
     probe_area : ~astropy.units.Quantity
         The area of the probe exposed to plasma in units convertible to m^2.
 
-    gas : `Quantity`
+    gas : ~astropy.units.Quantity
         The (mean) mass of the background gas in atomic mass units.
 
-    visualize : bool, Optional
+    visualize : bool, optional
         Can be used to plot the characteristic and the obtained parameters.
         Default is False.
 
-    plot_electron_fit : bool, Optional
+    plot_electron_fit : bool, optional
         If True, the fit of the electron current in the exponential section is
         shown. Default is False.
 
-    plot_EEDF : bool, Optional
+    plot_EEDF : bool, optional
         If True, the EEDF is computed and shown. Default is False.
 
-    Returns (as dictionary)
-    -----------------------
+    Returns
+    -------
 
-    "T_e" : `Quantity`
+    Results are returned as Dictionary
+
+    "T_e" : `astropy.units.Quantity`
         Best estimate of the electron temperature in units of eV. Contains
         two values if bimaxwellian is True.
 
-    'n_e' : `astropy.units.Quantity`
+    "n_e" : `astropy.units.Quantity`
         Estimate of the electron density in units of m^-3. See the Notes on
         plasma densities.
 
-    'n_i' : `astropy.units.Quantity`
+    "n_i" : `astropy.units.Quantity`
         Estimate of the ion density in units of m^-3. See the Notes on
         plasma densities.
 
-    'n_i_OML' : `astropy.units.Quantity`
+    "n_i_OML" : `astropy.units.Quantity`
         OML-theory estimate of the ion density in units of m^-3. See the Notes
         on plasma densities.
 
-    'V_F' : `astropy.units.Quantity`
+    "V_F" : `astropy.units.Quantity`
         Estimate of the floating potential in units of V.
 
-    'V_P' : `astropy.units.Quantity`
+    "V_P" : `astropy.units.Quantity`
         Estimate of the plasma potential in units of V.
 
-    'I_es' : `astropy.units.Quantity`
+    "I_es" : `astropy.units.Quantity`
         Estimate of the electron saturation current in units of Am^-2.
 
-    'I_is' : `astropy.units.Quantity`
+    "I_is" : `astropy.units.Quantity`
         Estimate of the ion saturation current in units of Am^-2.
 
-    'hot_fraction' : float
+    "hot_fraction" : float
         Estimate of the total hot (energetic) electron fraction.
 
     Notes
@@ -1150,7 +1152,7 @@ def get_EEDF(probe_characteristic, visualize=False):
     -----
     The Druyvesteyn method requires the second derivative of the probe
     :math:`I-V` characteristic, which inherently amplifies noise and
-    measurement errors. Therefore it is advisable to smooth the :math:`V_A`
+    measurement errors. Therefore it is advisable to smooth the :math:`I-V`
     prior to the use of this function.
 
     The Druyvesteyn analysis results in the following equation
