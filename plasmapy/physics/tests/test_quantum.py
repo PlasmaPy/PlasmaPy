@@ -47,7 +47,7 @@ def test_deBroglie_wavelength():
     with pytest.raises(RelativityError):
         deBroglie_wavelength(c * 1.000000001, 'e')
 
-    with pytest.raises(UserWarning):
+    with pytest.warns(u.UnitsWarning):
         deBroglie_wavelength(0.79450719277, 'Be-7 1+')
 
     with pytest.raises(u.UnitConversionError):
@@ -145,7 +145,8 @@ def test_Wigner_Seitz_radius():
 
 
 class Test_chemical_potential:
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.n_e = 1e20 * u.cm ** -3
         self.n_e_fail = 1e23 * u.cm ** -3
@@ -190,7 +191,8 @@ class Test_chemical_potential:
 
 
 class Test_chemical_potential_interp:
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.n_e = 1e23 * u.cm ** -3
         self.T = 11604 * u.K

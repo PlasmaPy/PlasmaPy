@@ -14,12 +14,14 @@ from ...utils import (
     InvalidElementError,
     InvalidIsotopeError,
     ChargeError,
+    call_string,
+    run_test_equivalent_calls,
 )
 
 from ..atomic import known_isotopes
 from ..isotopes import _Isotopes
 from ..particle_class import Particle
-from ..parsing import _call_string
+from ..special_particles import ParticleZoo
 
 # (arg, kwargs, results_dict
 test_Particle_table = [
@@ -28,7 +30,9 @@ test_Particle_table = [
      {'particle': 'n',
       'element': None,
       'isotope': None,
-      'ion': None,
+      'ionic_symbol': None,
+      'is_ion': False,
+      'is_electron': False,
       'integer_charge': 0,
       'atomic_number': InvalidElementError,
       'mass_number': InvalidIsotopeError,
@@ -45,7 +49,8 @@ test_Particle_table = [
       'element': 'H',
       'element_name': 'hydrogen',
       'isotope': 'H-1',
-      'ion': 'p+',
+      'ionic_symbol': 'p+',
+      'is_ion': True,
       'mass': m_p,
       'nuclide_mass': m_p,
       'integer_charge': 1,
@@ -77,7 +82,8 @@ test_Particle_table = [
       'element': None,
       'element_name': InvalidElementError,
       'isotope': None,
-      'ion': None,
+      'ionic_symbol': None,
+      'is_ion': False,
       'mass': m_p,
       'integer_charge': -1,
       'spin': 1 / 2,
@@ -96,7 +102,8 @@ test_Particle_table = [
       'element': None,
       'element_name': InvalidElementError,
       'isotope': None,
-      'ion': None,
+      'ionic_symbol': None,
+      'is_ion': False,
       'mass': m_e,
       'integer_charge': -1,
       'spin': 1 / 2,
@@ -117,7 +124,8 @@ test_Particle_table = [
      {'particle': 'e+',
       'element': None,
       'isotope': None,
-      'ion': None,
+      'ionic_symbol': None,
+      'is_ion': False,
       'mass': m_e,
       'nuclide_mass': InvalidIsotopeError,
       'integer_charge': 1,
@@ -129,6 +137,7 @@ test_Particle_table = [
       'is_category(require="positron")': True,
       'is_category(any_of={"positron"})': True,
       'is_category(exclude="positron")': False,
+      'is_category("ion")': False,
       '__str__()': 'e+',
       '__repr__()': 'Particle("e+")',
       'periodic_table.group': InvalidElementError,
@@ -141,7 +150,8 @@ test_Particle_table = [
      {'particle': 'H',
       'element': 'H',
       'isotope': None,
-      'ion': None,
+      'ionic_symbol': None,
+      'is_ion': False,
       'charge': ChargeError,
       'integer_charge': ChargeError,
       'mass_number': InvalidIsotopeError,
@@ -156,12 +166,33 @@ test_Particle_table = [
       'is_category("proton")': False,
       }),
 
+    ('H-1 0+', {}, {
+        'particle': 'H-1 0+',
+        'element': 'H',
+        'isotope': 'H-1',
+        'ionic_symbol': 'H-1 0+',
+        'is_ion': False,
+        'charge': 0 * u.C,
+        'integer_charge': 0,
+        'mass_number': 1,
+        'baryon_number': 1,
+        'lepton_number': 0,
+        'half_life': np.inf * u.s,
+        'nuclide_mass': m_p,
+        'is_category("charged")': False,
+        'is_category("uncharged")': True,
+        'is_category("ion")': False,
+        'is_category("nonmetal")': True,
+        'is_category("proton")': False,
+    }),
+
     ('D+', {},
      {'particle': 'D 1+',
       'element': 'H',
       'element_name': 'hydrogen',
       'isotope': 'D',
-      'ion': 'D 1+',
+      'ionic_symbol': 'D 1+',
+      'is_ion': True,
       'integer_charge': 1,
       'atomic_number': 1,
       'mass_number': 2,
@@ -179,7 +210,8 @@ test_Particle_table = [
      {'particle': 'T 1+',
       'element': 'H',
       'isotope': 'T',
-      'ion': 'T 1+',
+      'ionic_symbol': 'T 1+',
+      'is_ion': True,
       'integer_charge': 1,
       'atomic_number': 1,
       'mass_number': 3,
@@ -196,7 +228,9 @@ test_Particle_table = [
       'element': 'Fe',
       'element_name': 'iron',
       'isotope': 'Fe-56',
-      'ion': 'Fe-56 17+',
+      'ionic_symbol': 'Fe-56 17+',
+      'is_electron': False,
+      'is_ion': True,
       'integer_charge': 17,
       'atomic_number': 26,
       'mass_number': 56,
@@ -213,7 +247,8 @@ test_Particle_table = [
       'element': 'He',
       'element_name': 'helium',
       'isotope': 'He-4',
-      'ion': 'He-4 2+',
+      'ionic_symbol': 'He-4 2+',
+      'is_ion': True,
       'integer_charge': 2,
       'atomic_number': 2,
       'mass_number': 4,
@@ -227,7 +262,8 @@ test_Particle_table = [
       'element': 'Li',
       'element_name': 'lithium',
       'isotope': 'Li-7',
-      'ion': None,
+      'ionic_symbol': None,
+      'is_ion': False,
       'integer_charge': ChargeError,
       'atomic_number': 3,
       'mass_number': 7,
@@ -241,7 +277,8 @@ test_Particle_table = [
      {'particle': 'Cn-276 22+',
       'element': 'Cn',
       'isotope': 'Cn-276',
-      'ion': 'Cn-276 22+',
+      'ionic_symbol': 'Cn-276 22+',
+      'is_ion': True,
       'element_name': 'copernicium',
       'integer_charge': 22,
       'atomic_number': 112,
@@ -254,7 +291,8 @@ test_Particle_table = [
      {'particle': 'mu-',
       'element': None,
       'isotope': None,
-      'ion': None,
+      'ionic_symbol': None,
+      'is_ion': False,
       'integer_charge': -1,
       'atomic_number': InvalidElementError,
       'mass_number': InvalidIsotopeError,
@@ -273,6 +311,8 @@ test_Particle_table = [
       'baryon_number': 0,
       'lepton_number': 1,
       'half_life': np.inf * u.s,
+      'is_electron': False,
+      'is_ion': False,
       'is_category("fermion")': True,
       'is_category("neutrino")': True,
       'is_category("boson")': False,
@@ -299,7 +339,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
     all of the inconsistencies with the expected results.
     """
 
-    call = _call_string(arg, kwargs)
+    call = call_string(Particle, arg, kwargs)
     errmsg = ""
 
     try:
@@ -322,9 +362,9 @@ def test_Particle_class(arg, kwargs, expected_dict):
             try:
                 with pytest.raises(expected):
                     exec(f"particle.{key}")
-            except pytest.fail.Exception as exc_failed_fail:
+            except pytest.fail.Exception:
                 errmsg += f"\n{call}[{key}] does not raise {expected}."
-            except Exception as exc_bad:
+            except Exception:
                 errmsg += (f"\n{call}[{key}] does not raise {expected} but "
                            f"raises a different exception.")
 
@@ -333,10 +373,10 @@ def test_Particle_class(arg, kwargs, expected_dict):
             try:
                 result = eval(f"particle.{key}")
                 assert result == expected
-            except AssertionError as exc_assert:
+            except AssertionError:
                 errmsg += (f"\n{call}.{key} returns {result} instead "
                            f"of the expected value of {expected}.")
-            except Exception as exc_general:
+            except Exception:
                 errmsg += f"\n{call}.{key} raises an unexpected exception."
 
     if len(errmsg) > 0:
@@ -348,7 +388,7 @@ equivalent_particles_table = [
     ['p+', 'proton', 'H-1+', 'H-1 1+', 'H-1 +1'],
     ['D', 'H-2', 'Hydrogen-2', 'deuterium'],
     ['T', 'H-3', 'Hydrogen-3', 'tritium'],
-    ['alpha', 'He-4++', 'He-4 2+', 'He-4 +2'],
+    ['alpha', 'He-4++', 'He-4 2+', 'He-4 +2', 'He-4 III'],
     ['e-', 'electron', 'e'],
     ['e+', 'positron'],
     ['p-', 'antiproton'],
@@ -361,14 +401,7 @@ equivalent_particles_table = [
 @pytest.mark.parametrize("equivalent_particles", equivalent_particles_table)
 def test_Particle_equivalent_cases(equivalent_particles):
     """Test that all instances of a list of particles are equivalent."""
-
-    equivalent_Particle_classes = []
-
-    for particle in equivalent_particles:
-        equivalent_Particle_classes.append(Particle(particle))
-
-    for Q in equivalent_Particle_classes[1:]:
-        assert Q == equivalent_Particle_classes[0], f"{equivalent_particles}"
+    run_test_equivalent_calls(Particle, *equivalent_particles)
 
 
 # arg, kwargs, attribute, exception
@@ -408,7 +441,7 @@ def test_Particle_errors(arg, kwargs, attribute, exception):
     """
     with pytest.raises(exception, message=(
             f"The following command: "
-            f"\n\n >>> {_call_string(arg, kwargs)}{attribute}\n\n"
+            f"\n\n  {call_string(Particle, arg, kwargs)}{attribute}\n\n"
             f"did not raise a {exception.__name__} as expected")):
         exec(f'Particle(arg, **kwargs){attribute}')
 
@@ -430,7 +463,7 @@ def test_Particle_warnings(arg, kwargs, attribute, warning):
     """
     with pytest.warns(warning, message=(
             f"The following command: "
-            f"\n\n >>> {_call_string(arg, kwargs)}{attribute}\n\n"
+            f"\n\n >>> {call_string(Particle, arg, kwargs)}{attribute}\n\n"
             f"did not issue a {warning.__name__} as expected")):
         exec(f'Particle(arg, **kwargs){attribute}')
 
@@ -455,6 +488,7 @@ nuclide_mass_and_mass_equiv_table = [
     ('n', 'neutron'),
     ('p+', 'proton'),
     ('H-1', 'p+'),
+    ('H-1 0+', 'p+'),
     ('D', 'D+'),
     ('T', 'T+'),
     ('He-4', 'alpha'),
@@ -476,7 +510,8 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
     Isotope = Particle(isotope)
     Ion = Particle(ion)
 
-    if Isotope.particle == Ion.particle and Isotope.particle in ('n', 'p+'):
+    if Isotope.categories & {'isotope', 'baryon'} and Ion.categories & {'ion', 'baryon'}:
+
         particle = Isotope.particle
 
         assert Isotope.nuclide_mass == Ion.mass, (
@@ -530,3 +565,90 @@ def test_particle_is_electron(p, is_one):
 def test_particle_bool_error():
     with pytest.raises(AtomicError):
         bool(Particle('e-'))
+
+
+particle_antiparticle_pairs = [
+    ('p+', 'p-'),
+    ('n', 'antineutron'),
+    ('e-', 'e+'),
+    ('mu-', 'mu+'),
+    ('tau-', 'tau+'),
+    ('nu_e', 'anti_nu_e'),
+    ('nu_mu', 'anti_nu_mu'),
+    ('nu_tau', 'anti_nu_tau'),
+]
+
+
+@pytest.mark.parametrize("particle, antiparticle", particle_antiparticle_pairs)
+def test_particle_inversion(particle, antiparticle):
+    """Test that particles have the correct antiparticles."""
+    assert Particle(particle).antiparticle == Particle(antiparticle), \
+        (f"The antiparticle of {particle} is found to be "
+         f"{~Particle(particle)} instead of {antiparticle}.")
+
+
+@pytest.mark.parametrize("particle, antiparticle", particle_antiparticle_pairs)
+def test_antiparticle_inversion(particle, antiparticle):
+    """Test that antiparticles have the correct antiparticles."""
+    assert Particle(antiparticle).antiparticle == Particle(particle), \
+        (f"The antiparticle of {antiparticle} is found to be "
+         f"{~Particle(antiparticle)} instead of {particle}.")
+
+
+@pytest.fixture(params=ParticleZoo.everything)
+def particle(request):
+    return Particle(request.param)
+
+
+@pytest.fixture()
+def opposite(particle):
+    try:
+        opposite_particle = ~particle
+    except Exception as exc:
+        raise InvalidParticleError(
+                f"The unary ~ (invert) operator is unable to find the "
+                f"antiparticle of {particle}.") from exc
+    return opposite_particle
+
+
+class Test_antiparticle_properties_inversion:
+    """
+    Test particle and antiparticle inversion and properties for Particle
+    instances.
+    """
+    def test_inverted_inversion(self, particle):
+        """
+        Test that the antiparticle of the antiparticle of a particle is
+        the original particle.
+        """
+        assert particle == ~~particle, \
+            (f"~~{repr(particle)} equals {repr(~~particle)} instead of "
+             f"{repr(particle)}.")
+
+    def test_opposite_charge(self, particle, opposite):
+        """
+        Test that a particle and its antiparticle have the opposite
+        charge.
+        """
+        assert particle.integer_charge == -opposite.integer_charge, \
+            (f"The charges of {particle} and {opposite} are not "
+             f"opposites, as expected of a particle/antiparticle pair.")
+
+    def test_equal_mass(self, particle, opposite):
+        """
+        Test that a particle and its antiparticle have the same mass.
+        """
+        assert particle._attributes['mass'] == opposite._attributes['mass'], \
+            (f"The masses of {particle} and {opposite} are not equal, "
+             f"as expected of a particle/antiparticle pair.")
+
+    def test_antiparticle_attribute_and_operator(self, particle, opposite):
+        """
+        Test that the Particle.antiparticle attribute returns the same
+        value as the unary ~ (invert) operator acting on the same
+        Particle instance.
+        """
+        assert particle.antiparticle == ~particle, \
+            (f"{repr(particle)}.antiparticle returned "
+             f"{particle.antiparticle}, whereas ~{repr(particle)} "
+             f"returned {~particle}.")

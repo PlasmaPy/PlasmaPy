@@ -29,13 +29,19 @@ from .parsing import (
 from .elements import _Elements, _PeriodicTable
 from .isotopes import _Isotopes
 
-from .special_particles import (_Particles, ParticleZoo, _special_ion_masses)
+from .special_particles import (
+    _Particles,
+    ParticleZoo,
+    _special_ion_masses,
+    _antiparticles,
+)
 
 _classification_categories = {
     'lepton',
     'antilepton',
     'fermion',
     'boson',
+    'antibaryon',
     'baryon',
     'neutrino',
     'antineutrino',
@@ -139,7 +145,8 @@ class Particle:
         not available.
 
     `~plasmapy.utils.AtomicError`
-        Raised for attempts at converting a Particle object to a `bool`.
+        Raised for attempts at converting a
+        `~plasmapy.atomic.Particle` object to a `bool`.
 
     Examples
     --------
@@ -153,32 +160,43 @@ class Particle:
     >>> positron = Particle('positron')
     >>> hydrogen = Particle(1)  # atomic number
 
-    The `particle` attribute returns the particle's symbol in
-    the standard form.
+    The `particle` attribute returns the particle's symbol in the
+    standard form.
 
     >>> positron.particle
     'e+'
 
-    The `element`, `isotope`, and `ion` attributes return the symbols
-    for each of these different types of particles.
-
+    The `atomic_symbol`, `isotope_symbol`, and `ionic_symbol` attributes
+    return the symbols for each of these different types of particles.
 
     >>> proton.element
     'H'
     >>> alpha.isotope
     'He-4'
-    >>> deuteron.ion
+    >>> deuteron.ionic_symbol
     'D 1+'
+
+    The `ionic_symbol` attribute works for neutral atoms if charge
+    information is available.
+
+    >>> deuterium = Particle("D", Z=0)
+    >>> deuterium.ionic_symbol
+    'D 0+'
+
+    If the particle doesn't belong to one of those categories, then
+    these attributes return `None`.
+
     >>> positron.element is None
     True
 
-    Because these attributes return `None` if the particle does not
-    belong to that type of particle, these attributes can be used to
-    test whether or not a particle is an element, isotope, or ion.
+    The attributes of a `~plasmapy.atomic.Particle` instance may be used
+    to test whether or not a particle is an element, isotope, or ion.
 
-    >>> True if Particle('e-').element else False
+    >>> True if positron.element else False
     False
-    >>> True if Particle('alpha').ion else False
+    >>> True if deuterium.isotope else False
+    True
+    >>> True if Particle('alpha').is_ion else False
     True
 
     Many of the attributes return physical properties of a particle.
@@ -204,19 +222,33 @@ class Particle:
     >>> alpha.neutron_number
     2
 
+    If a `~plasmapy.atomic.Particle` instance represents an elementary
+    particle, then the unary `~` (invert) operator may be used to return
+    the particle's antiparticle.
+
+    >>> ~electron
+    Particle("e+")
+    >>> ~proton
+    Particle("p-")
+    >>> ~positron
+    Particle("e-")
+
     The `~plasmapy.atomic.particle_class.Particle.categories` attribute
     and `~plasmapy.atomic.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
-    Valid categories include `'lepton'`, `'antilepton'`, `'fermion'`,
-    `'boson'`, `'baryon'`, `'neutrino'`, `'antineutrino'`, `'element'`,
-    `'isotope'`, `'ion'`, `'matter'`, `'antimatter'`, `'nonmetal'`,
-    `'metal'`, `'alkali metal'`, `'alkaline earth metal'`,
-    `'metalloid'`, `'transition metal'`, `'post-transition metal',
-    `'halogen'`, `'noble gas'`, `'actinide'`, `'lanthanide'`, 'stable'`,
-    `'unstable'`, `'charged'`, `'uncharged'`, `'electron'`,
-    `'positron'`, `'proton'`, and `'neutron'`.
 
-    """
+    Valid particle categories include: `'actinide'`, `'alkali
+    metal'`, `'alkaline earth metal'`, `'antibaryon'`,
+    `'antilepton'`, `'antimatter'`, `'antineutrino'`, `'baryon'`,
+    `'boson'`, `'charged'`, `'electron'`, `'element'`,
+    `'fermion'`, `'halogen'`, `'ion'`, `'isotope'`,
+    `'lanthanide'`, `'lepton'`, `'matter'`, `'metal'`,
+    `'metalloid'`, `'neutrino'`, `'neutron'`, `'noble gas'`,
+    `'nonmetal'`, `'positron'`, `'post-transition metal'`,
+    `'proton'`, `'stable'`, `'transition metal'`, `'uncharged'`,
+    and `'unstable'`.
+
+"""
 
     def __init__(self, argument: Union[str, int], mass_numb: int = None, Z: int = None):
         """
@@ -298,7 +330,7 @@ class Particle:
                 categories.add('element')
             if isotope:
                 categories.add('isotope')
-            if ion:
+            if self.element and self._attributes['integer charge']:
                 categories.add('ion')
 
             # Element properties
@@ -358,6 +390,8 @@ class Particle:
             else:
                 categories.add('unstable')
 
+        self.__name__ = self.__repr__()
+
     def __repr__(self) -> str:
         """Return a call string that would recreate this object.
 
@@ -407,11 +441,17 @@ class Particle:
             except InvalidParticleError as exc:
                 raise InvalidParticleError(
                     f"{other} is not a particle and cannot be "
-                    f"compared to {self}.")
+                    f"compared to {self}.") from exc
 
         if not isinstance(other, self.__class__):
             raise TypeError(
                 f"The equality of a Particle object with a {type(other)} is undefined.")
+
+        no_particle_attr = 'particle' not in dir(self) or 'particle' not in dir(other)
+        no_attributes_attr = '_attributes' not in dir(self) or '_attributes' not in dir(other)
+
+        if no_particle_attr or no_attributes_attr:  # coveralls: ignore
+            raise TypeError(f"The equality of {self} with {other} is undefined.")
 
         same_particle = self.particle == other.particle
 
@@ -466,9 +506,18 @@ class Particle:
         """
         raise AtomicError("The truthiness of a Particle object is not defined.")
 
+    def __invert__(self):
+        """
+        Return the corresponding antiparticle, or raise an
+        `~plasmapy.utils.AtomicError` if the particle is not an
+        elementary particle.
+        """
+        return self.antiparticle
+
     @property
-    def particle(self) -> str:
-        """Return the particle's symbol.
+    def particle(self) -> Optional[str]:
+        """
+        Return the particle's symbol.
 
         Examples
         --------
@@ -478,6 +527,34 @@ class Particle:
 
         """
         return self._attributes['particle']
+
+    @property
+    def antiparticle(self):
+        """
+        Return the corresponding antiparticle, or raise an
+        `~plasmapy.utils.AtomicError` if the particle is not an
+        elementary particle.
+
+        This attribute may be accessed by using the unary operator `~`
+        acting on a `~plasma.atomic.Particle` instance.
+
+        Examples
+        --------
+        >>> electron = Particle('e-')
+        >>> electron.antiparticle
+        Particle("e+")
+
+        >>> antineutron = Particle('antineutron')
+        >>> ~antineutron
+        Particle("n")
+
+        """
+        if self.particle in _antiparticles.keys():
+            return Particle(_antiparticles[self.particle])
+        else:
+            raise AtomicError(
+                "The unary operator can only be used for elementary "
+                "particles and antiparticles.")
 
     @property
     def element(self) -> Optional[str]:
@@ -510,16 +587,19 @@ class Particle:
         return self._attributes['isotope']
 
     @property
-    def ion(self) -> Optional[str]:
+    def ionic_symbol(self) -> Optional[str]:
         """
-        Return the ion symbol if the particle corresponds to an ion,
-        and `None` otherwise.
+        Return the ionic symbol if the particle corresponds to an ion or
+        neutral atom, and `None` otherwise.
 
         Examples
         --------
         >>> deuteron = Particle('deuteron')
-        >>> deuteron.ion
+        >>> deuteron.ionic_symbol
         'D 1+'
+        >>> hydrogen_atom = Particle('H', Z=0)
+        >>> hydrogen_atom.ionic_symbol
+        'H 0+'
 
         """
         return self._attributes['ion']
@@ -602,7 +682,7 @@ class Particle:
         <Quantity 2.65669641e-26 kg>
 
         """
-        if self.isotope or self.ion or not self.element:
+        if self.isotope or self.is_ion or not self.element:
             raise InvalidElementError(_category_errmsg(self, 'element'))
         if self._attributes['standard atomic weight'] is None:  # coveralls: ignore
             raise MissingAtomicDataError(
@@ -628,14 +708,14 @@ class Particle:
 
         """
 
-        if self.particle in ['H-1', 'p+']:
+        if self.isotope == 'H-1':
             return const.m_p
+        elif self.isotope == 'D':
+            return _special_ion_masses['D 1+']
+        elif self.isotope == 'T':
+            return _special_ion_masses['T 1+']
         elif self.particle == 'n':
             return const.m_n
-        elif self.particle in ['D', 'D 1+']:
-            return _special_ion_masses['D 1+']
-        elif self.particle in ['T', 'T 1+']:
-            return _special_ion_masses['T 1+']
 
         if not self.isotope:
             raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
@@ -689,7 +769,7 @@ class Particle:
         if self._attributes['mass'] is not None:
             return self._attributes['mass'].to(u.kg)
 
-        if self.ion:
+        if self.is_ion:
 
             if self.isotope:
                 base_mass = self._attributes['isotope mass']
@@ -697,7 +777,9 @@ class Particle:
                 base_mass = self._attributes['standard atomic weight']
 
             if base_mass is None:
-                raise MissingAtomicDataError(f"The mass of ion '{self.ion}' is not available.")
+                raise MissingAtomicDataError(
+                    f"The mass of ion '{self.ionic_symbol}' is not available."
+                )
 
             mass = base_mass - self.integer_charge * const.m_e
 
@@ -807,7 +889,7 @@ class Particle:
         """
         if self.particle == 'e-':
             return 1
-        elif self.ion:
+        elif self.ionic_symbol:
             return self.atomic_number - self.integer_charge
         else:  # coveralls: ignore
             raise InvalidIonError(_category_errmsg(self, 'ion'))
@@ -831,7 +913,7 @@ class Particle:
         """
         from .atomic import common_isotopes
 
-        if not self.isotope or self.ion:  # coveralls: ignore
+        if not self.isotope or self.is_ion:  # coveralls: ignore
             raise InvalidIsotopeError(_category_errmsg(self.particle, 'isotope'))
 
         abundance = self._attributes.get('isotopic abundance', 0.0)
@@ -984,7 +1066,7 @@ class Particle:
         return self._attributes['spin']
 
     @property
-    def periodic_table(self):
+    def periodic_table(self) -> collections.namedtuple:
         """
         Return a `~collections.namedtuple` to access category, period,
         group, and block information about an element.
@@ -1077,7 +1159,7 @@ class Particle:
                 else:
                     return set(arg)
 
-        if category_tuple != () and require != set():
+        if category_tuple != () and require != set():  # coveralls: ignore
             raise AtomicError(
                 "No positional arguments are allowed if the `require` keyword "
                 "is set in is_category.")
@@ -1128,3 +1210,21 @@ class Particle:
 
         """
         return self == "e-"
+
+    @property
+    def is_ion(self) -> bool:
+        """
+        Return `True` if the particle is an ion, and `False`
+        otherwise.
+
+        Examples
+        --------
+        >>> Particle('D+').is_ion
+        True
+        >>> Particle('H-1 0+').is_ion
+        False
+        >>> Particle('e+').is_ion
+        False
+
+        """
+        return self.is_category('ion')

@@ -45,7 +45,6 @@ except ImportError:
     pass
 
 try:
-    from .classes import Plasma
     from . import classes
     from . import constants
     from . import atomic

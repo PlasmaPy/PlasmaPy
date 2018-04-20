@@ -263,8 +263,8 @@ def particle_input(wrapped_function: Callable = None,
                     new_kwargs[argname] = argval
                     continue
 
-                # Occasionally there will be functions where it will be useful
-                # to allow None as an argument.
+                # Occasionally there will be functions where it will be
+                # useful to allow None as an argument.
 
                 if none_shall_pass and argval is None:
                     new_kwargs[argname] = None
@@ -301,7 +301,7 @@ def particle_input(wrapped_function: Callable = None,
                 cat_table = [
                     ('element', particle.element, InvalidElementError),
                     ('isotope', particle.isotope, InvalidIsotopeError),
-                    ('ion', particle.ion, InvalidIonError),
+                    ('ion', particle.ionic_symbol, InvalidIonError),
                 ]
 
                 for category_name, category_symbol, CategoryError in cat_table:
@@ -311,8 +311,8 @@ def particle_input(wrapped_function: Callable = None,
                             f"{funcname} does not correspond to a valid "
                             f"{argname}.")
 
-                # Some functions require that particles be charged, or at least
-                # that particles have charge information.
+                # Some functions require that particles be charged, or
+                # at least that particles have charge information.
 
                 _integer_charge = particle._attributes['integer charge']
 
@@ -323,21 +323,18 @@ def particle_input(wrapped_function: Callable = None,
                 lacks_charge_info = _integer_charge is None
 
                 if must_be_charged and (uncharged or must_have_charge_info):
-                    raise ChargeError(
-                        f"A charged particle is required for {funcname}.")
+                    raise ChargeError(f"A charged particle is required for {funcname}.")
 
                 if must_have_charge_info and lacks_charge_info:
-                    raise ChargeError(
-                        f"Charge information is required for {funcname}.")
+                    raise ChargeError(f"Charge information is required for {funcname}.")
 
                 # Some functions require particles that belong to more complex
                 # classification schemes.  Again, be sure to provide a
                 # maximally useful error message.
 
-                if not particle.is_category(
-                        require=require, exclude=exclude, any_of=any_of):
-                    raise AtomicError(_category_errmsg(
-                        particle, require, exclude, any_of, funcname))
+                if not particle.is_category(require=require, exclude=exclude, any_of=any_of):
+                    raise AtomicError(
+                        _category_errmsg(particle, require, exclude, any_of, funcname))
 
                 new_kwargs[argname] = particle
 

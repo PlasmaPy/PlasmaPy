@@ -9,16 +9,18 @@ from astropy import units as u
 from lmfit import minimize, Parameters
 
 # plasmapy modules
-from plasmapy import atomic, utils
+from plasmapy import atomic, utils, mathematics
 from plasmapy.utils.checks import check_quantity
 from plasmapy.physics.relativity import Lorentz_factor
 
 from ..constants import c, h, hbar, m_e, eps0, e, k_B
-from ..mathematics import Fermi_integral
 
 
 # TODO: Use @check_relativistic and @particle_input
 
+@utils.check_quantity({
+    'V': {'units': u.m / u.s, 'can_be_negative': True}
+    })
 def deBroglie_wavelength(V, particle):
     r"""
     Calculates the de Broglie wavelength.
@@ -52,9 +54,8 @@ def deBroglie_wavelength(V, particle):
 
     Warns
     -----
-    UserWarning
-        If `V` is not a `~astropy.units.Quantity`, then a `UserWarning`
-        will be raised and units of meters per second will be assumed.
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed
 
     Notes
     -----
@@ -72,14 +73,12 @@ def deBroglie_wavelength(V, particle):
     Examples
     --------
     >>> from astropy import units as u
-    >>> velocity = 1.4e7*u.m/u.s
+    >>> velocity = 1.4e7 * u.m / u.s
     >>> deBroglie_wavelength(velocity, 'e')
     <Quantity 5.18997095e-11 m>
-    >>> deBroglie_wavelength(V = 0*u.m/u.s, particle = 'D+')
+    >>> deBroglie_wavelength(V = 0 * u.m / u.s, particle = 'D+')
     <Quantity inf m>
     """
-
-    utils._check_quantity(V, 'V', 'deBroglie_wavelength', u.m / u.s)
 
     V = np.abs(V)
 
@@ -92,7 +91,7 @@ def deBroglie_wavelength(V, particle):
     if not isinstance(particle, u.Quantity):
         try:
             # TODO: Replace with more general routine!
-            m = atomic.ion_mass(particle)
+            m = atomic.particle_mass(particle)
         except Exception:
             raise ValueError("Unable to find particle mass.")
     else:
@@ -150,8 +149,8 @@ def thermal_deBroglie_wavelength(T_e):
 
     Warns
     -----
-    UserWarning
-        If units are not provided and SI units are assumed.
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -203,8 +202,8 @@ def Fermi_energy(n_e):
 
     Warns
     -----
-    UserWarning
-        If units are not provided and SI units are assumed.
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -239,7 +238,8 @@ def Fermi_energy(n_e):
 })
 def Thomas_Fermi_length(n_e):
     r"""
-    Calculate the exponential scale length for charge screening.
+    Calculate the exponential scale length for charge screening
+    for cold and dense plasmas.
 
     Parameters
     ----------
@@ -264,8 +264,8 @@ def Thomas_Fermi_length(n_e):
 
     Warns
     -----
-    UserWarning
-        If units are not provided and SI units are assumed.
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -290,6 +290,7 @@ def Thomas_Fermi_length(n_e):
     See also
     --------
     Fermi_energy
+    plasmapy.physics.Debye_length
 
     Example
     -------
@@ -339,8 +340,8 @@ def Wigner_Seitz_radius(n: u.m**-3):
 
     Warns
     -----
-    UserWarning
-        If units are not provided and SI units are assumed.
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -397,8 +398,8 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
 
     Warns
     -----
-    UserWarning
-        If units are not provided and SI units are assumed.
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -419,7 +420,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     Levenberg-Marquardt least squares method is used to iteratively approach
     a value of :math:`\mu` which minimizes
     :math:`I_{1/2}(\beta \mu_a^{ideal}) - \chi_a`
-    
+
     This function returns :math:`\beta \mu^{ideal}` the dimensionless
     ideal chemical potential.
 
@@ -448,7 +449,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
         """Residual function for fitting parameters to Fermi_integral."""
         alpha = params['alpha'].value
         # note that alpha = mu / (k_B * T)
-        model = Fermi_integral(alpha, 0.5)
+        model = mathematics.Fermi_integral(alpha, 0.5)
         complexResidue = (data - model) / eps_data
         return complexResidue.view(np.float)
 
@@ -498,8 +499,8 @@ def chemical_potential_interp(n_e, T):
 
     Warnings
     --------
-    UserWarning
-        If units are not provided and SI units are assumed.
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
 
     Notes
     -----

@@ -242,6 +242,10 @@ invalid_particles_table = [
     ('He-99', {}),
     ('H-2+', {'Z': 0}),
     ('H-', {'Z': 1}),
+    ('C VX', {}),
+    ('Rh XXXX', {}),
+    ('Li -II', {}),
+    ('B +IV', {}),
 ]
 
 

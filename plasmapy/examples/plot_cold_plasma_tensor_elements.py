@@ -1,4 +1,3 @@
-# coding: utf-8
 """
 Cold Magnetized Plasma Waves Tensor Elements (S, D, P in Stix's notation)
 =========================================================================
@@ -15,12 +14,12 @@ from astropy import units as u
 #######################################################################
 # Let's define some parameters, such as the magnetic field magnitude,
 # the plasma species and densities and the frequency band of interest
-B = 2*u.T
+B = 2 * u.T
 species = ['e', 'D+']
-n = [1e18*u.m**-3, 1e18*u.m**-3]
+n = [1e18 * u.m ** -3, 1e18 * u.m ** -3]
 
 f = np.logspace(start=6, stop=11.3, num=3001)  # 1 MHz to 200 GHz
-omega_RF = f*(2*np.pi)*(u.rad/u.s)
+omega_RF = f * (2 * np.pi) * (u.rad / u.s)
 
 #######################################################################
 help(pp.physics.cold_plasma_permittivity_SDP)
@@ -31,12 +30,12 @@ S, D, P = pp.physics.cold_plasma_permittivity_SDP(B, species, n, omega_RF)
 #######################################################################
 # Filter positive and negative values, for display purposes only.
 # Still for display purposes, replace 0 by NaN to NOT plot 0 values
-S_pos = S*(S > 0)
-D_pos = D*(D > 0)
-P_pos = P*(P > 0)
-S_neg = S*(S < 0)
-D_neg = D*(D < 0)
-P_neg = P*(P < 0)
+S_pos = S * (S > 0)
+D_pos = D * (D > 0)
+P_pos = P * (P > 0)
+S_neg = S * (S < 0)
+D_neg = D * (D < 0)
+P_neg = P * (P < 0)
 S_pos[S_pos == 0] = np.NaN
 D_pos[D_pos == 0] = np.NaN
 P_pos[P_pos == 0] = np.NaN
@@ -68,10 +67,10 @@ plt.tick_params(labelsize=14)
 L, R, P = pp.physics.cold_plasma_permittivity_LRP(B, species, n, omega_RF)
 
 #######################################################################
-L_pos = L*(L > 0)
-R_pos = R*(R > 0)
-L_neg = L*(L < 0)
-R_neg = R*(R < 0)
+L_pos = L * (L > 0)
+R_pos = R * (R > 0)
+L_neg = L * (L < 0)
+R_neg = R * (R < 0)
 L_pos[L_pos == 0] = np.NaN
 R_pos[R_pos == 0] = np.NaN
 L_neg[L_neg == 0] = np.NaN
@@ -98,13 +97,13 @@ plt.tick_params(labelsize=14)
 # Checks if the values obtained are coherent. They should satisfy
 # S = (R+L)/2 and D = (R-L)/2
 try:
-    np.testing.assert_allclose(S, (R+L)/2)
-    np.testing.assert_allclose(D, (R-L)/2)
+    np.testing.assert_allclose(S, (R + L) / 2)
+    np.testing.assert_allclose(D, (R - L) / 2)
 except AssertionError as e:
     print(e)
 # Checks for R=S+D and L=S-D
 try:
-    np.testing.assert_allclose(R, S+D)
-    np.testing.assert_allclose(L, S-D)
+    np.testing.assert_allclose(R, S + D)
+    np.testing.assert_allclose(L, S - D)
 except AssertionError as e:
     print(e)

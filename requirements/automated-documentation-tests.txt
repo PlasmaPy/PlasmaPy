@@ -1,6 +1,7 @@
 astropy
 coveralls
 mpmath
+roman
 lmfit
 matplotlib
 numpy
@@ -11,3 +12,6 @@ scipy
 sphinx
 sphinx-automodapi
 sphinx-gallery
+sphinx_rtd_theme
+pytest
+colorama

@@ -1,7 +1,7 @@
 """
 Class representing a group of particles.
 """
-# coding=utf-8
+
 import numpy as np
 import scipy.interpolate as interp
 from ..atomic import atomic
@@ -64,7 +64,7 @@ class Species:
             raise ValueError("Both dt and nt are infinite.")
 
         self.q = atomic.integer_charge(particle_type) * constants.e.si
-        self.m = atomic.ion_mass(particle_type)
+        self.m = atomic.particle_mass(particle_type)
         self.N = int(n_particles)
         self.scaling = scaling
         self.eff_q = self.q * scaling

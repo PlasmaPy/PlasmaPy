@@ -3,34 +3,47 @@ import inspect
 
 import numpy as np
 from astropy import units as u
-from ..constants import c
+from astropy.units import UnitsWarning
+from plasmapy.constants import c
 import warnings
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
+from textwrap import dedent
 
 
 def check_quantity(validations):
-    r"""
-    Raises exceptions if `argname` in decorated function is not an
-    `~astropy.units.Quantity` with correct units and valid numerical
-    values.
+    """
+    Raise an exception if an annotated argument in a decorated function
+    is an `~astropy.units.Quantity` with incorrect units and valid
+    numerical values, or assume inputs are SI Quantities.
 
     Parameters
     ----------
-    validations : dict
+    validations : `dict`
         Validation dictionary.
 
     Raises
     ------
-    TypeError
-        If the argument is not a `~astropy.units.Quantity`, units is
-        not entirely units or `argname` does not have a type annotation.
+    `TypeError`
+        If the argument is not a `~astropy.units.Quantity`, units is not
+        entirely units or `argname` does not have a type annotation.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the argument is not in acceptable units.
 
-    ValueError
-        If the argument contains `~numpy.nan` or other invalid values
-        as determined by the keywords.
+    ~astropy.units.UnitsError
+        If after the assumption checks, the argument is still not in acceptable
+        units.
+
+    `ValueError`
+        If the argument contains `~numpy.nan` or other invalid values as
+        determined by the keywords.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If a `~astropy.units.Quantity` is not provided and unique units
+        are provided, a `UnitsWarning` will be raised and the inputted
+        units will be assumed.
 
     Returns
     -------
@@ -47,12 +60,12 @@ def check_quantity(validations):
     ...       "can_be_complex": True,
     ...       "can_be_inf": False}
     ... })
-    ... def func(x: u.m, y: u.s=1*u.s):
+    ... def func(x: u.m, y: u.s=1 * u.s):
     ...     return x
     ...
-    >>> func(1*u.m)
+    >>> func(1 * u.m)
     <Quantity 1. m>
-    >>> func(1*u.m, 2*u.m)
+    >>> func(1 * u.m, 2 * u.m)
     Traceback (most recent call last):
       ...
     astropy.units.core.UnitConversionError: The argument y to func should be a Quantity with the following units: s
@@ -86,39 +99,192 @@ def check_quantity(validations):
             for param_to_check, validation_settings in validations.items():
                 value_to_check = given_params_values[param_to_check]
 
-                can_be_negative = validation_settings.get(
-                    'can_be_negative', True)
-                can_be_complex = validation_settings.get(
-                    'can_be_complex', False)
-                can_be_inf = validation_settings.get(
-                    'can_be_inf', True)
+                can_be_negative = validation_settings.get('can_be_negative', True)
+                can_be_complex = validation_settings.get('can_be_complex', False)
+                can_be_inf = validation_settings.get('can_be_inf', True)
+                can_be_nan = validation_settings.get('can_be_nan', False)
 
-                _check_quantity(value_to_check,
-                                param_to_check,
-                                fname,
-                                validation_settings['units'],
-                                can_be_negative=can_be_negative,
-                                can_be_complex=can_be_complex,
-                                can_be_inf=can_be_inf)
+                validated_value = _check_quantity(value_to_check,
+                                                  param_to_check,
+                                                  fname,
+                                                  validation_settings['units'],
+                                                  can_be_negative=can_be_negative,
+                                                  can_be_complex=can_be_complex,
+                                                  can_be_inf=can_be_inf,
+                                                  can_be_nan=can_be_nan)
+                given_params_values[param_to_check] = validated_value
 
-            return f(*args, **kwargs)
+            return f(**given_params_values)
         return wrapper
     return decorator
 
 
-def check_relativistic(func=None, betafrac=0.1):
-    r"""
-    Warns or raises an error when the output of the decorated
-    function is greater than `betafrac` times the speed of light
+def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
+                    can_be_complex=False, can_be_inf=True, can_be_nan=False):
+    """
+    Raise an exception if an object is not a `~astropy.units.Quantity`
+    with correct units and valid numerical values.
 
     Parameters
     ----------
-    func : function, optional
+    arg : ~astropy.units.Quantity
+        The object to be tested.
+
+    argname : str
+        The name of the argument to be printed in error messages.
+
+    funcname : str
+        The name of the original function to be printed in error messages.
+
+    units : `~astropy.units.Unit` or list of `~astropy.unit.Unit`
+        Acceptable units for `arg`.
+
+    can_be_negative : bool, optional
+        `True` if the `~astropy.units.Quantity` can be negative,
+        `False` otherwise.  Defaults to `True`.
+
+    can_be_complex : bool, optional
+        `True` if the `~astropy.units.Quantity` can be a complex number,
+        `False` otherwise.  Defaults to `False`.
+
+    can_be_inf : bool, optional
+        `True` if the `~astropy.units.Quantity` can contain infinite
+        values, `False` otherwise.  Defaults to `True`.
+
+    can_be_inf : bool, optional
+        `True` if the `~astropy.units.Quantity` can contain NaN
+        values, `False` otherwise.  Defaults to `True`.
+
+    Raises
+    ------
+    TypeError
+        If the argument is not a `~astropy.units.Quantity` or units is
+        not entirely units.
+
+    ~astropy.units.UnitConversionError
+        If the argument is not in acceptable units.
+
+    ~astropy.units.UnitsError
+        If after the assumption checks, the argument is still not in acceptable
+        units.
+
+    ValueError
+        If the argument contains any `~numpy.nan` or other invalid
+        values as determined by the keywords.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If a `~astropy.units.Quantity` is not provided and unique units
+        are provided, a `UnitsWarning` will be raised and the inputted
+        units will be assumed.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> import pytest
+    >>> _check_quantity(4*u.T, 'B', 'f', u.T)
+    <Quantity 4. T>
+    >>> with pytest.warns(u.UnitsWarning, match="No units are specified"):
+    ...     assert _check_quantity(4, 'B', 'f', u.T) == 4 * u.T
+
+    """
+
+    # TODO: Replace `funcname` with func.__name__?
+
+    if not isinstance(units, list):
+        units = [units]
+
+    for unit in units:
+        if not isinstance(unit, (u.Unit, u.CompositeUnit, u.IrreducibleUnit)):
+            raise TypeError(
+                "The keyword 'units' to check_quantity must be "
+                "a unit or a list/tuple containing only units.")
+
+    # Create a generic error message
+
+    typeerror_message = (
+        f"The argument {argname} to {funcname} should be a Quantity with "
+    )
+
+    if len(units) == 1:
+        typeerror_message += f"the following units: {str(units[0])}"
+    else:
+        typeerror_message += "one of the following units: "
+        for unit in units:
+            typeerror_message += str(unit)
+            if unit != units[-1]:
+                typeerror_message += ", "
+
+    if isinstance(arg, (u.Unit, u.CompositeUnit, u.IrreducibleUnit)):
+        raise TypeError(typeerror_message)
+
+    # Make sure arg is a quantity with correct units
+
+    unit_casting_warning = dedent(
+            f"""No units are specified for {argname} = {arg} in {funcname}. Assuming units of {str(units[0])}.
+                To silence this warning, explicitly pass in an Astropy Quantity (from astropy.units)
+                (see http://docs.astropy.org/en/stable/units/)""")
+
+    # TODO include explicit note on how to pass in Astropy Quantity
+
+    if not isinstance(arg, (u.Quantity)):
+        if len(units) != 1:
+            raise TypeError(typeerror_message)
+        else:
+            try:
+                arg = arg * units[0]
+            except Exception:
+                raise TypeError(typeerror_message)
+            else:
+                warnings.warn(UnitsWarning(unit_casting_warning))
+    if not isinstance(arg, u.Quantity):
+        raise u.UnitsError("{} is still not a Quantity after checks!".format(arg))
+
+    in_acceptable_units = []
+
+    for unit in units:
+        try:
+            arg.unit.to(unit, equivalencies=u.temperature_energy())
+        except Exception:
+            in_acceptable_units.append(False)
+        else:
+            in_acceptable_units.append(True)
+
+    if not np.any(in_acceptable_units):
+        raise u.UnitConversionError(typeerror_message)
+
+    # Make sure that the quantity has valid numerical values
+
+    valueerror_message = (
+        f"The argument {argname} to function {funcname} cannot contain"
+    )
+
+    if np.any(np.isnan(arg.value)) and not can_be_nan:
+        raise ValueError(f"{valueerror_message} NaNs.")
+    elif np.any(np.iscomplex(arg.value)) and not can_be_complex:
+        raise ValueError(f"{valueerror_message} complex numbers.")
+    elif not can_be_negative and np.any(arg.value < 0):
+        raise ValueError(f"{valueerror_message} negative numbers.")
+    elif not can_be_inf and np.any(np.isinf(arg.value)):
+        raise ValueError(f"{valueerror_message} infs.")
+
+    return arg
+
+
+def check_relativistic(func=None, betafrac=0.05):
+    r"""
+    Warns or raises an exception when the output of the decorated
+    function is greater than `betafrac` times the speed of light.
+
+    Parameters
+    ----------
+    func : `function`, optional
         The function to decorate.
 
     betafrac : float, optional
         The minimum fraction of the speed of light that will raise a
-        `~plasmapy.utils.RelativityWarning`. Defaults to 0.1.
+        `~plasmapy.utils.RelativityWarning`. Defaults to 5%.
 
     Returns
     -------
@@ -163,8 +329,7 @@ def check_relativistic(func=None, betafrac=0.1):
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
             return_ = f(*args, **kwargs)
-            _check_relativistic(return_, f.__name__,
-                                betafrac=betafrac)
+            _check_relativistic(return_, f.__name__, betafrac=betafrac)
             return return_
         return wrapper
     if func:
@@ -172,136 +337,10 @@ def check_relativistic(func=None, betafrac=0.1):
     return decorator
 
 
-def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
-                    can_be_complex=False, can_be_inf=True):
-    """
-    Raise an exception if an object is not a `~astropy.units.Quantity`
-    withmcorrect units and valid numerical values.
-
-    Parameters
-    ----------
-    arg : ~astropy.units.Quantity
-        The object to be tested.
-
-    argname : str
-        The name of the argument to be printed in error messages.
-
-    funcname : str
-        The name of the original function to be printed in error messages.
-
-    units : ~astropy.units.Unit or list with ~astropy.units.Unit items
-        Acceptable units for `arg`.
-
-    can_be_negative : bool, optional
-        `True` if the `~astropy.units.Quantity` can be negative,
-        `False` otherwise. Defaults to `True`.
-
-    can_be_complex : bool, optional
-        `True` if the `~astropy.units.Quantity` can be a complex
-        number, `False` otherwise. Defaults to `False`.
-
-    can_be_inf : bool, optional
-        `True` if the `~astropy.units.Quantity` can contain infinite
-        values, `False` otherwise.  Defaults to `True`.
-
-    Raises
-    ------
-    TypeError
-        If the argument is not a `~astropy.units.Quantity` or units is
-        not entirely units.
-
-    ~astropy.units.UnitConversionError
-        If the argument is not in acceptable units.
-
-    ValueError
-        If the argument contains any `~numpy.nan` or other invalid
-        values as determined by the keywords.
-
-    UserWarning
-        If a `~astropy.units.Quantity` is not provided and unique units
-        are provided, a `UserWarning` will be raised and the inputted
-        units will be assumed.
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> _check_quantity(4*u.T, 'B', 'f', u.T)
-
-    """
-
-    # TODO: Replace `funcname` with func.__name__?
-
-    if not isinstance(units, list):
-        units = [units]
-
-    for unit in units:
-        if not isinstance(unit, (u.Unit, u.CompositeUnit, u.IrreducibleUnit)):
-            raise TypeError("The keyword 'units' to check_quantity must be "
-                            "a unit or a list/tuple containing only units.")
-
-    # Create a generic error message
-
-    typeerror_message = ("The argument " + argname + " to " + funcname +
-                         " should be a Quantity with ")
-
-    if len(units) == 1:
-        typeerror_message += "the following units: " + str(units[0])
-    else:
-        typeerror_message += "one of the following units: "
-        for unit in units:
-            typeerror_message += str(unit)
-            if unit != units[-1]:
-                typeerror_message += ", "
-
-    if isinstance(arg, (u.Unit, u.CompositeUnit, u.IrreducibleUnit)):
-        raise TypeError(typeerror_message)
-
-    # Make sure arg is a quantity with correct units
-
-    if not isinstance(arg, (u.Quantity)):
-        if len(units) != 1:
-            raise TypeError(typeerror_message)
-        else:
-            try:
-                arg = arg*units[0]
-            except Exception:
-                raise TypeError(typeerror_message)
-            else:
-                raise UserWarning("No units are specified for " + argname +
-                                  " in " + funcname + ". Assuming units of " +
-                                  str(units[0]) + ".")
-
-    in_acceptable_units = []
-
-    for unit in units:
-        try:
-            arg.unit.to(unit, equivalencies=u.temperature_energy())
-        except Exception:
-            in_acceptable_units.append(False)
-        else:
-            in_acceptable_units.append(True)
-
-    if not np.any(in_acceptable_units):
-        raise u.UnitConversionError(typeerror_message)
-
-    # Make sure that the quantity has valid numerical values
-
-    valueerror_message = ("The argument " + argname + " to function " +
-                          funcname + " cannot contain ")
-
-    if np.any(np.isnan(arg.value)):
-        raise ValueError(valueerror_message + "NaNs.")
-    elif np.any(np.iscomplex(arg.value)) and not can_be_complex:
-        raise ValueError(valueerror_message + "complex numbers.")
-    elif not can_be_negative and np.any(arg.value < 0):
-        raise ValueError(valueerror_message + "negative numbers.")
-    elif not can_be_inf and np.any(np.isinf(arg.value)):
-        raise ValueError(valueerror_message + "infs.")
-
-
-def _check_relativistic(V, funcname, betafrac=0.1):
+def _check_relativistic(V, funcname, betafrac=0.05):
     r"""
-    Warn or raise error for relativistic or superrelativistic velocities.
+    Warn or raise error for relativistic or superrelativistic
+    velocities.
 
     Parameters
     ----------
@@ -309,11 +348,12 @@ def _check_relativistic(V, funcname, betafrac=0.1):
         A velocity.
 
     funcname : str
-        The name of the original function to be printed in the error messages.
+        The name of the original function to be printed in the error
+        messages.
 
-    betafrac : float
+    betafrac : float, optional
         The minimum fraction of the speed of light that will generate
-        a warning.
+        a warning. Defaults to 5%.
 
     Raises
     ------
@@ -331,9 +371,9 @@ def _check_relativistic(V, funcname, betafrac=0.1):
 
     Warns
     -----
-    RelativityWarning
-        If `V` is greater than or equal to the specified fraction of
-        the speed of light.
+    ~plasmapy.utils.RelativityWarning
+        If `V` is greater than or equal to the specified fraction of the
+        speed of light.
 
     Examples
     --------
@@ -350,22 +390,23 @@ def _check_relativistic(V, funcname, betafrac=0.1):
     if not isinstance(V, u.Quantity):
         raise TypeError(errmsg)
 
-    if V.si.unit != u.m/u.s:
+    if V.si.unit != u.m / u.s:
         raise u.UnitConversionError(errmsg)
 
     if np.any(np.isnan(V.value)):
-        raise ValueError("V includes NaNs in " + funcname)
+        raise ValueError(f"V includes NaNs in {funcname}")
 
-    beta = np.max(np.abs((V.si/c).value))
+    beta = np.max(np.abs((V.si / c).value))
 
     if beta == np.inf:
-        raise RelativityError(funcname + " is yielding an infinite velocity.")
+        raise RelativityError(f"{funcname} is yielding an infinite velocity.")
     elif beta >= 1:
-        raise RelativityError(funcname + " is yielding a velocity that is " +
-                              str(round(beta, 3)) + " times the speed of " +
-                              "light.")
+        raise RelativityError(
+            f"{funcname} is yielding a velocity that is {str(round(beta, 3))} "
+            f"times the speed of light.")
     elif beta >= betafrac:
-        warnings.warn(funcname + " is yielding a velocity that is " +
-                      str(round(beta*100, 3)) + "% of the speed of " +
-                      "light. Relativistic effects may be important.",
-                      RelativityWarning)
+        warnings.warn(
+            f"{funcname} is yielding a velocity that is "
+            f"{str(round(beta * 100, 3))}% of the speed of "
+            f"light. Relativistic effects may be important.",
+            RelativityWarning)

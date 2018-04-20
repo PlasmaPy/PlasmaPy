@@ -60,7 +60,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'plasmapy'
-copyright = '2015-2017, PlasmaPy Community'
+copyright = '2015-2018, PlasmaPy Community'
 author = 'PlasmaPy Community'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -100,6 +100,7 @@ default_role = 'obj'
 # html_theme = 'alabaster'
 # html_theme = 'traditional'
 # html_theme = 'agogo'
+html_theme = "sphinx_rtd_theme"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

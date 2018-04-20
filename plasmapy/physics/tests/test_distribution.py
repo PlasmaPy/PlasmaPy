@@ -19,7 +19,8 @@ from ..parameters import (thermal_speed,
 
 
 class Test_Maxwellian_1D(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T_e = 30000 * u.K
         self.v = 1e5 * u.m / u.s
@@ -102,16 +103,6 @@ class Test_Maxwellian_1D(object):
         std = np.sqrt(std)
         T_distri = (std**2 / k_B * m_e).to(u.K)
         assert np.isclose(T_distri.value, self.T_e.value)
-
-    def test_valErr(self):
-        """
-        Tests whether ValueError is raised when invalid particle name
-        string is passed.
-        """
-        with pytest.raises(ValueError):
-            Maxwellian_1D(1 * u.m / u.s,
-                          T=1 * u.K,
-                          particle='XXX')
 
     def test_units_no_vTh(self):
         """
@@ -218,10 +209,11 @@ class Test_Maxwellian_1D(object):
 
 # test class for Maxwellian_speed_1D function
 class Test_Maxwellian_speed_1D(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 1.0 * u.eV
-        self.particle = 'H'
+        self.particle = 'H+'
         # get thermal velocity and thermal velocity squared
         self.vTh = thermal_speed(self.T,
                                  particle=self.particle,
@@ -349,10 +341,11 @@ class Test_Maxwellian_speed_1D(object):
 
 # test class for Maxwellian_velocity_3D function
 class Test_Maxwellian_velocity_3D(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 1.0 * u.eV
-        self.particle = 'H'
+        self.particle = 'H+'
         # get thermal velocity and thermal velocity squared
         self.vTh = thermal_speed(self.T,
                                  particle=self.particle,
@@ -525,10 +518,11 @@ class Test_Maxwellian_velocity_3D(object):
 
 # test class for Maxwellian_speed_3D function
 class Test_Maxwellian_speed_3D(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 1.0 * u.eV
-        self.particle = 'H'
+        self.particle = 'H+'
         # get thermal velocity and thermal velocity squared
         self.vTh = thermal_speed(self.T,
                                  particle=self.particle,
@@ -702,7 +696,8 @@ class Test_Maxwellian_speed_3D(object):
 
 # test class for kappa_velocity_1D function:
 class Test_kappa_velocity_1D(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T_e = 30000 * u.K
         self.kappa = 4
@@ -807,17 +802,6 @@ class Test_kappa_velocity_1D(object):
         std = np.sqrt(std)
         T_distri = (std**2 / k_B * m_e).to(u.K)
         assert np.isclose(T_distri.value, self.T_e.value)
-
-    def test_valErr(self):
-        """
-        Tests whether ValueError is raised when invalid particle name
-        string is passed.
-        """
-        with pytest.raises(ValueError):
-            kappa_velocity_1D(1 * u.m / u.s,
-                              T=1 * u.K,
-                              kappa=self.kappa,
-                              particle='XXX')
 
     def test_units_no_vTh(self):
         """
@@ -930,12 +914,13 @@ class Test_kappa_velocity_1D(object):
 
 # test class for kappa_velocity_3D function
 class Test_kappa_velocity_3D(object):
-    def setup_method(self):
+    @classmethod
+    def setup_class(self):
         """initializing parameters for tests """
         self.T = 1.0 * u.eV
         self.kappa = 4
         self.kappaInvalid = 3 / 2
-        self.particle = 'H'
+        self.particle = 'H+'
         # get thermal velocity and thermal velocity squared
         self.vTh = kappa_thermal_speed(self.T,
                                        kappa=self.kappa,

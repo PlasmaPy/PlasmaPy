@@ -1,8 +1,6 @@
-# coding: utf-8
-
 """
-1D Maxwellian
-=============
+1D Maxwellian distribution function
+===================================
 
 We import the usual and the hero of this notebook, the Maxwellian 1D distribution:
 """

@@ -1,5 +1,6 @@
 """Functionality to parse representations of particles into standard form."""
 
+import roman
 import numpy as np
 import re
 import warnings
@@ -34,15 +35,16 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
     case_sensitive_aliases_for_a_symbol = [
         (['beta-', 'e'], 'e-'),
         (['beta+'], 'e+'),
-        (['p', 'H-1+', 'H-1 1+', 'H-1 +1'], 'p+'),
+        (['p', 'H-1+', 'H-1 1+', 'H-1 +1', 'H-1 II'], 'p+'),
         (['n-1'], 'n'),
         (['H-2'], 'D'),
-        (['H-2+', 'H-2 1+', 'H-2 +1', 'D+'], 'D 1+'),
-        (['H-3+', 'H-3 1+', 'H-3 +1', 'T+'], 'T 1+'),
+        (['H-2+', 'H-2 1+', 'H-2 +1', 'D+', 'D II'], 'D 1+'),
+        (['H-3+', 'H-3 1+', 'H-3 +1', 'T+', 'T II'], 'T 1+'),
     ]
 
     case_insensitive_aliases_for_a_symbol = [
-        (['antielectron'], 'e+'),
+        (['antielectron', 'anti_electron'], 'e+'),
+        (['antipositron', 'anti_positron'], 'e-'),
         (['muon-'], 'mu-'),
         (['muon+'], 'mu+'),
         (['tau particle'], 'tau-'),
@@ -205,13 +207,19 @@ def _parse_and_check_atomic_input(argument: Union[str, int], mass_numb: int = No
             if not sign_indicator_only_on_one_end and just_one_sign_indicator:
                 raise InvalidParticleError(invalid_charge_errmsg) from None
 
-            if '-' in charge_info:
-                sign = -1
-            elif '+' in charge_info:
-                sign = 1
-
             charge_str = charge_info.strip('+-')
-            Z_from_arg = sign * int(charge_str)
+
+            try:
+                if roman.romanNumeralPattern.match(charge_info):
+                    Z_from_arg = roman.fromRoman(charge_info) - 1
+                elif '-' in charge_info:
+                    Z_from_arg = - int(charge_str)
+                elif '+' in charge_info:
+                    Z_from_arg = int(charge_str)
+                else:
+                    raise InvalidParticleError(invalid_charge_errmsg) from None
+            except ValueError:
+                raise InvalidParticleError(invalid_charge_errmsg) from None
 
         elif arg.endswith(('-', '+')):  # Cases like 'H-' and 'Pb-209+++'
             char = arg[-1]
