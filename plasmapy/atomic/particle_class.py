@@ -1016,6 +1016,35 @@ class Particle:
         return nuclear_binding_energy.to(u.J)
 
     @property
+    def mass_energy(self) -> u.Quantity:
+        """
+        Return the nuclear mass energy in joules.
+
+        This attribute will raise an
+        `~plasmapy.utils.InvalidIsotopeError` if the particle is not a
+        nucleon or isotope.
+
+        """
+        if self._attributes['baryon number'] == 1:
+            return 0 * u.J
+
+        if not self.isotope:
+            raise InvalidIsotopeError(
+                f"The nuclear binding energy may only be calculated for nucleons and isotopes.")
+
+        number_of_protons = self.atomic_number
+        number_of_neutrons = self.mass_number - self.atomic_number
+
+        mass_of_protons = number_of_protons * const.m_p
+        mass_of_neutrons = number_of_neutrons * const.m_n
+
+        mass_of_nucleons = mass_of_protons + mass_of_neutrons
+        nuclear_mass_energy = mass_of_nucleons * const.c ** 2
+
+        return nuclear_mass_energy.to(u.J)
+
+
+    @property
     def half_life(self) -> Union[u.Quantity, str]:
         """
         Return the particle's half-life in seconds, or a `str`

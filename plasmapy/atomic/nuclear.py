@@ -71,6 +71,43 @@ def nuclear_binding_energy(
     """
     return particle.binding_energy.to(u.J)
 
+@particle_input(any_of={'isotope', 'baryon'})
+def nuclear_mass_energy(
+        particle: Particle, mass_numb: int = None) -> u.Quantity:
+    """
+    Return the nuclear mass energy associated with an isotope.
+
+    Parameters
+    ----------
+    particle: `str`, `int`, or `~plasmapy.atomic.Particle`
+        A Particle object, a string representing an element or isotope,
+        or an integer representing the atomic number of an element.
+
+    mass_numb: `int` (optional)
+        The mass number of an isotope, which is required if and only
+        if the first argument can only be used to determine the
+        element and not the isotope.
+
+    Returns
+    -------
+    mass_energy: `~astropy.units.Quantity`
+        The mass energy of the nucleus in units of Joules.
+
+    Raises
+    ------
+    `~plasmapy.utils.InvalidParticleError`
+        If the inputs do not correspond to a valid particle.
+
+    `~plasmapy.utils.AtomicError`
+        If the inputs do not correspond to a valid isotope or nucleon.
+
+    `TypeError`
+        If the inputs are not of the correct types.
+
+    """
+    return particle.mass_energy.to(u.J)
+
+
 
 def nuclear_reaction_energy(*args, **kwargs):
     """
