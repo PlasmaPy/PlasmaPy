@@ -13,8 +13,8 @@ from textwrap import dedent
 def check_quantity(validations):
     """
     Raise an exception if an annotated argument in a decorated function
-    is not a `~astropy.units.Quantity` with correct units and valid
-    numerical values.
+    is an `~astropy.units.Quantity` with incorrect units and valid
+    numerical values, or assume inputs are SI Quantities.
 
     Parameters
     ----------
@@ -30,9 +30,20 @@ def check_quantity(validations):
     `~astropy.units.UnitConversionError`
         If the argument is not in acceptable units.
 
+    ~astropy.units.UnitsError
+        If after the assumption checks, the argument is still not in acceptable
+        units.
+
     `ValueError`
         If the argument contains `~numpy.nan` or other invalid values as
         determined by the keywords.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If a `~astropy.units.Quantity` is not provided and unique units
+        are provided, a `UnitsWarning` will be raised and the inputted
+        units will be assumed.
 
     Returns
     -------
@@ -222,7 +233,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
             raise TypeError(typeerror_message)
         else:
             try:
-                arg = arg*units[0]
+                arg = arg * units[0]
             except Exception:
                 raise TypeError(typeerror_message)
             else:
