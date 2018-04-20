@@ -1,4 +1,3 @@
-# coding=utf-8
 """Functions to calculate classical transport coefficients."""
 import warnings
 
@@ -10,13 +9,13 @@ from plasmapy import atomic
 from plasmapy.atomic.atomic import _is_electron
 from .collisions import Coulomb_logarithm
 from plasmapy.physics.parameters import (Hall_parameter,
-                                         grab_charge)
+                                         _grab_charge)
 from plasmapy.physics.transport.collisions import (collision_rate_electron_ion,
                                                    collision_rate_ion_ion)
 from plasmapy.constants import e, m_e, k_B
 
 
-class classical_transport:
+class ClassicalTransport:
     r"""
     Classical transport coefficients (e.g. Braginskii, 1965).
 
@@ -187,7 +186,7 @@ class classical_transport:
     Examples
     --------
     >>> from astropy import units as u
-    >>> t = classical_transport(1*u.eV, 1e20/u.m**3,
+    >>> t = ClassicalTransport(1*u.eV, 1e20/u.m**3,
     ...                         1*u.eV, 1e20/u.m**3, 'p')
     >>> t.resistivity()
     <Quantity 0.00036701 m Ohm>
@@ -283,10 +282,10 @@ class classical_transport:
                 self.m_i = atomic.particle_mass(ion_particle)
             except Exception:
                 raise ValueError(f"Unable to find mass of particle: "
-                                 f"{ion_particle} in classical_transport")
+                                 f"{ion_particle} in ClassicalTransport")
         else:
             self.m_i = m_i.to(u.kg)
-        self.Z = grab_charge(ion_particle, Z)
+        self.Z = _grab_charge(ion_particle, Z)
         if self.Z < 0:
             raise ValueError("Z is not allowed to be negative!")  # TODO remove?
 
@@ -309,8 +308,8 @@ class classical_transport:
         else:
             self.coulomb_log_ei = Coulomb_logarithm(T_e,
                                                     n_e,
-                                                    [self.e_particle,
-                                                     self.ion_particle],
+                                                    (self.e_particle,
+                                                     self.ion_particle),
                                                     V_ei,
                                                     method=coulomb_log_method)
         if coulomb_log_ii is not None:
@@ -322,8 +321,8 @@ class classical_transport:
         else:
             self.coulomb_log_ii = Coulomb_logarithm(T_i,
                                                     n_e,  # this is not a typo!
-                                                    [self.ion_particle,
-                                                     self.ion_particle],
+                                                    (self.ion_particle,
+                                                     self.ion_particle),
                                                     V_ii,
                                                     method=coulomb_log_method)
 
@@ -536,68 +535,169 @@ class classical_transport:
         return d
 
 
-def resistivity(T_e, n_e, T_i, n_i, ion_particle, m_i=None, Z=None, B=0.0 * u.T,
-                model='Braginskii', field_orientation='parallel',
-                mu=None, theta=None, coulomb_log_method="classical"):
-    ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
-                             Z=Z, B=B, model=model,
-                             field_orientation=field_orientation,
-                             mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
+def resistivity(T_e,
+                n_e,
+                T_i,
+                n_i,
+                ion_particle,
+                m_i=None,
+                Z=None,
+                B=0.0 * u.T,
+                model='Braginskii',
+                field_orientation='parallel',
+                mu=None,
+                theta=None,
+                coulomb_log_method="classical"):
+
+    ct = ClassicalTransport(T_e, n_e, T_i, n_i, ion_particle, m_i,
+                            Z=Z, B=B, model=model,
+                            field_orientation=field_orientation,
+                            mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
     return ct.resistivity()
 
 
-def thermoelectric_conductivity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
-                                Z=None, B=0.0 * u.T, model='Braginskii',
-                                field_orientation='parallel', mu=None,
-                                theta=None, coulomb_log_method="classical"):
-    ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
-                             Z=Z, B=B, model=model,
-                             field_orientation=field_orientation,
-                             mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
+def thermoelectric_conductivity(T_e,
+                                n_e,
+                                T_i,
+                                n_i,
+                                ion_particle,
+                                m_i=None,
+                                Z=None,
+                                B=0.0 * u.T,
+                                model='Braginskii',
+                                field_orientation='parallel',
+                                mu=None,
+                                theta=None,
+                                coulomb_log_method="classical"):
+    ct = ClassicalTransport(T_e,
+                            n_e,
+                            T_i,
+                            n_i,
+                            ion_particle,
+                            m_i,
+                            Z=Z,
+                            B=B,
+                            model=model,
+                            field_orientation=field_orientation,
+                            mu=mu,
+                            theta=theta,
+                            coulomb_log_method=coulomb_log_method)
     return ct.thermoelectric_conductivity()
 
 
-def ion_thermal_conductivity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
-                             Z=None, B=0.0 * u.T, model='Braginskii',
-                             field_orientation='parallel', mu=None,
-                             theta=None, coulomb_log_method="classical"):
-    ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
-                             Z=Z, B=B, model=model,
-                             field_orientation=field_orientation,
-                             mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
+def ion_thermal_conductivity(T_e,
+                             n_e,
+                             T_i,
+                             n_i,
+                             ion_particle,
+                             m_i=None,
+                             Z=None,
+                             B=0.0 * u.T,
+                             model='Braginskii',
+                             field_orientation='parallel',
+                             mu=None,
+                             theta=None,
+                             coulomb_log_method="classical"):
+    ct = ClassicalTransport(T_e,
+                            n_e,
+                            T_i,
+                            n_i,
+                            ion_particle,
+                            m_i,
+                            Z=Z,
+                            B=B,
+                            model=model,
+                            field_orientation=field_orientation,
+                            mu=mu,
+                            theta=theta,
+                            coulomb_log_method=coulomb_log_method)
     return ct.ion_thermal_conductivity()
 
 
-def electron_thermal_conductivity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
-                                  Z=None, B=0.0 * u.T, model='Braginskii',
-                                  field_orientation='parallel', mu=None,
-                                  theta=None, coulomb_log_method="classical"):
-    ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
-                             Z=Z, B=B, model=model,
-                             field_orientation=field_orientation,
-                             mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
+def electron_thermal_conductivity(T_e,
+                                  n_e,
+                                  T_i,
+                                  n_i,
+                                  ion_particle,
+                                  m_i=None,
+                                  Z=None,
+                                  B=0.0 * u.T,
+                                  model='Braginskii',
+                                  field_orientation='parallel',
+                                  mu=None,
+                                  theta=None,
+                                  coulomb_log_method="classical"):
+    ct = ClassicalTransport(T_e,
+                            n_e,
+                            T_i,
+                            n_i,
+                            ion_particle,
+                            m_i,
+                            Z=Z,
+                            B=B,
+                            model=model,
+                            field_orientation=field_orientation,
+                            mu=mu,
+                            theta=theta,
+                            coulomb_log_method=coulomb_log_method)
     return ct.electron_thermal_conductivity()
 
 
-def ion_viscosity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
-                  Z=None, B=0.0 * u.T, model='Braginskii',
-                  field_orientation='parallel', mu=None,
-                  theta=None, coulomb_log_method="classical"):
-    ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
-                             Z=Z, B=B, model=model,
-                             field_orientation=field_orientation,
-                             mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
+def ion_viscosity(T_e,
+                  n_e,
+                  T_i,
+                  n_i,
+                  ion_particle,
+                  m_i=None,
+                  Z=None,
+                  B=0.0 * u.T,
+                  model='Braginskii',
+                  field_orientation='parallel',
+                  mu=None,
+                  theta=None,
+                  coulomb_log_method="classical"):
+    ct = ClassicalTransport(T_e,
+                            n_e,
+                            T_i,
+                            n_i,
+                            ion_particle,
+                            m_i,
+                            Z=Z,
+                            B=B,
+                            model=model,
+                            field_orientation=field_orientation,
+                            mu=mu,
+                            theta=theta,
+                            coulomb_log_method=coulomb_log_method)
     return ct.ion_viscosity()
 
 
-def electron_viscosity(T_e, n_e, T_i, n_i, ion_particle, m_i=None,
-                       Z=None, B=0.0 * u.T, model='Braginskii',
-                       field_orientation='parallel', mu=None,
-                       theta=None, coulomb_log_method="classical"):
-    ct = classical_transport(T_e, n_e, T_i, n_i, ion_particle, m_i,
-                             Z=Z, B=B, model=model,
-                             field_orientation=field_orientation,
-                             mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
+def electron_viscosity(T_e,
+                       n_e,
+                       T_i,
+                       n_i,
+                       ion_particle,
+                       m_i=None,
+                       Z=None,
+                       B=0.0 * u.T,
+                       model='Braginskii',
+                       field_orientation='parallel',
+                       mu=None,
+                       theta=None,
+                       coulomb_log_method="classical"):
+    ct = ClassicalTransport(T_e,
+                            n_e,
+                            T_i,
+                            n_i,
+                            ion_particle,
+                            m_i,
+                            Z=Z,
+                            B=B,
+                            model=model,
+                            field_orientation=field_orientation,
+                            mu=mu,
+                            theta=theta,
+                            coulomb_log_method=coulomb_log_method)
     return ct.electron_viscosity()
 
 
@@ -628,8 +728,7 @@ def _nondim_thermal_conductivity(hall, Z,
         if model == 'braginskii':
             kappa_hat = _nondim_tc_i_braginskii(hall, field_orientation)
         elif model == 'ji-held':
-            kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta,
-                                             field_orientation)
+            kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)
         elif model == 'spitzer-harm' or model == 'spitzer':
             raise NotImplementedError("Ion thermal conductivity is not "
                                       "implemented in the Spitzer model.")
@@ -758,8 +857,7 @@ def _nondim_tc_e_spitzer(Z):
     This result is for parallel field or unmagnetized plasma only.
     """
     (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
-    kappa = (64 / np.pi) * delta_T * \
-            (5 / 3 - (gamma_T * delta_E) / (delta_T * gamma_E))
+    kappa = (64 / np.pi) * delta_T * (5 / 3 - (gamma_T * delta_E) / (delta_T * gamma_E))
     return kappa
 
 
@@ -866,15 +964,13 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
         kappa_perp_coeff_2 = 2.0
         kappa_perp_coeff_0 = 2.645
-        kappa_perp = (kappa_perp_coeff_2 * hall ** 2 +
-                      kappa_perp_coeff_0) / Delta
+        kappa_perp = (kappa_perp_coeff_2 * hall ** 2 + kappa_perp_coeff_0) / Delta
         return kappa_perp
 
     if field_orientation == 'cross':
         kappa_cross_coeff_3 = 2.5
         kappa_cross_coeff_1 = 4.65
-        kappa_cross = (kappa_cross_coeff_3 * hall ** 3 +
-                       kappa_cross_coeff_1 * hall) / Delta
+        kappa_cross = (kappa_cross_coeff_3 * hall ** 3 + kappa_cross_coeff_1 * hall) / Delta
         return kappa_cross
 
     if field_orientation == 'all':
@@ -883,13 +979,11 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
 
         kappa_perp_coeff_2 = 2.0
         kappa_perp_coeff_0 = 2.645
-        kappa_perp = (kappa_perp_coeff_2 * hall ** 2 +
-                      kappa_perp_coeff_0) / Delta
+        kappa_perp = (kappa_perp_coeff_2 * hall ** 2 + kappa_perp_coeff_0) / Delta
 
         kappa_cross_coeff_3 = 2.5
         kappa_cross_coeff_1 = 4.65
-        kappa_cross = (kappa_cross_coeff_3 * hall ** 3 +
-                       kappa_cross_coeff_1 * hall) / Delta
+        kappa_cross = (kappa_cross_coeff_3 * hall ** 3 + kappa_cross_coeff_1 * hall) / Delta
         return np.array((kappa_par, kappa_perp, kappa_cross))
 
 
@@ -922,8 +1016,7 @@ def _nondim_visc_e_braginskii(hall, Z):
 
     def f_eta_4(hall):
         Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
-        return (eta_tripleprime_2 * hall ** 3 +
-                eta_tripleprime_0 * hall) / Delta
+        return (eta_tripleprime_2 * hall ** 3 + eta_tripleprime_0 * hall) / Delta
 
     eta_4_e = f_eta_4(hall)
     eta_3_e = f_eta_4(2 * hall)
@@ -995,8 +1088,7 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
         return alpha_par
 
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
-        alpha_perp = (1 - (alpha_1_prime[Z_idx] * hall ** 2 +
-                           alpha_0_prime[Z_idx]) / Delta)
+        alpha_perp = (1 - (alpha_1_prime[Z_idx] * hall ** 2 + alpha_0_prime[Z_idx]) / Delta)
         return alpha_perp
 
     if field_orientation == 'cross':
@@ -1007,8 +1099,7 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
     if field_orientation == 'all':
         alpha_par = alpha_0
 
-        alpha_perp = (1 - (alpha_1_prime[Z_idx] * hall ** 2 +
-                           alpha_0_prime[Z_idx]) / Delta)
+        alpha_perp = (1 - (alpha_1_prime[Z_idx] * hall ** 2 + alpha_0_prime[Z_idx]) / Delta)
 
         alpha_cross = (alpha_1_doubleprime[Z_idx] * hall ** 3 +
                        alpha_0_doubleprime[Z_idx] * hall) / Delta
@@ -1043,8 +1134,7 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
         return beta_par
 
     if field_orientation == 'perpendicular' or field_orientation == 'perp':
-        beta_perp = (beta_1_prime[Z_idx] * hall ** 2 +
-                     beta_0_prime[Z_idx]) / Delta
+        beta_perp = (beta_1_prime[Z_idx] * hall ** 2 + beta_0_prime[Z_idx]) / Delta
         return beta_perp
 
     if field_orientation == 'cross':
@@ -1055,8 +1145,7 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
     if field_orientation == 'all':
         beta_par = beta_0
 
-        beta_perp = (beta_1_prime[Z_idx] * hall ** 2 +
-                     beta_0_prime[Z_idx]) / Delta
+        beta_perp = (beta_1_prime[Z_idx] * hall ** 2 + beta_0_prime[Z_idx]) / Delta
 
         beta_cross = (beta_1_doubleprime[Z_idx] * hall ** 3 +
                       beta_0_doubleprime[Z_idx] * hall) / Delta
@@ -1158,8 +1247,7 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
         return Z * kappa_par
 
     def f_kappa_perp(Z_idx):
-        numerator = ((13 / 4 * Z + np.sqrt(2)) * r +
-                     kappa_0[Z_idx] * kappa_par_e[Z_idx])
+        numerator = ((13 / 4 * Z + np.sqrt(2)) * r + kappa_0[Z_idx] * kappa_par_e[Z_idx])
         denominator = (r ** 3 +
                        kappa_4[Z_idx] * r ** (7 / 3) +
                        kappa_3[Z_idx] * r ** 2 +
@@ -1251,8 +1339,7 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
         return alpha_par
 
     def f_alpha_perp(Z_idx):
-        numerator = (1.46 * Z ** (2 / 3) * r +
-                     alpha_0[Z_idx] * (1 - alpha_par_e[Z_idx]))
+        numerator = (1.46 * Z ** (2 / 3) * r + alpha_0[Z_idx] * (1 - alpha_par_e[Z_idx]))
         denominator = (r ** (5 / 3) +
                        alpha_2[Z_idx] * r ** (4 / 3) +
                        alpha_1[Z_idx] * r +

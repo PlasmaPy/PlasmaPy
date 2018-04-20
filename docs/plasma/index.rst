@@ -1,6 +1,10 @@
-******
-Plasma
-******
+.. py:module:: classes.plasma
+
+.. _plasma:
+
+****************************************
+Plasma class (`plasmapy.classes.plasma`)
+****************************************
 
 .. currentmodule:: plasmapy.classes.plasma
 
@@ -23,7 +27,11 @@ and electron density :attr:`PlasmaBlob.n_e`. You may also optionally
 define the ionization, :attr:`PlasmaBlob.Z`, and relevant plasma 
 particle, :attr:`PlasmaBlob.particle`.
 
-This feature is currently under development.
+This feature is currently under heavy development.
+
+Reference/API
+=============
 
 .. automodapi:: plasmapy.classes.plasma
-   :no-inheritance-diagram:
+   :no-heading:
+   :no-main-docstr:

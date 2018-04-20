@@ -104,16 +104,6 @@ class Test_Maxwellian_1D(object):
         T_distri = (std**2 / k_B * m_e).to(u.K)
         assert np.isclose(T_distri.value, self.T_e.value)
 
-    def test_valErr(self):
-        """
-        Tests whether ValueError is raised when invalid particle name
-        string is passed.
-        """
-        with pytest.raises(ValueError):
-            Maxwellian_1D(1 * u.m / u.s,
-                          T=1 * u.K,
-                          particle='XXX')
-
     def test_units_no_vTh(self):
         """
         Tests distribution function with units, but not passing vTh.
@@ -812,17 +802,6 @@ class Test_kappa_velocity_1D(object):
         std = np.sqrt(std)
         T_distri = (std**2 / k_B * m_e).to(u.K)
         assert np.isclose(T_distri.value, self.T_e.value)
-
-    def test_valErr(self):
-        """
-        Tests whether ValueError is raised when invalid particle name
-        string is passed.
-        """
-        with pytest.raises(ValueError):
-            kappa_velocity_1D(1 * u.m / u.s,
-                              T=1 * u.K,
-                              kappa=self.kappa,
-                              particle='XXX')
 
     def test_units_no_vTh(self):
         """

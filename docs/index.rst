@@ -3,6 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+:tocdepth: 3
+
 ######################
 PlasmaPy Documentation
 ######################
@@ -33,60 +35,40 @@ Getting Started
 User Documentation
 ******************
 
-.. particles
-
-Particles
----------
-
-.. toctree::
-   :maxdepth: 2
-
-   atomic/index
-
 .. plasma-parameters
 
-Plasma Parameters
------------------
+Theoretical analysis
+--------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    physics/index
+   transport/index
+   mathematics/index
 
 .. diagnostics
 
-Diagnostics
+Experimental tools
 -----------
 
 The `~plasmapy.diagnostics` package is in the early stages of
 development.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    diagnostics/index
 
-.. mathematics
-
-Mathematics
------------
-
-The `plasmapy.mathematics` package contains mathematical functions
-commonly used by plasma physicists.
-
-.. toctree::
-   :maxdepth: 2
-
-   mathematics/index
-
 .. data-structures
 
-Data Structures
----------------
+Data Structures and simulation
+------------------------------
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
+    atomic/index
     plasma/index
     species/index
 
@@ -96,7 +78,7 @@ Utilities
 ---------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    utils/index
 
@@ -105,7 +87,7 @@ Utilities
 Examples
 --------
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     auto_examples/index
 
@@ -135,6 +117,8 @@ Project Details
 .. toctree::
    :maxdepth: 2
 
+   stability
+
 * `Vision Statement
   <https://github.com/PlasmaPy/PlasmaPy/blob/master/VISION.md>`_
 
@@ -147,8 +131,5 @@ Index
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-.. Did not include one for `search` since that page didn't show up
-   satisfactorily
 
 .. TODO: Add feedback link: .. _feedback@plasmapy.org: mailto:feedback@plasmapy.org

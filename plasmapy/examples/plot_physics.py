@@ -1,4 +1,3 @@
-# coding: utf-8
 """
 Analysing ITER parameters
 =========================
@@ -20,7 +19,11 @@ electron_temperature = 8.8 * u.keV
 electron_concentration = 10.1e19 / u.m**3
 print(physics.Debye_length(electron_temperature, electron_concentration))
 
-# physics.Coulomb_logarithm(electron_concentration, electron_temperature.to(u.K, equivalencies=u.energy_electron_temperature()), ('e', 'e'))
+############################################################
+# Note that we can also neglect the unit for the concentration, as
+# 1/m^3 is the a standard unit for this kind of Quantity:
+
+print(physics.Debye_length(electron_temperature, 10.1e19))
 
 ############################################################
 # Assuming the magnetic field as 5.3 Teslas (which is the value at the major

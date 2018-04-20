@@ -1,10 +1,9 @@
-"""Functions to calculate plasma dielectric paramaters"""
+"""Functions to calculate plasma dielectric parameters"""
 
 from astropy import units as u
 import plasmapy.utils as utils
-
-from ..constants import (pi, m_e, c, mu0, e, eps0)
-from .parameters import gyrofrequency, plasma_frequency
+from plasmapy.physics import parameters
+from plasmapy.constants import (pi, m_e, c, mu0, e, eps0)
 
 r"""
 Values should be returned as a `~astropy.units.Quantity` in SI units.
@@ -99,8 +98,8 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
     S, D, P = 1, 0, 1
 
     for s, n_s in zip(species, n):
-        omega_c = gyrofrequency(B=B, particle=s, signed=True)
-        omega_p = plasma_frequency(n=n_s, particle=s)
+        omega_c = parameters.gyrofrequency(B=B, particle=s, signed=True)
+        omega_p = parameters.plasma_frequency(n=n_s, particle=s)
 
         S += - omega_p ** 2 / (omega ** 2 - omega_c ** 2)
         D += omega_c / omega * omega_p ** 2 / (omega ** 2 - omega_c ** 2)
@@ -188,8 +187,8 @@ def cold_plasma_permittivity_LRP(B, species, n, omega):
     L, R, P = 1, 1, 1
 
     for s, n_s in zip(species, n):
-        omega_c = gyrofrequency(B=B, particle=s, signed=True)
-        omega_p = plasma_frequency(n=n_s, particle=s)
+        omega_c = parameters.gyrofrequency(B=B, particle=s, signed=True)
+        omega_p = parameters.plasma_frequency(n=n_s, particle=s)
 
         L += - omega_p ** 2 / (omega * (omega - omega_c))
         R += - omega_p ** 2 / (omega * (omega + omega_c))
