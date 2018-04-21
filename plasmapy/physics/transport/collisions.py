@@ -260,9 +260,9 @@ def _boilerPlate(T, particles, V):
 
 @check_quantity({"T": {"units": u.K, "can_be_negative": False}
                  })
-def b_perp(T,
-           particles,
-           V=np.nan * u.m / u.s):
+def impact_parameter_perp(T,
+                          particles,
+                          V=np.nan * u.m / u.s):
     """
     Distance of closest approach for a 90 degree Coulomb collision.
 
@@ -285,7 +285,7 @@ def b_perp(T,
 
     Returns
     -------
-    b_perp : float or numpy.ndarray
+    impact_parameter_perp : float or numpy.ndarray
         The distance of closest approach for a 90 degree Coulomb collision.
 
     Raises
@@ -315,7 +315,7 @@ def b_perp(T,
 
     Notes
     -----
-    The distance of closest approach, b_perp, is given by [1]_
+    The distance of closest approach, impact_parameter_perp, is given by [1]_
 
     .. math::
         b_{\perp} = \frac{Z_1 Z_2}{4 \pi \epsilon_0 m v^2}
@@ -326,7 +326,7 @@ def b_perp(T,
     >>> from astropy import units as u
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
-    >>> b_perp(T, particles)
+    >>> impact_parameter_perp(T, particles)
     <Quantity 8.35505011e-12 m>
 
 
@@ -474,9 +474,9 @@ def impact_parameter(T,
     # deBroglie wavelength
     lambdaBroglie = hbar / (2 * reduced_mass * V)
     # distance of closest approach in 90 degree Coulomb collision
-    bPerp = b_perp(T=T,
-                   particles=particles,
-                   V=V)
+    bPerp = impact_parameter_perp(T=T,
+                                  particles=particles,
+                                  V=V)
     # obtaining minimum and maximum impact parameters depending on which
     # method is requested
     if method == "classical":
@@ -666,9 +666,9 @@ def collision_frequency(T,
             V = V_reduced
         # electron-electron collision
         # impact parameter for 90 degree collision
-        bPerp = b_perp(T=T,
-                       particles=particles,
-                       V=V_reduced)
+        bPerp = impact_parameter_perp(T=T,
+                                      particles=particles,
+                                      V=V_reduced)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T,
                                     n,
@@ -686,9 +686,9 @@ def collision_frequency(T,
             V = np.sqrt(2 * k_B * T / m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
-        bPerp = b_perp(T=T,
-                       particles=particles,
-                       V=V) * reduced_mass / m_e
+        bPerp = impact_parameter_perp(T=T,
+                                      particles=particles,
+                                      V=V) * reduced_mass / m_e
         # Coulomb logarithm
         # !!! may also need to correct Coulomb logarithm to be
         # electron-electron version !!!
@@ -704,9 +704,9 @@ def collision_frequency(T,
         if np.isnan(V):
             V = V_reduced
         # ion-ion collision
-        bPerp = b_perp(T=T,
-                       particles=particles,
-                       V=V)
+        bPerp = impact_parameter_perp(T=T,
+                                      particles=particles,
+                                      V=V)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T,
                                     n,

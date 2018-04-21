@@ -3,7 +3,7 @@ import pytest
 from astropy import units as u
 
 from plasmapy.physics.transport import (Coulomb_logarithm,
-                                        b_perp,
+                                        impact_parameter_perp,
                                         impact_parameter,
                                         collision_frequency,
                                         mean_free_path,
@@ -486,15 +486,15 @@ class Test_b_perp:
         """
         Test for known value.
         """
-        methodVal = b_perp(self.T,
-                           self.particles,
-                           V=np.nan * u.m / u.s)
+        methodVal = impact_parameter_perp(self.T,
+                                          self.particles,
+                                          V=np.nan * u.m / u.s)
         testTrue = np.isclose(self.True1,
                               methodVal.si.value,
                               rtol=1e-1,
                               atol=0.0)
         errStr = ("Distance of closest approach for 90 degree Coulomb "
-                  f"collision, b_perp, should be {self.True1} and "
+                  f"collision, impact_parameter_perp, should be {self.True1} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
 
@@ -504,14 +504,14 @@ class Test_b_perp:
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 + 1e-15
-        methodVal = b_perp(self.T,
-                           self.particles,
-                           V=np.nan * u.m / u.s)
+        methodVal = impact_parameter_perp(self.T,
+                                          self.particles,
+                                          V=np.nan * u.m / u.s)
         testTrue = not np.isclose(methodVal.si.value,
                                   fail1,
                                   rtol=1e-16,
                                   atol=0.0)
-        errStr = (f"b_perp value test gives {methodVal} and "
+        errStr = (f"impact_parameter_perp value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
 
