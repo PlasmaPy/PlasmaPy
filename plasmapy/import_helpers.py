@@ -1,9 +1,12 @@
 import importlib
 import warnings
 import distutils.version as dv
+from os.path import dirname
+
+requirements_dir = dirname(dirname(__file__)) + '/requirements/'
 
 
-def _split_version(version):
+def split_version(version):
     """
     Separate a string including digits separated by periods into a
     tuple of integers.
@@ -11,13 +14,40 @@ def _split_version(version):
     return tuple(int(ver) for ver in version.split('.'))
 
 
-def _check_versions(minimum_versions):
+def get_minimum_versions(file='requirements.txt'):
+    """
+    Get the minimum versions from `requirements.txt` in the
+    `requirements` directory of `plasmapy`.
+    """
+    requirements = open(requirements_dir + file)
+    minimum_versions = {}
+
+    for line in requirements.readlines():
+        if ("(>=") in line:
+            package = line.split('(>=')[0].strip()
+            minimum_version = line.split('(>=')[1].split(')')[0].strip()
+        elif line.isalnum():
+            package = line.strip()
+            minimum_version = '0.1'
+        else:
+            raise ImportError(f"Invalid package requirement in requirements.txt: {line}")
+        minimum_versions[package] = minimum_version
+
+    requirements.close()
+
+    return minimum_versions
+
+
+def check_versions(minimum_versions=None):
     """
     Raise an `ImportError` if a dependent package is not installed and
     at the required version number, or issue a
     `~plasmapy.utils.PlasmaPyWarning` if the version of the dependent
     package cannot be found.
     """
+    if not minimum_versions:
+        minimum_versions = get_minimum_versions()
+
     for module_name in minimum_versions.keys():
         minimum_version = dv.LooseVersion(minimum_versions[module_name])
         try:

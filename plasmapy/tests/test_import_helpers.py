@@ -3,14 +3,14 @@
 import pytest
 import numpy
 
-from ...import_helpers import _check_versions, _split_version
+from ..import_helpers import check_versions, split_version
 
 
 def _create_distinct_versions(current_version, time):
     """Create a list containing version number strings that are either
     newer or older than/same as the inputted version string."""
 
-    major, minor, *extra = _split_version(current_version)
+    major, minor, *extra = split_version(current_version)
 
     if len(extra) == 1:
         patch = extra[0]
@@ -47,7 +47,7 @@ def test_check_versions_newer(newer_version):
 
     newer_minimum_versions = {'numpy': newer_version}
     with pytest.raises(ImportError):
-        _check_versions(newer_minimum_versions)
+        check_versions(newer_minimum_versions)
         raise Exception(
             "check_versions is not raising an exception when it should be "
             f"raising one, with numpy.__version__ = {numpy.__version__} "
@@ -63,7 +63,7 @@ def test_check_versions_older(older_version):
 
     older_minimum_versions = {'numpy': older_version}
     try:
-        _check_versions(older_minimum_versions)
+        check_versions(older_minimum_versions)
     except ImportError as e:
         raise ImportError(
             "check_versions is raising an exception when it should not be "

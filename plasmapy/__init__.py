@@ -22,22 +22,7 @@ if sys.version_info < (3, 6):
 
 from . import import_helpers  # noqa
 
-# TODO: Create _minimum_versions from requirements/requirements.txt
-# All of this could be put into import_helpers._check_versions.
-
-_minimum_versions = {
-    'numpy': '1.13',
-    'astropy': '2.0',
-    'scipy': '0.19',
-    'matplotlib': '2.0',
-    'mpmath': '1.0',
-    'lmfit': '0.9.7',
-    'roman': '1.4',
-    'colorama': '0.3',
-    'cython': '0.23',
-}
-
-import_helpers._check_versions(_minimum_versions)
+import_helpers.check_versions()
 
 __name__ = "plasmapy"
 
@@ -76,4 +61,4 @@ except ImportError:
 
 # Clean up the top-level namespace
 
-del _minimum_versions, sys, import_helpers
+del sys, import_helpers
