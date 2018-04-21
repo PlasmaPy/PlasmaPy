@@ -633,14 +633,6 @@ def collision_frequency(T,
     taken as the thermal velocity), and :math:`\ln{\Lambda}` is the Coulomb
     logarithm accounting for small angle collisions.
 
-    The collisional cross-section is obtained by
-
-    .. math::
-        \sigma = \pi \rho_{\perp}^2
-
-    where :math:`\rho_{\perp}` is the distance of closest approach for
-    a 90 degree Coulomb collision.
-
     See eq (2.14) in [2]_.
 
     Examples
@@ -721,13 +713,58 @@ def collision_frequency(T,
                                     V=np.nan * u.m / u.s,
                                     method=method)
     # collisional cross section
-    sigma = np.pi * (2 * bPerp) ** 2
+    sigma = Coulomb_cross_section(bPerp)
     # collision frequency where Coulomb logarithm accounts for
     # small angle collisions, which are more frequent than large
     # angle collisions.
     freq = n * sigma * V * cou_log
     return freq.to(u.Hz)
 
+
+@check_quantity({
+    'impact_param': {'units': u.m,
+                    'can_be_negative': False}
+    })
+def Coulomb_cross_section(impact_param: u.m):
+    """
+    Cross section for a large angle Coulomb collision
+
+    Parameters
+    ----------
+    impact_param : ~astropy.units.Quantity
+        Impact parameter for the collision.
+
+    Examples
+    --------
+    >>> Coulomb_cross_section(7e-10*u.m)
+    <Quantity 6.1575216e-18 m2>
+    >>> Coulomb_cross_section(0.5*u.m)
+    <Quantity 3.14159265 m2>
+
+    Notes
+    -----
+    The collisional cross-section (see [1]_ for a graphical demonstration)
+    for a 90 degree Coulomb collision is obtained by
+
+    .. math::
+        \sigma = \pi (2 * \rho_{\perp})^2
+
+    where :math:`\rho_{\perp}` is the distance of closest approach for
+    a 90 degree Coulomb collision. This function is a generalization of that
+    calculation. Please note that it is not guaranteed to return the correct
+    results for small angle collisions.
+
+    Returns
+    -------
+    ~astropy.units.Quantity
+        The Coulomb collision cross section area.
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Cross_section_(physics)#Collision_among_gas_particles
+    """
+    sigma = np.pi * (2 * impact_param) ** 2
+    return sigma
 
 @utils.check_quantity({
     'T_e': {'units': u.K, 'can_be_negative': False},
