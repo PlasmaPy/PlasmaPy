@@ -138,6 +138,45 @@ def Coulomb_logarithm(T,
     This means the Coulomb logarithm will not break down for Lambda < 0,
     which occurs for dense, cold plasmas.
 
+    Methods
+    ---
+    Classical
+        classical Landau-Spitzer approach. Fails for large coupling
+        parameter where Lambda can become less than zero.
+    GMS-1
+        1st method listed in Table 1 of reference [3]
+        Landau-Spitzer, but with interpolated bmin instead of bmin
+        selected between deBroglie wavelength and distance of closest
+        approach. Fails for large coupling
+        parameter where Lambda can become less than zero.
+    GMS-2
+        2nd method listed in Table 1 of reference [3]
+        Another Landau-Spitzer like approach, but now bmax is also
+        being interpolated. The interpolation is between the Debye
+        length and the ion sphere radius, allowing for descriptions
+        of dilute plasmas. Fails for large coupling
+        parameter where Lambda can become less than zero.
+        3rd method listed in Table 1 of reference [3]
+        classical Landau-Spitzer fails for argument of Coulomb logarithm
+        Lambda < 0, therefore a clamp is placed at Lambda_min = 2
+    GMS-4
+        4th method listed in Table 1 of reference [3]
+        Spitzer-like extension to Coulomb logarithm by noting that
+        Coulomb collisions take hyperbolic trajectories. Removes
+        divergence for small bmin issue in classical Landau-Spitzer
+        approach, so bmin can be zero. Also doesn't break down as
+        Lambda < 0 is now impossible, even when coupling parameter is large.
+    GMS-5
+        5th method listed in Table 1 of reference [3]
+        Similar to GMS-4, but setting bmin as distance of closest approach
+        and bmax interpolated between Debye length and ion sphere radius.
+        Lambda < 0 impossible.
+    GMS-6
+        6th method listed in Table 1 of reference [3]
+        Similar to GMS-4 and GMS-5, but using interpolation methods
+        for both bmin and bmax.
+    Lambda < 0 impossible.
+
     Examples
     --------
     >>> from astropy import units as u
@@ -172,61 +211,26 @@ def Coulomb_logarithm(T,
                                   z_mean=z_mean,
                                   V=V,
                                   method=method)
-    if method == "classical":
-        # classical Landau-Spitzer approach. Fails for large coupling
-        # parameter where Lambda can become less than zero.
-        ln_Lambda = np.log(bmax / bmin)
-    elif method == "GMS-1":
-        # 1st method listed in Table 1 of reference [3]
-        # Landau-Spitzer, but with interpolated bmin instead of bmin
-        # selected between deBroglie wavelength and distance of closest
-        # approach. Fails for large coupling
-        # parameter where Lambda can become less than zero.
-        ln_Lambda = np.log(bmax / bmin)
-    elif method == "GMS-2":
-        # 2nd method listed in Table 1 of reference [3]
-        # Another Landau-Spitzer like approach, but now bmax is also
-        # being interpolated. The interpolation is between the Debye
-        # length and the ion sphere radius, allowing for descriptions
-        # of dilute plasmas. Fails for large coupling
-        # parameter where Lambda can become less than zero.
+    if method in ["classical", "GMS-1", "GMS-2"]:
         ln_Lambda = np.log(bmax / bmin)
     elif method == "GMS-3":
-        # 3rd method listed in Table 1 of reference [3]
-        # classical Landau-Spitzer fails for argument of Coulomb logarithm
-        # Lambda < 0, therefore a clamp is placed at Lambda_min = 2
         ln_Lambda = np.log(bmax / bmin)
         if ln_Lambda < 2:
             ln_Lambda = 2 * u.dimensionless_unscaled
-    elif method == "GMS-4":
-        # 4th method listed in Table 1 of reference [3]
-        # Spitzer-like extension to Coulomb logarithm by noting that
-        # Coulomb collisions take hyperbolic trajectories. Removes
-        # divergence for small bmin issue in classical Landau-Spitzer
-        # approach, so bmin can be zero. Also doesn't break down as
-        # Lambda < 0 is now impossible, even when coupling parameter is large.
-        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
-    elif method == "GMS-5":
-        # 5th method listed in Table 1 of reference [3]
-        # Similar to GMS-4, but setting bmin as distance of closest approach
-        # and bmax interpolated between Debye length and ion sphere radius.
-        # Lambda < 0 impossible.
-        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
-    elif method == "GMS-6":
-        # 6th method listed in Table 1 of reference [3]
-        # Similar to GMS-4 and GMS-5, but using interpolation methods
-        # for both bmin and bmax.
-        # Lambda < 0 impossible.
+    elif method in ["GMS-4", "GMS-5", "GMS-6"]:
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
         raise ValueError("Unknown method! Choose from 'classical' and 'GMS-N', N from 1 to 6.")
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
-    if ln_Lambda < 4:
+    if ln_Lambda < 0:
+        raise utils.PhysicsError(f"A Coulomb logarithm = {ln_Lambda} < 0 is nonphysical.")
+    elif ln_Lambda < 2 and method in ["classical", "GMS-1", "GMS-2"]:
+        warnings.warn(f"Coulomb logarithm is {ln_Lambda} and {method} relies on weak coupling.",
+                      utils.CouplingWarning)
+    elif ln_Lambda < 4:
         warnings.warn(f"Coulomb logarithm is {ln_Lambda}, you might have strong coupling effects",
-                      utils.PhysicsWarning)
-    # if ln_Lambda < 1:
-    #     raise utils.PhysicsError(f"Coulomb logarithm is {ln_Lambda}, less than 1")
+                      utils.CouplingWarning)
     return ln_Lambda
 
 

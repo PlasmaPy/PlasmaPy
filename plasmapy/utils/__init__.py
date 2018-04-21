@@ -15,6 +15,7 @@ from .exceptions import (PlasmaPyError,
                          InvalidParticleError,
                          PlasmaPyWarning,
                          PhysicsWarning,
+                         CouplingWarning,
                          RelativityWarning,
                          AtomicWarning,
                          MissingAtomicDataWarning)

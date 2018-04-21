@@ -176,20 +176,13 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.raises(exceptions.PhysicsError, match="< 0"):
             methodVal = Coulomb_logarithm(self.temperature2,
                                           self.density2,
                                           self.particles,
                                           z_mean=np.nan * u.dimensionless_unscaled,
                                           V=np.nan * u.m / u.s,
                                           method="GMS-1")
-        testTrue = np.isclose(methodVal,
-                              self.gms1_negative,
-                              rtol=1e-15,
-                              atol=0.0)
-        errStr = (f"Coulomb logarithm for GMS-1 should be "
-                  f"{self.gms1_negative} and not {methodVal}.")
-        assert testTrue, errStr
 
     def test_GMS2(self):
         """
@@ -217,20 +210,13 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.raises(exceptions.PhysicsError, match="< 0"):
             methodVal = Coulomb_logarithm(self.temperature2,
                                           self.density2,
                                           self.particles,
                                           z_mean=self.z_mean,
                                           V=np.nan * u.m / u.s,
                                           method="GMS-2")
-        testTrue = np.isclose(methodVal,
-                              self.gms2_negative,
-                              rtol=1e-15,
-                              atol=0.0)
-        errStr = (f"Coulomb logarithm for GMS-2 should be "
-                  f"{self.gms2_negative} and not {methodVal}.")
-        assert testTrue, errStr
 
     def test_GMS3(self):
         """
