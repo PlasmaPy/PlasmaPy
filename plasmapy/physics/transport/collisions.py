@@ -251,6 +251,8 @@ def _boilerPlate(T, particles, V):
     # obtaining reduced mass of 2 particle collision system
     reduced_mass = atomic.reduced_mass(*particles)
 
+    if V == 0:
+        raise utils.exceptions.PhysicsError("You cannot have a collision for zero velocity!")
     # getting thermal velocity of system if no velocity is given
     if np.isnan(V):
         V = parameters.thermal_speed(T, mass=reduced_mass)
