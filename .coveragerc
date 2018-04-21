@@ -11,6 +11,7 @@ exclude_lines =
 	def __repr__
 	raise NotImplementedError
 	except NotImplementedError
-        raise ImportError
-	except ImportError
+    raise ImportError
+	except *ImportError*
+	except *ModuleNotFoundError*
 	except SyntaxError

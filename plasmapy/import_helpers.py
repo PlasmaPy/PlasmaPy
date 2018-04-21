@@ -56,7 +56,7 @@ def check_versions(minimum_versions=None):
         except ImportError:
             raise ImportError(
                 f"Unable to import {module_name} while importing PlasmaPy.") from None
-        except ModuleNotFoundError:
+        except ModuleNotFoundError:  # coveralls: ignore
             raise ImportError(
                 f"Unable to find {module_name} while importing PlasmaPy.") from None
         except AttributeError:  # coveralls: ignore

@@ -36,7 +36,7 @@ __doc__ = ("A community-developed and community-driven open source "
 try:
     from .version import version as __version__
     from .version import githash as _githash
-except (ImportError, ModuleNotFoundError):
+except (ImportError, ModuleNotFoundError):  # coveralls: ignore
     __version__ = None
     _githash = None
 
