@@ -6,7 +6,6 @@ gases and warm dense matter.
 # python modules
 import numpy as np
 from astropy import units as u
-from lmfit import minimize, Parameters
 
 # plasmapy modules
 from plasmapy import atomic, utils, mathematics
@@ -440,6 +439,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     <Quantity 2.00039985e-12>
 
     """
+    from lmfit import minimize, Parameters
     # deBroglie wavelength
     lambdaDB = thermal_deBroglie_wavelength(T)
     # degeneracy parameter
