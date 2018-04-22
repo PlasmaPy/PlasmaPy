@@ -15,6 +15,7 @@ from plasmapy.physics.parameters import (mass_density,
                                          gyrofrequency,
                                          gyroradius,
                                          thermal_speed,
+                                         thermal_pressure,
                                          kappa_thermal_speed,
                                          plasma_frequency,
                                          Debye_length,
@@ -252,6 +253,10 @@ def test_ion_sound_speed():
                       testTrue1,
                       atol=0.0,
                       rtol=1e-15), errStr
+
+
+def test_thermal_pressure():
+    assert thermal_pressure(T_e, n_i).unit.is_equivalent(u.Pa)
 
 
 def test_thermal_speed():

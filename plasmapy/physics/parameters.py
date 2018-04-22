@@ -438,6 +438,48 @@ def thermal_speed(T, particle: atomic.Particle="e-", method="most_probable", mas
     return V
 
 
+@utils.check_quantity({
+    'T': {'units': u.K, 'can_be_negative': False},
+    'n': {'units': u.m**-3, 'can_be_negative': False}
+    })
+def thermal_pressure(T, n):
+    r"""
+    Return the thermal pressure for a Maxwellian distribution.
+
+    Parameters
+    ----------
+    T : ~astropy.units.Quantity
+        The particle temperature in either kelvin or energy per particle
+
+    n : ~astropy.units.Quantity
+        The particle number density in units convertible to m**-3.
+
+    Returns
+    -------
+    p_th : ~astropy.units.Quantity
+        Thermal pressure.
+
+    Raises
+    ------
+    TypeError
+        The temperature or number density is not a `~astropy.units.Quantity`.
+
+    ~astropy.units.UnitConversionError
+        If the particle temperature is not in units of temperature or
+        energy per particle.
+
+    Notes
+    -----
+    The thermal pressure is given by:
+
+    .. math::
+        T_{th} = nk_{B}T
+    """
+
+    T = T.to(u.K, equivalencies=u.temperature_energy())
+    return (n * k_B * T).to(u.Pa)
+
+
 @utils.check_relativistic
 @utils.check_quantity({
     'T': {'units': u.K, 'can_be_negative': False}
