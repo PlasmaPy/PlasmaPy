@@ -10,7 +10,7 @@ import numpy as np
 from astropy import units
 
 from plasmapy.constants import k_B
-from plasmapy.physics import quantum
+from plasmapy.physics import quantum, parameters
 
 def quantum_theta(T, n_e):
     """
@@ -21,3 +21,12 @@ def quantum_theta(T, n_e):
     thermal_energy = k_B * T
     theta = thermal_energy / fermi_energy
     return theta
+
+
+def beta(T, n, B):
+    """
+    The ratio of thermal pressure to magnetic pressure.
+    """
+    thermal_pressure = parameters.thermal_pressure(T, n)
+    magnetic_pressure = parameters.magnetic_pressure(B)
+    return thermal_pressure / magnetic_pressure
