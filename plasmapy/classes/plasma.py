@@ -1,6 +1,7 @@
 """
 Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
+import warnings
 
 import numpy as np
 import astropy.units as u
@@ -23,7 +24,7 @@ from plasmapy.atomic import (particle_mass,
                              integer_charge,
                              )
 
-from plasmapy.utils import call_string
+from plasmapy.utils import call_string, CouplingWarning
 
 
 class Plasma3D:
@@ -225,11 +226,15 @@ class PlasmaBlob:
         are important. This compares Coulomb potential energy to thermal
         kinetic energy.
         """
-        return coupling_parameter(self.T_e,
-                                  self.n_e,
-                                  (self.particle, self.particle),
-                                  self.Z)
+        couple = coupling_parameter(self.T_e,
+                                    self.n_e,
+                                    (self.particle, self.particle),
+                                    self.Z)
+        if couple < 0.01:
+            warnings.warn(f"Coupling parameter is {couple}, you might have strong coupling effects",
+                          CouplingWarning)
 
+        return couple
     def quantum_theta(self):
         """
         Quantum theta parameter, which compares Fermi kinetic energy to
