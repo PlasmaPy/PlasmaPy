@@ -38,7 +38,7 @@ print(p_dens)
 # probability. Let's test that for a bunch of particles:
 
 T = 3e5 * u.K
-dv = 10
+dv = 10 * u.m / u.s
 v = np.arange(-5e6, 5e6, 10) * u.m / u.s
 
 ############################################################
