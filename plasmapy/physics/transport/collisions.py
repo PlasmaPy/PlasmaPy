@@ -836,8 +836,7 @@ def fundamental_electron_collision_freq(T_e,
     <Quantity 8.6204672e-08 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
     <Quantity 3936037.8595928 1 / s>
-    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3,
-    'p', coulomb_log_method = 'GMS-1')
+    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
     <Quantity 3872922.52743562 1 / s>
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
     <Quantity 4.41166015e-07 1 / s>
@@ -955,13 +954,11 @@ def fundamental_ion_collision_freq(T_i,
     <Quantity 1.43713193e-09 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
     <Quantity 66411.80316364 1 / s>
-    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p',
-    coulomb_log_method='GMS-1')
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
     <Quantity 66407.00859126 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
     <Quantity 6.53577473 1 / s>
-    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p',
-    coulomb_log=20)
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
     <Quantity 95918.76240877 1 / s>
 
     """
