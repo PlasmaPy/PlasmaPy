@@ -109,6 +109,12 @@ class RelativityWarning(PhysicsWarning):
     pass
 
 
+class CouplingWarning(PhysicsWarning):
+    """
+    A warning for functions that rely on a particular coupling regime to be valid.
+    """
+
+
 class AtomicWarning(PlasmaPyWarning):
     """The base warning for the `~plasmapy.atomic` subpackage."""
     pass

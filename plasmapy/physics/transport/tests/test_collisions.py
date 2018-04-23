@@ -3,7 +3,7 @@ import pytest
 from astropy import units as u
 
 from plasmapy.physics.transport import (Coulomb_logarithm,
-                                        b_perp,
+                                        impact_parameter_perp,
                                         impact_parameter,
                                         collision_frequency,
                                         mean_free_path,
@@ -38,6 +38,12 @@ class Test_Coulomb_logarithm:
         self.gms6 = 3.635342040477818
         self.gms6_negative = 0.030720859361047514
 
+    def test_symmetry(self):
+        lnLambda = Coulomb_logarithm(self.temperature1, self.density2, self.particles)
+        lnLambdaRev = Coulomb_logarithm(self.temperature1, self.density2, self.particles[::-1])
+        assert lnLambda == lnLambdaRev
+
+
     def test_Chen_Q_machine(self):
         """
         Tests whether Coulomb logarithm gives value consistent with
@@ -59,6 +65,7 @@ class Test_Coulomb_logarithm:
         errStr = ("Q-machine value of Coulomb logarithm should be "
                   f"{lnLambdaChen} and not {lnLambda}.")
         assert testTrue, errStr
+
 
     def test_Chen_lab(self):
         """
@@ -176,20 +183,13 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.raises(exceptions.PhysicsError, match="< 0"):
             methodVal = Coulomb_logarithm(self.temperature2,
                                           self.density2,
                                           self.particles,
                                           z_mean=np.nan * u.dimensionless_unscaled,
                                           V=np.nan * u.m / u.s,
                                           method="GMS-1")
-        testTrue = np.isclose(methodVal,
-                              self.gms1_negative,
-                              rtol=1e-15,
-                              atol=0.0)
-        errStr = (f"Coulomb logarithm for GMS-1 should be "
-                  f"{self.gms1_negative} and not {methodVal}.")
-        assert testTrue, errStr
 
     def test_GMS2(self):
         """
@@ -217,20 +217,13 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.raises(exceptions.PhysicsError, match="< 0"):
             methodVal = Coulomb_logarithm(self.temperature2,
                                           self.density2,
                                           self.particles,
                                           z_mean=self.z_mean,
                                           V=np.nan * u.m / u.s,
                                           method="GMS-2")
-        testTrue = np.isclose(methodVal,
-                              self.gms2_negative,
-                              rtol=1e-15,
-                              atol=0.0)
-        errStr = (f"Coulomb logarithm for GMS-2 should be "
-                  f"{self.gms2_negative} and not {methodVal}.")
-        assert testTrue, errStr
 
     def test_GMS3(self):
         """
@@ -473,7 +466,7 @@ class Test_Coulomb_logarithm:
     particles = ('e', 'p')
 
 
-class Test_b_perp:
+class Test_impact_parameter_perp:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests """
@@ -482,19 +475,24 @@ class Test_b_perp:
         self.V = 1e4 * u.km / u.s
         self.True1 = 7.200146594293746e-10
 
+    def test_symmetry(self):
+        result = impact_parameter_perp(self.T, self.particles)
+        resultRev = impact_parameter_perp(self.T, self.particles[::-1])
+        assert result == resultRev
+
     def test_known1(self):
         """
         Test for known value.
         """
-        methodVal = b_perp(self.T,
-                           self.particles,
-                           V=np.nan * u.m / u.s)
+        methodVal = impact_parameter_perp(self.T,
+                                          self.particles,
+                                          V=np.nan * u.m / u.s)
         testTrue = np.isclose(self.True1,
                               methodVal.si.value,
                               rtol=1e-1,
                               atol=0.0)
         errStr = ("Distance of closest approach for 90 degree Coulomb "
-                  f"collision, b_perp, should be {self.True1} and "
+                  f"collision, impact_parameter_perp, should be {self.True1} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
 
@@ -504,14 +502,14 @@ class Test_b_perp:
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 + 1e-15
-        methodVal = b_perp(self.T,
-                           self.particles,
-                           V=np.nan * u.m / u.s)
+        methodVal = impact_parameter_perp(self.T,
+                                          self.particles,
+                                          V=np.nan * u.m / u.s)
         testTrue = not np.isclose(methodVal.si.value,
                                   fail1,
                                   rtol=1e-16,
                                   atol=0.0)
-        errStr = (f"b_perp value test gives {methodVal} and "
+        errStr = (f"impact_parameter_perp value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
 
@@ -531,6 +529,11 @@ class Test_impact_parameter:
         self.z_mean = 2.5
         self.V = 1e4 * u.km / u.s
         self.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
+
+    def test_symmetry(self):
+        result = impact_parameter(self.T, self.n_e, self.particles)
+        resultRev = impact_parameter(self.T, self.n_e,  self.particles[::-1])
+        assert result == resultRev
 
     def test_known1(self):
         """
@@ -600,6 +603,11 @@ class Test_collision_frequency:
         self.True_electrons = 1904702641552.1638
         self.True_protons = 44450104815.91857
         self.True_zmean = 1346828153985.4646
+
+    def test_symmetry(self):
+        result = collision_frequency(self.T, self.n, self.particles)
+        resultRev = collision_frequency(self.T, self.n, self.particles[::-1])
+        assert result == resultRev
 
     def test_known1(self):
         """
@@ -710,6 +718,11 @@ class Test_mean_free_path:
         self.V = 1e4 * u.km / u.s
         self.True1 = 4.4047571877932046e-07
 
+    def test_symmetry(self):
+        result = mean_free_path(self.T, self.n_e, self.particles)
+        resultRev = mean_free_path(self.T, self.n_e,  self.particles[::-1])
+        assert result == resultRev
+
     def test_known1(self):
         """
         Test for known value.
@@ -762,6 +775,11 @@ class Test_Spitzer_resistivity:
         self.V = 1e4 * u.km / u.s
         self.True1 = 1.2665402649805445e-3
         self.True_zmean = 0.00020264644239688712
+
+    def test_symmetry(self):
+        result = Spitzer_resistivity(self.T, self.n, self.particles)
+        resultRev = Spitzer_resistivity(self.T, self.n,  self.particles[::-1])
+        assert result == resultRev
 
     def test_known1(self):
         """
@@ -829,6 +847,11 @@ class Test_mobility:
         self.V = 1e4 * u.km / u.s
         self.True1 = 0.13066090887074902
         self.True_zmean = 0.32665227217687254
+
+    def test_symmetry(self):
+        result = mobility(self.T, self.n_e, self.particles)
+        resultRev = mobility(self.T, self.n_e,  self.particles[::-1])
+        assert result == resultRev
 
     def test_known1(self):
         """
@@ -900,6 +923,11 @@ class Test_Knudsen_number:
         self.V = 1e4 * u.km / u.s
         self.True1 = 440.4757187793204
 
+    def test_symmetry(self):
+        result = Knudsen_number(self.length, self.T, self.n_e, self.particles)
+        resultRev = Knudsen_number(self.length, self.T, self.n_e,  self.particles[::-1])
+        assert result == resultRev
+
     def test_known1(self):
         """
         Test for known value.
@@ -955,6 +983,11 @@ class Test_coupling_parameter:
         self.True1 = 2.3213156755481195
         self.True_zmean = 10.689750083758698
         self.True_quantum = 0.3334662805238162
+
+    def test_symmetry(self):
+        result = coupling_parameter(self.T, self.n_e, self.particles)
+        resultRev = coupling_parameter(self.T, self.n_e,  self.particles[::-1])
+        assert result == resultRev
 
     def test_known1(self):
         """

@@ -138,6 +138,45 @@ def Coulomb_logarithm(T,
     This means the Coulomb logarithm will not break down for Lambda < 0,
     which occurs for dense, cold plasmas.
 
+    Methods
+    ---
+    Classical
+        classical Landau-Spitzer approach. Fails for large coupling
+        parameter where Lambda can become less than zero.
+    GMS-1
+        1st method listed in Table 1 of reference [3]
+        Landau-Spitzer, but with interpolated bmin instead of bmin
+        selected between deBroglie wavelength and distance of closest
+        approach. Fails for large coupling
+        parameter where Lambda can become less than zero.
+    GMS-2
+        2nd method listed in Table 1 of reference [3]
+        Another Landau-Spitzer like approach, but now bmax is also
+        being interpolated. The interpolation is between the Debye
+        length and the ion sphere radius, allowing for descriptions
+        of dilute plasmas. Fails for large coupling
+        parameter where Lambda can become less than zero.
+        3rd method listed in Table 1 of reference [3]
+        classical Landau-Spitzer fails for argument of Coulomb logarithm
+        Lambda < 0, therefore a clamp is placed at Lambda_min = 2
+    GMS-4
+        4th method listed in Table 1 of reference [3]
+        Spitzer-like extension to Coulomb logarithm by noting that
+        Coulomb collisions take hyperbolic trajectories. Removes
+        divergence for small bmin issue in classical Landau-Spitzer
+        approach, so bmin can be zero. Also doesn't break down as
+        Lambda < 0 is now impossible, even when coupling parameter is large.
+    GMS-5
+        5th method listed in Table 1 of reference [3]
+        Similar to GMS-4, but setting bmin as distance of closest approach
+        and bmax interpolated between Debye length and ion sphere radius.
+        Lambda < 0 impossible.
+    GMS-6
+        6th method listed in Table 1 of reference [3]
+        Similar to GMS-4 and GMS-5, but using interpolation methods
+        for both bmin and bmax.
+    Lambda < 0 impossible.
+
     Examples
     --------
     >>> from astropy import units as u
@@ -172,61 +211,26 @@ def Coulomb_logarithm(T,
                                   z_mean=z_mean,
                                   V=V,
                                   method=method)
-    if method == "classical":
-        # classical Landau-Spitzer approach. Fails for large coupling
-        # parameter where Lambda can become less than zero.
-        ln_Lambda = np.log(bmax / bmin)
-    elif method == "GMS-1":
-        # 1st method listed in Table 1 of reference [3]
-        # Landau-Spitzer, but with interpolated bmin instead of bmin
-        # selected between deBroglie wavelength and distance of closest
-        # approach. Fails for large coupling
-        # parameter where Lambda can become less than zero.
-        ln_Lambda = np.log(bmax / bmin)
-    elif method == "GMS-2":
-        # 2nd method listed in Table 1 of reference [3]
-        # Another Landau-Spitzer like approach, but now bmax is also
-        # being interpolated. The interpolation is between the Debye
-        # length and the ion sphere radius, allowing for descriptions
-        # of dilute plasmas. Fails for large coupling
-        # parameter where Lambda can become less than zero.
+    if method in ["classical", "GMS-1", "GMS-2"]:
         ln_Lambda = np.log(bmax / bmin)
     elif method == "GMS-3":
-        # 3rd method listed in Table 1 of reference [3]
-        # classical Landau-Spitzer fails for argument of Coulomb logarithm
-        # Lambda < 0, therefore a clamp is placed at Lambda_min = 2
         ln_Lambda = np.log(bmax / bmin)
         if ln_Lambda < 2:
             ln_Lambda = 2 * u.dimensionless_unscaled
-    elif method == "GMS-4":
-        # 4th method listed in Table 1 of reference [3]
-        # Spitzer-like extension to Coulomb logarithm by noting that
-        # Coulomb collisions take hyperbolic trajectories. Removes
-        # divergence for small bmin issue in classical Landau-Spitzer
-        # approach, so bmin can be zero. Also doesn't break down as
-        # Lambda < 0 is now impossible, even when coupling parameter is large.
-        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
-    elif method == "GMS-5":
-        # 5th method listed in Table 1 of reference [3]
-        # Similar to GMS-4, but setting bmin as distance of closest approach
-        # and bmax interpolated between Debye length and ion sphere radius.
-        # Lambda < 0 impossible.
-        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
-    elif method == "GMS-6":
-        # 6th method listed in Table 1 of reference [3]
-        # Similar to GMS-4 and GMS-5, but using interpolation methods
-        # for both bmin and bmax.
-        # Lambda < 0 impossible.
+    elif method in ["GMS-4", "GMS-5", "GMS-6"]:
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
         raise ValueError("Unknown method! Choose from 'classical' and 'GMS-N', N from 1 to 6.")
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
-    if ln_Lambda < 4:
+    if ln_Lambda < 0:
+        raise utils.PhysicsError(f"A Coulomb logarithm = {ln_Lambda} < 0 is nonphysical.")
+    elif ln_Lambda < 2 and method in ["classical", "GMS-1", "GMS-2"]:
+        warnings.warn(f"Coulomb logarithm is {ln_Lambda} and {method} relies on weak coupling.",
+                      utils.CouplingWarning)
+    elif ln_Lambda < 4:
         warnings.warn(f"Coulomb logarithm is {ln_Lambda}, you might have strong coupling effects",
-                      utils.PhysicsWarning)
-    # if ln_Lambda < 1:
-    #     raise utils.PhysicsError(f"Coulomb logarithm is {ln_Lambda}, less than 1")
+                      utils.CouplingWarning)
     return ln_Lambda
 
 
@@ -251,6 +255,8 @@ def _boilerPlate(T, particles, V):
     # obtaining reduced mass of 2 particle collision system
     reduced_mass = atomic.reduced_mass(*particles)
 
+    if V == 0:
+        raise utils.exceptions.PhysicsError("You cannot have a collision for zero velocity!")
     # getting thermal velocity of system if no velocity is given
     if np.isnan(V):
         V = parameters.thermal_speed(T, mass=reduced_mass)
@@ -260,9 +266,9 @@ def _boilerPlate(T, particles, V):
 
 @check_quantity({"T": {"units": u.K, "can_be_negative": False}
                  })
-def b_perp(T,
-           particles,
-           V=np.nan * u.m / u.s):
+def impact_parameter_perp(T,
+                          particles,
+                          V=np.nan * u.m / u.s):
     """
     Distance of closest approach for a 90 degree Coulomb collision.
 
@@ -285,7 +291,7 @@ def b_perp(T,
 
     Returns
     -------
-    b_perp : float or numpy.ndarray
+    impact_parameter_perp : float or numpy.ndarray
         The distance of closest approach for a 90 degree Coulomb collision.
 
     Raises
@@ -315,7 +321,7 @@ def b_perp(T,
 
     Notes
     -----
-    The distance of closest approach, b_perp, is given by [1]_
+    The distance of closest approach, impact_parameter_perp, is given by [1]_
 
     .. math::
         b_{\perp} = \frac{Z_1 Z_2}{4 \pi \epsilon_0 m v^2}
@@ -326,7 +332,7 @@ def b_perp(T,
     >>> from astropy import units as u
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
-    >>> b_perp(T, particles)
+    >>> impact_parameter_perp(T, particles)
     <Quantity 8.35505011e-12 m>
 
 
@@ -474,9 +480,9 @@ def impact_parameter(T,
     # deBroglie wavelength
     lambdaBroglie = hbar / (2 * reduced_mass * V)
     # distance of closest approach in 90 degree Coulomb collision
-    bPerp = b_perp(T=T,
-                   particles=particles,
-                   V=V)
+    bPerp = impact_parameter_perp(T=T,
+                                  particles=particles,
+                                  V=V)
     # obtaining minimum and maximum impact parameters depending on which
     # method is requested
     if method == "classical":
@@ -627,14 +633,6 @@ def collision_frequency(T,
     taken as the thermal velocity), and :math:`\ln{\Lambda}` is the Coulomb
     logarithm accounting for small angle collisions.
 
-    The collisional cross-section is obtained by
-
-    .. math::
-        \sigma = \pi \rho_{\perp}^2
-
-    where :math:`\rho_{\perp}` is the distance of closest approach for
-    a 90 degree Coulomb collision.
-
     See eq (2.14) in [2]_.
 
     Examples
@@ -666,9 +664,9 @@ def collision_frequency(T,
             V = V_reduced
         # electron-electron collision
         # impact parameter for 90 degree collision
-        bPerp = b_perp(T=T,
-                       particles=particles,
-                       V=V_reduced)
+        bPerp = impact_parameter_perp(T=T,
+                                      particles=particles,
+                                      V=V_reduced)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T,
                                     n,
@@ -686,9 +684,9 @@ def collision_frequency(T,
             V = np.sqrt(2 * k_B * T / m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
-        bPerp = b_perp(T=T,
-                       particles=particles,
-                       V=V) * reduced_mass / m_e
+        bPerp = impact_parameter_perp(T=T,
+                                      particles=particles,
+                                      V=V) * reduced_mass / m_e
         # Coulomb logarithm
         # !!! may also need to correct Coulomb logarithm to be
         # electron-electron version !!!
@@ -704,9 +702,9 @@ def collision_frequency(T,
         if np.isnan(V):
             V = V_reduced
         # ion-ion collision
-        bPerp = b_perp(T=T,
-                       particles=particles,
-                       V=V)
+        bPerp = impact_parameter_perp(T=T,
+                                      particles=particles,
+                                      V=V)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T,
                                     n,
@@ -715,13 +713,58 @@ def collision_frequency(T,
                                     V=np.nan * u.m / u.s,
                                     method=method)
     # collisional cross section
-    sigma = np.pi * (2 * bPerp) ** 2
+    sigma = Coulomb_cross_section(bPerp)
     # collision frequency where Coulomb logarithm accounts for
     # small angle collisions, which are more frequent than large
     # angle collisions.
     freq = n * sigma * V * cou_log
     return freq.to(u.Hz)
 
+
+@check_quantity({
+    'impact_param': {'units': u.m,
+                    'can_be_negative': False}
+    })
+def Coulomb_cross_section(impact_param: u.m):
+    """
+    Cross section for a large angle Coulomb collision
+
+    Parameters
+    ----------
+    impact_param : ~astropy.units.Quantity
+        Impact parameter for the collision.
+
+    Examples
+    --------
+    >>> Coulomb_cross_section(7e-10*u.m)
+    <Quantity 6.1575216e-18 m2>
+    >>> Coulomb_cross_section(0.5*u.m)
+    <Quantity 3.14159265 m2>
+
+    Notes
+    -----
+    The collisional cross-section (see [1]_ for a graphical demonstration)
+    for a 90 degree Coulomb collision is obtained by
+
+    .. math::
+        \sigma = \pi (2 * \rho_{\perp})^2
+
+    where :math:`\rho_{\perp}` is the distance of closest approach for
+    a 90 degree Coulomb collision. This function is a generalization of that
+    calculation. Please note that it is not guaranteed to return the correct
+    results for small angle collisions.
+
+    Returns
+    -------
+    ~astropy.units.Quantity
+        The Coulomb collision cross section area.
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Cross_section_(physics)#Collision_among_gas_particles
+    """
+    sigma = np.pi * (2 * impact_param) ** 2
+    return sigma
 
 @utils.check_quantity({
     'T_e': {'units': u.K, 'can_be_negative': False},
