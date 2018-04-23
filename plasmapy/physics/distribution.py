@@ -16,6 +16,8 @@ def Maxwellian_1D(v,
     Returns the probability at the velocity `v` in m/s
     to find a particle `particle` in a plasma of temperature `T`
     following the Maxwellian distribution function.
+    pdf of velocity for a Maxwellian distribution.
+
 
     Parameters
     ----------
@@ -26,16 +28,15 @@ def Maxwellian_1D(v,
         The temperature in Kelvin.
 
     particle: str, optional
-        Representation of the particle species(e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
-        (singly ionized helium-4),
-        which defaults to electrons.
+        Representation of the particle species(e.g., ``'p'`` for protons,
+        ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
+        (singly ionized helium-4), which defaults to electrons.
 
     V_drift: ~astropy.units.Quantity, optional
         The drift velocity in units convertible to m/s.
 
     vTh: ~astropy.units.Quantity, optional
-        Thermal velocity (most probable) in m/s. This is used for
+        Thermal velocity (most probable velocity) in m/s. This is used for
         optimization purposes to avoid re-calculating vTh, for example
         when integrating over velocity-space.
 
@@ -48,7 +49,7 @@ def Maxwellian_1D(v,
     Returns
     -------
     f : ~astropy.units.Quantity
-        Probability in Velocity^-1, normalized so that
+        Probability in units of Velocity^-1, normalized so that
         :math:`\int_{-\infty}^{+\infty} f(v) dv = 1`.
 
     Raises
@@ -72,9 +73,9 @@ def Maxwellian_1D(v,
     .. math::
 
         f = \sqrt{\frac{m}{2 \pi k_B T}} e^{-\frac{m}{2 k_B T} (v-V)^2}
-        f = (\pi * v_Th^2)^{-1/2} e^{-(v - v_{drift})^2 / v_Th^2}
+        \equiv \frac{1}{\sqrt{\pi v_{Th}^2}} e^{-(v - v_{drift})^2 / v_{Th}^2}
 
-    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed
+    where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed
 
     Examples
     --------
@@ -288,6 +289,8 @@ def Maxwellian_speed_1D(v,
                         vTh=np.nan,
                         units="units"):
     r"""
+    pdf of speed for a Maxwellian distribution.
+
     Return the probability of finding a particle with speed `v` in m/s
     in an equilibrium plasma of temperature `T` which follows the
     Maxwellian distribution function.
@@ -346,9 +349,9 @@ def Maxwellian_speed_1D(v,
 
     .. math::
 
-       f(v) = 4 \pi v^2 (\pi * v_Th^2)^{-3/2} \exp(-(v - V_{drift})^2 / v_Th^2)
+       f(v) = 4\pi v^2 \frac{1}{(\pi v_{Th}^2)^{3/2}} \exp(-(v - V_{drift})^2 / v_{Th}^2 )
 
-    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed.
+    where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
     Example
     -------
