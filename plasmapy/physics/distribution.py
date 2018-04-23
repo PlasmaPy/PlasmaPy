@@ -85,6 +85,7 @@ def Maxwellian_1D(v,
     >>> Maxwellian_1D(v=v, T= 30000*u.K, particle='e',V_drift=0*u.m/u.s)
     <Quantity 5.91632969e-07 s / m>
     """
+
     if units == "units":
         # unit checks and conversions
         # checking velocity units
@@ -136,8 +137,10 @@ def Maxwellian_velocity_3D(vx,
                            vTh=np.nan,
                            units="units"):
     r"""
+    pdf of velocity for a 3D Maxwellian distribution.
+
     Return the probability of finding a particle with velocity components
-    `vx`, `vy`, and `vz`in m/s in an equilibrium plasma of temperature
+    `vx`, `vy`, and `vz` in m/s in an equilibrium plasma of temperature
     `T` which follows the 3D Maxwellian distribution function. This
     function assumes Cartesian coordinates.
 
@@ -156,8 +159,8 @@ def Maxwellian_velocity_3D(vx,
         The temperature, preferably in Kelvin.
 
     particle: str, optional
-        Representation of the particle species (e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
+        Representation of the particle species (e.g., ``'p'`` for protons,
+        ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4), which defaults to electrons.
 
     Vx_drift: ~astropy.units.Quantity, optional
@@ -207,9 +210,10 @@ def Maxwellian_velocity_3D(vx,
 
     .. math::
 
-        f = (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} - \vec{V_{drift}})^2 / v_Th^2)
+        f = (\pi v_{Th}^2)^{-3/2} \exp \left [-(\vec{v} -
+        \vec{V}_{drift})^2 / v_{Th}^2 \right ]
 
-    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed.
+    where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
     See also
     --------
@@ -414,8 +418,10 @@ def Maxwellian_speed_3D(vx,
                         vTh=np.nan,
                         units="units"):
     r"""
+    pdf of speed for a 3D Maxwellian distribution.
+
     Return the probability of finding a particle with speed components
-    `vx`, `vy`, and `vz`in m/s in an equilibrium plasma of temperature
+    `vx`, `vy`, and `vz` in m/s in an equilibrium plasma of temperature
     `T` which follows the 3D Maxwellian distribution function. This
     function assumes Cartesian coordinates.
 
@@ -485,10 +491,10 @@ def Maxwellian_speed_3D(vx,
 
     .. math::
 
-       f = 4 \pi \vec{v}^2 (\pi * v_Th^2)^{-3/2} \exp(-(\vec{v} -
-       \vec{V_{drift}})^2 / v_Th^2)
+       f = 4 \pi \vec{v}^2 (\pi v_{Th}^2)^{-3/2} \exp(-(\vec{v} -
+       \vec{V}_{drift})^2 / v_{Th}^2)
 
-    where :math:`v_Th = \sqrt(2 k_B T / m)` is the thermal speed.
+    where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
     See also
     --------
@@ -648,10 +654,10 @@ def kappa_velocity_1D(v,
     .. math::
 
        f = A_\kappa \left(1 + \frac{(\vec{v} -
-       \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-\kappa}
+       \vec{V_{drift}})^2}{\kappa v_{Th},\kappa^2}\right)^{-\kappa}
 
-    where :math:`v_Th,\kappa` is the kappa thermal speed
-    and :math:`A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_Th,\kappa^2
+    where :math:`v_{Th},\kappa` is the kappa thermal speed
+    and :math:`A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_{Th},\kappa^2
     \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2)}}`
     is the normalization constant.
 
@@ -805,10 +811,10 @@ def kappa_velocity_3D(vx,
     .. math::
 
        f = A_\kappa \left(1 + \frac{(\vec{v} -
-       \vec{V_{drift}})^2}{\kappa v_Th,\kappa^2}\right)^{-(\kappa + 1)}
+       \vec{V_{drift}})^2}{\kappa v_{Th},\kappa^2}\right)^{-(\kappa + 1)}
 
-    where :math:`v_Th,\kappa` is the kappa thermal speed
-    and :math:`A_\kappa = \frac{1}{2 \pi (\kappa v_Th,\kappa^2)^{3/2}}
+    where :math:`v_{Th},\kappa` is the kappa thermal speed
+    and :math:`A_\kappa = \frac{1}{2 \pi (\kappa v_{Th},\kappa^2)^{3/2}}
     \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)}` is the
     normalization constant.
 
