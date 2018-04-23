@@ -770,12 +770,12 @@ def Coulomb_cross_section(impact_param: u.m):
     'T_e': {'units': u.K, 'can_be_negative': False},
     'n_e': {'units': u.m ** -3, 'can_be_negative': False}
     })
-def collision_rate_electron_ion(T_e,
-                                n_e,
-                                ion_particle,
-                                coulomb_log=None,
-                                V=None,
-                                coulomb_log_method="classical"):
+def fundamental_electron_collision_freq(T_e,
+                                        n_e,
+                                        ion_particle,
+                                        coulomb_log=None,
+                                        V=None,
+                                        coulomb_log_method="classical"):
     r"""
     Momentum relaxation electron-ion collision rate
 
@@ -830,17 +830,18 @@ def collision_rate_electron_ion(T_e,
     Examples
     --------
     >>> from astropy import units as u
-    >>> collision_rate_electron_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 0.00180172 1 / s>
-    >>> collision_rate_electron_ion(100 * u.eV, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_electron_collision_freq(100 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 8.6204672e-08 1 / s>
-    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p')
+    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
     <Quantity 3936037.8595928 1 / s>
-    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
+    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3,
+    'p', coulomb_log_method = 'GMS-1')
     <Quantity 3872922.52743562 1 / s>
-    >>> collision_rate_electron_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
+    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
     <Quantity 4.41166015e-07 1 / s>
-    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
+    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
     <Quantity 5812633.74935003 1 / s>
 
     """
@@ -883,12 +884,12 @@ def collision_rate_electron_ion(T_e,
     'T_i': {'units': u.K, 'can_be_negative': False},
     'n_i': {'units': u.m ** -3, 'can_be_negative': False}
     })
-def collision_rate_ion_ion(T_i,
-                           n_i,
-                           ion_particle,
-                           coulomb_log=None,
-                           V=None,
-                           coulomb_log_method="classical"):
+def fundamental_ion_collision_freq(T_i,
+                                   n_i,
+                                   ion_particle,
+                                   coulomb_log=None,
+                                   V=None,
+                                   coulomb_log_method="classical"):
     r"""
     Momentum relaxation ion-ion collision rate
 
@@ -948,17 +949,19 @@ def collision_rate_ion_ion(T_i,
     Examples
     --------
     >>> from astropy import units as u
-    >>> collision_rate_ion_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 2.97315582e-05 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 1.43713193e-09 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p')
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
     <Quantity 66411.80316364 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p',
+    coulomb_log_method='GMS-1')
     <Quantity 66407.00859126 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
     <Quantity 6.53577473 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p',
+    coulomb_log=20)
     <Quantity 95918.76240877 1 / s>
 
     """

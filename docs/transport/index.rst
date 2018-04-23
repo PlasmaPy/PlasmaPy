@@ -21,8 +21,8 @@ Reference/API
 .. automodapi:: plasmapy.physics.transport.braginskii
    :skip: Coulomb_logarithm 
    :skip: Hall_parameter
-   :skip: collision_rate_electron_ion
-   :skip: collision_rate_ion_ion
+   :skip: fundamental_electron_collision_freq
+   :skip: fundamental_ion_collision_freq
 .. automodapi:: plasmapy.physics.transport.collisions
    :skip: Debye_length
    :skip: Fermi_integral
