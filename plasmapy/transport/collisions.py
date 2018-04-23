@@ -763,7 +763,7 @@ def collision_frequency(T,
                                     n,
                                     particles,
                                     z_mean,
-                                    V=np.nan * u.m / u.s,
+                                    V=V,
                                     method=method)
     elif particles[0] in ('e','e-') or particles[1] in ('e','e-'):
         # electron-ion collision
