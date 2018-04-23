@@ -6,8 +6,7 @@ deps-run: &deps-install
 
 html-run: &doc-html
   name: Build HTML documentation
-  command: python setup.py build_docs -w
-  working_directory: docs
+  command: python setup.py build_docs
 
 latex-run: &doc-latex
   name: Build LaTeX documentation
