@@ -454,6 +454,14 @@ def thermal_pressure(T, n):
     n : ~astropy.units.Quantity
         The particle number density in units convertible to m**-3.
 
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> thermal_pressure(1*u.eV, 1e20/u.m**3)
+    <Quantity 16.02176621 Pa>
+    >>> thermal_pressure(10*u.eV, 1e20/u.m**3)
+    <Quantity 160.21766208 Pa>
+
     Returns
     -------
     p_th : ~astropy.units.Quantity
