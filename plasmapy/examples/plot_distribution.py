@@ -37,7 +37,7 @@ print(p_dens)
 # Note the units! Integrated over speed, this will give us a
 # probability. Let's test that for a bunch of particles:
 
-T = 3e5 * u.K
+T = 3e4 * u.K
 dv = 10 * u.m / u.s
 v = np.arange(-5e6, 5e6, 10) * u.m / u.s
 
