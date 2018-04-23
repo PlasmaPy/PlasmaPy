@@ -103,6 +103,7 @@ def check_quantity(validations):
                 can_be_complex = validation_settings.get('can_be_complex', False)
                 can_be_inf = validation_settings.get('can_be_inf', True)
                 can_be_nan = validation_settings.get('can_be_nan', False)
+                can_be_none = validation_settings.get('can_be_none', False)
 
                 validated_value = _check_quantity(value_to_check,
                                                   param_to_check,
@@ -111,7 +112,8 @@ def check_quantity(validations):
                                                   can_be_negative=can_be_negative,
                                                   can_be_complex=can_be_complex,
                                                   can_be_inf=can_be_inf,
-                                                  can_be_nan=can_be_nan)
+                                                  can_be_nan=can_be_nan,
+                                                  can_be_none=can_be_none)
                 given_params_values[param_to_check] = validated_value
 
             return f(**given_params_values)
@@ -120,7 +122,8 @@ def check_quantity(validations):
 
 
 def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
-                    can_be_complex=False, can_be_inf=True, can_be_nan=False):
+                    can_be_complex=False, can_be_inf=True, can_be_nan=False,
+                    can_be_none=False):
     """
     Raise an exception if an object is not a `~astropy.units.Quantity`
     with correct units and valid numerical values.
@@ -151,8 +154,12 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         `True` if the `~astropy.units.Quantity` can contain infinite
         values, `False` otherwise.  Defaults to `True`.
 
-    can_be_inf : bool, optional
+    can_be_nan : bool, optional
         `True` if the `~astropy.units.Quantity` can contain NaN
+        values, `False` otherwise.  Defaults to `True`.
+
+    can_be_none : bool, optional
+        `True` if the `~astropy.units.Quantity` can contain None
         values, `False` otherwise.  Defaults to `True`.
 
     Raises
@@ -268,6 +275,8 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         raise ValueError(f"{valueerror_message} negative numbers.")
     elif not can_be_inf and np.any(np.isinf(arg.value)):
         raise ValueError(f"{valueerror_message} infs.")
+    elif not can_be_none and arg is None:
+        raise ValueError(f"{valueerror_message} Nones.")
 
     return arg
 
