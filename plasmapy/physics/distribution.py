@@ -13,11 +13,11 @@ def Maxwellian_1D(v,
                   vTh=np.nan,
                   units="units"):
     r"""
+    pdf of velocity for a Maxwellian distribution.
+
     Returns the probability at the velocity `v` in m/s
     to find a particle `particle` in a plasma of temperature `T`
     following the Maxwellian distribution function.
-    pdf of velocity for a Maxwellian distribution.
-
 
     Parameters
     ----------
