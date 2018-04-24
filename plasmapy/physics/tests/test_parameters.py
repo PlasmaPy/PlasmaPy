@@ -713,7 +713,7 @@ def test_matrix_sheath_thickness():
 
     V_0 = 80 * u.V
 
-    assert matrix_sheath_thickness(V_0, n_e).unit.is_equivalent(u.m**-3)
+    assert matrix_sheath_thickness(V_0, n_e).unit.is_equivalent(u.m)
 
     assert np.isclose(matrix_sheath_thickness(V_0, n_e).value, 1.329823977068723e-05)
 
@@ -738,7 +738,7 @@ def test_Child_law_sheath_thickness():
 
     V_0 = 80 * u.V
 
-    assert Child_law_sheath_thickness(T_e, V_0, n_e).unit.is_equivalent(u.m**-3)
+    assert Child_law_sheath_thickness(T_e, V_0, n_e).unit.is_equivalent(u.m)
 
     assert np.isclose(Child_law_sheath_thickness(T_e, V_0, n_e).value, 7.317701879630642e-06)
 
