@@ -784,7 +784,7 @@ def collision_frequency(T,
                                     n,
                                     particles,
                                     z_mean,
-                                    V=np.nan * u.m / u.s,
+                                    V=V,
                                     method=method)
     else:
         # ion-ion collision
@@ -799,7 +799,7 @@ def collision_frequency(T,
                                     n,
                                     particles,
                                     z_mean,
-                                    V=np.nan * u.m / u.s,
+                                    V=V,
                                     method=method)
     # collisional cross section
     sigma = Coulomb_cross_section(bPerp)
@@ -968,7 +968,7 @@ def fundamental_electron_collision_freq(T_e,
                                  n_e,
                                  particles,
                                  z_mean=Z_i,
-                                 V=np.nan * u.m / u.s,
+                                 V=V,
                                  method=coulomb_log_method)
         # dividing out by typical Coulomb logarithm value implicit in
         # the collision frequency calculation and replacing with
@@ -1107,7 +1107,7 @@ def fundamental_ion_collision_freq(T_i,
                                  n_i,
                                  particles,
                                  z_mean=Z_i,
-                                 V=np.nan * u.m / u.s,
+                                 V=V,
                                  method=coulomb_log_method)
         # dividing out by typical Coulomb logarithm value implicit in
         # the collision frequency calculation and replacing with
