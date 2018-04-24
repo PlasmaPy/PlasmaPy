@@ -5,14 +5,9 @@ Functions to calculate plasma parameters.
 from astropy import units as u
 
 # from plasmapy.atomic import particle_mass, integer_charge
-
 import numpy as np
-# import warnings
-import inspect
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
 from plasmapy import atomic, utils
-
-from plasmapy.utils.exceptions import (PhysicsError, AtomicError)
 
 
 def _grab_charge(ion, z_mean=None):
@@ -34,6 +29,7 @@ def _grab_charge(ion, z_mean=None):
         of the `ion`.
 
     """
+
     if z_mean is None:
         # warnings.warn("No z_mean given, defaulting to atomic charge",
         #               PhysicsWarning)
@@ -44,7 +40,9 @@ def _grab_charge(ion, z_mean=None):
     return Z
 
 
-def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg / u.m ** 3:
+def mass_density(density,
+                 particle: str = None,
+                 z_mean: float = None) -> u.kg / u.m ** 3:
     """Utility function to merge two possible inputs for particle charge.
 
     Parameters
@@ -67,14 +65,17 @@ def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg / 
     ------
     ValueError
         If the `density` has units incovertible to either a particle density
-        or a mass density, or if you pass in a number density without a particle.
+        or a mass density, or if you pass in a number density without a
+        particle.
 
     Returns
     -------
     ~astropy.units.Quantity
-        The mass density calculated from all the provided sources of information.
+        The mass density calculated from all the provided sources of
+        information.
 
     """
+
     if density.unit.is_equivalent(u.kg / u.m ** 3):
         rho = density
     elif density.unit.is_equivalent(u.m ** -3):
@@ -83,8 +84,8 @@ def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg / 
             Z = _grab_charge(particle, z_mean)
             rho = density * m_i + Z * density * m_e
         else:
-            raise ValueError(f"You must pass a particle (not {particle}) to calculate the "
-                             f"mass density!")
+            raise ValueError(f"You must pass a particle (not {particle}) to "
+                             f"calculate the mass density!")
     else:
         raise ValueError(f"mass_density accepts either particle (m**-3)"
                          " or mass (kg * m**-3) density, not {density.unit}!")
@@ -313,11 +314,11 @@ def ion_sound_speed(T_e,
 
     for gamma, particles in zip([gamma_e, gamma_i], ["electrons", "ions"]):
         if not isinstance(gamma, (float, int)):
-            raise TypeError(f"The adiabatic index gamma for {particles} must be "
-                            "a float or int")
+            raise TypeError(f"The adiabatic index gamma for {particles} must "
+                            "be a float or int")
         if gamma < 1:
-            raise utils.PhysicsError(f"The adiabatic index for {particles} must be between "
-                                     "one and infinity")
+            raise utils.PhysicsError(f"The adiabatic index for {particles} "
+                                     f"must be between one and infinity")
 
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
@@ -337,7 +338,10 @@ def ion_sound_speed(T_e,
     'mass': {'units': u.kg, 'can_be_negative': False, 'can_be_nan': True}
     })
 @atomic.particle_input
-def thermal_speed(T, particle: atomic.Particle="e-", method="most_probable", mass=np.nan*u.kg):
+def thermal_speed(T,
+                  particle: atomic.Particle="e-",
+                  method="most_probable",
+                  mass=np.nan*u.kg):
     r"""
     Return the most probable speed for a particle within a Maxwellian
     distribution.
@@ -571,7 +575,9 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     --------
     plasmapy.physics.kappa_thermal_speed
     plasmapy.physics.kappa_velocity_1D
+
     """
+
     # Checking thermal units
     T = T.to(u.K, equivalencies=u.temperature_energy())
     if kappa <= 3 / 2:
@@ -623,10 +629,12 @@ def Hall_parameter(n,
     particle : str, optional
         String signifying the type of `particle`s. Defaults to electrons.
     coulomb_log : float, optional
-        Preset value for the Coulomb logarithm. Used mostly for testing purposes.
+        Preset value for the Coulomb logarithm. Used mostly for testing
+        purposes.
     V : The relative velocity between `particle`s and `ion_particle`s.
     coulomb_log_method : str, optional
-        Method used for Coulomb logarithm calculation. Refer to its documentation.
+        Method used for Coulomb logarithm calculation. Refer to its
+        documentation.
 
     See Also
     --------
@@ -637,18 +645,17 @@ def Hall_parameter(n,
     Returns
     -------
     astropy.units.quantity.Quantity
+
     """
-    from plasmapy.physics.transport.collisions import (collision_rate_ion_ion,
-                                                       collision_rate_electron_ion)
+
+    from plasmapy.physics.transport.collisions import (
+        collision_rate_ion_ion, collision_rate_electron_ion)
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
     if atomic.Particle(particle).particle == 'e-':
-        coll_rate = collision_rate_electron_ion(T,
-                                                n,
-                                                ion_particle,
-                                                coulomb_log,
-                                                V,
-                                                coulomb_log_method=coulomb_log_method)
+        coll_rate = collision_rate_electron_ion(
+            T, n, ion_particle, coulomb_log, V,
+            coulomb_log_method=coulomb_log_method)
     else:
         coll_rate = collision_rate_ion_ion(T, n, ion_particle, coulomb_log, V)
     return gyro_frequency / coll_rate
@@ -744,6 +751,7 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
     2799249007.6528206 Hz
 
     """
+
     m_i = atomic.particle_mass(particle)
     Z = _grab_charge(particle, Z)
     if not signed:
@@ -758,7 +766,11 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
                        'Vperp': {'units': u.m / u.s, 'can_be_nan': True},
                        'T_i': {'units': u.K, 'can_be_nan': True},
                        })
-def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
+def gyroradius(B,
+               particle='e-',
+               *,
+               Vperp=np.nan * u.m / u.s,
+               T_i=np.nan * u.K):
     r"""Return the particle gyroradius.
 
     Parameters
@@ -950,7 +962,8 @@ def plasma_frequency(n, particle='e-', z_mean=None):
             # using user provided average ionization
             Z = z_mean
         Z = np.abs(Z)
-        # TODO REPLACE WITH Z = np.abs(_grab_charge(particle, z_mean)), some bugs atm
+        # TODO REPLACE WITH Z = np.abs(_grab_charge(particle, z_mean)), some
+        # bugs atm
     except Exception:
         raise ValueError(f"Invalid particle, {particle}, in "
                          "plasma_frequency.")
@@ -1026,7 +1039,9 @@ def Debye_length(T_e, n_e):
     """
 
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
+
     lambda_D = np.sqrt(eps0 * k_B * T_e / (n_e * e ** 2))
+
     return lambda_D.to(u.m)
 
 
@@ -1092,9 +1107,146 @@ def Debye_number(T_e, n_e):
     """
 
     lambda_D = Debye_length(T_e, n_e)
+
     N_D = (4 / 3) * np.pi * n_e * lambda_D ** 3
 
     return N_D.to(u.dimensionless_unscaled)
+
+
+@utils.check_quantity({
+    'V_0': {'units': u.V, 'can_be_negative': False},
+    'n_s': {'units': u.m ** -3, 'can_be_negative': False}
+    })
+def matrix_sheath_thickness(V_0, n_s):
+    r"""Calculate the matrix sheath thickness for a high potential sheath.
+
+    Parameters
+    ----------
+    V_0 : ~astropy.units.Quantity
+        Sheath potential in units convertible to V.
+
+    n_s : ~astropy.units.Quantity
+        Sheath ion density in units convertible to m**-3.
+
+    Returns
+    -------
+    s : ~astropy.units.Quantity
+        Matrix sheath thickness in meters.
+
+    Raises
+    ------
+    TypeError
+        If one or more of the supplied parameters are not of the correct type.
+
+    ~astropy.units.UnitConversionError
+        If one or more parameter cannot be succesfully converted to the
+        respective unit.
+
+    ValueError
+        If one or more parameter does not have an appropriate value.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
+
+    Notes
+    -----
+    The matrix sheath model assumes an uniform ion sheath density and a large
+    sheath potential compared to the electron temperature. The sheath
+    thickness is given by
+
+    .. math::
+        s = \sqrt{ \frac{2 \epsilon_0 V_0}{e n_s} }.
+
+    See Also
+    --------
+    Child_law_sheath_thickness
+
+    Example
+    -------
+    >>> from astropy import units as u
+    >>> matrix_sheath_thickness(80 * u.V, 1e18 * u.m**-3)
+    <Quantity 9.403276e-05 m>
+
+    """
+
+    s = np.sqrt(2 * eps0 * V_0 / (e * n_s))
+
+    return s.to(u.m)
+
+
+@utils.check_quantity({
+    'T_e': {'units': u.eV, 'can_be_negative': False},
+    'V_0': {'units': u.V, 'can_be_negative': False},
+    'n_s': {'units': u.m ** -3, 'can_be_negative': False}
+    })
+def Child_law_sheath_thickness(T_e, V_0, n_s):
+    r"""Calculate the Child law sheath thickness.
+
+    Parameters
+    ----------
+    T_e : ~astropy.units.Quantity
+        Electron temperature in units convertible to eV.
+
+    V_0 : ~astropy.units.Quantity
+        Sheath potential in units convertible to V.
+
+    n_s : ~astropy.units.Quantity
+        Sheath ion density in units convertible to m**-3.
+
+    Returns
+    -------
+    s : ~astropy.units.Quantity
+        Child law sheath thickness in meters.
+
+    Raises
+    ------
+    TypeError
+        If one or more of the supplied parameters are not of the correct type.
+
+    ~astropy.units.UnitConversionError
+        If one or more parameter cannot be succesfully converted to the
+        respective unit.
+
+    ValueError
+        If one or more parameter does not have an appropriate value.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
+
+    Notes
+    -----
+    The Child law sheath model is self-consistent in terms of ion density
+    throughout the sheath and assumes a large sheath potential compared to the
+    electron temperature. The sheath thickness is given by
+
+    .. math::
+        s = \frac{\sqrt{2}}{3} \lambda_D
+        \left( \frac{2 V_0}{T_e} \right) ^ {3 / 4}.
+
+    This is larger than the matrix sheath thickness by a factor
+    :math:`\left( \frac{2 e V_0}{T_e} \right) ^ {1 / 4}`.
+
+    See Also
+    --------
+    matrix_sheath_thickness
+
+    Example
+    -------
+    >>> from astropy import units as u
+    >>> Child_law_sheath_thickness(2 * u.eV, 80 * u.V, 1e18 * u.m**-3)
+    <Quantity 0.00013257 m>
+
+    """
+
+    lambda_D = Debye_length(T_e, n_s)
+
+    s = (np.sqrt(2) / 3) * lambda_D * (2 * e * V_0 / T_e) ** 0.75
+
+    return s.to(u.m)
 
 
 @utils.check_quantity({
