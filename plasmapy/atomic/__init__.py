@@ -37,6 +37,8 @@ from .nuclear import (
     nuclear_reaction_energy,
 )
 
+from .ionization_states import IonizationState
+
 proton = Particle("p+")
 electron = Particle("e-")
 neutron = Particle("n")
