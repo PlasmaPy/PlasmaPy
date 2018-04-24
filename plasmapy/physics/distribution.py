@@ -39,7 +39,7 @@ def Maxwellian_1D(v,
     particle: str, optional
         Representation of the particle species(e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
-        (singly ionized helium-4), which defaults to electrons.
+        (singly ionized helium-4)), which defaults to electrons.
 
     V_drift: ~astropy.units.Quantity, optional
         The drift velocity in units convertible to m/s.
@@ -166,7 +166,7 @@ def Maxwellian_velocity_3D(vx,
     particle: str, optional
         Representation of the particle species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
-        (singly ionized helium-4), which defaults to electrons.
+        (singly ionized helium-4)), which defaults to electrons.
 
     Vx_drift: ~astropy.units.Quantity, optional
         The drift velocity in x-direction units convertible to m/s.
@@ -305,7 +305,7 @@ def Maxwellian_speed_1D(v,
     particle: str, optional
         Representation of the particle species(e.g., `'p'` for protons, `'D+'`
         for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
-        (singly ionized helium-4), which defaults to electrons.
+        (singly ionized helium-4)), which defaults to electrons.
 
     V_drift: ~astropy.units.Quantity
         The drift speed in units convertible to m/s.
@@ -433,7 +433,7 @@ def Maxwellian_speed_3D(vx,
     particle: str, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for :math:`He_4^{+1}`
-        (singly ionized helium-4), which defaults to electrons.
+        (singly ionized helium-4)), which defaults to electrons.
 
     Vx_drift: ~astropy.units.Quantity
         The drift speed in x-direction units convertible to m/s.
@@ -591,7 +591,7 @@ def kappa_velocity_1D(v,
     particle: str, optional
         Representation of the particle species(e.g., `'p` for protons, `'D+'`
         for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
-        (singly ionized helium-4), which defaults to electrons.
+        (singly ionized helium-4)), which defaults to electrons.
 
     V_drift: ~astropy.units.Quantity, optional
         The drift velocity in units convertible to m/s.
@@ -743,7 +743,7 @@ def kappa_velocity_3D(vx,
     particle: str, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for :math:`He_4^{+1}` : singly ionized
-        helium-4), which defaults to electrons.
+        helium-4)), which defaults to electrons.
 
     Vx_drift: ~astropy.units.Quantity, optional
         The drift velocity in x-direction units convertible to m/s.
