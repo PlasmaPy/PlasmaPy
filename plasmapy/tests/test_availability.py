@@ -6,7 +6,6 @@ availability and testing.
 import pytest
 from collections import namedtuple
 import re
-from ..utils import RunTestError
 from ..import_helpers import requirements_dir
 from os.path import dirname
 
