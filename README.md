@@ -7,20 +7,20 @@
 [![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy:matrix.org)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/PlasmaPy/Lobby)
 
-An open source community developed Python 3.6+ package for plasma physics in 
+An open source community developed Python 3.6+ package for plasma physics in
 the early stages of development. PlasmaPy intends to be for plasmas what
-[Astropy](https://github.com/astropy/astropy) is for astronomy - a 
-collection of functionality commonly used and shared between plasma physicists 
-and researchers globally, running within and leveraging the open source 
+[Astropy](https://github.com/astropy/astropy) is for astronomy - a
+collection of functionality commonly used and shared between plasma physicists
+and researchers globally, running within and leveraging the open source
 scientific Python ecosystem. The goals of this project are more thoroughly described in our
-[vision statement](vision_statement.md)
+[vision statement](vision_statement.md#vision-statement)
 and [an earlier conference poster](http://doi.org/10.5281/zenodo.163752).
 We are in the process of writing [online
 documentation](http://plasmapy.readthedocs.io/en/latest/).
 
 We created a guide on
-[contributing to PlasmaPy](CONTRIBUTING.md) and have a [code of conduct](CODE_OF_CONDUCT.md).
-New contributors are very welcome! 
+[contributing to PlasmaPy](CONTRIBUTING.md) and have a [Code of Conduct](CODE_OF_CONDUCT.md).
+New contributors are very welcome!
 
 If you have any questions, the quickest way to get a response is to ask on our
 [Matrix](https://riot.im/app/#/room/#plasmapy:matrix.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)

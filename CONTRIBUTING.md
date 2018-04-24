@@ -3,7 +3,7 @@
 There are numerous ways to contribute to PlasmaPy, including by
 providing code and documentation, suggesting and discussing ideas,
 submitting issues and bug reports, and engaging the broader plasma
-physics community.  
+physics community.
 
 **Imposter syndrome disclaimer**: We want your help. No, really.
 
@@ -27,8 +27,8 @@ the errors and assumptions that seasoned contributors have glossed over.
 
 *This disclaimer was originally written by
 [Adrienne Lowe](https://github.com/adriennefriend) for a
-[PyCon talk](https://www.youtube.com/watch?v=6Uj746j9Heo), and was adapted by 
-[yt](https://github.com/yt-project/yt) in their README file based on its use 
+[PyCon talk](https://www.youtube.com/watch?v=6Uj746j9Heo), and was adapted by
+[yt](https://github.com/yt-project/yt) in their README file based on its use
 in the README file for the [MetPy project](https://github.com/Unidata/MetPy).
 It was then adapted by PlasmaPy.*
 
@@ -47,19 +47,19 @@ early stages of PlasmaPy development:
   [submit issues](https://github.com/PlasmaPy/plasmapy/issues) and
   review [pull requests](https://github.com/PlasmaPy/plasmapy/pulls).
 
-* The PlasmaPy [Matrix](https://riot.im/app/#/room/#plasmapy:matrix.org) or 
+* The PlasmaPy [Matrix](https://riot.im/app/#/room/#plasmapy:matrix.org) or
   [Gitter](https://gitter.im/PlasmaPy/Lobby) joint channel
   is a great place to have informal conversations, coordinate efforts,
-  and share ideas.  
+  and share ideas.
 * We have biweekly telecons which are announced on the email list.
 
 ## Contributing code or documentation to PlasmaPy
 
 If you see something you'd like to work on amongst our
 [issues](https://github.com/PlasmaPy/PlasmaPy/issues), start hacking away on
- that! However, please announce your intent first in the relevant issue to 
+ that! However, please announce your intent first in the relevant issue to
  make sure there is no work duplication.
- 
+
 Please note that PlasmaPy has a [Code of Conduct](CODE_OF_CONDUCT.md).
 
 Issues marked by the community as *help wanted* mean just that - either they're
@@ -78,8 +78,8 @@ git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 locally on your computer.  We highly recommend getting reasonably familiar with
 git by going through these tutorials or a [Software
 Carpentry](https://software-carpentry.org/) workshop prior to making
-code contributions. Do note that you can usually find help in the 
-[PlasmaPy Matrix chatroom] (https://riot.im/app/#/room/#plasmapy:matrix.org).
+code contributions. Do note that you can usually find help in the
+[PlasmaPy Matrix chatroom](https://riot.im/app/#/room/#plasmapy:matrix.org).
 
 For actual guidelines for working on PlasmaPy, see the
 [Code Development Guide on our ReadTheDocs page](https://plasmapy.readthedocs.io/en/latest/development/code_guide.html).

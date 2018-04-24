@@ -1,4 +1,11 @@
-# Contributor Covenant Code of Conduct
+# PlasmaPy Community Code of Conduct
+
+The PlasmaPy community strives to follow the best practices in open source
+software development. New contributors are encouraged to join the team and
+contribute to the codebase. We anticipate/encourage a global
+participation from people with diverse backgrounds, skills, interests,
+and opinions. We believe that such diversity is critical in ensuring a
+growth of ideas in our community.
 
 ## Our Pledge
 
@@ -20,22 +27,51 @@ include:
 * Focusing on what is best for the community
 * Showing empathy towards other community members
 
-Examples of unacceptable behavior by participants include:
+We as a community pledge to abide by the following guidelines:
 
-* The use of sexualized language or imagery and unwelcome sexual attention or
-advances
-* Trolling, insulting/derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or electronic
-  address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
-  professional setting
+* We pledge to treat all people with respect and provide a harassment-
+  and bullying-free environment, regardless of age, sex, sexual orientation
+  and/or gender identity, disability, physical appearance, body size,
+  race, nationality, ethnicity, religion, and level of experience. In particular,
+  sexual language and imagery, sexist, racist, or otherwise exclusionary
+  jokes are not appropriate.
+* We pledge to respect the work of others by recognizing
+  acknowledgment/citation requests of original authors. As authors, we
+  pledge to be explicit about how we want our own work to be cited or
+  acknowledged.
+* We pledge to welcome those interested in joining the community, and
+  realize that including people with a variety of opinions and
+  backgrounds will only serve to enrich our community. In particular,
+  discussions relating to pros/cons of various technologies,
+  programming languages, and so on are welcome, but these should be
+  done with respect, taking proactive measure to ensure that all
+  participants are heard and feel confident that they can freely
+  express their opinions.
+* We pledge to welcome questions and answer them respectfully, paying
+  particular attention to those new to the community. We pledge to
+  provide respectful criticisms and feedback in forums, especially in
+  discussion threads resulting from code contributions.
+* We pledge to be conscientious of the perceptions of the wider
+  community and to respond to criticism respectfully. We will strive
+  to model behaviors that encourage productive debate and
+  disagreement, both within our community and where we are
+  criticized. We will treat those outside our community with the same
+  respect as people within our community.
+* We pledge to work from the very beginning of this project to make
+  PlasmaPy accessible to people with disabilities.
+* We pledge to help the entire community follow these guidelines, and
+  to not remain silent when we see violations of them. We will take
+  action when members of our community violate these guidelines. Members
+  of the PlasmaPy community may contact any member of the Coordinating Committee
+  to report violations. Members of the Coordinating Committee will treat these
+  reports in the strictest confidence.  The Coordinating Committee will develop
+  formal procedures for how to handle reported violations.
 
 ## Our Responsibilities
 
-Project maintainers are responsible for clarifying the standards of acceptable
-behavior and are expected to take appropriate and fair corrective action in
-response to any instances of unacceptable behavior.
+Project maintainers are responsible for clarifying the standards of acceptable behavior
+and are expected to take appropriate and fair corrective action in response to any
+instances of unacceptable behavior.
 
 Project maintainers have the right and responsibility to remove, edit, or
 reject comments, commits, code, wiki edits, issues, and other contributions
@@ -67,8 +103,8 @@ members of the project's leadership.
 
 ## Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4,
-available at [http://contributor-covenant.org/version/1/4][version]
-
-[homepage]: http://contributor-covenant.org
-[version]: http://contributor-covenant.org/version/1/4/
+Parts of these guidelines have been adapted from the
+[Contributor Covenant](http://contributor-covenant.org), version 1.4, available at
+[http://contributor-covenant.org/version/1/4](http://contributor-covenant.org/version/1/4/),
+the [Astropy code of conduct](http://www.astropy.org/about.html#codeofconduct) and
+the [Python Software Foundation code of conduct](https://www.python.org/psf/codeofconduct/).

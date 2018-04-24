@@ -1,4 +1,4 @@
-# A vision for an open source core Python package for plasma physics
+# Vision statement
 
 ## About PlasmaPy
 
@@ -37,15 +37,15 @@ that is difficult to reproduce, and present a significant barrier to
 entry for new users.
 
 The plasma physics community is slowly moving in the open source
-direction.  Several different types of packages and software have 
-been released under open source licences, including the UCLA 
-PIC codes, PICCANTE, EPOCH, VPIC, PIConGPU, WARP, the FLASH framework, 
-Athena, and PENCIL.  These projects are built as individual packages, 
-are written in different programming languages, and often have many 
-dependencies  on specific packages.  Python packages such as Astropy, 
-SunPy, and SpacePy have had notable success providing
-open source alternatives to legacy code in related fields.  We are
-grateful to these communities for their hard work, and hope to build
+direction. Several different types of packages and software have
+been released under open source licences, including the UCLA
+PIC codes, PICCANTE, EPOCH, VPIC, PIConGPU, WARP, the FLASH framework,
+Athena, and PENCIL. These projects are built as individual packages,
+are written in different programming languages, and often have many
+dependencies  on specific packages. Python packages such as Astropy,
+SunPy, and SpacePy have had notable success providing open source
+alternatives to legacy code in related fields. We are grateful to
+these communities for their hard work, and hope to build
 upon their accomplishments for the field of plasma physics.
 
 An end user might not always be interested in a complicated powerpack
@@ -56,59 +56,9 @@ running small desktop scale simulations to test preliminary ideas
 different sources (simulations vs. spacecraft). Such tasks require a
 central platform. This is where PlasmaPy comes in.
 
-## Ensuring a welcoming and inclusive environment
+## PlasmaPy Community Code of Conduct
 
-PlasmaPy strives to follow the best practices in open source software
-development. New contributors are encouraged to join the team and
-contribute to the codebase. We anticipate/encourage a global
-participation from people with diverse backgrounds, skills, interests,
-and opinions. We believe that such diversity is critical in ensuring a
-growth of ideas in our community. We as a community pledge to abide by
-the following guidelines:
-
-* We pledge to treat all people with respect and provide a harassment-
-  and bullying-free environment, regardless of sex, sexual orientation
-  and/or gender identity, disability, physical appearance, body size,
-  race, nationality, ethnicity, and religion. In particular, sexual
-  language and imagery, sexist, racist, or otherwise exclusionary
-  jokes are not appropriate.
-* We pledge to respect the work of others by recognizing
-  acknowledgment/citation requests of original authors. As authors, we
-  pledge to be explicit about how we want our own work to be cited or
-  acknowledged.
-* We pledge to welcome those interested in joining the community, and
-  realize that including people with a variety of opinions and
-  backgrounds will only serve to enrich our community. In particular,
-  discussions relating to pros/cons of various technologies,
-  programming languages, and so on are welcome, but these should be
-  done with respect, taking proactive measure to ensure that all
-  participants are heard and feel confident that they can freely
-  express their opinions.
-* We pledge to welcome questions and answer them respectfully, paying
-  particular attention to those new to the community. We pledge to
-  provide respectful criticisms and feedback in forums, especially in
-  discussion threads resulting from code contributions.
-* We pledge to be conscientious of the perceptions of the wider
-  community and to respond to criticism respectfully. We will strive
-  to model behaviors that encourage productive debate and
-  disagreement, both within our community and where we are
-  criticized. We will treat those outside our community with the same
-  respect as people within our community.
-* We pledge to work from the very beginning of this project to make
-  PlasmaPy accessible to people with disabilities.
-* We pledge to help the entire community follow these guidelines, and
-  to not remain silent when we see violations of them. We will take
-  action when members of our community violate these
-  guidelines. Members of the PlasmaPy community may contact any member
-  of the Coordinating Committee to report violations. Members of the
-  Coordinating Committee will treat these reports in the strictest
-  confidence.  The Coordinating Committee will develop formal
-  procedures for how to handle reported violations.
-
-Parts of these guidelines have been adapted from the [Astropy code of
-conduct](http://www.astropy.org/about.html#codeofconduct) and the
-[Python Software Foundation code of
-conduct](https://www.python.org/psf/codeofconduct/).
+Please see the attached [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Organizational structure
 
@@ -146,7 +96,7 @@ Astropy](http://www.astropy.org/team.html).
 
 ## Development procedure
 
-The initial developers of PlasmaPy will create a flexible 
+The initial developers of PlasmaPy will create a flexible
 development roadmap that outlines and prioritizes subpackages to be
 developed.  The developers will survey existing open source Python
 packages in plasma physics.  Priority will be given to determining how
@@ -229,7 +179,7 @@ where *MAJOR*, *MINOR*, and *PATCH* are nonnegative integers. Starting
 with version 1.0, *MAJOR* will be incremented when backwards
 incompatible changes are made, *MINOR* will be incremented when new
 backwards-compatible functionality is added, and *PATCH* will be
-incremented when backwards-compatible bug fixes are made.  
+incremented when backwards-compatible bug fixes are made.
 
 Development releases will have *MAJOR* equal to zero and start at
 version 0.1.  The API should not be considered stable during the
@@ -274,7 +224,7 @@ as how an electron volt is typically used as a measurement of
 temperature.  Code will be most readable and maintainable if written
 assuming a particular set of units, but there should be enough
 flexibility for people in different subfields to choose their
-preferred set of units. As the generally most common accepted 
+preferred set of units. As the generally most common accepted
 international standard, SI base units will be utilized.  We will use an
 existing Python module (e.g., astropy.units or pint) to assign units
 to variables and allow straightforward conversion between different
