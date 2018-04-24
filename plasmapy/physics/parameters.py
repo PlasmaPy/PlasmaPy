@@ -1167,7 +1167,7 @@ def matrix_sheath_thickness(V_0, n_s):
     -------
     >>> from astropy import units as u
     >>> matrix_sheath_thickness(80 * u.V, 1e18 * u.m**-3)
-    <Quantity 9.403276e-05 m>
+    <Quantity 9.40327552e-05 m>
 
     """
 
@@ -1241,6 +1241,8 @@ def Child_law_sheath_thickness(T_e, V_0, n_s):
     <Quantity 0.00013257 m>
 
     """
+
+    T_e = T_e.to(u.eV, equivalencies=u.temperature_energy())
 
     lambda_D = Debye_length(T_e, n_s)
 

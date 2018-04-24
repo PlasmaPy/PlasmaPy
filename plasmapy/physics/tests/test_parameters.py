@@ -20,6 +20,8 @@ from plasmapy.physics.parameters import (mass_density,
                                          plasma_frequency,
                                          Debye_length,
                                          Debye_number,
+                                         matrix_sheath_thickness,
+                                         Child_law_sheath_thickness,
                                          inertial_length,
                                          ion_sound_speed,
                                          magnetic_energy_density,
@@ -55,6 +57,7 @@ class Test_mass_density:
     def test_particleless(self):
         with pytest.raises(ValueError):
             mass_density(1 * u.m ** -3)
+
     def test_wrong_units(self):
         with pytest.raises(ValueError):
             mass_density(1 * u.J)
@@ -703,6 +706,64 @@ def test_Debye_number():
 
     with pytest.warns(u.UnitsWarning):
         assert Debye_number(1.1 * u.K, 1.1) == Debye_number(1.1, 1.1 * u.m ** -3)
+
+
+def test_matrix_sheath_thickness():
+    r"""Test the matrix_sheath_thickness function in parameters.py."""
+
+    V_0 = 80 * u.V
+
+    assert matrix_sheath_thickness(V_0, n_e).unit.is_equivalent(u.m**-3)
+
+    assert np.isclose(matrix_sheath_thickness(V_0, n_e).value, 1.329823977068723e-05)
+
+    with pytest.warns(u.UnitsWarning):
+        matrix_sheath_thickness(V_0, 4)
+
+    with pytest.raises(TypeError):
+        matrix_sheath_thickness(None, n_e)
+
+    with pytest.raises(u.UnitConversionError):
+        matrix_sheath_thickness(8 * u.T, n_e)
+
+    with pytest.raises(u.UnitConversionError):
+        matrix_sheath_thickness(V_0, 1e18 * u.m**3)
+
+    with pytest.raises(ValueError):
+        matrix_sheath_thickness(5j * u.V, n_e)
+
+
+def test_Child_law_sheath_thickness():
+    r"""Test the Child_law_sheath_thickness function in parameters.py."""
+
+    V_0 = 80 * u.V
+
+    assert Child_law_sheath_thickness(T_e, V_0, n_e).unit.is_equivalent(u.m**-3)
+
+    assert np.isclose(Child_law_sheath_thickness(T_e, V_0, n_e).value, 7.317701879630642e-06)
+
+    T_e_eV = T_e.to(u.eV, equivalencies=u.temperature_energy())
+
+    assert Child_law_sheath_thickness(T_e_eV, V_0, n_e) == (
+        Child_law_sheath_thickness(T_e, V_0, n_e))
+
+    with pytest.warns(u.UnitsWarning):
+        Child_law_sheath_thickness(T_e, V_0, 4)
+
+    with pytest.raises(TypeError):
+        Child_law_sheath_thickness(None, None, n_e)
+
+    with pytest.raises(u.UnitConversionError):
+        Child_law_sheath_thickness(3 * u.A, V_0, n_e)
+
+    with pytest.raises(u.UnitConversionError):
+        Child_law_sheath_thickness(T_e, 8 * u.T, n_e)
+
+    with pytest.raises(u.UnitConversionError):
+        Child_law_sheath_thickness(T_e, V_0, 1e18 * u.m**3)
+
+    with pytest.raises(ValueError):
+        Child_law_sheath_thickness(T_e, 5j * u.V, n_e)
 
 
 def test_inertial_length():
