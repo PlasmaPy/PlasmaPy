@@ -41,9 +41,8 @@ def get_minimum_versions(file='requirements.txt'):
 def check_versions(minimum_versions=None):
     """
     Raise an `ImportError` if a dependent package is not installed and
-    at the required version number, or issue a
-    `~plasmapy.utils.PlasmaPyWarning` if the version of the dependent
-    package cannot be found.
+    at the required version number, or issue a `UserWarning` if the
+    version of the dependent package cannot be found.
     """
     if not minimum_versions:
         minimum_versions = get_minimum_versions()
@@ -53,21 +52,19 @@ def check_versions(minimum_versions=None):
         try:
             module = importlib.import_module(module_name)
             module_version = dv.LooseVersion(module.__version__)
-        except ImportError:
+        except (ImportError, ModuleNotFoundError):
             raise ImportError(
-                f"Unable to import {module_name} while importing PlasmaPy.") from None
-        except ModuleNotFoundError:  # coveralls: ignore
-            raise ImportError(
-                f"Unable to find {module_name} while importing PlasmaPy.") from None
+                f"Unable to import PlasmaPy because the required "
+                f"package {module_name} cannot be imported.") from None
         except AttributeError:  # coveralls: ignore
             warnings.warn(
                 f"{module_name} version {minimum_version.vstring} "
                 "is required for PlasmaPy.  However, the version of "
                 f"{module_name} could not be determined to check if "
                 "this requirement is met.", UserWarning)
-        else:
+        else:  # coveralls: ignore
             if minimum_version > module_version:
                 raise ImportError(
-                    f"{module_name} {minimum_version} or newer is required "
-                    "for PlasmaPy. The currently installed version is "
-                    f"{module_version}.") from None
+                    f"PlasmaPy requires {module_name} {minimum_version}"
+                    f" or newer, but {module_name} {module_version} "
+                    f"is currently installed.") from None
