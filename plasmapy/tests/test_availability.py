@@ -69,44 +69,25 @@ def test_requirements_issubset_automated_code_tests():
             f"automated-code-tests.txt: {missing_lines}")
 
 
-def test_requirements_issubset_automated_documentation_tests():
+@pytest.mark.parametrize('filename', [
+    'automated-documentation-tests.txt',
+    'environment.txt',
+    'environment.yml',
+])
+def test_requirements_issubset_of_other_requirements_files(filename):
     """
-    Test that all of the packages in requirements.txt are also in
-    automated-code-tests.txt.
+    Test that all of the packages in requirements.txt are in other files
+    in the requirements directory.
     """
-    missing_packages = \
-        files['requirements.txt'].packages - files['automated-documentation-tests.txt'].packages
+    requirements_file = 'requirements.txt'
+    missing_packages = files[requirements_file].packages - files[filename].packages
     if missing_packages:
         raise Exception(
-            f"The following packages from requirements.txt are not in "
-            f"automated-documentation-tests.txt: {missing_packages}")
+            f"The following packages from {requirements_file} are "
+            f"missing from {filename}: {missing_packages}")
 
 
-def test_requirements_issubset_environment_txt():
-    """
-    Test that all of the packages in requirements.txt are also in
-    environment.txt.
-    """
-    missing_packages = files['requirements.txt'].packages - files['environment.txt'].packages
-    if missing_packages:
-        raise Exception(
-            f"The following packages from requirements.txt are missing "
-            f"from environment.txt: {missing_packages}")
-
-
-def test_requirements_issubset_environment_yml():
-    """
-    Test that all of the packages in requirements.yml are also in
-    environment.yml.
-    """
-    missing_packages = files['requirements.txt'].packages - files['environment.yml'].packages
-    if missing_packages:
-        raise Exception(
-            f"The following packages from requirements.txt are missing "
-            f" from environment.yml: {missing_packages}")
-
-
-def test__environment_txt_and_yml_files():
+def test_environment_txt_and_yml_files():
     """
     Test that environment.txt and environment.yml have the same
     packages.
