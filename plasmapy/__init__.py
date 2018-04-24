@@ -24,6 +24,11 @@ from . import import_helpers  # noqa
 
 import_helpers.check_versions()
 
+# The dunder namespace should be reserved for the special objects that
+# are specified in Python documentation (e.g., __name__, __doc__, and
+# __version__).  All hidden objects that are specific to PlasmaPy
+# should start with a single underscore (e.g., _githash).
+
 __name__ = "plasmapy"
 
 __doc__ = ("A community-developed and community-driven open source "
@@ -31,12 +36,12 @@ __doc__ = ("A community-developed and community-driven open source "
 
 # The file version.py is created by installing PlasmaPy with setup.py
 # using functionality from astropy_helpers.  If this has not been run,
-# then we can set the default values to None.
+# then set the default values to None.
 
 try:
     from .version import version as __version__
     from .version import githash as _githash
-except (ImportError, ModuleNotFoundError):  # coveralls: ignore
+except (ImportError, ModuleNotFoundError):
     __version__ = None
     _githash = None
 
@@ -48,9 +53,9 @@ try:
     from . import mathematics
     from . import physics
     from . import utils
-except ImportError:
-    raise ImportError("Unable to load PlasmaPy subpackages.")
+except (ImportError, ModuleNotFoundError) as exc:
+    raise ImportError("Unable to load PlasmaPy subpackages.") from exc
 
-# Clean up the top-level namespace
+# Clean up the top-level namespace.
 
 del sys, import_helpers
