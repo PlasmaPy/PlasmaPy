@@ -4,10 +4,11 @@ Test for common discrepancies and inconsistencies in requirements files.
 
 import pytest
 from collections import namedtuple
-
+import re
 from ..utils import RunTestError
-
 from ..import_helpers import requirements_dir
+from os.path import dirname
+
 
 filenames = [
             'automated-code-tests.txt',
@@ -49,3 +50,44 @@ def test_requirements_issubset_automated_code_tests():
         raise RunTestError(
             f"The following lines from requirements.txt are not in "
             f"automated-code-tests.txt: {missing_lines}")
+
+
+def test_no_formatted_string_literals():
+    """
+    Test that there are no f-strings in top-level __init__.py.
+
+    PlasmaPy's top-level __init__.py should not have any f-strings
+    because then a very unhelpful SyntaxError will be raised instead of
+    a helpful ImportError when attempting to import PlasmaPy in Python
+    3.5 or below.
+
+    Because we do not test that importing PlasmaPy from Python 2.7 or
+    3.5 will raise the correct exception, an error like this could
+    potentially remain hidden for a while unless we remember to check it
+    manually.  This test checks each line in __init__.py and makes sure
+    that there are no f-strings.
+
+    """
+    init_filename = dirname(dirname(__file__)) + "/__init__.py"
+    init_file = open(init_filename)
+    lines = init_file.readlines()
+    init_file.close()
+
+    fstring_regex_pattern = r'[ \(\[\+\{]f' + "['" + '"]'
+
+    errors = []
+    for line, line_number in zip(lines, range(1, len(lines) + 1)):
+        if re.search(fstring_regex_pattern, line) is not None:
+            errors.append((line, line_number))
+
+    if errors:
+        errmsg = (
+            f"The file {init_filename} contains formatted string "
+            f"literals (f-strings). However, f-strings may not be used "
+            f"in PlasmaPy's main __init__.py so that the correct "
+            f"exception is raised when attempting to import from "
+            f"an unsupported version of Python. The lines containing "
+            f"f-strings are:\n")
+        for (line, line_number) in errors:
+            errmsg += f"[Line {line_number}] {line}\n"
+        raise SyntaxError(errmsg)
