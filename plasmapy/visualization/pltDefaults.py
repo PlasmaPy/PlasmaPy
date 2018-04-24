@@ -1,18 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Oct 27 02:37:12 2017
-
-Default plotting parameters
-
-@author: Pawel M. Kozlowski
-"""
+"""Dynamically set defaults for matplotlib plots"""
 
 # importing Python modules
-import numpy as np
 import matplotlib 
 import matplotlib.pyplot as plt
-from itertools import cycle
 
 # setting default plot properties
 plotFont = {'family' : 'serif',
@@ -26,9 +16,6 @@ matplotlib.rcParams['mathtext.fontset'] = 'dejavuserif'
 matplotlib.rcParams['mathtext.rm'] = 'DejaVu Serif'
 matplotlib.rcParams['mathtext.it'] = 'DejaVu Serif:italic'
 matplotlib.rcParams['mathtext.bf'] = 'DejaVu Serif:bold'
-
-# for testing whether matplotlib and python fonts match
-#plt.title(r'cm$\rm cm^{-3}$')
 
 
 #%% convenience functions for plotting
@@ -90,51 +77,3 @@ def plot_scatter_bars(xData, yData, yErrs, label="", **kwargs):
                 elinewidth=1,
                 **kwargs)
     return
-
-#%% testing custom plotting tools
-
-#xData = np.arange(10)
-#yData = xData ** 2
-#yData2 = xData ** 3
-#yErrs = np.ones_like(xData) * 30
-#plot_line_shaded(xData, yData, yErrs, label="#1", color='r')
-#plot_line_shaded(xData, yData2, yErrs, label="#2")
-#plt.ylabel("y")
-#plt.xlabel("x")
-#plt.legend(loc='upper left', frameon=False, labelspacing=0.001,
-#           fontsize=14, borderaxespad=0.4)
-#plt.show()
-#
-#
-#xData = np.arange(10)
-#yData = xData ** 2
-#yData2 = xData ** 3
-#yErrs = np.ones_like(xData) * 30
-#plot_scatter_bars(xData, yData, yErrs, label="#1", color='r')
-#plot_scatter_bars(xData, yData2, yErrs, label="#2")
-#plt.ylabel("y")
-#plt.xlabel("x")
-#plt.legend(loc='upper left', frameon=False, labelspacing=0.001,
-#           fontsize=14, borderaxespad=0.4)
-#plt.show()
-
-#%% style cycling
-# printing default colors
-default_colors = matplotlib.colors.cnames.keys()
-#print(f"Colors: {default_colors}")
-# printing default linestyles
-default_lines = matplotlib.lines.lineStyles.keys()
-#print(f"Lines: {default_lines}")
-# printing default marker styles
-default_markers = matplotlib.markers.MarkerStyle.markers.keys()
-#print(f"Markers: {default_markers}")
-
-# custom list of linestyles (excluding blank line styles)
-lines = ["-","--","-.",":"]
-linecycler = cycle(lines)
-#plt.figure()
-#for i in range(10):
-#    x = range(i,i+10)
-#    plt.plot(range(10),x,next(linecycler))
-#plt.show()
-    
