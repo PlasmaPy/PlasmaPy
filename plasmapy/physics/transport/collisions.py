@@ -7,9 +7,6 @@ import warnings
 
 # plasmapy modules
 from plasmapy import utils
-from plasmapy.utils.checks import (check_quantity,
-                                   _check_relativistic)
-
 from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
 from plasmapy import atomic
 from plasmapy.physics import parameters
@@ -17,6 +14,7 @@ from plasmapy.physics.quantum import (Wigner_Seitz_radius,
                                       thermal_deBroglie_wavelength,
                                       chemical_potential)
 from plasmapy.mathematics import Fermi_integral
+from plasmapy.utils import check_quantity, _check_relativistic
 
 
 @utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
@@ -777,18 +775,13 @@ def fundamental_electron_collision_freq(T_e,
                                         V=None,
                                         coulomb_log_method="classical"):
     r"""
-    Momentum relaxation electron-ion collision rate
+    Average momentum relaxation rate for a slowly flowing Maxwellian distribution of electrons.
 
-    From [3]_, equations (2.17) and (2.120)
-
-    Considering a Maxwellian distribution of "test" electrons colliding with
-    a Maxwellian distribution of "field" ions.
-
-    This result is an electron momentum relaxation rate, and is used in many
-    classical transport expressions. It is equivalent to:
-    * 1/tau_e from ref [1]_ eqn (1) pp. #,
-    * 1/tau_e from ref [2]_ eqn (1) pp. #,
-    * nu_e\i_S from ref [2]_ eqn (1) pp. #,
+    [3]_ provides a derivation of this as an average collision frequency between electrons
+    and ions for a Maxwellian distribution. It is thus a special case of the collision
+    frequency with an averaging factor, and is on many occasions in transport theory
+    the most relevant collision frequency that has to be considered. It is heavily
+    related to diffusion and resistivity in plasmas.
 
     Parameters
     ----------
@@ -816,6 +809,23 @@ def fundamental_electron_collision_freq(T_e,
         Method used for Coulomb logarithm calculation (see that function
         for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
 
+    Notes
+    -----
+    Equations (2.17) and (2.120) in [3]_ provide the original source used
+    to implement this formula, however, the simplest form that connects our average
+    collision frequency to the general collision frequency is is this (from 2.17):
+
+    .. math::
+        \nu_e = \frac{4}{3 \sqrt{\pi}} \nu(v_{Te})
+
+    Where :math:`\nu` is the general collision frequency and :math:`\v_{Te}`
+    is the electron thermal velocity (the average, for a Maxwellian distribution).
+
+    This implementation of the average collision frequency is is equivalent to:
+    * 1/tau_e from ref [1]_ eqn (1) pp. #,
+    * 1/tau_e from ref [2]_ eqn (1) pp. #,
+    * nu_e\i_S from ref [2]_ eqn (1) pp. #,
+
     References
     ----------
     .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
@@ -825,7 +835,8 @@ def fundamental_electron_collision_freq(T_e,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
        https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
-    .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [3] J.D. Callen, Fundamentals of Plasma Physics draft material,
+       Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     Examples
     --------
@@ -843,6 +854,10 @@ def fundamental_electron_collision_freq(T_e,
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
     <Quantity 5812633.74935003 1 / s>
 
+    See Also
+    --------
+    collision_frequency
+    fundamental_ion_collision_freq
     """
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
     if not V:
@@ -890,22 +905,11 @@ def fundamental_ion_collision_freq(T_i,
                                    V=None,
                                    coulomb_log_method="classical"):
     r"""
-    Momentum relaxation ion-ion collision rate
+    Average momentum relaxation rate for a slowly flowing Maxwellian distribution of ions.
 
-    From [3]_, equations (2.36) and (2.122)
-
-    Considering a Maxwellian distribution of "test" ions colliding with
-    a Maxwellian distribution of "field" ions.
-
-    Note, it is assumed that electrons are present in such numbers as to
-    establish quasineutrality, but the effects of the test ions colliding
-    with them are not considered here.
-
-    This result is an ion momentum relaxation rate, and is used in many
-    classical transport expressions. It is equivalent to:
-    * 1/tau_i from ref [1]_ eqn (1) pp. #,
-    * 1/tau_i from ref [2]_ eqn (1) pp. #,
-    * nu_i\i_S from ref [2]_ eqn (1) pp. #,
+    [3]_ provides a derivation of this as an average collision frequency between ions
+    and ions for a Maxwellian distribution. It is thus a special case of the collision
+    frequency with an averaging factor.
 
     Parameters
     ----------
@@ -934,6 +938,31 @@ def fundamental_ion_collision_freq(T_i,
         Method used for Coulomb logarithm calculation (see that function
         for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
 
+    Notes
+    -----
+    Equations (2.36) and (2.122) in [3]_ provide the original source used
+    to implement this formula, however, in our implementation we use the very
+    same process that leads to the fundamental electron collison rate (2.17),
+    gaining simply a different coefficient:
+
+    .. math::
+        \nu_i = \frac{8}{3 * 4 * \sqrt{\pi}} \nu(v_{Ti})
+
+    Where :math:`\nu` is the general collision frequency and :math:`\v_{Ti}`
+    is the ion thermal velocity (the average, for a Maxwellian distribution).
+
+    Note that in the derivation, it is assumed that electrons are present
+    in such numbers as to establish quasineutrality, but the effects of the
+    test ions colliding with them are not considered here. This is a very
+    typical approximation in transport theory.
+
+    This result is an ion momentum relaxation rate, and is used in many
+    classical transport expressions. It is equivalent to:
+    * 1/tau_i from ref [1]_ eqn (1) pp. #,
+    * 1/tau_i from ref [2]_ eqn (1) pp. #,
+    * nu_i\i_S from ref [2]_ eqn (1) pp. #,
+
+
     References
     ----------
     .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
@@ -943,7 +972,8 @@ def fundamental_ion_collision_freq(T_i,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
        https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
-    .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [3] J.D. Callen, Fundamentals of Plasma Physics draft material,
+       Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     Examples
     --------
@@ -961,6 +991,10 @@ def fundamental_ion_collision_freq(T_i,
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
     <Quantity 95918.76240877 1 / s>
 
+    See Also
+    --------
+    collision_frequency
+    fundamental_electron_collision_freq
     """
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     m_i = atomic.particle_mass(ion_particle)
