@@ -1,69 +1,61 @@
-# This file must be Python 2 compliant enough so that the appropriate
-# ImportError is raised when PlasmaPy is being imported from Python 2.
-# This precludes the usage of some features such as f-strings.  Helper
-# functions should be put into utils/import_helpers.py except when
-# Python 2 compliance is needed to raise the correct ImportError.
+"""
+PlasmaPy is a community-developed and community-driven open source core
+Python package for plasma physics.
+"""
+
+# Check that PlasmaPy is being imported from a recent enough version of
+# Python so that otherwise an appropriate ImportError with a useful
+# error message will be raised.  This check should be done before
+# anything else to avoid error messages that obfuscate the source of the
+# problem.  This file must be Python 2 compliant enough to avoid raising
+# any SyntaxError exceptions, and thus cannot have f-strings.
 
 import sys
-from . import utils
 
+if sys.version_info < (3, 6):
+    raise ImportError(
+        "PlasmaPy requires Python version 3.6 or higher, but is being "
+        "called from Python version {}.".format(sys.version.split()[0]))
 
-def _split_version(version):
-    """Separate a string including digits separated by periods into a
-    tuple of integers."""
-    return tuple(int(ver) for ver in version.split('.'))
+# Place all imports that require Python 3.6+ **after** the Python
+# version check.
 
+from . import import_helpers  # noqa
+
+import_helpers.check_versions()
+
+# The dunder namespace should be reserved for the special objects that
+# are specified in Python documentation (e.g., __name__, __doc__, and
+# __version__).  All hidden objects that are specific to PlasmaPy
+# should start with a single underscore (e.g., _githash).
 
 __name__ = "plasmapy"
 
-__doc__ = ("A community-developed and community-driven open source core "
-           "Python package for plasma physics.")
-
-__minimum_python_version__ = '3.6'
-
-__minimum_versions__ = {
-    'numpy': '1.13',
-    'astropy': '2.0',
-    'scipy': '0.19',
-    }
-
-if sys.version_info < _split_version(__minimum_python_version__):
-    raise ImportError(
-        "PlasmaPy requires Python version {} or higher, but is being called "
-        "from Python version {}."
-        .format(__minimum_python_version__, sys.version.split()[0]))
-
-utils.check_versions(__minimum_versions__)
+__doc__ = ("A community-developed and community-driven open source "
+           "core Python package for plasma physics.")
 
 # The file version.py is created by installing PlasmaPy with setup.py
 # using functionality from astropy_helpers.  If this has not been run,
-# then we will not create the __version__ attribute.
+# then set the default values to None.
 
 try:
     from .version import version as __version__
-except ImportError:
-    pass
+    from .version import githash as _githash
+except (ImportError, ModuleNotFoundError):
+    __version__ = None
+    _githash = None
 
 try:
+    from . import atomic
     from . import classes
     from . import constants
-    from . import atomic
+    from . import diagnostics
     from . import mathematics
     from . import physics
-    from . import diagnostics
     from . import utils
-except ImportError:
-    raise ImportError("Unable to load PlasmaPy subpackages.")
+except (ImportError, ModuleNotFoundError) as exc:
+    raise ImportError("Unable to load PlasmaPy subpackages.") from exc
 
-# Allow astropy.units to be imported from PlasmaPy. This is the 
-# only place in the code where units should not be abbreviated as u.
+# Clean up the top-level namespace.
 
-try:
-    from astropy import units
-except ImportError:
-    raise ImportError("Unable to import astropy.units as a PlasmaPy submodule")
-
-# A more extensive and thoughtful method for cleaning up our top-level
-# namespace is in Astropy's __init__.py (see also pull request #210).
-
-del (__minimum_python_version__, __minimum_versions__)
+del sys, import_helpers
