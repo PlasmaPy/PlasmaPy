@@ -6,6 +6,15 @@ import numpy as np
 from scipy.special import gamma
 
 
+def _v_drift_units(v_drift):
+    # Helper method to assign units to  v_drift if it takes a default value
+    if (v_drift == 0 and
+        not isinstance(v_drift, astropy.units.quantity.Quantity)):
+        v_drift = v_drift * u.m / u.s
+    else:
+        v_drift = v_drift.to(u.m / u.s)
+    return v_drift
+
 def Maxwellian_1D(v,
                   T,
                   particle="e",
@@ -90,13 +99,9 @@ def Maxwellian_1D(v,
         # unit checks and conversions
         # checking velocity units
         v = v.to(u.m / u.s)
-        # catching case where drift velocities have default values, they
+        # Catching case where drift velocities have default values, they
         # need to be assigned units
-        if V_drift == 0:
-            if not isinstance(V_drift, astropy.units.quantity.Quantity):
-                V_drift = V_drift * u.m / u.s
-        # checking units of drift velocities
-        V_drift = V_drift.to(u.m / u.s)
+        V_drift = _v_drift_units(V_drift)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
@@ -244,19 +249,9 @@ def Maxwellian_velocity_3D(vx,
         vz = vz.to(u.m / u.s)
         # catching case where drift velocities have default values, they
         # need to be assigned units
-        if Vx_drift == 0:
-            if not isinstance(Vx_drift, astropy.units.quantity.Quantity):
-                Vx_drift = Vx_drift * u.m / u.s
-        if Vy_drift == 0:
-            if not isinstance(Vy_drift, astropy.units.quantity.Quantity):
-                Vy_drift = Vy_drift * u.m / u.s
-        if Vz_drift == 0:
-            if not isinstance(Vz_drift, astropy.units.quantity.Quantity):
-                Vz_drift = Vz_drift * u.m / u.s
-        # checking units of drift velocities
-        Vx_drift = Vx_drift.to(u.m / u.s)
-        Vy_drift = Vy_drift.to(u.m / u.s)
-        Vz_drift = Vz_drift.to(u.m / u.s)
+        Vx_drift = _v_drift_units(Vx_drift)
+        Vy_drift = _v_drift_units(Vy_drift)
+        Vz_drift = _v_drift_units(Vz_drift)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
@@ -370,13 +365,9 @@ def Maxwellian_speed_1D(v,
         # unit checks and conversions
         # checking velocity units
         v = v.to(u.m / u.s)
-        # catching case where drift velocity has default value, and
+        # Catching case where drift velocity has default value, and
         # needs to be assigned units
-        if V_drift == 0:
-            if not isinstance(V_drift, astropy.units.quantity.Quantity):
-                V_drift = V_drift * u.m / u.s
-        # checking drift velocity units
-        V_drift = V_drift.to(u.m / u.s)
+        V_drift = _v_drift_units(V_drift)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
@@ -522,20 +513,11 @@ def Maxwellian_speed_3D(vx,
         vx = vx.to(u.m / u.s)
         vy = vy.to(u.m / u.s)
         vz = vz.to(u.m / u.s)
-        # catching case where drift velocities have default values, they
+        # Catching case where drift velocities have default values, they
         # need to be assigned units
-        if Vx_drift == 0:
-            if not isinstance(Vx_drift, astropy.units.quantity.Quantity):
-                Vx_drift = Vx_drift * u.m / u.s
-        if Vy_drift == 0:
-            if not isinstance(Vy_drift, astropy.units.quantity.Quantity):
-                Vy_drift = Vy_drift * u.m / u.s
-        if Vz_drift == 0:
-            if not isinstance(Vz_drift, astropy.units.quantity.Quantity):
-                Vz_drift = Vz_drift * u.m / u.s
-        Vx_drift = Vx_drift.to(u.m / u.s)
-        Vy_drift = Vy_drift.to(u.m / u.s)
-        Vz_drift = Vz_drift.to(u.m / u.s)
+        Vx_drift = _v_drift_units(Vx_drift)
+        Vy_drift = _v_drift_units(Vy_drift)
+        Vz_drift = _v_drift_units(Vz_drift)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
@@ -851,21 +833,11 @@ def kappa_velocity_3D(vx,
         vx = vx.to(u.m / u.s)
         vy = vy.to(u.m / u.s)
         vz = vz.to(u.m / u.s)
-        # catching case where drift velocities have default values, they
+        # Catching case where drift velocities have default values, they
         # need to be assigned units
-        if Vx_drift == 0:
-            if not isinstance(Vx_drift, astropy.units.quantity.Quantity):
-                Vx_drift = Vx_drift * u.m / u.s
-        if Vy_drift == 0:
-            if not isinstance(Vy_drift, astropy.units.quantity.Quantity):
-                Vy_drift = Vy_drift * u.m / u.s
-        if Vz_drift == 0:
-            if not isinstance(Vz_drift, astropy.units.quantity.Quantity):
-                Vz_drift = Vz_drift * u.m / u.s
-        # checking units of drift velocities
-        Vx_drift = Vx_drift.to(u.m / u.s)
-        Vy_drift = Vy_drift.to(u.m / u.s)
-        Vz_drift = Vz_drift.to(u.m / u.s)
+        Vx_drift = _v_drift_units(Vx_drift)
+        Vy_drift = _v_drift_units(Vy_drift)
+        Vz_drift = _v_drift_units(Vz_drift)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
