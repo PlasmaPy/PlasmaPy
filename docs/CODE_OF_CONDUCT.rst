@@ -101,12 +101,15 @@ Enforcement
 -----------
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may
-be reported by contacting Nick Murphy at namurphy@cfa.harvard.edu. All
-complaints will be reviewed and investigated and will result in a
-response that is deemed necessary and appropriate to the circumstances.
-The project team is obligated to maintain confidentiality with regard to
-the reporter of an incident. Further details of specific enforcement
-policies may be posted separately.
+be reported by contacting Nick Murphy at namurphy@cfa.harvard.edu or any
+member of the Coordinating Committee. All complaints will be reviewed
+and investigated and will result in a response that is deemed necessary
+and appropriate to the circumstances. The project team is obligated to
+maintain confidentiality with regard to the reporter of an incident.
+Project team members should recuse themselves from enforcement of the
+code of conduct for a given incident if they have an actual or apparent
+conflict of interest.  Further details of specific enforcement policies
+may be posted separately.
 
 Project maintainers who do not follow or enforce the Code of Conduct in
 good faith may face temporary or permanent repercussions as determined
@@ -116,9 +119,9 @@ Attribution
 -----------
 
 Parts of these guidelines have been adapted from the `Contributor
-Covenant <http://contributor-covenant.org>`__, version 1.4, available at
-`http://contributor-covenant.org/version/1/4 <http://contributor-covenant.org/version/1/4/>`__,
-the `Astropy code of
-conduct <http://www.astropy.org/about.html#codeofconduct>`__ and the
-`Python Software Foundation code of
-conduct <https://www.python.org/psf/codeofconduct/>`__.
+Covenant (version 1.4)
+<https://www.contributor-covenant.org/version/1/4/code-of-conduct.html>`_,
+the `Astropy Community Code of Conduct
+<http://www.astropy.org/code_of_conduct.html>`_, and the
+`Python Software Foundation code of conduct
+<https://www.python.org/psf/codeofconduct/>`_.
