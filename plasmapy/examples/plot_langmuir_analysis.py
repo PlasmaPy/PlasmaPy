@@ -22,7 +22,7 @@ import os
 
 # Load the bias and current values stored in the .p pickle file.
 path = os.path.join("langmuir_samples", "Beckers2017.npy")
-bias, current = np.load(open(path, 'rb'))
+bias, current = np.load(path)
 
 # Create the Characteristic object, taking into account the correct units
 characteristic = Characteristic(np.array(bias) * u.V,
@@ -54,7 +54,7 @@ print(swept_probe_analysis(characteristic,
 
 # Load the data from a file and create the Characteristic object
 path = os.path.join("langmuir_samples", "Pace2015.npy")
-bias, current = np.load(open(path, 'rb'))
+bias, current = np.load(path)
 characteristic = Characteristic(np.array(bias) * u.V,
                                 np.array(current) * 1e3 * u.mA)
 
@@ -92,7 +92,7 @@ print(swept_probe_analysis(characteristic,
 
 # Import probe data and calculate probe surface area.
 path = os.path.join("langmuir_samples", "Beckers2017b.npy")
-bias, current = np.load(open(path, 'rb'))
+bias, current = np.load(path)
 characteristic = Characteristic(np.array(bias) * u.V,
                                 np.array(current) * 1e3 * u.mA)
 probe_length = 1.145 * u.mm
