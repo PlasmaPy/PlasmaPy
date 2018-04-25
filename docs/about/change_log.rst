@@ -5,7 +5,7 @@ PlasmaPy Change Log
 ===================
 
 This document provides a detailed list of changes associated with each
-release of PlasmaPy.  The release_notes_ contain a narrative description
+release of PlasmaPy.  The :ref:`release_notes` summarize the changes
 for each version.
 
 .. _change-log-0.1.0:
@@ -43,8 +43,7 @@ New Features
 * Set up automated documentation builds with Sphinx that are hosted on
   Read the Docs.
 
-* Adopted use of `~astropy.units` as a units package.  Allowed import of
-  units as ``import plasmapy.units as u``.
+* Adopted use of `~astropy.units` as a units package.
 
 * Created the `~plasmapy.atomic` subpackage to provide easy access to commonly
   used atomic data.
@@ -52,7 +51,8 @@ New Features
   - Created functional interface to access particle properties and find
     the energy released from nuclear reactions.
 
-  - Created `~plasmapy.atomic.Particle` class.
+  - Created `~plasmapy.atomic.Particle` class as an object-oriented interface
+    to the `~plasmapy.atomic` subpackage.
 
   - Created `~particle_input` decorator.
 

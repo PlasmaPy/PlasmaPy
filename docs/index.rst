@@ -113,12 +113,12 @@ Project Details
 ***************
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    about/credits
    about/stability
    about/release_notes
-   about/changelog
+   about/change_log
    about/vision_statement
 
 .. _index:
