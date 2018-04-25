@@ -819,9 +819,8 @@ def fundamental_electron_collision_freq(T_e,
     is the electron thermal velocity (the average, for a Maxwellian distribution).
 
     This implementation of the average collision frequency is is equivalent to:
-    * 1/tau_e from ref [1]_ eqn (1) pp. #,
-    * 1/tau_e from ref [2]_ eqn (1) pp. #,
-    * nu_e\i_S from ref [2]_ eqn (1) pp. #,
+    * 1/tau_e from ref [1]_ eqn (2.5e) pp. 215,
+    * nu_e from ref [2]_ pp. 33,
 
     References
     ----------
@@ -955,9 +954,8 @@ def fundamental_ion_collision_freq(T_i,
 
     This result is an ion momentum relaxation rate, and is used in many
     classical transport expressions. It is equivalent to:
-    * 1/tau_i from ref [1]_ eqn (1) pp. #,
-    * 1/tau_i from ref [2]_ eqn (1) pp. #,
-    * nu_i\i_S from ref [2]_ eqn (1) pp. #,
+    * 1/tau_i from ref [1]_, equation (2.5i) pp. 215,
+    * nu_i from ref [2]_ pp. 33,
 
 
     References
