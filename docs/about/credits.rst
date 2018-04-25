@@ -4,6 +4,7 @@ Authors and Credits
 
 PlasmaPy Coordinating Committee
 ===============================
+
 * Drew Leonard
 * Nick Murphy
 * Tulasi Parashar
@@ -11,11 +12,18 @@ PlasmaPy Coordinating Committee
 
 PlasmaPy Contributors
 =====================
+
+.. This list contains contributors to the core package as well as to the
+   vision statement when it was originally hosted on Google Docs.  Some
+   of the people who made commits do not show up as contributors on the
+   GitHub page, so it is important to check the git log as well to make
+   sure we are not missing anyone.
+
 * Jasper Beckers
 * Ludovico Bessi
 * Sean Carroll
 * Apoorv Choubey
-* C. Clauss
+* cclauss
 * Leah Einhorn
 * Thomas Fan
 * Graham Goudeau
@@ -49,6 +57,7 @@ PlasmaPy Contributors
 
 Other Credits
 =============
+
 * The PlasmaPy Community thanks the SunPy and Astropy communities for
   inspiring this project in the first place, providing much helpful
   advice, and showing examples of how to build a community-wide open
@@ -56,6 +65,7 @@ Other Credits
 
 Acknowledgements
 ================
+
 Some of the contributions to PlasmaPy have been directly or indirectly
 supported by funding from the following institutions and programs:
 
