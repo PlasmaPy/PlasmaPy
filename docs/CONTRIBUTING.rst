@@ -8,7 +8,10 @@ providing code and documentation, suggesting and discussing ideas,
 submitting issues and bug reports, and engaging the broader plasma
 physics community.
 
-**Imposter syndrome disclaimer**: We want your help. No, really.
+Imposter syndrome disclaimer
+----------------------------
+
+We want your help. No, really.
 
 There may be a little voice inside your head that is telling you that
 you’re not ready to be an open source contributor; that your skills
@@ -32,11 +35,11 @@ project with fresh eyes, so you can see the errors and assumptions that
 seasoned contributors have glossed over.
 
 *This disclaimer was originally written by `Adrienne
-Lowe <https://github.com/adriennefriend>`__ for a `PyCon
-talk <https://www.youtube.com/watch?v=6Uj746j9Heo>`__, and was adapted
-by `yt <https://github.com/yt-project/yt>`__ in their README file based
+Lowe <https://github.com/adriennefriend>`_ for a `PyCon
+talk <https://www.youtube.com/watch?v=6Uj746j9Heo>`_, and was adapted
+by `yt <https://github.com/yt-project/yt>`_ in their README file based
 on its use in the README file for the `MetPy
-project <https://github.com/Unidata/MetPy>`__. It was then adapted by
+project <https://github.com/Unidata/MetPy>`_. It was then adapted by
 PlasmaPy.*
 
 Sharing ideas
@@ -46,33 +49,33 @@ There are several methods of communication that are being used in the
 early stages of PlasmaPy development:
 
 -  `Signing up for the PlasmaPy email
-   list <https://groups.google.com/forum/#!forum/plasmapy>`__ will allow
+   list <https://groups.google.com/forum/#!forum/plasmapy>`_ will allow
    you to participate in broader discussions and keep up with the latest
    developments.
 
 -  The `PlasmaPy repository on
-   GitHub <https://github.com/PlasmaPy/plasmapy>`__ is the best place to
-   `submit issues <https://github.com/PlasmaPy/plasmapy/issues>`__ and
+   GitHub <https://github.com/PlasmaPy/plasmapy>`_ is the best place to
+   `submit issues <https://github.com/PlasmaPy/plasmapy/issues>`_ and
    review `pull
-   requests <https://github.com/PlasmaPy/plasmapy/pulls>`__.
+   requests <https://github.com/PlasmaPy/plasmapy/pulls>`_.
 
 -  The PlasmaPy
-   `Matrix <https://riot.im/app/#/room/#plasmapy:matrix.org>`__ or
-   `Gitter <https://gitter.im/PlasmaPy/Lobby>`__ joint channel is a
+   `Matrix <https://riot.im/app/#/room/#plasmapy:matrix.org>`_ or
+   `Gitter <https://gitter.im/PlasmaPy/Lobby>`_ joint channel is a
    great place to have informal conversations, coordinate efforts, and
    share ideas.
+
 -  We have biweekly telecons which are announced on the email list.
 
 Contributing code or documentation to PlasmaPy
 ----------------------------------------------
 
 If you see something you’d like to work on amongst our
-`issues <https://github.com/PlasmaPy/PlasmaPy/issues>`__, start hacking
+`issues <https://github.com/PlasmaPy/PlasmaPy/issues>`_, start hacking
 away on that! However, please announce your intent first in the relevant
 issue to make sure there is no work duplication.
 
-Please note that PlasmaPy has a `Code of
-Conduct <CODE_OF_CONDUCT.md>`__.
+Please note that PlasmaPy has a :ref:`plasmapy-code-of-conduct`.
 
 Issues marked by the community as *help wanted* mean just that - either
 they’re good contributions for outsiders or there’s an issue in the
@@ -80,21 +83,25 @@ ongoing work that requires a second opinion. Please consider these
 first!
 
 Work on PlasmaPy is done via GitHub, so you’ll need a `(free)
-account <https://github.com/join?source=header-home>`__. If you are new
-to `git <https://git-scm.com/>`__, helpful resources include
+account <https://github.com/join?source=header-home>`_. If you are new
+to `git <https://git-scm.com/>`_, helpful resources include
 documentation on `git
-basics <https://git-scm.com/book/en/v2/Getting-Started-Git-Basics>`__
+basics <https://git-scm.com/book/en/v2/Getting-Started-Git-Basics>`_
 and an `interactive git
-tutorial <https://try.github.io/levels/1/challenges/1>`__. You must also
+tutorial <https://try.github.io/levels/1/challenges/1>`_. You must also
 `install
-git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`__
+git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_
 locally on your computer. We highly recommend getting reasonably
 familiar with git by going through these tutorials or a `Software
-Carpentry <https://software-carpentry.org/>`__ workshop prior to making
+Carpentry <https://software-carpentry.org/>`_ workshop prior to making
 code contributions. Do note that you can usually find help in the
 `PlasmaPy Matrix
-chatroom <https://riot.im/app/#/room/#plasmapy:matrix.org>`__.
+chatroom <https://riot.im/app/#/room/#plasmapy:matrix.org>`_.
 
-For actual guidelines for working on PlasmaPy, see the `Code Development
-Guide on our ReadTheDocs
-page <https://plasmapy.readthedocs.io/en/latest/development/code_guide.html>`__.
+For actual guidelines for working on PlasmaPy, please see our
+:ref:`code-development-guide`.
+
+
+`Code
+Development Guide
+<http://docs.plasmapy.org/en/latest/development/code_guide.html>`_.
