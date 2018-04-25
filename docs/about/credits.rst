@@ -47,6 +47,13 @@ PlasmaPy Contributors
 * Antoine Tavant
 * Sixue Xu
 
+Other Credits
+=============
+* The PlasmaPy Community thanks the SunPy and Astropy communities for
+  inspiring this project in the first place, providing much helpful
+  advice, and showing examples of how to build a community-wide open
+  source scientific software package.
+
 Acknowledgements
 ================
 Some of the contributions to PlasmaPy have been directly or indirectly
