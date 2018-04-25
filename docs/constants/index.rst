@@ -26,15 +26,16 @@ Constants in SI units may be imported directly from PlasmaPy's
 much like `~astropy.units.Quantity` instances.
 
 A sample use case would be to calculate the fine structure constant
+
 .. math::
-    α = \frac{1}{4 \pi \epsilon_0} \frac{e^2}{ħ c}
+    \alpha = \frac{1}{4 \pi \epsilon_0} \frac{e^2}{\hbar c}
 
 using `~plasmapy.constants`.
 
     >>> from plasmapy.constants import eps0, e, hbar, c, pi as π
 
-    >>> α = e ** 2 / (4 * π * eps0 * hbar * c)
-    >>> (1 / α).to('')
+    >>> α = (e ** 2 / (4 * π * eps0 * hbar * c)).si
+    >>> α ** -1
     <Quantity 137.03599911>
 
 .. warning::
