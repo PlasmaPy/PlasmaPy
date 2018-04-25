@@ -39,7 +39,6 @@ from astropy.constants.si import (
 
 from astropy.constants import atm
 
-
 # The following code is modified from astropy.constants to produce a
 # table containing information on the constants contained with PlasmaPy.
 # Mathematical constants can be just entered.
@@ -53,10 +52,11 @@ _lines = [
 ]
 
 _constants = [eval(item) for item in dir() if item[0] != '_' and item != 'pi']
-
 for _const in _constants:
     _lines.append('{0:^10} {1:^17.12g} {2:^16} {3}'
                   .format(_const.abbrev, _const.value, _const._unit_string, _const.name))
+
+_lines.append(_lines[1])
 
 __doc__ += '\n'.join(_lines)
 
