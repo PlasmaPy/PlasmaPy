@@ -115,12 +115,12 @@ Project Details
 ***************
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    about/credits
    about/stability
    about/release_notes
-   about/changelog
+   about/change_log
 
 * `Vision Statement
   <https://github.com/PlasmaPy/PlasmaPy/blob/master/VISION.md>`_
