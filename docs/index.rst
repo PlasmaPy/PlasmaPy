@@ -1,8 +1,3 @@
-.. PlasmaPy documentation master file, created by
-   sphinx-quickstart on Wed May 31 18:16:46 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 :tocdepth: 3
 
 .. _plasmapy-documentation:
@@ -14,6 +9,8 @@ PlasmaPy Documentation
 `PlasmaPy <http://www.plasmapy.org/>`_ is an open source
 community-developed core `Python <https://www.python.org/>`_ 3.6+
 package for plasma physics in the early stages of development.
+
+.. _toplevel-getting-started:
 
 ***************
 Getting Started
@@ -28,13 +25,13 @@ Getting Started
 * `PlasmaPy website
   <http://www.plasmapy.org/>`_
 
-.. user-documentation
+.. _toplevel-user-documentation:
 
 ******************
 User Documentation
 ******************
 
-.. plasma-parameters
+.. _toplevel-plasma-parameters:
 
 Theoretical Analysis
 --------------------
@@ -46,7 +43,7 @@ Theoretical Analysis
    transport/index
    mathematics/index
 
-.. diagnostics
+.. _toplevel-experimental-tools:
 
 Experimental Tools
 ------------------
@@ -59,7 +56,7 @@ development.
 
    diagnostics/index
 
-.. _index-data-structures:
+.. _toplevel-data-structures:
 
 Data Structures and Simulation
 ------------------------------
@@ -67,11 +64,10 @@ Data Structures and Simulation
 .. toctree::
     :maxdepth: 1
 
-    atomic/index
     plasma/index
     species/index
 
-.. _index-utilities:
+.. _toplevel-physical-data:
 
 Physical Data
 -------------
@@ -82,6 +78,8 @@ Physical Data
     constants/index
     atomic/index
 
+.. _toplevel-utilities:
+
 Utilities
 ---------
 
@@ -90,7 +88,7 @@ Utilities
 
    utils/index
 
-.. _index-examples:
+.. _toplevel-examples:
 
 Examples
 --------
@@ -98,6 +96,8 @@ Examples
     :maxdepth: 1
 
     auto_examples/index
+
+.. _toplevel-development-guide:
 
 *****************
 Development Guide
@@ -115,6 +115,8 @@ documentation.
     development/doc_guide
     development/release_guide
 
+.. _toplevel-project-details:
+
 ***************
 Project Details
 ***************
@@ -128,7 +130,7 @@ Project Details
    about/change_log
    about/vision_statement
 
-.. _index:
+.. _toplevel-index:
 
 *****
 Index
