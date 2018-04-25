@@ -7,9 +7,6 @@ import warnings
 
 # plasmapy modules
 from plasmapy import utils
-from plasmapy.utils.checks import (check_quantity,
-                                   _check_relativistic)
-
 from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
 from plasmapy import atomic
 from plasmapy.physics import parameters
@@ -17,6 +14,7 @@ from plasmapy.physics.quantum import (Wigner_Seitz_radius,
                                       thermal_deBroglie_wavelength,
                                       chemical_potential)
 from plasmapy.mathematics import Fermi_integral
+from plasmapy.utils import check_quantity, _check_relativistic
 
 
 @utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
@@ -175,7 +173,6 @@ def Coulomb_logarithm(T,
         6th method listed in Table 1 of reference [3]
         Similar to GMS-4 and GMS-5, but using interpolation methods
         for both bmin and bmax.
-    Lambda < 0 impossible.
 
     Examples
     --------
@@ -223,9 +220,7 @@ def Coulomb_logarithm(T,
         raise ValueError("Unknown method! Choose from 'classical' and 'GMS-N', N from 1 to 6.")
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
-    if ln_Lambda < 0:
-        raise utils.PhysicsError(f"A Coulomb logarithm = {ln_Lambda} < 0 is nonphysical.")
-    elif ln_Lambda < 2 and method in ["classical", "GMS-1", "GMS-2"]:
+    if ln_Lambda < 2 and method in ["classical", "GMS-1", "GMS-2"]:
         warnings.warn(f"Coulomb logarithm is {ln_Lambda} and {method} relies on weak coupling.",
                       utils.CouplingWarning)
     elif ln_Lambda < 4:
@@ -770,25 +765,20 @@ def Coulomb_cross_section(impact_param: u.m):
     'T_e': {'units': u.K, 'can_be_negative': False},
     'n_e': {'units': u.m ** -3, 'can_be_negative': False}
     })
-def collision_rate_electron_ion(T_e,
-                                n_e,
-                                ion_particle,
-                                coulomb_log=None,
-                                V=None,
-                                coulomb_log_method="classical"):
+def fundamental_electron_collision_freq(T_e,
+                                        n_e,
+                                        ion_particle,
+                                        coulomb_log=None,
+                                        V=None,
+                                        coulomb_log_method="classical"):
     r"""
-    Momentum relaxation electron-ion collision rate
+    Average momentum relaxation rate for a slowly flowing Maxwellian distribution of electrons.
 
-    From [3]_, equations (2.17) and (2.120)
-
-    Considering a Maxwellian distribution of "test" electrons colliding with
-    a Maxwellian distribution of "field" ions.
-
-    This result is an electron momentum relaxation rate, and is used in many
-    classical transport expressions. It is equivalent to:
-    * 1/tau_e from ref [1]_ eqn (1) pp. #,
-    * 1/tau_e from ref [2]_ eqn (1) pp. #,
-    * nu_e\i_S from ref [2]_ eqn (1) pp. #,
+    [3]_ provides a derivation of this as an average collision frequency between electrons
+    and ions for a Maxwellian distribution. It is thus a special case of the collision
+    frequency with an averaging factor, and is on many occasions in transport theory
+    the most relevant collision frequency that has to be considered. It is heavily
+    related to diffusion and resistivity in plasmas.
 
     Parameters
     ----------
@@ -816,6 +806,22 @@ def collision_rate_electron_ion(T_e,
         Method used for Coulomb logarithm calculation (see that function
         for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
 
+    Notes
+    -----
+    Equations (2.17) and (2.120) in [3]_ provide the original source used
+    to implement this formula, however, the simplest form that connects our average
+    collision frequency to the general collision frequency is is this (from 2.17):
+
+    .. math::
+        \nu_e = \frac{4}{3 \sqrt{\pi}} \nu(v_{Te})
+
+    Where :math:`\nu` is the general collision frequency and :math:`v_{Te}`
+    is the electron thermal velocity (the average, for a Maxwellian distribution).
+
+    This implementation of the average collision frequency is is equivalent to:
+    * 1/tau_e from ref [1]_ eqn (2.5e) pp. 215,
+    * nu_e from ref [2]_ pp. 33,
+
     References
     ----------
     .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
@@ -825,24 +831,29 @@ def collision_rate_electron_ion(T_e,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
        https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
-    .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [3] J.D. Callen, Fundamentals of Plasma Physics draft material,
+       Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     Examples
     --------
     >>> from astropy import units as u
-    >>> collision_rate_electron_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 0.00180172 1 / s>
-    >>> collision_rate_electron_ion(100 * u.eV, 1e6 / u.m ** 3, 'p')
-    <Quantity 8.6204672e-08 1 / s>
-    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p')
+    >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
+    <Quantity 1.07222852e-07 1 / s>
+    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
     <Quantity 3936037.8595928 1 / s>
-    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
+    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
     <Quantity 3872922.52743562 1 / s>
-    >>> collision_rate_electron_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
+    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
     <Quantity 4.41166015e-07 1 / s>
-    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
+    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
     <Quantity 5812633.74935003 1 / s>
 
+    See Also
+    --------
+    collision_frequency
+    fundamental_ion_collision_freq
     """
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
     if not V:
@@ -883,29 +894,18 @@ def collision_rate_electron_ion(T_e,
     'T_i': {'units': u.K, 'can_be_negative': False},
     'n_i': {'units': u.m ** -3, 'can_be_negative': False}
     })
-def collision_rate_ion_ion(T_i,
-                           n_i,
-                           ion_particle,
-                           coulomb_log=None,
-                           V=None,
-                           coulomb_log_method="classical"):
+def fundamental_ion_collision_freq(T_i,
+                                   n_i,
+                                   ion_particle,
+                                   coulomb_log=None,
+                                   V=None,
+                                   coulomb_log_method="classical"):
     r"""
-    Momentum relaxation ion-ion collision rate
+    Average momentum relaxation rate for a slowly flowing Maxwellian distribution of ions.
 
-    From [3]_, equations (2.36) and (2.122)
-
-    Considering a Maxwellian distribution of "test" ions colliding with
-    a Maxwellian distribution of "field" ions.
-
-    Note, it is assumed that electrons are present in such numbers as to
-    establish quasineutrality, but the effects of the test ions colliding
-    with them are not considered here.
-
-    This result is an ion momentum relaxation rate, and is used in many
-    classical transport expressions. It is equivalent to:
-    * 1/tau_i from ref [1]_ eqn (1) pp. #,
-    * 1/tau_i from ref [2]_ eqn (1) pp. #,
-    * nu_i\i_S from ref [2]_ eqn (1) pp. #,
+    [3]_ provides a derivation of this as an average collision frequency between ions
+    and ions for a Maxwellian distribution. It is thus a special case of the collision
+    frequency with an averaging factor.
 
     Parameters
     ----------
@@ -934,6 +934,30 @@ def collision_rate_ion_ion(T_i,
         Method used for Coulomb logarithm calculation (see that function
         for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
 
+    Notes
+    -----
+    Equations (2.36) and (2.122) in [3]_ provide the original source used
+    to implement this formula, however, in our implementation we use the very
+    same process that leads to the fundamental electron collison rate (2.17),
+    gaining simply a different coefficient:
+
+    .. math::
+        \nu_i = \frac{8}{3 * 4 * \sqrt{\pi}} \nu(v_{Ti})
+
+    Where :math:`\nu` is the general collision frequency and :math:`v_{Ti}`
+    is the ion thermal velocity (the average, for a Maxwellian distribution).
+
+    Note that in the derivation, it is assumed that electrons are present
+    in such numbers as to establish quasineutrality, but the effects of the
+    test ions colliding with them are not considered here. This is a very
+    typical approximation in transport theory.
+
+    This result is an ion momentum relaxation rate, and is used in many
+    classical transport expressions. It is equivalent to:
+    * 1/tau_i from ref [1]_, equation (2.5i) pp. 215,
+    * nu_i from ref [2]_ pp. 33,
+
+
     References
     ----------
     .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
@@ -943,24 +967,29 @@ def collision_rate_ion_ion(T_i,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
        https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
-    .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [3] J.D. Callen, Fundamentals of Plasma Physics draft material,
+       Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     Examples
     --------
     >>> from astropy import units as u
-    >>> collision_rate_ion_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 2.97315582e-05 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e6 / u.m ** 3, 'p')
-    <Quantity 1.43713193e-09 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p')
+    >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
+    <Quantity 1.78316012e-09 1 / s>
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
     <Quantity 66411.80316364 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
     <Quantity 66407.00859126 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
     <Quantity 6.53577473 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
     <Quantity 95918.76240877 1 / s>
 
+    See Also
+    --------
+    collision_frequency
+    fundamental_electron_collision_freq
     """
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     m_i = atomic.particle_mass(ion_particle)

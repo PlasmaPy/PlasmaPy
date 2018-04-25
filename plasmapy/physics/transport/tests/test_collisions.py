@@ -183,13 +183,13 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        with pytest.raises(exceptions.PhysicsError, match="< 0"):
-            methodVal = Coulomb_logarithm(self.temperature2,
-                                          self.density2,
-                                          self.particles,
-                                          z_mean=np.nan * u.dimensionless_unscaled,
-                                          V=np.nan * u.m / u.s,
-                                          method="GMS-1")
+        with pytest.warns(exceptions.CouplingWarning, match="relies on weak coupling"):
+            Coulomb_logarithm(self.temperature2,
+                              self.density2,
+                              self.particles,
+                              z_mean=np.nan * u.dimensionless_unscaled,
+                              V=np.nan * u.m / u.s,
+                              method="GMS-1")
 
     def test_GMS2(self):
         """
@@ -217,7 +217,7 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        with pytest.raises(exceptions.PhysicsError, match="< 0"):
+        with pytest.warns(exceptions.CouplingWarning, match="relies on weak coupling"):
             methodVal = Coulomb_logarithm(self.temperature2,
                                           self.density2,
                                           self.particles,

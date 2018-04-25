@@ -631,26 +631,26 @@ def Hall_parameter(n,
     See Also
     --------
     plasmapy.physics.parameters.gyrofrequency
-    plasmapy.physics.parameters.collision_rate_electron_ion
+    plasmapy.physics.parameters.fundamental_electron_collision_freq
     plasmapy.physics.transport.Coulomb_logarithm
 
     Returns
     -------
     astropy.units.quantity.Quantity
     """
-    from plasmapy.physics.transport.collisions import (collision_rate_ion_ion,
-                                                       collision_rate_electron_ion)
+    from plasmapy.physics.transport.collisions import (fundamental_ion_collision_freq,
+                                                       fundamental_electron_collision_freq)
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
     if atomic.Particle(particle).particle == 'e-':
-        coll_rate = collision_rate_electron_ion(T,
-                                                n,
-                                                ion_particle,
-                                                coulomb_log,
-                                                V,
-                                                coulomb_log_method=coulomb_log_method)
+        coll_rate = fundamental_electron_collision_freq(T,
+                                                        n,
+                                                        ion_particle,
+                                                        coulomb_log,
+                                                        V,
+                                                        coulomb_log_method=coulomb_log_method)
     else:
-        coll_rate = collision_rate_ion_ion(T, n, ion_particle, coulomb_log, V)
+        coll_rate = fundamental_ion_collision_freq(T, n, ion_particle, coulomb_log, V)
     return gyro_frequency / coll_rate
 
 

@@ -10,8 +10,8 @@ from plasmapy.atomic.atomic import _is_electron
 from .collisions import Coulomb_logarithm
 from plasmapy.physics.parameters import (Hall_parameter,
                                          _grab_charge)
-from plasmapy.physics.transport.collisions import (collision_rate_electron_ion,
-                                                   collision_rate_ion_ion)
+from plasmapy.physics.transport.collisions import (fundamental_electron_collision_freq,
+                                                   fundamental_ion_collision_freq)
 from plasmapy.constants import e, m_e, k_B
 
 
@@ -368,11 +368,11 @@ class ClassicalTransport:
                                         self.e_particle,
                                         self.model,
                                         self.field_orientation)
-        tau_e = 1 / collision_rate_electron_ion(self.T_e,
-                                                self.n_e,
-                                                self.ion_particle,
-                                                self.coulomb_log_ei,
-                                                self.V_ei)
+        tau_e = 1 / fundamental_electron_collision_freq(self.T_e,
+                                                        self.n_e,
+                                                        self.ion_particle,
+                                                        self.coulomb_log_ei,
+                                                        self.V_ei)
 
         alpha = alpha_hat / (self.n_e * e ** 2 * tau_e / m_e)
         return alpha.to(u.ohm * u.m)
@@ -409,11 +409,11 @@ class ClassicalTransport:
                                                  self.field_orientation,
                                                  self.mu,
                                                  self.theta)
-        tau_i = 1 / collision_rate_ion_ion(self.T_i,
-                                           self.n_i,
-                                           self.ion_particle,
-                                           self.coulomb_log_ii,
-                                           self.V_ii)
+        tau_i = 1 / fundamental_ion_collision_freq(self.T_i,
+                                                   self.n_i,
+                                                   self.ion_particle,
+                                                   self.coulomb_log_ii,
+                                                   self.V_ii)
         kappa = kappa_hat * (self.n_i * k_B ** 2 * self.T_i * tau_i / self.m_i)
         return kappa.to(u.W / u.m / u.K)
 
@@ -433,11 +433,11 @@ class ClassicalTransport:
                                                  self.field_orientation,
                                                  self.mu,
                                                  self.theta)
-        tau_e = 1 / collision_rate_electron_ion(self.T_e,
-                                                self.n_e,
-                                                self.ion_particle,
-                                                self.coulomb_log_ei,
-                                                self.V_ei)
+        tau_e = 1 / fundamental_electron_collision_freq(self.T_e,
+                                                        self.n_e,
+                                                        self.ion_particle,
+                                                        self.coulomb_log_ei,
+                                                        self.V_ei)
         kappa = kappa_hat * (self.n_e * k_B ** 2 * self.T_e * tau_e / m_e)
         return kappa.to(u.W / u.m / u.K)
 
@@ -457,11 +457,11 @@ class ClassicalTransport:
                                     self.field_orientation,
                                     self.mu,
                                     self.theta)
-        tau_i = 1 / collision_rate_ion_ion(self.T_i,
-                                           self.n_i,
-                                           self.ion_particle,
-                                           self.coulomb_log_ii,
-                                           self.V_ii)
+        tau_i = 1 / fundamental_ion_collision_freq(self.T_i,
+                                                   self.n_i,
+                                                   self.ion_particle,
+                                                   self.coulomb_log_ii,
+                                                   self.V_ii)
         common_factor = self.n_i * k_B * self.T_i * tau_i
         eta1 = np.array(eta_hat) * common_factor
         if not np.isclose(self.hall_i, 0, rtol=1e-8):
@@ -488,11 +488,11 @@ class ClassicalTransport:
                                     self.field_orientation,
                                     self.mu,
                                     self.theta)
-        tau_e = 1 / collision_rate_electron_ion(self.T_e,
-                                                self.n_e,
-                                                self.ion_particle,
-                                                self.coulomb_log_ei,
-                                                self.V_ei)
+        tau_e = 1 / fundamental_electron_collision_freq(self.T_e,
+                                                        self.n_e,
+                                                        self.ion_particle,
+                                                        self.coulomb_log_ei,
+                                                        self.V_ei)
         common_factor = (self.n_e * k_B * self.T_e * tau_e)
         if np.isclose(self.hall_e, 0, rtol=1e-8):
             eta1 = (eta_hat[0] * common_factor,
