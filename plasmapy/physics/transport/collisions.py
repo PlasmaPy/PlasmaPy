@@ -945,7 +945,7 @@ def fundamental_ion_collision_freq(T_i,
     .. math::
         \nu_i = \frac{8}{3 * 4 * \sqrt{\pi}} \nu(v_{Ti})
 
-    Where :math:`\nu` is the general collision frequency and :math:`\v_{Ti}`
+    Where :math:`\nu` is the general collision frequency and :math:`v_{Ti}`
     is the ion thermal velocity (the average, for a Maxwellian distribution).
 
     Note that in the derivation, it is assumed that electrons are present
