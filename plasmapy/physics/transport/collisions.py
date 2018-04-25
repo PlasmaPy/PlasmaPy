@@ -818,7 +818,7 @@ def fundamental_electron_collision_freq(T_e,
     .. math::
         \nu_e = \frac{4}{3 \sqrt{\pi}} \nu(v_{Te})
 
-    Where :math:`\nu` is the general collision frequency and :math:`\v_{Te}`
+    Where :math:`\nu` is the general collision frequency and :math:`v_{Te}`
     is the electron thermal velocity (the average, for a Maxwellian distribution).
 
     This implementation of the average collision frequency is is equivalent to:
