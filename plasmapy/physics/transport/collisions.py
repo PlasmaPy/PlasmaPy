@@ -840,8 +840,8 @@ def fundamental_electron_collision_freq(T_e,
     >>> from astropy import units as u
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 0.00180172 1 / s>
-    >>> fundamental_electron_collision_freq(100 * u.eV, 1e6 / u.m ** 3, 'p')
-    <Quantity 8.6204672e-08 1 / s>
+    >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
+    <Quantity 1.07222852e-07 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
     <Quantity 3936037.8595928 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
@@ -977,8 +977,8 @@ def fundamental_ion_collision_freq(T_i,
     >>> from astropy import units as u
     >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 2.97315582e-05 1 / s>
-    >>> fundamental_ion_collision_freq(100 * u.eV, 1e6 / u.m ** 3, 'p')
-    <Quantity 1.43713193e-09 1 / s>
+    >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
+    <Quantity 1.78316012e-09 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
     <Quantity 66411.80316364 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
