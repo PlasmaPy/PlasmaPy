@@ -8,8 +8,8 @@ providing code and documentation, suggesting and discussing ideas,
 submitting issues and bug reports, and engaging the broader plasma
 physics community.
 
-Imposter syndrome disclaimer
-----------------------------
+Imposter syndrome disclaimer [1]_
+---------------------------------
 
 We want your help. No, really.
 
@@ -33,14 +33,6 @@ about the contribution process). Some of these contributions may be the
 most valuable to the project as a whole, because you’re coming to the
 project with fresh eyes, so you can see the errors and assumptions that
 seasoned contributors have glossed over.
-
-*This disclaimer was originally written by `Adrienne
-Lowe <https://github.com/adriennefriend>`_ for a `PyCon
-talk <https://www.youtube.com/watch?v=6Uj746j9Heo>`_, and was adapted
-by `yt <https://github.com/yt-project/yt>`_ in their README file based
-on its use in the README file for the `MetPy
-project <https://github.com/Unidata/MetPy>`_. It was then adapted by
-PlasmaPy.*
 
 Sharing ideas
 -------------
@@ -99,9 +91,16 @@ code contributions. Do note that you can usually find help in the
 chatroom <https://riot.im/app/#/room/#plasmapy:matrix.org>`_.
 
 For actual guidelines for working on PlasmaPy, please see our
-:ref:`code-development-guide`.
+:ref:`plasmapy-development-guide`.
 
 
-`Code
-Development Guide
-<http://docs.plasmapy.org/en/latest/development/code_guide.html>`_.
+Footnotes
+^^^^^^^^^
+
+.. [1] This disclaimer was originally written by `Adrienne
+       Lowe <https://github.com/adriennefriend>`_ for a `PyCon
+       talk <https://www.youtube.com/watch?v=6Uj746j9Heo>`_.  It was
+       adapted in the README files for
+       `MetPy <https://github.com/Unidata/MetPy>`_ and
+       `yt <https://github.com/yt-project/yt>`_, and was then adapted by
+       PlasmaPy.
