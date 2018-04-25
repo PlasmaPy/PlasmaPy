@@ -46,3 +46,13 @@ PlasmaPy Contributors
 * Dominik Stańczak
 * Antoine Tavant
 * Sixue Xu
+
+Acknowledgements
+================
+Some of the contributions to PlasmaPy have been directly or indirectly
+supported by funding from the following institutions and programs:
+* Department of Energy (US)
+* Google Summer of Code
+* National Science Foundation (US)
+* National Aeronautics and Space Administration (US)
+* Smithsonian Institution
