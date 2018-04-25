@@ -49,8 +49,7 @@ _lines = [
     '========== ================= ================ ============================================',
     'Name       Value             Units            Description',
     '========== ================= ================ ============================================',
-    '========== ================= ================ ============================================',
-    "   pi      3.141592653589793                  Ratio of circumference to diameter of circle"
+    "   pi      3.141592653589793                  Ratio of circumference to diameter of circle",
 ]
 
 _constants = [eval(item) for item in dir() if item[0] != '_' and item != 'pi']
