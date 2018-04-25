@@ -1,4 +1,5 @@
 .. _collisions
+.. py:module:: physics.transport.collisions
 
 Collisions
 **********
@@ -45,3 +46,18 @@ Spitzer_resistivity
 mobility
 Knudsen_number
 coupling_parameter
+
+Reference/API
+=============
+
+.. automodapi:: plasmapy.physics.transport.collisions
+      :skip: Debye_length
+      :skip: Fermi_integral
+      :skip: Wigner_Seitz_raidus
+      :skip: thermal_deBroglie_wavelength
+      :skip: chemical_potential
+      :skip: particle_mass
+      :skip: integer_charge
+      :skip: check_quantity
+      :no-heading:
+      :no-main-docstr:

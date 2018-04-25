@@ -1,4 +1,5 @@
 .. _braginskii
+.. py:module:: physics.transport.braginskii
 
 Braginskii
 **********
@@ -7,6 +8,10 @@ The `~plasmapy.physics.transport.braginskii` subpackage includes a
 class interface 
 `~plasmapy.physics.transport.braginskii.ClassicalTransport` with 
 multiple methods which are involved in modeling classical transport.
+
+.. topic:: Examples:
+
+   * :ref:`sphx_glr_auto_examples_plot_braginskii.py`
 
 .. _Classical transport models
 
@@ -47,3 +52,14 @@ Viscosities
 These include:
 ion_viscosity
 electron_viscosity
+
+Reference/API
+=============
+
+.. automodapi:: plasmapy.physics.transport.braginskii
+    :skip: Coulomb_logarithm
+    :skip: Hall_parameter
+    :skip: collision_rate_electron_ion
+    :skip: collision_rate_ion_ion
+    :no-heading:
+    :no-main-docstr:
