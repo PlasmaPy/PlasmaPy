@@ -173,7 +173,6 @@ def Coulomb_logarithm(T,
         6th method listed in Table 1 of reference [3]
         Similar to GMS-4 and GMS-5, but using interpolation methods
         for both bmin and bmax.
-    Lambda < 0 impossible.
 
     Examples
     --------
@@ -221,9 +220,7 @@ def Coulomb_logarithm(T,
         raise ValueError("Unknown method! Choose from 'classical' and 'GMS-N', N from 1 to 6.")
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
-    if ln_Lambda < 0:
-        raise utils.PhysicsError(f"A Coulomb logarithm = {ln_Lambda} < 0 is nonphysical.")
-    elif ln_Lambda < 2 and method in ["classical", "GMS-1", "GMS-2"]:
+    if ln_Lambda < 2 and method in ["classical", "GMS-1", "GMS-2"]:
         warnings.warn(f"Coulomb logarithm is {ln_Lambda} and {method} relies on weak coupling.",
                       utils.CouplingWarning)
     elif ln_Lambda < 4:
