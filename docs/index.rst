@@ -117,6 +117,7 @@ Project Details
 .. toctree::
    :maxdepth: 2
 
+   about/credits
    about/stability
    about/release_notes
    about/changelog
