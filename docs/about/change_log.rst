@@ -1,19 +1,24 @@
+.. _change-log:
+
 ===================
 PlasmaPy Change Log
 ===================
 
 This document provides a detailed list of changes associated with each
-release of PlasmaPy.  The [release
-notes](https://github.com/PlasmaPy/PlasmaPy/blob/master/RELEASE_NOTES.md)
-contain a narrative description for each version.
+release of PlasmaPy.  The release_notes_ contain a narrative description
+for each version.
 
-Version 0.1.0 (2018-03-xx)
+.. _change-log-0.1.0:
+
+Version `0.1.0` (2018-04-27)
 --------------------------
 
-Version 0.1.0 is the initial development release of PlasmaPy.  This
+Version `0.1.0` is the initial development release of PlasmaPy.  This
 version is a prototype and a preview, and is not feature complete.
 Significant changes to the API are expected to occur between versions
-0.1.0 and 0.2.0.
+`0.1.0` and `0.2.0`.
+
+.. _change-log-0.1.0-new:
 
 New Features
 ~~~~~~~~~~~~
@@ -30,61 +35,73 @@ New Features
   software patents.
 
 * Set up continuous integration testing with Travis CI, CircleCI, and
-  AppVeyor, along with test coverage checks with Coveralls.  
-  
-* Decided upon code and docstring style conventions and set up 
-  automated code style checks with pep8speaks.  
+  AppVeyor, along with test coverage checks with Coveralls.
+
+* Decided upon code and docstring style conventions and set up
+  automated code style checks with pep8speaks.
 
 * Set up automated documentation builds with Sphinx that are hosted on
   Read the Docs.
 
-* Adopted use of `astropy.units` as a units package.  Allowed import of
+* Adopted use of `~astropy.units` as a units package.  Allowed import of
   units as ``import plasmapy.units as u``.
 
-* Created the `atomic` subpackage to provide easy access to commonly
+* Created the `~plasmapy.atomic` subpackage to provide easy access to commonly
   used atomic data.
 
   - Created functional interface to access particle properties and find
     the energy released from nuclear reactions.
 
-  - Created ``Particle`` class.
+  - Created `~plasmapy.atomic.Particle` class.
 
-  - Created ``@particle_input`` decorator.
+  - Created `~particle_input` decorator.
 
-* Created `classes` subpackage with the ``Plasma`` and ``Species`` classes.
+* Created `~plasmapy.classes` subpackage with the
+  `~plasmapy.classes.Plasma` and `~plasmapy.classes.Species` classes.
 
-* Created `constants` subpackage.
+* Created `~plasmapy.constants` subpackage.
 
-* Created `mathematics` subpackage with functionality commonly used in
-  plasma physics.
-
-* Created `physics` subpackage to calculate plasma parameters, transport
-  coefficients, collision rates, and relativity/quantum physics parameters
+* Created `~plasmapy.mathematics` subpackage with functionality commonly
   used in plasma physics.
 
-* Created `utils` subpackage.
+* Created `~plasmapy.physics` subpackage with a
+  `~plasmapy.physics.transport` module to calculate plasma parameters,
+  transport coefficients, collision rates, and relativity/quantum
+  physics parameters used in plasma physics.
 
-  - Created ``@check_quantity`` and ``@check_relativistic``
-    decorators.
+* Created `~plasmapy.utils` subpackage.
 
-  - Added custom exceptions, including several for the `atomic`
-    subpackage.
-    
+  - Created `~plasmapy.utils.check_quantity` and
+    `~plasmapy.utils.check_relativistic` decorators.
+
+  - Added custom exceptions, including several for the
+    `~plasmapy.atomic` subpackage.
+
   - Added import helper and test helper functionality.
 
-* Created basic framework for `diagnostics` subpackage.
+* Created basic framework for `~plasmapy.diagnostics` subpackage.
 
-* Created a repository for PlasmaPy Enhancement Proposals.
+  - Added initial support for the analysis of Langmuir probes.
+
+* Created a repository for `PlasmaPy Enhancement Proposals
+  <https://github.com/PlasmaPy/PlasmaPy-PLEPs>`_.
 
 * Included astropy-helpers as a submodule.
+
+.. _change-log-0.1.0-api:
 
 Changes to API
 ~~~~~~~~~~~~~~
 
 - PlasmaPy now has an API.
 
+.. _change-log-0.1.0-bugfix:
+
 Bug Fixes
 ~~~~~~~~~
 
 - Fixed bug in universe that cause solar neutrinos to oscillate
   between different flavors.
+
+.. I went to a talk on neutrinos once, but it all just went in one ear
+   and out the other.
