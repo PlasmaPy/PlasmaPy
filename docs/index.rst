@@ -73,6 +73,15 @@ Data Structures and Simulation
 
 .. _index-utilities:
 
+Physical Data
+-------------
+
+.. toctree::
+    :maxdepth: 1
+
+    constants/index
+    atomic/index
+
 Utilities
 ---------
 
@@ -99,7 +108,7 @@ contribute to PlasmaPy, along with guidelines for code, testing, and
 documentation.
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     development/code_guide
     development/testing_guide

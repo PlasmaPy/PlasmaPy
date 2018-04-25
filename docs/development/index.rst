@@ -1,4 +1,4 @@
-.. plasmapy-development-guide
+.. _plasmapy-development-guide:
 
 **************************
 PlasmaPy Development Guide
