@@ -20,10 +20,8 @@ Getting Started
 
 * `Installing PlasmaPy
   <https://github.com/PlasmaPy/PlasmaPy/blob/master/INSTALL.md>`_
-* `Contributing to PlasmaPy
-  <https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTING.md>`_
-* `Code of conduct
-  <https://github.com/PlasmaPy/PlasmaPy/blob/master/CODE_OF_CONDUCT.md>`_
+* :ref:`contributing`
+* :ref:`code-of-conduct`
 * `PlasmaPy on GitHub
   <https://github.com/PlasmaPy/plasmapy>`_
 * `PlasmaPy website
@@ -37,7 +35,7 @@ User Documentation
 
 .. plasma-parameters
 
-Theoretical analysis
+Theoretical Analysis
 --------------------
 
 .. toctree::
@@ -49,8 +47,8 @@ Theoretical analysis
 
 .. diagnostics
 
-Experimental tools
------------
+Experimental Tools
+------------------
 
 The `~plasmapy.diagnostics` package is in the early stages of
 development.
@@ -62,7 +60,7 @@ development.
 
 .. data-structures
 
-Data Structures and simulation
+Data Structures and Simulation
 ------------------------------
 
 .. toctree::
@@ -121,9 +119,7 @@ Project Details
    about/stability
    about/release_notes
    about/changelog
-
-* `Vision Statement
-  <https://github.com/PlasmaPy/PlasmaPy/blob/master/VISION.md>`_
+   about/vision_statement
 
 .. _index:
 
