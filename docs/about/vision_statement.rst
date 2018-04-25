@@ -1,4 +1,6 @@
-Vision statement
+.. _plasmapy-vision-statement:
+
+Vision Statement
 ================
 
 About PlasmaPy
@@ -23,7 +25,7 @@ software package for plasma physics.
 
 There is considerable need in plasma physics for open, general purpose
 software framework using modern `best practices for scientific
-computing <http://dx.doi.org/10.1371/journal.pbio.1001745>`__. As most
+computing <http://dx.doi.org/10.1371/journal.pbio.1001745>`_. As most
 scientific programmers are largely self-taught, software often does not
 take advantage of these practices and is instead written in a rush to
 produce results for the next research paper. The resulting code is often
@@ -61,9 +63,9 @@ platform. This is where PlasmaPy comes in.
 PlasmaPy Community Code of Conduct
 ----------------------------------
 
-Please see the attached `Code of Conduct <CODE_OF_CONDUCT.md>`__.
+Please see the attached :ref:`plasmapy-code-of-conduct`.
 
-Organizational structure
+Organizational Structure
 ------------------------
 
 The Coordinating Committee (CC) will oversee the PlasmaPy project and
@@ -79,7 +81,7 @@ organizing conferences, trainings, and workshops; maintaining and
 moderating social media groups and accounts; overseeing PlasmaPy’s
 website; and communicating with the PlasmaPy and plasma physics
 communities. The CEC will facilitate partnerships with groups such as
-`Software Carpentry <https://software-carpentry.org/>`__.
+`Software Carpentry <https://software-carpentry.org/>`_.
 
 Each subpackage will have lead and deputy coordinators who will guide
 and oversee the development of that subpackage.
@@ -96,9 +98,9 @@ committee. Major decisions should ideally be made by general consensus
 among the PlasmaPy community, but when consensus is not possible then
 the committees may decide via majority vote. Much of this section is
 following the `organizational structure of
-Astropy <http://www.astropy.org/team.html>`__.
+Astropy <http://www.astropy.org/team.html>`_.
 
-Development procedure
+Development Procedure
 ---------------------
 
 The initial developers of PlasmaPy will create a flexible development
@@ -124,11 +126,11 @@ maintainers and the CC. The CC and CEC will develop a friendly guide on
 how users may contribute new code to PlasmaPy.
 
 New code should conform to the `PEP 8 style guide for Python
-code <https://www.python.org/dev/peps/pep-0008/>`__ and the established
+code <https://www.python.org/dev/peps/pep-0008/>`_ and the established
 coding style within PlasmaPy. New code should be submitted with
 documentation and tests. Documentation should be written primarily in
 docstrings and follow the `numpydoc documentation style
-guide <https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt>`__.
+guide <https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt>`_.
 Every new module, class and function should have an appropriate
 docstring. The documentation should describe the interface and the
 purpose for the method, but generally not the implementation. The code
@@ -141,24 +143,25 @@ development of a new feature when the application program interface
 (API) is not yet stable], but with caution since this may imply loss of
 backwards compatibility.
 
-Members of the PlasmaPy community may submit PlasmaPy Enhancement
-Proposals (PLEPs) to suggest changes such as major reorganization of a
-subpackage, creation of a new subpackage, non-backwards compatible
-changes to a stable package, or significant changes to policies and
-procedures related to the organization of this project. The issues list
-on GitHub will generally be more appropriate for changes that do not
-require community discussion. The CC shall maintain a GitHub repository
-of PLEPs. PLEPs will be made openly available for community discussion
-and transparency for a period of at least four weeks, during which time
-the proposal may be updated and revised by the proposers. The CC shall
-approve or decline these proposals after seeking community input. The
-rationale behind the decision and a summary of the community discussion
-shall be recorded along with the PLEP.
+Members of the PlasmaPy community may submit `PlasmaPy Enhancement
+Proposals (PLEPs) <https://github.com/PlasmaPy/PlasmaPy-PLEPs>`_ to
+suggest changes such as major reorganization of a subpackage, creation
+of a new subpackage, non-backwards compatible changes to a stable
+package, or significant changes to policies and procedures related to
+the organization of this project. The issues list on GitHub will
+generally be more appropriate for changes that do not require community
+discussion. The CC shall maintain a GitHub repository of PLEPs. PLEPs
+will be made openly available for community discussion and transparency
+for a period of at least four weeks, during which time the proposal may
+be updated and revised by the proposers. The CC shall approve or decline
+these proposals after seeking community input. The rationale behind the
+decision and a summary of the community discussion shall be recorded
+along with the PLEP.
 
-Programming guidelines
+Programming Guidelines
 ----------------------
 
-Choice of languages
+Choice of Languages
 ~~~~~~~~~~~~~~~~~~~
 
 PlasmaPy shall be written using Python 3. PlasmaPy shall initially
@@ -179,7 +182,7 @@ maintaining the significant advantages of using a high level language.
 Versioning
 ~~~~~~~~~~
 
-PlasmaPy will use `Semantic Versioning <http://semver.org/>`__. Releases
+PlasmaPy will use `Semantic Versioning <http://semver.org/>`_. Releases
 will be given version numbers of the form *MAJOR*.\ *MINOR*.\ *PATCH*,
 where *MAJOR*, *MINOR*, and *PATCH* are nonnegative integers. Starting
 with version 1.0, *MAJOR* will be incremented when backwards
@@ -213,7 +216,7 @@ for it, and if these packages are easily installed with currently
 available package managers. Subpackages may use additional dependencies
 when appropriate.
 
-Affiliated packages
+Affiliated Packages
 ~~~~~~~~~~~~~~~~~~~
 
 We will follow the practice of Astropy by having a core package and
