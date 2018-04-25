@@ -1,3 +1,5 @@
+.. _contributing-to-plasmapy:
+
 Contributing to PlasmaPy
 ========================
 

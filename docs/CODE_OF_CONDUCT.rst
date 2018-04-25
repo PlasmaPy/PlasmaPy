@@ -1,3 +1,5 @@
+.. _plasmapy-code-of-conduct:
+
 PlasmaPy Community Code of Conduct
 ==================================
 

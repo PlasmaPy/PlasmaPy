@@ -20,8 +20,8 @@ Getting Started
 
 * `Installing PlasmaPy
   <https://github.com/PlasmaPy/PlasmaPy/blob/master/INSTALL.md>`_
-* :ref:`contributing`
-* :ref:`code-of-conduct`
+* :ref:`contributing-to-plasmapy`
+* :ref:`plasmapy-code-of-conduct`
 * `PlasmaPy on GitHub
   <https://github.com/PlasmaPy/plasmapy>`_
 * `PlasmaPy website
