@@ -24,6 +24,7 @@ Getting Started
   <https://github.com/PlasmaPy/plasmapy>`_
 * `PlasmaPy website
   <http://www.plasmapy.org/>`_
+* `Using astropy.units <http://docs.astropy.org/en/stable/units/>`_
 
 .. _toplevel-user-documentation:
 
