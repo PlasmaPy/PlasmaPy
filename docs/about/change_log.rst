@@ -6,7 +6,7 @@ Change Log
 
 This document lists the changes made during each release of PlasmaPy,
 including bug fixes and changes to the application programming interface
-(API).  The :ref:`release_notes` summarize the changes for each version.
+(API).  The :ref:`release-notes` summarize the changes for each version.
 
 .. _change-log-0.1.0:
 

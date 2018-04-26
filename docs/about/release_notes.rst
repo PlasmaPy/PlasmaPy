@@ -6,7 +6,7 @@ Release Notes
 
 This document contains the release notes for each version of PlasmaPy.
 A list of the changes for each version are included in the
-:ref:`change_log_`.
+:ref:`change-log`.
 
 PlasmaPy uses `semantic versioning <http://www.semver.org/>`_.  Version
 numbers are of the form `MAJOR.MINOR.PATCH`.  Development releases have
