@@ -5,8 +5,9 @@ PlasmaPy Change Log
 ===================
 
 This document provides a detailed list of changes associated with each
-release of PlasmaPy.  The :ref:`release_notes` summarize the changes
-for each version.
+release of PlasmaPy, including bug fixes and changes to the application
+programming interface (API).  The :ref:`release_notes` summarize the
+changes for each version.
 
 .. _change-log-0.1.0:
 
@@ -15,78 +16,95 @@ Version `0.1.0` (2018-04-27)
 
 Version `0.1.0` is the initial development release of PlasmaPy.  This
 version is a prototype and a preview, and is not feature complete.
-Significant changes to the API are expected to occur between versions
-`0.1.0` and `0.2.0`.
+Significant changes to the API are
+expected to occur between versions `0.1.0` and `0.2.0`.
 
 .. _change-log-0.1.0-new:
 
 New Features
 ~~~~~~~~~~~~
 
-* The vision statement describes the motivation of early PlasmaPy
-  developers in creating a fully open source Python package for plasma
-  physics.
+* Composed :ref:`plasmapy-vision-statement`.
 
-* Added a code of conduct.
+* Adopted the :ref:`plasmapy-code-of-conduct`.
 
-* Added a contribution guide.
+* Created a guide on :ref:`contributing-to-plasmapy`.
 
-* Adopted a BSD 3-clause license and added protections against
-  software patents.
+* Adopted a permissive BSD 3-clause `license
+  <https://github.com/PlasmaPy/PlasmaPy/blob/master/LICENSE.md>`_ with
+  protections against software patents.
 
-* Set up continuous integration testing with Travis CI, CircleCI, and
-  AppVeyor, along with test coverage checks with Coveralls.
+* Set up continuous integration testing with `Travis CI
+  <https://travis-ci.org/>`_, `CircleCI <https://circleci.com/>`_, and
+  `AppVeyor <https://www.appveyor.com/>`_, along with test coverage
+  checks with `Coveralls <https://coveralls.io/>`_.
 
 * Decided upon code and docstring style conventions and set up
-  automated code style checks with pep8speaks.
+  automated code style checks with `pep8speaks
+  <https://pep8speaks.com/>`_.
 
-* Set up automated documentation builds with Sphinx that are hosted on
-  Read the Docs.
+* Developed `online documentation for PlasmaPy
+  <http://docs.plasmapy.org>`_ that is hosted by `Read the Docs
+  <https://readthedocs.org/>`_.
+
+  - Automated documentation builds with `Sphinx
+    <http://www.sphinx-doc.org/>`_.
+
+  - Wrote narrative documentation for each subpackage.
 
 * Adopted use of `~astropy.units` as a units package.
 
-* Created the `~plasmapy.atomic` subpackage to provide easy access to commonly
-  used atomic data.
+* Created the `~plasmapy.atomic` subpackage to provide easy access to
+  commonly used atomic data.
 
-  - Created functional interface to access particle properties and find
-    the energy released from nuclear reactions.
+  - Created a functional interface to access particle properties and
+    find the energy released from nuclear reactions.
 
-  - Created `~plasmapy.atomic.Particle` class as an object-oriented interface
-    to the `~plasmapy.atomic` subpackage.
+  - Created the `~plasmapy.atomic.Particle` class as an object-oriented
+    interface to the `~plasmapy.atomic` subpackage.
 
-  - Created `~particle_input` decorator.
+  - Created the `~plasmapy.atomic.particle_input` decorator.
 
-* Created `~plasmapy.classes` subpackage with the
-  `~plasmapy.classes.Plasma` and `~plasmapy.classes.Species` classes.
+* Created the `~plasmapy.classes` subpackage that includes the
+  `~plasmapy.classes.Plasma3D`, `~plasmapy.classes.PlasmaBlob`, and
+  `~plasmapy.classes.Species` classes.
 
-* Created `~plasmapy.constants` subpackage.
+.. I think I need to figure out some synonyms for "created".
 
-* Created `~plasmapy.mathematics` subpackage with functionality commonly
-  used in plasma physics.
+* Created the `~plasmapy.constants` subpackage.
 
-* Created `~plasmapy.physics` subpackage with a
+* Created the `~plasmapy.mathematics` subpackage that contains
+  analytical functions commonly used in plasma physics.
+
+* Created the `~plasmapy.physics` subpackage with its
   `~plasmapy.physics.transport` module to calculate plasma parameters,
-  transport coefficients, collision rates, and relativity/quantum
-  physics parameters used in plasma physics.
+  transport coefficients, dielectric tensor elements, collision rates,
+  and relativity/quantum physics parameters used in plasma physics.
 
-* Created `~plasmapy.utils` subpackage.
+* Created the `~plasmapy.utils` subpackage.
 
   - Created `~plasmapy.utils.check_quantity` and
     `~plasmapy.utils.check_relativistic` decorators.
 
-  - Added custom exceptions, including several for the
-    `~plasmapy.atomic` subpackage.
+  - Created custom exceptions.
 
   - Added import helper and test helper functionality.
 
-* Created basic framework for `~plasmapy.diagnostics` subpackage.
+* Began development of the `~plasmapy.diagnostics` subpackage.
 
-  - Added initial support for the analysis of Langmuir probes.
+  - Created a module to interpret Langmuir probe data.
 
 * Created a repository for `PlasmaPy Enhancement Proposals
   <https://github.com/PlasmaPy/PlasmaPy-PLEPs>`_.
 
-* Included astropy-helpers as a submodule.
+* Began using `type hint annotations
+  <https://docs.python.org/3/library/typing.html>`_.
+
+* Set up architecture to incorporate `Cython <http://cython.org/>`_ into
+  performance-critical sections of code.
+
+* Incorporated import and setup tools from the `~astropy_helpers`
+  package.
 
 .. _change-log-0.1.0-api:
 

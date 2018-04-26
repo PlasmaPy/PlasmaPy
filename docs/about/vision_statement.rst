@@ -1,7 +1,7 @@
 .. _plasmapy-vision-statement:
 
-Vision Statement
-================
+PlasmaPy's Vision Statement
+===========================
 
 About PlasmaPy
 --------------
