@@ -1,23 +1,22 @@
 .. _change-log:
 
-===================
-PlasmaPy Change Log
-===================
+==========
+Change Log
+==========
 
-This document provides a detailed list of changes associated with each
-release of PlasmaPy, including bug fixes and changes to the application
-programming interface (API).  The :ref:`release_notes` summarize the
-changes for each version.
+This document lists the changes made during each release of PlasmaPy,
+including bug fixes and changes to the application programming interface
+(API).  The :ref:`release_notes` summarize the changes for each version.
 
 .. _change-log-0.1.0:
 
-Version `0.1.0` (2018-04-27)
---------------------------
+Version `0.1.0`
+---------------
 
 Version `0.1.0` is the initial development release of PlasmaPy.  This
 version is a prototype and a preview, and is not feature complete.
-Significant changes to the API are
-expected to occur between versions `0.1.0` and `0.2.0`.
+Significant changes to the API are expected to occur between versions
+`0.1.0` and `0.2.0`.
 
 .. _change-log-0.1.0-new:
 
@@ -65,11 +64,9 @@ New Features
 
   - Created the `~plasmapy.atomic.particle_input` decorator.
 
-* Created the `~plasmapy.classes` subpackage that includes the
+* Created the `~plasmapy.classes` subpackage that includes the prototype
   `~plasmapy.classes.Plasma3D`, `~plasmapy.classes.PlasmaBlob`, and
   `~plasmapy.classes.Species` classes.
-
-.. I think I need to figure out some synonyms for "created".
 
 * Created the `~plasmapy.constants` subpackage.
 
@@ -105,6 +102,8 @@ New Features
 
 * Incorporated import and setup tools from the `~astropy_helpers`
   package.
+
+* Set up a page describing the :ref:`subpackage-stability`.
 
 .. _change-log-0.1.0-api:
 
