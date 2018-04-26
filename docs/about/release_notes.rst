@@ -1,11 +1,12 @@
 .. _release-notes:
 
-======================
-PlasmaPy Release Notes
-======================
+=============
+Release Notes
+=============
 
 This document contains the release notes for each version of PlasmaPy.
-A list of the changes for each version are included in the :ref:`change_log_`.
+A list of the changes for each version are included in the
+:ref:`change_log_`.
 
 PlasmaPy uses `semantic versioning <http://www.semver.org/>`_.  Version
 numbers are of the form `MAJOR.MINOR.PATCH`.  Development releases have
@@ -18,49 +19,102 @@ whenever the API changes in a way that is not backwards compatible,
 backwards compatibility, and `PATCH` must be incremented for each bug
 fix release.
 
-Version `0.1.0` (2018-04-27)
---------------------------
-We are pleased to announce the first development release of
-`PlasmaPy <http://www.plasmapy.org/>`_: a community-developed fully open
-source core Python package for plasma physics.
+Version `0.1.0`
+---------------
+
+We are excited to announce the first development release of `PlasmaPy
+<http://www.plasmapy.org/>`_: a community-developed fully open source
+core Python package for plasma physics.
 
 Version `0.1.0` is a preview and a prototype.  It is not yet feature
 complete or recommended for production work.  Significant changes to the
-API are expected to occur between versions `0.1.0` and `0.2.0` and
-throughout the development phase. Rather, version `0.1.0` serves as an
-invitation to plasma physicists to collaboratively develop a
-community-wide shared software package for our field.
+API are expected to occur between versions `0.1.0` and `0.2.0`.  Rather,
+version `0.1.0` serves as an invitation to plasma students and
+scientists to collaboratively develop a community-wide shared software
+package for our field.
 
-.. What needs to be included still?
-   Link to vision statement and code of conduct.
-   Requirements
-   Link to how to install
-   Link to doc page for each subpackage
+If you have a scientific Python 3.6+ environment already configured,
+you may install PlasmaPy with `pip <https://pypi.org/project/pip/>`_ by
+running:
 
-PlasmaPy is compatible with Python 3.6.  The core developers chose to
-support Python 3.6+ because Python 2.7 will cease to be supported by
-most scientific Python packages within about a year, Python 3.6 is
-likely to be the oldest version of Python still in use by the time we
-release PlasmaPy `1.0.0`, and (3) Python 3.6 contains new features such
-as formatted string literals that greatly improve readability.
+.. code-block::
+    pip install plasmapy
 
-PlasmaPy uses the `~astropy.units` package for compatibility with
+We recommend installing PlasmaPy in an Anaconda environment. `PlasmaPy's
+GitHub repository <https://github.com/PlasmaPy/PlasmaPy>`_ contains
+more detailed `installation instructions
+<https://github.com/PlasmaPy/PlasmaPy/blob/master/INSTALL.md>`_.
+
+PlasmaPy uses Astropy's `~astropy.units` subpackage to represent
+physical quantities with units, and for compatibility with
 `Astropy <http://www.astropy.org/>`_ and `SunPy <http://sunpy.org/>`_.
+This subpackage handles unit conversions, and raises exceptions for
+operations that have incompatible units.  New users may wish to become
+familiar with this functionality by reading Astropy's `units subpackage
+documentation <http://docs.astropy.org/en/stable/units/>`_.  An example
+use case is:
+
+    >>> import astropy.units as u
+    >>> 88 * u.imperial.mi / u.hr
+    <Quantity 88. mi / h>
+    >>> (1.21e9 * u.J / u.s).to(u.GW)
+    <Quantity 1.21 GW>
+
+PlasmaPy's `~plasmapy.physics` subpackage contains functions to
+calculate a wide variety of plasma parameters, dielectric tensor
+components, and relativity/quantum physics parameters used in plasma
+physics.  The `~plasmapy.physics.transport` module of
+`~plasmapy.physics` contains functionality to calculate collision rates
+and transport parameters (including an object-oriented interface to
+classical transport coefficients).  The `~plasmapy.atomic` subpackage
+includes both functional and object-oriented interfaces to access atomic
+parameters and represent particles. The `~plasmapy.mathematics`
+subpackage contains analytical functions that are commonly used in
+plasma physics (including the plasma dispersion function).  The
+`~plasmapy.classes` subpackage includes prototype classes to represent
+plasma configurations, including a particle pusher.
+
+PlasmaPy requires Python 3.6+.  The core developers chose to
+support Python 3.6+ because Python 2.7 will cease to be supported by
+most scientific Python packages within about a year, Python 3.6 will
+likely to be the oldest version of Python still in common use by the
+time we release PlasmaPy `1.0.0`, and Python 3.6 contains new features
+such as formatted string literals that greatly improve readability.
 
 If there is functionality that you would like future versions of
-PlasmaPy to include, we encourage you to
+PlasmaPy to include or if you discover a bug, we encourage you to
 `raise an issue <https://github.com/PlasmaPy/PlasmaPy/issues/new>`_ with
 your ideas or even contribute code directly.
 
-This release includes roughly 1800 commits with contributions from about
-35 different contributors to the code base and vision statement.  The
-people who have contributed to this release include:
+The following resources provide more information on PlasmaPy, including
+how to contribute.
+
+* `PlasmaPy's online documentation <docs.plasmapy.org>`_
+* `PlasmaPy's GitHub repository <https://github.com/PlasmaPy/PlasmaPy>`_
+* A guide on :ref:`contributing-to-plasmapy`
+* :ref:`subpackage-stability`
+* :ref:`plasmapy-vision-statement`
+* `PlasmaPy's website <http://www.plasmapy.org/>`_
+* :ref:`plasmapy-code-of-conduct`
+
+This release includes over 1800 commits and 173 merged pull requests,
+with contributions from 35 different people to the code base or the
+vision statement.
+
+PlasmaPy's Coordinating Committee includes:
+
+* Drew Leonard
+* Nick Murphy
+* Tulasi Parashar
+* Dominik Stańczak
+
+The people who have contributed to this release include:
 
 * Jasper Beckers
 * Ludovico Bessi
 * Sean Carroll
 * Apoorv Choubey
-* C. Clauss
+* cclauss
 * Leah Einhorn
 * Thomas Fan
 * Graham Goudeau
