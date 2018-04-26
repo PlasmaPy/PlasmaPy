@@ -111,6 +111,8 @@ documentation.
 .. toctree::
     :maxdepth: 1
 
+    CONTRIBUTING
+    CODE_OF_CONDUCT
     development/code_guide
     development/testing_guide
     development/doc_guide
@@ -130,6 +132,7 @@ Project Details
    about/release_notes
    about/change_log
    about/vision_statement
+
 
 .. _toplevel-index:
 
