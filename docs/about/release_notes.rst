@@ -38,6 +38,7 @@ you may install PlasmaPy with `pip <https://pypi.org/project/pip/>`_ by
 running:
 
 .. code-block::
+
     pip install plasmapy
 
 We recommend installing PlasmaPy in an Anaconda environment. `PlasmaPy's
