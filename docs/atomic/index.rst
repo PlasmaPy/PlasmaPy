@@ -1,4 +1,4 @@
-.. py:module:: atomic
+.. py:module:: plasmapy.atomic
 
 .. _plasmapy-atomic:
 

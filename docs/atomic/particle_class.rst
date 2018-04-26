@@ -37,7 +37,7 @@ keyword and the integer charge may be represented with the `Z` keyword.
 >>> proton = Particle(1, mass_numb=1, Z=1)
 
 The most frequently used `~plasmapy.atomic.Particle` instances may be
-imported directly from the atomic subpackage.  
+imported directly from the atomic subpackage.
 
 >>> from plasmapy.atomic import proton, electron
 
@@ -172,10 +172,10 @@ Returning Antiparticles
 =======================
 
 The antiparticle of an elementary particle or antiparticle may be found
-by using the unary operator `~` to invert a `~plasmapy.atomic.Particle`
-instance.
+by either using Python's unary invert operator (~) or the `antiparticle`
+attribute of a `~plasmapy.atomic.Particle` instance.
 
 >>> ~electron
 Particle("e+")
->>> ~antimuon
+>>> antimuon.antiparticle
 Particle("mu-")

@@ -1,4 +1,4 @@
-.. py:module:: utils
+.. py:module:: plasmapy.utils
 
 .. _plasmapy-utils:
 

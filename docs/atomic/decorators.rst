@@ -5,8 +5,8 @@ Decorators
 
 .. _atomic-decorators
 
-`plasmapy.atomic.particle_input`
-================================
+Passing `~plasmapy.atomic.Particle` Instances to Functions and Methods
+======================================================================
 
 When calculating plasma parameters, we very frequently need to access
 the properties of the particles that make up that plasma. The
