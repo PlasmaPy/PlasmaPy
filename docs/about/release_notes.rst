@@ -1,8 +1,8 @@
 .. _release-notes:
 
-=============
+#############
 Release Notes
-=============
+#############
 
 This document contains the release notes for each version of PlasmaPy.
 A list of the changes for each version are included in the

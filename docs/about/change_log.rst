@@ -1,8 +1,8 @@
 .. _change-log:
 
-==========
+##########
 Change Log
-==========
+##########
 
 This document lists the changes made during each release of PlasmaPy,
 including bug fixes and changes to the application programming interface
