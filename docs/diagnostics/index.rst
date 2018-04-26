@@ -1,4 +1,4 @@
-.. py:module:: diagnostics
+.. py:module:: plasmapy.diagnostics
 
 .. _diagnostics:
 

@@ -1,4 +1,4 @@
-.. py:module:: mathematics
+.. py:module:: plasmapy.mathematics
 
 .. _mathematics:
 

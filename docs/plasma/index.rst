@@ -1,4 +1,4 @@
-.. py:module:: classes.plasma
+.. py:module:: plasmapy.classes.plasma
 
 .. _plasma:
 

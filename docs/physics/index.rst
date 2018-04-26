@@ -1,4 +1,4 @@
-.. py:module:: physics
+.. py:module:: plasmapy.physics
 
 .. _plasmapy-physics:
 

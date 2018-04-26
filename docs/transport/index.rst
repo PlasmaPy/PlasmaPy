@@ -1,4 +1,4 @@
-.. py:module:: physics.transport
+.. py:module:: plasmapy.physics.transport
 
 .. _plasmapy-physics-transport:
 
