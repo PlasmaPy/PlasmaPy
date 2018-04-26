@@ -19,17 +19,17 @@ whenever the API changes in a way that is not backwards compatible,
 backwards compatibility, and `PATCH` must be incremented for each bug
 fix release.
 
-Version `0.1.0`
----------------
+Version 0.1.0
+-------------
 
 We are excited to announce the first development release of `PlasmaPy
 <http://www.plasmapy.org/>`_: a community-developed fully open source
 core Python package for plasma physics.
 
-Version `0.1.0` is a preview and a prototype.  It is not yet feature
+Version 0.1.0 is a preview and a prototype.  It is not yet feature
 complete or recommended for production work.  Significant changes to the
-API are expected to occur between versions `0.1.0` and `0.2.0`.  Rather,
-version `0.1.0` serves as an invitation to plasma students and
+API are expected to occur between versions 0.1.0 and 0.2.0.  Rather,
+version 0.1.0 serves as an invitation to plasma students and
 scientists to collaboratively develop a community-wide shared software
 package for our field.
 
@@ -78,7 +78,7 @@ PlasmaPy requires Python 3.6+.  The core developers chose to
 support Python 3.6+ because Python 2.7 will cease to be supported by
 most scientific Python packages within about a year, Python 3.6 will
 likely to be the oldest version of Python still in common use by the
-time we release PlasmaPy `1.0.0`, and Python 3.6 contains new features
+time we release PlasmaPy 1.0.0, and Python 3.6 contains new features
 such as formatted string literals that greatly improve readability.
 
 If there is functionality that you would like future versions of
