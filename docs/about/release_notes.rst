@@ -37,7 +37,7 @@ If you have a scientific Python 3.6+ environment already configured,
 you may install PlasmaPy with `pip <https://pypi.org/project/pip/>`_ by
 running:
 
-.. code-block::
+.. code-block:: python
 
     pip install plasmapy
 
