@@ -6,12 +6,12 @@ deps-run: &deps-install
 
 html-run: &doc-html
   name: Build HTML documentation
-  command: python setup.py build_docs
+  command: python setup.py build_docs -w
 
 latex-run: &doc-latex
   name: Build LaTeX documentation
   command: |
-    make latexpdf 2>/tmp/TexError 1>/dev/null
+    make latexpdf 2>/tmp/TexError 1>/dev/null -w
     cat /tmp/TexError
   working_directory: docs
 
