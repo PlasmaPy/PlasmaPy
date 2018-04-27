@@ -1,9 +1,7 @@
-.. _atomic-decorators
+.. _atomic-decorators:
 
 Decorators
 **********
-
-.. _atomic-decorators
 
 Passing `~plasmapy.atomic.Particle` Instances to Functions and Methods
 ======================================================================

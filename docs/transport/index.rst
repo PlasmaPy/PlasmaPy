@@ -15,8 +15,10 @@ The `plasmapy.physics.transport` subpackage covers the difficult area of transpo
 .. topic:: Examples:
 
    * :ref:`sphx_glr_auto_examples_plot_braginskii.py`
+
 Reference/API
 =============
 
 .. automodapi:: plasmapy.physics.transport.braginskii
 .. automodapi:: plasmapy.physics.transport.collisions
+
