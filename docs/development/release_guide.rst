@@ -27,6 +27,8 @@ for guidance.
 
 * Create a new branch for the release that is separate from the master
   branch
+  
+* Merge (via fast-forward merge with `git merge --ff-only`) changes from `master` into `stable`
 
 * Make sure all tests pass
 
