@@ -4,6 +4,9 @@ from astropy import units as u
 from ..constants import c
 from plasmapy import atomic, utils
 
+__all__ = [
+    "Lorentz_factor",
+]
 
 @utils.check_quantity({
     'V': {'units': u.m / u.s, 'can_be_negative': True}

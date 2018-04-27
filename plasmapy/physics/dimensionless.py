@@ -11,6 +11,7 @@ from astropy import units as u
 from plasmapy import constants, utils
 from plasmapy.physics import quantum, parameters
 
+__all__ = ['quantum_theta', 'beta']
 
 @utils.check_quantity({
     'T': {'units': u.K, 'can_be_negative': False},

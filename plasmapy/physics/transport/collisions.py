@@ -16,6 +16,20 @@ from plasmapy.physics.quantum import (Wigner_Seitz_radius,
 from plasmapy.mathematics import Fermi_integral
 from plasmapy.utils import check_quantity, _check_relativistic
 
+__all__=[
+    "Coulomb_logarithm",
+    "impact_parameter_perp",
+    "impact_parameter",
+    "collision_frequency",
+    "Coulomb_cross_section",
+    "fundamental_electron_collision_freq",
+    "fundamental_ion_collision_freq",
+    "mean_free_path",
+    "Spitzer_resistivity",
+    "mobility",
+    "Knudsen_number",
+    "coupling_parameter",
+]
 
 @utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
                        "n_e": {"units": u.m ** -3}

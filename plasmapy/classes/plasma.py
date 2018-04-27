@@ -26,6 +26,10 @@ from plasmapy.atomic import (particle_mass,
 
 from plasmapy.utils import call_string, CouplingWarning
 
+__all__ =[
+    "Plasma3D",
+    "PlasmaBlob"
+]
 
 class Plasma3D:
     """

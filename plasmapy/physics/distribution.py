@@ -5,6 +5,15 @@ from plasmapy.physics import parameters
 import numpy as np
 from scipy.special import gamma
 
+__all__ = [
+    "_v_drift_units",
+    "Maxwellian_1D",
+    "Maxwellian_velocity_3D",
+    "Maxwellian_speed_1D",
+    "Maxwellian_speed_3D",
+    "kappa_velocity_1D",
+    "kappa_velocity_3D",
+]
 
 def _v_drift_units(v_drift):
     # Helper method to assign units to  v_drift if it takes a default value

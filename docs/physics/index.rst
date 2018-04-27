@@ -35,17 +35,9 @@ Reference/API
 .. automodapi:: plasmapy.physics.parameters
 .. automodapi:: plasmapy.physics.dielectric
 .. automodapi:: plasmapy.physics.dimensionless
-   :skip: gyrofrequency
-   :skip: plasma-frequency
 .. automodapi:: plasmapy.physics.distribution
-   :skip: gyrofrequency
-   :skip: plasma-frequency
 .. automodapi:: plasmapy.physics.quantum
-   :skip: Lorentz_factor
-   :skip: Fermi_integral
-   :skip: check_quantity
 .. automodapi:: plasmapy.physics.relativity
-   :no-main-docstr:
 
 Notes for developers
 ====================

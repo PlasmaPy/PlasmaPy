@@ -22,7 +22,5 @@ Reference/API
 =============
 
 .. automodapi:: plasmapy.diagnostics.langmuir
-   :skip: curve_fit
-   :skip: quantity_support
    :no-inheritance-diagram:
    :no-heading:

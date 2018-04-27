@@ -29,7 +29,7 @@ from .quantum import (deBroglie_wavelength,
                       Thomas_Fermi_length,
                       Wigner_Seitz_radius,
                       chemical_potential,
-                      chemical_potential_interp)
+                      _chemical_potential_interp)
 
 from .relativity import Lorentz_factor
 
