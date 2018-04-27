@@ -548,7 +548,7 @@ def resistivity(T_e,
                 mu=None,
                 theta=None,
                 coulomb_log_method="classical"):
-
+    """Calculate the resistivity."""
     ct = ClassicalTransport(T_e, n_e, T_i, n_i, ion_particle, m_i,
                             Z=Z, B=B, model=model,
                             field_orientation=field_orientation,
@@ -569,6 +569,7 @@ def thermoelectric_conductivity(T_e,
                                 mu=None,
                                 theta=None,
                                 coulomb_log_method="classical"):
+    """Calculate the thermoelectric conductivity."""
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,
@@ -598,6 +599,7 @@ def ion_thermal_conductivity(T_e,
                              mu=None,
                              theta=None,
                              coulomb_log_method="classical"):
+    """Calculate the thermal conductivity of ions."""
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,
@@ -627,6 +629,7 @@ def electron_thermal_conductivity(T_e,
                                   mu=None,
                                   theta=None,
                                   coulomb_log_method="classical"):
+    """Calculate the thermal conductivity of electrons."""
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,
@@ -656,6 +659,7 @@ def ion_viscosity(T_e,
                   mu=None,
                   theta=None,
                   coulomb_log_method="classical"):
+    """Calculate the ion viscosity."""
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,
@@ -685,6 +689,7 @@ def electron_viscosity(T_e,
                        mu=None,
                        theta=None,
                        coulomb_log_method="classical"):
+    """Calculate the electron_viscosity."""
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,
