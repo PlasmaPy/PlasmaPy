@@ -627,24 +627,27 @@ def Hall_parameter(n,
                    coulomb_log=None,
                    V=None,
                    coulomb_log_method="classical"):
-    r"""Calculate the ratio between the `particle` gyrofrequency and the
-    `particle-`ion_particle` collision rate.
+    r"""Calculate the ratio between the particle gyrofrequency and the
+    particle-ion particle collision rate.
+
+    All parameters apply to `particle`.
 
     Parameters
     ----------
     n : ~astropy.units.quantity.Quantity
-        The density of `particle`s
+        The density of particle s
     T : ~astropy.units.quantity.Quantity
-        The temperature of `particle`s
+        The temperature of particles
     B : ~astropy.units.quantity.Quantity
         The magnetic field
     ion_particle : str
         String signifying the type of ion.
     particle : str, optional
-        String signifying the type of `particle`s. Defaults to electrons.
+        String signifying the type of particles. Defaults to electrons.
     coulomb_log : float, optional
         Preset value for the Coulomb logarithm. Used mostly for testing purposes.
-    V : The relative velocity between `particle`s and `ion_particle`s.
+    V : ~astropy.units.quantity.Quantity
+        The relative velocity between `particle` and ion particles.
     coulomb_log_method : str, optional
         Method used for Coulomb logarithm calculation. Refer to its documentation.
 
