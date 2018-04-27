@@ -6,6 +6,10 @@
 PlasmaPy Documentation
 ######################
 
+.. image:: _static/graphic-circular.png
+   :alt: PlasmaPy logo
+   :align: right
+   :scale: 80%
 
 
 `PlasmaPy <http://www.plasmapy.org/>`_ is an open source
