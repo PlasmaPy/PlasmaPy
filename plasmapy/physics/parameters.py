@@ -1,5 +1,6 @@
 """
-Functions to calculate plasma parameters.
+This module gathers basic and general plasma parameters such as the
+plasma frequency or Debye length.
 """
 
 __all__ = [

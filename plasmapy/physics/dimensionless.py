@@ -4,6 +4,9 @@ Module of dimensionless plasma parameters.
 These are especially important for determining what regime a plasma is
 in. (e.g., turbulent, quantum, collisional, etc.).
 
+For example, plasmas at high (much larger than 1) Reynolds numbers are
+highly turbulent, while turbulence is negligible at low Reynolds
+numbers.
 """
 
 from astropy import units as u
