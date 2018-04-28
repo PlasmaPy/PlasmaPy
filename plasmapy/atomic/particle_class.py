@@ -36,6 +36,10 @@ from .special_particles import (
     _antiparticles,
 )
 
+__all__ = [
+    "Particle",
+]
+
 _classification_categories = {
     'lepton',
     'antilepton',

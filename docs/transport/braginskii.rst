@@ -57,9 +57,5 @@ Reference/API
 =============
 
 .. automodapi:: plasmapy.physics.transport.braginskii
-    :skip: Coulomb_logarithm
-    :skip: Hall_parameter
-    :skip: collision_rate_electron_ion
-    :skip: collision_rate_ion_ion
     :no-heading:
     :no-main-docstr:

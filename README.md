@@ -7,20 +7,21 @@
 [![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy:matrix.org)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/PlasmaPy/Lobby)
 
-An open source community developed Python 3.6+ package for plasma physics in 
+An open source community developed Python 3.6+ package for plasma physics in
 the early stages of development. PlasmaPy intends to be for plasmas what
-[Astropy](https://github.com/astropy/astropy) is for astronomy - a 
-collection of functionality commonly used and shared between plasma physicists 
-and researchers globally, running within and leveraging the open source 
+[Astropy](https://github.com/astropy/astropy) is for astronomy - a
+collection of functionality commonly used and shared between plasma physicists
+and researchers globally, running within and leveraging the open source
 scientific Python ecosystem. The goals of this project are more thoroughly described in our
-[vision statement](vision_statement.md)
+[vision statement](http://docs.plasmapy.org/en/stable/vision_statement.html)
 and [an earlier conference poster](http://doi.org/10.5281/zenodo.163752).
 We are in the process of writing [online
 documentation](http://plasmapy.readthedocs.io/en/latest/).
 
 We created a guide on
-[contributing to PlasmaPy](CONTRIBUTING.md) and have a [code of conduct](CODE_OF_CONDUCT.md).
-New contributors are very welcome! 
+[contributing to PlasmaPy](docs.plasmapy.org/en/latest/CONTRIBUTING.html) and have a
+[Code of Conduct](docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html).
+New contributors are very welcome!
 
 If you have any questions, the quickest way to get a response is to ask on our
 [Matrix](https://riot.im/app/#/room/#plasmapy:matrix.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
@@ -35,7 +36,7 @@ out [our instructions on installing PlasmaPy from source](INSTALL.md).
 
 We're not on Conda yet, but we're working on it!
 
-Like most scientific Python packages, PlasmaPy probably runs best on the 
+Like most scientific Python packages, PlasmaPy probably runs best on the
 [Anaconda distribution](https://www.anaconda.com/downloads).
 
 PlasmaPy requires Python 3.6+ and is

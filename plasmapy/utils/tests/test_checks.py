@@ -204,7 +204,6 @@ def test_check_quantity_decorator_two_args_one_kwargs_default():
 
     func(1 * u.m, 1 * u.s, 10 * u.T)
 
-
 def test_check_quantity_decorator_two_args_one_kwargs_not_default():
 
     @check_quantity({
@@ -218,6 +217,22 @@ def test_check_quantity_decorator_two_args_one_kwargs_not_default():
     with pytest.raises(ValueError):
         func(1 * u.m, 1 * u.s, z=np.inf * u.eV)
 
+
+class Test_check_quantity_none_shall_pass:
+    @check_quantity({
+        "x": {"units": u.m, "none_shall_pass": True},
+    })
+    def func(self, x = None):
+        if x is None:
+            return 0 * u.m
+        return x
+
+    def test_incorrect_units(self):
+        with pytest.raises(u.UnitConversionError):
+            self.func(1*u.s)
+
+    def test_none_to_zero(self):
+        assert self.func(None) == 0*u.m
 
 # (speed, betafrac)
 non_relativistic_speed_examples = [

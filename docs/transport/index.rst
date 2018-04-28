@@ -1,4 +1,4 @@
-.. py:module:: physics.transport
+.. py:module:: plasmapy.physics.transport
 
 .. _plasmapy-physics-transport:
 
@@ -30,16 +30,5 @@ Reference/API
 =============
 
 .. automodapi:: plasmapy.physics.transport.braginskii
-   :skip: Coulomb_logarithm 
-   :skip: Hall_parameter
-   :skip: collision_rate_electron_ion
-   :skip: collision_rate_ion_ion
 .. automodapi:: plasmapy.physics.transport.collisions
-   :skip: Debye_length
-   :skip: Fermi_integral
-   :skip: Wigner_Seitz_raidus
-   :skip: thermal_deBroglie_wavelength
-   :skip: chemical_potential
-   :skip: particle_mass
-   :skip: integer_charge
-   :skip: check_quantity
+

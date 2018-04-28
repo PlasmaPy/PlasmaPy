@@ -1,3 +1,5 @@
+.. _code-development-guidelines:
+
 ***************************
 Code Development Guidelines
 ***************************

@@ -9,8 +9,13 @@ import warnings
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 from textwrap import dedent
 
+__all__ = [
+    "check_quantity",
+    "check_relativistic",
+]
 
-def check_quantity(validations):
+
+def check_quantity(validations):  # TODO simplify via **kwargs
     """
     Raise an exception if an annotated argument in a decorated function
     is an `~astropy.units.Quantity` with incorrect units and valid
@@ -103,6 +108,7 @@ def check_quantity(validations):
                 can_be_complex = validation_settings.get('can_be_complex', False)
                 can_be_inf = validation_settings.get('can_be_inf', True)
                 can_be_nan = validation_settings.get('can_be_nan', False)
+                none_shall_pass = validation_settings.get('none_shall_pass', False)
 
                 validated_value = _check_quantity(value_to_check,
                                                   param_to_check,
@@ -111,7 +117,8 @@ def check_quantity(validations):
                                                   can_be_negative=can_be_negative,
                                                   can_be_complex=can_be_complex,
                                                   can_be_inf=can_be_inf,
-                                                  can_be_nan=can_be_nan)
+                                                  can_be_nan=can_be_nan,
+                                                  none_shall_pass=none_shall_pass)
                 given_params_values[param_to_check] = validated_value
 
             return f(**given_params_values)
@@ -120,7 +127,8 @@ def check_quantity(validations):
 
 
 def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
-                    can_be_complex=False, can_be_inf=True, can_be_nan=False):
+                    can_be_complex=False, can_be_inf=True, can_be_nan=False,
+                    none_shall_pass=False):
     """
     Raise an exception if an object is not a `~astropy.units.Quantity`
     with correct units and valid numerical values.
@@ -151,8 +159,12 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         `True` if the `~astropy.units.Quantity` can contain infinite
         values, `False` otherwise.  Defaults to `True`.
 
-    can_be_inf : bool, optional
+    can_be_nan : bool, optional
         `True` if the `~astropy.units.Quantity` can contain NaN
+        values, `False` otherwise.  Defaults to `True`.
+
+    none_shall_pass : bool, optional
+        `True` if the `~astropy.units.Quantity` can contain None
         values, `False` otherwise.  Defaults to `True`.
 
     Raises
@@ -215,6 +227,8 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
             typeerror_message += str(unit)
             if unit != units[-1]:
                 typeerror_message += ", "
+    if none_shall_pass:
+        typeerror_message += "or None "
 
     if isinstance(arg, (u.Unit, u.CompositeUnit, u.IrreducibleUnit)):
         raise TypeError(typeerror_message)
@@ -228,6 +242,14 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
     # TODO include explicit note on how to pass in Astropy Quantity
 
+    valueerror_message = (
+        f"The argument {argname} to function {funcname} cannot contain"
+    )
+
+    if arg is None and none_shall_pass:
+        return arg
+    elif arg is None:
+        raise ValueError(f"{valueerror_message} Nones.")
     if not isinstance(arg, (u.Quantity)):
         if len(units) != 1:
             raise TypeError(typeerror_message)
@@ -256,9 +278,6 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
 
     # Make sure that the quantity has valid numerical values
 
-    valueerror_message = (
-        f"The argument {argname} to function {funcname} cannot contain"
-    )
 
     if np.any(np.isnan(arg.value)) and not can_be_nan:
         raise ValueError(f"{valueerror_message} NaNs.")
