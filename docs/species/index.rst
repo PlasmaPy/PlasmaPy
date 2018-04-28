@@ -4,6 +4,9 @@
 Particle Simulation (`plasmapy.classes.species`)
 ************************************************
 
+Introduction
+============
+
 This module contains the `species` class, which is a simple particle stepper
 implementing the Boris algorithm.
 
