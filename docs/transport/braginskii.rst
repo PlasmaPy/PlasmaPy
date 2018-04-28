@@ -1,5 +1,4 @@
-.. _braginskii
-.. py:module:: physics.transport.braginskii
+.. _braginskii:
 
 Braginskii
 **********
@@ -13,7 +12,7 @@ multiple methods which are involved in modeling classical transport.
 
    * :ref:`sphx_glr_auto_examples_plot_braginskii.py`
 
-.. _Classical transport models
+.. _Classical transport models:
 
 Classical transport models
 ==========================
@@ -25,7 +24,7 @@ Spitzer-Harm
 Epperlein-Haines (under construction)
 Ji-Held
 
-.. _Classical-transport-class
+.. _Classical-transport-class:
 
 Classical transport class
 =========================
@@ -33,7 +32,7 @@ Classical transport class
 Explain how to use the 
 `~plasmapy.physics.transport.braginskii.ClassicalTransport` interface.
 
-.. _Conductivities-resistivities
+.. _Conductivities-resistivities:
 
 Conductivities and Resistivities
 ================================
@@ -44,7 +43,7 @@ thermoelectric_conductivity
 ion_thermal_conductivity
 electron_thermal_conductivity
 
-.. _Viscosities
+.. _Viscosities:
 
 Viscosities
 ======================

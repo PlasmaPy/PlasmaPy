@@ -170,7 +170,6 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
-
 # -- Options for Sphinx Gallery -----------------
 
 sphinx_gallery_conf = {

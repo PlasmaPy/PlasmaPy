@@ -1,5 +1,4 @@
-.. _collisions
-.. py:module:: physics.transport.collisions
+.. _collisions:
 
 Collisions
 **********
@@ -8,7 +7,7 @@ The `~plasmapy.physics.transport.collisions` subpackage includes a
 number of functions for handling Coulomb collisions spanning weakly 
 coupled (low density) to strongly coupled (high density) regimes.
 
-.. _Coulomb-collisions
+.. _Coulomb-collisions:
 
 Coulomb collisions
 ==================
@@ -16,14 +15,14 @@ Coulomb collisions
 Explain, in general, what a Coulomb collision involves, when the model 
 is useful, and the limitations of this model.
 
-.. _Coulomb-logarithms
+.. _Coulomb-logarithms:
 
 Coulomb logarithms
 ==================
 
 Explain the various methods available under Coulomb_logarithm.
 
-.. _Collision-rates
+.. _Collision-rates:
 
 Collision rates
 ===============
@@ -36,7 +35,7 @@ collision_rate_ion_ion
 mean_free_path
 
 
-.. _Macroscopic-properties
+.. _Macroscopic-properties:
 
 Macroscopic properties
 ======================
