@@ -14,6 +14,15 @@ from plasmapy.physics.transport.collisions import (fundamental_electron_collisio
                                                    fundamental_ion_collision_freq)
 from plasmapy.constants import e, m_e, k_B
 
+__all__ = [
+    "ClassicalTransport",
+    "resistivity",
+    "thermoelectric_conductivity",
+    "ion_thermal_conductivity",
+    "electron_thermal_conductivity",
+    "ion_viscosity",
+    "electron_viscosity",
+]
 
 class ClassicalTransport:
     r"""

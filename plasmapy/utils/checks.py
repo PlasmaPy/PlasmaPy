@@ -9,6 +9,11 @@ import warnings
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 from textwrap import dedent
 
+__all__ = [
+    "check_quantity",
+    "check_relativistic",
+]
+
 
 def check_quantity(validations):  # TODO simplify via **kwargs
     """

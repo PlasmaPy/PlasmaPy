@@ -1,12 +1,8 @@
-.. py:module:: plasmapy.classes.plasma
-
 .. _plasma:
 
 ****************************************
 Plasma class (`plasmapy.classes.plasma`)
 ****************************************
-
-.. currentmodule:: plasmapy.classes.plasma
 
 Introduction
 ============
@@ -34,4 +30,3 @@ Reference/API
 
 .. automodapi:: plasmapy.classes.plasma
    :no-heading:
-   :no-main-docstr:

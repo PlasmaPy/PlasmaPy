@@ -16,6 +16,21 @@ from plasmapy.physics.quantum import (Wigner_Seitz_radius,
 from plasmapy.mathematics import Fermi_integral
 from plasmapy.utils import check_quantity, _check_relativistic
 
+__all__ = [
+    "Coulomb_logarithm",
+    "impact_parameter_perp",
+    "impact_parameter",
+    "collision_frequency",
+    "Coulomb_cross_section",
+    "fundamental_electron_collision_freq",
+    "fundamental_ion_collision_freq",
+    "mean_free_path",
+    "Spitzer_resistivity",
+    "mobility",
+    "Knudsen_number",
+    "coupling_parameter",
+]
+
 
 @utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
                        "n_e": {"units": u.m ** -3}
@@ -264,8 +279,7 @@ def _boilerPlate(T, particles, V):
 def impact_parameter_perp(T,
                           particles,
                           V=np.nan * u.m / u.s):
-    """
-    Distance of closest approach for a 90 degree Coulomb collision.
+    r"""Distance of closest approach for a 90 degree Coulomb collision.
 
     Parameters
     ----------
@@ -639,11 +653,12 @@ def collision_frequency(T,
     >>> collision_frequency(T, n, particles)
     <Quantity 702505.15998601 Hz>
 
-     References
+    References
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
     .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
+
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T,
@@ -721,8 +736,7 @@ def collision_frequency(T,
                     'can_be_negative': False}
     })
 def Coulomb_cross_section(impact_param: u.m):
-    """
-    Cross section for a large angle Coulomb collision
+    r"""Cross section for a large angle Coulomb collision.
 
     Parameters
     ----------

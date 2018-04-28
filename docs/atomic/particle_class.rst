@@ -1,4 +1,4 @@
-.. _particle-class
+.. _particle-class:
 
 Particle Class
 **************
@@ -82,7 +82,7 @@ Strings representing particles may be accessed using the `particle`,
 >>> deuteron.ionic_symbol
 'D 1+'
 
-.. _particle-class-categories
+.. _particle-class-categories:
 
 Categories
 ==========
@@ -125,7 +125,7 @@ categories include: `'actinide'`, `'alkali metal'`,
 `'positron'`, `'post-transition metal'`, `'proton'`, `'stable'`,
 `'transition metal'`, `'uncharged'`, and `'unstable'`.
 
-.. _particle-class-conditionals
+.. _particle-class-conditionals:
 
 Conditionals and Equality Properties
 ====================================
@@ -166,7 +166,7 @@ categories.
         if particle.isotope:
             print(f"{particle} corresponds to isotope {particle.isotope}")
 
-.. _particle-class-antiparticles
+.. _particle-class-antiparticles:
 
 Returning Antiparticles
 =======================

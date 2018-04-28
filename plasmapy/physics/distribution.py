@@ -1,10 +1,22 @@
-"""Functions to deal with distribution : generate, fit, calculate"""
+"""
+Common distribution functions for plasmas, such as the Maxwelian or
+Kappa distributions. Functionality is intended to include generation,
+fitting and calculation.
+"""
 import astropy as astropy
 from astropy import units as u
 from plasmapy.physics import parameters
 import numpy as np
 from scipy.special import gamma
 
+__all__ = [
+    "Maxwellian_1D",
+    "Maxwellian_velocity_3D",
+    "Maxwellian_speed_1D",
+    "Maxwellian_speed_3D",
+    "kappa_velocity_1D",
+    "kappa_velocity_3D",
+]
 
 def _v_drift_units(v_drift):
     # Helper method to assign units to  v_drift if it takes a default value
