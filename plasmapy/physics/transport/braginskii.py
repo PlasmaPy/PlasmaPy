@@ -8,8 +8,9 @@ plasma two-fluid (electron and ion fluid) equations in the collisional limit.
 The first complete model in this form was done by S. I. Braginskii [1]_.
 
 This module uses fitting functions from literature ([1]_, [2]_, [3]_, [4]_,
-[5]_ and the next section) to calculate the transport coefficients, which are the resistivity,
-thermoelectric conductivity, thermal conductivity, and viscosity.
+[5]_ and the next section) to calculate the transport coefficients, which are
+the resistivity, thermoelectric conductivity, thermal conductivity, and
+viscosity.
 
 Keep in mind the following assumptions under which the transport equations
 are derived:
@@ -49,6 +50,11 @@ that use `ClassicalTransport` under the hood. See:
 * `electron_thermal_conductivity`
 * `ion_viscosity`
 * `electron_viscosity`
+
+.. warning::
+
+    Please note that as PlasmaPy is a very new package, this API should not be
+    considered stable yet.
 
 Classical transport models
 ==========================
