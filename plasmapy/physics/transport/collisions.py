@@ -1,4 +1,41 @@
-"""Functions to calculate transport coefficients."""
+"""Functions to calculate transport coefficients.
+
+This module includes a number of functions for handling Coulomb collisions
+spanning weakly coupled (low density) to strongly coupled (high density)
+regimes.
+
+Coulomb collisions
+==================
+
+TODO Explain, in general, what a Coulomb collision involves, when the model 
+is useful, and the limitations of this model.
+
+Coulomb logarithms
+==================
+
+TODO Explain the various methods available under Coulomb_logarithm.
+
+Collision rates
+===============
+
+TODO Explain:
+collision_frequency
+Coulomb_cross_section
+collision_rate_electron_ion
+collision_rate_ion_ion
+mean_free_path
+
+Macroscopic properties
+======================
+
+TODO These include:
+Spitzer_resistivity
+mobility
+Knudsen_number
+coupling_parameter
+
+"""
+
 
 # python modules
 from astropy import units as u
