@@ -51,12 +51,27 @@ print(braginskii.electron_thermal_conductivity())
 print(braginskii.ion_thermal_conductivity())
 
 ######################################################
-# They also change with magnetization and direction. Here,
+# They also change with magnetization:
+
+mag_braginskii = ClassicalTransport(thermal_energy_per_electron,
+                                    electron_concentration,
+                                    thermal_energy_per_ion,
+                                    ion_concentration,
+                                    ion_particle,
+                                    B = 0.1 * u.T)
+
+print(mag_braginskii.resistivity())
+print(mag_braginskii.thermoelectric_conductivity())
+print(mag_braginskii.electron_thermal_conductivity())
+print(mag_braginskii.ion_thermal_conductivity())
+
+######################################################
+# They also change with direction with respect to the magnetic field. Here,
 # we choose to print out, as arrays, the (parallel, perpendicular,
 # and cross) directions. Take a look at the docs to `ClassicalTransport`
 # for more information on these.
 
-mag_braginskii = ClassicalTransport(thermal_energy_per_electron,
+all_direction_braginskii = ClassicalTransport(thermal_energy_per_electron,
                                     electron_concentration,
                                     thermal_energy_per_ion,
                                     ion_concentration,
@@ -64,10 +79,10 @@ mag_braginskii = ClassicalTransport(thermal_energy_per_electron,
                                     B = 0.1 * u.T,
                                     field_orientation = 'all')
 
-print(mag_braginskii.resistivity())
-print(mag_braginskii.thermoelectric_conductivity())
-print(mag_braginskii.electron_thermal_conductivity())
-print(mag_braginskii.ion_thermal_conductivity())
+print(all_direction_braginskii.resistivity())
+print(all_direction_braginskii.thermoelectric_conductivity())
+print(all_direction_braginskii.electron_thermal_conductivity())
+print(all_direction_braginskii.ion_thermal_conductivity())
 
 ######################################################
 # The viscosities return arrays:
