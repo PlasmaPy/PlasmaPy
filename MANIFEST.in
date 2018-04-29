@@ -1,5 +1,21 @@
-include requirements/base.txt
-include LICENSE.md
+include README.rst
+include CHANGES.rst
+
+include ez_setup.py
+include ah_bootstrap.py
+include setup.cfg
+include plasmapy/tests/coveragerc
+
+recursive-include plasmapy *.pyx *.c *.pxd
+recursive-include docs *
+recursive-include licenses *
+recursive-include cextern *
+recursive-include scripts *
+
+prune build
+prune docs/_build
+prune docs/api
+
 
 # the next few stanzas are for astropy_helpers.  It's derived from the
 # astropy_helpers/MANIFEST.in, but requires additional includes for the actual
@@ -10,8 +26,8 @@ include astropy_helpers/CHANGES.rst
 include astropy_helpers/LICENSE.rst
 recursive-include astropy_helpers/licenses *
 
-include ez_setup.py
-include ah_bootstrap.py
+include astropy_helpers/ez_setup.py
+include astropy_helpers/ah_bootstrap.py
 
 recursive-include astropy_helpers/astropy_helpers *.py *.pyx *.c *.h *.rst
 recursive-include astropy_helpers/astropy_helpers.egg-info *

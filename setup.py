@@ -5,6 +5,12 @@ import glob
 import os
 import sys
 
+# Enforce Python version check - this is the same check as in __init__.py but
+# this one has to happen before importing ah_bootstrap.
+if sys.version_info < tuple((int(val) for val in "3.6".split('.'))):
+    sys.stderr.write("ERROR: plasmapy requires Python {} or later\n".format(3.6))
+    sys.exit(1)
+
 import ah_bootstrap
 from setuptools import setup
 
@@ -30,12 +36,12 @@ conf = ConfigParser()
 conf.read(['setup.cfg'])
 metadata = dict(conf.items('metadata'))
 
-PACKAGENAME = metadata.get('package_name', 'packagename')
-DESCRIPTION = metadata.get('description', 'packagename')
-AUTHOR = metadata.get('author', 'Astropy Developers')
+PACKAGENAME = metadata.get('package_name', 'plasmapy')
+DESCRIPTION = metadata.get('description', 'plasmapy')
+AUTHOR = metadata.get('author', 'PlasmaPy Developers')
 AUTHOR_EMAIL = metadata.get('author_email', '')
 LICENSE = metadata.get('license', 'unknown')
-URL = metadata.get('url', 'http://astropy.org')
+URL = metadata.get('url', 'http://plasmapy.org')
 
 # order of priority for long_description:
 #   (1) set in setup.cfg,
@@ -126,6 +132,7 @@ setup(name=PACKAGENAME,
       version=VERSION,
       description=DESCRIPTION,
       scripts=scripts,
+      setup_requires=metadata.get("setup_requires", None),
       install_requires=[s.strip() for s in metadata.get('install_requires', 'astropy').split(',')],
       author=AUTHOR,
       author_email=AUTHOR_EMAIL,
@@ -136,5 +143,6 @@ setup(name=PACKAGENAME,
       zip_safe=False,
       use_2to3=False,
       entry_points=entry_points,
+      python_requires='>={}'.format("3.6"),
       **package_info
 )
