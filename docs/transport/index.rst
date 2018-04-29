@@ -26,9 +26,3 @@ Submodules
    braginskii
    collisions
 
-Reference/API
-=============
-
-.. automodapi:: plasmapy.physics.transport.braginskii
-.. automodapi:: plasmapy.physics.transport.collisions
-

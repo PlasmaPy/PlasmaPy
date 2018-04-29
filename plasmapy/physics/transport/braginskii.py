@@ -610,7 +610,7 @@ class ClassicalTransport:
             eta = (eta1.value * unit_val).to(u.Pa * u.s)
         return eta
 
-    def electron_viscosity(self):
+    def electron_viscosity(self) -> u.Pa * u.s:
         """
         Calculate the electron viscosity.
 
@@ -697,12 +697,35 @@ def resistivity(T_e,
                 field_orientation='parallel',
                 mu=None,
                 theta=None,
-                coulomb_log_method="classical"):
-    """Calculate the resistivity."""
+                coulomb_log_method="classical") -> u.Ohm * u.m:
+    """
+    Calculate the resistivity.
+
+    Notes
+    -----
+
+    The resistivity here is defined similarly to solid conductors, and thus
+    represents the classical plasmas' property to resist the flow of
+    electrical current. The result is in units of ohm * m, so if you
+    assume where the current is flowing in the plasma (length and
+    cross-sectional area), you could calculate a DC resistance of the
+    plasma in ohms as resistivity * length / cross-sectional area.
+
+    Experimentalists with plasma discharges may observe different V = IR
+    Ohm's law behavior than suggested by the resistance calculated here,
+    for reasons such as the occurrence of plasma sheath layers at the
+    electrodes or the plasma not satisfying the classical assumptions.
+
+    Returns
+    -------
+    astropy.units.quantity.Quantity
+
+    """
     ct = ClassicalTransport(T_e, n_e, T_i, n_i, ion_particle, m_i,
                             Z=Z, B=B, model=model,
                             field_orientation=field_orientation,
-                            mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
+                            mu=mu, theta=theta,
+                            coulomb_log_method=coulomb_log_method)
     return ct.resistivity()
 
 
@@ -735,7 +758,6 @@ def thermoelectric_conductivity(T_e,
                             coulomb_log_method=coulomb_log_method)
     return ct.thermoelectric_conductivity()
 
-
 def ion_thermal_conductivity(T_e,
                              n_e,
                              T_i,
@@ -748,8 +770,30 @@ def ion_thermal_conductivity(T_e,
                              field_orientation='parallel',
                              mu=None,
                              theta=None,
-                             coulomb_log_method="classical"):
-    """Calculate the thermal conductivity of ions."""
+                             coulomb_log_method="classical") -> u.W / u.m / u.K:
+    """
+    Calculate the thermal conductivity for ions.
+
+    Notes
+    -----
+    This is the classical plasma ions' ability to conduct energy and heat,
+    defined similarly to other materials. The result is a conductivity in units
+    of W / m / K, so if you assume you know where the heat is flowing
+    (temperature gradient, cross-sectional area) you can calculate the energy
+    transport in Watts as conductivity * cross-sectional area * temperature
+    gradient. In lab plasmas, typically the energy is flowing out of your
+    high-temperature plasma to something else, like the walls of your device,
+    and you are sad about this.
+
+    Returns
+    -------
+    astropy.units.quantity.Quantity
+
+    See also
+    --------
+    ion_thermal_conductivity
+
+    """
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,
@@ -778,8 +822,42 @@ def electron_thermal_conductivity(T_e,
                                   field_orientation='parallel',
                                   mu=None,
                                   theta=None,
-                                  coulomb_log_method="classical"):
-    """Calculate the thermal conductivity of electrons."""
+                                  coulomb_log_method="classical") -> u.W / u.m / u.K:
+    """
+    Calculate the thermal conductivity for electrons.
+
+    Notes
+    -----
+    This is quite similar to the ion thermal conductivity, except that it's for
+    the plasma electrons. In a typical unmagnetized plasma, the electron
+    thermal conductivity is much higher than the ions and will dominate, due to
+    the electrons' low mass and fast speeds.
+
+    In a strongly magnetized plasma, following the classical transport
+    analysis, you calculate that the perpendicular-field thermal conductivity
+    becomes greatly reduced for the ions and electrons, with the electrons
+    actually being restrained even more than the ions due to their low mass and
+    small gyroradius. In reality, the electrons and ions are pulling on each
+    other strongly due to their opposing charges, so you have the situation of
+    ambipolar diffusion.
+
+    This situation has been likened to an energetic little child (the
+    electrons) not wanting to be pulled away from the playground (the magnetic
+    field) by the parents (the ions).
+
+    The ultimate rate must typically be in between the individual rates for
+    electrons and ions, so at least you can get some bounds from this type of
+    analysis.
+
+    Returns
+    -------
+    astropy.units.quantity.Quantity
+
+    See also
+    --------
+    ion_thermal_conductivity
+
+    """
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,
@@ -808,8 +886,27 @@ def ion_viscosity(T_e,
                   field_orientation='parallel',
                   mu=None,
                   theta=None,
-                  coulomb_log_method="classical"):
-    """Calculate the ion viscosity."""
+                  coulomb_log_method="classical") -> u.Pa * u.s:
+    """
+    Calculate the ion viscosity.
+
+    Notes
+    -----
+    This is the dynamic viscosity that you find for ions in the classical
+    plasma, similar to the viscosity of air or water or honey. The big
+    effect is the T^5/2 dependence, so as classical plasmas get hotter they
+    become dramatically more viscous. The ion viscosity typically dominates
+    over the electron viscosity.
+
+    Returns
+    -------
+    astropy.units.quantity.Quantity
+
+    See also
+    --------
+    electron_viscosity
+
+    """
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,
@@ -838,8 +935,27 @@ def electron_viscosity(T_e,
                        field_orientation='parallel',
                        mu=None,
                        theta=None,
-                       coulomb_log_method="classical"):
-    """Calculate the electron_viscosity."""
+                       coulomb_log_method="classical") -> u.Pa * u.s:
+    """
+    Calculate the electron viscosity.
+
+    Notes
+    -----
+    This is the dynamic viscosity that you find for electrons in the
+    classical plasma, similar to the viscosity of air or water or honey.
+    The big effect is the T^5/2 dependence, so as classical plasmas get
+    hotter they become dramatically more viscous. The ion viscosity
+    typically dominates over the electron viscosity.
+
+    Returns
+    -------
+    astropy.units.quantity.Quantity
+
+    See also
+    --------
+    ion_viscosity
+
+    """
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,
