@@ -8,17 +8,11 @@ Braginskii and collisional transport theory (`plasmapy.physics.transport`)
 
 .. currentmodule:: plasmapy.physics.transport
 
-Introduction
-============
 The `plasmapy.physics.transport` subpackage covers the difficult area of transport theory.
 
-.. topic:: Examples:
+.. toctree::
+   :maxdepth: 3
 
-   * :ref:`sphx_glr_auto_examples_plot_braginskii.py`
-
-Reference/API
-=============
-
-.. automodapi:: plasmapy.physics.transport.braginskii
-.. automodapi:: plasmapy.physics.transport.collisions
+   braginskii
+   collisions
 

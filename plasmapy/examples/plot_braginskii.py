@@ -43,8 +43,51 @@ print(braginskii.hall_i)
 ######################################################
 # These quantities are not calculated during initialization and can be
 # referred to via methods. To signify the need to calculate them, we
-# call them via (). They could be made to act like variables via @Property,
-# but I'm not sure that's wise.
+# call them via ().
 
 print(braginskii.resistivity())
 print(braginskii.thermoelectric_conductivity())
+print(braginskii.electron_thermal_conductivity())
+print(braginskii.ion_thermal_conductivity())
+
+######################################################
+# They also change with magnetization:
+
+mag_braginskii = ClassicalTransport(thermal_energy_per_electron,
+                                    electron_concentration,
+                                    thermal_energy_per_ion,
+                                    ion_concentration,
+                                    ion_particle,
+                                    B = 0.1 * u.T)
+
+print(mag_braginskii.resistivity())
+print(mag_braginskii.thermoelectric_conductivity())
+print(mag_braginskii.electron_thermal_conductivity())
+print(mag_braginskii.ion_thermal_conductivity())
+
+######################################################
+# They also change with direction with respect to the magnetic field. Here,
+# we choose to print out, as arrays, the (parallel, perpendicular,
+# and cross) directions. Take a look at the docs to `ClassicalTransport`
+# for more information on these.
+
+all_direction_braginskii = ClassicalTransport(thermal_energy_per_electron,
+                                    electron_concentration,
+                                    thermal_energy_per_ion,
+                                    ion_concentration,
+                                    ion_particle,
+                                    B = 0.1 * u.T,
+                                    field_orientation = 'all')
+
+print(all_direction_braginskii.resistivity())
+print(all_direction_braginskii.thermoelectric_conductivity())
+print(all_direction_braginskii.electron_thermal_conductivity())
+print(all_direction_braginskii.ion_thermal_conductivity())
+
+######################################################
+# The viscosities return arrays:
+
+print(braginskii.electron_viscosity())
+print(mag_braginskii.electron_viscosity())
+print(braginskii.ion_viscosity())
+print(mag_braginskii.ion_viscosity())

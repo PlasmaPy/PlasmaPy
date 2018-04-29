@@ -1,4 +1,45 @@
-"""Functions to calculate transport coefficients."""
+"""Functions to calculate transport coefficients.
+
+This module includes a number of functions for handling Coulomb collisions
+spanning weakly coupled (low density) to strongly coupled (high density)
+regimes.
+
+Coulomb collisions
+==================
+
+Coulomb collisions are collisions where the interaction force is conveyed
+via the electric field, instead of any kind of contact force. They usually
+result in relatively small deflections of particle trajectories. However,
+given that there are many charged particles in a plasma, one has to take
+into account the cumulative effects of many such collisions.
+
+Coulomb logarithms
+==================
+
+Please see the documentation for the `Coulomb logarithm <Coulomb_logarithm>`_
+for a review of the many ways in which one can define and calculate
+that quantity.
+
+Collision rates
+===============
+
+The module gathers a few functions helpful for calculating collision
+rates between particles. The most general of these is `collision_frequency`,
+while if you need average values for a Maxwellian distribution, try
+out `collision_rate_electron_ion` and `collision_rate_ion_ion`. These
+use `collision_frequency` under the hood.
+
+Macroscopic properties
+======================
+
+These include:
+* `Spitzer_resistivity`
+* `mobility`
+* `Knudsen_number`
+* `coupling_parameter`
+
+"""
+
 
 # python modules
 from astropy import units as u
