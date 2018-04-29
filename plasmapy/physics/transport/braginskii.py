@@ -22,7 +22,7 @@ are derived:
 1. The plasma is fully ionized, only consisting of ions and electrons.
    Neutral atoms are neglected.
 2. Turbulent transport does not dominate
-3. The velocity distribution is close to Maxwellian. This is guaranteed if:
+3. The velocity distribution is close to Maxwellian. This implies:
     i. Collisional mean free path << gradient scale length along field
     ii. Gyroradius << gradient scale length perpendicular to field
 4. The plasma is highly collisional: collisional frequency >> gyrofrequency
