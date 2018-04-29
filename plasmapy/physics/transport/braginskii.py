@@ -200,7 +200,7 @@ class ClassicalTransport:
 
         See refs [1]_, [2]_, [3]_, [4]_ and [5]_.
 
-    field_orientation : string
+    field_orientation : string, defaults to `parallel`
         Either of 'parallel', 'par', 'perpendicular', 'perp', 'cross', or
         'all', indicating the cardinal orientation of the magnetic field with
         respect to the transport direction of interest. Note that 'perp' refers
@@ -208,7 +208,7 @@ class ClassicalTransport:
         the temperature gradient), while 'cross' refers to the direction
         perpendicular to B and the gradient of temperature
         (:math:`B \times \nabla(T)`). The option 'all' will return a Numpy array
-        of all three, `np.array((par, perp, cross))`.
+        of all three, `np.array((par, perp, cross))`. Does not apply to viscosities.
 
     coulomb_log_ei: float or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron-ion Coulomb
