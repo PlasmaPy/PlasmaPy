@@ -98,7 +98,7 @@ how to contribute.
 * `PlasmaPy's website <http://www.plasmapy.org/>`_
 * :ref:`plasmapy-code-of-conduct`
 
-This release includes over 1800 commits and 173 merged pull requests,
+This release includes over 1800 commits and 178 merged pull requests,
 with contributions from 35 different people to the code base or the
 vision statement.
 
