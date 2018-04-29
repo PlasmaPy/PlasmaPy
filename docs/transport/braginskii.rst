@@ -1,12 +1,12 @@
 .. _braginskii:
 
-Braginskii
-**********
+Classical transport theory
+**************************
 
 The `~plasmapy.physics.transport.braginskii` subpackage includes a 
 class interface 
 `~plasmapy.physics.transport.braginskii.ClassicalTransport` with 
-multiple methods which are involved in modeling classical transport.
+multiple methods to calculate classical transport coefficients.
 
 .. topic:: Examples:
 

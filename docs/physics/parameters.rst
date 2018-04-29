@@ -4,8 +4,6 @@
 Plasma parameters (`plasmapy.physics.parameters`)
 *************************************************
 
-.. currentmodule:: plasmapy.physics.parameters
-
 .. automodapi:: plasmapy.physics.parameters
    :no-heading:
 
