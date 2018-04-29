@@ -13,26 +13,25 @@ is useful, and the limitations of this model.
 Coulomb logarithms
 ==================
 
-TODO Explain the various methods available under Coulomb_logarithm.
+TODO Explain the various methods available under `Coulomb_logarithm`.
 
 Collision rates
 ===============
 
-TODO Explain:
-collision_frequency
-Coulomb_cross_section
-collision_rate_electron_ion
-collision_rate_ion_ion
-mean_free_path
+The module gathers a few functions helpful for calculating collision
+rates between particles. The most general of these is `collision_frequency`,
+while if you need average values for a Maxwellian distribution, try
+out `collision_rate_electron_ion` and `collision_rate_ion_ion`. These
+use `collision_frequency` under the hood.
 
 Macroscopic properties
 ======================
 
-TODO These include:
-Spitzer_resistivity
-mobility
-Knudsen_number
-coupling_parameter
+These include:
+* `Spitzer_resistivity`
+* `mobility`
+* `Knudsen_number`
+* `coupling_parameter`
 
 """
 
