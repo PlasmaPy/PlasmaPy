@@ -146,8 +146,11 @@ class ClassicalTransport:
 
     Notes
     -----
-    TODO
-
+    Given that many of the transport variables share a lot of the same
+    computation and many are often needed to be calculated simultaneously, this
+    class can be initialized once with all of the variables necessary for
+    calculation. It then provides all of the functionality as methods (please
+    refer to their documentation).
 
     Parameters
     ----------
