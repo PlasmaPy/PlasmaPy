@@ -7,13 +7,18 @@ regimes.
 Coulomb collisions
 ==================
 
-TODO Explain, in general, what a Coulomb collision involves, when the model 
-is useful, and the limitations of this model.
+Coulomb collisions are collisions where the interaction force is conveyed
+via the electric field, instead of any kind of contact force. They usually
+result in relatively small deflections of particle trajectories. However,
+given that there are many charged particles in a plasma, one has to take
+into account the cumulative effects of many such collisions.
 
 Coulomb logarithms
 ==================
 
-TODO Explain the various methods available under `Coulomb_logarithm`.
+Please see the documentation for the `Coulomb logarithm <Coulomb_logarithm>`_
+for a review of the many ways in which one can define and calculate
+that quantity.
 
 Collision rates
 ===============

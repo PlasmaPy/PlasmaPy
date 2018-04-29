@@ -471,6 +471,10 @@ class ClassicalTransport:
         """
         Calculate the thermoelectric conductivity.
 
+        Notes
+        -----
+        To be improved.
+
         Returns
         -------
         astropy.units.quantity.Quantity
