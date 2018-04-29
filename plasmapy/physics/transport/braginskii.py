@@ -1,4 +1,113 @@
-"""Functions to calculate classical transport coefficients."""
+"""Functions to calculate classical transport coefficients.
+
+Introduction
+============
+
+Classical transport theory is derived by using kinetic theory to close the
+plasma two-fluid (electron and ion fluid) equations in the collisional limit.
+The first complete model in this form was done by S. I. Braginskii [1]_.
+
+This module uses fitting functions from literature ([1]_, [2]_, [3]_, [4]_,
+[5]_ and the next section) to calculate the transport coefficients, which are the resistivity,
+thermoelectric conductivity, thermal conductivity, and viscosity.
+
+Keep in mind the following assumptions under which the transport equations
+are derived:
+
+1. The plasma is fully ionized, only consisting of ions and electrons.
+   Neutral atoms are neglected.
+2. Turbulent transport does not dominate
+3. The velocity distribution is close to Maxwellian. This is guaranteed if:
+    i. Collisional mean free path << gradient scale length along field
+    ii. Gyroradius << gradient scale length perpendicular to field
+4. The plasma is highly collisional: collisional frequency >> gyrofrequency
+
+When classical transport is not valid, e.g. due to the presence of strong
+gradients or turbulent transport, the transport is significantly increased
+by these other effects. Thus classical transport often serves as a lower
+bound on the losses / transport encountered in a plasma.
+
+.. topic:: Examples:
+
+   * :ref:`sphx_glr_auto_examples_plot_braginskii.py`
+
+Using the module
+================
+Given that many of the transport variables share a lot of the same computation
+and many are often needed to be calculated simultaneously, this module provides
+a `ClassicalTransport` class that can be initialized once with all of the
+variables necessary for calculation. It then provides all of the functionality
+as methods (please refer to its documentation).
+
+If you only wish to calculate a single transport variable (or if just don't
+like object oriented interfaces), we have also provided function based wrappers
+that use `ClassicalTransport` under the hood. See:
+
+* `resistivity`
+* `thermoelectric_conductivity`
+* `ion_thermal_conductivity`
+* `electron_thermal_conductivity`
+* `ion_viscosity`
+* `electron_viscosity`
+
+Classical transport models
+==========================
+In this section, we present a broad overview of classical transport models
+implemented within this module.
+
+Braginskii [1]_
+---------------
+
+The original Braginskii treatment as presented in the highly cited review
+paper from 1965. Coefficients are found from expansion of the kinetic
+equation in Laguerre polynomials, truncated at the second term in their
+series expansion (k = 2). This theory allows for arbitrary Hall parameter
+and include results for Z = 1, 2, 3, 4, and infinity (the case of Lorentz
+gas completely stripped of electrons, and the stationary ion approximation).
+
+Spitzer-Harm [2]_ [3]_
+----------------------
+
+These coefficients were obtained from a numerical solution of the Fokker-
+Planck equation. They give one of the earliest and most accurate (in the
+Fokker-Planck sense) results for electron transport in simple plasma. They
+principally apply in the unmagnetized / parallel field case, although for
+resistivity Spitzer also calculated a famous result for a strong
+perpendicular magnetic field. Results are for Z = 1, 2, 4, 16,
+and infinity (Lorentz gas / stationary ion approximation).
+
+Epperlein-Haines [4]_
+---------------------
+
+Not yet implemented.
+
+Ji-Held [5]_
+------------
+
+This is a modern treatment of the classical transport problem that has been
+carried out with laudable care. It allows for arbitrary hall parameter and
+arbitrary Z for all coefficients. Similar to the Epperlein-Haines model,
+it corrects some known inaccuracies in the original Braginskii results,
+notably the asymptotic behavior of alpha-cross and beta_perp as Hall ->
++infinity. It also studies effects of electron collisions in the ion
+terms, which all other treatments have not. To neglect electron-electron
+collisions, leave mu = 0. To consider them, specify mu and theta.
+
+References
+==========
+.. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
+       plasma physics 1 (1965): 205. (1965)
+.. [2] Spitzer Jr, Lyman, and Richard Härm. "Transport phenomena in a
+       completely ionized gas." Physical Review 89.5 (1953): 977. (1953)
+.. [3] Physics of Fully Ionized Gases, L. Spitzer (1962)
+.. [4] Epperlein, E. M., and M. G. Haines. "Plasma transport coefficients
+       in a magnetic field by direct numerical solution of the
+       Fokker–Planck equation." The Physics of fluids 29.4 (1986):
+       1029-1041.
+.. [5] Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
+       high-collisionality electron-ion plasmas." Physics of Plasmas 20.4
+       (2013): 042114.
+"""
 import warnings
 
 import numpy as np
@@ -30,68 +139,8 @@ class ClassicalTransport:
 
     Notes
     -----
-    Classical transport theory is derived by using kinetic theory to close the
-    plasma two-fluid (electron and ion fluid) equations in the collisional
-    limit. The first complete model in this form was done by S. I. Braginskii.
+    TODO
 
-    This function uses fitting functions from literature to calculate
-    the transport coefficients, which are the resistivity, thermoelectric
-    conductivity, thermal conductivity, and viscosity.
-
-    Keep in mind the following assumptions under which the transport equations
-    are derived:
-
-    1. the plasma is fully ionized, only consisting of ions and electrons
-    2. neutral atoms are neglected
-    3. turbulent transport does not dominate
-    4. the velocity distribution is close to Maxwellian
-
-    These are equivalent to the following conditions:
-
-    1. collisional frequency >> gyrofrequency
-    2. collisional mean free path << gradient scale length along field
-    3. gyroradius << gradient scale length perpendicular to field
-
-    When classical transport is not valid, e.g. due to the presence of strong
-    gradients or turbulent transport, the transport is significantly increased
-    by these other effects. Thus, classical transport often serves as a lower
-    bound on the losses / transport encountered in a plasma.
-
-    Models implemented:
-
-    * Braginskii [1]_
-
-    The original Braginskii treatment as presented in the highly cited review
-    paper from 1965. Coefficients are found from expansion of the kinetic
-    equation in Laguerre polynomials, truncated at the second term in their
-    series expansion (k = 2). This theory allows for arbitrary Hall parameter
-    and include results for Z = 1, 2, 3, 4, and infinity (the case of Lorentz
-    gas completely stripped of electrons, and the stationary ion approximation).
-
-    * Spitzer-Harm [2]_ [3]_
-
-    These coefficients were obtained from a numerical solution of the Fokker-
-    Planck equation. They give one of the earliest and most accurate (in the
-    Fokker-Planck sense) results for electron transport in simple plasma. They
-    principally apply in the unmagnetized / parallel field case, although for
-    resistivity Spitzer also calculated a famous result for a strong
-    perpendicular magnetic field. Results are for Z = 1, 2, 4, 16,
-    and infinity (Lorentz gas / stationary ion approximation).
-
-    * Epperlein-Haines [4]_
-
-    Not yet implemented.
-
-    * Ji-Held [5]_
-
-    This is a modern treatment of the classical transport problem that has been
-    carried out with laudable care. It allows for arbitrary hall parameter and
-    arbitrary Z for all coefficients. Similar to the Epperlein-Haines model,
-    it corrects some known inaccuracies in the original Braginskii results,
-    notably the asymptotic behavior of alpha-cross and beta_perp as Hall ->
-    +infinity. It also studies effects of electron collisions in the ion
-    terms, which all other treatments have not. To neglect electron-electron
-    collisions, leave mu = 0. To consider them, specify mu and theta.
 
     Parameters
     ----------
@@ -161,6 +210,7 @@ class ClassicalTransport:
         `Coulomb_logarithm` will be used. Useful for comparing calculations.
 
     V_ii: ~astropy.units.Quantity, optional
+
        The relative velocity between particles.  Supplied to
        `Coulomb_logarithm` function, not otherwise used. If not provided,
        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`

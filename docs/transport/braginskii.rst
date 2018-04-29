@@ -3,6 +3,9 @@
 Classical transport theory
 **************************
 
+.. automodapi:: plasmapy.physics.transport.braginskii
+    :no-heading:
+
 The `~plasmapy.physics.transport.braginskii` subpackage includes a 
 class interface 
 `~plasmapy.physics.transport.braginskii.ClassicalTransport` with 
@@ -55,6 +58,3 @@ electron_viscosity
 Reference/API
 =============
 
-.. automodapi:: plasmapy.physics.transport.braginskii
-    :no-heading:
-    :no-main-docstr:
