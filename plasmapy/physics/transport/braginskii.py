@@ -1,5 +1,9 @@
 """Functions to calculate classical transport coefficients.
 
+.. topic:: Examples:
+
+   * :ref:`sphx_glr_auto_examples_plot_braginskii.py`
+
 Introduction
 ============
 
@@ -27,10 +31,6 @@ When classical transport is not valid, e.g. due to the presence of strong
 gradients or turbulent transport, the transport is significantly increased
 by these other effects. Thus classical transport often serves as a lower
 bound on the losses / transport encountered in a plasma.
-
-.. topic:: Examples:
-
-   * :ref:`sphx_glr_auto_examples_plot_braginskii.py`
 
 Using the module
 ================
