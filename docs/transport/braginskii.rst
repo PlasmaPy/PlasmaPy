@@ -5,8 +5,3 @@ Classical transport theory
 
 .. automodapi:: plasmapy.physics.transport.braginskii
     :no-heading:
-
-Conductivities and Resistivities
-================================
-
-TODO: thermoelectric_conductivity

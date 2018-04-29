@@ -32,8 +32,21 @@ gradients or turbulent transport, the transport is significantly increased
 by these other effects. Thus classical transport often serves as a lower
 bound on the losses / transport encountered in a plasma.
 
-Using the module and available variables
-========================================
+Transport Variables
+===================
+For documentation on the individual transport variables, please take
+the following links to documentation of methods of `ClassicalTransport`.
+
+* `Resistivity <ClassicalTransport.resistivity>`_
+* `Thermoelectric conductivity <ClassicalTransport.thermoelectric_conductivity>`_
+* `Ion thermal conductivity <ClassicalTransport.ion_thermal_conductivity>`_
+* `Electron thermal conductivity <ClassicalTransport.electron_thermal_conductivity>`_
+* `Ion viscosity <ClassicalTransport.ion_viscosity>`_
+* `Electron viscosity <ClassicalTransport.electron_viscosity>`_
+
+
+Using the module
+================
 Given that many of the transport variables share a lot of the same computation
 and many are often needed to be calculated simultaneously, this module provides
 a `ClassicalTransport` class that can be initialized once with all of the
@@ -41,16 +54,9 @@ variables necessary for calculation. It then provides all of the functionality
 as methods (please refer to its documentation).
 
 If you only wish to calculate a single transport variable (or if just don't
-like object oriented interfaces), we have also provided function based wrappers
-that use `ClassicalTransport` under the hood. For documentation on the wrappers
-themselves and for some explanation of each of the variables, see:
-
-* `resistivity`
-* `thermoelectric_conductivity`
-* `ion_thermal_conductivity`
-* `electron_thermal_conductivity`
-* `ion_viscosity`
-* `electron_viscosity`
+like object oriented interfaces), we have also provided wrapper functions in
+the main module namespace that use `ClassicalTransport` under the hood (see below,
+in the Functions section).
 
 .. warning::
 
