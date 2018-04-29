@@ -20,6 +20,10 @@ if sys.version_info < (3, 6):
 # Place all imports that require Python 3.6+ **after** the Python
 # version check.
 
+from . import import_helpers  # noqa
+
+import_helpers.check_versions()
+
 # The dunder namespace should be reserved for the special objects that
 # are specified in Python documentation (e.g., __name__, __doc__, and
 # __version__).  All hidden objects that are specific to PlasmaPy
@@ -54,4 +58,4 @@ except (ImportError, ModuleNotFoundError) as exc:
 
 # Clean up the top-level namespace.
 
-del sys
+del sys, import_helpers

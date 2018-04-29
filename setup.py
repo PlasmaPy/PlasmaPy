@@ -4,6 +4,8 @@
 import glob
 import os
 import sys
+# testing if numpy exists at setup time
+import numpy
 
 import ah_bootstrap
 from setuptools import setup
@@ -118,15 +120,32 @@ for root, dirs, files in os.walk(PACKAGENAME):
                     os.path.relpath(root, PACKAGENAME), filename))
 package_info['package_data'][PACKAGENAME].extend(c_files)
 
+
+# importing Cython for cythonizing
+from Cython.Build import cythonize
+# trying to fetch extensions
+#exts = package_info['ext_modules']
+cython_exts = package_info.pop('ext_modules', [])
+print('*' * 40)
+print(cython_exts)
+print('*' * 40)
+print(package_info)
+print('*' * 40)
+# when extensions are getting built it seems that the .pyx files
+# aren't getting cythonized, unless setuptools know to automatically
+# do this somehow, but I doubt it.
+
 # Note that requires and provides should not be included in the call to
 # ``setup``, since these are now deprecated. See this link for more details:
 # https://groups.google.com/forum/#!topic/astropy-dev/urYO8ckB2uM
+
 
 setup(name=PACKAGENAME,
       version=VERSION,
       description=DESCRIPTION,
       scripts=scripts,
-      install_requires=[s.strip() for s in metadata.get('install_requires', 'astropy').split(',')],
+      install_requires=[s.strip() for s in metadata.get(
+          'install_requires', 'astropy').split(',')],
       author=AUTHOR,
       author_email=AUTHOR_EMAIL,
       license=LICENSE,
@@ -136,5 +155,6 @@ setup(name=PACKAGENAME,
       zip_safe=False,
       use_2to3=False,
       entry_points=entry_points,
-      **package_info
-)
+      ext_modules = cythonize(cython_exts),
+      **package_info,
+      )
