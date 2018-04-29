@@ -4,8 +4,12 @@
 import glob
 import os
 import sys
-# testing if numpy exists at setup time
-import numpy
+
+# Enforce Python version check - this is the same check as in __init__.py but
+# this one has to happen before importing ah_bootstrap.
+if sys.version_info < tuple((int(val) for val in "3.6".split('.'))):
+    sys.stderr.write("ERROR: plasmapy requires Python {} or later\n".format(3.6))
+    sys.exit(1)
 
 import ah_bootstrap
 from setuptools import setup
@@ -32,12 +36,12 @@ conf = ConfigParser()
 conf.read(['setup.cfg'])
 metadata = dict(conf.items('metadata'))
 
-PACKAGENAME = metadata.get('package_name', 'packagename')
-DESCRIPTION = metadata.get('description', 'packagename')
-AUTHOR = metadata.get('author', 'Astropy Developers')
+PACKAGENAME = metadata.get('package_name', 'plasmapy')
+DESCRIPTION = metadata.get('description', 'plasmapy')
+AUTHOR = metadata.get('author', 'PlasmaPy Developers')
 AUTHOR_EMAIL = metadata.get('author_email', '')
 LICENSE = metadata.get('license', 'unknown')
-URL = metadata.get('url', 'http://astropy.org')
+URL = metadata.get('url', 'http://plasmapy.org')
 
 # order of priority for long_description:
 #   (1) set in setup.cfg,
@@ -120,32 +124,16 @@ for root, dirs, files in os.walk(PACKAGENAME):
                     os.path.relpath(root, PACKAGENAME), filename))
 package_info['package_data'][PACKAGENAME].extend(c_files)
 
-
-# importing Cython for cythonizing
-from Cython.Build import cythonize
-# trying to fetch extensions
-#exts = package_info['ext_modules']
-cython_exts = package_info.pop('ext_modules', [])
-print('*' * 40)
-print(cython_exts)
-print('*' * 40)
-print(package_info)
-print('*' * 40)
-# when extensions are getting built it seems that the .pyx files
-# aren't getting cythonized, unless setuptools know to automatically
-# do this somehow, but I doubt it.
-
 # Note that requires and provides should not be included in the call to
 # ``setup``, since these are now deprecated. See this link for more details:
 # https://groups.google.com/forum/#!topic/astropy-dev/urYO8ckB2uM
-
 
 setup(name=PACKAGENAME,
       version=VERSION,
       description=DESCRIPTION,
       scripts=scripts,
-      install_requires=[s.strip() for s in metadata.get(
-          'install_requires', 'astropy').split(',')],
+      setup_requires=metadata.get("setup_requires", None),
+      install_requires=[s.strip() for s in metadata.get('install_requires', 'astropy').split(',')],
       author=AUTHOR,
       author_email=AUTHOR_EMAIL,
       license=LICENSE,
@@ -155,6 +143,6 @@ setup(name=PACKAGENAME,
       zip_safe=False,
       use_2to3=False,
       entry_points=entry_points,
-      ext_modules = cythonize(cython_exts),
-      **package_info,
-      )
+      python_requires='>={}'.format("3.6"),
+      **package_info
+)
