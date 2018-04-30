@@ -18,7 +18,7 @@ an equivalent and more secure command is:
 git clone git@github.com:PlasmaPy/PlasmaPy.git
 ```
 
-The [contributing to PlasmaPy](https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTING.md)
+The [contributing to PlasmaPy](http://docs.plasmapy.org/en/master/CONTRIBUTING.html)
 guide has instructions on how to fork a repository so that you may make pull requests.
 
 In the top level directory, run
