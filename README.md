@@ -13,7 +13,7 @@ the early stages of development. PlasmaPy intends to be for plasmas what
 collection of functionality commonly used and shared between plasma physicists
 and researchers globally, running within and leveraging the open source
 scientific Python ecosystem. The goals of this project are more thoroughly described in our
-[vision statement](http://docs.plasmapy.org/en/stable/vision_statement.html)
+[vision statement](http://docs.plasmapy.org/en/stable/about/vision_statement.html)
 and [an earlier conference poster](http://doi.org/10.5281/zenodo.163752).
 We are in the process of writing [online
 documentation](http://plasmapy.readthedocs.io/en/latest/).
