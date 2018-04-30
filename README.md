@@ -19,8 +19,8 @@ We are in the process of writing [online
 documentation](http://plasmapy.readthedocs.io/en/latest/).
 
 We created a guide on
-[contributing to PlasmaPy](docs.plasmapy.org/en/latest/CONTRIBUTING.html) and have a
-[Code of Conduct](docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html).
+[contributing to PlasmaPy](http://plasmapy.readthedocs.io/en/master/CONTRIBUTING.html) and have a
+[Code of Conduct](http://plasmapy.readthedocs.io/en/master/CODE_OF_CONDUCT.html).
 New contributors are very welcome!
 
 If you have any questions, the quickest way to get a response is to ask on our
