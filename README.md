@@ -13,14 +13,14 @@ the early stages of development. PlasmaPy intends to be for plasmas what
 collection of functionality commonly used and shared between plasma physicists
 and researchers globally, running within and leveraging the open source
 scientific Python ecosystem. The goals of this project are more thoroughly described in our
-[vision statement](http://docs.plasmapy.org/en/stable/vision_statement.html)
+[vision statement](http://docs.plasmapy.org/en/stable/about/vision_statement.html)
 and [an earlier conference poster](http://doi.org/10.5281/zenodo.163752).
 We are in the process of writing [online
 documentation](http://plasmapy.readthedocs.io/en/latest/).
 
 We created a guide on
-[contributing to PlasmaPy](docs.plasmapy.org/en/latest/CONTRIBUTING.html) and have a
-[Code of Conduct](docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html).
+[contributing to PlasmaPy](http://plasmapy.readthedocs.io/en/master/CONTRIBUTING.html) and have a
+[Code of Conduct](http://plasmapy.readthedocs.io/en/master/CODE_OF_CONDUCT.html).
 New contributors are very welcome!
 
 If you have any questions, the quickest way to get a response is to ask on our
