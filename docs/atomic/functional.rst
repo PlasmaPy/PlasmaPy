@@ -1,4 +1,4 @@
-.. _atomic-functions
+.. _atomic-functions:
 
 Functions
 *********
@@ -6,7 +6,7 @@ Functions
 In addition to the `~plasmapy.atomic.Particle` class, the
 `~plasmapy.atomic` subpackage has a functional interface.
 
-.. _atomic-func-symbols
+.. _atomic-func-symbols:
 
 Symbols and Names
 =================
@@ -34,7 +34,7 @@ The full symbol of the particle can be found using
 >>> particle_symbol('electron')
 'e-'
 
-.. _atomic-func-properties
+.. _atomic-func-properties:
 
 Particle Properties
 ===================
@@ -105,7 +105,7 @@ All stable isotopes of an element may be found with
 >>> stable_isotopes('Pb')
 ['Pb-204', 'Pb-206', 'Pb-207', 'Pb-208']
 
-.. _atomic-func-stability
+.. _atomic-func-stability:
 
 Stability
 =========

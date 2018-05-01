@@ -8,6 +8,9 @@ from ..atomic import atomic
 from astropy import constants
 from astropy import units as u
 
+__all__ = [
+    "Species",
+]
 
 class Species:
     """

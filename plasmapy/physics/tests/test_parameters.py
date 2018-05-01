@@ -684,7 +684,7 @@ def test_Debye_number():
     with pytest.warns(u.UnitsWarning):
         Debye_number(T_e, 4)
 
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         Debye_number(None, n_e)
 
     with pytest.raises(u.UnitConversionError):

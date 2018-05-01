@@ -1,6 +1,27 @@
 """
-Functions to calculate plasma parameters.
+This module gathers basic and general plasma parameters such as the
+plasma frequency or Debye length.
 """
+
+__all__ = [
+    "mass_density",
+    "Alfven_speed",
+    "ion_sound_speed",
+    "thermal_speed",
+    "thermal_pressure",
+    "kappa_thermal_speed",
+    "Hall_parameter",
+    "gyrofrequency",
+    "gyroradius",
+    "plasma_frequency",
+    "Debye_length",
+    "Debye_number",
+    "inertial_length",
+    "magnetic_pressure",
+    "magnetic_energy_density",
+    "upper_hybrid_frequency",
+    "lower_hybrid_frequency",
+]
 
 from astropy import units as u
 
@@ -613,25 +634,27 @@ def Hall_parameter(n,
                    coulomb_log=None,
                    V=None,
                    coulomb_log_method="classical"):
-    r"""Calculate the ratio between the `particle` gyrofrequency and the
-    `particle-`ion_particle` collision rate.
+    r"""Calculate the ratio between the particle gyrofrequency and the
+    particle-ion particle collision rate.
+
+    All parameters apply to `particle`.
 
     Parameters
     ----------
     n : ~astropy.units.quantity.Quantity
-        The density of `particle`s
+        The density of particle s
     T : ~astropy.units.quantity.Quantity
-        The temperature of `particle`s
+        The temperature of particles
     B : ~astropy.units.quantity.Quantity
         The magnetic field
     ion_particle : str
         String signifying the type of ion.
     particle : str, optional
-        String signifying the type of `particle`s. Defaults to electrons.
+        String signifying the type of particles. Defaults to electrons.
     coulomb_log : float, optional
-        Preset value for the Coulomb logarithm. Used mostly for testing
-        purposes.
-    V : The relative velocity between `particle`s and `ion_particle`s.
+        Preset value for the Coulomb logarithm. Used mostly for testing purposes.
+    V : ~astropy.units.quantity.Quantity
+        The relative velocity between `particle` and ion particles.
     coulomb_log_method : str, optional
         Method used for Coulomb logarithm calculation. Refer to its
         documentation.
@@ -639,7 +662,7 @@ def Hall_parameter(n,
     See Also
     --------
     plasmapy.physics.parameters.gyrofrequency
-    plasmapy.physics.parameters.collision_rate_electron_ion
+    plasmapy.physics.parameters.fundamental_electron_collision_freq
     plasmapy.physics.transport.Coulomb_logarithm
 
     Returns
@@ -648,16 +671,19 @@ def Hall_parameter(n,
 
     """
 
-    from plasmapy.physics.transport.collisions import (
-        collision_rate_ion_ion, collision_rate_electron_ion)
+    from plasmapy.physics.transport.collisions import (fundamental_ion_collision_freq,
+                                                       fundamental_electron_collision_freq)
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
     if atomic.Particle(particle).particle == 'e-':
-        coll_rate = collision_rate_electron_ion(
-            T, n, ion_particle, coulomb_log, V,
-            coulomb_log_method=coulomb_log_method)
+        coll_rate = fundamental_electron_collision_freq(T,
+                                                        n,
+                                                        ion_particle,
+                                                        coulomb_log,
+                                                        V,
+                                                        coulomb_log_method=coulomb_log_method)
     else:
-        coll_rate = collision_rate_ion_ion(T, n, ion_particle, coulomb_log, V)
+        coll_rate = fundamental_ion_collision_freq(T, n, ion_particle, coulomb_log, V)
     return gyro_frequency / coll_rate
 
 

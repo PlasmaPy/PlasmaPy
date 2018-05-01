@@ -11,7 +11,6 @@ basics.
 from plasmapy.diagnostics.langmuir import Characteristic, swept_probe_analysis
 import astropy.units as u
 import numpy as np
-import pickle
 import os
 
 ######################################################
@@ -22,8 +21,8 @@ import os
 # a Electron Energy Distribution Function (EEDF) as well.
 
 # Load the bias and current values stored in the .p pickle file.
-path = os.path.join("langmuir_samples", "Beckers2017.p")
-bias, current = pickle.load(open(path, 'rb'))
+path = os.path.join("langmuir_samples", "Beckers2017.npy")
+bias, current = np.load(path)
 
 # Create the Characteristic object, taking into account the correct units
 characteristic = Characteristic(np.array(bias) * u.V,
@@ -50,12 +49,12 @@ print(swept_probe_analysis(characteristic,
 # data. This indicates a succesfull analysis.
 
 ######################################################
-# The next sample probe data is provided by David Pace. is also obtained from a low relatively ion
-# temperature and density plasma, in Argon.
+# The next sample probe data is provided by David Pace. It is also obtained
+# from a low relatively ion temperature and density plasma, in Argon.
 
 # Load the data from a file and create the Characteristic object
-path = os.path.join("langmuir_samples", "Pace2015.p")
-bias, current = pickle.load(open(path, 'rb'))
+path = os.path.join("langmuir_samples", "Pace2015.npy")
+bias, current = np.load(path)
 characteristic = Characteristic(np.array(bias) * u.V,
                                 np.array(current) * 1e3 * u.mA)
 
@@ -92,8 +91,8 @@ print(swept_probe_analysis(characteristic,
 # This Helium plasma is fully bi-Maxwellian.
 
 # Import probe data and calculate probe surface area.
-path = os.path.join("langmuir_samples", "Beckers2017b.p")
-bias, current = pickle.load(open(path, 'rb'))
+path = os.path.join("langmuir_samples", "Beckers2017b.npy")
+bias, current = np.load(path)
 characteristic = Characteristic(np.array(bias) * u.V,
                                 np.array(current) * 1e3 * u.mA)
 probe_length = 1.145 * u.mm

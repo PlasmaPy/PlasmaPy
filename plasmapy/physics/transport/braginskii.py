@@ -1,4 +1,126 @@
-"""Functions to calculate classical transport coefficients."""
+"""Functions to calculate classical transport coefficients.
+
+.. topic:: Examples:
+
+   * :ref:`sphx_glr_auto_examples_plot_braginskii.py`
+
+Introduction
+============
+
+Classical transport theory is derived by using kinetic theory to close the
+plasma two-fluid (electron and ion fluid) equations in the collisional limit.
+The first complete model in this form was done by S. I. Braginskii [1]_.
+
+This module uses fitting functions from literature ([1]_, [2]_, [3]_, [4]_,
+[5]_ and the next section) to calculate the transport coefficients, which are
+the resistivity, thermoelectric conductivity, thermal conductivity, and
+viscosity.
+
+Keep in mind the following assumptions under which the transport equations
+are derived:
+
+1. The plasma is fully ionized, only consisting of ions and electrons.
+   Neutral atoms are neglected.
+2. Turbulent transport does not dominate
+3. The velocity distribution is close to Maxwellian. This implies:
+    i. Collisional mean free path << gradient scale length along field
+    ii. Gyroradius << gradient scale length perpendicular to field
+4. The plasma is highly collisional: collisional frequency >> gyrofrequency
+
+When classical transport is not valid, e.g. due to the presence of strong
+gradients or turbulent transport, the transport is significantly increased
+by these other effects. Thus classical transport often serves as a lower
+bound on the losses / transport encountered in a plasma.
+
+Transport Variables
+===================
+For documentation on the individual transport variables, please take
+the following links to documentation of methods of `ClassicalTransport`.
+
+* `Resistivity <ClassicalTransport.resistivity>`_
+* `Thermoelectric conductivity <ClassicalTransport.thermoelectric_conductivity>`_
+* `Ion thermal conductivity <ClassicalTransport.ion_thermal_conductivity>`_
+* `Electron thermal conductivity <ClassicalTransport.electron_thermal_conductivity>`_
+* `Ion viscosity <ClassicalTransport.ion_viscosity>`_
+* `Electron viscosity <ClassicalTransport.electron_viscosity>`_
+
+
+Using the module
+================
+Given that many of the transport variables share a lot of the same computation
+and many are often needed to be calculated simultaneously, this module provides
+a `ClassicalTransport` class that can be initialized once with all of the
+variables necessary for calculation. It then provides all of the functionality
+as methods (please refer to its documentation).
+
+If you only wish to calculate a single transport variable (or if just don't
+like object oriented interfaces), we have also provided wrapper functions in
+the main module namespace that use `ClassicalTransport` under the hood (see below,
+in the Functions section).
+
+.. warning::
+
+    Please note that as PlasmaPy is a very new package, this API should not be
+    considered stable yet.
+
+Classical transport models
+==========================
+In this section, we present a broad overview of classical transport models
+implemented within this module.
+
+Braginskii [1]_
+---------------
+
+The original Braginskii treatment as presented in the highly cited review
+paper from 1965. Coefficients are found from expansion of the kinetic
+equation in Laguerre polynomials, truncated at the second term in their
+series expansion (k = 2). This theory allows for arbitrary Hall parameter
+and include results for Z = 1, 2, 3, 4, and infinity (the case of Lorentz
+gas completely stripped of electrons, and the stationary ion approximation).
+
+Spitzer-Harm [2]_ [3]_
+----------------------
+
+These coefficients were obtained from a numerical solution of the Fokker-
+Planck equation. They give one of the earliest and most accurate (in the
+Fokker-Planck sense) results for electron transport in simple plasma. They
+principally apply in the unmagnetized / parallel field case, although for
+resistivity Spitzer also calculated a famous result for a strong
+perpendicular magnetic field. Results are for Z = 1, 2, 4, 16,
+and infinity (Lorentz gas / stationary ion approximation).
+
+Epperlein-Haines [4]_
+---------------------
+
+Not yet implemented.
+
+Ji-Held [5]_
+------------
+
+This is a modern treatment of the classical transport problem that has been
+carried out with laudable care. It allows for arbitrary hall parameter and
+arbitrary Z for all coefficients. Similar to the Epperlein-Haines model,
+it corrects some known inaccuracies in the original Braginskii results,
+notably the asymptotic behavior of alpha-cross and beta_perp as Hall ->
++infinity. It also studies effects of electron collisions in the ion
+terms, which all other treatments have not. To neglect electron-electron
+collisions, leave mu = 0. To consider them, specify mu and theta.
+
+References
+==========
+.. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
+       plasma physics 1 (1965): 205. (1965)
+.. [2] Spitzer Jr, Lyman, and Richard Härm. "Transport phenomena in a
+       completely ionized gas." Physical Review 89.5 (1953): 977. (1953)
+.. [3] Physics of Fully Ionized Gases, L. Spitzer (1962)
+.. [4] Epperlein, E. M., and M. G. Haines. "Plasma transport coefficients
+       in a magnetic field by direct numerical solution of the
+       Fokker–Planck equation." The Physics of fluids 29.4 (1986):
+       1029-1041.
+.. [5] Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
+       high-collisionality electron-ion plasmas." Physics of Plasmas 20.4
+       (2013): 042114.
+"""
 import warnings
 
 import numpy as np
@@ -10,10 +132,19 @@ from plasmapy.atomic.atomic import _is_electron
 from .collisions import Coulomb_logarithm
 from plasmapy.physics.parameters import (Hall_parameter,
                                          _grab_charge)
-from plasmapy.physics.transport.collisions import (collision_rate_electron_ion,
-                                                   collision_rate_ion_ion)
+from plasmapy.physics.transport.collisions import (fundamental_electron_collision_freq,
+                                                   fundamental_ion_collision_freq)
 from plasmapy.constants import e, m_e, k_B
 
+__all__ = [
+    "ClassicalTransport",
+    "resistivity",
+    "thermoelectric_conductivity",
+    "ion_thermal_conductivity",
+    "electron_thermal_conductivity",
+    "ion_viscosity",
+    "electron_viscosity",
+]
 
 class ClassicalTransport:
     r"""
@@ -21,68 +152,11 @@ class ClassicalTransport:
 
     Notes
     -----
-    Classical transport theory is derived by using kinetic theory to close the
-    plasma two-fluid (electron and ion fluid) equations in the collisional
-    limit. The first complete model in this form was done by S. I. Braginskii.
-
-    This function uses fitting functions from literature to calculate
-    the transport coefficients, which are the resistivity, thermoelectric
-    conductivity, thermal conductivity, and viscosity.
-
-    Keep in mind the following assumptions under which the transport equations
-    are derived:
-
-    1. the plasma is fully ionized, only consisting of ions and electrons
-    2. neutral atoms are neglected
-    3. turbulent transport does not dominate
-    4. the velocity distribution is close to Maxwellian
-
-    These are equivalent to the following conditions:
-
-    1. collisional frequency >> gyrofrequency
-    2. collisional mean free path << gradient scale length along field
-    3. gyroradius << gradient scale length perpendicular to field
-
-    When classical transport is not valid, e.g. due to the presence of strong
-    gradients or turbulent transport, the transport is significantly increased
-    by these other effects. Thus, classical transport often serves as a lower
-    bound on the losses / transport encountered in a plasma.
-
-    Models implemented:
-
-    * Braginskii [1]_
-
-    The original Braginskii treatment as presented in the highly cited review
-    paper from 1965. Coefficients are found from expansion of the kinetic
-    equation in Laguerre polynomials, truncated at the second term in their
-    series expansion (k = 2). This theory allows for arbitrary Hall parameter
-    and include results for Z = 1, 2, 3, 4, and infinity (the case of Lorentz
-    gas completely stripped of electrons, and the stationary ion approximation).
-
-    * Spitzer-Harm [2]_ [3]_
-
-    These coefficients were obtained from a numerical solution of the Fokker-
-    Planck equation. They give one of the earliest and most accurate (in the
-    Fokker-Planck sense) results for electron transport in simple plasma. They
-    principally apply in the unmagnetized / parallel field case, although for
-    resistivity Spitzer also calculated a famous result for a strong
-    perpendicular magnetic field. Results are for Z = 1, 2, 4, 16,
-    and infinity (Lorentz gas / stationary ion approximation).
-
-    * Epperlein-Haines [4]_
-
-    Not yet implemented.
-
-    * Ji-Held [5]_
-
-    This is a modern treatment of the classical transport problem that has been
-    carried out with laudable care. It allows for arbitrary hall parameter and
-    arbitrary Z for all coefficients. Similar to the Epperlein-Haines model,
-    it corrects some known inaccuracies in the original Braginskii results,
-    notably the asymptotic behavior of alpha-cross and beta_perp as Hall ->
-    +infinity. It also studies effects of electron collisions in the ion
-    terms, which all other treatments have not. To neglect electron-electron
-    collisions, leave mu = 0. To consider them, specify mu and theta.
+    Given that many of the transport variables share a lot of the same
+    computation and many are often needed to be calculated simultaneously, this
+    class can be initialized once with all of the variables necessary for
+    calculation. It then provides all of the functionality as methods (please
+    refer to their documentation).
 
     Parameters
     ----------
@@ -126,7 +200,7 @@ class ClassicalTransport:
 
         See refs [1]_, [2]_, [3]_, [4]_ and [5]_.
 
-    field_orientation : string
+    field_orientation : string, defaults to `parallel`
         Either of 'parallel', 'par', 'perpendicular', 'perp', 'cross', or
         'all', indicating the cardinal orientation of the magnetic field with
         respect to the transport direction of interest. Note that 'perp' refers
@@ -134,7 +208,7 @@ class ClassicalTransport:
         the temperature gradient), while 'cross' refers to the direction
         perpendicular to B and the gradient of temperature
         (:math:`B \times \nabla(T)`). The option 'all' will return a Numpy array
-        of all three, `np.array((par, perp, cross))`.
+        of all three, `np.array((par, perp, cross))`. Does not apply to viscosities.
 
     coulomb_log_ei: float or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron-ion Coulomb
@@ -152,6 +226,7 @@ class ClassicalTransport:
         `Coulomb_logarithm` will be used. Useful for comparing calculations.
 
     V_ii: ~astropy.units.Quantity, optional
+
        The relative velocity between particles.  Supplied to
        `Coulomb_logarithm` function, not otherwise used. If not provided,
        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
@@ -354,9 +429,24 @@ class ClassicalTransport:
         # self.mu = m_e / self.m_i  # enable the JH special features
         self.theta = self.T_e / self.T_i if theta is None else theta
 
-    def resistivity(self):
+    def resistivity(self) -> u.Ohm * u.m:
         """
         Calculate the resistivity.
+
+        Notes
+        -----
+
+        The resistivity here is defined similarly to solid conductors, and thus
+        represents the classical plasmas' property to resist the flow of
+        electrical current. The result is in units of ohm * m, so if you
+        assume where the current is flowing in the plasma (length and
+        cross-sectional area), you could calculate a DC resistance of the
+        plasma in ohms as resistivity * length / cross-sectional area.
+
+        Experimentalists with plasma discharges may observe different V = IR
+        Ohm's law behavior than suggested by the resistance calculated here,
+        for reasons such as the occurrence of plasma sheath layers at the
+        electrodes or the plasma not satisfying the classical assumptions.
 
         Returns
         -------
@@ -368,11 +458,11 @@ class ClassicalTransport:
                                         self.e_particle,
                                         self.model,
                                         self.field_orientation)
-        tau_e = 1 / collision_rate_electron_ion(self.T_e,
-                                                self.n_e,
-                                                self.ion_particle,
-                                                self.coulomb_log_ei,
-                                                self.V_ei)
+        tau_e = 1 / fundamental_electron_collision_freq(self.T_e,
+                                                        self.n_e,
+                                                        self.ion_particle,
+                                                        self.coulomb_log_ei,
+                                                        self.V_ei)
 
         alpha = alpha_hat / (self.n_e * e ** 2 * tau_e / m_e)
         return alpha.to(u.ohm * u.m)
@@ -380,6 +470,10 @@ class ClassicalTransport:
     def thermoelectric_conductivity(self):
         """
         Calculate the thermoelectric conductivity.
+
+        Notes
+        -----
+        To be improved.
 
         Returns
         -------
@@ -393,13 +487,28 @@ class ClassicalTransport:
                                            self.field_orientation)
         return u.Quantity(beta_hat)
 
-    def ion_thermal_conductivity(self):
+    def ion_thermal_conductivity(self) -> u.W / u.m / u.K:
         """
         Calculate the thermal conductivity for ions.
+
+        Notes
+        -----
+        This is the classical plasma ions' ability to conduct energy and heat,
+        defined similarly to other materials. The result is a conductivity in
+        units of W / m / K, so if you assume you know where the heat is flowing
+        (temperature gradient, cross-sectional area) you can calculate the
+        energy transport in Watts as conductivity * cross-sectional area *
+        temperature gradient. In lab plasmas, typically the energy is flowing
+        out of your high-temperature plasma to something else, like the walls
+        of your device, and you are sad about this.
 
         Returns
         -------
         astropy.units.quantity.Quantity
+
+        See also
+        --------
+        ion_thermal_conductivity
 
         """
         kappa_hat = _nondim_thermal_conductivity(self.hall_i,
@@ -409,21 +518,48 @@ class ClassicalTransport:
                                                  self.field_orientation,
                                                  self.mu,
                                                  self.theta)
-        tau_i = 1 / collision_rate_ion_ion(self.T_i,
-                                           self.n_i,
-                                           self.ion_particle,
-                                           self.coulomb_log_ii,
-                                           self.V_ii)
+        tau_i = 1 / fundamental_ion_collision_freq(self.T_i,
+                                                   self.n_i,
+                                                   self.ion_particle,
+                                                   self.coulomb_log_ii,
+                                                   self.V_ii)
         kappa = kappa_hat * (self.n_i * k_B ** 2 * self.T_i * tau_i / self.m_i)
         return kappa.to(u.W / u.m / u.K)
 
-    def electron_thermal_conductivity(self):
+    def electron_thermal_conductivity(self) -> u.W / u.m / u.K:
         """
         Calculate the thermal conductivity for electrons.
+
+        Notes
+        -----
+        This is quite similar to the ion thermal conductivity, except that it's
+        for the plasma electrons. In a typical unmagnetized plasma, the
+        electron thermal conductivity is much higher than the ions and will
+        dominate, due to the electrons' low mass and fast speeds.
+
+        In a strongly magnetized plasma, following the classical transport
+        analysis, you calculate that the perpendicular-field thermal
+        conductivity becomes greatly reduced for the ions and electrons, with
+        the electrons actually being restrained even more than the ions due to
+        their low mass and small gyroradius. In reality, the electrons and ions
+        are pulling on each other strongly due to their opposing charges, so
+        you have the situation of ambipolar diffusion.
+
+        This situation has been likened to an energetic little child (the
+        electrons) not wanting to be pulled away from the playground (the
+        magnetic field) by the parents (the ions).
+
+        The ultimate rate must typically be in between the individual rates for
+        electrons and ions, so at least you can get some bounds from this type
+        of analysis.
 
         Returns
         -------
         astropy.units.quantity.Quantity
+
+        See also
+        --------
+        ion_thermal_conductivity
 
         """
         kappa_hat = _nondim_thermal_conductivity(self.hall_e,
@@ -433,21 +569,33 @@ class ClassicalTransport:
                                                  self.field_orientation,
                                                  self.mu,
                                                  self.theta)
-        tau_e = 1 / collision_rate_electron_ion(self.T_e,
-                                                self.n_e,
-                                                self.ion_particle,
-                                                self.coulomb_log_ei,
-                                                self.V_ei)
+        tau_e = 1 / fundamental_electron_collision_freq(self.T_e,
+                                                        self.n_e,
+                                                        self.ion_particle,
+                                                        self.coulomb_log_ei,
+                                                        self.V_ei)
         kappa = kappa_hat * (self.n_e * k_B ** 2 * self.T_e * tau_e / m_e)
         return kappa.to(u.W / u.m / u.K)
 
-    def ion_viscosity(self):
+    def ion_viscosity(self) -> u.Pa * u.s:
         """
         Calculate the ion viscosity.
+
+        Notes
+        -----
+        This is the dynamic viscosity that you find for ions in the classical
+        plasma, similar to the viscosity of air or water or honey. The big
+        effect is the T^5/2 dependence, so as classical plasmas get hotter they
+        become dramatically more viscous. The ion viscosity typically dominates
+        over the electron viscosity.
 
         Returns
         -------
         astropy.units.quantity.Quantity
+
+        See also
+        --------
+        electron_viscosity
 
         """
         eta_hat = _nondim_viscosity(self.hall_i,
@@ -457,11 +605,11 @@ class ClassicalTransport:
                                     self.field_orientation,
                                     self.mu,
                                     self.theta)
-        tau_i = 1 / collision_rate_ion_ion(self.T_i,
-                                           self.n_i,
-                                           self.ion_particle,
-                                           self.coulomb_log_ii,
-                                           self.V_ii)
+        tau_i = 1 / fundamental_ion_collision_freq(self.T_i,
+                                                   self.n_i,
+                                                   self.ion_particle,
+                                                   self.coulomb_log_ii,
+                                                   self.V_ii)
         common_factor = self.n_i * k_B * self.T_i * tau_i
         eta1 = np.array(eta_hat) * common_factor
         if not np.isclose(self.hall_i, 0, rtol=1e-8):
@@ -472,13 +620,25 @@ class ClassicalTransport:
             eta = (eta1.value * unit_val).to(u.Pa * u.s)
         return eta
 
-    def electron_viscosity(self):
+    def electron_viscosity(self) -> u.Pa * u.s:
         """
         Calculate the electron viscosity.
+
+        Notes
+        -----
+        This is the dynamic viscosity that you find for electrons in the
+        classical plasma, similar to the viscosity of air or water or honey.
+        The big effect is the T^5/2 dependence, so as classical plasmas get
+        hotter they become dramatically more viscous. The ion viscosity
+        typically dominates over the electron viscosity.
 
         Returns
         -------
         astropy.units.quantity.Quantity
+
+        See also
+        --------
+        ion_viscosity
 
         """
         eta_hat = _nondim_viscosity(self.hall_e,
@@ -488,11 +648,11 @@ class ClassicalTransport:
                                     self.field_orientation,
                                     self.mu,
                                     self.theta)
-        tau_e = 1 / collision_rate_electron_ion(self.T_e,
-                                                self.n_e,
-                                                self.ion_particle,
-                                                self.coulomb_log_ei,
-                                                self.V_ei)
+        tau_e = 1 / fundamental_electron_collision_freq(self.T_e,
+                                                        self.n_e,
+                                                        self.ion_particle,
+                                                        self.coulomb_log_ei,
+                                                        self.V_ei)
         common_factor = (self.n_e * k_B * self.T_e * tau_e)
         if np.isclose(self.hall_e, 0, rtol=1e-8):
             eta1 = (eta_hat[0] * common_factor,
@@ -547,12 +707,35 @@ def resistivity(T_e,
                 field_orientation='parallel',
                 mu=None,
                 theta=None,
-                coulomb_log_method="classical"):
+                coulomb_log_method="classical") -> u.Ohm * u.m:
+    """
+    Calculate the resistivity.
 
+    Notes
+    -----
+
+    The resistivity here is defined similarly to solid conductors, and thus
+    represents the classical plasmas' property to resist the flow of
+    electrical current. The result is in units of ohm * m, so if you
+    assume where the current is flowing in the plasma (length and
+    cross-sectional area), you could calculate a DC resistance of the
+    plasma in ohms as resistivity * length / cross-sectional area.
+
+    Experimentalists with plasma discharges may observe different V = IR
+    Ohm's law behavior than suggested by the resistance calculated here,
+    for reasons such as the occurrence of plasma sheath layers at the
+    electrodes or the plasma not satisfying the classical assumptions.
+
+    Returns
+    -------
+    astropy.units.quantity.Quantity
+
+    """
     ct = ClassicalTransport(T_e, n_e, T_i, n_i, ion_particle, m_i,
                             Z=Z, B=B, model=model,
                             field_orientation=field_orientation,
-                            mu=mu, theta=theta, coulomb_log_method=coulomb_log_method)
+                            mu=mu, theta=theta,
+                            coulomb_log_method=coulomb_log_method)
     return ct.resistivity()
 
 
@@ -569,6 +752,7 @@ def thermoelectric_conductivity(T_e,
                                 mu=None,
                                 theta=None,
                                 coulomb_log_method="classical"):
+    """Calculate the thermoelectric conductivity."""
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,
@@ -584,7 +768,6 @@ def thermoelectric_conductivity(T_e,
                             coulomb_log_method=coulomb_log_method)
     return ct.thermoelectric_conductivity()
 
-
 def ion_thermal_conductivity(T_e,
                              n_e,
                              T_i,
@@ -597,7 +780,30 @@ def ion_thermal_conductivity(T_e,
                              field_orientation='parallel',
                              mu=None,
                              theta=None,
-                             coulomb_log_method="classical"):
+                             coulomb_log_method="classical") -> u.W / u.m / u.K:
+    """
+    Calculate the thermal conductivity for ions.
+
+    Notes
+    -----
+    This is the classical plasma ions' ability to conduct energy and heat,
+    defined similarly to other materials. The result is a conductivity in units
+    of W / m / K, so if you assume you know where the heat is flowing
+    (temperature gradient, cross-sectional area) you can calculate the energy
+    transport in Watts as conductivity * cross-sectional area * temperature
+    gradient. In lab plasmas, typically the energy is flowing out of your
+    high-temperature plasma to something else, like the walls of your device,
+    and you are sad about this.
+
+    Returns
+    -------
+    astropy.units.quantity.Quantity
+
+    See also
+    --------
+    ion_thermal_conductivity
+
+    """
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,
@@ -626,7 +832,42 @@ def electron_thermal_conductivity(T_e,
                                   field_orientation='parallel',
                                   mu=None,
                                   theta=None,
-                                  coulomb_log_method="classical"):
+                                  coulomb_log_method="classical") -> u.W / u.m / u.K:
+    """
+    Calculate the thermal conductivity for electrons.
+
+    Notes
+    -----
+    This is quite similar to the ion thermal conductivity, except that it's for
+    the plasma electrons. In a typical unmagnetized plasma, the electron
+    thermal conductivity is much higher than the ions and will dominate, due to
+    the electrons' low mass and fast speeds.
+
+    In a strongly magnetized plasma, following the classical transport
+    analysis, you calculate that the perpendicular-field thermal conductivity
+    becomes greatly reduced for the ions and electrons, with the electrons
+    actually being restrained even more than the ions due to their low mass and
+    small gyroradius. In reality, the electrons and ions are pulling on each
+    other strongly due to their opposing charges, so you have the situation of
+    ambipolar diffusion.
+
+    This situation has been likened to an energetic little child (the
+    electrons) not wanting to be pulled away from the playground (the magnetic
+    field) by the parents (the ions).
+
+    The ultimate rate must typically be in between the individual rates for
+    electrons and ions, so at least you can get some bounds from this type of
+    analysis.
+
+    Returns
+    -------
+    astropy.units.quantity.Quantity
+
+    See also
+    --------
+    ion_thermal_conductivity
+
+    """
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,
@@ -655,7 +896,27 @@ def ion_viscosity(T_e,
                   field_orientation='parallel',
                   mu=None,
                   theta=None,
-                  coulomb_log_method="classical"):
+                  coulomb_log_method="classical") -> u.Pa * u.s:
+    """
+    Calculate the ion viscosity.
+
+    Notes
+    -----
+    This is the dynamic viscosity that you find for ions in the classical
+    plasma, similar to the viscosity of air or water or honey. The big
+    effect is the T^5/2 dependence, so as classical plasmas get hotter they
+    become dramatically more viscous. The ion viscosity typically dominates
+    over the electron viscosity.
+
+    Returns
+    -------
+    astropy.units.quantity.Quantity
+
+    See also
+    --------
+    electron_viscosity
+
+    """
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,
@@ -684,7 +945,27 @@ def electron_viscosity(T_e,
                        field_orientation='parallel',
                        mu=None,
                        theta=None,
-                       coulomb_log_method="classical"):
+                       coulomb_log_method="classical") -> u.Pa * u.s:
+    """
+    Calculate the electron viscosity.
+
+    Notes
+    -----
+    This is the dynamic viscosity that you find for electrons in the
+    classical plasma, similar to the viscosity of air or water or honey.
+    The big effect is the T^5/2 dependence, so as classical plasmas get
+    hotter they become dramatically more viscous. The ion viscosity
+    typically dominates over the electron viscosity.
+
+    Returns
+    -------
+    astropy.units.quantity.Quantity
+
+    See also
+    --------
+    ion_viscosity
+
+    """
     ct = ClassicalTransport(T_e,
                             n_e,
                             T_i,

@@ -1,6 +1,8 @@
-*****************************
-Current status of subpackages
-*****************************
+.. _subpackage-stability:
+
+************************
+Stability of Subpackages
+************************
 
 .. This document is derived from docs/stability.rst in Astropy.  See
    licenses/Astropy_LICENSE.rst in PlasmaPy's directory.

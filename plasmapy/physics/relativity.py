@@ -1,9 +1,16 @@
+r"""This module currently provides ample room for the Lorentz factor,
+as it turned out we didn't really have much else of the relativistic
+variety to add just yet! This is expected to change in the future.
+"""
 import numpy as np
 from astropy import units as u
 
-from ..constants import c
+from plasmapy.constants import c
 from plasmapy import atomic, utils
 
+__all__ = [
+    "Lorentz_factor",
+]
 
 @utils.check_quantity({
     'V': {'units': u.m / u.s, 'can_be_negative': True}

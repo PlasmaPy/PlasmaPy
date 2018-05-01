@@ -1,4 +1,4 @@
-.. py:module:: physics
+.. py:module:: plasmapy.physics
 
 .. _plasmapy-physics:
 
@@ -8,11 +8,22 @@ Plasma physics formulas (`plasmapy.physics`)
 
 .. currentmodule:: plasmapy.physics
 
-Introduction
-============
-
 `plasmapy.physics` provides theoretical formulas for calculation of physical quantities helpful for plasma physics.
-The layout of the subpackage is still in flux.
+The layout of the subpackage is still in flux, but for now we have settled on providing a single `plasmapy.physics` namespace
+for some of the most common functions. The actual functions are located in modules, subjectively grouped by topic,
+with sub-namespaces for larger sub-packages.
+
+We thus have:
+
+.. toctree::
+   :maxdepth: 1
+
+   parameters
+   dimensionless
+   dielectric
+   distribution
+   quantum
+   relativity
 
 The subpackage makes heavy use of `astropy.units.Quantity` for handling conversions between different unit systems.
 This is especially important for electron volts, commonly used in plasma physics to denote temperature, although
@@ -26,26 +37,6 @@ For a general overview of how unit-based input works, take a look at the followi
 .. topic:: Examples:
 
    * :ref:`sphx_glr_auto_examples_plot_physics.py`
-   * :ref:`sphx_glr_auto_examples_plot_cold_plasma_tensor_elements.py`
-   * :ref:`sphx_glr_auto_examples_plot_distribution.py`
-
-Reference/API
-=============
-
-.. automodapi:: plasmapy.physics.parameters
-.. automodapi:: plasmapy.physics.dielectric
-.. automodapi:: plasmapy.physics.dimensionless
-   :skip: gyrofrequency
-   :skip: plasma-frequency
-.. automodapi:: plasmapy.physics.distribution
-   :skip: gyrofrequency
-   :skip: plasma-frequency
-.. automodapi:: plasmapy.physics.quantum
-   :skip: Lorentz_factor
-   :skip: Fermi_integral
-   :skip: check_quantity
-.. automodapi:: plasmapy.physics.relativity
-   :no-main-docstr:
 
 Notes for developers
 ====================

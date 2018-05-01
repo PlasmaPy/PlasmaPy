@@ -1,10 +1,22 @@
-"""Functions to deal with distribution : generate, fit, calculate"""
+"""
+Common distribution functions for plasmas, such as the Maxwelian or
+Kappa distributions. Functionality is intended to include generation,
+fitting and calculation.
+"""
 import astropy as astropy
 from astropy import units as u
 from plasmapy.physics import parameters
 import numpy as np
 from scipy.special import gamma
 
+__all__ = [
+    "Maxwellian_1D",
+    "Maxwellian_velocity_3D",
+    "Maxwellian_speed_1D",
+    "Maxwellian_speed_3D",
+    "kappa_velocity_1D",
+    "kappa_velocity_3D",
+]
 
 def _v_drift_units(v_drift):
     # Helper method to assign units to  v_drift if it takes a default value
@@ -39,7 +51,7 @@ def Maxwellian_1D(v,
     particle: str, optional
         Representation of the particle species(e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
-        (singly ionized helium-4), which defaults to electrons.
+        (singly ionized helium-4)), which defaults to electrons.
 
     V_drift: ~astropy.units.Quantity, optional
         The drift velocity in units convertible to m/s.
@@ -166,7 +178,7 @@ def Maxwellian_velocity_3D(vx,
     particle: str, optional
         Representation of the particle species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
-        (singly ionized helium-4), which defaults to electrons.
+        (singly ionized helium-4)), which defaults to electrons.
 
     Vx_drift: ~astropy.units.Quantity, optional
         The drift velocity in x-direction units convertible to m/s.
@@ -305,7 +317,7 @@ def Maxwellian_speed_1D(v,
     particle: str, optional
         Representation of the particle species(e.g., `'p'` for protons, `'D+'`
         for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
-        (singly ionized helium-4), which defaults to electrons.
+        (singly ionized helium-4)), which defaults to electrons.
 
     V_drift: ~astropy.units.Quantity
         The drift speed in units convertible to m/s.
@@ -433,7 +445,7 @@ def Maxwellian_speed_3D(vx,
     particle: str, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for :math:`He_4^{+1}`
-        (singly ionized helium-4), which defaults to electrons.
+        (singly ionized helium-4)), which defaults to electrons.
 
     Vx_drift: ~astropy.units.Quantity
         The drift speed in x-direction units convertible to m/s.
@@ -591,7 +603,7 @@ def kappa_velocity_1D(v,
     particle: str, optional
         Representation of the particle species(e.g., `'p` for protons, `'D+'`
         for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
-        (singly ionized helium-4), which defaults to electrons.
+        (singly ionized helium-4)), which defaults to electrons.
 
     V_drift: ~astropy.units.Quantity, optional
         The drift velocity in units convertible to m/s.
@@ -743,7 +755,7 @@ def kappa_velocity_3D(vx,
     particle: str, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for :math:`He_4^{+1}` : singly ionized
-        helium-4), which defaults to electrons.
+        helium-4)), which defaults to electrons.
 
     Vx_drift: ~astropy.units.Quantity, optional
         The drift velocity in x-direction units convertible to m/s.
