@@ -739,7 +739,7 @@ class Test__matrix_sheath_thickness:
                 f"matrix_sheath_thickness({w}) did not raise the warning "
                 f"{expected_warning.__name__} as expected.")):
 
-            matrix_sheath_thickness(w)
+            matrix_sheath_thickness(*w)
 
     matrix_sheath_thickness_errors_table = [
         ((None, n_e), ValueError),
@@ -755,7 +755,7 @@ class Test__matrix_sheath_thickness:
                 f"matrix_sheath_thickness({w}) did not raise the error "
                 f"{expected_error.__name__} as expected.")):
 
-            matrix_sheath_thickness(w)
+            matrix_sheath_thickness(*w)
 
 
 class Test__Child_law_sheath_thickness:
@@ -799,7 +799,7 @@ class Test__Child_law_sheath_thickness:
                 f"Child_law_sheath_thickness({w}) did not raise the warning "
                 f"{expected_warning.__name__} as expected.")):
 
-            matrix_sheath_thickness(w)
+            matrix_sheath_thickness(*w)
 
     Child_law_sheath_thickness_errors_table = [
         ((None, None, n_e), ValueError),
@@ -816,7 +816,7 @@ class Test__Child_law_sheath_thickness:
                 f"Child_law_sheath_thickness({w}) did not raise the error "
                 f"{expected_error.__name__} as expected.")):
 
-            matrix_sheath_thickness(w)
+            matrix_sheath_thickness(*w)
 
 
 def test_inertial_length():
