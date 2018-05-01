@@ -20,11 +20,14 @@ from plasmapy.physics.dimensionless import (quantum_theta,
                                             )
 from plasmapy.physics.transport import (coupling_parameter,
                                         )
-from plasmapy.atomic import (particle_mass,
-                             integer_charge,
-                             )
+from plasmapy.atomic import particle_mass
 
 from plasmapy.utils import call_string, CouplingWarning
+
+__all__ = [
+    "Plasma3D",
+    "PlasmaBlob"
+]
 
 
 class Plasma3D:

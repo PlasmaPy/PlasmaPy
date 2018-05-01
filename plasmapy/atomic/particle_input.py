@@ -17,6 +17,9 @@ from ..utils import (AtomicError,
                      InvalidIsotopeError,
                      ChargeError)
 
+__all__ = [
+    "particle_input",
+]
 
 def _particle_errmsg(argname: str,
                      argval: str,
