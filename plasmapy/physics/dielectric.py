@@ -1,8 +1,12 @@
 """Functions to calculate plasma dielectric parameters"""
 
+import numpy as np
 from astropy import units as u
 from plasmapy import utils
 from plasmapy.physics import parameters
+from plasmapy.constants import (pi, m_e, c, mu0, e, eps0)
+import scipy.special as spec
+from plasmapy.mathematics import jackson_function
 
 r"""
 Values should be returned as a `~astropy.units.Quantity` in SI units.
@@ -200,3 +204,40 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
         R += - omega_p ** 2 / (omega * (omega + omega_c))
         P += - omega_p ** 2 / omega ** 2
     return L, R, P
+
+# plasma permittivity in terms of Jackson function
+@u.quantity_input(omega=u.rad/u.s,
+                  kWave=u.rad/u.m,
+                  T=u.K,
+                  n=u.m**-3,
+                  z_mean=u.dimensionless_unscaled)
+def permittivity_1D_Maxwellian(omega,
+                               kWave,
+                               T,
+                               n,
+                               particle,
+                               z_mean=None):
+    """
+    omega [rad/s]
+    kWave [rad/m]
+    temperature [eV]
+    density [cm^-3]
+    """
+    vTh = parameters.thermal_speed(T=T,
+                                   particle=particle,
+                                   method="most_probable")
+    # plasma frequency
+    wp = parameters.plasma_frequency(n=n,
+                                     particle=particle,
+                                     z_mean=z_mean)
+    # scattering parameter alpha.
+    # explicitly removing factor of sqrt(2) to be consistent with Froula
+    alpha = np.sqrt(2) * (wp / (kWave * vTh)).to(u.dimensionless_unscaled)
+    x = (omega / (kWave * vTh)).to(u.dimensionless_unscaled)
+    # correction for comparing this 1D Maxwellian based definition
+    # to a 3D Maxwellian based permittivity
+    # this is sqrt(pi) / sqrt(pi) ** 3
+    #    corr = 1 / np.pi
+    corr = 1
+    chi = corr * alpha ** 2 * jackson_function(x.value)
+    return chi
