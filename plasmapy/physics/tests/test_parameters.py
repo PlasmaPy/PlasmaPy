@@ -708,62 +708,115 @@ def test_Debye_number():
         assert Debye_number(1.1 * u.K, 1.1) == Debye_number(1.1, 1.1 * u.m ** -3)
 
 
-def test_matrix_sheath_thickness():
+class Test__matrix_sheath_thickness:
     r"""Test the matrix_sheath_thickness function in parameters.py."""
 
     V_0 = 80 * u.V
 
-    assert matrix_sheath_thickness(V_0, n_e).unit.is_equivalent(u.m)
+    def test_correct_unit(self):
+        assert matrix_sheath_thickness(self.V_0, n_e).unit.is_equivalent(u.m), \
+            (f"The unit of matrix_sheath_thickness is not meter.")
 
-    assert np.isclose(matrix_sheath_thickness(V_0, n_e).value, 1.329823977068723e-05)
+    def test_correct_value(self):
 
-    with pytest.warns(u.UnitsWarning):
-        matrix_sheath_thickness(V_0, 4)
+        test_result = matrix_sheath_thickness(self.V_0, n_e).value
 
-    with pytest.raises(TypeError):
-        matrix_sheath_thickness(None, n_e)
+        expected = 1.329823977068723e-05
 
-    with pytest.raises(u.UnitConversionError):
-        matrix_sheath_thickness(8 * u.T, n_e)
+        assert np.isclose(test_result, expected), \
+            (f"The test result value of matrix_sheath_thickness is not correct and returns"
+             f"{test_result} instead of {expected}.")
 
-    with pytest.raises(u.UnitConversionError):
-        matrix_sheath_thickness(V_0, 1e18 * u.m**3)
+    matrix_sheath_thickness_warnings_table = [
+        ([V_0, 1], u.UnitsWarning),
+        ([1, n_e], u.UnitsWarning)]
 
-    with pytest.raises(ValueError):
-        matrix_sheath_thickness(5j * u.V, n_e)
+    @pytest.mark.parametrize('w, expected_warning', matrix_sheath_thickness_warnings_table)
+    def test_warnings(self, w, expected_warning):
+        """Test warnings that should be raised by matrix_sheath_thickness."""
+
+        with pytest.warns(expected_warning, message=(
+                f"matrix_sheath_thickness({w}) did not raise the warning "
+                f"{expected_warning.__name__} as expected.")):
+
+            matrix_sheath_thickness(*w)
+
+    matrix_sheath_thickness_errors_table = [
+        ([None, n_e], TypeError),
+        ([8 * u.T, n_e], u.UnitConversionError),
+        ([V_0, 1e18 * u.m**3], u.UnitConversionError),
+        ([5j * u.V, n_e], ValueError)]
+
+    @pytest.mark.parametrize('w, expected_error', matrix_sheath_thickness_errors_table)
+    def test_errors(self, w, expected_error):
+        """Test errors that should be raised by matrix_sheath_thickness."""
+
+        with pytest.raises(expected_error, message=(
+                f"matrix_sheath_thickness({w}) did not raise the error "
+                f"{expected_error.__name__} as expected.")):
+
+            matrix_sheath_thickness(*w)
 
 
-def test_Child_law_sheath_thickness():
+class Test__Child_law_sheath_thickness:
     r"""Test the Child_law_sheath_thickness function in parameters.py."""
 
     V_0 = 80 * u.V
 
-    assert Child_law_sheath_thickness(T_e, V_0, n_e).unit.is_equivalent(u.m)
+    def test_correct_unit(self):
+        assert Child_law_sheath_thickness(T_e, self.V_0, n_e).unit.is_equivalent(u.m), \
+            (f"The unit of Child_law_sheath_thickness is not meter.")
 
-    assert np.isclose(Child_law_sheath_thickness(T_e, V_0, n_e).value, 7.317701879630642e-06)
+    def test_correct_value(self):
 
-    T_e_eV = T_e.to(u.eV, equivalencies=u.temperature_energy())
+        test_result = Child_law_sheath_thickness(T_e, self.V_0, n_e).value
 
-    assert Child_law_sheath_thickness(T_e_eV, V_0, n_e) == (
-        Child_law_sheath_thickness(T_e, V_0, n_e))
+        expected = 7.317701879630642e-06
 
-    with pytest.warns(u.UnitsWarning):
-        Child_law_sheath_thickness(T_e, V_0, 4)
+        assert np.isclose(test_result, expected), \
+            (f"The test result value of Child_law_sheath_thickness is not correct and returns"
+             f"{test_result} instead of {expected}.")
 
-    with pytest.raises(TypeError):
-        Child_law_sheath_thickness(None, None, n_e)
+    def test_temperature_unit_equivalency(self):
 
-    with pytest.raises(u.UnitConversionError):
-        Child_law_sheath_thickness(3 * u.A, V_0, n_e)
+        T_e_eV = T_e.to(u.eV, equivalencies=u.temperature_energy())
 
-    with pytest.raises(u.UnitConversionError):
-        Child_law_sheath_thickness(T_e, 8 * u.T, n_e)
+        assert Child_law_sheath_thickness(T_e_eV, self.V_0, n_e) == (
+            Child_law_sheath_thickness(T_e, self.V_0, n_e)), \
+            (f"Child_law_sheath_thickness does not adhere to the temperature-energy "
+             f"equivalency.")
 
-    with pytest.raises(u.UnitConversionError):
-        Child_law_sheath_thickness(T_e, V_0, 1e18 * u.m**3)
+    Child_law_sheath_thickness_warnings_table = [
+        ([T_e, V_0, 4], u.UnitsWarning),
+        ([T_e, 80, n_e], u.UnitsWarning),
+        ([2, V_0, n_e], u.UnitsWarning)]
 
-    with pytest.raises(ValueError):
-        Child_law_sheath_thickness(T_e, 5j * u.V, n_e)
+    @pytest.mark.parametrize('w, expected_warning', Child_law_sheath_thickness_warnings_table)
+    def test_warnings(self, w, expected_warning):
+        """Test warnings that should be raised by Child_law_sheath_thickness."""
+
+        with pytest.warns(expected_warning, message=(
+                f"Child_law_sheath_thickness({w}) did not raise the warning "
+                f"{expected_warning.__name__} as expected.")):
+
+            matrix_sheath_thickness(*w)
+
+    Child_law_sheath_thickness_errors_table = [
+        ([None, None, n_e], TypeError),
+        ([3 * u.A, V_0, n_e], u.UnitConversionError),
+        ([T_e, 8 * u.T, n_e], u.UnitConversionError),
+        ([T_e, V_0, 1e18 * u.m**3], u.UnitConversionError),
+        ([T_e, 5j * u.V, n_e], ValueError)]
+
+    @pytest.mark.parametrize('w, expected_error', Child_law_sheath_thickness_errors_table)
+    def test_errors(self, w, expected_error):
+        """Test errors that should be raised by Child_law_sheath_thickness."""
+
+        with pytest.raises(expected_error, message=(
+                f"Child_law_sheath_thickness({w}) did not raise the error "
+                f"{expected_error.__name__} as expected.")):
+
+            matrix_sheath_thickness(*w)
 
 
 def test_inertial_length():

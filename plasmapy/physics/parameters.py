@@ -1177,7 +1177,7 @@ def matrix_sheath_thickness(V_0, n_s):
 
 
 @utils.check_quantity({
-    'T_e': {'units': u.eV, 'can_be_negative': False},
+    'T_e': {'units': u.K, 'can_be_negative': False},
     'V_0': {'units': u.V, 'can_be_negative': False},
     'n_s': {'units': u.m ** -3, 'can_be_negative': False}
     })
@@ -1187,7 +1187,7 @@ def Child_law_sheath_thickness(T_e, V_0, n_s):
     Parameters
     ----------
     T_e : ~astropy.units.Quantity
-        Electron temperature in units convertible to eV.
+        Electron temperature in units convertible to K.
 
     V_0 : ~astropy.units.Quantity
         Sheath potential in units convertible to V.
@@ -1225,10 +1225,10 @@ def Child_law_sheath_thickness(T_e, V_0, n_s):
 
     .. math::
         s = \frac{\sqrt{2}}{3} \lambda_D
-        \left( \frac{2 V_0}{T_e} \right) ^ {3 / 4}.
+        \left( \frac{2 V_0}{k_B T_e} \right) ^ {3 / 4}.
 
     This is larger than the matrix sheath thickness by a factor
-    :math:`\left( \frac{2 e V_0}{T_e} \right) ^ {1 / 4}`.
+    :math:`\left( \frac{2 e V_0}{k_B T_e} \right) ^ {1 / 4}`.
 
     See Also
     --------
@@ -1237,16 +1237,16 @@ def Child_law_sheath_thickness(T_e, V_0, n_s):
     Example
     -------
     >>> from astropy import units as u
-    >>> Child_law_sheath_thickness(2 * u.eV, 80 * u.V, 1e18 * u.m**-3)
-    <Quantity 0.00013257 m>
+    >>> Child_law_sheath_thickness(1e6 * u.K, 80 * u.V, 1e18 * u.m**-3)
+    <Quantity 5.17439662e-05 m>
 
     """
 
-    T_e = T_e.to(u.eV, equivalencies=u.temperature_energy())
+    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
 
     lambda_D = Debye_length(T_e, n_s)
 
-    s = (np.sqrt(2) / 3) * lambda_D * (2 * e * V_0 / T_e) ** 0.75
+    s = (np.sqrt(2) / 3) * lambda_D * (2 * e * V_0 / (k_B * T_e)) ** 0.75
 
     return s.to(u.m)
 
