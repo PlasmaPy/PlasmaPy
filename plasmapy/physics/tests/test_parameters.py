@@ -780,9 +780,9 @@ class Test__Child_law_sheath_thickness:
     def test_temperature_unit_equivalency(self):
 
         T_e_eV = T_e.to(u.eV, equivalencies=u.temperature_energy())
-
-        assert np.isclose(Child_law_sheath_thickness(T_e_eV, self.V_0, n_e),
-                          Child_law_sheath_thickness(T_e, self.V_0, n_e)), \
+        
+        assert np.isclose(Child_law_sheath_thickness(T_e_eV, self.V_0, n_e).value,
+                          Child_law_sheath_thickness(T_e, self.V_0, n_e).value), \
             (f"Child_law_sheath_thickness does not adhere to the temperature-energy "
              f"equivalency.")
 
@@ -799,7 +799,7 @@ class Test__Child_law_sheath_thickness:
                 f"Child_law_sheath_thickness({w}) did not raise the warning "
                 f"{expected_warning.__name__} as expected.")):
 
-            matrix_sheath_thickness(*w)
+            Child_law_sheath_thickness(*w)
 
     Child_law_sheath_thickness_errors_table = [
         ((None, None, n_e), ValueError),
@@ -816,7 +816,7 @@ class Test__Child_law_sheath_thickness:
                 f"Child_law_sheath_thickness({w}) did not raise the error "
                 f"{expected_error.__name__} as expected.")):
 
-            matrix_sheath_thickness(*w)
+            Child_law_sheath_thickness(*w)
 
 
 def test_inertial_length():
