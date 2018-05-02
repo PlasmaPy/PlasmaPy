@@ -723,9 +723,12 @@ class Test__matrix_sheath_thickness:
 
         expected = 1.329823977068723e-05
 
-        assert np.isclose(test_result, expected), \
-            (f"The test result value of matrix_sheath_thickness is not correct and returns"
-             f"{test_result} instead of {expected}.")
+        test = np.isclose(test_result, expected)
+
+        errStr = (f"The test result value of matrix_sheath_thickness is not correct "
+                  f"and returns {test_result} instead of {expected}.")
+
+        assert test, errStr
 
     matrix_sheath_thickness_warnings_table = [
         ((V_0, 1), u.UnitsWarning),
@@ -773,18 +776,27 @@ class Test__Child_law_sheath_thickness:
 
         expected = 7.317701879630642e-06
 
-        assert np.isclose(test_result, expected), \
-            (f"The test result value of Child_law_sheath_thickness is not correct and returns"
-             f"{test_result} instead of {expected}.")
+        test = np.isclose(test_result, expected)
+
+        errStr = (f"The test result value of Child_law_sheath_thickness is not correct "
+                  f"and returns {test_result} instead of {expected}.")
+
+        assert test, errStr
 
     def test_temperature_unit_equivalency(self):
 
         T_e_eV = T_e.to(u.eV, equivalencies=u.temperature_energy())
 
-        assert np.isclose(Child_law_sheath_thickness(T_e_eV, self.V_0, n_e).value,
-                          Child_law_sheath_thickness(T_e, self.V_0, n_e).value), \
-            (f"Child_law_sheath_thickness does not adhere to the temperature-energy "
-             f"equivalency.")
+        test_result = Child_law_sheath_thickness(T_e_eV, self.V_0, n_e).value
+
+        expected = Child_law_sheath_thickness(T_e, self.V_0, n_e).value
+
+        test = np.isclose(test_result, expected)
+
+        errStr = (f"Child_law_sheath_thickness does not adhere to the temperature-energy "
+                  f"equivalency and returns {test_result} instead of {expected}")
+
+        assert test, errStr
 
     Child_law_sheath_thickness_warnings_table = [
         ((T_e, V_0, 4), u.UnitsWarning),
