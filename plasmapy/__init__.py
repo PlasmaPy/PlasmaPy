@@ -31,5 +31,6 @@ if not _ASTROPY_SETUP_:
     from . import diagnostics
     from . import mathematics
     from . import physics
+    from . import uncertainty
     from . import utils
 
