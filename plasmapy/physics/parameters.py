@@ -15,6 +15,8 @@ __all__ = [
     "gyroradius",
     "plasma_frequency",
     "Debye_length",
+    "matrix_sheath_thickness",
+    "Child_law_sheath_thickness",
     "Debye_number",
     "inertial_length",
     "magnetic_pressure",
