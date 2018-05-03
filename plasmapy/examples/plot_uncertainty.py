@@ -11,7 +11,7 @@ print("Value a = " + str(value1))
 
 print("Base of a = " + str(value1.base()))
 
-print("Uncertainty of a = " + str(value1.get_uncertainty()))
+print("Uncertainty of a = " + str(value1.uncertainty))
 
 print("Value b = " + str(value1))
 

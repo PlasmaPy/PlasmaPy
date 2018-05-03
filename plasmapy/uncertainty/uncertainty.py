@@ -3,20 +3,29 @@
 import astropy.units as u
 import numpy as np
 
+
 class UncertaintyQuantity(u.Quantity):
-
-    def set_uncertainty(self, uncertainty):
-        self.uncertainty = uncertainty
-        return self
-
-    def relative(self):
-        return float(self.uncertainty / u.Quantity(self))
 
     def __new__(self, base, uncertainty):
         new = u.Quantity(base)
         new.__class__ = UncertaintyQuantity
-        new.uncertainty = uncertainty
+        new._uncertainty = u.Quantity(uncertainty)
         return new
+
+    @property
+    def uncertainty(self):
+        return self._uncertainty
+
+    @uncertainty.setter
+    def uncertainty(self, value):
+
+        if(value < 0):
+            raise ValueError('Uncertainty cannot be negative.')
+
+        self._uncertainty = value.to(self.unit)
+
+    def relative(self):
+        return float(self.uncertainty / u.Quantity(self))
 
     def base(self):
         return self.get_base()
@@ -25,177 +34,121 @@ class UncertaintyQuantity(u.Quantity):
         result = u.Quantity(self)
         return result
 
-    def get_uncertainty(self):
-        return u.Quantity(self.uncertainty)
-
     def to(self, *vars, **kwargs):
         result = super(UncertaintyQuantity, self).to(*vars, **kwargs)
-        result.uncertainty = self.uncertainty.to(*vars, **kwargs)
+        result._uncertainty = self.uncertainty.to(*vars, **kwargs)
         return result
 
     def __eq__(self, other):
         if not u.Quantity(self) == u.Quantity(other):
             return False
 
-        if not u.Quantity(self.uncertainty) == u.Quantity(other.uncertainty):
+        if not u.Quantity(self._uncertainty) == u.Quantity(other._uncertainty):
             return False
 
         return True
 
-    @staticmethod
-    def _uncertainty_method(a, b, term1, term2, **kwargs):
-
-        if(type(a) != UncertaintyQuantity or a.uncertainty == 0):
-            return term2()
-
-        if(type(b) != UncertaintyQuantity or b.uncertainty == 0):
-            return term1()
-
-        return np.sqrt(np.power(term1(), 2, **kwargs) + np.power(term2(), 2, **kwargs), **kwargs)
-
-    @staticmethod
-    def get_pow_uncertainty(a, b, **kwargs):
-
-        def term1():
-            return (np.abs(u.Quantity(b) *
-                           np.power(u.Quantity(a), u.Quantity(b) - 1, **kwargs), **kwargs) *
-                     u.Quantity(a.uncertainty))
-
-        def term2():
-            return (np.abs(np.power(u.Quantity(a), u.Quantity(b), **kwargs) *
-                           np.log(u.Quantity(a), **kwargs), **kwargs) *
-                    u.Quantity(b.uncertainty))
-
-        return UncertaintyQuantity._uncertainty_method(a, b, term1, term2, **kwargs)
-
-    @staticmethod
-    def get_add_uncertainty(a, b, **kwargs):
-
-        def term1():
-            return u.Quantity(a.uncertainty)
-
-        def term2():
-            return u.Quantity(b.uncertainty)
-
-        return UncertaintyQuantity._uncertainty_method(a, b, term1, term2, **kwargs)
-
-    @staticmethod
-    def get_sub_uncertainty(a, b, **kwargs):
-        return UncertaintyQuantity.get_add_uncertainty(a, b, **kwargs)
-
-    @staticmethod
-    def get_mul_uncertainty(a, b, **kwargs):
-
-        def term1():
-            return np.abs(u.Quantity(b)) * u.Quantity(a.uncertainty)
-
-        def term2():
-            return np.abs(u.Quantity(a)) * u.Quantity(b.uncertainty)
-
-        return UncertaintyQuantity._uncertainty_method(a, b, term1, term2, **kwargs)
-
-    @staticmethod
-    def get_truediv_uncertainty(a, b, **kwargs):
-
-        def term1():
-            return (np.abs(1 / u.Quantity(b), **kwargs) *
-                    u.Quantity(a.uncertainty))
-
-        def term2():
-            return (np.abs(u.Quantity(a) / u.Quantity(b) ** 2, **kwargs) *
-                     u.Quantity(b.uncertainty))
-
-        return UncertaintyQuantity._uncertainty_method(a, b, term1, term2, **kwargs)
-
     def __truediv__(self, other):
-        result = super(UncertaintyQuantity, self).__truediv__(other)
-
-        if not (type(other) == UncertaintyQuantity or type(other) == u.Quantity):
-            other = u.Quantity(1 * other)
-
-        result.uncertainty = UncertaintyQuantity.get_truediv_uncertainty(self, other)
-
-        return result
+        return np.true_divide(self, other)
 
     def __pow__(self, other):
-        result = super(UncertaintyQuantity, self).__pow__(other)
-
-        if not (type(other) == UncertaintyQuantity or type(other) == u.Quantity):
-            other = u.Quantity(1 * other)
-
-        result.uncertainty = UncertaintyQuantity.get_pow_uncertainty(self, other)
-
-        return result
+        return np.power(self, other)
 
     def __add__(self, other):
-        result = super(UncertaintyQuantity, self).__add__(other)
-
-        if not (type(other) == UncertaintyQuantity or type(other) == u.Quantity):
-            other = u.Quantity(1 * other)
-
-        result.uncertainty = UncertaintyQuantity.get_add_uncertainty(self, other)
-
-        return result
+        return np.add(self, other)
 
     def __sub__(self, other):
-        result = super(UncertaintyQuantity, self).__sub__(other)
-
-        if not (type(other) == UncertaintyQuantity or type(other) == u.Quantity):
-            other = u.Quantity(1 * other)
-
-        result.uncertainty = UncertaintyQuantity.get_sub_uncertainty(self, other)
-
-        return result
+        return np.subtract(self, other)
 
     def __mul__(self, other):
-        result = super(UncertaintyQuantity, self).__mul__(other)
+        return np.multiply(self, other)
 
-        if not (type(other) == UncertaintyQuantity or type(other) == u.Quantity):
-            other = u.Quantity(1 * other)
+    derivative_dict = {
+            np.add:         [lambda a, b: 1,
+                             lambda a, b: 1],
+            np.subtract:    [lambda a, b: 1,
+                             lambda a, b: 1],
+            np.multiply:    [lambda a, b: b,
+                             lambda a, b: a],
+            np.true_divide: [lambda a, b: 1 / b,
+                             lambda a, b: a / b ** 2],
+            np.square:      [lambda a: 2 * a],
+            np.sqrt:        [lambda a: 0.5 / a ** 0.5],
+            np.power:       [lambda a, b: b * a ** (b - 1),
+                             lambda a, b: np.log(a) * a ** b]}
 
-        result.uncertainty = UncertaintyQuantity.get_mul_uncertainty(self, other)
+    @staticmethod
+    def absolute_uncertainty_rule(derivatives, uncertainties):
+        # The rule for 100% uncertainty intervals:
+        # Df(x, y) = abs(df/dx) * Dx + abs(df/dy) * Dy
 
-        return result
+        return np.sum(np.abs(d) * u for [d, u] in zip(derivatives, uncertainties))
+
+    @staticmethod
+    def Gaussian_uncertainty_rule(terms):
+        # The rule for uncertainty intervals with a normal distribution:
+        # Df(x, y) = sqrt(abs(df/dx)^2 * Dx^2 + abs(df/dy)^2 * Dy^2)
+
+        return np.sqrt(np.sum((term**2 for term in terms)))
 
     def __array_ufunc__(self, *vars, **kwargs):
-        result = super(UncertaintyQuantity, self).__array_ufunc__(*vars, **kwargs)
 
-        if(vars[0].__name__ == 'sqrt'):
-            this = vars[2]
-            result.uncertainty = UncertaintyQuantity.get_pow_uncertainty(this, 0.5, **kwargs)
+        # This line unpacks one or both parameters of the operation into the variable params
+        ufunc, _, *params = vars
 
-        if(vars[0].__name__ == 'power'):
-            this = vars[2]
-            other = vars[3]
-            result.uncertainty = UncertaintyQuantity.get_pow_uncertainty(this, other, **kwargs)
+        # Defines a function to convert any input value to a Quantity
+        def toQuantity(value):
+            if not (type(value) == UncertaintyQuantity or type(value) == u.Quantity):
+                return u.Quantity(1 * value)
+            else:
+                return u.Quantity(value)
 
-        if(vars[0].__name__ == 'add'):
-            this = vars[2]
-            other = vars[3]
-            result.uncertainty = UncertaintyQuantity.get_add_uncertainty(this, other, **kwargs)
+        # Convert the input parameters to Quantity objects
+        quantity_params = [toQuantity(param) for param in params]
 
-        if(vars[0].__name__ == 'subtract'):
-            this = vars[2]
-            other = vars[3]
-            result.uncertainty = UncertaintyQuantity.get_sub_uncertainty(this, other, **kwargs)
+        # Execute the ufunc to obtain the normal result of the operation
+        result = ufunc(*quantity_params, **kwargs)
 
-        if(vars[0].__name__ == 'multiply'):
-            this = vars[2]
-            other = vars[3]
-            result.uncertainty = UncertaintyQuantity.get_mul_uncertainty(this, other, **kwargs)
+        # Return the result if no derivative uncertainty function is defined
+        if(ufunc not in self.derivative_dict):
+            return result
 
-        if(vars[0].__name__ == 'true_divide'):
-            this = vars[2]
-            other = vars[3]
-            result.uncertainty = UncertaintyQuantity.get_truediv_uncertainty(this, other, **kwargs)
+        # Ensure the result of the normal ufunc is an UncertaintyQuantity
+        result.__class__ = UncertaintyQuantity
 
-        if(vars[0].__name__ == 'square'):
-            this = vars[2]
-            result.uncertainty = UncertaintyQuantity.get_pow_uncertainty(this, 2, **kwargs)
+        # Obtain the derivative lambdas corresponding to the ufunc
+        derivative_funcs = self.derivative_dict[ufunc]
+
+        # Generate a list of uncertainty terms. The terms are defined as the product of the
+        # absolute value of the derivative to a parameter and the uncertainty of that parameter.
+        terms = []
+        for i in np.arange(len(params)):
+
+            # Do not calculate the term if the parameter has no uncertainty or it is zero
+            if(params[i].__class__ == UncertaintyQuantity and params[i]._uncertainty != 0):
+
+                # Add the term to the list
+                terms.append(np.abs(derivative_funcs[i](*quantity_params)) * params[i].uncertainty)
+
+        # Several methods are available to obtain the uncertainty based on the nature of the
+        # interval. Needs some easy method of switching, ie. subclassing UncertaintyQuantity.
+        result._uncertainty = UncertaintyQuantity.Gaussian_uncertainty_rule(terms)
 
         return result
 
     def __str__(self):
-        return super(UncertaintyQuantity, self).value.__str__() + \
-            " ± " + \
-            self.uncertainty.__str__()
+
+        return '{0} ± {1}{2:s}'.format(
+                self.value,
+                self._uncertainty.value,
+                self._unitstr)
+
+    def __repr__(self):
+
+        prefixstr = '<' + self.__class__.__name__ + ' '
+
+        return '{0}{1} ± {2}{3:s}>'.format(
+                prefixstr,
+                self.value,
+                self._uncertainty.value,
+                self._unitstr)
