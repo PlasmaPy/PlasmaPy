@@ -5,6 +5,29 @@ import numpy as np
 
 
 class UncertaintyQuantity(u.Quantity):
+    """
+    Extension of the Quantity class to implement uncertainty properties and propagation.
+
+    Attributes
+    ----------
+    uncertainty : `astropy.units.Quantity`
+        The uncertainty in the value of the parent object. This must be a Quantity to prevent
+        recursion.
+
+    Notes
+    -----
+    UncertaintyQuantity is highly experimental. Many but the most common operators and numpy
+    functions are not supported. Currently supported operations are:
+
+    - addition
+    - subtraction
+    - multiplication
+    - division
+    - power
+    - sqrt
+    - square
+
+    """
 
     def __new__(self, base, uncertainty):
         new = u.Quantity(base)
@@ -40,6 +63,11 @@ class UncertaintyQuantity(u.Quantity):
         return result
 
     def __eq__(self, other):
+        """
+        Equality is defined based on both the parent Quantity and the uncertainty Quantity.
+
+        """
+
         if not u.Quantity(self) == u.Quantity(other):
             return False
 
@@ -49,18 +77,23 @@ class UncertaintyQuantity(u.Quantity):
         return True
 
     def __truediv__(self, other):
+        """Redirects to the numpy operator"""
         return np.true_divide(self, other)
 
     def __pow__(self, other):
+        """Redirects to the numpy operator"""
         return np.power(self, other)
 
     def __add__(self, other):
+        """Redirects to the numpy operator"""
         return np.add(self, other)
 
     def __sub__(self, other):
+        """Redirects to the numpy operator"""
         return np.subtract(self, other)
 
     def __mul__(self, other):
+        """Redirects to the numpy operator"""
         return np.multiply(self, other)
 
     derivative_dict = {
@@ -79,19 +112,32 @@ class UncertaintyQuantity(u.Quantity):
 
     @staticmethod
     def absolute_uncertainty_rule(derivatives, uncertainties):
-        # The rule for 100% uncertainty intervals:
-        # Df(x, y) = abs(df/dx) * Dx + abs(df/dy) * Dy
+        """
+        The rule for 100% uncertainty intervals:
+        > Df(x, y) = abs(df/dx) * Dx + abs(df/dy) * Dy
+
+        """
 
         return np.sum(np.abs(d) * u for [d, u] in zip(derivatives, uncertainties))
 
     @staticmethod
     def Gaussian_uncertainty_rule(terms):
-        # The rule for uncertainty intervals with a normal distribution:
-        # Df(x, y) = sqrt(abs(df/dx)^2 * Dx^2 + abs(df/dy)^2 * Dy^2)
+        """
+        The rule for uncertainty intervals with a normal distribution:
+        > Df(x, y) = sqrt(abs(df/dx)^2 * Dx^2 + abs(df/dy)^2 * Dy^2)
+
+        """
 
         return np.sqrt(np.sum((term**2 for term in terms)))
 
     def __array_ufunc__(self, *vars, **kwargs):
+        """
+        Implements uncertainty propagation by extending __array_ufunc__, which is called whenever
+        an ufunc is applied. If not applicable or not implemented the normal result of the ufunc
+        is returned. Otherwise the standard rules of uncertainty calculus are applied to obtain the
+        uncertainty of the function result.
+
+        """
 
         # This line unpacks one or both parameters of the operation into the variable params
         ufunc, _, *params = vars
@@ -137,6 +183,7 @@ class UncertaintyQuantity(u.Quantity):
         return result
 
     def __str__(self):
+        """Generates a shortened representation of the UncertaintyQuantity object"""
 
         return '{0} ± {1}{2:s}'.format(
                 self.value,
@@ -144,6 +191,7 @@ class UncertaintyQuantity(u.Quantity):
                 self._unitstr)
 
     def __repr__(self):
+        """Generates a string representation of the UncertaintyQuantity object"""
 
         prefixstr = '<' + self.__class__.__name__ + ' '
 
