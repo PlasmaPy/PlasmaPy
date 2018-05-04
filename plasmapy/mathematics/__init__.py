@@ -5,4 +5,5 @@ to be abstracted from the main function interface."""
 
 from .mathematics import (plasma_dispersion_func,
                           plasma_dispersion_func_deriv,
+                          jackson_function,
                           Fermi_integral)

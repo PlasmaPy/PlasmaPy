@@ -233,11 +233,11 @@ def permittivity_1D_Maxwellian(omega,
     # scattering parameter alpha.
     # explicitly removing factor of sqrt(2) to be consistent with Froula
     alpha = np.sqrt(2) * (wp / (kWave * vTh)).to(u.dimensionless_unscaled)
-    x = (omega / (kWave * vTh)).to(u.dimensionless_unscaled)
+    zeta = (omega / (kWave * vTh)).to(u.dimensionless_unscaled)
     # correction for comparing this 1D Maxwellian based definition
     # to a 3D Maxwellian based permittivity
     # this is sqrt(pi) / sqrt(pi) ** 3
     #    corr = 1 / np.pi
     corr = 1
-    chi = corr * alpha ** 2 * jackson_function(x.value)
+    chi = corr * alpha ** 2 * jackson_function(zeta.value)
     return chi
