@@ -35,8 +35,8 @@ except:
         print("Couldn't load stix fonts for plot defaults.")
 
 
-# comparing fonts
-plt.title(r"cm-3 $\rm cm^{-3}$")
-plt.show()
+## comparing fonts
+#plt.title(r"cm-3 $\rm cm^{-3}$")
+#plt.show()
 
 
