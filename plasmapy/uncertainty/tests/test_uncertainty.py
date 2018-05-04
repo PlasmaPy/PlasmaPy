@@ -5,6 +5,7 @@ import astropy.units as u
 
 from plasmapy.uncertainty import UncertaintyQuantity
 
+
 def test_UncertaintyQuantity():
 
     base0, unc0 = 30, 5
