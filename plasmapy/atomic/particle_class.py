@@ -170,8 +170,8 @@ class Particle:
     >>> positron.particle
     'e+'
 
-    The `atomic_symbol`, `isotope_symbol`, and `ionic_symbol` attributes
-    return the symbols for each of these different types of particles.
+    The `element`, `isotope`, and `ionic_symbol` attributes return the
+    symbols for each of these different types of particles.
 
     >>> proton.element
     'H'
