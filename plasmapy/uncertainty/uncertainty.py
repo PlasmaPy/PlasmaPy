@@ -110,20 +110,20 @@ class UncertaintyQuantity(u.Quantity):
             np.power:       [lambda a, b: b * a ** (b - 1),
                              lambda a, b: np.log(a) * a ** b]}
 
+#    @staticmethod
+#    def absolute_uncertainty_rule(terms):
+#        """
+#        The uncertainty propagation rule for 100% confidence intervals:
+#        > Df(x, y) = abs(df/dx) * Dx + abs(df/dy) * Dy
+#
+#        """
+#
+#        return np.sum(np.abs(term) for term in terms)
+
     @staticmethod
-    def absolute_uncertainty_rule(derivatives, uncertainties):
+    def general_uncertainty_propagation_rule(terms):
         """
-        The rule for 100% uncertainty intervals:
-        > Df(x, y) = abs(df/dx) * Dx + abs(df/dy) * Dy
-
-        """
-
-        return np.sum(np.abs(d) * u for [d, u] in zip(derivatives, uncertainties))
-
-    @staticmethod
-    def Gaussian_uncertainty_rule(terms):
-        """
-        The rule for uncertainty intervals with a normal distribution:
+        The standard uncertainty propagation rule for 68% confidence intervals:
         > Df(x, y) = sqrt(abs(df/dx)^2 * Dx^2 + abs(df/dy)^2 * Dy^2)
 
         """
@@ -178,7 +178,7 @@ class UncertaintyQuantity(u.Quantity):
 
         # Several methods are available to obtain the uncertainty based on the nature of the
         # interval. Needs some easy method of switching, ie. subclassing UncertaintyQuantity.
-        result._uncertainty = UncertaintyQuantity.Gaussian_uncertainty_rule(terms)
+        result._uncertainty = UncertaintyQuantity.general_uncertainty_propagation_rule(terms)
 
         return result
 
