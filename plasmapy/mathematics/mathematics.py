@@ -167,7 +167,7 @@ def jackson_function(zeta):
     """
     Jackson function in terms of Fried and Conte dispersion. Useful for
     obtaining classical dielectric susceptibility.
-    
+
     As per Lehtinen (2010) notes eq (8), found here:
     http://nlpc.stanford.edu/nleht/Science/reference/errorfun.pdf
     """

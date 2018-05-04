@@ -206,8 +206,8 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     return L, R, P
 
 # plasma permittivity in terms of Jackson function
-@u.quantity_input(omega=u.rad/u.s,
-                  kWave=u.rad/u.m,
+@u.quantity_input(omega=u.rad /u.s,
+                  kWave=u.rad /u.m,
                   T=u.K,
                   n=u.m**-3,
                   z_mean=u.dimensionless_unscaled)
