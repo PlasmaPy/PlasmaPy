@@ -3,15 +3,17 @@
 Uncertainty propagation
 =======================
 
-A short demonstration of how `UncertaintyQuantity` can be used to compute uncertainties.
+A short demonstration of how `UncertaintyQuantity` can be used to compute uncertainties. First
+we'll import some essentials.
 """
 
-from plasmapy.uncertainty import UncertaintyQuantity
 import astropy.units as u
 import numpy as np
 
+from plasmapy.uncertainty import UncertaintyQuantity
+
 ######################################################
-# First we define two Quantities with uncertainties and check their properties.
+# First we define two `Quantities` with uncertainties and check their properties.
 
 value0 = UncertaintyQuantity(30 * u.m, 5 * u.m)
 value1 = UncertaintyQuantity(10 * u.m, 1 * u.m)
@@ -29,8 +31,8 @@ print("Base of b = " + str(value1.base()))
 print("Uncertainty of b = " + str(value1.uncertainty))
 
 ######################################################
-# Next we can perform calculations with these UncertaintyQuantity objects like we would with
-# normal variables or Quantities.
+# Next we can perform calculations with these `UncertaintyQuantity` variables like we would with
+# normal or `Quantity` variables.
 
 summation = value0 + value1
 print("Summation (a + b) = " + str(summation))

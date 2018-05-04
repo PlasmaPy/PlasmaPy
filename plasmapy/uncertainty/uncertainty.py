@@ -4,6 +4,12 @@ import astropy.units as u
 import numpy as np
 
 
+class UncertaintyWarning(Warning):
+    """
+    Used when unphysical or improbable uncertainties are encountered.
+    """
+
+
 class UncertaintyQuantity(u.Quantity):
     """
     Extension of the Quantity class to implement uncertainty properties and propagation.
@@ -32,7 +38,22 @@ class UncertaintyQuantity(u.Quantity):
     def __new__(self, base, uncertainty):
         new = u.Quantity(base)
         new.__class__ = UncertaintyQuantity
-        new._uncertainty = u.Quantity(uncertainty)
+
+        try:
+            new._uncertainty = u.Quantity(uncertainty)
+        except Exception:
+            raise ValueError(r"The uncertainty could not be converted to a Quantity.")
+
+        try:
+            new._uncertainty = new._uncertainty.to(new.unit)
+        except u.UnitConversionError:
+            raise u.UnitConversionError(r"The unit of the uncertainty could not be converted to "
+                                        r"the base unit. ")
+
+        # If a scalar uncertainty is provided, convert to array of parent length
+        if((not new.isscalar) and new._uncertainty.isscalar):
+            new._uncertainty = new._uncertainty * np.ones(len(new))
+
         return new
 
     @property
@@ -97,6 +118,16 @@ class UncertaintyQuantity(u.Quantity):
         return np.multiply(self, other)
 
     derivative_dict = {
+            np.sin:         [lambda a: np.cos(a)],
+            np.cos:         [lambda a: - np.sin(a)],
+            np.tan:         [lambda a: np.cos(a) ** -2],
+            np.arcsin:      [lambda a: (1 - a ** 2) ** -0.5],
+            np.arccos:      [lambda a: - (1 - a ** 2) ** -0.5],
+            np.arctan:      [lambda a: 1 / (a ** 2 + 1)],
+            np.hypot:       [lambda a, b: a / np.hypot(a, b),
+                             lambda a, b: b / np.hypot(a, b)],
+            np.arctan2:     [lambda a, b: - a / (a ** 2 + b ** 2),
+                             lambda a, b: b / (a ** 2 + b ** 2)],
             np.add:         [lambda a, b: 1,
                              lambda a, b: 1],
             np.subtract:    [lambda a, b: 1,
@@ -109,16 +140,6 @@ class UncertaintyQuantity(u.Quantity):
             np.sqrt:        [lambda a: 0.5 / a ** 0.5],
             np.power:       [lambda a, b: b * a ** (b - 1),
                              lambda a, b: np.log(a) * a ** b]}
-
-#    @staticmethod
-#    def absolute_uncertainty_rule(terms):
-#        """
-#        The uncertainty propagation rule for 100% confidence intervals:
-#        > Df(x, y) = abs(df/dx) * Dx + abs(df/dy) * Dy
-#
-#        """
-#
-#        return np.sum(np.abs(term) for term in terms)
 
     @staticmethod
     def general_uncertainty_propagation_rule(terms):
@@ -171,7 +192,7 @@ class UncertaintyQuantity(u.Quantity):
         for i in np.arange(len(params)):
 
             # Do not calculate the term if the parameter has no uncertainty or it is zero
-            if(params[i].__class__ == UncertaintyQuantity and params[i]._uncertainty != 0):
+            if(params[i].__class__ == UncertaintyQuantity and (params[i]._uncertainty != 0).any()):
 
                 # Add the term to the list
                 terms.append(np.abs(derivative_funcs[i](*quantity_params)) * params[i].uncertainty)
@@ -180,10 +201,22 @@ class UncertaintyQuantity(u.Quantity):
         # interval. Needs some easy method of switching, ie. subclassing UncertaintyQuantity.
         result._uncertainty = UncertaintyQuantity.general_uncertainty_propagation_rule(terms)
 
+        if((result._uncertainty > np.abs(result)).any()):
+            raise UncertaintyWarning("The encountered uncertainty exceeds the parent value.")
+
+        return result
+
+    def __getitem__(self, key):
+        """Slice the UncertaintyQuantity object"""
+
+        result = super(UncertaintyQuantity, self).__getitem__(key)
+
+        result._uncertainty = self._uncertainty[key]
+
         return result
 
     def __str__(self):
-        """Generates a shortened representation of the UncertaintyQuantity object"""
+        """Generate a shortened string representation of the UncertaintyQuantity object"""
 
         return '{0} ± {1}{2:s}'.format(
                 self.value,
@@ -191,7 +224,7 @@ class UncertaintyQuantity(u.Quantity):
                 self._unitstr)
 
     def __repr__(self):
-        """Generates a string representation of the UncertaintyQuantity object"""
+        """Generate a string representation of the UncertaintyQuantity object"""
 
         prefixstr = '<' + self.__class__.__name__ + ' '
 
