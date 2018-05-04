@@ -16,13 +16,17 @@ import numpy as np
 value0 = UncertaintyQuantity(30 * u.m, 5 * u.m)
 value1 = UncertaintyQuantity(10 * u.m, 1 * u.m)
 
-print("Value a = " + str(value1))
+print("Value a = " + str(value0))
 
-print("Base of a = " + str(value1.base()))
+print("Base of a = " + str(value0.base()))
 
-print("Uncertainty of a = " + str(value1.uncertainty))
+print("Uncertainty of a = " + str(value0.uncertainty))
 
 print("Value b = " + str(value1))
+
+print("Base of b = " + str(value1.base()))
+
+print("Uncertainty of b = " + str(value1.uncertainty))
 
 ######################################################
 # Next we can perform calculations with these UncertaintyQuantity objects like we would with
