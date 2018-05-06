@@ -36,8 +36,8 @@ if not _ASTROPY_SETUP_:
 def online_help(query):
     """
     Search the online PlasmaPy documentation for the given query from plasmapy.org
-    Opens the results in the default web browser.  Requires an active
-    Internet connection.
+    Opens the results in the default web browser.  
+    Requires an active Internet connection.
     Redirects to Astropy.units in case of query 'unit' or 'units'
 
     Parameters
