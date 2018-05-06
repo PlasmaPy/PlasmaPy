@@ -33,6 +33,7 @@ if not _ASTROPY_SETUP_:
     from . import physics
     from . import utils
 
+
 def online_help(query):
     """
     Search the online PlasmaPy documentation for the given query from plasmapy.org
@@ -55,6 +56,3 @@ def online_help(query):
         url = 'http://docs.astropy.org/en/stable/units/'
 
     webbrowser.open(url)
-
-
-
