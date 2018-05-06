@@ -36,7 +36,7 @@ if not _ASTROPY_SETUP_:
 def online_help(query):
     """
     Search the online PlasmaPy documentation for the given query from plasmapy.org
-    Opens the results in the default web browser.  
+    Opens the results in the default web browser.
     Requires an active Internet connection.
     Redirects to Astropy.units in case of query 'unit' or 'units'
 
@@ -48,9 +48,10 @@ def online_help(query):
     from urllib.parse import urlencode
     import webbrowser
 
-    url = 'http://docs.plasmapy.org/en/stable/search.html?{0}&check_keywords=yes&area=default'.format(urlencode({'q': query}))
+    url = 'http://docs.plasmapy.org/en/stable/search.html?\
+    {0}&check_keywords=yes&area=default'.format(urlencode({'q': query}))
 
-    if((query.lower()=='units') or (query.lower()=='unit')):
+    if((query.lower() == 'units') or (query.lower() == 'unit')):
         url = 'http://docs.astropy.org/en/stable/units/'
 
     webbrowser.open(url)
