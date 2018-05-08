@@ -7,7 +7,12 @@ import collections
 
 from .particle_class import Particle
 from .particle_input import particle_input
-from ..utils import AtomicError, check_quantity, InvalidParticleError
+from ..utils import (
+    AtomicError,
+    check_quantity,
+    InvalidParticleError,
+    ChargeError,
+)
 
 State = collections.namedtuple('State', ['integer_charge', 'ionic_fraction', 'ionic_symbol'])
 
@@ -94,21 +99,35 @@ class IonizationState:
     def __getitem__(self, value):
         """Return the ionic fraction(s)."""
         if isinstance(value, slice):
-            return self.ionic_fractions[value.start:value.stop:value.step]
+            result = State(
+                np.arange(value.start, value.stop, value.step),
+                self.ionic_fractions[value.start:value.stop:value.step],
+                self.ionic_symbols[value.start:value.stop:value.step],
+            )
         elif isinstance(value, int) and 0 <= value <= self.atomic_number:
-            return self.ionic_fractions[value]
-
-        if not isinstance(value, Particle):
-            try:
-                value = Particle(value)
-            except InvalidParticleError as exc:
-                raise InvalidParticleError(
-                    f"{value} is not a valid integer charge or particle.") from exc
-
-        if value.element == self.element and value.isotope == self.isotope:
-            return self.ionic_fractions[value.integer_charge]
+            result = State(value, self.ionic_fractions[value], self.ionic_symbols[value])
         else:
-            raise AtomicError("Incorrect element.")
+            if not isintance(value, Particle):
+                try:
+                    value = Particle(value)
+                except InvalidParticleError as exc:
+                    raise InvalidParticleError(
+                        f"{value} is not a valid integer charge or "
+                        f"particle.") from exc
+
+            same_element = value.element == self.element
+            same_isotope = value.isotope == self.isotope
+            has_charge_info = value.is_category(any_of=["charged", "uncharged"])
+
+            if same_element and same_isotope and has_charge_info:
+                Z = value.integer_charge
+                result = State(Z, self.ionic_fractions[Z], self.ionic_symbols[Z])
+            else:
+                if not same_element or not same_isotope:
+                    raise AtomicError("Inconsistent element or isotope.")
+                elif not has_charge_info:
+                    raise ChargeError("No integer charge provided.")
+        return result
 
     def __iter__(self):
         """Initialize the instance prior to an iteration."""
@@ -133,7 +152,7 @@ class IonizationState:
             raise StopIteration
 
     def __eq__(self, other):
-        r"""
+        """
         Return `True` if the ionic fractions for two `IonizationState`
         instances are approximately equal to within the minimum `tol`
         specified by either, and `False` otherwise.
@@ -146,11 +165,9 @@ class IonizationState:
 
         Examples
         --------
-        >>> IonizationState('H', [1, 0], tol=1e-6) == \
-                IonizationState('H', [1, 1e-6], tol=1e-6)
+        >>> IonizationState('H', [1, 0], tol=1e-6) == IonizationState('H', [1, 1e-6], tol=1e-6)
         True
-        >>> IonizationState('H', [1, 0], tol=1e-8) == \
-                IonizationState('H', [1, 1e-6], tol=1e-5)
+        >>> IonizationState('H', [1, 0], tol=1e-8) == IonizationState('H', [1, 1e-6], tol=1e-5)
         False
 
         """
