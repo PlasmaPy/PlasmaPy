@@ -1,3 +1,5 @@
+"""Classes for storing ionization state data."""
+
 import numpy as np
 import astropy.units as u
 import typing
@@ -5,7 +7,7 @@ import collections
 
 from .particle_class import Particle
 from .particle_input import particle_input
-from ..utils import AtomicError, check_quantity
+from ..utils import AtomicError, check_quantity, InvalidParticleError
 
 State = collections.namedtuple('State', ['integer_charge', 'ionic_fraction', 'ionic_symbol'])
 
@@ -47,6 +49,11 @@ class IonizationState:
     Raises
     ------
     ~plasmapy.utils.AtomicError
+        If the ionic fractions are not normalized or contain invalid
+        values
+
+    ~plasmapy.utils.InvalidParticleError
+        If the particle is invalid.
 
     """
 
@@ -65,14 +72,11 @@ class IonizationState:
                  element_density=None,
                  number_densities=None,
                  tol: typing.Union[float, int] = 1e-15):
-        """
-        Initialize a `~plasmapy.atomic.IonizationState` instance.
-        """
+        """Initialize a `~plasmapy.atomic.IonizationState` instance."""
 
         self.tol = tol
 
-        # Thermodynamic variables are not yet implemented.
-
+        # Thermodynamic variables are not yet implemented
         self.T_e = T_e
         self.n_e = n_e
         self.element_density = element_density
@@ -80,16 +84,12 @@ class IonizationState:
 
         # Store the Particle class instance so that we can access the
         # attributes of that as needed.
-
         self._particle = particle
 
-        if ionic_fractions is None and T_e is not None:
-            self.equilibrate(T_e)  # Not implemented.
-
-        self.ionic_fractions = ionic_fractions
-
-        if not self.is_normalized:
-            raise AtomicError
+        if ionic_fractions is not None:
+            self.ionic_fractions = ionic_fractions
+        elif self.T_e is not None:
+            self.equilibrate()  # Not implemented
 
     def __getitem__(self, value):
         """Return the ionic fraction(s)."""
@@ -102,11 +102,13 @@ class IonizationState:
             try:
                 value = Particle(value)
             except InvalidParticleError as exc:
-                raise InvalidParticleError from exc(
-                    f"{value} is not a valid integer charge or particle.")
+                raise InvalidParticleError(
+                    f"{value} is not a valid integer charge or particle.") from exc
 
-        if value.element == self.element:
+        if value.element == self.element and value.isotope == self.isotope:
             return self.ionic_fractions[value.integer_charge]
+        else:
+            raise AtomicError("Incorrect element.")
 
     def __iter__(self):
         """Initialize the instance prior to an iteration."""
@@ -131,7 +133,7 @@ class IonizationState:
             raise StopIteration
 
     def __eq__(self, other):
-        """
+        r"""
         Return `True` if the ionic fractions for two `IonizationState`
         instances are approximately equal to within the minimum `tol`
         specified by either, and `False` otherwise.
@@ -197,7 +199,9 @@ class IonizationState:
                 f"{value}.") from exc
 
         if np.any(value < 0) or np.any(value > 1):
-            raise AtomicError(f"The values of ")
+            raise AtomicError(
+                f"The values of ionic fractions must be between 0 and "
+                f"1, inclusive.")
 
         total = np.sum(value)
         if not np.isclose(total, 1, atol=self.tol, rtol=0):
@@ -243,14 +247,13 @@ class IonizationState:
 
     @property
     def ionic_symbols(self) -> typing.List[str]:
-        """
-        Return the ionic symbols for all charge states.
-        """
+        """Return the ionic symbols for all charge states."""
         return [p.ionic_symbol for p in self.particles]
 
     def is_normalized(self, tol=None) -> bool:
         """
-        Return `True` if the sum of the ionization fractions is
+        Return `True` if the sum of the ionization fractions is equal to
+        one within the allowed tolerance, and `False` otherwise.
         """
 
         tol = tol if tol is not None else self.tol
