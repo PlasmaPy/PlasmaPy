@@ -52,7 +52,7 @@ def online_help(query):
     url = 'http://docs.plasmapy.org/en/stable/search.html?\
     {0}&check_keywords=yes&area=default'.format(urlencode({'q': query}))
 
-    if(query.lower() in ('unit','units')):
+    if(query.lower() in ('unit', 'units')):
         url = 'http://docs.astropy.org/en/stable/units/'
 
     webbrowser.open(url)
