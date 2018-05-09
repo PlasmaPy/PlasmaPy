@@ -8,6 +8,7 @@ from ...atomic import (
     isotope_symbol,
     Particle,
 )
+import collections
 
 test_cases = {
     'Li': {
@@ -33,6 +34,12 @@ test_cases = {
         'ionic_fractions': [0.6, 0.400_000_001],
         'tol': 1e-8,
     },
+
+    'D': {
+        'particle': 'deuterium',
+        'ionic_fractions': [0.7, 0.3],
+        'tol': 1e-15,
+    }
 
 }
 
@@ -128,4 +135,83 @@ class Test_IonizationState:
             errmsg = " ".join(errors)
             raise AtomicError(errmsg)
 
+    def test_slicing1(self):
+        assert np.allclose(
+            self.instances['Li'][1:3].ionic_fraction,
+            test_cases['Li']['ionic_fractions'][1:3]
+        )
 
+    def test_slicing2(self):
+        assert np.allclose(
+            self.instances['Li'][1:4:2].ionic_fraction,
+            test_cases['Li']['ionic_fractions'][1:4:2]
+        )
+
+    @pytest.mark.parametrize('index', [-1, 4, 'Li'])
+    def test_indexing_error(self, index):
+        with pytest.raises(AtomicError):
+            self.instances['Li'][index]
+
+    def test_normalization(self):
+        H = self.instances['H acceptable error']
+        assert not H.is_normalized(tol=1e-15)
+        H.normalize()
+        assert H.is_normalized(tol=1e-15)
+
+    @pytest.mark.parametrize('test_name', test_cases.keys())
+    def test_identifications(self, test_name):
+        """
+        Test that the identification attributes for test IonizationState
+        instances match the expected values from the Particle instance.
+        """
+
+        Identifications = collections.namedtuple(
+            "Identifications",
+            ["element", "isotope", "base_particle", "atomic_number"],
+        )
+
+        expected_identifications = Identifications(
+            self.instances[test_name].element,
+            self.instances[test_name].isotope,
+            self.instances[test_name].base_particle,
+            self.instances[test_name].atomic_number,
+        )
+
+        expected_element = self.instances[test_name]._particle.element
+        expected_isotope = self.instances[test_name]._particle.isotope
+        expected_atomic_number = self.instances[test_name]._particle.atomic_number
+
+        resulting_identifications = Identifications(
+            expected_element,
+            expected_isotope,
+            expected_isotope if expected_isotope else expected_element,
+            expected_atomic_number,
+        )
+
+        assert resulting_identifications == expected_identifications, (
+            f"For IonizationState test {test_name}, the resulting "
+            f"identifications of {resulting_identifications} differ "
+            f"from the expected identifications of "
+            f"{expected_identifications}."
+        )
+
+    invalid_tolerances = [-1e-16, 1.0000001]
+
+    @pytest.mark.parametrize('tol', invalid_tolerances)
+    def test_intolerance(self, tol):
+        test_name = "Li"
+        instance = self.instances[test_name]
+        with pytest.raises(ValueError):
+            instance.tol = tol
+
+    @pytest.mark.parametrize('test_name', test_cases.keys())
+    def test_particles(self, test_name):
+        instance = self.instances[test_name]
+        base_particle = instance.base_particle
+        nstates = instance.atomic_number + 1
+
+        expected_particles = [
+            Particle(base_particle, Z=Z) for Z in range(nstates)
+        ]
+
+        assert expected_particles == instance.particles

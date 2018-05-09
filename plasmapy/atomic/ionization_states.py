@@ -23,7 +23,7 @@ class IonizationState:
 
     Parameters
     ----------
-    particle: str, int, or ~plasmapy.atomic.Particle
+    particle: str, int, np.integer, or ~plasmapy.atomic.Particle
         A `str` or `~plasmapy.atomic.Particle` instance representing
         an element or isotope, or an `int` representing the atomic
         number of an element.
@@ -107,7 +107,7 @@ class IonizationState:
         elif isinstance(value, int) and 0 <= value <= self.atomic_number:
             result = State(value, self.ionic_fractions[value], self.ionic_symbols[value])
         else:
-            if not isintance(value, Particle):
+            if not isinstance(value, Particle):
                 try:
                     value = Particle(value)
                 except InvalidParticleError as exc:
@@ -242,7 +242,7 @@ class IonizationState:
         Set the ionic fractions to collisional ionization equilibrium
         for temperature `T_e`.  Not implemented.
         """
-        self.ionic_fractions = self.equilibrium_ionic_fractions
+        self.ionic_fractions = self.equil_ionic_fractions
 
     @property
     def atomic_number(self) -> int:
@@ -253,6 +253,22 @@ class IonizationState:
     def element(self) -> str:
         """Return the atomic symbol of the element."""
         return self._particle.element
+
+    @property
+    def isotope(self) -> str:
+        """
+        Return the isotope symbol for an isotope, or `None` if the
+        particle is not an isotope.
+        """
+        return self._particle.isotope
+
+    @property
+    def base_particle(self) -> str:
+        """
+        Return the element or isotope corresponding to this
+        `~plasmapy.atomic.IonizationState` instance.
+        """
+        return self._particle.particle
 
     @property
     def particles(self) -> typing.List[Particle]:
