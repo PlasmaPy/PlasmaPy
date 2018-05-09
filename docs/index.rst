@@ -31,6 +31,7 @@ Getting Started
 * `PlasmaPy website
   <http://www.plasmapy.org/>`_
 * `Using astropy.units <http://docs.astropy.org/en/stable/units/>`_
+* :ref:`acknowledging`
 
 .. _toplevel-user-documentation:
 
