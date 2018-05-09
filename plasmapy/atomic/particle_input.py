@@ -6,6 +6,7 @@ as arguments and pass through the corresponding instance of the
 
 import functools
 import inspect
+import numpy as np
 from typing import Callable, Union, Any, Set, List, Tuple
 
 from .particle_class import Particle
@@ -278,7 +279,7 @@ def particle_input(wrapped_function: Callable = None,
 
                 if not already_particle:
 
-                    if not isinstance(argval, (int, str)):
+                    if not isinstance(argval, (int, np.integer, str)):
                         raise TypeError(
                             f"The argument {argname} to {funcname} must be "
                             f"a string, an integer corresponding to an atomic "

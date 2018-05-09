@@ -342,7 +342,7 @@ def _parse_and_check_atomic_input(argument: Union[str, int], mass_numb: int = No
 
         return ion
 
-    if not isinstance(argument, (str, int)):  # coveralls: ignore
+    if not isinstance(argument, (str, int, np.integer)):  # coveralls: ignore
         raise TypeError(f"The argument {argument} is not an integer or string.")
 
     arg = _dealias_particle_aliases(argument)
@@ -358,7 +358,7 @@ def _parse_and_check_atomic_input(argument: Union[str, int], mass_numb: int = No
     if isinstance(arg, str) and arg.isdigit():
         arg = int(arg)
 
-    if isinstance(arg, int):
+    if isinstance(arg, (int, np.integer)):
         element = _atomic_number_to_symbol(arg)
         Z_from_arg = None
         mass_numb_from_arg = None
@@ -394,7 +394,7 @@ def _parse_and_check_atomic_input(argument: Union[str, int], mass_numb: int = No
     if Z_from_arg is not None:
         Z = Z_from_arg
 
-    if isinstance(Z, int):
+    if isinstance(Z, (int, np.integer)):
         if Z > _Elements[element]['atomic number']:
             raise InvalidParticleError(
                 f"The integer charge Z = {Z} cannot exceed the atomic number "

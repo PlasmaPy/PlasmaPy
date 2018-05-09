@@ -104,7 +104,7 @@ class IonizationState:
                 self.ionic_fractions[value.start:value.stop:value.step],
                 self.ionic_symbols[value.start:value.stop:value.step],
             )
-        elif isinstance(value, int) and 0 <= value <= self.atomic_number:
+        elif isinstance(value, (int, np.integer)) and 0 <= value <= self.atomic_number:
             result = State(value, self.ionic_fractions[value], self.ionic_symbols[value])
         else:
             if not isinstance(value, Particle):
@@ -291,7 +291,7 @@ class IonizationState:
 
         tol = tol if tol is not None else self.tol
 
-        if not isinstance(tol, (int, float)):
+        if not isinstance(tol, (float, int, np.integer)):
             raise TypeError("tol must be an int or float.")
 
         if tol < 0 or tol > 1:
@@ -316,7 +316,7 @@ class IonizationState:
     @tol.setter
     def tol(self, atol):
         """Set the absolute tolerance for comparisons."""
-        if not isinstance(atol, (float, int)):
+        if not isinstance(atol, (float, int, np.integer)):
             raise TypeError("The attribute tol must be a float or an int.")
         if 0 <= atol <= 1.0:
             self._tol = atol

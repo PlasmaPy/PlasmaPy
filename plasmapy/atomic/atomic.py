@@ -1,6 +1,5 @@
 """Functions that retrieve or are related to elemental or isotopic data."""
 
-import warnings
 from typing import (
     Union,
     Optional,
@@ -8,6 +7,7 @@ from typing import (
     Any,
 )
 
+import numpy as np
 import astropy.constants as const
 import astropy.units as u
 
@@ -946,7 +946,7 @@ def periodic_table_period(argument: Union[str, int]) -> int:
 
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, int)):
+    if not isinstance(argument, (str, int, np.integer)):
         raise TypeError(
             "The argument to periodic_table_period must be either a "
             "string representing the element or its symbol, or an "
@@ -1002,7 +1002,7 @@ def periodic_table_group(argument: Union[str, int]) -> int:
 
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, int)):
+    if not isinstance(argument, (str, int, np.integer)):
         raise TypeError(
             "The argument to periodic_table_group must be "
             "either a string representing the element or its "
@@ -1058,7 +1058,7 @@ def periodic_table_block(argument: Union[str, int]) -> str:
 
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, int)):
+    if not isinstance(argument, (str, int, np.integer)):
         raise TypeError(
             "The argument to periodic_table_block must be "
             "either a string representing the element or its "
@@ -1112,7 +1112,7 @@ def periodic_table_category(argument: Union[str, int]) -> str:
 
     """
     # TODO: Implement @particle_input
-    if not isinstance(argument, (str, int)):
+    if not isinstance(argument, (str, int, np.integer)):
         raise TypeError(
             "The argument to periodic_table_category must be "
             "either a string representing the element or its "

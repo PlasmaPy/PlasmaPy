@@ -260,15 +260,15 @@ class Particle:
         attributes.
         """
 
-        if not isinstance(argument, (int, str)):
+        if not isinstance(argument, (int, np.integer, str)):
             raise TypeError(
                 "The first positional argument when creating a Particle "
                 "object must be either an integer or string.")
 
-        if mass_numb is not None and not isinstance(mass_numb, int):
+        if mass_numb is not None and not isinstance(mass_numb, (int, np.integer)):
             raise TypeError("mass_numb is not an integer")
 
-        if Z is not None and not isinstance(Z, int):
+        if Z is not None and not isinstance(Z, (int, np.integer)):
             raise TypeError("Z is not an integer.")
 
         self._attributes = collections.defaultdict(lambda: None)
