@@ -360,7 +360,7 @@ def Maxwellian_speed_1D(v,
 
     .. math::
 
-       f(v) = 4\pi v^2 \frac{1}{(\pi v_{Th}^2)^{3/2}} \exp(-(v - V_{drift})^2 / v_{Th}^2 )
+       f(v) = 2 \frac{1}{(\pi v_{Th}^2)^{1/2}} \exp(-(v - V_{drift})^2 / v_{Th}^2 )
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
@@ -373,7 +373,40 @@ def Maxwellian_speed_1D(v,
     <Quantity 2.60235754e-18 s / m>
 
     """
-    return
+    if units == "units":
+        # unit checks and conversions
+        # checking velocity units
+        v = v.to(u.m / u.s)
+        # Catching case where drift velocities have default values, they
+        # need to be assigned units
+        V_drift = _v_drift_units(V_drift)
+        # convert temperature to Kelvins
+        T = T.to(u.K, equivalencies=u.temperature_energy())
+        if np.isnan(vTh):
+            # get thermal velocity and thermal velocity squared
+            vTh = (parameters.thermal_speed(T,
+                                            particle=particle,
+                                            method="most_probable"))
+        elif not np.isnan(vTh):
+            # check units of thermal velocity
+            vTh = vTh.to(u.m / u.s)
+    elif np.isnan(vTh) and units == "unitless":
+        # assuming unitless temperature is in Kelvins
+        vTh = (parameters.thermal_speed(T * u.K,
+                                        particle=particle,
+                                        method="most_probable")).si.value
+    # Get thermal velocity squared
+    vThSq = vTh ** 2
+    # Get square of relative particle velocity
+    vSq = (v - V_drift) ** 2
+    # calculating distribution function
+    coeff = 2 * (vThSq * np.pi) ** (-1 / 2)
+    expTerm = np.exp(-vSq / vThSq)
+    distFunc = coeff * expTerm
+    if units == "units":
+        return distFunc.to(u.s / u.m)
+    elif units == "unitless":
+        return distFunc
 
 
 def Maxwellian_speed_3D(v,
