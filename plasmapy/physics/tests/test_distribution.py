@@ -360,7 +360,7 @@ class Test_Maxwellian_velocity_3D(object):
         self.Vx_drift2 = 1e5 * u.m / u.s
         self.Vy_drift2 = 1e5 * u.m / u.s
         self.Vz_drift2 = 1e5 * u.m / u.s
-        self.distFuncTrue = 2.7654607627522045e-37
+        self.distFuncTrue = 6.465458269306909e-82
 
     def test_norm(self):
         """
@@ -499,7 +499,7 @@ class Test_Maxwellian_velocity_3D(object):
         """
         Testing vdrifts with values
         """
-        testVal = ((3 * self.vTh**2 * np.pi) ** (-3 / 2)).si.value
+        testVal = ((self.vTh**2 * np.pi) ** (-3 / 2)).si.value
         distFunc = Maxwellian_velocity_3D(vx=self.vx,
                                           vy=self.vy,
                                           vz=self.vz,

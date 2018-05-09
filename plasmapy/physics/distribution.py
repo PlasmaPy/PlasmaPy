@@ -249,7 +249,7 @@ def Maxwellian_velocity_3D(vx,
     ... Vx_drift=0*u.m/u.s,
     ... Vy_drift=0*u.m/u.s,
     ... Vz_drift=0*u.m/u.s)
-    <Quantity 3.98543031e-20 s3 / m3>
+    <Quantity 2.07089033e-19 s3 / m3>
 
 
     """
@@ -280,7 +280,7 @@ def Maxwellian_velocity_3D(vx,
                                        particle=particle,
                                        method="most_probable").si.value
     # accounting for thermal velocity in 3D
-    vThSq = 3 * vTh ** 2
+    vThSq = vTh ** 2
     # Get square of relative particle velocity
     vSq = ((vx - Vx_drift) ** 2 + (vy - Vy_drift) ** 2 + (vz - Vz_drift) ** 2)
     # calculating distribution function
@@ -370,7 +370,7 @@ def Maxwellian_speed_1D(v,
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
     >>> Maxwellian_speed_1D(v=v, T= 30000*u.K, particle='e',V_drift=0*u.m/u.s)
-    <Quantity 2.60235754e-18 s / m>
+    <Quantity 1.18326594e-06 s / m>
 
     """
     if units == "units":
