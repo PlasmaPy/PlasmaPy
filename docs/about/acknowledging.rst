@@ -1,7 +1,7 @@
 .. _acknowledging:
 
-Acknowledging or Citing PlasmaPy
-================================
+Acknowledging and Citing PlasmaPy
+=================================
 
 If you use PlasmaPy for a project resulting in a publication, we ask
 that you cite the following reference
