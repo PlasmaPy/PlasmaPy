@@ -373,51 +373,13 @@ def Maxwellian_speed_1D(v,
     <Quantity 2.60235754e-18 s / m>
 
     """
-    if units == "units":
-        # unit checks and conversions
-        # checking velocity units
-        v = v.to(u.m / u.s)
-        # Catching case where drift velocity has default value, and
-        # needs to be assigned units
-        V_drift = _v_drift_units(V_drift)
-        # convert temperature to Kelvins
-        T = T.to(u.K, equivalencies=u.temperature_energy())
-        if np.isnan(vTh):
-            # get thermal velocity and thermal velocity squared
-            vTh = (parameters.thermal_speed(T,
-                                            particle=particle,
-                                            method="most_probable"))
-        elif not np.isnan(vTh):
-            # check units of thermal velocity
-            vTh = vTh.to(u.m / u.s)
-    elif np.isnan(vTh) and units == "unitless":
-        # assuming unitless temperature is in Kelvins
-        vTh = (parameters.thermal_speed(T * u.K,
-                                        particle=particle,
-                                        method="most_probable")).si.value
-    # getting square of thermal speed
-    vThSq = vTh ** 2
-    # get square of relative particle speed
-    vSq = (v - V_drift) ** 2
-    # calculating distribution function
-    coeff1 = (np.pi * vThSq) ** (-3 / 2)
-    coeff2 = 4 * np.pi * vSq
-    expTerm = np.exp(-vSq / vThSq)
-    distFunc = coeff1 * coeff2 * expTerm
-    if units == "units":
-        return distFunc.to(u.s / u.m)
-    elif units == "unitless":
-        return distFunc
+    return
 
 
-def Maxwellian_speed_3D(vx,
-                        vy,
-                        vz,
+def Maxwellian_speed_3D(v,
                         T,
                         particle="e",
-                        Vx_drift=0,
-                        Vy_drift=0,
-                        Vz_drift=0,
+                        V_drift=0,
                         vTh=np.nan,
                         units="units"):
     r"""
@@ -430,31 +392,19 @@ def Maxwellian_speed_3D(vx,
 
     Parameters
     ----------
-    vx: ~astropy.units.Quantity
-        The speed in x-direction units convertible to m/s.
-
-    vy: ~astropy.units.Quantity
-        The speed in y-direction units convertible to m/s.
-
-    vz: ~astropy.units.Quantity
-        The speed in z-direction units convertible to m/s.
+    v: ~astropy.units.Quantity
+        The speed in units convertible to m/s.
 
     T: ~astropy.units.Quantity
         The temperature, preferably in Kelvin.
 
     particle: str, optional
-        Representation of the particle species(e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for :math:`He_4^{+1}`
+        Representation of the particle species(e.g., `'p'` for protons, `'D+'`
+        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
-    Vx_drift: ~astropy.units.Quantity
-        The drift speed in x-direction units convertible to m/s.
-
-    Vy_drift: ~astropy.units.Quantity
-        The drift speed in y-direction units convertible to m/s.
-
-    Vz_drift: ~astropy.units.Quantity
-        The drift speed in z-direction units convertible to m/s.
+    V_drift: ~astropy.units.Quantity
+        The drift speed in units convertible to m/s.
 
     vTh: ~astropy.units.Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
@@ -508,28 +458,17 @@ def Maxwellian_speed_3D(vx,
     >>> from plasmapy.physics import Maxwellian_speed_3D
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
-    >>> Maxwellian_speed_3D(vx=v,
-    ... vy=v,
-    ... vz=v,
-    ... T=30000*u.K,
-    ... particle='e',
-    ... Vx_drift=0*u.m/u.s,
-    ... Vy_drift=0*u.m/u.s,
-    ... Vz_drift=0*u.m/u.s)
-    <Quantity 1.76238544e-53 s3 / m3>
+    >>> Maxwellian_speed_3D(v=v, T= 30000*u.K, particle='e',V_drift=0*u.m/u.s)
+    <Quantity 2.60235754e-18 s / m>
 
     """
     if units == "units":
         # unit checks and conversions
         # checking velocity units
-        vx = vx.to(u.m / u.s)
-        vy = vy.to(u.m / u.s)
-        vz = vz.to(u.m / u.s)
-        # Catching case where drift velocities have default values, they
-        # need to be assigned units
-        Vx_drift = _v_drift_units(Vx_drift)
-        Vy_drift = _v_drift_units(Vy_drift)
-        Vz_drift = _v_drift_units(Vz_drift)
+        v = v.to(u.m / u.s)
+        # Catching case where drift velocity has default value, and
+        # needs to be assigned units
+        V_drift = _v_drift_units(V_drift)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
@@ -545,29 +484,17 @@ def Maxwellian_speed_3D(vx,
         vTh = (parameters.thermal_speed(T * u.K,
                                         particle=particle,
                                         method="most_probable")).si.value
-    # getting distribution functions along each axis
-    fx = Maxwellian_speed_1D(vx,
-                             T,
-                             particle=particle,
-                             V_drift=Vx_drift,
-                             vTh=vTh,
-                             units=units)
-    fy = Maxwellian_speed_1D(vy,
-                             T,
-                             particle=particle,
-                             V_drift=Vy_drift,
-                             vTh=vTh,
-                             units=units)
-    fz = Maxwellian_speed_1D(vz,
-                             T,
-                             particle=particle,
-                             V_drift=Vz_drift,
-                             vTh=vTh,
-                             units=units)
-    # multiplying probabilities in each axis to get 3D probability
-    distFunc = fx * fy * fz
+    # getting square of thermal speed
+    vThSq = vTh ** 2
+    # get square of relative particle speed
+    vSq = (v - V_drift) ** 2
+    # calculating distribution function
+    coeff1 = (np.pi * vThSq) ** (-3 / 2)
+    coeff2 = 4 * np.pi * vSq
+    expTerm = np.exp(-vSq / vThSq)
+    distFunc = coeff1 * coeff2 * expTerm
     if units == "units":
-        return distFunc.to((u.s / u.m)**3)
+        return distFunc.to(u.s / u.m)
     elif units == "unitless":
         return distFunc
 
