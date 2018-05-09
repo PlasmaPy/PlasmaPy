@@ -6,6 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/PlasmaPy/PlasmaPy/badge.svg?branch=master)](https://coveralls.io/github/PlasmaPy/PlasmaPy?branch=master)
 [![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy:matrix.org)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/PlasmaPy/Lobby)
+[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 
 An open source community developed Python 3.6+ package for plasma physics in
 the early stages of development. PlasmaPy intends to be for plasmas what
