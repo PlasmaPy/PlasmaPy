@@ -33,7 +33,7 @@ if not _ASTROPY_SETUP_:
     from . import physics
     from . import utils
 
-_citation_bibtex = """@misc{plasmapy_community_2018_1238132,
+__citation__ = """@misc{plasmapy_community_2018_1238132,
   author       = {PlasmaPy Community and
                   Murphy, Nicholas A. and
                   Leonard, Andrew J. and
