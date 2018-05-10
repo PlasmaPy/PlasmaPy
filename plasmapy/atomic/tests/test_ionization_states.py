@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+import astropy.units as u
 from ..ionization_states import IonizationState
 from ...utils import AtomicError, RunTestError, InvalidIsotopeError
 from ...atomic import (
@@ -39,9 +40,17 @@ test_cases = {
         'particle': 'deuterium',
         'ionic_fractions': [0.7, 0.3],
         'tol': 1e-15,
-    }
+    },
+
+    'He': {
+        'particle': 'He',
+        'ionic_fractions': [0.5, 0.3, 0.2],
+        'n_elem': 1e20 * u.m ** -3,
+    },
 
 }
+
+test_names = test_cases.keys()
 
 
 class Test_IonizationState:
@@ -51,13 +60,18 @@ class Test_IonizationState:
     def setup_class(cls):
         "Set up the class and test instantantiation."
         cls.instances = {}
-        for test_case in test_cases.keys():
+        for test_name in test_names:
             try:
-                cls.instances[test_case] = IonizationState(**test_cases[test_case])
+                cls.instances[test_name] = IonizationState(**test_cases[test_name])
             except Exception as exc:
                 raise RunTestError(
                     f"Unable to create IonizationState instance for "
-                    f"test case {test_case}.")
+                    f"test case {test_name}.")
+
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_ionic_fractions(self, test_name):
+        instance = self.instances[test_name]
+        assert np.allclose(instance.ionic_fractions, test_cases[test_name]['ionic_fractions'])
 
     def test_equality1(self):
         assert self.instances['Li'] == self.instances['Li'], \
@@ -80,7 +94,7 @@ class Test_IonizationState:
         with pytest.raises(AtomicError):
             self.instances['Li'] == self.instances['H']
 
-    @pytest.mark.parametrize('test_name', test_cases.keys())
+    @pytest.mark.parametrize('test_name', test_names)
     def test_iteration(self, test_name: str):
         """Test that IonizationState instances iterate impeccably."""
         try:
@@ -158,7 +172,7 @@ class Test_IonizationState:
         H.normalize()
         assert H.is_normalized(tol=1e-15)
 
-    @pytest.mark.parametrize('test_name', test_cases.keys())
+    @pytest.mark.parametrize('test_name', test_names)
     def test_identifications(self, test_name):
         """
         Test that the identification attributes for test IonizationState
@@ -195,10 +209,9 @@ class Test_IonizationState:
             f"{expected_identifications}."
         )
 
-    invalid_tolerances = [-1e-16, 1.0000001]
-
-    @pytest.mark.parametrize('tol', invalid_tolerances)
-    def test_intolerance(self, tol):
+    @pytest.mark.parametrize('tol', [-1e-16, 1.0000001])
+    def test_invalid_tolerances(self, tol):
+        """Test that invalid tolerances raise appropriate errors."""
         test_name = "Li"
         instance = self.instances[test_name]
         with pytest.raises(ValueError):
@@ -206,12 +219,29 @@ class Test_IonizationState:
 
     @pytest.mark.parametrize('test_name', test_cases.keys())
     def test_particles(self, test_name):
+        """
+        Test that IonizationState returns the correct Particle
+        instances.
+        """
         instance = self.instances[test_name]
         base_particle = instance.base_particle
         nstates = instance.atomic_number + 1
+        expected_particles = [Particle(base_particle, Z=Z) for Z in range(nstates)]
+        assert expected_particles == instance.particles, (
+            f"The expected Particle instances of {expected_particles} "
+            f"are not all equal to the IonizationState particles of "
+            f"{instance.particles} for test {test_name}."
+        )
 
-        expected_particles = [
-            Particle(base_particle, Z=Z) for Z in range(nstates)
-        ]
-
-        assert expected_particles == instance.particles
+    def test_electron_density_from_n_elem_ionic_fractions(self):
+        test_name = 'He'
+        instance = self.instances[test_name]
+        n_elem = test_cases[test_name]['n_elem']
+        ionic_fractions = test_cases[test_name]['ionic_fractions']
+        assert instance.n_elem == n_elem, \
+            f"n_elem is not being stored correctly for test {test_name}"
+        assert np.isclose(
+            instance.n_e,
+            np.sum(n_elem * ionic_fractions * np.array([0, 1, 2])),
+            rtol=1e-12, atol=0 * u.m ** -3), \
+            "n_e is not the expected value."
