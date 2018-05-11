@@ -9,14 +9,14 @@ from plasmapy.physics import parameters
 import numpy as np
 from scipy.special import gamma
 
-__all__ = [
-    "Maxwellian_1D",
-    "Maxwellian_velocity_3D",
-    "Maxwellian_speed_1D",
-    "Maxwellian_speed_3D",
-    "kappa_velocity_1D",
-    "kappa_velocity_3D",
-]
+__all__ = ["Maxwellian_1D",
+           "Maxwellian_velocity_2D",
+           "Maxwellian_velocity_3D",
+           "Maxwellian_speed_1D",
+           "Maxwellian_speed_2D",
+           "Maxwellian_speed_3D",
+           "kappa_velocity_1D",
+           "kappa_velocity_3D"]
 
 def _v_drift_units(v_drift):
     # Helper method to assign units to  v_drift if it takes a default value
@@ -30,7 +30,7 @@ def _v_drift_units(v_drift):
 def Maxwellian_1D(v,
                   T,
                   particle="e",
-                  V_drift=0,
+                  v_drift=0,
                   vTh=np.nan,
                   units="units"):
     r"""
@@ -53,7 +53,7 @@ def Maxwellian_1D(v,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
-    V_drift: ~astropy.units.Quantity, optional
+    v_drift: ~astropy.units.Quantity, optional
         The drift velocity in units convertible to m/s.
 
     vTh: ~astropy.units.Quantity, optional
@@ -103,7 +103,7 @@ def Maxwellian_1D(v,
     >>> from plasmapy.physics import Maxwellian_1D
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
-    >>> Maxwellian_1D(v=v, T= 30000*u.K, particle='e',V_drift=0*u.m/u.s)
+    >>> Maxwellian_1D(v=v, T= 30000*u.K, particle='e',v_drift=0*u.m/u.s)
     <Quantity 5.91632969e-07 s / m>
     """
 
@@ -113,7 +113,7 @@ def Maxwellian_1D(v,
         v = v.to(u.m / u.s)
         # Catching case where drift velocities have default values, they
         # need to be assigned units
-        V_drift = _v_drift_units(V_drift)
+        v_drift = _v_drift_units(v_drift)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
@@ -132,7 +132,7 @@ def Maxwellian_1D(v,
     # Get thermal velocity squared
     vThSq = vTh ** 2
     # Get square of relative particle velocity
-    vSq = (v - V_drift) ** 2
+    vSq = (v - v_drift) ** 2
     # calculating distribution function
     coeff = (vThSq * np.pi) ** (-1 / 2)
     expTerm = np.exp(-vSq / vThSq)
@@ -147,8 +147,8 @@ def Maxwellian_velocity_2D(vx,
                            vy,
                            T,
                            particle="e",
-                           Vx_drift=0,
-                           Vy_drift=0,
+                           vx_drift=0,
+                           vy_drift=0,
                            vTh=np.nan,
                            units="units"):
     r"""
@@ -175,10 +175,10 @@ def Maxwellian_velocity_2D(vx,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
-    Vx_drift: ~astropy.units.Quantity, optional
+    vx_drift: ~astropy.units.Quantity, optional
         The drift velocity in x-direction units convertible to m/s.
 
-    Vy_drift: ~astropy.units.Quantity, optional
+    vy_drift: ~astropy.units.Quantity, optional
         The drift velocity in y-direction units convertible to m/s.
 
     vTh: ~astropy.units.Quantity, optional
@@ -237,8 +237,8 @@ def Maxwellian_velocity_2D(vx,
     ... vy=v,
     ... T=30000*u.K,
     ... particle='e',
-    ... Vx_drift=0*u.m/u.s,
-    ... Vy_drift=0*u.m/u.s)
+    ... vx_drift=0*u.m/u.s,
+    ... vy_drift=0*u.m/u.s)
     <Quantity 3.5002957e-13 s2 / m2>
 
 
@@ -250,8 +250,8 @@ def Maxwellian_velocity_2D(vx,
         vy = vy.to(u.m / u.s)
         # catching case where drift velocities have default values, they
         # need to be assigned units
-        Vx_drift = _v_drift_units(Vx_drift)
-        Vy_drift = _v_drift_units(Vy_drift)
+        vx_drift = _v_drift_units(vx_drift)
+        vy_drift = _v_drift_units(vy_drift)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
@@ -270,7 +270,7 @@ def Maxwellian_velocity_2D(vx,
     # accounting for thermal velocity in 3D
     vThSq = vTh ** 2
     # Get square of relative particle velocity
-    vSq = ((vx - Vx_drift) ** 2 + (vy - Vy_drift) ** 2)
+    vSq = ((vx - vx_drift) ** 2 + (vy - vy_drift) ** 2)
     # calculating distribution function
     coeff = (vThSq * np.pi) ** (-1)
     expTerm = np.exp(-vSq / vThSq)
@@ -286,9 +286,9 @@ def Maxwellian_velocity_3D(vx,
                            vz,
                            T,
                            particle="e",
-                           Vx_drift=0,
-                           Vy_drift=0,
-                           Vz_drift=0,
+                           vx_drift=0,
+                           vy_drift=0,
+                           vz_drift=0,
                            vTh=np.nan,
                            units="units"):
     r"""
@@ -318,13 +318,13 @@ def Maxwellian_velocity_3D(vx,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
-    Vx_drift: ~astropy.units.Quantity, optional
+    vx_drift: ~astropy.units.Quantity, optional
         The drift velocity in x-direction units convertible to m/s.
 
-    Vy_drift: ~astropy.units.Quantity, optional
+    vy_drift: ~astropy.units.Quantity, optional
         The drift velocity in y-direction units convertible to m/s.
 
-    Vz_drift: ~astropy.units.Quantity, optional
+    vz_drift: ~astropy.units.Quantity, optional
         The drift velocity in z-direction units convertible to m/s.
 
     vTh: ~astropy.units.Quantity, optional
@@ -384,9 +384,9 @@ def Maxwellian_velocity_3D(vx,
     ... vz=v,
     ... T=30000*u.K,
     ... particle='e',
-    ... Vx_drift=0*u.m/u.s,
-    ... Vy_drift=0*u.m/u.s,
-    ... Vz_drift=0*u.m/u.s)
+    ... vx_drift=0*u.m/u.s,
+    ... vy_drift=0*u.m/u.s,
+    ... vz_drift=0*u.m/u.s)
     <Quantity 2.07089033e-19 s3 / m3>
 
 
@@ -399,9 +399,9 @@ def Maxwellian_velocity_3D(vx,
         vz = vz.to(u.m / u.s)
         # catching case where drift velocities have default values, they
         # need to be assigned units
-        Vx_drift = _v_drift_units(Vx_drift)
-        Vy_drift = _v_drift_units(Vy_drift)
-        Vz_drift = _v_drift_units(Vz_drift)
+        vx_drift = _v_drift_units(vx_drift)
+        vy_drift = _v_drift_units(vy_drift)
+        vz_drift = _v_drift_units(vz_drift)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
@@ -420,7 +420,7 @@ def Maxwellian_velocity_3D(vx,
     # accounting for thermal velocity in 3D
     vThSq = vTh ** 2
     # Get square of relative particle velocity
-    vSq = ((vx - Vx_drift) ** 2 + (vy - Vy_drift) ** 2 + (vz - Vz_drift) ** 2)
+    vSq = ((vx - vx_drift) ** 2 + (vy - vy_drift) ** 2 + (vz - vz_drift) ** 2)
     # calculating distribution function
     coeff = (vThSq * np.pi) ** (-3 / 2)
     expTerm = np.exp(-vSq / vThSq)
@@ -434,7 +434,7 @@ def Maxwellian_velocity_3D(vx,
 def Maxwellian_speed_1D(v,
                         T,
                         particle="e",
-                        V_drift=0,
+                        v_drift=0,
                         vTh=np.nan,
                         units="units"):
     r"""
@@ -457,7 +457,7 @@ def Maxwellian_speed_1D(v,
         for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
-    V_drift: ~astropy.units.Quantity
+    v_drift: ~astropy.units.Quantity
         The drift speed in units convertible to m/s.
 
     vTh: ~astropy.units.Quantity, optional
@@ -507,7 +507,7 @@ def Maxwellian_speed_1D(v,
     >>> from plasmapy.physics import Maxwellian_speed_1D
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
-    >>> Maxwellian_speed_1D(v=v, T= 30000*u.K, particle='e',V_drift=0*u.m/u.s)
+    >>> Maxwellian_speed_1D(v=v, T= 30000*u.K, particle='e',v_drift=0*u.m/u.s)
     <Quantity 1.18326594e-06 s / m>
 
     """
@@ -517,7 +517,7 @@ def Maxwellian_speed_1D(v,
         v = v.to(u.m / u.s)
         # Catching case where drift velocities have default values, they
         # need to be assigned units
-        V_drift = _v_drift_units(V_drift)
+        v_drift = _v_drift_units(v_drift)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
@@ -536,7 +536,7 @@ def Maxwellian_speed_1D(v,
     # Get thermal velocity squared
     vThSq = vTh ** 2
     # Get square of relative particle velocity
-    vSq = (v - V_drift) ** 2
+    vSq = (v - v_drift) ** 2
     # calculating distribution function
     coeff = 2 * (vThSq * np.pi) ** (-1 / 2)
     expTerm = np.exp(-vSq / vThSq)
@@ -550,7 +550,7 @@ def Maxwellian_speed_1D(v,
 def Maxwellian_speed_2D(v,
                         T,
                         particle="e",
-                        V_drift=0,
+                        v_drift=0,
                         vTh=np.nan,
                         units="units"):
     r"""
@@ -574,7 +574,7 @@ def Maxwellian_speed_2D(v,
         for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
-    V_drift: ~astropy.units.Quantity
+    v_drift: ~astropy.units.Quantity
         The drift speed in units convertible to m/s.
 
     vTh: ~astropy.units.Quantity, optional
@@ -629,7 +629,7 @@ def Maxwellian_speed_2D(v,
     >>> from plasmapy.physics import Maxwellian_speed_2D
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
-    >>> Maxwellian_speed_2D(v=v, T= 30000*u.K, particle='e',V_drift=0*u.m/u.s)
+    >>> Maxwellian_speed_2D(v=v, T= 30000*u.K, particle='e',v_drift=0*u.m/u.s)
     <Quantity 2.19930065e-12 s / m>
 
     """
@@ -639,7 +639,7 @@ def Maxwellian_speed_2D(v,
         v = v.to(u.m / u.s)
         # Catching case where drift velocity has default value, and
         # needs to be assigned units
-        V_drift = _v_drift_units(V_drift)
+        v_drift = _v_drift_units(v_drift)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
@@ -658,10 +658,10 @@ def Maxwellian_speed_2D(v,
     # getting square of thermal speed
     vThSq = vTh ** 2
     # get square of relative particle speed
-    vSq = (v - V_drift) ** 2
+    vSq = (v - v_drift) ** 2
     # calculating distribution function
     coeff1 = (np.pi * vThSq) ** (-1)
-    coeff2 = 2 * np.pi * (v - V_drift)
+    coeff2 = 2 * np.pi * (v - v_drift)
     expTerm = np.exp(-vSq / vThSq)
     distFunc = coeff1 * coeff2 * expTerm
     if units == "units":
@@ -673,7 +673,7 @@ def Maxwellian_speed_2D(v,
 def Maxwellian_speed_3D(v,
                         T,
                         particle="e",
-                        V_drift=0,
+                        v_drift=0,
                         vTh=np.nan,
                         units="units"):
     r"""
@@ -697,7 +697,7 @@ def Maxwellian_speed_3D(v,
         for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
-    V_drift: ~astropy.units.Quantity
+    v_drift: ~astropy.units.Quantity
         The drift speed in units convertible to m/s.
 
     vTh: ~astropy.units.Quantity, optional
@@ -752,7 +752,7 @@ def Maxwellian_speed_3D(v,
     >>> from plasmapy.physics import Maxwellian_speed_3D
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
-    >>> Maxwellian_speed_3D(v=v, T= 30000*u.K, particle='e',V_drift=0*u.m/u.s)
+    >>> Maxwellian_speed_3D(v=v, T= 30000*u.K, particle='e',v_drift=0*u.m/u.s)
     <Quantity 2.60235754e-18 s / m>
 
     """
@@ -762,7 +762,7 @@ def Maxwellian_speed_3D(v,
         v = v.to(u.m / u.s)
         # Catching case where drift velocity has default value, and
         # needs to be assigned units
-        V_drift = _v_drift_units(V_drift)
+        v_drift = _v_drift_units(v_drift)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
@@ -781,7 +781,7 @@ def Maxwellian_speed_3D(v,
     # getting square of thermal speed
     vThSq = vTh ** 2
     # get square of relative particle speed
-    vSq = (v - V_drift) ** 2
+    vSq = (v - v_drift) ** 2
     # calculating distribution function
     coeff1 = (np.pi * vThSq) ** (-3 / 2)
     coeff2 = 4 * np.pi * vSq
@@ -797,7 +797,7 @@ def kappa_velocity_1D(v,
                       T,
                       kappa,
                       particle="e",
-                      V_drift=0,
+                      v_drift=0,
                       vTh=np.nan,
                       units="units"):
     r"""
@@ -826,7 +826,7 @@ def kappa_velocity_1D(v,
         for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
-    V_drift: ~astropy.units.Quantity, optional
+    v_drift: ~astropy.units.Quantity, optional
         The drift velocity in units convertible to m/s.
 
     vTh: ~astropy.units.Quantity, optional
@@ -884,7 +884,7 @@ def kappa_velocity_1D(v,
     >>> from plasmapy.physics import kappa_velocity_1D
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
-    >>> kappa_velocity_1D(v=v, T=30000*u.K, kappa=4, particle='e',V_drift=0*u.m/u.s)
+    >>> kappa_velocity_1D(v=v, T=30000*u.K, kappa=4, particle='e',v_drift=0*u.m/u.s)
     <Quantity 6.75549854e-07 s / m>
 
     See Also
@@ -901,11 +901,11 @@ def kappa_velocity_1D(v,
         v = v.to(u.m / u.s)
         # catching case where drift velocities have default values, they
         # need to be assigned units
-        if V_drift == 0:
-            if not isinstance(V_drift, astropy.units.quantity.Quantity):
-                V_drift = V_drift * u.m / u.s
+        if v_drift == 0:
+            if not isinstance(v_drift, astropy.units.quantity.Quantity):
+                v_drift = v_drift * u.m / u.s
         # checking units of drift velocities
-        V_drift = V_drift.to(u.m / u.s)
+        v_drift = v_drift.to(u.m / u.s)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
@@ -924,7 +924,7 @@ def kappa_velocity_1D(v,
     # Get thermal velocity squared and accounting for 1D instead of 3D
     vThSq = vTh ** 2
     # Get square of relative particle velocity
-    vSq = (v - V_drift) ** 2
+    vSq = (v - v_drift) ** 2
     # calculating distribution function
     expTerm = (1 + vSq / (kappa * vThSq)) ** (-kappa)
     coeff1 = 1 / (np.sqrt(np.pi) * kappa ** (3 / 2) * vTh)
@@ -942,9 +942,9 @@ def kappa_velocity_3D(vx,
                       T,
                       kappa,
                       particle="e",
-                      Vx_drift=0,
-                      Vy_drift=0,
-                      Vz_drift=0,
+                      vx_drift=0,
+                      vy_drift=0,
+                      vz_drift=0,
                       vTh=np.nan,
                       units="units"):
     r"""
@@ -978,13 +978,13 @@ def kappa_velocity_3D(vx,
         for deuterium, or 'He-4 +1' for :math:`He_4^{+1}` : singly ionized
         helium-4)), which defaults to electrons.
 
-    Vx_drift: ~astropy.units.Quantity, optional
+    vx_drift: ~astropy.units.Quantity, optional
         The drift velocity in x-direction units convertible to m/s.
 
-    Vy_drift: ~astropy.units.Quantity, optional
+    vy_drift: ~astropy.units.Quantity, optional
         The drift velocity in y-direction units convertible to m/s.
 
-    Vz_drift: ~astropy.units.Quantity, optional
+    vz_drift: ~astropy.units.Quantity, optional
         The drift velocity in z-direction units convertible to m/s.
 
     vTh: ~astropy.units.Quantity, optional
@@ -1052,9 +1052,9 @@ def kappa_velocity_3D(vx,
     ... T=30000*u.K,
     ... kappa=4,
     ... particle='e',
-    ... Vx_drift=0*u.m/u.s,
-    ... Vy_drift=0*u.m/u.s,
-    ... Vz_drift=0*u.m/u.s)
+    ... vx_drift=0*u.m/u.s,
+    ... vy_drift=0*u.m/u.s,
+    ... vz_drift=0*u.m/u.s)
     <Quantity 3.7833988e-19 s3 / m3>
     """
     # must have kappa > 3/2 for distribution function to be valid
@@ -1068,9 +1068,9 @@ def kappa_velocity_3D(vx,
         vz = vz.to(u.m / u.s)
         # Catching case where drift velocities have default values, they
         # need to be assigned units
-        Vx_drift = _v_drift_units(Vx_drift)
-        Vy_drift = _v_drift_units(Vy_drift)
-        Vz_drift = _v_drift_units(Vz_drift)
+        vx_drift = _v_drift_units(vx_drift)
+        vy_drift = _v_drift_units(vy_drift)
+        vz_drift = _v_drift_units(vz_drift)
         # convert temperature to Kelvins
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
@@ -1089,7 +1089,7 @@ def kappa_velocity_3D(vx,
     # getting square of thermal velocity
     vThSq = vTh ** 2
     # Get square of relative particle velocity
-    vSq = ((vx - Vx_drift) ** 2 + (vy - Vy_drift) ** 2 + (vz - Vz_drift) ** 2)
+    vSq = ((vx - vx_drift) ** 2 + (vy - vy_drift) ** 2 + (vz - vz_drift) ** 2)
     # calculating distribution function
     expTerm = (1 + vSq / (kappa * vThSq)) ** (-(kappa + 1))
     coeff1 = 1 / (2 * np.pi * (kappa * vThSq) ** (3 / 2))
