@@ -2,7 +2,7 @@
 
 import numpy as np
 import astropy.units as u
-from typing import Union, Dict, List
+from typing import Union, Dict, List, Tuple
 import collections
 
 from .particle_class import Particle
@@ -429,6 +429,214 @@ class IonizationState:
         becomes equal to one.
         """
         self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)
+
+    @property
+    def tol(self) -> float:
+        """Return the absolute tolerance for comparisons."""
+        return self._tol
+
+    @tol.setter
+    def tol(self, atol):
+        """Set the absolute tolerance for comparisons."""
+        if not isinstance(atol, (float, int, np.integer)):
+            raise TypeError("The attribute tol must be a float or an int.")
+        if 0 <= atol <= 1.0:
+            self._tol = atol
+        else:
+            raise ValueError("Need 0 <= tol <= 1.")
+
+
+
+
+class IonizationStates:
+    """
+    Describe the ionization state distributions of multiple elements.
+
+    Parameters
+    ----------
+    inputs: `list`, `tuple`, or `dict`
+        A `list` or `tuple` of elements or isotopes (if `T_e` is
+        provided); a `list` of `~plasmapy.atomic.IonizationState`
+        instances; or a `dict` with elements or isotopes as keys and
+        a `~numpy.ndarray` of ionic fractions as the values.
+
+    T_e: `~astropy.units.Quantity`
+        The electron temperature in units of temperature or thermal
+        energy per particle.
+
+    abundances: `dict` or `str`, optional
+        The relative abundances of each element in the plasma.
+
+    log_abundances: `dict`, optional
+        The base 10 logarithm of the relative abundances of each element
+        in the plasma.
+
+    number_densities: `dict`, optional
+        The number densities of elements (including both neutral atoms
+        and ions) in units of inverse volume.
+
+    n_H: ~astropy.units.Quantity, optional
+        The number density of neutral and ionized hydrogen atoms.  May
+        only be used if the ionization state of hydrogen is included.
+
+    Raises
+    ------
+    AtomicError
+
+    Notes
+    -----
+    Exactly one of `abundances`, `log_abundances`, and
+    `number_densities` must be specified.
+
+
+
+    """
+
+    @check_quantity({
+        "T_e": {"units": u.K, "none_shall_pass": True},
+        "n_H": {"units": u.m ** -3, "none_shall_pass": True},
+    })
+    def __init__(
+            self,
+            inputs,
+            *,
+            T_e=None,
+            abundances=None,
+            log_abundances=None,
+            n_H=None,
+            tol=1e-15,
+        ):
+
+        self.ionic_fractions = inputs
+
+        self._pars = collections.defaultdict(lambda: None)
+        self.T_e = T_e
+
+        self.abundances = abundances
+        self.log_abundances = log_abundances
+
+
+    @property
+    def ionic_fractions(self):
+        return self._ionic_fractions
+
+    @ionic_fractions.setter
+    def ionic_fractions(self, inputs: Union[Dict, List, Tuple]):
+        """Set the ionic fractions"""
+        if isinstance(inputs, dict):
+            original_keys = inputs.keys()
+
+            ionfrac_types = {type(inputs[key]) for key in original_keys}
+            if u.Quantity in ionfrac_types and len(ionfrac_types != 1):
+                raise TypeError(
+                    "Ionic fraction information may only be inputted "
+                    "as a Quantity object if all ionic fractions are "
+                    "Quantity objects with units of inverse volume.")
+
+            # Create a dictionary of Particle instances
+            particles = dict()
+            for key in original_keys:
+                try:
+                    particles[key] = key if isinstance(key, Particle) else Particle(key)
+                except (InvalidParticleError, TypeError) as exc:
+                    raise AtomicError(
+                        f"Unable to create IonizationStates instance "
+                        f"because {key} is not a valid particle") from exc
+
+            # The particles whose ionization states are to be recorded
+            # should be elements or isotopes but not ions or neutrals.
+            is_element = particles[key].is_category('element')
+            has_charge_info = particles[key].is_category(any_of=["charged", "uncharged"])
+            if not is_element or has_charge_info:
+                raise AtomicError(
+                    f"{key} is not an element or isotope without "
+                    f"charge information.")
+
+            # Sort the original keys by atomic number (and if needed, by mass number)
+            sorted_tuples = sorted([(
+            particles[key].atomic_number,
+            particles[key].mass_number if particles[key].isotope else 0,
+            key) for key in original_keys])
+            sorted_keys = [sorted_tuple[2] for sorted_tuple in sorted_tuples]
+
+            self._ionic_fractions = {}
+            for key in sorted_keys:
+                new_key = particles[key].particle
+                if isinstance(inputs[key], u.Quantity):
+                    try:
+                        number_densities = inputs[key].to(u.m ** -3)
+                        n_elem = np.sum(number_densities)
+                        self._ionic_fractions[new_key] = np.array(number_densities / n_elem)
+                    except u.UnitConversionError as exc:
+                        raise AtomicError("Units are not inverse volume.") from exc
+                elif isinstance(inputs[key], np.ndarray) and inputs[key].dtype.kind == 'f':
+                    self._ionic_fractions[particles[key].particle] = inputs[key]
+                else:
+                    try:
+                        self._ionic_fractions[particles[key].particle] = \
+                            np.array(inputs[key], dtype=np.float)
+                    except ValueError:
+                        raise AtomicError(f"Inappropriate ionic fractions for {key}.")
+
+            print(self._ionic_fractions)
+
+    def __getitem__(self, value):
+        ...
+
+    def __iter__(self):
+        ...
+
+    def __next__(self):
+        ...
+
+    def __eq__(self, other):
+        ...
+
+    @property
+    def elements(self):
+        return self._elements
+
+    @property
+    def abundances(self):
+        return self._pars['abundances']
+
+    @abundances.setter
+    def abundances(self, value):
+        self._pars['abundances'] = value
+
+    @property
+    def log_abundances(self):
+        return np.log10(self.abundances)
+
+    @log_abundances.setter
+    def log_abundances(self, value):
+        if value is None:
+            self._pars['abundances'] = None
+        else:
+            # Add checks
+            self._pars['abundances'] = 10 ** value
+
+    @property
+    def T_e(self):
+        return self._pars['T_e']
+
+    @T_e.setter
+    def T_e(self, electron_temperature):
+        if electron_temperature is None:
+            self._pars['T_e'] = None
+        else:
+            try:
+                self._pars['T_e'] = electron_temperature.to(u.K)
+            except (AttributeError, u.UnitsError):
+                raise AtomicError("Invalid electron temperature.")
+
+    def equilibrate(self, T_e=None):
+        if T_e is not None:
+            raise NotImplementedError
+        elif self._T_e is not None:
+            raise NotImplementedError
+        else:
+            raise AtomicError
 
     @property
     def tol(self) -> float:
