@@ -26,9 +26,9 @@ class Test_Maxwellian_1D(object):
         """initializing parameters for tests """
         self.T_e = 30000 * u.K
         self.v = 1e5 * u.m / u.s
-        self.V_drift = 1000000 * u.m / u.s
-        self.V_drift2 = 0 * u.m / u.s
-        self.V_drift3 = 1e5 * u.m / u.s
+        self.v_drift = 1000000 * u.m / u.s
+        self.v_drift2 = 0 * u.m / u.s
+        self.v_drift3 = 1e5 * u.m / u.s
         self.start = -5000
         self.stop = - self.start
         self.dv = 10000 * u.m / u.s
@@ -49,7 +49,7 @@ class Test_Maxwellian_1D(object):
         max_index = Maxwellian_1D(self.v_vect,
                                   T=self.T_e,
                                   particle=self.particle,
-                                  V_drift=0 * u.m / u.s
+                                  v_drift=0 * u.m / u.s
                                   ).argmax()
         assert np.isclose(self.v_vect[max_index].value, 0.0)
 
@@ -61,9 +61,9 @@ class Test_Maxwellian_1D(object):
         max_index = Maxwellian_1D(self.v_vect,
                                   T=self.T_e,
                                   particle=self.particle,
-                                  V_drift=self.V_drift
+                                  v_drift=self.v_drift
                                   ).argmax()
-        assert np.isclose(self.v_vect[max_index].value, self.V_drift.value)
+        assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
 
     def test_norm(self):
         """
@@ -182,7 +182,7 @@ class Test_Maxwellian_1D(object):
         distFunc = Maxwellian_1D(v=self.v,
                                  T=self.T_e,
                                  particle=self.particle,
-                                 V_drift=self.V_drift2,
+                                 v_drift=self.v_drift2,
                                  units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -199,7 +199,7 @@ class Test_Maxwellian_1D(object):
         distFunc = Maxwellian_1D(v=self.v,
                                  T=self.T_e,
                                  particle=self.particle,
-                                 V_drift=self.V_drift3,
+                                 v_drift=self.v_drift3,
                                  units="units")
         errStr = (f"Distribution function should be {testVal} "
                   f"and not {distFunc}.")
@@ -221,8 +221,8 @@ class Test_Maxwellian_speed_1D(object):
                                  particle=self.particle,
                                  method="most_probable")
         self.v = 1e5 * u.m / u.s
-        self.V_drift = 0 * u.m / u.s
-        self.V_drift2 = 1e5 * u.m / u.s
+        self.v_drift = 0 * u.m / u.s
+        self.v_drift2 = 1e5 * u.m / u.s
         self.distFuncTrue = 1.72940389716217e-27
         self.distFuncDrift = 2 * (self.vTh ** 2 * np.pi) ** (-1 / 2)
 
@@ -316,7 +316,7 @@ class Test_Maxwellian_speed_1D(object):
         distFunc = Maxwellian_speed_1D(v=self.v,
                                        T=self.T,
                                        particle=self.particle,
-                                       V_drift=self.V_drift,
+                                       v_drift=self.v_drift,
                                        units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -332,7 +332,7 @@ class Test_Maxwellian_speed_1D(object):
         distFunc = Maxwellian_speed_1D(v=self.v,
                                        T=self.T,
                                        particle=self.particle,
-                                       V_drift=self.V_drift2,
+                                       v_drift=self.v_drift2,
                                        units="units")
         errStr = (f"Distribution function should be 0.0 "
                   f"and not {distFunc}.")
@@ -355,10 +355,10 @@ class Test_Maxwellian_velocity_2D(object):
                                  method="most_probable")
         self.vx = 1e5 * u.m / u.s
         self.vy = 1e5 * u.m / u.s
-        self.Vx_drift = 0 * u.m / u.s
-        self.Vy_drift = 0 * u.m / u.s
-        self.Vx_drift2 = 1e5 * u.m / u.s
-        self.Vy_drift2 = 1e5 * u.m / u.s
+        self.vx_drift = 0 * u.m / u.s
+        self.vy_drift = 0 * u.m / u.s
+        self.vx_drift2 = 1e5 * u.m / u.s
+        self.vy_drift2 = 1e5 * u.m / u.s
         self.distFuncTrue = 7.477094598799251e-55
 
     def test_norm(self):
@@ -475,8 +475,8 @@ class Test_Maxwellian_velocity_2D(object):
                                           vy=self.vy,
                                           T=self.T,
                                           particle=self.particle,
-                                          Vx_drift=self.Vx_drift,
-                                          Vy_drift=self.Vy_drift,
+                                          vx_drift=self.vx_drift,
+                                          vy_drift=self.vy_drift,
                                           units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -494,8 +494,8 @@ class Test_Maxwellian_velocity_2D(object):
                                           vy=self.vy,
                                           T=self.T,
                                           particle=self.particle,
-                                          Vx_drift=self.Vx_drift2,
-                                          Vy_drift=self.Vy_drift2,
+                                          vx_drift=self.vx_drift2,
+                                          vy_drift=self.vy_drift2,
                                           units="units")
         errStr = (f"Distribution function should be {testVal} "
                   f"and not {distFunc}.")
@@ -517,8 +517,8 @@ class Test_Maxwellian_speed_2D(object):
                                  particle=self.particle,
                                  method="most_probable")
         self.v = 1e5 * u.m / u.s
-        self.V_drift = 0 * u.m / u.s
-        self.V_drift2 = 1e5 * u.m / u.s
+        self.v_drift = 0 * u.m / u.s
+        self.v_drift2 = 1e5 * u.m / u.s
         self.distFuncTrue = 2.2148166449365907e-26
 
     def test_norm(self):
@@ -611,7 +611,7 @@ class Test_Maxwellian_speed_2D(object):
         distFunc = Maxwellian_speed_2D(v=self.v,
                                        T=self.T,
                                        particle=self.particle,
-                                       V_drift=self.V_drift,
+                                       v_drift=self.v_drift,
                                        units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -627,7 +627,7 @@ class Test_Maxwellian_speed_2D(object):
         distFunc = Maxwellian_speed_2D(v=self.v,
                                        T=self.T,
                                        particle=self.particle,
-                                       V_drift=self.V_drift2,
+                                       v_drift=self.v_drift2,
                                        units="units")
         errStr = (f"Distribution function should be 0.0 "
                   f"and not {distFunc}.")
@@ -651,12 +651,12 @@ class Test_Maxwellian_velocity_3D(object):
         self.vx = 1e5 * u.m / u.s
         self.vy = 1e5 * u.m / u.s
         self.vz = 1e5 * u.m / u.s
-        self.Vx_drift = 0 * u.m / u.s
-        self.Vy_drift = 0 * u.m / u.s
-        self.Vz_drift = 0 * u.m / u.s
-        self.Vx_drift2 = 1e5 * u.m / u.s
-        self.Vy_drift2 = 1e5 * u.m / u.s
-        self.Vz_drift2 = 1e5 * u.m / u.s
+        self.vx_drift = 0 * u.m / u.s
+        self.vy_drift = 0 * u.m / u.s
+        self.vz_drift = 0 * u.m / u.s
+        self.vx_drift2 = 1e5 * u.m / u.s
+        self.vy_drift2 = 1e5 * u.m / u.s
+        self.vz_drift2 = 1e5 * u.m / u.s
         self.distFuncTrue = 6.465458269306909e-82
 
     def test_norm(self):
@@ -781,9 +781,9 @@ class Test_Maxwellian_velocity_3D(object):
                                           vz=self.vz,
                                           T=self.T,
                                           particle=self.particle,
-                                          Vx_drift=self.Vx_drift,
-                                          Vy_drift=self.Vy_drift,
-                                          Vz_drift=self.Vz_drift,
+                                          vx_drift=self.vx_drift,
+                                          vy_drift=self.vy_drift,
+                                          vz_drift=self.vz_drift,
                                           units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -802,9 +802,9 @@ class Test_Maxwellian_velocity_3D(object):
                                           vz=self.vz,
                                           T=self.T,
                                           particle=self.particle,
-                                          Vx_drift=self.Vx_drift2,
-                                          Vy_drift=self.Vy_drift2,
-                                          Vz_drift=self.Vz_drift2,
+                                          vx_drift=self.vx_drift2,
+                                          vy_drift=self.vy_drift2,
+                                          vz_drift=self.vz_drift2,
                                           units="units")
         errStr = (f"Distribution function should be {testVal} "
                   f"and not {distFunc}.")
@@ -826,8 +826,8 @@ class Test_Maxwellian_speed_3D(object):
                                  particle=self.particle,
                                  method="most_probable")
         self.v = 1e5 * u.m / u.s
-        self.V_drift = 0 * u.m / u.s
-        self.V_drift2 = 1e5 * u.m / u.s
+        self.v_drift = 0 * u.m / u.s
+        self.v_drift2 = 1e5 * u.m / u.s
         self.distFuncTrue = 1.8057567503860518e-25
 
     def test_norm(self):
@@ -920,7 +920,7 @@ class Test_Maxwellian_speed_3D(object):
         distFunc = Maxwellian_speed_3D(v=self.v,
                                        T=self.T,
                                        particle=self.particle,
-                                       V_drift=self.V_drift,
+                                       v_drift=self.v_drift,
                                        units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -936,7 +936,7 @@ class Test_Maxwellian_speed_3D(object):
         distFunc = Maxwellian_speed_3D(v=self.v,
                                        T=self.T,
                                        particle=self.particle,
-                                       V_drift=self.V_drift2,
+                                       v_drift=self.v_drift2,
                                        units="units")
         errStr = (f"Distribution function should be 0.0 "
                   f"and not {distFunc}.")
@@ -957,9 +957,9 @@ class Test_kappa_velocity_1D(object):
         self.kappa = 4
         self.kappaInvalid = 3 / 2
         self.v = 1e5 * u.m / u.s
-        self.V_drift = 1000000 * u.m / u.s
-        self.V_drift2 = 0 * u.m / u.s
-        self.V_drift3 = 1e5 * u.m / u.s
+        self.v_drift = 1000000 * u.m / u.s
+        self.v_drift2 = 0 * u.m / u.s
+        self.v_drift3 = 1e5 * u.m / u.s
         self.start = -5000
         self.stop = -self.start
         self.dv = 10000 * u.m / u.s
@@ -993,7 +993,7 @@ class Test_kappa_velocity_1D(object):
                                       T=self.T_e,
                                       kappa=self.kappa,
                                       particle=self.particle,
-                                      V_drift=0 * u.m / u.s).argmax()
+                                      v_drift=0 * u.m / u.s).argmax()
         assert np.isclose(self.v_vect[max_index].value, 0.0)
 
     def test_max_drift(self):
@@ -1005,8 +1005,8 @@ class Test_kappa_velocity_1D(object):
                                       T=self.T_e,
                                       kappa=self.kappa,
                                       particle=self.particle,
-                                      V_drift=self.V_drift).argmax()
-        assert np.isclose(self.v_vect[max_index].value, self.V_drift.value)
+                                      v_drift=self.v_drift).argmax()
+        assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
 
     def test_maxwellian_limit(self):
         """
@@ -1138,7 +1138,7 @@ class Test_kappa_velocity_1D(object):
                                      T=self.T_e,
                                      kappa=self.kappa,
                                      particle=self.particle,
-                                     V_drift=self.V_drift2,
+                                     v_drift=self.v_drift2,
                                      units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -1156,7 +1156,7 @@ class Test_kappa_velocity_1D(object):
                                      T=self.T_e,
                                      kappa=self.kappa,
                                      particle=self.particle,
-                                     V_drift=self.V_drift3,
+                                     v_drift=self.v_drift3,
                                      units="units")
         errStr = (f"Distribution function should be {testVal} "
                   f"and not {distFunc}.")
@@ -1182,12 +1182,12 @@ class Test_kappa_velocity_3D(object):
         self.vx = 1e5 * u.m / u.s
         self.vy = 1e5 * u.m / u.s
         self.vz = 1e5 * u.m / u.s
-        self.Vx_drift = 0 * u.m / u.s
-        self.Vy_drift = 0 * u.m / u.s
-        self.Vz_drift = 0 * u.m / u.s
-        self.Vx_drift2 = 1e5 * u.m / u.s
-        self.Vy_drift2 = 1e5 * u.m / u.s
-        self.Vz_drift2 = 1e5 * u.m / u.s
+        self.vx_drift = 0 * u.m / u.s
+        self.vy_drift = 0 * u.m / u.s
+        self.vz_drift = 0 * u.m / u.s
+        self.vx_drift2 = 1e5 * u.m / u.s
+        self.vy_drift2 = 1e5 * u.m / u.s
+        self.vz_drift2 = 1e5 * u.m / u.s
         self.distFuncTrue = 1.1847914288918793e-22
 
     def test_invalid_kappa(self):
@@ -1216,9 +1216,9 @@ class Test_kappa_velocity_3D(object):
 #                                          T=self.T,
 #                                          kappa=kappaLarge,
 #                                          particle=self.particle,
-#                                          Vx_drift=self.Vx_drift2,
-#                                          Vy_drift=self.Vy_drift2,
-#                                          Vz_drift=self.Vz_drift2,
+#                                          vx_drift=self.vx_drift2,
+#                                          vy_drift=self.vy_drift2,
+#                                          vz_drift=self.vz_drift2,
 #                                          units="units")
 #        Teff =  self.T
 #        maxwellDistFunc = Maxwellian_velocity_3D(vx=self.vx,
@@ -1226,9 +1226,9 @@ class Test_kappa_velocity_3D(object):
 #                                                 vz=self.vz,
 #                                                 T=Teff,
 #                                                 particle=self.particle,
-#                                                 Vx_drift=self.Vx_drift2,
-#                                                 Vy_drift=self.Vy_drift2,
-#                                                 Vz_drift=self.Vz_drift2,
+#                                                 vx_drift=self.vx_drift2,
+#                                                 vy_drift=self.vy_drift2,
+#                                                 vz_drift=self.vz_drift2,
 #                                                 units="units")
 #        errStr = (f"Distribution function should be {maxwellDistFunc} "
 #                  f"and not {kappaDistFunc}.")
@@ -1367,9 +1367,9 @@ class Test_kappa_velocity_3D(object):
                                      T=self.T,
                                      kappa=self.kappa,
                                      particle=self.particle,
-                                     Vx_drift=self.Vx_drift,
-                                     Vy_drift=self.Vy_drift,
-                                     Vz_drift=self.Vz_drift,
+                                     vx_drift=self.vx_drift,
+                                     vy_drift=self.vy_drift,
+                                     vz_drift=self.vz_drift,
                                      units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -1389,9 +1389,9 @@ class Test_kappa_velocity_3D(object):
                                      T=self.T,
                                      kappa=self.kappa,
                                      particle=self.particle,
-                                     Vx_drift=self.Vx_drift2,
-                                     Vy_drift=self.Vy_drift2,
-                                     Vz_drift=self.Vz_drift2,
+                                     vx_drift=self.vx_drift2,
+                                     vy_drift=self.vy_drift2,
+                                     vz_drift=self.vz_drift2,
                                      units="units")
         errStr = (f"Distribution function should be {testVal} "
                   f"and not {distFunc}.")
