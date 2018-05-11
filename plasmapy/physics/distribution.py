@@ -103,7 +103,7 @@ def Maxwellian_1D(v,
     >>> from plasmapy.physics import Maxwellian_1D
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
-    >>> Maxwellian_1D(v=v, T= 30000*u.K, particle='e',v_drift=0*u.m/u.s)
+    >>> Maxwellian_1D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
     <Quantity 5.91632969e-07 s / m>
     """
 
@@ -232,13 +232,13 @@ def Maxwellian_velocity_2D(vx,
     -------
     >>> from plasmapy.physics import Maxwellian_velocity_2D
     >>> from astropy import units as u
-    >>> v=1*u.m/u.s
+    >>> v=1 * u.m / u.s
     >>> Maxwellian_velocity_2D(vx=v,
     ... vy=v,
     ... T=30000*u.K,
     ... particle='e',
-    ... vx_drift=0*u.m/u.s,
-    ... vy_drift=0*u.m/u.s)
+    ... vx_drift=0 * u.m / u.s,
+    ... vy_drift=0 * u.m / u.s)
     <Quantity 3.5002957e-13 s2 / m2>
 
 
@@ -378,15 +378,15 @@ def Maxwellian_velocity_3D(vx,
     -------
     >>> from plasmapy.physics import Maxwellian_velocity_3D
     >>> from astropy import units as u
-    >>> v=1*u.m/u.s
+    >>> v=1 * u.m / u.s
     >>> Maxwellian_velocity_3D(vx=v,
     ... vy=v,
     ... vz=v,
-    ... T=30000*u.K,
+    ... T=30000 * u.K,
     ... particle='e',
-    ... vx_drift=0*u.m/u.s,
-    ... vy_drift=0*u.m/u.s,
-    ... vz_drift=0*u.m/u.s)
+    ... vx_drift=0 * u.m / u.s,
+    ... vy_drift=0 * u.m / u.s,
+    ... vz_drift=0 * u.m / u.s)
     <Quantity 2.07089033e-19 s3 / m3>
 
 
@@ -506,8 +506,8 @@ def Maxwellian_speed_1D(v,
     -------
     >>> from plasmapy.physics import Maxwellian_speed_1D
     >>> from astropy import units as u
-    >>> v=1*u.m/u.s
-    >>> Maxwellian_speed_1D(v=v, T= 30000*u.K, particle='e',v_drift=0*u.m/u.s)
+    >>> v=1 * u.m / u.s
+    >>> Maxwellian_speed_1D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
     <Quantity 1.18326594e-06 s / m>
 
     """
@@ -628,8 +628,8 @@ def Maxwellian_speed_2D(v,
     -------
     >>> from plasmapy.physics import Maxwellian_speed_2D
     >>> from astropy import units as u
-    >>> v=1*u.m/u.s
-    >>> Maxwellian_speed_2D(v=v, T= 30000*u.K, particle='e',v_drift=0*u.m/u.s)
+    >>> v=1 * u.m / u.s
+    >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
     <Quantity 2.19930065e-12 s / m>
 
     """
@@ -751,8 +751,8 @@ def Maxwellian_speed_3D(v,
     -------
     >>> from plasmapy.physics import Maxwellian_speed_3D
     >>> from astropy import units as u
-    >>> v=1*u.m/u.s
-    >>> Maxwellian_speed_3D(v=v, T= 30000*u.K, particle='e',v_drift=0*u.m/u.s)
+    >>> v=1 * u.m / u.s
+    >>> Maxwellian_speed_3D(v=v, T=30000*u.K, particle='e', v_drift=0 * u.m / u.s)
     <Quantity 2.60235754e-18 s / m>
 
     """
@@ -883,8 +883,8 @@ def kappa_velocity_1D(v,
     --------
     >>> from plasmapy.physics import kappa_velocity_1D
     >>> from astropy import units as u
-    >>> v=1*u.m/u.s
-    >>> kappa_velocity_1D(v=v, T=30000*u.K, kappa=4, particle='e',v_drift=0*u.m/u.s)
+    >>> v=1 * u.m / u.s
+    >>> kappa_velocity_1D(v=v, T=30000*u.K, kappa=4, particle='e', v_drift=0 * u.m / u.s)
     <Quantity 6.75549854e-07 s / m>
 
     See Also
@@ -1045,16 +1045,16 @@ def kappa_velocity_3D(vx,
     -------
     >>> from plasmapy.physics import kappa_velocity_3D
     >>> from astropy import units as u
-    >>> v=1*u.m/u.s
+    >>> v=1 * u.m / u.s
     >>> kappa_velocity_3D(vx=v,
     ... vy=v,
     ... vz=v,
-    ... T=30000*u.K,
+    ... T=30000 * u.K,
     ... kappa=4,
     ... particle='e',
-    ... vx_drift=0*u.m/u.s,
-    ... vy_drift=0*u.m/u.s,
-    ... vz_drift=0*u.m/u.s)
+    ... vx_drift=0 * u.m / u.s,
+    ... vy_drift=0 * u.m / u.s,
+    ... vz_drift=0 * u.m / u.s)
     <Quantity 3.7833988e-19 s3 / m3>
     """
     # must have kappa > 3/2 for distribution function to be valid
