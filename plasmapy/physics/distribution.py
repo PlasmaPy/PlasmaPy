@@ -156,10 +156,10 @@ def Maxwellian_velocity_2D(vx,
     Probability distribution function of velocity for a 2D Maxwellian 
     distribution.
 
-    Return the probability of finding a particle with velocity components
-    `vx` and `vy` in m/s in an equilibrium plasma of temperature
-    `T` which follows the 2D Maxwellian distribution function. This
-    function assumes Cartesian coordinates.
+    Return the probability density function for finding a particle with 
+    velocity components `vx` and `vy` in m/s in an equilibrium plasma of 
+    temperature `T` which follows the 2D Maxwellian distribution function. 
+    This function assumes Cartesian coordinates.
 
     Parameters
     ----------
@@ -297,10 +297,10 @@ def Maxwellian_velocity_3D(vx,
     Probability distribution function of velocity for a 3D Maxwellian 
     distribution.
 
-    Return the probability of finding a particle with velocity components
-    `vx`, `vy`, and `vz` in m/s in an equilibrium plasma of temperature
-    `T` which follows the 3D Maxwellian distribution function. This
-    function assumes Cartesian coordinates.
+    Return the probability density function for finding a particle with 
+    velocity components `vx`, `vy`, and `vz` in m/s in an equilibrium 
+    plasma of temperature `T` which follows the 3D Maxwellian distribution 
+    function. This function assumes Cartesian coordinates.
 
     Parameters
     ----------
@@ -443,9 +443,9 @@ def Maxwellian_speed_1D(v,
     r"""
     Probability distribution function of speed for a Maxwellian distribution.
 
-    Return the probability of finding a particle with speed `v` in m/s
-    in an equilibrium plasma of temperature `T` which follows the
-    Maxwellian distribution function.
+    Return the probability density function for finding a particle with 
+    speed `v` in m/s in an equilibrium plasma of temperature `T` which 
+    follows the Maxwellian distribution function.
 
     Parameters
     ----------
@@ -560,7 +560,7 @@ def Maxwellian_speed_2D(v,
     Probability distribution function of speed for a 2D Maxwellian
     distribution.
 
-    Return the probability of finding a particle with speed components
+    Return the probability density function of finding a particle with speed components
     `vx` and `vy` in m/s in an equilibrium plasma of temperature
     `T` which follows the 2D Maxwellian distribution function. This
     function assumes Cartesian coordinates.
@@ -684,10 +684,10 @@ def Maxwellian_speed_3D(v,
     Probability distribution function of speed for a 3D Maxwellian
     distribution.
 
-    Return the probability of finding a particle with speed components
-    `vx`, `vy`, and `vz` in m/s in an equilibrium plasma of temperature
-    `T` which follows the 3D Maxwellian distribution function. This
-    function assumes Cartesian coordinates.
+    Return the probability density function for finding a particle with 
+    speed components `vx`, `vy`, and `vz` in m/s in an equilibrium 
+    plasma of temperature `T` which follows the 3D Maxwellian 
+    distribution function. This function assumes Cartesian coordinates.
 
     Parameters
     ----------
@@ -953,10 +953,11 @@ def kappa_velocity_3D(vx,
                       vTh=np.nan,
                       units="units"):
     r"""
-    Return the probability of finding a particle with velocity components
-    `v_x`, `v_y`, and `v_z`in m/s in a suprathermal plasma of temperature
-    `T` and parameter 'kappa' which follows the 3D Kappa distribution function.
-    This function assumes Cartesian coordinates.
+    Return the probability density function for finding a particle with 
+    velocity components `v_x`, `v_y`, and `v_z`in m/s in a suprathermal 
+    plasma of temperature `T` and parameter 'kappa' which follows the 
+    3D Kappa distribution function. This function assumes Cartesian 
+    coordinates.
 
     Parameters
     ----------
