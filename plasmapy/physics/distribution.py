@@ -37,7 +37,7 @@ def Maxwellian_1D(v,
     Probability distribution function of velocity for a Maxwellian 
     distribution.
 
-    Returns the probability at the velocity `v` in m/s
+    Returns the probability density function at the velocity `v` in m/s
     to find a particle `particle` in a plasma of temperature `T`
     following the Maxwellian distribution function.
 
@@ -71,7 +71,7 @@ def Maxwellian_1D(v,
     Returns
     -------
     f : ~astropy.units.Quantity
-        Probability in units of Velocity^-1, normalized so that
+        Probability density in units of Velocity^-1, normalized so that
         :math:`\int_{-\infty}^{+\infty} f(v) dv = 1`.
 
     Raises
@@ -197,7 +197,7 @@ def Maxwellian_velocity_2D(vx,
     Returns
     -------
     f : ~astropy.units.Quantity
-        Probability in Velocity^-1, normalized so that
+        Probability density in Velocity^-1, normalized so that
         :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`.
 
     Raises
@@ -269,7 +269,7 @@ def Maxwellian_velocity_2D(vx,
         vTh = parameters.thermal_speed(T * u.K,
                                        particle=particle,
                                        method="most_probable").si.value
-    # accounting for thermal velocity in 3D
+    # accounting for thermal velocity in 2D
     vThSq = vTh ** 2
     # Get square of relative particle velocity
     vSq = ((vx - vx_drift) ** 2 + (vy - vy_drift) ** 2)
@@ -344,7 +344,7 @@ def Maxwellian_velocity_3D(vx,
     Returns
     -------
     f : ~astropy.units.Quantity
-        Probability in Velocity^-1, normalized so that
+        Probability density in Velocity^-1, normalized so that
         :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`.
 
     Raises
@@ -477,7 +477,7 @@ def Maxwellian_speed_1D(v,
     Returns
     -------
     f : ~astropy.units.Quantity
-        Probability in speed^-1, normalized so that
+        Probability density in speed^-1, normalized so that
         :math:`\int_{0}^{\infty} f(v) dv = 1`.
 
     Raises
@@ -595,7 +595,7 @@ def Maxwellian_speed_2D(v,
     Returns
     -------
     f : ~astropy.units.Quantity
-        Probability in speed^-1, normalized so that:
+        Probability density in speed^-1, normalized so that:
         :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`.
 
     Raises
@@ -719,7 +719,7 @@ def Maxwellian_speed_3D(v,
     Returns
     -------
     f : ~astropy.units.Quantity
-        Probability in speed^-1, normalized so that:
+        Probability density in speed^-1, normalized so that:
         :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`.
 
     Raises
@@ -848,7 +848,7 @@ def kappa_velocity_1D(v,
     Returns
     -------
     f : ~astropy.units.Quantity
-        probability in Velocity^-1, normalized so that
+        Probability density in Velocity^-1, normalized so that
         :math:`\int_{-\infty}^{+\infty} f(v) dv = 1`.
 
     Raises
@@ -1007,7 +1007,7 @@ def kappa_velocity_3D(vx,
     Returns
     -------
     f : ~astropy.units.Quantity
-        probability in Velocity^-1, normalized so that:
+        Probability density in Velocity^-1, normalized so that:
         :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`
 
     Raises
