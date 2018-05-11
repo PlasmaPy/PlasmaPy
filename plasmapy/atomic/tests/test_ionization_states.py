@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 import astropy.units as u
-from ..ionization_states import IonizationState
+from ..ionization_states import IonizationState, IonizationStates
 from ...utils import AtomicError, RunTestError, InvalidIsotopeError
 from ...atomic import (
     atomic_number,
@@ -245,3 +245,26 @@ class Test_IonizationState:
             np.sum(n_elem * ionic_fractions * np.array([0, 1, 2])),
             rtol=1e-12, atol=0 * u.m ** -3), \
             "n_e is not the expected value."
+
+
+class Test_IonizationStates:
+
+    @classmethod
+    def setup_class(cls):
+        cls.abundances = {'H': 1.0, 'He': 0.1}
+
+    def test_dict_inputs(self):
+        inputs = {'H': [0.1, 0.9], 'He': (0.2, 0.3, 0.5)}
+        instance = IonizationStates(inputs, abundances=self.abundances)
+        for key in inputs.keys():
+            expected = inputs[key]
+            actual = instance.ionic_fractions[key]
+            assert np.allclose(actual, expected), "Incorrect ionic fractions."
+
+    def test_dict_quantity_inputs(self):
+        inputs = {'He': np.array([1, 9]) * u.m ** -3, 'H': np.array([2, 3, 5]) * u.cm ** -3}
+        instance = IonizationStates(inputs, abundances=self.abundances)
+        for key in inputs.keys():
+            expected = inputs[key].value / np.sum(inputs[key].value)
+            actual = instance.ionic_fractions[key]
+            assert np.allclose(actual, expected), "Incorrect ionic fractions."

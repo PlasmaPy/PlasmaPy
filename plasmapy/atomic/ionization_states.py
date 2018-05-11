@@ -527,7 +527,7 @@ class IonizationStates:
             original_keys = inputs.keys()
 
             ionfrac_types = {type(inputs[key]) for key in original_keys}
-            if u.Quantity in ionfrac_types and len(ionfrac_types != 1):
+            if u.Quantity in ionfrac_types and len(ionfrac_types) != 1:
                 raise TypeError(
                     "Ionic fraction information may only be inputted "
                     "as a Quantity object if all ionic fractions are "
