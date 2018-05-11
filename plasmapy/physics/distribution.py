@@ -34,7 +34,8 @@ def Maxwellian_1D(v,
                   vTh=np.nan,
                   units="units"):
     r"""
-    pdf of velocity for a Maxwellian distribution.
+    Probability distribution function of velocity for a Maxwellian 
+    distribution.
 
     Returns the probability at the velocity `v` in m/s
     to find a particle `particle` in a plasma of temperature `T`
@@ -152,7 +153,8 @@ def Maxwellian_velocity_2D(vx,
                            vTh=np.nan,
                            units="units"):
     r"""
-    pdf of velocity for a 2D Maxwellian distribution.
+    Probability distribution function of velocity for a 2D Maxwellian 
+    distribution.
 
     Return the probability of finding a particle with velocity components
     `vx` and `vy` in m/s in an equilibrium plasma of temperature
@@ -292,7 +294,8 @@ def Maxwellian_velocity_3D(vx,
                            vTh=np.nan,
                            units="units"):
     r"""
-    pdf of velocity for a 3D Maxwellian distribution.
+    Probability distribution function of velocity for a 3D Maxwellian 
+    distribution.
 
     Return the probability of finding a particle with velocity components
     `vx`, `vy`, and `vz` in m/s in an equilibrium plasma of temperature
@@ -438,7 +441,7 @@ def Maxwellian_speed_1D(v,
                         vTh=np.nan,
                         units="units"):
     r"""
-    pdf of speed for a Maxwellian distribution.
+    Probability distribution function of speed for a Maxwellian distribution.
 
     Return the probability of finding a particle with speed `v` in m/s
     in an equilibrium plasma of temperature `T` which follows the
@@ -554,7 +557,8 @@ def Maxwellian_speed_2D(v,
                         vTh=np.nan,
                         units="units"):
     r"""
-    pdf of speed for a 2D Maxwellian distribution.
+    Probability distribution function of speed for a 2D Maxwellian
+    distribution.
 
     Return the probability of finding a particle with speed components
     `vx` and `vy` in m/s in an equilibrium plasma of temperature
@@ -677,7 +681,8 @@ def Maxwellian_speed_3D(v,
                         vTh=np.nan,
                         units="units"):
     r"""
-    pdf of speed for a 3D Maxwellian distribution.
+    Probability distribution function of speed for a 3D Maxwellian
+    distribution.
 
     Return the probability of finding a particle with speed components
     `vx`, `vy`, and `vz` in m/s in an equilibrium plasma of temperature
