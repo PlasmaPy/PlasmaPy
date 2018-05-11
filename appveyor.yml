@@ -6,7 +6,7 @@ environment:
     # /E:ON and /V:ON options are not enabled in the batch script intepreter
     # See: http://stackoverflow.com/a/13751649/163740
     CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\ci-helpers\\appveyor\\windows_sdk.cmd"
-    CONDA_DEPENDENCIES: ""
+    CONDA_DEPENDENCIES: "cython"
     NUMPY_VERSION: "stable"
 
   matrix:
@@ -31,5 +31,4 @@ install:
 build: false
 
 test_script:
-  - "%CMD_IN_ENV% python setup.py -q install build_ext --inplace"
   - "%CMD_IN_ENV% pytest"
