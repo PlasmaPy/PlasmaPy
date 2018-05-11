@@ -2,7 +2,7 @@
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
 [![Build Status](https://travis-ci.org/PlasmaPy/PlasmaPy.svg?branch=master)](https://travis-ci.org/PlasmaPy/PlasmaPy)
 [![Build status](https://ci.appveyor.com/api/projects/status/hbduy62sqrvy8rn7?svg=true)](https://ci.appveyor.com/project/namurphy/plasmapy)
-[![Documentation Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://docs.plasmapy.org/en/latest/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/github/PlasmaPy/PlasmaPy/badge.svg?branch=master)](https://coveralls.io/github/PlasmaPy/PlasmaPy?branch=master)
 [![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy:matrix.org)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/PlasmaPy/Lobby)
@@ -16,11 +16,11 @@ scientific Python ecosystem. The goals of this project are more thoroughly descr
 [vision statement](http://docs.plasmapy.org/en/stable/about/vision_statement.html)
 and [an earlier conference poster](http://doi.org/10.5281/zenodo.163752).
 We are in the process of writing [online
-documentation](http://plasmapy.readthedocs.io/en/latest/).
+documentation](http://docs.plasmapy.org/en/latest/).
 
 We created a guide on
-[contributing to PlasmaPy](http://plasmapy.readthedocs.io/en/master/CONTRIBUTING.html) and have a
-[Code of Conduct](http://plasmapy.readthedocs.io/en/master/CODE_OF_CONDUCT.html).
+[contributing to PlasmaPy](http://docs.plasmapy.org/en/master/CONTRIBUTING.html) and have a
+[Code of Conduct](http://docs.plasmapy.org/en/master/CODE_OF_CONDUCT.html).
 New contributors are very welcome!
 
 If you have any questions, the quickest way to get a response is to ask on our

@@ -32,10 +32,15 @@ python setup.py install
 ```
 ****
 
-We are officially [on PyPI](https://pypi.org/project/plasmapy/) and can be installed via
+We are officially [on PyPI](https://pypi.org/project/plasmapy/)
+- PlasmaPy can be installed via
+
 ```ShellSession
 pip install plasmapy
 ```
-Though be warned that the version on PyPI is our distribution version and not suitable for developemnt. If you wish to contribute to the project, please install from Github.
+
+Though be warned that the version on PyPI is our distribution version and not
+suitable for development. If you wish to contribute to the project, please
+install from GitHub.
 
 We're not on conda just yet, but we're working on it!
