@@ -1,5 +1,3 @@
-.. _acknowledging:
-
 Acknowledging and Citing PlasmaPy
 =================================
 
