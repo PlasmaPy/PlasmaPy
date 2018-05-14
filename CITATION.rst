@@ -16,8 +16,7 @@ We provide the following standard acknowledgment with this citation that
 you may use instead of a citation in the body of a paper.
 
 * This research made use of PlasmaPy, a community-developed open source
-  core Python package for plasma physics (PlasmaPy Community et al.,
-  2018).
+  core Python package for plasma physics (PlasmaPy Community 2018).
 
 We highly encourage researchers to acknowledge the packages that
 PlasmaPy depends on, including but not limited to Astropy, NumPy, and
