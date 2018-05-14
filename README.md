@@ -1,12 +1,15 @@
 # PlasmaPy
+
+[![PyPI version](https://badge.fury.io/py/plasmapy.svg)](https://badge.fury.io/py/plasmapy)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
-[![Build Status](https://travis-ci.org/PlasmaPy/PlasmaPy.svg?branch=master)](https://travis-ci.org/PlasmaPy/PlasmaPy)
-[![Build status](https://ci.appveyor.com/api/projects/status/hbduy62sqrvy8rn7?svg=true)](https://ci.appveyor.com/project/namurphy/plasmapy)
-[![Documentation Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
-[![Coverage Status](https://coveralls.io/repos/github/PlasmaPy/PlasmaPy/badge.svg?branch=master)](https://coveralls.io/github/PlasmaPy/PlasmaPy?branch=master)
+[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 [![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy:matrix.org)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/PlasmaPy/Lobby)
-[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
+
+[![Build Status](https://travis-ci.org/PlasmaPy/PlasmaPy.svg?branch=master)](https://travis-ci.org/PlasmaPy/PlasmaPy)
+[![Build status](https://ci.appveyor.com/api/projects/status/hbduy62sqrvy8rn7?svg=true)](https://ci.appveyor.com/project/namurphy/plasmapy)
+[![Coverage Status](https://coveralls.io/repos/github/PlasmaPy/PlasmaPy/badge.svg?branch=master)](https://coveralls.io/github/PlasmaPy/PlasmaPy?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
 
 PlasmaPy is an open source community developed Python 3.6+ package for
 plasma physics in the early stages of development.  PlasmaPy intends to
@@ -16,7 +19,7 @@ between plasma physicists and researchers globally, running within and
 leveraging the open source scientific Python ecosystem.  The goals of
 this project are more thoroughly described in our [vision
 statement](http://docs.plasmapy.org/en/stable/about/vision_statement.html)
-and [a recent reference](https://doi.org/10.5281/zenodo.1238132).
+and [this recent reference](https://doi.org/10.5281/zenodo.1238132).
 We are in the process of writing [online
 documentation](http://plasmapy.readthedocs.io/en/latest/).
 
@@ -31,7 +34,8 @@ on our
 [Matrix](https://riot.im/app/#/room/#plasmapy:matrix.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
 channel.  For a slower response, you may also contact Nick Murphy at
 <namurphy@cfa.harvard.edu> and Drew Leonard at
-<andy.j.leonard@gmail.com>.
+<andy.j.leonard@gmail.com>.  You may also [sign up for PlasmaPy's email
+list.](https://groups.google.com/forum/#!forum/plasmapy).
 
 ## Installation
 
