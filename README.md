@@ -21,7 +21,7 @@ this project are more thoroughly described in our [vision
 statement](http://docs.plasmapy.org/en/stable/about/vision_statement.html)
 and [this recent reference](https://doi.org/10.5281/zenodo.1238132).
 We are in the process of writing [online
-documentation](http://plasmapy.readthedocs.io/en/latest/).
+documentation](http://docs.plasmapy.org/en/latest/).
 
 We created a guide on [contributing to
 PlasmaPy](http://plasmapy.readthedocs.io/en/master/CONTRIBUTING.html)
