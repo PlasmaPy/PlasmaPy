@@ -23,6 +23,17 @@ _number_density_errmsg = (
 )
 
 
+#def _sort_elements_isotopes(atoms):
+
+
+#    particles = [Particle(atom) for atom in atoms]
+
+#    for particle in particles:
+#        to_be_sorted.append(
+#            [,]
+#        )
+
+
 class IonizationState:
     """
     Describe the ionization state distribution of a single element.
@@ -446,8 +457,6 @@ class IonizationState:
             raise ValueError("Need 0 <= tol <= 1.")
 
 
-
-
 class IonizationStates:
     """
     Describe the ionization state distributions of multiple elements.
@@ -507,14 +516,26 @@ class IonizationStates:
             tol=1e-15,
         ):
 
-        self.ionic_fractions = inputs
+        if isinstance(inputs, dict):
+            self.ionic_fractions = inputs
+        elif isinstance(inputs, (list, tuple) and T_e is not None):
+            self.elements = inputs
+        else:
+            raise TypeError(f"{inputs} are invalid inputs.")
 
         self._pars = collections.defaultdict(lambda: None)
         self.T_e = T_e
+        self.tol = tol
 
         self.abundances = abundances
         self.log_abundances = log_abundances
 
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        join_str = ", " if len(self.elements) <= 5 else ","
+        return f"<IonizationStates for: {join_str.join(self.elements)}>"
 
     @property
     def ionic_fractions(self):
@@ -554,14 +575,16 @@ class IonizationStates:
 
             # Sort the original keys by atomic number (and if needed, by mass number)
             sorted_tuples = sorted([(
-            particles[key].atomic_number,
-            particles[key].mass_number if particles[key].isotope else 0,
-            key) for key in original_keys])
+                particles[key].atomic_number,
+                particles[key].mass_number if particles[key].isotope else 0,
+                key) for key in original_keys])
             sorted_keys = [sorted_tuple[2] for sorted_tuple in sorted_tuples]
 
+            self._elements = []
             self._ionic_fractions = {}
             for key in sorted_keys:
                 new_key = particles[key].particle
+                self._elements.append(new_key)
                 if isinstance(inputs[key], u.Quantity):
                     try:
                         number_densities = inputs[key].to(u.m ** -3)
@@ -578,7 +601,6 @@ class IonizationStates:
                     except ValueError:
                         raise AtomicError(f"Inappropriate ionic fractions for {key}.")
 
-            print(self._ionic_fractions)
 
     def __getitem__(self, value):
         ...
@@ -596,17 +618,42 @@ class IonizationStates:
     def elements(self):
         return self._elements
 
+    @elements.setter
+    def elements(self, elems):
+        if hasattr(self, "_elements"):
+            raise AtomicError("Cannot change elements once they have been set.")
+        else:
+            self._elements = elems
+
     @property
     def abundances(self):
-        return self._pars['abundances']
+        if self._pars['abundances'] is not None:
+            return self._pars['abundances']
+        else:
+            raise AtomicError("No abundances are available.")
 
     @abundances.setter
-    def abundances(self, value):
-        self._pars['abundances'] = value
+    def abundances(self, abundances_dict):
+        """
+        Set the elemental (or isotopic) abundances.
+
+
+        """
+        if abundances_dict is None:
+            self._pars['abundances'] = None
+        elif not isinstance(abundances_dict, dict):
+            raise TypeError(
+                f"The abundances argument {abundances_dict} must be a dict with elements "
+                "or isotopes as keys and ")
+        else:
+            self._pars['abundances'] = abundances_dict
 
     @property
     def log_abundances(self):
-        return np.log10(self.abundances)
+        if self._pars['abundances'] is not None:
+            return np.log10(self.abundances)
+        else:
+            raise AtomicError("No abundances are available.")
 
     @log_abundances.setter
     def log_abundances(self, value):
