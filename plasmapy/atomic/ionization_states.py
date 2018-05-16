@@ -516,6 +516,11 @@ class IonizationStates:
             n_H=None,
             tol=1e-15,
         ):
+
+        self._pars = collections.defaultdict(lambda: None)
+        self.T_e = T_e
+        self.n_H = n_H
+
         self.tol = tol
 
         if isinstance(inputs, dict):
@@ -524,9 +529,6 @@ class IonizationStates:
             self.elements = inputs
         else:
             raise TypeError(f"{inputs} are invalid inputs.")
-
-        self._pars = collections.defaultdict(lambda: None)
-        self.T_e = T_e
 
         self.abundances = abundances
         self.log_abundances = log_abundances
@@ -589,7 +591,6 @@ class IonizationStates:
                 _particles.append(particles[key])
                 if new_key in _elements:
                     raise AtomicError("Repeated particles in IonizationStates.")
-
 
                 _elements.append(new_key)
                 if isinstance(inputs[key], u.Quantity):
@@ -738,16 +739,50 @@ class IonizationStates:
     @abundances.setter
     def abundances(self, abundances_dict: Optional[Dict]):
         """
-        Set the elemental (or isotopic) abundances.
+        Set the elemental (or isotopic) abundances.  The elements and
+        isotopes must be the same as or a superset of the elements whose
+        ionization states are being tracked.
         """
         if abundances_dict is None:
             self._pars['abundances'] = None
+
         elif not isinstance(abundances_dict, dict):
             raise TypeError(
                 f"The abundances argument {abundances_dict} must be a dict with elements "
                 "or isotopes as keys and ")
         else:
-            self._pars['abundances'] = abundances_dict
+            old_keys = abundances_dict.keys()
+            try:
+                new_keys_dict = {particle_symbol(old_key): old_key for old_key in old_keys}
+            except Exception:
+                raise AtomicError(
+                    "The key {repr(old_key)} in the abundances "
+                    "dictionary is not a valid element or isotope.")
+
+            new_elements = new_keys_dict.keys()
+
+            old_elements_set = set(self.elements)
+            new_elements_set = set(new_elements)
+
+            if old_elements_set > new_elements_set:
+                raise AtomicError(
+                    f"The abundances of the following particles are "
+                    f"missing: {old_elements_set - new_elements_set}")
+
+            new_abundances_dict = {}
+
+            for element in new_elements:
+                inputted_abundance = abundances_dict[new_keys_dict[element]]
+                try:
+                    inputted_abundance = float(inputted_abundance)
+                except Exception:
+                    raise TypeError
+
+                if inputted_abundance < 0:
+                    raise AtomicError(f"The abundance of {element} is negative.")
+                new_abundances_dict[element] = inputted_abundance
+
+            self._pars['abundances'] = new_abundances_dict
 
     @property
     def log_abundances(self):
@@ -812,5 +847,34 @@ class IonizationStates:
             self.ionic_fractions[particle] = self.ionic_fractions[particle] / tot
 
     @property
+    def number_densities(self):
+        ...
+
+    @property
     def n_e(self):
         raise NotImplementedError
+
+    @property
+    def n_H(self):
+        """
+        The number density of hydrogen neutrals and atoms of all
+        isotopes, if defined.
+        """
+        if 'H' not in self.elements or self._pars['n_H'] is None:
+            raise AtomicError("The number density of hydrogen is not ")
+        return self._pars['n_h']
+
+        if self._pars['n_H'] is not None:
+            return self._pars['n_H']
+
+    @n_H.setter
+    def n_H(self, n):
+        if n is None:
+            self._pars['n_H'] = n
+        else:
+            try:
+                self._pars = n.to(u.m ** -3)
+            except u.UnitConversionError:
+                raise AtomicError("Units cannot be converted to u.m**-3.")
+            except Exception:
+                raise AtomicError(f"{n} is not a valid number density.") from None
