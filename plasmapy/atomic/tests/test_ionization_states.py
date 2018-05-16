@@ -265,7 +265,7 @@ class Test_IonizationStates:
 
             'quantities': {
                 'inputs': {'H': np.array([0.1, 0.9]) * u.m ** -3},
-                'abundances': {'H': 1.0}
+                'abundances': {'H': 1.0, 'He': 0.1}
             },
 
             'just H': {
@@ -437,6 +437,15 @@ tests_for_exceptions = {
     'ion': IE({"inputs": {'H': [0.1, 0.9], 'He+': [0.0, 0.9, 0.1]}}, AtomicError),
     'repeat elements': IE({"inputs": {'H': [0.1, 0.9], "hydrogen": [0.2, 0.8]}}, AtomicError),
     'isotope of element': IE({"inputs": {'H': [0.1, 0.9], "D": [0.2, 0.8]}}, AtomicError),
+
+    'negative abundance': IE({
+        "inputs": {"H": [0.1, 0.9], "He": [0.4, 0.5, 0.1]}, "abundances": {"H": 1, "He": -0.1},
+    }, AtomicError),
+
+    'imaginary abundance': IE({
+        "inputs": {"H": [0.1, 0.9], "He": [0.4, 0.5, 0.1]}, "abundances": {"H": 1, "He": 0.1j},
+    }, TypeError),
+
 }
 
 @pytest.mark.parametrize('test', tests_for_exceptions.keys())
