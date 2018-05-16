@@ -11,6 +11,7 @@ from ...atomic import (
     Particle,
 )
 import collections
+import warnings
 
 test_cases = {
     'Li': {
@@ -253,8 +254,6 @@ class Test_IonizationStates:
     @classmethod
     def setup_class(cls):
 
-        H_number_densities = np.array([0.1, 0.9]) * u.m ** -3
-
         cls.tests = {
 
             'basic': {
@@ -265,19 +264,24 @@ class Test_IonizationStates:
             },
 
             'quantities': {
-                'inputs': {'H': H_number_densities},
+                'inputs': {'H': np.array([0.1, 0.9]) * u.m ** -3},
                 'abundances': {'H': 1.0}
             },
 
             'just H': {
                 'inputs': {'H': [0.1, 0.9]},
-            }
+            },
+
+            'H acceptable error': {
+                'inputs': {'H': [1.0, 1e-6]},
+                'tol': 1e-5,
+            },
 
         }
 
         cls.instances = {}
 
-    tests = ['basic', 'quantities', 'just H']
+    tests = ['basic', 'quantities', 'just H', 'H acceptable error']
 
     @pytest.mark.parametrize('test', tests)
     def test_instantiation(self, test):
@@ -353,23 +357,76 @@ class Test_IonizationStates:
         if errmsg:
             raise AtomicError(errmsg)
 
+    @pytest.mark.parametrize('test', tests)
+    def test_getitem_element(self, test):
+        """Test that __get_item__ returns an IonizationState instance"""
+        instance = self.instances[test]
 
-#    @pytest.mark.parametrize('key', ['H', 'helium'])
-#    def test_get_item(self, key):
+        for key in instance.elements:
 
-#        try:
-#            actual = self.instance[key]
-#        except Exception as exc:
-#            raise AtomicError(f"Unable to get {key} in IonizationStates instance.")
+            try:
+                expected = instance.ionic_fractions[key]
+            except Exception as exc:
+                raise AtomicError(
+                    f"Unable to get ionic_fractions for '{key}' in "
+                    f"test='{test}'.") from exc
 
-#        if not isinstance(actual, IonizationState):
-#            raise TypeError(f"Not getting an IonizationState instance for key='{key}'.")
+            try:
+                actual = instance[key].ionic_fractions
+            except Exception as exc:
+                raise AtomicError(f"Unable to get item {key} in test={test}.")
 
-#        expected = self.inputs[key]
+            try:
+                test_passed = np.allclose(expected, actual)
+            except Exception:
+                raise TypeError(
+                    f"For test='{test}' and key='{key}', cannot "
+                    f"compare expected ionic fractions of {expected} "
+                    f"with the resulting ionic fractions of {actual}.") from None
 
-#        assert np.allclose(actual.ionic_fractions, expected), (
-#            f"The resulting ionic fractions of {actual.ionic_fractions} "
-#            f"do not equal the expected values of {expected}")
+            if not test_passed:
+                raise AtomicError(
+                    f"For test='{test}' and key='{key}', the expected "
+                    f"ionic fractions of {expected} are not all equal "
+                    f"to the resulting ionic fractions of {actual}.")
+
+    @pytest.mark.parametrize('test', tests)
+    def test_getitem_element_intcharge(self, test):
+        instance = self.instances[test]
+        for particle in instance.elements:
+            for int_charge in range(0, atomic_number(particle) + 1):
+                actual = instance[particle, int_charge].ionic_fraction
+                expected = instance.ionic_fractions[particle][int_charge]
+                # We only need to check if one is broken
+                assert np.isclose(actual, expected), (
+                    f"Indexing broken for:\n"
+                    f"       test = '{test}'\n"
+                    f"   particle = '{particle}'")
+
+    @pytest.mark.parametrize('test', tests)
+    def test_normalization(self, test):
+        instance = self.instances[test]
+        instance.normalize()
+        not_normalized_elements = []
+        for element in instance.elements:
+            is_not_normalized = not np.isclose(
+                np.sum(instance.ionic_fractions[element]),
+                1,
+                atol=1e-19,
+                rtol=0,
+            )
+
+            if is_not_normalized:
+                not_normalized_elements.append(element)
+
+        if not_normalized_elements:
+            raise AtomicError(
+                f"In test='{test}', ionic fractions for the following "
+                f"particles were not normalized: "
+                f"{', '.join(not_normalized_elements)}."
+            )
+
+
 
 IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
 
@@ -378,6 +435,8 @@ tests_for_exceptions = {
     'not normalized': IE({"inputs": {'He': [0.4, 0.5, 0.0]}, "tol": 1e-9}, AtomicError),
     'negative ionfrac': IE({"inputs": {'H': [-0.1, 1.1]}}, AtomicError),
     'ion': IE({"inputs": {'H': [0.1, 0.9], 'He+': [0.0, 0.9, 0.1]}}, AtomicError),
+    'repeat elements': IE({"inputs": {'H': [0.1, 0.9], "hydrogen": [0.2, 0.8]}}, AtomicError),
+    'isotope of element': IE({"inputs": {'H': [0.1, 0.9], "D": [0.2, 0.8]}}, AtomicError),
 }
 
 @pytest.mark.parametrize('test', tests_for_exceptions.keys())
