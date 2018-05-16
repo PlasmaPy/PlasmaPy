@@ -2,11 +2,14 @@
 
 import numpy as np
 import astropy.units as u
-from typing import Union, Dict, List, Tuple
+from typing import Union, Dict, List, Tuple, Optional
 import collections
 
+from .symbols import particle_symbol
 from .particle_class import Particle
 from .particle_input import particle_input
+from .atomic import atomic_number, mass_number
+
 from ..utils import (
     AtomicError,
     check_quantity,
@@ -497,8 +500,6 @@ class IonizationStates:
     Exactly one of `abundances`, `log_abundances`, and
     `number_densities` must be specified.
 
-
-
     """
 
     @check_quantity({
@@ -515,6 +516,7 @@ class IonizationStates:
             n_H=None,
             tol=1e-15,
         ):
+        self.tol = tol
 
         if isinstance(inputs, dict):
             self.ionic_fractions = inputs
@@ -525,17 +527,16 @@ class IonizationStates:
 
         self._pars = collections.defaultdict(lambda: None)
         self.T_e = T_e
-        self.tol = tol
 
         self.abundances = abundances
         self.log_abundances = log_abundances
 
-    def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
+    def __str__(self) -> str:
         join_str = ", " if len(self.elements) <= 5 else ","
         return f"<IonizationStates for: {join_str.join(self.elements)}>"
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
     @property
     def ionic_fractions(self):
@@ -580,42 +581,144 @@ class IonizationStates:
                 key) for key in original_keys])
             sorted_keys = [sorted_tuple[2] for sorted_tuple in sorted_tuples]
 
-            self._elements = []
-            self._ionic_fractions = {}
+            _elements = []
+            _particles = []
+            new_ionic_fractions = {}
             for key in sorted_keys:
                 new_key = particles[key].particle
-                self._elements.append(new_key)
+                _particles.append(particles[key])
+                if new_key in _elements:
+                    raise AtomicError("Repeated particles in IonizationStates.")
+
+
+                _elements.append(new_key)
                 if isinstance(inputs[key], u.Quantity):
                     try:
                         number_densities = inputs[key].to(u.m ** -3)
                         n_elem = np.sum(number_densities)
-                        self._ionic_fractions[new_key] = np.array(number_densities / n_elem)
+                        new_ionic_fractions[new_key] = np.array(number_densities / n_elem)
                     except u.UnitConversionError as exc:
                         raise AtomicError("Units are not inverse volume.") from exc
                 elif isinstance(inputs[key], np.ndarray) and inputs[key].dtype.kind == 'f':
-                    self._ionic_fractions[particles[key].particle] = inputs[key]
+                    new_ionic_fractions[particles[key].particle] = inputs[key]
                 else:
                     try:
-                        self._ionic_fractions[particles[key].particle] = \
+                        new_ionic_fractions[particles[key].particle] = \
                             np.array(inputs[key], dtype=np.float)
                     except ValueError:
                         raise AtomicError(f"Inappropriate ionic fractions for {key}.")
 
+        for key in _elements:
+            if np.min(new_ionic_fractions[key]) < 0 or np.max(new_ionic_fractions[key]) > 1:
+                raise AtomicError(f"Ionic fractions for {key} are not between 0 and 1.")
+            if not np.isclose(np.sum(new_ionic_fractions[key]), 1, atol=self.tol, rtol=0):
+                raise AtomicError(f"Ionic fractions for {key} are not normalized to 1.")
 
-    def __getitem__(self, value):
-        ...
+        # Because this depends on _particles being sorted, we add in an
+        # easy check that atomic numbers do not decrease.
+        for i in range(1, len(_particles)):
+            if _particles[i - 1].element == _particles[i].element:
+                if not _particles[i - 1].isotope and _particles[i].isotope:
+                    raise AtomicError("Cannot have an element and isotopes of that element.")
+            elif _particles[i - 1].atomic_number > _particles[i].atomic_number:
+                raise AtomicError("_particles has not been sorted.")
+
+        self._particles = _particles
+        self._elements = _elements
+        self._ionic_fractions = new_ionic_fractions
+
+    def __getitem__(self, *values):
+
+        errmsg = f"Invalid indexing for IonizationStates instance: {values[0]}"
+
+        one_input = not isinstance(values[0], tuple)
+        two_inputs = len(values[0]) == 2
+
+        if not one_input and not two_inputs:
+            raise TypeError(errmsg)
+
+        try:
+            arg1 = values[0] if one_input else values[0][0]
+            int_charge = None if one_input else values[0][1]
+            particle = arg1 if arg1 in self.elements else particle_symbol(arg1)
+
+            if int_charge is None:
+                return IonizationState(
+                    particle=particle,
+                    ionic_fractions=self.ionic_fractions[particle],
+                    T_e=self._pars["T_e"],
+                    tol=self.tol,
+                )
+            else:
+                if not isinstance(int_charge, (int, np.integer)):
+                    raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
+                elif not 0 <= int_charge <= atomic_number(particle):
+                    raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
+                return State(
+                    integer_charge=int_charge,
+                    ionic_fraction=self.ionic_fractions[particle][int_charge],
+                    ionic_symbol=particle,
+                )
+        except Exception as exc:
+            raise AtomicError(errmsg) from exc
 
     def __iter__(self):
-        ...
+        self._element_index = 0
+        return self
 
     def __next__(self):
-        ...
+        if self._element_index < len(self.elements):
+            particle = self.elements[self._element_index]
+            result = IonizationState(
+                particle,
+                self.ionic_fractions[particle],
+                T_e=self.T_e,
+                tol=self.tol,
+            )
+            self._element_index += 1
+            return result
+        else:
+            del self._element_index
+            raise StopIteration
 
     def __eq__(self, other):
-        ...
+        """
+        Test that the ionic fractions are approximately equal to
+        another `~plasmapy.atomic.IonizationStates` instance.
+        """
+        # TODO: Should we check temperatures, densities, and other
+        # parameters too?
+
+        if not isinstance(other, IonizationStates):
+            raise TypeError(
+                "IonizationStates instance can only be compared with "
+                "other IonizationStates instances.")
+
+        if self.elements != other.elements:
+            raise AtomicError
+
+        tol = np.min([self.tol, other.tol])
+
+        for element in self.elements:
+
+            are_all_close = np.allclose(
+                self.ionic_fractions[element],
+                other.ionic_fractions[element],
+                atol=tol,
+                rtol=0,
+            )
+
+            if not are_all_close:
+                return False
+
+        return True
 
     @property
-    def elements(self):
+    def elements(self) -> List[str]:
+        """
+        Return a list of the elements whose ionization states are being
+        kept track of.
+        """
         return self._elements
 
     @elements.setter
@@ -626,18 +729,16 @@ class IonizationStates:
             self._elements = elems
 
     @property
-    def abundances(self):
+    def abundances(self) -> Dict:
         if self._pars['abundances'] is not None:
             return self._pars['abundances']
         else:
             raise AtomicError("No abundances are available.")
 
     @abundances.setter
-    def abundances(self, abundances_dict):
+    def abundances(self, abundances_dict: Optional[Dict]):
         """
         Set the elemental (or isotopic) abundances.
-
-
         """
         if abundances_dict is None:
             self._pars['abundances'] = None
@@ -665,6 +766,7 @@ class IonizationStates:
 
     @property
     def T_e(self):
+        """Return the electron temperature."""
         return self._pars['T_e']
 
     @T_e.setter
@@ -673,9 +775,13 @@ class IonizationStates:
             self._pars['T_e'] = None
         else:
             try:
-                self._pars['T_e'] = electron_temperature.to(u.K)
+                temp = electron_temperature.to(u.K, equivalencies=u.temperature_energy())
             except (AttributeError, u.UnitsError):
                 raise AtomicError("Invalid electron temperature.")
+            else:
+                if temp < 0 * u.K:
+                    raise AtomicError("The electron temperature cannot be negative.")
+                self._pars['T_e'] = temp
 
     def equilibrate(self, T_e=None):
         if T_e is not None:
@@ -699,3 +805,12 @@ class IonizationStates:
             self._tol = atol
         else:
             raise ValueError("Need 0 <= tol <= 1.")
+
+    def normalize(self):
+        for particle in self.elements:
+            tot = np.sum(self.ionic_fractions[particle])
+            self.ionic_fractions[particle] = self.ionic_fractions[particle] / tot
+
+    @property
+    def n_e(self):
+        raise NotImplementedError
