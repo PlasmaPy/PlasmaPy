@@ -29,8 +29,10 @@ quantity_support()
 # plasma at a temperature of 30 000 K:
 
 
-p_dens = Maxwellian_1D(v=1 * u.m / u.s, T=30000 * u.K,
-                       particle='e', V_drift=0 * u.m / u.s)
+p_dens = Maxwellian_1D(v=1 * u.m / u.s,
+                       T=30000 * u.K,
+                       particle='e',
+                       v_drift=0 * u.m / u.s)
 print(p_dens)
 
 ############################################################
@@ -58,8 +60,8 @@ plt.legend()
 # temperature:
 
 
-std = np.sqrt((Maxwellian_1D(v, T=T, particle='e') * v**2 * dv).sum())
-T_theo = (std**2 / k_B * m_e).to(u.K)
+std = np.sqrt((Maxwellian_1D(v, T=T, particle='e') * v ** 2 * dv).sum())
+T_theo = (std ** 2 / k_B * m_e).to(u.K)
 
 print('T from standard deviation:', T_theo)
 print('Initial T:', T)
