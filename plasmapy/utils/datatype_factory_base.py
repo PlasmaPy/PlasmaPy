@@ -33,7 +33,7 @@
 
 import inspect
 
-class BasicRegistrationFactory(object):
+class BasicRegistrationFactory:
     """
     Generalized registerable factory type.
 

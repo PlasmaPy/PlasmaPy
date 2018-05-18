@@ -1,8 +1,5 @@
-from collections import OrderedDict
 from abc import ABC
 
-# GenericPlasma subclass registry
-PLASMA_CLASSES = OrderedDict()
 
 class GenericPlasmaRegistrar(ABC):
     """
@@ -12,7 +9,8 @@ class GenericPlasmaRegistrar(ABC):
     when a subclass of `GenericPlasma` is defined. If it exists it will add that
     class to the registry.
     """
-    _registry = PLASMA_CLASSES
+    # GenericPlasma subclass registry
+    _registry = dict()
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
@@ -22,5 +20,4 @@ class GenericPlasmaRegistrar(ABC):
 
 class GenericPlasma(GenericPlasmaRegistrar):
     def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
+        pass
