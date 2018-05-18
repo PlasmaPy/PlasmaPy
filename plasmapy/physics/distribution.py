@@ -638,6 +638,8 @@ def Maxwellian_speed_2D(v,
     <Quantity 2.19930065e-12 s / m>
 
     """
+    if v_drift != 0:
+        raise NotImplementedError("Non-zero drift speed is work in progress.")
     if units == "units":
         # unit checks and conversions
         # checking velocity units
@@ -762,6 +764,8 @@ def Maxwellian_speed_3D(v,
     <Quantity 2.60235754e-18 s / m>
 
     """
+    if v_drift != 0:
+        raise NotImplementedError("Non-zero drift speed is work in progress.")
     if units == "units":
         # unit checks and conversions
         # checking velocity units

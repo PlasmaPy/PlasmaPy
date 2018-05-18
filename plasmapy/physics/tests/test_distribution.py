@@ -624,17 +624,18 @@ class Test_Maxwellian_speed_2D(object):
         """
         Testing vdrifts with values
         """
-        distFunc = Maxwellian_speed_2D(v=self.v,
-                                       T=self.T,
-                                       particle=self.particle,
-                                       v_drift=self.v_drift2,
-                                       units="units")
-        errStr = (f"Distribution function should be 0.0 "
-                  f"and not {distFunc}.")
-        assert np.isclose(distFunc.value,
-                          0.0,
-                          rtol=1e-8,
-                          atol=0.0), errStr
+        with pytest.raises(NotImplementedError):
+            distFunc = Maxwellian_speed_2D(v=self.v,
+                                           T=self.T,
+                                           particle=self.particle,
+                                           v_drift=self.v_drift2,
+                                           units="units")
+#        errStr = (f"Distribution function should be 0.0 "
+#                  f"and not {distFunc}.")
+#        assert np.isclose(distFunc.value,
+#                          0.0,
+#                          rtol=1e-8,
+#                          atol=0.0), errStr
 
 
 # test class for Maxwellian_velocity_3D function
@@ -933,17 +934,18 @@ class Test_Maxwellian_speed_3D(object):
         """
         Testing vdrifts with values
         """
-        distFunc = Maxwellian_speed_3D(v=self.v,
-                                       T=self.T,
-                                       particle=self.particle,
-                                       v_drift=self.v_drift2,
-                                       units="units")
-        errStr = (f"Distribution function should be 0.0 "
-                  f"and not {distFunc}.")
-        assert np.isclose(distFunc.value,
-                          0.0,
-                          rtol=1e-8,
-                          atol=0.0), errStr
+        with pytest.raises(NotImplementedError):
+            distFunc = Maxwellian_speed_3D(v=self.v,
+                                           T=self.T,
+                                           particle=self.particle,
+                                           v_drift=self.v_drift2,
+                                           units="units")
+#        errStr = (f"Distribution function should be 0.0 "
+#                  f"and not {distFunc}.")
+#        assert np.isclose(distFunc.value,
+#                          0.0,
+#                          rtol=1e-8,
+#                          atol=0.0), errStr
 
 
 # kappa
