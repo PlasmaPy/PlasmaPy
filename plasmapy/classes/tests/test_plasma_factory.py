@@ -15,6 +15,7 @@ class TestPlasma(object):
                                                     domain_y=np.linspace(0, 1, 3) * u.m,
                                                     domain_z=np.linspace(0, 1, 3) * u.m)
         assert isinstance(three_dimensional, plasmapy.classes.sources.Plasma3D)
+        assert isinstance(three_dimensional, plasmapy.classes.BasePlasma)
 
     def test_PlasmaBlob(self):
         # Input data for PlasmaBlob
@@ -27,3 +28,4 @@ class TestPlasma(object):
                                        Z=Z,
                                        particle=particle)
         assert isinstance(blob, plasmapy.classes.sources.PlasmaBlob)
+        assert isinstance(blob, plasmapy.classes.BasePlasma)

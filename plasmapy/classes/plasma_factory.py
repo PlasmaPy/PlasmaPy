@@ -8,8 +8,9 @@ from plasmapy.utils.datatype_factory_base import ValidationFunctionError
 
 class PlasmaFactory(BasicRegistrationFactory):
     """
-    Plasma factory class. Used to create a variety of Map objects. Valid plasma
-    structures are specified by registering them with the factory.
+    Plasma factory class. Used to create a variety of Plasma objects.
+    Valid plasma structures are specified by registering them with the
+    factory.
     """
     pass
 
