@@ -5,7 +5,7 @@ from astropy.modeling import models, fitting
 from scipy.optimize import curve_fit
 
 from plasmapy.classes import Species
-from plasmapy.classes.sources.plasma3d import Plasma3D
+from plasmapy.classes.sources import Plasma3D
 
 
 @pytest.fixture()

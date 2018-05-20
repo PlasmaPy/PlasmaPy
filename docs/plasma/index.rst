@@ -1,8 +1,8 @@
 .. _plasma:
 
-****************************************
-Plasma class (`plasmapy.classes.plasma`)
-****************************************
+***********************************************
+Plasma sub-classes (`plasmapy.classes.sources`)
+***********************************************
 
 Introduction
 ============
@@ -28,5 +28,5 @@ This feature is currently under heavy development.
 Reference/API
 =============
 
-.. automodapi:: plasmapy.classes.plasma
+.. automodapi:: plasmapy.classes.sources
    :no-heading:
