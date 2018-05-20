@@ -410,14 +410,14 @@ def _check_relativistic(V, funcname, betafrac=0.05):
         raise TypeError(errmsg)
 
     try:
-        V = V.to(u.m / u.s)
+        V_over_c = (V / c).to_value(u.dimensionless_unscaled)
     except Exception:
         raise u.UnitConversionError(errmsg)
 
     if np.any(np.isnan(V.value)):
         raise ValueError(f"V includes NaNs in {funcname}")
 
-    beta = np.max(np.abs((V / c).value))
+    beta = np.max(np.abs((V_over_c)))
 
     if beta == np.inf:
         raise RelativityError(f"{funcname} is yielding an infinite velocity.")
