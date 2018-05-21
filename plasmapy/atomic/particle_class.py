@@ -4,6 +4,7 @@ import numpy as np
 import warnings
 from typing import (Union, Set, Tuple, List, Optional)
 import collections
+import roman
 
 import astropy.units as u
 import astropy.constants as const
@@ -607,6 +608,35 @@ class Particle:
 
         """
         return self._attributes['ion']
+
+    @property
+    def roman_symbol(self) -> Optional[str]:
+        """
+        Return the spectral name of the particle (i.e. the ionic symbol in
+        Roman numeral notation).  If the particle is not an ion or neutral
+        atom, return `None`.
+
+        Examples
+        --------
+        >>> proton = Particle('proton')
+        >>> proton.roman_symbol
+        'H II'
+        >>> hydrogen_atom = Particle('H', Z=0)
+        >>> hydrogen_atom.roman_symbol
+        'H I'
+
+        """
+        if not self._attributes['element']:
+            return None
+        if self._attributes['integer charge'] is None:
+            raise ChargeError(f"The charge of particle {self} has not been specified.")
+        if self._attributes['integer charge'] < 0:
+            raise roman.OutOfRangeError('Cannot convert negative charges to Roman.')
+
+        element = self._attributes['element']
+        integer_charge = self._attributes['integer charge']
+        roman_charge = roman.toRoman(integer_charge + 1)
+        return element + ' ' + roman_charge
 
     @property
     def element_name(self) -> str:
