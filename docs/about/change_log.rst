@@ -8,6 +8,34 @@ This document lists the changes made during each release of PlasmaPy,
 including bug fixes and changes to the application programming interface
 (API).  The :ref:`release-notes` summarize the changes for each version.
 
+.. _change-log-0.1.1:
+
+Version 0.1.1
+-------------
+
+Version 0.1.1 is a minor bugfix release correcting a number of issues
+that arose during the release process and adding two minor convenience
+features.
+
+.. _change-log-0.1.0-new:
+
+New Features
+~~~~~~~~~~~~
+
+- Add `plasmapy.online_help()`
+- Add `plasmapy.__citation__` containing a BibTeX reference.
+
+.. _change-log-0.1.1-bugfix:
+
+Bug Fixes
+~~~~~~~~~
+
+- Bring back mistakenly removed Cython versions of plasma parameters.
+- Optimize `check_relativistic`.
+- Correct a failing import statement.
+- Fix a number of issues with the Maxwellian distribution in `physics
+.distribution`.
+
 .. _change-log-0.1.0:
 
 Version 0.1.0
@@ -121,4 +149,4 @@ Bug Fixes
   between different flavors.
 
 .. I went to a talk on neutrinos once, but it all just went in one ear
-   and out the other.
+and out the other.
