@@ -39,7 +39,7 @@ list](https://groups.google.com/forum/#!forum/plasmapy).
 
 ## Installation
 
-You can can PlasmaPy from pip via `pip install plasmapy`. To contribute
+You can get PlasmaPy from pip via `pip install plasmapy`. To contribute
 to the package, check out [our instructions on installing PlasmaPy from
 source](INSTALL.md).
 
