@@ -12,3 +12,4 @@ About PlasmaPy
    release_notes
    change_log
    vision_statement
+   citation
