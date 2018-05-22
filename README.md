@@ -35,7 +35,7 @@ on our
 channel.  For a slower response, you may also contact Nick Murphy at
 <namurphy@cfa.harvard.edu> and Drew Leonard at
 <andy.j.leonard@gmail.com>.  You may also [sign up for PlasmaPy's email
-list.](https://groups.google.com/forum/#!forum/plasmapy).
+list](https://groups.google.com/forum/#!forum/plasmapy).
 
 ## Installation
 
