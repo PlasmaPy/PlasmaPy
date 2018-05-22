@@ -17,7 +17,7 @@ Version 0.1.1 is a minor bugfix release correcting a number of issues
 that arose during the release process and adding two minor convenience
 features.
 
-.. _change-log-0.1.0-new:
+.. _change-log-0.1.1-new:
 
 New Features
 ~~~~~~~~~~~~
@@ -33,8 +33,7 @@ Bug Fixes
 - Bring back mistakenly removed Cython versions of plasma parameters.
 - Optimize `check_relativistic`.
 - Correct a failing import statement.
-- Fix a number of issues with the Maxwellian distribution in `physics
-.distribution`.
+- Fix a number of issues with the Maxwellian distribution in `physics.distribution`.
 
 .. _change-log-0.1.0:
 
@@ -149,4 +148,5 @@ Bug Fixes
   between different flavors.
 
 .. I went to a talk on neutrinos once, but it all just went in one ear
-and out the other.
+   and out the other.
+
