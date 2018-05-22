@@ -2,12 +2,14 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.a
+*.o
+*.so
 MANIFEST
 
-# C extensions
-*.so
-*.a
-plasmapy/_compiler.c
+# Ignore .c files by default to avoid including generated code. If you want to
+# add a non-generated .c extension, use `git add -f filename.c`.
+*.c
 
 # Distribution / packaging
 .Python
