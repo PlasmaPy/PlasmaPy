@@ -731,10 +731,9 @@ class IonizationStates:
 
     @property
     def abundances(self) -> Dict:
-        if self._pars['abundances'] is not None:
-            return self._pars['abundances']
-        else:
+        if self._pars['abundances'] is None:
             raise AtomicError("No abundances are available.")
+        return self._pars['abundances']
 
     @abundances.setter
     def abundances(self, abundances_dict: Optional[Dict]):
@@ -745,7 +744,6 @@ class IonizationStates:
         """
         if abundances_dict is None:
             self._pars['abundances'] = None
-
         elif not isinstance(abundances_dict, dict):
             raise TypeError(
                 f"The abundances argument {abundances_dict} must be a dict with elements "
@@ -787,17 +785,24 @@ class IonizationStates:
     @property
     def log_abundances(self):
         if self._pars['abundances'] is not None:
-            return np.log10(self.abundances)
+            log_abundances_dict = {}
+            for key in self.abundances.keys():
+                log_abundances_dict[key] = np.log10(self.abundances[key])
+            return log_abundances_dict
         else:
             raise AtomicError("No abundances are available.")
 
     @log_abundances.setter
     def log_abundances(self, value):
-        if value is None:
-            self._pars['abundances'] = None
-        else:
-            # Add checks
-            self._pars['abundances'] = 10 ** value
+
+        if value is not None:
+            try:
+                new_abundances_input = {}
+                for key in value.keys():
+                    new_abundances_input[key] = 10 ** value[key]
+                self.abundances = new_abundances_input
+            except Exception as exc:
+                raise AtomicError("Invalid log_abundances.")
 
     @property
     def T_e(self):
