@@ -862,7 +862,7 @@ class IonizationStates:
         """
         if 'H' not in self.elements or self._pars['n_H'] is None:
             raise AtomicError("The number density of hydrogen is not ")
-        return self._pars['n_h']
+        return self._pars['n_H']
 
         if self._pars['n_H'] is not None:
             return self._pars['n_H']
@@ -873,7 +873,7 @@ class IonizationStates:
             self._pars['n_H'] = n
         else:
             try:
-                self._pars = n.to(u.m ** -3)
+                self._pars['n_H'] = n.to(u.m ** -3)
             except u.UnitConversionError:
                 raise AtomicError("Units cannot be converted to u.m**-3.")
             except Exception:
