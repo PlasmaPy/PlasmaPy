@@ -337,7 +337,7 @@ class IonizationState:
             raise AtomicError
 
         self._n_elem = value.sum()
-        self._ionic_fractions = number_densities / self._n_elem
+        self._ionic_fractions = value / self._n_elem
 
     @property
     def T_e(self):
