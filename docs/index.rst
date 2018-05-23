@@ -11,7 +11,6 @@ PlasmaPy Documentation
    :align: right
    :scale: 80%
 
-
 `PlasmaPy <http://www.plasmapy.org/>`_ is an open source
 community-developed core `Python <https://www.python.org/>`_ 3.6+
 package for plasma physics in the early stages of development.
@@ -31,6 +30,7 @@ Getting Started
 * `PlasmaPy website
   <http://www.plasmapy.org/>`_
 * `Using astropy.units <http://docs.astropy.org/en/stable/units/>`_
+* :ref:`citation`
 
 .. _toplevel-user-documentation:
 
@@ -126,11 +126,14 @@ documentation.
 Project Details
 ***************
 
+.. The about PlasmaPy section has some important information that would
+   be helpful to have more readily accessible from the main doc index
+   page.
+
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    about/index
-
 
 .. _toplevel-index:
 

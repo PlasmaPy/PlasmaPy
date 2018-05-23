@@ -8,6 +8,8 @@ import scipy.integrate as spint
 from ...constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
 from ..distribution import (Maxwellian_1D,
                             Maxwellian_speed_1D,
+                            Maxwellian_velocity_2D,
+                            Maxwellian_speed_2D,
                             Maxwellian_velocity_3D,
                             Maxwellian_speed_3D,
                             kappa_velocity_1D,
@@ -24,9 +26,9 @@ class Test_Maxwellian_1D(object):
         """initializing parameters for tests """
         self.T_e = 30000 * u.K
         self.v = 1e5 * u.m / u.s
-        self.V_drift = 1000000 * u.m / u.s
-        self.V_drift2 = 0 * u.m / u.s
-        self.V_drift3 = 1e5 * u.m / u.s
+        self.v_drift = 1000000 * u.m / u.s
+        self.v_drift2 = 0 * u.m / u.s
+        self.v_drift3 = 1e5 * u.m / u.s
         self.start = -5000
         self.stop = - self.start
         self.dv = 10000 * u.m / u.s
@@ -47,7 +49,7 @@ class Test_Maxwellian_1D(object):
         max_index = Maxwellian_1D(self.v_vect,
                                   T=self.T_e,
                                   particle=self.particle,
-                                  V_drift=0 * u.m / u.s
+                                  v_drift=0 * u.m / u.s
                                   ).argmax()
         assert np.isclose(self.v_vect[max_index].value, 0.0)
 
@@ -59,9 +61,9 @@ class Test_Maxwellian_1D(object):
         max_index = Maxwellian_1D(self.v_vect,
                                   T=self.T_e,
                                   particle=self.particle,
-                                  V_drift=self.V_drift
+                                  v_drift=self.v_drift
                                   ).argmax()
-        assert np.isclose(self.v_vect[max_index].value, self.V_drift.value)
+        assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
 
     def test_norm(self):
         """
@@ -180,7 +182,7 @@ class Test_Maxwellian_1D(object):
         distFunc = Maxwellian_1D(v=self.v,
                                  T=self.T_e,
                                  particle=self.particle,
-                                 V_drift=self.V_drift2,
+                                 v_drift=self.v_drift2,
                                  units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -197,7 +199,7 @@ class Test_Maxwellian_1D(object):
         distFunc = Maxwellian_1D(v=self.v,
                                  T=self.T_e,
                                  particle=self.particle,
-                                 V_drift=self.V_drift3,
+                                 v_drift=self.v_drift3,
                                  units="units")
         errStr = (f"Distribution function should be {testVal} "
                   f"and not {distFunc}.")
@@ -219,9 +221,10 @@ class Test_Maxwellian_speed_1D(object):
                                  particle=self.particle,
                                  method="most_probable")
         self.v = 1e5 * u.m / u.s
-        self.V_drift = 0 * u.m / u.s
-        self.V_drift2 = 1e5 * u.m / u.s
-        self.distFuncTrue = 1.8057567503860518e-25
+        self.v_drift = 0 * u.m / u.s
+        self.v_drift2 = 1e5 * u.m / u.s
+        self.distFuncTrue = 1.72940389716217e-27
+        self.distFuncDrift = 2 * (self.vTh ** 2 * np.pi) ** (-1 / 2)
 
     def test_norm(self):
         """
@@ -313,7 +316,7 @@ class Test_Maxwellian_speed_1D(object):
         distFunc = Maxwellian_speed_1D(v=self.v,
                                        T=self.T,
                                        particle=self.particle,
-                                       V_drift=self.V_drift,
+                                       v_drift=self.v_drift,
                                        units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -329,14 +332,310 @@ class Test_Maxwellian_speed_1D(object):
         distFunc = Maxwellian_speed_1D(v=self.v,
                                        T=self.T,
                                        particle=self.particle,
-                                       V_drift=self.V_drift2,
+                                       v_drift=self.v_drift2,
                                        units="units")
         errStr = (f"Distribution function should be 0.0 "
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
-                          0.0,
+                          self.distFuncDrift.value,
                           rtol=1e-8,
                           atol=0.0), errStr
+
+
+# test class for Maxwellian_velocity_2D function
+class Test_Maxwellian_velocity_2D(object):
+    @classmethod
+    def setup_class(self):
+        """initializing parameters for tests """
+        self.T = 1.0 * u.eV
+        self.particle = 'H+'
+        # get thermal velocity and thermal velocity squared
+        self.vTh = thermal_speed(self.T,
+                                 particle=self.particle,
+                                 method="most_probable")
+        self.vx = 1e5 * u.m / u.s
+        self.vy = 1e5 * u.m / u.s
+        self.vx_drift = 0 * u.m / u.s
+        self.vy_drift = 0 * u.m / u.s
+        self.vx_drift2 = 1e5 * u.m / u.s
+        self.vy_drift2 = 1e5 * u.m / u.s
+        self.distFuncTrue = 7.477094598799251e-55
+
+    def test_norm(self):
+        """
+        Tests whether distribution function is normalized, and integrates to 1.
+        """
+        # converting vTh to unitless
+        vTh = self.vTh.si.value
+        # setting up integration from -10*vTh to 10*vTh, which is close to Inf
+        infApprox = (10 * vTh)
+        # integrating, this should be close to 1
+        integ = spint.dblquad(Maxwellian_velocity_2D,
+                              -infApprox,
+                              infApprox,
+                              lambda y: -infApprox,
+                              lambda y: infApprox,
+                              args=(self.T,
+                                    self.particle,
+                                    0,
+                                    0,
+                                    vTh,
+                                    "unitless"),
+                              epsabs=1e0,
+                              epsrel=1e0,
+                              )
+        # value returned from dblquad is (integral, error), we just need
+        # the 1st
+        integVal = integ[0]
+        exceptStr = ("Integral of distribution function should be 1 "
+                     f"and not {integVal}.")
+        assert np.isclose(integVal,
+                          1,
+                          rtol=1e-3,
+                          atol=0.0), exceptStr
+
+    def test_units_no_vTh(self):
+        """
+        Tests distribution function with units, but not passing vTh.
+        """
+        distFunc = Maxwellian_velocity_2D(vx=self.vx,
+                                          vy=self.vy,
+                                          T=self.T,
+                                          particle=self.particle,
+                                          units="units")
+        errStr = (f"Distribution function should be {self.distFuncTrue} "
+                  f"and not {distFunc}.")
+        assert np.isclose(distFunc.value,
+                          self.distFuncTrue,
+                          rtol=1e-8,
+                          atol=0.0), errStr
+
+    def test_units_vTh(self):
+        """
+        Tests distribution function with units and passing vTh.
+        """
+        distFunc = Maxwellian_velocity_2D(vx=self.vx,
+                                          vy=self.vy,
+                                          T=self.T,
+                                          vTh=self.vTh,
+                                          particle=self.particle,
+                                          units="units")
+        errStr = (f"Distribution function should be {self.distFuncTrue} "
+                  f"and not {distFunc}.")
+        assert np.isclose(distFunc.value,
+                          self.distFuncTrue,
+                          rtol=1e-8,
+                          atol=0.0), errStr
+
+    def test_unitless_no_vTh(self):
+        """
+        Tests distribution function without units, and not passing vTh.
+        """
+        # converting T to SI then stripping units
+        T = self.T.to(u.K, equivalencies=u.temperature_energy())
+        T = T.si.value
+        distFunc = Maxwellian_velocity_2D(vx=self.vx.si.value,
+                                          vy=self.vy.si.value,
+                                          T=T,
+                                          particle=self.particle,
+                                          units="unitless")
+        errStr = (f"Distribution function should be {self.distFuncTrue} "
+                  f"and not {distFunc}.")
+        assert np.isclose(distFunc,
+                          self.distFuncTrue,
+                          rtol=1e-8,
+                          atol=0.0), errStr
+
+    def test_unitless_vTh(self):
+        """
+        Tests distribution function without units, and with passing vTh.
+        """
+        # converting T to SI then stripping units
+        T = self.T.to(u.K, equivalencies=u.temperature_energy())
+        T = T.si.value
+        distFunc = Maxwellian_velocity_2D(vx=self.vx.si.value,
+                                          vy=self.vy.si.value,
+                                          T=T,
+                                          vTh=self.vTh.si.value,
+                                          particle=self.particle,
+                                          units="unitless")
+        errStr = (f"Distribution function should be {self.distFuncTrue} "
+                  f"and not {distFunc}.")
+        assert np.isclose(distFunc,
+                          self.distFuncTrue,
+                          rtol=1e-8,
+                          atol=0.0), errStr
+
+    def test_zero_drift_units(self):
+        """
+        Testing inputting drift equal to 0 with units. These should just
+        get passed and not have extra units applied to them.
+        """
+        distFunc = Maxwellian_velocity_2D(vx=self.vx,
+                                          vy=self.vy,
+                                          T=self.T,
+                                          particle=self.particle,
+                                          vx_drift=self.vx_drift,
+                                          vy_drift=self.vy_drift,
+                                          units="units")
+        errStr = (f"Distribution function should be {self.distFuncTrue} "
+                  f"and not {distFunc}.")
+        assert np.isclose(distFunc.value,
+                          self.distFuncTrue,
+                          rtol=1e-8,
+                          atol=0.0), errStr
+
+    def test_value_drift_units(self):
+        """
+        Testing vdrifts with values
+        """
+        testVal = ((self.vTh**2 * np.pi) ** (-1)).si.value
+        distFunc = Maxwellian_velocity_2D(vx=self.vx,
+                                          vy=self.vy,
+                                          T=self.T,
+                                          particle=self.particle,
+                                          vx_drift=self.vx_drift2,
+                                          vy_drift=self.vy_drift2,
+                                          units="units")
+        errStr = (f"Distribution function should be {testVal} "
+                  f"and not {distFunc}.")
+        assert np.isclose(distFunc.value,
+                          testVal,
+                          rtol=1e-8,
+                          atol=0.0), errStr
+
+
+# test class for Maxwellian_speed_2D function
+class Test_Maxwellian_speed_2D(object):
+    @classmethod
+    def setup_class(self):
+        """initializing parameters for tests """
+        self.T = 1.0 * u.eV
+        self.particle = 'H+'
+        # get thermal velocity and thermal velocity squared
+        self.vTh = thermal_speed(self.T,
+                                 particle=self.particle,
+                                 method="most_probable")
+        self.v = 1e5 * u.m / u.s
+        self.v_drift = 0 * u.m / u.s
+        self.v_drift2 = 1e5 * u.m / u.s
+        self.distFuncTrue = 2.2148166449365907e-26
+
+    def test_norm(self):
+        """
+        Tests whether distribution function is normalized, and integrates to 1.
+        """
+        # setting up integration from 0 to 10*vTh
+        xData1D = np.arange(0, 10.001, 0.001) * self.vTh
+        yData1D = Maxwellian_speed_2D(v=xData1D,
+                                      T=self.T,
+                                      particle=self.particle)
+        # integrating, this should be close to 1
+        integ = spint.trapz(y=yData1D, x=xData1D)
+        exceptStr = "Integral of distribution function should be 1."
+        assert np.isclose(integ.value, 1), exceptStr
+
+    def test_units_no_vTh(self):
+        """
+        Tests distribution function with units, but not passing vTh.
+        """
+        distFunc = Maxwellian_speed_2D(v=self.v,
+                                       T=self.T,
+                                       particle=self.particle,
+                                       units="units")
+        errStr = (f"Distribution function should be {self.distFuncTrue} "
+                  f"and not {distFunc}.")
+        assert np.isclose(distFunc.value,
+                          self.distFuncTrue,
+                          rtol=1e-8,
+                          atol=0.0), errStr
+
+    def test_units_vTh(self):
+        """
+        Tests distribution function with units and passing vTh.
+        """
+        distFunc = Maxwellian_speed_2D(v=self.v,
+                                       T=self.T,
+                                       vTh=self.vTh,
+                                       particle=self.particle,
+                                       units="units")
+        errStr = (f"Distribution function should be {self.distFuncTrue} "
+                  f"and not {distFunc}.")
+        assert np.isclose(distFunc.value,
+                          self.distFuncTrue,
+                          rtol=1e-8,
+                          atol=0.0), errStr
+
+    def test_unitless_no_vTh(self):
+        """
+        Tests distribution function without units, and not passing vTh.
+        """
+        # converting T to SI then stripping units
+        T = self.T.to(u.K, equivalencies=u.temperature_energy())
+        T = T.si.value
+        distFunc = Maxwellian_speed_2D(v=self.v.si.value,
+                                       T=T,
+                                       particle=self.particle,
+                                       units="unitless")
+        errStr = (f"Distribution function should be {self.distFuncTrue} "
+                  f"and not {distFunc}.")
+        assert np.isclose(distFunc,
+                          self.distFuncTrue,
+                          rtol=1e-8,
+                          atol=0.0), errStr
+
+    def test_unitless_vTh(self):
+        """
+        Tests distribution function without units, and with passing vTh.
+        """
+        # converting T to SI then stripping units
+        T = self.T.to(u.K, equivalencies=u.temperature_energy())
+        T = T.si.value
+        distFunc = Maxwellian_speed_2D(v=self.v.si.value,
+                                       T=T,
+                                       vTh=self.vTh.si.value,
+                                       particle=self.particle,
+                                       units="unitless")
+        errStr = (f"Distribution function should be {self.distFuncTrue} "
+                  f"and not {distFunc}.")
+        assert np.isclose(distFunc,
+                          self.distFuncTrue,
+                          rtol=1e-8,
+                          atol=0.0), errStr
+
+    def test_zero_drift_units(self):
+        """
+        Testing inputting drift equal to 0 with units. These should just
+        get passed and not have extra units applied to them.
+        """
+        distFunc = Maxwellian_speed_2D(v=self.v,
+                                       T=self.T,
+                                       particle=self.particle,
+                                       v_drift=self.v_drift,
+                                       units="units")
+        errStr = (f"Distribution function should be {self.distFuncTrue} "
+                  f"and not {distFunc}.")
+        assert np.isclose(distFunc.value,
+                          self.distFuncTrue,
+                          rtol=1e-8,
+                          atol=0.0), errStr
+
+    def test_value_drift_units(self):
+        """
+        Testing vdrifts with values
+        """
+        with pytest.raises(NotImplementedError):
+            distFunc = Maxwellian_speed_2D(v=self.v,
+                                           T=self.T,
+                                           particle=self.particle,
+                                           v_drift=self.v_drift2,
+                                           units="units")
+#        errStr = (f"Distribution function should be 0.0 "
+#                  f"and not {distFunc}.")
+#        assert np.isclose(distFunc.value,
+#                          0.0,
+#                          rtol=1e-8,
+#                          atol=0.0), errStr
 
 
 # test class for Maxwellian_velocity_3D function
@@ -353,13 +652,13 @@ class Test_Maxwellian_velocity_3D(object):
         self.vx = 1e5 * u.m / u.s
         self.vy = 1e5 * u.m / u.s
         self.vz = 1e5 * u.m / u.s
-        self.Vx_drift = 0 * u.m / u.s
-        self.Vy_drift = 0 * u.m / u.s
-        self.Vz_drift = 0 * u.m / u.s
-        self.Vx_drift2 = 1e5 * u.m / u.s
-        self.Vy_drift2 = 1e5 * u.m / u.s
-        self.Vz_drift2 = 1e5 * u.m / u.s
-        self.distFuncTrue = 2.7654607627522045e-37
+        self.vx_drift = 0 * u.m / u.s
+        self.vy_drift = 0 * u.m / u.s
+        self.vz_drift = 0 * u.m / u.s
+        self.vx_drift2 = 1e5 * u.m / u.s
+        self.vy_drift2 = 1e5 * u.m / u.s
+        self.vz_drift2 = 1e5 * u.m / u.s
+        self.distFuncTrue = 6.465458269306909e-82
 
     def test_norm(self):
         """
@@ -483,9 +782,9 @@ class Test_Maxwellian_velocity_3D(object):
                                           vz=self.vz,
                                           T=self.T,
                                           particle=self.particle,
-                                          Vx_drift=self.Vx_drift,
-                                          Vy_drift=self.Vy_drift,
-                                          Vz_drift=self.Vz_drift,
+                                          vx_drift=self.vx_drift,
+                                          vy_drift=self.vy_drift,
+                                          vz_drift=self.vz_drift,
                                           units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -498,15 +797,15 @@ class Test_Maxwellian_velocity_3D(object):
         """
         Testing vdrifts with values
         """
-        testVal = ((3 * self.vTh**2 * np.pi) ** (-3 / 2)).si.value
+        testVal = ((self.vTh**2 * np.pi) ** (-3 / 2)).si.value
         distFunc = Maxwellian_velocity_3D(vx=self.vx,
                                           vy=self.vy,
                                           vz=self.vz,
                                           T=self.T,
                                           particle=self.particle,
-                                          Vx_drift=self.Vx_drift2,
-                                          Vy_drift=self.Vy_drift2,
-                                          Vz_drift=self.Vz_drift2,
+                                          vx_drift=self.vx_drift2,
+                                          vy_drift=self.vy_drift2,
+                                          vz_drift=self.vz_drift2,
                                           units="units")
         errStr = (f"Distribution function should be {testVal} "
                   f"and not {distFunc}.")
@@ -527,60 +826,30 @@ class Test_Maxwellian_speed_3D(object):
         self.vTh = thermal_speed(self.T,
                                  particle=self.particle,
                                  method="most_probable")
-        self.vx = 1e5 * u.m / u.s
-        self.vy = 1e5 * u.m / u.s
-        self.vz = 1e5 * u.m / u.s
-        self.Vx_drift = 0 * u.m / u.s
-        self.Vy_drift = 0 * u.m / u.s
-        self.Vz_drift = 0 * u.m / u.s
-        self.Vx_drift2 = 1e5 * u.m / u.s
-        self.Vy_drift2 = 1e5 * u.m / u.s
-        self.Vz_drift2 = 1e5 * u.m / u.s
-        self.distFuncTrue = 5.888134761477178e-75
+        self.v = 1e5 * u.m / u.s
+        self.v_drift = 0 * u.m / u.s
+        self.v_drift2 = 1e5 * u.m / u.s
+        self.distFuncTrue = 1.8057567503860518e-25
 
     def test_norm(self):
         """
         Tests whether distribution function is normalized, and integrates to 1.
         """
-        # converting vTh to unitless
-        vTh = self.vTh.si.value
-        # setting up integration from 0 to 10*vTh, which is close to Inf
-        infApprox = (10 * vTh)
-        # integral should be close to 1
-        integ = spint.tplquad(Maxwellian_speed_3D,
-                              0,
-                              infApprox,
-                              lambda z: 0,
-                              lambda z: infApprox,
-                              lambda z, y: 0,
-                              lambda z, y: infApprox,
-                              args=(self.T,
-                                    self.particle,
-                                    0,
-                                    0,
-                                    0,
-                                    vTh,
-                                    "unitless"),
-                              epsabs=1e0,
-                              epsrel=1e0,
-                              )
-        # value returned from tplquad is (integral, error), we just need
-        # the 1st
-        integVal = integ[0]
-        exceptStr = ("Integral of distribution function should be 1 "
-                     f"and not {integVal}")
-        assert np.isclose(integVal,
-                          1,
-                          rtol=1e-3,
-                          atol=0.0), exceptStr
+        # setting up integration from 0 to 10*vTh
+        xData1D = np.arange(0, 10.01, 0.01) * self.vTh
+        yData1D = Maxwellian_speed_3D(v=xData1D,
+                                      T=self.T,
+                                      particle=self.particle)
+        # integrating, this should be close to 1
+        integ = spint.trapz(y=yData1D, x=xData1D)
+        exceptStr = "Integral of distribution function should be 1."
+        assert np.isclose(integ.value, 1), exceptStr
 
     def test_units_no_vTh(self):
         """
         Tests distribution function with units, but not passing vTh.
         """
-        distFunc = Maxwellian_speed_3D(vx=self.vx,
-                                       vy=self.vy,
-                                       vz=self.vz,
+        distFunc = Maxwellian_speed_3D(v=self.v,
                                        T=self.T,
                                        particle=self.particle,
                                        units="units")
@@ -595,9 +864,7 @@ class Test_Maxwellian_speed_3D(object):
         """
         Tests distribution function with units and passing vTh.
         """
-        distFunc = Maxwellian_speed_3D(vx=self.vx,
-                                       vy=self.vy,
-                                       vz=self.vz,
+        distFunc = Maxwellian_speed_3D(v=self.v,
                                        T=self.T,
                                        vTh=self.vTh,
                                        particle=self.particle,
@@ -616,9 +883,7 @@ class Test_Maxwellian_speed_3D(object):
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
-        distFunc = Maxwellian_speed_3D(vx=self.vx.si.value,
-                                       vy=self.vy.si.value,
-                                       vz=self.vz.si.value,
+        distFunc = Maxwellian_speed_3D(v=self.v.si.value,
                                        T=T,
                                        particle=self.particle,
                                        units="unitless")
@@ -636,9 +901,7 @@ class Test_Maxwellian_speed_3D(object):
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
-        distFunc = Maxwellian_speed_3D(vx=self.vx.si.value,
-                                       vy=self.vy.si.value,
-                                       vz=self.vz.si.value,
+        distFunc = Maxwellian_speed_3D(v=self.v.si.value,
                                        T=T,
                                        vTh=self.vTh.si.value,
                                        particle=self.particle,
@@ -655,14 +918,10 @@ class Test_Maxwellian_speed_3D(object):
         Testing inputting drift equal to 0 with units. These should just
         get passed and not have extra units applied to them.
         """
-        distFunc = Maxwellian_speed_3D(vx=self.vx,
-                                       vy=self.vy,
-                                       vz=self.vz,
+        distFunc = Maxwellian_speed_3D(v=self.v,
                                        T=self.T,
                                        particle=self.particle,
-                                       Vx_drift=self.Vx_drift,
-                                       Vy_drift=self.Vy_drift,
-                                       Vz_drift=self.Vz_drift,
+                                       v_drift=self.v_drift,
                                        units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -675,21 +934,18 @@ class Test_Maxwellian_speed_3D(object):
         """
         Testing vdrifts with values
         """
-        distFunc = Maxwellian_speed_3D(vx=self.vx,
-                                       vy=self.vy,
-                                       vz=self.vz,
-                                       T=self.T,
-                                       particle=self.particle,
-                                       Vx_drift=self.Vx_drift2,
-                                       Vy_drift=self.Vy_drift2,
-                                       Vz_drift=self.Vz_drift2,
-                                       units="units")
-        errStr = (f"Distribution function should be 0.0 "
-                  f"and not {distFunc}.")
-        assert np.isclose(distFunc.value,
-                          0.0,
-                          rtol=1e-8,
-                          atol=0.0), errStr
+        with pytest.raises(NotImplementedError):
+            distFunc = Maxwellian_speed_3D(v=self.v,
+                                           T=self.T,
+                                           particle=self.particle,
+                                           v_drift=self.v_drift2,
+                                           units="units")
+#        errStr = (f"Distribution function should be 0.0 "
+#                  f"and not {distFunc}.")
+#        assert np.isclose(distFunc.value,
+#                          0.0,
+#                          rtol=1e-8,
+#                          atol=0.0), errStr
 
 
 # kappa
@@ -703,9 +959,9 @@ class Test_kappa_velocity_1D(object):
         self.kappa = 4
         self.kappaInvalid = 3 / 2
         self.v = 1e5 * u.m / u.s
-        self.V_drift = 1000000 * u.m / u.s
-        self.V_drift2 = 0 * u.m / u.s
-        self.V_drift3 = 1e5 * u.m / u.s
+        self.v_drift = 1000000 * u.m / u.s
+        self.v_drift2 = 0 * u.m / u.s
+        self.v_drift3 = 1e5 * u.m / u.s
         self.start = -5000
         self.stop = -self.start
         self.dv = 10000 * u.m / u.s
@@ -739,7 +995,7 @@ class Test_kappa_velocity_1D(object):
                                       T=self.T_e,
                                       kappa=self.kappa,
                                       particle=self.particle,
-                                      V_drift=0 * u.m / u.s).argmax()
+                                      v_drift=0 * u.m / u.s).argmax()
         assert np.isclose(self.v_vect[max_index].value, 0.0)
 
     def test_max_drift(self):
@@ -751,8 +1007,8 @@ class Test_kappa_velocity_1D(object):
                                       T=self.T_e,
                                       kappa=self.kappa,
                                       particle=self.particle,
-                                      V_drift=self.V_drift).argmax()
-        assert np.isclose(self.v_vect[max_index].value, self.V_drift.value)
+                                      v_drift=self.v_drift).argmax()
+        assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
 
     def test_maxwellian_limit(self):
         """
@@ -884,7 +1140,7 @@ class Test_kappa_velocity_1D(object):
                                      T=self.T_e,
                                      kappa=self.kappa,
                                      particle=self.particle,
-                                     V_drift=self.V_drift2,
+                                     v_drift=self.v_drift2,
                                      units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -902,7 +1158,7 @@ class Test_kappa_velocity_1D(object):
                                      T=self.T_e,
                                      kappa=self.kappa,
                                      particle=self.particle,
-                                     V_drift=self.V_drift3,
+                                     v_drift=self.v_drift3,
                                      units="units")
         errStr = (f"Distribution function should be {testVal} "
                   f"and not {distFunc}.")
@@ -928,12 +1184,12 @@ class Test_kappa_velocity_3D(object):
         self.vx = 1e5 * u.m / u.s
         self.vy = 1e5 * u.m / u.s
         self.vz = 1e5 * u.m / u.s
-        self.Vx_drift = 0 * u.m / u.s
-        self.Vy_drift = 0 * u.m / u.s
-        self.Vz_drift = 0 * u.m / u.s
-        self.Vx_drift2 = 1e5 * u.m / u.s
-        self.Vy_drift2 = 1e5 * u.m / u.s
-        self.Vz_drift2 = 1e5 * u.m / u.s
+        self.vx_drift = 0 * u.m / u.s
+        self.vy_drift = 0 * u.m / u.s
+        self.vz_drift = 0 * u.m / u.s
+        self.vx_drift2 = 1e5 * u.m / u.s
+        self.vy_drift2 = 1e5 * u.m / u.s
+        self.vz_drift2 = 1e5 * u.m / u.s
         self.distFuncTrue = 1.1847914288918793e-22
 
     def test_invalid_kappa(self):
@@ -962,9 +1218,9 @@ class Test_kappa_velocity_3D(object):
 #                                          T=self.T,
 #                                          kappa=kappaLarge,
 #                                          particle=self.particle,
-#                                          Vx_drift=self.Vx_drift2,
-#                                          Vy_drift=self.Vy_drift2,
-#                                          Vz_drift=self.Vz_drift2,
+#                                          vx_drift=self.vx_drift2,
+#                                          vy_drift=self.vy_drift2,
+#                                          vz_drift=self.vz_drift2,
 #                                          units="units")
 #        Teff =  self.T
 #        maxwellDistFunc = Maxwellian_velocity_3D(vx=self.vx,
@@ -972,9 +1228,9 @@ class Test_kappa_velocity_3D(object):
 #                                                 vz=self.vz,
 #                                                 T=Teff,
 #                                                 particle=self.particle,
-#                                                 Vx_drift=self.Vx_drift2,
-#                                                 Vy_drift=self.Vy_drift2,
-#                                                 Vz_drift=self.Vz_drift2,
+#                                                 vx_drift=self.vx_drift2,
+#                                                 vy_drift=self.vy_drift2,
+#                                                 vz_drift=self.vz_drift2,
 #                                                 units="units")
 #        errStr = (f"Distribution function should be {maxwellDistFunc} "
 #                  f"and not {kappaDistFunc}.")
@@ -1113,9 +1369,9 @@ class Test_kappa_velocity_3D(object):
                                      T=self.T,
                                      kappa=self.kappa,
                                      particle=self.particle,
-                                     Vx_drift=self.Vx_drift,
-                                     Vy_drift=self.Vy_drift,
-                                     Vz_drift=self.Vz_drift,
+                                     vx_drift=self.vx_drift,
+                                     vy_drift=self.vy_drift,
+                                     vz_drift=self.vz_drift,
                                      units="units")
         errStr = (f"Distribution function should be {self.distFuncTrue} "
                   f"and not {distFunc}.")
@@ -1135,9 +1391,9 @@ class Test_kappa_velocity_3D(object):
                                      T=self.T,
                                      kappa=self.kappa,
                                      particle=self.particle,
-                                     Vx_drift=self.Vx_drift2,
-                                     Vy_drift=self.Vy_drift2,
-                                     Vz_drift=self.Vz_drift2,
+                                     vx_drift=self.vx_drift2,
+                                     vy_drift=self.vy_drift2,
+                                     vz_drift=self.vz_drift2,
                                      units="units")
         errStr = (f"Distribution function should be {testVal} "
                   f"and not {distFunc}.")

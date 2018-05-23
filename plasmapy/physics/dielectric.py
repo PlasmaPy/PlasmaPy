@@ -1,7 +1,7 @@
 """Functions to calculate plasma dielectric parameters"""
 
 from astropy import units as u
-import plasmapy.utils as utils
+from plasmapy import utils
 from plasmapy.physics import parameters
 from plasmapy.constants import (pi, m_e, c, mu0, e, eps0)
 
