@@ -14,8 +14,8 @@ import collections
 import warnings
 
 
-def has_attribute(attribute):
-    cases = [test for test in tests.keys() if attribute in tests[test_name].keys()]
+def has_attribute(attribute, tests_dict):
+    cases = [test for test in tests_dict.keys() if attribute in tests_dict[test].keys()]
     if cases:
         return cases
     else:
@@ -84,14 +84,30 @@ class Test_IonizationStates:
         particles = [Particle(input_key) for input_key in input_keys]
         expected_keys = [p.particle for p in particles]
         actual_keys = [key for key in self.instances[test].ionic_fractions.keys()]
-        elements = self.instances[test].elements
 
-        assert actual_keys == expected_keys == elements, (
+        assert actual_keys == expected_keys, (
             f"For test='{test}', the following should be equal:\n"
             f"  actual_keys = {actual_keys}\n"
-            f"expected_keys = {expected_keys}\n"
-            f"     elements = {elements}"
+            f"expected_keys = {expected_keys}"
         )
+
+    @pytest.mark.parametrize('test', has_attribute('abundances', tests))
+    def test_abundances(self, test):
+        try:
+            actual_abundances = self.instances[test].abundances
+        except Exception as exc:
+            raise AttributeError("Unable to access abundances.") from exc
+
+        elements = set(self.instances[test].elements)
+        elements_from_abundances = set(actual_abundances.keys())
+
+        if not elements.issubset(elements_from_abundances):
+            raise RunTestError(
+                f"The elements whose IonizationStates are being kept "
+                f"track of ({elements}) are not a subset of the "
+                f"elements whose abundances are being kept track of "
+                f"({elements_from_abundances}) for test {test}."
+            )
 
     @pytest.mark.parametrize('test', test_names2)
     def test_element_sorting(self, test):
