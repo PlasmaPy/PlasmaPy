@@ -1,4 +1,6 @@
 from plasmapy.classes import BasePlasma, GenericPlasma
+# Get rid of any previously registered classes.
+BasePlasma._registry = {}
 
 
 class NoDataSource(BasePlasma):
