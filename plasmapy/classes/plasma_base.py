@@ -50,6 +50,10 @@ class BasePlasma(ABC):
 
 
 class GenericPlasma(BasePlasma):
+    """
+    A Generic Plasma class. This class contains definitions for abstract
+    methods declared in the `~plasmapy.classes.plasma_base.BaseClass`.
+    """
     def __init__(self, **kwargs):
         pass
 
