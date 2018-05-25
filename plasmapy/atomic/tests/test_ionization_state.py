@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 import astropy.units as u
-from ..ionization_states import IonizationState, IonizationStates
+from ..ionization_states import IonizationState
 from ...utils import AtomicError, RunTestError, InvalidIsotopeError, run_test
 from ...atomic import (
     atomic_number,
@@ -43,6 +43,7 @@ test_cases = {
         'particle': 'deuterium',
         'ionic_fractions': [0.7, 0.3],
         'tol': 1e-15,
+        'n_e': 3e14 * u.m ** -3,
     },
 
     'He': {
@@ -50,6 +51,11 @@ test_cases = {
         'ionic_fractions': [0.5, 0.3, 0.2],
         'n_elem': 1e20 * u.m ** -3,
     },
+
+    'number densities': {
+        'particle': 'T',
+        'ionic_fractions': np.array([1e4, 1]) * u.cm ** -3,
+    }
 
 }
 
@@ -61,20 +67,33 @@ class Test_IonizationState:
 
     @classmethod
     def setup_class(cls):
-        "Set up the class and test instantantiation."
         cls.instances = {}
-        for test_name in test_names:
-            try:
-                cls.instances[test_name] = IonizationState(**test_cases[test_name])
-            except Exception as exc:
-                raise RunTestError(
-                    f"Unable to create IonizationState instance for "
-                    f"test case {test_name}.")
 
     @pytest.mark.parametrize('test_name', test_names)
+    def test_instantiation(self, test_name):
+        try:
+            self.instances[test_name] = IonizationState(**test_cases[test_name])
+        except Exception as exc:
+            raise RunTestError(
+                f"Unable to create IonizationState instance for "
+                f"test case {test_name}.")
+
+    @pytest.mark.parametrize(
+        'test_name',
+        [name for name in test_names if 'ionic_fractions' in test_cases[name].keys()],
+    )
     def test_ionic_fractions(self, test_name):
         instance = self.instances[test_name]
-        assert np.allclose(instance.ionic_fractions, test_cases[test_name]['ionic_fractions'])
+
+        inputted_fractions = test_cases[test_name]['ionic_fractions']
+        if isinstance(inputted_fractions, u.Quantity):
+            inputted_fractions = inputted_fractions.to(u.m ** -3)
+            inputted_fractions = (inputted_fractions / inputted_fractions.sum()).value
+
+        try:
+            assert np.allclose(instance.ionic_fractions, inputted_fractions)
+        except:
+            raise RunTestError(f"Mismatch in ionic fractions for test {test_name}")
 
     def test_equality1(self):
         assert self.instances['Li'] == self.instances['Li'], \
@@ -134,6 +153,9 @@ class Test_IonizationState:
                 f"which are {expected_charges}.")
 
         expected_fracs = test_cases[test_name]['ionic_fractions']
+        if isinstance(expected_fracs, u.Quantity):
+            expected_fracs = (expected_fracs / expected_fracs.sum()).value
+
         if not np.allclose(ionic_fractions, expected_fracs):
             errors.append(
                 f"The resulting ionic fractions are {ionic_fractions}, "
@@ -259,6 +281,14 @@ IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
 tests_for_exceptions = {
     'too few nstates': IE({'particle': 'H', 'ionic_fractions': [1.0]}, AtomicError),
     'too many nstates': IE({'particle': 'H', 'ionic_fractions': [1, 0, 0, 0]}, AtomicError),
+
+    'redundant ndens 1': IE({
+        'particle': 'H', 'ionic_fractions': np.array([3, 4]) * u.m ** -3, 'n_e': 4 * u.m ** -3,
+    }, AtomicError),
+
+    'redundant ndens 2': IE({
+        'particle': 'H', 'ionic_fractions': np.array([3, 4]) * u.m ** -3, 'n_elem': 7 * u.m ** -3,
+    }, AtomicError),
 }
 
 
