@@ -73,7 +73,6 @@ class Test_IonizationState:
 
     @pytest.mark.parametrize('test_name', test_names)
     def test_ionic_fractions(self, test_name):
-        raise
         instance = self.instances[test_name]
         assert np.allclose(instance.ionic_fractions, test_cases[test_name]['ionic_fractions'])
 

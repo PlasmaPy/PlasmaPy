@@ -58,6 +58,19 @@ tests = {
         'n_H': 1e15 * u.m ** -3,
     },
 
+    'log_abundances': {
+        'inputs': {'H': [1, 0], 'He': [1, 0, 0]},
+        'log_abundances': {'H': 1, 'He': 0},
+        'n_H': 1e9 * u.cm ** -3,
+    },
+
+    'elements & isotopes': {
+        'inputs': {'H': [0.9, 0.1], 'He-3': [0.3, 0.7, 0.0], 'He-4': [0.29, 0.69, 0.02]},
+        'abundances': {'H': 1, 'He-3': 1e-7, 'He-4': 0.1},
+        'n_H': 1e12 * u.m ** -3,
+    }
+
+
 }
 
 test_names2 = tests.keys()
@@ -230,6 +243,31 @@ class Test_IonizationStates:
                 f"{', '.join(not_normalized_elements)}."
             )
 
+
+def test_IonizationStates_abundances():
+    """Test that abundances and log_abundances are consistent."""
+
+    inputs = {'H': [1, 0], 'He': [1, 0, 0]}
+    abundances = {'H': 1.0, 'He': 0.1}
+    elements = abundances.keys()
+
+
+    log_abundances = {element: np.log10(abundances[element]) for element in elements}
+
+    instance_nolog = IonizationStates(inputs, abundances=abundances)
+    instance_log = IonizationStates(inputs, log_abundances=log_abundances)
+
+    for element in elements:
+        assert np.allclose(
+            instance_log.abundances[element],
+            instance_nolog.abundances[element],
+        ), 'abundances not consistent.'
+
+    for element in elements:
+        assert np.allclose(
+            instance_log.log_abundances[element],
+            instance_nolog.log_abundances[element],
+        ), 'log_abundances not consistent.'
 
 
 IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
