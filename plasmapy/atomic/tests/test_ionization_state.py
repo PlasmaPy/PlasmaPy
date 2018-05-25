@@ -86,13 +86,17 @@ class Test_IonizationState:
              "same to within the tolerance are not testing as equal.")
 
     def test_inequality(self):
+        """
+        Test that instances with different ionic fractions are not equal
+        to each other.
+        """
         assert self.instances['Li ground state'] != self.instances['Li'], \
             "Different IonizationState instances are equal."
 
     def test_equality_error(self):
         """
         Test that comparisons of IonizationState instances for
-        different elements
+        different elements fail.
         """
         with pytest.raises(AtomicError):
             self.instances['Li'] == self.instances['H']
@@ -248,3 +252,24 @@ class Test_IonizationState:
             np.sum(n_elem * ionic_fractions * np.array([0, 1, 2])),
             rtol=1e-12, atol=0 * u.m ** -3), \
             "n_e is not the expected value."
+
+
+IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
+
+tests_for_exceptions = {
+    'too few nstates': IE({'particle': 'H', 'ionic_fractions': [1.0]}, AtomicError),
+    'too many nstates': IE({'particle': 'H', 'ionic_fractions': [1, 0, 0, 0]}, AtomicError),
+}
+
+
+@pytest.mark.parametrize('test', tests_for_exceptions.keys())
+def test_execeptions(test):
+    """
+    Test that appropriate exceptions are raised for inappropriate inputs
+    to IonizationStates.
+    """
+    run_test(
+        IonizationState,
+        kwargs=tests_for_exceptions[test].inputs,
+        expected_outcome=tests_for_exceptions[test].expected_exception,
+    )

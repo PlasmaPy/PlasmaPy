@@ -108,7 +108,7 @@ class IonizationState:
         except Exception as exc:
             raise AtomicError(
                 f"Unable to create IonizationState instance for "
-                f"{particle.particle}.")
+                f"{particle.particle}.") from exc
 
     def __getitem__(self, value):
         """Return the ionic fraction(s)."""
@@ -249,6 +249,13 @@ class IonizationState:
                     raise AtomicError(
                         f"The sum of the ionic fractions of {self.element} "
                         f"equals {total}, which is not approximately one.")
+                if not len(fractions) == self.atomic_number + 1:
+                    raise AtomicError(
+                        f"len(fractions) equals {len(fractions)}, but "
+                        f"should equal {self.atomic_number + 1} which "
+                        f"is the atomic number of {self.element} + 1."
+                    )
+
 
                 self._ionic_fractions = fractions
 
@@ -310,7 +317,7 @@ class IonizationState:
             try:
                 self._n_elem = value.to(u.m ** -3)
             except (AttributeError, u.UnitConversionError):
-                raise AtomicError(_number_density_errmsg)
+                raise AtomicError(_number_density_errmsg) from None
 
     @property
     def number_densities(self):
@@ -344,7 +351,6 @@ class IonizationState:
             raise AtomicError("No electron temperature has been specified.")
         return self._T_e.to(u.K, equivalencies=u.temperature_energy())
 
-
     @T_e.setter
     def T_e(self, value):
 
@@ -354,7 +360,7 @@ class IonizationState:
             try:
                 value = value.to(u.K, equivalencies=u.temperature_energy())
             except (AttributeError, u.UnitsError):
-                raise AtomicError("Invalid temperature.")
+                raise AtomicError("Invalid temperature.") from None
             self._T_e = value
 
     @property
