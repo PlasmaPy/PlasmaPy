@@ -12,7 +12,12 @@ from .particle_input import particle_input
 from .symbols import particle_symbol
 from ..utils import (AtomicError, ChargeError, InvalidParticleError, check_quantity)
 
-State = collections.namedtuple('State', ['integer_charge', 'ionic_fraction', 'ionic_symbol'])
+State = collections.namedtuple(
+    'State', [
+        'integer_charge',
+        'ionic_fraction',
+        'ionic_symbol',
+    ])
 
 _number_density_errmsg = (
     "Number densities must be Quantity objects with units of inverse "
@@ -36,9 +41,9 @@ class IonizationState:
         The ionization fractions of an element, where the indices
         correspond to integer charge.  This argument should contain the
         atomic number plus one items, and must sum to one within an
-        absolute tolerance of `tol`.  Alternatively, this argument may
-        be a `~astropy.units.Quantity` that represents the number
-        densities of each neutral/ion.
+        absolute tolerance of `tol` if dimensionless.  Alternatively,
+        this argument may be a `~astropy.units.Quantity` that represents
+        the number densities of each neutral/ion.
 
     T_e: ~astropy.units.Quantity, keyword-only, optional
         The electron temperature or thermal energy per particle.
@@ -62,6 +67,16 @@ class IonizationState:
 
     ~plasmapy.utils.InvalidParticleError
         If the particle is invalid.
+
+    Examples
+    --------
+    >>> states = IonizationState('H', [0.6, 0.4], n_elem=1*u.cm**-3, T_e=11000*u.K)
+    >>> states.ionic_fractions
+    array([0.6, 0.4])
+    >>> states.n_e  # electron number density
+    <Quantity 400000. 1 / m3>
+    >>> states.n_elem  # element number density
+    <Quantity 1000000. 1 / m3>
 
     Notes
     -----
@@ -110,15 +125,12 @@ class IonizationState:
                 f"Unable to create IonizationState instance for "
                 f"{particle.particle}.") from exc
 
-    def __getitem__(self, value):
+    def __getitem__(self, value) -> State:
         """Return the ionic fraction(s)."""
         if isinstance(value, slice):
-            result = State(
-                np.arange(value.start, value.stop, value.step),
-                self.ionic_fractions[value.start:value.stop:value.step],
-                self.ionic_symbols[value.start:value.stop:value.step],
-            )
-        elif isinstance(value, (int, np.integer)) and 0 <= value <= self.atomic_number:
+            raise TypeError("IonizationState instances cannot be sliced.")
+
+        if isinstance(value, (int, np.integer)) and 0 <= value <= self.atomic_number:
             result = State(value, self.ionic_fractions[value], self.ionic_symbols[value])
         else:
             if not isinstance(value, Particle):
@@ -235,7 +247,7 @@ class IonizationState:
                 raise AtomicError("Ionic fractions cannot be negative.")
 
             if isinstance(fractions, u.Quantity):
-                if self._n_e or self._n_elem:
+                if self._n_e is not None or self._n_elem is not None:
                     raise AtomicError(
                         "The ionization state may be set using number "
                         "densities for each ion only if neither of the "
@@ -255,7 +267,6 @@ class IonizationState:
                         f"should equal {self.atomic_number + 1} which "
                         f"is the atomic number of {self.element} + 1."
                     )
-
 
                 self._ionic_fractions = fractions
 
@@ -330,7 +341,7 @@ class IonizationState:
 
     @number_densities.setter
     def number_densities(self, value):
-        if self._n_elem or self._n_e:
+        if self._n_elem is not None or self._n_e is not None:
             raise AtomicError
         if not isinstance(value, u.Quantity):
             raise AtomicError
@@ -347,7 +358,7 @@ class IonizationState:
     @property
     def T_e(self):
         """Return the electron temperature."""
-        if not self._T_e:
+        if self._T_e is None:
             raise AtomicError("No electron temperature has been specified.")
         return self._T_e.to(u.K, equivalencies=u.temperature_energy())
 
@@ -422,6 +433,20 @@ class IonizationState:
     def integer_charges(self) -> np.ndarray:
         """Return an array with the integer charges."""
         return np.arange(0, self.atomic_number + 1, dtype=np.int)
+
+    @property
+    def Z_mean(self) -> np.float64:
+        """Return the mean integer charge"""
+        if np.nan in self.ionic_fractions:
+            raise ChargeError(
+                "Z_mean cannot be found because no ionic fraction "
+                f"information is available for {self.particle}.")
+        return np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1))
+
+    @property
+    def Z_rms(self) -> np.float64:
+        return np.sqrt(np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1) ** 2))
+
 
     def is_normalized(self, tol=None) -> bool:
         """
@@ -874,9 +899,6 @@ class IonizationStates:
         if 'H' not in self.elements or self._pars['n_H'] is None:
             raise AtomicError("The number density of hydrogen is not ")
         return self._pars['n_H']
-
-        if self._pars['n_H'] is not None:
-            return self._pars['n_H']
 
     @n_H.setter
     def n_H(self, n):
