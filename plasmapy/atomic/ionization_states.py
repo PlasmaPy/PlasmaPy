@@ -1,22 +1,16 @@
 """Classes for storing ionization state data."""
 
-import numpy as np
-import astropy.units as u
-from typing import Union, Dict, List, Tuple, Optional
-import collections
+from typing import Dict, List, Optional, Tuple, Union
 
-from .symbols import particle_symbol
+import astropy.units as u
+import collections
+import numpy as np
+
+from .atomic import atomic_number
 from .particle_class import Particle
 from .particle_input import particle_input
-from .atomic import atomic_number, mass_number
-
-from ..utils import (
-    AtomicError,
-    check_quantity,
-    _check_quantity,
-    InvalidParticleError,
-    ChargeError,
-)
+from .symbols import particle_symbol
+from ..utils import (AtomicError, ChargeError, InvalidParticleError, check_quantity)
 
 State = collections.namedtuple('State', ['integer_charge', 'ionic_fraction', 'ionic_symbol'])
 
@@ -28,7 +22,8 @@ _number_density_errmsg = (
 
 class IonizationState:
     """
-    Describe the ionization state distribution of a single element.
+    Representation of the ionization state distribution of a single
+    element or isotope.
 
     Parameters
     ----------
@@ -52,7 +47,8 @@ class IonizationState:
         The electron number density.
 
     n_elem: ~astropy.units.Quantity, keyword-only, optional
-        The number density of ions plus atoms.
+        The number density of the element, including neutrals and all
+        ions.
 
     tol: float or int, keyword-only, optional
         The absolute tolerance used by `~numpy.isclose` when testing
@@ -73,6 +69,16 @@ class IonizationState:
 
     """
 
+    # TODO: Allow this class to (optionally?) handle negatively charged
+    # ions.  There are instances where singly negatively charged ions
+    # are important in astrophysical plasmas, such as H- in the
+    # atmospheres of relatively cool stars.  There may be some rare
+    # situations where doubly negatively charged ions show up too,
+    # though triply negatively charged ions are very unlikely.
+
+    # TODO: Add in functionality to find equilibrium ionization states.
+    # How much data will this require?
+
     @check_quantity({
         "T_e": {"units": u.K, "none_shall_pass": True},
         "n_e": {"units": u.m ** -3, "none_shall_pass": True},
@@ -89,15 +95,14 @@ class IonizationState:
                  tol: Union[float, int] = 1e-15):
         """Initialize a `~plasmapy.atomic.IonizationState` instance."""
 
+        self._particle = particle
+
         try:
-            self._n_e = None
-            self._n_elem = None
             self.tol = tol
             self.T_e = T_e
             self.n_elem = n_elem
             self.n_e = n_e
             self.ionic_fractions = ionic_fractions
-            self._particle = particle  # Store Particle class instance.
             if self._ionic_fractions is None and self.T_e is not None:
                 self.equilibrate()
         except Exception as exc:
@@ -214,34 +219,38 @@ class IonizationState:
         Set the ionic fractions, while checking that the new values are
         valid and normalized to one.
         """
-        try:
-            if not isinstance(fractions, np.ndarray) or 'float' not in str(fractions.dtype):
-                fractions = np.array(fractions, dtype=np.float)
-        except Exception as exc:
-            raise AtomicError(
-                f"Unable to set ionic fractions of {self.element} "
-                f"to {fractions}.") from exc
 
-        if np.min(fractions) < 0:
-            raise AtomicError("Ionic fractions cannot be negative.")
-
-        if isinstance(fractions, u.Quantity):
-            if self._n_e or self._n_elem:
-                raise AtomicError(
-                    "The ionization state may be set using number "
-                    "densities for each ion only if neither of the "
-                    "electron density and element density has already "
-                    "been set.")
-            self.number_densities = fractions
+        if fractions is None:
+            self._ionic_fractions = np.full(self.atomic_number + 1, np.nan, dtype=np.float64)
         else:
-
-            total = np.sum(fractions)
-            if not np.isclose(total, 1, atol=self.tol, rtol=0):
+            try:
+                if not isinstance(fractions, np.ndarray) or 'float' not in str(fractions.dtype):
+                    fractions = np.array(fractions, dtype=np.float)
+            except Exception as exc:
                 raise AtomicError(
-                    f"The sum of the ionic fractions of {self.element} "
-                    f"equals {total}, which is not approximately one.")
+                    f"Unable to set ionic fractions of {self.element} "
+                    f"to {fractions}.") from exc
 
-            self._ionic_fractions = fractions
+            if np.min(fractions) < 0:
+                raise AtomicError("Ionic fractions cannot be negative.")
+
+            if isinstance(fractions, u.Quantity):
+                if self._n_e or self._n_elem:
+                    raise AtomicError(
+                        "The ionization state may be set using number "
+                        "densities for each ion only if neither of the "
+                        "electron density and element density has "
+                        "already been set.")
+                self.number_densities = fractions
+            else:
+
+                total = np.sum(fractions)
+                if not np.isclose(total, 1, atol=self.tol, rtol=0):
+                    raise AtomicError(
+                        f"The sum of the ionic fractions of {self.element} "
+                        f"equals {total}, which is not approximately one.")
+
+                self._ionic_fractions = fractions
 
     @property
     def n_e(self):
