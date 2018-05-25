@@ -26,17 +26,6 @@ _number_density_errmsg = (
 )
 
 
-#def _sort_elements_isotopes(atoms):
-
-
-#    particles = [Particle(atom) for atom in atoms]
-
-#    for particle in particles:
-#        to_be_sorted.append(
-#            [,]
-#        )
-
-
 class IonizationState:
     """
     Describe the ionization state distribution of a single element.
@@ -555,7 +544,7 @@ class IonizationStates:
                 raise TypeError(
                     "Ionic fraction information may only be inputted "
                     "as a Quantity object if all ionic fractions are "
-                    "Quantity objects with units of inverse volume.")
+                    "Quantity arrays with units of inverse volume.")
 
             # Create a dictionary of Particle instances
             particles = dict()
@@ -576,12 +565,14 @@ class IonizationStates:
                     f"{key} is not an element or isotope without "
                     f"charge information.")
 
-            # Sort the original keys by atomic number (and if needed, by mass number)
-            sorted_tuples = sorted([(
-                particles[key].atomic_number,
-                particles[key].mass_number if particles[key].isotope else 0,
-                key) for key in original_keys])
-            sorted_keys = [sorted_tuple[2] for sorted_tuple in sorted_tuples]
+            # We are sorting the elements/isotopes by atomic number and
+            # mass number since we will often want to plot and analyze
+            # things and this is the most sensible order.
+
+            sorted_keys = sorted(original_keys, key=lambda k: (
+                particles[k].atomic_number,
+                particles[k].mass_number if particles[k].isotope else 0,
+            ))
 
             _elements = []
             _particles = []
