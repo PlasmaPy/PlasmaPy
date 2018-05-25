@@ -178,17 +178,9 @@ class Test_IonizationState:
             errmsg = " ".join(errors)
             raise AtomicError(errmsg)
 
-    def test_slicing1(self):
-        assert np.allclose(
-            self.instances['Li'][1:3].ionic_fraction,
-            test_cases['Li']['ionic_fractions'][1:3]
-        )
-
-    def test_slicing2(self):
-        assert np.allclose(
-            self.instances['Li'][1:4:2].ionic_fraction,
-            test_cases['Li']['ionic_fractions'][1:4:2]
-        )
+    def test_slicing_error(self):
+        with pytest.raises(TypeError):
+            self.instances['Li'][1:3]
 
     @pytest.mark.parametrize('index', [-1, 4, 'Li'])
     def test_indexing_error(self, index):
