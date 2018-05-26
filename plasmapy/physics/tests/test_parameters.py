@@ -51,6 +51,7 @@ mu = m_p.to(u.u).value
 
 V = 25.2 * u.m / u.s
 V_arr = np.array([25, 50]) * u.m / u.s
+V_nanarr = np.array([np.nan, 50]) * u.m / u.s
 
 
 class Test_mass_density:
@@ -592,6 +593,12 @@ def test_gyroradius():
     # Tests to verify that can handle Quantities with numpy array as the value:
     assert gyroradius(B_arr, Vperp=V_arr)[0] == gyroradius(B_arr[0], Vperp=V_arr[0])
     assert gyroradius(B_arr, T_i=T_arr)[0] == gyroradius(B_arr[0], T_i=T_arr[0])
+    
+    # If both Vperp or Ti are nan-less, arrays or not, should still raise ValueError:
+    with pytest.raises(ValueError):
+        gyroradius(B_arr, Vperp=V, T_i=T_arr)
+    with pytest.raises(ValueError):
+        gyroradius(B_arr, Vperp=V_arr, T_i=T_i)
 
 
 def test_plasma_frequency():
