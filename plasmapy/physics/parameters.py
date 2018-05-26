@@ -873,13 +873,29 @@ def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
     <Quantity 0.00142141 m>
 
     """
+    
+    isfinite_Ti = np.isfinite(T_i)
+    isfinite_Vperp = np.isfinite(Vperp)
 
-    if np.isfinite(Vperp) and np.isfinite(T_i):
-        raise ValueError("Cannot have both Vperp and T_i as arguments to "
-                         "gyroradius")
+    # goal 1: ensure either Vperp or T_i invalid, keeping in mind that
+    # the underlying values of the astropy quantity may be numpy arrays
+    if np.any(np.logical_not(np.logical_xor(isfinite_Vperp, isfinite_Ti))):
+        raise ValueError("Must give Vperp or T_i, but not both, as arguments to gyroradius")
 
-    elif not np.isfinite(Vperp) and np.isfinite(T_i):
-        Vperp = thermal_speed(T_i, particle=particle)
+    # goal 2: get Vperp as the thermal speed if is not already a valid input
+    if np.isscalar(Vperp.value) and np.isscalar(T_i.value):  # both T_i and Vperp are scalars
+        if isfinite_Ti:
+            Vperp = thermal_speed(T_i, particle=particle)
+    elif np.isscalar(Vperp.value):  # only T_i is an array
+        if np.any(isfinite_Ti):
+            Vperp_save = Vperp
+            Vperp = thermal_speed(T_i[isfinite_Ti], particle=particle)
+            Vperp[np.logical_not(isfinite_Ti)] = Vperp_save
+    elif np.isscalar(T_i.value):  # only Vperp is an array
+        if isfinite_Ti:
+            Vperp[np.logical_not(isfinite_Vperp)] = thermal_speed(T_i, particle=particle)
+    else:  # both T_i and Vperp are arrays
+        Vperp[isfinite_Ti] = thermal_speed(T_i[isfinite_Ti], particle=particle)
 
     omega_ci = gyrofrequency(B, particle)
 
