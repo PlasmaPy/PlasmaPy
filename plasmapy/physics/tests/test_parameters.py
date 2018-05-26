@@ -598,24 +598,25 @@ def test_gyroradius():
     # Tests to verify that can handle Quantities with numpy array as the value:
     assert gyroradius(B_arr, Vperp=V_arr)[0] == gyroradius(B_arr[0], Vperp=V_arr[0])
     assert gyroradius(B_arr, T_i=T_arr)[0] == gyroradius(B_arr[0], T_i=T_arr[0])
-    
+
     # If both Vperp or Ti are input as Qarrays, but only one of the two is valid
     # at each element, then that's fine, the function should work:
     assert gyroradius(B_arr, Vperp=V_nanarr, T_i=T_nanarr2)[0] == gyroradius(B_arr[0],
-        Vperp=V_nanarr[0], T_i=T_nanarr2[0])
-    
+                                                                             Vperp=V_nanarr[0],
+                                                                             T_i=T_nanarr2[0])
+
     # If both Vperp or Ti are nan-less, Qarrays or not, should raise ValueError:
     with pytest.raises(ValueError):
         gyroradius(B_arr, Vperp=V, T_i=T_arr)
     with pytest.raises(ValueError):
         gyroradius(B_arr, Vperp=V_arr, T_i=T_i)
-        
+
     # If one of (Vperp, Ti) is a valid and one is Qarray with at least one valid, ValueError:
     with pytest.raises(ValueError):
         gyroradius(B_arr, Vperp=V, T_i=T_nanarr)
     with pytest.raises(ValueError):
         gyroradius(B_arr, Vperp=V_nanarr, T_i=T_i)
-        
+
     # If either Vperp or Ti is a valid scalar and the other is a Qarray of all nans,
     # should do something valid and not raise a ValueError
     assert np.all(np.isfinite(gyroradius(B_arr, Vperp=V, T_i=T_allnanarr)))
