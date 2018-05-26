@@ -39,6 +39,7 @@ T_i = 1e6 * u.K
 
 B_arr = np.array([0.001, 0.002]) * u.T
 rho_arr = np.array([5e-10, 2e-10]) * u.kg / u.m ** 3
+T_arr = np.array([1e6, 2e6]) * u.K
 
 B_nanarr = np.array([0.001, np.nan]) * u.T
 rho_infarr = np.array([np.inf, 5e19]) * u.m ** -3
@@ -49,6 +50,7 @@ T_negarr = np.array([1e6, -5151.]) * u.K
 mu = m_p.to(u.u).value
 
 V = 25.2 * u.m / u.s
+V_arr = np.array([25, 50]) * u.m / u.s
 
 
 class Test_mass_density:
@@ -586,6 +588,10 @@ def test_gyroradius():
 
     with pytest.raises(ValueError):
         gyroradius(1.1 * u.T, particle="p", Vperp=1.2 * u.m, T_i=1.1 * u.K)
+
+    # Tests to verify that can handle Quantities with numpy array as the value:
+    assert gyroradius(B_arr, Vperp=V_arr)[0] == gyroradius(B_arr[0], Vperp=V_arr[0])
+    assert gyroradius(B_arr, T_i=T_arr)[0] == gyroradius(B_arr[0], T_i=T_arr[0])
 
 
 def test_plasma_frequency():
