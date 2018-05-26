@@ -881,6 +881,7 @@ def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
     # the underlying values of the astropy quantity may be numpy arrays
     if np.any(np.logical_not(np.logical_xor(isfinite_Vperp, isfinite_Ti))):
         raise ValueError("Must give Vperp or T_i, but not both, as arguments to gyroradius")
+    
 
     # check 2: get Vperp as the thermal speed if is not already a valid input
     if np.isscalar(Vperp.value) and np.isscalar(T_i.value):  # both T_i and Vperp are scalars
