@@ -30,6 +30,7 @@ __all__ = [
     "PlasmaBlob"
 ]
 
+
 class PlasmaBlob(GenericPlasma):
     """
     Class for describing and calculating plasma parameters without

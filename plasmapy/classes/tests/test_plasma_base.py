@@ -6,10 +6,12 @@ BasePlasma._registry = {}
 class NoDataSource(BasePlasma):
     pass
 
+
 class IsDataSource(BasePlasma):
     @classmethod
     def is_datasource_for(cls, **kwargs):
         return True
+
 
 class IsNotDataSource(BasePlasma):
     @classmethod

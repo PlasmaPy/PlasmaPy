@@ -181,4 +181,3 @@ class TestBasicRegistrationFactory(object):
 
         with pytest.raises(ValidationFunctionError):
             ExtraValidationFactory.register(MissingClassMethodDifferentValidationWidget)
-

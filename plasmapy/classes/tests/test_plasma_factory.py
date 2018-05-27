@@ -3,6 +3,7 @@ import numpy as np
 
 import plasmapy.classes
 
+
 class TestPlasma(object):
     def test_patters(self):
         # Input data whose specific subclass cannot be known
