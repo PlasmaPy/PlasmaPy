@@ -13,7 +13,7 @@ attribute of a `~plasmapy.atomic.Particle` instance, or by using the
 >>> D.binding_energy
 <Quantity 3.56414847e-13 J>
 >>> nuclear_binding_energy('D').to('GeV')
-<Quantity 2.22456652 MeV>
+<Quantity 0.00222457 GeV>
 
 Nuclear Reactions
 =================
@@ -30,4 +30,4 @@ The reaction may also be inputted using the `reactants` and `products`
 keywords.
 
 >>> nuclear_reaction_energy(reactants=['D', 'T'], products=['alpha', 'n'])
-<Quantity 17.58932778 MeV>
+<Quantity 2.81812097e-12 J>
