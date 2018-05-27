@@ -54,7 +54,7 @@ the `~plasmapy.atomic.Particle` instance.
 >>> proton.atomic_number
 1
 >>> electron.integer_charge
-1
+-1
 >>> triton.mass_number
 3
 
@@ -74,7 +74,7 @@ Strings representing particles may be accessed using the `particle`,
 `element`, `isotope`, and `ionic_symbol` attributes.
 
 >>> antimuon.particle
-'mu-'
+'mu+'
 >>> triton.element
 'H'
 >>> alpha.isotope
@@ -109,7 +109,7 @@ categories in the `exclude` in order for it to return `True`.
 
 >>> deuteron.is_category(require={'element', 'isotope', 'ion'})
 True
->>> Fe56.is_category(any_of=['charged', 'uncharged'])
+>>> iron56.is_category(any_of=['charged', 'uncharged'])
 False
 >>> alpha.is_category(exclude='lepton')
 True
@@ -135,9 +135,9 @@ Equality between particles may be tested either between two
 `~plasmapy.atomic.Particle` instance and a `str`.
 
 >>> Particle('H-1') == Particle('protium 1+')
-True
->>> alpha == 'He-4 1+'
 False
+>>> alpha == 'He-4 2+'
+True
 
 The `is_electron` and `is_ion` attributes provide a quick way to check
 whether or not a particle is an electron or ion, respectively.

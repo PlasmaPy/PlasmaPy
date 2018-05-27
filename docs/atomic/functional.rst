@@ -24,7 +24,7 @@ and `~plasmapy.atomic.element_name`.
 >>> ionic_symbol('alpha')
 'He-4 2+'
 >>> particle_symbol('alpha')
-'He-4 2+
+'He-4 2+'
 >>> element_name('alpha')
 'helium'
 
@@ -60,7 +60,9 @@ These functions will raise a `~plasmapy.utils.ChargeError` for
 elements and isotopes that lack explicit charge information.
 
 >>> electric_charge('H')
-ChargeError: Charge information is required for integer_charge.
+Traceback (most recent call last):
+  ...
+plasmapy.utils.exceptions.ChargeError: Charge information is required for electric_charge.
 
 The standard atomic weight for the terrestrial environment may be
 accessed using `~plasmapy.atomic.standard_atomic_weight`.
