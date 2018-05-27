@@ -888,9 +888,7 @@ def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
         if isfinite_Ti:
             # T_i is valid, so use it to determine Vperp
             Vperp = thermal_speed(T_i, particle=particle)
-        else:
-            # Vperp is alread valid, do nothing
-            pass
+        # else: Vperp is alread valid, do nothing
     elif np.isscalar(Vperp.value):  # only T_i is an array
         # this means either Vperp must be nan, or T_i must be array of all nan,
         # or else we couldn't have gotten through check 1
@@ -908,10 +906,8 @@ def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
             # T_i is valid, V_perp is an array of all nan
             # uh...
             Vperp = thermal_speed(np.repeat(T_i, len(Vperp)), particle=particle)
-        else:
-            # normal case where T_i is scalar nan and Vperp is already a valid array
-            # so, do nothing
-            pass
+        # else: normal case where T_i is scalar nan and Vperp is already a valid array
+        # so, do nothing
     else:  # both T_i and Vperp are arrays
         # we know all the elementwise combinations have one nan and one finite, due to check 1
         # use the valid Vperps, and replace the others with those calculated from T_i
