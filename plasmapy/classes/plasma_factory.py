@@ -5,6 +5,10 @@ from plasmapy.utils.datatype_factory_base import NoMatchError
 from plasmapy.utils.datatype_factory_base import MultipleMatchError
 from plasmapy.utils.datatype_factory_base import ValidationFunctionError
 
+__all__ = [
+    "PlasmaFactory",
+    "Plasma",
+]
 
 class PlasmaFactory(BasicRegistrationFactory):
     """

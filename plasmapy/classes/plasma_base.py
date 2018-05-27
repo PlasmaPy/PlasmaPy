@@ -1,5 +1,9 @@
 from abc import ABC, abstractmethod, abstractproperty
 
+__all__ = [
+    "BasePlasma",
+    "GenericPlasma",
+]
 
 class BasePlasma(ABC):
     """
