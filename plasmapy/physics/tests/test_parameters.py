@@ -38,17 +38,25 @@ T_e = 1e6 * u.K
 T_i = 1e6 * u.K
 
 B_arr = np.array([0.001, 0.002]) * u.T
-rho_arr = np.array([5e-10, 2e-10]) * u.kg / u.m ** 3
-
 B_nanarr = np.array([0.001, np.nan]) * u.T
+B_allnanarr = np.array([np.nan, np.nan]) * u.T
+
+rho_arr = np.array([5e-10, 2e-10]) * u.kg / u.m ** 3
 rho_infarr = np.array([np.inf, 5e19]) * u.m ** -3
 rho_negarr = np.array([-5e19, 6e19]) * u.m ** -3
+
+T_arr = np.array([1e6, 2e6]) * u.K
 T_nanarr = np.array([1e6, np.nan]) * u.K
+T_nanarr2 = np.array([np.nan, 2e6]) * u.K
+T_allnanarr = np.array([np.nan, np.nan]) * u.K
 T_negarr = np.array([1e6, -5151.]) * u.K
 
-mu = m_p.to(u.u).value
-
 V = 25.2 * u.m / u.s
+V_arr = np.array([25, 50]) * u.m / u.s
+V_nanarr = np.array([25, np.nan]) * u.m / u.s
+V_allnanarr = np.array([np.nan, np.nan]) * u.m / u.s
+
+mu = m_p.to(u.u).value
 
 
 class Test_mass_density:
@@ -587,6 +595,48 @@ def test_gyroradius():
     with pytest.raises(ValueError):
         gyroradius(1.1 * u.T, particle="p", Vperp=1.2 * u.m, T_i=1.1 * u.K)
 
+
+class Test_gyroradius:
+
+    def test_handle_numpy_array(self):
+        # Tests to verify that can handle Quantities with numpy array as the value:
+        assert gyroradius(B_arr, Vperp=V_arr)[0] == gyroradius(B_arr[0], Vperp=V_arr[0])
+        assert gyroradius(B_arr, T_i=T_arr)[0] == gyroradius(B_arr[0], T_i=T_arr[0])
+
+    def test_handle_mixed_Qarrays(self):
+        # If both Vperp or Ti are input as Qarrays, but only one of the two is valid
+        # at each element, then that's fine, the function should work:
+        assert gyroradius(B_arr, Vperp=V_nanarr, T_i=T_nanarr2)[0] == gyroradius(B_arr[0],
+                                                                                 Vperp=V_nanarr[0],
+                                                                                 T_i=T_nanarr2[0])
+
+    def test_raise_two_valid_inputs(self):
+        # If both Vperp or Ti are nan-less, Qarrays or not, should raise ValueError:
+        with pytest.raises(ValueError):
+            gyroradius(B_arr, Vperp=V, T_i=T_arr)
+        with pytest.raises(ValueError):
+            gyroradius(B_arr, Vperp=V_arr, T_i=T_i)
+
+    def test_all_valid_and_one_valid(self):
+        # If one of (Vperp, Ti) is a valid and one is Qarray with at least one valid, ValueError:
+        with pytest.raises(ValueError):
+            gyroradius(B_arr, Vperp=V, T_i=T_nanarr)
+        with pytest.raises(ValueError):
+            gyroradius(B_arr, Vperp=V_nanarr, T_i=T_i)
+
+    def test_scalar_and_nan_qarray(self):
+        # If either Vperp or Ti is a valid scalar and the other is a Qarray of all nans,
+        # should do something valid and not raise a ValueError
+        assert np.all(np.isfinite(gyroradius(B_arr, Vperp=V, T_i=T_allnanarr)))
+        assert np.all(np.isfinite(gyroradius(B_arr, Vperp=V_allnanarr, T_i=T_i)))
+
+    def test_keeps_arguments_unchanged(self):
+        Vperp1 = u.Quantity([np.nan, 1], unit=u.m/u.s)
+        Vperp2 = u.Quantity([np.nan, 1], unit=u.m/u.s)  # an exact copy
+        T_i = u.Quantity([1, np.nan], unit=u.K)
+
+        gyroradius(B_arr, Vperp=Vperp1, T_i = T_i)
+        assert_quantity_allclose(Vperp1, Vperp2)
 
 def test_plasma_frequency():
     r"""Test the plasma_frequency function in parameters.py."""
