@@ -268,8 +268,11 @@ def Coulomb_logarithm(T,
         ln_Lambda = np.log(bmax / bmin)
     elif method == "GMS-3":
         ln_Lambda = np.log(bmax / bmin)
-        if ln_Lambda < 2:
-            ln_Lambda = 2 * u.dimensionless_unscaled
+        if np.any(ln_Lambda < 2):
+            if np.isscalar(ln_Lambda.value):
+                ln_Lambda = 2 * u.dimensionless_unscaled
+            else:
+                ln_Lambda[ln_Lambda < 2] = 2 * u.dimensionless_unscaled
     elif method in ["GMS-4", "GMS-5", "GMS-6"]:
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
