@@ -142,6 +142,7 @@ setup(name=PACKAGENAME,
       cmdclass=cmdclassd,
       zip_safe=False,
       use_2to3=False,
+      include_package_data=True,
       entry_points=entry_points,
       python_requires='>={}'.format("3.6"),
       **package_info
