@@ -306,11 +306,22 @@ def _boilerPlate(T, particles, V):
     # obtaining reduced mass of 2 particle collision system
     reduced_mass = atomic.reduced_mass(*particles)
 
-    if V == 0:
+    if np.any(V == 0):
         raise utils.exceptions.PhysicsError("You cannot have a collision for zero velocity!")
     # getting thermal velocity of system if no velocity is given
-    if np.isnan(V):
+    if V is None:
         V = parameters.thermal_speed(T, mass=reduced_mass)
+    elif np.any(np.isnan(V)):
+        if np.isscalar(V.value) and np.isscalar(T.value):
+            V = parameters.thermal_speed(T, mass=reduced_mass)
+        elif np.isscalar(V.value):
+            V = parameters.thermal_speed(T, mass=reduced_mass)
+        elif np.isscalar(T.value):
+            V = V.copy()
+            V[np.isnan(V)] = parameters.thermal_speed(T, mass=reduced_mass)
+        else:
+            V = V.copy()
+            V[np.isnan(V)] = parameters.thermal_speed(T[np.isnan(V)], mass=reduced_mass)
     _check_relativistic(V, 'V')
     return T, masses, charges, reduced_mass, V
 
@@ -933,7 +944,7 @@ def fundamental_electron_collision_freq(T_e,
                                  n_e,
                                  particles,
                                  z_mean=Z_i,
-                                 V=np.nan, # probably needs to be enabled!
+                                 V=V,
                                  method=coulomb_log_method)
         # dividing out by typical Coulomb logarithm value implicit in
         # the collision frequency calculation and replacing with
