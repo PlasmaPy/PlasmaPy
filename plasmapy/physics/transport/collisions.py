@@ -552,10 +552,17 @@ def impact_parameter(T,
         # shorter than either of these two impact parameters, so we choose
         # the larger of these two possibilities. That is, between the
         # deBroglie wavelength and the distance of closest approach.
-        if bPerp > lambdaBroglie:
-            bmin = bPerp
-        else:
+        # ARRAY NOTES
+        # T and V should be guaranteed to be same size inputs from _boilerplate
+        # therefore, lambdaBroglie and bPerp are either both scalar or both array
+        if np.isscalar(bPerp.value) and np.isscalar(lambdaBroglie.value):  # both scalar
+            if bPerp > lambdaBroglie:
+                bmin = bPerp
+            else:
+                bmin = lambdaBroglie
+        else:  # both lambdaBroglie and bPerp are arrays
             bmin = lambdaBroglie
+            bmin[bPerp > lambdaBroglie] = bPerp[bPerp > lambdaBroglie]
     elif method == "GMS-1":
         # 1st method listed in Table 1 of reference [1]
         # This is just another form of the classical Landau-Spitzer
@@ -603,6 +610,14 @@ def impact_parameter(T,
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
     else:
         raise ValueError(f"Method {method} not found!")
+    # ARRAY NOTES
+    # it could be that bmin and bmax have different sizes. If Te is a scalar,
+    # T and V will be scalar from _boilerplate, so bmin will scalar.  However
+    # if n_e is an array, than bmax will be an array. if this is the case,
+    # we want to extend the scalar bmin to equal the length of bmax.
+    if np.isscalar(bmin.value) and not np.isscalar(bmax.value):
+        bmin = np.repeat(bmin, len(bmax))
+
     return bmin.to(u.m), bmax.to(u.m)
 
 
