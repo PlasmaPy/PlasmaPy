@@ -630,6 +630,13 @@ class Test_gyroradius:
         assert np.all(np.isfinite(gyroradius(B_arr, Vperp=V, T_i=T_allnanarr)))
         assert np.all(np.isfinite(gyroradius(B_arr, Vperp=V_allnanarr, T_i=T_i)))
 
+    def test_keeps_arguments_unchanged(self):
+        Vperp1 = u.Quantity([np.nan, 1], unit=u.m/u.s)
+        Vperp2 = u.Quantity([np.nan, 1], unit=u.m/u.s)  # an exact copy
+        T_i = u.Quantity([1, np.nan], unit=u.K)
+
+        gyroradius(B_arr, Vperp=Vperp1, T_i = T_i)
+        assert_quantity_allclose(Vperp1, Vperp2)
 
 def test_plasma_frequency():
     r"""Test the plasma_frequency function in parameters.py."""
