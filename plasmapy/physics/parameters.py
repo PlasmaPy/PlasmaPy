@@ -911,6 +911,7 @@ def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
     else:  # both T_i and Vperp are arrays
         # we know all the elementwise combinations have one nan and one finite, due to check 1
         # use the valid Vperps, and replace the others with those calculated from T_i
+        Vperp = Vperp.copy()  # avoid changing Vperp's value outside function
         Vperp[isfinite_Ti] = thermal_speed(T_i[isfinite_Ti], particle=particle)
 
     omega_ci = gyrofrequency(B, particle)
