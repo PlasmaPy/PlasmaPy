@@ -118,8 +118,12 @@ class IonizationState:
             self.n_elem = n_elem
             self.n_e = n_e
             self.ionic_fractions = ionic_fractions
-            if self._ionic_fractions is None and self.T_e is not None:
-                self.equilibrate()
+
+            # This functionality has not yet been implemented:
+
+            # if self._ionic_fractions is None and self.T_e is not None:
+            #     self.equilibrate()
+
         except Exception as exc:
             raise AtomicError(
                 f"Unable to create IonizationState instance for "
@@ -256,17 +260,19 @@ class IonizationState:
                 self.number_densities = fractions
             else:
 
-                total = np.sum(fractions)
-                if not np.isclose(total, 1, atol=self.tol, rtol=0):
-                    raise AtomicError(
-                        f"The sum of the ionic fractions of {self.element} "
-                        f"equals {total}, which is not approximately one.")
-                if not len(fractions) == self.atomic_number + 1:
-                    raise AtomicError(
-                        f"len(fractions) equals {len(fractions)}, but "
-                        f"should equal {self.atomic_number + 1} which "
-                        f"is the atomic number of {self.element} + 1."
-                    )
+                if not np.any(np.isnan(fractions)):
+
+                    total = np.sum(fractions)
+                    if not np.isclose(total, 1, atol=self.tol, rtol=0):
+                        raise AtomicError(
+                            f"The sum of the ionic fractions of {self.element} "
+                            f"equals {total}, which is not approximately one.")
+                    if not len(fractions) == self.atomic_number + 1:
+                        raise AtomicError(
+                            f"len(fractions) equals {len(fractions)}, but "
+                            f"should equal {self.atomic_number + 1} which "
+                            f"is the atomic number of {self.element} + 1."
+                        )
 
                 self._ionic_fractions = fractions
 
@@ -554,8 +560,8 @@ class IonizationStates:
 
         if isinstance(inputs, dict):
             self.ionic_fractions = inputs
-        elif isinstance(inputs, (list, tuple) and T_e is not None):
-            self.elements = inputs
+        elif isinstance(inputs, (list, tuple)):
+            self.ionic_fractions = inputs
         else:
             raise TypeError(f"{inputs} are invalid inputs.")
 
@@ -571,7 +577,10 @@ class IonizationStates:
 
     @property
     def ionic_fractions(self):
-        return self._ionic_fractions
+        try:
+            return self._ionic_fractions
+        except AttributeError as exc:
+            raise AttributeError("Ionic fractions were not set.") from exc
 
     @ionic_fractions.setter
     def ionic_fractions(self, inputs: Union[Dict, List, Tuple]):
@@ -640,11 +649,30 @@ class IonizationStates:
                     except ValueError:
                         raise AtomicError(f"Inappropriate ionic fractions for {key}.")
 
-        for key in _elements:
-            if np.min(new_ionic_fractions[key]) < 0 or np.max(new_ionic_fractions[key]) > 1:
-                raise AtomicError(f"Ionic fractions for {key} are not between 0 and 1.")
-            if not np.isclose(np.sum(new_ionic_fractions[key]), 1, atol=self.tol, rtol=0):
-                raise AtomicError(f"Ionic fractions for {key} are not normalized to 1.")
+            for key in _elements:
+                if np.min(new_ionic_fractions[key]) < 0 or np.max(new_ionic_fractions[key]) > 1:
+                    raise AtomicError(f"Ionic fractions for {key} are not between 0 and 1.")
+                if not np.isclose(np.sum(new_ionic_fractions[key]), 1, atol=self.tol, rtol=0):
+                    raise AtomicError(f"Ionic fractions for {key} are not normalized to 1.")
+
+        elif isinstance(inputs, (list, tuple)):
+
+            try:
+                _particles = [Particle(particle) for particle in inputs]
+            except (InvalidParticleError, TypeError):
+                raise AtomicError("Invalid inputs to IonizationStates")
+
+            _particles.sort(key=lambda p: (p.atomic_number, p.mass_number if p.isotope else 0))
+            _elements = [particle.particle for particle in _particles]
+            new_ionic_fractions = {
+                particle.particle: np.full(
+                    particle.atomic_number + 1,
+                    fill_value=np.nan,
+                    dtype=np.float64
+                ) for particle in _particles
+            }
+        else:
+            raise TypeError
 
         # Because this depends on _particles being sorted, we add in an
         # easy check that atomic numbers do not decrease.
