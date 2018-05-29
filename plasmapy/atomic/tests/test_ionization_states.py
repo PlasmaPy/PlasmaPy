@@ -184,10 +184,8 @@ class Test_IonizationStates:
 
             assert set(self.instances[test].elements) == elements_expected
 
-
             for element in elements_expected:
                 assert all(np.isnan(self.instances[test].ionic_fractions[element]))
-
 
         if errmsg:
             raise AtomicError(errmsg)
@@ -334,3 +332,26 @@ def test_execeptions(test):
         kwargs=tests_for_exceptions[test].inputs,
         expected_outcome=tests_for_exceptions[test].expected_exception,
     )
+
+
+def test_setitem():
+    states = IonizationStates({'H': [0.9, 0.1], 'He': [0.5, 0.4999, 1e-4]})
+
+    new_states = [0.0, 1.0]
+    states['H'] = new_states
+    assert np.allclose(states['H'].ionic_fractions, new_states)
+
+@pytest.mark.parametrize(
+    'new_states,expected_exception',
+    [
+        ((0, 0.9), AtomicError),
+        ((-0.1, 1.1), AtomicError),
+        ((0.0, 1.0, 0.0), AtomicError),
+     ]
+)
+def test_setitem_errors(new_states, expected_exception):
+    states = IonizationStates({'H': [0.9, 0.1], 'He': [0.5, 0.4999, 1e-4]})
+    with pytest.raises(expected_exception):
+        states['H'] = new_states
+
+
