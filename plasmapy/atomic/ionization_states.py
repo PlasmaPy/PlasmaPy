@@ -722,6 +722,30 @@ class IonizationStates:
         except Exception as exc:
             raise AtomicError(errmsg) from exc
 
+    def __setitem__(self, key, value):
+        if isinstance(value, dict):
+            raise NotImplementedError("Dictionary assignment not implemented.")
+        else:
+            try:
+                particle = particle_symbol(key)
+                if particle not in self.elements:
+                    raise AtomicError(
+                        f"{key} is not one of the particles kept track of "
+                        f"by this IonizationStates instance.")
+                new_fractions = np.array(value, dtype=np.float64)
+                if new_fractions.min() < 0 or new_fractions.max() > 1:
+                    raise ValueError("Ionic fractions must be between 0 and 1.")
+                if not np.isclose(np.sum(new_fractions), 1):
+                    raise ValueError("Ionic fractions are not normalized.")
+                if len(new_fractions) != atomic_number(particle) + 1:
+                    raise ValueError(f"Incorrect size of ionic fraction array for {key}.")
+                self._ionic_fractions[particle][:] = new_fractions[:]
+            except Exception as exc:
+                raise AtomicError(
+                    f"Cannot set item for this IonizationStates "
+                    f"instance for key = {repr(key)} and value = "
+                    f"{repr(value)}")
+
     def __iter__(self):
         self._element_index = 0
         return self
