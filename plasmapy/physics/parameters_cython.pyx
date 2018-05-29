@@ -10,7 +10,7 @@ import numpy as np
 from astropy import units
 
 # plasmapy modules
-from ..constants import (k_B)
+from plasmapy.constants import k_B
 import plasmapy.atomic as atomic
 # from plasmapy.atomic import particle_mass, charge_state
 # For future: change these into decorators.  _check_quantity does a

@@ -256,7 +256,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         else:
             try:
                 arg = arg * units[0]
-            except Exception:
+            except (u.UnitsError, ValueError):
                 raise TypeError(typeerror_message)
             else:
                 warnings.warn(UnitsWarning(unit_casting_warning))

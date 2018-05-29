@@ -428,12 +428,12 @@ Equations and Physical Formulae
   the physical constants.  For example, the following line of code
   obscures information about the physics being represented:
 
->>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s
+>>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s   # doctest: +SKIP
 
   In contrast, the following line of code shows the exact formula
   which makes the code much more readable.
 
->>> omega_ce = (e * B) / (m_e * c)
+>>> omega_ce = (e * B) / (m_e * c)       # doctest: +SKIP
 
   The origins of numerical coefficients in formulae should be
   documented.
@@ -450,12 +450,12 @@ Equations and Physical Formulae
   the same units.  In the following line, it is difficult to discern which
   is the electron temperature and which is the ion temperature.
 
-  >>> ion_sound_speed(1e6*u.K, 2e6*u.K)
+  >>> ion_sound_speed(1e6*u.K, 2e6*u.K)  # doctest: +SKIP
 
   Remembering that "explicit is better than implicit", it is more
   readable and less prone to errors to write:
 
-  >>> ion_sound_speed(T_i=1e6*u.K, T_e=2e6*u.K)
+  >>> ion_sound_speed(T_i=1e6*u.K, T_e=2e6*u.K)    # doctest: +SKIP
 
 * SI units that were named after a person should be lower case except at
   the beginning of a sentence, even if their symbol is capitalized. For
@@ -476,9 +476,9 @@ s) and angular frequency (rad / s).  An explicit way to do this
 conversion is to set up an equivalency between cycles/s and Hz:
 
 >>> from astropy import units as u
->>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
+>>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])   # doctest: +SKIP
 
 However, ``dimensionless_angles`` does work when dividing a velocity
 by an angular frequency to get a length scale:
 
->>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())
+>>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())    # doctest: +SKIP

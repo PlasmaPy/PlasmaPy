@@ -19,6 +19,29 @@ whenever the API changes in a way that is not backwards compatible,
 backwards compatibility, and `PATCH` must be incremented for each bug
 fix release.
 
+Version 0.1.1
+-------------
+
+Version 0.1.1 is a minor release fixing a small
+number of bugs and adding two
+convenience features, `plasmapy.online_help` and
+`plasmapy.__citation__`. For more information,
+take a look at the
+:ref:`change-log-0.1.1`.
+
+The people who have contributed to this release include
+(`(!)` denoting first-time contributors):
+
+* (!) Manas Bedmutha
+* Julien Hillairet
+* Pawel Kozlowski
+* Stuart Mumford
+* Nick Murphy
+* Samuel Langendorf
+* Drew Leonard
+* David Stansby
+* Dominik Stańczak
+
 Version 0.1.0
 -------------
 

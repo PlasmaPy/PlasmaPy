@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 import astropy.units as u
 
-from plasmapy.classes import plasma
+from plasmapy.classes.sources import plasma3d, plasmablob
 from plasmapy.utils.exceptions import InvalidParticleError
 
 @pytest.mark.parametrize('grid_dimensions, expected_size', [
@@ -33,9 +33,9 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
     >>> test_Plasma3D_setup((100, 10, 1), 1000)
     """
     x, y, z = grid_dimensions
-    test_plasma = plasma.Plasma3D(domain_x=np.linspace(0, 1, x) * u.m,
-                                  domain_y=np.linspace(0, 1, y) * u.m,
-                                  domain_z=np.linspace(0, 1, z) * u.m)
+    test_plasma = plasma3d.Plasma3D(domain_x=np.linspace(0, 1, x) * u.m,
+                                    domain_y=np.linspace(0, 1, y) * u.m,
+                                    domain_z=np.linspace(0, 1, z) * u.m)
 
     # Basic grid setup
     assert test_plasma.x.size == x
@@ -68,9 +68,9 @@ def test_Plasma3D_derived_vars():
     variables.  The core variables are set with arbitrary uniform
     values.
     """
-    test_plasma = plasma.Plasma3D(domain_x=np.linspace(0, 1, 64) * u.m,
-                                  domain_y=np.linspace(0, 1, 64) * u.m,
-                                  domain_z=np.linspace(0, 1, 1) * u.m)
+    test_plasma = plasma3d.Plasma3D(domain_x=np.linspace(0, 1, 64) * u.m,
+                                    domain_y=np.linspace(0, 1, 64) * u.m,
+                                    domain_z=np.linspace(0, 1, 1) * u.m)
 
     # Set an arbitrary uniform values throughout the plasma
     test_plasma.density[...] = 2.0 * u.kg / u.m ** 3
@@ -113,10 +113,10 @@ class Test_PlasmaBlobRegimes:
         n_e = 1e26 * u.cm ** -3
         Z = 2.0
         particle = 'p'
-        blob = plasma.PlasmaBlob(T_e=T_e,
-                                 n_e=n_e,
-                                 Z=Z,
-                                 particle=particle)
+        blob = plasmablob.PlasmaBlob(T_e=T_e,
+                                     n_e=n_e,
+                                     Z=Z,
+                                     particle=particle)
 
         expect_regime = 'Intermediate coupling regime: Gamma = 10.585076050938532.'
         regime, _ = blob.regimes()
@@ -140,10 +140,10 @@ class Test_PlasmaBlobRegimes:
         n_e = 1e26 * u.cm ** -3
         Z = 3.0
         particle = 'p'
-        blob = plasma.PlasmaBlob(T_e=T_e,
-                                 n_e=n_e,
-                                 Z=Z,
-                                 particle=particle)
+        blob = plasmablob.PlasmaBlob(T_e=T_e,
+                                     n_e=n_e,
+                                     Z=Z,
+                                     particle=particle)
 
         expect_regime = 'Strongly coupled regime: Gamma = 104.02780112828943.'
 
@@ -168,10 +168,10 @@ class Test_PlasmaBlobRegimes:
         n_e = 1e15 * u.cm ** -3
         Z = 2.5
         particle = 'p'
-        blob = plasma.PlasmaBlob(T_e=T_e,
-                                 n_e=n_e,
-                                 Z=Z,
-                                 particle=particle)
+        blob = plasmablob.PlasmaBlob(T_e=T_e,
+                                     n_e=n_e,
+                                     Z=Z,
+                                     particle=particle)
 
         expect_regime = 'Weakly coupled regime: Gamma = 0.0075178096952688445.'
 
@@ -196,10 +196,10 @@ class Test_PlasmaBlobRegimes:
         n_e = 1e20 * u.cm ** -3
         Z = 2.5
         particle = 'p'
-        blob = plasma.PlasmaBlob(T_e=T_e,
-                                 n_e=n_e,
-                                 Z=Z,
-                                 particle=particle)
+        blob = plasmablob.PlasmaBlob(T_e=T_e,
+                                     n_e=n_e,
+                                     Z=Z,
+                                     particle=particle)
 
         expect_regime = 'Thermal kinetic energy dominant: Theta = 120.65958493847927'
 
@@ -224,10 +224,10 @@ class Test_PlasmaBlobRegimes:
         n_e = 1e26 * u.cm ** -3
         Z = 3.0
         particle = 'p'
-        blob = plasma.PlasmaBlob(T_e=T_e,
-                                 n_e=n_e,
-                                 Z=Z,
-                                 particle=particle)
+        blob = plasmablob.PlasmaBlob(T_e=T_e,
+                                     n_e=n_e,
+                                     Z=Z,
+                                     particle=particle)
 
         expect_regime = 'Fermi quantum energy dominant: Theta = 0.009872147858602853'
 
@@ -252,10 +252,10 @@ class Test_PlasmaBlobRegimes:
         n_e = 1e25 * u.cm ** -3
         Z = 2.0
         particle = 'p'
-        blob = plasma.PlasmaBlob(T_e=T_e,
-                                 n_e=n_e,
-                                 Z=Z,
-                                 particle=particle)
+        blob = plasmablob.PlasmaBlob(T_e=T_e,
+                                     n_e=n_e,
+                                     Z=Z,
+                                     particle=particle)
 
         expect_regime = 'Both Fermi and thermal energy important: Theta = 0.03818537605355442'
 
@@ -274,10 +274,10 @@ class Test_PlasmaBlob:
         self.n_e = 1e23 * u.cm ** -3
         self.Z = 2.5
         self.particle = 'p'
-        self.blob = plasma.PlasmaBlob(T_e=self.T_e,
-                                      n_e=self.n_e,
-                                      Z=self.Z,
-                                      particle=self.particle)
+        self.blob = plasmablob.PlasmaBlob(T_e=self.T_e,
+                                          n_e=self.n_e,
+                                          Z=self.Z,
+                                          particle=self.particle)
         self.couplingVal = 10.468374460435724
         self.thetaVal = 0.6032979246923964
 
@@ -286,10 +286,10 @@ class Test_PlasmaBlob:
         Checks if function raises error for invalid particle.
         """
         with pytest.raises(InvalidParticleError):
-            plasma.PlasmaBlob(T_e=self.T_e,
-                              n_e=self.n_e,
-                              Z=self.Z,
-                              particle="cupcakes")
+            plasmablob.PlasmaBlob(T_e=self.T_e,
+                                  n_e=self.n_e,
+                                  Z=self.Z,
+                                  particle="cupcakes")
 
     def test_electron_temperature(self):
         """Testing if we get the same electron temperature we put in """
