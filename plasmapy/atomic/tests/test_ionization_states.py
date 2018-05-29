@@ -8,6 +8,7 @@ from ...atomic import (
     mass_number,
     atomic_symbol,
     isotope_symbol,
+    particle_symbol,
     Particle,
 )
 import collections
@@ -68,9 +69,11 @@ tests = {
         'inputs': {'H': [0.9, 0.1], 'He-3': [0.3, 0.7, 0.0], 'He-4': [0.29, 0.69, 0.02]},
         'abundances': {'H': 1, 'He-3': 1e-7, 'He-4': 0.1},
         'n_H': 1e12 * u.m ** -3,
-    }
+    },
 
-
+    'just elements': {
+        'inputs': ['H', 'He'],
+    },
 }
 
 test_names2 = tests.keys()
@@ -91,7 +94,10 @@ class Test_IonizationStates:
                 f"Cannot create IonizationStates instance for "
                 f"test='{test}'") from exc
 
-    @pytest.mark.parametrize('test', test_names2)
+    @pytest.mark.parametrize(
+        'test',
+        [name for name in test_names2 if isinstance(tests[name]['inputs'], dict)],
+    )
     def test_keys(self, test):
         input_keys = tests[test]['inputs'].keys()
         particles = [Particle(input_key) for input_key in input_keys]
@@ -146,28 +152,42 @@ class Test_IonizationStates:
 
         errmsg = ""
 
-        elements = self.instances[test].elements
-        input_keys = tests[test]["inputs"].keys()
-        for element, input_key in zip(elements, input_keys):
+        elements_actual = self.instances[test].elements
+        inputs = tests[test]["inputs"]
 
-            expected = np.array(tests[test]["inputs"][input_key])
+        if isinstance(inputs, dict):
 
-            if isinstance(expected, u.Quantity):
-                expected = np.array(expected.value / np.sum(expected.value))
+            input_keys = tests[test]["inputs"].keys()
+            for element, input_key in zip(elements_actual, input_keys):
 
-            #if not isinstance(expected, np.ndarray)
+                expected = np.array(tests[test]["inputs"][input_key])
 
-            actual = self.instances[test].ionic_fractions[element]
+                if isinstance(expected, u.Quantity):
+                    expected = np.array(expected.value / np.sum(expected.value))
 
-            if not np.allclose(actual, expected):
-                errmsg += (
-                    f"\n\nThere is a discrepancy in ionic fractions for "
-                    f"({test}, {element}, {input_key})\n"
-                    f"  expected = {expected}\n"
-                    f"    actual = {actual}")
-            if not isinstance(actual, np.ndarray) or isinstance(actual, u.Quantity):
-                raise AtomicError(
-                    f"\n\nNot a numpy.ndarray: ({test}, {element})")
+                #if not isinstance(expected, np.ndarray)
+
+                actual = self.instances[test].ionic_fractions[element]
+
+                if not np.allclose(actual, expected):
+                    errmsg += (
+                        f"\n\nThere is a discrepancy in ionic fractions for "
+                        f"({test}, {element}, {input_key})\n"
+                        f"  expected = {expected}\n"
+                        f"    actual = {actual}")
+                if not isinstance(actual, np.ndarray) or isinstance(actual, u.Quantity):
+                    raise AtomicError(
+                        f"\n\nNot a numpy.ndarray: ({test}, {element})")
+
+        else:
+            elements_expected = {particle_symbol(element) for element in inputs}
+
+            assert set(self.instances[test].elements) == elements_expected
+
+
+            for element in elements_expected:
+                assert all(np.isnan(self.instances[test].ionic_fractions[element]))
+
 
         if errmsg:
             raise AtomicError(errmsg)
@@ -193,8 +213,13 @@ class Test_IonizationStates:
             except Exception as exc:
                 raise AtomicError(f"Unable to get item {key} in test={test}.")
 
+
+
             try:
-                test_passed = np.allclose(expected, actual)
+                if all(np.isnan(expected)):
+                    test_passed=True
+                else:
+                    test_passed = np.allclose(expected, actual)
             except Exception:
                 raise TypeError(
                     f"For test='{test}' and key='{key}', cannot "
@@ -215,12 +240,19 @@ class Test_IonizationStates:
                 actual = instance[particle, int_charge].ionic_fraction
                 expected = instance.ionic_fractions[particle][int_charge]
                 # We only need to check if one is broken
+#                if not (all(np.isnan(actual)) and all(np.isnan(expected))):
+            if np.isnan(actual) and np.isnan(expected):
+                continue
+            else:
                 assert np.isclose(actual, expected), (
                     f"Indexing broken for:\n"
                     f"       test = '{test}'\n"
                     f"   particle = '{particle}'")
 
-    @pytest.mark.parametrize('test', test_names2)
+    @pytest.mark.parametrize(
+        'test',
+        [name for name in test_names2 if isinstance(tests[name]['inputs'], dict)]
+    )
     def test_normalization(self, test):
         instance = self.instances[test]
         instance.normalize()
