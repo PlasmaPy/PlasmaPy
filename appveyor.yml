@@ -23,12 +23,12 @@ install:
   - "powershell ci-helpers/appveyor/install-miniconda.ps1"
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "activate test"
+  - "pip install --quiet pytest-astropy"
   - "pip install --quiet -r requirements/requirements.txt"
-  - "python setup.py develop"
 
 
 # Not a .NET project, we build plasmapy in the install step instead
 build: false
 
 test_script:
-  - "%CMD_IN_ENV% pytest"
+  - "python setup.py test"

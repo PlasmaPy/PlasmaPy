@@ -25,9 +25,10 @@ Plasma objects are constructed using the special factory
 class `~plasmapy.classes.Plasma`: ::
 
     >>> x = plasmapy.classes.Plasma(T_e=T_e,
-                                    n_e=n_e,
-                                    Z=Z,
-                                    particle=particle)  # doctest: +SKIP
+    ...                             n_e=n_e,
+    ...                             Z=Z,
+    ...                             particle=particle)  # doctest: +SKIP
+
 
 The result of a call to `~plasmapy.classes.Plasma` will be either a
 `~plasmapy.classes.GenericPlasma` object, or a subclass of `~plasmapy.classes.GenericPlasma`
