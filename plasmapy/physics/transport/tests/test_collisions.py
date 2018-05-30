@@ -40,7 +40,7 @@ class Test_Coulomb_logarithm:
         self.gms5_negative = 0.03126832674323108
         self.gms6 = 3.635342040477818
         self.gms6_negative = 0.030720859361047514
-        
+
     def test_handle_invalid_V(self):
         """Test that V default, V = None, and V = np.nan all give the same result"""
         methodVal_0 = Coulomb_logarithm(self.T_arr[0],
@@ -59,7 +59,7 @@ class Test_Coulomb_logarithm:
                                         z_mean=1 * u.dimensionless_unscaled)
         assert_quantity_allclose(methodVal_0, methodVal_1)
         assert_quantity_allclose(methodVal_0, methodVal_2)
-        
+
     def test_handle_zero_V(self):
         """Test that V == 0 returns a PhysicsError"""
         with pytest.raises(exceptions.PhysicsError):
@@ -86,7 +86,7 @@ class Test_Coulomb_logarithm:
                                         V=np.nan * u.m / u.s,
                                         method=method)
         assert_quantity_allclose(methodVal[0], methodVal_0)
-        
+
     def test_handle_V_arraysizes(self):
         """Test that different sized V input array gets handled by _boilerplate"""
         methodVal_0 = Coulomb_logarithm(self.T_arr[0],
