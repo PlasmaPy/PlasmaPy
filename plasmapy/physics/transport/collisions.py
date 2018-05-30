@@ -558,12 +558,14 @@ def impact_parameter(T,
         # ARRAY NOTES
         # T and V should be guaranteed to be same size inputs from _boilerplate
         # therefore, lambdaBroglie and bPerp are either both scalar or both array
-        if np.isscalar(bPerp.value) and np.isscalar(lambdaBroglie.value):  # both scalar
+        # if np.isscalar(bPerp.value) and np.isscalar(lambdaBroglie.value):  # both scalar
+        try:  # assume both scalar
             if bPerp > lambdaBroglie:
                 bmin = bPerp
             else:
                 bmin = lambdaBroglie
-        else:  # both lambdaBroglie and bPerp are arrays
+        # else:  # both lambdaBroglie and bPerp are arrays
+        except ValueError:  # both lambdaBroglie and bPerp are arrays
             bmin = lambdaBroglie
             bmin[bPerp > lambdaBroglie] = bPerp[bPerp > lambdaBroglie]
     elif method == "GMS-1":
