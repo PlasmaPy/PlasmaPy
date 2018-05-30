@@ -93,17 +93,17 @@ class Test_Coulomb_logarithm:
                                         self.n_arr[0],
                                         self.particles,
                                         z_mean=1 * u.dimensionless_unscaled,
-                                        V=np.array([1e7, 3e7]) * u.m / u.s)
+                                        V=np.array([np.nan, 3e7]) * u.m / u.s)
         methodVal_1 = Coulomb_logarithm(self.T_arr[1],
                                         self.n_arr[0],
                                         self.particles,
                                         z_mean=1 * u.dimensionless_unscaled,
-                                        V=np.array([1e7, 3e7]) * u.m / u.s)
+                                        V=np.array([1e7, np.nan]) * u.m / u.s)
         methodVal_2 = Coulomb_logarithm(self.T_arr,
                                         self.n_arr[0],
                                         self.particles,
                                         z_mean=1 * u.dimensionless_unscaled,
-                                        V=np.array([1e7, 3e7]) * u.m / u.s)
+                                        V=np.array([np.nan, np.nan]) * u.m / u.s)
         assert_quantity_allclose(methodVal_0[0], methodVal_2[0])
         assert_quantity_allclose(methodVal_1[1], methodVal_2[1])
 
