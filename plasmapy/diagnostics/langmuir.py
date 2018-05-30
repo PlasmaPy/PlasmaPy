@@ -273,7 +273,8 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
         Estimate of the ion saturation current in units of Am^-2.
 
     "hot_fraction" : float
-        Estimate of the total hot (energetic) electron fraction.
+        Estimate of the total hot (energetic) electron fraction. Only supplied
+        if bimaxwellian is True.
 
     Notes
     -----
@@ -1046,7 +1047,7 @@ def get_ion_density_OML(probe_characteristic, probe_area, gas,
     Notes
     -----
     The method implemented in this function holds for cylindrical probes in a
-    cold ion plasma, ie. :math:T_i=0` eV. With OML theory an expression is found
+    cold ion plasma, ie. :math:`T_i=0` eV. With OML theory an expression is found
     for the ion current as function of probe bias independent of the electron
     temperature [mott-smith.langmuir-1926]_:
 
