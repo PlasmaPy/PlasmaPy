@@ -70,7 +70,14 @@ def check_quantity(validations):  # TODO simplify via **kwargs
     Parameters
     ----------
     validations : `dict`
-        Validation dictionary.
+        Validation dictionary, with structure as in
+        the example. Valid keys for each argument are:
+        'units': `astropy.units.Unit`,
+        'can_be_negative': `bool`,
+        'can_be_complex': `bool`,
+        'can_be_inf': `bool`,
+        'can_be_nan': `bool`,
+        'none_shall_pass': `bool`
 
     Raises
     ------
@@ -81,7 +88,7 @@ def check_quantity(validations):  # TODO simplify via **kwargs
     `~astropy.units.UnitConversionError`
         If the argument is not in acceptable units.
 
-    ~astropy.units.UnitsError
+    `~astropy.units.UnitsError`
         If after the assumption checks, the argument is still not in acceptable
         units.
 
@@ -91,7 +98,7 @@ def check_quantity(validations):  # TODO simplify via **kwargs
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    `~astropy.units.UnitsWarning`
         If a `~astropy.units.Quantity` is not provided and unique units
         are provided, a `UnitsWarning` will be raised and the inputted
         units will be assumed.
