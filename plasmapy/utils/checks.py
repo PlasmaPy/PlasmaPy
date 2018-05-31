@@ -27,6 +27,46 @@ def check_quantity(validations):  # TODO simplify via **kwargs
     If a number (non-Quantity) value is inserted in place of a value with units,
     assume the input is an SI Quantity and cast it to one.
 
+    This is probably best illustrated with an example:
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> @check_quantity({
+    ... "x": {"units": u.m,
+    ...       "can_be_negative": False,
+    ...       "can_be_complex": True,
+    ...       "can_be_inf": True}
+    ... })
+    ... def func(x):
+    ...     return x
+
+    >>> func(1 * u.m)
+    <Quantity 1. m>
+
+    >>> func(1 * u.s)
+    Traceback (most recent call last):
+      ...
+    astropy.units.core.UnitConversionError: The argument x to func should be a Quantity with the following units: m
+
+    >>> import pytest    # to show the UnitsWarning
+    >>> with pytest.warns(u.UnitsWarning, message="Assuming units of m."):
+    ...     func(1)
+    <Quantity 1. m>
+
+    >>> func(-1 * u.m)
+    Traceback (most recent call last):
+      ...
+    ValueError: The argument x to function func cannot contain negative numbers.
+
+    >>> func(np.inf * u.m)
+    <Quantity inf m>
+
+    >>> func(None)
+    Traceback (most recent call last):
+      ...
+    ValueError: The argument x to function func cannot contain Nones.
+
     Parameters
     ----------
     validations : `dict`
@@ -60,26 +100,6 @@ def check_quantity(validations):  # TODO simplify via **kwargs
     -------
     function
         Decorated function.
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> @check_quantity({
-    ... "x": {"units": u.m},
-    ... "y": {"units": u.s,
-    ...       "can_be_negative": False,
-    ...       "can_be_complex": True,
-    ...       "can_be_inf": False}
-    ... })
-    ... def func(x: u.m, y: u.s=1 * u.s):
-    ...     return x
-    ...
-    >>> func(1 * u.m)
-    <Quantity 1. m>
-    >>> func(1 * u.m, 2 * u.m)
-    Traceback (most recent call last):
-      ...
-    astropy.units.core.UnitConversionError: The argument y to func should be a Quantity with the following units: s
 
     See also
     --------
