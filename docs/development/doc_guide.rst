@@ -14,7 +14,7 @@ to it.
 
 Using sphinx within the project
 -------------------------------
-To build docs locally, run ``sphinx-build docs docs/_build`` from
+To build docs locally, run ``python setup.py build_docs`` from
 within the main PlasmaPy repository directory, then open
 ``docs/_build/index.html`` with your browser of choice.
 

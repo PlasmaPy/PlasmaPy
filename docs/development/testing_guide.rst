@@ -12,9 +12,10 @@ submitted it as a pull request, is to just push your code to GitHub.
 Pull requests are tested using Travis CI, CircleCI, and AppVeyor to make
 sure that the code passes tests and the documentation is able to be built.
 
-To run the test suite locally, use ``pytest`` from the repository's root
-directory.  This should detect our ``setup.cfg`` file and thus also verify
-examples in docstrings.
+To run the test suite locally, use ``python setup.py test`` from the
+repository's root directory.  This should detect our ``setup.cfg`` file and thus
+also verify examples in docstrings, the narrative documentation. Doing it
+this way also
 
 
 A few guidelines to on writing neat, readable and useful tests:
@@ -117,7 +118,7 @@ every Travis CI testing session, information on which lines were
 executed in the test is sent to Coveralls.io. At the very least, try
 to avoid test coverage decreasing if possible.
 
-To run coverage.py locally, run ``coverage run -m pytest``, then
+To run coverage.py locally, run ``python setup.py test --coverage``, then
 generate a HTML description with ``coverage html``.
 
 At the time of writing this, coverage.py has a known issue with being
