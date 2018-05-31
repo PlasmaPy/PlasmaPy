@@ -11,15 +11,21 @@ from textwrap import dedent
 
 __all__ = [
     "check_quantity",
+    "_check_quantity",
     "check_relativistic",
 ]
 
 
 def check_quantity(validations):  # TODO simplify via **kwargs
     """
-    Raise an exception if an annotated argument in a decorated function
-    is an `~astropy.units.Quantity` with incorrect units and valid
-    numerical values, or assume inputs are SI Quantities.
+    Verify that the function's arguments have correct units.
+
+    This decorator raises an exception if an annotated argument in the
+    decorated function is an `~astropy.units.Quantity` with incorrect units
+    or of the incorrect # TODO name - Nones, NaNs, negatives...
+
+    If a number (non-Quantity) value is inserted in place of a value with units,
+    assume the input is an SI Quantity and cast it to one.
 
     Parameters
     ----------
@@ -74,6 +80,10 @@ def check_quantity(validations):  # TODO simplify via **kwargs
     Traceback (most recent call last):
       ...
     astropy.units.core.UnitConversionError: The argument y to func should be a Quantity with the following units: s
+
+    See also
+    --------
+    _check_quantity
 
     """
     def decorator(f):
