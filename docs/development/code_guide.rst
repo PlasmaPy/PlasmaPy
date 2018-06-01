@@ -78,13 +78,24 @@ activate via
   source /home/user/anaconda3/bin/activate root
 
 where `/home/user/anaconda3/` can be swapped to wherever your anaconda
-installation was resides.
+installation resides.
 
-On Windows, the way to do this is via running `Anaconda Prompt` from the
-Start Menu. `Git Bash` may also work if you have added Anaconda to `PATH`.
+On `newer versions of Anaconda <https://conda.io/docs/release-notes
+.html#recommended-change-to-enable-conda-in-your-shell>`_ the
+recommended activation process has changed to:
 
-Afterwards, enter PlasmaPy's repository root directory and execute the
-following:
+.. code-block:: bash
+
+  . /home/user/anaconda3/etc/profile.d/conda.sh
+
+and the default environment is now named `base`.
+
+.. note::
+    On Windows, the way to do this is via running `Anaconda Prompt` from the
+    Start Menu. `Git Bash` may also work if you have added Anaconda to `PATH`.
+
+Having activated Anaconda, enter PlasmaPy's repository root directory and
+create an environment with our suggested packages by executing the following:
 
 .. code-block:: bash
 
@@ -96,7 +107,14 @@ You may now enter the environment via
 
     source activate plasmapy
 
-On Windows, skip the `source` part of the previous command.
+In newer Conda versions, the command to run is
+
+.. code-block:: bash
+
+    conda activate plasmapy
+
+.. note::
+    On Windows, skip the `source` part of the previous command.
 
 Virtualenv
 ----------
