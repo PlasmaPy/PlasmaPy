@@ -16,7 +16,7 @@ __all__ = [
 ]
 
 
-def check_quantity(**validations):  # TODO simplify via **kwargs
+def check_quantity(**validations):
     """
     Verify that the function's arguments have correct units.
 
