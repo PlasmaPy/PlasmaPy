@@ -90,8 +90,7 @@ recommended activation process has changed to:
 .. code-block:: bash
 
   . /home/user/anaconda3/etc/profile.d/conda.sh
-
-and the default environment is now named `base`.
+  conda activate
 
 .. note::
     On Windows, the way to do this is via running `Anaconda Prompt` from the
