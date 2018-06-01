@@ -16,10 +16,10 @@ from plasmapy.physics import quantum, parameters
 
 __all__ = ['quantum_theta', 'beta']
 
-@utils.check_quantity({
-    'T': {'units': u.K, 'can_be_negative': False},
-    'n_e': {'units': u.m**-3, 'can_be_negative': False},
-})
+@utils.check_quantity(
+    T={'units': u.K, 'can_be_negative': False},
+    n_e={'units': u.m**-3, 'can_be_negative': False},
+)
 def quantum_theta(T: u.K, n_e: u.m**-3):
     """
     Compares Fermi energy to thermal kinetic energy to check if quantum
@@ -55,11 +55,11 @@ def quantum_theta(T: u.K, n_e: u.m**-3):
     return theta
 
 
-@utils.check_quantity({
-    'T': {'units': u.K, 'can_be_negative': False},
-    'n': {'units': u.m**-3, 'can_be_negative': False},
-    'B': {'units': u.T}
-})
+@utils.check_quantity(
+    T={'units': u.K, 'can_be_negative': False},
+    n={'units': u.m**-3, 'can_be_negative': False},
+    B={'units': u.T}
+)
 def beta(T: u.K, n: u.m**-3, B: u.T):
     """
     The ratio of thermal pressure to magnetic pressure.

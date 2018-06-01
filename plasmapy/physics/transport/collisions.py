@@ -70,12 +70,11 @@ __all__ = [
     "mobility",
     "Knudsen_number",
     "coupling_parameter",
-]
+    ]
 
 
-@utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                       "n_e": {"units": u.m ** -3}
-                       })
+@utils.check_quantity(T={"units": u.K, "can_be_negative": False},
+                      n_e={"units": u.m ** -3} )
 def Coulomb_logarithm(T,
                       n_e,
                       particles,
@@ -315,8 +314,7 @@ def _boilerPlate(T, particles, V):
     return T, masses, charges, reduced_mass, V
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False})
 def impact_parameter_perp(T,
                           particles,
                           V=np.nan * u.m / u.s):
@@ -404,9 +402,9 @@ def impact_parameter_perp(T,
     return bPerp.to(u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def impact_parameter(T,
                      n_e,
                      particles,
@@ -595,9 +593,9 @@ def impact_parameter(T,
     return bmin.to(u.m), bmax.to(u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n={"units": u.m ** -3}
+                )
 def collision_frequency(T,
                         n,
                         particles,
@@ -772,10 +770,7 @@ def collision_frequency(T,
     return freq.to(u.Hz)
 
 
-@check_quantity({
-    'impact_param': {'units': u.m,
-                    'can_be_negative': False}
-    })
+@check_quantity(impact_param={'units': u.m, 'can_be_negative': False})
 def Coulomb_cross_section(impact_param: u.m):
     r"""Cross section for a large angle Coulomb collision.
 
@@ -816,10 +811,10 @@ def Coulomb_cross_section(impact_param: u.m):
     sigma = np.pi * (2 * impact_param) ** 2
     return sigma
 
-@utils.check_quantity({
-    'T_e': {'units': u.K, 'can_be_negative': False},
-    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
-    })
+@utils.check_quantity(
+    T_e={'units': u.K, 'can_be_negative': False},
+    n_e={'units': u.m ** -3, 'can_be_negative': False}
+    )
 def fundamental_electron_collision_freq(T_e,
                                         n_e,
                                         ion_particle,
@@ -945,10 +940,10 @@ def fundamental_electron_collision_freq(T_e,
     return nu_e.to(1 / u.s)
 
 
-@utils.check_quantity({
-    'T_i': {'units': u.K, 'can_be_negative': False},
-    'n_i': {'units': u.m ** -3, 'can_be_negative': False}
-    })
+@utils.check_quantity(
+    T_i={'units': u.K, 'can_be_negative': False},
+    n_i={'units': u.m ** -3, 'can_be_negative': False}
+    )
 def fundamental_ion_collision_freq(T_i,
                                    n_i,
                                    ion_particle,
@@ -1081,9 +1076,9 @@ def fundamental_ion_collision_freq(T_i,
     return nu_i.to(1 / u.s)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def mean_free_path(T,
                    n_e,
                    particles,
@@ -1199,9 +1194,9 @@ def mean_free_path(T,
     return mfp.to(u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n={"units": u.m ** -3}
+                )
 def Spitzer_resistivity(T,
                         n,
                         particles,
@@ -1327,9 +1322,9 @@ def Spitzer_resistivity(T,
     return spitzer.to(u.Ohm * u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def mobility(T,
              n_e,
              particles,
@@ -1454,9 +1449,9 @@ def mobility(T,
     return mobility_value.to(u.m ** 2 / (u.V * u.s))
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def Knudsen_number(characteristic_length,
                    T,
                    n_e,
@@ -1573,9 +1568,9 @@ def Knudsen_number(characteristic_length,
     return knudsen_param.to(u.dimensionless_unscaled)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def coupling_parameter(T,
                        n_e,
                        particles,

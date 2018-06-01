@@ -16,7 +16,7 @@ __all__ = [
 ]
 
 
-def check_quantity(validations):  # TODO simplify via **kwargs
+def check_quantity(**validations):  # TODO simplify via **kwargs
     """
     Verify that the function's arguments have correct units.
 
@@ -32,12 +32,10 @@ def check_quantity(validations):  # TODO simplify via **kwargs
     Examples
     --------
     >>> from astropy import units as u
-    >>> @check_quantity({
-    ... "x": {"units": u.m,
+    >>> @check_quantity(x={"units": u.m,
     ...       "can_be_negative": False,
     ...       "can_be_complex": True,
-    ...       "can_be_inf": True}
-    ... })
+    ...       "can_be_inf": True})
     ... def func(x):
     ...     return x
 
@@ -69,9 +67,10 @@ def check_quantity(validations):  # TODO simplify via **kwargs
 
     Parameters
     ----------
-    validations : `dict`
-        Validation dictionary, with structure as in
-        the example. Valid keys for each argument are:
+    Arguments to be validated passed in as keyword
+    arguments, with values as validation dictionaries,
+    with structure as in the example.
+    Valid keys for each argument are:
         'units': `astropy.units.Unit`,
         'can_be_negative': `bool`,
         'can_be_complex': `bool`,
