@@ -70,7 +70,7 @@ distribution <https://www.anaconda.com/download/>`_ is strongly
 recommended.
 
 Activate Anaconda
-*****************
+~~~~~~~~~~~~~~~~~
 
 After installing Anaconda, launch any conda environment. By default,
 conda installs a `root` environment, which you should be able to
@@ -98,7 +98,7 @@ and the default environment is now named `base`.
     Start Menu. `Git Bash` may also work if you have added Anaconda to `PATH`.
 
 Create your environment
-***********************
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Having activated Anaconda, enter PlasmaPy's repository root directory and
 create an environment with our suggested packages by executing the following:
@@ -227,9 +227,9 @@ Working with Cython code
 
 Cython poses a whole new set of issues for code development.
 
-.. todo::
+.. note::
 
-    Describe ways to develop Cython code once we know those.
+    TODO: Describe ways to develop Cython code once we know those.
     * Ipython
     * check back on the Cython book
 
