@@ -10,19 +10,8 @@ followed during the development of PlasmaPy and affiliated packages.
 Code written for PlasmaPy must be compatible with Python 3.6 and
 later. Python 2 is not supported by PlasmaPy.
 
-PlasmaPy requires
-
-* Python 3.6 or later
-* Astropy 2.0 or later
-* NumPy 1.13 or later
-* SciPy 0.19 or later
-* matplotlib 2.0 or later
-* Cython
-* mpmath 1.0 or later
-* lmfit 0.9.7 or later
-
 Obtaining PlasmaPy source code
-=========================================
+==============================
 
 After creating your GitHub account, go to the [main
 repository](https://github.com/PlasmaPy/PlasmaPy) and **fork a copy of
