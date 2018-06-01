@@ -204,18 +204,39 @@ for every new shell session.
 
 Installing your own dev version
 ===============================
-To be able to import PlasmaPy from your source version:
+To be able to import PlasmaPy from your source version, enter the repository
+root and use one of
 
 .. code-block:: bash
 
-  pip install -e {plasmapy-repository-root}
+  python setup.py develop
+  pip install -e .
 
-Where `{plasmapy-repository-root}` is the directory resulting from
-`git clone`.
+.. note::
 
-If you are not working within a virtual environment, this may end in a
-permission error - this can be avoided via also adding the `--user`
-flag.
+    If you are not working within a virtual environment, this may end in a
+    permission error - this can be avoided via also adding the `--user`
+    flag. But seriously, use a virtual environment and save yourself the trouble.
+
+Either one of these commands will create a soft link to your cloned repository.
+Any changes in Python code you make there will be there when you `import
+plasmapy` from an interactive session. The exception is Cython code.
+
+Working with Cython code
+========================
+
+Cython poses a whole new set of issues for code development.
+
+.. todo::
+
+    Describe ways to develop Cython code once we know those.
+    * Ipython
+    * check back on the Cython book
+
+The safest bet for running tests and checking documentation is using `python
+setup.py test` and `python setup.py build_docs` provided by `astropy_helpers`.
+These commands copy the entire code base into a temporary directory and build
+all Cython extensions there before running tests
 
 Coding Style
 ============
