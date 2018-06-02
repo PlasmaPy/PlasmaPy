@@ -273,71 +273,11 @@ def particle_input(wrapped_function: Callable = None,
                     new_kwargs[argname] = None
                     continue
 
-                # Convert the argument to a Particle object if it is not
-                # already one.
-
-                if not already_particle:
-
-                    if not isinstance(argval, (int, str)):
-                        raise TypeError(
-                            f"The argument {argname} to {funcname} must be "
-                            f"a string, an integer corresponding to an atomic "
-                            f"number, or a Particle object.")
-
-                    try:
-                        particle = Particle(argval, Z=Z, mass_numb=mass_numb)
-                    except InvalidParticleError as e:
-                        raise InvalidParticleError(_particle_errmsg(
-                            argname, argval, Z, mass_numb, funcname)) from e
-
-                # We will need to do the same error checks whether or not the
-                # argument is already an instance of the Particle class.
-
-                if already_particle:
-                    particle = argval
-
-                # If the name of the argument annotated with Particle in the
-                # decorated function is element, isotope, or ion; then this
-                # decorator should raise the appropriate exception when the
-                # particle ends up not being an element, isotope, or ion.
-
-                cat_table = [
-                    ('element', particle.element, InvalidElementError),
-                    ('isotope', particle.isotope, InvalidIsotopeError),
-                    ('ion', particle.ionic_symbol, InvalidIonError),
-                ]
-
-                for category_name, category_symbol, CategoryError in cat_table:
-                    if argname == category_name and not category_symbol:
-                        raise CategoryError(
-                            f"The argument {argname} = {repr(argval)} to "
-                            f"{funcname} does not correspond to a valid "
-                            f"{argname}.")
-
-                # Some functions require that particles be charged, or
-                # at least that particles have charge information.
-
-                _integer_charge = particle._attributes['integer charge']
-
-                must_be_charged = 'charged' in require
-                must_have_charge_info = set(any_of) == {'charged', 'uncharged'}
-
-                uncharged = _integer_charge == 0
-                lacks_charge_info = _integer_charge is None
-
-                if must_be_charged and (uncharged or must_have_charge_info):
-                    raise ChargeError(f"A charged particle is required for {funcname}.")
-
-                if must_have_charge_info and lacks_charge_info:
-                    raise ChargeError(f"Charge information is required for {funcname}.")
-
-                # Some functions require particles that belong to more complex
-                # classification schemes.  Again, be sure to provide a
-                # maximally useful error message.
-
-                if not particle.is_category(require=require, exclude=exclude, any_of=any_of):
-                    raise AtomicError(
-                        _category_errmsg(particle, require, exclude, any_of, funcname))
+                params = (argval, Z, mass_numb)
+                particle = get_particle(argname,
+                                        params,
+                                        already_particle,
+                                        funcname)
 
                 new_kwargs[argname] = particle
 
@@ -349,6 +289,78 @@ def particle_input(wrapped_function: Callable = None,
     # without arguments.  This allows us to invoke the decorator either
     # as `@particle_input` or as `@particle_input()`, where the latter
     # call allows the decorator to have keyword arguments.
+
+    def get_particle(argname, params, already_particle, funcname):
+        argval, Z, mass_numb = params
+
+        # Convert the argument to a Particle object if it is not
+        # already one.
+
+        if not already_particle:
+
+            if not isinstance(argval, (int, str)):
+                raise TypeError(
+                    f"The argument {argname} to {funcname} must be "
+                    f"a string, an integer corresponding to an atomic "
+                    f"number, or a Particle object.")
+
+            try:
+                particle = Particle(argval, Z=Z, mass_numb=mass_numb)
+            except InvalidParticleError as e:
+                raise InvalidParticleError(_particle_errmsg(
+                    argname, argval, Z, mass_numb, funcname)) from e
+
+        # We will need to do the same error checks whether or not the
+        # argument is already an instance of the Particle class.
+
+        if already_particle:
+            particle = argval
+
+        # If the name of the argument annotated with Particle in the
+        # decorated function is element, isotope, or ion; then this
+        # decorator should raise the appropriate exception when the
+        # particle ends up not being an element, isotope, or ion.
+
+        cat_table = [
+            ('element', particle.element, InvalidElementError),
+            ('isotope', particle.isotope, InvalidIsotopeError),
+            ('ion', particle.ionic_symbol, InvalidIonError),
+        ]
+
+        for category_name, category_symbol, CategoryError in cat_table:
+            if argname == category_name and not category_symbol:
+                raise CategoryError(
+                    f"The argument {argname} = {repr(argval)} to "
+                    f"{funcname} does not correspond to a valid "
+                    f"{argname}.")
+
+        # Some functions require that particles be charged, or
+        # at least that particles have charge information.
+
+        _integer_charge = particle._attributes['integer charge']
+
+        must_be_charged = 'charged' in require
+        must_have_charge_info = set(any_of) == {'charged', 'uncharged'}
+
+        uncharged = _integer_charge == 0
+        lacks_charge_info = _integer_charge is None
+
+        if must_be_charged and (uncharged or must_have_charge_info):
+            raise ChargeError(f"A charged particle is required for {funcname}.")
+
+        if must_have_charge_info and lacks_charge_info:
+            raise ChargeError(f"Charge information is required for {funcname}.")
+
+        # Some functions require particles that belong to more complex
+        # classification schemes.  Again, be sure to provide a
+        # maximally useful error message.
+
+        if not particle.is_category(require=require, exclude=exclude, any_of=any_of):
+            raise AtomicError(
+                _category_errmsg(particle, require, exclude, any_of, funcname))
+
+        return particle
+
 
     if wrapped_function is not None:
         return decorator(wrapped_function)
