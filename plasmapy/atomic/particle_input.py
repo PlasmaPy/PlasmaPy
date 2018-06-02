@@ -204,12 +204,10 @@ def particle_input(wrapped_function: Callable = None,
     """
 
     def decorator(wrapped_function: Callable):
-
         wrapped_signature = inspect.signature(wrapped_function)
 
         @functools.wraps(wrapped_function)
         def wrapper(*args, **kwargs):
-
             annotations = wrapped_function.__annotations__
             bound_args = wrapped_signature.bind(*args, **kwargs)
 
@@ -218,10 +216,33 @@ def particle_input(wrapped_function: Callable = None,
 
             funcname = wrapped_function.__name__
 
-            args_to_become_particles = [
-                argname for argname in annotations.keys()
-                if annotations[argname] is Particle and argname != 'return'
-            ]
+            args_to_become_particles = []
+            for argname in annotations.keys():
+                if isinstance(annotations[argname], tuple):
+                    annotated_argnames = annotations[argname]
+                    expected_params = len(annotated_argnames)
+                    received_params = len(arguments[argname])
+                    if not expected_params == received_params:
+                        raise TypeError(
+                            f"Number of parameters allowed in the tuple "
+                            f"({expected_params} parameters) are "
+                            f"not equal to number of parameters passed in "
+                            f"the tuple ({received_params} parameters).")
+                elif isinstance(annotations[argname], list):
+                    annotated_argnames = annotations[argname]
+                    expected_params = len(annotated_argnames)
+                    if expected_params > 1:
+                        raise TypeError(
+                            f"A list can take any number of parameters "
+                            f"without explictly mentioning the number of "
+                            f"parameters in declaration. Use a tuple "
+                            f"instead or '[Particle]' should be enough.")
+                else:
+                    annotated_argnames = (annotations[argname],)
+
+                for annotated_argname in annotated_argnames:
+                    if annotated_argname is Particle and argname != 'return':
+                        args_to_become_particles.append(argname)
 
             if not args_to_become_particles:
                 raise AtomicError(
@@ -253,42 +274,58 @@ def particle_input(wrapped_function: Callable = None,
             new_kwargs = {}
 
             for argname in argnames:
+                raw_argval = arguments[argname]
+                if isinstance(raw_argval, (tuple, list)):
+                    # Input argument value is a tuple or list
+                    # of correspoding particles or atomic values.
+                    argval_tuple = raw_argval
+                    particles = []
+                else:
+                    # Otherwise convert t to tuple anyway so it can work
+                    # with loops too.
+                    argval_tuple = (raw_argval,)
 
-                argval = arguments[argname]
+                for argval in argval_tuple:
+                    should_be_particle = argname in args_to_become_particles
+                    already_particle = isinstance(argval, Particle)
 
-                should_be_particle = argname in args_to_become_particles
-                already_particle = isinstance(argval, Particle)
+                    # If the argument is not annotated with Particle, then we just
+                    # pass it through to the new keywords without doing anything.
 
-                # If the argument is not annotated with Particle, then we just
-                # pass it through to the new keywords without doing anything.
+                    if not should_be_particle:
+                        new_kwargs[argname] = argval
+                        continue
 
-                if not should_be_particle:
-                    new_kwargs[argname] = argval
-                    continue
+                    # Occasionally there will be functions where it will be
+                    # useful to allow None as an argument.
 
-                # Occasionally there will be functions where it will be
-                # useful to allow None as an argument.
+                    if none_shall_pass and argval is None:
+                        new_kwargs[argname] = None
+                        continue
 
-                if none_shall_pass and argval is None:
-                    new_kwargs[argname] = None
-                    continue
+                    params = (argval, Z, mass_numb)
+                    particle = get_particle(argname,
+                                            params,
+                                            already_particle,
+                                            funcname)
 
-                params = (argval, Z, mass_numb)
-                particle = get_particle(argname,
-                                        params,
-                                        already_particle,
-                                        funcname)
-
-                new_kwargs[argname] = particle
+                    if len(argval_tuple) == 1:
+                        # Directly set values if argument value
+                        # consists of only one actual value.
+                        new_kwargs[argname] = particle
+                    else:
+                        # If it consists of more than 1 value, keep
+                        # appending them.
+                        particles.append(particle)
+                        # Set appended values if current iteration is the
+                        # last iteration.
+                        if argval == argval_tuple[-1]:
+                            new_kwargs[argname] = tuple(particles)
+                            del particles
 
             return wrapped_function(**new_kwargs)
 
         return wrapper
-
-    # The following code allows the decorator to be used either with or
-    # without arguments.  This allows us to invoke the decorator either
-    # as `@particle_input` or as `@particle_input()`, where the latter
-    # call allows the decorator to have keyword arguments.
 
     def get_particle(argname, params, already_particle, funcname):
         argval, Z, mass_numb = params
@@ -298,11 +335,12 @@ def particle_input(wrapped_function: Callable = None,
 
         if not already_particle:
 
-            if not isinstance(argval, (int, str)):
+            if not isinstance(argval, (int, str, tuple, list)):
                 raise TypeError(
                     f"The argument {argname} to {funcname} must be "
-                    f"a string, an integer corresponding to an atomic "
-                    f"number, or a Particle object.")
+                    f"a string, an integer or a tuple or list of them"
+                    f"corresponding to an atomic number, or a"
+                    f"Particle object.")
 
             try:
                 particle = Particle(argval, Z=Z, mass_numb=mass_numb)
@@ -361,6 +399,11 @@ def particle_input(wrapped_function: Callable = None,
 
         return particle
 
+
+    # The following code allows the decorator to be used either with or
+    # without arguments.  This allows us to invoke the decorator either
+    # as `@particle_input` or as `@particle_input()`, where the latter
+    # call allows the decorator to have keyword arguments.
 
     if wrapped_function is not None:
         return decorator(wrapped_function)
