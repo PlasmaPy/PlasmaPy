@@ -933,7 +933,7 @@ def fundamental_electron_collision_freq(T_e,
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
     <Quantity 4.41166015e-07 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
-    <Quantity 5812750.59387446 1 / s>
+    <Quantity 5812633.74935003 1 / s>
 
     See Also
     --------
@@ -963,7 +963,7 @@ def fundamental_electron_collision_freq(T_e,
                                  n_e,
                                  particles,
                                  z_mean=Z_i,
-                                 V=V,
+                                 V=np.nan * u.m / u.s,
                                  method=coulomb_log_method)
         # dividing out by typical Coulomb logarithm value implicit in
         # the collision frequency calculation and replacing with
