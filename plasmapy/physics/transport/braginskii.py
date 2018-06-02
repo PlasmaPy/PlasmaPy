@@ -264,18 +264,18 @@ class ClassicalTransport:
     >>> t = ClassicalTransport(1*u.eV, 1e20/u.m**3,
     ...                         1*u.eV, 1e20/u.m**3, 'p')
     >>> t.resistivity()
-    <Quantity 0.00036701 m Ohm>
+    <Quantity 0.00036704 m Ohm>
     >>> t.thermoelectric_conductivity()
     <Quantity 0.711084>
     >>> t.ion_thermal_conductivity()
     <Quantity 0.01552066 W / (K m)>
     >>> t.electron_thermal_conductivity()
-    <Quantity 0.38064293 W / (K m)>
+    <Quantity 0.38061307 W / (K m)>
     >>> t.ion_viscosity()
     <Quantity [4.62129725e-07, 4.60724824e-07, 4.60724824e-07, 0.00000000e+00,
                0.00000000e+00] Pa s>
     >>> t.electron_viscosity()
-    <Quantity [5.82273805e-09, 5.82082061e-09, 5.82082061e-09, 0.00000000e+00,
+    <Quantity [5.82228122e-09, 5.82036392e-09, 5.82036392e-09, 0.00000000e+00,
                0.00000000e+00] Pa s>
 
     References
