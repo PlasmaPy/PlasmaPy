@@ -310,14 +310,14 @@ def _boilerPlate(T, particles, V):
     reduced_mass = atomic.reduced_mass(*particles)
 
     # getting thermal velocity of system if no velocity is given
-    V = _vBoiler(V, T, reduced_mass)
+    V = _replaceNanVwithThermalV(V, T, reduced_mass)
 
     _check_relativistic(V, 'V')
 
     return T, masses, charges, reduced_mass, V
 
 
-def _vBoiler(V, T, m):
+def _replaceNanVwithThermalV(V, T, m):
     """
     Get thermal velocity of system if no velocity is given, for a given mass.
     Handles vector checks for V, you must already know that T and m are okay.
@@ -754,7 +754,7 @@ def collision_frequency(T,
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        V = _vBoiler(V, T, reduced_mass)
+        V = _replaceNanVwithThermalV(V, T, reduced_mass)
         # impact parameter for 90 degree collision
         bPerp = impact_parameter_perp(T=T,
                                       particles=particles,
@@ -772,7 +772,7 @@ def collision_frequency(T,
         # correct perpendicular collision radius
         # we ignore the reduced velocity and use the electron thermal
         # velocity instead
-        V = _vBoiler(V, T, m_e)
+        V = _replaceNanVwithThermalV(V, T, m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
         bPerp = impact_parameter_perp(T=T,
@@ -791,7 +791,7 @@ def collision_frequency(T,
         # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        V = _vBoiler(V, T, reduced_mass)
+        V = _replaceNanVwithThermalV(V, T, reduced_mass)
         bPerp = impact_parameter_perp(T=T,
                                       particles=particles,
                                       V=V)
@@ -952,7 +952,7 @@ def fundamental_electron_collision_freq(T_e,
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
 
     # specify to use electron thermal velocity (most probable), not based on reduced mass
-    V = _vBoiler(V, T_e, m_e)
+    V = _replaceNanVwithThermalV(V, T_e, m_e)
 
     particles = [ion_particle, 'e-']
     Z_i = atomic.integer_charge(ion_particle)
@@ -1090,7 +1090,7 @@ def fundamental_ion_collision_freq(T_i,
     particles = [ion_particle, ion_particle]
 
     # specify to use ion thermal velocity (most probable), not based on reduced mass
-    V = _vBoiler(V, T_i, m_i)
+    V = _replaceNanVwithThermalV(V, T_i, m_i)
 
     Z_i = atomic.integer_charge(ion_particle)
 
