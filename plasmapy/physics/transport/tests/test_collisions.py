@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 from astropy import units as u
+from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.physics.transport import (Coulomb_logarithm,
                                         impact_parameter_perp,
@@ -20,7 +21,9 @@ class Test_Coulomb_logarithm:
     def setup_class(self):
         """initializing parameters for tests """
         self.temperature1 = 10 * 11604 * u.K
+        self.T_arr = np.array([1, 2]) * u.eV
         self.density1 = 1e20 * u.cm ** -3
+        self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
         self.temperature2 = 1 * 11604 * u.K
         self.density2 = 1e23 * u.cm ** -3
         self.z_mean = 2.5
@@ -38,11 +41,76 @@ class Test_Coulomb_logarithm:
         self.gms6 = 3.635342040477818
         self.gms6_negative = 0.030720859361047514
 
+    def test_handle_invalid_V(self):
+        """Test that V default, V = None, and V = np.nan all give the same result"""
+        methodVal_0 = Coulomb_logarithm(self.T_arr[0],
+                                        self.n_arr[0],
+                                        self.particles,
+                                        z_mean=1 * u.dimensionless_unscaled,
+                                        V=np.nan * u.m / u.s)
+        methodVal_1 = Coulomb_logarithm(self.T_arr[0],
+                                        self.n_arr[0],
+                                        self.particles,
+                                        z_mean=1 * u.dimensionless_unscaled,
+                                        V=None)
+        methodVal_2 = Coulomb_logarithm(self.T_arr[0],
+                                        self.n_arr[0],
+                                        self.particles,
+                                        z_mean=1 * u.dimensionless_unscaled)
+        assert_quantity_allclose(methodVal_0, methodVal_1)
+        assert_quantity_allclose(methodVal_0, methodVal_2)
+
+    def test_handle_zero_V(self):
+        """Test that V == 0 returns a PhysicsError"""
+        with pytest.raises(exceptions.PhysicsError):
+            Coulomb_logarithm(self.T_arr[0],
+                              self.n_arr[0],
+                              self.particles,
+                              z_mean=1 * u.dimensionless_unscaled,
+                              V=0 * u.m / u.s)
+
+    @pytest.mark.parametrize("method", ["classical", "GMS-1", "GMS-2", "GMS-3", "GMS-4", "GMS-5",
+                                        "GMS-6"])
+    def test_handle_numpy_array(self, method):
+        """Tests to verify that can handle Quantities with numpy array as the value"""
+        methodVal = Coulomb_logarithm(self.T_arr,
+                                      self.n_arr,
+                                      self.particles,
+                                      z_mean=1 * u.dimensionless_unscaled,
+                                      V=np.nan * u.m / u.s,
+                                      method=method)
+        methodVal_0 = Coulomb_logarithm(self.T_arr[0],
+                                        self.n_arr[0],
+                                        self.particles,
+                                        z_mean=1 * u.dimensionless_unscaled,
+                                        V=np.nan * u.m / u.s,
+                                        method=method)
+        assert_quantity_allclose(methodVal[0], methodVal_0)
+
+    def test_handle_V_arraysizes(self):
+        """Test that different sized V input array gets handled by _boilerplate"""
+        methodVal_0 = Coulomb_logarithm(self.T_arr[0],
+                                        self.n_arr[0],
+                                        self.particles,
+                                        z_mean=1 * u.dimensionless_unscaled,
+                                        V=np.array([np.nan, 3e7]) * u.m / u.s)
+        methodVal_1 = Coulomb_logarithm(self.T_arr[1],
+                                        self.n_arr[0],
+                                        self.particles,
+                                        z_mean=1 * u.dimensionless_unscaled,
+                                        V=np.array([1e7, np.nan]) * u.m / u.s)
+        methodVal_2 = Coulomb_logarithm(self.T_arr,
+                                        self.n_arr[0],
+                                        self.particles,
+                                        z_mean=1 * u.dimensionless_unscaled,
+                                        V=np.array([np.nan, np.nan]) * u.m / u.s)
+        assert_quantity_allclose(methodVal_0[0], methodVal_2[0])
+        assert_quantity_allclose(methodVal_1[1], methodVal_2[1])
+
     def test_symmetry(self):
         lnLambda = Coulomb_logarithm(self.temperature1, self.density2, self.particles)
         lnLambdaRev = Coulomb_logarithm(self.temperature1, self.density2, self.particles[::-1])
         assert lnLambda == lnLambdaRev
-
 
     def test_Chen_Q_machine(self):
         """
@@ -65,7 +133,6 @@ class Test_Coulomb_logarithm:
         errStr = ("Q-machine value of Coulomb logarithm should be "
                   f"{lnLambdaChen} and not {lnLambda}.")
         assert testTrue, errStr
-
 
     def test_Chen_lab(self):
         """
@@ -524,7 +591,9 @@ class Test_impact_parameter:
     def setup_class(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
+        self.T_arr = np.array([1, 2]) * u.eV
         self.n_e = 1e17 * u.cm ** -3
+        self.n_e_arr = np.array([1e17, 2e17]) * u.cm ** -3
         self.particles = ('e', 'p')
         self.z_mean = 2.5
         self.V = 1e4 * u.km / u.s
@@ -586,6 +655,24 @@ class Test_impact_parameter:
                              z_mean=np.nan * u.dimensionless_unscaled,
                              V=np.nan * u.m / u.s,
                              method="meow")
+
+    @pytest.mark.parametrize("method", ["classical", "GMS-1", "GMS-2", "GMS-3", "GMS-4", "GMS-5",
+                                        "GMS-6"])
+    def test_handle_numpy_array(self, method):
+        """Tests to verify that can handle Quantities with numpy array as the value"""
+        methodVal = impact_parameter(self.T_arr,
+                                     self.n_e_arr,
+                                     self.particles,
+                                     z_mean=1 * u.dimensionless_unscaled,
+                                     V=np.nan * u.m / u.s,
+                                     method=method)
+        methodVal_0 = impact_parameter(self.T_arr[0],
+                                       self.n_e_arr[0],
+                                       self.particles,
+                                       z_mean=1 * u.dimensionless_unscaled,
+                                       V=np.nan * u.m / u.s,
+                                       method=method)
+        assert_quantity_allclose((methodVal[0][0], methodVal[1][0]), methodVal_0)
 
 
 class Test_collision_frequency:
