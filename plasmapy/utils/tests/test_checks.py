@@ -140,7 +140,7 @@ def test_check_quantity_decorator_non_default(
 
     @check_quantity(x={"units": units, "can_be_negative": can_be_negative,
                        "can_be_complex": can_be_complex, "can_be_inf": can_be_inf}
-    )
+                    )
     def func(x):
         return x
 
@@ -199,6 +199,7 @@ def test_check_quantity_decorator_two_args_one_kwargs_default():
 
     func(1 * u.m, 1 * u.s, 10 * u.T)
 
+
 def test_check_quantity_decorator_two_args_one_kwargs_not_default():
 
     @check_quantity(
@@ -215,7 +216,7 @@ def test_check_quantity_decorator_two_args_one_kwargs_not_default():
 
 class Test_check_quantity_none_shall_pass:
     @check_quantity(x={"units": u.m, "none_shall_pass": True})
-    def func(self, x = None):
+    def func(self, x=None):
         if x is None:
             return 0 * u.m
         return x

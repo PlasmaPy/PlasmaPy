@@ -74,7 +74,7 @@ __all__ = [
 
 
 @utils.check_quantity(T={"units": u.K, "can_be_negative": False},
-                      n_e={"units": u.m ** -3} )
+                      n_e={"units": u.m ** -3})
 def Coulomb_logarithm(T,
                       n_e,
                       particles,
@@ -810,6 +810,7 @@ def Coulomb_cross_section(impact_param: u.m):
     """
     sigma = np.pi * (2 * impact_param) ** 2
     return sigma
+
 
 @utils.check_quantity(
     T_e={'units': u.K, 'can_be_negative': False},

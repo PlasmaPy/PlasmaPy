@@ -16,6 +16,7 @@ from plasmapy.physics import quantum, parameters
 
 __all__ = ['quantum_theta', 'beta']
 
+
 @utils.check_quantity(
     T={'units': u.K, 'can_be_negative': False},
     n_e={'units': u.m**-3, 'can_be_negative': False},

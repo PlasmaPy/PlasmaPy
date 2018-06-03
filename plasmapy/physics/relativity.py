@@ -12,6 +12,7 @@ __all__ = [
     "Lorentz_factor",
 ]
 
+
 @utils.check_quantity(
     V={'units': u.m / u.s, 'can_be_negative': True}
     )

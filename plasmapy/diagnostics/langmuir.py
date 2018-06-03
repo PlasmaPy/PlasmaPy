@@ -70,15 +70,15 @@ class Characteristic:
     """
 
     @utils.check_quantity(bias={'units': u.V,
-                                    'can_be_negative': True,
-                                    'can_be_complex': False,
-                                    'can_be_inf': False,
-                                    'can_be_nan': True},
-                           current={'units': u.A,
-                                       'can_be_negative': True,
-                                       'can_be_complex': False,
-                                       'can_be_inf': False,
-                                       'can_be_nan': True})
+                                'can_be_negative': True,
+                                'can_be_complex': False,
+                                'can_be_inf': False,
+                                'can_be_nan': True},
+                          current={'units': u.A,
+                                   'can_be_negative': True,
+                                   'can_be_complex': False,
+                                   'can_be_inf': False,
+                                   'can_be_nan': True})
     def __init__(self, bias, current):
         self.bias = bias
         self.current = current
@@ -201,15 +201,15 @@ class Characteristic:
 
 
 @utils.check_quantity(probe_area={'units': u.m**2,
-                                      'can_be_negative': False,
-                                      'can_be_complex': False,
-                                      'can_be_inf': False,
-                                      'can_be_nan': False},
+                                  'can_be_negative': False,
+                                  'can_be_complex': False,
+                                  'can_be_inf': False,
+                                  'can_be_nan': False},
                       gas={'units': u.u,
-                              'can_be_negative': False,
-                              'can_be_complex': False,
-                              'can_be_inf': False,
-                              'can_be_nan': False})
+                           'can_be_negative': False,
+                           'can_be_complex': False,
+                           'can_be_inf': False,
+                           'can_be_nan': False})
 def swept_probe_analysis(probe_characteristic, probe_area, gas,
                          bimaxwellian=False, visualize=False,
                          plot_electron_fit=False, plot_EEDF=False):
@@ -535,25 +535,25 @@ def get_ion_saturation_current(probe_characteristic):
 
 
 @utils.check_quantity(ion_saturation_current={'units': u.A,
-                                                  'can_be_negative': True,
-                                                  'can_be_complex': False,
-                                                  'can_be_inf': False,
-                                                  'can_be_nan': False},
-                       T_e={'units': u.eV,
-                               'can_be_negative': False,
-                               'can_be_complex': False,
-                               'can_be_inf': False,
-                               'can_be_nan': False},
-                       probe_area={'units': u.m**2,
-                                      'can_be_negative': False,
-                                      'can_be_complex': False,
-                                      'can_be_inf': False,
-                                      'can_be_nan': False},
-                       gas={'units': u.u,
-                               'can_be_negative': False,
-                               'can_be_complex': False,
-                               'can_be_inf': False,
-                               'can_be_nan': False})
+                                              'can_be_negative': True,
+                                              'can_be_complex': False,
+                                              'can_be_inf': False,
+                                              'can_be_nan': False},
+                      T_e={'units': u.eV,
+                           'can_be_negative': False,
+                           'can_be_complex': False,
+                           'can_be_inf': False,
+                           'can_be_nan': False},
+                      probe_area={'units': u.m**2,
+                                  'can_be_negative': False,
+                                  'can_be_complex': False,
+                                  'can_be_inf': False,
+                                  'can_be_nan': False},
+                      gas={'units': u.u,
+                           'can_be_negative': False,
+                           'can_be_complex': False,
+                           'can_be_inf': False,
+                           'can_be_nan': False})
 def get_ion_density_LM(ion_saturation_current, T_e,
                        probe_area, gas):
     r"""Implement the Langmuir-Mottley (LM) method of obtaining the ion
@@ -601,20 +601,20 @@ def get_ion_density_LM(ion_saturation_current, T_e,
 
 
 @utils.check_quantity(electron_saturation_current={'units': u.A,
-                                                       'can_be_negative': True,
-                                                       'can_be_complex': False,
-                                                       'can_be_inf': False,
-                                                       'can_be_nan': False},
-                       T_e={'units': u.eV,
-                               'can_be_negative': False,
-                               'can_be_complex': False,
-                               'can_be_inf': False,
-                               'can_be_nan': False},
-                       probe_area={'units': u.m**2,
-                                      'can_be_negative': False,
-                                      'can_be_complex': False,
-                                      'can_be_inf': False,
-                                      'can_be_nan': False})
+                                                   'can_be_negative': True,
+                                                   'can_be_complex': False,
+                                                   'can_be_inf': False,
+                                                   'can_be_nan': False},
+                      T_e={'units': u.eV,
+                           'can_be_negative': False,
+                           'can_be_complex': False,
+                           'can_be_inf': False,
+                           'can_be_nan': False},
+                      probe_area={'units': u.m**2,
+                                  'can_be_negative': False,
+                                  'can_be_complex': False,
+                                  'can_be_inf': False,
+                                  'can_be_nan': False})
 def get_electron_density_LM(electron_saturation_current, T_e,
                             probe_area):
     r"""Implement the Langmuir-Mottley (LM) method of obtaining the electron
@@ -1006,15 +1006,15 @@ def reduce_bimaxwellian_temperature(T_e, hot_fraction):
 
 
 @utils.check_quantity(probe_area={'units': u.m**2,
-                                      'can_be_negative': False,
-                                      'can_be_complex': False,
-                                      'can_be_inf': False,
-                                      'can_be_nan': False},
-                       gas={'units': u.u,
-                               'can_be_negative': False,
-                               'can_be_complex': False,
-                               'can_be_inf': False,
-                               'can_be_nan': False})
+                                  'can_be_negative': False,
+                                  'can_be_complex': False,
+                                  'can_be_inf': False,
+                                  'can_be_nan': False},
+                      gas={'units': u.u,
+                           'can_be_negative': False,
+                           'can_be_complex': False,
+                           'can_be_inf': False,
+                           'can_be_nan': False})
 def get_ion_density_OML(probe_characteristic, probe_area, gas,
                         visualize=False, return_fit=False):
     r"""Implement the Orbital Motion Limit (OML) method of obtaining an

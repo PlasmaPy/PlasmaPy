@@ -358,7 +358,8 @@ def ion_sound_speed(T_e,
     mass={'units': u.kg, 'can_be_negative': False, 'can_be_nan': True}
     )
 @atomic.particle_input
-def thermal_speed(T, particle: atomic.Particle="e-", method="most_probable", mass=np.nan*u.kg):
+def thermal_speed(T, particle: atomic.Particle = "e-", method="most_probable",
+                  mass=np.nan*u.kg):
     r"""
     Return the most probable speed for a particle within a Maxwellian
     distribution.
@@ -783,8 +784,8 @@ def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None):
 def gyroradius(B: u.T,
                particle='e-',
                *,
-               Vperp:u.m / u.s=np.nan * u.m / u.s,
-               T_i: u.K=np.nan * u.K):
+               Vperp: u.m / u.s = np.nan * u.m / u.s,
+               T_i: u.K = np.nan * u.K):
     r"""Return the particle gyroradius.
 
     Parameters

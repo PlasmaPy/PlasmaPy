@@ -11,10 +11,11 @@ Values should be returned as a `~astropy.units.Quantity` in SI units.
 __all__ = ['cold_plasma_permittivity_SDP',
            'cold_plasma_permittivity_LRP']
 
+
 @utils.check_quantity(
     B={'units': u.T, 'can_be_negative': False},
     omega={'units': u.rad / u.s, 'can_be_negative': False},
-)
+    )
 def cold_plasma_permittivity_SDP(B, species, n, omega):
     r"""
     Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.

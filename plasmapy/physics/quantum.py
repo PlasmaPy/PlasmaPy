@@ -24,9 +24,7 @@ __all__ = [
 ]
 
 
-
 # TODO: Use @check_relativistic and @particle_input
-
 @utils.check_quantity(
     V={'units': u.m / u.s, 'can_be_negative': True}
     )
