@@ -683,7 +683,7 @@ class Test_impact_parameter:
                                        V=np.nan * u.m / u.s,
                                        method=method)
         assert_quantity_allclose((methodVal[0][0], methodVal[1][0]), methodVal_0)
-        
+
     def test_extend_scalar_bmin(self):
         """
         Test to verify that if T is scalar and n is vector, bmin will be extended
