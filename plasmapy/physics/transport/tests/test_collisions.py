@@ -816,8 +816,8 @@ class Test_fundamental_electron_collision_freq():
                                                           self.ion_particle,
                                                           coulomb_log=self.coulomb_log)
         assert_quantity_allclose(methodVal[0], methodVal_0)
-        
-        
+
+
 class Test_fundamental_ion_collision_freq():
     @classmethod
     def setup_class(self):
