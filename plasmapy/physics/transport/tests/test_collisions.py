@@ -11,7 +11,9 @@ from plasmapy.physics.transport import (Coulomb_logarithm,
                                         mobility,
                                         Knudsen_number,
                                         coupling_parameter)
-from plasmapy.physics.transport.collisions import Spitzer_resistivity
+from plasmapy.physics.transport.collisions import (Spitzer_resistivity,
+                                                   fundamental_electron_collision_freq,
+                                                   fundamental_ion_collision_freq)
 from plasmapy.utils import exceptions
 from plasmapy.constants import m_p, m_e, c
 
@@ -792,6 +794,50 @@ class Test_collision_frequency:
         errStr = (f"Collision frequency should be {self.True_zmean} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
+
+class Test_fundamental_electron_collision_freq():
+    @classmethod
+    def setup_class(self):
+        """initializing parameters for tests """
+        self.T_arr = np.array([1, 2]) * u.eV
+        self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
+        self.ion_particle = 'p'
+        self.coulomb_log = 10
+
+    def test_handle_numpy_array(self):
+        """Tests to verify that can handle Quantities with numpy array as the value"""
+        methodVal = fundamental_electron_collision_freq(self.T_arr,
+                                                        self.n_arr,
+                                                        self.ion_particle,
+                                                        coulomb_log=self.coulomb_log)
+        methodVal_0 = fundamental_electron_collision_freq(self.T_arr[0],
+                                                          self.n_arr[0],
+                                                          self.ion_particle,
+                                                          coulomb_log=self.coulomb_log)
+        assert_quantity_allclose(methodVal[0], methodVal_0)
+        
+        
+class Test_fundamental_ion_collision_freq():
+    @classmethod
+    def setup_class(self):
+        """initializing parameters for tests """
+        self.T_arr = np.array([1, 2]) * u.eV
+        self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
+        self.ion_particle = 'p'
+        self.coulomb_log = 10
+
+    def test_handle_numpy_array(self):
+        """Tests to verify that can handle Quantities with numpy array as the value"""
+        methodVal = fundamental_ion_collision_freq(self.T_arr,
+                                                   self.n_arr,
+                                                   self.ion_particle,
+                                                   coulomb_log=self.coulomb_log)
+        methodVal_0 = fundamental_ion_collision_freq(self.T_arr[0],
+                                                     self.n_arr[0],
+                                                     self.ion_particle,
+                                                     coulomb_log=self.coulomb_log)
+        assert_quantity_allclose(methodVal[0], methodVal_0)
 
 
 class Test_mean_free_path:
