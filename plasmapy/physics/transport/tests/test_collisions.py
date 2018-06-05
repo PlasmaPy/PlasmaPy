@@ -43,6 +43,14 @@ class Test_Coulomb_logarithm:
         self.gms6 = 3.635342040477818
         self.gms6_negative = 0.030720859361047514
 
+    def test_unknown_method(self):
+        """Test that function will raise ValueError on non-existent method"""
+        with pytest.raises(ValueError):
+            Coulomb_logarithm(self.T_arr[0],
+                              self.n_arr[0],
+                              self.particles,
+                              method="welcome our new microsoft overlords")
+
     def test_handle_invalid_V(self):
         """Test that V default, V = None, and V = np.nan all give the same result"""
         methodVal_0 = Coulomb_logarithm(self.T_arr[0],
@@ -675,6 +683,16 @@ class Test_impact_parameter:
                                        V=np.nan * u.m / u.s,
                                        method=method)
         assert_quantity_allclose((methodVal[0][0], methodVal[1][0]), methodVal_0)
+        
+    def test_extend_scalar_bmin(self):
+        """
+        Test to verify that if T is scalar and n is vector, bmin will be extended
+        to the same length as bmax
+        """
+        (bmin, bmax) = impact_parameter(1 * u.eV,
+                                        self.n_e_arr,
+                                        self.particles)
+        assert(len(bmin) == len(bmax))
 
 
 class Test_collision_frequency:
