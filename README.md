@@ -8,7 +8,7 @@
 
 [![Build Status](https://travis-ci.org/PlasmaPy/PlasmaPy.svg?branch=master)](https://travis-ci.org/PlasmaPy/PlasmaPy)
 [![Build status](https://ci.appveyor.com/api/projects/status/hbduy62sqrvy8rn7?svg=true)](https://ci.appveyor.com/project/namurphy/plasmapy)
-[![Coverage Status](https://coveralls.io/repos/github/PlasmaPy/PlasmaPy/badge.svg?branch=master)](https://coveralls.io/github/PlasmaPy/PlasmaPy?branch=master)
+[![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy/branch/master/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy)
 [![Documentation Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
 
 PlasmaPy is an open source community developed Python 3.6+ package for
