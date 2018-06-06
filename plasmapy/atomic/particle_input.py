@@ -285,7 +285,7 @@ def particle_input(wrapped_function: Callable = None,
                     # with loops too.
                     argval_tuple = (raw_argval,)
 
-                for argval in argval_tuple:
+                for pos, argval in enumerate(argval_tuple):
                     should_be_particle = argname in args_to_become_particles
                     already_particle = isinstance(argval, Particle)
 
@@ -319,7 +319,7 @@ def particle_input(wrapped_function: Callable = None,
                         particles.append(particle)
                         # Set appended values if current iteration is the
                         # last iteration.
-                        if argval == argval_tuple[-1]:
+                        if (pos + 1) == len(argval_tuple):
                             new_kwargs[argname] = tuple(particles)
                             del particles
 
