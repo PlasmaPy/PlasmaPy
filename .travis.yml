@@ -26,7 +26,6 @@ script: python setup.py test --coverage
 # Assess test coverage
 after_success:
         - codecov
-        - coveralls --rcfile plasmapy/tests/coveragerc
 
 # Hook travis into matrix channel for notifications
 notifications:
