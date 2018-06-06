@@ -7,7 +7,7 @@ import numpy as np
 import astropy.units as u
 import itertools
 
-from ...physics.magnetostatics import MagnetoStatics
+from plasmapy.physics.magnetostatics import MagnetoStatics
 
 from plasmapy.constants import (m_p,
                                 m_e,

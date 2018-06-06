@@ -12,9 +12,6 @@ from typing import (
 
 from scipy.special import roots_legendre
 
-DEFAULT_GENERAL_INTEGRATION_POINTS = 1000
-DEFAULT_CIRCULAR_INTEGRATION_POINTS = 300
-
 
 class MagnetoStatics(abc.ABC):
     """
@@ -36,13 +33,13 @@ class MagnetoStatics(abc.ABC):
 
     """
     @abc.abstractmethod
-    def magnetic_field(self, p) -> u.Quantity:
+    def magnetic_field(self, p) -> u.T:
         "This method should calculate the magnetic field at a given position"
 
 
 class MagneticDipole(MagnetoStatics):
-    @u.quantity_input(moment=u.A*u.m*u.m, p0=u.m)
-    def __init__(self, moment: u.Quantity, p0: u.Quantity):
+    @u.quantity_input()
+    def __init__(self, moment: u.A * u.m**2, p0: u.m):
         self.moment = moment.to(u.A*u.m*u.m).value
         self.p0 = p0.to(u.m).value
 
@@ -53,7 +50,7 @@ class MagneticDipole(MagnetoStatics):
             p0=self.p0
         )
 
-    def magnetic_field(self, p) -> u.Quantity:
+    def magnetic_field(self, p) -> u.T:
         r = p - self.p0
         m = self.moment
         B = constants.mu0.value/4/np.pi \
@@ -87,8 +84,8 @@ class GeneralWire(Wire):
     current: `astropy.units.Quantity`
         electric current
     """
-    @u.quantity_input(current=u.A)
-    def __init__(self, parametric_eq, t1, t2, current: u.Quantity):
+    @u.quantity_input()
+    def __init__(self, parametric_eq, t1, t2, current: u.A):
         if callable(parametric_eq):
             self.parametric_eq = parametric_eq
         else:
@@ -112,8 +109,7 @@ class GeneralWire(Wire):
                  {\left|\vec p - \frac{\vec l(t_{i}) + \vec l(t_{i-1})}{2}\right|^3},
                  \quad \text{where}\, t_i = t_{\min}+i/n*(t_{\max}-t_{\min})
     """
-    def magnetic_field(self, p,
-                       n=DEFAULT_GENERAL_INTEGRATION_POINTS) -> u.Quantity:
+    def magnetic_field(self, p, n=1000) -> u.T:
         p1 = self.parametric_eq(self.t1)
         step = (self.t2 - self.t1) / n
         t = self.t1
@@ -142,8 +138,8 @@ class FiniteStraightWire(Wire):
     current: `astropy.units.Quantity`
         electric current
     """
-    @u.quantity_input(p1=u.m, p2=u.m, current=u.A)
-    def __init__(self, p1: u.Quantity, p2: u.Quantity, current: u.Quantity):
+    @u.quantity_input()
+    def __init__(self, p1: u.m, p2: u.m, current: u.A):
         self.p1 = p1.to(u.m).value
         self.p2 = p2.to(u.m).value
         if np.all(p1 == p2):
@@ -169,7 +165,7 @@ class FiniteStraightWire(Wire):
                      \frac{\mu_0 I}{4\pi} (\cos\theta_1 - \cos\theta_2)
 
     """
-    def magnetic_field(self, p) -> u.Quantity:
+    def magnetic_field(self, p) -> u.T:
         # foot of perpendicular
         p1, p2 = self.p1, self.p2
         p2_p1 = p2 - p1
@@ -206,8 +202,8 @@ class InfiniteStraightWire(Wire):
     current: `astropy.units.Quantity`
         electric current
     """
-    @u.quantity_input(p0=u.m, current=u.A)
-    def __init__(self, direction, p0: u.Quantity, current: u.Quantity):
+    @u.quantity_input()
+    def __init__(self, direction, p0: u.m, current: u.A):
         self.direction = direction/np.linalg.norm(direction)
         self.p0 = p0.to(u.m).value
         self.current = current.to(u.A).value
@@ -226,7 +222,7 @@ class InfiniteStraightWire(Wire):
         \text{where}\, \vec l^0\, \text{is the unit vector of current direction},
         r\, \text{is the perpendicular distance between} P_0 \text{and the infinite wire}
     """
-    def magnetic_field(self, p) -> u.Quantity:
+    def magnetic_field(self, p) -> u.T:
         r = np.cross(self.direction, p - self.p0)
         B_unit = r/np.linalg.norm(r)
         r = np.linalg.norm(r)
@@ -250,9 +246,9 @@ class CircularWire(Wire):
     current: `astropy.units.Quantity`
         electric current
     """
-    @u.quantity_input(center=u.m, radius=u.m, current=u.A)
-    def __init__(self, normal, center: u.Quantity, radius: u.Quantity, current: u.Quantity,
-                 n=DEFAULT_CIRCULAR_INTEGRATION_POINTS):
+    @u.quantity_input()
+    def __init__(self, normal, center: u.m, radius: u.m,
+                 current: u.A, n=300):
         self.normal = normal/np.linalg.norm(normal)
         self.center = center.to(u.m).value
         if radius > 0:
@@ -312,7 +308,7 @@ radius={radius}, current={current})".format(
 
     We use n points Gauss-Legendre quadrature to compute the integral. The default n is 300.
     """
-    def magnetic_field(self, p) -> u.Quantity:
+    def magnetic_field(self, p) -> u.T:
         x, w = self.roots_legendre
         t = x*np.pi
         pt = self.curve(t)
