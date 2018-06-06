@@ -5,6 +5,7 @@ import astropy.units as u
 from plasmapy.classes.sources import plasma3d
 from plasmapy.utils.exceptions import InvalidParticleError
 
+
 @pytest.mark.parametrize('grid_dimensions, expected_size', [
     ((100, 1, 1), 100),  # Test 1D setup
     ((128, 128, 1), 16384),  # 2D
