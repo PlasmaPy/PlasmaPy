@@ -3,7 +3,6 @@
 from astropy import units as u
 from plasmapy import utils
 from plasmapy.physics import parameters
-from plasmapy.constants import (pi, m_e, c, mu0, e, eps0)
 
 r"""
 Values should be returned as a `~astropy.units.Quantity` in SI units.
@@ -12,10 +11,11 @@ Values should be returned as a `~astropy.units.Quantity` in SI units.
 __all__ = ['cold_plasma_permittivity_SDP',
            'cold_plasma_permittivity_LRP']
 
-@utils.check_quantity({
-    'B': {'units': u.T, 'can_be_negative': False},
-    'omega': {'units': u.rad / u.s, 'can_be_negative': False},
-})
+
+@utils.check_quantity(
+    B={'units': u.T, 'can_be_negative': False},
+    omega={'units': u.rad / u.s, 'can_be_negative': False},
+    )
 def cold_plasma_permittivity_SDP(B, species, n, omega):
     r"""
     Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
@@ -109,7 +109,11 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
     return S, D, P
 
 
-def cold_plasma_permittivity_LRP(B, species, n, omega):
+@utils.check_quantity(
+    B={'units': u.T, 'can_be_negative': False},
+    omega={'units': u.rad / u.s, 'can_be_negative': False},
+    )
+def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     r"""
     Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
 
