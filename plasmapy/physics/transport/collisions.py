@@ -308,24 +308,36 @@ def _boilerPlate(T, particles, V):
     # obtaining reduced mass of 2 particle collision system
     reduced_mass = atomic.reduced_mass(*particles)
 
+    # getting thermal velocity of system if no velocity is given
+    V = _replaceNanVwithThermalV(V, T, reduced_mass)
+
+    _check_relativistic(V, 'V')
+
+    return T, masses, charges, reduced_mass, V
+
+
+def _replaceNanVwithThermalV(V, T, m):
+    """
+    Get thermal velocity of system if no velocity is given, for a given mass.
+    Handles vector checks for V, you must already know that T and m are okay.
+    """
     if np.any(V == 0):
         raise utils.exceptions.PhysicsError("You cannot have a collision for zero velocity!")
     # getting thermal velocity of system if no velocity is given
     if V is None:
-        V = parameters.thermal_speed(T, mass=reduced_mass)
+        V = parameters.thermal_speed(T, mass=m)
     elif np.any(np.isnan(V)):
         if np.isscalar(V.value) and np.isscalar(T.value):
-            V = parameters.thermal_speed(T, mass=reduced_mass)
+            V = parameters.thermal_speed(T, mass=m)
         elif np.isscalar(V.value):
-            V = parameters.thermal_speed(T, mass=reduced_mass)
+            V = parameters.thermal_speed(T, mass=m)
         elif np.isscalar(T.value):
             V = V.copy()
-            V[np.isnan(V)] = parameters.thermal_speed(T, mass=reduced_mass)
+            V[np.isnan(V)] = parameters.thermal_speed(T, mass=m)
         else:
             V = V.copy()
-            V[np.isnan(V)] = parameters.thermal_speed(T[np.isnan(V)], mass=reduced_mass)
-    _check_relativistic(V, 'V')
-    return T, masses, charges, reduced_mass, V
+            V[np.isnan(V)] = parameters.thermal_speed(T[np.isnan(V)], mass=m)
+    return V
 
 
 @check_quantity(T={"units": u.K, "can_be_negative": False})
@@ -737,11 +749,10 @@ def collision_frequency(T,
     # reduced mass
     V_reduced = V_r
     if particles[0] in ('e','e-') and particles[1] in ('e','e-'):
+        # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        if np.isnan(V):
-            V = V_reduced
-        # electron-electron collision
+        V = _replaceNanVwithThermalV(V, T, reduced_mass)
         # impact parameter for 90 degree collision
         bPerp = impact_parameter_perp(T=T,
                                       particles=particles,
@@ -757,10 +768,9 @@ def collision_frequency(T,
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
-        if np.isnan(V):
-            # we ignore the reduced velocity and use the electron thermal
-            # velocity instead
-            V = np.sqrt(2 * k_B * T / m_e)
+        # we ignore the reduced velocity and use the electron thermal
+        # velocity instead
+        V = _replaceNanVwithThermalV(V, T, m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
         bPerp = impact_parameter_perp(T=T,
@@ -776,11 +786,10 @@ def collision_frequency(T,
                                     V=np.nan * u.m / u.s,
                                     method=method)
     else:
+        # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        if np.isnan(V):
-            V = V_reduced
-        # ion-ion collision
+        V = _replaceNanVwithThermalV(V, T, reduced_mass)
         bPerp = impact_parameter_perp(T=T,
                                       particles=particles,
                                       V=V)
@@ -937,9 +946,9 @@ def fundamental_electron_collision_freq(T_e,
     fundamental_ion_collision_freq
     """
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
-    if not V:
-        # electron thermal velocity (most probable)
-        V = np.sqrt(2 * k_B * T_e / m_e)
+
+    # specify to use electron thermal velocity (most probable), not based on reduced mass
+    V = _replaceNanVwithThermalV(V, T_e, m_e)
 
     particles = [ion_particle, 'e-']
     Z_i = atomic.integer_charge(ion_particle)
@@ -1075,10 +1084,12 @@ def fundamental_ion_collision_freq(T_i,
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     m_i = atomic.particle_mass(ion_particle)
     particles = [ion_particle, ion_particle]
-    if not V:
-        # ion thermal velocity (most probable)
-        V = np.sqrt(2 * k_B * T_i / m_i)
+
+    # specify to use ion thermal velocity (most probable), not based on reduced mass
+    V = _replaceNanVwithThermalV(V, T_i, m_i)
+
     Z_i = atomic.integer_charge(ion_particle)
+
     nu = collision_frequency(T_i,
                              n_i,
                              particles,
@@ -1104,6 +1115,7 @@ def fundamental_ion_collision_freq(T_i,
         nu_i = coeff * nu_mod
     else:
         nu_i = coeff * nu
+
     return nu_i.to(1 / u.s)
 
 
