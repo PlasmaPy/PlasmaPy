@@ -15,6 +15,7 @@ from plasmapy.physics.transport.collisions import (Spitzer_resistivity,
                                                    fundamental_electron_collision_freq,
                                                    fundamental_ion_collision_freq)
 from plasmapy.utils import exceptions
+from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 from plasmapy.constants import m_p, m_e, c
 
 
@@ -42,6 +43,20 @@ class Test_Coulomb_logarithm:
         self.gms5_negative = 0.03126832674323108
         self.gms6 = 3.635342040477818
         self.gms6_negative = 0.030720859361047514
+
+    @pytest.mark.parametrize("override_V", [False, True])
+    @pytest.mark.parametrize("override_cl", [False])
+    @pytest.mark.parametrize("force_args", [{"method": "classical"},
+                                            {"method": "GMS-1"},
+                                            {"method": "GMS-2", "z_mean": 1.0},
+                                            {"method": "GMS-3"},
+                                            {"method": "GMS-4"},
+                                            {"method": "GMS-5", "z_mean": 1.0},
+                                            {"method": "GMS-6", "z_mean": 1.0},])
+    def test_handle_nparrays(self, override_V, override_cl, force_args, include_nans=[]):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(Coulomb_logarithm, force_args, override_V, override_cl,
+                                  include_nans)
 
     def test_unknown_method(self):
         """Test that function will raise ValueError on non-existent method"""
@@ -609,6 +624,21 @@ class Test_impact_parameter:
         self.V = 1e4 * u.km / u.s
         self.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
 
+    @pytest.mark.parametrize("override_V", [False, True])
+    @pytest.mark.parametrize("override_cl", [False])
+    @pytest.mark.parametrize("force_args", [{"method": "classical"},
+                                            {"method": "GMS-1"},
+                                            {"method": "GMS-2", "z_mean": 1.0},
+                                            {"method": "GMS-3"},
+                                            {"method": "GMS-4"},
+                                            {"method": "GMS-5", "z_mean": 1.0},
+                                            {"method": "GMS-6", "z_mean": 1.0}, ])
+    def test_handle_nparrays(self, override_V, override_cl, force_args, include_nans=[]):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(impact_parameter, force_args, override_V, override_cl,
+                                  include_nans)
+
+
     def test_symmetry(self):
         result = impact_parameter(self.T, self.n_e, self.particles)
         resultRev = impact_parameter(self.T, self.n_e,  self.particles[::-1])
@@ -823,6 +853,13 @@ class Test_fundamental_electron_collision_freq():
         self.ion_particle = 'p'
         self.coulomb_log = 10
 
+    @pytest.mark.parametrize("override_V", [False, True])
+    @pytest.mark.parametrize("override_cl", [False, True])
+    def test_handle_nparrays(self, override_V, override_cl, force_args={}, include_nans=[]):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(fundamental_electron_collision_freq, force_args, override_V,
+                                  override_cl, include_nans)
+
     def test_handle_numpy_array(self):
         """Tests to verify that can handle Quantities with numpy array as the value"""
         methodVal = fundamental_electron_collision_freq(self.T_arr,
@@ -844,6 +881,13 @@ class Test_fundamental_ion_collision_freq():
         self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
         self.ion_particle = 'p'
         self.coulomb_log = 10
+
+    @pytest.mark.parametrize("override_V", [False, True])
+    @pytest.mark.parametrize("override_cl", [False, True])
+    def test_handle_nparrays(self, override_V, override_cl, force_args={}, include_nans=[]):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(fundamental_ion_collision_freq, force_args, override_V,
+                                  override_cl, include_nans)
 
     def test_handle_numpy_array(self):
         """Tests to verify that can handle Quantities with numpy array as the value"""

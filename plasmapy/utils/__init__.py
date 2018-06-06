@@ -31,4 +31,5 @@ from .pytest_helpers import (
     IncorrectResultError,
     MissingExceptionError,
     MissingWarningError,
+    assert_can_handle_nparray,
 )

@@ -719,3 +719,88 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
                 f"of type {test_case['type']}")
 
         raise UnexpectedResultError(errmsg)
+
+
+import plasmapy.physics.transport.collisions as coll
+from inspect import signature, _empty
+from astropy.tests.helper import assert_quantity_allclose
+
+
+def assert_can_handle_nparray(function_to_test, force_args, override_V, override_cl, include_nans=[]):
+    """
+    Specifiied test for ability to handle numpy array quantities.
+    """
+    def prepare_input(param_name, param_default, force_args, include_nans, override_V, override_cl):
+        for key in force_args:
+            if param_name == key:
+                return force_args[key], force_args[key], force_args[key]
+        if param_name == "particle" or param_name == "ion_particle":
+            if not (param_default is _empty):
+                return param_default, param_default, param_default
+            else:
+                return "p", "p", "p"
+        elif param_name == "particles":
+            if not (param_default is _empty):
+                return param_default, param_default, param_default
+            else:
+                return ("e", "p"), ("e", "p"), ("e", "p")
+        elif param_name in ["T", "T_i", "T_e", "temperature"]:
+            unit = u.eV
+            mag = 1.0
+        elif param_name in ["n", "n_i", "n_e", "density"]:
+            unit = u.cm ** -3
+            mag = 1e14
+        elif param_name == "B":
+            unit = u.G
+            mag = 1e3
+        elif override_V and (param_name == "V"):
+            unit = u.m / u.s
+            mag = 1e5
+        elif override_cl and (param_name == "coulomb_log"):
+            unit = 1.0
+            mag = 1e1
+        elif not (param_default is _empty):
+            return param_default, param_default, param_default
+        else:
+            raise ValueError("Unrecognized function input")
+        input_data_2d = np.reshape(np.arange(1.0, 5.0, 1.0), (2, 2))
+        if param_name in include_nans:
+            input_data_2d[0, 1] = np.nan
+            input_data_2d[1, 0] = np.nan
+        input_data_1d = np.arange(1.0, 5.0, 1.0)
+        if param_name in include_nans:
+            input_data_1d[1] = np.nan
+        input_data_2d *= mag
+        input_data_2d *= unit
+        input_data_1d *= mag
+        input_data_1d *= unit
+        input_data_0d = input_data_1d[3]
+        return input_data_0d, input_data_1d, input_data_2d
+
+    function_sig = signature(function_to_test)
+    function_params = function_sig.parameters
+    args_0d = dict()
+    args_1d = dict()
+    args_2d = dict()
+    param_names = [elm for elm in function_params.keys()]
+    for idx, key in enumerate(function_params):
+        args_0d[key], args_1d[key], args_2d[key] = prepare_input(param_names[idx],
+                                                                 function_params[key].default,
+                                                                 force_args, 
+                                                                 include_nans,
+                                                                 override_V,
+                                                                 override_cl)
+    result_0d = function_to_test(**args_0d)
+    result_1d = function_to_test(**args_1d)
+    result_2d = function_to_test(**args_2d)
+    try:
+        scalar_testable = result_0d.value
+    except AttributeError:
+        scalar_testable = result_0d
+    if np.isscalar(scalar_testable):
+        assert_quantity_allclose(result_0d, result_1d[3])
+        assert_quantity_allclose(result_0d, result_2d[1, 1])
+    else:
+        for idx, res_0d in enumerate(result_0d):
+            assert_quantity_allclose(res_0d, result_1d[idx][3])
+            assert_quantity_allclose(res_0d, result_2d[idx][1, 1])
