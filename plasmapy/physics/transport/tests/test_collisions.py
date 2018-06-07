@@ -762,15 +762,15 @@ class Test_collision_frequency:
         errStr = (f"Collision frequency value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
-        
-#    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
-#    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-#    @pytest.mark.parametrize("kwargs", [{"particles": ("e", "e")},
-#                                        {"particles": ("e", "p")},
-#                                        {"particles": ("p", "p")}, 
+
     @pytest.mark.parametrize("can_be_vector", ["auto"])
-    def test_handle_nparrays(self, can_be_vector, insert_some_nans=[],
-                             insert_all_nans=[], kwargs={}):
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    @pytest.mark.parametrize("kwargs", [{"particles": ("e", "e")},
+                                        {"particles": ("e", "p")},
+                                        {"particles": ("p", "p")}, ])
+    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
+                             insert_all_nans, kwargs):
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(collision_frequency, can_be_vector, insert_some_nans,
                                   insert_all_nans, kwargs)

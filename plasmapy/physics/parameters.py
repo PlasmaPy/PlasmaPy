@@ -29,7 +29,6 @@ from astropy import units as u
 
 import numpy as np
 # import warnings
-import inspect
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
 from plasmapy import atomic, utils
 

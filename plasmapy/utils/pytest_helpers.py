@@ -8,6 +8,8 @@ import numpy as np
 import astropy.units as u
 import astropy.constants as const
 import colorama
+from inspect import signature, _empty
+from astropy.tests.helper import assert_quantity_allclose
 
 # These colors/styles are used to highlight certain parts of the error
 # messages in consistent ways.
@@ -719,11 +721,6 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
                 f"of type {test_case['type']}")
 
         raise UnexpectedResultError(errmsg)
-
-
-import plasmapy.physics.transport.collisions as coll
-from inspect import signature, _empty
-from astropy.tests.helper import assert_quantity_allclose
 
 
 def assert_can_handle_nparray(function_to_test, can_be_vector="auto", insert_some_nans=[], 
