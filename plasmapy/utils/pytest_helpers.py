@@ -726,15 +726,18 @@ from inspect import signature, _empty
 from astropy.tests.helper import assert_quantity_allclose
 
 
-def assert_can_handle_nparray(function_to_test, force_args, override_V, override_cl, include_nans=[]):
+def assert_can_handle_nparray(function_to_test, can_be_vector="auto", insert_some_nans=[], 
+                              insert_all_nans=[], kwargs={}):
     """
-    Specifiied test for ability to handle numpy array quantities.
+    Specified test for ability to handle numpy array quantities.
     """
-    def prepare_input(param_name, param_default, force_args, include_nans, override_V, override_cl):
-        for key in force_args:
-            if param_name == key:
-                return force_args[key], force_args[key], force_args[key]
-        if param_name == "particle" or param_name == "ion_particle":
+    def prepare_input(param_name, param_default, can_be_vector, insert_some_nans,
+                      insert_all_nans, kwargs):
+        if can_be_vector != "auto":
+            raise NotImplementedError("Haven't implemeneted non-auto can_be_vector yet.")
+        if param_name in kwargs.keys():
+            return kwargs[param_name], kwargs[param_name], kwargs[param_name]
+        elif param_name == "particle" or param_name == "ion_particle":
             if not (param_default is _empty):
                 return param_default, param_default, param_default
             else:
@@ -753,10 +756,10 @@ def assert_can_handle_nparray(function_to_test, force_args, override_V, override
         elif param_name == "B":
             unit = u.G
             mag = 1e3
-        elif override_V and (param_name == "V"):
+        elif param_name == "V":
             unit = u.m / u.s
             mag = 1e5
-        elif override_cl and (param_name == "coulomb_log"):
+        elif param_name == "coulomb_log":
             unit = 1.0
             mag = 1e1
         elif not (param_default is _empty):
@@ -764,12 +767,14 @@ def assert_can_handle_nparray(function_to_test, force_args, override_V, override
         else:
             raise ValueError("Unrecognized function input")
         input_data_2d = np.reshape(np.arange(1.0, 5.0, 1.0), (2, 2))
-        if param_name in include_nans:
+        input_data_1d = np.arange(1.0, 5.0, 1.0)
+        if param_name in insert_some_nans:
             input_data_2d[0, 1] = np.nan
             input_data_2d[1, 0] = np.nan
-        input_data_1d = np.arange(1.0, 5.0, 1.0)
-        if param_name in include_nans:
             input_data_1d[1] = np.nan
+        elif param_name in insert_all_nans:
+            input_data_2d = np.ones((2, 2)) * np.nan
+            input_data_1d = np.ones(4) * np.nan
         input_data_2d *= mag
         input_data_2d *= unit
         input_data_1d *= mag
@@ -786,10 +791,10 @@ def assert_can_handle_nparray(function_to_test, force_args, override_V, override
     for idx, key in enumerate(function_params):
         args_0d[key], args_1d[key], args_2d[key] = prepare_input(param_names[idx],
                                                                  function_params[key].default,
-                                                                 force_args, 
-                                                                 include_nans,
-                                                                 override_V,
-                                                                 override_cl)
+                                                                 can_be_vector,
+                                                                 insert_some_nans,
+                                                                 insert_all_nans,
+                                                                 kwargs)
     result_0d = function_to_test(**args_0d)
     result_1d = function_to_test(**args_1d)
     result_2d = function_to_test(**args_2d)

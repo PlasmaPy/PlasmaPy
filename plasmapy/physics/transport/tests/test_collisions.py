@@ -44,19 +44,21 @@ class Test_Coulomb_logarithm:
         self.gms6 = 3.635342040477818
         self.gms6_negative = 0.030720859361047514
 
-    @pytest.mark.parametrize("override_V", [False, True])
-    @pytest.mark.parametrize("override_cl", [False])
-    @pytest.mark.parametrize("force_args", [{"method": "classical"},
-                                            {"method": "GMS-1"},
-                                            {"method": "GMS-2", "z_mean": 1.0},
-                                            {"method": "GMS-3"},
-                                            {"method": "GMS-4"},
-                                            {"method": "GMS-5", "z_mean": 1.0},
-                                            {"method": "GMS-6", "z_mean": 1.0},])
-    def test_handle_nparrays(self, override_V, override_cl, force_args, include_nans=[]):
+    @pytest.mark.parametrize("can_be_vector", ["auto"])
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    @pytest.mark.parametrize("kwargs", [{"method": "classical"},
+                                        {"method": "GMS-1"},
+                                        {"method": "GMS-2", "z_mean": 1.0},
+                                        {"method": "GMS-3"},
+                                        {"method": "GMS-4"},
+                                        {"method": "GMS-5", "z_mean": 1.0},
+                                        {"method": "GMS-6", "z_mean": 1.0}, ])
+    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
+                             insert_all_nans, kwargs):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(Coulomb_logarithm, force_args, override_V, override_cl,
-                                  include_nans)
+        assert_can_handle_nparray(Coulomb_logarithm, can_be_vector, insert_some_nans,
+                                  insert_all_nans, kwargs)
 
     def test_unknown_method(self):
         """Test that function will raise ValueError on non-existent method"""
@@ -93,24 +95,6 @@ class Test_Coulomb_logarithm:
                               self.particles,
                               z_mean=1 * u.dimensionless_unscaled,
                               V=0 * u.m / u.s)
-
-    @pytest.mark.parametrize("method", ["classical", "GMS-1", "GMS-2", "GMS-3", "GMS-4", "GMS-5",
-                                        "GMS-6"])
-    def test_handle_numpy_array(self, method):
-        """Tests to verify that can handle Quantities with numpy array as the value"""
-        methodVal = Coulomb_logarithm(self.T_arr,
-                                      self.n_arr,
-                                      self.particles,
-                                      z_mean=1 * u.dimensionless_unscaled,
-                                      V=np.nan * u.m / u.s,
-                                      method=method)
-        methodVal_0 = Coulomb_logarithm(self.T_arr[0],
-                                        self.n_arr[0],
-                                        self.particles,
-                                        z_mean=1 * u.dimensionless_unscaled,
-                                        V=np.nan * u.m / u.s,
-                                        method=method)
-        assert_quantity_allclose(methodVal[0], methodVal_0)
 
     def test_handle_V_arraysizes(self):
         """Test that different sized V input array gets handled by _boilerplate"""
@@ -604,6 +588,15 @@ class Test_impact_parameter_perp:
         errStr = (f"impact_parameter_perp value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
+        
+    @pytest.mark.parametrize("can_be_vector", ["auto"])
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
+                             insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(impact_parameter_perp, can_be_vector, insert_some_nans,
+                                  insert_all_nans, kwargs)
 
     assert np.isclose(Coulomb_logarithm(1 * u.eV, 5 * u.m ** -3, ('e', 'e')),
                       Coulomb_logarithm(11604.5220 * u.K,
@@ -623,20 +616,6 @@ class Test_impact_parameter:
         self.z_mean = 2.5
         self.V = 1e4 * u.km / u.s
         self.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
-
-    @pytest.mark.parametrize("override_V", [False, True])
-    @pytest.mark.parametrize("override_cl", [False])
-    @pytest.mark.parametrize("force_args", [{"method": "classical"},
-                                            {"method": "GMS-1"},
-                                            {"method": "GMS-2", "z_mean": 1.0},
-                                            {"method": "GMS-3"},
-                                            {"method": "GMS-4"},
-                                            {"method": "GMS-5", "z_mean": 1.0},
-                                            {"method": "GMS-6", "z_mean": 1.0}, ])
-    def test_handle_nparrays(self, override_V, override_cl, force_args, include_nans=[]):
-        """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(impact_parameter, force_args, override_V, override_cl,
-                                  include_nans)
 
 
     def test_symmetry(self):
@@ -696,23 +675,21 @@ class Test_impact_parameter:
                              V=np.nan * u.m / u.s,
                              method="meow")
 
-    @pytest.mark.parametrize("method", ["classical", "GMS-1", "GMS-2", "GMS-3", "GMS-4", "GMS-5",
-                                        "GMS-6"])
-    def test_handle_numpy_array(self, method):
-        """Tests to verify that can handle Quantities with numpy array as the value"""
-        methodVal = impact_parameter(self.T_arr,
-                                     self.n_e_arr,
-                                     self.particles,
-                                     z_mean=1 * u.dimensionless_unscaled,
-                                     V=np.nan * u.m / u.s,
-                                     method=method)
-        methodVal_0 = impact_parameter(self.T_arr[0],
-                                       self.n_e_arr[0],
-                                       self.particles,
-                                       z_mean=1 * u.dimensionless_unscaled,
-                                       V=np.nan * u.m / u.s,
-                                       method=method)
-        assert_quantity_allclose((methodVal[0][0], methodVal[1][0]), methodVal_0)
+    @pytest.mark.parametrize("can_be_vector", ["auto"])
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    @pytest.mark.parametrize("kwargs", [{"method": "classical"},
+                                        {"method": "GMS-1"},
+                                        {"method": "GMS-2", "z_mean": 1.0},
+                                        {"method": "GMS-3"},
+                                        {"method": "GMS-4"},
+                                        {"method": "GMS-5", "z_mean": 1.0},
+                                        {"method": "GMS-6", "z_mean": 1.0}, ])
+    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
+                             insert_all_nans, kwargs):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(impact_parameter, can_be_vector, insert_some_nans,
+                                  insert_all_nans, kwargs)
 
     def test_extend_scalar_bmin(self):
         """
@@ -785,6 +762,18 @@ class Test_collision_frequency:
         errStr = (f"Collision frequency value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
+        
+#    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+#    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+#    @pytest.mark.parametrize("kwargs", [{"particles": ("e", "e")},
+#                                        {"particles": ("e", "p")},
+#                                        {"particles": ("p", "p")}, 
+    @pytest.mark.parametrize("can_be_vector", ["auto"])
+    def test_handle_nparrays(self, can_be_vector, insert_some_nans=[],
+                             insert_all_nans=[], kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(collision_frequency, can_be_vector, insert_some_nans,
+                                  insert_all_nans, kwargs)
 
     def test_electrons(self):
         """
@@ -853,12 +842,6 @@ class Test_fundamental_electron_collision_freq():
         self.ion_particle = 'p'
         self.coulomb_log = 10
 
-    @pytest.mark.parametrize("override_V", [False, True])
-    @pytest.mark.parametrize("override_cl", [False, True])
-    def test_handle_nparrays(self, override_V, override_cl, force_args={}, include_nans=[]):
-        """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(fundamental_electron_collision_freq, force_args, override_V,
-                                  override_cl, include_nans)
 
     def test_handle_numpy_array(self):
         """Tests to verify that can handle Quantities with numpy array as the value"""
@@ -882,12 +865,6 @@ class Test_fundamental_ion_collision_freq():
         self.ion_particle = 'p'
         self.coulomb_log = 10
 
-    @pytest.mark.parametrize("override_V", [False, True])
-    @pytest.mark.parametrize("override_cl", [False, True])
-    def test_handle_nparrays(self, override_V, override_cl, force_args={}, include_nans=[]):
-        """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(fundamental_ion_collision_freq, force_args, override_V,
-                                  override_cl, include_nans)
 
     def test_handle_numpy_array(self):
         """Tests to verify that can handle Quantities with numpy array as the value"""

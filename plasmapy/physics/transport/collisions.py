@@ -322,7 +322,7 @@ def _replaceNanVwithThermalV(V, T, m):
     Handles vector checks for V, you must already know that T and m are okay.
     """
     if np.any(V == 0):
-        raise utils.exceptions.PhysicsError("You cannot have a collision for zero velocity!")
+        raise utils.PhysicsError("You cannot have a collision for zero velocity!")
     # getting thermal velocity of system if no velocity is given
     if V is None:
         V = parameters.thermal_speed(T, mass=m)
@@ -757,6 +757,7 @@ def collision_frequency(T,
         bPerp = impact_parameter_perp(T=T,
                                       particles=particles,
                                       V=V_reduced)
+        print(T, n, particles, z_mean, method)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T,
                                     n,
