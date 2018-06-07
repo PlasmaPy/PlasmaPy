@@ -23,6 +23,7 @@ builtins._ASTROPY_SETUP_ = True
 
 from astropy_helpers.setup_helpers import (register_commands, get_debug_option,
                                            get_package_info)
+from astropy_helpers.distutils_helpers import is_distutils_display_option
 from astropy_helpers.git_helpers import get_git_devstr
 from astropy_helpers.version_helpers import generate_version_py
 
@@ -124,6 +125,18 @@ for root, dirs, files in os.walk(PACKAGENAME):
                     os.path.relpath(root, PACKAGENAME), filename))
 package_info['package_data'][PACKAGENAME].extend(c_files)
 
+setup_requires = ['numpy']
+
+# Make sure to have the packages needed for building PlasmaPy, but do not require them
+# when installing from an sdist as the c files are included there.
+if not os.path.exists(os.path.join(os.path.dirname(__file__), 'PKG-INFO')):
+    setup_requires.extend(['cython>=0.27.2'])
+
+# Avoid installing setup_requires dependencies if the user just
+# queries for information
+if is_distutils_display_option():
+    setup_requires = []
+
 # Note that requires and provides should not be included in the call to
 # ``setup``, since these are now deprecated. See this link for more details:
 # https://groups.google.com/forum/#!topic/astropy-dev/urYO8ckB2uM
@@ -133,6 +146,7 @@ setup(name=PACKAGENAME,
       description=DESCRIPTION,
       scripts=scripts,
       setup_requires=metadata.get("setup_requires", None),
+      setup_requires=[s.strip() for s in metadata.get('install_requires', 'astropy').split(',')],
       install_requires=[s.strip() for s in metadata.get('install_requires', 'astropy').split(',')],
       author=AUTHOR,
       author_email=AUTHOR_EMAIL,
