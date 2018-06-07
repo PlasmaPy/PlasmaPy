@@ -159,5 +159,6 @@ setup(name=PACKAGENAME,
       include_package_data=True,
       entry_points=entry_points,
       python_requires='>={}'.format("3.6"),
+      tests_require=metadata.get("tests_require", None),
       **package_info
 )
