@@ -275,14 +275,28 @@ def test_invalid_number_of_tuple_elements():
         function_with_tuple_annotation(('e+', 'e-', 'alpha'), q='test')
 
 
-@particle_input
-def invalid_list_parameters(particles: [Particle, Particle]):
-    pass
+def test_invalid_list_type():
+    @particle_input
+    # This should be just [Particle] instead of [Particle, Particle]
+    # for it to work correctly
+    def invalid_list_type(particles: [Particle, Particle]):
+        pass
 
-
-def test_invalid_list_parameters():
     with pytest.raises(TypeError):
-        invalid_list_parameters((Particle('He'), 'Ne'))
+        invalid_list_type((Particle('He'), 'Ne'))
+
+
+def test_unexpected_tuple_and_list_argument_types():
+    @particle_input
+    def take_particle(particle: Particle):
+        pass
+
+    with pytest.raises(TypeError):
+        # Passing tuple of Particles instead of just single Particle
+        take_particle(('Li', 'Be'))
+    with pytest.raises(TypeError):
+        # Passing list of Particles instead of just single Particle
+        take_particle(['e+', 'alpha'])
 
 
 # decorator_kwargs, particle, expected_exception

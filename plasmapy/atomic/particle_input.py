@@ -257,6 +257,19 @@ def particle_input(wrapped_function: Callable = None,
                         f"annotated with Particle in functions decorated "
                         f"with @particle_input.")
 
+            for x in args_to_become_particles:
+                if annotations[x] is Particle and \
+                   isinstance(arguments[x], (tuple, list)) and \
+                   len(arguments[x]) > 1:
+                    raise TypeError(
+                        f"You cannot pass a tuple or list containing "
+                        f"Particles when only single Particle was "
+                        f"expected, instead found {arguments[x]}. If you "
+                        f"intend to pass more than 1 Particle instance, "
+                        f"use a tuple or a list type. "
+                        f"That is use (Particle, Particle, ...) or "
+                        f"[Particle] in function declaration.")
+
             # If the number of arguments and keywords annotated with
             # Particle is exactly one, then the Z and mass_numb keywords
             # can be used without potential for ambiguity.
