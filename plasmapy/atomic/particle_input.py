@@ -281,7 +281,7 @@ def particle_input(wrapped_function: Callable = None,
                     argval_tuple = raw_argval
                     particles = []
                 else:
-                    # Otherwise convert t to tuple anyway so it can work
+                    # Otherwise convert it to tuple anyway so it can work
                     # with loops too.
                     argval_tuple = (raw_argval,)
 
@@ -293,7 +293,7 @@ def particle_input(wrapped_function: Callable = None,
                     # pass it through to the new keywords without doing anything.
 
                     if not should_be_particle:
-                        new_kwargs[argname] = argval
+                        new_kwargs[argname] = raw_argval
                         continue
 
                     # Occasionally there will be functions where it will be
