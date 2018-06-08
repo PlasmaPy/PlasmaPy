@@ -309,12 +309,8 @@ def particle_input(wrapped_function: Callable = None,
                                             already_particle,
                                             funcname)
 
-                    if len(argval_tuple) == 1:
-                        # Directly set values if argument value
-                        # consists of only one actual value.
-                        new_kwargs[argname] = particle
-                    else:
-                        # If it consists of more than 1 value, keep
+                    if isinstance(raw_argval, (tuple, list)):
+                        # If passed argument is a tuple or list, keep
                         # appending them.
                         particles.append(particle)
                         # Set appended values if current iteration is the
@@ -322,6 +318,9 @@ def particle_input(wrapped_function: Callable = None,
                         if (pos + 1) == len(argval_tuple):
                             new_kwargs[argname] = tuple(particles)
                             del particles
+                    else:
+                        # Otherwise directly set values
+                        new_kwargs[argname] = particle
 
             return wrapped_function(**new_kwargs)
 

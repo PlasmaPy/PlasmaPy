@@ -1,5 +1,5 @@
 import pytest
-from typing import Optional, Union
+from typing import Optional, Union, Tuple, List
 
 from ...utils import (
     AtomicError,
@@ -173,21 +173,7 @@ def test_function_with_ambiguity():
     # are given as keyword arguments but are not explicitly set?
 
 
-#@particle_input
-def function_with_tuple_annotation(particles: (Particle, Particle), q, x=5):
-    return particles
-
-
-tuple_annotation_test_table = [
-    ('e-', 'e+'),
-    (Particle('alpha'), Particle('Fe 6+')),
-    ('e+', Particle('p+')),
-    ['nu_mu', 'anti_nu_mu'],
-]
-
-
-@pytest.mark.parametrize("particles", tuple_annotation_test_table)
-def test_tuple_annotation(particles: Union[tuple, list]):
+def function_to_test_annotations(particles: Union[Tuple, List], resulting_particles):
     """
     Test that a function with an argument annotated with (Particle,
     Particle) returns a tuple of the two expected Particle instances.
@@ -204,22 +190,15 @@ def test_tuple_annotation(particles: Union[tuple, list]):
     expected = [particle if isinstance(particle, Particle)
                 else Particle(particle) for particle in particles]
 
-    try:
-        resulting_particles = function_with_tuple_annotation(particles, 'ignore', x='ignore')
-    except Exception as exc2:
-        raise AtomicError(
-            f"Unable to evaluate a function decorated by particle_input"
-            f" with an annotation of (Particle, Particle) for inputs of"
-            f" {repr(particles)}."
-        ) from exc2
-
     # Check that the returned values are Particle instances because
     # running:
     #     Particle('p+') == 'p+'
     # will return True because of how Particle.__eq__ is set up.
 
-    returned_particle_instances = all([isinstance(p, Particle) for p in resulting_particles])
-    returned_correct_instances = all([expected[i] == resulting_particles[i] for i in range(2)])
+    returned_particle_instances = all([isinstance(p, Particle)
+                                       for p in resulting_particles])
+    returned_correct_instances = all([expected[i] == resulting_particles[i]
+                                      for i in range(len(particles))])
 
     if not returned_particle_instances:
         raise AtomicError(
@@ -234,6 +213,76 @@ def test_tuple_annotation(particles: Union[tuple, list]):
             f" of (Particle, Particle) did not return {repr(expected)} "
             f"as expected, and instead returned "
             f"{repr(resulting_particles)}.")
+
+
+@particle_input
+def function_with_tuple_annotation(particles: (Particle, Particle), q, x=5):
+    return particles
+
+
+tuple_annotation_test_table = [
+    ('e-', 'e+'),
+    (Particle('alpha'), Particle('Fe 6+')),
+    ('e+', Particle('p+')),
+    ['nu_mu', 'anti_nu_mu'],
+]
+
+
+@pytest.mark.parametrize("particles", tuple_annotation_test_table)
+def test_tuple_annotation(particles: Union[Tuple, List]):
+    try:
+        resulting_particles = function_with_tuple_annotation(particles, 'ignore', x='ignore')
+    except Exception as exc2:
+        raise AtomicError(
+            f"Unable to evaluate a function decorated by particle_input"
+            f" with an annotation of (Particle, Particle) for inputs of"
+            f" {repr(particles)}."
+        ) from exc2
+
+    function_to_test_annotations(particles, resulting_particles)
+
+
+@particle_input
+def function_with_list_annotation(particles: [Particle], q, x=5):
+    return particles
+
+
+list_annotation_test_table = [
+    ('e-', 'e+'),
+    ('alpha', Particle('O 2-'), 3),
+    ('nu_mu', ),
+    ['e+', 'p+', 'anti_nu_mu'],
+]
+
+
+@pytest.mark.parametrize("particles", list_annotation_test_table)
+def test_list_annotation(particles: Union[Tuple, List]):
+    try:
+        resulting_particles = function_with_list_annotation(particles, 'ignore', x='ignore')
+    except Exception as exc2:
+        raise AtomicError(
+            f"Unable to evaluate a function decorated by particle_input"
+            f" with an annotation of (Particle, Particle) for inputs of"
+            f" {repr(particles)}."
+        ) from exc2
+
+    function_to_test_annotations(particles, resulting_particles)
+
+
+def test_invalid_number_of_tuple_elements():
+    with pytest.raises(TypeError):
+        # Passed 3 elements when function only takes 2 in tuple
+        function_with_tuple_annotation(('e+', 'e-', 'alpha'), q='test')
+
+
+@particle_input
+def invalid_list_parameters(particles: [Particle, Particle]):
+    pass
+
+
+def test_invalid_list_parameters():
+    with pytest.raises(TypeError):
+        invalid_list_parameters((Particle('He'), 'Ne'))
 
 
 # decorator_kwargs, particle, expected_exception
