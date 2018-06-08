@@ -1,5 +1,5 @@
 import pytest
-from typing import Optional
+from typing import Optional, Union
 
 from ...utils import (
     AtomicError,
@@ -171,6 +171,69 @@ def test_function_with_ambiguity():
         ambiguous_keywords('H', 'He', mass_numb=4)
     # TODO: should particle_input raise an exception when Z and mass_numb
     # are given as keyword arguments but are not explicitly set?
+
+
+#@particle_input
+def function_with_tuple_annotation(particles: (Particle, Particle), q, x=5):
+    return particles
+
+
+tuple_annotation_test_table = [
+    ('e-', 'e+'),
+    (Particle('alpha'), Particle('Fe 6+')),
+    ('e+', Particle('p+')),
+    ['nu_mu', 'anti_nu_mu'],
+]
+
+
+@pytest.mark.parametrize("particles", tuple_annotation_test_table)
+def test_tuple_annotation(particles: Union[tuple, list]):
+    """
+    Test that a function with an argument annotated with (Particle,
+    Particle) returns a tuple of the two expected Particle instances.
+
+    Arguments
+    =========
+    particles: tuple or list
+        A collection containing two items, each of which may be a valid
+        representation of a particle or a `~plasmapy.atomic.Particle`
+        instance
+
+    """
+
+    expected = [particle if isinstance(particle, Particle)
+                else Particle(particle) for particle in particles]
+
+    try:
+        resulting_particles = function_with_tuple_annotation(particles, 'ignore', x='ignore')
+    except Exception as exc2:
+        raise AtomicError(
+            f"Unable to evaluate a function decorated by particle_input"
+            f" with an annotation of (Particle, Particle) for inputs of"
+            f" {repr(particles)}."
+        ) from exc2
+
+    # Check that the returned values are Particle instances because
+    # running:
+    #     Particle('p+') == 'p+'
+    # will return True because of how Particle.__eq__ is set up.
+
+    returned_particle_instances = all([isinstance(p, Particle) for p in resulting_particles])
+    returned_correct_instances = all([expected[i] == resulting_particles[i] for i in range(2)])
+
+    if not returned_particle_instances:
+        raise AtomicError(
+            f"A function decorated by particle_input with an annotation"
+            f" of (Particle, Particle) did not return a tuple of two "
+            f"Particle instances for inputs of {repr(particles)}, and "
+            f"instead returned {repr(resulting_particles)}.")
+
+    if not returned_correct_instances:
+        raise AtomicError(
+            f"A function decorated by particle_input with an annotation"
+            f" of (Particle, Particle) did not return {repr(expected)} "
+            f"as expected, and instead returned "
+            f"{repr(resulting_particles)}.")
 
 
 # decorator_kwargs, particle, expected_exception
