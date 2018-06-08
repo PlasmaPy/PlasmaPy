@@ -157,7 +157,7 @@ setup(name=PACKAGENAME,
                 'instability', 'modeling'],
       classifiers=[
           'Intended Audience :: Science/Research',
-          'License :: NOT QUITE SURE WHAT TO PUT HERE BUT A LIST OF PYPI LICENSES IS AT https://pypi.org/pypi?%3Aaction=list_classifiers',
+          'License :: OSI Approved :: BSD-2-Clause-Patent',
           'Operating System :: OS Independent',
           'Programming Language :: C',
           'Programming Language :: Cython',
