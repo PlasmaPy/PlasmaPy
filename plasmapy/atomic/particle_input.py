@@ -127,9 +127,12 @@ def particle_input(wrapped_function: Callable = None,
     Raises
     ------
     `TypeError`
-        If the annotated argument is not a `str`, `int`, or
-        `~plasmapy.atomic.Particle`; or if `Z` or `mass_numb` is
-        not an `int`.
+        If the annotated argument is not a `str`, `int`, `tuple`, `list`
+        or `~plasmapy.atomic.Particle`; or if `Z` or `mass_numb` is
+        not an `int`; or if number of elements in a tuple do not match
+        the expected parameters; or if invalid list annotations in
+        function declaration; or if a `tuple` or a `list` is passed when
+        function only expects a single Particle as `str` or `int` instead.
 
     `~plasmapy/utils/InvalidParticleError`
         If the annotated argument does not correspond to a valid
@@ -172,6 +175,25 @@ def particle_input(wrapped_function: Callable = None,
         @particle_input
         def decorated_function(particle: Particle):
             return particle
+
+    This decorator may also be used to accept arguments using tuple
+    annotation containing specific number of elements or using list
+    annotation which accepts any number of elements in an iterable.
+    Returns a tuple of `~plasmapy.atomic.Particle`:
+
+    .. code-block:: python
+
+        from plasmapy.atomic import particle_input, Particle
+        @particle_input
+        def decorated_tuple_function(particles: (Particle, Particle)):
+            return particles
+        sample_particles = decorated_tuple_function(('He', 'Li'))
+
+        @particle_input
+        def decorated_list_function(particles: [Particle]):
+            return particles
+        sample_particles = decorated_list_function(('Al 3+', 'C'))
+        sample_particles = decorated_list_function(['He', 'Ne', 'Ar'])
 
     This decorator may be used for methods in instances of classes, as
     in the following example:
