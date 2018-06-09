@@ -24,6 +24,7 @@ We thus have:
    distribution
    quantum
    relativity
+   magnetostatics
 
 The subpackage makes heavy use of `astropy.units.Quantity` for handling conversions between different unit systems.
 This is especially important for electron volts, commonly used in plasma physics to denote temperature, although
