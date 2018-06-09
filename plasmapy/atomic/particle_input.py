@@ -129,10 +129,7 @@ def particle_input(wrapped_function: Callable = None,
     `TypeError`
         If the annotated argument is not a `str`, `int`, `tuple`, `list`
         or `~plasmapy.atomic.Particle`; or if `Z` or `mass_numb` is
-        not an `int`; or if number of elements in a tuple do not match
-        the expected parameters; or if invalid list annotations in
-        function declaration; or if a `tuple` or a `list` is passed when
-        function only expects a single Particle as `str` or `int` instead.
+        not an `int`.
 
     `~plasmapy/utils/InvalidParticleError`
         If the annotated argument does not correspond to a valid
@@ -255,10 +252,8 @@ def particle_input(wrapped_function: Callable = None,
                     expected_params = len(annotated_argnames)
                     if expected_params > 1:
                         raise TypeError(
-                            f"A list can take any number of parameters "
-                            f"without explictly mentioning the number of "
-                            f"parameters in declaration. Use a tuple "
-                            f"instead or '[Particle]' should be enough.")
+                            f"Put in [Particle] as the annotation to "
+                            f"accept arbitrary number of Particle arguments.")
                 else:
                     annotated_argnames = (annotations[argname],)
 

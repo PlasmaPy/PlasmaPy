@@ -176,12 +176,13 @@ def test_function_with_ambiguity():
 def function_to_test_annotations(particles: Union[Tuple, List], resulting_particles):
     """
     Test that a function with an argument annotated with (Particle,
-    Particle) returns a tuple of the two expected Particle instances.
+    Particle, ...) or [Particle] returns a tuple of expected Particle
+    instances.
 
     Arguments
     =========
     particles: tuple or list
-        A collection containing two items, each of which may be a valid
+        A collection containing many items, each of which may be a valid
         representation of a particle or a `~plasmapy.atomic.Particle`
         instance
 
@@ -202,16 +203,15 @@ def function_to_test_annotations(particles: Union[Tuple, List], resulting_partic
 
     if not returned_particle_instances:
         raise AtomicError(
-            f"A function decorated by particle_input with an annotation"
-            f" of (Particle, Particle) did not return a tuple of two "
-            f"Particle instances for inputs of {repr(particles)}, and "
-            f"instead returned {repr(resulting_particles)}.")
+            f"A function decorated by particle_input did not return "
+            f"a tuple of Particle instances for input of "
+            f"{repr(particles)}, and instead returned"
+            f"{repr(resulting_particles)}.")
 
     if not returned_correct_instances:
         raise AtomicError(
-            f"A function decorated by particle_input with an annotation"
-            f" of (Particle, Particle) did not return {repr(expected)} "
-            f"as expected, and instead returned "
+            f"A function decorated by particle_input did not return "
+            f"{repr(expected)} as expected, and instead returned "
             f"{repr(resulting_particles)}.")
 
 
