@@ -588,7 +588,7 @@ class Test_impact_parameter_perp:
         errStr = (f"impact_parameter_perp value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
-        
+
     @pytest.mark.parametrize("can_be_vector", ["auto"])
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
@@ -616,7 +616,6 @@ class Test_impact_parameter:
         self.z_mean = 2.5
         self.V = 1e4 * u.km / u.s
         self.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
-
 
     def test_symmetry(self):
         result = impact_parameter(self.T, self.n_e, self.particles)
@@ -1007,7 +1006,7 @@ class Test_Spitzer_resistivity:
         errStr = (f"Spitzer resistivity should be {self.True_zmean} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
-        
+
     @pytest.mark.parametrize("can_be_vector", ["auto"])
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
@@ -1091,7 +1090,7 @@ class Test_mobility:
         errStr = (f"Mobility should be {self.True_zmean} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
-        
+
     @pytest.mark.parametrize("can_be_vector", ["auto"])
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
