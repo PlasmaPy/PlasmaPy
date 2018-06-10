@@ -71,11 +71,9 @@ class Test_mass_density:
         with pytest.raises(ValueError):
             mass_density(1 * u.J)
 
-    def test_handle_nparrays(self, can_be_vector="auto", insert_some_nans=[],
-                             insert_all_nans=[], kwargs={"particle": "p"}):
+    def test_handle_nparrays(self):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(mass_density, can_be_vector, insert_some_nans,
-                                  insert_all_nans, kwargs)
+        assert_can_handle_nparray(mass_density)
 
 
 # Assertions below that are in CGS units with 2-3 significant digits
@@ -184,8 +182,7 @@ def test_Alfven_speed():
                       atol=0.0,
                       rtol=1e-15), errStr
 
-    assert_can_handle_nparray(Alfven_speed, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={})
+    assert_can_handle_nparray(Alfven_speed)
 
 
 def test_ion_sound_speed():
@@ -275,8 +272,7 @@ def test_ion_sound_speed():
                       atol=0.0,
                       rtol=1e-15), errStr
 
-    assert_can_handle_nparray(ion_sound_speed, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={})
+    assert_can_handle_nparray(ion_sound_speed)
 
 
 def test_thermal_speed():
@@ -345,16 +341,14 @@ def test_thermal_speed():
     with pytest.raises(ValueError):
         thermal_speed(T_i, method="sadks")
 
-    assert_can_handle_nparray(thermal_speed, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={})
+    assert_can_handle_nparray(thermal_speed)
 
 
 def test_thermal_pressure():
     assert thermal_pressure(T_e, n_i).unit.is_equivalent(u.Pa)
 
     # TODO: may be array issues with arg "mass"
-    assert_can_handle_nparray(thermal_pressure, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={})
+    assert_can_handle_nparray(thermal_pressure)
 
 
 # test class for kappa_thermal_speed() function:
@@ -443,11 +437,9 @@ class Test_kappa_thermal_speed(object):
                           atol=0.0), errStr
         return
 
-    def test_handle_nparrays(self, can_be_vector="auto", insert_some_nans=[],
-                             insert_all_nans=[], kwargs={"kappa": 2}):
+    def test_handle_nparrays(self, kwargs={"kappa": 2}):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(kappa_thermal_speed, can_be_vector, insert_some_nans,
-                                  insert_all_nans, kwargs)
+        assert_can_handle_nparray(kappa_thermal_speed, kwargs=kwargs)
 
 
 def test_gyrofrequency():
@@ -526,11 +518,9 @@ def test_gyrofrequency():
                       atol=0.0,
                       rtol=1e-15), errStr
 
-    assert_can_handle_nparray(gyrofrequency, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={"signed": True})
+    assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
 
-    assert_can_handle_nparray(gyrofrequency, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={"signed": False})
+    assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
 
 
 def test_gyroradius():
@@ -721,8 +711,7 @@ def test_plasma_frequency():
                       atol=0.0,
                       rtol=1e-15), errStr
 
-    assert_can_handle_nparray(plasma_frequency, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={})
+    assert_can_handle_nparray(plasma_frequency)
 
 
 def test_Debye_length():
@@ -756,8 +745,7 @@ def test_Debye_length():
     with pytest.warns(u.UnitsWarning):
         assert Debye_length(2.0 * u.K, 2.0) == Debye_length(2.0, 2.0 * u.m ** -3)
 
-    assert_can_handle_nparray(Debye_length, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={})
+    assert_can_handle_nparray(Debye_length)
 
 
 def test_Debye_number():
@@ -797,8 +785,7 @@ def test_Debye_number():
     with pytest.warns(u.UnitsWarning):
         assert Debye_number(1.1 * u.K, 1.1) == Debye_number(1.1, 1.1 * u.m ** -3)
 
-    assert_can_handle_nparray(Debye_number, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={})
+    assert_can_handle_nparray(Debye_number)
 
 
 def test_inertial_length():
@@ -846,8 +833,7 @@ def test_inertial_length():
     with pytest.warns(u.UnitsWarning):
         assert inertial_length(1e19) == inertial_length(1e19 * u.m ** -3)
 
-    assert_can_handle_nparray(inertial_length, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={})
+    assert_can_handle_nparray(inertial_length)
 
 
 def test_magnetic_pressure():
@@ -883,8 +869,7 @@ def test_magnetic_pressure():
     with pytest.warns(u.UnitsWarning):
         assert magnetic_pressure(22.2) == magnetic_pressure(22.2 * u.T)
 
-    assert_can_handle_nparray(magnetic_pressure, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={})
+    assert_can_handle_nparray(magnetic_pressure)
 
 
 def test_magnetic_energy_density():
@@ -924,8 +909,7 @@ def test_magnetic_energy_density():
     with pytest.warns(u.UnitsWarning):
         assert magnetic_energy_density(22.2) == magnetic_energy_density(22.2 * u.T)
 
-    assert_can_handle_nparray(magnetic_energy_density, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={})
+    assert_can_handle_nparray(magnetic_energy_density)
 
 
 def test_upper_hybrid_frequency():
@@ -952,8 +936,7 @@ def test_upper_hybrid_frequency():
         assert upper_hybrid_frequency(1.4 * u.T, 1.3) == upper_hybrid_frequency(1.4,
                                                                                 1.3 * u.m ** -3)
 
-    assert_can_handle_nparray(upper_hybrid_frequency, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={})
+    assert_can_handle_nparray(upper_hybrid_frequency)
 
 
 def test_lower_hybrid_frequency():
@@ -985,5 +968,4 @@ def test_lower_hybrid_frequency():
     with pytest.warns(u.UnitsWarning):
         assert lower_hybrid_frequency(1.3, 1e19) == lower_hybrid_frequency(1.3 * u.T,
                                                                            1e19 * u.m ** -3)
-    assert_can_handle_nparray(lower_hybrid_frequency, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={})
+    assert_can_handle_nparray(lower_hybrid_frequency)

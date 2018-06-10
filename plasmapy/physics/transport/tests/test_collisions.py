@@ -44,7 +44,6 @@ class Test_Coulomb_logarithm:
         self.gms6 = 3.635342040477818
         self.gms6_negative = 0.030720859361047514
 
-    @pytest.mark.parametrize("can_be_vector", ["auto"])
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     @pytest.mark.parametrize("kwargs", [{"method": "classical"},
@@ -54,11 +53,9 @@ class Test_Coulomb_logarithm:
                                         {"method": "GMS-4"},
                                         {"method": "GMS-5", "z_mean": 1.0},
                                         {"method": "GMS-6", "z_mean": 1.0}, ])
-    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
-                             insert_all_nans, kwargs):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(Coulomb_logarithm, can_be_vector, insert_some_nans,
-                                  insert_all_nans, kwargs)
+        assert_can_handle_nparray(Coulomb_logarithm, insert_some_nans, insert_all_nans, kwargs)
 
     def test_unknown_method(self):
         """Test that function will raise ValueError on non-existent method"""
@@ -589,13 +586,12 @@ class Test_impact_parameter_perp:
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
 
-    @pytest.mark.parametrize("can_be_vector", ["auto"])
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
+    def test_handle_nparrays(self, insert_some_nans,
                              insert_all_nans, kwargs={}):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(impact_parameter_perp, can_be_vector, insert_some_nans,
+        assert_can_handle_nparray(impact_parameter_perp, insert_some_nans,
                                   insert_all_nans, kwargs)
 
     assert np.isclose(Coulomb_logarithm(1 * u.eV, 5 * u.m ** -3, ('e', 'e')),
@@ -674,7 +670,6 @@ class Test_impact_parameter:
                              V=np.nan * u.m / u.s,
                              method="meow")
 
-    @pytest.mark.parametrize("can_be_vector", ["auto"])
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     @pytest.mark.parametrize("kwargs", [{"method": "classical"},
@@ -684,11 +679,9 @@ class Test_impact_parameter:
                                         {"method": "GMS-4"},
                                         {"method": "GMS-5", "z_mean": 1.0},
                                         {"method": "GMS-6", "z_mean": 1.0}, ])
-    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
-                             insert_all_nans, kwargs):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(impact_parameter, can_be_vector, insert_some_nans,
-                                  insert_all_nans, kwargs)
+        assert_can_handle_nparray(impact_parameter, insert_some_nans, insert_all_nans, kwargs)
 
     def test_extend_scalar_bmin(self):
         """
@@ -762,17 +755,14 @@ class Test_collision_frequency:
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
 
-    @pytest.mark.parametrize("can_be_vector", ["auto"])
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     @pytest.mark.parametrize("kwargs", [{"particles": ("e", "e")},
                                         {"particles": ("e", "p")},
                                         {"particles": ("p", "p")}, ])
-    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
-                             insert_all_nans, kwargs):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(collision_frequency, can_be_vector, insert_some_nans,
-                                  insert_all_nans, kwargs)
+        assert_can_handle_nparray(collision_frequency, insert_some_nans, insert_all_nans, kwargs)
 
     def test_electrons(self):
         """
@@ -841,14 +831,12 @@ class Test_fundamental_electron_collision_freq():
         self.ion_particle = 'p'
         self.coulomb_log = 10
 
-    @pytest.mark.parametrize("can_be_vector", ["auto"])
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
-                             insert_all_nans, kwargs={}):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(fundamental_electron_collision_freq, can_be_vector,
-                                  insert_some_nans, insert_all_nans, kwargs)
+        assert_can_handle_nparray(fundamental_electron_collision_freq, insert_some_nans,
+                                  insert_all_nans, kwargs)
 
 
 class Test_fundamental_ion_collision_freq():
@@ -860,14 +848,12 @@ class Test_fundamental_ion_collision_freq():
         self.ion_particle = 'p'
         self.coulomb_log = 10
 
-    @pytest.mark.parametrize("can_be_vector", ["auto"])
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
-                             insert_all_nans, kwargs={}):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(fundamental_ion_collision_freq, can_be_vector,
-                                  insert_some_nans, insert_all_nans, kwargs)
+        assert_can_handle_nparray(fundamental_ion_collision_freq, insert_some_nans,
+                                  insert_all_nans, kwargs)
 
 
 class Test_mean_free_path:
@@ -926,14 +912,11 @@ class Test_mean_free_path:
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
 
-    @pytest.mark.parametrize("can_be_vector", ["auto"])
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
-                             insert_all_nans, kwargs={}):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(mean_free_path, can_be_vector, insert_some_nans,
-                                  insert_all_nans, kwargs)
+        assert_can_handle_nparray(mean_free_path, insert_some_nans, insert_all_nans, kwargs)
 
 
 class Test_Spitzer_resistivity:
@@ -1007,14 +990,11 @@ class Test_Spitzer_resistivity:
                   f"not {methodVal}.")
         assert testTrue, errStr
 
-    @pytest.mark.parametrize("can_be_vector", ["auto"])
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
-                             insert_all_nans, kwargs={}):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(Spitzer_resistivity, can_be_vector, insert_some_nans,
-                                  insert_all_nans, kwargs)
+        assert_can_handle_nparray(Spitzer_resistivity, insert_some_nans, insert_all_nans, kwargs)
 
 
 class Test_mobility:
@@ -1091,14 +1071,11 @@ class Test_mobility:
                   f"not {methodVal}.")
         assert testTrue, errStr
 
-    @pytest.mark.parametrize("can_be_vector", ["auto"])
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
-                             insert_all_nans, kwargs={}):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(mobility, can_be_vector, insert_some_nans,
-                                  insert_all_nans, kwargs)
+        assert_can_handle_nparray(mobility, insert_some_nans, insert_all_nans, kwargs)
 
 
 class Test_Knudsen_number:
@@ -1160,14 +1137,11 @@ class Test_Knudsen_number:
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
 
-    @pytest.mark.parametrize("can_be_vector", ["auto"])
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
-                             insert_all_nans, kwargs={}):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(Knudsen_number, can_be_vector, insert_some_nans,
-                                  insert_all_nans, kwargs)
+        assert_can_handle_nparray(Knudsen_number, insert_some_nans, insert_all_nans, kwargs)
 
 
 class Test_coupling_parameter:
@@ -1244,15 +1218,15 @@ class Test_coupling_parameter:
                   f"not {methodVal}.")
         assert testTrue, errStr
 
-    @pytest.mark.parametrize("can_be_vector", ["auto"])
+    
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     # @pytest.mark.parametrize("kwargs", [{"method": "classical"},
     #                                     {"method": "quantum"},])   # TODO quantum issues
-    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
+    def test_handle_nparrays(self, insert_some_nans,
                              insert_all_nans, kwargs={}):
         """Test for ability to handle numpy array quantities"""
-        assert_can_handle_nparray(coupling_parameter, can_be_vector, insert_some_nans,
+        assert_can_handle_nparray(coupling_parameter, insert_some_nans,
                                   insert_all_nans, kwargs)
 
     def test_quantum(self):

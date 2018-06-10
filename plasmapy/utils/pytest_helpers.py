@@ -723,19 +723,55 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
         raise UnexpectedResultError(errmsg)
 
 
-def assert_can_handle_nparray(function_to_test, can_be_vector="auto", insert_some_nans=[],
-                              insert_all_nans=[], kwargs={}):
+def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_nans=[],
+                              kwargs={}):
     """
-    Specified test for ability to handle numpy array quantities.
+    Test for ability to handle numpy array quantities.
+
+    Parameters
+    ----------
+    function_to_test
+        The function to be tested for ability to handle numpy array quantities.
+        Arguments are automatically given a vector input based on their
+        variable name. Current args that are interpreted as vectors are:
+        `["T", "T_i", "T_e", "temperature"]`
+        `["n", "n_i", "n_e", "density"]`
+        `["B"]`
+        `["V", "Vperp"]`
+        `["coulomb_log"]`
+        `["characteristic_length"]`
+
+    insert_some_nans: list
+        List of argument names in which to insert some np.nan values.
+        These must be arguments that will be tested as vectors as listed
+        above.
+
+    insert_all_nans: list
+        List of argument names to fill entirely with np.nan values.
+
+    kwargs: dict
+        Arguments to pass directly to the function in under test, in the
+        typical python dictionary format.
+
+    Raises
+    ------
+    ~ValueError
+        If this function cannot interpret a parameter of function_to_test,
+
+    Examples
+    --------
+    >>> from plasmapy.physics.parameters import gyrofrequency
+    >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
+    >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
     """
-    def prepare_input(param_name, param_default, can_be_vector, insert_some_nans,
-                      insert_all_nans, kwargs):
-        if can_be_vector != "auto":
-            raise NotImplementedError("Haven't implemeneted non-auto can_be_vector yet.")
+    def _prepare_input(param_name, param_default, insert_some_nans, insert_all_nans, kwargs):
+        """
+        Parse parameter names and set up values to input for 0d, 1d, and 2d array tests.
+        """
         if param_name in kwargs.keys():
             return kwargs[param_name], kwargs[param_name], kwargs[param_name]
         elif param_name in ["particle", "ion_particle", "ion"]:
-            if not (param_default is _empty):
+            if not (param_default is _empty or param_default is None):
                 return param_default, param_default, param_default
             else:
                 return "p", "p", "p"
@@ -789,12 +825,11 @@ def assert_can_handle_nparray(function_to_test, can_be_vector="auto", insert_som
     args_2d = dict()
     param_names = [elm for elm in function_params.keys()]
     for idx, key in enumerate(function_params):
-        args_0d[key], args_1d[key], args_2d[key] = prepare_input(param_names[idx],
-                                                                 function_params[key].default,
-                                                                 can_be_vector,
-                                                                 insert_some_nans,
-                                                                 insert_all_nans,
-                                                                 kwargs)
+        args_0d[key], args_1d[key], args_2d[key] = _prepare_input(param_names[idx],
+                                                                  function_params[key].default,
+                                                                  insert_some_nans,
+                                                                  insert_all_nans,
+                                                                  kwargs)
     result_0d = function_to_test(**args_0d)
     result_1d = function_to_test(**args_1d)
     result_2d = function_to_test(**args_2d)
