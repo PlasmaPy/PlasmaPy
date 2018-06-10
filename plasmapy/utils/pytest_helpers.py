@@ -751,7 +751,7 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
 
     kwargs: dict
         Arguments to pass directly to the function in under test, in the
-        typical python dictionary format.
+        normal kwargs python dictionary format.
 
     Raises
     ------
@@ -760,7 +760,8 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
 
     Examples
     --------
-    >>> from plasmapy.physics.parameters import gyrofrequency
+    >>> from plasmapy.physics.parameters import Alfven_speed, gyrofrequency
+    >>> assert_can_handle_nparray(Alfven_speed)
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
     """

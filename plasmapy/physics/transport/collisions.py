@@ -963,7 +963,7 @@ def fundamental_electron_collision_freq(T_e,
     coeff = 4 / np.sqrt(np.pi) / 3
 
     # accounting for when a Coulomb logarithm value is passed
-    if np.any(coulomb_log):  # TODO: something
+    if np.any(coulomb_log):
         cLog = Coulomb_logarithm(T_e,
                                  n_e,
                                  particles,
@@ -1102,7 +1102,7 @@ def fundamental_ion_collision_freq(T_i,
     coeff = np.sqrt(8 / np.pi) / 3 / 4
 
     # accounting for when a Coulomb logarithm value is passed
-    if np.any(coulomb_log):  # TODO: something
+    if np.any(coulomb_log):
         cLog = Coulomb_logarithm(T_i,
                                  n_i,
                                  particles,

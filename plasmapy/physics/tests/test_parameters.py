@@ -887,8 +887,6 @@ def test_magnetic_energy_density():
 
     assert_quantity_allclose(magnetic_energy_density(B), magnetic_energy_density(B.to(u.G)))
 
-    # TODO Add an array test!
-
     assert magnetic_energy_density(B_arr)
 
     with pytest.warns(u.UnitsWarning):

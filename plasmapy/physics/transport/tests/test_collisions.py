@@ -831,6 +831,7 @@ class Test_fundamental_electron_collision_freq():
         self.ion_particle = 'p'
         self.coulomb_log = 10
 
+    # TODO: array coulomb log
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
@@ -848,6 +849,7 @@ class Test_fundamental_ion_collision_freq():
         self.ion_particle = 'p'
         self.coulomb_log = 10
 
+    # TODO: array coulomb log
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
@@ -990,6 +992,7 @@ class Test_Spitzer_resistivity:
                   f"not {methodVal}.")
         assert testTrue, errStr
 
+    # TODO vector z_mean
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
@@ -1071,6 +1074,7 @@ class Test_mobility:
                   f"not {methodVal}.")
         assert testTrue, errStr
 
+    # TODO vector z_mean
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
@@ -1218,7 +1222,7 @@ class Test_coupling_parameter:
                   f"not {methodVal}.")
         assert testTrue, errStr
 
-    
+    # TODO vector z_mean
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     # @pytest.mark.parametrize("kwargs", [{"method": "classical"},
