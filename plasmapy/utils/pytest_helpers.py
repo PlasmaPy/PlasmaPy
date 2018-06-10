@@ -8,8 +8,7 @@ import numpy as np
 import astropy.units as u
 import astropy.constants as const
 import colorama
-from inspect import signature, _empty
-from astropy.tests.helper import assert_quantity_allclose
+import astropy.tests.helper as astrohelper
 
 # These colors/styles are used to highlight certain parts of the error
 # messages in consistent ways.
@@ -775,12 +774,12 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
 
         # else, if it's a recognized variable name, give it a reasonable unit and magnitude
         elif param_name in ["particle", "ion_particle", "ion"]:
-            if not (param_default is _empty or param_default is None):
+            if not (param_default is inspect._empty or param_default is None):
                 return param_default, param_default, param_default
             else:
                 return "p", "p", "p"
         elif param_name == "particles":
-            if not (param_default is _empty):
+            if not (param_default is inspect._empty):
                 return param_default, param_default, param_default
             else:
                 return ("e", "p"), ("e", "p"), ("e", "p")
@@ -832,7 +831,7 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
     #
 
     # call _prepare_input to prepare 0d, 1d, and 2d sets of arguments for the function:
-    function_sig = signature(function_to_test)
+    function_sig = inspect.signature(function_to_test)
     function_params = function_sig.parameters
     args_0d = dict()
     args_1d = dict()
@@ -857,9 +856,9 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
     except AttributeError:
         scalar_testable = result_0d
     if np.isscalar(scalar_testable):
-        assert_quantity_allclose(result_0d, result_1d[3])
-        assert_quantity_allclose(result_0d, result_2d[1, 1])
+        astrohelper.assert_quantity_allclose(result_0d, result_1d[3])
+        astrohelper.assert_quantity_allclose(result_0d, result_2d[1, 1])
     else:
         for idx, res_0d in enumerate(result_0d):
-            assert_quantity_allclose(res_0d, result_1d[idx][3])
-            assert_quantity_allclose(res_0d, result_2d[idx][1, 1])
+            astrohelper.assert_quantity_allclose(res_0d, result_1d[idx][3])
+            astrohelper.assert_quantity_allclose(res_0d, result_2d[idx][1, 1])
