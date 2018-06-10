@@ -842,18 +842,14 @@ class Test_fundamental_electron_collision_freq():
         self.ion_particle = 'p'
         self.coulomb_log = 10
 
-
-    def test_handle_numpy_array(self):
-        """Tests to verify that can handle Quantities with numpy array as the value"""
-        methodVal = fundamental_electron_collision_freq(self.T_arr,
-                                                        self.n_arr,
-                                                        self.ion_particle,
-                                                        coulomb_log=self.coulomb_log)
-        methodVal_0 = fundamental_electron_collision_freq(self.T_arr[0],
-                                                          self.n_arr[0],
-                                                          self.ion_particle,
-                                                          coulomb_log=self.coulomb_log)
-        assert_quantity_allclose(methodVal[0], methodVal_0)
+    @pytest.mark.parametrize("can_be_vector", ["auto"])
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
+                             insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(fundamental_electron_collision_freq, can_be_vector,
+                                  insert_some_nans, insert_all_nans, kwargs)
 
 
 class Test_fundamental_ion_collision_freq():
@@ -865,18 +861,14 @@ class Test_fundamental_ion_collision_freq():
         self.ion_particle = 'p'
         self.coulomb_log = 10
 
-
-    def test_handle_numpy_array(self):
-        """Tests to verify that can handle Quantities with numpy array as the value"""
-        methodVal = fundamental_ion_collision_freq(self.T_arr,
-                                                   self.n_arr,
-                                                   self.ion_particle,
-                                                   coulomb_log=self.coulomb_log)
-        methodVal_0 = fundamental_ion_collision_freq(self.T_arr[0],
-                                                     self.n_arr[0],
-                                                     self.ion_particle,
-                                                     coulomb_log=self.coulomb_log)
-        assert_quantity_allclose(methodVal[0], methodVal_0)
+    @pytest.mark.parametrize("can_be_vector", ["auto"])
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
+                             insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(fundamental_ion_collision_freq, can_be_vector,
+                                  insert_some_nans, insert_all_nans, kwargs)
 
 
 class Test_mean_free_path:
