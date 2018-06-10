@@ -75,9 +75,10 @@ __all__ = [
 
 @utils.check_quantity(T={"units": u.K, "can_be_negative": False},
                       n_e={"units": u.m ** -3})
+@atomic.particle_input
 def Coulomb_logarithm(T,
                       n_e,
-                      particles,
+                      particles: (atomic.Particle, atomic.Particle),
                       z_mean=np.nan * u.dimensionless_unscaled,
                       V=np.nan * u.m / u.s,
                       method="classical"):
@@ -287,7 +288,8 @@ def Coulomb_logarithm(T,
     return ln_Lambda
 
 
-def _boilerPlate(T, particles, V):
+@atomic.particle_input
+def _boilerPlate(T, particles: (atomic.Particle, atomic.Particle), V):
     """
     Some boiler plate code for checking if inputs to functions in
     collisions.py are good. Also obtains reduced in mass in a
@@ -295,13 +297,7 @@ def _boilerPlate(T, particles, V):
     """
     # checking temperature is in correct units
     T = T.to(u.K, equivalencies=u.temperature_energy())
-    # extracting particle information
-    if not isinstance(particles, (list, tuple)) or len(particles) != 2:
-        raise ValueError("Particles input must be a "
-                         "list or tuple containing representations of two  "
-                         f"charged particles. Got {particles} instead.")
 
-    particles = [atomic.Particle(p) for p in particles]
     masses = [p.mass for p in particles]
     charges = [np.abs(p.charge) for p in particles]
 
@@ -341,8 +337,9 @@ def _replaceNanVwithThermalV(V, T, m):
 
 
 @check_quantity(T={"units": u.K, "can_be_negative": False})
+@atomic.particle_input
 def impact_parameter_perp(T,
-                          particles,
+                          particles: (atomic.Particle, atomic.Particle),
                           V=np.nan * u.m / u.s):
     r"""Distance of closest approach for a 90 degree Coulomb collision.
 

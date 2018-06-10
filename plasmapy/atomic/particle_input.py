@@ -131,6 +131,10 @@ def particle_input(wrapped_function: Callable = None,
         or `~plasmapy.atomic.Particle`; or if `Z` or `mass_numb` is
         not an `int`.
 
+    `ValueError`
+        If the number of input elements in a collection do not match the
+        number of expected elements.
+
     `~plasmapy/utils/InvalidParticleError`
         If the annotated argument does not correspond to a valid
         particle.
@@ -242,7 +246,7 @@ def particle_input(wrapped_function: Callable = None,
                     expected_params = len(annotated_argnames)
                     received_params = len(arguments[argname])
                     if not expected_params == received_params:
-                        raise TypeError(
+                        raise ValueError(
                             f"Number of parameters allowed in the tuple "
                             f"({expected_params} parameters) are "
                             f"not equal to number of parameters passed in "
