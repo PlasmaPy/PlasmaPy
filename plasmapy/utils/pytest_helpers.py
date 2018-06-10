@@ -802,11 +802,11 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
         elif param_name == "characteristic_length":
             unit = u.m
             magnitude = 1.0
-            
+
         # else, last resort, if it has a default argument, go with that:
         elif not (param_default is _empty):
             return param_default, param_default, param_default
-        
+
         else:
             raise ValueError("Unrecognized function input")
 
