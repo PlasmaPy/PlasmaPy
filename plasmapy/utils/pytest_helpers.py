@@ -723,7 +723,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
         raise UnexpectedResultError(errmsg)
 
 
-def assert_can_handle_nparray(function_to_test, can_be_vector="auto", insert_some_nans=[], 
+def assert_can_handle_nparray(function_to_test, can_be_vector="auto", insert_some_nans=[],
                               insert_all_nans=[], kwargs={}):
     """
     Specified test for ability to handle numpy array quantities.
@@ -734,7 +734,7 @@ def assert_can_handle_nparray(function_to_test, can_be_vector="auto", insert_som
             raise NotImplementedError("Haven't implemeneted non-auto can_be_vector yet.")
         if param_name in kwargs.keys():
             return kwargs[param_name], kwargs[param_name], kwargs[param_name]
-        elif param_name == "particle" or param_name == "ion_particle":
+        elif param_name in ["particle", "ion_particle", "ion"]:
             if not (param_default is _empty):
                 return param_default, param_default, param_default
             else:
@@ -753,7 +753,7 @@ def assert_can_handle_nparray(function_to_test, can_be_vector="auto", insert_som
         elif param_name == "B":
             unit = u.G
             mag = 1e3
-        elif param_name == "V":
+        elif param_name in ["V", "Vperp"]:
             unit = u.m / u.s
             mag = 1e5
         elif param_name == "coulomb_log":

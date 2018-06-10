@@ -8,6 +8,7 @@ from warnings import simplefilter
 
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 from plasmapy.utils.exceptions import PhysicsError, InvalidParticleError
+from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 from astropy.constants import c, m_p, m_e, e, mu0
 
 from plasmapy.physics.parameters import (mass_density,
@@ -60,12 +61,21 @@ mu = m_p.to(u.u).value
 
 
 class Test_mass_density:
+    r"""Test the mass_density function in parameters.py."""
+
     def test_particleless(self):
         with pytest.raises(ValueError):
             mass_density(1 * u.m ** -3)
+
     def test_wrong_units(self):
         with pytest.raises(ValueError):
             mass_density(1 * u.J)
+
+    def test_handle_nparrays(self, can_be_vector="auto", insert_some_nans=[],
+                             insert_all_nans=[], kwargs={"particle": "p"}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(mass_density, can_be_vector, insert_some_nans,
+                                  insert_all_nans, kwargs)
 
 
 # Assertions below that are in CGS units with 2-3 significant digits
@@ -174,6 +184,9 @@ def test_Alfven_speed():
                       atol=0.0,
                       rtol=1e-15), errStr
 
+    assert_can_handle_nparray(Alfven_speed, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={})
+
 
 def test_ion_sound_speed():
     r"""Test the ion_sound_speed function in parameters.py."""
@@ -262,9 +275,8 @@ def test_ion_sound_speed():
                       atol=0.0,
                       rtol=1e-15), errStr
 
-
-def test_thermal_pressure():
-    assert thermal_pressure(T_e, n_i).unit.is_equivalent(u.Pa)
+    assert_can_handle_nparray(ion_sound_speed, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={})
 
 
 def test_thermal_speed():
@@ -332,6 +344,17 @@ def test_thermal_speed():
 
     with pytest.raises(ValueError):
         thermal_speed(T_i, method="sadks")
+
+    assert_can_handle_nparray(thermal_speed, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={})
+
+
+def test_thermal_pressure():
+    assert thermal_pressure(T_e, n_i).unit.is_equivalent(u.Pa)
+
+    # TODO: may be array issues with arg "mass"
+    assert_can_handle_nparray(thermal_pressure, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={})
 
 
 # test class for kappa_thermal_speed() function:
@@ -420,6 +443,12 @@ class Test_kappa_thermal_speed(object):
                           atol=0.0), errStr
         return
 
+    def test_handle_nparrays(self, can_be_vector="auto", insert_some_nans=[],
+                             insert_all_nans=[], kwargs={"kappa": 2}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(kappa_thermal_speed, can_be_vector, insert_some_nans,
+                                  insert_all_nans, kwargs)
+
 
 def test_gyrofrequency():
     r"""Test the gyrofrequency function in parameters.py."""
@@ -496,6 +525,12 @@ def test_gyrofrequency():
                       testTrue1,
                       atol=0.0,
                       rtol=1e-15), errStr
+
+    assert_can_handle_nparray(gyrofrequency, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={"signed": True})
+
+    assert_can_handle_nparray(gyrofrequency, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={"signed": False})
 
 
 def test_gyroradius():
@@ -598,6 +633,7 @@ def test_gyroradius():
 
 class Test_gyroradius:
 
+    # some custom numpy array tests here, because of the T_i / Vperp situation
     def test_handle_numpy_array(self):
         # Tests to verify that can handle Quantities with numpy array as the value:
         assert gyroradius(B_arr, Vperp=V_arr)[0] == gyroradius(B_arr[0], Vperp=V_arr[0])
@@ -635,8 +671,9 @@ class Test_gyroradius:
         Vperp2 = u.Quantity([np.nan, 1], unit=u.m/u.s)  # an exact copy
         T_i = u.Quantity([1, np.nan], unit=u.K)
 
-        gyroradius(B_arr, Vperp=Vperp1, T_i = T_i)
+        gyroradius(B_arr, Vperp=Vperp1, T_i=T_i)
         assert_quantity_allclose(Vperp1, Vperp2)
+
 
 def test_plasma_frequency():
     r"""Test the plasma_frequency function in parameters.py."""
@@ -684,6 +721,9 @@ def test_plasma_frequency():
                       atol=0.0,
                       rtol=1e-15), errStr
 
+    assert_can_handle_nparray(plasma_frequency, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={})
+
 
 def test_Debye_length():
     r"""Test the Debye_length function in parameters.py."""
@@ -715,6 +755,9 @@ def test_Debye_length():
 
     with pytest.warns(u.UnitsWarning):
         assert Debye_length(2.0 * u.K, 2.0) == Debye_length(2.0, 2.0 * u.m ** -3)
+
+    assert_can_handle_nparray(Debye_length, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={})
 
 
 def test_Debye_number():
@@ -753,6 +796,9 @@ def test_Debye_number():
 
     with pytest.warns(u.UnitsWarning):
         assert Debye_number(1.1 * u.K, 1.1) == Debye_number(1.1, 1.1 * u.m ** -3)
+
+    assert_can_handle_nparray(Debye_number, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={})
 
 
 def test_inertial_length():
@@ -800,6 +846,9 @@ def test_inertial_length():
     with pytest.warns(u.UnitsWarning):
         assert inertial_length(1e19) == inertial_length(1e19 * u.m ** -3)
 
+    assert_can_handle_nparray(inertial_length, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={})
+
 
 def test_magnetic_pressure():
     r"""Test the magnetic_pressure function in parameters.py."""
@@ -833,6 +882,9 @@ def test_magnetic_pressure():
 
     with pytest.warns(u.UnitsWarning):
         assert magnetic_pressure(22.2) == magnetic_pressure(22.2 * u.T)
+
+    assert_can_handle_nparray(magnetic_pressure, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={})
 
 
 def test_magnetic_energy_density():
@@ -872,6 +924,9 @@ def test_magnetic_energy_density():
     with pytest.warns(u.UnitsWarning):
         assert magnetic_energy_density(22.2) == magnetic_energy_density(22.2 * u.T)
 
+    assert_can_handle_nparray(magnetic_energy_density, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={})
+
 
 def test_upper_hybrid_frequency():
     r"""Test the upper_hybrid_frequency function in parameters.py."""
@@ -896,6 +951,9 @@ def test_upper_hybrid_frequency():
     with pytest.warns(u.UnitsWarning):
         assert upper_hybrid_frequency(1.4 * u.T, 1.3) == upper_hybrid_frequency(1.4,
                                                                                 1.3 * u.m ** -3)
+
+    assert_can_handle_nparray(upper_hybrid_frequency, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={})
 
 
 def test_lower_hybrid_frequency():
@@ -927,3 +985,5 @@ def test_lower_hybrid_frequency():
     with pytest.warns(u.UnitsWarning):
         assert lower_hybrid_frequency(1.3, 1e19) == lower_hybrid_frequency(1.3 * u.T,
                                                                            1e19 * u.m ** -3)
+    assert_can_handle_nparray(lower_hybrid_frequency, can_be_vector="auto", insert_some_nans=[],
+                              insert_all_nans=[], kwargs={})
