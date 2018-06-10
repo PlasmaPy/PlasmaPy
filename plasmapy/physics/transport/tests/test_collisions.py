@@ -927,6 +927,15 @@ class Test_mean_free_path:
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
 
+    @pytest.mark.parametrize("can_be_vector", ["auto"])
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
+                             insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(mean_free_path, can_be_vector, insert_some_nans,
+                                  insert_all_nans, kwargs)
+
 
 class Test_Spitzer_resistivity:
     @classmethod
@@ -998,6 +1007,15 @@ class Test_Spitzer_resistivity:
         errStr = (f"Spitzer resistivity should be {self.True_zmean} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+        
+    @pytest.mark.parametrize("can_be_vector", ["auto"])
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
+                             insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(Spitzer_resistivity, can_be_vector, insert_some_nans,
+                                  insert_all_nans, kwargs)
 
 
 class Test_mobility:
@@ -1073,6 +1091,15 @@ class Test_mobility:
         errStr = (f"Mobility should be {self.True_zmean} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+        
+    @pytest.mark.parametrize("can_be_vector", ["auto"])
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
+                             insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(mobility, can_be_vector, insert_some_nans,
+                                  insert_all_nans, kwargs)
 
 
 class Test_Knudsen_number:
@@ -1133,6 +1160,15 @@ class Test_Knudsen_number:
         errStr = (f"Knudsen number value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
+
+    @pytest.mark.parametrize("can_be_vector", ["auto"])
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
+                             insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(Knudsen_number, can_be_vector, insert_some_nans,
+                                  insert_all_nans, kwargs)
 
 
 class Test_coupling_parameter:
@@ -1208,6 +1244,17 @@ class Test_coupling_parameter:
         errStr = (f"Coupling parameter should be {self.True_zmean} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
+    @pytest.mark.parametrize("can_be_vector", ["auto"])
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    # @pytest.mark.parametrize("kwargs", [{"method": "classical"},
+    #                                     {"method": "quantum"},])   # TODO quantum issues
+    def test_handle_nparrays(self, can_be_vector, insert_some_nans,
+                             insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(coupling_parameter, can_be_vector, insert_some_nans,
+                                  insert_all_nans, kwargs)
 
     def test_quantum(self):
         """

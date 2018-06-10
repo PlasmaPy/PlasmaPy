@@ -1787,7 +1787,7 @@ def coupling_parameter(T,
         fermiIntegral = Fermi_integral(chemicalPotential.si.value, 1.5)
         denom = (n_e * lambda_deBroglie ** 3) * fermiIntegral
         kineticEnergy = 2 * k_B * T / denom
-        if np.imag(kineticEnergy) == 0:
+        if np.all(np.imag(kineticEnergy) == 0):
             kineticEnergy = np.real(kineticEnergy)
         else:
             raise ValueError("Kinetic energy should not be imaginary."

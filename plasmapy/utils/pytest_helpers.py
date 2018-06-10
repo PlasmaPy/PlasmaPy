@@ -748,8 +748,8 @@ def assert_can_handle_nparray(function_to_test, can_be_vector="auto", insert_som
             unit = u.eV
             mag = 1.0
         elif param_name in ["n", "n_i", "n_e", "density"]:
-            unit = u.cm ** -3
-            mag = 1e14
+            unit = u.m ** -3
+            mag = 1e20
         elif param_name == "B":
             unit = u.G
             mag = 1e3
@@ -759,6 +759,9 @@ def assert_can_handle_nparray(function_to_test, can_be_vector="auto", insert_som
         elif param_name == "coulomb_log":
             unit = 1.0
             mag = 1e1
+        elif param_name == "characteristic_length":
+            unit = u.m
+            mag = 1.0
         elif not (param_default is _empty):
             return param_default, param_default, param_default
         else:
