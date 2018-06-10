@@ -769,8 +769,11 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
         """
         Parse parameter names and set up values to input for 0d, 1d, and 2d array tests.
         """
+        # first things first: let any passed in kwarg right through (VIP access)
         if param_name in kwargs.keys():
             return kwargs[param_name], kwargs[param_name], kwargs[param_name]
+
+        # else, if it's a recognized variable name, give it a reasonable unit and magnitude
         elif param_name in ["particle", "ion_particle", "ion"]:
             if not (param_default is _empty or param_default is None):
                 return param_default, param_default, param_default
@@ -783,26 +786,31 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
                 return ("e", "p"), ("e", "p"), ("e", "p")
         elif param_name in ["T", "T_i", "T_e", "temperature"]:
             unit = u.eV
-            mag = 1.0
+            magnitude = 1.0
         elif param_name in ["n", "n_i", "n_e", "density"]:
             unit = u.m ** -3
-            mag = 1e20
+            magnitude = 1e20
         elif param_name == "B":
             unit = u.G
-            mag = 1e3
+            magnitude = 1e3
         elif param_name in ["V", "Vperp"]:
             unit = u.m / u.s
-            mag = 1e5
+            magnitude = 1e5
         elif param_name == "coulomb_log":
             unit = 1.0
-            mag = 1e1
+            magnitude = 1e1
         elif param_name == "characteristic_length":
             unit = u.m
-            mag = 1.0
+            magnitude = 1.0
+            
+        # else, last resort, if it has a default argument, go with that:
         elif not (param_default is _empty):
             return param_default, param_default, param_default
+        
         else:
             raise ValueError("Unrecognized function input")
+
+        # now knowing unit and magnitude, set up the 0d, 1d, and 2d arrays:
         input_data_2d = np.reshape(np.arange(1.0, 5.0, 1.0), (2, 2))
         input_data_1d = np.arange(1.0, 5.0, 1.0)
         if param_name in insert_some_nans:
@@ -812,13 +820,18 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
         elif param_name in insert_all_nans:
             input_data_2d = np.ones((2, 2)) * np.nan
             input_data_1d = np.ones(4) * np.nan
-        input_data_2d *= mag
+        input_data_2d *= magnitude
         input_data_2d *= unit
-        input_data_1d *= mag
+        input_data_1d *= magnitude
         input_data_1d *= unit
         input_data_0d = input_data_1d[3]
         return input_data_0d, input_data_1d, input_data_2d
 
+    #
+    # *** body of assert_can_handle_nparray function ***
+    #
+
+    # call _prepare_input to prepare 0d, 1d, and 2d sets of arguments for the function:
     function_sig = signature(function_to_test)
     function_params = function_sig.parameters
     args_0d = dict()
@@ -831,9 +844,14 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
                                                                   insert_some_nans,
                                                                   insert_all_nans,
                                                                   kwargs)
+
+    # call the function with the prepared argument sets:
     result_0d = function_to_test(**args_0d)
     result_1d = function_to_test(**args_1d)
     result_2d = function_to_test(**args_2d)
+
+    # assert that the 1d, 2d versions get the same result (elementwise) as the 0d version:
+    # (if the function returns multiple values, loop through and test each)
     try:
         scalar_testable = result_0d.value
     except AttributeError:
