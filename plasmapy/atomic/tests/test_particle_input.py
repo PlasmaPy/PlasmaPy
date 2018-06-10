@@ -270,7 +270,7 @@ def test_list_annotation(particles: Union[Tuple, List]):
 
 
 def test_invalid_number_of_tuple_elements():
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         # Passed 3 elements when function only takes 2 in tuple
         function_with_tuple_annotation(('e+', 'e-', 'alpha'), q='test')
 

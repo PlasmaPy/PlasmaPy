@@ -297,11 +297,6 @@ def _boilerPlate(T, particles: (atomic.Particle, atomic.Particle), V):
     """
     # checking temperature is in correct units
     T = T.to(u.K, equivalencies=u.temperature_energy())
-    # extracting particle information
-    if not isinstance(particles, (list, tuple)) or len(particles) != 2:
-        raise ValueError("Particles input must be a "
-                         "list or tuple containing representations of two  "
-                         f"charged particles. Got {particles} instead.")
 
     masses = [p.mass for p in particles]
     charges = [np.abs(p.charge) for p in particles]
