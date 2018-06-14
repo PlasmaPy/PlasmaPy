@@ -275,3 +275,28 @@ class Test__swept_probe_analysis:
                   f"input data.")
         for key in sim_result:
             assert (sim_result[key] == sim_result_shuffled[key]).all(), errStr
+
+
+def test_get_floating_potential_with_return_arg():
+    char = characteristic()
+    potential, arg = langmuir.get_floating_potential(char, return_arg=True)
+    assert np.allclose((potential.to(u.V).value, arg), (0.12203823, 5))
+
+
+def test_get_ion_density_OML_without_return_fit():
+    char = characteristic()
+    density = langmuir.get_ion_density_OML(char, 5000000*u.m**2,
+                                           1*u.u, return_fit=False)
+    assert np.isclose(density.value, 383949768.0764418)
+
+
+def test_get_EEDF():
+    char = langmuir.Characteristic(bias_arr[:17],
+                                   current_arr[:17])
+    energy, probability = langmuir.get_EEDF(char, visualize=False)
+
+    expect_energy = (0.14118696, 0.05293109, 0.00709731)
+    expect_probability = (8.64838751, 8.05295503, 3.42348436)
+
+    assert np.allclose(energy.to(u.eV).value, np.array(expect_energy))
+    assert np.allclose(probability, np.array(expect_probability))
