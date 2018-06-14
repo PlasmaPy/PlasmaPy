@@ -6,8 +6,7 @@ from astropy import units as u
 import pytest
 import plasmapy.constants as const
 
-from plasmapy.diagnostics.langmuir import (Characteristic,
-                                           swept_probe_analysis)
+from plasmapy.diagnostics import langmuir
 
 np.random.seed(42)
 N = 30  # array length of dummy probe characteristic
@@ -16,8 +15,35 @@ current_arr = np.random.rand(N) * u.A
 bias_arr = np.random.rand(N) * u.V
 
 
+class Test__fitting_functions:
+    x = 20
+    x0 = 10
+    y0 = 5
+    c0 = 2
+    T0 = 3
+    Delta_T = 15
+
+    def test_fit_func_lin(self):
+        value = langmuir._fit_func_lin(self.x, self.x0, self.y0, self.c0)
+        assert value == 25
+
+    def test_fit_func_lin_inverse(self):
+        value = langmuir._fit_func_lin_inverse(self.x, self.x0, self.y0, self.T0)
+        assert np.allclose(value, 8.33333)
+
+    def test_fit_func_double_lin_inverse(self):
+        value = langmuir._fit_func_double_lin_inverse(self.x, self.x0, self.y0,
+                                                      self.T0, self.Delta_T)
+        assert value == 8
+
+
 class Test__characteristic_errors:
     r"""Test the Characteristic class constructor in langmuir.py"""
+
+    bias_2darr = np.array((np.random.rand(N),
+                           np.random.rand(N))) * u.V
+    current_2darr = np.array((np.random.rand(N),
+                              np.random.rand(N))) * u.A
 
     bias_infarr = np.append(np.random.rand(N - 1), np.inf) * u.V
     current_infarr = np.append(np.random.rand(N - 1), np.inf) * u.A
@@ -27,35 +53,40 @@ class Test__characteristic_errors:
 
     current_arr2 = np.random.rand(N) * u.A
 
+    def test_invalid_dimensions(self):
+        # Checks if `Characterisitc.get_unique_bias` runs during
+        # initialization.
+        langmuir.Characteristic(self.bias_2darr, self.current_2darr)
+
     def test_infinite_I(self):
         r"""Test error upon an infinite current value"""
 
         with pytest.raises(ValueError):
-            Characteristic(bias_arr, self.current_infarr)
+            langmuir.Characteristic(bias_arr, self.current_infarr)
 
     def test_infinite_U(self):
         r"""Test error upon an infinite bias value"""
 
         with pytest.raises(ValueError):
-            Characteristic(self.bias_infarr, current_arr)
+            langmuir.Characteristic(self.bias_infarr, current_arr)
 
     def test_unequal_arrays(self):
         r"""Test errors upon unequal array lengths"""
 
         with pytest.raises(ValueError):
-            Characteristic(self.bias_longarr, current_arr)
+            langmuir.Characteristic(self.bias_longarr, current_arr)
 
         with pytest.raises(ValueError):
-            Characteristic(bias_arr, self.current_longarr)
+            langmuir.Characteristic(bias_arr, self.current_longarr)
 
     def test_addition(self):
         r"""Test addition of characteristic objects"""
 
-        a = Characteristic(bias_arr, current_arr)
+        a = langmuir.Characteristic(bias_arr, current_arr)
 
-        b = Characteristic(bias_arr, self.current_arr2)
+        b = langmuir.Characteristic(bias_arr, self.current_arr2)
 
-        ab_sum = Characteristic(bias_arr, current_arr + self.current_arr2)
+        ab_sum = a + b
 
         errStr = (f"Addition of characteristic objects is not behaving as it "
                   f"should.")
@@ -64,11 +95,11 @@ class Test__characteristic_errors:
     def test_subtraction(self):
         r"""Test addition of characteristic objects"""
 
-        a = Characteristic(bias_arr, current_arr)
+        a = langmuir.Characteristic(bias_arr, current_arr)
 
-        b = Characteristic(bias_arr, self.current_arr2)
+        b = langmuir.Characteristic(bias_arr, self.current_arr2)
 
-        ab_sub = Characteristic(bias_arr, current_arr - self.current_arr2)
+        ab_sub = a - b
 
         errStr = (f"Subtraction of characteristic objects is not behaving as "
                   f"it should.")
@@ -78,7 +109,7 @@ class Test__characteristic_errors:
 @pytest.fixture
 def characteristic():
     r""""Create a dummy characteristic with random values"""
-    return Characteristic(bias_arr, current_arr)
+    return langmuir.Characteristic(bias_arr, current_arr)
 
 
 @pytest.fixture
@@ -106,7 +137,7 @@ def characteristic_simulated():
     current_simarr[current_simarr < I_es_sim] += (
         bias_simarr[current_simarr < I_es_sim] * 1e-4 * u.A/u.V)
 
-    return Characteristic(bias_simarr, current_simarr)
+    return langmuir.Characteristic(bias_simarr, current_simarr)
 
 
 @pytest.fixture
@@ -117,7 +148,54 @@ def shuffle_characteristic(characteristic):
                       key=lambda k: np.random.random())
     U_shuffled = characteristic.bias[_shuffle]
     I_shuffled = characteristic.current[_shuffle]
-    return Characteristic(U_shuffled, I_shuffled)
+    return langmuir.Characteristic(U_shuffled, I_shuffled)
+
+
+class DryCharacteristic(langmuir.Characteristic):
+    def __init__(self, bias, current):
+        self.bias = bias
+        self.current = current
+
+
+class Test__check_validity:
+    r"""."""
+    bias_2darr = np.array((np.random.rand(N),
+                           np.random.rand(N))) * u.V
+    current_2darr = np.array((np.random.rand(N),
+                              np.random.rand(N))) * u.A
+
+    bias_4length_arr = np.array(np.random.rand(N-1)) * u.V
+    current_5length_arr = np.array(np.random.rand(N)) * u.A
+
+    bias_duplicates_arr = np.array((1,2) * int(N/2))
+
+    def test_invalid_bias_dimensions(self):
+        with pytest.raises(ValueError):
+            characteristic = DryCharacteristic(self.bias_2darr,
+                                               current_arr)
+            characteristic.check_validity()
+
+    def test_invalid_current_dimensions(self):
+        with pytest.raises(ValueError):
+            characteristic = DryCharacteristic(bias_arr,
+                                               self.current_2darr)
+            characteristic.check_validity()
+
+    def test_bias_and_current_length_mismatch(self):
+        with pytest.raises(ValueError):
+            characteristic = DryCharacteristic(self.bias_4length_arr,
+                                               self.current_5length_arr)
+            characteristic.check_validity()
+
+    def test_duplicate_bias_values(self):
+        with pytest.raises(ValueError):
+            characteristic = DryCharacteristic(self.bias_duplicates_arr,
+                                               current_arr)
+            characteristic.check_validity()
+
+    def test_inplace_unique_bias(self):
+        characteristic = DryCharacteristic(bias_arr, current_arr)
+        characteristic.get_unique_bias(inplace=False)
 
 
 class Test__swept_probe_analysis:
@@ -128,21 +206,21 @@ class Test__swept_probe_analysis:
         r"""Test error upon NaN area"""
 
         with pytest.raises(ValueError):
-            swept_probe_analysis(characteristic, np.nan * u.cm**2, 40 * u.u)
+            langmuir.swept_probe_analysis(characteristic, np.nan * u.cm**2, 40 * u.u)
 
     @staticmethod
     def test_unit_conversion_error():
         r"""Test error upon incorrect probe area unit"""
 
         with pytest.raises(u.UnitConversionError):
-            swept_probe_analysis(characteristic, 1 * u.cm, 40 * u.u)
+            langmuir.swept_probe_analysis(characteristic, 1 * u.cm, 40 * u.u)
 
     @staticmethod
     def test_negative_area():
         r"""Test error upon negative probe area"""
 
         with pytest.raises(ValueError):
-            swept_probe_analysis(characteristic, -1 * u.cm**2, 40 * u.u)
+            langmuir.swept_probe_analysis(characteristic, -1 * u.cm**2, 40 * u.u)
 
     @staticmethod
     def test_ion_mass_unit():
@@ -150,10 +228,10 @@ class Test__swept_probe_analysis:
 
         sim = characteristic_simulated()
 
-        sim_result1 = swept_probe_analysis(
+        sim_result1 = langmuir.swept_probe_analysis(
             sim, 1 * u.cm**2, 40)
 
-        sim_result2 = swept_probe_analysis(
+        sim_result2 = langmuir.swept_probe_analysis(
             sim, 1 * u.cm**2, 40 * u.u)
 
         errStr = (f"`swept_probe_analysis` should accept both floats and "
@@ -168,13 +246,13 @@ class Test__swept_probe_analysis:
 
         sim = characteristic_simulated()
 
-        sim_result = swept_probe_analysis(
+        sim_result = langmuir.swept_probe_analysis(
             sim,
             1 * u.cm**2,
             40 * u.u,
             bimaxwellian=bimaxwellian)
 
-        sim_result_shuffled = swept_probe_analysis(
+        sim_result_shuffled = langmuir.swept_probe_analysis(
             shuffle_characteristic(sim),
             1 * u.cm**2,
             40 * u.u,
