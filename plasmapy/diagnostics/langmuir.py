@@ -378,7 +378,7 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
 
     # Obtain and show the EEDF. This is only useful if the characteristic data
     # has been preprocessed to be sufficiently smooth and noiseless.
-    if plot_EEDF:
+    if plot_EEDF:  # coveralls: ignore
         get_EEDF(probe_characteristic, visualize=True)
 
     # Compile the results dictionary
