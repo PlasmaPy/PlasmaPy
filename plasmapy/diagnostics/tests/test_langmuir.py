@@ -16,6 +16,8 @@ bias_arr = np.random.rand(N) * u.V
 
 
 class Test__fitting_functions:
+    r"Tests the different available fit functions"
+
     x = 20
     x0 = 10
     y0 = 5
@@ -24,17 +26,39 @@ class Test__fitting_functions:
     Delta_T = 15
 
     def test_fit_func_lin(self):
+        r"""Test linear fitting function"""
+
         value = langmuir._fit_func_lin(self.x, self.x0, self.y0, self.c0)
-        assert value == 25
+        expect_value = 25
+
+        errStr = (f"Linear fitting function did not return the expected"
+                  f"value {expect_value} and instead returned {value}")
+        assert value == expect_value, errStr
 
     def test_fit_func_lin_inverse(self):
+        r"""Test linear fitting function with inverse slope"""
+
         value = langmuir._fit_func_lin_inverse(self.x, self.x0, self.y0, self.T0)
-        assert np.allclose(value, 8.33333)
+        expect_value = 8.33333
+
+        errStr = (f"Linear fitting function with inverse slope did not return"
+                  f"the expected value {expect_value} and instead returned"
+                  f"{value}")
+        assert np.allclose(value, expect_value), errStr
 
     def test_fit_func_double_lin_inverse(self):
+        r"""Test double linear fitting function with inverse slope and an offset
+            for use in fitting a bi-Maxwellian electron current growth region"""
+
         value = langmuir._fit_func_double_lin_inverse(self.x, self.x0, self.y0,
                                                       self.T0, self.Delta_T)
-        assert value == 8
+        expect_value = 8
+
+        errStr = (f"Linear fitting function with inverse slope and an offset for"
+                  f"use in fitting a bi-Maxwellian electron current growth"
+                  f"region did not return the expected value {expect_value} and"
+                  f"instead returned {value}")
+        assert value == expect_value, errStr
 
 
 class Test__characteristic_errors:
@@ -54,8 +78,10 @@ class Test__characteristic_errors:
     current_arr2 = np.random.rand(N) * u.A
 
     def test_invalid_dimensions(self):
-        # Checks if `Characteristic.get_unique_bias` runs during
-        # initialization.
+        r"""Test 2D arrays work with Characteristic class"""
+
+        # `Characteristic.get_unique_bias` runs during initialization
+        # which prevents an exception from being raised..
         langmuir.Characteristic(self.bias_2darr, self.current_2darr)
 
     def test_infinite_I(self):
@@ -83,7 +109,6 @@ class Test__characteristic_errors:
         r"""Test addition of characteristic objects"""
 
         a = langmuir.Characteristic(bias_arr, current_arr)
-
         b = langmuir.Characteristic(bias_arr, self.current_arr2)
 
         ab_sum = a + b
@@ -96,7 +121,6 @@ class Test__characteristic_errors:
         r"""Test addition of characteristic objects"""
 
         a = langmuir.Characteristic(bias_arr, current_arr)
-
         b = langmuir.Characteristic(bias_arr, self.current_arr2)
 
         ab_sub = a - b
@@ -109,6 +133,7 @@ class Test__characteristic_errors:
 @pytest.fixture
 def characteristic():
     r""""Create a dummy characteristic with random values"""
+
     return langmuir.Characteristic(bias_arr, current_arr)
 
 
@@ -152,13 +177,16 @@ def shuffle_characteristic(characteristic):
 
 
 class DryCharacteristic(langmuir.Characteristic):
+    r"""Overrides the constructor in Characteristic class"""
+
     def __init__(self, bias, current):
         self.bias = bias
         self.current = current
 
 
-class Test__Characteristic_methods:
-    r"""."""
+class Test__Characteristic_inherited_methods:
+    r"""Test methods on DryCharacteristic class."""
+
     bias_2darr = np.array((np.random.rand(N),
                            np.random.rand(N))) * u.V
     current_2darr = np.array((np.random.rand(N),
@@ -170,24 +198,32 @@ class Test__Characteristic_methods:
     bias_duplicates_arr = np.array((1,2) * int(N/2))
 
     def test_invalid_bias_dimensions(self):
+        r"""Test error on non-1D bias array"""
+
         with pytest.raises(ValueError):
             char = DryCharacteristic(self.bias_2darr,
                                      current_arr)
             char.check_validity()
 
     def test_invalid_current_dimensions(self):
+        r"""Test error on non-1d current array"""
+
         with pytest.raises(ValueError):
             char = DryCharacteristic(bias_arr,
                                      self.current_2darr)
             char.check_validity()
 
     def test_bias_and_current_length_mismatch(self):
+        r"""Test error on non-1d bias and current arrays"""
+
         with pytest.raises(ValueError):
             char = DryCharacteristic(self.bias_4length_arr,
                                      self.current_5length_arr)
             char.check_validity()
 
     def test_duplicate_bias_values(self):
+        r"""Test error on bias array containig duplicate values"""
+
         with pytest.raises(ValueError):
             char= DryCharacteristic(self.bias_duplicates_arr,
                                     current_arr)
@@ -195,6 +231,8 @@ class Test__Characteristic_methods:
 
     @staticmethod
     def test_inplace_unique_bias():
+        r"""Test new Characteristic instance being returned"""
+
         char = DryCharacteristic(bias_arr, current_arr)
         new_char = char.get_unique_bias(inplace=False)
         assert char != new_char
@@ -202,6 +240,8 @@ class Test__Characteristic_methods:
 
     @staticmethod
     def test_getpadded_limit():
+        r"""Test padding limit on Characteristic instance"""
+
         char = characteristic()
         limits = char.get_padded_limit(0.1)
         log_limits = char.get_padded_limit(0.1, log=True)
@@ -278,12 +318,16 @@ class Test__swept_probe_analysis:
 
 
 def test_get_floating_potential_with_return_arg():
+    r"""Test floating potential and the return argument"""
+
     char = characteristic()
     potential, arg = langmuir.get_floating_potential(char, return_arg=True)
     assert np.allclose((potential.to(u.V).value, arg), (0.12203823, 5))
 
 
 def test_get_ion_density_OML_without_return_fit():
+    r"""Test ion density without returning the fit value"""
+
     char = characteristic()
     density = langmuir.get_ion_density_OML(char, 5000000*u.m**2,
                                            1*u.u, return_fit=False)
@@ -291,6 +335,8 @@ def test_get_ion_density_OML_without_return_fit():
 
 
 def test_get_EEDF():
+    """Test the obtained EEDF"""
+
     char = langmuir.Characteristic(bias_arr[:17],
                                    current_arr[:17])
     energy, probability = langmuir.get_EEDF(char, visualize=False)
