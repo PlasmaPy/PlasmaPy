@@ -195,7 +195,7 @@ class Test__Characteristic_inherited_methods:
     bias_4length_arr = np.array(np.random.rand(N-1)) * u.V
     current_5length_arr = np.array(np.random.rand(N)) * u.A
 
-    bias_duplicates_arr = np.array((1,2) * int(N/2))
+    bias_duplicates_arr = np.array((1, 2) * int(N/2))
 
     def test_invalid_bias_dimensions(self):
         r"""Test error on non-1D bias array"""
@@ -225,8 +225,8 @@ class Test__Characteristic_inherited_methods:
         r"""Test error on bias array containig duplicate values"""
 
         with pytest.raises(ValueError):
-            char= DryCharacteristic(self.bias_duplicates_arr,
-                                    current_arr)
+            char = DryCharacteristic(self.bias_duplicates_arr,
+                                     current_arr)
             char.check_validity()
 
     @staticmethod
