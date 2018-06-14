@@ -54,7 +54,7 @@ class Test__characteristic_errors:
     current_arr2 = np.random.rand(N) * u.A
 
     def test_invalid_dimensions(self):
-        # Checks if `Characterisitc.get_unique_bias` runs during
+        # Checks if `Characteristic.get_unique_bias` runs during
         # initialization.
         langmuir.Characteristic(self.bias_2darr, self.current_2darr)
 
@@ -157,7 +157,7 @@ class DryCharacteristic(langmuir.Characteristic):
         self.current = current
 
 
-class Test__check_validity:
+class Test__Characteristic_methods:
     r"""."""
     bias_2darr = np.array((np.random.rand(N),
                            np.random.rand(N))) * u.V
@@ -171,31 +171,44 @@ class Test__check_validity:
 
     def test_invalid_bias_dimensions(self):
         with pytest.raises(ValueError):
-            characteristic = DryCharacteristic(self.bias_2darr,
-                                               current_arr)
-            characteristic.check_validity()
+            char = DryCharacteristic(self.bias_2darr,
+                                     current_arr)
+            char.check_validity()
 
     def test_invalid_current_dimensions(self):
         with pytest.raises(ValueError):
-            characteristic = DryCharacteristic(bias_arr,
-                                               self.current_2darr)
-            characteristic.check_validity()
+            char = DryCharacteristic(bias_arr,
+                                     self.current_2darr)
+            char.check_validity()
 
     def test_bias_and_current_length_mismatch(self):
         with pytest.raises(ValueError):
-            characteristic = DryCharacteristic(self.bias_4length_arr,
-                                               self.current_5length_arr)
-            characteristic.check_validity()
+            char = DryCharacteristic(self.bias_4length_arr,
+                                     self.current_5length_arr)
+            char.check_validity()
 
     def test_duplicate_bias_values(self):
         with pytest.raises(ValueError):
-            characteristic = DryCharacteristic(self.bias_duplicates_arr,
-                                               current_arr)
-            characteristic.check_validity()
+            char= DryCharacteristic(self.bias_duplicates_arr,
+                                    current_arr)
+            char.check_validity()
 
-    def test_inplace_unique_bias(self):
-        characteristic = DryCharacteristic(bias_arr, current_arr)
-        characteristic.get_unique_bias(inplace=False)
+    @staticmethod
+    def test_inplace_unique_bias():
+        char = DryCharacteristic(bias_arr, current_arr)
+        new_char = char.get_unique_bias(inplace=False)
+        assert char != new_char
+        assert isinstance(new_char, langmuir.Characteristic)
+
+    @staticmethod
+    def test_getpadded_limit():
+        char = characteristic()
+        limits = char.get_padded_limit(0.1)
+        log_limits = char.get_padded_limit(0.1, log=True)
+        assert np.allclose(limits.to(u.A).value,
+                           np.array((-0.07434804, 1.06484239)))
+        assert np.allclose(log_limits.to(u.A).value,
+                           np.array((0.014003, 1.42577333)))
 
 
 class Test__swept_probe_analysis:
