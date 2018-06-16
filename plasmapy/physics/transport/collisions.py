@@ -323,7 +323,7 @@ def _replaceNanVwithThermalV(V, T, m):
     Handles vector checks for V, you must already know that T and m are okay.
     """
     if np.any(V == 0):
-        raise utils.exceptions.PhysicsError("You cannot have a collision for zero velocity!")
+        raise utils.PhysicsError("You cannot have a collision for zero velocity!")
     # getting thermal velocity of system if no velocity is given
     if V is None:
         V = parameters.thermal_speed(T, mass=m)
@@ -759,6 +759,7 @@ def collision_frequency(T,
         bPerp = impact_parameter_perp(T=T,
                                       particles=particles,
                                       V=V_reduced)
+        print(T, n, particles, z_mean, method)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T,
                                     n,
@@ -965,9 +966,8 @@ def fundamental_electron_collision_freq(T_e,
                              )
     coeff = 4 / np.sqrt(np.pi) / 3
 
-
     # accounting for when a Coulomb logarithm value is passed
-    if coulomb_log:
+    if np.any(coulomb_log):
         cLog = Coulomb_logarithm(T_e,
                                  n_e,
                                  particles,
@@ -981,6 +981,7 @@ def fundamental_electron_collision_freq(T_e,
         nu_e = coeff * nu_mod
     else:
         nu_e = coeff * nu
+
     return nu_e.to(1 / u.s)
 
 
@@ -1105,7 +1106,7 @@ def fundamental_ion_collision_freq(T_i,
     coeff = np.sqrt(8 / np.pi) / 3 / 4
 
     # accounting for when a Coulomb logarithm value is passed
-    if coulomb_log:
+    if np.any(coulomb_log):
         cLog = Coulomb_logarithm(T_i,
                                  n_i,
                                  particles,
@@ -1790,7 +1791,7 @@ def coupling_parameter(T,
         fermiIntegral = Fermi_integral(chemicalPotential.si.value, 1.5)
         denom = (n_e * lambda_deBroglie ** 3) * fermiIntegral
         kineticEnergy = 2 * k_B * T / denom
-        if np.imag(kineticEnergy) == 0:
+        if np.all(np.imag(kineticEnergy) == 0):
             kineticEnergy = np.real(kineticEnergy)
         else:
             raise ValueError("Kinetic energy should not be imaginary."
