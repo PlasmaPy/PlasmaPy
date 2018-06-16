@@ -770,19 +770,19 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
         """
         # first things first: let any passed in kwarg right through (VIP access)
         if param_name in kwargs.keys():
-            return kwargs[param_name], kwargs[param_name], kwargs[param_name]
+            return (kwargs[param_name], ) * 4
 
         # else, if it's a recognized variable name, give it a reasonable unit and magnitude
         elif param_name in ["particle", "ion_particle", "ion"]:
             if not (param_default is inspect._empty or param_default is None):
-                return param_default, param_default, param_default
+                return (param_default, ) * 4
             else:
-                return "p", "p", "p"
+                return ("p", ) * 4
         elif param_name == "particles":
             if not (param_default is inspect._empty):
-                return param_default, param_default, param_default
+                return (param_default, ) * 4
             else:
-                return ("e", "p"), ("e", "p"), ("e", "p")
+                return (("e", "p"), ) * 4
         elif param_name in ["T", "T_i", "T_e", "temperature"]:
             unit = u.eV
             magnitude = 1.0
@@ -804,27 +804,33 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
 
         # else, last resort, if it has a default argument, go with that:
         elif not (param_default is inspect._empty):
-            return param_default, param_default, param_default
+            return (param_default, ) * 4
 
         else:
             raise ValueError("Unrecognized function input")
 
-        # now knowing unit and magnitude, set up the 0d, 1d, and 2d arrays:
+        # now knowing unit and magnitude, set up the 0d, 1d, 2d, and 3d arrays:
+        input_data_3d = np.reshape(np.arange(1.0, 9.0, 1.0), (2, 2, 2))
         input_data_2d = np.reshape(np.arange(1.0, 5.0, 1.0), (2, 2))
         input_data_1d = np.arange(1.0, 5.0, 1.0)
         if param_name in insert_some_nans:
+            input_data_3d[0, 0, 1] = np.nan
+            input_data_3d[0, 1, 0] = np.nan
             input_data_2d[0, 1] = np.nan
             input_data_2d[1, 0] = np.nan
             input_data_1d[1] = np.nan
         elif param_name in insert_all_nans:
+            input_data_3d = np.ones((2, 2, 2)) * np.nan
             input_data_2d = np.ones((2, 2)) * np.nan
             input_data_1d = np.ones(4) * np.nan
+        input_data_3d *= magnitude
+        input_data_3d *= unit
         input_data_2d *= magnitude
         input_data_2d *= unit
         input_data_1d *= magnitude
         input_data_1d *= unit
         input_data_0d = input_data_1d[3]
-        return input_data_0d, input_data_1d, input_data_2d
+        return input_data_0d, input_data_1d, input_data_2d, input_data_3d
 
     #
     # *** body of assert_can_handle_nparray function ***
@@ -836,20 +842,24 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
     args_0d = dict()
     args_1d = dict()
     args_2d = dict()
+    args_3d = dict()
     param_names = [elm for elm in function_params.keys()]
     for idx, key in enumerate(function_params):
-        args_0d[key], args_1d[key], args_2d[key] = _prepare_input(param_names[idx],
-                                                                  function_params[key].default,
-                                                                  insert_some_nans,
-                                                                  insert_all_nans,
-                                                                  kwargs)
+        args_0d[key], args_1d[key], args_2d[key], args_3d[key] = _prepare_input(
+            param_names[idx],
+            function_params[key].default,
+            insert_some_nans,
+            insert_all_nans,
+            kwargs,
+            )
 
     # call the function with the prepared argument sets:
     result_0d = function_to_test(**args_0d)
     result_1d = function_to_test(**args_1d)
     result_2d = function_to_test(**args_2d)
+    result_3d = function_to_test(**args_3d)
 
-    # assert that the 1d, 2d versions get the same result (elementwise) as the 0d version:
+    # assert that the 1d, 2d, 3d versions get the same result (elementwise) as the 0d version:
     # (if the function returns multiple values, loop through and test each)
     try:
         scalar_testable = result_0d.value
@@ -858,7 +868,9 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
     if np.isscalar(scalar_testable):
         astrohelper.assert_quantity_allclose(result_0d, result_1d[3])
         astrohelper.assert_quantity_allclose(result_0d, result_2d[1, 1])
+        astrohelper.assert_quantity_allclose(result_0d, result_3d[0, 1, 1])
     else:
         for idx, res_0d in enumerate(result_0d):
             astrohelper.assert_quantity_allclose(res_0d, result_1d[idx][3])
             astrohelper.assert_quantity_allclose(res_0d, result_2d[idx][1, 1])
+            astrohelper.assert_quantity_allclose(res_0d, result_3d[idx][0, 1, 1])
