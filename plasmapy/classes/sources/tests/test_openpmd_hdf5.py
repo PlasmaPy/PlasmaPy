@@ -11,7 +11,7 @@ def openPMD2DPlasma():
     per the Creative Commons Zero v1.0 Universal license"""
     return plasmapy.classes.Plasma(
         hdf5=os.path.join(
-            os.basedir(__file__),
+            os.path.dirname(__file__) or '.',
             "data",
             "data00000255.h5")
         )

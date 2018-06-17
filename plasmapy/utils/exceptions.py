@@ -78,6 +78,11 @@ class InvalidParticleError(AtomicError):
     pass
 
 
+class OpenPMDError(PlasmaPyError):
+    """An exception for when HDF5 is not defined by OpenPMD standard."""
+    pass
+
+
 # ----------
 # Warnings:
 # ----------
