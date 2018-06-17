@@ -30,3 +30,8 @@ class TestPlasma(object):
                                        particle=particle)
         assert isinstance(blob, plasmapy.classes.sources.PlasmaBlob)
         assert isinstance(blob, plasmapy.classes.BasePlasma)
+
+    def test_HDF5Reader(self):
+        h5 = plasmapy.classes.Plasma(hdf5='virtual_hdf5.h5')
+        assert isinstance(h5, plasmapy.classes.sources.HDF5Reader)
+        assert isinstance(h5, plasmapy.classes.BasePlasma)
