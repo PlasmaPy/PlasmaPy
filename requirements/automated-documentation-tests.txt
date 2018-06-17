@@ -2,6 +2,7 @@ astropy
 coveralls
 mpmath
 roman
+h5py
 lmfit
 matplotlib
 numpy
