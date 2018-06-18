@@ -1,12 +1,16 @@
-[report]
+[run]
+source = plasmapy
 omit =
-    ci-helpers/*
     */tests/*
     astropy_helpers/*
     ah_bootstrap.py
     plasmapy/setup_package.py
     plasmapy/version.py
+    plasmapy/_base_init.py
+    */.eggs/*
+[report]
 exclude_lines =
+    pragma: no cover
     coveralls: ignore
     def __repr__
     NotImplementedError
