@@ -1,0 +1,15 @@
+[report]
+omit =
+    ci-helpers/*
+    */tests/*
+    astropy_helpers/*
+    ah_bootstrap.py
+    plasmapy/setup_package.py
+    plasmapy/version.py
+exclude_lines =
+    coveralls: ignore
+    def __repr__
+    NotImplementedError
+    ImportError
+    ModuleNotFoundError
+    SyntaxError
