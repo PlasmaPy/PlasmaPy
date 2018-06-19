@@ -8,6 +8,8 @@ from plasmapy.utils import OpenPMDError
 import os
 
 
+# This is the order what OpenPMD uses to store unit
+# dimensions for a record.
 _UNITS = (u.meter,
           u.kilogram,
           u.second,
@@ -18,6 +20,10 @@ _UNITS = (u.meter,
 
 
 def _fetch_units(openPMD_dims):
+    """
+    Converts a collection of OpenPMD dimensions to astropy.units.
+    """
+
     units = u.dimensionless_unscaled
     for factor, unit in zip(openPMD_dims, _UNITS):
         units *= (unit ** factor)
@@ -26,6 +32,25 @@ def _fetch_units(openPMD_dims):
 
 
 class _ElectricField:
+    """
+    A class for representing electric field obtained from HDF5 based on
+    OpenPMD standards.
+
+    Attributes
+    ----------
+    x : `astropy.units.Quantity`
+        Array of x-coordinates data within the electric field domain.
+    y : `astropy.units.Quantity`
+        Array of y-coordinates data within the electric field domain.
+    z : `astropy.units.Quantity`
+        Array of z-coordinates data within the electric field domain.
+
+    Parameters
+    ----------
+    E : `h5py.hl.group.Group`
+        Path to 'fields/E' in an HDF5 file.
+    """
+
     def __init__(self, E):
         self.units = _fetch_units(E.attrs["unitDimension"])
         self.E = E
@@ -45,6 +70,25 @@ class _ElectricField:
 
 class HDF5Reader(GenericPlasma):
     def __init__(self, hdf5, **kwargs):
+        """
+        Core class for accessing various attributes on HDF5 files that
+        are based on OpenPMD standards.
+
+        Attributes
+        ----------
+        electric_field : `_ElectricField`
+            An instance of ``_ElectricField`` whose cartesian
+            coordinate attributes can be accessed by reading suitable
+            coordinate axis.
+        charge_density : `astropy.units.Quantity`
+            An array containing charge density data.
+
+        Parameters
+        ----------
+        hdf5 : `str`
+            Path to HDF5 file.
+        """
+
         if not os.path.isfile(hdf5):
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
 
