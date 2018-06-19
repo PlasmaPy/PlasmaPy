@@ -5,6 +5,7 @@ include ez_setup.py
 include ah_bootstrap.py
 include setup.cfg
 include plasmapy/tests/coveragerc
+include .coveragerc
 
 recursive-include plasmapy *.pyx *.c *.pxd
 recursive-include docs *
