@@ -8,21 +8,39 @@ from plasmapy.utils import OpenPMDError
 import os
 
 
+_UNITS = (u.meter,
+          u.kilogram,
+          u.second,
+          u.ampere,
+          u.Kelvin,
+          u.mol,
+          u.candela)
+
+
+def _fetch_units(openPMD_dims):
+    units = u.dimensionless_unscaled
+    for factor, unit in zip(openPMD_dims, _UNITS):
+        units *= (unit ** factor)
+    units, *_ = units.compose()
+    return units
+
+
 class _ElectricField:
     def __init__(self, E):
+        self.units = _fetch_units(E.attrs["unitDimension"])
         self.E = E
 
     @property
     def x(self):
-        return np.array(self.E['x']) * u.V / u.m
+        return np.array(self.E['x']) * self.units
 
     @property
     def y(self):
-        return np.array(self.E['y']) * u.V / u.m
+        return np.array(self.E['y']) * self.units
 
     @property
     def z(self):
-        return np.array(self.E['z']) * u.V / u.m
+        return np.array(self.E['z']) * self.units
 
 
 class HDF5Reader(GenericPlasma):
@@ -55,27 +73,8 @@ class HDF5Reader(GenericPlasma):
     def charge_density(self):
         path = 'data/' + self.subname + '/fields/rho'
         if path in self.h5:
-            return np.array(self.h5[path]) * u.C / u.m**3
-        else:
-            raise AttributeError
-
-    @property
-    def x(self):
-        path = 'data/' + self.subname + '/fields/E/x'
-        if path in self.h5:
-            return self.h5[path]
-        else:
-            raise AttributeError
-
-    @property
-    def y(self):
-        raise AttributeError
-
-    @property
-    def z(self):
-        path = 'data/' + self.subname + '/fields/E/z'
-        if path in self.h5:
-            return self.h5[path]
+            units = _fetch_units(self.h5[path].attrs["unitDimension"])
+            return np.array(self.h5[path]) * units
         else:
             raise AttributeError
 
