@@ -1,46 +1,87 @@
-import pytest
-import plasmapy
+from plasmapy.classes.sources import openpmd_hdf5
+from plasmapy.utils import OpenPMDError
+
 from astropy import units as u
+from typing import Union, Tuple, List
 import os
-
-@pytest.fixture(scope="module")
-def openPMD2DPlasma():
-    """This is me not knowing how to handle the new Plasma class with data!
-
-    Downloaded from https://github.com/openPMD/openPMD-example-datasets/blob/draft/example-2d.tar.gz
-    per the Creative Commons Zero v1.0 Universal license"""
-    return plasmapy.classes.Plasma(
-        hdf5=os.path.join(
-            os.path.dirname(__file__) or '.',
-            "data",
-            "data00000255.h5")
-        )
-
-def test_has_electric_field_with_units(openPMD2DPlasma):
-    "It would be nice to let the fields have the correct units from the get go"
-    assert openPMD2DPlasma.electric_field.to(u.V / u.m)
-
-def test_has_charge_density_with_units(openPMD2DPlasma):
-    assert openPMD2DPlasma.charge_density.to(u.C/u.m**3)  # unless it's some
-    # 2D charge density
-
-def test_correct_shape_electric_field(openPMD2DPlasma):
-    assert openPMD2DPlasma.electric_field.shape == (3, 51, 201)
-    # IIRC this is how we defined it in the old Plasma class but I can be
-    # convinced otherwise if another way makes more sense
-
-def test_x(openPMD2DPlasma):
-    assert openPMD2DPlasma.x.shape == (51, 201)
-    assert openPMD2DPlasma.x.to(u.m)
-
-def test_y(openPMD2DPlasma):
-    """"I'm not sure this should happen but the 2D dataset has an x-z grid only so
-    we will have to discuss this"""
-    with pytest.raises(AttributeError):
-        print(openPMD2DPlasma.y)
-
-def test_z(openPMD2DPlasma):
-    assert openPMD2DPlasma.z.shape == (51, 201)
-    assert openPMD2DPlasma.z.to(u.m)
+import pytest
 
 
+class TestOpenPMD2D:
+    """Test 2D HDF5 dataset based on OpenPMD."""
+    # Downloaded from
+    # https://github.com/openPMD/openPMD-example-datasets/blob/draft/example-2d.tar.gz
+    # per the Creative Commons Zero v1.0 Universal license
+    h5 = openpmd_hdf5.HDF5Reader(
+            hdf5=os.path.join(
+                os.path.dirname(__file__) or '.',
+                "data",
+                "data00000255.h5")
+            )
+
+    def test_has_electric_field_with_units(self):
+        assert self.h5.electric_field.to(u.V / u.m)
+
+    def test_correct_shape_electric_field(self):
+        assert self.h5.electric_field.shape == (3, 51, 201)
+
+    def test_has_charge_density_with_units(self):
+        assert self.h5.charge_density.to(u.C / u.m**3)
+
+    def test_correct_shape_charge_density(self):
+        assert self.h5.charge_density.shape == (51, 201)
+
+
+class TestOpenPMD3D:
+    """Test 3D HDF5 dataset based on OpenPMD."""
+    # Downloaded from
+    # https://github.com/openPMD/openPMD-example-datasets/blob/draft/example-3d.tar.gz
+    # per the Creative Commons Zero v1.0 Universal license
+    h5 = openpmd_hdf5.HDF5Reader(
+            hdf5=os.path.join(
+                os.path.dirname(__file__) or '.',
+                "data",
+                "data00000100.h5")
+            )
+
+    def test_has_electric_field_with_units(self):
+        assert self.h5.electric_field.to(u.V / u.m)
+
+    def test_correct_shape_electric_field(self):
+        assert self.h5.electric_field.shape == (3, 26, 26, 201)
+
+    def test_has_charge_density_with_units(self):
+        assert self.h5.charge_density.to(u.C / u.m**3)
+
+    def test_correct_shape_charge_density(self):
+        assert self.h5.charge_density.shape == (26, 26, 201)
+
+
+units_test_table = [
+    ((1., 1., 0., -1., 0. ,0., 2.),
+     u.m * u.kg / u.amp * u.cd ** 2),
+    ((1, 0, 1, 2, 0, 0, 0),
+     u.m * u.s * u.amp ** 2),
+    ([-3.,  0.,  1.,  1.,  0.,  0.,  0.],
+     u.coulomb / u.m**3),
+    ([2, 1, -3, -2, 0, 0, 0],
+     u.ohm)
+]
+@pytest.mark.parametrize("openPMD_dims, expected", units_test_table)
+def test_fetch_units(openPMD_dims, expected: Union[Tuple, List]):
+    units = openpmd_hdf5._fetch_units(openPMD_dims)
+    assert units == expected
+
+
+def test_unavailable_hdf5():
+    with pytest.raises(FileNotFoundError):
+        openpmd_hdf5.HDF5Reader(hdf5="this_file_does_not_exist.h5")
+
+
+def test_non_openpmd_hdf5():
+    with pytest.raises(OpenPMDError):
+        openpmd_hdf5.HDF5Reader(hdf5=os.path.join(
+                                    os.path.dirname(__file__) or '.',
+                                    "data",
+                                    "blank.h5")
+                                )

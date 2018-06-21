@@ -6,7 +6,11 @@ from plasmapy.classes import GenericPlasma
 from plasmapy.utils import OpenPMDError
 
 import os
+from distutils.version import StrictVersion
 
+
+_OUTDATED_VERSION = "1.1.0"
+_NEWER_VERSION = "2.0.0"
 
 # This is the order what OpenPMD uses to store unit
 # dimensions for a record.
@@ -29,6 +33,18 @@ def _fetch_units(openPMD_dims):
         units *= (unit ** factor)
     units, *_ = units.compose()
     return units
+
+
+def _valid_version(openPMD_version,
+                   outdated=_OUTDATED_VERSION, newer=_NEWER_VERSION):
+    """
+    Checks if the passed version is supported or not.
+    """
+
+    parsed_version = StrictVersion(openPMD_version)
+    outdated_version = StrictVersion(outdated)
+    newer_version = StrictVersion(newer)
+    return outdated_version <= parsed_version < newer_version
 
 
 class HDF5Reader(GenericPlasma):
@@ -54,17 +70,28 @@ class HDF5Reader(GenericPlasma):
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
 
         h5 = h5py.File(hdf5)
-        try:
-            openPMD = h5.attrs["openPMDextension"]
-        except KeyError:
-            openPMD = False
+        self.h5 = h5
 
-        if not openPMD:
+        self._check_valid_openpmd_version()
+
+        self.subname = tuple(self.h5['data'])[0]
+
+
+    def _check_valid_openpmd_version(self):
+        try:
+            openPMD_version = self.h5.attrs["openPMD"].decode('utf-8')
+            if _valid_version(openPMD_version):
+                return True
+            else:
+                raise OpenPMDError(f"We currently only support HDF5 versions"
+                                   f"starting from v{_OUTDATED_VERSION} and "
+                                   f"lower than v{_NEWER_VERSION}. You can "
+                                   f"however convert your HDF5 to a supported "
+                                   f"version. For more information; see "
+                                   f"https://github.com/openPMD/openPMD-updater")
+        except KeyError:
             raise OpenPMDError("Input HDF5 file does not go on with "
                                "standards defined by OpenPMD")
-
-        self.subname = tuple(h5['data'])[0]
-        self.h5 = h5
 
     @property
     def electric_field(self):
@@ -103,7 +130,7 @@ class HDF5Reader(GenericPlasma):
         if not "openPMD" in kwargs and isfile:
             h5 = h5py.File(hdf5)
             try:
-                openPMD = h5.attrs["openPMDextension"]
+                openPMD = h5.attrs["openPMD"]
             except KeyError:
                 openPMD = False
 
