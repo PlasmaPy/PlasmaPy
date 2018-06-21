@@ -31,43 +31,6 @@ def _fetch_units(openPMD_dims):
     return units
 
 
-class _ElectricField:
-    """
-    A class for representing electric field obtained from HDF5 based on
-    OpenPMD standards.
-
-    Attributes
-    ----------
-    x : `astropy.units.Quantity`
-        Array of x-coordinates data within the electric field domain.
-    y : `astropy.units.Quantity`
-        Array of y-coordinates data within the electric field domain.
-    z : `astropy.units.Quantity`
-        Array of z-coordinates data within the electric field domain.
-
-    Parameters
-    ----------
-    E : `h5py.hl.group.Group`
-        Path to 'fields/E' in an HDF5 file.
-    """
-
-    def __init__(self, E):
-        self.units = _fetch_units(E.attrs["unitDimension"])
-        self.E = E
-
-    @property
-    def x(self):
-        return np.array(self.E['x']) * self.units
-
-    @property
-    def y(self):
-        return np.array(self.E['y']) * self.units
-
-    @property
-    def z(self):
-        return np.array(self.E['z']) * self.units
-
-
 class HDF5Reader(GenericPlasma):
     def __init__(self, hdf5, **kwargs):
         """
@@ -76,10 +39,8 @@ class HDF5Reader(GenericPlasma):
 
         Attributes
         ----------
-        electric_field : `_ElectricField`
-            An instance of ``_ElectricField`` whose cartesian
-            coordinate attributes can be accessed by reading suitable
-            coordinate axis.
+        electric_field : `astropy.units.Quantity`
+            An (x, y, z) array containing electric field data.
         charge_density : `astropy.units.Quantity`
             An array containing charge density data.
 
@@ -109,9 +70,13 @@ class HDF5Reader(GenericPlasma):
     def electric_field(self):
         path = 'data/' + self.subname + '/fields/E'
         if path in self.h5:
-            return _ElectricField(self.h5[path])
+            units = _fetch_units(self.h5[path].attrs["unitDimension"])
+            return np.array((self.h5[path]['x'],
+                             self.h5[path]['y'],
+                             self.h5[path]['z'])) * units
         else:
-            raise AttributeError
+            raise AttributeError("No electric field data available "
+                                 "in HDF5 file")
 
     @property
     def charge_density(self):
@@ -120,7 +85,8 @@ class HDF5Reader(GenericPlasma):
             units = _fetch_units(self.h5[path].attrs["unitDimension"])
             return np.array(self.h5[path]) * units
         else:
-            raise AttributeError
+            raise AttributeError("No charge density data available "
+                                 "in HDF5 file")
 
     @classmethod
     def is_datasource_for(cls, **kwargs):
@@ -130,7 +96,11 @@ class HDF5Reader(GenericPlasma):
         hdf5 = kwargs.get("hdf5")
         openPMD = kwargs.get("openPMD")
 
-        if not "openPMD" in kwargs and os.path.isfile(hdf5):
+        isfile = os.path.isfile(hdf5)
+        if not isfile:
+            raise FileNotFoundError(f"Could not find file: '{hdf5}'")
+
+        if not "openPMD" in kwargs and isfile:
             h5 = h5py.File(hdf5)
             try:
                 openPMD = h5.attrs["openPMDextension"]
