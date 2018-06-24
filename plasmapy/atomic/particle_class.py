@@ -614,13 +614,15 @@ class Particle:
         """
         Return the spectral name of the particle (i.e. the ionic symbol in
         Roman numeral notation).  If the particle is not an ion or neutral
-        atom, return `None`.
+        atom, return `None`. The roman numeral represents one plus the
+        integer charge. Raise `ChargeError` if no charge has been specified
+        and `roman.OutOfRangeError` if the charge is negative.
 
         Examples
         --------
         >>> proton = Particle('proton')
         >>> proton.roman_symbol
-        'H II'
+        'H-1 II'
         >>> hydrogen_atom = Particle('H', Z=0)
         >>> hydrogen_atom.roman_symbol
         'H I'
@@ -633,10 +635,10 @@ class Particle:
         if self._attributes['integer charge'] < 0:
             raise roman.OutOfRangeError('Cannot convert negative charges to Roman.')
 
-        element = self._attributes['element']
+        symbol = self.isotope if self.isotope else self.element
         integer_charge = self._attributes['integer charge']
         roman_charge = roman.toRoman(integer_charge + 1)
-        return element + ' ' + roman_charge
+        return f"{symbol} {roman_charge}"
 
     @property
     def element_name(self) -> str:
