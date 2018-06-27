@@ -49,7 +49,7 @@ class TestOpenPMD3D:
 
 
 units_test_table = [
-    ((1., 1., 0., -1., 0. ,0., 2.),
+    ((1., 1., 0., -1., 0., 0., 2.),
      u.m * u.kg / u.amp * u.cd ** 2),
     ((1, 0, 1, 2, 0, 0, 0),
      u.m * u.s * u.amp ** 2),
@@ -58,6 +58,8 @@ units_test_table = [
     ([2, 1, -3, -2, 0, 0, 0],
      u.ohm)
 ]
+
+
 @pytest.mark.parametrize("openPMD_dims, expected", units_test_table)
 def test_fetch_units(openPMD_dims, expected: Union[Tuple, List]):
     units = openpmd_hdf5._fetch_units(openPMD_dims)

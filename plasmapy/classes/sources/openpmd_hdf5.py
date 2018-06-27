@@ -76,7 +76,6 @@ class HDF5Reader(GenericPlasma):
 
         self.subname = tuple(self.h5['data'])[0]
 
-
     def _check_valid_openpmd_version(self):
         try:
             openPMD_version = self.h5.attrs["openPMD"].decode('utf-8')
@@ -117,7 +116,7 @@ class HDF5Reader(GenericPlasma):
 
     @classmethod
     def is_datasource_for(cls, **kwargs):
-        if not "hdf5" in kwargs:
+        if "hdf5" not in kwargs:
             return False
 
         hdf5 = kwargs.get("hdf5")
@@ -127,7 +126,7 @@ class HDF5Reader(GenericPlasma):
         if not isfile:
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
 
-        if not "openPMD" in kwargs and isfile:
+        if "openPMD" not in kwargs and isfile:
             h5 = h5py.File(hdf5)
             try:
                 openPMD = h5.attrs["openPMD"]
