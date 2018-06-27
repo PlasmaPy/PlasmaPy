@@ -1,5 +1,6 @@
 from plasmapy.classes.sources import openpmd_hdf5
 from plasmapy.utils import OpenPMDError
+from plasmapy.data.test import rootdir
 
 from astropy import units as u
 from typing import Union, Tuple, List
@@ -12,12 +13,7 @@ class TestOpenPMD2D:
     # Downloaded from
     # https://github.com/openPMD/openPMD-example-datasets/blob/draft/example-2d.tar.gz
     # per the Creative Commons Zero v1.0 Universal license
-    h5 = openpmd_hdf5.HDF5Reader(
-            hdf5=os.path.join(
-                os.path.dirname(__file__) or '.',
-                "data",
-                "data00000255.h5")
-            )
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000255.h5"))
 
     def test_has_electric_field_with_units(self):
         assert self.h5.electric_field.to(u.V / u.m)
@@ -37,12 +33,7 @@ class TestOpenPMD3D:
     # Downloaded from
     # https://github.com/openPMD/openPMD-example-datasets/blob/draft/example-3d.tar.gz
     # per the Creative Commons Zero v1.0 Universal license
-    h5 = openpmd_hdf5.HDF5Reader(
-            hdf5=os.path.join(
-                os.path.dirname(__file__) or '.',
-                "data",
-                "data00000100.h5")
-            )
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000100.h5"))
 
     def test_has_electric_field_with_units(self):
         assert self.h5.electric_field.to(u.V / u.m)
@@ -80,8 +71,4 @@ def test_unavailable_hdf5():
 
 def test_non_openpmd_hdf5():
     with pytest.raises(OpenPMDError):
-        openpmd_hdf5.HDF5Reader(hdf5=os.path.join(
-                                    os.path.dirname(__file__) or '.',
-                                    "data",
-                                    "blank.h5")
-                                )
+        openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "blank.h5"))
