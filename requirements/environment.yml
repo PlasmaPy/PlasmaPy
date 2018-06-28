@@ -15,6 +15,7 @@ dependencies:
     - coveralls
     - mpmath
     - roman
+    - h5py
     - lmfit
     - matplotlib
     - sphinx
