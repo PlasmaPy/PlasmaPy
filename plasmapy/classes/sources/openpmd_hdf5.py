@@ -3,7 +3,7 @@ import numpy as np
 import astropy.units as u
 
 from plasmapy.classes import GenericPlasma
-from plasmapy.utils import OpenPMDError
+from plasmapy.utils import DataStandardError
 
 import os
 from distutils.version import StrictVersion
@@ -64,6 +64,10 @@ class HDF5Reader(GenericPlasma):
         ----------
         hdf5 : `str`
             Path to HDF5 file.
+
+        References
+        ----------
+        .. [1] http://openpmd.org/
         """
 
         if not os.path.isfile(hdf5):
@@ -82,36 +86,60 @@ class HDF5Reader(GenericPlasma):
             if _valid_version(openPMD_version):
                 return True
             else:
-                raise OpenPMDError(f"We currently only support HDF5 versions"
-                                   f"starting from v{_OUTDATED_VERSION} and "
-                                   f"lower than v{_NEWER_VERSION}. You can "
-                                   f"however convert your HDF5 to a supported "
-                                   f"version. For more information; see "
-                                   f"https://github.com/openPMD/openPMD-updater")
+                raise DataStandardError(f"We currently only support HDF5 versions"
+                                        f"starting from v{_OUTDATED_VERSION} and "
+                                        f"lower than v{_NEWER_VERSION}. You can "
+                                        f"however convert your HDF5 to a supported "
+                                        f"version. For more information; see "
+                                        f"https://github.com/openPMD/openPMD-updater")
         except KeyError:
-            raise OpenPMDError("Input HDF5 file does not go on with "
-                               "standards defined by OpenPMD")
+            raise DataStandardError("Input HDF5 file does not go on with "
+                                    "standards defined by OpenPMD")
 
     @property
     def electric_field(self):
-        path = 'data/' + self.subname + '/fields/E'
+        path = f"data/{self.subname}/fields/E"
         if path in self.h5:
             units = _fetch_units(self.h5[path].attrs["unitDimension"])
-            return np.array((self.h5[path]['x'],
-                             self.h5[path]['y'],
-                             self.h5[path]['z'])) * units
+            axes = [self.h5[path][axis]
+                    for axis in self.h5[path]]
+            return np.array(axes) * units
         else:
             raise AttributeError("No electric field data available "
                                  "in HDF5 file")
 
     @property
     def charge_density(self):
-        path = 'data/' + self.subname + '/fields/rho'
+        path = f"data/{self.subname}/fields/rho"
         if path in self.h5:
             units = _fetch_units(self.h5[path].attrs["unitDimension"])
             return np.array(self.h5[path]) * units
         else:
             raise AttributeError("No charge density data available "
+                                 "in HDF5 file")
+
+    @property
+    def magnetic_field(self):
+        path = f"data/{self.subname}/fields/B"
+        if path in self.h5:
+            units = _fetch_units(self.h5[path].attrs["unitDimension"])
+            axes = [self.h5[path][axis]
+                    for axis in self.h5[path]]
+            return np.array(axes) * units
+        else:
+            raise AttributeError("No magnetic field data available "
+                                 "in HDF5 file")
+
+    @property
+    def electric_current(self):
+        path = f"data/{self.subname}/fields/J"
+        if path in self.h5:
+            units = _fetch_units(self.h5[path].attrs["unitDimension"])
+            axes = [self.h5[path][axis]
+                    for axis in self.h5[path]]
+            return np.array(axes) * units
+        else:
+            raise AttributeError("No electric current data available "
                                  "in HDF5 file")
 
     @classmethod
@@ -126,7 +154,7 @@ class HDF5Reader(GenericPlasma):
         if not isfile:
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
 
-        if "openPMD" not in kwargs and isfile:
+        if "openPMD" not in kwargs:
             h5 = h5py.File(hdf5)
             try:
                 openPMD = h5.attrs["openPMD"]

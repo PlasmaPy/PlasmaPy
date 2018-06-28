@@ -1,5 +1,5 @@
 from plasmapy.classes.sources import openpmd_hdf5
-from plasmapy.utils import OpenPMDError
+from plasmapy.utils import DataStandardError
 from plasmapy.data.test import rootdir
 
 from astropy import units as u
@@ -27,6 +27,14 @@ class TestOpenPMD2D:
     def test_correct_shape_charge_density(self):
         assert self.h5.charge_density.shape == (51, 201)
 
+    def test_has_magnetic_field(self):
+        with pytest.raises(AttributeError):
+            self.h5.magnetic_field
+
+    def test_has_electric_current(self):
+        with pytest.raises(AttributeError):
+            self.h5.electric_current
+
 
 class TestOpenPMD3D:
     """Test 3D HDF5 dataset based on OpenPMD."""
@@ -46,6 +54,46 @@ class TestOpenPMD3D:
 
     def test_correct_shape_charge_density(self):
         assert self.h5.charge_density.shape == (26, 26, 201)
+
+    def test_has_magnetic_field(self):
+        with pytest.raises(AttributeError):
+            self.h5.magnetic_field
+
+    def test_has_electric_current(self):
+        with pytest.raises(AttributeError):
+            self.h5.electric_current
+
+
+class TestOpenPMDThetaMode:
+    """Test thetaMode HDF5 dataset based on OpenPMD."""
+    # Downloaded from
+    # https://github.com/openPMD/openPMD-example-datasets/blob/draft/example-thetaMode.tar.gz
+    # per the Creative Commons Zero v1.0 Universal license
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000200.h5"))
+
+    def test_has_electric_field_with_units(self):
+        assert self.h5.electric_field.to(u.V / u.m)
+
+    def test_correct_shape_electric_field(self):
+        assert self.h5.electric_field.shape == (3, 3, 51, 201)
+
+    def test_has_charge_density_with_units(self):
+        assert self.h5.charge_density.to(u.C / u.m**3)
+
+    def test_correct_shape_charge_density(self):
+        assert self.h5.charge_density.shape == (3, 51, 201)
+
+    def test_has_magnetic_field_with_units(self):
+        assert self.h5.magnetic_field.to(u.T)
+
+    def test_correct_shape_magnetic_field(self):
+        assert self.h5.magnetic_field.shape == (3, 3, 51, 201)
+
+    def test_has_electric_current_with_units(self):
+        assert self.h5.electric_current.to(u.A * u.kg / u.m**3)
+
+    def test_correct_shape_electric_current(self):
+        assert self.h5.electric_current.shape == (3, 3, 51, 201)
 
 
 units_test_table = [
@@ -72,5 +120,5 @@ def test_unavailable_hdf5():
 
 
 def test_non_openpmd_hdf5():
-    with pytest.raises(OpenPMDError):
+    with pytest.raises(DataStandardError):
         openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "blank.h5"))
