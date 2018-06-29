@@ -218,7 +218,7 @@ def permittivity_1D_Maxwellian(omega,
                                n,
                                particle,
                                z_mean=None):
-    """
+    r"""
     The classical dielectric permittivity for a 1D Maxwellian plasma. This 
     function can calculate both the ion and electron permittivities. No
     additional effects are considered (e.g. magnetic fields, relativistic
@@ -284,8 +284,8 @@ def permittivity_1D_Maxwellian(omega,
        Plasma scattering of electromagnetic radiation: theory and measurement
        techniques. Chapter 5 Pg 106 (Academic press, 2010).
 
-    Examples
-    --------
+    Example
+    -------
     >>> from astropy import units as u
     >>> from plasmapy.constants import pi, c
     >>> T = 30 * 11600 * u.K
