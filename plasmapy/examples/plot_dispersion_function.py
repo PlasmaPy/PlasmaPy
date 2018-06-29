@@ -85,7 +85,7 @@ plot_complex(X, Y, F, 100)
 # techniques. Chapter 5 Pg 106 (Academic press, 2010).
 
 xs = np.linspace(0, 4, 100)
-ws = (-1 / 2) * plasmapy.mathematics.plasma_dispersion_func_deriv(xs.value)
+ws = (-1 / 2) * plasmapy.mathematics.plasma_dispersion_func_deriv(xs)
 wRe = np.real(ws)
 wIm = np.imag(ws)
 
