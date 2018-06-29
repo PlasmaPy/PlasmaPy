@@ -278,13 +278,11 @@ def permittivity_1D_Maxwellian(omega,
     scattering regimes. :math:`x` is the dimensionless phase velocity
     of the EM wave propagating through the plasma.
 
-
     References
     ----------
     .. [1] J. Sheffield, D. Froula, S. H. Glenzer, and N. C. Luhmann Jr,
        Plasma scattering of electromagnetic radiation: theory and measurement
        techniques. Chapter 5 Pg 106 (Academic press, 2010).
-
 
     Examples
     --------
