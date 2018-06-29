@@ -629,6 +629,11 @@ def test_antiparticle_inversion(particle, antiparticle):
          f"{~Particle(antiparticle)} instead of {particle}.")
 
 
+def test_unary_operator_for_elements():
+    with pytest.raises(AtomicError):
+        Particle('C').antiparticle
+
+
 @pytest.fixture(params=ParticleZoo.everything)
 def particle(request):
     return Particle(request.param)
