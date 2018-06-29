@@ -261,10 +261,14 @@ def permittivity_1D_Maxwellian(omega,
     -----
     The dielectric permittivities for a Maxwellian plasma are described
     by the following equations [1]_
+    
     .. math::
         \chi_e(k, \omega) = - \frac{\alpha_e^2}{2} Z'(x_e)
+        
         \chi_i(k, \omega) = - \frac{\alpha_i^2}{2}\frac{Z}{} Z'(x_i)
+        
         \alpha = \frac{\omega_p}{k v_{Th}}
+        
         x = \frac{\omega}{k v_{Th}}
 
     :math:`chi_e` and :math:`chi_i` are the electron and ion permittivities
