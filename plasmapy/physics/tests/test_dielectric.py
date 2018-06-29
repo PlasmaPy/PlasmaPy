@@ -5,9 +5,12 @@ import numpy as np
 from astropy import units as u
 
 from ..dielectric import (cold_plasma_permittivity_LRP,
-                          cold_plasma_permittivity_SDP)
+                          cold_plasma_permittivity_SDP,
+                          permittivity_1D_Maxwellian)
 
-from ..parameters import (plasma_frequency, gyrofrequency)
+from ..parameters import (plasma_frequency,
+                          gyrofrequency,
+                          thermal_speed)
 
 B = 1.0 * u.T
 n = [1e18 / u.m ** 3]
@@ -75,3 +78,58 @@ class Test_ColdPlasmaPermittivity(object):
         assert np.isclose(L, S - D)
         assert np.isclose(S, (R + L) / 2)
         assert np.isclose(D, (R - L) / 2)
+
+
+class Test_permittivity_1D_Maxwellian:
+    @classmethod
+    def setup_class(self):
+        """initializing parameters for tests """
+        self.T = 30 * 11600 * u.K
+        self.n = 1e18 * u.cm**-3
+        self.particle = 'Ne'
+        self.z_mean = 8 * u.dimensionless_unscaled
+        self.vTh = thermal_speed(self.T,
+                                 self.particle,
+                                 method="most_probable")
+        self.omega = 5.635e14 * 2 * np.pi * u.rad / u.s
+        self.kWave = self.omega / self.vTh
+        self.True1 = (-6.728092569241431e-08 + 
+                      5.760379561405176e-07j) * u.dimensionless_unscaled
+
+    def test_known1(self):
+        """
+        Tests Fermi_integral for expected value.
+        """
+        methodVal = permittivity_1D_Maxwellian(self.omega,
+                                               self.kWave,
+                                               self.T,
+                                               self.n,
+                                               self.particle,
+                                               self.z_mean)
+        testTrue = np.isclose(methodVal,
+                              self.True1,
+                              rtol=1e-16,
+                              atol=0.0)
+        errStr = (f"Permittivity value should be {self.True1} and not "
+                  f"{methodVal}.")
+        assert testTrue, errStr
+
+    def test_fail1(self):
+        """
+        Tests if test_known1() would fail if we slightly adjusted the
+        value comparison by some quantity close to numerical error.
+        """
+        fail1 = self.True1 + 1e-15
+        methodVal = permittivity_1D_Maxwellian(self.omega,
+                                               self.kWave,
+                                               self.T,
+                                               self.n,
+                                               self.particle,
+                                               self.z_mean)
+        testTrue = not np.isclose(methodVal,
+                                  fail1,
+                                  rtol=1e-16,
+                                  atol=0.0)
+        errStr = (f"Permittivity value test gives {methodVal} "
+                  f"and should not be equal to {fail1}.")
+        assert testTrue, errStr
