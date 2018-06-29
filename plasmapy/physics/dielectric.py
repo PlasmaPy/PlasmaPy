@@ -218,11 +218,84 @@ def permittivity_1D_Maxwellian(omega,
                                particle,
                                z_mean=None):
     """
-    omega [rad/s]
-    kWave [rad/m]
-    temperature [eV]
-    density [cm^-3]
+    The classical dielectric permittivity for a 1D Maxwellian plasma. This 
+    function can calculate both the ion and electron permittivities. No
+    additional effects are considered (e.g. magnetic fields, relativistic
+    effects, strongly coupled regime, etc.)
+    
+    Parameters
+    ----------
+    omega : ~astropy.units.Quantity
+        The frequency in rad/s of the electromagnetic wave propagating
+        through the plasma.
+
+    kWave : ~astropy.units.Quantity
+        The corresponding wavenumber, in rad/m, of the electromagnetic wave
+        propagating through the plasma. This is often modulated by the
+        dispersion of the plasma or by relativistic effects. See em_wave.py
+        for ways to calculate this.
+
+    T : ~astropy.units.Quantity
+        The plasma temperature - this can be either the electron or the ion
+        temperature, but should be consistent with density and particle.
+
+    n : ~astropy.units.Quantity
+        The plasma density - this can be either the electron or the ion
+        density, but should be consistent with temperature and particle.
+        
+    particle : str
+        The plasma particle species.
+        
+    z_mean : str
+        The average ionization of the plasma. This is only required for
+        calculating the ion permittivity.
+
+    Returns
+    -------
+    chi : ~astropy.units.Quantity
+        The ion or the electron dielectric permittivity of the plasma.
+        This is a dimensionless quantity.
+
+    Notes
+    -----
+    The dielectric permittivities for a Maxwellian plasma are described
+    by the following equations [1]_
+    .. math::
+        \chi_e(k, \omega) = - \frac{\alpha_e^2}{2} Z'(x_e)
+        \chi_i(k, \omega) = - \frac{\alpha_i^2}{2}\frac{Z}{} Z'(x_i)
+        \alpha = \frac{\omega_p}{k v_{Th}}
+        x = \frac{\omega}{k v_{Th}}
+        
+    :math:`chi_e` and :math:`chi_i` are the electron and ion permittivities
+    respectively. :math:`Z'` is the derivative of the plasma dispersion
+    function. :math:`\alpha` is the scattering parameter which delineates
+    the difference between the collective and non-collective Thomson
+    scattering regimes. :math:`x` is the dimensionless phase velocity
+    of the EM wave propagating through the plasma.
+    
+
+    References
+    ----------
+    .. [1] J. Sheffield, D. Froula, S. H. Glenzer, and N. C. Luhmann Jr,
+       Plasma scattering of electromagnetic radiation: theory and measurement
+       techniques. Chapter 5 Pg 106 (Academic press, 2010).
+
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> from plasmapy.constants import pi, c
+    >>> T = 30 * 11600 * u.K
+    >>> n = 1e18 * u.cm**-3
+    >>> particle = 'Ne'
+    >>> z_mean = 8 * u.dimensionless_unscaled
+    >>> vTh = parameters.thermal_speed(T, particle, method="most_probable")
+    >>> omega = 5.635e14 * 2 * pi * u.rad / u.s
+    >>> kWave = omega / vTh
+    >>> permittivity_1D_Maxwellian(omega, kWave, T, n, particle, z_mean)
+    <Quantity -6.72809257e-08+5.76037956e-07j>
     """
+    # thermal velocity
     vTh = parameters.thermal_speed(T=T,
                                    particle=particle,
                                    method="most_probable")
@@ -233,6 +306,7 @@ def permittivity_1D_Maxwellian(omega,
     # scattering parameter alpha.
     # explicitly removing factor of sqrt(2) to be consistent with Froula
     alpha = np.sqrt(2) * (wp / (kWave * vTh)).to(u.dimensionless_unscaled)
+    # The dimensionless phase velocity of the propagating EM wave.
     zeta = (omega / (kWave * vTh)).to(u.dimensionless_unscaled)
     chi = alpha ** 2 * (-1 / 2) * plasma_dispersion_func_deriv(zeta.value)
-    return chi
+    return chi.to(u.dimensionless_unscaled)
