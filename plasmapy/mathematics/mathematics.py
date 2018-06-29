@@ -163,17 +163,6 @@ def plasma_dispersion_func_deriv(zeta: Union[complex, int, float, np.ndarray, u.
     return Zprime
 
 
-def jackson_function(zeta):
-    """
-    Jackson function in terms of Fried and Conte dispersion. Useful for
-    obtaining classical dielectric susceptibility.
-
-    As per Lehtinen (2010) notes eq (8), found here:
-    http://nlpc.stanford.edu/nleht/Science/reference/errorfun.pdf
-    """
-    return (-1 / 2) * plasma_dispersion_func_deriv(zeta)
-
-
 def Fermi_integral(
         x: Union[float, int, complex, np.ndarray],
         j: Union[float, int, complex, np.ndarray]) -> Union[float, complex, np.ndarray]:

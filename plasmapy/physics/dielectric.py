@@ -6,7 +6,7 @@ from plasmapy import utils
 from plasmapy.physics import parameters
 from plasmapy.constants import (pi, m_e, c, mu0, e, eps0)
 import scipy.special as spec
-from plasmapy.mathematics import jackson_function
+from plasmapy.mathematics import plasma_dispersion_func_deriv
 
 r"""
 Values should be returned as a `~astropy.units.Quantity` in SI units.
@@ -205,7 +205,7 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
         P += - omega_p ** 2 / omega ** 2
     return L, R, P
 
-# plasma permittivity in terms of Jackson function
+
 @u.quantity_input(omega=u.rad /u.s,
                   kWave=u.rad /u.m,
                   T=u.K,
@@ -234,10 +234,5 @@ def permittivity_1D_Maxwellian(omega,
     # explicitly removing factor of sqrt(2) to be consistent with Froula
     alpha = np.sqrt(2) * (wp / (kWave * vTh)).to(u.dimensionless_unscaled)
     zeta = (omega / (kWave * vTh)).to(u.dimensionless_unscaled)
-    # correction for comparing this 1D Maxwellian based definition
-    # to a 3D Maxwellian based permittivity
-    # this is sqrt(pi) / sqrt(pi) ** 3
-    #    corr = 1 / np.pi
-    corr = 1
-    chi = corr * alpha ** 2 * jackson_function(zeta.value)
+    chi = alpha ** 2 * (-1 / 2) * plasma_dispersion_func_deriv(zeta.value)
     return chi
