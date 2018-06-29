@@ -26,6 +26,7 @@ test_nuclear_table = [
     [nuclear_reaction_energy, (), {'reactants': ['H'], 'products': ['H-1']}, AtomicError],
     [nuclear_reaction_energy, (), {'reactants': ['p'], 'products': ['n', 'n', 'e-']}, AtomicError],
     [nuclear_reaction_energy, 'H + H --> H', {}, AtomicError],
+    [nuclear_reaction_energy, 'H + H', {}, AtomicError],
     [nuclear_reaction_energy, 1, {}, TypeError],
     [nuclear_reaction_energy, 'H-1 + H-1 --> H-1', {}, AtomicError],
     [nuclear_reaction_energy, 'p --> n', {}, AtomicError],
