@@ -93,7 +93,7 @@ class Test_permittivity_1D_Maxwellian:
                                  method="most_probable")
         self.omega = 5.635e14 * 2 * np.pi * u.rad / u.s
         self.kWave = self.omega / self.vTh
-        self.True1 = (-6.728092569241431e-08 + 
+        self.True1 = (-6.728092569241431e-08 +
                       5.760379561405176e-07j) * u.dimensionless_unscaled
 
     def test_known1(self):

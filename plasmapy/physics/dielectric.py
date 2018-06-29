@@ -20,7 +20,7 @@ __all__ = ['cold_plasma_permittivity_SDP',
 @utils.check_quantity(
     B={'units': u.T, 'can_be_negative': False},
     omega={'units': u.rad / u.s, 'can_be_negative': False},
-    )
+)
 def cold_plasma_permittivity_SDP(B, species, n, omega):
     r"""
     Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
@@ -117,7 +117,7 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
 @utils.check_quantity(
     B={'units': u.T, 'can_be_negative': False},
     omega={'units': u.rad / u.s, 'can_be_negative': False},
-    )
+)
 def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     r"""
     Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
@@ -207,8 +207,8 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     return L, R, P
 
 
-@u.quantity_input(omega=u.rad /u.s,
-                  kWave=u.rad /u.m,
+@u.quantity_input(omega=u.rad / u.s,
+                  kWave=u.rad / u.m,
                   T=u.K,
                   n=u.m**-3,
                   z_mean=u.dimensionless_unscaled)
@@ -223,7 +223,7 @@ def permittivity_1D_Maxwellian(omega,
     function can calculate both the ion and electron permittivities. No
     additional effects are considered (e.g. magnetic fields, relativistic
     effects, strongly coupled regime, etc.)
-    
+
     Parameters
     ----------
     omega : ~astropy.units.Quantity
@@ -243,10 +243,10 @@ def permittivity_1D_Maxwellian(omega,
     n : ~astropy.units.Quantity
         The plasma density - this can be either the electron or the ion
         density, but should be consistent with temperature and particle.
-        
+
     particle : str
         The plasma particle species.
-        
+
     z_mean : str
         The average ionization of the plasma. This is only required for
         calculating the ion permittivity.
@@ -266,14 +266,14 @@ def permittivity_1D_Maxwellian(omega,
         \chi_i(k, \omega) = - \frac{\alpha_i^2}{2}\frac{Z}{} Z'(x_i)
         \alpha = \frac{\omega_p}{k v_{Th}}
         x = \frac{\omega}{k v_{Th}}
-        
+
     :math:`chi_e` and :math:`chi_i` are the electron and ion permittivities
     respectively. :math:`Z'` is the derivative of the plasma dispersion
     function. :math:`\alpha` is the scattering parameter which delineates
     the difference between the collective and non-collective Thomson
     scattering regimes. :math:`x` is the dimensionless phase velocity
     of the EM wave propagating through the plasma.
-    
+
 
     References
     ----------
