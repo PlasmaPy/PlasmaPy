@@ -13,7 +13,8 @@ Values should be returned as a `~astropy.units.Quantity` in SI units.
 """
 
 __all__ = ['cold_plasma_permittivity_SDP',
-           'cold_plasma_permittivity_LRP']
+           'cold_plasma_permittivity_LRP',
+           'permittivity_1D_Maxwellian']
 
 
 @utils.check_quantity(
