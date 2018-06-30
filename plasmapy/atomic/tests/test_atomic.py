@@ -760,6 +760,7 @@ str_electron_table = [
     ('merry-go-round', False),
 ]
 
+
 @pytest.mark.parametrize('particle, electron', str_electron_table)
 def test_is_electron(particle, electron):
     assert _is_electron(particle) == electron
