@@ -264,7 +264,7 @@ def Coulomb_logarithm(T,
                                   z_mean=z_mean,
                                   V=V,
                                   method=method)
-    if method in ["classical", "GMS-1", "GMS-2"]:
+    if method in ("classical", "GMS-1", "GMS-2"):
         ln_Lambda = np.log(bmax / bmin)
     elif method == "GMS-3":
         ln_Lambda = np.log(bmax / bmin)
@@ -273,7 +273,7 @@ def Coulomb_logarithm(T,
                 ln_Lambda = 2 * u.dimensionless_unscaled
             else:
                 ln_Lambda[ln_Lambda < 2] = 2 * u.dimensionless_unscaled
-    elif method in ["GMS-4", "GMS-5", "GMS-6"]:
+    elif method in ("GMS-4", "GMS-5", "GMS-6"):
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
         raise ValueError("Unknown method! Choose from 'classical' and 'GMS-N', N from 1 to 6.")
@@ -542,7 +542,7 @@ def impact_parameter(T,
                                                        V=V)
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
-    if method == "GMS-2" or method == "GMS-5" or method == "GMS-6":
+    if method in ("GMS-2", "GMS-5", "GMS-6"):
         if np.isnan(z_mean):
             raise ValueError("Must provide a z_mean for GMS-2, GMS-5, and "
                              "GMS-6 methods.")
@@ -1786,7 +1786,7 @@ def coupling_parameter(T,
         kineticEnergy = 2 * k_B * T / denom
         if np.all(np.imag(kineticEnergy) == 0):
             kineticEnergy = np.real(kineticEnergy)
-        else:
+        else:  # coveralls: ignore
             raise ValueError("Kinetic energy should not be imaginary."
                              "Something went horribly wrong.")
     coupling = coulombEnergy / kineticEnergy
