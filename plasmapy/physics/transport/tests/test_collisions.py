@@ -37,6 +37,7 @@ class Test_Coulomb_logarithm:
         self.gms2_negative = -1.379394033464292
         self.gms3 = 3.4014290066940966
         self.gms3_negative = 2
+        self.gms3_non_scalar = (2, 2)
         self.gms4 = 3.401983996820073
         self.gms4_negative = 0.0005230791851781715
         self.gms5 = 3.7196690506837693
@@ -339,6 +340,28 @@ class Test_Coulomb_logarithm:
         errStr = (f"Coulomb logarithm for GMS-3 should be "
                   f"{self.gms3_negative} and not {methodVal}.")
         assert testTrue, errStr
+
+    def test_GMS3_non_scalar_density(self):
+        """
+        Test for third version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        passing in a collection of density values returns a
+        collection of Coulomb logarithm values.
+        """
+        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(10 * 1160 * u.K,
+                                          (1e23 * u.cm ** -3, 1e20 * u.cm ** -3),
+                                          self.particles,
+                                          z_mean=self.z_mean,
+                                          V=np.nan * u.m / u.s,
+                                          method="GMS-3")
+        testTrue = np.isclose(methodVal,
+                              self.gms3_non_scalar,
+                              rtol=1e-15,
+                              atol=0.0)
+        errStr = (f"Coulomb logarithm for GMS-3 should be "
+                  f"{self.gms3_non_scalar} and not {methodVal}.")
+        assert testTrue.all(), errStr
 
     def test_GMS4(self):
         """
