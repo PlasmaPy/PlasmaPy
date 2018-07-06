@@ -11,7 +11,7 @@ env:
         - PYTHON_VERSION=3.6
         - SETUP_CMD='test'
         - MAIN_CMD='python setup.py'
-        - CONDA_DEPENDENCIES='Cython'
+        - CONDA_DEPENDENCIES='Cython astropy scipy h5py matplotlib mpmath'
         - CONDA_ALL_DEPENDENCIES='Cython astropy scipy h5py matplotlib mpmath'
 
 # TODO include:
