@@ -13,7 +13,7 @@ env:
         - MAIN_CMD='python setup.py'
         - CONDA_DEPENDENCIES='Cython astropy scipy h5py matplotlib mpmath pytest'
         - CONDA_ALL_DEPENDENCIES='Cython astropy scipy h5py matplotlib mpmath pytest'
-        - PIP_DEPENDENCIES='roman lmfit colorama'
+        - PIP_DEPENDENCIES='roman lmfit colorama codecov'
 
 matrix:
 
