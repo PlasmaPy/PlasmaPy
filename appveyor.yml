@@ -6,7 +6,7 @@ environment:
     # /E:ON and /V:ON options are not enabled in the batch script intepreter
     # See: http://stackoverflow.com/a/13751649/163740
     CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\ci-helpers\\appveyor\\windows_sdk.cmd"
-    CONDA_DEPENDENCIES: "cython"
+    CONDA_DEPENDENCIES: "Cython astropy scipy h5py matplotlib mpmath pytest"
     NUMPY_VERSION: "stable"
     CONDA_ALL_DEPENDENCIES: "Cython astropy scipy h5py matplotlib mpmath pytest"
     PIP_DEPENDENCIES: "roman lmfit colorama codecov"
