@@ -8,6 +8,8 @@ environment:
     CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\ci-helpers\\appveyor\\windows_sdk.cmd"
     CONDA_DEPENDENCIES: "cython"
     NUMPY_VERSION: "stable"
+    CONDA_ALL_DEPENDENCIES: "Cython astropy scipy h5py matplotlib mpmath pytest"
+    PIP_DEPENDENCIES: "roman lmfit colorama codecov"
 
   matrix:
     - PYTHON_VERSION: "3.6"
@@ -23,9 +25,6 @@ install:
   - "powershell ci-helpers/appveyor/install-miniconda.ps1"
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "activate test"
-  - "pip install --quiet pytest-astropy"
-  - "pip install --quiet -r requirements/requirements.txt"
-
 
 # Not a .NET project, we build plasmapy in the install step instead
 build: false
