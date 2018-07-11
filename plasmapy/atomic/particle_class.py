@@ -674,7 +674,7 @@ class Particle:
         --------
         >>> deuterium = Particle("D")
         >>> deuterium.isotope_name
-        'hydrogen-2'
+        'deuterium'
         >>> iron_isotope = Particle("Fe-56", Z=16)
         >>> iron_isotope.isotope_name
         'iron-56'
@@ -684,8 +684,15 @@ class Particle:
             raise InvalidElementError(_category_errmsg(self.particle, 'element'))
         elif not self.isotope:
             raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
+
+        if self.isotope == "D":
+            isotope_name = "deuterium"
+        elif self.isotope == "T":
+            isotope_name = "tritium"
         else:
-            return f"{self.element_name}-{self.mass_number}"
+            isotope_name = f"{self.element_name}-{self.mass_number}"
+
+        return isotope_name
 
     @property
     def integer_charge(self) -> int:
