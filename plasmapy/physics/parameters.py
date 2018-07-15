@@ -29,7 +29,6 @@ from astropy import units as u
 
 import numpy as np
 # import warnings
-import inspect
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
 from plasmapy import atomic, utils
 
@@ -113,9 +112,9 @@ def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg / 
 
 
 @utils.check_relativistic
-@utils.check_quantity({'B': {'units': u.T},
-                       'density': {'units': [u.m ** -3, u.kg / u.m ** 3],
-                                   'can_be_negative': False}})
+@utils.check_quantity(B={'units': u.T},
+                      density={'units': [u.m ** -3, u.kg / u.m ** 3],
+                               'can_be_negative': False})
 def Alfven_speed(B, density, ion="p+", z_mean=None):
     r"""
     Return the Alfven speed.
@@ -216,10 +215,10 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
 
 
 @utils.check_relativistic
-@utils.check_quantity({
-    'T_i': {'units': u.K, 'can_be_negative': False},
-    'T_e': {'units': u.K, 'can_be_negative': False}
-    })
+@utils.check_quantity(
+    T_i={'units': u.K, 'can_be_negative': False},
+    T_e={'units': u.K, 'can_be_negative': False}
+    )
 def ion_sound_speed(T_e,
                     T_i,
                     gamma_e=1,
@@ -353,12 +352,13 @@ def ion_sound_speed(T_e,
 
 
 @utils.check_relativistic
-@utils.check_quantity({
-    'T': {'units': u.K, 'can_be_negative': False},
-    'mass': {'units': u.kg, 'can_be_negative': False, 'can_be_nan': True}
-    })
+@utils.check_quantity(
+    T={'units': u.K, 'can_be_negative': False},
+    mass={'units': u.kg, 'can_be_negative': False, 'can_be_nan': True}
+    )
 @atomic.particle_input
-def thermal_speed(T, particle: atomic.Particle="e-", method="most_probable", mass=np.nan*u.kg):
+def thermal_speed(T, particle: atomic.Particle = "e-", method="most_probable",
+                  mass=np.nan*u.kg):
     r"""
     Return the most probable speed for a particle within a Maxwellian
     distribution.
@@ -459,10 +459,10 @@ def thermal_speed(T, particle: atomic.Particle="e-", method="most_probable", mas
     return V
 
 
-@utils.check_quantity({
-    'T': {'units': u.K, 'can_be_negative': False},
-    'n': {'units': u.m**-3, 'can_be_negative': False}
-    })
+@utils.check_quantity(
+    T={'units': u.K, 'can_be_negative': False},
+    n={'units': u.m**-3, 'can_be_negative': False}
+    )
 def thermal_pressure(T, n):
     r"""
     Return the thermal pressure for a Maxwellian distribution.
@@ -510,9 +510,9 @@ def thermal_pressure(T, n):
 
 
 @utils.check_relativistic
-@utils.check_quantity({
-    'T': {'units': u.K, 'can_be_negative': False}
-    })
+@utils.check_quantity(
+    T={'units': u.K, 'can_be_negative': False}
+    )
 def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
@@ -615,11 +615,11 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     return vTh * coeff
 
 
-@utils.check_quantity({
-    'n': {'units': u.m ** -3, 'can_be_negative': False},
-    'T': {'units': u.K, 'can_be_negative': False},
-    'B': {'units': u.T}
-    })
+@utils.check_quantity(
+    n={'units': u.m ** -3, 'can_be_negative': False},
+    T={'units': u.K, 'can_be_negative': False},
+    B={'units': u.T}
+    )
 def Hall_parameter(n,
                    T,
                    B,
@@ -678,10 +678,8 @@ def Hall_parameter(n,
     return gyro_frequency / coll_rate
 
 
-@utils.check_quantity({
-    'B': {'units': u.T}
-    })
-def gyrofrequency(B, particle='e-', signed=False, Z=None):
+@utils.check_quantity(B={'units': u.T})
+def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None):
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
@@ -778,11 +776,15 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
     return omega_ci
 
 
-@utils.check_quantity({'B': {'units': u.T},
-                       'Vperp': {'units': u.m / u.s, 'can_be_nan': True},
-                       'T_i': {'units': u.K, 'can_be_nan': True},
-                       })
-def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
+@utils.check_quantity(B={'units': u.T},
+                      Vperp={'units': u.m / u.s, 'can_be_nan': True},
+                      T_i={'units': u.K, 'can_be_nan': True},
+                      )
+def gyroradius(B: u.T,
+               particle='e-',
+               *,
+               Vperp: u.m / u.s = np.nan * u.m / u.s,
+               T_i: u.K = np.nan * u.K):
     r"""Return the particle gyroradius.
 
     Parameters
@@ -921,10 +923,10 @@ def gyroradius(B, particle='e-', *, Vperp=np.nan * u.m / u.s, T_i=np.nan * u.K):
     return r_Li.to(u.m, equivalencies=u.dimensionless_angles())
 
 
-@utils.check_quantity({
-    'n': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def plasma_frequency(n, particle='e-', z_mean=None):
+@utils.check_quantity(
+    n={'units': u.m ** -3, 'can_be_negative': False}
+    )
+def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None):
     r"""Calculate the particle plasma frequency.
 
     Parameters
@@ -1017,11 +1019,11 @@ def plasma_frequency(n, particle='e-', z_mean=None):
     return omega_p.si
 
 
-@utils.check_quantity({
-    'T_e': {'units': u.K, 'can_be_negative': False},
-    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def Debye_length(T_e, n_e):
+@utils.check_quantity(
+    T_e={'units': u.K, 'can_be_negative': False},
+    n_e={'units': u.m ** -3, 'can_be_negative': False}
+    )
+def Debye_length(T_e: u.K, n_e: u.m**-3):
     r"""Calculate the characteristic decay length for electric fields,
      due to charge screening.
 
@@ -1087,11 +1089,11 @@ def Debye_length(T_e, n_e):
     return lambda_D.to(u.m)
 
 
-@utils.check_quantity({
-    'T_e': {'units': u.K, 'can_be_negative': False},
-    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def Debye_number(T_e, n_e):
+@utils.check_quantity(
+    T_e={'units': u.K, 'can_be_negative': False},
+    n_e={'units': u.m ** -3, 'can_be_negative': False}
+    )
+def Debye_number(T_e: u.K, n_e: u.m**-3):
     r"""Return the number of electrons within a sphere with a radius
     of the Debye length.
 
@@ -1154,10 +1156,10 @@ def Debye_number(T_e, n_e):
     return N_D.to(u.dimensionless_unscaled)
 
 
-@utils.check_quantity({
-    'n': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def inertial_length(n, particle='e-'):
+@utils.check_quantity(
+    n={'units': u.m ** -3, 'can_be_negative': False}
+    )
+def inertial_length(n: u.m**-3, particle='e-'):
     r"""Calculate the particle inertial length. At this length, the Hall effect
     becomes important.
 
@@ -1217,10 +1219,8 @@ def inertial_length(n, particle='e-'):
     return d
 
 
-@utils.check_quantity({
-    'B': {'units': u.T}
-    })
-def magnetic_pressure(B):
+@utils.check_quantity(B={'units': u.T})
+def magnetic_pressure(B: u.T):
     r"""
     Calculate the magnetic pressure.
 
@@ -1281,9 +1281,7 @@ def magnetic_pressure(B):
     return p_B
 
 
-@utils.check_quantity({
-    'B': {'units': u.T}
-    })
+@utils.check_quantity(B={'units': u.T})
 def magnetic_energy_density(B: u.T):
     r"""
     Calculate the magnetic energy density.
@@ -1345,11 +1343,11 @@ def magnetic_energy_density(B: u.T):
     return E_B
 
 
-@utils.check_quantity({
-    'B': {'units': u.T},
-    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def upper_hybrid_frequency(B, n_e):
+@utils.check_quantity(
+    B={'units': u.T},
+    n_e={'units': u.m ** -3, 'can_be_negative': False}
+    )
+def upper_hybrid_frequency(B: u.T, n_e: u.m**-3):
     r"""
     Return the upper hybrid frequency.
 
@@ -1408,10 +1406,10 @@ def upper_hybrid_frequency(B, n_e):
     return omega_uh.to(u.rad / u.s)
 
 
-@utils.check_quantity({
-    'B': {'units': u.T},
-    'n_i': {'units': u.m ** -3, 'can_be_negative': False}
-    })
+@utils.check_quantity(
+    B={'units': u.T},
+    n_i={'units': u.m ** -3, 'can_be_negative': False}
+    )
 def lower_hybrid_frequency(B, n_i, ion='p+'):
     r"""
     Return the lower hybrid frequency.
