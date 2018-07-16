@@ -9,7 +9,7 @@ environment:
     CONDA_DEPENDENCIES: "Cython astropy scipy h5py matplotlib mpmath pytest"
     NUMPY_VERSION: "stable"
     CONDA_ALL_DEPENDENCIES: "Cython astropy scipy h5py matplotlib mpmath pytest"
-    PIP_DEPENDENCIES: "roman lmfit colorama codecov"
+    PIP_DEPENDENCIES: "lmfit colorama codecov"
 
   matrix:
     - PYTHON_VERSION: "3.6"

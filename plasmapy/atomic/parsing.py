@@ -1,6 +1,6 @@
 """Functionality to parse representations of particles into standard form."""
 
-import roman
+from plasmapy.utils import roman
 import numpy as np
 import re
 import warnings

@@ -13,7 +13,6 @@ dependencies:
     - numpydoc
     - pytest
     - mpmath
-    - roman
     - h5py
     - lmfit
     - matplotlib
