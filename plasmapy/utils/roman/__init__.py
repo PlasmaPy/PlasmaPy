@@ -5,6 +5,5 @@ from .roman import (
     fromRoman,
     RomanError,
     OutOfRangeError,
-    NotIntegerError,
     InvalidRomanNumeralError,
 )
