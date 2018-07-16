@@ -17,6 +17,16 @@ import numpy as np
 import typing
 
 
+__all__ = [
+    'RomanError',
+    'OutOfRangeError',
+    'InvalidRomanNumeralError',
+    'to_roman',
+    'from_roman',
+    'is_roman_numeral',
+]
+
+
 class RomanError(Exception):
     """A base exception for errors from `~plasmapy.utils.roman`."""
     pass
