@@ -199,7 +199,5 @@ def is_roman_numeral(s: str) -> bool:
     """
     if not isinstance(s, str):
         raise TypeError("Only strings may be tested ")
-    return _romanNumeralPattern.match(s)
-
-
-del re
+    result = bool(_romanNumeralPattern.match(s))
+    return result

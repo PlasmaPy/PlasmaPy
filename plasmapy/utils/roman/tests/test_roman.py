@@ -186,3 +186,18 @@ def test_from_roman_exceptions(input, expected_exception):
     exceptions when necessary.
     """
     run_test(func=roman.from_roman, args=input, expected_outcome=expected_exception)
+
+
+test_is_roman_numeral_table = [
+    ('I', True),
+    ('i', False),
+    ('CLXXXVIII', True),
+    (1, TypeError),
+    ('khjfda', False),
+    ('VIIII', False),
+]
+
+
+@pytest.mark.parametrize('input, expected', test_is_roman_numeral_table)
+def test_is_roman_numeral(input, expected):
+    run_test(func=roman.is_roman_numeral, args=input, expected_outcome=expected)
