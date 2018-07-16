@@ -6,4 +6,5 @@ from .roman import (
     RomanError,
     OutOfRangeError,
     InvalidRomanNumeralError,
+    _romanNumeralPattern,
 )

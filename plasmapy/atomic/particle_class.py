@@ -4,7 +4,7 @@ import numpy as np
 import warnings
 from typing import (Union, Set, Tuple, List, Optional)
 import collections
-from plasmapy.utils import roman
+import plasmapy.utils.roman as roman
 
 import astropy.units as u
 import astropy.constants as const

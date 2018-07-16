@@ -38,7 +38,7 @@ class InvalidRomanNumeralError(RomanError):
     pass
 
 
-#Define digit mapping
+# Define digit mapping
 _romanNumeralMap = (('M', 1000),
                     ('CM', 900),
                     ('D',  500),
@@ -53,7 +53,7 @@ _romanNumeralMap = (('M', 1000),
                     ('IV', 4),
                     ('I',  1))
 
-#Define pattern to detect valid Roman numerals
+# Define pattern to detect valid Roman numerals
 _romanNumeralPattern = re.compile("""
     ^                   # beginning of string
     M{0,4}              # thousands - 0 to 4 M's
@@ -65,7 +65,6 @@ _romanNumeralPattern = re.compile("""
                         #        or 5-8 (V, followed by 0 to 3 I's)
     $                   # end of string
     """, re.VERBOSE)
-
 
 
 def to_roman(n: typing.Union[int, np.integer]) -> str:
@@ -162,3 +161,6 @@ def from_roman(s: str) -> int:
             result += integer
             index += len(numeral)
     return result
+
+
+del re
