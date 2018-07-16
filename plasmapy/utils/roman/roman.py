@@ -163,4 +163,43 @@ def from_roman(s: str) -> int:
     return result
 
 
+def is_roman_numeral(s: str) -> bool:
+    """
+    Check whether or not a string is a valid Roman numeral.
+
+    Parameters
+    ----------
+    s : str
+        The possible Roman numeral.
+
+    Returns
+    -------
+    result : bool
+        `True` if the `str` input is a valid Roman numeral, and `False`
+        if it is not.
+
+    Raises
+    ------
+    TypeError
+        If the argument is not a `str`.
+
+    See Also
+    --------
+    to_roman
+
+    from_roman
+
+    Examples
+    --------
+    >>> is_roman_numeral("CXVII")
+    True
+    >>> is_roman_numeral("42")
+    False
+
+    """
+    if not isinstance(s, str):
+        raise TypeError("Only strings may be tested ")
+    return _romanNumeralPattern.match(s)
+
+
 del re
