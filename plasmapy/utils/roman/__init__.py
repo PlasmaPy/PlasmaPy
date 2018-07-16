@@ -1,8 +1,8 @@
 """Utilities to convert integers to Roman numerals and vice versa."""
 
 from .roman import (
-    toRoman,
-    fromRoman,
+    to_roman,
+    from_roman,
     RomanError,
     OutOfRangeError,
     InvalidRomanNumeralError,

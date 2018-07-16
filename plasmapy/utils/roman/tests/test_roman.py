@@ -139,7 +139,7 @@ ints_and_roman_numerals = [
 ]
 
 toRoman_exceptions_table = [
-    ('X', roman.NotIntegerError),
+    ('X', TypeError),
     (-1, roman.OutOfRangeError),
     (0, roman.OutOfRangeError),
     (5000, roman.OutOfRangeError),
@@ -147,7 +147,7 @@ toRoman_exceptions_table = [
 
 fromRoman_exceptions_table = [
     ('asdfasd', roman.InvalidRomanNumeralError),
-    (1, roman.InvalidRomanNumeralError),
+    (1, TypeError),
     ('xi', roman.InvalidRomanNumeralError),
 ]
 
@@ -155,34 +155,34 @@ fromRoman_exceptions_table = [
 @pytest.mark.parametrize('integer, roman_numeral', ints_and_roman_numerals)
 def test_toRoman(integer, roman_numeral):
     """
-    Test that `~plasmapy.extern.roman.toRoman` correctly converts
+    Test that `~plasmapy.utils.roman.to_roman` correctly converts
     integers to Roman numerals.
     """
-    run_test(func=roman.toRoman, args=integer, expected_outcome=roman_numeral)
+    run_test(func=roman.to_roman, args=integer, expected_outcome=roman_numeral)
 
 
 @pytest.mark.parametrize('integer, roman_numeral', ints_and_roman_numerals)
 def test_fromRoman(integer, roman_numeral):
     """
-    Test that `~plasmapy.extern.roman.fromRoman` correctly converts
+    Test that `~plasmapy.utils.roman.from_roman` correctly converts
     Roman numerals to integers.
     """
-    run_test(func=roman.toRoman, args=integer, expected_outcome=roman_numeral)
+    run_test(func=roman.to_roman, args=integer, expected_outcome=roman_numeral)
 
 
 @pytest.mark.parametrize('input, expected_exception', toRoman_exceptions_table)
 def test_toRoman_exceptions(input, expected_exception):
     """
-    Test that `~plasmapy.extern.roman.toRoman` raises the correct
+    Test that `~plasmapy.utils.roman.to_roman` raises the correct
     exceptions when necessary.
     """
-    run_test(func=roman.toRoman, args=input, expected_outcome=expected_exception)
+    run_test(func=roman.to_roman, args=input, expected_outcome=expected_exception)
 
 
 @pytest.mark.parametrize('input, expected_exception', fromRoman_exceptions_table)
 def test_fromRoman_exceptions(input, expected_exception):
     """
-    Test that `~plasmapy.extern.roman.fromRoman` raises the correct
+    Test that `~plasmapy.utils.roman.from_roman` raises the correct
     exceptions when necessary.
     """
-    run_test(func=roman.fromRoman, args=input, expected_outcome=expected_exception)
+    run_test(func=roman.from_roman, args=input, expected_outcome=expected_exception)

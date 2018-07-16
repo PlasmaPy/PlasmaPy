@@ -68,7 +68,7 @@ _romanNumeralPattern = re.compile("""
 
 
 
-def toRoman(n: typing.Union[int, np.integer]) -> str:
+def to_roman(n: typing.Union[int, np.integer]) -> str:
     """
     Convert an integer to a Roman numeral.
 
@@ -93,13 +93,13 @@ def toRoman(n: typing.Union[int, np.integer]) -> str:
 
     See Also
     --------
-    fromRoman
+    from_roman
 
     Examples
     --------
-    >>> toRoman(5)
+    >>> to_roman(5)
     'V'
-    >>> toRoman(2525)
+    >>> to_roman(2525)
     'MMDXXV'
 
     """
@@ -116,7 +116,7 @@ def toRoman(n: typing.Union[int, np.integer]) -> str:
     return result
 
 
-def fromRoman(s: str) -> int:
+def from_roman(s: str) -> int:
     """
     Convert a Roman numeral to an integer.
 
@@ -140,18 +140,18 @@ def fromRoman(s: str) -> int:
 
     See Also
     --------
-    toRoman
+    to_roman
 
     Examples
     --------
-    >>> fromRoman('V')
+    >>> from_roman('V')
     5
-    >>> fromRoman('MMMMCCCLXVII')
+    >>> from_roman('MMMMCCCLXVII')
     4367
 
     """
     if not isinstance(s, str):
-        raise TypeError('The argument to fromRoman must be a string.')
+        raise TypeError('The argument to from_roman must be a string.')
     if not _romanNumeralPattern.search(s):
         raise InvalidRomanNumeralError('Invalid Roman numeral: %s' % s)
 

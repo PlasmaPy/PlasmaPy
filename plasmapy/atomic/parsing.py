@@ -211,7 +211,7 @@ def _parse_and_check_atomic_input(argument: Union[str, int], mass_numb: int = No
 
             try:
                 if roman.romanNumeralPattern.match(charge_info):
-                    Z_from_arg = roman.fromRoman(charge_info) - 1
+                    Z_from_arg = roman.from_roman(charge_info) - 1
                 elif '-' in charge_info:
                     Z_from_arg = - int(charge_str)
                 elif '+' in charge_info:
