@@ -35,4 +35,4 @@ from .pytest_helpers import (
     assert_can_handle_nparray,
 )
 
-import roman
+from . import roman
