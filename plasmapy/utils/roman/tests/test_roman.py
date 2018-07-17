@@ -195,6 +195,8 @@ test_is_roman_numeral_table = [
     (1, TypeError),
     ('khjfda', False),
     ('VIIII', False),
+    ('IXX', False),
+    (('I', 'II'), TypeError),
 ]
 
 
