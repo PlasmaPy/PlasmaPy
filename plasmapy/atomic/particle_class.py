@@ -659,6 +659,42 @@ class Particle:
         return self._attributes['element name']
 
     @property
+    def isotope_name(self) -> str:
+        """
+        Return the name of the element along with the isotope
+        symbol if the particle corresponds to an isotope, and
+        `None` otherwise.
+
+        If the particle is not a valid element, then this
+        attribute will raise an `~plasmapy.utils.InvalidElementError`.
+        If it is not an isotope, then this attribute will raise an
+        `~plasmapy.utils.InvalidIsotopeError`.
+
+        Examples
+        --------
+        >>> deuterium = Particle("D")
+        >>> deuterium.isotope_name
+        'deuterium'
+        >>> iron_isotope = Particle("Fe-56", Z=16)
+        >>> iron_isotope.isotope_name
+        'iron-56'
+
+        """
+        if not self.element:
+            raise InvalidElementError(_category_errmsg(self.particle, 'element'))
+        elif not self.isotope:
+            raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
+
+        if self.isotope == "D":
+            isotope_name = "deuterium"
+        elif self.isotope == "T":
+            isotope_name = "tritium"
+        else:
+            isotope_name = f"{self.element_name}-{self.mass_number}"
+
+        return isotope_name
+
+    @property
     def integer_charge(self) -> int:
         """
         Return the particle's integer charge.
