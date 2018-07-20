@@ -707,3 +707,25 @@ class Test_antiparticle_properties_inversion:
             (f"{repr(particle)}.antiparticle returned "
              f"{particle.antiparticle}, whereas ~{repr(particle)} "
              f"returned {~particle}.")
+
+
+@pytest.mark.parametrize('arg', ['e-', 'D+', 'Fe 25+', 'H-', 'mu+'])
+def test_particleing_a_particle(arg):
+    """
+    Test that Particle(arg) is equal to Particle(Particle(arg)), but is
+    not the same object in memory.
+    """
+    particle = Particle(arg)
+
+    assert particle == Particle(particle), (
+        f"Particle({repr(arg)}) does not equal "
+        f"Particle(Particle({repr(arg)}).")
+
+    assert particle == Particle(Particle(Particle(particle))), (
+        f"Particle({repr(arg)}) does not equal "
+        f"Particle(Particle(Particle({repr(arg)})).")
+
+    assert particle is not Particle(particle), (
+        f"Particle({repr(arg)}) is the same object in memory as "
+        f"Particle(Particle({repr(arg)})), when it is intended to "
+        f"create a new object in memory (e.g., a copy).")
