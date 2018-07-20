@@ -113,9 +113,10 @@ class Particle:
 
     Parameters
     ----------
-    argument : `str` or `int`
-        A string representing a particle, element, isotope, or ion; or
-        an integer representing the atomic number of an element.
+    argument : `str`, `int`, or `~plasmapy.atomic.Particle`
+        A string representing a particle, element, isotope, or ion; an
+        integer representing the atomic number of an element; or a
+        `Particle` instance.
 
     mass_numb : `int`, optional
         The mass number of an isotope or nuclide.
@@ -238,6 +239,25 @@ class Particle:
     >>> ~positron
     Particle("e-")
 
+    A `~plasmapy.atomic.Particle` instance may be used as the first
+    argument to `~plasmapy.atomic.Particle`.
+
+    >>> iron = Particle('Fe')
+    >>> iron == Particle(iron)
+    True
+    >>> Particle(iron, mass_numb=56, Z=6)
+    Particle("Fe-56 6+")
+
+    If the previously constructed `~plasmapy.atomic.Particle` instance
+    represents an element, then the `Z` and `mass_numb` arguments may be
+    used to specify an ion or isotope.
+
+    >>> iron = Particle('Fe')
+    >>> Particle(iron, Z=1)
+    Particle("Fe 1+")
+    >>> Particle(iron, mass_numb=56)
+    Particle("Fe-56")
+
     The `~plasmapy.atomic.particle_class.Particle.categories` attribute
     and `~plasmapy.atomic.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
@@ -257,7 +277,7 @@ class Particle:
 
     def __init__(self, argument: Union[str, int], mass_numb: int = None, Z: int = None):
         """
-        Initialize a `~plasmapy.atomic.Particle` object and set private
+        Instantiate a `~plasmapy.atomic.Particle` object and set private
         attributes.
         """
 

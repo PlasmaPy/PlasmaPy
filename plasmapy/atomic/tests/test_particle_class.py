@@ -377,6 +377,17 @@ test_Particle_table = [
       'is_category("boson", exclude="boson")': AtomicError,
       'is_category(any_of="boson", exclude="boson")': AtomicError,
       }),
+
+    (Particle('C'), {},
+     {'particle': 'C',
+      }),
+
+    (Particle('C'), {'Z': 3, 'mass_numb': 14},
+     {'particle': 'C-14 3+',
+      'element': 'C',
+      'isotope': 'C-14',
+      'ionic_symbol': 'C-14 3+',
+     }),
 ]
 
 
@@ -478,6 +489,8 @@ test_Particle_error_table = [
     ('Fe', {}, '.spin', MissingAtomicDataError),
     ('nu_e', {}, '.mass', MissingAtomicDataError),
     ('Og', {}, '.standard_atomic_weight', MissingAtomicDataError),
+    (Particle('C-14'), {'mass_numb': 13}, "", InvalidParticleError),
+    (Particle('Au 1+'), {'Z': 2}, "", InvalidParticleError),
     ([], {}, "", TypeError),
 ]
 
