@@ -1,7 +1,8 @@
 import pytest
 import numpy as np
 import astropy.units as u
-from ..ionization_states import IonizationState
+from ..ionization_state import IonizationState
+from ..ionization_states import IonizationStates
 from ...utils import AtomicError, RunTestError, InvalidIsotopeError, run_test
 from ...atomic import (
     atomic_number,
