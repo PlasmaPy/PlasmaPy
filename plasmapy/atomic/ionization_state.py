@@ -46,11 +46,12 @@ class IonizationState:
         The electron temperature or thermal energy per particle.
 
     n_e: ~astropy.units.Quantity, keyword-only, optional
-        The electron number density.
+        The electron number density.  May only be set if `n_elem` is not
+        set.
 
     n_elem: ~astropy.units.Quantity, keyword-only, optional
         The number density of the element, including neutrals and all
-        ions.
+        ions.  May only be set if `n_e` is not set.
 
     tol: float or integer, keyword-only, optional
         The absolute tolerance used by `~numpy.isclose` when testing
@@ -68,8 +69,10 @@ class IonizationState:
     Examples
     --------
     >>> states = IonizationState('H', [0.6, 0.4], n_elem=1*u.cm**-3, T_e=11000*u.K)
-    >>> states.ionic_fractions
-    array([0.6, 0.4])
+    >>> states.ionic_fractions[0]  # fraction of hydrogen that is neutral
+    0.6
+    >>> states.ionic_fractions[1]  # fraction of hydrogen that is ionized
+    0.4
     >>> states.n_e  # electron number density
     <Quantity 400000. 1 / m3>
     >>> states.n_elem  # element number density
@@ -77,7 +80,8 @@ class IonizationState:
 
     Notes
     -----
-    Only one of `n_e` and `n_elem` may be set.
+    Calculation of collisional ionization equilibrium has not yet been
+    implemented.
 
     """
 
@@ -125,6 +129,12 @@ class IonizationState:
             raise AtomicError(
                 f"Unable to create IonizationState instance for "
                 f"{particle.particle}.") from exc
+
+    def __str__(self) -> str:
+        return f"<IonizationState of {self.atom}>"
+
+    def __repr__(self):
+        return self.__str__()
 
     def __getitem__(self, value) -> State:
         """Return the ionic fraction(s)."""
@@ -274,7 +284,6 @@ class IonizationState:
                 self._ionic_fractions = fractions
 
     @property
-    @u.quantity_input
     def n_e(self) -> u.m ** -3:
         """
         Return the electron number density assuming a single species
@@ -309,7 +318,6 @@ class IonizationState:
             raise AtomicError(_number_density_errmsg)
 
     @property
-    @u.quantity_input
     def n_elem(self) -> u.m ** -3:
         """
         Return the number density of atoms plus ions for this
@@ -321,7 +329,6 @@ class IonizationState:
             return self._n_e / (self.ionic_fractions * self.integer_charges)
 
     @n_elem.setter
-    @u.quantity_input
     def n_elem(self, value):
         """The number density of atoms plus ions of this species."""
         if value is None:
@@ -337,7 +344,6 @@ class IonizationState:
                 raise AtomicError(_number_density_errmsg) from None
 
     @property
-    @u.quantity_input
     def number_densities(self) -> u.m ** -3:
         """Return the number densities for each state."""
         if self._n_e is not None or self._n_elem is not None:
@@ -351,9 +357,9 @@ class IonizationState:
     def number_densities(self, value: u.m ** -3):
         """Set the number densities for each state."""
         if self._n_elem is not None or self._n_e is not None:
-            raise AtomicError
-#        if not isinstance(value, u.Quantity):
-#            raise TypeError
+            raise AtomicError(
+                "number_densities cannot be set if n_elem or n_e "
+                "")
         if np.any(value.value < 0):
             raise AtomicError("Number densities cannot be negative.")
         try:
@@ -365,14 +371,15 @@ class IonizationState:
         self._ionic_fractions = value / self._n_elem
 
     @property
-    def T_e(self):
+    @u.quantity_input(equivalencies=u.temperature_energy())
+    def T_e(self) -> u.K:
         """Return the electron temperature."""
         if self._T_e is None:
             raise AtomicError("No electron temperature has been specified.")
         return self._T_e.to(u.K, equivalencies=u.temperature_energy())
 
     @T_e.setter
-    def T_e(self, value):
+    def T_e(self, value: u.K):
         """Set the electron temperature."""
         if value is None:
             self._T_e = None
@@ -430,7 +437,7 @@ class IonizationState:
     def particles(self) -> List[Particle]:
         """
         Return a list of the `~plasmapy.atomic.Particle` class
-        instances.
+        instances corresponding to each ion.
         """
         return [Particle(self._particle.particle, Z=i) for i in range(self.atomic_number + 1)]
 

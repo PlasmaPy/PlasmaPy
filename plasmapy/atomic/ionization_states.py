@@ -46,6 +46,11 @@ class IonizationStates:
     Raises
     ------
     AtomicError
+        # TODO: Describe exceptions
+
+    Examples
+    --------
+        # TODO: Include examples
 
     Notes
     -----
@@ -66,8 +71,8 @@ class IonizationStates:
             abundances=None,
             log_abundances=None,
             n=None,
-            tol=1e-15,
-        ):
+            tol=1e-15):
+        """Initialize a `~plasmapy.atomic.IonizationStates` instance."""
 
         self._pars = collections.defaultdict(lambda: None)
         self.T_e = T_e
@@ -101,7 +106,7 @@ class IonizationStates:
 
     @ionic_fractions.setter
     def ionic_fractions(self, inputs: Union[Dict, List, Tuple]):
-        """Set the ionic fractions"""
+        """Set the ionic fractions."""
         if isinstance(inputs, dict):
             original_keys = inputs.keys()
 
@@ -124,8 +129,10 @@ class IonizationStates:
 
             # The particles whose ionization states are to be recorded
             # should be elements or isotopes but not ions or neutrals.
+
             is_element = particles[key].is_category('element')
             has_charge_info = particles[key].is_category(any_of=["charged", "uncharged"])
+
             if not is_element or has_charge_info:
                 raise AtomicError(
                     f"{key} is not an element or isotope without "
@@ -143,6 +150,7 @@ class IonizationStates:
             _elements = []
             _particles = []
             new_ionic_fractions = {}
+
             for key in sorted_keys:
                 new_key = particles[key].particle
                 _particles.append(particles[key])
@@ -163,8 +171,8 @@ class IonizationStates:
                     try:
                         new_ionic_fractions[particles[key].particle] = \
                             np.array(inputs[key], dtype=np.float)
-                    except ValueError:
-                        raise AtomicError(f"Inappropriate ionic fractions for {key}.")
+                    except ValueError as exc:
+                        raise AtomicError(f"Inappropriate ionic fractions for {key}.") from exc
 
             for key in _elements:
                 if np.min(new_ionic_fractions[key]) < 0 or np.max(new_ionic_fractions[key]) > 1:
@@ -176,8 +184,8 @@ class IonizationStates:
 
             try:
                 _particles = [Particle(particle) for particle in inputs]
-            except (InvalidParticleError, TypeError):
-                raise AtomicError("Invalid inputs to IonizationStates")
+            except (InvalidParticleError, TypeError) as exc:
+                raise AtomicError("Invalid inputs to IonizationStates") from exc
 
             _particles.sort(key=lambda p: (p.atomic_number, p.mass_number if p.isotope else 0))
             _elements = [particle.particle for particle in _particles]
@@ -189,7 +197,7 @@ class IonizationStates:
                 ) for particle in _particles
             }
         else:
-            raise TypeError
+            raise TypeError("Incorrect inputs to set ionic_fractions.")
 
         # Because this depends on _particles being sorted, we add in an
         # easy check that atomic numbers do not decrease.
@@ -424,23 +432,34 @@ class IonizationStates:
                 self._pars['T_e'] = temp
 
     def equilibrate(self, T_e=None):
+        """
+        Set the ionic fractions to collisional ionization equilibrium
+        for the temperature `T_e` if specified
+
+        Parameters
+        ----------
+        T_e : ~astropy.units.Quantity
+            The electron temperature.
+
+        """
         if T_e is not None:
             raise NotImplementedError
         elif self._T_e is not None:
             raise NotImplementedError
         else:
-            raise AtomicError
+            raise AtomicError(
+                "The electron temperature must be specified for the ")
 
     @property
-    def tol(self) -> float:
+    def tol(self) -> numbers.Real:
         """Return the absolute tolerance for comparisons."""
         return self._tol
 
     @tol.setter
-    def tol(self, atol):
+    def tol(self, atol: numbers.Real):
         """Set the absolute tolerance for comparisons."""
         if not isinstance(atol, numbers.Real):
-            raise TypeError("The attribute tol must be a float or an int.")
+            raise TypeError("The attribute tol must be a real number.")
         if 0 <= atol <= 1.0:
             self._tol = atol
         else:
@@ -452,24 +471,28 @@ class IonizationStates:
             self.ionic_fractions[particle] = self.ionic_fractions[particle] / tot
 
     @property
-    def number_densities(self):
-        ...
-
-    @property
-    def n_e(self):
+    @u.quantity_input
+    def number_densities(self) -> u.m ** -3:
         raise NotImplementedError
 
     @property
-    def n(self):
+    @u.quantity_input
+    def n_e(self) -> u.m ** -3:
+        """Return the electron number density, assuming quasineutrality."""
+        raise NotImplementedError
+
+    @property
+    @u.quantity_input
+    def n(self) -> u.m ** -3:
         """
-        The number density scaling factor, if defined.
+        Return the number density scaling factor.
         """
         if 'H' not in self.elements or self._pars['n'] is None:
             raise AtomicError("The number density of hydrogen is not ")
         return self._pars['n']
 
     @n.setter
-    def n(self, n):
+    def n(self, n: u.m ** -3):
         if n is None:
             self._pars['n'] = n
         else:
