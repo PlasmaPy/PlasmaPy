@@ -4,10 +4,9 @@ import astropy.units as u
 import collections
 import numpy as np
 import numbers
-from plasmapy.atomic.atomic import atomic_number
+import warnings
 from plasmapy.atomic.particle_class import Particle
 from plasmapy.atomic.particle_input import particle_input
-from plasmapy.atomic.symbols import particle_symbol
 from plasmapy.utils import (AtomicError, ChargeError, InvalidParticleError, check_quantity)
 
 State = collections.namedtuple(
@@ -53,7 +52,7 @@ class IonizationState:
         The number density of the element, including neutrals and all
         ions.
 
-    tol: float or int, keyword-only, optional
+    tol: float or integer, keyword-only, optional
         The absolute tolerance used by `~numpy.isclose` when testing
         normalizations and making comparisons.  Defaults to `1e-15`.
 
@@ -90,7 +89,6 @@ class IonizationState:
     # though triply negatively charged ions are very unlikely.
 
     # TODO: Add in functionality to find equilibrium ionization states.
-    # How much data will this require?
 
     @check_quantity(
         T_e={"units": u.K, "none_shall_pass": True},
@@ -117,8 +115,11 @@ class IonizationState:
             self.n_e = n_e
             self.ionic_fractions = ionic_fractions
 
-            # if self._ionic_fractions is None and self.T_e is not None:
-            #     self.equilibrate()
+            if self._ionic_fractions is None and self.T_e is not None:
+                warnings.warn(
+                    "Collisional ionization equilibration has not yet "
+                    "been implemented in IonizationState; cannot set "
+                    "ionic fractions.")
 
         except Exception as exc:
             raise AtomicError(
@@ -273,7 +274,8 @@ class IonizationState:
                 self._ionic_fractions = fractions
 
     @property
-    def n_e(self):
+    @u.quantity_input
+    def n_e(self) -> u.m ** -3:
         """
         Return the electron number density assuming a single species
         plasma.
@@ -307,7 +309,8 @@ class IonizationState:
             raise AtomicError(_number_density_errmsg)
 
     @property
-    def n_elem(self):
+    @u.quantity_input
+    def n_elem(self) -> u.m ** -3:
         """
         Return the number density of atoms plus ions for this
         species.
@@ -318,6 +321,7 @@ class IonizationState:
             return self._n_e / (self.ionic_fractions * self.integer_charges)
 
     @n_elem.setter
+    @u.quantity_input
     def n_elem(self, value):
         """The number density of atoms plus ions of this species."""
         if value is None:
@@ -333,7 +337,8 @@ class IonizationState:
                 raise AtomicError(_number_density_errmsg) from None
 
     @property
-    def number_densities(self):
+    @u.quantity_input
+    def number_densities(self) -> u.m ** -3:
         """Return the number densities for each state."""
         if self._n_e is not None or self._n_elem is not None:
             return (self.n_elem * self.ionic_fractions).to(u.m ** -3)
@@ -342,12 +347,14 @@ class IonizationState:
                 "Insufficient information to return number densities.")
 
     @number_densities.setter
+    @u.quantity_input
     def number_densities(self, value: u.m ** -3):
+        """Set the number densities for each state."""
         if self._n_elem is not None or self._n_e is not None:
             raise AtomicError
-        if not isinstance(value, u.Quantity):
-            raise TypeError
-        if np.any(value < 0):
+#        if not isinstance(value, u.Quantity):
+#            raise TypeError
+        if np.any(value.value < 0):
             raise AtomicError("Number densities cannot be negative.")
         try:
             value = value.to(u.m ** -3)
@@ -366,7 +373,7 @@ class IonizationState:
 
     @T_e.setter
     def T_e(self, value):
-
+        """Set the electron temperature."""
         if value is None:
             self._T_e = None
         else:
