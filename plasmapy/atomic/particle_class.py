@@ -261,10 +261,18 @@ class Particle:
         attributes.
         """
 
-        if not isinstance(argument, (int, str)):
+        if not isinstance(argument, (int, np.integer, str, Particle)):
             raise TypeError(
                 "The first positional argument when creating a Particle "
-                "object must be either an integer or string.")
+                "object must be either an integer, string, or another"
+                "Particle object.")
+
+        # If argument is a Particle instance, then we will construct a
+        # new Particle instance for the same Particle (essentially a
+        # copy).
+
+        if isinstance(argument, Particle):
+            argument = argument.particle
 
         if mass_numb is not None and not isinstance(mass_numb, int):
             raise TypeError("mass_numb is not an integer")
