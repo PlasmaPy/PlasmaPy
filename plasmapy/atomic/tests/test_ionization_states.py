@@ -46,29 +46,29 @@ tests = {
         'tol': 1e-5,
     },
 
-    'n_H': {
+    'n': {
         'inputs': {'H': [1, 0], 'He': [1, 0, 0]},
         'abundances': {'H': 1, 'He': 0.1},
-        'n_H': 1e9 * u.cm **-3,
+        'n': 1e9 * u.cm **-3,
     },
 
-    'T_e and n_H': {
+    'T_e and n': {
         'inputs': {'H': [0.9, 0.1], 'He': [0.5, 0.3, 0.2]},
         'abundances': {'H': 1, 'He': 0.1},
         'T_e': 1e4 * u.K,
-        'n_H': 1e15 * u.m ** -3,
+        'n': 1e15 * u.m ** -3,
     },
 
     'log_abundances': {
         'inputs': {'H': [1, 0], 'He': [1, 0, 0]},
         'log_abundances': {'H': 1, 'He': 0},
-        'n_H': 1e9 * u.cm ** -3,
+        'n': 1e9 * u.cm ** -3,
     },
 
     'elements & isotopes': {
         'inputs': {'H': [0.9, 0.1], 'He-3': [0.3, 0.7, 0.0], 'He-4': [0.29, 0.69, 0.02]},
         'abundances': {'H': 1, 'He-3': 1e-7, 'He-4': 0.1},
-        'n_H': 1e12 * u.m ** -3,
+        'n': 1e12 * u.m ** -3,
     },
 
     'just elements': {

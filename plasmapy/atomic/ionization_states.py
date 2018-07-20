@@ -6,11 +6,11 @@ import astropy.units as u
 import collections
 import numpy as np
 
-from .atomic import atomic_number
-from .particle_class import Particle
-from .particle_input import particle_input
-from .symbols import particle_symbol
-from ..utils import (AtomicError, ChargeError, InvalidParticleError, check_quantity)
+from plasmapy.atomic.atomic import atomic_number
+from plasmapy.atomic.particle_class import Particle
+from plasmapy.atomic.particle_input import particle_input
+from plasmapy.atomic.symbols import particle_symbol
+from plasmapy.utils import (AtomicError, ChargeError, InvalidParticleError, check_quantity)
 
 State = collections.namedtuple(
     'State', [
@@ -32,7 +32,7 @@ class IonizationState:
 
     Parameters
     ----------
-    particle: str, int, np.integer, or ~plasmapy.atomic.Particle
+    particle: str, integer, or ~plasmapy.atomic.Particle
         A `str` or `~plasmapy.atomic.Particle` instance representing
         an element or isotope, or an `int` representing the atomic
         number of an element.
@@ -522,7 +522,7 @@ class IonizationStates:
         The number densities of elements (including both neutral atoms
         and ions) in units of inverse volume.
 
-    n_H: ~astropy.units.Quantity, optional
+    n: ~astropy.units.Quantity, optional
         The number density of neutral and ionized hydrogen atoms.  May
         only be used if the ionization state of hydrogen is included.
 
@@ -539,7 +539,7 @@ class IonizationStates:
 
     @check_quantity({
         "T_e": {"units": u.K, "none_shall_pass": True},
-        "n_H": {"units": u.m ** -3, "none_shall_pass": True},
+        "n": {"units": u.m ** -3, "none_shall_pass": True},
     })
     def __init__(
             self,
@@ -548,13 +548,13 @@ class IonizationStates:
             T_e=None,
             abundances=None,
             log_abundances=None,
-            n_H=None,
+            n=None,
             tol=1e-15,
         ):
 
         self._pars = collections.defaultdict(lambda: None)
         self.T_e = T_e
-        self.n_H = n_H
+        self.n = n
 
         self.tol = tol
 
@@ -943,22 +943,21 @@ class IonizationStates:
         raise NotImplementedError
 
     @property
-    def n_H(self):
+    def n(self):
         """
-        The number density of hydrogen neutrals and atoms of all
-        isotopes, if defined.
+        The number density scaling factor, if defined.
         """
-        if 'H' not in self.elements or self._pars['n_H'] is None:
+        if 'H' not in self.elements or self._pars['n'] is None:
             raise AtomicError("The number density of hydrogen is not ")
-        return self._pars['n_H']
+        return self._pars['n']
 
-    @n_H.setter
-    def n_H(self, n):
+    @n.setter
+    def n(self, n):
         if n is None:
-            self._pars['n_H'] = n
+            self._pars['n'] = n
         else:
             try:
-                self._pars['n_H'] = n.to(u.m ** -3)
+                self._pars['n'] = n.to(u.m ** -3)
             except u.UnitConversionError:
                 raise AtomicError("Units cannot be converted to u.m**-3.")
             except Exception:
