@@ -94,11 +94,11 @@ class IonizationState:
     # TODO: Add in functionality to find equilibrium ionization states.
     # How much data will this require?
 
-    @check_quantity({
-        "T_e": {"units": u.K, "none_shall_pass": True},
-        "n_e": {"units": u.m ** -3, "none_shall_pass": True},
-        "n_elem": {"units": u.m ** -3, "none_shall_pass": True},
-    })
+    @check_quantity(
+        T_e={"units": u.K, "none_shall_pass": True},
+        n_e={"units": u.m ** -3, "none_shall_pass": True},
+        n_elem={"units": u.m ** -3, "none_shall_pass": True},
+    )
     @particle_input(require='element', exclude='ion')
     def __init__(self,
                  particle: Particle,
@@ -537,10 +537,10 @@ class IonizationStates:
 
     """
 
-    @check_quantity({
-        "T_e": {"units": u.K, "none_shall_pass": True},
-        "n": {"units": u.m ** -3, "none_shall_pass": True},
-    })
+    @check_quantity(
+        T_e={"units": u.K, "none_shall_pass": True},
+        n={"units": u.m ** -3, "none_shall_pass": True},
+    )
     def __init__(
             self,
             inputs,
