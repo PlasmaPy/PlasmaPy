@@ -4,7 +4,7 @@ import numpy as np
 import warnings
 from typing import (Union, Set, Tuple, List, Optional)
 import collections
-import roman
+import plasmapy.utils.roman as roman
 
 import astropy.units as u
 import astropy.constants as const
@@ -637,7 +637,7 @@ class Particle:
 
         symbol = self.isotope if self.isotope else self.element
         integer_charge = self._attributes['integer charge']
-        roman_charge = roman.toRoman(integer_charge + 1)
+        roman_charge = roman.to_roman(integer_charge + 1)
         return f"{symbol} {roman_charge}"
 
     @property

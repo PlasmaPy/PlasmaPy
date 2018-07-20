@@ -34,3 +34,5 @@ from .pytest_helpers import (
     MissingWarningError,
     assert_can_handle_nparray,
 )
+
+from . import roman
