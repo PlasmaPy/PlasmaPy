@@ -34,23 +34,23 @@ class BasePlasma(ABC):
 
     @abstractproperty
     def electron_temperature(self):
-        pass
+        raise NotImplementedError
 
     @abstractproperty
     def ion_temperature(self):
-        pass
+        raise NotImplementedError
 
     @abstractproperty
     def electron_density(self):
-        pass
+        raise NotImplementedError
 
     @abstractproperty
     def ion_density(self):
-        pass
+        raise NotImplementedError
 
     @abstractproperty
     def average_ionization(self):
-        pass
+        raise NotImplementedError
 
 
 class GenericPlasma(BasePlasma):
@@ -65,16 +65,16 @@ class GenericPlasma(BasePlasma):
     # goes here.
 
     def electron_temperature(self):
-        pass
+        raise NotImplementedError
 
     def ion_temperature(self):
-        pass
+        raise NotImplementedError
 
     def electron_density(self):
-        pass
+        raise NotImplementedError
 
     def ion_density(self):
-        pass
+        raise NotImplementedError
 
     def average_ionization(self):
-        pass
+        raise NotImplementedError

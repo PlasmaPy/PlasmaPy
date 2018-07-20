@@ -12,9 +12,8 @@ dependencies:
   - pip:
     - numpydoc
     - pytest
-    - coveralls
     - mpmath
-    - roman
+    - h5py
     - lmfit
     - matplotlib
     - sphinx

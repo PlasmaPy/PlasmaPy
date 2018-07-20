@@ -4,6 +4,7 @@ import numpy as np
 import warnings
 from typing import (Union, Set, Tuple, List, Optional)
 import collections
+import plasmapy.utils.roman as roman
 
 import astropy.units as u
 import astropy.constants as const
@@ -112,9 +113,10 @@ class Particle:
 
     Parameters
     ----------
-    argument : `str` or `int`
-        A string representing a particle, element, isotope, or ion; or
-        an integer representing the atomic number of an element.
+    argument : `str`, `int`, or `~plasmapy.atomic.Particle`
+        A string representing a particle, element, isotope, or ion; an
+        integer representing the atomic number of an element; or a
+        `Particle` instance.
 
     mass_numb : `int`, optional
         The mass number of an isotope or nuclide.
@@ -237,6 +239,25 @@ class Particle:
     >>> ~positron
     Particle("e-")
 
+    A `~plasmapy.atomic.Particle` instance may be used as the first
+    argument to `~plasmapy.atomic.Particle`.
+
+    >>> iron = Particle('Fe')
+    >>> iron == Particle(iron)
+    True
+    >>> Particle(iron, mass_numb=56, Z=6)
+    Particle("Fe-56 6+")
+
+    If the previously constructed `~plasmapy.atomic.Particle` instance
+    represents an element, then the `Z` and `mass_numb` arguments may be
+    used to specify an ion or isotope.
+
+    >>> iron = Particle('Fe')
+    >>> Particle(iron, Z=1)
+    Particle("Fe 1+")
+    >>> Particle(iron, mass_numb=56)
+    Particle("Fe-56")
+
     The `~plasmapy.atomic.particle_class.Particle.categories` attribute
     and `~plasmapy.atomic.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
@@ -252,18 +273,26 @@ class Particle:
     `'proton'`, `'stable'`, `'transition metal'`, `'uncharged'`,
     and `'unstable'`.
 
-"""
+    """
 
     def __init__(self, argument: Union[str, int], mass_numb: int = None, Z: int = None):
         """
-        Initialize a `~plasmapy.atomic.Particle` object and set private
+        Instantiate a `~plasmapy.atomic.Particle` object and set private
         attributes.
         """
 
-        if not isinstance(argument, (int, np.integer, str)):
+        if not isinstance(argument, (int, np.integer, str, Particle)):
             raise TypeError(
                 "The first positional argument when creating a Particle "
-                "object must be either an integer or string.")
+                "object must be either an integer, string, or another"
+                "Particle object.")
+
+        # If argument is a Particle instance, then we will construct a
+        # new Particle instance for the same Particle (essentially a
+        # copy).
+
+        if isinstance(argument, Particle):
+            argument = argument.particle
 
         if mass_numb is not None and not isinstance(mass_numb, (int, np.integer)):
             raise TypeError("mass_numb is not an integer")
@@ -609,6 +638,37 @@ class Particle:
         return self._attributes['ion']
 
     @property
+    def roman_symbol(self) -> Optional[str]:
+        """
+        Return the spectral name of the particle (i.e. the ionic symbol in
+        Roman numeral notation).  If the particle is not an ion or neutral
+        atom, return `None`. The roman numeral represents one plus the
+        integer charge. Raise `ChargeError` if no charge has been specified
+        and `roman.OutOfRangeError` if the charge is negative.
+
+        Examples
+        --------
+        >>> proton = Particle('proton')
+        >>> proton.roman_symbol
+        'H-1 II'
+        >>> hydrogen_atom = Particle('H', Z=0)
+        >>> hydrogen_atom.roman_symbol
+        'H I'
+
+        """
+        if not self._attributes['element']:
+            return None
+        if self._attributes['integer charge'] is None:
+            raise ChargeError(f"The charge of particle {self} has not been specified.")
+        if self._attributes['integer charge'] < 0:
+            raise roman.OutOfRangeError('Cannot convert negative charges to Roman.')
+
+        symbol = self.isotope if self.isotope else self.element
+        integer_charge = self._attributes['integer charge']
+        roman_charge = roman.to_roman(integer_charge + 1)
+        return f"{symbol} {roman_charge}"
+
+    @property
     def element_name(self) -> str:
         """
         Return the name of the element corresponding to this
@@ -625,6 +685,42 @@ class Particle:
         if not self.element:
             raise InvalidElementError(_category_errmsg(self, 'element'))
         return self._attributes['element name']
+
+    @property
+    def isotope_name(self) -> str:
+        """
+        Return the name of the element along with the isotope
+        symbol if the particle corresponds to an isotope, and
+        `None` otherwise.
+
+        If the particle is not a valid element, then this
+        attribute will raise an `~plasmapy.utils.InvalidElementError`.
+        If it is not an isotope, then this attribute will raise an
+        `~plasmapy.utils.InvalidIsotopeError`.
+
+        Examples
+        --------
+        >>> deuterium = Particle("D")
+        >>> deuterium.isotope_name
+        'deuterium'
+        >>> iron_isotope = Particle("Fe-56", Z=16)
+        >>> iron_isotope.isotope_name
+        'iron-56'
+
+        """
+        if not self.element:
+            raise InvalidElementError(_category_errmsg(self.particle, 'element'))
+        elif not self.isotope:
+            raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
+
+        if self.isotope == "D":
+            isotope_name = "deuterium"
+        elif self.isotope == "T":
+            isotope_name = "tritium"
+        else:
+            isotope_name = f"{self.element_name}-{self.mass_number}"
+
+        return isotope_name
 
     @property
     def integer_charge(self) -> int:

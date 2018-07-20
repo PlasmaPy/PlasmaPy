@@ -75,3 +75,26 @@ print(Z.shape)
 
 F = plasmapy.mathematics.plasma_dispersion_func(Z)
 plot_complex(X, Y, F, 100)
+
+#######################################################################
+# Now we examine the derivative of the dispersion function as a function
+# of the phase velocity of an electromagnetic wave propagating through
+# the plasma. This is recreating figure 5.1 in:
+# J. Sheffield, D. Froula, S. H. Glenzer, and N. C. Luhmann Jr,
+# Plasma scattering of electromagnetic radiation: theory and measurement
+# techniques. Chapter 5 Pg 106 (Academic press, 2010).
+
+xs = np.linspace(0, 4, 100)
+ws = (-1 / 2) * plasmapy.mathematics.plasma_dispersion_func_deriv(xs)
+wRe = np.real(ws)
+wIm = np.imag(ws)
+
+plt.plot(xs, wRe, label="Re")
+plt.plot(xs, wIm, label="Im")
+plt.axis([0, 4, -0.3, 1])
+plt.legend(loc='upper right',
+           frameon=False,
+           labelspacing=0.001,
+           fontsize=14,
+           borderaxespad=0.1)
+plt.show()

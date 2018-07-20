@@ -2,6 +2,7 @@ import pytest
 import numpy as np
 from astropy import units as u
 import inspect
+from plasmapy.utils import roman
 
 from ...constants import m_p, m_e, m_n, e
 
@@ -30,7 +31,9 @@ test_Particle_table = [
      {'particle': 'n',
       'element': None,
       'isotope': None,
+      'isotope_name': InvalidElementError,
       'ionic_symbol': None,
+      'roman_symbol': None,
       'is_ion': False,
       'is_electron': False,
       'integer_charge': 0,
@@ -49,7 +52,9 @@ test_Particle_table = [
       'element': 'H',
       'element_name': 'hydrogen',
       'isotope': 'H-1',
+      'isotope_name': 'hydrogen-1',
       'ionic_symbol': 'p+',
+      'roman_symbol': 'H-1 II',
       'is_ion': True,
       'mass': m_p,
       'nuclide_mass': m_p,
@@ -82,7 +87,9 @@ test_Particle_table = [
       'element': None,
       'element_name': InvalidElementError,
       'isotope': None,
+      'isotope_name': InvalidElementError,
       'ionic_symbol': None,
+      'roman_symbol': None,
       'is_ion': False,
       'mass': m_p,
       'integer_charge': -1,
@@ -102,7 +109,9 @@ test_Particle_table = [
       'element': None,
       'element_name': InvalidElementError,
       'isotope': None,
+      'isotope_name': InvalidElementError,
       'ionic_symbol': None,
+      'roman_symbol': None,
       'is_ion': False,
       'mass': m_e,
       'integer_charge': -1,
@@ -124,7 +133,9 @@ test_Particle_table = [
      {'particle': 'e+',
       'element': None,
       'isotope': None,
+      'isotope_name': InvalidElementError,
       'ionic_symbol': None,
+      'roman_symbol': None,
       'is_ion': False,
       'mass': m_e,
       'nuclide_mass': InvalidIsotopeError,
@@ -150,7 +161,9 @@ test_Particle_table = [
      {'particle': 'H',
       'element': 'H',
       'isotope': None,
+      'isotope_name': InvalidIsotopeError,
       'ionic_symbol': None,
+      'roman_symbol': ChargeError,
       'is_ion': False,
       'charge': ChargeError,
       'integer_charge': ChargeError,
@@ -166,11 +179,33 @@ test_Particle_table = [
       'is_category("proton")': False,
       }),
 
+    ('H 1-', {},
+     {'particle': 'H 1-',
+      'element': 'H',
+      'isotope': None,
+      'isotope_name': InvalidIsotopeError,
+      'ionic_symbol': 'H 1-',
+      'roman_symbol': roman.OutOfRangeError,
+      'is_ion': True,
+      'integer_charge': -1,
+      'mass_number': InvalidIsotopeError,
+      'baryon_number': MissingAtomicDataError,
+      'lepton_number': 0,
+      'half_life': InvalidIsotopeError,
+      'standard_atomic_weight': InvalidElementError,
+      'nuclide_mass': InvalidIsotopeError,
+      'is_category("charged")': True,
+      'is_category("nonmetal")': True,
+      'is_category("proton")': False,
+      }),
+
     ('H-1 0+', {}, {
         'particle': 'H-1 0+',
         'element': 'H',
         'isotope': 'H-1',
+        'isotope_name': 'hydrogen-1',
         'ionic_symbol': 'H-1 0+',
+        'roman_symbol': 'H-1 I',
         'is_ion': False,
         'charge': 0 * u.C,
         'integer_charge': 0,
@@ -191,7 +226,9 @@ test_Particle_table = [
       'element': 'H',
       'element_name': 'hydrogen',
       'isotope': 'D',
+      'isotope_name': 'deuterium',
       'ionic_symbol': 'D 1+',
+      'roman_symbol': 'D II',
       'is_ion': True,
       'integer_charge': 1,
       'atomic_number': 1,
@@ -210,7 +247,9 @@ test_Particle_table = [
      {'particle': 'T 1+',
       'element': 'H',
       'isotope': 'T',
+      'isotope_name': 'tritium',
       'ionic_symbol': 'T 1+',
+      'roman_symbol': 'T II',
       'is_ion': True,
       'integer_charge': 1,
       'atomic_number': 1,
@@ -228,7 +267,9 @@ test_Particle_table = [
       'element': 'Fe',
       'element_name': 'iron',
       'isotope': 'Fe-56',
+      'isotope_name': 'iron-56',
       'ionic_symbol': 'Fe-56 17+',
+      'roman_symbol': 'Fe-56 XVIII',
       'is_electron': False,
       'is_ion': True,
       'integer_charge': 17,
@@ -247,7 +288,9 @@ test_Particle_table = [
       'element': 'He',
       'element_name': 'helium',
       'isotope': 'He-4',
+      'isotope_name': 'helium-4',
       'ionic_symbol': 'He-4 2+',
+      'roman_symbol': 'He-4 III',
       'is_ion': True,
       'integer_charge': 2,
       'atomic_number': 2,
@@ -262,7 +305,9 @@ test_Particle_table = [
       'element': 'Li',
       'element_name': 'lithium',
       'isotope': 'Li-7',
+      'isotope_name': 'lithium-7',
       'ionic_symbol': None,
+      'roman_symbol': ChargeError,
       'is_ion': False,
       'integer_charge': ChargeError,
       'atomic_number': 3,
@@ -277,7 +322,9 @@ test_Particle_table = [
      {'particle': 'Cn-276 22+',
       'element': 'Cn',
       'isotope': 'Cn-276',
+      'isotope_name': 'copernicium-276',
       'ionic_symbol': 'Cn-276 22+',
+      'roman_symbol': 'Cn-276 XXIII',
       'is_ion': True,
       'element_name': 'copernicium',
       'integer_charge': 22,
@@ -291,7 +338,9 @@ test_Particle_table = [
      {'particle': 'mu-',
       'element': None,
       'isotope': None,
+      'isotope_name': InvalidElementError,
       'ionic_symbol': None,
+      'roman_symbol': None,
       'is_ion': False,
       'integer_charge': -1,
       'atomic_number': InvalidElementError,
@@ -304,6 +353,7 @@ test_Particle_table = [
      {'particle': 'nu_tau',
       'element': None,
       'isotope': None,
+      'isotope_name': InvalidElementError,
       'mass': MissingAtomicDataError,
       'integer_charge': 0,
       'mass_number': InvalidIsotopeError,
@@ -327,6 +377,17 @@ test_Particle_table = [
       'is_category("boson", exclude="boson")': AtomicError,
       'is_category(any_of="boson", exclude="boson")': AtomicError,
       }),
+
+    (Particle('C'), {},
+     {'particle': 'C',
+      }),
+
+    (Particle('C'), {'Z': 3, 'mass_numb': 14},
+     {'particle': 'C-14 3+',
+      'element': 'C',
+      'isotope': 'C-14',
+      'ionic_symbol': 'C-14 3+',
+     }),
 ]
 
 
@@ -428,6 +489,8 @@ test_Particle_error_table = [
     ('Fe', {}, '.spin', MissingAtomicDataError),
     ('nu_e', {}, '.mass', MissingAtomicDataError),
     ('Og', {}, '.standard_atomic_weight', MissingAtomicDataError),
+    (Particle('C-14'), {'mass_numb': 13}, "", InvalidParticleError),
+    (Particle('Au 1+'), {'Z': 2}, "", InvalidParticleError),
     ([], {}, "", TypeError),
 ]
 
@@ -595,6 +658,11 @@ def test_antiparticle_inversion(particle, antiparticle):
          f"{~Particle(antiparticle)} instead of {particle}.")
 
 
+def test_unary_operator_for_elements():
+    with pytest.raises(AtomicError):
+        Particle('C').antiparticle
+
+
 @pytest.fixture(params=ParticleZoo.everything)
 def particle(request):
     return Particle(request.param)
@@ -652,3 +720,25 @@ class Test_antiparticle_properties_inversion:
             (f"{repr(particle)}.antiparticle returned "
              f"{particle.antiparticle}, whereas ~{repr(particle)} "
              f"returned {~particle}.")
+
+
+@pytest.mark.parametrize('arg', ['e-', 'D+', 'Fe 25+', 'H-', 'mu+'])
+def test_particleing_a_particle(arg):
+    """
+    Test that Particle(arg) is equal to Particle(Particle(arg)), but is
+    not the same object in memory.
+    """
+    particle = Particle(arg)
+
+    assert particle == Particle(particle), (
+        f"Particle({repr(arg)}) does not equal "
+        f"Particle(Particle({repr(arg)}).")
+
+    assert particle == Particle(Particle(Particle(particle))), (
+        f"Particle({repr(arg)}) does not equal "
+        f"Particle(Particle(Particle({repr(arg)})).")
+
+    assert particle is not Particle(particle), (
+        f"Particle({repr(arg)}) is the same object in memory as "
+        f"Particle(Particle({repr(arg)})), when it is intended to "
+        f"create a new object in memory (e.g., a copy).")

@@ -10,19 +10,8 @@ followed during the development of PlasmaPy and affiliated packages.
 Code written for PlasmaPy must be compatible with Python 3.6 and
 later. Python 2 is not supported by PlasmaPy.
 
-PlasmaPy requires
-
-* Python 3.6 or later
-* Astropy 2.0 or later
-* NumPy 1.13 or later
-* SciPy 0.19 or later
-* matplotlib 2.0 or later
-* Cython
-* mpmath 1.0 or later
-* lmfit 0.9.7 or later
-
 Obtaining PlasmaPy source code
-=========================================
+==============================
 
 After creating your GitHub account, go to the [main
 repository](https://github.com/PlasmaPy/PlasmaPy) and **fork a copy of
@@ -80,6 +69,9 @@ To set up a development environment for PlasmaPy, `the Anaconda
 distribution <https://www.anaconda.com/download/>`_ is strongly
 recommended.
 
+Activate Anaconda
+~~~~~~~~~~~~~~~~~
+
 After installing Anaconda, launch any conda environment. By default,
 conda installs a `root` environment, which you should be able to
 activate via
@@ -89,13 +81,26 @@ activate via
   source /home/user/anaconda3/bin/activate root
 
 where `/home/user/anaconda3/` can be swapped to wherever your anaconda
-installation was resides.
+installation resides.
 
-On Windows, the way to do this is via running `Anaconda Prompt` from the
-Start Menu. `Git Bash` may also work if you have added Anaconda to `PATH`.
+On `newer versions of Anaconda <https://conda.io/docs/release-notes
+.html#recommended-change-to-enable-conda-in-your-shell>`_ the
+recommended activation process has changed to:
 
-Afterwards, enter PlasmaPy's repository root directory and execute the
-following:
+.. code-block:: bash
+
+  . /home/user/anaconda3/etc/profile.d/conda.sh
+  conda activate
+
+.. note::
+    On Windows, the way to do this is via running `Anaconda Prompt` from the
+    Start Menu. `Git Bash` may also work if you have added Anaconda to `PATH`.
+
+Create your environment
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Having activated Anaconda, enter PlasmaPy's repository root directory and
+create an environment with our suggested packages by executing the following:
 
 .. code-block:: bash
 
@@ -107,7 +112,15 @@ You may now enter the environment via
 
     source activate plasmapy
 
-On Windows, skip the `source` part of the previous command.
+.. note::
+
+    On Windows, skip the `source` part of the previous command.
+
+In newer Conda versions, the command to run is
+
+.. code-block:: bash
+
+    conda activate plasmapy
 
 Virtualenv
 ----------
@@ -190,18 +203,51 @@ for every new shell session.
 
 Installing your own dev version
 ===============================
-To be able to import PlasmaPy from your source version:
+To be able to import PlasmaPy from your source version, enter the repository
+root and use one of
 
 .. code-block:: bash
 
-  pip install -e {plasmapy-repository-root}
+  python setup.py develop
+  pip install -e .
 
-Where `{plasmapy-repository-root}` is the directory resulting from
-`git clone`.
+.. note::
 
-If you are not working within a virtual environment, this may end in a
-permission error - this can be avoided via also adding the `--user`
-flag.
+    If you are not working within a virtual environment, this may end in a
+    permission error - this can be avoided via also adding the `--user`
+    flag. But seriously, use a virtual environment and spare yourself the trouble.
+
+Either one of these commands will create a soft link to your cloned repository.
+Any changes in Python code you make there will be there when you `import
+plasmapy` from an interactive session. The exception is Cython code.
+
+Working with Cython code
+========================
+
+.. note::
+     
+    We are still figuring this part out. Contributions are very welcome!
+
+Cython poses a whole new set of issues for code development.  When writing
+Cython code, you need to recompile your current files for your changes to take
+effect. This is accomplished, to the best of our current understanding , via
+`python setup.py build_ext -i`, as recommended by the Cython development guide
+and as supported by the Astropy package template in `astropy_helpers`. This
+places compiled `.c` or `.cpp` sources and `.so` compiled libraries in the same
+location as your original `.pxd` and `.py` sources - this plays well with import
+statements.
+
+Note that `python setup.py install` or `pip install` will also build extensions.
+
+For now, the `.c` and `.cpp` sources are not included with the source code, meaning
+that they are compiled on installation. This solution is what we got working
+for distribution, but may change in the future.
+
+The safest bet for running tests and checking documentation is using `python
+setup.py test` and `python setup.py build_docs` provided by `astropy_helpers`.
+These commands copy the entire code base into a temporary directory for
+isolation and build all Cython extensions there before running tests and
+documenation builds.
 
 Coding Style
 ============
