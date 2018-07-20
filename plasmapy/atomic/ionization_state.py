@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Tuple, Union
 import astropy.units as u
 import collections
 import numpy as np
-
+import numbers
 from plasmapy.atomic.atomic import atomic_number
 from plasmapy.atomic.particle_class import Particle
 from plasmapy.atomic.particle_input import particle_input
@@ -32,7 +32,7 @@ class IonizationState:
     ----------
     particle: str, integer, or ~plasmapy.atomic.Particle
         A `str` or `~plasmapy.atomic.Particle` instance representing
-        an element or isotope, or an `int` representing the atomic
+        an element or isotope, or an integer representing the atomic
         number of an element.
 
     ionic_fractions: ~numpy.ndarray, list, tuple, or ~astropy.units.Quantity
@@ -117,8 +117,6 @@ class IonizationState:
             self.n_e = n_e
             self.ionic_fractions = ionic_fractions
 
-            # This functionality has not yet been implemented:
-
             # if self._ionic_fractions is None and self.T_e is not None:
             #     self.equilibrate()
 
@@ -132,7 +130,7 @@ class IonizationState:
         if isinstance(value, slice):
             raise TypeError("IonizationState instances cannot be sliced.")
 
-        if isinstance(value, (int, np.integer)) and 0 <= value <= self.atomic_number:
+        if isinstance(value, numbers.Integral) and 0 <= value <= self.atomic_number:
             result = State(value, self.ionic_fractions[value], self.ionic_symbols[value])
         else:
             if not isinstance(value, Particle):
@@ -344,11 +342,11 @@ class IonizationState:
                 "Insufficient information to return number densities.")
 
     @number_densities.setter
-    def number_densities(self, value):
+    def number_densities(self, value: u.m ** -3):
         if self._n_elem is not None or self._n_e is not None:
             raise AtomicError
         if not isinstance(value, u.Quantity):
-            raise AtomicError
+            raise TypeError
         if np.any(value < 0):
             raise AtomicError("Number densities cannot be negative.")
         try:
@@ -392,7 +390,8 @@ class IonizationState:
         Set the ionic fractions to collisional ionization equilibrium
         for temperature `T_e`.  Not implemented.
         """
-        self.ionic_fractions = self.equil_ionic_fractions
+        # self.ionic_fractions = self.equil_ionic_fractions
+        raise NotImplementedError
 
     @property
     def atomic_number(self) -> int:
@@ -413,7 +412,7 @@ class IonizationState:
         return self._particle.isotope
 
     @property
-    def base_particle(self) -> str:
+    def atom(self) -> str:
         """
         Return the element or isotope corresponding to this
         `~plasmapy.atomic.IonizationState` instance.
@@ -449,25 +448,20 @@ class IonizationState:
 
     @property
     def Z_rms(self) -> np.float64:
+        """Return the root mean square integer charge."""
         return np.sqrt(np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1) ** 2))
 
-
-    def is_normalized(self, tol=None) -> bool:
+    def is_normalized(self, tol: numbers.Integral = None) -> bool:
         """
         Return `True` if the sum of the ionization fractions is equal to
         one within the allowed tolerance, and `False` otherwise.
         """
-
         tol = tol if tol is not None else self.tol
-
-        if not isinstance(tol, (float, int, np.integer)):
+        if not isinstance(tol, numbers.Real):
             raise TypeError("tol must be an int or float.")
-
-        if tol < 0 or tol > 1:
-            raise ValueError("tol must be between 0 and 1, inclusive.")
-
+        if not 0 <= tol < 1:
+            raise ValueError("Need 0 <= tol < 1.")
         total = np.sum(self._ionic_fractions)
-
         return np.isclose(total, 1, atol=tol, rtol=0)
 
     def normalize(self):
@@ -478,16 +472,16 @@ class IonizationState:
         self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)
 
     @property
-    def tol(self) -> float:
+    def tol(self) -> numbers.Real:
         """Return the absolute tolerance for comparisons."""
         return self._tol
 
     @tol.setter
-    def tol(self, atol):
+    def tol(self, atol: numbers.Real):
         """Set the absolute tolerance for comparisons."""
-        if not isinstance(atol, (float, int, np.integer)):
-            raise TypeError("The attribute tol must be a float or an int.")
-        if 0 <= atol <= 1.0:
+        if not isinstance(atol, numbers.Real):
+            raise TypeError("The attribute tol must be a real number.")
+        if 0 <= atol < 1:
             self._tol = atol
         else:
-            raise ValueError("Need 0 <= tol <= 1.")
+            raise ValueError("Need 0 <= tol < 1.")

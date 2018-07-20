@@ -4,12 +4,13 @@ from typing import Dict, List, Optional, Tuple, Union
 import astropy.units as u
 import collections
 import numpy as np
+import numbers
 from plasmapy.atomic.atomic import atomic_number
 from plasmapy.atomic.particle_class import Particle
 from plasmapy.atomic.symbols import particle_symbol
 from plasmapy.utils import (AtomicError, ChargeError, InvalidParticleError, check_quantity)
-
 from plasmapy.atomic.ionization_state import (State, IonizationState, _number_density_errmsg)
+
 
 class IonizationStates:
     """
@@ -226,7 +227,7 @@ class IonizationStates:
                     tol=self.tol,
                 )
             else:
-                if not isinstance(int_charge, (int, np.integer)):
+                if not isinstance(int_charge, numbers.Integral):
                     raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
                 elif not 0 <= int_charge <= atomic_number(particle):
                     raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
@@ -438,7 +439,7 @@ class IonizationStates:
     @tol.setter
     def tol(self, atol):
         """Set the absolute tolerance for comparisons."""
-        if not isinstance(atol, (float, int, np.integer)):
+        if not isinstance(atol, numbers.Real):
             raise TypeError("The attribute tol must be a float or an int.")
         if 0 <= atol <= 1.0:
             self._tol = atol

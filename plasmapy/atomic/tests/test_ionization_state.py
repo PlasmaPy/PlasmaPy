@@ -203,13 +203,13 @@ class Test_IonizationState:
 
         Identifications = collections.namedtuple(
             "Identifications",
-            ["element", "isotope", "base_particle", "atomic_number"],
+            ["element", "isotope", "atom", "atomic_number"],
         )
 
         expected_identifications = Identifications(
             self.instances[test_name].element,
             self.instances[test_name].isotope,
-            self.instances[test_name].base_particle,
+            self.instances[test_name].atom,
             self.instances[test_name].atomic_number,
         )
 
@@ -246,9 +246,9 @@ class Test_IonizationState:
         instances.
         """
         instance = self.instances[test_name]
-        base_particle = instance.base_particle
+        atom = instance.atom
         nstates = instance.atomic_number + 1
-        expected_particles = [Particle(base_particle, Z=Z) for Z in range(nstates)]
+        expected_particles = [Particle(atom, Z=Z) for Z in range(nstates)]
         assert expected_particles == instance.particles, (
             f"The expected Particle instances of {expected_particles} "
             f"are not all equal to the IonizationState particles of "
