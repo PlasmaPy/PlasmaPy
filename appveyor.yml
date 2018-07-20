@@ -8,6 +8,8 @@ environment:
     CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\ci-helpers\\appveyor\\windows_sdk.cmd"
     CONDA_DEPENDENCIES: "cython"
     NUMPY_VERSION: "stable"
+    CONDA_ALL_DEPENDENCIES: "Cython astropy scipy h5py matplotlib mpmath pytest"
+    PIP_DEPENDENCIES: "lmfit colorama codecov"
 
   matrix:
     - PYTHON_VERSION: "3.6"
