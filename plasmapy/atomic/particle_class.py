@@ -5,6 +5,7 @@ import warnings
 from typing import (Union, Set, Tuple, List, Optional)
 import collections
 import plasmapy.utils.roman as roman
+import numbers
 
 import astropy.units as u
 import astropy.constants as const
@@ -1328,3 +1329,136 @@ class Particle:
 
         """
         return self.is_category('ion')
+
+    def ionize(self, n: numbers.Integral = 1):
+        """
+        Remove an electron from a `~plasmapy.atomic.Particle` object. If
+        a positive integer `n` is specified, then remove `n` electrons
+        instead.
+
+        Parameters
+        ----------
+        n : positive integer
+            The number of electrons to remove from the
+            `~plasmapy.atomic.Particle` object.
+
+        Returns
+        -------
+        self : ~plasmapy.atomic.Particle
+            The new `~plasmapy.atomic.Particle` object after being
+            ionized.
+
+        Raises
+        ------
+        ~plasmapy.atomic.InvalidElementError
+            If the `~plasampy.atomic.Particle` is not an element.
+
+        ~plasmapy.atomic.ChargeError
+            If no charge information for the `~plasmapy.atomic.Particle`
+            object is specified.
+
+        ~plasmapy.atomic.InvalidIonError
+            If there are less than `n` remaining bound electrons.
+
+        ValueError
+            If `n` is not positive.
+
+        Examples
+        --------
+        >>> atom = Particle("Fe 6+")
+        >>> atom.ionize()
+        Particle("Fe 7+")
+        >>> atom.ionize(2)
+        Particle("Fe 9+")
+
+        """
+        if not self.element:
+            raise InvalidElementError(
+                f"Cannot ionize {self.particle} because it is not a "
+                f"neutral atom or ion.")
+        if not self.is_category(any_of={"charged", "uncharged"}):
+            raise ChargeError(
+                f"Cannot ionize {self.particle} because its charge "
+                f"is not specified.")
+        if self.integer_charge == self.atomic_number:
+            raise InvalidIonError(
+                f"The particle {self.particle} is already fully "
+                f"ionized and cannot be ionized further.")
+        if not isinstance(n, numbers.Integral):
+            raise TypeError("n must be a positive integer.")
+        if n <= 0:
+            raise ValueError("n must be a positive number.")
+
+        base_particle = self.isotope if self.isotope else self.element
+        new_integer_charge = self.integer_charge + n
+
+        self.__init__(base_particle, Z=new_integer_charge)
+
+        # Returning self here allows comparisons like
+        # Particle("Fe 5+").ionize() == Particle("Fe 6+")
+
+        return self
+
+    def recombine(self, n: numbers.Integral = 1):
+        """
+        Add an electron into a `~plasmapy.atomic.Particle` object
+        through recombination.  If a positive integer `n` is specified,
+        then remove `n` electrons instead.
+
+        Parameters
+        ----------
+        n : positive integer
+            The number of electrons to recombine into the
+            `~plasmapy.atomic.Particle` object.
+
+        Returns
+        -------
+        self : ~plasmapy.atomic.Particle
+            The new `~plasmapy.atomic.Particle` object after
+            recombination.
+
+        Raises
+        ------
+        ~plasmapy.atomic.InvalidElementError
+            If the `~plasampy.atomic.Particle` is not an element.
+
+        ~plasmapy.atomic.ChargeError
+            If no charge information for the `~plasmapy.atomic.Particle`
+            object is specified.
+
+        ValueError
+            If `n` is not positive.
+
+        Examples
+        --------
+        >>> atom = Particle("alpha")
+        >>> atom.recombine()
+        Particle("He-4 1+")
+        >>> iron_ion = Particle("Fe 26+")
+        >>> iron_ion.recombine(8)
+        Particle("Fe 18+")
+
+        """
+
+        if not self.element:
+            raise InvalidElementError(
+                f"{self.particle} cannot undergo recombination because "
+                f"it is not a neutral atom or ion.")
+        if not self.is_category(any_of={"charged", "uncharged"}):
+            raise ChargeError(
+                f"{self.particle} cannot undergo recombination because "
+                f"its charge is not specified.")
+        if not isinstance(n, numbers.Integral):
+            raise TypeError("n must be a positive integer.")
+        if n <= 0:
+            raise ValueError("n must be a positive number.")
+
+        base_particle = self.isotope if self.isotope else self.element
+        new_integer_charge = self.integer_charge - n
+
+        self.__init__(base_particle, Z=new_integer_charge)
+
+        # Returning self here allows comparisons like
+        # Particle("Fe 5+").recombine() == Particle("Fe 4+")
+
+        return self
