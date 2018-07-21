@@ -91,9 +91,7 @@ class Test_IonizationState:
             inputted_fractions = inputted_fractions.to(u.m ** -3)
             inputted_fractions = (inputted_fractions / inputted_fractions.sum()).value
 
-        try:
-            assert np.allclose(instance.ionic_fractions, inputted_fractions)
-        except:
+        if not np.allclose(instance.ionic_fractions, inputted_fractions):
             raise RunTestError(f"Mismatch in ionic fractions for test {test_name}")
 
     def test_equality1(self):

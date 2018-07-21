@@ -49,7 +49,7 @@ tests = {
     'n': {
         'inputs': {'H': [1, 0], 'He': [1, 0, 0]},
         'abundances': {'H': 1, 'He': 0.1},
-        'n': 1e9 * u.cm **-3,
+        'n': 1e9 * u.cm ** -3,
     },
 
     'T_e and n': {
@@ -142,7 +142,7 @@ class Test_IonizationStates:
         after_sorting = sorted(before_sorting)
 
         assert before_sorting == after_sorting, (
-            f"Elements/isotopes are not sorted for test='{test}':\n" 
+            f"Elements/isotopes are not sorted for test='{test}':\n"
             f"  before_sorting = {before_sorting}\n"
             f"   after_sorting = {after_sorting}\n"
             f"where above is (atomic_number, mass_number if isotope else 0)")
@@ -164,8 +164,6 @@ class Test_IonizationStates:
 
                 if isinstance(expected, u.Quantity):
                     expected = np.array(expected.value / np.sum(expected.value))
-
-                #if not isinstance(expected, np.ndarray)
 
                 actual = self.instances[test].ionic_fractions[element]
 
@@ -207,11 +205,11 @@ class Test_IonizationStates:
             try:
                 actual = instance[key].ionic_fractions
             except Exception as exc:
-                raise AtomicError(f"Unable to get item {key} in test={test}.")
+                raise AtomicError(f"Unable to get item {key} in test={test}.") from exc
 
             try:
                 if all(np.isnan(expected)):
-                    test_passed=True
+                    test_passed = True
                 else:
                     test_passed = np.allclose(expected, actual)
             except Exception:
@@ -277,7 +275,6 @@ def test_IonizationStates_abundances():
     abundances = {'H': 1.0, 'He': 0.1}
     elements = abundances.keys()
 
-
     log_abundances = {element: np.log10(abundances[element]) for element in elements}
 
     instance_nolog = IonizationStates(inputs, abundances=abundances)
@@ -337,6 +334,7 @@ def test_setitem():
     states['H'] = new_states
     assert np.allclose(states['H'].ionic_fractions, new_states)
 
+
 @pytest.mark.parametrize(
     'new_states,expected_exception',
     [
@@ -362,7 +360,7 @@ class Test_IonizationStates:
 
         cls.expected_densities = {
             'H': np.array([8.7, 1.3]) * u.m ** -3,
-            'He': np.array([0.2004 , 0.30895, 0.32565]) * u.m ** -3
+            'He': np.array([0.2004, 0.30895, 0.32565]) * u.m ** -3
         }
 
         cls.expected_electron_density = 2.26025 * u.m ** -3
@@ -382,6 +380,3 @@ class Test_IonizationStates:
             f"Mismatch in number densities for {elem}\n"
             f"Calculated = {self.states.number_densities[elem]}\n"
             f"Expected   = {self.expected_electron_density}")
-
-
-
