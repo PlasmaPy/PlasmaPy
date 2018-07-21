@@ -40,8 +40,8 @@ class IonizationStates:
         and ions) in units of inverse volume.
 
     n: ~astropy.units.Quantity, optional
-        The number density of neutral and ionized hydrogen atoms.  May
-        only be used if the ionization state of hydrogen is included.
+        The number density scaling factor.  The number density of an
+        element will be the product of its abundance and `n`.
 
     Raises
     ------
@@ -471,15 +471,36 @@ class IonizationStates:
             self.ionic_fractions[particle] = self.ionic_fractions[particle] / tot
 
     @property
-    @u.quantity_input
-    def number_densities(self) -> u.m ** -3:
-        raise NotImplementedError
+    def number_densities(self) -> Dict:
+        """
+        Return a `dict` containing the number densities for element or
+        isotope.
+        """
+        # TODO: Add tests!
+
+        try:
+            number_densities = {
+                elem: self.n * self.abundances[elem] * self.ionic_fractions[elem]
+                for elem in self.elements}
+        except Exception as exc:
+            raise AtomicError("Unable to calculate ionic number densities.") from exc
+        return number_densities
 
     @property
     @u.quantity_input
     def n_e(self) -> u.m ** -3:
         """Return the electron number density, assuming quasineutrality."""
-        raise NotImplementedError
+
+        number_densities = self.number_densities
+        n_e = 0.0 * u.m ** -3
+
+        for elem in self.elements:
+            atomic_numb = atomic_number(elem)
+            number_of_ionization_states = atomic_numb + 1
+            integer_charges = np.linspace(0, atomic_numb, number_of_ionization_states)
+            n_e += np.sum(number_densities[elem] * integer_charges)
+
+        return n_e
 
     @property
     @u.quantity_input

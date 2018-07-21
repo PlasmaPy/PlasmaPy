@@ -190,8 +190,6 @@ class Test_IonizationStates:
         if errmsg:
             raise AtomicError(errmsg)
 
-#    @pytest.mark.parametrize('test', [test for test in tests if ])
-
     @pytest.mark.parametrize('test', test_names2)
     def test_getitem_element(self, test):
         """Test that __get_item__ returns an IonizationState instance"""
@@ -210,8 +208,6 @@ class Test_IonizationStates:
                 actual = instance[key].ionic_fractions
             except Exception as exc:
                 raise AtomicError(f"Unable to get item {key} in test={test}.")
-
-
 
             try:
                 if all(np.isnan(expected)):
@@ -353,5 +349,39 @@ def test_setitem_errors(new_states, expected_exception):
     states = IonizationStates({'H': [0.9, 0.1], 'He': [0.5, 0.4999, 1e-4]})
     with pytest.raises(expected_exception):
         states['H'] = new_states
+
+
+class Test_IonizationStates:
+
+    @classmethod
+    def setup_class(cls):
+
+        cls.initial_ionfracs = {'H': np.array([0.87, 0.13]), 'He': np.array([0.24, 0.37, 0.39])}
+        cls.abundances = {'H': 1.0, 'He': 0.0835}
+        cls.n = 10 * u.m ** -3
+
+        cls.expected_densities = {
+            'H': np.array([8.7, 1.3]) * u.m ** -3,
+            'He': np.array([0.2004 , 0.30895, 0.32565]) * u.m ** -3
+        }
+
+        cls.expected_electron_density = 2.26025 * u.m ** -3
+        cls.states = IonizationStates(cls.initial_ionfracs, abundances=cls.abundances, n=cls.n)
+
+    def test_electron_density(self):
+        assert np.isclose(self.states.n_e.value, self.expected_electron_density.value), (
+            'Mismatch in electron density calculation:\n'
+            f'Calculated = {self.states.n_e}\n'
+            f'Expected   = {self.expected_electron_density}')
+
+    @pytest.mark.parametrize('elem', ['H', 'He'])
+    def test_number_densities(self, elem):
+        assert np.allclose(
+            self.states.number_densities[elem].value,
+            self.expected_densities[elem].value), (
+            f"Mismatch in number densities for {elem}\n"
+            f"Calculated = {self.states.number_densities[elem]}\n"
+            f"Expected   = {self.expected_electron_density}")
+
 
 
