@@ -1248,17 +1248,17 @@ class Particle:
         """
 
         def become_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
-                """Change the argument into a `set`."""
-                if len(arg) == 0:
-                    return set()
-                if isinstance(arg, set):
-                    return arg
-                if isinstance(arg, str):
-                    return {arg}
-                if isinstance(arg[0], (tuple, list, set)):
-                    return set(arg[0])
-                else:
-                    return set(arg)
+            """Change the argument into a `set`."""
+            if len(arg) == 0:
+                return set()
+            if isinstance(arg, set):
+                return arg
+            if isinstance(arg, str):
+                return {arg}
+            if isinstance(arg[0], (tuple, list, set)):
+                return set(arg[0])
+            else:
+                return set(arg)
 
         if category_tuple != () and require != set():  # coveralls: ignore
             raise AtomicError(
@@ -1330,23 +1330,37 @@ class Particle:
         """
         return self.is_category('ion')
 
-    def ionize(self, n: numbers.Integral = 1):
+    def ionize(self, n: numbers.Integral = 1, inplace: bool = False):
         """
-        Remove an electron from a `~plasmapy.atomic.Particle` object. If
-        a positive integer `n` is specified, then remove `n` electrons
-        instead.
+        Create a new `~plasmapy.atomic.Particle` instance corresponding
+        to the current `~plasmapy.atomic.Particle` after being ionized
+        `n` times.
+
+        If `inplace` is `False` (default), then return the ionized
+        `~plasmapy.atomic.Particle`.
+
+        If `inplace` is `True`, then replace the current
+        `~plasmapy.atomic.Particle` with the newly ionized
+        `~plasmapy.atomic.Particle`.
 
         Parameters
         ----------
         n : positive integer
-            The number of electrons to remove from the
-            `~plasmapy.atomic.Particle` object.
+            The number of bound electrons to remove from the
+            `~plasmapy.atomic.Particle` object.  Defaults to `1`.
+
+        inplace : bool, optional
+            If `True`, then replace the current
+            `~plasmapy.atomic.Particle` instance with the newly ionized
+            `~plasmapy.atomic.Particle`.
 
         Returns
         -------
-        self : ~plasmapy.atomic.Particle
-            The new `~plasmapy.atomic.Particle` object after being
-            ionized.
+        particle : ~plasmapy.atomic.Particle
+            A new `~plasmapy.atomic.Particle` object that has been
+            ionized `n` times relative to the original
+            `~plasmapy.atomic.Particle`.  If `inplace` is `False`,
+            instead return `None`.
 
         Raises
         ------
@@ -1365,11 +1379,12 @@ class Particle:
 
         Examples
         --------
-        >>> atom = Particle("Fe 6+")
-        >>> atom.ionize()
+        >>> Particle("Fe 6+").ionize()
         Particle("Fe 7+")
-        >>> atom.ionize(2)
-        Particle("Fe 9+")
+        >>> helium_particle = Particle("He-4 0+")
+        >>> helium_particle.ionize(n=2, inplace=True)
+        >>> helium_particle
+        Particle("He-4 2+")
 
         """
         if not self.element:
@@ -1392,18 +1407,23 @@ class Particle:
         base_particle = self.isotope if self.isotope else self.element
         new_integer_charge = self.integer_charge + n
 
-        self.__init__(base_particle, Z=new_integer_charge)
+        if inplace:
+            self.__init__(base_particle, Z=new_integer_charge)
+        else:
+            return Particle(base_particle, Z=new_integer_charge)
 
-        # Returning self here allows comparisons like
-        # Particle("Fe 5+").ionize() == Particle("Fe 6+")
-
-        return self
-
-    def recombine(self, n: numbers.Integral = 1):
+    def recombine(self, n: numbers.Integral = 1, inplace=False):
         """
-        Add an electron into a `~plasmapy.atomic.Particle` object
-        through recombination.  If a positive integer `n` is specified,
-        then remove `n` electrons instead.
+        Create a new `~plasmapy.atomic.Particle` instance corresponding
+        to the current `~plasmapy.atomic.Particle` after undergoing
+        recombination `n` times.
+
+        If `inplace` is `False` (default), then return the
+        `~plasmapy.atomic.Particle` that just underwent recombination.
+
+        If `inplace` is `True`, then replace the current
+        `~plasmapy.atomic.Particle` with the `~plasmapy.atomic.Particle`
+        that just underwent recombination.
 
         Parameters
         ----------
@@ -1411,11 +1431,19 @@ class Particle:
             The number of electrons to recombine into the
             `~plasmapy.atomic.Particle` object.
 
+        inplace : bool, optional
+            If `True`, then replace the current
+            `~plasmapy.atomic.Particle` instance with the
+            `~plasmapy.atomic.Particle` that just underwent
+            recombination.
+
         Returns
         -------
-        self : ~plasmapy.atomic.Particle
-            The new `~plasmapy.atomic.Particle` object after
-            recombination.
+        particle : ~plasmapy.atomic.Particle
+            A new `~plasmapy.atomic.Particle` object that has undergone
+            recombination `n` times relative to the original
+            `~plasmapy.atomic.Particle`.  If `inplace` is `False`,
+            instead return `None`.
 
         Raises
         ------
@@ -1431,12 +1459,12 @@ class Particle:
 
         Examples
         --------
-        >>> atom = Particle("alpha")
-        >>> atom.recombine()
-        Particle("He-4 1+")
-        >>> iron_ion = Particle("Fe 26+")
-        >>> iron_ion.recombine(8)
-        Particle("Fe 18+")
+        >>> Particle("Fe 6+").recombine()
+        Particle("Fe 5+")
+        >>> helium_particle = Particle("He-4 2+")
+        >>> helium_particle.recombine(n=2, inplace=True)
+        >>> helium_particle
+        Particle("He-4 0+")
 
         """
 
@@ -1456,9 +1484,7 @@ class Particle:
         base_particle = self.isotope if self.isotope else self.element
         new_integer_charge = self.integer_charge - n
 
-        self.__init__(base_particle, Z=new_integer_charge)
-
-        # Returning self here allows comparisons like
-        # Particle("Fe 5+").recombine() == Particle("Fe 4+")
-
-        return self
+        if inplace:
+            self.__init__(base_particle, Z=new_integer_charge)
+        else:
+            return Particle(base_particle, Z=new_integer_charge)
