@@ -21,8 +21,7 @@ package for plasma physics in the early stages of development.
 Getting Started
 ***************
 
-* `Installing PlasmaPy
-  <https://github.com/PlasmaPy/PlasmaPy/blob/master/INSTALL.md>`_
+* :ref:`install-plasmapy`
 * :ref:`contributing-to-plasmapy`
 * :ref:`plasmapy-code-of-conduct`
 * `PlasmaPy's GitHub repository
