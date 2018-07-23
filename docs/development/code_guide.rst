@@ -13,8 +13,8 @@ later. Python 2 is not supported by PlasmaPy.
 Obtaining PlasmaPy source code
 ==============================
 
-After creating your GitHub account, go to the [main
-repository](https://github.com/PlasmaPy/PlasmaPy) and **fork a copy of
+After creating your GitHub account, go to the `PlasmaPy repository on
+   GitHub <https://github.com/PlasmaPy/plasmapy>`_ and **fork a copy of
 PlasmaPy to your account**.
 
 To access Git commands on Windows, try `Git Bash
@@ -30,8 +30,8 @@ up), then run:
 
   git clone https://github.com/your-username/PlasmaPy.git
 
-SSH is a more secure option, but requires you to [set up an SSH
-key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/)
+SSH is a more secure option, but requires you to `set up an SSH key
+<https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/>`_
 beforehand.  The equivalent SSH command is:
 
 .. code-block:: bash
@@ -65,9 +65,8 @@ and virtualenv, are listed below.
 Conda
 -----
 
-To set up a development environment for PlasmaPy, `the Anaconda
-distribution <https://www.anaconda.com/download/>`_ is strongly
-recommended.
+To set up a development environment for PlasmaPy, we strongly recommend
+the `Anaconda distribution <https://www.anaconda.com/download/>`_.
 
 Activate Anaconda
 ~~~~~~~~~~~~~~~~~
@@ -225,7 +224,7 @@ Working with Cython code
 ========================
 
 .. note::
-     
+
     We are still figuring this part out. Contributions are very welcome!
 
 Cython poses a whole new set of issues for code development.  When writing
@@ -260,7 +259,7 @@ Coding Style
     any departures from the PEP 8 style guide.
 
   * PEP 8 compliance may be checked locally using
-    [pycodestyle](http://pycodestyle.pycqa.org/en/latest/).
+    `pycodestyle <http://pycodestyle.pycqa.org/en/latest/>`_.
 
   * Line lengths should be chosen to maximize the readability and
     elegance of the code.  The maximum line length for Python code in
@@ -408,7 +407,7 @@ Documentation
   using the numpydoc format.
 
 * Docstrings may be checked locally using
-  [pydocstyle](http://www.pydocstyle.org/en/latest/).
+  `pydocstyle <http://www.pydocstyle.org/en/latest/>`_.
 
 * These docstrings should include usage examples.
 
