@@ -21,15 +21,19 @@ package for plasma physics in the early stages of development.
 Getting Started
 ***************
 
-* :ref:`install-plasmapy`
-* :ref:`contributing-to-plasmapy`
-* :ref:`plasmapy-code-of-conduct`
+.. toctree::
+   :maxdepth: 1
+
+   install
+   CONTRIBUTING
+   CODE_OF_CONDUCT
+   about/citation
+
 * `PlasmaPy's GitHub repository
   <https://github.com/PlasmaPy/plasmapy>`_
 * `PlasmaPy website
   <http://www.plasmapy.org/>`_
 * `Using astropy.units <http://docs.astropy.org/en/stable/units/>`_
-* :ref:`citation`
 
 .. _toplevel-user-documentation:
 
