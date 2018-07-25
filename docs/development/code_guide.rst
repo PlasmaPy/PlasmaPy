@@ -8,7 +8,7 @@ This document describes the coding requirements and guidelines to be
 followed during the development of PlasmaPy and affiliated packages.
 
 Code written for PlasmaPy must be compatible with Python 3.6 and
-later. Python 2 is not supported by PlasmaPy.
+later.
 
 Coding Style
 ============
