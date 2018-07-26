@@ -31,7 +31,7 @@ installation:
 Installation
 ============
 
-.. _install-conda:
+.. _create-conda-env:
 
 Creating a conda environment
 ----------------------------
