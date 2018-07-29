@@ -620,8 +620,7 @@ def Maxwellian_speed_2D(v,
 
     .. math::
 
-       f = 2 \pi \vec{v} (\pi v_{Th}^2)^{-1} \exp(-(\vec{v} -
-       \vec{V}_{drift})^2 / v_{Th}^2)
+       f = 2 \pi v (\pi v_{Th}^2)^{-1} \exp(-v^2 / v_{Th}^2)
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
@@ -746,8 +745,7 @@ def Maxwellian_speed_3D(v,
 
     .. math::
 
-       f = 4 \pi \vec{v}^2 (\pi v_{Th}^2)^{-3/2} \exp(-(\vec{v} -
-       \vec{V}_{drift})^2 / v_{Th}^2)
+       f = 4 \pi \left v^{2} (\pi v_{Th}^2)^{-3/2} \exp(-v^{2} / v_{Th}^2)
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
