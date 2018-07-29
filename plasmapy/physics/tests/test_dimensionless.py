@@ -1,12 +1,27 @@
 from plasmapy.physics.dimensionless import (beta)
 
 import astropy.units as u
+import numpy as np
 
 B = 1.0 * u.T
-n_i = 5e19 * u.m ** -3
-T_e = 1e6 * u.K
+n = 5e19 * u.m ** -3
+T = 1e6 * u.K
 
 
-def test_beta():
+def test_beta_dimensionless():
     # Check that beta is dimensionless
-    float(beta(T_e, n_i, B))
+    float(beta(T, n, B))
+
+
+def quantum_theta_dimensionless():
+    # Check that quantum theta is dimensionless
+    float(quantum_theta(T, n))
+
+
+def test_beta_nan():
+    # Check that nans are passed through properly
+    B = np.array([1, np.nan]) * u.T
+    n = np.array([1, 1]) * u.cm**-3
+    T = np.array([1, 1]) * u.K
+    out = beta(T, n, B)
+    assert out[1] == np.nan * u.dimensionless_unscaled
