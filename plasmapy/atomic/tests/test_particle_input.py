@@ -204,7 +204,7 @@ def function_to_test_annotations(particles: Union[Tuple, List], resulting_partic
     if not returned_particle_instances:
         raise AtomicError(
             f"A function decorated by particle_input did not return "
-            f"a tuple of Particle instances for input of "
+            f"a collection of Particle instances for input of "
             f"{repr(particles)}, and instead returned"
             f"{repr(resulting_particles)}.")
 
@@ -262,11 +262,48 @@ def test_list_annotation(particles: Union[Tuple, List]):
     except Exception as exc2:
         raise AtomicError(
             f"Unable to evaluate a function decorated by particle_input"
-            f" with an annotation of (Particle, Particle) for inputs of"
+            f" with an annotation of [Particle] for inputs of"
             f" {repr(particles)}."
         ) from exc2
 
     function_to_test_annotations(particles, resulting_particles)
+
+
+class TestOptionalArgs:
+    def particle_iter(self, particles):
+        return [Particle(particle) for particle in particles]
+
+    def test_optional_particle(self):
+        particle = "He"
+
+        @particle_input
+        def optional_particle(particle: Particle = particle):
+            return particle
+
+        assert optional_particle() == Particle(particle)
+        assert optional_particle("Ne") == Particle("Ne")
+
+    def test_optional_tuple(self):
+        tuple_of_particles = ("Mg", "Al")
+
+        @particle_input
+        def optional_tuple(particles: (Particle, Particle) = tuple_of_particles):
+            return particles
+
+        function_to_test_annotations(optional_tuple(), self.particle_iter(tuple_of_particles))
+        elements = ("C", "N")
+        function_to_test_annotations(optional_tuple(elements), self.particle_iter(elements))
+
+    def test_optional_list(self):
+        list_of_particles = ("Ca", "Ne")
+
+        @particle_input
+        def optional_list(particles: [Particle] = list_of_particles):
+            return particles
+
+        function_to_test_annotations(optional_list(), self.particle_iter(list_of_particles))
+        elements = ("Na", "H", "C")
+        function_to_test_annotations(optional_list(elements), self.particle_iter(elements))
 
 
 def test_invalid_number_of_tuple_elements():
