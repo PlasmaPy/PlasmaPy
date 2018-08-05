@@ -144,7 +144,8 @@ Creating a conda environment
 We highly recommend installing PlasmaPy from a Python environtment
 created using `conda <https://conda.io/docs/>`_.  Conda allows us to
 create and switch between Python environments that are isolated from
-each other and the system installation.
+each other and the system installation, while also simplifying
+distribution of binary and compiled dependencies.
 
 After `installing conda <https://conda.io/docs/user-guide/install/>`_,
 
