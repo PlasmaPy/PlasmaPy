@@ -13,7 +13,7 @@ PlasmaPy Documentation
 
 `PlasmaPy <http://www.plasmapy.org/>`_ is an open source
 community-developed core `Python <https://www.python.org/>`_ 3.6+
-package for plasma physics in the early stages of development.
+package for plasma physics currently under development.
 
 .. _toplevel-getting-started:
 
