@@ -21,27 +21,36 @@ class IonizationStates:
     inputs: `list`, `tuple`, or `dict`
         A `list` or `tuple` of elements or isotopes (if `T_e` is
         provided); a `list` of `~plasmapy.atomic.IonizationState`
-        instances; or a `dict` with elements or isotopes as keys and
-        a `~numpy.ndarray` of ionic fractions as the values.
+        instances; a `dict` with elements or isotopes as keys and
+        a `~numpy.ndarray` of ionic fractions as the values; or a `dict`
+        with elements or isotopes as keys and `~astropy.units.Quantity`
+        instances with units of number density.
 
-    T_e: `~astropy.units.Quantity`
+    T_e: `~astropy.units.Quantity`, optional, keyword-only
         The electron temperature in units of temperature or thermal
         energy per particle.
 
-    abundances: `dict` or `str`, optional
+    equilibrate: `bool`, optional, keyword-only
+        Set the ionic fractions to the estimated collisional ionization
+        equilibrium.  Not implemented.
+
+    abundances: `dict` or `str`, optional, keyword-only
         The relative abundances of each element in the plasma.
 
-    log_abundances: `dict`, optional
+    log_abundances: `dict`, optional, optional, keyword-only
         The base 10 logarithm of the relative abundances of each element
         in the plasma.
 
-    number_densities: `dict`, optional
+    number_densities: `dict`, optional, keyword-only
         The number densities of elements (including both neutral atoms
         and ions) in units of inverse volume.
 
-    n: ~astropy.units.Quantity, optional
+    n: ~astropy.units.Quantity, optional, keyword-only
         The number density scaling factor.  The number density of an
         element will be the product of its abundance and `n`.
+
+    kappa: optional, keyword-only
+        The value of kappa for a kappa distribution function.
 
     Raises
     ------
@@ -50,12 +59,16 @@ class IonizationStates:
 
     Examples
     --------
-        # TODO: Include examples
+    >>> from plasmapy.atomic import IonizationStates
+    >>> solar_corona = IonizationStates(['H', 'He', 'Fe'])
 
     Notes
     -----
-    Exactly one of `abundances`, `log_abundances`, and
-    `number_densities` must be specified.
+    No more than one of `abundances`, `log_abundances`, and
+    `number_densities` may be specified.
+
+    Collisional ionization equilibrium is based on atomic data that
+    has relative errors of order 20%.
 
     """
 
@@ -68,11 +81,13 @@ class IonizationStates:
             inputs,
             *,
             T_e=None,
+            equilibrate=None,
             abundances=None,
             log_abundances=None,
             n=None,
-            tol=1e-15):
-        """Initialize a `~plasmapy.atomic.IonizationStates` instance."""
+            tol=1e-15,
+            kappa=None):
+        """Instantiate a `~plasmapy.atomic.IonizationStates` instance."""
 
         self._pars = collections.defaultdict(lambda: None)
         self.T_e = T_e
@@ -338,9 +353,13 @@ class IonizationStates:
             self._elements = elems
 
     @property
-    def abundances(self) -> Dict:
-        if self._pars['abundances'] is None:
-            raise AtomicError("No abundances are available.")
+    def abundances(self) -> Optional[Dict]:
+        """
+        Return the elemental abundances
+        """
+
+#        if self._pars['abundances'] is None:
+#            raise AtomicError("No abundances are available.")
         return self._pars['abundances']
 
     @abundances.setter
@@ -391,7 +410,7 @@ class IonizationStates:
             self._pars['abundances'] = new_abundances_dict
 
     @property
-    def log_abundances(self):
+    def log_abundances(self) -> Optional[Dict]:
         if self._pars['abundances'] is not None:
             log_abundances_dict = {}
             for key in self.abundances.keys():
@@ -401,7 +420,7 @@ class IonizationStates:
             raise AtomicError("No abundances are available.")
 
     @log_abundances.setter
-    def log_abundances(self, value):
+    def log_abundances(self, value: Optional[Dict]):
 
         if value is not None:
             try:
@@ -431,24 +450,47 @@ class IonizationStates:
                     raise AtomicError("The electron temperature cannot be negative.")
                 self._pars['T_e'] = temp
 
-    def equilibrate(self, T_e=None):
+    @property
+    def kappa(self):
+        return self._kappa
+
+    @kappa.setter
+    def kappa(self, value: ):
+
+    def equilibrate(self, T_e=None, elements='all', kappa=None):
         """
-        Set the ionic fractions to collisional ionization equilibrium
-        for the temperature `T_e` if specified
+        Set the ionic fractions to collisional ionization equilibrium.
+        Not implemented.
+
+        The electron temperature used to calculate the new equilibrium
+        ionic fractions will be the argument `T_e`, if given. Otherwise,
+        the
+
+        The new equilibrium ionic fractions will correspond to the
+        argument `T_e` (if it is given) or the
+
+        , or to the attribute `T_e` if it is not
+        given
+
+
+        If the argument `T_e` is given, then the equilibrium ionic
+        fractions will correspond to that value.  Otherwise, if the
+        attribute `T_e` is set for this
+        `~plasmapy.atomic.IonizationStates` instance, then the equi
+
 
         Parameters
         ----------
-        T_e : ~astropy.units.Quantity
+        T_e : ~astropy.units.Quantity, optional
             The electron temperature.
 
+        elements : `list`, `tuple`, or `str`, optional
+            The elements to be equilibrated. If `elements` is `'all'`
+            (default), then all elements will be equilibrated.
+
+
         """
-        if T_e is not None:
-            raise NotImplementedError
-        elif self._T_e is not None:
-            raise NotImplementedError
-        else:
-            raise AtomicError(
-                "The electron temperature must be specified for the ")
+        raise NotImplementedError
 
     @property
     def tol(self) -> numbers.Real:

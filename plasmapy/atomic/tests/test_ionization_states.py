@@ -39,6 +39,8 @@ tests = {
 
     'just H': {
         'inputs': {'H': [0.1, 0.9]},
+        'T_e': None,
+        'n': None,
     },
 
     'H acceptable error': {
@@ -72,7 +74,7 @@ tests = {
     },
 
     'just elements': {
-        'inputs': ['H', 'He'],
+        'inputs': ['O', 'C', 'H', 'Fe', 'Ar'],
     },
 }
 
@@ -232,10 +234,7 @@ class Test_IonizationStates:
                 actual = instance[particle, int_charge].ionic_fraction
                 expected = instance.ionic_fractions[particle][int_charge]
                 # We only need to check if one is broken
-#                if not (all(np.isnan(actual)) and all(np.isnan(expected))):
-            if np.isnan(actual) and np.isnan(expected):
-                continue
-            else:
+            if not np.isnan(actual) and np.isnan(expected):
                 assert np.isclose(actual, expected), (
                     f"Indexing broken for:\n"
                     f"       test = '{test}'\n"
@@ -328,8 +327,8 @@ def test_execeptions(test):
 
 
 def test_setitem():
+    # TODO: parametrize this
     states = IonizationStates({'H': [0.9, 0.1], 'He': [0.5, 0.4999, 1e-4]})
-
     new_states = [0.0, 1.0]
     states['H'] = new_states
     assert np.allclose(states['H'].ionic_fractions, new_states)
