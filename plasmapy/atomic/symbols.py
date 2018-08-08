@@ -92,7 +92,7 @@ def atomic_symbol(element: Particle) -> str:
 
 
 @particle_input
-def isotope_symbol(isotope: Particle, mass_numb: int = None) -> str:
+def isotope_symbol(isotope: Particle, mass_numb: numbers.Integral = None) -> str:
     """
     Return the symbol representing an isotope.
 
@@ -151,7 +151,7 @@ def isotope_symbol(isotope: Particle, mass_numb: int = None) -> str:
 
 
 @particle_input(require="element", any_of=('charged', 'uncharged'))
-def ionic_symbol(particle: Particle, mass_numb: int = None, Z: int = None) -> str:
+def ionic_symbol(particle: Particle, mass_numb: numbers.Integral = None, Z: numbers.Integral = None) -> str:
     """
     Return the ionic symbol of an ion or neutral atom.
 
@@ -217,7 +217,7 @@ def ionic_symbol(particle: Particle, mass_numb: int = None, Z: int = None) -> st
 
 
 @particle_input
-def particle_symbol(particle: Particle, mass_numb: int = None, Z: int = None) -> str:
+def particle_symbol(particle: Particle, mass_numb: numbers.Integral = None, Z: numbers.Integral = None) -> str:
     """
     Return the symbol of a particle.
 

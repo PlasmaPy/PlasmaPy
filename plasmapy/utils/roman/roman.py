@@ -15,6 +15,7 @@ https://www.python.org/download/releases/2.1.1/license/
 import re
 import numpy as np
 import typing
+import numbers
 
 
 __all__ = [
@@ -77,7 +78,7 @@ _romanNumeralPattern = re.compile("""
     """, re.VERBOSE)
 
 
-def to_roman(n: typing.Union[int, np.integer]) -> str:
+def to_roman(n: typing.Union[numbers.Integral, np.integer]) -> str:
     """
     Convert an integer to a Roman numeral.
 
@@ -112,7 +113,7 @@ def to_roman(n: typing.Union[int, np.integer]) -> str:
     'MMDXXV'
 
     """
-    if not isinstance(n, (int, np.integer)):
+    if not isinstance(n, (numbers.Integral, np.integer)):
         raise TypeError(f"{n} cannot be converted to a Roman numeral.")
     if not (0 < n < 5000):
         raise OutOfRangeError("Number is out of range (need 0 < n < 5000)")
@@ -125,7 +126,7 @@ def to_roman(n: typing.Union[int, np.integer]) -> str:
     return result
 
 
-def from_roman(s: str) -> int:
+def from_roman(s: str) -> numbers.Integral:
     """
     Convert a Roman numeral to an integer.
 
