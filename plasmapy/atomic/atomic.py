@@ -308,7 +308,7 @@ def isotopic_abundance(isotope: Particle, mass_numb: numbers.Integral = None) ->
 
 
 @particle_input(any_of={'charged', 'uncharged'})
-def Integer_charge(particle: Particle) -> numbers.Integral:
+def integer_charge(particle: Particle) -> numbers.Integral:
     """Return the integer charge of a particle.
 
     Parameters
