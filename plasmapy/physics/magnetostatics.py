@@ -5,6 +5,7 @@ as first raised in issue #100.
 
 import abc
 
+import numbers
 import numpy as np
 from astropy import units as u, constants
 from scipy.special import roots_legendre
