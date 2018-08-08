@@ -5,6 +5,7 @@ and numbers.
 
 from .particle_class import Particle
 from .particle_input import particle_input
+import numbers
 
 # The @particle_input decorator takes the inputs for a function or
 # method and passes through the corresponding instance of the Particle
