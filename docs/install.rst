@@ -31,7 +31,7 @@ Installation
 
 .. note::
 
-   We recommend that new users :ref:`create-conda-env`
+   We recommend that new users :ref:`create-conda-env`.
 
 .. _install-pip:
 
@@ -45,7 +45,6 @@ run
 .. code:: bash
 
    pip install plasmapy
-
 
 .. _install-conda:
 
@@ -70,8 +69,8 @@ Obtaining source code
 Stable release
 ^^^^^^^^^^^^^^
 
-The most recent stable release of PlasmaPy can be `downloaded from
-PyPI <https://pypi.org/project/plasmapy/>`_.
+The source code for the most recent stable release of PlasmaPy can be
+`downloaded from PyPI <https://pypi.org/project/plasmapy/>`_.
 
 Development version on GitHub
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -84,17 +83,18 @@ from the most recent development version by running:
 
    git clone https://github.com/PlasmaPy/PlasmaPy.git
 
-The above command uses HTTPS, which is the default protocol and easier
-to set up.  If you have `set up an SSH key`_, then an equivalent and
-more secure command is:
+The above command uses HTTPS, which is the default protocol and more
+straightforward to set up.  If you have `set up an SSH key`_, then an
+equivalent and more secure command is:
 
 .. code:: bash
 
    git clone git@github.com:PlasmaPy/PlasmaPy.git
 
 If you do not have git installed on your computer, then you may download
-the source code from `PlasmaPy's GitHub repository`_ by selecting "Clone
-or Download", which will give you the option to download a zip file.
+the most recent source code from `PlasmaPy's GitHub repository`_ by
+selecting "Clone or Download", which will give you the option to
+download a zip file.
 
 .. note::
 
@@ -144,7 +144,8 @@ Creating a conda environment
 We highly recommend installing PlasmaPy from a Python environtment
 created using `conda <https://conda.io/docs/>`_.  Conda allows us to
 create and switch between Python environments that are isolated from
-each other and the system installation.
+each other and the system installation, while also simplifying
+distribution of binary and compiled dependencies.
 
 After `installing conda <https://conda.io/docs/user-guide/install/>`_,
 
