@@ -8,7 +8,7 @@ Installing PlasmaPy
 
    If you would like to contribute to PlasmaPy, please refer to the
    instructions on :ref:`installing PlasmaPy for development
-   install-plasmapy-dev>`.
+   <install-plasmapy-dev>`.
 
 Requirements
 ============
