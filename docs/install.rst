@@ -10,6 +10,8 @@ Installing PlasmaPy
    instructions on :ref:`installing PlasmaPy for development
    <install-plasmapy-dev>`.
 
+.. _install-requirements:
+
 Requirements
 ============
 
@@ -26,6 +28,10 @@ installation:
 - `matplotlib <https://matplotlib.org/>`_ 2.0 or newer
 - `Cython <http://cython.org/>`_ 0.27.2 or newer
 - `colorama <https://pypi.org/project/colorama/>`_ 0.3 or newer
+
+Testing PlasmaPy requires:
+
+- `pytest <https://docs.pytest.org/>`_
 
 Installation
 ============
@@ -121,9 +127,25 @@ or
 Building documentation
 ----------------------
 
-.. note::
+Building and testing PlasmaPy documentation requires the following
+packages:
 
-   These instructions still need to be written.
+- `Sphinx <http://www.sphinx-doc.org/>`_
+- `sphinx-gallery <https://sphinx-gallery.readthedocs.io/>`_
+- `sphinx_rtd_theme <https://sphinx-rtd-theme.readthedocs.io/>`_
+- `sphinx-automodapi <http://sphinx-automodapi.readthedocs.io/>`_
+- `pillow <https://pillow.readthedocs.io/>`_
+- `numpydoc <http://numpydoc.readthedocs.io/>`_
+
+To build the documentation, run the following command in the top level
+directory of the repository:
+
+.. code:: bash
+
+   python setup.py build_docs
+
+The HTML files built by this command will be placed in the
+``docs/_build/html`` subdirectory and can be read using a web browser.
 
 Testing a source code build
 ---------------------------
@@ -153,7 +175,7 @@ After `installing conda <https://conda.io/docs/user-guide/install/>`_,
 
 .. code:: bash
 
-   conda create -n plasmapy python=3.7 numpy scipy astropy matplotlib cython h5py lmfit mpmath colorama sphinx sphinx-gallery pillow -c conda-forge
+   conda create -n plasmapyy python=3.7 numpy scipy astropy matplotlib cython h5py lmfit mpmath colorama -c conda-forge
 
 To activate this environment, run
 
