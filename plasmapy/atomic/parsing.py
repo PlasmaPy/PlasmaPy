@@ -143,13 +143,13 @@ def _parse_and_check_atomic_input(argument: Union[str, numbers.Integral], mass_n
     -------
     nomenclature_dict : `dict`
         A dictionary containing information about the element, isotope,
-        or ion.  The key 'symbol' corresponds to the particle symbol
-        containing the most information, 'element' corresponds to the
-        atomic symbol, 'isotope' corresponds to the isotope symbol,
-        'ion' corresponds to the ion symbol, 'mass_numb' corresponds
-        to the mass number, and 'Z' corresponds to the integer charge.
-        The corresponding items will be given by None if the necessary
-        information is not provided.
+        or ion.  The key ``'symbol'`` corresponds to the particle symbol
+        containing the most information, ``'element'`` corresponds to
+        the atomic symbol, ``'isotope'`` corresponds to the isotope
+        symbol, ``'ion'`` corresponds to the ion symbol, ``'mass_numb'``
+        corresponds to the mass number, and ``'Z'`` corresponds to the
+        integer charge.  The corresponding items will be given by `None`
+        if the necessary information is not provided.
 
     Raises
     ------
@@ -244,8 +244,8 @@ def _parse_and_check_atomic_input(argument: Union[str, numbers.Integral], mass_n
         Return a tuple containing a string that should represent
         an element, and either an integer representing the mass
         number or None if no mass number is available.  Raises an
-        InvalidParticleError if the mass number information is
-        inputted incorrectly.
+        `~plasmapy.utils.InvalidParticleError` if the mass number
+        information is inputted incorrectly.
         """
 
         if isotope_info == 'D':

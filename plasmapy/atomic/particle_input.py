@@ -120,16 +120,16 @@ def particle_input(wrapped_function: Callable = None,
     respectively.
 
     If exactly one argument is annotated with `~plasmapy.atomic.Particle`,
-    then the keywords `Z` and `mass_numb` may be used to specify the
+    then the keywords ``Z`` and ``mass_numb`` may be used to specify the
     integer charge and/or mass number of an ion or isotope.  However,
-    the decorated function must allow `Z` and/or `mass_numb` as keywords
+    the decorated function must allow ``Z`` and/or ``mass_numb`` as keywords
     in order to enable this functionality.
 
     Raises
     ------
     `TypeError`
         If the annotated argument is not a `str`, `int`, `tuple`, `list`
-        or `~plasmapy.atomic.Particle`; or if `Z` or `mass_numb` is
+        or `~plasmapy.atomic.Particle`; or if ``Z`` or ``mass_numb`` is
         not an `int`.
 
     `ValueError`
@@ -141,29 +141,29 @@ def particle_input(wrapped_function: Callable = None,
         particle.
 
     `~plasmapy/utils/InvalidElementError`
-        If an annotated argument is named `element`, and the input does
-        not correspond to an element, isotope, or ion.
+        If an annotated argument is named ``element``, and the input
+        does not correspond to an element, isotope, or ion.
 
     `~plasmapy/utils/InvalidIsotopeError`
-        If an annotated argument is named `isotope`, and the input does
-        not correspond to an isotope or an ion of an isotope.
+        If an annotated argument is named ``isotope``, and the input
+        does not correspond to an isotope or an ion of an isotope.
 
     `~plasmapy/utils/InvalidIonError`
-        If an annotated argument is named `ion`, and the input does not
-        correspond to an ion.
+        If an annotated argument is named ``ion``, and the input does
+        not correspond to an ion.
 
     `~plasmapy/utils/ChargeError`
-        If `'charged'` is in the `require` argument and the particle
-        is not explicitly charged, or if `any_of = {'charged',
-        'uncharged'}` and the particle does not have charge information
+        If ``'charged'`` is in the ``require`` argument and the particle
+        is not explicitly charged, or if ``any_of = {'charged',
+        'uncharged'}`` and the particle does not have charge information
         associated with it.
 
     `~plasmapy/utils/AtomicError`
         If an annotated argument does not meet the criteria set by the
-        categories in the `require`, `any_of`, and `exclude` keywords;
-        if more than one argument is annotated and `Z` or `mass_numb`
-        are used as arguments; or if none of the arguments have been
-        annotated with `~plasmapy.atomic.Particle`.
+        categories in the ``require``, ``any_of``, and ``exclude``
+        keywords; if more than one argument is annotated and ``Z`` or
+        ``mass_numb`` are used as arguments; or if none of the arguments
+        have been annotated with `~plasmapy.atomic.Particle`.
 
     Examples
     --------
@@ -211,7 +211,7 @@ def particle_input(wrapped_function: Callable = None,
         sample_instance.decorated_method('Fe')
 
     Some functions may intended to be used with only certain categories
-    of particles.  The `require`, `any_of`, and `exclude` keyword
+    of particles.  The ``require``, ``any_of``, and ``exclude`` keyword
     arguments enable this functionality.
 
     .. code-block:: python
