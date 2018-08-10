@@ -234,8 +234,18 @@ def particle_input(wrapped_function: Callable = None,
             annotations = wrapped_function.__annotations__
             bound_args = wrapped_signature.bind(*args, **kwargs)
 
+            default_arguments = bound_args.signature.parameters
             arguments = bound_args.arguments
-            argnames = bound_args.arguments.keys()
+            argnames = bound_args.signature.parameters.keys()
+
+            # Handle optional-only arguments in function declaration
+            for default_arg in default_arguments:
+                # The argument is not contained in `arguments` if the
+                # user does not explicitly pass an optional argument.
+                # In such cases, manually add it to `arguments` with
+                # the default value of parameter.
+                if default_arg not in arguments:
+                    arguments[default_arg] = default_arguments[default_arg].default
 
             funcname = wrapped_function.__name__
 
@@ -371,8 +381,8 @@ def particle_input(wrapped_function: Callable = None,
             if not isinstance(argval, (int, str, tuple, list)):
                 raise TypeError(
                     f"The argument {argname} to {funcname} must be "
-                    f"a string, an integer or a tuple or list of them"
-                    f"corresponding to an atomic number, or a"
+                    f"a string, an integer or a tuple or list of them "
+                    f"corresponding to an atomic number, or a "
                     f"Particle object.")
 
             try:
