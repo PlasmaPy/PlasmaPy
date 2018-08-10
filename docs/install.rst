@@ -6,8 +6,9 @@ Installing PlasmaPy
 
 .. note::
 
-   If you would like to contribute to PlasmaPy, please see the
-   development guide.
+   If you would like to contribute to PlasmaPy, please refer to the
+   instructions on :ref:`installing PlasmaPy for development
+   install-plasmapy-dev>`.
 
 Requirements
 ============
@@ -16,22 +17,23 @@ PlasmaPy requires Python version 3.6 or newer, and is not compatible
 with Python 2.7.  PlasmaPy requires the following packages for
 installation:
 
-- NumPy 1.13 or newer
-- SciPy 0.19 or newer
-- Astropy 2.0 or newer
-- mpmath 1.0 or newer
-- h5py 2.8 or newer
-- lmfit 0.9.7 or newer
-- matplotlib 2.0 or newer
-- Cython 0.27.2 or newer
-- colorama 0.3 or newer
+- `NumPy <http://www.numpy.org/>`_ 1.13 or newer
+- `SciPy <https://www.scipy.org/>`_ 0.19 or newer
+- `Astropy <http://www.astropy.org/>`_ 2.0 or newer
+- `mpmath <http://mpmath.org/>`_ 1.0 or newer
+- `h5py <https://www.h5py.org/>`_ 2.8 or newer
+- `lmfit <https://lmfit.github.io/lmfit-py/>`_ 0.9.7 or newer
+- `matplotlib <https://matplotlib.org/>`_ 2.0 or newer
+- `Cython <http://cython.org/>`_ 0.27.2 or newer
+- `colorama <https://pypi.org/project/colorama/>`_ 0.3 or newer
 
 Installation
 ============
 
 .. note::
 
-   We recommend that new users :ref:`create-conda-env`.
+   We recommend that new users :ref:`create a conda environment
+   <create-conda-env>`.
 
 .. _install-pip:
 
@@ -141,17 +143,17 @@ In the top level directory, run
 Creating a conda environment
 ----------------------------
 
-We highly recommend installing PlasmaPy from a Python environtment
+We highly recommend installing PlasmaPy from a Python environment
 created using `conda <https://conda.io/docs/>`_.  Conda allows us to
 create and switch between Python environments that are isolated from
-each other and the system installation, while also simplifying
+each other and the system installation, while also simplifying the
 distribution of binary and compiled dependencies.
 
 After `installing conda <https://conda.io/docs/user-guide/install/>`_,
 
 .. code:: bash
 
-   conda create -n plasmapy python=3.7 numpy scipy matplotlib astropy lmfit h5py cython mpmath colorama -c conda-forge
+   conda create -n plasmapy python=3.7 numpy scipy astropy matplotlib cython h5py lmfit mpmath colorama sphinx sphinx-gallery pillow -c conda-forge
 
 To activate this environment, run
 
@@ -159,9 +161,7 @@ To activate this environment, run
 
    conda activate plasmapy
 
-Once the environment is activated, then you may move on to the next step
-of installing PlasmaPy.
-
-.. _installation:
-
-
+Once the environment is activated, then you may install the most recent
+release of PlasmaPy by running ``pip install plasmapy`` or build
+PlasmaPy from source code by running ``python setup.py install`` in the
+top level directory of the repository.
