@@ -22,16 +22,39 @@ installation:
 - `NumPy <http://www.numpy.org/>`_ 1.13 or newer
 - `SciPy <https://www.scipy.org/>`_ 0.19 or newer
 - `Astropy <http://www.astropy.org/>`_ 2.0 or newer
-- `mpmath <http://mpmath.org/>`_ 1.0 or newer
-- `h5py <https://www.h5py.org/>`_ 2.8 or newer
-- `lmfit <https://lmfit.github.io/lmfit-py/>`_ 0.9.7 or newer
 - `matplotlib <https://matplotlib.org/>`_ 2.0 or newer
 - `Cython <http://cython.org/>`_ 0.27.2 or newer
+- `h5py <https://www.h5py.org/>`_ 2.8 or newer
+- `mpmath <http://mpmath.org/>`_ 1.0 or newer
+- `lmfit <https://lmfit.github.io/lmfit-py/>`_ 0.9.7 or newer
 - `colorama <https://pypi.org/project/colorama/>`_ 0.3 or newer
 
-Testing PlasmaPy requires:
+.. _create-conda-env:
 
-- `pytest <https://docs.pytest.org/>`_
+Creating a conda environment
+============================
+
+We highly recommend installing PlasmaPy from a Python environment
+created using `conda <https://conda.io/docs/>`_.  Conda allows us to
+create and switch between Python environments that are isolated from
+each other and the system installation, while also simplifying the
+distribution of binary and compiled dependencies.
+
+After `installing conda <https://conda.io/docs/user-guide/install/>`_,
+run:
+
+.. code:: bash
+
+   conda create -n plasmapy python=3.7 numpy scipy astropy matplotlib cython h5py lmfit mpmath colorama -c conda-forge
+
+To activate this environment, run:
+
+.. code:: bash
+
+   conda activate plasmapy
+
+Once the environment is activated, then you may proceed with
+installation.
 
 Installation
 ============
@@ -124,6 +147,19 @@ or
 
    pip install .
 
+Testing a source code build
+---------------------------
+
+Testing PlasmaPy requires:
+
+- `pytest <https://docs.pytest.org/>`_
+
+In the top level directory, run
+
+.. code:: bash
+
+   python setup.py test
+
 Building documentation
 ----------------------
 
@@ -147,43 +183,6 @@ directory of the repository:
 The HTML files built by this command will be placed in the
 ``docs/_build/html`` subdirectory and can be read using a web browser.
 
-Testing a source code build
----------------------------
-
-In the top level directory, run
-
-.. code:: bash
-
-   python setup.py test
-
 .. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/PlasmaPy
 .. _set up an SSH key: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 .. _on PyPI: https://pypi.org/project/plasmapy/
-
-.. _create-conda-env:
-
-Creating a conda environment
-----------------------------
-
-We highly recommend installing PlasmaPy from a Python environment
-created using `conda <https://conda.io/docs/>`_.  Conda allows us to
-create and switch between Python environments that are isolated from
-each other and the system installation, while also simplifying the
-distribution of binary and compiled dependencies.
-
-After `installing conda <https://conda.io/docs/user-guide/install/>`_,
-
-.. code:: bash
-
-   conda create -n plasmapyy python=3.7 numpy scipy astropy matplotlib cython h5py lmfit mpmath colorama -c conda-forge
-
-To activate this environment, run
-
-.. code:: bash
-
-   conda activate plasmapy
-
-Once the environment is activated, then you may install the most recent
-release of PlasmaPy by running ``pip install plasmapy`` or build
-PlasmaPy from source code by running ``python setup.py install`` in the
-top level directory of the repository.
