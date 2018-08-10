@@ -40,7 +40,7 @@ PlasmaPy is by running:
    cd PlasmaPy
    git remote add upstream git://github.com/PlasmaPy/PlasmaPy.git
 
-To check on which remotes exist, run `git remote -v`.  You should get
+To check on which remotes exist, run ``git remote -v``.  You should get
 something like this:
 
 .. code-block:: bash
@@ -87,9 +87,9 @@ recommended activation process has changed to:
 
 .. note::
 
-   On Windows, the way to do this is via running `Anaconda Prompt` from
-   the Start Menu. `Git Bash` may also work if you have added Anaconda
-   to `PATH`.
+   On Windows, the way to do this is via running ``Anaconda Prompt``
+   from the Start Menu. ``Git Bash`` may also work if you have added
+   Anaconda to ``PATH``.
 
 Create your environment
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,7 +110,7 @@ You may now enter the environment via
 
 .. note::
 
-   On Windows, skip the `source` part of the previous command.
+   On Windows, skip the ``source`` part of the previous command.
 
 In newer Conda versions, the command to run is
 
