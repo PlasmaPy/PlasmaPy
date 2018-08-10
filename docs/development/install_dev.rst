@@ -31,13 +31,13 @@ beforehand.  The equivalent SSH command is:
 .. code-block:: bash
 
    git clone git@github.com:your-username/PlasmaPy.git
-   cd PlasmaPy
 
 After cloning, we must tell git where the development version of
 PlasmaPy is by running:
 
 .. code-block:: bash
 
+   cd PlasmaPy
    git remote add upstream git://github.com/PlasmaPy/PlasmaPy.git
 
 To check on which remotes exist, run `git remote -v`.  You should get
@@ -66,14 +66,14 @@ Activate Anaconda
 ~~~~~~~~~~~~~~~~~
 
 After installing Anaconda, launch any conda environment. By default,
-conda installs a `root` environment, which you should be able to
+conda installs a ``root`` environment, which you should be able to
 activate via
 
 .. code-block:: bash
 
    source /home/user/anaconda3/bin/activate root
 
-where `/home/user/anaconda3/` can be swapped to wherever your anaconda
+where ``/home/user/anaconda3/`` can be swapped to wherever your anaconda
 installation resides.
 
 On `newer versions of Anaconda <https://conda.io/docs/release-notes
@@ -87,14 +87,16 @@ recommended activation process has changed to:
 
 .. note::
 
-   On Windows, the way to do this is via running `Anaconda Prompt` from the
-   Start Menu. `Git Bash` may also work if you have added Anaconda to `PATH`.
+   On Windows, the way to do this is via running `Anaconda Prompt` from
+   the Start Menu. `Git Bash` may also work if you have added Anaconda
+   to `PATH`.
 
 Create your environment
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Having activated Anaconda, enter PlasmaPy's repository root directory and
-create an environment with our suggested packages by executing the following:
+Having activated Anaconda, enter PlasmaPy's repository root directory
+and create an environment with our suggested packages by executing the
+following:
 
 .. code-block:: bash
 
@@ -129,9 +131,9 @@ and create the virtual environment
 You may need to make sure that this directory's path doesn't contain
 any spaces, otherwise virtualenv may throw an error.
 
-Your virtual environment should now be created. If you run `ls` you
+Your virtual environment should now be created. If you run ``ls`` you
 will notice that virtualenv has created a number of subdirectories:
-`bin/`, `lib/`, and `include/`. This is why we're not creating the
+``bin/``, ``lib/``, and ``include/``. This is why we're not creating the
 virtualenv within the repository itself - so as to not pollute it. To
 activate the virtualenv you will run:
 
@@ -174,7 +176,7 @@ setup.py script there:
 
 
 You should now be all set to run development versions of PlasmaPy
-modules via `import PlasmaPy` in your test scripts!
+modules via ``import PlasmaPy`` in your test scripts!
 
 Running anaconda with virtualenv
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -182,7 +184,7 @@ Running anaconda with virtualenv
 If you are running the Anaconda suite and want to use virtualenv to
 setup your virtual environment, you will have to let the system know
 where the Python interpreter can be found. On Linux this is done with
-(for example, assuming having installed Anaconda into `~/anaconda3`):
+(for example, assuming having installed Anaconda into ``~/anaconda3``):
 
 .. code-block:: bash
 
@@ -198,8 +200,8 @@ for every new shell session.
 Installing your own dev version
 ===============================
 
-To be able to import PlasmaPy from your source version, enter the repository
-root and use one of
+To be able to import PlasmaPy from your source version, enter the
+repository root and use one of
 
 .. code-block:: bash
 
@@ -208,13 +210,15 @@ root and use one of
 
 .. note::
 
-   If you are not working within a virtual environment, this may end in a
-   permission error - this can be avoided via also adding the `--user`
-   flag. But seriously, use a virtual environment and spare yourself the trouble.
+   If you are not working within a virtual environment, this may end in
+   a permission error - this can be avoided via also adding the
+   ``--user`` flag. But seriously, use a virtual environment and spare
+   yourself the trouble.
 
-Either one of these commands will create a soft link to your cloned repository.
-Any changes in Python code you make there will be there when you `import
-plasmapy` from an interactive session. The exception is Cython code.
+Either one of these commands will create a soft link to your cloned
+repository.  Any changes in Python code you make there will be there
+when you ``import plasmapy`` from an interactive session.  The exception
+is Cython code.
 
 Working with Cython code
 ========================
@@ -223,23 +227,26 @@ Working with Cython code
 
    We are still figuring this part out. Contributions are very welcome!
 
-Cython poses a whole new set of issues for code development.  When writing
-Cython code, you need to recompile your current files for your changes to take
-effect. This is accomplished, to the best of our current understanding , via
-`python setup.py build_ext -i`, as recommended by the Cython development guide
-and as supported by the Astropy package template in `astropy_helpers`. This
-places compiled `.c` or `.cpp` sources and `.so` compiled libraries in the same
-location as your original `.pxd` and `.py` sources - this plays well with import
+Cython poses a whole new set of issues for code development.  When
+writing Cython code, you need to recompile your current files for your
+changes to take effect.  This is accomplished, to the best of our current
+understanding , via ``python setup.py build_ext -i``, as recommended by
+the Cython development guide and as supported by the Astropy package
+template in ``astropy_helpers``. This places compiled ``.c`` or ``.cpp``
+sources and ``.so`` compiled libraries in the same location as your
+original ``.pxd`` and ``.py`` sources - this plays well with import
 statements.
 
-Note that `python setup.py install` or `pip install` will also build extensions.
+Note that ``python setup.py install`` or ``pip install`` will also build
+extensions.
 
-For now, the `.c` and `.cpp` sources are not included with the source code, meaning
-that they are compiled on installation. This solution is what we got working
-for distribution, but may change in the future.
+For now, the ``.c`` and ``.cpp`` sources are not included with the
+source code, meaning that they are compiled on installation.  This
+solution is what we got working for distribution, but may change in the
+future.
 
-The safest bet for running tests and checking documentation is using `python
-setup.py test` and `python setup.py build_docs` provided by `astropy_helpers`.
-These commands copy the entire code base into a temporary directory for
-isolation and build all Cython extensions there before running tests and
-documenation builds.
+The safest bet for running tests and checking documentation is using
+``python setup.py test`` and ``python setup.py build_docs`` provided by
+``astropy_helpers``.  These commands copy the entire code base into a
+temporary directory for isolation and build all Cython extensions there
+before running tests and documenation builds.
