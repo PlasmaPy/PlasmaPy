@@ -24,4 +24,5 @@ def test_beta_nan():
     n = np.array([1, 1]) * u.cm**-3
     T = np.array([1, 1]) * u.K
     out = beta(T, n, B)
-    assert out[1] == np.nan * u.dimensionless_unscaled
+    assert np.isnan(out[1])
+    assert out[1].unit == u.dimensionless_unscaled
