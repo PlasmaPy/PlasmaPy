@@ -42,11 +42,11 @@ each other and the system installation (in contrast to `this xkcd
 binary and compiled dependencies.
 
 After `installing conda <https://conda.io/docs/user-guide/install/>`_,
-run:
+create a PlasmaPy environment by running:
 
 .. code:: bash
 
-   conda create -n plasmapy python=3.7 numpy scipy astropy matplotlib cython h5py lmfit mpmath colorama -c conda-forge
+    conda env create -f requirements/environment.yml
 
 To activate this environment, run:
 
