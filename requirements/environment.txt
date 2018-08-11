@@ -1,17 +1,4 @@
-numpy
-scipy
-astropy
-numpydoc
+-r requirements.txt
+-r automated-documentation-tests.txt
+
 pytest
-cython
-coveralls
-mpmath
-roman
-lmfit
-matplotlib
-sphinx
-sphinx-gallery
-sphinx-automodapi
-pillow
-colorama
-sphinx_rtd_theme

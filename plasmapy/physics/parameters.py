@@ -29,6 +29,7 @@ from astropy import units as u
 
 # from plasmapy.atomic import particle_mass, integer_charge
 import numpy as np
+# import warnings
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
 from plasmapy import atomic, utils
 
@@ -71,7 +72,7 @@ def mass_density(density,
     Parameters
     ----------
     density : ~astropy.units.Quantity
-        Either a particle density (number of particles per density, in units
+        Either a particle density (number of particles per unit volume, in units
         of 1/m^3) or a mass density (in units of kg/m^3 or equivalent).
 
     particle : str, optional
@@ -116,12 +117,12 @@ def mass_density(density,
 
 
 @utils.check_relativistic
-@utils.check_quantity({'B': {'units': u.T},
-                       'density': {'units': [u.m ** -3, u.kg / u.m ** 3],
-                                   'can_be_negative': False}})
+@utils.check_quantity(B={'units': u.T},
+                      density={'units': [u.m ** -3, u.kg / u.m ** 3],
+                               'can_be_negative': False})
 def Alfven_speed(B, density, ion="p+", z_mean=None):
     r"""
-    Return the Alfven speed.
+    Return the Alfvén speed.
 
     Parameters
     ----------
@@ -148,8 +149,8 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
 
     Returns
     -------
-    V_A : ~astropy.units.Quantity with units of velocity
-        The Alfven velocity of the plasma in units of meters per second.
+    V_A : ~astropy.units.Quantity with units of speed
+        The Alfvén speed of the plasma in units of meters per second.
 
     Raises
     ------
@@ -177,7 +178,7 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
 
     Notes
     -----
-    The Alfven velocity :math:`V_A` is the typical propagation speed
+    The Alfven speed :math:`V_A` is the typical propagation speed
     of magnetic disturbances in a plasma, and is given by:
 
     .. math::
@@ -189,10 +190,6 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     This expression does not account for relativistic effects, and
     loses validity when the resulting speed is a significant fraction
     of the speed of light.
-
-    This function switches B and density when B has units of number
-    density or mass density and density has units of magnetic field
-    strength.
 
     Examples
     --------
@@ -219,10 +216,10 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
 
 
 @utils.check_relativistic
-@utils.check_quantity({
-    'T_i': {'units': u.K, 'can_be_negative': False},
-    'T_e': {'units': u.K, 'can_be_negative': False}
-    })
+@utils.check_quantity(
+    T_i={'units': u.K, 'can_be_negative': False},
+    T_e={'units': u.K, 'can_be_negative': False}
+    )
 def ion_sound_speed(T_e,
                     T_i,
                     gamma_e=1,
@@ -356,13 +353,13 @@ def ion_sound_speed(T_e,
 
 
 @utils.check_relativistic
-@utils.check_quantity({
-    'T': {'units': u.K, 'can_be_negative': False},
-    'mass': {'units': u.kg, 'can_be_negative': False, 'can_be_nan': True}
-    })
+@utils.check_quantity(
+    T={'units': u.K, 'can_be_negative': False},
+    mass={'units': u.kg, 'can_be_negative': False, 'can_be_nan': True}
+    )
 @atomic.particle_input
 def thermal_speed(T,
-                  particle: atomic.Particle="e-",
+                  particle: atomic.Particle = "e-",
                   method="most_probable",
                   mass=np.nan*u.kg):
     r"""
@@ -465,10 +462,10 @@ def thermal_speed(T,
     return V
 
 
-@utils.check_quantity({
-    'T': {'units': u.K, 'can_be_negative': False},
-    'n': {'units': u.m**-3, 'can_be_negative': False}
-    })
+@utils.check_quantity(
+    T={'units': u.K, 'can_be_negative': False},
+    n={'units': u.m**-3, 'can_be_negative': False}
+    )
 def thermal_pressure(T, n):
     r"""
     Return the thermal pressure for a Maxwellian distribution.
@@ -516,9 +513,9 @@ def thermal_pressure(T, n):
 
 
 @utils.check_relativistic
-@utils.check_quantity({
-    'T': {'units': u.K, 'can_be_negative': False}
-    })
+@utils.check_quantity(
+    T={'units': u.K, 'can_be_negative': False}
+    )
 def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
@@ -623,11 +620,11 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     return vTh * coeff
 
 
-@utils.check_quantity({
-    'n': {'units': u.m ** -3, 'can_be_negative': False},
-    'T': {'units': u.K, 'can_be_negative': False},
-    'B': {'units': u.T}
-    })
+@utils.check_quantity(
+    n={'units': u.m ** -3, 'can_be_negative': False},
+    T={'units': u.K, 'can_be_negative': False},
+    B={'units': u.T}
+    )
 def Hall_parameter(n,
                    T,
                    B,
@@ -689,10 +686,8 @@ def Hall_parameter(n,
     return gyro_frequency / coll_rate
 
 
-@utils.check_quantity({
-    'B': {'units': u.T}
-    })
-def gyrofrequency(B, particle='e-', signed=False, Z=None):
+@utils.check_quantity(B={'units': u.T})
+def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None):
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
@@ -706,6 +701,11 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
         which defaults to electrons.  If no charge state information is
         provided, then the particles are assumed to be singly charged.
 
+    signed : bool, optional
+        The gyrofrequency can be defined as signed (negative for electron,
+        positive for ion). Default is `False` (unsigned, i.e. always
+        positive).
+
     Z : float or ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
@@ -714,11 +714,6 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
         plasma where multiple charge states are present, and should
         not be interpreted as the gyrofrequency for any single particle.
         If not provided, it defaults to the integer charge of the `particle`.
-
-    signed : bool, optional
-        The gyrofrequency can be defined as signed (negative for electron,
-        positive for ion). Default is `False` (unsigned, i.e. always
-        positive).
 
     Returns
     -------
@@ -790,15 +785,15 @@ def gyrofrequency(B, particle='e-', signed=False, Z=None):
     return omega_ci
 
 
-@utils.check_quantity({'B': {'units': u.T},
-                       'Vperp': {'units': u.m / u.s, 'can_be_nan': True},
-                       'T_i': {'units': u.K, 'can_be_nan': True},
-                       })
-def gyroradius(B,
+@utils.check_quantity(B={'units': u.T},
+                      Vperp={'units': u.m / u.s, 'can_be_nan': True},
+                      T_i={'units': u.K, 'can_be_nan': True},
+                      )
+def gyroradius(B: u.T,
                particle='e-',
                *,
-               Vperp=np.nan * u.m / u.s,
-               T_i=np.nan * u.K):
+               Vperp: u.m / u.s=np.nan * u.m / u.s,
+               T_i: u.K = np.nan * u.K):
     r"""Return the particle gyroradius.
 
     Parameters
@@ -890,12 +885,45 @@ def gyroradius(B,
 
     """
 
-    if np.isfinite(Vperp) and np.isfinite(T_i):
-        raise ValueError("Cannot have both Vperp and T_i as arguments to "
-                         "gyroradius")
+    isfinite_Ti = np.isfinite(T_i)
+    isfinite_Vperp = np.isfinite(Vperp)
 
-    elif not np.isfinite(Vperp) and np.isfinite(T_i):
-        Vperp = thermal_speed(T_i, particle=particle)
+    # check 1: ensure either Vperp or T_i invalid, keeping in mind that
+    # the underlying values of the astropy quantity may be numpy arrays
+    if np.any(np.logical_not(np.logical_xor(isfinite_Vperp, isfinite_Ti))):
+        raise ValueError("Must give Vperp or T_i, but not both, as arguments to gyroradius")
+
+    # check 2: get Vperp as the thermal speed if is not already a valid input
+    if np.isscalar(Vperp.value) and np.isscalar(T_i.value):  # both T_i and Vperp are scalars
+        # we know exactly one of them is nan from check 1
+        if isfinite_Ti:
+            # T_i is valid, so use it to determine Vperp
+            Vperp = thermal_speed(T_i, particle=particle)
+        # else: Vperp is alread valid, do nothing
+    elif np.isscalar(Vperp.value):  # only T_i is an array
+        # this means either Vperp must be nan, or T_i must be array of all nan,
+        # or else we couldn't have gotten through check 1
+        if isfinite_Vperp:
+            # Vperp is valid, T_i is a vector that is all nan
+            # uh...
+            Vperp = np.repeat(Vperp, len(T_i))
+        else:
+            # normal case where Vperp is scalar nan and T_i is valid array
+            Vperp = thermal_speed(T_i, particle=particle)
+    elif np.isscalar(T_i.value):  # only Vperp is an array
+        # this means either T_i must be nan, or V_perp must be array of all nan,
+        # or else we couldn't have gotten through check 1
+        if isfinite_Ti:
+            # T_i is valid, V_perp is an array of all nan
+            # uh...
+            Vperp = thermal_speed(np.repeat(T_i, len(Vperp)), particle=particle)
+        # else: normal case where T_i is scalar nan and Vperp is already a valid array
+        # so, do nothing
+    else:  # both T_i and Vperp are arrays
+        # we know all the elementwise combinations have one nan and one finite, due to check 1
+        # use the valid Vperps, and replace the others with those calculated from T_i
+        Vperp = Vperp.copy()  # avoid changing Vperp's value outside function
+        Vperp[isfinite_Ti] = thermal_speed(T_i[isfinite_Ti], particle=particle)
 
     omega_ci = gyrofrequency(B, particle)
 
@@ -904,10 +932,10 @@ def gyroradius(B,
     return r_Li.to(u.m, equivalencies=u.dimensionless_angles())
 
 
-@utils.check_quantity({
-    'n': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def plasma_frequency(n, particle='e-', z_mean=None):
+@utils.check_quantity(
+    n={'units': u.m ** -3, 'can_be_negative': False}
+    )
+def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None):
     r"""Calculate the particle plasma frequency.
 
     Parameters
@@ -1001,11 +1029,11 @@ def plasma_frequency(n, particle='e-', z_mean=None):
     return omega_p.si
 
 
-@utils.check_quantity({
-    'T_e': {'units': u.K, 'can_be_negative': False},
-    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def Debye_length(T_e, n_e):
+@utils.check_quantity(
+    T_e={'units': u.K, 'can_be_negative': False},
+    n_e={'units': u.m ** -3, 'can_be_negative': False}
+    )
+def Debye_length(T_e: u.K, n_e: u.m**-3):
     r"""Calculate the characteristic decay length for electric fields,
      due to charge screening.
 
@@ -1073,11 +1101,11 @@ def Debye_length(T_e, n_e):
     return lambda_D.to(u.m)
 
 
-@utils.check_quantity({
-    'T_e': {'units': u.K, 'can_be_negative': False},
-    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def Debye_number(T_e, n_e):
+@utils.check_quantity(
+    T_e={'units': u.K, 'can_be_negative': False},
+    n_e={'units': u.m ** -3, 'can_be_negative': False}
+    )
+def Debye_number(T_e: u.K, n_e: u.m**-3):
     r"""Return the number of electrons within a sphere with a radius
     of the Debye length.
 
@@ -1141,10 +1169,9 @@ def Debye_number(T_e, n_e):
     return N_D.to(u.dimensionless_unscaled)
 
 
-@utils.check_quantity({
-    'V_0': {'units': u.V, 'can_be_negative': False},
-    'n_s': {'units': u.m ** -3, 'can_be_negative': False}
-    })
+@utils.check_quantity(V_0={'units': u.V, 'can_be_negative': False},
+    n_s={'units': u.m ** -3, 'can_be_negative': False}
+    )
 def matrix_sheath_thickness(V_0, n_s):
     r"""Calculate the matrix sheath thickness for a high potential sheath.
 
@@ -1204,11 +1231,11 @@ def matrix_sheath_thickness(V_0, n_s):
     return s.to(u.m)
 
 
-@utils.check_quantity({
-    'T_e': {'units': u.K, 'can_be_negative': False},
-    'V_0': {'units': u.V, 'can_be_negative': False},
-    'n_s': {'units': u.m ** -3, 'can_be_negative': False}
-    })
+@utils.check_quantity(
+    T_e={'units': u.K, 'can_be_negative': False},
+    V_0={'units': u.V, 'can_be_negative': False},
+    n_s={'units': u.m ** -3, 'can_be_negative': False}
+    )
 def Child_law_sheath_thickness(T_e, V_0, n_s):
     r"""Calculate the Child law sheath thickness.
 
@@ -1279,10 +1306,10 @@ def Child_law_sheath_thickness(T_e, V_0, n_s):
     return s.to(u.m)
 
 
-@utils.check_quantity({
-    'n': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def inertial_length(n, particle='e-'):
+@utils.check_quantity(
+    n={'units': u.m ** -3, 'can_be_negative': False}
+    )
+def inertial_length(n: u.m**-3, particle='e-'):
     r"""Calculate the particle inertial length. At this length, the Hall effect
     becomes important.
 
@@ -1342,10 +1369,8 @@ def inertial_length(n, particle='e-'):
     return d
 
 
-@utils.check_quantity({
-    'B': {'units': u.T}
-    })
-def magnetic_pressure(B):
+@utils.check_quantity(B={'units': u.T})
+def magnetic_pressure(B: u.T):
     r"""
     Calculate the magnetic pressure.
 
@@ -1406,9 +1431,7 @@ def magnetic_pressure(B):
     return p_B
 
 
-@utils.check_quantity({
-    'B': {'units': u.T}
-    })
+@utils.check_quantity(B={'units': u.T})
 def magnetic_energy_density(B: u.T):
     r"""
     Calculate the magnetic energy density.
@@ -1464,17 +1487,15 @@ def magnetic_energy_density(B: u.T):
     <Quantity 3978.8735773 J / m3>
 
     """
-
-    E_B = (B ** 2 / (2 * mu0)).to(u.J / u.m ** 3)
-
+    E_B = magnetic_pressure(B).to(u.J / u.m ** 3)
     return E_B
 
 
-@utils.check_quantity({
-    'B': {'units': u.T},
-    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def upper_hybrid_frequency(B, n_e):
+@utils.check_quantity(
+    B={'units': u.T},
+    n_e={'units': u.m ** -3, 'can_be_negative': False}
+    )
+def upper_hybrid_frequency(B: u.T, n_e: u.m**-3):
     r"""
     Return the upper hybrid frequency.
 
@@ -1533,10 +1554,10 @@ def upper_hybrid_frequency(B, n_e):
     return omega_uh.to(u.rad / u.s)
 
 
-@utils.check_quantity({
-    'B': {'units': u.T},
-    'n_i': {'units': u.m ** -3, 'can_be_negative': False}
-    })
+@utils.check_quantity(
+    B={'units': u.T},
+    n_i={'units': u.m ** -3, 'can_be_negative': False}
+    )
 def lower_hybrid_frequency(B, n_i, ion='p+'):
     r"""
     Return the lower hybrid frequency.

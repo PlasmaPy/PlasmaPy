@@ -70,15 +70,15 @@ __all__ = [
     "mobility",
     "Knudsen_number",
     "coupling_parameter",
-]
+    ]
 
 
-@utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                       "n_e": {"units": u.m ** -3}
-                       })
+@utils.check_quantity(T={"units": u.K, "can_be_negative": False},
+                      n_e={"units": u.m ** -3})
+@atomic.particle_input
 def Coulomb_logarithm(T,
                       n_e,
-                      particles,
+                      particles: (atomic.Particle, atomic.Particle),
                       z_mean=np.nan * u.dimensionless_unscaled,
                       V=np.nan * u.m / u.s,
                       method="classical"):
@@ -264,28 +264,32 @@ def Coulomb_logarithm(T,
                                   z_mean=z_mean,
                                   V=V,
                                   method=method)
-    if method in ["classical", "GMS-1", "GMS-2"]:
+    if method in ("classical", "GMS-1", "GMS-2"):
         ln_Lambda = np.log(bmax / bmin)
     elif method == "GMS-3":
         ln_Lambda = np.log(bmax / bmin)
-        if ln_Lambda < 2:
-            ln_Lambda = 2 * u.dimensionless_unscaled
-    elif method in ["GMS-4", "GMS-5", "GMS-6"]:
+        if np.any(ln_Lambda < 2):
+            if np.isscalar(ln_Lambda.value):
+                ln_Lambda = 2 * u.dimensionless_unscaled
+            else:
+                ln_Lambda[ln_Lambda < 2] = 2 * u.dimensionless_unscaled
+    elif method in ("GMS-4", "GMS-5", "GMS-6"):
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
         raise ValueError("Unknown method! Choose from 'classical' and 'GMS-N', N from 1 to 6.")
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
-    if ln_Lambda < 2 and method in ["classical", "GMS-1", "GMS-2"]:
+    if np.any(ln_Lambda < 2) and method in ["classical", "GMS-1", "GMS-2"]:
         warnings.warn(f"Coulomb logarithm is {ln_Lambda} and {method} relies on weak coupling.",
                       utils.CouplingWarning)
-    elif ln_Lambda < 4:
+    elif np.any(ln_Lambda < 4):
         warnings.warn(f"Coulomb logarithm is {ln_Lambda}, you might have strong coupling effects",
                       utils.CouplingWarning)
     return ln_Lambda
 
 
-def _boilerPlate(T, particles, V):
+@atomic.particle_input
+def _boilerPlate(T, particles: (atomic.Particle, atomic.Particle), V):
     """
     Some boiler plate code for checking if inputs to functions in
     collisions.py are good. Also obtains reduced in mass in a
@@ -293,32 +297,49 @@ def _boilerPlate(T, particles, V):
     """
     # checking temperature is in correct units
     T = T.to(u.K, equivalencies=u.temperature_energy())
-    # extracting particle information
-    if not isinstance(particles, (list, tuple)) or len(particles) != 2:
-        raise ValueError("Particles input must be a "
-                         "list or tuple containing representations of two  "
-                         f"charged particles. Got {particles} instead.")
 
-    particles = [atomic.Particle(p) for p in particles]
     masses = [p.mass for p in particles]
     charges = [np.abs(p.charge) for p in particles]
 
     # obtaining reduced mass of 2 particle collision system
     reduced_mass = atomic.reduced_mass(*particles)
 
-    if V == 0:
-        raise utils.exceptions.PhysicsError("You cannot have a collision for zero velocity!")
     # getting thermal velocity of system if no velocity is given
-    if np.isnan(V):
-        V = parameters.thermal_speed(T, mass=reduced_mass)
+    V = _replaceNanVwithThermalV(V, T, reduced_mass)
+
     _check_relativistic(V, 'V')
+
     return T, masses, charges, reduced_mass, V
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False}
-                 })
+def _replaceNanVwithThermalV(V, T, m):
+    """
+    Get thermal velocity of system if no velocity is given, for a given mass.
+    Handles vector checks for V, you must already know that T and m are okay.
+    """
+    if np.any(V == 0):
+        raise utils.PhysicsError("You cannot have a collision for zero velocity!")
+    # getting thermal velocity of system if no velocity is given
+    if V is None:
+        V = parameters.thermal_speed(T, mass=m)
+    elif np.any(np.isnan(V)):
+        if np.isscalar(V.value) and np.isscalar(T.value):
+            V = parameters.thermal_speed(T, mass=m)
+        elif np.isscalar(V.value):
+            V = parameters.thermal_speed(T, mass=m)
+        elif np.isscalar(T.value):
+            V = V.copy()
+            V[np.isnan(V)] = parameters.thermal_speed(T, mass=m)
+        else:
+            V = V.copy()
+            V[np.isnan(V)] = parameters.thermal_speed(T[np.isnan(V)], mass=m)
+    return V
+
+
+@check_quantity(T={"units": u.K, "can_be_negative": False})
+@atomic.particle_input
 def impact_parameter_perp(T,
-                          particles,
+                          particles: (atomic.Particle, atomic.Particle),
                           V=np.nan * u.m / u.s):
     r"""Distance of closest approach for a 90 degree Coulomb collision.
 
@@ -404,9 +425,9 @@ def impact_parameter_perp(T,
     return bPerp.to(u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def impact_parameter(T,
                      n_e,
                      particles,
@@ -521,7 +542,7 @@ def impact_parameter(T,
                                                        V=V)
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
-    if method == "GMS-2" or method == "GMS-5" or method == "GMS-6":
+    if method in ("GMS-2", "GMS-5", "GMS-6"):
         if np.isnan(z_mean):
             raise ValueError("Must provide a z_mean for GMS-2, GMS-5, and "
                              "GMS-6 methods.")
@@ -541,10 +562,19 @@ def impact_parameter(T,
         # shorter than either of these two impact parameters, so we choose
         # the larger of these two possibilities. That is, between the
         # deBroglie wavelength and the distance of closest approach.
-        if bPerp > lambdaBroglie:
-            bmin = bPerp
-        else:
+        # ARRAY NOTES
+        # T and V should be guaranteed to be same size inputs from _boilerplate
+        # therefore, lambdaBroglie and bPerp are either both scalar or both array
+        # if np.isscalar(bPerp.value) and np.isscalar(lambdaBroglie.value):  # both scalar
+        try:  # assume both scalar
+            if bPerp > lambdaBroglie:
+                bmin = bPerp
+            else:
+                bmin = lambdaBroglie
+        # else:  # both lambdaBroglie and bPerp are arrays
+        except ValueError:  # both lambdaBroglie and bPerp are arrays
             bmin = lambdaBroglie
+            bmin[bPerp > lambdaBroglie] = bPerp[bPerp > lambdaBroglie]
     elif method == "GMS-1":
         # 1st method listed in Table 1 of reference [1]
         # This is just another form of the classical Landau-Spitzer
@@ -592,12 +622,19 @@ def impact_parameter(T,
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
     else:
         raise ValueError(f"Method {method} not found!")
+    # ARRAY NOTES
+    # it could be that bmin and bmax have different sizes. If Te is a scalar,
+    # T and V will be scalar from _boilerplate, so bmin will scalar.  However
+    # if n_e is an array, than bmax will be an array. if this is the case,
+    # do we want to extend the scalar bmin to equal the length of bmax? Sure.
+    if np.isscalar(bmin.value) and not np.isscalar(bmax.value):
+        bmin = np.repeat(bmin, len(bmax))
     return bmin.to(u.m), bmax.to(u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n={"units": u.m ** -3}
+                )
 def collision_frequency(T,
                         n,
                         particles,
@@ -709,11 +746,10 @@ def collision_frequency(T,
     # reduced mass
     V_reduced = V_r
     if particles[0] in ('e','e-') and particles[1] in ('e','e-'):
+        # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        if np.isnan(V):
-            V = V_reduced
-        # electron-electron collision
+        V = _replaceNanVwithThermalV(V, T, reduced_mass)
         # impact parameter for 90 degree collision
         bPerp = impact_parameter_perp(T=T,
                                       particles=particles,
@@ -729,10 +765,9 @@ def collision_frequency(T,
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
-        if np.isnan(V):
-            # we ignore the reduced velocity and use the electron thermal
-            # velocity instead
-            V = np.sqrt(2 * k_B * T / m_e)
+        # we ignore the reduced velocity and use the electron thermal
+        # velocity instead
+        V = _replaceNanVwithThermalV(V, T, m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
         bPerp = impact_parameter_perp(T=T,
@@ -748,11 +783,10 @@ def collision_frequency(T,
                                     V=np.nan * u.m / u.s,
                                     method=method)
     else:
+        # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        if np.isnan(V):
-            V = V_reduced
-        # ion-ion collision
+        V = _replaceNanVwithThermalV(V, T, reduced_mass)
         bPerp = impact_parameter_perp(T=T,
                                       particles=particles,
                                       V=V)
@@ -772,10 +806,7 @@ def collision_frequency(T,
     return freq.to(u.Hz)
 
 
-@check_quantity({
-    'impact_param': {'units': u.m,
-                    'can_be_negative': False}
-    })
+@check_quantity(impact_param={'units': u.m, 'can_be_negative': False})
 def Coulomb_cross_section(impact_param: u.m):
     r"""Cross section for a large angle Coulomb collision.
 
@@ -816,10 +847,11 @@ def Coulomb_cross_section(impact_param: u.m):
     sigma = np.pi * (2 * impact_param) ** 2
     return sigma
 
-@utils.check_quantity({
-    'T_e': {'units': u.K, 'can_be_negative': False},
-    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
-    })
+
+@utils.check_quantity(
+    T_e={'units': u.K, 'can_be_negative': False},
+    n_e={'units': u.m ** -3, 'can_be_negative': False}
+    )
 def fundamental_electron_collision_freq(T_e,
                                         n_e,
                                         ion_particle,
@@ -911,9 +943,9 @@ def fundamental_electron_collision_freq(T_e,
     fundamental_ion_collision_freq
     """
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
-    if not V:
-        # electron thermal velocity (most probable)
-        V = np.sqrt(2 * k_B * T_e / m_e)
+
+    # specify to use electron thermal velocity (most probable), not based on reduced mass
+    V = _replaceNanVwithThermalV(V, T_e, m_e)
 
     particles = [ion_particle, 'e-']
     Z_i = atomic.integer_charge(ion_particle)
@@ -926,14 +958,13 @@ def fundamental_electron_collision_freq(T_e,
                              )
     coeff = 4 / np.sqrt(np.pi) / 3
 
-
     # accounting for when a Coulomb logarithm value is passed
-    if coulomb_log:
+    if np.any(coulomb_log):
         cLog = Coulomb_logarithm(T_e,
                                  n_e,
                                  particles,
                                  z_mean=Z_i,
-                                 V=np.nan, # probably needs to be enabled!
+                                 V=np.nan * u.m / u.s,
                                  method=coulomb_log_method)
         # dividing out by typical Coulomb logarithm value implicit in
         # the collision frequency calculation and replacing with
@@ -942,13 +973,14 @@ def fundamental_electron_collision_freq(T_e,
         nu_e = coeff * nu_mod
     else:
         nu_e = coeff * nu
+
     return nu_e.to(1 / u.s)
 
 
-@utils.check_quantity({
-    'T_i': {'units': u.K, 'can_be_negative': False},
-    'n_i': {'units': u.m ** -3, 'can_be_negative': False}
-    })
+@utils.check_quantity(
+    T_i={'units': u.K, 'can_be_negative': False},
+    n_i={'units': u.m ** -3, 'can_be_negative': False}
+    )
 def fundamental_ion_collision_freq(T_i,
                                    n_i,
                                    ion_particle,
@@ -1049,10 +1081,12 @@ def fundamental_ion_collision_freq(T_i,
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     m_i = atomic.particle_mass(ion_particle)
     particles = [ion_particle, ion_particle]
-    if not V:
-        # ion thermal velocity (most probable)
-        V = np.sqrt(2 * k_B * T_i / m_i)
+
+    # specify to use ion thermal velocity (most probable), not based on reduced mass
+    V = _replaceNanVwithThermalV(V, T_i, m_i)
+
     Z_i = atomic.integer_charge(ion_particle)
+
     nu = collision_frequency(T_i,
                              n_i,
                              particles,
@@ -1064,7 +1098,7 @@ def fundamental_ion_collision_freq(T_i,
     coeff = np.sqrt(8 / np.pi) / 3 / 4
 
     # accounting for when a Coulomb logarithm value is passed
-    if coulomb_log:
+    if np.any(coulomb_log):
         cLog = Coulomb_logarithm(T_i,
                                  n_i,
                                  particles,
@@ -1078,12 +1112,13 @@ def fundamental_ion_collision_freq(T_i,
         nu_i = coeff * nu_mod
     else:
         nu_i = coeff * nu
+
     return nu_i.to(1 / u.s)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def mean_free_path(T,
                    n_e,
                    particles,
@@ -1199,9 +1234,9 @@ def mean_free_path(T,
     return mfp.to(u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n={"units": u.m ** -3}
+                )
 def Spitzer_resistivity(T,
                         n,
                         particles,
@@ -1327,9 +1362,9 @@ def Spitzer_resistivity(T,
     return spitzer.to(u.Ohm * u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def mobility(T,
              n_e,
              particles,
@@ -1454,9 +1489,9 @@ def mobility(T,
     return mobility_value.to(u.m ** 2 / (u.V * u.s))
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def Knudsen_number(characteristic_length,
                    T,
                    n_e,
@@ -1573,9 +1608,9 @@ def Knudsen_number(characteristic_length,
     return knudsen_param.to(u.dimensionless_unscaled)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def coupling_parameter(T,
                        n_e,
                        particles,
@@ -1748,9 +1783,9 @@ def coupling_parameter(T,
         fermiIntegral = Fermi_integral(chemicalPotential.si.value, 1.5)
         denom = (n_e * lambda_deBroglie ** 3) * fermiIntegral
         kineticEnergy = 2 * k_B * T / denom
-        if np.imag(kineticEnergy) == 0:
+        if np.all(np.imag(kineticEnergy) == 0):
             kineticEnergy = np.real(kineticEnergy)
-        else:
+        else:  # coveralls: ignore
             raise ValueError("Kinetic energy should not be imaginary."
                              "Something went horribly wrong.")
     coupling = coulombEnergy / kineticEnergy

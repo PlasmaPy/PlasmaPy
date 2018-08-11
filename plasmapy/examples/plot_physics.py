@@ -55,3 +55,6 @@ plt.plot(n_e, physics.plasma_frequency(n_e))
 plt.scatter(
     electron_concentration,
     physics.plasma_frequency(electron_concentration))
+plt.xlabel("Electron Concentration (m^-3)")
+plt.ylabel("Langmuir Wave Plasma Frequency (rad/s)")
+plt.show()

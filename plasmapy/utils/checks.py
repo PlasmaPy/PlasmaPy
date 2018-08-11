@@ -11,20 +11,72 @@ from textwrap import dedent
 
 __all__ = [
     "check_quantity",
+    "_check_quantity",
     "check_relativistic",
 ]
 
 
-def check_quantity(validations):  # TODO simplify via **kwargs
+def check_quantity(**validations):
     """
-    Raise an exception if an annotated argument in a decorated function
-    is an `~astropy.units.Quantity` with incorrect units and valid
-    numerical values, or assume inputs are SI Quantities.
+    Verify that the function's arguments have correct units.
+
+    This decorator raises an exception if an annotated argument in the
+    decorated function is an `~astropy.units.Quantity` with incorrect units
+    or of the incorrect # TODO name - Nones, NaNs, negatives...
+
+    If a number (non-Quantity) value is inserted in place of a value with units,
+    assume the input is an SI Quantity and cast it to one.
+
+    This is probably best illustrated with an example:
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> @check_quantity(x={"units": u.m,
+    ...       "can_be_negative": False,
+    ...       "can_be_complex": True,
+    ...       "can_be_inf": True})
+    ... def func(x):
+    ...     return x
+
+    >>> func(1 * u.m)
+    <Quantity 1. m>
+
+    >>> func(1 * u.s)
+    Traceback (most recent call last):
+      ...
+    astropy.units.core.UnitConversionError: The argument x to func should be a Quantity with the following units: m
+
+    >>> import pytest    # to show the UnitsWarning
+    >>> with pytest.warns(u.UnitsWarning, message="Assuming units of m."):
+    ...     func(1)
+    <Quantity 1. m>
+
+    >>> func(-1 * u.m)
+    Traceback (most recent call last):
+      ...
+    ValueError: The argument x to function func cannot contain negative numbers.
+
+    >>> func(np.inf * u.m)
+    <Quantity inf m>
+
+    >>> func(None)
+    Traceback (most recent call last):
+      ...
+    ValueError: The argument x to function func cannot contain Nones.
 
     Parameters
     ----------
-    validations : `dict`
-        Validation dictionary.
+    Arguments to be validated passed in as keyword
+    arguments, with values as validation dictionaries,
+    with structure as in the example.
+    Valid keys for each argument are:
+        'units': `astropy.units.Unit`,
+        'can_be_negative': `bool`,
+        'can_be_complex': `bool`,
+        'can_be_inf': `bool`,
+        'can_be_nan': `bool`,
+        'none_shall_pass': `bool`
 
     Raises
     ------
@@ -35,7 +87,7 @@ def check_quantity(validations):  # TODO simplify via **kwargs
     `~astropy.units.UnitConversionError`
         If the argument is not in acceptable units.
 
-    ~astropy.units.UnitsError
+    `~astropy.units.UnitsError`
         If after the assumption checks, the argument is still not in acceptable
         units.
 
@@ -45,7 +97,7 @@ def check_quantity(validations):  # TODO simplify via **kwargs
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    `~astropy.units.UnitsWarning`
         If a `~astropy.units.Quantity` is not provided and unique units
         are provided, a `UnitsWarning` will be raised and the inputted
         units will be assumed.
@@ -55,25 +107,9 @@ def check_quantity(validations):  # TODO simplify via **kwargs
     function
         Decorated function.
 
-    Examples
+    See also
     --------
-    >>> from astropy import units as u
-    >>> @check_quantity({
-    ... "x": {"units": u.m},
-    ... "y": {"units": u.s,
-    ...       "can_be_negative": False,
-    ...       "can_be_complex": True,
-    ...       "can_be_inf": False}
-    ... })
-    ... def func(x: u.m, y: u.s=1 * u.s):
-    ...     return x
-    ...
-    >>> func(1 * u.m)
-    <Quantity 1. m>
-    >>> func(1 * u.m, 2 * u.m)
-    Traceback (most recent call last):
-      ...
-    astropy.units.core.UnitConversionError: The argument y to func should be a Quantity with the following units: s
+    _check_quantity
 
     """
     def decorator(f):
@@ -256,7 +292,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         else:
             try:
                 arg = arg * units[0]
-            except Exception:
+            except (u.UnitsError, ValueError):
                 raise TypeError(typeerror_message)
             else:
                 warnings.warn(UnitsWarning(unit_casting_warning))
@@ -409,13 +445,15 @@ def _check_relativistic(V, funcname, betafrac=0.05):
     if not isinstance(V, u.Quantity):
         raise TypeError(errmsg)
 
-    if V.si.unit != u.m / u.s:
+    try:
+        V_over_c = (V / c).to_value(u.dimensionless_unscaled)
+    except Exception:
         raise u.UnitConversionError(errmsg)
 
     if np.any(np.isnan(V.value)):
         raise ValueError(f"V includes NaNs in {funcname}")
 
-    beta = np.max(np.abs((V.si / c).value))
+    beta = np.max(np.abs((V_over_c)))
 
     if beta == np.inf:
         raise RelativityError(f"{funcname} is yielding an infinite velocity.")

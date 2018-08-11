@@ -295,16 +295,16 @@ class ClassicalTransport:
 
     """
 
-    @utils.check_quantity({"T_e": {"units": u.K, "can_be_negative": False},
-                           "n_e": {"units": u.m ** -3},
-                           "T_i": {"units": u.K, "can_be_negative": False},
-                           "n_i": {"units": u.m ** -3},
-                           })
+    @utils.check_quantity(T_e={"units": u.K, "can_be_negative": False},
+                          n_e={"units": u.m ** -3},
+                          T_i={"units": u.K, "can_be_negative": False},
+                          n_i={"units": u.m ** -3},
+                          )
     def __init__(self,
-                 T_e,
-                 n_e,
-                 T_i,
-                 n_i,
+                 T_e: u.K,
+                 n_e: u.m**-3,
+                 T_i: u.K,
+                 n_i: u.m**-3,
                  ion_particle,
                  m_i=None,
                  Z=None,

@@ -1,17 +1,8 @@
-astropy
-coveralls
-mpmath
-roman
-lmfit
-matplotlib
-numpy
-cython
+-r requirements.txt
+
 numpydoc
 pillow
-scipy
 sphinx
 sphinx-automodapi
 sphinx-gallery
 sphinx_rtd_theme
-pytest
-colorama

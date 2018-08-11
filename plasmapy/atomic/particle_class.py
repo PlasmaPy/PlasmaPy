@@ -4,6 +4,8 @@ import numpy as np
 import warnings
 from typing import (Union, Set, Tuple, List, Optional)
 import collections
+import plasmapy.utils.roman as roman
+import numbers
 
 import astropy.units as u
 import astropy.constants as const
@@ -112,9 +114,10 @@ class Particle:
 
     Parameters
     ----------
-    argument : `str` or `int`
-        A string representing a particle, element, isotope, or ion; or
-        an integer representing the atomic number of an element.
+    argument : `str`, `int`, or `~plasmapy.atomic.Particle`
+        A string representing a particle, element, isotope, or ion; an
+        integer representing the atomic number of an element; or a
+        `Particle` instance.
 
     mass_numb : `int`, optional
         The mass number of an isotope or nuclide.
@@ -237,6 +240,25 @@ class Particle:
     >>> ~positron
     Particle("e-")
 
+    A `~plasmapy.atomic.Particle` instance may be used as the first
+    argument to `~plasmapy.atomic.Particle`.
+
+    >>> iron = Particle('Fe')
+    >>> iron == Particle(iron)
+    True
+    >>> Particle(iron, mass_numb=56, Z=6)
+    Particle("Fe-56 6+")
+
+    If the previously constructed `~plasmapy.atomic.Particle` instance
+    represents an element, then the `Z` and `mass_numb` arguments may be
+    used to specify an ion or isotope.
+
+    >>> iron = Particle('Fe')
+    >>> Particle(iron, Z=1)
+    Particle("Fe 1+")
+    >>> Particle(iron, mass_numb=56)
+    Particle("Fe-56")
+
     The `~plasmapy.atomic.particle_class.Particle.categories` attribute
     and `~plasmapy.atomic.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
@@ -256,14 +278,22 @@ class Particle:
 
     def __init__(self, argument: Union[str, int], mass_numb: int = None, Z: int = None):
         """
-        Initialize a `~plasmapy.atomic.Particle` object and set private
+        Instantiate a `~plasmapy.atomic.Particle` object and set private
         attributes.
         """
 
-        if not isinstance(argument, (int, str)):
+        if not isinstance(argument, (int, np.integer, str, Particle)):
             raise TypeError(
                 "The first positional argument when creating a Particle "
-                "object must be either an integer or string.")
+                "object must be either an integer, string, or another"
+                "Particle object.")
+
+        # If argument is a Particle instance, then we will construct a
+        # new Particle instance for the same Particle (essentially a
+        # copy).
+
+        if isinstance(argument, Particle):
+            argument = argument.particle
 
         if mass_numb is not None and not isinstance(mass_numb, int):
             raise TypeError("mass_numb is not an integer")
@@ -609,6 +639,37 @@ class Particle:
         return self._attributes['ion']
 
     @property
+    def roman_symbol(self) -> Optional[str]:
+        """
+        Return the spectral name of the particle (i.e. the ionic symbol in
+        Roman numeral notation).  If the particle is not an ion or neutral
+        atom, return `None`. The roman numeral represents one plus the
+        integer charge. Raise `ChargeError` if no charge has been specified
+        and `roman.OutOfRangeError` if the charge is negative.
+
+        Examples
+        --------
+        >>> proton = Particle('proton')
+        >>> proton.roman_symbol
+        'H-1 II'
+        >>> hydrogen_atom = Particle('H', Z=0)
+        >>> hydrogen_atom.roman_symbol
+        'H I'
+
+        """
+        if not self._attributes['element']:
+            return None
+        if self._attributes['integer charge'] is None:
+            raise ChargeError(f"The charge of particle {self} has not been specified.")
+        if self._attributes['integer charge'] < 0:
+            raise roman.OutOfRangeError('Cannot convert negative charges to Roman.')
+
+        symbol = self.isotope if self.isotope else self.element
+        integer_charge = self._attributes['integer charge']
+        roman_charge = roman.to_roman(integer_charge + 1)
+        return f"{symbol} {roman_charge}"
+
+    @property
     def element_name(self) -> str:
         """
         Return the name of the element corresponding to this
@@ -625,6 +686,42 @@ class Particle:
         if not self.element:
             raise InvalidElementError(_category_errmsg(self, 'element'))
         return self._attributes['element name']
+
+    @property
+    def isotope_name(self) -> str:
+        """
+        Return the name of the element along with the isotope
+        symbol if the particle corresponds to an isotope, and
+        `None` otherwise.
+
+        If the particle is not a valid element, then this
+        attribute will raise an `~plasmapy.utils.InvalidElementError`.
+        If it is not an isotope, then this attribute will raise an
+        `~plasmapy.utils.InvalidIsotopeError`.
+
+        Examples
+        --------
+        >>> deuterium = Particle("D")
+        >>> deuterium.isotope_name
+        'deuterium'
+        >>> iron_isotope = Particle("Fe-56", Z=16)
+        >>> iron_isotope.isotope_name
+        'iron-56'
+
+        """
+        if not self.element:
+            raise InvalidElementError(_category_errmsg(self.particle, 'element'))
+        elif not self.isotope:
+            raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
+
+        if self.isotope == "D":
+            isotope_name = "deuterium"
+        elif self.isotope == "T":
+            isotope_name = "tritium"
+        else:
+            isotope_name = f"{self.element_name}-{self.mass_number}"
+
+        return isotope_name
 
     @property
     def integer_charge(self) -> int:
@@ -1151,17 +1248,17 @@ class Particle:
         """
 
         def become_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
-                """Change the argument into a `set`."""
-                if len(arg) == 0:
-                    return set()
-                if isinstance(arg, set):
-                    return arg
-                if isinstance(arg, str):
-                    return {arg}
-                if isinstance(arg[0], (tuple, list, set)):
-                    return set(arg[0])
-                else:
-                    return set(arg)
+            """Change the argument into a `set`."""
+            if len(arg) == 0:
+                return set()
+            if isinstance(arg, set):
+                return arg
+            if isinstance(arg, str):
+                return {arg}
+            if isinstance(arg[0], (tuple, list, set)):
+                return set(arg[0])
+            else:
+                return set(arg)
 
         if category_tuple != () and require != set():  # coveralls: ignore
             raise AtomicError(
@@ -1232,3 +1329,162 @@ class Particle:
 
         """
         return self.is_category('ion')
+
+    def ionize(self, n: numbers.Integral = 1, inplace: bool = False):
+        """
+        Create a new `~plasmapy.atomic.Particle` instance corresponding
+        to the current `~plasmapy.atomic.Particle` after being ionized
+        `n` times.
+
+        If `inplace` is `False` (default), then return the ionized
+        `~plasmapy.atomic.Particle`.
+
+        If `inplace` is `True`, then replace the current
+        `~plasmapy.atomic.Particle` with the newly ionized
+        `~plasmapy.atomic.Particle`.
+
+        Parameters
+        ----------
+        n : positive integer
+            The number of bound electrons to remove from the
+            `~plasmapy.atomic.Particle` object.  Defaults to `1`.
+
+        inplace : bool, optional
+            If `True`, then replace the current
+            `~plasmapy.atomic.Particle` instance with the newly ionized
+            `~plasmapy.atomic.Particle`.
+
+        Returns
+        -------
+        particle : ~plasmapy.atomic.Particle
+            A new `~plasmapy.atomic.Particle` object that has been
+            ionized `n` times relative to the original
+            `~plasmapy.atomic.Particle`.  If `inplace` is `False`,
+            instead return `None`.
+
+        Raises
+        ------
+        ~plasmapy.atomic.InvalidElementError
+            If the `~plasampy.atomic.Particle` is not an element.
+
+        ~plasmapy.atomic.ChargeError
+            If no charge information for the `~plasmapy.atomic.Particle`
+            object is specified.
+
+        ~plasmapy.atomic.InvalidIonError
+            If there are less than `n` remaining bound electrons.
+
+        ValueError
+            If `n` is not positive.
+
+        Examples
+        --------
+        >>> Particle("Fe 6+").ionize()
+        Particle("Fe 7+")
+        >>> helium_particle = Particle("He-4 0+")
+        >>> helium_particle.ionize(n=2, inplace=True)
+        >>> helium_particle
+        Particle("He-4 2+")
+
+        """
+        if not self.element:
+            raise InvalidElementError(
+                f"Cannot ionize {self.particle} because it is not a "
+                f"neutral atom or ion.")
+        if not self.is_category(any_of={"charged", "uncharged"}):
+            raise ChargeError(
+                f"Cannot ionize {self.particle} because its charge "
+                f"is not specified.")
+        if self.integer_charge == self.atomic_number:
+            raise InvalidIonError(
+                f"The particle {self.particle} is already fully "
+                f"ionized and cannot be ionized further.")
+        if not isinstance(n, numbers.Integral):
+            raise TypeError("n must be a positive integer.")
+        if n <= 0:
+            raise ValueError("n must be a positive number.")
+
+        base_particle = self.isotope if self.isotope else self.element
+        new_integer_charge = self.integer_charge + n
+
+        if inplace:
+            self.__init__(base_particle, Z=new_integer_charge)
+        else:
+            return Particle(base_particle, Z=new_integer_charge)
+
+    def recombine(self, n: numbers.Integral = 1, inplace=False):
+        """
+        Create a new `~plasmapy.atomic.Particle` instance corresponding
+        to the current `~plasmapy.atomic.Particle` after undergoing
+        recombination `n` times.
+
+        If `inplace` is `False` (default), then return the
+        `~plasmapy.atomic.Particle` that just underwent recombination.
+
+        If `inplace` is `True`, then replace the current
+        `~plasmapy.atomic.Particle` with the `~plasmapy.atomic.Particle`
+        that just underwent recombination.
+
+        Parameters
+        ----------
+        n : positive integer
+            The number of electrons to recombine into the
+            `~plasmapy.atomic.Particle` object.
+
+        inplace : bool, optional
+            If `True`, then replace the current
+            `~plasmapy.atomic.Particle` instance with the
+            `~plasmapy.atomic.Particle` that just underwent
+            recombination.
+
+        Returns
+        -------
+        particle : ~plasmapy.atomic.Particle
+            A new `~plasmapy.atomic.Particle` object that has undergone
+            recombination `n` times relative to the original
+            `~plasmapy.atomic.Particle`.  If `inplace` is `False`,
+            instead return `None`.
+
+        Raises
+        ------
+        ~plasmapy.atomic.InvalidElementError
+            If the `~plasampy.atomic.Particle` is not an element.
+
+        ~plasmapy.atomic.ChargeError
+            If no charge information for the `~plasmapy.atomic.Particle`
+            object is specified.
+
+        ValueError
+            If `n` is not positive.
+
+        Examples
+        --------
+        >>> Particle("Fe 6+").recombine()
+        Particle("Fe 5+")
+        >>> helium_particle = Particle("He-4 2+")
+        >>> helium_particle.recombine(n=2, inplace=True)
+        >>> helium_particle
+        Particle("He-4 0+")
+
+        """
+
+        if not self.element:
+            raise InvalidElementError(
+                f"{self.particle} cannot undergo recombination because "
+                f"it is not a neutral atom or ion.")
+        if not self.is_category(any_of={"charged", "uncharged"}):
+            raise ChargeError(
+                f"{self.particle} cannot undergo recombination because "
+                f"its charge is not specified.")
+        if not isinstance(n, numbers.Integral):
+            raise TypeError("n must be a positive integer.")
+        if n <= 0:
+            raise ValueError("n must be a positive number.")
+
+        base_particle = self.isotope if self.isotope else self.element
+        new_integer_charge = self.integer_charge - n
+
+        if inplace:
+            self.__init__(base_particle, Z=new_integer_charge)
+        else:
+            return Particle(base_particle, Z=new_integer_charge)

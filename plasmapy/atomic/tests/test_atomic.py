@@ -15,6 +15,7 @@ from ..atomic import (
     mass_number,
     standard_atomic_weight,
     particle_mass,
+    reduced_mass,
     is_stable,
     half_life,
     known_isotopes,
@@ -27,6 +28,7 @@ from ..atomic import (
     periodic_table_block,
     periodic_table_category,
     periodic_table_group,
+    _is_electron,
 )
 
 from ..nuclear import (
@@ -338,6 +340,8 @@ is_stable_table = [
     [('',), InvalidParticleError],
     [('pb-209',), InvalidParticleError],
     [('h',), InvalidParticleError],
+    [('He',), InvalidIsotopeError],
+    [('B',), InvalidIsotopeError],
 ]
 
 integer_charge_table = [
@@ -391,6 +395,24 @@ half_life_table = [
     ['tritium', u.s],
     ['H-1', np.inf * u.s],
 ]
+
+
+class TestInvalidPeriodicElement:
+    def test_periodic_table_period(self):
+        with pytest.raises(TypeError):
+            periodic_table_period(('Ne', 'Na'))
+
+    def test_periodic_table_block(self):
+        with pytest.raises(TypeError):
+            periodic_table_block(('N', 'C', 'F'))
+
+    def test_periodic_table_category(self):
+        with pytest.raises(TypeError):
+            periodic_table_category(['Rb', 'He', 'Li'])
+
+    def test_periodic_table_group(self):
+        with pytest.raises(TypeError):
+            periodic_table_group(('B', 'Ti', 'Ge'))
 
 # The tables above do not include the function to be tested in order to
 # avoid cluttering up the code.  The following block of code prepends
@@ -712,3 +734,33 @@ def test_isotopic_abundances_sum(element, isotopes):
     sum_of_iso_abund = sum(isotopic_abundance(isotope) for isotope in isotopes)
     assert np.isclose(sum_of_iso_abund, 1, atol=1e-6), \
         f"The sum of the isotopic abundances for {element} does not equal 1."
+
+
+class TestReducedMassInput:
+    def test_incorrect_units(self):
+        with pytest.raises(u.UnitConversionError):
+            reduced_mass('N', 6e-26 * u.l)
+
+    def test_missing_atomic_data(self):
+        with pytest.raises(MissingAtomicDataError):
+            reduced_mass('Og', 'H')
+
+
+str_electron_table = [
+    ('e-', True),
+    ('e+', False),
+    ('e', True),
+    ('electron', True),
+    ('ELECTRON', True),
+    ('H', False),
+    ('positron', False),
+    ('Carbon', False),
+    (('e', 'e-'), False),
+    (['e+', 'proton'], False),
+    ('merry-go-round', False),
+]
+
+
+@pytest.mark.parametrize('particle, electron', str_electron_table)
+def test_is_electron(particle, electron):
+    assert _is_electron(particle) == electron

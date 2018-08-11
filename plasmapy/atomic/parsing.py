@@ -1,6 +1,6 @@
 """Functionality to parse representations of particles into standard form."""
 
-import roman
+from plasmapy.utils import roman
 import numpy as np
 import re
 import warnings
@@ -210,8 +210,8 @@ def _parse_and_check_atomic_input(argument: Union[str, int], mass_numb: int = No
             charge_str = charge_info.strip('+-')
 
             try:
-                if roman.romanNumeralPattern.match(charge_info):
-                    Z_from_arg = roman.fromRoman(charge_info) - 1
+                if roman.is_roman_numeral(charge_info):
+                    Z_from_arg = roman.from_roman(charge_info) - 1
                 elif '-' in charge_info:
                     Z_from_arg = - int(charge_str)
                 elif '+' in charge_info:

@@ -1,5 +1,5 @@
 import pytest
-from typing import Optional
+from typing import Optional, Union, Tuple, List
 
 from ...utils import (
     AtomicError,
@@ -171,6 +171,169 @@ def test_function_with_ambiguity():
         ambiguous_keywords('H', 'He', mass_numb=4)
     # TODO: should particle_input raise an exception when Z and mass_numb
     # are given as keyword arguments but are not explicitly set?
+
+
+def function_to_test_annotations(particles: Union[Tuple, List], resulting_particles):
+    """
+    Test that a function with an argument annotated with (Particle,
+    Particle, ...) or [Particle] returns a tuple of expected Particle
+    instances.
+
+    Arguments
+    =========
+    particles: tuple or list
+        A collection containing many items, each of which may be a valid
+        representation of a particle or a `~plasmapy.atomic.Particle`
+        instance
+
+    """
+
+    expected = [particle if isinstance(particle, Particle)
+                else Particle(particle) for particle in particles]
+
+    # Check that the returned values are Particle instances because
+    # running:
+    #     Particle('p+') == 'p+'
+    # will return True because of how Particle.__eq__ is set up.
+
+    returned_particle_instances = all([isinstance(p, Particle)
+                                       for p in resulting_particles])
+    returned_correct_instances = all([expected[i] == resulting_particles[i]
+                                      for i in range(len(particles))])
+
+    if not returned_particle_instances:
+        raise AtomicError(
+            f"A function decorated by particle_input did not return "
+            f"a collection of Particle instances for input of "
+            f"{repr(particles)}, and instead returned"
+            f"{repr(resulting_particles)}.")
+
+    if not returned_correct_instances:
+        raise AtomicError(
+            f"A function decorated by particle_input did not return "
+            f"{repr(expected)} as expected, and instead returned "
+            f"{repr(resulting_particles)}.")
+
+
+@particle_input
+def function_with_tuple_annotation(particles: (Particle, Particle), q, x=5):
+    return particles
+
+
+tuple_annotation_test_table = [
+    ('e-', 'e+'),
+    (Particle('alpha'), Particle('Fe 6+')),
+    ('e+', Particle('p+')),
+    ['nu_mu', 'anti_nu_mu'],
+]
+
+
+@pytest.mark.parametrize("particles", tuple_annotation_test_table)
+def test_tuple_annotation(particles: Union[Tuple, List]):
+    try:
+        resulting_particles = function_with_tuple_annotation(particles, 'ignore', x='ignore')
+    except Exception as exc2:
+        raise AtomicError(
+            f"Unable to evaluate a function decorated by particle_input"
+            f" with an annotation of (Particle, Particle) for inputs of"
+            f" {repr(particles)}."
+        ) from exc2
+
+    function_to_test_annotations(particles, resulting_particles)
+
+
+@particle_input
+def function_with_list_annotation(particles: [Particle], q, x=5):
+    return particles
+
+
+list_annotation_test_table = [
+    ('e-', 'e+'),
+    ('alpha', Particle('O 2-'), 3),
+    ('nu_mu', ),
+    ['e+', 'p+', 'anti_nu_mu'],
+]
+
+
+@pytest.mark.parametrize("particles", list_annotation_test_table)
+def test_list_annotation(particles: Union[Tuple, List]):
+    try:
+        resulting_particles = function_with_list_annotation(particles, 'ignore', x='ignore')
+    except Exception as exc2:
+        raise AtomicError(
+            f"Unable to evaluate a function decorated by particle_input"
+            f" with an annotation of [Particle] for inputs of"
+            f" {repr(particles)}."
+        ) from exc2
+
+    function_to_test_annotations(particles, resulting_particles)
+
+
+class TestOptionalArgs:
+    def particle_iter(self, particles):
+        return [Particle(particle) for particle in particles]
+
+    def test_optional_particle(self):
+        particle = "He"
+
+        @particle_input
+        def optional_particle(particle: Particle = particle):
+            return particle
+
+        assert optional_particle() == Particle(particle)
+        assert optional_particle("Ne") == Particle("Ne")
+
+    def test_optional_tuple(self):
+        tuple_of_particles = ("Mg", "Al")
+
+        @particle_input
+        def optional_tuple(particles: (Particle, Particle) = tuple_of_particles):
+            return particles
+
+        function_to_test_annotations(optional_tuple(), self.particle_iter(tuple_of_particles))
+        elements = ("C", "N")
+        function_to_test_annotations(optional_tuple(elements), self.particle_iter(elements))
+
+    def test_optional_list(self):
+        list_of_particles = ("Ca", "Ne")
+
+        @particle_input
+        def optional_list(particles: [Particle] = list_of_particles):
+            return particles
+
+        function_to_test_annotations(optional_list(), self.particle_iter(list_of_particles))
+        elements = ("Na", "H", "C")
+        function_to_test_annotations(optional_list(elements), self.particle_iter(elements))
+
+
+def test_invalid_number_of_tuple_elements():
+    with pytest.raises(ValueError):
+        # Passed 3 elements when function only takes 2 in tuple
+        function_with_tuple_annotation(('e+', 'e-', 'alpha'), q='test')
+
+
+def test_invalid_list_type():
+    @particle_input
+    # This should be just [Particle] instead of [Particle, Particle]
+    # for it to work correctly
+    def invalid_list_type(particles: [Particle, Particle]):
+        pass
+
+    with pytest.raises(TypeError):
+        invalid_list_type((Particle('He'), 'Ne'))
+
+
+def test_unexpected_tuple_and_list_argument_types():
+    @particle_input
+    def take_particle(particle: Particle):
+        pass
+
+    with pytest.raises(TypeError):
+        # Passing tuple of Particles instead of just single Particle
+        take_particle(('Li', 'Be'))
+    with pytest.raises(TypeError):
+        # Passing list of Particles instead of just single Particle
+        take_particle(['e+', 'alpha'])
 
 
 # decorator_kwargs, particle, expected_exception
