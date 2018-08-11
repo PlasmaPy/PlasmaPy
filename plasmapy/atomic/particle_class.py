@@ -276,13 +276,13 @@ class Particle:
 
 """
 
-    def __init__(self, argument: Union[str, int], mass_numb: int = None, Z: int = None):
+    def __init__(self, argument: Union[str, numbers.Integral], mass_numb: numbers.Integral = None, Z: numbers.Integral = None):
         """
         Instantiate a `~plasmapy.atomic.Particle` object and set private
         attributes.
         """
 
-        if not isinstance(argument, (int, np.integer, str, Particle)):
+        if not isinstance(argument, (numbers.Integral, np.integer, str, Particle)):
             raise TypeError(
                 "The first positional argument when creating a Particle "
                 "object must be either an integer, string, or another"
@@ -295,10 +295,10 @@ class Particle:
         if isinstance(argument, Particle):
             argument = argument.particle
 
-        if mass_numb is not None and not isinstance(mass_numb, int):
+        if mass_numb is not None and not isinstance(mass_numb, numbers.Integral):
             raise TypeError("mass_numb is not an integer")
 
-        if Z is not None and not isinstance(Z, int):
+        if Z is not None and not isinstance(Z, numbers.Integral):
             raise TypeError("Z is not an integer.")
 
         self._attributes = collections.defaultdict(lambda: None)
@@ -724,7 +724,7 @@ class Particle:
         return isotope_name
 
     @property
-    def integer_charge(self) -> int:
+    def integer_charge(self) -> numbers.Integral:
         """
         Return the particle's integer charge.
 
@@ -899,7 +899,7 @@ class Particle:
         raise MissingAtomicDataError(f"The mass of {self} is not available.")
 
     @property
-    def atomic_number(self) -> int:
+    def atomic_number(self) -> numbers.Integral:
         """
         Return the number of protons in an element, isotope, or ion.
 
@@ -921,7 +921,7 @@ class Particle:
         return self._attributes['atomic number']
 
     @property
-    def mass_number(self) -> int:
+    def mass_number(self) -> numbers.Integral:
         """
         Return the number of nucleons in an isotope.
 
@@ -943,7 +943,7 @@ class Particle:
         return self._attributes['mass number']
 
     @property
-    def neutron_number(self) -> int:
+    def neutron_number(self) -> numbers.Integral:
         """
         Return the number of neutrons in an isotope or nucleon.
 
@@ -970,7 +970,7 @@ class Particle:
             raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
 
     @property
-    def electron_number(self) -> int:
+    def electron_number(self) -> numbers.Integral:
         """
         Return the number of electrons in an ion.
 
@@ -1028,7 +1028,7 @@ class Particle:
         return abundance
 
     @property
-    def baryon_number(self) -> int:
+    def baryon_number(self) -> numbers.Integral:
         """
         Return the number of baryons in a particle.
 
@@ -1052,7 +1052,7 @@ class Particle:
         return self._attributes['baryon number']
 
     @property
-    def lepton_number(self) -> int:
+    def lepton_number(self) -> numbers.Integral:
         """
         Return `1` for leptons, `-1` for antileptons, and `0` otherwise.
 
@@ -1147,7 +1147,7 @@ class Particle:
         return self._attributes['half-life']
 
     @property
-    def spin(self) -> Union[int, float]:
+    def spin(self) -> Union[numbers.Integral, numbers.Real]:
         """
         Return the spin of the particle.
 

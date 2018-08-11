@@ -7,6 +7,7 @@ as arguments and pass through the corresponding instance of the
 import functools
 import inspect
 from typing import Callable, Union, Any, Set, List, Tuple
+import numbers
 
 from .particle_class import Particle
 
@@ -378,7 +379,7 @@ def particle_input(wrapped_function: Callable = None,
 
         if not already_particle:
 
-            if not isinstance(argval, (int, str, tuple, list)):
+            if not isinstance(argval, (numbers.Integral, str, tuple, list)):
                 raise TypeError(
                     f"The argument {argname} to {funcname} must be "
                     f"a string, an integer or a tuple or list of them "

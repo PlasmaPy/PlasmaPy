@@ -26,7 +26,7 @@ __all__ = [
 from astropy import units as u
 
 # from plasmapy.atomic import particle_mass, integer_charge
-
+import numbers
 import numpy as np
 # import warnings
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
@@ -64,7 +64,7 @@ def _grab_charge(ion, z_mean=None):
     return Z
 
 
-def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg / u.m ** 3:
+def mass_density(density, particle: str = None, z_mean: numbers.Real = None) -> u.kg / u.m ** 3:
     """Utility function to merge two possible inputs for particle charge.
 
     Parameters
@@ -328,7 +328,7 @@ def ion_sound_speed(T_e,
     Z = _grab_charge(ion, z_mean)
 
     for gamma, particles in zip([gamma_e, gamma_i], ["electrons", "ions"]):
-        if not isinstance(gamma, (float, int)):
+        if not isinstance(gamma, (numbers.Real, numbers.Integral)):
             raise TypeError(f"The adiabatic index gamma for {particles} must be "
                             "a float or int")
         if gamma < 1:
