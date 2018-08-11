@@ -464,8 +464,7 @@ def test_gyrofrequency():
     with pytest.raises(u.UnitConversionError):
         gyrofrequency(u.m * 1)
 
-    with pytest.raises(ValueError):
-        gyrofrequency(B_nanarr)
+    assert np.isnan(gyrofrequency(B_nanarr)[-1])
 
     # The following is a test to check that equivalencies from astropy
     # are working.
@@ -548,8 +547,7 @@ def test_gyroradius():
     with pytest.raises(ValueError):
         gyroradius(np.array([5, 6]) * u.T, Vperp=np.array([5, 6, 7]) * u.m / u.s)
 
-    with pytest.raises(ValueError):
-        gyroradius(np.nan * u.T, Vperp=1 * u.m / u.s)
+    assert np.isnan(gyroradius(np.nan * u.T, Vperp=1 * u.m / u.s))
 
     with pytest.raises(ValueError):
         gyroradius(3.14159 * u.T, T_i=-1 * u.K)
@@ -680,8 +678,7 @@ def test_plasma_frequency():
     with pytest.raises(u.UnitConversionError):
         plasma_frequency(5 * u.m ** -2)
 
-    with pytest.raises(ValueError):
-        plasma_frequency(np.nan * u.m ** -3)
+    assert np.isnan(plasma_frequency(np.nan * u.m ** -3))
 
     with pytest.warns(u.UnitsWarning):
         assert plasma_frequency(1e19) == plasma_frequency(1e19 * u.m ** -3)
@@ -859,14 +856,12 @@ def test_magnetic_pressure():
     with pytest.raises(u.UnitConversionError):
         magnetic_pressure(5 * u.m)
 
-    with pytest.raises(ValueError):
-        magnetic_pressure(np.nan * u.T)
+    assert np.isnan(magnetic_pressure(np.nan * u.T))
 
     with pytest.raises(ValueError):
         magnetic_pressure(5j * u.T)
 
-    with pytest.raises(ValueError):
-        magnetic_pressure(B_nanarr)
+    assert np.isnan(magnetic_pressure(B_nanarr)[-1])
 
     with pytest.warns(u.UnitsWarning):
         assert magnetic_pressure(22.2) == magnetic_pressure(22.2 * u.T)
@@ -897,14 +892,12 @@ def test_magnetic_energy_density():
     with pytest.raises(u.UnitConversionError):
         magnetic_energy_density(5 * u.m)
 
-    with pytest.raises(ValueError):
-        magnetic_energy_density(np.nan * u.T)
+    assert np.isnan(magnetic_energy_density(np.nan * u.T))
 
     with pytest.raises(ValueError):
         magnetic_energy_density(5j * u.T)
 
-    with pytest.raises(ValueError):
-        magnetic_energy_density(B_nanarr)
+    assert np.isnan(magnetic_energy_density(B_nanarr)[-1])
 
     with pytest.warns(u.UnitsWarning):
         assert magnetic_energy_density(22.2) == magnetic_energy_density(22.2 * u.T)
