@@ -76,7 +76,7 @@ The mass of a particle may be accessed through the
 >>> particle_mass('deuteron')
 <Quantity 3.34358372e-27 kg>
 
-.. atomic-func-isotopes
+.. _atomic-func-isotopes:
 
 Isotopes
 ========
