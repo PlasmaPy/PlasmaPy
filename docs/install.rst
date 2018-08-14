@@ -46,7 +46,7 @@ create a PlasmaPy environment by running:
 
 .. code:: bash
 
-    conda env create -f requirements/environment.yml
+    conda create -n plasmapy python=3.7 numpy scipy astropy matplotlib cython h5py lmfit mpmath colorama -c conda-forge
 
 To activate this environment, run:
 
