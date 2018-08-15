@@ -143,7 +143,7 @@ def check_quantity(**validations):
                 can_be_negative = validation_settings.get('can_be_negative', True)
                 can_be_complex = validation_settings.get('can_be_complex', False)
                 can_be_inf = validation_settings.get('can_be_inf', True)
-                can_be_nan = validation_settings.get('can_be_nan', False)
+                can_be_nan = validation_settings.get('can_be_nan', True)
                 none_shall_pass = validation_settings.get('none_shall_pass', False)
 
                 validated_value = _check_quantity(value_to_check,
@@ -163,7 +163,7 @@ def check_quantity(**validations):
 
 
 def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
-                    can_be_complex=False, can_be_inf=True, can_be_nan=False,
+                    can_be_complex=False, can_be_inf=True, can_be_nan=True,
                     none_shall_pass=False):
     """
     Raise an exception if an object is not a `~astropy.units.Quantity`
