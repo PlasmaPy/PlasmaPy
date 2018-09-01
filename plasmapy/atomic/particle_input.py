@@ -6,7 +6,7 @@ as arguments and pass through the corresponding instance of the
 
 import functools
 import inspect
-from typing import Callable, Union, Any, Set, List, Tuple
+from typing import Callable, Union, Any, Set, List, Tuple, Optional
 import numbers
 
 from .particle_class import Particle
@@ -253,6 +253,8 @@ def particle_input(wrapped_function: Callable = None,
             args_to_become_particles = []
             for argname in annotations.keys():
                 if isinstance(annotations[argname], tuple):
+                    if argname == 'return':
+                        continue
                     annotated_argnames = annotations[argname]
                     expected_params = len(annotated_argnames)
                     received_params = len(arguments[argname])
@@ -273,7 +275,7 @@ def particle_input(wrapped_function: Callable = None,
                     annotated_argnames = (annotations[argname],)
 
                 for annotated_argname in annotated_argnames:
-                    if annotated_argname is Particle and argname != 'return':
+                    if (annotated_argname is Particle or annotated_argname is Optional[Particle]) and argname != 'return':
                         args_to_become_particles.append(argname)
 
             if not args_to_become_particles:
@@ -344,15 +346,25 @@ def particle_input(wrapped_function: Callable = None,
                     # Occasionally there will be functions where it will be
                     # useful to allow None as an argument.
 
-                    if none_shall_pass and argval is None:
-                        new_kwargs[argname] = None
-                        continue
 
-                    params = (argval, Z, mass_numb)
-                    particle = get_particle(argname,
-                                            params,
-                                            already_particle,
-                                            funcname)
+                    # In case annotations[argname] is a collection (which looks
+                    # like (Particle, Optional[Particle], ...) or [Particle])
+                    if isinstance(annotations[argname], tuple):
+                        optional_particle = annotations[argname][pos] is Optional[Particle]
+                    elif isinstance(annotations[argname], list):
+                        optional_particle = annotations[argname] == [Optional[Particle],]
+                    else:
+                        # Otherwise annotations[argname] must be a Particle itself
+                        optional_particle = annotations[argname] is Optional[Particle]
+
+                    if (optional_particle or none_shall_pass) and argval is None:
+                        particle = None
+                    else:
+                        params = (argval, Z, mass_numb)
+                        particle = get_particle(argname,
+                                                params,
+                                                already_particle,
+                                                funcname)
 
                     if isinstance(raw_argval, (tuple, list)):
                         # If passed argument is a tuple or list, keep
