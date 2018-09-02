@@ -399,7 +399,8 @@ def test_none_shall_pass():
         return particle
 
     @particle_input(none_shall_pass=True)
-    def func_none_shall_pass_with_tuple(particles: (Particle, Particle)) -> (Optional[Particle], Optional[Particle]):
+    def func_none_shall_pass_with_tuple(particles: (Particle, Particle)) -> \
+                                       (Optional[Particle], Optional[Particle]):
         return particles
 
     @particle_input(none_shall_pass=True)
@@ -430,7 +431,8 @@ def test_none_shall_not_pass():
         return particle
 
     @particle_input(none_shall_pass=False)
-    def func_none_shall_not_pass_with_tuple(particles: (Particle, Particle)) -> (Particle, Particle):
+    def func_none_shall_not_pass_with_tuple(particles: (Particle, Particle)) -> \
+                                           (Particle, Particle):
         return particles
 
     @particle_input(none_shall_pass=False)
@@ -463,7 +465,8 @@ def test_optional_particle_annotation_argname():
         return particle
 
     @particle_input
-    def func_optional_particle_with_tuple(particles: (Particle, Optional[Particle])) -> (Particle, Optional[Particle]):
+    def func_optional_particle_with_tuple(particles: (Particle, Optional[Particle])) -> \
+                                         (Particle, Optional[Particle]):
         return particles
 
     @particle_input
@@ -489,7 +492,8 @@ def test_not_optional_particle_annotation_argname():
     not allows `None` to be passed through to the decorated function."""
 
     @particle_input
-    def func_not_optional_particle_with_tuple(particles: (Particle, Optional[Particle])) -> (Particle, Optional[Particle]):
+    def func_not_optional_particle_with_tuple(particles: (Particle, Optional[Particle])) -> \
+                                             (Particle, Optional[Particle]):
         return particles
 
     @particle_input

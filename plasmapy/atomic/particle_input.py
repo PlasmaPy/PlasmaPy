@@ -22,6 +22,7 @@ __all__ = [
     "particle_input",
 ]
 
+
 def _particle_errmsg(argname: str,
                      argval: str,
                      Z: int = None,
@@ -275,7 +276,9 @@ def particle_input(wrapped_function: Callable = None,
                     annotated_argnames = (annotations[argname],)
 
                 for annotated_argname in annotated_argnames:
-                    if (annotated_argname is Particle or annotated_argname is Optional[Particle]) and argname != 'return':
+                    is_particle = annotated_argname is Particle or \
+                                  annotated_argname is Optional[Particle]
+                    if is_particle and argname != 'return':
                         args_to_become_particles.append(argname)
 
             if not args_to_become_particles:
@@ -346,13 +349,12 @@ def particle_input(wrapped_function: Callable = None,
                     # Occasionally there will be functions where it will be
                     # useful to allow None as an argument.
 
-
                     # In case annotations[argname] is a collection (which looks
                     # like (Particle, Optional[Particle], ...) or [Particle])
                     if isinstance(annotations[argname], tuple):
                         optional_particle = annotations[argname][pos] is Optional[Particle]
                     elif isinstance(annotations[argname], list):
-                        optional_particle = annotations[argname] == [Optional[Particle],]
+                        optional_particle = annotations[argname] == [Optional[Particle], ]
                     else:
                         # Otherwise annotations[argname] must be a Particle itself
                         optional_particle = annotations[argname] is Optional[Particle]
@@ -454,7 +456,6 @@ def particle_input(wrapped_function: Callable = None,
                 _category_errmsg(particle, require, exclude, any_of, funcname))
 
         return particle
-
 
     # The following code allows the decorator to be used either with or
     # without arguments.  This allows us to invoke the decorator either
