@@ -8,6 +8,22 @@ This document lists the changes made during each release of PlasmaPy,
 including bug fixes and changes to the application programming interface
 (API).  The :ref:`release-notes` summarize the changes for each version.
 
+.. _change-log-0.1.2:
+
+Version 0.1.2
+-------------
+
+Version 0.1.2 is a minor bugfix release aimed at solving issues with
+conda-forge builds.
+
+.. _change-log-0.1.2-bugfix:
+
+Bug Fixes
+~~~~~~~~~
+
+- Remove `roman` dependency via incorporating used code into `plasmapy.utils`
+- Allow numpy array operations for most functions in `plasmapy.physics`
+
 .. _change-log-0.1.1:
 
 Version 0.1.1

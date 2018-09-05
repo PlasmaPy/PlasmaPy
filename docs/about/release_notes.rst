@@ -19,6 +19,14 @@ whenever the API changes in a way that is not backwards compatible,
 backwards compatibility, and `PATCH` must be incremented for each bug
 fix release.
 
+Version 0.1.2
+-------------
+
+Version 0.1.2 is a minor release removing the `roman` dependency and
+allowing numpy array operations for most of the functions in 
+`plasmapy.physics`. For detailed information, take a look at the
+:ref:`change-log-0.1.2`.
+
 Version 0.1.1
 -------------
 
