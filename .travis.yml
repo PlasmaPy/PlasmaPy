@@ -11,9 +11,7 @@ install:
         - git clone git://github.com/astropy/ci-helpers.git --depth 1
         - source ci-helpers/travis/setup_conda.sh
         - pip install -r requirements/requirements.txt
-        - pip install coveralls flake8
-        # building so that we have cython files compiled for tests
-        - python setup.py develop
+        - pip install codecov coveralls flake8 pytest-cov pytest-astropy
 
 # Run flake8 tests
 before_script:
@@ -23,11 +21,11 @@ before_script:
         - time flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=astropy_helpers
 
 # Run the tests
-script: coverage run -m pytest plasmapy
+script: python setup.py test --coverage
 
 # Assess test coverage
 after_success:
-        - coveralls
+        - codecov
 
 # Hook travis into matrix channel for notifications
 notifications:

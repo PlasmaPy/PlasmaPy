@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 from astropy import units as u
+from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.physics.transport import (Coulomb_logarithm,
                                         impact_parameter_perp,
@@ -10,8 +11,11 @@ from plasmapy.physics.transport import (Coulomb_logarithm,
                                         mobility,
                                         Knudsen_number,
                                         coupling_parameter)
-from plasmapy.physics.transport.collisions import Spitzer_resistivity
+from plasmapy.physics.transport.collisions import (Spitzer_resistivity,
+                                                   fundamental_electron_collision_freq,
+                                                   fundamental_ion_collision_freq)
 from plasmapy.utils import exceptions
+from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 from plasmapy.constants import m_p, m_e, c
 
 
@@ -20,7 +24,9 @@ class Test_Coulomb_logarithm:
     def setup_class(self):
         """initializing parameters for tests """
         self.temperature1 = 10 * 11604 * u.K
+        self.T_arr = np.array([1, 2]) * u.eV
         self.density1 = 1e20 * u.cm ** -3
+        self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
         self.temperature2 = 1 * 11604 * u.K
         self.density2 = 1e23 * u.cm ** -3
         self.z_mean = 2.5
@@ -38,11 +44,79 @@ class Test_Coulomb_logarithm:
         self.gms6 = 3.635342040477818
         self.gms6_negative = 0.030720859361047514
 
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    @pytest.mark.parametrize("kwargs", [{"method": "classical"},
+                                        {"method": "GMS-1"},
+                                        {"method": "GMS-2", "z_mean": 1.0},
+                                        {"method": "GMS-3"},
+                                        {"method": "GMS-4"},
+                                        {"method": "GMS-5", "z_mean": 1.0},
+                                        {"method": "GMS-6", "z_mean": 1.0}, ])
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(Coulomb_logarithm, insert_some_nans, insert_all_nans, kwargs)
+
+    def test_unknown_method(self):
+        """Test that function will raise ValueError on non-existent method"""
+        with pytest.raises(ValueError):
+            Coulomb_logarithm(self.T_arr[0],
+                              self.n_arr[0],
+                              self.particles,
+                              method="welcome our new microsoft overlords")
+
+    def test_handle_invalid_V(self):
+        """Test that V default, V = None, and V = np.nan all give the same result"""
+        methodVal_0 = Coulomb_logarithm(self.T_arr[0],
+                                        self.n_arr[0],
+                                        self.particles,
+                                        z_mean=1 * u.dimensionless_unscaled,
+                                        V=np.nan * u.m / u.s)
+        methodVal_1 = Coulomb_logarithm(self.T_arr[0],
+                                        self.n_arr[0],
+                                        self.particles,
+                                        z_mean=1 * u.dimensionless_unscaled,
+                                        V=None)
+        methodVal_2 = Coulomb_logarithm(self.T_arr[0],
+                                        self.n_arr[0],
+                                        self.particles,
+                                        z_mean=1 * u.dimensionless_unscaled)
+        assert_quantity_allclose(methodVal_0, methodVal_1)
+        assert_quantity_allclose(methodVal_0, methodVal_2)
+
+    def test_handle_zero_V(self):
+        """Test that V == 0 returns a PhysicsError"""
+        with pytest.raises(exceptions.PhysicsError):
+            Coulomb_logarithm(self.T_arr[0],
+                              self.n_arr[0],
+                              self.particles,
+                              z_mean=1 * u.dimensionless_unscaled,
+                              V=0 * u.m / u.s)
+
+    def test_handle_V_arraysizes(self):
+        """Test that different sized V input array gets handled by _boilerplate"""
+        methodVal_0 = Coulomb_logarithm(self.T_arr[0],
+                                        self.n_arr[0],
+                                        self.particles,
+                                        z_mean=1 * u.dimensionless_unscaled,
+                                        V=np.array([np.nan, 3e7]) * u.m / u.s)
+        methodVal_1 = Coulomb_logarithm(self.T_arr[1],
+                                        self.n_arr[0],
+                                        self.particles,
+                                        z_mean=1 * u.dimensionless_unscaled,
+                                        V=np.array([1e7, np.nan]) * u.m / u.s)
+        methodVal_2 = Coulomb_logarithm(self.T_arr,
+                                        self.n_arr[0],
+                                        self.particles,
+                                        z_mean=1 * u.dimensionless_unscaled,
+                                        V=np.array([np.nan, np.nan]) * u.m / u.s)
+        assert_quantity_allclose(methodVal_0[0], methodVal_2[0])
+        assert_quantity_allclose(methodVal_1[1], methodVal_2[1])
+
     def test_symmetry(self):
         lnLambda = Coulomb_logarithm(self.temperature1, self.density2, self.particles)
         lnLambdaRev = Coulomb_logarithm(self.temperature1, self.density2, self.particles[::-1])
         assert lnLambda == lnLambdaRev
-
 
     def test_Chen_Q_machine(self):
         """
@@ -65,7 +139,6 @@ class Test_Coulomb_logarithm:
         errStr = ("Q-machine value of Coulomb logarithm should be "
                   f"{lnLambdaChen} and not {lnLambda}.")
         assert testTrue, errStr
-
 
     def test_Chen_lab(self):
         """
@@ -513,6 +586,14 @@ class Test_impact_parameter_perp:
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
 
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, insert_some_nans,
+                             insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(impact_parameter_perp, insert_some_nans,
+                                  insert_all_nans, kwargs)
+
     assert np.isclose(Coulomb_logarithm(1 * u.eV, 5 * u.m ** -3, ('e', 'e')),
                       Coulomb_logarithm(11604.5220 * u.K,
                                         5 * u.m ** -3,
@@ -524,7 +605,9 @@ class Test_impact_parameter:
     def setup_class(self):
         """initializing parameters for tests """
         self.T = 11604 * u.K
+        self.T_arr = np.array([1, 2]) * u.eV
         self.n_e = 1e17 * u.cm ** -3
+        self.n_e_arr = np.array([1e17, 2e17]) * u.cm ** -3
         self.particles = ('e', 'p')
         self.z_mean = 2.5
         self.V = 1e4 * u.km / u.s
@@ -586,6 +669,29 @@ class Test_impact_parameter:
                              z_mean=np.nan * u.dimensionless_unscaled,
                              V=np.nan * u.m / u.s,
                              method="meow")
+
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    @pytest.mark.parametrize("kwargs", [{"method": "classical"},
+                                        {"method": "GMS-1"},
+                                        {"method": "GMS-2", "z_mean": 1.0},
+                                        {"method": "GMS-3"},
+                                        {"method": "GMS-4"},
+                                        {"method": "GMS-5", "z_mean": 1.0},
+                                        {"method": "GMS-6", "z_mean": 1.0}, ])
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(impact_parameter, insert_some_nans, insert_all_nans, kwargs)
+
+    def test_extend_scalar_bmin(self):
+        """
+        Test to verify that if T is scalar and n is vector, bmin will be extended
+        to the same length as bmax
+        """
+        (bmin, bmax) = impact_parameter(1 * u.eV,
+                                        self.n_e_arr,
+                                        self.particles)
+        assert(len(bmin) == len(bmax))
 
 
 class Test_collision_frequency:
@@ -649,6 +755,15 @@ class Test_collision_frequency:
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
 
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    @pytest.mark.parametrize("kwargs", [{"particles": ("e", "e")},
+                                        {"particles": ("e", "p")},
+                                        {"particles": ("p", "p")}, ])
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(collision_frequency, insert_some_nans, insert_all_nans, kwargs)
+
     def test_electrons(self):
         """
         Testing collision frequency between electrons.
@@ -707,6 +822,42 @@ class Test_collision_frequency:
         assert testTrue, errStr
 
 
+class Test_fundamental_electron_collision_freq():
+    @classmethod
+    def setup_class(self):
+        """initializing parameters for tests """
+        self.T_arr = np.array([1, 2]) * u.eV
+        self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
+        self.ion_particle = 'p'
+        self.coulomb_log = 10
+
+    # TODO: array coulomb log
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(fundamental_electron_collision_freq, insert_some_nans,
+                                  insert_all_nans, kwargs)
+
+
+class Test_fundamental_ion_collision_freq():
+    @classmethod
+    def setup_class(self):
+        """initializing parameters for tests """
+        self.T_arr = np.array([1, 2]) * u.eV
+        self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
+        self.ion_particle = 'p'
+        self.coulomb_log = 10
+
+    # TODO: array coulomb log
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(fundamental_ion_collision_freq, insert_some_nans,
+                                  insert_all_nans, kwargs)
+
+
 class Test_mean_free_path:
     @classmethod
     def setup_class(self):
@@ -762,6 +913,12 @@ class Test_mean_free_path:
         errStr = (f"Mean free path value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
+
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(mean_free_path, insert_some_nans, insert_all_nans, kwargs)
 
 
 class Test_Spitzer_resistivity:
@@ -834,6 +991,13 @@ class Test_Spitzer_resistivity:
         errStr = (f"Spitzer resistivity should be {self.True_zmean} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
+    # TODO vector z_mean
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(Spitzer_resistivity, insert_some_nans, insert_all_nans, kwargs)
 
 
 class Test_mobility:
@@ -910,6 +1074,13 @@ class Test_mobility:
                   f"not {methodVal}.")
         assert testTrue, errStr
 
+    # TODO vector z_mean
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(mobility, insert_some_nans, insert_all_nans, kwargs)
+
 
 class Test_Knudsen_number:
     @classmethod
@@ -969,6 +1140,12 @@ class Test_Knudsen_number:
         errStr = (f"Knudsen number value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
+
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(Knudsen_number, insert_some_nans, insert_all_nans, kwargs)
 
 
 class Test_coupling_parameter:
@@ -1044,6 +1221,17 @@ class Test_coupling_parameter:
         errStr = (f"Coupling parameter should be {self.True_zmean} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
+    # TODO vector z_mean
+    @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
+    @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
+    # @pytest.mark.parametrize("kwargs", [{"method": "classical"},
+    #                                     {"method": "quantum"},])   # TODO quantum issues
+    def test_handle_nparrays(self, insert_some_nans,
+                             insert_all_nans, kwargs={}):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(coupling_parameter, insert_some_nans,
+                                  insert_all_nans, kwargs)
 
     def test_quantum(self):
         """

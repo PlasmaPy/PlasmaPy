@@ -2,6 +2,7 @@ import pytest
 import numpy as np
 from astropy import units as u
 import inspect
+from plasmapy.utils import roman
 
 from ...constants import m_p, m_e, m_n, e
 

@@ -10,10 +10,7 @@ html-run: &doc-html
 
 latex-run: &doc-latex
   name: Build LaTeX documentation
-  command: |
-    make latexpdf 2>/tmp/TexError 1>/dev/null -w
-    cat /tmp/TexError
-  working_directory: docs
+  command: python setup.py build_docs -b latex -w
 
 version: 2
 jobs:
