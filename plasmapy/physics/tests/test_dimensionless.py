@@ -13,7 +13,7 @@ def test_beta_dimensionless():
     float(beta(T, n, B))
 
 
-def quantum_theta_dimensionless():
+def test_quantum_theta_dimensionless():
     # Check that quantum theta is dimensionless
     float(quantum_theta(T, n))
 
