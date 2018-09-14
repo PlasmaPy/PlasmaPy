@@ -114,6 +114,9 @@ class IonizationStates:
 
     @property
     def ionic_fractions(self):
+        """
+        ADD DOCSTRING
+        """
         try:
             return self._ionic_fractions
         except AttributeError as exc:
@@ -355,11 +358,8 @@ class IonizationStates:
     @property
     def abundances(self) -> Optional[Dict]:
         """
-        Return the elemental abundances
+        Return the elemental abundances.
         """
-
-#        if self._pars['abundances'] is None:
-#            raise AtomicError("No abundances are available.")
         return self._pars['abundances']
 
     @abundances.setter
@@ -411,6 +411,7 @@ class IonizationStates:
 
     @property
     def log_abundances(self) -> Optional[Dict]:
+
         if self._pars['abundances'] is not None:
             log_abundances_dict = {}
             for key in self.abundances.keys():
@@ -451,11 +452,25 @@ class IonizationStates:
                 self._pars['T_e'] = temp
 
     @property
-    def kappa(self):
+    def kappa(self) -> np.real:
+        """
+        Return the kappa parameter for a kappa distribution function
+        for electrons.
+        """
         return self._kappa
 
     @kappa.setter
-    def kappa(self, value: ):
+    def kappa(self, value: numbers.Real):
+        """
+        Set the kappa parameter for a kappa distribution function for
+        electrons.
+        """
+        kappa_errmsg = "kappa must be a real number greater than 1.5"
+        if not isinstance(value, numbers.Real):
+            raise TypeError(kappa_errmsg)
+        if kappa <= 1.5:
+            raise ValueError(kappa_errmsg)
+        self._kappa = np.real(kappa)
 
     def equilibrate(self, T_e=None, elements='all', kappa=None):
         """
@@ -463,21 +478,9 @@ class IonizationStates:
         Not implemented.
 
         The electron temperature used to calculate the new equilibrium
-        ionic fractions will be the argument `T_e`, if given. Otherwise,
-        the
-
-        The new equilibrium ionic fractions will correspond to the
-        argument `T_e` (if it is given) or the
-
-        , or to the attribute `T_e` if it is not
-        given
-
-
-        If the argument `T_e` is given, then the equilibrium ionic
-        fractions will correspond to that value.  Otherwise, if the
-        attribute `T_e` is set for this
-        `~plasmapy.atomic.IonizationStates` instance, then the equi
-
+        ionic fractions will be the argument `T_e` to this method if
+        given, and otherwise the attribute `T_e` if no electon
+        temperature is provided to this method.
 
         Parameters
         ----------
@@ -487,7 +490,6 @@ class IonizationStates:
         elements : `list`, `tuple`, or `str`, optional
             The elements to be equilibrated. If `elements` is `'all'`
             (default), then all elements will be equilibrated.
-
 
         """
         raise NotImplementedError
@@ -508,6 +510,10 @@ class IonizationStates:
             raise ValueError("Need 0 <= tol <= 1.")
 
     def normalize(self):
+        """
+        Normalize the ionic fractions so that the sum for each element
+        equals one.
+        """
         for particle in self.elements:
             tot = np.sum(self.ionic_fractions[particle])
             self.ionic_fractions[particle] = self.ionic_fractions[particle] / tot
