@@ -9,6 +9,7 @@ PlasmaPy Development Guide
 
    ../CONTRIBUTING
    ../CODE_OF_CONDUCT
+   install_dev
    code_guide
    testing_guide
    doc_guide

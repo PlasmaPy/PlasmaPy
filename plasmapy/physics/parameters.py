@@ -26,7 +26,7 @@ __all__ = [
 from astropy import units as u
 
 # from plasmapy.atomic import particle_mass, integer_charge
-
+import numbers
 import numpy as np
 # import warnings
 from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
@@ -64,13 +64,13 @@ def _grab_charge(ion, z_mean=None):
     return Z
 
 
-def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg / u.m ** 3:
+def mass_density(density, particle: str = None, z_mean: numbers.Real = None) -> u.kg / u.m ** 3:
     """Utility function to merge two possible inputs for particle charge.
 
     Parameters
     ----------
     density : ~astropy.units.Quantity
-        Either a particle density (number of particles per density, in units
+        Either a particle density (number of particles per unit volume, in units
         of 1/m^3) or a mass density (in units of kg/m^3 or equivalent).
 
     particle : str, optional
@@ -117,7 +117,7 @@ def mass_density(density, particle: str = None, z_mean: float = None) -> u.kg / 
                                'can_be_negative': False})
 def Alfven_speed(B, density, ion="p+", z_mean=None):
     r"""
-    Return the Alfven speed.
+    Return the Alfvén speed.
 
     Parameters
     ----------
@@ -144,8 +144,8 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
 
     Returns
     -------
-    V_A : ~astropy.units.Quantity with units of velocity
-        The Alfven velocity of the plasma in units of meters per second.
+    V_A : ~astropy.units.Quantity with units of speed
+        The Alfvén speed of the plasma in units of meters per second.
 
     Raises
     ------
@@ -173,7 +173,7 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
 
     Notes
     -----
-    The Alfven velocity :math:`V_A` is the typical propagation speed
+    The Alfven speed :math:`V_A` is the typical propagation speed
     of magnetic disturbances in a plasma, and is given by:
 
     .. math::
@@ -185,10 +185,6 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     This expression does not account for relativistic effects, and
     loses validity when the resulting speed is a significant fraction
     of the speed of light.
-
-    This function switches B and density when B has units of number
-    density or mass density and density has units of magnetic field
-    strength.
 
     Examples
     --------
@@ -332,7 +328,7 @@ def ion_sound_speed(T_e,
     Z = _grab_charge(ion, z_mean)
 
     for gamma, particles in zip([gamma_e, gamma_i], ["electrons", "ions"]):
-        if not isinstance(gamma, (float, int)):
+        if not isinstance(gamma, (numbers.Real, numbers.Integral)):
             raise TypeError(f"The adiabatic index gamma for {particles} must be "
                             "a float or int")
         if gamma < 1:
@@ -693,6 +689,11 @@ def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None):
         which defaults to electrons.  If no charge state information is
         provided, then the particles are assumed to be singly charged.
 
+    signed : bool, optional
+        The gyrofrequency can be defined as signed (negative for electron,
+        positive for ion). Default is `False` (unsigned, i.e. always
+        positive).
+
     Z : float or ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
@@ -701,11 +702,6 @@ def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None):
         plasma where multiple charge states are present, and should
         not be interpreted as the gyrofrequency for any single particle.
         If not provided, it defaults to the integer charge of the `particle`.
-
-    signed : bool, optional
-        The gyrofrequency can be defined as signed (negative for electron,
-        positive for ion). Default is `False` (unsigned, i.e. always
-        positive).
 
     Returns
     -------
@@ -1337,9 +1333,7 @@ def magnetic_energy_density(B: u.T):
     <Quantity 3978.8735773 J / m3>
 
     """
-
-    E_B = (B ** 2 / (2 * mu0)).to(u.J / u.m ** 3)
-
+    E_B = magnetic_pressure(B).to(u.J / u.m ** 3)
     return E_B
 
 

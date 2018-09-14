@@ -14,6 +14,7 @@ from ...utils import (
     InvalidParticleError,
     InvalidElementError,
     InvalidIsotopeError,
+    InvalidIonError,
     ChargeError,
     call_string,
     run_test_equivalent_calls,
@@ -80,6 +81,7 @@ test_Particle_table = [
       'periodic_table.period': 1,
       'periodic_table.category': 'nonmetal',
       'binding_energy': 0 * u.J,
+      'recombine()': 'H-1 0+',
       }),
 
     ('p-', {},
@@ -298,6 +300,7 @@ test_Particle_table = [
       'baryon_number': 4,
       'lepton_number': 0,
       'half_life': np.inf * u.s,
+      'recombine()': Particle('He-4 1+')
       }),
 
     ('Li', {'mass_numb': 7},
@@ -456,6 +459,8 @@ equivalent_particles_table = [
     ['n', 'n-1', 'neutron', 'NEUTRON'],
     ['muon', 'mu-', 'muon-'],
     ['tau', 'tau-'],
+    [Particle('Fe 5+'), Particle('Fe 4+').ionize()],
+    [Particle('He-4 0+'), Particle('alpha').recombine(2)]
 ]
 
 
@@ -492,6 +497,15 @@ test_Particle_error_table = [
     (Particle('C-14'), {'mass_numb': 13}, "", InvalidParticleError),
     (Particle('Au 1+'), {'Z': 2}, "", InvalidParticleError),
     ([], {}, "", TypeError),
+    ('Fe', {}, ".ionize()", ChargeError),
+    ('D', {}, ".recombine()", ChargeError),
+    ('Fe 26+', {}, ".ionize()", InvalidIonError),
+    ('Fe 6+', {}, ".ionize(-1)", ValueError),
+    ('Fe 25+', {}, ".recombine(0)", ValueError),
+    ('Fe 6+', {}, ".ionize(4.6)", TypeError),
+    ('Fe 25+', {}, ".recombine(8.2)", TypeError),
+    ('e-', {}, ".ionize()", InvalidElementError),
+    ('e+', {}, ".recombine()", InvalidElementError),
 ]
 
 
