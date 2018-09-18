@@ -10,6 +10,23 @@ including bug fixes and changes to the application programming interface
 
 .. _change-log-0.1.1:
 
+Version 0.2.0
+-------------
+
+New Features
+~~~~~~~~~~~~
+
+Bug Fixes
+~~~~~~~~~
+
+Changes to API
+~~~~~~~~~~~~~~
+
+- Moved `~plasmapy.transport` from `~plasmapy.physics` to its own
+  subpackage.
+
+.. _change-log-0.1.1:
+
 Version 0.1.1
 -------------
 
