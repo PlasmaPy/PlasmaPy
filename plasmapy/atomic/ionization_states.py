@@ -287,7 +287,7 @@ class IonizationStates:
                 raise AtomicError(
                     f"Cannot set item for this IonizationStates "
                     f"instance for key = {repr(key)} and value = "
-                    f"{repr(value)}")
+                    f"{repr(value)}") from exc
 
     def __iter__(self):
         self._element_index = 0
@@ -429,8 +429,8 @@ class IonizationStates:
                 for key in value.keys():
                     new_abundances_input[key] = 10 ** value[key]
                 self.abundances = new_abundances_input
-            except Exception as exc:
-                raise AtomicError("Invalid log_abundances.")
+            except Exception:
+                raise AtomicError("Invalid log_abundances.") from None
 
     @property
     def T_e(self):
