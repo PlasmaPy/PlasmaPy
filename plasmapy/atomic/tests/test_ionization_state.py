@@ -2,11 +2,9 @@ import pytest
 import numpy as np
 import astropy.units as u
 from ..ionization_state import IonizationState
-from ..ionization_states import IonizationStates
 from ...utils import AtomicError, RunTestError, InvalidIsotopeError, run_test
 from ...atomic import (
     atomic_number,
-    mass_number,
     atomic_symbol,
     isotope_symbol,
     Particle,
@@ -201,13 +199,12 @@ class Test_IonizationState:
 
         Identifications = collections.namedtuple(
             "Identifications",
-            ["element", "isotope", "atom", "atomic_number"],
+            ["element", "isotope", "atomic_number"],
         )
 
         expected_identifications = Identifications(
             self.instances[test_name].element,
             self.instances[test_name].isotope,
-            self.instances[test_name].atom,
             self.instances[test_name].atomic_number,
         )
 
@@ -218,7 +215,6 @@ class Test_IonizationState:
         resulting_identifications = Identifications(
             expected_element,
             expected_isotope,
-            expected_isotope if expected_isotope else expected_element,
             expected_atomic_number,
         )
 
@@ -244,7 +240,7 @@ class Test_IonizationState:
         instances.
         """
         instance = self.instances[test_name]
-        atom = instance.atom
+        atom = instance.isotope if instance._particle.isotope else instance.element
         nstates = instance.atomic_number + 1
         expected_particles = [Particle(atom, Z=Z) for Z in range(nstates)]
         assert expected_particles == instance.particles, (
@@ -266,6 +262,37 @@ class Test_IonizationState:
             rtol=1e-12, atol=0 * u.m ** -3), \
             "n_e is not the expected value."
 
+    def test_getitem(self):
+        test_name = 'He'
+        instance = self.instances[test_name]
+
+        charge = 1
+        ion_name = 'He 1+'
+
+        gotten_item = instance[charge]
+
+        assert hasattr(gotten_item, 'integer_charge')
+        assert hasattr(gotten_item, 'ionic_fraction')
+        assert hasattr(gotten_item, 'ionic_symbol')
+
+    @pytest.mark.parametrize('attr', ['integer_charge', 'ionic_fraction', 'ionic_symbol'])
+    def test_State_attrs(self, attr):
+        """
+        Test that an IonizationState returns something with the correct
+        attributes (be it a collections.namedtuple or a class).
+        """
+        test_name = 'He'
+        state = self.instances[test_name][1]
+        assert hasattr(state, attr)
+
+    def test_State_equality_and_getitem(self):
+        test_name = 'He'
+        instance = self.instances[test_name]
+        charge = 2
+        symbol = 'He 2+'
+        result_from_charge = instance[charge]
+        result_from_symbol = instance[symbol]
+        assert result_from_charge == result_from_symbol
 
 IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
 
@@ -284,7 +311,7 @@ tests_for_exceptions = {
 
 
 @pytest.mark.parametrize('test', tests_for_exceptions.keys())
-def test_execeptions(test):
+def test_IonizationState_exceptions(test):
     """
     Test that appropriate exceptions are raised for inappropriate inputs
     to IonizationStates.
@@ -294,3 +321,46 @@ def test_execeptions(test):
         kwargs=tests_for_exceptions[test].inputs,
         expected_outcome=tests_for_exceptions[test].expected_exception,
     )
+
+
+kwargs = {
+    'particle': 'He-4',
+    'ionic_fractions': [0.2, 0.3, 0.5],
+    'T_e': 5.0 * u.kK,
+    'tol': 2e-14,
+    'n_elem': 1e13 * u.cm ** -3
+}
+
+expected_properties = {
+    'T_e': 5000.0 * u.K,
+    'tol': 2e-14,
+    'isotope': 'He-4',
+    'element': 'He',
+    'atomic_number': 2,
+    'Z_mean': 1.3,
+    'Z_rms': 1.51657508881031,
+    'integer_charges': [0, 1, 2],
+    'ionic_fractions': np.array([0.2, 0.3, 0.5]),
+    'ionic_symbols': ['He-4 0+', 'He-4 1+', 'He-4 2+'],
+    'is_normalized()': True,
+    'number_densities': np.array([2e18, 3e18, 5e18]) * u.m ** -3,
+    'tol': 2e-14,
+}
+
+instance = IonizationState(**kwargs)
+
+@pytest.mark.parametrize('key', expected_properties.keys())
+def test_IonizationState_attributes(key):
+    """
+    Test a specific case that the IonizationState attributes are working
+    as expected.
+    """
+
+    expected = expected_properties[key]
+    actual = eval(f'instance.{key}')
+
+    try:
+        assert expected == actual
+    except ValueError:
+        unit = expected.unit if isinstance(expected, u.Quantity) else 1
+        assert np.allclose(expected, actual, atol=1e-15 * unit)

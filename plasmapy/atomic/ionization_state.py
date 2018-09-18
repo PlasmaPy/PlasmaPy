@@ -1,13 +1,21 @@
-from typing import Dict, List, Optional, Tuple, Union
-
+import typing
 import astropy.units as u
 import collections
 import numpy as np
 import numbers
 import warnings
+
 from plasmapy.atomic.particle_class import Particle
 from plasmapy.atomic.particle_input import particle_input
-from plasmapy.utils import (AtomicError, ChargeError, InvalidParticleError, check_quantity)
+
+from plasmapy.utils import (
+    AtomicError,
+    ChargeError,
+    InvalidParticleError,
+    InvalidIsotopeError,
+    check_quantity,
+)
+
 
 State = collections.namedtuple(
     'State', [
@@ -104,10 +112,10 @@ class IonizationState:
                  particle: Particle,
                  ionic_fractions=None,
                  *,
-                 T_e=None,
-                 n_e=None,
+                 T_e: u.K = None,
+                 n_e: u.m ** -3 =None,
                  n_elem=None,
-                 tol: Union[float, int] = 1e-15):
+                 tol: typing.Union[float, int] = 1e-15):
         """Initialize a `~plasmapy.atomic.IonizationState` instance."""
 
         self._particle = particle
@@ -131,7 +139,8 @@ class IonizationState:
                 f"{particle.particle}.") from exc
 
     def __str__(self) -> str:
-        return f"<IonizationState of {self.atom}>"
+        symbol = self.isotope if self._particle.isotope else self.element
+        return f"<IonizationState of {symbol}>"
 
     def __repr__(self):
         return self.__str__()
@@ -214,9 +223,11 @@ class IonizationState:
                 "compared with other IonizationState instances.")
 
         if self.element != other.element:
-            raise AtomicError("Only ionization states of the same element may be compared.")
+            raise AtomicError(
+                "Only ionization states of the same element or isotope "
+                "may be compared.")
 
-        # Use the tightest of the two absolute tolerances
+        # Use the tighter of the two absolute tolerances
         min_tol = np.min([self.tol, other.tol])
 
         return np.allclose(self.ionic_fractions, other.ionic_fractions, atol=min_tol)
@@ -329,7 +340,7 @@ class IonizationState:
             return self._n_e / (self.ionic_fractions * self.integer_charges)
 
     @n_elem.setter
-    def n_elem(self, value):
+    def n_elem(self, value: u.m ** -3):
         """The number density of atoms plus ions of this species."""
         if value is None:
             self._n_elem = None
@@ -391,7 +402,7 @@ class IonizationState:
             self._T_e = value
 
     @property
-    def equil_ionic_fractions(self, T_e=None):
+    def equil_ionic_fractions(self, T_e: u.K = None):
         """
         Return the equilibrium ionic fractions for temperature `T_e` or
         the temperature set in the IonizationState instance.  Not
@@ -399,7 +410,7 @@ class IonizationState:
         """
         raise NotImplementedError
 
-    def equilibrate(self, T_e=None):
+    def equilibrate(self, T_e: u.K = None):
         """
         Set the ionic fractions to collisional ionization equilibrium
         for temperature `T_e`.  Not implemented.
@@ -423,18 +434,12 @@ class IonizationState:
         Return the isotope symbol for an isotope, or `None` if the
         particle is not an isotope.
         """
+        # Returning None when not an isotope makes it easier to do
+        # things like: symbol = x.isotope if x.isotope else x.element
         return self._particle.isotope
 
     @property
-    def atom(self) -> str:
-        """
-        Return the element or isotope corresponding to this
-        `~plasmapy.atomic.IonizationState` instance.
-        """
-        return self._particle.particle
-
-    @property
-    def particles(self) -> List[Particle]:
+    def particles(self) -> typing.List[Particle]:
         """
         Return a list of the `~plasmapy.atomic.Particle` class
         instances corresponding to each ion.
@@ -442,9 +447,9 @@ class IonizationState:
         return [Particle(self._particle.particle, Z=i) for i in range(self.atomic_number + 1)]
 
     @property
-    def ionic_symbols(self) -> List[str]:
+    def ionic_symbols(self) -> typing.List[str]:
         """Return the ionic symbols for all charge states."""
-        return [p.ionic_symbol for p in self.particles]
+        return [particle.ionic_symbol for particle in self.particles]
 
     @property
     def integer_charges(self) -> np.ndarray:
@@ -478,7 +483,7 @@ class IonizationState:
         total = np.sum(self._ionic_fractions)
         return np.isclose(total, 1, atol=tol, rtol=0)
 
-    def normalize(self):
+    def normalize(self) -> None:
         """
         Normalize the ionization state distribution so that the sum
         becomes equal to one.
