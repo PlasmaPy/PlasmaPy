@@ -113,8 +113,8 @@ class IonizationState:
                  ionic_fractions=None,
                  *,
                  T_e: u.K = None,
-                 n_e: u.m ** -3 =None,
-                 n_elem=None,
+                 n_e: u.m ** -3 = None,
+                 n_elem: u.m ** -3 = None,
                  tol: typing.Union[float, int] = 1e-15):
         """Initialize a `~plasmapy.atomic.IonizationState` instance."""
 
@@ -199,15 +199,18 @@ class IonizationState:
 
     def __eq__(self, other):
         """
-        Return `True` if the ionic fractions for two `IonizationState`
-        instances are approximately equal to within the minimum `tol`
-        specified by either, and `False` otherwise.
+        Return `True` if the ionic fractions (and other density and
+        temperature parameters, if set) are equal to within the minimum
+        specified tolerance, and `False` otherwise.
 
         Raises
         ------
-        AtomicError
+        TypeError
             If `other` is not an `~plasmapy.atomic.IonizationState`
-            instance, or if `other` corresponds to a different element.
+            instance.
+
+        AtomicError
+            If `other` corresponds to a different element or isotope.
 
         Examples
         --------
@@ -218,19 +221,58 @@ class IonizationState:
 
         """
         if not isinstance(other, IonizationState):
-            raise AtomicError(
-                "Instances of the IonizationState class may only be "
-                "compared with other IonizationState instances.")
+            raise TypeError(
+                "An instance of the IonizationState class may only be "
+                "compared with another IonizationState instance.")
 
-        if self.element != other.element:
+        same_element = self.element == other.element
+        same_isotope = self.isotope == other.isotope
+
+        if not same_element or not same_isotope:
             raise AtomicError(
-                "Only ionization states of the same element or isotope "
-                "may be compared.")
+                "An instance of the IonizationState class may only be "
+                "compared with another IonizationState instance if "
+                "both correspond to the same element and/or isotope.")
 
         # Use the tighter of the two absolute tolerances
+
         min_tol = np.min([self.tol, other.tol])
 
-        return np.allclose(self.ionic_fractions, other.ionic_fractions, atol=min_tol)
+        # Check that the electron temperatures are either both undefined
+        # or both defined and approximately equal to each other.
+
+        if self._T_e == other._T_e:
+            same_T_e = True
+        else:
+            if self._T_e is None ^ other._T_e is None:
+                same_T_e = False
+            else:
+                same_T_e = u.allclose(self.T_e, other.T_e, rtol=0, atol=min_tol*u.K)
+
+        # The densities may be recorded either as n_e or as n_elem, so
+        # account for both of them.
+
+        if self._n_e == other._n_e == self._n_elem == other._n_elem == None:
+            same_n_e = True
+        else:
+            try:
+                same_n_e = np.allclose(self.n_e, other.n_e, rtol=0, atol=min_tol*u.m**-3)
+            except TypeError:
+                same_n_e = False
+
+        same_ionic_fractions = np.allclose(
+            self.ionic_fractions,
+            other.ionic_fractions,
+            rtol=0,
+            atol=min_tol)
+
+        return np.all([
+            same_element,
+            same_isotope,
+            same_T_e,
+            same_n_e,
+            same_ionic_fractions,
+        ])
 
     @property
     def ionic_fractions(self) -> np.ndarray:
