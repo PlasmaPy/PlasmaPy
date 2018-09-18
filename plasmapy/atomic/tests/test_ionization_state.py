@@ -299,6 +299,36 @@ IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
 tests_for_exceptions = {
     'too few nstates': IE({'particle': 'H', 'ionic_fractions': [1.0]}, AtomicError),
     'too many nstates': IE({'particle': 'H', 'ionic_fractions': [1, 0, 0, 0]}, AtomicError),
+    'ionic fraction < 0': IE({'particle': 'He', 'ionic_fractions': [-0.1, 0.1, 1]}, AtomicError),
+    'ionic fraction > 1': IE({'particle': 'He', 'ionic_fractions': [1.1, 0.0, 0.0]}, AtomicError),
+
+    'invalid ionic fraction': IE({
+        'particle': 'He', 'ionic_fractions': [1.0, 0.0, 'a']
+    }, AtomicError),
+
+    'bad n_e units': IE({
+        'particle': 'H', 'ionic_fractions': [0, 1], 'n_e': 2 * u.m ** -2
+    }, u.UnitConversionError),
+
+    'bad n_elem units': IE({
+        'particle': 'H', 'ionic_fractions': [0, 1], 'n_elem': 3 * u.m ** 3
+    }, u.UnitConversionError),
+
+    'bad T_e units': IE({
+        'particle': 'H', 'ionic_fractions': [0, 1], 'T_e': 1 * u.m
+    }, u.UnitConversionError),
+
+    'negative n_e': IE({
+        'particle': 'He', 'ionic_fractions': [1.0, 0.0, 0.0], 'n_e': -1 * u.m ** -3
+    }, AtomicError),
+
+    'negative n_elem': IE({
+        'particle': 'He', 'ionic_fractions': [1.0, 0.0, 0.0], 'n_elem': -1 * u.m ** -3
+    }, AtomicError),
+
+    'negative T_e': IE({
+        'particle': 'He', 'ionic_fractions': [1.0, 0.0, 0.0], 'T_e': -1 * u.K
+    }, AtomicError),
 
     'redundant ndens 1': IE({
         'particle': 'H', 'ionic_fractions': np.array([3, 4]) * u.m ** -3, 'n_e': 4 * u.m ** -3,
@@ -339,12 +369,16 @@ expected_properties = {
     'atomic_number': 2,
     'Z_mean': 1.3,
     'Z_rms': 1.51657508881031,
+    'n_e': 1.3e19 * u.m ** -3,
+    'n_elem': 1e19 * u.m ** -3,
     'integer_charges': [0, 1, 2],
     'ionic_fractions': np.array([0.2, 0.3, 0.5]),
     'ionic_symbols': ['He-4 0+', 'He-4 1+', 'He-4 2+'],
     'is_normalized()': True,
     'number_densities': np.array([2e18, 3e18, 5e18]) * u.m ** -3,
     'tol': 2e-14,
+    '__str__()': "<IonizationState of He-4>",
+    '__repr__()': "<IonizationState of He-4>",
 }
 
 instance = IonizationState(**kwargs)
@@ -359,8 +393,48 @@ def test_IonizationState_attributes(key):
     expected = expected_properties[key]
     actual = eval(f'instance.{key}')
 
-    try:
-        assert expected == actual
-    except ValueError:
-        unit = expected.unit if isinstance(expected, u.Quantity) else 1
-        assert np.allclose(expected, actual, atol=1e-15 * unit)
+    if isinstance(expected, u.Quantity):
+        assert expected.unit == actual.unit, \
+            f"Unit mismatch for IonizationState.{key}"
+        assert np.allclose(expected, actual, atol=1e-15 * expected.unit), \
+            f"Quantity.value mismatch for IonizationState.{key}"
+    else:
+        try:
+            assert expected == actual
+        except ValueError:
+            assert np.allclose(expected, actual)
+
+
+def test_nans():
+    """
+    Test that when no ionic fractions or temperature are inputted,
+    the result is an array of NaNs of the right size.
+    """
+    instance = IonizationState('He')
+    assert len(instance.ionic_fractions) == 3
+    assert np.all([np.isnan(instance.ionic_fractions[i]) for i in range(3)])
+
+
+def test_setting_ionic_fractions():
+    instance = IonizationState('He')
+    new_ionic_fractions = [0.2, 0.5, 0.3]
+    instance.ionic_fractions = new_ionic_fractions
+    assert np.allclose(instance.ionic_fractions, new_ionic_fractions)
+
+
+def test_missing_n_e_error():
+    instance = IonizationState('H', [0, 1])
+    with pytest.raises(AtomicError):
+        instance.n_e
+
+
+def test_setting_n_e_if_n_elem_is_set():
+    instance = IonizationState('H', [0.2, 0.8], n_elem=1e8*u.m**-3)
+    with pytest.raises(AtomicError):
+        instance.n_e = 12 * u.m ** -3
+
+
+def test_setting_n_elem_if_n_e_is_set():
+    instance = IonizationState('H', [0.2, 0.8], n_e=1e8*u.m**-3)
+    with pytest.raises(AtomicError):
+        instance.n_elem = 12 * u.m ** -3

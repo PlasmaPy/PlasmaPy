@@ -323,7 +323,10 @@ class IonizationState:
                 "Only one of n_e and n_elem may be set for a "
                 "single element, quasineutral plasma.")
         try:
-            self._n_e = value.to(u.m ** -3)
+            value = value.to(u.m ** -3)
+            if value < 0 * u.m ** -3:
+                raise AtomicError("Negative n_e.")
+            self._n_e = value
             self._n_elem = None
         except (AttributeError, u.UnitConversionError):
             raise AtomicError(_number_density_errmsg)
@@ -350,9 +353,14 @@ class IonizationState:
                     "Only one of n_e and n_elem may be set for a "
                     "single element, quasineutral plasma.")
             try:
-                self._n_elem = value.to(u.m ** -3)
+                value = value.to(u.m ** -3)
             except (AttributeError, u.UnitConversionError):
                 raise AtomicError(_number_density_errmsg) from None
+            else:
+                if value < 0 * u.m ** -3:
+                    raise AtomicError("n_elem cannot be negative.")
+            finally:
+                self._n_elem = value
 
     @property
     def number_densities(self) -> u.m ** -3:
@@ -397,8 +405,11 @@ class IonizationState:
         else:
             try:
                 value = value.to(u.K, equivalencies=u.temperature_energy())
-            except (AttributeError, u.UnitsError):
+            except (AttributeError, u.UnitsError, u.UnitConversionError):
                 raise AtomicError("Invalid temperature.") from None
+            else:
+                if value < 0 * u.K:
+                    raise AtomicError("T_e cannot be negative.")
             self._T_e = value
 
     @property
