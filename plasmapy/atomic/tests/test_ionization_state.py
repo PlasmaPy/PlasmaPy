@@ -42,7 +42,7 @@ test_cases = {
         'particle': 'deuterium',
         'ionic_fractions': [0.7, 0.3],
         'tol': 1e-15,
-        'n_e': 3e14 * u.m ** -3,
+        'n_elem': 3e14 * u.m ** -3,
     },
 
     'He': {
@@ -186,9 +186,9 @@ class Test_IonizationState:
 
     def test_normalization(self):
         H = self.instances['H acceptable error']
-        assert not H.is_normalized(tol=1e-15)
+        assert not H._is_normalized(tol=1e-15)
         H.normalize()
-        assert H.is_normalized(tol=1e-15)
+        assert H._is_normalized(tol=1e-15)
 
     @pytest.mark.parametrize('test_name', test_names)
     def test_identifications(self, test_name):
@@ -306,10 +306,6 @@ tests_for_exceptions = {
         'particle': 'He', 'ionic_fractions': [1.0, 0.0, 'a']
     }, AtomicError),
 
-    'bad n_e units': IE({
-        'particle': 'H', 'ionic_fractions': [0, 1], 'n_e': 2 * u.m ** -2
-    }, u.UnitConversionError),
-
     'bad n_elem units': IE({
         'particle': 'H', 'ionic_fractions': [0, 1], 'n_elem': 3 * u.m ** 3
     }, u.UnitConversionError),
@@ -317,10 +313,6 @@ tests_for_exceptions = {
     'bad T_e units': IE({
         'particle': 'H', 'ionic_fractions': [0, 1], 'T_e': 1 * u.m
     }, u.UnitConversionError),
-
-    'negative n_e': IE({
-        'particle': 'He', 'ionic_fractions': [1.0, 0.0, 0.0], 'n_e': -1 * u.m ** -3
-    }, AtomicError),
 
     'negative n_elem': IE({
         'particle': 'He', 'ionic_fractions': [1.0, 0.0, 0.0], 'n_elem': -1 * u.m ** -3
@@ -330,13 +322,10 @@ tests_for_exceptions = {
         'particle': 'He', 'ionic_fractions': [1.0, 0.0, 0.0], 'T_e': -1 * u.K
     }, AtomicError),
 
-    'redundant ndens 1': IE({
-        'particle': 'H', 'ionic_fractions': np.array([3, 4]) * u.m ** -3, 'n_e': 4 * u.m ** -3,
+    'redundant ndens': IE({
+        'particle': 'H', 'ionic_fractions': np.array([3, 4]) * u.m ** -3, 'n_elem': 4 * u.m ** -3,
     }, AtomicError),
 
-    'redundant ndens 2': IE({
-        'particle': 'H', 'ionic_fractions': np.array([3, 4]) * u.m ** -3, 'n_elem': 7 * u.m ** -3,
-    }, AtomicError),
 }
 
 
@@ -374,7 +363,7 @@ expected_properties = {
     'integer_charges': [0, 1, 2],
     'ionic_fractions': np.array([0.2, 0.3, 0.5]),
     'ionic_symbols': ['He-4 0+', 'He-4 1+', 'He-4 2+'],
-    'is_normalized()': True,
+    '_is_normalized()': True,
     'number_densities': np.array([2e18, 3e18, 5e18]) * u.m ** -3,
     'tol': 2e-14,
     '__str__()': "<IonizationState of He-4>",
@@ -420,21 +409,3 @@ def test_setting_ionic_fractions():
     new_ionic_fractions = [0.2, 0.5, 0.3]
     instance.ionic_fractions = new_ionic_fractions
     assert np.allclose(instance.ionic_fractions, new_ionic_fractions)
-
-
-def test_missing_n_e_error():
-    instance = IonizationState('H', [0, 1])
-    with pytest.raises(AtomicError):
-        instance.n_e
-
-
-def test_setting_n_e_if_n_elem_is_set():
-    instance = IonizationState('H', [0.2, 0.8], n_elem=1e8*u.m**-3)
-    with pytest.raises(AtomicError):
-        instance.n_e = 12 * u.m ** -3
-
-
-def test_setting_n_elem_if_n_e_is_set():
-    instance = IonizationState('H', [0.2, 0.8], n_e=1e8*u.m**-3)
-    with pytest.raises(AtomicError):
-        instance.n_elem = 12 * u.m ** -3
