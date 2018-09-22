@@ -3,11 +3,12 @@ dielectry.py"""
 
 import numpy as np
 from astropy import units as u
-from astropy.tests.helper import assert_quantity_allclose
 
 from ..dielectric import (cold_plasma_permittivity_LRP,
                           cold_plasma_permittivity_SDP,
-                          permittivity_1D_Maxwellian)
+                          permittivity_1D_Maxwellian,
+                          RotatingTensorElements,
+                          StixTensorElements)
 
 from ..parameters import (plasma_frequency,
                           gyrofrequency,
@@ -49,13 +50,20 @@ class Test_ColdPlasmaPermittivity(object):
         species = ['e', 'p']
         S, D, P = tuple_result = cold_plasma_permittivity_SDP(B, species, n, omega)
 
-        assert_quantity_allclose(tuple_result.sum, S)
-        assert_quantity_allclose(tuple_result.difference, D)
-        assert_quantity_allclose(tuple_result.plasma, P)
+        assert tuple_result.sum is S
+        assert tuple_result.difference is D
+        assert tuple_result.plasma is P
+        assert isinstance(tuple_result, StixTensorElements)
 
         assert np.isclose(S, S_analytical)
         assert np.isclose(D, D_analytical)
         assert np.isclose(P, P_analytical)
+
+        L, R, P = rotating_tuple_result = cold_plasma_permittivity_LRP(B, species, n, omega)
+        assert rotating_tuple_result.left is L
+        assert rotating_tuple_result.right is R
+        assert rotating_tuple_result.plasma is P
+        assert isinstance(rotating_tuple_result, RotatingTensorElements)
 
     def test_three_species(self):
         """

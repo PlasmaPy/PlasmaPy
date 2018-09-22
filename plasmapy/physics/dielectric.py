@@ -17,6 +17,7 @@ __all__ = ['cold_plasma_permittivity_SDP',
            'permittivity_1D_Maxwellian']
 
 StixTensorElements = namedtuple("Result1", ["sum", "difference", "plasma"], )
+RotatingTensorElements = namedtuple("Result1", ["left", "right", "plasma"], )
 
 @utils.check_quantity(
     B={'units': u.T, 'can_be_negative': False},
@@ -205,7 +206,7 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
         L += - omega_p ** 2 / (omega * (omega - omega_c))
         R += - omega_p ** 2 / (omega * (omega + omega_c))
         P += - omega_p ** 2 / omega ** 2
-    return L, R, P
+    return RotatingTensorElements(L, R, P)
 
 
 @u.quantity_input(omega=u.rad / u.s,
