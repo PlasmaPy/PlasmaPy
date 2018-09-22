@@ -5,8 +5,8 @@ from astropy import units as u
 from plasmapy import utils
 from plasmapy.physics import parameters
 from plasmapy.constants import (pi, m_e, c, mu0, e, eps0)
-import scipy.special as spec
 from plasmapy.mathematics import plasma_dispersion_func_deriv
+from collections import namedtuple
 
 r"""
 Values should be returned as a `~astropy.units.Quantity` in SI units.
@@ -16,6 +16,7 @@ __all__ = ['cold_plasma_permittivity_SDP',
            'cold_plasma_permittivity_LRP',
            'permittivity_1D_Maxwellian']
 
+StixTensorElements = namedtuple("Result1", ["sum", "difference", "plasma"], )
 
 @utils.check_quantity(
     B={'units': u.T, 'can_be_negative': False},
@@ -111,7 +112,7 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
         S += - omega_p ** 2 / (omega ** 2 - omega_c ** 2)
         D += omega_c / omega * omega_p ** 2 / (omega ** 2 - omega_c ** 2)
         P += - omega_p ** 2 / omega ** 2
-    return S, D, P
+    return StixTensorElements(S, D, P)
 
 
 @utils.check_quantity(

@@ -3,6 +3,7 @@ dielectry.py"""
 
 import numpy as np
 from astropy import units as u
+from astropy.tests.helper import assert_quantity_allclose
 
 from ..dielectric import (cold_plasma_permittivity_LRP,
                           cold_plasma_permittivity_SDP,
@@ -46,7 +47,11 @@ class Test_ColdPlasmaPermittivity(object):
         P_analytical = 1 - (omega_pe ** 2 + omega_pp ** 2) / omega ** 2
 
         species = ['e', 'p']
-        S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega)
+        S, D, P = tuple_result = cold_plasma_permittivity_SDP(B, species, n, omega)
+
+        assert_quantity_allclose(tuple_result.sum, S)
+        assert_quantity_allclose(tuple_result.difference, D)
+        assert_quantity_allclose(tuple_result.plasma, P)
 
         assert np.isclose(S, S_analytical)
         assert np.isclose(D, D_analytical)
