@@ -5,13 +5,13 @@ import pytest
 from astropy import units as u
 from warnings import simplefilter
 
-from ...utils.exceptions import RelativityWarning, RelativityError
-from ...utils.exceptions import PhysicsError
-from ...constants import c, m_p, m_e, e, mu0
+from plasmapy.utils.exceptions import RelativityWarning, RelativityError
+from plasmapy.utils.exceptions import PhysicsError
+from plasmapy.constants import c, m_p, m_e, e, mu0
 
-from ..parameters_cython import (thermal_speed,
+import plasmapy.physics.parameters_cython
+from plasmapy.physics.parameters_cython import (thermal_speed,
                                  )
-    
 def test_thermal_speed():
     r"""Test for cythonized version of thermal_speed()."""
     trueVal = 593083.619464999

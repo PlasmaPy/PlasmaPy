@@ -6,27 +6,37 @@ python:
 git:
     submodules: false
 
-# Install dependencies
+env:
+    global:
+        - PYTHON_VERSION=3.6
+        - SETUP_CMD='test'
+        - MAIN_CMD='python setup.py'
+        - CONDA_DEPENDENCIES='Cython astropy scipy h5py matplotlib mpmath pytest'
+        - CONDA_ALL_DEPENDENCIES='Cython astropy scipy h5py matplotlib mpmath pytest'
+        - PIP_DEPENDENCIES='roman lmfit colorama codecov'
+
+matrix:
+
+    # Don't wait for allowed failures
+    fast_finish: true
+
+    include:
+
+        - env: PYTHON_VERSION=3.6 SETUP_CMD='test --coverage'
+
+        - env: PYTHON_VERSION=3.7 SETUP_CMD='test'
+
 install:
         - git clone git://github.com/astropy/ci-helpers.git --depth 1
         - source ci-helpers/travis/setup_conda.sh
-        - "pip install -r requirements/automated-code-tests.txt"
-        # building so that we have cython files compiled for tests
-        - python setup.py build_ext --inplace
-
-# Run flake8 tests
-before_script:
-        # stop the build if there are Python syntax errors or undefined names
-        - time flake8 . --count --select=E901,E999,F821,F822,F823,F821 --show-source --statistics --exclude=astropy_helpers
-        # exit-zero treats all errors as warnings.  The GitHub editor is 127 chars wide
-        - time flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=astropy_helpers
 
 # Run the tests
-script: coverage run -m pytest plasmapy
+script:
+    - $MAIN_CMD $SETUP_CMD
 
 # Assess test coverage
 after_success:
-        - coveralls
+        - codecov
 
 # Hook travis into matrix channel for notifications
 notifications:

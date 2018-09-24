@@ -14,11 +14,14 @@ from .parameters import (Alfven_speed,
                          lower_hybrid_frequency)
 
 from .dielectric import (cold_plasma_permittivity_LRP,
-                         cold_plasma_permittivity_SDP)
+                         cold_plasma_permittivity_SDP,
+                         permittivity_1D_Maxwellian)
 
 from .distribution import (Maxwellian_1D,
+                           Maxwellian_velocity_2D,
                            Maxwellian_velocity_3D,
                            Maxwellian_speed_1D,
+                           Maxwellian_speed_2D,
                            Maxwellian_speed_3D,
                            kappa_velocity_3D,
                            kappa_velocity_1D)
@@ -29,8 +32,10 @@ from .quantum import (deBroglie_wavelength,
                       Thomas_Fermi_length,
                       Wigner_Seitz_radius,
                       chemical_potential,
-                      chemical_potential_interp)
+                      _chemical_potential_interp)
 
 from .relativity import Lorentz_factor
 
 from . import transport
+
+from . import magnetostatics

@@ -1,4 +1,4 @@
-.. _atomic-functions
+.. _atomic-functions:
 
 Functions
 *********
@@ -6,7 +6,7 @@ Functions
 In addition to the `~plasmapy.atomic.Particle` class, the
 `~plasmapy.atomic` subpackage has a functional interface.
 
-.. _atomic-func-symbols
+.. _atomic-func-symbols:
 
 Symbols and Names
 =================
@@ -24,7 +24,7 @@ and `~plasmapy.atomic.element_name`.
 >>> ionic_symbol('alpha')
 'He-4 2+'
 >>> particle_symbol('alpha')
-'He-4 2+
+'He-4 2+'
 >>> element_name('alpha')
 'helium'
 
@@ -34,7 +34,7 @@ The full symbol of the particle can be found using
 >>> particle_symbol('electron')
 'e-'
 
-.. _atomic-func-properties
+.. _atomic-func-properties:
 
 Particle Properties
 ===================
@@ -60,7 +60,9 @@ These functions will raise a `~plasmapy.utils.ChargeError` for
 elements and isotopes that lack explicit charge information.
 
 >>> electric_charge('H')
-ChargeError: Charge information is required for integer_charge.
+Traceback (most recent call last):
+  ...
+plasmapy.utils.exceptions.ChargeError: Charge information is required for electric_charge.
 
 The standard atomic weight for the terrestrial environment may be
 accessed using `~plasmapy.atomic.standard_atomic_weight`.
@@ -74,7 +76,7 @@ The mass of a particle may be accessed through the
 >>> particle_mass('deuteron')
 <Quantity 3.34358372e-27 kg>
 
-.. atomic-func-isotopes
+.. _atomic-func-isotopes:
 
 Isotopes
 ========
@@ -105,7 +107,7 @@ All stable isotopes of an element may be found with
 >>> stable_isotopes('Pb')
 ['Pb-204', 'Pb-206', 'Pb-207', 'Pb-208']
 
-.. _atomic-func-stability
+.. _atomic-func-stability:
 
 Stability
 =========

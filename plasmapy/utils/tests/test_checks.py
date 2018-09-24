@@ -97,9 +97,7 @@ def test__check_quantity_default(value, units):
     "value, units, error", quantity_error_examples_default)
 def test_check_quantity_decorator_errors_default(value, units, error):
 
-    @check_quantity({
-        "x": {"units": units}
-    })
+    @check_quantity(x={"units": units})
     def func(x):
         return x
 
@@ -113,10 +111,10 @@ def test_check_quantity_decorator_errors_default(value, units, error):
 def test_check_quantity_decorator_errors_non_default(
         value, units, can_be_negative, can_be_complex, can_be_inf, error):
 
-    @check_quantity({
-        "x": {"units": units, "can_be_negative": can_be_negative,
-              "can_be_complex": can_be_complex, "can_be_inf": can_be_inf}
-    })
+    @check_quantity(
+       x={"units": units, "can_be_negative": can_be_negative,
+          "can_be_complex": can_be_complex, "can_be_inf": can_be_inf}
+    )
     def func(x):
         return x
 
@@ -127,9 +125,7 @@ def test_check_quantity_decorator_errors_non_default(
 @pytest.mark.parametrize("value, units", quantity_valid_examples_default)
 def test_check_quantity_decorator_default(value, units):
 
-    @check_quantity({
-        "x": {"units": units}
-    })
+    @check_quantity(x={"units": units})
     def func(x):
         return x
 
@@ -142,10 +138,9 @@ def test_check_quantity_decorator_default(value, units):
 def test_check_quantity_decorator_non_default(
         value, units, can_be_negative, can_be_complex, can_be_inf):
 
-    @check_quantity({
-        "x": {"units": units, "can_be_negative": can_be_negative,
-              "can_be_complex": can_be_complex, "can_be_inf": can_be_inf}
-    })
+    @check_quantity(x={"units": units, "can_be_negative": can_be_negative,
+                       "can_be_complex": can_be_complex, "can_be_inf": can_be_inf}
+                    )
     def func(x):
         return x
 
@@ -154,10 +149,10 @@ def test_check_quantity_decorator_non_default(
 
 def test_check_quantity_decorator_missing_validated_params():
 
-    @check_quantity({
-        "x": {"units": u.m},
-        "y": {"units": u.s}
-    })
+    @check_quantity(
+        x={"units": u.m},
+        y={"units": u.s}
+    )
     def func(x):
         return x
 
@@ -169,10 +164,10 @@ def test_check_quantity_decorator_missing_validated_params():
 
 def test_check_quantity_decorator_two_args_default():
 
-    @check_quantity({
-        "x": {"units": u.m},
-        "y": {"units": u.s}
-    })
+    @check_quantity(
+        x={"units": u.m},
+        y={"units": u.s}
+    )
     def func(x, y):
         return x / y
 
@@ -181,10 +176,10 @@ def test_check_quantity_decorator_two_args_default():
 
 def test_check_quantity_decorator_two_args_not_default():
 
-    @check_quantity({
-        "x": {"units": u.m, "can_be_negative": False},
-        "y": {"units": u.s}
-    })
+    @check_quantity(
+        x={"units": u.m, "can_be_negative": False},
+        y={"units": u.s}
+    )
     def func(x, y):
         return x / y
 
@@ -194,11 +189,11 @@ def test_check_quantity_decorator_two_args_not_default():
 
 def test_check_quantity_decorator_two_args_one_kwargs_default():
 
-    @check_quantity({
-        "x": {"units": u.m},
-        "y": {"units": u.s},
-        "z": {"units": u.eV}
-    })
+    @check_quantity(
+        x={"units": u.m},
+        y={"units": u.s},
+        z={"units": u.eV}
+    )
     def func(x, y, another, z=10 * u.eV):
         return x * y * z
 
@@ -207,17 +202,31 @@ def test_check_quantity_decorator_two_args_one_kwargs_default():
 
 def test_check_quantity_decorator_two_args_one_kwargs_not_default():
 
-    @check_quantity({
-        "x": {"units": u.m},
-        "y": {"units": u.s, "can_be_negative": False},
-        "z": {"units": u.eV, "can_be_inf": False}
-    })
+    @check_quantity(
+        x={"units": u.m},
+        y={"units": u.s, "can_be_negative": False},
+        z={"units": u.eV, "can_be_inf": False}
+    )
     def func(x, y, z=10 * u.eV):
         return x * y * z
 
     with pytest.raises(ValueError):
         func(1 * u.m, 1 * u.s, z=np.inf * u.eV)
 
+
+class Test_check_quantity_none_shall_pass:
+    @check_quantity(x={"units": u.m, "none_shall_pass": True})
+    def func(self, x=None):
+        if x is None:
+            return 0 * u.m
+        return x
+
+    def test_incorrect_units(self):
+        with pytest.raises(u.UnitConversionError):
+            self.func(1*u.s)
+
+    def test_none_to_zero(self):
+        assert self.func(None) == 0*u.m
 
 # (speed, betafrac)
 non_relativistic_speed_examples = [

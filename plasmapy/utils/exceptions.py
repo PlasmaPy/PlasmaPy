@@ -78,6 +78,11 @@ class InvalidParticleError(AtomicError):
     pass
 
 
+class DataStandardError(PlasmaPyError):
+    """An exception for when HDF5 is not defined by OpenPMD standard."""
+    pass
+
+
 # ----------
 # Warnings:
 # ----------
@@ -107,6 +112,12 @@ class RelativityWarning(PhysicsWarning):
     returned by non-relativistic functionality.
     """
     pass
+
+
+class CouplingWarning(PhysicsWarning):
+    """
+    A warning for functions that rely on a particular coupling regime to be valid.
+    """
 
 
 class AtomicWarning(PlasmaPyWarning):

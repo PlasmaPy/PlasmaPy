@@ -1,43 +1,49 @@
-.. PlasmaPy documentation master file, created by
-   sphinx-quickstart on Wed May 31 18:16:46 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 :tocdepth: 3
+
+.. _plasmapy-documentation:
 
 ######################
 PlasmaPy Documentation
 ######################
 
+.. image:: _static/graphic-circular.png
+   :alt: PlasmaPy logo
+   :align: right
+   :scale: 80%
+
 `PlasmaPy <http://www.plasmapy.org/>`_ is an open source
 community-developed core `Python <https://www.python.org/>`_ 3.6+
-package for plasma physics in the early stages of development. The
-documentation contained on this page is in the process of being written.
+package for plasma physics currently under development.
+
+.. _toplevel-getting-started:
 
 ***************
 Getting Started
 ***************
 
-* `Installing PlasmaPy
-  <https://github.com/PlasmaPy/PlasmaPy/blob/master/INSTALL.md>`_
-* `Contributing to PlasmaPy
-  <https://github.com/PlasmaPy/PlasmaPy/blob/master/CONTRIBUTING.md>`_
-* `Code of conduct
-  <https://github.com/PlasmaPy/PlasmaPy/blob/master/CODE_OF_CONDUCT.md>`_
-* `PlasmaPy on GitHub
+.. toctree::
+   :maxdepth: 1
+
+   install
+   CONTRIBUTING
+   CODE_OF_CONDUCT
+   about/citation
+
+* `PlasmaPy's GitHub repository
   <https://github.com/PlasmaPy/plasmapy>`_
 * `PlasmaPy website
   <http://www.plasmapy.org/>`_
+* `Using astropy.units <http://docs.astropy.org/en/stable/units/>`_
 
-.. user-documentation
+.. _toplevel-user-documentation:
 
 ******************
 User Documentation
 ******************
 
-.. plasma-parameters
+.. _toplevel-plasma-parameters:
 
-Theoretical analysis
+Theoretical Analysis
 --------------------
 
 .. toctree::
@@ -47,10 +53,10 @@ Theoretical analysis
    transport/index
    mathematics/index
 
-.. diagnostics
+.. _toplevel-experimental-tools:
 
-Experimental tools
------------
+Experimental Tools
+------------------
 
 The `~plasmapy.diagnostics` package is in the early stages of
 development.
@@ -60,19 +66,29 @@ development.
 
    diagnostics/index
 
-.. data-structures
+.. _toplevel-data-structures:
 
-Data Structures and simulation
+Data Structures and Simulation
 ------------------------------
 
 .. toctree::
     :maxdepth: 1
 
-    atomic/index
     plasma/index
     species/index
 
-.. utilities
+.. _toplevel-physical-data:
+
+Physical Data
+-------------
+
+.. toctree::
+    :maxdepth: 1
+
+    constants/index
+    atomic/index
+
+.. _toplevel-utilities:
 
 Utilities
 ---------
@@ -82,7 +98,7 @@ Utilities
 
    utils/index
 
-.. examples
+.. _toplevel-examples:
 
 Examples
 --------
@@ -91,38 +107,38 @@ Examples
 
     auto_examples/index
 
-.. development-guide
+.. _toplevel-development-guide:
 
 *****************
 Development Guide
 *****************
 
-The development guide contains information on how to contribute to
-PlasmaPy, along with guidelines for code, testing, and documentation.
+The :ref:`plasmapy-development-guide` contains information on how to
+contribute to PlasmaPy, along with guidelines for code, testing, and
+documentation.
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
+    :hidden:
 
-    development/code_guide
-    development/testing_guide
-    development/doc_guide
-    development/release_guide
+    development/index
 
-.. project_details:
+.. _toplevel-project-details:
 
 ***************
 Project Details
 ***************
 
+.. The about PlasmaPy section has some important information that would
+   be helpful to have more readily accessible from the main doc index
+   page.
+
 .. toctree::
    :maxdepth: 2
 
-   stability
+   about/index
 
-* `Vision Statement
-  <https://github.com/PlasmaPy/PlasmaPy/blob/master/VISION.md>`_
-
-.. _index:
+.. _toplevel-index:
 
 *****
 Index

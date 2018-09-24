@@ -1,69 +1,77 @@
-# This file must be Python 2 compliant enough so that the appropriate
-# ImportError is raised when PlasmaPy is being imported from Python 2.
-# This precludes the usage of some features such as f-strings.  Helper
-# functions should be put into utils/import_helpers.py except when
-# Python 2 compliance is needed to raise the correct ImportError.
+# Licensed under a 3-clause BSD style license - see LICENSE.rst
 
+# Packages may add whatever they like to this file, but
+# should keep this content at the top.
+# ----------------------------------------------------------------------------
+from ._base_init import *
+# ----------------------------------------------------------------------------
+
+# Enforce Python version check during package import.
+# This is the same check as the one at the top of setup.py
 import sys
-from . import utils
-
-
-def _split_version(version):
-    """Separate a string including digits separated by periods into a
-    tuple of integers."""
-    return tuple(int(ver) for ver in version.split('.'))
-
 
 __name__ = "plasmapy"
 
-__doc__ = ("A community-developed and community-driven open source core "
-           "Python package for plasma physics.")
+__doc__ = ("A community-developed and community-driven open source "
+           "core Python package for plasma physics.")
 
-__minimum_python_version__ = '3.6'
 
-__minimum_versions__ = {
-    'numpy': '1.13',
-    'astropy': '2.0',
-    'scipy': '0.19',
-    }
-
-if sys.version_info < _split_version(__minimum_python_version__):
-    raise ImportError(
-        "PlasmaPy requires Python version {} or higher, but is being called "
-        "from Python version {}."
-        .format(__minimum_python_version__, sys.version.split()[0]))
-
-utils.check_versions(__minimum_versions__)
-
-# The file version.py is created by installing PlasmaPy with setup.py
-# using functionality from astropy_helpers.  If this has not been run,
-# then we will not create the __version__ attribute.
-
-try:
-    from .version import version as __version__
-except ImportError:
+class UnsupportedPythonError(Exception):
     pass
 
-try:
+
+if sys.version_info < tuple((int(val) for val in "3.6".split('.'))):
+    raise UnsupportedPythonError("plasmapy does not support Python < {}".format(3.6))
+
+if not _ASTROPY_SETUP_:
+    # For egg_info test builds to pass, put package imports here.
+    from . import atomic
     from . import classes
     from . import constants
-    from . import atomic
+    from . import diagnostics
     from . import mathematics
     from . import physics
-    from . import diagnostics
     from . import utils
-except ImportError:
-    raise ImportError("Unable to load PlasmaPy subpackages.")
 
-# Allow astropy.units to be imported from PlasmaPy. This is the 
-# only place in the code where units should not be abbreviated as u.
+def online_help(query):
+    """
+    Search the online PlasmaPy documentation for the given query from plasmapy.org
+    Opens the results in the default web browser.
+    Requires an active Internet connection.
+    Redirects to Astropy.units in case of query 'unit' or 'units'
 
-try:
-    from astropy import units
-except ImportError:
-    raise ImportError("Unable to import astropy.units as a PlasmaPy submodule")
+    Parameters
+    ----------
+    query : str
+        The search query.
+    """
+    from urllib.parse import urlencode
+    import webbrowser
 
-# A more extensive and thoughtful method for cleaning up our top-level
-# namespace is in Astropy's __init__.py (see also pull request #210).
+    url = ('http://docs.plasmapy.org/en/stable/search.html?'
+           '{0}&check_keywords=yes&area=default').format(urlencode({'q': query}))
 
-del (__minimum_python_version__, __minimum_versions__)
+    if(query.lower() in ('unit', 'units')):
+        url = 'http://docs.astropy.org/en/stable/units/'
+
+    webbrowser.open(url)
+
+__citation__ = """@misc{plasmapy_community_2018_1238132,
+  author       = {PlasmaPy Community and
+                  Murphy, Nicholas A. and
+                  Leonard, Andrew J. and
+                  Sta\'nczak, Dominik and
+                  Kozlowski, Pawel M. and
+                  Langendorf, Samuel J. and
+                  Haggerty, Colby C. and
+                  Beckers, Jasper P. and
+                  Mumford, Stuart J. and
+                  Parashar, Tulasi N. and
+                  Huang, Yi-Min},
+  title        = {{PlasmaPy: an open source community-developed 
+                   Python package for plasma physics}},
+  month        = apr,
+  year         = 2018,
+  doi          = {10.5281/zenodo.1238132},
+  url          = {https://doi.org/10.5281/zenodo.1238132}
+}"""

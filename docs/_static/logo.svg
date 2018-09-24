@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="375.54346mm"
+   height="86.39843mm"
+   viewBox="0 0 375.54345 86.398431"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="logo.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   inkscape:export-filename="C:\Users\Jasper\Dropbox\Jaar 5\Graduation Project\General Atomics\Work\Plasma\logo-design\PlasmaPy-logo\exports\with-text-light.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4597">
+      <stop
+         style="stop-color:#35b8b8;stop-opacity:1;"
+         offset="0"
+         id="stop4593" />
+      <stop
+         style="stop-color:#35b8b8;stop-opacity:0;"
+         offset="1"
+         id="stop4595" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4573">
+      <stop
+         style="stop-color:#2fa4a4;stop-opacity:1;"
+         offset="0"
+         id="stop4569" />
+      <stop
+         style="stop-color:#2fa4a4;stop-opacity:0;"
+         offset="1"
+         id="stop4571" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient904">
+      <stop
+         style="stop-color:#ff0000;stop-opacity:1;"
+         offset="0"
+         id="stop900" />
+      <stop
+         style="stop-color:#ff0000;stop-opacity:0;"
+         offset="1"
+         id="stop902" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient896">
+      <stop
+         style="stop-color:#ff0000;stop-opacity:1;"
+         offset="0"
+         id="stop892" />
+      <stop
+         style="stop-color:#ff0000;stop-opacity:0;"
+         offset="1"
+         id="stop894" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient896"
+       id="linearGradient898"
+       x1="11.219438"
+       y1="134.67"
+       x2="84.115585"
+       y2="136.16614"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.78698794,0.66036129,-0.66036129,0.78698794,106.39282,-7.371001)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient904"
+       id="linearGradient906"
+       x1="92.175125"
+       y1="83.616402"
+       x2="18.20875"
+       y2="150.96487"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.78698794,0.66036129,-0.66036129,0.78698794,106.39282,-7.371001)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4573"
+       id="linearGradient3751"
+       gradientUnits="userSpaceOnUse"
+       x1="18.796324"
+       y1="112.43423"
+       x2="87.200218"
+       y2="164.05856"
+       gradientTransform="matrix(-0.78698794,-0.66036129,0.66036129,-0.78698794,41.635591,283.53866)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4597"
+       id="linearGradient4599"
+       x1="88.255325"
+       y1="173.51405"
+       x2="111.53816"
+       y2="97.14666"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.78698794,0.66036129,-0.66036129,0.78698794,105.37444,-29.115517)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient904"
+       id="linearGradient919"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.78698794,0.66036129,-0.66036129,0.78698794,106.39282,-7.371001)"
+       x1="60.298435"
+       y1="84.859024"
+       x2="32.245949"
+       y2="172.99535" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient896"
+       id="linearGradient924"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.78698794,0.66036129,-0.66036129,0.78698794,106.39282,-7.371001)"
+       x1="11.219438"
+       y1="134.67"
+       x2="84.115585"
+       y2="136.16614" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.1336156"
+     inkscape:cx="451.56852"
+     inkscape:cy="117.7803"
+     inkscape:document-units="mm"
+     inkscape:current-layer="g913"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="false" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="left-side"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline"
+     transform="translate(-28.724715,-94.428989)">
+    <g
+       id="g913"
+       transform="translate(0,-0.51609953)"
+       inkscape:export-filename="C:\Users\Jasper\Dropbox\Jaar 5\Graduation Project\General Atomics\Work\Plasma\logo-design\PlasmaPy-logo\exports\graphic.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96">
+      <path
+         inkscape:export-filename="C:\Users\Jasper\Dropbox\Jaar 5\Graduation Project\General Atomics\Work\Plasma\logo-design\PlasmaPy-logo\exports\graphic.png"
+         inkscape:export-ydpi="96"
+         inkscape:export-xdpi="96"
+         sodipodi:nodetypes="cscccsc"
+         style="fill:url(#linearGradient924);fill-opacity:1;stroke:none;stroke-width:0.36242279"
+         inkscape:connector-curvature="0"
+         id="path-body"
+         d="m 31.854095,119.83134 c 3.479087,-9.22068 14.20774,-20.878931 26.793883,-24.038074 12.586142,-3.159159 27.194209,3.110119 32.011156,10.151514 -9.4411,1.85244 -25.409121,17.31331 -32.481625,31.56637 -8.678278,18.42205 -5.97539,34.56514 -14.173698,43.77167 -6.016281,-5.04827 -13.173638,-19.25771 -14.491177,-32.34711 -1.317528,-13.0894 -1.139951,-19.88091 2.341461,-29.10437 z" />
+      <path
+         inkscape:export-filename="C:\Users\Jasper\Dropbox\Jaar 5\Graduation Project\General Atomics\Work\Plasma\logo-design\PlasmaPy-logo\exports\graphic.png"
+         inkscape:export-ydpi="96"
+         inkscape:export-xdpi="96"
+         inkscape:connector-curvature="0"
+         id="path-head"
+         d="M 87.027285,102.08618 C 80.488912,96.821734 68.874294,93.226226 58.648063,95.793026 46.061925,98.952153 35.333277,110.61069 31.854187,119.83137 c -3.481426,9.22347 -3.728454,16.02226 -2.341576,29.10447 0.847049,7.99016 3.486068,14.32134 3.486068,14.32134 4.852065,-8.22949 16.73864,-21.32349 25.716099,-23.56497 8.979774,-2.24422 22.560619,-2.68122 29.078563,-8.71803 9.388038,-8.36909 7.609338,-17.90399 2.869716,-25.03192 -0.888762,-1.33744 -2.126918,-2.64119 -3.635772,-3.85608 z m 0.752781,8.36311 a 3.9445998,3.9445998 0 0 1 0.48619,5.55719 3.9445998,3.9445998 0 0 1 -5.557185,0.48619 3.9445998,3.9445998 0 0 1 -0.486187,-5.55719 3.9445998,3.9445998 0 0 1 5.557182,-0.48619 z"
+         style="fill:url(#linearGradient919);fill-opacity:1;stroke:none;stroke-width:0.36242276" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="right-side"
+     style="display:inline"
+     transform="translate(-28.724715,-94.428989)">
+    <g
+       id="g917"
+       transform="translate(0,-0.45583501)"
+       inkscape:export-filename="C:\Users\Jasper\Dropbox\Jaar 5\Graduation Project\General Atomics\Work\Plasma\logo-design\PlasmaPy-logo\exports\graphic.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96">
+      <path
+         inkscape:export-filename="C:\Users\Jasper\Dropbox\Jaar 5\Graduation Project\General Atomics\Work\Plasma\logo-design\PlasmaPy-logo\exports\graphic.png"
+         inkscape:export-ydpi="96"
+         inkscape:export-xdpi="96"
+         d="m 116.17433,156.3363 c -3.47909,9.22068 -14.20774,20.87894 -26.793891,24.03808 -12.586141,3.15915 -27.194207,-3.11011 -32.011149,-10.15152 9.441097,-1.85244 25.409122,-17.31331 32.481624,-31.56637 8.678288,-18.42205 5.975396,-34.56515 14.173696,-43.771666 6.01629,5.048259 13.17363,19.257706 14.49118,32.347106 1.31753,13.08938 1.13995,19.88091 -2.34146,29.10437 z"
+         id="path3743"
+         inkscape:connector-curvature="0"
+         style="display:inline;fill:url(#linearGradient3751);fill-opacity:1;stroke:none;stroke-width:0.36242279"
+         sodipodi:nodetypes="cscccsc" />
+      <path
+         inkscape:export-filename="C:\Users\Jasper\Dropbox\Jaar 5\Graduation Project\General Atomics\Work\Plasma\logo-design\PlasmaPy-logo\exports\graphic.png"
+         inkscape:export-ydpi="96"
+         inkscape:export-xdpi="96"
+         style="display:inline;fill:url(#linearGradient4599);fill-opacity:1;stroke:none;stroke-width:0.36242276"
+         d="m 61.001139,174.08146 c 6.538367,5.26446 18.152986,8.85997 28.379224,6.29316 12.586147,-3.15913 23.314787,-14.81767 26.793877,-24.03835 3.48142,-9.22348 3.72845,-16.02226 2.34157,-29.10448 -0.84704,-7.99015 -3.48606,-14.32133 -3.48606,-14.32133 -4.85207,8.22949 -16.738646,21.32349 -25.716106,23.56497 -8.979781,2.24423 -22.560626,2.68123 -29.078561,8.71803 -9.388045,8.3691 -7.609339,17.90399 -2.869717,25.03192 0.888756,1.33745 2.126919,2.64119 3.635773,3.85608 z m -0.752783,-8.36311 a 3.9445998,3.9445998 0 0 1 -0.486192,-5.55718 3.9445998,3.9445998 0 0 1 5.557184,-0.4862 3.9445998,3.9445998 0 0 1 0.486194,5.55719 3.9445998,3.9445998 0 0 1 -5.557186,0.48619 z"
+         id="path3745"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+  <g
+     id="g3747"
+     inkscape:groupmode="layer"
+     inkscape:label="plasmapy"
+     style="display:inline"
+     transform="translate(-28.724715,-94.428989)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:91.81484985px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.29537106"
+       x="140.86116"
+       y="161.00905"
+       id="text3755"
+       transform="scale(0.9904282,1.0096643)"><tspan
+         sodipodi:role="line"
+         id="tspan3753"
+         x="140.86116"
+         y="161.00905"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:91.81484985px;font-family:'Yanone Kaffeesatz';-inkscape-font-specification:'Yanone Kaffeesatz, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;stroke-width:2.29537106">plasma<tspan
+   style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:91.81394958px;font-family:'Yanone Kaffeesatz';-inkscape-font-specification:'Yanone Kaffeesatz, Light';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;stroke-width:2.29537106"
+   id="tspan3757">py</tspan></tspan></text>
+  </g>
+</svg>

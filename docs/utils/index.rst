@@ -1,4 +1,4 @@
-.. py:module:: utils
+.. py:module:: plasmapy.utils
 
 .. _plasmapy-utils:
 
@@ -26,7 +26,5 @@ Reference/API
 =============
 
 .. automodapi:: plasmapy.utils.checks
-   :skip: dedent
 .. automodapi:: plasmapy.utils.exceptions
-.. automodapi:: plasmapy.utils.import_helpers
 .. automodapi:: plasmapy.utils.pytest_helpers

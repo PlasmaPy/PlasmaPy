@@ -1,3 +1,5 @@
+.. _code-development-guidelines:
+
 ***************************
 Code Development Guidelines
 ***************************
@@ -6,200 +8,7 @@ This document describes the coding requirements and guidelines to be
 followed during the development of PlasmaPy and affiliated packages.
 
 Code written for PlasmaPy must be compatible with Python 3.6 and
-later. Python 2 is not supported by PlasmaPy.
-
-PlasmaPy requires
-
-* Python 3.6 or later
-* Astropy 2.0 or later
-* NumPy 1.13 or later
-* SciPy 0.19 or later
-* matplotlib 2.0 or later
-* Cython
-* mpmath 1.0 or later
-* lmfit 0.9.7 or later
-
-Obtaining PlasmaPy source code
-=========================================
-
-After creating your GitHub account, go to the [main
-repository](https://github.com/PlasmaPy/PlasmaPy) and **fork a copy of
-PlasmaPy to your account**.
-
-To access Git commands on Windows, try `Git Bash
-<https://git-scm.com/downloads>`_.
-
-Next you must **clone your fork to your computer**.  Go to the
-directory that will host your PlasmaPy directory, and run one of the
-following commands (after changing *your-username* to your username).
-If you would like to use HTTPS (which is the default and easier to set
-up), then run:
-
-.. code-block:: bash
-
-  git clone https://github.com/your-username/PlasmaPy.git
-
-SSH is a more secure option, but requires you to [set up an SSH
-key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/)
-beforehand.  The equivalent SSH command is:
-
-.. code-block:: bash
-
-    git clone git@github.com:your-username/PlasmaPy.git
-    cd PlasmaPy
-
-After cloning, we must tell git where the development version of
-PlasmaPy is by running:
-
-.. code-block:: bash
-
-  git remote add upstream git://github.com/PlasmaPy/PlasmaPy.git
-
-To check on which remotes exist, run `git remote -v`.  You should get
-something like this:
-
-.. code-block:: bash
-
-  origin	git@github.com:namurphy/PlasmaPy.git (fetch)
-  origin	git@github.com:namurphy/PlasmaPy.git (push)
-  upstream	git@github.com:PlasmaPy/PlasmaPy.git (fetch)
-  upstream	git@github.com:PlasmaPy/PlasmaPy.git (push)
-
-Setting up an environment for development
-=========================================
-
-Setup procedures for the two most popular virtual environments, conda
-and virtualenv, are listed below.
-
-Conda
------
-
-To set up a development environment for PlasmaPy, `the Anaconda
-distribution <https://www.anaconda.com/download/>`_ is strongly
-recommended.
-
-After installing Anaconda, launch any conda environment. By default,
-conda installs a `root` environment, which you should be able to
-activate via
-
-.. code-block:: bash
-
-  source /home/user/anaconda3/bin/activate root
-
-where `/home/user/anaconda3/` can be swapped to wherever your anaconda
-installation was resides.
-
-On Windows, the way to do this is via running `Anaconda Prompt` from the
-Start Menu. `Git Bash` may also work if you have added Anaconda to `PATH`.
-
-Afterwards, enter PlasmaPy's repository root directory and execute the
-following:
-
-.. code-block:: bash
-
-    conda env create -f requirements/environment.yml
-
-You may now enter the environment via
-
-.. code-block:: bash
-
-    source activate plasmapy
-
-On Windows, skip the `source` part of the previous command.
-
-Virtualenv
-----------
-
-Create a directory for holding the PlasmaPy repository, move into it
-and create the virtual environment
-
-.. code-block:: bash
-
-    virtualenv -p python3 .
-
-You may need to make sure that this directory's path doesn't contain
-any spaces, otherwise virtualenv may throw an error.
-
-Your virtual environment should now be created. If you run `ls` you
-will notice that virtualenv has created a number of subdirectories:
-`bin/`, `lib/`, and `include/`. This is why we're not creating the
-virtualenv within the repository itself - so as to not pollute it. To
-activate the virtualenv you will run:
-
-.. code-block:: bash
-
-    source ./bin/activate
-
-You should now see that your shell session is prepended with
-(plasmapy), like so:
-
-.. code-block:: bash
-
-    (plasmapy) user@name:~/programming/plasmapy$
-
-This indicates that the virtualenv is running. Congratulations!  When
-your're done working on PlasmaPy, you can deactivate the virtualenv by
-running
-
-.. code-block:: bash
-
-    source deactivate
-
-Now that you have plasmapy on your local computer and you have a
-virtual environment, you will want to "install" this development
-version of PlasmaPy along with its dependencies. Start by activating
-your virtual environment. Next you want install the PlasmaPy
-dependencies. One way to do this is to do
-
-.. code-block:: bash
-
-    (plasmapy) user@name:~/programming/plasmapy$ pip install -r requirements/environment.txt
-
-Next, setup the development version of PlasmaPy which you just cloned
-by moving into the root directory of the cloned repo and running the
-setup.py script there:
-
-.. code-block:: bash
-
-    (plasmapy) user@name:~/programming/plasmapy/PlasmaPy$ pip install -e .
-
-
-You should now be all set to run development versions of PlasmaPy
-modules via `import PlasmaPy` in your test scripts!
-
-Running anaconda with virtualenv
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you are running the Anaconda suite and want to use virtualenv to
-setup your virtual environment, you will have to let the system know
-where the Python interpreter can be found. On Linux this is done with
-(for example, assuming having installed Anaconda into `~/anaconda3`):
-
-.. code-block:: bash
-
-    export LD_LIBRARY_PATH="$HOME/anaconda3/lib/"
-
-Exporting the library path to the dynamic linker will only last for
-the duration of the current shell session.
-
-You will have to add the python library directory to LD_LIBRARY_PATH,
-as described in a previous step, prior to activating the virtualenv
-for every new shell session.
-
-Installing your own dev version
-===============================
-To be able to import PlasmaPy from your source version:
-
-.. code-block:: bash
-
-  pip install -e {plasmapy-repository-root}
-
-Where `{plasmapy-repository-root}` is the directory resulting from
-`git clone`.
-
-If you are not working within a virtual environment, this may end in a
-permission error - this can be avoided via also adding the `--user`
-flag.
+later.
 
 Coding Style
 ============
@@ -212,7 +21,7 @@ Coding Style
     any departures from the PEP 8 style guide.
 
   * PEP 8 compliance may be checked locally using
-    [pycodestyle](http://pycodestyle.pycqa.org/en/latest/).
+    `pycodestyle <http://pycodestyle.pycqa.org/en/latest/>`_.
 
   * Line lengths should be chosen to maximize the readability and
     elegance of the code.  The maximum line length for Python code in
@@ -360,7 +169,7 @@ Documentation
   using the numpydoc format.
 
 * Docstrings may be checked locally using
-  [pydocstyle](http://www.pydocstyle.org/en/latest/).
+  `pydocstyle <http://www.pydocstyle.org/en/latest/>`_.
 
 * These docstrings should include usage examples.
 
@@ -426,12 +235,12 @@ Equations and Physical Formulae
   the physical constants.  For example, the following line of code
   obscures information about the physics being represented:
 
->>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s
+>>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s   # doctest: +SKIP
 
   In contrast, the following line of code shows the exact formula
   which makes the code much more readable.
 
->>> omega_ce = (e * B) / (m_e * c)
+>>> omega_ce = (e * B) / (m_e * c)       # doctest: +SKIP
 
   The origins of numerical coefficients in formulae should be
   documented.
@@ -448,12 +257,12 @@ Equations and Physical Formulae
   the same units.  In the following line, it is difficult to discern which
   is the electron temperature and which is the ion temperature.
 
-  >>> ion_sound_speed(1e6*u.K, 2e6*u.K)
+  >>> ion_sound_speed(1e6*u.K, 2e6*u.K)  # doctest: +SKIP
 
   Remembering that "explicit is better than implicit", it is more
   readable and less prone to errors to write:
 
-  >>> ion_sound_speed(T_i=1e6*u.K, T_e=2e6*u.K)
+  >>> ion_sound_speed(T_i=1e6*u.K, T_e=2e6*u.K)    # doctest: +SKIP
 
 * SI units that were named after a person should be lower case except at
   the beginning of a sentence, even if their symbol is capitalized. For
@@ -474,9 +283,9 @@ s) and angular frequency (rad / s).  An explicit way to do this
 conversion is to set up an equivalency between cycles/s and Hz:
 
 >>> from astropy import units as u
->>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
+>>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])   # doctest: +SKIP
 
 However, ``dimensionless_angles`` does work when dividing a velocity
 by an angular frequency to get a length scale:
 
->>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())
+>>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())    # doctest: +SKIP

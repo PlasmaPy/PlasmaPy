@@ -6,7 +6,6 @@ gases and warm dense matter.
 # python modules
 import numpy as np
 from astropy import units as u
-from lmfit import minimize, Parameters
 
 # plasmapy modules
 from plasmapy import atomic, utils, mathematics
@@ -15,12 +14,20 @@ from plasmapy.physics.relativity import Lorentz_factor
 
 from ..constants import c, h, hbar, m_e, eps0, e, k_B
 
+__all__ = [
+    "deBroglie_wavelength",
+    "thermal_deBroglie_wavelength",
+    "Fermi_energy",
+    "Thomas_Fermi_length",
+    "Wigner_Seitz_radius",
+    "chemical_potential",
+]
+
 
 # TODO: Use @check_relativistic and @particle_input
-
-@utils.check_quantity({
-    'V': {'units': u.m / u.s, 'can_be_negative': True}
-    })
+@utils.check_quantity(
+    V={'units': u.m / u.s, 'can_be_negative': True}
+    )
 def deBroglie_wavelength(V, particle):
     r"""
     Calculates the de Broglie wavelength.
@@ -119,9 +126,9 @@ def deBroglie_wavelength(V, particle):
     return lambda_dBr.to(u.m)
 
 
-@utils.check_quantity({
-    'T_e': {'units': u.K, 'can_be_negative': False}
-})
+@utils.check_quantity(
+    T_e={'units': u.K, 'can_be_negative': False}
+)
 def thermal_deBroglie_wavelength(T_e):
     r"""
     Calculate the thermal deBroglie wavelength for electrons.
@@ -172,9 +179,9 @@ def thermal_deBroglie_wavelength(T_e):
     return lambda_dbTh.to(u.m)
 
 
-@utils.check_quantity({
-    'n_e': {'units': u.m**-3, 'can_be_negative': False}
-})
+@utils.check_quantity(
+    n_e={'units': u.m**-3, 'can_be_negative': False}
+)
 def Fermi_energy(n_e):
     r"""
     Calculate the kinetic energy in a degenerate electron gas.
@@ -233,9 +240,9 @@ def Fermi_energy(n_e):
     return energy_F.to(u.Joule)
 
 
-@utils.check_quantity({
-    'n_e': {'units': u.m**-3, 'can_be_negative': False}
-})
+@utils.check_quantity(
+    n_e={'units': u.m**-3, 'can_be_negative': False}
+)
 def Thomas_Fermi_length(n_e):
     r"""
     Calculate the exponential scale length for charge screening
@@ -304,9 +311,9 @@ def Thomas_Fermi_length(n_e):
     return lambda_TF.to(u.m)
 
 
-@check_quantity({
-    'n': {'units': u.m**-3, 'can_be_negative': False}
-})
+@check_quantity(
+    n={'units': u.m**-3, 'can_be_negative': False}
+)
 def Wigner_Seitz_radius(n: u.m**-3):
     r"""
     Calculate the Wigner-Seitz radius, which approximates the inter-
@@ -440,6 +447,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     <Quantity 2.00039985e-12>
 
     """
+    from lmfit import minimize, Parameters
     # deBroglie wavelength
     lambdaDB = thermal_deBroglie_wavelength(T)
     # degeneracy parameter
@@ -465,7 +473,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     return beta_mu
 
 
-def chemical_potential_interp(n_e, T):
+def _chemical_potential_interp(n_e, T):
     r"""
     Fitting formula for interpolating chemical potential between classical
     and quantum regimes.
@@ -531,7 +539,7 @@ def chemical_potential_interp(n_e, T):
     Example
     -------
     >>> from astropy import units as u
-    >>> chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
+    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
     <Quantity 8.17649673>
 
     """

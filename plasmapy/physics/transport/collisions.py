@@ -1,4 +1,45 @@
-"""Functions to calculate transport coefficients."""
+"""Functions to calculate transport coefficients.
+
+This module includes a number of functions for handling Coulomb collisions
+spanning weakly coupled (low density) to strongly coupled (high density)
+regimes.
+
+Coulomb collisions
+==================
+
+Coulomb collisions are collisions where the interaction force is conveyed
+via the electric field, instead of any kind of contact force. They usually
+result in relatively small deflections of particle trajectories. However,
+given that there are many charged particles in a plasma, one has to take
+into account the cumulative effects of many such collisions.
+
+Coulomb logarithms
+==================
+
+Please see the documentation for the `Coulomb logarithm <Coulomb_logarithm>`_
+for a review of the many ways in which one can define and calculate
+that quantity.
+
+Collision rates
+===============
+
+The module gathers a few functions helpful for calculating collision
+rates between particles. The most general of these is `collision_frequency`,
+while if you need average values for a Maxwellian distribution, try
+out `collision_rate_electron_ion` and `collision_rate_ion_ion`. These
+use `collision_frequency` under the hood.
+
+Macroscopic properties
+======================
+
+These include:
+* `Spitzer_resistivity`
+* `mobility`
+* `Knudsen_number`
+* `coupling_parameter`
+
+"""
+
 
 # python modules
 from astropy import units as u
@@ -7,9 +48,6 @@ import warnings
 
 # plasmapy modules
 from plasmapy import utils
-from plasmapy.utils.checks import (check_quantity,
-                                   _check_relativistic)
-
 from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
 from plasmapy import atomic
 from plasmapy.physics import parameters
@@ -17,14 +55,30 @@ from plasmapy.physics.quantum import (Wigner_Seitz_radius,
                                       thermal_deBroglie_wavelength,
                                       chemical_potential)
 from plasmapy.mathematics import Fermi_integral
+from plasmapy.utils import check_quantity, _check_relativistic
+
+__all__ = [
+    "Coulomb_logarithm",
+    "impact_parameter_perp",
+    "impact_parameter",
+    "collision_frequency",
+    "Coulomb_cross_section",
+    "fundamental_electron_collision_freq",
+    "fundamental_ion_collision_freq",
+    "mean_free_path",
+    "Spitzer_resistivity",
+    "mobility",
+    "Knudsen_number",
+    "coupling_parameter",
+    ]
 
 
-@utils.check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                       "n_e": {"units": u.m ** -3}
-                       })
+@utils.check_quantity(T={"units": u.K, "can_be_negative": False},
+                      n_e={"units": u.m ** -3})
+@atomic.particle_input
 def Coulomb_logarithm(T,
                       n_e,
-                      particles,
+                      particles: (atomic.Particle, atomic.Particle),
                       z_mean=np.nan * u.dimensionless_unscaled,
                       V=np.nan * u.m / u.s,
                       method="classical"):
@@ -138,6 +192,44 @@ def Coulomb_logarithm(T,
     This means the Coulomb logarithm will not break down for Lambda < 0,
     which occurs for dense, cold plasmas.
 
+    Methods
+    ---
+    Classical
+        classical Landau-Spitzer approach. Fails for large coupling
+        parameter where Lambda can become less than zero.
+    GMS-1
+        1st method listed in Table 1 of reference [3]
+        Landau-Spitzer, but with interpolated bmin instead of bmin
+        selected between deBroglie wavelength and distance of closest
+        approach. Fails for large coupling
+        parameter where Lambda can become less than zero.
+    GMS-2
+        2nd method listed in Table 1 of reference [3]
+        Another Landau-Spitzer like approach, but now bmax is also
+        being interpolated. The interpolation is between the Debye
+        length and the ion sphere radius, allowing for descriptions
+        of dilute plasmas. Fails for large coupling
+        parameter where Lambda can become less than zero.
+        3rd method listed in Table 1 of reference [3]
+        classical Landau-Spitzer fails for argument of Coulomb logarithm
+        Lambda < 0, therefore a clamp is placed at Lambda_min = 2
+    GMS-4
+        4th method listed in Table 1 of reference [3]
+        Spitzer-like extension to Coulomb logarithm by noting that
+        Coulomb collisions take hyperbolic trajectories. Removes
+        divergence for small bmin issue in classical Landau-Spitzer
+        approach, so bmin can be zero. Also doesn't break down as
+        Lambda < 0 is now impossible, even when coupling parameter is large.
+    GMS-5
+        5th method listed in Table 1 of reference [3]
+        Similar to GMS-4, but setting bmin as distance of closest approach
+        and bmax interpolated between Debye length and ion sphere radius.
+        Lambda < 0 impossible.
+    GMS-6
+        6th method listed in Table 1 of reference [3]
+        Similar to GMS-4 and GMS-5, but using interpolation methods
+        for both bmin and bmax.
+
     Examples
     --------
     >>> from astropy import units as u
@@ -172,65 +264,32 @@ def Coulomb_logarithm(T,
                                   z_mean=z_mean,
                                   V=V,
                                   method=method)
-    if method == "classical":
-        # classical Landau-Spitzer approach. Fails for large coupling
-        # parameter where Lambda can become less than zero.
-        ln_Lambda = np.log(bmax / bmin)
-    elif method == "GMS-1":
-        # 1st method listed in Table 1 of reference [3]
-        # Landau-Spitzer, but with interpolated bmin instead of bmin
-        # selected between deBroglie wavelength and distance of closest
-        # approach. Fails for large coupling
-        # parameter where Lambda can become less than zero.
-        ln_Lambda = np.log(bmax / bmin)
-    elif method == "GMS-2":
-        # 2nd method listed in Table 1 of reference [3]
-        # Another Landau-Spitzer like approach, but now bmax is also
-        # being interpolated. The interpolation is between the Debye
-        # length and the ion sphere radius, allowing for descriptions
-        # of dilute plasmas. Fails for large coupling
-        # parameter where Lambda can become less than zero.
+    if method in ("classical", "GMS-1", "GMS-2"):
         ln_Lambda = np.log(bmax / bmin)
     elif method == "GMS-3":
-        # 3rd method listed in Table 1 of reference [3]
-        # classical Landau-Spitzer fails for argument of Coulomb logarithm
-        # Lambda < 0, therefore a clamp is placed at Lambda_min = 2
         ln_Lambda = np.log(bmax / bmin)
-        if ln_Lambda < 2:
-            ln_Lambda = 2 * u.dimensionless_unscaled
-    elif method == "GMS-4":
-        # 4th method listed in Table 1 of reference [3]
-        # Spitzer-like extension to Coulomb logarithm by noting that
-        # Coulomb collisions take hyperbolic trajectories. Removes
-        # divergence for small bmin issue in classical Landau-Spitzer
-        # approach, so bmin can be zero. Also doesn't break down as
-        # Lambda < 0 is now impossible, even when coupling parameter is large.
-        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
-    elif method == "GMS-5":
-        # 5th method listed in Table 1 of reference [3]
-        # Similar to GMS-4, but setting bmin as distance of closest approach
-        # and bmax interpolated between Debye length and ion sphere radius.
-        # Lambda < 0 impossible.
-        ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
-    elif method == "GMS-6":
-        # 6th method listed in Table 1 of reference [3]
-        # Similar to GMS-4 and GMS-5, but using interpolation methods
-        # for both bmin and bmax.
-        # Lambda < 0 impossible.
+        if np.any(ln_Lambda < 2):
+            if np.isscalar(ln_Lambda.value):
+                ln_Lambda = 2 * u.dimensionless_unscaled
+            else:
+                ln_Lambda[ln_Lambda < 2] = 2 * u.dimensionless_unscaled
+    elif method in ("GMS-4", "GMS-5", "GMS-6"):
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
         raise ValueError("Unknown method! Choose from 'classical' and 'GMS-N', N from 1 to 6.")
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
-    if ln_Lambda < 4:
+    if np.any(ln_Lambda < 2) and method in ["classical", "GMS-1", "GMS-2"]:
+        warnings.warn(f"Coulomb logarithm is {ln_Lambda} and {method} relies on weak coupling.",
+                      utils.CouplingWarning)
+    elif np.any(ln_Lambda < 4):
         warnings.warn(f"Coulomb logarithm is {ln_Lambda}, you might have strong coupling effects",
-                      utils.PhysicsWarning)
-    # if ln_Lambda < 1:
-    #     raise utils.PhysicsError(f"Coulomb logarithm is {ln_Lambda}, less than 1")
+                      utils.CouplingWarning)
     return ln_Lambda
 
 
-def _boilerPlate(T, particles, V):
+@atomic.particle_input
+def _boilerPlate(T, particles: (atomic.Particle, atomic.Particle), V):
     """
     Some boiler plate code for checking if inputs to functions in
     collisions.py are good. Also obtains reduced in mass in a
@@ -238,13 +297,7 @@ def _boilerPlate(T, particles, V):
     """
     # checking temperature is in correct units
     T = T.to(u.K, equivalencies=u.temperature_energy())
-    # extracting particle information
-    if not isinstance(particles, (list, tuple)) or len(particles) != 2:
-        raise ValueError("Particles input must be a "
-                         "list or tuple containing representations of two  "
-                         f"charged particles. Got {particles} instead.")
 
-    particles = [atomic.Particle(p) for p in particles]
     masses = [p.mass for p in particles]
     charges = [np.abs(p.charge) for p in particles]
 
@@ -252,19 +305,43 @@ def _boilerPlate(T, particles, V):
     reduced_mass = atomic.reduced_mass(*particles)
 
     # getting thermal velocity of system if no velocity is given
-    if np.isnan(V):
-        V = parameters.thermal_speed(T, mass=reduced_mass)
+    V = _replaceNanVwithThermalV(V, T, reduced_mass)
+
     _check_relativistic(V, 'V')
+
     return T, masses, charges, reduced_mass, V
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False}
-                 })
-def b_perp(T,
-           particles,
-           V=np.nan * u.m / u.s):
+def _replaceNanVwithThermalV(V, T, m):
     """
-    Distance of closest approach for a 90 degree Coulomb collision.
+    Get thermal velocity of system if no velocity is given, for a given mass.
+    Handles vector checks for V, you must already know that T and m are okay.
+    """
+    if np.any(V == 0):
+        raise utils.PhysicsError("You cannot have a collision for zero velocity!")
+    # getting thermal velocity of system if no velocity is given
+    if V is None:
+        V = parameters.thermal_speed(T, mass=m)
+    elif np.any(np.isnan(V)):
+        if np.isscalar(V.value) and np.isscalar(T.value):
+            V = parameters.thermal_speed(T, mass=m)
+        elif np.isscalar(V.value):
+            V = parameters.thermal_speed(T, mass=m)
+        elif np.isscalar(T.value):
+            V = V.copy()
+            V[np.isnan(V)] = parameters.thermal_speed(T, mass=m)
+        else:
+            V = V.copy()
+            V[np.isnan(V)] = parameters.thermal_speed(T[np.isnan(V)], mass=m)
+    return V
+
+
+@check_quantity(T={"units": u.K, "can_be_negative": False})
+@atomic.particle_input
+def impact_parameter_perp(T,
+                          particles: (atomic.Particle, atomic.Particle),
+                          V=np.nan * u.m / u.s):
+    r"""Distance of closest approach for a 90 degree Coulomb collision.
 
     Parameters
     ----------
@@ -285,7 +362,7 @@ def b_perp(T,
 
     Returns
     -------
-    b_perp : float or numpy.ndarray
+    impact_parameter_perp : float or numpy.ndarray
         The distance of closest approach for a 90 degree Coulomb collision.
 
     Raises
@@ -315,7 +392,7 @@ def b_perp(T,
 
     Notes
     -----
-    The distance of closest approach, b_perp, is given by [1]_
+    The distance of closest approach, impact_parameter_perp, is given by [1]_
 
     .. math::
         b_{\perp} = \frac{Z_1 Z_2}{4 \pi \epsilon_0 m v^2}
@@ -326,7 +403,7 @@ def b_perp(T,
     >>> from astropy import units as u
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
-    >>> b_perp(T, particles)
+    >>> impact_parameter_perp(T, particles)
     <Quantity 8.35505011e-12 m>
 
 
@@ -348,9 +425,9 @@ def b_perp(T,
     return bPerp.to(u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def impact_parameter(T,
                      n_e,
                      particles,
@@ -465,7 +542,7 @@ def impact_parameter(T,
                                                        V=V)
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
-    if method == "GMS-2" or method == "GMS-5" or method == "GMS-6":
+    if method in ("GMS-2", "GMS-5", "GMS-6"):
         if np.isnan(z_mean):
             raise ValueError("Must provide a z_mean for GMS-2, GMS-5, and "
                              "GMS-6 methods.")
@@ -474,9 +551,9 @@ def impact_parameter(T,
     # deBroglie wavelength
     lambdaBroglie = hbar / (2 * reduced_mass * V)
     # distance of closest approach in 90 degree Coulomb collision
-    bPerp = b_perp(T=T,
-                   particles=particles,
-                   V=V)
+    bPerp = impact_parameter_perp(T=T,
+                                  particles=particles,
+                                  V=V)
     # obtaining minimum and maximum impact parameters depending on which
     # method is requested
     if method == "classical":
@@ -485,10 +562,19 @@ def impact_parameter(T,
         # shorter than either of these two impact parameters, so we choose
         # the larger of these two possibilities. That is, between the
         # deBroglie wavelength and the distance of closest approach.
-        if bPerp > lambdaBroglie:
-            bmin = bPerp
-        else:
+        # ARRAY NOTES
+        # T and V should be guaranteed to be same size inputs from _boilerplate
+        # therefore, lambdaBroglie and bPerp are either both scalar or both array
+        # if np.isscalar(bPerp.value) and np.isscalar(lambdaBroglie.value):  # both scalar
+        try:  # assume both scalar
+            if bPerp > lambdaBroglie:
+                bmin = bPerp
+            else:
+                bmin = lambdaBroglie
+        # else:  # both lambdaBroglie and bPerp are arrays
+        except ValueError:  # both lambdaBroglie and bPerp are arrays
             bmin = lambdaBroglie
+            bmin[bPerp > lambdaBroglie] = bPerp[bPerp > lambdaBroglie]
     elif method == "GMS-1":
         # 1st method listed in Table 1 of reference [1]
         # This is just another form of the classical Landau-Spitzer
@@ -536,12 +622,19 @@ def impact_parameter(T,
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
     else:
         raise ValueError(f"Method {method} not found!")
+    # ARRAY NOTES
+    # it could be that bmin and bmax have different sizes. If Te is a scalar,
+    # T and V will be scalar from _boilerplate, so bmin will scalar.  However
+    # if n_e is an array, than bmax will be an array. if this is the case,
+    # do we want to extend the scalar bmin to equal the length of bmax? Sure.
+    if np.isscalar(bmin.value) and not np.isscalar(bmax.value):
+        bmin = np.repeat(bmin, len(bmax))
     return bmin.to(u.m), bmax.to(u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n={"units": u.m ** -3}
+                )
 def collision_frequency(T,
                         n,
                         particles,
@@ -627,14 +720,6 @@ def collision_frequency(T,
     taken as the thermal velocity), and :math:`\ln{\Lambda}` is the Coulomb
     logarithm accounting for small angle collisions.
 
-    The collisional cross-section is obtained by
-
-    .. math::
-        \sigma = \pi \rho_{\perp}^2
-
-    where :math:`\rho_{\perp}` is the distance of closest approach for
-    a 90 degree Coulomb collision.
-
     See eq (2.14) in [2]_.
 
     Examples
@@ -646,11 +731,12 @@ def collision_frequency(T,
     >>> collision_frequency(T, n, particles)
     <Quantity 702505.15998601 Hz>
 
-     References
+    References
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
     .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
+
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T,
@@ -660,15 +746,15 @@ def collision_frequency(T,
     # reduced mass
     V_reduced = V_r
     if particles[0] in ('e','e-') and particles[1] in ('e','e-'):
+        # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        if np.isnan(V):
-            V = V_reduced
-        # electron-electron collision
+        V = _replaceNanVwithThermalV(V, T, reduced_mass)
         # impact parameter for 90 degree collision
-        bPerp = b_perp(T=T,
-                       particles=particles,
-                       V=V_reduced)
+        bPerp = impact_parameter_perp(T=T,
+                                      particles=particles,
+                                      V=V_reduced)
+        print(T, n, particles, z_mean, method)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T,
                                     n,
@@ -680,15 +766,14 @@ def collision_frequency(T,
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
-        if np.isnan(V):
-            # we ignore the reduced velocity and use the electron thermal
-            # velocity instead
-            V = np.sqrt(2 * k_B * T / m_e)
+        # we ignore the reduced velocity and use the electron thermal
+        # velocity instead
+        V = _replaceNanVwithThermalV(V, T, m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
-        bPerp = b_perp(T=T,
-                       particles=particles,
-                       V=V) * reduced_mass / m_e
+        bPerp = impact_parameter_perp(T=T,
+                                      particles=particles,
+                                      V=V) * reduced_mass / m_e
         # Coulomb logarithm
         # !!! may also need to correct Coulomb logarithm to be
         # electron-electron version !!!
@@ -699,14 +784,13 @@ def collision_frequency(T,
                                     V=np.nan * u.m / u.s,
                                     method=method)
     else:
+        # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
-        if np.isnan(V):
-            V = V_reduced
-        # ion-ion collision
-        bPerp = b_perp(T=T,
-                       particles=particles,
-                       V=V)
+        V = _replaceNanVwithThermalV(V, T, reduced_mass)
+        bPerp = impact_parameter_perp(T=T,
+                                      particles=particles,
+                                      V=V)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T,
                                     n,
@@ -715,7 +799,7 @@ def collision_frequency(T,
                                     V=np.nan * u.m / u.s,
                                     method=method)
     # collisional cross section
-    sigma = np.pi * (2 * bPerp) ** 2
+    sigma = Coulomb_cross_section(bPerp)
     # collision frequency where Coulomb logarithm accounts for
     # small angle collisions, which are more frequent than large
     # angle collisions.
@@ -723,29 +807,66 @@ def collision_frequency(T,
     return freq.to(u.Hz)
 
 
-@utils.check_quantity({
-    'T_e': {'units': u.K, 'can_be_negative': False},
-    'n_e': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def collision_rate_electron_ion(T_e,
-                                n_e,
-                                ion_particle,
-                                coulomb_log=None,
-                                V=None,
-                                coulomb_log_method="classical"):
+@check_quantity(impact_param={'units': u.m, 'can_be_negative': False})
+def Coulomb_cross_section(impact_param: u.m):
+    r"""Cross section for a large angle Coulomb collision.
+
+    Parameters
+    ----------
+    impact_param : ~astropy.units.Quantity
+        Impact parameter for the collision.
+
+    Examples
+    --------
+    >>> Coulomb_cross_section(7e-10*u.m)
+    <Quantity 6.1575216e-18 m2>
+    >>> Coulomb_cross_section(0.5*u.m)
+    <Quantity 3.14159265 m2>
+
+    Notes
+    -----
+    The collisional cross-section (see [1]_ for a graphical demonstration)
+    for a 90 degree Coulomb collision is obtained by
+
+    .. math::
+        \sigma = \pi (2 * \rho_{\perp})^2
+
+    where :math:`\rho_{\perp}` is the distance of closest approach for
+    a 90 degree Coulomb collision. This function is a generalization of that
+    calculation. Please note that it is not guaranteed to return the correct
+    results for small angle collisions.
+
+    Returns
+    -------
+    ~astropy.units.Quantity
+        The Coulomb collision cross section area.
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Cross_section_(physics)#Collision_among_gas_particles
+    """
+    sigma = np.pi * (2 * impact_param) ** 2
+    return sigma
+
+
+@utils.check_quantity(
+    T_e={'units': u.K, 'can_be_negative': False},
+    n_e={'units': u.m ** -3, 'can_be_negative': False}
+    )
+def fundamental_electron_collision_freq(T_e,
+                                        n_e,
+                                        ion_particle,
+                                        coulomb_log=None,
+                                        V=None,
+                                        coulomb_log_method="classical"):
     r"""
-    Momentum relaxation electron-ion collision rate
+    Average momentum relaxation rate for a slowly flowing Maxwellian distribution of electrons.
 
-    From [3]_, equations (2.17) and (2.120)
-
-    Considering a Maxwellian distribution of "test" electrons colliding with
-    a Maxwellian distribution of "field" ions.
-
-    This result is an electron momentum relaxation rate, and is used in many
-    classical transport expressions. It is equivalent to:
-    * 1/tau_e from ref [1]_ eqn (1) pp. #,
-    * 1/tau_e from ref [2]_ eqn (1) pp. #,
-    * nu_e\i_S from ref [2]_ eqn (1) pp. #,
+    [3]_ provides a derivation of this as an average collision frequency between electrons
+    and ions for a Maxwellian distribution. It is thus a special case of the collision
+    frequency with an averaging factor, and is on many occasions in transport theory
+    the most relevant collision frequency that has to be considered. It is heavily
+    related to diffusion and resistivity in plasmas.
 
     Parameters
     ----------
@@ -773,6 +894,22 @@ def collision_rate_electron_ion(T_e,
         Method used for Coulomb logarithm calculation (see that function
         for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
 
+    Notes
+    -----
+    Equations (2.17) and (2.120) in [3]_ provide the original source used
+    to implement this formula, however, the simplest form that connects our average
+    collision frequency to the general collision frequency is is this (from 2.17):
+
+    .. math::
+        \nu_e = \frac{4}{3 \sqrt{\pi}} \nu(v_{Te})
+
+    Where :math:`\nu` is the general collision frequency and :math:`v_{Te}`
+    is the electron thermal velocity (the average, for a Maxwellian distribution).
+
+    This implementation of the average collision frequency is is equivalent to:
+    * 1/tau_e from ref [1]_ eqn (2.5e) pp. 215,
+    * nu_e from ref [2]_ pp. 33,
+
     References
     ----------
     .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
@@ -782,29 +919,34 @@ def collision_rate_electron_ion(T_e,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
        https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
-    .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [3] J.D. Callen, Fundamentals of Plasma Physics draft material,
+       Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     Examples
     --------
     >>> from astropy import units as u
-    >>> collision_rate_electron_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 0.00180172 1 / s>
-    >>> collision_rate_electron_ion(100 * u.eV, 1e6 / u.m ** 3, 'p')
-    <Quantity 8.6204672e-08 1 / s>
-    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p')
+    >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
+    <Quantity 1.07222852e-07 1 / s>
+    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
     <Quantity 3936037.8595928 1 / s>
-    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
+    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
     <Quantity 3872922.52743562 1 / s>
-    >>> collision_rate_electron_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
+    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
     <Quantity 4.41166015e-07 1 / s>
-    >>> collision_rate_electron_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
+    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
     <Quantity 5812633.74935003 1 / s>
 
+    See Also
+    --------
+    collision_frequency
+    fundamental_ion_collision_freq
     """
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
-    if not V:
-        # electron thermal velocity (most probable)
-        V = np.sqrt(2 * k_B * T_e / m_e)
+
+    # specify to use electron thermal velocity (most probable), not based on reduced mass
+    V = _replaceNanVwithThermalV(V, T_e, m_e)
 
     particles = [ion_particle, 'e-']
     Z_i = atomic.integer_charge(ion_particle)
@@ -817,14 +959,13 @@ def collision_rate_electron_ion(T_e,
                              )
     coeff = 4 / np.sqrt(np.pi) / 3
 
-
     # accounting for when a Coulomb logarithm value is passed
-    if coulomb_log:
+    if np.any(coulomb_log):
         cLog = Coulomb_logarithm(T_e,
                                  n_e,
                                  particles,
                                  z_mean=Z_i,
-                                 V=np.nan, # probably needs to be enabled!
+                                 V=np.nan * u.m / u.s,
                                  method=coulomb_log_method)
         # dividing out by typical Coulomb logarithm value implicit in
         # the collision frequency calculation and replacing with
@@ -833,36 +974,26 @@ def collision_rate_electron_ion(T_e,
         nu_e = coeff * nu_mod
     else:
         nu_e = coeff * nu
+
     return nu_e.to(1 / u.s)
 
 
-@utils.check_quantity({
-    'T_i': {'units': u.K, 'can_be_negative': False},
-    'n_i': {'units': u.m ** -3, 'can_be_negative': False}
-    })
-def collision_rate_ion_ion(T_i,
-                           n_i,
-                           ion_particle,
-                           coulomb_log=None,
-                           V=None,
-                           coulomb_log_method="classical"):
+@utils.check_quantity(
+    T_i={'units': u.K, 'can_be_negative': False},
+    n_i={'units': u.m ** -3, 'can_be_negative': False}
+    )
+def fundamental_ion_collision_freq(T_i,
+                                   n_i,
+                                   ion_particle,
+                                   coulomb_log=None,
+                                   V=None,
+                                   coulomb_log_method="classical"):
     r"""
-    Momentum relaxation ion-ion collision rate
+    Average momentum relaxation rate for a slowly flowing Maxwellian distribution of ions.
 
-    From [3]_, equations (2.36) and (2.122)
-
-    Considering a Maxwellian distribution of "test" ions colliding with
-    a Maxwellian distribution of "field" ions.
-
-    Note, it is assumed that electrons are present in such numbers as to
-    establish quasineutrality, but the effects of the test ions colliding
-    with them are not considered here.
-
-    This result is an ion momentum relaxation rate, and is used in many
-    classical transport expressions. It is equivalent to:
-    * 1/tau_i from ref [1]_ eqn (1) pp. #,
-    * 1/tau_i from ref [2]_ eqn (1) pp. #,
-    * nu_i\i_S from ref [2]_ eqn (1) pp. #,
+    [3]_ provides a derivation of this as an average collision frequency between ions
+    and ions for a Maxwellian distribution. It is thus a special case of the collision
+    frequency with an averaging factor.
 
     Parameters
     ----------
@@ -891,6 +1022,30 @@ def collision_rate_ion_ion(T_i,
         Method used for Coulomb logarithm calculation (see that function
         for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
 
+    Notes
+    -----
+    Equations (2.36) and (2.122) in [3]_ provide the original source used
+    to implement this formula, however, in our implementation we use the very
+    same process that leads to the fundamental electron collison rate (2.17),
+    gaining simply a different coefficient:
+
+    .. math::
+        \nu_i = \frac{8}{3 * 4 * \sqrt{\pi}} \nu(v_{Ti})
+
+    Where :math:`\nu` is the general collision frequency and :math:`v_{Ti}`
+    is the ion thermal velocity (the average, for a Maxwellian distribution).
+
+    Note that in the derivation, it is assumed that electrons are present
+    in such numbers as to establish quasineutrality, but the effects of the
+    test ions colliding with them are not considered here. This is a very
+    typical approximation in transport theory.
+
+    This result is an ion momentum relaxation rate, and is used in many
+    classical transport expressions. It is equivalent to:
+    * 1/tau_i from ref [1]_, equation (2.5i) pp. 215,
+    * nu_i from ref [2]_ pp. 33,
+
+
     References
     ----------
     .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
@@ -900,32 +1055,39 @@ def collision_rate_ion_ion(T_i,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
        https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
-    .. [3] Callen Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [3] J.D. Callen, Fundamentals of Plasma Physics draft material,
+       Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
 
     Examples
     --------
     >>> from astropy import units as u
-    >>> collision_rate_ion_ion(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 2.97315582e-05 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e6 / u.m ** 3, 'p')
-    <Quantity 1.43713193e-09 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p')
+    >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
+    <Quantity 1.78316012e-09 1 / s>
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
     <Quantity 66411.80316364 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
     <Quantity 66407.00859126 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
     <Quantity 6.53577473 1 / s>
-    >>> collision_rate_ion_ion(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
     <Quantity 95918.76240877 1 / s>
 
+    See Also
+    --------
+    collision_frequency
+    fundamental_electron_collision_freq
     """
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     m_i = atomic.particle_mass(ion_particle)
     particles = [ion_particle, ion_particle]
-    if not V:
-        # ion thermal velocity (most probable)
-        V = np.sqrt(2 * k_B * T_i / m_i)
+
+    # specify to use ion thermal velocity (most probable), not based on reduced mass
+    V = _replaceNanVwithThermalV(V, T_i, m_i)
+
     Z_i = atomic.integer_charge(ion_particle)
+
     nu = collision_frequency(T_i,
                              n_i,
                              particles,
@@ -937,7 +1099,7 @@ def collision_rate_ion_ion(T_i,
     coeff = np.sqrt(8 / np.pi) / 3 / 4
 
     # accounting for when a Coulomb logarithm value is passed
-    if coulomb_log:
+    if np.any(coulomb_log):
         cLog = Coulomb_logarithm(T_i,
                                  n_i,
                                  particles,
@@ -951,12 +1113,13 @@ def collision_rate_ion_ion(T_i,
         nu_i = coeff * nu_mod
     else:
         nu_i = coeff * nu
+
     return nu_i.to(1 / u.s)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def mean_free_path(T,
                    n_e,
                    particles,
@@ -1072,9 +1235,9 @@ def mean_free_path(T,
     return mfp.to(u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n={"units": u.m ** -3}
+                )
 def Spitzer_resistivity(T,
                         n,
                         particles,
@@ -1200,9 +1363,9 @@ def Spitzer_resistivity(T,
     return spitzer.to(u.Ohm * u.m)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def mobility(T,
              n_e,
              particles,
@@ -1327,9 +1490,9 @@ def mobility(T,
     return mobility_value.to(u.m ** 2 / (u.V * u.s))
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def Knudsen_number(characteristic_length,
                    T,
                    n_e,
@@ -1446,9 +1609,9 @@ def Knudsen_number(characteristic_length,
     return knudsen_param.to(u.dimensionless_unscaled)
 
 
-@check_quantity({"T": {"units": u.K, "can_be_negative": False},
-                 "n_e": {"units": u.m ** -3}
-                 })
+@check_quantity(T={"units": u.K, "can_be_negative": False},
+                n_e={"units": u.m ** -3}
+                )
 def coupling_parameter(T,
                        n_e,
                        particles,
@@ -1621,9 +1784,9 @@ def coupling_parameter(T,
         fermiIntegral = Fermi_integral(chemicalPotential.si.value, 1.5)
         denom = (n_e * lambda_deBroglie ** 3) * fermiIntegral
         kineticEnergy = 2 * k_B * T / denom
-        if np.imag(kineticEnergy) == 0:
+        if np.all(np.imag(kineticEnergy) == 0):
             kineticEnergy = np.real(kineticEnergy)
-        else:
+        else:  # coveralls: ignore
             raise ValueError("Kinetic energy should not be imaginary."
                              "Something went horribly wrong.")
     coupling = coulombEnergy / kineticEnergy
