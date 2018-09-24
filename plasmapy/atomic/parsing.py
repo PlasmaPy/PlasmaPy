@@ -121,7 +121,10 @@ def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
     return errmsg
 
 
-def _parse_and_check_atomic_input(argument: Union[str, numbers.Integral], mass_numb: numbers.Integral = None, Z: numbers.Integral = None):
+def _parse_and_check_atomic_input(
+        argument: Union[str, numbers.Integral],
+        mass_numb: numbers.Integral = None,
+        Z: numbers.Integral = None):
     """
     Parse information about a particle into a dictionary of standard
     symbols, and check the validity of the particle.

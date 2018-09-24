@@ -276,7 +276,11 @@ class Particle:
 
 """
 
-    def __init__(self, argument: Union[str, numbers.Integral], mass_numb: numbers.Integral = None, Z: numbers.Integral = None):
+    def __init__(
+            self,
+            argument: Union[str, numbers.Integral],
+            mass_numb: numbers.Integral = None,
+            Z: numbers.Integral = None):
         """
         Instantiate a `~plasmapy.atomic.Particle` object and set private
         attributes.

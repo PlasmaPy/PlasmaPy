@@ -19,6 +19,7 @@ __all__ = [
     "nuclear_reaction_energy",
 ]
 
+
 @particle_input(any_of={'isotope', 'baryon'})
 def nuclear_binding_energy(
         particle: Particle, mass_numb: int = None) -> u.Quantity:
