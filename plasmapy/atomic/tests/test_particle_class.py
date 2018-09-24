@@ -4,7 +4,7 @@ from astropy import units as u
 import inspect
 from plasmapy.utils import roman
 
-from ...constants import m_p, m_e, m_n, e
+from ...constants import m_p, m_e, m_n, e, c
 
 from ...utils import (
     AtomicWarning,
@@ -140,6 +140,7 @@ test_Particle_table = [
       'roman_symbol': None,
       'is_ion': False,
       'mass': m_e,
+      'mass_energy': (m_e * c ** 2).to('J'),
       'nuclide_mass': InvalidIsotopeError,
       'integer_charge': 1,
       'spin': 1 / 2,
@@ -358,6 +359,7 @@ test_Particle_table = [
       'isotope': None,
       'isotope_name': InvalidElementError,
       'mass': MissingAtomicDataError,
+      'mass_energy': MissingAtomicDataError,
       'integer_charge': 0,
       'mass_number': InvalidIsotopeError,
       'element_name': InvalidElementError,
