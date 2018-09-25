@@ -795,46 +795,6 @@ class Particle:
         return self._attributes['standard atomic weight'].to(u.kg)
 
     @property
-    def nuclide_mass(self) -> u.Quantity:
-        """
-        Return the mass of the bare nucleus of an isotope or a neutron.
-
-        This attribute will raise a
-        `~plasmapy.utils.InvalidIsotopeError` if the particle is not an
-        isotope or neutron, or a
-        `~plasmapy.utils.MissingAtomicDataError` if the isotope mass is
-        not available.
-
-        Examples
-        --------
-        >>> deuterium = Particle('D')
-        >>> deuterium.nuclide_mass
-        <Quantity 3.34358372e-27 kg>
-
-        """
-
-        if self.isotope == 'H-1':
-            return const.m_p
-        elif self.isotope == 'D':
-            return _special_ion_masses['D 1+']
-        elif self.isotope == 'T':
-            return _special_ion_masses['T 1+']
-        elif self.particle == 'n':
-            return const.m_n
-
-        if not self.isotope:
-            raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
-
-        base_mass = self._attributes['isotope mass']
-
-        if base_mass is None:  # coveralls: ignore
-            raise MissingAtomicDataError(f"The mass of a {self.isotope} nuclide is not available.")
-
-        _nuclide_mass = self._attributes['isotope mass'] - self.atomic_number * const.m_e
-
-        return _nuclide_mass.to(u.kg)
-
-    @property
     def mass(self) -> u.Quantity:
         """
         Return the mass of the particle in kilograms.
@@ -901,6 +861,138 @@ class Particle:
                 return mass.to(u.kg)
 
         raise MissingAtomicDataError(f"The mass of {self} is not available.")
+
+    @property
+    def nuclide_mass(self) -> u.Quantity:
+        """
+        Return the mass of the bare nucleus of an isotope or a neutron.
+
+        This attribute will raise a
+        `~plasmapy.utils.InvalidIsotopeError` if the particle is not an
+        isotope or neutron, or a
+        `~plasmapy.utils.MissingAtomicDataError` if the isotope mass is
+        not available.
+
+        Examples
+        --------
+        >>> deuterium = Particle('D')
+        >>> deuterium.nuclide_mass
+        <Quantity 3.34358372e-27 kg>
+
+        """
+
+        if self.isotope == 'H-1':
+            return const.m_p
+        elif self.isotope == 'D':
+            return _special_ion_masses['D 1+']
+        elif self.isotope == 'T':
+            return _special_ion_masses['T 1+']
+        elif self.particle == 'n':
+            return const.m_n
+
+        if not self.isotope:
+            raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
+
+        base_mass = self._attributes['isotope mass']
+
+        if base_mass is None:  # coveralls: ignore
+            raise MissingAtomicDataError(f"The mass of a {self.isotope} nuclide is not available.")
+
+        _nuclide_mass = self._attributes['isotope mass'] - self.atomic_number * const.m_e
+
+        return _nuclide_mass.to(u.kg)
+
+    @property
+    def mass_energy(self) -> u.Quantity:
+        """
+        Return the mass energy of the particle in joules.
+
+        If the particle is an atom or ion, include the mass of the
+        electrons.
+
+        If the mass of the particle is not known, then raise a
+        `~plasmapy.utils.MissingAtomicDataError`.
+
+        Example
+        -------
+        >>> proton = Particle('p+')
+        >>> proton.mass_energy
+        <Quantity 1.50327759e-10 J>
+        >>> electron = Particle('electron')
+        >>> electron.mass_energy.to('MeV')
+        <Quantity 0.51099895 MeV>
+
+        """
+        try:
+            return (self.mass * const.c ** 2).to(u.J)
+        except MissingAtomicDataError:
+            raise MissingAtomicDataError(
+                f"The mass energy of {self.particle} is not available "
+                f"because the mass is unknown.") from None
+
+    @property
+    def nuclear_mass_energy(self) -> u.Quantity:
+        """
+        Return the mass energy of the nucleus of an isotope.
+
+        If the particle is not an isotope, then raise a
+        `~plasmapy.utils.InvalidIsotopeError`.
+
+        Examples
+        --------
+        >>> protium = Particle('H-1 0+')
+        >>> protium.nuclear_mass_energy
+        <Quantity 1.50327759e-10 J>
+        >>> proton = Particle('p+')
+        >>> proton.mass_energy
+        <Quantity 1.50327759e-10 J>
+
+        """
+        if not self.isotope:
+            raise InvalidIsotopeError(
+                f"The nuclear mass energy of {self.particle} cannot "
+                f"be found because it is not an isotope. "
+                f"Use mass_energy instead.")
+        return (self.nuclide_mass * const.c ** 2).to(u.J)
+
+    @property
+    def binding_energy(self) -> u.Quantity:
+        """
+        Return the nuclear binding energy in joules.
+
+        This attribute will raise an
+        `~plasmapy.utils.InvalidIsotopeError` if the particle is not a
+        nucleon or isotope.
+
+        Examples
+        --------
+        >>> alpha = Particle('alpha')
+        >>> alpha.binding_energy
+        <Quantity 4.53346938e-12 J>
+        >>> Particle('T').binding_energy.to('MeV')
+        <Quantity 8.48179621 MeV>
+
+        """
+
+        if self._attributes['baryon number'] == 1:
+            return 0 * u.J
+
+        if not self.isotope:
+            raise InvalidIsotopeError(
+                f"The nuclear binding energy may only be calculated for nucleons and isotopes.")
+
+        number_of_protons = self.atomic_number
+        number_of_neutrons = self.mass_number - self.atomic_number
+
+        mass_of_protons = number_of_protons * const.m_p
+        mass_of_neutrons = number_of_neutrons * const.m_n
+
+        mass_of_nucleons = mass_of_protons + mass_of_neutrons
+
+        mass_defect = mass_of_nucleons - self.nuclide_mass
+        nuclear_binding_energy = mass_defect * const.c ** 2
+
+        return nuclear_binding_energy.to(u.J)
 
     @property
     def atomic_number(self) -> numbers.Integral:
@@ -1080,68 +1172,6 @@ class Particle:
             raise MissingAtomicDataError(
                 f"The lepton number for {self.particle} is not available.")
         return self._attributes['lepton number']
-
-    @property
-    def binding_energy(self) -> u.Quantity:
-        """
-        Return the nuclear binding energy in joules.
-
-        This attribute will raise an
-        `~plasmapy.utils.InvalidIsotopeError` if the particle is not a
-        nucleon or isotope.
-
-        Examples
-        --------
-        >>> alpha = Particle('alpha')
-        >>> alpha.binding_energy
-        <Quantity 4.53346938e-12 J>
-        >>> Particle('T').binding_energy.to('MeV')
-        <Quantity 8.48179621 MeV>
-
-        """
-
-        if self._attributes['baryon number'] == 1:
-            return 0 * u.J
-
-        if not self.isotope:
-            raise InvalidIsotopeError(
-                f"The nuclear binding energy may only be calculated for nucleons and isotopes.")
-
-        number_of_protons = self.atomic_number
-        number_of_neutrons = self.mass_number - self.atomic_number
-
-        mass_of_protons = number_of_protons * const.m_p
-        mass_of_neutrons = number_of_neutrons * const.m_n
-
-        mass_of_nucleons = mass_of_protons + mass_of_neutrons
-
-        mass_defect = mass_of_nucleons - self.nuclide_mass
-        nuclear_binding_energy = mass_defect * const.c ** 2
-
-        return nuclear_binding_energy.to(u.J)
-
-    @property
-    def mass_energy(self) -> u.Quantity:
-        """
-        Return the mass energy in joules.
-
-        Example
-        -------
-        >>> proton = Particle('p+')
-        >>> proton.mass_energy
-        <Quantity 1.50327759e-10 J>
-        >>> electron = Particle('electron')
-        >>> electron.mass_energy.to('MeV')
-        <Quantity 0.51099895 MeV>
-
-        """
-        try:
-            return (self.mass * const.c ** 2).to('J')
-        except MissingAtomicDataError:
-            raise MissingAtomicDataError(
-                f"The mass energy of {self.particle} is not available "
-                f"because the mass is unknown."
-            ) from None
 
     @property
     def half_life(self) -> Union[u.Quantity, str]:

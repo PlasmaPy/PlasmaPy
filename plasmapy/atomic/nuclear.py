@@ -111,7 +111,7 @@ def nuclear_mass_energy(
         If the inputs are not of the correct types.
 
     """
-    return particle.mass_energy.to(u.J)
+    return particle.nuclear_mass_energy
 
 
 def nuclear_reaction_energy(*args, **kwargs):
