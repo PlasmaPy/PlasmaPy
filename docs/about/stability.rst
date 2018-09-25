@@ -170,7 +170,7 @@ PlasmaPy's planned and existing subpackages are:
         </tr>
         <tr>
             <td>
-                plasmapy.physics.transport
+                plasmapy.transport
             </td>
             <td align='center'>
                 <span class="dev"></span>

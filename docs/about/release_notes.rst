@@ -19,6 +19,12 @@ whenever the API changes in a way that is not backwards compatible,
 backwards compatibility, and `PATCH` must be incremented for each bug
 fix release.
 
+Version 0.2.0
+-------------
+
+The `~plasmapy.transport` subpackage was moved outside of
+`~plasmapy.physics`.
+
 Version 0.1.1
 -------------
 

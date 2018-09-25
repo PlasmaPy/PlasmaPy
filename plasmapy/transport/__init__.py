@@ -7,6 +7,7 @@ from .collisions import (Coulomb_logarithm,
                          mean_free_path,
                          mobility,
                          Knudsen_number,
+                         Spitzer_resistivity,
                          coupling_parameter)
 from .braginskii import (ClassicalTransport,
                          resistivity,
