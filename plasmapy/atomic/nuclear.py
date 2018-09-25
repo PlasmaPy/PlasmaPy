@@ -81,7 +81,7 @@ def nuclear_binding_energy(
 def nuclear_mass_energy(
         particle: Particle, mass_numb: int = None) -> u.Quantity:
     """
-    Return the nuclear mass energy associated with an isotope.
+    Return the nuclear mass energy associated with a nuclide or isotope.
 
     Parameters
     ----------
@@ -109,6 +109,9 @@ def nuclear_mass_energy(
 
     `TypeError`
         If the inputs are not of the correct types.
+
+    >>> nuclear_mass_energy('He-4')
+    <Quantity 5.97191997e-10 J>
 
     """
     return particle.nuclear_mass_energy

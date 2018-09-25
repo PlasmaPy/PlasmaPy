@@ -948,7 +948,7 @@ class Particle:
         <Quantity 1.50327759e-10 J>
 
         """
-        if not self.isotope:
+        if not self.isotope and not self == 'n':
             raise InvalidIsotopeError(
                 f"The nuclear mass energy of {self.particle} cannot "
                 f"be found because it is not an isotope. "
