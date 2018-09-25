@@ -7,9 +7,7 @@ from Bragiński's theory.
 """
 
 from astropy import units as u
-from plasmapy.physics.transport.braginskii import ClassicalTransport
-import matplotlib.pyplot as plt
-import numpy as np
+from plasmapy.transport.braginskii import ClassicalTransport
 
 #####################################################
 # We'll use some sample ITER data, without much regard for whether

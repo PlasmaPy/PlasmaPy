@@ -390,29 +390,125 @@ def test_decorator_categories(decorator_kwargs, particle, expected_exception):
 
 
 def test_none_shall_pass():
-    """Tests the `none_shall_pass` keyword argument in is_particle.  If
-    `none_shall_pass=True`, then an annotated argument should allow
-    `None` to be passed through to the decorated function.  If
-    `none_shall_pass=False`, then particle_input should raise a
-    `~plasmapy.utils.AtomicError` if an annotated argument is assigned
-    the value of `None`.
-    """
+    """Tests the `none_shall_pass` keyword argument in is_particle.
+    If `none_shall_pass=True`, then an annotated argument should allow
+    `None` to be passed through to the decorated function."""
+
     @particle_input(none_shall_pass=True)
     def func_none_shall_pass(particle: Particle) -> Optional[Particle]:
         return particle
 
-    @particle_input(none_shall_pass=False)
-    def func_none_shall_not_pass(particle: Particle) -> Particle:
-        return particle
+    @particle_input(none_shall_pass=True)
+    def func_none_shall_pass_with_tuple(particles: (Particle, Particle)) -> \
+                                       (Optional[Particle], Optional[Particle]):
+        return particles
+
+    @particle_input(none_shall_pass=True)
+    def func_none_shall_pass_with_list(particles: [Particle]) -> [Optional[Particle]]:
+        return particles
 
     assert func_none_shall_pass(None) is None, \
         ("The none_shall_pass keyword in the particle_input decorator is set "
          "to True, but is not passing through None.")
 
+    assert func_none_shall_pass_with_tuple((None, None)) == (None, None), \
+        ("The none_shall_pass keyword in the particle_input decorator is set "
+         "to True, but is not passing through None.")
+
+    assert func_none_shall_pass_with_list((None, None)) == (None, None), \
+        ("The none_shall_pass keyword in the particle_input decorator is set "
+         "to True, but is not passing through None.")
+
+
+def test_none_shall_not_pass():
+    """Tests the `none_shall_pass` keyword argument in is_particle.
+    If `none_shall_pass=False`, then particle_input should raise a
+    `TypeError` if an annotated argument is assigned the value of
+    `None`."""
+
+    @particle_input(none_shall_pass=False)
+    def func_none_shall_not_pass(particle: Particle) -> Particle:
+        return particle
+
+    @particle_input(none_shall_pass=False)
+    def func_none_shall_not_pass_with_tuple(particles: (Particle, Particle)) -> \
+                                           (Particle, Particle):
+        return particles
+
+    @particle_input(none_shall_pass=False)
+    def func_none_shall_not_pass_with_list(particles: [Particle]) -> [Particle]:
+        return particles
+
     with pytest.raises(TypeError, message=(
             "The none_shall_pass keyword in the particle_input decorator is "
             "set to False, but is not raising a TypeError.")):
         func_none_shall_not_pass(None)
+
+    with pytest.raises(TypeError, message=(
+            "The none_shall_pass keyword in the particle_input decorator is "
+            "set to False, but is not raising a TypeError.")):
+        func_none_shall_not_pass_with_tuple(('He', None))
+
+    with pytest.raises(TypeError, message=(
+            "The none_shall_pass keyword in the particle_input decorator is "
+            "set to False, but is not raising a TypeError.")):
+        func_none_shall_not_pass(('He', None))
+
+
+def test_optional_particle_annotation_argname():
+    """Tests the `Optional[Particle]` annotation argument in a function
+    decorated by `@particle_input` such that the annotated argument allows
+    `None` to be passed through to the decorated function."""
+
+    @particle_input
+    def func_optional_particle(particle: Optional[Particle]) -> Optional[Particle]:
+        return particle
+
+    @particle_input
+    def func_optional_particle_with_tuple(particles: (Particle, Optional[Particle])) -> \
+                                         (Particle, Optional[Particle]):
+        return particles
+
+    @particle_input
+    def func_optional_particle_with_list(particles: [Optional[Particle]]) -> [Optional[Particle]]:
+        return particles
+
+    assert func_optional_particle(None) is None, \
+        ("The particle keyword in the particle_input decorator is set "
+         "to accept Optional[Particle], but is not passing through None.")
+
+    assert func_optional_particle_with_tuple(('He', None)) == (Particle('He'), None), \
+        ("The particles keyword in the particle_input decorator is set "
+         "to accept Optional[Particle], but is not passing through None.")
+
+    assert func_optional_particle_with_list(('He', None)) == (Particle('He'), None), \
+        ("The particles keyword in the particle_input decorator is set "
+         "to accept Optional[Particle], but is not passing through None.")
+
+
+def test_not_optional_particle_annotation_argname():
+    """Tests the `Optional[Particle]` annotation argument in a function
+    decorated by `@particle_input` such that the annotated argument does
+    not allows `None` to be passed through to the decorated function."""
+
+    @particle_input
+    def func_not_optional_particle_with_tuple(particles: (Particle, Optional[Particle])) -> \
+                                             (Particle, Optional[Particle]):
+        return particles
+
+    @particle_input
+    def func_not_optional_particle_with_list(particles: [Particle]) -> [Particle]:
+        return particles
+
+    with pytest.raises(TypeError, message=(
+            "The particle keyword in the particle_input decorator received a "
+            "None instead of a Particle, but is not raising a TypeError.")):
+        func_not_optional_particle_with_tuple((None, 'He'))
+
+    with pytest.raises(TypeError, message=(
+            "The particle keyword in the particle_input decorator received a "
+            "None instead of a Particle, but is not raising a TypeError.")):
+        func_not_optional_particle_with_list(('He', None))
 
 
 # TODO: The following tests might be able to be cleaned up and/or

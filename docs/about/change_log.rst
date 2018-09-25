@@ -8,12 +8,37 @@ This document lists the changes made during each release of PlasmaPy,
 including bug fixes and changes to the application programming interface
 (API).  The :ref:`release-notes` summarize the changes for each version.
 
+.. _change-log-0.2.0:
+
+Version 0.2.0
+-------------
+
+PlasmaPy version 0.2.0 is the second minor development release.
+
+.. _change-log-0.2.0-new:
+
+New Features
+~~~~~~~~~~~~
+
+.. _change-log-0.2.0-bugfix:
+
+Bug Fixes
+~~~~~~~~~
+
+.. _change-log-0.2.0-api:
+
+Changes to API
+~~~~~~~~~~~~~~
+
+- Moved `~plasmapy.transport` from `~plasmapy.physics` to its own
+  subpackage.
+
 .. _change-log-0.1.1:
 
 Version 0.1.1
 -------------
 
-Version 0.1.1 is a minor bugfix release correcting a number of issues
+Version 0.1.1 is a bugfix patch release correcting a number of issues
 that arose during the release process and adding two minor convenience
 features.
 
@@ -149,4 +174,3 @@ Bug Fixes
 
 .. I went to a talk on neutrinos once, but it all just went in one ear
    and out the other.
-

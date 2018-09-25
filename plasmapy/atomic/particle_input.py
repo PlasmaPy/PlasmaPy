@@ -6,7 +6,7 @@ as arguments and pass through the corresponding instance of the
 
 import functools
 import inspect
-from typing import Callable, Union, Any, Set, List, Tuple
+from typing import Callable, Union, Any, Set, List, Tuple, Optional
 import numbers
 
 from .particle_class import Particle
@@ -21,6 +21,7 @@ from ..utils import (AtomicError,
 __all__ = [
     "particle_input",
 ]
+
 
 def _particle_errmsg(argname: str,
                      argval: str,
@@ -253,6 +254,8 @@ def particle_input(wrapped_function: Callable = None,
             args_to_become_particles = []
             for argname in annotations.keys():
                 if isinstance(annotations[argname], tuple):
+                    if argname == 'return':
+                        continue
                     annotated_argnames = annotations[argname]
                     expected_params = len(annotated_argnames)
                     received_params = len(arguments[argname])
@@ -273,7 +276,9 @@ def particle_input(wrapped_function: Callable = None,
                     annotated_argnames = (annotations[argname],)
 
                 for annotated_argname in annotated_argnames:
-                    if annotated_argname is Particle and argname != 'return':
+                    is_particle = annotated_argname is Particle or \
+                                  annotated_argname is Optional[Particle]
+                    if is_particle and argname != 'return':
                         args_to_become_particles.append(argname)
 
             if not args_to_become_particles:
@@ -344,15 +349,24 @@ def particle_input(wrapped_function: Callable = None,
                     # Occasionally there will be functions where it will be
                     # useful to allow None as an argument.
 
-                    if none_shall_pass and argval is None:
-                        new_kwargs[argname] = None
-                        continue
+                    # In case annotations[argname] is a collection (which looks
+                    # like (Particle, Optional[Particle], ...) or [Particle])
+                    if isinstance(annotations[argname], tuple):
+                        optional_particle = annotations[argname][pos] is Optional[Particle]
+                    elif isinstance(annotations[argname], list):
+                        optional_particle = annotations[argname] == [Optional[Particle], ]
+                    else:
+                        # Otherwise annotations[argname] must be a Particle itself
+                        optional_particle = annotations[argname] is Optional[Particle]
 
-                    params = (argval, Z, mass_numb)
-                    particle = get_particle(argname,
-                                            params,
-                                            already_particle,
-                                            funcname)
+                    if (optional_particle or none_shall_pass) and argval is None:
+                        particle = None
+                    else:
+                        params = (argval, Z, mass_numb)
+                        particle = get_particle(argname,
+                                                params,
+                                                already_particle,
+                                                funcname)
 
                     if isinstance(raw_argval, (tuple, list)):
                         # If passed argument is a tuple or list, keep
@@ -442,7 +456,6 @@ def particle_input(wrapped_function: Callable = None,
                 _category_errmsg(particle, require, exclude, any_of, funcname))
 
         return particle
-
 
     # The following code allows the decorator to be used either with or
     # without arguments.  This allows us to invoke the decorator either
