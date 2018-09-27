@@ -56,13 +56,13 @@ def check_versions(minimum_versions=None):
             raise ImportError(
                 f"Unable to import PlasmaPy because the required "
                 f"package {module_name} cannot be imported.") from None
-        except AttributeError:  # coveralls: ignore
+        except AttributeError:  # coverage: ignore
             warnings.warn(
                 f"{module_name} version {minimum_version.vstring} "
                 "is required for PlasmaPy.  However, the version of "
                 f"{module_name} could not be determined to check if "
                 "this requirement is met.", UserWarning)
-        else:  # coveralls: ignore
+        else:  # coverage: ignore
             if minimum_version > module_version:
                 raise ImportError(
                     f"PlasmaPy requires {module_name} {minimum_version}"

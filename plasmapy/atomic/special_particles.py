@@ -166,7 +166,7 @@ def _create_Particles_dict() -> Dict[str, dict]:
     for fermion in ParticleZoo.fermions:
         Particles[fermion]['spin'] = 0.5
 
-    for boson in ParticleZoo.bosons:  # coveralls: ignore
+    for boson in ParticleZoo.bosons:  # coverage: ignore
         Particles[boson]['spin'] = 0
 
     for lepton in ParticleZoo.leptons:
@@ -299,7 +299,7 @@ _antiparticles = {
     'anti_nu_tau': 'nu_tau',
 }
 
-if __name__ == "__main__":  # coveralls: ignore
+if __name__ == "__main__":  # coverage: ignore
     from pprint import pprint
     print("Particles:")
     pprint(_Particles)

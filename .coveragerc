@@ -7,7 +7,7 @@ omit =
     plasmapy/setup_package.py
     plasmapy/version.py
 exclude_lines =
-    coveralls: ignore
+    coverage: ignore
     def __repr__
     ImportError
     ModuleNotFoundError

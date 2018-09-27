@@ -487,7 +487,7 @@ class Particle:
         no_particle_attr = 'particle' not in dir(self) or 'particle' not in dir(other)
         no_attributes_attr = '_attributes' not in dir(self) or '_attributes' not in dir(other)
 
-        if no_particle_attr or no_attributes_attr:  # coveralls: ignore
+        if no_particle_attr or no_attributes_attr:  # coverage: ignore
             raise TypeError(f"The equality of {self} with {other} is undefined.")
 
         same_particle = self.particle == other.particle
@@ -508,7 +508,7 @@ class Particle:
 
         same_attributes = self._attributes == other._attributes
 
-        if same_particle and not same_attributes:  # coveralls: ignore
+        if same_particle and not same_attributes:  # coverage: ignore
             raise AtomicError(
                 f"{self} and {other} should be the same Particle, but "
                 f"have differing attributes.\n\n"
@@ -789,7 +789,7 @@ class Particle:
         """
         if self.isotope or self.is_ion or not self.element:
             raise InvalidElementError(_category_errmsg(self, 'element'))
-        if self._attributes['standard atomic weight'] is None:  # coveralls: ignore
+        if self._attributes['standard atomic weight'] is None:  # coverage: ignore
             raise MissingAtomicDataError(
                 f"The standard atomic weight of {self} is unavailable.")
         return self._attributes['standard atomic weight'].to(u.kg)
@@ -827,7 +827,7 @@ class Particle:
 
         base_mass = self._attributes['isotope mass']
 
-        if base_mass is None:  # coveralls: ignore
+        if base_mass is None:  # coverage: ignore
             raise MissingAtomicDataError(f"The mass of a {self.isotope} nuclide is not available.")
 
         _nuclide_mass = self._attributes['isotope mass'] - self.atomic_number * const.m_e
@@ -970,7 +970,7 @@ class Particle:
             return 1
         elif self.isotope:
             return self.mass_number - self.atomic_number
-        else:  # coveralls: ignore
+        else:  # coverage: ignore
             raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
 
     @property
@@ -996,7 +996,7 @@ class Particle:
             return 1
         elif self.ionic_symbol:
             return self.atomic_number - self.integer_charge
-        else:  # coveralls: ignore
+        else:  # coverage: ignore
             raise InvalidIonError(_category_errmsg(self, 'ion'))
 
     @property
@@ -1018,7 +1018,7 @@ class Particle:
         """
         from .atomic import common_isotopes
 
-        if not self.isotope or self.is_ion:  # coveralls: ignore
+        if not self.isotope or self.is_ion:  # coverage: ignore
             raise InvalidIsotopeError(_category_errmsg(self.particle, 'isotope'))
 
         abundance = self._attributes.get('isotopic abundance', 0.0)
@@ -1050,7 +1050,7 @@ class Particle:
         4
 
         """
-        if self._attributes['baryon number'] is None:  # coveralls: ignore
+        if self._attributes['baryon number'] is None:  # coverage: ignore
             raise MissingAtomicDataError(
                 f"The baryon number for '{self.particle}' is not available.")
         return self._attributes['baryon number']
@@ -1077,7 +1077,7 @@ class Particle:
         0
 
         """
-        if self._attributes['lepton number'] is None:  # coveralls: ignore
+        if self._attributes['lepton number'] is None:  # coverage: ignore
             raise MissingAtomicDataError(
                 f"The lepton number for {self.particle} is not available.")
         return self._attributes['lepton number']
@@ -1195,7 +1195,7 @@ class Particle:
         """
         if self.element:
             return self._attributes['periodic table']
-        else:  # coveralls: ignore
+        else:  # coverage: ignore
             raise InvalidElementError(_category_errmsg(self.particle, 'element'))
 
     @property
@@ -1265,7 +1265,7 @@ class Particle:
             else:
                 return set(arg)
 
-        if category_tuple != () and require != set():  # coveralls: ignore
+        if category_tuple != () and require != set():  # coverage: ignore
             raise AtomicError(
                 "No positional arguments are allowed if the `require` keyword "
                 "is set in is_category.")

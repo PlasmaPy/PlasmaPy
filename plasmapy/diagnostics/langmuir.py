@@ -163,7 +163,7 @@ class Characteristic:
                               can_be_negative=True, can_be_complex=False,
                               can_be_inf=False, can_be_nan=True)
 
-    def get_padded_limit(self, padding, log=False):  # coveralls: ignore
+    def get_padded_limit(self, padding, log=False):  # coverage: ignore
         r"""Return the limits of the current range for plotting, taking into
         account padding. Matplotlib lacks this functionality.
 
@@ -190,7 +190,7 @@ class Characteristic:
             return [ymin - padding * (ymax - ymin),
                     ymax + padding * (ymax - ymin)] * u.A
 
-    def plot(self):  # coveralls: ignore
+    def plot(self):  # coverage: ignore
         r"""Plot the characteristic in matplotlib."""
 
         with quantity_support():
@@ -340,7 +340,7 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
     n_e = get_electron_density_LM(I_es, reduce_bimaxwellian_temperature(T_e,
                                   hot_fraction), probe_area)
 
-    if visualize:  # coveralls: ignore
+    if visualize:  # coverage: ignore
         with quantity_support():
             fig, (ax1, ax2) = plt.subplots(2, 1)
             ax1.plot(probe_characteristic.bias,
@@ -378,7 +378,7 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
 
     # Obtain and show the EEDF. This is only useful if the characteristic data
     # has been preprocessed to be sufficiently smooth and noiseless.
-    if plot_EEDF:  # coveralls: ignore
+    if plot_EEDF:  # coverage: ignore
         get_EEDF(probe_characteristic, visualize=True)
 
     # Compile the results dictionary
@@ -862,7 +862,7 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
         # If bi-Maxwellian, return main temperature first
         T_e = np.array([T0, T0 + Delta_T]) * u.eV
 
-    if visualize:  # coveralls: ignore
+    if visualize:  # coverage: ignore
         with quantity_support():
             plt.figure()
 
@@ -950,7 +950,7 @@ def extrapolate_electron_current(probe_characteristic, fit,
     electron_characteristic = Characteristic(probe_characteristic.bias,
                                              electron_current)
 
-    if visualize:  # coveralls: ignore
+    if visualize:  # coverage: ignore
         with quantity_support():
             plt.figure()
             plt.scatter(probe_characteristic.bias,
@@ -1075,7 +1075,7 @@ def get_ion_density_OML(probe_characteristic, probe_area, gas,
     n_i_OML = np.sqrt(-slope * u.mA ** 2 / u.V * np.pi ** 2 * gas /
                       (probe_area ** 2 * const.e ** 3 * 2))
 
-    if visualize:  # coveralls: ignore
+    if visualize:  # coverage: ignore
         with quantity_support():
             plt.figure()
             plt.scatter(ion_section.bias.to(u.V), ion_section.current.to(
@@ -1133,7 +1133,7 @@ def extrapolate_ion_current_OML(probe_characteristic, fit,
 
     ion_characteristic = Characteristic(probe_characteristic.bias, ion_current)
 
-    if visualize:  # coveralls: ignore
+    if visualize:  # coverage: ignore
         with quantity_support():
             plt.figure()
             plt.scatter(probe_characteristic.bias,
@@ -1217,7 +1217,7 @@ def get_EEDF(probe_characteristic, visualize=False):
     integral = np.abs(np.trapz(probability, x=energy.to(u.eV).value))
     probability = probability / integral
 
-    if visualize:  # coveralls: ignore
+    if visualize:  # coverage: ignore
         with quantity_support():
             plt.figure()
             plt.semilogy(energy, probability, c='k')
