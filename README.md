@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/plasmapy.svg)](https://badge.fury.io/py/plasmapy)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1436019.svg)](https://doi.org/10.5281/zenodo.1436019)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1436011.svg)](https://doi.org/10.5281/zenodo.1436011)
 
 [![Build Status](https://travis-ci.org/PlasmaPy/PlasmaPy.svg?branch=master)](https://travis-ci.org/PlasmaPy/PlasmaPy)
 [![Build status](https://ci.appveyor.com/api/projects/status/hbduy62sqrvy8rn7?svg=true)](https://ci.appveyor.com/project/namurphy/plasmapy)
