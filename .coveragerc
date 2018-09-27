@@ -9,7 +9,5 @@ omit =
 exclude_lines =
     coveralls: ignore
     def __repr__
-    NotImplementedError
     ImportError
     ModuleNotFoundError
-    SyntaxError
