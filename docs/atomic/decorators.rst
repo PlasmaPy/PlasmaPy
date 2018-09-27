@@ -30,8 +30,8 @@ to a valid particle.
       return particle.mass
 
 If only one positional or keyword argument is annotated with
-`~plasmapy.atomic.Particle`, then the keywords `mass_numb` and `Z` may
-be used when the decorated function is called.
+`~plasmapy.atomic.Particle`, then the keywords ``mass_numb`` and ``Z``
+may be used when the decorated function is called.
 
 .. code-block:: python
 
@@ -39,8 +39,8 @@ be used when the decorated function is called.
   def integer_charge(particle: Particle, Z: int = None, mass_numb: int = None) -> int:
       return particle.integer_charge
 
-The above example includes optional type hint annotations for `Z` and
-`mass_numb` and the returned value.  The
+The above example includes optional type hint annotations for ``Z`` and
+``mass_numb`` and the returned value.  The
 `~plasmapy.atomic.particle_input` decorator may be used in methods in
 classes as well:
 
@@ -55,8 +55,8 @@ On occasion it is necessary for a function to accept only certain
 categories of particles.  The `~plasmapy.atomic.particle_input`
 decorator enables several ways to allow this.
 
-If an annotated keyword is named `element`, `isotope`, or `ion`; then
-`~plasmapy.atomic.particle_input` will raise an
+If an annotated keyword is named ``element``, ``isotope``, or ``ion``;
+then `~plasmapy.atomic.particle_input` will raise an
 `~plasmapy.utils.InvalidElementError`,
 `~plasmapy.utils.InvalidIsotopeError`, or
 `~plasmapy.utils.InvalidIonError` if the particle is not associated with
@@ -76,9 +76,10 @@ an element, isotope, or ion; respectively.
   def number_of_bound_electrons(ion: Particle):
       return ion.atomic_number - ion.integer_charge
 
-The keywords `require`, `any_of`, and `exclude` to the decorator allow
-further customization of the particle categories allowed as inputs.
-These keywords are used as in `~plasmapy.atomic.Particle.is_category`.
+The keywords ``require``, ``any_of``, and ``exclude`` to the decorator
+allow further customization of the particle categories allowed as
+inputs.  These keywords are used as in
+`~plasmapy.atomic.Particle.is_category`.
 
 .. code-block:: python
 

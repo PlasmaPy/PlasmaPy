@@ -23,11 +23,11 @@ The energy released from a nuclear reaction may be found using the
 a `str` representing the reaction.
 
 >>> from plasmapy.atomic import nuclear_reaction_energy
->>> nuclear_reaction_energy('Be-8 -> 2*alpha')
+>>> nuclear_reaction_energy('Be-8 -> 2 * alpha')
 <Quantity 1.47143078e-14 J>
 
-The reaction may also be inputted using the `reactants` and `products`
-keywords.
+The reaction may also be inputted using the ``reactants`` and
+``products`` keywords.
 
 >>> nuclear_reaction_energy(reactants=['D', 'T'], products=['alpha', 'n'])
 <Quantity 2.81812097e-12 J>

@@ -199,6 +199,7 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
     <Quantity 3.44063689e-25 kg>
 
     """
+    # TODO: Put in ReST links into above docstring
     return element.standard_atomic_weight
 
 
@@ -332,7 +333,8 @@ def integer_charge(particle: Particle) -> numbers.Integral:
 
     `~plasmapy.atomic.AtomicWarning`
         If the input represents an ion with an integer charge that is
-        less than or equal to -3, which is unlikely to occur in nature.
+        less than or equal to ``-3``, which is unlikely to occur in
+        nature.
 
     Notes
     -----
@@ -388,7 +390,7 @@ def electric_charge(particle: Particle) -> u.Quantity:
 
     `~plasmapy.utils.AtomicWarning`
         If the input represents an ion with an integer charge that is
-        below -3.
+        below ``-3``.
 
     Notes
     -----
@@ -797,7 +799,7 @@ def stable_isotopes(argument: Union[str, numbers.Integral] = None,
     >>> stable_isotopes(118)
     []
 
-    Find unstable isotopes using the `unstable` keyword.
+    Find unstable isotopes using the ``unstable`` keyword.
 
     >>> stable_isotopes('U', unstable=True)[:5]  # only first five
     ['U-217', 'U-218', 'U-219', 'U-220', 'U-221']
@@ -914,8 +916,8 @@ def periodic_table_period(argument: Union[str, numbers.Integral]) -> numbers.Int
     Parameters
     ----------
     argument: `str` or `int`
-        Atomic number (either integer or string), atomic symbol (e.g. "H",
-        string), or element name (e.g. "Francium", string).
+        Atomic number (either integer or string), atomic symbol (e.g.,
+        ``"H"``, string), or element name (e.g. ``"Francium"``, string).
 
     Returns
     -------
@@ -966,7 +968,8 @@ def periodic_table_group(argument: Union[str, numbers.Integral]) -> numbers.Inte
     ----------
     argument: `str` or `int`
         Atomic number (either integer or string), atomic symbol (e.g.,
-        "H", string), or element name (e.g., "francium", string).
+        ``"H"``, string), or element name (e.g., ``"francium"``,
+        string).
 
     Returns
     -------
@@ -1021,8 +1024,9 @@ def periodic_table_block(argument: Union[str, numbers.Integral]) -> str:
     Parameters
     ----------
     argument: `str` or `int`
-        Atomic number (either integer or string), atomic symbol (e.g. "H",
-        string), or element name (e.g. "francium", string).
+        Atomic number (either integer or string), atomic symbol (e.g.,
+        ``"H"``, string), or element name (e.g., ``"francium"``,
+        string).
 
     Returns
     -------
@@ -1077,8 +1081,9 @@ def periodic_table_category(argument: Union[str, numbers.Integral]) -> str:
     Parameters
     ----------
     argument: `str` or `int`
-        Atomic number (either integer or string), atomic symbol (e.g. "H",
-        string), or element name (e.g. "francium", string).
+        Atomic number (either integer or string), atomic symbol (e.g.,
+        ``"H"``, string), or element name (e.g., ``"francium"``,
+        string).
 
     Returns
     -------

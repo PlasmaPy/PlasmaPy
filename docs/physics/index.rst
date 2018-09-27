@@ -8,10 +8,12 @@ Plasma physics formulas (`plasmapy.physics`)
 
 .. currentmodule:: plasmapy.physics
 
-`plasmapy.physics` provides theoretical formulas for calculation of physical quantities helpful for plasma physics.
-The layout of the subpackage is still in flux, but for now we have settled on providing a single `plasmapy.physics` namespace
-for some of the most common functions. The actual functions are located in modules, subjectively grouped by topic,
-with sub-namespaces for larger sub-packages.
+`plasmapy.physics` provides theoretical formulas for calculation of
+physical quantities helpful for plasma physics. The layout of the
+subpackage is still in flux, but for now we have settled on providing a
+single `plasmapy.physics` namespace for some of the most common
+functions. The actual functions are located in modules, subjectively
+grouped by topic, with sub-namespaces for larger sub-packages.
 
 We thus have:
 
@@ -26,14 +28,18 @@ We thus have:
    relativity
    magnetostatics
 
-The subpackage makes heavy use of `astropy.units.Quantity` for handling conversions between different unit systems.
-This is especially important for electron volts, commonly used in plasma physics to denote temperature, although
-it is technically a unit of energy.
+The subpackage makes heavy use of `astropy.units.Quantity` for handling
+conversions between different unit systems. This is especially important
+for electron-volts, commonly used in plasma physics to denote
+temperature, although it is technically a unit of energy.
 
-Most functions expect `astropy.units.Quantity` as input, however some will use the `plasmapy.utils.check_quantity` decorator
-to automatically cast arguments to Quantities. If that happens, you will be notified via an `astropy.units.UnitsWarning`.
+Most functions expect `astropy.units.Quantity` as input, however some
+will use the `plasmapy.utils.check_quantity` decorator to automatically
+cast arguments to Quantities. If that happens, you will be notified via
+an `astropy.units.UnitsWarning`.
 
-For a general overview of how unit-based input works, take a look at the following example:
+For a general overview of how unit-based input works, take a look at the
+following example:
 
 .. topic:: Examples:
 
@@ -55,4 +61,3 @@ The docstrings for plasma parameter methods should describe the
 physics associated with these quantities in ways that are
 understandable to students who are taking their first course in plasma
 physics while still being useful to experienced plasma physicists.
-
