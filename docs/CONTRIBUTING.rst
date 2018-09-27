@@ -8,7 +8,9 @@ providing code and documentation, suggesting and discussing ideas,
 submitting issues and bug reports, and engaging the broader plasma
 physics community.
 
-Imposter syndrome disclaimer [1]_
+.. _impostor-syndrome-disclaimer:
+
+Impostor syndrome disclaimer [1]_
 ---------------------------------
 
 We want your help. No, really.
@@ -33,6 +35,8 @@ about the contribution process). Some of these contributions may be the
 most valuable to the project as a whole, because you're coming to the
 project with fresh eyes, so you can see the errors and assumptions that
 seasoned contributors have glossed over.
+
+.. _sharing-ideas:
 
 Sharing ideas
 -------------

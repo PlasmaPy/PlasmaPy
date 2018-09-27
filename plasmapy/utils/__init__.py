@@ -13,6 +13,7 @@ from .exceptions import (PlasmaPyError,
                          InvalidIsotopeError,
                          InvalidElementError,
                          InvalidParticleError,
+                         DataStandardError,
                          PlasmaPyWarning,
                          PhysicsWarning,
                          CouplingWarning,
@@ -33,3 +34,5 @@ from .pytest_helpers import (
     MissingWarningError,
     assert_can_handle_nparray,
 )
+
+from . import roman

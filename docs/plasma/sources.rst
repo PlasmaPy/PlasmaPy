@@ -18,12 +18,12 @@ This feature is currently under development.
 The :class:`PlasmaBlob` class is a basic structure to contain just
 plasma parameter information about a plasma with no associated
 spatial or temporal scales.  To initialize a PlasmaBlob system, call
-it with arguments: electron temperature :attr:`PlasmaBlob.T_e`, 
+it with arguments: electron temperature :attr:`PlasmaBlob.T_e`,
 and electron density :attr:`PlasmaBlob.n_e`. You may also optionally
-define the ionization, :attr:`PlasmaBlob.Z`, and relevant plasma 
+define the ionization, :attr:`PlasmaBlob.Z`, and relevant plasma
 particle, :attr:`PlasmaBlob.particle`.
 
-This feature is currently under heavy development.
+This feature is currently under development.
 
 Reference/API
 =============

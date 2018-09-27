@@ -1,18 +1,17 @@
-.. py:module:: plasmapy.physics.transport
+.. py:module:: plasmapy.transport
 
-.. _plasmapy-physics-transport:
+.. _plasmapy-transport:
 
-**************************************************************************
-Braginskii and collisional transport theory (`plasmapy.physics.transport`)
-**************************************************************************
+******************************************************************
+Braginskii and collisional transport theory (`plasmapy.transport`)
+******************************************************************
 
-.. currentmodule:: plasmapy.physics.transport
+.. currentmodule:: plasmapy.transport
 
-The `plasmapy.physics.transport` subpackage covers the difficult area of transport theory.
+The `plasmapy.transport` subpackage covers plasma transport theory.
 
 .. toctree::
    :maxdepth: 3
 
    braginskii
    collisions
-

@@ -6,7 +6,8 @@ as arguments and pass through the corresponding instance of the
 
 import functools
 import inspect
-from typing import Callable, Union, Any, Set, List, Tuple
+from typing import Callable, Union, Any, Set, List, Tuple, Optional
+import numbers
 
 from .particle_class import Particle
 
@@ -20,6 +21,7 @@ from ..utils import (AtomicError,
 __all__ = [
     "particle_input",
 ]
+
 
 def _particle_errmsg(argname: str,
                      argval: str,
@@ -119,16 +121,16 @@ def particle_input(wrapped_function: Callable = None,
     respectively.
 
     If exactly one argument is annotated with `~plasmapy.atomic.Particle`,
-    then the keywords `Z` and `mass_numb` may be used to specify the
+    then the keywords ``Z`` and ``mass_numb`` may be used to specify the
     integer charge and/or mass number of an ion or isotope.  However,
-    the decorated function must allow `Z` and/or `mass_numb` as keywords
+    the decorated function must allow ``Z`` and/or ``mass_numb`` as keywords
     in order to enable this functionality.
 
     Raises
     ------
     `TypeError`
         If the annotated argument is not a `str`, `int`, `tuple`, `list`
-        or `~plasmapy.atomic.Particle`; or if `Z` or `mass_numb` is
+        or `~plasmapy.atomic.Particle`; or if ``Z`` or ``mass_numb`` is
         not an `int`.
 
     `ValueError`
@@ -140,29 +142,29 @@ def particle_input(wrapped_function: Callable = None,
         particle.
 
     `~plasmapy/utils/InvalidElementError`
-        If an annotated argument is named `element`, and the input does
-        not correspond to an element, isotope, or ion.
+        If an annotated argument is named ``element``, and the input
+        does not correspond to an element, isotope, or ion.
 
     `~plasmapy/utils/InvalidIsotopeError`
-        If an annotated argument is named `isotope`, and the input does
-        not correspond to an isotope or an ion of an isotope.
+        If an annotated argument is named ``isotope``, and the input
+        does not correspond to an isotope or an ion of an isotope.
 
     `~plasmapy/utils/InvalidIonError`
-        If an annotated argument is named `ion`, and the input does not
-        correspond to an ion.
+        If an annotated argument is named ``ion``, and the input does
+        not correspond to an ion.
 
     `~plasmapy/utils/ChargeError`
-        If `'charged'` is in the `require` argument and the particle
-        is not explicitly charged, or if `any_of = {'charged',
-        'uncharged'}` and the particle does not have charge information
+        If ``'charged'`` is in the ``require`` argument and the particle
+        is not explicitly charged, or if ``any_of = {'charged',
+        'uncharged'}`` and the particle does not have charge information
         associated with it.
 
     `~plasmapy/utils/AtomicError`
         If an annotated argument does not meet the criteria set by the
-        categories in the `require`, `any_of`, and `exclude` keywords;
-        if more than one argument is annotated and `Z` or `mass_numb`
-        are used as arguments; or if none of the arguments have been
-        annotated with `~plasmapy.atomic.Particle`.
+        categories in the ``require``, ``any_of``, and ``exclude``
+        keywords; if more than one argument is annotated and ``Z`` or
+        ``mass_numb`` are used as arguments; or if none of the arguments
+        have been annotated with `~plasmapy.atomic.Particle`.
 
     Examples
     --------
@@ -210,7 +212,7 @@ def particle_input(wrapped_function: Callable = None,
         sample_instance.decorated_method('Fe')
 
     Some functions may intended to be used with only certain categories
-    of particles.  The `require`, `any_of`, and `exclude` keyword
+    of particles.  The ``require``, ``any_of``, and ``exclude`` keyword
     arguments enable this functionality.
 
     .. code-block:: python
@@ -234,14 +236,26 @@ def particle_input(wrapped_function: Callable = None,
             annotations = wrapped_function.__annotations__
             bound_args = wrapped_signature.bind(*args, **kwargs)
 
+            default_arguments = bound_args.signature.parameters
             arguments = bound_args.arguments
-            argnames = bound_args.arguments.keys()
+            argnames = bound_args.signature.parameters.keys()
+
+            # Handle optional-only arguments in function declaration
+            for default_arg in default_arguments:
+                # The argument is not contained in `arguments` if the
+                # user does not explicitly pass an optional argument.
+                # In such cases, manually add it to `arguments` with
+                # the default value of parameter.
+                if default_arg not in arguments:
+                    arguments[default_arg] = default_arguments[default_arg].default
 
             funcname = wrapped_function.__name__
 
             args_to_become_particles = []
             for argname in annotations.keys():
                 if isinstance(annotations[argname], tuple):
+                    if argname == 'return':
+                        continue
                     annotated_argnames = annotations[argname]
                     expected_params = len(annotated_argnames)
                     received_params = len(arguments[argname])
@@ -262,7 +276,9 @@ def particle_input(wrapped_function: Callable = None,
                     annotated_argnames = (annotations[argname],)
 
                 for annotated_argname in annotated_argnames:
-                    if annotated_argname is Particle and argname != 'return':
+                    is_particle = annotated_argname is Particle or \
+                                  annotated_argname is Optional[Particle]
+                    if is_particle and argname != 'return':
                         args_to_become_particles.append(argname)
 
             if not args_to_become_particles:
@@ -333,15 +349,24 @@ def particle_input(wrapped_function: Callable = None,
                     # Occasionally there will be functions where it will be
                     # useful to allow None as an argument.
 
-                    if none_shall_pass and argval is None:
-                        new_kwargs[argname] = None
-                        continue
+                    # In case annotations[argname] is a collection (which looks
+                    # like (Particle, Optional[Particle], ...) or [Particle])
+                    if isinstance(annotations[argname], tuple):
+                        optional_particle = annotations[argname][pos] is Optional[Particle]
+                    elif isinstance(annotations[argname], list):
+                        optional_particle = annotations[argname] == [Optional[Particle], ]
+                    else:
+                        # Otherwise annotations[argname] must be a Particle itself
+                        optional_particle = annotations[argname] is Optional[Particle]
 
-                    params = (argval, Z, mass_numb)
-                    particle = get_particle(argname,
-                                            params,
-                                            already_particle,
-                                            funcname)
+                    if (optional_particle or none_shall_pass) and argval is None:
+                        particle = None
+                    else:
+                        params = (argval, Z, mass_numb)
+                        particle = get_particle(argname,
+                                                params,
+                                                already_particle,
+                                                funcname)
 
                     if isinstance(raw_argval, (tuple, list)):
                         # If passed argument is a tuple or list, keep
@@ -368,11 +393,11 @@ def particle_input(wrapped_function: Callable = None,
 
         if not already_particle:
 
-            if not isinstance(argval, (int, str, tuple, list)):
+            if not isinstance(argval, (numbers.Integral, str, tuple, list)):
                 raise TypeError(
                     f"The argument {argname} to {funcname} must be "
-                    f"a string, an integer or a tuple or list of them"
-                    f"corresponding to an atomic number, or a"
+                    f"a string, an integer or a tuple or list of them "
+                    f"corresponding to an atomic number, or a "
                     f"Particle object.")
 
             try:
@@ -431,7 +456,6 @@ def particle_input(wrapped_function: Callable = None,
                 _category_errmsg(particle, require, exclude, any_of, funcname))
 
         return particle
-
 
     # The following code allows the decorator to be used either with or
     # without arguments.  This allows us to invoke the decorator either

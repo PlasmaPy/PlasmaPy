@@ -6,19 +6,10 @@ import warnings
 import numpy as np
 import astropy.units as u
 
-from plasmapy.constants import (m_p,
-                                m_e,
-                                c,
-                                mu0,
-                                k_B,
-                                e,
-                                eps0,
-                                pi,
-                                )
 from plasmapy.physics.parameters import _grab_charge
 from plasmapy.physics.dimensionless import (quantum_theta,
                                             )
-from plasmapy.physics.transport import (coupling_parameter,
+from plasmapy.transport import (coupling_parameter,
                                         )
 from plasmapy.atomic import particle_mass
 

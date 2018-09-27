@@ -1,5 +1,6 @@
 """Functions related to the plasma dispersion function"""
 
+import numbers
 import numpy as np
 from astropy import units as u
 from mpmath import polylog
@@ -70,7 +71,7 @@ def plasma_dispersion_func(zeta: Union[complex, int, float, np.ndarray, u.Quanti
 
     """
 
-    if not isinstance(zeta, (int, float, complex, np.ndarray, u.Quantity)):
+    if not isinstance(zeta, (numbers.Integral, numbers.Real, numbers.Complex, np.ndarray, u.Quantity)):
         raise TypeError("The argument to plasma_dispersion_function "
                         "must be one of the following types: complex, float, "
                         "int, ndarray, or Quantity.")
@@ -143,7 +144,7 @@ def plasma_dispersion_func_deriv(zeta: Union[complex, int, float, np.ndarray, u.
 
     """
 
-    if not isinstance(zeta, (int, float, complex, np.ndarray, u.Quantity)):
+    if not isinstance(zeta, (numbers.Integral, numbers.Real, numbers.Complex, np.ndarray, u.Quantity)):
         raise TypeError("The argument to plasma_dispersion_function_deriv "
                         "must be one of the following types: complex, float, "
                         "int, ndarray, or Quantity.")
@@ -203,7 +204,7 @@ def Fermi_integral(
     .. math::
         F_j (x) = \frac{1}{\Gamma (j+1)} \int_0^{\infty} \frac{t^j}{\exp{(t-x)} + 1} dt
 
-    for j > 0.
+    for :math:`j > 0`.
 
     This is equivalent to the following `polylogarithm
     <https://en.wikipedia.org/wiki/Polylogarithm>`_ function:
@@ -225,7 +226,7 @@ def Fermi_integral(
     (1.8062860704447743-0j)
 
     """
-    if isinstance(x, (int, float, complex)):
+    if isinstance(x, (numbers.Integral, numbers.Real, numbers.Complex)):
         arg = -np.exp(x)
         integral = -1 * complex(polylog(j + 1, arg))
         return integral

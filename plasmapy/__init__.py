@@ -48,8 +48,8 @@ def online_help(query):
     from urllib.parse import urlencode
     import webbrowser
 
-    url = 'http://docs.plasmapy.org/en/stable/search.html?\
-    {0}&check_keywords=yes&area=default'.format(urlencode({'q': query}))
+    url = ('http://docs.plasmapy.org/en/stable/search.html?'
+           '{0}&check_keywords=yes&area=default').format(urlencode({'q': query}))
 
     if(query.lower() in ('unit', 'units')):
         url = 'http://docs.astropy.org/en/stable/units/'
@@ -57,7 +57,7 @@ def online_help(query):
     webbrowser.open(url)
 
 __citation__ = """@misc{plasmapy_community_2018_1238132,
-  author       = {PlasmaPy Community and
+  author       = {{PlasmaPy Community} and
                   Murphy, Nicholas A. and
                   Leonard, Andrew J. and
                   Sta\'nczak, Dominik and
