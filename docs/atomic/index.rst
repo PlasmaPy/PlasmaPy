@@ -2,17 +2,17 @@
 
 .. _plasmapy-atomic:
 
-**************************************
-The Atomic Package (`plasmapy.atomic`)
-**************************************
+**************************
+Atomic (`plasmapy.atomic`)
+**************************
 
 .. currentmodule:: plasmapy.atomic
 
 Introduction
 ============
 
-`plasmapy.atomic` provides access to information about atoms, ions,
-isotopes, and other particles.
+The `~plasmapy.atomic` subpackage provides access to information about
+atoms, ions, isotopes, and other particles.
 
 Submodules
 ==========

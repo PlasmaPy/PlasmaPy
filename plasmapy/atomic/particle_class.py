@@ -167,8 +167,8 @@ class Particle:
     >>> positron = Particle('positron')
     >>> hydrogen = Particle(1)  # atomic number
 
-    The `particle` attribute returns the particle's symbol in the
-    standard form.
+    The `~plasmapy.atomic.Particle.particle` attribute returns the
+    particle's symbol in the standard form.
 
     >>> positron.particle
     'e+'
@@ -183,8 +183,8 @@ class Particle:
     >>> deuteron.ionic_symbol
     'D 1+'
 
-    The `ionic_symbol` attribute works for neutral atoms if charge
-    information is available.
+    The `~plasmapy.atomic.Particle.ionic_symbol` attribute works for
+    neutral atoms if charge information is available.
 
     >>> deuterium = Particle("D", Z=0)
     >>> deuterium.ionic_symbol
@@ -230,8 +230,8 @@ class Particle:
     2
 
     If a `~plasmapy.atomic.Particle` instance represents an elementary
-    particle, then the unary `~` (invert) operator may be used to return
-    the particle's antiparticle.
+    particle, then the unary ``~`` (invert) operator may be used to
+    return the particle's antiparticle.
 
     >>> ~electron
     Particle("e+")
@@ -250,8 +250,8 @@ class Particle:
     Particle("Fe-56 6+")
 
     If the previously constructed `~plasmapy.atomic.Particle` instance
-    represents an element, then the `Z` and `mass_numb` arguments may be
-    used to specify an ion or isotope.
+    represents an element, then the ``Z`` and ``mass_numb`` arguments
+    may be used to specify an ion or isotope.
 
     >>> iron = Particle('Fe')
     >>> Particle(iron, Z=1)
@@ -263,16 +263,16 @@ class Particle:
     and `~plasmapy.atomic.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
 
-    Valid particle categories include: `'actinide'`, `'alkali
-    metal'`, `'alkaline earth metal'`, `'antibaryon'`,
-    `'antilepton'`, `'antimatter'`, `'antineutrino'`, `'baryon'`,
-    `'boson'`, `'charged'`, `'electron'`, `'element'`,
-    `'fermion'`, `'halogen'`, `'ion'`, `'isotope'`,
-    `'lanthanide'`, `'lepton'`, `'matter'`, `'metal'`,
-    `'metalloid'`, `'neutrino'`, `'neutron'`, `'noble gas'`,
-    `'nonmetal'`, `'positron'`, `'post-transition metal'`,
-    `'proton'`, `'stable'`, `'transition metal'`, `'uncharged'`,
-    and `'unstable'`.
+    Valid particle categories include: ``'actinide'``, ``'alkali
+    metal'``, ``'alkaline earth metal'``, ``'antibaryon'``,
+    ``'antilepton'``, ``'antimatter'``, ``'antineutrino'``,
+    ``'baryon'``, ``'boson'``, ``'charged'``, ``'electron'``,
+    ``'element'``, ``'fermion'``, ``'halogen'``, ``'ion'``,
+    ``'isotope'``, ``'lanthanide'``, ``'lepton'``, ``'matter'``,
+    ``'metal'``, ``'metalloid'``, ``'neutrino'``, ``'neutron'``,
+    ``'noble gas'``, ``'nonmetal'``, ``'positron'``,
+    ``'post-transition metal'``, ``'proton'``, ``'stable'``,
+    ``'transition metal'``, ``'uncharged'``, and ``'unstable'``.
 
     """
 
@@ -427,7 +427,8 @@ class Particle:
         self.__name__ = self.__repr__()
 
     def __repr__(self) -> str:
-        """Return a call string that would recreate this object.
+        """
+        Return a call string that would recreate this object.
 
         Examples
         --------
@@ -446,15 +447,15 @@ class Particle:
         """
         Determine if two objects correspond to the same particle.
 
-        This method will return `True` if `other` is an identical
+        This method will return `True` if ``other`` is an identical
         `~plasmapy.atomic.Particle` instance or a `str` representing the
-        same particle, and return `False` if `other` is a different
+        same particle, and return `False` if ``other`` is a different
         `~plasmapy.atomic.Particle` or a `str` representing a different
         particle.
 
-        If `other` is not a `str` or `~plasmapy.atomic.Particle`
+        If ``other`` is not a `str` or `~plasmapy.atomic.Particle`
         instance, then this method will raise a `TypeError`.  If
-        `other.particle` equals `self.particle` but the attributes
+        ``other.particle`` equals ``self.particle`` but the attributes
         differ, then this method will raise a
         `~plasmapy.utils.AtomicError`.
 
@@ -520,13 +521,13 @@ class Particle:
 
         This method will return `False` if `other` is an identical
         `~plasmapy.atomic.Particle` instance or a `str` representing the
-        same particle, and return `True` if `other` is a different
+        same particle, and return `True` if ``other`` is a different
         `~plasmapy.atomic.Particle` or a `str` representing a different
         particle.
 
-        If `other` is not a `str` or `~plasmapy.atomic.Particle`
+        If ``other`` is not a `str` or `~plasmapy.atomic.Particle`
         instance, then this method will raise a `TypeError`.  If
-        `other.particle` equals `self.particle` but the attributes
+        ``other.particle`` equals ``self.particle`` but the attributes
         differ, then this method will raise a
         `~plasmapy.utils.AtomicError`.
 
@@ -569,7 +570,7 @@ class Particle:
         `~plasmapy.utils.AtomicError` if the particle is not an
         elementary particle.
 
-        This attribute may be accessed by using the unary operator `~`
+        This attribute may be accessed by using the unary operator ``~``
         acting on a `~plasma.atomic.Particle` instance.
 
         Examples
@@ -641,11 +642,12 @@ class Particle:
     @property
     def roman_symbol(self) -> Optional[str]:
         """
-        Return the spectral name of the particle (i.e. the ionic symbol in
-        Roman numeral notation).  If the particle is not an ion or neutral
-        atom, return `None`. The roman numeral represents one plus the
-        integer charge. Raise `ChargeError` if no charge has been specified
-        and `roman.OutOfRangeError` if the charge is negative.
+        Return the spectral name of the particle (i.e. the ionic symbol
+        in Roman numeral notation).  If the particle is not an ion or
+        neutral atom, return `None`. The roman numeral represents one
+        plus the integer charge. Raise `ChargeError` if no charge has
+        been specified and `~plasmapy.utils.roman.roman.OutOfRangeError`
+        if the charge is negative.
 
         Examples
         --------
@@ -948,7 +950,7 @@ class Particle:
         Return the number of neutrons in an isotope or nucleon.
 
         This attribute will return the number of neutrons in an isotope,
-        or `1` for a neutron.
+        or ``1`` for a neutron.
 
         If this particle is not an isotope or neutron, then this
         attribute will raise an `~plasmapy.utils.InvalidIsotopeError`.
@@ -975,7 +977,7 @@ class Particle:
         Return the number of electrons in an ion.
 
         This attribute will return the number of bound electrons in an
-        ion, or `1` for an electron.
+        ion, or ``1`` for an electron.
 
         If this particle is not an ion or electron, then this attribute
         will raise an `~plasmapy.utils.InvalidIonError`.
@@ -1054,7 +1056,8 @@ class Particle:
     @property
     def lepton_number(self) -> numbers.Integral:
         """
-        Return `1` for leptons, `-1` for antileptons, and `0` otherwise.
+        Return ``1`` for leptons, ``-1`` for antileptons, and ``0``
+        otherwise.
 
         This attribute returns the number of leptons minus the number of
         antileptons, excluding bound electrons in an atom or ion.
@@ -1226,11 +1229,11 @@ class Particle:
         This method will return `False` if the particle is not in all of
         the required categories.
 
-        If categories are inputted using the `any_of` keyword argument,
-        then this method will return `False` if the particle is not of
-        any of the categories in `any_of`.
+        If categories are inputted using the ``any_of`` keyword
+        argument, then this method will return `False` if the particle
+        is not of any of the categories in ``any_of``.
 
-        If the `exclude` keyword is set, then this method will return
+        If the ``exclude`` keyword is set, then this method will return
         `False` if the particle is in any of the excluded categories,
         whether or not the particle matches the other criteria.
 
@@ -1334,12 +1337,12 @@ class Particle:
         """
         Create a new `~plasmapy.atomic.Particle` instance corresponding
         to the current `~plasmapy.atomic.Particle` after being ionized
-        `n` times.
+        ``n`` times.
 
-        If `inplace` is `False` (default), then return the ionized
+        If ``inplace`` is `False` (default), then return the ionized
         `~plasmapy.atomic.Particle`.
 
-        If `inplace` is `True`, then replace the current
+        If ``inplace`` is `True`, then replace the current
         `~plasmapy.atomic.Particle` with the newly ionized
         `~plasmapy.atomic.Particle`.
 
@@ -1347,7 +1350,7 @@ class Particle:
         ----------
         n : positive integer
             The number of bound electrons to remove from the
-            `~plasmapy.atomic.Particle` object.  Defaults to `1`.
+            `~plasmapy.atomic.Particle` object.  Defaults to ``1``.
 
         inplace : bool, optional
             If `True`, then replace the current
@@ -1358,8 +1361,8 @@ class Particle:
         -------
         particle : ~plasmapy.atomic.Particle
             A new `~plasmapy.atomic.Particle` object that has been
-            ionized `n` times relative to the original
-            `~plasmapy.atomic.Particle`.  If `inplace` is `False`,
+            ionized ``n`` times relative to the original
+            `~plasmapy.atomic.Particle`.  If ``inplace`` is `False`,
             instead return `None`.
 
         Raises
@@ -1372,10 +1375,10 @@ class Particle:
             object is specified.
 
         ~plasmapy.atomic.InvalidIonError
-            If there are less than `n` remaining bound electrons.
+            If there are less than ``n`` remaining bound electrons.
 
         ValueError
-            If `n` is not positive.
+            If ``n`` is not positive.
 
         Examples
         --------
@@ -1416,12 +1419,12 @@ class Particle:
         """
         Create a new `~plasmapy.atomic.Particle` instance corresponding
         to the current `~plasmapy.atomic.Particle` after undergoing
-        recombination `n` times.
+        recombination ``n`` times.
 
-        If `inplace` is `False` (default), then return the
+        If ``inplace`` is `False` (default), then return the
         `~plasmapy.atomic.Particle` that just underwent recombination.
 
-        If `inplace` is `True`, then replace the current
+        If ``inplace`` is `True`, then replace the current
         `~plasmapy.atomic.Particle` with the `~plasmapy.atomic.Particle`
         that just underwent recombination.
 
@@ -1441,7 +1444,7 @@ class Particle:
         -------
         particle : ~plasmapy.atomic.Particle
             A new `~plasmapy.atomic.Particle` object that has undergone
-            recombination `n` times relative to the original
+            recombination ``n`` times relative to the original
             `~plasmapy.atomic.Particle`.  If `inplace` is `False`,
             instead return `None`.
 
@@ -1455,7 +1458,7 @@ class Particle:
             object is specified.
 
         ValueError
-            If `n` is not positive.
+            If ``n`` is not positive.
 
         Examples
         --------
