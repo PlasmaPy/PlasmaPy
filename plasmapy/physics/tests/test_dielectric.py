@@ -92,6 +92,14 @@ class Test_ColdPlasmaPermittivity(object):
         assert np.isclose(S, (R + L) / 2)
         assert np.isclose(D, (R - L) / 2)
 
+    def test_numpy_array_workflow(self):
+        """as per @jhillairet at https://github.com/PlasmaPy/PlasmaPy/issues/539#issuecomment-425337810 """
+        ns = np.logspace(17, 19, 50)/u.m**3
+        B0 = 4*u.T
+        omega_RF = 2*np.pi*50e6*(u.rad/u.s)
+
+        S, D, P = cold_plasma_permittivity_SDP(B=B0, species=['e', 'D+'], n=[ns, ns], omega=omega_RF)
+        assert S.shape == D.shape == P.shape == (50,)
 
 class Test_permittivity_1D_Maxwellian:
     @classmethod
