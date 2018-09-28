@@ -2,6 +2,7 @@
 
 import numpy as np
 from astropy import units as u
+from collections import namedtuple
 from plasmapy import utils
 from plasmapy.physics import parameters
 from plasmapy.constants import (pi, m_e, c, mu0, e, eps0)
@@ -111,7 +112,9 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
         S += - omega_p ** 2 / (omega ** 2 - omega_c ** 2)
         D += omega_c / omega * omega_p ** 2 / (omega ** 2 - omega_c ** 2)
         P += - omega_p ** 2 / omega ** 2
-    return S, D, P
+
+    result_tuple = namedtuple('Permittivity', 'S D P')
+    return result_tuple(S, D, P)
 
 
 @utils.check_quantity(
@@ -204,7 +207,9 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
         L += - omega_p ** 2 / (omega * (omega - omega_c))
         R += - omega_p ** 2 / (omega * (omega + omega_c))
         P += - omega_p ** 2 / omega ** 2
-    return L, R, P
+
+    result_tuple = namedtuple('Permittivity', 'L R P')
+    return result_tuple(L, R, P)
 
 
 @u.quantity_input(omega=u.rad / u.s,
