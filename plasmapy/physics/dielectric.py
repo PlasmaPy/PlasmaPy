@@ -16,8 +16,8 @@ __all__ = ['cold_plasma_permittivity_SDP',
            'cold_plasma_permittivity_LRP',
            'permittivity_1D_Maxwellian']
 
-StixTensorElements = namedtuple("Result1", ["sum", "difference", "plasma"], )
-RotatingTensorElements = namedtuple("Result1", ["left", "right", "plasma"], )
+StixTensorElements = namedtuple("StixTensorElements", ["sum", "difference", "plasma"], )
+RotatingTensorElements = namedtuple("RotatingTensorElements", ["left", "right", "plasma"], )
 
 @utils.check_quantity(
     B={'units': u.T, 'can_be_negative': False},
