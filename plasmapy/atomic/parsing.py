@@ -343,7 +343,7 @@ def _parse_and_check_atomic_input(argument: Union[str, numbers.Integral], mass_n
 
         return ion
 
-    if not isinstance(argument, (str, numbers.Integral)):  # coveralls: ignore
+    if not isinstance(argument, (str, numbers.Integral)):  # coverage: ignore
         raise TypeError(f"The argument {argument} is not an integer or string.")
 
     arg = _dealias_particle_aliases(argument)

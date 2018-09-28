@@ -488,7 +488,7 @@ def run_test(
     try:
         if result == expected['result']:
             return None
-    except Exception as exc_equality:  # coveralls: ignore
+    except Exception as exc_equality:  # coverage: ignore
         raise TypeError(
             f"The equality of {_represent_result(result)} and "
             f"{_represent_result(expected['result'])} "
@@ -697,7 +697,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
 
     try:
         equals_first_result = [result == results[0] for result in results]
-    except Exception as exc:  # coveralls: ignore
+    except Exception as exc:  # coverage: ignore
         raise UnexpectedExceptionError(
             f"Unable to determine equality properties of results."
         ) from exc
