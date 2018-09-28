@@ -12,7 +12,7 @@ Motivation
 Tests are vital for software reliability and maintainability.  Writing
 tests requires additional effort now, but saves considerable time in the
 long run.  Tests enable us to modify code and quickly discover when we
-introduce errors [#feathers]_.  Tests provide future contributors with
+introduce errors [1]_.  Tests provide future contributors with
 examples of how functions and classes were originally intended to be
 used.
 
@@ -20,7 +20,7 @@ Tests should also be readable and maintainable.  Well-written tests are
 easier to understand and modify when the behavior of a function or
 method is intended to be changed. When bugs are discovered, they should
 be turned into test cases to prevent the bug from emerging again in the
-future [#bernstein]_.
+future [2]_.
 
 .. _testing-guidelines-overview:
 
@@ -289,13 +289,10 @@ Occasionally there will be lines of code that do not require tests
 
 The ``.coveragerc`` file in the top level directory contains
 
-
-
-
 Footnotes
 =========
 
-.. [#feathers]_ In `Working Effectively With Legacy Code
+.. [1] In `Working Effectively With Legacy Code
    <https://www.oreilly.com/library/view/working-effectively-with/0131177052/>`__,
    Michael Feathers bluntly writes: "Code without tests is bad code.  It
    doesn't matter how well written it is; it doesn't matter how pretty
@@ -303,7 +300,7 @@ Footnotes
    change the behavior of our code quickly and verifiably.  Without
    them, we really don't know if our code is getting better or worse."
 
-.. [#bernstein]_ In the chapter "Bugs Are Missing Tests" in `Beyond
+.. [2] In the chapter "Bugs Are Missing Tests" in `Beyond
    Legacy Code <https://pragprog.com/book/dblegacy/beyond-legacy-code>`__,
    David Bernstein writes: "Every bug exists because of a missing test
    in a system.  The way to fix bugs using TDD [test-driven development]
