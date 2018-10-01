@@ -27,6 +27,9 @@ future [2]_.
 Overview
 ========
 
+Pull requests that create or change functionality must include tests
+before being merged.
+
 PlasmaPy uses the `pytest <https://docs.pytest.org>`_ framework for
 software testing.  The test suite may be run locally or automatically
 via pull requests on GitHub.  PlasmaPy undergoes continuous integration
@@ -132,9 +135,8 @@ using
 Writing Tests
 =============
 
-
-
-Tests are required when adding new functionality in code contribution.
+Pull requests must include tests of new or changed functionality before
+being merged.
 
 Best practices
 --------------
@@ -142,13 +144,9 @@ Best practices
 The following guidelines are helpful ways for writing neat, readable,
 and useful tests.
 
-* Unit tests should be provided for all methods when possible.
+* Each function and method should have several unit tests.
 
 * Bugs should be turned into test cases.
-
-..  The Travis CI, CircleCI, and AppVeyor integrations on GitHub run tests
-  whenever pull requests to PlasmaPy are created or updated.  The pytest
-  module may used on a local computer.
 
 * Tests are run frequently during code development, and slow tests may
   interrupt the flow of a contributor.  Tests should be minimal,
@@ -157,29 +155,35 @@ and useful tests.
 Assert statements
 -----------------
 
-* Pytest runs tests by checking ``assert`` statements, so this is sufficient:
+* Pytest runs tests by checking `assert` statements.
 
 .. code-block:: python
 
-  def test_universe_is_sane():
+  def test_addition():
       assert 2 + 2 == 4
 
-However, making assertions descriptive is better in most cases:
+However, descriptive error messages that provide context help us
+pinpoint the causes of test failures more quickly.
 
 .. code-block:: python
 
-  def test_universe_is_sane():
-      assert 2 + 2 == 4, "Addition is broken. Reinstall the universe and reboot."
+  def test_addition():
+      assert 2 + 2 == 4, "Addition is broken. Reinstall universe and reboot."
 
-pytest should display the value of the ``2 + 2`` expression, but the value can be added to the thrown string:
+Pytest should display the value of each expression in `assert`
+statements.  To make the error statement easier to read, the values of
+variables can be included in the error message by using `f-strings
+<https://www.python.org/dev/peps/pep-0498/>`_.
 
 .. code-block:: python
 
-  def test_universe_is_sane():
-      assert 2 + 2 == 4, f"Addition is broken, 2 + 2 giving {2 + 2}. Reinstall the universe and reboot."
+  def test_addition():
+      result = 2 + 2
+      expected = 4
+      assert result == expected, f"2 + 2 returns {result} instead of {expected}."
 
-A note on test independence and parametrization
------------------------------------------------
+Test independence and parametrization
+-------------------------------------
 
 In this section, we'll discuss the issue of parametrization based on
 an example of a `proof
@@ -188,10 +192,10 @@ of Gauss's class number conjecture.
 
 The proof goes along these lines:
 * If the generalized Riemann hypothesis is true, the conjecture is true.
-* If the former is false, the latter is also true.
-* Therefore, the latter is true.
+* If the generalized Riemann hypothesis is false, the conjecture is also true.
+* Therefore, the conjecture is true.
 
-One way to use pytest for testing is to write continuous assertions:
+One way to use pytest would be to write continuous assertions:
 
 .. code-block:: python
 
@@ -201,8 +205,10 @@ One way to use pytest for testing is to write continuous assertions:
        # and you have to run this again
        assert proof_by_riemann(True)
 
-To do this the right way, what you technically should do to make the
-tests independent:
+If the first test were to fail, then the second test will never be run.
+We would therefore not know the potentially useful results of the second
+tests.  This drawback can be avoided by making independent tests that
+will both be run.
 
 .. code-block:: python
 
@@ -211,26 +217,37 @@ tests independent:
   def test_proof_if_riemann_true():
        assert proof_by_riemann(True)
 
-but that's a lot of typing so what you actually do is use pytest parametrization:
+However, this approach can lead to cumbersome, repeated code if you are
+calling the same function over and over.  If you wish to run multiple
+tests for the same function, the preferred method is to use pytest's
+`parametrization <https://docs.pytest.org/en/stable/parametrize.html>`_
+capabilities.
 
 .. code-block:: python
 
-  @pytest.mark.parametrize("truth", [True, False])
-  def test_proof_if_riemann(truth):
-       assert proof_by_riemann(truth)
+  truth_values_to_test = [True, False]
+  @pytest.mark.parametrize("truth_value", truth_values_to_test)
+  def test_proof_if_riemann(truth_value):
+       assert proof_by_riemann(truth_value)
 
-And both of these are going to run regardless of failures, which is
-awesome!
+This code snippet will run ``proof_by_riemann(truth_value)`` for each
+``truth_value`` in ``truth_values_to_test``.  Both of the above
+tests will be run regardless of failures.  This approach is much cleaner
+for long lists of arguments, and has the advantage that you would only
+need to change the function call in one place if something changes.
 
-Of course, with qualitatively different tests you would use either
-separate functions or you'd pass in pairs of inputs and expected
-values:
+With qualitatively different tests you would use either separate
+functions or pass in tuples containing inputs and expected values.
 
 .. code-block:: python
 
-  @pytest.mark.parametrize("truth,expected", [(True, True), (False, True)])
-  def test_proof_if_riemann(truth, expected):
-       assert proof_by_riemann(truth) == expected
+  truth_values_and_expected_results = [
+      (True, True),
+      (False, True),
+  ]
+  @pytest.mark.parametrize("truth_value, expected", truth_values_and_expected_results)
+  def test_proof_if_riemann(truth_value, expected):
+       assert proof_by_riemann(truth_value) == expected
 
 Code Coverage
 =============
