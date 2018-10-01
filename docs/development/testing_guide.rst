@@ -18,9 +18,11 @@ used.
 
 Tests should also be readable and maintainable.  Well-written tests are
 easier to understand and modify when the behavior of a function or
-method is intended to be changed. When bugs are discovered, they should
-be turned into test cases to prevent the bug from emerging again in the
-future [2]_.
+method is intended to be changed.  Consequently, tests should be held to
+the same coding standards as the rest of the package.
+
+When bugs are discovered, they should be turned into test cases to
+prevent the bug from emerging again in the future [2]_.
 
 .. _testing-guidelines-overview:
 
@@ -30,18 +32,18 @@ Overview
 Pull requests that create or change functionality must include tests
 before being merged.
 
-PlasmaPy uses the `pytest <https://docs.pytest.org>`_ framework for
-software testing.  The test suite may be run locally or automatically
-via pull requests on GitHub.  PlasmaPy undergoes continuous integration
-testing of the code base by `Travis CI <https://travis-ci.org>`_ and
-`AppVeyor <https://www.appveyor.com>`_, including code examples in
-docstrings. `Codecov <https://codecov.io>`_ performs test coverage
-checks and shows whether or not each line of code is run during the test
-suite. `CircleCI <https://circleci.com/>`_ tests that the documentation
-can be successfully built.  The results of the documentation test builds
-are displayed using `Giles <https://github.com/apps/giles>`_.
-PlasmaPy's test suite is automatically run whenever a pull request to
-the main repository is made or updated.
+PlasmaPy uses `pytest <https://docs.pytest.org>`_ for software testing.
+The test suite may be run locally or automatically via pull requests on
+GitHub.  PlasmaPy undergoes continuous integration testing of the code
+base by `Travis CI <https://travis-ci.org>`_ and `AppVeyor
+<https://www.appveyor.com>`_, including code examples in docstrings.
+`Codecov <https://codecov.io>`_ performs test coverage checks and shows
+whether or not each line of code is run during the test suite.
+`CircleCI <https://circleci.com/>`_ tests that the documentation can be
+successfully built.  The results of the documentation test builds are
+displayed using `Giles <https://github.com/apps/giles>`_.  PlasmaPy's
+test suite is automatically run whenever a pull request to the main
+repository is made or updated.
 
 .. _testing-guidelines-running-tests:
 
@@ -88,7 +90,8 @@ and update that comment as the pull request is updated.
 Running tests from the command line
 -----------------------------------
 
-The test suite may be performed locally on your computer by running
+The recommended method for running the test suite locally on your
+computer is running
 
 .. code-block:: shell
 
@@ -138,8 +141,8 @@ Writing Tests
 Pull requests must include tests of new or changed functionality before
 being merged.
 
-Best practices
---------------
+Best practices for writing tests
+--------------------------------
 
 The following guidelines are helpful ways for writing neat, readable,
 and useful tests.
@@ -151,6 +154,28 @@ and useful tests.
 * Tests are run frequently during code development, and slow tests may
   interrupt the flow of a contributor.  Tests should be minimal,
   sufficient enough to be complete, and as efficient as possible.
+
+Test organization and collection
+--------------------------------
+
+Pytest has certain `test discovery conventions
+<https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery>`_
+that are used to collect the tests to be run.
+
+The tests for each subpackage are contained in a ``tests`` subfolder.
+For example, the tests for `~plasmapy.atomic` are located in
+``plasmapy/atomic/tests``.  Test files should begin with ``test_`` and
+generally contain the name of the module or `object` that is being
+tested.
+
+The functions that are to be tested in each test file should likewise be
+prepended with `test_` (e.g., ``test_atomic.py``).  Tests may also be
+`grouped into classes
+<https://docs.pytest.org/en/latest/getting-started.html#group-multiple-tests-in-a-class>`_.
+In order for pytest to find tests in classes, the class name should
+start with ``Test`` and the methods to be run as tests should start with
+``test_``.  For example, ``test_particle_class.py`` could define the
+``TestParticle`` class containing the method ``test_integer_charge``.
 
 Assert statements
 -----------------
@@ -181,6 +206,42 @@ variables can be included in the error message by using `f-strings
       result = 2 + 2
       expected = 4
       assert result == expected, f"2 + 2 returns {result} instead of {expected}."
+
+Testing warnings and exceptions
+-------------------------------
+
+Robust testing frameworks should test that functions and methods return
+the expected results, issue the expected warnings, and raise the
+expected exceptions.  Pytest contains functionality to `test warnings
+<https://docs.pytest.org/en/latest/warnings.html#warns>`_
+and `test exceptions
+<https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions>`_.
+
+To test that a function issues an appropriate warning, use
+``pytest.warns``.
+
+.. code-block:: python
+
+  import pytest, warnings
+
+  def issue_user_warning():
+      warnings.warn("grumblemuffins", UserWarning)
+
+  def test_issue_warning():
+      with pytest.warns(UserWarning, message="UserWarning not issued."):
+          issue_user_warning()
+
+To test that a function raises an appropriate exception, use
+``pytest.raises``.
+
+.. code-block:: python
+
+  def raise_value_error():
+      raise ValueError
+
+  def test_raise_value_error():
+      with pytest.raises(ValueError, message="ValueError not raised."):
+          raise_value_error()
 
 Test independence and parametrization
 -------------------------------------
@@ -248,6 +309,20 @@ functions or pass in tuples containing inputs and expected values.
   @pytest.mark.parametrize("truth_value, expected", truth_values_and_expected_results)
   def test_proof_if_riemann(truth_value, expected):
        assert proof_by_riemann(truth_value) == expected
+
+Pytest helpers
+--------------
+
+
+
+A robust testing framework should test not just that functions and
+methods return the expect results, but also
+
+PlasmaPy's `~plasmapy.utils` subpackage contains pytest helper functions
+that
+
+ * Raise the required exceptions
+
 
 Code Coverage
 =============
