@@ -383,17 +383,19 @@ exception).
 
 .. code-block:: python
 
-  func_arg_result_tuples = [
+  # Each tuple in the list contains the function, the argument,
+  # and the expected outcome.
+  input_tuples = [
     (sin, 0, cos(π/2)),
     (sin, '...', TypeError),
   ]
 
-  @pytest.mark.parametrize("func_arg_result_tuples", input_tuples)
+  @pytest.mark.parametrize("input_tuple", input_tuples)
   def test_trigonometry(input_tuple):
       plasmapy.utils.run_test(input_tuple)
 
-This parametrized function will check that ``sin(0) == cos(π/2)` and
-that  ``sin('...') raises a TypeError.
+This parametrized function will check that ``sin(0) == cos(π/2)`` and
+that  ``sin('...')`` raises a TypeError.
 
 We may use `~plasmapy.utils.run_test_equivalent_calls` to check symmetry
 properties such as
