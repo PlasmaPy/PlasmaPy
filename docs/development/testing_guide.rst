@@ -141,19 +141,25 @@ Writing Tests
 Pull requests must include tests of new or changed functionality before
 being merged.
 
+.. _testing-guidelines-writing-tests-best-practices:
+
 Best practices for writing tests
 --------------------------------
 
 The following guidelines are helpful ways for writing neat, readable,
 and useful tests.
 
-* Each function and method should have several unit tests.
+* Each function and method should have unit tests that check that it
+  returns the expected results, issues the appropriate warnings, and
+  raises the appropriate exceptions.
 
 * Bugs should be turned into test cases.
 
 * Tests are run frequently during code development, and slow tests may
   interrupt the flow of a contributor.  Tests should be minimal,
   sufficient enough to be complete, and as efficient as possible.
+
+.. _testing-guidelines-writing-tests-organization:
 
 Test organization and collection
 --------------------------------
@@ -176,6 +182,8 @@ In order for pytest to find tests in classes, the class name should
 start with ``Test`` and the methods to be run as tests should start with
 ``test_``.  For example, ``test_particle_class.py`` could define the
 ``TestParticle`` class containing the method ``test_integer_charge``.
+
+.. _testing-guidelines-writing-tests-asserts:
 
 Assert statements
 -----------------
@@ -207,6 +215,8 @@ variables can be included in the error message by using `f-strings
       expected = 4
       assert result == expected, f"2 + 2 returns {result} instead of {expected}."
 
+.. _testing-guidelines-writing-tests-warnings:
+
 Testing warnings and exceptions
 -------------------------------
 
@@ -218,7 +228,7 @@ and `test exceptions
 <https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions>`_.
 
 To test that a function issues an appropriate warning, use
-``pytest.warns``.
+`pytest.warns`.
 
 .. code-block:: python
 
@@ -232,7 +242,7 @@ To test that a function issues an appropriate warning, use
           issue_user_warning()
 
 To test that a function raises an appropriate exception, use
-``pytest.raises``.
+`pytest.raises`.
 
 .. code-block:: python
 
@@ -242,6 +252,8 @@ To test that a function raises an appropriate exception, use
   def test_raise_value_error():
       with pytest.raises(ValueError, message="ValueError not raised."):
           raise_value_error()
+
+.. _testing-guidelines-writing-tests-parametrize:
 
 Test independence and parametrization
 -------------------------------------
@@ -310,19 +322,84 @@ functions or pass in tuples containing inputs and expected values.
   def test_proof_if_riemann(truth_value, expected):
        assert proof_by_riemann(truth_value) == expected
 
+.. _testing-guidelines-writing-tests-helpers:
+
 Pytest helpers
 --------------
 
-
-
 A robust testing framework should test not just that functions and
-methods return the expect results, but also
+methods return the expected results, but also that they issue the
+expected warnings and raise the expected exceptions.  In PlasmaPy, tests
+often need to compare floats against floats, arrays, and
+`~astropy.units.Quantity` objects against other floats, arrays, and
+`~astropy.units.Quantity` objects to within a certain tolerance.
+Occasionally tests will be needed to make sure that a function will
+return the same value for different arguments (e.g., due to symmetry
+properties. PlasmaPy's `~plasmapy.utils` subpackage contains the
+`~plasmapy.utils.run_test` and
+`~plasmapy.utils.run_test_equivalent_calls` helper functions that can
+generically perform many of these comparisons and checks.
 
-PlasmaPy's `~plasmapy.utils` subpackage contains pytest helper functions
+The `~plasmapy.utils.run_test` function can be used to check that a
+callable object returns the expected result, raises the expected
+exception, or issues the expected warning using the supplied positional
+and keyword arguments.  The function provides a useful error message
 that
 
- * Raise the required exceptions
 
+For the next few examples, suppose that we want to test the
+trigonometric property that
+
+.. math::
+
+  sin(\theta) \equiv cos(\theta + \frac{\pi}{2})
+
+.. code-block:: python
+
+  from numpy import sin, cos, pi as π
+  from plasmapy.utils import run_test
+
+  def test_trigonometric_properties():
+      run_test(
+          func=sin,  # the callable to be tested
+          args=0,  # an object or tuple for positional arguments
+          kwargs={},  # a dictionary for keyword arguments
+          expected_outcome=cos(π/2),  # expected returned value, warning, or exception
+          atol=1e-16,  # absolute tolerance for comparison
+          rtol=0,  # relative tolerance for comparison
+  )
+
+
+
+.. _testing-guidelines-writing-tests-fixtures:
+
+Fixtures
+--------
+
+`Fixtures <https://docs.pytest.org/en/stable/fixture.html>`_ provide a
+way to set up the conditions
+
+
+are one of
+the most powerful features of pytest.  Fixtures provide a way to set up
+
+We recommend using fixtures for complex tests that
+
+.. code-block:: python
+
+  import pytest, collections
+
+  @pytest.fixture
+  def sample_fixture():
+      return {'x': 1, 'y': 2}
+
+  def test_fixture(sample_fixture):
+      assert sample_fixture['x'] == 1
+      assert sample_fixture['y'] == 2
+
+Fixtures are recommended for complex tests
+
+.. _testing-guidelines-coverage:
 
 Code Coverage
 =============
@@ -337,6 +414,8 @@ GitHub with a coverage report.
    compiled functions:  "At the time of writing this, coverage.py has a
    known issue with being unable to check lines executed in Numba JIT
    compiled functions."
+
+.. _testing-guidelines-coverage-testing:
 
 Test coverage of contributed code
 ---------------------------------
@@ -360,6 +439,8 @@ line to ``.coveragerc``).  This strategy should be used sparingly, since
 it is often better to explicitly test exceptions and warnings and to
 show the lines of code that are not tested.
 
+.. _testing-guidelines-coverage-local:
+
 Generating coverage reports locally
 -----------------------------------
 
@@ -374,12 +455,40 @@ The coverage reports may be accessed by opening the newly generated
 ``htmlcov/index.html`` in your favorite web brower.  These commands
 require the ``pytest`` and ``coverage`` packages to be installed.
 
+.. _testing-guidelines-coverage-ignore:
+
 Ignoring lines in coverage tests
 --------------------------------
 
-Occasionally there will be lines of code that do not require tests
+Occasionally there will be lines of code that do not require tests.  For
+example, it would be impractical to test that an `ImportError` is raised
+when running ``import plasmapy`` from Python 2.7.
 
-The ``.coveragerc`` file in the top level directory contains
+To ignore a line of code in coverage tests, append it with
+``# coverage: ignore``.  If this comment is used on a line with a
+control flow structure (e.g., `if`, `for`, and `while`) that begins a
+block of code, then all lines in that block of code will be ignored.  In
+the following example, lines 3 and 4 will be ignored in coverage tests.
+
+.. code-block:: python
+  :linenos:
+  :emphasize-lines: 3,4
+
+  try:
+      import numpy
+  except ModuleNotFoundError as exc:  # coverage: ignore
+      raise RuntimeError from exc
+
+The ``.coveragerc`` file is used to specify lines of code and files that
+should always be ignored in coverage tests.  For example, tests in
+``astropy-helpers`` should not be run because those tests are performed
+through the ``astropy-helpers`` repository.
+
+.. note::
+
+  In general, untested lines of code should remain marked as untested to
+  give future developers a better idea of where tests should be added in
+  the future and where potential bugs may exist.
 
 Footnotes
 =========
