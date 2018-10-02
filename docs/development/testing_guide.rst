@@ -188,12 +188,17 @@ start with ``Test`` and the methods to be run as tests should start with
 Assert statements
 -----------------
 
-* Pytest runs tests by checking `assert` statements.
+* Pytest often runs tests by checking `assert` statements.
 
 .. code-block:: python
 
   def test_addition():
       assert 2 + 2 == 4
+
+When `assert` statements raise an `AssertionError`, pytest will display
+the values of the expressions evaluated in the `assert` statement.  This
+output is often sufficient for simple tests as above.  For more complex
+tests
 
 However, descriptive error messages that provide context help us
 pinpoint the causes of test failures more quickly.
@@ -203,8 +208,13 @@ pinpoint the causes of test failures more quickly.
   def test_addition():
       assert 2 + 2 == 4, "Addition is broken. Reinstall universe and reboot."
 
-Pytest should display the value of each expression in `assert`
-statements.  To make the error statement easier to read, the values of
+When `assert` statements raise an `AssertionError`, pytest will display
+the value of the expressions in `assert` statements.  In cases where
+
+Pytest display the value of each expression in `assert`
+statements, so for simul.
+
+To make the error statement easier to read, the values of
 variables can be included in the error message by using `f-strings
 <https://www.python.org/dev/peps/pep-0498/>`_.
 
@@ -358,11 +368,11 @@ check the case of :math:`\theta \equiv 0`.
 
 .. code-block:: python
 
-  from numpy import sin, cos, pi as π
+  from numpy import sin, cos, pi
   from plasmapy.utils import run_test
 
   def test_trigonometric_properties():
-      run_test(func=sin, args=0, expected_outcome=cos(π/2), atol=1e-16)
+      run_test(func=sin, args=0, expected_outcome=cos(pi/2), atol=1e-16)
 
 We may use `pytest.mark.parametrize` with `~plasmapy.utils.run_test` to
 check multiple cases.  If `~plasmapy.utils.run_test` only receives one
@@ -374,12 +384,12 @@ exception).
 
 .. code-block:: python
 
-  @pytest.mark.parametrize("input_tuple", [(sin, 0, cos(π/2)), (sin, '.', TypeError)])
+  @pytest.mark.parametrize("input_tuple", [(sin, 0, cos(pi/2)), (sin, '.', TypeError)])
   def test_trigonometry(input_tuple):
       run_test(input_tuple, atol=1e-16)
 
 This parametrized function will check that ``sin(0)`` is within `1e-16`
-of ``cos(π/2)`` and that  ``sin('.')`` raises a TypeError.
+of ``cos(pi/2)`` and that  ``sin('.')`` raises a TypeError.
 
 We may use `~plasmapy.utils.run_test_equivalent_calls` to check symmetry
 properties such as
@@ -403,7 +413,7 @@ multiple symmetry properties.
 
 .. code-block:: python
 
-  @pytest.mark.parametrize('input_tuple', [(cos, 1, -1), ([cos, π/2], [sin, 0])])
+  @pytest.mark.parametrize('input_tuple', [(cos, 1, -1), ([cos, pi/2], [sin, 0])])
   def test_symmetry_properties(input_tuple):
       plasmapy.utils.run_test_equivalent_calls(input_tuple, atol=1e-16)
 
