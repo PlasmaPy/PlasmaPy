@@ -419,6 +419,7 @@ class TestInvalidPeriodicElement:
 # the correct function to each list containing args, kwargs, and the
 # expected outcome prior to being passed through to run_test.
 
+
 tables_and_functions = [
     (atomic_symbol, atomic_symbol_table),
     (isotope_symbol, isotope_symbol_table),
@@ -637,7 +638,6 @@ def test_half_life_u_220():
             f"data should be chosen for this test.")):
 
         half_life(isotope_without_half_life_data)
-
 
 
 def test_known_common_stable_isotopes_cases():
