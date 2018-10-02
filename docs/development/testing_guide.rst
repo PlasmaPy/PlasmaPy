@@ -343,33 +343,97 @@ generically perform many of these comparisons and checks.
 The `~plasmapy.utils.run_test` function can be used to check that a
 callable object returns the expected result, raises the expected
 exception, or issues the expected warning using the supplied positional
-and keyword arguments.  The function provides a useful error message
-that
+and keyword arguments.  This function is particularly useful for unit
+tests of straightforward functions when you have a bunch of inputs and
+know the expected result.
 
-
-For the next few examples, suppose that we want to test the
-trigonometric property that
+Suppose that we want to test the trigonometric property that
 
 .. math::
 
-  sin(\theta) \equiv cos(\theta + \frac{\pi}{2})
+  \sin(\theta) = \cos(\theta + \frac{\pi}{2}).
+
+We may use `~plasmapy.utils.run_test` as in the following example to
+check the case of :math:`\theta \equiv 0`.
 
 .. code-block:: python
 
   from numpy import sin, cos, pi as π
-  from plasmapy.utils import run_test
+  import plasmapy
 
   def test_trigonometric_properties():
-      run_test(
+      plasmapy.utils.run_test(
           func=sin,  # the callable to be tested
           args=0,  # an object or tuple for positional arguments
           kwargs={},  # a dictionary for keyword arguments
           expected_outcome=cos(π/2),  # expected returned value, warning, or exception
           atol=1e-16,  # absolute tolerance for comparison
           rtol=0,  # relative tolerance for comparison
-  )
+      )
 
+We may use `pytest.mark.parametrize` with `~plasmapy.utils.run_test` to
+check multiple cases.  If `~plasmapy.utils.run_test` only receives one
+positional argument that is a `list` or `tuple`, then it will assume
+that `list` or `tuple` contains the `callable`, the positional
+arguments, the keyword arguments (which may be omitted), and the
+expected outcome (which may be the returned `object`, a warning, or an
+exception).
 
+.. TODO: The following code still needs to be tested!!!!!
+
+.. code-block:: python
+
+  func_arg_result_tuples = [
+    (sin, 0, cos(π/2)),
+    (sin, '...', TypeError),
+  ]
+
+  @pytest.mark.parametrize("func_arg_result_tuples", input_tuples)
+  def test_trigonometry(input_tuple):
+      plasmapy.utils.run_test(input_tuple)
+
+This parametrized function will check that ``sin(0) == cos(π/2)` and
+that  ``sin('...') raises a TypeError.
+
+We may use `~plasmapy.utils.run_test_equivalent_calls` to check symmetry
+properties such as
+
+.. math::
+
+  \cos(\theta) = \cos(-\theta).
+
+This property can be checked for :math:`\theta = 1` with the following
+code.
+
+.. code-block:: python
+
+  def test_cosine_symmetry():
+      """Test that cos(1) equals sin(-1)."""
+      plasmapy.utils.run_test_equivalent_calls(cos, 1, -1)
+
+We may also use `pytest.mark.parametrize` with
+`~plasmapy.utils.run_test_equivalent_calls` to sequentially test
+multiple symmetry properties.
+
+.. TODO: test the following code block
+
+.. code-block:: python
+
+  input_tuples = [
+    (cos, 1, -1),
+    ([cos, π/2], [sin, 0]),
+  ]
+
+  @pytest.mark.parametrize('input_tuple', input_tuples)
+  def test_symmetry_properties(input_tuple):
+      plasmapy.utils.run_test_equivalent_calls(input_tuple)
+
+This parametrized function will check that `cos(1) == cos(-1)` and then
+that `cos(π/2) == sin(0)`.
+
+Please refer to the documentation for `~plasmapy.utils.run_test` and
+`~plasmapy.utils.run_test_equivalent_calls` to learn about the full
+capabilities of these pytest helper functions.
 
 .. _testing-guidelines-writing-tests-fixtures:
 
@@ -377,11 +441,9 @@ Fixtures
 --------
 
 `Fixtures <https://docs.pytest.org/en/stable/fixture.html>`_ provide a
-way to set up the conditions
+way to set up well-defined states in order to have consistent tests.
 
-
-are one of
-the most powerful features of pytest.  Fixtures provide a way to set up
+.. TODO: finish writing this section!
 
 We recommend using fixtures for complex tests that
 
@@ -397,7 +459,7 @@ We recommend using fixtures for complex tests that
       assert sample_fixture['x'] == 1
       assert sample_fixture['y'] == 2
 
-Fixtures are recommended for complex tests
+Fixtures are recommended for complex tests...
 
 .. _testing-guidelines-coverage:
 
