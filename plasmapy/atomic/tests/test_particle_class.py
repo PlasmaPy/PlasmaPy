@@ -390,7 +390,7 @@ test_Particle_table = [
       'element': 'C',
       'isotope': 'C-14',
       'ionic_symbol': 'C-14 3+',
-     }),
+      }),
 ]
 
 

@@ -47,6 +47,7 @@ __all__ = [
     "periodic_table_category"
 ]
 
+
 @particle_input
 def atomic_number(element: Particle) -> numbers.Integral:
     """
@@ -204,7 +205,11 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
 
 @particle_input(exclude={'neutrino', 'antineutrino'})
-def particle_mass(particle: Particle, *, Z: numbers.Integral = None, mass_numb: numbers.Integral = None) -> u.Quantity:
+def particle_mass(
+        particle: Particle,
+        *,
+        Z: numbers.Integral = None,
+        mass_numb: numbers.Integral = None) -> u.Quantity:
     """
     Return the mass of a particle.
 
@@ -617,7 +622,9 @@ def known_isotopes(argument: Union[str, numbers.Integral] = None) -> List[str]:
     return isotopes_list
 
 
-def common_isotopes(argument: Union[str, numbers.Integral] = None, most_common_only: bool = False) -> List[str]:
+def common_isotopes(
+        argument: Union[str, numbers.Integral] = None,
+        most_common_only: bool = False) -> List[str]:
     """
     Return a list of isotopes of an element with an isotopic abundances
     greater than zero, or if no input is provided, a list of all such
