@@ -278,25 +278,25 @@ The proof goes along these lines:
 * If the generalized Riemann hypothesis is false, the conjecture is also true.
 * Therefore, the conjecture is true.
 
-One way to use pytest would be to write continuous assertions:
+One way to use pytest would be to write sequential test in a single
+function.
 
 .. code-block:: python
 
   def test_proof_by_riemann_hypothesis():
-       # if this step fails, the test stops
        assert proof_by_riemann(False)
-       # and you have to run this again
-       assert proof_by_riemann(True)
+       assert proof_by_riemann(True)  # only run if previous test passes
 
 If the first test were to fail, then the second test will never be run.
 We would therefore not know the potentially useful results of the second
-tests.  This drawback can be avoided by making independent tests that
+test.  This drawback can be avoided by making independent tests that
 will both be run.
 
 .. code-block:: python
 
   def test_proof_if_riemann_false():
        assert proof_by_riemann(False)
+
   def test_proof_if_riemann_true():
        assert proof_by_riemann(True)
 
@@ -308,8 +308,7 @@ capabilities.
 
 .. code-block:: python
 
-  truth_values_to_test = [True, False]
-  @pytest.mark.parametrize("truth_value", truth_values_to_test)
+  @pytest.mark.parametrize("truth_value", [True, False])
   def test_proof_if_riemann(truth_value):
        assert proof_by_riemann(truth_value)
 
@@ -324,11 +323,7 @@ functions or pass in tuples containing inputs and expected values.
 
 .. code-block:: python
 
-  truth_values_and_expected_results = [
-      (True, True),
-      (False, True),
-  ]
-  @pytest.mark.parametrize("truth_value, expected", truth_values_and_expected_results)
+  @pytest.mark.parametrize("truth_value, expected", [(True, True), (False, True)])
   def test_proof_if_riemann(truth_value, expected):
        assert proof_by_riemann(truth_value) == expected
 
@@ -339,22 +334,22 @@ Pytest helpers
 
 A robust testing framework should test not just that functions and
 methods return the expected results, but also that they issue the
-expected warnings and raise the expected exceptions.  In PlasmaPy, tests
-often need to compare floats against floats, arrays, and
-`~astropy.units.Quantity` objects against other floats, arrays, and
-`~astropy.units.Quantity` objects to within a certain tolerance.
+expected warnings and raise the expected exceptions. In PlasmaPy, tests
+often need to compare a `float` against a `float`, an `~numpy.array`
+against an `~numpy.array`, and `~astropy.units.Quantity` objects against
+other `~astropy.units.Quantity` objects to within a certain tolerance.
 Occasionally tests will be needed to make sure that a function will
 return the same value for different arguments (e.g., due to symmetry
-properties. PlasmaPy's `~plasmapy.utils` subpackage contains the
+properties). PlasmaPy's `~plasmapy.utils` subpackage contains the
 `~plasmapy.utils.run_test` and
 `~plasmapy.utils.run_test_equivalent_calls` helper functions that can
 generically perform many of these comparisons and checks.
 
 The `~plasmapy.utils.run_test` function can be used to check that a
 callable object returns the expected result, raises the expected
-exception, or issues the expected warning using the supplied positional
-and keyword arguments.  This function is particularly useful for unit
-tests of straightforward functions when you have a bunch of inputs and
+exception, or issues the expected warning for different positional and
+keyword arguments.  This function is particularly useful when unit
+testing straightforward functions when you have a bunch of inputs and
 know the expected result.
 
 Suppose that we want to test the trigonometric property that
@@ -388,8 +383,8 @@ exception).
   def test_trigonometry(input_tuple):
       run_test(input_tuple, atol=1e-16)
 
-This parametrized function will check that ``sin(0)`` is within `1e-16`
-of ``cos(pi/2)`` and that  ``sin('.')`` raises a TypeError.
+This parametrized function will check that ``sin(0)`` is within
+``1e-16`` of ``cos(pi/2)`` and that  ``sin('.')`` raises a `TypeError`.
 
 We may use `~plasmapy.utils.run_test_equivalent_calls` to check symmetry
 properties such as
@@ -404,7 +399,7 @@ code.
 .. code-block:: python
 
   def test_cosine_symmetry():
-      """Test that cos(1) equals sin(-1)."""
+      """Test that cos(1) equals cos(-1)."""
       plasmapy.utils.run_test_equivalent_calls(cos, 1, -1)
 
 We may also use `pytest.mark.parametrize` with
