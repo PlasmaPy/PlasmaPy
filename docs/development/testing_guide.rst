@@ -418,7 +418,7 @@ multiple symmetry properties.
       plasmapy.utils.run_test_equivalent_calls(input_tuple, atol=1e-16)
 
 This parametrized function will check that ``cos(1)`` is withn ``1e-16``
-of ``cos(-1)``, and that ``cos(π/2)`` is within ``1e-16`` of ``sin(0)``.
+of ``cos(-1)``, and that ``cos(pi/2)`` is within ``1e-16`` of ``sin(0)``.
 
 Please refer to the documentation for `~plasmapy.utils.run_test` and
 `~plasmapy.utils.run_test_equivalent_calls` to learn about the full
