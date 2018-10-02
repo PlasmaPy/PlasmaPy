@@ -359,17 +359,10 @@ check the case of :math:`\theta \equiv 0`.
 .. code-block:: python
 
   from numpy import sin, cos, pi as π
-  import plasmapy
+  from plasmapy.utils import run_test
 
   def test_trigonometric_properties():
-      plasmapy.utils.run_test(
-          func=sin,  # the callable to be tested
-          args=0,  # an object or tuple for positional arguments
-          kwargs={},  # a dictionary for keyword arguments
-          expected_outcome=cos(π/2),  # expected returned value, warning, or exception
-          atol=1e-16,  # absolute tolerance for comparison
-          rtol=0,  # relative tolerance for comparison
-      )
+      run_test(func=sin, args=0, expected_outcome=cos(π/2), atol=1e-16)
 
 We may use `pytest.mark.parametrize` with `~plasmapy.utils.run_test` to
 check multiple cases.  If `~plasmapy.utils.run_test` only receives one
@@ -379,23 +372,14 @@ arguments, the keyword arguments (which may be omitted), and the
 expected outcome (which may be the returned `object`, a warning, or an
 exception).
 
-.. TODO: The following code still needs to be tested!!!!!
-
 .. code-block:: python
 
-  # Each tuple in the list contains the function, the argument,
-  # and the expected outcome.
-  input_tuples = [
-    (sin, 0, cos(π/2)),
-    (sin, '...', TypeError),
-  ]
-
-  @pytest.mark.parametrize("input_tuple", input_tuples)
+  @pytest.mark.parametrize("input_tuple", [(sin, 0, cos(π/2)), (sin, '.', TypeError)])
   def test_trigonometry(input_tuple):
-      plasmapy.utils.run_test(input_tuple)
+      run_test(input_tuple, atol=1e-16)
 
-This parametrized function will check that ``sin(0) == cos(π/2)`` and
-that  ``sin('...')`` raises a TypeError.
+This parametrized function will check that ``sin(0)`` is within `1e-16`
+of ``cos(π/2)`` and that  ``sin('.')`` raises a TypeError.
 
 We may use `~plasmapy.utils.run_test_equivalent_calls` to check symmetry
 properties such as
@@ -417,21 +401,14 @@ We may also use `pytest.mark.parametrize` with
 `~plasmapy.utils.run_test_equivalent_calls` to sequentially test
 multiple symmetry properties.
 
-.. TODO: test the following code block
-
 .. code-block:: python
 
-  input_tuples = [
-    (cos, 1, -1),
-    ([cos, π/2], [sin, 0]),
-  ]
-
-  @pytest.mark.parametrize('input_tuple', input_tuples)
+  @pytest.mark.parametrize('input_tuple', [(cos, 1, -1), ([cos, π/2], [sin, 0])])
   def test_symmetry_properties(input_tuple):
-      plasmapy.utils.run_test_equivalent_calls(input_tuple)
+      plasmapy.utils.run_test_equivalent_calls(input_tuple, atol=1e-16)
 
-This parametrized function will check that `cos(1) == cos(-1)` and then
-that `cos(π/2) == sin(0)`.
+This parametrized function will check that ``cos(1)`` is withn ``1e-16``
+of ``cos(-1)``, and that ``cos(π/2)`` is within ``1e-16`` of ``sin(0)``.
 
 Please refer to the documentation for `~plasmapy.utils.run_test` and
 `~plasmapy.utils.run_test_equivalent_calls` to learn about the full
@@ -451,7 +428,7 @@ We recommend using fixtures for complex tests that
 
 .. code-block:: python
 
-  import pytest, collections
+  import pytest
 
   @pytest.fixture
   def sample_fixture():
