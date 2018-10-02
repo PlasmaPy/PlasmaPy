@@ -118,7 +118,7 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
     B={'units': u.T, 'can_be_negative': False},
     omega={'units': u.rad / u.s, 'can_be_negative': False},
 )
-def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
+def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.core.CompositeUnit):
     r"""
     Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
 
