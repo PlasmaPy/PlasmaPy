@@ -269,9 +269,12 @@ an example of a `proof
 of Gauss's class number conjecture.
 
 The proof goes along these lines:
+
 * If the generalized Riemann hypothesis is true, the conjecture is true.
+
 * If the generalized Riemann hypothesis is false, the conjecture is also
   true.
+
 * Therefore, the conjecture is true.
 
 One way to use pytest would be to write sequential test in a single
