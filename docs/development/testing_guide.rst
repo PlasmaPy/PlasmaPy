@@ -32,10 +32,10 @@ Overview
 Pull requests that create or change functionality must include tests
 before being merged.
 
-PlasmaPy uses `pytest <https://docs.pytest.org>`_ for software testing.
-The test suite may be run locally or automatically via pull requests on
-GitHub.  PlasmaPy undergoes continuous integration testing of the code
-base by `Travis CI <https://travis-ci.org>`_ and `AppVeyor
+PlasmaPy uses **`pytest <https://docs.pytest.org>`_** for software
+testing.  The test suite may be run locally or automatically via pull
+requests on GitHub.  PlasmaPy undergoes continuous integration testing
+of the code base by `Travis CI <https://travis-ci.org>`_ and `AppVeyor
 <https://www.appveyor.com>`_, including code examples in docstrings.
 `Codecov <https://codecov.io>`_ performs test coverage checks and shows
 whether or not each line of code is run during the test suite.
@@ -196,26 +196,19 @@ Assert statements
       assert 2 + 2 == 4
 
 When `assert` statements raise an `AssertionError`, pytest will display
-the values of the expressions evaluated in the `assert` statement.  This
-output is often sufficient for simple tests as above.  For more complex
-tests
-
-However, descriptive error messages that provide context help us
-pinpoint the causes of test failures more quickly.
+the values of the expressions evaluated in the `assert` statement.  The
+automatic output from pytest is sufficient for simple tests as above.
+For more complex tests, we can add a descriptive error message to
+provide context that can help us pinpoint the causes of test failures
+more quickly.
 
 .. code-block:: python
 
   def test_addition():
       assert 2 + 2 == 4, "Addition is broken. Reinstall universe and reboot."
 
-When `assert` statements raise an `AssertionError`, pytest will display
-the value of the expressions in `assert` statements.  In cases where
-
-Pytest display the value of each expression in `assert`
-statements, so for simul.
-
-To make the error statement easier to read, the values of
-variables can be included in the error message by using `f-strings
+To make the error statement easier to read, the values of variables can
+be included in the error message by using `f-strings
 <https://www.python.org/dev/peps/pep-0498/>`_.
 
 .. code-block:: python
@@ -412,8 +405,9 @@ multiple symmetry properties.
   def test_symmetry_properties(input_tuple):
       plasmapy.utils.run_test_equivalent_calls(input_tuple, atol=1e-16)
 
-This parametrized function will check that ``cos(1)`` is withn ``1e-16``
-of ``cos(-1)``, and that ``cos(pi/2)`` is within ``1e-16`` of ``sin(0)``.
+This parametrized function will check that ``cos(1)`` is within
+``1e-16`` of ``cos(-1)``, and that ``cos(pi/2)`` is within ``1e-16`` of
+``sin(0)``.
 
 Please refer to the documentation for `~plasmapy.utils.run_test` and
 `~plasmapy.utils.run_test_equivalent_calls` to learn about the full
