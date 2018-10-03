@@ -12,14 +12,14 @@ Motivation
 Tests are vital for software reliability and maintainability.  Writing
 tests requires additional effort now, but saves considerable time in the
 long run.  Tests enable us to modify code and quickly discover when we
-introduce errors [1]_.  Tests provide future contributors with
+introduce errors [1]_.  Tests also provide future contributors with
 examples of how functions and classes were originally intended to be
 used.
 
-Tests should also be readable and maintainable.  Well-written tests are
+Tests should be readable and maintainable.  Well-written tests are
 easier to understand and modify when the behavior of a function or
-method is intended to be changed.  Consequently, tests should be held to
-the same coding standards as the rest of the package.
+method is changed.  Consequently, tests should be held to the same
+code quality standards as the rest of the package.
 
 When bugs are discovered, they should be turned into test cases to
 prevent the bug from emerging again in the future [2]_.
@@ -30,20 +30,21 @@ Overview
 ========
 
 Pull requests that create or change functionality must include tests
-before being merged.
+and documentation before being merged.
 
 PlasmaPy uses **`pytest <https://docs.pytest.org>`_** for software
 testing.  The test suite may be run locally or automatically via pull
-requests on GitHub.  PlasmaPy undergoes continuous integration testing
-of the code base by `Travis CI <https://travis-ci.org>`_ and `AppVeyor
-<https://www.appveyor.com>`_, including code examples in docstrings.
-`Codecov <https://codecov.io>`_ performs test coverage checks and shows
-whether or not each line of code is run during the test suite.
-`CircleCI <https://circleci.com/>`_ tests that the documentation can be
-successfully built.  The results of the documentation test builds are
-displayed using `Giles <https://github.com/apps/giles>`_.  PlasmaPy's
-test suite is automatically run whenever a pull request to the main
-repository is made or updated.
+requests on `GitHub <https://github.com/>`_.  PlasmaPy undergoes
+continuous integration testing of the code base by `Travis CI
+<https://travis-ci.org>`_ and `AppVeyor <https://www.appveyor.com>`_,
+including code examples in docstrings.  `Codecov <https://codecov.io>`_
+performs test coverage checks and shows whether or not each line of code
+is run during the test suite. `CircleCI <https://circleci.com/>`_ tests
+that the documentation can be successfully built.  The results of the
+documentation test builds are displayed using `Giles
+<https://github.com/apps/giles>`_.  PlasmaPy's test suite is
+automatically run whenever a pull request to the main repository is made
+or updated.
 
 .. _testing-guidelines-running-tests:
 
@@ -65,12 +66,12 @@ is subsequently updated.
 
 `Travis CI <https://travis-ci.org>`_ and `AppVeyor
 <https://www.appveyor.com>`_ run code tests and check that code examples
-in docstrings produce the expected output.  Travis CI runs the tests in a
-Linux/MacOS environment whereas AppVeyor runs the tests in a Windows
+in docstrings produce the expected output.  Travis CI runs the tests in
+a Linux/MacOS environment whereas AppVeyor runs the tests in a Windows
 environment.
 
 The results from Travis CI are used to generate test coverage reports
-which are displayed by `Codecov <https://codecov.io>`_. These reports
+which are displayed by `Codecov <https://codecov.io>`_.  These reports
 show which lines of code are covered by tests and which are not, and
 allow us to write targeted tests to fill in the gaps in test coverage.
 The results displayed by Codecov will be marked as passing when the code
@@ -116,8 +117,8 @@ short traceback reports, and run tests only if the test path contains
   python setup.py test -a "--maxfail=2 --tb=short -k 'plasma and not blob'"
 
 One may also run ``pytest`` as a shortcut from the command line, though
-this command may result in an error if pytest collects tests
-of Cython code.
+this command may result in an error if pytest collects tests of Cython
+code.
 
 .. _testing-guidelines-running-tests-python:
 
@@ -146,8 +147,8 @@ being merged.
 Best practices for writing tests
 --------------------------------
 
-The following guidelines are helpful ways for writing neat, readable,
-and useful tests.
+The following guidelines are helpful suggestions for writing readable,
+maintainable, and robust tests.
 
 * Each function and method should have unit tests that check that it
   returns the expected results, issues the appropriate warnings, and
@@ -235,26 +236,27 @@ To test that a function issues an appropriate warning, use
 
 .. code-block:: python
 
-  import pytest, warnings
+  import pytest
+  import warnings
 
-  def issue_user_warning():
+  def issue_warning():
       warnings.warn("grumblemuffins", UserWarning)
 
   def test_issue_warning():
       with pytest.warns(UserWarning, message="UserWarning not issued."):
-          issue_user_warning()
+          issue_warning()
 
 To test that a function raises an appropriate exception, use
 `pytest.raises`.
 
 .. code-block:: python
 
-  def raise_value_error():
-      raise ValueError
+  def raise_exception():
+      raise Exception
 
-  def test_raise_value_error():
-      with pytest.raises(ValueError, message="ValueError not raised."):
-          raise_value_error()
+  def test_raise_exception():
+      with pytest.raises(Exception, message="Exception not raised."):
+          raise_exception()
 
 .. _testing-guidelines-writing-tests-parametrize:
 
@@ -268,7 +270,8 @@ of Gauss's class number conjecture.
 
 The proof goes along these lines:
 * If the generalized Riemann hypothesis is true, the conjecture is true.
-* If the generalized Riemann hypothesis is false, the conjecture is also true.
+* If the generalized Riemann hypothesis is false, the conjecture is also
+  true.
 * Therefore, the conjecture is true.
 
 One way to use pytest would be to write sequential test in a single
@@ -411,7 +414,8 @@ This parametrized function will check that ``cos(1)`` is within
 
 Please refer to the documentation for `~plasmapy.utils.run_test` and
 `~plasmapy.utils.run_test_equivalent_calls` to learn about the full
-capabilities of these pytest helper functions.
+capabilities of these pytest helper functions (including for testing
+functions that return `~astropy.units.Quantity` objects).
 
 .. _testing-guidelines-writing-tests-fixtures:
 
@@ -420,24 +424,12 @@ Fixtures
 
 `Fixtures <https://docs.pytest.org/en/stable/fixture.html>`_ provide a
 way to set up well-defined states in order to have consistent tests.
+We recommend using fixtures for complex tests that would be unwieldy to
+set up with parametrization as described above.
 
-.. TODO: finish writing this section!
-
-We recommend using fixtures for complex tests that
-
-.. code-block:: python
-
-  import pytest
-
-  @pytest.fixture
-  def sample_fixture():
-      return {'x': 1, 'y': 2}
-
-  def test_fixture(sample_fixture):
-      assert sample_fixture['x'] == 1
-      assert sample_fixture['y'] == 2
-
-Fixtures are recommended for complex tests...
+.. At some point in the future, we may wish to add more information
+   and/or more references for pytest fixtures when we use them more
+   frequently.
 
 .. _testing-guidelines-coverage:
 
