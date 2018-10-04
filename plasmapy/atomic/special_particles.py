@@ -7,7 +7,7 @@ from typing import Set, Dict, List, Optional, Union
 from astropy import units as u, constants as const
 import numpy as np
 from plasmapy.atomic.elements import _PeriodicTable
-#alias arl cd /home/sfarid/ARL_EVOL/
+
 
 
 class _ParticleZooClass:
