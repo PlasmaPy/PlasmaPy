@@ -45,13 +45,12 @@ def test_nuclear(test_inputs):
     run_test(*test_inputs, rtol=1e-3)
 
 
-test_nuclear_equivalent_calls = [
+test_nuclear_equivalent_calls_table = [
     [nuclear_binding_energy, ['He-4', {}], ['alpha', {}], ['He', {'mass_numb': 4}]],
-
 ]
 
 
-@pytest.mark.parametrize('test_inputs', test_nuclear_equivalent_calls)
+@pytest.mark.parametrize('test_inputs', test_nuclear_equivalent_calls_table)
 def test_nuclear_equivalent_calls(test_inputs):
     run_test_equivalent_calls(test_inputs)
 

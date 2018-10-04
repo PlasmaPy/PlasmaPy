@@ -6,17 +6,19 @@ information for special particles.
 from typing import Set, Dict, List, Optional, Union
 from astropy import units as u, constants as const
 import numpy as np
-from .elements import _PeriodicTable
+from plasmapy.atomic.elements import _PeriodicTable
+
 
 
 class _ParticleZooClass:
     """
     Create an object with taxonomy information for special particles.
 
-    The `_taxonomy_dict` attribute contains the name of each
-    classification (e.g., 'lepton', 'baryon', 'matter', etc.) as the
-    keys and a set of particle symbol strings of the particles belonging
-    to that classification.
+    The `~plasmapy.atomic.special_particles._ParticleZooClass._taxonomy_dict`
+    attribute contains the name of each classification (e.g.,
+    ``'lepton'``, ``'baryon'``, ``'matter'``, etc.) as the keys and a
+    set of particle symbol strings of the particles belonging to that
+    classification.
 
     The attributes of this class provide sets of strings representing
     particles in the corresponding category.
@@ -36,26 +38,19 @@ class _ParticleZooClass:
     def __init__(self):
 
         leptons = {'e-', 'mu-', 'tau-', 'nu_e', 'nu_mu', 'nu_tau'}
-
-        antileptons = \
-            {'e+', 'mu+', 'tau+', 'anti_nu_e', 'anti_nu_mu', 'anti_nu_tau'}
-
+        antileptons = {'e+', 'mu+', 'tau+', 'anti_nu_e', 'anti_nu_mu', 'anti_nu_tau'}
         baryons = {'p+', 'n'}
-
         antibaryons = {'p-', 'antineutron'}
 
         particles = leptons | baryons
-
         antiparticles = antileptons | antibaryons
-
         fermions = leptons | antileptons | baryons | antibaryons
 
         bosons = set()
 
         neutrinos = {lepton for lepton in leptons if 'nu' in lepton}
 
-        antineutrinos = {antilepton for antilepton in antileptons
-                         if 'nu' in antilepton}
+        antineutrinos = {antilepton for antilepton in antileptons if 'nu' in antilepton}
 
         self._taxonomy_dict = {
             'lepton': leptons,
@@ -123,8 +118,7 @@ class _ParticleZooClass:
     @property
     def everything(self) -> Set[str]:
         """Return all particles and antiparticles."""
-        return \
-            self._taxonomy_dict['matter'] | self._taxonomy_dict['antimatter']
+        return self._taxonomy_dict['matter'] | self._taxonomy_dict['antimatter']
 
 
 ParticleZoo = _ParticleZooClass()
@@ -138,8 +132,8 @@ def _create_Particles_dict() -> Dict[str, dict]:
 
     The keys of the top-level dictionary are the standard particle
     symbols. The values of the top-level dictionary are dictionaries for
-    each particle or antiparticle with strings such as `'name'`,
-    `'mass'`, and `'spin'` as the keys and the corresponding atomic
+    each particle or antiparticle with strings such as ``'name'``,
+    ``'mass'``, and ``'spin'`` as the keys and the corresponding atomic
     properties as symbols.
     """
 
@@ -173,7 +167,7 @@ def _create_Particles_dict() -> Dict[str, dict]:
     for fermion in ParticleZoo.fermions:
         Particles[fermion]['spin'] = 0.5
 
-    for boson in ParticleZoo.bosons:  # coveralls: ignore
+    for boson in ParticleZoo.bosons:  # coverage: ignore
         Particles[boson]['spin'] = 0
 
     for lepton in ParticleZoo.leptons:
@@ -306,7 +300,7 @@ _antiparticles = {
     'anti_nu_tau': 'nu_tau',
 }
 
-if __name__ == "__main__":  # coveralls: ignore
+if __name__ == "__main__":  # coverage: ignore
     from pprint import pprint
     print("Particles:")
     pprint(_Particles)

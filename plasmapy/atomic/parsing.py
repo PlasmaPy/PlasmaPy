@@ -1,19 +1,20 @@
 """Functionality to parse representations of particles into standard form."""
 
-from plasmapy.utils import roman
 import numpy as np
 import re
 import warnings
 from typing import (Union, Dict)
 import numbers
 
-from .elements import (_atomic_numbers_to_symbols, _element_names_to_symbols, _Elements)
-from .isotopes import _Isotopes
-from .special_particles import _Particles, ParticleZoo
+from plasmapy.atomic.elements import (_atomic_numbers_to_symbols, _element_names_to_symbols, _Elements)
+from plasmapy.atomic.isotopes import _Isotopes
+from plasmapy.atomic.special_particles import _Particles, ParticleZoo
 
-from ..utils import (AtomicWarning,
+from plasmapy.utils import (
+                     AtomicWarning,
                      InvalidElementError,
-                     InvalidParticleError)
+                     InvalidParticleError,
+                     roman)
 
 
 def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
@@ -146,13 +147,13 @@ def _parse_and_check_atomic_input(
     -------
     nomenclature_dict : `dict`
         A dictionary containing information about the element, isotope,
-        or ion.  The key 'symbol' corresponds to the particle symbol
-        containing the most information, 'element' corresponds to the
-        atomic symbol, 'isotope' corresponds to the isotope symbol,
-        'ion' corresponds to the ion symbol, 'mass_numb' corresponds
-        to the mass number, and 'Z' corresponds to the integer charge.
-        The corresponding items will be given by None if the necessary
-        information is not provided.
+        or ion.  The key ``'symbol'`` corresponds to the particle symbol
+        containing the most information, ``'element'`` corresponds to
+        the atomic symbol, ``'isotope'`` corresponds to the isotope
+        symbol, ``'ion'`` corresponds to the ion symbol, ``'mass_numb'``
+        corresponds to the mass number, and ``'Z'`` corresponds to the
+        integer charge.  The corresponding items will be given by `None`
+        if the necessary information is not provided.
 
     Raises
     ------
@@ -247,8 +248,8 @@ def _parse_and_check_atomic_input(
         Return a tuple containing a string that should represent
         an element, and either an integer representing the mass
         number or None if no mass number is available.  Raises an
-        InvalidParticleError if the mass number information is
-        inputted incorrectly.
+        `~plasmapy.utils.InvalidParticleError` if the mass number
+        information is inputted incorrectly.
         """
 
         if isotope_info == 'D':
@@ -346,7 +347,7 @@ def _parse_and_check_atomic_input(
 
         return ion
 
-    if not isinstance(argument, (str, numbers.Integral)):  # coveralls: ignore
+    if not isinstance(argument, (str, numbers.Integral)):  # coverage: ignore
         raise TypeError(f"The argument {argument} is not an integer or string.")
 
     arg = _dealias_particle_aliases(argument)

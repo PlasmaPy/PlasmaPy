@@ -420,6 +420,7 @@ class TestInvalidPeriodicElement:
 # the correct function to each list containing args, kwargs, and the
 # expected outcome prior to being passed through to run_test.
 
+
 tables_and_functions = [
     (atomic_symbol, atomic_symbol_table),
     (isotope_symbol, isotope_symbol_table),

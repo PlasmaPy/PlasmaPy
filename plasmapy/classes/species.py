@@ -63,7 +63,7 @@ class Species:
     def __init__(self, plasma, particle_type='p', n_particles=1, scaling=1,
                  dt=np.inf * u.s, nt=np.inf):
 
-        if np.isinf(dt) and np.isinf(nt):  # coveralls: ignore
+        if np.isinf(dt) and np.isinf(nt):  # coverage: ignore
             raise ValueError("Both dt and nt are infinite.")
 
         self.q = atomic.integer_charge(particle_type) * constants.e.si
@@ -191,13 +191,13 @@ class Species:
         return f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N}," \
                f"name=\"{self.name}\",NT={self.NT})"
 
-    def __str__(self):  # coveralls: ignore
+    def __str__(self):  # coverage: ignore
         return f"{self.N} {self.scaling:.2e}-{self.name} with " \
                f"q = {self.q:.2e}, m = {self.m:.2e}, " \
                f"{self.saved_iterations} saved history " \
                f"steps over {self.NT} iterations"
 
-    def plot_trajectories(self):  # coveralls: ignore
+    def plot_trajectories(self):  # coverage: ignore
         r"""Draws trajectory history."""
         from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
@@ -216,7 +216,7 @@ class Species:
         ax.set_zlabel("$z$ position")
         plt.show()
 
-    def plot_time_trajectories(self, plot="xyz"):  # coveralls: ignore
+    def plot_time_trajectories(self, plot="xyz"):  # coverage: ignore
         r"""
         Draws position history versus time.
 

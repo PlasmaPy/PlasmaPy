@@ -57,7 +57,7 @@ def online_help(query):
     webbrowser.open(url)
 
 __citation__ = """@misc{plasmapy_community_2018_1238132,
-  author       = {PlasmaPy Community and
+  author       = {{PlasmaPy Community} and
                   Murphy, Nicholas A. and
                   Leonard, Andrew J. and
                   Sta\'nczak, Dominik and

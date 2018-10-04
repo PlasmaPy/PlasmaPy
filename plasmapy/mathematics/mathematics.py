@@ -204,7 +204,7 @@ def Fermi_integral(
     .. math::
         F_j (x) = \frac{1}{\Gamma (j+1)} \int_0^{\infty} \frac{t^j}{\exp{(t-x)} + 1} dt
 
-    for j > 0.
+    for :math:`j > 0`.
 
     This is equivalent to the following `polylogarithm
     <https://en.wikipedia.org/wiki/Polylogarithm>`_ function:

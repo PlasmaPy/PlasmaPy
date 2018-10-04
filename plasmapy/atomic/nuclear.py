@@ -4,13 +4,13 @@ from astropy import units as u
 from typing import List, Union
 import re
 
-from ..utils import (
+from plasmapy.utils import (
     AtomicError,
     InvalidParticleError,
 )
 
-from .particle_class import Particle
-from .particle_input import particle_input
+from plasmapy.atomic.particle_class import Particle
+from plasmapy.atomic.particle_input import particle_input
 
 __all__ = [
     "nuclear_binding_energy",
@@ -30,7 +30,7 @@ def nuclear_binding_energy(particle: Particle, mass_numb: int = None) -> u.Quant
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
-    mass_numb: `int` (optional)
+    mass_numb: `int`, optional
         The mass number of an isotope, which is required if and only
         if the first argument can only be used to determine the
         element and not the isotope.
@@ -125,16 +125,17 @@ def nuclear_reaction_energy(*args, **kwargs):
     Parameters
     ----------
     reaction: `str` (optional, positional argument only)
-        A string representing the reaction, like "D + T --> alpha + n"
-        or "Be-8 --> 2*He-4"
+        A string representing the reaction, like
+        ``"D + T --> alpha + n"`` or ``"Be-8 --> 2 * He-4"``.
 
-    reactants: `list`, `tuple`, or `str` (optional, keyword argument only)
-        A `list` or `tuple` containing the reactants of a nuclear reaction
-        (e.g., ['D', 'T']), or a string representing the sole reactant.
+    reactants: `list`, `tuple`, or `str`, optional, keyword-only
+        A `list` or `tuple` containing the reactants of a nuclear
+        reaction (e.g., ``['D', 'T']``), or a string representing the
+        sole reactant.
 
-    products: `list`, `tuple`, or `str` (optional, keyword argument only)
+    products: `list`, `tuple`, or `str`, optional, keyword-only
         A list or tuple containing the products of a nuclear reaction
-        (e.g., ['alpha', 'n']), or a string representing the sole
+        (e.g., ``['alpha', 'n']``), or a string representing the sole
         product.
 
     Returns
