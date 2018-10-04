@@ -61,7 +61,8 @@ early stages of PlasmaPy development:
    great place to have informal conversations, coordinate efforts, and
    share ideas.
 
--  We have biweekly telecons which are announced on the email list.
+-  We have approximately biweekly telecons that are announced on the
+   email list.
 
 Contributing code or documentation to PlasmaPy
 ----------------------------------------------
