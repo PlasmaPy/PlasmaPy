@@ -310,7 +310,7 @@ test_Particle_table = [
       'element': 'He',
       'isotope': 'He-4',
       'mass_energy': 5.971919969131517e-10 * u.J,
-     }),
+      }),
 
     ('Li', {'mass_numb': 7},
      {'particle': 'Li-7',
@@ -344,7 +344,8 @@ test_Particle_table = [
       'mass_number': 276,
       'neutron_number': 164,
       'baryon_number': 276,
-      'lepton_number': 0}),
+      'lepton_number': 0,
+      }),
 
     ('muon', {},
      {'particle': 'mu-',
