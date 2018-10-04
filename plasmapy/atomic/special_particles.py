@@ -6,7 +6,8 @@ information for special particles.
 from typing import Set, Dict, List, Optional, Union
 from astropy import units as u, constants as const
 import numpy as np
-from .elements import _PeriodicTable
+from plasmapy.atomic.elements import _PeriodicTable
+
 
 
 class _ParticleZooClass:
