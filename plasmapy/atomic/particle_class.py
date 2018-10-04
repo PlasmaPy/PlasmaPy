@@ -838,7 +838,6 @@ class Particle:
 
         return _nuclide_mass.to(u.kg)
 
-
     @property
     def mass(self) -> u.Quantity:
         """
