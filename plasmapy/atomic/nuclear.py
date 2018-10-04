@@ -4,13 +4,13 @@ from astropy import units as u, constants
 from typing import List, Union
 import re
 
-from ..utils import (
+from plasmapy.utils import (
     AtomicError,
     InvalidParticleError,
 )
 
-from .particle_class import Particle
-from .particle_input import particle_input
+from plasmapy.atomic.particle_class import Particle
+from plasmapy.atomic.particle_input import particle_input
 
 __all__ = [
     "nuclear_binding_energy",
