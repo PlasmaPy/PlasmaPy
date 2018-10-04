@@ -295,7 +295,6 @@ test_Particle_table = [
       'ionic_symbol': 'He-4 2+',
       'roman_symbol': 'He-4 III',
       'mass_energy': 5.971919969131517e-10 * u.J,
-      'nuclear_mass_energy': 5.971919969131517e-10 * u.J,
       'is_ion': True,
       'integer_charge': 2,
       'atomic_number': 2,
@@ -305,6 +304,13 @@ test_Particle_table = [
       'half_life': np.inf * u.s,
       'recombine()': Particle('He-4 1+')
       }),
+
+    ('He-4 0+', {},
+     {'particle': 'He-4 0+',
+      'element': 'He',
+      'isotope': 'He-4',
+      'mass_energy': 5.971919969131517e-10 * u.J,
+     }),
 
     ('Li', {'mass_numb': 7},
      {'particle': 'Li-7',
@@ -353,7 +359,6 @@ test_Particle_table = [
       'mass_number': InvalidIsotopeError,
       'baryon_number': 0,
       'lepton_number': 1,
-      'nuclear_mass_energy': InvalidIsotopeError,
       }),
 
     ('nu_tau', {},
@@ -363,7 +368,6 @@ test_Particle_table = [
       'isotope_name': InvalidElementError,
       'mass': MissingAtomicDataError,
       'mass_energy': MissingAtomicDataError,
-      'nuclear_mass_energy': InvalidIsotopeError,
       'integer_charge': 0,
       'mass_number': InvalidIsotopeError,
       'element_name': InvalidElementError,

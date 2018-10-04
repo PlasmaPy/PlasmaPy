@@ -274,7 +274,7 @@ class Particle:
     `'proton'`, `'stable'`, `'transition metal'`, `'uncharged'`,
     and `'unstable'`.
 
-"""
+    """
 
     def __init__(
             self,
@@ -907,53 +907,35 @@ class Particle:
         """
         Return the mass energy of the particle in joules.
 
-        If the particle is an atom or ion, include the mass of the
-        electrons.
+        If the particle is an isotope or nuclide, return the mass energy
+        of the nucleus only.
 
         If the mass of the particle is not known, then raise a
         `~plasmapy.utils.MissingAtomicDataError`.
 
-        Example
-        -------
+        Examples
+        --------
         >>> proton = Particle('p+')
         >>> proton.mass_energy
         <Quantity 1.50327759e-10 J>
+
+        >>> protium = Particle('H-1 0+')
+        >>> protium.mass_energy
+        <Quantity 1.50327759e-10 J>
+
         >>> electron = Particle('electron')
         >>> electron.mass_energy.to('MeV')
         <Quantity 0.51099895 MeV>
 
         """
         try:
-            return (self.mass * const.c ** 2).to(u.J)
+            mass = self.nuclide_mass if self.isotope else self.mass
+            energy = mass * const.c ** 2
+            return energy.to(u.J)
         except MissingAtomicDataError:
             raise MissingAtomicDataError(
                 f"The mass energy of {self.particle} is not available "
                 f"because the mass is unknown.") from None
-
-    @property
-    def nuclear_mass_energy(self) -> u.Quantity:
-        """
-        Return the mass energy of the nucleus of an isotope.
-
-        If the particle is not an isotope, then raise a
-        `~plasmapy.utils.InvalidIsotopeError`.
-
-        Examples
-        --------
-        >>> protium = Particle('H-1 0+')
-        >>> protium.nuclear_mass_energy
-        <Quantity 1.50327759e-10 J>
-        >>> proton = Particle('p+')
-        >>> proton.mass_energy
-        <Quantity 1.50327759e-10 J>
-
-        """
-        if not self.isotope and not self == 'n':
-            raise InvalidIsotopeError(
-                f"The nuclear mass energy of {self.particle} cannot "
-                f"be found because it is not an isotope. "
-                f"Use mass_energy instead.")
-        return (self.nuclide_mass * const.c ** 2).to(u.J)
 
     @property
     def binding_energy(self) -> u.Quantity:
