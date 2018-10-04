@@ -998,6 +998,15 @@ class Particle:
         >>> Particle('T').binding_energy.to('MeV')
         <Quantity 8.48179621 MeV>
 
+        The binding energy of a nucleon equals 0 joules.
+
+        >>> neutron = Particle('n')
+        >>> proton = Particle('p+')
+        >>> neutron.binding_energy
+        <Quantity 0. J>
+        >>> proton.binding_energy
+        <Quantity 0. J>
+
         """
 
         if self._attributes['baryon number'] == 1:
