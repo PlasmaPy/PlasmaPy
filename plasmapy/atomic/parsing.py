@@ -1,19 +1,20 @@
 """Functionality to parse representations of particles into standard form."""
 
-from plasmapy.utils import roman
 import numpy as np
 import re
 import warnings
 from typing import (Union, Dict)
 import numbers
 
-from .elements import (_atomic_numbers_to_symbols, _element_names_to_symbols, _Elements)
-from .isotopes import _Isotopes
-from .special_particles import _Particles, ParticleZoo
+from plasampy.atomic.elements import (_atomic_numbers_to_symbols, _element_names_to_symbols, _Elements)
+from plasmapy.atomic.isotopes import _Isotopes
+from plasmapy.atomic.special_particles import _Particles, ParticleZoo
 
-from ..utils import (AtomicWarning,
+from plasmapy.utils import (
+					 AtomicWarning,
                      InvalidElementError,
-                     InvalidParticleError)
+                     InvalidParticleError,
+                     roman)
 
 
 def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
