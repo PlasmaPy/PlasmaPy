@@ -310,8 +310,8 @@ def nuclear_reaction_energy(*args, **kwargs):
 
         try:
             LHS_string, RHS_string = re.split('-+>', reaction)
-            LHS_list = re.split(' \+ ', LHS_string)
-            RHS_list = re.split(' \+ ', RHS_string)
+            LHS_list = re.split(r' \+ ', LHS_string)
+            RHS_list = re.split(r' \+ ', RHS_string)
             reactants = process_particles_list(LHS_list)
             products = process_particles_list(RHS_list)
         except Exception as ex:
