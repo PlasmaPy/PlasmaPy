@@ -939,7 +939,7 @@ class Particle:
 
         base_mass = self._attributes['isotope mass']
 
-        if base_mass is None:  # coveralls: ignore
+        if base_mass is None:  # coverage: ignore
             raise MissingAtomicDataError(f"The mass of a {self.isotope} nuclide is not available.")
 
         _nuclide_mass = self._attributes['isotope mass'] - self.atomic_number * const.m_e
