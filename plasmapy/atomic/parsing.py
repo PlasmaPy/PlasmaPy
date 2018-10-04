@@ -6,12 +6,12 @@ import warnings
 from typing import (Union, Dict)
 import numbers
 
-from plasampy.atomic.elements import (_atomic_numbers_to_symbols, _element_names_to_symbols, _Elements)
+from plasmapy.atomic.elements import (_atomic_numbers_to_symbols, _element_names_to_symbols, _Elements)
 from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.atomic.special_particles import _Particles, ParticleZoo
 
 from plasmapy.utils import (
-					 AtomicWarning,
+                     AtomicWarning,
                      InvalidElementError,
                      InvalidParticleError,
                      roman)
