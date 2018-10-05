@@ -1,6 +1,6 @@
 """Functions that are related to nuclear reactions."""
 
-from astropy import units as u, constants
+from astropy import units as u
 from typing import List, Union
 import re
 
@@ -15,6 +15,7 @@ from plasmapy.atomic.particle_input import particle_input
 __all__ = [
     "nuclear_binding_energy",
     "nuclear_reaction_energy",
+    "mass_energy",
 ]
 
 
@@ -37,7 +38,7 @@ def nuclear_binding_energy(particle: Particle, mass_numb: int = None) -> u.Quant
     Returns
     -------
     binding_energy: `~astropy.units.Quantity`
-        The binding energy of the nucleus in units of Joules.
+        The binding energy of the nucleus in units of joules.
 
     Raises
     ------
@@ -52,8 +53,11 @@ def nuclear_binding_energy(particle: Particle, mass_numb: int = None) -> u.Quant
 
     See Also
     --------
-    `~plasmapy.atomic.nuclear_reaction_energy` : Returns the change in
+    `~plasmapy.atomic.nuclear_reaction_energy` : Return the change in
         binding energy during nuclear fusion or fission reactions.
+
+    `~plasmapy.atomic.mass_energy` : Return the mass energy of a
+        nucleon or particle.
 
     Examples
     --------
@@ -72,6 +76,46 @@ def nuclear_binding_energy(particle: Particle, mass_numb: int = None) -> u.Quant
 
     """
     return particle.binding_energy.to(u.J)
+
+
+@particle_input
+def mass_energy(particle: Particle, mass_numb: int = None) -> u.Quantity:
+    """
+    Return a particle's mass energy.  If the particle is an isotope or
+    nuclide, return the nuclear mass energy only.
+
+    Parameters
+    ----------
+    particle: `str`, `int`, or `~plasmapy.atomic.Particle`
+        A Particle object, a string representing an element or isotope,
+        or an integer representing the atomic number of an element.
+
+    mass_numb: `int` (optional)
+        The mass number of an isotope, which is required if and only
+        if the first argument can only be used to determine the
+        element and not the isotope.
+
+    Returns
+    -------
+    mass_energy: `~astropy.units.Quantity`
+        The mass energy of the particle (or in the case of ) in units of joules.
+
+    Raises
+    ------
+    `~plasmapy.utils.InvalidParticleError`
+        If the inputs do not correspond to a valid particle.
+
+    `~plasmapy.utils.AtomicError`
+        If the inputs do not correspond to a valid isotope or nucleon.
+
+    `TypeError`
+        If the inputs are not of the correct types.
+
+    >>> mass_energy('He-4')
+    <Quantity 5.97191997e-10 J>
+
+    """
+    return particle.mass_energy
 
 
 def nuclear_reaction_energy(*args, **kwargs):
@@ -129,16 +173,19 @@ def nuclear_reaction_energy(*args, **kwargs):
     Examples
     --------
     >>> from astropy import units as u
+
     >>> nuclear_reaction_energy("D + T --> alpha + n")
     <Quantity 2.81812097e-12 J>
+
     >>> triple_alpha1 = '2*He-4 --> Be-8'
     >>> triple_alpha2 = 'Be-8 + alpha --> carbon-12'
     >>> energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
     >>> energy_triplealpha2 = nuclear_reaction_energy(triple_alpha2)
     >>> print(energy_triplealpha1, energy_triplealpha2)
-    -1.4714307834388437e-14 J 1.18025735267267e-12 J
+    -1.4714307834388437e-14 J 1.1802573526724632e-12 J
     >>> energy_triplealpha2.to(u.MeV)
     <Quantity 7.36658704 MeV>
+
     >>> nuclear_reaction_energy(reactants=['n'], products=['p+', 'e-'])
     <Quantity 1.25343511e-13 J>
 
@@ -229,13 +276,10 @@ def nuclear_reaction_energy(*args, **kwargs):
         Find the total mass energy from a list of particles, while
         taking the masses of the fully ionized isotopes.
         """
-        total_mass = 0.0 * u.kg
+        total_mass_energy = 0.0 * u.J
         for particle in particles:
-            if particle.isotope:
-                total_mass += particle.nuclide_mass
-            else:
-                total_mass += particle.mass
-        return (total_mass * constants.c ** 2).to(u.J)
+            total_mass_energy += particle.mass_energy
+        return total_mass_energy.to(u.J)
 
     input_err_msg = (
         "The inputs to nuclear_reaction_energy should be either "
@@ -266,8 +310,8 @@ def nuclear_reaction_energy(*args, **kwargs):
 
         try:
             LHS_string, RHS_string = re.split('-+>', reaction)
-            LHS_list = re.split(' \+ ', LHS_string)
-            RHS_list = re.split(' \+ ', RHS_string)
+            LHS_list = re.split(r' \+ ', LHS_string)
+            RHS_list = re.split(r' \+ ', RHS_string)
             reactants = process_particles_list(LHS_list)
             products = process_particles_list(RHS_list)
         except Exception as ex:

@@ -414,6 +414,7 @@ class TestInvalidPeriodicElement:
         with pytest.raises(TypeError):
             periodic_table_group(('B', 'Ti', 'Ge'))
 
+
 # The tables above do not include the function to be tested in order to
 # avoid cluttering up the code.  The following block of code prepends
 # the correct function to each list containing args, kwargs, and the

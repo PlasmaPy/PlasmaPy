@@ -1,6 +1,5 @@
 """Functions that retrieve or are related to elemental or isotopic data."""
 
-import warnings
 from typing import (
     Union,
     Optional,
@@ -21,7 +20,6 @@ from ..utils import (
     InvalidParticleError,
     InvalidElementError,
     InvalidIsotopeError,
-    InvalidIonError,
     MissingAtomicDataError,
 )
 
