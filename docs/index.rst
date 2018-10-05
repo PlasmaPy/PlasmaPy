@@ -52,6 +52,7 @@ Theoretical Analysis
    physics/index
    transport/index
    mathematics/index
+   dispersion/index
 
 .. _toplevel-experimental-tools:
 
