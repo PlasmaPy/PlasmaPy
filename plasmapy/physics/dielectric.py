@@ -49,13 +49,13 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
 
     Returns
     -------
-    S : ~astropy.units.Quantity
+    sum : ~astropy.units.Quantity
         S ("Sum") dielectric tensor element.
 
-    D : ~astropy.units.Quantity
+    difference : ~astropy.units.Quantity
         D ("Difference") dielectric tensor element.
 
-    P : ~astropy.units.Quantity
+    plasma : ~astropy.units.Quantity
         P ("Plasma") dielectric tensor element.
 
     Notes
@@ -96,8 +96,10 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
     >>> species = ['e', 'D+']
     >>> n = [1e18*u.m**-3, 1e18*u.m**-3]
     >>> omega = 3.7e9*(2*pi)*(u.rad/u.s)
-    >>> S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega)
+    >>> permittivity = S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega)
     >>> S
+    <Quantity 1.02422902>
+    >>> permittivity.sum   # namedtuple-style access
     <Quantity 1.02422902>
     >>> D
     <Quantity 0.39089352>
@@ -148,13 +150,13 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 
     Returns
     -------
-    L : ~astropy.units.Quantity
+    left : ~astropy.units.Quantity
         L ("Left") Left-handed circularly polarization tensor element.
 
-    R : ~astropy.units.Quantity
+    right : ~astropy.units.Quantity
         R ("Right") Right-handed circularly polarization tensor element.
 
-    P : ~astropy.units.Quantity
+    plasma : ~astropy.units.Quantity
         P ("Plasma") dielectric tensor element.
 
     Notes
@@ -189,8 +191,10 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     >>> species = ['e', 'D+']
     >>> n = [1e18*u.m**-3, 1e18*u.m**-3]
     >>> omega = 3.7e9*(2*pi)*(u.rad/u.s)
-    >>> L, R, P = cold_plasma_permittivity_LRP(B, species, n, omega)
+    >>> L, R, P = permittivity = cold_plasma_permittivity_LRP(B, species, n, omega)
     >>> L
+    <Quantity 0.63333549>
+    >>> permittivity.left    # namedtuple-style access
     <Quantity 0.63333549>
     >>> R
     <Quantity 1.41512254>
