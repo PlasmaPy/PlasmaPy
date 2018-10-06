@@ -49,6 +49,9 @@ Coding Style
 * For multiline imports, instead of using ``\`` to break lines, wrap the
   imported names in ``()`` parentheses and use consistent whitespace.
 
+* Use ``Optional[type]`` for type hinted keyword arguments with a default value of
+  ``None``.
+
 * There should be at most one pun per 1284 lines of code.
 
 Branches, commits, and pull requests
