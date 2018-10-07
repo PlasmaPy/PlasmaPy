@@ -3,6 +3,8 @@ Functions that deal with string representations of atomic symbols
 and numbers.
 """
 
+from typing import Optional
+
 from .particle_class import Particle
 from .particle_input import particle_input
 import numbers
@@ -94,7 +96,7 @@ def atomic_symbol(element: Particle) -> str:
 
 
 @particle_input
-def isotope_symbol(isotope: Particle, mass_numb: numbers.Integral = None) -> str:
+def isotope_symbol(isotope: Particle, mass_numb: Optional[numbers.Integral] = None) -> str:
     """
     Return the symbol representing an isotope.
 

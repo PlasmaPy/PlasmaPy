@@ -3,6 +3,8 @@ This module gathers basic and general plasma parameters such as the
 plasma frequency or Debye length.
 """
 
+from typing import Optional
+
 __all__ = [
     "mass_density",
     "Alfven_speed",
@@ -64,7 +66,7 @@ def _grab_charge(ion, z_mean=None):
     return Z
 
 
-def mass_density(density, particle: str = None, z_mean: numbers.Real = None) -> u.kg / u.m ** 3:
+def mass_density(density, particle: Optional[str] = None, z_mean: Optional[numbers.Real] = None) -> u.kg / u.m ** 3:
     """Utility function to merge two possible inputs for particle charge.
 
     Parameters

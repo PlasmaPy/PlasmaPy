@@ -260,7 +260,7 @@ def particle_mass(
 
 
 @particle_input
-def isotopic_abundance(isotope: Particle, mass_numb: numbers.Integral = None) -> numbers.Real:
+def isotopic_abundance(isotope: Particle, mass_numb: Optional[numbers.Integral] = None) -> numbers.Real:
     """
     Return the isotopic abundances if known, and otherwise zero.
 
@@ -422,7 +422,7 @@ def electric_charge(particle: Particle) -> u.Quantity:
 
 
 @particle_input
-def is_stable(particle: Particle, mass_numb: numbers.Integral = None) -> bool:
+def is_stable(particle: Particle, mass_numb: Optional[numbers.Integral] = None) -> bool:
     """
     Return `True` for stable isotopes and particles and `False` for
     unstable isotopes.
@@ -476,7 +476,7 @@ def is_stable(particle: Particle, mass_numb: numbers.Integral = None) -> bool:
 
 
 @particle_input(any_of={'stable', 'unstable', 'isotope'})
-def half_life(particle: Particle, mass_numb: numbers.Integral = None) -> u.Quantity:
+def half_life(particle: Particle, mass_numb: Optional[numbers.Integral] = None) -> u.Quantity:
     """
     Return the half-life in seconds for unstable isotopes and particles,
     and numpy.inf in seconds for stable isotopes and particles.
