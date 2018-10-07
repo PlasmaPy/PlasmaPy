@@ -399,7 +399,6 @@ class Particle:
                 else:
                     attributes['half-life'] = Isotope.get('half-life', None)
 
-
             if element and not isotope:
                 attributes['standard atomic weight'] = Element.get('atomic mass', None)
 
