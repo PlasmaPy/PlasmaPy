@@ -16,7 +16,7 @@ class TestOpenPMD2D:
     h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000255.h5"))
 
     def test_has_electric_field_with_units(self):
-        assert self.h5.electric_field.to(u.V / u.m)
+        assert isinstance(self.h5.electric_field.to(u.V / u.m), u.Quantity)
 
     def test_correct_shape_electric_field(self):
         assert self.h5.electric_field.shape == (3, 51, 201)
@@ -44,13 +44,13 @@ class TestOpenPMD3D:
     h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000100.h5"))
 
     def test_has_electric_field_with_units(self):
-        assert self.h5.electric_field.to(u.V / u.m)
+        assert isinstance(self.h5.electric_field.to(u.V / u.m), u.Quantity)
 
     def test_correct_shape_electric_field(self):
         assert self.h5.electric_field.shape == (3, 26, 26, 201)
 
     def test_has_charge_density_with_units(self):
-        assert self.h5.charge_density.to(u.C / u.m**3)
+        assert isinstance(self.h5.charge_density.to(u.C / u.m**3), u.Quantity)
 
     def test_correct_shape_charge_density(self):
         assert self.h5.charge_density.shape == (26, 26, 201)
@@ -72,25 +72,25 @@ class TestOpenPMDThetaMode:
     h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000200.h5"))
 
     def test_has_electric_field_with_units(self):
-        assert self.h5.electric_field.to(u.V / u.m)
+        assert isinstance(self.h5.electric_field.to(u.V / u.m), u.Quantity)
 
     def test_correct_shape_electric_field(self):
         assert self.h5.electric_field.shape == (3, 3, 51, 201)
 
     def test_has_charge_density_with_units(self):
-        assert self.h5.charge_density.to(u.C / u.m**3)
+        assert isinstance(self.h5.charge_density.to(u.C / u.m**3), u.Quantity)
 
     def test_correct_shape_charge_density(self):
         assert self.h5.charge_density.shape == (3, 51, 201)
 
     def test_has_magnetic_field_with_units(self):
-        assert self.h5.magnetic_field.to(u.T)
+        assert isinstance(self.h5.magnetic_field.to(u.T), u.Quantity)
 
     def test_correct_shape_magnetic_field(self):
         assert self.h5.magnetic_field.shape == (3, 3, 51, 201)
 
     def test_has_electric_current_with_units(self):
-        assert self.h5.electric_current.to(u.A * u.kg / u.m**3)
+        assert isinstance(self.h5.electric_current.to(u.A * u.kg / u.m**3), u.Quantity)
 
     def test_correct_shape_electric_current(self):
         assert self.h5.electric_current.shape == (3, 3, 51, 201)

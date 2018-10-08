@@ -425,7 +425,9 @@ class Particle:
             categories.add('uncharged')
 
         if attributes['half-life'] is not None:
-            if attributes['half-life'] == np.inf * u.s:
+            if isinstance(attributes['half-life'], str):
+                categories.add('unstable')
+            elif attributes['half-life'] == np.inf * u.s:
                 categories.add('stable')
             else:
                 categories.add('unstable')
