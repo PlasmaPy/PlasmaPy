@@ -10,13 +10,13 @@ from typing import (
 import astropy.constants as const
 import astropy.units as u
 
-from .elements import _Elements
-from .isotopes import _Isotopes
-from .particle_class import Particle
-from .particle_input import particle_input
-from .symbols import atomic_symbol
+from plasmapy.atomic.elements import _Elements
+from plasmapy.atomic.isotopes import _Isotopes
+from plasmapy.atomic.particle_class import Particle
+from plasmapy.atomic.particle_input import particle_input
+from plasmapy.atomic.symbols import atomic_symbol
 
-from ..utils import (
+from plasmapy.utils import (
     InvalidParticleError,
     InvalidElementError,
     InvalidIsotopeError,
