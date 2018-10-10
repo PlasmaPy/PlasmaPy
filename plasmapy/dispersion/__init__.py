@@ -24,9 +24,11 @@ class DispersionOutput:
         Angular frequencies. Can be complex, and must be the same size as *k*.
     """
     def __init__(self, input, omega, k):
-        if omega.size != k.size:
+        if len(omega.shape) != 1:
+            raise ValueError('"omega" must be a 1D array (got {}D)'.format(len(omega.shape)))
+        if omega.shape[0] != k.shape[0]:
             raise ValueError(
-                'Arguments "omega" (size {}) and "k" (size {}) must have the same size.'.format(omega.size, k.size))
+                'The first dimension of "omega" and "k" must match (got {} and {} respectively)'.format(omega.shape[0], k.shape[0]))
         self._omega = omega
         self._k = k
         self._input = input
