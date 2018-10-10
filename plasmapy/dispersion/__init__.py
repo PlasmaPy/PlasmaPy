@@ -36,7 +36,7 @@ class DispersionOutput:
     @property
     def input(self):
         """
-        Input parameters
+        Input parameters to the dispersion relation.
         """
         return self._input
 
@@ -53,3 +53,23 @@ class DispersionOutput:
         Angular freuencies.
         """
         return self._omega
+
+
+class DispersionSolver:
+    """
+    Base class that stores a dispersion solver. Must be overriden by specific
+    dispersion solver implementations.
+    """
+    def solve(self, input):
+        """
+        Run the dispersion solver for a given input.
+
+        Parameters
+        ----------
+        input : DispersionInput
+
+        Returns
+        -------
+        output : DispersionOutput
+        """
+        raise NotImplementedError
