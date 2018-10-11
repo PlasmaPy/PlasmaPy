@@ -43,11 +43,15 @@ These include:
 
 
 # python modules
+import numbers
+
 from astropy import units as u
 import numpy as np
 import warnings
 
 # plasmapy modules
+from plasmapy.atomic import Particle, particle_input
+
 from plasmapy import utils
 from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
 from plasmapy import atomic
@@ -71,6 +75,7 @@ __all__ = [
     "mobility",
     "Knudsen_number",
     "coupling_parameter",
+    "Dreicer_electric_field",
     ]
 
 
@@ -1794,3 +1799,99 @@ def coupling_parameter(T,
                              "Something went horribly wrong.")
     coupling = coulombEnergy / kineticEnergy
     return coupling.to(u.dimensionless_unscaled)
+
+
+@particle_input
+@check_quantity()
+def Dreicer_electric_field(T: u.K,
+                           n_i: 1/u.m**3,
+                           ion_particle: Particle,
+                           coulomb_log: numbers.Real=None,
+                           vTh: u.m / u.s = np.nan * u.m / u.s,
+                           coulomb_log_method: str = "classical",
+                           ) -> u.V / u.m:
+    r"""
+    Calculates the minimum electric field for runaway electrons to occur
+
+    Parameters
+    ----------
+
+    T : ~astropy.units.Quantity
+        Temperature in units of temperature or energy per particle,
+        which is assumed to be equal for both the test particle and
+        the target particle.
+
+    n_i : ~astropy.units.Quantity
+        The ions density in units convertible to per cubic meter.
+
+    ion_particle : Particle
+
+    vTh : ~astropy.units.Quantity, optional
+        Electron thermal velocity.  If not provided,
+        thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
+        where `mu` is the reduced mass.
+
+    coulomb_log_method: str, optional
+        Selects which theory to use when calculating the Coulomb
+        logarithm. Defaults to classical method.
+
+    Returns
+    -------
+    ~astropy.units.Quantity
+        the Dreicer electric field, in units of V/m
+
+    Raises
+    ------
+    ValueError
+        If the mass or charge of either particle cannot be found, or
+        any of the inputs contain incorrect values.
+
+    UnitConversionError
+        If the units on any of the inputs are incorrect.
+
+        If the n_e, T, or vTh are not Quantities.
+
+    PhysicsError
+        If the result is smaller than 1.
+
+    RelativityError
+        If the input velocity is same or greater than the speed
+        of light.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed
+
+    ~plasmapy.utils.RelativityWarning
+        If the input velocity is greater than 5% of the speed of
+        light.
+
+    Notes
+    -----
+    TODO
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 1e19*u.m**-3
+    >>> T = 1e6*u.K
+    >>> Dreicer_electric_field(T, n, 'p')
+    <Quantity 1.74996887 V / m>
+
+    References
+    ----------
+    TODO
+    Callen chapter 2
+    """
+    if coulomb_log is None:
+        coulomb_log = Coulomb_logarithm(T,
+                                        n_i,
+                                        (Particle('e'), ion_particle), method=coulomb_log_method
+                                        )
+    vTh = _replaceNanVwithThermalV(vTh, T, m_e)
+    thermal_electron_velocity = vTh
+    denominator = (4 * pi * eps0)**2 * m_e * thermal_electron_velocity ** 2
+    dreicer_electric_field = n_i * ion_particle.charge**2 * e * coulomb_log / denominator
+    return dreicer_electric_field.to(u.V/u.m)
+
