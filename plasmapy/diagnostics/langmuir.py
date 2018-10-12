@@ -221,8 +221,11 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas_argument,
     probe_area : ~astropy.units.Quantity
         The area of the probe exposed to plasma in units convertible to m^2.
 
-    gas : ~astropy.units.Quantity
-        The (mean) mass of the background gas in atomic mass units.
+    gas_argument : argument to instantiate the `Particle` class.
+        `str`, `int`, or `~plasmapy.atomic.Particle`
+        A string representing a particle, element, isotope, or ion; an
+        integer representing the atomic number of an element; or a
+        `Particle` instance.
 
     visualize : bool, optional
         Can be used to plot the characteristic and the obtained parameters.
