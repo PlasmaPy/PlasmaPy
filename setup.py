@@ -127,6 +127,15 @@ package_info['package_data'][PACKAGENAME].extend(c_files)
 
 setup_requires = ['numpy']
 
+extras_require = {'openPMD': ["h5py"],
+                  'visualization': ["matplotlib"],
+                  'analysis': ["lmfit", "mpmath"],
+                  'tests': ["pytest", "pytest-astropy"]}
+extras_require['all'] = extras_require['openPMD'] +\
+                        extras_require['visualization'] + \
+                        extras_require['analysis'] + \
+                        extras_require['tests']
+
 # Make sure to have the packages needed for building PlasmaPy, but do not require them
 # when installing from an sdist as the c files are included there.
 if not os.path.exists(os.path.join(os.path.dirname(__file__), 'PKG-INFO')):
@@ -172,6 +181,7 @@ setup(name=PACKAGENAME,
       include_package_data=True,
       entry_points=entry_points,
       python_requires='>={}'.format("3.6"),
-      tests_require=["pytest", "pytest-astropy"],
+      tests_require=extras_require['tests'],
+      extras_require=extras_require,
       **package_info
 )
