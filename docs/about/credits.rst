@@ -19,41 +19,62 @@ PlasmaPy Contributors
    GitHub page, so it is important to check the git log as well to make
    sure we are not missing anyone.
 
-* Jasper Beckers
-* Ludovico Bessi
-* Sean Carroll
-* Apoorv Choubey
-* cclauss
-* Leah Einhorn
-* Thomas Fan
-* Graham Goudeau
-* Silvina Guidoni
-* Colby Haggerty
-* Julien Hillairet
-* Poh Zi How
-* Yi-Min Huang
-* Nabil Humphrey
-* Maria Isupova
-* Pawel Kozlowski
-* Siddharth Kulshrestha
-* Piotr Kuszaj
-* Samuel Langendorf
-* Drew Leonard
-* Ritiek Malhotra
-* Stuart Mumford
-* Joshua Munn
-* Nick Murphy
-* Nismirno
-* nrb1324
-* Tulasi Parashar
-* Neil Patel
-* Roberto Díaz Pérez
-* Raajit Raj
-* Dawa Nurbu Sherpa
-* David Stansby
-* Dominik Stańczak
-* Antoine Tavant
-* Sixue Xu
+The following people have contributed to PlasmaPy:
+
+* `Jasper Beckers <https://github.com/jasperbeckers>`__
+* `Manas Bedmutha <https://github.com/manasbedmutha98>`__
+* `Ludovico Bessi <https://github.com/ludoro>`__
+* `BH4 <https://github.com/BH4>`__
+* `Sean Carroll <https://github.com/seanwilliamcarroll>`__
+* `Sean Chambers <https://github.com/schambers>`__
+* `Apoorv Choubey <https://github.com/apooravc>`__
+* `cclauss <https://github.com/cclauss>`__
+* `Leah Einhorn <https://github.com/leahein>`__
+* `Thomas Fan <https://github.com/thomasjpfan>`__
+* `Samaiyah Farid <https://github.com/samaiyahfarid>`__
+* `Michael Fischer <https://github.com/mj-fischer>`__
+* `Graham Goudeau <https://github.com/GrahamGoudeau>`__
+* `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`__
+* `Colby Haggerty <https://github.com/colbych>`__
+* `Julien Hillairet <https://github.com/jhillairet>`__ (`0000-0002-1073-6383 <https://orcid.org/0000-0002-1073-6383>`__)
+* `Poh Zi How <https://github.com/pohzipohzi>`__
+* `Yi-Min Huang <https://github.com/yopology>`__ (`0000-0002-4237-2211 <https://orcid.org/0000-0002-4237-2211>`__)
+* `Nabil Humphrey <https://github.com/NabilHumphrey>`__
+* `Maria Isupova <https://github.com/misupova>`__
+* `Pawel Kozlowski <https://github.com/lemmatum>`__ (`0000-0001-6849-3612 <https://orcid.org/0000-0001-6849-3612>`__)
+* `Siddharth Kulshrestha <https://github.com/siddharth185>`__
+* `Piotr Kuszaj <https://github.com/kuszaj>`__
+* `Samuel Langendorf <https://github.com/samurai688>`__ (`0000-0002-7757-5879 <https://orcid.org/0000-0002-7757-5879>`__)
+* `Drew Leonard <https://github.com/SolarDrew>`__ (`0000-0001-5270-7487 <https://orcid.org/0000-0001-5270-7487>`__)
+* `lgoenner <https://github.com/lgoenner>`__
+* `Ritiek Malhotra <https://github.com/ritiek>`__
+* `Stuart Mumford <https://github.com/Cadair>`__ (`0000-0003-4217-4642 <https://orcid.org/0000-0003-4217-4642>`__)
+* `Joshua Munn <https://github.com/jams2>`__
+* `Nick Murphy <https://github.com/namurphy>`__ (`0000-0001-6628-8033 <https://orcid.org/0000-0001-6628-8033>`__)
+* `Nismirno <https://github.com/Nismirno>`__
+* `nrb1324 <https://github.com/nrb1324>`__
+* `Tulasi Parashar <https://github.com/tulasinandan>`__ (`0000-0003-0602-8381 <https://orcid.org/0000-0003-0602-8381>`__)
+* `Neil Patel <https://github.com/ministrike3>`__
+* `Francisco Silva Pavon <https://github.com/fsilvapavon>`__
+* `Roberto Díaz Pérez <https://github.com/RobertTnf>`__
+* `Raajit Raj <https://github.com/raajitr>`__
+* `Antonia Savcheva <https://github.com/savcheva>`__ (`0000-0002-5598-046X <https://orcid.org/0000-0002-5598-046X>`__)
+* `Chengcai Shen <https://github.com/ionizationcalc>`__ (`0000-0002-9258-4490 <https://orcid.org/0000-0002-9258-4490>`__)
+* `Dawa Nurbu Sherpa <https://github.com/nurbu5>`__
+* `Ankit Singh <https://github.com/Griffintaur>`__
+* `David Stansby <https://github.com/dstansby>`__ (`0000-0002-1365-1908 <https://orcid.org/0000-0002-1365-1908>`__)
+* `Dominik Stańczak <https://github.com/StanczakDominik>`__ (`0000-0001-6291-8843 <https://orcid.org/0000-0001-6291-8843>`__)
+* `Antoine Tavant <https://github.com/antoinelpp>`__
+* `Thomas Ulrich <https://github.com/Elfhelm>`__
+* `Sixue Xu <https://github.com/hzxusx>`__
+
+This list contains contributors to PlasmaPy's core package and vision
+statement, including a few people whose contributions do not show up `on
+GitHub  <https://github.com/PlasmaPy/PlasmaPy/graphs/contributors>`__.
+If you made a contribution that was merged and your name is missing from
+the list, your information is incorrect, or you do not wish to be
+listed, then please submit a pull request or email Nick Murphy at
+``namurphy@cfa.harvard.edu``.
 
 Other Credits
 =============
