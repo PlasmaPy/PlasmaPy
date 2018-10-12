@@ -1,4 +1,3 @@
-import h5py
 import numpy as np
 import astropy.units as u
 
@@ -8,6 +7,11 @@ from plasmapy.utils import DataStandardError
 import os
 from distutils.version import StrictVersion
 
+# make h5py an optional dependency
+try:
+    import h5py
+except ImportError:
+    h5py = None
 
 _OUTDATED_VERSION = "1.1.0"
 _NEWER_VERSION = "2.0.0"
