@@ -11,17 +11,16 @@ import numpy as np
 import astropy.constants as const
 import astropy.units as u
 
-from .elements import _Elements
-from .isotopes import _Isotopes
-from .particle_class import Particle
-from .particle_input import particle_input
-from .symbols import atomic_symbol
+from plasmapy.atomic.elements import _Elements
+from plasmapy.atomic.isotopes import _Isotopes
+from plasmapy.atomic.particle_class import Particle
+from plasmapy.atomic.particle_input import particle_input
+from plasmapy.atomic.symbols import atomic_symbol
 
-from ..utils import (
+from plasmapy.utils import (
     InvalidParticleError,
     InvalidElementError,
     InvalidIsotopeError,
-    InvalidIonError,
     MissingAtomicDataError,
 )
 
@@ -46,6 +45,7 @@ __all__ = [
     "periodic_table_block",
     "periodic_table_category"
 ]
+
 
 @particle_input
 def atomic_number(element: Particle) -> numbers.Integral:
@@ -204,7 +204,11 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
 
 @particle_input(exclude={'neutrino', 'antineutrino'})
-def particle_mass(particle: Particle, *, Z: numbers.Integral = None, mass_numb: numbers.Integral = None) -> u.Quantity:
+def particle_mass(
+        particle: Particle,
+        *,
+        Z: numbers.Integral = None,
+        mass_numb: numbers.Integral = None) -> u.Quantity:
     """
     Return the mass of a particle.
 
@@ -257,7 +261,7 @@ def particle_mass(particle: Particle, *, Z: numbers.Integral = None, mass_numb: 
 
 
 @particle_input
-def isotopic_abundance(isotope: Particle, mass_numb: numbers.Integral = None) -> numbers.Real:
+def isotopic_abundance(isotope: Particle, mass_numb: Optional[numbers.Integral] = None) -> numbers.Real:
     """
     Return the isotopic abundances if known, and otherwise zero.
 
@@ -419,7 +423,7 @@ def electric_charge(particle: Particle) -> u.Quantity:
 
 
 @particle_input
-def is_stable(particle: Particle, mass_numb: numbers.Integral = None) -> bool:
+def is_stable(particle: Particle, mass_numb: Optional[numbers.Integral] = None) -> bool:
     """
     Return `True` for stable isotopes and particles and `False` for
     unstable isotopes.
@@ -473,7 +477,7 @@ def is_stable(particle: Particle, mass_numb: numbers.Integral = None) -> bool:
 
 
 @particle_input(any_of={'stable', 'unstable', 'isotope'})
-def half_life(particle: Particle, mass_numb: numbers.Integral = None) -> u.Quantity:
+def half_life(particle: Particle, mass_numb: Optional[numbers.Integral] = None) -> u.Quantity:
     """
     Return the half-life in seconds for unstable isotopes and particles,
     and numpy.inf in seconds for stable isotopes and particles.
@@ -617,7 +621,9 @@ def known_isotopes(argument: Union[str, numbers.Integral] = None) -> List[str]:
     return isotopes_list
 
 
-def common_isotopes(argument: Union[str, numbers.Integral] = None, most_common_only: bool = False) -> List[str]:
+def common_isotopes(
+        argument: Union[str, numbers.Integral] = None,
+        most_common_only: bool = False) -> List[str]:
     """
     Return a list of isotopes of an element with an isotopic abundances
     greater than zero, or if no input is provided, a list of all such

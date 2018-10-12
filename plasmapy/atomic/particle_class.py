@@ -276,7 +276,11 @@ class Particle:
 
     """
 
-    def __init__(self, argument: Union[str, numbers.Integral], mass_numb: numbers.Integral = None, Z: numbers.Integral = None):
+    def __init__(
+            self,
+            argument: Union[str, numbers.Integral],
+            mass_numb: numbers.Integral = None,
+            Z: numbers.Integral = None):
         """
         Instantiate a `~plasmapy.atomic.Particle` object and set private
         attributes.
@@ -419,7 +423,9 @@ class Particle:
             categories.add('uncharged')
 
         if attributes['half-life'] is not None:
-            if attributes['half-life'] == np.inf * u.s:
+            if isinstance(attributes['half-life'], str):
+                categories.add('unstable')
+            elif attributes['half-life'] == np.inf * u.s:
                 categories.add('stable')
             else:
                 categories.add('unstable')
@@ -485,7 +491,7 @@ class Particle:
         no_particle_attr = 'particle' not in dir(self) or 'particle' not in dir(other)
         no_attributes_attr = '_attributes' not in dir(self) or '_attributes' not in dir(other)
 
-        if no_particle_attr or no_attributes_attr:  # coveralls: ignore
+        if no_particle_attr or no_attributes_attr:  # coverage: ignore
             raise TypeError(f"The equality of {self} with {other} is undefined.")
 
         same_particle = self.particle == other.particle
@@ -506,7 +512,7 @@ class Particle:
 
         same_attributes = self._attributes == other._attributes
 
-        if same_particle and not same_attributes:  # coveralls: ignore
+        if same_particle and not same_attributes:  # coverage: ignore
             raise AtomicError(
                 f"{self} and {other} should be the same Particle, but "
                 f"have differing attributes.\n\n"
@@ -787,7 +793,7 @@ class Particle:
         """
         if self.isotope or self.is_ion or not self.element:
             raise InvalidElementError(_category_errmsg(self, 'element'))
-        if self._attributes['standard atomic weight'] is None:  # coveralls: ignore
+        if self._attributes['standard atomic weight'] is None:  # coverage: ignore
             raise MissingAtomicDataError(
                 f"The standard atomic weight of {self} is unavailable.")
         return self._attributes['standard atomic weight'].to(u.kg)
@@ -825,7 +831,7 @@ class Particle:
 
         base_mass = self._attributes['isotope mass']
 
-        if base_mass is None:  # coveralls: ignore
+        if base_mass is None:  # coverage: ignore
             raise MissingAtomicDataError(f"The mass of a {self.isotope} nuclide is not available.")
 
         _nuclide_mass = self._attributes['isotope mass'] - self.atomic_number * const.m_e
@@ -901,6 +907,129 @@ class Particle:
         raise MissingAtomicDataError(f"The mass of {self} is not available.")
 
     @property
+    def nuclide_mass(self) -> u.Quantity:
+        """
+        Return the mass of the bare nucleus of an isotope or a neutron.
+
+        This attribute will raise a
+        `~plasmapy.utils.InvalidIsotopeError` if the particle is not an
+        isotope or neutron, or a
+        `~plasmapy.utils.MissingAtomicDataError` if the isotope mass is
+        not available.
+
+        Examples
+        --------
+        >>> deuterium = Particle('D')
+        >>> deuterium.nuclide_mass
+        <Quantity 3.34358372e-27 kg>
+
+        """
+
+        if self.isotope == 'H-1':
+            return const.m_p
+        elif self.isotope == 'D':
+            return _special_ion_masses['D 1+']
+        elif self.isotope == 'T':
+            return _special_ion_masses['T 1+']
+        elif self.particle == 'n':
+            return const.m_n
+
+        if not self.isotope:
+            raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
+
+        base_mass = self._attributes['isotope mass']
+
+        if base_mass is None:  # coverage: ignore
+            raise MissingAtomicDataError(f"The mass of a {self.isotope} nuclide is not available.")
+
+        _nuclide_mass = self._attributes['isotope mass'] - self.atomic_number * const.m_e
+
+        return _nuclide_mass.to(u.kg)
+
+    @property
+    def mass_energy(self) -> u.Quantity:
+        """
+        Return the mass energy of the particle in joules.
+
+        If the particle is an isotope or nuclide, return the mass energy
+        of the nucleus only.
+
+        If the mass of the particle is not known, then raise a
+        `~plasmapy.utils.MissingAtomicDataError`.
+
+        Examples
+        --------
+        >>> proton = Particle('p+')
+        >>> proton.mass_energy
+        <Quantity 1.50327759e-10 J>
+
+        >>> protium = Particle('H-1 0+')
+        >>> protium.mass_energy
+        <Quantity 1.50327759e-10 J>
+
+        >>> electron = Particle('electron')
+        >>> electron.mass_energy.to('MeV')
+        <Quantity 0.51099895 MeV>
+
+        """
+        try:
+            mass = self.nuclide_mass if self.isotope else self.mass
+            energy = mass * const.c ** 2
+            return energy.to(u.J)
+        except MissingAtomicDataError:
+            raise MissingAtomicDataError(
+                f"The mass energy of {self.particle} is not available "
+                f"because the mass is unknown.") from None
+
+    @property
+    def binding_energy(self) -> u.Quantity:
+        """
+        Return the nuclear binding energy in joules.
+
+        This attribute will raise an
+        `~plasmapy.utils.InvalidIsotopeError` if the particle is not a
+        nucleon or isotope.
+
+        Examples
+        --------
+        >>> alpha = Particle('alpha')
+        >>> alpha.binding_energy
+        <Quantity 4.53346938e-12 J>
+        >>> Particle('T').binding_energy.to('MeV')
+        <Quantity 8.48179621 MeV>
+
+        The binding energy of a nucleon equals 0 joules.
+
+        >>> neutron = Particle('n')
+        >>> proton = Particle('p+')
+        >>> neutron.binding_energy
+        <Quantity 0. J>
+        >>> proton.binding_energy
+        <Quantity 0. J>
+
+        """
+
+        if self._attributes['baryon number'] == 1:
+            return 0 * u.J
+
+        if not self.isotope:
+            raise InvalidIsotopeError(
+                f"The nuclear binding energy may only be calculated for nucleons and isotopes.")
+
+        number_of_protons = self.atomic_number
+        number_of_neutrons = self.mass_number - self.atomic_number
+
+        mass_of_protons = number_of_protons * const.m_p
+        mass_of_neutrons = number_of_neutrons * const.m_n
+
+        mass_of_nucleons = mass_of_protons + mass_of_neutrons
+
+        mass_defect = mass_of_nucleons - self.nuclide_mass
+        nuclear_binding_energy = mass_defect * const.c ** 2
+
+        return nuclear_binding_energy.to(u.J)
+
+    @property
     def atomic_number(self) -> numbers.Integral:
         """
         Return the number of protons in an element, isotope, or ion.
@@ -968,7 +1097,7 @@ class Particle:
             return 1
         elif self.isotope:
             return self.mass_number - self.atomic_number
-        else:  # coveralls: ignore
+        else:  # coverage: ignore
             raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
 
     @property
@@ -994,7 +1123,7 @@ class Particle:
             return 1
         elif self.ionic_symbol:
             return self.atomic_number - self.integer_charge
-        else:  # coveralls: ignore
+        else:  # coverage: ignore
             raise InvalidIonError(_category_errmsg(self, 'ion'))
 
     @property
@@ -1016,7 +1145,7 @@ class Particle:
         """
         from .atomic import common_isotopes
 
-        if not self.isotope or self.is_ion:  # coveralls: ignore
+        if not self.isotope or self.is_ion:  # coverage: ignore
             raise InvalidIsotopeError(_category_errmsg(self.particle, 'isotope'))
 
         abundance = self._attributes.get('isotopic abundance', 0.0)
@@ -1048,7 +1177,7 @@ class Particle:
         4
 
         """
-        if self._attributes['baryon number'] is None:  # coveralls: ignore
+        if self._attributes['baryon number'] is None:  # coverage: ignore
             raise MissingAtomicDataError(
                 f"The baryon number for '{self.particle}' is not available.")
         return self._attributes['baryon number']
@@ -1075,49 +1204,10 @@ class Particle:
         0
 
         """
-        if self._attributes['lepton number'] is None:  # coveralls: ignore
+        if self._attributes['lepton number'] is None:  # coverage: ignore
             raise MissingAtomicDataError(
                 f"The lepton number for {self.particle} is not available.")
         return self._attributes['lepton number']
-
-    @property
-    def binding_energy(self) -> u.Quantity:
-        """
-        Return the nuclear binding energy in joules.
-
-        This attribute will raise an
-        `~plasmapy.utils.InvalidIsotopeError` if the particle is not a
-        nucleon or isotope.
-
-        Examples
-        --------
-        >>> alpha = Particle('alpha')
-        >>> alpha.binding_energy
-        <Quantity 4.53346938e-12 J>
-        >>> Particle('T').binding_energy.to('MeV')
-        <Quantity 8.48179621 MeV>
-
-        """
-
-        if self._attributes['baryon number'] == 1:
-            return 0 * u.J
-
-        if not self.isotope:
-            raise InvalidIsotopeError(
-                f"The nuclear binding energy may only be calculated for nucleons and isotopes.")
-
-        number_of_protons = self.atomic_number
-        number_of_neutrons = self.mass_number - self.atomic_number
-
-        mass_of_protons = number_of_protons * const.m_p
-        mass_of_neutrons = number_of_neutrons * const.m_n
-
-        mass_of_nucleons = mass_of_protons + mass_of_neutrons
-
-        mass_defect = mass_of_nucleons - self.nuclide_mass
-        nuclear_binding_energy = mass_defect * const.c ** 2
-
-        return nuclear_binding_energy.to(u.J)
 
     @property
     def half_life(self) -> Union[u.Quantity, str]:
@@ -1193,7 +1283,7 @@ class Particle:
         """
         if self.element:
             return self._attributes['periodic table']
-        else:  # coveralls: ignore
+        else:  # coverage: ignore
             raise InvalidElementError(_category_errmsg(self.particle, 'element'))
 
     @property
@@ -1263,7 +1353,7 @@ class Particle:
             else:
                 return set(arg)
 
-        if category_tuple != () and require != set():  # coveralls: ignore
+        if category_tuple != () and require != set():  # coverage: ignore
             raise AtomicError(
                 "No positional arguments are allowed if the `require` keyword "
                 "is set in is_category.")

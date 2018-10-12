@@ -1,8 +1,9 @@
-from astropy import units as u
+from astropy import units as u, constants as const
 import numpy as np
-from ..nuclear import nuclear_binding_energy, nuclear_reaction_energy
+from ..nuclear import nuclear_binding_energy, nuclear_reaction_energy, mass_energy
 from ...utils import (
     InvalidParticleError,
+    InvalidIsotopeError,
     AtomicError,
     run_test,
     run_test_equivalent_calls,
@@ -17,6 +18,11 @@ test_nuclear_table = [
     [nuclear_binding_energy, 'He-99', {}, InvalidParticleError],
     [nuclear_binding_energy, "He", {"mass_numb": 99}, InvalidParticleError],
     [nuclear_binding_energy, 3.1415926535j, {}, TypeError],
+    [mass_energy, 'e-', {}, (const.m_e * const.c ** 2).to(u.J)],
+    [mass_energy, 'p+', {}, (const.m_p * const.c ** 2).to(u.J)],
+    [mass_energy, 'H-1', {}, (const.m_p * const.c ** 2).to(u.J)],
+    [mass_energy, 'H-1 0+', {}, (const.m_p * const.c ** 2).to(u.J)],
+    [mass_energy, 'n', {}, (const.m_n * const.c ** 2).to(u.J)],
     [nuclear_reaction_energy, (), {'reactants': ['n'], 'products': 3}, TypeError],
     [nuclear_reaction_energy, (), {'reactants': ['n'], 'products': ['He-4']}, AtomicError],
     [nuclear_reaction_energy, (), {'reactants': ['h'], 'products': ['H-1']}, AtomicError],
@@ -39,12 +45,12 @@ def test_nuclear(test_inputs):
     run_test(*test_inputs, rtol=1e-3)
 
 
-test_nuclear_equivalent_calls = [
+test_nuclear_equivalent_calls_table = [
     [nuclear_binding_energy, ['He-4', {}], ['alpha', {}], ['He', {'mass_numb': 4}]],
-
 ]
 
-@pytest.mark.parametrize('test_inputs', test_nuclear_equivalent_calls)
+
+@pytest.mark.parametrize('test_inputs', test_nuclear_equivalent_calls_table)
 def test_nuclear_equivalent_calls(test_inputs):
     run_test_equivalent_calls(test_inputs)
 
@@ -123,4 +129,3 @@ def test_nuclear_reaction_energy_kwargs(reactants, products, expectedMeV, tol):
     energy = nuclear_reaction_energy(reactants=reactants, products=products).si
     expected = (expectedMeV * u.MeV).si
     assert np.isclose(expected.value, energy.value, atol=tol)
-

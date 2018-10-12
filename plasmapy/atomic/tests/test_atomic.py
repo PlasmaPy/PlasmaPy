@@ -414,10 +414,12 @@ class TestInvalidPeriodicElement:
         with pytest.raises(TypeError):
             periodic_table_group(('B', 'Ti', 'Ge'))
 
+
 # The tables above do not include the function to be tested in order to
 # avoid cluttering up the code.  The following block of code prepends
 # the correct function to each list containing args, kwargs, and the
 # expected outcome prior to being passed through to run_test.
+
 
 tables_and_functions = [
     (atomic_symbol, atomic_symbol_table),
@@ -637,7 +639,6 @@ def test_half_life_u_220():
             f"data should be chosen for this test.")):
 
         half_life(isotope_without_half_life_data)
-
 
 
 def test_known_common_stable_isotopes_cases():

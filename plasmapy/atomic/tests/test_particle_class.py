@@ -4,7 +4,7 @@ from astropy import units as u
 import inspect
 from plasmapy.utils import roman
 
-from ...constants import m_p, m_e, m_n, e
+from ...constants import m_p, m_e, m_n, e, c
 
 from ...utils import (
     AtomicWarning,
@@ -140,6 +140,7 @@ test_Particle_table = [
       'roman_symbol': None,
       'is_ion': False,
       'mass': m_e,
+      'mass_energy': (m_e * c ** 2).to('J'),
       'nuclide_mass': InvalidIsotopeError,
       'integer_charge': 1,
       'spin': 1 / 2,
@@ -293,6 +294,7 @@ test_Particle_table = [
       'isotope_name': 'helium-4',
       'ionic_symbol': 'He-4 2+',
       'roman_symbol': 'He-4 III',
+      'mass_energy': 5.971919969131517e-10 * u.J,
       'is_ion': True,
       'integer_charge': 2,
       'atomic_number': 2,
@@ -301,6 +303,13 @@ test_Particle_table = [
       'lepton_number': 0,
       'half_life': np.inf * u.s,
       'recombine()': Particle('He-4 1+')
+      }),
+
+    ('He-4 0+', {},
+     {'particle': 'He-4 0+',
+      'element': 'He',
+      'isotope': 'He-4',
+      'mass_energy': 5.971919969131517e-10 * u.J,
       }),
 
     ('Li', {'mass_numb': 7},
@@ -335,7 +344,8 @@ test_Particle_table = [
       'mass_number': 276,
       'neutron_number': 164,
       'baryon_number': 276,
-      'lepton_number': 0}),
+      'lepton_number': 0,
+      }),
 
     ('muon', {},
      {'particle': 'mu-',
@@ -358,6 +368,7 @@ test_Particle_table = [
       'isotope': None,
       'isotope_name': InvalidElementError,
       'mass': MissingAtomicDataError,
+      'mass_energy': MissingAtomicDataError,
       'integer_charge': 0,
       'mass_number': InvalidIsotopeError,
       'element_name': InvalidElementError,
@@ -383,6 +394,8 @@ test_Particle_table = [
 
     (Particle('C'), {},
      {'particle': 'C',
+      'atomic_number': 6,
+      'element': 'C',
       }),
 
     (Particle('C'), {'Z': 3, 'mass_numb': 14},
@@ -390,7 +403,7 @@ test_Particle_table = [
       'element': 'C',
       'isotope': 'C-14',
       'ionic_symbol': 'C-14 3+',
-     }),
+      }),
 ]
 
 

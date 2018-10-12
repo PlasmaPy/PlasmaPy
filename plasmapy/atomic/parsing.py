@@ -1,19 +1,24 @@
 """Functionality to parse representations of particles into standard form."""
 
-from plasmapy.utils import roman
 import numpy as np
 import re
 import warnings
 from typing import (Union, Dict)
 import numbers
 
-from .elements import (_atomic_numbers_to_symbols, _element_names_to_symbols, _Elements)
-from .isotopes import _Isotopes
-from .special_particles import _Particles, ParticleZoo
+from plasmapy.atomic.elements import (
+    _atomic_numbers_to_symbols,
+    _element_names_to_symbols,
+    _Elements)
 
-from ..utils import (AtomicWarning,
+from plasmapy.atomic.isotopes import _Isotopes
+from plasmapy.atomic.special_particles import _Particles, ParticleZoo
+
+from plasmapy.utils import (
+                     AtomicWarning,
                      InvalidElementError,
-                     InvalidParticleError)
+                     InvalidParticleError,
+                     roman)
 
 
 def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
@@ -121,7 +126,10 @@ def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
     return errmsg
 
 
-def _parse_and_check_atomic_input(argument: Union[str, numbers.Integral], mass_numb: numbers.Integral = None, Z: numbers.Integral = None):
+def _parse_and_check_atomic_input(
+        argument: Union[str, numbers.Integral],
+        mass_numb: numbers.Integral = None,
+        Z: numbers.Integral = None):
     """
     Parse information about a particle into a dictionary of standard
     symbols, and check the validity of the particle.
@@ -343,7 +351,7 @@ def _parse_and_check_atomic_input(argument: Union[str, numbers.Integral], mass_n
 
         return ion
 
-    if not isinstance(argument, (str, numbers.Integral)):  # coveralls: ignore
+    if not isinstance(argument, (str, numbers.Integral)):  # coverage: ignore
         raise TypeError(f"The argument {argument} is not an integer or string.")
 
     arg = _dealias_particle_aliases(argument)

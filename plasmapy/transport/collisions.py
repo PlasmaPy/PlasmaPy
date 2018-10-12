@@ -1786,7 +1786,7 @@ def coupling_parameter(T,
         kineticEnergy = 2 * k_B * T / denom
         if np.all(np.imag(kineticEnergy) == 0):
             kineticEnergy = np.real(kineticEnergy)
-        else:  # coveralls: ignore
+        else:  # coverage: ignore
             raise ValueError("Kinetic energy should not be imaginary."
                              "Something went horribly wrong.")
     coupling = coulombEnergy / kineticEnergy

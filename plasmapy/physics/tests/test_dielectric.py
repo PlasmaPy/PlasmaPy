@@ -6,7 +6,9 @@ from astropy import units as u
 
 from ..dielectric import (cold_plasma_permittivity_LRP,
                           cold_plasma_permittivity_SDP,
-                          permittivity_1D_Maxwellian)
+                          permittivity_1D_Maxwellian,
+                          RotatingTensorElements,
+                          StixTensorElements)
 
 from ..parameters import (plasma_frequency,
                           gyrofrequency,
@@ -46,11 +48,22 @@ class Test_ColdPlasmaPermittivity(object):
         P_analytical = 1 - (omega_pe ** 2 + omega_pp ** 2) / omega ** 2
 
         species = ['e', 'p']
-        S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega)
+        S, D, P = tuple_result = cold_plasma_permittivity_SDP(B, species, n, omega)
+
+        assert tuple_result.sum is S
+        assert tuple_result.difference is D
+        assert tuple_result.plasma is P
+        assert isinstance(tuple_result, StixTensorElements)
 
         assert np.isclose(S, S_analytical)
         assert np.isclose(D, D_analytical)
         assert np.isclose(P, P_analytical)
+
+        L, R, P = rotating_tuple_result = cold_plasma_permittivity_LRP(B, species, n, omega)
+        assert rotating_tuple_result.left is L
+        assert rotating_tuple_result.right is R
+        assert rotating_tuple_result.plasma is P
+        assert isinstance(rotating_tuple_result, RotatingTensorElements)
 
     def test_three_species(self):
         """
@@ -79,6 +92,14 @@ class Test_ColdPlasmaPermittivity(object):
         assert np.isclose(S, (R + L) / 2)
         assert np.isclose(D, (R - L) / 2)
 
+    def test_numpy_array_workflow(self):
+        """as per @jhillairet at https://github.com/PlasmaPy/PlasmaPy/issues/539#issuecomment-425337810 """
+        ns = np.logspace(17, 19, 50)/u.m**3
+        B0 = 4*u.T
+        omega_RF = 2*np.pi*50e6*(u.rad/u.s)
+
+        S, D, P = cold_plasma_permittivity_SDP(B=B0, species=['e', 'D+'], n=[ns, ns], omega=omega_RF)
+        assert S.shape == D.shape == P.shape == (50,)
 
 class Test_permittivity_1D_Maxwellian:
     @classmethod
