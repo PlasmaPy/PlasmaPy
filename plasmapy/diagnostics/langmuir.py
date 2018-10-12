@@ -8,6 +8,7 @@ import copy
 from astropy.visualization import quantity_support
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
+from plasmapy.atomic import Particle
 
 __all__ = [
     "Characteristic",
@@ -204,13 +205,8 @@ class Characteristic:
                                   'can_be_negative': False,
                                   'can_be_complex': False,
                                   'can_be_inf': False,
-                                  'can_be_nan': False},
-                      gas={'units': u.u,
-                           'can_be_negative': False,
-                           'can_be_complex': False,
-                           'can_be_inf': False,
-                           'can_be_nan': False})
-def swept_probe_analysis(probe_characteristic, probe_area, gas,
+                                  'can_be_nan': False})
+def swept_probe_analysis(probe_characteristic, probe_area, gas_argument,
                          bimaxwellian=False, visualize=False,
                          plot_electron_fit=False, plot_EEDF=False):
     r"""Attempt to perform a basic swept probe analysis based on the provided
@@ -287,6 +283,8 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas,
     for OML theory hold.
 
     """
+
+    gas = Particle(argument=gas_argument)
 
     # Check (unit) validity of the probe characteristic
     probe_characteristic.check_validity()
@@ -548,12 +546,7 @@ def get_ion_saturation_current(probe_characteristic):
                                   'can_be_negative': False,
                                   'can_be_complex': False,
                                   'can_be_inf': False,
-                                  'can_be_nan': False},
-                      gas={'units': u.u,
-                           'can_be_negative': False,
-                           'can_be_complex': False,
-                           'can_be_inf': False,
-                           'can_be_nan': False})
+                                  'can_be_nan': False})
 def get_ion_density_LM(ion_saturation_current, T_e,
                        probe_area, gas):
     r"""Implement the Langmuir-Mottley (LM) method of obtaining the ion
@@ -593,7 +586,7 @@ def get_ion_density_LM(ion_saturation_current, T_e,
     """
 
     # Calculate the acoustic (Bohm) velocity
-    c_s = np.sqrt(T_e / gas)
+    c_s = np.sqrt(T_e / gas.mass)
 
     n_i = np.abs(ion_saturation_current) / (0.6 * const.e * probe_area * c_s)
 
@@ -1009,12 +1002,7 @@ def reduce_bimaxwellian_temperature(T_e, hot_fraction):
                                   'can_be_negative': False,
                                   'can_be_complex': False,
                                   'can_be_inf': False,
-                                  'can_be_nan': False},
-                      gas={'units': u.u,
-                           'can_be_negative': False,
-                           'can_be_complex': False,
-                           'can_be_inf': False,
-                           'can_be_nan': False})
+                                  'can_be_nan': False})
 def get_ion_density_OML(probe_characteristic, probe_area, gas,
                         visualize=False, return_fit=False):
     r"""Implement the Orbital Motion Limit (OML) method of obtaining an
@@ -1072,7 +1060,7 @@ def get_ion_density_OML(probe_characteristic, probe_area, gas,
 
     slope = fit[0]
 
-    n_i_OML = np.sqrt(-slope * u.mA ** 2 / u.V * np.pi ** 2 * gas /
+    n_i_OML = np.sqrt(-slope * u.mA ** 2 / u.V * np.pi ** 2 * gas.mass /
                       (probe_area ** 2 * const.e ** 3 * 2))
 
     if visualize:  # coverage: ignore
