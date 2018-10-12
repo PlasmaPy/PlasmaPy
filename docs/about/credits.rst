@@ -19,7 +19,8 @@ PlasmaPy Contributors
    GitHub page, so it is important to check the git log as well to make
    sure we are not missing anyone.
 
-The following people have contributed to PlasmaPy:
+The people in the following list have contributed to PlasmaPy.  Included
+in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 
 * `Jasper Beckers <https://github.com/jasperbeckers>`__
 * `Manas Bedmutha <https://github.com/manasbedmutha98>`__
@@ -31,7 +32,7 @@ The following people have contributed to PlasmaPy:
 * `cclauss <https://github.com/cclauss>`__
 * `Leah Einhorn <https://github.com/leahein>`__
 * `Thomas Fan <https://github.com/thomasjpfan>`__
-* `Samaiyah Farid <https://github.com/samaiyahfarid>`__
+* `Samaiyah I. Farid <https://github.com/samaiyahfarid>`__
 * `Michael Fischer <https://github.com/mj-fischer>`__
 * `Graham Goudeau <https://github.com/GrahamGoudeau>`__
 * `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`__
@@ -69,12 +70,12 @@ The following people have contributed to PlasmaPy:
 * `Sixue Xu <https://github.com/hzxusx>`__
 
 This list contains contributors to PlasmaPy's core package and vision
-statement, including a few people whose contributions do not show up `on
-GitHub  <https://github.com/PlasmaPy/PlasmaPy/graphs/contributors>`__.
-If you made a contribution that was merged and your name is missing from
-the list, your information is incorrect, or you do not wish to be
-listed, then please submit a pull request or email Nick Murphy at
-``namurphy@cfa.harvard.edu``.
+statement, including a few people who do not show up as `PlasmaPy
+contributors on GitHub
+<https://github.com/PlasmaPy/PlasmaPy/graphs/contributors>`__. If you
+made a contribution that was merged and your name is missing from the
+list, your information is incorrect, or you do not wish to be listed,
+then please submit a pull request or email ``namurphy@cfa.harvard.edu``.
 
 Other Credits
 =============
