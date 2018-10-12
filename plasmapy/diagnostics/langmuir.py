@@ -283,7 +283,7 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas_argument,
     for OML theory hold.
 
     """
-
+    # Instantiate gas using the Particle class
     gas = Particle(argument=gas_argument)
 
     # Check (unit) validity of the probe characteristic
@@ -300,7 +300,7 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas_argument,
     # The OML method is used to obtain an ion density without knowing the
     # electron temperature. This can then be used to obtain the ion current
     # and subsequently a better electron current fit.
-    n_i_OML, fit = get_ion_density_OML(probe_characteristic, probe_area, gas,
+    n_i_OML, fit = get_ion_density_OML(probe_characteristic, probe_area, gas.mass,
                                        return_fit=True)
 
     ion_current = extrapolate_ion_current_OML(probe_characteristic, fit)
@@ -334,7 +334,7 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas_argument,
     # Using a good estimate of electron temperature, obtain the ion and
     # electron densities from the saturation currents.
     n_i = get_ion_density_LM(I_is, reduce_bimaxwellian_temperature(T_e,
-                             hot_fraction), probe_area, gas)
+                             hot_fraction), probe_area, gas.mass)
     n_e = get_electron_density_LM(I_es, reduce_bimaxwellian_temperature(T_e,
                                   hot_fraction), probe_area)
 
@@ -586,7 +586,7 @@ def get_ion_density_LM(ion_saturation_current, T_e,
     """
 
     # Calculate the acoustic (Bohm) velocity
-    c_s = np.sqrt(T_e / gas.mass)
+    c_s = np.sqrt(T_e / gas)
 
     n_i = np.abs(ion_saturation_current) / (0.6 * const.e * probe_area * c_s)
 
@@ -1060,7 +1060,7 @@ def get_ion_density_OML(probe_characteristic, probe_area, gas,
 
     slope = fit[0]
 
-    n_i_OML = np.sqrt(-slope * u.mA ** 2 / u.V * np.pi ** 2 * gas.mass /
+    n_i_OML = np.sqrt(-slope * u.mA ** 2 / u.V * np.pi ** 2 * gas /
                       (probe_area ** 2 * const.e ** 3 * 2))
 
     if visualize:  # coverage: ignore
