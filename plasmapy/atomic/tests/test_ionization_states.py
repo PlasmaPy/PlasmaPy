@@ -1,18 +1,15 @@
 import pytest
 import numpy as np
 import astropy.units as u
-from ..ionization_states import IonizationState, IonizationStates
+from ..ionization_states import IonizationStates
 from ...utils import AtomicError, RunTestError, InvalidIsotopeError, run_test
 from ...atomic import (
     atomic_number,
     mass_number,
-    atomic_symbol,
-    isotope_symbol,
     particle_symbol,
     Particle,
 )
 import collections
-import warnings
 
 
 def has_attribute(attribute, tests_dict):
@@ -39,8 +36,6 @@ tests = {
 
     'just H': {
         'inputs': {'H': [0.1, 0.9]},
-        'T_e': None,
-        'n': None,
     },
 
     'H acceptable error': {
@@ -330,7 +325,12 @@ def test_setitem():
     # TODO: parametrize this
     states = IonizationStates({'H': [0.9, 0.1], 'He': [0.5, 0.4999, 1e-4]})
     new_states = [0.0, 1.0]
-    states['H'] = new_states
+    try:
+        states['H'] = new_states
+    except Exception as exc:
+        raise Exception(
+            "Unable to change ionic fractions for an IonizationStates "
+            "instance.") from exc
     assert np.allclose(states['H'].ionic_fractions, new_states)
 
 

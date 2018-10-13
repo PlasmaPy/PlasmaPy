@@ -5,8 +5,7 @@ import numpy as np
 import numbers
 import warnings
 
-from plasmapy.atomic.particle_class import Particle
-from plasmapy.atomic.particle_input import particle_input
+from plasmapy.atomic import Particle, particle_input
 from plasmapy.utils.exceptions import AtomicError, ChargeError, InvalidParticleError
 from plasmapy.utils.checks import check_quantity
 
@@ -15,6 +14,7 @@ State = collections.namedtuple(
         'integer_charge',
         'ionic_fraction',
         'ionic_symbol',
+        'number_density',
     ])
 
 _number_density_errmsg = (
@@ -136,7 +136,47 @@ class IonizationState:
         return f"<IonizationState of {symbol}>"
 
     def __repr__(self):
-        return self.__str__()
+        """Show diagnostic information of an IonizationState instance."""
+
+        minimum_ionic_fraction_to_show = 1e-3
+
+        output = f"IonizationState instance of {self.particle}"
+
+        if np.any(np.isnan(self.ionic_fractions)):
+            return output
+
+        Z_mean = "{:.2f}".format(self.Z_mean)
+        output += f'with Z_mean = {Z_mean}\n\n'
+
+        for state in self:
+            if state.ionic_fraction > minimum_ionic_fraction_to_show:
+
+                symbol = state.ionic_symbol
+                if state.integer_charge < 10:
+                    symbol = symbol[:-2] + ' ' + symbol[-2:]
+
+                fraction = "{:.3f}".format(state.ionic_fraction)
+
+                output += (f'  {symbol}: {fraction}')
+
+                if np.isfinite(self.n_elem):
+                    value = "{:.2e}".format(state.number_density.si.value)
+                    output += f"     n_i = {value} m**-3"
+
+                output += '\n'
+
+        if np.isfinite(self.T_e) or np.isfinite(self.n_elem):
+            output += '\n'
+        if np.isfinite(self.T_e):
+            T_e = "{:.2e}".format(self.T_e.value) + " K"
+            output += f'  T_e    = {T_e}\n'
+        if np.isfinite(self.n_elem):
+            n_elem = "{:.2e}".format(self.n_elem.value) + " m**-3"
+            n_e = "{:.2e}".format(self.n_e.value) + " m**-3"
+            output += f'  n_elem = {n_elem}\n'
+            output += f'  n_e    = {n_e}'
+
+        return output
 
     def __getitem__(self, value) -> State:
         """Return the ionic fraction(s)."""
@@ -144,7 +184,12 @@ class IonizationState:
             raise TypeError("IonizationState instances cannot be sliced.")
 
         if isinstance(value, numbers.Integral) and 0 <= value <= self.atomic_number:
-            result = State(value, self.ionic_fractions[value], self.ionic_symbols[value])
+            result = State(
+                value,
+                self.ionic_fractions[value],
+                self.ionic_symbols[value],
+                self.number_densities[value],
+            )
         else:
             if not isinstance(value, Particle):
                 try:
@@ -160,7 +205,12 @@ class IonizationState:
 
             if same_element and same_isotope and has_charge_info:
                 Z = value.integer_charge
-                result = State(Z, self.ionic_fractions[Z], self.ionic_symbols[Z])
+                result = State(
+                    Z,
+                    self.ionic_fractions[Z],
+                    self.ionic_symbols[Z],
+                    self.number_densities[Z],
+                )
             else:
                 if not same_element or not same_isotope:
                     raise AtomicError("Inconsistent element or isotope.")
@@ -183,6 +233,7 @@ class IonizationState:
                 self._charge_index,
                 self._ionic_fractions[self._charge_index],
                 self.ionic_symbols[self._charge_index],
+                self.number_densities[self._charge_index],
             )
             self._charge_index += 1
             return result
@@ -327,11 +378,10 @@ class IonizationState:
     @u.quantity_input
     def number_densities(self) -> u.m ** -3:
         """Return the number densities for each state."""
-        if not np.isnan(self._n_elem):
+        try:
             return (self.n_elem * self.ionic_fractions).to(u.m ** -3)
-        else:
-            raise AtomicError(
-                "Insufficient information to return number densities.")
+        except Exception:
+            return np.full(self.atomic_number + 1, np.nan) * u.m ** -3
 
     @number_densities.setter
     @u.quantity_input
@@ -339,6 +389,8 @@ class IonizationState:
         """Set the number densities for each state."""
         if np.any(value.value < 0):
             raise AtomicError("Number densities cannot be negative.")
+        if len(value) != self.atomic_number + 1:
+            raise AtomicError(f"Incorrect number of charge states for {self.particle}")
         try:
             value = value.to(u.m ** -3)
         except (AttributeError, u.UnitsError):
@@ -405,6 +457,10 @@ class IonizationState:
         return self._particle.isotope
 
     @property
+    def particle(self) -> str:
+        return self.isotope if self.isotope else self.element
+
+    @property
     def particles(self) -> typing.List[Particle]:
         """
         Return a list of the `~plasmapy.atomic.Particle` class
@@ -435,6 +491,10 @@ class IonizationState:
     def Z_rms(self) -> np.float64:
         """Return the root mean square integer charge."""
         return np.sqrt(np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1) ** 2))
+
+    @property
+    def Z_mode(self) -> np.float64:
+        return np.argmax
 
     def _is_normalized(self, tol: numbers.Integral = None) -> bool:
         """

@@ -10,8 +10,6 @@ from ...atomic import (
     Particle,
 )
 import collections
-import warnings
-
 
 test_cases = {
     'Li': {
@@ -75,7 +73,7 @@ class Test_IonizationState:
         except Exception as exc:
             raise RunTestError(
                 f"Unable to create IonizationState instance for "
-                f"test case {test_name}.")
+                f"test case {test_name}.") from exc
 
     @pytest.mark.parametrize(
         'test_name',
@@ -367,7 +365,6 @@ expected_properties = {
     'number_densities': np.array([2e18, 3e18, 5e18]) * u.m ** -3,
     'tol': 2e-14,
     '__str__()': "<IonizationState of He-4>",
-    '__repr__()': "<IonizationState of He-4>",
 }
 
 instance = IonizationState(**kwargs)

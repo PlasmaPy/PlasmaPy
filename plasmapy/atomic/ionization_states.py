@@ -8,8 +8,8 @@ import numbers
 from plasmapy.atomic.atomic import atomic_number
 from plasmapy.atomic.particle_class import Particle
 from plasmapy.atomic.symbols import particle_symbol
-from plasmapy.utils import (AtomicError, ChargeError, InvalidParticleError, check_quantity)
-from plasmapy.atomic.ionization_state import (State, IonizationState, _number_density_errmsg)
+from plasmapy.utils import AtomicError, ChargeError, InvalidParticleError, check_quantity
+from plasmapy.atomic.ionization_state import State, IonizationState
 
 
 class IonizationStates:
@@ -80,11 +80,11 @@ class IonizationStates:
             self,
             inputs,
             *,
-            T_e=None,
+            T_e = np.nan * u.K,
             equilibrate=None,
             abundances=None,
             log_abundances=None,
-            n=None,
+            n =  np.nan * u.m ** -3,
             tol=1e-15,
             kappa=None):
         """Instantiate a `~plasmapy.atomic.IonizationStates` instance."""
@@ -261,6 +261,7 @@ class IonizationStates:
                     integer_charge=int_charge,
                     ionic_fraction=self.ionic_fractions[particle][int_charge],
                     ionic_symbol=particle,
+                    number_density=self.number_densities[particle][int_charge]
                 )
         except Exception as exc:
             raise AtomicError(errmsg) from exc
