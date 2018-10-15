@@ -146,7 +146,7 @@ class IonizationState:
             return output
 
         Z_mean = "{:.2f}".format(self.Z_mean)
-        output += f'with Z_mean = {Z_mean}\n\n'
+        output += f' with Z_mean = {Z_mean}\n\n'
 
         for state in self:
             if state.ionic_fraction > minimum_ionic_fraction_to_show:
