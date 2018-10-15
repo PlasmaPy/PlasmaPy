@@ -391,10 +391,7 @@ class IonizationState:
             raise AtomicError("Number densities cannot be negative.")
         if len(value) != self.atomic_number + 1:
             raise AtomicError(f"Incorrect number of charge states for {self.particle}")
-        try:
-            value = value.to(u.m ** -3)
-        except (AttributeError, u.UnitsError):
-            raise AtomicError
+        value = value.to(u.m ** -3)
 
         self._n_elem = value.sum()
         self._ionic_fractions = value / self._n_elem

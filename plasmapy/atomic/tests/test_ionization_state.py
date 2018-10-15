@@ -406,3 +406,13 @@ def test_setting_ionic_fractions():
     new_ionic_fractions = [0.2, 0.5, 0.3]
     instance.ionic_fractions = new_ionic_fractions
     assert np.allclose(instance.ionic_fractions, new_ionic_fractions)
+
+def test_number_density_setter():
+    instance = IonizationState('H')
+    instance.number_densities = u.Quantity([0.1, 0.2], unit=u.m**-3)
+    with pytest.raises(AtomicError, message="cannot be negative"):
+        instance.number_densities = u.Quantity([-0.1, 0.2], unit=u.m**-3)
+    with pytest.raises(AtomicError, message="Incorrect number of charge states"):
+        instance.number_densities = u.Quantity([0.1, 0.2, 0.3], unit=u.m**-3)
+    with pytest.raises(u.UnitsError):
+        instance.number_densities = u.Quantity([0.1, 0.2], unit=u.kg)
