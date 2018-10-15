@@ -303,7 +303,7 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas_argument,
     # The OML method is used to obtain an ion density without knowing the
     # electron temperature. This can then be used to obtain the ion current
     # and subsequently a better electron current fit.
-    n_i_OML, fit = get_ion_density_OML(probe_characteristic, probe_area, gas.mass,
+    n_i_OML, fit = get_ion_density_OML(probe_characteristic, probe_area, gas,
                                        return_fit=True)
 
     ion_current = extrapolate_ion_current_OML(probe_characteristic, fit)
