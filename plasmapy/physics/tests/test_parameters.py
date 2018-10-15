@@ -809,28 +809,28 @@ def test_inertial_length():
     with pytest.raises(ValueError):
         inertial_length(-5 * u.m ** -3, particle='p')
 
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidParticleError):
         inertial_length(n_i, particle=-135)
 
     with pytest.warns(u.UnitsWarning):
         inertial_length_no_units = inertial_length(1e19, particle='p')
         assert inertial_length_no_units == inertial_length(1e19 * u.m ** -3, particle='p')
 
-    assert inertial_length(n_e).unit.is_equivalent(u.m)
+    assert inertial_length(n_e, 'e-').unit.is_equivalent(u.m)
 
-    assert np.isclose(inertial_length(1 * u.cm ** -3).cgs.value, 5.31e5, rtol=1e-3)
+    assert np.isclose(inertial_length(1 * u.cm ** -3, 'e-').cgs.value, 5.31e5, rtol=1e-3)
 
     with pytest.warns(u.UnitsWarning):
-        inertial_length(5)
+        inertial_length(5, 'e-')
 
     with pytest.raises(u.UnitConversionError):
-        inertial_length(5 * u.m)
+        inertial_length(5 * u.m, 'e-')
 
     with pytest.raises(ValueError):
-        inertial_length(-5 * u.m ** -3)
+        inertial_length(-5 * u.m ** -3, 'e-')
 
     with pytest.warns(u.UnitsWarning):
-        assert inertial_length(1e19) == inertial_length(1e19 * u.m ** -3)
+        assert inertial_length(1e19, 'e-') == inertial_length(1e19 * u.m ** -3, 'e-')
 
     assert_can_handle_nparray(inertial_length)
 
