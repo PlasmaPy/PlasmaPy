@@ -14,7 +14,10 @@ def uniform():
 def test_interface(uniform):
     assert_quantity_allclose(uniform.electron_density([0, 0, 0]), 1*u.m**-3)
     assert_quantity_allclose(uniform.ion_density([0, 0, 0]), 1*u.m**-3)
+    assert_quantity_allclose(uniform.electron_velocity([0, 0, 0]), 0*u.m/u.s)
+    assert_quantity_allclose(uniform.electron_velocity([0, 0, 0]), 0*u.m/u.s)
     assert_quantity_allclose(uniform.electron_temperature([0, 0, 0]), 1*u.eV)
     assert_quantity_allclose(uniform.ion_temperature([0, 0, 0]), 1*u.K)
     assert_quantity_allclose(uniform.magnetic_field([0, 0, 0]), 1*u.T)
+    assert_quantity_allclose(uniform.electric_field([0, 0, 0]), 0*u.V/u.m)
 
