@@ -6,6 +6,7 @@ from ...utils import AtomicError, RunTestError, InvalidIsotopeError, run_test
 from ...atomic import (
     atomic_number,
     atomic_symbol,
+    particle_symbol,
     isotope_symbol,
     Particle,
 )
@@ -75,6 +76,12 @@ class Test_IonizationState:
                 f"Unable to create IonizationState instance for "
                 f"test case {test_name}.") from exc
 
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_integer_charges(self, test_name):
+        instance = self.instances[test_name]
+        expected_integer_charges = np.arange(instance.atomic_number + 1)
+        assert np.allclose(instance.integer_charges, expected_integer_charges)
+
     @pytest.mark.parametrize(
         'test_name',
         [name for name in test_names if 'ionic_fractions' in test_cases[name].keys()],
@@ -129,7 +136,7 @@ class Test_IonizationState:
             ionic_fractions = np.array([state.ionic_fraction for state in states])
             ionic_symbols = [state.ionic_symbol for state in states]
         except Exception:
-            raise AtomicError("An attribute may be misnamed or missing.")
+            raise AtomicError(f"An attribute may be misnamed or missing ({test_name}).")
 
         try:
             base_symbol = isotope_symbol(ionic_symbols[0])
@@ -244,11 +251,12 @@ class Test_IonizationState:
         assert expected_particles == instance.particles, (
             f"The expected Particle instances of {expected_particles} "
             f"are not all equal to the IonizationState particles of "
-            f"{instance.particles} for test {test_name}."
-        )
+            f"{instance.particles} for test {test_name}.")
 
-    def test_electron_density_from_n_elem_ionic_fractions(self):
-        test_name = 'He'
+    @pytest.mark.parametrize(
+        'test_name',
+        [name for name in test_names if 'n_elem' in test_cases[name].keys()])
+    def test_electron_density_from_n_elem_ionic_fractions(self, test_name):
         instance = self.instances[test_name]
         n_elem = test_cases[test_name]['n_elem']
         ionic_fractions = test_cases[test_name]['ionic_fractions']
@@ -256,22 +264,79 @@ class Test_IonizationState:
             f"n_elem is not being stored correctly for test {test_name}"
         assert np.isclose(
             instance.n_e,
-            np.sum(n_elem * ionic_fractions * np.array([0, 1, 2])),
+            np.sum(n_elem * ionic_fractions * np.arange(instance.atomic_number + 1)),
             rtol=1e-12, atol=0 * u.m ** -3), \
             "n_e is not the expected value."
 
-    def test_getitem(self):
-        test_name = 'He'
+#    @pytest.mark.parametrize('test_name', test_names)
+#    def test_getitem(self, test_name):
+
+#        instance = self.instances[test_name]
+#        attrs = ['integer_charge', 'ionic_fraction', 'ionic_symbol', 'number_density']#
+
+#        base_particle = instance.particle
+
+#        errors = []
+
+#        for Z in instance.integer_charges:
+
+#            expected_symbol = f"{base_particle} {Z}+"
+#            expected_particle = Particle(expected_symbol)
+
+#            keys = [Z, expected_symbol, expected_particle]
+
+#            items = {key: instance[key] for key in keys}
+
+#            for attr in attrs:
+#                items[key].integer_charge
+
+#                values = {eval{f'items[{key}].attr}}
+
+
+
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_getitem(self, test_name):
+        """
+        Test that IonizationState.__getitem__ returns the same value
+        when using equivalent keys (integer charge, particle symbol, and
+        Particle instance).
+
+        For example, if we create
+
+        >>> He_states = IonizationState('He', [0.2, 0.3, 0.5])
+
+        then this checks to make sure that `He_states[2]`,
+        `He_states['He 2+']`, and `He_states[Particle('He 2+')]` all
+        return the same result.
+
+        """
         instance = self.instances[test_name]
+        particle_name = instance.particle
 
-        charge = 1
-        ion_name = 'He 1+'
+        integer_charges = np.arange(instance.atomic_number + 1)
+        symbols = [particle_symbol(particle_name, Z=Z) for Z in integer_charges]
+        particles = instance.particles
 
-        gotten_item = instance[charge]
+        errors = []
 
-        assert hasattr(gotten_item, 'integer_charge')
-        assert hasattr(gotten_item, 'ionic_fraction')
-        assert hasattr(gotten_item, 'ionic_symbol')
+        # In the following loop, instance[key] will return a namedtuple
+        # or class which may contain Quantity objects with values of
+        # numpy.nan.  Because of the difficulty of comparing nans in
+        # these objects, we compare the string representations instead
+        # (see Astropy issue #7901 on GitHub).
+
+        for keys in zip(integer_charges, symbols, particles):
+            set_of_str_values = {str(instance[key]) for key in keys}
+            if len(set_of_str_values) != 1:
+                errors.append(
+                    f'\n\n'
+                    f'The following keys in test {test_name} did not '
+                    f'produce identical outputs as required: {keys}. '
+                    f'The set containing string representations of'
+                    f'the values is:\n\n{set_of_str_values}')
+
+        if errors:
+            raise AtomicError(str.join('', errors))
 
     @pytest.mark.parametrize('attr', ['integer_charge', 'ionic_fraction', 'ionic_symbol'])
     def test_State_attrs(self, attr):
@@ -364,7 +429,7 @@ expected_properties = {
     '_is_normalized()': True,
     'number_densities': np.array([2e18, 3e18, 5e18]) * u.m ** -3,
     'tol': 2e-14,
-    '__str__()': "<IonizationState of He-4>",
+    '__str__()': "<IonizationState instance of He-4>",
 }
 
 instance = IonizationState(**kwargs)
