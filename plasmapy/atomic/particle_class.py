@@ -540,6 +540,9 @@ class Particle:
         """
         return not self.__eq__(other)
 
+    def __hash__(self):
+        return hash(self.__repr__())
+
     def __bool__(self):
         """
         Raise an `~plasmapy.utils.AtomicError` because Particle objects
