@@ -1,9 +1,10 @@
-import typing
+import numpy as np
 import astropy.units as u
 import collections
-import numpy as np
-import numbers
 import warnings
+
+from typing import Union, List, Optional
+from numbers import Integral, Real
 
 from plasmapy.atomic import Particle, particle_input
 from plasmapy.utils.exceptions import AtomicError, ChargeError, InvalidParticleError
@@ -35,7 +36,7 @@ class IonizationState:
         an element or isotope, or an integer representing the atomic
         number of an element.
 
-    ionic_fractions: ~numpy.ndarray, list, tuple, or ~astropy.units.Quantity
+    ionic_fractions: ~numpy.ndarray, list, tuple, or ~astropy.units.Quantity; optional
         The ionization fractions of an element, where the indices
         correspond to integer charge.  This argument should contain the
         atomic number plus one items, and must sum to one within an
@@ -103,7 +104,7 @@ class IonizationState:
                  *,
                  T_e: u.K = np.nan * u.K,
                  n_elem: u.m ** -3 = np.nan * u.m ** -3,
-                 tol: typing.Union[float, int] = 1e-15):
+                 tol: Union[float, int] = 1e-15):
         """Initialize a `~plasmapy.atomic.IonizationState` instance."""
 
         self._particle = particle
@@ -132,8 +133,7 @@ class IonizationState:
                 f"{particle.particle}.") from exc
 
     def __str__(self) -> str:
-        symbol = self.isotope if self._particle.isotope else self.element
-        return f"<IonizationState of {symbol}>"
+        return f"<IonizationState instance of {self.particle}>"
 
     def __repr__(self):
         """Show diagnostic information of an IonizationState instance."""
@@ -183,7 +183,7 @@ class IonizationState:
         if isinstance(value, slice):
             raise TypeError("IonizationState instances cannot be sliced.")
 
-        if isinstance(value, numbers.Integral) and 0 <= value <= self.atomic_number:
+        if isinstance(value, Integral) and 0 <= value <= self.atomic_number:
             result = State(
                 value,
                 self.ionic_fractions[value],
@@ -455,10 +455,11 @@ class IonizationState:
 
     @property
     def particle(self) -> str:
+        """Return the symbol of the element or isotope."""
         return self.isotope if self.isotope else self.element
 
     @property
-    def particles(self) -> typing.List[Particle]:
+    def particles(self) -> List[Particle]:
         """
         Return a list of the `~plasmapy.atomic.Particle` class
         instances corresponding to each ion.
@@ -466,7 +467,7 @@ class IonizationState:
         return [Particle(self._particle.particle, Z=i) for i in range(self.atomic_number + 1)]
 
     @property
-    def ionic_symbols(self) -> typing.List[str]:
+    def ionic_symbols(self) -> List[str]:
         """Return the ionic symbols for all charge states."""
         return [particle.ionic_symbol for particle in self.particles]
 
@@ -490,16 +491,37 @@ class IonizationState:
         return np.sqrt(np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1) ** 2))
 
     @property
-    def Z_mode(self) -> np.float64:
-        return np.argmax
+    def Z_most_abundant(self) -> List[Integral]:
+        """
+        Return a `list` of the integer charges with the highest ionic
+        fractions.
 
-    def _is_normalized(self, tol: numbers.Integral = None) -> bool:
+        Examples
+        --------
+        >>> He = IonizationState('He', [0.2, 0.5, 0.3])
+        >>> He.Z_most_abundant
+        [1]
+        >>> Li = IonizationState('Li', [0.4, 0.4, 0.2, 0.0])
+        >>> Li.Z_most_abundant
+        [0, 1]
+
+        """
+        if np.any(np.isnan(self.ionic_fractions)):
+            raise AtomicError(
+                f"Cannot find most abundant ion of {self.particle} "
+                f"because the ionic fractions have not been defined.")
+
+        return np.flatnonzero(
+            self.ionic_fractions == self.ionic_fractions.max()
+        ).tolist()
+
+    def _is_normalized(self, tol: Optional[Real] = None) -> bool:
         """
         Return `True` if the sum of the ionization fractions is equal to
         one within the allowed tolerance, and `False` otherwise.
         """
         tol = tol if tol is not None else self.tol
-        if not isinstance(tol, numbers.Real):
+        if not isinstance(tol, Real):
             raise TypeError("tol must be an int or float.")
         if not 0 <= tol < 1:
             raise ValueError("Need 0 <= tol < 1.")
@@ -514,14 +536,14 @@ class IonizationState:
         self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)
 
     @property
-    def tol(self) -> numbers.Real:
+    def tol(self) -> Real:
         """Return the absolute tolerance for comparisons."""
         return self._tol
 
     @tol.setter
-    def tol(self, atol: numbers.Real):
+    def tol(self, atol: Real):
         """Set the absolute tolerance for comparisons."""
-        if not isinstance(atol, numbers.Real):
+        if not isinstance(atol, Real):
             raise TypeError("The attribute tol must be a real number.")
         if 0 <= atol < 1:
             self._tol = atol
