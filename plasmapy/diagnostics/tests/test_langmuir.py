@@ -313,7 +313,7 @@ def test_get_ion_density_OML_without_return_fit():
 
     char = characteristic()
     density = langmuir.get_ion_density_OML(char, 5000000*u.m**2,
-                                           1*u.u, return_fit=False)
+                                           'p+', return_fit=False)
     assert np.isclose(density.value, 383949768.0764418)
 
 
