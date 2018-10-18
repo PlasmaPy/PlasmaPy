@@ -1,17 +1,3 @@
-deps-run: &deps-install
-  name: Install Python dependencies and PlasmaPy
-  command: |
-    pip install --user -r requirements/automated-documentation-tests.txt | cat
-    pip install --user . | cat
-
-html-run: &doc-html
-  name: Build HTML documentation
-  command: python setup.py build_docs -w
-
-latex-run: &doc-latex
-  name: Build LaTeX documentation
-  command: python setup.py build_docs -b latex -w
-
 version: 2
 jobs:
   test-html:
@@ -19,14 +5,30 @@ jobs:
       - image: plasmapy/documentation-builder:latest
     steps:
       - checkout
-      - run: *deps-install
-      - run: *doc-html
+      - run: 
+          name: Install Python dependencies and PlasmaPy
+          command: |
+            pip install --user -r requirements/automated-documentation-tests.txt | cat
+            pip install --user . | cat
+      - run:
+          name: Build HTML documentation
+          shell: /bin/bash
+          command: |
+            python setup.py build_docs -W 2> >(tee /tmp/stderr) 1> >(tee /tmp/stdout) || true; echo $? | tee /tmp/EXITCODE
       - store_artifacts:
           path: docs/_build/html
       - run:
           name: "Built documentation is available at:"
           command: DOCS_URL="${CIRCLE_BUILD_URL}/artifacts/${CIRCLE_NODE_INDEX}/${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}/docs/_build/html/index.html"; echo $DOCS_URL
-      - run: *doc-latex
+      - run:
+          name: "Output from html documentation build is:"
+          command: cat /tmp/stdout
+      - run:
+          name: "Error from html documentation build is:"
+          command: cat /tmp/stderr && [ $(cat /tmp/EXITCODE) -eq 0 ]
+      - run: 
+          name: Build LaTeX documentation
+          command: python setup.py build_docs -b latex -w
 
 workflows:
   version: 2
