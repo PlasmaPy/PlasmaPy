@@ -13,7 +13,13 @@ jobs:
       - run:
           name: Build HTML documentation
           shell: /bin/bash
+          # command needed to not fail the build step on non-zero exit code from sphinx
+          # (now is not the time for build fail)
+          # (that comes later)
           command: |
+            # build docs, sending standard output and error to separate files in /tmp
+            # || true ignores the error code as stated above
+            # echo | tee prints out sphinx's error code and saves it to /tmp
             python setup.py build_docs -W 2> >(tee /tmp/stderr) 1> >(tee /tmp/stdout) || true; echo $? | tee /tmp/EXITCODE
       - store_artifacts:
           path: docs/_build/html
@@ -25,6 +31,8 @@ jobs:
           command: cat /tmp/stdout
       - run:
           name: "Error from html documentation build is:"
+          # display stderr from build AND assert the build went successfully
+          # build errors should fail at this stage
           command: cat /tmp/stderr && [ $(cat /tmp/EXITCODE) -eq 0 ]
       - run: 
           name: Build LaTeX documentation
