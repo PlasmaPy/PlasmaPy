@@ -181,7 +181,7 @@ setup(name=PACKAGENAME,
       include_package_data=True,
       entry_points=entry_points,
       python_requires='>={}'.format("3.6"),
-      tests_require=extras_require['tests'],
+      tests_require=extras_require.get("all", ""),
       extras_require=extras_require,
       **package_info
 )
