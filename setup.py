@@ -4,6 +4,7 @@
 import glob
 import os
 import sys
+import itertools
 
 # Enforce Python version check - this is the same check as in __init__.py but
 # this one has to happen before importing ah_bootstrap.
@@ -127,14 +128,13 @@ package_info['package_data'][PACKAGENAME].extend(c_files)
 
 setup_requires = ['numpy']
 
-extras_require = {'openPMD': ["h5py"],
-                  'visualization': ["matplotlib"],
-                  'analysis': ["lmfit", "mpmath"],
-                  'tests': ["pytest", "pytest-astropy"]}
-extras_require['all'] = extras_require['openPMD'] +\
-                        extras_require['visualization'] + \
-                        extras_require['analysis'] + \
-                        extras_require['tests']
+extra_tags = [m.strip() for m in metadata.get("extra_requires", "").split(',')] 
+if extra_tags: 
+     extras_require = {tag: [m.strip() for m in metadata[f"{tag}_requires"].split(',')] 
+                       for tag in extra_tags} 
+     extras_require['all'] = list(itertools.chain.from_iterable(extras_require.values())) 
+else:
+     extras_require = None 
 
 # Make sure to have the packages needed for building PlasmaPy, but do not require them
 # when installing from an sdist as the c files are included there.
