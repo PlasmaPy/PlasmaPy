@@ -39,14 +39,14 @@ probe_area = (probe_length * np.pi * probe_diameter +
 # ion mass number of 4 is entered. The results are visualized and the obtained
 # EEDF is also shown.
 print(swept_probe_analysis(characteristic,
-                           probe_area, 4 * u.u,
+                           probe_area, 'He-4+',
                            visualize=True,
                            plot_EEDF=True))
 
 ######################################################
 # The cyan and yellow lines indicate the fitted electron and ion currents,
 # respectively. The green line is the sum of these and agrees nicely with the
-# data. This indicates a succesfull analysis.
+# data. This indicates a successful analysis.
 
 ######################################################
 # The next sample probe data is provided by David Pace. It is also obtained
@@ -63,7 +63,7 @@ characteristic = Characteristic(np.array(bias) * u.V,
 # of the electron growth region will be plotted.
 swept_probe_analysis(characteristic,
                      0.738 * u.cm**2,
-                     40 * u.u,
+                     'Ar-40 1+',
                      bimaxwellian=False,
                      plot_electron_fit=True)
 
@@ -73,7 +73,7 @@ swept_probe_analysis(characteristic,
 # with bimaxwellian set to True, which yields improved results.
 print(swept_probe_analysis(characteristic,
                            0.738 * u.cm**2,
-                           40 * u.u,
+                           'Ar-40 1+',
                            bimaxwellian=True,
                            visualize=True,
                            plot_electron_fit=True))
@@ -105,7 +105,7 @@ probe_area = (probe_length * np.pi * probe_diameter +
 # The fit converges nicely to the two slopes of the electron growth region.
 print(swept_probe_analysis(characteristic,
                            probe_area,
-                           4 * u.u,
+                           'He-4+',
                            bimaxwellian=True,
                            plot_electron_fit=True,
                            visualize=True))
