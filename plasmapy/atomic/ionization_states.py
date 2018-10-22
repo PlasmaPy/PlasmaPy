@@ -49,13 +49,13 @@ class IonizationStates:
         The number density scaling factor.  The number density of an
         element will be the product of its abundance and `n`.
 
-    kappa: optional, keyword-only
+    kappa: float, optional, keyword-only
         The value of kappa for a kappa distribution function.
 
     Raises
     ------
     AtomicError
-        # TODO: Describe exceptions
+        If `~plasmapy.atomic.IonizationStates` cannot be instantiated.
 
     Examples
     --------
@@ -85,25 +85,23 @@ class IonizationStates:
             abundances=None,
             log_abundances=None,
             n =  np.nan * u.m ** -3,
-            tol=1e-15,
-            kappa=None):
-        """Instantiate a `~plasmapy.atomic.IonizationStates` instance."""
+            tol: numbers.Real = 1e-15,
+            kappa: numbers.Real = np.inf):
+        """
+        Initialize an `~plasmapy.atomic.IonizationStates`.
+        """
 
-        self._pars = collections.defaultdict(lambda: None)
-        self.T_e = T_e
-        self.n = n
-
-        self.tol = tol
-
-        if isinstance(inputs, dict):
+        try:
+            self._pars = collections.defaultdict(lambda: None)
+            self.T_e = T_e
+            self.n = n
+            self.tol = tol
             self.ionic_fractions = inputs
-        elif isinstance(inputs, (list, tuple)):
-            self.ionic_fractions = inputs
-        else:
-            raise TypeError(f"{inputs} are invalid inputs.")
-
-        self.abundances = abundances
-        self.log_abundances = log_abundances
+            self.abundances = abundances
+            self.log_abundances = log_abundances
+            self.kappa = kappa
+        except Exception as exc:
+            raise AtomicError ("Unable to create an IonizationStates instance.") from exc
 
     def __str__(self) -> str:
         join_str = ", " if len(self.elements) <= 5 else ","
@@ -457,21 +455,26 @@ class IonizationStates:
         """
         Return the kappa parameter for a kappa distribution function
         for electrons.
+
+        The value of ``kappa`` must be greater than ``1.5`` in order to
+        have a valid distribution function.  If ``kappa`` equals
+        `~numpy.inf`, then the distribution function reduces to a
+        Maxwellian.
         """
-        return self._kappa
+        return self._pars['kappa']
 
     @kappa.setter
     def kappa(self, value: numbers.Real):
         """
         Set the kappa parameter for a kappa distribution function for
-        electrons.
+        electrons.  The value must be between ``1.5`` and `~numpy.inf`.
         """
         kappa_errmsg = "kappa must be a real number greater than 1.5"
         if not isinstance(value, numbers.Real):
             raise TypeError(kappa_errmsg)
-        if kappa <= 1.5:
+        if value <= 1.5:
             raise ValueError(kappa_errmsg)
-        self._kappa = np.real(kappa)
+        self._pars['kappa'] = np.real(value)
 
     def equilibrate(self, T_e=None, elements='all', kappa=None):
         """
@@ -496,17 +499,21 @@ class IonizationStates:
         raise NotImplementedError
 
     @property
-    def tol(self) -> numbers.Real:
-        """Return the absolute tolerance for comparisons."""
+    def tol(self) -> np.real:
+        """
+        Return the absolute tolerance for comparisons.
+        """
         return self._tol
 
     @tol.setter
     def tol(self, atol: numbers.Real):
-        """Set the absolute tolerance for comparisons."""
+        """
+        Set the absolute tolerance for comparisons.
+        """
         if not isinstance(atol, numbers.Real):
             raise TypeError("The attribute tol must be a real number.")
         if 0 <= atol <= 1.0:
-            self._tol = atol
+            self._tol = np.real(atol)
         else:
             raise ValueError("Need 0 <= tol <= 1.")
 
@@ -538,17 +545,17 @@ class IonizationStates:
     @property
     @u.quantity_input
     def n_e(self) -> u.m ** -3:
-        """Return the electron number density, assuming quasineutrality."""
-
+        """
+        Return the electron number density under the assumption of
+        quasineutrality.
+        """
         number_densities = self.number_densities
         n_e = 0.0 * u.m ** -3
-
         for elem in self.elements:
             atomic_numb = atomic_number(elem)
             number_of_ionization_states = atomic_numb + 1
             integer_charges = np.linspace(0, atomic_numb, number_of_ionization_states)
             n_e += np.sum(number_densities[elem] * integer_charges)
-
         return n_e
 
     @property
@@ -563,6 +570,10 @@ class IonizationStates:
 
     @n.setter
     def n(self, n: u.m ** -3):
+        """
+        Set the number density scaling factor.
+        """
+
         if n is None:
             self._pars['n'] = n
         else:
