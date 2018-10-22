@@ -105,7 +105,7 @@ class IonizationState:
                  T_e: u.K = np.nan * u.K,
                  n_elem: u.m ** -3 = np.nan * u.m ** -3,
                  tol: Union[float, int] = 1e-15):
-        """Initialize a `~plasmapy.atomic.IonizationState` instance."""
+        """Initialize an `~plasmapy.atomic.IonizationState` instance."""
 
         self._particle = particle
 
@@ -135,7 +135,7 @@ class IonizationState:
     def __str__(self) -> str:
         return f"<IonizationState instance of {self.particle}>"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Show diagnostic information of an IonizationState instance."""
 
         minimum_ionic_fraction_to_show = 1e-3

@@ -290,7 +290,7 @@ def test_IonizationStates_abundances():
 IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
 
 tests_for_exceptions = {
-    'wrong type': IE({"inputs": None}, TypeError),
+    'wrong type': IE({"inputs": None}, AtomicError),
     'not normalized': IE({"inputs": {'He': [0.4, 0.5, 0.0]}, "tol": 1e-9}, AtomicError),
     'negative ionfrac': IE({"inputs": {'H': [-0.1, 1.1]}}, AtomicError),
     'ion': IE({"inputs": {'H': [0.1, 0.9], 'He+': [0.0, 0.9, 0.1]}}, AtomicError),
@@ -303,7 +303,7 @@ tests_for_exceptions = {
 
     'imaginary abundance': IE({
         "inputs": {"H": [0.1, 0.9], "He": [0.4, 0.5, 0.1]}, "abundances": {"H": 1, "He": 0.1j},
-    }, TypeError),
+    }, AtomicError),
 
 }
 
