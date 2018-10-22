@@ -37,7 +37,7 @@ class IonizationStates:
     abundances: `dict` or `str`, optional, keyword-only
         The relative abundances of each element in the plasma.
 
-    log_abundances: `dict`, optional, optional, keyword-only
+    log_abundances: `dict`, optional, keyword-only
         The base 10 logarithm of the relative abundances of each element
         in the plasma.
 
@@ -412,7 +412,11 @@ class IonizationStates:
 
     @property
     def log_abundances(self) -> Optional[Dict]:
-
+        """
+        Return a `dict` with atomic or isotope symbols as keys and the
+        base 10 logarithms of the relative abundances as the
+        corresponding values.
+        """
         if self._pars['abundances'] is not None:
             log_abundances_dict = {}
             for key in self.abundances.keys():
@@ -423,7 +427,9 @@ class IonizationStates:
 
     @log_abundances.setter
     def log_abundances(self, value: Optional[Dict]):
-
+        """
+        Set the base 10 logarithm of the relative abundances.
+        """
         if value is not None:
             try:
                 new_abundances_input = {}
@@ -434,12 +440,17 @@ class IonizationStates:
                 raise AtomicError("Invalid log_abundances.") from None
 
     @property
-    def T_e(self):
-        """Return the electron temperature."""
+    def T_e(self) -> u.K:
+        """
+        Return the electron temperature.
+        """
         return self._pars['T_e']
 
     @T_e.setter
-    def T_e(self, electron_temperature):
+    def T_e(self, electron_temperature: u.K):
+        """
+        Set the electron temperature.
+        """
         if electron_temperature is None:
             self._pars['T_e'] = None
         else:
@@ -497,12 +508,16 @@ class IonizationStates:
 
     @property
     def tol(self) -> numbers.Real:
-        """Return the absolute tolerance for comparisons."""
+        """
+        Return the absolute tolerance for comparisons.
+        """
         return self._tol
 
     @tol.setter
     def tol(self, atol: numbers.Real):
-        """Set the absolute tolerance for comparisons."""
+        """
+        Set the absolute tolerance for comparisons.
+        """
         if not isinstance(atol, numbers.Real):
             raise TypeError("The attribute tol must be a real number.")
         if 0 <= atol <= 1.0:
@@ -538,17 +553,16 @@ class IonizationStates:
     @property
     @u.quantity_input
     def n_e(self) -> u.m ** -3:
-        """Return the electron number density, assuming quasineutrality."""
-
+        """
+        Return the electron number density, assuming quasineutrality.
+        """
         number_densities = self.number_densities
         n_e = 0.0 * u.m ** -3
-
         for elem in self.elements:
             atomic_numb = atomic_number(elem)
             number_of_ionization_states = atomic_numb + 1
             integer_charges = np.linspace(0, atomic_numb, number_of_ionization_states)
             n_e += np.sum(number_densities[elem] * integer_charges)
-
         return n_e
 
     @property
@@ -563,6 +577,9 @@ class IonizationStates:
 
     @n.setter
     def n(self, n: u.m ** -3):
+        """
+        Set the number density scaling factor.
+        """
         if n is None:
             self._pars['n'] = n
         else:
