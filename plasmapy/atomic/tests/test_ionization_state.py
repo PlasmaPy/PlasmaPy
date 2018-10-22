@@ -69,6 +69,9 @@ class Test_IonizationState:
 
     @pytest.mark.parametrize('test_name', test_names)
     def test_instantiation(self, test_name):
+        """
+        Test that each IonizationState test case can be instantiated.
+        """
         try:
             self.instances[test_name] = IonizationState(**test_cases[test_name])
         except Exception as exc:
@@ -78,6 +81,10 @@ class Test_IonizationState:
 
     @pytest.mark.parametrize('test_name', test_names)
     def test_integer_charges(self, test_name):
+        """
+        Test that an IonizationState instance has the correct integer
+        charges.
+        """
         instance = self.instances[test_name]
         expected_integer_charges = np.arange(instance.atomic_number + 1)
         assert np.allclose(instance.integer_charges, expected_integer_charges)
@@ -87,21 +94,32 @@ class Test_IonizationState:
         [name for name in test_names if 'ionic_fractions' in test_cases[name].keys()],
     )
     def test_ionic_fractions(self, test_name):
+        """
+        Test that each IonizationState instance has the expected
+        ionic fractions.
+        """
         instance = self.instances[test_name]
-
         inputted_fractions = test_cases[test_name]['ionic_fractions']
         if isinstance(inputted_fractions, u.Quantity):
             inputted_fractions = inputted_fractions.to(u.m ** -3)
             inputted_fractions = (inputted_fractions / inputted_fractions.sum()).value
-
         if not np.allclose(instance.ionic_fractions, inputted_fractions):
             raise RunTestError(f"Mismatch in ionic fractions for test {test_name}")
 
-    def test_equality1(self):
+    def test_equal_to_itself(self):
+        """
+        Test that IonizationState.__eq__ returns True for two identical
+        IonizationState instances.
+        """
         assert self.instances['Li'] == self.instances['Li'], \
             "Identical IonizationState instances are not equal."
 
-    def test_equality2(self):
+    def test_equal_to_within_tolerance(self):
+        """
+        Test that IonizationState.__eq__ returns `True` for two
+        IonizationState instances that differ within the inputted
+        tolerance.
+        """
         assert self.instances['H'] == self.instances['H acceptable error'], \
             ("Two IonizationState instances that are approximately the "
              "same to within the tolerance are not testing as equal.")
@@ -114,7 +132,7 @@ class Test_IonizationState:
         assert self.instances['Li ground state'] != self.instances['Li'], \
             "Different IonizationState instances are equal."
 
-    def test_equality_error(self):
+    def test_equality_exception(self):
         """
         Test that comparisons of IonizationState instances for
         different elements fail.
@@ -127,16 +145,17 @@ class Test_IonizationState:
         """Test that IonizationState instances iterate impeccably."""
         try:
             states = [state for state in self.instances[test_name]]
-        except Exception:
+        except Exception as exc:
             raise AtomicError(
-                f"Unable to perform iteration for {test_name}.")
+                f"Unable to perform iteration for {test_name}.") from exc
 
         try:
             integer_charges = [state.integer_charge for state in states]
             ionic_fractions = np.array([state.ionic_fraction for state in states])
             ionic_symbols = [state.ionic_symbol for state in states]
-        except Exception:
-            raise AtomicError(f"An attribute may be misnamed or missing ({test_name}).")
+        except Exception as exc:
+            raise AtomicError(
+                f"An attribute may be misnamed or missing ({test_name}).") from exc
 
         try:
             base_symbol = isotope_symbol(ionic_symbols[0])
@@ -181,15 +200,26 @@ class Test_IonizationState:
             raise AtomicError(errmsg)
 
     def test_slicing_error(self):
+        """
+        Test that an IonizationState instance cannot be sliced.
+        """
         with pytest.raises(TypeError):
             self.instances['Li'][1:3]
 
     @pytest.mark.parametrize('index', [-1, 4, 'Li'])
     def test_indexing_error(self, index):
+        """
+        Test that an IonizationState instance cannot be indexed outside
+        of the bounds of allowed integer charges.
+        """
         with pytest.raises(AtomicError):
             self.instances['Li'][index]
 
     def test_normalization(self):
+        """
+        Test that _is_normalized returns False when there is an error
+        greater than the tolerance, and True after normalizing.
+        """
         H = self.instances['H acceptable error']
         assert not H._is_normalized(tol=1e-15)
         H.normalize()
