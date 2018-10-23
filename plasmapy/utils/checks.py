@@ -1,5 +1,6 @@
 import functools
 import inspect
+import typing
 
 import numpy as np
 from astropy import units as u
@@ -16,13 +17,14 @@ __all__ = [
 ]
 
 
-def check_quantity(**validations):
+def check_quantity(**validations: typing.Dict[str, bool]):
     """
     Verify that the function's arguments have correct units.
 
     This decorator raises an exception if an annotated argument in the
     decorated function is an `~astropy.units.Quantity` with incorrect units
-    or of the incorrect # TODO name - Nones, NaNs, negatives...
+    or of incorrect kind. You can prevent arguments from being input as
+    Nones, NaNs, negatives, infinities and complex numbers.
 
     If a number (non-Quantity) value is inserted in place of a value with units,
     assume the input is an SI Quantity and cast it to one.
@@ -67,10 +69,10 @@ def check_quantity(**validations):
 
     Parameters
     ----------
-    Arguments to be validated passed in as keyword
-    arguments, with values as validation dictionaries,
-    with structure as in the example.
-    Valid keys for each argument are:
+    dict
+        Arguments to be validated passed in as keyword arguments, with values as
+        validation dictionaries, with structure as in the example.  Valid keys for
+        each argument are:
         'units': `astropy.units.Unit`,
         'can_be_negative': `bool`,
         'can_be_complex': `bool`,
@@ -101,6 +103,13 @@ def check_quantity(**validations):
         If a `~astropy.units.Quantity` is not provided and unique units
         are provided, a `UnitsWarning` will be raised and the inputted
         units will be assumed.
+
+    Notes
+    -----
+    This functionality may end up becoming deprecated due to 
+    noncompliance with the `IEEE 754 standard
+    <https://en.wikipedia.org/wiki/IEEE_754#Exception_handling>`_
+    and in favor of `~astropy.units.quantity_input`.
 
     Returns
     -------
