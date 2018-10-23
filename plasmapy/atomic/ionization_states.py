@@ -73,8 +73,8 @@ class IonizationStates:
     """
 
     @check_quantity(
-        T_e={"units": u.K, "none_shall_pass": True},
-        n={"units": u.m ** -3, "none_shall_pass": True},
+        T_e={"units": u.K},
+        n={"units": u.m ** -3},
     )
     def __init__(
             self,
@@ -104,14 +104,77 @@ class IonizationStates:
             raise AtomicError ("Unable to create an IonizationStates instance.") from exc
 
     def __str__(self) -> str:
-        join_str = ", " if len(self.elements) <= 5 else ","
-        return f"<IonizationStates for: {join_str.join(self.elements)}>"
+        return f"<IonizationStates for: {', '.join(self.elements)}>"
 
     def __repr__(self) -> str:
-        return self.__str__()
+        """
+        Show diagnostic information for an IonizationStates instance.
+        """
+
+        output = []
+        output.append(f"IonizationStates instance for: {', '.join(self.elements)}\n")
+
+        for ionization_state in self:
+            output += ionization_state._get_states_info(minimum_ionic_fraction=0.01)
+            output[-1] += '\n'
+
+        if np.isfinite(self.T_e): # or np.isfinite(self.n_e):
+            output += '\n'
+        if np.isfinite(self.T_e):
+            T_e = "{:.2e}".format(self.T_e.value) + " K"
+            output += f'  T_e    = {T_e}\n'
+#        if np.isfinite(self.n_e):
+##            n_elem = "{:.2e}".format(self.n_elem.value) + " m**-3"
+#            n_e = "{:.2e}".format(self.n_e.value) + " m**-3"
+##            output += f'  n_elem = {n_elem}\n'
+#            output += f'  n_e    = {n_e}'
+
+        return "\n".join(output)
+
+#        output = f"IonizationState instance of {self.particle}"
+#
+#        if np.any(np.isnan(self.ionic_fractions)):
+#            return output
+#
+#        Z_mean = "{:.2f}".format(self.Z_mean)
+#        output += f' with Z_mean = {Z_mean}\n\n'
+#
+#        for state in self:
+#            if state.ionic_fraction > minimum_ionic_fraction_to_show:
+#
+#                symbol = state.ionic_symbol
+#                if state.integer_charge < 10:
+#                    symbol = symbol[:-2] + ' ' + symbol[-2:]
+#
+#                fraction = "{:.3f}".format(state.ionic_fraction)
+#
+#                output += (f'  {symbol}: {fraction}')
+#
+#                if np.isfinite(self.n_elem):
+#                    value = "{:.2e}".format(state.number_density.si.value)
+#                    output += f"     n_i = {value} m**-3"
+#
+#                output += '\n'
+#
+#        if np.isfinite(self.T_e) or np.isfinite(self.n_elem):
+#            output += '\n'
+#        if np.isfinite(self.T_e):
+#            T_e = "{:.2e}".format(self.T_e.value) + " K"
+#            output += f'  T_e    = {T_e}\n'
+#        if np.isfinite(self.n_elem):
+#            n_elem = "{:.2e}".format(self.n_elem.value) + " m**-3"
+#            n_e = "{:.2e}".format(self.n_e.value) + " m**-3"
+#            output += f'  n_elem = {n_elem}\n'
+#            output += f'  n_e    = {n_e}'
+#
+#        return output
+
+
+
+
 
     @property
-    def ionic_fractions(self):
+    def ionic_fractions(self) -> Dict[str, np.array]:
         """
         ADD DOCSTRING
         """
@@ -173,6 +236,13 @@ class IonizationStates:
                 if new_key in _elements:
                     raise AtomicError("Repeated particles in IonizationStates.")
 
+                nstates_input = len(inputs[key])
+                nstates = particles[key].atomic_number + 1
+                if nstates != nstates_input:
+                    raise AtomicError(
+                        f"The ionic fractions array for {key} must "
+                        f"have a length of {nstates}.")
+
                 _elements.append(new_key)
                 if isinstance(inputs[key], u.Quantity):
                     try:
@@ -215,13 +285,11 @@ class IonizationStates:
         else:
             raise TypeError("Incorrect inputs to set ionic_fractions.")
 
-        # Because this depends on _particles being sorted, we add in an
-        # easy check that atomic numbers do not decrease.
         for i in range(1, len(_particles)):
             if _particles[i - 1].element == _particles[i].element:
                 if not _particles[i - 1].isotope and _particles[i].isotope:
                     raise AtomicError("Cannot have an element and isotopes of that element.")
-            elif _particles[i - 1].atomic_number > _particles[i].atomic_number:
+            if _particles[i - 1].atomic_number > _particles[i].atomic_number:
                 raise AtomicError("_particles has not been sorted.")
 
         self._particles = _particles
@@ -449,17 +517,28 @@ class IonizationStates:
         """
         Set the electron temperature.
         """
-        if electron_temperature is None:
-            self._pars['T_e'] = None
-        else:
-            try:
-                temp = electron_temperature.to(u.K, equivalencies=u.temperature_energy())
-            except (AttributeError, u.UnitsError):
-                raise AtomicError("Invalid electron temperature.")
-            else:
-                if temp < 0 * u.K:
-                    raise AtomicError("The electron temperature cannot be negative.")
-                self._pars['T_e'] = temp
+        try:
+            temperature = electron_temperature.to(u.K, equivalencies=u.temperature_energy())
+        except (AttributeError, u.UnitsError):
+            raise AtomicError(
+                f"{electron_temperature} is not a valid temperature.") from None
+        if temperature < 0 * u.K:
+            raise AtomicError("The electron temperature cannot be negative.")
+        self._pars['T_e'] = temperature
+
+#        if temp < 0 * u.K
+
+#        if electron_temperature is None:
+#            self._pars['T_e'] = np.nan * u.K
+#        else:
+#            try:
+#                temp = electron_temperature.to(u.K, equivalencies=u.temperature_energy())
+#            except (AttributeError, u.UnitsError):
+#                raise AtomicError("Invalid electron temperature.")
+#            else:
+#                if temp < 0 * u.K:
+#                    raise AtomicError("The electron temperature cannot be negative.")
+#                self._pars['T_e'] = temp
 
     @property
     def kappa(self) -> np.real:
@@ -529,7 +608,7 @@ class IonizationStates:
         else:
             raise ValueError("Need 0 <= tol <= 1.")
 
-    def normalize(self):
+    def normalize(self) -> None:
         """
         Normalize the ionic fractions so that the sum for each element
         equals one.
