@@ -10,7 +10,7 @@ import numbers
 import astropy.units as u
 import astropy.constants as const
 
-from ..utils import (
+from plasmapy.utils import (
     AtomicError,
     AtomicWarning,
     InvalidParticleError,

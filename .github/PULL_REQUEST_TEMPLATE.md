@@ -10,9 +10,12 @@ Here are a few things to keep in mind when making a pull request (PR).
   to be made before the PR is merged.
 * PlasmaPy follows the PEP 8 style guide: https://www.python.org/dev/peps/pep-0008
 * Please double check that a new PR will not duplicate an existing PR.
-* If this PR will solve an issue tracked by GitHub, please add a phrase like 
-  "Closes #404." to automatically close the issue once the pull request is 
-  merged.  If your PR will not completely solve the issue, please still 
+* If this PR will solve an issue tracked by GitHub, please add a phrase like
+  "Closes #404." to automatically close the issue once the pull request is
+  merged.  If your PR will not completely solve the issue, please still
   reference the issue.
+* If this is your first contribution, please add your name to the author
+  list in `docs/about/credits.rst`.
 * Feel free to chat with other developers on our Matrix channel at:
   https://riot.im/app/#/room/#plasmapy:matrix.org
+

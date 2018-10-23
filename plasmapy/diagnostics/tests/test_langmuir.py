@@ -259,38 +259,21 @@ class Test__swept_probe_analysis:
         r"""Test error upon NaN area"""
 
         with pytest.raises(ValueError):
-            langmuir.swept_probe_analysis(characteristic, np.nan * u.cm**2, 40 * u.u)
+            langmuir.swept_probe_analysis(characteristic, np.nan * u.cm**2, 'Ar-40 1+')
 
     @staticmethod
     def test_unit_conversion_error():
         r"""Test error upon incorrect probe area unit"""
 
         with pytest.raises(u.UnitConversionError):
-            langmuir.swept_probe_analysis(characteristic, 1 * u.cm, 40 * u.u)
+            langmuir.swept_probe_analysis(characteristic, 1 * u.cm, 'Ar-40 1+')
 
     @staticmethod
     def test_negative_area():
         r"""Test error upon negative probe area"""
 
         with pytest.raises(ValueError):
-            langmuir.swept_probe_analysis(characteristic, -1 * u.cm**2, 40 * u.u)
-
-    @staticmethod
-    def test_ion_mass_unit():
-        r"""Test equality of float and a.m.u. ion mass"""
-
-        sim = characteristic_simulated()
-
-        sim_result1 = langmuir.swept_probe_analysis(
-            sim, 1 * u.cm**2, 40)
-
-        sim_result2 = langmuir.swept_probe_analysis(
-            sim, 1 * u.cm**2, 40 * u.u)
-
-        errStr = (f"`swept_probe_analysis` should accept both floats and "
-                  f"a.m.u. Quantities as atomic gas mass input.")
-        for key in sim_result1:
-            assert (sim_result1[key] == sim_result2[key]).all(), errStr
+            langmuir.swept_probe_analysis(characteristic, -1 * u.cm**2, 'Ar-40 1+')
 
     @staticmethod
     @pytest.mark.parametrize("bimaxwellian", [True, False])
@@ -302,13 +285,13 @@ class Test__swept_probe_analysis:
         sim_result = langmuir.swept_probe_analysis(
             sim,
             1 * u.cm**2,
-            40 * u.u,
+            'Ar-40 1+',
             bimaxwellian=bimaxwellian)
 
         sim_result_shuffled = langmuir.swept_probe_analysis(
             shuffle_characteristic(sim),
             1 * u.cm**2,
-            40 * u.u,
+            'Ar-40 1+',
             bimaxwellian=bimaxwellian)
 
         errStr = (f"Analysis should be invariant to the ordering of the "
@@ -330,8 +313,8 @@ def test_get_ion_density_OML_without_return_fit():
 
     char = characteristic()
     density = langmuir.get_ion_density_OML(char, 5000000*u.m**2,
-                                           1*u.u, return_fit=False)
-    assert np.isclose(density.value, 383949768.0764418)
+                                           'p+', return_fit=False)
+    assert np.isclose(density.value, 385344135.12064785)
 
 
 def test_get_EEDF():
