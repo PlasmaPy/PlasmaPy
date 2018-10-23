@@ -1,14 +1,20 @@
-import numpy as np
-import astropy.units as u
+"""
+A class for storing ionization state data for a single element or
+isotope.
+"""
+
+from numbers import Integral, Real
+from typing import Union, List, Optional
 import collections
 import warnings
 
-from typing import Union, List, Optional
-from numbers import Integral, Real
+import numpy as np
+import astropy.units as u
 
 from plasmapy.atomic import Particle, particle_input
-from plasmapy.utils.exceptions import AtomicError, ChargeError, InvalidParticleError
-from plasmapy.utils.checks import check_quantity
+from plasmapy.utils import AtomicError, ChargeError, InvalidParticleError, check_quantity
+
+__all__ = ["IonizationState", "State"]
 
 State = collections.namedtuple(
     'State', [
@@ -94,8 +100,8 @@ class IonizationState:
     # TODO: Add in functionality to find equilibrium ionization states.
 
     @check_quantity(
-        T_e={"units": u.K, "none_shall_pass": True},
-        n_elem={"units": u.m ** -3, "none_shall_pass": True},
+        T_e={"units": u.K},
+        n_elem={"units": u.m ** -3},
     )
     @particle_input(require='element', exclude='ion')
     def __init__(self,
@@ -133,12 +139,36 @@ class IonizationState:
                 f"{particle.particle}.") from exc
 
     def __str__(self) -> str:
-        return f"<IonizationState instance of {self.particle}>"
+        return f"<IonizationState instance for {self.particle}>"
+
+    def _get_states_info(self, minimum_ionic_fraction=0.01) -> List[str]:
+        """
+        Return a list containing the ion symbol, ionic fraction, and
+        (if available) the number density for that ion.
+        """
+
+        states_info = []
+
+        for state in self:
+            if state.ionic_fraction > minimum_ionic_fraction:
+                state_info = ""
+                symbol = state.ionic_symbol
+                if state.integer_charge < 10:
+                    symbol = symbol[:-2] + ' ' + symbol[-2:]
+                fraction = "{:.3f}".format(state.ionic_fraction)
+
+                state_info += f'  {symbol}: {fraction}'
+
+                if np.isfinite(self.n_elem):
+                    value = "{:.2e}".format(state.number_density.si.value)
+                    state_info += f"     n_i = {value} m**-3"
+
+                states_info.append(state_info)
+
+        return states_info
 
     def __repr__(self) -> str:
-        """
-        Show diagnostic information of an IonizationState instance.
-        """
+        """Show diagnostic information."""
         output = f"IonizationState instance for {self.particle}"
 
         if np.any(np.isnan(self.ionic_fractions)):
@@ -163,7 +193,7 @@ class IonizationState:
         return output
 
     def __getitem__(self, value) -> State:
-        """Return the ionic fraction(s)."""
+        """Return information for a single ionization level."""
         if isinstance(value, slice):
             raise TypeError("IonizationState instances cannot be sliced.")
 
@@ -203,14 +233,14 @@ class IonizationState:
         return result
 
     def __iter__(self):
-        """Initialize the instance prior to an iteration."""
+        """Initialize an instance prior to iteration."""
         self._charge_index = 0
         return self
 
     def __next__(self):
         """
-        Return a `~State` `~collections.namedtuple` which contains
-        ``integer_charge``, ``ionic_fraction``, and ``ionic_symbol``.
+        Return a `~plasmapy.atomic.State` instance that contains
+        information about a particular ionization level.
         """
         if self._charge_index <= self.atomic_number:
             result = State(
@@ -227,9 +257,9 @@ class IonizationState:
 
     def __eq__(self, other):
         """
-        Return `True` if the ionic fractions, number density (if set),
-        and electron temperature (if set) are all equal, and `False`
-        otherwise.
+        Return `True` if the ionic fractions, number density scaling
+        factor (if set), and electron temperature (if set) are all
+        equal, and `False` otherwise.
 
         Raises
         ------
@@ -274,9 +304,13 @@ class IonizationState:
         same_n_elem = np.isnan(self.n_elem) and np.isnan(other.n_elem) or \
             u.allclose(self.n_elem, other.n_elem, rtol=min_tol*u.m**-3, atol=0*u.m**-3)
 
-        same_fracs = np.allclose(self.ionic_fractions, other.ionic_fractions, rtol=0, atol=min_tol)
+        same_fractions = np.allclose(
+            self.ionic_fractions,
+            other.ionic_fractions,
+            rtol=0,
+            atol=min_tol)
 
-        return np.all([same_element, same_isotope, same_T_e, same_n_elem, same_fracs])
+        return np.all([same_element, same_isotope, same_T_e, same_n_elem, same_fractions])
 
     @property
     def ionic_fractions(self) -> np.ndarray:
@@ -341,16 +375,13 @@ class IonizationState:
     @property
     @u.quantity_input
     def n_elem(self) -> u.m ** -3:
-        """
-        Return the number density of atoms plus ions for this
-        species.
-        """
+        """Return the total number density of neutrals and all ions."""
         return self._n_elem.to(u.m ** -3)
 
     @n_elem.setter
     @u.quantity_input
     def n_elem(self, value: u.m ** -3):
-        """The number density of atoms plus ions of this species."""
+        """Set the number density of neutrals and all ions."""
         if value < 0 * u.m ** -3:
             raise AtomicError
         if 0 * u.m ** -3 < value <= np.inf * u.m ** -3:
@@ -533,29 +564,3 @@ class IonizationState:
             self._tol = atol
         else:
             raise ValueError("Need 0 <= tol < 1.")
-
-    def _get_states_info(self, minimum_ionic_fraction=0.01) -> List[str]:
-        """
-        Return a list containing the ion symbol, ionic fraction, and
-        (if available) the number density for that ion.
-        """
-
-        states_info = []
-
-        for state in self:
-            if state.ionic_fraction > minimum_ionic_fraction:
-                state_info = ""
-                symbol = state.ionic_symbol
-                if state.integer_charge < 10:
-                    symbol = symbol[:-2] + ' ' + symbol[-2:]
-                fraction = "{:.3f}".format(state.ionic_fraction)
-
-                state_info += f'  {symbol}: {fraction}'
-
-                if np.isfinite(self.n_elem):
-                    value = "{:.2e}".format(state.number_density.si.value)
-                    state_info += f"     n_i = {value} m**-3"
-
-                states_info.append(state_info)
-
-        return states_info

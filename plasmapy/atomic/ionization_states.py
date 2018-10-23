@@ -1,15 +1,19 @@
-"""Classes for storing ionization state data."""
+"""
+A class for storing ionization state data for multiple elements or
+isotopes.
+"""
 
+from numbers import Real, Integral
 from typing import Dict, List, Optional, Tuple, Union
-import astropy.units as u
 import collections
+
 import numpy as np
-import numbers
-from plasmapy.atomic.atomic import atomic_number
-from plasmapy.atomic.particle_class import Particle
-from plasmapy.atomic.symbols import particle_symbol
+import astropy.units as u
+
+from plasmapy.atomic import atomic_number, Particle, particle_symbol, IonizationState, State
 from plasmapy.utils import AtomicError, ChargeError, InvalidParticleError, check_quantity
-from plasmapy.atomic.ionization_state import State, IonizationState
+
+__all__ = ["IonizationStates"]
 
 
 class IonizationStates:
@@ -85,8 +89,8 @@ class IonizationStates:
             abundances=None,
             log_abundances=None,
             n =  np.nan * u.m ** -3,
-            tol: numbers.Real = 1e-15,
-            kappa: numbers.Real = np.inf):
+            tol: Real = 1e-15,
+            kappa: Real = np.inf):
         """
         Initialize an `~plasmapy.atomic.IonizationStates`.
         """
@@ -319,7 +323,7 @@ class IonizationStates:
                     tol=self.tol,
                 )
             else:
-                if not isinstance(int_charge, numbers.Integral):
+                if not isinstance(int_charge, Integral):
                     raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
                 elif not 0 <= int_charge <= atomic_number(particle):
                     raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
@@ -555,13 +559,13 @@ class IonizationStates:
         return self._pars['kappa']
 
     @kappa.setter
-    def kappa(self, value: numbers.Real):
+    def kappa(self, value: Real):
         """
         Set the kappa parameter for a kappa distribution function for
         electrons.  The value must be between ``1.5`` and `~numpy.inf`.
         """
         kappa_errmsg = "kappa must be a real number greater than 1.5"
-        if not isinstance(value, numbers.Real):
+        if not isinstance(value, Real):
             raise TypeError(kappa_errmsg)
         if value <= 1.5:
             raise ValueError(kappa_errmsg)
@@ -597,11 +601,11 @@ class IonizationStates:
         return self._tol
 
     @tol.setter
-    def tol(self, atol: numbers.Real):
+    def tol(self, atol: Real):
         """
         Set the absolute tolerance for comparisons.
         """
-        if not isinstance(atol, numbers.Real):
+        if not isinstance(atol, Real):
             raise TypeError("The attribute tol must be a real number.")
         if 0 <= atol <= 1.0:
             self._tol = np.real(atol)

@@ -37,7 +37,10 @@ from .nuclear import (
     nuclear_reaction_energy,
 )
 
-from .ionization_states import IonizationState, IonizationStates
+from .ionization_state import IonizationState, State
+from .ionization_states import IonizationStates
+
+# Create instances of the most commonly used particles
 
 proton = Particle("p+")
 electron = Particle("e-")

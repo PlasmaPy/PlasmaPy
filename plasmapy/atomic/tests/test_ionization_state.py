@@ -459,7 +459,7 @@ expected_properties = {
     '_is_normalized()': True,
     'number_densities': np.array([2e18, 3e18, 5e18]) * u.m ** -3,
     'tol': 2e-14,
-    '__str__()': "<IonizationState instance of He-4>",
+    '__str__()': "<IonizationState instance for He-4>",
 }
 
 instance = IonizationState(**kwargs)
