@@ -132,7 +132,7 @@ using
 .. code-block:: python
 
   >>> import plasmapy
-  >>> plasmapy.test()
+  >>> plasmapy.test() # doctest: +SKIP
 
 .. _testing-guidelines-writing-tests:
 
