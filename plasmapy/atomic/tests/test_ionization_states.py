@@ -1,15 +1,17 @@
 import pytest
+import collections
+
 import numpy as np
 import astropy.units as u
-from ..ionization_states import IonizationStates
-from ...utils import AtomicError, RunTestError, InvalidIsotopeError, run_test
-from ...atomic import (
+
+from plasmapy.utils import AtomicError, RunTestError, InvalidIsotopeError, run_test
+from plasmapy.atomic import (
+    IonizationStates,
     atomic_number,
     mass_number,
     particle_symbol,
     Particle,
 )
-import collections
 
 
 def has_attribute(attribute, tests_dict):
@@ -73,7 +75,7 @@ tests = {
     },
 }
 
-test_names2 = tests.keys()
+test_names = tests.keys()
 
 
 class Test_IonizationStates:
@@ -82,52 +84,58 @@ class Test_IonizationStates:
     def setup_class(cls):
         cls.instances = {}
 
-    @pytest.mark.parametrize('test', test_names2)
-    def test_instantiation(self, test):
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_instantiation(self, test_name):
         try:
-            self.instances[test] = IonizationStates(**tests[test])
+            self.instances[test_name] = IonizationStates(**tests[test_name])
         except Exception as exc:
             raise AtomicError(
                 f"Cannot create IonizationStates instance for "
-                f"test='{test}'") from exc
+                f"test='{test_name}'") from exc
+
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_repr(self, test_name):
+        try:
+            repr(self)
+        except Exception as exc:
+            raise AtomicError(f"Unable to use repr for test_name = {test_name}") from exc
 
     @pytest.mark.parametrize(
-        'test',
-        [name for name in test_names2 if isinstance(tests[name]['inputs'], dict)],
+        'test_name',
+        [test_name for test_name in test_names if isinstance(tests[test_name]['inputs'], dict)],
     )
-    def test_keys(self, test):
-        input_keys = tests[test]['inputs'].keys()
+    def test_keys(self, test_name):
+        input_keys = tests[test_name]['inputs'].keys()
         particles = [Particle(input_key) for input_key in input_keys]
         expected_keys = [p.particle for p in particles]
-        actual_keys = [key for key in self.instances[test].ionic_fractions.keys()]
+        actual_keys = [key for key in self.instances[test_name].ionic_fractions.keys()]
 
         assert actual_keys == expected_keys, (
-            f"For test='{test}', the following should be equal:\n"
+            f"For test='{test_name}', the following should be equal:\n"
             f"  actual_keys = {actual_keys}\n"
             f"expected_keys = {expected_keys}"
         )
 
-    @pytest.mark.parametrize('test', has_attribute('abundances', tests))
-    def test_abundances(self, test):
+    @pytest.mark.parametrize('test_name', has_attribute('abundances', tests))
+    def test_abundances(self, test_name):
         try:
-            actual_abundances = self.instances[test].abundances
+            actual_abundances = self.instances[test_name].abundances
         except Exception as exc:
             raise AttributeError("Unable to access abundances.") from exc
 
-        elements = set(self.instances[test].elements)
+        elements = set(self.instances[test_name].elements)
         elements_from_abundances = set(actual_abundances.keys())
 
         if not elements.issubset(elements_from_abundances):
-            raise RunTestError(
-                f"The elements whose IonizationStates are being kept "
-                f"track of ({elements}) are not a subset of the "
-                f"elements whose abundances are being kept track of "
-                f"({elements_from_abundances}) for test {test}."
+            raise RunTestError(f"The elements whose IonizationStates are being kept "
+                               f"track of ({elements}) are not a subset of the "
+                               f"elements whose abundances are being kept track of "
+                               f"({elements_from_abundances}) for test {test_name}."
             )
 
-    @pytest.mark.parametrize('test', test_names2)
-    def test_element_sorting(self, test):
-        elements = self.instances[test].elements
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_element_sorting(self, test_name):
+        elements = self.instances[test_name].elements
         before_sorting = []
         for element in elements:
             atomic_numb = atomic_number(element)
@@ -139,70 +147,67 @@ class Test_IonizationStates:
         after_sorting = sorted(before_sorting)
 
         assert before_sorting == after_sorting, (
-            f"Elements/isotopes are not sorted for test='{test}':\n"
+            f"Elements/isotopes are not sorted for test='{test_name}':\n"
             f"  before_sorting = {before_sorting}\n"
             f"   after_sorting = {after_sorting}\n"
             f"where above is (atomic_number, mass_number if isotope else 0)")
 
-    @pytest.mark.parametrize('test', test_names2)
-    def test_ionic_fractions(self, test):
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_ionic_fractions(self, test_name):
 
         errmsg = ""
 
-        elements_actual = self.instances[test].elements
-        inputs = tests[test]["inputs"]
+        elements_actual = self.instances[test_name].elements
+        inputs = tests[test_name]["inputs"]
 
         if isinstance(inputs, dict):
 
-            input_keys = tests[test]["inputs"].keys()
+            input_keys = tests[test_name]["inputs"].keys()
             for element, input_key in zip(elements_actual, input_keys):
 
-                expected = np.array(tests[test]["inputs"][input_key])
+                expected = np.array(tests[test_name]["inputs"][input_key])
 
                 if isinstance(expected, u.Quantity):
                     expected = np.array(expected.value / np.sum(expected.value))
 
-                actual = self.instances[test].ionic_fractions[element]
+                actual = self.instances[test_name].ionic_fractions[element]
 
                 if not np.allclose(actual, expected):
-                    errmsg += (
-                        f"\n\nThere is a discrepancy in ionic fractions for "
-                        f"({test}, {element}, {input_key})\n"
-                        f"  expected = {expected}\n"
-                        f"    actual = {actual}")
+                    errmsg += (f"\n\nThere is a discrepancy in ionic fractions for "
+                               f"({test_name}, {element}, {input_key})\n"
+                               f"  expected = {expected}\n"
+                               f"    actual = {actual}")
                 if not isinstance(actual, np.ndarray) or isinstance(actual, u.Quantity):
-                    raise AtomicError(
-                        f"\n\nNot a numpy.ndarray: ({test}, {element})")
+                    raise AtomicError(f"\n\nNot a numpy.ndarray: ({test_name}, {element})")
 
         else:
             elements_expected = {particle_symbol(element) for element in inputs}
 
-            assert set(self.instances[test].elements) == elements_expected
+            assert set(self.instances[test_name].elements) == elements_expected
 
             for element in elements_expected:
-                assert all(np.isnan(self.instances[test].ionic_fractions[element]))
+                assert all(np.isnan(self.instances[test_name].ionic_fractions[element]))
 
         if errmsg:
             raise AtomicError(errmsg)
 
-    @pytest.mark.parametrize('test', test_names2)
-    def test_getitem_element(self, test):
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_getitem_element(self, test_name):
         """Test that __get_item__ returns an IonizationState instance"""
-        instance = self.instances[test]
+        instance = self.instances[test_name]
 
         for key in instance.elements:
 
             try:
                 expected = instance.ionic_fractions[key]
             except Exception as exc:
-                raise AtomicError(
-                    f"Unable to get ionic_fractions for '{key}' in "
-                    f"test='{test}'.") from exc
+                raise AtomicError(f"Unable to get ionic_fractions for '{key}' in "
+                                  f"test='{test_name}'.") from exc
 
             try:
                 actual = instance[key].ionic_fractions
             except Exception as exc:
-                raise AtomicError(f"Unable to get item {key} in test={test}.") from exc
+                raise AtomicError(f"Unable to get item {key} in test={test_name}.") from exc
 
             try:
                 if all(np.isnan(expected)):
@@ -210,20 +215,18 @@ class Test_IonizationStates:
                 else:
                     test_passed = np.allclose(expected, actual)
             except Exception:
-                raise TypeError(
-                    f"For test='{test}' and key='{key}', cannot "
-                    f"compare expected ionic fractions of {expected} "
-                    f"with the resulting ionic fractions of {actual}.") from None
+                raise TypeError(f"For test='{test_name}' and key='{key}', cannot "
+                                f"compare expected ionic fractions of {expected} "
+                                f"with the resulting ionic fractions of {actual}.") from None
 
             if not test_passed:
-                raise AtomicError(
-                    f"For test='{test}' and key='{key}', the expected "
-                    f"ionic fractions of {expected} are not all equal "
-                    f"to the resulting ionic fractions of {actual}.")
+                raise AtomicError(f"For test='{test_name}' and key='{key}', the expected "
+                                  f"ionic fractions of {expected} are not all equal "
+                                  f"to the resulting ionic fractions of {actual}.")
 
-    @pytest.mark.parametrize('test', test_names2)
-    def test_getitem_element_intcharge(self, test):
-        instance = self.instances[test]
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_getitem_element_intcharge(self, test_name):
+        instance = self.instances[test_name]
         for particle in instance.elements:
             for int_charge in range(0, atomic_number(particle) + 1):
                 actual = instance[particle, int_charge].ionic_fraction
@@ -232,15 +235,15 @@ class Test_IonizationStates:
             if not np.isnan(actual) and np.isnan(expected):
                 assert np.isclose(actual, expected), (
                     f"Indexing broken for:\n"
-                    f"       test = '{test}'\n"
+                    f"       test = '{test_name}'\n"
                     f"   particle = '{particle}'")
 
     @pytest.mark.parametrize(
-        'test',
-        [name for name in test_names2 if isinstance(tests[name]['inputs'], dict)]
+        'test_name',
+        [test_name for test_name in test_names if isinstance(tests[test_name]['inputs'], dict)]
     )
-    def test_normalization(self, test):
-        instance = self.instances[test]
+    def test_normalization(self, test_name):
+        instance = self.instances[test_name]
         instance.normalize()
         not_normalized_elements = []
         for element in instance.elements:
@@ -256,10 +259,9 @@ class Test_IonizationStates:
 
         if not_normalized_elements:
             raise AtomicError(
-                f"In test='{test}', ionic fractions for the following "
+                f"In test='{test_name}', ionic fractions for the following "
                 f"particles were not normalized: "
-                f"{', '.join(not_normalized_elements)}."
-            )
+                f"{', '.join(not_normalized_elements)}.")
 
 
 def test_IonizationStates_abundances():
@@ -308,16 +310,16 @@ tests_for_exceptions = {
 }
 
 
-@pytest.mark.parametrize('test', tests_for_exceptions.keys())
-def test_execeptions(test):
+@pytest.mark.parametrize('test_name', tests_for_exceptions.keys())
+def test_execeptions(test_name):
     """
     Test that appropriate exceptions are raised for inappropriate inputs
     to IonizationStates.
     """
     run_test(
         IonizationStates,
-        kwargs=tests_for_exceptions[test].inputs,
-        expected_outcome=tests_for_exceptions[test].expected_exception,
+        kwargs=tests_for_exceptions[test_name].inputs,
+        expected_outcome=tests_for_exceptions[test_name].expected_exception,
     )
 
 
@@ -335,7 +337,7 @@ def test_setitem():
 
 
 @pytest.mark.parametrize(
-    'new_states,expected_exception',
+    'new_states, expected_exception',
     [
         ((0, 0.9), AtomicError),
         ((-0.1, 1.1), AtomicError),
@@ -348,7 +350,7 @@ def test_setitem_errors(new_states, expected_exception):
         states['H'] = new_states
 
 
-class Test_IonizationStates:
+class Test_IonizationStates_Example:
 
     @classmethod
     def setup_class(cls):
