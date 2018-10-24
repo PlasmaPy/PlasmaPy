@@ -1,6 +1,6 @@
 """
-A class for storing ionization state data for a single element or
-isotope.
+Objects for storing ionization state data for a single element or for
+a single ionization level.
 """
 
 from numbers import Integral, Real
@@ -46,7 +46,7 @@ class IonizationState:
         The ionization fractions of an element, where the indices
         correspond to integer charge.  This argument should contain the
         atomic number plus one items, and must sum to one within an
-        absolute tolerance of `tol` if dimensionless.  Alternatively,
+        absolute tolerance of ``tol`` if dimensionless.  Alternatively,
         this argument may be a `~astropy.units.Quantity` that represents
         the number densities of each neutral/ion.
 
@@ -59,14 +59,14 @@ class IonizationState:
 
     tol: float or integer, keyword-only, optional
         The absolute tolerance used by `~numpy.isclose` when testing
-        normalizations and making comparisons.  Defaults to `1e-15`.
+        normalizations and making comparisons.  Defaults to ``1e-15``.
 
     Raises
     ------
     ~plasmapy.utils.AtomicError
         If the ionic fractions are not normalized or contain invalid
         values, or if number density information is provided through
-        both `ionic_fractions` and `n_elem`.
+        both ``ionic_fractions`` and ``n_elem``.
 
     ~plasmapy.utils.InvalidParticleError
         If the particle is invalid.
@@ -121,8 +121,9 @@ class IonizationState:
 
             if not np.isnan(n_elem) and isinstance(ionic_fractions, u.Quantity) and \
                     ionic_fractions.si.unit == u.m ** -3:
-                raise AtomicError("Cannot simultaneously provide number density "
-                                  "through both n_elem and ionic_fractions.")
+                raise AtomicError(
+                    "Cannot simultaneously provide number density "
+                    "through both n_elem and ionic_fractions.")
 
             self.n_elem = n_elem
             self.ionic_fractions = ionic_fractions
@@ -143,7 +144,7 @@ class IonizationState:
 
     def _get_states_info(self, minimum_ionic_fraction=0.01) -> List[str]:
         """
-        Return a list containing the ion symbol, ionic fraction, and
+        Return a `list` containing the ion symbol, ionic fraction, and
         (if available) the number density for that ion.
         """
 
@@ -264,11 +265,11 @@ class IonizationState:
         Raises
         ------
         TypeError
-            If `other` is not an `~plasmapy.atomic.IonizationState`
+            If ``other`` is not an `~plasmapy.atomic.IonizationState`
             instance.
 
         AtomicError
-            If `other` corresponds to a different element or isotope.
+            If ``other`` corresponds to a different element or isotope.
 
         Examples
         --------
@@ -333,7 +334,7 @@ class IonizationState:
         Set the ionic fractions, while checking that the new values are
         valid and normalized to one.
         """
-        if fractions is None:
+        if fractions is None or np.all(np.isnan(fractions)):
             self._ionic_fractions = np.full(self.atomic_number + 1, np.nan, dtype=np.float64)
             return
 
@@ -346,16 +347,22 @@ class IonizationState:
                     "The length of ionic_fractions must be "
                     f"{self.atomic_number + 1}.")
 
-            elif isinstance(fractions, u.Quantity):
+            if isinstance(fractions, u.Quantity):
                 fractions = fractions.to(u.m ** -3)
                 self.n_elem = np.sum(fractions)
                 self._ionic_fractions = np.array(fractions/self.n_elem)
             else:
                 fractions = np.array(fractions, dtype=np.float64)
-                if np.any(fractions < 0) or np.any(fractions > 1):
-                    raise AtomicError("Ionic fractions must be between 0 and 1.")
-                if not np.isclose(np.sum(fractions), 1, rtol=0, atol=self.tol):
-                    raise AtomicError("Ionic fractions must sum to one.")
+                sum_of_fractions = np.sum(fractions)
+                all_nans = np.all(np.isnan(fractions))
+
+                if not all_nans:
+                    if np.any(fractions < 0) or np.any(fractions > 1):
+                        raise AtomicError("Ionic fractions must be between 0 and 1.")
+
+                    if not np.isclose(sum_of_fractions, 1, rtol=0, atol=self.tol):
+                        raise AtomicError("Ionic fractions must sum to one.")
+
                 self._ionic_fractions = fractions
 
         except Exception as exc:
@@ -434,8 +441,8 @@ class IonizationState:
     @property
     def equil_ionic_fractions(self, T_e: u.K = None):
         """
-        Return the equilibrium ionic fractions for temperature `T_e` or
-        the temperature set in the IonizationState instance.  Not
+        Return the equilibrium ionic fractions for temperature ``T_e``
+        or the temperature set in the IonizationState instance.  Not
         implemented.
         """
         raise NotImplementedError
@@ -443,7 +450,7 @@ class IonizationState:
     def equilibrate(self, T_e: u.K = None):
         """
         Set the ionic fractions to collisional ionization equilibrium
-        for temperature `T_e`.  Not implemented.
+        for temperature ``T_e``.  Not implemented.
         """
         # self.ionic_fractions = self.equil_ionic_fractions
         raise NotImplementedError
