@@ -115,77 +115,33 @@ class IonizationStates:
         Show diagnostic information for an IonizationStates instance.
         """
 
-        output = []
-        output.append(f"IonizationStates instance for: {', '.join(self.elements)}\n")
-
-        for ionization_state in self:
-            output += ionization_state._get_states_info(minimum_ionic_fraction=0.01)
-            output[-1] += '\n'
-
-        if np.isfinite(self.T_e): # or np.isfinite(self.n_e):
-            output += '\n'
-        if np.isfinite(self.T_e):
-            T_e = "{:.2e}".format(self.T_e.value) + " K"
-            output += f'  T_e    = {T_e}\n'
-#        if np.isfinite(self.n_e):
-##            n_elem = "{:.2e}".format(self.n_elem.value) + " m**-3"
-#            n_e = "{:.2e}".format(self.n_e.value) + " m**-3"
-##            output += f'  n_elem = {n_elem}\n'
-#            output += f'  n_e    = {n_e}'
-
-        return "\n".join(output)
-
-#        output = f"IonizationState instance of {self.particle}"
-#
-#        if np.any(np.isnan(self.ionic_fractions)):
-#            return output
-#
-#        Z_mean = "{:.2f}".format(self.Z_mean)
-#        output += f' with Z_mean = {Z_mean}\n\n'
-#
-#        for state in self:
-#            if state.ionic_fraction > minimum_ionic_fraction_to_show:
-#
-#                symbol = state.ionic_symbol
-#                if state.integer_charge < 10:
-#                    symbol = symbol[:-2] + ' ' + symbol[-2:]
-#
-#                fraction = "{:.3f}".format(state.ionic_fraction)
-#
-#                output += (f'  {symbol}: {fraction}')
-#
-#                if np.isfinite(self.n_elem):
-#                    value = "{:.2e}".format(state.number_density.si.value)
-#                    output += f"     n_i = {value} m**-3"
-#
-#                output += '\n'
-#
-#        if np.isfinite(self.T_e) or np.isfinite(self.n_elem):
+#        output = []
+#        output.append(f"IonizationStates instance for: {', '.join(self.elements)}\n")
+#        for ionization_state in self:
+#            output += ionization_state._get_states_info(minimum_ionic_fraction=0.01)
+#            output[-1] += '\n'
+#        if np.isfinite(self.T_e): # or np.isfinite(self.n_e):
 #            output += '\n'
 #        if np.isfinite(self.T_e):
 #            T_e = "{:.2e}".format(self.T_e.value) + " K"
 #            output += f'  T_e    = {T_e}\n'
-#        if np.isfinite(self.n_elem):
-#            n_elem = "{:.2e}".format(self.n_elem.value) + " m**-3"
-#            n_e = "{:.2e}".format(self.n_e.value) + " m**-3"
-#            output += f'  n_elem = {n_elem}\n'
-#            output += f'  n_e    = {n_e}'
-#
-#        return output
+#        return "\n".join(output)
 
-
-
-
+        return self.__str__()
 
     @property
     def ionic_fractions(self) -> Dict[str, np.array]:
         """
-        ADD DOCSTRING
+        Return a `dict` containing the ionic fractions for each element
+        and isotope.
+
+        The keys of this `dict` are the symbols for each element or
+        isotope.  The values will be `~numpy.ndarray` objects containing
+        the ionic fractions for each ionization level corresponding to
+        each element or isotope.
+
         """
-        try:
-            return self._ionic_fractions
-        except AttributeError as exc:
-            raise AttributeError("Ionic fractions were not set.") from exc
+        return self._ionic_fractions
 
     @ionic_fractions.setter
     def ionic_fractions(self, inputs: Union[Dict, List, Tuple]):
@@ -201,6 +157,9 @@ class IonizationStates:
                     "Quantity arrays with units of inverse volume.")
 
             # Create a dictionary of Particle instances
+
+            # TODO: clean up since Particle(Particle(x)) == Particle(x)
+
             particles = dict()
             for key in original_keys:
                 try:
@@ -428,9 +387,7 @@ class IonizationStates:
 
     @property
     def abundances(self) -> Optional[Dict]:
-        """
-        Return the elemental abundances.
-        """
+        """Return the elemental abundances."""
         return self._pars['abundances']
 
     @abundances.setter
@@ -441,11 +398,15 @@ class IonizationStates:
         ionization states are being tracked.
         """
         if abundances_dict is None:
-            self._pars['abundances'] = None
+            self._pars['abundances'] = {
+                elem: np.full(Particle(elem).atomic_number + 1, np.nan)
+                for elem in self.elements
+            }
         elif not isinstance(abundances_dict, dict):
             raise TypeError(
-                f"The abundances argument {abundances_dict} must be a dict with elements "
-                "or isotopes as keys and ")
+                f"The abundances attribute must be a dict with "
+                f"elements or isotopes as keys and real numbers "
+                f"representing relative abundances as values.")
         else:
             old_keys = abundances_dict.keys()
             try:
@@ -529,20 +490,6 @@ class IonizationStates:
         if temperature < 0 * u.K:
             raise AtomicError("The electron temperature cannot be negative.")
         self._pars['T_e'] = temperature
-
-#        if temp < 0 * u.K
-
-#        if electron_temperature is None:
-#            self._pars['T_e'] = np.nan * u.K
-#        else:
-#            try:
-#                temp = electron_temperature.to(u.K, equivalencies=u.temperature_energy())
-#            except (AttributeError, u.UnitsError):
-#                raise AtomicError("Invalid electron temperature.")
-#            else:
-#                if temp < 0 * u.K:
-#                    raise AtomicError("The electron temperature cannot be negative.")
-#                self._pars['T_e'] = temp
 
     @property
     def kappa(self) -> np.real:
@@ -641,7 +588,8 @@ class IonizationStates:
     @u.quantity_input
     def n_e(self) -> u.m ** -3:
         """
-        Return the electron number density, assuming quasineutrality.
+        Return the electron number density under the assumption of
+        quasineutrality.
         """
         number_densities = self.number_densities
         n_e = 0.0 * u.m ** -3
@@ -655,24 +603,22 @@ class IonizationStates:
     @property
     @u.quantity_input
     def n(self) -> u.m ** -3:
-        """
-        Return the number density scaling factor.
-        """
+        """Return the number density scaling factor."""
         if 'H' not in self.elements or self._pars['n'] is None:
             raise AtomicError("The number density of hydrogen is not ")
         return self._pars['n']
 
     @n.setter
     def n(self, n: u.m ** -3):
-        """
-        Set the number density scaling factor.
-        """
-        if n is None:
-            self._pars['n'] = n
-        else:
-            try:
-                self._pars['n'] = n.to(u.m ** -3)
-            except u.UnitConversionError:
-                raise AtomicError("Units cannot be converted to u.m**-3.")
-            except Exception:
-                raise AtomicError(f"{n} is not a valid number density.") from None
+        """Set the number density scaling factor."""
+        try:
+            n = n.to(u.m ** -3)
+        except u.UnitConversionError as exc:
+            raise AtomicError("Units cannot be converted to u.m ** -3.") from exc
+        except Exception as exc:
+            raise AtomicError(f"{n} is not a valid number density") from exc
+
+        if n < 0 * u.m ** -3:
+            raise AtomicError("Number density cannot be negative.")
+
+        self._pars['n'] = n.to(u.m ** -3)
