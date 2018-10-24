@@ -68,8 +68,8 @@ class IonizationStates:
 
     Notes
     -----
-    No more than one of `abundances`, `log_abundances`, and
-    `number_densities` may be specified.
+    No more than one of ``abundances``, ``log_abundances``, and
+    ``number_densities`` may be specified.
 
     Collisional ionization equilibrium is based on atomic data that
     has relative errors of order 20%.
@@ -82,13 +82,13 @@ class IonizationStates:
     )
     def __init__(
             self,
-            inputs,
+            inputs: Union[Dict[str, np.ndarray], List, Tuple],
             *,
-            T_e = np.nan * u.K,
-            equilibrate=None,
-            abundances=None,
-            log_abundances=None,
-            n =  np.nan * u.m ** -3,
+            T_e: u.K = np.nan * u.K,
+            equilibrate: Optional[bool] = None,
+            abundances: Optional[Dict[str, Real]] = None,
+            log_abundances: Optional[Dict[str, Real]] = None,
+            n: u.m ** -3 =  np.nan * u.m ** -3,
             tol: Real = 1e-15,
             kappa: Real = np.inf):
         """
@@ -111,23 +111,37 @@ class IonizationStates:
         return f"<IonizationStates for: {', '.join(self.elements)}>"
 
     def __repr__(self) -> str:
-        """
-        Show diagnostic information for an IonizationStates instance.
-        """
+        """Show diagnostic information."""
+        output = []
 
-#        output = []
-#        output.append(f"IonizationStates instance for: {', '.join(self.elements)}\n")
-#        for ionization_state in self:
-#            output += ionization_state._get_states_info(minimum_ionic_fraction=0.01)
-#            output[-1] += '\n'
-#        if np.isfinite(self.T_e): # or np.isfinite(self.n_e):
-#            output += '\n'
-#        if np.isfinite(self.T_e):
-#            T_e = "{:.2e}".format(self.T_e.value) + " K"
-#            output += f'  T_e    = {T_e}\n'
-#        return "\n".join(output)
+        output.append(f"IonizationStates instance for: {', '.join(self.elements)}")
 
-        return self.__str__()
+        # Get the ionic symbol with the corresponding ionic fraction and
+        # number density (if available), but only for the most abundant
+        # ionization levels for each element.
+
+        for ionization_state in self:
+            states_info = ionization_state._get_states_info(minimum_ionic_fraction=0.01)
+            if len(states_info) > 0:
+                output += states_info
+                output[-1] += "\n"
+
+        attributes = []
+        if np.isfinite(self.T_e):
+            attributes.append("   T_e = " + "{:.2e}".format(self.T_e.value) + " K")
+        if np.isfinite(self.kappa):
+            attributes.append(" kappa = " + "{:.3f}".format(self.kappa))
+        if np.isfinite(self.n_e):
+            attributes.append("   n_e = " + "{:.2e}".format(self.T_e.value) + " m ** -3")
+        output += ["\n".join(attributes)]
+
+        if len(output) > 1:
+            output[0] += "\n"
+            output_string = "\n".join(output)
+        else:
+            output_string = output[0]
+
+        return output_string
 
     @property
     def ionic_fractions(self) -> Dict[str, np.array]:
@@ -224,10 +238,12 @@ class IonizationStates:
                         raise AtomicError(f"Inappropriate ionic fractions for {key}.") from exc
 
             for key in _elements:
-                if np.min(new_ionic_fractions[key]) < 0 or np.max(new_ionic_fractions[key]) > 1:
-                    raise AtomicError(f"Ionic fractions for {key} are not between 0 and 1.")
-                if not np.isclose(np.sum(new_ionic_fractions[key]), 1, atol=self.tol, rtol=0):
-                    raise AtomicError(f"Ionic fractions for {key} are not normalized to 1.")
+                fractions = new_ionic_fractions[key]
+                if not np.all(np.isnan(fractions)):
+                    if np.min(fractions) < 0 or np.max(fractions) > 1:
+                        raise AtomicError(f"Ionic fractions for {key} are not between 0 and 1.")
+                    if not np.isclose(np.sum(fractions), 1, atol=self.tol, rtol=0):
+                        raise AtomicError(f"Ionic fractions for {key} are not normalized to 1.")
 
         elif isinstance(inputs, (list, tuple)):
 
@@ -279,6 +295,7 @@ class IonizationStates:
                     particle=particle,
                     ionic_fractions=self.ionic_fractions[particle],
                     T_e=self._pars["T_e"],
+                    n_elem=np.sum(self.number_densities[particle]),
                     tol=self.tol,
                 )
             else:
@@ -330,6 +347,7 @@ class IonizationStates:
                 particle,
                 self.ionic_fractions[particle],
                 T_e=self.T_e,
+                n_elem=np.sum(self.number_densities[particle]),
                 tol=self.tol,
             )
             self._element_index += 1
@@ -442,7 +460,7 @@ class IonizationStates:
             self._pars['abundances'] = new_abundances_dict
 
     @property
-    def log_abundances(self) -> Optional[Dict]:
+    def log_abundances(self) -> Optional[Dict[str, Real]]:
         """
         Return a `dict` with atomic or isotope symbols as keys and the
         base 10 logarithms of the relative abundances as the
@@ -457,7 +475,7 @@ class IonizationStates:
             raise AtomicError("No abundances are available.")
 
     @log_abundances.setter
-    def log_abundances(self, value: Optional[Dict]):
+    def log_abundances(self, value: Optional[Dict[str, Real]]):
         """
         Set the base 10 logarithm of the relative abundances.
         """
@@ -472,16 +490,12 @@ class IonizationStates:
 
     @property
     def T_e(self) -> u.K:
-        """
-        Return the electron temperature.
-        """
+        """Return the electron temperature."""
         return self._pars['T_e']
 
     @T_e.setter
     def T_e(self, electron_temperature: u.K):
-        """
-        Set the electron temperature.
-        """
+        """Set the electron temperature."""
         try:
             temperature = electron_temperature.to(u.K, equivalencies=u.temperature_energy())
         except (AttributeError, u.UnitsError):
@@ -574,15 +588,10 @@ class IonizationStates:
         Return a `dict` containing the number densities for element or
         isotope.
         """
-        # TODO: Add tests!
-
-        try:
-            number_densities = {
-                elem: self.n * self.abundances[elem] * self.ionic_fractions[elem]
-                for elem in self.elements}
-        except Exception as exc:
-            raise AtomicError("Unable to calculate ionic number densities.") from exc
-        return number_densities
+        return {
+            elem: self.n * self.abundances[elem] * self.ionic_fractions[elem]
+            for elem in self.elements
+        }
 
     @property
     @u.quantity_input
