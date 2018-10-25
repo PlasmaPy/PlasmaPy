@@ -123,7 +123,7 @@ class Test_IonizationStates:
         except Exception as exc:
             raise AttributeError("Unable to access abundances.") from exc
 
-        elements = set(self.instances[test_name].elements)
+        elements = set(self.instances[test_name].base_particles)
         elements_from_abundances = set(actual_abundances.keys())
 
         if not elements.issubset(elements_from_abundances):
@@ -135,7 +135,7 @@ class Test_IonizationStates:
 
     @pytest.mark.parametrize('test_name', test_names)
     def test_element_sorting(self, test_name):
-        elements = self.instances[test_name].elements
+        elements = self.instances[test_name].base_particles
         before_sorting = []
         for element in elements:
             atomic_numb = atomic_number(element)
@@ -157,7 +157,7 @@ class Test_IonizationStates:
 
         errmsg = ""
 
-        elements_actual = self.instances[test_name].elements
+        elements_actual = self.instances[test_name].base_particles
         inputs = tests[test_name]["inputs"]
 
         if isinstance(inputs, dict):
@@ -183,7 +183,7 @@ class Test_IonizationStates:
         else:
             elements_expected = {particle_symbol(element) for element in inputs}
 
-            assert set(self.instances[test_name].elements) == elements_expected
+            assert set(self.instances[test_name].base_particles) == elements_expected
 
             for element in elements_expected:
                 assert all(np.isnan(self.instances[test_name].ionic_fractions[element]))
@@ -196,7 +196,7 @@ class Test_IonizationStates:
         """Test that __get_item__ returns an IonizationState instance"""
         instance = self.instances[test_name]
 
-        for key in instance.elements:
+        for key in instance.base_particles:
 
             try:
                 expected = instance.ionic_fractions[key]
@@ -227,7 +227,7 @@ class Test_IonizationStates:
     @pytest.mark.parametrize('test_name', test_names)
     def test_getitem_element_intcharge(self, test_name):
         instance = self.instances[test_name]
-        for particle in instance.elements:
+        for particle in instance.base_particles:
             for int_charge in range(0, atomic_number(particle) + 1):
                 actual = instance[particle, int_charge].ionic_fraction
                 expected = instance.ionic_fractions[particle][int_charge]
@@ -246,7 +246,7 @@ class Test_IonizationStates:
         instance = self.instances[test_name]
         instance.normalize()
         not_normalized_elements = []
-        for element in instance.elements:
+        for element in instance.base_particles:
             is_not_normalized = not np.isclose(
                 np.sum(instance.ionic_fractions[element]),
                 1,

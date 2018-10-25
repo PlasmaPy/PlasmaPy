@@ -241,8 +241,8 @@ class Test_IonizationState:
         )
 
         expected_identifications = Identifications(
-            self.instances[test_name].element,
-            self.instances[test_name].isotope,
+            self.instances[test_name]._element,
+            self.instances[test_name]._isotope,
             self.instances[test_name].atomic_number,
         )
 
@@ -278,13 +278,13 @@ class Test_IonizationState:
         instances.
         """
         instance = self.instances[test_name]
-        atom = instance.isotope if instance._particle.isotope else instance.element
+        atom = instance._isotope if instance._particle.isotope else instance._element
         nstates = instance.atomic_number + 1
         expected_particles = [Particle(atom, Z=Z) for Z in range(nstates)]
-        assert expected_particles == instance.particles, (
+        assert expected_particles == instance._particle_instances, (
             f"The expected Particle instances of {expected_particles} "
             f"are not all equal to the IonizationState particles of "
-            f"{instance.particles} for test {test_name}.")
+            f"{instance._particle_instances} for test {test_name}.")
 
     @pytest.mark.parametrize(
         'test_name',
@@ -318,11 +318,11 @@ class Test_IonizationState:
 
         """
         instance = self.instances[test_name]
-        particle_name = instance.particle
+        particle_name = instance.base_particle
 
         integer_charges = np.arange(instance.atomic_number + 1)
         symbols = [particle_symbol(particle_name, Z=Z) for Z in integer_charges]
-        particles = instance.particles
+        particles = instance._particle_instances
 
         errors = []
 
@@ -424,8 +424,8 @@ kwargs = {
 expected_properties = {
     'T_e': 5000.0 * u.K,
     'tol': 2e-14,
-    'isotope': 'He-4',
-    'element': 'He',
+    '_isotope': 'He-4',
+    '_element': 'He',
     'atomic_number': 2,
     'Z_mean': 1.3,
     'Z_rms': 1.51657508881031,
