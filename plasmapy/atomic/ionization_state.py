@@ -4,7 +4,7 @@ a single ionization level.
 """
 
 from numbers import Integral, Real
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Any
 import collections
 import warnings
 
@@ -109,15 +109,17 @@ class IonizationState:
                  ionic_fractions=None,
                  *,
                  T_e: u.K = np.nan * u.K,
+                 kappa: Real = np.inf,
                  n_elem: u.m ** -3 = np.nan * u.m ** -3,
                  tol: Union[float, int] = 1e-15):
         """Initialize an `~plasmapy.atomic.IonizationState` instance."""
 
-        self._particle = particle
+        self._particle_instance = particle
 
         try:
             self.tol = tol
             self.T_e = T_e
+            self.kappa = kappa
 
             if not np.isnan(n_elem) and isinstance(ionic_fractions, u.Quantity) and \
                     ionic_fractions.si.unit == u.m ** -3:
@@ -233,6 +235,17 @@ class IonizationState:
                     raise ChargeError("No integer charge provided.")
         return result
 
+    def __setitem__(self, key: Any, value: Any):
+        """
+        Raise a `NotImplementedError` because the ionic fractions for
+        different ionization levels should be set simultaneously due to
+        the normalization constraint.
+        """
+        raise NotImplementedError(
+            "Dictionary assignment of an IonizationState instance is "
+            "not allowed. because the ionic fractions of for different "
+            "ionization levels should be set simultaneously.")
+
     def __iter__(self):
         """Initialize an instance prior to iteration."""
         self._charge_index = 0
@@ -314,63 +327,6 @@ class IonizationState:
         return np.all([same_element, same_isotope, same_T_e, same_n_elem, same_fractions])
 
     @property
-    def ionic_fractions(self) -> np.ndarray:
-        """
-        Return the ionic fractions, where the index corresponds to
-        the integer charge.
-
-        Examples
-        --------
-        >>> hydrogen_states = IonizationState('H', [0.9, 0.1])
-        >>> hydrogen_states.ionic_fractions
-        array([0.9, 0.1])
-
-        """
-        return self._ionic_fractions
-
-    @ionic_fractions.setter
-    def ionic_fractions(self, fractions):
-        """
-        Set the ionic fractions, while checking that the new values are
-        valid and normalized to one.
-        """
-        if fractions is None or np.all(np.isnan(fractions)):
-            self._ionic_fractions = np.full(self.atomic_number + 1, np.nan, dtype=np.float64)
-            return
-
-        try:
-            if np.min(fractions) < 0:
-                raise AtomicError("Cannot have negative ionic fractions.")
-
-            if len(fractions) != self.atomic_number + 1:
-                raise AtomicError(
-                    "The length of ionic_fractions must be "
-                    f"{self.atomic_number + 1}.")
-
-            if isinstance(fractions, u.Quantity):
-                fractions = fractions.to(u.m ** -3)
-                self.n_elem = np.sum(fractions)
-                self._ionic_fractions = np.array(fractions/self.n_elem)
-            else:
-                fractions = np.array(fractions, dtype=np.float64)
-                sum_of_fractions = np.sum(fractions)
-                all_nans = np.all(np.isnan(fractions))
-
-                if not all_nans:
-                    if np.any(fractions < 0) or np.any(fractions > 1):
-                        raise AtomicError("Ionic fractions must be between 0 and 1.")
-
-                    if not np.isclose(sum_of_fractions, 1, rtol=0, atol=self.tol):
-                        raise AtomicError("Ionic fractions must sum to one.")
-
-                self._ionic_fractions = fractions
-
-        except Exception as exc:
-            raise AtomicError(
-                f"Unable to set ionic fractions of {self._element} "
-                f"to {fractions}.") from exc
-
-    @property
     @u.quantity_input
     def n_e(self) -> u.m ** -3:
         """
@@ -441,6 +397,90 @@ class IonizationState:
         self._T_e = value
 
     @property
+    def kappa(self) -> np.real:
+        """
+        Return the kappa parameter for a kappa distribution function
+        for electrons.
+
+        The value of ``kappa`` must be greater than ``1.5`` in order to
+        have a valid distribution function.  If ``kappa`` equals
+        `~numpy.inf`, then the distribution function reduces to a
+        Maxwellian.
+
+        """
+        return self._kappa
+
+    @kappa.setter
+    def kappa(self, value: Real):
+        """
+        Set the kappa parameter for a kappa distribution function for
+        electrons.  The value must be between ``1.5`` and `~numpy.inf`.
+        """
+        kappa_errmsg = "kappa must be a real number greater than 1.5"
+        if not isinstance(value, Real):
+            raise TypeError(kappa_errmsg)
+        if value <= 1.5:
+            raise ValueError(kappa_errmsg)
+        self._kappa = np.real(value)
+
+    @property
+    def ionic_fractions(self) -> np.ndarray:
+        """
+        Return the ionic fractions, where the index corresponds to
+        the integer charge.
+
+        Examples
+        --------
+        >>> hydrogen_states = IonizationState('H', [0.9, 0.1])
+        >>> hydrogen_states.ionic_fractions
+        array([0.9, 0.1])
+
+        """
+        return self._ionic_fractions
+
+    @ionic_fractions.setter
+    def ionic_fractions(self, fractions):
+        """
+        Set the ionic fractions, while checking that the new values are
+        valid and normalized to one.
+        """
+        if fractions is None or np.all(np.isnan(fractions)):
+            self._ionic_fractions = np.full(self.atomic_number + 1, np.nan, dtype=np.float64)
+            return
+
+        try:
+            if np.min(fractions) < 0:
+                raise AtomicError("Cannot have negative ionic fractions.")
+
+            if len(fractions) != self.atomic_number + 1:
+                raise AtomicError(
+                    "The length of ionic_fractions must be "
+                    f"{self.atomic_number + 1}.")
+
+            if isinstance(fractions, u.Quantity):
+                fractions = fractions.to(u.m ** -3)
+                self.n_elem = np.sum(fractions)
+                self._ionic_fractions = np.array(fractions/self.n_elem)
+            else:
+                fractions = np.array(fractions, dtype=np.float64)
+                sum_of_fractions = np.sum(fractions)
+                all_nans = np.all(np.isnan(fractions))
+
+                if not all_nans:
+                    if np.any(fractions < 0) or np.any(fractions > 1):
+                        raise AtomicError("Ionic fractions must be between 0 and 1.")
+
+                    if not np.isclose(sum_of_fractions, 1, rtol=0, atol=self.tol):
+                        raise AtomicError("Ionic fractions must sum to one.")
+
+                self._ionic_fractions = fractions
+
+        except Exception as exc:
+            raise AtomicError(
+                f"Unable to set ionic fractions of {self._element} "
+                f"to {fractions}.") from exc
+
+    @property
     def equil_ionic_fractions(self, T_e: u.K = None):
         """
         Return the equilibrium ionic fractions for temperature ``T_e``
@@ -457,25 +497,38 @@ class IonizationState:
         # self.ionic_fractions = self.equil_ionic_fractions
         raise NotImplementedError
 
-    @property
-    def atomic_number(self) -> int:
-        """Return the atomic number of the element."""
-        return self._particle.atomic_number
+    def _is_normalized(self, tol: Optional[Real] = None) -> bool:
+        """
+        Return `True` if the sum of the ionization fractions is equal to
+        one within the allowed tolerance, and `False` otherwise.
+        """
+        tol = tol if tol is not None else self.tol
+        if not isinstance(tol, Real):
+            raise TypeError("tol must be an int or float.")
+        if not 0 <= tol < 1:
+            raise ValueError("Need 0 <= tol < 1.")
+        total = np.sum(self._ionic_fractions)
+        return np.isclose(total, 1, atol=tol, rtol=0)
+
+    def normalize(self) -> None:
+        """
+        Normalize the ionization state distribution (if set) so that the
+        sum becomes equal to one.
+        """
+        self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)
 
     @property
     def _element(self) -> str:
         """Return the atomic symbol of the element."""
-        return self._particle.element
+        return self._particle_instance.element
 
     @property
-    def _isotope(self) -> str:
+    def _isotope(self) -> Optional[str]:
         """
         Return the isotope symbol for an isotope, or `None` if the
         particle is not an isotope.
         """
-        # Returning None when not an isotope makes it easier to do
-        # things like: symbol = x.isotope if x.isotope else x.element
-        return self._particle.isotope
+        return self._particle_instance.isotope
 
     @property
     def base_particle(self) -> str:
@@ -483,12 +536,20 @@ class IonizationState:
         return self._isotope if self._isotope else self._element
 
     @property
+    def atomic_number(self) -> int:
+        """Return the atomic number of the element."""
+        return self._particle_instance.atomic_number
+
+    @property
     def _particle_instances(self) -> List[Particle]:
         """
         Return a list of the `~plasmapy.atomic.Particle` class
         instances corresponding to each ion.
         """
-        return [Particle(self._particle.particle, Z=i) for i in range(self.atomic_number + 1)]
+        return [
+            Particle(self._particle_instance.particle, Z=i)
+            for i in range(self.atomic_number + 1)
+        ]
 
     @property
     def ionic_symbols(self) -> List[str]:
@@ -538,26 +599,6 @@ class IonizationState:
         return np.flatnonzero(
             self.ionic_fractions == self.ionic_fractions.max()
         ).tolist()
-
-    def _is_normalized(self, tol: Optional[Real] = None) -> bool:
-        """
-        Return `True` if the sum of the ionization fractions is equal to
-        one within the allowed tolerance, and `False` otherwise.
-        """
-        tol = tol if tol is not None else self.tol
-        if not isinstance(tol, Real):
-            raise TypeError("tol must be an int or float.")
-        if not 0 <= tol < 1:
-            raise ValueError("Need 0 <= tol < 1.")
-        total = np.sum(self._ionic_fractions)
-        return np.isclose(total, 1, atol=tol, rtol=0)
-
-    def normalize(self) -> None:
-        """
-        Normalize the ionization state distribution so that the sum
-        becomes equal to one.
-        """
-        self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)
 
     @property
     def tol(self) -> Real:

@@ -246,9 +246,9 @@ class Test_IonizationState:
             self.instances[test_name].atomic_number,
         )
 
-        expected_element = self.instances[test_name]._particle.element
-        expected_isotope = self.instances[test_name]._particle.isotope
-        expected_atomic_number = self.instances[test_name]._particle.atomic_number
+        expected_element = self.instances[test_name]._particle_instance.element
+        expected_isotope = self.instances[test_name]._particle_instance.isotope
+        expected_atomic_number = self.instances[test_name]._particle_instance.atomic_number
 
         resulting_identifications = Identifications(
             expected_element,
@@ -272,13 +272,13 @@ class Test_IonizationState:
             instance.tol = tol
 
     @pytest.mark.parametrize('test_name', test_cases.keys())
-    def test_particles(self, test_name):
+    def test_particle_instances(self, test_name):
         """
         Test that `IonizationState` returns the correct `Particle`
         instances.
         """
         instance = self.instances[test_name]
-        atom = instance._isotope if instance._particle.isotope else instance._element
+        atom = instance._isotope if instance._particle_instance.isotope else instance._element
         nstates = instance.atomic_number + 1
         expected_particles = [Particle(atom, Z=Z) for Z in range(nstates)]
         assert expected_particles == instance._particle_instances, (
@@ -365,6 +365,7 @@ class Test_IonizationState:
         result_from_symbol = instance[symbol]
         assert result_from_charge == result_from_symbol
 
+
 IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
 
 tests_for_exceptions = {
@@ -442,13 +443,13 @@ expected_properties = {
 
 instance = IonizationState(**kwargs)
 
+
 @pytest.mark.parametrize('key', expected_properties.keys())
 def test_IonizationState_attributes(key):
     """
     Test a specific case that the `IonizationState` attributes are
     working as expected.
     """
-
     expected = expected_properties[key]
     actual = eval(f'instance.{key}')
 
@@ -469,9 +470,12 @@ def test_nans():
     Test that when no ionic fractions or temperature are inputted,
     the result is an array full of `~numpy.nan` of the right size.
     """
-    instance = IonizationState('He')
-    assert len(instance.ionic_fractions) == 3
-    assert np.all([np.isnan(instance.ionic_fractions[i]) for i in range(3)])
+    element = 'He'
+    instance = IonizationState(element)
+    assert len(instance.ionic_fractions) == atomic_number(element) + 1, \
+        f"Incorrect number of ionization states for {element}"
+    assert np.all([np.isnan(instance.ionic_fractions[i]) for i in range(3)]), \
+        f"When no ionic fractions are set"
 
 
 def test_setting_ionic_fractions():
@@ -481,12 +485,74 @@ def test_setting_ionic_fractions():
     assert np.allclose(instance.ionic_fractions, new_ionic_fractions)
 
 
-def test_number_density_setter():
-    instance = IonizationState('H')
-    instance.number_densities = u.Quantity([0.1, 0.2], unit=u.m**-3)
-    with pytest.raises(AtomicError, message="cannot be negative"):
-        instance.number_densities = u.Quantity([-0.1, 0.2], unit=u.m**-3)
-    with pytest.raises(AtomicError, message="Incorrect number of charge states"):
-        instance.number_densities = u.Quantity([0.1, 0.2, 0.3], unit=u.m**-3)
-    with pytest.raises(u.UnitsError):
-        instance.number_densities = u.Quantity([0.1, 0.2], unit=u.kg)
+class Test_IonizationStateNumberDensitiesSetter:
+    """Test that setting IonizationState.number_densities works correctly."""
+
+    def setup_class(self):
+        self.element = 'H'
+        self.valid_number_densities = u.Quantity([0.1, 0.2], unit = u.m ** -3)
+        self.expected_n_elem = np.sum(self.valid_number_densities)
+        self.expected_ionic_fractions = self.valid_number_densities / self.expected_n_elem
+        try:
+            self.instance = IonizationState(self.element)
+        except Exception as exc:
+            raise AtomicError(
+                "Unable to instantiate IonizationState with no ionic "
+                "fractions") from exc
+
+    def test_setting_number_densities(self):
+        try:
+            self.instance.number_densities = self.valid_number_densities
+        except Exception as exc:
+            raise AtomicError(
+                f"Unable to set number densities of {self.element} to "
+                f"{self.valid_number_densities}.") from exc
+
+        assert u.quantity.allclose(
+            self.instance.number_densities,
+            self.valid_number_densities), (
+            f"The number densities of {self.element} were set to "
+            f"{self.instance.number_densities} instead of the expceted "
+            f"value of {self.valid_number_densities}.")
+
+    def test_ionic_fractions(self):
+        assert np.allclose(
+            self.instance.ionic_fractions,
+            self.expected_ionic_fractions), (
+            "The IonizationState.ionic_fractions attribute was not set "
+            "correctly after the number densities were set.")
+
+    def test_n_elem(self):
+        assert u.quantity.allclose(
+            self.instance.n_elem,
+            self.expected_n_elem), (
+            "IonizationState.n_elem not set correctly after "
+            "number_densities was set.")
+
+    def test_n_e(self):
+        assert u.quantity.allclose(
+            self.instance.n_e,
+            self.valid_number_densities[1]), (
+            "IonizationState.n_e not set correctly after "
+            "number_densities was set.")
+
+    def test_that_negative_density_raises_error(self):
+        with pytest.raises(AtomicError, message="cannot be negative"):
+            self.instance.number_densities = u.Quantity([-0.1, 0.2], unit=u.m**-3)
+
+    def test_incorrect_number_of_charge_states_error(self):
+        with pytest.raises(AtomicError, message="Incorrect number of charge states"):
+            self.instance.number_densities = u.Quantity([0.1, 0.2, 0.3], unit=u.m**-3)
+
+    def test_incorrect_units_error(self):
+        with pytest.raises(u.UnitsError):
+            self.instance.number_densities = u.Quantity([0.1, 0.2], unit=u.kg)
+
+    # The following two tests are not related to setting the
+    # number_densities attribute, but are helpful to test anyway
+
+    def test_T_e_isnan_when_not_set(self):
+        assert np.isnan(self.instance.T_e)
+
+    def test_kappa_isinf_when_not_set(self):
+        assert np.isinf(self.instance.kappa)
