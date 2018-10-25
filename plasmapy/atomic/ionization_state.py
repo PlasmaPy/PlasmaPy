@@ -140,7 +140,7 @@ class IonizationState:
                 f"{particle.particle}.") from exc
 
     def __str__(self) -> str:
-        return f"<IonizationState instance for {self.particle}>"
+        return f"<IonizationState instance for {self.base_particle}>"
 
     def _get_states_info(self, minimum_ionic_fraction=0.01) -> List[str]:
         """
@@ -170,7 +170,7 @@ class IonizationState:
 
     def __repr__(self) -> str:
         """Show diagnostic information."""
-        output = f"IonizationState instance for {self.particle}"
+        output = f"IonizationState instance for {self.base_particle}"
 
         if np.any(np.isnan(self.ionic_fractions)):
             return output
@@ -214,8 +214,8 @@ class IonizationState:
                         f"{value} is not a valid integer charge or "
                         f"particle.") from exc
 
-            same_element = value.element == self.element
-            same_isotope = value.isotope == self.isotope
+            same_element = value.element == self._element
+            same_isotope = value.isotope == self._isotope
             has_charge_info = value.is_category(any_of=["charged", "uncharged"])
 
             if same_element and same_isotope and has_charge_info:
@@ -284,8 +284,8 @@ class IonizationState:
                 "An instance of the IonizationState class may only be "
                 "compared with another IonizationState instance.")
 
-        same_element = self.element == other.element
-        same_isotope = self.isotope == other.isotope
+        same_element = self._element == other._element
+        same_isotope = self._isotope == other._isotope
 
         if not same_element or not same_isotope:
             raise AtomicError(
@@ -367,7 +367,7 @@ class IonizationState:
 
         except Exception as exc:
             raise AtomicError(
-                f"Unable to set ionic fractions of {self.element} "
+                f"Unable to set ionic fractions of {self._element} "
                 f"to {fractions}.") from exc
 
     @property
@@ -412,7 +412,9 @@ class IonizationState:
         if np.any(value.value < 0):
             raise AtomicError("Number densities cannot be negative.")
         if len(value) != self.atomic_number + 1:
-            raise AtomicError(f"Incorrect number of charge states for {self.particle}")
+            raise AtomicError(
+                f"Incorrect number of charge states for "
+                f"{self.base_particle}")
         value = value.to(u.m ** -3)
 
         self._n_elem = value.sum()
@@ -461,12 +463,12 @@ class IonizationState:
         return self._particle.atomic_number
 
     @property
-    def element(self) -> str:
+    def _element(self) -> str:
         """Return the atomic symbol of the element."""
         return self._particle.element
 
     @property
-    def isotope(self) -> str:
+    def _isotope(self) -> str:
         """
         Return the isotope symbol for an isotope, or `None` if the
         particle is not an isotope.
@@ -476,12 +478,12 @@ class IonizationState:
         return self._particle.isotope
 
     @property
-    def particle(self) -> str:
+    def base_particle(self) -> str:
         """Return the symbol of the element or isotope."""
-        return self.isotope if self.isotope else self.element
+        return self._isotope if self._isotope else self._element
 
     @property
-    def particles(self) -> List[Particle]:
+    def _particle_instances(self) -> List[Particle]:
         """
         Return a list of the `~plasmapy.atomic.Particle` class
         instances corresponding to each ion.
@@ -491,7 +493,7 @@ class IonizationState:
     @property
     def ionic_symbols(self) -> List[str]:
         """Return the ionic symbols for all charge states."""
-        return [particle.ionic_symbol for particle in self.particles]
+        return [particle.ionic_symbol for particle in self._particle_instances]
 
     @property
     def integer_charges(self) -> np.ndarray:
@@ -504,7 +506,7 @@ class IonizationState:
         if np.nan in self.ionic_fractions:
             raise ChargeError(
                 "Z_mean cannot be found because no ionic fraction "
-                f"information is available for {self.particle}.")
+                f"information is available for {self.base_particle}.")
         return np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1))
 
     @property
@@ -530,7 +532,7 @@ class IonizationState:
         """
         if np.any(np.isnan(self.ionic_fractions)):
             raise AtomicError(
-                f"Cannot find most abundant ion of {self.particle} "
+                f"Cannot find most abundant ion of {self.base_particle} "
                 f"because the ionic fractions have not been defined.")
 
         return np.flatnonzero(
