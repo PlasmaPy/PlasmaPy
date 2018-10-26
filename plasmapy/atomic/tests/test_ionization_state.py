@@ -490,7 +490,7 @@ class Test_IonizationStateNumberDensitiesSetter:
 
     def setup_class(self):
         self.element = 'H'
-        self.valid_number_densities = u.Quantity([0.1, 0.2], unit = u.m ** -3)
+        self.valid_number_densities = u.Quantity([0.1, 0.2], unit=u.m**-3)
         self.expected_n_elem = np.sum(self.valid_number_densities)
         self.expected_ionic_fractions = self.valid_number_densities / self.expected_n_elem
         try:

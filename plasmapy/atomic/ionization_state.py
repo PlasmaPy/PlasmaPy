@@ -243,7 +243,7 @@ class IonizationState:
         """
         raise NotImplementedError(
             "Dictionary assignment of an IonizationState instance is "
-            "not allowed. because the ionic fractions of for different "
+            "not allowed because the ionic fractions for different "
             "ionization levels should be set simultaneously.")
 
     def __iter__(self):
@@ -318,11 +318,12 @@ class IonizationState:
         same_n_elem = np.isnan(self.n_elem) and np.isnan(other.n_elem) or \
             u.allclose(self.n_elem, other.n_elem, rtol=min_tol*u.m**-3, atol=0*u.m**-3)
 
-        same_fractions = np.allclose(
-            self.ionic_fractions,
-            other.ionic_fractions,
-            rtol=0,
-            atol=min_tol)
+        # For the next line, recall that np.nan == np.nan is False (sigh)
+
+        same_fractions = np.any([
+            np.allclose(self.ionic_fractions, other.ionic_fractions, rtol=0, atol=min_tol),
+            np.all(np.isnan(self.ionic_fractions)) and np.all(np.isnan(other.ionic_fractions)),
+        ])
 
         return np.all([same_element, same_isotope, same_T_e, same_n_elem, same_fractions])
 
