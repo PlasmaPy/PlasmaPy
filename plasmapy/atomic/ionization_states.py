@@ -152,7 +152,7 @@ class IonizationStates:
         two_inputs = len(values[0]) == 2
 
         if not one_input and not two_inputs:
-            raise TypeError(errmsg)
+            raise IndexError(errmsg)
 
         try:
             arg1 = values[0] if one_input else values[0][0]
@@ -175,11 +175,11 @@ class IonizationStates:
                 return State(
                     integer_charge=int_charge,
                     ionic_fraction=self.ionic_fractions[particle][int_charge],
-                    ionic_symbol=particle,
+                    ionic_symbol=particle_symbol(particle, Z=int_charge),
                     number_density=self.number_densities[particle][int_charge]
                 )
         except Exception as exc:
-            raise AtomicError(errmsg) from exc
+            raise IndexError(errmsg) from exc
 
     def __setitem__(self, key, value):
         if isinstance(value, dict):

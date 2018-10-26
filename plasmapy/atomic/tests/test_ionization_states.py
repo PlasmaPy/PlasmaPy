@@ -8,6 +8,8 @@ import astropy.units as u
 
 from plasmapy.utils import AtomicError, RunTestError, InvalidIsotopeError, run_test
 from plasmapy.atomic import (
+    State,
+    IonizationState,
     IonizationStates,
     atomic_number,
     mass_number,
@@ -429,7 +431,7 @@ class TestIonizationStatesAttributes:
 
     def test_kappa_defaults_to_inf(self):
         assert np.isinf(self.instance.kappa), \
-            "kappa does not default to a value of "
+            "kappa does not default to a value of inf."
 
     @pytest.mark.parametrize(
         "uninitialized_attribute",
@@ -470,10 +472,10 @@ class TestIonizationStatesAttributes:
         used for just H, while not changing the ionic fractions for He
         from the uninitialized default of an array of nans of length 3.
         """
-        new_fractions = [0.3, 0.7]
-        self.instance['H'] = new_fractions
+        self.new_fractions = [0.3, 0.7]
+        self.instance['H'] = self.new_fractions
         resulting_fractions = self.instance.ionic_fractions['H']
-        assert np.allclose(new_fractions, resulting_fractions), \
+        assert np.allclose(self.new_fractions, resulting_fractions), \
             "Ionic fractions for H not set using __setitem__."
         assert 'He' in self.instance.ionic_fractions.keys(), (
             "He is missing in ionic_fractions after __setitem__ was "
@@ -503,6 +505,80 @@ class TestIonizationStatesAttributes:
             raise Exception(f"Could not set log_abundances to {log_new_abundances}.") from exc
         else:
             check_abundances_consistency(self.instance.abundances, self.instance.log_abundances)
+
+    @pytest.mark.parametrize(
+        "invalid_indices", [
+            (1, 2, 3),
+            'C',
+            'H-1',
+            ('Fe', -1),
+            ('Fe', 27),
+            ('He', -1),
+            ('He', 3),
+            ('Fe', slice(3, 7)),
+        ])
+    def test_invalid_indices(self, invalid_indices):
+        with pytest.raises(IndexError):
+            self.instance[invalid_indices]
+
+    @pytest.mark.parametrize("index", ["H", "Fe"])
+    def test_getitem_one_index(self, index):
+        instance = self.instance
+        result = instance[index]
+
+        if np.all(np.isnan(instance.number_densities[index])):
+            inputs = instance.ionic_fractions[index]
+        else:
+            inputs = instance.number_densities[index]
+
+        expected = IonizationState(index, inputs, T_e=instance.T_e, kappa=instance.kappa)
+
+        assert isinstance(result, IonizationState)
+        assert result == expected
+
+    @pytest.mark.parametrize("indices", [("H", 1), ("Fe", 6)])
+    def test_getitem_two_indices(self, indices):
+        instance = self.instance
+        result = instance[indices]
+
+        particle = indices[0]
+        integer_charge = indices[1]
+
+        assert isinstance(result, State)
+
+        assert result.integer_charge == integer_charge
+
+        expected_ionic_fraction = instance.ionic_fractions[particle][integer_charge]
+
+        assert np.any([
+            np.isclose(result.ionic_fraction, expected_ionic_fraction),
+            np.isnan(result.ionic_fraction) and np.isnan(expected_ionic_fraction),
+        ])
+
+#        assert result.ionic_fraction == instance.ionic_fractions[particle][integer_charge]
+        assert result.ionic_symbol == particle_symbol(particle, Z=integer_charge)
+
+#    State = collections.namedtuple('State',
+#        ['integer_charge', 'ionic_fraction', 'ionic_symbol', 'number_density', ])
+
+
+
+#    @pytest.mark.parametrize("indices", [("H"), ("H", 1)])
+#    def test_indexing(self, indices):
+#        """
+#        Test that
+#
+#        """
+#        result = self.instance[indices]
+#        base_particle = indices[0]
+#        if len(indices) == 1:
+#            assert isinstance(result, IonizationState)
+#            assert np.allclose(self.instance.ionic_fractions[indices[0]])
+##            assert np.allclose([0.3, 0.7], result.ionic_fractions)
+#            assert result.base_particle == base_particle
+#        elif len(indices) == 2:
+#            assert isinstance(result, State)
+#            assert result.integer_charge == indices[1]
 
     def test_that_iron_ionic_fractions_are_still_undefined(self):
         assert 'Fe' in self.instance.ionic_fractions.keys()
