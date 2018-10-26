@@ -216,8 +216,8 @@ class IonizationState:
                         f"{value} is not a valid integer charge or "
                         f"particle.") from exc
 
-            same_element = value.element == self._element
-            same_isotope = value.isotope == self._isotope
+            same_element = value.element == self.element
+            same_isotope = value.isotope == self.isotope
             has_charge_info = value.is_category(any_of=["charged", "uncharged"])
 
             if same_element and same_isotope and has_charge_info:
@@ -297,8 +297,8 @@ class IonizationState:
                 "An instance of the IonizationState class may only be "
                 "compared with another IonizationState instance.")
 
-        same_element = self._element == other._element
-        same_isotope = self._isotope == other._isotope
+        same_element = self.element == other.element
+        same_isotope = self.isotope == other.isotope
 
         if not same_element or not same_isotope:
             raise AtomicError(
@@ -477,9 +477,8 @@ class IonizationState:
                 self._ionic_fractions = fractions
 
         except Exception as exc:
-            raise AtomicError(
-                f"Unable to set ionic fractions of {self._element} "
-                f"to {fractions}.") from exc
+            raise AtomicError(f"Unable to set ionic fractions of {self.element} "
+                              f"to {fractions}.") from exc
 
     @property
     def equil_ionic_fractions(self, T_e: u.K = None):
@@ -519,12 +518,12 @@ class IonizationState:
         self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)
 
     @property
-    def _element(self) -> str:
+    def element(self) -> str:
         """Return the atomic symbol of the element."""
         return self._particle_instance.element
 
     @property
-    def _isotope(self) -> Optional[str]:
+    def isotope(self) -> Optional[str]:
         """
         Return the isotope symbol for an isotope, or `None` if the
         particle is not an isotope.
@@ -534,7 +533,7 @@ class IonizationState:
     @property
     def base_particle(self) -> str:
         """Return the symbol of the element or isotope."""
-        return self._isotope if self._isotope else self._element
+        return self.isotope if self.isotope else self.element
 
     @property
     def atomic_number(self) -> int:

@@ -241,8 +241,8 @@ class Test_IonizationState:
         )
 
         expected_identifications = Identifications(
-            self.instances[test_name]._element,
-            self.instances[test_name]._isotope,
+            self.instances[test_name].element,
+            self.instances[test_name].isotope,
             self.instances[test_name].atomic_number,
         )
 
@@ -278,7 +278,7 @@ class Test_IonizationState:
         instances.
         """
         instance = self.instances[test_name]
-        atom = instance._isotope if instance._particle_instance.isotope else instance._element
+        atom = instance.base_particle
         nstates = instance.atomic_number + 1
         expected_particles = [Particle(atom, Z=Z) for Z in range(nstates)]
         assert expected_particles == instance._particle_instances, (
@@ -425,8 +425,8 @@ kwargs = {
 expected_properties = {
     'T_e': 5000.0 * u.K,
     'tol': 2e-14,
-    '_isotope': 'He-4',
-    '_element': 'He',
+    'isotope': 'He-4',
+    'element': 'He',
     'atomic_number': 2,
     'Z_mean': 1.3,
     'Z_rms': 1.51657508881031,
