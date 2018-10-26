@@ -183,7 +183,7 @@ class IonizationStates:
 
     def __setitem__(self, key, value):
         if isinstance(value, dict):
-            raise NotImplementedError("Dictionary assignment not implemented.")
+            raise TypeError("Dictionary assignment not implemented.")
         else:
             try:
                 particle = particle_symbol(key)
@@ -230,8 +230,6 @@ class IonizationStates:
         Test that the ionic fractions are approximately equal to
         another `~plasmapy.atomic.IonizationStates` instance.
         """
-        # TODO: Should we check temperatures, densities, and other
-        # parameters too?
 
         if not isinstance(other, IonizationStates):
             raise TypeError(
@@ -241,19 +239,44 @@ class IonizationStates:
         if self.base_particles != other.base_particles:
             raise AtomicError
 
-        tol = np.min([self.tol, other.tol])
+        min_tol = np.min([self.tol, other.tol])
 
-        for element in self.base_particles:
+        # Check any of a whole bunch of equality measures, recalling
+        # that np.nan == np.nan is False.
 
-            are_all_close = np.allclose(
-                self.ionic_fractions[element],
-                other.ionic_fractions[element],
-                atol=tol,
-                rtol=0,
-            )
+        for attribute in ['T_e', 'n_e', 'kappa']:
+            this = eval(f"self.{attribute}")
+            that = eval(f"other.{attribute}")
 
-            if not are_all_close:
+            this_equals_that = np.any([
+                this == that,
+                this is that,
+                np.isnan(this) and np.isnan(that),
+                np.isinf(this) and np.isinf(that),
+                u.quantity.allclose(this, that, rtol=min_tol),
+            ])
+
+            if not this_equals_that:
                 return False
+
+        for attribute in ['ionic_fractions', 'number_densities', 'abundances']:
+
+            this_dict = eval(f"self.{attribute}")
+            that_dict = eval(f"other.{attribute}")
+
+            for particle in self.base_particles:
+
+                this = this_dict[particle]
+                that = that_dict[particle]
+
+                this_equals_that = np.any([
+                    this is that,
+                    np.all(np.isnan(this)) and np.all(np.isnan(that)),
+                    u.quantity.allclose(this, that, rtol=min_tol),
+                ])
+
+                if not this_equals_that:
+                    return False
 
         return True
 
@@ -277,8 +300,6 @@ class IonizationStates:
     @u.quantity_input
     def n(self) -> u.m ** -3:
         """Return the number density scaling factor."""
-        if 'H' not in self.base_particles or self._pars['n'] is None:
-            raise AtomicError("The number density of hydrogen is not ")
         return self._pars['n']
 
     @n.setter
@@ -289,11 +310,9 @@ class IonizationStates:
         except u.UnitConversionError as exc:
             raise AtomicError("Units cannot be converted to u.m ** -3.") from exc
         except Exception as exc:
-            raise AtomicError(f"{n} is not a valid number density") from exc
-
+            raise AtomicError(f"{n} is not a valid number density.") from exc
         if n < 0 * u.m ** -3:
             raise AtomicError("Number density cannot be negative.")
-
         self._pars['n'] = n.to(u.m ** -3)
 
     @property
@@ -452,7 +471,47 @@ class IonizationStates:
 
     @ionic_fractions.setter
     def ionic_fractions(self, inputs: Union[Dict, List, Tuple]):
-        """Set the ionic fractions."""
+        """
+        Set the ionic fractions.
+
+        Notes
+        -----
+        The ionic fractions are initialized during instantiation of
+        `~plasmapy.atomic.IonizationStates`.  After this, the only way
+        to reset the ionic fractions via the ``ionic_fractions``
+        attribute is via a `dict` with elements or isotopes that are a
+        superset of the previous elements or isotopes.  However, you may
+        use item assignment of the `~plasmapy.atomic.IonizationState`
+        instance to assign new ionic fractions one element or isotope
+        at a time.
+
+        Raises
+        ------
+        AtomicError
+            If the ionic fractions cannot be set.
+
+        TypeError
+            If ``inputs`` is not a `list`, `tuple`, or `dict` during
+            instantiation, or if ``inputs`` is not a `dict` when it is
+            being set.
+
+        """
+        if hasattr(self, '_ionic_fractions'):
+            if not isinstance(inputs, dict):
+                raise TypeError(
+                    "Can only reset ionic_fractions with a dict if "
+                    "ionic_fractions has been set already.")
+            old_particles = set(self.base_particles)
+            new_particles = {particle_symbol(key) for key in inputs.keys()}
+            missing_particles = old_particles - new_particles
+            if missing_particles:
+                raise AtomicError(
+                    "Can only reset ionic fractions with a dict if "
+                    "the new base particles are a superset of the "
+                    "prior base particles.  To change ionic fractions "
+                    "for one base particle, use item assignment on the "
+                    "IonizationStates instance instead.")
+
         if isinstance(inputs, dict):
             original_keys = inputs.keys()
 
@@ -463,29 +522,24 @@ class IonizationStates:
                     "as a Quantity object if all ionic fractions are "
                     "Quantity arrays with units of inverse volume.")
 
-            # Create a dictionary of Particle instances
-
-            # TODO: clean up since Particle(Particle(x)) == Particle(x)
-
-            particles = dict()
-            for key in original_keys:
-                try:
-                    particles[key] = key if isinstance(key, Particle) else Particle(key)
-                except (InvalidParticleError, TypeError) as exc:
-                    raise AtomicError(
-                        f"Unable to create IonizationStates instance "
-                        f"because {key} is not a valid base_particle") from exc
+            try:
+                particles = {key: Particle(key) for key in original_keys}
+            except (InvalidParticleError, TypeError) as exc:
+                raise AtomicError(
+                    "Unable to create IonizationStates instance "
+                    "because not all particles are valid.") from exc
 
             # The particles whose ionization states are to be recorded
             # should be elements or isotopes but not ions or neutrals.
 
-            is_element = particles[key].is_category('element')
-            has_charge_info = particles[key].is_category(any_of=["charged", "uncharged"])
+            for key in particles.keys():
+                is_element = particles[key].is_category('element')
+                has_charge_info = particles[key].is_category(any_of=["charged", "uncharged"])
 
-            if not is_element or has_charge_info:
-                raise AtomicError(
-                    f"{key} is not an element or isotope without "
-                    f"charge information.")
+                if not is_element or has_charge_info:
+                    raise AtomicError(
+                        f"{key} is not an element or isotope without "
+                        f"charge information.")
 
             # We are sorting the elements/isotopes by atomic number and
             # mass number since we will often want to plot and analyze
@@ -543,7 +597,7 @@ class IonizationStates:
             try:
                 _particle_instances = [Particle(particle) for particle in inputs]
             except (InvalidParticleError, TypeError) as exc:
-                raise AtomicError("Invalid inputs to IonizationStates") from exc
+                raise AtomicError("Invalid inputs to IonizationStates.") from exc
 
             _particle_instances.sort(
                 key=lambda p: (p.atomic_number, p.mass_number if p.isotope else 0)
@@ -563,8 +617,6 @@ class IonizationStates:
             if _particle_instances[i - 1].element == _particle_instances[i].element:
                 if not _particle_instances[i - 1].isotope and _particle_instances[i].isotope:
                     raise AtomicError("Cannot have an element and isotopes of that element.")
-            if _particle_instances[i - 1].atomic_number > _particle_instances[i].atomic_number:
-                raise AtomicError("_particles has not been sorted.")
 
         self._particle_instances = _particle_instances
         self._base_particles = _elements_and_isotopes
@@ -607,14 +659,6 @@ class IonizationStates:
         states are being kept track of.
         """
         return self._base_particles
-
-    @base_particles.setter
-    def base_particles(self, particles):
-        if hasattr(self, "_base_particles"):
-            raise AtomicError(
-                "Cannot change base particles once they have been set.")
-        else:
-            self._base_particles = particles
 
     @property
     def tol(self) -> np.real:
