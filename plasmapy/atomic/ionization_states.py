@@ -689,7 +689,7 @@ class IonizationStates:
                         raise AtomicError(f"Ionic fractions for {key} are not normalized to 1.")
 
             # When the inputs provide the densities, the abundances must
-            # cannot have been provided because that would be redundant
+            # not have been provided because that would be redundant
             # or contradictory information.  The number density scaling
             # factor might or might not have been provided.  Have the
             # number density scaling factor default to the total number
