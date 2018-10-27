@@ -68,13 +68,13 @@ tests = {
     },
 
     'n': {
-        'inputs': {'H': [1, 0], 'He': [1, 0, 0]},
+        'inputs': {'He': [1, 0, 0], 'H': [1, 0]},
         'abundances': {'H': 1, 'He': 0.1},
         'n': 1e9 * u.cm ** -3,
     },
 
     'T_e and n': {
-        'inputs': {'H': [0.9, 0.1], 'He': [0.5, 0.3, 0.2]},
+        'inputs': {'H': [0.9, 0.1], 'helium': [0.5, 0.3, 0.2]},
         'abundances': {'H': 1, 'He': 0.1},
         'T_e': 1e4 * u.K,
         'n': 1e15 * u.m ** -3,
@@ -143,60 +143,30 @@ class TestIonizationStates:
         self.instances[test_name].info()
 
     @pytest.mark.parametrize('test_name', test_names)
-    def test_equality(self, test_name):
+    def test_simple_equality(self, test_name):
+        """Test that __eq__ is not extremely broken."""
         a = IonizationStates(**tests[test_name])
         b = IonizationStates(**tests[test_name])
         assert a == a, f"IonizationStates instance does not equal itself."
         assert a == b, f"IonizationStates instance does not equal identical instance."
 
-    """
-    @pytest.mark.parametrize('test_name', test_names)
-    def test_inequality(self, test_name):
-
-        errmsg = ""
-
-        original_kwargs = tests[test_name]
-        original_instance = IonizationStates(**original_kwargs)
-
-        items = [
-            ('T_e', 789135 * u.K),
-            ('kappa', 3.137),
-            ('n', 1.5e17 * u.m ** -3),
-        ]
-
-        for key, value in items:
-
-            new_kwargs = original_kwargs.copy()
-            new_kwargs[key] = value
-            altered_instance = IonizationStates(**new_kwargs)
-
-            if not (original_instance != altered_instance):
-                errmsg += (
-                    f"IonizationStates({original_kwargs}) != "
-                    f"IonizationStates({new_kwargs}) is not True.\n\n")
-
-        if errmsg:
-            raise AtomicError('\n\n' + errmsg)
-    """
-
     @pytest.mark.parametrize(
         'test_name',
         [test_name for test_name in test_names if isinstance(tests[test_name]['inputs'], dict)],
     )
-    def test_keys(self, test_name):
-        input_keys = tests[test_name]['inputs'].keys()
-        particles = [Particle(input_key) for input_key in input_keys]
-        expected_keys = [p.particle for p in particles]
-        actual_keys = [key for key in self.instances[test_name].ionic_fractions.keys()]
+    def test_that_particles_were_set_correctly(self, test_name):
+        input_particles = tests[test_name]['inputs'].keys()
+        particles = [Particle(input_particle) for input_particle in input_particles]
+        expected_particles = {p.particle for p in particles}
+        actual_particles = {particle for particle in self.instances[test_name].ionic_fractions.keys()}
 
-        assert actual_keys == expected_keys, (
+        assert actual_particles == expected_particles, (
             f"For test='{test_name}', the following should be equal:\n"
-            f"  actual_keys = {actual_keys}\n"
-            f"expected_keys = {expected_keys}"
-        )
+            f"  actual_particles = {actual_particles}\n"
+            f"expected_particles = {expected_particles}")
 
     @pytest.mark.parametrize('test_name', has_attribute('abundances', tests))
-    def test_abundances(self, test_name):
+    def test_that_abundances_kwarg_sets_abundances(self, test_name):
         try:
             actual_abundances = self.instances[test_name].abundances
         except Exception as exc:
@@ -213,7 +183,7 @@ class TestIonizationStates:
                 f"({elements_from_abundances}) for test {test_name}.")
 
     @pytest.mark.parametrize('test_name', test_names)
-    def test_element_sorting(self, test_name):
+    def test_that_elements_and_isotopes_are_sorted(self, test_name):
         elements = self.instances[test_name].base_particles
         before_sorting = []
         for element in elements:
@@ -232,7 +202,7 @@ class TestIonizationStates:
             f"where above is (atomic_number, mass_number if isotope else 0)")
 
     @pytest.mark.parametrize('test_name', test_names)
-    def test_ionic_fractions(self, test_name):
+    def test_that_ionic_fractions_are_set_correctly(self, test_name):
 
         errmsg = ""
 
@@ -240,7 +210,12 @@ class TestIonizationStates:
         inputs = tests[test_name]["inputs"]
 
         if isinstance(inputs, dict):
-            input_keys = tests[test_name]["inputs"].keys()
+            input_keys = list(tests[test_name]["inputs"].keys())
+
+            input_keys = sorted(
+                input_keys,
+                key=lambda k: (atomic_number(k), mass_number(k) if Particle(k).isotope else 0)
+            )
 
             for element, input_key in zip(elements_actual, input_keys):
                 expected = tests[test_name]["inputs"][input_key]
@@ -342,7 +317,7 @@ class TestIonizationStates:
                 f"{', '.join(not_normalized_elements)}.")
 
 
-def test_IonizationStates_abundances():
+def test_abundances_consistency():
     """Test that ``abundances`` and ``log_abundances`` are consistent."""
 
     inputs = {'H': [1, 0], 'He': [1, 0, 0]}

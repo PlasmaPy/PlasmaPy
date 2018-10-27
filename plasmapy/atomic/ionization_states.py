@@ -361,9 +361,6 @@ class IonizationStates:
                 ])
 
                 if not this_equals_that:
-
-                    print('this = ', this)
-                    print('that = ', that)
                     return False
 
         return True
