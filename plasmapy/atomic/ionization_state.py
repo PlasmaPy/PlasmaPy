@@ -237,14 +237,20 @@ class IonizationState:
 
     def __setitem__(self, key: Any, value: Any):
         """
-        Raise a `NotImplementedError` because the ionic fractions for
-        different ionization levels should be set simultaneously due to
-        the normalization constraint.
+        Raise a `NotImplementedError`.
+
+        Notes
+        -----
+        The ionic fractions for different ionization levels must be set
+        simultaneously due to the normalization constraint, so item
+        assignment is not allowed.
+
         """
         raise NotImplementedError(
-            "Dictionary assignment of an IonizationState instance is "
-            "not allowed because the ionic fractions for different "
-            "ionization levels should be set simultaneously.")
+            "Item assignment of an IonizationState instance is not "
+            "allowed because the ionic fractions for different "
+            "ionization levels must be set simultaneously due to the "
+            "normalization constraint.")
 
     def __iter__(self):
         """Initialize an instance prior to iteration."""
