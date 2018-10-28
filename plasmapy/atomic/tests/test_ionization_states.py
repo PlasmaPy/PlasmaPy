@@ -767,6 +767,6 @@ class TestIonizationStatesDensityEqualities:
             print(f"{that} kwargs:\n {self.dict_of_kwargs[that]}\n")
             self.instances[that].info()
             descriptor = "equal" if expect_equality else "unequal"
-            raise pytest.fail.Exception(
+            pytest.fail(
                 f"Cases {this} and {that} should be {descriptor} but "
                 f"are not.")
