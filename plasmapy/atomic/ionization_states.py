@@ -234,37 +234,78 @@ class IonizationStates:
             raise IndexError(errmsg) from exc
 
     def __setitem__(self, key, value):
-        if isinstance(value, dict):
-            raise TypeError("Item assignment not implemented for dictionaries.")
-        else:
+        """
+        Set the ionic fractions of ``key`` to ``value``.
+
+        If ``value`` is a `~astropy.units.Quantity` with units of number
+        density that retains the total element density, then the ionic
+        fractions will be set proportionately.
+
+        """
+
+        errmsg = (
+            f"Cannot set item for this IonizationStates instance for "
+            f"key = {repr(key)} and value = {repr(value)}")
+
+        try:
+            particle = particle_symbol(key)
+            self.ionic_fractions[key]
+        except (AtomicError, TypeError):
+            raise KeyError(
+                f"{errmsg} because {repr(key)} is an invalid particle."
+            ) from None
+        except KeyError:
+            raise KeyError(
+                f"{errmsg} because {repr(key)} is not one of the base "
+                f"particles whose ionization state is being kept track "
+                f"of.") from None
+
+        if isinstance(value, u.Quantity) and value.unit != u.dimensionless_unscaled:
             try:
-                particle = particle_symbol(key)
-                if particle not in self.base_particles:
-                    raise AtomicError(
-                        f"{key} is not one of the particles kept track "
-                        f"of by this IonizationStates instance.")
+                new_number_densities = value.to(u.m ** -3)
+            except u.UnitConversionError:
+                raise ValueError(
+                    f"{errmsg} because the units of value do not "
+                    f"correspond to a number density.") from None
 
-                new_fractions = np.array(value, dtype=np.float64)
+            old_n_elem = np.sum(self.number_densities[particle])
+            new_n_elem = np.sum(new_number_densities)
+            if not u.quantity.allclose(old_n_elem, new_n_elem, rtol=self.tol):
+                raise ValueError(
+                    f"{errmsg} because the old element number density "
+                    f"of {old_n_elem} is not approximately equal to "
+                    f"the new element number density of {new_n_elem}."
+                ) from None
+            value = new_number_densities / new_n_elem
 
-                if not np.all(np.isnan(new_fractions)):
+        try:
+            new_fractions = np.array(value, dtype=np.float64)
+        except Exception as exc:
+            raise TypeError(
+                f"{errmsg} because value cannot be converted into an "
+                f"array that represents ionic fractions.")
 
-                    if new_fractions.min() < 0 or new_fractions.max() > 1:
-                        raise ValueError("Ionic fractions must be between 0 and 1.")
+        required_nstates = atomic_number(particle) + 1
+        new_nstates = len(new_fractions)
+        if new_nstates != required_nstates:
+            raise ValueError(
+                f"{errmsg} because value must have {required_nstates} "
+                f"ionization levels but instead corresponds to "
+                f"{new_nstates} levels.")
 
-                    normalized = np.isclose(np.sum(new_fractions), 1)
-                    if not normalized and not all_nans:
-                        raise ValueError("Ionic fractions are not normalized.")
+        all_nans = np.all(np.isnan(new_fractions))
+        if not all_nans and (new_fractions.min() < 0 or new_fractions.max() > 1):
+            raise ValueError(
+                f"{errmsg} because the new ionic fractions are not "
+                f"all between 0 and 1.")
 
-                if len(new_fractions) != atomic_number(particle) + 1:
-                    raise ValueError(f"Incorrect size of ionic fraction array for {key}.")
+        normalized = np.isclose(np.sum(new_fractions), 1, rtol=self.tol)
+        if not normalized and not all_nans:
+            raise ValueError(
+                f"{errmsg} because the ionic fractions are not "
+                f"normalized to one.")
 
-                self._ionic_fractions[particle][:] = new_fractions[:]
-
-            except Exception as exc:
-                raise AtomicError(
-                    f"Cannot set item for this IonizationStates "
-                    f"instance for key = {repr(key)} and value = "
-                    f"{repr(value)}") from exc
+        self._ionic_fractions[particle][:] = new_fractions[:]
 
     def __iter__(self):
         """

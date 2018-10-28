@@ -77,7 +77,7 @@ class Test_IonizationState:
         try:
             self.instances[test_name] = IonizationState(**test_cases[test_name])
         except Exception as exc:
-            raise RunTestError(
+            raise pytest.fail.Exception(
                 f"Unable to create IonizationState instance for "
                 f"test case {test_name}.") from exc
 
@@ -106,7 +106,8 @@ class Test_IonizationState:
             inputted_fractions = inputted_fractions.to(u.m ** -3)
             inputted_fractions = (inputted_fractions / inputted_fractions.sum()).value
         if not np.allclose(instance.ionic_fractions, inputted_fractions):
-            raise RunTestError(f"Mismatch in ionic fractions for test {test_name}")
+            raise pytest.fail.Exception(
+                f"Mismatch in ionic fractions for test {test_name}")
 
     def test_equal_to_itself(self):
         """
@@ -148,7 +149,7 @@ class Test_IonizationState:
         try:
             states = [state for state in self.instances[test_name]]
         except Exception as exc:
-            raise AtomicError(
+            raise pytest.fail.Exception(
                 f"Unable to perform iteration for {test_name}.") from exc
 
         try:
@@ -156,7 +157,7 @@ class Test_IonizationState:
             ionic_fractions = np.array([state.ionic_fraction for state in states])
             ionic_symbols = [state.ionic_symbol for state in states]
         except Exception as exc:
-            raise AtomicError(
+            raise pytest.fail.Exception(
                 f"An attribute may be misnamed or missing ({test_name}).") from exc
 
         try:
@@ -199,7 +200,7 @@ class Test_IonizationState:
                 f"resulted in the following errors when attempting to "
                 f"iterate."))
             errmsg = " ".join(errors)
-            raise AtomicError(errmsg)
+            raise pytest.fail.Exception(errmsg)
 
     def test_slicing_error(self):
         """
@@ -343,7 +344,7 @@ class Test_IonizationState:
                     f'the values is:\n\n{set_of_str_values}')
 
         if errors:
-            raise AtomicError(str.join('', errors))
+            raise pytest.fail.Exception(str.join('', errors))
 
     @pytest.mark.parametrize('attr', ['integer_charge', 'ionic_fraction', 'ionic_symbol'])
     def test_State_attrs(self, attr):
@@ -496,7 +497,7 @@ class Test_IonizationStateNumberDensitiesSetter:
         try:
             self.instance = IonizationState(self.element)
         except Exception as exc:
-            raise AtomicError(
+            raise pytest.fail.Exception(
                 "Unable to instantiate IonizationState with no ionic "
                 "fractions") from exc
 
@@ -504,7 +505,7 @@ class Test_IonizationStateNumberDensitiesSetter:
         try:
             self.instance.number_densities = self.valid_number_densities
         except Exception as exc:
-            raise AtomicError(
+            raise pytest.fail.Exception(
                 f"Unable to set number densities of {self.element} to "
                 f"{self.valid_number_densities}.") from exc
 

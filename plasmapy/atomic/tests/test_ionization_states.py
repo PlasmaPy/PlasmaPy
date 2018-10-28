@@ -35,7 +35,6 @@ def check_abundances_consistency(abundances: Dict[str, Real], log_abundances: Di
         assert np.isclose(abundance_from_abundances, abundance_from_log_abundances), (
             f"Mismatch between abundances and log_abundances.")
 
-
 def has_attribute(attribute, tests_dict):
     cases = [test for test in tests_dict.keys() if attribute in tests_dict[test].keys()]
     if cases:
@@ -126,7 +125,7 @@ class TestIonizationStates:
         try:
             self.instances[test_name] = IonizationStates(**tests[test_name])
         except Exception as exc:
-            raise AtomicError(
+            raise pytest.fail.Exception(
                 f"Cannot create IonizationStates instance for "
                 f"test='{test_name}'") from exc
 
@@ -170,13 +169,13 @@ class TestIonizationStates:
         try:
             actual_abundances = self.instances[test_name].abundances
         except Exception as exc:
-            raise AttributeError("Unable to access abundances.") from exc
+            raise pytest.fail.Exception("Unable to access abundances.") from exc
 
         elements = set(self.instances[test_name].base_particles)
         elements_from_abundances = set(actual_abundances.keys())
 
         if not elements.issubset(elements_from_abundances):
-            raise RunTestError(
+            raise pytest.fail.Exception(
                 f"The elements whose IonizationStates are being kept "
                 f"track of ({elements}) are not a subset of the "
                 f"elements whose abundances are being kept track of "
@@ -242,7 +241,7 @@ class TestIonizationStates:
             for element in elements_expected:
                 assert all(np.isnan(self.instances[test_name].ionic_fractions[element]))
         if errmsg:
-            raise AtomicError(errmsg)
+            raise pytest.fail.Exception(errmsg)
 
     @pytest.mark.parametrize('test_name', test_names)
     def test_getitem_element(self, test_name):
@@ -254,13 +253,16 @@ class TestIonizationStates:
             try:
                 expected = instance.ionic_fractions[key]
             except Exception as exc:
-                raise AtomicError(f"Unable to get ionic_fractions for '{key}' in "
-                                  f"test='{test_name}'.") from exc
+                raise pytest.fail.Exception(
+                    f"Unable to get ionic_fractions for '{key}' in "
+                    f"test='{test_name}'.") from exc
 
             try:
                 actual = instance[key].ionic_fractions
             except Exception as exc:
-                raise AtomicError(f"Unable to get item {key} in test={test_name}.") from exc
+                raise pytest.fail.Exception(
+                    f"Unable to get item {key} in test={test_name}."
+                ) from exc
 
             try:
                 if all(np.isnan(expected)):
@@ -268,14 +270,16 @@ class TestIonizationStates:
                 else:
                     test_passed = np.allclose(expected, actual)
             except Exception:
-                raise TypeError(f"For test='{test_name}' and key='{key}', cannot "
-                                f"compare expected ionic fractions of {expected} "
-                                f"with the resulting ionic fractions of {actual}.") from None
+                raise TypeError(
+                    f"For test='{test_name}' and key='{key}', cannot "
+                    f"compare expected ionic fractions of {expected} "
+                    f"with the resulting ionic fractions of {actual}.") from None
 
             if not test_passed:
-                raise AtomicError(f"For test='{test_name}' and key='{key}', the expected "
-                                  f"ionic fractions of {expected} are not all equal "
-                                  f"to the resulting ionic fractions of {actual}.")
+                raise pytest.fail.Exception(
+                    f"For test='{test_name}' and key='{key}', the expected "
+                    f"ionic fractions of {expected} are not all equal "
+                    f"to the resulting ionic fractions of {actual}.")
 
     @pytest.mark.parametrize('test_name', test_names)
     def test_getitem_element_intcharge(self, test_name):
@@ -311,9 +315,9 @@ class TestIonizationStates:
                 not_normalized_elements.append(element)
 
         if not_normalized_elements:
-            raise AtomicError(
-                f"In test='{test_name}', ionic fractions for the following "
-                f"particles were not normalized: "
+            raise pytest.fail.Exception(
+                f"In test = '{test_name}', ionic fractions for the "
+                f"following particles were not normalized: "
                 f"{', '.join(not_normalized_elements)}.")
 
 
@@ -362,9 +366,9 @@ class TestIonizationStatesItemAssignment:
         try:
             self.states[element] = new_states
         except Exception as exc:
-            raise Exception(
-                "Unable to change ionic fractions for an IonizationStates "
-                "instance.") from exc
+            raise pytest.fail.Exception(
+                "Unable to change ionic fractions for an "
+                "IonizationStates instance.") from exc
         resulting_states = self.states[element].ionic_fractions
 
         assert np.any([
@@ -373,11 +377,12 @@ class TestIonizationStatesItemAssignment:
         ])
 
     @pytest.mark.parametrize('base_particle, new_states, expected_exception', [
-        ('H', (0, 0.9), AtomicError),
-        ('H', (-0.1, 1.1), AtomicError),
-        ('H', (0.0, 1.0, 0.0), AtomicError),
-        ('Li', (0.0, 1.0, 0.0, 0.0), AtomicError),
-        ('sdfasd', (0, 1), AtomicError),
+        ('H', (0, 0.9), ValueError),
+        ('H', (-0.1, 1.1), ValueError),
+        ('H', (0.0, 1.0, 0.0), ValueError),
+        ('Li', (0.0, 1.0, 0.0, 0.0), KeyError),
+        ('sdfasd', (0, 1), KeyError),
+        (KeyError, KeyError, KeyError),
     ])
     def test_setitem_errors(self, base_particle, new_states, expected_exception):
         with pytest.raises(expected_exception):
@@ -487,6 +492,24 @@ class TestIonizationStatesAttributes:
             "He ionic fractions are not all nans after __setitem__ "
             "was used to set H ionic fractions.")
 
+    @pytest.mark.parametrize(
+        "key, invalid_fracs, expected_exception",[
+            ('H', [-0.01, 1.01], ValueError),
+            ('H', [0.4, 0.5], ValueError),
+            ('H', [0.5, 0.5, 0.0], ValueError),
+            ('He', [0.5, 0.5], ValueError),
+            ('He', [0.1, 0.9, 0.0, 0.0], ValueError),
+            ('He', [0.9, 0.1, 0.0] * u.m ** -2, ValueError),
+            ('He', [-0.01, 0.99, 0.02], ValueError),
+            ('He', [1.01, -0.02, 0.01], ValueError),
+        ])
+    def test_setting_invalid_ionfracs(self, key, invalid_fracs, expected_exception):
+        errmsg = (
+            f"No {expected_exception} is raised when trying to assign "
+            f"{invalid_fracs} to {key} in an IonizationStates instance.")
+        with pytest.raises(expected_exception, message=errmsg):
+            self.instance[key] = invalid_fracs
+
     def test_setting_abundances(self):
         new_abundances = {'H': 1, 'He': 0.1, 'Fe': 1e-5, 'Au': 1e-8}
 
@@ -498,14 +521,18 @@ class TestIonizationStatesAttributes:
         try:
             self.instance.abundances = new_abundances
         except Exception as exc:
-            raise Exception(f"Could not set abundances to {new_abundances}.") from exc
+            raise pytest.fail.Exception(
+                f"Could not set abundances to {new_abundances}."
+            ) from exc
         else:
             check_abundances_consistency(self.instance.abundances, self.instance.log_abundances)
 
         try:
             self.instance.log_abundances = log_new_abundances
         except Exception as exc:
-            raise Exception(f"Could not set log_abundances to {log_new_abundances}.") from exc
+            raise pytest.fail.Exception(
+                f"Could not set log_abundances to {log_new_abundances}."
+            ) from exc
         else:
             check_abundances_consistency(self.instance.abundances, self.instance.log_abundances)
 
@@ -617,6 +644,11 @@ tests_for_exceptions = {
     'imaginary abundance': IE({
         "inputs": {"H": [0.1, 0.9], "He": [0.4, 0.5, 0.1]},
         "abundances": {"H": 1, "He": 0.1j},
+    }, AtomicError),
+
+    'wrong density units': IE({
+        "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -2},
+        "abundances": {"H": 1, "He": 0.1},
     }, AtomicError),
 
     'abundance redundance': IE({
@@ -735,6 +767,6 @@ class TestIonizationStatesDensityEqualities:
             print(f"{that} kwargs:\n {self.dict_of_kwargs[that]}\n")
             self.instances[that].info()
             descriptor = "equal" if expect_equality else "unequal"
-            raise AtomicError(
+            raise pytest.fail.Exception(
                 f"Cases {this} and {that} should be {descriptor} but "
                 f"are not.")
