@@ -5,7 +5,7 @@ import numpy as np
 import astropy.units as u
 
 from plasmapy.atomic.ionization_state import IonizationState
-from plasmapy.utils import AtomicError, RunTestError, InvalidIsotopeError, run_test
+from plasmapy.utils import AtomicError, InvalidIsotopeError, run_test
 from plasmapy.atomic import (
     atomic_number,
     atomic_symbol,
@@ -76,10 +76,8 @@ class Test_IonizationState:
         """
         try:
             self.instances[test_name] = IonizationState(**test_cases[test_name])
-        except Exception as exc:
-            raise pytest.fail.Exception(
-                f"Unable to create IonizationState instance for "
-                f"test case {test_name}.") from exc
+        except Exception:
+            pytest.fail(f"Unable to create IonizationState instance for test case {test_name}.")
 
     @pytest.mark.parametrize('test_name', test_names)
     def test_integer_charges(self, test_name):
@@ -106,8 +104,7 @@ class Test_IonizationState:
             inputted_fractions = inputted_fractions.to(u.m ** -3)
             inputted_fractions = (inputted_fractions / inputted_fractions.sum()).value
         if not np.allclose(instance.ionic_fractions, inputted_fractions):
-            raise pytest.fail.Exception(
-                f"Mismatch in ionic fractions for test {test_name}")
+            pytest.fail(f"Mismatch in ionic fractions for test {test_name}.")
 
     def test_equal_to_itself(self):
         """
@@ -148,17 +145,15 @@ class Test_IonizationState:
         """Test that `IonizationState` instances iterate impeccably."""
         try:
             states = [state for state in self.instances[test_name]]
-        except Exception as exc:
-            raise pytest.fail.Exception(
-                f"Unable to perform iteration for {test_name}.") from exc
+        except Exception:
+            pytest.fail(f"Unable to perform iteration for {test_name}.")
 
         try:
             integer_charges = [state.integer_charge for state in states]
             ionic_fractions = np.array([state.ionic_fraction for state in states])
             ionic_symbols = [state.ionic_symbol for state in states]
-        except Exception as exc:
-            raise pytest.fail.Exception(
-                f"An attribute may be misnamed or missing ({test_name}).") from exc
+        except Exception:
+            pytest.fail(f"An attribute may be misnamed or missing ({test_name}).")
 
         try:
             base_symbol = isotope_symbol(ionic_symbols[0])
@@ -200,7 +195,7 @@ class Test_IonizationState:
                 f"resulted in the following errors when attempting to "
                 f"iterate."))
             errmsg = " ".join(errors)
-            raise pytest.fail.Exception(errmsg)
+            pytest.fail(errmsg)
 
     def test_slicing_error(self):
         """
@@ -344,7 +339,7 @@ class Test_IonizationState:
                     f'the values is:\n\n{set_of_str_values}')
 
         if errors:
-            raise pytest.fail.Exception(str.join('', errors))
+            pytest.fail(str.join('', errors))
 
     @pytest.mark.parametrize('attr', ['integer_charge', 'ionic_fraction', 'ionic_symbol'])
     def test_State_attrs(self, attr):
@@ -455,8 +450,7 @@ def test_IonizationState_attributes(key):
     actual = eval(f'instance.{key}')
 
     if isinstance(expected, u.Quantity):
-        assert expected.unit == actual.unit, \
-            f"Unit mismatch for IonizationState.{key}"
+        assert expected.unit == actual.unit, f"Unit mismatch for IonizationState.{key}"
         assert np.allclose(expected, actual, atol=1e-15 * expected.unit), \
             f"Quantity.value mismatch for IonizationState.{key}"
     else:
@@ -472,11 +466,13 @@ def test_nans():
     the result is an array full of `~numpy.nan` of the right size.
     """
     element = 'He'
+    nstates = atomic_number(element) + 1
     instance = IonizationState(element)
-    assert len(instance.ionic_fractions) == atomic_number(element) + 1, \
+    assert len(instance.ionic_fractions) == nstates, \
         f"Incorrect number of ionization states for {element}"
-    assert np.all([np.isnan(instance.ionic_fractions[i]) for i in range(3)]), \
-        f"When no ionic fractions are set"
+    assert np.all([np.isnan(instance.ionic_fractions)]), (
+        f"The ionic fractions for IonizationState are not defaulting " 
+        f"to numpy.nan when not set by user.")
 
 
 def test_setting_ionic_fractions():
@@ -496,18 +492,16 @@ class Test_IonizationStateNumberDensitiesSetter:
         self.expected_ionic_fractions = self.valid_number_densities / self.expected_n_elem
         try:
             self.instance = IonizationState(self.element)
-        except Exception as exc:
-            raise pytest.fail.Exception(
-                "Unable to instantiate IonizationState with no ionic "
-                "fractions") from exc
+        except Exception:
+            pytest.fail("Unable to instantiate IonizationState with no ionic fractions.")
 
     def test_setting_number_densities(self):
         try:
             self.instance.number_densities = self.valid_number_densities
-        except Exception as exc:
-            raise pytest.fail.Exception(
+        except Exception:
+            pytest.fail(
                 f"Unable to set number densities of {self.element} to "
-                f"{self.valid_number_densities}.") from exc
+                f"{self.valid_number_densities}.")
 
         assert u.quantity.allclose(
             self.instance.number_densities,
