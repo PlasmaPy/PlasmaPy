@@ -6,7 +6,11 @@ from plasmapy import utils
 import plasmapy.constants as const
 import copy
 from astropy.visualization import quantity_support
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except (ImportError, ModuleNotFoundError) as e:
+    from plasmapy.optional_deps import mpl_import_error
+    raise mpl_import_error from e
 from scipy.optimize import curve_fit
 from plasmapy.atomic import Particle
 

@@ -3,7 +3,11 @@
 import numbers
 import numpy as np
 from astropy import units as u
-from mpmath import polylog
+try:
+    from mpmath import polylog
+except (ImportError, ModuleNotFoundError) as e:
+    from plasmapy.optional_deps import mpmath_import_error
+    raise mpmath_import_error from e
 from scipy.special import wofz as Faddeeva_function
 from typing import Union
 
