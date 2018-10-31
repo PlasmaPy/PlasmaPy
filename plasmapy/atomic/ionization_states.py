@@ -24,7 +24,7 @@ class IonizationStates:
     Parameters
     ----------
     inputs: `list`, `tuple`, or `dict`
-        A `list` or `tuple` of elements or isotopes (if `T_e` is
+        A `list` or `tuple` of elements or isotopes (if ``T_e`` is
         provided); a `list` of `~plasmapy.atomic.IonizationState`
         instances; a `dict` with elements or isotopes as keys and
         a `~numpy.ndarray` of ionic fractions as the values; or a `dict`
@@ -64,18 +64,59 @@ class IonizationStates:
 
     Examples
     --------
+    >>> from astropy import units as u
     >>> from plasmapy.atomic import IonizationStates
-    >>> solar_corona = IonizationStates(['H', 'He', 'Fe'])
+    >>> states = IonizationStates(
+    ...     {'H': [0.5, 0.5], 'He': [0.95, 0.05, 0]},
+    ...     T_e = 1.2e4 * u.K,
+    ...     n = 1e15 * u.m ** -3,
+    ...     abundances = {'H': 1, 'He': 0.08},
+    ... )
+    >>> states.ionic_fractions
+    {'H': array([0.5, 0.5]), 'He': array([0.95, 0.05, 0.  ])}
+
+    The number densities are given by the ionic fractions multiplied by
+    the abundance and the
+
+    >>> states.number_densities['H']
+    <Quantity [5.e+14, 5.e+14] 1 / m3>
+    >>> states['He'] = [0.4, 0.59, 0.01]
+
+    To change the ionic fractions for a single element, use item
+    assignment.
+
+    >>> states = IonizationStates(['H', 'He'])
+    >>> states['H'] = [0.1, 0.9]
+
+    Item assignment will also work if you supply number densities.
+
+    >>> states['He'] = [0.4, 0.6, 0.0] * u.m ** -3
+    >>> states.ionic_fractions['He']
+    array([0.4, 0.6, 0. ])
+    >>> states.number_densities['He']
+    <Quantity [0.4, 0.6, 0. ] 1 / m3>
 
     Notes
     -----
     No more than one of ``abundances``, ``log_abundances``, and
     ``number_densities`` may be specified.
 
+    If the value provided during item assignment is a
+    `~astropy.units.Quantity` with units of number density that retains
+    the total element density, then the ionic fractions will be set
+    proportionately.
+
+    When making comparisons between `~plasmapy.atomic.IonizationStates`
+    instances, `~numpy.nan` values are treated as equal.  Equality tests
+    are performed to within a tolerance of ``tol``.
+
     Collisional ionization equilibrium is based on atomic data that
     has relative errors of order 20%.
 
     """
+
+    # TODO: The docstring above needs to be expanded and revised to
+    # TODO: better describe what the magic methods do.
 
     @check_quantity(
         T_e={"units": u.K},
@@ -92,9 +133,6 @@ class IonizationStates:
             n: u.m ** -3 = np.nan * u.m ** -3,
             tol: Real = 1e-15,
             kappa: Real = np.inf):
-        """
-        Initialize an `~plasmapy.atomic.IonizationStates`.
-        """
 
         abundances_provided = abundances is not None or log_abundances is not None
 
@@ -124,77 +162,14 @@ class IonizationStates:
         except Exception as exc:
             raise AtomicError("Unable to create IonizationStates instance.") from exc
 
+        if equilibrate:
+            self.equilibrate()  # for now, this raises a NotImplementedError
+
     def __str__(self) -> str:
         return f"<IonizationStates for: {', '.join(self.base_particles)}>"
 
     def __repr__(self) -> str:
         return self.__str__()
-
-    def info(self, minimum_ionic_fraction: Real = 0.001) -> None:
-        """
-        Print quicklook information for an
-        `~plasmapy.atomic.IonizationStates` instance.
-
-        Parameters
-        ----------
-        minimum_ionic_fraction: Real
-            If the ionic fraction for a particular ionization state is
-            below this level, then information for it will not be
-            printed.  Defaults to 0.001.
-
-        Examples
-        --------
-        >>> states = IonizationStates(
-        ...     {'H': [0.1, 0.9], 'He': [0.95, 0.05, 0.0]},
-        ...     T_e = 12000 * u.K,
-        ...     n = 3e9 * u.cm ** -3,
-        ...     abundances = {'H': 1.0, 'He': 0.1},
-        ...     kappa = 3.4,
-        ... )
-        >>> states.info()
-        IonizationStates instance for: H, He
-        <BLANKLINE>
-          H  0+: 0.100     n_i = 3.00e+14 m**-3
-          H  1+: 0.900     n_i = 2.70e+15 m**-3
-        <BLANKLINE>
-          He  0+: 0.950     n_i = 2.85e+14 m**-3
-          He  1+: 0.050     n_i = 1.50e+13 m**-3
-        <BLANKLINE>
-           T_e = 1.20e+04 K
-         kappa = 3.400
-           n_e = 1.20e+04 m ** -3
-
-        """
-        output = []
-
-        output.append(f"IonizationStates instance for: {', '.join(self.base_particles)}")
-
-        # Get the ionic symbol with the corresponding ionic fraction and
-        # number density (if available), but only for the most abundant
-        # ionization levels for each element.
-
-        for ionization_state in self:
-            states_info = ionization_state._get_states_info(minimum_ionic_fraction)
-            if len(states_info) > 0:
-                output += states_info
-                output[-1] += "\n"
-
-        attributes = []
-        if np.isfinite(self.T_e):
-            attributes.append("   T_e = " + "{:.2e}".format(self.T_e.value) + " K")
-        if np.isfinite(self.kappa):
-            attributes.append(" kappa = " + "{:.3f}".format(self.kappa))
-        if np.isfinite(self.n_e):
-            attributes.append("   n_e = " + "{:.2e}".format(self.T_e.value) + " m ** -3")
-        output += ["\n".join(attributes)]
-
-        if len(output) > 1:
-            output[0] += "\n"
-            output_string = "\n".join(output)
-        else:
-            output_string = output[0]
-
-        print(output_string.strip('\n'))
 
     def __getitem__(self, *values) -> IonizationState:
 
@@ -234,14 +209,6 @@ class IonizationStates:
             raise IndexError(errmsg) from exc
 
     def __setitem__(self, key, value):
-        """
-        Set the ionic fractions of ``key`` to ``value``.
-
-        If ``value`` is a `~astropy.units.Quantity` with units of number
-        density that retains the total element density, then the ionic
-        fractions will be set proportionately.
-
-        """
 
         errmsg = (
             f"Cannot set item for this IonizationStates instance for "
@@ -270,20 +237,53 @@ class IonizationStates:
 
             old_n_elem = np.sum(self.number_densities[particle])
             new_n_elem = np.sum(new_number_densities)
-            if not u.quantity.allclose(old_n_elem, new_n_elem, rtol=self.tol):
+
+            density_was_nan = np.all(np.isnan(self.number_densities[particle]))
+            same_density = u.quantity.allclose(old_n_elem, new_n_elem, rtol=self.tol)
+
+            if not same_density and not density_was_nan:
                 raise ValueError(
                     f"{errmsg} because the old element number density "
                     f"of {old_n_elem} is not approximately equal to "
-                    f"the new element number density of {new_n_elem}."
-                ) from None
-            value = new_number_densities / new_n_elem
+                    f"the new element number density of {new_n_elem}.")
+
+            value = (new_number_densities / new_n_elem).to(u.dimensionless_unscaled)
+
+            # If the abundance of this particle has not been defined,
+            # then set the abundance if there is enough (but not too
+            # much) information to do so.
+
+            abundance_is_undefined = np.isnan(self.abundances[particle])
+            isnan_of_abundance_values = np.isnan(list(self.abundances.values()))
+            all_abundances_are_nan = np.all(isnan_of_abundance_values)
+            n_is_defined = not np.isnan(self.n)
+
+            if abundance_is_undefined:
+                if n_is_defined:
+                    self._pars['abundances'][particle] = new_n_elem / self.n
+                elif all_abundances_are_nan:
+                    self.n = new_n_elem
+                    self._pars['abundances'][particle] = 1
+                else:
+                    raise AtomicError(
+                        f"Cannot set number density of {particle} to "
+                        f"{value * new_n_elem} when the number density "
+                        f"scaling factor is undefined, the abundance "
+                        f"of {particle} is undefined, and some of the "
+                        f"abundances of other elements/isotopes is "
+                        f"defined.")
 
         try:
             new_fractions = np.array(value, dtype=np.float64)
         except Exception as exc:
             raise TypeError(
                 f"{errmsg} because value cannot be converted into an "
-                f"array that represents ionic fractions.")
+                f"array that represents ionic fractions.") from exc
+
+        # TODO: Create a separate function that makes sure ionic
+        # TODO: fractions are valid to reduce code repetition.  This
+        # TODO: would probably best go as a private function in
+        # TODO: ionization_state.py.
 
         required_nstates = atomic_number(particle) + 1
         new_nstates = len(new_fractions)
@@ -342,15 +342,7 @@ class IonizationStates:
             raise StopIteration
 
     def __eq__(self, other):
-        """
-        Test that the ionic fractions are approximately equal to
-        another `~plasmapy.atomic.IonizationStates` instance.
 
-        Notes
-        -----
-        In this method, `~numpy.nan` values are treated as equal.
-
-        """
         if not isinstance(other, IonizationStates):
             raise TypeError(
                 "IonizationStates instance can only be compared with "
@@ -406,184 +398,6 @@ class IonizationStates:
 
         return True
 
-    def __ne__(self, other):
-        return not self == other
-
-    @property
-    @u.quantity_input
-    def n_e(self) -> u.m ** -3:
-        """
-        Return the electron number density under the assumption of
-        quasineutrality.
-        """
-        number_densities = self.number_densities
-        n_e = 0.0 * u.m ** -3
-        for elem in self.base_particles:
-            atomic_numb = atomic_number(elem)
-            number_of_ionization_states = atomic_numb + 1
-            integer_charges = np.linspace(0, atomic_numb, number_of_ionization_states)
-            n_e += np.sum(number_densities[elem] * integer_charges)
-        return n_e
-
-    @property
-    @u.quantity_input
-    def n(self) -> u.m ** -3:
-        """Return the number density scaling factor."""
-        return self._pars['n']
-
-    @n.setter
-    def n(self, n: u.m ** -3):
-        """Set the number density scaling factor."""
-        try:
-            n = n.to(u.m ** -3)
-        except u.UnitConversionError as exc:
-            raise AtomicError("Units cannot be converted to u.m ** -3.") from exc
-        except Exception as exc:
-            raise AtomicError(f"{n} is not a valid number density.") from exc
-        if n < 0 * u.m ** -3:
-            raise AtomicError("Number density cannot be negative.")
-        self._pars['n'] = n.to(u.m ** -3)
-
-    @property
-    def number_densities(self) -> Dict:
-        """
-        Return a `dict` containing the number densities for element or
-        isotope.
-        """
-        return {
-            elem: self.n * self.abundances[elem] * self.ionic_fractions[elem]
-            for elem in self.base_particles
-        }
-
-    @property
-    def abundances(self) -> Optional[Dict]:
-        """Return the elemental abundances."""
-        return self._pars['abundances']
-
-    @abundances.setter
-    def abundances(self, abundances_dict: Optional[Dict]):
-        """
-        Set the elemental (or isotopic) abundances.  The elements and
-        isotopes must be the same as or a superset of the elements whose
-        ionization states are being tracked.
-        """
-        if abundances_dict is None:
-            self._pars['abundances'] = {
-                elem: np.full(Particle(elem).atomic_number + 1, np.nan)
-                for elem in self.base_particles
-            }
-        elif not isinstance(abundances_dict, dict):
-            raise TypeError(
-                f"The abundances attribute must be a dict with "
-                f"elements or isotopes as keys and real numbers "
-                f"representing relative abundances as values.")
-        else:
-            old_keys = abundances_dict.keys()
-            try:
-                new_keys_dict = {particle_symbol(old_key): old_key for old_key in old_keys}
-            except Exception:
-                raise AtomicError(
-                    "The key {repr(old_key)} in the abundances "
-                    "dictionary is not a valid element or isotope.")
-
-            new_elements = new_keys_dict.keys()
-
-            old_elements_set = set(self.base_particles)
-            new_elements_set = set(new_elements)
-
-            if old_elements_set > new_elements_set:
-                raise AtomicError(
-                    f"The abundances of the following particles are "
-                    f"missing: {old_elements_set - new_elements_set}")
-
-            new_abundances_dict = {}
-
-            for element in new_elements:
-                inputted_abundance = abundances_dict[new_keys_dict[element]]
-                try:
-                    inputted_abundance = float(inputted_abundance)
-                except Exception:
-                    raise TypeError
-
-                if inputted_abundance < 0:
-                    raise AtomicError(f"The abundance of {element} is negative.")
-                new_abundances_dict[element] = inputted_abundance
-
-            self._pars['abundances'] = new_abundances_dict
-
-    @property
-    def log_abundances(self) -> Optional[Dict[str, Real]]:
-        """
-        Return a `dict` with atomic or isotope symbols as keys and the
-        base 10 logarithms of the relative abundances as the
-        corresponding values.
-        """
-        if self._pars['abundances'] is not None:
-            log_abundances_dict = {}
-            for key in self.abundances.keys():
-                log_abundances_dict[key] = np.log10(self.abundances[key])
-            return log_abundances_dict
-        else:
-            raise AtomicError("No abundances are available.")
-
-    @log_abundances.setter
-    def log_abundances(self, value: Optional[Dict[str, Real]]):
-        """
-        Set the base 10 logarithm of the relative abundances.
-        """
-        if value is not None:
-            try:
-                new_abundances_input = {}
-                for key in value.keys():
-                    new_abundances_input[key] = 10 ** value[key]
-                self.abundances = new_abundances_input
-            except Exception:
-                raise AtomicError("Invalid log_abundances.") from None
-
-    @property
-    def T_e(self) -> u.K:
-        """Return the electron temperature."""
-        return self._pars['T_e']
-
-    @T_e.setter
-    def T_e(self, electron_temperature: u.K):
-        """Set the electron temperature."""
-        try:
-            temperature = electron_temperature.to(u.K, equivalencies=u.temperature_energy())
-        except (AttributeError, u.UnitsError):
-            raise AtomicError(
-                f"{electron_temperature} is not a valid temperature.") from None
-        if temperature < 0 * u.K:
-            raise AtomicError("The electron temperature cannot be negative.")
-        self._pars['T_e'] = temperature
-
-    @property
-    def kappa(self) -> np.real:
-        """
-        Return the kappa parameter for a kappa distribution function
-        for electrons.
-
-        The value of ``kappa`` must be greater than ``1.5`` in order to
-        have a valid distribution function.  If ``kappa`` equals
-        `~numpy.inf`, then the distribution function reduces to a
-        Maxwellian.
-
-        """
-        return self._pars['kappa']
-
-    @kappa.setter
-    def kappa(self, value: Real):
-        """
-        Set the kappa parameter for a kappa distribution function for
-        electrons.  The value must be between ``1.5`` and `~numpy.inf`.
-        """
-        kappa_errmsg = "kappa must be a real number greater than 1.5"
-        if not isinstance(value, Real):
-            raise TypeError(kappa_errmsg)
-        if value <= 1.5:
-            raise ValueError(kappa_errmsg)
-        self._pars['kappa'] = np.real(value)
-
     @property
     def ionic_fractions(self) -> Dict[str, np.array]:
         """
@@ -625,6 +439,17 @@ class IonizationStates:
             being set.
 
         """
+
+        # A potential problem is that using item assignment on the
+        # ionic_fractions attribute could cause the original attributes
+        # to be overwritten without checks being performed.  We might
+        # eventually want to create a new class or subclass of UserDict
+        # that goes through these checks.  In the meantime, we should
+        # make it clear to users to set ionic_fractions by using item
+        # assignment on the IonizationStates instance as a whole.  An
+        # example of the problem is `s = IonizationStates(["He"])` being
+        # followed by `s.ionic_fractions["He"] = 0.3`.
+
         if hasattr(self, '_ionic_fractions'):
             if not isinstance(inputs, dict):
                 raise TypeError(
@@ -735,7 +560,7 @@ class IonizationStates:
             # it was not provided.  Then go ahead and calculate the
             # abundances based on that.  However, we need to be careful
             # that the abundances are not overwritten during the
-            # instantatiation of the class.
+            # instantiation of the class.
 
             if inputs_have_quantities:
                 if np.isnan(self.n):
@@ -780,6 +605,15 @@ class IonizationStates:
         self._base_particles = _elements_and_isotopes
         self._ionic_fractions = new_ionic_fractions
 
+    def normalize(self) -> None:
+        """
+        Normalize the ionic fractions so that the sum for each element
+        equals one.
+        """
+        for particle in self.base_particles:
+            tot = np.sum(self.ionic_fractions[particle])
+            self.ionic_fractions[particle] = self.ionic_fractions[particle] / tot
+
     def equilibrate(
             self,
             T_e: u.K = np.nan * u.K,
@@ -811,6 +645,181 @@ class IonizationStates:
         raise NotImplementedError
 
     @property
+    @u.quantity_input
+    def n_e(self) -> u.m ** -3:
+        """
+        Return the electron number density under the assumption of
+        quasineutrality.
+        """
+        number_densities = self.number_densities
+        n_e = 0.0 * u.m ** -3
+        for elem in self.base_particles:
+            atomic_numb = atomic_number(elem)
+            number_of_ionization_states = atomic_numb + 1
+            integer_charges = np.linspace(0, atomic_numb, number_of_ionization_states)
+            n_e += np.sum(number_densities[elem] * integer_charges)
+        return n_e
+
+    @property
+    @u.quantity_input
+    def n(self) -> u.m ** -3:
+        """Return the number density scaling factor."""
+        return self._pars['n']
+
+    @n.setter
+    @u.quantity_input
+    def n(self, n: u.m ** -3):
+        """Set the number density scaling factor."""
+        try:
+            n = n.to(u.m ** -3)
+        except u.UnitConversionError as exc:
+            raise AtomicError("Units cannot be converted to u.m ** -3.") from exc
+        except Exception as exc:
+            raise AtomicError(f"{n} is not a valid number density.") from exc
+        if n < 0 * u.m ** -3:
+            raise AtomicError("Number density cannot be negative.")
+        self._pars['n'] = n.to(u.m ** -3)
+
+    @property
+    def number_densities(self) -> Dict[str, u.Quantity]:
+        """
+        Return a `dict` containing the number densities for element or
+        isotope.
+        """
+        return {
+            elem: self.n * self.abundances[elem] * self.ionic_fractions[elem]
+            for elem in self.base_particles
+        }
+
+    @property
+    def abundances(self) -> Optional[Dict]:
+        """Return the elemental abundances."""
+        return self._pars['abundances']
+
+    @abundances.setter
+    def abundances(self, abundances_dict: Optional[Dict]):
+        """
+        Set the elemental (or isotopic) abundances.  The elements and
+        isotopes must be the same as or a superset of the elements whose
+        ionization states are being tracked.
+        """
+        if abundances_dict is None:
+            self._pars['abundances'] = {elem: np.nan for elem in self.base_particles}
+        elif not isinstance(abundances_dict, dict):
+            raise TypeError(
+                f"The abundances attribute must be a dict with "
+                f"elements or isotopes as keys and real numbers "
+                f"representing relative abundances as values.")
+        else:
+            old_keys = abundances_dict.keys()
+            try:
+                new_keys_dict = {particle_symbol(old_key): old_key for old_key in old_keys}
+            except Exception:
+                raise AtomicError(
+                    f"The key {repr(old_key)} in the abundances "
+                    f"dictionary is not a valid element or isotope.")
+
+            new_elements = new_keys_dict.keys()
+
+            old_elements_set = set(self.base_particles)
+            new_elements_set = set(new_elements)
+
+            if old_elements_set - new_elements_set:
+                raise AtomicError(
+                    f"The abundances of the following particles are "
+                    f"missing: {old_elements_set - new_elements_set}")
+
+            new_abundances_dict = {}
+
+            for element in new_elements:
+                inputted_abundance = abundances_dict[new_keys_dict[element]]
+                try:
+                    inputted_abundance = float(inputted_abundance)
+                except Exception:
+                    raise TypeError(
+                        f"The abundance for {element} was provided as"
+                        f"{inputted_abundance}, which cannot be "
+                        f"converted to a real number.") from None
+
+                if inputted_abundance < 0:
+                    raise AtomicError(f"The abundance of {element} is negative.")
+                new_abundances_dict[element] = inputted_abundance
+
+            self._pars['abundances'] = new_abundances_dict
+
+    @property
+    def log_abundances(self) -> Dict[str, Real]:
+        """
+        Return a `dict` with atomic or isotope symbols as keys and the
+        base 10 logarithms of the relative abundances as the
+        corresponding values.
+        """
+        log_abundances_dict = {}
+        for key in self.abundances.keys():
+            log_abundances_dict[key] = np.log10(self.abundances[key])
+        return log_abundances_dict
+
+    @log_abundances.setter
+    def log_abundances(self, value: Optional[Dict[str, Real]]):
+        """
+        Set the base 10 logarithm of the relative abundances.
+        """
+        if value is not None:
+            try:
+                new_abundances_input = {}
+                for key in value.keys():
+                    new_abundances_input[key] = 10 ** value[key]
+                self.abundances = new_abundances_input
+            except Exception:
+                raise AtomicError("Invalid log_abundances.") from None
+
+    @property
+    @u.quantity_input(equivalencies=u.temperature_energy())
+    def T_e(self) -> u.K:
+        """Return the electron temperature."""
+        return self._pars['T_e']
+
+    @T_e.setter
+    @u.quantity_input(equivalencies=u.temperature_energy())
+    def T_e(self, electron_temperature: u.K):
+        """Set the electron temperature."""
+        try:
+            temperature = electron_temperature.to(u.K, equivalencies=u.temperature_energy())
+        except (AttributeError, u.UnitsError):
+            raise AtomicError(
+                f"{electron_temperature} is not a valid temperature.") from None
+        if temperature < 0 * u.K:
+            raise AtomicError("The electron temperature cannot be negative.")
+        self._pars['T_e'] = temperature
+
+    @property
+    def kappa(self) -> np.real:
+        """
+        Return the kappa parameter for a kappa distribution function
+        for electrons.
+
+        The value of ``kappa`` must be greater than ``1.5`` in order to
+        have a valid distribution function.  If ``kappa`` equals
+        `~numpy.inf`, then the distribution function reduces to a
+        Maxwellian.
+
+        """
+        return self._pars['kappa']
+
+    @kappa.setter
+    def kappa(self, value: Real):
+        """
+        Set the kappa parameter for a kappa distribution function for
+        electrons.  The value must be between ``1.5`` and `~numpy.inf`.
+        """
+        kappa_errmsg = "kappa must be a real number greater than 1.5"
+        if not isinstance(value, Real):
+            raise TypeError(kappa_errmsg)
+        if value <= 1.5:
+            raise ValueError(kappa_errmsg)
+        self._pars['kappa'] = np.real(value)
+
+    @property
     def base_particles(self) -> List[str]:
         """
         Return a list of the elements and isotopes whose ionization
@@ -835,11 +844,75 @@ class IonizationStates:
         else:
             raise ValueError("Need 0 <= tol <= 1.")
 
-    def normalize(self) -> None:
+    def info(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
-        Normalize the ionic fractions so that the sum for each element
-        equals one.
+        Print quicklook information for an
+        `~plasmapy.atomic.IonizationStates` instance.
+
+        Parameters
+        ----------
+        minimum_ionic_fraction: Real
+            If the ionic fraction for a particular ionization state is
+            below this level, then information for it will not be
+            printed.  Defaults to 0.01.
+
+        Examples
+        --------
+        >>> states = IonizationStates(
+        ...     {'H': [0.1, 0.9], 'He': [0.95, 0.05, 0.0]},
+        ...     T_e = 12000 * u.K,
+        ...     n = 3e9 * u.cm ** -3,
+        ...     abundances = {'H': 1.0, 'He': 0.1},
+        ...     kappa = 3.4,
+        ... )
+        >>> states.info()
+        IonizationStates instance for: H, He
+        ----------------------------------------------------------------
+        H  0+: 0.100    n_i = 3.00e+14 m**-3
+        H  1+: 0.900    n_i = 2.70e+15 m**-3
+        ----------------------------------------------------------------
+        He  0+: 0.950    n_i = 2.85e+14 m**-3
+        He  1+: 0.050    n_i = 1.50e+13 m**-3
+        ----------------------------------------------------------------
+        n_e = 2.71e+15 m**-3
+        T_e = 1.20e+04 K
+        kappa = 3.40
+        ----------------------------------------------------------------
+
         """
-        for particle in self.base_particles:
-            tot = np.sum(self.ionic_fractions[particle])
-            self.ionic_fractions[particle] = self.ionic_fractions[particle] / tot
+        separator_line = 64 * '-'
+
+        output = []
+
+        output.append(f"IonizationStates instance for: {', '.join(self.base_particles)}")
+
+        # Get the ionic symbol with the corresponding ionic fraction and
+        # number density (if available), but only for the most abundant
+        # ionization levels for each element.
+
+        for ionization_state in self:
+            states_info = ionization_state._get_states_info(minimum_ionic_fraction)
+            if len(states_info) > 0:
+                output += states_info
+                output[-1] += '\n' + separator_line
+
+        attributes = []
+        if np.isfinite(self.n_e):
+            attributes.append("n_e = " + "{:.2e}".format(self.n_e.value) + " m**-3")
+        if np.isfinite(self.T_e):
+            attributes.append("T_e = " + "{:.2e}".format(self.T_e.value) + " K")
+        if np.isfinite(self.kappa):
+            attributes.append("kappa = " + "{:.2f}".format(self.kappa))
+
+        if attributes:
+            attributes.append(separator_line)
+
+        output.append("\n".join(attributes))
+
+        if len(output) > 1:
+            output[0] += '\n' + separator_line
+            output_string = "\n".join(output)
+        else:
+            output_string = output[0]
+
+        print(output_string.strip('\n'))

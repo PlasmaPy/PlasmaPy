@@ -544,7 +544,7 @@ class Test_IonizationStateNumberDensitiesSetter:
             self.instance.number_densities = u.Quantity([0.1, 0.2], unit=u.kg)
 
     # The following two tests are not related to setting the
-    # number_densities attribute, but are helpful to test anyway
+    # number_densities attribute, but are helpful to test anyway.
 
     def test_T_e_isnan_when_not_set(self):
         assert np.isnan(self.instance.T_e)

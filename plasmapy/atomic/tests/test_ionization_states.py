@@ -422,8 +422,9 @@ class TestIonizationStatesAttributes:
 
     @classmethod
     def setup_class(cls):
-        cls.elements = ['H', 'He', 'Fe']
+        cls.elements = ['H', 'He', 'Li', 'Fe']
         cls.instance = IonizationStates(cls.elements)
+        cls.new_n = 5.153 * u.cm ** -3
 
     @pytest.mark.parametrize("uninitialized_attribute", ['T_e', 'n', 'n_e'])
     def test_attribute_defaults_to_nan(self, uninitialized_attribute):
@@ -439,7 +440,7 @@ class TestIonizationStatesAttributes:
 
     @pytest.mark.parametrize(
         "uninitialized_attribute",
-        ["number_densities", "ionic_fractions", "abundances", "log_abundances"])
+        ["number_densities", "ionic_fractions"])
     def test_attribute_defaults_to_dict_of_nans(self, uninitialized_attribute):
         command = f"self.instance.{uninitialized_attribute}"
         default_value = eval(command)
@@ -451,11 +452,19 @@ class TestIonizationStatesAttributes:
                 f"The values do not default to an array of nans for "
                 f"{element}.")
 
+    @pytest.mark.parametrize("uninitialized_attribute", ["abundances", "log_abundances"])
+    def test_abundances_default_to_nans(self, uninitialized_attribute):
+        command = f"self.instance.{uninitialized_attribute}"
+        default_value = eval(command)
+        for element in self.elements:
+            assert isinstance(default_value[element], Real)
+            assert np.isnan(default_value[element])
+
     @pytest.mark.parametrize(
         "attribute, invalid_value, expected_exception", [
-            ('T_e', '5 * u.m', AtomicError),
+            ('T_e', '5 * u.m', u.UnitsError),
             ('T_e', '-1 * u.K', AtomicError),
-            ('n', '5 * u.m', AtomicError),
+            ('n', '5 * u.m', u.UnitsError),
             ('n', '-1 * u.m ** -3', AtomicError),
             ('ionic_fractions', {'H': [0.3, 0.7], 'He': [-0.1, 0.4, 0.7]}, AtomicError),
             ('ionic_fractions', {'H': [0.3, 0.7], 'He': [1.01, 0.0, 0.7]}, AtomicError),
@@ -506,8 +515,13 @@ class TestIonizationStatesAttributes:
         with pytest.raises(expected_exception, message=errmsg):
             self.instance[key] = invalid_fracs
 
+    def test_setting_incomplete_abundances(self):
+        new_abundances = {'H': 1, 'He': 0.1, 'Fe': 1e-5, 'Au': 1e-8}  # missing lithium
+        with pytest.raises(AtomicError):
+            self.instance.abundances = new_abundances
+
     def test_setting_abundances(self):
-        new_abundances = {'H': 1, 'He': 0.1, 'Fe': 1e-5, 'Au': 1e-8}
+        new_abundances = {'H': 1, 'He': 0.1, 'Li': 1e-4, 'Fe': 1e-5, 'Au': 1e-8}
 
         log_new_abundances = {
             element: np.log10(new_abundances[element])
@@ -567,7 +581,6 @@ class TestIonizationStatesAttributes:
         integer_charge = indices[1]
 
         assert isinstance(result, State)
-
         assert result.integer_charge == integer_charge
 
         expected_ionic_fraction = instance.ionic_fractions[particle][integer_charge]
@@ -577,10 +590,64 @@ class TestIonizationStatesAttributes:
             np.isnan(result.ionic_fraction) and np.isnan(expected_ionic_fraction),
         ])
 
-        # TODO: finish this
-
-#        assert result.ionic_fraction == instance.ionic_fractions[particle][integer_charge]
         assert result.ionic_symbol == particle_symbol(particle, Z=integer_charge)
+
+    def test_setting_n(self):
+        try:
+            self.instance.n = self.new_n
+        except Exception:
+            pytest.fail("Unable to set number density scaling factor attribute")
+        if not u.quantity.allclose(self.instance.n, self.new_n):
+            pytest.fail("Number density scaling factor was not set correctly.")
+        if not self.instance.n.unit == u.m ** -3:
+            pytest.fail("Incorrect units for new number density.")
+
+    def test_resetting_valid_densities(self):
+        """
+        Test that item assignment can be used to set number densities
+        that preserve the total element number density.
+        """
+
+        element = "H"
+        valid_ionic_fractions = [0.54, 0.46]
+        original_n_elem = np.sum(self.instance.number_densities[element])
+        valid_number_densities = valid_ionic_fractions * original_n_elem
+
+        try:
+            self.instance[element] = valid_number_densities
+        except Exception:
+            pytest.fail("Unable to set valid number densities using item assignment.")
+
+        assert u.quantity.allclose(
+            self.instance.ionic_fractions[element],
+            valid_ionic_fractions,
+        ), "Item assignment of valid number densities did not yield correct ionic fractions."
+
+        assert u.quantity.allclose(
+            self.instance.number_densities[element],
+            valid_number_densities,
+        ), "Item assignment of valid number densities did not yield correct number densities."
+
+    def test_resetting_invalid_densities(self):
+        """
+        Test that item assignment with number densities that would
+        change the total element number density raises an exception.
+        """
+        element = "H"
+        original_n_elem = np.sum(self.instance.number_densities[element])
+        invalid_number_densities = np.array([1.0001, 0]) * original_n_elem
+        with pytest.raises(ValueError):
+            self.instance[element] = invalid_number_densities
+
+    def test_elemental_abundances_not_quantities(self):
+        for element in self.instance.base_particles:
+            assert not isinstance(self.instance.abundances[element], u.Quantity)
+
+    @pytest.mark.parametrize("element", ["H", "He", "Fe"])
+    def test_ionic_fractions_not_quantities(self, element):
+        ionic_fractions = self.instance.ionic_fractions[element]
+        if isinstance(ionic_fractions, u.Quantity):
+            pytest.fail(f"The ionic fractions of {element} are a Quantity but should not be.")
 
     def test_that_iron_ionic_fractions_are_still_undefined(self):
         assert 'Fe' in self.instance.ionic_fractions.keys()
@@ -762,3 +829,9 @@ class TestIonizationStatesDensityEqualities:
             pytest.fail(
                 f"Cases {this} and {that} should be {descriptor} but "
                 f"are not.")
+
+
+def test_number_density_assignment():
+    instance = IonizationStates(["H", "He"])
+    number_densities = [2, 3, 5] * u.m ** -3
+    instance["He"] = number_densities
