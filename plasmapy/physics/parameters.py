@@ -1166,8 +1166,7 @@ def inertial_length(n: u.m**-3, particle: atomic.Particle):
     Parameters
     ----------
     n : ~astropy.units.Quantity
-        Particle number density in units convertible to
-        m\ :superscript:`-3`\ .
+        Particle number density in units convertible to m ** -3.
 
     particle : str, optional
         Representation of the particle species (e.g., 'p+' for protons,
