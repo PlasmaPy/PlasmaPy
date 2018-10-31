@@ -25,17 +25,15 @@ installation:
 - `Cython <http://cython.org/>`_ 0.27.2 or newer
 - `colorama <https://pypi.org/project/colorama/>`_ 0.3 or newer
 
-PlasmaPy also uses optional dependencies which are grouped as follows
+PlasmaPy also uses the following optional dependencies:
 
-- `visualization` for plotting:
-    - `matplotlib <https://matplotlib.org/>`_ 2.0 or newer
-- `openPMD` for loading `openPMD <https://www.openpmd.org/#/start>`_-compliant datasets:
-    - `h5py <https://www.h5py.org/>`_ 2.8 or newer
-- `analysis` for a few functions from the `physics` and `transport` subpackages:
-    - `mpmath <http://mpmath.org/>`_ 1.0 or newer
-    - `lmfit <https://lmfit.github.io/lmfit-py/>`_ 0.9.7 or newer
+- `matplotlib <https://matplotlib.org/>`_ 2.0 or newer
+- `h5py <https://www.h5py.org/>`_ 2.8 or newer
+- `mpmath <http://mpmath.org/>`_ 1.0 or newer
+- `lmfit <https://lmfit.github.io/lmfit-py/>`_ 0.9.7 or newer
 
-The categories above also function as :ref:`extras keys for pip install<install-pip>`.
+PlasmaPy can be installed with all of the optional dependencies via
+`pip install plasmapy[optional]`.
 
 .. _create-conda-env:
 
@@ -79,12 +77,12 @@ Installation with pip
 ---------------------
 
 To install the most recent release of PlasmaPy `on PyPI`_ with `pip
-<https://pip.pypa.io/en/stable/>`_ into an existing Python environment,
-run
+<https://pip.pypa.io/en/stable/>`_ into an existing Python environment
+alongside all optional dependencies, run
 
 .. code:: bash
 
-   pip install plasmapy[all]
+   pip install plasmapy[optional]
 
 To install a minimal set of dependencies (which does not guarantee that
 everything will run and may result in `ImportError`s, skip `[all]` and run
@@ -93,8 +91,6 @@ simply
 .. code:: bash
 
     pip install plasmapy
-
-For other optional options, see :ref:`install-requirements`.
 
 .. _install-conda:
 

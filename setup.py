@@ -129,10 +129,14 @@ package_info['package_data'][PACKAGENAME].extend(c_files)
 setup_requires = ['numpy']
 
 extra_tags = [m.strip() for m in metadata.get("extra_requires", "").split(',')] 
-if extra_tags: 
+if extra_tags:
+     # TODO: the line below will prove useful once #576 is in play
      extras_require = {tag: [m.strip() for m in metadata[f"{tag}_requires"].split(',')] 
-                       for tag in extra_tags} 
-     extras_require['all'] = list(itertools.chain.from_iterable(extras_require.values())) 
+                       for tag in extra_tags}
+
+    # but for now we'll limit ourselves to pip install plasmapy[optional]
+     optionals_require = list(itertools.chain.from_iterable(extras_require.values()))
+     extras_require = dict(optional=optionals_require)
 else:
      extras_require = None 
 
@@ -181,7 +185,7 @@ setup(name=PACKAGENAME,
       include_package_data=True,
       entry_points=entry_points,
       python_requires='>={}'.format("3.6"),
-      tests_require=extras_require.get("all", ""),
+      tests_require=extras_require.get("optional", ""),
       extras_require=extras_require,
       **package_info
 )
