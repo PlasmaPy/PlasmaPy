@@ -1154,28 +1154,28 @@ def Debye_number(T_e: u.K, n_e: u.m**-3):
     return N_D.to(u.dimensionless_unscaled)
 
 
+
 @utils.check_quantity(
     n={'units': u.m ** -3, 'can_be_negative': False}
     )
-def inertial_length(n: u.m**-3, particle='e-'):
-    r"""Calculate the particle inertial length. At this length, the Hall effect
-    becomes important.
+@atomic.particle_input(require='charged')
+def inertial_length(n: u.m**-3, particle: atomic.Particle):
+    r"""
+    Calculate a charged particle's inertial length.
 
     Parameters
     ----------
     n : ~astropy.units.Quantity
-        Particle number density in units convertible to m**-3.
+        Particle number density in units convertible to m ** -3.
 
     particle : str, optional
-        Representation of the particle species (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for singly ionized helium-4),
-        which defaults to electrons.  If no charge state information is
-        provided, then the particles are assumed to be singly charged.
+        Representation of the particle species (e.g., 'p+' for protons,
+        'D+' for deuterium, or 'He-4 +1' for singly ionized helium-4).
 
     Returns
     -------
     d : ~astropy.units.Quantity
-        Particles inertial length in meters.
+        The particle's inertial length in meters.
 
     Raises
     ------
@@ -1191,22 +1191,27 @@ def inertial_length(n: u.m**-3, particle='e-'):
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided, SI units are assumed
+        If units are not provided and SI units are assumed.
 
     Notes
     -----
-    The particle inertial length is also known as an particle skin depth and is
-    given by:
+    The inertial length of a particle of species :math:`s` is given by
 
     .. math::
-        d = \frac{c}{\omega_{pi}}
+        d = \frac{c}{\omega_{ps}}
+
+    The inertial length is the characteristic length scale for a
+    particle to be accelerated in a plasma.  The Hall effect becomes
+    important on length scales shorter than the ion inertial length.
+
+    The inertial length is also known as the skin depth.
 
     Example
     -------
     >>> from astropy import units as u
-    >>> inertial_length(5*u.m**-3, particle='He+')
+    >>> inertial_length(5 * u.m ** -3, 'He+')
     <Quantity 2.02985802e+08 m>
-    >>> inertial_length(5*u.m**-3)
+    >>> inertial_length(5 * u.m ** -3, 'e-')
     <Quantity 2376534.75601976 m>
 
     """
