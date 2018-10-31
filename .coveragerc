@@ -8,6 +8,5 @@ omit =
     plasmapy/version.py
 exclude_lines =
     coverage: ignore
-    def __repr__
     ImportError
     ModuleNotFoundError

@@ -1,12 +1,17 @@
 import pytest
+import inspect
+import collections
+
 import numpy as np
 from astropy import units as u
-import inspect
+
 from plasmapy.utils import roman
-
-from ...constants import m_p, m_e, m_n, e, c
-
-from ...utils import (
+from plasmapy.constants import m_p, m_e, m_n, e, c
+from plasmapy.atomic.atomic import known_isotopes
+from plasmapy.atomic.isotopes import _Isotopes
+from plasmapy.atomic.particle_class import Particle
+from plasmapy.atomic.special_particles import ParticleZoo
+from plasmapy.utils import (
     AtomicWarning,
     AtomicError,
     MissingAtomicDataError,
@@ -20,12 +25,7 @@ from ...utils import (
     run_test_equivalent_calls,
 )
 
-from ..atomic import known_isotopes
-from ..isotopes import _Isotopes
-from ..particle_class import Particle
-from ..special_particles import ParticleZoo
-
-# (arg, kwargs, results_dict
+# (arg, kwargs, results_dict)
 test_Particle_table = [
 
     ('neutron', {},
@@ -559,7 +559,7 @@ def test_Particle_warnings(arg, kwargs, attribute, warning):
 
 
 def test_Particle_cmp():
-    """Test __eq__ and __ne__ in the Particle class."""
+    """Test ``__eq__`` and ``__ne__`` in the Particle class."""
     proton1 = Particle('p+')
     proton2 = Particle('proton')
     electron = Particle('e-')
@@ -589,7 +589,7 @@ nuclide_mass_and_mass_equiv_table = [
 @pytest.mark.parametrize('isotope, ion', nuclide_mass_and_mass_equiv_table)
 def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
     """
-    Test that the `mass` and `nuclide_mass` attributes return
+    Test that the ``mass`` and ``nuclide_mass`` attributes return
     equivalent values when appropriate.  The inputs should generally be
     an isotope with no charge information, and a fully ionized ion of
     that isotope, in order to make sure that the nuclide mass of the
@@ -610,12 +610,13 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
 
     else:
 
-        inputerrmsg = (f"isotope = {repr(isotope)} and ion = {repr(ion)} are "
-                       f"not valid inputs to this test. The inputs should be "
-                       f"an isotope with no charge information, and a fully "
-                       f"ionized ion of that isotope, in order to make sure "
-                       f"that the nuclide mass of the isotope equals the mass "
-                       f"of the ion.")
+        inputerrmsg = (
+            f"isotope = {repr(isotope)} and ion = {repr(ion)} are "
+            f"not valid inputs to this test. The inputs should be "
+            f"an isotope with no charge information, and a fully "
+            f"ionized ion of that isotope, in order to make sure "
+            f"that the nuclide mass of the isotope equals the mass "
+            f"of the ion.")
 
         assert Isotope.isotope and not Isotope.ion, inputerrmsg
         assert Isotope.isotope == Ion.isotope, inputerrmsg
@@ -634,7 +635,7 @@ def test_particle_half_life_string():
     """
     Find the first isotope where the half-life is stored as a string
     (because the uncertainties are too great), and tests that requesting
-    the half-life of that isotope causes a MissingAtomicDataWarning
+    the half-life of that isotope causes a `MissingAtomicDataWarning`
     whilst returning a string.
     """
 
@@ -701,8 +702,8 @@ def opposite(particle):
         opposite_particle = ~particle
     except Exception as exc:
         raise InvalidParticleError(
-                f"The unary ~ (invert) operator is unable to find the "
-                f"antiparticle of {particle}.") from exc
+            f"The unary ~ (invert) operator is unable to find the "
+            f"antiparticle of {particle}.") from exc
     return opposite_particle
 
 
@@ -769,3 +770,41 @@ def test_particleing_a_particle(arg):
         f"Particle({repr(arg)}) is the same object in memory as "
         f"Particle(Particle({repr(arg)})), when it is intended to "
         f"create a new object in memory (e.g., a copy).")
+
+
+@pytest.mark.parametrize("key", [Particle('H'), Particle('e+')])
+def test_that_object_can_be_dict_key(key):
+    """
+    Test that ``key`` can be used as the key of a `dict`.
+
+    This test will fail if ``key`` does not equal itself or if ``key``
+    is not hashable.  If this test fails, there is a problem with the
+    ``__eq__`` and ``__hash__`` methods of ``key``.
+
+    In most cases, objects that are mutable should not be hashable since
+    they may change.
+
+    """
+    # TODO: I wrote this to be pretty general since I felt like
+    # TODO: procrastinating other things, so we can probably put this
+    # TODO: into utils.pytest_helpers later on.  There are likely other
+    # TODO: classes that should be able to be used as keys of dicts.
+
+    value = 42
+
+    try:
+        dictionary = {key: value}
+    except Exception as exc:
+        error_message = f"{key} is not a valid key for a dict. "
+        if not isinstance(key, collections.Hashable):
+            error_message += f"{key} is not hashable. "
+        try:
+            key_equals_itself = key == key
+        except Exception:
+            error_message += f"{key} == {key} cannot be evaluated. "
+        else:
+            if not key_equals_itself:
+                error_message += f"{key} does not equal itself."
+        raise TypeError(error_message) from exc
+
+    assert dictionary[key] is value

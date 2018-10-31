@@ -7,6 +7,7 @@ from typing import (
     Any,
 )
 
+import numpy as np
 import astropy.constants as const
 import astropy.units as u
 

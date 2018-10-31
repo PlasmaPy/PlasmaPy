@@ -1,15 +1,17 @@
 """The Particle class."""
 
-import numpy as np
 import warnings
 from typing import (Union, Set, Tuple, List, Optional)
 import collections
-import plasmapy.utils.roman as roman
-import numbers
+from numbers import Integral, Real
 
+import numpy as np
 import astropy.units as u
 import astropy.constants as const
 
+import plasmapy.utils.roman as roman
+from plasmapy.atomic.elements import _Elements, _PeriodicTable
+from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.utils import (
     AtomicError,
     AtomicWarning,
@@ -21,17 +23,12 @@ from plasmapy.utils import (
     MissingAtomicDataError,
     MissingAtomicDataWarning,
 )
-
-from .parsing import (
+from plasmapy.atomic.parsing import (
     _dealias_particle_aliases,
     _parse_and_check_atomic_input,
     _invalid_particle_errmsg,
 )
-
-from .elements import _Elements, _PeriodicTable
-from .isotopes import _Isotopes
-
-from .special_particles import (
+from plasmapy.atomic.special_particles import (
     _Particles,
     ParticleZoo,
     _special_ion_masses,
@@ -39,7 +36,7 @@ from .special_particles import (
 )
 
 __all__ = [
-    "Particle",
+    'Particle',
 ]
 
 _classification_categories = {
@@ -173,10 +170,8 @@ class Particle:
     >>> positron.particle
     'e+'
 
-    The `~plasmapy.atomic.Particle.atomic_symbol`,
-    `~plasmapy.atomic.Particle.isotope_symbol`, and
-    `~plasmapy.atomic.Particle.ionic_symbol` attributes return the
-    symbols for each of these different types of particles.
+    The ``element``, ``isotope``, and ``ionic_symbol`` attributes return
+    the symbols for each of these different types of particles.
 
     >>> proton.element
     'H'
@@ -280,19 +275,19 @@ class Particle:
 
     def __init__(
             self,
-            argument: Union[str, numbers.Integral],
-            mass_numb: numbers.Integral = None,
-            Z: numbers.Integral = None):
+            argument: Union[str, Integral],
+            mass_numb: Integral = None,
+            Z: Integral = None):
         """
         Instantiate a `~plasmapy.atomic.Particle` object and set private
         attributes.
         """
 
-        if not isinstance(argument, (numbers.Integral, np.integer, str, Particle)):
+        if not isinstance(argument, (Integral, np.integer, str, Particle)):
             raise TypeError(
-                "The first positional argument when creating a Particle "
-                "object must be either an integer, string, or another"
-                "Particle object.")
+                "The first positional argument when creating a "
+                "Particle object must be either an integer, string, or "
+                "another Particle object.")
 
         # If argument is a Particle instance, then we will construct a
         # new Particle instance for the same Particle (essentially a
@@ -301,10 +296,10 @@ class Particle:
         if isinstance(argument, Particle):
             argument = argument.particle
 
-        if mass_numb is not None and not isinstance(mass_numb, numbers.Integral):
+        if mass_numb is not None and not isinstance(mass_numb, Integral):
             raise TypeError("mass_numb is not an integer")
 
-        if Z is not None and not isinstance(Z, numbers.Integral):
+        if Z is not None and not isinstance(Z, Integral):
             raise TypeError("Z is not an integer.")
 
         self._attributes = collections.defaultdict(lambda: None)
@@ -527,7 +522,7 @@ class Particle:
         """
         Test whether or not two objects are different particles.
 
-        This method will return `False` if `other` is an identical
+        This method will return `False` if ``other`` is an identical
         `~plasmapy.atomic.Particle` instance or a `str` representing the
         same particle, and return `True` if ``other`` is a different
         `~plasmapy.atomic.Particle` or a `str` representing a different
@@ -542,12 +537,19 @@ class Particle:
         """
         return not self.__eq__(other)
 
+    def __hash__(self) -> int:
+        """
+        Allow use of `hash` so that a `~plasmapy.atomic.Particle`
+        instance may be used as a key in a `dict`.
+        """
+        return hash(self.__repr__())
+
     def __bool__(self):
         """
         Raise an `~plasmapy.utils.AtomicError` because Particle objects
         do not have a truth value.
         """
-        raise AtomicError("The truthiness of a Particle object is not defined.")
+        raise AtomicError("The truthiness of a Particle instance is not defined.")
 
     def __invert__(self):
         """
@@ -734,7 +736,7 @@ class Particle:
         return isotope_name
 
     @property
-    def integer_charge(self) -> numbers.Integral:
+    def integer_charge(self) -> Integral:
         """
         Return the particle's integer charge.
 
@@ -1032,7 +1034,7 @@ class Particle:
         return nuclear_binding_energy.to(u.J)
 
     @property
-    def atomic_number(self) -> numbers.Integral:
+    def atomic_number(self) -> Integral:
         """
         Return the number of protons in an element, isotope, or ion.
 
@@ -1054,7 +1056,7 @@ class Particle:
         return self._attributes['atomic number']
 
     @property
-    def mass_number(self) -> numbers.Integral:
+    def mass_number(self) -> Integral:
         """
         Return the number of nucleons in an isotope.
 
@@ -1076,7 +1078,7 @@ class Particle:
         return self._attributes['mass number']
 
     @property
-    def neutron_number(self) -> numbers.Integral:
+    def neutron_number(self) -> Integral:
         """
         Return the number of neutrons in an isotope or nucleon.
 
@@ -1103,7 +1105,7 @@ class Particle:
             raise InvalidIsotopeError(_category_errmsg(self, 'isotope'))
 
     @property
-    def electron_number(self) -> numbers.Integral:
+    def electron_number(self) -> Integral:
         """
         Return the number of electrons in an ion.
 
@@ -1161,7 +1163,7 @@ class Particle:
         return abundance
 
     @property
-    def baryon_number(self) -> numbers.Integral:
+    def baryon_number(self) -> Integral:
         """
         Return the number of baryons in a particle.
 
@@ -1185,7 +1187,7 @@ class Particle:
         return self._attributes['baryon number']
 
     @property
-    def lepton_number(self) -> numbers.Integral:
+    def lepton_number(self) -> Integral:
         """
         Return ``1`` for leptons, ``-1`` for antileptons, and ``0``
         otherwise.
@@ -1242,7 +1244,7 @@ class Particle:
         return self._attributes['half-life']
 
     @property
-    def spin(self) -> Union[numbers.Integral, numbers.Real]:
+    def spin(self) -> Real:
         """
         Return the spin of the particle.
 
@@ -1290,7 +1292,8 @@ class Particle:
 
     @property
     def categories(self) -> Set[str]:
-        """Return the particle's categories.
+        """
+        Return the particle's categories.
 
         Examples
         --------
@@ -1317,9 +1320,9 @@ class Particle:
 
         Required categories may be entered as positional arguments,
         including as a `list`, `set`, or `tuple` of required categories.
-        These may also be included using the `require` keyword argument.
-        This method will return `False` if the particle is not in all of
-        the required categories.
+        These may also be included using the ``require`` keyword
+        argument.  This method will return `False` if the particle is
+        not in all of the required categories.
 
         If categories are inputted using the ``any_of`` keyword
         argument, then this method will return `False` if the particle
@@ -1410,8 +1413,7 @@ class Particle:
     @property
     def is_ion(self) -> bool:
         """
-        Return `True` if the particle is an ion, and `False`
-        otherwise.
+        Return `True` if the particle is an ion, and `False` otherwise.
 
         Examples
         --------
@@ -1425,7 +1427,7 @@ class Particle:
         """
         return self.is_category('ion')
 
-    def ionize(self, n: numbers.Integral = 1, inplace: bool = False):
+    def ionize(self, n: Integral = 1, inplace: bool = False):
         """
         Create a new `~plasmapy.atomic.Particle` instance corresponding
         to the current `~plasmapy.atomic.Particle` after being ionized
@@ -1494,7 +1496,7 @@ class Particle:
             raise InvalidIonError(
                 f"The particle {self.particle} is already fully "
                 f"ionized and cannot be ionized further.")
-        if not isinstance(n, numbers.Integral):
+        if not isinstance(n, Integral):
             raise TypeError("n must be a positive integer.")
         if n <= 0:
             raise ValueError("n must be a positive number.")
@@ -1507,7 +1509,7 @@ class Particle:
         else:
             return Particle(base_particle, Z=new_integer_charge)
 
-    def recombine(self, n: numbers.Integral = 1, inplace=False):
+    def recombine(self, n: Integral = 1, inplace=False):
         """
         Create a new `~plasmapy.atomic.Particle` instance corresponding
         to the current `~plasmapy.atomic.Particle` after undergoing
@@ -1537,7 +1539,7 @@ class Particle:
         particle : ~plasmapy.atomic.Particle
             A new `~plasmapy.atomic.Particle` object that has undergone
             recombination ``n`` times relative to the original
-            `~plasmapy.atomic.Particle`.  If `inplace` is `False`,
+            `~plasmapy.atomic.Particle`.  If ``inplace`` is `False`,
             instead return `None`.
 
         Raises
@@ -1571,7 +1573,7 @@ class Particle:
             raise ChargeError(
                 f"{self.particle} cannot undergo recombination because "
                 f"its charge is not specified.")
-        if not isinstance(n, numbers.Integral):
+        if not isinstance(n, Integral):
             raise TypeError("n must be a positive integer.")
         if n <= 0:
             raise ValueError("n must be a positive number.")
