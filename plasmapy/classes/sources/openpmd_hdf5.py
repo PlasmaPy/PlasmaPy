@@ -1,6 +1,10 @@
-import h5py
 import numpy as np
 import astropy.units as u
+try:
+    import h5py
+except (ImportError, ModuleNotFoundError) as e:
+    from plasmapy.optional_deps import h5py_import_error
+    raise ImportError(h5py_import_error) from e
 
 from plasmapy.classes import GenericPlasma
 from plasmapy.utils import DataStandardError

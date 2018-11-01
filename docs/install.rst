@@ -22,12 +22,18 @@ installation:
 - `NumPy <http://www.numpy.org/>`_ 1.13 or newer
 - `SciPy <https://www.scipy.org/>`_ 0.19 or newer
 - `Astropy <http://www.astropy.org/>`_ 2.0 or newer
-- `matplotlib <https://matplotlib.org/>`_ 2.0 or newer
 - `Cython <http://cython.org/>`_ 0.27.2 or newer
+- `colorama <https://pypi.org/project/colorama/>`_ 0.3 or newer
+
+PlasmaPy also uses the following optional dependencies:
+
+- `matplotlib <https://matplotlib.org/>`_ 2.0 or newer
 - `h5py <https://www.h5py.org/>`_ 2.8 or newer
 - `mpmath <http://mpmath.org/>`_ 1.0 or newer
 - `lmfit <https://lmfit.github.io/lmfit-py/>`_ 0.9.7 or newer
-- `colorama <https://pypi.org/project/colorama/>`_ 0.3 or newer
+
+PlasmaPy can be installed with all of the optional dependencies via
+`pip install plasmapy[optional]`.
 
 .. _create-conda-env:
 
@@ -71,12 +77,20 @@ Installation with pip
 ---------------------
 
 To install the most recent release of PlasmaPy `on PyPI`_ with `pip
-<https://pip.pypa.io/en/stable/>`_ into an existing Python environment,
-run
+<https://pip.pypa.io/en/stable/>`_ into an existing Python environment
+alongside all optional dependencies, run
 
 .. code:: bash
 
-   pip install plasmapy
+   pip install plasmapy[optional]
+
+To install a minimal set of dependencies (which does not guarantee that
+everything will run and may result in `ImportError`s, skip `[all]` and run
+simply
+
+.. code:: bash
+
+    pip install plasmapy
 
 .. _install-conda:
 
@@ -84,6 +98,8 @@ Installation with conda
 -----------------------
 
 We’re not on conda just yet, but we’re working on it!
+
+Conda installs all dependencies by default.
 
 Building and installing from source code
 ========================================

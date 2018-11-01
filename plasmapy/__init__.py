@@ -23,16 +23,6 @@ class UnsupportedPythonError(Exception):
 if sys.version_info < tuple((int(val) for val in "3.6".split('.'))):
     raise UnsupportedPythonError("plasmapy does not support Python < {}".format(3.6))
 
-if not _ASTROPY_SETUP_:
-    # For egg_info test builds to pass, put package imports here.
-    from . import atomic
-    from . import classes
-    from . import constants
-    from . import diagnostics
-    from . import mathematics
-    from . import physics
-    from . import utils
-
 def online_help(query):
     """
     Search the online PlasmaPy documentation for the given query from plasmapy.org
