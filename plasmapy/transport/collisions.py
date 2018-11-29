@@ -33,6 +33,7 @@ Macroscopic properties
 ======================
 
 These include:
+
 * `Spitzer_resistivity`
 * `mobility`
 * `Knudsen_number`
