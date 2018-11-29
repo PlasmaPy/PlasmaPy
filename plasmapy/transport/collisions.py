@@ -16,7 +16,7 @@ into account the cumulative effects of many such collisions.
 Coulomb logarithms
 ==================
 
-Please see the documentation for the `Coulomb logarithm <Coulomb_logarithm>`_
+Please see the documentation for the `Coulomb_logarithm`
 for a review of the many ways in which one can define and calculate
 that quantity.
 
