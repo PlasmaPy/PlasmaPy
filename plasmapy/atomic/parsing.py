@@ -4,7 +4,7 @@ import numpy as np
 import re
 import warnings
 from typing import (Union, Dict)
-import numbers
+from numbers import Integral
 
 from plasmapy.atomic.elements import (
     _atomic_numbers_to_symbols,
@@ -18,7 +18,8 @@ from plasmapy.utils import (
                      AtomicWarning,
                      InvalidElementError,
                      InvalidParticleError,
-                     roman)
+                     roman
+)
 
 
 def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
@@ -86,7 +87,7 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
 _case_sensitive_aliases, _case_insensitive_aliases = _create_alias_dicts(_Particles)
 
 
-def _dealias_particle_aliases(alias: Union[str, numbers.Integral]) -> str:
+def _dealias_particle_aliases(alias: Union[str, Integral]) -> str:
     """
     Return the standard symbol for a particle or antiparticle
     when the argument is a valid alias.  If the argument is not a
@@ -127,9 +128,9 @@ def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
 
 
 def _parse_and_check_atomic_input(
-        argument: Union[str, numbers.Integral],
-        mass_numb: numbers.Integral = None,
-        Z: numbers.Integral = None):
+        argument: Union[str, Integral],
+        mass_numb: Integral = None,
+        Z: Integral = None):
     """
     Parse information about a particle into a dictionary of standard
     symbols, and check the validity of the particle.
@@ -175,7 +176,7 @@ def _parse_and_check_atomic_input(
 
     """
 
-    def _atomic_number_to_symbol(atomic_numb: numbers.Integral):
+    def _atomic_number_to_symbol(atomic_numb: Integral):
         """
         Return the atomic symbol associated with an integer
         representing an atomic number, or raises an
@@ -295,7 +296,7 @@ def _parse_and_check_atomic_input(
 
         return element
 
-    def _reconstruct_isotope_symbol(element: str, mass_numb: numbers.Integral) -> str:
+    def _reconstruct_isotope_symbol(element: str, mass_numb: Integral) -> str:
         """
         Receive a `str` representing an atomic symbol and an
         `int` representing a mass number.  Return the isotope symbol
@@ -322,8 +323,7 @@ def _parse_and_check_atomic_input(
 
         return isotope
 
-    def _reconstruct_ion_symbol(
-            element: str, isotope: numbers.Integral = None, Z: numbers.Integral = None):
+    def _reconstruct_ion_symbol(element: str, isotope: Integral = None, Z: Integral = None):
         """
         Receive a `str` representing an atomic symbol and/or a
         string representing an isotope, and an `int` representing the
@@ -351,7 +351,7 @@ def _parse_and_check_atomic_input(
 
         return ion
 
-    if not isinstance(argument, (str, numbers.Integral)):  # coverage: ignore
+    if not isinstance(argument, (str, Integral)):  # coverage: ignore
         raise TypeError(f"The argument {argument} is not an integer or string.")
 
     arg = _dealias_particle_aliases(argument)
@@ -367,7 +367,7 @@ def _parse_and_check_atomic_input(
     if isinstance(arg, str) and arg.isdigit():
         arg = int(arg)
 
-    if isinstance(arg, numbers.Integral):
+    if isinstance(arg, Integral):
         element = _atomic_number_to_symbol(arg)
         Z_from_arg = None
         mass_numb_from_arg = None
@@ -403,7 +403,7 @@ def _parse_and_check_atomic_input(
     if Z_from_arg is not None:
         Z = Z_from_arg
 
-    if isinstance(Z, numbers.Integral):
+    if isinstance(Z, Integral):
         if Z > _Elements[element]['atomic number']:
             raise InvalidParticleError(
                 f"The integer charge Z = {Z} cannot exceed the atomic number "
@@ -435,7 +435,7 @@ def _parse_and_check_atomic_input(
     return nomenclature_dict
 
 
-def _call_string(arg: Union[str, numbers.Integral], kwargs: Dict = {}) -> str:
+def _call_string(arg: Union[str, Integral], kwargs: Dict = {}) -> str:
     """
     Return a `str` that recreates the call to create a particular
     particle from the input.

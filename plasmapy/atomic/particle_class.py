@@ -2,7 +2,7 @@
 
 import warnings
 from typing import (Union, Set, Tuple, List, Optional)
-import collections
+from collections import defaultdict, namedtuple
 from numbers import Integral, Real
 
 import numpy as np
@@ -302,7 +302,7 @@ class Particle:
         if Z is not None and not isinstance(Z, Integral):
             raise TypeError("Z is not an integer.")
 
-        self._attributes = collections.defaultdict(lambda: None)
+        self._attributes = defaultdict(lambda: None)
         attributes = self._attributes
 
         # Use this set to keep track of particle categories such as
@@ -1264,7 +1264,7 @@ class Particle:
         return self._attributes['spin']
 
     @property
-    def periodic_table(self) -> collections.namedtuple:
+    def periodic_table(self) -> namedtuple:
         """
         Return a `~collections.namedtuple` to access category, period,
         group, and block information about an element.
