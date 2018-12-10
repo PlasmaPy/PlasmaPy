@@ -30,6 +30,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Sean Chambers <https://github.com/schambers>`__
 * `Apoorv Choubey <https://github.com/apooravc>`__
 * `cclauss <https://github.com/cclauss>`__
+* `Jacob Deal <https://github.com/Jac0bDeal>`__
 * `Leah Einhorn <https://github.com/leahein>`__
 * `Thomas Fan <https://github.com/thomasjpfan>`__
 * `Samaiyah I. Farid <https://github.com/samaiyahfarid>`__
