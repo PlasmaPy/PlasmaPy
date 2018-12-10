@@ -1,6 +1,6 @@
 import functools
 import inspect
-import typing
+from typing import Dict
 
 import numpy as np
 from astropy import units as u
@@ -17,7 +17,7 @@ __all__ = [
 ]
 
 
-def check_quantity(**validations: typing.Dict[str, bool]):
+def check_quantity(**validations: Dict[str, bool]):
     """
     Verify that the function's arguments have correct units.
 

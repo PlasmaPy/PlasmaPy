@@ -14,8 +14,8 @@ https://www.python.org/download/releases/2.1.1/license/
 
 import re
 import numpy as np
-import typing
-import numbers
+from typing import Union
+from numbers import Integral
 
 
 __all__ = [
@@ -78,7 +78,7 @@ _romanNumeralPattern = re.compile("""
     """, re.VERBOSE)
 
 
-def to_roman(n: typing.Union[numbers.Integral, np.integer]) -> str:
+def to_roman(n: Union[Integral, np.integer]) -> str:
     """
     Convert an integer to a Roman numeral.
 
@@ -113,7 +113,7 @@ def to_roman(n: typing.Union[numbers.Integral, np.integer]) -> str:
     'MMDXXV'
 
     """
-    if not isinstance(n, (numbers.Integral, np.integer)):
+    if not isinstance(n, (Integral, np.integer)):
         raise TypeError(f"{n} cannot be converted to a Roman numeral.")
     if not (0 < n < 5000):
         raise OutOfRangeError("Number is out of range (need 0 < n < 5000)")
@@ -126,7 +126,7 @@ def to_roman(n: typing.Union[numbers.Integral, np.integer]) -> str:
     return result
 
 
-def from_roman(s: str) -> numbers.Integral:
+def from_roman(s: str) -> Integral:
     """
     Convert a Roman numeral to an integer.
 
