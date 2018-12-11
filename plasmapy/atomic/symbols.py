@@ -7,7 +7,8 @@ from typing import Optional
 
 from .particle_class import Particle
 from .particle_input import particle_input
-import numbers
+
+from numbers import Integral
 
 # The @particle_input decorator takes the inputs for a function or
 # method and passes through the corresponding instance of the Particle
@@ -96,7 +97,7 @@ def atomic_symbol(element: Particle) -> str:
 
 
 @particle_input
-def isotope_symbol(isotope: Particle, mass_numb: Optional[numbers.Integral] = None) -> str:
+def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> str:
     """
     Return the symbol representing an isotope.
 
@@ -157,8 +158,8 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[numbers.Integral] = No
 @particle_input(require="element", any_of=('charged', 'uncharged'))
 def ionic_symbol(
         particle: Particle,
-        mass_numb: numbers.Integral = None,
-        Z: numbers.Integral = None) -> str:
+        mass_numb: Integral = None,
+        Z: Integral = None) -> str:
     """
     Return the ionic symbol of an ion or neutral atom.
 
@@ -225,8 +226,8 @@ def ionic_symbol(
 @particle_input
 def particle_symbol(
         particle: Particle,
-        mass_numb: numbers.Integral = None,
-        Z: numbers.Integral = None) -> str:
+        mass_numb: Integral = None,
+        Z: Integral = None) -> str:
     """
     Return the symbol of a particle.
 
