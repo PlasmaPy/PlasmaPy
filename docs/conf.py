@@ -60,7 +60,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'PlasmaPy'
-copyright = '2015-2018, PlasmaPy Community'
+copyright = '2015-2019, PlasmaPy Community'
 author = 'PlasmaPy Community'
 
 # The version info for the project you're documenting, acts as replacement for
