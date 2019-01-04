@@ -48,14 +48,6 @@ class Test_Fermi_integral:
                   f"not be equal to {fail1}.")
         assert testTrue, errStr
 
-    def test_polog_fail(self):
-        """
-        Test whether Fermi_integral fails due to `~mpmath.polylog`
-        not having an implementation for larger argument values.
-        """
-        with pytest.raises(NotImplementedError):
-            Fermi_integral(self.argFail1, self.order1)
-
     def test_array(self):
         """Test Fermi_integral where argument is an array of inputs."""
         methodVals = Fermi_integral(self.args, self.order1)

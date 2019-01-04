@@ -25,6 +25,22 @@ _func_color = f"{_cyan}{_bold}"
 _result_color = f"{_blue}{_bold}"
 _message_color = f"{_red}{_bold}"
 
+__all__ = [
+    "RunTestError",
+    "UnexpectedResultError",
+    "InconsistentTypeError",
+    "MissingExceptionError",
+    "UnexpectedResultError",
+    "MissingExceptionError",
+    "MissingWarningError",
+    "IncorrectResultError",
+    "InvalidTestError",
+    "call_string",
+    "run_test",
+    "run_test_equivalent_calls",
+    "assert_can_handle_nparray",
+]
+
 
 class RunTestError(Exception):
     """Base exception for test failures. Derived from `Exception`."""

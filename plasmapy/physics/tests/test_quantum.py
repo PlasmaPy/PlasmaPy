@@ -181,14 +181,6 @@ class Test_chemical_potential:
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
 
-    def test_polog_fail(self):
-        """
-        Tests whether Fermi_integral() fails due to polylog from mpmath
-        not having an implementation for larger argument values.
-        """
-        with pytest.raises(NotImplementedError):
-            chemical_potential(self.n_e_fail, self.T)
-
 
 class Test__chemical_potential_interp:
     @classmethod
