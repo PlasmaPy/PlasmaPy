@@ -874,5 +874,3 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
             astrohelper.assert_quantity_allclose(res_0d, result_1d[idx][3])
             astrohelper.assert_quantity_allclose(res_0d, result_2d[idx][1, 1])
             astrohelper.assert_quantity_allclose(res_0d, result_3d[idx][0, 1, 1])
-
-del Any, Callable, Dict
