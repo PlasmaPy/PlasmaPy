@@ -37,16 +37,13 @@ matrix:
           stage: Generic tests
 
         - env: ASTROPY_VERSION='dev'
-          stage: Generic tests
-#          stage: Cron tests
+          stage: Cron tests
 
         - env: NUMPY_VERSION='dev'
-          stage: Generic tests
-#          stage: Cron tests
+          stage: Cron tests
 
         - env: NUMPY_VERSION='dev' ASTROPY_VERSION='dev'
-          stage: Generic tests
-#          stage: Cron tests
+          stage: Cron tests
 
 install:
         - git clone git://github.com/astropy/ci-helpers.git --depth 1
