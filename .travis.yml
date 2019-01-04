@@ -13,8 +13,8 @@ env:
         - NUMPY_VERSION='stable'
         - ASTROPY_VERSION='stable'
         - MAIN_CMD='python setup.py'
-        - CONDA_DEPENDENCIES='Cython astropy scipy h5py matplotlib mpmath pytest'
-        - CONDA_ALL_DEPENDENCIES='Cython astropy scipy h5py matplotlib mpmath pytest'
+        - CONDA_DEPENDENCIES='Cython scipy h5py matplotlib mpmath pytest'
+        - CONDA_ALL_DEPENDENCIES='Cython scipy h5py matplotlib mpmath pytest'
         - PIP_DEPENDENCIES='roman lmfit colorama codecov'
 
 stages:
