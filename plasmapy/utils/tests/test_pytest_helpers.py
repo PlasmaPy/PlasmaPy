@@ -168,7 +168,7 @@ def test_run_test(f, args, kwargs, expected, whaterror):
         if whaterror is None:
             run_test(f, args, kwargs, expected)
         else:
-            with pytest.raises(whaterror, match = (
+            with pytest.raises(whaterror, match=(
                     f"run_test did not raise an exception for "
                     f"{call_string(f, args, kwargs, color=None)} "
                     f"with expected = {repr(expected)} and "
