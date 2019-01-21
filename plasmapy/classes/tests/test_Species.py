@@ -98,7 +98,7 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 #     # s.plot_trajectories()
 
 
-def test_particle_exb_drift():
+def test_particle_exb_drift(uniform_magnetic_field):
     r"""
         Tests the particle stepper for a field with magnetic field in the Z
         direction, electric field in the y direction. This should produce a
@@ -108,7 +108,7 @@ def test_particle_exb_drift():
 
         which is independent of ion charge.
     """
-    test_plasma = uniform_magnetic_field()
+    test_plasma = uniform_magnetic_field
     test_plasma.electric_field[1] = 1 * u.V / u.m
     expected_drift_velocity = -(test_plasma.electric_field_strength /
                                 test_plasma.magnetic_field_strength).mean() \
