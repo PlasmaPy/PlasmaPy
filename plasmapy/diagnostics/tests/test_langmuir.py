@@ -165,7 +165,6 @@ def characteristic_simulated():
     return langmuir.Characteristic(bias_simarr, current_simarr)
 
 
-@pytest.fixture
 def shuffle_characteristic(characteristic):
     r""""Shuffle a given characteristic"""
 
