@@ -50,7 +50,7 @@ def check_quantity(**validations: Dict[str, bool]):
     astropy.units.core.UnitConversionError: The argument x to func should be a Quantity with the following units: m
 
     >>> import pytest    # to show the UnitsWarning
-    >>> with pytest.warns(u.UnitsWarning, message="Assuming units of m."):
+    >>> with pytest.warns(u.UnitsWarning, match="Assuming units of m."):
     ...     func(1)
     <Quantity 1. m>
 

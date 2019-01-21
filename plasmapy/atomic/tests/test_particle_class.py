@@ -529,7 +529,7 @@ def test_Particle_errors(arg, kwargs, attribute, exception):
     Test that the appropriate exceptions are raised during the creation
     and use of a `~plasmapy.atomic.Particle` object.
     """
-    with pytest.raises(exception, message=(
+    with pytest.raises(exception, match=(
             f"The following command: "
             f"\n\n  {call_string(Particle, arg, kwargs)}{attribute}\n\n"
             f"did not raise a {exception.__name__} as expected")):
@@ -551,7 +551,7 @@ def test_Particle_warnings(arg, kwargs, attribute, warning):
     Test that the appropriate warnings are issued during the creation
     and use of a `~plasmapy.atomic.Particle` object.
     """
-    with pytest.warns(warning, message=(
+    with pytest.warns(warning, match=(
             f"The following command: "
             f"\n\n >>> {call_string(Particle, arg, kwargs)}{attribute}\n\n"
             f"did not issue a {warning.__name__} as expected")):

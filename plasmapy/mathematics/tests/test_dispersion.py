@@ -182,7 +182,7 @@ plasma_disp_func_errors_table = [
 def test_plasma_dispersion_func_errors(w, expected_error):
     """Test errors that should be raised by plasma_dispersion_func."""
 
-    with pytest.raises(expected_error, message=(
+    with pytest.raises(expected_error, match=(
             f"plasma_dispersion_func({w}) did not raise "
             f"{expected_error.__name__} as expected.")):
 
@@ -193,7 +193,7 @@ def test_plasma_dispersion_func_errors(w, expected_error):
 def test_plasma_dispersion_deriv_errors(w, expected_error):
     """Test errors that should be raised by plasma_dispersion_func_deriv."""
 
-    with pytest.raises(expected_error, message=(
+    with pytest.raises(expected_error, match=(
             f"plasma_dispersion_func_deriv({w}) did not raise "
             f"{expected_error.__name__} as expected.")):
 

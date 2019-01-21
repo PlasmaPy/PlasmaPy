@@ -254,7 +254,7 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidParticleError when the input does not correspond
     to a real particle."""
-    with pytest.raises(InvalidParticleError, message=(
+    with pytest.raises(InvalidParticleError, match=(
             "An InvalidParticleError was expected to be raised by "
             f"{_call_string(arg, kwargs)}, but no exception was raised.")):
         _parse_and_check_atomic_input(arg, **kwargs)
@@ -265,7 +265,7 @@ def test_parse_InvalidElementErrors(arg):
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidElementError when the input corresponds to a valid
     particle but not a valid element, isotope, or ion."""
-    with pytest.raises(InvalidElementError, message=(
+    with pytest.raises(InvalidElementError, match=(
             "An InvalidElementError was expected to be raised by "
             f"{_call_string(arg)}, but no exception was raised.")):
         _parse_and_check_atomic_input(arg)
@@ -285,7 +285,7 @@ atomic_warnings_table = [
 def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
     r"""Tests that _parse_and_check_atomic_input issues an AtomicWarning
     under the required conditions.  """
-    with pytest.warns(AtomicWarning, message=(
+    with pytest.warns(AtomicWarning, match=(
             f"No AtomicWarning was issued by {_call_string(arg, kwargs)} but "
             f"the expected number of warnings was {num_warnings}")) as record:
         _parse_and_check_atomic_input(arg, **kwargs)
