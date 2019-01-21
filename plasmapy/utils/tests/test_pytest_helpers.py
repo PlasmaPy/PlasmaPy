@@ -168,7 +168,7 @@ def test_run_test(f, args, kwargs, expected, whaterror):
         if whaterror is None:
             run_test(f, args, kwargs, expected)
         else:
-            with pytest.raises(whaterror, match=(
+            with pytest.raises(whaterror, message = (
                     f"run_test did not raise an exception for "
                     f"{call_string(f, args, kwargs, color=None)} "
                     f"with expected = {repr(expected)} and "
@@ -187,7 +187,7 @@ def test_run_test_rtol():
 
 
 def test_run_test_rtol_failure():
-    with pytest.raises(UnexpectedResultError, match="No exception raised for rtol test."):
+    with pytest.raises(UnexpectedResultError, message="No exception raised for rtol test."):
         run_test(return_arg, 1.0, {}, 0.999999, rtol=1e-7)
 
 
@@ -196,7 +196,7 @@ def test_run_test_atol():
 
 
 def test_run_test_atol_failure():
-    with pytest.raises(UnexpectedResultError, match="No exception raised for atol test."):
+    with pytest.raises(UnexpectedResultError, message="No exception raised for atol test."):
         run_test(return_arg, (1.0,), {}, 0.999999, atol=1e-7)
 
 

@@ -632,7 +632,7 @@ def test_half_life_u_220():
 
     isotope_without_half_life_data = "No-248"
 
-    with pytest.raises(MissingAtomicDataError, match=(
+    with pytest.raises(MissingAtomicDataError, message=(
             f"This test assumes that {isotope_without_half_life_data} does "
             f"not have half-life data.  If half-life data is added for this "
             f"isotope, then a different isotope that does not have half-life "
@@ -692,7 +692,7 @@ def test_known_common_stable_isotopes_error(func):
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` raise an `~plasmapy.utils.InvalidElementError` for
     neutrons."""
-    with pytest.raises(InvalidElementError, match=(
+    with pytest.raises(InvalidElementError, message=(
             f"{func} is not raising a ElementError for neutrons.")):
         func('n')
 
@@ -708,7 +708,7 @@ def test_isotopic_abundance():
     with pytest.warns(AtomicWarning):
         isotopic_abundance('Og', 294)
 
-    with pytest.raises(InvalidIsotopeError, match="No exception raised for "
+    with pytest.raises(InvalidIsotopeError, message="No exception raised for "
                                                     "neutrons"):
         isotopic_abundance('neutron')
 

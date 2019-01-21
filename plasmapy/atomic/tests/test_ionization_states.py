@@ -476,7 +476,7 @@ class TestIonizationStatesAttributes:
         command = f"self.instance.{attribute} = {invalid_value}"
         errmsg = f"No {expected_exception} was raised for command\n\n: {command}"
 
-        with pytest.raises(expected_exception, match=errmsg):
+        with pytest.raises(expected_exception, message=errmsg):
             exec(command)
 
     def test_setting_ionic_fractions_for_single_element(self):
@@ -512,7 +512,7 @@ class TestIonizationStatesAttributes:
         errmsg = (
             f"No {expected_exception} is raised when trying to assign "
             f"{invalid_fracs} to {key} in an IonizationStates instance.")
-        with pytest.raises(expected_exception, match=errmsg):
+        with pytest.raises(expected_exception, message=errmsg):
             self.instance[key] = invalid_fracs
 
     def test_setting_incomplete_abundances(self):
