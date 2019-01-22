@@ -165,7 +165,6 @@ def characteristic_simulated():
     return langmuir.Characteristic(bias_simarr, current_simarr)
 
 
-@pytest.fixture
 def shuffle_characteristic(characteristic):
     r""""Shuffle a given characteristic"""
 
@@ -239,10 +238,10 @@ class Test__Characteristic_inherited_methods:
         assert isinstance(new_char, langmuir.Characteristic)
 
     @staticmethod
-    def test_getpadded_limit():
+    def test_getpadded_limit(characteristic):
         r"""Test padding limit on Characteristic instance"""
 
-        char = characteristic()
+        char = characteristic
         limits = char.get_padded_limit(0.1)
         log_limits = char.get_padded_limit(0.1, log=True)
         assert np.allclose(limits.to(u.A).value,
@@ -277,19 +276,17 @@ class Test__swept_probe_analysis:
 
     @staticmethod
     @pytest.mark.parametrize("bimaxwellian", [True, False])
-    def test_ordering_invariance(bimaxwellian):
+    def test_ordering_invariance(bimaxwellian, characteristic_simulated):
         r"""Test invariance to ordering of the bias and current values"""
 
-        sim = characteristic_simulated()
-
         sim_result = langmuir.swept_probe_analysis(
-            sim,
+            characteristic_simulated,
             1 * u.cm**2,
             'Ar-40 1+',
             bimaxwellian=bimaxwellian)
 
         sim_result_shuffled = langmuir.swept_probe_analysis(
-            shuffle_characteristic(sim),
+            shuffle_characteristic(characteristic_simulated),
             1 * u.cm**2,
             'Ar-40 1+',
             bimaxwellian=bimaxwellian)
@@ -300,19 +297,17 @@ class Test__swept_probe_analysis:
             assert (sim_result[key] == sim_result_shuffled[key]).all(), errStr
 
 
-def test_get_floating_potential_with_return_arg():
+def test_get_floating_potential_with_return_arg(characteristic):
     r"""Test floating potential and the return argument"""
 
-    char = characteristic()
-    potential, arg = langmuir.get_floating_potential(char, return_arg=True)
+    potential, arg = langmuir.get_floating_potential(characteristic, return_arg=True)
     assert np.allclose((potential.to(u.V).value, arg), (0.12203823, 5))
 
 
-def test_get_ion_density_OML_without_return_fit():
+def test_get_ion_density_OML_without_return_fit(characteristic):
     r"""Test ion density without returning the fit value"""
 
-    char = characteristic()
-    density = langmuir.get_ion_density_OML(char, 5000000*u.m**2,
+    density = langmuir.get_ion_density_OML(characteristic, 5000000*u.m**2,
                                            'p+', return_fit=False)
     assert np.isclose(density.value, 385344135.12064785)
 
