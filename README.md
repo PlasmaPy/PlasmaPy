@@ -1,3 +1,5 @@
+<div align="center"><img src="https://raw.githubusercontent.com/PlasmaPy/PlasmaPy-logo/master/exports/with-text-dark.png" width="600"/></div>
+
 # PlasmaPy
 
 [![PyPI version](https://badge.fury.io/py/plasmapy.svg)](https://badge.fury.io/py/plasmapy)
