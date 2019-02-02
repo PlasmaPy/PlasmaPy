@@ -254,21 +254,24 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidParticleError when the input does not correspond
     to a real particle."""
-    with pytest.raises(InvalidParticleError, message=(
-            "An InvalidParticleError was expected to be raised by "
-            f"{_call_string(arg, kwargs)}, but no exception was raised.")):
+    with pytest.raises(InvalidParticleError):
         _parse_and_check_atomic_input(arg, **kwargs)
-
+        pytest.fail((
+            "An InvalidParticleError was expected to be raised by "
+            f"{_call_string(arg, kwargs)}, but no exception was raised."
+        ))
 
 @pytest.mark.parametrize('arg', ParticleZoo.everything - {'p+'})
 def test_parse_InvalidElementErrors(arg):
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidElementError when the input corresponds to a valid
     particle but not a valid element, isotope, or ion."""
-    with pytest.raises(InvalidElementError, message=(
-            "An InvalidElementError was expected to be raised by "
-            f"{_call_string(arg)}, but no exception was raised.")):
+    with pytest.raises(InvalidElementError):
         _parse_and_check_atomic_input(arg)
+        pytest.fail((
+            "An InvalidElementError was expected to be raised by "
+            f"{_call_string(arg)}, but no exception was raised."
+        ))
 
 
 # (arg, kwargs, num_warnings)
@@ -285,10 +288,16 @@ atomic_warnings_table = [
 def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
     r"""Tests that _parse_and_check_atomic_input issues an AtomicWarning
     under the required conditions.  """
-    with pytest.warns(AtomicWarning, message=(
+
+    try:
+        with pytest.warns(AtomicWarning) as record:
+            _parse_and_check_atomic_input(arg, **kwargs)
+    except pytest.fail.Exception:
+        pytest.fail((
             f"No AtomicWarning was issued by {_call_string(arg, kwargs)} but "
-            f"the expected number of warnings was {num_warnings}")) as record:
-        _parse_and_check_atomic_input(arg, **kwargs)
+            f"the expected number of warnings was {num_warnings}"
+        ))
+
     assert len(record) == num_warnings, (
         f"The number of AtomicWarnings issued by {_call_string(arg, kwargs)} "
         f"was {len(record)}, which differs from the expected number "
