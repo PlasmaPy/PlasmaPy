@@ -100,9 +100,9 @@ def test_particle_input_errors(func, kwargs, expected_error):
     Test that functions decorated with particle_input raise the
     expected errors.
     """
-    with pytest.raises(expected_error, message=(
-            f"{func} did not raise {expected_error} with kwargs = {kwargs}")):
+    with pytest.raises(expected_error):
         func(**kwargs)
+        pytest.fail(f"{func} did not raise {expected_error} with kwargs = {kwargs}")
 
 
 class Test_particle_input:
@@ -439,20 +439,23 @@ def test_none_shall_not_pass():
     def func_none_shall_not_pass_with_list(particles: [Particle]) -> [Particle]:
         return particles
 
-    with pytest.raises(TypeError, message=(
-            "The none_shall_pass keyword in the particle_input decorator is "
-            "set to False, but is not raising a TypeError.")):
+    with pytest.raises(TypeError):
         func_none_shall_not_pass(None)
+        pytest.fail(
+            "The none_shall_pass keyword in the particle_input "
+            "decorator is set to False, but is not raising a TypeError.")
 
-    with pytest.raises(TypeError, message=(
-            "The none_shall_pass keyword in the particle_input decorator is "
-            "set to False, but is not raising a TypeError.")):
+    with pytest.raises(TypeError):
         func_none_shall_not_pass_with_tuple(('He', None))
+        pytest.fail(
+            "The none_shall_pass keyword in the particle_input "
+            "decorator is set to False, but is not raising a TypeError.")
 
-    with pytest.raises(TypeError, message=(
-            "The none_shall_pass keyword in the particle_input decorator is "
-            "set to False, but is not raising a TypeError.")):
+    with pytest.raises(TypeError):
         func_none_shall_not_pass(('He', None))
+        pytest.fail(
+            "The none_shall_pass keyword in the particle_input "
+            "decorator is set to False, but is not raising a TypeError.")
 
 
 def test_optional_particle_annotation_argname():
@@ -500,15 +503,20 @@ def test_not_optional_particle_annotation_argname():
     def func_not_optional_particle_with_list(particles: [Particle]) -> [Particle]:
         return particles
 
-    with pytest.raises(TypeError, message=(
-            "The particle keyword in the particle_input decorator received a "
-            "None instead of a Particle, but is not raising a TypeError.")):
+    with pytest.raises(TypeError):
         func_not_optional_particle_with_tuple((None, 'He'))
+        pytest.fail(
+            "The particle keyword in the particle_input decorator "
+            "received None instead of a Particle, but is not raising a "
+            "TypeError.")
 
-    with pytest.raises(TypeError, message=(
-            "The particle keyword in the particle_input decorator received a "
-            "None instead of a Particle, but is not raising a TypeError.")):
+    with pytest.raises(TypeError):
+
         func_not_optional_particle_with_list(('He', None))
+        pytest.fail(
+            "The particle keyword in the particle_input decorator "
+            "received None instead of a Particle, but is not raising a "
+            "TypeError.")
 
 
 # TODO: The following tests might be able to be cleaned up and/or
@@ -575,11 +583,12 @@ def test_not_element(particle):
     `~plasmapy.atomic.Particle` is named 'element', but the annotated
     argument ends up not being an element, isotope, or ion.
     """
-    with pytest.raises(InvalidElementError, message=(
-            "@particle_input is not raising an InvalidElementError for "
-            f"{repr(particle)} even though the annotated argument is named "
-            "'element'.")):
+    with pytest.raises(InvalidElementError):
         function_with_element_argument(particle)
+        pytest.fail(
+            "@particle_input is not raising an InvalidElementError for "
+            f"{repr(particle)} even though the annotated argument is "
+            f"named 'element'.")
 
 
 @pytest.mark.parametrize('isotope', is_isotope)

@@ -529,12 +529,12 @@ def test_Particle_errors(arg, kwargs, attribute, exception):
     Test that the appropriate exceptions are raised during the creation
     and use of a `~plasmapy.atomic.Particle` object.
     """
-    with pytest.raises(exception, message=(
+    with pytest.raises(exception):
+        exec(f'Particle(arg, **kwargs){attribute}')
+        pytest.fail(
             f"The following command: "
             f"\n\n  {call_string(Particle, arg, kwargs)}{attribute}\n\n"
-            f"did not raise a {exception.__name__} as expected")):
-        exec(f'Particle(arg, **kwargs){attribute}')
-
+            f"did not raise a {exception.__name__} as expected")
 
 # arg, kwargs, attribute, exception
 test_Particle_warning_table = [
@@ -551,12 +551,13 @@ def test_Particle_warnings(arg, kwargs, attribute, warning):
     Test that the appropriate warnings are issued during the creation
     and use of a `~plasmapy.atomic.Particle` object.
     """
-    with pytest.warns(warning, message=(
-            f"The following command: "
-            f"\n\n >>> {call_string(Particle, arg, kwargs)}{attribute}\n\n"
-            f"did not issue a {warning.__name__} as expected")):
+    with pytest.warns(warning) as record:
         exec(f'Particle(arg, **kwargs){attribute}')
-
+        if not record:
+            pytest.fail(
+                f"The following command: "
+                f"\n\n >>> {call_string(Particle, arg, kwargs)}{attribute}\n\n"
+                f"did not issue a {warning.__name__} as expected")
 
 def test_Particle_cmp():
     """Test ``__eq__`` and ``__ne__`` in the Particle class."""

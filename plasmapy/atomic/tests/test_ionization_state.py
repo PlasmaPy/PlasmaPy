@@ -532,11 +532,11 @@ class Test_IonizationStateNumberDensitiesSetter:
             "number_densities was set.")
 
     def test_that_negative_density_raises_error(self):
-        with pytest.raises(AtomicError, message="cannot be negative"):
+        with pytest.raises(AtomicError, match="cannot be negative"):
             self.instance.number_densities = u.Quantity([-0.1, 0.2], unit=u.m**-3)
 
     def test_incorrect_number_of_charge_states_error(self):
-        with pytest.raises(AtomicError, message="Incorrect number of charge states"):
+        with pytest.raises(AtomicError, match="Incorrect number of charge states"):
             self.instance.number_densities = u.Quantity([0.1, 0.2, 0.3], unit=u.m**-3)
 
     def test_incorrect_units_error(self):
