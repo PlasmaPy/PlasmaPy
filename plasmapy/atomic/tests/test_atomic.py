@@ -634,12 +634,12 @@ def test_half_life_u_220():
 
     with pytest.raises(MissingAtomicDataError):
         half_life(isotope_without_half_life_data)
-        pytest.fail((
+        pytest.fail(
             f"This test assumes that {isotope_without_half_life_data} does "
             f"not have half-life data.  If half-life data is added for this "
             f"isotope, then a different isotope that does not have half-life "
             f"data should be chosen for this test."
-        ))
+        )
 
 
 def test_known_common_stable_isotopes_cases():

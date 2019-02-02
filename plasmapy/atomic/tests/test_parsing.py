@@ -256,10 +256,10 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
     to a real particle."""
     with pytest.raises(InvalidParticleError):
         _parse_and_check_atomic_input(arg, **kwargs)
-        pytest.fail((
+        pytest.fail(
             "An InvalidParticleError was expected to be raised by "
             f"{_call_string(arg, kwargs)}, but no exception was raised."
-        ))
+        )
 
 @pytest.mark.parametrize('arg', ParticleZoo.everything - {'p+'})
 def test_parse_InvalidElementErrors(arg):
@@ -268,10 +268,10 @@ def test_parse_InvalidElementErrors(arg):
     particle but not a valid element, isotope, or ion."""
     with pytest.raises(InvalidElementError):
         _parse_and_check_atomic_input(arg)
-        pytest.fail((
+        pytest.fail(
             "An InvalidElementError was expected to be raised by "
             f"{_call_string(arg)}, but no exception was raised."
-        ))
+        )
 
 
 # (arg, kwargs, num_warnings)
@@ -289,14 +289,14 @@ def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
     r"""Tests that _parse_and_check_atomic_input issues an AtomicWarning
     under the required conditions.  """
 
-    try:
-        with pytest.warns(AtomicWarning) as record:
-            _parse_and_check_atomic_input(arg, **kwargs)
-    except pytest.fail.Exception:
-        pytest.fail((
-            f"No AtomicWarning was issued by {_call_string(arg, kwargs)} but "
-            f"the expected number of warnings was {num_warnings}"
-        ))
+    with pytest.warns(AtomicWarning) as record:
+        _parse_and_check_atomic_input(arg, **kwargs)
+        if record:
+            pytest.fail(
+                f"No AtomicWarning was issued by "
+                f"{_call_string(arg, kwargs)} but the expected number "
+                f"of warnings was {num_warnings}"
+            )
 
     assert len(record) == num_warnings, (
         f"The number of AtomicWarnings issued by {_call_string(arg, kwargs)} "
