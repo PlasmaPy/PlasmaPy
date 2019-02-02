@@ -551,12 +551,13 @@ def test_Particle_warnings(arg, kwargs, attribute, warning):
     Test that the appropriate warnings are issued during the creation
     and use of a `~plasmapy.atomic.Particle` object.
     """
-    with pytest.warns(warning):
+    with pytest.warns(warning) as record:
         exec(f'Particle(arg, **kwargs){attribute}')
-        pytest.fail(
-            f"The following command: "
-            f"\n\n >>> {call_string(Particle, arg, kwargs)}{attribute}\n\n"
-            f"did not issue a {warning.__name__} as expected")
+        if not record:
+            pytest.fail(
+                f"The following command: "
+                f"\n\n >>> {call_string(Particle, arg, kwargs)}{attribute}\n\n"
+                f"did not issue a {warning.__name__} as expected")
 
 def test_Particle_cmp():
     """Test ``__eq__`` and ``__ne__`` in the Particle class."""
