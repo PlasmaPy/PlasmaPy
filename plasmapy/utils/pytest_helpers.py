@@ -703,7 +703,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
             test_case['type'] = type(test_case['result'])
         except Exception as exc:
             raise UnexpectedExceptionError(
-                f"Unable to evaluate {test_case['call string']}.")
+                f"Unable to evaluate {test_case['call string']}.") from exc
 
     # Make sure that all of the results evaluate as equal to the first
     # result.
@@ -736,6 +736,26 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
                 f"of type {test_case['type']}")
 
         raise UnexpectedResultError(errmsg)
+
+
+def run_test_class_methods_attrs(Class, args, kwargs, expected_dict):
+    r"""
+
+    Parameters
+    ----------
+    Class : class
+
+    args : tuple or object
+
+    kwargs : dict
+
+    expected_dict : dict
+
+    Examples
+    --------
+
+    """
+    ...
 
 
 def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_nans=[],
@@ -848,9 +868,7 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
         input_data_0d = input_data_1d[3]
         return input_data_0d, input_data_1d, input_data_2d, input_data_3d
 
-    #
     # *** body of assert_can_handle_nparray function ***
-    #
 
     # call _prepare_input to prepare 0d, 1d, and 2d sets of arguments for the function:
     function_sig = inspect.signature(function_to_test)
