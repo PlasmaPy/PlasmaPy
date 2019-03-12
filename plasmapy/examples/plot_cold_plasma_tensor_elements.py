@@ -9,7 +9,7 @@ elements for various electromagnetic wave frequencies.
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy import units as u
-from plasmapy.physics.dielectric import (cold_plasma_permittivity_SDP, 
+from plasmapy.physics.dielectric import (cold_plasma_permittivity_SDP,
                                          cold_plasma_permittivity_LRP)
 
 #######################################################################
