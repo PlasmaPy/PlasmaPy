@@ -1,3 +1,44 @@
+"""
+PlasmaPy: A plasma physics Python package
+================================================
+
+Documentation is available in the docstrings,
+online at https://docs.plasmapy.org (accessible also using
+the ``plasmapy.online_help`` function).
+
+Contents
+--------
+PlasmaPy provides the following functionality:
+
+Subpackages
+-----------
+Each of these subpackages requires an explicit import, for example,
+via ``import plasmapy.physics``.
+
+::
+
+ atomic                            --- Database for atoms, isotopes, ions...
+ classes                           --- (WIP) classes used in multiple places
+ constants                         --- (WIP?) wrapper for astropy.constants.si
+ data                              --- (SCRAPPABLE?)
+ diagnostics                       --- Experimental research data analysis
+ io                                --- (SCRAPPABLE?)
+ mathematics                       --- General formulas used elsewhere
+ physics                           --- Plasma theory functionality
+ transport                         --- Transport theory functionality
+ utils                             --- Various  utilities
+ visualization                     --- (SCRAPPABLE?)
+
+Utility tools
+-------------
+::
+
+ test              --- Run PlasmaPy unit tests
+ online_help       --- Search the online documentation
+ __version__       --- PlasmaPy version string
+ __citation__      --- PlasmaPy citation template
+
+"""
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 
 # Packages may add whatever they like to this file, but
@@ -11,10 +52,6 @@ from ._base_init import *
 import sys
 
 __name__ = "plasmapy"
-
-__doc__ = ("A community-developed and community-driven open source "
-           "core Python package for plasma physics.")
-
 
 class UnsupportedPythonError(Exception):
     pass
