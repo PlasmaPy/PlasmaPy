@@ -20,14 +20,12 @@ via ``import plasmapy.physics``.
  atomic                            --- Database for atoms, isotopes, ions...
  classes                           --- (WIP) classes used in multiple places
  constants                         --- (WIP?) wrapper for astropy.constants.si
- data                              --- (SCRAPPABLE?)
+ data                              --- Data used for testing and examples
  diagnostics                       --- Experimental research data analysis
- io                                --- (SCRAPPABLE?)
- mathematics                       --- General formulas used elsewhere
+ mathematics                       --- General formulae used elsewhere
  physics                           --- Plasma theory functionality
  transport                         --- Transport theory functionality
- utils                             --- Various  utilities
- visualization                     --- (SCRAPPABLE?)
+ utils                             --- Various utilities
 
 Utility tools
 -------------
