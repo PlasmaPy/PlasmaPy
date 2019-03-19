@@ -15,11 +15,9 @@ from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.atomic.special_particles import _Particles, ParticleZoo
 
 from plasmapy.utils import (
-                     AtomicWarning,
-                     InvalidElementError,
-                     InvalidParticleError,
-                     roman
+    roman
 )
+from plasmapy.atomic._exceptions import InvalidElementError, InvalidParticleError, AtomicWarning
 
 
 def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):

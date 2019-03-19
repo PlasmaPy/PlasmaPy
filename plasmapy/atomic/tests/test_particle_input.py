@@ -2,13 +2,9 @@ import pytest
 from typing import Optional, Union, Tuple, List
 
 from ...utils import (
-    AtomicError,
-    InvalidParticleError,
-    ChargeError,
     InvalidElementError,
-    InvalidIonError,
-    InvalidIsotopeError,
-)
+    )
+from plasmapy.atomic._exceptions import AtomicError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidParticleError
 
 from ..particle_class import Particle
 from ..particle_input import particle_input
