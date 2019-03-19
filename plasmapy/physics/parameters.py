@@ -31,11 +31,8 @@ from astropy import units as u
 import numbers
 import numpy as np
 # import warnings
-from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
+from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0)
 from plasmapy import atomic, utils
-
-from plasmapy.utils.exceptions import (PhysicsError)
-from plasmapy.atomic._exceptions import AtomicError
 
 
 def _grab_charge(ion, z_mean=None):

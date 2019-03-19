@@ -3,7 +3,7 @@ import warnings
 
 from plasmapy.atomic._exceptions import AtomicError, MissingAtomicDataError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, \
     InvalidParticleError, AtomicWarning, MissingAtomicDataWarning
-from ..exceptions import *
+from plasmapy.physics.exceptions import *
 
 plasmapy_exceptions = [
     PlasmaPyError,

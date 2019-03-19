@@ -6,8 +6,8 @@ from astropy import units as u
 from astropy.tests.helper import assert_quantity_allclose
 from warnings import simplefilter
 
-from plasmapy.utils.exceptions import RelativityWarning, RelativityError
-from plasmapy.utils.exceptions import PhysicsError
+from plasmapy.physics.exceptions import RelativityWarning, RelativityError
+from plasmapy.physics.exceptions import PhysicsError
 from plasmapy.atomic._exceptions import InvalidParticleError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 from astropy.constants import c, m_p, m_e, e, mu0

@@ -15,7 +15,7 @@ from ..pytest_helpers import (
     MissingExceptionError,
 )
 
-from ..exceptions import PlasmaPyWarning, PlasmaPyError
+from plasmapy.physics.exceptions import PlasmaPyWarning, PlasmaPyError
 from plasmapy.atomic._exceptions import AtomicError
 
 from ...atomic import Particle

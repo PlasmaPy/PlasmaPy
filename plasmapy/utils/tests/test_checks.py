@@ -4,7 +4,7 @@ import numpy as np
 from astropy import units as u
 import pytest
 
-from ...utils.exceptions import RelativityWarning, RelativityError
+from plasmapy.physics.exceptions import RelativityWarning, RelativityError
 from ...constants import c
 from ..checks import (
     _check_quantity, _check_relativistic, check_relativistic,

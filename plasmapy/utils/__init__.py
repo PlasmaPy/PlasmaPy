@@ -3,17 +3,6 @@ from .checks import (check_quantity,
                      _check_quantity,
                      _check_relativistic)
 
-from .exceptions import (PlasmaPyError,
-                         PhysicsError,
-                         RelativityError,
-                         PlasmaPyWarning,
-                         PhysicsWarning,
-                         CouplingWarning,
-                         RelativityWarning)
-from plasmapy.classes.sources.openpmd_hdf5 import DataStandardError
-from plasmapy.atomic._exceptions import AtomicError, MissingAtomicDataError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, \
-    InvalidParticleError, AtomicWarning, MissingAtomicDataWarning
-
 from .pytest_helpers import (
     run_test,
     run_test_equivalent_calls,

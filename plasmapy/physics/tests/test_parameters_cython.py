@@ -3,13 +3,9 @@
 import numpy as np
 import pytest
 from astropy import units as u
-from warnings import simplefilter
 
-from plasmapy.utils.exceptions import RelativityWarning, RelativityError
-from plasmapy.utils.exceptions import PhysicsError
-from plasmapy.constants import c, m_p, m_e, e, mu0
+from plasmapy.physics.exceptions import PhysicsError
 
-import plasmapy.physics.parameters_cython
 from plasmapy.physics.parameters_cython import (thermal_speed,
                                  )
 def test_thermal_speed():
