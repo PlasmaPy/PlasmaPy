@@ -7,7 +7,6 @@ except (ImportError, ModuleNotFoundError) as e:
     raise ImportError(h5py_import_error) from e
 
 from plasmapy.classes import GenericPlasma
-from plasmapy.utils import DataStandardError
 
 import os
 from distutils.version import StrictVersion
@@ -166,3 +165,8 @@ class HDF5Reader(GenericPlasma):
                 openPMD = False
 
         return openPMD
+
+
+class DataStandardError(Exception):
+    """An exception for when HDF5 is not defined by OpenPMD standard."""
+    pass

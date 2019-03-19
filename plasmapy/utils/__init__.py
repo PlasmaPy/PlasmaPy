@@ -6,11 +6,11 @@ from .checks import (check_quantity,
 from .exceptions import (PlasmaPyError,
                          PhysicsError,
                          RelativityError,
-                         DataStandardError,
                          PlasmaPyWarning,
                          PhysicsWarning,
                          CouplingWarning,
                          RelativityWarning)
+from plasmapy.classes.sources.openpmd_hdf5 import DataStandardError
 from plasmapy.atomic._exceptions import AtomicError, MissingAtomicDataError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, \
     InvalidParticleError, AtomicWarning, MissingAtomicDataWarning
 

@@ -19,11 +19,6 @@ class RelativityError(PhysicsError):
     pass
 
 
-class DataStandardError(Exception):
-    """An exception for when HDF5 is not defined by OpenPMD standard."""
-    pass
-
-
 # ----------
 # Warnings:
 # ----------
