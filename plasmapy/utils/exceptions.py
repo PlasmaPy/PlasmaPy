@@ -5,17 +5,7 @@
 # Exceptions
 # ----------
 
-class PlasmaPyError(Exception):
-    """
-    Base class of PlasmaPy custom errors.
-
-    All custom exceptions raised by PlasmaPy should inherit from this
-    class and be defined in this module.
-    """
-    pass
-
-
-class PhysicsError(PlasmaPyError, ValueError):
+class PhysicsError(Exception, ValueError):
     """
     The base exception for physics-related errors.
     """
@@ -29,7 +19,7 @@ class RelativityError(PhysicsError):
     pass
 
 
-class AtomicError(PlasmaPyError):
+class AtomicError(Exception):
     """An exception for errors in the `~plasmapy.atomic` subpackage."""
     pass
 
@@ -78,7 +68,7 @@ class InvalidParticleError(AtomicError):
     pass
 
 
-class DataStandardError(PlasmaPyError):
+class DataStandardError(Exception):
     """An exception for when HDF5 is not defined by OpenPMD standard."""
     pass
 
@@ -87,21 +77,7 @@ class DataStandardError(PlasmaPyError):
 # Warnings:
 # ----------
 
-class PlasmaPyWarning(Warning):
-    """
-    Base class of PlasmaPy custom warnings.
-
-    All PlasmaPy custom warnings should inherit from this class and be
-    defined in this module.
-
-    Warnings should be issued using `~warnings.warn`, which will not break
-    execution if unhandled.
-
-    """
-    pass
-
-
-class PhysicsWarning(PlasmaPyWarning):
+class PhysicsWarning(Warning):
     """The base warning for `~plasmapy.physics` related warnings."""
     pass
 
@@ -120,7 +96,7 @@ class CouplingWarning(PhysicsWarning):
     """
 
 
-class AtomicWarning(PlasmaPyWarning):
+class AtomicWarning(Warning):
     """The base warning for the `~plasmapy.atomic` subpackage."""
     pass
 
