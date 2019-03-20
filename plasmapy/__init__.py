@@ -53,7 +53,7 @@ __name__ = "plasmapy"
 
 
 if sys.version_info < tuple((int(val) for val in "3.6".split('.'))):
-    raise Exception("plasmapy does not support Python < {}".format(3.6))
+    raise RuntimeError("plasmapy does not support Python < {}".format(3.6))
 
 def online_help(query):
     """
