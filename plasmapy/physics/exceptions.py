@@ -1,4 +1,4 @@
-"""Exceptions and warnings specific to PlasmaPy."""
+"""Exceptions and warnings related to plasma parameter calculations."""
 
 
 # ----------

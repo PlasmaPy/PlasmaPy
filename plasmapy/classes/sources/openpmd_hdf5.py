@@ -168,5 +168,6 @@ class HDF5Reader(GenericPlasma):
 
 
 class DataStandardError(Exception):
-    """An exception for when HDF5 is not defined by OpenPMD standard."""
+    """An exception for when the structure of a data file does not match the
+    expected standard."""
     pass
