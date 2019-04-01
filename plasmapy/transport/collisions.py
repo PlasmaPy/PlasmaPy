@@ -280,12 +280,14 @@ def Coulomb_logarithm(T,
         raise ValueError("Unknown method! Choose from 'classical' and 'GMS-N', N from 1 to 6.")
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
-    if np.any(ln_Lambda < 2) and method in ["classical", "GMS-1", "GMS-2"]:
-        warnings.warn(f"Coulomb logarithm is {ln_Lambda} and {method} relies on weak coupling.",
-                      utils.CouplingWarning)
-    elif np.any(ln_Lambda < 4):
-        warnings.warn(f"Coulomb logarithm is {ln_Lambda}, you might have strong coupling effects",
-                      utils.CouplingWarning)
+    # Allow NaNs through the < checks without warning
+    with np.errstate(invalid='ignore'):
+        if np.any(ln_Lambda < 2) and method in ["classical", "GMS-1", "GMS-2"]:
+            warnings.warn(f"Coulomb logarithm is {ln_Lambda} and {method} relies on "
+                          "weak coupling.", utils.CouplingWarning)
+        elif np.any(ln_Lambda < 4):
+            warnings.warn(f"Coulomb logarithm is {ln_Lambda}, you might have strong "
+                          "coupling effects", utils.CouplingWarning)
     return ln_Lambda
 
 
