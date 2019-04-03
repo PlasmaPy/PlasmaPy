@@ -326,8 +326,12 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         raise ValueError(f"{valueerror_message} NaNs.")
     elif np.any(np.iscomplex(arg.value)) and not can_be_complex:
         raise ValueError(f"{valueerror_message} complex numbers.")
-    elif not can_be_negative and np.any(arg.value < 0):
-        raise ValueError(f"{valueerror_message} negative numbers.")
+    elif not can_be_negative:
+        # Allow NaNs through without raising a warning
+        with np.errstate(invalid='ignore'):
+            isneg = np.any(arg.value < 0)
+        if isneg:
+            raise ValueError(f"{valueerror_message} negative numbers.")
     elif not can_be_inf and np.any(np.isinf(arg.value)):
         raise ValueError(f"{valueerror_message} infs.")
 
