@@ -199,48 +199,48 @@ class Test_classical_transport:
     def test_Z_checks(self):
         """should raise ValueError if Z is negative"""
         with pytest.raises(ValueError):
-            ct2 = ClassicalTransport(T_e=self.T_e,
-                                     n_e=self.n_e,
-                                     T_i=self.T_i,
-                                     n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
-                                     Z=-1)
+            ClassicalTransport(T_e=self.T_e,
+                               n_e=self.n_e,
+                               T_i=self.T_i,
+                               n_i=self.n_i,
+                               ion_particle=self.ion_particle,
+                               Z=-1)
 
     def test_coulomb_log_warnings(self):
         """should warn PhysicsWarning if coulomb log is near 1"""
         with pytest.warns(PhysicsWarning):
-            ct2 = ClassicalTransport(T_e=self.T_e,
-                                     n_e=self.n_e,
-                                     T_i=self.T_i,
-                                     n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
-                                     coulomb_log_ii=1.3)
+            ClassicalTransport(T_e=self.T_e,
+                               n_e=self.n_e,
+                               T_i=self.T_i,
+                               n_i=self.n_i,
+                               ion_particle=self.ion_particle,
+                               coulomb_log_ii=1.3)
 
         with pytest.warns(PhysicsWarning):
-            ct2 = ClassicalTransport(T_e=self.T_e,
-                                     n_e=self.n_e,
-                                     T_i=self.T_i,
-                                     n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
-                                     coulomb_log_ei=1.3)
+            ClassicalTransport(T_e=self.T_e,
+                               n_e=self.n_e,
+                               T_i=self.T_i,
+                               n_i=self.n_i,
+                               ion_particle=self.ion_particle,
+                               coulomb_log_ei=1.3)
 
     def test_coulomb_log_errors(self):
         """should raise PhysicsError if coulomb log is < 1"""
         with pytest.warns(PhysicsWarning):
-            ct2 = ClassicalTransport(T_e=self.T_e,
-                                     n_e=self.n_e,
-                                     T_i=self.T_i,
-                                     n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
-                                     coulomb_log_ii=0.3)
+            ClassicalTransport(T_e=self.T_e,
+                               n_e=self.n_e,
+                               T_i=self.T_i,
+                               n_i=self.n_i,
+                               ion_particle=self.ion_particle,
+                               coulomb_log_ii=0.3)
 
         with pytest.warns(PhysicsWarning):
-            ct2 = ClassicalTransport(T_e=self.T_e,
-                                     n_e=self.n_e,
-                                     T_i=self.T_i,
-                                     n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
-                                     coulomb_log_ei=0.3)
+            ClassicalTransport(T_e=self.T_e,
+                               n_e=self.n_e,
+                               T_i=self.T_i,
+                               n_i=self.n_i,
+                               ion_particle=self.ion_particle,
+                               coulomb_log_ei=0.3)
 
     def test_coulomb_log_calc(self):
         """if no coulomb logs are input, they should be calculated"""

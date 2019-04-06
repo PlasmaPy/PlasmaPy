@@ -15,7 +15,6 @@ from ..pytest_helpers import (
     MissingExceptionError,
 )
 
-from plasmapy.physics.exceptions import PlasmaPyWarning, PlasmaPyError
 from plasmapy.atomic.exceptions import AtomicError
 
 from ...atomic import Particle
@@ -25,14 +24,14 @@ def f(*args, **kwargs):
 
 
 def raise_exception(*args, **kwargs):
-    raise PlasmaPyError(
+    raise Exception(
         f"This exception was raised by raise_exception with:\n\n"
         f"  args = {args}\n"
         f"kwargs = {kwargs}\n")
 
 
 def issue_warning(*args, **kwargs) -> int:
-    warnings.warn(f"\n{args}\n{kwargs}", PlasmaPyWarning)
+    warnings.warn(f"\n{args}\n{kwargs}", Warning)
     return 42
 
 
@@ -83,17 +82,16 @@ f_args_kwargs_expected_whaterror = [
     [adams_number, (4,), {'y': 1}, 6 * 9, UnexpectedResultError],
     [adams_number, (5, 1), {}, 6 * 9, UnexpectedResultError],
 
-    [raise_exception, 6, {'y': 1}, PlasmaPyError, None],
-    [raise_exception, (7,), {'y': 1}, PlasmaPyError, None],
-    [raise_exception, (8, 1), {}, PlasmaPyError, None],
+    [raise_exception, 6, {'y': 1}, Exception, None],
+    [raise_exception, (7,), {'y': 1}, Exception, None],
+    [raise_exception, (8, 1), {}, Exception, None],
 
     [raise_exception, 9, {'y': 1}, TypeError, UnexpectedExceptionError],
     [raise_exception, (10,), {'y': 1}, TypeError, UnexpectedExceptionError],
-    [raise_exception, (11, 1), {}, Exception, UnexpectedExceptionError],
 
-    [issue_warning, 12, {'y': 1}, PlasmaPyWarning, None],
-    [issue_warning, (13,), {'y': 1}, PlasmaPyWarning, None],
-    [issue_warning, (14, 1), {}, PlasmaPyWarning, None],
+    [issue_warning, 12, {'y': 1}, Warning, None],
+    [issue_warning, (13,), {'y': 1}, Warning, None],
+    [issue_warning, (14, 1), {}, Warning, None],
 
     [issue_warning, 15, {'y': 1}, (42, UserWarning), MissingWarningError],
     [issue_warning, (16,), {'y': 1}, (42, UserWarning), MissingWarningError],

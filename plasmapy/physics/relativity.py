@@ -7,6 +7,7 @@ from astropy import units as u
 
 from plasmapy.constants import c
 from plasmapy import utils
+from plasmapy.physics.exceptions import RelativityError
 
 __all__ = [
     "Lorentz_factor",
@@ -71,7 +72,7 @@ def Lorentz_factor(V: u.m / u.s):
     utils._check_quantity(V, 'V', 'Lorentz_factor', u.m / u.s)
 
     if not np.all(np.abs(V) <= c):
-        raise utils.RelativityError(
+        raise RelativityError(
             "The Lorentz factor cannot be calculated for "
             "speeds faster than the speed of light. ")
 

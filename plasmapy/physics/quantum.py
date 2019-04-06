@@ -6,6 +6,9 @@ gases and warm dense matter.
 # python modules
 import numpy as np
 from astropy import units as u
+
+from plasmapy.physics.exceptions import RelativityError
+
 try:
     from lmfit import minimize, Parameters
 except (ImportError, ModuleNotFoundError) as e:
@@ -95,7 +98,7 @@ def deBroglie_wavelength(V, particle):
     V = np.abs(V)
 
     if np.any(V >= c):
-        raise utils.RelativityError(
+        raise RelativityError(
             "Velocity input in deBroglie_wavelength cannot "
             "be greater than or equal to the speed of "
             "light.")

@@ -129,6 +129,7 @@ from astropy import units as u
 from plasmapy import utils
 from plasmapy import atomic
 from plasmapy.atomic.atomic import _is_electron
+from plasmapy.physics.exceptions import PhysicsWarning, PhysicsError
 from .collisions import Coulomb_logarithm
 from plasmapy.physics.parameters import (Hall_parameter,
                                          _grab_charge)
@@ -379,7 +380,7 @@ class ClassicalTransport:
             if self.coulomb_log_ei < 4:
                 warnings.warn(f"Coulomb logarithm is {coulomb_log_ei},"
                               f" you might have strong coupling effects",
-                              utils.PhysicsWarning)
+                              PhysicsWarning)
         else:
             self.coulomb_log_ei = Coulomb_logarithm(T_e,
                                                     n_e,
@@ -392,7 +393,7 @@ class ClassicalTransport:
             if self.coulomb_log_ii < 4:
                 warnings.warn(f"Coulomb logarithm is {coulomb_log_ii},"
                               f" you might have strong coupling effects",
-                              utils.PhysicsWarning)
+                              PhysicsWarning)
         else:
             self.coulomb_log_ii = Coulomb_logarithm(T_i,
                                                     n_e,  # this is not a typo!
@@ -1108,7 +1109,7 @@ def _check_Z(allowed_Z, Z):
     # at this point we have looped through allowed_Z and either found a match
     # or not. If we haven't found a match and arbitrary Z aren't allowed, break
     if np.isnan(Z_idx) and not arbitrary_Z_allowed:
-        raise utils.PhysicsError(f"{Z} is not an allowed Z value")
+        raise PhysicsError(f"{Z} is not an allowed Z value")
     elif np.isnan(Z_idx):  # allowed arbitrary Z
         # return a Z_idx pointing to the 'arbitrary'
         Z_idx = the_arbitrary_idx

@@ -13,7 +13,8 @@ from plasmapy.transport import (coupling_parameter,
                                         )
 from plasmapy.atomic import particle_mass
 
-from plasmapy.utils import call_string, CouplingWarning
+from plasmapy.utils import call_string
+from plasmapy.physics.exceptions import CouplingWarning
 
 from plasmapy.classes import GenericPlasma
 

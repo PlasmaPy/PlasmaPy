@@ -52,6 +52,7 @@ from plasmapy import utils
 from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
 from plasmapy import atomic
 from plasmapy.physics import parameters
+from plasmapy.physics.exceptions import CouplingWarning, PhysicsError
 from plasmapy.physics.quantum import (Wigner_Seitz_radius,
                                       thermal_deBroglie_wavelength,
                                       chemical_potential)
@@ -284,10 +285,10 @@ def Coulomb_logarithm(T,
     with np.errstate(invalid='ignore'):
         if np.any(ln_Lambda < 2) and method in ["classical", "GMS-1", "GMS-2"]:
             warnings.warn(f"Coulomb logarithm is {ln_Lambda} and {method} relies on "
-                          "weak coupling.", utils.CouplingWarning)
+                          "weak coupling.", CouplingWarning)
         elif np.any(ln_Lambda < 4):
             warnings.warn(f"Coulomb logarithm is {ln_Lambda}, you might have strong "
-                          "coupling effects", utils.CouplingWarning)
+                          "coupling effects", CouplingWarning)
     return ln_Lambda
 
 
@@ -321,7 +322,7 @@ def _replaceNanVwithThermalV(V, T, m):
     Handles vector checks for V, you must already know that T and m are okay.
     """
     if np.any(V == 0):
-        raise utils.PhysicsError("You cannot have a collision for zero velocity!")
+        raise PhysicsError("You cannot have a collision for zero velocity!")
     # getting thermal velocity of system if no velocity is given
     if V is None:
         V = parameters.thermal_speed(T, mass=m)

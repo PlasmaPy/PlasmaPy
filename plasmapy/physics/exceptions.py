@@ -5,7 +5,7 @@
 # Exceptions
 # ----------
 
-class PhysicsError(Exception, ValueError):
+class PhysicsError(ValueError):
     """
     The base exception for physics-related errors.
     """

@@ -5,6 +5,8 @@ plasma frequency or Debye length.
 
 from typing import Optional
 
+from plasmapy.physics.exceptions import PhysicsError
+
 __all__ = [
     "mass_density",
     "Alfven_speed",
@@ -332,8 +334,8 @@ def ion_sound_speed(T_e,
             raise TypeError(f"The adiabatic index gamma for {particles} must be "
                             "a float or int")
         if gamma < 1:
-            raise utils.PhysicsError(f"The adiabatic index for {particles} must be between "
-                                     "one and infinity")
+            raise PhysicsError(f"The adiabatic index for {particles} must be between "
+                               "one and infinity")
 
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
