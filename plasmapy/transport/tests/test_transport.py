@@ -8,7 +8,7 @@ from astropy.tests.helper import assert_quantity_allclose
 from plasmapy.physics.exceptions import (PhysicsError,
                                          PhysicsWarning,
                                          RelativityWarning)
-from plasmapy.atomic._exceptions import InvalidParticleError
+from plasmapy.atomic.exceptions import InvalidParticleError
 from plasmapy.physics.parameters import Hall_parameter
 from plasmapy.constants import m_p, m_e
 

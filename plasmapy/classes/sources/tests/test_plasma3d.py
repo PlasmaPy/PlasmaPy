@@ -3,7 +3,7 @@ import numpy as np
 import astropy.units as u
 
 from plasmapy.classes.sources import plasma3d
-from plasmapy.atomic._exceptions import InvalidParticleError
+from plasmapy.atomic.exceptions import InvalidParticleError
 
 
 @pytest.mark.parametrize('grid_dimensions, expected_size', [

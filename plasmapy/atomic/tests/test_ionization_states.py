@@ -8,7 +8,7 @@ import numpy as np
 import astropy.units as u
 
 from plasmapy.utils import run_test
-from plasmapy.atomic._exceptions import AtomicError, InvalidIsotopeError
+from plasmapy.atomic.exceptions import AtomicError, InvalidIsotopeError
 from plasmapy.atomic import (
     State,
     IonizationState,

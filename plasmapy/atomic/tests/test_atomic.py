@@ -39,7 +39,7 @@ from ..nuclear import (
 from ...utils import (
     run_test,
     )
-from plasmapy.atomic._exceptions import AtomicError, MissingAtomicDataError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, \
+from plasmapy.atomic.exceptions import AtomicError, MissingAtomicDataError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, \
     InvalidParticleError, AtomicWarning
 
 # function to be tested, argument(s), expected result/outcome

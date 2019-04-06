@@ -8,7 +8,7 @@ from warnings import simplefilter
 
 from plasmapy.physics.exceptions import RelativityWarning, RelativityError
 from plasmapy.physics.exceptions import PhysicsError
-from plasmapy.atomic._exceptions import InvalidParticleError
+from plasmapy.atomic.exceptions import InvalidParticleError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 from astropy.constants import c, m_p, m_e, e, mu0
 

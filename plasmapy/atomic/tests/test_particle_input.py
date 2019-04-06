@@ -4,7 +4,7 @@ from typing import Optional, Union, Tuple, List
 from ...utils import (
     InvalidElementError,
     )
-from plasmapy.atomic._exceptions import AtomicError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidParticleError
+from plasmapy.atomic.exceptions import AtomicError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidParticleError
 
 from ..particle_class import Particle
 from ..particle_input import particle_input

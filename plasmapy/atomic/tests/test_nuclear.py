@@ -5,7 +5,7 @@ from ...utils import (
     run_test,
     run_test_equivalent_calls,
 )
-from plasmapy.atomic._exceptions import AtomicError, InvalidIsotopeError, InvalidParticleError
+from plasmapy.atomic.exceptions import AtomicError, InvalidIsotopeError, InvalidParticleError
 import pytest
 
 test_nuclear_table = [

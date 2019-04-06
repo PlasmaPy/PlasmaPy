@@ -1,7 +1,7 @@
 import pytest
 import warnings
 
-from plasmapy.atomic._exceptions import AtomicError, MissingAtomicDataError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, \
+from plasmapy.atomic.exceptions import AtomicError, MissingAtomicDataError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, \
     InvalidParticleError, AtomicWarning, MissingAtomicDataWarning
 from plasmapy.physics.exceptions import *
 

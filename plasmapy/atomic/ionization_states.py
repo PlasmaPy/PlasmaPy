@@ -12,7 +12,7 @@ import astropy.units as u
 
 from plasmapy.atomic import atomic_number, Particle, particle_symbol, IonizationState, State
 from plasmapy.utils import check_quantity
-from plasmapy.atomic._exceptions import AtomicError, ChargeError, InvalidParticleError
+from plasmapy.atomic.exceptions import AtomicError, ChargeError, InvalidParticleError
 
 __all__ = ["IonizationStates"]
 

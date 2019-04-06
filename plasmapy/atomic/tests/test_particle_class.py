@@ -15,7 +15,7 @@ from plasmapy.utils import (
     call_string,
     run_test_equivalent_calls,
 )
-from plasmapy.atomic._exceptions import AtomicError, MissingAtomicDataError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, \
+from plasmapy.atomic.exceptions import AtomicError, MissingAtomicDataError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, \
     InvalidParticleError, AtomicWarning, MissingAtomicDataWarning
 
 # (arg, kwargs, results_dict)
