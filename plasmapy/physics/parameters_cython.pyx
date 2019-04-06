@@ -17,7 +17,7 @@ import plasmapy.atomic as atomic
 # bit more than @quantity_input as it can allow
 import plasmapy.utils as utils
 from plasmapy.utils.checks import _check_quantity
-from plasmapy.utils.exceptions import PhysicsError  # , PhysicsWarning
+from plasmapy.physics.exceptions import PhysicsError  # , PhysicsWarning
 
 
 #@utils.check_relativistic

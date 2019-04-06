@@ -62,7 +62,7 @@ elements and isotopes that lack explicit charge information.
 >>> electric_charge('H')
 Traceback (most recent call last):
   ...
-plasmapy.utils.exceptions.ChargeError: Charge information is required for electric_charge.
+plasmapy.atomic.exceptions.ChargeError: Charge information is required for electric_charge.
 
 The standard atomic weight for the terrestrial environment may be
 accessed using `~plasmapy.atomic.standard_atomic_weight`.
