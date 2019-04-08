@@ -19,6 +19,19 @@ def ExB_drift(E: u.V/u.m, B: u.T) -> u.m/u.s:
     v: ~astropy.units.Quantity
         Drift velocity, in m/s
 
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> from astropy.constants.si import g0, e, m_e
+    >>> ex = np.array([1, 0, 0])
+    >>> ez = np.array([0, 0, 1])
+    >>> force_drift(-ez*g0*m_e, ex*0.01*u.T, e)
+    <Quantity [ 0.0000000e+00, -5.5756984e-09,  0.0000000e+00] m / s>
+    >>> force_drift(-ez*g0*m_e, ez*0.01*u.T, e)
+    <Quantity [ 0., -0.,  0.] m / s>
+    >>> force_drift(-ez*g0*m_e, ex*u.T, e)
+    <Quantity [ 0.0000000e+00, -5.5756984e-11,  0.0000000e+00] m / s>
+
     Notes
     -----
     The E cross B drift is given by
@@ -52,6 +65,18 @@ def force_drift(F: u.N, B: u.T, q: u.C):
         Magnetic field
     q : ~astropy.units.Quantity
         Particle charge
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> ex = np.array([1, 0, 0])
+    >>> ey = np.array([0, 1, 0])
+    >>> ExB_drift(ex * u.V/u.m, ey * u.T)
+    <Quantity [0., 0., 1.] m / s>
+    >>> ExB_drift(ex * u.V/u.m, ex * u.T)
+    <Quantity [0., 0., 0.] m / s>
+    >>> ExB_drift(ex * u.V/u.m, 100 * ey * u.T)
+    <Quantity [0.  , 0.  , 0.01] m / s>
 
     Returns
     -------
