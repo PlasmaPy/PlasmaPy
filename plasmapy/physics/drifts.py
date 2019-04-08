@@ -2,10 +2,10 @@ import astropy.units as u
 from astropy.units.utils import np
 from plasmapy import utils
 
-@utils.check_quantity(E={'units':u.V/u.m}, B={'units':u.T})
+@utils.check_quantity()
 def ExB_drift(E: u.V/u.m, B: u.T) -> u.m/u.s:
     """
-    TODO
+    Calculate the "electric cross magnetic" particle drift.
 
     Parameters
     ----------
@@ -17,11 +17,21 @@ def ExB_drift(E: u.V/u.m, B: u.T) -> u.m/u.s:
     Returns
     -------
     v: ~astropy.units.Quantity
-        Velocity, in m/s
+        Drift velocity, in m/s
+
+    Notes
+    -----
+    The E cross B drift is given by
+
+    .. math::
+
+        \vec{v} = \frac{\vec{E} \times \vec{B}}{|B|^2}
+
+    and is independent of particle charge.
 
     References
     ----------
-    Bellan, Fundamentals of Plasma Physics, 3.57
+    - PM Bellan, Fundamentals of Plasma Physics, 3.57
 
     """
 
@@ -29,24 +39,39 @@ def ExB_drift(E: u.V/u.m, B: u.T) -> u.m/u.s:
     cross = np.cross(E.si.value, B.si.value) * E.unit * B.unit
     return (cross / (B*B).sum(-1)).to(u.m/u.s)
 
-@utils.check_quantity(F={'units':u.N}, B={'units':u.T}, q={'units':u.C})
+@utils.check_quantity()
 def force_drift(F: u.N, B: u.T, q: u.C):
     """
+    Calculate the general force drift for a particle in a magnetic field.
 
     Parameters
     ----------
-    F :
-    B :
-    q :
+    F : ~astropy.units.Quantity
+        Force acting on particle
+    B : ~astropy.units.Quantity
+        Magnetic field
+    q : ~astropy.units.Quantity
+        Particle charge
 
     Returns
     -------
     v: ~astropy.units.Quantity
-        Velocity, in m/s
+        Drift velocity, in m/s
+
+    Notes
+    -----
+    The particle drift in a magnetic field and with a general
+    force (e.g. gravity) applied to it is given by
+
+    .. math::
+
+        \vec{v} = \frac{\vec{F} \times \vec{B}}{q |B|^2}
+
+    Note the charge dependency.
 
     References
     ----------
-    Bellan, Fundamentals of Plasma Physics, 3.58
+    - PM Bellan, Fundamentals of Plasma Physics, 3.58
 
     """
     cross = np.cross(F.si.value, B.si.value) * F.unit * B.unit
