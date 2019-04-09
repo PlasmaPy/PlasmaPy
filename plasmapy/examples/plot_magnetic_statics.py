@@ -6,19 +6,17 @@ Magnetostatic Fields
 An example of using PlasmaPy's `Magnetostatic` class in `physics` subpackage.
 """
 
-import plasmapy as pp
-from plasmapy.physics import magnetostatics
+from plasmapy.theory.physics import magnetostatics
 from plasmapy.classes.sources import Plasma3D
 import numpy as np
 import astropy.units as u
 import matplotlib.pyplot as plt
-import itertools
 
 ############################################################
 # Some common magnetostatic fields can be generated and added to a plasma object.
 # A dipole
 
-dipole = magnetostatics.MagneticDipole(np.array([0, 0, 1])*u.A*u.m*u.m, np.array([0, 0, 0])*u.m)
+dipole = magnetostatics.MagneticDipole(np.array([0, 0, 1]) * u.A * u.m * u.m, np.array([0, 0, 0]) * u.m)
 print(dipole)
 
 ############################################################
@@ -48,7 +46,7 @@ plt.streamplot(plasma.x.value, plasma.z.value, U, W)
 ############################################################
 # A circular current-carring wire
 
-cw = magnetostatics.CircularWire(np.array([0, 0, 1]), np.array([0, 0, 0])*u.m, 1*u.m, 1*u.A)
+cw = magnetostatics.CircularWire(np.array([0, 0, 1]), np.array([0, 0, 0]) * u.m, 1 * u.m, 1 * u.A)
 print(cw)
 
 ############################################################
@@ -85,7 +83,7 @@ print(gw_cw.magnetic_field([0, 0, 0]) - cw.magnetic_field([0, 0, 0]))
 # A infinite straight wire
 
 
-iw = magnetostatics.InfiniteStraightWire(np.array([0, 1, 0]), np.array([0, 0, 0])*u.m, 1*u.A)
+iw = magnetostatics.InfiniteStraightWire(np.array([0, 1, 0]), np.array([0, 0, 0]) * u.m, 1 * u.A)
 print(iw)
 
 ############################################################

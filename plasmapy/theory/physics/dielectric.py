@@ -3,9 +3,9 @@
 import numpy as np
 from astropy import units as u
 from plasmapy import utils
-from plasmapy.physics import parameters
-from plasmapy.constants import (pi, m_e, c, mu0, e, eps0)
-from plasmapy.mathematics import plasma_dispersion_func_deriv
+from plasmapy.theory.physics import parameters
+from plasmapy.constants import (pi)
+from plasmapy.theory.mathematics import plasma_dispersion_func_deriv
 from collections import namedtuple
 
 r"""

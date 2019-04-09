@@ -51,11 +51,11 @@ import warnings
 from plasmapy import utils
 from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
 from plasmapy import atomic
-from plasmapy.physics import parameters
-from plasmapy.physics.quantum import (Wigner_Seitz_radius,
-                                      thermal_deBroglie_wavelength,
-                                      chemical_potential)
-from plasmapy.mathematics import Fermi_integral
+from plasmapy.theory.physics import parameters
+from plasmapy.theory.physics.quantum import (Wigner_Seitz_radius,
+                                             thermal_deBroglie_wavelength,
+                                             chemical_potential)
+from plasmapy.theory.mathematics import Fermi_integral
 from plasmapy.utils import check_quantity, _check_relativistic
 
 __all__ = [

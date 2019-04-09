@@ -12,7 +12,7 @@ numbers.
 from astropy import units as u
 
 from plasmapy import constants, utils
-from plasmapy.physics import quantum, parameters
+from plasmapy.theory.physics import parameters, quantum
 
 __all__ = ['quantum_theta', 'beta']
 

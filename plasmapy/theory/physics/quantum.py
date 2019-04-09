@@ -13,11 +13,12 @@ except (ImportError, ModuleNotFoundError) as e:
     raise lmfit_import_error from e
 
 # plasmapy modules
-from plasmapy import atomic, utils, mathematics
+from plasmapy import atomic, utils
+from plasmapy.theory import mathematics
 from plasmapy.utils.checks import check_quantity
-from plasmapy.physics.relativity import Lorentz_factor
+from plasmapy.theory.physics.relativity import Lorentz_factor
 
-from ..constants import c, h, hbar, m_e, eps0, e, k_B
+from plasmapy.constants import c, h, hbar, m_e, eps0, e, k_B
 
 __all__ = [
     "deBroglie_wavelength",

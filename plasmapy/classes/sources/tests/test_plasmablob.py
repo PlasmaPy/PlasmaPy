@@ -3,7 +3,7 @@ import numpy as np
 import astropy.units as u
 
 from plasmapy.classes.sources import plasma3d, plasmablob
-from plasmapy.physics import magnetostatics
+from plasmapy.theory.physics import magnetostatics
 from plasmapy.utils.exceptions import InvalidParticleError
 
 @pytest.mark.parametrize('grid_dimensions, expected_size', [
@@ -100,10 +100,10 @@ def test_Plasma3D_derived_vars():
 def test_Plasma3D_add_magnetostatics():
     r"""Function to test add_magnetostatic function
     """
-    dipole = magnetostatics.MagneticDipole(np.array([0, 0, 1])*u.A*u.m*u.m, np.array([0, 0, 0])*u.m)
-    cw = magnetostatics.CircularWire(np.array([0, 0, 1]), np.array([0, 0, 0])*u.m, 1*u.m, 1*u.A)
+    dipole = magnetostatics.MagneticDipole(np.array([0, 0, 1]) * u.A * u.m * u.m, np.array([0, 0, 0]) * u.m)
+    cw = magnetostatics.CircularWire(np.array([0, 0, 1]), np.array([0, 0, 0]) * u.m, 1 * u.m, 1 * u.A)
     gw_cw = cw.to_GeneralWire()
-    iw = magnetostatics.InfiniteStraightWire(np.array([0, 1, 0]), np.array([0, 0, 0])*u.m, 1*u.A)
+    iw = magnetostatics.InfiniteStraightWire(np.array([0, 1, 0]), np.array([0, 0, 0]) * u.m, 1 * u.A)
     plasma = plasma3d.Plasma3D(domain_x=np.linspace(-2, 2, 30) * u.m,
                 domain_y=np.linspace(0, 0, 1) * u.m,
                 domain_z=np.linspace(-2, 2, 20) * u.m)

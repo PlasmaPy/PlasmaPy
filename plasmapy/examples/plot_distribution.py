@@ -9,11 +9,10 @@ the Maxwellian 1D distribution:
 
 import numpy as np
 from astropy import units as u
-import plasmapy
 import matplotlib.pyplot as plt
-from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi, e)
+from plasmapy.constants import (m_e, k_B)
 
-from plasmapy.physics.distribution import Maxwellian_1D
+from plasmapy.theory.physics.distribution import Maxwellian_1D
 
 
 ############################################################

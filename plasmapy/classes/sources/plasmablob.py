@@ -3,14 +3,13 @@ Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
 import warnings
 
-import numpy as np
 import astropy.units as u
 
-from plasmapy.physics.parameters import _grab_charge
-from plasmapy.physics.dimensionless import (quantum_theta,
-                                            )
-from plasmapy.transport import (coupling_parameter,
-                                        )
+from plasmapy.theory.physics.parameters import _grab_charge
+from plasmapy.theory.physics.dimensionless import (quantum_theta,
+                                                   )
+from plasmapy.theory.transport import (coupling_parameter,
+                                       )
 from plasmapy.atomic import particle_mass
 
 from plasmapy.utils import call_string, CouplingWarning

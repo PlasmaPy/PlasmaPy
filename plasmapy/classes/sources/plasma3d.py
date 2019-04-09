@@ -1,22 +1,14 @@
 """
 Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
-import warnings
 
 import numpy as np
 import astropy.units as u
 import itertools
 
-from plasmapy.physics.magnetostatics import MagnetoStatics
+from plasmapy.theory.physics.magnetostatics import MagnetoStatics
 
-from plasmapy.constants import (m_p,
-                                m_e,
-                                c,
-                                mu0,
-                                k_B,
-                                e,
-                                eps0,
-                                pi,
+from plasmapy.constants import (mu0,
                                 )
 
 from plasmapy.classes import GenericPlasma

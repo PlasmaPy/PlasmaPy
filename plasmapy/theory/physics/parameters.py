@@ -31,10 +31,8 @@ from astropy import units as u
 import numbers
 import numpy as np
 # import warnings
-from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
+from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0)
 from plasmapy import atomic, utils
-
-from plasmapy.utils.exceptions import (PhysicsError, AtomicError)
 
 
 def _grab_charge(ion, z_mean=None):
@@ -660,8 +658,8 @@ def Hall_parameter(n,
     -------
     astropy.units.quantity.Quantity
     """
-    from plasmapy.transport import (fundamental_ion_collision_freq,
-                                    fundamental_electron_collision_freq)
+    from plasmapy.theory.transport import (fundamental_ion_collision_freq,
+                                           fundamental_electron_collision_freq)
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
     if atomic.Particle(particle).particle == 'e-':
