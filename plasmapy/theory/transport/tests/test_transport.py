@@ -9,7 +9,7 @@ from plasmapy.utils.exceptions import (PhysicsError,
                                        PhysicsWarning,
                                        InvalidParticleError,
                                        RelativityWarning)
-from plasmapy.theory.physics.parameters import Hall_parameter
+from plasmapy.theory.parameters.parameters import Hall_parameter
 from plasmapy.constants import m_p, m_e
 
 from plasmapy.theory.transport import (Coulomb_logarithm,

@@ -16,7 +16,7 @@ except (ImportError, ModuleNotFoundError) as e:
 from plasmapy import atomic, utils
 from plasmapy.theory import mathematics
 from plasmapy.utils.checks import check_quantity
-from plasmapy.theory.physics.relativity import Lorentz_factor
+from plasmapy.theory.parameters.relativity import Lorentz_factor
 
 from plasmapy.constants import c, h, hbar, m_e, eps0, e, k_B
 
@@ -303,7 +303,7 @@ def Thomas_Fermi_length(n_e):
     See also
     --------
     Fermi_energy
-    plasmapy.physics.Debye_length
+    plasmapy.parameters.Debye_length
 
     Example
     -------

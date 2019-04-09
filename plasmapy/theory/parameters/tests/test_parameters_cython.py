@@ -3,9 +3,9 @@
 import numpy as np
 import pytest
 
-import plasmapy.theory.physics.parameters_cython
-from plasmapy.theory.physics import (thermal_speed,
-                                     )
+import plasmapy.theory.parameters.parameters_cython
+from plasmapy.theory.parameters import (thermal_speed,
+                                        )
 def test_thermal_speed():
     r"""Test for cythonized version of thermal_speed()."""
     trueVal = 593083.619464999

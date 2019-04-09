@@ -586,8 +586,8 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
 
     See Also
     --------
-    plasmapy.physics.kappa_thermal_speed
-    plasmapy.physics.kappa_velocity_1D
+    plasmapy.parameters.kappa_thermal_speed
+    plasmapy.parameters.kappa_velocity_1D
     """
     # Checking thermal units
     T = T.to(u.K, equivalencies=u.temperature_energy())
@@ -650,9 +650,9 @@ def Hall_parameter(n,
 
     See Also
     --------
-    plasmapy.physics.parameters.gyrofrequency
-    plasmapy.physics.parameters.fundamental_electron_collision_freq
-    plasmapy.physics.transport.Coulomb_logarithm
+    plasmapy.parameters.parameters.gyrofrequency
+    plasmapy.parameters.parameters.fundamental_electron_collision_freq
+    plasmapy.parameters.transport.Coulomb_logarithm
 
     Returns
     -------

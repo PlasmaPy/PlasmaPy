@@ -3,10 +3,10 @@
 Magnetostatic Fields
 =====================
 
-An example of using PlasmaPy's `Magnetostatic` class in `physics` subpackage.
+An example of using PlasmaPy's `Magnetostatic` class in `parameters` subpackage.
 """
 
-from plasmapy.theory.physics import magnetostatics
+from plasmapy.theory.parameters import magnetostatics
 from plasmapy.classes.sources import Plasma3D
 import numpy as np
 import astropy.units as u

@@ -13,7 +13,7 @@ PlasmaPy provides the following functionality:
 Subpackages
 -----------
 Each of these subpackages requires an explicit import, for example,
-via ``import plasmapy.physics``.
+via ``import plasmapy.parameters``.
 
 ::
 
@@ -23,7 +23,7 @@ via ``import plasmapy.physics``.
  data                              --- Data used for testing and examples
  diagnostics                       --- Experimental research data analysis
  mathematics                       --- General formulae used elsewhere
- physics                           --- Plasma theory functionality
+ parameters                           --- Plasma theory functionality
  transport                         --- Transport theory functionality
  utils                             --- Various utilities
 
@@ -94,7 +94,7 @@ __citation__ = """@misc{plasmapy_community_2018_1238132,
                   Parashar, Tulasi N. and
                   Huang, Yi-Min},
   title        = {{PlasmaPy: an open source community-developed 
-                   Python package for plasma physics}},
+                   Python package for plasma parameters}},
   month        = apr,
   year         = 2018,
   doi          = {10.5281/zenodo.1238132},

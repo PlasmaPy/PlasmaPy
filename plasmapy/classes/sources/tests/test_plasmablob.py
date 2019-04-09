@@ -3,7 +3,7 @@ import numpy as np
 import astropy.units as u
 
 from plasmapy.classes.sources import plasma3d, plasmablob
-from plasmapy.theory.physics import magnetostatics
+from plasmapy.theory.parameters import magnetostatics
 from plasmapy.utils.exceptions import InvalidParticleError
 
 @pytest.mark.parametrize('grid_dimensions, expected_size', [

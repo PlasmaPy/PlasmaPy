@@ -12,7 +12,7 @@ from astropy import units as u
 import matplotlib.pyplot as plt
 from plasmapy.constants import (m_e, k_B)
 
-from plasmapy.theory.physics.distribution import Maxwellian_1D
+from plasmapy.theory.parameters.distribution import Maxwellian_1D
 
 
 ############################################################

@@ -5,9 +5,9 @@ import warnings
 
 import astropy.units as u
 
-from plasmapy.theory.physics.parameters import _grab_charge
-from plasmapy.theory.physics.dimensionless import (quantum_theta,
-                                                   )
+from plasmapy.theory.parameters.parameters import _grab_charge
+from plasmapy.theory.parameters.dimensionless import (quantum_theta,
+                                                      )
 from plasmapy.theory.transport import (coupling_parameter,
                                        )
 from plasmapy.atomic import particle_mass

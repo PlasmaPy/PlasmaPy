@@ -51,10 +51,10 @@ import warnings
 from plasmapy import utils
 from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
 from plasmapy import atomic
-from plasmapy.theory.physics import parameters
-from plasmapy.theory.physics.quantum import (Wigner_Seitz_radius,
-                                             thermal_deBroglie_wavelength,
-                                             chemical_potential)
+from plasmapy.theory.parameters import parameters
+from plasmapy.theory.parameters.quantum import (Wigner_Seitz_radius,
+                                                thermal_deBroglie_wavelength,
+                                                chemical_potential)
 from plasmapy.theory.mathematics import Fermi_integral
 from plasmapy.utils import check_quantity, _check_relativistic
 
@@ -891,7 +891,7 @@ def fundamental_electron_collision_freq(T_e,
     coulomb_log : float or dimensionless ~astropy.units.Quantity, optional
         Option to specify a Coulomb logarithm of the electrons on the ions.
         If not specified, the Coulomb log will is calculated using the
-        `~plasmapy.physics.transport.Coulomb_logarithm` function.
+        `~plasmapy.parameters.transport.Coulomb_logarithm` function.
 
     coulomb_log_method : string, optional
         Method used for Coulomb logarithm calculation (see that function
@@ -1019,7 +1019,7 @@ def fundamental_ion_collision_freq(T_i,
     coulomb_log : float or dimensionless ~astropy.units.Quantity, optional
         Option to specify a Coulomb logarithm of the electrons on the ions.
         If not specified, the Coulomb log will is calculated using the
-        ~plasmapy.physics.transport.Coulomb_logarithm function.
+        ~plasmapy.parameters.transport.Coulomb_logarithm function.
 
     coulomb_log_method : str, optional
         Method used for Coulomb logarithm calculation (see that function

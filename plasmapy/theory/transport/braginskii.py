@@ -130,8 +130,8 @@ from plasmapy import utils
 from plasmapy import atomic
 from plasmapy.atomic.atomic import _is_electron
 from .collisions import Coulomb_logarithm
-from plasmapy.theory.physics.parameters import (Hall_parameter,
-                                                _grab_charge)
+from plasmapy.theory.parameters.parameters import (Hall_parameter,
+                                                   _grab_charge)
 from plasmapy.theory.transport import (fundamental_electron_collision_freq,
                                        fundamental_ion_collision_freq)
 from plasmapy.constants import e, m_e, k_B

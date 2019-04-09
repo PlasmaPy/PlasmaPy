@@ -1,4 +1,4 @@
-from plasmapy.theory.physics.dimensionless import (beta, quantum_theta)
+from plasmapy.theory.parameters.dimensionless import (beta, quantum_theta)
 
 import astropy.units as u
 import numpy as np
