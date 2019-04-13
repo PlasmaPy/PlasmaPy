@@ -19,6 +19,7 @@ from plasmapy.atomic.exceptions import AtomicError
 
 from ...atomic import Particle
 
+
 def f(*args, **kwargs):
     return None
 
@@ -167,7 +168,7 @@ def test_run_test(f, args, kwargs, expected, whaterror):
         if whaterror is None:
             run_test(f, args, kwargs, expected)
         else:
-            with pytest.raises(whaterror, message = (
+            with pytest.raises(whaterror, message=(
                     f"run_test did not raise an exception for "
                     f"{call_string(f, args, kwargs, color=None)} "
                     f"with expected = {repr(expected)} and "

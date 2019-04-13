@@ -112,8 +112,8 @@ def test_check_quantity_decorator_errors_non_default(
         value, units, can_be_negative, can_be_complex, can_be_inf, error):
 
     @check_quantity(
-       x={"units": units, "can_be_negative": can_be_negative,
-          "can_be_complex": can_be_complex, "can_be_inf": can_be_inf}
+        x={"units": units, "can_be_negative": can_be_negative,
+           "can_be_complex": can_be_complex, "can_be_inf": can_be_inf}
     )
     def func(x):
         return x

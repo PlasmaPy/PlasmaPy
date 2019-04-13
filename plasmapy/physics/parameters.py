@@ -216,7 +216,7 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
 @utils.check_quantity(
     T_i={'units': u.K, 'can_be_negative': False},
     T_e={'units': u.K, 'can_be_negative': False}
-    )
+)
 def ion_sound_speed(T_e,
                     T_i,
                     gamma_e=1,
@@ -353,7 +353,7 @@ def ion_sound_speed(T_e,
 @utils.check_quantity(
     T={'units': u.K, 'can_be_negative': False},
     mass={'units': u.kg, 'can_be_negative': False, 'can_be_nan': True}
-    )
+)
 @atomic.particle_input
 def thermal_speed(T, particle: atomic.Particle = "e-", method="most_probable",
                   mass=np.nan*u.kg):
@@ -460,7 +460,7 @@ def thermal_speed(T, particle: atomic.Particle = "e-", method="most_probable",
 @utils.check_quantity(
     T={'units': u.K, 'can_be_negative': False},
     n={'units': u.m**-3, 'can_be_negative': False}
-    )
+)
 def thermal_pressure(T, n):
     r"""
     Return the thermal pressure for a Maxwellian distribution.
@@ -510,7 +510,7 @@ def thermal_pressure(T, n):
 @utils.check_relativistic
 @utils.check_quantity(
     T={'units': u.K, 'can_be_negative': False}
-    )
+)
 def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
@@ -617,7 +617,7 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     n={'units': u.m ** -3, 'can_be_negative': False},
     T={'units': u.K, 'can_be_negative': False},
     B={'units': u.T}
-    )
+)
 def Hall_parameter(n,
                    T,
                    B,
@@ -923,7 +923,7 @@ def gyroradius(B: u.T,
 
 @utils.check_quantity(
     n={'units': u.m ** -3, 'can_be_negative': False}
-    )
+)
 def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None):
     r"""Calculate the particle plasma frequency.
 
@@ -1020,7 +1020,7 @@ def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None):
 @utils.check_quantity(
     T_e={'units': u.K, 'can_be_negative': False},
     n_e={'units': u.m ** -3, 'can_be_negative': False}
-    )
+)
 def Debye_length(T_e: u.K, n_e: u.m**-3):
     r"""Calculate the characteristic decay length for electric fields,
      due to charge screening.
@@ -1090,7 +1090,7 @@ def Debye_length(T_e: u.K, n_e: u.m**-3):
 @utils.check_quantity(
     T_e={'units': u.K, 'can_be_negative': False},
     n_e={'units': u.m ** -3, 'can_be_negative': False}
-    )
+)
 def Debye_number(T_e: u.K, n_e: u.m**-3):
     r"""Return the number of electrons within a sphere with a radius
     of the Debye length.
@@ -1154,10 +1154,9 @@ def Debye_number(T_e: u.K, n_e: u.m**-3):
     return N_D.to(u.dimensionless_unscaled)
 
 
-
 @utils.check_quantity(
     n={'units': u.m ** -3, 'can_be_negative': False}
-    )
+)
 @atomic.particle_input(require='charged')
 def inertial_length(n: u.m**-3, particle: atomic.Particle):
     r"""
@@ -1347,7 +1346,7 @@ def magnetic_energy_density(B: u.T):
 @utils.check_quantity(
     B={'units': u.T},
     n_e={'units': u.m ** -3, 'can_be_negative': False}
-    )
+)
 def upper_hybrid_frequency(B: u.T, n_e: u.m**-3):
     r"""
     Return the upper hybrid frequency.
@@ -1410,7 +1409,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m**-3):
 @utils.check_quantity(
     B={'units': u.T},
     n_i={'units': u.m ** -3, 'can_be_negative': False}
-    )
+)
 def lower_hybrid_frequency(B, n_i, ion='p+'):
     r"""
     Return the lower hybrid frequency.

@@ -38,7 +38,7 @@ from ..nuclear import (
 
 from ...utils import (
     run_test,
-    )
+)
 from plasmapy.atomic.exceptions import AtomicError, MissingAtomicDataError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, \
     InvalidParticleError, AtomicWarning
 

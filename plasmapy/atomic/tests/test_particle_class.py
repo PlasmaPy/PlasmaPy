@@ -529,6 +529,7 @@ def test_Particle_errors(arg, kwargs, attribute, exception):
             f"\n\n  {call_string(Particle, arg, kwargs)}{attribute}\n\n"
             f"did not raise a {exception.__name__} as expected")
 
+
 # arg, kwargs, attribute, exception
 test_Particle_warning_table = [
     ('H----', {}, "", AtomicWarning),
@@ -551,6 +552,7 @@ def test_Particle_warnings(arg, kwargs, attribute, warning):
                 f"The following command: "
                 f"\n\n >>> {call_string(Particle, arg, kwargs)}{attribute}\n\n"
                 f"did not issue a {warning.__name__} as expected")
+
 
 def test_Particle_cmp():
     """Test ``__eq__`` and ``__ne__`` in the Particle class."""
@@ -706,6 +708,7 @@ class Test_antiparticle_properties_inversion:
     Test particle and antiparticle inversion and properties for Particle
     instances.
     """
+
     def test_inverted_inversion(self, particle):
         """
         Test that the antiparticle of the antiparticle of a particle is

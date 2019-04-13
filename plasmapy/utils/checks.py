@@ -281,7 +281,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
     # Make sure arg is a quantity with correct units
 
     unit_casting_warning = dedent(
-            f"""No units are specified for {argname} = {arg} in {funcname}. Assuming units of {str(units[0])}.
+        f"""No units are specified for {argname} = {arg} in {funcname}. Assuming units of {str(units[0])}.
                 To silence this warning, explicitly pass in an Astropy Quantity (from astropy.units)
                 (see http://docs.astropy.org/en/stable/units/)""")
 

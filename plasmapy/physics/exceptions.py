@@ -40,5 +40,3 @@ class CouplingWarning(PhysicsWarning):
     """
     A warning for functions that rely on a particular coupling regime to be valid.
     """
-
-

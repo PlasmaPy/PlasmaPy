@@ -16,7 +16,7 @@ __all__ = [
 
 @utils.check_quantity(
     V={'units': u.m / u.s, 'can_be_negative': True}
-    )
+)
 def Lorentz_factor(V: u.m / u.s):
     r"""
     Return the Lorentz factor.

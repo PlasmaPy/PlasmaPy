@@ -72,7 +72,7 @@ __all__ = [
     "mobility",
     "Knudsen_number",
     "coupling_parameter",
-    ]
+]
 
 
 @utils.check_quantity(T={"units": u.K, "can_be_negative": False},
@@ -749,7 +749,7 @@ def collision_frequency(T,
     # using a more descriptive name for the thermal velocity using
     # reduced mass
     V_reduced = V_r
-    if particles[0] in ('e','e-') and particles[1] in ('e','e-'):
+    if particles[0] in ('e', 'e-') and particles[1] in ('e', 'e-'):
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
@@ -766,7 +766,7 @@ def collision_frequency(T,
                                     z_mean,
                                     V=np.nan * u.m / u.s,
                                     method=method)
-    elif particles[0] in ('e','e-') or particles[1] in ('e','e-'):
+    elif particles[0] in ('e', 'e-') or particles[1] in ('e', 'e-'):
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
@@ -856,7 +856,7 @@ def Coulomb_cross_section(impact_param: u.m):
 @utils.check_quantity(
     T_e={'units': u.K, 'can_be_negative': False},
     n_e={'units': u.m ** -3, 'can_be_negative': False}
-    )
+)
 def fundamental_electron_collision_freq(T_e,
                                         n_e,
                                         ion_particle,
@@ -985,7 +985,7 @@ def fundamental_electron_collision_freq(T_e,
 @utils.check_quantity(
     T_i={'units': u.K, 'can_be_negative': False},
     n_i={'units': u.m ** -3, 'can_be_negative': False}
-    )
+)
 def fundamental_ion_collision_freq(T_i,
                                    n_i,
                                    ion_particle,

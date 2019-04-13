@@ -7,7 +7,9 @@ from astropy import units as u
 from plasmapy.physics.exceptions import PhysicsError
 
 from plasmapy.physics.parameters_cython import (thermal_speed,
-                                 )
+                                                )
+
+
 def test_thermal_speed():
     r"""Test for cythonized version of thermal_speed()."""
     trueVal = 593083.619464999

@@ -55,6 +55,7 @@ __name__ = "plasmapy"
 if sys.version_info < tuple((int(val) for val in "3.6".split('.'))):
     raise RuntimeError("plasmapy does not support Python < {}".format(3.6))
 
+
 def online_help(query):
     """
     Search the online PlasmaPy documentation for the given query from plasmapy.org
@@ -77,6 +78,7 @@ def online_help(query):
         url = 'http://docs.astropy.org/en/stable/units/'
 
     webbrowser.open(url)
+
 
 __citation__ = """@misc{plasmapy_community_2018_1238132,
   author       = {{PlasmaPy Community} and

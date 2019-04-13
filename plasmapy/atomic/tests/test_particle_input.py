@@ -3,7 +3,7 @@ from typing import Optional, Union, Tuple, List
 
 from plasmapy.atomic.exceptions import (
     InvalidElementError,
-    )
+)
 from plasmapy.atomic.exceptions import AtomicError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidParticleError
 
 from ..particle_class import Particle

@@ -203,14 +203,14 @@ def _parse_and_check_atomic_input(
             isotope_info, charge_info = arg.split(' ')
 
             sign_indicator_only_on_one_end = (
-                    charge_info.endswith(('-', '+')) ^
-                    charge_info.startswith(('-', '+')))
+                charge_info.endswith(('-', '+')) ^
+                charge_info.startswith(('-', '+')))
 
             just_one_sign_indicator = (
-                    (charge_info.count('-') == 1 and
-                     charge_info.count('+') == 0) or
-                    (charge_info.count('-') == 0 and
-                     charge_info.count('+') == 1))
+                (charge_info.count('-') == 1 and
+                 charge_info.count('+') == 0) or
+                (charge_info.count('-') == 0 and
+                 charge_info.count('+') == 1))
 
             if not sign_indicator_only_on_one_end and just_one_sign_indicator:
                 raise InvalidParticleError(invalid_charge_errmsg) from None

@@ -147,6 +147,7 @@ __all__ = [
     "electron_viscosity",
 ]
 
+
 class ClassicalTransport:
     r"""
     Classical transport coefficients (e.g. Braginskii, 1965).
@@ -768,6 +769,7 @@ def thermoelectric_conductivity(T_e,
                             theta=theta,
                             coulomb_log_method=coulomb_log_method)
     return ct.thermoelectric_conductivity()
+
 
 def ion_thermal_conductivity(T_e,
                              n_e,

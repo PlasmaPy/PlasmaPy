@@ -10,7 +10,7 @@ from plasmapy.physics.parameters import _grab_charge
 from plasmapy.physics.dimensionless import (quantum_theta,
                                             )
 from plasmapy.transport import (coupling_parameter,
-                                        )
+                                )
 from plasmapy.atomic import particle_mass
 
 from plasmapy.utils import call_string
@@ -147,6 +147,7 @@ class PlasmaBlob(GenericPlasma):
                           CouplingWarning)
 
         return couple
+
     def quantum_theta(self):
         """
         Quantum theta parameter, which compares Fermi kinetic energy to

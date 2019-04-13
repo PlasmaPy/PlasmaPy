@@ -98,19 +98,22 @@ def test_Plasma3D_derived_vars():
     assert test_plasma.alfven_speed.unit.si == u.m / u.s
     assert np.allclose(test_plasma.alfven_speed.value, 10.92548431)
 
+
 def test_Plasma3D_add_magnetostatics():
     r"""Function to test add_magnetostatic function
     """
-    dipole = magnetostatics.MagneticDipole(np.array([0, 0, 1])*u.A*u.m*u.m, np.array([0, 0, 0])*u.m)
+    dipole = magnetostatics.MagneticDipole(
+        np.array([0, 0, 1])*u.A*u.m*u.m, np.array([0, 0, 0])*u.m)
     cw = magnetostatics.CircularWire(np.array([0, 0, 1]), np.array([0, 0, 0])*u.m, 1*u.m, 1*u.A)
     gw_cw = cw.to_GeneralWire()
     iw = magnetostatics.InfiniteStraightWire(np.array([0, 1, 0]), np.array([0, 0, 0])*u.m, 1*u.A)
     plasma = plasma3d.Plasma3D(domain_x=np.linspace(-2, 2, 30) * u.m,
-                domain_y=np.linspace(0, 0, 1) * u.m,
-                domain_z=np.linspace(-2, 2, 20) * u.m)
+                               domain_y=np.linspace(0, 0, 1) * u.m,
+                               domain_z=np.linspace(-2, 2, 20) * u.m)
 
     plasma.add_magnetostatic(dipole, cw, gw_cw, iw)
-    
+
+
 class Test_PlasmaBlobRegimes:
     def test_intermediate_coupling(self):
         r"""

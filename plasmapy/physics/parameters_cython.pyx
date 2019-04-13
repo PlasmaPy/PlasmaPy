@@ -20,10 +20,10 @@ from plasmapy.utils.checks import _check_quantity
 from plasmapy.physics.exceptions import PhysicsError  # , PhysicsWarning
 
 
-#@utils.check_relativistic
-#@utils.check_quantity({
+# @utils.check_relativistic
+# @utils.check_quantity({
 #    'T': {'units': units.K, 'can_be_negative': False}
-#})
+# })
 def thermal_speed(double T, particle="e", method="most_probable"):
     r"""
     Returns the most probable speed for a particle within a Maxwellian

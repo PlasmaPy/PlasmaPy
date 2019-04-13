@@ -40,4 +40,3 @@ def test_warnings(warning):
     warning message."""
     with pytest.warns(warning, message=f"Problem issuing {warning}"):
         warnings.warn("Coverage decreased (-0.00002%)", warning)
-

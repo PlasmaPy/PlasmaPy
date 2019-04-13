@@ -256,6 +256,7 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
             "An InvalidParticleError was expected to be raised by "
             f"{_call_string(arg, kwargs)}, but no exception was raised.")
 
+
 @pytest.mark.parametrize('arg', ParticleZoo.everything - {'p+'})
 def test_parse_InvalidElementErrors(arg):
     r"""Tests that _parse_and_check_atomic_input raises an

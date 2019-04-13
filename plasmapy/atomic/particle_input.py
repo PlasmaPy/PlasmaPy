@@ -272,7 +272,7 @@ def particle_input(wrapped_function: Callable = None,
 
                 for annotated_argname in annotated_argnames:
                     is_particle = annotated_argname is Particle or \
-                                  annotated_argname is Optional[Particle]
+                        annotated_argname is Optional[Particle]
                     if is_particle and argname != 'return':
                         args_to_become_particles.append(argname)
 
