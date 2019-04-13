@@ -10,11 +10,7 @@ import warnings
 from plasmapy.physics.exceptions import RelativityWarning, RelativityError
 from textwrap import dedent
 
-__all__ = [
-    "check_quantity",
-    "_check_quantity",
-    "check_relativistic",
-]
+__all__ = ["check_quantity", "_check_quantity", "check_relativistic"]
 
 
 def check_quantity(**validations: Dict[str, bool]):
@@ -121,6 +117,7 @@ def check_quantity(**validations: Dict[str, bool]):
     _check_quantity
 
     """
+
     def decorator(f):
         wrapped_sign = inspect.signature(f)
         fname = f.__name__
@@ -136,44 +133,52 @@ def check_quantity(**validations: Dict[str, bool]):
             # names of params to check
             validated_params = set(validations.keys())
 
-            missing_params = [
-                param for param in (validated_params - given_params)
-            ]
+            missing_params = [param for param in (validated_params - given_params)]
 
             if len(missing_params) > 0:
                 params_str = ", ".join(missing_params)
-                raise TypeError(
-                    f"Call to {fname} is missing "
-                    f"validated params {params_str}")
+                raise TypeError(f"Call to {fname} is missing " f"validated params {params_str}")
 
             for param_to_check, validation_settings in validations.items():
                 value_to_check = given_params_values[param_to_check]
 
-                can_be_negative = validation_settings.get('can_be_negative', True)
-                can_be_complex = validation_settings.get('can_be_complex', False)
-                can_be_inf = validation_settings.get('can_be_inf', True)
-                can_be_nan = validation_settings.get('can_be_nan', True)
-                none_shall_pass = validation_settings.get('none_shall_pass', False)
+                can_be_negative = validation_settings.get("can_be_negative", True)
+                can_be_complex = validation_settings.get("can_be_complex", False)
+                can_be_inf = validation_settings.get("can_be_inf", True)
+                can_be_nan = validation_settings.get("can_be_nan", True)
+                none_shall_pass = validation_settings.get("none_shall_pass", False)
 
-                validated_value = _check_quantity(value_to_check,
-                                                  param_to_check,
-                                                  fname,
-                                                  validation_settings['units'],
-                                                  can_be_negative=can_be_negative,
-                                                  can_be_complex=can_be_complex,
-                                                  can_be_inf=can_be_inf,
-                                                  can_be_nan=can_be_nan,
-                                                  none_shall_pass=none_shall_pass)
+                validated_value = _check_quantity(
+                    value_to_check,
+                    param_to_check,
+                    fname,
+                    validation_settings["units"],
+                    can_be_negative=can_be_negative,
+                    can_be_complex=can_be_complex,
+                    can_be_inf=can_be_inf,
+                    can_be_nan=can_be_nan,
+                    none_shall_pass=none_shall_pass,
+                )
                 given_params_values[param_to_check] = validated_value
 
             return f(**given_params_values)
+
         return wrapper
+
     return decorator
 
 
-def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
-                    can_be_complex=False, can_be_inf=True, can_be_nan=True,
-                    none_shall_pass=False):
+def _check_quantity(
+    arg,
+    argname,
+    funcname,
+    units,
+    can_be_negative=True,
+    can_be_complex=False,
+    can_be_inf=True,
+    can_be_nan=True,
+    none_shall_pass=False,
+):
     """
     Raise an exception if an object is not a `~astropy.units.Quantity`
     with correct units and valid numerical values.
@@ -256,13 +261,12 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         if not isinstance(unit, (u.Unit, u.CompositeUnit, u.IrreducibleUnit)):
             raise TypeError(
                 "The keyword 'units' to check_quantity must be "
-                "a unit or a list/tuple containing only units.")
+                "a unit or a list/tuple containing only units."
+            )
 
     # Create a generic error message
 
-    typeerror_message = (
-        f"The argument {argname} to {funcname} should be a Quantity with "
-    )
+    typeerror_message = f"The argument {argname} to {funcname} should be a Quantity with "
 
     if len(units) == 1:
         typeerror_message += f"the following units: {str(units[0])}"
@@ -283,13 +287,12 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
     unit_casting_warning = dedent(
         f"""No units are specified for {argname} = {arg} in {funcname}. Assuming units of {str(units[0])}.
                 To silence this warning, explicitly pass in an Astropy Quantity (from astropy.units)
-                (see http://docs.astropy.org/en/stable/units/)""")
+                (see http://docs.astropy.org/en/stable/units/)"""
+    )
 
     # TODO include explicit note on how to pass in Astropy Quantity
 
-    valueerror_message = (
-        f"The argument {argname} to function {funcname} cannot contain"
-    )
+    valueerror_message = f"The argument {argname} to function {funcname} cannot contain"
 
     if arg is None and none_shall_pass:
         return arg
@@ -328,7 +331,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         raise ValueError(f"{valueerror_message} complex numbers.")
     elif not can_be_negative:
         # Allow NaNs through without raising a warning
-        with np.errstate(invalid='ignore'):
+        with np.errstate(invalid="ignore"):
             isneg = np.any(arg.value < 0)
         if isneg:
             raise ValueError(f"{valueerror_message} negative numbers.")
@@ -391,13 +394,16 @@ def check_relativistic(func=None, betafrac=0.05):
     ...     return 1 * u.m / u.s
 
     """
+
     def decorator(f):
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
             return_ = f(*args, **kwargs)
             _check_relativistic(return_, f.__name__, betafrac=betafrac)
             return return_
+
         return wrapper
+
     if func:
         return decorator(func)
     return decorator
@@ -450,8 +456,7 @@ def _check_relativistic(V, funcname, betafrac=0.05):
 
     # TODO: Replace `funcname` with func.__name__?
 
-    errmsg = ("V must be a Quantity with units of velocity in"
-              "_check_relativistic")
+    errmsg = "V must be a Quantity with units of velocity in" "_check_relativistic"
 
     if not isinstance(V, u.Quantity):
         raise TypeError(errmsg)
@@ -468,10 +473,12 @@ def _check_relativistic(V, funcname, betafrac=0.05):
     elif beta >= 1:
         raise RelativityError(
             f"{funcname} is yielding a velocity that is {str(round(beta, 3))} "
-            f"times the speed of light.")
+            f"times the speed of light."
+        )
     elif beta >= betafrac:
         warnings.warn(
             f"{funcname} is yielding a velocity that is "
             f"{str(round(beta * 100, 3))}% of the speed of "
             f"light. Relativistic effects may be important.",
-            RelativityWarning)
+            RelativityWarning,
+        )

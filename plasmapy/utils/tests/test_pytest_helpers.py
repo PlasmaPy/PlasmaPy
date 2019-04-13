@@ -28,7 +28,8 @@ def raise_exception(*args, **kwargs):
     raise Exception(
         f"This exception was raised by raise_exception with:\n\n"
         f"  args = {args}\n"
-        f"kwargs = {kwargs}\n")
+        f"kwargs = {kwargs}\n"
+    )
 
 
 def issue_warning(*args, **kwargs) -> int:
@@ -56,13 +57,12 @@ def return_arg(arg: Any, should_warn: bool = False) -> Any:
 call_string_table = [
     (f, (), {}, "f()"),
     (f, (1), {}, "f(1)"),
-    (f, ('x'), {}, "f('x')"),
-    (f, (1, 'b', {}), {}, "f(1, 'b', {})"),
-    (f, (), {'kw': 1}, "f(kw=1)"),
-    (f, (), {'x': 'c'}, "f(x='c')"),
-    (f, (1, 'b'), {'b': 42, 'R2': 'D2'}, "f(1, 'b', b=42, R2='D2')"),
-    (run_test, run_test, {run_test: run_test},
-     'run_test(run_test, run_test=run_test)'),
+    (f, ("x"), {}, "f('x')"),
+    (f, (1, "b", {}), {}, "f(1, 'b', {})"),
+    (f, (), {"kw": 1}, "f(kw=1)"),
+    (f, (), {"x": "c"}, "f(x='c')"),
+    (f, (1, "b"), {"b": 42, "R2": "D2"}, "f(1, 'b', b=42, R2='D2')"),
+    (run_test, run_test, {run_test: run_test}, "run_test(run_test, run_test=run_test)"),
 ]
 
 
@@ -74,59 +74,49 @@ def test_call_string(f, args, kwargs, expected):
 
 
 f_args_kwargs_expected_whaterror = [
-
-    [adams_number, 0, {'y': 1}, 42, None],
-    [adams_number, (1,), {'y': 1}, 42, None],
+    [adams_number, 0, {"y": 1}, 42, None],
+    [adams_number, (1,), {"y": 1}, 42, None],
     [adams_number, (2, 1), {}, 42, None],
-
-    [adams_number, 3, {'y': 1}, 6 * 9, UnexpectedResultError],
-    [adams_number, (4,), {'y': 1}, 6 * 9, UnexpectedResultError],
+    [adams_number, 3, {"y": 1}, 6 * 9, UnexpectedResultError],
+    [adams_number, (4,), {"y": 1}, 6 * 9, UnexpectedResultError],
     [adams_number, (5, 1), {}, 6 * 9, UnexpectedResultError],
-
-    [raise_exception, 6, {'y': 1}, Exception, None],
-    [raise_exception, (7,), {'y': 1}, Exception, None],
+    [raise_exception, 6, {"y": 1}, Exception, None],
+    [raise_exception, (7,), {"y": 1}, Exception, None],
     [raise_exception, (8, 1), {}, Exception, None],
-
-    [raise_exception, 9, {'y': 1}, TypeError, UnexpectedExceptionError],
-    [raise_exception, (10,), {'y': 1}, TypeError, UnexpectedExceptionError],
-
-    [issue_warning, 12, {'y': 1}, Warning, None],
-    [issue_warning, (13,), {'y': 1}, Warning, None],
+    [raise_exception, 9, {"y": 1}, TypeError, UnexpectedExceptionError],
+    [raise_exception, (10,), {"y": 1}, TypeError, UnexpectedExceptionError],
+    [issue_warning, 12, {"y": 1}, Warning, None],
+    [issue_warning, (13,), {"y": 1}, Warning, None],
     [issue_warning, (14, 1), {}, Warning, None],
-
-    [issue_warning, 15, {'y': 1}, (42, UserWarning), MissingWarningError],
-    [issue_warning, (16,), {'y': 1}, (42, UserWarning), MissingWarningError],
+    [issue_warning, 15, {"y": 1}, (42, UserWarning), MissingWarningError],
+    [issue_warning, (16,), {"y": 1}, (42, UserWarning), MissingWarningError],
     [issue_warning, (17, 1), {}, (42, UserWarning), MissingWarningError],
-
     [return_quantity, (18), {}, 5 * u.m / u.s, None],
     [return_quantity, (19), {}, u.m / u.s, None],
     [return_quantity, (20), {}, u.barn * u.Mpc, u.UnitsError],
     [return_quantity, (21), {}, 4 * u.m / u.s, UnexpectedResultError],
     [return_quantity, (22), {}, 5 * u.kg / u.s, u.UnitsError],
-    [return_quantity, (23), {'should_warn': True}, (5 * u.m / u.s, UserWarning), None],
-
-    [return_quantity, (24), {'should_warn': False}, (5 * u.m / u.s, UserWarning),
-     MissingWarningError],
-
+    [return_quantity, (23), {"should_warn": True}, (5 * u.m / u.s, UserWarning), None],
+    [
+        return_quantity,
+        (24),
+        {"should_warn": False},
+        (5 * u.m / u.s, UserWarning),
+        MissingWarningError,
+    ],
     [return_arg, u.kg / u.K, {}, u.kg / u.K, None],
     [return_arg, u.kg / u.K, {}, u.kg / u.N, u.UnitsError],
     [return_arg, u.kg, {}, u.g, u.UnitsError],
-    [return_arg, u.C, {'should_warn': True}, (u.C, UserWarning), None],
-    [adams_number, 1, {'x': 1}, u.pc, u.UnitsError],
-
-    [return_arg, Particle('p+'), {}, Particle('proton'), None],
-    [return_arg, Particle('e+'), {}, Particle('e-'), UnexpectedResultError],
-    [return_arg, Particle('mu+'), {}, type, InconsistentTypeError],
-
+    [return_arg, u.C, {"should_warn": True}, (u.C, UserWarning), None],
+    [adams_number, 1, {"x": 1}, u.pc, u.UnitsError],
+    [return_arg, Particle("p+"), {}, Particle("proton"), None],
+    [return_arg, Particle("e+"), {}, Particle("e-"), UnexpectedResultError],
+    [return_arg, Particle("mu+"), {}, type, InconsistentTypeError],
     [return_arg, (2,), {}, IOError, MissingExceptionError],
-
 ]
 
 
-@pytest.mark.parametrize(
-    "f, args, kwargs, expected, whaterror",
-    f_args_kwargs_expected_whaterror,
-)
+@pytest.mark.parametrize("f, args, kwargs, expected, whaterror", f_args_kwargs_expected_whaterror)
 def test_run_test(f, args, kwargs, expected, whaterror):
     """
     Test the behavior of the test helper function.
@@ -168,18 +158,23 @@ def test_run_test(f, args, kwargs, expected, whaterror):
         if whaterror is None:
             run_test(f, args, kwargs, expected)
         else:
-            with pytest.raises(whaterror, message=(
+            with pytest.raises(
+                whaterror,
+                message=(
                     f"run_test did not raise an exception for "
                     f"{call_string(f, args, kwargs, color=None)} "
                     f"with expected = {repr(expected)} and "
-                    f"whaterror = {repr(whaterror)}.")):
+                    f"whaterror = {repr(whaterror)}."
+                ),
+            ):
                 run_test(f, args, kwargs, expected)
     except Exception as spectacular_exception:
         raise Exception(
             f"An unexpected exception was raised while running "
             f"{call_string(f, args, kwargs, color=None)} with "
             f"expected = {repr(expected)} and "
-            f"whaterror = {repr(whaterror)}.") from spectacular_exception
+            f"whaterror = {repr(whaterror)}."
+        ) from spectacular_exception
 
 
 def test_run_test_rtol():
@@ -211,61 +206,25 @@ def func(x, raise_exception=False, issue_warning=False):
 inputs_table = [
     (func, 1, 1),
     (func, (2,), {}, 2),
-    (func, 3, {'raise_exception': True}, ValueError),
-    (func, 4, {'issue_warning': True}, UserWarning),
-    (func, 5, {'issue_warning': True}, (5, UserWarning)),
+    (func, 3, {"raise_exception": True}, ValueError),
+    (func, 4, {"issue_warning": True}, UserWarning),
+    (func, 5, {"issue_warning": True}, (5, UserWarning)),
 ]
 
 
-@pytest.mark.parametrize('inputs', inputs_table)
+@pytest.mark.parametrize("inputs", inputs_table)
 def test_func(inputs):
     """Test cases originally put in the docstring."""
     run_test(inputs)
 
 
 run_test_equivalent_calls_table = [
-
     # cases like inputs = (func, (args, kwargs), (args, kwargs), (args, kwargs))
-
-    [
-        (
-            return_arg,
-            [(1,), {}],
-            [(1,), {}],
-        ),
-        None,
-    ],
-
-    [
-        (
-            return_arg,
-            [(1,), {}],
-            [(86,), {}],
-        ),
-        UnexpectedResultError,
-    ],
-
-    [
-        (
-            return_arg,
-            [(1,), {}],
-            [(1,), {}],
-            [(1,), {}],
-            [(1,), {}],
-            [(1,), {}],
-        ),
-        None,
-    ],
-
+    [(return_arg, [(1,), {}], [(1,), {}]), None],
+    [(return_arg, [(1,), {}], [(86,), {}]), UnexpectedResultError],
+    [(return_arg, [(1,), {}], [(1,), {}], [(1,), {}], [(1,), {}], [(1,), {}]), None],
     # cases like inputs = [(func, args, kwargs), (func, args, kwargs))
-    (
-        (
-            (return_arg, (1,), {}),
-            (return_arg, (1,), {}),
-        ),
-        None,
-    ),
-
+    (((return_arg, (1,), {}), (return_arg, (1,), {})), None),
     (
         (
             (return_arg, (1,), {}),
@@ -275,7 +234,6 @@ run_test_equivalent_calls_table = [
         ),
         None,
     ),
-
     (
         (
             (return_arg, (1,), {}),
@@ -285,63 +243,20 @@ run_test_equivalent_calls_table = [
         ),
         UnexpectedResultError,
     ),
-
     # cases where there are no kwargs
-
-    (
-        (return_arg, [1], [1]),
-        None,
-    ),
-
-    (
-        (return_arg, ['this'], ['that']),
-        UnexpectedResultError,
-    ),
-
-    (
-        [(return_arg, [1], [1])],
-        None,
-    ),
-
+    ((return_arg, [1], [1]), None),
+    ((return_arg, ["this"], ["that"]), UnexpectedResultError),
+    ([(return_arg, [1], [1])], None),
     # cases where there are no kwargs and the args are not in tuples or lists
-
-    (
-        (return_arg, 1, 1, 1, 1),
-        None
-    ),
-
-    (
-        (return_arg, 1, 1, 1, 87948794580745),
-        UnexpectedResultError,
-    ),
-
-    (
-        (
-            (lambda x, y: x + y, (1, 0), {}),
-            (lambda x, y: x * y, (1, 1), {}),
-        ),
-        None,
-    ),
-
-    (
-        (
-            (lambda x, y: x + y, (1, 0), {}),
-            (lambda x, y: x * y, (1, 1), {}),
-        ),
-        None,
-    ),
-
-    (
-        (
-            (lambda x, y: x + y, (1, 0), {}),
-            (lambda x, y: x * y, (1, 59), {}),
-        ),
-        UnexpectedResultError,
-    ),
+    ((return_arg, 1, 1, 1, 1), None),
+    ((return_arg, 1, 1, 1, 87948794580745), UnexpectedResultError),
+    (((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 1), {})), None),
+    (((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 1), {})), None),
+    (((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 59), {})), UnexpectedResultError),
 ]
 
 
-@pytest.mark.parametrize('inputs, error', run_test_equivalent_calls_table)
+@pytest.mark.parametrize("inputs, error", run_test_equivalent_calls_table)
 def test_run_test_equivalent_calls(inputs, error):
     if error is None:
         try:

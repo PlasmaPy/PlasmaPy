@@ -1,7 +1,4 @@
-from .checks import (check_quantity,
-                     check_relativistic,
-                     _check_quantity,
-                     _check_relativistic)
+from .checks import check_quantity, check_relativistic, _check_quantity, _check_relativistic
 
 from .pytest_helpers import (
     run_test,

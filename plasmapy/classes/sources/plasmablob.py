@@ -7,10 +7,8 @@ import numpy as np
 import astropy.units as u
 
 from plasmapy.physics.parameters import _grab_charge
-from plasmapy.physics.dimensionless import (quantum_theta,
-                                            )
-from plasmapy.transport import (coupling_parameter,
-                                )
+from plasmapy.physics.dimensionless import quantum_theta
+from plasmapy.transport import coupling_parameter
 from plasmapy.atomic import particle_mass
 
 from plasmapy.utils import call_string
@@ -18,9 +16,7 @@ from plasmapy.physics.exceptions import CouplingWarning
 
 from plasmapy.classes import GenericPlasma
 
-__all__ = [
-    "PlasmaBlob"
-]
+__all__ = ["PlasmaBlob"]
 
 
 class PlasmaBlob(GenericPlasma):
@@ -28,8 +24,9 @@ class PlasmaBlob(GenericPlasma):
     Class for describing and calculating plasma parameters without
     spatial/temporal description.
     """
-    @u.quantity_input(T_e=u.K, n_e=u.m**-3)
-    def __init__(self, T_e, n_e, Z=None, particle='p'):
+
+    @u.quantity_input(T_e=u.K, n_e=u.m ** -3)
+    def __init__(self, T_e, n_e, Z=None, particle="p"):
         """
         Initialize plasma paramters.
         The most basic description is composition (ion), temperature,
@@ -69,10 +66,7 @@ class PlasmaBlob(GenericPlasma):
         >>> PlasmaBlob(1e4*u.K, 1e20/u.m**3, particle='p')
         PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p', Z=1)
         """
-        argument_dict = {'T_e': self.T_e,
-                         'n_e': self.n_e,
-                         'particle': self.particle,
-                         'Z': self.Z}
+        argument_dict = {"T_e": self.T_e, "n_e": self.n_e, "particle": self.particle, "Z": self.Z}
 
         return call_string(PlasmaBlob, (), argument_dict)
 
@@ -115,21 +109,18 @@ class PlasmaBlob(GenericPlasma):
         # quantum_theta
         if quantum_theta <= 0.01:
             # Fermi energy dominant
-            quantum_theta_str = (f"Fermi quantum energy dominant: Theta = "
-                                 f"{quantum_theta}")
+            quantum_theta_str = f"Fermi quantum energy dominant: Theta = " f"{quantum_theta}"
         elif quantum_theta >= 100:
             # thermal kinetic energy dominant
-            quantum_theta_str = (f"Thermal kinetic energy dominant: Theta = "
-                                 f"{quantum_theta}")
+            quantum_theta_str = f"Thermal kinetic energy dominant: Theta = " f"{quantum_theta}"
         else:
             # intermediate regime
-            quantum_theta_str = (f"Both Fermi and thermal energy important: "
-                                 f"Theta = {quantum_theta}")
+            quantum_theta_str = (
+                f"Both Fermi and thermal energy important: " f"Theta = {quantum_theta}"
+            )
 
         # summarizing and printing/returning regimes
-        aggregateStrs = [coupling_str,
-                         quantum_theta_str,
-                         ]
+        aggregateStrs = [coupling_str, quantum_theta_str]
         return aggregateStrs
 
     def coupling(self):
@@ -138,13 +129,12 @@ class PlasmaBlob(GenericPlasma):
         are important. This compares Coulomb potential energy to thermal
         kinetic energy.
         """
-        couple = coupling_parameter(self.T_e,
-                                    self.n_e,
-                                    (self.particle, self.particle),
-                                    self.Z)
+        couple = coupling_parameter(self.T_e, self.n_e, (self.particle, self.particle), self.Z)
         if couple < 0.01:
-            warnings.warn(f"Coupling parameter is {couple}, you might have strong coupling effects",
-                          CouplingWarning)
+            warnings.warn(
+                f"Coupling parameter is {couple}, you might have strong coupling effects",
+                CouplingWarning,
+            )
 
         return couple
 
@@ -158,5 +148,5 @@ class PlasmaBlob(GenericPlasma):
 
     @classmethod
     def is_datasource_for(cls, **kwargs):
-        match = kwargs.get('T_e') and kwargs.get('n_e')
+        match = kwargs.get("T_e") and kwargs.get("n_e")
         return match

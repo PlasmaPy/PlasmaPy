@@ -9,14 +9,10 @@ from plasmapy.constants import c
 from plasmapy import utils
 from plasmapy.physics.exceptions import RelativityError
 
-__all__ = [
-    "Lorentz_factor",
-]
+__all__ = ["Lorentz_factor"]
 
 
-@utils.check_quantity(
-    V={'units': u.m / u.s, 'can_be_negative': True}
-)
+@utils.check_quantity(V={"units": u.m / u.s, "can_be_negative": True})
 def Lorentz_factor(V: u.m / u.s):
     r"""
     Return the Lorentz factor.
@@ -69,12 +65,13 @@ def Lorentz_factor(V: u.m / u.s):
     inf
     """
 
-    utils._check_quantity(V, 'V', 'Lorentz_factor', u.m / u.s)
+    utils._check_quantity(V, "V", "Lorentz_factor", u.m / u.s)
 
     if not np.all(np.abs(V) <= c):
         raise RelativityError(
             "The Lorentz factor cannot be calculated for "
-            "speeds faster than the speed of light. ")
+            "speeds faster than the speed of light. "
+        )
 
     if V.size > 1:
 
@@ -83,13 +80,13 @@ def Lorentz_factor(V: u.m / u.s):
         equals_c = np.abs(V) == c
         is_slow = ~equals_c
 
-        gamma[is_slow] = ((1 - (V[is_slow] / c)**2)**-0.5).value
+        gamma[is_slow] = ((1 - (V[is_slow] / c) ** 2) ** -0.5).value
         gamma[equals_c] = np.inf
 
     else:
         if np.abs(V) == c:
             gamma = np.inf
         else:
-            gamma = ((1 - (V / c)**2)**-0.5).value
+            gamma = ((1 - (V / c) ** 2) ** -0.5).value
 
     return gamma

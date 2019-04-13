@@ -43,6 +43,7 @@ Utility tools
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
 from ._base_init import *
+
 # ----------------------------------------------------------------------------
 
 # Enforce Python version check during package import.
@@ -52,7 +53,7 @@ import sys
 __name__ = "plasmapy"
 
 
-if sys.version_info < tuple((int(val) for val in "3.6".split('.'))):
+if sys.version_info < tuple((int(val) for val in "3.6".split("."))):
     raise RuntimeError("plasmapy does not support Python < {}".format(3.6))
 
 
@@ -71,11 +72,12 @@ def online_help(query):
     from urllib.parse import urlencode
     import webbrowser
 
-    url = ('http://docs.plasmapy.org/en/stable/search.html?'
-           '{0}&check_keywords=yes&area=default').format(urlencode({'q': query}))
+    url = (
+        "http://docs.plasmapy.org/en/stable/search.html?" "{0}&check_keywords=yes&area=default"
+    ).format(urlencode({"q": query}))
 
-    if(query.lower() in ('unit', 'units')):
-        url = 'http://docs.astropy.org/en/stable/units/'
+    if query.lower() in ("unit", "units"):
+        url = "http://docs.astropy.org/en/stable/units/"
 
     webbrowser.open(url)
 

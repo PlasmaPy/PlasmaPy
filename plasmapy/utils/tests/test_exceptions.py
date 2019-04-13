@@ -1,8 +1,17 @@
 import pytest
 import warnings
 
-from plasmapy.atomic.exceptions import AtomicError, MissingAtomicDataError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, \
-    InvalidParticleError, AtomicWarning, MissingAtomicDataWarning
+from plasmapy.atomic.exceptions import (
+    AtomicError,
+    MissingAtomicDataError,
+    ChargeError,
+    InvalidIonError,
+    InvalidIsotopeError,
+    InvalidElementError,
+    InvalidParticleError,
+    AtomicWarning,
+    MissingAtomicDataWarning,
+)
 from plasmapy.physics.exceptions import *
 
 plasmapy_exceptions = [
@@ -26,12 +35,7 @@ def test_exceptions(exception):
         raise exception("What an exceptionally exceptional exception!")
 
 
-plasmapy_warnings = [
-    PhysicsWarning,
-    RelativityWarning,
-    AtomicWarning,
-    MissingAtomicDataWarning,
-]
+plasmapy_warnings = [PhysicsWarning, RelativityWarning, AtomicWarning, MissingAtomicDataWarning]
 
 
 @pytest.mark.parametrize("warning", plasmapy_warnings)

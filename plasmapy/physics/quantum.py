@@ -13,6 +13,7 @@ try:
     from lmfit import minimize, Parameters
 except (ImportError, ModuleNotFoundError) as e:
     from plasmapy.optional_deps import lmfit_import_error
+
     raise lmfit_import_error from e
 
 # plasmapy modules
@@ -33,9 +34,7 @@ __all__ = [
 
 
 # TODO: Use @check_relativistic and @particle_input
-@utils.check_quantity(
-    V={'units': u.m / u.s, 'can_be_negative': True}
-)
+@utils.check_quantity(V={"units": u.m / u.s, "can_be_negative": True})
 def deBroglie_wavelength(V, particle):
     r"""
     Calculates the de Broglie wavelength.
@@ -101,7 +100,8 @@ def deBroglie_wavelength(V, particle):
         raise RelativityError(
             "Velocity input in deBroglie_wavelength cannot "
             "be greater than or equal to the speed of "
-            "light.")
+            "light."
+        )
 
     if not isinstance(particle, u.Quantity):
         try:
@@ -113,10 +113,12 @@ def deBroglie_wavelength(V, particle):
         try:
             m = particle.to(u.kg)
         except Exception:
-            raise u.UnitConversionError("The second argument for deBroglie"
-                                        " wavelength must be either a "
-                                        "representation of a particle or a"
-                                        " Quantity with units of mass.")
+            raise u.UnitConversionError(
+                "The second argument for deBroglie"
+                " wavelength must be either a "
+                "representation of a particle or a"
+                " Quantity with units of mass."
+            )
 
     if V.size > 1:
 
@@ -134,9 +136,7 @@ def deBroglie_wavelength(V, particle):
     return lambda_dBr.to(u.m)
 
 
-@utils.check_quantity(
-    T_e={'units': u.K, 'can_be_negative': False}
-)
+@utils.check_quantity(T_e={"units": u.K, "can_be_negative": False})
 def thermal_deBroglie_wavelength(T_e):
     r"""
     Calculate the thermal deBroglie wavelength for electrons.
@@ -187,9 +187,7 @@ def thermal_deBroglie_wavelength(T_e):
     return lambda_dbTh.to(u.m)
 
 
-@utils.check_quantity(
-    n_e={'units': u.m**-3, 'can_be_negative': False}
-)
+@utils.check_quantity(n_e={"units": u.m ** -3, "can_be_negative": False})
 def Fermi_energy(n_e):
     r"""
     Calculate the kinetic energy in a degenerate electron gas.
@@ -248,9 +246,7 @@ def Fermi_energy(n_e):
     return energy_F.to(u.Joule)
 
 
-@utils.check_quantity(
-    n_e={'units': u.m**-3, 'can_be_negative': False}
-)
+@utils.check_quantity(n_e={"units": u.m ** -3, "can_be_negative": False})
 def Thomas_Fermi_length(n_e):
     r"""
     Calculate the exponential scale length for charge screening
@@ -319,10 +315,8 @@ def Thomas_Fermi_length(n_e):
     return lambda_TF.to(u.m)
 
 
-@check_quantity(
-    n={'units': u.m**-3, 'can_be_negative': False}
-)
-def Wigner_Seitz_radius(n: u.m**-3):
+@check_quantity(n={"units": u.m ** -3, "can_be_negative": False})
+def Wigner_Seitz_radius(n: u.m ** -3):
     r"""
     Calculate the Wigner-Seitz radius, which approximates the inter-
     particle spacing. It is the radius of a sphere whose volume is
@@ -462,7 +456,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
 
     def residual(params, data, eps_data):
         """Residual function for fitting parameters to Fermi_integral."""
-        alpha = params['alpha'].value
+        alpha = params["alpha"].value
         # note that alpha = mu / (k_B * T)
         model = mathematics.Fermi_integral(alpha, 0.5)
         complexResidue = (data - model) / eps_data
@@ -471,12 +465,12 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     # setting parameters for fitting along with bounds
     alphaGuess = 1 * u.dimensionless_unscaled
     params = Parameters()
-    params.add('alpha', value=alphaGuess, min=0.0)
+    params.add("alpha", value=alphaGuess, min=0.0)
     # calling minimize function from lmfit to fit by minimizing the residual
     data = np.array([degen])  # result of Fermi_integral - degen should be zero
     eps_data = np.array([1e-15])  # numerical error
     minFit = minimize(residual, params, args=(data, eps_data))
-    beta_mu = minFit.params['alpha'].value * u.dimensionless_unscaled
+    beta_mu = minFit.params["alpha"].value * u.dimensionless_unscaled
     return beta_mu
 
 

@@ -5,10 +5,12 @@
 # Exceptions
 # ----------
 
+
 class PhysicsError(ValueError):
     """
     The base exception for physics-related errors.
     """
+
     pass
 
 
@@ -16,6 +18,7 @@ class RelativityError(PhysicsError):
     """
     An exception for speeds greater than the speed of light.
     """
+
     pass
 
 
@@ -23,8 +26,10 @@ class RelativityError(PhysicsError):
 # Warnings:
 # ----------
 
+
 class PhysicsWarning(Warning):
     """The base warning for `~plasmapy.physics` related warnings."""
+
     pass
 
 
@@ -33,6 +38,7 @@ class RelativityWarning(PhysicsWarning):
     A warning for when relativistic velocities are being used in or are
     returned by non-relativistic functionality.
     """
+
     pass
 
 
