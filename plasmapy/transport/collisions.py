@@ -1811,7 +1811,7 @@ def Dreicer_electric_field(T: u.K,
                            coulomb_log_method: str = "classical",
                            ) -> u.V / u.m:
     r"""
-    Calculates the minimum electric field for runaway electrons to occur
+    Calculate the minimum electric field for runaway electrons to occur
 
     Parameters
     ----------
