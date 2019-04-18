@@ -11,8 +11,6 @@ from .exceptions import (PlasmaPyError,
                          PhysicsWarning,
                          CouplingWarning,
                          RelativityWarning)
-from plasmapy.atomic.exceptions import AtomicError, MissingAtomicDataError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, \
-    InvalidParticleError, AtomicWarning, MissingAtomicDataWarning
 
 from .pytest_helpers import (
     run_test,
