@@ -5,7 +5,8 @@ import numpy as np
 import astropy.units as u
 
 from plasmapy.atomic.ionization_state import IonizationState
-from plasmapy.utils import AtomicError, InvalidIsotopeError, run_test
+from plasmapy.utils import run_test
+from plasmapy.atomic.exceptions import AtomicError, InvalidIsotopeError
 from plasmapy.atomic import (
     atomic_number,
     atomic_symbol,

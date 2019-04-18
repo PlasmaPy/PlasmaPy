@@ -11,14 +11,7 @@ import numbers
 
 from .particle_class import Particle
 
-from plasmapy.utils import (
-    AtomicError,
-    InvalidParticleError,
-    InvalidElementError,
-    InvalidIonError,
-    InvalidIsotopeError,
-    ChargeError,
-)
+from plasmapy.atomic.exceptions import AtomicError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, InvalidParticleError
 
 __all__ = [
     "particle_input",
