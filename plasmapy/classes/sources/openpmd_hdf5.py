@@ -7,7 +7,7 @@ except (ImportError, ModuleNotFoundError) as e:
     raise ImportError(h5py_import_error) from e
 
 from plasmapy.classes import GenericPlasma
-from plasmapy.utils import DataStandardError
+from plasmapy.classes.exceptions import DataStandardError
 
 import os
 from distutils.version import StrictVersion
