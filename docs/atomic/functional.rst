@@ -56,13 +56,13 @@ and `~plasmapy.atomic.electric_charge`.
 >>> electric_charge('muon antineutrino')
 <Quantity 0. C>
 
-These functions will raise a `~plasmapy.utils.ChargeError` for
+These functions will raise a `~plasmapy.atomic.exceptions.ChargeError` for
 elements and isotopes that lack explicit charge information.
 
 >>> electric_charge('H')
 Traceback (most recent call last):
   ...
-plasmapy.utils.exceptions.ChargeError: Charge information is required for electric_charge.
+plasmapy.atomic.exceptions.ChargeError: Charge information is required for electric_charge.
 
 The standard atomic weight for the terrestrial environment may be
 accessed using `~plasmapy.atomic.standard_atomic_weight`.
@@ -134,7 +134,7 @@ unstable), `~plasmapy.atomic.half_life` returns infinity seconds.
 
 If the particle's half-life is not known to sufficient precision, then
 `~plasmapy.atomic.half_life` returns a `str` with the estimated value
-while issuing a `~plasmapy.utils.MissingAtomicDataWarning`.
+while issuing a `~plasmapy.atomic.exceptions.MissingAtomicDataWarning`.
 
 Additional Properties
 =====================
