@@ -129,6 +129,7 @@ from astropy import units as u
 from plasmapy import utils
 from plasmapy import atomic
 from plasmapy.atomic.atomic import _is_electron
+from plasmapy.utils import PhysicsError
 from .collisions import Coulomb_logarithm
 from plasmapy.physics.parameters import (Hall_parameter,
                                          _grab_charge)
@@ -376,10 +377,6 @@ class ClassicalTransport:
         # calculate Coulomb logs if not forced in input
         if coulomb_log_ei is not None:
             self.coulomb_log_ei = coulomb_log_ei
-            if self.coulomb_log_ei < 4:
-                warnings.warn(f"Coulomb logarithm is {coulomb_log_ei},"
-                              f" you might have strong coupling effects",
-                              utils.PhysicsWarning)
         else:
             self.coulomb_log_ei = Coulomb_logarithm(T_e,
                                                     n_e,
@@ -387,12 +384,18 @@ class ClassicalTransport:
                                                      self.ion_particle),
                                                     V_ei,
                                                     method=coulomb_log_method)
+
+        if self.coulomb_log_ei < 1:
+            # TODO discuss whether this is not too strict
+            raise PhysicsError(f"Coulomb logarithm is {coulomb_log_ei} (below 1),"
+                                "this is probably not physical!")
+        elif self.coulomb_log_ei < 4:
+            warnings.warn(f"Coulomb logarithm is {coulomb_log_ei},"
+                          f" you might have strong coupling effects",
+                          utils.CouplingWarning)
+
         if coulomb_log_ii is not None:
             self.coulomb_log_ii = coulomb_log_ii
-            if self.coulomb_log_ii < 4:
-                warnings.warn(f"Coulomb logarithm is {coulomb_log_ii},"
-                              f" you might have strong coupling effects",
-                              utils.PhysicsWarning)
         else:
             self.coulomb_log_ii = Coulomb_logarithm(T_i,
                                                     n_e,  # this is not a typo!
@@ -400,6 +403,15 @@ class ClassicalTransport:
                                                      self.ion_particle),
                                                     V_ii,
                                                     method=coulomb_log_method)
+
+        if self.coulomb_log_ii < 1:
+            # TODO discuss whether this is not too strict
+            raise PhysicsError(f"Coulomb logarithm is {coulomb_log_ii} (below 1),"
+                               "this is probably not physical!")
+        elif self.coulomb_log_ii < 4:
+            warnings.warn(f"Coulomb logarithm is {coulomb_log_ii},"
+                          f" you might have strong coupling effects",
+                          utils.CouplingWarning)
 
         # calculate Hall parameters if not forced in input
         if hall_e is not None:
