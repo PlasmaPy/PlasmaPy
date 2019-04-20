@@ -12,8 +12,17 @@ import astropy.constants as const
 import plasmapy.utils.roman as roman
 from plasmapy.atomic.elements import _Elements, _PeriodicTable
 from plasmapy.atomic.isotopes import _Isotopes
-from plasmapy.atomic.exceptions import AtomicError, MissingAtomicDataError, ChargeError, InvalidIonError, InvalidIsotopeError, InvalidElementError, \
-    InvalidParticleError, AtomicWarning, MissingAtomicDataWarning
+from plasmapy.atomic.exceptions import (
+    AtomicError,
+    MissingAtomicDataError,
+    ChargeError,
+    InvalidIonError,
+    InvalidIsotopeError,
+    InvalidElementError,
+    InvalidParticleError,
+    AtomicWarning,
+    MissingAtomicDataWarning,
+    )
 from plasmapy.atomic.parsing import (
     _dealias_particle_aliases,
     _parse_and_check_atomic_input,

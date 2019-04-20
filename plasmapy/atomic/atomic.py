@@ -17,7 +17,12 @@ from plasmapy.atomic.particle_class import Particle
 from plasmapy.atomic.particle_input import particle_input
 from plasmapy.atomic.symbols import atomic_symbol
 
-from plasmapy.atomic.exceptions import MissingAtomicDataError, InvalidIsotopeError, InvalidElementError, InvalidParticleError
+from plasmapy.atomic.exceptions import (
+    MissingAtomicDataError,
+    InvalidIsotopeError,
+    InvalidElementError,
+    InvalidParticleError,
+    )
 
 from numbers import (
     Integral,

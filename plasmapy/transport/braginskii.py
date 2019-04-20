@@ -388,7 +388,7 @@ class ClassicalTransport:
         if self.coulomb_log_ei < 1:
             # TODO discuss whether this is not too strict
             raise PhysicsError(f"Coulomb logarithm is {coulomb_log_ei} (below 1),"
-                                "this is probably not physical!")
+                               "this is probably not physical!")
         elif self.coulomb_log_ei < 4:
             warnings.warn(f"Coulomb logarithm is {coulomb_log_ei},"
                           f" you might have strong coupling effects",
