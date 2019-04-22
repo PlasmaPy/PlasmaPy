@@ -2,6 +2,7 @@ import astropy.units as u
 from astropy.units.utils import np
 from plasmapy import utils
 
+
 @utils.check_quantity()
 def ExB_drift(E: u.V/u.m, B: u.T) -> u.m/u.s:
     """
@@ -51,6 +52,7 @@ def ExB_drift(E: u.V/u.m, B: u.T) -> u.m/u.s:
     # np.cross drops units right now, thus this hack
     cross = np.cross(E.si.value, B.si.value) * E.unit * B.unit
     return (cross / (B*B).sum(-1)).to(u.m/u.s)
+
 
 @utils.check_quantity()
 def force_drift(F: u.N, B: u.T, q: u.C):
