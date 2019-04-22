@@ -7,6 +7,7 @@ The periodic tabla data is from: http://periodic.lanl.gov/index.shtml
 import collections
 import astropy.units as u
 import json
+import pkgutil
 
 _PeriodicTable = collections.namedtuple(
     "periodic_table", ['group', 'category', 'block', 'period']
@@ -32,8 +33,8 @@ def _element_obj_hook(obj):
 # with open("elements.json", "w") as f:
 #    json.dump(_Elements, f, default=plasma_default, indent=2)
 
-with open("elements.json", "r") as f:
-    elements = json.load(f, object_hook=_element_obj_hook)
+_Elements = json.loads(pkgutil.get_data('plasmapy', 'atomic/elements.json'),
+                       object_hook=_element_obj_hook)
 
 _atomic_numbers_to_symbols = {
     elemdict['atomic number']: symb for (symb, elemdict) in _Elements.items()
