@@ -29,12 +29,14 @@ def _element_obj_hook(obj):
 #             "unit": obj.unit.name,
 #             "value": obj.value,
 #         }
-# 
+#
 # with open("elements.json", "w") as f:
 #    json.dump(_Elements, f, default=plasma_default, indent=2)
 
+
 _Elements = json.loads(pkgutil.get_data('plasmapy', 'atomic/elements.json'),
                        object_hook=_element_obj_hook)
+
 
 _atomic_numbers_to_symbols = {
     elemdict['atomic number']: symb for (symb, elemdict) in _Elements.items()

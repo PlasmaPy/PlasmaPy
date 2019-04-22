@@ -26,5 +26,6 @@ def _isotope_obj_hook(obj):
         return obj["value"] * u.Unit(obj["unit"])
     return obj
 
+
 _Isotopes = json.loads(pkgutil.get_data('plasmapy', 'atomic/isotopes.json'),
                        object_hook=_isotope_obj_hook)
