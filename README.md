@@ -41,6 +41,8 @@ channel.  For a slower response, you may also contact Nick Murphy at
 <andy.j.leonard@gmail.com>.  You may also [sign up for PlasmaPy's email
 list](https://groups.google.com/forum/#!forum/plasmapy).
 
+We also have approximately bi-weekly online meetings at [Jitsi](https://meet.jit.si/plasmapy), for which we have a [calendar here](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ). Come discuss plasma software with us!
+
 ## Installation
 
 You can get PlasmaPy from pip via `pip install plasmapy`. To contribute
