@@ -4,7 +4,8 @@ import astropy.units as u
 
 from plasmapy.classes.sources import plasma3d, plasmablob
 from plasmapy.physics import magnetostatics
-from plasmapy.utils.exceptions import InvalidParticleError
+from plasmapy.atomic.exceptions import InvalidParticleError
+
 
 @pytest.mark.parametrize('grid_dimensions, expected_size', [
     ((100, 1, 1), 100),  # Test 1D setup

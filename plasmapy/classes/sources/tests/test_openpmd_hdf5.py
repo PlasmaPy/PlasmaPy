@@ -1,5 +1,5 @@
 from plasmapy.classes.sources import openpmd_hdf5
-from plasmapy.utils import DataStandardError
+from plasmapy.classes.exceptions import DataStandardError
 from plasmapy.data.test import rootdir
 
 from astropy import units as u

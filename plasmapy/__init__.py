@@ -51,12 +51,8 @@ import sys
 
 __name__ = "plasmapy"
 
-class UnsupportedPythonError(Exception):
-    pass
-
-
 if sys.version_info < tuple((int(val) for val in "3.6".split('.'))):
-    raise UnsupportedPythonError("plasmapy does not support Python < {}".format(3.6))
+    raise Exception("plasmapy does not support Python < {}".format(3.6))
 
 def online_help(query):
     """

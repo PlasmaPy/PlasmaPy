@@ -3,6 +3,7 @@ import pytest
 from astropy import units as u
 from astropy.tests.helper import assert_quantity_allclose
 
+import plasmapy.atomic.exceptions
 from plasmapy.transport import (Coulomb_logarithm,
                                 impact_parameter_perp,
                                 impact_parameter,
@@ -553,7 +554,7 @@ class Test_Coulomb_logarithm:
         Tests whether an error is raised when an invalid particle name
         is given.
         """
-        with pytest.raises(exceptions.InvalidParticleError):
+        with pytest.raises(plasmapy.atomic.exceptions.InvalidParticleError):
             Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, ('e', 'g'))
 
     n_e = np.array([1e9, 1e9, 1e24]) * u.cm ** -3
