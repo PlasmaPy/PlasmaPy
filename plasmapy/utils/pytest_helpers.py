@@ -180,6 +180,75 @@ def _represent_result(result: Any, color=_result_color) -> str:
         return f"{color}{repr(result)}{return_color}"
 
 
+#def _equal_enough(result, expected, atol=0, rtol=0):
+#    """
+
+#    Parameters
+#    ----------
+#    result
+#        The actual result or outcome.
+
+#    expected
+#        The expected result or outcome.
+
+#    atol
+
+#    rtol
+
+#    Returns
+#    -------
+
+
+#    """
+
+class _EqualEnough:
+    """
+
+    rtol : float
+        The relative tolerance to be used by `~numpy.allclose` in an
+        element-wise comparison, defaulting to `0`.
+
+    atol : float
+        The absolute tolerance to be used by `~numpy.allclose` in an
+        element-wise comparison, defaulting to `0`.
+
+    """
+
+
+    def __init__(self, result, expected, *_, atol=0, rtol=0):
+        self.result = result
+        self.expected = expected
+        self.atol = atol
+        self.rtol = rtol
+
+
+
+
+    def __bool__(self):
+        return self.exception is None
+
+    @property
+    def errmsg(self):
+        return self._errmsg if hasattr(self, "_errmsg") else ""
+
+    @errmsg.setter
+    def errmsg(self, value: str):
+        if isinstance(value, str):
+            self._errmsg = value
+
+    @property
+    def exception(self):
+        return self._exception if hasattr(self, "_exception") else None
+
+    @exception.setter
+    def exception(self, value):
+        self.exception = value
+
+
+
+
+
+
 def _process_input(wrapped_function: Callable):
     """
     Allow `run_test` to take a single positional argument that is a
