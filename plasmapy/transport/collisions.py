@@ -280,12 +280,14 @@ def Coulomb_logarithm(T,
         raise ValueError("Unknown method! Choose from 'classical' and 'GMS-N', N from 1 to 6.")
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
-    if np.any(ln_Lambda < 2) and method in ["classical", "GMS-1", "GMS-2"]:
-        warnings.warn(f"Coulomb logarithm is {ln_Lambda} and {method} relies on weak coupling.",
-                      utils.CouplingWarning)
-    elif np.any(ln_Lambda < 4):
-        warnings.warn(f"Coulomb logarithm is {ln_Lambda}, you might have strong coupling effects",
-                      utils.CouplingWarning)
+    # Allow NaNs through the < checks without warning
+    with np.errstate(invalid='ignore'):
+        if np.any(ln_Lambda < 2) and method in ["classical", "GMS-1", "GMS-2"]:
+            warnings.warn(f"Coulomb logarithm is {ln_Lambda} and {method} relies on "
+                          "weak coupling.", utils.CouplingWarning)
+        elif np.any(ln_Lambda < 4):
+            warnings.warn(f"Coulomb logarithm is {ln_Lambda}, you might have strong "
+                          "coupling effects", utils.CouplingWarning)
     return ln_Lambda
 
 
@@ -730,7 +732,7 @@ def collision_frequency(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> collision_frequency(T, n, particles)
-    <Quantity 702505.15998601 Hz>
+    <Quantity 702492.01188504 Hz>
 
     References
     ----------
@@ -761,7 +763,7 @@ def collision_frequency(T,
                                     n,
                                     particles,
                                     z_mean,
-                                    V=np.nan * u.m / u.s,
+                                    V=V,
                                     method=method)
     elif particles[0] in ('e','e-') or particles[1] in ('e','e-'):
         # electron-ion collision
@@ -782,7 +784,7 @@ def collision_frequency(T,
                                     n,
                                     particles,
                                     z_mean,
-                                    V=np.nan * u.m / u.s,
+                                    V=V,
                                     method=method)
     else:
         # ion-ion collision
@@ -797,7 +799,7 @@ def collision_frequency(T,
                                     n,
                                     particles,
                                     z_mean,
-                                    V=np.nan * u.m / u.s,
+                                    V=V,
                                     method=method)
     # collisional cross section
     sigma = Coulomb_cross_section(bPerp)
@@ -927,17 +929,17 @@ def fundamental_electron_collision_freq(T_e,
     --------
     >>> from astropy import units as u
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
-    <Quantity 0.00180172 1 / s>
+    <Quantity 0.00180167 1 / s>
     >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
-    <Quantity 1.07222852e-07 1 / s>
+    <Quantity 1.07221863e-07 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
-    <Quantity 3936037.8595928 1 / s>
+    <Quantity 3935958.7396539 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
-    <Quantity 3872922.52743562 1 / s>
+    <Quantity 3872815.52840036 1 / s>
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
-    <Quantity 4.41166015e-07 1 / s>
+    <Quantity 5.65897885e-07 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
-    <Quantity 5812633.74935003 1 / s>
+    <Quantity 5812633.74935004 1 / s>
 
     See Also
     --------
@@ -966,7 +968,7 @@ def fundamental_electron_collision_freq(T_e,
                                  n_e,
                                  particles,
                                  z_mean=Z_i,
-                                 V=np.nan * u.m / u.s,
+                                 V=V,
                                  method=coulomb_log_method)
         # dividing out by typical Coulomb logarithm value implicit in
         # the collision frequency calculation and replacing with
@@ -1063,15 +1065,15 @@ def fundamental_ion_collision_freq(T_i,
     --------
     >>> from astropy import units as u
     >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
-    <Quantity 2.97315582e-05 1 / s>
+    <Quantity 2.86803251e-05 1 / s>
     >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
-    <Quantity 1.78316012e-09 1 / s>
+    <Quantity 1.74160353e-09 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
-    <Quantity 66411.80316364 1 / s>
+    <Quantity 63087.51217732 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
-    <Quantity 66407.00859126 1 / s>
+    <Quantity 63085.11369283 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
-    <Quantity 6.53577473 1 / s>
+    <Quantity 9.11173204 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
     <Quantity 95918.76240877 1 / s>
 
@@ -1105,7 +1107,7 @@ def fundamental_ion_collision_freq(T_i,
                                  n_i,
                                  particles,
                                  z_mean=Z_i,
-                                 V=np.nan * u.m / u.s,
+                                 V=V,
                                  method=coulomb_log_method)
         # dividing out by typical Coulomb logarithm value implicit in
         # the collision frequency calculation and replacing with
@@ -1207,9 +1209,9 @@ def mean_free_path(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> mean_free_path(T, n, particles)
-    <Quantity 7.8393631 m>
+    <Quantity 7.83950983 m>
     >>> mean_free_path(T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 0.00852932 m>
+    <Quantity 0.01091773 m>
 
     References
     ----------
@@ -1334,9 +1336,9 @@ def Spitzer_resistivity(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> Spitzer_resistivity(T, n, particles)
-    <Quantity 2.4916169e-06 m Ohm>
+    <Quantity 2.49157026e-06 m Ohm>
     >>> Spitzer_resistivity(T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 0.00041583 m Ohm>
+    <Quantity 0.00032486 m Ohm>
 
     References
     ----------
@@ -1462,9 +1464,9 @@ def mobility(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> mobility(T, n, particles)
-    <Quantity 250500.35318738 m2 / (s V)>
+    <Quantity 250505.04164488 m2 / (s V)>
     >>> mobility(T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 1500.97042427 m2 / (s V)>
+    <Quantity 1921.27848189 m2 / (s V)>
 
     References
     ----------
@@ -1591,9 +1593,9 @@ def Knudsen_number(characteristic_length,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> Knudsen_number(L, T, n, particles)
-    <Quantity 7839.36310417>
+    <Quantity 7839.5098286>
     >>> Knudsen_number(L, T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 8.52931736>
+    <Quantity 10.91773271>
 
     References
     ----------

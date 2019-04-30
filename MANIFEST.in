@@ -8,6 +8,7 @@ include setup.cfg
 include plasmapy/tests/coveragerc
 
 recursive-include plasmapy *.pyx *.c *.pxd
+recursive-include plasmapy *.json
 recursive-include docs *
 recursive-include licenses *
 recursive-include cextern *

@@ -228,6 +228,7 @@ class Test_check_quantity_none_shall_pass:
     def test_none_to_zero(self):
         assert self.func(None) == 0*u.m
 
+
 # (speed, betafrac)
 non_relativistic_speed_examples = [
     (0 * u.m / u.s, 0.1),
@@ -241,7 +242,6 @@ relativistic_error_examples = [
     (u.m / u.s, 0.1, TypeError),
     (51513.35, 0.1, TypeError),
     (5 * u.m, 0.1, u.UnitConversionError),
-    (np.nan * u.m / u.s, 0.1, ValueError),
     (1.0 * c, 0.1, RelativityError),
     (1.1 * c, 0.1, RelativityError),
     (np.inf * u.cm / u.s, 0.1, RelativityError),

@@ -4,10 +4,7 @@ from astropy import units as u
 from typing import List, Union, Optional
 import re
 
-from plasmapy.utils import (
-    AtomicError,
-    InvalidParticleError,
-)
+from plasmapy.atomic.exceptions import AtomicError, InvalidParticleError
 
 from plasmapy.atomic.particle_class import Particle
 from plasmapy.atomic.particle_input import particle_input

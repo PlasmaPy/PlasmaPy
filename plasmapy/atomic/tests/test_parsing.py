@@ -1,10 +1,6 @@
 import pytest
 
-from ...utils import (
-    InvalidParticleError,
-    InvalidElementError,
-    AtomicWarning,
-)
+from plasmapy.atomic.exceptions import InvalidElementError, InvalidParticleError, AtomicWarning
 
 from ..special_particles import ParticleZoo
 

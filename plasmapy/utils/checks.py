@@ -322,14 +322,16 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
         raise u.UnitConversionError(typeerror_message)
 
     # Make sure that the quantity has valid numerical values
-
-
     if np.any(np.isnan(arg.value)) and not can_be_nan:
         raise ValueError(f"{valueerror_message} NaNs.")
     elif np.any(np.iscomplex(arg.value)) and not can_be_complex:
         raise ValueError(f"{valueerror_message} complex numbers.")
-    elif not can_be_negative and np.any(arg.value < 0):
-        raise ValueError(f"{valueerror_message} negative numbers.")
+    elif not can_be_negative:
+        # Allow NaNs through without raising a warning
+        with np.errstate(invalid='ignore'):
+            isneg = np.any(arg.value < 0)
+        if isneg:
+            raise ValueError(f"{valueerror_message} negative numbers.")
     elif not can_be_inf and np.any(np.isinf(arg.value)):
         raise ValueError(f"{valueerror_message} infs.")
 
@@ -458,9 +460,6 @@ def _check_relativistic(V, funcname, betafrac=0.05):
         V_over_c = (V / c).to_value(u.dimensionless_unscaled)
     except Exception:
         raise u.UnitConversionError(errmsg)
-
-    if np.any(np.isnan(V.value)):
-        raise ValueError(f"V includes NaNs in {funcname}")
 
     beta = np.max(np.abs((V_over_c)))
 

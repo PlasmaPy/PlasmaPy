@@ -6,20 +6,10 @@ from .checks import (check_quantity,
 from .exceptions import (PlasmaPyError,
                          PhysicsError,
                          RelativityError,
-                         AtomicError,
-                         MissingAtomicDataError,
-                         ChargeError,
-                         InvalidIonError,
-                         InvalidIsotopeError,
-                         InvalidElementError,
-                         InvalidParticleError,
-                         DataStandardError,
                          PlasmaPyWarning,
                          PhysicsWarning,
                          CouplingWarning,
-                         RelativityWarning,
-                         AtomicWarning,
-                         MissingAtomicDataWarning)
+                         RelativityWarning)
 
 from .pytest_helpers import (
     run_test,

@@ -7,7 +7,8 @@ from astropy.tests.helper import assert_quantity_allclose
 from warnings import simplefilter
 
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
-from plasmapy.utils.exceptions import PhysicsError, InvalidParticleError
+from plasmapy.utils.exceptions import PhysicsError
+from plasmapy.atomic.exceptions import InvalidParticleError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 from astropy.constants import c, m_p, m_e, e, mu0
 
@@ -125,8 +126,7 @@ def test_Alfven_speed():
         Alfven_speed(np.array([5, 6, 7]) * u.T,
                      np.array([5, 6]) * u.m ** -3)
 
-    with pytest.raises(ValueError):
-        Alfven_speed(B_nanarr, rho_arr)
+    assert np.isnan(Alfven_speed(B_nanarr, rho_arr)[1])
 
     with pytest.raises(ValueError):
         Alfven_speed(B_arr, rho_negarr)
@@ -152,11 +152,9 @@ def test_Alfven_speed():
     with pytest.raises(ValueError):
         Alfven_speed(0.001 * u.T, -5e19 * u.m ** -3, ion='p')
 
-    with pytest.raises(ValueError):
-        Alfven_speed(np.nan * u.T, 1 * u.m ** -3, ion='p')
+    assert np.isnan(Alfven_speed(np.nan * u.T, 1 * u.m ** -3, ion='p'))
 
-    with pytest.raises(ValueError):
-        Alfven_speed(1 * u.T, np.nan * u.m ** -3, ion='p')
+    assert np.isnan(Alfven_speed(1 * u.T, np.nan * u.m ** -3, ion='p'))
 
     with pytest.raises(RelativityError):
         assert Alfven_speed(np.inf * u.T, 1 * u.m ** -3,
@@ -242,11 +240,9 @@ def test_ion_sound_speed():
     with pytest.raises(u.UnitConversionError):
         ion_sound_speed(T_i=5 * u.A, T_e=0 * u.K)
 
-    with pytest.raises(ValueError):
-        ion_sound_speed(T_i=T_nanarr, T_e=0 * u.K)
+    assert np.isnan(ion_sound_speed(T_i=T_nanarr, T_e=0 * u.K)[1])
 
-    with pytest.raises(ValueError):
-        ion_sound_speed(T_e=T_nanarr, T_i=0 * u.K)
+    assert np.isnan(ion_sound_speed(T_e=T_nanarr, T_i=0 * u.K)[1])
 
     with pytest.raises(ValueError):
         ion_sound_speed(T_i=T_negarr, T_e=0 * u.K)

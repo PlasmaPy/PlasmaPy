@@ -6,9 +6,9 @@ from astropy import units as u
 from plasmapy.atomic.atomic import particle_mass, integer_charge
 from astropy.tests.helper import assert_quantity_allclose
 from plasmapy.utils.exceptions import (PhysicsError,
-                                       PhysicsWarning,
-                                       InvalidParticleError,
+                                       CouplingWarning,
                                        RelativityWarning)
+from plasmapy.atomic.exceptions import InvalidParticleError
 from plasmapy.physics.parameters import Hall_parameter
 from plasmapy.constants import m_p, m_e
 
@@ -207,8 +207,8 @@ class Test_classical_transport:
                                      Z=-1)
 
     def test_coulomb_log_warnings(self):
-        """should warn PhysicsWarning if coulomb log is near 1"""
-        with pytest.warns(PhysicsWarning):
+        """should warn CouplingWarning if coulomb log is near 1"""
+        with pytest.warns(CouplingWarning):
             ct2 = ClassicalTransport(T_e=self.T_e,
                                      n_e=self.n_e,
                                      T_i=self.T_i,
@@ -216,7 +216,7 @@ class Test_classical_transport:
                                      ion_particle=self.ion_particle,
                                      coulomb_log_ii=1.3)
 
-        with pytest.warns(PhysicsWarning):
+        with pytest.warns(CouplingWarning):
             ct2 = ClassicalTransport(T_e=self.T_e,
                                      n_e=self.n_e,
                                      T_i=self.T_i,
@@ -226,7 +226,7 @@ class Test_classical_transport:
 
     def test_coulomb_log_errors(self):
         """should raise PhysicsError if coulomb log is < 1"""
-        with pytest.warns(PhysicsWarning):
+        with pytest.raises(PhysicsError):
             ct2 = ClassicalTransport(T_e=self.T_e,
                                      n_e=self.n_e,
                                      T_i=self.T_i,
@@ -234,7 +234,7 @@ class Test_classical_transport:
                                      ion_particle=self.ion_particle,
                                      coulomb_log_ii=0.3)
 
-        with pytest.warns(PhysicsWarning):
+        with pytest.raises(PhysicsError):
             ct2 = ClassicalTransport(T_e=self.T_e,
                                      n_e=self.n_e,
                                      T_i=self.T_i,

@@ -7,9 +7,10 @@ elements for various electromagnetic wave frequencies.
 """
 # First, import some basics (and `PlasmaPy`!)
 import numpy as np
-import plasmapy as pp
 import matplotlib.pyplot as plt
 from astropy import units as u
+from plasmapy.physics.dielectric import (cold_plasma_permittivity_SDP,
+                                         cold_plasma_permittivity_LRP)
 
 #######################################################################
 # Let's define some parameters, such as the magnetic field magnitude,
@@ -22,10 +23,10 @@ f = np.logspace(start=6, stop=11.3, num=3001)  # 1 MHz to 200 GHz
 omega_RF = f * (2 * np.pi) * (u.rad / u.s)
 
 #######################################################################
-help(pp.physics.cold_plasma_permittivity_SDP)
+help(cold_plasma_permittivity_SDP)
 
 #######################################################################
-S, D, P = pp.physics.cold_plasma_permittivity_SDP(B, species, n, omega_RF)
+S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega_RF)
 
 #######################################################################
 # Filter positive and negative values, for display purposes only.
@@ -64,7 +65,7 @@ plt.tick_params(labelsize=14)
 
 #######################################################################
 # Cold Plasma tensor elements in the rotating basis
-L, R, P = pp.physics.cold_plasma_permittivity_LRP(B, species, n, omega_RF)
+L, R, P = cold_plasma_permittivity_LRP(B, species, n, omega_RF)
 
 #######################################################################
 L_pos = L * (L > 0)
