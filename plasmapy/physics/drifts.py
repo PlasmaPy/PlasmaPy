@@ -11,9 +11,9 @@ def ExB_drift(E: u.V/u.m, B: u.T) -> u.m/u.s:
     Parameters
     ----------
     E : ~astropy.units.Quantity
-        Electric field
+        Electric field vector
     B : ~astropy.units.Quantity
-        Magnetic field
+        Magnetic field vector
 
     Returns
     -------
@@ -49,13 +49,14 @@ def ExB_drift(E: u.V/u.m, B: u.T) -> u.m/u.s:
 
     """
 
-    # np.cross drops units right now, thus this hack
+    # np.cross drops units right now, thus this hack: see
+    # https://github.com/PlasmaPy/PlasmaPy/issues/59 
     cross = np.cross(E.si.value, B.si.value) * E.unit * B.unit
     return (cross / (B*B).sum(-1)).to(u.m/u.s)
 
 
 @utils.check_quantity()
-def force_drift(F: u.N, B: u.T, q: u.C):
+def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
     """
     Calculate the general force drift for a particle in a magnetic field.
 
