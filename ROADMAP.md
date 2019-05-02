@@ -51,19 +51,19 @@ ABC.
 
 ### Experimental support
 
-
 ### Plasma simulation capabilities
 
+### Turbulence analysis tools
 
-### Plasma parameters
+### Dispersion relation solver
 
-- Dimensionless numbers functionality
+### Plasma parameters and transport coefficients
 
-- Code and documentation infrastructure
-- Plasma parameter calculations
-- Transport coefficient functions
-   - Braginskii theory
-- Base PlasmaBlob class
+PlasmaPy currently has numerous functions and classes that compute
+plasma parameters and transport coefficients.  Plasma physics is a
+very broad discipline, so there remain many plasma parameter functions
+that have not yet been implemented.  We will continue to expand and
+refactor this functionality.
 
 
 ### Features to be included in Version 0.2 release
@@ -87,8 +87,3 @@ ABC.
 - Analytical plasma physics tools (with SymPy)
 
 
-### Future events
-
-- Code development meeting
-- Software Carpentry workshops at plasma physics conferences
-- Python in Plasma Physics conference?
