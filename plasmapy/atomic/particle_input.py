@@ -233,7 +233,11 @@ def particle_input(wrapped_function: Callable = None,
     def decorator(wrapped_function: Callable):
         wrapped_signature = inspect.signature(wrapped_function)
 
-        @functools.wraps(wrapped_function)
+        # add '__signature__' to methods that are copied from
+        # wrapped_function onto wrapper
+        assigned = list(functools.WRAPPER_ASSIGNMENTS)
+        assigned.append('__signature__')
+        @functools.wraps(wrapped_function, assigned=assigned)
         def wrapper(*args, **kwargs):
             annotations = wrapped_function.__annotations__
             bound_args = wrapped_signature.bind(*args, **kwargs)
@@ -384,6 +388,11 @@ def particle_input(wrapped_function: Callable = None,
                         new_kwargs[argname] = particle
 
             return wrapped_function(**new_kwargs)
+
+        # add '__signature__' if it does not exist
+        # - this will preserve parameter hints in IDE's
+        if not hasattr(wrapper, '__signature__'):
+            wrapper.__signature__ = inspect.signature(wrapped_function)
 
         return wrapper
 
