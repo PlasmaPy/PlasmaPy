@@ -1,6 +1,6 @@
 import functools
 import inspect
-from typing import Dict
+from typing import (Dict, Union)
 
 import numpy as np
 from astropy import units as u
@@ -17,7 +17,7 @@ __all__ = [
 ]
 
 
-def check_quantity(**validations: Dict[str, bool]):
+def check_quantity(**validations: Dict[str, Union[bool, u.Quantity]]):
     """
     Verify that the function's arguments have correct units.
 
@@ -125,7 +125,11 @@ def check_quantity(**validations: Dict[str, bool]):
         wrapped_sign = inspect.signature(f)
         fname = f.__name__
 
-        @functools.wraps(f)
+        # add '__signature__' to methods that are copied from
+        # f onto wrapper
+        assigned = list(functools.WRAPPER_ASSIGNMENTS)
+        assigned.append('__signature__')
+        @functools.wraps(f, assigned=assigned)
         def wrapper(*args, **kwargs):
             # combine args and kwargs into dictionary
             bound_args = wrapped_sign.bind(*args, **kwargs)
@@ -167,6 +171,12 @@ def check_quantity(**validations: Dict[str, bool]):
                 given_params_values[param_to_check] = validated_value
 
             return f(**given_params_values)
+
+        # add '__signature__' if it does not exist
+        # - this will preserve parameter hints in IDE's
+        if not hasattr(wrapper, '__signature__'):
+            wrapper.__signature__ = inspect.signature(f)
+
         return wrapper
     return decorator
 
@@ -392,11 +402,21 @@ def check_relativistic(func=None, betafrac=0.05):
 
     """
     def decorator(f):
+        # add '__signature__' to methods that are copied from
+        # f onto wrapper
+        assigned = list(functools.WRAPPER_ASSIGNMENTS)
+        assigned.append('__signature__')
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
             return_ = f(*args, **kwargs)
             _check_relativistic(return_, f.__name__, betafrac=betafrac)
             return return_
+
+        # add '__signature__' if it does not exist
+        # - this will preserve parameter hints in IDE's
+        if not hasattr(wrapper, '__signature__'):
+            wrapper.__signature__ = inspect.signature(f)
+
         return wrapper
     if func:
         return decorator(func)
