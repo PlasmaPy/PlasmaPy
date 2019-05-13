@@ -9,6 +9,7 @@ basics.
 """
 
 from plasmapy.diagnostics.langmuir import Characteristic, swept_probe_analysis
+import matplotlib.pyplot as plt
 import astropy.units as u
 import numpy as np
 import os
