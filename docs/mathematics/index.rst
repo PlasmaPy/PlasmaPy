@@ -1,5 +1,3 @@
-.. py:module:: plasmapy.mathematics
-
 .. _mathematics:
 
 ************************************
