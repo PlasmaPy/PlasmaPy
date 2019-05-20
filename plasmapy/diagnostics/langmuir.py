@@ -367,7 +367,8 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas_argument,
             ax1.axvline(x=V_F.value, color='k', linestyle='--')
             ax1.axhline(y=I_is.value, color='r', linestyle='--')
             ax1.plot(ion_current.bias, ion_current.current, c='y', label="Ion current")
-            ax1.plot(electron_current.bias, electron_current.current, c='c', label="Electron current")
+            ax1.plot(electron_current.bias, electron_current.current,
+                     c='c', label="Electron current")
             tot_current = ion_current + electron_current
             ax1.plot(tot_current.bias, tot_current.current, c='g')
 
@@ -375,9 +376,10 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas_argument,
             ax2.axhline(y=I_es.value, color='grey', linestyle='--')
             ax2.axvline(x=V_F.value, color='k', linestyle='--')
             ax2.axhline(y=np.abs(I_is.value), color='r', linestyle='--')
-            ax2.plot(ion_current.bias, np.abs(ion_current.current), c='y', label="Ion current")
-            ax2.plot(electron_current.bias, np.abs(electron_current.current), label="Electron current",
-                     c='c')
+            ax2.plot(ion_current.bias, np.abs(ion_current.current),
+                     label="Ion current", c='y')
+            ax2.plot(electron_current.bias, np.abs(electron_current.current),
+                     label="Electron current", c='c')
             ax2.plot(tot_current.bias, np.abs(tot_current.current), c='g')
             ax2.set_yscale("log", nonposy='clip')
             ax1.legend(loc='best')
