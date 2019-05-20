@@ -9,9 +9,11 @@ basics.
 """
 
 from plasmapy.diagnostics.langmuir import Characteristic, swept_probe_analysis
+import matplotlib.pyplot as plt
 import astropy.units as u
 import numpy as np
 import os
+from pprint import pprint
 
 ######################################################
 # The first characteristic we analyze is a simple single-probe measurement in
@@ -25,8 +27,8 @@ path = os.path.join("langmuir_samples", "Beckers2017.npy")
 bias, current = np.load(path)
 
 # Create the Characteristic object, taking into account the correct units
-characteristic = Characteristic(np.array(bias) * u.V,
-                                np.array(current)*1e3 * u.mA)
+characteristic = Characteristic(u.Quantity(bias,  u.V),
+                                u.Quantity(current, u.A))
 
 # Calculate the cylindrical probe surface area
 probe_length = 1.145 * u.mm
@@ -38,7 +40,7 @@ probe_area = (probe_length * np.pi * probe_diameter +
 # Now we can actually perform the analysis. Since the plasma is in Helium an
 # ion mass number of 4 is entered. The results are visualized and the obtained
 # EEDF is also shown.
-print(swept_probe_analysis(characteristic,
+pprint(swept_probe_analysis(characteristic,
                            probe_area, 'He-4+',
                            visualize=True,
                            plot_EEDF=True))
@@ -55,8 +57,8 @@ print(swept_probe_analysis(characteristic,
 # Load the data from a file and create the Characteristic object
 path = os.path.join("langmuir_samples", "Pace2015.npy")
 bias, current = np.load(path)
-characteristic = Characteristic(np.array(bias) * u.V,
-                                np.array(current) * 1e3 * u.mA)
+characteristic = Characteristic(u.Quantity(bias, u.V),
+                                u.Quantity(current, u.A))
 
 ######################################################
 # Initially the electrons are assumed to be Maxwellian. To check this the fit
@@ -71,7 +73,7 @@ swept_probe_analysis(characteristic,
 # It can be seen that this plasma is slightly bi-Maxwellian, as there are two
 # distinct slopes in the exponential section. The analysis is now performed
 # with bimaxwellian set to True, which yields improved results.
-print(swept_probe_analysis(characteristic,
+pprint(swept_probe_analysis(characteristic,
                            0.738 * u.cm**2,
                            'Ar-40 1+',
                            bimaxwellian=True,
@@ -93,8 +95,8 @@ print(swept_probe_analysis(characteristic,
 # Import probe data and calculate probe surface area.
 path = os.path.join("langmuir_samples", "Beckers2017b.npy")
 bias, current = np.load(path)
-characteristic = Characteristic(np.array(bias) * u.V,
-                                np.array(current) * 1e3 * u.mA)
+characteristic = Characteristic(u.Quantity(bias, u.V),
+                                u.Quantity(current, u.A))
 probe_length = 1.145 * u.mm
 probe_diameter = 1.57 * u.mm
 probe_area = (probe_length * np.pi * probe_diameter +
@@ -103,7 +105,7 @@ probe_area = (probe_length * np.pi * probe_diameter +
 ######################################################
 # `plot_electron_fit` is set to True to check the bi-Maxwellian properties.
 # The fit converges nicely to the two slopes of the electron growth region.
-print(swept_probe_analysis(characteristic,
+pprint(swept_probe_analysis(characteristic,
                            probe_area,
                            'He-4+',
                            bimaxwellian=True,

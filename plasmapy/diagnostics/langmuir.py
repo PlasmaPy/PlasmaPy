@@ -350,13 +350,15 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas_argument,
             fig, (ax1, ax2) = plt.subplots(2, 1)
             ax1.plot(probe_characteristic.bias,
                      probe_characteristic.current,
-                     marker='.', color='k', linestyle='')
+                     marker='.', color='k', linestyle='',
+                     label="Probe current")
             ax1.set_title("Probe characteristic")
             ax2.set_ylim(probe_characteristic.get_padded_limit(0.1))
 
             ax2.plot(probe_characteristic.bias,
                      np.abs(probe_characteristic.current),
-                     marker='.', color='k', linestyle='')
+                     marker='.', color='k', linestyle='',
+                     label="Probe current")
             ax2.set_title("Logarithmic")
             ax2.set_ylim(probe_characteristic.get_padded_limit(0.1, log=True))
 
@@ -364,8 +366,9 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas_argument,
             ax1.axhline(y=I_es.value, color='grey', linestyle='--')
             ax1.axvline(x=V_F.value, color='k', linestyle='--')
             ax1.axhline(y=I_is.value, color='r', linestyle='--')
-            ax1.plot(ion_current.bias, ion_current.current, c='y')
-            ax1.plot(electron_current.bias, electron_current.current, c='c')
+            ax1.plot(ion_current.bias, ion_current.current, c='y', label="Ion current")
+            ax1.plot(electron_current.bias, electron_current.current,
+                     c='c', label="Electron current")
             tot_current = ion_current + electron_current
             ax1.plot(tot_current.bias, tot_current.current, c='g')
 
@@ -373,11 +376,14 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas_argument,
             ax2.axhline(y=I_es.value, color='grey', linestyle='--')
             ax2.axvline(x=V_F.value, color='k', linestyle='--')
             ax2.axhline(y=np.abs(I_is.value), color='r', linestyle='--')
-            ax2.plot(ion_current.bias, np.abs(ion_current.current), c='y')
+            ax2.plot(ion_current.bias, np.abs(ion_current.current),
+                     label="Ion current", c='y')
             ax2.plot(electron_current.bias, np.abs(electron_current.current),
-                     c='c')
+                     label="Electron current", c='c')
             ax2.plot(tot_current.bias, np.abs(tot_current.current), c='g')
             ax2.set_yscale("log", nonposy='clip')
+            ax1.legend(loc='best')
+            ax2.legend(loc='best')
 
             fig.tight_layout()
 
@@ -869,7 +875,8 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
             plt.scatter(exponential_section.bias.to(u.V),
                         np.log(exponential_section.current.to(u.A).value),
                         color='k',
-                        marker='.')
+                        marker='.',
+                        label="Exponential section")
 
             if bimaxwellian:
                 plt.scatter(x0, y0, marker='o', c='g')
@@ -878,15 +885,19 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
                              exponential_section.bias.to(u.V).value,
                              fit[0], fit[1], fit[2] + fit[3]),
                          c='g',
-                         linestyle='--')
+                         linestyle='--',
+                         label="Bimaxwellian exponential section fit",
+                         )
 
             plt.plot(exponential_section.bias.to(u.V),
                      fit_func(exponential_section.bias.to(u.V).value,
                      *fit),
+                     label="Exponential fit",
                      c='g')
 
             plt.ylabel("Logarithmic current")
             plt.title("Exponential fit")
+            plt.legend(loc='best')
             plt.tight_layout()
 
     k = [T_e]
@@ -955,9 +966,12 @@ def extrapolate_electron_current(probe_characteristic, fit,
             plt.figure()
             plt.scatter(probe_characteristic.bias,
                         probe_characteristic.current.to(u.mA), marker='.',
+                        label="Probe characteristic",
                         c='k')
             plt.plot(electron_characteristic.bias,
-                     electron_characteristic.current.to(u.mA))
+                     electron_characteristic.current.to(u.mA),
+                     label="Estimated electron characteristic")
+            plt.legend()
 
     return electron_characteristic
 
@@ -1221,5 +1235,6 @@ def get_EEDF(probe_characteristic, visualize=False):
             plt.title("Electron Energy Distribution Function")
             plt.xlabel("Energy (eV)")
             plt.ylabel("Probability")
+            plt.grid()
 
     return energy, probability
