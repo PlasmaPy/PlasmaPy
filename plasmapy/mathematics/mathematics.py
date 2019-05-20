@@ -8,7 +8,7 @@ try:
 except (ImportError, ModuleNotFoundError) as e:
     from plasmapy.optional_deps import mpmath_import_error
     raise mpmath_import_error from e
-from scipy.special import wofz as Faddeeva_function
+import scipy.special
 from typing import Union
 
 
@@ -91,7 +91,8 @@ def plasma_dispersion_func(zeta: Union[complex, int, float, np.ndarray, u.Quanti
         raise ValueError("The argument to plasma_dispersion_function is "
                          "not finite.")
 
-    Z = 1j * np.sqrt(np.pi) * Faddeeva_function(zeta)
+    # wofz is the so-called Faddeeva function
+    Z = 1j * np.sqrt(np.pi) * scipy.special.wofz(zeta)
 
     return Z
 
