@@ -17,6 +17,12 @@ grouped by topic, with sub-namespaces for larger sub-packages.
 
 We thus have:
 
+.. NOTE
+   As PlasmaPy is currently in very early stages of development, APIs for most
+   functionality should be considered unstable. Specifically, `plasmapy.physics`
+   may move to a subset of `plasmapy.theory`.
+   
+
 .. toctree::
    :maxdepth: 1
 
