@@ -33,13 +33,17 @@ and have a [Code of
 Conduct](http://plasmapy.readthedocs.io/en/master/CODE_OF_CONDUCT.html).
 New contributors are very welcome!
 
+# Feedback and communicataion
+
 If you have any questions, the quickest way to get a response is to ask
 on our
 [Matrix](https://riot.im/app/#/room/#plasmapy:matrix.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
-channel.  For a slower response, you may also contact Nick Murphy at
-<namurphy@cfa.harvard.edu> and Drew Leonard at
-<andy.j.leonard@gmail.com>.  You may also [sign up for PlasmaPy's email
+channel. 
+
+We also have a [sign up for PlasmaPy's email
 list](https://groups.google.com/forum/#!forum/plasmapy).
+
+We have a suggestion box if you would like to (optionally anonymously) suggest a feature/topic of discussion. These will be reposted on the mailing list
 
 We also have approximately bi-weekly online meetings at [Jitsi](https://meet.jit.si/plasmapy), for which we have a [calendar here](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) and [written meeting notes here](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing). Come discuss plasma software with us!
 
