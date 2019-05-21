@@ -15,13 +15,12 @@ single `plasmapy.physics` namespace for some of the most common
 functions. The actual functions are located in modules, subjectively
 grouped by topic, with sub-namespaces for larger sub-packages.
 
-We thus have:
-
 .. note::
    As PlasmaPy is currently in very early stages of development, APIs for most
    functionality should be considered unstable. Specifically, `plasmapy.physics`
    may move to a subset of `plasmapy.theory`.
-   
+
+We thus have:
 
 .. toctree::
    :maxdepth: 1
