@@ -6,7 +6,7 @@ Mathematics (`plasmapy.mathematics`)
 
 `plasmapy.mathematics` gathers general mathematical formulae used elsewhere in the code.
 
-.. NOTE
+.. note::
    As PlasmaPy is currently in very early stages of development, APIs for most
    functionality should be considered unstable. Specifically, `plasmapy.mathematics`
    may move to a subset of `plasmapy.theory`.
