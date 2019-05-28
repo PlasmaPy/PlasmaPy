@@ -47,9 +47,11 @@ channel.
 We also have a [mailing list](https://groups.google.com/forum/#!forum/plasmapy)
 that serves as a less volatile discussion forum.
 
-## [Suggestion box](TODO_LINK)
+## [Suggestion box](https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link)
 
-We have [a suggestion box](TODO_LINK) if you would like to (optionally anonymously) suggest
+We have 
+[a suggestion box](https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link)
+if you would like to (optionally anonymously) suggest
 a feature/topic for consideration. These will be reposted on the mailing list
 or directly in GitHub issues, as appropriate, for further discussion.
 
