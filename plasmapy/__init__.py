@@ -54,6 +54,7 @@ __name__ = "plasmapy"
 if sys.version_info < tuple((int(val) for val in "3.6".split('.'))):
     raise Exception("plasmapy does not support Python < {}".format(3.6))
 
+
 def online_help(query):
     """
     Search the online PlasmaPy documentation for the given query from plasmapy.org
@@ -77,22 +78,8 @@ def online_help(query):
 
     webbrowser.open(url)
 
-__citation__ = """@misc{plasmapy_community_2018_1238132,
-  author       = {{PlasmaPy Community} and
-                  Murphy, Nicholas A. and
-                  Leonard, Andrew J. and
-                  Sta\'nczak, Dominik and
-                  Kozlowski, Pawel M. and
-                  Langendorf, Samuel J. and
-                  Haggerty, Colby C. and
-                  Beckers, Jasper P. and
-                  Mumford, Stuart J. and
-                  Parashar, Tulasi N. and
-                  Huang, Yi-Min},
-  title        = {{PlasmaPy: an open source community-developed 
-                   Python package for plasma physics}},
-  month        = apr,
-  year         = 2018,
-  doi          = {10.5281/zenodo.1238132},
-  url          = {https://doi.org/10.5281/zenodo.1238132}
-}"""
+
+__citation__ = [
+    "https://doi.org/10.5281/zenodo.1238132",
+    "https://doi.org/10.5281/zenodo.3235817",
+]
