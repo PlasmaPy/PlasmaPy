@@ -13,24 +13,32 @@ including bug fixes and changes to the application programming interface
 Version 0.2.0
 -------------
 
-PlasmaPy version 0.2.0 is the second minor development release.
+Version 0.2.0 is the second development release of PlasmaPy.
 
 .. _change-log-0.2.0-new:
 
 New Features
 ~~~~~~~~~~~~
 
+- Implement machinery for a ``Plasma`` class factory based on
+  `PLEP 6 <http://doi.org/10.5281/zenodo.1460977>`__
+- Create an openPMD ``Plasma`` subclass
+- Create classes to represent ionization state distributions for one
+  or more elements or isotopes.
+
 .. _change-log-0.2.0-bugfix:
 
 Bug Fixes
 ~~~~~~~~~
+
+- Improve handling of NumPy arrays for plasma parameter and transport functions.
 
 .. _change-log-0.2.0-api:
 
 Changes to API
 ~~~~~~~~~~~~~~
 
-- Moved `~plasmapy.transport` from `~plasmapy.physics` to its own
+- Move `~plasmapy.transport` from `~plasmapy.physics` to its own
   subpackage.
 
 .. _change-log-0.1.1:
