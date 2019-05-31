@@ -1,4 +1,5 @@
 .. _plasmapy-communication:
+
 Feedback and communication
 ==========================
 
