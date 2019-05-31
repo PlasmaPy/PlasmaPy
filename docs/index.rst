@@ -25,6 +25,7 @@ Getting Started
    :maxdepth: 1
 
    install
+   COMMUNICATION
    CONTRIBUTING
    CODE_OF_CONDUCT
    about/citation

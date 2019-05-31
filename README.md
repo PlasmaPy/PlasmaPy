@@ -33,17 +33,37 @@ and have a [Code of
 Conduct](http://plasmapy.readthedocs.io/en/master/CODE_OF_CONDUCT.html).
 New contributors are very welcome!
 
+# Feedback and communication
+
+## [Matrix chat](https://riot.im/app/#/room/#plasmapy:matrix.org)
+
 If you have any questions, the quickest way to get a response is to ask
 on our
 [Matrix](https://riot.im/app/#/room/#plasmapy:matrix.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
-channel.  For a slower response, you may also contact Nick Murphy at
-<namurphy@cfa.harvard.edu> and Drew Leonard at
-<andy.j.leonard@gmail.com>.  You may also [sign up for PlasmaPy's email
-list](https://groups.google.com/forum/#!forum/plasmapy).
+channel. 
 
-We also have approximately bi-weekly online meetings at [Jitsi](https://meet.jit.si/plasmapy), for which we have a [calendar here](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) and [written meeting notes here](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing). Come discuss plasma software with us!
+## [Mailing list](https://groups.google.com/forum/#!forum/plasmapy)
 
-## Installation
+We also have a [mailing list](https://groups.google.com/forum/#!forum/plasmapy)
+that serves as a less volatile discussion forum.
+
+## [Suggestion box](https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link)
+
+We have 
+[a suggestion box](https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link)
+if you would like to (optionally anonymously) suggest
+a feature/topic for consideration. These will be reposted on the mailing list
+or directly in GitHub issues, as appropriate, for further discussion.
+
+## [Biweekly](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) [video calls](https://meet.jit.si/plasmapy)
+
+We also have approximately bi-weekly online meetings at
+[Jitsi](https://meet.jit.si/plasmapy), for which we have a 
+[calendar here](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ)
+and [written meeting notes here](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing).
+Come discuss plasma software with us!
+
+# Installation
 
 You can get PlasmaPy from pip via `pip install plasmapy`. To contribute
 to the package, check out [our instructions on installing PlasmaPy from
