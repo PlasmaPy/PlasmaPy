@@ -170,7 +170,7 @@ setup(name=PACKAGENAME,
                 'instability', 'modeling'],
       classifiers=[
           'Intended Audience :: Science/Research',
-          'License :: OSI Approved :: BSD-2-Clause-Patent',
+          'License :: OSI Approved :: BSD License',
           'Operating System :: OS Independent',
           'Programming Language :: C',
           'Programming Language :: Cython',
