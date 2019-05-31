@@ -24,6 +24,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 
 * `Jasper Beckers <https://github.com/jasperbeckers>`__
 * `Manas Bedmutha <https://github.com/manasbedmutha98>`__
+* `Justin Bergeron <https://github.com/Justin-Bergeron>`__
 * `Ludovico Bessi <https://github.com/ludoro>`__
 * `BH4 <https://github.com/BH4>`__
 * `Sean Carroll <https://github.com/seanwilliamcarroll>`__
@@ -32,6 +33,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `cclauss <https://github.com/cclauss>`__
 * `Jacob Deal <https://github.com/Jac0bDeal>`__
 * `Leah Einhorn <https://github.com/leahein>`__
+* `Erik Everson <https://github.com/rocco8773>`__
 * `Thomas Fan <https://github.com/thomasjpfan>`__
 * `Samaiyah I. Farid <https://github.com/samaiyahfarid>`__
 * `Michael Fischer <https://github.com/mj-fischer>`__
@@ -64,11 +66,13 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Chengcai Shen <https://github.com/ionizationcalc>`__ (`0000-0002-9258-4490 <https://orcid.org/0000-0002-9258-4490>`__)
 * `Dawa Nurbu Sherpa <https://github.com/nurbu5>`__
 * `Ankit Singh <https://github.com/Griffintaur>`__
+* `Brigitta Sipocz <http://github.com/bsipocz>`__
 * `David Stansby <https://github.com/dstansby>`__ (`0000-0002-1365-1908 <https://orcid.org/0000-0002-1365-1908>`__)
 * `Dominik Stańczak <https://github.com/StanczakDominik>`__ (`0000-0001-6291-8843 <https://orcid.org/0000-0001-6291-8843>`__)
 * `Antoine Tavant <https://github.com/antoinelpp>`__
 * `Thomas Ulrich <https://github.com/Elfhelm>`__
 * `Sixue Xu <https://github.com/hzxusx>`__
+* `Carol Zhang <https://github.com/carolyz>`__
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy
