@@ -13,7 +13,9 @@ including bug fixes and changes to the application programming interface
 Version 0.2.0
 -------------
 
-Version 0.2.0 is the second development release of PlasmaPy.
+Version 0.2.0 is the second development release of PlasmaPy. Alongside a few
+new features, it brings plentiful refactoring, documentation and back stage
+improvements.
 
 .. _change-log-0.2.0-new:
 
@@ -25,6 +27,8 @@ New Features
 - Create an openPMD ``Plasma`` subclass
 - Create classes to represent ionization state distributions for one
   or more elements or isotopes.
+- Add basic particle drifts to `plasmapy.physics.drifts`
+- Turn most dependencies into optional, subpackage-specific ones
 
 .. _change-log-0.2.0-bugfix:
 
@@ -32,6 +36,8 @@ Bug Fixes
 ~~~~~~~~~
 
 - Improve handling of NumPy arrays for plasma parameter and transport functions.
+- Vendor the `roman` package so as to allow installation via Conda
+- Decrease strictness of `check_quantity` to allow `nan` and `inf` by default
 
 .. _change-log-0.2.0-api:
 
