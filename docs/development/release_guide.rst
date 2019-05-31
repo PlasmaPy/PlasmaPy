@@ -72,9 +72,12 @@ Release
 
 * Make the release on conda-forge
 
-
 Post-release
 ------------
+
+* Update ``docs/about/change_log.rst`` (Add a new heading for the next release)
+
+* Update ``setup.cfg`` (increment version and add ``dev`` suffix)
 
 * Mint a release on Zenodo and get a digital object identifier (DOI)
 
@@ -84,4 +87,3 @@ Post-release
 
 * Send release announcement to mailing list
 
-* Update ``CHANGELOG.rst`` (Add a new heading for the next release)
