@@ -34,7 +34,7 @@ def _element_obj_hook(obj):
 #    json.dump(_Elements, f, default=plasma_default, indent=2)
 
 
-_Elements = json.loads(pkgutil.get_data('plasmapy', 'atomic/elements.json'),
+_Elements = json.loads(pkgutil.get_data('plasmapy', 'data/elements.json'),
                        object_hook=_element_obj_hook)
 
 
