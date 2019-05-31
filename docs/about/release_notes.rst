@@ -22,8 +22,52 @@ fix release.
 Version 0.2.0
 -------------
 
-The `~plasmapy.transport` subpackage was moved outside of
-`~plasmapy.physics`.
+Version 0.2.0 is the second minor release of PlasmaPy.
+It mostly includes groundwork for future expansion.
+Among such changes, the ``Plasma`` abstract base class
+based on `PLEP 6 <http://doi.org/10.5281/zenodo.1460977>`__
+, with an example class implementing the `openPMD <https://www.openpmd.org/#/start>__ standard`, is the most notable.
+
+In terms of new user-facing functionality, ``plasmapy.atomic``
+now has classes representing ionization state distributions
+for multiple elements or isotopes, and ``plasmapy.physics``
+has a new ``drifts`` module which aims to, in the future,
+provide a comprehensive source of particle drifts in plasmas.
+
+In terms of technical fixes and improvements, most dependencies
+were turned optional to ease installation in extreme conditions,
+handling of NumPy arrays for functions in ``physics`` was vastly
+improved, and the ``roman`` package was vendored to allow PlasmaPy
+installation via ``conda-feedstock`` (coming soon!).
+
+The people who have contributed to this release include
+(`(!)` denoting first-time contributors):
+
+* Dominik Stańczak
+* Nick Murphy
+* Ritiek Malhotra
+* Samuel Langendorf
+* Pawel Kozlowski
+* David Stansby
+* (!) Michael Fischer
+* (!) Ankit Singh
+* (!) Thomas Ulrich
+* (!) lgoenner
+* (!) BH4
+* (!) Brigitta Sipocz
+* (!) Carol Zhang
+* (!) Chengcai Shen
+* Drew Leonard
+* (!) Francisco Silva Pavon
+* (!) Jacob Deal
+* Julien Hillairet
+* (!) Justin Bergeron
+* (!) Samaiyah I. Farid
+* (!) Sean Chambers
+* cclauss
+* (!) hzxusx
+* (!) Erik Everson
+* (!) savcheva
 
 Version 0.1.1
 -------------
@@ -130,13 +174,6 @@ how to contribute.
 This release includes over 1800 commits and 178 merged pull requests,
 with contributions from 35 different people to the code base or the
 vision statement.
-
-PlasmaPy's Coordinating Committee includes:
-
-* Drew Leonard
-* Nick Murphy
-* Tulasi Parashar
-* Dominik Stańczak
 
 The people who have contributed to this release include:
 
