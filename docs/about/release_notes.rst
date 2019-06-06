@@ -26,7 +26,7 @@ Version 0.2.0 is the second minor release of PlasmaPy.
 It mostly includes groundwork for future expansion.
 Among such changes, the ``Plasma`` abstract base class
 based on `PLEP 6 <http://doi.org/10.5281/zenodo.1460977>`__
-, with an example class implementing the `openPMD <https://www.openpmd.org/#/start>__ standard`, is the most notable.
+, with an example class implementing the `openPMD <https://www.openpmd.org/#/start>_ standard`, is the most notable.
 
 In terms of new user-facing functionality, ``plasmapy.atomic``
 now has classes representing ionization state distributions
