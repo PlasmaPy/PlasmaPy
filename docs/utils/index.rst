@@ -27,6 +27,7 @@ means:
 Reference/API
 =============
 
+.. automodapi:: plasmapy.utils.decorators
 .. automodapi:: plasmapy.utils.checks
 .. automodapi:: plasmapy.utils.exceptions
 .. automodapi:: plasmapy.utils.pytest_helpers

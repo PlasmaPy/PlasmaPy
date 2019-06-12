@@ -1,8 +1,16 @@
+"""
+Package of functions and classes used to develop clean, readable, and informative
+code.
+"""
+from . import decorators
+from . import roman
+
 from .checks import (check_quantity,
                      check_relativistic,
                      _check_quantity,
                      _check_relativistic)
 
+from .decorators import preserve_signature
 from .exceptions import (PlasmaPyError,
                          PhysicsError,
                          RelativityError,
@@ -24,5 +32,3 @@ from .pytest_helpers import (
     MissingWarningError,
     assert_can_handle_nparray,
 )
-
-from . import roman

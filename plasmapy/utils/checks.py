@@ -1,20 +1,20 @@
+"""
+Decorator for checking input/output arguments of functions.
+"""
+__all__ = ["check_quantity", "_check_quantity", "check_relativistic"]
+
 import functools
 import inspect
-from typing import (Dict, Union)
-
 import numpy as np
+import warnings
+
 from astropy import units as u
 from astropy.units import UnitsWarning
 from plasmapy.constants import c
-import warnings
+from plasmapy.utils.decorators import preserve_signature
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 from textwrap import dedent
-
-__all__ = [
-    "check_quantity",
-    "_check_quantity",
-    "check_relativistic",
-]
+from typing import (Dict, Union)
 
 
 def check_quantity(**validations: Dict[str, Union[bool, u.Quantity]]):
@@ -125,11 +125,8 @@ def check_quantity(**validations: Dict[str, Union[bool, u.Quantity]]):
         wrapped_sign = inspect.signature(f)
         fname = f.__name__
 
-        # add '__signature__' to methods that are copied from
-        # f onto wrapper
-        assigned = list(functools.WRAPPER_ASSIGNMENTS)
-        assigned.append('__signature__')
-        @functools.wraps(f, assigned=assigned)
+        @preserve_signature
+        @functools.wraps(f)
         def wrapper(*args, **kwargs):
             # combine args and kwargs into dictionary
             bound_args = wrapped_sign.bind(*args, **kwargs)
@@ -171,11 +168,6 @@ def check_quantity(**validations: Dict[str, Union[bool, u.Quantity]]):
                 given_params_values[param_to_check] = validated_value
 
             return f(**given_params_values)
-
-        # add '__signature__' if it does not exist
-        # - this will preserve parameter hints in IDE's
-        if not hasattr(wrapper, '__signature__'):
-            wrapper.__signature__ = inspect.signature(f)
 
         return wrapper
     return decorator
@@ -402,20 +394,13 @@ def check_relativistic(func=None, betafrac=0.05):
 
     """
     def decorator(f):
-        # add '__signature__' to methods that are copied from
-        # f onto wrapper
-        assigned = list(functools.WRAPPER_ASSIGNMENTS)
-        assigned.append('__signature__')
+
+        @preserve_signature
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
             return_ = f(*args, **kwargs)
             _check_relativistic(return_, f.__name__, betafrac=betafrac)
             return return_
-
-        # add '__signature__' if it does not exist
-        # - this will preserve parameter hints in IDE's
-        if not hasattr(wrapper, '__signature__'):
-            wrapper.__signature__ = inspect.signature(f)
 
         return wrapper
     if func:
