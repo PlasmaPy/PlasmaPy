@@ -30,10 +30,13 @@ matrix:
 
     include:
 
-        - env: PYTHON_VERSION=3.6 SETUP_CMD='test --coverage'
+        - env: PYTHON_VERSION=3.6 
           stage: Generic tests
 
-        - env: PYTHON_VERSION=3.7
+        - env: PYTHON_VERSION=3.7 SETUP_CMD='test --coverage'
+          stage: Generic tests
+          
+        - env: PYTHON_VERSION=3.8
           stage: Generic tests
 
         - env: ASTROPY_VERSION='dev'
