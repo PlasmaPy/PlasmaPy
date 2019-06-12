@@ -1,20 +1,20 @@
+"""
+Decorator for checking input/output arguments of functions.
+"""
+__all__ = ["check_quantity", "_check_quantity", "check_relativistic",]
+
 import functools
 import inspect
-from typing import (Dict, Union)
-
 import numpy as np
+import warnings
+
 from astropy import units as u
 from astropy.units import UnitsWarning
 from plasmapy.constants import c
-import warnings
+from plasmapy.utils.decorators import preserve_signature
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 from textwrap import dedent
-
-__all__ = [
-    "check_quantity",
-    "_check_quantity",
-    "check_relativistic",
-]
+from typing import (Dict, Union)
 
 
 def check_quantity(**validations: Dict[str, Union[bool, u.Quantity]]):
