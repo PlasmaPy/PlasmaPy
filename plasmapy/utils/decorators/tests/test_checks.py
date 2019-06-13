@@ -1,17 +1,20 @@
 """Tests for methods relating to quantities."""
-
 import numpy as np
-from astropy import units as u
 import pytest
 
-from plasmapy.utils.exceptions import RelativityWarning, RelativityError
+from astropy import units as u
 from plasmapy.constants import c
 from plasmapy.utils.decorators.checks import (
-    _check_quantity, _check_relativistic, check_relativistic,
-    check_quantity
+    _check_quantity,
+    _check_relativistic,
+    check_quantity,
+    check_relativistic,
 )
+from plasmapy.utils.exceptions import (RelativityWarning, RelativityError)
 
-
+# ----------------------------------------------------------------------------------------
+# Test Decorator `check_quantity` (& function `_check_quantity`
+# ----------------------------------------------------------------------------------------
 # (value, units, error)
 quantity_error_examples_default = [
     # exceptions associated with the units keyword
@@ -229,6 +232,9 @@ class Test_check_quantity_none_shall_pass:
         assert self.func(None) == 0*u.m
 
 
+# ----------------------------------------------------------------------------------------
+# Test Decorator `check_relativistic` (& function `_check_relativistic`
+# ----------------------------------------------------------------------------------------
 # (speed, betafrac)
 non_relativistic_speed_examples = [
     (0 * u.m / u.s, 0.1),
