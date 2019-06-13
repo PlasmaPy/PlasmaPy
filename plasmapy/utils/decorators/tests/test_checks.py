@@ -217,7 +217,7 @@ def test_check_quantity_decorator_two_args_one_kwargs_not_default():
         func(1 * u.m, 1 * u.s, z=np.inf * u.eV)
 
 
-class Test_check_quantity_none_shall_pass:
+class TestCheckQuantityNoneShallPass:
     @check_quantity(x={"units": u.m, "none_shall_pass": True})
     def func(self, x=None):
         if x is None:
