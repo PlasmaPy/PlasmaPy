@@ -6,7 +6,7 @@ import pytest
 
 from ...utils.exceptions import RelativityWarning, RelativityError
 from ...constants import c
-from ..checks import (
+from plasmapy.utils.decorators.checks import (
     _check_quantity, _check_relativistic, check_relativistic,
     check_quantity
 )

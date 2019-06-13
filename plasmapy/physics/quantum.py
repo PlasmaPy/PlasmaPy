@@ -14,7 +14,7 @@ except (ImportError, ModuleNotFoundError) as e:
 
 # plasmapy modules
 from plasmapy import atomic, utils, mathematics
-from plasmapy.utils.checks import check_quantity
+from plasmapy.utils.decorators.checks import check_quantity
 from plasmapy.physics.relativity import Lorentz_factor
 
 from ..constants import c, h, hbar, m_e, eps0, e, k_B
