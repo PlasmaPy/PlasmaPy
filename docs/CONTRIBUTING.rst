@@ -70,6 +70,17 @@ chatroom <https://riot.im/app/#/room/#plasmapy:matrix.org>`_.
 For actual guidelines for working on PlasmaPy, please see our
 :ref:`plasmapy-development-guide`.
 
+Towncrier changelog entries
+---------------------------
+
+Every pull request should include a changelog entry. Please see
+`changelog/README.rst` for instructions.
+
+To summarize, put a file like ``<PULL REQUEST>.<TYPE>.rst``, where ``<PULL
+REQUEST>`` is a pull request number, and ``<TYPE>`` is one of ``breaking``,
+``feature``, ``bugfix``, ``doc``, ``removal``, ``trivial``. If unsure, ask
+a maintainer.
+
 Footnotes
 ^^^^^^^^^
 
