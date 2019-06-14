@@ -1,0 +1,2 @@
+Add `Towncrier <https://github.com/hawkowl/towncrier>`_ automated changelog creation support
+
