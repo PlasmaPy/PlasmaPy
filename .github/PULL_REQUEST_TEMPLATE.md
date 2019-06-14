@@ -8,6 +8,8 @@ Here are a few things to keep in mind when making a pull request (PR).
 * Please take care to write helpful commit messages: https://chris.beams.io/posts/git-commit/
 * As a PR nears completion, fellow developers will likely suggest changes
   to be made before the PR is merged.
+* Every pull request should include a changelog entry. Please see
+  `changelog/README.rst` for instructions.
 * PlasmaPy follows the PEP 8 style guide: https://www.python.org/dev/peps/pep-0008
 * Please double check that a new PR will not duplicate an existing PR.
 * If this PR will solve an issue tracked by GitHub, please add a phrase like
