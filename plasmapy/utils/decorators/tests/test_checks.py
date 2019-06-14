@@ -1,4 +1,7 @@
-"""Tests for methods relating to quantities."""
+"""
+Tests for 'check` decorators (i.e. decorators that only check values but do not
+change them).
+"""
 import numpy as np
 import pytest
 
