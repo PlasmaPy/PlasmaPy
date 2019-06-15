@@ -7,7 +7,6 @@ to using C types.
 
 # python modules
 import numpy as np
-from astropy import units
 
 # plasmapy modules
 from plasmapy.constants import k_B
@@ -15,9 +14,6 @@ import plasmapy.atomic as atomic
 # from plasmapy.atomic import particle_mass, charge_state
 # For future: change these into decorators.  _check_quantity does a
 # bit more than @quantity_input as it can allow
-import plasmapy.utils as utils
-from plasmapy.utils.checks import _check_quantity
-from plasmapy.utils.exceptions import PhysicsError  # , PhysicsWarning
 
 
 #@utils.check_relativistic

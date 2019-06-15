@@ -1,19 +1,4 @@
 """Defines the Langmuir analysis module as part of the diagnostics package."""
-
-import numpy as np
-import astropy.units as u
-from plasmapy import utils
-import plasmapy.constants as const
-import copy
-from astropy.visualization import quantity_support
-try:
-    import matplotlib.pyplot as plt
-except (ImportError, ModuleNotFoundError) as e:
-    from plasmapy.optional_deps import mpl_import_error
-    raise mpl_import_error from e
-from scipy.optimize import curve_fit
-from plasmapy.atomic import Particle
-
 __all__ = [
     "Characteristic",
     "swept_probe_analysis",
@@ -32,6 +17,22 @@ __all__ = [
     "extrapolate_ion_current_OML",
     "get_EEDF",
 ]
+
+import copy
+import numpy as np
+import plasmapy.constants as const
+
+from astropy import units as u
+from astropy.visualization import quantity_support
+from plasmapy import utils
+from plasmapy.atomic import Particle
+from scipy.optimize import curve_fit
+
+try:
+    import matplotlib.pyplot as plt
+except (ImportError, ModuleNotFoundError) as e:
+    from plasmapy.optional_deps import mpl_import_error
+    raise mpl_import_error from e
 
 
 def _fit_func_lin(x, x0, y0, c0):

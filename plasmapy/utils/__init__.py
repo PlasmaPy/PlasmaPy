@@ -5,10 +5,10 @@ code.
 from . import decorators
 from . import roman
 
-from .checks import (check_quantity,
-                     check_relativistic,
-                     _check_quantity,
-                     _check_relativistic)
+from plasmapy.utils.decorators.checks import (check_quantity,
+                                              check_relativistic,
+                                              _check_quantity,
+                                              _check_relativistic)
 
 from .decorators import preserve_signature
 from .exceptions import (PlasmaPyError,

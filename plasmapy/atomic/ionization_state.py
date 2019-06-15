@@ -2,20 +2,18 @@
 Objects for storing ionization state data for a single element or for
 a single ionization level.
 """
+__all__ = ["IonizationState", "State"]
 
-from numbers import Integral, Real
-from typing import Union, List, Optional
 import collections
+import numpy as np
 import warnings
 
-import numpy as np
-import astropy.units as u
-
+from astropy import units as u
+from numbers import (Integral, Real)
 from plasmapy.atomic import Particle, particle_input
-from plasmapy.utils import check_quantity
 from plasmapy.atomic.exceptions import AtomicError, ChargeError, InvalidParticleError
-
-__all__ = ["IonizationState", "State"]
+from plasmapy.utils.decorators import check_quantity
+from typing import (Union, List, Optional)
 
 
 _number_density_errmsg = (
