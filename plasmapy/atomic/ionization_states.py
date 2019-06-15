@@ -2,19 +2,18 @@
 A class for storing ionization state data for multiple elements or
 isotopes.
 """
-
-from numbers import Real, Integral
-from typing import Dict, List, Optional, Tuple, Union
-import collections
-
-import numpy as np
-import astropy.units as u
-
-from plasmapy.atomic import atomic_number, Particle, particle_symbol, IonizationState, State
-from plasmapy.utils import check_quantity
-from plasmapy.atomic.exceptions import AtomicError, ChargeError, InvalidParticleError
-
 __all__ = ["IonizationStates"]
+
+import collections
+import numpy as np
+
+from astropy import units as u
+from numbers import (Real, Integral)
+from plasmapy.atomic import (atomic_number, Particle, particle_symbol, IonizationState,
+                             State)
+from plasmapy.atomic.exceptions import (AtomicError, ChargeError, InvalidParticleError)
+from plasmapy.utils import check_quantity
+from typing import (Dict, List, Optional, Tuple, Union)
 
 
 class IonizationStates:
