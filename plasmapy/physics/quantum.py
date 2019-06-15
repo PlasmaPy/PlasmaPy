@@ -3,22 +3,6 @@ Functions for quantum parameters, including electron degenerate
 gases and warm dense matter.
 
 """
-# python modules
-import numpy as np
-from astropy import units as u
-try:
-    from lmfit import minimize, Parameters
-except (ImportError, ModuleNotFoundError) as e:
-    from plasmapy.optional_deps import lmfit_import_error
-    raise lmfit_import_error from e
-
-# plasmapy modules
-from plasmapy import atomic, utils, mathematics
-from plasmapy.utils.decorators.checks import check_quantity
-from plasmapy.physics.relativity import Lorentz_factor
-
-from ..constants import c, h, hbar, m_e, eps0, e, k_B
-
 __all__ = [
     "deBroglie_wavelength",
     "thermal_deBroglie_wavelength",
@@ -27,6 +11,20 @@ __all__ = [
     "Wigner_Seitz_radius",
     "chemical_potential",
 ]
+
+import numpy as np
+
+from astropy import units as u
+from plasmapy import (atomic, utils, mathematics)
+from plasmapy.utils.decorators.checks import check_quantity
+from plasmapy.physics.relativity import Lorentz_factor
+from plasmapy.constants import (c, h, hbar, m_e, eps0, e, k_B)
+
+try:
+    from lmfit import minimize, Parameters
+except (ImportError, ModuleNotFoundError) as e:
+    from plasmapy.optional_deps import lmfit_import_error
+    raise lmfit_import_error from e
 
 
 # TODO: Use @check_relativistic and @particle_input

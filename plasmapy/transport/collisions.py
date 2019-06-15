@@ -40,24 +40,6 @@ These include:
 * `coupling_parameter`
 
 """
-
-
-# python modules
-from astropy import units as u
-import numpy as np
-import warnings
-
-# plasmapy modules
-from plasmapy import utils
-from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
-from plasmapy import atomic
-from plasmapy.physics import parameters
-from plasmapy.physics.quantum import (Wigner_Seitz_radius,
-                                      thermal_deBroglie_wavelength,
-                                      chemical_potential)
-from plasmapy.mathematics import Fermi_integral
-from plasmapy.utils import check_quantity, _check_relativistic
-
 __all__ = [
     "Coulomb_logarithm",
     "impact_parameter_perp",
@@ -71,7 +53,20 @@ __all__ = [
     "mobility",
     "Knudsen_number",
     "coupling_parameter",
-    ]
+]
+
+import numpy as np
+import warnings
+
+from astropy import units as u
+from plasmapy import (atomic, utils)
+from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
+from plasmapy.mathematics import Fermi_integral
+from plasmapy.physics import parameters
+from plasmapy.physics.quantum import (Wigner_Seitz_radius,
+                                      thermal_deBroglie_wavelength,
+                                      chemical_potential)
+from plasmapy.utils import (check_quantity, _check_relativistic)
 
 
 @utils.check_quantity(T={"units": u.K, "can_be_negative": False},

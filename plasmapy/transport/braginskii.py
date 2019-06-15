@@ -121,22 +121,6 @@ References
        high-collisionality electron-ion plasmas." Physics of Plasmas 20.4
        (2013): 042114.
 """
-import warnings
-
-import numpy as np
-from astropy import units as u
-
-from plasmapy import utils
-from plasmapy import atomic
-from plasmapy.atomic.atomic import _is_electron
-from plasmapy.utils import PhysicsError
-from .collisions import Coulomb_logarithm
-from plasmapy.physics.parameters import (Hall_parameter,
-                                         _grab_charge)
-from plasmapy.transport import (fundamental_electron_collision_freq,
-                                fundamental_ion_collision_freq)
-from plasmapy.constants import e, m_e, k_B
-
 __all__ = [
     "ClassicalTransport",
     "resistivity",
@@ -146,6 +130,20 @@ __all__ = [
     "ion_viscosity",
     "electron_viscosity",
 ]
+
+import numpy as np
+import warnings
+
+from astropy import units as u
+from plasmapy import (atomic, utils)
+from plasmapy.atomic.atomic import _is_electron
+from plasmapy.constants import (e, m_e, k_B)
+from plasmapy.physics.parameters import (Hall_parameter, _grab_charge)
+from plasmapy.transport import (fundamental_electron_collision_freq,
+                                fundamental_ion_collision_freq)
+from plasmapy.transport.collisions import Coulomb_logarithm
+from plasmapy.utils import PhysicsError
+
 
 class ClassicalTransport:
     r"""

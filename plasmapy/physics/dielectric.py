@@ -1,20 +1,20 @@
 """Functions to calculate plasma dielectric parameters"""
+__all__ = ['cold_plasma_permittivity_SDP',
+           'cold_plasma_permittivity_LRP',
+           'permittivity_1D_Maxwellian']
 
 import numpy as np
+
 from astropy import units as u
+from collections import namedtuple
 from plasmapy import utils
-from plasmapy.physics import parameters
 from plasmapy.constants import (pi, m_e, c, mu0, e, eps0)
 from plasmapy.mathematics import plasma_dispersion_func_deriv
-from collections import namedtuple
+from plasmapy.physics import parameters
 
 r"""
 Values should be returned as a `~astropy.units.Quantity` in SI units.
 """
-
-__all__ = ['cold_plasma_permittivity_SDP',
-           'cold_plasma_permittivity_LRP',
-           'permittivity_1D_Maxwellian']
 
 StixTensorElements = namedtuple("StixTensorElements", ["sum", "difference", "plasma"], )
 RotatingTensorElements = namedtuple("RotatingTensorElements", ["left", "right", "plasma"], )

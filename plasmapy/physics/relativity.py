@@ -2,15 +2,15 @@ r"""This module currently provides ample room for the Lorentz factor,
 as it turned out we didn't really have much else of the relativistic
 variety to add just yet! This is expected to change in the future.
 """
-import numpy as np
-from astropy import units as u
-
-from plasmapy.constants import c
-from plasmapy import utils
-
 __all__ = [
     "Lorentz_factor",
 ]
+
+import numpy as np
+
+from astropy import units as u
+from plasmapy import utils
+from plasmapy.constants import c
 
 
 @utils.check_quantity(
