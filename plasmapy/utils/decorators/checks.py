@@ -25,22 +25,24 @@ class CheckValues:
     @classmethod
     def as_decorator(cls,
                      func=None,
-                     **validations: Dict[str, Union[str, List, None, u.Quantity]]):
+                     **checks: Dict[str, Union[str, List, None, u.Quantity]]):
         """
-        The decorator for the class.
+        A decorator to limit/control values of input arguments to a function.
 
         Parameters
         ----------
         func:
             The function to be decorated
 
-        **validations: Dict[str, Union[str, List, None, :class:`astropy.units.Quantity`]]
+        **checks: Dict[str, Union[str, List, None, :class:`astropy.units.Quantity`]]
+            Each validation keyword is the name of the function argument to be checked.
+
             Input arguments to the wrapped function whose values are to be validated.
             The name of each keyword should be the name of the input argument to the
             wrapped function and its value is a dictionary specifying how the value
             should be validated.  For example, `mass={'can_be_negative': False}` would
             specify the `mass` argument to the wrapped function can not be negative.
-            The following keys are allows in the validations:
+            The following keys are allows in the checks:
 
             ================ ===== ================================================
             Key              Type  Description
@@ -53,14 +55,14 @@ class CheckValues:
             ================ ===== ================================================
 
         """
-        # if func is not None and not validations:
+        # if func is not None and not checks:
         if func is not None:
-            return cls(**validations)(func)
+            return cls(**checks)(func)
         else:
-            return cls(**validations)
+            return cls(**checks)
 
-    def __init__(self, **validations: Dict[str, Union[bool, List, None, u.Quantity]]):
-        self.validations = validations
+    def __init__(self, **checks: Dict[str, Union[bool, List, None, u.Quantity]]):
+        self.checks = checks
 
     def __call__(self, f):
         self.f = f
@@ -74,13 +76,13 @@ class CheckValues:
             bound_args.apply_defaults()
             given_args = bound_args.arguments
 
-            # get validations
-            validations = self._get_validations(bound_args)
+            # get checks
+            checks = self._get_checks(bound_args)
 
-            # Does `validations` indicate arguments not used by f?
+            # Does `checks` indicate arguments not used by f?
             missing_params = [
                 param
-                for param in set(validations.keys()) - set(given_args.keys())
+                for param in set(checks.keys()) - set(given_args.keys())
             ]
             if len(missing_params) > 0:
                 params_str = ", ".join(missing_params)
@@ -88,22 +90,22 @@ class CheckValues:
                     f"Call to {self.f.__name__} is missing validated "
                     f"params {params_str}")
 
-            # Review validations and check argument
-            for arg_name in validations:
-                self._validate_value(given_args[arg_name],
-                                     arg_name,
-                                     **validations[arg_name])
+            # Review checks and check argument
+            for arg_name in checks:
+                self._check_value(given_args[arg_name],
+                                  arg_name,
+                                  **checks[arg_name])
 
             return f(**given_args)
 
         return wrapper
 
-    def _get_validations(self, bound_args: inspect.BoundArguments) -> Dict[str, Any]:
+    def _get_checks(self, bound_args: inspect.BoundArguments) -> Dict[str, Any]:
         # initialize validation dictionary
-        out_validations = {}
+        out_checks = {}
 
-        # Iterate through parameters, determine validation keys, and build validations
-        # dictionary `value_validations`
+        # Iterate through parameters, determine validation keys, and build checks
+        # dictionary `out_checks`
         for param in bound_args.signature.parameters.values():
             # variable arguments (*args, **kwargs) not validted
             if param.kind in (inspect.Parameter.VAR_KEYWORD,
@@ -115,26 +117,26 @@ class CheckValues:
                     and param.default is not param.empty:
                 bound_args.arguments[param.name] = param.default
 
-            # grab the validations dictionary for the desired parameter
+            # grab the checks dictionary for the desired parameter
             try:
-                param_in_validations = self.validations[param.name]
+                param_in_checks = self.checks[param.name]
             except KeyError:
-                # validations for parameter not specified
+                # checks for parameter not specified
                 continue
 
-            # build `value_validations`
-            # read validations and/or apply defaults values
-            out_validations[param.name] = {}
-            for v_name, v_default in self._validation_item_defaults.items():
-                out_validations[param.name][v_name] = \
-                    param_in_validations.get(v_name, v_default)
+            # build `out_checks`
+            # read checks and/or apply defaults values
+            out_checks[param.name] = {}
+            for v_name, v_default in self._check_item_defaults.items():
+                out_checks[param.name][v_name] = \
+                    param_in_checks.get(v_name, v_default)
 
-        return out_validations
+        return out_checks
 
     @property
-    def _validation_item_defaults(self) -> Dict[str, bool]:
+    def _check_item_defaults(self) -> Dict[str, bool]:
         # adding a new validation key and default value here will automatically
-        # update the checks of the `validations` passed in
+        # update the checks of the `checks` passed in
         _defaults = {
             'can_be_negative': True,
             'can_be_complex': False,
@@ -144,29 +146,30 @@ class CheckValues:
         }
         return _defaults
 
-    def _validate_value(self, arg, arg_name, **validations):
+    def _check_value(self, arg, arg_name, **checks):
         valueerror_msg = (f"The argument '{arg_name}'' to function "
                           f"{self.f.__name__}() can not contain")
 
         # check values
-        if arg is None and validations['none_shall_pass']:
+        if arg is None and checks['none_shall_pass']:
             return
         elif arg is None:
             raise ValueError(f"{valueerror_msg} Nones.")
-        elif not validations['can_be_negative']:
+        elif not checks['can_be_negative']:
             # Allow NaNs through without raising a warning
             with np.errstate(invalid='ignore'):
                 isneg = np.any(arg < 0)
             if isneg:
                 raise ValueError(f"{valueerror_msg} negative numbers.")
-        elif not validations['can_be_complex'] and np.any(np.iscomplexobj(arg)):
+        elif not checks['can_be_complex'] and np.any(np.iscomplexobj(arg)):
             raise ValueError(f"{valueerror_msg} complex numbers.")
-        elif not validations['can_be_inf'] and np.any(np.isinf(arg)):
+        elif not checks['can_be_inf'] and np.any(np.isinf(arg)):
             raise ValueError(f"{valueerror_msg} infs.")
-        elif not validations['can_be_nan'] and np.any(np.isnan(arg)):
+        elif not checks['can_be_nan'] and np.any(np.isnan(arg)):
             raise ValueError(f"{valueerror_msg} NaNs.")
 
 
+# Define `check_values` decorator
 check_values = CheckValues.as_decorator
 
 
