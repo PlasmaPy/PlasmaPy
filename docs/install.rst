@@ -97,9 +97,11 @@ simply
 Installation with conda
 -----------------------
 
-We’re not on conda just yet, but we’re working on it!
+You can get PlasmaPy from `conda` via
 
-Conda installs all dependencies by default.
+.. code:: bash
+
+    conda install -c conda-forge plasmapy
 
 Building and installing from source code
 ========================================
