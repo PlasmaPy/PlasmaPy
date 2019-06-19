@@ -213,8 +213,58 @@ class CheckValues:
         return self._checks
 
 
-# Define `check_values` decorator
-check_values = CheckValues.as_decorator
+def check_values(func=None, **checks: Dict[str, bool]):
+    """
+    A decorator to limit/control values of input arguments to a function.
+
+    Parameters
+    ----------
+    func:
+        The function to be decorated
+
+    **checks: Dict[str, Dict[str, bool]]
+        Each keyword in `checks` is the name of the function argument to be checked
+        and the keyword value is a dictionary specifying the limits on the function's
+        argument value.  For example, `mass={'can_be_negative': False}` would
+        specify the `mass` argument to a function can not be negative.  The
+        following keys are allowed in the 'check' dictionary:
+
+        ================ ======= ================================================
+        Key              Type    Description
+        ================ ======= ================================================
+        can_be_negative  `bool`  `True` (DEFAULT) values can be negative
+        can_be_complex   `bool`  `False` (DEFAULT) values can be complex numbers
+        can_be_inf       `bool`  `True` (DEFAULT) values can be infinite
+        can_be_nan       `bool`  `True` (DEFAULT) values can be NaN
+        none_shall_pass  `bool`  `False` (DEFAULT) values can be python `None`
+        ================ ======= ================================================
+
+    Examples
+    -------=
+    .. code-block:: python
+
+        from plasmapy.utils.decorators import check_values
+        @check_values(arg1={'can_be_negative': False, 'can_be_nan': False},
+                      arg2={'can_be_inf': False})
+        def foo(arg1, arg2):
+            return arg1 + arg2
+
+    Or the `**{}` notation can be utilized::
+
+        from plasmapy.utils.decorators import check_values
+        @check_values(**{'arg1': {'can_be_negative': False, 'can_be_nan': False},
+                         'arg2': {'can_be_inf': False}})
+        def foo(arg1, arg2):
+            return arg1 + arg2
+
+    Notes
+    -----
+    * Full functionality is defined by the class :class:`CheckValues`.
+    """
+    if func is not None:
+        return CheckValues(**checks)(func)
+    else:
+        return CheckValues(**checks)
 
 
 def check_quantity(**validations: Dict[str, Union[bool, u.Quantity]]):
