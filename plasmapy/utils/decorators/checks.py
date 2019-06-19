@@ -19,52 +19,56 @@ from typing import (Any, Dict, List, Union)
 
 class CheckValues:
     """
-    Class for defining a decorator that checks input values to a function.
+    A decorator class to limit/control the values of input arguments to a function.
+
+    Parameters
+    ----------
+    **checks: Dict[str, Dict[str, bool]]
+        Each keyword in `checks` is the name of the function argument to be checked
+        and the keyword value is a dictionary specifying the limits on the function's
+        argument value.  For example, `mass={'can_be_negative': False}` would
+        specify the `mass` argument to a function can not be negative.  The
+        following keys are allowed in the 'check' dictionary:
+
+        ================ ======= ================================================
+        Key              Type    Description
+        ================ ======= ================================================
+        can_be_negative  `bool`  `True` (DEFAULT) values can be negative
+        can_be_complex   `bool`  `False` (DEFAULT) values can be complex numbers
+        can_be_inf       `bool`  `True` (DEFAULT) values can be infinite
+        can_be_nan       `bool`  `True` (DEFAULT) values can be NaN
+        none_shall_pass  `bool`  `False` (DEFAULT) values can be python `None`
+        ================ ======= ================================================
+
+    Examples
+    --------
+    .. code-block:: python
+
+        from plasmapy.utils.decorators import CheckValues
+        @CheckValues(arg1={'can_be_negative': False, 'can_be_nan': False},
+                     arg2={'can_be_inf': False})
+        def foo(arg1, arg2):
+            return arg1 + arg2
+
+    Or the `**{}` notation can be utilized::
+
+        from plasmapy.utils.decorators import CheckValues
+        @CheckValues(**{'arg1': {'can_be_negative': False, 'can_be_nan': False},
+                        'arg2': {'can_be_inf': False}})
+        def foo(arg1, arg2):
+            return arg1 + arg2
     """
 
-    @classmethod
-    def as_decorator(cls,
-                     func=None,
-                     **checks: Dict[str, Union[str, List, None, u.Quantity]]):
-        """
-        A decorator to limit/control values of input arguments to a function.
-
-        Parameters
-        ----------
-        func:
-            The function to be decorated
-
-        **checks: Dict[str, Union[str, List, None, :class:`astropy.units.Quantity`]]
-            Each validation keyword is the name of the function argument to be checked.
-
-            Input arguments to the wrapped function whose values are to be validated.
-            The name of each keyword should be the name of the input argument to the
-            wrapped function and its value is a dictionary specifying how the value
-            should be validated.  For example, `mass={'can_be_negative': False}` would
-            specify the `mass` argument to the wrapped function can not be negative.
-            The following keys are allows in the checks:
-
-            ================ ===== ================================================
-            Key              Type  Description
-            ================ ===== ================================================
-            can_be_negative  bool  `True` (DEFAULT) values can be negative
-            can_be_complex   bool  `False` (DEFAULT) values can be complex numbers
-            can_be_inf       bool  `True` (DEFAULT) values can be infinite
-            can_be_nan       bool  `True` (DEFAULT) values can be NaN
-            none_shall_pass  bool  `False` (DEFAULT) values can be python `None`
-            ================ ===== ================================================
-
-        """
-        # if func is not None and not checks:
-        if func is not None:
-            return cls(**checks)(func)
-        else:
-            return cls(**checks)
-
-    def __init__(self, **checks: Dict[str, Union[bool, List, None, u.Quantity]]):
-        self.checks = checks
+    def __init__(self, **checks: Dict[str, bool]):
+        self._checks = checks
 
     def __call__(self, f):
+        """
+        Parameters
+        ----------
+        f
+            Function to be wrapped/decorated.
+        """
         self.f = f
         wrapped_sign = inspect.signature(f)
 
@@ -100,14 +104,30 @@ class CheckValues:
 
         return wrapper
 
-    def _get_checks(self, bound_args: inspect.BoundArguments) -> Dict[str, Any]:
+    def _get_checks(self,
+                    bound_args: inspect.BoundArguments) -> Dict[str, Dict[str, bool]]:
+        """
+        Review function bound arguments and :attr:`checks` to build a complete 'checks'
+        dictionary. Any unspecified check key is filled with a default value.
+
+        Parameters
+        ----------
+        bound_args
+            Bound Arguments passed to the function being wrapped.
+
+        Returns
+        -------
+        Dict[str, Dict[str, bool]]
+            A complete 'checks' dictionary for checking function input arguments.
+
+        """
         # initialize validation dictionary
         out_checks = {}
 
         # Iterate through parameters, determine validation keys, and build checks
         # dictionary `out_checks`
         for param in bound_args.signature.parameters.values():
-            # variable arguments (*args, **kwargs) not validted
+            # variable arguments (*args, **kwargs) not checked
             if param.kind in (inspect.Parameter.VAR_KEYWORD,
                               inspect.Parameter.VAR_POSITIONAL):
                 continue
@@ -135,6 +155,7 @@ class CheckValues:
 
     @property
     def _check_item_defaults(self) -> Dict[str, bool]:
+        """Default values for the possible 'check' keys."""
         # adding a new validation key and default value here will automatically
         # update the checks of the `checks` passed in
         _defaults = {
@@ -146,27 +167,50 @@ class CheckValues:
         }
         return _defaults
 
-    def _check_value(self, arg, arg_name, **checks):
+    def _check_value(self, arg, arg_name, **arg_checks: Dict[str, bool]):
+        """
+        Perform requested argument checks.
+
+        Parameters
+        ----------
+        arg
+            The argument to be checked
+        arg_name: str
+            The name of the argument to be checked
+        arg_checks: Dict[str, Dict[str, bool]]
+            The requested checks for the argument.
+
+        Raises
+        ------
+        ValueError
+            If a check fails, then `ValueError` is raised.
+
+        """
         valueerror_msg = (f"The argument '{arg_name}'' to function "
                           f"{self.f.__name__}() can not contain")
 
         # check values
-        if arg is None and checks['none_shall_pass']:
+        if arg is None and arg_checks['none_shall_pass']:
             return
         elif arg is None:
             raise ValueError(f"{valueerror_msg} Nones.")
-        elif not checks['can_be_negative']:
+        elif not arg_checks['can_be_negative']:
             # Allow NaNs through without raising a warning
             with np.errstate(invalid='ignore'):
                 isneg = np.any(arg < 0)
             if isneg:
                 raise ValueError(f"{valueerror_msg} negative numbers.")
-        elif not checks['can_be_complex'] and np.any(np.iscomplexobj(arg)):
+        elif not arg_checks['can_be_complex'] and np.any(np.iscomplexobj(arg)):
             raise ValueError(f"{valueerror_msg} complex numbers.")
-        elif not checks['can_be_inf'] and np.any(np.isinf(arg)):
+        elif not arg_checks['can_be_inf'] and np.any(np.isinf(arg)):
             raise ValueError(f"{valueerror_msg} infs.")
-        elif not checks['can_be_nan'] and np.any(np.isnan(arg)):
+        elif not arg_checks['can_be_nan'] and np.any(np.isnan(arg)):
             raise ValueError(f"{valueerror_msg} NaNs.")
+
+    @property
+    def checks(self) -> Dict[str, Dict[str, bool]]:
+        """Requested argument checks"""
+        return self._checks
 
 
 # Define `check_values` decorator
