@@ -36,7 +36,7 @@ matrix:
         - env: PYTHON_VERSION=3.7 SETUP_CMD='test --coverage'
           stage: Generic tests
           
-        - env: PYTHON_VERSION=3.8
+        - env: PYTHON_VERSION=3.8 CONDA_CHANNELS=conda-forge
           stage: Generic tests
 
         - env: ASTROPY_VERSION='dev'
