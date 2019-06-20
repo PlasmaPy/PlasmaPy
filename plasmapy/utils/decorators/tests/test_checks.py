@@ -2,6 +2,7 @@
 Tests for 'check` decorators (i.e. decorators that only check values but do not
 change them).
 """
+import inspect
 import numpy as np
 import pytest
 
@@ -10,10 +11,108 @@ from plasmapy.constants import c
 from plasmapy.utils.decorators.checks import (
     _check_quantity,
     _check_relativistic,
+    check_values,
     check_quantity,
     check_relativistic,
+    CheckValues,
 )
 from plasmapy.utils.exceptions import (RelativityWarning, RelativityError)
+from unittest import mock
+
+
+# ----------------------------------------------------------------------------------------
+# Test Decorator class `CheckValues` and decorator `check_values`
+# ----------------------------------------------------------------------------------------
+class TestCheckValues:
+
+    @mock.patch(CheckValues.__module__ + '.' + CheckValues.__qualname__,
+                side_effect=CheckValues, autospec=True)
+    def test_decorator_definition(self, mock_cv_class):
+        # create mock function (mock_foo) and function to mock (foo)
+        def foo(x, y):
+            return x + y
+        mock_foo = mock.Mock(side_effect=foo, name='mock_foo', autospec=True)
+        mock_foo.__name__ = 'mock_foo'
+        mock_foo.__signature__ = inspect.signature(foo)
+
+        # defing various possible check dicts
+        check_list = [
+            {'none_shall_pass': False},
+            {'can_be_negative': True,
+             'can_be_nan': False},
+            {'can_be_negative': False,
+             'can_be_complex': True,
+             'can_be_inf': False,
+             'can_be_nan': False,
+             'none_shall_pass': True}
+        ]
+
+        # Examine various checks and their pass-through
+        for check in check_list:
+            # -- decorate like a traditional function --
+            # decorate
+            wfoo = check_values(mock_foo, **{'x': check, 'y': check})
+
+            # tests
+            assert wfoo(2, 3) == 5
+            assert mock_cv_class.called
+            assert mock_foo.called
+            assert len(mock_cv_class.call_args) == 2
+            assert mock_cv_class.call_args[0] == ()
+            assert isinstance(mock_cv_class.call_args[1], dict)
+            assert sorted(mock_cv_class.call_args[1].keys()) == ['x', 'y']
+            assert mock_cv_class.call_args[1]['x'] == check
+            assert mock_cv_class.call_args[1]['y'] == check
+
+            # reset
+            mock_cv_class.reset_mock()
+            mock_foo.reset_mock()
+
+            # -- decorate like "sugar" syntax --
+            #
+            #  @check_values(x=check)
+            #      def foo(x):
+            #          return x
+            #
+            # decorate
+            wfoo = check_values(**{'x': check, 'y': check})(mock_foo)
+
+            # tests
+            assert wfoo(2, 3) == 5
+            assert mock_cv_class.called
+            assert mock_foo.called
+            assert len(mock_cv_class.call_args) == 2
+            assert mock_cv_class.call_args[0] == ()
+            assert isinstance(mock_cv_class.call_args[1], dict)
+            assert sorted(mock_cv_class.call_args[1].keys()) == ['x', 'y']
+            assert mock_cv_class.call_args[1]['x'] == check
+            assert mock_cv_class.call_args[1]['y'] == check
+
+            # reset
+            mock_cv_class.reset_mock()
+            mock_foo.reset_mock()
+
+        # -- decorate like "sugar" syntax w/o checks--
+        #
+        #  @check_values
+        #      def foo(x):
+        #          return x
+        #
+        # decorate
+        wfoo = check_values(mock_foo)
+
+        # tests
+        assert wfoo(2, 3) == 5
+        assert mock_cv_class.called
+        assert mock_foo.called
+        assert len(mock_cv_class.call_args) == 2
+        assert mock_cv_class.call_args[0] == ()
+        assert mock_cv_class.call_args[1] == {}
+
+        # reset
+        mock_cv_class.reset_mock()
+        mock_foo.reset_mock()
+
 
 # ----------------------------------------------------------------------------------------
 # Test Decorator `check_quantity` (& function `_check_quantity`
