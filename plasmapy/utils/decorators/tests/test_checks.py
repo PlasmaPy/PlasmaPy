@@ -24,18 +24,141 @@ from unittest import mock
 # Test Decorator class `CheckValues` and decorator `check_values`
 # ----------------------------------------------------------------------------------------
 class TestCheckValues:
+    """
+    Tests for decorator :func:`~plasmapy.utils.decorators.checks.check_values` and
+    decorator class :class:`~plasmapy.utils.decorators.checks.CheckValues`.
+    """
+
+    @staticmethod
+    def foo(x, y):
+        return x + y
+
+    def test_cv_default_check_values(self):
+        """Test the default check dictionary for CheckValues"""
+        cv = CheckValues()
+        assert hasattr(cv, '_check_item_defaults')
+        assert isinstance(cv._check_item_defaults, dict)
+        _defaults = [('can_be_negative', True),
+                     ('can_be_complex', False),
+                     ('can_be_inf', True),
+                     ('can_be_nan', True),
+                     ('none_shall_pass', False)]
+        for key, val in _defaults:
+            assert cv._check_item_defaults[key] == val
+
+    def test_cv_method__check_value(self):
+        """
+        Test functionality/behavior of the `_check_value` method on `CheckValues`.
+        This method does the actual checking of the argument values and should be
+        called by `CheckValues.__call__()`.
+        """
+        # setup wrapped function
+        cv = CheckValues()
+        wfoo = cv(self.foo)
+
+        assert hasattr(cv, '_check_value')
+
+        # -- Test 'can_be_negative' check --
+        check = cv._check_item_defaults
+        args = [-5,
+                -5.0,
+                np.array([-1, 2]),
+                np.array([-3., 2.]),
+                -3 * u.cm,
+                np.array([-4., 3.]) * u.kg]
+        for arg in args:
+            # can_be_negative == False
+            check['can_be_negative'] = False
+            with pytest.raises(ValueError):
+                cv._check_value(arg, 'arg', **check)
+
+            # can_be_negative == True
+            check['can_be_negative'] = True
+            assert cv._check_value(arg, 'arg', **check) is None
+
+        # -- Test 'can_be_complex' check --
+        check = cv._check_item_defaults
+        args = [complex(5),
+                complex(2, 3),
+                np.complex(3.),
+                complex(4., 2.) * u.cm,
+                np.array([complex(4, 5), complex(1)]) * u.kg]
+        for arg in args:
+            # can_be_complex == False
+            check['can_be_complex'] = False
+            with pytest.raises(ValueError):
+                cv._check_value(arg, 'arg', **check)
+
+            # can_be_negative == True
+            check['can_be_complex'] = True
+            assert cv._check_value(arg, 'arg', **check) is None
+
+        # -- Test 'can_be_inf' check --
+        check = cv._check_item_defaults
+        args = [np.inf,
+                np.inf * u.cm,
+                np.array([1., 2., np.inf, 10.]),
+                np.array([1., 2., np.inf, np.inf]) * u.kg]
+        for arg in args:
+            # can_be_inf == False
+            check['can_be_inf'] = False
+            with pytest.raises(ValueError):
+                cv._check_value(arg, 'arg', **check)
+
+            # can_be_inf == True
+            check['can_be_inf'] = True
+            assert cv._check_value(arg, 'arg', **check) is None
+
+        # -- Test 'can_be_inf' check --
+        check = cv._check_item_defaults
+        args = [np.nan,
+                np.nan * u.cm,
+                np.array([1., 2., np.nan, 10.]),
+                np.array([1., 2., np.nan, np.nan]) * u.kg]
+        for arg in args:
+            # can_be_nan == False
+            check['can_be_nan'] = False
+            with pytest.raises(ValueError):
+                cv._check_value(arg, 'arg', **check)
+
+            # can_be_nan == True
+            check['can_be_nan'] = True
+            assert cv._check_value(arg, 'arg', **check) is None
+
+        # -- Test 'none_shall_pass' check --
+        check = cv._check_item_defaults
+        args = [None]
+        for arg in args:
+            # none_shall_pass == False
+            check['none_shall_pass'] = False
+            with pytest.raises(ValueError):
+                cv._check_value(arg, 'arg', **check)
+
+            # none_shall_pass == True
+            check['none_shall_pass'] = True
+            assert cv._check_value(arg, 'arg', **check) is None
+
+    def test_cv_preserves_signature(self):
+        """Test CheckValues preserves signature of wrapped function."""
+        # I'd like to directly dest the @preserve_signature is used (??)
+
+        wfoo = CheckValues()(self.foo)
+        assert hasattr(wfoo, '__signature__')
+        assert wfoo.__signature__ == inspect.signature(self.foo)
 
     @mock.patch(CheckValues.__module__ + '.' + CheckValues.__qualname__,
                 side_effect=CheckValues, autospec=True)
     def test_decorator_definition(self, mock_cv_class):
-        # create mock function (mock_foo) and function to mock (foo)
-        def foo(x, y):
-            return x + y
-        mock_foo = mock.Mock(side_effect=foo, name='mock_foo', autospec=True)
+        """
+        Test that :func:`~plasmapy.utils.decorators.checks.check_values` is
+        properly defined.
+        """
+        # create mock function (mock_foo) from function to mock (self.foo)
+        mock_foo = mock.Mock(side_effect=self.foo, name='mock_foo', autospec=True)
         mock_foo.__name__ = 'mock_foo'
-        mock_foo.__signature__ = inspect.signature(foo)
+        mock_foo.__signature__ = inspect.signature(self.foo)
 
-        # defing various possible check dicts
+        # define various possible check dicts
         check_list = [
             {'none_shall_pass': False},
             {'can_be_negative': True,
