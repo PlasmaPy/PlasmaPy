@@ -16,7 +16,9 @@ from plasmapy.utils.decorators.checks import (
     check_relativistic,
     CheckValues,
 )
-from plasmapy.utils.exceptions import (RelativityWarning, RelativityError)
+from plasmapy.utils.exceptions import (PlasmaPyWarning,
+                                       RelativityWarning,
+                                       RelativityError)
 from unittest import mock
 
 
@@ -138,6 +140,87 @@ class TestCheckValues:
             check['none_shall_pass'] = True
             assert cv._check_value(arg, 'arg', **check) is None
 
+    @mock.patch.object(CheckValues, '_check_value', side_efect=CheckValues._check_value)
+    def test_cv_called_as_decorator(self, mock_cv):
+        # create mock function (mock_foo) from function to mock (self.foo)
+        mock_foo = mock.Mock(side_effect=self.foo, name='mock_foo', autospec=True)
+        mock_foo.__name__ = 'mock_foo'
+        mock_foo.__signature__ = inspect.signature(self.foo)
+
+        # -- basic wrap and call --
+        # create wrapped function
+        xchecks = {}
+        ychecks = {'none_shall_pass': True,
+                   'can_be_negative': False}
+        cv = CheckValues(x=xchecks, y=ychecks)
+        default_checks = cv._check_item_defaults
+        wfoo = cv(mock_foo)
+
+        # basic tests
+        assert wfoo(2, 3) == 5
+        assert mock_foo.called
+        assert mock_cv.called
+
+        # ensure `_check_value` method was called with correct arguments
+        assert mock_cv.call_count == 2
+        for ii, (arg, arg_name, checks) in enumerate(zip([2, 3],
+                                                         ['x', 'y'],
+                                                         [xchecks, ychecks])):
+            # test passed arguments
+            assert mock_cv.mock_calls[ii][1] == (arg, arg_name)
+
+            # test passed keywords
+            for key, val in default_checks.items():
+                if key in checks:
+                    # if key defined in checks then value should be passed
+                    assert mock_cv.mock_calls[ii][2][key] == checks[key]
+                else:
+                    # if key NOT defined in checks then default value should be passed
+                    assert mock_cv.mock_calls[ii][2][key] == default_checks[key]
+
+        # reset mocks
+        mock_cv.reset_mock()
+        mock_foo.reset_mock()
+
+        # -- decorator specifies too many arguments --
+        # if the number of checked arguments is not less than or equal to the number
+        # of function arguments, then a PlasmaPyWarning is raised
+        cv = CheckValues(x=xchecks, y=ychecks, z={'none_shall_pass': True})
+        with pytest.warns(PlasmaPyWarning):
+            wfoo = cv(self.foo)
+            assert wfoo(2, 3) == 5
+
+        # reset mocks
+        mock_cv.reset_mock()
+        mock_foo.reset_mock()
+
+        # -- decorated function has *arg and **kwargs arguments --
+        # values passed via *args and **kwargs are ignored by CheckValues
+        #
+        # create mock function (mock_foo) from function to mock (foo)
+        def foo(x, *args, y=3, **kwargs):
+            return x + y
+        mock_foo = mock.Mock(side_effect=foo, name='mock_foo', autospec=True)
+        mock_foo.__name__ = 'mock_foo'
+        mock_foo.__signature__ = inspect.signature(foo)
+
+        # create wrapped function
+        xchecks = {}
+        ychecks = {'none_shall_pass': True,
+                   'can_be_negative': False}
+        cv = CheckValues(x=xchecks, y=ychecks, z={'nont_shall_pass': True})
+        wfoo = cv(mock_foo)
+
+        # test
+        with pytest.warns(PlasmaPyWarning):
+            assert wfoo(5, 'hello', y=3, z=None) == 8
+        assert mock_foo.called
+        assert mock_cv.call_count == 2
+
+        # reset mocks
+        mock_cv.reset_mock()
+        mock_foo.reset_mock()
+
     def test_cv_preserves_signature(self):
         """Test CheckValues preserves signature of wrapped function."""
         # I'd like to directly dest the @preserve_signature is used (??)
@@ -148,7 +231,7 @@ class TestCheckValues:
 
     @mock.patch(CheckValues.__module__ + '.' + CheckValues.__qualname__,
                 side_effect=CheckValues, autospec=True)
-    def test_decorator_definition(self, mock_cv_class):
+    def test_decorator_func_def(self, mock_cv_class):
         """
         Test that :func:`~plasmapy.utils.decorators.checks.check_values` is
         properly defined.
