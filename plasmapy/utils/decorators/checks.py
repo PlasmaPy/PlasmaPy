@@ -62,6 +62,18 @@ class CheckValues:
         def foo(arg1, arg2):
             return arg1 + arg2
     """
+    #: Default values for the possible 'check' keys.
+    # To add a new check the the class, the folowing needs to be done:
+    #   1. Add a key & default value to the `_check_defaults` dictionary
+    #   2. Add a corresponding if-statement to method `_check_value`
+    #
+    _check_defaults = {
+        'can_be_negative': True,
+        'can_be_complex': False,
+        'can_be_inf': True,
+        'can_be_nan': True,
+        'none_shall_pass': False,
+    }
 
     def __init__(self, **checks: Dict[str, bool]):
         self._checks = checks
@@ -93,7 +105,6 @@ class CheckValues:
                                   **checks[arg_name])
 
             return f(**bound_args.arguments)
-
         return wrapper
 
     def _get_checks(self,
@@ -137,7 +148,7 @@ class CheckValues:
             # build `out_checks`
             # read checks and/or apply defaults values
             out_checks[param.name] = {}
-            for v_name, v_default in self._check_item_defaults.items():
+            for v_name, v_default in self._check_defaults.items():
                 out_checks[param.name][v_name] = \
                     param_in_checks.get(v_name, v_default)
 
@@ -153,20 +164,6 @@ class CheckValues:
                 f"are missing from the call to {self.f.__name__}"))
 
         return out_checks
-
-    @property
-    def _check_item_defaults(self) -> Dict[str, bool]:
-        """Default values for the possible 'check' keys."""
-        # adding a new validation key and default value here will automatically
-        # update the checks of the `checks` passed in
-        _defaults = {
-            'can_be_negative': True,
-            'can_be_complex': False,
-            'can_be_inf': True,
-            'can_be_nan': True,
-            'none_shall_pass': False,
-        }
-        return _defaults
 
     def _check_value(self, arg, arg_name, **arg_checks: Dict[str, bool]):
         """

@@ -38,15 +38,15 @@ class TestCheckValues:
     def test_cv_default_check_values(self):
         """Test the default check dictionary for CheckValues"""
         cv = CheckValues()
-        assert hasattr(cv, '_check_item_defaults')
-        assert isinstance(cv._check_item_defaults, dict)
+        assert hasattr(cv, '_check_defaults')
+        assert isinstance(cv._check_defaults, dict)
         _defaults = [('can_be_negative', True),
                      ('can_be_complex', False),
                      ('can_be_inf', True),
                      ('can_be_nan', True),
                      ('none_shall_pass', False)]
         for key, val in _defaults:
-            assert cv._check_item_defaults[key] == val
+            assert cv._check_defaults[key] == val
 
     def test_cv_method__check_value(self):
         """
@@ -61,7 +61,7 @@ class TestCheckValues:
         assert hasattr(cv, '_check_value')
 
         # -- Test 'can_be_negative' check --
-        check = cv._check_item_defaults
+        check = cv._check_defaults.copy()
         args = [-5,
                 -5.0,
                 np.array([-1, 2]),
@@ -79,7 +79,7 @@ class TestCheckValues:
             assert cv._check_value(arg, 'arg', **check) is None
 
         # -- Test 'can_be_complex' check --
-        check = cv._check_item_defaults
+        check = cv._check_defaults.copy()
         args = [complex(5),
                 complex(2, 3),
                 np.complex(3.),
@@ -96,7 +96,7 @@ class TestCheckValues:
             assert cv._check_value(arg, 'arg', **check) is None
 
         # -- Test 'can_be_inf' check --
-        check = cv._check_item_defaults
+        check = cv._check_defaults.copy()
         args = [np.inf,
                 np.inf * u.cm,
                 np.array([1., 2., np.inf, 10.]),
@@ -112,7 +112,7 @@ class TestCheckValues:
             assert cv._check_value(arg, 'arg', **check) is None
 
         # -- Test 'can_be_inf' check --
-        check = cv._check_item_defaults
+        check = cv._check_defaults.copy()
         args = [np.nan,
                 np.nan * u.cm,
                 np.array([1., 2., np.nan, 10.]),
@@ -128,7 +128,7 @@ class TestCheckValues:
             assert cv._check_value(arg, 'arg', **check) is None
 
         # -- Test 'none_shall_pass' check --
-        check = cv._check_item_defaults
+        check = cv._check_defaults.copy()
         args = [None]
         for arg in args:
             # none_shall_pass == False
@@ -153,7 +153,7 @@ class TestCheckValues:
         ychecks = {'none_shall_pass': True,
                    'can_be_negative': False}
         cv = CheckValues(x=xchecks, y=ychecks)
-        default_checks = cv._check_item_defaults
+        default_checks = cv._check_defaults.copy()
         wfoo = cv(mock_foo)
 
         # basic tests
