@@ -176,7 +176,7 @@ Code readability is more important than optimization, except when
 performance is critical. Code should be optimized only after getting it
 to work, and primarily for where there is a performance bottleneck.
 Performance-critical parts of the core package will preferably be
-written using Cython or Numba to achieve compiled speeds while
+written using Numba to achieve compiled speeds while
 maintaining the significant advantages of using a high level language.
 
 Versioning

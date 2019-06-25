@@ -103,9 +103,8 @@ tests and verify that examples in docstrings produce the expected
 output.  This command (which was enabled by `integrating pytest with
 setuptools
 <https://docs.pytest.org/en/latest/goodpractices.html#integrating-with-setuptools-python-setup-py-test-pytest-runner>`_)
-ensures that the package is set up and `Cython <http://cython.org>`_
-code is compiled before the tests are run.  These tests should be run in
-a Python environment in which PlasmaPy has not already been installed.
+ensures that the package is set up. These tests should be run in a Python
+environment in which PlasmaPy has not already been installed.
 
 Command line options for pytest may be passed using the ``-a`` flag.
 For example, if you want to stop pytest after two test failures, return
@@ -116,9 +115,7 @@ short traceback reports, and run tests only if the test path contains
 
   python setup.py test -a "--maxfail=2 --tb=short -k 'plasma and not blob'"
 
-One may also run ``pytest`` as a shortcut from the command line, though
-this command may result in an error if pytest collects tests of Cython
-code.
+One may also simply run ``pytest`` as a shortcut from the command line.
 
 .. _testing-guidelines-running-tests-python:
 

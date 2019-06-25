@@ -1,0 +1,2 @@
+Deprecate `parameters_cython.pyx`, switching to Numba for the future of computationally intensive code in PlasmaPy
+
