@@ -208,7 +208,7 @@ class TestCheckValues:
         xchecks = {}
         ychecks = {'none_shall_pass': True,
                    'can_be_negative': False}
-        cv = CheckValues(x=xchecks, y=ychecks, z={'nont_shall_pass': True})
+        cv = CheckValues(x=xchecks, y=ychecks, z={'none_shall_pass': True})
         wfoo = cv(mock_foo)
 
         # test
