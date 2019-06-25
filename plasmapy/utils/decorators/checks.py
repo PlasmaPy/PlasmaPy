@@ -125,11 +125,6 @@ class CheckValues:
                               inspect.Parameter.VAR_POSITIONAL):
                 continue
 
-            # catch the (never triggered) case where bind relied on a default value
-            if param.name not in bound_args.arguments \
-                    and param.default is not param.empty:
-                bound_args.arguments[param.name] = param.default
-
             # grab the checks dictionary for the desired parameter
             try:
                 param_in_checks = self.checks[param.name]
