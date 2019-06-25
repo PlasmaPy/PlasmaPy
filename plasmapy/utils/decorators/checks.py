@@ -21,7 +21,9 @@ from typing import (Any, Dict, List, Union)
 
 class CheckValues:
     """
-    A decorator class to limit/control the values of input arguments to a function.
+    A decorator class to "check" (i.e. limit/control) the values of input arguments to
+    a function.  (Checking of function arguments `*args` and `**kwargs` is not
+    supported.)
 
     Parameters
     ----------
@@ -214,7 +216,9 @@ class CheckValues:
 
 def check_values(func=None, **checks: Dict[str, bool]):
     """
-    A decorator to limit/control values of input arguments to a function.
+    A decorator to "check" (i.e. limit/control) values of input arguments to a
+    function.  (Checking of function arguments `*args` and `**kwargs` is not
+    supported.)
 
     Parameters
     ----------
@@ -238,8 +242,12 @@ def check_values(func=None, **checks: Dict[str, bool]):
         none_shall_pass  `bool`  `False` (DEFAULT) values can be python `None`
         ================ ======= ================================================
 
+    Notes
+    -----
+    * Full functionality is defined by the class :class:`CheckValues`.
+
     Examples
-    -------=
+    --------
     .. code-block:: python
 
         from plasmapy.utils.decorators import check_values
@@ -255,11 +263,7 @@ def check_values(func=None, **checks: Dict[str, bool]):
                          'arg2': {'can_be_inf': False}})
         def foo(arg1, arg2):
             return arg1 + arg2
-
-    Notes
-    -----
-    * Full functionality is defined by the class :class:`CheckValues`.
-    """
+     """
     if func is not None:
         return CheckValues(**checks)(func)
     else:
