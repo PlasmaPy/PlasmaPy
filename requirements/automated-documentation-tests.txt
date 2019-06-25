@@ -6,3 +6,4 @@ sphinx
 sphinx-automodapi
 sphinx-gallery
 sphinx_rtd_theme
+sphinx-astropy
