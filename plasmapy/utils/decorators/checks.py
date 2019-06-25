@@ -117,7 +117,10 @@ class CheckValues:
         # Iterate through parameters, determine validation keys, and build checks
         # dictionary `out_checks`
         for param in bound_args.signature.parameters.values():
-            # variable arguments (*args, **kwargs) not checked
+            # variable arguments are NOT checked
+            # e.g. in foo(x, y, *args, d=None, **kwargs) variable arguments
+            #      *args and **kwargs will NOT be checked
+            #
             if param.kind in (inspect.Parameter.VAR_KEYWORD,
                               inspect.Parameter.VAR_POSITIONAL):
                 continue
