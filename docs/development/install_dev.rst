@@ -219,34 +219,3 @@ Either one of these commands will create a soft link to your cloned
 repository.  Any changes in Python code you make there will be there
 when you ``import plasmapy`` from an interactive session.  The exception
 is Cython code.
-
-Working with Cython code
-========================
-
-.. note::
-
-   We are still figuring this part out. Contributions are very welcome!
-
-Cython poses a whole new set of issues for code development.  When
-writing Cython code, you need to recompile your current files for your
-changes to take effect.  This is accomplished, to the best of our current
-understanding , via ``python setup.py build_ext -i``, as recommended by
-the Cython development guide and as supported by the Astropy package
-template in ``astropy_helpers``. This places compiled ``.c`` or ``.cpp``
-sources and ``.so`` compiled libraries in the same location as your
-original ``.pxd`` and ``.py`` sources - this plays well with import
-statements.
-
-Note that ``python setup.py install`` or ``pip install`` will also build
-extensions.
-
-For now, the ``.c`` and ``.cpp`` sources are not included with the
-source code, meaning that they are compiled on installation.  This
-solution is what we got working for distribution, but may change in the
-future.
-
-The safest bet for running tests and checking documentation is using
-``python setup.py test`` and ``python setup.py build_docs`` provided by
-``astropy_helpers``.  These commands copy the entire code base into a
-temporary directory for isolation and build all Cython extensions there
-before running tests and documenation builds.
