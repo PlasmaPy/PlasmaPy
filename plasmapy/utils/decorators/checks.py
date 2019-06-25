@@ -208,7 +208,7 @@ class CheckValues:
 
     @property
     def checks(self) -> Dict[str, Dict[str, bool]]:
-        """Requested argument checks"""
+        """Dictionary of requested argument checks."""
         return self._checks
 
 
