@@ -217,5 +217,4 @@ repository root and use one of
 
 Either one of these commands will create a soft link to your cloned
 repository.  Any changes in Python code you make there will be there
-when you ``import plasmapy`` from an interactive session.  The exception
-is Cython code.
+when you ``import plasmapy`` from an interactive session.
