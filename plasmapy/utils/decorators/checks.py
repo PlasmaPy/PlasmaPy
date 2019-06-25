@@ -12,7 +12,9 @@ from astropy import units as u
 from astropy.units import UnitsWarning
 from plasmapy.constants import c
 from plasmapy.utils.decorators import preserve_signature
-from plasmapy.utils.exceptions import RelativityWarning, RelativityError
+from plasmapy.utils.exceptions import (PlasmaPyWarning,
+                                       RelativityWarning,
+                                       RelativityError)
 from textwrap import dedent
 from typing import (Any, Dict, List, Union)
 
@@ -78,29 +80,17 @@ class CheckValues:
             # combine args and kwargs into dictionary
             bound_args = wrapped_sign.bind(*args, **kwargs)
             bound_args.apply_defaults()
-            given_args = bound_args.arguments
 
             # get checks
             checks = self._get_checks(bound_args)
 
-            # Does `checks` indicate arguments not used by f?
-            missing_params = [
-                param
-                for param in set(checks.keys()) - set(given_args.keys())
-            ]
-            if len(missing_params) > 0:
-                params_str = ", ".join(missing_params)
-                raise TypeError(
-                    f"Call to {self.f.__name__} is missing validated "
-                    f"params {params_str}")
-
             # Review checks and check argument
             for arg_name in checks:
-                self._check_value(given_args[arg_name],
+                self._check_value(bound_args.arguments[arg_name],
                                   arg_name,
                                   **checks[arg_name])
 
-            return f(**given_args)
+            return f(**bound_args.arguments)
 
         return wrapper
 
@@ -150,6 +140,17 @@ class CheckValues:
             for v_name, v_default in self._check_item_defaults.items():
                 out_checks[param.name][v_name] = \
                     param_in_checks.get(v_name, v_default)
+
+        # Does `self.checks` indicate arguments not used by f?
+        missing_params = [
+            param
+            for param in set(self.checks.keys()) - set(out_checks.keys())
+        ]
+        if len(missing_params) > 0:
+            params_str = ", ".join(missing_params)
+            warnings.warn(PlasmaPyWarning(
+                f"Expected to value check parameters {params_str} but they "
+                f"are missing from the call to {self.f.__name__}"))
 
         return out_checks
 
