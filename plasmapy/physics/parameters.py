@@ -186,7 +186,7 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.constants import m_p, m_e
+    >>> from astropy.constants.si import m_p, m_e
     >>> B = 0.014*u.T
     >>> n = 5e19*u.m**-3
     >>> rho = n*(m_p+m_e)
