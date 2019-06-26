@@ -4,7 +4,7 @@
 import numpy as np
 from astropy import units as u
 import pytest
-import plasmapy.constants as const
+import astropy.constants.si as const
 
 from plasmapy.diagnostics import langmuir
 

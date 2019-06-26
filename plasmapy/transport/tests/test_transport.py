@@ -10,7 +10,7 @@ from plasmapy.utils.exceptions import (PhysicsError,
                                        RelativityWarning)
 from plasmapy.atomic.exceptions import InvalidParticleError
 from plasmapy.physics.parameters import Hall_parameter
-from plasmapy.constants import m_p, m_e
+from astropy.constants import m_p, m_e
 
 from plasmapy.transport import (Coulomb_logarithm,
                                                    )

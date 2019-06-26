@@ -27,7 +27,8 @@ import numpy as np
 
 from astropy import units as u
 from plasmapy import (atomic, utils)
-from plasmapy.constants import (m_p, m_e, c, mu0, k_B, e, eps0, pi)
+from astropy.constants.si import (m_p, m_e, c, mu0, k_B, e, eps0)
+from numpy import pi
 from typing import Optional
 
 

@@ -17,7 +17,7 @@ from plasmapy.transport import (Spitzer_resistivity,
                                 fundamental_ion_collision_freq)
 from plasmapy.utils import exceptions
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
-from plasmapy.constants import m_p, m_e, c
+from astropy.constants import m_p, m_e, c
 
 
 class Test_Coulomb_logarithm:

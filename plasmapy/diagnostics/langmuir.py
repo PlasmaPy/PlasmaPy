@@ -20,7 +20,7 @@ __all__ = [
 
 import copy
 import numpy as np
-import plasmapy.constants as const
+import astropy.constants.si as const
 
 from astropy import units as u
 from astropy.visualization import quantity_support
