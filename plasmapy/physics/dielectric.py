@@ -8,7 +8,8 @@ import numpy as np
 from astropy import units as u
 from collections import namedtuple
 from plasmapy import utils
-from plasmapy.constants import (pi, m_e, c, mu0, e, eps0)
+from astropy.constants import (m_e, c, mu0, e, eps0)
+from numpy import pi
 from plasmapy.mathematics import plasma_dispersion_func_deriv
 from plasmapy.physics import parameters
 
@@ -91,7 +92,7 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.constants import pi
+    >>> from numpy import pi
     >>> B = 2*u.T
     >>> species = ['e', 'D+']
     >>> n = [1e18*u.m**-3, 1e18*u.m**-3]
@@ -186,7 +187,7 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.constants import pi
+    >>> from numpy import pi
     >>> B = 2*u.T
     >>> species = ['e', 'D+']
     >>> n = [1e18*u.m**-3, 1e18*u.m**-3]
@@ -293,7 +294,8 @@ def permittivity_1D_Maxwellian(omega,
     Example
     -------
     >>> from astropy import units as u
-    >>> from plasmapy.constants import pi, c
+    >>> from numpy import pi
+    >>> from astropy.constants import c
     >>> T = 30 * 11600 * u.K
     >>> n = 1e18 * u.cm**-3
     >>> particle = 'Ne'

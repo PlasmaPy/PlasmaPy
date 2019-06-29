@@ -116,32 +116,6 @@ PlasmaPy's planned and existing subpackages are:
         </tr>
         <tr>
             <td>
-                plasmapy.constants
-            </td>
-            <td align='center'>
-                <span class="stable"></span>
-            </td>
-            <td>
-                We do not anticipate that there will be any major backward
-                incompatible changes within the
-                <tt class="docutils literal"><span class="pre">constants</span></tt>
-                subpackage.  However, the values for constants may be updated
-                when improved values become available.
-            </td>
-        </tr>
-        <tr>
-            <td>
-                plasmapy.diagnostics
-            </td>
-            <td align='center'>
-                <span class="dev"></span>
-            </td>
-            <td>
-                This subpackage is in the early stages of development.
-            </td>
-        </tr>
-        <tr>
-            <td>
                 plasmapy.mathematics
             </td>
             <td align='center'>

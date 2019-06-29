@@ -19,7 +19,6 @@ via ``import plasmapy.physics``.
 
  atomic                            --- Database for atoms, isotopes, ions...
  classes                           --- (WIP) classes used in multiple places
- constants                         --- (WIP?) wrapper for astropy.constants.si
  data                              --- Data used for testing and examples
  diagnostics                       --- Experimental research data analysis
  mathematics                       --- General formulae used elsewhere

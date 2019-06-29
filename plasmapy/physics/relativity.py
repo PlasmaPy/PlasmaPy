@@ -10,7 +10,7 @@ import numpy as np
 
 from astropy import units as u
 from plasmapy import utils
-from plasmapy.constants import c
+from astropy.constants import c
 
 
 @utils.check_quantity(

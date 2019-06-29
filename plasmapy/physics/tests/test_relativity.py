@@ -3,7 +3,7 @@
 import pytest
 import numpy as np
 from astropy import units as u
-from ...constants import c
+from astropy.constants import c
 from ..relativity import Lorentz_factor
 from ...utils.exceptions import RelativityError
 

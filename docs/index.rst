@@ -86,7 +86,6 @@ Physical Data
 .. toctree::
     :maxdepth: 1
 
-    constants/index
     atomic/index
 
 .. _toplevel-utilities:
