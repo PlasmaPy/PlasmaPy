@@ -99,7 +99,7 @@ class CheckValues:
             # get checks
             checks = self._get_checks(bound_args)
 
-            # Review checks and check argument
+            # check argument values
             for arg_name in checks:
                 self._check_value(bound_args.arguments[arg_name],
                                   arg_name,
