@@ -6,11 +6,6 @@
 PlasmaPy Documentation
 ######################
 
-.. toctree::
-   :hidden:
-
-   /auto_examples/plot_distribution
-
 .. raw:: html
 
     <div style="width: 30%;" class="sphx-glr-thumbcontainer" tooltip="Let&#x27;s try to look at ITER plasma conditions using the physics subpackage. ">
@@ -25,11 +20,6 @@ PlasmaPy Documentation
 
     </div> 
 
-.. toctree::
-   :hidden:
-
-   /auto_examples/plot_physics
-
 .. raw:: html
 
     <div style="width: 30%;" class="sphx-glr-thumbcontainer" tooltip="Let&#x27;s import some basics (and PlasmaPy!) ">
@@ -43,11 +33,6 @@ PlasmaPy Documentation
 .. raw:: html
 
     </div>
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/plot_braginskii
 
 .. raw:: html
 
