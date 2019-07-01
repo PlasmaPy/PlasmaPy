@@ -1,17 +1,4 @@
-numpy (>= 1.13)
-scipy (>= 0.19)
-astropy (>= 2.0)
-mpmath (>= 1.0.0)
-h5py (>= 2.8)
-lmfit (>= 0.9.7)
-matplotlib (>= 2.0)
-colorama (>= 0.3)
+-r requirements/automated-documentation-tests.txt
+pytest
 jupytext
-numpydoc
-pillow
-sphinx
-sphinx-automodapi
-sphinx-gallery
-sphinx_rtd_theme
-sphinx-astropy
 .
