@@ -10,6 +10,7 @@ import warnings
 
 from astropy import units as u
 from astropy.units import UnitsWarning
+from astropy.units.decorators import _get_allowed_units
 from plasmapy.constants import c
 from plasmapy.utils.decorators import preserve_signature
 from plasmapy.utils.exceptions import (PlasmaPyWarning,
@@ -207,6 +208,254 @@ class CheckValues:
 
     @property
     def checks(self) -> Dict[str, Dict[str, bool]]:
+        """Dictionary of requested argument checks."""
+        return self._checks
+
+
+class CheckUnits:
+    """
+    A decorator class to "check" (i.e. limit/control) the units of input/output
+    arguments to a function. (Checking of function arguments `*args` and `**kwargs`
+    is not supported.)
+
+    Parameters
+    ----------
+    equivalencies
+
+    **checks: Union[u.Unit,]
+        Each keyword in `checks` is the name of the function argument to be checked
+        and the keyword value is a dictionary specifying the limits on the function's
+        argument value.  For example, `mass={'can_be_negative': False}` would
+        specify the `mass` argument to a function can not be negative.  The
+        following keys are allowed in the 'check' dictionary:
+
+        ====================== ======= ================================================
+        Key                    Type    Description
+        ====================== ======= ================================================
+        units                  ``      list of desired :mod:`astropy.units`
+        equivalencies          ``      `None` (DEFAULT) equivalencies for units
+        pass_equivalent_units  `bool`  `False` (DEFAULT) allow equivalent units to pass
+        ====================== ======= ================================================
+
+    Notes
+    -----
+    * Decorator does NOT perform any unit conversions.
+
+    Examples
+    --------
+    .. code-block:: python
+
+        from plasmapy.utils.decorators import CheckValues
+        @CheckValues(arg1={'can_be_negative': False, 'can_be_nan': False},
+                     arg2={'can_be_inf': False})
+        def foo(arg1, arg2):
+            return arg1 + arg2
+
+    Or the `**{}` notation can be utilized::
+
+        from plasmapy.utils.decorators import CheckValues
+        @CheckValues(**{'arg1': {'can_be_negative': False, 'can_be_nan': False},
+                        'arg2': {'can_be_inf': False}})
+        def foo(arg1, arg2):
+            return arg1 + arg2
+    """
+    _check_defaults = {
+        'units': None,
+        'equivalencies': None,
+        'pass_equivalent_units': False,
+    }
+
+    def __init__(self,
+                 equivalencies: Union[None, List] = None,
+                 **checks: Dict[str, bool]):
+        self._checks = checks
+        self._equivalencies = equivalencies
+
+    def __call__(self, f):
+        """
+        Parameters
+        ----------
+        f
+            Function to be wrapped/decorated.
+        """
+        self.f = f
+        wrapped_sign = inspect.signature(f)
+
+        @preserve_signature
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            # combine args and kwargs into dictionary
+            bound_args = wrapped_sign.bind(*args, **kwargs)
+            bound_args.apply_defaults()
+
+            checks = self._get_checks(bound_args)
+
+            return f(**bound_args.arguments)
+        return wrapper
+
+    def _get_checks(self,
+                    bound_args: inspect.BoundArguments) -> Dict[str, Dict[str, Any]]:
+        out_checks = {}
+
+        # Iterate through function bound arguments and determine check keys:
+        #   1. 'units'
+        #   2. 'equivalencies'
+        #   3. 'pass_equivalent_units'
+        for param in bound_args.signature.parameters.values():
+            # variable arguments are NOT checked
+            # e.g. in foo(x, y, *args, d=None, **kwargs) variable arguments
+            #      *args and **kwargs will NOT be checked
+            #
+            if param.kind in (inspect.Parameter.VAR_KEYWORD,
+                              inspect.Parameter.VAR_POSITIONAL):
+                continue
+
+            # grab the checks dictionary for the desired parameter
+            try:
+                param_checks = self.checks[param.name]
+            except KeyError:
+                param_checks = None
+
+            # -- Determine target units `_units` --
+            # target units can be define in one of three ways (in
+            # preferential order):
+            #   1. direct keyword pass-through
+            #      i.e. CheckUnits(x=u.cm)
+            #           CheckUnits(x=[u.cm, u.s])
+            #   2. keyword pass-through via dictionary definition
+            #      i.e. CheckUnits(x={'units': u.cm})
+            #           CheckUnits(x={'units': [u.cm, u.s]})
+            #   3. function annotations
+            #
+            # * options (1) and (2) will supersede option (3)
+            # * if None is included in the units list, then None values are allowed
+            #
+            _none_shall_pass = False
+            _units = None
+            if param_checks is not None:
+                # checks for argument were defined with decorator
+                try:
+                    _units = param_checks['units']
+                except KeyError:
+                    # if checks does NOT have 'units' but is still a dictionary,
+                    # then other check conditions may have been specified and the
+                    # user is relying on function annotations to define desired
+                    # units
+                    if not isinstance(param_checks, dict):
+                        _units = param_checks
+                    else:
+                        pass
+
+            # If no units have been specified by decorator checks, then look for
+            # function annotations.
+            if _units is None:
+                _units = param.annotation
+
+                if param_checks is None and _units is inspect.Parameter.empty:
+                    continue
+                else:
+                    raise ValueError(
+                        f"No astropy.units specified for argument {param.name} "
+                        f"of function {self.f.__name__}.")
+
+            # Ensure `_units` is an iterable
+            if isinstance(_units, str) or not hasattr(_units, '__iter__'):
+                # target units/physical types is singular
+                _units = [_units]
+
+            # Is None allowed?
+            if None in _units or param.default is None:
+                _none_shall_pass = True
+
+            # Remove Nones
+            if None in _units:
+                _units = [t for t in _units if t is not None]
+
+            # ensure all _units are astropy.units.Unit or physical types &
+            # define 'units' for unit checks &
+            # define 'none_shall_pass' check
+            _units = self._condition_target_units(_units)
+            out_checks[param.name] = {'units': _units,
+                                      'none_shall_pass': _none_shall_pass}
+
+            # -- Determine target equivalencies --
+            # Unit equivalences can be defined two ways:
+            # 1. using the 'equivalencies' keyword which acts as a global
+            #    equivalencies for all function arguments
+            #    e.g. CheckUnits(equivalencies=u.temperature(), x=u.C)
+            # 2. keyword pass-through via dictionary definition
+            #    e.g. CheckUnits(x={'units': u.C,
+            #                       'equivalencies': u.temperature})
+            #
+            # * (1) will be applied gloably and (2) will override
+            #
+            # initialize equivalencies
+            try:
+                _equivs = param_checks['equivalencies']
+            except KeyError:
+                _equivs = self._equivalencies
+
+            # ensure equivalences are properly formatted
+            if _equivs is None:
+                _equivs = [None] * len(_units)
+            elif isinstance(_equivs, list):
+                if all(isinstance(el, tuple) for el in _equivs):
+                    _equivs = [_equivs]
+
+                    # ensure passed equivalencies list is structured properly
+                    #   [[(), ...], ...]
+                for equiv in _equivs:
+                    for el in equiv:
+                        err_str = (
+                            "All equivalencies must be a list of 2 or 4 element "
+                            "tuples structured like (unit1, unit2) or "
+                            "(unit1, unit2, func_unit1_to_unit2, func_unit2_to_unit1)"
+                        )
+                        if not isinstance(el, tuple):
+                            raise TypeError(err_str)
+                        elif len(el) not in (2, 4):
+                            raise TypeError(err_str)
+
+                    # ensure number of equivalencies lists match the number of
+                    # equivalent units to check
+                if len(_equivs) == 1:
+                    _equivs = _equivs * len(_units)
+                elif len(_equivs) != len(_units):
+                    raise ValueError(
+                        f"The length of the specified equivalencies list "
+                        f"({len(_equivs)}) must be 1 or equal to the "
+                        f"number of specified units ({len(_units)})")
+                else:
+                    raise ValueError(
+                        f"The specified equivalencies {_equivs} is not"
+                        f"valid for astropy.unit.to()")
+                out_checks[param.name]['equivalencies'] = _equivs
+
+            # -- Determine if equivalent units pass --
+            try:
+                peu = param_checks.get(
+                    'pass_equivalent_units',
+                    self._check_defaults['pass_equivalent_units']
+                )
+            except TypeError:
+                peu = self._check_defaults['pass_equivalent_units']
+
+            out_checks[param.name]['pass_equivalent_units'] = peu
+
+        return out_checks
+
+    @staticmethod
+    def _condition_target_units(targets):
+        """
+        From a list of target units (either as a string or unit
+        objects) and physical types, return a list of
+        :class:`astropy.units.Unit` objects.
+        (see :func:`astropy.units.decorators._get_allowed_units`)
+        """
+        return _get_allowed_units(targets)
+
+    @property
+    def checks(self) -> Dict[str, Dict[str, Any]]:
         """Dictionary of requested argument checks."""
         return self._checks
 
