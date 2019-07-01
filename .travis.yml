@@ -20,8 +20,8 @@ env:
 stages:
     - name: Generic tests
 
-    - name: Cron tests
-      if: type = cron
+    - name: Master branch tests
+      if: branch = master
 
 matrix:
 
@@ -37,13 +37,13 @@ matrix:
           stage: Generic tests
 
         - env: ASTROPY_VERSION='dev'
-          stage: Cron tests
+          stage: Master branch tests
 
         - env: NUMPY_VERSION='dev'
-          stage: Cron tests
+          stage: Master branch tests
 
         - env: NUMPY_VERSION='dev' ASTROPY_VERSION='dev'
-          stage: Cron tests
+          stage: Master branch tests
 
 install:
         - git clone git://github.com/astropy/ci-helpers.git --depth 1
