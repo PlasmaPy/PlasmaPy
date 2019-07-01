@@ -10,7 +10,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plasmapy
 
-
 #######################################################################
 help(plasmapy.mathematics.plasma_dispersion_func)
 
@@ -41,9 +40,10 @@ def plot_complex(X, Y, Z, N=50):
 
 plot_complex(X, Y, Z)
 
-#######################################################################
-# We can now apply our visualization function to our simple
+###############################################################################
+# We can now apply our visualization function to our simple dispersion relation
 
+# sphinx_gallery_thumbnail_number = 2
 F = plasmapy.mathematics.plasma_dispersion_func(Z)
 plot_complex(X, Y, F)
 
