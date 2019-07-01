@@ -7,3 +7,10 @@ lmfit (>= 0.9.7)
 matplotlib (>= 2.0)
 colorama (>= 0.3)
 jupytext
+numpydoc
+pillow
+sphinx
+sphinx-automodapi
+sphinx-gallery
+sphinx_rtd_theme
+sphinx-astropy
