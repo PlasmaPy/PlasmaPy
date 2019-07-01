@@ -1,0 +1,1 @@
+Patch `sphinx_gallery.binder` to output custom links to Binder instance
