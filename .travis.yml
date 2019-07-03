@@ -1,21 +1,15 @@
-# Language options
 language: python
-python:
-        - "3.6"
+group: travis_latest
+dist: xenial
+os: linux
+sudo: false
 
 git:
     submodules: false
 
 env:
     global:
-        - PYTHON_VERSION=3.6
-        - SETUP_CMD='test'
-        - NUMPY_VERSION='stable'
-        - ASTROPY_VERSION='stable'
-        - MAIN_CMD='python setup.py'
-        - CONDA_DEPENDENCIES='Cython scipy h5py matplotlib mpmath pytest'
-        - CONDA_ALL_DEPENDENCIES='Cython scipy h5py matplotlib mpmath pytest'
-        - PIP_DEPENDENCIES='roman lmfit colorama codecov'
+        - TOX_ARG=''
 
 stages:
     - name: Generic tests
@@ -24,34 +18,50 @@ stages:
       if: type = cron
 
 matrix:
-
     # Don't wait for allowed failures
     fast_finish: true
-
     include:
-
-        - env: PYTHON_VERSION=3.6 SETUP_CMD='test --coverage'
+        - name: "3.7"
+          env: TOX_ENV='py37-offline'
+          python: "3.7"
           stage: Generic tests
 
-        - env: PYTHON_VERSION=3.7
-          stage: Generic tests
-
-        - env: ASTROPY_VERSION='dev'
+        - name: "3.6"
+          env: TOX_ENV='py36-offline'
+          python: "3.6"
           stage: Cron tests
 
-        - env: NUMPY_VERSION='dev'
+        - name: "3.6-numpydev"
+          env: TOX_ENV='py36-numpydev'
+          python: "3.6"
           stage: Cron tests
 
-        - env: NUMPY_VERSION='dev' ASTROPY_VERSION='dev'
+        - name: "3.7-numpydev"
+          env: TOX_ENV='py37-numpydev'
+          python: "3.7"
           stage: Cron tests
 
-install:
+        - name: "3.6-astropydev"
+          env: TOX_ENV='py36-astropydev'
+          python: "3.6"
+          stage: Cron tests
+
+        - name: "3.7-astropydev"
+          env: TOX_ENV='py37-astropydev'
+          python: "3.7"
+          stage: Cron tests
+
+before_install:
         - git clone git://github.com/astropy/ci-helpers.git --depth 1
+          # We do not want to create the test env
+        - echo "" > ci-helpers/travis/setup_dependencies_common.sh
         - source ci-helpers/travis/setup_conda.sh
+        - pip install tox
 
-# Run the tests
 script:
-    - $MAIN_CMD $SETUP_CMD
+  - tox -e $TOX_ENV $TOX_ARG
+  - pip install --upgrade codecov
+  - codecov
 
 # Assess test coverage
 after_success:
