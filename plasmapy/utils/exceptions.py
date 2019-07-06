@@ -3,7 +3,7 @@ __all__ = ['PlasmaPyError',
            'PhysicsError', 'RelativityError',
            'PlasmaPyWarning',
            'CouplingWarning', 'ImplicitUnitConversionWarning', 'PhysicsWarning',
-           'RelativityWarning', 'UnitsWarning']
+           'RelativityWarning']
 
 from astropy.units import UnitsWarning
 
