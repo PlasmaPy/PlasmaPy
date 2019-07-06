@@ -22,18 +22,19 @@ from typing import (Any, Dict, List, Union)
 
 class CheckValues:
     """
-    A decorator class to "check" (i.e. limit/control) the values of input arguments to
-    a function.  (Checking of function arguments `*args` and `**kwargs` is not
-    supported.)
+    A decorator class to "check" (i.e. limit/control) the values of input
+    arguments to a function.  (Checking of function arguments `*args` and
+    `**kwargs` is not supported.)
 
     Parameters
     ----------
     **checks: Dict[str, Dict[str, bool]]
-        Each keyword in `checks` is the name of the function argument to be checked
-        and the keyword value is a dictionary specifying the limits on the function's
-        argument value.  For example, `mass={'can_be_negative': False}` would
-        specify the `mass` argument to a function can not be negative.  The
-        following keys are allowed in the 'check' dictionary:
+        Each keyword in `checks` is the name of the function argument to be
+        checked and the keyword value is a dictionary specifying the limits on
+        the function's argument value.  For example,
+        `mass={'can_be_negative': False}` would specify the `mass` argument
+        to a function can not be negative.  The following keys are allowed in
+        the 'check' dictionary:
 
         ================ ======= ================================================
         Key              Type    Description
