@@ -17,7 +17,7 @@ from plasmapy.utils.exceptions import (PlasmaPyWarning,
                                        RelativityWarning,
                                        RelativityError)
 from textwrap import dedent
-from typing import (Any, Dict, List, Union)
+from typing import (Any, Dict, List, Tuple, Union)
 
 
 class CheckValues:
@@ -268,7 +268,7 @@ class CheckUnits:
 
     def __init__(self,
                  equivalencies: Union[None, List] = None,
-                 **checks: Dict[str, bool]):
+                 **checks: Dict[str, Any]):
         self._checks = checks
         self._equivalencies = equivalencies
 
