@@ -175,6 +175,8 @@ html_favicon = "./_static/icon.ico"
 # -- Options for Sphinx Gallery -----------------
 
 # Patch sphinx_gallery.binder.gen_binder_rst so as to point to .py file in repository
+# Original code as per sphinx_gallery, under the BSD 3-Clause license
+
 import sphinx_gallery.binder
 def patched_gen_binder_rst(fpath, binder_conf, gallery_conf):
     """Generate the RST + link for the Binder badge.
