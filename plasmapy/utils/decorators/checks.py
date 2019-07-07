@@ -216,62 +216,72 @@ class CheckValues:
 
 class CheckUnits:
     """
-    A decorator class to "check" (i.e. limit/control) the units of input/output
+    A decorator class to "check" -- limit/control -- the units of input/output
     arguments to a function. (Checking of function arguments `*args` and `**kwargs`
     is not supported.)
 
     Parameters
     ----------
-    equivalencies
-
-    **checks: Union[u.Unit,]
+    **checks: Union[u.Unit, List[u.Unit], Dict[str, Any]]
         Each keyword in `checks` is the name of the function argument to be checked
-        and the keyword value is a dictionary specifying the limits on the function's
-        argument value.  For example, `mass={'can_be_negative': False}` would
-        specify the `mass` argument to a function can not be negative.  The
-        following keys are allowed in the 'check' dictionary:
+        and the keyword value is either a list of desired astropy
+        :class:`~astropy.units.Unit`'s or a dictionary specifying the desired unit
+        checks.  The following keys are allowed in the `check` dictionary:
 
         ====================== ======= ================================================
         Key                    Type    Description
         ====================== ======= ================================================
-        units                  ``      list of desired :mod:`astropy.units`
-        equivalencies          ``      `None` (DEFAULT) equivalencies for units
-        pass_equivalent_units  `bool`  `False` (DEFAULT) allow equivalent units to pass
+        units                          list of desired astropy
+                                       :class:`~astropy.units.Unit`'s
+        equivalencies                  [DEFAULT `None`] A list of equivalent pairs to
+                                       try if the units are not directly convertible.
+                                       (see :mod:`~astropy.units.equivalencies` and/or
+                                       `astropy equivalencies`_)
+        pass_equivalent_units  `bool`  [DEFAULT `False`] allow equivalent units to pass
         ====================== ======= ================================================
 
     Notes
     -----
     * Decorator does NOT perform any unit conversions.
+    * If it is desired that `None` values do not raise errors or warnings, then
+      include `None` in the list of units.
+    * If units are not specified in `checks`, then the decorator will attempt
+      to identify desired units by examining the function annotations.
 
     Examples
     --------
     .. code-block:: python
 
-        from plasmapy.utils.decorators import CheckValues
-        @CheckValues(arg1={'can_be_negative': False, 'can_be_nan': False},
-                     arg2={'can_be_inf': False})
+        from plasmapy.utils.decorators import CheckUnits
+        @CheckUnits(arg1={'units': u.cm}, arg2=u.cm)
         def foo(arg1, arg2):
             return arg1 + arg2
 
     Or the `**{}` notation can be utilized::
 
         from plasmapy.utils.decorators import CheckValues
-        @CheckValues(**{'arg1': {'can_be_negative': False, 'can_be_nan': False},
-                        'arg2': {'can_be_inf': False}})
+        @CheckValues(**{'arg1': {'units': u.cm},
+                        'arg2': u.cm})
         def foo(arg1, arg2):
             return arg1 + arg2
+
+    .. _astropy equivalencies:
+        https://docs.astropy.org/en/stable/units/equivalencies.html
     """
+    #: Default values for the possible 'check' keys.
+    # To add a new check the the class, the following needs to be done:
+    #   1. Add a key & default value to the `_check_defaults` dictionary
+    #   2. Add a corresponding conditioning statement to `_get_checks`
+    #   3. Add a corresponding behavior to `_check_unit`
+    #
     _check_defaults = {
         'units': None,
         'equivalencies': None,
         'pass_equivalent_units': False,
     }
 
-    def __init__(self,
-                 equivalencies: Union[None, List] = None,
-                 **checks: Dict[str, Any]):
+    def __init__(self, **checks: Dict[str, Any]):
         self._checks = checks
-        self._equivalencies = equivalencies
 
     def __call__(self, f):
         """
@@ -381,21 +391,16 @@ class CheckUnits:
                                       'none_shall_pass': _none_shall_pass}
 
             # -- Determine target equivalencies --
-            # Unit equivalences can be defined two ways:
-            # 1. using the 'equivalencies' keyword which acts as a global
-            #    equivalencies for all function arguments
-            #    e.g. CheckUnits(equivalencies=u.temperature(), x=u.C)
-            # 2. keyword pass-through via dictionary definition
+            # Unit equivalences can be defined by:
+            # 1. keyword pass-through via dictionary definition
             #    e.g. CheckUnits(x={'units': u.C,
             #                       'equivalencies': u.temperature})
-            #
-            # * (1) will be applied gloably and (2) will override
             #
             # initialize equivalencies
             try:
                 _equivs = param_checks['equivalencies']
-            except KeyError:
-                _equivs = self._equivalencies
+            except (KeyError, TypeError):
+                _equivs = self._check_defaults['equivalencies']
 
             # ensure equivalences are properly formatted
             if _equivs is None:
@@ -404,8 +409,8 @@ class CheckUnits:
                 if all(isinstance(el, tuple) for el in _equivs):
                     _equivs = [_equivs]
 
-                    # ensure passed equivalencies list is structured properly
-                    #   [[(), ...], ...]
+                # ensure passed equivalencies list is structured properly
+                #   [[(), ...], ...]
                 for equiv in _equivs:
                     for el in equiv:
                         err_str = (
@@ -418,8 +423,8 @@ class CheckUnits:
                         elif len(el) not in (2, 4):
                             raise TypeError(err_str)
 
-                    # ensure number of equivalencies lists match the number of
-                    # equivalent units to check
+                # ensure number of equivalencies lists match the number of
+                # equivalent units to check
                 if len(_equivs) == 1:
                     _equivs = _equivs * len(_units)
                 elif len(_equivs) != len(_units):
@@ -431,7 +436,7 @@ class CheckUnits:
                     raise ValueError(
                         f"The specified equivalencies {_equivs} is not"
                         f"valid for astropy.unit.to()")
-                out_checks[param.name]['equivalencies'] = _equivs
+            out_checks[param.name]['equivalencies'] = _equivs
 
             # -- Determine if equivalent units pass --
             try:
