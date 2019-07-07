@@ -556,6 +556,70 @@ class CheckUnits:
         return self._checks
 
 
+def check_units(func=None, **checks: Dict[str, Any]):
+    """
+    A decorator to "check" -- limit/control -- the units of input/output
+    arguments to a function. (Checking of function arguments `*args` and `**kwargs`
+    is not supported.)
+
+    Parameters
+    ----------
+    func:
+        The function to be decorated
+
+    **checks: Union[u.Unit, List[u.Unit], Dict[str, Any]]
+        Each keyword in `checks` is the name of the function argument to be checked
+        and the keyword value is either a list of desired astropy
+        :class:`~astropy.units.Unit`'s or a dictionary specifying the desired unit
+        checks.  The following keys are allowed in the `check` dictionary:
+
+        ====================== ======= ================================================
+        Key                    Type    Description
+        ====================== ======= ================================================
+        units                          list of desired astropy
+                                       :class:`~astropy.units.Unit`'s
+        equivalencies                  [DEFAULT `None`] A list of equivalent pairs to
+                                       try if the units are not directly convertible.
+                                       (see :mod:`~astropy.units.equivalencies` and/or
+                                       `astropy equivalencies`_)
+        pass_equivalent_units  `bool`  [DEFAULT `False`] allow equivalent units to pass
+        ====================== ======= ================================================
+
+    Notes
+    -----
+    * Decorator does NOT perform any unit conversions.
+    * If it is desired that `None` values do not raise errors or warnings, then
+      include `None` in the list of units.
+    * If units are not specified in `checks`, then the decorator will attempt
+      to identify desired units by examining the function annotations.
+
+    Examples
+    --------
+    .. code-block:: python
+
+        from plasmapy.utils.decorators import check_values
+        @check_values(arg1={'can_be_negative': False, 'can_be_nan': False},
+                      arg2={'can_be_inf': False})
+        def foo(arg1, arg2):
+            return arg1 + arg2
+
+    Or the `**{}` notation can be utilized::
+
+        from plasmapy.utils.decorators import check_values
+        @check_values(**{'arg1': {'can_be_negative': False, 'can_be_nan': False},
+                         'arg2': {'can_be_inf': False}})
+        def foo(arg1, arg2):
+            return arg1 + arg2
+
+    .. _astropy equivalencies:
+        https://docs.astropy.org/en/stable/units/equivalencies.html
+    """
+    if func is not None:
+        return CheckUnits(**checks)(func)
+    else:
+        return CheckUnits(**checks)
+
+
 def check_values(func=None, **checks: Dict[str, bool]):
     """
     A decorator to "check" -- limit/control -- values of input arguments to a
