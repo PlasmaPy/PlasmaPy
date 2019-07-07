@@ -22,7 +22,7 @@ from typing import (Any, Dict, List, Tuple, Union)
 
 class CheckValues:
     """
-    A decorator class to "check" (i.e. limit/control) the values of input
+    A decorator class to "check" -- limit/control -- the values of input
     arguments to a function.  (Checking of function arguments `*args` and
     `**kwargs` is not supported.)
 
@@ -65,7 +65,7 @@ class CheckValues:
             return arg1 + arg2
     """
     #: Default values for the possible 'check' keys.
-    # To add a new check the the class, the folowing needs to be done:
+    # To add a new check the the class, the following needs to be done:
     #   1. Add a key & default value to the `_check_defaults` dictionary
     #   2. Add a corresponding if-statement to method `_check_value`
     #
