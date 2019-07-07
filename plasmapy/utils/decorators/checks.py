@@ -451,6 +451,81 @@ class CheckUnits:
 
         return out_checks
 
+    def _check_unit(self,
+                    arg,
+                    arg_name,
+                    **arg_checks: Dict[str, Any]) -> Tuple[Any, Any, Any]:
+
+        # initialize ValueError message
+        valueerror_msg = (f"The argument {arg_name} to function "
+                          f"{self.f.__name__} can not contain")
+
+        # initialize TypeError message
+        typeerror_message = (
+            f"The argument {arg_name} to {self.f.__name__} should "
+            f"be an astropy Quantity with "
+        )
+        if len(arg_checks['units']) == 1:
+            typeerror_message += f"the following units: {arg_checks['units'][0]}"
+        else:
+            typeerror_message += "one of the following units: "
+            for unit in arg_checks['units']:
+                typeerror_message += str(unit)
+                if unit != arg_checks['units'][-1]:
+                    typeerror_message += ", "
+        if arg_checks['none_shall_pass']:
+            typeerror_message += "or None "
+
+        # pass Nones if allowed
+        if arg is None:
+            if arg_checks['none_shall_pass']:
+                return arg, None, None
+            else:
+                raise ValueError(f"{valueerror_msg} Nones")
+
+        # check units
+        in_acceptable_units = []
+        for unit, equiv in zip(arg_checks['units'], arg_checks['equivalencies']):
+            try:
+                in_acceptable_units.append(
+                    arg.unit.is_equivalent(unit, equivalencies=equiv)
+                )
+            except AttributeError:
+                if hasattr(arg, 'unit'):
+                    err_msg = "a 'unit' attribute without an 'is_equivalent' method"
+                else:
+                    err_msg = "no 'unit' attribute"
+
+                raise TypeError(f"Argument {arg_name} to function {self.f.__name__}"
+                                f" has {err_msg}. Pass in an astropy Quantity instead.")
+            # except u.UnitConversionError:
+            #     in_acceptable_units.append(False)
+            # else:
+            #     in_acceptable_units.append(True)
+
+        # How many acceptable units?
+        nacceptable = np.count_nonzero(in_acceptable_units)
+        if nacceptable == 0:
+            # NO equivalent units
+            raise u.UnitConversionError(typeerror_message)
+        # elif nacceptable == 1 and not arg_checks['pass_equivalent_units']:
+        elif nacceptable == 1:
+            # determine unit and equivalencies for unit conversion
+            unit = np.array(arg_checks['units'])[in_acceptable_units][0]
+            equiv = np.array(arg_checks['equivalencies'])[in_acceptable_units][0]
+
+            # return info for unit/quantity conversion
+            return arg, unit, equiv
+        else:  # nacceptable >= 1
+            if arg_checks['pass_equivalent_units']:
+                return arg, None, None
+            else:
+                # too many equivalent units
+                raise u.UnitConversionError(
+                    f"Argument {arg_name} to function {self.f.__name__} must be "
+                    f"equivalent to one unit in: "
+                    f"{[unit for unit in arg_checks['units']]}.")
+
     @staticmethod
     def _condition_target_units(targets):
         """
