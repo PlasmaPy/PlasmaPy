@@ -48,6 +48,14 @@ class TestCheckUnits:
         for key, val in _defaults:
             assert cu._check_defaults[key] == val
 
+    def test_cu_preserves_signature(self):
+        """Test CheckValues preserves signature of wrapped function."""
+        # I'd like to directly dest the @preserve_signature is used (??)
+
+        wfoo = CheckUnits()(self.foo)
+        assert hasattr(wfoo, '__signature__')
+        assert wfoo.__signature__ == inspect.signature(self.foo)
+
     @mock.patch(CheckUnits.__module__ + '.' + CheckUnits.__qualname__,
                 side_effect=CheckUnits, autospec=True)
     def test_decorator_func_def(self, mock_cu_class):
