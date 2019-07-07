@@ -11,15 +11,117 @@ from plasmapy.constants import c
 from plasmapy.utils.decorators.checks import (
     _check_quantity,
     _check_relativistic,
+    check_units,
     check_values,
     check_quantity,
     check_relativistic,
+    CheckUnits,
     CheckValues,
 )
 from plasmapy.utils.exceptions import (PlasmaPyWarning,
                                        RelativityWarning,
                                        RelativityError)
 from unittest import mock
+
+
+# ----------------------------------------------------------------------------------------
+# Test Decorator class `CheckValues` and decorator `check_values`
+# ----------------------------------------------------------------------------------------
+class TestCheckUnits:
+    """
+    Tests for decorator :func:`~plasmapy.utils.decorators.checks.check_units` and
+    decorator class :class:`~plasmapy.utils.decorators.checks.CheckUnits`.
+    """
+
+    @staticmethod
+    def foo(x, y):
+        return x + y
+
+    @mock.patch(CheckUnits.__module__ + '.' + CheckUnits.__qualname__,
+                side_effect=CheckUnits, autospec=True)
+    def test_decorator_func_def(self, mock_cu_class):
+        """
+        Test that :func:`~plasmapy.utils.decorators.checks.check_units` is
+        properly defined.
+        """
+        # create mock function (mock_foo) from function to mock (self.foo)
+        mock_foo = mock.Mock(side_effect=self.foo, name='mock_foo', autospec=True)
+        mock_foo.__name__ = 'mock_foo'
+        mock_foo.__signature__ = inspect.signature(self.foo)
+
+        # define various possible check dicts
+        check_list = [
+            u.cm,
+            {'units': u.cm},
+            {'units': u.cm,
+             'equivalencies': u.temperature()},
+        ]
+
+        # Examine various checks and their pass-through
+        for check in check_list:
+            # -- decorate like a traditional function --
+            # decorate
+            wfoo = check_units(mock_foo, **{'x': check, 'y': check})
+
+            # tests
+            assert wfoo(2 * u.cm, 3 * u.cm) == 5 * u.cm
+            assert mock_cu_class.called
+            assert mock_foo.called
+            assert len(mock_cu_class.call_args) == 2
+            assert mock_cu_class.call_args[0] == ()
+            assert isinstance(mock_cu_class.call_args[1], dict)
+            assert sorted(mock_cu_class.call_args[1].keys()) == ['x', 'y']
+            assert mock_cu_class.call_args[1]['x'] == check
+            assert mock_cu_class.call_args[1]['y'] == check
+
+            # reset
+            mock_cu_class.reset_mock()
+            mock_foo.reset_mock()
+
+            # -- decorate like "sugar" syntax --
+            #
+            #  @check_units(x=check)
+            #      def foo(x):
+            #          return x
+            #
+            # decorate
+            wfoo = check_units(**{'x': check, 'y': check})(mock_foo)
+
+            # tests
+            assert wfoo(2 * u.cm, 3 * u.cm) == 5 * u.cm
+            assert mock_cu_class.called
+            assert mock_foo.called
+            assert len(mock_cu_class.call_args) == 2
+            assert mock_cu_class.call_args[0] == ()
+            assert isinstance(mock_cu_class.call_args[1], dict)
+            assert sorted(mock_cu_class.call_args[1].keys()) == ['x', 'y']
+            assert mock_cu_class.call_args[1]['x'] == check
+            assert mock_cu_class.call_args[1]['y'] == check
+
+            # reset
+            mock_cu_class.reset_mock()
+            mock_foo.reset_mock()
+
+        # -- decorate like "sugar" syntax w/o checks --
+        #
+        #  @check_values
+        #      def foo(x):
+        #          return x
+        #
+        # decorate
+        wfoo = check_units(mock_foo)
+
+        # tests
+        assert wfoo(2, 3) == 5
+        assert mock_cu_class.called
+        assert mock_foo.called
+        assert len(mock_cu_class.call_args) == 2
+        assert mock_cu_class.call_args[0] == ()
+        assert mock_cu_class.call_args[1] == {}
+
+        # reset
+        mock_cu_class.reset_mock()
+        mock_foo.reset_mock()
 
 
 # ----------------------------------------------------------------------------------------
@@ -298,7 +400,7 @@ class TestCheckValues:
             mock_cv_class.reset_mock()
             mock_foo.reset_mock()
 
-        # -- decorate like "sugar" syntax w/o checks--
+        # -- decorate like "sugar" syntax w/o checks --
         #
         #  @check_values
         #      def foo(x):
