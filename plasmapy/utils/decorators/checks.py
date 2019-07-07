@@ -355,15 +355,22 @@ class CheckUnits:
                 # checks for argument were defined with decorator
                 try:
                     _units = param_checks['units']
+                except TypeError:
+                    # if checks is NOT None and is NOT a dictionary, then assume
+                    # only units were specified
+                    #   e.g. CheckUnits(x=u.cm)
+                    #
+                    _units = param_checks
                 except KeyError:
                     # if checks does NOT have 'units' but is still a dictionary,
                     # then other check conditions may have been specified and the
                     # user is relying on function annotations to define desired
                     # units
-                    if not isinstance(param_checks, dict):
-                        _units = param_checks
-                    else:
-                        pass
+                    _units = param_checks
+                    # if not isinstance(param_checks, dict):
+                    #     _units = param_checks
+                    # else:
+                    #     pass
 
             # If no units have been specified by decorator checks, then look for
             # function annotations.
@@ -451,7 +458,7 @@ class CheckUnits:
                     'pass_equivalent_units',
                     self._check_defaults['pass_equivalent_units']
                 )
-            except TypeError:
+            except (AttributeError, TypeError):
                 peu = self._check_defaults['pass_equivalent_units']
 
             out_checks[param.name]['pass_equivalent_units'] = peu
