@@ -558,7 +558,7 @@ class CheckUnits:
 
 def check_values(func=None, **checks: Dict[str, bool]):
     """
-    A decorator to "check" (i.e. limit/control) values of input arguments to a
+    A decorator to "check" -- limit/control -- values of input arguments to a
     function.  (Checking of function arguments `*args` and `**kwargs` is not
     supported.)
 
