@@ -605,7 +605,7 @@ def check_values(func=None, **checks: Dict[str, bool]):
                          'arg2': {'can_be_inf': False}})
         def foo(arg1, arg2):
             return arg1 + arg2
-     """
+    """
     if func is not None:
         return CheckValues(**checks)(func)
     else:
