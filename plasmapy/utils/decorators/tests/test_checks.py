@@ -37,6 +37,17 @@ class TestCheckUnits:
     def foo(x, y):
         return x + y
 
+    def test_cu_default_check_values(self):
+        """Test the default check dictionary for CheckUnits."""
+        cu = CheckUnits()
+        assert hasattr(cu, '_check_defaults')
+        assert isinstance(cu._check_defaults, dict)
+        _defaults = [('units', None),
+                     ('equivalencies', None),
+                     ('pass_equivalent_units', False)]
+        for key, val in _defaults:
+            assert cu._check_defaults[key] == val
+
     @mock.patch(CheckUnits.__module__ + '.' + CheckUnits.__qualname__,
                 side_effect=CheckUnits, autospec=True)
     def test_decorator_func_def(self, mock_cu_class):
