@@ -1,7 +1,8 @@
 """
 Decorator for checking input/output arguments of functions.
 """
-__all__ = ["check_values", "check_quantity", "check_relativistic"]
+__all__ = ["check_values", "check_quantity", "check_relativistic",
+           "CheckUnits", "CheckValues"]
 
 import functools
 import inspect
