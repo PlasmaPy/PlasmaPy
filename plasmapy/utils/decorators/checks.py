@@ -300,7 +300,14 @@ class CheckUnits:
             bound_args = wrapped_sign.bind(*args, **kwargs)
             bound_args.apply_defaults()
 
+            # get checks
             checks = self._get_checks(bound_args)
+
+            # check argument units
+            for arg_name in checks:
+                self._check_unit(bound_args.arguments[arg_name],
+                                 arg_name,
+                                 **checks[arg_name])
 
             return f(**bound_args.arguments)
         return wrapper
