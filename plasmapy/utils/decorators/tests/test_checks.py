@@ -113,6 +113,104 @@ class TestCheckUnits:
         check['pass_equivalent_units'] = True
         assert cu._check_unit(2. * u.km, 'arg', **check) == (2. * u.km, None, None)
 
+    @mock.patch.object(CheckUnits, '_check_unit')
+    def test_cu_called_as_decorator(self, mock_cu):
+        # create mock function (mock_foo) from function to mock (foo)
+        def foo(x: u.Quantity, y: u.cm):
+            return x.value + y.value
+        mock_foo = mock.Mock(side_effect=foo, name='mock_foo', autospec=True)
+        mock_foo.__name__ = 'mock_foo'
+        mock_foo.__signature__ = inspect.signature(foo)
+
+        # -- basic wrap and call --
+        # * units for x will be defined by keyword argument via CheckUnits
+        # * units for y will be defined by annotations
+        #
+        # create wrapped function
+        default_checks = self.check_defaults
+        xchecks = {'units': [u.cm],
+                   'equivalencies': [u.temperature_energy()]}
+        cu = CheckUnits(x=xchecks)
+        wfoo = cu(mock_foo)
+
+        # basic tests
+        assert wfoo(2 * u.cm, 3 * u.cm) == 5
+        assert mock_foo.called
+        assert mock_cu.called
+
+        # ensure `_check_value` method was called with correct arguments
+        assert mock_cu.call_count == 2
+        for ii, (arg, arg_name, checks) in enumerate(zip([2 * u.cm, 3 * u.cm],
+                                                         ['x', 'y'],
+                                                         [xchecks, {'units': [u.cm]}])):
+            # test passed arguments
+            assert mock_cu.mock_calls[ii][1] == (arg, arg_name)
+
+            # test passed keywords
+            for key, val in default_checks.items():
+                if key in checks:
+                    # if key defined in checks then value should be passed
+                    val = checks[key]
+                else:
+                    # if key NOT defined in checks then default value should be passed
+                    val = default_checks[key]
+
+                if not isinstance(val, (bool, list)):
+                    val = [val]
+
+                assert mock_cu.mock_calls[ii][2][key] == val
+
+        # reset mocks
+        mock_cu.reset_mock()
+        mock_foo.reset_mock()
+
+        # -- Argument checks specified, but relying on function annotations --
+        # -- to define units                                                --
+        # * units for x will be defined by keyword argument via CheckUnits
+        # * units for y will be defined by annotations, but other check
+        #   conditions will be defined by keyworkd arguemnt
+        #
+        # create wrapped function
+        default_checks = self.check_defaults
+        xchecks = {'units': [u.cm],
+                   'equivalencies': [u.temperature_energy()]}
+        ychecks = {'pass_equivalent_units': False}
+        cu = CheckUnits(x=xchecks, y=ychecks)
+        wfoo = cu(mock_foo)
+
+        # basic tests
+        assert wfoo(2 * u.cm, 3 * u.cm) == 5
+        assert mock_foo.called
+        assert mock_cu.called
+
+        # ensure `_check_value` method was called with correct arguments
+        ychecks['units'] = [u.cm]
+        assert mock_cu.call_count == 2
+        for ii, (arg, arg_name, checks) in enumerate(zip([2 * u.cm, 3 * u.cm],
+                                                         ['x', 'y'],
+                                                         [xchecks, ychecks])):
+            # test passed arguments
+            assert mock_cu.mock_calls[ii][1] == (arg, arg_name)
+
+            # test passed keywords
+            for key, val in default_checks.items():
+                if key in checks:
+                    # if key defined in checks then value should be passed
+                    val = checks[key]
+                else:
+                    # if key NOT defined in checks then default value should be passed
+                    val = default_checks[key]
+
+                if not isinstance(val, (bool, list)):
+                    val = [val]
+
+                assert mock_cu.mock_calls[ii][2][key] == val
+
+        # reset mocks
+        mock_cu.reset_mock()
+        mock_foo.reset_mock()
+
+
     def test_cu_preserves_signature(self):
         """Test CheckValues preserves signature of wrapped function."""
         # I'd like to directly dest the @preserve_signature is used (??)
