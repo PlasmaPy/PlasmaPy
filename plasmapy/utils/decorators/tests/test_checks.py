@@ -21,6 +21,7 @@ from plasmapy.utils.decorators.checks import (
 from plasmapy.utils.exceptions import (PlasmaPyWarning,
                                        RelativityWarning,
                                        RelativityError)
+from typing import (Any, Dict)
 from unittest import mock
 
 
@@ -32,6 +33,8 @@ class TestCheckUnits:
     Tests for decorator :func:`~plasmapy.utils.decorators.checks.check_units` and
     decorator class :class:`~plasmapy.utils.decorators.checks.CheckUnits`.
     """
+
+    check_defaults = CheckUnits._CheckUnits__check_defaults  # type: Dict[str, Any]
 
     @staticmethod
     def foo(x, y):
@@ -47,6 +50,68 @@ class TestCheckUnits:
                      ('pass_equivalent_units', False)]
         for key, val in _defaults:
             assert cu._CheckUnits__check_defaults[key] == val
+
+    def test_cu_method__check_unit(self):
+        """
+        Test functionality/behavior of the `_check_unit` method on `CheckUnits`.
+        This method does the actual checking of the argument values and should be
+        called by `CheckUnits.__call__()`.
+        """
+        # setup wrapped function
+        cu = CheckUnits()
+        wfoo = cu(self.foo)
+
+        assert hasattr(cu, '_check_unit')
+
+        # -- Test 'units' check --
+        # setup argument checks
+        check = self.check_defaults.copy()
+        check['units'] = [u.cm]
+        check['equivalencies'] = [None]
+
+        # argument does not have units
+        with pytest.raises(TypeError):
+            cu._check_unit(5., 'arg', **check)
+
+        # argument does not match desired units
+        with pytest.raises(u.UnitTypeError):
+            cu._check_unit(5. * u.kg, 'arg', **check)
+
+        # argument has equivalent but not matching units
+        with pytest.raises(u.UnitTypeError):
+            cu._check_unit(5. * u.km, 'arg', **check)
+
+        # argument is equivalent to many specified units but exactly matches one
+        check['units'] = [u.cm, u.km]
+        check['equivalencies'] = [None] * 2
+        assert cu._check_unit(5. * u.km, 'arg', **check) == (5. * u.km, u.km, None)
+
+        # argument is equivalent to many specified units and does NOT exactly matches one
+        with pytest.raises(u.UnitTypeError):
+            cu._check_unit(5. * u.m, 'arg', **check)
+
+        # -- Test 'none_shall_pass' check --
+        # setup argument checks
+        check = self.check_defaults.copy()
+        check['units'] = [u.cm]
+        check['equivalencies'] = [None]
+
+        # argument is None and none_shall_pass = False
+        check['none_shall_pass'] = False
+        with pytest.raises(ValueError):
+            cu._check_unit(None, 'arg', **check)
+
+        # argument is None and none_shall_pass = True
+        check['none_shall_pass'] = True
+        assert cu._check_unit(None, 'arg', **check) == (None, None, None)
+
+        # -- Test 'pass_equivalent_units' check --
+        # setup argument checks
+        check = self.check_defaults.copy()
+        check['units'] = [u.cm]
+        check['equivalencies'] = [None]
+        check['pass_equivalent_units'] = True
+        assert cu._check_unit(2. * u.km, 'arg', **check) == (2. * u.km, None, None)
 
     def test_cu_preserves_signature(self):
         """Test CheckValues preserves signature of wrapped function."""
