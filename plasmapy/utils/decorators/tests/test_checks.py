@@ -326,7 +326,7 @@ class TestCheckValues:
             check['none_shall_pass'] = True
             assert cv._check_value(arg, 'arg', **check) is None
 
-    @mock.patch.object(CheckValues, '_check_value', side_efect=CheckValues._check_value)
+    @mock.patch.object(CheckValues, '_check_value')
     def test_cv_called_as_decorator(self, mock_cv):
         # create mock function (mock_foo) from function to mock (self.foo)
         mock_foo = mock.Mock(side_effect=self.foo, name='mock_foo', autospec=True)
