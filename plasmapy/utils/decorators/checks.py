@@ -168,7 +168,7 @@ class CheckValues:
 
         return out_checks
 
-    def _check_value(self, arg, arg_name, **arg_checks: Dict[str, bool]):
+    def _check_value(self, arg, arg_name, **arg_checks: bool):
         """
         Perform requested argument checks.
 
@@ -178,7 +178,7 @@ class CheckValues:
             The argument to be checked
         arg_name: str
             The name of the argument to be checked
-        arg_checks: Dict[str, Dict[str, bool]]
+        arg_checks: Dict[str, bool]
             The requested checks for the argument.
 
         Raises
@@ -468,7 +468,7 @@ class CheckUnits:
     def _check_unit(self,
                     arg,
                     arg_name,
-                    **arg_checks: Dict[str, Any]) -> Tuple[Any, Any, Any]:
+                    **arg_checks: Union[List, None, bool]) -> Tuple[Any, Any, Any]:
 
         # initialize ValueError message
         valueerror_msg = (f"The argument {arg_name} to function "
@@ -512,10 +512,6 @@ class CheckUnits:
 
                 raise TypeError(f"Argument {arg_name} to function {self.f.__name__}"
                                 f" has {err_msg}. Pass in an astropy Quantity instead.")
-            # except u.UnitConversionError:
-            #     in_acceptable_units.append(False)
-            # else:
-            #     in_acceptable_units.append(True)
 
         # How many acceptable units?
         nacceptable = np.count_nonzero(in_acceptable_units)
