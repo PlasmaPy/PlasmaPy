@@ -40,13 +40,13 @@ class TestCheckUnits:
     def test_cu_default_check_values(self):
         """Test the default check dictionary for CheckUnits."""
         cu = CheckUnits()
-        assert hasattr(cu, '_check_defaults')
-        assert isinstance(cu._check_defaults, dict)
+        assert hasattr(cu, '_CheckUnits__check_defaults')
+        assert isinstance(cu._CheckUnits__check_defaults, dict)
         _defaults = [('units', None),
                      ('equivalencies', None),
                      ('pass_equivalent_units', False)]
         for key, val in _defaults:
-            assert cu._check_defaults[key] == val
+            assert cu._CheckUnits__check_defaults[key] == val
 
     def test_cu_preserves_signature(self):
         """Test CheckValues preserves signature of wrapped function."""

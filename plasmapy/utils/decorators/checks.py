@@ -270,18 +270,18 @@ class CheckUnits:
     """
     #: Default values for the possible 'check' keys.
     # To add a new check the the class, the following needs to be done:
-    #   1. Add a key & default value to the `_check_defaults` dictionary
+    #   1. Add a key & default value to the `__check_defaults` dictionary
     #   2. Add a corresponding conditioning statement to `_get_checks`
     #   3. Add a corresponding behavior to `_check_unit`
     #
-    _check_defaults = {
+    __check_defaults = {
         'units': None,
         'equivalencies': None,
         'pass_equivalent_units': False,
     }
 
     def __init__(self, **checks: Dict[str, Any]):
-        self._checks = checks
+        self._unit_checks = checks
 
     def __call__(self, f):
         """
@@ -331,7 +331,7 @@ class CheckUnits:
 
             # grab the checks dictionary for the desired parameter
             try:
-                param_checks = self.checks[param.name]
+                param_checks = self.unit_checks[param.name]
             except KeyError:
                 param_checks = None
 
@@ -414,7 +414,7 @@ class CheckUnits:
             try:
                 _equivs = param_checks['equivalencies']
             except (KeyError, TypeError):
-                _equivs = self._check_defaults['equivalencies']
+                _equivs = self.__check_defaults['equivalencies']
 
             # ensure equivalences are properly formatted
             if _equivs is None:
@@ -456,10 +456,10 @@ class CheckUnits:
             try:
                 peu = param_checks.get(
                     'pass_equivalent_units',
-                    self._check_defaults['pass_equivalent_units']
+                    self.__check_defaults['pass_equivalent_units']
                 )
             except (AttributeError, TypeError):
-                peu = self._check_defaults['pass_equivalent_units']
+                peu = self.__check_defaults['pass_equivalent_units']
 
             out_checks[param.name]['pass_equivalent_units'] = peu
 
@@ -551,9 +551,9 @@ class CheckUnits:
         return _get_allowed_units(targets)
 
     @property
-    def checks(self) -> Dict[str, Dict[str, Any]]:
+    def unit_checks(self) -> Dict[str, Dict[str, Any]]:
         """Dictionary of requested argument checks."""
-        return self._checks
+        return self._unit_checks
 
 
 def check_units(func=None, **checks: Dict[str, Any]):
