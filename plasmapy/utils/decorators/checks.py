@@ -518,8 +518,7 @@ class CheckUnits:
         nacceptable = np.count_nonzero(in_acceptable_units)
         if nacceptable == 0:
             # NO equivalent units
-            raise u.UnitConversionError(typeerror_message)
-        # elif nacceptable == 1 and not arg_checks['pass_equivalent_units']:
+            raise u.UnitTypeError(typeerror_msg)
         elif nacceptable == 1:
             # determine unit and equivalencies for unit conversion
             unit = np.array(arg_checks['units'])[in_acceptable_units][0]
@@ -532,7 +531,7 @@ class CheckUnits:
                 return arg, None, None
             else:
                 # too many equivalent units
-                raise u.UnitConversionError(
+                raise u.UnitTypeError(
                     f"Argument {arg_name} to function {self.f.__name__} must be "
                     f"equivalent to one unit in: "
                     f"{[unit for unit in arg_checks['units']]}.")
