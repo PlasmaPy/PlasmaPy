@@ -278,6 +278,7 @@ class CheckUnits:
         'units': None,
         'equivalencies': None,
         'pass_equivalent_units': False,
+        'none_shall_pass': False,
     }
 
     def __init__(self, **checks: Dict[str, Any]):
@@ -475,20 +476,20 @@ class CheckUnits:
                           f"{self.f.__name__} can not contain")
 
         # initialize TypeError message
-        typeerror_message = (
+        typeerror_msg = (
             f"The argument {arg_name} to {self.f.__name__} should "
             f"be an astropy Quantity with "
         )
         if len(arg_checks['units']) == 1:
-            typeerror_message += f"the following units: {arg_checks['units'][0]}"
+            typeerror_msg += f"the following units: {arg_checks['units'][0]}"
         else:
-            typeerror_message += "one of the following units: "
+            typeerror_msg += "one of the following units: "
             for unit in arg_checks['units']:
-                typeerror_message += str(unit)
+                typeerror_msg += str(unit)
                 if unit != arg_checks['units'][-1]:
-                    typeerror_message += ", "
+                    typeerror_msg += ", "
         if arg_checks['none_shall_pass']:
-            typeerror_message += "or None "
+            typeerror_msg += "or None "
 
         # pass Nones if allowed
         if arg is None:
