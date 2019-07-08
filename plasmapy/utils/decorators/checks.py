@@ -481,7 +481,7 @@ class CheckUnits:
             f"be an astropy Quantity with "
         )
         if len(arg_checks['units']) == 1:
-            typeerror_msg += f"the following units: {arg_checks['units'][0]}"
+            typeerror_msg += f"the following unit: {arg_checks['units'][0]}"
         else:
             typeerror_msg += "one of the following units: "
             for unit in arg_checks['units']:
@@ -519,22 +519,22 @@ class CheckUnits:
         if nacceptable == 0:
             # NO equivalent units
             raise u.UnitTypeError(typeerror_msg)
-        elif nacceptable == 1:
-            # determine unit and equivalencies for unit conversion
-            unit = np.array(arg_checks['units'])[in_acceptable_units][0]
-            equiv = np.array(arg_checks['equivalencies'])[in_acceptable_units][0]
+        else:
+            # is there an exact match?
+            units_arr = np.array(arg_checks['units'])
+            units_equal_mask = np.equal(units_arr, arg.unit)
+            units_mask = np.logical_and(units_equal_mask, in_acceptable_units)
+            if np.count_nonzero(units_mask) == 1:
+                # matched exactly to a desired unit
+                unit = units_arr[units_mask]
+                equiv = np.array(arg_checks['equivalencies'])[units_mask]
 
-            # return info for unit/quantity conversion
-            return arg, unit, equiv
-        else:  # nacceptable >= 1
-            if arg_checks['pass_equivalent_units']:
-                return arg, None, None
+                return arg, unit[0], equiv[0]
             else:
-                # too many equivalent units
-                raise u.UnitTypeError(
-                    f"Argument {arg_name} to function {self.f.__name__} must be "
-                    f"equivalent to one unit in: "
-                    f"{[unit for unit in arg_checks['units']]}.")
+                if arg_checks['pass_equivalent_units']:
+                    return arg, None, None
+                else:
+                    raise u.UnitTypeError(typeerror_msg)
 
     @staticmethod
     def _condition_target_units(targets):
