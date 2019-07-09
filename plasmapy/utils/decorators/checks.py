@@ -14,7 +14,7 @@ from astropy import units as u
 from astropy.units import UnitsWarning
 from astropy.units.core import _normalize_equivalencies
 from astropy.units.decorators import _get_allowed_units
-from plasmapy.constants import c
+from astropy.constants import c
 from plasmapy.utils.decorators import preserve_signature
 from plasmapy.utils.exceptions import (PlasmaPyWarning,
                                        RelativityWarning,

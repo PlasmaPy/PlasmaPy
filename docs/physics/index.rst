@@ -38,6 +38,9 @@ will use the `plasmapy.utils.check_quantity` decorator to automatically
 cast arguments to Quantities. If that happens, you will be notified via
 an `astropy.units.UnitsWarning`.
 
+Please note that well maintained physical constant data with units and
+uncertainties can be found in `astropy.constants`.
+
 For a general overview of how unit-based input works, take a look at the
 following example:
 

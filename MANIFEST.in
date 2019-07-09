@@ -1,18 +1,16 @@
-include README.rst
-include CHANGES.rst
+include README.md
 include LICENSE.md
+include setup.py
+include pyproject.toml
 
-include ez_setup.py
 include ah_bootstrap.py
 include setup.cfg
 include plasmapy/tests/coveragerc
+include plasmapy/version.py
 
-recursive-include plasmapy *.pyx *.c *.pxd
-recursive-include plasmapy *.json
+recursive-include plasmapy *.json *.npy
 recursive-include docs *
 recursive-include licenses *
-recursive-include cextern *
-recursive-include scripts *
 
 prune build
 prune docs/_build
@@ -28,7 +26,6 @@ include astropy_helpers/CHANGES.rst
 include astropy_helpers/LICENSE.rst
 recursive-include astropy_helpers/licenses *
 
-include astropy_helpers/ez_setup.py
 include astropy_helpers/ah_bootstrap.py
 
 recursive-include astropy_helpers/astropy_helpers *.py *.pyx *.c *.h *.rst

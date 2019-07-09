@@ -60,7 +60,8 @@ import warnings
 
 from astropy import units as u
 from plasmapy import (atomic, utils)
-from plasmapy.constants import (c, m_e, k_B, e, eps0, pi, hbar)
+from astropy.constants.si import (c, m_e, k_B, e, eps0, hbar)
+from numpy import pi
 from plasmapy.mathematics import Fermi_integral
 from plasmapy.physics import parameters
 from plasmapy.physics.quantum import (Wigner_Seitz_radius,

@@ -18,7 +18,7 @@ from astropy import units as u
 from plasmapy import (atomic, utils, mathematics)
 from plasmapy.utils.decorators.checks import check_quantity
 from plasmapy.physics.relativity import Lorentz_factor
-from plasmapy.constants import (c, h, hbar, m_e, eps0, e, k_B)
+from astropy.constants.si import (c, h, hbar, m_e, eps0, e, k_B)
 
 try:
     from lmfit import minimize, Parameters

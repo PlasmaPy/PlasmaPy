@@ -11,7 +11,8 @@ numbers.
 __all__ = ['quantum_theta', 'beta']
 
 from astropy import units as u
-from plasmapy import (constants, utils)
+from plasmapy import utils
+from astropy import constants
 from plasmapy.physics import (quantum, parameters)
 
 

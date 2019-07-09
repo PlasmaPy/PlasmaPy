@@ -1,48 +1,140 @@
+skip-check: &skip-check
+  name: Check for [ci skip]
+  command: bash .circleci/early_exit.sh
+
+merge-check: &merge-check
+  name: Check if we need to merge upstream master
+  command: |
+    if [[ -n "${CIRCLE_PR_NUMBER}" ]]; then
+      git fetch origin --tags
+      git fetch origin +refs/pull/$CIRCLE_PR_NUMBER/merge:pr/$CIRCLE_PR_NUMBER/merge
+      git checkout -qf pr/$CIRCLE_PR_NUMBER/merge
+    fi
+
+apt-run: &apt-install
+  name: Install apt packages
+  command: |
+    apt update
+    apt install -y graphviz build-essential 
+
+apt-latex: &apt-latex
+  name: Install apt packages
+  command: |
+    apt update
+    apt install -y texlive texlive-xetex texlive-fonts-extra texlive-latex-extra texlive-plain-extra latexmk graphviz
+
+tox-install: &tox-install
+  name: Install Tox
+  command: |
+    pip install tox
+
+tox-conda-install: &tox-conda-install
+  name: Install Tox-Conda
+  command: |
+    pip install tox-conda
+
+image-run: &image-tests
+  name: Run image tests
+  environment:
+    MPLBACKEND: Agg
+  command: |
+    tox -e figure
+    pip install codecov
+    codecov
+
 version: 2
 jobs:
-  test-html:
+  egg-info-36:
     docker:
-      - image: plasmapy/documentation-builder:latest
+      - image: circleci/python:3.6
     steps:
       - checkout
-      - run: 
-          name: Install Python dependencies and PlasmaPy
-          command: |
-            pip install --user -r requirements/automated-documentation-tests.txt | cat
-            pip install --user . | cat
+      - run: *skip-check
+      - run: *merge-check
+      - run: python setup.py egg_info
+
+  egg-info-37:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run: *skip-check
+      - run: *merge-check
+      - run: python setup.py egg_info
+
+  twine-check:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run: *skip-check
+      - run: *merge-check
+      - run: python setup.py sdist
+      - run: python -m pip install -U --user --force-reinstall twine
+      - run: python -m twine check dist/*
+
+  pip-install:
+    docker:
+      - image: continuumio/miniconda3
+    steps:
+      - checkout
+      - run: *skip-check
+      - run: *merge-check
+      - run: *apt-install
       - run:
-          name: Build HTML documentation
-          shell: /bin/bash
-          # command needed to not fail the build step on non-zero exit code from sphinx
-          # (now is not the time for build fail)
-          # (that comes later)
+          name: Update pip
+          command: pip install -U pip
+      - run:
+          name: Install PlasmaPy
           command: |
-            # build docs, sending standard output and error to separate files in /tmp
-            # || true ignores the error code as stated above
-            # echo | tee prints out sphinx's error code and saves it to /tmp
-            python setup.py build_docs -W 2> >(tee /tmp/stderr) 1> >(tee /tmp/stdout) || true; echo $? | tee /tmp/EXITCODE
+            pip install --progress-bar off .[all,dev]
+            pip install -e .[all,dev]
+            python setup.py develop
+
+  html-docs:
+    docker:
+      - image: continuumio/miniconda3
+    steps:
+      - restore_cache:
+          keys: sample-data-v1
+
+      - checkout
+      - run: *skip-check
+      - run: *merge-check
+      - run: *apt-install
+      - run: *tox-install
+      - run: tox -e build_docs
       - store_artifacts:
           path: docs/_build/html
+
       - run:
           name: "Built documentation is available at:"
           command: DOCS_URL="${CIRCLE_BUILD_URL}/artifacts/${CIRCLE_NODE_INDEX}/${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}/docs/_build/html/index.html"; echo $DOCS_URL
-      - run:
-          name: "Output from html documentation build is:"
-          command: cat /tmp/stdout
-      - run:
-          name: "Error from html documentation build is:"
-          # display stderr from build AND assert the build went successfully
-          # build errors should fail at this stage
-          command: cat /tmp/stderr && [ $(cat /tmp/EXITCODE) -eq 0 ]
-      - run: 
-          name: Build LaTeX documentation
-          command: python setup.py build_docs -b latex -w
+
+      - save_cache:
+          key: sample-data-v1
+          paths:
+            - ~/sunpy/data/sample_data
 
 workflows:
   version: 2
+
+  egg-info:
+    jobs:
+      - egg-info-36
+      - egg-info-37
+
+  twine-check:
+    jobs:
+      - twine-check
+
+  pip-install:
+    jobs:
+      - pip-install
+
   test-documentation:
     jobs:
-      - test-html
+      - html-docs
 
 notify:
   webhooks:

@@ -6,7 +6,7 @@ import numpy as np
 from astropy import units as u
 
 from plasmapy.utils import roman
-from plasmapy.constants import m_p, m_e, m_n, e, c
+from astropy.constants import m_p, m_e, m_n, e, c
 from plasmapy.atomic.atomic import known_isotopes
 from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.atomic.particle_class import Particle
