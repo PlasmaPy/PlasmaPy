@@ -243,6 +243,31 @@ class TestCheckUnits:
         mock_cu.reset_mock()
         mock_foo.reset_mock()
 
+        # -- decorated function has *args and **kwargs arguments                    -- (4)
+        # arguments passed via *args and **kwargs are ignored by CheckUnits
+        #
+        # create mock function (mock_foo) from function to mock (foo)
+        def foo(x: u.Quantity, *args, y=3*u.cm, **kwargs):
+            return x.value + y.value
+
+        mock_foo = mock.Mock(side_effect=foo, name='mock_foo', autospec=True)
+        mock_foo.__name__ = 'mock_foo'
+        mock_foo.__signature__ = inspect.signature(foo)
+
+        # create wrapped function
+        cu = CheckUnits(x=u.cm, y=u.cm, z=u.cm)
+        wfoo = cu(mock_foo)
+
+        # test
+        with pytest.warns(PlasmaPyWarning):
+            assert wfoo(5 * u.cm, 'hello', z=None) == 8
+        assert mock_foo.called
+        assert mock_cu.call_count == 2
+
+        # reset mocks
+        mock_cu.reset_mock()
+        mock_foo.reset_mock()
+
         # -- Decorator calls with None values                                       -- (5)
         #     * arg x None values are allows via decorator keyword argument
         #     * arg y None values are allowed via function annotations
