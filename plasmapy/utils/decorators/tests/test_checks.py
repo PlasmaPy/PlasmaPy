@@ -73,6 +73,12 @@ class TestCheckUnits:
         with pytest.raises(TypeError):
             cu._check_unit(5., 'arg', **check)
 
+        # argument has attr unit but unit does not have is_equivalent
+        class MyQuantity:
+            unit = None
+        with pytest.raises(TypeError):
+            cu._check_unit(MyQuantity(), 'arg', **check)
+
         # argument does not match desired units
         with pytest.raises(u.UnitTypeError):
             cu._check_unit(5. * u.kg, 'arg', **check)
