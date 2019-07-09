@@ -4,6 +4,7 @@ Decorator for checking input/output arguments of functions.
 __all__ = ["check_values", "check_quantity", "check_relativistic",
            "CheckUnits", "CheckValues"]
 
+import collections
 import functools
 import inspect
 import numpy as np
@@ -11,6 +12,7 @@ import warnings
 
 from astropy import units as u
 from astropy.units import UnitsWarning
+from astropy.units.core import _normalize_equivalencies
 from astropy.units.decorators import _get_allowed_units
 from plasmapy.constants import c
 from plasmapy.utils.decorators import preserve_signature
@@ -387,7 +389,7 @@ class CheckUnits:
                         f"of function {self.f.__name__}.")
 
             # Ensure `_units` is an iterable
-            if isinstance(_units, str) or not hasattr(_units, '__iter__'):
+            if not isinstance(_units, collections.abc.Iterable):
                 # target units/physical types is singular
                 _units = [_units]
 
@@ -427,17 +429,15 @@ class CheckUnits:
 
                 # ensure passed equivalencies list is structured properly
                 #   [[(), ...], ...]
+                #
+                # * All equivalencies must be a list of 2, 3, or 4 element tuples
+                #   structured like...
+                #     (from_unit, to_unit, forward_func, backward_func)
+                #
+                norm_equivs = []
                 for equiv in _equivs:
-                    for el in equiv:
-                        err_str = (
-                            "All equivalencies must be a list of 2 or 4 element "
-                            "tuples structured like (unit1, unit2) or "
-                            "(unit1, unit2, func_unit1_to_unit2, func_unit2_to_unit1)"
-                        )
-                        if not isinstance(el, tuple):
-                            raise TypeError(err_str)
-                        elif len(el) not in (2, 4):
-                            raise TypeError(err_str)
+                    norm_equivs.append(self._normalize_equivalencies(equiv))
+                _equivs = norm_equivs
 
                 # ensure number of equivalencies lists match the number of
                 # equivalent units to check
@@ -448,10 +448,7 @@ class CheckUnits:
                         f"The length of the specified equivalencies list "
                         f"({len(_equivs)}) must be 1 or equal to the "
                         f"number of specified units ({len(_units)})")
-                else:
-                    raise ValueError(
-                        f"The specified equivalencies {_equivs} is not"
-                        f"valid for astropy.unit.to()")
+
             out_checks[param.name]['equivalencies'] = _equivs
 
             # -- Determine if equivalent units pass --
@@ -557,6 +554,24 @@ class CheckUnits:
         (see :func:`astropy.units.decorators._get_allowed_units`)
         """
         return _get_allowed_units(targets)
+
+    @staticmethod
+    def _normalize_equivalencies(equivalencies):
+        """
+        Normalizes equivalencies to ensure each is in a 4-tuple form::
+
+            (from_unit, to_unit, forward_func, backward_func)
+
+        Parameters
+        ----------
+        equivalencies: list of equivalent pairs
+
+
+        Notes
+        -----
+        * see astropy function :func:`~astropy.units.core._normalize_equivalencies`
+        """
+        return _normalize_equivalencies(equivalencies)
 
     @property
     def unit_checks(self) -> Dict[str, Dict[str, Any]]:
