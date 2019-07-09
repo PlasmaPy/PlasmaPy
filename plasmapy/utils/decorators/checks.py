@@ -368,18 +368,18 @@ class CheckUnits:
                     # then other check conditions may have been specified and the
                     # user is relying on function annotations to define desired
                     # units
-                    _units = param_checks
-                    # if not isinstance(param_checks, dict):
-                    #     _units = param_checks
-                    # else:
-                    #     pass
+                    _units = None
 
             # If no units have been specified by decorator checks, then look for
             # function annotations.
             if _units is None:
                 _units = param.annotation
 
-                if param_checks is None and _units is inspect.Parameter.empty:
+                if _units is not inspect.Parameter.empty:
+                    # unit annotations defined
+                    pass
+                elif param_checks is None:
+                    # no checks specified and no unit annotations defined
                     continue
                 else:
                     raise ValueError(
