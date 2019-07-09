@@ -134,6 +134,10 @@ class TestCheckUnits:
         #     * arg x None values are allows via decorator keyword argument
         #     * arg y None values are allowed via function annotations
         #       (i.e. default value)
+        # 6.  ValueError -- decorator checks and function annotation do NOT specify
+        #     any units
+        # 7.  ValueError -- decorator checks specify too many equivalency lists compared
+        #     to the number of units
         #
         # create mock function (mock_foo) from function to mock (foo)
         def foo(x: u.Quantity, y: u.cm):
@@ -300,12 +304,46 @@ class TestCheckUnits:
             assert mock_cu.mock_calls[ii][1] == (arg, arg_name)
 
             # test definition of 'none_shall_pass'
-            assert mock_cu.mock_calls[ii][2]['none_shall_pass'] == True
+            assert mock_cu.mock_calls[ii][2]['none_shall_pass']
 
         # reset mocks
         mock_cu.reset_mock()
         mock_foo.reset_mock()
 
+        # -- decorator checks and function annotation do NOT specify units          -- (6)
+        # create mock function (mock_foo) from function to mock (foo)
+        def foo(x):
+            return x
+        mock_foo = mock.Mock(side_effect=foo, name='mock_foo', autospec=True)
+        mock_foo.__name__ = 'mock_foo'
+        mock_foo.__signature__ = inspect.signature(foo)
+
+        # create wrapped function
+        cu = CheckUnits(x={'equivalencies': u.temperature()})
+        wfoo = cu(mock_foo)
+
+        # basic tests
+        with pytest.raises(ValueError):
+            wfoo(5. * u.cm)
+
+        # reset mocks
+        mock_cu.reset_mock()
+        mock_foo.reset_mock()
+
+        # -- decorator checks specify too many equivalency lists                    -- (7)
+        # create mock function (mock_foo) from function to mock (foo)
+        # create wrapped function
+        cu = CheckUnits(x={'units': u.cm,
+                           'equivalencies': [u.temperature(), u.temperature_energy()]})
+        wfoo = cu(mock_foo)
+
+        # basic tests
+        with pytest.raises(ValueError):
+            wfoo(5. * u.cm)
+
+        # reset mocks
+        mock_cu.reset_mock()
+        mock_foo.reset_mock()
 
     def test_cu_preserves_signature(self):
         """Test CheckValues preserves signature of wrapped function."""
