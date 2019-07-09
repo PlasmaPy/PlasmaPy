@@ -281,7 +281,8 @@ class CheckUnits:
         'none_shall_pass': False,
     }
 
-    def __init__(self, **checks: Dict[str, Any]):
+    def __init__(self,
+                 **checks: Union[u.Unit, List[Union[u.Unit, None]], Dict[str, Any]]):
         self._unit_checks = checks
 
     def __call__(self, f):
