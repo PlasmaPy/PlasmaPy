@@ -128,7 +128,9 @@ class TestCheckUnits:
         #     * arg x units are specified via decorator keyword argument
         #     * arg y units are specified via function annotations but additional
         #       check conditions are specified via decorator keyword argument
-        # 3.  basic decorator call with None values allowed...
+        # 3.  decorator checks specify arguments not in function
+        # 4.  decorated function has *args and **kwargs
+        # 5.  basic decorator call with None values allowed...
         #     * arg x None values are allows via decorator keyword argument
         #     * arg y None values are allowed via function annotations
         #       (i.e. default value)
@@ -229,7 +231,19 @@ class TestCheckUnits:
         mock_cu.reset_mock()
         mock_foo.reset_mock()
 
-        # -- Decorator calls with None values                                       -- (3)
+        # -- decorator checks specify too many arguments                            -- (3)
+        # if the number of checked arguments is not less than or equal to the number
+        # of function arguments, then a PlasmaPyWarning is raised
+        cu = CheckUnits(x=u.cm, y=u.cm, z=u.cm)
+        wfoo = cu(foo)
+        with pytest.warns(PlasmaPyWarning):
+            assert wfoo(2 * u.cm, 3 * u.cm) == 5
+
+        # reset mocks
+        mock_cu.reset_mock()
+        mock_foo.reset_mock()
+
+        # -- Decorator calls with None values                                       -- (5)
         #     * arg x None values are allows via decorator keyword argument
         #     * arg y None values are allowed via function annotations
         #       (i.e. default value)
@@ -535,7 +549,7 @@ class TestCheckValues:
         mock_cv.reset_mock()
         mock_foo.reset_mock()
 
-        # -- decorated function has *arg and **kwargs arguments --
+        # -- decorated function has *args and **kwargs arguments --
         # values passed via *args and **kwargs are ignored by CheckValues
         #
         # create mock function (mock_foo) from function to mock (foo)

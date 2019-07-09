@@ -465,6 +465,17 @@ class CheckUnits:
 
             out_checks[param.name]['pass_equivalent_units'] = peu
 
+        # Does `self.unit_checks` indicate arguments not used by f?
+        missing_params = [
+            param
+            for param in set(self.unit_checks.keys()) - set(out_checks.keys())
+        ]
+        if len(missing_params) > 0:
+            params_str = ", ".join(missing_params)
+            warnings.warn(PlasmaPyWarning(
+                f"Expected to unit check parameters {params_str} but they "
+                f"are missing from the call to {self.f.__name__}"))
+
         return out_checks
 
     def _check_unit(self,
