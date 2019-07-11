@@ -28,34 +28,34 @@ jobs:
   parameters:
     name: Linux_37_offline_coverage
     os: linux
-    tox: py37-offline
+    tox: py37-offline -- -n=4
 
 - template: azure-templates.yml
   parameters:
     name: Linux_36_offline
     os: linux
-    tox: py36-offline 
+    tox: py36-offline  -- -n=4
 
 - template: azure-templates.yml
   parameters:
     name: Windows_37_offline
     os: windows
-    tox: py37-offline 
+    tox: py37-offline  -- -n=4
 
 - template: azure-templates.yml
   parameters:
     name: Windows_36_offline
     os: windows
-    tox: py36-offline 
+    tox: py36-offline  -- -n=4
 
 - template: azure-templates.yml
   parameters:
     name: macOS_37_offline
     os: macos
-    tox: py37-offline 
+    tox: py37-offline  -- -n=4
 
 - template: azure-templates.yml
   parameters:
     name: macOS_36_offline
     os: macos
-    tox: py36-offline 
+    tox: py36-offline  -- -n=4
