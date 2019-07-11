@@ -7,33 +7,46 @@ from typing import Union, Tuple, List
 import os
 import pytest
 
+@pytest.fixture()
+def h5_2d(request):
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000255.h5"))
+    yield h5
+
+@pytest.fixture()
+def h5_3d(request):
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000100.h5"))
+    yield h5
+
+@pytest.fixture()
+def h5_theta(request):
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000200.h5"))
+    yield h5
 
 class TestOpenPMD2D:
     """Test 2D HDF5 dataset based on OpenPMD."""
     # Downloaded from
     # https://github.com/openPMD/openPMD-example-datasets/blob/draft/example-2d.tar.gz
     # per the Creative Commons Zero v1.0 Universal license
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000255.h5"))
 
-    def test_has_electric_field_with_units(self):
-        assert isinstance(self.h5.electric_field.to(u.V / u.m), u.Quantity)
+    def test_has_electric_field_with_units(self, h5_2d):
+        assert isinstance(h5_2d.electric_field.to(u.V / u.m), u.Quantity)
 
-    def test_correct_shape_electric_field(self):
-        assert self.h5.electric_field.shape == (3, 51, 201)
+    def test_correct_shape_electric_field(self, h5_2d):
+        assert h5_2d.electric_field.shape == (3, 51, 201)
 
-    def test_has_charge_density_with_units(self):
-        assert self.h5.charge_density.to(u.C / u.m**3)
+    def test_has_charge_density_with_units(self, h5_2d):
+        assert h5_2d.charge_density.to(u.C / u.m**3)
 
-    def test_correct_shape_charge_density(self):
-        assert self.h5.charge_density.shape == (51, 201)
+    def test_correct_shape_charge_density(self, h5_2d):
+        assert h5_2d.charge_density.shape == (51, 201)
 
-    def test_has_magnetic_field(self):
+    def test_has_magnetic_field(self, h5_2d):
         with pytest.raises(AttributeError):
-            self.h5.magnetic_field
+            h5_2d.magnetic_field
 
-    def test_has_electric_current(self):
+    def test_has_electric_current(self, h5_2d):
         with pytest.raises(AttributeError):
-            self.h5.electric_current
+            h5_2d.electric_current
 
 
 class TestOpenPMD3D:
@@ -41,27 +54,26 @@ class TestOpenPMD3D:
     # Downloaded from
     # https://github.com/openPMD/openPMD-example-datasets/blob/draft/example-3d.tar.gz
     # per the Creative Commons Zero v1.0 Universal license
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000100.h5"))
 
-    def test_has_electric_field_with_units(self):
-        assert isinstance(self.h5.electric_field.to(u.V / u.m), u.Quantity)
+    def test_has_electric_field_with_units(self, h5_3d):
+        assert isinstance(h5_3d.electric_field.to(u.V / u.m), u.Quantity)
 
-    def test_correct_shape_electric_field(self):
-        assert self.h5.electric_field.shape == (3, 26, 26, 201)
+    def test_correct_shape_electric_field(self, h5_3d):
+        assert h5_3d.electric_field.shape == (3, 26, 26, 201)
 
-    def test_has_charge_density_with_units(self):
-        assert isinstance(self.h5.charge_density.to(u.C / u.m**3), u.Quantity)
+    def test_has_charge_density_with_units(self, h5_3d):
+        assert isinstance(h5_3d.charge_density.to(u.C / u.m**3), u.Quantity)
 
-    def test_correct_shape_charge_density(self):
-        assert self.h5.charge_density.shape == (26, 26, 201)
+    def test_correct_shape_charge_density(self, h5_3d):
+        assert h5_3d.charge_density.shape == (26, 26, 201)
 
-    def test_has_magnetic_field(self):
+    def test_has_magnetic_field(self, h5_3d):
         with pytest.raises(AttributeError):
-            self.h5.magnetic_field
+            h5_3d.magnetic_field
 
-    def test_has_electric_current(self):
+    def test_has_electric_current(self, h5_3d):
         with pytest.raises(AttributeError):
-            self.h5.electric_current
+            h5_3d.electric_current
 
 
 class TestOpenPMDThetaMode:
@@ -69,31 +81,30 @@ class TestOpenPMDThetaMode:
     # Downloaded from
     # https://github.com/openPMD/openPMD-example-datasets/blob/draft/example-thetaMode.tar.gz
     # per the Creative Commons Zero v1.0 Universal license
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000200.h5"))
 
-    def test_has_electric_field_with_units(self):
-        assert isinstance(self.h5.electric_field.to(u.V / u.m), u.Quantity)
+    def test_has_electric_field_with_units(self, h5_theta):
+        assert isinstance(h5_theta.electric_field.to(u.V / u.m), u.Quantity)
 
-    def test_correct_shape_electric_field(self):
-        assert self.h5.electric_field.shape == (3, 3, 51, 201)
+    def test_correct_shape_electric_field(self, h5_theta):
+        assert h5_theta.electric_field.shape == (3, 3, 51, 201)
 
-    def test_has_charge_density_with_units(self):
-        assert isinstance(self.h5.charge_density.to(u.C / u.m**3), u.Quantity)
+    def test_has_charge_density_with_units(self, h5_theta):
+        assert isinstance(h5_theta.charge_density.to(u.C / u.m**3), u.Quantity)
 
-    def test_correct_shape_charge_density(self):
-        assert self.h5.charge_density.shape == (3, 51, 201)
+    def test_correct_shape_charge_density(self, h5_theta):
+        assert h5_theta.charge_density.shape == (3, 51, 201)
 
-    def test_has_magnetic_field_with_units(self):
-        assert isinstance(self.h5.magnetic_field.to(u.T), u.Quantity)
+    def test_has_magnetic_field_with_units(self, h5_theta):
+        assert isinstance(h5_theta.magnetic_field.to(u.T), u.Quantity)
 
-    def test_correct_shape_magnetic_field(self):
-        assert self.h5.magnetic_field.shape == (3, 3, 51, 201)
+    def test_correct_shape_magnetic_field(self, h5_theta):
+        assert h5_theta.magnetic_field.shape == (3, 3, 51, 201)
 
-    def test_has_electric_current_with_units(self):
-        assert isinstance(self.h5.electric_current.to(u.A * u.kg / u.m**3), u.Quantity)
+    def test_has_electric_current_with_units(self, h5_theta):
+        assert isinstance(h5_theta.electric_current.to(u.A * u.kg / u.m**3), u.Quantity)
 
-    def test_correct_shape_electric_current(self):
-        assert self.h5.electric_current.shape == (3, 3, 51, 201)
+    def test_correct_shape_electric_current(self, h5_theta):
+        assert h5_theta.electric_current.shape == (3, 3, 51, 201)
 
 
 units_test_table = [
