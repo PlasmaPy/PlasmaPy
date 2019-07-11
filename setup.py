@@ -11,12 +11,7 @@ from setuptools.config import read_configuration
 sys.path.append(os.path.abspath("."))
 import ah_bootstrap  # noqa
 
-from astropy_helpers.setup_helpers import register_commands, get_package_info
-from astropy_helpers.version_helpers import generate_version_py
-
-# Create a dictionary with setup command overrides. Note that this gets
-# information about the package (name and version) from the setup.cfg file.
-cmdclass = register_commands()
+# TODO cmdclass = {'test':astropy_helpers.setup_helpers.PlasmapyTest}
 
 ################################################################################
 # Programmatically generate some extras combos.
@@ -35,5 +30,4 @@ extras['all'] = list(chain.from_iterable(ex_extras.values()))
 # Get configuration information from all of the various subpackages.
 # See the docstring for setup_helpers.update_package_files for more
 # details.
-package_info = get_package_info()
-setup(extras_require=extras, use_scm_version=True, cmdclass=cmdclass, **package_info)
+setup(extras_require=extras, use_scm_version=True, cmdclass=cmdclass)
