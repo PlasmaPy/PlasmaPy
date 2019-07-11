@@ -29,4 +29,4 @@ extras['all'] = list(chain.from_iterable(ex_extras.values()))
 # Get configuration information from all of the various subpackages.
 # See the docstring for setup_helpers.update_package_files for more
 # details.
-setup(extras_require=extras, use_scm_version=True, cmdclass=cmdclass)
+setup(extras_require=extras, use_scm_version=True)
