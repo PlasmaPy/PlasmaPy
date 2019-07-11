@@ -9,7 +9,6 @@ from setuptools.config import read_configuration
 
 # Append cwd for pip 19
 sys.path.append(os.path.abspath("."))
-import ah_bootstrap  # noqa
 
 # TODO cmdclass = {'test':astropy_helpers.setup_helpers.PlasmapyTest}
 
