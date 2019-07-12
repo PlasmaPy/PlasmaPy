@@ -631,7 +631,7 @@ class CheckUnits:
         return self._unit_checks
 
 
-def check_units(func=None, **checks: Dict[str, Any]):
+def check_units(func=None, checks_on_return=None, **checks: Dict[str, Any]):
     """
     A decorator to "check" -- limit/control -- the units of input/output
     arguments to a function. (Checking of function arguments `*args` and `**kwargs`
@@ -689,13 +689,16 @@ def check_units(func=None, **checks: Dict[str, Any]):
     .. _astropy equivalencies:
         https://docs.astropy.org/en/stable/units/equivalencies.html
     """
+    if checks_on_return is not None:
+        checks['checks_on_return'] = checks_on_return
+
     if func is not None:
         return CheckUnits(**checks)(func)
     else:
         return CheckUnits(**checks)
 
 
-def check_values(func=None, **checks: Dict[str, bool]):
+def check_values(func=None, checks_on_return=None, **checks: Dict[str, bool]):
     """
     A decorator to "check" -- limit/control -- values of input arguments to a
     function.  (Checking of function arguments `*args` and `**kwargs` is not
@@ -745,6 +748,9 @@ def check_values(func=None, **checks: Dict[str, bool]):
         def foo(arg1, arg2):
             return arg1 + arg2
     """
+    if checks_on_return is not None:
+        checks['checks_on_return'] = checks_on_return
+
     if func is not None:
         return CheckValues(**checks)(func)
     else:
