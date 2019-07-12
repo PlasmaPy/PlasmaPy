@@ -69,10 +69,10 @@ class CheckValues:
     """
     #: Default values for the possible 'check' keys.
     # To add a new check the the class, the following needs to be done:
-    #   1. Add a key & default value to the `_check_defaults` dictionary
+    #   1. Add a key & default value to the `__check_defaults` dictionary
     #   2. Add a corresponding if-statement to method `_check_value`
     #
-    _check_defaults = {
+    __check_defaults = {
         'can_be_negative': True,
         'can_be_complex': False,
         'can_be_inf': True,
@@ -153,7 +153,7 @@ class CheckValues:
             # build `out_checks`
             # read checks and/or apply defaults values
             out_checks[param.name] = {}
-            for v_name, v_default in self._check_defaults.items():
+            for v_name, v_default in self.__check_defaults.items():
                 out_checks[param.name][v_name] = \
                     param_in_checks.get(v_name, v_default)
 
