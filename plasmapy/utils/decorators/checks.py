@@ -11,10 +11,10 @@ import numpy as np
 import warnings
 
 from astropy import units as u
+from astropy.constants import c
 from astropy.units import UnitsWarning
 from astropy.units.core import _normalize_equivalencies
 from astropy.units.decorators import _get_allowed_units
-from astropy.constants import c
 from plasmapy.utils.decorators import preserve_signature
 from plasmapy.utils.exceptions import (PlasmaPyWarning,
                                        RelativityWarning,
@@ -283,9 +283,16 @@ class CheckUnits:
         'none_shall_pass': False,
     }
 
-    def __init__(self,
-                 **checks: Union[u.Unit, List[Union[u.Unit, None]], Dict[str, Any]]):
+    def __init__(
+            self,
+            checks_on_return: Union[u.Unit,
+                                    List[Union[u.Unit, None]],
+                                    Dict[str, Any]] = None,
+            **checks: Union[u.Unit, List[Union[u.Unit, None]], Dict[str, Any]]):
         self._unit_checks = checks
+
+        if checks_on_return is not None:
+            self._unit_checks['checks_on_return'] = checks_on_return
 
     def __call__(self, f):
         """
@@ -307,24 +314,44 @@ class CheckUnits:
             # get checks
             checks = self._get_checks(bound_args)
 
-            # check argument units
+            # check (input) argument units
             for arg_name in checks:
+                # skip check of output/return
+                if arg_name == 'checks_on_return':
+                    continue
+
+                # check argument
                 self._check_unit(bound_args.arguments[arg_name],
                                  arg_name,
                                  **checks[arg_name])
 
-            return f(**bound_args.arguments)
+            # call function
+            _return = f(**bound_args.arguments)
+
+            # check output
+            if 'checks_on_return' in checks:
+                self._check_unit(_return, 'checks_on_return',
+                                 **checks['checks_on_return'])
+
+            return _return
         return wrapper
 
     def _get_checks(self,
                     bound_args: inspect.BoundArguments) -> Dict[str, Dict[str, Any]]:
         out_checks = {}
 
-        # Iterate through function bound arguments and determine check keys:
+        # Iterate through function bound arguments + return and determine check keys:
         #   1. 'units'
         #   2. 'equivalencies'
         #   3. 'pass_equivalent_units'
-        for param in bound_args.signature.parameters.values():
+        #
+        # artificially add "return" to parameters
+        things_to_check = bound_args.signature.parameters.copy()
+        things_to_check['checks_on_return'] = \
+            inspect.Parameter('checks_on_return',
+                              inspect.Parameter.POSITIONAL_ONLY,
+                              annotation=bound_args.signature.return_annotation)
+        for param in things_to_check.values():
             # variable arguments are NOT checked
             # e.g. in foo(x, y, *args, d=None, **kwargs) variable arguments
             #      *args and **kwargs will NOT be checked
