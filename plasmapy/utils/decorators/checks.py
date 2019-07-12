@@ -312,7 +312,7 @@ class CheckUnits:
             bound_args.apply_defaults()
 
             # get checks
-            checks = self._get_checks(bound_args)
+            checks = self._get_unit_checks(bound_args)
 
             # check (input) argument units
             for arg_name in checks:
@@ -336,8 +336,8 @@ class CheckUnits:
             return _return
         return wrapper
 
-    def _get_checks(self,
-                    bound_args: inspect.BoundArguments) -> Dict[str, Dict[str, Any]]:
+    def _get_unit_checks(self,
+                         bound_args: inspect.BoundArguments) -> Dict[str, Dict[str, Any]]:
         out_checks = {}
 
         # Iterate through function bound arguments + return and determine check keys:
