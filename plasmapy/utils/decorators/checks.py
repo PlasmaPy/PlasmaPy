@@ -214,8 +214,12 @@ class CheckValues:
             If a check fails, then `ValueError` is raised.
 
         """
-        valueerror_msg = (f"The argument '{arg_name}'' to function "
-                          f"{self.f.__name__}() can not contain")
+        if arg_name == 'checks_on_return':
+            valueerror_msg = (f"The return value to function "
+                              f"{self.f.__name__}() can not contain")
+        else:
+            valueerror_msg = (f"The argument '{arg_name}' to function "
+                              f"{self.f.__name__}() can not contain")
 
         # check values
         if arg is None and arg_checks['none_shall_pass']:
