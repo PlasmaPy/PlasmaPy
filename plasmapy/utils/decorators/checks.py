@@ -80,8 +80,14 @@ class CheckValues:
         'none_shall_pass': False,
     }
 
-    def __init__(self, **checks: Dict[str, bool]):
+    def __init__(
+            self,
+            checks_on_return: Dict[str, bool] = None,
+            **checks: Dict[str, bool]):
         self._value_checks = checks
+
+        if checks_on_return is not None:
+            self._value_checks['checks_on_return'] = checks_on_return
 
     def __call__(self, f):
         """
@@ -105,11 +111,24 @@ class CheckValues:
 
             # check argument values
             for arg_name in checks:
+                # skip check of output/return
+                if arg_name == 'checks_on_return':
+                    continue
+
+                # check argument
                 self._check_value(bound_args.arguments[arg_name],
                                   arg_name,
                                   **checks[arg_name])
 
-            return f(**bound_args.arguments)
+            # call function
+            _return = f(**bound_args.arguments)
+
+            # check output
+            if 'checks_on_return' in checks:
+                self._check_value(_return, 'checks_on_return',
+                                  **checks['checks_on_return'])
+
+            return _return
         return wrapper
 
     def _get_value_checks(self,
@@ -132,9 +151,15 @@ class CheckValues:
         # initialize validation dictionary
         out_checks = {}
 
-        # Iterate through parameters, determine validation keys, and build checks
-        # dictionary `out_checks`
-        for param in bound_args.signature.parameters.values():
+        # Iterate through function bound arguments + return and build `out_checks:
+        #
+        # artificially add "return" to parameters
+        things_to_check = bound_args.signature.parameters.copy()
+        things_to_check['checks_on_return'] = \
+            inspect.Parameter('checks_on_return',
+                              inspect.Parameter.POSITIONAL_ONLY,
+                              annotation=bound_args.signature.return_annotation)
+        for param in things_to_check.values():
             # variable arguments are NOT checked
             # e.g. in foo(x, y, *args, d=None, **kwargs) variable arguments
             #      *args and **kwargs will NOT be checked
