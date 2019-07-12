@@ -215,11 +215,10 @@ class CheckValues:
 
         """
         if arg_name == 'checks_on_return':
-            valueerror_msg = (f"The return value to function "
-                              f"{self.f.__name__}() can not contain")
+            valueerror_msg = f"The return value "
         else:
-            valueerror_msg = (f"The argument '{arg_name}' to function "
-                              f"{self.f.__name__}() can not contain")
+            valueerror_msg = f"The argument '{arg_name}' "
+        valueerror_msg += f"to function {self.f.__name__}() can not contain"
 
         # check values
         if arg is None and arg_checks['none_shall_pass']:
@@ -440,9 +439,13 @@ class CheckUnits:
                     # no checks specified and no unit annotations defined
                     continue
                 else:
-                    raise ValueError(
-                        f"No astropy.units specified for argument {param.name} "
-                        f"of function {self.f.__name__}.")
+                    msg = f"No astropy.units specified for "
+                    if param.name == 'checks_on_return':
+                        msg += f"return value "
+                    else:
+                        msg += f"argument {param.name} "
+                    msg += f"of function {self.f.__name__}()."
+                    raise ValueError(msg)
 
             # Ensure `_units` is an iterable
             if not isinstance(_units, collections.abc.Iterable):
@@ -536,15 +539,18 @@ class CheckUnits:
                     arg_name,
                     **arg_checks: Union[List, None, bool]) -> Tuple[Any, Any, Any]:
 
+        # initialize str for error messages
+        if arg_name == 'checks_on_return':
+            err_msg = f"The return value  "
+        else:
+            err_msg = f"The argument '{arg_name}' "
+        err_msg += f"to function {self.f.__name__}()"
+
         # initialize ValueError message
-        valueerror_msg = (f"The argument {arg_name} to function "
-                          f"{self.f.__name__} can not contain")
+        valueerror_msg = f"{err_msg} can not contain"
 
         # initialize TypeError message
-        typeerror_msg = (
-            f"The argument {arg_name} to {self.f.__name__} should "
-            f"be an astropy Quantity with "
-        )
+        typeerror_msg = f"{err_msg} should be an astropy Quantity with "
         if len(arg_checks['units']) == 1:
             typeerror_msg += f"the following unit: {arg_checks['units'][0]}"
         else:
@@ -572,12 +578,12 @@ class CheckUnits:
                 )
             except AttributeError:
                 if hasattr(arg, 'unit'):
-                    err_msg = "a 'unit' attribute without an 'is_equivalent' method"
+                    err_specifier = "a 'unit' attribute without an 'is_equivalent' method"
                 else:
-                    err_msg = "no 'unit' attribute"
+                    err_specifier = "no 'unit' attribute"
 
-                raise TypeError(f"Argument {arg_name} to function {self.f.__name__}"
-                                f" has {err_msg}. Pass in an astropy Quantity instead.")
+                raise TypeError(f"{err_msg} has {err_specifier}. "
+                                f"Use an astropy Quantity instead.")
 
         # How many acceptable units?
         nacceptable = np.count_nonzero(in_acceptable_units)
