@@ -28,6 +28,7 @@ from unittest import mock
 # ----------------------------------------------------------------------------------------
 # Test Decorator class `CheckValues` and decorator `check_values`
 # ----------------------------------------------------------------------------------------
+# noinspection PyUnresolvedReferences
 class TestCheckUnits:
     """
     Tests for decorator :func:`~plasmapy.utils.decorators.checks.check_units` and
@@ -47,7 +48,8 @@ class TestCheckUnits:
         assert isinstance(cu._CheckUnits__check_defaults, dict)
         _defaults = [('units', None),
                      ('equivalencies', None),
-                     ('pass_equivalent_units', False)]
+                     ('pass_equivalent_units', False),
+                     ('none_shall_pass', False)]
         for key, val in _defaults:
             assert cu._CheckUnits__check_defaults[key] == val
 
@@ -346,6 +348,99 @@ class TestCheckUnits:
         # basic tests
         with pytest.raises(ValueError):
             wfoo(5. * u.cm)
+
+        # reset mocks
+        mock_cu.reset_mock()
+        mock_foo.reset_mock()
+
+    @mock.patch.object(CheckUnits, '_check_unit')
+    def test_cu_checks_on_return(self, mock_cu):
+        """
+        Test behavior of `CheckUnits` on checking the units of the return value of
+        the decorated function.
+        """
+        # create mock function (mock_foo) from function to mock (foo)
+        def foo(x: u.cm) -> u.km:
+            return x
+
+        mock_foo = mock.Mock(side_effect=foo, name='mock_foo', autospec=True)
+        mock_foo.__name__ = 'mock_foo'
+        mock_foo.__signature__ = inspect.signature(foo)
+
+        # default unit check values
+        default_checks = self.check_defaults
+
+        # -- Defining units through decorator keyword arg --
+        # * keyword overrides annotations
+        #
+        # create wrapped function
+        rchecks = {'units': [u.cm]}
+        cu = CheckUnits(checks_on_return=rchecks)
+        wfoo = cu(mock_foo)
+
+        # basic tests
+        assert wfoo(2 * u.cm) == 2 * u.cm
+        assert mock_foo.called
+        assert mock_cu.called
+
+        # ensure `_check_value` method was called with correct arguments
+        assert mock_cu.call_count == 2
+        for ii, (arg, arg_name, checks) in enumerate(zip([2 * u.cm, 2 * u.cm],
+                                                         ['x', 'checks_on_return'],
+                                                         [{'units': [u.cm]}, rchecks])):
+            # test passed arguments
+            assert mock_cu.mock_calls[ii][1] == (arg, arg_name)
+
+            # test passed keywords
+            for key, val in default_checks.items():
+                if key in checks:
+                    # if key defined in checks then value should be passed
+                    val = checks[key]
+                else:
+                    # if key NOT defined in checks then default value should be passed
+                    val = default_checks[key]
+
+                if not isinstance(val, (bool, list)):
+                    val = [val]
+
+                assert mock_cu.mock_calls[ii][2][key] == val
+
+        # reset mocks
+        mock_cu.reset_mock()
+        mock_foo.reset_mock()
+
+        # -- Defining units with annotations --
+        # create wrapped function
+        xchecks = {'units': [u.km]}
+        cu = CheckUnits(x=xchecks)
+        wfoo = cu(mock_foo)
+
+        # basic tests
+        assert wfoo(2 * u.km) == 2 * u.km
+        assert mock_foo.called
+        assert mock_cu.called
+
+        # ensure `_check_value` method was called with correct arguments
+        assert mock_cu.call_count == 2
+        for ii, (arg, arg_name, checks) in enumerate(zip([2 * u.km, 2 * u.km],
+                                                         ['x', 'checks_on_return'],
+                                                         [xchecks, {'units': [u.km]}])):
+            # test passed arguments
+            assert mock_cu.mock_calls[ii][1] == (arg, arg_name)
+
+            # test passed keywords
+            for key, val in default_checks.items():
+                if key in checks:
+                    # if key defined in checks then value should be passed
+                    val = checks[key]
+                else:
+                    # if key NOT defined in checks then default value should be passed
+                    val = default_checks[key]
+
+                if not isinstance(val, (bool, list)):
+                    val = [val]
+
+                assert mock_cu.mock_calls[ii][2][key] == val
 
         # reset mocks
         mock_cu.reset_mock()
