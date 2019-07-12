@@ -28,7 +28,6 @@ from unittest import mock
 # ----------------------------------------------------------------------------------------
 # Test Decorator class `CheckValues` and decorator `check_values`
 # ----------------------------------------------------------------------------------------
-# noinspection PyUnresolvedReferences
 class TestCheckUnits:
     """
     Tests for decorator :func:`~plasmapy.utils.decorators.checks.check_units` and
