@@ -81,7 +81,7 @@ class CheckValues:
     }
 
     def __init__(self, **checks: Dict[str, bool]):
-        self._checks = checks
+        self._value_checks = checks
 
     def __call__(self, f):
         """
@@ -115,7 +115,7 @@ class CheckValues:
     def _get_checks(self,
                     bound_args: inspect.BoundArguments) -> Dict[str, Dict[str, bool]]:
         """
-        Review function bound arguments and :attr:`checks` to build a complete 'checks'
+        Review function bound arguments and :attr:`value_checks` to build a complete 'value_checks'
         dictionary. Any unspecified check key is filled with a default value.
 
         Parameters
@@ -145,7 +145,7 @@ class CheckValues:
 
             # grab the checks dictionary for the desired parameter
             try:
-                param_in_checks = self.checks[param.name]
+                param_in_checks = self.value_checks[param.name]
             except KeyError:
                 # checks for parameter not specified
                 continue
@@ -160,7 +160,7 @@ class CheckValues:
         # Does `self.checks` indicate arguments not used by f?
         missing_params = [
             param
-            for param in set(self.checks.keys()) - set(out_checks.keys())
+            for param in set(self.value_checks.keys()) - set(out_checks.keys())
         ]
         if len(missing_params) > 0:
             params_str = ", ".join(missing_params)
@@ -211,9 +211,9 @@ class CheckValues:
             raise ValueError(f"{valueerror_msg} NaNs.")
 
     @property
-    def checks(self) -> Dict[str, Dict[str, bool]]:
+    def value_checks(self) -> Dict[str, Dict[str, bool]]:
         """Dictionary of requested argument checks."""
-        return self._checks
+        return self._value_checks
 
 
 class CheckUnits:
