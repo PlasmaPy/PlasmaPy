@@ -101,7 +101,7 @@ class CheckValues:
             bound_args.apply_defaults()
 
             # get checks
-            checks = self._get_checks(bound_args)
+            checks = self._get_value_checks(bound_args)
 
             # check argument values
             for arg_name in checks:
@@ -112,8 +112,8 @@ class CheckValues:
             return f(**bound_args.arguments)
         return wrapper
 
-    def _get_checks(self,
-                    bound_args: inspect.BoundArguments) -> Dict[str, Dict[str, bool]]:
+    def _get_value_checks(self,
+                          bound_args: inspect.BoundArguments) -> Dict[str, Dict[str, bool]]:
         """
         Review function bound arguments and :attr:`value_checks` to build a complete 'value_checks'
         dictionary. Any unspecified check key is filled with a default value.
@@ -273,7 +273,7 @@ class CheckUnits:
     #: Default values for the possible 'check' keys.
     # To add a new check the the class, the following needs to be done:
     #   1. Add a key & default value to the `__check_defaults` dictionary
-    #   2. Add a corresponding conditioning statement to `_get_checks`
+    #   2. Add a corresponding conditioning statement to `_get_value_checks`
     #   3. Add a corresponding behavior to `_check_unit`
     #
     __check_defaults = {
