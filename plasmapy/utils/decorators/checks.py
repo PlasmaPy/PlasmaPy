@@ -23,7 +23,18 @@ from textwrap import dedent
 from typing import (Any, Dict, List, Tuple, Union)
 
 
-class CheckValues:
+class CheckBase(object):
+    def __init__(self, checks_on_return=None, **checks):
+        self._checks = checks
+        if checks_on_return is not None:
+            self._checks['checks_on_return'] = checks_on_return
+
+    @property
+    def checks(self):
+        return self._checks
+
+
+class CheckValues(CheckBase):
     """
     A decorator class to "check" -- limit/control -- the values of input
     arguments to a function.  (Checking of function arguments `*args` and
@@ -84,10 +95,13 @@ class CheckValues:
             self,
             checks_on_return: Dict[str, bool] = None,
             **checks: Dict[str, bool]):
-        self._value_checks = checks
 
-        if checks_on_return is not None:
-            self._value_checks['checks_on_return'] = checks_on_return
+        # self._value_checks = checks
+        # if checks_on_return is not None:
+        #     self._value_checks['checks_on_return'] = checks_on_return
+
+        # super().__init__(**self._value_checks)
+        super().__init__(checks_on_return=checks_on_return, **checks)
 
     def __call__(self, f):
         """
@@ -134,7 +148,7 @@ class CheckValues:
     def _get_value_checks(self,
                           bound_args: inspect.BoundArguments) -> Dict[str, Dict[str, bool]]:
         """
-        Review function bound arguments and :attr:`value_checks` to build a complete 'value_checks'
+        Review function bound arguments and :attr:`checks` to build a complete 'checks'
         dictionary. Any unspecified check key is filled with a default value.
 
         Parameters
@@ -170,7 +184,7 @@ class CheckValues:
 
             # grab the checks dictionary for the desired parameter
             try:
-                param_in_checks = self.value_checks[param.name]
+                param_in_checks = self.checks[param.name]
             except KeyError:
                 # checks for parameter not specified
                 continue
@@ -185,7 +199,7 @@ class CheckValues:
         # Does `self.checks` indicate arguments not used by f?
         missing_params = [
             param
-            for param in set(self.value_checks.keys()) - set(out_checks.keys())
+            for param in set(self.checks.keys()) - set(out_checks.keys())
         ]
         if len(missing_params) > 0:
             params_str = ", ".join(missing_params)
@@ -238,13 +252,14 @@ class CheckValues:
         elif not arg_checks['can_be_nan'] and np.any(np.isnan(arg)):
             raise ValueError(f"{valueerror_msg} NaNs.")
 
-    @property
-    def value_checks(self) -> Dict[str, Dict[str, bool]]:
-        """Dictionary of requested argument checks."""
-        return self._value_checks
+    # @property
+    # def value_checks(self) -> Dict[str, Dict[str, bool]]:
+    #     """Dictionary of requested argument checks."""
+    #     # return self._value_checks
+    #     return self.checks
 
 
-class CheckUnits:
+class CheckUnits(CheckBase):
     """
     A decorator class to "check" -- limit/control -- the units of input/output
     arguments to a function. (Checking of function arguments `*args` and `**kwargs`
@@ -317,10 +332,8 @@ class CheckUnits:
                                     List[Union[u.Unit, None]],
                                     Dict[str, Any]] = None,
             **checks: Union[u.Unit, List[Union[u.Unit, None]], Dict[str, Any]]):
-        self._unit_checks = checks
 
-        if checks_on_return is not None:
-            self._unit_checks['checks_on_return'] = checks_on_return
+        super().__init__(checks_on_return=checks_on_return, **checks)
 
     def __call__(self, f):
         """
@@ -349,6 +362,12 @@ class CheckUnits:
                     continue
 
                 # check argument
+                # arg, unit, equiv = \
+                #     self._check_unit(bound_args.arguments[arg_name],
+                #                      arg_name,
+                #                      **checks[arg_name])
+                # if unit is not None and unit != arg.unit:
+                #     raise u.UnitTypeError
                 self._check_unit(bound_args.arguments[arg_name],
                                  arg_name,
                                  **checks[arg_name])
@@ -357,9 +376,15 @@ class CheckUnits:
             _return = f(**bound_args.arguments)
 
             # check output
-            if 'checks_on_return' in checks:
-                self._check_unit(_return, 'checks_on_return',
-                                 **checks['checks_on_return'])
+            # if 'checks_on_return' in checks:
+            #     _return, unit, equiv = \
+            #         self._check_unit(_return,
+            #                          'checks_on_return',
+            #                          **checks['checks_on_return'])
+            #     if unit is not None and unit != _return.unit:
+            #         raise u.UnitTypeError
+            self._check_unit(_return, 'checks_on_return',
+                             **checks['checks_on_return'])
 
             return _return
         return wrapper
@@ -390,7 +415,7 @@ class CheckUnits:
 
             # grab the checks dictionary for the desired parameter
             try:
-                param_checks = self.unit_checks[param.name]
+                param_checks = self.checks[param.name]
             except KeyError:
                 param_checks = None
 
@@ -521,10 +546,10 @@ class CheckUnits:
 
             out_checks[param.name]['pass_equivalent_units'] = peu
 
-        # Does `self.unit_checks` indicate arguments not used by f?
+        # Does `self.checks` indicate arguments not used by f?
         missing_params = [
             param
-            for param in set(self.unit_checks.keys()) - set(out_checks.keys())
+            for param in set(self.checks.keys()) - set(out_checks.keys())
         ]
         if len(missing_params) > 0:
             params_str = ", ".join(missing_params)
@@ -534,10 +559,20 @@ class CheckUnits:
 
         return out_checks
 
-    def _check_unit(self,
-                    arg,
-                    arg_name,
-                    **arg_checks: Union[List, None, bool]) -> Tuple[Any, Any, Any]:
+    def _check_unit(self, arg, arg_name: str,
+                    **arg_checks: Union[List, None, bool]):
+        arg, unit, equiv, err = \
+            self._check_unit_core(arg, arg_name, **arg_checks)
+        if err is not None:
+            raise err
+
+    def _check_unit_core(
+            self, arg, arg_name: str,
+            **arg_checks: Union[List, None, bool]
+    ) -> Tuple[Union[None, u.Quantity],
+               Union[None, u.Unit],
+               Union[None, List[Any]],
+               Union[None, type(Exception)]]:
 
         # initialize str for error messages
         if arg_name == 'checks_on_return':
@@ -565,9 +600,9 @@ class CheckUnits:
         # pass Nones if allowed
         if arg is None:
             if arg_checks['none_shall_pass']:
-                return arg, None, None
+                return arg, None, None, None
             else:
-                raise ValueError(f"{valueerror_msg} Nones")
+                return None, None, None, ValueError(f"{valueerror_msg} Nones")
 
         # check units
         in_acceptable_units = []
@@ -582,14 +617,19 @@ class CheckUnits:
                 else:
                     err_specifier = "no 'unit' attribute"
 
-                raise TypeError(f"{err_msg} has {err_specifier}. "
-                                f"Use an astropy Quantity instead.")
+                msg = (f"{err_msg} has {err_specifier}. "
+                       f"Use an astropy Quantity instead.")
+                return None, None, None, TypeError(msg)
 
         # How many acceptable units?
         nacceptable = np.count_nonzero(in_acceptable_units)
+        unit = None
+        equiv = None
+        err = None
         if nacceptable == 0:
             # NO equivalent units
-            raise u.UnitTypeError(typeerror_msg)
+            arg = None
+            err = u.UnitTypeError(typeerror_msg)
         else:
             # is there an exact match?
             units_arr = np.array(arg_checks['units'])
@@ -597,15 +637,22 @@ class CheckUnits:
             units_mask = np.logical_and(units_equal_mask, in_acceptable_units)
             if np.count_nonzero(units_mask) == 1:
                 # matched exactly to a desired unit
-                unit = units_arr[units_mask]
-                equiv = np.array(arg_checks['equivalencies'])[units_mask]
-
-                return arg, unit[0], equiv[0]
+                unit = units_arr[units_mask][0]
+                equiv = np.array(arg_checks['equivalencies'])[units_mask][0]
+            elif nacceptable == 1:
+                # there is a match to 1 equivalent unit
+                unit = units_arr[in_acceptable_units][0]
+                equiv = np.array(arg_checks['equivalencies'])[in_acceptable_units][0]
+                if not arg_checks['pass_equivalent_units']:
+                    err = u.UnitTypeError(typeerror_msg)
+            elif arg_checks['pass_equivalent_units']:
+                # there is a match to more than one equivalent units
+                pass
             else:
-                if arg_checks['pass_equivalent_units']:
-                    return arg, None, None
-                else:
-                    raise u.UnitTypeError(typeerror_msg)
+                # there is a match to more than 1 equivalent units
+                arg = None
+                err = u.UnitTypeError(typeerror_msg)
+        return arg, unit, equiv, err
 
     @staticmethod
     def _condition_target_units(targets):
@@ -635,10 +682,11 @@ class CheckUnits:
         """
         return _normalize_equivalencies(equivalencies)
 
-    @property
-    def unit_checks(self) -> Dict[str, Dict[str, Any]]:
-        """Dictionary of requested argument checks."""
-        return self._unit_checks
+    # @property
+    # def unit_checks(self) -> Dict[str, Dict[str, Any]]:
+    #     """Dictionary of requested argument checks."""
+    #     # return self._unit_checks
+    #     return self.checks
 
 
 def check_units(func=None, checks_on_return=None, **checks: Dict[str, Any]):
