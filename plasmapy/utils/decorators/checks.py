@@ -23,7 +23,10 @@ from textwrap import dedent
 from typing import (Any, Dict, List, Tuple, Union)
 
 
-class CheckBase(object):
+class CheckBase:
+    """
+    Base class for check decorator classes.
+    """
     def __init__(self, checks_on_return=None, **checks):
         self._checks = checks
         if checks_on_return is not None:
@@ -31,6 +34,10 @@ class CheckBase(object):
 
     @property
     def checks(self):
+        """
+        Requested checks on the decorated function's input arguments
+        and return variables.
+        """
         return self._checks
 
 

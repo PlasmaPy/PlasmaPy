@@ -27,6 +27,28 @@ from unittest import mock
 
 
 # ----------------------------------------------------------------------------------------
+# Test Decorator class `CheckBase`
+# ----------------------------------------------------------------------------------------
+class TestCheckBase:
+    """
+    Test for decorator class :class:`~plasmapy.utils.decorators.checks.CheckBase`.
+    """
+    def test_for_members(self):
+        assert hasattr(CheckUnits, 'checks')
+
+    def test_checks(self):
+        _cases = [
+            {'input': (None, {'x': 1, 'y': 2}),
+             'output': {'x': 1, 'y': 2}},
+            {'input': (6, {'x': 1, 'y': 2}),
+             'output': {'x': 1, 'y': 2, 'checks_on_return': 6}},
+        ]
+        for case in _cases:
+            cb = CheckBase(checks_on_return=case['input'][0], **case['input'][1])
+            assert cb.checks == case['output']
+
+
+# ----------------------------------------------------------------------------------------
 # Test Decorator class `CheckValues` and decorator `check_values`
 # ----------------------------------------------------------------------------------------
 class TestCheckUnits:
