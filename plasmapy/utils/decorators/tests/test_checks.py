@@ -15,6 +15,7 @@ from plasmapy.utils.decorators.checks import (
     check_values,
     check_quantity,
     check_relativistic,
+    CheckBase,
     CheckUnits,
     CheckValues,
 )
@@ -39,6 +40,9 @@ class TestCheckUnits:
     @staticmethod
     def foo(x, y):
         return x + y
+
+    def test_inheritance(self):
+        assert issubclass(CheckUnits, CheckBase)
 
     def test_cu_default_check_values(self):
         """Test the default check dictionary for CheckUnits."""
