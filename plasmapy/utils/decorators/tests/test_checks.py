@@ -61,10 +61,14 @@ class TestCheckUnits:
 
     @staticmethod
     def foo_no_anno(x, y):
-        return x.value + y.value
+        return x + y
 
     @staticmethod
     def foo_partial_anno(x: u.Quantity, y: u.cm):
+        return x.value + y.value
+
+    @staticmethod
+    def foo_return_anno(x, y) -> u.um:
         return x.value + y.value
 
     @staticmethod
@@ -73,10 +77,6 @@ class TestCheckUnits:
 
     @staticmethod
     def foo_with_none(x: u.Quantity, y: u.cm = None):
-        return x.value + y.value
-
-    @staticmethod
-    def foo_return_anno(x, y) -> u.um:
         return x.value + y.value
 
     def test_inheritance(self):
@@ -107,6 +107,11 @@ class TestCheckUnits:
         default_checks = self.check_defaults.copy()
 
         # setup test cases
+        # 'setup' = arguments for `_get_unit_checks`
+        # 'output' = expected return from `_get_unit_checks`
+        # 'raises' = if `_get_unit_checks` raises an Exception
+        # 'warns' = if `_get_unit_checks` issues a warning
+        #
         equivs = [[u.temperature_energy()]]
         _cases = [
             # x units are defined via decorator kwarg of CheckUnits
@@ -390,330 +395,60 @@ class TestCheckUnits:
                 with pytest.raises(case['output'][3]):
                     cu._check_unit(arg, arg_name, **arg_checks)
 
-    @mock.patch.object(CheckUnits, '_check_unit')
-    def test_cu_called_as_decorator(self, mock_cu):
+    def test_cu_called_as_decorator(self):
         """
-        Test behavior of `CheckUnits` and argument pass-through to
-        `CheckUnits._check_unit` when `CheckUnits` is used as a decorator.
+        Test behavior of `CheckUnits.__call__` (i.e. used as a decorator).
         """
-        # What is tested?
-        # 1.  basic decorator call where...
-        #     * arg x units are specified via decorator keyword argument
-        #     * arg y units are specified via function annotations (no additional
-        #       checks conditions are specified via decorator keyword argument)
-        # 2.  basic decorator call where...
-        #     * arg x units are specified via decorator keyword argument
-        #     * arg y units are specified via function annotations but additional
-        #       check conditions are specified via decorator keyword argument
-        # 3.  decorator checks specify arguments not in function
-        # 4.  decorated function has *args and **kwargs
-        # 5.  basic decorator call with None values allowed...
-        #     * arg x None values are allows via decorator keyword argument
-        #     * arg y None values are allowed via function annotations
-        #       (i.e. default value)
-        # 6.  ValueError -- decorator checks and function annotation do NOT specify
-        #     any units
-        # 7.  ValueError -- decorator checks specify too many equivalency lists compared
-        #     to the number of units
+        # setup test cases
+        # 'setup' = arguments for `CheckUnits` and wrapped function
+        # 'output' = expected return from wrapped function
+        # 'raises' = if an Exception is expected to be raised
+        # 'warns' = if a warning is expected to be issued
         #
-        # create mock function (mock_foo) from function to mock (foo)
-        def foo(x: u.Quantity, y: u.cm):
-            return x.value + y.value
-        mock_foo = mock.Mock(side_effect=foo, name='mock_foo', autospec=True)
-        mock_foo.__name__ = 'mock_foo'
-        mock_foo.__signature__ = inspect.signature(foo)
+        _cases = [
+            # clean execution
+            {'setup': {'function': self.foo_no_anno,
+                       'args': (2 * u.cm, 3 * u.cm),
+                       'kwargs': {},
+                       'checks': {'x': u.cm,
+                                  'y': u.cm,
+                                  'checks_on_return': u.cm}},
+             'output': 5 * u.cm,
+             },
 
-        # default unit check values
-        default_checks = self.check_defaults
+            # argument fails checks
+            {'setup': {'function': self.foo_no_anno,
+                       'args': (2 * u.cm, 3 * u.cm),
+                       'kwargs': {},
+                       'checks': {'x': u.g,
+                                  'y': u.cm,
+                                  'checks_on_return': u.cm}},
+             'raises': u.UnitTypeError,
+             },
 
-        # # -- basic wrap and call                                                    -- (1)
-        # # * units for x will be defined by keyword argument via CheckUnits
-        # # * units for y will be defined by annotations
-        # #
-        # # create wrapped function
-        # xchecks = {'units': [u.cm],
-        #            'equivalencies': [u.temperature_energy()]}
-        # cu = CheckUnits(x=xchecks)
-        # wfoo = cu(mock_foo)
-        #
-        # # basic tests
-        # assert wfoo(2 * u.cm, 3 * u.cm) == 5
-        # assert mock_foo.called
-        # assert mock_cu.called
-        #
-        # # ensure `_check_value` method was called with correct arguments
-        # assert mock_cu.call_count == 2
-        # for ii, (arg, arg_name, checks) in enumerate(zip([2 * u.cm, 3 * u.cm],
-        #                                                  ['x', 'y'],
-        #                                                  [xchecks, {'units': [u.cm]}])):
-        #     # test passed arguments
-        #     assert mock_cu.mock_calls[ii][1] == (arg, arg_name)
-        #
-        #     # test passed keywords
-        #     for key, val in default_checks.items():
-        #         if key in checks:
-        #             # if key defined in checks then value should be passed
-        #             val = checks[key]
-        #         else:
-        #             # if key NOT defined in checks then default value should be passed
-        #             val = default_checks[key]
-        #
-        #         if not isinstance(val, (bool, list)):
-        #             val = [val]
-        #
-        #         assert mock_cu.mock_calls[ii][2][key] == val
-        #
-        # # reset mocks
-        # mock_cu.reset_mock()
-        # mock_foo.reset_mock()
+            # return fails checks
+            {'setup': {'function': self.foo_no_anno,
+                       'args': (2 * u.cm, 3 * u.cm),
+                       'kwargs': {},
+                       'checks': {'x': u.cm,
+                                  'y': u.cm,
+                                  'checks_on_return': u.km}},
+             'raises': u.UnitTypeError,
+             },
+        ]
 
-        # # -- Argument checks specified, but relying on function annotations         -- (2)
-        # # -- to define units                                                        --
-        # # * units for x will be defined by keyword argument via CheckUnits
-        # # * units for y will be defined by annotations, but other check
-        # #   conditions will be defined by keyword arguement
-        # #
-        # # create wrapped function
-        # xchecks = {'units': [u.cm],
-        #            'equivalencies': [u.temperature_energy()]}
-        # ychecks = {'pass_equivalent_units': False}
-        # cu = CheckUnits(x=xchecks, y=ychecks)
-        # wfoo = cu(mock_foo)
-        #
-        # # basic tests
-        # assert wfoo(2 * u.cm, 3 * u.cm) == 5
-        # assert mock_foo.called
-        # assert mock_cu.called
-        #
-        # # ensure `_check_value` method was called with correct arguments
-        # ychecks['units'] = [u.cm]
-        # assert mock_cu.call_count == 2
-        # for ii, (arg, arg_name, checks) in enumerate(zip([2 * u.cm, 3 * u.cm],
-        #                                                  ['x', 'y'],
-        #                                                  [xchecks, ychecks])):
-        #     # test passed arguments
-        #     assert mock_cu.mock_calls[ii][1] == (arg, arg_name)
-        #
-        #     # test passed keywords
-        #     for key, val in default_checks.items():
-        #         if key in checks:
-        #             # if key defined in checks then value should be passed
-        #             val = checks[key]
-        #         else:
-        #             # if key NOT defined in checks then default value should be passed
-        #             val = default_checks[key]
-        #
-        #         if not isinstance(val, (bool, list)):
-        #             val = [val]
-        #
-        #         assert mock_cu.mock_calls[ii][2][key] == val
-        #
-        # # reset mocks
-        # mock_cu.reset_mock()
-        # mock_foo.reset_mock()
+        # test
+        for case in _cases:
+            wfoo = CheckUnits(**case['setup']['checks'])(case['setup']['function'])
 
-        # # -- decorator checks specify too many arguments                            -- (3)
-        # # if the number of checked arguments is not less than or equal to the number
-        # # of function arguments, then a PlasmaPyWarning is raised
-        # cu = CheckUnits(x=u.cm, y=u.cm, z=u.cm)
-        # wfoo = cu(foo)
-        # with pytest.warns(PlasmaPyWarning):
-        #     assert wfoo(2 * u.cm, 3 * u.cm) == 5
-        #
-        # # reset mocks
-        # mock_cu.reset_mock()
-        # mock_foo.reset_mock()
+            args = case['setup']['args']
+            kwargs = case['setup']['kwargs']
 
-        # -- decorated function has *args and **kwargs arguments                    -- (4)
-        # arguments passed via *args and **kwargs are ignored by CheckUnits
-        #
-        # # create mock function (mock_foo) from function to mock (foo)
-        # def foo(x: u.Quantity, *args, y=3*u.cm, **kwargs):
-        #     return x.value + y.value
-        #
-        # mock_foo = mock.Mock(side_effect=foo, name='mock_foo', autospec=True)
-        # mock_foo.__name__ = 'mock_foo'
-        # mock_foo.__signature__ = inspect.signature(foo)
-        #
-        # # create wrapped function
-        # cu = CheckUnits(x=u.cm, y=u.cm, z=u.cm)
-        # wfoo = cu(mock_foo)
-        #
-        # # test
-        # with pytest.warns(PlasmaPyWarning):
-        #     assert wfoo(5 * u.cm, 'hello', z=None) == 8
-        # assert mock_foo.called
-        # assert mock_cu.call_count == 2
-        #
-        # # reset mocks
-        # mock_cu.reset_mock()
-        # mock_foo.reset_mock()
-
-        # # -- Decorator calls with None values                                       -- (5)
-        # #     * arg x None values are allows via decorator keyword argument
-        # #     * arg y None values are allowed via function annotations
-        # #       (i.e. default value)
-        # #
-        # # create mock function (mock_foo) from function to mock (foo)
-        # def foo(x: u.Quantity, y: u.cm = None):
-        #     return x.value + y.value
-        # mock_foo = mock.Mock(side_effect=foo, name='mock_foo', autospec=True)
-        # mock_foo.__name__ = 'mock_foo'
-        # mock_foo.__signature__ = inspect.signature(foo)
-        #
-        # # create wrapped function
-        # xchecks = {'units': [u.cm, None],
-        #            'equivalencies': [u.temperature_energy()]}
-        # cu = CheckUnits(x=xchecks)
-        # wfoo = cu(mock_foo)
-        #
-        # # basic tests
-        # assert wfoo(2 * u.cm, 3 * u.cm) == 5
-        # assert mock_foo.called
-        # assert mock_cu.called
-        #
-        # # ensure `_check_value` method was called with correct arguments
-        # assert mock_cu.call_count == 2
-        # for ii, (arg, arg_name, checks) in enumerate(zip([2 * u.cm, 3 * u.cm],
-        #                                                  ['x', 'y'],
-        #                                                  [xchecks, {'units': [u.cm]}])):
-        #     # test passed arguments
-        #     assert mock_cu.mock_calls[ii][1] == (arg, arg_name)
-        #
-        #     # test definition of 'none_shall_pass'
-        #     assert mock_cu.mock_calls[ii][2]['none_shall_pass']
-        #
-        # # reset mocks
-        # mock_cu.reset_mock()
-        # mock_foo.reset_mock()
-
-        # # -- decorator checks and function annotation do NOT specify units          -- (6)
-        # # create mock function (mock_foo) from function to mock (foo)
-        # def foo(x):
-        #     return x
-        # mock_foo = mock.Mock(side_effect=foo, name='mock_foo', autospec=True)
-        # mock_foo.__name__ = 'mock_foo'
-        # mock_foo.__signature__ = inspect.signature(foo)
-        #
-        # # create wrapped function
-        # cu = CheckUnits(x={'equivalencies': u.temperature()})
-        # wfoo = cu(mock_foo)
-        #
-        # # basic tests
-        # with pytest.raises(ValueError):
-        # #     wfoo(5. * u.cm)
-        #
-        # # reset mocks
-        # mock_cu.reset_mock()
-        # mock_foo.reset_mock()
-
-        # # -- decorator checks specify too many equivalency lists                    -- (7)
-        # # create mock function (mock_foo) from function to mock (foo)
-        # # create wrapped function
-        # cu = CheckUnits(x={'units': u.cm,
-        #                    'equivalencies': [u.temperature(), u.temperature_energy()]})
-        # wfoo = cu(mock_foo)
-        #
-        # # basic tests
-        # with pytest.raises(ValueError):
-        #     wfoo(5. * u.cm)
-        #
-        # # reset mocks
-        # mock_cu.reset_mock()
-        # mock_foo.reset_mock()
-
-    @mock.patch.object(CheckUnits, '_check_unit')
-    def test_cu_checks_on_return(self, mock_cu):
-        """
-        Test behavior of `CheckUnits` on checking the units of the return value of
-        the decorated function.
-        """
-        # create mock function (mock_foo) from function to mock (foo)
-        def foo(x: u.cm) -> u.km:
-            return x
-
-        mock_foo = mock.Mock(side_effect=foo, name='mock_foo', autospec=True)
-        mock_foo.__name__ = 'mock_foo'
-        mock_foo.__signature__ = inspect.signature(foo)
-
-        # default unit check values
-        default_checks = self.check_defaults
-
-        # -- Defining units through decorator keyword arg --
-        # * keyword overrides annotations
-        #
-        # create wrapped function
-        rchecks = {'units': [u.cm]}
-        cu = CheckUnits(checks_on_return=rchecks)
-        wfoo = cu(mock_foo)
-
-        # basic tests
-        assert wfoo(2 * u.cm) == 2 * u.cm
-        assert mock_foo.called
-        assert mock_cu.called
-
-        # ensure `_check_value` method was called with correct arguments
-        assert mock_cu.call_count == 2
-        for ii, (arg, arg_name, checks) in enumerate(zip([2 * u.cm, 2 * u.cm],
-                                                         ['x', 'checks_on_return'],
-                                                         [{'units': [u.cm]}, rchecks])):
-            # test passed arguments
-            assert mock_cu.mock_calls[ii][1] == (arg, arg_name)
-
-            # test passed keywords
-            for key, val in default_checks.items():
-                if key in checks:
-                    # if key defined in checks then value should be passed
-                    val = checks[key]
-                else:
-                    # if key NOT defined in checks then default value should be passed
-                    val = default_checks[key]
-
-                if not isinstance(val, (bool, list)):
-                    val = [val]
-
-                assert mock_cu.mock_calls[ii][2][key] == val
-
-        # reset mocks
-        mock_cu.reset_mock()
-        mock_foo.reset_mock()
-
-        # -- Defining units with annotations --
-        # create wrapped function
-        xchecks = {'units': [u.km]}
-        cu = CheckUnits(x=xchecks)
-        wfoo = cu(mock_foo)
-
-        # basic tests
-        assert wfoo(2 * u.km) == 2 * u.km
-        assert mock_foo.called
-        assert mock_cu.called
-
-        # ensure `_check_value` method was called with correct arguments
-        assert mock_cu.call_count == 2
-        for ii, (arg, arg_name, checks) in enumerate(zip([2 * u.km, 2 * u.km],
-                                                         ['x', 'checks_on_return'],
-                                                         [xchecks, {'units': [u.km]}])):
-            # test passed arguments
-            assert mock_cu.mock_calls[ii][1] == (arg, arg_name)
-
-            # test passed keywords
-            for key, val in default_checks.items():
-                if key in checks:
-                    # if key defined in checks then value should be passed
-                    val = checks[key]
-                else:
-                    # if key NOT defined in checks then default value should be passed
-                    val = default_checks[key]
-
-                if not isinstance(val, (bool, list)):
-                    val = [val]
-
-                assert mock_cu.mock_calls[ii][2][key] == val
-
-        # reset mocks
-        mock_cu.reset_mock()
-        mock_foo.reset_mock()
+            if 'raises' in case:
+                with pytest.raises(case['raises']):
+                    wfoo(*args, **kwargs)
+            else:
+                assert wfoo(*args, **kwargs) == case['output']
 
     def test_cu_preserves_signature(self):
         """Test CheckValues preserves signature of wrapped function."""
@@ -730,84 +465,73 @@ class TestCheckUnits:
         Test that :func:`~plasmapy.utils.decorators.checks.check_units` is
         properly defined.
         """
-        # create mock function (mock_foo) from function to mock (self.foo)
-        mock_foo = mock.Mock(side_effect=self.foo_no_anno, name='mock_foo', autospec=True)
+        # create mock function (mock_foo) from function to mock (self.foo_no_anno)
+        mock_foo = mock.Mock(side_effect=self.foo_no_anno, name='mock_foo',
+                             autospec=True)
         mock_foo.__name__ = 'mock_foo'
         mock_foo.__signature__ = inspect.signature(self.foo_no_anno)
 
-        # define various possible check dicts
-        check_list = [
-            u.cm,
-            {'units': u.cm},
-            {'units': u.cm,
-             'equivalencies': u.temperature()},
+        # setup test cases
+        # 'setup' = arguments for `check_units` and wrapped function
+        # 'output' = expected return from wrapped function
+        # 'raises' = a raised Exception is expected
+        # 'warns' = an issued warning is expected
+        #
+        _cases = [
+            # only argument checks
+            {'setup': {'args': (2 * u.cm, 3 * u.cm),
+                       'kwargs': {},
+                       'checks': {'x': u.cm,
+                                  'y': u.cm}
+                       },
+             'output': 5 * u.cm,
+             },
+
+            # argument and return checks
+            {'setup': {'args': (2 * u.cm, 3 * u.cm),
+                       'kwargs': {},
+                       'checks': {'x': u.cm,
+                                  'checks_on_return': u.cm}
+                       },
+             'output': 5 * u.cm,
+             },
         ]
+        for case in _cases:
+            for ii in range(2):
+                # decorate
+                if ii == 0:
+                    # functional decorator call
+                    wfoo = check_units(mock_foo, **case['setup']['checks'])
+                elif ii == 1:
+                    # sugar decorator call
+                    #
+                    #  @check_units(x=check)
+                    #      def foo(x):
+                    #          return x
+                    #
+                    wfoo = check_units(**case['setup']['checks'])(mock_foo)
+                else:
+                    continue
 
-        # Examine various checks and their pass-through
-        for check in check_list:
-            # -- decorate like a traditional function --
-            # decorate
-            wfoo = check_units(mock_foo, **{'x': check, 'y': check})
+                # test
+                args = case['setup']['args']
+                kwargs = case['setup']['kwargs']
+                assert wfoo(*args, **kwargs) == case['output']
 
-            # tests
-            assert wfoo(2 * u.cm, 3 * u.cm) == 5 * u.cm
-            assert mock_cu_class.called
-            assert mock_foo.called
-            assert len(mock_cu_class.call_args) == 2
-            assert mock_cu_class.call_args[0] == ()
-            assert isinstance(mock_cu_class.call_args[1], dict)
-            assert sorted(mock_cu_class.call_args[1].keys()) == ['x', 'y']
-            assert mock_cu_class.call_args[1]['x'] == check
-            assert mock_cu_class.call_args[1]['y'] == check
+                assert mock_cu_class.called
+                assert mock_foo.called
 
-            # reset
-            mock_cu_class.reset_mock()
-            mock_foo.reset_mock()
+                assert len(mock_cu_class.call_args) == len(case['setup']['checks'])
+                assert mock_cu_class.call_args[0] == ()
+                assert sorted(mock_cu_class.call_args[1].keys()) \
+                       == sorted(case['setup']['checks'].keys())
 
-            # -- decorate like "sugar" syntax --
-            #
-            #  @check_units(x=check)
-            #      def foo(x):
-            #          return x
-            #
-            # decorate
-            wfoo = check_units(**{'x': check, 'y': check})(mock_foo)
+                for arg_name, checks in case['setup']['checks'].items():
+                    assert mock_cu_class.call_args[1][arg_name] == checks
 
-            # tests
-            assert wfoo(2 * u.cm, 3 * u.cm) == 5 * u.cm
-            assert mock_cu_class.called
-            assert mock_foo.called
-            assert len(mock_cu_class.call_args) == 2
-            assert mock_cu_class.call_args[0] == ()
-            assert isinstance(mock_cu_class.call_args[1], dict)
-            assert sorted(mock_cu_class.call_args[1].keys()) == ['x', 'y']
-            assert mock_cu_class.call_args[1]['x'] == check
-            assert mock_cu_class.call_args[1]['y'] == check
-
-            # reset
-            mock_cu_class.reset_mock()
-            mock_foo.reset_mock()
-
-        # -- decorate like "sugar" syntax w/o checks --
-        #
-        #  @check_values
-        #      def foo(x):
-        #          return x
-        #
-        # decorate
-        wfoo = check_units(mock_foo)
-
-        # tests
-        assert wfoo(2, 3) == 5
-        assert mock_cu_class.called
-        assert mock_foo.called
-        assert len(mock_cu_class.call_args) == 2
-        assert mock_cu_class.call_args[0] == ()
-        assert mock_cu_class.call_args[1] == {}
-
-        # reset
-        mock_cu_class.reset_mock()
-        mock_foo.reset_mock()
+                # reset
+                mock_cu_class.reset_mock()
+                mock_foo.reset_mock()
 
 
 # ----------------------------------------------------------------------------------------
