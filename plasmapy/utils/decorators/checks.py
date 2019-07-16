@@ -369,12 +369,6 @@ class CheckUnits(CheckBase):
                     continue
 
                 # check argument
-                # arg, unit, equiv = \
-                #     self._check_unit(bound_args.arguments[arg_name],
-                #                      arg_name,
-                #                      **checks[arg_name])
-                # if unit is not None and unit != arg.unit:
-                #     raise u.UnitTypeError
                 self._check_unit(bound_args.arguments[arg_name],
                                  arg_name,
                                  **checks[arg_name])
@@ -383,15 +377,9 @@ class CheckUnits(CheckBase):
             _return = f(**bound_args.arguments)
 
             # check output
-            # if 'checks_on_return' in checks:
-            #     _return, unit, equiv = \
-            #         self._check_unit(_return,
-            #                          'checks_on_return',
-            #                          **checks['checks_on_return'])
-            #     if unit is not None and unit != _return.unit:
-            #         raise u.UnitTypeError
-            self._check_unit(_return, 'checks_on_return',
-                             **checks['checks_on_return'])
+            if 'checks_on_return' in checks:
+                self._check_unit(_return, 'checks_on_return',
+                                 **checks['checks_on_return'])
 
             return _return
         return wrapper
@@ -695,8 +683,9 @@ class CheckUnits(CheckBase):
     #     # return self._unit_checks
     #     return self.checks
 
-
-def check_units(func=None, checks_on_return=None, **checks: Dict[str, Any]):
+def check_units(func=None,
+                checks_on_return: Dict[str, Any] = None,
+                **checks: Dict[str, Any]):
     """
     A decorator to "check" -- limit/control -- the units of input/output
     arguments to a function. (Checking of function arguments `*args` and `**kwargs`
