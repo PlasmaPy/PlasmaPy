@@ -677,11 +677,6 @@ class CheckUnits(CheckBase):
         """
         return _normalize_equivalencies(equivalencies)
 
-    # @property
-    # def unit_checks(self) -> Dict[str, Dict[str, Any]]:
-    #     """Dictionary of requested argument checks."""
-    #     # return self._unit_checks
-    #     return self.checks
 
 def check_units(func=None,
                 checks_on_return: Dict[str, Any] = None,
@@ -696,11 +691,21 @@ def check_units(func=None,
     func:
         The function to be decorated
 
+    checks_on_return: Union[u.Unit, List[u.Unit], Dict[str, Any]]
+        Specifications for unit checks on the return variable from the wrapped
+        function. (see `check values`_ for valid specifications).
+
     **checks: Union[u.Unit, List[u.Unit], Dict[str, Any]]
-        Each keyword in `checks` is the name of the function argument to be checked
-        and the keyword value is either a list of desired astropy
-        :class:`~astropy.units.Unit`'s or a dictionary specifying the desired unit
-        checks.  The following keys are allowed in the `check` dictionary:
+        Specifications for unit checks on the function arguments.  Each keyword
+        in `checks` is the name of the function argument to be checked
+        and the keyword value contains the unit check specifications.
+
+        .. _`check values`:
+
+        The value for a unit check keyword is either a list of desired astropy
+        :class:`~astropy.units.Unit`'s or a dictionary specifying the desired units
+        and additional restrictions.  The following keys are allowed in the `check`
+        dictionary:
 
         ====================== ======= ================================================
         Key                    Type    Description
@@ -716,7 +721,8 @@ def check_units(func=None,
 
     Notes
     -----
-    * Decorator does NOT perform any unit conversions.
+    * Decorator does NOT perform any unit conversions, unlike
+      :func:`~plasmapy.utils.decorators.validate_quantities`.
     * If it is desired that `None` values do not raise errors or warnings, then
       include `None` in the list of units.
     * If units are not specified in `checks`, then the decorator will attempt
