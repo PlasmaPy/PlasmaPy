@@ -1,7 +1,7 @@
 """
 Various decorators to validate input/output arguments to functions.
 """
-__all__ = ['ValidateQuantities']
+__all__ = ['validate_quantities', 'ValidateQuantities']
 
 import functools
 import inspect
@@ -193,3 +193,24 @@ class ValidateQuantities(CheckUnits, CheckValues):
             self._check_value(arg, arg_name, **validations)
 
         return arg
+
+
+def validate_quantities(func=None, validations_on_return=None, **validations):
+    """
+    Parameters
+    ----------
+    func
+    validations_on_return
+    validations
+
+    Returns
+    -------
+
+    """
+    if validations_on_return is not None:
+        validations['validations_on_return'] = validations_on_return
+
+    if func is not None:
+        return ValidateQuantities(**validations)(func)
+    else:
+        return ValidateQuantities(**validations)
