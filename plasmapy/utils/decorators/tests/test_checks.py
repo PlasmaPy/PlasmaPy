@@ -58,71 +58,110 @@ class TestCheckUnits:
 
     def test_cu_method__check_unit(self):
         """
-        Test functionality/behavior of the `_check_unit` method on `CheckUnits`.
-        This method does the actual checking of the argument values and should be
-        called by `CheckUnits.__call__()`.
+        Test functionality/behavior of the methods `_check_unit` and `_check_unit_core`
+        on `CheckUnits`.  These methods do the actual checking of the argument units
+        and should be called by `CheckUnits.__call__()`.
         """
         # setup wrapped function
         cu = CheckUnits()
         wfoo = cu(self.foo)
 
+        # methods must exist
         assert hasattr(cu, '_check_unit')
+        assert hasattr(cu, '_check_unit_core')
 
-        # -- Test 'units' check --
-        # setup argument checks
+        # setup default checks
         check = self.check_defaults.copy()
         check['units'] = [u.cm]
         check['equivalencies'] = [None]
 
-        # argument does not have units
-        with pytest.raises(TypeError):
-            cu._check_unit(5., 'arg', **check)
-
-        # argument has attr unit but unit does not have is_equivalent
+        # make a class w/ improper units
         class MyQuantity:
             unit = None
-        with pytest.raises(TypeError):
-            cu._check_unit(MyQuantity(), 'arg', **check)
 
-        # argument does not match desired units
-        with pytest.raises(u.UnitTypeError):
-            cu._check_unit(5. * u.kg, 'arg', **check)
+        # setup test cases
+        # 'input' = arguments for `_check_unit_core`
+        # 'output' = expected return from `_check_unit_core`
+        #
+        # add cases for 'units' checks
+        _cases = [
+            # argument does not have units
+            {'input': (5., 'arg', check),
+             'output': (None, None, None, TypeError)},
 
-        # argument has equivalent but not matching units
-        with pytest.raises(u.UnitTypeError):
-            cu._check_unit(5. * u.km, 'arg', **check)
+            # argument does match desired units
+            # * set arg_name = 'checks_on_return' to cover if-else statement
+            #   in initializing error string
+            {'input': (5. * u.kg, 'checks_on_return', check),
+             'output': (None, None, None, u.UnitTypeError)},
 
-        # argument is equivalent to many specified units but exactly matches one
-        check['units'] = [u.cm, u.km]
-        check['equivalencies'] = [None] * 2
-        assert cu._check_unit(5. * u.km, 'arg', **check) == (5. * u.km, u.km, None)
+            # argument has equivalent but not matching unit
+            {'input': (5. * u.km, 'arg', check),
+             'output': (5. * u.km, u.cm, None, u.UnitTypeError)},
 
-        # argument is equivalent to many specified units and does NOT exactly matches one
-        with pytest.raises(u.UnitTypeError):
-            cu._check_unit(5. * u.m, 'arg', **check)
+            # argument is equivalent to many specified units but exactly matches one
+            {'input': (5. * u.km,
+                       'arg', {**check,
+                               'units': [u.cm, u.km],
+                               'equivalencies': [None] * 2}),
+             'output': (5. * u.km, u.km, None, None)},
 
-        # -- Test 'none_shall_pass' check --
-        # setup argument checks
-        check = self.check_defaults.copy()
-        check['units'] = [u.cm]
-        check['equivalencies'] = [None]
+            # argument is equivalent to many specified units and
+            # does NOT exactly match one
+            {'input': (5. * u.m,
+                       'arg', {**check,
+                               'units': [u.cm, u.km],
+                               'equivalencies': [None] * 2}),
+             'output': (None, None, None, u.UnitTypeError)},
 
-        # argument is None and none_shall_pass = False
-        check['none_shall_pass'] = False
-        with pytest.raises(ValueError):
-            cu._check_unit(None, 'arg', **check)
+            # argument has attr unit but unit does not have is_equivalent
+            {'input': (MyQuantity, 'arg', check),
+             'output': (None, None, None, TypeError)},
+        ]
 
-        # argument is None and none_shall_pass = True
-        check['none_shall_pass'] = True
-        assert cu._check_unit(None, 'arg', **check) == (None, None, None)
+        # add cases for 'none_shall_pass' checks
+        _cases.extend([
+            # argument is None and none_shall_pass = False
+            {'input': (None, 'arg', {**check, 'none_shall_pass': False}),
+             'output': (None, None, None, ValueError)},
 
-        # -- Test 'pass_equivalent_units' check --
-        # setup argument checks
-        check = self.check_defaults.copy()
-        check['units'] = [u.cm]
-        check['equivalencies'] = [None]
-        check['pass_equivalent_units'] = True
-        assert cu._check_unit(2. * u.km, 'arg', **check) == (2. * u.km, None, None)
+            # argument is None and none_shall_pass = True
+            {'input': (None, 'arg', {**check, 'none_shall_pass': True}),
+             'output': (None, None, None, None)},
+
+        ])
+
+        # add cases for 'pass_equivalent_units' checks
+        _cases.extend([
+            # argument is equivalent to 1 to unit,
+            # does NOT exactly match the unit,
+            # and 'pass_equivalent_units' = True and argument
+            {'input': (5. * u.km, 'arg', {**check, 'pass_equivalent_units': True}),
+             'output': (5. * u.km, u.cm, None, None)},
+
+            # argument is equivalent to more than 1 unit,
+            # does NOT exactly match any unit,
+            # and 'pass_equivalent_units' = True and argument
+            {'input': (5. * u.km, 'arg', {**check,
+                                          'units': [u.cm, u.m],
+                                          'equivalencies': [None] * 2,
+                                          'pass_equivalent_units': True}),
+             'output': (5. * u.km, None, None, None)},
+        ])
+
+        # perform tests
+        for case in _cases:
+            arg, arg_name, arg_checks = case['input']
+            _results = cu._check_unit_core(arg, arg_name, **arg_checks)
+            assert _results[0:3] == case['output'][0:3]
+
+            if _results[3] is None:
+                assert _results[3] is case['output'][3]
+                assert cu._check_unit(arg, arg_name, **arg_checks) is None
+            else:
+                assert isinstance(_results[3], case['output'][3])
+                with pytest.raises(case['output'][3]):
+                    cu._check_unit(arg, arg_name, **arg_checks)
 
     @mock.patch.object(CheckUnits, '_check_unit')
     def test_cu_called_as_decorator(self, mock_cu):
