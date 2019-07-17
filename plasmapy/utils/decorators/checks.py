@@ -385,6 +385,7 @@ class CheckUnits(CheckBase):
 
     def _get_unit_checks(self,
                          bound_args: inspect.BoundArguments) -> Dict[str, Dict[str, Any]]:
+        # initialize validation dictionary
         out_checks = {}
 
         # Iterate through function bound arguments + return and determine check keys:
@@ -757,7 +758,9 @@ def check_units(func=None,
         return CheckUnits(**checks)
 
 
-def check_values(func=None, checks_on_return=None, **checks: Dict[str, bool]):
+def check_values(func=None,
+                 checks_on_return: Dict[str, bool] = None,
+                 **checks: Dict[str, bool]):
     """
     A decorator to "check" -- limit/control -- values of input arguments to a
     function.  (Checking of function arguments `*args` and `**kwargs` is not
@@ -765,8 +768,11 @@ def check_values(func=None, checks_on_return=None, **checks: Dict[str, bool]):
 
     Parameters
     ----------
+
     func:
         The function to be decorated
+
+    checks_on_return
 
     **checks: Dict[str, Dict[str, bool]]
         Each keyword in `checks` is the name of the function argument to be checked
