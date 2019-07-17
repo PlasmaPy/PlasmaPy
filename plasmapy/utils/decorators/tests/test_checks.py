@@ -523,8 +523,8 @@ class TestCheckUnits:
 
                 assert len(mock_cu_class.call_args) == len(case['setup']['checks'])
                 assert mock_cu_class.call_args[0] == ()
-                assert sorted(mock_cu_class.call_args[1].keys()) \
-                       == sorted(case['setup']['checks'].keys())
+                assert (sorted(mock_cu_class.call_args[1].keys())
+                        == sorted(case['setup']['checks'].keys()))
 
                 for arg_name, checks in case['setup']['checks'].items():
                     assert mock_cu_class.call_args[1][arg_name] == checks
@@ -781,86 +781,60 @@ class TestCheckValues:
                 else:
                     assert cv._check_value(arg, arg_name, **checks) is None
 
-    @mock.patch.object(CheckValues, '_check_value')
-    def test_cv_called_as_decorator(self, mock_cv):
-        # create mock function (mock_foo) from function to mock (self.foo)
-        mock_foo = mock.Mock(side_effect=self.foo, name='mock_foo', autospec=True)
-        mock_foo.__name__ = 'mock_foo'
-        mock_foo.__signature__ = inspect.signature(self.foo)
-
-        # -- basic wrap and call --
-        # create wrapped function
-        xchecks = {}
-        ychecks = {'none_shall_pass': True,
-                   'can_be_negative': False}
-        cv = CheckValues(x=xchecks, y=ychecks)
-        default_checks = self.check_defaults.copy()
-        wfoo = cv(mock_foo)
-
-        # basic tests
-        assert wfoo(2, 3) == 5
-        assert mock_foo.called
-        assert mock_cv.called
-
-        # ensure `_check_value` method was called with correct arguments
-        assert mock_cv.call_count == 2
-        for ii, (arg, arg_name, checks) in enumerate(zip([2, 3],
-                                                         ['x', 'y'],
-                                                         [xchecks, ychecks])):
-            # test passed arguments
-            assert mock_cv.mock_calls[ii][1] == (arg, arg_name)
-
-            # test passed keywords
-            for key, val in default_checks.items():
-                if key in checks:
-                    # if key defined in checks then value should be passed
-                    assert mock_cv.mock_calls[ii][2][key] == checks[key]
-                else:
-                    # if key NOT defined in checks then default value should be passed
-                    assert mock_cv.mock_calls[ii][2][key] == default_checks[key]
-
-        # reset mocks
-        mock_cv.reset_mock()
-        mock_foo.reset_mock()
-
-        # -- decorator specifies too many arguments --
-        # if the number of checked arguments is not less than or equal to the number
-        # of function arguments, then a PlasmaPyWarning is raised
-        cv = CheckValues(x=xchecks, y=ychecks, z={'none_shall_pass': True})
-        with pytest.warns(PlasmaPyWarning):
-            wfoo = cv(self.foo)
-            assert wfoo(2, 3) == 5
-
-        # reset mocks
-        mock_cv.reset_mock()
-        mock_foo.reset_mock()
-
-        # -- decorated function has *args and **kwargs arguments --
-        # values passed via *args and **kwargs are ignored by CheckValues
+    def test_cv_called_as_decorator(self):
+        """
+        Test behavior of `CheckValues.__call__` (i.e. used as a decorator).
+        """
+        # setup test cases
+        # 'setup' = arguments for `CheckUnits` and wrapped function
+        # 'output' = expected return from wrapped function
+        # 'raises' = if an Exception is expected to be raised
+        # 'warns' = if a warning is expected to be issued
         #
-        # create mock function (mock_foo) from function to mock (foo)
-        def foo(x, *args, y=3, **kwargs):
-            return x + y
-        mock_foo = mock.Mock(side_effect=foo, name='mock_foo', autospec=True)
-        mock_foo.__name__ = 'mock_foo'
-        mock_foo.__signature__ = inspect.signature(foo)
+        _cases = [
+            # clean execution
+            {'setup': {'function': self.foo,
+                       'args': (2, -3),
+                       'kwargs': {},
+                       'checks': {'x': {'can_be_negative': True},
+                                  'y': {'can_be_negative': True},
+                                  'checks_on_return': {'can_be_negative': True}}},
+             'output': -1,
+             },
 
-        # create wrapped function
-        xchecks = {}
-        ychecks = {'none_shall_pass': True,
-                   'can_be_negative': False}
-        cv = CheckValues(x=xchecks, y=ychecks, z={'none_shall_pass': True})
-        wfoo = cv(mock_foo)
+            # argument fails checks
+            {'setup': {'function': self.foo,
+                       'args': (2, -3),
+                       'kwargs': {},
+                       'checks': {'x': {'can_be_negative': True},
+                                  'y': {'can_be_negative': False},
+                                  'checks_on_return': {'can_be_negative': True}}},
+             'raises': ValueError,
+             },
+
+            # return fails checks
+            {'setup': {'function': self.foo,
+                       'args': (2, -3),
+                       'kwargs': {},
+                       'checks': {'x': {'can_be_negative': True},
+                                  'y': {'can_be_negative': True},
+                                  'checks_on_return': {'can_be_negative': False}}},
+             'raises': ValueError,
+             },
+        ]
 
         # test
-        with pytest.warns(PlasmaPyWarning):
-            assert wfoo(5, 'hello', y=3, z=None) == 8
-        assert mock_foo.called
-        assert mock_cv.call_count == 2
+        for case in _cases:
+            wfoo = CheckValues(**case['setup']['checks'])(case['setup']['function'])
 
-        # reset mocks
-        mock_cv.reset_mock()
-        mock_foo.reset_mock()
+            args = case['setup']['args']
+            kwargs = case['setup']['kwargs']
+
+            if 'raises' in case:
+                with pytest.raises(case['raises']):
+                    wfoo(*args, **kwargs)
+            else:
+                assert wfoo(*args, **kwargs) == case['output']
 
     def test_cv_preserves_signature(self):
         """Test CheckValues preserves signature of wrapped function."""
@@ -882,83 +856,67 @@ class TestCheckValues:
         mock_foo.__name__ = 'mock_foo'
         mock_foo.__signature__ = inspect.signature(self.foo)
 
-        # define various possible check dicts
-        check_list = [
-            {'none_shall_pass': False},
-            {'can_be_negative': True,
-             'can_be_nan': False},
-            {'can_be_negative': False,
-             'can_be_complex': True,
-             'can_be_inf': False,
-             'can_be_nan': False,
-             'none_shall_pass': True}
+        # setup test cases
+        # 'setup' = arguments for `check_units` and wrapped function
+        # 'output' = expected return from wrapped function
+        # 'raises' = a raised Exception is expected
+        # 'warns' = an issued warning is expected
+        #
+        _cases = [
+            # only argument checks
+            {'setup': {'args': (-4, 3),
+                       'kwargs': {},
+                       'checks': {'x': {'can_be_negative': True},
+                                  'y': {'can_be_nan': False}}
+                       },
+             'output': -1,
+             },
+
+            # argument and return checks
+            {'setup': {'args': (-4, 3),
+                       'kwargs': {},
+                       'checks': {'x': {'can_be_negative': True},
+                                  'checks_on_return': {'can_be_negative': True}}
+                       },
+             'output': -1,
+             },
         ]
+        for case in _cases:
+            for ii in range(2):
+                # decorate
+                if ii == 0:
+                    # functional decorator call
+                    wfoo = check_values(mock_foo, **case['setup']['checks'])
+                elif ii == 1:
+                    # sugar decorator call
+                    #
+                    #  @check_values(x=check)
+                    #      def foo(x):
+                    #          return x
+                    #
+                    wfoo = check_values(**case['setup']['checks'])(mock_foo)
+                else:
+                    continue
 
-        # Examine various checks and their pass-through
-        for check in check_list:
-            # -- decorate like a traditional function --
-            # decorate
-            wfoo = check_values(mock_foo, **{'x': check, 'y': check})
+                # test
+                args = case['setup']['args']
+                kwargs = case['setup']['kwargs']
+                assert wfoo(*args, **kwargs) == case['output']
 
-            # tests
-            assert wfoo(2, 3) == 5
-            assert mock_cv_class.called
-            assert mock_foo.called
-            assert len(mock_cv_class.call_args) == 2
-            assert mock_cv_class.call_args[0] == ()
-            assert isinstance(mock_cv_class.call_args[1], dict)
-            assert sorted(mock_cv_class.call_args[1].keys()) == ['x', 'y']
-            assert mock_cv_class.call_args[1]['x'] == check
-            assert mock_cv_class.call_args[1]['y'] == check
+                assert mock_cv_class.called
+                assert mock_foo.called
 
-            # reset
-            mock_cv_class.reset_mock()
-            mock_foo.reset_mock()
+                assert len(mock_cv_class.call_args) == len(case['setup']['checks'])
+                assert mock_cv_class.call_args[0] == ()
+                assert (sorted(mock_cv_class.call_args[1].keys())
+                        == sorted(case['setup']['checks'].keys()))
 
-            # -- decorate like "sugar" syntax --
-            #
-            #  @check_values(x=check)
-            #      def foo(x):
-            #          return x
-            #
-            # decorate
-            wfoo = check_values(**{'x': check, 'y': check})(mock_foo)
+                for arg_name, checks in case['setup']['checks'].items():
+                    assert mock_cv_class.call_args[1][arg_name] == checks
 
-            # tests
-            assert wfoo(2, 3) == 5
-            assert mock_cv_class.called
-            assert mock_foo.called
-            assert len(mock_cv_class.call_args) == 2
-            assert mock_cv_class.call_args[0] == ()
-            assert isinstance(mock_cv_class.call_args[1], dict)
-            assert sorted(mock_cv_class.call_args[1].keys()) == ['x', 'y']
-            assert mock_cv_class.call_args[1]['x'] == check
-            assert mock_cv_class.call_args[1]['y'] == check
-
-            # reset
-            mock_cv_class.reset_mock()
-            mock_foo.reset_mock()
-
-        # -- decorate like "sugar" syntax w/o checks --
-        #
-        #  @check_values
-        #      def foo(x):
-        #          return x
-        #
-        # decorate
-        wfoo = check_values(mock_foo)
-
-        # tests
-        assert wfoo(2, 3) == 5
-        assert mock_cv_class.called
-        assert mock_foo.called
-        assert len(mock_cv_class.call_args) == 2
-        assert mock_cv_class.call_args[0] == ()
-        assert mock_cv_class.call_args[1] == {}
-
-        # reset
-        mock_cv_class.reset_mock()
-        mock_foo.reset_mock()
+                # reset
+                mock_cv_class.reset_mock()
+                mock_foo.reset_mock()
 
 
 # ----------------------------------------------------------------------------------------
