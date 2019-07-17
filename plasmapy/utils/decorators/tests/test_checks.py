@@ -549,6 +549,13 @@ class TestCheckValues:
     def foo(x, y):
         return x + y
 
+    @staticmethod
+    def foo_stars(x, *args, y=3, **kwargs):
+        return x + y
+
+    def test_inheritance(self):
+        assert issubclass(CheckValues, CheckBase)
+
     def test_cv_default_check_values(self):
         """Test the default check dictionary for CheckValues"""
         cv = CheckValues()
@@ -561,6 +568,95 @@ class TestCheckValues:
                      ('none_shall_pass', False)]
         for key, val in _defaults:
             assert cv._CheckValues__check_defaults[key] == val
+
+    def test_cv_method__get_value_checks(self):
+        """
+        Test functionality/behavior of the method `_get_value_checks` on `CheckValues`.
+        This method reviews the decorator `checks` arguments to build a complete
+        checks dictionary.
+        """
+        # methods must exist
+        assert hasattr(CheckValues, '_get_value_checks')
+
+        # setup default checks
+        default_checks = self.check_defaults.copy()
+
+        # setup test cases
+        # 'setup' = arguments for `_get_value_checks`
+        # 'output' = expected return from `_get_value_checks`
+        # 'raises' = if `_get_value_checks` raises an Exception
+        # 'warns' = if `_get_value_checks` issues a warning
+        #
+        _cases = [
+            # define some checks
+            {'setup': {'function': self.foo,
+                       'args': (2, 3),
+                       'kwargs': {},
+                       'checks': {'x': {'can_be_negative': False,
+                                        'can_be_complex': True,
+                                        'can_be_inf': False},
+                                  'checks_on_return': {'can_be_nan': False,
+                                                       'none_shall_pass': True},
+                                  },
+                       },
+             'output': {'x': {'can_be_negative': False,
+                              'can_be_complex': True,
+                              'can_be_inf': False},
+                        'checks_on_return': {'can_be_nan': False,
+                                             'none_shall_pass': True},
+                        },
+             },
+
+            # arguments passed via *args and **kwargs are ignored
+            {'setup': {'function': self.foo_stars,
+                       'args': (2, 'hello'),
+                       'kwargs': {'z': None},
+                       'checks': {'x': {'can_be_negative': False},
+                                  'y': {'can_be_inf': False},
+                                  'z': {'none_shall_pass': True},
+                                  },
+                       },
+             'output': {'x': {'can_be_negative': False},
+                        'y': {'can_be_inf': False},
+                        },
+             'warns': PlasmaPyWarning,
+             },
+
+        ]
+
+        # perform tests
+        for case in _cases:
+            sig = inspect.signature(case['setup']['function'])
+            args = case['setup']['args']
+            kwargs = case['setup']['kwargs']
+            bound_args = sig.bind(*args, **kwargs)
+
+            cv = CheckValues(**case['setup']['checks'])
+            cv.f = case['setup']['function']
+            if 'warns' in case:
+                with pytest.warns(case['warns']):
+                    checks = cv._get_value_checks(bound_args)
+            elif 'raises' in case:
+                with pytest.raises(case['raises']):
+                    cv._get_value_checks(bound_args)
+                continue
+            else:
+                checks = cv._get_value_checks(bound_args)
+
+            # only expected keys exist
+            assert sorted(checks.keys()) == sorted(case['output'].keys())
+
+            # if check key-value not specified then default is assumed
+            for arg_name in case['output'].keys():
+                arg_checks = checks[arg_name]
+
+                for key in default_checks.keys():
+                    if key in case['output'][arg_name]:
+                        val = case['output'][arg_name][key]
+                    else:
+                        val = default_checks[key]
+
+                    assert arg_checks[key] == val
 
     def test_cv_method__check_value(self):
         """
