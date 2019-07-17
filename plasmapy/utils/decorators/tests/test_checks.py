@@ -668,87 +668,118 @@ class TestCheckValues:
         cv = CheckValues()
         wfoo = cv(self.foo)
 
+        # methods must exist
         assert hasattr(cv, '_check_value')
 
-        # -- Test 'can_be_negative' check --
-        check = self.check_defaults.copy()
-        args = [-5,
-                -5.0,
-                np.array([-1, 2]),
-                np.array([-3., 2.]),
-                -3 * u.cm,
-                np.array([-4., 3.]) * u.kg]
-        for arg in args:
-            # can_be_negative == False
-            check['can_be_negative'] = False
-            with pytest.raises(ValueError):
-                cv._check_value(arg, 'arg', **check)
+        # setup default checks
+        default_checks = self.check_defaults.copy()
 
-            # can_be_negative == True
-            check['can_be_negative'] = True
-            assert cv._check_value(arg, 'arg', **check) is None
+        # setup test cases
+        # 'setup' = arguments for `CheckUnits` and wrapped function
+        # 'raises' = if an Exception is expected to be raised
+        # 'warns' = if a warning is expected to be issued
+        #
+        _cases = [
+            # tests for check 'can_be_negative'
+            {'input': {'args': [-5,
+                                -5.0,
+                                np.array([-1, 2]),
+                                np.array([-3., 2.]),
+                                -3 * u.cm,
+                                np.array([-4., 3.]) * u.kg],
+                       'arg_name': 'arg',
+                       'checks': {**default_checks, 'can_be_negative': False}},
+             'raises': ValueError,
+             },
+            {'input': {'args': [-5,
+                                -5.0,
+                                np.array([-1, 2]),
+                                np.array([-3., 2.]),
+                                -3 * u.cm,
+                                np.array([-4., 3.]) * u.kg],
+                       'arg_name': 'arg',
+                       'checks': {**default_checks, 'can_be_negative': True}},
+             },
 
-        # -- Test 'can_be_complex' check --
-        check = self.check_defaults.copy()
-        args = [complex(5),
-                complex(2, 3),
-                np.complex(3.),
-                complex(4., 2.) * u.cm,
-                np.array([complex(4, 5), complex(1)]) * u.kg]
-        for arg in args:
-            # can_be_complex == False
-            check['can_be_complex'] = False
-            with pytest.raises(ValueError):
-                cv._check_value(arg, 'arg', **check)
+            # tests for check 'can_be_complex'
+            {'input': {'args': [complex(5),
+                                complex(2, 3),
+                                np.complex(3.),
+                                complex(4., 2.) * u.cm,
+                                np.array([complex(4, 5), complex(1)]) * u.kg],
+                       'arg_name': 'checks_on_return',
+                       'checks': {**default_checks, 'can_be_complex': False}},
+             'raises': ValueError,
+             },
+            {'input': {'args': [complex(5),
+                                complex(2, 3),
+                                np.complex(3.),
+                                complex(4., 2.) * u.cm,
+                                np.array([complex(4, 5), complex(1)]) * u.kg],
+                       'arg_name': 'checks_on_return',
+                       'checks': {**default_checks, 'can_be_complex': True}},
+             },
 
-            # can_be_negative == True
-            check['can_be_complex'] = True
-            assert cv._check_value(arg, 'arg', **check) is None
+            # tests for check 'can_be_inf'
+            {'input': {'args': [np.inf,
+                                np.inf * u.cm,
+                                np.array([1., 2., np.inf, 10.]),
+                                np.array([1., 2., np.inf, np.inf]) * u.kg],
+                       'arg_name': 'arg',
+                       'checks': {**default_checks, 'can_be_inf': False}},
+             'raises': ValueError,
+             },
+            {'input': {'args': [np.inf,
+                                np.inf * u.cm,
+                                np.array([1., 2., np.inf, 10.]),
+                                np.array([1., 2., np.inf, np.inf]) * u.kg],
+                       'arg_name': 'arg',
+                       'checks': {**default_checks, 'can_be_inf': True}},
+             },
 
-        # -- Test 'can_be_inf' check --
-        check = self.check_defaults.copy()
-        args = [np.inf,
-                np.inf * u.cm,
-                np.array([1., 2., np.inf, 10.]),
-                np.array([1., 2., np.inf, np.inf]) * u.kg]
-        for arg in args:
-            # can_be_inf == False
-            check['can_be_inf'] = False
-            with pytest.raises(ValueError):
-                cv._check_value(arg, 'arg', **check)
+            # tests for check 'can_be_nan'
+            {'input': {'args': [np.nan,
+                                np.nan * u.cm,
+                                np.array([1., 2., np.nan, 10.]),
+                                np.array([1., 2., np.nan, np.nan]) * u.kg],
+                       'arg_name': 'arg',
+                       'checks': {**default_checks, 'can_be_nan': False}},
+             'raises': ValueError,
+             },
+            {'input': {'args': [np.nan,
+                                np.nan * u.cm,
+                                np.array([1., 2., np.nan, 10.]),
+                                np.array([1., 2., np.nan, np.nan]) * u.kg],
+                       'arg_name': 'arg',
+                       'checks': {**default_checks, 'can_be_nan': True}},
+             },
 
-            # can_be_inf == True
-            check['can_be_inf'] = True
-            assert cv._check_value(arg, 'arg', **check) is None
+            # tests for check 'none_shall_pass'
+            {'input': {'args': [None],
+                       'arg_name': 'arg',
+                       'checks': {**default_checks, 'none_shall_pass': False}},
+             'raises': ValueError,
+             },
+            {'input': {'args': [None],
+                       'arg_name': 'arg',
+                       'checks': {**default_checks, 'none_shall_pass': True}},
+             },
+        ]
 
-        # -- Test 'can_be_inf' check --
-        check = self.check_defaults.copy()
-        args = [np.nan,
-                np.nan * u.cm,
-                np.array([1., 2., np.nan, 10.]),
-                np.array([1., 2., np.nan, np.nan]) * u.kg]
-        for arg in args:
-            # can_be_nan == False
-            check['can_be_nan'] = False
-            with pytest.raises(ValueError):
-                cv._check_value(arg, 'arg', **check)
+        # test
+        for case in _cases:
+            arg_name = case['input']['arg_name']
+            checks = case['input']['checks']
 
-            # can_be_nan == True
-            check['can_be_nan'] = True
-            assert cv._check_value(arg, 'arg', **check) is None
-
-        # -- Test 'none_shall_pass' check --
-        check = self.check_defaults.copy()
-        args = [None]
-        for arg in args:
-            # none_shall_pass == False
-            check['none_shall_pass'] = False
-            with pytest.raises(ValueError):
-                cv._check_value(arg, 'arg', **check)
-
-            # none_shall_pass == True
-            check['none_shall_pass'] = True
-            assert cv._check_value(arg, 'arg', **check) is None
+            for arg in case['input']['args']:
+                if 'raises' in case:
+                    with pytest.raises(case['raises']):
+                        cv._check_value(arg, arg_name, **checks)
+                elif 'warns' in case:
+                    with pytest.warns(case['warns']):
+                        cv._check_value(arg, arg_name, **checks)
+                else:
+                    assert cv._check_value(arg, arg_name, **checks) is None
 
     @mock.patch.object(CheckValues, '_check_value')
     def test_cv_called_as_decorator(self, mock_cv):
