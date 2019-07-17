@@ -103,11 +103,6 @@ class CheckValues(CheckBase):
             checks_on_return: Dict[str, bool] = None,
             **checks: Dict[str, bool]):
 
-        # self._value_checks = checks
-        # if checks_on_return is not None:
-        #     self._value_checks['checks_on_return'] = checks_on_return
-
-        # super().__init__(**self._value_checks)
         super().__init__(checks_on_return=checks_on_return, **checks)
 
     def __call__(self, f):
@@ -242,28 +237,32 @@ class CheckValues(CheckBase):
         valueerror_msg += f"to function {self.f.__name__}() can not contain"
 
         # check values
-        if arg is None and arg_checks['none_shall_pass']:
-            return
-        elif arg is None:
-            raise ValueError(f"{valueerror_msg} Nones.")
-        elif not arg_checks['can_be_negative']:
-            # Allow NaNs through without raising a warning
-            with np.errstate(invalid='ignore'):
-                isneg = np.any(arg < 0)
-            if isneg:
-                raise ValueError(f"{valueerror_msg} negative numbers.")
-        elif not arg_checks['can_be_complex'] and np.any(np.iscomplexobj(arg)):
-            raise ValueError(f"{valueerror_msg} complex numbers.")
-        elif not arg_checks['can_be_inf'] and np.any(np.isinf(arg)):
-            raise ValueError(f"{valueerror_msg} infs.")
-        elif not arg_checks['can_be_nan'] and np.any(np.isnan(arg)):
-            raise ValueError(f"{valueerror_msg} NaNs.")
+        for ckey in self.__check_defaults:
+            if ckey == 'none_shall_pass':
+                if arg is None and arg_checks[ckey]:
+                    return
+                elif arg is None:
+                    raise ValueError(f"{valueerror_msg} Nones.")
 
-    # @property
-    # def value_checks(self) -> Dict[str, Dict[str, bool]]:
-    #     """Dictionary of requested argument checks."""
-    #     # return self._value_checks
-    #     return self.checks
+            elif ckey == 'can_be_negative':
+                if not arg_checks[ckey]:
+                    # Allow NaNs through without raising a warning
+                    with np.errstate(invalid='ignore'):
+                        isneg = np.any(arg < 0)
+                    if isneg:
+                        raise ValueError(f"{valueerror_msg} negative numbers.")
+
+            elif ckey == 'can_be_complex':
+                if not arg_checks[ckey] and np.any(np.iscomplexobj(arg)):
+                    raise ValueError(f"{valueerror_msg} complex numbers.")
+
+            elif ckey == 'can_be_inf':
+                if not arg_checks[ckey] and np.any(np.isinf(arg)):
+                    raise ValueError(f"{valueerror_msg} infs.")
+
+            elif ckey == 'can_be_nan':
+                if not arg_checks['can_be_nan'] and np.any(np.isnan(arg)):
+                    raise ValueError(f"{valueerror_msg} NaNs.")
 
 
 class CheckUnits(CheckBase):
