@@ -147,8 +147,10 @@ class CheckValues(CheckBase):
             return _return
         return wrapper
 
-    def _get_value_checks(self,
-                          bound_args: inspect.BoundArguments) -> Dict[str, Dict[str, bool]]:
+    def _get_value_checks(
+            self,
+            bound_args: inspect.BoundArguments
+    ) -> Dict[str, Dict[str, bool]]:
         """
         Review function bound arguments and :attr:`checks` to build a complete 'checks'
         dictionary. Any unspecified check key is filled with a default value.
