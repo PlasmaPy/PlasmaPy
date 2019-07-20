@@ -1,5 +1,5 @@
 """
-Tests for 'check` decorators (i.e. decorators that only check values but do not
+Tests for 'check` decorators (i.e. decorators that only check objects but do not
 change them).
 """
 import inspect
@@ -270,7 +270,7 @@ class TestCheckUnits:
             else:
                 checks = cu._get_unit_checks(bound_args)
 
-            # only expected keys exist
+            # only expected argument checks exist
             assert sorted(checks.keys()) == sorted(case['output'].keys())
 
             # if check key-value not specified then default is assumed
