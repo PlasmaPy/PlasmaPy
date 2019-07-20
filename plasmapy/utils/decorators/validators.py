@@ -24,12 +24,10 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     def __init__(self, validations_on_return=None, **validations: Dict[str, Any]):
 
-        checks_on_return = validations.pop('checks_on_return', None)
-        if checks_on_return is not None:
-            if 'checks_on_return' in validations:
-                raise TypeError(f"keyword argument 'checks_on_return' is not allowed, "
-                                f"use 'validations_on_return' to set validations "
-                                f"on the return variable")
+        if 'checks_on_return' in validations:
+            raise TypeError(f"keyword argument 'checks_on_return' is not allowed, "
+                            f"use 'validations_on_return' to set validations "
+                            f"on the return variable")
 
         self._validations = validations
 
@@ -57,7 +55,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
             # validate (input) argument units and values
             for arg_name in validations:
                 # skip check of output/return
-                if arg_name == 'checks_on_return':
+                if arg_name == 'validations_on_return':
                     continue
 
                 # validate argument & update for conversion
@@ -70,9 +68,9 @@ class ValidateQuantities(CheckUnits, CheckValues):
             _return = f(**bound_args.arguments)
 
             # validate output
-            if 'checks_on_return' in validations:
-                _return = self._validate_quantity(_return, 'checks_on_return',
-                                                  **validations['checks_on_return'])
+            if 'validations_on_return' in validations:
+                _return = self._validate_quantity(_return, 'validations_on_return',
+                                                  **validations['validations_on_return'])
 
             return _return
         return wrapper
@@ -86,29 +84,14 @@ class ValidateQuantities(CheckUnits, CheckValues):
         unit_checks = self._get_unit_checks(bound_args)
         value_checks = self._get_value_checks(bound_args)
 
-        # ensure both dictionaries have the exact same keys
-        # key_set = set(list(value_validations.keys()) + list(validations))
-        # if len(key_set - set(value_validations.keys())) != 0 \
-        #         or len(key_set - set(validations.keys())) != 0:
-        #     raise TypeError
-
         # combine all validations
-        key_set = set(list(unit_checks.keys()) + list(value_checks.keys()))
-        validations = {}
-        for arg_name in key_set:
-            # add unit checks to validations
-            try:
-                validations[arg_name] = unit_checks[arg_name].copy()
-            except KeyError:
-                # no unit checks were defined, but value checks were
-                validations[arg_name] = value_checks[arg_name]
-
-                # TODO: improve warning string
-                warnings.warn(u.UnitsWarning(f"No units defined for argument"))
-
-                # jump to next for-loop iteration
-                continue
-
+        # * `unit_checks` will encompass all argument "checks" defined either by
+        #   function annotations or **validations.
+        # * `value_checks` may miss some arguments if **validations only defines
+        #   unit validations or some validations come from function annotations
+        #
+        validations = unit_checks.copy()
+        for arg_name in validations:
             # augment 'none_shall_pass' (if needed)
             try:
                 # if 'none_shall_pass' was in the original passed-in validations,
@@ -119,19 +102,27 @@ class ValidateQuantities(CheckUnits, CheckValues):
                 # 'none_shall_pass' was not in the original passed-in validations, so
                 # rely on the value determined by CheckUnits
                 pass
-            else:
-                del value_checks[arg_name]['none_shall_pass']
+            finally:
+                try:
+                    del value_checks[arg_name]['none_shall_pass']
+                except KeyError:
+                    dvc = self._CheckValues__check_defaults.copy()
+                    del dvc['none_shall_pass']
+                    value_checks[arg_name] = dvc
 
             # update the validations dictionary
-            try:
-                validations[arg_name].update(value_checks[arg_name])
-            except KeyError:
-                # no value checks were defined
-                pass
+            validations[arg_name].update(value_checks[arg_name])
+
+        if 'checks_on_return' in validations:
+            validations['validations_on_return'] = validations.pop('checks_on_return')
 
         return validations
 
     def _validate_quantity(self, arg, arg_name, **validations: Dict[str, Any]):
+
+        # rename to work with "check" methods
+        if arg_name == 'validations_on_return':
+            arg_name = 'checks_on_return'
 
         # initialize TypeError message
         typeerror_msg = (
@@ -176,17 +167,17 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         if 'units' in validations:
             # check units
-            arg, unit, equiv = self._check_unit(arg, arg_name, **validations)
+            arg, unit, equiv, err = self._check_unit_core(arg, arg_name, **validations)
 
             # convert quantity
-            if arg is None:
-                pass
-            elif unit is not None and unit != arg.unit:
-                arg = arg.to(unit, equivalencies=equiv)
-
+            if arg is not None and unit is not None:
                 # if non-standard conversion then warn
-                if equiv is not None:
+                if not arg.unit.is_equivalent(unit):
                     warnings.warn(ImplicitUnitConversionWarning)
+
+                arg = arg.to(unit, equivalencies=equiv)
+            elif err is not None:
+                raise err
 
         # check value
         if all([key in validations for key in self._CheckValues__check_defaults]):
