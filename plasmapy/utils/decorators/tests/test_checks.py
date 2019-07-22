@@ -294,13 +294,9 @@ class TestCheckUnits:
         on `CheckUnits`.  These methods do the actual checking of the argument units
         and should be called by `CheckUnits.__call__()`.
         """
-        # setup wrapped function
-        cu = CheckUnits()
-        wfoo = cu(self.foo_no_anno)
-
         # methods must exist
-        assert hasattr(cu, '_check_unit')
-        assert hasattr(cu, '_check_unit_core')
+        assert hasattr(CheckUnits, '_check_unit')
+        assert hasattr(CheckUnits, '_check_unit_core')
 
         # setup default checks
         check = self.check_defaults.copy()
@@ -380,6 +376,10 @@ class TestCheckUnits:
                                           'pass_equivalent_units': True}),
              'output': (5. * u.km, None, None, None)},
         ])
+
+        # setup wrapped function
+        cu = CheckUnits()
+        cu.f = self.foo_no_anno
 
         # perform tests
         for case in _cases:
