@@ -42,6 +42,7 @@ class TestValidateQuantities:
 
     def test_vq_method__get_validations(self):
         # method must exist
+        assert hasattr(ValidateQuantities, 'validations')
         assert hasattr(ValidateQuantities, '_get_validations')
 
         # setup default validations
