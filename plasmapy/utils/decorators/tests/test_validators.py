@@ -10,6 +10,7 @@ from plasmapy.utils.decorators.checks import (CheckUnits, CheckValues)
 from plasmapy.utils.decorators.validators import (validate_quantities,
                                                   ValidateQuantities)
 from typing import (Any, Dict)
+from unittest import mock
 
 
 # ----------------------------------------------------------------------------------------
@@ -152,3 +153,17 @@ class TestValidateQuantities:
                         val = default_validations[key]
 
                     assert arg_validations[key] == val
+
+        # method calls `_get_unit_checks` and `_get_value_checks
+        with mock.patch.object(CheckUnits, '_get_unit_checks', return_value={}) \
+                as mock_cu_get, \
+                mock.patch.object(CheckValues, '_get_value_checks', return_value={}) \
+                        as mock_cv_get:
+            vq = ValidateQuantities(x=u.cm)
+            vq.f = self.foo
+            sig = inspect.signature(self.foo)
+            bound_args = sig.bind(5)
+
+            assert vq._get_validations(bound_args) == {}
+            assert mock_cu_get.called
+            assert mock_cv_get.called
