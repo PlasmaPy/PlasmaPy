@@ -281,3 +281,96 @@ class TestValidateQuantities:
         assert hasattr(wfoo, '__signature__')
         assert wfoo.__signature__ == inspect.signature(self.foo_anno)
 
+    def test_vq_called_as_decorator(self):
+        """
+        Test behavior of `ValidateQuantities.__call__` (i.e. used as a decorator).
+        """
+        # setup test cases
+        # 'setup' = arguments for `CheckUnits` and wrapped function
+        # 'output' = expected return from wrapped function
+        # 'raises' = if an Exception is expected to be raised
+        # 'warns' = if a warning is expected to be issued
+        #
+        _cases = [
+            # clean execution
+            {'setup': {'function': self.foo,
+                       'args': (2 * u.cm, ),
+                       'kwargs': {},
+                       'validations': {'x': u.cm,
+                                       'validations_on_return': u.cm}},
+             'output': 2 * u.cm,
+             },
+
+            # call with unit conversion
+            {'setup': {'function': self.foo,
+                       'args': (2 * u.cm,),
+                       'kwargs': {},
+                       'validations': {'x': u.cm,
+                                       'validations_on_return': u.um}},
+             'output': (2 * u.cm).to(u.um),
+             },
+
+            # argument fails checks
+            {'setup': {'function': self.foo,
+                       'args': (2 * u.cm, ),
+                       'kwargs': {},
+                       'validations': {'x': u.g,
+                                       'validations_on_return': u.cm}},
+             'raises': u.UnitTypeError,
+             },
+
+            # return fails checks
+            {'setup': {'function': self.foo,
+                       'args': (2 * u.cm, ),
+                       'kwargs': {},
+                       'validations': {'x': u.cm,
+                                       'validations_on_return': u.kg}},
+             'raises': u.UnitTypeError,
+             },
+
+        ]
+
+        # perform tests
+        for case in _cases:
+            validations = case['setup']['validations']
+            func = case['setup']['function']
+            wfoo = ValidateQuantities(**validations)(func)
+
+            args = case['setup']['args']
+            kwargs = case['setup']['kwargs']
+
+            if 'raises' in case:
+                with pytest.raises(case['raises']):
+                    wfoo(*args, **kwargs)
+                continue
+
+            assert wfoo(*args, **kwargs) == case['output']
+
+        # __call__ calls methods `_get_validations` and `_validate_quantity`
+        #
+        # setup default validations
+        default_validations = self.check_defaults.copy()
+        default_validations['units'] = [default_validations.pop('units')]
+        default_validations['equivalencies'] = [
+            default_validations.pop('equivalencies')]
+        validations = {
+            'x': {**default_validations,
+                  'units': [u.cm]},
+            'validations_on_return': {**default_validations,
+                                      'units': [u.cm]},
+        }
+        with mock.patch.object(ValidateQuantities,
+                               '_get_validations',
+                               return_value=validations) as mock_vq_get,\
+                mock.patch.object(ValidateQuantities,
+                                  '_validate_quantity',
+                                  return_value=5 * u.cm) as mock_vq_validate:
+
+            wfoo = ValidateQuantities(**validations)(self.foo)
+            assert wfoo(5 * u.cm) == 5 * u.cm
+            assert mock_vq_get.call_count == 1
+            assert mock_vq_validate.call_count == len(validations)
+
+        # validation 'checks_on_return' not allowed
+        with pytest.raises(TypeError):
+            ValidateQuantities(checks_on_return=u.cm)
