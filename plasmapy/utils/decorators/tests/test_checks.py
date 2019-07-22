@@ -451,7 +451,7 @@ class TestCheckUnits:
                 assert wfoo(*args, **kwargs) == case['output']
 
     def test_cu_preserves_signature(self):
-        """Test CheckValues preserves signature of wrapped function."""
+        """Test `CheckValues` preserves signature of wrapped function."""
         # I'd like to directly dest the @preserve_signature is used (??)
 
         wfoo = CheckUnits()(self.foo_no_anno)
@@ -622,6 +622,14 @@ class TestCheckValues:
              'warns': PlasmaPyWarning,
              },
 
+            # check argument is not a dictionary (default is assumed)
+            {'setup': {'function': self.foo,
+                       'args': (2, 3),
+                       'kwargs': {},
+                       'checks': {'x': u.cm},
+                       },
+             'output': {'x': {}},
+             },
         ]
 
         # perform tests

@@ -197,8 +197,15 @@ class CheckValues(CheckBase):
             # read checks and/or apply defaults values
             out_checks[param.name] = {}
             for v_name, v_default in self.__check_defaults.items():
-                out_checks[param.name][v_name] = \
-                    param_in_checks.get(v_name, v_default)
+                try:
+                    out_checks[param.name][v_name] = \
+                        param_in_checks.get(v_name, v_default)
+                except AttributeError:
+                    # for the case that checks are defined for an argument,
+                    # but is NOT a dictionary
+                    # (e.g. CheckValues(x=u.cm) ... this scenario could happen
+                    # curing subclassing)
+                    out_checks[param.name][v_name] = v_default
 
         # Does `self.checks` indicate arguments not used by f?
         missing_params = [
