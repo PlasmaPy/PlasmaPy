@@ -4,7 +4,7 @@ from astropy import units as u
 from astropy.modeling import models, fitting
 from scipy.optimize import curve_fit
 
-from plasmapy.classes import Species
+from plasmapy.simulation.species import Species
 from plasmapy.classes.sources import Plasma3D
 
 

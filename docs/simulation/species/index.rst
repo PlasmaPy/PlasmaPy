@@ -1,7 +1,7 @@
 .. currentmodule:: plasmapy.classes.species
 
 ************************************************
-Particle Simulation (`plasmapy.classes.species`)
+Particle Simulation (`plasmapy.simulation.stepper`)
 ************************************************
 
 Introduction
@@ -20,6 +20,6 @@ future.
 Reference/API
 =============
 
-.. automodapi:: plasmapy.classes.species
+.. automodapi:: plasmapy.simulation.stepper
    :no-heading:
    :no-main-docstr:
