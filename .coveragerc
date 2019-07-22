@@ -6,6 +6,7 @@ omit =
     ah_bootstrap.py
     plasmapy/setup_package.py
     plasmapy/version.py
+    plasmapy/_base_init.py
 exclude_lines =
     coverage: ignore
     ImportError
