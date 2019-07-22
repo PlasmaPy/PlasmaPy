@@ -10,7 +10,7 @@ import warnings
 
 from astropy import units as u
 from astropy.units import UnitsWarning
-from plasmapy.constants import c
+from astropy.constants import c
 from plasmapy.utils.decorators import preserve_signature
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 from textwrap import dedent

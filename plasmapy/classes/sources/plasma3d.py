@@ -9,15 +9,15 @@ import itertools
 
 from plasmapy.physics.magnetostatics import MagnetoStatics
 
-from plasmapy.constants import (m_p,
-                                m_e,
-                                c,
-                                mu0,
-                                k_B,
-                                e,
-                                eps0,
-                                pi,
-                                )
+from astropy.constants import (m_p,
+                               m_e,
+                               c,
+                               mu0,
+                               k_B,
+                               e,
+                               eps0,
+                               )
+from numpy import pi
 
 from plasmapy.classes import GenericPlasma
 

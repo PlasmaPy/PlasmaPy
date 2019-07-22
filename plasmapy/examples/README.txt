@@ -9,4 +9,6 @@ Examples
 General examples
 ----------------
 
-General-purpose and introductory examples from PlasmaPy
+General-purpose and introductory examples from PlasmaPy.
+
+`You may also run these online via Binder (link uses the current master version). <https://mybinder.org/v2/gh/PlasmaPy/PlasmaPy/master?filepath=plasmapy%2Fexamples>`_

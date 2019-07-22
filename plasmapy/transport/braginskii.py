@@ -137,7 +137,7 @@ import warnings
 from astropy import units as u
 from plasmapy import (atomic, utils)
 from plasmapy.atomic.atomic import _is_electron
-from plasmapy.constants import (e, m_e, k_B)
+from astropy.constants.si import (e, m_e, k_B)
 from plasmapy.physics.parameters import (Hall_parameter, _grab_charge)
 from plasmapy.transport import (fundamental_electron_collision_freq,
                                 fundamental_ion_collision_freq)

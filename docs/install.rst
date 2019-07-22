@@ -22,7 +22,6 @@ installation:
 - `NumPy <http://www.numpy.org/>`_ 1.13 or newer
 - `SciPy <https://www.scipy.org/>`_ 0.19 or newer
 - `Astropy <http://www.astropy.org/>`_ 2.0 or newer
-- `Cython <http://cython.org/>`_ 0.27.2 or newer
 - `colorama <https://pypi.org/project/colorama/>`_ 0.3 or newer
 
 PlasmaPy also uses the following optional dependencies:
@@ -52,7 +51,7 @@ create a PlasmaPy environment by running:
 
 .. code:: bash
 
-    conda create -n plasmapy python=3.7 numpy scipy astropy matplotlib cython h5py lmfit mpmath colorama -c conda-forge
+    conda create -n plasmapy python=3.7 numpy scipy astropy matplotlib h5py lmfit mpmath colorama -c conda-forge
 
 To activate this environment, run:
 
@@ -97,9 +96,11 @@ simply
 Installation with conda
 -----------------------
 
-We’re not on conda just yet, but we’re working on it!
+You can get PlasmaPy from `conda` via
 
-Conda installs all dependencies by default.
+.. code:: bash
+
+    conda install -c conda-forge plasmapy
 
 Building and installing from source code
 ========================================
