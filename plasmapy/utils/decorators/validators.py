@@ -98,7 +98,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
                 # then override the value determined by CheckUnits
                 validations[arg_name]['none_shall_pass'] = \
                     self.validations[arg_name]['none_shall_pass']
-            except KeyError:
+            except (KeyError, TypeError):
                 # 'none_shall_pass' was not in the original passed-in validations, so
                 # rely on the value determined by CheckUnits
                 pass
