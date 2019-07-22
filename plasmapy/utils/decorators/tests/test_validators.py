@@ -272,3 +272,12 @@ class TestValidateQuantities:
             assert vq._validate_quantity(*args, **validations) == case['output']
             assert mock_cu_checks.called
             assert mock_cv_checks.called
+
+    def test_vq_preserves_signature(self):
+        """Test `ValidateQuantities` preserves signature of wrapped function."""
+        # I'd like to directly dest the @preserve_signature is used (??)
+
+        wfoo = ValidateQuantities()(self.foo_anno)
+        assert hasattr(wfoo, '__signature__')
+        assert wfoo.__signature__ == inspect.signature(self.foo_anno)
+
