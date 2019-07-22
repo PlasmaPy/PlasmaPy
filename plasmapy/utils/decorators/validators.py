@@ -97,7 +97,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
                 # if 'none_shall_pass' was in the original passed-in validations,
                 # then override the value determined by CheckUnits
                 validations[arg_name]['none_shall_pass'] = \
-                    self._validations[arg_name]['none_shall_pass']
+                    self.validations[arg_name]['none_shall_pass']
             except KeyError:
                 # 'none_shall_pass' was not in the original passed-in validations, so
                 # rely on the value determined by CheckUnits
@@ -180,6 +180,14 @@ class ValidateQuantities(CheckUnits, CheckValues):
         self._check_value(arg, arg_name, **validations)
 
         return arg
+
+    @property
+    def validations(self):
+        """
+        Requested validations on the decorated function's input arguments and
+        return variable.
+        """
+        return self._validations
 
 
 def validate_quantities(func=None, validations_on_return=None, **validations):
