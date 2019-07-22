@@ -9,6 +9,7 @@ from astropy import units as u
 from plasmapy.utils.decorators.checks import (CheckUnits, CheckValues)
 from plasmapy.utils.decorators.validators import (validate_quantities,
                                                   ValidateQuantities)
+from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
 from typing import (Any, Dict)
 from unittest import mock
 
@@ -169,3 +170,104 @@ class TestValidateQuantities:
             assert vq._get_validations(bound_args) == {}
             assert mock_cu_get.called
             assert mock_cv_get.called
+
+    def test_vq_method__validate_quantity(self):
+
+        # method must exist
+        assert hasattr(ValidateQuantities, '_validate_quantity')
+
+        # setup default validations
+        default_validations = self.check_defaults.copy()
+        default_validations['units'] = [default_validations.pop('units')]
+        default_validations['equivalencies'] = [default_validations.pop('equivalencies')]
+
+        # setup test cases
+        # 'setup' = arguments for `_get_validations`
+        # 'output' = expected return from `_get_validations`
+        # 'raises' = if `_get_validations` raises an Exception
+        # 'warns' = if `_get_validations` issues a warning
+        #
+        _cases = [
+            # typical call
+            {'input': {'args': (5 * u.cm, 'arg'),
+                       'validations': {**default_validations,
+                                       'units': [u.cm]}},
+             'output': 5 * u.cm},
+
+            # argument does not have units, but only one is specified
+            {'input': {'args': (5, 'arg'),
+                       'validations': {**default_validations,
+                                       'units': [u.cm]}},
+             'output': 5 * u.cm,
+             'warns': u.UnitsWarning},
+
+            # argument does not have units and multiple unit validations specified
+            {'input': {'args': (5, 'arg'),
+                       'validations': {**default_validations,
+                                       'units': [u.cm, u.km],
+                                       'equivalencies': [None, None]}},
+             'raises': TypeError},
+
+            # units can NOT be applied to argument
+            {'input': {'args': ({}, 'arg'),
+                       'validations': {**default_validations,
+                                       'units': [u.cm]}},
+             'raises': TypeError},
+
+            # argument has a non-standard unit conversion
+            {'input': {'args': (5. * u.K, 'arg'),
+                       'validations': {**default_validations,
+                                       'units': [u.eV],
+                                       'equivalencies': [u.temperature_energy()]}},
+             'output': (5. * u.K).to(u.eV, equivalencies=u.temperature_energy()),
+             'warns': ImplicitUnitConversionWarning},
+
+            # return value is None and not allowed
+            {'input': {'args': (None, 'validations_on_return'),
+                       'validations': {**default_validations,
+                                       'units': [u.cm],
+                                       'none_shall_pass': False}},
+             'raises': ValueError},
+        ]
+
+        # setup wrapped function
+        vq = ValidateQuantities()
+        vq.f = self.foo
+
+        # perform tests
+        for case in _cases:
+            arg, arg_name = case['input']['args']
+            validations = case['input']['validations']
+
+            if 'warns' in case:
+                with pytest.warns(case['warns']):
+                    _result = vq._validate_quantity(arg, arg_name, **validations)
+            elif 'raises' in case:
+                with pytest.raises(case['raises']):
+                    vq._validate_quantity(arg, arg_name, **validations)
+                continue
+            else:
+                _result = vq._validate_quantity(arg, arg_name, **validations)
+
+            assert _result == case['output']
+
+        # method calls `_check_unit_core` and `_check_value`
+        case = {'input': (5. * u.cm, u.cm, {**default_validations, 'units': [u.cm]}),
+                'output': 5. * u.cm}
+        with mock.patch.object(CheckUnits,
+                               '_check_unit_core',
+                               return_value=(5*u.cm, u.cm, None, None)) \
+                as mock_cu_checks, \
+                mock.patch.object(CheckValues,
+                                  '_check_value',
+                                  return_value=None) as mock_cv_checks:
+
+            args = case['input'][0:2]
+            validations = case['input'][2]
+
+            vq = ValidateQuantities(**validations)
+            vq.f = self.foo
+
+            assert vq._validate_quantity(*args, **validations) == case['output']
+            assert mock_cu_checks.called
+            assert mock_cv_checks.called
