@@ -1,26 +1,30 @@
 from plasmapy.classes.sources import openpmd_hdf5
 from plasmapy.classes.exceptions import DataStandardError
 from plasmapy.data.test import rootdir
+import plasmapy.classes
 
 from astropy import units as u
 from typing import Union, Tuple, List
 import os
 import pytest
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def h5_2d(request):
     h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000255.h5"))
     yield h5
+    h5.close()
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def h5_3d(request):
     h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000100.h5"))
     yield h5
+    h5.close()
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def h5_theta(request):
     h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000200.h5"))
     yield h5
+    h5.close()
 
 class TestOpenPMD2D:
     """Test 2D HDF5 dataset based on OpenPMD."""
@@ -133,3 +137,7 @@ def test_unavailable_hdf5():
 def test_non_openpmd_hdf5():
     with pytest.raises(DataStandardError):
         openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "blank.h5"))
+
+def test_HDF5Reader(h5_2d):
+    assert isinstance(h5_2d, plasmapy.classes.sources.HDF5Reader)
+    assert isinstance(h5_2d, plasmapy.classes.BasePlasma)

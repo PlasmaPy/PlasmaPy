@@ -112,21 +112,8 @@ tests = {
 
 }
 
-@pytest.fixture(params = tests)
-def test_name(request):
-    return request.param
+test_names = tests.keys()
 
-@pytest.fixture(params = (test for test in tests if isinstance(tests[test]['inputs'], dict)))
-def dict_test_name(request):
-    return request.param
-
-@pytest.fixture
-def ionization_state(test_name):
-    return IonizationStates(**tests[test_name])
-
-@pytest.fixture
-def dict_ionization_state(dict_test_name):
-    return IonizationStates(**tests[dict_test_name])
 
 class TestIonizationStates:
 
@@ -134,15 +121,26 @@ class TestIonizationStates:
     def setup_class(cls):
         cls.instances = {}
 
-    def test_no_exceptions_from_str(self, ionization_state):
-        ionization_state.__str__()
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_instantiation(self, test_name):
+        try:
+            self.instances[test_name] = IonizationStates(**tests[test_name])
+        except Exception:
+            pytest.fail(f"Cannot create IonizationStates instance for test='{test_name}'")
 
-    def test_no_exceptions_from_repr(self, ionization_state):
-        ionization_state.__repr__()
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_no_exceptions_from_str(self, test_name):
+        self.instances[test_name].__str__()
 
-    def test_no_exceptions_from_info(self, ionization_state):
-        ionization_state.info()
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_no_exceptions_from_repr(self, test_name):
+        self.instances[test_name].__repr__()
 
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_no_exceptions_from_info(self, test_name):
+        self.instances[test_name].info()
+
+    @pytest.mark.parametrize('test_name', test_names)
     def test_simple_equality(self, test_name):
         """Test that __eq__ is not extremely broken."""
         a = IonizationStates(**tests[test_name])
@@ -150,28 +148,29 @@ class TestIonizationStates:
         assert a == a, f"IonizationStates instance does not equal itself."
         assert a == b, f"IonizationStates instance does not equal identical instance."
 
-    def test_that_particles_were_set_correctly(self, dict_ionization_state):
-        input_particles = dict_ionization_state['inputs'].keys()
+    @pytest.mark.parametrize(
+        'test_name',
+        [test_name for test_name in test_names if isinstance(tests[test_name]['inputs'], dict)],
+    )
+    def test_that_particles_were_set_correctly(self, test_name):
+        input_particles = tests[test_name]['inputs'].keys()
         particles = [Particle(input_particle) for input_particle in input_particles]
         expected_particles = {p.particle for p in particles}
-        actual_particles = {particle for particle in dict_ionization_state.ionic_fractions.keys()}
+        actual_particles = {particle for particle in self.instances[test_name].ionic_fractions.keys()}
 
         assert actual_particles == expected_particles, (
             f"For test='{test_name}', the following should be equal:\n"
             f"  actual_particles = {actual_particles}\n"
             f"expected_particles = {expected_particles}")
 
+    @pytest.mark.parametrize('test_name', has_attribute('abundances', tests))
     def test_that_abundances_kwarg_sets_abundances(self, test_name):
-        if "abundances" not in tests[test_name]:
-            pytest.skip("Test only needed for tests with 'abundances'")
-
-        instance = IonizationStates(**tests[test_name])
         try:
-            actual_abundances = instance.abundances
+            actual_abundances = self.instances[test_name].abundances
         except Exception as exc:
             pytest.fail("Unable to access abundances.")
 
-        elements = set(instance.base_particles)
+        elements = set(self.instances[test_name].base_particles)
         elements_from_abundances = set(actual_abundances.keys())
 
         if not elements.issubset(elements_from_abundances):
@@ -181,8 +180,9 @@ class TestIonizationStates:
                 f"elements whose abundances are being kept track of "
                 f"({elements_from_abundances}) for test {test_name}.")
 
+    @pytest.mark.parametrize('test_name', test_names)
     def test_that_elements_and_isotopes_are_sorted(self, test_name):
-        elements = IonizationStates(**tests[test_name]).base_particles
+        elements = self.instances[test_name].base_particles
         before_sorting = []
         for element in elements:
             atomic_numb = atomic_number(element)
@@ -199,11 +199,12 @@ class TestIonizationStates:
             f"   after_sorting = {after_sorting}\n"
             f"where above is (atomic_number, mass_number if isotope else 0)")
 
+    @pytest.mark.parametrize('test_name', test_names)
     def test_that_ionic_fractions_are_set_correctly(self, test_name):
 
         errmsg = ""
 
-        elements_actual = IonizationStates(**tests[test_name]).base_particles
+        elements_actual = self.instances[test_name].base_particles
         inputs = tests[test_name]["inputs"]
 
         if isinstance(inputs, dict):
@@ -220,7 +221,7 @@ class TestIonizationStates:
                 if isinstance(expected, u.Quantity):
                     expected = np.array(expected.value / np.sum(expected.value))
 
-                actual = IonizationStates(**tests[test_name]).ionic_fractions[element]
+                actual = self.instances[test_name].ionic_fractions[element]
 
                 if not np.allclose(actual, expected):
                     errmsg += (
@@ -234,24 +235,27 @@ class TestIonizationStates:
         else:
             elements_expected = {particle_symbol(element) for element in inputs}
 
-            assert set(IonizationStates(**tests[test_name]).base_particles) == elements_expected
+            assert set(self.instances[test_name].base_particles) == elements_expected
 
             for element in elements_expected:
-                assert all(np.isnan(IonizationStates(**tests[test_name]).ionic_fractions[element]))
+                assert all(np.isnan(self.instances[test_name].ionic_fractions[element]))
         if errmsg:
             pytest.fail(errmsg)
 
-    def test_getitem_element(self, ionization_state):
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_getitem_element(self, test_name):
         """Test that __get_item__ returns an IonizationState instance"""
-        for key in ionization_state.base_particles:
+        instance = self.instances[test_name]
+
+        for key in instance.base_particles:
 
             try:
-                expected = ionization_state.ionic_fractions[key]
+                expected = instance.ionic_fractions[key]
             except Exception as exc:
                 pytest.fail(f"Unable to get ionic_fractions for '{key}' in test='{test_name}'.")
 
             try:
-                actual = ionization_state[key].ionic_fractions
+                actual = instance[key].ionic_fractions
             except Exception as exc:
                 pytest(
                     f"Unable to get item {key} in test={test_name}."
@@ -274,11 +278,13 @@ class TestIonizationStates:
                     f"ionic fractions of {expected} are not all equal "
                     f"to the resulting ionic fractions of {actual}.")
 
-    def test_getitem_element_intcharge(self, ionization_state):
-        for particle in ionization_state.base_particles:
+    @pytest.mark.parametrize('test_name', test_names)
+    def test_getitem_element_intcharge(self, test_name):
+        instance = self.instances[test_name]
+        for particle in instance.base_particles:
             for int_charge in range(0, atomic_number(particle) + 1):
-                actual = ionization_state[particle, int_charge].ionic_fraction
-                expected = ionization_state.ionic_fractions[particle][int_charge]
+                actual = instance[particle, int_charge].ionic_fraction
+                expected = instance.ionic_fractions[particle][int_charge]
                 # We only need to check if one is broken
             if not np.isnan(actual) and np.isnan(expected):
                 assert np.isclose(actual, expected), (
@@ -286,12 +292,17 @@ class TestIonizationStates:
                     f"       test = '{test_name}'\n"
                     f"   particle = '{particle}'")
 
-    def test_normalization(self, dict_ionization_state):
-        dict_ionization_state.normalize()
+    @pytest.mark.parametrize('test_name', [
+        test_name for test_name in test_names
+        if isinstance(tests[test_name]['inputs'], dict)
+    ])
+    def test_normalization(self, test_name):
+        instance = self.instances[test_name]
+        instance.normalize()
         not_normalized_elements = []
-        for element in dict_ionization_state.base_particles:
+        for element in instance.base_particles:
             is_not_normalized = not np.isclose(
-                np.sum(dict_ionization_state.ionic_fractions[element]),
+                np.sum(instance.ionic_fractions[element]),
                 1,
                 atol=1e-19,
                 rtol=0,
@@ -302,7 +313,7 @@ class TestIonizationStates:
 
         if not_normalized_elements:
             pytest.fail(
-                f"In test = '{dict_test_name}', ionic fractions for the "
+                f"In test = '{test_name}', ionic fractions for the "
                 f"following particles were not normalized: "
                 f"{', '.join(not_normalized_elements)}.")
 
@@ -782,16 +793,16 @@ class TestIonizationStatesDensityEqualities:
 
     @pytest.mark.parametrize("test_key", ['ndens1', 'ndens2'])
     def test_number_densities_defined(self, test_key):
-        number_densities = IonizationStates(**tests[test_key]).number_densities
-        for base_particle in IonizationStates(**tests[test_key]).base_particles:
+        number_densities = self.instances[test_key].number_densities
+        for base_particle in self.instances[test_key].base_particles:
             assert not np.any(np.isnan(number_densities[base_particle])), (
                 f"Test {test_key} should have number densities "
                 f"defined, but doesn't.")
 
     @pytest.mark.parametrize("test_key", ['no_ndens3', 'no_ndens4', 'no_ndens5'])
     def test_number_densities_undefined(self, test_key):
-        number_densities = IonizationStates(**tests[test_key]).number_densities
-        for base_particle in IonizationStates(**tests[test_key]).base_particles:
+        number_densities = self.instances[test_key].number_densities
+        for base_particle in self.instances[test_key].base_particles:
             assert np.all(np.isnan(number_densities[base_particle])), (
                 f"Test {test_key} should not have number densities "
                 f"defined, but does.")
@@ -810,13 +821,13 @@ class TestIonizationStatesDensityEqualities:
         should not provide ``number_densities``.
         """
         expect_equality = this[0:4] == that[0:4]
-        are_equal = IonizationStates(**tests[this]) == IonizationStates(**tests[that])
+        are_equal = self.instances[this] == self.instances[that]
         if expect_equality != are_equal:
             print(f"{this} kwargs:\n {self.dict_of_kwargs[this]}\n")
-            IonizationStates(**tests[this]).info()
+            self.instances[this].info()
             print()
             print(f"{that} kwargs:\n {self.dict_of_kwargs[that]}\n")
-            IonizationStates(**tests[that]).info()
+            self.instances[that].info()
             descriptor = "equal" if expect_equality else "unequal"
             pytest.fail(
                 f"Cases {this} and {that} should be {descriptor} but "
