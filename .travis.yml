@@ -22,12 +22,12 @@ matrix:
     fast_finish: true
     include:
         - name: "3.7"
-          env: TOX_ENV='py37-offline'
+          env: TOX_ENV='py37'
           python: "3.7"
           stage: Generic tests
 
         - name: "3.6"
-          env: TOX_ENV='py36-offline'
+          env: TOX_ENV='py36'
           python: "3.6"
           stage: Cron tests
 
