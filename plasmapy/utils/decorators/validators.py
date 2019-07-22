@@ -118,17 +118,21 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         return validations
 
-    def _validate_quantity(self, arg, arg_name, **validations: Dict[str, Any]):
-
+    def _validate_quantity(self, arg, arg_name, **validations):
         # rename to work with "check" methods
         if arg_name == 'validations_on_return':
             arg_name = 'checks_on_return'
 
+        # initialize str for error message
+        if arg_name == 'checks_on_return':
+            err_msg = f"The return value  "
+        else:
+            err_msg = f"The argument '{arg_name}' "
+        err_msg += f"to function {self.f.__name__}()"
+
         # initialize TypeError message
-        typeerror_msg = (
-            f"The argument {arg_name} to {self.f.__name__} should be an astropy"
-            f"Quantity with units equivalent to one of ["
-        )
+        typeerror_msg = (f"{err_msg} should be an astropy Quantity with units"
+                         f" equivalent to one of [")
         for ii, unit in enumerate(validations['units']):
             typeerror_msg += f"{unit}"
 
@@ -137,51 +141,43 @@ class ValidateQuantities(CheckUnits, CheckValues):
         typeerror_msg += f"]"
 
         # add units to arg if possible
-        # * a None value will be taken care of by `_check_unit`
+        # * a None value will be taken care of by `_check_unit_core`
         #
-        if 'units' not in validations:
+        if arg is None or hasattr(arg, 'unit'):
             pass
-        elif arg is not None and not isinstance(arg, u.Quantity):
-            if len(validations['units']) != 1:
+        elif len(validations['units']) != 1:
+            raise TypeError(typeerror_msg)
+        else:
+            try:
+                arg = arg * validations['units'][0]
+            except (TypeError, ValueError):
                 raise TypeError(typeerror_msg)
             else:
-                try:
-                    arg = arg * validations['units'][0]
-                except (TypeError, ValueError):
-                    raise TypeError(typeerror_msg)
-                else:
-                    if not isinstance(arg, u.Quantity):  # pragma: no cover
-                        # this should never be reached...if so, except
-                        # is not setup correctly
-                        #
-                        raise TypeError(typeerror_msg)
+                warnings.warn(u.UnitsWarning(
+                    f"{err_msg} has no specified units. Assuming units of "
+                    f"{validations['units'][0]}. To silence this warning, "
+                    f"explicitly pass in an astropy Quantity "
+                    f"(e.g. 5. * astropy.units.cm) "
+                    f"(see http://docs.astropy.org/en/stable/units/)"
+                ))
 
-                    warnings.warn(u.UnitsWarning(
-                        f"No units are specified for {arg_name} = {arg.value} "
-                        f"in {self.f.__name__}(). Assuming units of "
-                        f"{validations['units'][0]}. To silence this warning, "
-                        f"explicitly pass in an astropy Quantity "
-                        f"(e.g. 5. * astropy.units.cm) "
-                        f"(see http://docs.astropy.org/en/stable/units/)"
-                    ))
+        # check units
+        arg, unit, equiv, err = self._check_unit_core(arg, arg_name, **validations)
 
-        if 'units' in validations:
-            # check units
-            arg, unit, equiv, err = self._check_unit_core(arg, arg_name, **validations)
+        # convert quantity
+        if arg is not None and unit is not None:
+            # if non-standard conversion then warn
+            if not arg.unit.is_equivalent(unit):
+                warnings.warn(ImplicitUnitConversionWarning(
+                    f"{err_msg} has a non-standard unit conversion..."
+                    f"converting {arg.unit} to {unit}"))
 
-            # convert quantity
-            if arg is not None and unit is not None:
-                # if non-standard conversion then warn
-                if not arg.unit.is_equivalent(unit):
-                    warnings.warn(ImplicitUnitConversionWarning)
-
-                arg = arg.to(unit, equivalencies=equiv)
-            elif err is not None:
-                raise err
+            arg = arg.to(unit, equivalencies=equiv)
+        elif err is not None:
+            raise err
 
         # check value
-        if all([key in validations for key in self._CheckValues__check_defaults]):
-            self._check_value(arg, arg_name, **validations)
+        self._check_value(arg, arg_name, **validations)
 
         return arg
 
