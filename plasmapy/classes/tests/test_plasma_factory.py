@@ -1,10 +1,16 @@
 import astropy.units as u
 import numpy as np
 import os
+import pytest
 
 import plasmapy.classes
 from plasmapy.data.test import rootdir
 
+@pytest.fixture(scope='module')
+def h5(request):
+    h5 = plasmapy.classes.Plasma(hdf5=os.path.join(rootdir, "data00000255.h5"))
+    yield h5
+    h5.close()
 
 class TestPlasma(object):
     def test_patters(self):
@@ -32,8 +38,3 @@ class TestPlasma(object):
                                        particle=particle)
         assert isinstance(blob, plasmapy.classes.sources.PlasmaBlob)
         assert isinstance(blob, plasmapy.classes.BasePlasma)
-
-    def test_HDF5Reader(self):
-        h5 = plasmapy.classes.Plasma(hdf5=os.path.join(rootdir, "data00000255.h5"))
-        assert isinstance(h5, plasmapy.classes.sources.HDF5Reader)
-        assert isinstance(h5, plasmapy.classes.BasePlasma)

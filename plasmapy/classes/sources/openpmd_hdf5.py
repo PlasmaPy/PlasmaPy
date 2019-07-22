@@ -84,6 +84,15 @@ class HDF5Reader(GenericPlasma):
 
         self.subname = tuple(self.h5['data'])[0]
 
+    def __enter__(self):
+        return self.h5
+
+    def close(self):
+        self.h5.close()
+
+    def __exit__(self):
+        self.h5.close()
+
     def _check_valid_openpmd_version(self):
         try:
             openPMD_version = self.h5.attrs["openPMD"].decode('utf-8')
