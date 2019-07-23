@@ -173,7 +173,6 @@ class TestValidateQuantities:
             assert mock_cv_get.called
 
     def test_vq_method__validate_quantity(self):
-        warnings.simplefilter("always")
 
         # method must exist
         assert hasattr(ValidateQuantities, '_validate_quantity')
@@ -242,6 +241,7 @@ class TestValidateQuantities:
             if 'warns' in case:
                 with pytest.warns(case['warns']):
                     _result = vq._validate_quantity(arg, arg_name, **validations)
+                    warnings.warn(case['warns'])
             elif 'raises' in case:
                 with pytest.raises(case['raises']):
                     vq._validate_quantity(arg, arg_name, **validations)
