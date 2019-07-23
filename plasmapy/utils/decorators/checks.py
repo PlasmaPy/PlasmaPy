@@ -22,6 +22,13 @@ from plasmapy.utils.exceptions import (PlasmaPyWarning,
 from textwrap import dedent
 from typing import (Any, Dict, List, Tuple, Union)
 
+try:
+    from astropy.units.equivalencies import Equivalency
+except ImportError:
+    # astropy defined the Equivalency class in v3.2.1
+    class Equivalency:
+        pass
+
 
 class CheckBase:
     """
@@ -509,33 +516,30 @@ class CheckUnits(CheckBase):
                 _equivs = self.__check_defaults['equivalencies']
 
             # ensure equivalences are properly formatted
-            if _equivs is None:
-                _equivs = [None] * len(_units)
-            elif isinstance(_equivs, list):
-                if all(isinstance(el, tuple) for el in _equivs):
+            if _equivs is None or _equivs == [None]:
+                _equivs = None
+            elif isinstance(_equivs, Equivalency):
+                _equivs = [_equivs]
+            elif isinstance(_equivs, (list, tuple)):
+
+                # flatten list to non-list elements
+                if isinstance(_equivs, tuple):
                     _equivs = [_equivs]
+                else:
+                    _equivs = self.flatten_equivalencies_list(_equivs)
 
                 # ensure passed equivalencies list is structured properly
-                #   [[(), ...], ...]
+                #   [(), ...]
+                #   or [Equivalency(), ...]
                 #
                 # * All equivalencies must be a list of 2, 3, or 4 element tuples
                 #   structured like...
                 #     (from_unit, to_unit, forward_func, backward_func)
                 #
-                norm_equivs = []
-                for equiv in _equivs:
-                    norm_equivs.append(self._normalize_equivalencies(equiv))
-                _equivs = norm_equivs
-
-                # ensure number of equivalencies lists match the number of
-                # equivalent units to check
-                if len(_equivs) == 1:
-                    _equivs = _equivs * len(_units)
-                elif len(_equivs) != len(_units):
-                    raise ValueError(
-                        f"The length of the specified equivalencies list "
-                        f"({len(_equivs)}) must be 1 or equal to the "
-                        f"number of specified units ({len(_units)})")
+                if all(isinstance(el, Equivalency) for el in _equivs):
+                    pass
+                else:
+                    _equivs = self._normalize_equivalencies(_equivs)
 
             out_checks[param.name]['equivalencies'] = _equivs
 
@@ -610,7 +614,8 @@ class CheckUnits(CheckBase):
 
         # check units
         in_acceptable_units = []
-        for unit, equiv in zip(arg_checks['units'], arg_checks['equivalencies']):
+        equiv = arg_checks['equivalencies']
+        for unit in arg_checks['units']:
             try:
                 in_acceptable_units.append(
                     arg.unit.is_equivalent(unit, equivalencies=equiv)
@@ -642,11 +647,11 @@ class CheckUnits(CheckBase):
             if np.count_nonzero(units_mask) == 1:
                 # matched exactly to a desired unit
                 unit = units_arr[units_mask][0]
-                equiv = np.array(arg_checks['equivalencies'])[units_mask][0]
+                equiv = arg_checks['equivalencies']
             elif nacceptable == 1:
                 # there is a match to 1 equivalent unit
                 unit = units_arr[in_acceptable_units][0]
-                equiv = np.array(arg_checks['equivalencies'])[in_acceptable_units][0]
+                equiv = arg_checks['equivalencies']
                 if not arg_checks['pass_equivalent_units']:
                     err = u.UnitTypeError(typeerror_msg)
             elif arg_checks['pass_equivalent_units']:
@@ -685,6 +690,16 @@ class CheckUnits(CheckBase):
         * see astropy function :func:`~astropy.units.core._normalize_equivalencies`
         """
         return _normalize_equivalencies(equivalencies)
+
+    def flatten_equivalencies_list(self, elist):
+        new_list = []
+        for el in elist:
+            if not isinstance(el, list):
+                new_list.append(el)
+            else:
+                new_list.extend(self.flatten_equivalencies_list(el))
+
+        return new_list
 
 
 def check_units(func=None,

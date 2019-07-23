@@ -94,6 +94,17 @@ class TestCheckUnits:
         for key, val in _defaults:
             assert cu._CheckUnits__check_defaults[key] == val
 
+    def test_cu_method_flatten_equivalencies_list(self):
+        assert hasattr(CheckUnits, 'flatten_equivalencies_list')
+
+        cu = CheckUnits()
+        pairs = [
+            ([1, 2, 4], [1, 2, 4]),
+            ([1, 2, (3, 4), [5, 6]], [1, 2, (3, 4), 5, 6])
+        ]
+        for pair in pairs:
+            assert cu.flatten_equivalencies_list(pair[0]) == pair[1]
+
     def test_cu_method__get_unit_checks(self):
         """
         Test functionality/behavior of the method `_get_unit_checks` on `CheckUnits`.
@@ -104,9 +115,8 @@ class TestCheckUnits:
         assert hasattr(CheckUnits, '_get_unit_checks')
 
         # setup default checks
-        default_checks = self.check_defaults.copy()
-        default_checks['units'] = [default_checks.pop('units')]
-        default_checks['equivalencies'] = [default_checks.pop('equivalencies')]
+        default_checks = {**self.check_defaults.copy(),
+                          'units': [self.check_defaults['units']]}
 
         # setup test cases
         # 'setup' = arguments for `_get_unit_checks`
@@ -114,7 +124,10 @@ class TestCheckUnits:
         # 'raises' = if `_get_unit_checks` raises an Exception
         # 'warns' = if `_get_unit_checks` issues a warning
         #
-        equivs = [[u.temperature_energy()]]
+        equivs = [
+            [u.temperature_energy()],  # list of astropy Equivalency objects
+            list(u.temperature()),  # list of equivalencies (pre astropy v3.2.1 style)
+        ]
         _cases = [
             # x units are defined via decorator kwarg of CheckUnits
             # y units are defined via function annotations, additional checks
@@ -147,6 +160,23 @@ class TestCheckUnits:
                               'equivalencies': equivs[0]},
                         'y': {'units': [u.cm],
                               'pass_equivalent_units': False},
+                        },
+             },
+
+            # equivalencies are a list instead of astropy Equivalency objects
+            {'setup': {'function': self.foo_no_anno,
+                       'args': (2 * u.K, 3 * u.K),
+                       'kwargs': {},
+                       'checks': {'x': {'units': [u.K],
+                                        'equivalencies': equivs[1][0]},
+                                  'y': {'units': [u.K],
+                                        'equivalencies': equivs[1]},
+                                  },
+                       },
+             'output': {'x': {'units': [u.K],
+                              'equivalencies': [equivs[1][0]]},
+                        'y': {'units': [u.K],
+                              'equivalencies': equivs[1]},
                         },
              },
 
@@ -198,17 +228,6 @@ class TestCheckUnits:
                        'args': (2 * u.cm, 3 * u.cm),
                        'kwargs': {},
                        'checks': {'x': {'pass_equivalent_units': True}},
-                       },
-             'raises': ValueError,
-             },
-
-            # checks specify too many equivalency lists
-            {'setup': {'function': self.foo_no_anno,
-                       'args': (2 * u.cm, 3 * u.cm),
-                       'kwargs': {},
-                       'checks': {'x': {'units': u.cm,
-                                        'equivalencies': [u.temperature(),
-                                                          u.temperature_energy()]}},
                        },
              'raises': ValueError,
              },
@@ -298,9 +317,11 @@ class TestCheckUnits:
         assert hasattr(CheckUnits, '_check_unit_core')
 
         # setup default checks
-        check = self.check_defaults.copy()
-        check['units'] = [u.cm]
-        check['equivalencies'] = [None]
+        check = {**self.check_defaults,
+                 'units': [u.cm]}
+        # check = self.check_defaults.copy()
+        # check['units'] = [u.cm]
+        # check['equivalencies'] = [None]
 
         # make a class w/ improper units
         class MyQuantity:
@@ -329,16 +350,14 @@ class TestCheckUnits:
             # argument is equivalent to many specified units but exactly matches one
             {'input': (5. * u.km,
                        'arg', {**check,
-                               'units': [u.cm, u.km],
-                               'equivalencies': [None] * 2}),
+                               'units': [u.cm, u.km]}),
              'output': (5. * u.km, u.km, None, None)},
 
             # argument is equivalent to many specified units and
             # does NOT exactly match one
             {'input': (5. * u.m,
                        'arg', {**check,
-                               'units': [u.cm, u.km],
-                               'equivalencies': [None] * 2}),
+                               'units': [u.cm, u.km]}),
              'output': (None, None, None, u.UnitTypeError)},
 
             # argument has attr unit but unit does not have is_equivalent
@@ -371,7 +390,6 @@ class TestCheckUnits:
             # and 'pass_equivalent_units' = True and argument
             {'input': (5. * u.km, 'arg', {**check,
                                           'units': [u.cm, u.m],
-                                          'equivalencies': [None] * 2,
                                           'pass_equivalent_units': True}),
              'output': (5. * u.km, None, None, None)},
         ])
@@ -381,7 +399,7 @@ class TestCheckUnits:
         cu.f = self.foo_no_anno
 
         # perform tests
-        for case in _cases:
+        for ii, case in enumerate(_cases):
             arg, arg_name, arg_checks = case['input']
             _results = cu._check_unit_core(arg, arg_name, **arg_checks)
             assert _results[0:3] == case['output'][0:3]
