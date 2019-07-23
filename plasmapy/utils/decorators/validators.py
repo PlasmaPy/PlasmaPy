@@ -10,7 +10,7 @@ import warnings
 from astropy import units as u
 from plasmapy.utils.decorators.checks import (CheckValues, CheckUnits)
 from plasmapy.utils.decorators.helpers import preserve_signature
-from plasmapy.utils.exceptions import (ImplicitUnitConversionWarning, PlasmaPyWarning)
+from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
 from typing import (Any, Dict, List, Union)
 
 
