@@ -374,3 +374,77 @@ class TestValidateQuantities:
         # validation 'checks_on_return' not allowed
         with pytest.raises(TypeError):
             ValidateQuantities(checks_on_return=u.cm)
+
+    @mock.patch(ValidateQuantities.__module__ + '.' + ValidateQuantities.__qualname__,
+                side_effect=ValidateQuantities, autospec=True)
+    def test_decorator_func_def(self, mock_vq_class):
+        """
+        Test that :func:`~plasmapy.utils.decorators.validators.validate_quantities` is
+        properly defined.
+        """
+        # create mock function (mock_foo) from function to mock (self.foo)
+        mock_foo = mock.Mock(side_effect=self.foo, name='mock_foo', autospec=True)
+        mock_foo.__name__ = 'mock_foo'
+        mock_foo.__signature__ = inspect.signature(self.foo)
+
+        # setup test cases
+        # 'setup' = arguments for `check_units` and wrapped function
+        # 'output' = expected return from wrapped function
+        # 'raises' = a raised Exception is expected
+        # 'warns' = an issued warning is expected
+        #
+        _cases = [
+            # only argument checks
+            {'setup': {'args': (5 * u.cm, ),
+                       'kwargs': {},
+                       'validations': {'x': u.cm}
+                       },
+             'output': 5 * u.cm,
+             },
+
+            # argument and return checks
+            {'setup': {'args': (-3. * u.cm, ),
+                       'kwargs': {},
+                       'validations': {
+                           'x': {'units': u.cm, 'can_be_negative': True},
+                           'validations_on_return': {'units': u.cm,
+                                                     'can_be_negative': True},
+                       }, },
+             'output': -3 * u.cm,
+            },
+        ]
+        for case in _cases:
+            for ii in range(2):
+                # decorate
+                if ii == 0:
+                    # functional decorator call
+                    wfoo = validate_quantities(mock_foo, **case['setup']['validations'])
+                elif ii == 1:
+                    # sugar decorator call
+                    #
+                    #  @validate_quantities(x=check)
+                    #      def foo(x):
+                    #          return x
+                    #
+                    wfoo = validate_quantities(**case['setup']['validations'])(mock_foo)
+                else:
+                    continue
+
+                # test
+                args = case['setup']['args']
+                kwargs = case['setup']['kwargs']
+                assert wfoo(*args, **kwargs) == case['output']
+
+                assert mock_vq_class.called
+                assert mock_foo.called
+
+                assert mock_vq_class.call_args[0] == ()
+                assert (sorted(mock_vq_class.call_args[1].keys())
+                        == sorted(case['setup']['validations'].keys()))
+
+                for arg_name, validations in case['setup']['validations'].items():
+                    assert mock_vq_class.call_args[1][arg_name] == validations
+
+                # reset
+                mock_vq_class.reset_mock()
+                mock_foo.reset_mock()
