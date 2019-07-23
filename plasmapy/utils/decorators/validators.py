@@ -168,10 +168,9 @@ class ValidateQuantities(CheckUnits, CheckValues):
         if arg is not None and unit is not None:
             # if non-standard conversion then warn
             if not arg.unit.is_equivalent(unit):
-                # warnings.warn(ImplicitUnitConversionWarning(
-                #     f"{err_msg} has a non-standard unit conversion..."
-                #     f"converting {arg.unit} to {unit}"))
-                warnings.warn(ImplicitUnitConversionWarning('Will TravisCI see this?'))
+                warnings.warn(ImplicitUnitConversionWarning(
+                    f"{err_msg} has a non-standard unit conversion..."
+                    f"converting {arg.unit} to {unit}"))
 
             arg = arg.to(unit, equivalencies=equiv)
         elif err is not None:
