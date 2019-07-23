@@ -4,6 +4,7 @@ when possible).
 """
 import inspect
 import pytest
+import warnings
 
 from astropy import units as u
 from plasmapy.utils.decorators.checks import (CheckUnits, CheckValues)
@@ -172,6 +173,7 @@ class TestValidateQuantities:
             assert mock_cv_get.called
 
     def test_vq_method__validate_quantity(self):
+        warnings.simplefilter("always")
 
         # method must exist
         assert hasattr(ValidateQuantities, '_validate_quantity')
