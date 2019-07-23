@@ -105,6 +105,8 @@ class TestCheckUnits:
 
         # setup default checks
         default_checks = self.check_defaults.copy()
+        default_checks['units'] = [default_checks.pop('units')]
+        default_checks['equivalencies'] = [default_checks.pop('equivalencies')]
 
         # setup test cases
         # 'setup' = arguments for `_get_unit_checks`
@@ -282,9 +284,6 @@ class TestCheckUnits:
                         val = case['output'][arg_name][key]
                     else:
                         val = default_checks[key]
-
-                        if key in ('units', 'equivalencies'):
-                            val = [val]
 
                     assert arg_checks[key] == val
 
