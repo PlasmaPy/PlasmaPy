@@ -520,7 +520,6 @@ class TestCheckUnits:
                 assert mock_cu_class.called
                 assert mock_foo.called
 
-                assert len(mock_cu_class.call_args) == len(case['setup']['checks'])
                 assert mock_cu_class.call_args[0] == ()
                 assert (sorted(mock_cu_class.call_args[1].keys())
                         == sorted(case['setup']['checks'].keys()))
@@ -913,7 +912,6 @@ class TestCheckValues:
                 assert mock_cv_class.called
                 assert mock_foo.called
 
-                assert len(mock_cv_class.call_args) == len(case['setup']['checks'])
                 assert mock_cv_class.call_args[0] == ()
                 assert (sorted(mock_cv_class.call_args[1].keys())
                         == sorted(case['setup']['checks'].keys()))
