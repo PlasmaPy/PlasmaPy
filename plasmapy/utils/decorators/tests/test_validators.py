@@ -240,6 +240,7 @@ class TestValidateQuantities:
 
             if 'warns' in case:
                 with pytest.warns(case['warns']):
+                    warnings.simplefilter("default")
                     _result = vq._validate_quantity(arg, arg_name, **validations)
             elif 'raises' in case:
                 with pytest.raises(case['raises']):
