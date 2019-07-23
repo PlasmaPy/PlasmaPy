@@ -46,9 +46,8 @@ class TestValidateQuantities:
         assert hasattr(ValidateQuantities, '_get_validations')
 
         # setup default validations
-        default_validations = self.check_defaults.copy()
-        default_validations['units'] = [default_validations.pop('units')]
-        default_validations['equivalencies'] = [default_validations.pop('equivalencies')]
+        default_validations = {**self.check_defaults.copy(),
+                               'units': [self.check_defaults['units']]}
 
         # setup test cases
         # 'setup' = arguments for `_get_validations`
@@ -178,9 +177,8 @@ class TestValidateQuantities:
         assert hasattr(ValidateQuantities, '_validate_quantity')
 
         # setup default validations
-        default_validations = self.check_defaults.copy()
-        default_validations['units'] = [default_validations.pop('units')]
-        default_validations['equivalencies'] = [default_validations.pop('equivalencies')]
+        default_validations = {**self.check_defaults.copy(),
+                               'units': [self.check_defaults['units']]}
 
         # setup test cases
         # 'setup' = arguments for `_get_validations`
@@ -205,8 +203,7 @@ class TestValidateQuantities:
             # argument does not have units and multiple unit validations specified
             {'input': {'args': (5, 'arg'),
                        'validations': {**default_validations,
-                                       'units': [u.cm, u.km],
-                                       'equivalencies': [None, None]}},
+                                       'units': [u.cm, u.km]}},
              'raises': TypeError},
 
             # units can NOT be applied to argument
@@ -219,7 +216,7 @@ class TestValidateQuantities:
             {'input': {'args': (5. * u.K, 'arg'),
                        'validations': {**default_validations,
                                        'units': [u.eV],
-                                       'equivalencies': [u.temperature_energy()]}},
+                                       'equivalencies': u.temperature_energy()}},
              'output': (5. * u.K).to(u.eV, equivalencies=u.temperature_energy()),
              'warns': ImplicitUnitConversionWarning},
 
@@ -236,7 +233,7 @@ class TestValidateQuantities:
         vq.f = self.foo
 
         # perform tests
-        for case in _cases:
+        for ii, case in enumerate(_cases):
             arg, arg_name = case['input']['args']
             validations = case['input']['validations']
 

@@ -15,6 +15,7 @@ from astropy.constants import c
 from astropy.units import UnitsWarning
 from astropy.units.core import _normalize_equivalencies
 from astropy.units.decorators import _get_allowed_units
+from functools import reduce
 from plasmapy.utils.decorators import preserve_signature
 from plasmapy.utils.exceptions import (PlasmaPyWarning,
                                        RelativityWarning,
@@ -519,7 +520,7 @@ class CheckUnits(CheckBase):
             if _equivs is None or _equivs == [None]:
                 _equivs = None
             elif isinstance(_equivs, Equivalency):
-                _equivs = [_equivs]
+                _equivs = _equivs
             elif isinstance(_equivs, (list, tuple)):
 
                 # flatten list to non-list elements
@@ -537,7 +538,7 @@ class CheckUnits(CheckBase):
                 #     (from_unit, to_unit, forward_func, backward_func)
                 #
                 if all(isinstance(el, Equivalency) for el in _equivs):
-                    pass
+                    _equivs = reduce(lambda x, y: x + y, _equivs)
                 else:
                     _equivs = self._normalize_equivalencies(_equivs)
 

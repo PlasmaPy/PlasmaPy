@@ -125,8 +125,11 @@ class TestCheckUnits:
         # 'warns' = if `_get_unit_checks` issues a warning
         #
         equivs = [
-            [u.temperature_energy()],  # list of astropy Equivalency objects
-            list(u.temperature()),  # list of equivalencies (pre astropy v3.2.1 style)
+            # list of astropy Equivalency objects
+            [u.temperature_energy(), u.temperature()],
+
+            # list of equivalencies (pre astropy v3.2.1 style)
+            list(u.temperature()),
         ]
         _cases = [
             # x units are defined via decorator kwarg of CheckUnits
@@ -140,7 +143,7 @@ class TestCheckUnits:
                                   },
                        },
              'output': {'x': {'units': [u.cm],
-                              'equivalencies': equivs[0]},
+                              'equivalencies': equivs[0][0]},
                         'y': {'units': [u.cm]},
                         },
              },
@@ -157,7 +160,7 @@ class TestCheckUnits:
                                   },
                        },
              'output': {'x': {'units': [u.cm],
-                              'equivalencies': equivs[0]},
+                              'equivalencies': equivs[0][0] + equivs[0][1]},
                         'y': {'units': [u.cm],
                               'pass_equivalent_units': False},
                         },
@@ -275,7 +278,7 @@ class TestCheckUnits:
         ]
 
         # perform tests
-        for case in _cases:
+        for ii, case in enumerate(_cases):
             sig = inspect.signature(case['setup']['function'])
             bound_args = sig.bind(*case['setup']['args'], **case['setup']['kwargs'])
 
