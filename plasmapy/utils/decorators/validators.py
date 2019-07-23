@@ -169,7 +169,8 @@ class ValidateQuantities(CheckUnits, CheckValues):
             # if non-standard conversion then warn
             # if not arg.unit.is_equivalent(unit):
             is_standard = bool(arg.unit.is_equivalent(unit))
-            warnings.warn(u.UnitsWarning(f"The unit conversion is standard: {is_standard}"))
+            warnings.warn(u.UnitsWarning(
+                f"The unit conversion is standard: {is_standard}...{arg.unit} to {unit}"))
             # if True:
             #     warnings.warn(ImplicitUnitConversionWarning(
             #         f"{err_msg} has a non-standard unit conversion..."
