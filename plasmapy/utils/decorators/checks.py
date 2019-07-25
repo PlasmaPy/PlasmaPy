@@ -2,7 +2,7 @@
 Decorator for checking input/output arguments of functions.
 """
 __all__ = ["check_values", "check_units", "check_quantity", "check_relativistic",
-           "CheckUnits", "CheckValues"]
+           "CheckBase", "CheckUnits", "CheckValues"]
 
 import collections
 import functools
@@ -33,7 +33,15 @@ except ImportError:
 
 class CheckBase:
     """
-    Base class for check decorator classes.
+    Base class for 'Check' decorator classes.
+
+    Parameters
+    ----------
+    checks_on_return
+        specified checks on the return of the wrapped function
+
+    **checks
+        specified checks on the input arguments of the wrapped function
     """
     def __init__(self, checks_on_return=None, **checks):
         self._checks = checks
@@ -44,7 +52,7 @@ class CheckBase:
     def checks(self):
         """
         Requested checks on the decorated function's input arguments
-        and return variables.
+        and/or return.
         """
         return self._checks
 
