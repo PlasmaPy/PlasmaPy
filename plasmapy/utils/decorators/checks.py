@@ -160,7 +160,7 @@ class CheckValues(CheckBase):
                 # check argument
                 self._check_value(bound_args.arguments[arg_name],
                                   arg_name,
-                                  **checks[arg_name])
+                                  checks[arg_name])
 
             # call function
             _return = f(**bound_args.arguments)
@@ -168,7 +168,7 @@ class CheckValues(CheckBase):
             # check function return
             if 'checks_on_return' in checks:
                 self._check_value(_return, 'checks_on_return',
-                                  **checks['checks_on_return'])
+                                  checks['checks_on_return'])
 
             return _return
         return wrapper
@@ -252,7 +252,7 @@ class CheckValues(CheckBase):
 
         return out_checks
 
-    def _check_value(self, arg, arg_name: str, **arg_checks: bool):
+    def _check_value(self, arg, arg_name: str, arg_checks: Dict[str, bool]):
         """
         Perform checks `arg_checks` on function argument `arg`.
 

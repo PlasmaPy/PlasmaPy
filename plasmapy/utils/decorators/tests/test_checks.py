@@ -801,12 +801,12 @@ class TestCheckValues:
             for arg in case['input']['args']:
                 if 'raises' in case:
                     with pytest.raises(case['raises']):
-                        cv._check_value(arg, arg_name, **checks)
+                        cv._check_value(arg, arg_name, checks)
                 elif 'warns' in case:
                     with pytest.warns(case['warns']):
-                        cv._check_value(arg, arg_name, **checks)
+                        cv._check_value(arg, arg_name, checks)
                 else:
-                    assert cv._check_value(arg, arg_name, **checks) is None
+                    assert cv._check_value(arg, arg_name, checks) is None
 
     def test_cv_called_as_decorator(self):
         """
