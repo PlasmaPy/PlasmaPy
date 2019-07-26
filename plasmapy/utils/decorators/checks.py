@@ -65,19 +65,19 @@ class CheckValues(CheckBase):
     Parameters
     ----------
     checks_on_return: Dict[str, bool]
-        Specifications for value checks on the return of the wrapped function. (see
-        `check values`_ for valid specifications)
+        Specifications for value checks on the return of the function being wrapped.
+        (see `check values`_ for valid specifications)
 
     **checks: Dict[str, Dict[str, bool]]
-        Specifications for value checks on the input arguments of the wrapped
-        function.  Each keyword argument in `checks` is the name of a function
+        Specifications for value checks on the input arguments of the function
+        being wrapped.  Each keyword argument in `checks` is the name of a function
         argument to be checked and the keyword value contains the value check
         specifications.
 
         .. _`check values`:
 
         The value check specifications are defined within a dictionary containing
-        the keys defined below.  If the dictionary is empty or omitting a key,
+        the keys defined below.  If the dictionary is empty or omitting keys,
         then the default value will be assumed for the missing keys.
 
         ================ ======= ================================================
@@ -254,7 +254,7 @@ class CheckValues(CheckBase):
 
     def _check_value(self, arg, arg_name: str, **arg_checks: bool):
         """
-        Perform checks `arg_checks` on function argutment `arg`.
+        Perform checks `arg_checks` on function argument `arg`.
 
         Parameters
         ----------
@@ -813,9 +813,8 @@ def check_values(func=None,
                  checks_on_return: Dict[str, bool] = None,
                  **checks: Dict[str, bool]):
     """
-    A decorator to "check" -- limit/control -- values of input arguments to a
-    function.  (Checking of function arguments `*args` and `**kwargs` is not
-    supported.)
+    A decorator to 'check' -- limit/control -- the values of input arguments to a
+    function, as well as, the function's return.
 
     Parameters
     ----------
@@ -823,27 +822,35 @@ def check_values(func=None,
     func:
         The function to be decorated
 
-    checks_on_return
+    checks_on_return: Dict[str, bool]
+        Specifications for value checks on the return of the function being wrapped.
+        (see `check values`_ for valid specifications)
 
     **checks: Dict[str, Dict[str, bool]]
-        Each keyword in `checks` is the name of the function argument to be checked
-        and the keyword value is a dictionary specifying the limits on the function's
-        argument value.  For example, `mass={'can_be_negative': False}` would
-        specify the `mass` argument to a function can not be negative.  The
-        following keys are allowed in the 'check' dictionary:
+        Specifications for value checks on the input arguments of the function
+        being wrapped.  Each keyword argument in `checks` is the name of a function
+        argument to be checked and the keyword value contains the value check
+        specifications.
+
+        .. _`check values`:
+
+        The value check specifications are defined within a dictionary containing
+        the keys defined below.  If the dictionary is empty or omitting keys,
+        then the default value will be assumed for the missing keys.
 
         ================ ======= ================================================
         Key              Type    Description
         ================ ======= ================================================
-        can_be_negative  `bool`  `True` (DEFAULT) values can be negative
-        can_be_complex   `bool`  `False` (DEFAULT) values can be complex numbers
-        can_be_inf       `bool`  `True` (DEFAULT) values can be infinite
-        can_be_nan       `bool`  `True` (DEFAULT) values can be NaN
-        none_shall_pass  `bool`  `False` (DEFAULT) values can be python `None`
+        can_be_negative  `bool`  [DEFAULT `True`] values can be negative
+        can_be_complex   `bool`  [DEFAULT `False`] values can be complex numbers
+        can_be_inf       `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
+        can_be_nan       `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
+        none_shall_pass  `bool`  [DEFAULT `False`] values can be a python `None`
         ================ ======= ================================================
 
     Notes
     -----
+    * Checking of function arguments `*args` and `**kwargs` is not supported.
     * Full functionality is defined by the class :class:`CheckValues`.
 
     Examples
@@ -851,18 +858,12 @@ def check_values(func=None,
     .. code-block:: python
 
         from plasmapy.utils.decorators import check_values
+
         @check_values(arg1={'can_be_negative': False, 'can_be_nan': False},
-                      arg2={'can_be_inf': False})
+                      arg2={'can_be_inf': False},
+                      checks_on_return={'none_shall_pass': True)
         def foo(arg1, arg2):
-            return arg1 + arg2
-
-    Or the `**{}` notation can be utilized::
-
-        from plasmapy.utils.decorators import check_values
-        @check_values(**{'arg1': {'can_be_negative': False, 'can_be_nan': False},
-                         'arg2': {'can_be_inf': False}})
-        def foo(arg1, arg2):
-            return arg1 + arg2
+            return None
     """
     if checks_on_return is not None:
         checks['checks_on_return'] = checks_on_return
