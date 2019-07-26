@@ -59,47 +59,52 @@ class CheckBase:
 
 class CheckValues(CheckBase):
     """
-    A decorator class to "check" -- limit/control -- the values of input
-    arguments to a function.  (Checking of function arguments `*args` and
-    `**kwargs` is not supported.)
+    A decorator class to 'check' -- limit/control -- the values of input
+    arguments to a function, as well as, the function's return.
 
     Parameters
     ----------
+    checks_on_return: Dict[str, bool]
+        Specifications for value checks on the return of the wrapped function. (see
+        `check values`_ for valid specifications)
+
     **checks: Dict[str, Dict[str, bool]]
-        Each keyword in `checks` is the name of the function argument to be
-        checked and the keyword value is a dictionary specifying the limits on
-        the function's argument value.  For example,
-        `mass={'can_be_negative': False}` would specify the `mass` argument
-        to a function can not be negative.  The following keys are allowed in
-        the 'check' dictionary:
+        Specifications for value checks on the input arguments of the wrapped
+        function.  Each keyword argument in `checks` is the name of a function
+        argument to be checked and the keyword value contains the value check
+        specifications.
+
+        .. _`check values`:
+
+        The value check specifications are defined within a dictionary containing
+        the keys defined below.  If the dictionary is empty or omitting a key,
+        then the default value will be assumed for the missing keys.
 
         ================ ======= ================================================
         Key              Type    Description
         ================ ======= ================================================
-        can_be_negative  `bool`  `True` (DEFAULT) values can be negative
-        can_be_complex   `bool`  `False` (DEFAULT) values can be complex numbers
-        can_be_inf       `bool`  `True` (DEFAULT) values can be infinite
-        can_be_nan       `bool`  `True` (DEFAULT) values can be NaN
-        none_shall_pass  `bool`  `False` (DEFAULT) values can be python `None`
+        can_be_negative  `bool`  [DEFAULT `True`] values can be negative
+        can_be_complex   `bool`  [DEFAULT `False`] values can be complex numbers
+        can_be_inf       `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
+        can_be_nan       `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
+        none_shall_pass  `bool`  [DEFAULT `False`] values can be a python `None`
         ================ ======= ================================================
+
+    Notes
+    -----
+    * Checking of function arguments `*args` and `**kwargs` is not supported.
 
     Examples
     --------
     .. code-block:: python
 
         from plasmapy.utils.decorators import CheckValues
+
         @CheckValues(arg1={'can_be_negative': False, 'can_be_nan': False},
-                     arg2={'can_be_inf': False})
+                     arg2={'can_be_inf': False},
+                     checks_on_return={'none_shall_pass': True)
         def foo(arg1, arg2):
-            return arg1 + arg2
-
-    Or the `**{}` notation can be utilized::
-
-        from plasmapy.utils.decorators import CheckValues
-        @CheckValues(**{'arg1': {'can_be_negative': False, 'can_be_nan': False},
-                        'arg2': {'can_be_inf': False}})
-        def foo(arg1, arg2):
-            return arg1 + arg2
+            return None
     """
     #: Default values for the possible 'check' keys.
     # To add a new check the the class, the following needs to be done:
@@ -126,7 +131,12 @@ class CheckValues(CheckBase):
         Parameters
         ----------
         f
-            Function to be wrapped/decorated.
+            Function to be wrapped
+
+        Returns
+        -------
+        function
+            wrapped function of `f`
         """
         self.f = f
         wrapped_sign = inspect.signature(f)
@@ -134,14 +144,14 @@ class CheckValues(CheckBase):
         @preserve_signature
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
-            # combine args and kwargs into dictionary
+            # map args and kwargs to function parameters
             bound_args = wrapped_sign.bind(*args, **kwargs)
             bound_args.apply_defaults()
 
             # get checks
             checks = self._get_value_checks(bound_args)
 
-            # check argument values
+            # check input arguments
             for arg_name in checks:
                 # skip check of output/return
                 if arg_name == 'checks_on_return':
@@ -155,7 +165,7 @@ class CheckValues(CheckBase):
             # call function
             _return = f(**bound_args.arguments)
 
-            # check output
+            # check function return
             if 'checks_on_return' in checks:
                 self._check_value(_return, 'checks_on_return',
                                   **checks['checks_on_return'])
@@ -168,18 +178,24 @@ class CheckValues(CheckBase):
             bound_args: inspect.BoundArguments
     ) -> Dict[str, Dict[str, bool]]:
         """
-        Review function bound arguments and :attr:`checks` to build a complete 'checks'
-        dictionary. Any unspecified check key is filled with a default value.
+        Review :attr:`checks` and function bound arguments to build a complete 'checks'
+        dictionary.  If a check key is omitted from the argument checks, then a default
+        value is assumed (see `check values`_).
 
         Parameters
         ----------
-        bound_args
-            Bound Arguments passed to the function being wrapped.
+        bound_args: :class:`inspect.BoundArguments`
+            arguments passed into the function being wrapped
+
+            .. code-block:: python
+
+                bound_args = inspect.signature(f).bind(*args, **kwargs)
 
         Returns
         -------
         Dict[str, Dict[str, bool]]
-            A complete 'checks' dictionary for checking function input arguments.
+            A complete 'checks' dictionary for checking function input arguments
+            and return.
 
         """
         # initialize validation dictionary
@@ -236,23 +252,25 @@ class CheckValues(CheckBase):
 
         return out_checks
 
-    def _check_value(self, arg, arg_name, **arg_checks: bool):
+    def _check_value(self, arg, arg_name: str, **arg_checks: bool):
         """
-        Perform requested argument checks.
+        Perform checks `arg_checks` on function argutment `arg`.
 
         Parameters
         ----------
         arg
             The argument to be checked
+
         arg_name: str
             The name of the argument to be checked
+
         arg_checks: Dict[str, bool]
             The requested checks for the argument.
 
         Raises
         ------
         ValueError
-            If a check fails, then `ValueError` is raised.
+            raised if a check fails
 
         """
         if arg_name == 'checks_on_return':
