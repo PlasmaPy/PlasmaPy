@@ -413,7 +413,7 @@ class CheckUnits(CheckBase):
                 # check argument
                 self._check_unit(bound_args.arguments[arg_name],
                                  arg_name,
-                                 **checks[arg_name])
+                                 checks[arg_name])
 
             # call function
             _return = f(**bound_args.arguments)
@@ -421,7 +421,7 @@ class CheckUnits(CheckBase):
             # check output
             if 'checks_on_return' in checks:
                 self._check_unit(_return, 'checks_on_return',
-                                 **checks['checks_on_return'])
+                                 checks['checks_on_return'])
 
             return _return
         return wrapper
@@ -595,15 +595,33 @@ class CheckUnits(CheckBase):
         return out_checks
 
     def _check_unit(self, arg, arg_name: str,
-                    **arg_checks: Union[List, None, bool]):
+                    arg_checks: Dict[str, Any]):
+        """
+        Perform unit checks `arg_checks` on function argument `arg`.
+
+        Parameters
+        ----------
+        arg
+            The argument to be checked
+
+        arg_name: str
+            The name of the argument to be checked
+
+        arg_checks: Dict[str, Any]
+            The requested checks for the argument
+
+        Raises
+        ------
+
+        """
         arg, unit, equiv, err = \
-            self._check_unit_core(arg, arg_name, **arg_checks)
+            self._check_unit_core(arg, arg_name, arg_checks)
         if err is not None:
             raise err
 
     def _check_unit_core(
             self, arg, arg_name: str,
-            **arg_checks: Union[List, None, bool]
+            arg_checks: Dict[str, Any]
     ) -> Tuple[Union[None, u.Quantity],
                Union[None, u.Unit],
                Union[None, List[Any]],

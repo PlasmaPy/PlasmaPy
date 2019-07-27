@@ -404,16 +404,16 @@ class TestCheckUnits:
         # perform tests
         for ii, case in enumerate(_cases):
             arg, arg_name, arg_checks = case['input']
-            _results = cu._check_unit_core(arg, arg_name, **arg_checks)
+            _results = cu._check_unit_core(arg, arg_name, arg_checks)
             assert _results[0:3] == case['output'][0:3]
 
             if _results[3] is None:
                 assert _results[3] is case['output'][3]
-                assert cu._check_unit(arg, arg_name, **arg_checks) is None
+                assert cu._check_unit(arg, arg_name, arg_checks) is None
             else:
                 assert isinstance(_results[3], case['output'][3])
                 with pytest.raises(case['output'][3]):
-                    cu._check_unit(arg, arg_name, **arg_checks)
+                    cu._check_unit(arg, arg_name, arg_checks)
 
     def test_cu_called_as_decorator(self):
         """
