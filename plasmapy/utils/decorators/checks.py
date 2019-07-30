@@ -899,69 +899,109 @@ def check_units(func=None,
                 checks_on_return: Dict[str, Any] = None,
                 **checks: Dict[str, Any]):
     """
-    A decorator to "check" -- limit/control -- the units of input/output
-    arguments to a function. (Checking of function arguments `*args` and `**kwargs`
-    is not supported.)
+    A decorator to 'check' -- limit/control -- the units of input arguments
+    to a function, as well as, the function's return.
 
     Parameters
     ----------
     func:
         The function to be decorated
 
-    checks_on_return: Union[u.Unit, List[u.Unit], Dict[str, Any]]
-        Specifications for unit checks on the return variable from the wrapped
-        function. (see `check values`_ for valid specifications).
+    checks_on_return: list of astropy :mod:`~astropy.units` or dict of unit specifications
+        Specifications for unit checks on the return of the function being wrapped.
+        (see `check units`_ for valid specifications)
 
-    **checks: Union[u.Unit, List[u.Unit], Dict[str, Any]]
-        Specifications for unit checks on the function arguments.  Each keyword
-        in `checks` is the name of the function argument to be checked
-        and the keyword value contains the unit check specifications.
+    **checks: list of astropy :mod:`~astropy.units` or dict of unit specifications
+        Specifications for unit checks on the input arguments of the function
+        being wrapped.  Each keyword argument in `checks` is the name of a function
+        argument to be checked and the keyword value contains the unit check
+        specifications.
 
-        .. _`check values`:
+        .. _`check units`:
 
-        The value for a unit check keyword is either a list of desired astropy
-        :class:`~astropy.units.Unit`'s or a dictionary specifying the desired units
-        and additional restrictions.  The following keys are allowed in the `check`
-        dictionary:
+        Unit checks can be defined by passing one of the astropy
+        :mod:`~astropy.units`, a list of astropy units, or a dictionary containing
+        the keys defined below.  Units can also be defined with function
+        annotations, but argument pass-though will override any annotations.  If
+        a key is omitted, then the default value will be assumed.
 
         ====================== ======= ================================================
         Key                    Type    Description
         ====================== ======= ================================================
-        units                          list of desired astropy
-                                       :class:`~astropy.units.Unit`'s
-        equivalencies                  [DEFAULT `None`] A list of equivalent pairs to
-                                       try if the units are not directly convertible.
-                                       (see :mod:`~astropy.units.equivalencies` and/or
-                                       `astropy equivalencies`_)
-        pass_equivalent_units  `bool`  [DEFAULT `False`] allow equivalent units to pass
+        units                          list of desired astropy :mod:`~astropy.units`
+        equivalencies                  | [DEFAULT `None`] A list of equivalent pairs to
+                                         try if
+                                       | the units are not directly convertible.
+                                       | (see :mod:`~astropy.units.equivalencies`,
+                                         and/or `astropy equivalencies`_)
+        pass_equivalent_units  `bool`  | [DEFAULT `False`] allow equivalent units
+                                       | to pass
         ====================== ======= ================================================
 
     Notes
     -----
+    * Checking of function arguments `*args` and `**kwargs` is not supported.
     * Decorator does NOT perform any unit conversions, unlike
       :func:`~plasmapy.utils.decorators.validate_quantities`.
     * If it is desired that `None` values do not raise errors or warnings, then
-      include `None` in the list of units.
+      include `None` in the list of units or as a default value for the function
+      argument.
     * If units are not specified in `checks`, then the decorator will attempt
-      to identify desired units by examining the function annotations.
+      to identify desired units by examining the function annotations.  However,
+      `checks` will always override function annotations.
 
     Examples
     --------
-    .. code-block:: python
+    Define units with decorator parameters::
 
-        from plasmapy.utils.decorators import check_values
-        @check_values(arg1={'can_be_negative': False, 'can_be_nan': False},
-                      arg2={'can_be_inf': False})
+        import astropy.units as u
+        from plasmapy.utils.decorators import check_units
+
+        @check_units(arg1={'units': u.cm},
+                     arg2=u.cm,
+                     checks_on_return=[u.cm, u.km])
         def foo(arg1, arg2):
             return arg1 + arg2
 
-    Or the `**{}` notation can be utilized::
+    Define units with function annotations::
 
-        from plasmapy.utils.decorators import check_values
-        @check_values(**{'arg1': {'can_be_negative': False, 'can_be_nan': False},
-                         'arg2': {'can_be_inf': False}})
-        def foo(arg1, arg2):
+        import astropy.units as u
+        from plasmapy.utils.decorators import check_units
+
+        @check_units
+        def foo(arg1: u.cm, arg2: u.cm) -> u.cm:
             return arg1 + arg2
+
+    Allow `None` values to pass::
+
+        import astropy.units as u
+        from plasmapy.utils.decorators import check_units
+
+        @check_units(checks_on_return=[u.cm, None])
+        def foo(arg1: u.cm = None):
+            return arg1
+
+    Allow return values to have equivalent units::
+
+        import astropy.units as u
+        from plasmapy.utils.decorators import check_units
+
+        @check_units(arg1={'units': u.cm},
+                     checks_on_return={'units': u.km,
+                                       'pass_equivalent_units': True})
+        def foo(arg1):
+            return arg1
+
+    Allow equivalent units to pass with specified equivalencies::
+
+        import astropy.units as u
+        from plasmapy.utils.decorators import check_units
+
+        @check_units(arg1={'units': u.K,
+                           'equivalencies': u.temperature(),
+                           'pass_equivalent_units': True})
+        def foo(arg1):
+            return arg1
 
     .. _astropy equivalencies:
         https://docs.astropy.org/en/stable/units/equivalencies.html
