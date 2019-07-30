@@ -553,7 +553,7 @@ class CheckUnits(CheckBase):
                 if isinstance(_equivs, tuple):
                     _equivs = [_equivs]
                 else:
-                    _equivs = self.flatten_equivalencies_list(_equivs)
+                    _equivs = self._flatten_equivalencies_list(_equivs)
 
                 # ensure passed equivalencies list is structured properly
                 #   [(), ...]
@@ -736,13 +736,28 @@ class CheckUnits(CheckBase):
         """
         return _normalize_equivalencies(equivalencies)
 
-    def flatten_equivalencies_list(self, elist):
+    def _flatten_equivalencies_list(self, elist):
+        """
+        Given a list of equivalencies, flatten out any sub-element lists
+
+
+        Parameters
+        ----------
+        elist: list
+            list of asttropy :mod:`~astropy.units.equivalencies` to be flattened
+
+        Returns
+        -------
+        list
+            a flattened list of astropy :mod:`~astropy.units.equivalencies`
+
+        """
         new_list = []
         for el in elist:
             if not isinstance(el, list):
                 new_list.append(el)
             else:
-                new_list.extend(self.flatten_equivalencies_list(el))
+                new_list.extend(self._flatten_equivalencies_list(el))
 
         return new_list
 

@@ -95,7 +95,7 @@ class TestCheckUnits:
             assert cu._CheckUnits__check_defaults[key] == val
 
     def test_cu_method_flatten_equivalencies_list(self):
-        assert hasattr(CheckUnits, 'flatten_equivalencies_list')
+        assert hasattr(CheckUnits, '_flatten_equivalencies_list')
 
         cu = CheckUnits()
         pairs = [
@@ -103,7 +103,7 @@ class TestCheckUnits:
             ([1, 2, (3, 4), [5, 6]], [1, 2, (3, 4), 5, 6])
         ]
         for pair in pairs:
-            assert cu.flatten_equivalencies_list(pair[0]) == pair[1]
+            assert cu._flatten_equivalencies_list(pair[0]) == pair[1]
 
     def test_cu_method__get_unit_checks(self):
         """
