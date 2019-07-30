@@ -324,11 +324,6 @@ class CheckUnits(CheckBase):
         argument to be checked and the keyword value contains the unit check
         specifications.
 
-        Each keyword in `checks` is the name of the function argument to be checked
-        and the keyword value is either a list of desired astropy
-        :class:`~astropy.units.Unit`'s or a dictionary specifying the desired unit
-        checks.  The following keys are allowed in the `check` dictionary:
-
         .. _`check units`:
 
         Unit checks can be defined by passing one of the astropy
