@@ -162,7 +162,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
                 ))
 
         # check units
-        arg, unit, equiv, err = self._check_unit_core(arg, arg_name, **validations)
+        arg, unit, equiv, err = self._check_unit_core(arg, arg_name, validations)
 
         # convert quantity
         if arg is not None and unit is not None:
@@ -177,7 +177,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
             raise err
 
         # check value
-        self._check_value(arg, arg_name, **validations)
+        self._check_value(arg, arg_name, validations)
 
         return arg
 
