@@ -221,12 +221,25 @@ class TestValidateQuantities:
              'output': (5. * u.K).to(u.eV, equivalencies=u.temperature_energy()),
              'warns': ImplicitUnitConversionWarning},
 
+            # argument has a standard unit conversion
+            {'input': {'args': (5. * u.cm, 'arg'),
+                       'validations': {**default_validations,
+                                       'units': [u.km]}},
+             'output': (5. * u.cm).to(u.km)},
+
             # return value is None and not allowed
             {'input': {'args': (None, 'validations_on_return'),
                        'validations': {**default_validations,
                                        'units': [u.cm],
                                        'none_shall_pass': False}},
              'raises': ValueError},
+
+            # 'pass_equivalent_units' is True and unit conversion is not performed
+            {'input': {'args': (5 * u.cm, 'arg'),
+                       'validations': {**default_validations,
+                                       'units': [u.km],
+                                       'pass_equivalent_units': True}},
+             'output': 5 * u.cm},
         ]
 
         # setup wrapped function
