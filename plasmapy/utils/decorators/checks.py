@@ -738,7 +738,7 @@ class CheckUnits(CheckBase):
         """
         # initialize str for error messages
         if arg_name == 'checks_on_return':
-            err_msg = f"The return value  "
+            err_msg = f"The return value "
         else:
             err_msg = f"The argument '{arg_name}' "
         err_msg += f"to function {self.f.__name__}()"
