@@ -535,7 +535,7 @@ class CheckUnits(CheckBase):
                 param_checks = None
 
             # -- Determine target units `_units` --
-            # target units can be define in one of three ways (in
+            # target units can be defined in one of three ways (in
             # preferential order):
             #   1. direct keyword pass-through
             #      i.e. CheckUnits(x=u.cm)
@@ -546,6 +546,7 @@ class CheckUnits(CheckBase):
             #   3. function annotations
             #
             # * options (1) and (2) will supersede option (3)
+            # # TODO make these mutually exclusive
             # * if None is included in the units list, then None values are allowed
             #
             _none_shall_pass = False
