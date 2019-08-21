@@ -9,10 +9,10 @@ from astropy import constants
 from astropy import units as u
 
 __all__ = [
-    "Species",
+    "ParticleTracker",
 ]
 
-class Species:
+class ParticleTracker:
     """
     Object representing a species of particles: ions, electrons, or simply
     a group of particles with a particular initial velocity distribution.

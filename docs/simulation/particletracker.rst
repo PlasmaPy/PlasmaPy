@@ -1,13 +1,13 @@
-.. currentmodule:: plasmapy.classes.species
+.. currentmodule:: plasmapy.simulation.particletracker
 
 ************************************************
-Particle Simulation (`plasmapy.classes.species`)
+Particle Tracker (`plasmapy.simulation.tracker`)
 ************************************************
 
 Introduction
 ============
 
-This module contains the `species` class, which is a simple particle
+This module contains the `ParticleTracker` class, which is a simple particle
 stepper implementing the Boris algorithm.
 
 This module is highly unstable and is expected to change a lot in the
@@ -20,6 +20,6 @@ future.
 Reference/API
 =============
 
-.. automodapi:: plasmapy.classes.species
+.. automodapi:: plasmapy.simulation.particletracker
    :no-heading:
    :no-main-docstr:

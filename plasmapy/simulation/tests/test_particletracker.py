@@ -4,7 +4,7 @@ from astropy import units as u
 from astropy.modeling import models, fitting
 from scipy.optimize import curve_fit
 
-from plasmapy.classes import Species
+from plasmapy.simulation.particletracker import ParticleTracker
 from plasmapy.classes.sources import Plasma3D
 
 
@@ -17,15 +17,15 @@ def uniform_magnetic_field(N=3, max_x=1):
     return test_plasma
 
 
-# def test_basic_species_functionality():
+# def test_basic_particletracker_functionality():
 #     plasma = uniform_magnetic_field()
 
-#     s = Species(plasma=plasma, dt=1e-3 * u.s, nt=1)
+#     s = ParticleTracker(plasma=plasma, dt=1e-3 * u.s, nt=1)
 #     assert np.isclose(s.kinetic_energy, 0 * u.J, atol=1e-4 * u.J)
 
 #     # this should crash as neither `dt` nor `NT` are not provided
 #     with pytest.raises(ValueError):
-#         Species(plasma=plasma)
+#         ParticleTracker(plasma=plasma)
 
 
 def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
@@ -48,7 +48,7 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 #     test_plasma = uniform_magnetic_field()
 
 #     particle_type = 'N-14++'
-#     s = Species(test_plasma, particle_type=particle_type, dt=1e-2 * u.s,
+#     s = ParticleTracker(test_plasma, particle_type=particle_type, dt=1e-2 * u.s,
 #                 nt=int(1e2))
 
 #     perp_speed = 0.01 * u.m / u.s
@@ -60,7 +60,7 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 
 #     dt = expected_gyroperiod / 100
 
-#     s = Species(test_plasma, particle_type=particle_type, dt=dt, nt=int(1e4))
+#     s = ParticleTracker(test_plasma, particle_type=particle_type, dt=dt, nt=int(1e4))
 #     s.v[:, 1] = perp_speed
 
 #     s.v[:, 2] = parallel_speed
@@ -114,7 +114,7 @@ def test_particle_exb_drift(uniform_magnetic_field):
                                 test_plasma.magnetic_field_strength).mean() \
         .to(u.m / u.s)
 
-    s = Species(test_plasma, 'p', 5, dt=1e-10 * u.s, nt=int(5e3))
+    s = ParticleTracker(test_plasma, 'p', 5, dt=1e-10 * u.s, nt=int(5e3))
     s.v[:, 2] += np.random.normal(size=s.N) * u.m / u.s
 
     s.run()
@@ -153,7 +153,7 @@ def test_particle_exb_nonuniform_drift():
     parallel_speed = 1e-5 * u.m / u.s
 
 
-    s = Species(test_plasma, particle_type='p', dt=1e-10 * u.s, nt=int(1e4))
+    s = ParticleTracker(test_plasma, particle_type='p', dt=1e-10 * u.s, nt=int(1e4))
     s.v[:, 1] = parallel_speed
     s.v[:, 2] = perp_speed
 
@@ -203,4 +203,4 @@ def test_particle_exb_nonuniform_drift():
 
 #     plasma = Plasma3D(x, y, z)
 
-#     Species(plasma, 'e', dt=1e-14*u.s, nt=2).run()
+#     ParticleTracker(plasma, 'e', dt=1e-14*u.s, nt=2).run()

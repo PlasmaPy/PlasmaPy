@@ -119,7 +119,7 @@ Data Structures and Simulation
     :maxdepth: 1
 
     plasma/index
-    species/index
+    simulation/particletracker
 
 .. _toplevel-physical-data:
 
