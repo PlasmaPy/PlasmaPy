@@ -107,7 +107,7 @@ class CheckValues(CheckBase):
             return None
     """
     #: Default values for the possible 'check' keys.
-    # To add a new check the the class, the following needs to be done:
+    # To add a new check to the class, the following needs to be done:
     #   1. Add a key & default value to the `__check_defaults` dictionary
     #   2. Add a corresponding if-statement to method `_check_value`
     #
