@@ -727,8 +727,8 @@ class CheckUnits(CheckBase):
         Returns
         -------
         (`arg`, `unit`, `equivalencies`, `error`)
-            * `arg` is the original input argument `arg` or `None` if unit chcks
-              fail
+            * `arg` is the original input argument `arg` or `None` if unit
+              checks fail
             * `unit` is the identified astropy :mod:`~astropy.units` that `arg`
               can be converted to or `None` if none exist
             * `equivalencies` is the astropy :mod:`~astropy.units.equivalencies`
