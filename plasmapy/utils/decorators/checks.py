@@ -378,7 +378,7 @@ class CheckUnits(CheckBase):
         def foo(arg1: u.cm, arg2: u.cm) -> u.cm:
             return arg1 + arg2
 
-    Allow `None` values to pass::
+    Allow `None` values to pass, both on input and output::
 
         import astropy.units as u
         from plasmapy.utils.decorators import CheckUnits
