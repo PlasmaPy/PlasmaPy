@@ -252,8 +252,9 @@ To test that a function raises an appropriate exception, use
       raise Exception
 
   def test_raise_exception():
-      with pytest.raises(Exception, message="Exception not raised."):
+      with pytest.raises(Exception):
           raise_exception()
+          pytest.fail("Exception not raised.")
 
 .. _testing-guidelines-writing-tests-parametrize:
 
