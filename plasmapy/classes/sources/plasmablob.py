@@ -156,5 +156,5 @@ class PlasmaBlob(GenericPlasma):
 
     @classmethod
     def is_datasource_for(cls, **kwargs):
-        match = kwargs.get('T_e') and kwargs.get('n_e')
+        match = 'T_e' in kwargs.keys() and 'n_e' in kwargs.keys()
         return match
