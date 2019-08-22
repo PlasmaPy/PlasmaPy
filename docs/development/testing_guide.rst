@@ -240,7 +240,7 @@ To test that a function issues an appropriate warning, use
       warnings.warn("grumblemuffins", UserWarning)
 
   def test_issue_warning():
-      with pytest.warns(UserWarning, message="UserWarning not issued."):
+      with pytest.warns(UserWarning):
           issue_warning()
 
 To test that a function raises an appropriate exception, use

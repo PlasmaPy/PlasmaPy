@@ -60,7 +60,7 @@ plasmapy_warnings = [
 def test_warnings(warning):
     r"""Test that custom PlasmaPy warnings can be issued with a
     warning message."""
-    with pytest.warns(warning, message=f"Problem issuing {warning}"):
+    with pytest.warns(warning):
         warnings.warn("Coverage decreased (-0.00002%)", warning)
 
 
@@ -68,6 +68,5 @@ def test_warnings(warning):
 def test_PlasmaPyWarning_subclassing(warning):
     r"""Test that custom PlasmaPy warnings can all be caught
     as a PlasmaPyWarning."""
-    with pytest.warns(PlasmaPyWarning, message=(
-            f"Problem with subclassing of {warning}")):
+    with pytest.warns(PlasmaPyWarning):
         warnings.warn("Electrons are WEIRD.", warning)
