@@ -5,6 +5,7 @@ import astropy.units as u
 from plasmapy.classes.sources import plasma3d, plasmablob
 from plasmapy.physics import magnetostatics
 from plasmapy.atomic.exceptions import InvalidParticleError
+from plasmapy.utils.exceptions import CouplingWarning
 
 
 @pytest.mark.parametrize('grid_dimensions, expected_size', [
@@ -189,7 +190,8 @@ class Test_PlasmaBlobRegimes:
 
         expect_regime = 'Weakly coupled regime: Gamma = 0.0075178096952688445.'
 
-        regime, _ = blob.regimes()
+        with pytest.warns(CouplingWarning):
+            regime, _ = blob.regimes()
         testTrue = regime == expect_regime
 
         errStr = f"Regime should be {expect_regime}, but got {regime} instead."
