@@ -609,11 +609,12 @@ def test_not_isotope(particle):
     `~plasmapy.atomic.Particle` is named 'isotope', but the annotated
     argument ends up not being an isotope or an ion of an isotope.
     """
-    with pytest.raises(InvalidIsotopeError, message=(
+    with pytest.raises(InvalidIsotopeError):
+        function_with_isotope_argument(particle)
+        pytest.fail(
             "@particle_input is not raising an InvalidIsotopeError for "
             f"{repr(particle)} even though the annotated argument is named "
-            "'isotope'.")):
-        function_with_isotope_argument(particle)
+            "'isotope'.")
 
 
 @pytest.mark.parametrize('ion', is_ion)
@@ -634,8 +635,9 @@ def test_not_ion(particle):
     `~plasmapy.atomic.Particle` is named 'ion', but the annotated
     argument ends up not being an ion.
     """
-    with pytest.raises(InvalidIonError, message=(
+    with pytest.raises(InvalidIonError):
+        function_with_ion_argument(particle)
+        pytest.fail(
             "@particle_input is not raising an InvalidIonError for "
             f"{repr(particle)} even though the annotated argument is named "
-            "'ion'.")):
-        function_with_ion_argument(particle)
+            "'ion'.")

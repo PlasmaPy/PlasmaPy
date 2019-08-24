@@ -112,9 +112,7 @@ class Plasma3D(GenericPlasma):
     @classmethod
     def is_datasource_for(cls, **kwargs):
         if len(kwargs) == 3:
-            match = kwargs.get('domain_x') and \
-                    kwargs.get('domain_y') and \
-                    kwargs.get('domain_z')
+            match = all(f'domain_{direction}' in kwargs.keys() for direction in 'xyz')
         else:
             match = False
         return match

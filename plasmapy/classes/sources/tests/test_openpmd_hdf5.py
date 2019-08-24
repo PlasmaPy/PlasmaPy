@@ -39,7 +39,8 @@ class TestOpenPMD2D:
         assert h5_2d.electric_field.shape == (3, 51, 201)
 
     def test_has_charge_density_with_units(self, h5_2d):
-        assert h5_2d.charge_density.to(u.C / u.m**3)
+        # this should simply pass without exception
+        h5_2d.charge_density.to(u.C / u.m**3)
 
     def test_correct_shape_charge_density(self, h5_2d):
         assert h5_2d.charge_density.shape == (51, 201)

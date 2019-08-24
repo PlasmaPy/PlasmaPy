@@ -169,12 +169,13 @@ def test_run_test(f, args, kwargs, expected, whaterror):
         if whaterror is None:
             run_test(f, args, kwargs, expected)
         else:
-            with pytest.raises(whaterror, message = (
+            with pytest.raises(whaterror):
+                run_test(f, args, kwargs, expected)
+                pytest.fail(
                     f"run_test did not raise an exception for "
                     f"{call_string(f, args, kwargs, color=None)} "
                     f"with expected = {repr(expected)} and "
-                    f"whaterror = {repr(whaterror)}.")):
-                run_test(f, args, kwargs, expected)
+                    f"whaterror = {repr(whaterror)}.")
     except Exception as spectacular_exception:
         raise Exception(
             f"An unexpected exception was raised while running "
@@ -188,8 +189,9 @@ def test_run_test_rtol():
 
 
 def test_run_test_rtol_failure():
-    with pytest.raises(UnexpectedResultError, message="No exception raised for rtol test."):
+    with pytest.raises(UnexpectedResultError):
         run_test(return_arg, 1.0, {}, 0.999999, rtol=1e-7)
+        pytest.fail("No exception raised for rtol test.")
 
 
 def test_run_test_atol():
@@ -197,8 +199,9 @@ def test_run_test_atol():
 
 
 def test_run_test_atol_failure():
-    with pytest.raises(UnexpectedResultError, message="No exception raised for atol test."):
+    with pytest.raises(UnexpectedResultError):
         run_test(return_arg, (1.0,), {}, 0.999999, atol=1e-7)
+        pytest.fail("No exception raised for atol test.")
 
 
 def func(x, raise_exception=False, issue_warning=False):
