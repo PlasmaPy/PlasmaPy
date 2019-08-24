@@ -133,9 +133,10 @@ class Test_classical_transport:
 
     def test_resistivity_units(self):
         """output should be a Quantity with units of Ohm m"""
-        testTrue = self.ct.resistivity().unit == u.Ohm * u.m
-        errStr = (f"Resistivity units should be {u.Ohm * u.m} and "
-                  f"not {self.ct.resistivity().unit}.")
+        with pytest.warns(RelativityWarning):
+            testTrue = self.ct.resistivity().unit == u.Ohm * u.m
+            errStr = (f"Resistivity units should be {u.Ohm * u.m} and "
+                      f"not {self.ct.resistivity().unit}.")
         assert testTrue, errStr
 
     def test_thermoelectric_conductivity_units(self):
@@ -155,11 +156,12 @@ class Test_classical_transport:
 
     def test_electron_thermal_conductivity_units(self):
         """output should be Quantity with units of W / (m K)"""
-        testTrue = (self.ct.electron_thermal_conductivity().unit ==
-                    u.W / u.m / u.K)
-        errStr = (f"Electron thermal conductivity units "
-                  f"should be {u.W / u.m / u.K} "
-                  f"and not {self.ct.electron_thermal_conductivity().unit}.")
+        with pytest.warns(RelativityWarning):
+            testTrue = (self.ct.electron_thermal_conductivity().unit ==
+                        u.W / u.m / u.K)
+            errStr = (f"Electron thermal conductivity units "
+                      f"should be {u.W / u.m / u.K} "
+                      f"and not {self.ct.electron_thermal_conductivity().unit}.")
         assert testTrue, errStr
 
     def test_ion_viscosity_units(self):
@@ -171,9 +173,10 @@ class Test_classical_transport:
 
     def test_electron_viscosity_units(self):
         """output should be Quantity with units of Pa s"""
-        testTrue = self.ct.electron_viscosity().unit == u.Pa * u.s
-        errStr = (f"Electron viscosity units should be {u.Pa * u.s} "
-                  f"and not {self.ct.electron_viscosity().unit}.")
+        with pytest.warns(RelativityWarning):
+            testTrue = self.ct.electron_viscosity().unit == u.Pa * u.s
+            errStr = (f"Electron viscosity units should be {u.Pa * u.s} "
+                      f"and not {self.ct.electron_viscosity().unit}.")
         assert testTrue, errStr
 
     def test_particle_mass(self):
@@ -226,7 +229,7 @@ class Test_classical_transport:
 
     def test_coulomb_log_errors(self):
         """should raise PhysicsError if coulomb log is < 1"""
-        with pytest.raises(PhysicsError):
+        with pytest.raises(PhysicsError), pytest.warns(CouplingWarning):
             ct2 = ClassicalTransport(T_e=self.T_e,
                                      n_e=self.n_e,
                                      T_i=self.T_i,
@@ -234,7 +237,7 @@ class Test_classical_transport:
                                      ion_particle=self.ion_particle,
                                      coulomb_log_ii=0.3)
 
-        with pytest.raises(PhysicsError):
+        with pytest.raises(PhysicsError), pytest.warns(CouplingWarning):
             ct2 = ClassicalTransport(T_e=self.T_e,
                                      n_e=self.n_e,
                                      T_i=self.T_i,
