@@ -9,6 +9,8 @@ import astropy.units as u
 import astropy.constants as const
 import colorama
 import astropy.tests.helper as astrohelper
+import warnings
+from plasmapy.utils.exceptions import PlasmaPyWarning
 
 # These colors/styles are used to highlight certain parts of the error
 # messages in consistent ways.
@@ -870,10 +872,12 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
             )
 
     # call the function with the prepared argument sets:
-    result_0d = function_to_test(**args_0d)
-    result_1d = function_to_test(**args_1d)
-    result_2d = function_to_test(**args_2d)
-    result_3d = function_to_test(**args_3d)
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=PlasmaPyWarning)
+        result_0d = function_to_test(**args_0d)
+        result_1d = function_to_test(**args_1d)
+        result_2d = function_to_test(**args_2d)
+        result_3d = function_to_test(**args_3d)
 
     # assert that the 1d, 2d, 3d versions get the same result (elementwise) as the 0d version:
     # (if the function returns multiple values, loop through and test each)
