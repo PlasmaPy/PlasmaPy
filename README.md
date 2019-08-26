@@ -70,7 +70,7 @@ Come discuss plasma software with us!
 
 You can get PlasmaPy from pip via `pip install plasmapy`. To contribute
 to the package, check out [our instructions on installing PlasmaPy from
-source](INSTALL.md).
+source](http://docs.plasmapy.org/en/stable/install.html#building-and-installing-from-source-code).
 
 You can also get PlasmaPy from `conda` via `conda install -c conda-forge plasmapy`.
 
