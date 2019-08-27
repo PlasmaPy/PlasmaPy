@@ -3,13 +3,14 @@ Particle stepper
 ================
 
 An example of PlasmaPy's particle stepper class, currently in need of a rewrite
-for speed. Currently disabled from running.
+for speed.
 """
 
 
 import numpy as np
 from astropy import units as u
-from plasmapy.classes import Plasma, Species
+from plasmapy.classes import Plasma
+from plasmapy.simulation import ParticleTracker
 
 ############################################################
 # Initialize a plasma. This will be a source of electric and magnetic
@@ -32,39 +33,38 @@ plasma.electric_field[1, :, :, :] = np.ones((10, 10, 10)) * E0
 
 ############################################################
 # Initialize the particle. We'll take one proton `p` with a timestep of
-# $10^{-10}s$ and run it for 10000 iterations.
+# $10^{-4}s$ and run it for 40 iterations.
 
-species = Species(plasma, 'p', 1, 1, 1e-10 * u.s, 10000)
+particle = ParticleTracker(plasma, 'p', 1, 1, 1e-4 * u.s, 40)
 
 ############################################################
-# Initialize the particle's velocity. We'll limit ourselves to one in the
-# $\hat{x}$ direction, parallel to the magnetic field $\vec{B}$ - that
-# way, it won't turn in the $\hat{z}$ direction.
+# We still have to initialize the particle's velocity. We'll limit ourselves to
+# one in the $\hat{x}$ direction, parallel to the magnetic field $\vec{B}$ -
+# that way, it won't turn in the $\hat{z}$ direction.
 
-V0 = 1 * (u.m / u.s)
-species.v[0][0] = V0
+particle.v[0][0] = 1 * (u.m / u.s)
 
 ############################################################
 # Run the pusher and plot the trajectory versus time.
 
-species.run()
-species.plot_time_trajectories()
+particle.run()
+particle.plot_time_trajectories()
 
 ############################################################
 # Plot the shape of the trajectory in 3D.
 
-species.plot_trajectories()
+particle.plot_trajectories()
 
 ############################################################
 # As a test, we calculate the mean velocity in the z direction from the
 # velocity and position
 
-vmean = species.velocity_history[:, :, 2].mean()
+vmean = particle.velocity_history[:, :, 2].mean()
 print(f"The calculated drift velocity is {vmean:.4f} to compare with the"
       f"theoretical E0/B0 = {E0/B0:.4f}")
 
 ############################################################
 # and from position:
-Vdrift = species.position_history[-1, 0, 2] / (species.NT * species.dt)
+Vdrift = particle.position_history[-1, 0, 2] / (particle.NT * particle.dt)
 normdrift = Vdrift
 print(f"The calculated drift velocity from position is {normdrift:.4f}")
