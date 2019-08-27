@@ -32,39 +32,39 @@ E0 = 2 * u.V / u.m
 plasma.electric_field[1, :, :, :] = np.ones((10, 10, 10)) * E0
 
 ############################################################
-# Initialize the particle. We'll take one proton `p` with a timestep of
+# Initialize the trajectory calculation. We'll take one proton `p` with a timestep of
 # $10^{-4}s$ and run it for 40 iterations.
 
-particle = ParticleTracker(plasma, 'p', 1, 1, 1e-4 * u.s, 40)
+trajectory = ParticleTracker(plasma, 'p', 1, 1, 1e-4 * u.s, 40)
 
 ############################################################
 # We still have to initialize the particle's velocity. We'll limit ourselves to
 # one in the $\hat{x}$ direction, parallel to the magnetic field $\vec{B}$ -
 # that way, it won't turn in the $\hat{z}$ direction.
 
-particle.v[0][0] = 1 * (u.m / u.s)
+trajectory.v[0][0] = 1 * (u.m / u.s)
 
 ############################################################
 # Run the pusher and plot the trajectory versus time.
 
-particle.run()
-particle.plot_time_trajectories()
+trajectory.run()
+trajectory.plot_time_trajectories()
 
 ############################################################
 # Plot the shape of the trajectory in 3D.
 
-particle.plot_trajectories()
+trajectory.plot_trajectories()
 
 ############################################################
 # As a test, we calculate the mean velocity in the z direction from the
 # velocity and position
 
-vmean = particle.velocity_history[:, :, 2].mean()
+vmean = trajectory.velocity_history[:, :, 2].mean()
 print(f"The calculated drift velocity is {vmean:.4f} to compare with the"
       f"theoretical E0/B0 = {E0/B0:.4f}")
 
 ############################################################
 # and from position:
-Vdrift = particle.position_history[-1, 0, 2] / (particle.NT * particle.dt)
+Vdrift = trajectory.position_history[-1, 0, 2] / (trajectory.NT * trajectory.dt)
 normdrift = Vdrift
 print(f"The calculated drift velocity from position is {normdrift:.4f}")
