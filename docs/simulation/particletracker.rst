@@ -15,7 +15,7 @@ future.
 
 .. topic:: Examples:
 
-   * :ref:`sphx_glr_auto_examples_particle_stepper.py`
+   * :ref:`sphx_glr_auto_examples_plot_particle_stepper.py`
 
 Reference/API
 =============
