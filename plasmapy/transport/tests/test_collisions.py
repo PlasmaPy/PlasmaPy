@@ -18,6 +18,7 @@ from plasmapy.transport import (Spitzer_resistivity,
 from plasmapy.utils import exceptions
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 from astropy.constants import m_p, m_e, c
+from plasmapy.utils.exceptions import CouplingWarning
 
 
 class Test_Coulomb_logarithm:
@@ -69,20 +70,21 @@ class Test_Coulomb_logarithm:
 
     def test_handle_invalid_V(self):
         """Test that V default, V = None, and V = np.nan all give the same result"""
-        methodVal_0 = Coulomb_logarithm(self.T_arr[0],
-                                        self.n_arr[0],
-                                        self.particles,
-                                        z_mean=1 * u.dimensionless_unscaled,
-                                        V=np.nan * u.m / u.s)
-        methodVal_1 = Coulomb_logarithm(self.T_arr[0],
-                                        self.n_arr[0],
-                                        self.particles,
-                                        z_mean=1 * u.dimensionless_unscaled,
-                                        V=None)
-        methodVal_2 = Coulomb_logarithm(self.T_arr[0],
-                                        self.n_arr[0],
-                                        self.particles,
-                                        z_mean=1 * u.dimensionless_unscaled)
+        with pytest.warns(CouplingWarning):
+            methodVal_0 = Coulomb_logarithm(self.T_arr[0],
+                                            self.n_arr[0],
+                                            self.particles,
+                                            z_mean=1 * u.dimensionless_unscaled,
+                                            V=np.nan * u.m / u.s)
+            methodVal_1 = Coulomb_logarithm(self.T_arr[0],
+                                            self.n_arr[0],
+                                            self.particles,
+                                            z_mean=1 * u.dimensionless_unscaled,
+                                            V=None)
+            methodVal_2 = Coulomb_logarithm(self.T_arr[0],
+                                            self.n_arr[0],
+                                            self.particles,
+                                            z_mean=1 * u.dimensionless_unscaled)
         assert_quantity_allclose(methodVal_0, methodVal_1)
         assert_quantity_allclose(methodVal_0, methodVal_2)
 
@@ -97,27 +99,29 @@ class Test_Coulomb_logarithm:
 
     def test_handle_V_arraysizes(self):
         """Test that different sized V input array gets handled by _boilerplate"""
-        methodVal_0 = Coulomb_logarithm(self.T_arr[0],
-                                        self.n_arr[0],
-                                        self.particles,
-                                        z_mean=1 * u.dimensionless_unscaled,
-                                        V=np.array([np.nan, 3e7]) * u.m / u.s)
-        methodVal_1 = Coulomb_logarithm(self.T_arr[1],
-                                        self.n_arr[0],
-                                        self.particles,
-                                        z_mean=1 * u.dimensionless_unscaled,
-                                        V=np.array([1e7, np.nan]) * u.m / u.s)
-        methodVal_2 = Coulomb_logarithm(self.T_arr,
-                                        self.n_arr[0],
-                                        self.particles,
-                                        z_mean=1 * u.dimensionless_unscaled,
-                                        V=np.array([np.nan, np.nan]) * u.m / u.s)
+        with pytest.warns(CouplingWarning):
+            methodVal_0 = Coulomb_logarithm(self.T_arr[0],
+                                            self.n_arr[0],
+                                            self.particles,
+                                            z_mean=1 * u.dimensionless_unscaled,
+                                            V=np.array([np.nan, 3e7]) * u.m / u.s)
+            methodVal_1 = Coulomb_logarithm(self.T_arr[1],
+                                            self.n_arr[0],
+                                            self.particles,
+                                            z_mean=1 * u.dimensionless_unscaled,
+                                            V=np.array([1e7, np.nan]) * u.m / u.s)
+            methodVal_2 = Coulomb_logarithm(self.T_arr,
+                                            self.n_arr[0],
+                                            self.particles,
+                                            z_mean=1 * u.dimensionless_unscaled,
+                                            V=np.array([np.nan, np.nan]) * u.m / u.s)
         assert_quantity_allclose(methodVal_0[0], methodVal_2[0])
         assert_quantity_allclose(methodVal_1[1], methodVal_2[1])
 
     def test_symmetry(self):
-        lnLambda = Coulomb_logarithm(self.temperature1, self.density2, self.particles)
-        lnLambdaRev = Coulomb_logarithm(self.temperature1, self.density2, self.particles[::-1])
+        with pytest.warns(CouplingWarning):
+            lnLambda = Coulomb_logarithm(self.temperature1, self.density2, self.particles)
+            lnLambdaRev = Coulomb_logarithm(self.temperature1, self.density2, self.particles[::-1])
         assert lnLambda == lnLambdaRev
 
     def test_Chen_Q_machine(self):
@@ -735,8 +739,9 @@ class Test_collision_frequency:
         self.True_zmean = 1346828153985.4646
 
     def test_symmetry(self):
-        result = collision_frequency(self.T, self.n, self.particles)
-        resultRev = collision_frequency(self.T, self.n, self.particles[::-1])
+        with pytest.warns(CouplingWarning):
+            result = collision_frequency(self.T, self.n, self.particles)
+            resultRev = collision_frequency(self.T, self.n, self.particles[::-1])
         assert result == resultRev
 
     def test_known1(self):
@@ -894,8 +899,9 @@ class Test_mean_free_path:
         self.True1 = 4.4047571877932046e-07
 
     def test_symmetry(self):
-        result = mean_free_path(self.T, self.n_e, self.particles)
-        resultRev = mean_free_path(self.T, self.n_e,  self.particles[::-1])
+        with pytest.warns(CouplingWarning):
+            result = mean_free_path(self.T, self.n_e, self.particles)
+            resultRev = mean_free_path(self.T, self.n_e,  self.particles[::-1])
         assert result == resultRev
 
     def test_known1(self):
@@ -1037,8 +1043,9 @@ class Test_mobility:
         self.True_zmean = 0.32665227217687254
 
     def test_symmetry(self):
-        result = mobility(self.T, self.n_e, self.particles)
-        resultRev = mobility(self.T, self.n_e,  self.particles[::-1])
+        with pytest.warns(CouplingWarning):
+            result = mobility(self.T, self.n_e, self.particles)
+            resultRev = mobility(self.T, self.n_e,  self.particles[::-1])
         assert result == resultRev
 
     def test_known1(self):
@@ -1119,8 +1126,9 @@ class Test_Knudsen_number:
         self.True1 = 440.4757187793204
 
     def test_symmetry(self):
-        result = Knudsen_number(self.length, self.T, self.n_e, self.particles)
-        resultRev = Knudsen_number(self.length, self.T, self.n_e,  self.particles[::-1])
+        with pytest.warns(CouplingWarning):
+            result = Knudsen_number(self.length, self.T, self.n_e, self.particles)
+            resultRev = Knudsen_number(self.length, self.T, self.n_e,  self.particles[::-1])
         assert result == resultRev
 
     def test_known1(self):
