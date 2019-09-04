@@ -9,7 +9,7 @@ from plasmapy.utils.decorators.checks import (check_quantity,
                                               check_relativistic,
                                               _check_quantity,
                                               _check_relativistic)
-
+from plasmapy.utils.decorators.converter import from_radians_to_hz
 from .decorators import preserve_signature
 from .exceptions import (PlasmaPyError,
                          PhysicsError,

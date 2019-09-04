@@ -671,8 +671,10 @@ def Hall_parameter(n,
     return gyro_frequency / coll_rate
 
 
+
+@utils.from_radians_to_hz
 @utils.check_quantity(B={'units': u.T})
-def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None):
+def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None, to_hz=True):
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
@@ -909,17 +911,17 @@ def gyroradius(B: u.T,
         Vperp = Vperp.copy()  # avoid changing Vperp's value outside function
         Vperp[isfinite_Ti] = thermal_speed(T_i[isfinite_Ti], particle=particle)
 
-    omega_ci = gyrofrequency(B, particle)
+    omega_ci = gyrofrequency(B, particle, to_hz=False)
 
     r_Li = np.abs(Vperp) / omega_ci
 
     return r_Li.to(u.m, equivalencies=u.dimensionless_angles())
 
-
+@utils.from_radians_to_hz
 @utils.check_quantity(
     n={'units': u.m ** -3, 'can_be_negative': False}
     )
-def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None):
+def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None, to_hz= True):
     r"""Calculate the particle plasma frequency.
 
     Parameters
@@ -1211,7 +1213,7 @@ def inertial_length(n: u.m**-3, particle: atomic.Particle):
 
     """
 
-    omega_p = plasma_frequency(n, particle=particle)
+    omega_p = plasma_frequency(n, particle=particle, to_hz=False)
     d = (c / omega_p).to(u.m, equivalencies=u.dimensionless_angles())
 
     return d
@@ -1338,12 +1340,12 @@ def magnetic_energy_density(B: u.T):
     E_B = magnetic_pressure(B).to(u.J / u.m ** 3)
     return E_B
 
-
+@utils.from_radians_to_hz
 @utils.check_quantity(
     B={'units': u.T},
     n_e={'units': u.m ** -3, 'can_be_negative': False}
     )
-def upper_hybrid_frequency(B: u.T, n_e: u.m**-3):
+def upper_hybrid_frequency(B: u.T, n_e: u.m**-3,to_hz=True):
     r"""
     Return the upper hybrid frequency.
 
@@ -1395,18 +1397,18 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m**-3):
 
     """
 
-    omega_pe = plasma_frequency(n=n_e)
-    omega_ce = gyrofrequency(B)
+    omega_pe = plasma_frequency(n=n_e, to_hz = False)
+    omega_ce = gyrofrequency(B,to_hz = False)
     omega_uh = (np.sqrt(omega_pe ** 2 + omega_ce ** 2))
 
     return omega_uh.to(u.rad / u.s)
 
-
+@utils.from_radians_to_hz
 @utils.check_quantity(
     B={'units': u.T},
     n_i={'units': u.m ** -3, 'can_be_negative': False}
     )
-def lower_hybrid_frequency(B, n_i, ion='p+'):
+def lower_hybrid_frequency(B, n_i, ion='p+',to_hz=True):
     r"""
     Return the lower hybrid frequency.
 
@@ -1475,11 +1477,10 @@ def lower_hybrid_frequency(B, n_i, ion='p+'):
     except Exception:
         raise ValueError("Invalid ion in lower_hybrid_frequency.")
 
-    omega_ci = gyrofrequency(B, particle=ion)
-    omega_pi = plasma_frequency(n_i, particle=ion)
-    omega_ce = gyrofrequency(B)
+    omega_ci = gyrofrequency(B, particle=ion,to_hz = False)
+    omega_pi = plasma_frequency(n_i, particle=ion, to_hz = False)
+    omega_ce = gyrofrequency(B, to_hz = False)
     omega_lh = ((omega_ci * omega_ce) ** -1 + omega_pi ** -2) ** -0.5
     # TODO possibly optimize the above line via np.sqrt
     omega_lh = omega_lh
-
     return omega_lh.to(u.rad / u.s)
