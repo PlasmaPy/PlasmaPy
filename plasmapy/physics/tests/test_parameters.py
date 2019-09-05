@@ -443,7 +443,7 @@ def test_gyrofrequency():
 
     assert gyrofrequency(B).unit.is_equivalent(u.rad / u.s)
 
-    assert np.isclose(gyrofrequency(1 * u.T).value, 175882008784.72018)
+    assert np.isclose(gyrofrequency(1 * u.T, to_hz = True).value, 175882008784.72018)
 
     assert np.isclose(gyrofrequency(2.4 * u.T).value,
                       422116821083.3284)
