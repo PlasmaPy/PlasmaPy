@@ -34,6 +34,7 @@ from typing import Optional
 
 def _grab_charge(ion, z_mean=None):
     """Utility function to merge two possible inputs for particle charge.
+    
     Parameters
     ----------
     ion : str or `plasmapy.atomic.Particle`
