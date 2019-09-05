@@ -2,8 +2,6 @@
 omit =
     ci-helpers/*
     */tests/*
-    astropy_helpers/*
-    ah_bootstrap.py
     plasmapy/setup_package.py
     plasmapy/version.py
     plasmapy/_base_init.py

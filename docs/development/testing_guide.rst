@@ -513,9 +513,7 @@ the following example, lines 3 and 4 will be ignored in coverage tests.
       raise RuntimeError from exc
 
 The ``.coveragerc`` file is used to specify lines of code and files that
-should always be ignored in coverage tests.  For example, tests in
-``astropy-helpers`` should not be run because those tests are performed
-through the ``astropy-helpers`` repository.
+should always be ignored in coverage tests.
 
 .. note::
 

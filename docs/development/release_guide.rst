@@ -28,8 +28,6 @@ Pre-release
 
 * Edit ``setup.cfg`` to remove ``.dev`` from ``version = 0.2.0.dev``
 
-* Update ``astropy_helpers`` to the most recent release
-
 * Make sure tests pass (``python setup.py test``) and documentation builds without issue (``python setup.py build_docs -W``)
 
 * commit your changes up until now
