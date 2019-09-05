@@ -36,6 +36,4 @@ from .quantum import (deBroglie_wavelength,
 
 from .relativity import Lorentz_factor
 
-from plasmapy import transport
-
 from . import magnetostatics

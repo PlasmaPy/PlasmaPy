@@ -32,6 +32,7 @@ __all__ = [
     "UnexpectedResultError",
     "InconsistentTypeError",
     "MissingExceptionError",
+    "UnexpectedExceptionError",
     "UnexpectedResultError",
     "MissingExceptionError",
     "MissingWarningError",
@@ -93,10 +94,11 @@ class IncorrectResultError(RunTestError):
     """
 
 
-class InvalidTestError(RunTestError):
+class InvalidTestError(Exception):
     """
     Exception for when the inputs to a test are not valid.
     """
+
 
 def call_string(f: Callable,
                 args: Any=tuple(),
