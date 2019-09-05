@@ -3,7 +3,6 @@ Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
 import warnings
 
-import numpy as np
 import astropy.units as u
 
 from plasmapy.physics.parameters import _grab_charge
@@ -13,7 +12,8 @@ from plasmapy.transport import (coupling_parameter,
                                         )
 from plasmapy.atomic import particle_mass
 
-from plasmapy.utils import call_string, CouplingWarning
+from plasmapy.utils import CouplingWarning
+from plasmapy.utils.pytest_helpers import call_string
 
 from plasmapy.classes import GenericPlasma
 

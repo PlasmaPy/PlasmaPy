@@ -6,7 +6,6 @@ from astropy import units as u
 import scipy.integrate as spint
 
 from astropy.constants import (m_p, m_e, c, mu0, k_B, e, eps0)
-from numpy import pi
 from ..distribution import (Maxwellian_1D,
                             Maxwellian_speed_1D,
                             Maxwellian_velocity_2D,

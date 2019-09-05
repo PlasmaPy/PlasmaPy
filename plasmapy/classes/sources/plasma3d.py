@@ -1,7 +1,6 @@
 """
 Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
-import warnings
 
 import numpy as np
 import astropy.units as u
@@ -17,7 +16,6 @@ from astropy.constants import (m_p,
                                e,
                                eps0,
                                )
-from numpy import pi
 
 from plasmapy.classes import GenericPlasma
 
