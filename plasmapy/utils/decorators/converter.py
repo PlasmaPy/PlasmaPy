@@ -1,20 +1,29 @@
 """
 Decorator to convert units of functions in /physics methods
 """
+__all__ = ["angular_freq_to_hz"]
+
 from astropy import units as u
 import functools
 import inspect
 from plasmapy.utils.decorators import preserve_signature
-__all__ = ["from_radians_to_hz"]
 
 
-def from_radians_to_hz(fn):
+
+def angular_freq_to_hz(fn):
     """Decorator to convert angular frequencies from radians per second
      to  Hz.
-        Parameters
-    fn: The original function.
-    ----------
 
+    Parameters
+    ----------
+    fn: callable
+        The function being wrapped.
+
+    Returns
+    -------
+    callable
+        Wrapped version of the function.
+    -------
     """
     wrapped_sign = inspect.signature(fn)
     fname = fn.__name__
