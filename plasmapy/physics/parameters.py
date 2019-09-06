@@ -673,7 +673,7 @@ def Hall_parameter(n,
 
 @utils.angular_freq_to_hz
 @utils.check_quantity(B={'units': u.T})
-def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None, to_hz = False):
+def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None, to_hz=False):
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
@@ -931,7 +931,7 @@ def gyroradius(B: u.T,
 @utils.check_quantity(
     n={'units': u.m ** -3, 'can_be_negative': False}
     )
-def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None, to_hz = False):
+def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None, to_hz=False):
     r"""Calculate the particle plasma frequency.
 
     Parameters
@@ -1366,7 +1366,7 @@ def magnetic_energy_density(B: u.T):
     B={'units': u.T},
     n_e={'units': u.m ** -3, 'can_be_negative': False}
     )
-def upper_hybrid_frequency(B: u.T, n_e: u.m**-3, to_hz = False):
+def upper_hybrid_frequency(B: u.T, n_e: u.m**-3, to_hz=False):
     r"""
     Return the upper hybrid frequency.
 
@@ -1378,7 +1378,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m**-3, to_hz = False):
     n_e : ~astropy.units.Quantity
         The electron number density.
 
-	to_hz : bool, optional
+    to_hz : bool, optional
         By default the output of this function will return the gyrofrequency in
         radians per second. However, it can also be expressed in units of Hertz.
         Default is 'False', if it is changed to True decorator angular_freq_to_hz
@@ -1438,7 +1438,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m**-3, to_hz = False):
     B={'units': u.T},
     n_i={'units': u.m ** -3, 'can_be_negative': False}
     )
-def lower_hybrid_frequency(B, n_i, ion='p+', to_hz = False):
+def lower_hybrid_frequency(B, n_i, ion='p+', to_hz=False):
     r"""
     Return the lower hybrid frequency.
 
@@ -1456,7 +1456,7 @@ def lower_hybrid_frequency(B, n_i, ion='p+', to_hz = False):
         which defaults to protons.  If no charge state information is
         provided, then the ions are assumed to be singly charged.
 
-	to_hz : bool, optional
+    to_hz : bool, optional
         By default the output of this function will return the gyrofrequency in
         radians per second. However, it can also be expressed in units of Hertz.
         Default is 'False', if it is changed to True decorator angular_freq_to_hz

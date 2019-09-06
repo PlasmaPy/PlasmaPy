@@ -9,10 +9,9 @@ import inspect
 from plasmapy.utils.decorators import preserve_signature
 
 
-
 def angular_freq_to_hz(fn):
     """Decorator to convert angular frequencies from radians per second
-     to  Hz.
+    to  Hz.
 
     Parameters
     ----------
