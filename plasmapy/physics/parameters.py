@@ -673,7 +673,7 @@ def Hall_parameter(n,
 
 @utils.angular_freq_to_hz
 @utils.check_quantity(B={'units': u.T})
-def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None, to_hz=False):
+def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None, to_hz = False):
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
@@ -750,6 +750,8 @@ def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None, to_hz=False):
     >>> from astropy import units as u
     >>> gyrofrequency(0.1*u.T)
     <Quantity 1.75882002e+10 rad / s>
+    >>> gyrofrequency(0.1*u.T, to_hz=True)
+    <Quantity 2799249007.6528206 Hz>
     >>> gyrofrequency(0.1*u.T, signed=True)
     <Quantity -1.75882002e+10 rad / s>
     >>> gyrofrequency(0.01*u.T, 'p')
@@ -758,6 +760,8 @@ def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None, to_hz=False):
     <Quantity 957883.32241481 rad / s>
     >>> gyrofrequency(0.01*u.T, particle='T+')
     <Quantity 319964.54975911 rad / s>
+    >>> gyrofrequency(0.01*u.T, particle='T+', to_hz=True)
+    <Quantity 50923.93970833496 Hz>
     >>> omega_ce = gyrofrequency(0.1*u.T)
     >>> print(omega_ce)
     17588200236.02124 rad / s
@@ -996,10 +1000,14 @@ def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None, to_hz = False):
     >>> from astropy import units as u
     >>> plasma_frequency(1e19*u.m**-3, particle='p')
     <Quantity 4.16329453e+09 rad / s>
+    >>> plasma_frequency(1e19*u.m**-3, particle='p', to_hz=True)
+    <Quantity 662608904.1071696 Hz>
     >>> plasma_frequency(1e19*u.m**-3, particle='D+')
     <Quantity 2.94462452e+09 rad / s>
     >>> plasma_frequency(1e19*u.m**-3)
     <Quantity 1.78398636e+11 rad / s>
+    >>> plasma_frequency(1e19*u.m**-3, to_hz=True)
+    <Quantity 28393024835.274036 Hz>
 
     """
 
@@ -1413,6 +1421,8 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m**-3, to_hz = False):
     >>> from astropy import units as u
     >>> upper_hybrid_frequency(0.2*u.T, n_e=5e19*u.m**-3)
     <Quantity 4.00459419e+11 rad / s>
+    >>> upper_hybrid_frequency(0.2*u.T, n_e=5e19*u.m**-3, to_hz = True)
+    <Quantity 63735096112.815445 Hz>
 
     """
 
@@ -1493,6 +1503,8 @@ def lower_hybrid_frequency(B, n_i, ion='p+', to_hz = False):
     >>> from astropy import units as u
     >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+')
     <Quantity 5.78372733e+08 rad / s>
+    >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+', to_hz = True)
+    <Quantity 92050879.32941628 Hz>
 
     """
 
