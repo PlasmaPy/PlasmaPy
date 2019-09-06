@@ -443,10 +443,15 @@ def test_gyrofrequency():
 
     assert gyrofrequency(B).unit.is_equivalent(u.rad / u.s)
 
+    assert gyrofrequency(B, to_hz = True).unit.is_equivalent(u.Hz)
+
     assert np.isclose(gyrofrequency(1 * u.T).value, 175882008784.72018)
 
     assert np.isclose(gyrofrequency(2.4 * u.T).value,
                       422116821083.3284)
+
+    assert np.isclose(gyrofrequency(1 * u.T, to_hz = True).value,
+                      27992490076.528206)
 
     assert np.isclose(gyrofrequency(2.4 * u.T, signed=True).value,
                       -422116821083.3284)
@@ -666,9 +671,14 @@ def test_plasma_frequency():
 
     assert plasma_frequency(n_e).unit.is_equivalent(u.rad / u.s)
 
+    assert plasma_frequency(n_e,to_hz = True).unit.is_equivalent(u.Hz)
+
     assert np.isclose(plasma_frequency(1 * u.cm ** -3).value, 5.64e4, rtol=1e-2)
 
     assert np.isclose(plasma_frequency(1 * u.cm ** -3, particle='N').value, 3.53e2, rtol=1e-1)
+
+    assert np.isclose(plasma_frequency(1 * u.cm ** -3, particle='N', to_hz = True).value,
+                                        56.19000195094519)
 
     with pytest.raises(TypeError):
         plasma_frequency(u.m ** -3)
@@ -907,14 +917,18 @@ def test_upper_hybrid_frequency():
     r"""Test the upper_hybrid_frequency function in parameters.py."""
 
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
+    omega_uh_hz = upper_hybrid_frequency(B, n_e=n_e, to_hz = True)
     omega_ce = gyrofrequency(B)
     omega_pe = plasma_frequency(n=n_e)
     assert omega_ce.unit.is_equivalent(u.rad / u.s)
     assert omega_pe.unit.is_equivalent(u.rad / u.s)
     assert omega_uh.unit.is_equivalent(u.rad / u.s)
+    assert omega_uh_hz.unit.is_equivalent(u.Hz)
     left_hand_side = omega_uh ** 2
     right_hand_side = omega_ce ** 2 + omega_pe ** 2
     assert np.isclose(left_hand_side.value, right_hand_side.value)
+
+    assert np.isclose(omega_uh_hz.value, 69385868857.90918)
 
     with pytest.raises(ValueError):
         upper_hybrid_frequency(5 * u.T, n_e=-1 * u.m ** -3)
@@ -938,6 +952,7 @@ def test_lower_hybrid_frequency():
     omega_pi = plasma_frequency(n=n_i, particle=ion)
     omega_ce = gyrofrequency(B)
     omega_lh = lower_hybrid_frequency(B, n_i=n_i, ion=ion)
+    omega_lh_hz = lower_hybrid_frequency(B, n_i=n_i, ion=ion, to_hz = True)
     assert omega_ci.unit.is_equivalent(u.rad / u.s)
     assert omega_pi.unit.is_equivalent(u.rad / u.s)
     assert omega_ce.unit.is_equivalent(u.rad / u.s)
@@ -945,6 +960,8 @@ def test_lower_hybrid_frequency():
     left_hand_side = omega_lh ** -2
     right_hand_side = 1 / (omega_ci ** 2 + omega_pi ** 2) + omega_ci ** -1 * omega_ce ** -1
     assert np.isclose(left_hand_side.value, right_hand_side.value)
+
+    assert np.isclose(omega_lh_hz.value, 597740622.8210828)
 
     with pytest.raises(ValueError):
         lower_hybrid_frequency(0.2 * u.T, n_i=5e19 * u.m ** -3, ion='asdfasd')
