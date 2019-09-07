@@ -13,8 +13,8 @@ def angular_freq_to_hz(fn):
     """Decorator to convert angular frequencies from radians per second
     to  Hz.
 
-    Parameters
-    ----------
+    Other Parameters
+    ----------------
     fn: callable
         The function being wrapped.
 
