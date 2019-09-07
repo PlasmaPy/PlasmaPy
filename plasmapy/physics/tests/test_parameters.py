@@ -671,14 +671,14 @@ def test_plasma_frequency():
 
     assert plasma_frequency(n_e).unit.is_equivalent(u.rad / u.s)
 
-    assert plasma_frequency(n_e,to_hz=True).unit.is_equivalent(u.Hz)
+    assert plasma_frequency(n_e, to_hz=True).unit.is_equivalent(u.Hz)
 
     assert np.isclose(plasma_frequency(1 * u.cm ** -3).value, 5.64e4, rtol=1e-2)
 
     assert np.isclose(plasma_frequency(1 * u.cm ** -3, particle='N').value, 3.53e2, rtol=1e-1)
 
     assert np.isclose(plasma_frequency(1 * u.cm ** -3, particle='N', to_hz=True).value,
-                                        56.19000195094519)
+                      56.19000195094519)
 
     with pytest.raises(TypeError):
         plasma_frequency(u.m ** -3)
@@ -961,7 +961,7 @@ def test_lower_hybrid_frequency():
     right_hand_side = 1 / (omega_ci ** 2 + omega_pi ** 2) + omega_ci ** -1 * omega_ce ** -1
     assert np.isclose(left_hand_side.value, right_hand_side.value)
 
-    assert np.isclose(omega_lh_hz.value, 597740622.8210828)
+    assert np.isclose(omega_lh_hz.value, 299878691.3223296)
 
     with pytest.raises(ValueError):
         lower_hybrid_frequency(0.2 * u.T, n_i=5e19 * u.m ** -3, ion='asdfasd')
