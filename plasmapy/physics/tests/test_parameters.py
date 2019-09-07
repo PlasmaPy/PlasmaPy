@@ -443,14 +443,14 @@ def test_gyrofrequency():
 
     assert gyrofrequency(B).unit.is_equivalent(u.rad / u.s)
 
-    assert gyrofrequency(B, to_hz = True).unit.is_equivalent(u.Hz)
+    assert gyrofrequency(B, to_hz=True).unit.is_equivalent(u.Hz)
 
     assert np.isclose(gyrofrequency(1 * u.T).value, 175882008784.72018)
 
     assert np.isclose(gyrofrequency(2.4 * u.T).value,
                       422116821083.3284)
 
-    assert np.isclose(gyrofrequency(1 * u.T, to_hz = True).value,
+    assert np.isclose(gyrofrequency(1 * u.T, to_hz=True).value,
                       27992490076.528206)
 
     assert np.isclose(gyrofrequency(2.4 * u.T, signed=True).value,
@@ -671,13 +671,13 @@ def test_plasma_frequency():
 
     assert plasma_frequency(n_e).unit.is_equivalent(u.rad / u.s)
 
-    assert plasma_frequency(n_e,to_hz = True).unit.is_equivalent(u.Hz)
+    assert plasma_frequency(n_e,to_hz=True).unit.is_equivalent(u.Hz)
 
     assert np.isclose(plasma_frequency(1 * u.cm ** -3).value, 5.64e4, rtol=1e-2)
 
     assert np.isclose(plasma_frequency(1 * u.cm ** -3, particle='N').value, 3.53e2, rtol=1e-1)
 
-    assert np.isclose(plasma_frequency(1 * u.cm ** -3, particle='N', to_hz = True).value,
+    assert np.isclose(plasma_frequency(1 * u.cm ** -3, particle='N', to_hz=True).value,
                                         56.19000195094519)
 
     with pytest.raises(TypeError):
@@ -917,7 +917,7 @@ def test_upper_hybrid_frequency():
     r"""Test the upper_hybrid_frequency function in parameters.py."""
 
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
-    omega_uh_hz = upper_hybrid_frequency(B, n_e=n_e, to_hz = True)
+    omega_uh_hz = upper_hybrid_frequency(B, n_e=n_e, to_hz=True)
     omega_ce = gyrofrequency(B)
     omega_pe = plasma_frequency(n=n_e)
     assert omega_ce.unit.is_equivalent(u.rad / u.s)
@@ -952,7 +952,7 @@ def test_lower_hybrid_frequency():
     omega_pi = plasma_frequency(n=n_i, particle=ion)
     omega_ce = gyrofrequency(B)
     omega_lh = lower_hybrid_frequency(B, n_i=n_i, ion=ion)
-    omega_lh_hz = lower_hybrid_frequency(B, n_i=n_i, ion=ion, to_hz = True)
+    omega_lh_hz = lower_hybrid_frequency(B, n_i=n_i, ion=ion, to_hz=True)
     assert omega_ci.unit.is_equivalent(u.rad / u.s)
     assert omega_pi.unit.is_equivalent(u.rad / u.s)
     assert omega_ce.unit.is_equivalent(u.rad / u.s)
