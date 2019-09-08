@@ -9,7 +9,7 @@ from plasmapy.classes.sources import Plasma3D
 
 
 @pytest.fixture()
-def uniform_magnetic_field(N=3, max_x=1):
+def uniform_magnetic_field(N=4, max_x=1):
     x = np.linspace(-max_x, max_x, N) * u.m
     test_plasma = Plasma3D(x, x, x)
     magfieldstr = 1 * u.T

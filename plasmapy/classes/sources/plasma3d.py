@@ -7,6 +7,7 @@ import astropy.units as u
 import itertools
 
 from plasmapy.physics.magnetostatics import MagnetoStatics
+import scipy.interpolate as interp
 
 from astropy.constants import (m_p,
                                m_e,
@@ -86,6 +87,30 @@ class Plasma3D(GenericPlasma):
         self.pressure = np.zeros(self.domain_shape) * u.Pa
         self.magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
         self.electric_field = np.zeros((3, *self.domain_shape)) * u.V / u.m
+
+        # create intermediate array of dimension (nx,ny,nz,3) in order to allow
+        # interpolation on non-equal spatial domain dimensions
+        self._B_interpolator = interp.RegularGridInterpolator(
+            (self.x.si.value,
+             self.y.si.value,
+             self.z.si.value),
+            self.magnetic_field.si.value.reshape((*self.domain_shape, 3)),
+            method="linear",
+            bounds_error=True)
+
+        self._E_interpolator = interp.RegularGridInterpolator(
+            (self.x.si.value,
+             self.y.si.value,
+             self.z.si.value),
+            self.electric_field.si.value.reshape((*self.domain_shape, 3)),
+            method="linear",
+            bounds_error=True)
+
+    def interpolate_E(self, x):
+        return self._E_interpolator(x.si.value) * u.V / u.m
+
+    def interpolate_B(self, x):
+        return self._B_interpolator(x.si.value) * u.T
 
     @property
     def velocity(self):

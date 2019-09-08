@@ -3,7 +3,6 @@ Class representing a group of particles.
 """
 
 import numpy as np
-import scipy.interpolate as interp
 from plasmapy.atomic import atomic
 from astropy import constants
 from astropy import units as u
@@ -87,31 +86,6 @@ class ParticleTracker:
                                          dtype=float) * u.m
         self.velocity_history = np.zeros((self.NT, *self.v.shape),
                                          dtype=float) * (u.m / u.s)
-        # create intermediate array of dimension (nx,ny,nz,3) in order to allow
-        # interpolation on non-equal spatial domain dimensions
-        _B = np.moveaxis(self.plasma.magnetic_field.si.value, 0, -1)
-        _E = np.moveaxis(self.plasma.electric_field.si.value, 0, -1)
-
-        self._B_interpolator = interp.RegularGridInterpolator(
-            (self.plasma.x.si.value,
-             self.plasma.y.si.value,
-             self.plasma.z.si.value),
-            _B,
-            method="linear",
-            bounds_error=True)
-
-        self._E_interpolator = interp.RegularGridInterpolator(
-            (self.plasma.x.si.value,
-             self.plasma.y.si.value,
-             self.plasma.z.si.value),
-            _E,
-            method="linear",
-            bounds_error=True)
-
-    def _interpolate_fields(self):
-        interpolated_b = self._B_interpolator(self.x.si.value) * u.T
-        interpolated_e = self._E_interpolator(self.x.si.value) * u.V / u.m
-        return interpolated_b, interpolated_e
 
     @property
     def kinetic_energy_history(self):
@@ -157,7 +131,8 @@ class ParticleTracker:
                Simulation", 2004, p. 58-63
         """
         dt = -self.dt / 2 if init else self.dt
-        b, e = self._interpolate_fields()
+        b = self.plasma.interpolate_B(self.x)
+        e = self.plasma.interpolate_E(self.x)
 
         # add first half of electric impulse
         vminus = self.v + self.eff_q * e / self.eff_m * dt * 0.5
