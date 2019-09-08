@@ -7,10 +7,25 @@ from typing import Any, Callable, Dict
 import numpy as np
 import astropy.units as u
 import astropy.constants as const
-import colorama
 import astropy.tests.helper as astrohelper
+import colorama
 import warnings
 from plasmapy.utils.exceptions import PlasmaPyWarning
+
+from plasmapy.utils.pytest_helpers.error_messages import (
+    call_string,
+    _represent_result,
+    _exc_str
+)
+
+from plasmapy.utils.pytest_helpers.exceptions import (
+    InvalidTestError,
+    UnexpectedResultError,
+    UnexpectedExceptionError,
+    InconsistentTypeError,
+    MissingExceptionError,
+    MissingWarningError,
+)
 
 # These colors/styles are used to highlight certain parts of the error
 # messages in consistent ways.
@@ -28,158 +43,10 @@ _result_color = f"{_blue}{_bold}"
 _message_color = f"{_red}{_bold}"
 
 __all__ = [
-    "RunTestError",
-    "UnexpectedResultError",
-    "InconsistentTypeError",
-    "MissingExceptionError",
-    "UnexpectedResultError",
-    "MissingExceptionError",
-    "MissingWarningError",
-    "IncorrectResultError",
-    "InvalidTestError",
-    "call_string",
     "run_test",
     "run_test_equivalent_calls",
     "assert_can_handle_nparray",
 ]
-
-
-class RunTestError(Exception):
-    """Base exception for test failures. Derived from `Exception`."""
-
-
-class UnexpectedResultError(RunTestError):
-    """
-    Exception for when the actual result differs from the expected
-    result.  Derived from `~plasmapy.utils.RunTestError`.
-    """
-
-
-class InconsistentTypeError(RunTestError):
-    """
-    Exception for when the type of the actual result differs from the
-    type of the expected result.  Derived from
-    `~plasmapy.utils.RunTestError`.
-    """
-
-
-class MissingExceptionError(RunTestError):
-    """
-    Exception for when an expected exception is not raised.  Derived
-    from `~plasmapy.utils.RunTestError`.
-    """
-
-
-class UnexpectedExceptionError(RunTestError):
-    """
-    Exception for when an exception is expected, but a different
-    exception is raised instead.  Derived from
-    `~plasmapy.utils.RunTestError`.
-    """
-
-
-class MissingWarningError(RunTestError):
-    """
-    Exception for when a warning is expected to be issued, but isn't.
-    Derived from `~plasmapy.utils.RunTestError`.
-    """
-
-
-class IncorrectResultError(RunTestError):
-    """
-    Exception for when the actual result differs from the expected
-    result by more than the allowed tolerance.  Derived from
-    `~plasmapy.utils.RunTestError`.
-    """
-
-
-class InvalidTestError(RunTestError):
-    """
-    Exception for when the inputs to a test are not valid.
-    """
-
-def call_string(f: Callable,
-                args: Any=tuple(),
-                kwargs: Dict={},
-                color="",
-                return_color="",
-                ) -> str:
-    """Return a string with the equivalent call of a function."""
-
-    def format_quantity(arg):
-        formatted = f'{arg.value}'
-        for base, power in zip(arg.unit.bases, arg.unit.powers):
-            if power == -1:
-                formatted += f"/u.{base}"
-            elif power == 1:
-                formatted += f"*u.{base}"
-            else:
-                formatted += f"*u.{base}**{power}"
-        return formatted
-
-    def format_arg(arg):
-        if hasattr(arg, '__name__'):
-            return arg.__name__
-        elif isinstance(arg, u.quantity.Quantity):
-            return format_quantity(arg)
-        else:
-            return repr(arg)
-
-    def format_kw(keyword):
-        if isinstance(keyword, str):
-            return str(keyword)
-        elif hasattr(keyword, '__name__'):
-            return keyword.__name__
-        else:
-            return repr(keyword)
-
-    if color and not return_color:
-        return_color = _message_color
-
-    if not isinstance(args, tuple):
-        args = (args,)
-
-    args_and_kwargs = ""
-
-    for arg in args:
-        args_and_kwargs += f"{format_arg(arg)}, "
-
-    for kwarg in kwargs:
-        args_and_kwargs += f"{format_kw(kwarg)}={format_arg(kwargs[kwarg])}, "
-
-    if args_and_kwargs[-2:] == ", ":
-        args_and_kwargs = args_and_kwargs[:-2]
-
-    return f"{color}{f.__name__}({args_and_kwargs}){return_color}"
-
-
-def _exc_str(ex: Exception, color=_exception_color) -> str:
-    """
-    Return a string with an indefinite article and the name of
-    exception `ex`.
-    """
-    if color is None:
-        color = ""
-        return_color = ""
-    else:
-        return_color = _message_color
-    exception_name = ex.__name__
-    use_an = exception_name[0] in 'aeiouAEIOU' and exception_name[0:4] != "User"
-    article = 'an' if use_an else 'a'
-    return f"{article} {color}{exception_name}{return_color}"
-
-
-def _represent_result(result: Any, color=_result_color) -> str:
-    if color is None:
-        color = ""
-        return_color = ""
-    else:
-        return_color = _message_color
-
-    if hasattr(result, '__name__'):
-        return f"{color}{result.__name__}{return_color}"
-    else:
-        return f"{color}{repr(result)}{return_color}"
 
 
 def _process_input(wrapped_function: Callable):
@@ -850,10 +717,6 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
         input_data_0d = input_data_1d[3]
         return input_data_0d, input_data_1d, input_data_2d, input_data_3d
 
-    #
-    # *** body of assert_can_handle_nparray function ***
-    #
-
     # call _prepare_input to prepare 0d, 1d, and 2d sets of arguments for the function:
     function_sig = inspect.signature(function_to_test)
     function_params = function_sig.parameters
@@ -869,7 +732,7 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
             insert_some_nans,
             insert_all_nans,
             kwargs,
-            )
+        )
 
     # call the function with the prepared argument sets:
     with warnings.catch_warnings():

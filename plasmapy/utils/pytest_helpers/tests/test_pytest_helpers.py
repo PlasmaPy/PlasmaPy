@@ -1,10 +1,9 @@
 import pytest
 import warnings
 from typing import Any
-import numpy as np
 import astropy.units as u
 
-from ..pytest_helpers import (
+from plasmapy.utils.pytest_helpers import (
     call_string,
     run_test,
     run_test_equivalent_calls,
@@ -15,12 +14,12 @@ from ..pytest_helpers import (
     MissingExceptionError,
 )
 
-from ..exceptions import PlasmaPyWarning, PlasmaPyError
-from plasmapy.atomic.exceptions import AtomicError
+from plasmapy.utils.exceptions import PlasmaPyWarning, PlasmaPyError
 
-from ...atomic import Particle
+from plasmapy.atomic import Particle
 
-def f(*args, **kwargs):
+
+def generic_function(*args, **kwargs):
     return None
 
 
@@ -42,35 +41,35 @@ def adams_number(*args, **kwargs):
 
 def return_quantity(*args, should_warn: bool = False):
     if should_warn:
-        warnings.warn("It was the best of times, it was the worst of times", UserWarning)
+        warnings.warn("", UserWarning)
     return 5 * u.m / u.s
 
 
 def return_arg(arg: Any, should_warn: bool = False) -> Any:
     if should_warn:
-        warnings.warn("It was the age of wisdom, it was the age of foolishness", UserWarning)
+        warnings.warn("", UserWarning)
     return arg
 
 
-# f, args, kwargs, expected
+# function, args, kwargs, expected
 call_string_table = [
-    (f, (), {}, "f()"),
-    (f, (1), {}, "f(1)"),
-    (f, ('x'), {}, "f('x')"),
-    (f, (1, 'b', {}), {}, "f(1, 'b', {})"),
-    (f, (), {'kw': 1}, "f(kw=1)"),
-    (f, (), {'x': 'c'}, "f(x='c')"),
-    (f, (1, 'b'), {'b': 42, 'R2': 'D2'}, "f(1, 'b', b=42, R2='D2')"),
+    (generic_function, (), {}, "generic_function()"),
+    (generic_function, (1), {}, "generic_function(1)"),
+    (generic_function, ('x'), {}, "generic_function('x')"),
+    (generic_function, (1, 'b', {}), {}, "generic_function(1, 'b', {})"),
+    (generic_function, (), {'kw': 1}, "generic_function(kw=1)"),
+    (generic_function, (), {'x': 'c'}, "generic_function(x='c')"),
+    (generic_function, (1, 'b'), {'b': 42, 'R2': 'D2'}, "generic_function(1, 'b', b=42, R2='D2')"),
     (run_test, run_test, {run_test: run_test},
      'run_test(run_test, run_test=run_test)'),
 ]
 
 
-@pytest.mark.parametrize("f,args,kwargs,expected", call_string_table)
-def test_call_string(f, args, kwargs, expected):
+@pytest.mark.parametrize("function,args,kwargs,expected", call_string_table)
+def test_call_string(function, args, kwargs, expected):
     """Tests that call_string returns a string that is
     equivalent to the function call."""
-    assert expected == call_string(f, args, kwargs)
+    assert expected == call_string(function, args, kwargs)
 
 
 f_args_kwargs_expected_whaterror = [
@@ -206,9 +205,9 @@ def test_run_test_atol_failure():
 
 def func(x, raise_exception=False, issue_warning=False):
     if raise_exception:
-        raise ValueError("I'm sorry, Dave. I'm afraid I can't do that.")
+        raise ValueError("")
     elif issue_warning:
-        warnings.warn("Open the pod bay doors, HAL.", UserWarning)
+        warnings.warn("", UserWarning)
     return x
 
 
@@ -226,6 +225,8 @@ def test_func(inputs):
     """Test cases originally put in the docstring."""
     run_test(inputs)
 
+
+# TODO: organize this in a namedtuple to improve readability?
 
 run_test_equivalent_calls_table = [
 
@@ -315,7 +316,7 @@ run_test_equivalent_calls_table = [
     ),
 
     (
-        (return_arg, 1, 1, 1, 87948794580745),
+        (return_arg, 1, 1, 1, 8794),
         UnexpectedResultError,
     ),
 

@@ -6,7 +6,6 @@ import numpy as np
 import pytest
 from astropy import units as u
 from ..mathematics import plasma_dispersion_func, plasma_dispersion_func_deriv
-import warnings
 from numpy import pi as π
 from scipy.special import gamma as Γ
 

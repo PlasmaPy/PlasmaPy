@@ -1,5 +1,6 @@
 import numpy as np
 import astropy.units as u
+
 try:
     import h5py
 except (ImportError, ModuleNotFoundError) as e:

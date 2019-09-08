@@ -1,11 +1,10 @@
 from astropy import units as u, constants as const
 import numpy as np
 from ..nuclear import nuclear_binding_energy, nuclear_reaction_energy, mass_energy
-from ...utils import (
-    run_test,
-    run_test_equivalent_calls,
-)
-from plasmapy.atomic.exceptions import AtomicError, InvalidIsotopeError, InvalidParticleError
+
+from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
+
+from plasmapy.atomic.exceptions import AtomicError, InvalidParticleError
 import pytest
 
 test_nuclear_table = [

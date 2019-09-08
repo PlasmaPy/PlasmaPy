@@ -11,10 +11,9 @@ from plasmapy.atomic.atomic import known_isotopes
 from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.atomic.particle_class import Particle
 from plasmapy.atomic.special_particles import ParticleZoo
-from plasmapy.utils import (
-    call_string,
-    run_test_equivalent_calls,
-)
+
+from plasmapy.utils.pytest_helpers import call_string, run_test_equivalent_calls
+
 from plasmapy.atomic.exceptions import (
     AtomicError,
     MissingAtomicDataError,
@@ -25,7 +24,7 @@ from plasmapy.atomic.exceptions import (
     InvalidParticleError,
     AtomicWarning,
     MissingAtomicDataWarning,
-    )
+)
 
 # (arg, kwargs, results_dict)
 test_Particle_table = [

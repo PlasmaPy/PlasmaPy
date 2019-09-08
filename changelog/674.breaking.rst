@@ -1,0 +1,2 @@
+Move pytest helper functionality from `plasmapy.utils` to
+`~plasmapy.utils.pytest_helpers`
