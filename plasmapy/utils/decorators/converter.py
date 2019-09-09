@@ -29,7 +29,7 @@ def angular_freq_to_hz(fn):
         Set `True` to to convert function output from angular frequency to Hz
     """
     fn.__doc__ += """
-    Parameters
+    Additional parameters
     ------------
     to_hz: bool
         Set `True` to to convert function output from angular frequency to Hz
