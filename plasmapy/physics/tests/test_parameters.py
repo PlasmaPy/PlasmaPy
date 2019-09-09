@@ -459,7 +459,6 @@ def test_gyrofrequency():
     assert np.isclose(gyrofrequency(1 * u.G).cgs.value,
                       1.76e7, rtol=1e-3)
 
-    assert np.isclose(gyrofrequency())
 
     with pytest.raises(TypeError):
         gyrofrequency(u.m)

@@ -953,7 +953,7 @@ def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None, to_hz=False):
         plasma where multiple charge states are present.
 
     to_hz : bool, optional
-        By default the output of this function will return the gyrofrequency in
+        By default the output of this function will return the plasma frequency in
         radians per second. However, it can also be expressed in units of Hertz.
         Default is 'False', if it is changed to True decorator angular_freq_to_hz
         will convert it to Hertz.
@@ -1379,8 +1379,8 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m**-3, to_hz=False):
         The electron number density.
 
     to_hz : bool, optional
-        By default the output of this function will return the gyrofrequency in
-        radians per second. However, it can also be expressed in units of Hertz.
+        By default the output of this function will return the upper hybrid frequency
+        in radians per second. However, it can also be expressed in units of Hertz.
         Default is 'False', if it is changed to True decorator angular_freq_to_hz
         will convert it to Hertz.
 
@@ -1457,10 +1457,11 @@ def lower_hybrid_frequency(B, n_i, ion='p+', to_hz=False):
         provided, then the ions are assumed to be singly charged.
 
     to_hz : bool, optional
-        By default the output of this function will return the gyrofrequency in
-        radians per second. However, it can also be expressed in units of Hertz.
-        Default is 'False', if it is changed to True decorator angular_freq_to_hz
-        will convert it to Hertz.
+        By default the output of this function will return the lower hybrid
+        frequency in radians per second. However, it can also be expressed
+        in units of Hertz.
+        Default is 'False', if it is changed to True decorator
+        angular_freq_to_hz will convert it to Hertz.
 
     Returns
     -------
