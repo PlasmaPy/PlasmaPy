@@ -673,7 +673,7 @@ def Hall_parameter(n,
 
 @utils.angular_freq_to_hz
 @utils.check_quantity(B={'units': u.T})
-def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None, to_hz=False):
+def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None):
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
@@ -700,12 +700,6 @@ def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None, to_hz=False):
         plasma where multiple charge states are present, and should
         not be interpreted as the gyrofrequency for any single particle.
         If not provided, it defaults to the integer charge of the `particle`.
-
-    to_hz : bool, optional
-        By default the output of this function will return the gyrofrequency in
-        radians per second. However, it can also be expressed in units of Hertz.
-        Default is 'False', if it is changed to True decorator angular_freq_to_hz
-        will convert it to Hertz.
 
     Returns
     -------
@@ -931,7 +925,7 @@ def gyroradius(B: u.T,
 @utils.check_quantity(
     n={'units': u.m ** -3, 'can_be_negative': False}
     )
-def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None, to_hz=False):
+def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None):
     r"""Calculate the particle plasma frequency.
 
     Parameters
@@ -951,12 +945,6 @@ def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None, to_hz=False):
         given then the atomic charge state (`int`) of the ion
         is used. This is effectively an average plasma frequency for the
         plasma where multiple charge states are present.
-
-    to_hz : bool, optional
-        By default the output of this function will return the plasma frequency in
-        radians per second. However, it can also be expressed in units of Hertz.
-        Default is 'False', if it is changed to True decorator angular_freq_to_hz
-        will convert it to Hertz.
 
     Returns
     -------
@@ -1366,7 +1354,7 @@ def magnetic_energy_density(B: u.T):
     B={'units': u.T},
     n_e={'units': u.m ** -3, 'can_be_negative': False}
     )
-def upper_hybrid_frequency(B: u.T, n_e: u.m**-3, to_hz=False):
+def upper_hybrid_frequency(B: u.T, n_e: u.m**-3):
     r"""
     Return the upper hybrid frequency.
 
@@ -1377,12 +1365,6 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m**-3, to_hz=False):
 
     n_e : ~astropy.units.Quantity
         The electron number density.
-
-    to_hz : bool, optional
-        By default the output of this function will return the upper hybrid frequency
-        in radians per second. However, it can also be expressed in units of Hertz.
-        Default is 'False', if it is changed to True decorator angular_freq_to_hz
-        will convert it to Hertz.
 
     Returns
     -------
@@ -1438,7 +1420,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m**-3, to_hz=False):
     B={'units': u.T},
     n_i={'units': u.m ** -3, 'can_be_negative': False}
     )
-def lower_hybrid_frequency(B, n_i, ion='p+', to_hz=False):
+def lower_hybrid_frequency(B, n_i, ion='p+'):
     r"""
     Return the lower hybrid frequency.
 
@@ -1455,13 +1437,6 @@ def lower_hybrid_frequency(B, n_i, ion='p+', to_hz=False):
         for deuterium, or 'He-4 +1' for singly ionized helium-4),
         which defaults to protons.  If no charge state information is
         provided, then the ions are assumed to be singly charged.
-
-    to_hz : bool, optional
-        By default the output of this function will return the lower hybrid
-        frequency in radians per second. However, it can also be expressed
-        in units of Hertz.
-        Default is 'False', if it is changed to True decorator
-        angular_freq_to_hz will convert it to Hertz.
 
     Returns
     -------

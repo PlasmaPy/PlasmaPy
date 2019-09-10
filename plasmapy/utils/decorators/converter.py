@@ -13,8 +13,8 @@ def angular_freq_to_hz(fn):
     # raise exception if fn uses the 'to_hz' kwarg
     sig = inspect.signature(fn)
     if 'to_hz' in sig.parameters:
-        raise raise ValueError(f"Wrapped function '{fn.__name__}'
-        can not use keyword 'to_hz'.  Keyword reserved for decorator functionality.")
+        raise ValueError(f"Wrapped function '{fn.__name__}' can not use keyword 'to_hz'."+
+                        " Keyword reserved for decorator functionality.")
 
     # make new signature for fn
     new_params = sig.parameters.copy()
@@ -28,12 +28,6 @@ def angular_freq_to_hz(fn):
     fn.__doc__ = """
     Other Parameters
     ----------------
-    to_hz: bool
-        Set `True` to to convert function output from angular frequency to Hz
-    """
-    fn.__doc__ += """
-    Additional parameters
-    ------------
     to_hz: bool
         Set `True` to to convert function output from angular frequency to Hz
     """
