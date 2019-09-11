@@ -24,6 +24,7 @@ def angular_freq_to_hz(fn):
                                 return_annotation=sig.return_annotation)
     fn.__signature__ = new_sig
 
+    @preserve_signature
     @functools.wraps(fn)
     def wrapper(*args, to_hz=False, **kwargs):
         _result = fn(*args, **kwargs)
