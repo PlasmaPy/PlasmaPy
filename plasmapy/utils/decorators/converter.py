@@ -24,17 +24,16 @@ def angular_freq_to_hz(fn):
                                 return_annotation=sig.return_annotation)
     fn.__signature__ = new_sig
 
-    # add 'to_hz' to fn docstring
-    fn.__doc__ = """
-    Other Parameters
-    ----------------
-    to_hz: bool
-        Set `True` to to convert function output from angular frequency to Hz
-    """
-
+    @functools.wraps(fn)
     def wrapper(*args, to_hz=False, **kwargs):
         _result = fn(*args, **kwargs)
         if to_hz:
             return _result.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
         return _result
+    wrapper.__doc__ += """
+    Other Parameters
+    ----------------
+    to_hz: bool
+        Set `True` to to convert function output from angular frequency to Hz
+    """
     return wrapper
