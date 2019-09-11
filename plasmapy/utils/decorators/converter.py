@@ -31,10 +31,15 @@ def angular_freq_to_hz(fn):
         if to_hz:
             return _result.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
         return _result
-    wrapper.__doc__ += """
+    added_doc_bit = """
     Other Parameters
     ----------------
     to_hz: bool
         Set `True` to to convert function output from angular frequency to Hz
     """
+    if wrapper.__doc__ is not None:
+        wrapper.__doc__ += added_doc_bit
+    else:
+        wrapper.__doc__ = added_doc_bit
+
     return wrapper
