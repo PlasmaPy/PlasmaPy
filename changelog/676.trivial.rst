@@ -1,0 +1,1 @@
+Add a Codemeta file (``codemeta.json``)
