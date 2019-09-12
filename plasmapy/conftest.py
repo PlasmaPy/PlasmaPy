@@ -1,4 +1,4 @@
-    # Force MPL to use non-gui backends for testing.
+# Force MPL to use non-gui backends for testing.
 import pytest
 
 try:
@@ -8,6 +8,7 @@ except ImportError:
 else:
     matplotlib.use('Agg')
 
+
 def pytest_addoption(parser):
     parser.addoption(
         "--not-slow", action="store_true", default=False, help='Pytest will skip slow tests.'
@@ -15,6 +16,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--slow", action="store_true", default=False, help='Pytest will only run slow tests.'
     )
+
 
 def pytest_configure(config):
     config.addinivalue_line(
