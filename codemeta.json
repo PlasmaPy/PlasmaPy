@@ -1,0 +1,55 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "PlasmaPy",
+  "description": "An open source software package for plasma research and education",
+  "keywords": [
+    "plasma physics",
+    "open source",
+    "scientific software",
+    "Python"
+  ],
+  "version": "0.3.0",
+  "license": "https://github.com/PlasmaPy/PlasmaPy/blob/master/LICENSE.md",
+  "creator": [
+    {
+      "@type": "Organization",
+      "name": "PlasmaPy Community"
+    },
+    {}
+  ],
+  "codeRepository": "https://github.com/PlasmaPy/PlasmaPy",
+  "programmingLanguage": [
+    "Python 3.6",
+    "Python 3.7"
+  ],
+  "copyrightHolder": "PlasmaPy Developers",
+  "isAccessibleForFree": true,
+  "issueTracker": "https://github.com/PlasmaPy/plasmapy/issues",
+  "readme": "https://github.com/PlasmaPy/PlasmaPy/blob/master/README.md",
+  "developmentStatus": "WIP",
+  "buildInstructions": "http://docs.plasmapy.org/en/stable/install.html",
+  "referencePublication": "https://doi.org/10.5281/zenodo.1238132",
+  "funder": [
+    {
+      "@id": "https://doi.org/10.13039/100000001",
+      "@type": "Organization",
+      "name": "National Science Foundation"
+    },
+    {
+      "@id": "https://doi.org/10.13039/100000015",
+      "@type": "Organization",
+      "name": "U.S. Department of Energy"
+    },
+    {
+      "@id": "https://doi.org/10.03039/100000104",
+      "@type": "Organization",
+      "name": "NASA"
+    },
+    {
+      "@id": "https://doi.org/10.03039/100000014",
+      "@type": "Organization",
+      "name": "Smithsonian Institution"
+    }
+  ]
+}
