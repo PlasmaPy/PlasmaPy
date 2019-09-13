@@ -1,6 +1,7 @@
-# Force MPL to use non-gui backends for testing.
+'''Adds slow marker and forces matplotlib to use non-gui backends during tests'''
 import pytest
 
+# Force MPL to use non-gui backends for testing.
 try:
     import matplotlib
 except ImportError:
@@ -8,19 +9,11 @@ except ImportError:
 else:
     matplotlib.use('Agg')
 
-
-def pytest_addoption(parser):
-    parser.addoption(
-        "--not-slow", action="store_true", default=False, help='Pytest will skip slow tests.'
-    )
-    parser.addoption(
-        "--slow", action="store_true", default=False, help='Pytest will only run slow tests.'
-    )
-
-
+# Add slow marker
+# coverage : ignore
 def pytest_configure(config):
     config.addinivalue_line(
         "markers",
-        ("slow: mark test as slow to run. Test can be skipped with --not-slow or exclusively "
-        "executed with --slow.")
+        ("slow: mark test as slow to run. Used to mark tests that execute in more than 1000x the "
+        "time of the median test.")
     )

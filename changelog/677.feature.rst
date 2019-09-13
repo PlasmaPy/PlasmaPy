@@ -1,3 +1,1 @@
 Added pytest.mark.slow to pytest markers.
-Added --not-slow pytest invocation to skip tests marked slow.
-added --slow pytest invocation to only run tests marked slow.
