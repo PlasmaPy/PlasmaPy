@@ -117,6 +117,11 @@ short traceback reports, and run tests only if the test path contains
 
 One may also run ``pytest`` from the command line.
 
+Some tests in the test suite can take a long time to run, which can
+slow down development. These tests can be identified with the pytest annotation
+``@pytest.mark.slow``. To skip these tests, execute ``pytest -m 'not slow'``.
+To exclusively test the slow tests, execute ``pytest -m slow``.
+
 .. _testing-guidelines-running-tests-python:
 
 Running tests within Python
@@ -156,6 +161,8 @@ maintainable, and robust tests.
 * Tests are run frequently during code development, and slow tests may
   interrupt the flow of a contributor.  Tests should be minimal,
   sufficient enough to be complete, and as efficient as possible.
+
+* Slow tests can be annotated with ``@pytest.mark.slow`` when they cannot be made more efficient.
 
 .. _testing-guidelines-writing-tests-organization:
 
