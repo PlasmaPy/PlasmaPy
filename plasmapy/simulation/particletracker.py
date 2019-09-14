@@ -6,6 +6,7 @@ import numpy as np
 from plasmapy.atomic import atomic
 from astropy import constants
 from astropy import units as u
+import numba
 
 __all__ = [
     "ParticleTracker",
@@ -74,18 +75,51 @@ class ParticleTracker:
 
         self.plasma = plasma
 
-        self.dt = dt
+        self._dt = dt.si.value
         self.NT = int(nt)
-        self.t = np.arange(nt) * dt
+        self._t = np.arange(nt) * self._dt
 
-        self.x = np.zeros((n_particles, 3), dtype=float) * u.m
-        self.v = np.zeros((n_particles, 3), dtype=float) * (u.m / u.s)
+        self._x = np.zeros((n_particles, 3), dtype=float)
+        self._v = np.zeros((n_particles, 3), dtype=float)
         self.name = particle_type
 
-        self.position_history = np.zeros((self.NT, *self.x.shape),
-                                         dtype=float) * u.m
-        self.velocity_history = np.zeros((self.NT, *self.v.shape),
-                                         dtype=float) * (u.m / u.s)
+        self._position_history = np.zeros((self.NT, *self.x.shape),
+                                         dtype=float)
+        self._velocity_history = np.zeros((self.NT, *self.v.shape),
+                                         dtype=float)
+        self._hqmdt = (self.eff_q / self.eff_m / 2 * dt).si.value 
+
+    @property
+    def x(self):
+        return self._x * u.m
+
+    @x.setter
+    def x(self, value):
+        self._x = value.si.value
+
+    @property
+    def v(self):
+        return self._v * u.m / u.s
+
+    @v.setter
+    def v(self, value):
+        self._v = value.si.value
+
+    @property
+    def dt(self):
+        return self._dt * u.s
+
+    @property
+    def t(self):
+        return self._t * u.s
+
+    @property
+    def position_history(self):
+        return self._position_history * u.m
+
+    @property
+    def velocity_history(self):
+        return self._velocity_history * u.m / u.s
 
     @property
     def kinetic_energy_history(self):
@@ -98,6 +132,7 @@ class ParticleTracker:
             Array of kinetic energies, shape (nt, n).
         """
         return (self.velocity_history ** 2).sum(axis=-1) * self.eff_m / 2
+
 
     # @profile
     def boris_push(self, init=False):
@@ -131,25 +166,35 @@ class ParticleTracker:
         .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
                Simulation", 2004, p. 58-63
         """
-        dt = -self.dt / 2 if init else self.dt
-        b = self.plasma.interpolate_B(self.x)
-        e = self.plasma.interpolate_E(self.x)
+        b = self.plasma.interpolate_B(self.x).si.value
+        e = self.plasma.interpolate_E(self.x).si.value
+        if init:
+            self._boris_push(self._x,
+                             self._v, 
+                             b, e, -0.5 * self._hqmdt, -0.5*self._dt)
+            self._x -= self._v * -0.5 * self._dt
+        else:
+            self._boris_push(self._x,
+                             self._v, 
+                             b, e, self._hqmdt, self._dt)
+            self._x -= self._v * self._dt
 
+    @staticmethod
+    # @numba.njit
+    def _boris_push(x, v, b, e, hqmdt, dt):
         # add first half of electric impulse
-        vminus = self.v + self.eff_q * e / self.eff_m * dt * 0.5
+        vminus = v + hqmdt * e
 
         # rotate to add magnetic field
-        t = -b * self.eff_q / self.eff_m * dt * 0.5
+        t = -b * hqmdt
+        # TODO this is **** and needs rewriting
         s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
-        vprime = vminus + np.cross(vminus.si.value, t) * u.m / u.s
-        vplus = vminus + np.cross(vprime.si.value, s) * u.m / u.s
+        vprime = vminus + np.cross(vminus, t)
+        vplus = vminus + np.cross(vprime, s)
 
         # add second half of electric impulse
-        v_new = vplus + self.eff_q * e / self.eff_m * dt * 0.5
-
-        self.v = v_new
-        if not init:
-            self.x += self.v * dt
+        v[...] = vplus + e * hqmdt
+        x += v * dt
 
     # @profile
     def run(self):
@@ -157,12 +202,13 @@ class ParticleTracker:
         Runs a simulation instance.
         """
         self.boris_push(init=True)
-        self.position_history[0] = self.x
-        self.velocity_history[0] = self.v
+        self._position_history[0] = self._x
+        self._velocity_history[0] = self._v
         for i in range(1, self.NT):
+            breakpoint()
             self.boris_push()
-            self.position_history[i] = self.x
-            self.velocity_history[i] = self.v
+            self._position_history[i] = self._x
+            self._velocity_history[i] = self._v
 
     def __repr__(self, *args, **kwargs):
         return f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N}," \
