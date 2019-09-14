@@ -12,7 +12,7 @@ class DistributionFunction(metaclass=abc.ABCMeta):
     @n_spatial_dims.setter
     def n_spatial_dims(self, n_spatial_dims):
         if not 0 <= n_spatial_dims <= 3:
-            raise ValueError('Number of spatial dimensions must be bewteen '
+            raise ValueError('Number of spatial dimensions must be between '
                              f'0 and 3 (got {n_spatial_dims}).')
         self._n_spatial_dims = n_spatial_dims
 
@@ -23,7 +23,7 @@ class DistributionFunction(metaclass=abc.ABCMeta):
     @n_velocity_dims.setter
     def n_velocity_dims(self, n_velocity_dims):
         if not 1 <= n_velocity_dims <= 3:
-            raise ValueError('Number of velocity dimensions must be bewteen '
+            raise ValueError('Number of velocity dimensions must be between '
                              f'1 and 3 (got {n_velocity_dims}).')
         self._n_velocity_dims = n_velocity_dims
 
@@ -34,7 +34,7 @@ class DistributionFunction(metaclass=abc.ABCMeta):
     @n_time_dims.setter
     def n_time_dims(self, n_time_dims):
         if not 0 <= n_time_dims <= 1:
-            raise ValueError('Number of time dimensions must be bewteen '
+            raise ValueError('Number of time dimensions must be between '
                              f'0 and 1 (got {n_time_dims}).')
         self._n_time_dims = n_time_dims
 
