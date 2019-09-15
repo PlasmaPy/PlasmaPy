@@ -7,10 +7,17 @@ from plasmapy.atomic import atomic
 from astropy import constants
 from astropy import units as u
 import numba
+from plasmapy.utils import PhysicsError
 
 __all__ = [
     "ParticleTracker",
 ]
+
+@numba.njit
+def _numba_cross(A, X):
+    a, b, c = A
+    x, y, z = X
+    return np.array([b*z - c*y, -a*z + c*x, a*y - b*x])
 
 class ParticleTracker:
     """
@@ -121,6 +128,12 @@ class ParticleTracker:
     def velocity_history(self):
         return self._velocity_history * u.m / u.s
 
+    def _b(self):
+        return self.plasma.interpolate_B(self.x).si.value
+
+    def _e(self):
+        return self.plasma.interpolate_E(self.x).si.value
+
     @property
     def kinetic_energy_history(self):
         r"""
@@ -166,8 +179,10 @@ class ParticleTracker:
         .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
                Simulation", 2004, p. 58-63
         """
-        b = self.plasma.interpolate_B(self.x).si.value
-        e = self.plasma.interpolate_E(self.x).si.value
+        b = self._b()
+        e = self._e()
+        x = self._x
+        v = self._v
         if init:
             self._boris_push(self._x,
                              self._v, 
@@ -177,24 +192,24 @@ class ParticleTracker:
             self._boris_push(self._x,
                              self._v, 
                              b, e, self._hqmdt, self._dt)
-            self._x -= self._v * self._dt
 
     @staticmethod
-    # @numba.njit
+    @numba.njit(parallel=True)
+    # @profile
     def _boris_push(x, v, b, e, hqmdt, dt):
-        # add first half of electric impulse
-        vminus = v + hqmdt * e
+        for i in numba.prange(len(x)):
+            # add first half of electric impulse
+            vminus = v[i] + hqmdt * e[i]
 
-        # rotate to add magnetic field
-        t = -b * hqmdt
-        # TODO this is **** and needs rewriting
-        s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
-        vprime = vminus + np.cross(vminus, t)
-        vplus = vminus + np.cross(vprime, s)
+            # rotate to add magnetic field
+            t = -b[i] * hqmdt
+            s = 2 * t / (1 + (t[0] * t[0] + t[1] * t[1] + t[2] * t[2]))
+            vprime = vminus + _numba_cross(vminus, t)
+            vplus = vminus + _numba_cross(vprime, s)
 
-        # add second half of electric impulse
-        v[...] = vplus + e * hqmdt
-        x += v * dt
+            # add second half of electric impulse
+            v[i] = vplus + e[i] * hqmdt
+            x[i] += v[i] * dt
 
     # @profile
     def run(self):
@@ -204,8 +219,8 @@ class ParticleTracker:
         self.boris_push(init=True)
         self._position_history[0] = self._x
         self._velocity_history[0] = self._v
+        # TODO: for i in tqdm.trange(1, self.NT):
         for i in range(1, self.NT):
-            breakpoint()
             self.boris_push()
             self._position_history[i] = self._x
             self._velocity_history[i] = self._v
@@ -271,7 +286,20 @@ class ParticleTracker:
 
     def test_kinetic_energy(self):
         r"""Test conservation of kinetic energy."""
-        assert np.allclose(self.kinetic_energy_history,
+        conservation = np.allclose(self.kinetic_energy_history,
                            self.kinetic_energy_history.mean(),
-                           atol=3 * self.kinetic_energy_history.std()), \
-            "Kinetic energy is not conserved!"
+                           atol=3 * self.N * self.kinetic_energy_history.std())
+        if not conservation:
+            try:
+                from astropy.visualization import quantity_support
+                import matplotlib.pyplot as plt
+                from mpl_toolkits.mplot3d import Axes3D
+
+                quantity_support()
+                fig, ax = plt.subplots()
+                difference = self.kinetic_energy_history - self.kinetic_energy_history[0]
+                ax.plot(difference)
+                plt.show()
+            except ImportError:
+                pass
+            raise PhysicsError("Kinetic energy is not conserved!")
