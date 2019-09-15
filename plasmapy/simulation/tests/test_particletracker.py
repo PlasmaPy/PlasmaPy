@@ -34,6 +34,8 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 E_unit = u.V / u.m
 
 # @profile
+
+
 def test_particle_uniform_magnetic():
     r"""
         Tests the particle stepper for a uniform magnetic field motion.
@@ -50,7 +52,7 @@ def test_particle_uniform_magnetic():
 
     particle_type = 'N-14++'
     s = ParticleTracker(test_plasma, particle_type=particle_type, dt=1e-2 * u.s,
-                nt=int(1e2))
+                        nt=int(1e2))
 
     perp_speed = 0.01 * u.m / u.s
     parallel_speed = 1e-5 * u.m / u.s
@@ -113,9 +115,10 @@ def test_particle_exb_drift():
     """
     def magnetic_field(r):
         return u.Quantity([[0, 0, 1]]*len(r), u.T)
+
     def electric_field(r):
         return u.Quantity([[0, 1, 0]]*len(r), E_unit)
-    test_plasma =  AnalyticalPlasma(magnetic_field, electric_field)
+    test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
 
     expected_drift_velocity = -1 * u.m / u.s
 
@@ -143,63 +146,62 @@ def test_particle_exb_drift():
 
 @pytest.mark.skip
 def test_particle_exb_nonuniform_drift():
-     """
-         Tests the particle stepper for a field with magnetic field in the Z
-         direction, electric field in the y direction. This should produce a
-         drift in the negative X direction, with the drift velocity
+    """
+        Tests the particle stepper for a field with magnetic field in the Z
+        direction, electric field in the y direction. This should produce a
+        drift in the negative X direction, with the drift velocity
 
-         v_e = ExB / B^2
+        v_e = ExB / B^2
 
-         which is independent of ion charge.
-     """
-     def magnetic_field(r):
-         return u.Quantity([[0, 0, 1]]*len(r), u.T)
-     def electric_field(r):
-         c1 = 10 * u.V / u.m**3
-         E_val = u.Quantity([[0, 0, 0]]*len(r), u.V/u.m)
-         E_val[:, 1] = c1 * r[:,1]**2 / 2
-         return E_val
+        which is independent of ion charge.
+    """
+    def magnetic_field(r):
+        return u.Quantity([[0, 0, 1]]*len(r), u.T)
 
-     test_plasma =  AnalyticalPlasma(magnetic_field, electric_field)
-     perp_speed = 1e3 * u.m / u.s
-     parallel_speed = 1e-5 * u.m / u.s
+    def electric_field(r):
+        c1 = 10 * u.V / u.m**3
+        E_val = u.Quantity([[0, 0, 0]]*len(r), u.V/u.m)
+        E_val[:, 1] = c1 * r[:, 1]**2 / 2
+        return E_val
 
+    test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
+    perp_speed = 1e3 * u.m / u.s
+    parallel_speed = 1e-5 * u.m / u.s
 
-     s = ParticleTracker(test_plasma, particle_type='p', dt=1e-10 * u.s, nt=int(1e4))
-     s.v[:, 1] = parallel_speed
-     s.v[:, 2] = perp_speed
+    s = ParticleTracker(test_plasma, particle_type='p', dt=1e-10 * u.s, nt=int(1e4))
+    s.v[:, 1] = parallel_speed
+    s.v[:, 2] = perp_speed
 
-     expected_gyrofrequency = (s.q * 1 * u.T / s.m).to(1 / u.s)
-     expected_gyroradius = perp_speed / expected_gyrofrequency
-     s.x[:, 0] = expected_gyroradius / 2
+    expected_gyrofrequency = (s.q * 1 * u.T / s.m).to(1 / u.s)
+    expected_gyroradius = perp_speed / expected_gyrofrequency
+    s.x[:, 0] = expected_gyroradius / 2
 
-     # expected_drift_velocity = -(test_plasma.electric_field_strength /
-     #                             test_plasma.magnetic_field_strength).to(u.m/u.s)
-     # expected_drift_velocity += 0.25 * expected_gyroradius**2 * c1 / u.T
-     # expected_drift_velocity = expected_drift_velocity.mean().to(u.m / u.s)
+    # expected_drift_velocity = -(test_plasma.electric_field_strength /
+    #                             test_plasma.magnetic_field_strength).to(u.m/u.s)
+    # expected_drift_velocity += 0.25 * expected_gyroradius**2 * c1 / u.T
+    # expected_drift_velocity = expected_drift_velocity.mean().to(u.m / u.s)
 
-     s.run()
+    s.run()
 
-     x = s.position_history[:, 0, 0]
+    x = s.position_history[:, 0, 0]
 
-     s.plot_time_trajectories("x")
+    s.plot_time_trajectories("x")
 
-     p_init = models.Polynomial1D(degree=1)
-     fit_p = fitting.LinearLSQFitter()
-     p = fit_p(p_init, s.t, x)
-     fit_velocity = p.parameters[1] * u.m / u.s
-    
-     s.plot_trajectories()
+    p_init = models.Polynomial1D(degree=1)
+    fit_p = fitting.LinearLSQFitter()
+    p = fit_p(p_init, s.t, x)
+    fit_velocity = p.parameters[1] * u.m / u.s
 
-     assert np.allclose(x, p(s.t), atol=1e-3 * u.m), \
-         "x position doesn't follow linear fit!"
-    
+    s.plot_trajectories()
 
-     assert np.isclose(expected_drift_velocity, fit_velocity,
-                       atol=1e-3 * u.m / u.s), \
-         "x velocity doesn't agree with expected drift velocity!"
-    
-     s.test_kinetic_energy()
+    assert np.allclose(x, p(s.t), atol=1e-3 * u.m), \
+        "x position doesn't follow linear fit!"
+
+    assert np.isclose(expected_drift_velocity, fit_velocity,
+                      atol=1e-3 * u.m / u.s), \
+        "x velocity doesn't agree with expected drift velocity!"
+
+    s.test_kinetic_energy()
 
 
 # # def test_particle_nonuniform_grid():

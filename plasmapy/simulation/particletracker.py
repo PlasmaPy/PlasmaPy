@@ -14,11 +14,13 @@ __all__ = [
     "ParticleTracker",
 ]
 
+
 @numba.njit
 def _numba_cross(A, X):
     a, b, c = A
     x, y, z = X
     return np.array([b*z - c*y, -a*z + c*x, a*y - b*x])
+
 
 class ParticleTracker:
     """
@@ -92,10 +94,10 @@ class ParticleTracker:
         self.name = particle_type
 
         self._position_history = np.zeros((self.NT, *self.x.shape),
-                                         dtype=float)
+                                          dtype=float)
         self._velocity_history = np.zeros((self.NT, *self.v.shape),
-                                         dtype=float)
-        self._hqmdt = (self.eff_q / self.eff_m / 2 * dt).si.value 
+                                          dtype=float)
+        self._hqmdt = (self.eff_q / self.eff_m / 2 * dt).si.value
 
     @property
     def x(self):
@@ -147,8 +149,8 @@ class ParticleTracker:
         """
         return (self.velocity_history ** 2).sum(axis=-1) * self.eff_m / 2
 
-
     # @profile
+
     def boris_push(self, init=False):
         r"""
         Implements the Boris algorithm for moving particles and updating their
@@ -186,12 +188,12 @@ class ParticleTracker:
         v = self._v
         if init:
             self._boris_push(self._x,
-                             self._v, 
+                             self._v,
                              b, e, -0.5 * self._hqmdt, -0.5*self._dt)
             self._x -= self._v * -0.5 * self._dt
         else:
             self._boris_push(self._x,
-                             self._v, 
+                             self._v,
                              b, e, self._hqmdt, self._dt)
 
     @staticmethod
@@ -288,8 +290,8 @@ class ParticleTracker:
     def test_kinetic_energy(self):
         r"""Test conservation of kinetic energy."""
         conservation = np.allclose(self.kinetic_energy_history,
-                           self.kinetic_energy_history.mean(),
-                           atol=3 * self.N * self.kinetic_energy_history.std())
+                                   self.kinetic_energy_history.mean(),
+                                   atol=3 * self.N * self.kinetic_energy_history.std())
         if not conservation:
             try:
                 from astropy.visualization import quantity_support

@@ -19,12 +19,17 @@ from plasmapy.physics.parameters import gyrofrequency
 # and E in the y direction, which gets us an E cross B drift
 # in the z direction.
 
+
 def magnetic_field(r):
-  return u.Quantity([[4, 0, 0]]*len(r), u.T)
+    return u.Quantity([[4, 0, 0]]*len(r), u.T)
+
 
 E_unit = u.V / u.m
+
+
 def electric_field(r):
-  return u.Quantity([[0, 2, 0]]*len(r), E_unit)
+    return u.Quantity([[0, 2, 0]]*len(r), E_unit)
+
 
 plasma = AnalyticalPlasma(magnetic_field, electric_field)
 

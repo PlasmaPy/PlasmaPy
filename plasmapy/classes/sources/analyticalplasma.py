@@ -9,7 +9,7 @@ from plasmapy.physics.parameters import _grab_charge
 from plasmapy.physics.dimensionless import (quantum_theta,
                                             )
 from plasmapy.transport import (coupling_parameter,
-                                        )
+                                )
 from plasmapy.atomic import particle_mass
 
 from plasmapy.utils import CouplingWarning
@@ -27,6 +27,7 @@ class AnalyticalPlasma(GenericPlasma):
     Class for describing and calculating plasma parameters without
     spatial/temporal description.
     """
+
     def __init__(self, magnetic_field, electric_field):
         """
         Initialize plasma paramters.
