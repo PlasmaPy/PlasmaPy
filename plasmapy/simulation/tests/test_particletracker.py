@@ -97,7 +97,7 @@ def test_particle_uniform_magnetic():
     assert np.allclose(z, p(s.t), atol=1e-4 * u.m), \
         "z-velocity doesn't stay constant!"
 
-    s.plot_trajectories()
+    # s.plot_trajectories()
     s.test_kinetic_energy()
 
 
