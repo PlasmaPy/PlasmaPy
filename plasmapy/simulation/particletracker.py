@@ -8,6 +8,7 @@ from astropy import constants
 from astropy import units as u
 import numba
 from plasmapy.utils import PhysicsError
+import tqdm
 
 __all__ = [
     "ParticleTracker",
@@ -220,7 +221,7 @@ class ParticleTracker:
         self._position_history[0] = self._x
         self._velocity_history[0] = self._v
         # TODO: for i in tqdm.trange(1, self.NT):
-        for i in range(1, self.NT):
+        for i in tqdm.trange(1, self.NT):
             self.boris_push()
             self._position_history[i] = self._x
             self._velocity_history[i] = self._v
@@ -235,7 +236,7 @@ class ParticleTracker:
                f"{self.saved_iterations} saved history " \
                f"steps over {self.NT} iterations"
 
-    def plot_trajectories(self):  # coverage: ignore
+    def plot_trajectories(self, *args, **kwargs):  # coverage: ignore
         r"""Draws trajectory history."""
         from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
@@ -247,7 +248,7 @@ class ParticleTracker:
         for p_index in range(self.N):
             r = self.position_history[:, p_index]
             x, y, z = r.T
-            ax.plot(x, y, z)
+            ax.plot(x, y, z, *args, **kwargs)
         ax.set_title(self.name)
         ax.set_xlabel("$x$ position")
         ax.set_ylabel("$y$ position")
