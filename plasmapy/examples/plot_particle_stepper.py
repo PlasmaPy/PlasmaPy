@@ -2,41 +2,37 @@
 Particle stepper
 ================
 
-An example of PlasmaPy's particle stepper class, currently in need of a rewrite
-for speed.
+An example of using PlasmaPy's particle stepper class.
 """
 
 
 import numpy as np
 from astropy import units as u
-from plasmapy.classes import Plasma
+from plasmapy.classes.sources.analyticalplasma import AnalyticalPlasma
 from plasmapy.simulation import ParticleTracker
 from plasmapy.physics.parameters import gyrofrequency
 
 ############################################################
 # Initialize a plasma. This will be a source of electric and magnetic
 # fields for our particles to move in.
-
-plasma = Plasma(domain_x=np.linspace(-1, 1, 10) * u.m,
-                domain_y=np.linspace(-1, 1, 10) * u.m,
-                domain_z=np.linspace(-1, 1, 10) * u.m)
-
-############################################################
-# Initialize the fields. We'll take B in the x direction
+# We'll take B in the x direction
 # and E in the y direction, which gets us an E cross B drift
 # in the z direction.
 
-B0 = 4 * u.T
-plasma.magnetic_field[0, :, :, :] = np.ones((10, 10, 10)) * B0
+def magnetic_field(r):
+  return u.Quantity([[4, 0, 0]]*len(r), u.T)
 
-E0 = 2 * u.V / u.m
-plasma.electric_field[1, :, :, :] = np.ones((10, 10, 10)) * E0
+E_unit = u.V / u.m
+def electric_field(r):
+  return u.Quantity([[0, 2, 0]]*len(r), E_unit)
+
+plasma = AnalyticalPlasma(magnetic_field, electric_field)
 
 ############################################################
 # Calculate the timestep. We'll take one proton `p`, take its gyrofrequency, invert that
 # to get to the gyroperiod, and resolve that into 10 steps for higher accuracy.
 
-freq = gyrofrequency(B0, 'p').to(u.Hz, equivalencies=u.dimensionless_angles())
+freq = gyrofrequency(4 * u.T, 'p').to(u.Hz, equivalencies=u.dimensionless_angles())
 gyroperiod = (1/freq).to(u.s)
 steps_to_gyroperiod = 10
 timestep = gyroperiod / steps_to_gyroperiod
@@ -44,7 +40,7 @@ timestep = gyroperiod / steps_to_gyroperiod
 ############################################################
 # Initialize the trajectory calculation.
 
-number_steps = steps_to_gyroperiod * int(2 * np.pi)
+number_steps = 5 * steps_to_gyroperiod * int(2 * np.pi)
 trajectory = ParticleTracker(plasma, 'p', 1, 1, timestep, number_steps)
 
 ############################################################
@@ -58,7 +54,7 @@ trajectory.v[0][0] = 1 * (u.m / u.s)
 # Run the pusher and plot the trajectory versus time.
 
 trajectory.run()
-trajectory.plot_time_trajectories()
+trajectory.plot_time_trajectories('yz')
 
 ############################################################
 # Plot the shape of the trajectory in 3D.
@@ -71,9 +67,24 @@ trajectory.plot_trajectories()
 
 vmean = trajectory.velocity_history[:, :, 2].mean()
 print(f"The calculated drift velocity is {vmean:.4f} to compare with the"
-      f"theoretical E0/B0 = {E0/B0:.4f}")
+      f"theoretical E0/B0 = {0.5 * u.m / u.s}")
 
 ############################################################
 # and from position:
 Vdrift = trajectory.position_history[-1, 0, 2] / (trajectory.NT * trajectory.dt)
 print(f"The calculated drift velocity from position is {Vdrift:.4f}")
+
+############################################################
+# Supposing we wanted to examine the effect of the initial velocity in the x-y plane on the trajectory:
+N = 20
+np.random.seed(0)
+trajectory = ParticleTracker(plasma, 'p', N, 1, timestep/10, number_steps*10)
+trajectory._v[:, :2] = np.random.normal(size=(N, 2))
+# we choose this as our example's thumbnail:
+# sphinx_gallery_thumbnail_number = 3
+trajectory.run()
+trajectory.plot_trajectories(alpha=0.8)
+
+############################################################
+# Note how while each trajectory fans out in a different way,
+# each one traverses the z direction in about the same time!

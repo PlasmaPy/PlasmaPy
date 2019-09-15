@@ -8,13 +8,13 @@ PlasmaPy Documentation
 
 .. raw:: html
 
-    <div style="width: 30%;" class="sphx-glr-thumbcontainer" tooltip="Let&#x27;s try to look at ITER plasma conditions using the physics subpackage. ">
+    <div style="width: 30%;" class="sphx-glr-thumbcontainer">
 
 .. only:: html
 
-    .. figure:: /auto_examples/images/thumb/sphx_glr_plot_physics_thumb.png
+    .. figure:: /auto_examples/images/thumb/sphx_glr_plot_particle_stepper_thumb.png
 
-        :ref:`sphx_glr_auto_examples_plot_physics.py`
+        :ref:`sphx_glr_auto_examples_plot_particle_stepper.py`
 
 .. raw:: html
 
