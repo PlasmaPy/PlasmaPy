@@ -1,0 +1,2 @@
+Added pytest.mark.slow to pytest markers.
+Updated documentation to notify developers of functionality.

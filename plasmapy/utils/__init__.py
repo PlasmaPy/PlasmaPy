@@ -12,6 +12,7 @@ from plasmapy.utils.decorators.checks import (
     _check_relativistic,
 )
 
+from plasmapy.utils.decorators.converter import angular_freq_to_hz
 from .decorators import preserve_signature
 
 from .exceptions import (

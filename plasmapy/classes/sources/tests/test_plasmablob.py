@@ -99,6 +99,8 @@ def test_Plasma3D_derived_vars():
     assert test_plasma.alfven_speed.unit.si == u.m / u.s
     assert np.allclose(test_plasma.alfven_speed.value, 10.92548431)
 
+
+@pytest.mark.slow
 def test_Plasma3D_add_magnetostatics():
     r"""Function to test add_magnetostatic function
     """
@@ -111,7 +113,7 @@ def test_Plasma3D_add_magnetostatics():
                 domain_z=np.linspace(-2, 2, 20) * u.m)
 
     plasma.add_magnetostatic(dipole, cw, gw_cw, iw)
-    
+
 class Test_PlasmaBlobRegimes:
     def test_intermediate_coupling(self):
         r"""
