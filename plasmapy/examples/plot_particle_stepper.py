@@ -15,26 +15,24 @@ from plasmapy.physics.parameters import gyrofrequency
 ############################################################
 # Initialize a plasma. This will be a source of electric and magnetic
 # fields for our particles to move in.
-# We'll take B in the x direction
-# and E in the y direction, which gets us an E cross B drift
+# We'll take the magnetic field in the x direction
+# and the electric field in the y direction, which gets us an E cross B drift
 # in the z direction.
 
 
 def magnetic_field(r):
     return u.Quantity([[4, 0, 0]]*len(r), u.T)
 
-
+# precomputed for efficiency
 E_unit = u.V / u.m
-
-
 def electric_field(r):
     return u.Quantity([[0, 2, 0]]*len(r), E_unit)
-
 
 plasma = AnalyticalPlasma(magnetic_field, electric_field)
 
 ############################################################
-# Calculate the timestep. We'll take one proton `p`, take its gyrofrequency, invert that
+# We'll now calculate the timestep. We'll take one proton `p`,
+# take its gyrofrequency, invert that
 # to get to the gyroperiod, and resolve that into 10 steps for higher accuracy.
 
 freq = gyrofrequency(4 * u.T, 'p').to(u.Hz, equivalencies=u.dimensionless_angles())
@@ -53,10 +51,12 @@ trajectory = ParticleTracker(plasma, 'p', 1, 1, timestep, number_steps)
 # one in the x direction, parallel to the magnetic field B -
 # that way, it won't turn in the z direction.
 
-trajectory.v[0][0] = 1 * (u.m / u.s)
+trajectory._v[0][0] = -1 # * (u.m / u.s)
+# this is currently the only way to set the velocity here
 
 ############################################################
-# Run the pusher and plot the trajectory versus time.
+# Let's run the pusher and plot the trajectory versus time.
+# We'll just show the y-z trajectories for clarity.
 
 trajectory.run()
 trajectory.plot_time_trajectories('yz')

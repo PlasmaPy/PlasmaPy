@@ -6,17 +6,7 @@ from scipy.optimize import curve_fit
 
 from plasmapy.simulation.particletracker import ParticleTracker
 from plasmapy.classes.sources import AnalyticalPlasma
-
-# def test_basic_particletracker_functionality():
-#     plasma = uniform_magnetic_field()
-
-#     s = ParticleTracker(plasma=plasma, dt=1e-3 * u.s, nt=1)
-#     assert np.isclose(s.kinetic_energy, 0 * u.J, atol=1e-4 * u.J)
-
-#     # this should crash as neither `dt` nor `NT` are not provided
-#     with pytest.raises(ValueError):
-#         ParticleTracker(plasma=plasma)
-
+from plasmapy.utils.exceptions import PhysicsError
 
 def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
     def sine(t, amplitude, omega, phase, mean):
@@ -31,10 +21,23 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
     return params, stds
 
 
+# precalculating unit for efficiency
 E_unit = u.V / u.m
 
-# @profile
+@pytest.mark.xfail
+def test_set_particle_velocity():
+    test_plasma = AnalyticalPlasma(lambda r: None, lambda r: None)
+    particle_type = 'N-14++'
+    s = ParticleTracker(test_plasma, 'p', dt=1 * u.s, nt=5)
+    s.v[0,0] = 5 * u.m/u.s
+    assert s._v[0,0] == 5
 
+def test_set_particle_velocity_by_value():
+    test_plasma = AnalyticalPlasma(lambda r: None, lambda r: None)
+    particle_type = 'N-14++'
+    s = ParticleTracker(test_plasma, 'p', dt=1 * u.s, nt=5)
+    s.v = np.array([[5, 0, 0]]) * u.m/u.s
+    assert s._v[0,0] == 5
 
 def test_particle_uniform_magnetic():
     r"""
@@ -141,7 +144,8 @@ def test_particle_exb_drift():
             "x velocity doesn't agree with expected drift velocity!"
 
     # s.plot_trajectories()
-    s.test_kinetic_energy()
+    with pytest.raises(PhysicsError):
+        s.test_kinetic_energy()
 
 
 @pytest.mark.skip
