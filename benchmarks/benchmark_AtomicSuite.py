@@ -1,35 +1,54 @@
+"""Functions from Atomic to benchmark with aerospeed velocity """
+
 import astropy.constants as const
 import astropy.units as u
-from plasmapy.atomic import half_life, is_stable, electric_charge, integer_charge, particle_mass, isotopic_abundance, atomic_number, standard_atomic_weight, mass_number,known_isotopes, common_isotopes, stable_isotopes, reduced_mass, periodic_table_group, periodic_table_category
+from plasmapy.atomic import (
+    atomic_number,
+    mass_number,
+    standard_atomic_weight,
+    particle_mass,
+    reduced_mass,
+    is_stable,
+    half_life,
+    known_isotopes,
+    common_isotopes,
+    stable_isotopes,
+    isotopic_abundance,
+    integer_charge,
+    electric_charge,
+    periodic_table_period,
+    periodic_table_block,
+    periodic_table_category,
+    periodic_table_group)
+
 
 class PhysicsSuite:
     """
-    An example benchmark that times the performance of various kinds
-    of iterating over dictionaries in Python.
+    Benchmark that times the performance of funcions from Atomic package
     """
     def setup(self):
         pass
 
 
-    def time_electric_charge(self):
-        electric_charge('p+')
-        electric_charge('O-')
-        electric_charge('N-')
-        electric_charge('He-')
+    def time_atomic_number(self):
+        atomic_number("H")
+        atomic_number("tritium")
+        atomic_number("alpha")
+        atomic_number("oganesson")
 
 
-    def time_is_stable(self):
-        is_stable("H-1")
-        is_stable("tritium")
-        is_stable("e-")
-        is_stable("tau+")
+    def time_mass_number(self):
+        mass_number("H-1")
+        mass_number("Pb-208")
+        mass_number("tritium")
+        mass_number("alpha")
 
 
-    def time_integer_charge(self):
-        integer_charge('Fe-56 2+')
-        integer_charge('He -2')
-        integer_charge('H+')
-        integer_charge('N-14++')
+    def time_standard_atomic_weight(self):
+        standard_atomic_weight("H")
+        standard_atomic_weight("lead")
+        standard_atomic_weight("Au")
+        standard_atomic_weight("nitrogen")
 
 
     def time_particle_mass(self):
@@ -46,25 +65,32 @@ class PhysicsSuite:
         isotopic_abundance('hydrogen', 2)
 
 
-    def time_standard_atomic_weight(self):
-        standard_atomic_weight("H")
-        standard_atomic_weight("lead")
-        standard_atomic_weight("Au")
-        standard_atomic_weight("nitrogen")
+    def time_integer_charge(self):
+        integer_charge('Fe-56 2+')
+        integer_charge('He -2')
+        integer_charge('H+')
+        integer_charge('N-14++')
 
 
-    def time_mass_number(self):
-        mass_number("H-1")
-        mass_number("Pb-208")
-        mass_number("tritium")
-        mass_number("alpha")
+    def time_electric_charge(self):
+        electric_charge('p+')
+        electric_charge('O-')
+        electric_charge('N-')
+        electric_charge('He-')
 
 
-    def time_atomic_number(self):
-        atomic_number("H")
-        atomic_number("tritium")
-        atomic_number("alpha")
-        atomic_number("oganesson")
+    def time_is_stable(self):
+        is_stable("H-1")
+        is_stable("tritium")
+        is_stable("e-")
+        is_stable("tau+")
+
+
+    def time_half_life(self):
+        half_life('T')
+        half_life('n')
+        half_life('H-1')
+        half_life('C-14')
 
 
     def time_known_isotopes(self):
@@ -95,11 +121,18 @@ class PhysicsSuite:
         reduced_mass(1.4e-10 * u.kg, 2.6e-40 * u.kg)
 
 
-    def test_periodic_table_period(self):
+    def time_periodic_table_period(self):
         periodic_table_period(5)
         periodic_table_period("5")
         periodic_table_period("Au")
         periodic_table_period("nitrogen")
+
+
+    def time_periodic_table_group(self):
+        periodic_table_group(18)
+        periodic_table_group(24)
+        periodic_table_group("Al")
+        periodic_table_group("neon")
 
 
     def time_periodic_table_block(self):

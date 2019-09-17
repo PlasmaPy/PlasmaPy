@@ -1,6 +1,7 @@
 import astropy.constants as const
 import astropy.units as u
 
+
 class PhysicsSuite:
     """
     An example benchmark that times the performance of various kinds
