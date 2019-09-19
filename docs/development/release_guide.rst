@@ -30,7 +30,11 @@ Pre-release
   * Use ``git shortlog -n -s -e`` for ``.mailmap``
   * Use ``astropy-tools/author_lists.py`` for ``credits.rst``
 
-* Edit ``setup.cfg`` to remove ``.dev`` from ``version = x.y.z.dev``
+* Update ``setup.cfg``
+
+  * Remove ``.dev`` from ``version = x.y.z.dev``
+  * Update minimum versions of required packages, including
+    ``python_requires``, ``install_requires``, and other variables
 
 * Reserve a digital object identifier on Zenodo, and update citation
   information (e.g., in ``plasmapy.__citation__`` and ``README.md``)
@@ -105,3 +109,31 @@ Post-release
 * Send release announcement to mailing list
 
 * Update the release guide to reflect any changes
+
+Compatibility with Prior Versions of Python, NumPy, and Astropy
+===============================================================
+
+PlasmaPy releases will generally abide by the following standards,
+which are adapted from `NumPy Enhancement Proposal 29
+<https://numpy.org/neps/nep-0029-deprecation_policy.html>`_ for the
+support of old versions of Python, NumPy, and Astropy.
+
+* PlasmaPy should support at least the minor versions of Python
+  initially released 42 months prior to a planned project release date.
+* PlasmaPy should support at least the 2 latest minor versions of
+  Python.
+* PlasmaPy should support minor versions of NumPy initially released
+  in the 24 months prior to a planned project release date or the
+  oldest version that supports the minimum Python version (whichever is
+  higher).
+* PlasmaPy should support at least the 3 latest minor versions of
+  NumPy and Astropy.
+
+Upstream package requirements should only change during major or minor
+releases, and never during a patch release.  All supported minor
+versions of Python should be in the test matrix and have binary
+artifacts built for releases.
+
+Exceptions to these guidelines should only be made when there are major
+improvements or fixes to upstream functionality or when other required
+packages have stricter requirements.
