@@ -43,11 +43,10 @@ def test_particle_uniform_magnetic():
     r"""
         Tests the particle stepper for a uniform magnetic field motion.
     """
-    # @profile
+    np.random.seed(0)
     def magnetic_field(r):
-        return u.Quantity([[0, 0, 1]]*len(r), u.T)
+        return u.Quantity([[0, 0, 1]], u.T)
 
-    # @profile
     def electric_field(r):
         return u.Quantity(np.zeros(r.shape), E_unit)
 
@@ -116,11 +115,12 @@ def test_particle_exb_drift():
 
         which is independent of ion charge.
     """
+    np.random.seed(0)
     def magnetic_field(r):
-        return u.Quantity([[0, 0, 1]]*len(r), u.T)
+        return u.Quantity([[0, 0, 1]], u.T)
 
     def electric_field(r):
-        return u.Quantity([[0, 1, 0]]*len(r), E_unit)
+        return u.Quantity([[0, 1, 0]], E_unit)
     test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
 
     expected_drift_velocity = -1 * u.m / u.s

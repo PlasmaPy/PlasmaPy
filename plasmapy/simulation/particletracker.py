@@ -99,6 +99,7 @@ class ParticleTracker:
                                           dtype=float)
         self._hqmdt = (self.eff_q / self.eff_m / 2 * dt).si.value
 
+    # TODO: find way to clean up the lines below!
     @property
     def x(self):
         return self._x * u.m
