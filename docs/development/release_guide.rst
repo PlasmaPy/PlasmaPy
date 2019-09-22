@@ -129,10 +129,9 @@ support of old versions of Python, NumPy, and Astropy.
 * PlasmaPy should support at least the 3 latest minor versions of
   NumPy and Astropy.
 
-Upstream package requirements should only change during major or minor
-releases, and never during a patch release.  All supported minor
-versions of Python should be in the test matrix and have binary
-artifacts built for releases.
+The required major and minor version numbers of upstream packages may
+only change during major or minor releases of PlasmaPy, and never during
+patch releases.
 
 Exceptions to these guidelines should only be made when there are major
 improvements or fixes to upstream functionality or when other required
