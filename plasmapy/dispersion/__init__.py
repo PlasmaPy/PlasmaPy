@@ -2,14 +2,16 @@
 Tools for working with dispersion solvers.
 """
 
+import abc
 
-class DispersionInput:
+
+class DispersionInput(abc.ABC):
     """
     Base class that stores the input to a dispersion solver.
     """
 
 
-class DispersionOutput:
+class DispersionOutput(abc.ABC):
     """
     Base class that stores the output to a dispersion solver.
 
@@ -24,11 +26,6 @@ class DispersionOutput:
         Angular frequencies. Can be complex, and must be the same size as *k*.
     """
     def __init__(self, input, omega, k):
-        if len(omega.shape) != 1:
-            raise ValueError('"omega" must be a 1D array (got {}D)'.format(len(omega.shape)))
-        if omega.shape[0] != k.shape[0]:
-            raise ValueError(
-                'The first dimension of "omega" and "k" must match (got {} and {} respectively)'.format(omega.shape[0], k.shape[0]))
         self._omega = omega
         self._k = k
         self._input = input
@@ -55,11 +52,12 @@ class DispersionOutput:
         return self._omega
 
 
-class DispersionSolver:
+class DispersionSolver(abc.ABC):
     """
     Base class that stores a dispersion solver. Must be overriden by specific
     dispersion solver implementations.
     """
+    @abc.abstractmethod
     def solve(self, input):
         """
         Run the dispersion solver for a given input.
@@ -72,4 +70,4 @@ class DispersionSolver:
         -------
         output : DispersionOutput
         """
-        raise NotImplementedError
+        pass
