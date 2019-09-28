@@ -86,7 +86,15 @@ PlasmaPy is licensed under a 3-clause BSD license with added protections
 against software patents - see the [``LICENSE.md``](LICENSE.md) file in
 the top-level directory.
 
-## Acknowledging and Citing PlasmaPy
+## Citing PlasmaPy
 
 Please see the [``CITATION.rst``](CITATION.rst) file for instructions on
 how to cite PlasmaPy.
+
+## Acknowledgements
+
+Early development on PlasmaPy was supported in part by the U.S. 
+Department of Energy, the Smithsonian Institution, and Google Summer of
+Code.  Ongoing PlasmaPy development is being supported through a
+collaborative award from the U.S. National Science Foundation's
+Cyberinfrastructure for Sustained Scientific Innovation program.
