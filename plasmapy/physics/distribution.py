@@ -8,6 +8,7 @@ from astropy import units as u
 from plasmapy.physics import parameters
 import numpy as np
 from scipy.special import gamma
+from scipy.constants import pi,hbar,k
 
 __all__ = ["Maxwellian_1D",
            "Maxwellian_velocity_2D",
@@ -16,7 +17,8 @@ __all__ = ["Maxwellian_1D",
            "Maxwellian_speed_2D",
            "Maxwellian_speed_3D",
            "kappa_velocity_1D",
-           "kappa_velocity_3D"]
+           "kappa_velocity_3D",
+           "Fermi_velocity_1D"]
 
 def _v_drift_units(v_drift):
     # Helper method to assign units to  v_drift if it takes a default value
@@ -27,6 +29,98 @@ def _v_drift_units(v_drift):
         v_drift = v_drift.to(u.m / u.s)
     return v_drift
 
+def Fermi_velocity_1D(m,
+                      T,
+                      particle="e",
+                      vTh=np.nan,
+                      units="units",
+                      E_F=0):
+    r"""
+    Returns the Fermi-Dirac velocity distribution of a particle of mass m,
+    at temperature T with thermal velocity vTh and Fermi Energy E_F
+
+    Parameters
+    ----------
+
+    m: ~astropy.units.Quantity
+        The mass of the particle convertible to kg.
+
+    T: ~astropy.units.Quantity
+        The temperature in Kelvin.
+
+    particle: str, optional
+        Representation of the particle species(e.g., ``'p'`` for protons,
+        ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
+        (singly ionized helium-4)), which defaults to electrons.
+
+    vTh: ~astropy.units.Quantity, optional
+        Thermal velocity (most probable velocity) in m/s. This is used for
+        optimization purposes to avoid re-calculating vTh, for example
+        when integrating over velocity-space.
+
+    E_F: ~astropy.units.Quantity
+        The Fermi energy of the particle in units convertible to J.
+
+    units: str, optional
+        Selects whether to run function with units and unit checks (when
+        equal to "units") or to run as unitless (when equal to "unitless").
+        The unitless version is substantially faster for intensive
+        computations.
+
+    Returns
+    -------
+    f : ~astropy.units.Quantity
+        Probability density in units of Velocity^-1, normalized so that
+        :math:`\int_{-\infty}^{+\infty} f(v) dv = 1`.
+
+    Raises
+    ------
+    TypeError
+        The parameter arguments are not Quantities and
+        cannot be converted into Quantities.
+
+    ~astropy.units.UnitConversionError
+        If the parameters are not in appropriate units.
+
+    ValueError
+        If the temperature is negative, or the particle mass or charge state
+        cannot be found.
+
+    Notes
+    -----
+
+    Examples
+    --------
+
+    """
+
+    if units == "units":
+         # unit checks and conversions
+        # checking velocity units
+        v = v.to(u.m / u.s)
+        # Catching case where drift velocities have default values, they
+        # need to be assigned units
+        v_drift = _v_drift_units(v_drift)
+        # convert temperature to Kelvins
+        T = T.to(u.K, equivalencies=u.temperature_energy())
+        if np.isnan(vTh):
+            # get thermal velocity and thermal velocity squared
+            vTh = (parameters.thermal_speed(T,
+                                            particle=particle,
+                                            method="most_probable"))
+        elif not np.isnan(vTh):
+            # check units of thermal velocity
+            vTh = vTh.to(u.m / u.s)
+    elif np.isnan(vTh) and units == "unitless":
+        # assuming unitless temperature is in Kelvins
+        vTh = (parameters.thermal_speed(T * u.K,
+                                        particle=particle,
+                                        method="most_probable")).si.value
+
+    distFunc = ( m * vTh / pi / hbar) ** 3 / ( 1 + np.exp( (m * vTh **2  / 2 - E_F )/ k / T ) )
+
+    return distFunc
+    
 def Maxwellian_1D(v,
                   T,
                   particle="e",
