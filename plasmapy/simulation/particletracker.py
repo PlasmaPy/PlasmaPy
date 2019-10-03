@@ -19,7 +19,7 @@ __all__ = [
 def _numba_cross(A, X):
     a, b, c = A
     x, y, z = X
-    return np.array([b*z - c*y, -a*z + c*x, a*y - b*x])
+    return np.array([b*z - c*y, -a*z + c*x, a*y - b*x]) * (A.unit * X.unit)
 
 
 class ParticleTracker:
@@ -85,52 +85,20 @@ class ParticleTracker:
 
         self.plasma = plasma
 
-        self._dt = dt.si.value
+        self.dt = dt
         self.NT = int(nt)
-        self._t = np.arange(nt) * self._dt
+        self.t = np.arange(nt) * self.dt
 
-        self._x = np.zeros((n_particles, 3), dtype=float)
-        self._v = np.zeros((n_particles, 3), dtype=float)
+        self.x = np.zeros((n_particles, 3), dtype=float) * u.m
+        self.v = np.zeros((n_particles, 3), dtype=float) * (u.m / u.s)
         self.name = particle_type
 
-        self._position_history = np.zeros((self.NT, *self.x.shape),
-                                          dtype=float)
-        self._velocity_history = np.zeros((self.NT, *self.v.shape),
-                                          dtype=float)
-        self._hqmdt = (self.eff_q / self.eff_m / 2 * dt).si.value
+        self.position_history = np.zeros((self.NT, *self.x.shape),
+                                          dtype=float) * u.m
+        self.velocity_history = np.zeros((self.NT, *self.v.shape),
+                                          dtype=float) * (u.m / u.s)
+        self._hqmdt = self.eff_q / self.eff_m / 2 * dt
 
-    # TODO: find way to clean up the lines below!
-    @property
-    def x(self):
-        return self._x * u.m
-
-    @x.setter
-    def x(self, value):
-        self._x = value.si.value
-
-    @property
-    def v(self):
-        return self._v * u.m / u.s
-
-    @v.setter
-    def v(self, value):
-        self._v = value.si.value
-
-    @property
-    def dt(self):
-        return self._dt * u.s
-
-    @property
-    def t(self):
-        return self._t * u.s
-
-    @property
-    def position_history(self):
-        return self._position_history * u.m
-
-    @property
-    def velocity_history(self):
-        return self._velocity_history * u.m / u.s
 
     @property
     def kinetic_energy_history(self):
@@ -175,20 +143,20 @@ class ParticleTracker:
         .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
                Simulation", 2004, p. 58-63
         """
-        b = self.plasma.interpolate_B(self.x).si.value
-        e = self.plasma.interpolate_E(self.x).si.value
+        b = self.plasma.interpolate_B(self.x)
+        e = self.plasma.interpolate_E(self.x)
         if init:
-            self._boris_push(self._x,
-                             self._v,
-                             b, e, -0.5 * self._hqmdt, -0.5*self._dt)
-            self._x -= self._v * -0.5 * self._dt
+            self._boris_push(self.x,
+                             self.v,
+                             b, e, -0.5 * self._hqmdt, -0.5*self.dt)
+            self.x -= self.v * -0.5 * self.dt
         else:
-            self._boris_push(self._x,
-                             self._v,
-                             b, e, self._hqmdt, self._dt)
+            self._boris_push(self.x,
+                             self.v,
+                             b, e, self._hqmdt, self.dt)
 
     @staticmethod
-    @numba.njit(parallel=True)
+    # @numba.njit()
     def _boris_push(x, v, b, e, hqmdt, dt):
         for i in numba.prange(len(x)):
             # add first half of electric impulse
@@ -209,12 +177,13 @@ class ParticleTracker:
         Runs a simulation instance.
         """
         self.boris_push(init=True)
-        self._position_history[0] = self._x
-        self._velocity_history[0] = self._v
+        self.position_history[0] = self.x
+        self.velocity_history[0] = self.v
         for i in tqdm.trange(1, self.NT):
             self.boris_push()
-            self._position_history[i] = self._x
-            self._velocity_history[i] = self._v
+            assert np.isfinite(self.v).all()
+            self.position_history[i] = self.x
+            self.velocity_history[i] = self.v
 
     def __repr__(self, *args, **kwargs):
         return f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N}," \
