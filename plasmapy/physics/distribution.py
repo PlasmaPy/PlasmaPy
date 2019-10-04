@@ -8,7 +8,7 @@ from astropy import units as u
 from plasmapy.physics import parameters
 import numpy as np
 from scipy.special import gamma
-from scipy.constants import pi,hbar,k
+from scipy.constants import pi, hbar, k
 
 __all__ = ["Maxwellian_1D",
            "Maxwellian_velocity_2D",
@@ -20,14 +20,16 @@ __all__ = ["Maxwellian_1D",
            "kappa_velocity_3D",
            "Fermi_velocity_1D"]
 
+
 def _v_drift_units(v_drift):
     # Helper method to assign units to  v_drift if it takes a default value
     if (v_drift == 0 and
-        not isinstance(v_drift, astropy.units.quantity.Quantity)):
+            not isinstance(v_drift, astropy.units.quantity.Quantity)):
         v_drift = v_drift * u.m / u.s
     else:
         v_drift = v_drift.to(u.m / u.s)
     return v_drift
+
 
 def Fermi_velocity_1D(m,
                       T,
@@ -95,7 +97,7 @@ def Fermi_velocity_1D(m,
     """
 
     if units == "units":
-         # unit checks and conversions
+        # unit checks and conversions
         # checking velocity units
         v = v.to(u.m / u.s)
         # Catching case where drift velocities have default values, they
@@ -117,10 +119,12 @@ def Fermi_velocity_1D(m,
                                         particle=particle,
                                         method="most_probable")).si.value
 
-    distFunc = ( m * vTh / pi / hbar) ** 3 / ( 1 + np.exp( (m * vTh **2  / 2 - E_F )/ k / T ) )
+    distFunc = (m * vTh / pi / hbar) ** 3 / (1 +
+                                             np.exp((m * vTh ** 2 / 2 - E_F) / k / T))
 
     return distFunc
-    
+
+
 def Maxwellian_1D(v,
                   T,
                   particle="e",
