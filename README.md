@@ -74,7 +74,7 @@ source](http://docs.plasmapy.org/en/stable/install.html#building-and-installing-
 
 You can also get PlasmaPy from `conda` via `conda install -c conda-forge plasmapy`.
 
-Like most scientific Python packages, PlasmaPy probably runs best on the
+Like most scientific Python packages, PlasmaPy probably runs better on the
 [Anaconda distribution](https://www.anaconda.com/downloads).
 
 PlasmaPy requires Python 3.6+ and is [not compatible with
