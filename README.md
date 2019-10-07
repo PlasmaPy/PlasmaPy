@@ -45,6 +45,13 @@ on our
 [Matrix](https://riot.im/app/#/room/#plasmapy:matrix.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
 channel. 
 
+## [Discourse room](https://plasmapy.discourse.group/)
+
+We have recently created a [PlasmaPy Discourse 
+group](https://plasmapy.discourse.group/) in order to allow threaded 
+public discussions on a variety of topics.  This group will be a great 
+place to suggest ideas, bring up discussion topics, and ask questions.
+
 ## [Mailing list](https://groups.google.com/forum/#!forum/plasmapy)
 
 We also have a [mailing list](https://groups.google.com/forum/#!forum/plasmapy)
