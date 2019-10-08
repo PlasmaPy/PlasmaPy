@@ -9,10 +9,10 @@ PlasmaPy Plasma
 
 Overview
 --------
-One of core classes in PlasmaPy is `~plasmapy.classes.Plasma`. In order
-to make it easy to work mwith different plasma data in PlasmaPy, the
-Plasma object provides a number of methods for commonly existing plasmas
-in nature.
+One of the core classes in PlasmaPy is `~plasmapy.classes.Plasma`. In order
+to make it easy to work with different plasma data in PlasmaPy, the
+`~plasmapy.classes.Plasma` object provides a number of methods for
+commonly existing plasmas in nature.
 
 All Plasma objects are created using the Plasma factory
 `~plasmapy.classes.Plasma`.
