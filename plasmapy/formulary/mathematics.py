@@ -1,4 +1,7 @@
-"""Functions related to the plasma dispersion function"""
+"""This module gathers highly theoretical mathematical formulas
+relevant to plasma physics. Usually, those are used somewhere else in
+the code but were deemed general enough for the mathematical apparatus
+to be abstracted from the main function interface."""
 
 import numbers
 import numpy as np

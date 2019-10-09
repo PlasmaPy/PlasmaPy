@@ -10,7 +10,7 @@ from collections import namedtuple
 from plasmapy import utils
 from numpy import pi
 from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv
-from plasmapy.formulary.physics import parameters
+from plasmapy.formulary import parameters
 
 r"""
 Values should be returned as a `~astropy.units.Quantity` in SI units.

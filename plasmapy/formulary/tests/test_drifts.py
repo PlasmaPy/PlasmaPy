@@ -1,6 +1,6 @@
 import pytest
 
-from plasmapy.formulary.physics import drifts
+from plasmapy.formulary import drifts
 import astropy.units as u
 from astropy.tests.helper import assert_quantity_allclose
 

@@ -654,8 +654,8 @@ def Hall_parameter(n,
     -------
     astropy.units.quantity.Quantity
     """
-    from plasmapy.formulary.transport import (fundamental_ion_collision_freq,
-                                              fundamental_electron_collision_freq)
+    from plasmapy.formulary.collisions import (fundamental_ion_collision_freq,
+                                               fundamental_electron_collision_freq)
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
     if atomic.Particle(particle).particle == 'e-':

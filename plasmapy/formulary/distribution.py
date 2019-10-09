@@ -5,7 +5,7 @@ fitting and calculation.
 """
 import astropy as astropy
 from astropy import units as u
-from plasmapy.formulary.physics import parameters
+from plasmapy.formulary import parameters
 import numpy as np
 from scipy.special import gamma
 

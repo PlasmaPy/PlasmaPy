@@ -2,11 +2,11 @@ import numpy as np
 import pytest
 from astropy import units as u, constants
 
-from plasmapy.formulary.physics.magnetostatics import (MagneticDipole,
-                                                       GeneralWire,
-                                                       FiniteStraightWire,
-                                                       InfiniteStraightWire,
-                                                       CircularWire)
+from plasmapy.formulary.magnetostatics import (MagneticDipole,
+                                               GeneralWire,
+                                               FiniteStraightWire,
+                                               InfiniteStraightWire,
+                                               CircularWire)
 
 
 mu0_4pi = constants.mu0/4/np.pi
