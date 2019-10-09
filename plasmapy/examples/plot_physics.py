@@ -6,7 +6,7 @@ Let's try to look at ITER plasma conditions using the `physics` subpackage.
 """
 
 from astropy import units as u
-from plasmapy import physics
+from plasmapy.formulary import physics
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D

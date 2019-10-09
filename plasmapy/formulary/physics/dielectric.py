@@ -8,10 +8,9 @@ import numpy as np
 from astropy import units as u
 from collections import namedtuple
 from plasmapy import utils
-from astropy.constants import (m_e, c, mu0, e, eps0)
 from numpy import pi
-from plasmapy.mathematics import plasma_dispersion_func_deriv
-from plasmapy.physics import parameters
+from plasmapy.formulary.mathematics import plasma_dispersion_func_deriv
+from plasmapy.formulary.physics import parameters
 
 r"""
 Values should be returned as a `~astropy.units.Quantity` in SI units.

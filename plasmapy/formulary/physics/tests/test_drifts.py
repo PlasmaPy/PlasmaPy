@@ -1,6 +1,6 @@
 import pytest
 
-from plasmapy.physics import drifts
+from plasmapy.formulary.physics import drifts
 import astropy.units as u
 from astropy.tests.helper import assert_quantity_allclose
 
@@ -9,7 +9,7 @@ class Test_ExB_drift:
     def test_E_x_B_1d_arrays(self):
         E = u.Quantity([1, 0, 0], unit=u.V/u.m)
         B = u.Quantity([0, 1, 0], unit=u.T)
-        result = drifts.ExB_drift(2*E, 3*B)
+        result = drifts.ExB_drift(2 * E, 3 * B)
         assert_quantity_allclose(result, (2/3)*u.Quantity([0, 0, 1], u.m/u.s))
 
     def test_ExB_2d_array(self):
@@ -20,7 +20,7 @@ class Test_ExB_drift:
                         [0, 1, 0],
                         [0, 1, 0]], unit=u.T)
 
-        result = drifts.ExB_drift(2*E, 3*B)
+        result = drifts.ExB_drift(2 * E, 3 * B)
         assert_quantity_allclose(result, (2/3)*u.Quantity([[0, 0, 1],
                                                            [0, 0, 1],
                                                            [0, 0, 1],
@@ -41,7 +41,7 @@ class Test_ExB_drift:
         E = u.Quantity([[[1, 0, 0]]], unit=u.V/u.m)
         B = u.Quantity([[[0, 1, 0]]], unit=u.T)
 
-        result = drifts.ExB_drift(2*E, 3*B)
+        result = drifts.ExB_drift(2 * E, 3 * B)
         assert_quantity_allclose(result, (2/3)*u.Quantity([[[0, 0, 1]]],
                                                           unit=u.m/u.s))
 
@@ -51,7 +51,7 @@ class Test_force_drift:
         F = u.Quantity([1, 0, 0], unit=u.N)
         B = u.Quantity([0, 1, 0], unit=u.T)
         q = 1*u.C
-        result = drifts.force_drift(2*F, 3*B, q)
+        result = drifts.force_drift(2 * F, 3 * B, q)
         assert_quantity_allclose(result, (2/3)*u.Quantity([0, 0, 1], u.m/u.s))
 
     def test_force_B_2d_array(self):
@@ -63,7 +63,7 @@ class Test_force_drift:
                         [0, 1, 0]], unit=u.T)
         q = 1*u.C
 
-        result = drifts.force_drift(2*F, 3*B, q)
+        result = drifts.force_drift(2 * F, 3 * B, q)
         assert_quantity_allclose(result, (2/3)*u.Quantity([[0, 0, 1],
                                                            [0, 0, 1],
                                                            [0, 0, 1],
@@ -74,7 +74,7 @@ class Test_force_drift:
         B = u.Quantity([[[0, 1, 0]]], unit=u.T)
         q = 1*u.C
 
-        result = drifts.force_drift(2*F, 3*B, q)
+        result = drifts.force_drift(2 * F, 3 * B, q)
         assert_quantity_allclose(result, (2/3)*u.Quantity([[[0, 0, 1]]],
                                                           unit=u.m/u.s))
 

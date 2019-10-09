@@ -28,7 +28,6 @@ import numpy as np
 from astropy import units as u
 from plasmapy import (atomic, utils)
 from astropy.constants.si import (m_p, m_e, c, mu0, k_B, e, eps0)
-from numpy import pi
 from typing import Optional
 
 
@@ -655,8 +654,8 @@ def Hall_parameter(n,
     -------
     astropy.units.quantity.Quantity
     """
-    from plasmapy.transport import (fundamental_ion_collision_freq,
-                                    fundamental_electron_collision_freq)
+    from plasmapy.formulary.transport import (fundamental_ion_collision_freq,
+                                              fundamental_electron_collision_freq)
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
     if atomic.Particle(particle).particle == 'e-':

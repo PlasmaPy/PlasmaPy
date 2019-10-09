@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import astropy.units as u
 from astropy.constants import c, h
-from ...utils.exceptions import RelativityError
+from plasmapy.utils.exceptions import RelativityError
 from ..quantum import (deBroglie_wavelength,
                        thermal_deBroglie_wavelength,
                        Fermi_energy,

@@ -644,7 +644,7 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
 
     Examples
     --------
-    >>> from plasmapy.physics.parameters import Alfven_speed, gyrofrequency
+    >>> from plasmapy.formulary.physics.parameters import Alfven_speed, gyrofrequency
     >>> assert_can_handle_nparray(Alfven_speed)
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})

@@ -5,7 +5,7 @@ import numpy as np
 from astropy import units as u
 from astropy.constants import c
 from ..relativity import Lorentz_factor
-from ...utils.exceptions import RelativityError
+from plasmapy.utils.exceptions import RelativityError
 
 
 def test_Lorentz_factor():

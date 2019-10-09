@@ -13,7 +13,7 @@ __all__ = ['quantum_theta', 'beta']
 from astropy import units as u
 from plasmapy import utils
 from astropy import constants
-from plasmapy.physics import (quantum, parameters)
+from plasmapy.formulary.physics import (quantum, parameters)
 
 
 @utils.check_quantity(

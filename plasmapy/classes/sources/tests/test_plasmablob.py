@@ -3,7 +3,7 @@ import numpy as np
 import astropy.units as u
 
 from plasmapy.classes.sources import plasma3d, plasmablob
-from plasmapy.physics import magnetostatics
+from plasmapy.formulary.physics import magnetostatics
 from plasmapy.atomic.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import CouplingWarning
 

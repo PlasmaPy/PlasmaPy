@@ -4,20 +4,20 @@ from astropy import units as u
 from astropy.tests.helper import assert_quantity_allclose
 
 import plasmapy.atomic.exceptions
-from plasmapy.transport import (Coulomb_logarithm,
-                                impact_parameter_perp,
-                                impact_parameter,
-                                collision_frequency,
-                                mean_free_path,
-                                mobility,
-                                Knudsen_number,
-                                coupling_parameter)
-from plasmapy.transport import (Spitzer_resistivity,
-                                fundamental_electron_collision_freq,
-                                fundamental_ion_collision_freq)
+from plasmapy.formulary.transport import (Coulomb_logarithm,
+                                          impact_parameter_perp,
+                                          impact_parameter,
+                                          collision_frequency,
+                                          mean_free_path,
+                                          mobility,
+                                          Knudsen_number,
+                                          coupling_parameter)
+from plasmapy.formulary.transport import (Spitzer_resistivity,
+                                          fundamental_electron_collision_freq,
+                                          fundamental_ion_collision_freq)
 from plasmapy.utils import exceptions
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
-from astropy.constants import m_p, m_e, c
+from astropy.constants import c
 from plasmapy.utils.exceptions import CouplingWarning
 
 

@@ -11,22 +11,22 @@ from plasmapy.atomic.exceptions import InvalidParticleError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 from astropy.constants import c, m_p, m_e, e, mu0
 
-from plasmapy.physics.parameters import (mass_density,
-                                         Alfven_speed,
-                                         gyrofrequency,
-                                         gyroradius,
-                                         thermal_speed,
-                                         thermal_pressure,
-                                         kappa_thermal_speed,
-                                         plasma_frequency,
-                                         Debye_length,
-                                         Debye_number,
-                                         inertial_length,
-                                         ion_sound_speed,
-                                         magnetic_energy_density,
-                                         magnetic_pressure,
-                                         upper_hybrid_frequency,
-                                         lower_hybrid_frequency)
+from plasmapy.formulary.physics.parameters import (mass_density,
+                                                   Alfven_speed,
+                                                   gyrofrequency,
+                                                   gyroradius,
+                                                   thermal_speed,
+                                                   thermal_pressure,
+                                                   kappa_thermal_speed,
+                                                   plasma_frequency,
+                                                   Debye_length,
+                                                   Debye_number,
+                                                   inertial_length,
+                                                   ion_sound_speed,
+                                                   magnetic_energy_density,
+                                                   magnetic_pressure,
+                                                   upper_hybrid_frequency,
+                                                   lower_hybrid_frequency)
 
 B = 1.0 * u.T
 Z = 1
