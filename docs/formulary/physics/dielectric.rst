@@ -1,12 +1,12 @@
 .. _dielectric:
 
-****************************************************
-Dielectric functions (`plasmapy.physics.dielectric`)
-****************************************************
+**************************************************************
+Dielectric functions (`plasmapy.formulary.physics.dielectric`)
+**************************************************************
 
-.. currentmodule:: plasmapy.physics.dielectric
+.. currentmodule:: plasmapy.formulary.physics.dielectric
 
-.. automodapi:: plasmapy.physics.dielectric
+.. automodapi:: plasmapy.formulary.physics.dielectric
    :no-heading:
 
 .. topic:: Examples:

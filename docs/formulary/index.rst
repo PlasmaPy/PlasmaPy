@@ -4,6 +4,14 @@
 Formulary (`plasmapy.formulary`)
 ********************************
 
-.. automodapi:: plasmapy.formulary
-   :no-heading:
+.. currentmodule:: plasmapy.formulary.transport
+
+The `plasmapy.formulary` TODO
+
+.. toctree::
+   :maxdepth: 1
+
+   mathematics/index
+   physics/index
+   transport/index
 

@@ -1,12 +1,12 @@
 .. _distribution:
 
-********************************************************
-Distribution functions (`plasmapy.physics.distribution`)
-********************************************************
+******************************************************************
+Distribution functions (`plasmapy.formulary.physics.distribution`)
+******************************************************************
 
-.. currentmodule:: plasmapy.physics.distribution
+.. currentmodule:: plasmapy.formulary.physics.distribution
 
-.. automodapi:: plasmapy.physics.distribution
+.. automodapi:: plasmapy.formulary.physics.distribution
    :no-heading:
 
 .. topic:: Examples:

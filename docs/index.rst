@@ -134,6 +134,14 @@ Physical Data
 
 .. _toplevel-utilities:
 
+Dispersion relations
+--------------------
+
+.. toctree::
+    :maxdepth: 1
+
+    dispersion/index
+
 Utilities
 ---------
 

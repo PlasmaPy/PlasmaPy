@@ -1,11 +1,11 @@
 .. _magnetostatics:
 
-**************************************************
-Magnetostatics (`plasmapy.physics.magnetostatics`)
-**************************************************
+************************************************************
+Magnetostatics (`plasmapy.formulary.physics.magnetostatics`)
+************************************************************
 
-.. currentmodule:: plasmapy.physics.magnetostatics
+.. currentmodule:: plasmapy.formulary.physics.magnetostatics
 
-.. automodapi:: plasmapy.physics.magnetostatics
+.. automodapi:: plasmapy.formulary.physics.magnetostatics
    :no-heading:
 
