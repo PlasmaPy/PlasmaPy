@@ -5,7 +5,7 @@
 import numpy as np
 import pytest
 
-from .. mathematics import Fermi_integral
+from plasmapy.formulary.mathematics import Fermi_integral
 
 
 class Test_Fermi_integral:
