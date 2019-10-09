@@ -45,6 +45,13 @@ on our
 [Matrix](https://riot.im/app/#/room/#plasmapy:matrix.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
 channel. 
 
+## [Discourse room](https://plasmapy.discourse.group/)
+
+We have recently created a [PlasmaPy Discourse 
+group](https://plasmapy.discourse.group/) in order to allow threaded 
+public discussions on a variety of topics.  This group will be a great 
+place to suggest ideas, bring up discussion topics, and ask questions.
+
 ## [Mailing list](https://groups.google.com/forum/#!forum/plasmapy)
 
 We also have a [mailing list](https://groups.google.com/forum/#!forum/plasmapy)
@@ -86,7 +93,15 @@ PlasmaPy is licensed under a 3-clause BSD license with added protections
 against software patents - see the [``LICENSE.md``](LICENSE.md) file in
 the top-level directory.
 
-## Acknowledging and Citing PlasmaPy
+## Citing PlasmaPy
 
 Please see the [``CITATION.rst``](CITATION.rst) file for instructions on
 how to cite PlasmaPy.
+
+## Acknowledgements
+
+Early development on PlasmaPy was supported in part by the U.S. 
+Department of Energy, the Smithsonian Institution, and Google Summer of
+Code.  Ongoing PlasmaPy development is being supported through a
+collaborative award from the U.S. National Science Foundation's
+Cyberinfrastructure for Sustained Scientific Innovation program.

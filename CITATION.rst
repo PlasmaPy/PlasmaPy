@@ -1,13 +1,20 @@
 Acknowledging and Citing PlasmaPy
 =================================
 
-If you use PlasmaPy for a project resulting in a publication, we ask
-that you cite both the specific version of PlasmaPy used in your
-project and an informational reference.  Including these references
-provides credit to developers of PlasmaPy and enables greater
-scientific reproducibility.
+If you use PlasmaPy for a project resulting in a publication, we
+ask that you include a line such as the following in the
+acknowledgements section of your paper:
 
-Version 0.2.0 of PlasmaPy may be cited using the following reference.
+* This research made use of version 0.2.0 of PlasmaPy, a
+  community-developed open source Python package for plasma physics
+  (PlasmaPy Community et al. 2018, 2019) that has been developed with
+  support from the U.S. National Science Foundation and the U.S.
+  Department of Energy.
+
+This line should reference the specific version of PlasmaPy that was
+used in the paper in order to facilitate scientific reproducibility.
+For example, version 0.2.0 of PlasmaPy may be cited using the following
+reference:
 
 * PlasmaPy Community et al. (2019). *PlasmaPy version 0.2.0*, Zenodo,
   https://doi.org/10.5281/zenodo.3235817
@@ -21,14 +28,7 @@ The current standard informational reference for PlasmaPy is
   Python package for plasma physics*, Zenodo,
   https://doi.org/10.5281/zenodo.1238132
 
-These references may be made by adding the following line to the
-methods or acknowledgements sections of a paper.
-
-* This research made use of PlasmaPy version 0.2.0, a
-  community-developed open source Python package for plasma
-  physics (PlasmaPy Community et al. 2018, 2019).
-
-All public releases of PlasmaPy are openly archived in the `PlasmaPy
+Public releases of PlasmaPy are openly archived in the `PlasmaPy
 Community <https://zenodo.org/communities/plasmapy>`__ on `Zenodo
 <https://zenodo.org>`__.
 
@@ -37,5 +37,3 @@ depends on, including but not limited to
 `Astropy <https://www.astropy.org/acknowledging.html>`__,
 `NumPy <https://www.scipy.org/citing.html#numpy>`__, and
 `SciPy <https://www.scipy.org/citing.html#scipy-the-library>`__.
-
-

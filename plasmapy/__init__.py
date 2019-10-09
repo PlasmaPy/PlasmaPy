@@ -50,8 +50,13 @@ import sys
 
 __name__ = "plasmapy"
 
+__citation__ = (
+    "Instructions on how to cite and acknowledge PlasmaPy are provided in the "
+    "online documentation at: http://docs.plasmapy.org/en/latest/about/citation.html"
+)
+
 if sys.version_info < tuple((int(val) for val in "3.6".split('.'))):
-    raise Exception("plasmapy does not support Python < {}".format(3.6))
+    raise Exception("PlasmaPy does not support Python < {}".format(3.6))
 
 
 def online_help(query):
@@ -76,9 +81,3 @@ def online_help(query):
         url = 'http://docs.astropy.org/en/stable/units/'
 
     webbrowser.open(url)
-
-
-__citation__ = [
-    "https://doi.org/10.5281/zenodo.1238132",
-    "https://doi.org/10.5281/zenodo.3235817",
-]
