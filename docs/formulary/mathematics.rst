@@ -1,10 +1,10 @@
 .. _mathematics:
 
 **********************************************
-Mathematics (`plasmapy.formulary`)
+Mathematics (`plasmapy.formulary.mathematics`)
 **********************************************
 
-.. automodapi:: plasmapy.formulary
+.. automodapi:: plasmapy.formulary.mathematics
    :no-heading:
 
 .. topic:: Examples:
