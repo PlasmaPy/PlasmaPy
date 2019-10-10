@@ -4,7 +4,7 @@
 Formulary (`plasmapy.formulary`)
 ********************************
 
-.. currentmodule:: plasmapy.formulary.transport
+.. currentmodule:: plasmapy.formulary
 
 The `plasmapy.formulary` TODO
 

@@ -12,7 +12,7 @@ from astropy import units as u
 import matplotlib.pyplot as plt
 from astropy.constants import (m_e, k_B)
 
-from plasmapy.formulary.physics import Maxwellian_1D
+from plasmapy.formulary import Maxwellian_1D
 
 
 ############################################################

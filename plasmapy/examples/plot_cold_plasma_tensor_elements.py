@@ -9,8 +9,8 @@ elements for various electromagnetic wave frequencies.
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy import units as u
-from plasmapy.formulary.physics import (cold_plasma_permittivity_SDP,
-                                        cold_plasma_permittivity_LRP)
+from plasmapy.formulary import (cold_plasma_permittivity_SDP,
+                                cold_plasma_permittivity_LRP)
 
 #######################################################################
 # Let's define some parameters, such as the magnetic field magnitude,

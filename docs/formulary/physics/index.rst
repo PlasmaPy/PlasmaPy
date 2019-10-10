@@ -1,17 +1,17 @@
-.. py:module:: plasmapy.formulary.physics
+.. py:module:: plasmapy.formulary
 
-.. _plasmapy.formulary.physics:
+.. _plasmapy.formulary:
 
 ******************************************************
-Plasma physics formulas (`plasmapy.formulary.physics`)
+Plasma physics formulas (`plasmapy.formulary`)
 ******************************************************
 
-.. currentmodule:: plasmapy.formulary.physics
+.. currentmodule:: plasmapy.formulary
 
-`plasmapy.formulary.physics` provides theoretical formulas for calculation of
+`plasmapy.formulary` provides theoretical formulas for calculation of
 physical quantities helpful for plasma physics. The layout of the
 subpackage is still in flux, but for now we have settled on providing a
-single `plasmapy.formulary.physics` namespace for some of the most common
+single `plasmapy.formulary` namespace for some of the most common
 functions. The actual functions are located in modules, subjectively
 grouped by topic, with sub-namespaces for larger sub-packages.
 

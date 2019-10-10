@@ -3,5 +3,5 @@
 Classical transport theory
 **************************
 
-.. automodapi:: plasmapy.formulary.transport.braginskii
+.. automodapi:: plasmapy.formulary.braginskii
     :no-heading:

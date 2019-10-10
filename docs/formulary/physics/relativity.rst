@@ -1,10 +1,10 @@
 .. _relativity:
 
 ****************************************************************
-Relativistic functions (`plasmapy.formulary.physics.relativity`)
+Relativistic functions (`plasmapy.formulary.relativity`)
 ****************************************************************
 
-.. currentmodule:: plasmapy.formulary.physics.relativity
+.. currentmodule:: plasmapy.formulary.relativity
 
-.. automodapi:: plasmapy.formulary.physics.relativity
+.. automodapi:: plasmapy.formulary.relativity
    :no-heading:

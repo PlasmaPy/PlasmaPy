@@ -1,10 +1,10 @@
 .. _parameters:
 
 ***********************************************************
-Plasma parameters (`plasmapy.formulary.physics.parameters`)
+Plasma parameters (`plasmapy.formulary.parameters`)
 ***********************************************************
 
-.. automodapi:: plasmapy.formulary.physics.parameters
+.. automodapi:: plasmapy.formulary.parameters
    :no-heading:
 
 .. topic:: Examples:

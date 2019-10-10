@@ -11,7 +11,7 @@ import numpy as np
 from astropy import units as u
 from plasmapy.classes import Plasma
 from plasmapy.simulation import ParticleTracker
-from plasmapy.formulary.physics import gyrofrequency
+from plasmapy.formulary import gyrofrequency
 
 ############################################################
 # Initialize a plasma. This will be a source of electric and magnetic

@@ -1,10 +1,10 @@
 .. _dimensionless:
 
-*********************************************************************
-Dimensionless parameters (`plasmapy.formulary.physics.dimensionless`)
-*********************************************************************
+*************************************************************
+Dimensionless parameters (`plasmapy.formulary.dimensionless`)
+*************************************************************
 
-.. currentmodule:: plasmapy.formulary.physics.dimensionless
+.. currentmodule:: plasmapy.formulary.dimensionless
 
-.. automodapi:: plasmapy.formulary.physics.dimensionless
+.. automodapi:: plasmapy.formulary.dimensionless
    :no-heading:

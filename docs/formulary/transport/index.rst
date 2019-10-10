@@ -1,14 +1,14 @@
-.. py:module:: plasmapy.formulary.transport
+.. py:module:: plasmapy.formulary
 
 .. _plasmapy-transport:
 
 ****************************************************************************
-Braginskii and collisional transport theory (`plasmapy.formulary.transport`)
+Braginskii and collisional transport theory (`plasmapy.formulary`)
 ****************************************************************************
 
-.. currentmodule:: plasmapy.formulary.transport
+.. currentmodule:: plasmapy.formulary
 
-The `plasmapy.formulary.transport` subpackage covers plasma transport theory.
+The `plasmapy.formulary` subpackage covers plasma transport theory.
 
 .. toctree::
    :maxdepth: 3

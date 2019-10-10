@@ -3,5 +3,5 @@
 Collisions
 **********
 
-.. automodapi:: plasmapy.formulary.transport.collisions
+.. automodapi:: plasmapy.formulary.collisions
       :no-heading:
