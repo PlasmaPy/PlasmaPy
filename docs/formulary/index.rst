@@ -24,6 +24,8 @@ physical quantities helpful for plasma physics.
    braginskii
    collisions
 
+.. automodsumm:: plasmapy.formulary
+
 The subpackage makes heavy use of `astropy.units.Quantity` for handling
 conversions between different unit systems. This is especially important
 for electron-volts, commonly used in plasma physics to denote
