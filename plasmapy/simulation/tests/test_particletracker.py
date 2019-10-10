@@ -25,6 +25,11 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 # precalculating unit for efficiency
 E_unit = u.V / u.m
 
+def test_write_into_si_array():
+    A = u.Quantity([1, 2, 3], unit=u.T)
+    A[0].si.value = 5
+    assert A[0] == 5 * u.T
+
 def test_cross():
     A = u.Quantity([1, 2, 3], unit=u.T)
     v = u.Quantity([4, 5, 6], unit=u.m/u.s)

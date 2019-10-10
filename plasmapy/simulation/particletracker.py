@@ -15,25 +15,11 @@ __all__ = [
 ]
 
 
-@numba.jit
-def _numba_cross(A, X):
-    result = np.zeros_like(X)
-    _numba_cross_(A, X, result)
-    return result
-
 @numba.njit
-def _numba_cross_(A, X, result):
+def _numba_cross(A, X):
     a, b, c = A
     x, y, z = X
-    result[0] = b * z - c * y
-    result[1] = c * x - a * z
-    result[2] = a * y - b * x
-
-# @numba.njit
-# def _numba_cross(A, X):
-#     a, b, c = A
-#     x, y, z = X
-#     return np.array([b*z - c*y, -a*z + c*x, a*y - b*x]) * (A.unit * X.unit)
+    return np.array([b*z - c*y, -a*z + c*x, a*y - b*x]) * (A.unit * X.unit)
 
 
 class ParticleTracker:
@@ -159,22 +145,19 @@ class ParticleTracker:
         """
         b = self.plasma.interpolate_B(self.x)
         e = self.plasma.interpolate_E(self.x)
-        tmp_array = np.zeros_like(self.v)
-        print(tmp_array)
         if init:
             self._boris_push(self.x,
                              self.v,
-                             b, e, -0.5 * self._hqmdt, -0.5*self.dt,
-                             tmp_array)
+                             b, e, -0.5 * self._hqmdt, -0.5*self.dt)
             self.x -= self.v * -0.5 * self.dt
         else:
             self._boris_push(self.x,
                              self.v,
-                             b, e, self._hqmdt, self.dt, tmp_array)
+                             b, e, self._hqmdt, self.dt)
 
     @staticmethod
     # @numba.njit()
-    def _boris_push(x, v, b, e, hqmdt, dt, tmp_array):
+    def _boris_push(x, v, b, e, hqmdt, dt):
         for i in numba.prange(len(x)):
             # add first half of electric impulse
             vminus = v[i] + hqmdt * e[i]
@@ -182,10 +165,8 @@ class ParticleTracker:
             # rotate to add magnetic field
             t = -b[i] * hqmdt
             s = 2 * t / (1 + (t[0] * t[0] + t[1] * t[1] + t[2] * t[2]))
-            _numba_cross_(vminus, t, tmp_array)
-            vprime = vminus + tmp_array
-            _numba_cross_(vprime, s, tmp_array)
-            vplus = vminus + tmp_array
+            vprime = vminus + _numba_cross(vminus, t)
+            vplus = vminus + _numba_cross(vprime, s)
 
             # add second half of electric impulse
             v[i] = vplus + e[i] * hqmdt
