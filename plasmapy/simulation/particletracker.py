@@ -19,7 +19,7 @@ __all__ = [
 def _numba_cross(A, X):
     a, b, c = A
     x, y, z = X
-    return np.array([b*z - c*y, -a*z + c*x, a*y - b*x])
+    return np.array((b*z - c*y, -a*z + c*x, a*y - b*x))
 
 
 class ParticleTracker:
@@ -188,7 +188,7 @@ class ParticleTracker:
                              b, e, self._hqmdt, self._dt)
 
     @staticmethod
-    @numba.njit(parallel=True)
+    @numba.njit()
     def _boris_push(x, v, b, e, hqmdt, dt):
         for i in numba.prange(len(x)):
             # add first half of electric impulse
@@ -197,8 +197,10 @@ class ParticleTracker:
             # rotate to add magnetic field
             t = -b[i] * hqmdt
             s = 2 * t / (1 + (t[0] * t[0] + t[1] * t[1] + t[2] * t[2]))
-            vprime = vminus + _numba_cross(vminus, t)
-            vplus = vminus + _numba_cross(vprime, s)
+            cross_result = _numba_cross(vminus, t)
+            vprime = vminus + cross_result
+            cross_result_2 = _numba_cross(vprime, s)
+            vplus = vminus + cross_result_2
 
             # add second half of electric impulse
             v[i] = vplus + e[i] * hqmdt

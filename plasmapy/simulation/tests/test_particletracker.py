@@ -24,6 +24,66 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 # precalculating unit for efficiency
 E_unit = u.V / u.m
 
+def test_boris_push_class_no_fields():
+    def magnetic_field(r):
+        return u.Quantity(np.zeros_like(r.value), u.T)
+
+    def electric_field(r):
+        return u.Quantity([np.zeros_like(r.value)], E_unit)
+    test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
+
+    s = ParticleTracker(test_plasma, 'p', 50, dt=1e-10 * u.s, nt=int(2))
+    s.run()
+    assert np.isfinite(s._x).all()
+    assert np.isfinite(s._v).all()
+
+def test_boris_push_no_fields_no_movement():
+    x = np.zeros((2, 3), dtype=float)
+    x_copy = x.copy()
+    v = np.zeros_like(x)
+    b = np.zeros_like(x)
+    e = np.zeros_like(x)
+    q = 1
+    m = 1
+    dt = 1e-3
+    hqmdt = 0.5 * q * m * dt
+    ParticleTracker._boris_push(x, v, b, e, hqmdt, dt)
+    assert np.isfinite(x).all()
+    assert np.isfinite(v).all()
+    assert (x == x_copy).all()
+
+def test_boris_push_no_fields_just_velocity():
+    x = np.zeros((2, 3), dtype=float)
+    x_copy = x.copy()
+    v = np.ones_like(x)
+    b = np.zeros_like(x)
+    e = np.zeros_like(x)
+    q = 1
+    m = 1
+    dt = 1e-3
+    hqmdt = 0.5 * q * m * dt
+    ParticleTracker._boris_push(x, v, b, e, hqmdt, dt)
+    assert np.isfinite(x).all()
+    assert np.isfinite(v).all()
+    assert ((x - v * dt) == x_copy).all()
+
+def test_boris_push_electric_field():
+    x = np.zeros((2, 3), dtype=float)
+    x_copy = x.copy()
+    v = np.zeros_like(x)
+    b = np.zeros_like(x)
+    e = np.zeros_like(x)
+    e[:,0] = 1
+
+    q = 1
+    m = 1
+    dt = 1e-3
+    hqmdt = 0.5 * q * m * dt
+    ParticleTracker._boris_push(x, v, b, e, hqmdt, dt)
+    assert np.isfinite(x).all()
+    assert np.isfinite(v).all()
+    assert ((x - e * dt**2 / 2) == x_copy).all()
+
 @pytest.mark.xfail
 def test_set_particle_velocity():
     test_plasma = AnalyticalPlasma(lambda r: None, lambda r: None)
@@ -126,6 +186,7 @@ def test_particle_exb_drift():
     expected_drift_velocity = -1 * u.m / u.s
 
     s = ParticleTracker(test_plasma, 'p', 50, dt=1e-10 * u.s, nt=int(5e3))
+    breakpoint()
     s._v[:, 2] += np.random.normal(size=s.N)
 
     s.run()
