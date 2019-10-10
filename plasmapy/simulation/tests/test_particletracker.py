@@ -4,10 +4,9 @@ from astropy import units as u
 from astropy.modeling import models, fitting
 from scipy.optimize import curve_fit
 
-from plasmapy.simulation.particletracker import ParticleTracker, _numba_cross
+from plasmapy.simulation.particletracker import ParticleTracker
 from plasmapy.classes.sources import AnalyticalPlasma
 from plasmapy.utils.exceptions import PhysicsError
-
 
 def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
     def sine(t, amplitude, omega, phase, mean):
@@ -25,32 +24,20 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 # precalculating unit for efficiency
 E_unit = u.V / u.m
 
-def test_write_into_si_array():
-    A = u.Quantity([1, 2, 3], unit=u.T)
-    A[0].si.value = 5
-    assert A[0] == 5 * u.T
-
-def test_cross():
-    A = u.Quantity([1, 2, 3], unit=u.T)
-    v = u.Quantity([4, 5, 6], unit=u.m/u.s)
-    result = _numba_cross(A, v)
-    assert result.unit == (A.unit * v.unit)
-
-
 @pytest.mark.xfail
 def test_set_particle_velocity():
     test_plasma = AnalyticalPlasma(lambda r: None, lambda r: None)
     particle_type = 'N-14++'
     s = ParticleTracker(test_plasma, 'p', dt=1 * u.s, nt=5)
     s.v[0,0] = 5 * u.m/u.s
-    assert s.v[0,0] == 5 * (u.m/u.s)
+    assert s._v[0,0] == 5
 
 def test_set_particle_velocity_by_value():
     test_plasma = AnalyticalPlasma(lambda r: None, lambda r: None)
     particle_type = 'N-14++'
     s = ParticleTracker(test_plasma, 'p', dt=1 * u.s, nt=5)
     s.v = np.array([[5, 0, 0]]) * u.m/u.s
-    assert s.v[0,0] == 5 * (u.m/u.s)
+    assert s._v[0,0] == 5
 
 def test_particle_uniform_magnetic():
     r"""
@@ -79,9 +66,9 @@ def test_particle_uniform_magnetic():
     dt = expected_gyroperiod / 100
 
     s = ParticleTracker(test_plasma, particle_type=particle_type, dt=dt, nt=int(1e4))
-    s.v[:, 1] = perp_speed
+    s._v[:, 1] = perp_speed.si.value
 
-    s.v[:, 2] = parallel_speed
+    s._v[:, 2] = parallel_speed.si.value
     assert s.v[0, 1] == perp_speed
     assert s.v[0, 2] == parallel_speed
     s.run()
@@ -128,6 +115,7 @@ def test_particle_exb_drift():
 
         which is independent of ion charge.
     """
+    np.random.seed(0)
     def magnetic_field(r):
         return u.Quantity([[0, 0, 1]], u.T)
 
@@ -138,8 +126,7 @@ def test_particle_exb_drift():
     expected_drift_velocity = -1 * u.m / u.s
 
     s = ParticleTracker(test_plasma, 'p', 50, dt=1e-10 * u.s, nt=int(5e3))
-    s.v[:, 2] += np.random.normal(size=s.N) * (u.m / u.s)
-    np.random.seed(0)
+    s._v[:, 2] += np.random.normal(size=s.N)
 
     s.run()
 
