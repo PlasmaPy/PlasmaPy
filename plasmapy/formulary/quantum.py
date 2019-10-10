@@ -301,7 +301,7 @@ def Thomas_Fermi_length(n_e):
     See also
     --------
     Fermi_energy
-    plasmapy.physics.Debye_length
+    plasmapy.formulary.Debye_length
 
     Example
     -------

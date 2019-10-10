@@ -1,2 +1,1 @@
-Move `plasmapy.physics`, `plasmapy.mathematics` and `plasmapy.transport` into
-the common `plasmapy.formulary` subpackage
+Move `plasmapy.physics`, `plasmapy.mathematics` and `plasmapy.transport` into the common `plasmapy.formulary` subpackage

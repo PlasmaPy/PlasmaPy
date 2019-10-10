@@ -116,44 +116,13 @@ PlasmaPy's planned and existing subpackages are:
         </tr>
         <tr>
             <td>
-                plasmapy.mathematics
+                plasmapy.formulary
             </td>
             <td align='center'>
                 <span class="dev"></span>
             </td>
             <td>
-                The
-                <tt class="docutils literal"><span class="pre">mathematics</span></tt>
-                subpackage is in the early stages of development.
-            </td>
-        </tr>
-        <tr>
-            <td>
-                plasmapy.physics
-            </td>
-            <td align='center'>
-                <span class="dev"></span>
-            </td>
-            <td>
-                The
-                <tt class="docutils literal"><span class="pre">physics</span></tt>
-                subpackage may undergo significant reorganization with potentially
-                major changes to the API.  We anticipate that there will be major
-                additions to this package.
-            </td>
-        </tr>
-        <tr>
-            <td>
-                plasmapy.transport
-            </td>
-            <td align='center'>
-                <span class="dev"></span>
-            </td>
-            <td>
-                The
-                <tt class="docutils literal"><span class="pre">transport</span></tt>
-                subpackage will likely undergo significant reorganization
-                and expansion with major changes to the API.
+                The <tt class="docutils literal"><span class="pre">formulary</span></tt> subpackage should now be reasonably stable, with possible additions rather than removals now being in scope.
             </td>
         </tr>
         <tr>

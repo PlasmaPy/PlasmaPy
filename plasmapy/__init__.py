@@ -13,7 +13,7 @@ PlasmaPy provides the following functionality:
 Subpackages
 -----------
 Each of these subpackages requires an explicit import, for example,
-via ``import plasmapy.physics``.
+via ``import plasmapy.formulary``.
 
 ::
 
@@ -21,9 +21,7 @@ via ``import plasmapy.physics``.
  classes                           --- (WIP) classes used in multiple places
  data                              --- Data used for testing and examples
  diagnostics                       --- Experimental research data analysis
- mathematics                       --- General formulae used elsewhere
- physics                           --- Plasma theory functionality
- transport                         --- Transport theory functionality
+ formulary                         --- Plasma theory analysis formulae
  utils                             --- Various utilities
 
 Utility tools
@@ -33,7 +31,7 @@ Utility tools
  test              --- Run PlasmaPy unit tests
  online_help       --- Search the online documentation
  __version__       --- PlasmaPy version string
- __citation__      --- PlasmaPy citation template
+ __citation__      --- PlasmaPy citation instructions
 
 """
 # Licensed under a 3-clause BSD style license - see LICENSE.rst

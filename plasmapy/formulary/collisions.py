@@ -887,7 +887,7 @@ def fundamental_electron_collision_freq(T_e,
     coulomb_log : float or dimensionless ~astropy.units.Quantity, optional
         Option to specify a Coulomb logarithm of the electrons on the ions.
         If not specified, the Coulomb log will is calculated using the
-        `~plasmapy.physics.transport.Coulomb_logarithm` function.
+        `~plasmapy.formulary.Coulomb_logarithm` function.
 
     coulomb_log_method : string, optional
         Method used for Coulomb logarithm calculation (see that function
@@ -1015,7 +1015,7 @@ def fundamental_ion_collision_freq(T_i,
     coulomb_log : float or dimensionless ~astropy.units.Quantity, optional
         Option to specify a Coulomb logarithm of the electrons on the ions.
         If not specified, the Coulomb log will is calculated using the
-        ~plasmapy.physics.transport.Coulomb_logarithm function.
+        ~plasmapy.formulary.Coulomb_logarithm function.
 
     coulomb_log_method : str, optional
         Method used for Coulomb logarithm calculation (see that function
