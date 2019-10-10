@@ -8,7 +8,7 @@ import abc
 import numbers
 import numpy as np
 from astropy import units as u, constants
-from scipy.special import roots_legendre
+import scipy.special
 
 
 class MagnetoStatics(abc.ABC):
@@ -363,7 +363,7 @@ class CircularWire(Wire):
                 return self.radius*(np.cos(t)*axis_x + np.sin(t)*axis_y) + self.center
         self.curve = curve
 
-        self.roots_legendre = roots_legendre(n)
+        self.roots_legendre = scipy.special.roots_legendre(n)
         self.n = n
 
     def __repr__(self):

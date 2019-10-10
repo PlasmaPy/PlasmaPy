@@ -1,3 +1,4 @@
+"""Formulas for calculating particle drifts."""
 import astropy.units as u
 
 from astropy.units.utils import np
@@ -6,7 +7,7 @@ from plasmapy import utils
 
 @utils.check_quantity()
 def ExB_drift(E: u.V/u.m, B: u.T) -> u.m/u.s:
-    """
+    r"""
     Calculate the "electric cross magnetic" particle drift.
 
     Parameters
@@ -58,7 +59,7 @@ def ExB_drift(E: u.V/u.m, B: u.T) -> u.m/u.s:
 
 @utils.check_quantity()
 def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
-    """
+    r"""
     Calculate the general force drift for a particle in a magnetic field.
 
     Parameters
