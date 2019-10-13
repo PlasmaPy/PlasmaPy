@@ -24,12 +24,12 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 # precalculating unit for efficiency
 E_unit = u.V / u.m
 
-def test_boris_push_class_no_fields():
+def test_run_no_fields():
     def magnetic_field(r):
         return u.Quantity(np.zeros_like(r.value), u.T)
 
     def electric_field(r):
-        return u.Quantity([np.zeros_like(r.value)], E_unit)
+        return u.Quantity(np.zeros_like(r.value), E_unit)
     test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
 
     s = ParticleTracker(test_plasma, 'p', 50, dt=1e-10 * u.s, nt=int(2))
@@ -82,7 +82,7 @@ def test_boris_push_electric_field():
     ParticleTracker._boris_push(x, v, b, e, hqmdt, dt)
     assert np.isfinite(x).all()
     assert np.isfinite(v).all()
-    assert ((x - e * dt**2 / 2) == x_copy).all()
+    assert ((x - e * dt**2 / 2 - v * dt / 2) == x_copy).all()
 
 @pytest.mark.xfail
 def test_set_particle_velocity():
@@ -146,11 +146,11 @@ def test_particle_uniform_magnetic():
     estimated_gyrofrequency = np.abs(params[1]) / u.s
     estimated_gyrofrequency_std = np.abs(stds[1]) / u.s
 
-    assert np.isclose(expected_gyroradius, estimated_gyroradius,
+    assert u.isclose(expected_gyroradius, estimated_gyroradius,
                       atol=estimated_gyroradius_std), \
         "Gyroradii don't match!"
 
-    assert np.isclose(expected_gyrofrequency, estimated_gyrofrequency,
+    assert u.isclose(expected_gyrofrequency, estimated_gyrofrequency,
                       atol=estimated_gyrofrequency_std), \
         "Gyrofrequencies don't match!"
 
@@ -158,7 +158,7 @@ def test_particle_uniform_magnetic():
     fit_p = fitting.LinearLSQFitter()
     p = fit_p(p_init, s.t, z)
 
-    assert np.allclose(z, p(s.t), atol=1e-4 * u.m), \
+    assert u.allclose(z, p(s.t), atol=1e-4 * u.m), \
         "z-velocity doesn't stay constant!"
 
     # s.plot_trajectories()
@@ -177,19 +177,21 @@ def test_particle_exb_drift():
     """
     np.random.seed(0)
     def magnetic_field(r):
-        return u.Quantity([[0, 0, 1]], u.T)
+        return u.Quantity([[0, 0, 1]] * len(r), u.T)
 
     def electric_field(r):
-        return u.Quantity([[0, 1, 0]], E_unit)
+        return u.Quantity([[0, 1, 0]] * len(r), E_unit)
     test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
 
     expected_drift_velocity = -1 * u.m / u.s
 
     s = ParticleTracker(test_plasma, 'p', 50, dt=1e-10 * u.s, nt=int(5e3))
-    breakpoint()
     s._v[:, 2] += np.random.normal(size=s.N)
-
+    assert np.isfinite(s._v).all()
+    assert np.isfinite(s._x).all()
     s.run()
+    assert np.isfinite(s.position_history).all()
+    assert np.isfinite(s.velocity_history).all()
 
     p_init = models.Polynomial1D(degree=1)
     for x in s.position_history[:, :, 0].T:
@@ -197,12 +199,12 @@ def test_particle_exb_drift():
         p = fit_p(p_init, s.t, x)
         fit_velocity = p.parameters[1] * u.m / u.s
 
-        assert np.allclose(x, p(s.t), atol=1e-3 * u.m), \
+        assert u.allclose(x, p(s.t), atol=1e-3 * u.m), \
             "x position doesn't follow linear fit!"
 
-        assert np.isclose(expected_drift_velocity, fit_velocity,
-                          atol=1e-3 * u.m / u.s), \
-            "x velocity doesn't agree with expected drift velocity!"
+    assert u.isclose(expected_drift_velocity, fit_velocity,
+                      atol=1e-3 * u.m / u.s), \
+        "x velocity doesn't agree with expected drift velocity!"
 
     # s.plot_trajectories()
     with pytest.raises(PhysicsError):

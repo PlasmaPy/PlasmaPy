@@ -15,13 +15,6 @@ __all__ = [
 ]
 
 
-@numba.njit
-def _numba_cross(A, X):
-    a, b, c = A
-    x, y, z = X
-    return np.array((b*z - c*y, -a*z + c*x, a*y - b*x))
-
-
 class ParticleTracker:
     """
     Object representing a species of particles: ions, electrons, or simply
@@ -197,9 +190,9 @@ class ParticleTracker:
             # rotate to add magnetic field
             t = -b[i] * hqmdt
             s = 2 * t / (1 + (t[0] * t[0] + t[1] * t[1] + t[2] * t[2]))
-            cross_result = _numba_cross(vminus, t)
+            cross_result = np.cross(vminus, t)
             vprime = vminus + cross_result
-            cross_result_2 = _numba_cross(vprime, s)
+            cross_result_2 = np.cross(vprime, s)
             vplus = vminus + cross_result_2
 
             # add second half of electric impulse
@@ -210,13 +203,14 @@ class ParticleTracker:
         r"""
         Runs a simulation instance.
         """
-        self.boris_push(init=True)
-        self._position_history[0] = self._x
-        self._velocity_history[0] = self._v
-        for i in tqdm.trange(1, self.NT):
-            self.boris_push()
-            self._position_history[i] = self._x
-            self._velocity_history[i] = self._v
+        with np.errstate(all='raise'):
+            self.boris_push(init=True)
+            self._position_history[0] = self._x
+            self._velocity_history[0] = self._v
+            for i in tqdm.trange(1, self.NT):
+                self.boris_push()
+                self._position_history[i] = self._x
+                self._velocity_history[i] = self._v
 
     def __repr__(self, *args, **kwargs):
         return f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N}," \
