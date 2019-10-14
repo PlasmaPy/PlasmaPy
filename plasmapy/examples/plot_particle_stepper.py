@@ -21,12 +21,13 @@ from plasmapy.physics.parameters import gyrofrequency
 
 
 def magnetic_field(r):
-    return u.Quantity([[4, 0, 0]], u.T)
+    # TODO proper shape of array needs to be asserted
+    return u.Quantity([[4, 0, 0]]*len(r), u.T)
 
 # precomputed for efficiency
 E_unit = u.V / u.m
 def electric_field(r):
-    return u.Quantity([[0, 2, 0]], E_unit)
+    return u.Quantity([[0, 2, 0]]*len(r), E_unit)
 
 plasma = AnalyticalPlasma(magnetic_field, electric_field)
 
@@ -83,7 +84,7 @@ print(f"The calculated drift velocity from position is {Vdrift:.4f}")
 # Supposing we wanted to examine the effect of the initial velocity in the x-y plane on the trajectory:
 N = 20
 np.random.seed(0)
-trajectory = ParticleTracker(plasma, 'p', N, 1, timestep/10, number_steps*10)
+trajectory = ParticleTracker(plasma, 'p', N, 1, timestep/100, number_steps*200)
 trajectory._v[:, :2] = np.random.normal(size=(N, 2))
 # we choose this as our example's thumbnail:
 # sphinx_gallery_thumbnail_number = 3
@@ -92,4 +93,6 @@ trajectory.plot_trajectories(alpha=0.8)
 
 ############################################################
 # Note how while each trajectory fans out in a different way,
-# each one traverses the z direction in about the same time!
+# each one traverses the z direction in about the same time:
+
+trajectory.plot_time_trajectories('z')

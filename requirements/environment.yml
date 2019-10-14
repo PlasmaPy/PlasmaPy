@@ -24,3 +24,4 @@ dependencies:
     - sphinx_rtd_theme
     - numba
     - tqdm
+    - hypothesis[numpy]

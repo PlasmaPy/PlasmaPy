@@ -174,7 +174,7 @@ class ParticleTracker:
             self._boris_push(self._x,
                              self._v,
                              b, e, -0.5 * self._hqmdt, -0.5*self._dt)
-            self._x -= self._v * -0.5 * self._dt
+            self._x = self._x - self._v * 0.5 * self._dt
         else:
             self._boris_push(self._x,
                              self._v,
