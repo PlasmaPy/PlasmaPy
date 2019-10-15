@@ -91,6 +91,24 @@ class ParticleTracker:
         self._velocity_history = np.zeros((self.NT, *self.v.shape),
                                           dtype=float)
         self._hqmdt = (self.eff_q / self.eff_m / 2 * dt).si.value
+        self._check_field_size()
+
+    def _check_field_size(self):
+        b = self.plasma.interpolate_B(self.x)
+        e = self.plasma.interpolate_E(self.x)
+        if b.shape != self._x.shape:
+            raise ValueError(
+                f"""Invalid shape {b.shape} for the magnetic field array!
+                `plasma.interpolate_B` must return an array of shape (N, 3),
+                where N is the number of particles in the simulation, currently {N}."""
+            )
+        if e.shape != self._x.shape:
+            raise ValueError(
+                f"""Invalid shape {e.shape} for the electric field array!
+                `plasma.interpolate_E` must return an array of shape (N, 3),
+                where N is the number of particles in the simulation, currently {N}."""
+            )
+
 
     # TODO: find way to clean up the lines below!
     @property

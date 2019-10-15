@@ -93,7 +93,7 @@ def test_set_particle_velocity():
     assert s._v[0,0] == 5
 
 def test_set_particle_velocity_by_value():
-    test_plasma = AnalyticalPlasma(lambda r: None, lambda r: None)
+    test_plasma = AnalyticalPlasma(lambda r: np.zeros_like(r), lambda r: np.zeros_like(r))
     particle_type = 'N-14++'
     s = ParticleTracker(test_plasma, 'p', dt=1 * u.s, nt=5)
     s.v = np.array([[5, 0, 0]]) * u.m/u.s
