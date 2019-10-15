@@ -210,10 +210,14 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
 @utils.check_relativistic
 @utils.check_quantity(
     T_i={'units': u.K, 'can_be_negative': False},
-    T_e={'units': u.K, 'can_be_negative': False}
+    T_e={'units': u.K, 'can_be_negative': False},
+    n_e={'units': u.m ** -3, 'can_be_negative': False},
+    k={'units': u.m ** -1, 'can_be_negative': False}
     )
 def ion_sound_speed(T_e,
                     T_i,
+                    n_e,
+                    k,
                     gamma_e=1,
                     gamma_i=3,
                     ion='p+',
@@ -232,6 +236,12 @@ def ion_sound_speed(T_e,
         Ion temperature in units of temperature or energy per
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
+        
+    n_e : ~astropy.units.Quantity
+        Electron number density.
+        
+    k : ~astropy.units.Quantity
+        Wavenumber (in units of inverse length, e.g. per meter).
 
     gamma_e : float or int
         The adiabatic index for electrons, which defaults to 1.  This
@@ -276,7 +286,8 @@ def ion_sound_speed(T_e,
         If an adiabatic index is less than one.
 
     ~astropy.units.UnitConversionError
-        If the temperature is in incorrect units.
+        If the temperature, electron number density, or wavenumber 
+        is in incorrect units.
 
     Warns
     -----
@@ -288,36 +299,40 @@ def ion_sound_speed(T_e,
 
     Notes
     -----
-    The ion sound speed :math:`V_S` is approximately given by
+    The ion sound speed :math:`V_S` is given by
 
     .. math::
 
-        V_S = \sqrt{\frac{\gamma_e Z k_B T_e + \gamma_i k_B T_i}{m_i}}
+        V_S = \sqrt{\frac{\gamma_e Z k_B T_e + \gamma_i k_B T_i}{m_i (1 + k^2 \lambda_{D}^2)}}
 
     where :math:`\gamma_e` and :math:`\gamma_i` are the electron and
     ion adiabatic indices, :math:`k_B` is the Boltzmann constant,
     :math:`T_e` and :math:`T_i` are the electron and ion temperatures,
-    :math:`Z` is the charge state of the ion, and :math:`m_i` is the
-    ion mass.
-
-    This function assumes that the product of the wavenumber and the
-    Debye length is small. In this limit, the ion sound speed is not
-    dispersive. In other words, it is frequency independent.
+    :math:`Z` is the charge state of the ion, :math:`m_i` is the
+    ion mass, :math:`\lambda_{D}` is the Debye length, and :math:`k` is the 
+    wavenumber.
 
     When the electron temperature is much greater than the ion
     temperature, the ion sound velocity reduces to
-    :math:`\sqrt{\gamma_e k_B T_e / m_i}`.  Ion acoustic waves can
+    :math:`\sqrt{\gamma_e k_B T_e / m_i}`. Ion acoustic waves can
     therefore occur even when the ion temperature is zero.
 
     Example
     -------
     >>> from astropy import units as u
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, ion='p', gamma_e=1, gamma_i=3)
-    <Quantity 203155.0764042 m / s>
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K)
-    <Quantity 203155.0764042 m / s>
-    >>> ion_sound_speed(T_e=500*u.eV, T_i=200*u.eV, ion='D+')
-    <Quantity 229586.01860212 m / s>
+    >>> n = 5e19*u.m**-3
+    >>> k_1 = 3e1*u.m**-1
+    >>> k_2 = 3e7*u.m**-1
+    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1,
+                        ion='p', gamma_e=1, gamma_i=3)
+    <Quantity 203155.03286794 m / s>
+    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_2,
+                        ion='p', gamma_e=1, gamma_i=3)
+    <Quantity 310.31329069 m / s>
+    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, k=k, n_e=n, k=k_1)
+    <Quantity 203155.03286794 m / s>
+    >>> ion_sound_speed(T_e=500*u.eV, T_i=200*u.eV, n_e=n, k=k_1, ion='D+')
+    <Quantity 229585.96150738 m / s>
 
     """
 
@@ -334,9 +349,12 @@ def ion_sound_speed(T_e,
 
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
+    
+    lambda_D = Debye_length(T_e, n_e)
 
     try:
-        V_S_squared = (gamma_e * Z * k_B * T_e + gamma_i * k_B * T_i) / m_i
+        V_S_squared = (gamma_e * Z * k_B * T_e + gamma_i * k_B * T_i) / (m_i \
+        * (1 + k ** 2 * lambda_D ** 2))
         V_S = np.sqrt(V_S_squared).to(u.m / u.s)
     except Exception:
         raise ValueError("Unable to find ion sound speed.")
