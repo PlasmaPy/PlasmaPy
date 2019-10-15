@@ -10,6 +10,7 @@ import astropy.units as u
 import astropy.constants as const
 
 import plasmapy.utils.roman as roman
+from plasmapy.utils.collections_helpers import compare_default_dicts
 from plasmapy.atomic.elements import _Elements, _PeriodicTable
 from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.atomic.exceptions import (
@@ -492,22 +493,7 @@ class Particle:
             raise TypeError(f"The equality of {self} with {other} is undefined.")
 
         same_particle = self.particle == other.particle
-
-        # The following two loops are a hack to enable comparisons
-        # between defaultdicts.  By accessing all of the defined keys in
-        # each of the defaultdicts, this makes sure that
-        # self._attributes and other._attributes have the same keys.
-
-        # TODO: create function in utils to account for equality between
-        # defaultdicts, and implement it here
-
-        for attribute in self._attributes.keys():
-            other._attributes[attribute]
-
-        for attribute in other._attributes.keys():
-            self._attributes[attribute]
-
-        same_attributes = self._attributes == other._attributes
+        same_attributes = compare_default_dicts(self._attributes, other._attributes)
 
         if same_particle and not same_attributes:  # coverage: ignore
             raise AtomicError(
