@@ -3,7 +3,7 @@ try:
     from hypothesis.extra.numpy import arrays
 except ImportError:
     import pytest
-    pytest.skip("Optional hypothesis test")
+    pytestmark = pytest.mark.skip("Optional hypothesis test")
 
 from astropy import units as u
 from plasmapy.classes.sources.analyticalplasma import AnalyticalPlasma
