@@ -1,9 +1,10 @@
 """
-Class representing a group of particles.
+Class representing a group of particles moving in a plasma's electric and
+magnetic fields.
 """
 
 import numpy as np
-from plasmapy.atomic import atomic
+from plasmapy import atomic
 from astropy import constants
 from astropy import units as u
 import numba
@@ -29,10 +30,6 @@ class ParticleTracker:
         The default is a proton.
     n_particles : int
         number of macroparticles. The default is a single particle.
-    scaling : float
-        number of particles represented by each macroparticle.
-        The default is 1, which means a 1:1 correspondence between particles
-        and macroparticles.
     dt : `astropy.units.Quantity`
         length of timestep
     nt : int
@@ -40,18 +37,19 @@ class ParticleTracker:
 
     Attributes
     ----------
+    _x : `np.ndarray`
     x : `astropy.units.Quantity`
+    _v : `np.ndarray`
     v : `astropy.units.Quantity`
-        Current position and velocity, respectively. Shape (n, 3).
+        Current position and velocity, without and with units. Shape (n, 3).
+    _position_history : `np.ndarray`
     position_history : `astropy.units.Quantity`
+    _velocity_history : `np.ndarray`
     velocity_history : `astropy.units.Quantity`
         History of position and velocity. Shape (nt, n, 3).
     q : `astropy.units.Quantity`
     m : `astropy.units.Quantity`
         Charge and mass of particle.
-    eff_q : `astropy.units.Quantity`
-    eff_m : `astropy.units.Quantity`
-        Total charge and mass of macroparticle.
     kinetic_energy
         calculated from `v`, as in, current velocity.
     kinetic_energy_history
@@ -59,38 +57,42 @@ class ParticleTracker:
 
     Examples
     ----------
-    See `plasmapy/examples/particle-stepper.ipynb.`
+    See `plasmapy/examples/plot_particle_stepper.ipynb`.
 
     """
+
+    @atomic.particle_input
     @u.quantity_input(dt=u.s)
-    def __init__(self, plasma, particle_type='p', n_particles=1, scaling=1,
-                 dt=np.inf * u.s, nt=np.inf):
+    def __init__(self,
+                 plasma,
+                 particle_type: atomic.Particle = 'p',
+                 n_particles: int = 1,
+                 dt: u.s = np.inf * u.s,
+                 nt: int = np.inf,
+                 ):
 
         if np.isinf(dt) and np.isinf(nt):  # coverage: ignore
             raise ValueError("Both dt and nt are infinite.")
 
-        self.q = atomic.integer_charge(particle_type) * constants.e.si
-        self.m = atomic.particle_mass(particle_type)
+        self.q = particle_type.charge
+        self.m = particle_type.mass
         self.N = int(n_particles)
-        self.scaling = scaling
-        self.eff_q = self.q * scaling
-        self.eff_m = self.m * scaling
+        self.NT = int(nt)
+        self.name = particle_type
 
         self.plasma = plasma
 
         self._dt = dt.si.value
-        self.NT = int(nt)
         self._t = np.arange(nt) * self._dt
 
         self._x = np.zeros((n_particles, 3), dtype=float)
         self._v = np.zeros((n_particles, 3), dtype=float)
-        self.name = particle_type
 
         self._position_history = np.zeros((self.NT, *self.x.shape),
                                           dtype=float)
         self._velocity_history = np.zeros((self.NT, *self.v.shape),
                                           dtype=float)
-        self._hqmdt = (self.eff_q / self.eff_m / 2 * dt).si.value
+        self._hqmdt = (self.q / self.m / 2 * dt).si.value
         self._check_field_size()
 
     def _check_field_size(self):
@@ -153,7 +155,7 @@ class ParticleTracker:
         ~astropy.units.Quantity
             Array of kinetic energies, shape (nt, n).
         """
-        return (self.velocity_history ** 2).sum(axis=-1) * self.eff_m / 2
+        return (self.velocity_history ** 2).sum(axis=-1) * self.m / 2
 
     def boris_push(self, init=False):
         r"""
@@ -235,7 +237,7 @@ class ParticleTracker:
                f"name=\"{self.name}\",NT={self.NT})"
 
     def __str__(self):  # coverage: ignore
-        return f"{self.N} {self.scaling:.2e}-{self.name} with " \
+        return f"{self.N} {self.name} with " \
                f"q = {self.q:.2e}, m = {self.m:.2e}, " \
                f"{self.saved_iterations} saved history " \
                f"steps over {self.NT} iterations"
