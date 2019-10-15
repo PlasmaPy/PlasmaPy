@@ -75,6 +75,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Thomas Ulrich <https://github.com/Elfhelm>`__
 * `Sixue Xu <https://github.com/hzxusx>`__
 * `Carol Zhang <https://github.com/carolyz>`__
+* `Raymon Skjørten Hansen <https://github.com/raymonshansen>`__
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy
