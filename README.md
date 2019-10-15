@@ -87,18 +87,18 @@ Like most scientific Python packages, PlasmaPy probably runs better on the
 PlasmaPy requires Python 3.6+ and is [not compatible with
 Python 2](https://pythonclock.org/).
 
-## License
+# License
 
 PlasmaPy is licensed under a 3-clause BSD license with added protections
 against software patents - see the [``LICENSE.md``](LICENSE.md) file in
 the top-level directory.
 
-## Citing PlasmaPy
+# Citing PlasmaPy
 
 Please see the [``CITATION.rst``](CITATION.rst) file for instructions on
 how to cite PlasmaPy.
 
-## Acknowledgements
+# Acknowledgements
 
 Early development on PlasmaPy was supported in part by the U.S. 
 Department of Energy, the Smithsonian Institution, and Google Summer of
