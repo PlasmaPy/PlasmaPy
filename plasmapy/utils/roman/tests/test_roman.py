@@ -167,7 +167,7 @@ def test_from_roman(integer, roman_numeral):
     Test that `~plasmapy.utils.roman.from_roman` correctly converts
     Roman numerals to integers.
     """
-    run_test(func=roman.to_roman, args=integer, expected_outcome=roman_numeral)
+    run_test(func=roman.from_roman, args=integer, expected_outcome=roman_numeral)
 
 
 @pytest.mark.parametrize('input, expected_exception', toRoman_exceptions_table)
