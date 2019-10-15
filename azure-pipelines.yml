@@ -32,30 +32,12 @@ jobs:
 
 - template: azure-templates.yml
   parameters:
-    name: Linux_36
-    os: linux
-    tox: py36
-
-- template: azure-templates.yml
-  parameters:
     name: Windows_37
     os: windows
     tox: py37
 
 - template: azure-templates.yml
   parameters:
-    name: Windows_36
-    os: windows
-    tox: py36
-
-- template: azure-templates.yml
-  parameters:
     name: macOS_37
     os: macos
     tox: py37
-
-- template: azure-templates.yml
-  parameters:
-    name: macOS_36
-    os: macos
-    tox: py36

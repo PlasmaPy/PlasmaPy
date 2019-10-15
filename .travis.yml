@@ -15,7 +15,7 @@ stages:
     - name: Generic tests
 
     - name: Cron tests
-      if: type = cron
+      if: (type = cron) OR (branch = master)
 
 
 matrix:
@@ -54,17 +54,17 @@ matrix:
 
         - name: "3.8"
           env: TOX_ENV='py38'
-          python: "3.8-dev"
+          python: "3.6"
           stage: Generic tests
 
         - name: "3.8-astropydev"
           env: TOX_ENV='py38-astropydev'
-          python: "3.8-dev"
+          python: "3.6"
           stage: Generic tests
 
         - name: "3.8-numpydev"
           env: TOX_ENV='py38-numpydev'
-          python: "3.8-dev"
+          python: "3.6"
           stage: Generic tests
 
 before_install:
@@ -76,12 +76,6 @@ before_install:
 
 script:
   - tox -e $TOX_ENV $TOX_ARG
-  - pip install --upgrade codecov
-  - codecov
-
-# Assess test coverage
-after_success:
-        - codecov
 
 # Hook travis into matrix channel for notifications
 notifications:
