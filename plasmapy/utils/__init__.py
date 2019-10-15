@@ -4,6 +4,7 @@ code.
 """
 from . import decorators
 from . import roman
+from plasmapy.utils.collections_helpers import compare_default_dicts
 
 from plasmapy.utils.decorators.checks import (
     check_quantity,
