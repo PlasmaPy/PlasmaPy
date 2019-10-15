@@ -66,6 +66,7 @@ matrix:
           env: TOX_ENV='py38-numpydev'
           python: "3.6"
           stage: Generic tests
+          # TODO change generic tests to cron jobs
 
 before_install:
         - git clone git://github.com/astropy/ci-helpers.git --depth 1
