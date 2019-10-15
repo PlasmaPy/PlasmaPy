@@ -17,6 +17,7 @@ stages:
     - name: Cron tests
       if: type = cron
 
+
 matrix:
     # Don't wait for allowed failures
     fast_finish: true
@@ -53,17 +54,17 @@ matrix:
 
         - name: "3.8"
           env: TOX_ENV='py38'
-          python: "3.8"
+          python: "3.8-dev"
           stage: Generic tests
 
         - name: "3.8-astropydev"
           env: TOX_ENV='py38-astropydev'
-          python: "3.8"
+          python: "3.8-dev"
           stage: Generic tests
 
         - name: "3.8-numpydev"
           env: TOX_ENV='py38-numpydev'
-          python: "3.8"
+          python: "3.8-dev"
           stage: Generic tests
 
 before_install:
