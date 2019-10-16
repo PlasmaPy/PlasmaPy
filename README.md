@@ -30,10 +30,8 @@ and [this recent reference](https://doi.org/10.5281/zenodo.1238132).
 We are in the process of writing [online
 documentation](http://docs.plasmapy.org/en/latest/).
 
-We created a guide on [contributing to
-PlasmaPy](http://plasmapy.readthedocs.io/en/master/CONTRIBUTING.html)
-and have a [Code of
-Conduct](http://plasmapy.readthedocs.io/en/master/CODE_OF_CONDUCT.html).
+We created a guide on [contributing to PlasmaPy](http://docs.plasmapy.org/en/stable/CONTRIBUTING.html)
+and have a [Code of Conduct](http://docs.plasmapy.org/en/stable/CODE_OF_CONDUCT.html).
 New contributors are very welcome!
 
 # Feedback and communication
