@@ -4,7 +4,7 @@ make things easier for all of us:
 
 * If this PR will solve an issue tracked by GitHub, please add a phrase like
   "Closes #404." to automatically close the issue once the pull request is
-  merged .  If your PR will not completely solve the issue, please still
+  merged.  If your PR will not completely solve the issue, please still
   reference the issue. For an overview of this functionality, see
   https://help.github.com/articles/closing-issues-using-keywords/
 
@@ -22,7 +22,7 @@ make things easier for all of us:
   list in `docs/about/credits.rst`.
   
 * Feel free to chat with other developers on our Matrix channel at:
-  https://riot.im/app/#/room/#plasmapy:matrix.org
+   https://riot.im/app/#/room/#plasmapy:openastronomy.org
   
 * We have a developer's guide, where some answers to your questions may
   possibly be found, at
