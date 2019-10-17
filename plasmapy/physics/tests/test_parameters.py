@@ -188,7 +188,6 @@ def test_ion_sound_speed():
     r"""Test the ion_sound_speed function in parameters.py."""
 
     assert np.isclose(ion_sound_speed(T_i=1.3232 * u.MK, T_e=1.831 * u.MK,
-                                      n_e=n_e, k=0 * u.m ** -1,
                                       ion='p', gamma_e=1, gamma_i=3).value,
                       218816.06086407552)
     

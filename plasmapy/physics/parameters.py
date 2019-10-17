@@ -216,8 +216,8 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     )
 def ion_sound_speed(T_e,
                     T_i,
-                    n_e,
-                    k,
+                    n_e=0*u.m**-3,
+                    k=0*u.m**-1,
                     gamma_e=1,
                     gamma_i=3,
                     ion='p+',
@@ -238,10 +238,14 @@ def ion_sound_speed(T_e,
         assumed to be zero.
         
     n_e : ~astropy.units.Quantity
-        Electron number density.
+        Electron number density. If this is not given, then ion_sound_speed 
+        will be approximated in the non-dispersive limit 
+        (:math:`k^2 \lambda_{D}^2` will be assumed zero).
         
     k : ~astropy.units.Quantity
-        Wavenumber (in units of inverse length, e.g. per meter).
+        Wavenumber (in units of inverse length, e.g. per meter). If this 
+        is not given, then ion_sound_speed will be approximated in the 
+        non-dispersive limit (:math:`k^2 \lambda_{D}^2` will be assumed zero).
 
     gamma_e : float or int
         The adiabatic index for electrons, which defaults to 1.  This
@@ -311,6 +315,10 @@ def ion_sound_speed(T_e,
     :math:`Z` is the charge state of the ion, :math:`m_i` is the
     ion mass, :math:`\lambda_{D}` is the Debye length, and :math:`k` is the 
     wavenumber.
+    
+    In the non-dispersive limit (:math:`k^2 \lambda_{D}^2` is small) the 
+    equation for :math:`V_S` is approximated (the denominator reduces 
+    to :math:`m_i`).
 
     When the electron temperature is much greater than the ion
     temperature, the ion sound velocity reduces to
@@ -323,6 +331,8 @@ def ion_sound_speed(T_e,
     >>> n = 5e19*u.m**-3
     >>> k_1 = 3e1*u.m**-1
     >>> k_2 = 3e7*u.m**-1
+    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, ion='p', gamma_e=1, gamma_i=3)
+    <Quantity 203155.0764042 m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p', gamma_e=1, gamma_i=3)
     <Quantity 203155.03286794 m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_2, ion='p', gamma_e=1, gamma_i=3)
@@ -348,7 +358,12 @@ def ion_sound_speed(T_e,
     T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
     
-    lambda_D = Debye_length(T_e, n_e)
+    # Assume non-dispersive limit if n_e is not specified
+    # TODO: NUMPY DOESN'T LIKE THIS WHEN USING VECTORS!
+    if n_e != 0:
+        lambda_D = Debye_length(T_e, n_e)
+    else:
+        lambda_D = 0 * u.m
 
     try:
         V_S_squared = (gamma_e * Z * k_B * T_e + gamma_i * k_B * T_i) / (m_i \
