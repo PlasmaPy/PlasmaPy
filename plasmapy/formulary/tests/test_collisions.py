@@ -4,8 +4,7 @@ from astropy import units as u
 from astropy.tests.helper import assert_quantity_allclose
 
 import plasmapy.atomic.exceptions
-from plasmapy.formulary.braginskii import (Coulomb_logarithm,
-                                           )
+from plasmapy.formulary.braginskii import Coulomb_logarithm
 from plasmapy.formulary.collisions import (Spitzer_resistivity,
                                            fundamental_electron_collision_freq,
                                            fundamental_ion_collision_freq,

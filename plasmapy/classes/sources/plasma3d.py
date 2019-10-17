@@ -8,8 +8,7 @@ import itertools
 
 from plasmapy.formulary.magnetostatics import MagnetoStatics
 
-from astropy.constants import (mu0,
-                               )
+from astropy.constants import mu0
 
 from plasmapy.classes import GenericPlasma
 
