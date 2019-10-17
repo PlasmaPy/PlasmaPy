@@ -18,7 +18,7 @@ dependencies:
     - numpydoc
     - pytest
     - lmfit
-    - sphinx
+    - sphinx>2
     - sphinx-gallery
     - sphinx-automodapi
     - sphinx_rtd_theme

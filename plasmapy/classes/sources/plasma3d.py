@@ -6,17 +6,9 @@ import numpy as np
 import astropy.units as u
 import itertools
 
-from plasmapy.physics.magnetostatics import MagnetoStatics
 import scipy.interpolate as interp
-
-from astropy.constants import (m_p,
-                               m_e,
-                               c,
-                               mu0,
-                               k_B,
-                               e,
-                               eps0,
-                               )
+from plasmapy.formulary.magnetostatics import MagnetoStatics
+from astropy.constants import mu0
 
 from plasmapy.classes import GenericPlasma
 

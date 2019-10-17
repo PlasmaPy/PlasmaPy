@@ -30,10 +30,8 @@ and [this recent reference](https://doi.org/10.5281/zenodo.1238132).
 We are in the process of writing [online
 documentation](http://docs.plasmapy.org/en/latest/).
 
-We created a guide on [contributing to
-PlasmaPy](http://plasmapy.readthedocs.io/en/master/CONTRIBUTING.html)
-and have a [Code of
-Conduct](http://plasmapy.readthedocs.io/en/master/CODE_OF_CONDUCT.html).
+We created a guide on [contributing to PlasmaPy](http://docs.plasmapy.org/en/stable/CONTRIBUTING.html)
+and have a [Code of Conduct](http://docs.plasmapy.org/en/stable/CODE_OF_CONDUCT.html).
 New contributors are very welcome!
 
 # Feedback and communication
@@ -44,6 +42,13 @@ If you have any questions, the quickest way to get a response is to ask
 on our
 [Matrix](https://riot.im/app/#/room/#plasmapy:matrix.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
 channel. 
+
+## [Discourse room](https://plasmapy.discourse.group/)
+
+We have recently created a [PlasmaPy Discourse 
+group](https://plasmapy.discourse.group/) in order to allow threaded 
+public discussions on a variety of topics.  This group will be a great 
+place to suggest ideas, bring up discussion topics, and ask questions.
 
 ## [Mailing list](https://groups.google.com/forum/#!forum/plasmapy)
 
@@ -74,19 +79,27 @@ source](http://docs.plasmapy.org/en/stable/install.html#building-and-installing-
 
 You can also get PlasmaPy from `conda` via `conda install -c conda-forge plasmapy`.
 
-Like most scientific Python packages, PlasmaPy probably runs best on the
+Like most scientific Python packages, PlasmaPy probably runs better on the
 [Anaconda distribution](https://www.anaconda.com/downloads).
 
 PlasmaPy requires Python 3.6+ and is [not compatible with
 Python 2](https://pythonclock.org/).
 
-## License
+# License
 
 PlasmaPy is licensed under a 3-clause BSD license with added protections
 against software patents - see the [``LICENSE.md``](LICENSE.md) file in
 the top-level directory.
 
-## Acknowledging and Citing PlasmaPy
+# Citing PlasmaPy
 
 Please see the [``CITATION.rst``](CITATION.rst) file for instructions on
 how to cite PlasmaPy.
+
+# Acknowledgements
+
+Early development on PlasmaPy was supported in part by the U.S. 
+Department of Energy, the Smithsonian Institution, and Google Summer of
+Code.  Ongoing PlasmaPy development is being supported through a
+collaborative award from the U.S. National Science Foundation's
+Cyberinfrastructure for Sustained Scientific Innovation program.
