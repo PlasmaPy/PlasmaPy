@@ -15,6 +15,7 @@ physical quantities helpful for plasma physics.
    mathematics
    dielectric
    dimensionless
+   dispersionfunction
    distribution
    drifts
    magnetostatics

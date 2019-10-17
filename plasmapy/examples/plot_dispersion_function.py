@@ -8,12 +8,11 @@ Let's import some basics (and `PlasmaPy`!)
 
 import numpy as np
 import matplotlib.pyplot as plt
-import plasmapy
 
 #######################################################################
-import plasmapy.dispersion.dispersionfunction
+import plasmapy.formulary.dispersionfunction
 
-help(plasmapy.dispersion.dispersionfunction.plasma_dispersion_func)
+help(plasmapy.formulary.dispersionfunction.plasma_dispersion_func)
 
 
 #######################################################################
@@ -46,7 +45,7 @@ plot_complex(X, Y, Z)
 # We can now apply our visualization function to our simple dispersion relation
 
 # sphinx_gallery_thumbnail_number = 2
-F = plasmapy.dispersion.dispersionfunction.plasma_dispersion_func(Z)
+F = plasmapy.formulary.dispersionfunction.plasma_dispersion_func(Z)
 plot_complex(X, Y, F)
 
 
@@ -62,7 +61,7 @@ plot_complex(X, Y, F.real < 0)
 #######################################################################
 # We can also visualize the derivative:
 
-F = plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv(Z)
+F = plasmapy.formulary.dispersionfunction.plasma_dispersion_func_deriv(Z)
 plot_complex(X, Y, F)
 
 #######################################################################
@@ -75,7 +74,7 @@ print(Z.shape)
 
 #######################################################################
 
-F = plasmapy.dispersion.dispersionfunction.plasma_dispersion_func(Z)
+F = plasmapy.formulary.dispersionfunction.plasma_dispersion_func(Z)
 plot_complex(X, Y, F, 100)
 
 #######################################################################
@@ -87,7 +86,7 @@ plot_complex(X, Y, F, 100)
 # techniques. Chapter 5 Pg 106 (Academic press, 2010).
 
 xs = np.linspace(0, 4, 100)
-ws = (-1 / 2) * plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv(xs)
+ws = (-1 / 2) * plasmapy.formulary.dispersionfunction.plasma_dispersion_func_deriv(xs)
 wRe = np.real(ws)
 wIm = np.imag(ws)
 

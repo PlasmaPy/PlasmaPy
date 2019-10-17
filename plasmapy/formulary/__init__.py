@@ -2,6 +2,7 @@ from .braginskii import *
 from .collisions import *
 from .dielectric import *
 from .dimensionless import *
+from .dispersionfunction import *
 from .distribution import *
 from .drifts import *
 from .magnetostatics import *

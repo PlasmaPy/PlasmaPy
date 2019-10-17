@@ -12,8 +12,8 @@ PlasmaPy provides the following functionality:
 
 Subpackages
 -----------
-Each of these subpackages requires an explicit import, for example,
-via ``import plasmapy.formulary``.
+Each of these subpackages (except for `formulary` and `atomic`) requires an
+explicit import, for example, via ``import plasmapy.diagnostics``.
 
 ::
 
@@ -40,6 +40,8 @@ Utility tools
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
 from ._base_init import *
+from . import formulary
+from . import atomic
 # ----------------------------------------------------------------------------
 
 # Enforce Python version check during package import.

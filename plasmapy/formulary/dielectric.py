@@ -9,7 +9,7 @@ from astropy import units as u
 from collections import namedtuple
 from plasmapy import utils
 from numpy import pi
-from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv
+from plasmapy.formulary.dispersionfunction import plasma_dispersion_func_deriv
 from plasmapy.formulary import parameters
 
 r"""
