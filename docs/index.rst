@@ -87,15 +87,16 @@ User Documentation
 
 .. _toplevel-plasma-parameters:
 
-Theoretical Analysis
---------------------
+Formulary
+---------
+
+The `~plasmapy.formulary` subpackage aims to cover the `NRL Plasma Physics
+Formulary <https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary>`_.
 
 .. toctree::
    :maxdepth: 1
 
-   physics/index
-   transport/index
-   mathematics/index
+   formulary/index
 
 .. _toplevel-experimental-tools:
 

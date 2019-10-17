@@ -48,7 +48,7 @@ class PlasmaPyWarning(Warning):
 
 
 class PhysicsWarning(PlasmaPyWarning):
-    """The base warning for `~plasmapy.physics` related warnings."""
+    """The base warning for warnings related to non-physical situations."""
     pass
 
 
