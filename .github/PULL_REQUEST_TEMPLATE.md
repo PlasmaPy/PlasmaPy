@@ -18,9 +18,6 @@ make things easier for all of us:
 * If your pull request is not yet ready for review, add a `[WIP]`
   label to its name and remove it once it's ready.
 
-* Every pull request should include a changelog entry. Please see
-  `changelog/README.rst` for instructions.
-  
 * If this is your first contribution, please add your name to the author
   list in `docs/about/credits.rst`.
   
@@ -31,7 +28,16 @@ make things easier for all of us:
   possibly be found, at
   http://docs.plasmapy.org/en/master/development/index.html
 
-Many thanks in advance for following these pointers and for willing to
-contribute!
+Many thanks in advance for following these pointers and for being willing to contribute!
+
+When submitting a pull request, please ensure that you can (eventually,
+sometime before it is merged) check the following basic requirements:
 
 -->
+
+- [ ] I have added a changelog entry for this pull request (please see
+  `changelog/README.rst` for instructions, and if you need help with picking the PR type, ask!)
+- [ ] If adding new functionality, I have added (passing) tests and
+      docstrings. (Tests pop up at the bottom, in the checks box).
+- [ ] I have fixed any new failing tests (if you're unsure why
+  they're failing, ask!).
