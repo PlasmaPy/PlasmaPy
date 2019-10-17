@@ -15,8 +15,8 @@ make things easier for all of us:
   will pop up at the bottom, in the Checks box. If you're unsure why
   they're failing, ask!
   
-* If your pull request is not yet ready for review, add a `[WIP]`
-  label to its name and remove it once it's ready.
+* If your pull request is not yet ready for review, submit it as a draft.
+  Remember to change its' status once it's ready.
 
 * If this is your first contribution, please add your name to the author
   list in `docs/about/credits.rst`.
