@@ -1,8 +1,8 @@
 .. _dispersion:
 
-********************************************
+**************************************************************
 Dispersion relations (`plasmapy.formulary.dispersionfunction`)
-********************************************
+**************************************************************
 
 .. currentmodule:: plasmapy.formulary.dispersionfunction
 
