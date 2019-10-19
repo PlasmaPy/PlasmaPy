@@ -54,17 +54,17 @@ matrix:
 
         - name: "3.8"
           env: TOX_ENV='py38'
-          python: "3.6"
+          python: "3.8-dev"
           stage: Generic tests
 
         - name: "3.8-astropydev"
           env: TOX_ENV='py38-astropydev'
-          python: "3.6"
+          python: "3.8-dev"
           stage: Generic tests
 
         - name: "3.8-numpydev"
           env: TOX_ENV='py38-numpydev'
-          python: "3.6"
+          python: "3.8-dev"
           stage: Generic tests
           # TODO change generic tests to cron jobs
 
@@ -73,7 +73,7 @@ before_install:
           # We do not want to create the test env
         - echo "" > ci-helpers/travis/setup_dependencies_common.sh
         - source ci-helpers/travis/setup_conda.sh
-        - pip install tox-conda tox
+        - pip install tox
 
 script:
   - tox -e $TOX_ENV $TOX_ARG
