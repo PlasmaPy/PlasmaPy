@@ -215,6 +215,12 @@ def test_ion_sound_speed():
     with pytest.raises(RelativityError):
         ion_sound_speed(T_i=T_i, T_e=T_e, n_e=n_e, 
                         k=k_1, gamma_i=np.inf)
+        
+    with pytest.raises(UserWarning):
+        ion_sound_speed(T_i=T_i, T_e=T_e, n_e=n_e)
+        
+    with pytest.raises(UserWarning):
+        ion_sound_speed(T_i=T_i, T_e=T_e, k=k_1)
 
     with pytest.raises(ValueError):
         ion_sound_speed(T_i=np.array([5, 6, 5]) * u.K,
