@@ -1,0 +1,1 @@
+Optimized `add__magnetostatics` for a 16x speedup in tests!
