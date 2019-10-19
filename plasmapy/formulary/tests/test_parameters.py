@@ -6,7 +6,7 @@ from astropy import units as u
 from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
-from plasmapy.utils.exceptions import PhysicsError
+from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
 from plasmapy.atomic.exceptions import InvalidParticleError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 from astropy.constants import c, m_p, m_e, e, mu0
@@ -216,10 +216,10 @@ def test_ion_sound_speed():
         ion_sound_speed(T_i=T_i, T_e=T_e, n_e=n_e, 
                         k=k_1, gamma_i=np.inf)
         
-    with pytest.raises(UserWarning):
+    with pytest.warns(PhysicsWarning):
         ion_sound_speed(T_i=T_i, T_e=T_e, n_e=n_e)
         
-    with pytest.raises(UserWarning):
+    with pytest.warns(PhysicsWarning):
         ion_sound_speed(T_i=T_i, T_e=T_e, k=k_1)
 
     with pytest.raises(ValueError):

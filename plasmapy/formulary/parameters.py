@@ -29,6 +29,8 @@ from astropy import units as u
 from plasmapy import (atomic, utils)
 from astropy.constants.si import (m_p, m_e, c, mu0, k_B, e, eps0)
 from typing import Optional
+import warnings
+from plasmapy.utils.exceptions import PhysicsWarning
 
 
 def _grab_charge(ion, z_mean=None):
@@ -301,6 +303,10 @@ def ion_sound_speed(T_e,
 
     ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed.
+        
+    PhysicsWarning
+        If only one of (k, n_e) is given, the non-dispersive limit 
+        is assumed.
 
     Notes
     -----
@@ -346,9 +352,9 @@ def ion_sound_speed(T_e,
     """
     
     if (n_e is None and k is not None) or (k is None and n_e is not None):
-        raise UserWarning("The non-dispersive limit has been assumed for this "
-                          "calculation. To prevent this, values must be "
-                          "specified for both n_e and k.")
+        warnings.warn("The non-dispersive limit has been assumed for "
+                      "this calculation. To prevent this, values must "
+                      "be specified for both n_e and k.", PhysicsWarning)
 
     m_i = atomic.particle_mass(ion)
     Z = _grab_charge(ion, z_mean)
