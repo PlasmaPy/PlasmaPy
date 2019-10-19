@@ -1,0 +1,1 @@
+Tweaked add__magnetostatics function in plasma3d.py
