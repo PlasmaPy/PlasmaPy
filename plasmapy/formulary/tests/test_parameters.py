@@ -235,22 +235,22 @@ def test_ion_sound_speed():
         ion_sound_speed('p')
 
     with pytest.raises(PhysicsError):
-        ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=n_e, k=k_1, gamma_i=0.9999)
+        ion_sound_speed(T_i=T_i, T_e=0 * u.K, gamma_i=0.9999)
 
     with pytest.raises(PhysicsError):
-        ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=n_e, k=k_1, gamma_e=0.9999)
+        ion_sound_speed(T_i=T_i, T_e=0 * u.K, gamma_e=0.9999)
 
     with pytest.raises(TypeError):
-        ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=n_e, k=k_1, gamma_e='sdjklsf')
+        ion_sound_speed(T_i=T_i, T_e=0 * u.K, gamma_e='sdjklsf')
 
     with pytest.raises(TypeError):
-        ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=n_e, k=k_1, gamma_i='fsdfas')
+        ion_sound_speed(T_i=T_i, T_e=0 * u.K, gamma_i='fsdfas')
 
     with pytest.raises(InvalidParticleError):
-        ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=n_e, k=k_1, ion='cupcakes')
+        ion_sound_speed(T_i=T_i, T_e=0 * u.K, ion='cupcakes')
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i=-np.abs(T_i), T_e=0 * u.K, n_e=n_e, k=k_1)
+        ion_sound_speed(T_i=-np.abs(T_i), T_e=0 * u.K)
     
     with pytest.raises(ValueError):
         ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=-np.abs(n_e), k=k_1)
@@ -259,10 +259,10 @@ def test_ion_sound_speed():
         ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=n_e, k=-np.abs(k_1))
 
     with pytest.warns(RelativityWarning):
-        ion_sound_speed(T_i=5e11 * u.K, T_e=0 * u.K, n_e=n_e, k=k_1)
+        ion_sound_speed(T_i=5e11 * u.K, T_e=0 * u.K)
 
     with pytest.raises(RelativityError):
-        ion_sound_speed(T_i=5e19 * u.K, T_e=0 * u.K, n_e=n_e, k=k_1)
+        ion_sound_speed(T_i=5e19 * u.K, T_e=0 * u.K)
 
     with pytest.raises(u.UnitConversionError):
         ion_sound_speed(T_i=5 * u.A, T_e=0 * u.K, n_e=n_e, k=k_1)
