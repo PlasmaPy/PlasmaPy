@@ -2,6 +2,7 @@
 __all__ = [
     "Characteristic",
     "swept_probe_analysis",
+    "plot_swept_probe_analysis",
     "get_plasma_potential",
     "get_floating_potential",
     "get_electron_saturation_current",
@@ -205,7 +206,7 @@ class Characteristic:
                         marker='.', color='k')
             plt.title("Probe characteristic")
 
-def calculate_swept_probe_analysis(probe_characteristic, V_P, I_es, V_F, I_is, ion_current, electron_current):
+def plot_swept_probe_analysis(probe_characteristic, V_P, I_es, V_F, I_is, ion_current, electron_current):
     with quantity_support():
         fig, (ax1, ax2) = plt.subplots(2, 1)
         ax1.plot(probe_characteristic.bias,
