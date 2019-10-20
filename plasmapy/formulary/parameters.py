@@ -351,11 +351,6 @@ def ion_sound_speed(T_e,
 
     """
     
-    if (n_e is None and k is not None) or (k is None and n_e is not None):
-        warnings.warn("The non-dispersive limit has been assumed for "
-                      "this calculation. To prevent this, values must "
-                      "be specified for both n_e and k.", PhysicsWarning)
-
     m_i = atomic.particle_mass(ion)
     Z = _grab_charge(ion, z_mean)
 
@@ -371,9 +366,12 @@ def ion_sound_speed(T_e,
     T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
     
     # Assume non-dispersive limit if values for n_e (or k) are not specified
-    if n_e is None or k is None:
-        klD2 = 0.0
-    else:
+    klD2 = 0.0
+    if (n_e is None) ^ (k is None):
+        warnings.warn("The non-dispersive limit has been assumed for "
+                      "this calculation. To prevent this, values must "
+                      "be specified for both n_e and k.", PhysicsWarning)
+    elif n_e is not None and k is not None:
         lambda_D = Debye_length(T_e, n_e)
         klD2 = (k * lambda_D) ** 2
 
