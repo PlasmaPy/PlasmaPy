@@ -262,18 +262,18 @@ class ClassicalTransport:
     >>> from astropy import units as u
     >>> t = ClassicalTransport(1*u.eV, 1e20/u.m**3,
     ...                         1*u.eV, 1e20/u.m**3, 'p')
-    >>> t.resistivity()
+    >>> t.resistivity
     <Quantity 0.00036701 m Ohm>
-    >>> t.thermoelectric_conductivity()
+    >>> t.thermoelectric_conductivity
     <Quantity 0.711084>
-    >>> t.ion_thermal_conductivity()
+    >>> t.ion_thermal_conductivity
     <Quantity 0.01552066 W / (K m)>
-    >>> t.electron_thermal_conductivity()
+    >>> t.electron_thermal_conductivity
     <Quantity 0.38064293 W / (K m)>
-    >>> t.ion_viscosity()
+    >>> t.ion_viscosity
     <Quantity [4.62129725e-07, 4.60724824e-07, 4.60724824e-07, 0.00000000e+00,
                0.00000000e+00] Pa s>
-    >>> t.electron_viscosity()
+    >>> t.electron_viscosity
     <Quantity [5.82273805e-09, 5.82082061e-09, 5.82082061e-09, 0.00000000e+00,
                0.00000000e+00] Pa s>
 
@@ -439,6 +439,7 @@ class ClassicalTransport:
         # self.mu = m_e / self.m_i  # enable the JH special features
         self.theta = self.T_e / self.T_i if theta is None else theta
 
+    @property
     def resistivity(self) -> u.Ohm * u.m:
         """
         Calculate the resistivity.
@@ -477,6 +478,7 @@ class ClassicalTransport:
         alpha = alpha_hat / (self.n_e * e ** 2 * tau_e / m_e)
         return alpha.to(u.ohm * u.m)
 
+    @property
     def thermoelectric_conductivity(self):
         """
         Calculate the thermoelectric conductivity.
@@ -497,6 +499,7 @@ class ClassicalTransport:
                                            self.field_orientation)
         return u.Quantity(beta_hat)
 
+    @property
     def ion_thermal_conductivity(self) -> u.W / u.m / u.K:
         """
         Calculate the thermal conductivity for ions.
@@ -536,6 +539,7 @@ class ClassicalTransport:
         kappa = kappa_hat * (self.n_i * k_B ** 2 * self.T_i * tau_i / self.m_i)
         return kappa.to(u.W / u.m / u.K)
 
+    @property
     def electron_thermal_conductivity(self) -> u.W / u.m / u.K:
         """
         Calculate the thermal conductivity for electrons.
@@ -587,6 +591,7 @@ class ClassicalTransport:
         kappa = kappa_hat * (self.n_e * k_B ** 2 * self.T_e * tau_e / m_e)
         return kappa.to(u.W / u.m / u.K)
 
+    @property
     def ion_viscosity(self) -> u.Pa * u.s:
         """
         Calculate the ion viscosity.
@@ -630,6 +635,7 @@ class ClassicalTransport:
             eta = (eta1.value * unit_val).to(u.Pa * u.s)
         return eta
 
+    @property
     def electron_viscosity(self) -> u.Pa * u.s:
         """
         Calculate the electron viscosity.
@@ -685,6 +691,7 @@ class ClassicalTransport:
                              eta1[4].value)) * unit_val).to(u.Pa * u.s)
         return eta
 
+    @property
     def all_variables(self) -> dict:
         """
         Return all transport variables as a dictionary.
@@ -695,13 +702,13 @@ class ClassicalTransport:
 
         """
         d = {}
-        d['resistivity'] = self.resistivity()
-        d['thermoelectric conductivity'] = self.thermoelectric_conductivity()
-        d['electron thermal conductivity'] = self.electron_thermal_conductivity()
-        d['electron viscosity'] = self.electron_viscosity()
+        d['resistivity'] = self.resistivity
+        d['thermoelectric conductivity'] = self.thermoelectric_conductivity
+        d['electron thermal conductivity'] = self.electron_thermal_conductivity
+        d['electron viscosity'] = self.electron_viscosity
         if self.model != "spitzer":
-            d['ion thermal conductivity'] = self.ion_thermal_conductivity()
-            d['ion viscosity'] = self.ion_viscosity()
+            d['ion thermal conductivity'] = self.ion_thermal_conductivity
+            d['ion viscosity'] = self.ion_viscosity
         return d
 
 
@@ -746,7 +753,7 @@ def resistivity(T_e,
                             field_orientation=field_orientation,
                             mu=mu, theta=theta,
                             coulomb_log_method=coulomb_log_method)
-    return ct.resistivity()
+    return ct.resistivity
 
 
 def thermoelectric_conductivity(T_e,
@@ -776,7 +783,7 @@ def thermoelectric_conductivity(T_e,
                             mu=mu,
                             theta=theta,
                             coulomb_log_method=coulomb_log_method)
-    return ct.thermoelectric_conductivity()
+    return ct.thermoelectric_conductivity
 
 def ion_thermal_conductivity(T_e,
                              n_e,
@@ -827,7 +834,7 @@ def ion_thermal_conductivity(T_e,
                             mu=mu,
                             theta=theta,
                             coulomb_log_method=coulomb_log_method)
-    return ct.ion_thermal_conductivity()
+    return ct.ion_thermal_conductivity
 
 
 def electron_thermal_conductivity(T_e,
@@ -891,7 +898,7 @@ def electron_thermal_conductivity(T_e,
                             mu=mu,
                             theta=theta,
                             coulomb_log_method=coulomb_log_method)
-    return ct.electron_thermal_conductivity()
+    return ct.electron_thermal_conductivity
 
 
 def ion_viscosity(T_e,
@@ -940,7 +947,7 @@ def ion_viscosity(T_e,
                             mu=mu,
                             theta=theta,
                             coulomb_log_method=coulomb_log_method)
-    return ct.ion_viscosity()
+    return ct.ion_viscosity
 
 
 def electron_viscosity(T_e,
@@ -989,7 +996,7 @@ def electron_viscosity(T_e,
                             mu=mu,
                             theta=theta,
                             coulomb_log_method=coulomb_log_method)
-    return ct.electron_viscosity()
+    return ct.electron_viscosity
 
 
 def _nondim_thermal_conductivity(hall, Z,
