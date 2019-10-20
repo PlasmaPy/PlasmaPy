@@ -686,6 +686,9 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
         elif param_name == "characteristic_length":
             unit = u.m
             magnitude = 1.0
+        elif param_name == "k":
+            unit = u.m ** -1
+            magnitude = 1.0
 
         # else, last resort, if it has a default argument, go with that:
         elif not (param_default is inspect._empty):
