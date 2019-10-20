@@ -454,8 +454,6 @@ def get_plasma_potential(probe_characteristic, return_arg=False):
 
     return probe_characteristic.bias[arg_V_P]
 
-def calculate_
-
 def get_floating_potential(probe_characteristic, return_arg=False):
     r"""Implement the simplest but crudest method for obtaining an estimate of
     the floating potential from the probe characteristic.
