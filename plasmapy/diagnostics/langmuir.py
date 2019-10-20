@@ -389,7 +389,7 @@ def swept_probe_analysis(probe_characteristic, probe_area, gas_argument,
                                   hot_fraction), probe_area)
 
     if visualize:  # coverage: ignore
-        calculate_swept_probe_analysis(probe_characteristic, V_P, I_es, V_F, I_is, ion_current, electron_current)
+        plot_swept_probe_analysis(probe_characteristic, V_P, I_es, V_F, I_is, ion_current, electron_current)
 
     # Obtain and show the EEDF. This is only useful if the characteristic data
     # has been preprocessed to be sufficiently smooth and noiseless.
