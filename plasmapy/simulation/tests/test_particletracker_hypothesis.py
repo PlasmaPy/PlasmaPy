@@ -9,7 +9,7 @@ else:
     from astropy import units as u
     from plasmapy.classes.sources.analyticalplasma import AnalyticalPlasma
     from plasmapy.simulation import ParticleTracker
-    from plasmapy.physics.parameters import gyrofrequency
+    from plasmapy.formulary.parameters import gyrofrequency
     import numpy as np
 
     def magnetic_field(r):
@@ -31,6 +31,6 @@ else:
         timestep = gyroperiod / steps_to_gyroperiod
         number_steps = 5 * steps_to_gyroperiod * int(2 * np.pi)
 
-        trajectory = ParticleTracker(plasma, 'p', N, 1, timestep/100, number_steps)
+        trajectory = ParticleTracker(plasma, 'p', N, timestep/100, number_steps)
         trajectory._v[:, :2] = velocity
         trajectory.run()

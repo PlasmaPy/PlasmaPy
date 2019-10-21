@@ -45,7 +45,7 @@ timestep = gyroperiod / steps_to_gyroperiod
 # Initialize the trajectory calculation.
 
 number_steps = 5 * steps_to_gyroperiod * int(2 * np.pi)
-trajectory = ParticleTracker(plasma, 'p', 1, 1, timestep, number_steps)
+trajectory = ParticleTracker(plasma, 'p', 1, timestep, number_steps)
 
 ############################################################
 # We still have to initialize the particle's velocity. We'll limit ourselves to
@@ -84,7 +84,7 @@ print(f"The calculated drift velocity from position is {Vdrift:.4f}")
 # Supposing we wanted to examine the effect of the initial velocity in the x-y plane on the trajectory:
 N = 20
 np.random.seed(0)
-trajectory = ParticleTracker(plasma, 'p', N, 1, timestep/100, number_steps*200)
+trajectory = ParticleTracker(plasma, 'p', N, timestep/100, number_steps*200)
 trajectory._v[:, :2] = np.random.normal(size=(N, 2))
 # we choose this as our example's thumbnail:
 # sphinx_gallery_thumbnail_number = 3
