@@ -18,8 +18,7 @@ __all__ = [
 
 class ParticleTracker:
     """
-    Object representing a species of particles: ions, electrons, or simply
-    a group of particles with a particular initial velocity distribution.
+    A group of particles moving in a plasma's electromagnetic field.
 
     Parameters
     ----------
@@ -54,6 +53,12 @@ class ParticleTracker:
         calculated from `v`, as in, current velocity.
     kinetic_energy_history
         calculated from `velocity_history`.
+
+    Notes
+    -----
+    Currently the only way of setting initial conditions is modifying
+    the `_x` and `_v` arrays without using `astropy.units`.
+    This is an issue we're actively looking to overcome.
 
     Examples
     ----------
