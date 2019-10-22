@@ -92,6 +92,14 @@ def mass_density(density, particle: Optional[str] = None, z_mean: Optional[numbe
     ~astropy.units.Quantity
         The mass density calculated from all the provided sources of information.
 
+    Examples
+    -------
+    >>> from astropy import units as u
+    >>> mass_density(1 * u.m ** -3,'p')
+    <Quantity 1.67353284e-27 kg / m3>
+    >>> mass_density(4 * u.m ** -3,'D+')
+    <Quantity 1.33779786e-26 kg / m3>
+
     """
     if density.unit.is_equivalent(u.kg / u.m ** 3):
         rho = density
@@ -101,8 +109,8 @@ def mass_density(density, particle: Optional[str] = None, z_mean: Optional[numbe
             Z = _grab_charge(particle, z_mean)
             rho = density * m_i + Z * density * m_e
         else:
-            raise ValueError(f"You must pass a particle (not {particle}) to calculate the "
-                             f"mass density!")
+            raise ValueError(f"If passing a number density, you must pass a"
+                             f"particle (not {particle}) to calculate the mass density!")
     else:
         raise ValueError(f"mass_density accepts either particle (m**-3)"
                          " or mass (kg * m**-3) density, not {density.unit}!")
@@ -694,6 +702,15 @@ def Hall_parameter(n,
     Returns
     -------
     astropy.units.quantity.Quantity
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> Hall_parameter(1e10 * u.m**-3, 2.8e3 * u.eV, 2.3 * u.T, 'He-4 +1')
+    <Quantity 7.26446755e+16>
+    >>> Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1')
+    <Quantity 2.11158408e+17>
+
     """
     from plasmapy.formulary.collisions import (fundamental_ion_collision_freq,
                                                fundamental_electron_collision_freq)
