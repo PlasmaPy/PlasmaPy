@@ -14,11 +14,6 @@ build-backend = "setuptools.build_meta"
         showcontent = true
 
     [[tool.towncrier.type]]
-        directory = "api"
-        name = "API Changes"
-        showcontent = true
-
-    [[tool.towncrier.type]]
       directory = "removal"
       name = "Deprecations and Removals"
       showcontent = true
@@ -42,3 +37,10 @@ build-backend = "setuptools.build_meta"
       directory = "trivial"
       name = "Trivial/Internal Changes"
       showcontent = true
+
+[ tool.gilesbot ]
+  [ tool.gilesbot.pull_requests ]
+    enabled = true
+  
+  [ tool.gilesbot.towncrier_changelog ]
+      enabled = true

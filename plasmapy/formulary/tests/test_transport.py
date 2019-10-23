@@ -107,7 +107,7 @@ class Test_classical_transport:
                 mu=self.mu,
                 theta=self.theta,
                 )
-            self.all_variables = self.ct.all_variables()
+            self.all_variables = self.ct.all_variables
 
     def test_spitzer_vs_formulary(self):
         """Spitzer resistivity should agree with approx. in NRL formulary"""
@@ -123,60 +123,60 @@ class Test_classical_transport:
                                       ct2.coulomb_log_ei *
                                       (ct2.T_e.to(u.eV)).value ** (-3 / 2) *
                                       u.Ohm * u.m)
-            testTrue = np.isclose(ct2.resistivity().value,
+            testTrue = np.isclose(ct2.resistivity.value,
                                   alpha_spitzer_perp_NRL.value,
                                   rtol=2e-2)
             errStr = (f"Resistivity should be close to "
                       f"{alpha_spitzer_perp_NRL.value} "
-                      f"and not {ct2.resistivity().value}.")
+                      f"and not {ct2.resistivity.value}.")
         assert testTrue, errStr
 
     def test_resistivity_units(self):
         """output should be a Quantity with units of Ohm m"""
         with pytest.warns(RelativityWarning):
-            testTrue = self.ct.resistivity().unit == u.Ohm * u.m
+            testTrue = self.ct.resistivity.unit == u.Ohm * u.m
             errStr = (f"Resistivity units should be {u.Ohm * u.m} and "
-                      f"not {self.ct.resistivity().unit}.")
+                      f"not {self.ct.resistivity.unit}.")
         assert testTrue, errStr
 
     def test_thermoelectric_conductivity_units(self):
         """output should be a Quantity with units of dimensionless"""
-        testTrue = self.ct.thermoelectric_conductivity().unit == u.m / u.m
+        testTrue = self.ct.thermoelectric_conductivity.unit == u.m / u.m
         errStr = (f"Thermoelectric conductivity units should be dimensionless "
-                  f"and not {self.ct.thermoelectric_conductivity().unit}.")
+                  f"and not {self.ct.thermoelectric_conductivity.unit}.")
         assert testTrue, errStr
 
     def test_ion_thermal_conductivity_units(self):
         """output should be Quantity with units of W / (m K)"""
-        testTrue = self.ct.ion_thermal_conductivity().unit == u.W / u.m / u.K
+        testTrue = self.ct.ion_thermal_conductivity.unit == u.W / u.m / u.K
         errStr = (f"Ion thermal conductivity units "
                   f"should be {u.W / u.m / u.K} "
-                  f"and not {self.ct.ion_thermal_conductivity().unit}.")
+                  f"and not {self.ct.ion_thermal_conductivity.unit}.")
         assert testTrue, errStr
 
     def test_electron_thermal_conductivity_units(self):
         """output should be Quantity with units of W / (m K)"""
         with pytest.warns(RelativityWarning):
-            testTrue = (self.ct.electron_thermal_conductivity().unit ==
+            testTrue = (self.ct.electron_thermal_conductivity.unit ==
                         u.W / u.m / u.K)
             errStr = (f"Electron thermal conductivity units "
                       f"should be {u.W / u.m / u.K} "
-                      f"and not {self.ct.electron_thermal_conductivity().unit}.")
+                      f"and not {self.ct.electron_thermal_conductivity.unit}.")
         assert testTrue, errStr
 
     def test_ion_viscosity_units(self):
         """output should be Quantity with units of Pa s """
-        testTrue = self.ct.ion_viscosity().unit == u.Pa * u.s
+        testTrue = self.ct.ion_viscosity.unit == u.Pa * u.s
         errStr = (f"Ion viscosity units should be {u.Pa * u.s} "
-                  f"and not {self.ct.ion_viscosity().unit}.")
+                  f"and not {self.ct.ion_viscosity.unit}.")
         assert testTrue, errStr
 
     def test_electron_viscosity_units(self):
         """output should be Quantity with units of Pa s"""
         with pytest.warns(RelativityWarning):
-            testTrue = self.ct.electron_viscosity().unit == u.Pa * u.s
+            testTrue = self.ct.electron_viscosity.unit == u.Pa * u.s
             errStr = (f"Electron viscosity units should be {u.Pa * u.s} "
-                      f"and not {self.ct.electron_viscosity().unit}.")
+                      f"and not {self.ct.electron_viscosity.unit}.")
         assert testTrue, errStr
 
     def test_particle_mass(self):
@@ -328,22 +328,21 @@ class Test_classical_transport:
                                      ion_particle=self.ion_particle,
                                      hall_i=0,
                                      hall_e=0)
-            testTrue = np.isclose(ct2.resistivity(),
+            testTrue = np.isclose(ct2.resistivity,
                                   2.8184954e-8 * u.Ohm * u.m,
                                   atol=1e-6 * u.Ohm * u.m)
             errStr = (f"Resistivity should be close to "
-                      f"{2.8184954e-8 * u.Ohm * u.m} and not {ct2.resistivity()}.")
+                      f"{2.8184954e-8 * u.Ohm * u.m} and not {ct2.resistivity}.")
         assert testTrue, errStr
 
-    @pytest.mark.parametrize("model, method, field_orientation, expected", [
+    @pytest.mark.parametrize("model, attr_name, field_orientation, expected", [
         ("ji-held", "resistivity", "all", 3),
         ("ji-held", "thermoelectric_conductivity", "all", 3),
         ("ji-held", "electron_thermal_conductivity", "all", 3),
         ("ji-held", "ion_thermal_conductivity", "all", 3),
         ("spitzer", "resistivity", "all", 2),
         ])
-    def test_number_of_returns(self, model, method, field_orientation,
-                               expected):
+    def test_number_of_returns(self, model, attr_name, field_orientation, expected):
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(T_e=self.T_e,
                                      n_e=self.n_e,
@@ -352,10 +351,10 @@ class Test_classical_transport:
                                      ion_particle=self.ion_particle,
                                      model=model,
                                      field_orientation=field_orientation)
-            method_to_call = getattr(ct2, method)
-            testTrue = np.size(method_to_call()) == expected
-            errStr = (f"{method} in {model} model returns "
-                      f"{np.size(method_to_call())} objects. "
+            attr_to_test = getattr(ct2, attr_name)
+            testTrue = np.size(attr_to_test) == expected
+            errStr = (f"{attr_name} in {model} model returns "
+                      f"{np.size(attr_to_test)} objects. "
                       f"Expected to return {expected} objects.")
         assert testTrue, errStr
 
@@ -372,11 +371,11 @@ class Test_classical_transport:
                                      n_i=self.n_i,
                                      ion_particle=self.ion_particle,
                                      model=model)
-            testTrue = np.isclose(ct2.resistivity(),
+            testTrue = np.isclose(ct2.resistivity,
                                   expected,
                                   atol=1e-6 * u.Ohm * u.m)
             errStr = (f"Resistivity in {model} model should be "
-                      f"close to {expected} and not {ct2.resistivity()}.")
+                      f"close to {expected} and not {ct2.resistivity}.")
         assert testTrue, errStr
 
     @pytest.mark.parametrize("model, expected", [
@@ -392,12 +391,12 @@ class Test_classical_transport:
                                      n_i=self.n_i,
                                      ion_particle=self.ion_particle,
                                      model=model)
-            testTrue = np.isclose(ct2.thermoelectric_conductivity(),
+            testTrue = np.isclose(ct2.thermoelectric_conductivity,
                                   expected,
                                   atol=1e-6 * u.s / u.s)
             errStr = (f"Thermoelectric conductivity in {model} model "
                       f"should be close {expected} and not "
-                      f"{ct2.thermoelectric_conductivity()}.")
+                      f"{ct2.thermoelectric_conductivity}.")
         assert testTrue, errStr
 
     @pytest.mark.parametrize("model, expected", [
@@ -414,11 +413,11 @@ class Test_classical_transport:
                                      n_i=self.n_i,
                                      ion_particle=self.ion_particle,
                                      model=model)
-            testTrue = np.allclose(ct2.electron_viscosity(),
+            testTrue = np.allclose(ct2.electron_viscosity,
                                    expected,
                                    atol=1e-6 * u.Pa * u.s)
             errStr = (f"Electron viscosity in {model} model should be close to "
-                      f"{expected} and not {ct2.electron_viscosity()}.")
+                      f"{expected} and not {ct2.electron_viscosity}.")
         assert testTrue, errStr
 
     @pytest.mark.parametrize("model, expected", [
@@ -435,11 +434,11 @@ class Test_classical_transport:
                                      n_i=self.n_i,
                                      ion_particle=self.ion_particle,
                                      model=model)
-            testTrue = np.allclose(ct2.ion_viscosity(),
+            testTrue = np.allclose(ct2.ion_viscosity,
                                    expected,
                                    atol=1e-6 * u.Pa * u.s)
             errStr = (f"Electron viscosity in {model} model should be close to "
-                      f"{expected} and not {ct2.electron_viscosity()}")
+                      f"{expected} and not {ct2.electron_viscosity}")
         assert testTrue, errStr
 
     @pytest.mark.parametrize("model, expected", [
@@ -455,12 +454,12 @@ class Test_classical_transport:
                                      n_i=self.n_i,
                                      ion_particle=self.ion_particle,
                                      model=model)
-            testTrue = np.allclose(ct2.electron_thermal_conductivity(),
+            testTrue = np.allclose(ct2.electron_thermal_conductivity,
                                    expected,
                                    atol=1e-6 * u.W / (u.K * u.m))
             errStr = (f"Electron thermal conductivity in {model} model "
                       f"should be close to {expected} and not "
-                      f"{ct2.electron_thermal_conductivity()}.")
+                      f"{ct2.electron_thermal_conductivity}.")
         assert testTrue, errStr
 
     @pytest.mark.parametrize("model, expected", [
@@ -475,12 +474,12 @@ class Test_classical_transport:
                                      n_i=self.n_i,
                                      ion_particle=self.ion_particle,
                                      model=model)
-            testTrue = np.allclose(ct2.ion_thermal_conductivity(),
+            testTrue = np.allclose(ct2.ion_thermal_conductivity,
                                    expected,
                                    atol=1e-6 * u.W / (u.K * u.m))
             errStr = (f"Ion thermal conductivity in {model} model "
                       f"should be close to {expected} and not "
-                      f"{ct2.ion_thermal_conductivity()}.")
+                      f"{ct2.ion_thermal_conductivity}.")
         assert testTrue, errStr
 
     @pytest.mark.parametrize("key, expected", {
@@ -533,7 +532,7 @@ class Test_classical_transport:
                                                  mu=self.mu,
                                                  theta=self.theta,
                                                  ),
-                                     self.ct_wrapper.resistivity())
+                                     self.ct_wrapper.resistivity)
 
     def test_thermoelectric_conductivity_wrapper(self):
         with pytest.warns(RelativityWarning):
@@ -549,7 +548,7 @@ class Test_classical_transport:
                                                mu=self.mu,
                                                theta=self.theta,
                                                )
-            val2 = self.ct_wrapper.thermoelectric_conductivity()
+            val2 = self.ct_wrapper.thermoelectric_conductivity
             assert_quantity_allclose(val1, val2)
 
     def test_ion_thermal_conductivity_wrapper(self):
@@ -566,7 +565,7 @@ class Test_classical_transport:
                                                mu=self.mu,
                                                theta=self.theta,
                                                )
-            assert_quantity_allclose(wrapped, self.ct_wrapper.ion_thermal_conductivity())
+            assert_quantity_allclose(wrapped, self.ct_wrapper.ion_thermal_conductivity)
 
     def test_electron_thermal_conductivity_wrapper(self):
         with pytest.warns(RelativityWarning):
@@ -582,7 +581,7 @@ class Test_classical_transport:
                                                     mu=self.mu,
                                                     theta=self.theta,
                                                     )
-            assert_quantity_allclose(wrapped, self.ct_wrapper.electron_thermal_conductivity())
+            assert_quantity_allclose(wrapped, self.ct_wrapper.electron_thermal_conductivity)
 
     def test_ion_viscosity_wrapper(self):
         with pytest.warns(RelativityWarning):
@@ -598,7 +597,7 @@ class Test_classical_transport:
                                                    mu=self.mu,
                                                    theta=self.theta,
                                                    ),
-                                     self.ct_wrapper.ion_viscosity())
+                                     self.ct_wrapper.ion_viscosity)
 
     def test_electron_viscosity_wrapper(self):
         with pytest.warns(RelativityWarning):
@@ -614,7 +613,7 @@ class Test_classical_transport:
                                                     mu=self.mu,
                                                     theta=self.theta,
                                                     ),
-                                     self.ct_wrapper.electron_viscosity())
+                                     self.ct_wrapper.electron_viscosity)
 
 @pytest.mark.parametrize(["particle"], ['e', 'p'])
 def test_nondim_thermal_conductivity_unrecognized_model(particle):

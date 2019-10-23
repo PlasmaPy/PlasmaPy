@@ -75,6 +75,9 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Thomas Ulrich <https://github.com/Elfhelm>`__
 * `Sixue Xu <https://github.com/hzxusx>`__
 * `Carol Zhang <https://github.com/carolyz>`__
+* `Thomas Varnish <https://github.com/tvarnish>`__
+* `Aditya Magarde <https://github.com/adityamagarde>`__
+* `Diego A. Diaz Riega <https://github.com/diego7319>`__
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy
@@ -85,7 +88,6 @@ list, your information is incorrect, or you do not wish to be listed,
 then please submit a pull request or email ``namurphy@cfa.harvard.edu``.
 
 Other Credits
-=============
 
 The PlasmaPy Community thanks the SunPy and Astropy communities for
 inspiring this project in the first place, providing much helpful
@@ -93,7 +95,6 @@ advice, and showing examples of how to build a community-wide open
 source scientific software package.
 
 Acknowledgements
-================
 
 Early development on PlasmaPy was partially supported by the U.S.
 Department of Energy through grant DE-SC0016363 that was funded
