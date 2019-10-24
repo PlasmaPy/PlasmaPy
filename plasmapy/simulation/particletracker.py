@@ -107,13 +107,13 @@ class ParticleTracker:
             raise ValueError(
                 f"""Invalid shape {b.shape} for the magnetic field array!
                 `plasma.interpolate_B` must return an array of shape (N, 3),
-                where N is the number of particles in the simulation, currently {N}."""
+                where N is the number of particles in the simulation, currently {self.N}."""
             )
         if e.shape != self._x.shape:
             raise ValueError(
                 f"""Invalid shape {e.shape} for the electric field array!
                 `plasma.interpolate_E` must return an array of shape (N, 3),
-                where N is the number of particles in the simulation, currently {N}."""
+                where N is the number of particles in the simulation, currently {self.N}."""
             )
 
 

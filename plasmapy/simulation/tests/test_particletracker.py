@@ -26,10 +26,10 @@ E_unit = u.V / u.m
 
 def test_run_no_fields():
     def magnetic_field(r):
-        return u.Quantity(np.zeros_like(r.value), u.T)
+        return u.Quantity(np.zeros(3), u.T)
 
     def electric_field(r):
-        return u.Quantity(np.zeros_like(r.value), E_unit)
+        return u.Quantity(np.zeros(3), E_unit)
     test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
 
     s = ParticleTracker(test_plasma, 'p', 50, dt=1e-10 * u.s, nt=int(2))
@@ -93,7 +93,7 @@ def test_set_particle_velocity():
     assert s._v[0,0] == 5
 
 def test_set_particle_velocity_by_value():
-    test_plasma = AnalyticalPlasma(lambda r: np.zeros_like(r), lambda r: np.zeros_like(r))
+    test_plasma = AnalyticalPlasma(lambda r: np.zeros(3), lambda r: np.zeros(3))
     particle_type = 'N-14++'
     s = ParticleTracker(test_plasma, 'p', dt=1 * u.s, nt=5)
     s.v = np.array([[5, 0, 0]]) * u.m/u.s
@@ -105,10 +105,10 @@ def test_particle_uniform_magnetic():
     """
     np.random.seed(0)
     def magnetic_field(r):
-        return u.Quantity([[0, 0, 1]], u.T)
+        return u.Quantity([0, 0, 1], u.T)
 
     def electric_field(r):
-        return u.Quantity(np.zeros(r.shape), E_unit)
+        return u.Quantity(np.zeros(3), E_unit)
 
     test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
 
@@ -177,10 +177,10 @@ def test_particle_exb_drift():
     """
     np.random.seed(0)
     def magnetic_field(r):
-        return u.Quantity([[0, 0, 1]] * len(r), u.T)
+        return u.Quantity([0, 0, 1], u.T)
 
     def electric_field(r):
-        return u.Quantity([[0, 1, 0]] * len(r), E_unit)
+        return u.Quantity([0, 1, 0], E_unit)
     test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
 
     expected_drift_velocity = -1 * u.m / u.s

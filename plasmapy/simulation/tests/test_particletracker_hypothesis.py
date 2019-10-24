@@ -13,12 +13,12 @@ else:
     import numpy as np
 
     def magnetic_field(r):
-        return u.Quantity([[4, 0, 0]]*len(r), u.T)
+        return u.Quantity([4, 0, 0], u.T)
 
     # precomputed for efficiency
     E_unit = u.V / u.m
     def electric_field(r):
-        return u.Quantity([[0, 2, 0]]*len(r), E_unit)
+        return u.Quantity([0, 2, 0], E_unit)
 
     N = 20
     @given(arrays(dtype='float', shape=(N, 2)))
