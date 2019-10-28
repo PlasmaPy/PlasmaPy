@@ -63,7 +63,7 @@ Some of these properties are returned as a `~astropy.units.Quantity` in
 SI units.
 
 >>> alpha.charge
-<Quantity 3.20435324e-19 C>
+<Quantity 3.204353242e-19 C>
 >>> deuteron.mass
 <Quantity 3.34358372e-27 kg>
 >>> triton.half_life
@@ -155,6 +155,9 @@ True
 False
 >>> deuteron.is_ion
 True
+>>> deuteron.is_electron
+False
+
 
 The `~plasmapy.atomic.Particle.element` and
 `~plasmapy.atomic.Particle.isotope` attributes return `None` when the
