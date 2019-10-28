@@ -28,6 +28,7 @@ but element names and many aliases are not.
 >>> muon = Particle('mu-')
 >>> antimuon = Particle('antimuon')
 >>> hydride = Particle('H-')
+>>> proton = Particle('H+')
 
 An `int` may be used as the first positional argument to
 `~plasmapy.atomic.Particle` to represent an atomic number.  For isotopes
