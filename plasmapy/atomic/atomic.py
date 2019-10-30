@@ -7,9 +7,14 @@ from typing import (
     Any,
 )
 
+from numbers import (
+    Integral,
+    Real,
+)
+
 import numpy as np
-import astropy.constants as const
 import astropy.units as u
+import astropy.constants as const
 
 from plasmapy.atomic.elements import _Elements
 from plasmapy.atomic.isotopes import _Isotopes
@@ -24,10 +29,7 @@ from plasmapy.atomic.exceptions import (
     InvalidParticleError,
     )
 
-from numbers import (
-    Integral,
-    Real,
-)
+
 
 __all__ = [
     "atomic_number",

@@ -1,8 +1,8 @@
 """Functions that are related to nuclear reactions."""
 
-from astropy import units as u
-from typing import List, Union, Optional
 import re
+from typing import List, Union, Optional
+from astropy import units as u
 
 from plasmapy.atomic.exceptions import AtomicError, InvalidParticleError
 

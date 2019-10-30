@@ -1311,7 +1311,7 @@ class Particle:
                     require: Union[str, Set, Tuple, List] = set(),
                     any_of: Union[str, Set, Tuple, List] = set(),
                     exclude: Union[str, Set, Tuple, List] = set(),
-                    ) -> bool:
+                   ) -> bool:
         """
         Determine if the particle meets categorization criteria.
 
