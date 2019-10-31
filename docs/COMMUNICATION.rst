@@ -13,11 +13,12 @@ is bridged to `Gitter <https://gitter.im/PlasmaPy/Lobby>`__).
 If you have any questions, the quickest way to get a response is to ask
 on our `Matrix <https://riot.im/app/#/room/#plasmapy:matrix.org>`__/ channel.
 
-`Discourse room <https://plasmapy.discourse.group/>`__
--------------------------------------------------
+`Discourse group <https://plasmapy.discourse.group>`__
+------------------------------------------------------
 
-PlasmaPy's `Discourse room <https://plasmapy.discourse.group>`__
-
+PlasmaPy's `Discourse group <https://plasmapy.discourse.group>`__ is a
+great place to suggest ideas, bring up discussion topics, and ask
+questions in threaded public discussions.
 
 `Mailing list <https://groups.google.com/forum/#!forum/plasmapy>`__
 -------------------------------------------------------------------
@@ -47,4 +48,3 @@ Any last minute changes will be discussed on `Matrix
 <https://riot.im/app/#/room/#plasmapy:openastronomy.org>`__.
 As of November 2019, our meetings are on Tuesdays at
 `19:00 UTC <http://time.unitarium.com/utc/7pm>`__.
-
