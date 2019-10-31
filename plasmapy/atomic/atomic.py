@@ -29,8 +29,6 @@ from plasmapy.atomic.exceptions import (
     InvalidParticleError,
     )
 
-
-
 __all__ = [
     "atomic_number",
     "mass_number",
