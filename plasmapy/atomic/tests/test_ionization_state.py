@@ -472,7 +472,7 @@ def test_nans():
     assert len(instance.ionic_fractions) == nstates, \
         f"Incorrect number of ionization states for {element}"
     assert np.all([np.isnan(instance.ionic_fractions)]), (
-        f"The ionic fractions for IonizationState are not defaulting " 
+        f"The ionic fractions for IonizationState are not defaulting "
         f"to numpy.nan when not set by user.")
 
 
