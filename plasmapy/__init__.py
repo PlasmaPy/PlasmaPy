@@ -81,5 +81,6 @@ def online_help(query):
 
     webbrowser.open(url)
 
+
 del sys
 del test
