@@ -28,7 +28,6 @@ Utility tools
 -------------
 ::
 
- test              --- Run PlasmaPy unit tests
  online_help       --- Search the online documentation
  __version__       --- PlasmaPy version string
  __citation__      --- PlasmaPy citation instructions
@@ -47,8 +46,6 @@ from . import atomic
 # Enforce Python version check during package import.
 # This is the same check as the one at the top of setup.py
 import sys
-
-__name__ = "plasmapy"
 
 __citation__ = (
     "Instructions on how to cite and acknowledge PlasmaPy are provided in the "
@@ -81,3 +78,6 @@ def online_help(query):
         url = 'http://docs.astropy.org/en/stable/units/'
 
     webbrowser.open(url)
+
+del sys
+del test
