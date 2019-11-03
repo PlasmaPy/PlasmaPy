@@ -38,11 +38,11 @@ build-backend = "setuptools.build_meta"
       name = "Trivial/Internal Changes"
       showcontent = true
 
-[[ tool.gilesbot ]]
-  [[ tool.gilesbot.pull_requests ]]
+[ tool.gilesbot ]
+  [ tool.gilesbot.pull_requests ]
     enabled = true
   
-  [[ tool.gilesbot.towncrier_changelog ]]
+  [ tool.gilesbot.towncrier_changelog ]
       enabled = true
       changelog_skip_label = "No changelog entry needed"
       help_url = "https://github.com/PlasmaPy/PlasmaPy/blob/master/changelog/README.rst"
