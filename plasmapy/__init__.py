@@ -38,7 +38,9 @@ Utility tools
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
-from ._base_init import *
+from .version import version as __version__
+from .version import githash as __githash__
+
 from . import formulary
 from . import atomic
 # ----------------------------------------------------------------------------
