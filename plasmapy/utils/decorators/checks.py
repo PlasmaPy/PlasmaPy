@@ -107,7 +107,7 @@ class CheckValues(CheckBase):
             return None
     """
     #: Default values for the possible 'check' keys.
-    # To add a new check the the class, the following needs to be done:
+    # To add a new check to the class, the following needs to be done:
     #   1. Add a key & default value to the `__check_defaults` dictionary
     #   2. Add a corresponding if-statement to method `_check_value`
     #
@@ -378,7 +378,7 @@ class CheckUnits(CheckBase):
         def foo(arg1: u.cm, arg2: u.cm) -> u.cm:
             return arg1 + arg2
 
-    Allow `None` values to pass::
+    Allow `None` values to pass, on input and output both ::
 
         import astropy.units as u
         from plasmapy.utils.decorators import CheckUnits
@@ -404,7 +404,7 @@ class CheckUnits(CheckBase):
         from plasmapy.utils.decorators import CheckUnits
 
         @CheckUnits(arg1={'units': u.K,
-                          'equivalencies': u.temperature(),
+                          'equivalencies': u.temperature_energy(),
                           'pass_equivalent_units': True})
         def foo(arg1):
             return arg1
@@ -535,7 +535,7 @@ class CheckUnits(CheckBase):
                 param_checks = None
 
             # -- Determine target units `_units` --
-            # target units can be define in one of three ways (in
+            # target units can be defined in one of three ways (in
             # preferential order):
             #   1. direct keyword pass-through
             #      i.e. CheckUnits(x=u.cm)
@@ -546,6 +546,7 @@ class CheckUnits(CheckBase):
             #   3. function annotations
             #
             # * options (1) and (2) will supersede option (3)
+            # # TODO make these mutually exclusive
             # * if None is included in the units list, then None values are allowed
             #
             _none_shall_pass = False
@@ -726,8 +727,8 @@ class CheckUnits(CheckBase):
         Returns
         -------
         (`arg`, `unit`, `equivalencies`, `error`)
-            * `arg` is the original input argument `arg` or `None` if unit chcks
-              fail
+            * `arg` is the original input argument `arg` or `None` if unit
+              checks fail
             * `unit` is the identified astropy :mod:`~astropy.units` that `arg`
               can be converted to or `None` if none exist
             * `equivalencies` is the astropy :mod:`~astropy.units.equivalencies`
@@ -737,7 +738,7 @@ class CheckUnits(CheckBase):
         """
         # initialize str for error messages
         if arg_name == 'checks_on_return':
-            err_msg = f"The return value  "
+            err_msg = f"The return value "
         else:
             err_msg = f"The argument '{arg_name}' "
         err_msg += f"to function {self.f.__name__}()"

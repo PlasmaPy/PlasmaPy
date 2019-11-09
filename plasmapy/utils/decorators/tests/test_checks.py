@@ -1275,3 +1275,42 @@ def test_check_relativistic_decorator_errors(speed, betafrac, error):
 
     with pytest.raises(error):
         speed_func()
+
+def test_check_units_on_methods():
+    class square:
+        @check_units
+        def __init__(self, side: u.m):
+            self.side = side
+
+        @check_units
+        def area(self) -> u.m**2:
+            return self.side**2
+
+    testsquare = square(2*u.m)
+    assert testsquare.area() == (4 * u.m**2)
+
+def test_check_units_on_methods_alternate_call():
+    class square:
+        @check_units
+        def __init__(self, side: u.m):
+            self.side = side
+
+        @check_units(checks_on_return={'units':u.m**2})
+        def area(self):
+            return self.side**2
+
+    testsquare = square(2*u.m)
+    assert testsquare.area() == (4 * u.m**2)
+
+def test_check_units_on_methods_simpler_function():
+    class square:
+        @check_units
+        def __init__(self, side: u.m):
+            self.side = side
+
+        @check_units(checks_on_return={'units':u.m})
+        def fourier(self):
+            return 4*self.side
+
+    testsquare = square(2*u.m)
+    assert testsquare.fourier() == (8 * u.m)
