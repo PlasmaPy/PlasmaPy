@@ -1276,6 +1276,7 @@ def test_check_relativistic_decorator_errors(speed, betafrac, error):
     with pytest.raises(error):
         speed_func()
 
+# TODO: move test into TestCheckUnits
 def test_check_units_on_methods():
     class square:
         @check_units
@@ -1289,6 +1290,7 @@ def test_check_units_on_methods():
     testsquare = square(2*u.m)
     assert testsquare.area() == (4 * u.m**2)
 
+# TODO: move test into TestCheckUnits
 def test_check_units_on_methods_alternate_call():
     class square:
         @check_units
@@ -1302,6 +1304,7 @@ def test_check_units_on_methods_alternate_call():
     testsquare = square(2*u.m)
     assert testsquare.area() == (4 * u.m**2)
 
+# TODO: move test into TestCheckUnits
 def test_check_units_on_methods_simpler_function():
     class square:
         @check_units
