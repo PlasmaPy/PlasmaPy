@@ -59,8 +59,8 @@ class CheckBase:
 
 class CheckValues(CheckBase):
     """
-    A decorator class to 'check' -- limit/control -- the values of input
-    arguments to a function, as well as, the function's return.
+    A decorator class to 'check' -- limit/control -- the values of input and return
+    arguments to a function/method.
 
     Parameters
     ----------
@@ -98,7 +98,7 @@ class CheckValues(CheckBase):
     --------
     .. code-block:: python
 
-        from plasmapy.utils.decorators import CheckValues
+        from plasmapy.utils.decorators.checks import CheckValues
 
         @CheckValues(arg1={'can_be_negative': False, 'can_be_nan': False},
                      arg2={'can_be_inf': False},
@@ -877,7 +877,7 @@ class CheckUnits(CheckBase):
         Parameters
         ----------
         elist: list
-            list of asttropy :mod:`~astropy.units.equivalencies` to be flattened
+            list of astropy :mod:`~astropy.units.equivalencies` to be flattened
 
         Returns
         -------
@@ -1019,8 +1019,8 @@ def check_values(func=None,
                  checks_on_return: Dict[str, bool] = None,
                  **checks: Dict[str, bool]):
     """
-    A decorator to 'check' -- limit/control -- the values of input arguments to a
-    function, as well as, the function's return.
+    A decorator class to 'check' -- limit/control -- the values of input and return
+    arguments to a function/method.
 
     Parameters
     ----------

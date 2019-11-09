@@ -850,7 +850,7 @@ class TestCheckValues:
              },
         ]
 
-        # test
+        # test on function
         for case in _cases:
             wfoo = CheckValues(**case['setup']['checks'])(case['setup']['function'])
 
@@ -862,6 +862,20 @@ class TestCheckValues:
                     wfoo(*args, **kwargs)
             else:
                 assert wfoo(*args, **kwargs) == case['output']
+
+        # test on class method
+        class Bar:
+            def __init__(self):
+                self.y = -5
+
+            @CheckValues(x={'can_be_negative': True},
+                         checks_on_return={'can_be_negative': False})
+            def foo(self, x):
+                return x + self.y
+
+        assert Bar().foo(6) == 1
+        with pytest.raises(ValueError):
+            Bar().foo(1)
 
     def test_cv_preserves_signature(self):
         """Test CheckValues preserves signature of wrapped function."""
