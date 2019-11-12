@@ -282,7 +282,7 @@ class CheckValues(CheckBase):
         for ckey in self.__check_defaults:
             if ckey == 'none_shall_pass':
                 if arg is None and arg_checks[ckey]:
-                    return
+                    break
                 elif arg is None:
                     raise ValueError(f"{valueerror_msg} Nones.")
 
