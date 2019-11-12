@@ -428,9 +428,9 @@ class CheckUnits(CheckBase):
     def __init__(
             self,
             checks_on_return: Union[u.Unit,
-                                    List[Union[u.Unit]],
+                                    List[u.Unit],
                                     Dict[str, Any]] = None,
-            **checks: Union[u.Unit, List[Union[u.Unit]], Dict[str, Any]]):
+            **checks: Union[u.Unit, List[u.Unit], Dict[str, Any]]):
 
         super().__init__(checks_on_return=checks_on_return, **checks)
 
