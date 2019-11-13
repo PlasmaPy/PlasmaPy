@@ -49,48 +49,28 @@ print(formulary.plasma_frequency(electron_concentration))
 
 ############################################################
 # Let's try to recreate some plots and get a feel for some of these quantities.
+# We will also compare our data to real-world plasma situations.
 
 n_e = np.logspace(4, 30, 100) / u.m**3
 plt.plot(n_e, formulary.plasma_frequency(n_e))
 plt.scatter(
     electron_concentration,
-    formulary.plasma_frequency(electron_concentration))
-plt.xlabel("Electron Concentration (m^-3)")
-plt.ylabel("Langmuir Wave Plasma Frequency (rad/s)")
-plt.grid()
-plt.show()
-
-############################################################
-# Let's compare our data to real-world data of plasma devices
-
-# Our 'Data'
-print("---Our Data---")
-print("n_e: " + str(electron_concentration))
-print("T_e: " + str(electron_temperature))
-print("B: " + str(B))
-plt.scatter(electron_concentration, formulary.plasma_frequency(electron_concentration))
+    formulary.plasma_frequency(electron_concentration),
+    label="Our Data")
 
 # IRT1 Tokamak Data
 # http://article.sapub.org/pdf/10.5923.j.jnpp.20110101.03.pdf
 n_e = 1.2e19 / u.m**3
 T_e = 136.8323 * u.eV
 B = 0.82 * u.T
-print("---IRT1 Tokamak Data---")
-print("n_e: " + str(n_e))
-print("T_e: " + str(T_e))
-print("B: " + str(B))
-plt.scatter(n_e, formulary.plasma_frequency(n_e))
+plt.scatter(n_e, formulary.plasma_frequency(n_e), label="IRT1 Tokamak")
 
 # Wendelstein 7-X Stellerator Data
 # https://nucleus.iaea.org/sites/fusionportal/Shared%20Documents/FEC%202016/fec2016-preprints/preprint0541.pdf
 n_e = 3e19 / u.m**3
 T_e = 6 * u.keV
 B = 3 * u.T
-print("---Wendelstein 7-X Stellerator Data---")
-print("n_e: " + str(n_e))
-print("T_e: " + str(T_e))
-print("B: " + str(B))
-plt.scatter(n_e, formulary.plasma_frequency(n_e))
+plt.scatter(n_e, formulary.plasma_frequency(n_e), label="W7-X Stellerator")
 
 # Solar Corona
 # Estimated by Nick Murphy
@@ -98,11 +78,7 @@ n_e = 1e15 / u.m**3
 T_e = 1e6 * u.K
 B = 0.005 * u.T
 T_e.to(u.eV, equivalencies=u.temperature_energy())
-print("---Solar Corona Data---")
-print("n_e: " + str(n_e))
-print("T_e: " + str(T_e))
-print("B: " + str(B))
-plt.scatter(n_e, formulary.plasma_frequency(n_e))
+plt.scatter(n_e, formulary.plasma_frequency(n_e), label="Solar Corona")
 
 # Interstellar (warm neutral) Medium
 # Estimated by Nick Murphy
@@ -110,11 +86,7 @@ n_e = 1e6 / u.m**3
 T_e = 5e3 * u.K
 B = 0.005 * u.T
 T_e.to(u.eV, equivalencies=u.temperature_energy())
-print("---Interstellar Medium Data---")
-print("n_e: " + str(n_e))
-print("T_e: " + str(T_e))
-print("B: " + str(B))
-plt.scatter(n_e, formulary.plasma_frequency(n_e))
+plt.scatter(n_e, formulary.plasma_frequency(n_e), label="Interstellar Medium")
 
 # Solar Wind at 1 AU
 # Estimated by Nick Murphy
@@ -122,14 +94,14 @@ n_e = 7e6 / u.m**3
 T_e = 1e5 * u.K
 B = 5e-9 * u.T
 T_e.to(u.eV, equivalencies=u.temperature_energy())
-print("---Interstellar Medium Data---")
-print("n_e: " + str(n_e))
-print("T_e: " + str(T_e))
-print("B: " + str(B))
-plt.scatter(n_e, formulary.plasma_frequency(n_e))
+plt.scatter(n_e, formulary.plasma_frequency(n_e), label="Solar Wind (1AU)")
+
 
 plt.xlabel("Electron Concentration (m^-3)")
 plt.ylabel("Langmuir Wave Plasma Frequency (rad/s)")
-plt.legend(["Our Data", "IRT1 Tokamak", "Wendelstein 7-X", "Solar Corona", "Instellar Medium", "Solar Wind (1AU)"])
 plt.grid()
+plt.xscale("log")
+plt.yscale("log")
+plt.legend()
+plt.title("Log-scale plot of plasma frequencies")
 plt.show()
