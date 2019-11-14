@@ -1,0 +1,1 @@
+Added real-world examples to examples/plot_physics.py and adjusted the plots to be more human-friendly.
