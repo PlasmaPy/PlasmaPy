@@ -309,8 +309,8 @@ class CheckValues(CheckBase):
 
 class CheckUnits(CheckBase):
     """
-    A decorator class to 'check' -- limit/control -- the units of input arguments
-    to a function, as well as, the function's return.
+    A decorator class to 'check' -- limit/control -- the units of input and return
+    arguments to a function/method.
 
     Parameters
     ----------
@@ -508,10 +508,7 @@ class CheckUnits(CheckBase):
         # initialize validation dictionary
         out_checks = {}
 
-        # Iterate through function bound arguments + return and determine check keys:
-        #   1. 'units'
-        #   2. 'equivalencies'
-        #   3. 'pass_equivalent_units'
+        # Iterate through function bound arguments + return and build `out_checks`:
         #
         # artificially add "return" to parameters
         things_to_check = bound_args.signature.parameters.copy()
@@ -900,8 +897,8 @@ def check_units(func=None,
                 checks_on_return: Dict[str, Any] = None,
                 **checks: Dict[str, Any]):
     """
-    A decorator to 'check' -- limit/control -- the units of input arguments
-    to a function, as well as, the function's return.
+    A decorator class to 'check' -- limit/control -- the units of input and return
+    arguments to a function/method.
 
     Parameters
     ----------
