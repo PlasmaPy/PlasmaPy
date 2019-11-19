@@ -567,28 +567,34 @@ class CheckUnits(CheckBase):
 
             # If no units have been specified by decorator checks, then look for
             # function annotations.
-            if _units is None:
-                _units = param.annotation
+            #
+            # Reconcile units specified by decorator checks and function annotations
+            _units_anno = None
+            if param.annotation is not inspect.Parameter.empty:
+                # unit annotations defined
+                _units_anno = param.annotation
 
-                if _units is not inspect.Parameter.empty:
-                    # unit annotations defined
-                    pass
-                elif param_checks is None:
-                    # no checks specified and no unit annotations defined
-                    continue
+            if _units is None and _units_anno is None and param_checks is None:
+                # no checks specified and no unit annotations defined
+                continue
+            elif _units is None and _units_anno is None:
+                # checks specified, but NO unit checks
+                msg = f"No astropy.units specified for "
+                if param.name == 'checks_on_return':
+                    msg += f"return value "
                 else:
-                    msg = f"No astropy.units specified for "
-                    if param.name == 'checks_on_return':
-                        msg += f"return value "
-                    else:
-                        msg += f"argument {param.name} "
-                    msg += f"of function {self.f.__name__}()."
-                    raise ValueError(msg)
+                    msg += f"argument {param.name} "
+                msg += f"of function {self.f.__name__}()."
+                raise ValueError(msg)
+            elif _units is None:
+                _units = _units_anno
+                _units_anno = None
 
             # Ensure `_units` is an iterable
             if not isinstance(_units, collections.abc.Iterable):
-                # target units/physical types is singular
                 _units = [_units]
+            if not isinstance(_units_anno, collections.abc.Iterable):
+                _units_anno = [_units_anno]
 
             # Is None allowed?
             if None in _units or param.default is None:
@@ -597,11 +603,35 @@ class CheckUnits(CheckBase):
             # Remove Nones
             if None in _units:
                 _units = [t for t in _units if t is not None]
+            if None in _units_anno:
+                _units_anno = [t for t in _units_anno if t is not None]
 
             # ensure all _units are astropy.units.Unit or physical types &
             # define 'units' for unit checks &
             # define 'none_shall_pass' check
             _units = self._condition_target_units(_units)
+            _units_anno = self._condition_target_units(_units_anno)
+            if not all(_u in _units for _u in _units_anno):
+                raise ValueError(
+                    f"Annotation units ({_units_anno}) are not included in the units "
+                    f"specified by decorator arguments ({_units}).  Use either "
+                    f"decorator arguments or function annotations to defined unit "
+                    f"types, or make sure annotation specifications match decorator "
+                    f"argument specifications."
+                )
+            if len(_units) == 0 and len(_units_anno) == 0 and param_checks is None:
+                # annotations did not specify units
+                continue
+            elif len(_units) == 0 and len(_units_anno) == 0:
+                # checks specified, but NO unit checks
+                msg = f"No astropy.units specified for "
+                if param.name == 'checks_on_return':
+                    msg += f"return value "
+                else:
+                    msg += f"argument {param.name} "
+                msg += f"of function {self.f.__name__}()."
+                raise ValueError(msg)
+
             out_checks[param.name] = {'units': _units,
                                       'none_shall_pass': _none_shall_pass}
 
@@ -842,6 +872,9 @@ class CheckUnits(CheckBase):
         -----
         * access to :func:`astropy.units.decorators._get_allowed_units`
         """
+        # remove astropy.units.quantity.Quantity
+        targets = [t for t in targets if t is not u.Quantity]
+
         return _get_allowed_units(targets)
 
     @staticmethod

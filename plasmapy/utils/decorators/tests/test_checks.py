@@ -64,7 +64,7 @@ class TestCheckUnits:
         return x + y
 
     @staticmethod
-    def foo_partial_anno(x: u.Quantity, y: u.cm):
+    def foo_partial_anno(x: u.Quantity, y: u.cm) -> u.Quantity:
         return x.value + y.value
 
     @staticmethod
@@ -132,10 +132,10 @@ class TestCheckUnits:
             list(u.temperature()),
         ]
         _cases = [
-            # x units are defined via decorator kwarg of CheckUnits
-            # y units are defined via function annotations, additional checks
-            #   thru CheckUnits kwarg
-            {'setup': {'function': self.foo_partial_anno,
+            {'descr': 'x units are defined via decorator kwarg of CheckUnits\n'
+                      'y units are defined via decorator annotations, additional\n'
+                      '  checks thru CheckUnits kwarg',
+             'setup': {'function': self.foo_partial_anno,
                        'args': (2 * u.cm, 3 * u.cm),
                        'kwargs': {},
                        'checks': {'x': {'units': [u.cm],
@@ -147,11 +147,10 @@ class TestCheckUnits:
                         'y': {'units': [u.cm]},
                         },
              },
-
-            # x units are defined via decorator kwarg of CheckUnits
-            # y units are defined via function annotations, additional checks
-            #   thru CheckUnits kwarg
-            {'setup': {'function': self.foo_partial_anno,
+            {'descr': 'x units are defined via decorator kwarg of CheckUnits\n'
+                      'y units are defined via function annotations, additional\n'
+                      '  checks thru CheckUnits kwarg',
+             'setup': {'function': self.foo_partial_anno,
                        'args': (2 * u.cm, 3 * u.cm),
                        'kwargs': {},
                        'checks': {'x': {'units': [u.cm],
@@ -165,9 +164,8 @@ class TestCheckUnits:
                               'pass_equivalent_units': False},
                         },
              },
-
-            # equivalencies are a list instead of astropy Equivalency objects
-            {'setup': {'function': self.foo_no_anno,
+            {'descr': 'equivalencies are a list instead of astropy Equivalency objects',
+             'setup': {'function': self.foo_no_anno,
                        'args': (2 * u.K, 3 * u.K),
                        'kwargs': {},
                        'checks': {'x': {'units': [u.K],
@@ -182,9 +180,8 @@ class TestCheckUnits:
                               'equivalencies': equivs[1]},
                         },
              },
-
-            # number of checked arguments exceed number of function arguments
-            {'setup': {'function': self.foo_partial_anno,
+            {'descr': 'number of checked arguments exceed number of function arguments',
+             'setup': {'function': self.foo_partial_anno,
                        'args': (2 * u.cm, 3 * u.cm),
                        'kwargs': {},
                        'checks': {'x': {'units': [u.cm]},
@@ -197,9 +194,8 @@ class TestCheckUnits:
                         'y': {'units': [u.cm]},
                         },
              },
-
-            # arguments passed via *args and **kwargs are ignored
-            {'setup': {'function': self.foo_stars,
+            {'descr': 'arguments passed via *args and **kwargs are ignored',
+             'setup': {'function': self.foo_stars,
                        'args': (2 * u.cm, 'hello'),
                        'kwargs': {'z': None},
                        'checks': {'x': {'units': [u.cm]},
@@ -212,9 +208,8 @@ class TestCheckUnits:
                         'y': {'units': [u.cm]},
                         },
              },
-
-            # arguments arguments can be None values
-            {'setup': {'function': self.foo_with_none,
+            {'descr': 'arguments can be None values',
+             'setup': {'function': self.foo_with_none,
                        'args': (2 * u.cm, 3 * u.cm),
                        'kwargs': {},
                        'checks': {'x': {'units': [u.cm, None]}},
@@ -225,18 +220,16 @@ class TestCheckUnits:
                               'none_shall_pass': True},
                         },
              },
-
-            # checks and annotations do not specify units
-            {'setup': {'function': self.foo_no_anno,
+            {'descr': 'checks and annotations do not specify units',
+             'setup': {'function': self.foo_no_anno,
                        'args': (2 * u.cm, 3 * u.cm),
                        'kwargs': {},
                        'checks': {'x': {'pass_equivalent_units': True}},
                        },
              'raises': ValueError,
              },
-
-            # units are directly assigned to the check kwarg
-            {'setup': {'function': self.foo_partial_anno,
+            {'descr': 'units are directly assigned to the check kwarg',
+             'setup': {'function': self.foo_partial_anno,
                        'args': (2 * u.cm, 3 * u.cm),
                        'kwargs': {},
                        'checks': {'x': u.cm},
@@ -245,19 +238,17 @@ class TestCheckUnits:
                         'y': {'units': [u.cm]},
                         },
              },
-
-            # return units are assigned via checks
-            {'setup': {'function': self.foo_return_anno,
-                       'args': (2 * u.cm, 3 * u.cm),
+            {'descr': 'return units are assigned via checks',
+             'setup': {'function': self.foo_no_anno,
+                       'args': (2 * u.km, 3 * u.km),
                        'kwargs': {},
                        'checks': {'checks_on_return': u.km},
                        },
              'output': {'checks_on_return': {'units': [u.km]},
                         },
              },
-
-            # return units are assigned via annotations
-            {'setup': {'function': self.foo_return_anno,
+            {'descr': 'return units are assigned via annotations',
+             'setup': {'function': self.foo_return_anno,
                        'args': (2 * u.cm, 3 * u.cm),
                        'kwargs': {},
                        'checks': {},
@@ -265,16 +256,52 @@ class TestCheckUnits:
              'output': {'checks_on_return': {'units': [u.um]},
                         },
              },
-
-            # return units are not specified but other checks are
-            {'setup': {'function': self.foo_no_anno,
+            {'descr': 'return units are assigned via annotations and checks arg, but'
+                      'are not consistent',
+             'setup': {'function': self.foo_return_anno,
+                       'args': (2 * u.cm, 3 * u.cm),
+                       'kwargs': {},
+                       'checks': {'checks_on_return': {'units': u.km}},
+                       },
+             'raises': ValueError,
+             },
+            {'descr': 'return units are not specified but other checks are',
+             'setup': {'function': self.foo_no_anno,
                        'args': (2 * u.cm, 3 * u.cm),
                        'kwargs': {},
                        'checks': {'checks_on_return': {'pass_equivalent_units': True}},
                        },
              'raises': ValueError,
              },
-
+            {'descr': 'no parameter checks for x are defined, but a non-unit annotation'
+                      'is used',
+             'setup': {'function': self.foo_partial_anno,
+                       'args': (2 * u.cm, 3 * u.cm),
+                       'kwargs': {},
+                       'checks': {},
+                       },
+             'output': {'y': {'units': [u.cm]}},
+             },
+            {'descr': 'parameter checks defined for x but unit checks calculated from'
+                      'function annotations. Function annotations do NOT define '
+                      'a proper unit type.',
+             'setup': {'function': self.foo_partial_anno,
+                       'args': (2 * u.cm, 3 * u.cm),
+                       'kwargs': {},
+                       'checks': {'x': {'pass_equivalent_units': True}},
+                       },
+             'raises': ValueError,
+             },
+            {'descr': 'parameter checks defined for return argument but unit checks '
+                      'calculated from function annotations. Function annotations do '
+                      'NOT define a proper unit type.',
+             'setup': {'function': self.foo_partial_anno,
+                       'args': (2 * u.cm, 3 * u.cm),
+                       'kwargs': {},
+                       'checks': {'checks_on_return': {'pass_equivalent_units': True}},
+                       },
+             'raises': ValueError,
+             },
         ]
 
         # perform tests
@@ -1297,7 +1324,7 @@ def test_check_units_on_methods_alternate_call():
         def __init__(self, side: u.m):
             self.side = side
 
-        @check_units(checks_on_return={'units':u.m**2})
+        @check_units(checks_on_return={'units': u.m**2})
         def area(self):
             return self.side**2
 
