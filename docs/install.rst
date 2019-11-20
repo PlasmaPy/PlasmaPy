@@ -165,42 +165,6 @@ or
 
    pip install .
 
-Testing a source code build
----------------------------
-
-Testing PlasmaPy requires:
-
-- `pytest <https://docs.pytest.org/>`_
-
-In the top level directory, run
-
-.. code:: bash
-
-   python setup.py test
-
-Building documentation
-----------------------
-
-Building and testing PlasmaPy documentation requires the following
-packages:
-
-- `Sphinx <http://www.sphinx-doc.org/>`_
-- `sphinx-gallery <https://sphinx-gallery.readthedocs.io/>`_
-- `sphinx_rtd_theme <https://sphinx-rtd-theme.readthedocs.io/>`_
-- `sphinx-automodapi <http://sphinx-automodapi.readthedocs.io/>`_
-- `pillow <https://pillow.readthedocs.io/>`_
-- `numpydoc <http://numpydoc.readthedocs.io/>`_
-
-To build the documentation, run the following command in the top level
-directory of the repository:
-
-.. code:: bash
-
-   python setup.py build_docs
-
-The HTML files built by this command will be placed in the
-``docs/_build/html`` subdirectory and can be read using a web browser.
-
 .. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/PlasmaPy
 .. _set up an SSH key: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 .. _on PyPI: https://pypi.org/project/plasmapy/
