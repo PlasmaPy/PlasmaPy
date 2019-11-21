@@ -197,9 +197,9 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
     Examples
     --------
     >>> standard_atomic_weight("H")
-    <Quantity 1.67382335e-27 kg>
+    <Quantity 1.6738233e-27 kg>
     >>> standard_atomic_weight("lead")
-    <Quantity 3.44063689e-25 kg>
+    <Quantity 3.440636e-25 kg>
 
     """
     # TODO: Put in ReST links into above docstring
@@ -417,7 +417,7 @@ def electric_charge(particle: Particle) -> u.Quantity:
     Examples
     --------
     >>> electric_charge('p+')
-    <<class 'astropy.constants.codata2014.EMCODATA2014'> name='Electron charge' value=1.6021766208e-19 uncertainty=9.8e-28 unit='C' reference='CODATA 2014'>
+    <<class 'astropy.constants.codata...'> name='Electron charge' ...>
     >>> electric_charge('H-')
     <Quantity -1.60217662e-19 C>
 
@@ -882,7 +882,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
     -------
     >>> from astropy import units as u
     >>> reduced_mass('p+', 'e-')
-    <Quantity 9.10442514e-31 kg>
+    <Quantity 9.104425e-31 kg>
     >>> reduced_mass(5.4e-27 * u.kg, 8.6e-27 * u.kg)
     <Quantity 3.31714286e-27 kg>
 
