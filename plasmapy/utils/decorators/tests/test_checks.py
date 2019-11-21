@@ -94,7 +94,24 @@ class TestCheckUnits:
         for key, val in _defaults:
             assert cu._CheckUnits__check_defaults[key] == val
 
-    def test_cu_method_flatten_equivalencies_list(self):
+    def test_cu_method__condition_target_units(self):
+        """Test method `CheckUnits._condition_target_units`."""
+        assert hasattr(CheckUnits, '_condition_target_units')
+
+        cu = CheckUnits()
+
+        targets = ['cm', u.km, u.Quantity, float]
+        conditioned_targets = [u.cm, u.km]
+        with pytest.raises(TypeError):
+            cu._condition_target_units(targets)
+
+        assert (cu._condition_target_units(targets, from_annotations=True)
+                == conditioned_targets)
+
+        with pytest.raises(ValueError):
+            cu._condition_target_units(['five'])
+
+    def test_cu_method__flatten_equivalencies_list(self):
         assert hasattr(CheckUnits, '_flatten_equivalencies_list')
 
         cu = CheckUnits()

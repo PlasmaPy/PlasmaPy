@@ -548,6 +548,7 @@ class CheckUnits(CheckBase):
             #
             _none_shall_pass = False
             _units = None
+            _units_are_from_anno = False
             if param_checks is not None:
                 # checks for argument were defined with decorator
                 try:
@@ -588,6 +589,7 @@ class CheckUnits(CheckBase):
                 raise ValueError(msg)
             elif _units is None:
                 _units = _units_anno
+                _units_are_from_anno = True
                 _units_anno = None
 
             # Ensure `_units` is an iterable
@@ -609,8 +611,10 @@ class CheckUnits(CheckBase):
             # ensure all _units are astropy.units.Unit or physical types &
             # define 'units' for unit checks &
             # define 'none_shall_pass' check
-            _units = self._condition_target_units(_units)
-            _units_anno = self._condition_target_units(_units_anno)
+            _units = self._condition_target_units(_units,
+                                                  from_annotations=_units_are_from_anno)
+            _units_anno = self._condition_target_units(_units_anno,
+                                                       from_annotations=True)
             if not all(_u in _units for _u in _units_anno):
                 raise ValueError(
                     f"Annotation units ({_units_anno}) are not included in the units "
@@ -845,17 +849,21 @@ class CheckUnits(CheckBase):
         return arg, unit, equiv, err
 
     @staticmethod
-    def _condition_target_units(targets):
+    def _condition_target_units(targets: List, from_annotations: bool = False):
         """
-        From a list of target units (either as a string or unit
-        objects) and physical types, return a list of
-        :class:`astropy.units.Unit` objects.
+        From a list of target units (either as a string or astropy
+        :class:`~astropy.units.Unit` objects), return a list of conditioned
+        :class:`~astropy.units.Unit` objects.
 
         Parameters
         ----------
         targets: list of target units
-            list of units (either as a string or unit) and physical types
+            list of units (either as a string or :class:`~astropy.units.Unit`)
             to be conditioned into astropy :class:`~astropy.units.Unit` objects
+
+        from_annotations: bool
+            (Default `False`) Indicates if `targets` originated from function/method
+            annotations versus decorator input arguments.
 
         Returns
         -------
@@ -865,17 +873,31 @@ class CheckUnits(CheckBase):
 
         Raises
         ------
+        TypeError
+            If `target` is not a valid type for :class:`~astropy.units.Unit` when
+            `from_annotations == True`,
+
         ValueError
-            if a target is not a valid :mod:`astropy` unit of physical type.
-
-        Notes
-        -----
-        * access to :func:`astropy.units.decorators._get_allowed_units`
+            If a `target` is a valid unit type but not a valid value for
+            :class:`~astropy.units.Unit`.
         """
-        # remove astropy.units.quantity.Quantity
-        targets = [t for t in targets if t is not u.Quantity]
+        # Note: this method does not allow for astropy physical types. This is
+        #       done because we expect all use cases of CheckUnits to define the
+        #       exact units desired.
+        #
+        allowed_units = []
+        for target in targets:
+            try:
+                target_unit = u.Unit(target)
+                allowed_units.append(target_unit)
+            except TypeError as err:
+                # not a unit type
+                if not from_annotations:
+                    raise err
 
-        return _get_allowed_units(targets)
+                continue
+
+        return allowed_units
 
     @staticmethod
     def _normalize_equivalencies(equivalencies):
