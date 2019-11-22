@@ -110,7 +110,7 @@ class CheckValues(CheckBase):
             arg1={'can_be_negative': False, 'can_be_nan': False},
                          arg2={'can_be_inf': False},
                          checks_on_return={'none_shall_pass': True)
-            def bar(arg1, arg2):
+            def bar(self, arg1, arg2):
                 return None
     """
     #: Default values for the possible 'check' keys.
@@ -381,7 +381,7 @@ class CheckUnits(CheckBase):
             @CheckUnits(arg1={'units': u.cm},
                         arg2=u.cm,
                         checks_on_return=[u.cm, u.km])
-            def bar(arg1, arg2):
+            def bar(self, arg1, arg2):
                 return arg1 + arg2
 
     Define units with function annotations::
@@ -396,7 +396,7 @@ class CheckUnits(CheckBase):
         # or on a method
         class Foo:
             @CheckUnits()
-            def bar(arg1: u.cm, arg2: u.cm) -> u.cm:
+            def bar(self, arg1: u.cm, arg2: u.cm) -> u.cm:
                 return arg1 + arg2
 
     Allow `None` values to pass, on input and output::
@@ -1078,7 +1078,7 @@ def check_units(func=None,
             @check_units(arg1={'units': u.cm},
                          arg2=u.cm,
                          checks_on_return=[u.cm, u.km])
-            def bar(arg1, arg2):
+            def bar(self, arg1, arg2):
                 return arg1 + arg2
 
     Define units with function annotations::
@@ -1093,7 +1093,7 @@ def check_units(func=None,
         # or on a method
         class Foo:
             @check_units
-            def bar(arg1: u.cm, arg2: u.cm) -> u.cm:
+            def bar(self, arg1: u.cm, arg2: u.cm) -> u.cm:
                 return arg1 + arg2
 
     Allow `None` values to pass::
@@ -1200,7 +1200,7 @@ def check_values(func=None,
             @check_values(arg1={'can_be_negative': False, 'can_be_nan': False},
                           arg2={'can_be_inf': False},
                           checks_on_return={'none_shall_pass': True)
-            def bar(arg1, arg2):
+            def bar(self, arg1, arg2):
                 return None
     """
     if checks_on_return is not None:
