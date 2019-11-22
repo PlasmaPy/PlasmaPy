@@ -975,18 +975,20 @@ class TestCheckValues:
                 assert wfoo(*args, **kwargs) == case['output']
 
         # test on class method
-        class Bar:
-            def __init__(self):
-                self.y = -5
+        class Foo:
+            @CheckValues(y={'can_be_negative': True})
+            def __init__(self, y):
+                self.y = y
 
             @CheckValues(x={'can_be_negative': True},
                          checks_on_return={'can_be_negative': False})
-            def foo(self, x):
+            def bar(self, x):
                 return x + self.y
 
-        assert Bar().foo(6) == 1
+        foo = Foo(-5)
+        assert foo.bar(6) == 1
         with pytest.raises(ValueError):
-            Bar().foo(1)
+            foo.bar(1)
 
     def test_cv_preserves_signature(self):
         """Test CheckValues preserves signature of wrapped function."""
