@@ -513,6 +513,19 @@ class TestCheckUnits:
                 with pytest.raises(case['output'][3]):
                     cu._check_unit(arg, arg_name, arg_checks)
 
+        # test on class method
+        class Foo:
+            @CheckUnits()
+            def __init__(self, y: u.cm):
+                self.y = y
+
+            @CheckUnits(x=u.cm)
+            def bar(self, x) -> u.cm:
+                return x + self.y
+
+        foo = Foo(10. * u.cm)
+        assert foo.bar(-3 * u.cm) == 7 * u.cm
+
     def test_cu_called_as_decorator(self):
         """
         Test behavior of `CheckUnits.__call__` (i.e. used as a decorator).
@@ -1373,45 +1386,3 @@ def test_check_relativistic_decorator_errors(speed, betafrac, error):
 
     with pytest.raises(error):
         speed_func()
-
-# TODO: move test into TestCheckUnits
-def test_check_units_on_methods():
-    class square:
-        @check_units
-        def __init__(self, side: u.m):
-            self.side = side
-
-        @check_units
-        def area(self) -> u.m**2:
-            return self.side**2
-
-    testsquare = square(2*u.m)
-    assert testsquare.area() == (4 * u.m**2)
-
-# TODO: move test into TestCheckUnits
-def test_check_units_on_methods_alternate_call():
-    class square:
-        @check_units
-        def __init__(self, side: u.m):
-            self.side = side
-
-        @check_units(checks_on_return={'units': u.m**2})
-        def area(self):
-            return self.side**2
-
-    testsquare = square(2*u.m)
-    assert testsquare.area() == (4 * u.m**2)
-
-# TODO: move test into TestCheckUnits
-def test_check_units_on_methods_simpler_function():
-    class square:
-        @check_units
-        def __init__(self, side: u.m):
-            self.side = side
-
-        @check_units(checks_on_return={'units':u.m})
-        def fourier(self):
-            return 4*self.side
-
-    testsquare = square(2*u.m)
-    assert testsquare.fourier() == (8 * u.m)
