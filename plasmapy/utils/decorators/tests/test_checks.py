@@ -513,19 +513,6 @@ class TestCheckUnits:
                 with pytest.raises(case['output'][3]):
                     cu._check_unit(arg, arg_name, arg_checks)
 
-        # test on class method
-        class Foo:
-            @CheckUnits()
-            def __init__(self, y: u.cm):
-                self.y = y
-
-            @CheckUnits(x=u.cm)
-            def bar(self, x) -> u.cm:
-                return x + self.y
-
-        foo = Foo(10. * u.cm)
-        assert foo.bar(-3 * u.cm) == 7 * u.cm
-
     def test_cu_called_as_decorator(self):
         """
         Test behavior of `CheckUnits.__call__` (i.e. used as a decorator).
@@ -580,6 +567,19 @@ class TestCheckUnits:
                     wfoo(*args, **kwargs)
             else:
                 assert wfoo(*args, **kwargs) == case['output']
+
+        # test on class method
+        class Foo:
+            @CheckUnits()
+            def __init__(self, y: u.cm):
+                self.y = y
+
+            @CheckUnits(x=u.cm)
+            def bar(self, x) -> u.cm:
+                return x + self.y
+
+        foo = Foo(10. * u.cm)
+        assert foo.bar(-3 * u.cm) == 7 * u.cm
 
     def test_cu_preserves_signature(self):
         """Test `CheckValues` preserves signature of wrapped function."""
