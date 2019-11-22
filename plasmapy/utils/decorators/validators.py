@@ -96,8 +96,18 @@ class ValidateQuantities(CheckUnits, CheckValues):
             try:
                 # if 'none_shall_pass' was in the original passed-in validations,
                 # then override the value determined by CheckUnits
-                validations[arg_name]['none_shall_pass'] = \
-                    self.validations[arg_name]['none_shall_pass']
+                _none_shall_pass = self.validations[arg_name]['none_shall_pass']
+                # if validations[arg_name]['none_shall_pass'] != _none_shall_pass:
+                if _none_shall_pass is False \
+                        and validations[arg_name]['none_shall_pass'] is True:
+                    raise ValueError(
+                        f"Validation 'none_shall_pass' for argument '{arg_name}' is "
+                        f"inconsistent between function annotations "
+                        f"({validations[arg_name]['none_shall_pass']}) and decorator "
+                        f"argument ({_none_shall_pass})."
+                    )
+
+                validations[arg_name]['none_shall_pass'] = _none_shall_pass
             except (KeyError, TypeError):
                 # 'none_shall_pass' was not in the original passed-in validations, so
                 # rely on the value determined by CheckUnits

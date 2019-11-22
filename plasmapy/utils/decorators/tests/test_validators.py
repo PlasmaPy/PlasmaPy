@@ -57,8 +57,8 @@ class TestValidateQuantities:
         # 'warns' = if `_get_validations` issues a warning
         #
         _cases = [
-            # typical call
-            {'setup': {'function': self.foo,
+            {'descr': "typical call...using 'can_be_negative'",
+             'setup': {'function': self.foo,
                        'args': (5, ),
                        'kwargs': {},
                        'validations': {'x': {'units': u.cm, 'can_be_negative': False}},
@@ -66,7 +66,8 @@ class TestValidateQuantities:
              'output': {'x': {'units': [u.cm],
                               'can_be_negative': False}},
              },
-            {'setup': {'function': self.foo,
+            {'descr': "typical call...using 'none_shall_pass'",
+             'setup': {'function': self.foo,
                        'args': (5,),
                        'kwargs': {},
                        'validations': {'x': {'units': u.cm, 'none_shall_pass': True}},
@@ -74,27 +75,24 @@ class TestValidateQuantities:
              'output': {'x': {'units': [u.cm],
                               'none_shall_pass': True}},
              },
-
-            # call w/o value validations
-            {'setup': {'function': self.foo,
+            {'descr': "call w/o value validations",
+             'setup': {'function': self.foo,
                        'args': (5,),
                        'kwargs': {},
                        'validations': {'x': {'units': u.cm}},
                        },
              'output': {'x': {'units': [u.cm]}},
              },
-
-            # call w/o unit validations
-            {'setup': {'function': self.foo,
+            {'descr': "call w/o unit validations",
+             'setup': {'function': self.foo,
                        'args': (5,),
                        'kwargs': {},
                        'validations': {'x': {'can_be_inf': False}},
                        },
              'raises': ValueError,
              },
-
-            # 'none_shall_pass' defined w/ validations
-            {'setup': {'function': self.foo,
+            {'descr': "'none_shall_pass' defined w/ validations",
+             'setup': {'function': self.foo,
                        'args': (5,),
                        'kwargs': {},
                        'validations': {'x': {'units': [u.cm, None]}},
@@ -102,24 +100,31 @@ class TestValidateQuantities:
              'output': {'x': {'units': [u.cm],
                               'none_shall_pass': True}},
              },
-
-            # units are defined via function annotations
-            {'setup': {'function': self.foo_anno,
+            {'descr': "units are defined via function annotations",
+             'setup': {'function': self.foo_anno,
                        'args': (5,),
                        'kwargs': {},
                        'validations': {},
                        },
              'output': {'x': {'units': [u.cm]}},
              },
-
-            # define 'validations_on_return'
-            {'setup': {'function': self.foo,
+            {'descr': "define 'validations_on_return",
+             'setup': {'function': self.foo,
                        'args': (5,),
                        'kwargs': {},
                        'validations': {'validations_on_return': {'units': [u.cm, None]}},
                        },
              'output': {'validations_on_return': {'units': [u.cm],
                                                   'none_shall_pass': True}},
+             },
+            {'descr': "'none_shall_pass' is inconsistently doubly defined'",
+             'setup': {'function': self.foo,
+                       'args': (5,),
+                       'kwargs': {},
+                       'validations': {'x': {'units': [u.cm, None],
+                                             'none_shall_pass': False}},
+                       },
+             'raises': ValueError,
              },
         ]
 
