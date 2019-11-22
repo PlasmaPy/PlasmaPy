@@ -1049,13 +1049,15 @@ def check_units(func=None,
     Notes
     -----
     * Checking of function arguments `*args` and `**kwargs` is not supported.
-    * Decorator does NOT perform any unit conversions, unlike
-      :func:`~plasmapy.utils.decorators.validate_quantities`.
+    * Decorator does NOT perform any unit conversions, look to
+      :func:`~plasmapy.utils.decorators.validate_quantities` if that functionality is
+      desired.
     * If it is desired that `None` values do not raise errors or warnings, then
       include `None` in the list of units or as a default value for the function
       argument.
     * If units are not specified in `checks`, then the decorator will attempt
       to identify desired units by examining the function annotations.
+    * Full functionality is defined by the class :class:`CheckUnits`.
 
     Examples
     --------
