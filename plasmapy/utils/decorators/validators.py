@@ -61,7 +61,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     Notes
     -----
-    * Checking of function arguments `*args` and `**kwargs` is not supported.
+    * Validation of function arguments `*args` and `**kwargs` is not supported.
     * `None` values will pass when `None` is included in the list of specified units,
       is set as a default value for the function argument, or `none_shall_pass` is
       set to `True`.  If `none_shall_pass` is doubly/triply defined through the
@@ -90,7 +90,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
                                 vel=u.cm / u.s,
                                 validations_on_return=[u.g * u.cm / u.s,
                                                        u.kg * u.m / u.s])
-            def bar(mass, vel):
+            def bar(self, mass, vel):
                 return mass * vel
 
 
@@ -100,7 +100,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         from plasmapy.utils.decorators import ValidateQuantities
 
         @ValidateQuantities(mass={'can_be_negative': False})
-        def foo(self, mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
+        def foo(mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
             return mass * vel
 
         # on a method
