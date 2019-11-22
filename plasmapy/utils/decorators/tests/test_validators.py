@@ -260,13 +260,13 @@ class TestValidateQuantities:
                 with pytest.warns(case['warns']):
                     warnings.simplefilter("always",
                                           category=ImplicitUnitConversionWarning)
-                    _result = vq._validate_quantity(arg, arg_name, **validations)
+                    _result = vq._validate_quantity(arg, arg_name, validations)
             elif 'raises' in case:
                 with pytest.raises(case['raises']):
-                    vq._validate_quantity(arg, arg_name, **validations)
+                    vq._validate_quantity(arg, arg_name, validations)
                 continue
             else:
-                _result = vq._validate_quantity(arg, arg_name, **validations)
+                _result = vq._validate_quantity(arg, arg_name, validations)
 
             assert _result == case['output']
 
@@ -287,7 +287,7 @@ class TestValidateQuantities:
             vq = ValidateQuantities(**validations)
             vq.f = self.foo
 
-            assert vq._validate_quantity(*args, **validations) == case['output']
+            assert vq._validate_quantity(*args, validations) == case['output']
             assert mock_cu_checks.called
             assert mock_cv_checks.called
 

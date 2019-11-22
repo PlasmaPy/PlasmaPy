@@ -183,7 +183,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
                 # validate argument & update for conversion
                 arg = self._validate_quantity(bound_args.arguments[arg_name],
                                               arg_name,
-                                              **validations[arg_name])
+                                              validations[arg_name])
                 bound_args.arguments[arg_name] = arg
 
             # call function
@@ -192,7 +192,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
             # validate output
             if 'validations_on_return' in validations:
                 _return = self._validate_quantity(_return, 'validations_on_return',
-                                                  **validations['validations_on_return'])
+                                                  validations['validations_on_return'])
 
             return _return
         return wrapper
@@ -266,7 +266,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         return validations
 
-    def _validate_quantity(self, arg, arg_name, **validations):
+    def _validate_quantity(self, arg, arg_name: str, arg_validations: Dict[str, Any]):
         # rename to work with "check" methods
         if arg_name == 'validations_on_return':
             arg_name = 'checks_on_return'
@@ -281,10 +281,10 @@ class ValidateQuantities(CheckUnits, CheckValues):
         # initialize TypeError message
         typeerror_msg = (f"{err_msg} should be an astropy Quantity with units"
                          f" equivalent to one of [")
-        for ii, unit in enumerate(validations['units']):
+        for ii, unit in enumerate(arg_validations['units']):
             typeerror_msg += f"{unit}"
 
-            if ii != len(validations['units']) - 1:
+            if ii != len(arg_validations['units']) - 1:
                 typeerror_msg += f", "
         typeerror_msg += f"]"
 
@@ -293,29 +293,29 @@ class ValidateQuantities(CheckUnits, CheckValues):
         #
         if arg is None or hasattr(arg, 'unit'):
             pass
-        elif len(validations['units']) != 1:
+        elif len(arg_validations['units']) != 1:
             raise TypeError(typeerror_msg)
         else:
             try:
-                arg = arg * validations['units'][0]
+                arg = arg * arg_validations['units'][0]
             except (TypeError, ValueError):
                 raise TypeError(typeerror_msg)
             else:
                 warnings.warn(u.UnitsWarning(
                     f"{err_msg} has no specified units. Assuming units of "
-                    f"{validations['units'][0]}. To silence this warning, "
+                    f"{arg_validations['units'][0]}. To silence this warning, "
                     f"explicitly pass in an astropy Quantity "
                     f"(e.g. 5. * astropy.units.cm) "
                     f"(see http://docs.astropy.org/en/stable/units/)"
                 ))
 
         # check units
-        arg, unit, equiv, err = self._check_unit_core(arg, arg_name, validations)
+        arg, unit, equiv, err = self._check_unit_core(arg, arg_name, arg_validations)
 
         # convert quantity
         if arg is not None \
                 and unit is not None \
-                and not validations['pass_equivalent_units']:
+                and not arg_validations['pass_equivalent_units']:
 
             if arg.unit != unit:
                 # if non-standard conversion then warn
@@ -329,7 +329,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
             raise err
 
         # check value
-        self._check_value(arg, arg_name, validations)
+        self._check_value(arg, arg_name, arg_validations)
 
         return arg
 
