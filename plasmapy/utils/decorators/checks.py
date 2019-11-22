@@ -1009,7 +1009,7 @@ def check_units(func=None,
                 checks_on_return: Dict[str, Any] = None,
                 **checks: Dict[str, Any]):
     """
-    A decorator class to 'check' -- limit/control -- the units of input and return
+    A decorator to 'check' -- limit/control -- the units of input and return
     arguments to a function or method.
 
     Parameters
@@ -1144,7 +1144,7 @@ def check_values(func=None,
                  checks_on_return: Dict[str, bool] = None,
                  **checks: Dict[str, bool]):
     """
-    A decorator class to 'check' -- limit/control -- the values of input and return
+    A decorator to 'check' -- limit/control -- the values of input and return
     arguments to a function or method.
 
     Parameters
