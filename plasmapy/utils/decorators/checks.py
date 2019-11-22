@@ -639,7 +639,8 @@ class CheckUnits(CheckBase):
                                                        from_annotations=True)
             if not all(_u in _units for _u in _units_anno):
                 raise ValueError(
-                    f"Annotation units ({_units_anno}) are not included in the units "
+                    f"For argument '{param.name}', "
+                    f"annotation units ({_units_anno}) are not included in the units "
                     f"specified by decorator arguments ({_units}).  Use either "
                     f"decorator arguments or function annotations to defined unit "
                     f"types, or make sure annotation specifications match decorator "
