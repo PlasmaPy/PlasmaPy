@@ -393,6 +393,21 @@ class TestValidateQuantities:
         with pytest.raises(TypeError):
             ValidateQuantities(checks_on_return=u.cm)
 
+        # test on class method
+        class Foo:
+            @ValidateQuantities()
+            def __init__(self, y: u.cm):
+                self.y = y
+
+            @ValidateQuantities(validations_on_return={'can_be_negative': False})
+            def bar(self, x: u.cm) -> u.m:
+                return x + self.y
+
+        foo = Foo(-10 * u.cm)
+        assert foo.bar(20.*u.cm) == 0.1*u.m
+        with pytest.raises(ValueError):
+            foo.bar(5*u.cm)
+
     @mock.patch(ValidateQuantities.__module__ + '.' + ValidateQuantities.__qualname__,
                 side_effect=ValidateQuantities, autospec=True)
     def test_decorator_func_def(self, mock_vq_class):
