@@ -201,7 +201,24 @@ class ValidateQuantities(CheckUnits, CheckValues):
             self,
             bound_args: inspect.BoundArguments) -> Dict[str, Dict[str, Any]]:
         """
-        TODO: write docstrings
+        Review :attr:`validations` and function bound arguments to build a complete
+        'validations' dictionary.  If a validation key is omitted from the argument
+        validations, then a default value is assumed (see `quantity validations`_).
+
+        Parameters
+        ----------
+        bound_args: :class:`inspect.BoundArguments`
+            arguments passed into the function being wrapped
+
+            .. code-block:: python
+
+                bound_args = inspect.signature(f).bind(*args, **kwargs)
+
+        Returns
+        -------
+        Dict[str, Dict[str, Any]]
+            A complete 'validations' dictionary for validating function input arguments
+            and return.
         """
         unit_checks = self._get_unit_checks(bound_args)
         value_checks = self._get_value_checks(bound_args)
