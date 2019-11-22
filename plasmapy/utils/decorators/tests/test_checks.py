@@ -22,6 +22,7 @@ from plasmapy.utils.decorators.checks import (
 from plasmapy.utils.exceptions import (PlasmaPyWarning,
                                        RelativityWarning,
                                        RelativityError)
+from types import LambdaType
 from typing import (Any, Dict)
 from unittest import mock
 
@@ -94,6 +95,17 @@ class TestCheckUnits:
         for key, val in _defaults:
             assert cu._CheckUnits__check_defaults[key] == val
 
+    def test_cu_method__flatten_equivalencies_list(self):
+        assert hasattr(CheckUnits, '_flatten_equivalencies_list')
+
+        cu = CheckUnits()
+        pairs = [
+            ([1, 2, 4], [1, 2, 4]),
+            ([1, 2, (3, 4), [5, 6]], [1, 2, (3, 4), 5, 6])
+        ]
+        for pair in pairs:
+            assert cu._flatten_equivalencies_list(pair[0]) == pair[1]
+
     def test_cu_method__condition_target_units(self):
         """Test method `CheckUnits._condition_target_units`."""
         assert hasattr(CheckUnits, '_condition_target_units')
@@ -111,16 +123,58 @@ class TestCheckUnits:
         with pytest.raises(ValueError):
             cu._condition_target_units(['five'])
 
-    def test_cu_method__flatten_equivalencies_list(self):
-        assert hasattr(CheckUnits, '_flatten_equivalencies_list')
+    def test_cu_method__normalize_equivalencies(self):
+        """Test method `CheckUnits._normalize_equivalencies`."""
+        assert hasattr(CheckUnits, '_normalize_equivalencies')
 
         cu = CheckUnits()
-        pairs = [
-            ([1, 2, 4], [1, 2, 4]),
-            ([1, 2, (3, 4), [5, 6]], [1, 2, (3, 4), 5, 6])
-        ]
-        for pair in pairs:
-            assert cu._flatten_equivalencies_list(pair[0]) == pair[1]
+
+        assert cu._normalize_equivalencies(None) == []
+
+        # 2 element equivalency
+        norme = cu._normalize_equivalencies([(u.cm, u.cm)])
+        assert len(norme) == 1
+        assert isinstance(norme[0], tuple)
+        assert len(norme[0]) == 4
+        assert norme[0][0] == norme[0][1]
+        assert norme[0][2] == norme[0][3]
+        assert isinstance(norme[0][2], LambdaType)
+        assert norme[0][1] == norme[0][2](norme[0][0])
+        assert norme[0][0] == norme[0][3](norme[0][1])
+
+        # 3 element equivalency
+        norme = cu._normalize_equivalencies([(u.cm, u.cm, lambda x: x)])
+        assert len(norme) == 1
+        assert isinstance(norme[0], tuple)
+        assert len(norme[0]) == 4
+        assert norme[0][0] == norme[0][1]
+        assert norme[0][2] == norme[0][3]
+        assert isinstance(norme[0][2], LambdaType)
+        assert norme[0][1] == norme[0][2](norme[0][0])
+        assert norme[0][0] == norme[0][3](norme[0][1])
+
+        # 3 element equivalency
+        norme = cu._normalize_equivalencies([(u.K, u.deg_C,
+                                              lambda x: x - 273.15,
+                                              lambda x: x + 273.15)])
+        assert len(norme) == 1
+        assert isinstance(norme[0], tuple)
+        assert len(norme[0]) == 4
+        assert norme[0][0] == u.K
+        assert norme[0][1] == u.deg_C
+        assert isinstance(norme[0][2], LambdaType)
+        assert isinstance(norme[0][3], LambdaType)
+        for val in [-20., 50., 195.]:
+            assert norme[0][2](val) == (lambda x: x -273.15)(val)
+            assert norme[0][3](val) == (lambda x: x + 273.15)(val)
+
+        # not a 2, 3, or 4-tuple
+        with pytest.raises(ValueError):
+            cu._normalize_equivalencies([(u.cm,)])
+
+        # input is not a astropy.unit.Unit
+        with pytest.raises(ValueError):
+            cu._normalize_equivalencies([('cm', u.cm)])
 
     def test_cu_method__get_unit_checks(self):
         """

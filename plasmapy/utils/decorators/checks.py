@@ -13,8 +13,6 @@ import warnings
 from astropy import units as u
 from astropy.constants import c
 from astropy.units import UnitsWarning
-from astropy.units.core import _normalize_equivalencies
-from astropy.units.decorators import _get_allowed_units
 from functools import reduce
 from plasmapy.utils.decorators import preserve_signature
 from plasmapy.utils.exceptions import (PlasmaPyWarning,
@@ -906,6 +904,9 @@ class CheckUnits(CheckBase):
 
             (from_unit, to_unit, forward_func, backward_func)
 
+        `forward_func` maps `from_unit` into `to_unit` and `backward_func` does
+        the reverse.
+
         Parameters
         ----------
         equivalencies: list of equivalent pairs
@@ -918,9 +919,40 @@ class CheckUnits(CheckBase):
 
         Notes
         -----
-        * access to :func:`astropy.units.core._normalize_equivalencies`
+        * the code here was copied and modified from
+          :func:`astropy.units.core._normalize_equivalencies` from AstroPy
+          version 3.2.3
+        * this will work on both the old style list equivalencies (pre AstroPy v3.2.1)
+          and the modern equivalencies defined with the
+          :class:`~astropy.units.equivalencies.Equivalency` class
         """
-        return _normalize_equivalencies(equivalencies)
+        if equivalencies is None:
+            return []
+
+        normalized = []
+
+        for i, equiv in enumerate(equivalencies):
+            if len(equiv) == 2:
+                from_unit, to_unit = equiv
+                a = b = lambda x: x
+            elif len(equiv) == 3:
+                from_unit, to_unit, a = equiv
+                b = a
+            elif len(equiv) == 4:
+                from_unit, to_unit, a, b = equiv
+            else:
+                raise ValueError(
+                    f"Invalid equivalence entry {i}: {equiv!r}")
+
+            if not (from_unit is u.Unit(from_unit) and
+                    (to_unit is None or to_unit is u.Unit(to_unit)) and
+                    callable(a) and
+                    callable(b)):
+                raise ValueError(
+                    f"Invalid equivalence entry {i}: {equiv!r}")
+            normalized.append((from_unit, to_unit, a, b))
+
+        return normalized
 
     def _flatten_equivalencies_list(self, elist):
         """
