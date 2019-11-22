@@ -278,6 +278,29 @@ class ValidateQuantities(CheckUnits, CheckValues):
         return validations
 
     def _validate_quantity(self, arg, arg_name: str, arg_validations: Dict[str, Any]):
+        """
+        Perform validations `arg_validations` on function argument `arg`
+        named `arg_name`.
+
+        Parameters
+        ----------
+        arg
+            The argument to be validated.
+
+        arg_name: str
+            The name of the argument to be validated
+
+        arg_validations: Dict[str, Any]
+            The requested validations for the argument
+
+        Raises
+        ------
+        TypeError
+            if argument is not an AstroPy :class:`~astropy.units.Quantity`
+            or not convertible to a :class:`~astropy.units.Quantity`
+        ValueError
+            if validations fail
+        """
         # rename to work with "check" methods
         if arg_name == 'validations_on_return':
             arg_name = 'checks_on_return'
