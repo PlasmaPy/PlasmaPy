@@ -541,8 +541,9 @@ class CheckUnits(CheckBase):
             #           CheckUnits(x={'units': [u.cm, u.s]})
             #   3. function annotations
             #
-            # * options (1) and (2) will supersede option (3)
-            # # TODO make these mutually exclusive
+            # * if option (3) is used simultaneously with option (1) or (2), then
+            #   checks defined by (3) must be consistent with checks from (1) or (2)
+            #   to avoid raising an error.
             # * if None is included in the units list, then None values are allowed
             #
             _none_shall_pass = False
@@ -654,7 +655,7 @@ class CheckUnits(CheckBase):
             if _equivs is None or _equivs == [None]:
                 _equivs = None
             elif isinstance(_equivs, Equivalency):
-                _equivs = _equivs
+                pass
             elif isinstance(_equivs, (list, tuple)):
 
                 # flatten list to non-list elements
