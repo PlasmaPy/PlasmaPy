@@ -161,6 +161,17 @@ class ValidateQuantities(CheckUnits, CheckValues):
         super().__init__(**checks)
 
     def __call__(self, f):
+        """
+        Parameters
+        ----------
+        f
+            Function to be wrapped
+
+        Returns
+        -------
+        function
+            wrapped function of `f`
+        """
         self.f = f
         wrapped_sign = inspect.signature(f)
 
