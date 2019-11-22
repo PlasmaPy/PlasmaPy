@@ -309,7 +309,7 @@ class CheckValues(CheckBase):
 class CheckUnits(CheckBase):
     """
     A decorator class to 'check' -- limit/control -- the units of input and return
-    arguments to a function/method.
+    arguments to a function or method.
 
     Parameters
     ----------
@@ -328,8 +328,8 @@ class CheckUnits(CheckBase):
         Unit checks can be defined by passing one of the astropy
         :mod:`~astropy.units`, a list of astropy units, or a dictionary containing
         the keys defined below.  Units can also be defined with function
-        annotations, but argument pass-though will override any annotations.  If
-        a key is omitted, then the default value will be assumed.
+        annotations, but must be consistent with decorator `**checks` arguments if
+        used concurrently. If a key is omitted, then the default value will be assumed.
 
         ====================== ======= ================================================
         Key                    Type    Description
@@ -352,8 +352,7 @@ class CheckUnits(CheckBase):
       include `None` in the list of units or as a default value for the function
       argument.
     * If units are not specified in `checks`, then the decorator will attempt
-      to identify desired units by examining the function annotations.  However,
-      `checks` will always override function annotations.
+      to identify desired units by examining the function annotations.
 
     Examples
     --------
@@ -368,6 +367,14 @@ class CheckUnits(CheckBase):
         def foo(arg1, arg2):
             return arg1 + arg2
 
+        # or on a method
+        class Foo:
+            @CheckUnits(arg1={'units': u.cm},
+                        arg2=u.cm,
+                        checks_on_return=[u.cm, u.km])
+            def bar(arg1, arg2):
+                return arg1 + arg2
+
     Define units with function annotations::
 
         import astropy.units as u
@@ -376,6 +383,12 @@ class CheckUnits(CheckBase):
         @CheckUnits()
         def foo(arg1: u.cm, arg2: u.cm) -> u.cm:
             return arg1 + arg2
+
+        # or on a method
+        class Foo:
+            @CheckUnits()
+            def bar(arg1: u.cm, arg2: u.cm) -> u.cm:
+                return arg1 + arg2
 
     Allow `None` values to pass, on input and output::
 
@@ -987,7 +1000,7 @@ def check_units(func=None,
                 **checks: Dict[str, Any]):
     """
     A decorator class to 'check' -- limit/control -- the units of input and return
-    arguments to a function/method.
+    arguments to a function or method.
 
     Parameters
     ----------
@@ -1009,8 +1022,8 @@ def check_units(func=None,
         Unit checks can be defined by passing one of the astropy
         :mod:`~astropy.units`, a list of astropy units, or a dictionary containing
         the keys defined below.  Units can also be defined with function
-        annotations, but argument pass-though will override any annotations.  If
-        a key is omitted, then the default value will be assumed.
+        annotations, but must be consistent with decorator `**checks` arguments if
+        used concurrently. If a key is omitted, then the default value will be assumed.
 
         ====================== ======= ================================================
         Key                    Type    Description
@@ -1034,8 +1047,7 @@ def check_units(func=None,
       include `None` in the list of units or as a default value for the function
       argument.
     * If units are not specified in `checks`, then the decorator will attempt
-      to identify desired units by examining the function annotations.  However,
-      `checks` will always override function annotations.
+      to identify desired units by examining the function annotations.
 
     Examples
     --------
@@ -1050,6 +1062,14 @@ def check_units(func=None,
         def foo(arg1, arg2):
             return arg1 + arg2
 
+        # or on a method
+        class Foo:
+            @check_units(arg1={'units': u.cm},
+                         arg2=u.cm,
+                         checks_on_return=[u.cm, u.km])
+            def bar(arg1, arg2):
+                return arg1 + arg2
+
     Define units with function annotations::
 
         import astropy.units as u
@@ -1058,6 +1078,12 @@ def check_units(func=None,
         @check_units
         def foo(arg1: u.cm, arg2: u.cm) -> u.cm:
             return arg1 + arg2
+
+        # or on a method
+        class Foo:
+            @check_units
+            def bar(arg1: u.cm, arg2: u.cm) -> u.cm:
+                return arg1 + arg2
 
     Allow `None` values to pass::
 
