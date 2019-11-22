@@ -24,6 +24,7 @@ from typing import (Any, Dict, List, Tuple, Union)
 try:
     from astropy.units.equivalencies import Equivalency
 except ImportError:
+    # TODO: remove once we have dependency Astropy >= 3.2.1
     # astropy defined the Equivalency class in v3.2.1
     class Equivalency:
         pass
