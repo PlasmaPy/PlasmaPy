@@ -16,10 +16,132 @@ from typing import (Any, Dict, List, Union)
 
 class ValidateQuantities(CheckUnits, CheckValues):
     """
-    A decorator class to "validate" (i.e. control convert) the units (and values) of
-    input/output arguments to a function.  (Validating of function arguments `*args`
-    and `**kwargs` is not supported.)
+    A decorator class to 'validate' -- control and convert -- the units and values
+    of input and return arguments to a function or method.  Arguments are expected to
+    be astropy :class:`~astropy.units.quantity.Quantity` objects.
 
+    Parameters
+    ----------
+    validations_on_return: dictionary of validation specifications
+        Specifications for unit and value validations on the return of the
+        function being wrapped. (see `quantity validations`_ for valid
+        specifications.
+
+    **validations: dictionary of validation specifications
+        Specifications for unit and value validations on the input arguments of the
+        function being wrapped.  Each keyword argument in `validations` is the
+        name of a function argument to be validated and the keyword value contains
+        the unit and value validation specifications.
+
+        .. _`quantity validations`:
+
+        Unit and value validations can be defined by passing one of the astropy
+        :mod:`~astropy.units`, a list of astropy units, or a dictionary containing
+        the keys defined below.  Units can also be defined with function annotations,
+        but must be consistent with decorator `**validations` arguments if used
+        concurrently.  If a key is omitted, then the default value will be assumed.
+
+        ====================== ======= ================================================
+        Key                    Type    Description
+        ====================== ======= ================================================
+        units                          list of desired astropy :mod:`~astropy.units`
+        equivalencies                  | [DEFAULT `None`] A list of equivalent pairs to
+                                         try if
+                                       | the units are not directly convertible.
+                                       | (see :mod:`~astropy.units.equivalencies`,
+                                         and/or `astropy equivalencies`_)
+        pass_equivalent_units  `bool`  | [DEFAULT `False`] allow equivalent units
+                                       | to pass
+        can_be_negative        `bool`  [DEFAULT `True`] values can be negative
+        can_be_complex         `bool`  [DEFAULT `False`] values can be complex numbers
+        can_be_inf             `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
+        can_be_nan             `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
+        none_shall_pass        `bool`  [DEFAULT `False`] values can be a python `None`
+        ====================== ======= ================================================
+
+    Notes
+    -----
+    * Checking of function arguments `*args` and `**kwargs` is not supported.
+    * `None` values will pass when `None` is included in the list of specified units,
+      is set as a default value for the function argument, or `none_shall_pass` is
+      set to `True`.  If `none_shall_pass` is doubly/triply defined through the
+      mentioned options, then they all must be consistent with each other.
+    * If units are not specified in `validations`, then the decorator will attempt
+      to identify desired units by examining the function annotations.
+
+    Examples
+    --------
+    Define unit and value validations with decorator parameters::
+
+        import astropy.units as u
+        from plasmapy.utils.decorators import ValidateQuantities
+
+        @ValidateQuantities(mass={'units': u.g,
+                                  'can_be_negative': False},
+                            vel=u.cm / u.s,
+                            validations_on_return=[u.g * u.cm / u.s, u.kg * u.m / u.s])
+        def foo(mass, vel):
+            return mass * vel
+
+        # on a method
+        class Foo:
+            @ValidateQuantities(mass={'units': u.g,
+                                      'can_be_negative': False},
+                                vel=u.cm / u.s,
+                                validations_on_return=[u.g * u.cm / u.s,
+                                                       u.kg * u.m / u.s])
+            def bar(mass, vel):
+                return mass * vel
+
+
+    Define units with function annotations::
+
+        import astropy.units as u
+        from plasmapy.utils.decorators import ValidateQuantities
+
+        @ValidateQuantities(mass={'can_be_negative': False})
+        def foo(self, mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
+            return mass * vel
+
+        # on a method
+        class Foo:
+            @ValidateQuantities(mass={'can_be_negative': False})
+            def bar(self, mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
+                return mass * vel
+
+    Allow `None` values to pass::
+
+        import astropy.units as u
+        from plasmapy.utils.decorators import ValidateQuantities
+
+        @ValidateQuantities(checks_on_return=[u.cm, None])
+        def foo(arg1: u.cm = None):
+            return arg1
+
+    Allow return values to have equivalent units::
+
+        import astropy.units as u
+        from plasmapy.utils.decorators import ValidateQuantities
+
+        @ValidateQuantities(arg1={'units': u.cm},
+                            checks_on_return={'units': u.km,
+                                              'pass_equivalent_units': True})
+        def foo(arg1):
+            return arg1
+
+    Allow equivalent units to pass with specified equivalencies::
+
+        import astropy.units as u
+        from plasmapy.utils.decorators import ValidateQuantities
+
+        @ValidateQuantities(arg1={'units': u.K,
+                                  'equivalencies': u.temperature(),
+                                  'pass_equivalent_units': True})
+        def foo(arg1):
+            return arg1
+
+    .. _astropy equivalencies:
+        https://docs.astropy.org/en/stable/units/equivalencies.html
     """
 
     def __init__(self, validations_on_return=None, **validations: Dict[str, Any]):
@@ -89,7 +211,6 @@ class ValidateQuantities(CheckUnits, CheckValues):
         #   function annotations or **validations.
         # * `value_checks` may miss some arguments if **validations only defines
         #   unit validations or some validations come from function annotations
-        #
         validations = unit_checks.copy()
         for arg_name in validations:
             # augment 'none_shall_pass' (if needed)
