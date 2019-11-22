@@ -59,7 +59,7 @@ class CheckBase:
 class CheckValues(CheckBase):
     """
     A decorator class to 'check' -- limit/control -- the values of input and return
-    arguments to a function/method.
+    arguments to a function or method.
 
     Parameters
     ----------
@@ -104,6 +104,14 @@ class CheckValues(CheckBase):
                      checks_on_return={'none_shall_pass': True)
         def foo(arg1, arg2):
             return None
+
+        # on a method
+        class Foo:
+            arg1={'can_be_negative': False, 'can_be_nan': False},
+                         arg2={'can_be_inf': False},
+                         checks_on_return={'none_shall_pass': True)
+            def bar(arg1, arg2):
+                return None
     """
     #: Default values for the possible 'check' keys.
     # To add a new check to the class, the following needs to be done:
@@ -1133,7 +1141,7 @@ def check_values(func=None,
                  **checks: Dict[str, bool]):
     """
     A decorator class to 'check' -- limit/control -- the values of input and return
-    arguments to a function/method.
+    arguments to a function or method.
 
     Parameters
     ----------
@@ -1183,6 +1191,14 @@ def check_values(func=None,
                       checks_on_return={'none_shall_pass': True)
         def foo(arg1, arg2):
             return None
+
+        # on a method
+        class Foo:
+            @check_values(arg1={'can_be_negative': False, 'can_be_nan': False},
+                          arg2={'can_be_inf': False},
+                          checks_on_return={'none_shall_pass': True)
+            def bar(arg1, arg2):
+                return None
     """
     if checks_on_return is not None:
         checks['checks_on_return'] = checks_on_return
