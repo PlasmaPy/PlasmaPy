@@ -14,9 +14,12 @@ to it.
 
 Using sphinx within the project
 -------------------------------
-To build docs locally, run ``python setup.py build_docs`` from
-within the main PlasmaPy repository directory, then open
-``docs/_build/index.html`` with your browser of choice.
+To build docs locally, either:
+
+* use `Tox <https://tox.readthedocs.io/en/latest/>`_ with ``tox -e build_docs`` from within the main PlasmaPy repository directory, or
+* enter the ``docs`` directory and run ``make html``.
+
+Afterwards, open ``docs/_build/index.html`` with your browser of choice.
 
 Do try to solve warnings in documentation when writing your code.
 

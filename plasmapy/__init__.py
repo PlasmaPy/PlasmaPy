@@ -12,8 +12,8 @@ PlasmaPy provides the following functionality:
 
 Subpackages
 -----------
-Each of these subpackages requires an explicit import, for example,
-via ``import plasmapy.physics``.
+Each of these subpackages (except for `formulary` and `atomic`) requires an
+explicit import, for example, via ``import plasmapy.diagnostics``.
 
 ::
 
@@ -21,19 +21,16 @@ via ``import plasmapy.physics``.
  classes                           --- (WIP) classes used in multiple places
  data                              --- Data used for testing and examples
  diagnostics                       --- Experimental research data analysis
- mathematics                       --- General formulae used elsewhere
- physics                           --- Plasma theory functionality
- transport                         --- Transport theory functionality
+ formulary                         --- Plasma theory analysis formulae
  utils                             --- Various utilities
 
 Utility tools
 -------------
 ::
 
- test              --- Run PlasmaPy unit tests
  online_help       --- Search the online documentation
  __version__       --- PlasmaPy version string
- __citation__      --- PlasmaPy citation template
+ __citation__      --- PlasmaPy citation instructions
 
 """
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
@@ -41,17 +38,24 @@ Utility tools
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
-from ._base_init import *
+from .version import version as __version__
+from .version import githash as __githash__
+
+from . import formulary
+from . import atomic
 # ----------------------------------------------------------------------------
 
 # Enforce Python version check during package import.
 # This is the same check as the one at the top of setup.py
 import sys
 
-__name__ = "plasmapy"
+__citation__ = (
+    "Instructions on how to cite and acknowledge PlasmaPy are provided in the "
+    "online documentation at: http://docs.plasmapy.org/en/latest/about/citation.html"
+)
 
 if sys.version_info < tuple((int(val) for val in "3.6".split('.'))):
-    raise Exception("plasmapy does not support Python < {}".format(3.6))
+    raise Exception("PlasmaPy does not support Python < {}".format(3.6))
 
 
 def online_help(query):
@@ -78,7 +82,5 @@ def online_help(query):
     webbrowser.open(url)
 
 
-__citation__ = [
-    "https://doi.org/10.5281/zenodo.1238132",
-    "https://doi.org/10.5281/zenodo.3235817",
-]
+del sys
+del version

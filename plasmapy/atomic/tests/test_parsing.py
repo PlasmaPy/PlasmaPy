@@ -9,7 +9,7 @@ from ..parsing import (
     _case_insensitive_aliases,
     _case_sensitive_aliases,
     _parse_and_check_atomic_input,
-    _call_string,
+    _particle_call_string,  # duplicate with utils.pytest_helpers.error_messages.call_string?
 )
 
 aliases_and_symbols = [
@@ -254,7 +254,8 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
         _parse_and_check_atomic_input(arg, **kwargs)
         pytest.fail(
             "An InvalidParticleError was expected to be raised by "
-            f"{_call_string(arg, kwargs)}, but no exception was raised.")
+            f"{_particle_call_string(arg, kwargs)}, but no exception was raised.")
+
 
 @pytest.mark.parametrize('arg', ParticleZoo.everything - {'p+'})
 def test_parse_InvalidElementErrors(arg):
@@ -265,7 +266,7 @@ def test_parse_InvalidElementErrors(arg):
         _parse_and_check_atomic_input(arg)
         pytest.fail(
             "An InvalidElementError was expected to be raised by "
-            f"{_call_string(arg)}, but no exception was raised.")
+            f"{_particle_call_string(arg)}, but no exception was raised.")
 
 
 # (arg, kwargs, num_warnings)
@@ -288,10 +289,10 @@ def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
         if not record:
             pytest.fail(
                 f"No AtomicWarning was issued by "
-                f"{_call_string(arg, kwargs)} but the expected number "
+                f"{_particle_call_string(arg, kwargs)} but the expected number "
                 f"of warnings was {num_warnings}")
 
     assert len(record) == num_warnings, (
-        f"The number of AtomicWarnings issued by {_call_string(arg, kwargs)} "
+        f"The number of AtomicWarnings issued by {_particle_call_string(arg, kwargs)} "
         f"was {len(record)}, which differs from the expected number "
         f"of {num_warnings} warnings.")

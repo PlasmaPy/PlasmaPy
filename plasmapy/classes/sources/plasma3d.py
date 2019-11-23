@@ -1,23 +1,14 @@
 """
 Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
-import warnings
 
 import numpy as np
 import astropy.units as u
 import itertools
 
-from plasmapy.physics.magnetostatics import MagnetoStatics
+from plasmapy.formulary.magnetostatics import MagnetoStatics
 
-from astropy.constants import (m_p,
-                               m_e,
-                               c,
-                               mu0,
-                               k_B,
-                               e,
-                               eps0,
-                               )
-from numpy import pi
+from astropy.constants import mu0
 
 from plasmapy.classes import GenericPlasma
 
@@ -112,18 +103,17 @@ class Plasma3D(GenericPlasma):
     @classmethod
     def is_datasource_for(cls, **kwargs):
         if len(kwargs) == 3:
-            match = kwargs.get('domain_x') and \
-                    kwargs.get('domain_y') and \
-                    kwargs.get('domain_z')
+            match = all(f'domain_{direction}' in kwargs.keys() for direction in 'xyz')
         else:
             match = False
         return match
 
     def add_magnetostatic(self, *mstats: MagnetoStatics):
         # for each MagnetoStatic argument
+        prod = itertools.product(*[list(range(n)) for n in self.domain_shape])
         for mstat in mstats:
             # loop over 3D-index (ix,iy,iz)
-            for point_index in itertools.product(*[list(range(n)) for n in self.domain_shape]):
+            for point_index in prod:
                 # get coordinate
                 p = self.grid[(slice(None),)+point_index]  # function as [:, *index]
                 # calculate magnetic field at this point and add back

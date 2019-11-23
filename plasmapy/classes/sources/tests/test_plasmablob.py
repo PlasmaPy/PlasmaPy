@@ -3,8 +3,9 @@ import numpy as np
 import astropy.units as u
 
 from plasmapy.classes.sources import plasma3d, plasmablob
-from plasmapy.physics import magnetostatics
+from plasmapy.formulary import magnetostatics
 from plasmapy.atomic.exceptions import InvalidParticleError
+from plasmapy.utils.exceptions import CouplingWarning
 
 
 @pytest.mark.parametrize('grid_dimensions, expected_size', [
@@ -98,6 +99,8 @@ def test_Plasma3D_derived_vars():
     assert test_plasma.alfven_speed.unit.si == u.m / u.s
     assert np.allclose(test_plasma.alfven_speed.value, 10.92548431)
 
+
+@pytest.mark.slow
 def test_Plasma3D_add_magnetostatics():
     r"""Function to test add_magnetostatic function
     """
@@ -110,7 +113,7 @@ def test_Plasma3D_add_magnetostatics():
                 domain_z=np.linspace(-2, 2, 20) * u.m)
 
     plasma.add_magnetostatic(dipole, cw, gw_cw, iw)
-    
+
 class Test_PlasmaBlobRegimes:
     def test_intermediate_coupling(self):
         r"""
@@ -189,7 +192,8 @@ class Test_PlasmaBlobRegimes:
 
         expect_regime = 'Weakly coupled regime: Gamma = 0.0075178096952688445.'
 
-        regime, _ = blob.regimes()
+        with pytest.warns(CouplingWarning):
+            regime, _ = blob.regimes()
         testTrue = regime == expect_regime
 
         errStr = f"Regime should be {expect_regime}, but got {regime} instead."

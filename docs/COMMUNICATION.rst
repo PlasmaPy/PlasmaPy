@@ -6,10 +6,19 @@ Feedback and communication
 `Matrix chat <https://riot.im/app/#/room/#plasmapy:matrix.org>`__
 -----------------------------------------------------------------
 
+The primary communication channel for PlasmaPy is our `Matrix room
+<https://riot.im/app/#/room/#plasmapy:openastronomy.org>`__ (which
+is bridged to `Gitter <https://gitter.im/PlasmaPy/Lobby>`__).
+
 If you have any questions, the quickest way to get a response is to ask
-on our
-`Matrix <https://riot.im/app/#/room/#plasmapy:matrix.org>`__/`Gitter <https://gitter.im/PlasmaPy/Lobby>`__
-channel.
+on our `Matrix <https://riot.im/app/#/room/#plasmapy:matrix.org>`__/ channel.
+
+`Discourse group <https://plasmapy.discourse.group>`__
+------------------------------------------------------
+
+PlasmaPy's `Discourse group <https://plasmapy.discourse.group>`__ is a
+great place to suggest ideas, bring up discussion topics, and ask
+questions in threaded public discussions.
 
 `Mailing list <https://groups.google.com/forum/#!forum/plasmapy>`__
 -------------------------------------------------------------------
@@ -27,13 +36,15 @@ if you would like to (optionally anonymously) suggest a feature/topic
 for consideration. These will be reposted on the mailing list or
 directly in GitHub issues, as appropriate, for further discussion.
 
-`Biweekly <https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ>`__ `video calls <https://meet.jit.si/plasmapy>`__
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-We also have approximately bi-weekly online meetings at
-`Jitsi <https://meet.jit.si/plasmapy>`__, for which we have a `calendar
-here <https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ>`__
-and `written meeting notes
-here <https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing>`__.
-Come discuss plasma software with us!
-
+`Weekly <https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ>`__ `community meetings <https://jitsi.riot.im/plasmapy>`__
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+We have approximately weekly community meetings in the
+`PlasmaPy room on Jitsi <https://jitsi.riot.im/plasmapy>`__.
+The schedule of our community meetings is on our `calendar
+<https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ>`__,
+and you may access the `minutes and agendas
+<https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing>`__.
+Any last minute changes will be discussed on `Matrix
+<https://riot.im/app/#/room/#plasmapy:openastronomy.org>`__.
+As of November 2019, our meetings are on Tuesdays at
+`19:00 UTC <http://time.unitarium.com/utc/7pm>`__.

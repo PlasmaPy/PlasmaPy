@@ -6,13 +6,11 @@ Magnetostatic Fields
 An example of using PlasmaPy's `Magnetostatic` class in `physics` subpackage.
 """
 
-import plasmapy as pp
-from plasmapy.physics import magnetostatics
+from plasmapy.formulary import magnetostatics
 from plasmapy.classes.sources import Plasma3D
 import numpy as np
 import astropy.units as u
 import matplotlib.pyplot as plt
-import itertools
 
 ############################################################
 # Some common magnetostatic fields can be generated and added to a plasma object.

@@ -1,10 +1,10 @@
 """Functionality to parse representations of particles into standard form."""
 
-import numpy as np
 import re
 import warnings
 from typing import (Union, Dict)
 from numbers import Integral
+import numpy as np
 
 from plasmapy.atomic.elements import (
     _atomic_numbers_to_symbols,
@@ -14,9 +14,8 @@ from plasmapy.atomic.elements import (
 from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.atomic.special_particles import _Particles, ParticleZoo
 
-from plasmapy.utils import (
-    roman
-)
+from plasmapy.utils import roman, pytest_helpers
+
 from plasmapy.atomic.exceptions import InvalidElementError, InvalidParticleError, AtomicWarning
 
 
@@ -203,14 +202,14 @@ def _parse_and_check_atomic_input(
             isotope_info, charge_info = arg.split(' ')
 
             sign_indicator_only_on_one_end = (
-                    charge_info.endswith(('-', '+')) ^
-                    charge_info.startswith(('-', '+')))
+                charge_info.endswith(('-', '+')) ^
+                charge_info.startswith(('-', '+')))
 
             just_one_sign_indicator = (
-                    (charge_info.count('-') == 1 and
-                     charge_info.count('+') == 0) or
-                    (charge_info.count('-') == 0 and
-                     charge_info.count('+') == 1))
+                (charge_info.count('-') == 1 and
+                 charge_info.count('+') == 0) or
+                (charge_info.count('-') == 0 and
+                 charge_info.count('+') == 1))
 
             if not sign_indicator_only_on_one_end and just_one_sign_indicator:
                 raise InvalidParticleError(invalid_charge_errmsg) from None
@@ -433,13 +432,14 @@ def _parse_and_check_atomic_input(
     return nomenclature_dict
 
 
-def _call_string(arg: Union[str, Integral], kwargs: Dict = {}) -> str:
+def _particle_call_string(arg: Union[str, Integral], kwargs: Dict = {}) -> str:
     """
     Return a `str` that recreates the call to create a particular
-    particle from the input.
+    `~plasmapy.atomic.Particle` instance from the input.
     """
-    if kwargs != {}:
-        keyword_string = ", " + str(kwargs).strip(r"}{'").replace("'", "").replace(":", " =")
-    else:
-        keyword_string = ""
-    return f"Particle({repr(arg)}{keyword_string})"
+    return pytest_helpers.call_string(Particle, arg, kwargs)
+#    if kwargs != {}:
+#        keyword_string = ", " + str(kwargs).strip(r"}{'").replace("'", "").replace(":", " =")
+#    else:
+#        keyword_string = ""
+#    return f"Particle({repr(arg)}{keyword_string})"

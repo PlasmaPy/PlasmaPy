@@ -7,7 +7,7 @@ from Bragiński's theory.
 """
 
 from astropy import units as u
-from plasmapy.transport.braginskii import ClassicalTransport
+from plasmapy.formulary import ClassicalTransport
 
 #####################################################
 # We'll use some sample ITER data, without much regard for whether
@@ -43,10 +43,10 @@ print(braginskii.hall_i)
 # referred to via methods. To signify the need to calculate them, we
 # call them via ().
 
-print(braginskii.resistivity())
-print(braginskii.thermoelectric_conductivity())
-print(braginskii.electron_thermal_conductivity())
-print(braginskii.ion_thermal_conductivity())
+print(braginskii.resistivity)
+print(braginskii.thermoelectric_conductivity)
+print(braginskii.electron_thermal_conductivity)
+print(braginskii.ion_thermal_conductivity)
 
 ######################################################
 # They also change with magnetization:
@@ -58,10 +58,10 @@ mag_braginskii = ClassicalTransport(thermal_energy_per_electron,
                                     ion_particle,
                                     B = 0.1 * u.T)
 
-print(mag_braginskii.resistivity())
-print(mag_braginskii.thermoelectric_conductivity())
-print(mag_braginskii.electron_thermal_conductivity())
-print(mag_braginskii.ion_thermal_conductivity())
+print(mag_braginskii.resistivity)
+print(mag_braginskii.thermoelectric_conductivity)
+print(mag_braginskii.electron_thermal_conductivity)
+print(mag_braginskii.ion_thermal_conductivity)
 
 ######################################################
 # They also change with direction with respect to the magnetic field. Here,
@@ -77,15 +77,15 @@ all_direction_braginskii = ClassicalTransport(thermal_energy_per_electron,
                                     B = 0.1 * u.T,
                                     field_orientation = 'all')
 
-print(all_direction_braginskii.resistivity())
-print(all_direction_braginskii.thermoelectric_conductivity())
-print(all_direction_braginskii.electron_thermal_conductivity())
-print(all_direction_braginskii.ion_thermal_conductivity())
+print(all_direction_braginskii.resistivity)
+print(all_direction_braginskii.thermoelectric_conductivity)
+print(all_direction_braginskii.electron_thermal_conductivity)
+print(all_direction_braginskii.ion_thermal_conductivity)
 
 ######################################################
 # The viscosities return arrays:
 
-print(braginskii.electron_viscosity())
-print(mag_braginskii.electron_viscosity())
-print(braginskii.ion_viscosity())
-print(mag_braginskii.ion_viscosity())
+print(braginskii.electron_viscosity)
+print(mag_braginskii.electron_viscosity)
+print(braginskii.ion_viscosity)
+print(mag_braginskii.ion_viscosity)

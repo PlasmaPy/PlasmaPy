@@ -19,9 +19,9 @@ PlasmaPy requires Python version 3.6 or newer, and is not compatible
 with Python 2.7.  PlasmaPy requires the following packages for
 installation:
 
-- `NumPy <http://www.numpy.org/>`_ 1.13 or newer
+- `NumPy <http://www.numpy.org/>`_ 1.14 or newer
 - `SciPy <https://www.scipy.org/>`_ 0.19 or newer
-- `Astropy <http://www.astropy.org/>`_ 2.0 or newer
+- `Astropy <http://www.astropy.org/>`_ 3.1 or newer
 - `colorama <https://pypi.org/project/colorama/>`_ 0.3 or newer
 
 PlasmaPy also uses the following optional dependencies:
@@ -164,42 +164,6 @@ or
 .. code:: bash
 
    pip install .
-
-Testing a source code build
----------------------------
-
-Testing PlasmaPy requires:
-
-- `pytest <https://docs.pytest.org/>`_
-
-In the top level directory, run
-
-.. code:: bash
-
-   python setup.py test
-
-Building documentation
-----------------------
-
-Building and testing PlasmaPy documentation requires the following
-packages:
-
-- `Sphinx <http://www.sphinx-doc.org/>`_
-- `sphinx-gallery <https://sphinx-gallery.readthedocs.io/>`_
-- `sphinx_rtd_theme <https://sphinx-rtd-theme.readthedocs.io/>`_
-- `sphinx-automodapi <http://sphinx-automodapi.readthedocs.io/>`_
-- `pillow <https://pillow.readthedocs.io/>`_
-- `numpydoc <http://numpydoc.readthedocs.io/>`_
-
-To build the documentation, run the following command in the top level
-directory of the repository:
-
-.. code:: bash
-
-   python setup.py build_docs
-
-The HTML files built by this command will be placed in the
-``docs/_build/html`` subdirectory and can be read using a web browser.
 
 .. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/PlasmaPy
 .. _set up an SSH key: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/

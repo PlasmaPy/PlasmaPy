@@ -1,0 +1,1 @@
+Fix Pytest deprecations of `message` argument to `raise` and `warn` functions.

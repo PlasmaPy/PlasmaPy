@@ -36,14 +36,12 @@ from ..nuclear import (
     nuclear_reaction_energy,
 )
 
-from ...utils import (
-    run_test,
-    )
+from plasmapy.utils.pytest_helpers import run_test
+
 from plasmapy.atomic.exceptions import (
     AtomicError,
     MissingAtomicDataError,
     ChargeError,
-    InvalidIonError,
     InvalidIsotopeError,
     InvalidElementError,
     InvalidParticleError,

@@ -37,6 +37,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Thomas Fan <https://github.com/thomasjpfan>`__
 * `Samaiyah I. Farid <https://github.com/samaiyahfarid>`__
 * `Michael Fischer <https://github.com/mj-fischer>`__
+* `Brian Goodall <https://github.com/goodab>`__
 * `Graham Goudeau <https://github.com/GrahamGoudeau>`__
 * `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`__
 * `Colby Haggerty <https://github.com/colbych>`__
@@ -65,6 +66,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Antonia Savcheva <https://github.com/savcheva>`__ (`0000-0002-5598-046X <https://orcid.org/0000-0002-5598-046X>`__)
 * `Chengcai Shen <https://github.com/ionizationcalc>`__ (`0000-0002-9258-4490 <https://orcid.org/0000-0002-9258-4490>`__)
 * `Dawa Nurbu Sherpa <https://github.com/nurbu5>`__
+* `Angad Singh <https://github.com/singha95>`__
 * `Ankit Singh <https://github.com/Griffintaur>`__
 * `Brigitta Sipocz <http://github.com/bsipocz>`__
 * `David Stansby <https://github.com/dstansby>`__ (`0000-0002-1365-1908 <https://orcid.org/0000-0002-1365-1908>`__)
@@ -73,7 +75,9 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Thomas Ulrich <https://github.com/Elfhelm>`__
 * `Sixue Xu <https://github.com/hzxusx>`__
 * `Carol Zhang <https://github.com/carolyz>`__
-* `Angad Singh <https://github.com/singha95>`__
+* `Thomas Varnish <https://github.com/tvarnish>`__
+* `Aditya Magarde <https://github.com/adityamagarde>`__
+* `Diego A. Diaz Riega <https://github.com/diego7319>`__
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy
@@ -84,21 +88,25 @@ list, your information is incorrect, or you do not wish to be listed,
 then please submit a pull request or email ``namurphy@cfa.harvard.edu``.
 
 Other Credits
-=============
 
-* The PlasmaPy Community thanks the SunPy and Astropy communities for
-  inspiring this project in the first place, providing much helpful
-  advice, and showing examples of how to build a community-wide open
-  source scientific software package.
+The PlasmaPy Community thanks the SunPy and Astropy communities for
+inspiring this project in the first place, providing much helpful
+advice, and showing examples of how to build a community-wide open
+source scientific software package.
 
 Acknowledgements
-================
 
-Some of the contributions to PlasmaPy have been directly or indirectly
-supported by funding from the following institutions and programs:
-
-* Department of Energy (US)
-* Google Summer of Code
-* National Science Foundation (US)
-* National Aeronautics and Space Administration (US)
-* Smithsonian Institution
+Early development on PlasmaPy was partially supported by the U.S.
+Department of Energy through grant DE-SC0016363 that was funded
+through the NSF-DOE Partnership on Basic Plasma Science and
+Engineering; a Scholarly Studies grant awarded by the Smithsonian
+Institution; and Google Summer of Code.  PlasmaPy is being developed
+with support from the U.S. National Science Foundation through
+grants 1931388, 1931393, 1931429, and 1931435 that were awarded
+through `a collaborative proposal
+<http://doi.org/10.5281/zenodo.3406803>`__ submitted to the
+Cyberinfrastructure for Sustained Scientific Innovation (CSSI) program.
+Any opinions, findings, and conclusions or recommendations expressed
+in this material are those of the authors and do not necessarily
+reflect the views of any of the funding agencies or organizations that
+have supported PlasmaPy development.

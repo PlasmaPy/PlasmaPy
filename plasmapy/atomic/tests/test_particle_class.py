@@ -11,10 +11,9 @@ from plasmapy.atomic.atomic import known_isotopes
 from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.atomic.particle_class import Particle
 from plasmapy.atomic.special_particles import ParticleZoo
-from plasmapy.utils import (
-    call_string,
-    run_test_equivalent_calls,
-)
+
+from plasmapy.utils.pytest_helpers import call_string, run_test_equivalent_calls
+
 from plasmapy.atomic.exceptions import (
     AtomicError,
     MissingAtomicDataError,
@@ -25,7 +24,7 @@ from plasmapy.atomic.exceptions import (
     InvalidParticleError,
     AtomicWarning,
     MissingAtomicDataWarning,
-    )
+)
 
 # (arg, kwargs, results_dict)
 test_Particle_table = [
@@ -538,6 +537,7 @@ def test_Particle_errors(arg, kwargs, attribute, exception):
             f"\n\n  {call_string(Particle, arg, kwargs)}{attribute}\n\n"
             f"did not raise a {exception.__name__} as expected")
 
+
 # arg, kwargs, attribute, exception
 test_Particle_warning_table = [
     ('H----', {}, "", AtomicWarning),
@@ -560,6 +560,7 @@ def test_Particle_warnings(arg, kwargs, attribute, warning):
                 f"The following command: "
                 f"\n\n >>> {call_string(Particle, arg, kwargs)}{attribute}\n\n"
                 f"did not issue a {warning.__name__} as expected")
+
 
 def test_Particle_cmp():
     """Test ``__eq__`` and ``__ne__`` in the Particle class."""

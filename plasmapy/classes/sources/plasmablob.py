@@ -3,17 +3,15 @@ Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
 import warnings
 
-import numpy as np
 import astropy.units as u
 
-from plasmapy.physics.parameters import _grab_charge
-from plasmapy.physics.dimensionless import (quantum_theta,
-                                            )
-from plasmapy.transport import (coupling_parameter,
-                                        )
+from plasmapy.formulary.parameters import _grab_charge
+from plasmapy.formulary.dimensionless import quantum_theta
+from plasmapy.formulary.collisions import coupling_parameter
 from plasmapy.atomic import particle_mass
 
-from plasmapy.utils import call_string, CouplingWarning
+from plasmapy.utils import CouplingWarning
+from plasmapy.utils.pytest_helpers import call_string
 
 from plasmapy.classes import GenericPlasma
 
@@ -156,5 +154,5 @@ class PlasmaBlob(GenericPlasma):
 
     @classmethod
     def is_datasource_for(cls, **kwargs):
-        match = kwargs.get('T_e') and kwargs.get('n_e')
+        match = 'T_e' in kwargs.keys() and 'n_e' in kwargs.keys()
         return match
