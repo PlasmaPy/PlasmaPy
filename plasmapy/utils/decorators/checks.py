@@ -228,7 +228,6 @@ class CheckValues(CheckBase):
             try:
                 param_in_checks = self.checks[param.name]
             except KeyError:
-                # TODO: allow "none_shall_pass" to be defined by default param value
                 # checks for parameter not specified
                 continue
 
