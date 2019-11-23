@@ -287,7 +287,11 @@ class CheckValues(CheckBase):
         valueerror_msg += f"to function {self.f.__name__}() can not contain"
 
         # check values
-        for ckey in self.__check_defaults:
+        # * 'none_shall_pass' always needs to be checked first
+        ckeys = list(self.__check_defaults.keys())
+        ckeys.remove('none_shall_pass')
+        ckeys = ('none_shall_pass',) + tuple(ckeys)
+        for ckey in ckeys:
             if ckey == 'none_shall_pass':
                 if arg is None and arg_checks[ckey]:
                     break
