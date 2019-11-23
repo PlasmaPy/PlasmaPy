@@ -135,14 +135,15 @@ import numpy as np
 import warnings
 
 from astropy import units as u
+from astropy.constants.si import (e, m_e, k_B)
 from plasmapy import (atomic, utils)
 from plasmapy.atomic.atomic import _is_electron
-from astropy.constants.si import (e, m_e, k_B)
 from plasmapy.formulary.parameters import (Hall_parameter, _grab_charge)
 from plasmapy.formulary.collisions import (fundamental_electron_collision_freq,
                                            fundamental_ion_collision_freq,
                                            Coulomb_logarithm)
 from plasmapy.utils import PhysicsError
+from plasmapy.utils.decorators import validate_quantities
 
 
 class ClassicalTransport:
@@ -294,20 +295,20 @@ class ClassicalTransport:
 
     """
 
-    @utils.check_quantity(T_e={"units": u.K, "can_be_negative": False},
-                          n_e={"units": u.m ** -3},
-                          T_i={"units": u.K, "can_be_negative": False},
-                          n_i={"units": u.m ** -3},
-                          )
+    @validate_quantities(T_e={"can_be_negative": False,
+                              "equivalencies": u.temperature_energy()},
+                         T_i={"can_be_negative": False,
+                              "equivalencies": u.temperature_energy()},
+                         m_i={"can_be_negative": False})
     def __init__(self,
                  T_e: u.K,
                  n_e: u.m**-3,
                  T_i: u.K,
                  n_i: u.m**-3,
                  ion_particle,
-                 m_i=None,
+                 m_i: u.kg = None,
                  Z=None,
-                 B=0.0 * u.T,
+                 B: u.T = 0.0 * u.T,
                  model='Braginskii',
                  field_orientation='parallel',
                  coulomb_log_ei=None,
@@ -343,12 +344,11 @@ class ClassicalTransport:
             raise ValueError(f"Unknown field orientation "
                              f"'{self.field_orientation}'")
 
-        # density and temperature units have already been checked by decorator
-        # so just convert
-        self.T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
-        self.T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
-        self.n_e = n_e.to(u.m ** -3)
-        self.n_i = n_i.to(u.m ** -3)
+        # values and units have already been checked by decorator
+        self.T_e = T_e
+        self.T_i = T_i
+        self.n_e = n_e
+        self.n_i = n_i
 
         # get ion mass and charge state
         if m_i is None:
@@ -358,7 +358,7 @@ class ClassicalTransport:
                 raise ValueError(f"Unable to find mass of particle: "
                                  f"{ion_particle} in ClassicalTransport")
         else:
-            self.m_i = m_i.to(u.kg)
+            self.m_i = m_i
         self.Z = _grab_charge(ion_particle, Z)
         if self.Z < 0:
             raise ValueError("Z is not allowed to be negative!")  # TODO remove?
@@ -440,6 +440,7 @@ class ClassicalTransport:
         self.theta = self.T_e / self.T_i if theta is None else theta
 
     @property
+    @validate_quantities
     def resistivity(self) -> u.Ohm * u.m:
         """
         Calculate the resistivity.
@@ -476,7 +477,7 @@ class ClassicalTransport:
                                                         self.V_ei)
 
         alpha = alpha_hat / (self.n_e * e ** 2 * tau_e / m_e)
-        return alpha.to(u.ohm * u.m)
+        return alpha
 
     @property
     def thermoelectric_conductivity(self):
@@ -500,6 +501,7 @@ class ClassicalTransport:
         return u.Quantity(beta_hat)
 
     @property
+    @validate_quantities
     def ion_thermal_conductivity(self) -> u.W / u.m / u.K:
         """
         Calculate the thermal conductivity for ions.
@@ -537,9 +539,10 @@ class ClassicalTransport:
                                                    self.coulomb_log_ii,
                                                    self.V_ii)
         kappa = kappa_hat * (self.n_i * k_B ** 2 * self.T_i * tau_i / self.m_i)
-        return kappa.to(u.W / u.m / u.K)
+        return kappa
 
     @property
+    @validate_quantities
     def electron_thermal_conductivity(self) -> u.W / u.m / u.K:
         """
         Calculate the thermal conductivity for electrons.
@@ -589,9 +592,10 @@ class ClassicalTransport:
                                                         self.coulomb_log_ei,
                                                         self.V_ei)
         kappa = kappa_hat * (self.n_e * k_B ** 2 * self.T_e * tau_e / m_e)
-        return kappa.to(u.W / u.m / u.K)
+        return kappa
 
     @property
+    @validate_quantities
     def ion_viscosity(self) -> u.Pa * u.s:
         """
         Calculate the ion viscosity.
@@ -632,10 +636,11 @@ class ClassicalTransport:
             eta1[3:] /= self.hall_i
         if eta1[0].unit == eta1[2].unit == eta1[4].unit:
             unit_val = eta1[0].unit
-            eta = (eta1.value * unit_val).to(u.Pa * u.s)
+            eta = eta1.value * unit_val
         return eta
 
     @property
+    @validate_quantities
     def electron_viscosity(self) -> u.Pa * u.s:
         """
         Calculate the electron viscosity.
@@ -684,11 +689,11 @@ class ClassicalTransport:
                     eta_hat[4] * common_factor / self.hall_e)
         if eta1[0].unit == eta1[2].unit and eta1[2].unit == eta1[4].unit:
             unit_val = eta1[0].unit
-            eta = (np.array((eta1[0].value,
-                             eta1[1].value,
-                             eta1[2].value,
-                             eta1[3].value,
-                             eta1[4].value)) * unit_val).to(u.Pa * u.s)
+            eta = np.array((eta1[0].value,
+                            eta1[1].value,
+                            eta1[2].value,
+                            eta1[3].value,
+                            eta1[4].value)) * unit_val
         return eta
 
     @property
@@ -712,6 +717,7 @@ class ClassicalTransport:
         return d
 
 
+@validate_quantities
 def resistivity(T_e,
                 n_e,
                 T_i,
@@ -719,7 +725,7 @@ def resistivity(T_e,
                 ion_particle,
                 m_i=None,
                 Z=None,
-                B=0.0 * u.T,
+                B: u.T = 0.0 * u.T,
                 model='Braginskii',
                 field_orientation='parallel',
                 mu=None,
@@ -756,6 +762,7 @@ def resistivity(T_e,
     return ct.resistivity
 
 
+@validate_quantities
 def thermoelectric_conductivity(T_e,
                                 n_e,
                                 T_i,
@@ -763,7 +770,7 @@ def thermoelectric_conductivity(T_e,
                                 ion_particle,
                                 m_i=None,
                                 Z=None,
-                                B=0.0 * u.T,
+                                B: u.T = 0.0 * u.T,
                                 model='Braginskii',
                                 field_orientation='parallel',
                                 mu=None,
@@ -785,6 +792,7 @@ def thermoelectric_conductivity(T_e,
                             coulomb_log_method=coulomb_log_method)
     return ct.thermoelectric_conductivity
 
+@validate_quantities
 def ion_thermal_conductivity(T_e,
                              n_e,
                              T_i,
@@ -792,7 +800,7 @@ def ion_thermal_conductivity(T_e,
                              ion_particle,
                              m_i=None,
                              Z=None,
-                             B=0.0 * u.T,
+                             B: u.T = 0.0 * u.T,
                              model='Braginskii',
                              field_orientation='parallel',
                              mu=None,
@@ -837,6 +845,7 @@ def ion_thermal_conductivity(T_e,
     return ct.ion_thermal_conductivity
 
 
+@validate_quantities
 def electron_thermal_conductivity(T_e,
                                   n_e,
                                   T_i,
@@ -844,7 +853,7 @@ def electron_thermal_conductivity(T_e,
                                   ion_particle,
                                   m_i=None,
                                   Z=None,
-                                  B=0.0 * u.T,
+                                  B: u.T = 0.0 * u.T,
                                   model='Braginskii',
                                   field_orientation='parallel',
                                   mu=None,
@@ -901,6 +910,7 @@ def electron_thermal_conductivity(T_e,
     return ct.electron_thermal_conductivity
 
 
+@validate_quantities
 def ion_viscosity(T_e,
                   n_e,
                   T_i,
@@ -908,7 +918,7 @@ def ion_viscosity(T_e,
                   ion_particle,
                   m_i=None,
                   Z=None,
-                  B=0.0 * u.T,
+                  B: u.T = 0.0 * u.T,
                   model='Braginskii',
                   field_orientation='parallel',
                   mu=None,
@@ -950,6 +960,7 @@ def ion_viscosity(T_e,
     return ct.ion_viscosity
 
 
+@validate_quantities
 def electron_viscosity(T_e,
                        n_e,
                        T_i,
@@ -957,7 +968,7 @@ def electron_viscosity(T_e,
                        ion_particle,
                        m_i=None,
                        Z=None,
-                       B=0.0 * u.T,
+                       B: u.T = 0.0 * u.T,
                        model='Braginskii',
                        field_orientation='parallel',
                        mu=None,
