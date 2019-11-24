@@ -165,7 +165,7 @@ class TestCheckUnits:
         assert isinstance(norme[0][2], LambdaType)
         assert isinstance(norme[0][3], LambdaType)
         for val in [-20., 50., 195.]:
-            assert norme[0][2](val) == (lambda x: x -273.15)(val)
+            assert norme[0][2](val) == (lambda x: x - 273.15)(val)
             assert norme[0][3](val) == (lambda x: x + 273.15)(val)
 
         # not a 2, 3, or 4-tuple

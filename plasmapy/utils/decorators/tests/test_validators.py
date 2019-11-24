@@ -11,7 +11,7 @@ from plasmapy.utils.decorators.checks import (CheckUnits, CheckValues)
 from plasmapy.utils.decorators.validators import (validate_quantities,
                                                   ValidateQuantities)
 from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
-from typing import (Any, Dict)
+from typing import (Any, Dict, List)
 from unittest import mock
 
 
@@ -126,7 +126,7 @@ class TestValidateQuantities:
                        },
              'raises': ValueError,
              },
-        ]
+        ]  # type: List[Dict[str, Any]]
 
         for case in _cases:
             sig = inspect.signature(case['setup']['function'])
@@ -444,7 +444,7 @@ class TestValidateQuantities:
                                                      'can_be_negative': True},
                        }, },
              'output': -3 * u.cm,
-            },
+             },
         ]
         for case in _cases:
             for ii in range(2):
