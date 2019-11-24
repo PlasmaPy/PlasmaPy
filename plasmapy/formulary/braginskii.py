@@ -792,6 +792,7 @@ def thermoelectric_conductivity(T_e,
                             coulomb_log_method=coulomb_log_method)
     return ct.thermoelectric_conductivity
 
+
 @validate_quantities
 def ion_thermal_conductivity(T_e,
                              n_e,
