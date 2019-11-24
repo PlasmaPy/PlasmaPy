@@ -1281,3 +1281,8 @@ class Test_coupling_parameter:
         errStr = (f"Coupling parameter should be {self.True_quantum} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
+    def test_kwarg_method_error(self):
+        """Testing kwarg `method` fails is not 'classical' or 'quantum'"""
+        with pytest.raises(ValueError):
+            coupling_parameter(self.T, self.n_e, self.particles, method='not a method')
