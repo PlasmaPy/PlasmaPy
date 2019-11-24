@@ -543,7 +543,7 @@ class Test_Coulomb_logarithm:
         Tests whether unit conversion error is raised when arguments
         are given with incorrect units.
         """
-        with pytest.raises(u.UnitConversionError):
+        with pytest.raises(u.UnitTypeError):
             Coulomb_logarithm(1e5 * u.g, 1 * u.m ** -3,
                               ('e', 'p'), V=29979245 * u.m / u.s)
 
