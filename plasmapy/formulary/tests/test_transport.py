@@ -55,6 +55,8 @@ class Test_classical_transport:
     @classmethod
     def setup_class(self):
         """set up some initial values for tests"""
+        # TODO: when implementing validate_quantities remove this set equivalencies...
+        #       it affects the entire test environment
         u.set_enabled_equivalencies(u.temperature_energy())
         self.T_e = 1000 * u.eV
         self.n_e = 2e13 / u.cm ** 3
