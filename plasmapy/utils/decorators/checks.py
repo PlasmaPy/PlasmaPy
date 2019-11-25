@@ -1474,7 +1474,7 @@ def _check_quantity(arg, argname, funcname, units, can_be_negative=True,
             if unit != units[-1]:
                 typeerror_message += ", "
     if none_shall_pass:
-        typeerror_message += "or None "
+        typeerror_message += " or None "
 
     if isinstance(arg, (u.Unit, u.CompositeUnit, u.IrreducibleUnit)):
         raise TypeError(typeerror_message)
