@@ -222,7 +222,8 @@ class Test_PlasmaBlobRegimes:
                                      Z=Z,
                                      particle=particle)
 
-        expect_regime = 'Thermal kinetic energy dominant: Theta = 120.65958493847927'
+        # expect_regime = 'Thermal kinetic energy dominant: Theta = 120.65958493847927'
+        expect_regime = f'Thermal kinetic energy dominant: Theta = {blob.quantum_theta()}'
 
         _, regime = blob.regimes()
         testTrue = regime == expect_regime
@@ -250,7 +251,8 @@ class Test_PlasmaBlobRegimes:
                                      Z=Z,
                                      particle=particle)
 
-        expect_regime = 'Fermi quantum energy dominant: Theta = 0.009872147858602853'
+        # expect_regime = 'Fermi quantum energy dominant: Theta = 0.009872147858602853'
+        expect_regime = f'Fermi quantum energy dominant: Theta = {blob.quantum_theta()}'
 
         _, regime = blob.regimes()
         testTrue = regime == expect_regime
@@ -278,7 +280,8 @@ class Test_PlasmaBlobRegimes:
                                      Z=Z,
                                      particle=particle)
 
-        expect_regime = 'Both Fermi and thermal energy important: Theta = 0.03818537605355442'
+        # expect_regime = 'Both Fermi and thermal energy important: Theta = 0.03818537605355442'
+        expect_regime = f'Both Fermi and thermal energy important: Theta = {blob.quantum_theta()}'
 
         _, regime = blob.regimes()
         testTrue = regime == expect_regime
