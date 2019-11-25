@@ -7,10 +7,10 @@ import numpy as np
 
 from astropy import units as u
 from collections import namedtuple
-from plasmapy import utils
 from numpy import pi
-from plasmapy.formulary.dispersionfunction import plasma_dispersion_func_deriv
 from plasmapy.formulary import parameters
+from plasmapy.formulary.dispersionfunction import plasma_dispersion_func_deriv
+from plasmapy.utils.decorators import validate_quantities
 
 r"""
 Values should be returned as a `~astropy.units.Quantity` in SI units.
@@ -19,11 +19,9 @@ Values should be returned as a `~astropy.units.Quantity` in SI units.
 StixTensorElements = namedtuple("StixTensorElements", ["sum", "difference", "plasma"], )
 RotatingTensorElements = namedtuple("RotatingTensorElements", ["left", "right", "plasma"], )
 
-@utils.check_quantity(
-    B={'units': u.T, 'can_be_negative': False},
-    omega={'units': u.rad / u.s, 'can_be_negative': False},
-)
-def cold_plasma_permittivity_SDP(B, species, n, omega):
+@validate_quantities(B={'can_be_negative': False},
+                     omega={'can_be_negative': False})
+def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     r"""
     Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
 
@@ -118,10 +116,8 @@ def cold_plasma_permittivity_SDP(B, species, n, omega):
     return StixTensorElements(S, D, P)
 
 
-@utils.check_quantity(
-    B={'units': u.T, 'can_be_negative': False},
-    omega={'units': u.rad / u.s, 'can_be_negative': False},
-)
+@validate_quantities(B={'can_be_negative': False},
+                     omega={'can_be_negative': False})
 def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     r"""
     Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
@@ -213,17 +209,14 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     return RotatingTensorElements(L, R, P)
 
 
-@u.quantity_input(omega=u.rad / u.s,
-                  kWave=u.rad / u.m,
-                  T=u.K,
-                  n=u.m**-3,
-                  z_mean=u.dimensionless_unscaled)
-def permittivity_1D_Maxwellian(omega,
-                               kWave,
-                               T,
-                               n,
+@validate_quantities(kWave={'none_shall_pass': True},
+                     validations_on_return={'can_be_complex': True})
+def permittivity_1D_Maxwellian(omega: u.rad / u.s,
+                               kWave: u.rad / u.m,
+                               T: u.K,
+                               n: u.m ** -3,
                                particle,
-                               z_mean=None):
+                               z_mean: u.dimensionless_unscaled = None) -> u.dimensionless_unscaled:
     r"""
     The classical dielectric permittivity for a 1D Maxwellian plasma. This 
     function can calculate both the ion and electron permittivities. No
@@ -319,4 +312,4 @@ def permittivity_1D_Maxwellian(omega,
     # The dimensionless phase velocity of the propagating EM wave.
     zeta = (omega / (kWave * vTh)).to(u.dimensionless_unscaled)
     chi = alpha ** 2 * (-1 / 2) * plasma_dispersion_func_deriv(zeta.value)
-    return chi.to(u.dimensionless_unscaled)
+    return chi
