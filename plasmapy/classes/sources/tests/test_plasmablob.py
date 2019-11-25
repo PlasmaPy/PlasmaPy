@@ -135,7 +135,8 @@ class Test_PlasmaBlobRegimes:
                                      Z=Z,
                                      particle=particle)
 
-        expect_regime = 'Intermediate coupling regime: Gamma = 10.585076050938532.'
+        # expect_regime = 'Intermediate coupling regime: Gamma = 10.585076050938532.'
+        expect_regime = f'Intermediate coupling regime: Gamma = {blob.coupling()}.'
         regime, _ = blob.regimes()
         testTrue = regime == expect_regime
 
@@ -162,7 +163,8 @@ class Test_PlasmaBlobRegimes:
                                      Z=Z,
                                      particle=particle)
 
-        expect_regime = 'Strongly coupled regime: Gamma = 104.02780112828943.'
+        # expect_regime = 'Strongly coupled regime: Gamma = 104.02780112828943.'
+        expect_regime = f'Strongly coupled regime: Gamma = {blob.coupling()}.'
 
         regime, _ = blob.regimes()
         testTrue = regime == expect_regime
@@ -190,7 +192,8 @@ class Test_PlasmaBlobRegimes:
                                      Z=Z,
                                      particle=particle)
 
-        expect_regime = 'Weakly coupled regime: Gamma = 0.0075178096952688445.'
+        # expect_regime = 'Weakly coupled regime: Gamma = 0.0075178096952688445.'
+        expect_regime = f'Weakly coupled regime: Gamma = {blob.coupling()}.'
 
         with pytest.warns(CouplingWarning):
             regime, _ = blob.regimes()
