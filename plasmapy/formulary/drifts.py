@@ -1,7 +1,7 @@
 """Formulas for calculating particle drifts."""
 import astropy.units as u
+import numpy as np
 
-from astropy.units.utils import np
 from plasmapy import utils
 
 
