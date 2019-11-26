@@ -1,0 +1,3 @@
+Replace decorator :func:`plasmapy.utils.decorators.checks.check_quantity` with decorator
+:func:`plasmapy.utils.decorators.validators.validate_quantities`.  Permanently delete decorator
+:func:`~plasmapy.utils.decorators.checks.check_quantity` and its supporting code.
