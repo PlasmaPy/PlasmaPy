@@ -240,7 +240,7 @@ class CheckValues(CheckBase):
                     # for the case that checks are defined for an argument,
                     # but is NOT a dictionary
                     # (e.g. CheckValues(x=u.cm) ... this scenario could happen
-                    # curing subclassing)
+                    # during subclassing)
                     out_checks[param.name][v_name] = v_default
 
         # Does `self.checks` indicate arguments not used by f?

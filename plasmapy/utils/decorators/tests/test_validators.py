@@ -310,42 +310,46 @@ class TestValidateQuantities:
         # 'warns' = if a warning is expected to be issued
         #
         _cases = [
-            # clean execution
-            {'setup': {'function': self.foo,
+            {'descr': 'clean execution',
+             'setup': {'function': self.foo,
                        'args': (2 * u.cm, ),
                        'kwargs': {},
                        'validations': {'x': u.cm,
                                        'validations_on_return': u.cm}},
              'output': 2 * u.cm,
              },
-
-            # call with unit conversion
-            {'setup': {'function': self.foo,
+            {'descr': 'call with unit conversion',
+             'setup': {'function': self.foo,
                        'args': (2 * u.cm,),
                        'kwargs': {},
                        'validations': {'x': u.cm,
                                        'validations_on_return': u.um}},
              'output': (2 * u.cm).to(u.um),
              },
-
-            # argument fails checks
-            {'setup': {'function': self.foo,
+            {'descr': 'argument fails checks',
+             'setup': {'function': self.foo,
                        'args': (2 * u.cm, ),
                        'kwargs': {},
                        'validations': {'x': u.g,
                                        'validations_on_return': u.cm}},
              'raises': u.UnitTypeError,
              },
-
-            # return fails checks
-            {'setup': {'function': self.foo,
+            {'descr': 'return fails checks',
+             'setup': {'function': self.foo,
                        'args': (2 * u.cm, ),
                        'kwargs': {},
                        'validations': {'x': u.cm,
                                        'validations_on_return': u.kg}},
              'raises': u.UnitTypeError,
              },
-
+            {'descr': 'decomposed units are still covnerted',
+             'setup': {'function': self.foo,
+                       'args': (2 * u.kg * u.m / u.s ** 2,),
+                       'kwargs': {},
+                       'validations': {'x': u.N}},
+             'output': (2 * u.kg * u.m / u.s ** 2).to(u.N),
+             'extra assert': lambda x: x.unit.to_string() == u.N.to_string(),
+             },
         ]
 
         # perform tests
@@ -362,7 +366,10 @@ class TestValidateQuantities:
                     wfoo(*args, **kwargs)
                 continue
 
-            assert wfoo(*args, **kwargs) == case['output']
+            _result = wfoo(*args, **kwargs)
+            assert _result == case['output']
+            if 'extra assert' in case:
+                assert case['extra assert'](_result)
 
         # __call__ calls methods `_get_validations` and `_validate_quantity`
         #
