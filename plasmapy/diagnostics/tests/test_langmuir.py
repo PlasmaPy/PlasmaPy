@@ -264,7 +264,7 @@ class Test__swept_probe_analysis:
     def test_unit_conversion_error():
         r"""Test error upon incorrect probe area unit"""
 
-        with pytest.raises(u.UnitConversionError):
+        with pytest.raises(u.UnitTypeError):
             langmuir.swept_probe_analysis(characteristic, 1 * u.cm, 'Ar-40 1+')
 
     @staticmethod
