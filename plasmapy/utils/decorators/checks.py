@@ -12,13 +12,11 @@ import warnings
 
 from astropy import units as u
 from astropy.constants import c
-from astropy.units import UnitsWarning
 from functools import reduce
 from plasmapy.utils.decorators import preserve_signature
 from plasmapy.utils.exceptions import (PlasmaPyWarning,
                                        RelativityWarning,
                                        RelativityError)
-from textwrap import dedent
 from typing import (Any, Dict, List, Tuple, Union)
 
 try:
