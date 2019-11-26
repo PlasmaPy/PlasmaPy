@@ -475,6 +475,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     return beta_mu
 
 
+# TODO: decorate with validate_quantities
 def _chemical_potential_interp(n_e, T):
     r"""
     Fitting formula for interpolating chemical potential between classical
