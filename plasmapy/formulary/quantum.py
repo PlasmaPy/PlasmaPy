@@ -15,11 +15,12 @@ __all__ = [
 import numpy as np
 
 from astropy import units as u
-from plasmapy import (atomic, utils)
-from plasmapy.formulary import mathematics
-from plasmapy.utils.decorators.checks import check_quantity
-from plasmapy.formulary.relativity import Lorentz_factor
 from astropy.constants.si import (c, h, hbar, m_e, eps0, e, k_B)
+from plasmapy import atomic
+from plasmapy.formulary import mathematics
+from plasmapy.formulary.relativity import Lorentz_factor
+from plasmapy.utils import RelativityError
+from plasmapy.utils.decorators import validate_quantities
 
 try:
     from lmfit import minimize, Parameters
@@ -29,10 +30,9 @@ except (ImportError, ModuleNotFoundError) as e:
 
 
 # TODO: Use @check_relativistic and @particle_input
-@utils.check_quantity(
-    V={'units': u.m / u.s, 'can_be_negative': True}
-    )
-def deBroglie_wavelength(V, particle):
+@validate_quantities(V={'can_be_negative': True},
+                     validations_on_return={'can_be_negative': False})
+def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
     Calculates the de Broglie wavelength.
 
@@ -53,7 +53,7 @@ def deBroglie_wavelength(V, particle):
 
     Raises
     ------
-    TypeError
+    TypeError.
         The velocity is not a `~astropy.units.Quantity` and cannot be
         converted into a ~astropy.units.Quantity.
 
@@ -94,7 +94,7 @@ def deBroglie_wavelength(V, particle):
     V = np.abs(V)
 
     if np.any(V >= c):
-        raise utils.RelativityError(
+        raise RelativityError(
             "Velocity input in deBroglie_wavelength cannot "
             "be greater than or equal to the speed of "
             "light.")
@@ -127,13 +127,13 @@ def deBroglie_wavelength(V, particle):
         else:
             lambda_dBr = h / (Lorentz_factor(V) * m * V)
 
-    return lambda_dBr.to(u.m)
+    return lambda_dBr
 
 
-@utils.check_quantity(
-    T_e={'units': u.K, 'can_be_negative': False}
-)
-def thermal_deBroglie_wavelength(T_e):
+@validate_quantities(T_e={'can_be_negative': False,
+                          'equivalencies': u.temperature_energy()},
+                     validations_on_return={'can_be_negative': False})
+def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     r"""
     Calculate the thermal deBroglie wavelength for electrons.
 
@@ -178,15 +178,13 @@ def thermal_deBroglie_wavelength(T_e):
     >>> thermal_deBroglie_wavelength(1 * u.eV)
     <Quantity 6.91936752e-10 m>
     """
-    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
     lambda_dbTh = h / np.sqrt(2 * np.pi * m_e * k_B * T_e)
-    return lambda_dbTh.to(u.m)
+    return lambda_dbTh
 
 
-@utils.check_quantity(
-    n_e={'units': u.m**-3, 'can_be_negative': False}
-)
-def Fermi_energy(n_e):
+@validate_quantities(n_e={'can_be_negative': False},
+                     validations_on_return={'can_be_negative': False})
+def Fermi_energy(n_e: u.m ** -3) -> u.J:
     r"""
     Calculate the kinetic energy in a degenerate electron gas.
 
@@ -241,13 +239,12 @@ def Fermi_energy(n_e):
     """
     coeff = (np.pi * hbar) ** 2 / (2 * m_e)
     energy_F = coeff * (3 * n_e / np.pi) ** (2 / 3)
-    return energy_F.to(u.Joule)
+    return energy_F
 
 
-@utils.check_quantity(
-    n_e={'units': u.m**-3, 'can_be_negative': False}
-)
-def Thomas_Fermi_length(n_e):
+@validate_quantities(n_e={'can_be_negative': False},
+                     validations_on_return={'can_be_negative': False})
+def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
     r"""
     Calculate the exponential scale length for charge screening
     for cold and dense plasmas.
@@ -312,13 +309,12 @@ def Thomas_Fermi_length(n_e):
     """
     energy_F = Fermi_energy(n_e)
     lambda_TF = np.sqrt(2 * eps0 * energy_F / (3 * n_e * e ** 2))
-    return lambda_TF.to(u.m)
+    return lambda_TF
 
 
-@check_quantity(
-    n={'units': u.m**-3, 'can_be_negative': False}
-)
-def Wigner_Seitz_radius(n: u.m**-3):
+@validate_quantities(n={'can_be_negative': False},
+                     validations_on_return={'can_be_negative': False})
+def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
     r"""
     Calculate the Wigner-Seitz radius, which approximates the inter-
     particle spacing. It is the radius of a sphere whose volume is
@@ -375,10 +371,13 @@ def Wigner_Seitz_radius(n: u.m**-3):
 
     """
     radius = (3 / (4 * np.pi * n)) ** (1 / 3)
-    return radius.to(u.m)
+    return radius
 
 
-def chemical_potential(n_e: u.m ** -3, T: u.K):
+@validate_quantities(n_e={'can_be_negative': False},
+                     T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()})
+def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     r"""
     Calculate the ideal chemical potential.
 
