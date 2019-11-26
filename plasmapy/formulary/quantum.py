@@ -170,7 +170,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
     .. math::
 
-       \lambda_dbTh = \frac{h}{\sqrt{2 \pi m_e k_B T_e}}
+       \lambda_{dbTh} = \frac{h}{\sqrt{2 \pi m_e k_B T_e}}
 
     Example
     -------
