@@ -12,8 +12,7 @@ from plasmapy.atomic.exceptions import InvalidParticleError
 from plasmapy.formulary.parameters import Hall_parameter
 from astropy.constants import m_p, m_e
 
-from plasmapy.formulary.collisions import (Coulomb_logarithm,
-                                          )
+from plasmapy.formulary.collisions import Coulomb_logarithm
 from plasmapy.formulary.braginskii import (_nondim_thermal_conductivity,
                                            _nondim_viscosity,
                                            _nondim_resistivity,
@@ -55,9 +54,6 @@ class Test_classical_transport:
     @classmethod
     def setup_class(self):
         """set up some initial values for tests"""
-        # TODO: when implementing validate_quantities remove this set equivalencies...
-        #       it affects the entire test environment
-        u.set_enabled_equivalencies(u.temperature_energy())
         self.T_e = 1000 * u.eV
         self.n_e = 2e13 / u.cm ** 3
         self.ion_particle = 'D +1'
@@ -121,10 +117,14 @@ class Test_classical_transport:
                                      ion_particle=self.ion_particle,
                                      model='spitzer',
                                      field_orientation='perp')
-            alpha_spitzer_perp_NRL = (1.03e-4 * ct2.Z *
-                                      ct2.coulomb_log_ei *
-                                      (ct2.T_e.to(u.eV)).value ** (-3 / 2) *
-                                      u.Ohm * u.m)
+            alpha_spitzer_perp_NRL = (
+                    1.03e-4
+                    * ct2.Z
+                    * ct2.coulomb_log_ei
+                    * (ct2.T_e.to(u.eV, equivalencies=u.temperature_energy())).value ** (-3 / 2)
+                    * u.Ohm
+                    * u.m
+            )
             testTrue = np.isclose(ct2.resistivity.value,
                                   alpha_spitzer_perp_NRL.value,
                                   rtol=2e-2)
