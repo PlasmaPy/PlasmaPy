@@ -197,7 +197,7 @@ class Test__chemical_potential_interp:
         methodVal = _chemical_potential_interp(self.n_e, self.T)
         testTrue = np.isclose(methodVal,
                               self.True1,
-                              rtol=1e-16,
+                              rtol=1e-14,
                               atol=0.0)
         errStr = (f"Chemical potential value should be {self.True1} and not "
                   f"{methodVal}.")
