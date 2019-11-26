@@ -6,9 +6,7 @@ from . import decorators
 from . import roman
 
 from plasmapy.utils.decorators.checks import (
-    check_quantity,
     check_relativistic,
-    _check_quantity,
     _check_relativistic,
 )
 

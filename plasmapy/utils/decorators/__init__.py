@@ -3,7 +3,6 @@ A module to contain various decorators used to build readable and useful code.
 """
 __all__ = ['angular_freq_to_hz',
            'check_relativistic',
-           'check_quantity',
            'check_values',
            'check_units',
            'preserve_signature',
@@ -16,7 +15,6 @@ __all__ = ['angular_freq_to_hz',
 from .helpers import preserve_signature
 from .checks import (
     check_relativistic,
-    check_quantity,
     check_values,
     check_units,
     CheckBase,
