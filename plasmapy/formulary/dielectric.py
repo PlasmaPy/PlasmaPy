@@ -211,12 +211,14 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 
 @validate_quantities(kWave={'none_shall_pass': True},
                      validations_on_return={'can_be_complex': True})
-def permittivity_1D_Maxwellian(omega: u.rad / u.s,
-                               kWave: u.rad / u.m,
-                               T: u.K,
-                               n: u.m ** -3,
-                               particle,
-                               z_mean: u.dimensionless_unscaled = None) -> u.dimensionless_unscaled:
+def permittivity_1D_Maxwellian(
+        omega: u.rad / u.s,
+        kWave: u.rad / u.m,
+        T: u.K,
+        n: u.m ** -3,
+        particle,
+        z_mean: u.dimensionless_unscaled = None
+) -> u.dimensionless_unscaled:
     r"""
     The classical dielectric permittivity for a 1D Maxwellian plasma. This 
     function can calculate both the ion and electron permittivities. No
