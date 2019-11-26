@@ -19,7 +19,7 @@ means:
    encounter while working with PlasmaPy, such as
    `plasmapy.utils.RelativityWarning` or `plasmapy.utils.PhysicsError`.
  * decorators we use for reusable physical quantity computation and
-   checking, such as `plasmapy.utils.check_quantity` and
+   checking, such as `plasmapy.utils.decorators.validate_quantities` and
    `plasmapy.utils.check_relativistic`.
  * Some helper utilities for importing and testing packages such as
    `plasmapy.utils.call_string`.
