@@ -150,14 +150,6 @@ class Characteristic:
         if len(np.unique(self.bias)) != len(self.bias):
             raise ValueError(f"Bias array contains duplicate values.")
 
-        # utils._check_quantity(self.bias, 'bias', str(self), u.V,
-        #                       can_be_negative=True, can_be_complex=False,
-        #                       can_be_inf=False, can_be_nan=True)
-
-        # utils._check_quantity(self.current, 'bias', str(self), u.A,
-        #                       can_be_negative=True, can_be_complex=False,
-        #                       can_be_inf=False, can_be_nan=True)
-
     def get_padded_limit(self, padding, log=False):  # coverage: ignore
         r"""Return the limits of the current range for plotting, taking into
         account padding. Matplotlib lacks this functionality.
