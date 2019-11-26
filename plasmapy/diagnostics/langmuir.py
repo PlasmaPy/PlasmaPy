@@ -80,7 +80,7 @@ class Characteristic:
         self.bias = bias
         self.current = current
         self.get_unique_bias(True)
-        self.check_validity()
+        self._check_validity()
 
     def __getitem__(self, key):
         r"""Allow array indexing operations directly on the Characteristic
@@ -133,7 +133,7 @@ class Characteristic:
         else:
             return Characteristic(bias_unique, current_unique)
 
-    def check_validity(self):
+    def _check_validity(self):
         r"""Check the unit and value validity of the characteristic."""
 
         if len(self.bias.shape) != 1:
