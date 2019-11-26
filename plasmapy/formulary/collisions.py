@@ -67,8 +67,8 @@ from plasmapy.formulary import parameters
 from plasmapy.formulary.quantum import (Wigner_Seitz_radius,
                                         thermal_deBroglie_wavelength,
                                         chemical_potential)
-from plasmapy.utils import _check_relativistic
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.decorators.checks import _check_relativistic
 
 
 @validate_quantities(T={"units": u.K,
