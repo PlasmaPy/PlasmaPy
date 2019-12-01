@@ -53,7 +53,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
     Raises
     ------
-    TypeError.
+    TypeError
         The velocity is not a `~astropy.units.Quantity` and cannot be
         converted into a ~astropy.units.Quantity.
 
