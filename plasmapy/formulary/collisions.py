@@ -71,15 +71,13 @@ from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 
 
-@validate_quantities(T={"units": u.K,
-                        "can_be_negative": False,
+@validate_quantities(T={"can_be_negative": False,
                         "equivalencies": u.temperature_energy()},
-                     n_e={"units": u.m ** -3},
                      z_mean={'none_shall_pass': True},
                      V={'none_shall_pass': True})
 @atomic.particle_input
-def Coulomb_logarithm(T,
-                      n_e,
+def Coulomb_logarithm(T: u.K,
+                      n_e: u.m**-3,
                       particles: (atomic.Particle, atomic.Particle),
                       z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
                       V: u.m / u.s = np.nan * u.m / u.s,
