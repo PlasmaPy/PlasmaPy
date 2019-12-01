@@ -1138,8 +1138,10 @@ def check_units(func=None,
         checks['checks_on_return'] = checks_on_return
 
     if func is not None:
+        # `check_units` called as a function
         return CheckUnits(**checks)(func)
     else:
+        # `check_units` called as a decorator "sugar-syntax"
         return CheckUnits(**checks)
 
 
@@ -1211,8 +1213,10 @@ def check_values(func=None,
         checks['checks_on_return'] = checks_on_return
 
     if func is not None:
+        # `check_values` called as a function
         return CheckValues(**checks)(func)
     else:
+        # `check_values` called as a decorator "sugar-syntax"
         return CheckValues(**checks)
 
 
