@@ -1794,8 +1794,8 @@ def coupling_parameter(T: u.K,
             raise ValueError("Kinetic energy should not be imaginary."
                              "Something went horribly wrong.")
     else:
-        raise ValueError(f"Keyword 'method' is '{method}' and expected "
-                         f"'classical' or 'quantum'")
+        raise ValueError(f"Keyword 'method' must be either 'classical' or "
+                         f"'quantum', instead of '{method}'.")
 
     coupling = coulombEnergy / kineticEnergy
     return coupling
