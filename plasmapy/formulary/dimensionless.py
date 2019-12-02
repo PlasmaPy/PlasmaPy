@@ -57,7 +57,7 @@ def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
 @validate_quantities(T={'can_be_negative': False,
                         'equivalencies': u.temperature_energy()},
                      n={'can_be_negative': False},
-                     B={'units': u.T})
+                     )
 def beta(T: u.K, n: u.m**-3, B: u.T) -> u.dimensionless_unscaled:
     """
     The ratio of thermal pressure to magnetic pressure.

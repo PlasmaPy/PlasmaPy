@@ -53,7 +53,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
     Raises
     ------
-    TypeError.
+    TypeError
         The velocity is not a `~astropy.units.Quantity` and cannot be
         converted into a ~astropy.units.Quantity.
 
@@ -176,7 +176,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     -------
     >>> from astropy import units as u
     >>> thermal_deBroglie_wavelength(1 * u.eV)
-    <Quantity 6.91936752e-10 m>
+    <Quantity 6.9193675e-10 m>
     """
     lambda_dbTh = h / np.sqrt(2 * np.pi * m_e * k_B * T_e)
     return lambda_dbTh
@@ -235,7 +235,7 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
     -------
     >>> from astropy import units as u
     >>> Fermi_energy(1e23 * u.cm**-3)
-    <Quantity 1.25867611e-18 J>
+    <Quantity 1.2586761e-18 J>
     """
     coeff = (np.pi * hbar) ** 2 / (2 * m_e)
     energy_F = coeff * (3 * n_e / np.pi) ** (2 / 3)
@@ -544,7 +544,7 @@ def _chemical_potential_interp(n_e, T):
     -------
     >>> from astropy import units as u
     >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
-    <Quantity 8.17649673>
+    <Quantity 8.17649>
 
     """
     A = 0.25945

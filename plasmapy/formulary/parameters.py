@@ -547,7 +547,6 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
         T_{th} = nk_{B}T
     """
 
-    # T = T.to(u.K, equivalencies=u.temperature_energy())
     return n * k_B * T
 
 
