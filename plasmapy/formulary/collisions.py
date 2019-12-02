@@ -62,8 +62,8 @@ from astropy import units as u
 from plasmapy import (atomic, utils)
 from astropy.constants.si import (c, m_e, k_B, e, eps0, hbar)
 from numpy import pi
-from plasmapy.formulary.mathematics import Fermi_integral
 from plasmapy.formulary import parameters
+from plasmapy.formulary.mathematics import Fermi_integral
 from plasmapy.formulary.quantum import (Wigner_Seitz_radius,
                                         thermal_deBroglie_wavelength,
                                         chemical_potential)
