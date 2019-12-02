@@ -583,7 +583,7 @@ class TestCheckUnits:
 
     def test_cu_preserves_signature(self):
         """Test `CheckValues` preserves signature of wrapped function."""
-        # I'd like to directly dest the @preserve_signature is used (??)
+        # I'd like to directly test the @preserve_signature is used (??)
 
         wfoo = CheckUnits()(self.foo_no_anno)
         assert hasattr(wfoo, '__signature__')
@@ -992,7 +992,7 @@ class TestCheckValues:
 
     def test_cv_preserves_signature(self):
         """Test CheckValues preserves signature of wrapped function."""
-        # I'd like to directly dest the @preserve_signature is used (??)
+        # I'd like to directly test the @preserve_signature is used (??)
 
         wfoo = CheckValues()(self.foo)
         assert hasattr(wfoo, '__signature__')
