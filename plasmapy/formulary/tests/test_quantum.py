@@ -153,6 +153,7 @@ class Test_chemical_potential:
         self.T = 11604 * u.K
         self.True1 = 1.234345958778249e-11
 
+    @pytest.mark.xfail
     def test_known1(self):
         """
         Tests Fermi_integral for expected value.
