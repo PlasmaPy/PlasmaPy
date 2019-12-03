@@ -1,4 +1,11 @@
 """Exceptions and warnings specific to PlasmaPy."""
+__all__ = ['PlasmaPyError',
+           'PhysicsError', 'RelativityError',
+           'PlasmaPyWarning',
+           'CouplingWarning', 'ImplicitUnitConversionWarning', 'PhysicsWarning',
+           'RelativityWarning']
+
+from astropy.units import UnitsWarning
 
 
 # ----------
@@ -66,3 +73,8 @@ class CouplingWarning(PhysicsWarning):
     """
 
 
+class ImplicitUnitConversionWarning(PlasmaPyWarning, UnitsWarning):
+    """
+    A warning for an implicit conversion between equivalent :mod:`astropy` units.
+    """
+    pass

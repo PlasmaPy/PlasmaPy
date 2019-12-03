@@ -35,5 +35,5 @@ def test_Lorentz_factor():
     with pytest.warns(u.UnitsWarning):
         Lorentz_factor(2.2)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         Lorentz_factor(4 * u.kg)
