@@ -447,7 +447,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     Example
     -------
     >>> from astropy import units as u
-    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)
+    >>> # chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)
     <Quantity 2.00039985e-12>
 
     """
