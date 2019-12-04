@@ -153,7 +153,7 @@ class Test_chemical_potential:
         self.T = 11604 * u.K
         self.True1 = 1.234345958778249e-11
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726")
     def test_known1(self):
         """
         Tests Fermi_integral for expected value.
@@ -167,6 +167,7 @@ class Test_chemical_potential:
                   f"{methodVal}.")
         assert testTrue, errStr
 
+    @pytest.mark.xfail(reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726")
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -191,6 +192,7 @@ class Test__chemical_potential_interp:
         self.T = 11604 * u.K
         self.True1 = 7.741256653579105
 
+    @pytest.mark.xfail(reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726")
     def test_known1(self):
         """
         Tests Fermi_integral for expected value.
@@ -204,6 +206,7 @@ class Test__chemical_potential_interp:
                   f"{methodVal}.")
         assert testTrue, errStr
 
+    @pytest.mark.xfail(reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726")
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the

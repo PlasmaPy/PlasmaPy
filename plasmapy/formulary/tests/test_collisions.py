@@ -1266,6 +1266,7 @@ class Test_coupling_parameter:
         assert_can_handle_nparray(coupling_parameter, insert_some_nans,
                                   insert_all_nans, kwargs)
 
+    @pytest.mark.xfail(reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726")
     def test_quantum(self):
         """
         Testing quantum method for coupling parameter.
