@@ -519,6 +519,8 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         validations['validations_on_return'] = validations_on_return
 
     if func is not None:
+        # `validate_quantities` called as a function
         return ValidateQuantities(**validations)(func)
     else:
+        # `validate_quantities` called as a decorator "sugar-syntax"
         return ValidateQuantities(**validations)

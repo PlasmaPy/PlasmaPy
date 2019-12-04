@@ -293,7 +293,7 @@ class TestValidateQuantities:
 
     def test_vq_preserves_signature(self):
         """Test `ValidateQuantities` preserves signature of wrapped function."""
-        # I'd like to directly dest the @preserve_signature is used (??)
+        # I'd like to directly test the @preserve_signature is used (??)
 
         wfoo = ValidateQuantities()(self.foo_anno)
         assert hasattr(wfoo, '__signature__')
