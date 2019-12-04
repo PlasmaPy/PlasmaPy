@@ -1,3 +1,7 @@
 Replace decorator :func:`plasmapy.utils.decorators.checks.check_quantity` with decorator
 :func:`plasmapy.utils.decorators.validators.validate_quantities`.  Permanently delete decorator
-:func:`~plasmapy.utils.decorators.checks.check_quantity` and its supporting code.
+:func:`~plasmapy.utils.decorators.checks.check_quantity` and its supporting code.  For functions
+:func:`plasmapy.formulary.quantum.chemical_potential` and
+:func:`plasmapy.formulary.quantum._chemical_potential_interp`, add a `RaiseNotImplementedError` due
+to bug outlined in issue `<https://github.com/PlasmaPy/PlasmaPy/issues/726>`_.  Associated pytests
+are marked with `pytest.mark.xfails` and doctests are marked with `doctests: +SKIP`.
