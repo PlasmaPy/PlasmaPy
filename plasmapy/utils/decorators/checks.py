@@ -105,7 +105,7 @@ class CheckValues(CheckBase):
 
         # on a method
         class Foo:
-            arg1={'can_be_negative': False, 'can_be_nan': False},
+            @CheckValues(arg1={'can_be_negative': False, 'can_be_nan': False},
                          arg2={'can_be_inf': False},
                          checks_on_return={'none_shall_pass': True)
             def bar(self, arg1, arg2):
@@ -1136,8 +1136,10 @@ def check_units(func=None,
         checks['checks_on_return'] = checks_on_return
 
     if func is not None:
+        # `check_units` called as a function
         return CheckUnits(**checks)(func)
     else:
+        # `check_units` called as a decorator "sugar-syntax"
         return CheckUnits(**checks)
 
 
@@ -1209,8 +1211,10 @@ def check_values(func=None,
         checks['checks_on_return'] = checks_on_return
 
     if func is not None:
+        # `check_values` called as a function
         return CheckValues(**checks)(func)
     else:
+        # `check_values` called as a decorator "sugar-syntax"
         return CheckValues(**checks)
 
 
