@@ -543,7 +543,7 @@ class Test_Coulomb_logarithm:
         Tests whether unit conversion error is raised when arguments
         are given with incorrect units.
         """
-        with pytest.raises(u.UnitConversionError):
+        with pytest.raises(u.UnitTypeError):
             Coulomb_logarithm(1e5 * u.g, 1 * u.m ** -3,
                               ('e', 'p'), V=29979245 * u.m / u.s)
 
@@ -1266,6 +1266,7 @@ class Test_coupling_parameter:
         assert_can_handle_nparray(coupling_parameter, insert_some_nans,
                                   insert_all_nans, kwargs)
 
+    @pytest.mark.xfail(reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726")
     def test_quantum(self):
         """
         Testing quantum method for coupling parameter.
@@ -1281,3 +1282,8 @@ class Test_coupling_parameter:
         errStr = (f"Coupling parameter should be {self.True_quantum} and "
                   f"not {methodVal}.")
         assert testTrue, errStr
+
+    def test_kwarg_method_error(self):
+        """Testing kwarg `method` fails is not 'classical' or 'quantum'"""
+        with pytest.raises(ValueError):
+            coupling_parameter(self.T, self.n_e, self.particles, method='not a method')

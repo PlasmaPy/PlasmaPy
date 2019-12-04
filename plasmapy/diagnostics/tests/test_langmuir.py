@@ -176,11 +176,15 @@ def shuffle_characteristic(characteristic):
 
 
 class DryCharacteristic(langmuir.Characteristic):
-    r"""Overrides the constructor in Characteristic class"""
-
+    r"""
+    Overrides the constructor in Characteristic class such that `bias` is not filtered for
+    unique values.
+    """
     def __init__(self, bias, current):
+        super().__init__(bias, current)
         self.bias = bias
         self.current = current
+        self._check_validity()
 
 
 class Test__Characteristic_inherited_methods:
@@ -198,35 +202,25 @@ class Test__Characteristic_inherited_methods:
 
     def test_invalid_bias_dimensions(self):
         r"""Test error on non-1D bias array"""
-
         with pytest.raises(ValueError):
-            char = DryCharacteristic(self.bias_2darr,
-                                     current_arr)
-            char.check_validity()
+            DryCharacteristic(self.bias_2darr, current_arr)
 
     def test_invalid_current_dimensions(self):
         r"""Test error on non-1d current array"""
-
         with pytest.raises(ValueError):
-            char = DryCharacteristic(bias_arr,
-                                     self.current_2darr)
-            char.check_validity()
+            DryCharacteristic(bias_arr, self.current_2darr)
 
     def test_bias_and_current_length_mismatch(self):
         r"""Test error on non-1d bias and current arrays"""
 
         with pytest.raises(ValueError):
-            char = DryCharacteristic(self.bias_4length_arr,
-                                     self.current_5length_arr)
-            char.check_validity()
+            DryCharacteristic(self.bias_4length_arr, self.current_5length_arr)
 
     def test_duplicate_bias_values(self):
-        r"""Test error on bias array containig duplicate values"""
+        r"""Test error on bias array containing duplicate values"""
 
         with pytest.raises(ValueError):
-            char = DryCharacteristic(self.bias_duplicates_arr,
-                                     current_arr)
-            char.check_validity()
+            DryCharacteristic(self.bias_duplicates_arr, current_arr)
 
     @staticmethod
     def test_inplace_unique_bias():
@@ -264,7 +258,7 @@ class Test__swept_probe_analysis:
     def test_unit_conversion_error():
         r"""Test error upon incorrect probe area unit"""
 
-        with pytest.raises(u.UnitConversionError):
+        with pytest.raises(u.UnitTypeError):
             langmuir.swept_probe_analysis(characteristic, 1 * u.cm, 'Ar-40 1+')
 
     @staticmethod

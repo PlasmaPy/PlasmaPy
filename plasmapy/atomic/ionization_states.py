@@ -12,7 +12,7 @@ from numbers import (Real, Integral)
 from plasmapy.atomic import (atomic_number, Particle, particle_symbol, IonizationState,
                              State)
 from plasmapy.atomic.exceptions import (AtomicError, ChargeError, InvalidParticleError)
-from plasmapy.utils import check_quantity
+from plasmapy.utils.decorators import validate_quantities
 from typing import (Dict, List, Optional, Tuple, Union)
 
 
@@ -118,10 +118,7 @@ class IonizationStates:
     # TODO: The docstring above needs to be expanded and revised to
     # TODO: better describe what the magic methods do.
 
-    @check_quantity(
-        T_e={"units": u.K},
-        n={"units": u.m ** -3},
-    )
+    @validate_quantities(T_e={'equivalencies': u.temperature_energy()})
     def __init__(
             self,
             inputs: Union[Dict[str, np.ndarray], List, Tuple],

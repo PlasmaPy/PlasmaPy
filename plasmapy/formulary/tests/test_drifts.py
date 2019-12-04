@@ -34,7 +34,7 @@ class Test_ExB_drift:
                         [0, 1, 0],
                         [0, 1, 0]], unit=u.kg)
 
-        with pytest.raises(u.UnitConversionError):
+        with pytest.raises(u.UnitTypeError):
             drifts.ExB_drift(E, B)
 
     def test_ExB_3d_array(self):
@@ -87,5 +87,5 @@ class Test_force_drift:
                         [0, 1, 0]], unit=u.kg)
         q = 1*u.C
 
-        with pytest.raises(u.UnitConversionError):
+        with pytest.raises(u.UnitTypeError):
             drifts.force_drift(F, B, q)

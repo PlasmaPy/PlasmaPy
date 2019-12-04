@@ -2,46 +2,46 @@
 
 import numpy as np
 import pytest
+
 from astropy import units as u
-from plasmapy.atomic.atomic import particle_mass, integer_charge
+from astropy.constants import m_p, m_e
 from astropy.tests.helper import assert_quantity_allclose
+from plasmapy.atomic.atomic import particle_mass, integer_charge
+from plasmapy.atomic.exceptions import InvalidParticleError
+from plasmapy.formulary.braginskii import (
+    _nondim_thermal_conductivity,
+    _nondim_viscosity,
+    _nondim_resistivity,
+    _nondim_te_conductivity,
+    _check_Z,
+    _nondim_tc_e_spitzer,
+    _nondim_resist_spitzer,
+    _nondim_tec_spitzer,
+    _nondim_tc_e_braginskii,
+    _nondim_tc_i_braginskii,
+    _nondim_visc_e_braginskii,
+    _nondim_visc_i_braginskii,
+    _nondim_resist_braginskii,
+    _nondim_tec_braginskii,
+    _nondim_tc_e_ji_held,
+    _nondim_resist_ji_held,
+    _nondim_tec_ji_held,
+    _nondim_visc_e_ji_held,
+    _nondim_tc_i_ji_held,
+    _nondim_visc_i_ji_held,
+    resistivity,
+    electron_thermal_conductivity,
+    ion_thermal_conductivity,
+    electron_viscosity,
+    ion_viscosity,
+    thermoelectric_conductivity,
+    ClassicalTransport,
+)
+from plasmapy.formulary.collisions import Coulomb_logarithm
 from plasmapy.utils.exceptions import (PhysicsError,
                                        CouplingWarning,
                                        RelativityWarning)
-from plasmapy.atomic.exceptions import InvalidParticleError
 from plasmapy.formulary.parameters import Hall_parameter
-from astropy.constants import m_p, m_e
-
-from plasmapy.formulary.collisions import (Coulomb_logarithm,
-                                          )
-from plasmapy.formulary.braginskii import (_nondim_thermal_conductivity,
-                                           _nondim_viscosity,
-                                           _nondim_resistivity,
-                                           _nondim_te_conductivity,
-                                           _check_Z,
-                                           _nondim_tc_e_spitzer,
-                                           _nondim_resist_spitzer,
-                                           _nondim_tec_spitzer,
-                                           _nondim_tc_e_braginskii,
-                                           _nondim_tc_i_braginskii,
-                                           _nondim_visc_e_braginskii,
-                                           _nondim_visc_i_braginskii,
-                                           _nondim_resist_braginskii,
-                                           _nondim_tec_braginskii,
-                                           _nondim_tc_e_ji_held,
-                                           _nondim_resist_ji_held,
-                                           _nondim_tec_ji_held,
-                                           _nondim_visc_e_ji_held,
-                                           _nondim_tc_i_ji_held,
-                                           _nondim_visc_i_ji_held,
-                                           resistivity,
-                                           electron_thermal_conductivity,
-                                           ion_thermal_conductivity,
-                                           electron_viscosity,
-                                           ion_viscosity,
-                                           thermoelectric_conductivity,
-                                           )
-from plasmapy.formulary.braginskii import ClassicalTransport
 
 
 def count_decimal_places(digits):
@@ -55,9 +55,6 @@ class Test_classical_transport:
     @classmethod
     def setup_class(self):
         """set up some initial values for tests"""
-        # TODO: when implementing validate_quantities remove this set equivalencies...
-        #       it affects the entire test environment
-        u.set_enabled_equivalencies(u.temperature_energy())
         self.T_e = 1000 * u.eV
         self.n_e = 2e13 / u.cm ** 3
         self.ion_particle = 'D +1'
@@ -121,10 +118,14 @@ class Test_classical_transport:
                                      ion_particle=self.ion_particle,
                                      model='spitzer',
                                      field_orientation='perp')
-            alpha_spitzer_perp_NRL = (1.03e-4 * ct2.Z *
-                                      ct2.coulomb_log_ei *
-                                      (ct2.T_e.to(u.eV)).value ** (-3 / 2) *
-                                      u.Ohm * u.m)
+            alpha_spitzer_perp_NRL = (
+                    1.03e-4
+                    * ct2.Z
+                    * ct2.coulomb_log_ei
+                    * (ct2.T_e.to(u.eV, equivalencies=u.temperature_energy())).value ** (-3 / 2)
+                    * u.Ohm
+                    * u.m
+            )
             testTrue = np.isclose(ct2.resistivity.value,
                                   alpha_spitzer_perp_NRL.value,
                                   rtol=2e-2)

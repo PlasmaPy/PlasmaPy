@@ -70,7 +70,7 @@ class Test_mass_density:
             mass_density(1 * u.m ** -3)
 
     def test_wrong_units(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(u.UnitTypeError):
             mass_density(1 * u.J)
 
     def test_handle_nparrays(self):
@@ -132,7 +132,7 @@ def test_Alfven_speed():
     with pytest.raises(ValueError):
         Alfven_speed(B_arr, rho_negarr)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         Alfven_speed(5 * u.A, n_i, ion='p')
 
     with pytest.raises(TypeError):
@@ -222,7 +222,7 @@ def test_ion_sound_speed():
     with pytest.warns(PhysicsWarning):
         ion_sound_speed(T_i=T_i, T_e=T_e, k=k_1)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(u.UnitTypeError):
         ion_sound_speed(T_i=np.array([5, 6, 5]) * u.K,
                         T_e=np.array([3, 4]) * u.K,
                         n_e=np.array([5, 6, 5]) * u.m ** -3,
@@ -264,7 +264,7 @@ def test_ion_sound_speed():
     with pytest.raises(RelativityError):
         ion_sound_speed(T_i=5e19 * u.K, T_e=0 * u.K)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         ion_sound_speed(T_i=5 * u.A, T_e=0 * u.K, n_e=n_e, k=k_1)
 
     assert np.isnan(ion_sound_speed(T_i=T_nanarr, T_e=0 * u.K, n_e=n_e, k=k_1)[1])
@@ -310,7 +310,7 @@ def test_thermal_speed():
     assert np.isclose(thermal_speed(1 * u.MK).value,
                       5505694.743141063)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         thermal_speed(5 * u.m)
 
     with pytest.raises(ValueError):
@@ -337,7 +337,7 @@ def test_thermal_speed():
 
     assert thermal_speed(1 * u.MK, particle='e+') == thermal_speed(1 * u.MK)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         thermal_speed(5 * u.m, particle='p')
 
     with pytest.raises(ValueError):
@@ -491,7 +491,7 @@ def test_gyrofrequency():
     with pytest.raises(TypeError):
         gyrofrequency(u.m)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         gyrofrequency(u.m * 1)
 
     assert np.isnan(gyrofrequency(B_nanarr)[-1])
@@ -527,7 +527,7 @@ def test_gyrofrequency():
     with pytest.warns(u.UnitsWarning):
         gyrofrequency(8, 'p')
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         gyrofrequency(5 * u.m, 'p')
 
     with pytest.raises(InvalidParticleError):
@@ -568,10 +568,10 @@ def test_gyroradius():
     with pytest.raises(TypeError):
         gyroradius(u.T)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         gyroradius(5 * u.A, Vperp=8 * u.m / u.s)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         gyroradius(5 * u.T, Vperp=8 * u.m)
 
     with pytest.raises(ValueError):
@@ -591,7 +591,7 @@ def test_gyroradius():
     with pytest.raises(ValueError):
         gyroradius(1.1 * u.T, Vperp=1 * u.m / u.s, T_i=1.2 * u.K)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(u.UnitTypeError):
         gyroradius(1.1 * u.T, Vperp=1.1 * u.m, T_i=1.2 * u.K)
 
     assert gyroradius(B, particle="p", T_i=T_i).unit.is_equivalent(u.m)
@@ -642,10 +642,10 @@ def test_gyroradius():
     with pytest.raises(ValueError):
         gyroradius(1.1 * u.T, particle="p", Vperp=1 * u.m / u.s, T_i=1.2 * u.K)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(u.UnitTypeError):
         gyroradius(1.1 * u.T, particle="p", Vperp=1.1 * u.m, T_i=1.2 * u.K)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(u.UnitTypeError):
         gyroradius(1.1 * u.T, particle="p", Vperp=1.2 * u.m, T_i=1.1 * u.K)
 
 
@@ -710,7 +710,7 @@ def test_plasma_frequency():
     with pytest.raises(TypeError):
         plasma_frequency(u.m ** -3)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         plasma_frequency(5 * u.m ** -2)
 
     assert np.isnan(plasma_frequency(np.nan * u.m ** -3))
@@ -759,7 +759,7 @@ def test_Debye_length():
     with pytest.warns(u.UnitsWarning):
         Debye_length(5, 5 * u.m ** -3)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         Debye_length(56 * u.kg, 5 * u.m ** -3)
 
     with pytest.raises(ValueError):
@@ -799,10 +799,10 @@ def test_Debye_number():
     with pytest.raises(ValueError):
         Debye_number(None, n_e)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         Debye_number(5 * u.m, 5 * u.m ** -3)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         Debye_number(5 * u.K, 5 * u.m ** 3)
 
     with pytest.raises(ValueError):
@@ -838,7 +838,7 @@ def test_inertial_length():
     with pytest.warns(u.UnitsWarning):
         inertial_length(4, particle='p')
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         inertial_length(4 * u.m ** -2, particle='p')
 
     with pytest.raises(ValueError):
@@ -858,7 +858,7 @@ def test_inertial_length():
     with pytest.warns(u.UnitsWarning):
         inertial_length(5, 'e-')
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         inertial_length(5 * u.m, 'e-')
 
     with pytest.raises(ValueError):
@@ -888,7 +888,7 @@ def test_magnetic_pressure():
     with pytest.warns(u.UnitsWarning):
         magnetic_pressure(5)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         magnetic_pressure(5 * u.m)
 
     assert np.isnan(magnetic_pressure(np.nan * u.T))
@@ -924,7 +924,7 @@ def test_magnetic_energy_density():
     with pytest.warns(u.UnitsWarning):
         magnetic_energy_density(5)
 
-    with pytest.raises(u.UnitConversionError):
+    with pytest.raises(u.UnitTypeError):
         magnetic_energy_density(5 * u.m)
 
     assert np.isnan(magnetic_energy_density(np.nan * u.T))
