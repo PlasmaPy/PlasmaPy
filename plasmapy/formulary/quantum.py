@@ -446,6 +446,12 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     ----------
     .. [1] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.
 
+    Example
+    -------
+    >>> from astropy import units as u
+    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)  # doctest: +SKIP
+    <Quantity 2.00039985e-12>
+
     """
 
     raise NotImplementedError(
@@ -549,7 +555,7 @@ def _chemical_potential_interp(n_e, T):
     Example
     -------
     >>> from astropy import units as u
-    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
+    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)  # doctest: +SKIP
     <Quantity 8.17649>
 
     """
