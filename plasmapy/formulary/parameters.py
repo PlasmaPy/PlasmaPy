@@ -107,19 +107,17 @@ def mass_density(density: [u.m ** -3, u.kg / (u.m ** 3)],
     <Quantity 1.33779786e-26 kg / m3>
 
     """
-    if density.unit.is_equivalent(u.kg / u.m ** 3):
-        rho = density
-    elif density.unit.is_equivalent(u.m ** -3):
+    # validate_quantities ensures we have units of u.kg/u.m**3 or 1/u.m**3
+    rho = density
+    if not rho.unit.is_equivalent(u.kg / u.m ** 3):
         if particle:
             m_i = atomic.particle_mass(particle)
             Z = _grab_charge(particle, z_mean)
             rho = density * m_i + Z * density * m_e
         else:
-            raise ValueError(f"If passing a number density, you must pass a"
+            raise ValueError(f"If passing a number density, you must pass a "
                              f"particle (not {particle}) to calculate the mass density!")
-    else:
-        raise ValueError(f"mass_density accepts either particle (m**-3)"
-                         " or mass (kg * m**-3) density, not {density.unit}!")
+
     return rho
 
 
