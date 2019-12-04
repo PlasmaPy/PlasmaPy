@@ -374,7 +374,9 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
     return radius
 
 
-# TODO: review doctests...before decoration wrong units [cm^3] where being passed and not converted
+# TODO: remove NotImplementedError and 'doctest: +SKIP' when the following issues are addressed...
+#       https://github.com/PlasmaPy/PlasmaPy/issues/726
+#       https://github.com/astropy/astropy/issues/9721
 @validate_quantities(n_e={'can_be_negative': False},
                      T={'can_be_negative': False,
                         'equivalencies': u.temperature_energy()})
@@ -447,8 +449,9 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     """
 
     raise NotImplementedError(
-        "This function has been temporarily disabled due to a bug.\n" \
-        "Please refer to https://github.com/PlasmaPy/PlasmaPy/issues/726 \n"\
+        "This function has been temporarily disabled due to a bug.\n"
+        "Please refer to https://github.com/PlasmaPy/PlasmaPy/issues/726 \n"
+        "and https://github.com/astropy/astropy/issues/9721 "
         "for progress in fixing it."
     )
     # deBroglie wavelength
@@ -477,6 +480,9 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
 
 # TODO: decorate with validate_quantities
+# TODO: remove NotImplementedError and 'doctest: +SKIP' when the following issues are addressed...
+#       https://github.com/PlasmaPy/PlasmaPy/issues/726
+#       https://github.com/astropy/astropy/issues/9721
 def _chemical_potential_interp(n_e, T):
     r"""
     Fitting formula for interpolating chemical potential between classical
@@ -547,6 +553,12 @@ def _chemical_potential_interp(n_e, T):
     <Quantity 8.17649>
 
     """
+    raise NotImplementedError(
+        "This function has been temporarily disabled due to a bug.\n"
+        "Please refer to https://github.com/PlasmaPy/PlasmaPy/issues/726 \n"
+        "and https://github.com/astropy/astropy/issues/9721 "
+        "for progress in fixing it."
+    )
     A = 0.25945
     B = 0.072
     b = 0.858
