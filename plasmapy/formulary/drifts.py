@@ -1,4 +1,8 @@
-"""Formulas for calculating particle drifts."""
+"""
+Formulas for calculating particle drifts.
+"""
+__all__ = ['ExB_drift', 'force_drift']
+
 import astropy.units as u
 import numpy as np
 
