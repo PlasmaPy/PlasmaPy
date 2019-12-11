@@ -26,7 +26,7 @@ def angular_freq_to_hz(fn):
     ValueError
         fn.__name__ can not be `to_hz`
 
-    Returns 
+    Returns
     -------
 
     _result
