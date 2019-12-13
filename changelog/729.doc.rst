@@ -1,1 +1,1 @@
-Add docstrings to decorator :func:plasmapy.utils.decorators.converter.angular_freq_to_hz
+Add docstrings to decorator :func:`plasmapy.utils.decorators.converter.angular_freq_to_hz`
