@@ -34,6 +34,27 @@ def angular_freq_to_hz(fn):
     callable
         The decorated function
 
+    Notes
+    -----
+    * If `angular_freq_to_hz` is used with decorator
+      :func:`~plasmapy.utils.decorators.validate_quantities`, then
+      `angular_freq_to_hz` should be used inside
+      :func:`~plasmapy.utils.decorators.validate_quantities` but special
+      consideration is needed for setup.  The following is an example of an
+      appropriate setup::
+
+        import astropy.units as u
+        from plasmapy.utils.decorators.converter import angular_freq_to_hz
+        from plasmapy.utils.decorators.validators import validate_quantities
+
+        @validate_quantities(validations_on_return={'units': [u.rad / u.s, u.Hz]})
+        @angular_freq_to_hz
+        def foo(x: u.rad / u.s) -> u.rad / u.s
+            return x
+
+      Adding `u.Hz` to the allowed units allows the converted quantity to pass
+      the validations.
+
     Examples
     --------
 
