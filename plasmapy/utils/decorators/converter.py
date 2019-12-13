@@ -9,29 +9,54 @@ import inspect
 from astropy import units as u
 from plasmapy.utils.decorators import preserve_signature
 
-
 def angular_freq_to_hz(fn):
     """
-    Converts angular frequency (ω) frenquency to Hertz(hz)
+    A decorator that adds to a function the ability to convert the function's return from angular frequency (rad/s)(ω) to frequency (Hz).
+
+    A kwarg to_hz is added to the function's signature, with a default value of False. 
+    The keyword is also added to the function's docstring under the Other Parameters heading.
 
     Parameters
     ----------
 
-    fn : obj
-        The object to be converted
+    fn : function
+        The function to be decorated
 
     Raises
     ------
 
     ValueError
-        fn.__name__ can not be `to_hz`
+        If `fn` has already defined a kwarg `to_hz`
 
     Returns
     -------
 
-    _result
-        result in Hertz(hz)
+    callable
+        The decorated function
 
+    Tests
+    -----
+
+    >>> import astropy.units as u
+    >>> from plasmapy.utils.decorators.converter import angular_freq_to_hz
+
+    >>> @angular_freq_to_hz
+    ... def foo(x):
+    ...     return x
+
+    >>> foo(5 * u.rad / u.s, to_hz=True)
+    <Quantity 0.79577472 Hz>
+
+    >>> foo(-1 * u.rad / u.s, to_hz=True)
+    <Quantity -0.15915494 Hz>
+
+    >>> foo(0.5 * u.rad / u.s, to_hz=True)
+    <Quantity 0.07957747 Hz>
+
+    >>> foo((1/2) * u.rad / u.s, to_hz=True)
+    <Quantity 0.07957747 Hz>
+
+    
     """
     # raise exception if fn uses the 'to_hz' kwarg
     sig = inspect.signature(fn)
@@ -66,3 +91,4 @@ def angular_freq_to_hz(fn):
         wrapper.__doc__ = added_doc_bit
 
     return wrapper
+    
