@@ -34,27 +34,36 @@ def angular_freq_to_hz(fn):
     callable
         The decorated function
 
-    Tests
-    -----
+    Examples
+    --------
 
-    >>> import astropy.units as u
-    >>> from plasmapy.utils.decorators.converter import angular_freq_to_hz
+        >>> import astropy.units as u
+        >>> from plasmapy.utils.decorators.converter import angular_freq_to_hz
+        >>>
+        >>> @angular_freq_to_hz
+        ... def foo(x):
+        ...     return x
+        >>>
+        >>> foo(5 * u.rad / u.s, to_hz=True)
+        <Quantity 0.79577472 Hz>
+        >>>
+        >>> foo(-1 * u.rad / u.s, to_hz=True)
+        <Quantity -0.15915494 Hz>
 
-    >>> @angular_freq_to_hz
-    ... def foo(x):
-    ...     return x
+    Decoration also works with methods
 
-    >>> foo(5 * u.rad / u.s, to_hz=True)
-    <Quantity 0.79577472 Hz>
+        >>> class Foo:
+        ...     def __init__(self, x):
+        ...         self.x = x
+        ...
+        ...     @angular_freq_to_hz
+        ...     def bar(self):
+        ...         return self.x
+        >>>
+        >>> foo = Foo(0.5 * u.rad / u.s)
+        >>> foo.bar(to_hz=True)
+        <Quantity 0.07957747 Hz>
 
-    >>> foo(-1 * u.rad / u.s, to_hz=True)
-    <Quantity -0.15915494 Hz>
-
-    >>> foo(0.5 * u.rad / u.s, to_hz=True)
-    <Quantity 0.07957747 Hz>
-
-    >>> foo((1/2) * u.rad / u.s, to_hz=True)
-    <Quantity 0.07957747 Hz>
     """
     # raise exception if fn uses the 'to_hz' kwarg
     sig = inspect.signature(fn)
