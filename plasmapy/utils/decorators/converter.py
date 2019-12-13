@@ -19,19 +19,16 @@ def angular_freq_to_hz(fn):
 
     Parameters
     ----------
-
     fn : function
         The function to be decorated
 
     Raises
     ------
-
     ValueError
         If `fn` has already defined a kwarg `to_hz`
 
     Returns
     -------
-
     callable
         The decorated function
 
@@ -60,7 +57,7 @@ def angular_freq_to_hz(fn):
     # raise exception if fn uses the 'to_hz' kwarg
     sig = inspect.signature(fn)
     if 'to_hz' in sig.parameters:
-        raise ValueError(f"Wrapped function '{fn.__name__}' can not use keyword 'to_hz'." +
+        raise ValueError(f"Wrapped function '{fn.__name__}' can not use keyword 'to_hz'."
                          f" Keyword reserved for decorator functionality.")
 
     # make new signature for fn
