@@ -9,13 +9,15 @@ import inspect
 from astropy import units as u
 from plasmapy.utils.decorators import preserve_signature
 
+
 def angular_freq_to_hz(fn):
     """
     A decorator that adds to a function the ability to convert the function's return from
-    angular frequency (rad/s or ω) to frequency (Hz).
+    angular frequency (rad/s) to frequency (Hz).
 
-    A kwarg to_hz is added to the function's signature, with a default value of False.
-    The keyword is also added to the function's docstring under the Other Parameters heading.
+    A kwarg `to_hz` is added to the function's signature, with a default value of `False`.
+    The keyword is also added to the function's docstring under the **"Other Parameters"**
+    heading.
 
     Parameters
     ----------
