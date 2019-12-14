@@ -46,9 +46,10 @@ extras['all'] = list(chain.from_iterable(ex_extras.values()))
 # discovered_addons_list = [
 #     f'{name} = '
 # ]
-extras['entry_points'] = {'plasmapy.addons': []}
+# extras['entry_points'] = {'plasmapy.addons': []}
 
 # Get configuration information from all of the various subpackages.
 # See the docstring for setup_helpers.update_package_files for more
 # details.
-setup(extras_require=extras, use_scm_version=True)
+setup(extras_require=extras, use_scm_version=True,
+      entry_points={'plasmapy.addons': []})
