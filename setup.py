@@ -3,7 +3,7 @@ import importlib
 import os
 import pkgutil
 import sys
-import plasmapy.addons
+# import plasmapy.addons
 
 from itertools import chain
 from setuptools import setup
