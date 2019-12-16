@@ -33,6 +33,8 @@ Utility tools
  __citation__      --- PlasmaPy citation instructions
 
 """
+__all__ = ['addons', 'atomic', 'classes', 'data', 'diagnostics', 'formulary',
+           'simulation', 'utils', 'online_help']
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 
 # Packages may add whatever they like to this file, but
@@ -41,8 +43,17 @@ Utility tools
 from .version import version as __version__
 from .version import githash as __githash__
 
-from . import formulary
-from . import atomic
+from . import (
+    addons,
+    atomic,
+    classes,
+    data,
+    diagnostics,
+    formulary,
+    simulation,
+    utils,
+)
+
 # ----------------------------------------------------------------------------
 
 # Enforce Python version check during package import.
