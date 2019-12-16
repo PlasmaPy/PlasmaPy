@@ -23,7 +23,7 @@ ex_extras = dict(filter(lambda i: i[0] not in exclude_keys, extras.items()))
 # Concatenate all the values together for 'all'
 extras['all'] = list(chain.from_iterable(ex_extras.values()))
 
-packages = find_packages + ['plasmapy.addons', ]
+packages = find_packages() + ['plasmapy.addons', ]
 # Get configuration information from all of the various subpackages.
 # See the docstring for setup_helpers.update_package_files for more
 # details.
