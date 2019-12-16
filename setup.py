@@ -12,7 +12,7 @@ sys.path.append(os.path.abspath("."))
 ################################################################################
 # Programmatically generate some extras combos.
 ################################################################################
-extras = read_configuration("setup_ns.cfg")['options']['extras_require']
+extras = read_configuration("setup.cfg")['options']['extras_require']
 
 # Dev is everything
 extras['dev'] = list(chain(*extras.values()))
