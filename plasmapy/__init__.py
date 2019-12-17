@@ -40,6 +40,10 @@ __all__ = ['addons', 'atomic', 'classes', 'data', 'diagnostics', 'formulary',
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
+import importlib
+import pkgutil
+import sys
+
 from .version import version as __version__
 from .version import githash as __githash__
 
@@ -54,11 +58,16 @@ from . import (
     utils,
 )
 
+# import addon packages so that they're discoverable by dir()
+for finder, name, ispkg in \
+        pkgutil.iter_modules(path=addons.__path__, prefix=addons.__name__ + "."):
+    if ispkg:
+        importlib.import_module(name)
+
 # ----------------------------------------------------------------------------
 
 # Enforce Python version check during package import.
 # This is the same check as the one at the top of setup.py
-import sys
 
 __citation__ = (
     "Instructions on how to cite and acknowledge PlasmaPy are provided in the "
