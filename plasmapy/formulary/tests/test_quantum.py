@@ -159,9 +159,9 @@ class Test_chemical_potential:
         """
         methodVal = chemical_potential(self.n_e, self.T)
         testTrue = u.isclose(methodVal,
-                              self.True1,
-                              rtol=1e-16,
-                              atol=0.0)
+                             self.True1,
+                             rtol=1e-16,
+                             atol=0.0)
         errStr = (f"Chemical potential value should be {self.True1} and not "
                   f"{methodVal}.")
         assert testTrue, errStr
@@ -175,9 +175,9 @@ class Test_chemical_potential:
         fail1 = self.True1 + 1e-15
         methodVal = chemical_potential(self.n_e, self.T)
         testTrue = not u.isclose(methodVal,
-                                  fail1,
-                                  rtol=1e-16,
-                                  atol=0.0)
+                                 fail1,
+                                 rtol=1e-16,
+                                 atol=0.0)
         errStr = (f"Chemical potential value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
@@ -197,10 +197,7 @@ class Test__chemical_potential_interp:
         Tests Fermi_integral for expected value.
         """
         methodVal = _chemical_potential_interp(self.n_e, self.T)
-        testTrue = u.isclose(methodVal,
-                              self.True1,
-                              rtol=1e-16,
-                              atol=0.0)
+        testTrue = u.isclose(methodVal, self.True1, rtol=1e-16, atol=0.0)
         errStr = (f"Chemical potential value should be {self.True1} and not "
                   f"{methodVal}.")
         assert testTrue, errStr
@@ -213,10 +210,7 @@ class Test__chemical_potential_interp:
         """
         fail1 = self.True1 + 1e-15
         methodVal = _chemical_potential_interp(self.n_e, self.T)
-        testTrue = not u.isclose(methodVal,
-                                  fail1,
-                                  rtol=1e-16,
-                                  atol=0.0)
+        testTrue = not u.isclose(methodVal, fail1, rtol=1e-16, atol=0.0)
         errStr = (f"Chemical potential value test gives {methodVal} "
                   f"and should not be equal to {fail1}.")
         assert testTrue, errStr
