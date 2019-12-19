@@ -939,7 +939,7 @@ def fundamental_electron_collision_freq(T_e: u.K,
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
     <Quantity 5.6589...e-07 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
-    <Quantity 5812633.7... 1 / s>
+    <Quantity 5812633... 1 / s>
 
     See Also
     --------
@@ -1463,7 +1463,7 @@ def mobility(T: u.K,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> mobility(T, n, particles)
-    <Quantity 250505.0416... m2 / (s V)>
+    <Quantity 250505... m2 / (s V)>
     >>> mobility(T, n, particles, V=1e6 * u.m / u.s)
     <Quantity 1921.2784... m2 / (s V)>
 

@@ -181,7 +181,7 @@ def test_Alfven_speed():
     assert np.isclose(testMeth1,
                       testTrue1,
                       atol=0.0,
-                      rtol=1e-15), errStr
+                      rtol=1e-6), errStr
 
     assert_can_handle_nparray(Alfven_speed)
 

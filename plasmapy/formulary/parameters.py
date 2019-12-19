@@ -810,7 +810,7 @@ def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None) -> u.rad / u.s:
     <Quantity 50923.9... Hz>
     >>> omega_ce = gyrofrequency(0.1*u.T)
     >>> print(omega_ce)
-    17588200236.0... rad / s
+    1758820... rad / s
     >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
     >>> print(f_ce)
     279924... Hz

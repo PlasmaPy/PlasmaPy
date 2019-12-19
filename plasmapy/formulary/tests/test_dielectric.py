@@ -129,7 +129,7 @@ class Test_permittivity_1D_Maxwellian:
                                                self.z_mean)
         testTrue = np.isclose(methodVal,
                               self.True1,
-                              rtol=1e-16,
+                              rtol=1e-6,
                               atol=0.0)
         errStr = (f"Permittivity value should be {self.True1} and not "
                   f"{methodVal}.")
