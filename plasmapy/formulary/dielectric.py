@@ -96,13 +96,13 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     >>> omega = 3.7e9*(2*pi)*(u.rad/u.s)
     >>> permittivity = S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega)
     >>> S
-    <Quantity 1.02422902>
+    <Quantity 1.02422...>
     >>> permittivity.sum   # namedtuple-style access
-    <Quantity 1.02422902>
+    <Quantity 1.02422...>
     >>> D
-    <Quantity 0.39089352>
+    <Quantity 0.39089...>
     >>> P
-    <Quantity -4.8903104>
+    <Quantity -4.8903...>
     """
     S, D, P = 1, 0, 1
 
@@ -189,13 +189,13 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     >>> omega = 3.7e9*(2*pi)*(u.rad/u.s)
     >>> L, R, P = permittivity = cold_plasma_permittivity_LRP(B, species, n, omega)
     >>> L
-    <Quantity 0.63333549>
+    <Quantity 0.63333...>
     >>> permittivity.left    # namedtuple-style access
-    <Quantity 0.63333549>
+    <Quantity 0.63333...>
     >>> R
-    <Quantity 1.41512254>
+    <Quantity 1.41512...>
     >>> P
-    <Quantity -4.8903104>
+    <Quantity -4.8903...>
     """
     L, R, P = 1, 1, 1
 
@@ -298,7 +298,7 @@ def permittivity_1D_Maxwellian(
     >>> omega = 5.635e14 * 2 * pi * u.rad / u.s
     >>> kWave = omega / vTh
     >>> permittivity_1D_Maxwellian(omega, kWave, T, n, particle, z_mean)
-    <Quantity -6.72809257e-08+5.76037956e-07j>
+    <Quantity -6.72809...e-08+5.76037...e-07j>
     """
     # thermal velocity
     vTh = parameters.thermal_speed(T=T,

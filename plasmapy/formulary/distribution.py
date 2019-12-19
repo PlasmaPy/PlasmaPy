@@ -104,7 +104,7 @@ def Maxwellian_1D(v,
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
     >>> Maxwellian_1D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
-    <Quantity 5.91632969e-07 s / m>
+    <Quantity 5.9163...e-07 s / m>
     """
 
     if units == "units":
@@ -239,7 +239,7 @@ def Maxwellian_velocity_2D(vx,
     ... particle='e',
     ... vx_drift=0 * u.m / u.s,
     ... vy_drift=0 * u.m / u.s)
-    <Quantity 3.5002957e-13 s2 / m2>
+    <Quantity 3.5002...e-13 s2 / m2>
 
 
     """
@@ -387,7 +387,7 @@ def Maxwellian_velocity_3D(vx,
     ... vx_drift=0 * u.m / u.s,
     ... vy_drift=0 * u.m / u.s,
     ... vz_drift=0 * u.m / u.s)
-    <Quantity 2.07089033e-19 s3 / m3>
+    <Quantity 2.07089...e-19 s3 / m3>
 
 
     """
@@ -508,7 +508,7 @@ def Maxwellian_speed_1D(v,
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_1D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
-    <Quantity 1.18326594e-06 s / m>
+    <Quantity 1.1832...e-06 s / m>
 
     """
     if units == "units":
@@ -629,7 +629,7 @@ def Maxwellian_speed_2D(v,
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
-    <Quantity 2.19930065e-12 s / m>
+    <Quantity 2.1993...e-12 s / m>
 
     """
     if v_drift != 0:
@@ -753,7 +753,7 @@ def Maxwellian_speed_3D(v,
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_3D(v=v, T=30000*u.K, particle='e', v_drift=0 * u.m / u.s)
-    <Quantity 2.60235754e-18 s / m>
+    <Quantity 2.60235...e-18 s / m>
 
     """
     if v_drift != 0:
@@ -886,7 +886,7 @@ def kappa_velocity_1D(v,
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> kappa_velocity_1D(v=v, T=30000*u.K, kappa=4, particle='e', v_drift=0 * u.m / u.s)
-    <Quantity 6.75549854e-07 s / m>
+    <Quantity 6.75549...e-07 s / m>
 
     See Also
     --------
@@ -1056,7 +1056,7 @@ def kappa_velocity_3D(vx,
     ... vx_drift=0 * u.m / u.s,
     ... vy_drift=0 * u.m / u.s,
     ... vz_drift=0 * u.m / u.s)
-    <Quantity 3.7833988e-19 s3 / m3>
+    <Quantity 3.7833...e-19 s3 / m3>
     """
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3 / 2:

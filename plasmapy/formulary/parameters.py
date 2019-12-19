@@ -102,9 +102,9 @@ def mass_density(density: [u.m ** -3, u.kg / (u.m ** 3)],
     -------
     >>> from astropy import units as u
     >>> mass_density(1 * u.m ** -3,'p')
-    <Quantity 1.67353284e-27 kg / m3>
+    <Quantity 1.67353...e-27 kg / m3>
     >>> mass_density(4 * u.m ** -3,'D+')
-    <Quantity 1.33779786e-26 kg / m3>
+    <Quantity 1.33779...e-26 kg / m3>
 
     """
     # validate_quantities ensures we have units of u.kg/u.m**3 or 1/u.m**3
@@ -206,11 +206,11 @@ def Alfven_speed(B: u.T,
     >>> rho = n*(m_p+m_e)
     >>> ion = 'p'
     >>> Alfven_speed(B, n, ion)
-    <Quantity 43173.87029559 m / s>
+    <Quantity 43173.870... m / s>
     >>> Alfven_speed(B, rho, ion)
-    <Quantity 43173.87029559 m / s>
+    <Quantity 43173.870... m / s>
     >>> Alfven_speed(B, rho, ion).to(u.cm/u.us)
-    <Quantity 4.31738703 cm / us>
+    <Quantity 4.31738... cm / us>
 
     """
     rho = mass_density(density, ion, z_mean)
@@ -352,15 +352,15 @@ def ion_sound_speed(T_e: u.K,
     >>> k_1 = 3e1*u.m**-1
     >>> k_2 = 3e7*u.m**-1
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, ion='p', gamma_e=1, gamma_i=3)
-    <Quantity 203155.0764042 m / s>
+    <Quantity 203155.07... m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p', gamma_e=1, gamma_i=3)
-    <Quantity 203155.03286794 m / s>
+    <Quantity 203155.03... m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_2, ion='p', gamma_e=1, gamma_i=3)
-    <Quantity 310.31329069 m / s>
+    <Quantity 310.3132... m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1)
-    <Quantity 203155.03286794 m / s>
+    <Quantity 203155.03... m / s>
     >>> ion_sound_speed(T_e=500*u.eV, T_i=200*u.eV, n_e=n, k=k_1, ion='D+')
-    <Quantity 229585.96150738 m / s>
+    <Quantity 229585.96... m / s>
 
     """
     
@@ -472,17 +472,17 @@ def thermal_speed(T: u.K,
     --------
     >>> from astropy import units as u
     >>> thermal_speed(5*u.eV, 'p')
-    <Quantity 30949.69018286 m / s>
+    <Quantity 30949.69... m / s>
     >>> thermal_speed(1e6*u.K, particle='p')
-    <Quantity 128486.55193256 m / s>
+    <Quantity 128486.5... m / s>
     >>> thermal_speed(5*u.eV)
-    <Quantity 1326205.12123959 m / s>
+    <Quantity 1326205.1... m / s>
     >>> thermal_speed(1e6*u.K)
-    <Quantity 5505693.98842538 m / s>
+    <Quantity 5505693.9... m / s>
     >>> thermal_speed(1e6*u.K, method="rms")
-    <Quantity 6743070.47577549 m / s>
+    <Quantity 6743070.4... m / s>
     >>> thermal_speed(1e6*u.K, method="mean_magnitude")
-    <Quantity 6212510.3969422 m / s>
+    <Quantity 6212510.3... m / s>
 
     """
     m = mass if np.isfinite(mass) else atomic.particle_mass(particle)
@@ -519,9 +519,9 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
     --------
     >>> import astropy.units as u
     >>> thermal_pressure(1*u.eV, 1e20/u.m**3)
-    <Quantity 16.02176621 Pa>
+    <Quantity 16.021... Pa>
     >>> thermal_pressure(10*u.eV, 1e20/u.m**3)
-    <Quantity 160.21766208 Pa>
+    <Quantity 160.21... Pa>
 
     Returns
     -------
@@ -616,11 +616,11 @@ def kappa_thermal_speed(T: u.K, kappa, particle="e-", method="most_probable") ->
     --------
     >>> from astropy import units as u
     >>> kappa_thermal_speed(5*u.eV, 4, 'p') # defaults to most probable
-    <Quantity 24467.87846359 m / s>
+    <Quantity 24467.87... m / s>
     >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'rms')
-    <Quantity 37905.47432261 m / s>
+    <Quantity 37905.47... m / s>
     >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'mean_magnitude')
-    <Quantity 34922.9856304 m / s>
+    <Quantity 34922.98... m / s>
 
     References
     ----------
@@ -701,9 +701,9 @@ def Hall_parameter(n: u.m ** -3,
     --------
     >>> from astropy import units as u
     >>> Hall_parameter(1e10 * u.m**-3, 2.8e3 * u.eV, 2.3 * u.T, 'He-4 +1')
-    <Quantity 7.26446755e+16>
+    <Quantity 7.26446...e+16>
     >>> Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1')
-    <Quantity 2.11158408e+17>
+    <Quantity 2.11158...e+17>
 
     """
     from plasmapy.formulary.collisions import (fundamental_ion_collision_freq,
@@ -795,25 +795,25 @@ def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None) -> u.rad / u.s:
     --------
     >>> from astropy import units as u
     >>> gyrofrequency(0.1*u.T)
-    <Quantity 1.75882002e+10 rad / s>
+    <Quantity 1.7588...e+10 rad / s>
     >>> gyrofrequency(0.1*u.T, to_hz=True)
-    <Quantity 2.79924901e+09 Hz>
+    <Quantity 2.79924...e+09 Hz>
     >>> gyrofrequency(0.1*u.T, signed=True)
-    <Quantity -1.75882002e+10 rad / s>
+    <Quantity -1.75882...e+10 rad / s>
     >>> gyrofrequency(0.01*u.T, 'p')
-    <Quantity 957883.32241481 rad / s>
+    <Quantity 957883.32... rad / s>
     >>> gyrofrequency(0.01*u.T, 'p', signed=True)
-    <Quantity 957883.32241481 rad / s>
+    <Quantity 957883.32... rad / s>
     >>> gyrofrequency(0.01*u.T, particle='T+')
-    <Quantity 319964.54975911 rad / s>
+    <Quantity 319964.5... rad / s>
     >>> gyrofrequency(0.01*u.T, particle='T+', to_hz=True)
-    <Quantity 50923.93970833 Hz>
+    <Quantity 50923.939... Hz>
     >>> omega_ce = gyrofrequency(0.1*u.T)
     >>> print(omega_ce)
-    17588200236.02124 rad / s
+    17588200236.0... rad / s
     >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
     >>> print(f_ce)
-    2799249007.6528206 Hz
+    2799249007.6... Hz
 
     """
     m_i = atomic.particle_mass(particle)
@@ -906,23 +906,23 @@ def gyroradius(B: u.T,
     --------
     >>> from astropy import units as u
     >>> gyroradius(0.2*u.T,particle='p+',T_i=1e5*u.K)
-    <Quantity 0.00212087 m>
+    <Quantity 0.002120... m>
     >>> gyroradius(0.2*u.T,particle='p+',T_i=1e5*u.K)
-    <Quantity 0.00212087 m>
+    <Quantity 0.002120... m>
     >>> gyroradius(5*u.uG,particle='alpha',T_i=1*u.eV)
-    <Quantity 288002.38837768 m>
+    <Quantity 288002.38... m>
     >>> gyroradius(400*u.G,particle='Fe+++',Vperp=1e7*u.m/u.s)
-    <Quantity 48.23129811 m>
+    <Quantity 48.23129... m>
     >>> gyroradius(B=0.01*u.T,T_i=1e6*u.K)
-    <Quantity 0.00313033 m>
+    <Quantity 0.003130... m>
     >>> gyroradius(B=0.01*u.T,Vperp=1e6*u.m/u.s)
-    <Quantity 0.00056856 m>
+    <Quantity 0.000568... m>
     >>> gyroradius(0.2*u.T,T_i=1e5*u.K)
-    <Quantity 4.94949252e-05 m>
+    <Quantity 4.94949...e-05 m>
     >>> gyroradius(5*u.uG,T_i=1*u.eV)
-    <Quantity 6744.2598183 m>
+    <Quantity 6744.25... m>
     >>> gyroradius(400*u.G,Vperp=1e7*u.m/u.s)
-    <Quantity 0.00142141 m>
+    <Quantity 0.001421... m>
 
     """
 
@@ -1039,15 +1039,15 @@ def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None) -> u.rad / u.s:
     -------
     >>> from astropy import units as u
     >>> plasma_frequency(1e19*u.m**-3, particle='p')
-    <Quantity 4.16329453e+09 rad / s>
+    <Quantity 4.16329...e+09 rad / s>
     >>> plasma_frequency(1e19*u.m**-3, particle='p', to_hz=True)
-    <Quantity 6.62608904e+08 Hz>
+    <Quantity 6.62608...e+08 Hz>
     >>> plasma_frequency(1e19*u.m**-3, particle='D+')
-    <Quantity 2.94462452e+09 rad / s>
+    <Quantity 2.94462...e+09 rad / s>
     >>> plasma_frequency(1e19*u.m**-3)
-    <Quantity 1.78398636e+11 rad / s>
+    <Quantity 1.78398...e+11 rad / s>
     >>> plasma_frequency(1e19*u.m**-3, to_hz=True)
-    <Quantity 2.83930248e+10 Hz>
+    <Quantity 2.83930...e+10 Hz>
 
     """
 
@@ -1134,7 +1134,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
     -------
     >>> from astropy import units as u
     >>> Debye_length(5e6*u.K, 5e15*u.m**-3)
-    <Quantity 0.00218226 m>
+    <Quantity 0.002182... m>
 
     """
     lambda_D = np.sqrt(eps0 * k_B * T_e / (n_e * e ** 2))
@@ -1197,7 +1197,7 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     -------
     >>> from astropy import units as u
     >>> Debye_number(5e6*u.K, 5e9*u.cm**-3)
-    <Quantity 2.17658302e+08>
+    <Quantity 2.17658...e+08>
 
     """
 
@@ -1261,9 +1261,9 @@ def inertial_length(n: u.m ** -3, particle: atomic.Particle) -> u.m:
     -------
     >>> from astropy import units as u
     >>> inertial_length(5 * u.m ** -3, 'He+')
-    <Quantity 2.02985802e+08 m>
+    <Quantity 2.02985...e+08 m>
     >>> inertial_length(5 * u.m ** -3, 'e-')
-    <Quantity 2376534.75601976 m>
+    <Quantity 2376534.75... m>
 
     """
     omega_p = plasma_frequency(n, particle=particle)
@@ -1324,7 +1324,7 @@ def magnetic_pressure(B: u.T) -> u.Pa:
     -------
     >>> from astropy import units as u
     >>> magnetic_pressure(0.1*u.T).to(u.Pa)
-    <Quantity 3978.8735773 Pa>
+    <Quantity 3978.87... Pa>
 
     """
     return (B ** 2) / (2 * mu0)
@@ -1383,7 +1383,7 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
     -------
     >>> from astropy import units as u
     >>> magnetic_energy_density(0.1*u.T)
-    <Quantity 3978.8735773 J / m3>
+    <Quantity 3978.87... J / m3>
 
     """
     return magnetic_pressure(B)
@@ -1441,9 +1441,9 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     -------
     >>> from astropy import units as u
     >>> upper_hybrid_frequency(0.2*u.T, n_e=5e19*u.m**-3)
-    <Quantity 4.00459419e+11 rad / s>
+    <Quantity 4.00459...e+11 rad / s>
     >>> upper_hybrid_frequency(0.2*u.T, n_e=5e19*u.m**-3, to_hz = True)
-    <Quantity 6.37350961e+10 Hz>
+    <Quantity 6.37350...e+10 Hz>
 
     """
     omega_pe = plasma_frequency(n=n_e)
@@ -1515,9 +1515,9 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion='p+') -> u.rad / u.s:
     -------
     >>> from astropy import units as u
     >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+')
-    <Quantity 5.78372733e+08 rad / s>
+    <Quantity 5.78372...e+08 rad / s>
     >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+', to_hz = True)
-    <Quantity 92050879.32941628 Hz>
+    <Quantity 92050879.32... Hz>
 
     """
 
