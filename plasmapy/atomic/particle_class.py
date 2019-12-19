@@ -214,9 +214,9 @@ class Particle:
     >>> deuteron.mass_number
     2
     >>> deuteron.binding_energy.to('MeV')
-    <Quantity 2.22456652 MeV>
+    <Quantity 2.224... MeV>
     >>> alpha.charge
-    <Quantity 3.20435324e-19 C>
+    <Quantity 3.20435...e-19 C>
     >>> neutron.half_life
     <Quantity 881.5 s>
     >>> Particle('C-14').half_life.to(u.year)
