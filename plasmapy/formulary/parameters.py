@@ -352,15 +352,15 @@ def ion_sound_speed(T_e: u.K,
     >>> k_1 = 3e1*u.m**-1
     >>> k_2 = 3e7*u.m**-1
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, ion='p', gamma_e=1, gamma_i=3)
-    <Quantity 203155.07... m / s>
+    <Quantity 203155... m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p', gamma_e=1, gamma_i=3)
-    <Quantity 203155.03... m / s>
+    <Quantity 203155... m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_2, ion='p', gamma_e=1, gamma_i=3)
-    <Quantity 310.3132... m / s>
+    <Quantity 310.31... m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1)
-    <Quantity 203155.03... m / s>
+    <Quantity 203155... m / s>
     >>> ion_sound_speed(T_e=500*u.eV, T_i=200*u.eV, n_e=n, k=k_1, ion='D+')
-    <Quantity 229585.96... m / s>
+    <Quantity 229585... m / s>
 
     """
     
@@ -472,17 +472,17 @@ def thermal_speed(T: u.K,
     --------
     >>> from astropy import units as u
     >>> thermal_speed(5*u.eV, 'p')
-    <Quantity 30949.69... m / s>
+    <Quantity 30949.6... m / s>
     >>> thermal_speed(1e6*u.K, particle='p')
-    <Quantity 128486.5... m / s>
-    >>> thermal_speed(5*u.eV)
-    <Quantity 1326205.1... m / s>
-    >>> thermal_speed(1e6*u.K)
-    <Quantity 5505693.9... m / s>
+    <Quantity 128486... m / s>
+    >>> thermal_speed(5*u.eV, particle='e-')
+    <Quantity 132620... m / s>
+    >>> thermal_speed(1e6*u.K, particle='e-')
+    <Quantity 550569... m / s>
     >>> thermal_speed(1e6*u.K, method="rms")
-    <Quantity 6743070.4... m / s>
+    <Quantity 674307... m / s>
     >>> thermal_speed(1e6*u.K, method="mean_magnitude")
-    <Quantity 6212510.3... m / s>
+    <Quantity 621251... m / s>
 
     """
     m = mass if np.isfinite(mass) else atomic.particle_mass(particle)
@@ -807,13 +807,13 @@ def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None) -> u.rad / u.s:
     >>> gyrofrequency(0.01*u.T, particle='T+')
     <Quantity 319964.5... rad / s>
     >>> gyrofrequency(0.01*u.T, particle='T+', to_hz=True)
-    <Quantity 50923.939... Hz>
+    <Quantity 50923.9... Hz>
     >>> omega_ce = gyrofrequency(0.1*u.T)
     >>> print(omega_ce)
     17588200236.0... rad / s
     >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
     >>> print(f_ce)
-    2799249007.6... Hz
+    279924... Hz
 
     """
     m_i = atomic.particle_mass(particle)
@@ -1517,7 +1517,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion='p+') -> u.rad / u.s:
     >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+')
     <Quantity 5.78372...e+08 rad / s>
     >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+', to_hz = True)
-    <Quantity 92050879.32... Hz>
+    <Quantity 92050879.3... Hz>
 
     """
 

@@ -85,8 +85,10 @@ class Test_mass_density:
 def test_Alfven_speed():
     r"""Test the Alfven_speed function in parameters.py."""
 
+    # TODO: break this test up until multiple tests
+
     assert np.isclose(Alfven_speed(1 * u.T, 1e-8 * u.kg * u.m ** -3).value,
-                      8920620.580763856)
+                      8920620.580763856, rtol=1e-6)
 
     V_A = Alfven_speed(B, n_i)
     assert np.isclose(
@@ -289,12 +291,12 @@ def test_ion_sound_speed():
     # testing for user input z_mean
     testMeth1 = ion_sound_speed(T_e=1.2e6 * u.K, T_i=0 * u.K, n_e=n_e, 
                                 k=0 * u.m ** -1, z_mean=0.8).si.value
-    testTrue1 = 89018.0944146141
+    testTrue1 = 89018.09
     errStr = f"ion_sound_speed() gave {testMeth1}, should be {testTrue1}."
     assert np.isclose(testMeth1,
                       testTrue1,
                       atol=0.0,
-                      rtol=1e-15), errStr
+                      rtol=1e-6), errStr
 
     assert_can_handle_nparray(ion_sound_speed)
 
@@ -545,7 +547,7 @@ def test_gyrofrequency():
     assert np.isclose(testMeth1,
                       testTrue1,
                       atol=0.0,
-                      rtol=1e-15), errStr
+                      rtol=1e-5), errStr
 
     assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
 
@@ -743,7 +745,7 @@ def test_plasma_frequency():
     assert np.isclose(testMeth1,
                       testTrue1,
                       atol=0.0,
-                      rtol=1e-15), errStr
+                      rtol=1e-6), errStr
 
     assert_can_handle_nparray(plasma_frequency)
 

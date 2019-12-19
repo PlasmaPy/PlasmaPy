@@ -75,7 +75,7 @@ def test_thermal_deBroglie_wavelength():
                  f"{lambda_dbTh_true} and not {lambda_dbTh}")
     assert np.isclose(lambda_dbTh.value,
                       lambda_dbTh_true,
-                      rtol=1e-15,
+                      rtol=1e-5,
                       atol=0.0), expectStr
     # testing returned units
     assert lambda_dbTh.unit == u.m
@@ -96,7 +96,7 @@ def test_Fermi_energy():
                  f"{energy_F_true} and not {energy_F}.")
     assert np.isclose(energy_F.value,
                       energy_F_true,
-                      rtol=1e-15,
+                      rtol=1e-5,
                       atol=0.0), expectStr
     # testing returned units
     assert energy_F.unit == u.J
@@ -117,7 +117,7 @@ def test_Thomas_Fermi_length():
                  f"{lambda_TF_true} and not {lambda_TF}.")
     assert np.isclose(lambda_TF.value,
                       lambda_TF_true,
-                      rtol=1e-15,
+                      rtol=1e-5,
                       atol=0.0), expectStr
     # testing returned units
     assert lambda_TF.unit == u.m
@@ -137,8 +137,7 @@ def test_Wigner_Seitz_radius():
     radiusMeth = Wigner_Seitz_radius(n_e)
     testTrue = np.isclose(radiusMeth,
                           radiusTrue,
-                          rtol=0.0,
-                          atol=1e-15 * u.m)
+                          rtol=1e-5)
     errStr = (f"Error in Wigner_Seitz_radius(), got {radiusMeth}, "
               f"should be {radiusTrue}")
     assert testTrue, errStr
@@ -200,7 +199,7 @@ class Test__chemical_potential_interp:
         methodVal = _chemical_potential_interp(self.n_e, self.T)
         testTrue = np.isclose(methodVal,
                               self.True1,
-                              rtol=1e-14,
+                              rtol=1e-16,
                               atol=0.0)
         errStr = (f"Chemical potential value should be {self.True1} and not "
                   f"{methodVal}.")

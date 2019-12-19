@@ -37,7 +37,7 @@ def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
     >>> quantum_theta(1*u.eV, 1e20*u.m**-3)
     <Quantity 127290.619...>
     >>> quantum_theta(1*u.eV, 1e16*u.m**-3)
-    <Quantity 59083071.8...>
+    <Quantity 59083071...>
     >>> quantum_theta(1*u.eV, 1e26*u.m**-3)
     <Quantity 12.72906...>
     >>> quantum_theta(1*u.K, 1e26*u.m**-3)

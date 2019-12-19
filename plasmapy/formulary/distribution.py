@@ -387,7 +387,7 @@ def Maxwellian_velocity_3D(vx,
     ... vx_drift=0 * u.m / u.s,
     ... vy_drift=0 * u.m / u.s,
     ... vz_drift=0 * u.m / u.s)
-    <Quantity 2.07089...e-19 s3 / m3>
+    <Quantity 2.0708...e-19 s3 / m3>
 
 
     """
@@ -629,7 +629,7 @@ def Maxwellian_speed_2D(v,
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
-    <Quantity 2.1993...e-12 s / m>
+    <Quantity 2.199...e-12 s / m>
 
     """
     if v_drift != 0:

@@ -733,7 +733,7 @@ def collision_frequency(T: u.K,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> collision_frequency(T, n, particles)
-    <Quantity 702492.011... Hz>
+    <Quantity 70249... Hz>
 
     References
     ----------
@@ -931,15 +931,15 @@ def fundamental_electron_collision_freq(T_e: u.K,
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 0.001801... 1 / s>
     >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
-    <Quantity 1.072218...e-07 1 / s>
+    <Quantity 1.07221...e-07 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
-    <Quantity 3935958.739... 1 / s>
+    <Quantity 3935958.7... 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
-    <Quantity 3872815.5284... 1 / s>
+    <Quantity 3872815.5... 1 / s>
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
-    <Quantity 5.65897...e-07 1 / s>
+    <Quantity 5.6589...e-07 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
-    <Quantity 5812633.749... 1 / s>
+    <Quantity 5812633.7... 1 / s>
 
     See Also
     --------
@@ -1064,15 +1064,15 @@ def fundamental_ion_collision_freq(T_i: u.K,
     >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 2.868...e-05 1 / s>
     >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
-    <Quantity 1.7416...e-09 1 / s>
+    <Quantity 1.741...e-09 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
-    <Quantity 63087.512... 1 / s>
+    <Quantity 63087.5... 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
-    <Quantity 63085.113... 1 / s>
+    <Quantity 63085.1... 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
     <Quantity 9.111... 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
-    <Quantity 95918.762... 1 / s>
+    <Quantity 95918.7... 1 / s>
 
     See Also
     --------
@@ -1740,9 +1740,9 @@ def coupling_parameter(T: u.K,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> coupling_parameter(T, n, particles)
-    <Quantity 5.803303...e-05>
+    <Quantity 5.8033...e-05>
     >>> coupling_parameter(T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 5.803303...e-05>
+    <Quantity 5.8033...e-05>
 
     References
     ----------
