@@ -135,7 +135,7 @@ def test_Wigner_Seitz_radius():
     n_e = 1e23 * u.cm ** -3
     radiusTrue = 1.3365046175719772e-10 * u.m
     radiusMeth = Wigner_Seitz_radius(n_e)
-    testTrue = np.isclose(radiusMeth,
+    testTrue = u.isclose(radiusMeth,
                           radiusTrue,
                           rtol=1e-5)
     errStr = (f"Error in Wigner_Seitz_radius(), got {radiusMeth}, "
@@ -158,7 +158,7 @@ class Test_chemical_potential:
         Tests Fermi_integral for expected value.
         """
         methodVal = chemical_potential(self.n_e, self.T)
-        testTrue = np.isclose(methodVal,
+        testTrue = u.isclose(methodVal,
                               self.True1,
                               rtol=1e-16,
                               atol=0.0)
@@ -174,7 +174,7 @@ class Test_chemical_potential:
         """
         fail1 = self.True1 + 1e-15
         methodVal = chemical_potential(self.n_e, self.T)
-        testTrue = not np.isclose(methodVal,
+        testTrue = not u.isclose(methodVal,
                                   fail1,
                                   rtol=1e-16,
                                   atol=0.0)
@@ -197,7 +197,7 @@ class Test__chemical_potential_interp:
         Tests Fermi_integral for expected value.
         """
         methodVal = _chemical_potential_interp(self.n_e, self.T)
-        testTrue = np.isclose(methodVal,
+        testTrue = u.isclose(methodVal,
                               self.True1,
                               rtol=1e-16,
                               atol=0.0)
@@ -213,7 +213,7 @@ class Test__chemical_potential_interp:
         """
         fail1 = self.True1 + 1e-15
         methodVal = _chemical_potential_interp(self.n_e, self.T)
-        testTrue = not np.isclose(methodVal,
+        testTrue = not u.isclose(methodVal,
                                   fail1,
                                   rtol=1e-16,
                                   atol=0.0)
