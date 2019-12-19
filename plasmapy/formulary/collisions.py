@@ -237,9 +237,9 @@ def Coulomb_logarithm(T: u.K,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> Coulomb_logarithm(T, n, particles)
-    14.545527226436974
+    14.545527...
     >>> Coulomb_logarithm(T, n, particles, V=1e6 * u.m / u.s)
-    11.363478214139432
+    11.363478...
 
     References
     ----------
@@ -405,7 +405,7 @@ def impact_parameter_perp(T: u.K,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> impact_parameter_perp(T, particles)
-    <Quantity 8.35505011e-12 m>
+    <Quantity 8.3550...e-12 m>
 
 
     References
@@ -529,9 +529,9 @@ def impact_parameter(T: u.K,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> impact_parameter(T, n, particles)
-    (<Quantity 1.05163088e-11 m>, <Quantity 2.18225522e-05 m>)
+    (<Quantity 1.051...e-11 m>, <Quantity 2.182...e-05 m>)
     >>> impact_parameter(T, n, particles, V=1e6 * u.m / u.s)
-    (<Quantity 2.53401778e-10 m>, <Quantity 2.18225522e-05 m>)
+    (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
 
     References
     ----------
@@ -733,7 +733,7 @@ def collision_frequency(T: u.K,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> collision_frequency(T, n, particles)
-    <Quantity 702492.01188504 Hz>
+    <Quantity 702492.011... Hz>
 
     References
     ----------
@@ -823,9 +823,9 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m**2:
     Examples
     --------
     >>> Coulomb_cross_section(7e-10*u.m)
-    <Quantity 6.1575216e-18 m2>
+    <Quantity 6.157...e-18 m2>
     >>> Coulomb_cross_section(0.5*u.m)
-    <Quantity 3.14159265 m2>
+    <Quantity 3.141... m2>
 
     Notes
     -----
@@ -929,17 +929,17 @@ def fundamental_electron_collision_freq(T_e: u.K,
     --------
     >>> from astropy import units as u
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
-    <Quantity 0.00180167 1 / s>
+    <Quantity 0.001801... 1 / s>
     >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
-    <Quantity 1.07221863e-07 1 / s>
+    <Quantity 1.072218...e-07 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
-    <Quantity 3935958.7396539 1 / s>
+    <Quantity 3935958.739... 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
-    <Quantity 3872815.52840036 1 / s>
+    <Quantity 3872815.5284... 1 / s>
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
-    <Quantity 5.65897885e-07 1 / s>
+    <Quantity 5.65897...e-07 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
-    <Quantity 5812633.74935004 1 / s>
+    <Quantity 5812633.749... 1 / s>
 
     See Also
     --------
@@ -1062,17 +1062,17 @@ def fundamental_ion_collision_freq(T_i: u.K,
     --------
     >>> from astropy import units as u
     >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
-    <Quantity 2.86803251e-05 1 / s>
+    <Quantity 2.868...e-05 1 / s>
     >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
-    <Quantity 1.74160353e-09 1 / s>
+    <Quantity 1.7416...e-09 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
-    <Quantity 63087.51217732 1 / s>
+    <Quantity 63087.512... 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
-    <Quantity 63085.11369283 1 / s>
+    <Quantity 63085.113... 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
-    <Quantity 9.11173204 1 / s>
+    <Quantity 9.111... 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
-    <Quantity 95918.76240877 1 / s>
+    <Quantity 95918.762... 1 / s>
 
     See Also
     --------
@@ -1206,9 +1206,9 @@ def mean_free_path(T: u.K,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> mean_free_path(T, n, particles)
-    <Quantity 7.83950983 m>
+    <Quantity 7.839... m>
     >>> mean_free_path(T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 0.01091773 m>
+    <Quantity 0.0109... m>
 
     References
     ----------
@@ -1334,9 +1334,9 @@ def Spitzer_resistivity(T: u.K,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> Spitzer_resistivity(T, n, particles)
-    <Quantity 2.49157026e-06 m Ohm>
+    <Quantity 2.4915...e-06 m Ohm>
     >>> Spitzer_resistivity(T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 0.00032486 m Ohm>
+    <Quantity 0.000324... m Ohm>
 
     References
     ----------
@@ -1463,9 +1463,9 @@ def mobility(T: u.K,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> mobility(T, n, particles)
-    <Quantity 250505.04164488 m2 / (s V)>
+    <Quantity 250505.0416... m2 / (s V)>
     >>> mobility(T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 1921.27848189 m2 / (s V)>
+    <Quantity 1921.2784... m2 / (s V)>
 
     References
     ----------
@@ -1503,7 +1503,7 @@ def Knudsen_number(characteristic_length,
                    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
                    V: u.m / u.s = np.nan * u.m / u.s,
                    method="classical") -> u.dimensionless_unscaled:
-    r"""Knudsen number (dimless)
+    r"""Knudsen number (dimensionless)
 
     Parameters
     ----------
@@ -1593,9 +1593,9 @@ def Knudsen_number(characteristic_length,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> Knudsen_number(L, T, n, particles)
-    <Quantity 7839.5098286>
+    <Quantity 7839.5...>
     >>> Knudsen_number(L, T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 10.91773271>
+    <Quantity 10.91773...>
 
     References
     ----------
@@ -1740,9 +1740,9 @@ def coupling_parameter(T: u.K,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> coupling_parameter(T, n, particles)
-    <Quantity 5.80330315e-05>
+    <Quantity 5.803303...e-05>
     >>> coupling_parameter(T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 5.80330315e-05>
+    <Quantity 5.803303...e-05>
 
     References
     ----------
