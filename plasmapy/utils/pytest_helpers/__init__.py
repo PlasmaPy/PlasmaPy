@@ -18,6 +18,8 @@ from plasmapy.utils.pytest_helpers.exceptions import (
 
 from plasmapy.utils.pytest_helpers.expected import ExpectedTestOutcome
 
+from plasmapy.utils.pytest_helpers.actual import ActualTestOutcome
+
 from plasmapy.utils.pytest_helpers.inputs import (
     AbstractTestInputs,
     GenericClassTestInputs,
