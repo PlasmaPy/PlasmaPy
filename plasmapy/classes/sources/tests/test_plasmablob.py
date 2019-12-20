@@ -356,7 +356,7 @@ class Test_PlasmaBlob:
                   f"and not {methodVal.si.value}.")
         testTrue = np.isclose(methodVal.value,
                               self.couplingVal,
-                              rtol=1e-8,
+                              rtol=1e-6,
                               atol=0.0)
         assert testTrue, errStr
 
@@ -369,6 +369,6 @@ class Test_PlasmaBlob:
                   f"and not {methodVal.si.value}.")
         testTrue = np.isclose(methodVal.value,
                               self.thetaVal,
-                              rtol=1e-8,
+                              rtol=1e-6,
                               atol=0.0)
         assert testTrue, errStr

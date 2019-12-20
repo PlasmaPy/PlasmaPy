@@ -68,8 +68,9 @@ def plasma_dispersion_func(zeta: Union[complex, int, float, np.ndarray, u.Quanti
     (0.6088888957234254+0.33494583882874024j)
 
     """
-
-    if not isinstance(zeta, (numbers.Integral, numbers.Real, numbers.Complex, np.ndarray, u.Quantity)):
+    if not isinstance(
+            zeta,
+            (numbers.Integral, numbers.Real, numbers.Complex, np.ndarray, u.Quantity)):
         raise TypeError("The argument to plasma_dispersion_function "
                         "must be one of the following types: complex, float, "
                         "int, ndarray, or Quantity.")
@@ -136,13 +137,15 @@ def plasma_dispersion_func_deriv(zeta: Union[complex, int, float, np.ndarray, u.
     >>> plasma_dispersion_func_deriv(0)
     (-2+0j)
     >>> plasma_dispersion_func_deriv(1j)
-    (-0.48425568771737604+0j)
+    (-0.484255687717376...+0j)
     >>> plasma_dispersion_func_deriv(-1.52+0.47j)
-    (0.16587133149822897+0.44587978805935047j)
+    (0.165871331498228...+0.445879788059350...j)
 
     """
 
-    if not isinstance(zeta, (numbers.Integral, numbers.Real, numbers.Complex, np.ndarray, u.Quantity)):
+    if not isinstance(
+            zeta,
+            (numbers.Integral, numbers.Real, numbers.Complex, np.ndarray, u.Quantity)):
         raise TypeError("The argument to plasma_dispersion_function_deriv "
                         "must be one of the following types: complex, float, "
                         "int, ndarray, or Quantity.")

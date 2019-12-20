@@ -450,7 +450,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
             try:
                 result = eval(f"particle.{key}")
-                assert result == expected
+                assert result == expected or u.isclose(result, expected)
             except AssertionError:
                 errmsg += (f"\n{call}.{key} returns {result} instead "
                            f"of the expected value of {expected}.")
