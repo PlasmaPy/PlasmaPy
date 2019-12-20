@@ -8,20 +8,19 @@ from plasmapy.formulary.magnetostatics import (MagneticDipole,
                                                InfiniteStraightWire,
                                                CircularWire)
 
-
 mu0_4pi = constants.mu0/4/np.pi
 
 
 class Test_MagneticDipole:
     def setup_method(self):
-        self.moment = np.array([0, 0, 1])*u.A*u.m*u.m
-        self.p0 = np.array([0, 0, 0])*u.m
+        self.moment = np.array([0, 0, 1]) * u.A * u.m * u.m
+        self.p0 = np.array([0, 0, 0]) * u.m
 
     def test_value1(self):
         "Test a known solution"
         p = np.array([1, 0, 0])
         B1 = MagneticDipole(self.moment, self.p0).magnetic_field(p)
-        B1_expected = np.array([0, 0, -1])*1e-7*u.T
+        B1_expected = np.array([0, 0, -1]) * 1e-7 * u.T
         assert np.all(np.isclose(B1.value, B1_expected.value))
         assert B1.unit == u.T
 
@@ -29,22 +28,22 @@ class Test_MagneticDipole:
         "Test a known solution"
         p = np.array([0, 0, 1])
         B2 = MagneticDipole(self.moment, self.p0).magnetic_field(p)
-        B2_expected = np.array([0, 0, 2])*1e-7*u.T
+        B2_expected = np.array([0, 0, 2]) * 1e-7 * u.T
         assert np.all(np.isclose(B2.value, B2_expected.value))
         assert B2.unit == u.T
 
 
 class Test_GeneralWire:
     def setup_method(self):
-        self.cw = CircularWire(np.array([0, 0, 1]), np.array([0, 0, 0])*u.m, 1*u.m, 1*u.A)
-        p1 = np.array([0., 0., 0.])*u.m
-        p2 = np.array([0., 0., 1.])*u.m
-        self.fw = FiniteStraightWire(p1, p2, 1*u.A)
+        self.cw = CircularWire(np.array([0, 0, 1]), np.array([0, 0, 0]) * u.m, 1 * u.m, 1 * u.A)
+        p1 = np.array([0., 0., 0.]) * u.m
+        p2 = np.array([0., 0., 1.]) * u.m
+        self.fw = FiniteStraightWire(p1, p2, 1 * u.A)
 
     def test_not_callable(self):
         "Test that `GeneralWire` raises `ValueError` if its first argument is not callale"
         with pytest.raises(ValueError):
-            GeneralWire("wire", 0, 1, 1*u.A)
+            GeneralWire("wire", 0, 1, 1 * u.A)
 
     def test_close_cw(self):
         "Test if the GeneralWire is close to the CircularWire it converted from"
@@ -65,11 +64,11 @@ class Test_GeneralWire:
 
         assert np.all(np.isclose(B_fw.value, B_gw_fw.value))
         assert B_fw.unit == B_gw_fw.unit
-    
+
     def test_value_error(self):
         "Test GeneralWire raise ValueError when argument t1>t2"
-        with pytest.raises(ValueError) as e:
-            gw_cw = GeneralWire(lambda t: [0,0,t], 2, 1, 1.*u.A)
+        with pytest.raises(ValueError):
+            gw_cw = GeneralWire(lambda t: [0, 0, t], 2, 1, 1.*u.A)
 
 
 class Test_FiniteStraightWire:
@@ -97,7 +96,6 @@ class Test_FiniteStraightWire:
         assert repr(fw) == r"FiniteStraightWire(p1=[ 0.  0. -1.], p2=[0. 0. 1.], current=1.0)"
 
 
-
 class Test_InfiniteStraightWire:
     def setup_method(self):
         self.direction = np.array([0, 1, 0])
@@ -115,7 +113,9 @@ class Test_InfiniteStraightWire:
     def test_repr(self):
         "Test __repr__ function"
         iw = InfiniteStraightWire(self.direction, self.p0, self.current)
-        assert repr(iw) == r"InfiniteStraightWire(direction=[0. 1. 0.], p0=[0. 0. 0.], current=1.0)"
+        assert repr(iw) == \
+            r"InfiniteStraightWire(direction=[0. 1. 0.], p0=[0. 0. 0.], current=1.0)"
+
 
 class Test_CircularWire:
     def setup_method(self):
@@ -149,4 +149,5 @@ class Test_CircularWire:
     def test_repr(self):
         "Test __repr__ function"
         cw = CircularWire(self.normalz, self.center, self.radius, self.current)
-        assert repr(cw) == r"CircularWire(normal=[0. 0. 1.], center=[0. 0. 0.], radius=1.0, current=1.0)"
+        assert repr(cw) == \
+            r"CircularWire(normal=[0. 0. 1.], center=[0. 0. 0.], radius=1.0, current=1.0)"

@@ -253,14 +253,14 @@ def ion_sound_speed(T_e: u.K,
 
     n_e : ~astropy.units.Quantity
         Electron number density. If this is not given, then ion_sound_speed
-        will be approximated in the non-dispersive limit 
-        (:math:`k^2 \lambda_{D}^2` will be assumed zero). If n_e is given, 
+        will be approximated in the non-dispersive limit
+        (:math:`k^2 \lambda_{D}^2` will be assumed zero). If n_e is given,
         a value for k must also be given.
-        
+
     k : ~astropy.units.Quantity
-        Wavenumber (in units of inverse length, e.g. per meter). If this 
-        is not given, then ion_sound_speed will be approximated in the 
-        non-dispersive limit (:math:`k^2 \lambda_{D}^2` will be assumed zero). 
+        Wavenumber (in units of inverse length, e.g. per meter). If this
+        is not given, then ion_sound_speed will be approximated in the
+        non-dispersive limit (:math:`k^2 \lambda_{D}^2` will be assumed zero).
         If k is given, a value for n_e must also be given.
 
     gamma_e : float or int
@@ -306,7 +306,7 @@ def ion_sound_speed(T_e: u.K,
         If an adiabatic index is less than one.
 
     ~astropy.units.UnitConversionError
-        If the temperature, electron number density, or wavenumber 
+        If the temperature, electron number density, or wavenumber
         is in incorrect units.
 
     Warns
@@ -316,9 +316,9 @@ def ion_sound_speed(T_e: u.K,
 
     ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed.
-        
+
     PhysicsWarning
-        If only one of (k, n_e) is given, the non-dispersive limit 
+        If only one of (k, n_e) is given, the non-dispersive limit
         is assumed.
 
     Notes
@@ -333,11 +333,11 @@ def ion_sound_speed(T_e: u.K,
     ion adiabatic indices, :math:`k_B` is the Boltzmann constant,
     :math:`T_e` and :math:`T_i` are the electron and ion temperatures,
     :math:`Z` is the charge state of the ion, :math:`m_i` is the
-    ion mass, :math:`\lambda_{D}` is the Debye length, and :math:`k` is the 
+    ion mass, :math:`\lambda_{D}` is the Debye length, and :math:`k` is the
     wavenumber.
-    
-    In the non-dispersive limit (:math:`k^2 \lambda_{D}^2` is small) the 
-    equation for :math:`V_S` is approximated (the denominator reduces 
+
+    In the non-dispersive limit (:math:`k^2 \lambda_{D}^2` is small) the
+    equation for :math:`V_S` is approximated (the denominator reduces
     to :math:`m_i`).
 
     When the electron temperature is much greater than the ion
@@ -363,7 +363,7 @@ def ion_sound_speed(T_e: u.K,
     <Quantity 229585... m / s>
 
     """
-    
+
     m_i = atomic.particle_mass(ion)
     Z = _grab_charge(ion, z_mean)
 
@@ -374,7 +374,7 @@ def ion_sound_speed(T_e: u.K,
         if gamma < 1:
             raise PhysicsError(f"The adiabatic index for {particles} must be between "
                                f"one and infinity")
-    
+
     # Assume non-dispersive limit if values for n_e (or k) are not specified
     klD2 = 0.0
     if (n_e is None) ^ (k is None):

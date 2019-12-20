@@ -18,14 +18,15 @@ __all__ = ["Maxwellian_1D",
            "kappa_velocity_1D",
            "kappa_velocity_3D"]
 
+
 def _v_drift_units(v_drift):
     # Helper method to assign units to  v_drift if it takes a default value
-    if (v_drift == 0 and
-        not isinstance(v_drift, astropy.units.quantity.Quantity)):
+    if (v_drift == 0 and not isinstance(v_drift, astropy.units.quantity.Quantity)):
         v_drift = v_drift * u.m / u.s
     else:
         v_drift = v_drift.to(u.m / u.s)
     return v_drift
+
 
 def Maxwellian_1D(v,
                   T,
@@ -34,7 +35,7 @@ def Maxwellian_1D(v,
                   vTh=np.nan,
                   units="units"):
     r"""
-    Probability distribution function of velocity for a Maxwellian 
+    Probability distribution function of velocity for a Maxwellian
     distribution in 1D.
 
     Returns the probability density function at the velocity `v` in m/s
@@ -152,12 +153,12 @@ def Maxwellian_velocity_2D(vx,
                            vTh=np.nan,
                            units="units"):
     r"""
-    Probability distribution function of velocity for a Maxwellian 
+    Probability distribution function of velocity for a Maxwellian
     distribution in 2D.
 
-    Return the probability density function for finding a particle with 
-    velocity components `vx` and `vy` in m/s in an equilibrium plasma of 
-    temperature `T` which follows the 2D Maxwellian distribution function. 
+    Return the probability density function for finding a particle with
+    velocity components `vx` and `vy` in m/s in an equilibrium plasma of
+    temperature `T` which follows the 2D Maxwellian distribution function.
     This function assumes Cartesian coordinates.
 
     Parameters
@@ -292,12 +293,12 @@ def Maxwellian_velocity_3D(vx,
                            vTh=np.nan,
                            units="units"):
     r"""
-    Probability distribution function of velocity for a Maxwellian 
+    Probability distribution function of velocity for a Maxwellian
     distribution in 3D.
 
-    Return the probability density function for finding a particle with 
-    velocity components `vx`, `vy`, and `vz` in m/s in an equilibrium 
-    plasma of temperature `T` which follows the 3D Maxwellian distribution 
+    Return the probability density function for finding a particle with
+    velocity components `vx`, `vy`, and `vz` in m/s in an equilibrium
+    plasma of temperature `T` which follows the 3D Maxwellian distribution
     function. This function assumes Cartesian coordinates.
 
     Parameters
@@ -441,8 +442,8 @@ def Maxwellian_speed_1D(v,
     Probability distribution function of speed for a Maxwellian distribution
     in 1D.
 
-    Return the probability density function for finding a particle with 
-    speed `v` in m/s in an equilibrium plasma of temperature `T` which 
+    Return the probability density function for finding a particle with
+    speed `v` in m/s in an equilibrium plasma of temperature `T` which
     follows the Maxwellian distribution function.
 
     Parameters
@@ -681,9 +682,9 @@ def Maxwellian_speed_3D(v,
     Probability distribution function of speed for a Maxwellian
     distribution in 3D.
 
-    Return the probability density function for finding a particle with 
-    speed components `vx`, `vy`, and `vz` in m/s in an equilibrium 
-    plasma of temperature `T` which follows the 3D Maxwellian 
+    Return the probability density function for finding a particle with
+    speed components `vx`, `vy`, and `vz` in m/s in an equilibrium
+    plasma of temperature `T` which follows the 3D Maxwellian
     distribution function. This function assumes Cartesian coordinates.
 
     Parameters
@@ -949,10 +950,10 @@ def kappa_velocity_3D(vx,
                       vTh=np.nan,
                       units="units"):
     r"""
-    Return the probability density function for finding a particle with 
-    velocity components `v_x`, `v_y`, and `v_z`in m/s in a suprathermal 
-    plasma of temperature `T` and parameter 'kappa' which follows the 
-    3D Kappa distribution function. This function assumes Cartesian 
+    Return the probability density function for finding a particle with
+    velocity components `v_x`, `v_y`, and `v_z`in m/s in a suprathermal
+    plasma of temperature `T` and parameter 'kappa' which follows the
+    3D Kappa distribution function. This function assumes Cartesian
     coordinates.
 
     Parameters
