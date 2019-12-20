@@ -250,9 +250,9 @@ def ion_sound_speed(T_e: u.K,
         Ion temperature in units of temperature or energy per
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
-        
+
     n_e : ~astropy.units.Quantity
-        Electron number density. If this is not given, then ion_sound_speed 
+        Electron number density. If this is not given, then ion_sound_speed
         will be approximated in the non-dispersive limit 
         (:math:`k^2 \lambda_{D}^2` will be assumed zero). If n_e is given, 
         a value for k must also be given.

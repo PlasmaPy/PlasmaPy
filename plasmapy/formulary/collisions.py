@@ -749,7 +749,7 @@ def collision_frequency(T: u.K,
     # using a more descriptive name for the thermal velocity using
     # reduced mass
     V_reduced = V_r
-    if particles[0] in ('e','e-') and particles[1] in ('e','e-'):
+    if particles[0] in ('e', 'e-') and particles[1] in ('e', 'e-'):
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
@@ -766,7 +766,7 @@ def collision_frequency(T: u.K,
                                     z_mean,
                                     V=V,
                                     method=method)
-    elif particles[0] in ('e','e-') or particles[1] in ('e','e-'):
+    elif particles[0] in ('e', 'e-') or particles[1] in ('e', 'e-'):
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
