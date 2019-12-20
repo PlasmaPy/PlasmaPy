@@ -96,13 +96,13 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     >>> omega = 3.7e9*(2*pi)*(u.rad/u.s)
     >>> permittivity = S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega)
     >>> S
-    <Quantity 1.02422902>
+    <Quantity 1.02422...>
     >>> permittivity.sum   # namedtuple-style access
-    <Quantity 1.02422902>
+    <Quantity 1.02422...>
     >>> D
-    <Quantity 0.39089352>
+    <Quantity 0.39089...>
     >>> P
-    <Quantity -4.8903104>
+    <Quantity -4.8903...>
     """
     S, D, P = 1, 0, 1
 
@@ -189,13 +189,13 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     >>> omega = 3.7e9*(2*pi)*(u.rad/u.s)
     >>> L, R, P = permittivity = cold_plasma_permittivity_LRP(B, species, n, omega)
     >>> L
-    <Quantity 0.63333549>
+    <Quantity 0.63333...>
     >>> permittivity.left    # namedtuple-style access
-    <Quantity 0.63333549>
+    <Quantity 0.63333...>
     >>> R
-    <Quantity 1.41512254>
+    <Quantity 1.41512...>
     >>> P
-    <Quantity -4.8903104>
+    <Quantity -4.8903...>
     """
     L, R, P = 1, 1, 1
 
@@ -220,7 +220,7 @@ def permittivity_1D_Maxwellian(
         z_mean: u.dimensionless_unscaled = None
 ) -> u.dimensionless_unscaled:
     r"""
-    The classical dielectric permittivity for a 1D Maxwellian plasma. This 
+    The classical dielectric permittivity for a 1D Maxwellian plasma. This
     function can calculate both the ion and electron permittivities. No
     additional effects are considered (e.g. magnetic fields, relativistic
     effects, strongly coupled regime, etc.)
@@ -262,14 +262,14 @@ def permittivity_1D_Maxwellian(
     -----
     The dielectric permittivities for a Maxwellian plasma are described
     by the following equations [1]_
-    
+
     .. math::
         \chi_e(k, \omega) = - \frac{\alpha_e^2}{2} Z'(x_e)
-        
+
         \chi_i(k, \omega) = - \frac{\alpha_i^2}{2}\frac{Z}{} Z'(x_i)
-        
+
         \alpha = \frac{\omega_p}{k v_{Th}}
-        
+
         x = \frac{\omega}{k v_{Th}}
 
     :math:`chi_e` and :math:`chi_i` are the electron and ion permittivities
@@ -298,7 +298,7 @@ def permittivity_1D_Maxwellian(
     >>> omega = 5.635e14 * 2 * pi * u.rad / u.s
     >>> kWave = omega / vTh
     >>> permittivity_1D_Maxwellian(omega, kWave, T, n, particle, z_mean)
-    <Quantity -6.72809257e-08+5.76037956e-07j>
+    <Quantity -6.72809...e-08+5.76037...e-07j>
     """
     # thermal velocity
     vTh = parameters.thermal_speed(T=T,

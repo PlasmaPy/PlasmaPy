@@ -35,13 +35,13 @@ def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
     --------
     >>> import astropy.units as u
     >>> quantum_theta(1*u.eV, 1e20*u.m**-3)
-    <Quantity 127290.61956522>
+    <Quantity 127290.619...>
     >>> quantum_theta(1*u.eV, 1e16*u.m**-3)
-    <Quantity 59083071.83975738>
+    <Quantity 59083071...>
     >>> quantum_theta(1*u.eV, 1e26*u.m**-3)
-    <Quantity 12.72906196>
+    <Quantity 12.72906...>
     >>> quantum_theta(1*u.K, 1e26*u.m**-3)
-    <Quantity 0.00109691>
+    <Quantity 0.00109...>
 
     Returns
     -------
@@ -74,9 +74,9 @@ def beta(T: u.K, n: u.m**-3, B: u.T) -> u.dimensionless_unscaled:
     --------
     >>> import astropy.units as u
     >>> beta(1*u.eV, 1e20*u.m**-3, 1*u.T)
-    <Quantity 4.02670904e-05>
+    <Quantity 4.0267...e-05>
     >>> beta(8.8e3*u.eV, 1e20*u.m**-3, 5.3*u.T)
-    <Quantity 0.01261482>
+    <Quantity 0.01261...>
 
     Returns
     -------
