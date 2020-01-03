@@ -8,7 +8,6 @@ import numpy as np
 import astropy.units as u
 import astropy.constants as const
 import astropy.tests.helper as astrohelper
-import colorama
 import warnings
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
@@ -26,21 +25,6 @@ from plasmapy.utils.pytest_helpers.exceptions import (
     MissingExceptionError,
     MissingWarningError,
 )
-
-# These colors/styles are used to highlight certain parts of the error
-# messages in consistent ways.
-
-_bold = colorama.Style.BRIGHT
-_magenta = colorama.Fore.MAGENTA
-_blue = colorama.Fore.BLUE
-_cyan = colorama.Fore.CYAN
-_red = colorama.Fore.RED
-
-_exception_color = f"{_magenta}{_bold}"
-_type_color = f"{_magenta}{_bold}"
-_func_color = f"{_cyan}{_bold}"
-_result_color = f"{_blue}{_bold}"
-_message_color = f"{_red}{_bold}"
 
 __all__ = [
     "run_test",
@@ -236,7 +220,7 @@ def run_test(
     # messages, we can make it easier to reproduce the error in an
     # interactive session.
 
-    call_str = call_string(func, args, kwargs, color=_func_color, return_color=_message_color)
+    call_str = call_string(func, args, kwargs)
 
     # There are many possibilities for expected outcomes that we must
     # keep track of, including exceptions being raised and warnings
@@ -364,10 +348,10 @@ def run_test(
         raise InconsistentTypeError(
             f"The command {call_str} returned "
             f"{_represent_result(result)} which has type "
-            f"{_represent_result(type(result), color=_type_color)}, "
+            f"{_represent_result(type(result))}, "
             f"instead of the expected value of "
             f"{_represent_result(expected['result'])} which has type "
-            f"{_represent_result(type(expected['result']), color=_type_color)}."
+            f"{_represent_result(type(expected['result']))}."
         )
 
     try:
