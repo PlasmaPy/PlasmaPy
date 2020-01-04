@@ -5,6 +5,8 @@ import astropy.units as u
 
 from plasmapy.utils.pytest_helpers import (
     call_string,
+    class_attribute_call_string,
+    class_method_call_string,
     run_test,
     run_test_equivalent_calls,
     UnexpectedResultError,
@@ -49,27 +51,6 @@ def return_arg(arg: Any, should_warn: bool = False) -> Any:
     if should_warn:
         warnings.warn("", UserWarning)
     return arg
-
-
-# function, args, kwargs, expected
-call_string_table = [
-    (generic_function, (), {}, "generic_function()"),
-    (generic_function, (1), {}, "generic_function(1)"),
-    (generic_function, ('x'), {}, "generic_function('x')"),
-    (generic_function, (1, 'b', {}), {}, "generic_function(1, 'b', {})"),
-    (generic_function, (), {'kw': 1}, "generic_function(kw=1)"),
-    (generic_function, (), {'x': 'c'}, "generic_function(x='c')"),
-    (generic_function, (1, 'b'), {'b': 42, 'R2': 'D2'}, "generic_function(1, 'b', b=42, R2='D2')"),
-    (run_test, run_test, {run_test: run_test},
-     'run_test(run_test, run_test=run_test)'),
-]
-
-
-@pytest.mark.parametrize("function,args,kwargs,expected", call_string_table)
-def test_call_string(function, args, kwargs, expected):
-    """Tests that call_string returns a string that is
-    equivalent to the function call."""
-    assert expected == call_string(function, args, kwargs)
 
 
 f_args_kwargs_expected_whaterror = [
@@ -131,11 +112,11 @@ def test_run_test(f, args, kwargs, expected, whaterror):
     """
     Test the behavior of the test helper function.
 
-    The arguments `f`, `args`, `kwargs`, and `expected` are to be
-    passed directly to `~plasmapy.utils.run_test`.  If the test is
-    expected to pass, then `whaterror` should be set to `None`.  If the
-    test is expected to fail, then `whaterror` should be set to the
-    exception that should be raised during the test failure.
+    The arguments ``f``, ``args``, ``kwargs``, and ``expected`` are to
+    be passed directly to `~plasmapy.utils.run_test`.  If the test is
+    expected to pass, then ``whaterror`` should be set to `None`.  If
+    the test is expected to fail, then ``whaterror`` should be set to
+    the exception that should be raised during the test failure.
 
     This function does not test that the exception messages are correct;
     it only checks that the exception messages do not raise any
@@ -147,10 +128,10 @@ def test_run_test(f, args, kwargs, expected, whaterror):
         The function or method to be tested.
 
     args : tuple
-        The positional arguments to be sent to f.
+        The positional arguments to be sent to ``f``.
 
     kwargs : dict
-        The keyword arguments to be sent to f.
+        The keyword arguments to be sent to ``f``.
 
     expected : object
         The expected result from the test, which can be an `object`, an
@@ -365,3 +346,68 @@ def test_run_test_equivalent_calls_types():
     run_test_equivalent_calls(return_arg, 1, 1.0, require_same_type=False)
     with pytest.raises(UnexpectedResultError):
         run_test_equivalent_calls(return_arg, 1, 1.0)
+
+
+# function, args, kwargs, expected
+call_string_table = [
+    (generic_function, (), {}, "generic_function()"),
+    (generic_function, (1), {}, "generic_function(1)"),
+    (generic_function, ('x'), {}, "generic_function('x')"),
+    (generic_function, (1, 'b', {}), {}, "generic_function(1, 'b', {})"),
+    (generic_function, (), {'kw': 1}, "generic_function(kw=1)"),
+    (generic_function, (), {'x': 'c'}, "generic_function(x='c')"),
+    (generic_function, (1, 'b'), {'b': 42, 'R2': 'D2'}, "generic_function(1, 'b', b=42, R2='D2')"),
+    (run_test, run_test, {run_test: run_test},
+     'run_test(run_test, run_test=run_test)'),
+]
+
+
+@pytest.mark.parametrize("function,args,kwargs,expected", call_string_table)
+def test_call_string(function, args, kwargs, expected):
+    """Tests that call_string returns a string that is
+    equivalent to the function call."""
+    assert expected == call_string(function, args, kwargs)
+
+
+class SampleClass:
+    def method(self, *args, **kwargs):
+        pass
+    @property
+    def attr(self):
+        pass
+
+
+class_method_call_string_table = [
+    ((), {}, (), {}, 'SampleClass().method()'),
+
+    ((1, 2), {'a': 'x', 'b': 'y'}, (3, 4.2), {'q': UserWarning},
+     "SampleClass(1, 2, a='x', b='y').method(3, 4.2, q=UserWarning)"),
+
+    ((Exception), {}, (SampleClass, adams_number), {'r': 5.3 * u.m},
+     "SampleClass(Exception).method(SampleClass, adams_number, r=5.3*u.m)"),
+
+    (1, {}, 2, {}, "SampleClass(1).method(2)"),
+]
+
+
+@pytest.mark.parametrize(
+    "c_args, c_kwargs, m_args, m_kwargs, expected",
+    class_method_call_string_table,
+)
+def test_class_method_call_string(c_args, c_kwargs, m_args, m_kwargs, expected):
+    """Test that `class_method_call_string` returns the expected results."""
+    actual = class_method_call_string(SampleClass, 'method', c_args, c_kwargs, m_args, m_kwargs)
+    assert expected == actual
+
+
+class_attribute_call_string_table = [
+    ((), {}, "SampleClass().attr"),
+    ((1, 2), {'a': 'x', 'b': 'y'}, "SampleClass(1, 2, a='x', b='y').attr"),
+    (1, {}, "SampleClass(1).attr"),
+    ({'dict': 'ionary'}, {}, "SampleClass({'dict': 'ionary'}).attr")
+]
+@pytest.mark.parametrize("c_args, c_kwargs, expected", class_attribute_call_string_table)
+def test_class_attribute_call_string(c_args, c_kwargs, expected):
+    """Test that `class_attribute_call_string` returns the expected results."""
+    actual = class_attribute_call_string(SampleClass, 'attr', c_args, c_kwargs)
+    assert expected == actual
