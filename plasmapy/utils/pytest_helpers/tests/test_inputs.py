@@ -61,6 +61,9 @@ class SampleClass(SampleClassNoArgs):
     (sample_function_one_arg, sample_value, None, 'args', (sample_value,)),
     (sample_function_no_args, None, None, 'args', ()),
     (sample_function_no_args, None, None, 'kwargs', {}),
+    (sample_function_no_args, None, None, 'call_string', "sample_function_no_args()"),
+    (sample_function, sample_args, sample_kwargs, 'call_string',
+     "sample_function(2, 3, kwarg1=13, kwarg2=17)"),
 ])
 def test_function_test_inputs(function, args, kwargs, attribute, expected):
     """Test the attributes of FunctionTestInputs."""
@@ -89,7 +92,7 @@ def test_function_test_inputs_call(function, args, kwargs, expected):
     if result_of_call != expected:
         pytest.fail(
             f"FunctionTestInputs({function.__name__}, {args}, {kwargs}).call() "
-            f"returns {value_of_call}, instead of the expected value of "
+            f"returns {result_of_call}, instead of the expected value of "
             f"{expected}.")
 
 
@@ -121,6 +124,9 @@ def test_function_test_inputs_errors(function, args, kwargs):
         (SampleClass, sample_args, sample_kwargs, 'cls_kwargs', sample_kwargs),
         (SampleClass, sample_args, None, 'cls_kwargs', {}),
         (SampleClass, sample_args, None, 'attribute', 'sample_attribute'),
+        (SampleClass, None, None, 'call_string', "SampleClass().sample_attribute"),
+        (SampleClass, sample_args, None, 'call_string', "SampleClass(2, 3).sample_attribute"),
+        (SampleClass, 1, {'a': 2}, 'call_string', "SampleClass(1, a=2).sample_attribute"),
     ])
 def test_class_attr_test_inputs(cls, args, kwargs, attribute_being_tested, expected):
     """
@@ -211,6 +217,8 @@ def test_class_attr_test_inputs_errors(cls, args, kwargs, attribute_of_cls):
 common_inputs = (SampleClass, sample_args, sample_kwargs, sample_method_args, sample_method_kwargs)
 
 
+
+
 @pytest.mark.parametrize(
     "cls, cls_args, cls_kwargs, method_args, method_kwargs, attribute_being_tested, expected", [
         (*common_inputs, 'cls', SampleClass),
@@ -227,6 +235,11 @@ common_inputs = (SampleClass, sample_args, sample_kwargs, sample_method_args, sa
         (SampleClassNoArgs, None, None, None, None, 'method_kwargs', {}),
         (SampleClassNoArgs, 42, None, None, None, 'cls_args', (42,)),
         (SampleClassNoArgs, None, None, 42, None, 'method_args', (42,)),
+        (SampleClassNoArgs, None, None, None, None, 'call_string',
+         "SampleClassNoArgs().sample_method()"),
+        (*common_inputs, 'call_string', (
+            "SampleClass(2, 3, kwarg1=13, kwarg2=17)."
+            "sample_method(41, 43, method_kwarg1=47, method_kwarg2=53)")),
     ])
 def test_class_method_test_inputs(
         cls, cls_args, cls_kwargs, method_args, method_kwargs, attribute_being_tested, expected,

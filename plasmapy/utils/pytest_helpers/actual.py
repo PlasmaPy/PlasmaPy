@@ -1,6 +1,6 @@
 import pytest
 import warnings
-from typing import List
+from typing import List, Any
 from plasmapy.utils.pytest_helpers.inputs import AbstractTestInputs
 
 __all__ = ["ActualTestOutcome"]
@@ -24,6 +24,8 @@ class ActualTestOutcome:
         inputs : instance of subclass of `plasmapy.utils.pytest_helpers.inputs.AbstractTestInputs`
 
         """
+
+        self._inputs = inputs
 
         if not isinstance(inputs, AbstractTestInputs):
             raise TypeError(
@@ -157,7 +159,7 @@ class ActualTestOutcome:
         return [str(warning.message.args[0]) for warning in self.warnings_record]
 
     @property
-    def value(self):
+    def value(self) -> Any:
         """
         The value returned by the function, class, or class method that
         is being tested.
@@ -173,3 +175,8 @@ class ActualTestOutcome:
             return self._value
         else:
             raise RuntimeError("No value was returned.")
+
+    @property
+    def call_string(self) -> str:
+        """A string that reproduces the call that is being tested."""
+        return self._inputs.call_string

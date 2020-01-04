@@ -1,8 +1,15 @@
 from abc import ABC, abstractmethod
-from typing import Tuple, List, Dict, Union, Callable, Optional, Any, NoReturn, AnyStr
+from typing import Tuple, List, Dict, Union, Callable, Optional, Any, AnyStr
 import inspect
 
-from plasmapy.utils.pytest_helpers import InvalidTestError
+
+from plasmapy.utils.pytest_helpers.exceptions import InvalidTestError
+
+from plasmapy.utils.pytest_helpers.error_messages import (
+    call_string,
+    class_attribute_call_string,
+    class_method_call_string,
+)
 
 __all__ = [
     'AbstractTestInputs',
@@ -56,6 +63,11 @@ def _validate_kwargs(kwargs: Optional[Dict[str, Any]]) -> Dict[str, Any]:
 class AbstractTestInputs(ABC):
     @abstractmethod
     def call(self):
+        pass
+
+    @property
+    @abstractmethod
+    def call_string(self):
         pass
 
 
@@ -138,6 +150,10 @@ class FunctionTestInputs(AbstractTestInputs):
         """
         __tracebackhide__ = True
         return self.function(*self.args, **self.kwargs)
+
+    @property
+    def call_string(self) -> str:
+        return call_string(self.function, args=self.args, kwargs=self.kwargs)
 
 
 class GenericClassTestInputs(AbstractTestInputs):
@@ -245,9 +261,23 @@ class ClassAttributeTestInputs(GenericClassTestInputs):
             self._info['attribute'] = attribute_name
 
     def call(self):
+        """Instantiate the class and access the attribute."""
         __tracebackhide__ = True
         instance = self.cls(*self.cls_args, **self.cls_kwargs)
         return getattr(instance, self.attribute)
+
+    @property
+    def call_string(self) -> str:
+        """
+        Return a string that is designed to reproduce class instantiation
+        and accessing the class attribute.
+        """
+        return class_attribute_call_string(
+            cls=self.cls,
+            attr=self.attribute,
+            cls_args=self.cls_args,
+            cls_kwargs=self.cls_kwargs,
+        )
 
 
 class ClassMethodTestInputs(GenericClassTestInputs):
@@ -359,7 +389,23 @@ class ClassMethodTestInputs(GenericClassTestInputs):
         self._info['method_kwargs'] = _validate_kwargs(provided_kwargs)
 
     def call(self):
+        """Instantiate the class and call the appropriate method."""
         __tracebackhide__ = True
         instance = self.cls(*self.cls_args, **self.cls_kwargs)
         method = getattr(instance, self.method)
         return method(*self.method_args, **self.method_kwargs)
+
+    @property
+    def call_string(self) -> str:
+        """
+        Return a string that is designed to reproduce class instantiation
+        and accessing the class attribute.
+        """
+        return class_method_call_string(
+            cls=self.cls,
+            method=self.method,
+            cls_args=self.cls_args,
+            cls_kwargs=self.cls_kwargs,
+            method_args=self.method_args,
+            method_kwargs=self.method_kwargs,
+        )

@@ -23,6 +23,7 @@ def raise_exception():
     (return_something, 'exception_was_raised', False),
     (return_something, 'value', 42),
     (return_something, 'value_was_returned', True),
+    (return_something, 'call_string', 'return_something()'),
 
     (issue_warning, 'warning_was_issued', True),
     (issue_warning, 'exception_was_raised', False),
