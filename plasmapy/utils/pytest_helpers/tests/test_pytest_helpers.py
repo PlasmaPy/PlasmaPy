@@ -370,8 +370,10 @@ def test_call_string(function, args, kwargs, expected):
 
 
 class SampleClass:
+
     def method(self, *args, **kwargs):
         pass
+
     @property
     def attr(self):
         pass

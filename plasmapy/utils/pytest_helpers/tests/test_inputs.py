@@ -217,8 +217,6 @@ def test_class_attr_test_inputs_errors(cls, args, kwargs, attribute_of_cls):
 common_inputs = (SampleClass, sample_args, sample_kwargs, sample_method_args, sample_method_kwargs)
 
 
-
-
 @pytest.mark.parametrize(
     "cls, cls_args, cls_kwargs, method_args, method_kwargs, attribute_being_tested, expected", [
         (*common_inputs, 'cls', SampleClass),
