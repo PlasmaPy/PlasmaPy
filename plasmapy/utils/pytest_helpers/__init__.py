@@ -32,3 +32,5 @@ from plasmapy.utils.pytest_helpers.inputs import (
     ClassAttributeTestInputs,
     FunctionTestInputs,
 )
+
+from plasmapy.utils.pytest_helpers.comparators import CompareActualExpected
