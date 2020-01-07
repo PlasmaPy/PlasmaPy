@@ -7,6 +7,8 @@ __all__ = [
     "class_method_call_string",
 ]
 
+# TODO: Choose a more appropriate filename...perhaps errmsg_formatting.py?
+
 
 def _format_quantity(arg) -> str:
     """
@@ -85,6 +87,23 @@ def _get_object_name(obj: Any) -> str:
     """Return the name of an `object`."""
 
     return obj.__name__ if hasattr(obj, "__name__") else repr(obj)
+
+
+def _string_together_warnings_for_printing(warning_types, warning_messages):
+    """
+    Take a list of warning types with a list of corresponding warning
+    messages, and create a string that prints out each warning type
+    followed by the corresponding message, separated by a full line.
+    """
+
+    warnings_with_messages = [
+        _get_object_name(warning) + ": " + message
+        for warning, message in zip(warning_types, warning_messages)
+    ]
+
+    return "\n\n".join(warnings_with_messages)
+
+    # TODO: Add tests!
 
 
 def call_string(f: Callable, args: Any = tuple(), kwargs: Dict = {}) -> str:
