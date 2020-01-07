@@ -128,7 +128,10 @@ class ActualTestOutcome:
         if self.warning_was_issued:
             return self._warnings_record
         else:
-            raise RuntimeError("Warnings information is not available")
+            raise RuntimeError(
+                f"The warnings_record attribute is not available because "
+                f" no warnings were issued when running the command: "
+                f"{self._inputs.call_string}")
 
     @property
     def warning_types(self) -> List:
@@ -141,7 +144,14 @@ class ActualTestOutcome:
         RuntimeError
             If no warning was issued during the test.
         """
-        return [warning.category for warning in self.warnings_record]
+        if self.warning_was_issued:
+            return [warning.category for warning in self.warnings_record]
+        else:
+            raise RuntimeError(
+                f"The warning_types attribute is not available because "
+                f"no warnings were issued when running the command: "
+                f"{self._inputs.call_string}"
+            )
 
     @property
     def warning_messages(self) -> List[str]:
@@ -156,7 +166,14 @@ class ActualTestOutcome:
             If no warning was issued during the test.
 
         """
-        return [str(warning.message.args[0]) for warning in self.warnings_record]
+        if self.warning_was_issued:
+            return [str(warning.message.args[0]) for warning in self.warnings_record]
+        else:
+            raise RuntimeError(
+                f"The warning_messages attribute is not available because "
+                f"no warnings were issued when running the command: "
+                f"{self._inputs.call_string}"
+            )
 
     @property
     def value(self) -> Any:
