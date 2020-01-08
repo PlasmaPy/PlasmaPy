@@ -4,18 +4,16 @@ import inspect
 import pytest
 
 from plasmapy.utils.pytest_helpers.expected import (
-    ExpectedTestOutcome, _is_warning, _is_exception, _is_warning_and_value,
+    ExpectedTestOutcome,
+    _is_warning,
+    _is_exception,
+    _is_warning_and_value,
 )
 
 
 @pytest.mark.parametrize(
     "argument, expected",
-    [
-        (Warning, True),
-        (UserWarning, True),
-        (Exception, False),
-        ('', False),
-    ]
+    [(Warning, True), (UserWarning, True), (Exception, False), ("", False),],
 )
 def test__is_warning(argument, expected):
     """
@@ -27,12 +25,7 @@ def test__is_warning(argument, expected):
 
 @pytest.mark.parametrize(
     "argument, expected",
-    [
-        (Warning, False),
-        (UserWarning, False),
-        (Exception, True),
-        ('', False),
-    ]
+    [(Warning, False), (UserWarning, False), (Exception, True), ("", False),],
 )
 def test__is_exception(argument, expected):
     """
@@ -45,14 +38,14 @@ def test__is_exception(argument, expected):
 @pytest.mark.parametrize(
     "argument, expected",
     [
-        ((Warning, ''), True),
-        (['', UserWarning], True),
+        ((Warning, ""), True),
+        (["", UserWarning], True),
         ((Warning, UserWarning), False),
         (Warning, False),
         (UserWarning, False),
         (Exception, False),
-        ('', False),
-    ]
+        ("", False),
+    ],
 )
 def test__is_warning_and_value(argument, expected):
     """
@@ -67,39 +60,39 @@ expected_exception = KeyError
 expected_warning = UserWarning
 expected_value = 42
 
-Case = collections.namedtuple('Case', ['argument', 'attribute', 'correct_outcome'])
+Case = collections.namedtuple("Case", ["argument", "attribute", "correct_outcome"])
 
 expected_value_and_warning = (expected_value, expected_warning)
 expected_warning_and_value = (expected_warning, expected_value)
 
 cases = [
-    Case(expected_exception, 'expected_exception', expected_exception),
-    Case(expected_exception, 'expected_outcome', expected_exception),
-    Case(expected_exception, 'expecting_an_exception', True),
-    Case(expected_exception, 'expecting_a_warning', False),
-    Case(expected_exception, 'expecting_a_value', False),
-    Case(expected_warning, 'expected_warning', expected_warning),
-    Case(expected_warning, 'expected_outcome', expected_warning),
-    Case(expected_warning, 'expecting_an_exception', False),
-    Case(expected_warning, 'expecting_a_warning', True),
-    Case(expected_warning, 'expecting_a_value', False),
-    Case(expected_value, 'expected_value', expected_value),
-    Case(expected_value, 'expected_outcome', expected_value),
-    Case(expected_value, 'expecting_an_exception', False),
-    Case(expected_value, 'expecting_a_warning', False),
-    Case(expected_value, 'expecting_a_value', True),
-    Case(expected_value_and_warning, 'expected_warning', expected_warning),
-    Case(expected_value_and_warning, 'expected_value', expected_value),
-    Case(expected_value_and_warning, 'expecting_an_exception', False),
-    Case(expected_value_and_warning, 'expecting_a_warning', True),
-    Case(expected_value_and_warning, 'expecting_a_value', True),
-    Case(expected_value_and_warning, 'expected_outcome', expected_warning_and_value),
-    Case(expected_warning_and_value, 'expected_warning', expected_warning),
-    Case(expected_warning_and_value, 'expected_value', expected_value),
-    Case(expected_warning_and_value, 'expecting_an_exception', False),
-    Case(expected_warning_and_value, 'expecting_a_warning', True),
-    Case(expected_warning_and_value, 'expecting_a_value', True),
-    Case(expected_warning_and_value, 'expected_outcome', expected_warning_and_value),
+    Case(expected_exception, "expected_exception", expected_exception),
+    Case(expected_exception, "expected_outcome", expected_exception),
+    Case(expected_exception, "expecting_an_exception", True),
+    Case(expected_exception, "expecting_a_warning", False),
+    Case(expected_exception, "expecting_a_value", False),
+    Case(expected_warning, "expected_warning", expected_warning),
+    Case(expected_warning, "expected_outcome", expected_warning),
+    Case(expected_warning, "expecting_an_exception", False),
+    Case(expected_warning, "expecting_a_warning", True),
+    Case(expected_warning, "expecting_a_value", False),
+    Case(expected_value, "expected_value", expected_value),
+    Case(expected_value, "expected_outcome", expected_value),
+    Case(expected_value, "expecting_an_exception", False),
+    Case(expected_value, "expecting_a_warning", False),
+    Case(expected_value, "expecting_a_value", True),
+    Case(expected_value_and_warning, "expected_warning", expected_warning),
+    Case(expected_value_and_warning, "expected_value", expected_value),
+    Case(expected_value_and_warning, "expecting_an_exception", False),
+    Case(expected_value_and_warning, "expecting_a_warning", True),
+    Case(expected_value_and_warning, "expecting_a_value", True),
+    Case(expected_value_and_warning, "expected_outcome", expected_warning_and_value),
+    Case(expected_warning_and_value, "expected_warning", expected_warning),
+    Case(expected_warning_and_value, "expected_value", expected_value),
+    Case(expected_warning_and_value, "expecting_an_exception", False),
+    Case(expected_warning_and_value, "expecting_a_warning", True),
+    Case(expected_warning_and_value, "expecting_a_value", True),
+    Case(expected_warning_and_value, "expected_outcome", expected_warning_and_value),
 ]
 
 
@@ -117,21 +110,23 @@ def test_expected_outcome(case):
 exception_to_be_raised = RuntimeError
 
 exception_raising_cases = [
-    Case(expected_exception, 'expected_warning', exception_to_be_raised),
-    Case(expected_exception, 'expected_value', exception_to_be_raised),
-    Case(expected_warning, 'expected_exception', exception_to_be_raised),
-    Case(expected_warning, 'expected_value', exception_to_be_raised),
-    Case(expected_value, 'expected_exception', exception_to_be_raised),
-    Case(expected_value, 'expected_warning', exception_to_be_raised),
-    Case(expected_value_and_warning, 'expected_exception', exception_to_be_raised),
-    Case(expected_warning_and_value, 'expected_exception', exception_to_be_raised),
+    Case(expected_exception, "expected_warning", exception_to_be_raised),
+    Case(expected_exception, "expected_value", exception_to_be_raised),
+    Case(expected_warning, "expected_exception", exception_to_be_raised),
+    Case(expected_warning, "expected_value", exception_to_be_raised),
+    Case(expected_value, "expected_exception", exception_to_be_raised),
+    Case(expected_value, "expected_warning", exception_to_be_raised),
+    Case(expected_value_and_warning, "expected_exception", exception_to_be_raised),
+    Case(expected_warning_and_value, "expected_exception", exception_to_be_raised),
 ]
 
 
 @pytest.mark.parametrize("case", exception_raising_cases)
 def test_attribute_exceptions(case):
     if not issubclass(case.correct_outcome, Exception):
-        raise TypeError("Incorrect test setup: the expected outcome must be an exception.")
+        raise TypeError(
+            "Incorrect test setup: the expected outcome must be an exception."
+        )
     with pytest.raises(case.correct_outcome):
         expected_outcome = ExpectedTestOutcome(case.argument)
         result = expected_outcome.__getattribute__(case.attribute)

@@ -31,13 +31,14 @@ class ActualTestOutcome:
             raise TypeError(
                 "Expecting an instance of a subclass of AbstractTestInputs,"
                 "such as FunctionTestInputs, ClassAttributeTestInputs, or "
-                "ClassMethodTestInputs.")
+                "ClassMethodTestInputs."
+            )
 
         with pytest.warns(Warning) as warnings_record:
-            warnings.warn('So we can exit pytest.warns context manager', _MockWarning)
+            warnings.warn("So we can exit pytest.warns context manager", _MockWarning)
             with pytest.raises(Exception) as exception_info:
                 self._value = inputs.call()
-                raise _MockException('So we can exit pytest.raises context manager')
+                raise _MockException("So we can exit pytest.raises context manager")
 
         self._exception_info = exception_info
 
@@ -51,7 +52,7 @@ class ActualTestOutcome:
         `True` if the `callable` being tested returned a value or
         `None`, and `False` otherwise.
         """
-        return hasattr(self, '_value')
+        return hasattr(self, "_value")
 
     @property
     def exception_was_raised(self) -> bool:
@@ -131,7 +132,8 @@ class ActualTestOutcome:
             raise RuntimeError(
                 f"The warnings_record attribute is not available because "
                 f" no warnings were issued when running the command: "
-                f"{self._inputs.call_string}")
+                f"{self._inputs.call_string}"
+            )
 
     @property
     def warning_types(self) -> List:
