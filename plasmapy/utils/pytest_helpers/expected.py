@@ -83,6 +83,7 @@ class ExpectedTestOutcome:
     <class 'UserWarning'>
 
     """
+
     def __init__(self, expected):
         self.expected_outcome = expected
 
@@ -106,16 +107,16 @@ class ExpectedTestOutcome:
     def expected_outcome(self, expected):
         self._info = dict()
         if _is_warning(expected):
-            self._info['warning'] = expected
+            self._info["warning"] = expected
         elif _is_exception(expected):
-            self._info['exception'] = expected
+            self._info["exception"] = expected
         elif _is_warning_and_value(expected):
             warning_is_first = _is_warning(expected[0])
             warning_index, value_index = (0, 1) if warning_is_first else (1, 0)
-            self._info['warning'] = expected[warning_index]
-            self._info['value'] = expected[value_index]
+            self._info["warning"] = expected[warning_index]
+            self._info["value"] = expected[value_index]
         else:
-            self._info['value'] = expected
+            self._info["value"] = expected
 
     @property
     def expecting_a_value(self) -> bool:
@@ -123,7 +124,7 @@ class ExpectedTestOutcome:
         Return `True` if the test should return a value, and `False`
         otherwise.
         """
-        return 'value' in self._info.keys()
+        return "value" in self._info.keys()
 
     @property
     def expected_value(self):
@@ -132,7 +133,7 @@ class ExpectedTestOutcome:
         expected value.  Otherwise, raise a `RuntimeError`.
         """
         if self.expecting_a_value:
-            return self._info['value']
+            return self._info["value"]
         else:
             raise RuntimeError("The test is not expected to return a value.")
 
@@ -142,7 +143,7 @@ class ExpectedTestOutcome:
         Return `True` if the test should raise an exception, and `False`
         otherwise.
         """
-        return 'exception' in self._info.keys()
+        return "exception" in self._info.keys()
 
     @property
     def expected_exception(self):
@@ -151,7 +152,7 @@ class ExpectedTestOutcome:
         exception. Otherwise, raise a `RuntimeError`.
         """
         if self.expecting_an_exception:
-            return self._info['exception']
+            return self._info["exception"]
         else:
             raise RuntimeError("The test is not expected to raise an exception.")
 
@@ -161,7 +162,7 @@ class ExpectedTestOutcome:
         Return `True` if the test should issue a warning, and `False`
         otherwise.
         """
-        return 'warning' in self._info.keys()
+        return "warning" in self._info.keys()
 
     @property
     def expected_warning(self):
@@ -170,12 +171,12 @@ class ExpectedTestOutcome:
         warning.  Otherwise, raise a `RuntimeError`.
         """
         if self.expecting_a_warning:
-            return self._info['warning']
+            return self._info["warning"]
         else:
             raise RuntimeError("The test is not expected to issue a warning.")
 
     def __repr__(self):
-        return f'ExpectedTestOutcome({self.expected_outcome})'
+        return f"ExpectedTestOutcome({self.expected_outcome})"
 
     def __str__(self):
         return self.__repr__()
