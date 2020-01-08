@@ -16,7 +16,7 @@ def _format_quantity(arg) -> str:
     in a function call.
     """
 
-    formatted = f'{arg.value}'
+    formatted = f"{arg.value}"
     for base, power in zip(arg.unit.bases, arg.unit.powers):
         if power == -1:
             formatted += f"/u.{base}"
@@ -30,7 +30,7 @@ def _format_quantity(arg) -> str:
 def _format_arg(arg) -> str:
     """Transform an argument into a format as would appear in a function call."""
 
-    if hasattr(arg, '__name__'):
+    if hasattr(arg, "__name__"):
         return arg.__name__
     elif isinstance(arg, u.Quantity):
         return _format_quantity(arg)
@@ -43,7 +43,7 @@ def _format_kw(keyword) -> str:
 
     if isinstance(keyword, str):
         return str(keyword)
-    elif hasattr(keyword, '__name__'):
+    elif hasattr(keyword, "__name__"):
         return keyword.__name__
     else:
         return repr(keyword)
@@ -78,8 +78,8 @@ def _exc_str(ex: Exception) -> str:
     """
 
     exception_name = ex.__name__
-    use_an = exception_name[0] in 'aeiouAEIOU' and exception_name[0:4] != "User"
-    indefinite_article = 'an' if use_an else 'a'
+    use_an = exception_name[0] in "aeiouAEIOU" and exception_name[0:4] != "User"
+    indefinite_article = "an" if use_an else "a"
     return f"{indefinite_article} {exception_name}"
 
 
@@ -135,10 +135,11 @@ def call_string(f: Callable, args: Any = tuple(), kwargs: Dict = {}) -> str:
 
 
 def class_attribute_call_string(
-        cls,
-        attr: str,
-        cls_args: Optional[Union[Tuple, Any]] = None,
-        cls_kwargs: Optional[Dict[str, Any]] = None) -> str:
+    cls,
+    attr: str,
+    cls_args: Optional[Union[Tuple, Any]] = None,
+    cls_kwargs: Optional[Dict[str, Any]] = None,
+) -> str:
     """
     Return a string to represent accessing a class attribute.
 
@@ -179,12 +180,13 @@ def class_attribute_call_string(
 
 
 def class_method_call_string(
-        cls,
-        method: str,
-        cls_args: Any = tuple(),
-        cls_kwargs: Dict = {},
-        method_args: Any = tuple(),
-        method_kwargs: Dict = {}) -> str:
+    cls,
+    method: str,
+    cls_args: Any = tuple(),
+    cls_kwargs: Dict = {},
+    method_args: Any = tuple(),
+    method_kwargs: Dict = {},
+) -> str:
     """
     Return a string to represent calling a class method.
 
