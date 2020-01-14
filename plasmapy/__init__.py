@@ -83,4 +83,3 @@ def online_help(query):
 
 
 del sys
-del version
