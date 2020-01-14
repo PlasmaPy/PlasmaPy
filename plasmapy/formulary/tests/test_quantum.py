@@ -73,10 +73,7 @@ def test_thermal_deBroglie_wavelength():
     # test a simple case for expected value
     expectStr = ("Thermal deBroglie wavelength at 1 eV should be "
                  f"{lambda_dbTh_true} and not {lambda_dbTh}")
-    assert np.isclose(lambda_dbTh.value,
-                      lambda_dbTh_true,
-                      rtol=1e-15,
-                      atol=0.0), expectStr
+    assert np.isclose(lambda_dbTh.value, lambda_dbTh_true, rtol=1e-5, atol=0.0), expectStr
     # testing returned units
     assert lambda_dbTh.unit == u.m
     # testing exceptions
@@ -94,10 +91,7 @@ def test_Fermi_energy():
     # test a simple case for expected value
     expectStr = ("Fermi energy at 1e23 cm^-3 should be "
                  f"{energy_F_true} and not {energy_F}.")
-    assert np.isclose(energy_F.value,
-                      energy_F_true,
-                      rtol=1e-15,
-                      atol=0.0), expectStr
+    assert np.isclose(energy_F.value, energy_F_true, rtol=1e-5, atol=0.0), expectStr
     # testing returned units
     assert energy_F.unit == u.J
     # testing exceptions
@@ -115,10 +109,7 @@ def test_Thomas_Fermi_length():
     # test a simple case for expected value
     expectStr = ("Thomas-Fermi length at 1e23 cm^-3 should be "
                  f"{lambda_TF_true} and not {lambda_TF}.")
-    assert np.isclose(lambda_TF.value,
-                      lambda_TF_true,
-                      rtol=1e-15,
-                      atol=0.0), expectStr
+    assert np.isclose(lambda_TF.value, lambda_TF_true, rtol=1e-5, atol=0.0), expectStr
     # testing returned units
     assert lambda_TF.unit == u.m
     # testing exceptions
@@ -135,10 +126,7 @@ def test_Wigner_Seitz_radius():
     n_e = 1e23 * u.cm ** -3
     radiusTrue = 1.3365046175719772e-10 * u.m
     radiusMeth = Wigner_Seitz_radius(n_e)
-    testTrue = np.isclose(radiusMeth,
-                          radiusTrue,
-                          rtol=0.0,
-                          atol=1e-15 * u.m)
+    testTrue = u.isclose(radiusMeth, radiusTrue, rtol=1e-5)
     errStr = (f"Error in Wigner_Seitz_radius(), got {radiusMeth}, "
               f"should be {radiusTrue}")
     assert testTrue, errStr
@@ -153,19 +141,18 @@ class Test_chemical_potential:
         self.T = 11604 * u.K
         self.True1 = 1.234345958778249e-11
 
+    @pytest.mark.xfail(reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726")
     def test_known1(self):
         """
         Tests Fermi_integral for expected value.
         """
         methodVal = chemical_potential(self.n_e, self.T)
-        testTrue = np.isclose(methodVal,
-                              self.True1,
-                              rtol=1e-16,
-                              atol=0.0)
+        testTrue = u.isclose(methodVal, self.True1, rtol=1e-16, atol=0.0)
         errStr = (f"Chemical potential value should be {self.True1} and not "
                   f"{methodVal}.")
         assert testTrue, errStr
 
+    @pytest.mark.xfail(reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726")
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -173,10 +160,7 @@ class Test_chemical_potential:
         """
         fail1 = self.True1 + 1e-15
         methodVal = chemical_potential(self.n_e, self.T)
-        testTrue = not np.isclose(methodVal,
-                                  fail1,
-                                  rtol=1e-16,
-                                  atol=0.0)
+        testTrue = not u.isclose(methodVal, fail1, rtol=1e-16, atol=0.0)
         errStr = (f"Chemical potential value test gives {methodVal} and "
                   f"should not be equal to {fail1}.")
         assert testTrue, errStr
@@ -190,19 +174,18 @@ class Test__chemical_potential_interp:
         self.T = 11604 * u.K
         self.True1 = 7.741256653579105
 
+    @pytest.mark.xfail(reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726")
     def test_known1(self):
         """
         Tests Fermi_integral for expected value.
         """
         methodVal = _chemical_potential_interp(self.n_e, self.T)
-        testTrue = np.isclose(methodVal,
-                              self.True1,
-                              rtol=1e-16,
-                              atol=0.0)
+        testTrue = u.isclose(methodVal, self.True1, rtol=1e-16, atol=0.0)
         errStr = (f"Chemical potential value should be {self.True1} and not "
                   f"{methodVal}.")
         assert testTrue, errStr
 
+    @pytest.mark.xfail(reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726")
     def test_fail1(self):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -210,10 +193,7 @@ class Test__chemical_potential_interp:
         """
         fail1 = self.True1 + 1e-15
         methodVal = _chemical_potential_interp(self.n_e, self.T)
-        testTrue = not np.isclose(methodVal,
-                                  fail1,
-                                  rtol=1e-16,
-                                  atol=0.0)
+        testTrue = not u.isclose(methodVal, fail1, rtol=1e-16, atol=0.0)
         errStr = (f"Chemical potential value test gives {methodVal} "
                   f"and should not be equal to {fail1}.")
         assert testTrue, errStr

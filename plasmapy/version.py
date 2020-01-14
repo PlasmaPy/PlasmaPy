@@ -215,5 +215,3 @@ version_info = (major, minor, bugfix)
 release = False
 timestamp = datetime.datetime(2019, 7, 4, 16, 6, 37)
 debug = False
-
-astropy_helpers_version = "3.2.1"

@@ -45,8 +45,8 @@ Pre-release
     relatively new, so check the standard for terms that have changed
     and new terms that may apply
 
-* Make sure that tests pass (``python setup.py test``) and that
-  documentation builds without issue (``python setup.py build_docs -W``)
+* Make sure that tests pass  and that
+  documentation builds without issue (``tox``)
 
 * Commit your changes up until now
 

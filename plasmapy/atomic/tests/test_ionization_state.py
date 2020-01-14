@@ -377,11 +377,11 @@ tests_for_exceptions = {
 
     'bad n_elem units': IE({
         'particle': 'H', 'ionic_fractions': [0, 1], 'n_elem': 3 * u.m ** 3
-    }, u.UnitConversionError),
+    }, u.UnitTypeError),
 
     'bad T_e units': IE({
         'particle': 'H', 'ionic_fractions': [0, 1], 'T_e': 1 * u.m
-    }, u.UnitConversionError),
+    }, u.UnitTypeError),
 
     'negative n_elem': IE({
         'particle': 'He', 'ionic_fractions': [1.0, 0.0, 0.0], 'n_elem': -1 * u.m ** -3
@@ -472,7 +472,7 @@ def test_nans():
     assert len(instance.ionic_fractions) == nstates, \
         f"Incorrect number of ionization states for {element}"
     assert np.all([np.isnan(instance.ionic_fractions)]), (
-        f"The ionic fractions for IonizationState are not defaulting " 
+        f"The ionic fractions for IonizationState are not defaulting "
         f"to numpy.nan when not set by user.")
 
 

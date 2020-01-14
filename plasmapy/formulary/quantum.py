@@ -15,11 +15,12 @@ __all__ = [
 import numpy as np
 
 from astropy import units as u
-from plasmapy import (atomic, utils)
-from plasmapy.formulary import mathematics
-from plasmapy.utils.decorators.checks import check_quantity
-from plasmapy.formulary.relativity import Lorentz_factor
 from astropy.constants.si import (c, h, hbar, m_e, eps0, e, k_B)
+from plasmapy import atomic
+from plasmapy.formulary import mathematics
+from plasmapy.formulary.relativity import Lorentz_factor
+from plasmapy.utils import RelativityError
+from plasmapy.utils.decorators import validate_quantities
 
 try:
     from lmfit import minimize, Parameters
@@ -29,10 +30,9 @@ except (ImportError, ModuleNotFoundError) as e:
 
 
 # TODO: Use @check_relativistic and @particle_input
-@utils.check_quantity(
-    V={'units': u.m / u.s, 'can_be_negative': True}
-    )
-def deBroglie_wavelength(V, particle):
+@validate_quantities(V={'can_be_negative': True},
+                     validations_on_return={'can_be_negative': False})
+def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
     Calculates the de Broglie wavelength.
 
@@ -94,7 +94,7 @@ def deBroglie_wavelength(V, particle):
     V = np.abs(V)
 
     if np.any(V >= c):
-        raise utils.RelativityError(
+        raise RelativityError(
             "Velocity input in deBroglie_wavelength cannot "
             "be greater than or equal to the speed of "
             "light.")
@@ -127,13 +127,13 @@ def deBroglie_wavelength(V, particle):
         else:
             lambda_dBr = h / (Lorentz_factor(V) * m * V)
 
-    return lambda_dBr.to(u.m)
+    return lambda_dBr
 
 
-@utils.check_quantity(
-    T_e={'units': u.K, 'can_be_negative': False}
-)
-def thermal_deBroglie_wavelength(T_e):
+@validate_quantities(T_e={'can_be_negative': False,
+                          'equivalencies': u.temperature_energy()},
+                     validations_on_return={'can_be_negative': False})
+def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     r"""
     Calculate the thermal deBroglie wavelength for electrons.
 
@@ -170,23 +170,21 @@ def thermal_deBroglie_wavelength(T_e):
 
     .. math::
 
-       \lambda_dbTh = \frac{h}{\sqrt{2 \pi m_e k_B T_e}}
+       \lambda_{dbTh} = \frac{h}{\sqrt{2 \pi m_e k_B T_e}}
 
     Example
     -------
     >>> from astropy import units as u
     >>> thermal_deBroglie_wavelength(1 * u.eV)
-    <Quantity 6.91936752e-10 m>
+    <Quantity 6.9193675e-10 m>
     """
-    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
     lambda_dbTh = h / np.sqrt(2 * np.pi * m_e * k_B * T_e)
-    return lambda_dbTh.to(u.m)
+    return lambda_dbTh
 
 
-@utils.check_quantity(
-    n_e={'units': u.m**-3, 'can_be_negative': False}
-)
-def Fermi_energy(n_e):
+@validate_quantities(n_e={'can_be_negative': False},
+                     validations_on_return={'can_be_negative': False})
+def Fermi_energy(n_e: u.m ** -3) -> u.J:
     r"""
     Calculate the kinetic energy in a degenerate electron gas.
 
@@ -237,17 +235,16 @@ def Fermi_energy(n_e):
     -------
     >>> from astropy import units as u
     >>> Fermi_energy(1e23 * u.cm**-3)
-    <Quantity 1.25867611e-18 J>
+    <Quantity 1.2586761e-18 J>
     """
     coeff = (np.pi * hbar) ** 2 / (2 * m_e)
     energy_F = coeff * (3 * n_e / np.pi) ** (2 / 3)
-    return energy_F.to(u.Joule)
+    return energy_F
 
 
-@utils.check_quantity(
-    n_e={'units': u.m**-3, 'can_be_negative': False}
-)
-def Thomas_Fermi_length(n_e):
+@validate_quantities(n_e={'can_be_negative': False},
+                     validations_on_return={'can_be_negative': False})
+def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
     r"""
     Calculate the exponential scale length for charge screening
     for cold and dense plasmas.
@@ -312,13 +309,12 @@ def Thomas_Fermi_length(n_e):
     """
     energy_F = Fermi_energy(n_e)
     lambda_TF = np.sqrt(2 * eps0 * energy_F / (3 * n_e * e ** 2))
-    return lambda_TF.to(u.m)
+    return lambda_TF
 
 
-@check_quantity(
-    n={'units': u.m**-3, 'can_be_negative': False}
-)
-def Wigner_Seitz_radius(n: u.m**-3):
+@validate_quantities(n={'can_be_negative': False},
+                     validations_on_return={'can_be_negative': False})
+def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
     r"""
     Calculate the Wigner-Seitz radius, which approximates the inter-
     particle spacing. It is the radius of a sphere whose volume is
@@ -375,10 +371,16 @@ def Wigner_Seitz_radius(n: u.m**-3):
 
     """
     radius = (3 / (4 * np.pi * n)) ** (1 / 3)
-    return radius.to(u.m)
+    return radius
 
 
-def chemical_potential(n_e: u.m ** -3, T: u.K):
+# TODO: remove NotImplementedError and 'doctest: +SKIP' when the following issues are addressed...
+#       https://github.com/PlasmaPy/PlasmaPy/issues/726
+#       https://github.com/astropy/astropy/issues/9721
+@validate_quantities(n_e={'can_be_negative': False},
+                     T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()})
+def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     r"""
     Calculate the ideal chemical potential.
 
@@ -447,10 +449,17 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     Example
     -------
     >>> from astropy import units as u
-    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)
+    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)  # doctest: +SKIP
     <Quantity 2.00039985e-12>
 
     """
+
+    raise NotImplementedError(
+        "This function has been temporarily disabled due to a bug.\n"
+        "Please refer to https://github.com/PlasmaPy/PlasmaPy/issues/726 \n"
+        "and https://github.com/astropy/astropy/issues/9721 "
+        "for progress in fixing it."
+    )
     # deBroglie wavelength
     lambdaDB = thermal_deBroglie_wavelength(T)
     # degeneracy parameter
@@ -476,6 +485,10 @@ def chemical_potential(n_e: u.m ** -3, T: u.K):
     return beta_mu
 
 
+# TODO: decorate with validate_quantities
+# TODO: remove NotImplementedError and 'doctest: +SKIP' when the following issues are addressed...
+#       https://github.com/PlasmaPy/PlasmaPy/issues/726
+#       https://github.com/astropy/astropy/issues/9721
 def _chemical_potential_interp(n_e, T):
     r"""
     Fitting formula for interpolating chemical potential between classical
@@ -542,10 +555,16 @@ def _chemical_potential_interp(n_e, T):
     Example
     -------
     >>> from astropy import units as u
-    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
-    <Quantity 8.17649673>
+    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)  # doctest: +SKIP
+    <Quantity 8.17649>
 
     """
+    raise NotImplementedError(
+        "This function has been temporarily disabled due to a bug.\n"
+        "Please refer to https://github.com/PlasmaPy/PlasmaPy/issues/726 \n"
+        "and https://github.com/astropy/astropy/issues/9721 "
+        "for progress in fixing it."
+    )
     A = 0.25945
     B = 0.072
     b = 0.858

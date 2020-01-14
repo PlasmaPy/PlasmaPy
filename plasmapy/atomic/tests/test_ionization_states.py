@@ -26,7 +26,7 @@ def check_abundances_consistency(abundances: Dict[str, Real], log_abundances: Di
     10 logarithm of abundances.
     """
     assert abundances.keys() == log_abundances.keys(), (
-        f"Mismatch between keys from abundances and log_abundances.\n\n" 
+        f"Mismatch between keys from abundances and log_abundances.\n\n"
         f"abundances.keys():     {abundances.keys()}\n\n"
         f"log_abundances.keys(): {log_abundances.keys()}")
 
@@ -35,6 +35,7 @@ def check_abundances_consistency(abundances: Dict[str, Real], log_abundances: Di
         abundance_from_log_abundances = 10 ** log_abundances[element]
         assert np.isclose(abundance_from_abundances, abundance_from_log_abundances), (
             f"Mismatch between abundances and log_abundances.")
+
 
 def has_attribute(attribute, tests_dict):
     cases = [test for test in tests_dict.keys() if attribute in tests_dict[test].keys()]
@@ -500,7 +501,7 @@ class TestIonizationStatesAttributes:
             "was used to set H ionic fractions.")
 
     @pytest.mark.parametrize(
-        "key, invalid_fracs, expected_exception",[
+        "key, invalid_fracs, expected_exception", [
             ('H', [-0.01, 1.01], ValueError),
             ('H', [0.4, 0.5], ValueError),
             ('H', [0.5, 0.5, 0.0], ValueError),

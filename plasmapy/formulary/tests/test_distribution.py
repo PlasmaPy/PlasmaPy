@@ -118,7 +118,7 @@ class Test_Maxwellian_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_units_vTh(self):
@@ -134,7 +134,7 @@ class Test_Maxwellian_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_no_vTh(self):
@@ -152,7 +152,7 @@ class Test_Maxwellian_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_vTh(self):
@@ -171,7 +171,7 @@ class Test_Maxwellian_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_zero_drift_units(self):
@@ -188,7 +188,7 @@ class Test_Maxwellian_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_value_drift_units(self):
@@ -205,7 +205,7 @@ class Test_Maxwellian_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           testVal,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
 
@@ -252,7 +252,7 @@ class Test_Maxwellian_speed_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_units_vTh(self):
@@ -268,7 +268,7 @@ class Test_Maxwellian_speed_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_no_vTh(self):
@@ -286,7 +286,7 @@ class Test_Maxwellian_speed_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_vTh(self):
@@ -305,7 +305,7 @@ class Test_Maxwellian_speed_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_zero_drift_units(self):
@@ -322,7 +322,7 @@ class Test_Maxwellian_speed_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_value_drift_units(self):
@@ -338,7 +338,7 @@ class Test_Maxwellian_speed_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncDrift.value,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
 
@@ -407,7 +407,7 @@ class Test_Maxwellian_velocity_2D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_units_vTh(self):
@@ -424,7 +424,7 @@ class Test_Maxwellian_velocity_2D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_no_vTh(self):
@@ -443,7 +443,7 @@ class Test_Maxwellian_velocity_2D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_vTh(self):
@@ -463,7 +463,7 @@ class Test_Maxwellian_velocity_2D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_zero_drift_units(self):
@@ -482,7 +482,7 @@ class Test_Maxwellian_velocity_2D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_value_drift_units(self):
@@ -501,7 +501,7 @@ class Test_Maxwellian_velocity_2D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           testVal,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
 
@@ -547,7 +547,7 @@ class Test_Maxwellian_speed_2D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_units_vTh(self):
@@ -563,7 +563,7 @@ class Test_Maxwellian_speed_2D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_no_vTh(self):
@@ -581,7 +581,7 @@ class Test_Maxwellian_speed_2D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_vTh(self):
@@ -600,7 +600,7 @@ class Test_Maxwellian_speed_2D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_zero_drift_units(self):
@@ -617,7 +617,7 @@ class Test_Maxwellian_speed_2D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_value_drift_units(self):
@@ -634,7 +634,7 @@ class Test_Maxwellian_speed_2D(object):
 #                  f"and not {distFunc}.")
 #        assert np.isclose(distFunc.value,
 #                          0.0,
-#                          rtol=1e-8,
+#                          rtol=1e-5,
 #                          atol=0.0), errStr
 
 
@@ -710,7 +710,7 @@ class Test_Maxwellian_velocity_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_units_vTh(self):
@@ -728,7 +728,7 @@ class Test_Maxwellian_velocity_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_no_vTh(self):
@@ -748,7 +748,7 @@ class Test_Maxwellian_velocity_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_vTh(self):
@@ -769,7 +769,7 @@ class Test_Maxwellian_velocity_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_zero_drift_units(self):
@@ -790,7 +790,7 @@ class Test_Maxwellian_velocity_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_value_drift_units(self):
@@ -811,7 +811,7 @@ class Test_Maxwellian_velocity_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           testVal,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
 
@@ -857,7 +857,7 @@ class Test_Maxwellian_speed_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_units_vTh(self):
@@ -873,7 +873,7 @@ class Test_Maxwellian_speed_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_no_vTh(self):
@@ -891,7 +891,7 @@ class Test_Maxwellian_speed_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_vTh(self):
@@ -910,7 +910,7 @@ class Test_Maxwellian_speed_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_zero_drift_units(self):
@@ -927,7 +927,7 @@ class Test_Maxwellian_speed_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_value_drift_units(self):
@@ -944,7 +944,7 @@ class Test_Maxwellian_speed_3D(object):
 #                  f"and not {distFunc}.")
 #        assert np.isclose(distFunc.value,
 #                          0.0,
-#                          rtol=1e-8,
+#                          rtol=1e-5,
 #                          atol=0.0), errStr
 
 
@@ -1072,7 +1072,7 @@ class Test_kappa_velocity_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_units_vTh(self):
@@ -1089,7 +1089,7 @@ class Test_kappa_velocity_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_no_vTh(self):
@@ -1108,7 +1108,7 @@ class Test_kappa_velocity_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_vTh(self):
@@ -1128,7 +1128,7 @@ class Test_kappa_velocity_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_zero_drift_units(self):
@@ -1146,7 +1146,7 @@ class Test_kappa_velocity_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_value_drift_units(self):
@@ -1164,7 +1164,7 @@ class Test_kappa_velocity_1D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           testVal,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
 
@@ -1236,7 +1236,7 @@ class Test_kappa_velocity_3D(object):
 #                  f"and not {kappaDistFunc}.")
 #        assert np.isclose(kappaDistFunc.value,
 #                          maxwellDistFunc.value,
-#                          rtol=1e-8,
+#                          rtol=1e-5,
 #                          atol=0.0), errStr
 #
 #        return
@@ -1293,7 +1293,7 @@ class Test_kappa_velocity_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_units_vTh(self):
@@ -1312,7 +1312,7 @@ class Test_kappa_velocity_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_no_vTh(self):
@@ -1333,7 +1333,7 @@ class Test_kappa_velocity_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_unitless_vTh(self):
@@ -1355,7 +1355,7 @@ class Test_kappa_velocity_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_zero_drift_units(self):
@@ -1377,7 +1377,7 @@ class Test_kappa_velocity_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           self.distFuncTrue,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr
 
     def test_value_drift_units(self):
@@ -1399,5 +1399,5 @@ class Test_kappa_velocity_3D(object):
                   f"and not {distFunc}.")
         assert np.isclose(distFunc.value,
                           testVal,
-                          rtol=1e-8,
+                          rtol=1e-5,
                           atol=0.0), errStr

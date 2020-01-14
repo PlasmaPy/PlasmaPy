@@ -24,13 +24,15 @@ __all__ = [
 
 import numbers
 import numpy as np
+import warnings
 
 from astropy import units as u
-from plasmapy import (atomic, utils)
 from astropy.constants.si import (m_p, m_e, c, mu0, k_B, e, eps0)
-from typing import Optional
-import warnings
+from plasmapy import atomic
+from plasmapy.utils import PhysicsError
+from plasmapy.utils.decorators import (angular_freq_to_hz, check_relativistic, validate_quantities)
 from plasmapy.utils.exceptions import PhysicsWarning
+from typing import Optional
 
 
 def _grab_charge(ion, z_mean=None):
@@ -62,7 +64,11 @@ def _grab_charge(ion, z_mean=None):
     return Z
 
 
-def mass_density(density, particle: Optional[str] = None, z_mean: Optional[numbers.Real] = None) -> u.kg / u.m ** 3:
+@validate_quantities(density={'can_be_negative': False},
+                     validations_on_return={'can_be_negative': False})
+def mass_density(density: [u.m ** -3, u.kg / (u.m ** 3)],
+                 particle: Optional[str] = None,
+                 z_mean: Optional[numbers.Real] = None) -> u.kg / u.m ** 3:
     """Utility function to merge two possible inputs for particle charge.
 
     Parameters
@@ -84,7 +90,7 @@ def mass_density(density, particle: Optional[str] = None, z_mean: Optional[numbe
     Raises
     ------
     ValueError
-        If the `density` has units incovertible to either a particle density
+        If the `density` has units inconvertible to either a particle density
         or a mass density, or if you pass in a number density without a particle.
 
     Returns
@@ -96,32 +102,31 @@ def mass_density(density, particle: Optional[str] = None, z_mean: Optional[numbe
     -------
     >>> from astropy import units as u
     >>> mass_density(1 * u.m ** -3,'p')
-    <Quantity 1.67353284e-27 kg / m3>
+    <Quantity 1.67353...e-27 kg / m3>
     >>> mass_density(4 * u.m ** -3,'D+')
-    <Quantity 1.33779786e-26 kg / m3>
+    <Quantity 1.33779...e-26 kg / m3>
 
     """
-    if density.unit.is_equivalent(u.kg / u.m ** 3):
-        rho = density
-    elif density.unit.is_equivalent(u.m ** -3):
+    # validate_quantities ensures we have units of u.kg/u.m**3 or 1/u.m**3
+    rho = density
+    if not rho.unit.is_equivalent(u.kg / u.m ** 3):
         if particle:
             m_i = atomic.particle_mass(particle)
             Z = _grab_charge(particle, z_mean)
             rho = density * m_i + Z * density * m_e
         else:
-            raise ValueError(f"If passing a number density, you must pass a"
+            raise ValueError(f"If passing a number density, you must pass a "
                              f"particle (not {particle}) to calculate the mass density!")
-    else:
-        raise ValueError(f"mass_density accepts either particle (m**-3)"
-                         " or mass (kg * m**-3) density, not {density.unit}!")
+
     return rho
 
 
-@utils.check_relativistic
-@utils.check_quantity(B={'units': u.T},
-                      density={'units': [u.m ** -3, u.kg / u.m ** 3],
-                               'can_be_negative': False})
-def Alfven_speed(B, density, ion="p+", z_mean=None):
+@check_relativistic
+@validate_quantities(density={'can_be_negative': False})
+def Alfven_speed(B: u.T,
+                 density: [u.m ** -3, u.kg / u.m ** 3],
+                 ion="p+",
+                 z_mean=None) -> u.m / u.s:
     r"""
     Return the Alfvén speed.
 
@@ -201,36 +206,36 @@ def Alfven_speed(B, density, ion="p+", z_mean=None):
     >>> rho = n*(m_p+m_e)
     >>> ion = 'p'
     >>> Alfven_speed(B, n, ion)
-    <Quantity 43173.87029559 m / s>
+    <Quantity 43173.870... m / s>
     >>> Alfven_speed(B, rho, ion)
-    <Quantity 43173.87029559 m / s>
+    <Quantity 43173.870... m / s>
     >>> Alfven_speed(B, rho, ion).to(u.cm/u.us)
-    <Quantity 4.31738703 cm / us>
+    <Quantity 4.31738... cm / us>
 
     """
-
-    B = B.to(u.T)
     rho = mass_density(density, ion, z_mean)
 
     V_A = (np.abs(B) / np.sqrt(mu0 * rho))
-    return V_A.to(u.m / u.s)
+    return V_A
 
 
-@utils.check_relativistic
-@utils.check_quantity(
-    T_i={'units': u.K, 'can_be_negative': False},
-    T_e={'units': u.K, 'can_be_negative': False},
-    n_e={'units': u.m ** -3, 'can_be_negative': False, 'none_shall_pass': True},
-    k={'units': u.m ** -1, 'can_be_negative': False, 'none_shall_pass': True}
-    )
-def ion_sound_speed(T_e,
-                    T_i,
-                    n_e=None,
-                    k=None,
+@check_relativistic
+@validate_quantities(T_i={'can_be_negative': False,
+                          'equivalencies': u.temperature_energy()},
+                     T_e={'can_be_negative': False,
+                          'equivalencies': u.temperature_energy()},
+                     n_e={'can_be_negative': False,
+                          'none_shall_pass': True},
+                     k={'can_be_negative': False,
+                        'none_shall_pass': True})
+def ion_sound_speed(T_e: u.K,
+                    T_i: u.K,
+                    n_e: u.m ** -3 = None,
+                    k: u.m ** -1 = None,
                     gamma_e=1,
                     gamma_i=3,
                     ion='p+',
-                    z_mean=None):
+                    z_mean=None) -> u.m / u.s:
     r"""
     Return the ion sound speed for an electron-ion plasma.
 
@@ -245,17 +250,17 @@ def ion_sound_speed(T_e,
         Ion temperature in units of temperature or energy per
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
-        
+
     n_e : ~astropy.units.Quantity
-        Electron number density. If this is not given, then ion_sound_speed 
-        will be approximated in the non-dispersive limit 
-        (:math:`k^2 \lambda_{D}^2` will be assumed zero). If n_e is given, 
+        Electron number density. If this is not given, then ion_sound_speed
+        will be approximated in the non-dispersive limit
+        (:math:`k^2 \lambda_{D}^2` will be assumed zero). If n_e is given,
         a value for k must also be given.
-        
+
     k : ~astropy.units.Quantity
-        Wavenumber (in units of inverse length, e.g. per meter). If this 
-        is not given, then ion_sound_speed will be approximated in the 
-        non-dispersive limit (:math:`k^2 \lambda_{D}^2` will be assumed zero). 
+        Wavenumber (in units of inverse length, e.g. per meter). If this
+        is not given, then ion_sound_speed will be approximated in the
+        non-dispersive limit (:math:`k^2 \lambda_{D}^2` will be assumed zero).
         If k is given, a value for n_e must also be given.
 
     gamma_e : float or int
@@ -301,7 +306,7 @@ def ion_sound_speed(T_e,
         If an adiabatic index is less than one.
 
     ~astropy.units.UnitConversionError
-        If the temperature, electron number density, or wavenumber 
+        If the temperature, electron number density, or wavenumber
         is in incorrect units.
 
     Warns
@@ -311,9 +316,9 @@ def ion_sound_speed(T_e,
 
     ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed.
-        
+
     PhysicsWarning
-        If only one of (k, n_e) is given, the non-dispersive limit 
+        If only one of (k, n_e) is given, the non-dispersive limit
         is assumed.
 
     Notes
@@ -328,11 +333,11 @@ def ion_sound_speed(T_e,
     ion adiabatic indices, :math:`k_B` is the Boltzmann constant,
     :math:`T_e` and :math:`T_i` are the electron and ion temperatures,
     :math:`Z` is the charge state of the ion, :math:`m_i` is the
-    ion mass, :math:`\lambda_{D}` is the Debye length, and :math:`k` is the 
+    ion mass, :math:`\lambda_{D}` is the Debye length, and :math:`k` is the
     wavenumber.
-    
-    In the non-dispersive limit (:math:`k^2 \lambda_{D}^2` is small) the 
-    equation for :math:`V_S` is approximated (the denominator reduces 
+
+    In the non-dispersive limit (:math:`k^2 \lambda_{D}^2` is small) the
+    equation for :math:`V_S` is approximated (the denominator reduces
     to :math:`m_i`).
 
     When the electron temperature is much greater than the ion
@@ -347,18 +352,18 @@ def ion_sound_speed(T_e,
     >>> k_1 = 3e1*u.m**-1
     >>> k_2 = 3e7*u.m**-1
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, ion='p', gamma_e=1, gamma_i=3)
-    <Quantity 203155.0764042 m / s>
+    <Quantity 203155... m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p', gamma_e=1, gamma_i=3)
-    <Quantity 203155.03286794 m / s>
+    <Quantity 203155... m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_2, ion='p', gamma_e=1, gamma_i=3)
-    <Quantity 310.31329069 m / s>
+    <Quantity 310.31... m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1)
-    <Quantity 203155.03286794 m / s>
+    <Quantity 203155... m / s>
     >>> ion_sound_speed(T_e=500*u.eV, T_i=200*u.eV, n_e=n, k=k_1, ion='D+')
-    <Quantity 229585.96150738 m / s>
+    <Quantity 229585... m / s>
 
     """
-    
+
     m_i = atomic.particle_mass(ion)
     Z = _grab_charge(ion, z_mean)
 
@@ -367,12 +372,9 @@ def ion_sound_speed(T_e,
             raise TypeError(f"The adiabatic index gamma for {particles} must be "
                             "a float or int")
         if gamma < 1:
-            raise utils.PhysicsError(f"The adiabatic index for {particles} must be between "
-                                     "one and infinity")
+            raise PhysicsError(f"The adiabatic index for {particles} must be between "
+                               f"one and infinity")
 
-    T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
-    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
-    
     # Assume non-dispersive limit if values for n_e (or k) are not specified
     klD2 = 0.0
     if (n_e is None) ^ (k is None):
@@ -392,14 +394,15 @@ def ion_sound_speed(T_e,
     return V_S
 
 
-@utils.check_relativistic
-@utils.check_quantity(
-    T={'units': u.K, 'can_be_negative': False},
-    mass={'units': u.kg, 'can_be_negative': False, 'can_be_nan': True}
-    )
+@check_relativistic
+@validate_quantities(T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()},
+                     mass={'can_be_negative': False, 'can_be_nan': True})
 @atomic.particle_input
-def thermal_speed(T, particle: atomic.Particle = "e-", method="most_probable",
-                  mass=np.nan*u.kg):
+def thermal_speed(T: u.K,
+                  particle: atomic.Particle = "e-",
+                  method="most_probable",
+                  mass: u.kg = np.nan * u.kg) -> u.m / u.s:
     r"""
     Return the most probable speed for a particle within a Maxwellian
     distribution.
@@ -469,42 +472,38 @@ def thermal_speed(T, particle: atomic.Particle = "e-", method="most_probable",
     --------
     >>> from astropy import units as u
     >>> thermal_speed(5*u.eV, 'p')
-    <Quantity 30949.69018286 m / s>
+    <Quantity 30949.6... m / s>
     >>> thermal_speed(1e6*u.K, particle='p')
-    <Quantity 128486.55193256 m / s>
-    >>> thermal_speed(5*u.eV)
-    <Quantity 1326205.12123959 m / s>
-    >>> thermal_speed(1e6*u.K)
-    <Quantity 5505693.98842538 m / s>
+    <Quantity 128486... m / s>
+    >>> thermal_speed(5*u.eV, particle='e-')
+    <Quantity 132620... m / s>
+    >>> thermal_speed(1e6*u.K, particle='e-')
+    <Quantity 550569... m / s>
     >>> thermal_speed(1e6*u.K, method="rms")
-    <Quantity 6743070.47577549 m / s>
+    <Quantity 674307... m / s>
     >>> thermal_speed(1e6*u.K, method="mean_magnitude")
-    <Quantity 6212510.3969422 m / s>
+    <Quantity 621251... m / s>
 
     """
-
-    T = T.to(u.K, equivalencies=u.temperature_energy())
-
     m = mass if np.isfinite(mass) else atomic.particle_mass(particle)
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     if method == "most_probable":
-        V = (np.sqrt(2 * k_B * T / m)).to(u.m / u.s)
+        V = (np.sqrt(2 * k_B * T / m))
     elif method == "rms":
-        V = (np.sqrt(3 * k_B * T / m)).to(u.m / u.s)
+        V = (np.sqrt(3 * k_B * T / m))
     elif method == "mean_magnitude":
-        V = (np.sqrt(8 * k_B * T / (m * np.pi))).to(u.m / u.s)
+        V = (np.sqrt(8 * k_B * T / (m * np.pi)))
     else:
         raise ValueError("Method {method} not supported in thermal_speed")
 
     return V
 
 
-@utils.check_quantity(
-    T={'units': u.K, 'can_be_negative': False},
-    n={'units': u.m**-3, 'can_be_negative': False}
-    )
-def thermal_pressure(T, n):
+@validate_quantities(T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()},
+                     n={'can_be_negative': False})
+def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
     r"""
     Return the thermal pressure for a Maxwellian distribution.
 
@@ -520,9 +519,9 @@ def thermal_pressure(T, n):
     --------
     >>> import astropy.units as u
     >>> thermal_pressure(1*u.eV, 1e20/u.m**3)
-    <Quantity 16.02176621 Pa>
+    <Quantity 16.021... Pa>
     >>> thermal_pressure(10*u.eV, 1e20/u.m**3)
-    <Quantity 160.21766208 Pa>
+    <Quantity 160.21... Pa>
 
     Returns
     -------
@@ -546,15 +545,13 @@ def thermal_pressure(T, n):
         T_{th} = nk_{B}T
     """
 
-    T = T.to(u.K, equivalencies=u.temperature_energy())
-    return (n * k_B * T).to(u.Pa)
+    return n * k_B * T
 
 
-@utils.check_relativistic
-@utils.check_quantity(
-    T={'units': u.K, 'can_be_negative': False}
-    )
-def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
+@check_relativistic
+@validate_quantities(T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()})
+def kappa_thermal_speed(T: u.K, kappa, particle="e-", method="most_probable") -> u.m / u.s:
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
 
@@ -619,11 +616,11 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     --------
     >>> from astropy import units as u
     >>> kappa_thermal_speed(5*u.eV, 4, 'p') # defaults to most probable
-    <Quantity 24467.87846359 m / s>
+    <Quantity 24467.87... m / s>
     >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'rms')
-    <Quantity 37905.47432261 m / s>
+    <Quantity 37905.47... m / s>
     >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'mean_magnitude')
-    <Quantity 34922.9856304 m / s>
+    <Quantity 34922.98... m / s>
 
     References
     ----------
@@ -635,7 +632,6 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     plasmapy.formulary.kappa_velocity_1D
     """
     # Checking thermal units
-    T = T.to(u.K, equivalencies=u.temperature_energy())
     if kappa <= 3 / 2:
         raise ValueError(f"Must have kappa > 3/2, instead of {kappa}, for "
                          "kappa distribution function to be valid.")
@@ -656,14 +652,12 @@ def kappa_thermal_speed(T, kappa, particle="e-", method="most_probable"):
     return vTh * coeff
 
 
-@utils.check_quantity(
-    n={'units': u.m ** -3, 'can_be_negative': False},
-    T={'units': u.K, 'can_be_negative': False},
-    B={'units': u.T}
-    )
-def Hall_parameter(n,
-                   T,
-                   B,
+@validate_quantities(n={'can_be_negative': False},
+                     T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()})
+def Hall_parameter(n: u.m ** -3,
+                   T: u.K,
+                   B: u.T,
                    ion_particle,
                    particle='e-',
                    coulomb_log=None,
@@ -707,9 +701,9 @@ def Hall_parameter(n,
     --------
     >>> from astropy import units as u
     >>> Hall_parameter(1e10 * u.m**-3, 2.8e3 * u.eV, 2.3 * u.T, 'He-4 +1')
-    <Quantity 7.26446755e+16>
+    <Quantity 7.26446...e+16>
     >>> Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1')
-    <Quantity 2.11158408e+17>
+    <Quantity 2.11158...e+17>
 
     """
     from plasmapy.formulary.collisions import (fundamental_ion_collision_freq,
@@ -728,9 +722,10 @@ def Hall_parameter(n,
     return gyro_frequency / coll_rate
 
 
-@utils.angular_freq_to_hz
-@utils.check_quantity(B={'units': u.T})
-def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None):
+@validate_quantities(validations_on_return={'units': [u.rad / u.s, u.Hz],
+                                            'equivalencies': [(u.cy / u.s, u.Hz)]})
+@angular_freq_to_hz
+def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None) -> u.rad / u.s:
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     Parameters
@@ -800,25 +795,25 @@ def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None):
     --------
     >>> from astropy import units as u
     >>> gyrofrequency(0.1*u.T)
-    <Quantity 1.75882002e+10 rad / s>
+    <Quantity 1.7588...e+10 rad / s>
     >>> gyrofrequency(0.1*u.T, to_hz=True)
-    <Quantity 2799249007.6528206 Hz>
+    <Quantity 2.79924...e+09 Hz>
     >>> gyrofrequency(0.1*u.T, signed=True)
-    <Quantity -1.75882002e+10 rad / s>
+    <Quantity -1.75882...e+10 rad / s>
     >>> gyrofrequency(0.01*u.T, 'p')
-    <Quantity 957883.32241481 rad / s>
+    <Quantity 957883.32... rad / s>
     >>> gyrofrequency(0.01*u.T, 'p', signed=True)
-    <Quantity 957883.32241481 rad / s>
+    <Quantity 957883.32... rad / s>
     >>> gyrofrequency(0.01*u.T, particle='T+')
-    <Quantity 319964.54975911 rad / s>
+    <Quantity 319964.5... rad / s>
     >>> gyrofrequency(0.01*u.T, particle='T+', to_hz=True)
-    <Quantity 50923.93970833496 Hz>
+    <Quantity 50923.9... Hz>
     >>> omega_ce = gyrofrequency(0.1*u.T)
     >>> print(omega_ce)
-    17588200236.02124 rad / s
+    1758820... rad / s
     >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
     >>> print(f_ce)
-    2799249007.6528206 Hz
+    279924... Hz
 
     """
     m_i = atomic.particle_mass(particle)
@@ -831,15 +826,15 @@ def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None):
     return omega_ci
 
 
-@utils.check_quantity(B={'units': u.T},
-                      Vperp={'units': u.m / u.s, 'can_be_nan': True},
-                      T_i={'units': u.K, 'can_be_nan': True},
-                      )
+@validate_quantities(Vperp={'can_be_nan': True},
+                     T_i={'can_be_nan': True,
+                          'equivalencies': u.temperature_energy()},
+                     validations_on_return={'equivalencies': u.dimensionless_angles()})
 def gyroradius(B: u.T,
                particle='e-',
                *,
                Vperp: u.m / u.s = np.nan * u.m / u.s,
-               T_i: u.K = np.nan * u.K):
+               T_i: u.K = np.nan * u.K) -> u.m:
     r"""Return the particle gyroradius.
 
     Parameters
@@ -911,23 +906,23 @@ def gyroradius(B: u.T,
     --------
     >>> from astropy import units as u
     >>> gyroradius(0.2*u.T,particle='p+',T_i=1e5*u.K)
-    <Quantity 0.00212087 m>
+    <Quantity 0.002120... m>
     >>> gyroradius(0.2*u.T,particle='p+',T_i=1e5*u.K)
-    <Quantity 0.00212087 m>
+    <Quantity 0.002120... m>
     >>> gyroradius(5*u.uG,particle='alpha',T_i=1*u.eV)
-    <Quantity 288002.38837768 m>
+    <Quantity 288002.38... m>
     >>> gyroradius(400*u.G,particle='Fe+++',Vperp=1e7*u.m/u.s)
-    <Quantity 48.23129811 m>
+    <Quantity 48.23129... m>
     >>> gyroradius(B=0.01*u.T,T_i=1e6*u.K)
-    <Quantity 0.00313033 m>
+    <Quantity 0.003130... m>
     >>> gyroradius(B=0.01*u.T,Vperp=1e6*u.m/u.s)
-    <Quantity 0.00056856 m>
+    <Quantity 0.000568... m>
     >>> gyroradius(0.2*u.T,T_i=1e5*u.K)
-    <Quantity 4.94949252e-05 m>
+    <Quantity 4.94949...e-05 m>
     >>> gyroradius(5*u.uG,T_i=1*u.eV)
-    <Quantity 6744.2598183 m>
+    <Quantity 6744.25... m>
     >>> gyroradius(400*u.G,Vperp=1e7*u.m/u.s)
-    <Quantity 0.00142141 m>
+    <Quantity 0.001421... m>
 
     """
 
@@ -975,14 +970,14 @@ def gyroradius(B: u.T,
 
     r_Li = np.abs(Vperp) / omega_ci
 
-    return r_Li.to(u.m, equivalencies=u.dimensionless_angles())
+    return r_Li
 
 
-@utils.angular_freq_to_hz
-@utils.check_quantity(
-    n={'units': u.m ** -3, 'can_be_negative': False}
-    )
-def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None):
+@validate_quantities(n={'can_be_negative': False},
+                     validations_on_return={'units': [u.rad / u.s, u.Hz],
+                                            'equivalencies': [(u.cy / u.s, u.Hz)]})
+@angular_freq_to_hz
+def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
     Parameters
@@ -1044,15 +1039,15 @@ def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None):
     -------
     >>> from astropy import units as u
     >>> plasma_frequency(1e19*u.m**-3, particle='p')
-    <Quantity 4.16329453e+09 rad / s>
+    <Quantity 4.16329...e+09 rad / s>
     >>> plasma_frequency(1e19*u.m**-3, particle='p', to_hz=True)
-    <Quantity 662608904.1071696 Hz>
+    <Quantity 6.62608...e+08 Hz>
     >>> plasma_frequency(1e19*u.m**-3, particle='D+')
-    <Quantity 2.94462452e+09 rad / s>
+    <Quantity 2.94462...e+09 rad / s>
     >>> plasma_frequency(1e19*u.m**-3)
-    <Quantity 1.78398636e+11 rad / s>
+    <Quantity 1.78398...e+11 rad / s>
     >>> plasma_frequency(1e19*u.m**-3, to_hz=True)
-    <Quantity 28393024835.274036 Hz>
+    <Quantity 2.83930...e+10 Hz>
 
     """
 
@@ -1079,11 +1074,10 @@ def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None):
     return omega_p.si
 
 
-@utils.check_quantity(
-    T_e={'units': u.K, 'can_be_negative': False},
-    n_e={'units': u.m ** -3, 'can_be_negative': False}
-    )
-def Debye_length(T_e: u.K, n_e: u.m**-3):
+@validate_quantities(T_e={'can_be_negative': False,
+                          'equivalencies': u.temperature_energy()},
+                     n_e={'can_be_negative': False})
+def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
     r"""Calculate the characteristic decay length for electric fields,
      due to charge screening.
 
@@ -1140,20 +1134,17 @@ def Debye_length(T_e: u.K, n_e: u.m**-3):
     -------
     >>> from astropy import units as u
     >>> Debye_length(5e6*u.K, 5e15*u.m**-3)
-    <Quantity 0.00218226 m>
+    <Quantity 0.002182... m>
 
     """
-
-    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
     lambda_D = np.sqrt(eps0 * k_B * T_e / (n_e * e ** 2))
-    return lambda_D.to(u.m)
+    return lambda_D
 
 
-@utils.check_quantity(
-    T_e={'units': u.K, 'can_be_negative': False},
-    n_e={'units': u.m ** -3, 'can_be_negative': False}
-    )
-def Debye_number(T_e: u.K, n_e: u.m**-3):
+@validate_quantities(T_e={'can_be_negative': False,
+                          'equivalencies': u.temperature_energy()},
+                     n_e={'can_be_negative': False})
+def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     r"""Return the number of electrons within a sphere with a radius
     of the Debye length.
 
@@ -1206,22 +1197,20 @@ def Debye_number(T_e: u.K, n_e: u.m**-3):
     -------
     >>> from astropy import units as u
     >>> Debye_number(5e6*u.K, 5e9*u.cm**-3)
-    <Quantity 2.17658302e+08>
+    <Quantity 2.17658...e+08>
 
     """
 
     lambda_D = Debye_length(T_e, n_e)
     N_D = (4 / 3) * np.pi * n_e * lambda_D ** 3
 
-    return N_D.to(u.dimensionless_unscaled)
+    return N_D
 
 
-
-@utils.check_quantity(
-    n={'units': u.m ** -3, 'can_be_negative': False}
-    )
+@validate_quantities(n={'can_be_negative': False},
+                     validations_on_return={'equivalencies': u.dimensionless_angles()})
 @atomic.particle_input(require='charged')
-def inertial_length(n: u.m**-3, particle: atomic.Particle):
+def inertial_length(n: u.m ** -3, particle: atomic.Particle) -> u.m:
     r"""
     Calculate a charged particle's inertial length.
 
@@ -1272,20 +1261,18 @@ def inertial_length(n: u.m**-3, particle: atomic.Particle):
     -------
     >>> from astropy import units as u
     >>> inertial_length(5 * u.m ** -3, 'He+')
-    <Quantity 2.02985802e+08 m>
+    <Quantity 2.02985...e+08 m>
     >>> inertial_length(5 * u.m ** -3, 'e-')
-    <Quantity 2376534.75601976 m>
+    <Quantity 2376534.75... m>
 
     """
-
     omega_p = plasma_frequency(n, particle=particle)
-    d = (c / omega_p).to(u.m, equivalencies=u.dimensionless_angles())
 
-    return d
+    return c / omega_p
 
 
-@utils.check_quantity(B={'units': u.T})
-def magnetic_pressure(B: u.T):
+@validate_quantities
+def magnetic_pressure(B: u.T) -> u.Pa:
     r"""
     Calculate the magnetic pressure.
 
@@ -1337,17 +1324,14 @@ def magnetic_pressure(B: u.T):
     -------
     >>> from astropy import units as u
     >>> magnetic_pressure(0.1*u.T).to(u.Pa)
-    <Quantity 3978.8735773 Pa>
+    <Quantity 3978.87... Pa>
 
     """
-
-    p_B = (B ** 2 / (2 * mu0)).to(u.Pa)
-
-    return p_B
+    return (B ** 2) / (2 * mu0)
 
 
-@utils.check_quantity(B={'units': u.T})
-def magnetic_energy_density(B: u.T):
+@validate_quantities
+def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
     r"""
     Calculate the magnetic energy density.
 
@@ -1399,19 +1383,17 @@ def magnetic_energy_density(B: u.T):
     -------
     >>> from astropy import units as u
     >>> magnetic_energy_density(0.1*u.T)
-    <Quantity 3978.8735773 J / m3>
+    <Quantity 3978.87... J / m3>
 
     """
-    E_B = magnetic_pressure(B).to(u.J / u.m ** 3)
-    return E_B
+    return magnetic_pressure(B)
 
 
-@utils.angular_freq_to_hz
-@utils.check_quantity(
-    B={'units': u.T},
-    n_e={'units': u.m ** -3, 'can_be_negative': False}
-    )
-def upper_hybrid_frequency(B: u.T, n_e: u.m**-3):
+@validate_quantities(n_e={'can_be_negative': False},
+                     validations_on_return={'units': [u.rad / u.s, u.Hz],
+                                            'equivalencies': [(u.cy / u.s, u.Hz)]})
+@angular_freq_to_hz
+def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     r"""
     Return the upper hybrid frequency.
 
@@ -1459,25 +1441,23 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m**-3):
     -------
     >>> from astropy import units as u
     >>> upper_hybrid_frequency(0.2*u.T, n_e=5e19*u.m**-3)
-    <Quantity 4.00459419e+11 rad / s>
+    <Quantity 4.00459...e+11 rad / s>
     >>> upper_hybrid_frequency(0.2*u.T, n_e=5e19*u.m**-3, to_hz = True)
-    <Quantity 63735096112.815445 Hz>
+    <Quantity 6.37350...e+10 Hz>
 
     """
-
     omega_pe = plasma_frequency(n=n_e)
     omega_ce = gyrofrequency(B)
     omega_uh = (np.sqrt(omega_pe ** 2 + omega_ce ** 2))
 
-    return omega_uh.to(u.rad / u.s)
+    return omega_uh
 
 
-@utils.angular_freq_to_hz
-@utils.check_quantity(
-    B={'units': u.T},
-    n_i={'units': u.m ** -3, 'can_be_negative': False}
-    )
-def lower_hybrid_frequency(B, n_i, ion='p+'):
+@validate_quantities(n_i={'can_be_negative': False},
+                     validations_on_return={'units': [u.rad / u.s, u.Hz],
+                                            'equivalencies': [(u.cy / u.s, u.Hz)]})
+@angular_freq_to_hz
+def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion='p+') -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
 
@@ -1535,9 +1515,9 @@ def lower_hybrid_frequency(B, n_i, ion='p+'):
     -------
     >>> from astropy import units as u
     >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+')
-    <Quantity 5.78372733e+08 rad / s>
+    <Quantity 5.78372...e+08 rad / s>
     >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+', to_hz = True)
-    <Quantity 92050879.32941628 Hz>
+    <Quantity 92050879.3... Hz>
 
     """
 
@@ -1555,4 +1535,4 @@ def lower_hybrid_frequency(B, n_i, ion='p+'):
     # TODO possibly optimize the above line via np.sqrt
     omega_lh = omega_lh
 
-    return omega_lh.to(u.rad / u.s)
+    return omega_lh

@@ -62,22 +62,25 @@ from astropy import units as u
 from plasmapy import (atomic, utils)
 from astropy.constants.si import (c, m_e, k_B, e, eps0, hbar)
 from numpy import pi
-from plasmapy.formulary.mathematics import Fermi_integral
 from plasmapy.formulary import parameters
+from plasmapy.formulary.mathematics import Fermi_integral
 from plasmapy.formulary.quantum import (Wigner_Seitz_radius,
                                         thermal_deBroglie_wavelength,
                                         chemical_potential)
-from plasmapy.utils import (check_quantity, _check_relativistic)
+from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.decorators.checks import _check_relativistic
 
 
-@utils.check_quantity(T={"units": u.K, "can_be_negative": False},
-                      n_e={"units": u.m ** -3})
+@validate_quantities(T={"can_be_negative": False,
+                        "equivalencies": u.temperature_energy()},
+                     z_mean={'none_shall_pass': True},
+                     V={'none_shall_pass': True})
 @atomic.particle_input
-def Coulomb_logarithm(T,
-                      n_e,
+def Coulomb_logarithm(T: u.K,
+                      n_e: u.m**-3,
                       particles: (atomic.Particle, atomic.Particle),
-                      z_mean=np.nan * u.dimensionless_unscaled,
-                      V=np.nan * u.m / u.s,
+                      z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+                      V: u.m / u.s = np.nan * u.m / u.s,
                       method="classical"):
     r"""
     Estimates the Coulomb logarithm.
@@ -234,9 +237,9 @@ def Coulomb_logarithm(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> Coulomb_logarithm(T, n, particles)
-    14.545527226436974
+    14.545527...
     >>> Coulomb_logarithm(T, n, particles, V=1e6 * u.m / u.s)
-    11.363478214139432
+    11.363478...
 
     References
     ----------
@@ -287,16 +290,14 @@ def Coulomb_logarithm(T,
     return ln_Lambda
 
 
+@validate_quantities(T={'equivalencies': u.temperature_energy()})
 @atomic.particle_input
-def _boilerPlate(T, particles: (atomic.Particle, atomic.Particle), V):
+def _boilerPlate(T: u.K, particles: (atomic.Particle, atomic.Particle), V):
     """
     Some boiler plate code for checking if inputs to functions in
     collisions.py are good. Also obtains reduced in mass in a
     2 particle collision system along with thermal velocity.
     """
-    # checking temperature is in correct units
-    T = T.to(u.K, equivalencies=u.temperature_energy())
-
     masses = [p.mass for p in particles]
     charges = [np.abs(p.charge) for p in particles]
 
@@ -335,11 +336,12 @@ def _replaceNanVwithThermalV(V, T, m):
     return V
 
 
-@check_quantity(T={"units": u.K, "can_be_negative": False})
+@validate_quantities(T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()})
 @atomic.particle_input
-def impact_parameter_perp(T,
+def impact_parameter_perp(T: u.K,
                           particles: (atomic.Particle, atomic.Particle),
-                          V=np.nan * u.m / u.s):
+                          V: u.m / u.s = np.nan * u.m / u.s) -> u.m:
     r"""Distance of closest approach for a 90 degree Coulomb collision.
 
     Parameters
@@ -403,7 +405,7 @@ def impact_parameter_perp(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> impact_parameter_perp(T, particles)
-    <Quantity 8.35505011e-12 m>
+    <Quantity 8.3550...e-12 m>
 
 
     References
@@ -421,17 +423,19 @@ def impact_parameter_perp(T,
     # !!!Note: an average ionization parameter will have to be
     # included here in the future
     bPerp = (charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V ** 2))
-    return bPerp.to(u.m)
+    return bPerp
 
 
-@check_quantity(T={"units": u.K, "can_be_negative": False},
-                n_e={"units": u.m ** -3}
-                )
-def impact_parameter(T,
-                     n_e,
+@validate_quantities(T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()},
+                     n_e={'can_be_negative': False},
+                     z_mean={'none_shall_pass': True},
+                     V={'none_shall_pass': True})
+def impact_parameter(T: u.K,
+                     n_e: u.m ** -3,
                      particles,
-                     z_mean=np.nan * u.dimensionless_unscaled,
-                     V=np.nan * u.m / u.s,
+                     z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+                     V: u.m / u.s = np.nan * u.m / u.s,
                      method="classical"):
     r"""Impact parameters for classical and quantum Coulomb collision
 
@@ -525,9 +529,9 @@ def impact_parameter(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> impact_parameter(T, n, particles)
-    (<Quantity 1.05163088e-11 m>, <Quantity 2.18225522e-05 m>)
+    (<Quantity 1.051...e-11 m>, <Quantity 2.182...e-05 m>)
     >>> impact_parameter(T, n, particles, V=1e6 * u.m / u.s)
-    (<Quantity 2.53401778e-10 m>, <Quantity 2.18225522e-05 m>)
+    (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
 
     References
     ----------
@@ -631,15 +635,16 @@ def impact_parameter(T,
     return bmin.to(u.m), bmax.to(u.m)
 
 
-@check_quantity(T={"units": u.K, "can_be_negative": False},
-                n={"units": u.m ** -3}
-                )
-def collision_frequency(T,
-                        n,
+@validate_quantities(T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()},
+                     n={'can_be_negative': False},
+                     z_mean={'none_shall_pass': True})
+def collision_frequency(T: u.K,
+                        n: u.m ** -3,
                         particles,
-                        z_mean=np.nan * u.dimensionless_unscaled,
-                        V=np.nan * u.m / u.s,
-                        method="classical"):
+                        z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+                        V: u.m / u.s = np.nan * u.m / u.s,
+                        method="classical") -> u.Hz:
     r"""Collision frequency of particles in a plasma.
 
     Parameters
@@ -728,7 +733,7 @@ def collision_frequency(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> collision_frequency(T, n, particles)
-    <Quantity 702492.01188504 Hz>
+    <Quantity 70249... Hz>
 
     References
     ----------
@@ -744,7 +749,7 @@ def collision_frequency(T,
     # using a more descriptive name for the thermal velocity using
     # reduced mass
     V_reduced = V_r
-    if particles[0] in ('e','e-') and particles[1] in ('e','e-'):
+    if particles[0] in ('e', 'e-') and particles[1] in ('e', 'e-'):
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
@@ -761,7 +766,7 @@ def collision_frequency(T,
                                     z_mean,
                                     V=V,
                                     method=method)
-    elif particles[0] in ('e','e-') or particles[1] in ('e','e-'):
+    elif particles[0] in ('e', 'e-') or particles[1] in ('e', 'e-'):
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
@@ -803,11 +808,11 @@ def collision_frequency(T,
     # small angle collisions, which are more frequent than large
     # angle collisions.
     freq = n * sigma * V * cou_log
-    return freq.to(u.Hz)
+    return freq
 
 
-@check_quantity(impact_param={'units': u.m, 'can_be_negative': False})
-def Coulomb_cross_section(impact_param: u.m):
+@validate_quantities(impact_param={'can_be_negative': False})
+def Coulomb_cross_section(impact_param: u.m) -> u.m**2:
     r"""Cross section for a large angle Coulomb collision.
 
     Parameters
@@ -818,9 +823,9 @@ def Coulomb_cross_section(impact_param: u.m):
     Examples
     --------
     >>> Coulomb_cross_section(7e-10*u.m)
-    <Quantity 6.1575216e-18 m2>
+    <Quantity 6.157...e-18 m2>
     >>> Coulomb_cross_section(0.5*u.m)
-    <Quantity 3.14159265 m2>
+    <Quantity 3.141... m2>
 
     Notes
     -----
@@ -848,16 +853,15 @@ def Coulomb_cross_section(impact_param: u.m):
     return sigma
 
 
-@utils.check_quantity(
-    T_e={'units': u.K, 'can_be_negative': False},
-    n_e={'units': u.m ** -3, 'can_be_negative': False}
-    )
-def fundamental_electron_collision_freq(T_e,
-                                        n_e,
+@validate_quantities(T_e={'can_be_negative': False,
+                          'equivalencies': u.temperature_energy()},
+                     n_e={'can_be_negative': False})
+def fundamental_electron_collision_freq(T_e: u.K,
+                                        n_e: u.m ** -3,
                                         ion_particle,
                                         coulomb_log=None,
                                         V=None,
-                                        coulomb_log_method="classical"):
+                                        coulomb_log_method="classical") -> u.s ** -1:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian distribution of electrons.
 
@@ -925,25 +929,23 @@ def fundamental_electron_collision_freq(T_e,
     --------
     >>> from astropy import units as u
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
-    <Quantity 0.00180167 1 / s>
+    <Quantity 0.001801... 1 / s>
     >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
-    <Quantity 1.07221863e-07 1 / s>
+    <Quantity 1.07221...e-07 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
-    <Quantity 3935958.7396539 1 / s>
+    <Quantity 3935958.7... 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
-    <Quantity 3872815.52840036 1 / s>
+    <Quantity 3872815.5... 1 / s>
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
-    <Quantity 5.65897885e-07 1 / s>
+    <Quantity 5.6589...e-07 1 / s>
     >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
-    <Quantity 5812633.74935004 1 / s>
+    <Quantity 5812633... 1 / s>
 
     See Also
     --------
     collision_frequency
     fundamental_ion_collision_freq
     """
-    T_e = T_e.to(u.K, equivalencies=u.temperature_energy())
-
     # specify to use electron thermal velocity (most probable), not based on reduced mass
     V = _replaceNanVwithThermalV(V, T_e, m_e)
 
@@ -974,19 +976,18 @@ def fundamental_electron_collision_freq(T_e,
     else:
         nu_e = coeff * nu
 
-    return nu_e.to(1 / u.s)
+    return nu_e
 
 
-@utils.check_quantity(
-    T_i={'units': u.K, 'can_be_negative': False},
-    n_i={'units': u.m ** -3, 'can_be_negative': False}
-    )
-def fundamental_ion_collision_freq(T_i,
-                                   n_i,
+@validate_quantities(T_i={'can_be_negative': False,
+                          'equivalencies': u.temperature_energy()},
+                     n_i={'can_be_negative': False})
+def fundamental_ion_collision_freq(T_i: u.K,
+                                   n_i: u.m ** -3,
                                    ion_particle,
                                    coulomb_log=None,
                                    V=None,
-                                   coulomb_log_method="classical"):
+                                   coulomb_log_method="classical") -> u.s ** -1:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian distribution of ions.
 
@@ -1061,24 +1062,23 @@ def fundamental_ion_collision_freq(T_i,
     --------
     >>> from astropy import units as u
     >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
-    <Quantity 2.86803251e-05 1 / s>
+    <Quantity 2.868...e-05 1 / s>
     >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
-    <Quantity 1.74160353e-09 1 / s>
+    <Quantity 1.741...e-09 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
-    <Quantity 63087.51217732 1 / s>
+    <Quantity 63087.5... 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
-    <Quantity 63085.11369283 1 / s>
+    <Quantity 63085.1... 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
-    <Quantity 9.11173204 1 / s>
+    <Quantity 9.111... 1 / s>
     >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
-    <Quantity 95918.76240877 1 / s>
+    <Quantity 95918.7... 1 / s>
 
     See Also
     --------
     collision_frequency
     fundamental_electron_collision_freq
     """
-    T_i = T_i.to(u.K, equivalencies=u.temperature_energy())
     m_i = atomic.particle_mass(ion_particle)
     particles = [ion_particle, ion_particle]
 
@@ -1113,18 +1113,19 @@ def fundamental_ion_collision_freq(T_i,
     else:
         nu_i = coeff * nu
 
-    return nu_i.to(1 / u.s)
+    return nu_i
 
 
-@check_quantity(T={"units": u.K, "can_be_negative": False},
-                n_e={"units": u.m ** -3}
-                )
-def mean_free_path(T,
-                   n_e,
+@validate_quantities(T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()},
+                     n_e={'can_be_negative': False},
+                     z_mean={'none_shall_pass': True})
+def mean_free_path(T: u.K,
+                   n_e: u.m ** -3,
                    particles,
-                   z_mean=np.nan * u.dimensionless_unscaled,
-                   V=np.nan * u.m / u.s,
-                   method="classical"):
+                   z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+                   V: u.m / u.s = np.nan * u.m / u.s,
+                   method="classical") -> u.m:
     r"""Collisional mean free path (m)
 
     Parameters
@@ -1205,9 +1206,9 @@ def mean_free_path(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> mean_free_path(T, n, particles)
-    <Quantity 7.83950983 m>
+    <Quantity 7.839... m>
     >>> mean_free_path(T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 0.01091773 m>
+    <Quantity 0.0109... m>
 
     References
     ----------
@@ -1231,18 +1232,19 @@ def mean_free_path(T,
                                                        V=V)
     # mean free path length
     mfp = V / freq
-    return mfp.to(u.m)
+    return mfp
 
 
-@check_quantity(T={"units": u.K, "can_be_negative": False},
-                n={"units": u.m ** -3}
-                )
-def Spitzer_resistivity(T,
-                        n,
+@validate_quantities(T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()},
+                     n={'can_be_negative': False},
+                     z_mean={'none_shall_pass': True})
+def Spitzer_resistivity(T: u.K,
+                        n: u.m ** -3,
                         particles,
-                        z_mean=np.nan * u.dimensionless_unscaled,
-                        V=np.nan * u.m / u.s,
-                        method="classical"):
+                        z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+                        V: u.m/u.s = np.nan * u.m / u.s,
+                        method="classical") -> u.Ohm * u.m:
     r"""Spitzer resistivity of a plasma
 
     Parameters
@@ -1332,9 +1334,9 @@ def Spitzer_resistivity(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> Spitzer_resistivity(T, n, particles)
-    <Quantity 2.49157026e-06 m Ohm>
+    <Quantity 2.4915...e-06 m Ohm>
     >>> Spitzer_resistivity(T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 0.00032486 m Ohm>
+    <Quantity 0.000324... m Ohm>
 
     References
     ----------
@@ -1359,18 +1361,19 @@ def Spitzer_resistivity(T,
         spitzer = freq * reduced_mass / (n * charges[0] * charges[1])
     else:
         spitzer = freq * reduced_mass / (n * (z_mean * e) ** 2)
-    return spitzer.to(u.Ohm * u.m)
+    return spitzer
 
 
-@check_quantity(T={"units": u.K, "can_be_negative": False},
-                n_e={"units": u.m ** -3}
-                )
-def mobility(T,
-             n_e,
+@validate_quantities(T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()},
+                     n_e={'can_be_negative': False},
+                     z_mean={'none_shall_pass': True})
+def mobility(T: u.K,
+             n_e: u.m ** -3,
              particles,
-             z_mean=np.nan * u.dimensionless_unscaled,
-             V=np.nan * u.m / u.s,
-             method="classical"):
+             z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+             V: u.m / u.s = np.nan * u.m / u.s,
+             method="classical") -> u.m ** 2 / (u.V * u.s):
     r"""Electrical mobility (m^2/(V s))
 
     Parameters
@@ -1460,9 +1463,9 @@ def mobility(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> mobility(T, n, particles)
-    <Quantity 250505.04164488 m2 / (s V)>
+    <Quantity 250505... m2 / (s V)>
     >>> mobility(T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 1921.27848189 m2 / (s V)>
+    <Quantity 1921.2784... m2 / (s V)>
 
     References
     ----------
@@ -1486,20 +1489,21 @@ def mobility(T,
     else:
         z_val = z_mean * e
     mobility_value = z_val / (reduced_mass * freq)
-    return mobility_value.to(u.m ** 2 / (u.V * u.s))
+    return mobility_value
 
 
-@check_quantity(T={"units": u.K, "can_be_negative": False},
-                n_e={"units": u.m ** -3}
-                )
+@validate_quantities(T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()},
+                     n_e={'can_be_negative': False},
+                     z_mean={'none_shall_pass': True})
 def Knudsen_number(characteristic_length,
-                   T,
-                   n_e,
+                   T: u.K,
+                   n_e: u.m ** -3,
                    particles,
-                   z_mean=np.nan * u.dimensionless_unscaled,
-                   V=np.nan * u.m / u.s,
-                   method="classical"):
-    r"""Knudsen number (dimless)
+                   z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+                   V: u.m / u.s = np.nan * u.m / u.s,
+                   method="classical") -> u.dimensionless_unscaled:
+    r"""Knudsen number (dimensionless)
 
     Parameters
     ----------
@@ -1589,9 +1593,9 @@ def Knudsen_number(characteristic_length,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> Knudsen_number(L, T, n, particles)
-    <Quantity 7839.5098286>
+    <Quantity 7839.5...>
     >>> Knudsen_number(L, T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 10.91773271>
+    <Quantity 10.91773...>
 
     References
     ----------
@@ -1605,18 +1609,19 @@ def Knudsen_number(characteristic_length,
                                  V=V,
                                  method=method)
     knudsen_param = path_length / characteristic_length
-    return knudsen_param.to(u.dimensionless_unscaled)
+    return knudsen_param
 
 
-@check_quantity(T={"units": u.K, "can_be_negative": False},
-                n_e={"units": u.m ** -3}
-                )
-def coupling_parameter(T,
-                       n_e,
+@validate_quantities(T={'can_be_negative': False,
+                        'equivalencies': u.temperature_energy()},
+                     n_e={'can_be_negative': False},
+                     z_mean={'none_shall_pass': True})
+def coupling_parameter(T: u.K,
+                       n_e: u.m ** -3,
                        particles,
-                       z_mean=np.nan * u.dimensionless_unscaled,
-                       V=np.nan * u.m / u.s,
-                       method="classical"):
+                       z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+                       V: u.m / u.s = np.nan * u.m / u.s,
+                       method="classical") -> u.dimensionless_unscaled:
     r"""Coupling parameter.
     Coupling parameter compares Coulomb energy to kinetic energy (typically)
     thermal. Classical plasmas are weakly coupled Gamma << 1, whereas dense
@@ -1735,9 +1740,9 @@ def coupling_parameter(T,
     >>> T = 1e6*u.K
     >>> particles = ('e', 'p')
     >>> coupling_parameter(T, n, particles)
-    <Quantity 5.80330315e-05>
+    <Quantity 5.8033...e-05>
     >>> coupling_parameter(T, n, particles, V=1e6 * u.m / u.s)
-    <Quantity 5.80330315e-05>
+    <Quantity 5.8033...e-05>
 
     References
     ----------
@@ -1788,5 +1793,9 @@ def coupling_parameter(T,
         else:  # coverage: ignore
             raise ValueError("Kinetic energy should not be imaginary."
                              "Something went horribly wrong.")
+    else:
+        raise ValueError(f"Keyword 'method' must be either 'classical' or "
+                         f"'quantum', instead of '{method}'.")
+
     coupling = coulombEnergy / kineticEnergy
-    return coupling.to(u.dimensionless_unscaled)
+    return coupling

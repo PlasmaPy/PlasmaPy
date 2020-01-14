@@ -9,13 +9,12 @@ __all__ = [
 import numpy as np
 
 from astropy import units as u
-from plasmapy import utils
 from astropy.constants import c
+from plasmapy import utils
+from plasmapy.utils.decorators import validate_quantities
 
 
-@utils.check_quantity(
-    V={'units': u.m / u.s, 'can_be_negative': True}
-    )
+@validate_quantities(V={'can_be_negative': True})
 def Lorentz_factor(V: u.m / u.s):
     r"""
     Return the Lorentz factor.
@@ -67,8 +66,6 @@ def Lorentz_factor(V: u.m / u.s):
     >>> Lorentz_factor(299792458*u.m/u.s)
     inf
     """
-
-    utils._check_quantity(V, 'V', 'Lorentz_factor', u.m / u.s)
 
     if not np.all(np.abs(V) <= c):
         raise utils.RelativityError(

@@ -1,7 +1,10 @@
-"""This module gathers highly theoretical mathematical formulas
+"""
+This module gathers highly theoretical mathematical formulas
 relevant to plasma physics. Usually, those are used somewhere else in
 the code but were deemed general enough for the mathematical apparatus
-to be abstracted from the main function interface."""
+to be abstracted from the main function interface.
+"""
+__all__ = ['Fermi_integral']
 
 import numbers
 import numpy as np
@@ -13,7 +16,6 @@ except (ImportError, ModuleNotFoundError) as e:
     raise mpmath_import_error from e
 from typing import Union
 
-__all__ = ['Fermi_integral']
 
 def Fermi_integral(
         x: Union[float, int, complex, np.ndarray],

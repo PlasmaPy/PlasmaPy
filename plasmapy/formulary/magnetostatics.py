@@ -4,11 +4,13 @@ as first raised in issue #100.
 """
 
 import abc
-
 import numbers
 import numpy as np
-from astropy import units as u, constants
 import scipy.special
+
+from astropy import constants
+from astropy import units as u
+from plasmapy.utils.decorators import validate_quantities
 
 
 class MagnetoStatics(abc.ABC):
@@ -44,11 +46,10 @@ class MagneticDipole(MagnetoStatics):
         Position of the dipole
 
     """
-
-    @u.quantity_input()
+    @validate_quantities
     def __init__(self, moment: u.A * u.m**2, p0: u.m):
-        self.moment = moment.to(u.A*u.m*u.m).value
-        self.p0 = p0.to(u.m).value
+        self.moment = moment.value
+        self.p0 = p0.value
 
     def __repr__(self):
         return "{name}(moment={moment}, p0={p0})".format(
@@ -100,13 +101,11 @@ class GeneralWire(Wire):
         electric current
 
     """
-
-    @u.quantity_input()
+    @validate_quantities
     def __init__(self, parametric_eq,
                  t1,
                  t2,
-                 current:
-                 u.A):
+                 current: u.A):
         if callable(parametric_eq):
             self.parametric_eq = parametric_eq
         else:
@@ -116,7 +115,7 @@ class GeneralWire(Wire):
             self.t2 = t2
         else:
             raise ValueError(f"t1={t1} is not smaller than t2={t2}")
-        self.current = current.to(u.A).value
+        self.current = current.value
 
     def magnetic_field(self, p: u.m, n: numbers.Integral = 1000) -> u.T:
         r"""
@@ -182,14 +181,13 @@ class FiniteStraightWire(Wire):
         electric current
 
     """
-
-    @u.quantity_input()
+    @validate_quantities
     def __init__(self, p1: u.m, p2: u.m, current: u.A):
-        self.p1 = p1.to(u.m).value
-        self.p2 = p2.to(u.m).value
+        self.p1 = p1.value
+        self.p2 = p2.value
         if np.all(p1 == p2):
             raise ValueError("p1, p2 should not be the same point.")
-        self.current = current.to(u.A).value
+        self.current = current.value
 
     def __repr__(self):
         return "{name}(p1={p1}, p2={p2}, current={current})".format(
@@ -263,12 +261,11 @@ class InfiniteStraightWire(Wire):
         electric current
 
     """
-
-    @u.quantity_input()
+    @validate_quantities
     def __init__(self, direction, p0: u.m, current: u.A):
         self.direction = direction/np.linalg.norm(direction)
-        self.p0 = p0.to(u.m).value
-        self.current = current.to(u.A).value
+        self.p0 = p0.value
+        self.current = current.value
 
     def __repr__(self):
         return "{name}(direction={direction}, p0={p0}, current={current})".format(
@@ -323,17 +320,16 @@ class CircularWire(Wire):
         electric current
 
     """
-
-    @u.quantity_input()
+    @validate_quantities
     def __init__(self, normal, center: u.m, radius: u.m,
                  current: u.A, n=300):
         self.normal = normal/np.linalg.norm(normal)
-        self.center = center.to(u.m).value
+        self.center = center.value
         if radius > 0:
-            self.radius = radius.to(u.m).value
+            self.radius = radius.value
         else:
             raise ValueError("Radius should bu larger than 0")
-        self.current = current.to(u.A).value
+        self.current = current.value
 
         # parametric equation
         # find other two axises in the disc plane

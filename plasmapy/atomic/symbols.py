@@ -5,10 +5,11 @@ and numbers.
 
 from typing import Optional
 
+from numbers import Integral
+
 from .particle_class import Particle
 from .particle_input import particle_input
 
-from numbers import Integral
 
 # The @particle_input decorator takes the inputs for a function or
 # method and passes through the corresponding instance of the Particle
