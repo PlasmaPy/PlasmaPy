@@ -10,7 +10,7 @@ from astropy import units as u
 import numba
 from plasmapy.utils.decorators import check_units
 from plasmapy.utils import PhysicsError
-import tqdm
+import tqdm.auto
 
 __all__ = [
     "ParticleTracker",
@@ -233,7 +233,7 @@ class ParticleTracker:
             self.boris_push(init=True)
             self._position_history[0] = self._x
             self._velocity_history[0] = self._v
-            for i in tqdm.trange(1, self.NT):
+            for i in tqdm.auto.trange(1, self.NT):
                 self.boris_push()
                 self._position_history[i] = self._x
                 self._velocity_history[i] = self._v
