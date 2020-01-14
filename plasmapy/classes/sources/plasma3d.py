@@ -132,7 +132,6 @@ class Plasma3D(GenericPlasma):
             match = False
         return match
 
-    # TODO this needs more numba and less for loop
     def add_magnetostatic(self, *mstats: MagnetoStatics):
         # for each MagnetoStatic argument
         prod = itertools.product(*[list(range(n)) for n in self.domain_shape])

@@ -8,7 +8,8 @@ from plasmapy import atomic
 from astropy import constants
 from astropy import units as u
 import numba
-from plasmapy.utils import PhysicsError, check_quantity
+from plasmapy.utils.decorators import check_units
+from plasmapy.utils import PhysicsError
 import tqdm
 
 __all__ = [
@@ -67,7 +68,7 @@ class ParticleTracker:
     """
 
     @atomic.particle_input
-    @check_quantity()
+    @check_units()
     def __init__(self,
                  plasma,
                  particle_type: atomic.Particle = 'p',
