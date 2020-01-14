@@ -84,7 +84,7 @@ class ParticleTracker:
         self.m = particle_type.mass
         self.N = int(n_particles)
         self.NT = int(nt)
-        self.name = particle_type.element_name
+        self.name = particle_type.particle
 
         self.plasma = plasma
 

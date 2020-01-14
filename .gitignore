@@ -75,9 +75,6 @@ docs/gen_modules
 # PyBuilder
 target/
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
 # pyenv
 .python-version
 
