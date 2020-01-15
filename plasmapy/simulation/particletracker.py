@@ -325,7 +325,7 @@ class ParticleTracker:
         else:
             fig = figure
         x, y, z = self.position_history[:,0,:].T   # FIXME
-        trajectory = mlab.plot3d(x,y,z, self.t, figure=fig2, line_width=1e-13, representation='surface')
+        trajectory = mlab.plot3d(x,y,z, self.t, figure=fig, line_width=1e-13, representation='surface')
         mlab.colorbar(trajectory, title="Trajectory - Time", orientation="vertical")
         if figure is None:
             mlab.show()
