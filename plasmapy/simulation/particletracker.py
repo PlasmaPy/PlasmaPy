@@ -194,8 +194,8 @@ class ParticleTracker:
         .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
                Simulation", 2004, p. 58-63
         """
-        b = self.plasma.interpolate_B(self.x).si.value
-        e = self.plasma.interpolate_E(self.x).si.value
+        b = self.plasma._interpolate_B(self._x)
+        e = self.plasma.interpolate_E(self._x)
         if init:
             self._boris_push(self._x,
                              self._v,

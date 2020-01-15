@@ -61,9 +61,9 @@ class Coils(GenericPlasma):
         return u.Quantity(np.zeros(r.shape), E_unit)
     
     def _interpolate_B(self, r):
-        B = u.Quantity(np.zeros(r.shape), u.T)
+        B = np.zeros(r.shape)
         for ms in self.magnetostatics:
-            field = ms.magnetic_field(r.si.value[0])
+            field = ms._magnetic_field(r[0], ms.pt, ms.dl, ms.current)
             B[0] += field
         return B
 
@@ -80,7 +80,7 @@ class Coils(GenericPlasma):
         return match
     
 c = Coils(*all_currents)
-sim = simulation.ParticleTracker(c, 'e', dt=1e-8 * u.s, nt=int(1e3))
+sim = simulation.ParticleTracker(c, 'e', dt=1e-8 * u.s, nt=int(1e6))
 sim._x[0][0] = 1 + minor_radius.si.value / 2 # * (u.m / u.s)
 sim._v[0][1] = 1000 # * (u.m / u.s)
 sim._v[0][2] = 100 # * (u.m / u.s)
