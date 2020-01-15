@@ -68,11 +68,7 @@ class Coils(GenericPlasma):
         return B
 
     def interpolate_B(self, r: u.m):
-        B = u.Quantity(np.zeros(r.shape), u.T)
-        for ms in self.magnetostatics:
-            field = ms.magnetic_field(r.si.value[0])
-            B[0] += field
-        return B
+        return u.Quantity(self._interpolate_B(r.si.value), u.T)
         
     @classmethod
     def is_datasource_for(cls, **kwargs):
