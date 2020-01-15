@@ -60,6 +60,13 @@ class Coils(GenericPlasma):
     def interpolate_E(self, r: u.m):
         return u.Quantity(np.zeros(r.shape), E_unit)
     
+    def _interpolate_B(self, r):
+        B = u.Quantity(np.zeros(r.shape), u.T)
+        for ms in self.magnetostatics:
+            field = ms.magnetic_field(r.si.value[0])
+            B[0] += field
+        return B
+
     def interpolate_B(self, r: u.m):
         B = u.Quantity(np.zeros(r.shape), u.T)
         for ms in self.magnetostatics:
