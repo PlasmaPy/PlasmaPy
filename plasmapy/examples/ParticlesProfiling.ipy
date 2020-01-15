@@ -6,6 +6,7 @@
 
 from plasmapy import simulation
 from plasmapy.formulary import magnetostatics
+from plasmapy.classes.sources import Coils
 
 import astropy.units as u
 import numpy as np
@@ -24,7 +25,6 @@ minor_radius = 0.3 * u.m
 currents = u.Quantity(n_coils * [0.1], u.A)
 currents
 
-
 coils = []
 for i in range(n_coils):
     coil_angle = coil_angles[i]
@@ -39,42 +39,6 @@ for i in range(n_coils):
 
 all_currents = coils + [plasma_wire]
 
-from plasmapy.classes.plasma_base import GenericPlasma
-
-E_unit = u.V / u.m
-class Coils(GenericPlasma):
-    """
-    Work-in-progress class for passing analytical functions as fields 
-
-    This is primarily helpful for `plasmapy.simulation.ParticleTracker`.
-    """
-
-    def __init__(self, *magnetostatics):
-        """
-        Initialize plasma paramters.
-        The most basic description is composition (ion), temperature,
-        density, and ionization.
-        """
-        self.magnetostatics = magnetostatics
-    
-    def interpolate_E(self, r: u.m):
-        return u.Quantity(np.zeros(r.shape), E_unit)
-    
-    def _interpolate_B(self, r):
-        B = np.zeros(r.shape)
-        for ms in self.magnetostatics:
-            field = ms._magnetic_field(r[0], ms.pt, ms.dl, ms.current)
-            B[0] += field
-        return B
-
-    def interpolate_B(self, r: u.m):
-        return u.Quantity(self._interpolate_B(r.si.value), u.T)
-        
-    @classmethod
-    def is_datasource_for(cls, **kwargs):
-        match = 'interpolate_B' in kwargs.keys()
-        return match
-    
 c = Coils(*all_currents)
 sim = simulation.ParticleTracker(c, 'e', dt=1e-8 * u.s, nt=int(1e6))
 sim._x[0][0] = 1 + minor_radius.si.value / 2 # * (u.m / u.s)
