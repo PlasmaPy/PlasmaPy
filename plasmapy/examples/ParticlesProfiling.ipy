@@ -1,0 +1,84 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+from plasmapy import simulation
+from plasmapy.formulary import magnetostatics
+
+import astropy.units as u
+import numpy as np
+radius = 1 * u.m
+main_current = 1 * u.A
+plasma_wire = magnetostatics.CircularWire([0, 0, 1], u.Quantity((0, 0, 0), u.m), radius, main_current)
+plasma_wire
+
+
+n_coils = 4
+coil_angles = np.linspace(0, 2*np.pi, n_coils, endpoint=False)
+coil_angles
+
+
+minor_radius = 0.3 * u.m
+currents = u.Quantity(n_coils * [0.1], u.A)
+currents
+
+
+coils = []
+for i in range(n_coils):
+    coil_angle = coil_angles[i]
+    x = radius * np.cos(coil_angle)
+    y = radius * np.sin(coil_angle)
+    normal_angle = np.pi/2 + coil_angle
+    normal = u.Quantity([np.cos(normal_angle), np.sin(normal_angle), 0])
+    center = u.Quantity([x, y, 0 * u.m])
+    coil = magnetostatics.CircularWire(normal, center, minor_radius, currents[i])
+    coils.append(coil)
+
+
+all_currents = coils + [plasma_wire]
+
+from plasmapy.classes.plasma_base import GenericPlasma
+
+E_unit = u.V / u.m
+class Coils(GenericPlasma):
+    """
+    Work-in-progress class for passing analytical functions as fields 
+
+    This is primarily helpful for `plasmapy.simulation.ParticleTracker`.
+    """
+
+    def __init__(self, *magnetostatics):
+        """
+        Initialize plasma paramters.
+        The most basic description is composition (ion), temperature,
+        density, and ionization.
+        """
+        self.magnetostatics = magnetostatics
+    
+    def interpolate_E(self, r: u.m):
+        return u.Quantity(np.zeros(r.shape), E_unit)
+    
+    def interpolate_B(self, r: u.m):
+        B = u.Quantity(np.zeros(r.shape), u.T)
+        for ms in self.magnetostatics:
+            field = ms.magnetic_field(r.si.value[0])
+            B[0] += field
+        return B
+        
+    @classmethod
+    def is_datasource_for(cls, **kwargs):
+        match = 'interpolate_B' in kwargs.keys()
+        return match
+    
+c = Coils(*all_currents)
+sim = simulation.ParticleTracker(c, 'e', dt=1e-8 * u.s, nt=int(1e3))
+sim._x[0][0] = 1 + minor_radius.si.value / 2 # * (u.m / u.s)
+sim._v[0][1] = 1000 # * (u.m / u.s)
+sim._v[0][2] = 100 # * (u.m / u.s)
+
+def profile():
+    sim.run() # this should return a Solution object or sth
+%load_ext line_profiler
+%lprun -f profile -f sim.run -f sim.boris_push -f sim._boris_push -f Coils.interpolate_B profile()
