@@ -3,7 +3,7 @@ import os
 import sys
 
 from itertools import chain
-from setuptools import (find_packages, setup)
+from setuptools import setup
 from setuptools.config import read_configuration
 
 # Append cwd for pip 19
