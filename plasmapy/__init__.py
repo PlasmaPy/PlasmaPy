@@ -44,6 +44,8 @@ import importlib
 import pkgutil
 import sys
 
+from pkg_resources import iter_entry_points
+
 from .version import version as __version__
 from .version import githash as __githash__
 
@@ -64,6 +66,10 @@ for finder, name, ispkg in \
     # if ispkg:
     #     importlib.import_module(name)
     importlib.import_module(name)
+
+# import addon entry points
+for ep in iter_entry_points('plasmapy.addons'):
+    ep.load()
 
 # ----------------------------------------------------------------------------
 
