@@ -61,8 +61,9 @@ from . import (
 # import addon packages so that they're discoverable by dir()
 for finder, name, ispkg in \
         pkgutil.iter_modules(path=addons.__path__, prefix=addons.__name__ + "."):
-    if ispkg:
-        importlib.import_module(name)
+    # if ispkg:
+    #     importlib.import_module(name)
+    importlib.import_module(name)
 
 # ----------------------------------------------------------------------------
 
@@ -100,6 +101,10 @@ def online_help(query):
         url = 'http://docs.astropy.org/en/stable/units/'
 
     webbrowser.open(url)
+
+
+def foo():
+    print(f"I'm an entry_point.")
 
 
 del sys
