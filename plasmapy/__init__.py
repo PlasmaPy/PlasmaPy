@@ -35,6 +35,7 @@ Utility tools
 """
 __all__ = ['addons', 'atomic', 'classes', 'data', 'diagnostics', 'formulary',
            'simulation', 'utils', 'online_help']
+
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 
 # Packages may add whatever they like to this file, but
@@ -69,7 +70,7 @@ for finder, name, ispkg in \
 
 # import addon entry points
 for ep in iter_entry_points('plasmapy.addons'):
-    ep.load()
+    addons.__dict__[ep.name] = ep.load()
 
 # ----------------------------------------------------------------------------
 
@@ -107,10 +108,6 @@ def online_help(query):
         url = 'http://docs.astropy.org/en/stable/units/'
 
     webbrowser.open(url)
-
-
-def foo():
-    print(f"I'm an entry_point.")
 
 
 del sys
