@@ -445,6 +445,10 @@ radius={radius}, current={current})".format(
 
         """
 
+        if isinstance(p, u.Quantity):
+            p = u.si.value
+        elif isinstance(p, list):
+            p = np.array(p)
         return self._magnetic_field(p, self.pt, self.dl, self.current) * u.T
     
     def visualize(self, figure = None):
