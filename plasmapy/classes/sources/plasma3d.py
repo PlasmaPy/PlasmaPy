@@ -82,7 +82,7 @@ class Plasma3D(GenericPlasma):
 
         # create intermediate array of dimension (nx,ny,nz,3) in order to allow
         # interpolation on non-equal spatial domain dimensions
-        self._B_interpolator = interp.RegularGridInterpolator(
+        self._interpolate_B = interp.RegularGridInterpolator(
             (self.x.si.value,
              self.y.si.value,
              self.z.si.value),
@@ -90,7 +90,7 @@ class Plasma3D(GenericPlasma):
             method="linear",
             bounds_error=True)
 
-        self._E_interpolator = interp.RegularGridInterpolator(
+        self._interpolate_E = interp.RegularGridInterpolator(
             (self.x.si.value,
              self.y.si.value,
              self.z.si.value),
@@ -99,10 +99,10 @@ class Plasma3D(GenericPlasma):
             bounds_error=True)
 
     def interpolate_E(self, x):
-        return self._E_interpolator(x.si.value) * u.V / u.m
+        return self._interpolate_E(x.si.value) * (u.V / u.m)
 
     def interpolate_B(self, x):
-        return self._B_interpolator(x.si.value) * u.T
+        return self._interpolate_B(x.si.value) * u.T
 
     @property
     def velocity(self):
