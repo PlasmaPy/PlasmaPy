@@ -17,7 +17,7 @@ plasma_wire = magnetostatics.CircularWire([0, 0, 1], u.Quantity((0, 0, 0), u.m),
 plasma_wire
 
 
-# In[2]:
+################################################################
 
 
 n_coils = 8
@@ -27,6 +27,7 @@ coil_angles
 
 # In[3]:
 
+################################################################
 
 minor_radius = 0.3 * u.m
 currents = u.Quantity(n_coils * [10e6], u.A)
@@ -35,6 +36,7 @@ currents
 
 # In[4]:
 
+#################################################################
 
 coils = []
 for i in range(n_coils):
@@ -50,6 +52,7 @@ for i in range(n_coils):
 
 # In[5]:
 
+#################################################################
 
 all_currents = coils + [plasma_wire]
 
@@ -68,6 +71,7 @@ plasma_wire.magnetic_field(center.value)
 
 # In[ ]:
 
+#################################################################
 
 c = Coils(*all_currents)
 
@@ -79,9 +83,11 @@ sim._v[0][2] = 100 # * (u.m / u.s)
 
 sim.run() # this should return a Solution object or sth
 
+#################################################################
 
 # In[34]:
 
+#################################################################
 
 import mayavi
 from mayavi import mlab
@@ -97,6 +103,7 @@ sim.visualize(fig)
 mlab.orientation_axes(figure=fig)
 display(fig)
 
+#################################################################
 
 # In[36]:
 
@@ -111,6 +118,7 @@ sim2.run() # this should return a Solution object or sth
 
 # In[38]:
 
+#################################################################
 
 fig2 = mlab.figure()
 c.visualize(fig2)
@@ -121,6 +129,7 @@ display(fig2)
 
 # In[68]:
 
+#################################################################
 
 factor = 1.7
 x = np.linspace(-factor * (radius + minor_radius), factor * (radius + minor_radius), 100)
@@ -140,6 +149,7 @@ for i, xi in tqdm.tqdm(enumerate(x.si.value), total=len(x)):
 
 Bmag2 = np.sum(Bval**2, axis=0)
 
+#################################################################
 
 # In[70]:
 
