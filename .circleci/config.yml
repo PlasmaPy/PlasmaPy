@@ -103,7 +103,7 @@ jobs:
       - run: *merge-check
       - run: *apt-install
       - run: *tox-conda-install
-      - run: tox -e build_docs
+      - run: tox -e build_docs-conda
       - store_artifacts:
           path: docs/_build/html
 
