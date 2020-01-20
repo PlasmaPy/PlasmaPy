@@ -102,8 +102,8 @@ jobs:
       - run: *skip-check
       - run: *merge-check
       - run: *apt-install
-      - run: *tox-conda-install
-      - run: tox -e build_docs-conda
+      - run: *tox-install
+      - run: tox -e build_docs
       - store_artifacts:
           path: docs/_build/html
 
