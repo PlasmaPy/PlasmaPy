@@ -89,7 +89,6 @@ sim.run() # this should return a Solution object or sth
 
 #################################################################
 
-import mayavi
 from mayavi import mlab
 mlab.init_notebook()
 

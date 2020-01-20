@@ -32,7 +32,6 @@ class Coils(GenericPlasma):
         return match
 
     def visualize(self, figure = None):
-        import mayavi
         from mayavi import mlab
         if figure is None:
             fig = mlab.figure()

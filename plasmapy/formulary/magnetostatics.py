@@ -452,7 +452,6 @@ radius={radius}, current={current})".format(
         return self._magnetic_field(p, self.pt, self.dl, self.current) * u.T
     
     def visualize(self, figure = None):
-        import mayavi
         from mayavi import mlab
         if figure is None:
             fig = mlab.figure()

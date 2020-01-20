@@ -318,7 +318,6 @@ class ParticleTracker:
             raise PhysicsError("Kinetic energy is not conserved!")
 
     def visualize(self, figure = None):
-        import mayavi
         from mayavi import mlab
         if figure is None:
             fig = mlab.figure()
