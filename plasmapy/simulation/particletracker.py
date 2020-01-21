@@ -4,13 +4,13 @@ magnetic fields.
 """
 
 import numpy as np
-from plasmapy import atomic
-from astropy import constants
 from astropy import units as u
 import numba
+import tqdm.auto
+
+from plasmapy import atomic
 from plasmapy.utils.decorators import check_units
 from plasmapy.utils import PhysicsError
-import tqdm.auto
 
 __all__ = [
     "ParticleTracker",
@@ -76,6 +76,11 @@ class ParticleTrackerSolution:
         calculated from `velocity_history`.
     """
     def __init__(self, x, v, NT, dt):
+        self.init_x = x.copy()
+        self.init_v = v.copy()
+        assert x.shape == v.shape
+        self.N, dims = x.shape
+        assert dims == 3
         self._position_history = np.zeros((NT, *x.shape),
                                           dtype=float)
         self._velocity_history = np.zeros((NT, *v.shape),
@@ -112,7 +117,7 @@ class ParticleTrackerSolution:
             r = self.position_history[:, p_index]
             x, y, z = r.T
             ax.plot(x, y, z, *args, **kwargs)
-        ax.set_title(self.name)
+        # ax.set_title(self.name)
         ax.set_xlabel("$x$ position")
         ax.set_ylabel("$y$ position")
         ax.set_zlabel("$z$ position")
@@ -143,9 +148,11 @@ class ParticleTrackerSolution:
                 ax.plot(self.t, y, label=f"y_{p_index}")
             if "z" in plot:
                 ax.plot(self.t, z, label=f"z_{p_index}")
-        ax.set_title(self.name)
+        # ax.set_title(self.name)
         ax.legend(loc='best')
         ax.grid()
+        ax.set_xlabel(f"Time $t$ [{u.s}]")
+        ax.set_ylabel(f"Position [{u.m}]")
         plt.show()
 
     def test_kinetic_energy(self):
@@ -268,21 +275,24 @@ class ParticleTracker:
     # TODO: find way to clean up the lines below!
     @property
     def x(self):
-        return self._x * u.m
+        return u.Quantity(self._x, u.m, copy = False)
 
+    # @check_units() # TODO
     @x.setter
-    def x(self, value):
+    def x(self, value: u.m):
         self._x = value.si.value
 
     @property
     def v(self):
-        return self._v * u.m / u.s
+        return u.Quantity(self._v, u.m / u.s, copy = False)
 
+    # @check_units()
     @v.setter
-    def v(self, value):
+    def v(self, value: u.m / u.s):
         self._v = value.si.value
 
-    def run(self, dt, nt):
+    @check_units()
+    def run(self, dt: u.s, nt: int):
         r"""
         Runs a simulation instance.
          dt: u.s = np.inf * u.s,
@@ -293,6 +303,7 @@ class ParticleTracker:
 
         _hqmdt = (self.q / self.m / 2 * dt).si.value
         _dt = dt.si.value
+
         nt = int(nt)
 
         _x = self._x.copy()
@@ -302,7 +313,7 @@ class ParticleTracker:
 
         with np.errstate(all='raise'):
             b = self.plasma._interpolate_B(_x)
-            e = self.plasma.interpolate_E(self._x).si.value
+            e = self.plasma.interpolate_E(_x).si.value
             _boris_push(_x, _v, b, e, -0.5 * _hqmdt, -0.5*_dt)
 
             _x = _x - _v * 0.5 * _dt
