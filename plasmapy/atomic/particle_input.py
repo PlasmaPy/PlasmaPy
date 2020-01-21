@@ -409,7 +409,8 @@ def particle_input(wrapped_function: Callable = None,
                     f"The argument {argname} to {funcname} must be "
                     f"a string, an integer or a tuple or list of them "
                     f"corresponding to an atomic number, or a "
-                    f"Particle object.")
+                    f"Particle object. Got: "
+                    f"{argval}")
 
             try:
                 particle = Particle(argval, Z=Z, mass_numb=mass_numb)
