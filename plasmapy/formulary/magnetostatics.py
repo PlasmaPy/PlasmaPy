@@ -412,7 +412,7 @@ class CircularWire(Wire):
             We use n points Gauss-Legendre quadrature to compute the integral. The default n is 300.
 
             """
-            field = np.zeros(p.shape, dtype=float)
+            field = np.zeros_like(p, dtype=float)
             for pi in numba.prange(p.shape[0]):
                 P = p[pi]
                 for i in range(pt.shape[1]):  # 300
@@ -466,7 +466,7 @@ radius={radius}, current={current})".format(
 
         shape = p.shape
         if shape == (3,):
-            p = p.resize(1, 3)
+            p = p.reshape(1, 3)
 
         if isinstance(p, u.Quantity):
             p = u.si.value
