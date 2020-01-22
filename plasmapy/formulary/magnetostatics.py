@@ -412,7 +412,7 @@ class CircularWire(Wire):
             We use n points Gauss-Legendre quadrature to compute the integral. The default n is 300.
 
             """
-            field = np.zeros_like(p, dtype=float)
+            field = np.zeros_like(p)
             for pi in numba.prange(p.shape[0]):
                 P = p[pi]
                 for i in range(pt.shape[1]):  # 300
@@ -461,17 +461,17 @@ radius={radius}, current={current})".format(
         We use n points Gauss-Legendre quadrature to compute the integral. The default n is 300.
 
         """
-        if isinstance(p, list):
+        if isinstance(p, u.Quantity):
+            p = u.si.value
+        elif isinstance(p, list):
             p = np.array(p)
 
         shape = p.shape
         if shape == (3,):
             p = p.reshape(1, 3)
 
-        if isinstance(p, u.Quantity):
-            p = u.si.value
-        elif isinstance(p, list):
-            p = np.array(p)
+        p = p.astype(float)
+
         return self._magnetic_field(p, self.pt, self.dl, self.current, self.w).reshape(shape) * u.T
     
     def visualize(self, figure = None):
