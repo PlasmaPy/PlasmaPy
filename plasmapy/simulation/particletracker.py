@@ -344,7 +344,7 @@ class ParticleTracker:
                     solution._position_history[i] = _x
                     solution._velocity_history[i] = _v
                     reldelta = self.kinetic_energy().sum()/init_kinetic - 1
-                    pbar.set_postfix({"RelDelta kinetic energy": reldelta})
+                    pbar.set_postfix({"Relative kinetic energy change": reldelta})
         return solution
 
     def kinetic_energy(self):

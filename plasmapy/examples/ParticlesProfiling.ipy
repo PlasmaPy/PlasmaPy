@@ -13,17 +13,14 @@ import numpy as np
 radius = 1 * u.m
 main_current = 1 * u.A
 plasma_wire = magnetostatics.CircularWire([0, 0, 1], u.Quantity((0, 0, 0), u.m), radius, main_current)
-plasma_wire
 
 
 n_coils = 4
 coil_angles = np.linspace(0, 2*np.pi, n_coils, endpoint=False)
-coil_angles
 
 
 minor_radius = 0.3 * u.m
 currents = u.Quantity(n_coils * [0.1], u.A)
-currents
 
 coils = []
 for i in range(n_coils):
@@ -40,12 +37,11 @@ for i in range(n_coils):
 all_currents = coils + [plasma_wire]
 
 c = Coils(*all_currents)
-sim = simulation.ParticleTracker(c, 'e', dt=1e-8 * u.s, nt=int(1e6))
-sim._x[0][0] = 1 + minor_radius.si.value / 2 # * (u.m / u.s)
-sim._v[0][1] = 1000 # * (u.m / u.s)
-sim._v[0][2] = 100 # * (u.m / u.s)
+x = u.Quantity([[0, 0, minor_radius.si.value / 2]], u.m)
+v = u.Quantity([[0, 1000, 100]], u.m/u.s)
+sim = simulation.ParticleTracker(c, x, v, 'e')
 
 def profile():
-    sim.run() # this should return a Solution object or sth
+    sim.run(dt=1e-8 * u.s, nt=1e2)
 %load_ext line_profiler
-%lprun -f profile -f sim.run -f sim.boris_push -f sim._boris_push -f Coils.interpolate_B profile()
+%lprun -f profile -f simulation.ParticleTracker.run -f simulation.particletracker._boris_push -f Coils._interpolate_B -f magnetostatics.CircularWire._magnetic_field profile()
