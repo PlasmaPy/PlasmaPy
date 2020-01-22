@@ -3,9 +3,8 @@ try:
     from hypothesis.extra.numpy import arrays
 except ImportError:
     import pytest
-    pytestmark = pytest.skip("Optional hypothesis test")
+    pytestmark = pytest.mark.skip("Optional hypothesis test")
 else:
-
     from astropy import units as u
     from plasmapy.classes.sources import AnalyticalFields
     from plasmapy.simulation import ParticleTracker

@@ -68,13 +68,34 @@ def _boris_push(x, v, b, e, hqmdt, dt):
 
 class ParticleTrackerSolution:
     """
-    _position_history : `np.ndarray`
+    A solution to `ParticleTracker`'s trajectory integration.
+
+    Parameters
+    ----------
+    x : `astropy.units.Quantity`
+        Initial particle positions
+    v : `astropy.units.Quantity`
+        Initial particle velocities
+    NT: int
+        Number of time steps
+    dt: `astropy.units.Quantity`
+        time step length
+    particle: `plasmapy.atomic.Particle`
+        Particle type that underwent motion.
+
+    Attributes
+    ----------
     position_history : `astropy.units.Quantity`
-    _velocity_history : `np.ndarray`
+        History of position, with units. Shape (nt, n, 3).
     velocity_history : `astropy.units.Quantity`
-        History of position and velocity. Shape (nt, n, 3).
-    kinetic_energy_history
-        calculated from `velocity_history`.
+        History of velocity, with units. Shape (nt, n, 3).
+    t: `astropy.units.Quantity`
+        Array of times at which snapshots were taken.
+
+    Examples
+    ----------
+    See `plasmapy/examples/plot_particle_stepper.ipynb`.
+
     """
     @check_units
     @particle_input
@@ -181,7 +202,7 @@ class ParticleTrackerSolution:
                 pass
             raise PhysicsError("Kinetic energy is not conserved!")
 
-    def visualize(self, figure = None):
+    def visualize(self, figure = None):  # coverage: ignore
         from mayavi import mlab
         if figure is None:
             fig = mlab.figure()
