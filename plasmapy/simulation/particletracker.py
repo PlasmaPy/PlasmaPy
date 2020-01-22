@@ -85,11 +85,13 @@ class ParticleTrackerSolution:
         assert x.shape == v.shape
         self.N, dims = x.shape
         assert dims == 3
+        # TODO use xarray for this
         self._position_history = np.zeros((NT, *x.shape),
                                           dtype=float)
         self._velocity_history = np.zeros((NT, *v.shape),
                                           dtype=float)
         self._dt = dt.si.value
+        # TODO this will need to be gathered in run with adaptive time stepper
         self._t = np.arange(NT) * self._dt
 
     @property
