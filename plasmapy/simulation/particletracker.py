@@ -18,7 +18,7 @@ __all__ = [
     "ParticleTrackerSolution",
 ]
 
-@numba.njit()
+@numba.njit(parallel = True)
 def _boris_push(x, v, b, e, hqmdt, dt):
     r"""
     Implements the Boris algorithm for moving particles and updating their
@@ -257,6 +257,7 @@ class ParticleTracker:
             v = u.Quantity(np.zeros((x.shape)), u.m/u.s)
         self.q = particle_type.charge
         self.m = particle_type.mass
+        self._m = particle_type.mass.si.value
         self.particle = particle_type
         self.name = particle_type.particle
 
@@ -287,7 +288,6 @@ class ParticleTracker:
             )
 
 
-    # TODO: find way to clean up the lines below!
     @property
     def x(self):
         return u.Quantity(self._x, u.m, copy = False)
@@ -325,7 +325,7 @@ class ParticleTracker:
         _v = self._v.copy()
 
         solution = ParticleTrackerSolution(self.x, self.v, nt, dt, self.particle)
-        init_kinetic = self.kinetic_energy().sum()
+        init_kinetic = self._kinetic_energy()
 
         with np.errstate(all='raise'):
             b = self.plasma._interpolate_B(_x)
@@ -343,12 +343,18 @@ class ParticleTracker:
                     _boris_push(_x, _v, b, e, _hqmdt, _dt)
                     solution._position_history[i] = _x
                     solution._velocity_history[i] = _v
-                    reldelta = self.kinetic_energy().sum()/init_kinetic - 1
+                    reldelta = self._kinetic_energy()/init_kinetic - 1
                     pbar.set_postfix({"Relative kinetic energy change": reldelta})
         return solution
 
+    def _kinetic_energy(self):
+        return (self._v ** 2).sum() * self._m / 2
+
     def kinetic_energy(self):
-        return ((self.v ** 2).sum(axis=-1) * self.particle.mass / 2).to(u.J)
+        return u.Quantity(self._kinetic_energy, u.J)
+
+
+
     def __repr__(self, *args, **kwargs):
         return f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N}," \
                f"name=\"{self.name}\""
