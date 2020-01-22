@@ -325,6 +325,7 @@ class ParticleTracker:
         _v = self._v.copy()
 
         solution = ParticleTrackerSolution(self.x, self.v, nt, dt, self.particle)
+        init_kinetic = self.kinetic_energy().sum()
 
         with np.errstate(all='raise'):
             b = self.plasma._interpolate_B(_x)
@@ -335,14 +336,19 @@ class ParticleTracker:
 
             solution._position_history[0] = _x
             solution._velocity_history[0] = _v
-            for i in tqdm.auto.trange(1, nt):
-                b = self.plasma._interpolate_B(_x)
-                e = self.plasma.interpolate_E(_x).si.value
-                _boris_push(_x, _v, b, e, _hqmdt, _dt)
-                solution._position_history[i] = _x
-                solution._velocity_history[i] = _v
+            with tqdm.auto.trange(1, nt) as pbar:
+                for i in pbar:
+                    b = self.plasma._interpolate_B(_x)
+                    e = self.plasma.interpolate_E(_x).si.value
+                    _boris_push(_x, _v, b, e, _hqmdt, _dt)
+                    solution._position_history[i] = _x
+                    solution._velocity_history[i] = _v
+                    reldelta = self.kinetic_energy().sum()/init_kinetic - 1
+                    pbar.set_postfix({"RelDelta kinetic energy": reldelta})
         return solution
 
+    def kinetic_energy(self):
+        return ((self.v ** 2).sum(axis=-1) * self.particle.mass / 2).to(u.J)
     def __repr__(self, *args, **kwargs):
         return f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N}," \
                f"name=\"{self.name}\""
