@@ -343,8 +343,12 @@ class ParticleTracker:
                     _boris_push(_x, _v, b, e, _hqmdt, _dt)
                     solution._position_history[i] = _x
                     solution._velocity_history[i] = _v
-                    reldelta = self._kinetic_energy()/init_kinetic - 1
-                    pbar.set_postfix({"Relative kinetic energy change": reldelta})
+                    if init_kinetic:
+                        reldelta = self._kinetic_energy()/init_kinetic - 1
+                        pbar.set_postfix({"Relative kinetic energy change": reldelta})
+                    else:
+                        delta = self._kinetic_energy()
+                        pbar.set_postfix({"Kinetic energy change": delta})
         return solution
 
     def _kinetic_energy(self):
