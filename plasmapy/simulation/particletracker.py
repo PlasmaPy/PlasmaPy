@@ -313,7 +313,6 @@ class ParticleTracker:
          dt: u.s = np.inf * u.s,
          nt: int = np.inf,
         """
-        breakpoint()
         if np.isinf(dt) and np.isinf(nt):  # coverage: ignore
             raise ValueError("Both dt and nt are infinite.")
 
