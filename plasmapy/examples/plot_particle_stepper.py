@@ -62,9 +62,9 @@ solution.plot_time_trajectories('yz')
 solution.plot_trajectories()
 
 ############################################################
-# If you have Mayavi, you can 
+# If you have Mayavi, you can  run the following line - it'll open up a neat 3D visualization.
 
-solution.visualize()
+# solution.visualize()
 
 
 ############################################################
