@@ -329,7 +329,7 @@ class ParticleTracker:
 
         with np.errstate(all='raise'):
             b = self.plasma._interpolate_B(_x)
-            e = self.plasma.interpolate_E(_x).si.value
+            e = self.plasma._interpolate_E(_x)
             _boris_push(_x, _v, b, e, -0.5 * _hqmdt, -0.5*_dt)
 
             _x = _x - _v * 0.5 * _dt
@@ -339,7 +339,7 @@ class ParticleTracker:
             with tqdm.auto.trange(1, nt) as pbar:
                 for i in pbar:
                     b = self.plasma._interpolate_B(_x)
-                    e = self.plasma.interpolate_E(_x).si.value
+                    e = self.plasma._interpolate_E(_x)
                     _boris_push(_x, _v, b, e, _hqmdt, _dt)
                     solution._position_history[i] = _x
                     solution._velocity_history[i] = _v

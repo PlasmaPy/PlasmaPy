@@ -12,9 +12,12 @@ class Coils(GenericPlasma):
 
     def __init__(self, *magnetostatics):
         self.magnetostatics = magnetostatics
+
+    def _interpolate_E(self, r: u.m):
+        return np.zeros(r.shape)
     
     def interpolate_E(self, r: u.m):
-        return u.Quantity(np.zeros(r.shape), E_unit)
+        return u.Quantity(self._interpolate_E(r.si.value), E_unit)
     
     def _interpolate_B(self, r):
         B = np.zeros(r.shape)

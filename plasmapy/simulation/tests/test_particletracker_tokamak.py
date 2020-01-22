@@ -43,23 +43,29 @@ def coils():
 
 
 @pytest.fixture
-def sim1(coils):
+def sim_single(coils):
     x = u.Quantity([[1 + MINOR_RADIUS.si.value / 2, 0, 0]],  u.m)
     v = u.Quantity([[0, 100, 10]], u.m / u.s)
 
     sim = simulation.ParticleTracker(coils, x, v, 'e-')
     return sim
 
-def test_1(sim1):
-    solution = sim1.run(1e-3 * u.s, 1e2)
-    # c = sim1.plasma
+@pytest.fixture
+def sim_many(coils):
+    N = 100
+    x = u.Quantity(N * [[1 + MINOR_RADIUS.si.value / 2, 0, 0]],  u.m)
+    v = u.Quantity(np.random.normal(size=(N, 3)), u.m / u.s)
 
-    # from mayavi import mlab
-    # fig = mlab.figure()
-    # c.visualize(fig)
-    # solution.visualize(fig)
-    # mlab.orientation_axes(figure=fig)
-    # mlab.show()
+    sim = simulation.ParticleTracker(coils, x, v, 'e-')
+    return sim
 
+
+def test_1(sim_single):
+    solution = sim_single.run(1e-3 * u.s, 1e3)
     assert abs(np.mean(solution.position_history[:,0,1])) < 4 * u.m  # should be about 5m for no B field
     assert 0.001 * u.m < abs(np.mean(solution.position_history[:,0,1])) < 0.01 * u.m
+
+def test_2(sim_many):
+    solution = sim_many.run(1e-3 * u.s, 1e3)
+    assert abs(np.mean(solution.position_history[:,:,1])) < 4 * u.m  # should be about 5m for no B field
+    assert 0.001 * u.m < abs(np.mean(solution.position_history[:,:,1])) < 0.1 * u.m
