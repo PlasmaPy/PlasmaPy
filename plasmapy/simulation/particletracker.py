@@ -325,7 +325,7 @@ class ParticleTracker:
         _v = self._v.copy()
 
         solution = ParticleTrackerSolution(self.x, self.v, nt, dt, self.particle)
-        init_kinetic = self._kinetic_energy()
+        init_kinetic = self._kinetic_energy(_v)
 
         with np.errstate(all='raise'):
             b = self.plasma._interpolate_B(_x)
@@ -344,18 +344,18 @@ class ParticleTracker:
                     solution._position_history[i] = _x
                     solution._velocity_history[i] = _v
                     if init_kinetic:
-                        reldelta = self._kinetic_energy()/init_kinetic - 1
+                        reldelta = self._kinetic_energy(_v)/init_kinetic - 1
                         pbar.set_postfix({"Relative kinetic energy change": reldelta})
                     else:
-                        delta = self._kinetic_energy()
+                        delta = self._kinetic_energy(_v)
                         pbar.set_postfix({"Kinetic energy change": delta})
         return solution
 
-    def _kinetic_energy(self):
-        return (self._v ** 2).sum() * self._m / 2
+    def _kinetic_energy(self, _v):
+        return (_v ** 2).sum() * self._m / 2
 
-    def kinetic_energy(self):
-        return u.Quantity(self._kinetic_energy, u.J)
+    def kinetic_energy(self, v):
+        return u.Quantity(self._kinetic_energy(v.si.value), u.J)
 
 
 
