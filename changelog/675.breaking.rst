@@ -1,5 +1,5 @@
 Overhaul `plasmapy.simulation.ParticleTracker`.
 Add progress bar using `tqdm`.
 Add unit-less versions to some of `plasmapy.formulary.magnetostatics`.
-Add `AnalyticalPlasma` and `Coils` Plasma objects for ease of providing simulation initial conditions.
+Add `AnalyticalFields` and `Coils` Plasma objects for ease of providing simulation initial conditions.
 Add 3D visualization of Particle trajectories using Mayavi (optional).

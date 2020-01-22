@@ -23,7 +23,7 @@ class Coils(GenericPlasma):
         B = np.zeros(r.shape)
         for ms in self.magnetostatics:
             field = ms._magnetic_field(r, ms.pt, ms.dl, ms.current, ms.w)
-            B += field  # FIXME
+            B += field
         return B
 
     def interpolate_B(self, r: u.m):

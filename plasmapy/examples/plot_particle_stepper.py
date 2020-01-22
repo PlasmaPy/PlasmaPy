@@ -8,7 +8,7 @@ An example of using PlasmaPy's particle stepper class.
 
 import numpy as np
 from astropy import units as u
-from plasmapy.classes.sources.analyticalplasma import AnalyticalPlasma
+from plasmapy.classes.sources import AnalyticalFields
 from plasmapy.simulation import ParticleTracker
 from plasmapy.formulary import gyrofrequency
 
@@ -21,7 +21,6 @@ from plasmapy.formulary import gyrofrequency
 
 
 def magnetic_field(r):
-    # TODO proper shape of array needs to be asserted
     return u.Quantity([4, 0, 0], u.T)
 
 # precomputed for efficiency
@@ -29,7 +28,7 @@ E_unit = u.V / u.m
 def electric_field(r):
     return u.Quantity([0, 2, 0], E_unit)
 
-plasma = AnalyticalPlasma(magnetic_field, electric_field)
+plasma = AnalyticalFields(magnetic_field, electric_field)
 
 ############################################################
 # We'll now calculate the timestep. We'll take one proton `p`,

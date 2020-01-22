@@ -1,5 +1,6 @@
 """
-Defines the core Plasma class used by PlasmaPy to represent plasma properties.
+Defines the AnalyticalFields class used by PlasmaPy to represent electric and magnetic fields varying
+as known functions of position.
 """
 import astropy.units as u
 
@@ -7,11 +8,11 @@ from plasmapy.classes import GenericPlasma
 import numpy as np
 
 __all__ = [
-    "AnalyticalPlasma"
+    "AnalyticalFields"
 ]
 
 
-class AnalyticalPlasma(GenericPlasma):
+class AnalyticalFields(GenericPlasma):
     """
     Work-in-progress class for passing analytical functions as fields 
 

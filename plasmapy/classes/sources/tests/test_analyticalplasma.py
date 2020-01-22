@@ -1,7 +1,7 @@
 import pytest
 from astropy import units as u
 import numpy as np
-from plasmapy.classes.sources import AnalyticalPlasma 
+from plasmapy.classes.sources import AnalyticalFields 
 
 @pytest.fixture()
 def plasma():
@@ -10,7 +10,7 @@ def plasma():
     def electric_field(r):
         return u.Quantity([0, 1, 0], u.V/u.m)
 
-    plasma = AnalyticalPlasma(magnetic_field, electric_field)
+    plasma = AnalyticalFields(magnetic_field, electric_field)
     return plasma
 
 @pytest.fixture()

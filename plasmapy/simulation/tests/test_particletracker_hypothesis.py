@@ -7,7 +7,7 @@ except ImportError:
 else:
 
     from astropy import units as u
-    from plasmapy.classes.sources.analyticalplasma import AnalyticalPlasma
+    from plasmapy.classes.sources import AnalyticalFields
     from plasmapy.simulation import ParticleTracker
     from plasmapy.formulary.parameters import gyrofrequency
     import numpy as np
@@ -24,7 +24,7 @@ else:
     @given(arrays(dtype='float', shape=(N, 2)))
     @settings(deadline=None)
     def test_no_underflow(velocity):
-        plasma = AnalyticalPlasma(magnetic_field, electric_field)
+        plasma = AnalyticalFields(magnetic_field, electric_field)
         freq = gyrofrequency(4 * u.T, 'p').to(u.Hz, equivalencies=u.dimensionless_angles())
         gyroperiod = (1/freq).to(u.s)
         steps_to_gyroperiod = 10

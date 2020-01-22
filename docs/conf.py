@@ -45,7 +45,8 @@ intersphinx_mapping = {
     'numpy': ('https://docs.scipy.org/doc/numpy', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
     'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
-    'astropy': ('http://docs.astropy.org/en/stable/', None)}
+    'astropy': ('http://docs.astropy.org/en/stable/', None),
+    'numba': ('https://numba.pydata.org/numba-doc/dev/', None)}
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

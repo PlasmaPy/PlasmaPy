@@ -21,8 +21,7 @@ apt-latex: &apt-latex
   name: Install apt packages
   command: |
     apt update
-    apt install -y texlive texlive-xetex texlive-fonts-extra texlive-latex-extra texlive-plain-extra latexmk graphviz libgl1-mesa-glx libglvnd-dev
-
+    apt install -y texlive texlive-xetex texlive-fonts-extra texlive-latex-extra texlive-plain-extra latexmk graphviz
 
 tox-install: &tox-install
   name: Install Tox

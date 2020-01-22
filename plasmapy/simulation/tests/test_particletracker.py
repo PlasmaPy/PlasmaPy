@@ -6,7 +6,7 @@ from scipy.optimize import curve_fit
 
 from plasmapy import formulary
 from plasmapy.simulation.particletracker import ParticleTracker, _boris_push
-from plasmapy.classes.sources import AnalyticalPlasma
+from plasmapy.classes.sources import AnalyticalFields
 from plasmapy.utils.exceptions import PhysicsError
 
 def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
@@ -31,7 +31,7 @@ def test_run_no_fields():
 
     def electric_field(r):
         return u.Quantity(np.zeros(3), E_unit)
-    test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
+    test_plasma = AnalyticalFields(magnetic_field, electric_field)
 
     s = ParticleTracker(test_plasma, x = u.Quantity([[0,0,0]], u.m), v = u.Quantity([[0,0,0]], u.m/u.s))
     sol = s.run(dt=1e-10 * u.s, nt=int(2))
@@ -96,7 +96,7 @@ def test_particle_uniform_magnetic():
     def electric_field(r):
         return u.Quantity(np.zeros(3), E_unit)
 
-    test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
+    test_plasma = AnalyticalFields(magnetic_field, electric_field)
 
     particle_type = 'N-14++'
     perp_speed = 0.01 * u.m / u.s
@@ -159,7 +159,7 @@ def test_particle_exb_drift():
 
     def electric_field(r):
         return u.Quantity([0, 1, 0], E_unit)
-    test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
+    test_plasma = AnalyticalFields(magnetic_field, electric_field)
 
     expected_drift_velocity = -1 * u.m / u.s
 
