@@ -381,9 +381,13 @@ class CircularWire(Wire):
         x, self.w = self.roots_legendre
         t = x*np.pi
         self.pt = self.curve(t)
+        if isinstance(self.pt, u.Quantity):
+            self.pt = self.pt.si.value
         self.dl = self.radius*(
             - np.matmul(np.expand_dims(self.axis_x, 1), np.expand_dims(np.sin(t), 0))
             + np.matmul(np.expand_dims(self.axis_y, 1), np.expand_dims(np.cos(t), 0)))  # (3, n)
+        if isinstance(self.dl, u.Quantity):
+            self.dl = self.dl.si.value
 
         @numba.njit
         def _magnetic_field(p, pt, dl, current, w) -> u.T:

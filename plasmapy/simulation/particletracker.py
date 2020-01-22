@@ -241,11 +241,20 @@ class ParticleTracker:
     @check_units()
     def __init__(self,
                  plasma,
-                 x: u.m,
-                 v: u.m/u.s,
+                 x: u.m = None,
+                 v: u.m/u.s = None,
                  particle_type: atomic.Particle = 'p',
                  ):
 
+        if x is not None and v is not None:
+            pass
+        elif x is None and v is None:
+            x = u.Quantity(np.zeros((1, 3)), u.m)
+            v = u.Quantity(np.zeros((1, 3)), u.v)
+        elif v is not None:
+            x = u.Quantity(np.zeros((v.shape)), u.m)
+        elif x is not None:
+            v = u.Quantity(np.zeros((x.shape)), u.m/u.s)
         self.q = particle_type.charge
         self.m = particle_type.mass
         self.particle = particle_type
@@ -304,6 +313,7 @@ class ParticleTracker:
          dt: u.s = np.inf * u.s,
          nt: int = np.inf,
         """
+        breakpoint()
         if np.isinf(dt) and np.isinf(nt):  # coverage: ignore
             raise ValueError("Both dt and nt are infinite.")
 

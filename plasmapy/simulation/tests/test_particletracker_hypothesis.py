@@ -3,7 +3,7 @@ try:
     from hypothesis.extra.numpy import arrays
 except ImportError:
     import pytest
-    pytestmark = pytest.mark.skip("Optional hypothesis test")
+    pytestmark = pytest.skip("Optional hypothesis test")
 else:
 
     from astropy import units as u
@@ -31,6 +31,7 @@ else:
         timestep = gyroperiod / steps_to_gyroperiod
         number_steps = 5 * steps_to_gyroperiod * int(2 * np.pi)
 
-        trajectory = ParticleTracker(plasma, 'p', N, timestep/100, number_steps)
-        trajectory._v[:, :2] = velocity
-        trajectory.run()
+        v = np.zeros((N, 3))
+        v[:, :2] = velocity
+        trajectory = ParticleTracker(plasma, v = v * u.m / u.s)
+        trajectory.run(timestep/100, number_steps)

@@ -43,56 +43,58 @@ timestep = gyroperiod / steps_to_gyroperiod
 
 ############################################################
 # Initialize the trajectory calculation.
-
-number_steps = 5 * steps_to_gyroperiod * int(2 * np.pi)
-trajectory = ParticleTracker(plasma, 'p', 1, timestep, number_steps)
-
-############################################################
 # We still have to initialize the particle's velocity. We'll limit ourselves to
 # one in the x direction, parallel to the magnetic field B -
 # that way, it won't turn in the z direction.
 
-trajectory._v[0][0] = -1 # * (u.m / u.s)
-# this is currently the only way to set the velocity here
+number_steps = 5 * steps_to_gyroperiod * int(2 * np.pi)
+trajectory = ParticleTracker(plasma, v = u.Quantity([[-1, 0, 0]] * u.m/u.s), particle_type = 'p')
 
 ############################################################
 # Let's run the pusher and plot the trajectory versus time.
 # We'll just show the y-z trajectories for clarity.
 
-trajectory.run()
-trajectory.plot_time_trajectories('yz')
+solution = trajectory.run(timestep, number_steps)
+solution.plot_time_trajectories('yz')
 
 ############################################################
 # Plot the shape of the trajectory in 3D.
 
-trajectory.plot_trajectories()
+solution.plot_trajectories()
+
+############################################################
+# If you have Mayavi, you can 
+
+solution.visualize()
+
 
 ############################################################
 # As a test, we calculate the mean velocity in the z direction from the
 # velocity and position
 
-vmean = trajectory.velocity_history[:, :, 2].mean()
-print(f"The calculated drift velocity is {vmean:.4f} to compare with the"
+vmean = solution.velocity_history[:, :, 2].mean()
+print(f"The calculated drift velocity is {vmean:.4f} to compare with the "
       f"theoretical E0/B0 = {0.5 * u.m / u.s}")
 
 ############################################################
 # and from position:
-Vdrift = trajectory.position_history[-1, 0, 2] / (trajectory.NT * trajectory.dt)
+Vdrift = solution.position_history[-1, 0, 2] / solution.t.max()
 print(f"The calculated drift velocity from position is {Vdrift:.4f}")
 
 ############################################################
 # Supposing we wanted to examine the effect of the initial velocity in the x-y plane on the trajectory:
 N = 20
 np.random.seed(0)
-trajectory = ParticleTracker(plasma, 'p', N, timestep/100, number_steps*200)
-trajectory._v[:, :2] = np.random.normal(size=(N, 2))
+v = np.zeros((N, 3))
+v[:, :2] = np.random.normal(size=(N, 2))
+trajectory = ParticleTracker(plasma, v = v * u.m / u.s, particle_type = 'p')
 # we choose this as our example's thumbnail:
 # sphinx_gallery_thumbnail_number = 3
-trajectory.run()
-trajectory.plot_trajectories(alpha=0.8)
+solution = trajectory.run(timestep/100, number_steps*200)
+solution.plot_trajectories(alpha=0.8)
 
 ############################################################
 # Note how while each trajectory fans out in a different way,
 # each one traverses the z direction in about the same time:
 
-trajectory.plot_time_trajectories('z')
+solution.plot_time_trajectories('z')
