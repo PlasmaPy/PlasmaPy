@@ -416,16 +416,21 @@ class CircularWire(Wire):
             We use n points Gauss-Legendre quadrature to compute the integral. The default n is 300.
 
             """
+            shape = p.shape
+            if shape == (3,):
+                p = p.reshape(1, 3)
+
             field = np.zeros_like(p)
             for pi in numba.prange(p.shape[0]):
                 P = p[pi]
                 for i in range(pt.shape[1]):  # 300
                     r = P - pt[:, i]
                     r_norm_3 = np.linalg.norm(r)**3
-                    ft = np.cross(dl[:, i], r) / r_norm_3
-                    field[pi] += w[i] * ft
-            field  = field * scipy.constants.mu_0/4/current  # np.pi in nominator and denominator cancels out
-            return field
+                    dli = dl[:, i]
+                    ft = np.cross(dli, r) 
+                    field[pi] += w[i] * ft / r_norm_3
+            field  = field * scipy.constants.mu_0/4*current  # np.pi in nominator and denominator cancels out
+            return field.reshape(shape)
 
         self._magnetic_field = _magnetic_field
 
@@ -469,14 +474,10 @@ radius={radius}, current={current})".format(
             p = u.si.value
         elif isinstance(p, list):
             p = np.array(p)
-
-        shape = p.shape
-        if shape == (3,):
-            p = p.reshape(1, 3)
-
         p = p.astype(float)
 
-        return self._magnetic_field(p, self.pt, self.dl, self.current, self.w).reshape(shape) * u.T
+
+        return self._magnetic_field(p, self.pt, self.dl, self.current, self.w) * u.T
     
     def visualize(self, figure = None):
         from mayavi import mlab
