@@ -8,9 +8,10 @@ from astropy import units as u
 import numba
 import tqdm.auto
 
-from plasmapy import atomic
+from plasmapy import atomic, formulary
 from plasmapy.utils.decorators import check_units
 from plasmapy.utils import PhysicsError
+from plasmapy.atomic import particle_input, Particle
 
 __all__ = [
     "ParticleTracker",
@@ -75,9 +76,12 @@ class ParticleTrackerSolution:
     kinetic_energy_history
         calculated from `velocity_history`.
     """
-    def __init__(self, x, v, NT, dt):
+    @check_units
+    @particle_input
+    def __init__(self, x: u.m, v: u.m/u.s, NT, dt: u.s, particle: Particle):
         self.init_x = x.copy()
         self.init_v = v.copy()
+        self.particle = particle
         assert x.shape == v.shape
         self.N, dims = x.shape
         assert dims == 3
@@ -181,7 +185,7 @@ class ParticleTrackerSolution:
             fig = mlab.figure()
         else:
             fig = figure
-        x, y, z = self.position_history[:,0,:].T   # FIXME
+        x, y, z = self.position_history[:,0,:].T   # TODO FIXME
         trajectory = mlab.plot3d(x,y,z, self.t, figure=fig, line_width=1e-13, representation='surface')
         mlab.colorbar(trajectory, title="Trajectory - Time", orientation="vertical")
         if figure is None:
@@ -197,7 +201,7 @@ class ParticleTrackerSolution:
         ~astropy.units.Quantity
             Array of kinetic energies, shape (nt, n).
         """
-        return (self.velocity_history ** 2).sum(axis=-1) * self.m / 2
+        return (self.velocity_history ** 2).sum(axis=-1) * self.particle.mass / 2
 
 
 class ParticleTracker:
@@ -242,6 +246,7 @@ class ParticleTracker:
 
         self.q = particle_type.charge
         self.m = particle_type.mass
+        self.particle = particle_type
         self.name = particle_type.particle
 
         self.plasma = plasma
@@ -308,7 +313,7 @@ class ParticleTracker:
         _x = self._x.copy()
         _v = self._v.copy()
 
-        solution = ParticleTrackerSolution(self.x, self.v, nt, dt)
+        solution = ParticleTrackerSolution(self.x, self.v, nt, dt, self.particle)
 
         with np.errstate(all='raise'):
             b = self.plasma._interpolate_B(_x)

@@ -4,7 +4,8 @@ from astropy import units as u
 from astropy.modeling import models, fitting
 from scipy.optimize import curve_fit
 
-from plasmapy.simulation.particletracker import ParticleTracker
+from plasmapy import formulary
+from plasmapy.simulation.particletracker import ParticleTracker, _boris_push
 from plasmapy.classes.sources import AnalyticalPlasma
 from plasmapy.utils.exceptions import PhysicsError
 
@@ -32,10 +33,10 @@ def test_run_no_fields():
         return u.Quantity(np.zeros(3), E_unit)
     test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
 
-    s = ParticleTracker(test_plasma, 'p', 50, dt=1e-10 * u.s, nt=int(2))
-    s.run()
-    assert np.isfinite(s._x).all()
-    assert np.isfinite(s._v).all()
+    s = ParticleTracker(test_plasma, x = u.Quantity([[0,0,0]], u.m), v = u.Quantity([[0,0,0]], u.m/u.s))
+    sol = s.run(dt=1e-10 * u.s, nt=int(2))
+    assert np.isfinite(sol.position_history).all()
+    assert np.isfinite(sol.velocity_history).all()
 
 def test_boris_push_no_fields_no_movement():
     x = np.zeros((2, 3), dtype=float)
@@ -47,7 +48,7 @@ def test_boris_push_no_fields_no_movement():
     m = 1
     dt = 1e-3
     hqmdt = 0.5 * q * m * dt
-    ParticleTracker._boris_push(x, v, b, e, hqmdt, dt)
+    _boris_push(x, v, b, e, hqmdt, dt)
     assert np.isfinite(x).all()
     assert np.isfinite(v).all()
     assert (x == x_copy).all()
@@ -62,7 +63,7 @@ def test_boris_push_no_fields_just_velocity():
     m = 1
     dt = 1e-3
     hqmdt = 0.5 * q * m * dt
-    ParticleTracker._boris_push(x, v, b, e, hqmdt, dt)
+    _boris_push(x, v, b, e, hqmdt, dt)
     assert np.isfinite(x).all()
     assert np.isfinite(v).all()
     assert ((x - v * dt) == x_copy).all()
@@ -79,25 +80,10 @@ def test_boris_push_electric_field():
     m = 1
     dt = 1e-3
     hqmdt = 0.5 * q * m * dt
-    ParticleTracker._boris_push(x, v, b, e, hqmdt, dt)
+    _boris_push(x, v, b, e, hqmdt, dt)
     assert np.isfinite(x).all()
     assert np.isfinite(v).all()
     assert ((x - e * dt**2 / 2 - v * dt / 2) == x_copy).all()
-
-@pytest.mark.xfail
-def test_set_particle_velocity():
-    test_plasma = AnalyticalPlasma(lambda r: None, lambda r: None)
-    particle_type = 'N-14++'
-    s = ParticleTracker(test_plasma, 'p', dt=1 * u.s, nt=5)
-    s.v[0,0] = 5 * u.m/u.s
-    assert s._v[0,0] == 5
-
-def test_set_particle_velocity_by_value():
-    test_plasma = AnalyticalPlasma(lambda r: np.zeros(3), lambda r: np.zeros(3))
-    particle_type = 'N-14++'
-    s = ParticleTracker(test_plasma, 'p', dt=1 * u.s, nt=5)
-    s.v = np.array([[5, 0, 0]]) * u.m/u.s
-    assert s._v[0,0] == 5
 
 def test_particle_uniform_magnetic():
     r"""
@@ -113,31 +99,23 @@ def test_particle_uniform_magnetic():
     test_plasma = AnalyticalPlasma(magnetic_field, electric_field)
 
     particle_type = 'N-14++'
-    s = ParticleTracker(test_plasma, particle_type=particle_type, dt=1e-2 * u.s,
-                        nt=int(1e2))
-
     perp_speed = 0.01 * u.m / u.s
     parallel_speed = 1e-5 * u.m / u.s
     mean_B = 1 * u.T
-    expected_gyrofrequency = (s.q * mean_B / s.m).to(1 / u.s)
-    expected_gyroradius = perp_speed / expected_gyrofrequency
-    expected_gyroperiod = 2 * np.pi / expected_gyrofrequency
+    expected_gyrofrequency = formulary.gyrofrequency(mean_B, particle_type, to_hz=True)
+    expected_gyroradius = formulary.gyroradius(mean_B, particle_type, Vperp = perp_speed)
+    expected_gyroperiod = 1 / expected_gyrofrequency
 
     dt = expected_gyroperiod / 100
+    v = u.Quantity([0 * u.m/u.s, perp_speed, parallel_speed]).reshape((1,3))
+    s = ParticleTracker(test_plasma, particle_type=particle_type, x = np.zeros((1,3)) * u.m, v = v, )
+    sol = s.run(dt=dt, nt=int(1e4))
 
-    s = ParticleTracker(test_plasma, particle_type=particle_type, dt=dt, nt=int(1e4))
-    s._v[:, 1] = perp_speed.si.value
-
-    s._v[:, 2] = parallel_speed.si.value
-    assert s.v[0, 1] == perp_speed
-    assert s.v[0, 2] == parallel_speed
-    s.run()
-
-    x = s.position_history[:, 0, 0]
-    z = s.position_history[:, 0, 2]
+    x = sol.position_history[:, 0, 0]
+    z = sol.position_history[:, 0, 2]
 
     try:
-        params, stds = fit_sine_curve(x, s.t, expected_gyrofrequency)
+        params, stds = fit_sine_curve(x, sol.t, expected_gyrofrequency)
     except RuntimeError as e:
         print(s)
         raise e
@@ -156,13 +134,13 @@ def test_particle_uniform_magnetic():
 
     p_init = models.Polynomial1D(degree=1)
     fit_p = fitting.LinearLSQFitter()
-    p = fit_p(p_init, s.t, z)
+    p = fit_p(p_init, sol.t, z)
 
-    assert u.allclose(z, p(s.t), atol=1e-4 * u.m), \
+    assert u.allclose(z, p(sol.t), atol=1e-4 * u.m), \
         "z-velocity doesn't stay constant!"
 
     # s.plot_trajectories()
-    s.test_kinetic_energy()
+    sol.test_kinetic_energy()
 
 
 def test_particle_exb_drift():
@@ -185,21 +163,22 @@ def test_particle_exb_drift():
 
     expected_drift_velocity = -1 * u.m / u.s
 
-    s = ParticleTracker(test_plasma, 'p', 50, dt=1e-10 * u.s, nt=int(5e3))
-    s._v[:, 2] += np.random.normal(size=s.N)
+    v = np.zeros((50, 3))
+    v[:, 2] += np.random.normal(size=50)
+    s = ParticleTracker(test_plasma, np.zeros((50, 3)) * u.m, v * u.m / u.s)
     assert np.isfinite(s._v).all()
     assert np.isfinite(s._x).all()
-    s.run()
-    assert np.isfinite(s.position_history).all()
-    assert np.isfinite(s.velocity_history).all()
+    sol = s.run(dt=1e-10 * u.s, nt=int(5e3))
+    assert np.isfinite(sol.position_history).all()
+    assert np.isfinite(sol.velocity_history).all()
 
     p_init = models.Polynomial1D(degree=1)
-    for x in s.position_history[:, :, 0].T:
+    for x in sol.position_history[:, :, 0].T:
         fit_p = fitting.LinearLSQFitter()
-        p = fit_p(p_init, s.t, x)
+        p = fit_p(p_init, sol.t, x)
         fit_velocity = p.parameters[1] * u.m / u.s
 
-        assert u.allclose(x, p(s.t), atol=1e-3 * u.m), \
+        assert u.allclose(x, p(sol.t), atol=1e-3 * u.m), \
             "x position doesn't follow linear fit!"
 
     assert u.isclose(expected_drift_velocity, fit_velocity,
@@ -208,7 +187,7 @@ def test_particle_exb_drift():
 
     # s.plot_trajectories()
     with pytest.raises(PhysicsError):
-        s.test_kinetic_energy()
+        sol.test_kinetic_energy()
 
 if __name__ == "__main__":
     import pytest
