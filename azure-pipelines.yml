@@ -41,6 +41,9 @@ jobs:
       - linux: py37
         name: py37_linux
 
+      - linux: py37-no-numba
+        name: py37_linux-no-numba-jitting
+
       - linux: py38
         name: py38_linux
 
