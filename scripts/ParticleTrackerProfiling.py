@@ -42,6 +42,5 @@ v = u.Quantity([[0, 1000, 100]], u.m/u.s)
 sim = simulation.ParticleTracker(c, x, v, 'e')
 
 def profile():
-    sim.run(dt=1e-8 * u.s, nt=1e2)
-%load_ext line_profiler
-%lprun -f profile -f simulation.ParticleTracker.run -f simulation.particletracker._boris_push -f Coils._interpolate_B -f magnetostatics.CircularWire._magnetic_field profile()
+    sim.run(dt=1e-8 * u.s, nt=1e5)
+profile()
