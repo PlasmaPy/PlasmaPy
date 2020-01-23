@@ -6,7 +6,13 @@ from astropy import units as u
 from plasmapy.utils.pytest_helpers.actual import ActualTestOutcome
 from plasmapy.utils.pytest_helpers.expected import ExpectedTestOutcome
 from plasmapy.utils.pytest_helpers.inputs import FunctionTestInputs
-from plasmapy.utils.pytest_helpers.comparators import CompareActualExpected, CompareValues
+
+from plasmapy.utils.pytest_helpers.comparators import (
+    CompareActualExpected,
+    CompareValues,
+    _get_unit,
+    _units_are_compatible,
+)
 from plasmapy.utils.pytest_helpers.exceptions import InvalidTestError
 
 
@@ -357,4 +363,29 @@ def test_compare_values_bool(this, that, when_made_boolean):
             f"The CompareValues instance for {this} and {that} corresponds "
             f"to a boolean value of {made_boolean}, when it should "
             f"actually correspond to {when_made_boolean}."
+        )
+
+
+@pytest.mark.parametrize("rtol", [-1e-14, 1 + 1e-14, 5 * u.m, 1, '...'])
+def test_compare_values_rtol_exceptions(rtol):
+    """
+    Test that bad values of ``rtol`` raise appropriate exceptions
+    in CompareValues.
+    """
+    with pytest.raises(InvalidTestError):
+        CompareValues(1, 1, rtol=rtol)
+        pytest.fail(
+            f"CompareValues with rtol = {rtol} is not raising an "
+            f"InvalidTestError as expected."
+        )
+
+
+@pytest.mark.parametrize("rtol", [1e-14, 0.999999, 0.5 * u.dimensionless_unscaled])
+def test_compare_values_rtol(rtol):
+    """Test that good values of rtol get passed through okay."""
+    comparison = CompareValues(1, 1, rtol=rtol)
+    if comparison.rtol != rtol:
+        pytest.fail(
+            f"rtol attribute of CompareValues is not the expected "
+            f"value of {rtol}."
         )

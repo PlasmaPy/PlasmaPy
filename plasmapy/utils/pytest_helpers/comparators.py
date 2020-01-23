@@ -1,6 +1,6 @@
 """Contains test comparators: tools that automate comparisons."""
 
-from numbers import Number, Complex
+from numbers import Number
 from typing import Union, Tuple, Any, Optional
 
 from astropy import units as u
@@ -36,6 +36,12 @@ def _get_unit(obj):
 
 
 def _units_are_compatible(unit1: Optional[u.UnitBase], unit2: Optional[u.UnitBase]):
+    """
+    Return `True` if ``unit1`` and ``unit2`` are compatible with each
+    other. This function considers `None` (representing an `object`
+    other than a `~astropy.units.Quantity` which has no units) as
+    equivalent to `~astropy.units.dimensionless_unscaled`.
+    """
 
     for unit in [unit1, unit2]:
         if unit is not None and not isinstance(unit, u.UnitBase):
@@ -47,7 +53,9 @@ def _units_are_compatible(unit1: Optional[u.UnitBase], unit2: Optional[u.UnitBas
     new_unit1 = unit1 if isinstance(unit1, u.UnitBase) else u.dimensionless_unscaled
     new_unit2 = unit2 if isinstance(unit2, u.UnitBase) else u.dimensionless_unscaled
 
-    if new_unit1.physical_type == new_unit2.physical_type != "unknown":
+    if new_unit1.physical_type != new_unit2.physical_type:
+        return False
+    elif new_unit1.physical_type == new_unit2.physical_type != "unknown":
         return True
 
     try:
@@ -154,13 +162,11 @@ class CompareValues:
             if 0 <= new_rtol < 1:
                 self._rtol = new_rtol
             else:
-                raise ValueError("Need 0 <= rtol < 1")
-        except u.UnitsError:
-            raise u.UnitsError("'rtol' must be dimensionless") from None
+                raise ValueError
         except Exception:
-            raise TypeError(
-                "'rtol' must be a number or dimensionless Quantity, "
-                "with 0 <= rtol < 1"
+            raise InvalidTestError(
+                "rtol must be a number or dimensionless Quantity with"
+                "0 <= rtol < 0."
             ) from None
 
     @property
@@ -176,6 +182,7 @@ class CompareValues:
 
     @atol.setter
     def atol(self, new_atol):
+
         self._atol = new_atol
 
     @property
@@ -275,6 +282,7 @@ class CompareValues:
         """
         Return `True` if the test should pass, and `False` otherwise.
         """
+
         if self.are_quantity_and_unit:
             return self.units_are_identical
 
@@ -482,7 +490,10 @@ class CompareActualExpected:
         )
 
     def _make_incompatible_units_errmsg(self):
-
+        """
+        Compose an error message for tests where the units of the two
+        values being compared cannot be converted to each other.
+        """
         actual_unit = _get_unit(self.actual.value)
         expected_unit = _get_unit(self.expected.expected_value)
 
@@ -493,6 +504,10 @@ class CompareActualExpected:
         )
 
     def _make_nonidentical_units_errmsg(self):
+        """
+        Compose an error message for tests where the units of the two
+        values being compared are not identical to each other.
+        """
 
         actual_unit = _get_unit(self.actual.value)
         expected_unit = _get_unit(self.expected.expected_value)
@@ -504,6 +519,10 @@ class CompareActualExpected:
         )
 
     def _make_different_types_errmsg(self):
+        """
+        Compose an error message for tests where the two values have
+        different types.
+        """
 
         actual_type = type(self.actual.value)
         expected_type = type(self.expected.expected_value)
