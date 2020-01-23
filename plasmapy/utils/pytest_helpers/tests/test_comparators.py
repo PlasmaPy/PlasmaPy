@@ -6,7 +6,7 @@ from astropy import units as u
 from plasmapy.utils.pytest_helpers.actual import ActualTestOutcome
 from plasmapy.utils.pytest_helpers.expected import ExpectedTestOutcome
 from plasmapy.utils.pytest_helpers.inputs import FunctionTestInputs
-from plasmapy.utils.pytest_helpers.comparators import CompareActualExpected
+from plasmapy.utils.pytest_helpers.comparators import CompareActualExpected, CompareValues
 from plasmapy.utils.pytest_helpers.exceptions import InvalidTestError
 
 
@@ -86,7 +86,7 @@ nokwargs = {}
         (return_42, noargs, nokwargs, (SampleWarning, 42), False),
         (return_42, noargs, nokwargs, (42, SampleWarning), False),
         (return_42_meters, noargs, nokwargs, 42.0 * u.m, True),
-        (return_42_meters, noargs, nokwargs, 42.00000000000001 * u.m, True),
+        (return_42_meters, noargs, nokwargs, 42 * (1 + 1e-15) * u.m, True),
         (return_42_meters, noargs, nokwargs, 4200.0 * u.cm, False),
         (return_42_meters, noargs, nokwargs, 42 * u.kg, False),
         (return_42_meters, noargs, nokwargs, 6 * 9 * u.m, False),
@@ -231,7 +231,7 @@ def test_comparator_actual_expected(function, args, kwargs, expected, test_shoul
         )
 
     try:
-        comparison = CompareActualExpected(actual, expected)
+        comparison = CompareActualExpected(actual, expected, atol=None, rtol=1e-7)
     except Exception:
         raise InvalidTestError(
             f"Unable to instantiate CompareActualExpected." f"{test_information}"
@@ -251,9 +251,110 @@ def test_comparator_actual_expected(function, args, kwargs, expected, test_shoul
         pytest.fail("Test should not have passed, but did." + test_information)
 
 
-def test_comparator_atol():
-    raise NotImplementedError
 
 
-def test_comparator_rtol():
-    raise NotImplementedError
+@pytest.mark.parametrize(
+    "this, that, attribute, expected",
+    [
+        (1, 1, "values", (1, 1)),
+        ("1", "1", "types", (str, str)),
+        (1, 1, "units", (None, None)),
+        (1, 1, "units_are_identical", True),
+        (1, 1, "units_are_compatible", True),
+        (None, None, "are_identical", True),
+        (1, 1, "are_equal", True),
+        (0, 0.0, "are_equal", True),
+        (1, 1, "are_quantities", False),
+        (1, 1, "have_same_types", True),
+        (5 * u.m, u.m, "units", (u.m, u.m)),
+        (5 * u.m, u.cm, "are_quantity_and_unit", True),
+        (5 * u.m, 6 * u.m, "units_are_identical", True),
+        (5 * u.m, 6 * u.cm, "units_are_identical", False),
+        (5 * u.m, u.cm, "units_are_compatible", True),
+        (5 * u.m, 5.000001 * u.m, "are_allclose", True),
+        (5 * u.m, 5.01 * u.m, "are_allclose", False),
+        ([5.0, 6.0] * u.m, [5.0, 6.0] * u.m, "are_allclose", True),
+        ([5.0, 6.0] * u.m, [5.0, 6.00000001] * u.m, "are_allclose", True),
+        ([5.0, 6.0] * u.m, [5.0, 6.01] * u.m, "are_allclose", False),
+        (5 * u.m, 5.000001 * u.m, "are_equal", False),
+        (5 * u.m, 5.01 * u.m, "are_equal", False),
+        ([5.0, 6.0] * u.m, [5.0, 6.0] * u.m, "are_equal", True),
+        ([5.0, 6.0] * u.m, [5.0, 6.00000001] * u.m, "are_equal", False),
+        ([5.0, 6.0] * u.m, [5.0, 6.01] * u.m, "are_equal", False),
+    ]
+)
+def test_compare_values_attributes(this, that, attribute, expected):
+    """
+    Test that the attributes of CompareValues return the correct results.
+    """
+
+    try:
+        comparison = CompareValues(this, that, rtol=1e-4)
+    except Exception:
+        pytest.fail(f"Unable to instantiate CompareValues for {this} and {that}.")
+
+    try:
+        value_of_attribute = getattr(comparison, attribute)
+    except Exception:
+        pytest.fail(
+            f"Unable to access attribute {attribute} for the CompareValues "
+            f"instance for {this} and {that}.")
+
+    if value_of_attribute != expected and value_of_attribute is not expected:
+        pytest.fail(
+            f"For the CompareValues instance for {this} and {that}, "
+            f"the {repr(attribute)} attribute returns a value of "
+            f"{value_of_attribute}, which differs from the expected "
+            f"value of {expected}."
+        )
+
+
+@pytest.mark.parametrize(
+    "this, that, when_made_boolean",
+    [
+        (1, 1, True),
+        (1, 2, False),
+        ("1", "1", True),
+        (5 * u.m, 6 * u.m, False),
+        (None, None, True),
+        (0, 0.0, False),
+        (5 * u.m, u.m, True),
+        (5 * u.m, u.cm, False),
+        (5 * u.m, 6 * u.m, False),
+        (5 * u.m, 6 * u.cm, False),
+        (5 * u.m, 500 * u.cm, False),
+        (5 * u.m, 5.000001 * u.m, True),
+        (5 * u.m, 5.01 * u.m, False),
+        ([5.0, 6.0] * u.m, [5.0, 6.0] * u.m, True),
+        ([5.0, 6.0] * u.m, [5.0, 6.00000001] * u.m, True),
+        ([5.0, 6.0] * u.m, [5.0, 6.01] * u.m, False),
+        (np.nan, np.nan, True),
+        (np.inf, np.inf, True),
+        (np.inf, np.nan, False),
+        (1, np.int32(1), False),
+    ]
+)
+def test_compare_values_bool(this, that, when_made_boolean):
+    """
+    Test that CompareValues.__bool__ returns the expected results.
+    """
+
+    try:
+        comparison = CompareValues(this, that, rtol=1e-4)
+    except Exception:
+        pytest.fail(f"Unable to instantiate CompareValues for {this} and {that}.")
+
+    try:
+        made_boolean = bool(comparison)
+    except Exception:
+        pytest.fail(
+            f"The CompareValues instance for {this} and {that} cannot "
+            f"be made boolean."
+        )
+
+    if made_boolean is not when_made_boolean:
+        pytest.fail(
+            f"The CompareValues instance for {this} and {that} corresponds "
+            f"to a boolean value of {made_boolean}, when it should "
+            f"actually correspond to {when_made_boolean}."
+        )

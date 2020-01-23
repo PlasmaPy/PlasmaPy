@@ -194,10 +194,31 @@ class CompareValues:
         and `False` otherwise.
         """
 
+        if self.are_quantities:
+            return u.allclose(*self.values, atol=None, rtol=0, equal_nan=True)
+
         try:
-            return self._this == self._that
+            equality = self.values[0] == self.values[1]
         except Exception:
             return False
+
+        if isinstance(equality, bool):
+            return equality
+
+        try:
+            return all(equality)
+        except Exception:
+            pass
+
+        if not self.units_are_compatible:
+            return False
+
+        if self.are_quantity_and_unit:
+            return False
+
+        raise InvalidTestError(
+            f"Cannot determine whether or not {self.values} are equal."
+        )
 
     @property
     def have_same_types(self) -> bool:
@@ -215,7 +236,7 @@ class CompareValues:
         `False` otherwise.
         """
 
-        return isinstance(self._this, u.Quantity) and isinstance(self._that, u.Quantity)
+        return isinstance(self.values[0], u.Quantity) and isinstance(self.values[1], u.Quantity)
 
     @property
     def are_quantity_and_unit(self) -> bool:
@@ -225,11 +246,13 @@ class CompareValues:
         (a subclass of) `~astropy.units.UnitBase`, and `False` otherwise.
         """
 
-        return isinstance(self._this, u.Quantity) and isinstance(self._that, u.UnitBase)
+        return isinstance(self.values[0], u.Quantity) and isinstance(self.values[1], u.UnitBase)
 
     @property
     def are_allclose(self) -> bool:
         """
+        `True` if the compared values are
+
         `True` if ``this`` is element-wise equal to ``that`` within an
         absolute tolerance of ``atol`` and a relative tolerance of
         ``rtol``, and `False` otherwise.  This attribute calls
@@ -237,7 +260,7 @@ class CompareValues:
         """
 
         try:
-            return u.allclose(self._this, self._that, rtol=self.rtol, atol=self.atol)
+            return u.allclose(*self.values, rtol=self.rtol, atol=self.atol, equal_nan=True)
         except u.UnitsError as exc:
             if self.units_are_compatible and isinstance(self.atol, u.Quantity):
                 if not _units_are_compatible(self.units[0], self.atol.unit):
@@ -246,21 +269,24 @@ class CompareValues:
                         f"the units of the Quantity instances being compared "
                         f"{self.units}."
                     ) from exc
-        finally:
             return False
 
     def __bool__(self):
         """
         Return `True` if the test should pass, and `False` otherwise.
         """
-        if self.are_identical:
-            return True
+        if self.are_quantity_and_unit:
+            return self.units_are_identical
+
+        if not self.have_same_types:
+            return False
         elif not self.units_are_identical:
             return False
-        elif self.are_equal and self.have_same_types:
+
+        if self.are_identical or self.are_allclose or self.are_equal:
             return True
-        elif self.are_allclose:
-            return True
+        else:
+            return False
 
 
 class CompareActualExpected:
@@ -506,7 +532,7 @@ class CompareActualExpected:
 
         self._add_errmsg(
             f"{self._subject} returned a value of {self.actual.value}, "
-            f"which differs from the expected value of {self.expected.value}."
+            f"which differs from the expected value of {self.expected.expected_value}."
         )
 
         if not comparison.have_same_types:
