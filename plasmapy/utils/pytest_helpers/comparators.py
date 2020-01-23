@@ -1,6 +1,6 @@
 """Contains test comparators: tools that automate comparisons."""
 
-from numbers import Number
+from numbers import Number, Complex
 from typing import Union, Tuple, Any, Optional
 
 from astropy import units as u
@@ -15,12 +15,48 @@ from plasmapy.utils.pytest_helpers.error_messages import (
     _string_together_warnings_for_printing,
 )
 
-
 __all__ = ["CompareActualExpected"]
-
 
 # TODO: Test that error messages are working correctly!  This is going to
 #       be hard to manually check.
+
+
+def _get_unit(obj):
+    """
+    Return the unit corresponding to a unit or Quantity, or return
+    `None` when ``obj`` is not a unit or Quantity.
+    """
+
+    if isinstance(obj, u.UnitBase):
+        return obj
+    elif isinstance(obj, u.Quantity):
+        return obj.unit
+    else:
+        return None
+
+
+def _units_are_compatible(unit1: Optional[u.UnitBase], unit2: Optional[u.UnitBase]):
+
+    for unit in [unit1, unit2]:
+        if unit is not None and not isinstance(unit, u.UnitBase):
+            raise TypeError(f"{unit} is not a unit or None.")
+
+    if unit1 is unit2:
+        return True
+
+    new_unit1 = unit1 if isinstance(unit1, u.UnitBase) else u.dimensionless_unscaled
+    new_unit2 = unit2 if isinstance(unit2, u.UnitBase) else u.dimensionless_unscaled
+
+    if new_unit1.physical_type == new_unit2.physical_type != "unknown":
+        return True
+
+    try:
+        new_unit1.to(new_unit2)
+    except u.UnitConversionError:
+        return False
+    else:
+        return True
+
 
 class CompareValues:
     """
@@ -36,7 +72,7 @@ class CompareValues:
 
     rtol : number or dimensionless `~astropy.units.Quantity`, optional, keyword-only
         The relative tolerance to be supplied to `~astropy.units.isclose`
-        or `~astropy.units.allclose`.  Defaults to ``1e-6``.
+        or `~astropy.units.allclose`.  Defaults to ``1e-12``.
 
     atol : number or `~astropy.units.Quantity`, optional, keyword-only
         The absolute tolerance to be supplied to `astropy.units.isclose`
@@ -50,21 +86,15 @@ class CompareValues:
             this: Any,
             that: Any,
             *,
-            rtol: Union[Number, u.Quantity] = 1e-6,
+            rtol: Union[Number, u.Quantity] = 1e-12,
             atol: Optional[Union[Number, u.Quantity]] = None,
     ):
 
         self._this = this
         self._that = that
 
-        try:
-            self.rtol = rtol
-            self.atol = atol
-        except Exception as exc:  # TODO: make more specific
-            raise InvalidTestError(
-                "Cannot perform comparison with invalid values for the "
-                "relative and/or absolute tolerances for comparison."
-            ) from exc
+        self.rtol = rtol
+        self.atol = atol
 
     @property
     def values(self) -> Tuple[Any, Any]:
@@ -72,7 +102,7 @@ class CompareValues:
         The two values that are being compared.
         """
 
-        return (self._this, self._that)
+        return self._this, self._that
 
     @property
     def types(self) -> Tuple[type, type]:
@@ -80,48 +110,79 @@ class CompareValues:
         The types of the two values that are being compared.
         """
 
-        return (type(self._this), type(self._that))
+        return type(self._this), type(self._that)
+
+    @property
+    def units(self) -> Tuple[Optional[u.UnitBase], Optional[u.UnitBase]]:
+        """
+        A `tuple` containing the units of ``this`` and ``that`` or `None`
+        for each value that does not have units.
+        """
+
+        return _get_unit(self._this), _get_unit(self._that)
+
+    @property
+    def units_are_identical(self) -> bool:
+        """
+        `True` if the units of the two values being compared are identical
+        to each other or if neither of the values has a unit, and `False` otherwise.
+        """
+        return self.units[0] is self.units[1]
+
+    @property
+    def units_are_compatible(self) -> bool:
+        """
+        `True` if the units of the two values are dimensionally compatible, and
+        `False` otherwise.
+        """
+        return _units_are_compatible(*self.units)
 
     @property
     def rtol(self) -> Union[Number, u.Quantity]:
         """
         The relative tolerance to be used by `~astropy.units.isclose` or
-        `~astropy.units.allclose`.
-
-        If ``rtol`` is a `~astropy.units.Quantity`, then it must be
-        dimensionless.
+        `~astropy.units.allclose`.  If ``rtol`` is a
+        `~astropy.units.Quantity`, then it must be dimensionless.
         """
 
         return self._rtol
 
+    @rtol.setter
+    def rtol(self, new_rtol):
+
+        try:
+            if 0 <= new_rtol < 1:
+                self._rtol = new_rtol
+            else:
+                raise ValueError("Need 0 <= rtol < 1")
+        except u.UnitsError:
+            raise u.UnitsError("'rtol' must be dimensionless") from None
+        except Exception:
+            raise TypeError(
+                "'rtol' must be a number or dimensionless Quantity, "
+                "with 0 <= rtol < 1"
+            ) from None
+
     @property
-    def atol(self) -> Optional[Union[Number, u.Quantity]]:
+    def atol(self):
         """
         The absolute tolerance to be used by `~astropy.units.isclose` or
-        `~astropy.units.allclose`.
-
-        If the objects being compared are two `~astropy.units.Quantity`
-        instances, then ``atol`` must have consistent dimensions.
+        `~astropy.units.allclose`.  If the objects being compared are two
+        `~astropy.units.Quantity` instances, then ``atol`` must have
+        consistent dimensions.
         """
 
         return self._atol
 
-    @rtol.setter
-    def rtol(self, relative_tolerance):
-        self._rtol = relative_tolerance
-        raise NotImplementedError
-
     @atol.setter
-    def atol(self, absolute_tolerance):
-        self._atol = absolute_tolerance
-        raise NotImplementedError
-
+    def atol(self, new_atol):
+        self._atol = new_atol
 
     @property
     def are_identical(self) -> bool:
         """
-        Return `True` if the two values refer to the same identical
-        object, and `False` otherwise.
+        Return `True` if the two values refer to the same object,
+        and `False` otherwise.
         """
 
         return self._this is self._that
@@ -130,7 +191,7 @@ class CompareValues:
     def are_equal(self) -> bool:
         """
         Return `True` if the two values evaluate as equal to each other,
-        and `False` otherwise (including if the .
+        and `False` otherwise.
         """
 
         try:
@@ -167,50 +228,39 @@ class CompareValues:
         return isinstance(self._this, u.Quantity) and isinstance(self._that, u.UnitBase)
 
     @property
-    def units_are_consistent(self) -> bool:
+    def are_allclose(self) -> bool:
         """
-        If the objects being compared are both `~astropy.units.Quantity`
-        instances, then return `True` if the units are identical and
-        `False` otherwise.
-
-        If the first object is a `~astropy.units.Quantity` and the second
-        object is a `~astropy.units.UnitBase`
-
-        Return `True` if the two objects being compared are both
-        `~astropy.units.Quantity` instances with identical units, or if
-        the first object is a `~Quantity.`
-
-        This attribute will raise a `u.UnitsError` if the values being
-        compared are a `
+        `True` if ``this`` is element-wise equal to ``that`` within an
+        absolute tolerance of ``atol`` and a relative tolerance of
+        ``rtol``, and `False` otherwise.  This attribute calls
+        `~astropy.units.allclose` to make this determination.
         """
 
-        if self.are_quantities:
-            return self._this.unit == self._that.unit
-        elif self.are_quantity_and_unit:
-            return self._this.unit == self._that
-        else:
-            raise u.UnitsError(
-                "The `units_are_consistent` attribute of CompareValues "
-                "may only be used when comparing a Quantity with a Quantity, "
-                "or a Quantity with a Unit (in that order)."
-            )
-
-
-    @property
-    def are_close(self):
-        """
-        `True` if
-        """
-        return u.allclose(self._this, self._that, rtol=self.rtol, atol=self.atol)
-
+        try:
+            return u.allclose(self._this, self._that, rtol=self.rtol, atol=self.atol)
+        except u.UnitsError as exc:
+            if self.units_are_compatible and isinstance(self.atol, u.Quantity):
+                if not _units_are_compatible(self.units[0], self.atol.unit):
+                    raise InvalidTestError(
+                        f"The units of atol ({self.atol}) are incompatible with "
+                        f"the units of the Quantity instances being compared "
+                        f"{self.units}."
+                    ) from exc
+        finally:
+            return False
 
     def __bool__(self):
+        """
+        Return `True` if the test should pass, and `False` otherwise.
+        """
         if self.are_identical:
             return True
+        elif not self.units_are_identical:
+            return False
         elif self.are_equal and self.have_same_types:
             return True
-        elif self.are_quantity_and_unit:
-            return
+        elif self.are_allclose:
+            return True
 
 
 class CompareActualExpected:
@@ -218,16 +268,25 @@ class CompareActualExpected:
     A class to compare the actual and expected results of a test, and
     generate an appropriate error message if necessary.
 
+    Parameters
+    ----------
+    actual : ActualTestOutcome
+
+    expected : ExpectedTestOutcome
+
+    rtol : optional
+
+    atol : optional
+
 
     """
-
 
     def __init__(
         self,
         actual: ActualTestOutcome,
         expected: ExpectedTestOutcome,
         *,
-        rtol=1e-9,
+        rtol=1e-12,
         atol=0.0,
     ):
 
@@ -238,6 +297,9 @@ class CompareActualExpected:
 
         self._actual = actual
         self._expected = expected
+
+        self._rtol = rtol
+        self._atol = atol
 
         self._make_errmsg_if_necessary()
 
@@ -262,55 +324,22 @@ class CompareActualExpected:
     @property
     def rtol(self) -> Union[Number, u.Quantity]:
         """
-        The relative tolerance to be used in `~astropy.units.isclose` or
-        `astropy.units.allclose`.  If ``rtol`` is a `~astropy.units.Quantity`
-        instance, then it must be dimensionless.
+        The relative tolerance to be used in `astropy.units.allclose`.
+        If ``rtol`` is a `~astropy.units.Quantity` instance, then it
+        must be dimensionless.
         """
         return self._rtol
 
     @property
     def atol(self) -> Union[Number, u.Quantity]:
         """
-        The absolute tolerance to be used in `~astropy.units.isclose`
-        or `~astropy.units.allclose`.
+        The absolute tolerance to be used in `~astropy.units.allclose`.
         """
         return self._atol
 
     @rtol.setter
-    def rtol(self, relative_tolerance):
-        if isinstance(relative_tolerance, u.Quantity):
-            if relative_tolerance.unit == u.dimensionless_unscaled:
-                self._rtol = relative_tolerance
-            else:
-                raise u.UnitsError("`rtol` should be dimensionless if it is a Quantity")
-        elif isinstance(relative_tolerance, Number):
-            self._rtol = relative_tolerance
-        else:
-            raise TypeError(f"Invalid value of `rtol`: {relative_tolerance}")
-
-    @atol.setter
-    def atol(self, absolute_tolerance):
-
-        # if it is a quantity, then it must have the same units as the expected value,
-        # and otherwise it should raise an InvalidTestError
-        #
-        raise NotImplementedError
-
-#        is_a_quantity = isinstance(absolute_tolerance, u.Quantity)
-#        expecting_a_value = self.expected.expecting_a_value
-#        expecting_a_quantity = isinstance()
-
-#        if expecting_a_value:
-
-
-#        expecting_a_quantity = self.expected.expecting_a_value and self.ex
-
-#        expecting_a_quantity = isinstance(self.expected.expecting_a_value)
-
-#        if isinstance(u.Quantity):
-
-
-#            if isinstance(self.expected.expected_value)
+    def rtol(self, new_rtol):
+        self._rtol = new_rtol
 
     @property
     def test_passed(self) -> bool:
@@ -332,6 +361,7 @@ class CompareActualExpected:
 
     def _add_errmsg(self, errmsg):
         """Add an error message to the list of error messages."""
+
         self._error_messages_list.append(errmsg)
 
     @property
@@ -341,6 +371,7 @@ class CompareActualExpected:
         error message.  The call string should be included in each error
         message if and only if it is the first error message.
         """
+
         is_first_error = not self._error_messages_list
         return (
             f"The command {self.actual.call_string}"
@@ -359,13 +390,6 @@ class CompareActualExpected:
             self.actual.warning_types, self.actual.warning_messages,
         )
 
-        is_first_error = not self._error_messages_list
-        subject = (
-            f"The command {self.actual.call_string}"
-            if is_first_error
-            else "This command"
-        )
-
         warnings_for_printing = _string_together_warnings_for_printing(
             self.actual.warning_types, self.actual.warning_messages,
         )
@@ -373,7 +397,7 @@ class CompareActualExpected:
         number_of_warnings = len(self.actual.warning_types)
 
         errmsg = (
-            f"{subject} unexpectedly issued the following warnings"
+            f"{self._subject} unexpectedly issued the following warnings"
             f"{'s' if number_of_warnings > 1 else ''}:"
             f"\n\n"
             f"{warnings_for_printing}"
@@ -395,7 +419,7 @@ class CompareActualExpected:
         if actual_exception is not expected_exception:
 
             self._add_errmsg(
-                f"The command {self.actual.call_string} raised "
+                f"{self._subject} raised "
                 f"{_exc_str(self.actual.exception_type)}, instead of "
                 f"{_exc_str(self.expected.expected_exception)} as expected."
             )
@@ -431,6 +455,38 @@ class CompareActualExpected:
             f"{_exc_str(self.actual.exception_type)}."
         )
 
+    def _make_incompatible_units_errmsg(self):
+
+        actual_unit = _get_unit(self.actual.value)
+        expected_unit = _get_unit(self.expected.expected_value)
+
+        self._add_errmsg(
+            f"The units of the returned value ({actual_unit}) are "
+            f"incompatible with the units of the expected value "
+            f"({expected_unit})."
+        )
+
+    def _make_nonidentical_units_errmsg(self):
+
+        actual_unit = _get_unit(self.actual.value)
+        expected_unit = _get_unit(self.expected.expected_value)
+
+        self._add_errmsg(
+            f"The units of the returned value ({actual_unit}) are not "
+            f"identical to the units of the expected value "
+            f"({expected_unit})."
+        )
+
+    def _make_different_types_errmsg(self):
+
+        actual_type = type(self.actual.value)
+        expected_type = type(self.expected.expected_value)
+
+        self._add_errmsg(
+            f"The type of the returned value ({actual_type}) is different "
+            f"than the type of the expected value ({expected_type})."
+        )
+
     def _make_value_mismatch_errmsg_if_necessary(self):
         """
         Compose an error message for tests where the expected value does
@@ -438,39 +494,27 @@ class CompareActualExpected:
         and actual values match, then do nothing.
         """
 
-        # TODO: deal with all of the weird comparison cases (like making
-        #       sure that a Quantity has a unit, a Quantity matches another
-        #       Quantity, arrays match, etc.
+        comparison = CompareValues(
+            self.actual.value,
+            self.expected.expected_value,
+            rtol=self.rtol,
+            atol=self.atol,
+        )
 
-        expected_value = self.expected.expected_value
-        actual_value = self.actual.value
-        both_values = (expected_value, actual_value)
-
-        are_same_object = expected_value is actual_value
-        test_is_unit_check = isinstance(expected_value, u.Unit)
-
-        both_are_quantities = all([
-            isinstance(expected_value, u.Quantity),
-            isinstance(actual_value, u.Quantity),
-        ])
-
-        try:
-            are_equal = expected_value == actual_value
-        except Exception:
-            are_equal = False
-        finally:
-            same_type = type(expected_value) is type(actual_value)
-
-        if are_equal and same_type:
+        if comparison:
             return
 
+        self._add_errmsg(
+            f"{self._subject} returned a value of {self.actual.value}, "
+            f"which differs from the expected value of {self.expected.value}."
+        )
 
-
-
-
-
-        if actual_value is not expected_value and actual_value != expected_value:
-            self._add_errmsg("_make_value_mismatch_errmsg_if_necessary")
+        if not comparison.have_same_types:
+            self._make_different_types_errmsg()
+        elif not comparison.units_are_compatible:
+            self._make_incompatible_units_errmsg()
+        elif not comparison.units_are_identical:
+            self._make_nonidentical_units_errmsg()
 
     def _make_missing_warning_errmsg(self):
         """
@@ -478,15 +522,8 @@ class CompareActualExpected:
         to be issued, but was not.
         """
 
-        is_first_error = not self._error_messages_list
-        subject = (
-            f"The command {self.actual.call_string}"
-            if is_first_error
-            else "This command "
-        )
-
         self._add_errmsg(
-            f"{subject} did not raise {_exc_str(self.expected.expected_warning)}"
+            f"{self._subject} did not raise {_exc_str(self.expected.expected_warning)}"
             f"as expected."
         )
 
@@ -502,19 +539,11 @@ class CompareActualExpected:
 
         number_of_warnings = len(actual_warnings)
 
-        is_first_error = bool(self._error_messages_list)
-
         if expected_warning in actual_warnings:
             return
 
-        subject = (
-            f"The command {self.actual.call_string}"
-            if is_first_error
-            else "This command"
-        )
-
         errmsg = (
-            f"{subject} was expected to issue a {_exc_str(expected_warning)}, "
+            f"{self._subject} was expected to issue a {_exc_str(expected_warning)}, "
             f"but instead issued the following warning"
             f"{'' if number_of_warnings == 1 else 's'}:"
         )
