@@ -257,8 +257,6 @@ def test_comparator_actual_expected(function, args, kwargs, expected, test_shoul
         pytest.fail("Test should not have passed, but did." + test_information)
 
 
-
-
 @pytest.mark.parametrize(
     "this, that, attribute, expected",
     [
@@ -287,7 +285,7 @@ def test_comparator_actual_expected(function, args, kwargs, expected, test_shoul
         ([5.0, 6.0] * u.m, [5.0, 6.0] * u.m, "are_equal", True),
         ([5.0, 6.0] * u.m, [5.0, 6.00000001] * u.m, "are_equal", False),
         ([5.0, 6.0] * u.m, [5.0, 6.01] * u.m, "are_equal", False),
-    ]
+    ],
 )
 def test_compare_values_attributes(this, that, attribute, expected):
     """
@@ -304,7 +302,8 @@ def test_compare_values_attributes(this, that, attribute, expected):
     except Exception:
         pytest.fail(
             f"Unable to access attribute {attribute} for the CompareValues "
-            f"instance for {this} and {that}.")
+            f"instance for {this} and {that}."
+        )
 
     if value_of_attribute != expected and value_of_attribute is not expected:
         pytest.fail(
@@ -338,7 +337,7 @@ def test_compare_values_attributes(this, that, attribute, expected):
         (np.inf, np.inf, True),
         (np.inf, np.nan, False),
         (1, np.int32(1), False),
-    ]
+    ],
 )
 def test_compare_values_bool(this, that, when_made_boolean):
     """
@@ -366,7 +365,7 @@ def test_compare_values_bool(this, that, when_made_boolean):
         )
 
 
-@pytest.mark.parametrize("rtol", [-1e-14, 1 + 1e-14, 5 * u.m, 1, '...'])
+@pytest.mark.parametrize("rtol", [-1e-14, 1 + 1e-14, 5 * u.m, 1, "..."])
 def test_compare_values_rtol_exceptions(rtol):
     """
     Test that bad values of ``rtol`` raise appropriate exceptions
@@ -386,6 +385,38 @@ def test_compare_values_rtol(rtol):
     comparison = CompareValues(1, 1, rtol=rtol)
     if comparison.rtol != rtol:
         pytest.fail(
-            f"rtol attribute of CompareValues is not the expected "
-            f"value of {rtol}."
+            f"rtol attribute of CompareValues is not the expected " f"value of {rtol}."
+        )
+
+
+inputs_and_expected_units = [(u.m, u.m), (5 * u.kg * u.s, u.kg * u.s), (1, None)]
+
+
+@pytest.mark.parametrize("input, expected_unit", inputs_and_expected_units)
+def test__get_unit(input, expected_unit):
+    gotten_unit = _get_unit(input)
+    if gotten_unit != expected_unit:
+        pytest.fail(f"_get_unit({input}) is not ")
+
+
+units_and_expected_compatibility = [
+    (u.m, u.m, True),
+    (u.m, u.cm, True),
+    (u.m, u.kg, False),
+    (u.g * u.m * u.s ** 7, u.kg * u.km * u.s ** 7, True),
+    (None, u.dimensionless_unscaled, True),
+    (None, None, True),
+]
+
+
+@pytest.mark.parametrize(
+    "unit1, unit2, expected_compatibility", units_and_expected_compatibility
+)
+def test__units_are_compatible(unit1, unit2, expected_compatibility):
+    actual_compatibility = _units_are_compatible(unit1, unit2)
+    if actual_compatibility is not expected_compatibility:
+        pytest.fail(
+            f"_units_are_compatible({unit1}, {unit2}) resulted "
+            f"in {actual_compatibility}, not the expected value of "
+            f"{expected_compatibility}."
         )

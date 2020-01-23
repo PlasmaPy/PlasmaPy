@@ -90,12 +90,12 @@ class CompareValues:
     """
 
     def __init__(
-            self,
-            this: Any,
-            that: Any,
-            *,
-            rtol: Union[Number, u.Quantity] = 1e-12,
-            atol: Optional[Union[Number, u.Quantity]] = None,
+        self,
+        this: Any,
+        that: Any,
+        *,
+        rtol: Union[Number, u.Quantity] = 1e-12,
+        atol: Optional[Union[Number, u.Quantity]] = None,
     ):
 
         self._this = this
@@ -165,8 +165,7 @@ class CompareValues:
                 raise ValueError
         except Exception:
             raise InvalidTestError(
-                "rtol must be a number or dimensionless Quantity with"
-                "0 <= rtol < 0."
+                "rtol must be a number or dimensionless Quantity with" "0 <= rtol < 0."
             ) from None
 
     @property
@@ -243,7 +242,9 @@ class CompareValues:
         `False` otherwise.
         """
 
-        return isinstance(self.values[0], u.Quantity) and isinstance(self.values[1], u.Quantity)
+        return isinstance(self.values[0], u.Quantity) and isinstance(
+            self.values[1], u.Quantity
+        )
 
     @property
     def are_quantity_and_unit(self) -> bool:
@@ -253,7 +254,9 @@ class CompareValues:
         (a subclass of) `~astropy.units.UnitBase`, and `False` otherwise.
         """
 
-        return isinstance(self.values[0], u.Quantity) and isinstance(self.values[1], u.UnitBase)
+        return isinstance(self.values[0], u.Quantity) and isinstance(
+            self.values[1], u.UnitBase
+        )
 
     @property
     def are_allclose(self) -> bool:
@@ -267,7 +270,9 @@ class CompareValues:
         """
 
         try:
-            return u.allclose(*self.values, rtol=self.rtol, atol=self.atol, equal_nan=True)
+            return u.allclose(
+                *self.values, rtol=self.rtol, atol=self.atol, equal_nan=True
+            )
         except u.UnitsError as exc:
             if self.units_are_compatible and isinstance(self.atol, u.Quantity):
                 if not _units_are_compatible(self.units[0], self.atol.unit):
@@ -412,7 +417,6 @@ class CompareActualExpected:
             if is_first_error
             else "This command"
         )
-
 
     def _make_unexpected_warnings_errmsg(self):
         """
