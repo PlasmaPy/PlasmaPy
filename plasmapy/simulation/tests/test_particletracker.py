@@ -52,7 +52,7 @@ def test_adjust_position_velocity():
     s.v = s.v + 2 * u.m/u.s
 
     assert_quantity_allclose(s.x, 2 * u.m)
-    assert_quantity_allclose(s.v, 2 * u.m)
+    assert_quantity_allclose(s.v, 2 * u.m / u.s)
 
     s.v = u.Quantity(np.zeros_like(s.v), u.m/u.s)
     assert_quantity_allclose(s.kinetic_energy(), 0 * u.J)
