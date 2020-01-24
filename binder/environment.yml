@@ -1,0 +1,29 @@
+name: plasmapy
+
+channels:
+  - astropy
+  - conda-forge
+
+dependencies:
+  - python=3.7
+  - numpy
+  - scipy
+  - astropy
+  - h5py
+  - matplotlib
+  - mpmath
+  - pillow
+  - colorama
+  - vtk
+  - pip:
+    - numpydoc
+    - pytest
+    - lmfit
+    - sphinx>2
+    - sphinx-gallery
+    - sphinx-automodapi
+    - sphinx_rtd_theme
+    - numba
+    - tqdm
+    - hypothesis[numpy]
+    - mayavi
