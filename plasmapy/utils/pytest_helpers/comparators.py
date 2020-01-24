@@ -313,11 +313,15 @@ class CompareActualExpected:
 
     expected : ExpectedTestOutcome
 
-    rtol : optional
+    rtol : number or dimensionless `~astropy.units.Quantity`, optional, keyword-only
+        The relative tolerance to be supplied to `~astropy.units.isclose`
+        or `~astropy.units.allclose`.  Defaults to ``1e-12``.
 
-    atol : optional
-
-
+    atol : number or `~astropy.units.Quantity`, optional, keyword-only
+        The absolute tolerance to be supplied to `astropy.units.isclose`
+        or `~astropy.units.allclose`.  If ``atol`` is a
+        `~astropy.units.Quantity`, then it must have the same units as
+        ``this`` and ``that``.  Defaults to zero in the appropriate units.
     """
 
     def __init__(
@@ -367,6 +371,7 @@ class CompareActualExpected:
         If ``rtol`` is a `~astropy.units.Quantity` instance, then it
         must be dimensionless.
         """
+
         return self._rtol
 
     @property
@@ -374,6 +379,7 @@ class CompareActualExpected:
         """
         The absolute tolerance to be used in `~astropy.units.allclose`.
         """
+
         return self._atol
 
     @rtol.setter
