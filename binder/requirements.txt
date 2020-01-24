@@ -1,4 +1,0 @@
--r ../requirements/automated-documentation-tests.txt
-pytest
-jupytext
-.

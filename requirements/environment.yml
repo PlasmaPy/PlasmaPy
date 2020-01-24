@@ -14,6 +14,8 @@ dependencies:
   - mpmath
   - pillow
   - colorama
+  - pip
+  - vtk
   - pip:
     - numpydoc
     - pytest
@@ -25,3 +27,4 @@ dependencies:
     - numba
     - tqdm
     - hypothesis[numpy]
+    - mayavi
