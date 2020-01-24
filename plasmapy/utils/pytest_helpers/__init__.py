@@ -34,3 +34,9 @@ from plasmapy.utils.pytest_helpers.inputs import (
 )
 
 from plasmapy.utils.pytest_helpers.comparators import CompareActualExpected
+
+from plasmapy.utils.pytest_helpers.runners import (
+    function_test_runner,
+    method_test_runner,
+    attr_test_runner,
+)
