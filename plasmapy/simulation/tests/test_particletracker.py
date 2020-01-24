@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 from astropy import units as u
+from astropy.tests.helper import assert_quantity_allclose
 from astropy.modeling import models, fitting
 from scipy.optimize import curve_fit
 
@@ -33,10 +34,35 @@ def test_run_no_fields():
         return u.Quantity(np.zeros(3), E_unit)
     test_plasma = AnalyticalFields(magnetic_field, electric_field)
 
-    s = ParticleTracker(test_plasma, x = u.Quantity([[0,0,0]], u.m), v = u.Quantity([[0,0,0]], u.m/u.s))
+    s = ParticleTracker(test_plasma)
     sol = s.run(dt=1e-10 * u.s, nt=int(2))
     assert np.isfinite(sol.position_history).all()
     assert np.isfinite(sol.velocity_history).all()
+
+def test_adjust_position_velocity():
+    def magnetic_field(r):
+        return u.Quantity(np.zeros(3), u.T)
+
+    def electric_field(r):
+        return u.Quantity(np.zeros(3), E_unit)
+    test_plasma = AnalyticalFields(magnetic_field, electric_field)
+
+    s = ParticleTracker(test_plasma)
+    s.x = s.x + 2 * u.m
+    s.v = s.v + 2 * u.m/u.s
+
+    assert_quantity_allclose(s.x, 2 * u.m)
+    assert_quantity_allclose(s.v, 2 * u.m)
+
+    s.v = u.Quantity(np.zeros_like(s.v), u.m/u.s)
+    assert_quantity_allclose(s.kinetic_energy(), 0 * u.J)
+
+    r = repr(s)
+    assert 'N = 1' in r
+    assert 'AnalyticalFields' in r
+    assert 'particle_type=p' in r
+
+
 
 def test_boris_push_no_fields_no_movement():
     x = np.zeros((2, 3), dtype=float)
@@ -108,7 +134,7 @@ def test_particle_uniform_magnetic():
 
     dt = expected_gyroperiod / 100
     v = u.Quantity([0 * u.m/u.s, perp_speed, parallel_speed]).reshape((1,3))
-    s = ParticleTracker(test_plasma, particle_type=particle_type, x = np.zeros((1,3)) * u.m, v = v, )
+    s = ParticleTracker(test_plasma, particle_type=particle_type,  v = v)
     sol = s.run(dt=dt, nt=int(1e4))
 
     x = sol.position_history[:, 0, 0]
@@ -165,7 +191,7 @@ def test_particle_exb_drift():
 
     v = np.zeros((50, 3))
     v[:, 2] += np.random.normal(size=50)
-    s = ParticleTracker(test_plasma, np.zeros((50, 3)) * u.m, v * u.m / u.s)
+    s = ParticleTracker(test_plasma, v = v * u.m / u.s)
     assert np.isfinite(s._v).all()
     assert np.isfinite(s._x).all()
     sol = s.run(dt=1e-10 * u.s, nt=int(5e3))

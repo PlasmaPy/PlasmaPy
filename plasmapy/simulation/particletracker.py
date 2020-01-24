@@ -271,7 +271,7 @@ class ParticleTracker:
             pass
         elif x is None and v is None:
             x = u.Quantity(np.zeros((1, 3)), u.m)
-            v = u.Quantity(np.zeros((1, 3)), u.v)
+            v = u.Quantity(np.zeros((1, 3)), u.m/u.s)
         elif v is not None:
             x = u.Quantity(np.zeros((v.shape)), u.m)
         elif x is not None:
@@ -334,9 +334,6 @@ class ParticleTracker:
          dt: u.s = np.inf * u.s,
          nt: int = np.inf,
         """
-        if np.isinf(dt) and np.isinf(nt):  # coverage: ignore
-            raise ValueError("Both dt and nt are infinite.")
-
         _hqmdt = (self.q / self.m / 2 * dt).si.value
         _dt = dt.si.value
 
@@ -372,17 +369,21 @@ class ParticleTracker:
                         pbar.set_postfix({"Kinetic energy change": delta})
         return solution
 
-    def _kinetic_energy(self, _v):
+    def _kinetic_energy(self, _v = None):
+        if _v is None:
+            _v = self._v
         return (_v ** 2).sum() * self._m / 2
 
-    def kinetic_energy(self, v):
+    def kinetic_energy(self, v = None):
+        if v is None:
+            v = self.v
         return u.Quantity(self._kinetic_energy(v.si.value), u.J)
 
 
 
     def __repr__(self, *args, **kwargs):
-        return f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N}," \
-               f"name=\"{self.name}\""
+        return f"ParticleTracker(plasma={self.plasma}, particle_type={self.particle}," \
+               f"N = {self.x.shape[0]})"
 
     def __str__(self):  # coverage: ignore
         return f"{self.N} {self.name} with " \

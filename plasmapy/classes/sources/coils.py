@@ -34,7 +34,7 @@ class Coils(GenericPlasma):
         match = 'interpolate_B' in kwargs.keys()
         return match
 
-    def visualize(self, figure = None):
+    def visualize(self, figure = None):   # coverage: ignore
         from mayavi import mlab
         if figure is None:
             fig = mlab.figure()
