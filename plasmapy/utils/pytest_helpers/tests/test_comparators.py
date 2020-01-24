@@ -1,4 +1,5 @@
 import warnings
+import collections
 import pytest
 import numpy as np
 from astropy import units as u
@@ -419,4 +420,177 @@ def test__units_are_compatible(unit1, unit2, expected_compatibility):
             f"_units_are_compatible({unit1}, {unit2}) resulted "
             f"in {actual_compatibility}, not the expected value of "
             f"{expected_compatibility}."
+        )
+
+
+case = collections.namedtuple("case", ["func", "args", "kwargs", "expected", "errmsg"])
+
+func_args_kwargs_expected_errmsg = [
+    case(
+        return_42,
+        noargs,
+        nokwargs,
+        41,
+        "The command return_42() returned a value of 42, which differs "
+        "from the expected value of 41",
+    ),
+    case(
+        return_42,
+        noargs,
+        nokwargs,
+        SyntaxError,
+        "The command return_42() did not raise a SyntaxError as expected. "
+        "Instead, this command returned the unexpected value of 42.",
+    ),
+    case(
+        return_42,
+        noargs,
+        nokwargs,
+        np.int32(42),
+        "The command return_42() returned a value of 42, which differs "
+        "from the expected value of 42. The type of the returned value "
+        "(int) is different than the type of the expected value (numpy.int32).",
+    ),
+    case(
+        return_42_meters,
+        noargs,
+        nokwargs,
+        42 * u.cm,
+        "The command return_42_meters() returned a value of 42.0 m, which differs "
+        "from the expected value of 42.0 cm. The units of the returned value (m) "
+        "are not identical to the units of the expected value (cm).",
+    ),
+    case(
+        return_np_array,
+        (1.0, 2.0, 3.0),
+        nokwargs,
+        np.array([1.0, 2.0, 3.1]),
+        "The command return_np_array(1.0, 2.0, 3.0) returned a value of "
+        "[1. 2. 3.], which differs from the expected value of [1.  2.  3.1].",
+    ),
+    case(
+        issue_sample_warning_and_return_42,
+        noargs,
+        nokwargs,
+        43,
+        "The command issue_sample_warning_and_return_42() returned a value "
+        "of 42, which differs from the expected value of 43. This command "
+        "unexpectedly issued the following warnings:\n\n"
+        "SampleWarning: warning message",
+    ),
+    case(
+        issue_sample_warning_and_return_42,
+        noargs,
+        nokwargs,
+        (SampleWarning, 43),
+        "The command issue_sample_warning_and_return_42() returned a "
+        "value of 42, which differs from the expected value of 43.",
+    ),
+    case(
+        issue_sample_warning_and_return_42,
+        noargs,
+        nokwargs,
+        Warning,
+        "The command issue_sample_warning_and_return_42() was expected to "
+        "issue a a Warning, but instead issued the following warning:\n\n"
+        "SampleWarning: warning message",
+    ),
+    case(
+        issue_sample_warning_and_return_42,
+        noargs,
+        nokwargs,
+        (SampleWarningSubclass, 43),
+        "The command issue_sample_warning_and_return_42() returned a value "
+        "of 42, which differs from the expected value of 43. This command "
+        "was expected to issue a SampleWarningSubclass, but instead "
+        "issued the following warning:\n\n"
+        "SampleWarning: warning message",
+    ),
+    case(
+        raise_sample_exception,
+        noargs,
+        nokwargs,
+        Exception,
+        "The command raise_sample_exception() raised a SampleException, "
+        "instead of an Exception as expected.",
+    ),
+    case(
+        raise_sample_exception,
+        noargs,
+        nokwargs,
+        SampleExceptionSubclass,
+        "The command raise_sample_exception() raised a SampleException, "
+        "instead of a SampleExceptionSubclass as expected.",
+    ),
+    case(
+        raise_sample_exception,
+        noargs,
+        nokwargs,
+        42,
+        "The command raise_sample_exception() unexpectedly raised a "
+        "SampleException.",
+    ),
+    case(
+        return_sum_of_two_args_and_kwargs,
+        (5.3, 2.42),
+        {"kw1": 1.56 * u.dimensionless_unscaled, "kw2": 4.2},
+        42,
+        "The command return_sum_of_two_args_and_kwargs(5.3, 2.42, kw1=1.56, "
+        "kw2=4.2) returned a value of 13.48, which differs from the expected "
+        "value of 42. The type of the returned value (Quantity) "
+        "is different than the type of the expected value (int).",
+    ),
+]
+
+
+@pytest.mark.parametrize(
+    "func, args, kwargs, expected, errmsg", func_args_kwargs_expected_errmsg
+)
+def test_compare_actual_expected_errmsg(func, args, kwargs, expected, errmsg):
+    """
+    Test that CompareActualExpected generates the appropriate error
+    messages.
+
+    Parameters
+    ----------
+    func
+        The sample function for the test.
+
+    args
+        The positional arguments to be passed to ``func``.
+
+    kwargs
+        The keyword arguments to be passed to ``func``.
+
+    expected
+        The incorrect expected outcome of a test.
+
+    errmsg : str
+        The error message that is expected to be generated (or a portion
+        thereof).
+
+    """
+
+    try:
+        inputs = FunctionTestInputs(func, args, kwargs)
+        actual = ActualTestOutcome(inputs)
+        expected = ExpectedTestOutcome(expected)
+        comparison = CompareActualExpected(actual, expected, rtol=1e-6)
+    except Exception as exc:
+        raise InvalidTestError("Unable to instantiate preconditions.") from exc
+
+    if not comparison.error_message:
+        pytest.fail("No error message was created.")
+
+    if not errmsg in comparison.error_message:
+        pytest.fail(
+            f"The instance of CompareActualExpected created from:\n\n"
+            f"   func = {func.__name__}\n"
+            f"   args = {args}\n"
+            f" kwargs = {kwargs}\n\n"
+            f"resulted in an error message of:"
+            f"\n\n  {comparison.error_message}\n\n"
+            f"which differs from the expected error message which "
+            f"should contain:\n\n"
+            f"  {errmsg}"
         )
