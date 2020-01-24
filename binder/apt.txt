@@ -1,1 +1,2 @@
 xvfb
+libglu1

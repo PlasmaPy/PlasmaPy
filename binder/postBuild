@@ -1,0 +1,2 @@
+sh xvfb_bg start
+export DISPLAY=:1
