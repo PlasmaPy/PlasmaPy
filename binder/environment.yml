@@ -29,4 +29,3 @@ dependencies:
     - hypothesis[numpy]
     - mayavi
     - jupytext
-    - .
