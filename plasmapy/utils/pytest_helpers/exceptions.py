@@ -1,3 +1,5 @@
+import pytest
+
 __all__ = [
     "RunTestError",
     "UnexpectedResultError",
@@ -12,7 +14,7 @@ __all__ = [
 ]
 
 
-class RunTestError(Exception):
+class RunTestError(pytest.fail.Exception):
     """Base exception for test failures. Derived from `Exception`."""
 
 
