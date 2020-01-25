@@ -110,8 +110,8 @@ class ParticleTrackerSolution:
         assert position_history.shape == velocity_history.shape
         particles = range(position_history.shape[1])
         for i, dim in enumerate(dimensions):
-            data_vars[dim] = (('time', 'particle'), x[:,:,i])
-            data_vars[f'v{dim}'] = (('time', 'particle'), v[:,:,i])
+            data_vars[dim] = (('time', 'particle'), x[:, :, i])
+            data_vars[f'v{dim}'] = (('time', 'particle'), v[:, :, i])
         self.dataset = xarray.Dataset(data_vars = data_vars,
                                       coords={'time': times,
                                               'particle': particles}) 
@@ -119,6 +119,7 @@ class ParticleTrackerSolution:
             self.dataset[dim].attrs['unit'] = position_history.unit
             self.dataset[f"v{dim}"].attrs['unit'] = velocity_history.unit
         self.dataset.times.attrs['unit'] = times.unit
+        self.dataset.attrs["particle"] = particle
         self.particle = particle
 
     @property
@@ -347,8 +348,8 @@ class ParticleTracker:
 
         _x = self._x.copy()
         _v = self._v.copy()
+        _time = 0
 
-        solution = ParticleTrackerSolution(self.x, self.v, nt, dt, self.particle)
         init_kinetic = self._kinetic_energy(_v)
 
         with np.errstate(all='raise'):
@@ -358,21 +359,30 @@ class ParticleTracker:
 
             _x = _x - _v * 0.5 * _dt
 
-            solution._position_history[0] = _x
-            solution._velocity_history[0] = _v
+            _position_history = [_x.copy()]
+            _velocity_history = [_v.copy()]
+            _times = [_time]
             with tqdm.auto.trange(1, nt) as pbar:
                 for i in pbar:
+                    _time += _dt
                     b = self.plasma._interpolate_B(_x)
                     e = self.plasma._interpolate_E(_x)
                     _boris_push(_x, _v, b, e, _hqmdt, _dt)
-                    solution._position_history[i] = _x
-                    solution._velocity_history[i] = _v
+                    _position_history.append(_x)
+                    _velocity_history.append(_v)
+                    _times.append(_time)
                     if init_kinetic:
                         reldelta = self._kinetic_energy(_v)/init_kinetic - 1
                         pbar.set_postfix({"Relative kinetic energy change": reldelta})
                     else:
                         delta = self._kinetic_energy(_v)
                         pbar.set_postfix({"Kinetic energy change": delta})
+
+        solution = ParticleTrackerSolution(u.Quantity(_position_history, u.m),
+                                           u.Quantity(_velocity_history, u.m/u.s),
+                                           u.Quantity(_times, u.s),
+                                           self.particle,
+                                           )
         return solution
 
     def _kinetic_energy(self, _v = None):
