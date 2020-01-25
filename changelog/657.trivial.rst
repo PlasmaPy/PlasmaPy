@@ -1,1 +1,0 @@
-Overhaul CI setup, following the example of SunPy
