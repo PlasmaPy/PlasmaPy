@@ -80,7 +80,7 @@ class CompareValues:
 
     rtol : number or dimensionless `~astropy.units.Quantity`, optional, keyword-only
         The relative tolerance to be supplied to `~astropy.units.isclose`
-        or `~astropy.units.allclose`.  Defaults to ``1e-12``.
+        or `~astropy.units.allclose`.  Defaults to ``1e-8``.
 
     atol : number or `~astropy.units.Quantity`, optional, keyword-only
         The absolute tolerance to be supplied to `astropy.units.isclose`
@@ -94,7 +94,7 @@ class CompareValues:
         this: Any,
         that: Any,
         *,
-        rtol: Union[Number, u.Quantity] = 1e-12,
+        rtol: Union[Number, u.Quantity] = 1e-8,
         atol: Optional[Union[Number, u.Quantity]] = None,
     ):
 
@@ -313,9 +313,9 @@ class CompareActualExpected:
 
     expected : ExpectedTestOutcome
 
-    rtol : number or dimensionless `~astropy.units.Quantity`, optional, keyword-only
+    rtol : dimensionless number, optional, keyword-only
         The relative tolerance to be supplied to `~astropy.units.isclose`
-        or `~astropy.units.allclose`.  Defaults to ``1e-12``.
+        or `~astropy.units.allclose`.  Defaults to ``1e-8``.
 
     atol : number or `~astropy.units.Quantity`, optional, keyword-only
         The absolute tolerance to be supplied to `astropy.units.isclose`
@@ -329,7 +329,7 @@ class CompareActualExpected:
         actual: ActualTestOutcome,
         expected: ExpectedTestOutcome,
         *,
-        rtol=1e-12,
+        rtol=1e-8,
         atol=0.0,
     ):
 
