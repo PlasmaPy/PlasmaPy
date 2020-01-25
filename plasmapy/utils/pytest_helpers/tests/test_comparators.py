@@ -16,63 +16,20 @@ from plasmapy.utils.pytest_helpers.comparators import (
 )
 from plasmapy.utils.pytest_helpers.exceptions import InvalidTestError
 
-
-class SampleException(Exception):
-    pass
-
-
-class SampleExceptionSubclass(SampleException):
-    pass
-
-
-class SampleWarning(Warning):
-    pass
-
-
-class SampleWarningSubclass(SampleWarning):
-    pass
-
-
-def return_42() -> int:
-    return 42
-
-
-def return_42_meters() -> u.Quantity:
-    return 42.0 * u.m
-
-
-def return_np_array(*args) -> np.array:
-    return np.array(args)
-
-
-def issue_sample_warning_and_return_42() -> int:
-    warnings.warn("warning message", SampleWarning)
-    return 42
-
-
-def raise_sample_exception():
-    raise SampleException("exception message")
-
-
-def return_sum_of_two_args_and_kwargs(arg1, arg2, *, kw1=None, kw2=None):
-    return arg1 + arg2 + kw1 + kw2
-
-
-def return_none():
-    return None
-
-
-class SampleClass:
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def arg_plus_kwarg(self, arg, *, kwarg=None):
-        return arg + kwarg
-
-    @property
-    def forty(self) -> int:
-        return 40
-
+from plasmapy.utils.pytest_helpers.tests.sample_functions import (
+    return_42,
+    return_42_meters,
+    return_np_array,
+    return_sum_of_two_args_and_kwargs,
+    return_none,
+    raise_sample_exception,
+    issue_sample_warning_and_return_42,
+    SampleClass,
+    SampleException,
+    SampleExceptionSubclass,
+    SampleWarning,
+    SampleWarningSubclass,
+)
 
 noargs = ()
 nokwargs = {}
