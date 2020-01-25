@@ -7,6 +7,7 @@ import numpy as np
 from astropy import units as u
 import numba
 import tqdm.auto
+import xarray
 
 from plasmapy import atomic, formulary
 from plasmapy.utils.decorators import check_units
@@ -99,21 +100,26 @@ class ParticleTrackerSolution:
     """
     @check_units
     @particle_input
-    def __init__(self, x: u.m, v: u.m/u.s, NT, dt: u.s, particle: Particle):
-        self.init_x = x.copy()
-        self.init_v = v.copy()
+    def __init__(self, position_history: u.m,
+                 velocity_history: u.m/u.s,
+                 times: u.s,
+                 particle: Particle,
+                 dimensions = 'xyz',
+                 ):
+        data_vars = {}
+        assert position_history.shape == velocity_history.shape
+        particles = range(position_history.shape[1])
+        for i, dim in enumerate(dimensions):
+            data_vars[dim] = (('time', 'particle'), x[:,:,i])
+            data_vars[f'v{dim}'] = (('time', 'particle'), v[:,:,i])
+        self.dataset = xarray.Dataset(data_vars = data_vars,
+                                      coords={'time': times,
+                                              'particle': particles}) 
+        for dim in enumerate(dimensions):
+            self.dataset[dim].attrs['unit'] = position_history.unit
+            self.dataset[f"v{dim}"].attrs['unit'] = velocity_history.unit
+        self.dataset.times.attrs['unit'] = times.unit
         self.particle = particle
-        assert x.shape == v.shape
-        self.N, dims = x.shape
-        assert dims == 3
-        # TODO use xarray for this
-        self._position_history = np.zeros((NT, *x.shape),
-                                          dtype=float)
-        self._velocity_history = np.zeros((NT, *v.shape),
-                                          dtype=float)
-        self._dt = dt.si.value
-        # TODO this will need to be gathered in run with adaptive time stepper
-        self._t = np.arange(NT) * self._dt
 
     @property
     def dt(self):
