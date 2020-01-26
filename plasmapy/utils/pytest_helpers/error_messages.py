@@ -1,3 +1,4 @@
+import inspect
 from astropy import units as u
 from typing import Callable, Any, Dict, Optional, Union, Tuple
 
@@ -83,10 +84,21 @@ def _exc_str(ex: Exception) -> str:
     return f"{indefinite_article} {exception_name}"
 
 
-def _get_object_name(obj: Any) -> str:
-    """Return the name of an `object`."""
+def _get_object_name(obj: Any, showmodule=False) -> str:
+    """
+    Return the name of an `object`.  If the `object` has a "__name__"
+    attribute and ``showmodule`` is `True`, then prepend the module
+    name if not in `builtins`.
+    """
 
-    return obj.__name__ if hasattr(obj, "__name__") else repr(obj)
+    obj_name = obj.__name__ if hasattr(obj, "__name__") else repr(obj)
+
+    if hasattr(obj, "__name__") and showmodule is True:
+        module_name = inspect.getmodule(obj).__name__
+        if module_name != "builtins":
+            obj_name = f"{module_name}.{obj_name}"
+
+    return obj_name
 
 
 def _string_together_warnings_for_printing(warning_types, warning_messages):
@@ -97,7 +109,7 @@ def _string_together_warnings_for_printing(warning_types, warning_messages):
     """
 
     warnings_with_messages = [
-        _get_object_name(warning) + ": " + message
+        _get_object_name(warning, showmodule=False) + ": " + message
         for warning, message in zip(warning_types, warning_messages)
     ]
 
