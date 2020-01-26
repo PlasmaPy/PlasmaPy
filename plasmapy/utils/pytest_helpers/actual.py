@@ -6,11 +6,15 @@ from plasmapy.utils.pytest_helpers.inputs import AbstractTestInputs
 __all__ = ["ActualTestOutcome"]
 
 
-class _MockException(Exception):
+class _ExitPytestRaises(Exception):
+    """An `Exception` to be raised to exit `pytest.raises` context manager."""
+
     pass
 
 
-class _MockWarning(Warning):
+class _ExitPytestWarns(Warning):
+    """A `Warning` to be raised to exit `pytest.warns` context manager."""
+
     pass
 
 
@@ -21,8 +25,11 @@ class ActualTestOutcome:
 
         Parameters
         ----------
-        inputs : instance of subclass of `plasmapy.utils.pytest_helpers.inputs.AbstractTestInputs`
-
+        inputs : `plasmapy.utils.pytest_helpers.inputs.AbstractTestInputs`
+            The instance of a subclass of
+            `plasmapy.utils.pytest_helpers.inputs.AbstractTestInputs`
+            that contains the function of class to be tested, along with
+            corresponding positional and keyword arguments.
         """
 
         self._inputs = inputs
@@ -35,10 +42,12 @@ class ActualTestOutcome:
             )
 
         with pytest.warns(Warning) as warnings_record:
-            warnings.warn("So we can exit pytest.warns context manager", _MockWarning)
+            warnings.warn(
+                "So we can exit pytest.warns context manager", _ExitPytestWarns
+            )
             with pytest.raises(Exception) as exception_info:
                 self._value = inputs.call()
-                raise _MockException("So we can exit pytest.raises context manager")
+                raise _ExitPytestRaises("So we can exit pytest.raises context manager")
 
         self._exception_info = exception_info
 
@@ -52,6 +61,7 @@ class ActualTestOutcome:
         `True` if the `callable` being tested returned a value or
         `None`, and `False` otherwise.
         """
+
         return hasattr(self, "_value")
 
     @property
@@ -60,7 +70,8 @@ class ActualTestOutcome:
         `True` if an exception was raised by the `callable` being
         tested, and `False` otherwise.
         """
-        return self._exception_info.type is not _MockException
+
+        return self._exception_info.type is not _ExitPytestRaises
 
     @property
     def warning_was_issued(self) -> bool:
@@ -68,6 +79,7 @@ class ActualTestOutcome:
         `True` if a warning was issued by the `callable` being tested,
         and `False` otherwise.
         """
+
         return bool(self._warnings_record.list)
 
     @property
@@ -80,8 +92,8 @@ class ActualTestOutcome:
         ------
         RuntimeError
             If no exception was raised during the test.
-
         """
+
         if self.exception_was_raised:
             return self._exception_info
         else:
@@ -96,8 +108,8 @@ class ActualTestOutcome:
         ------
         RuntimeError
             If no exception was raised during the test.
-
         """
+
         return self.exception_info.type
 
     @property
@@ -110,8 +122,8 @@ class ActualTestOutcome:
         ------
         RuntimeError
             If no exception was raised during the test.
-
         """
+
         return str(self.exception_info.value)
 
     @property
@@ -124,8 +136,8 @@ class ActualTestOutcome:
         ------
         RuntimeError
             If no warning was issued during the test.
-
         """
+
         if self.warning_was_issued:
             return self._warnings_record
         else:
@@ -146,6 +158,7 @@ class ActualTestOutcome:
         RuntimeError
             If no warning was issued during the test.
         """
+
         if self.warning_was_issued:
             return [warning.category for warning in self.warnings_record]
         else:
@@ -166,8 +179,8 @@ class ActualTestOutcome:
         ------
         RuntimeError
             If no warning was issued during the test.
-
         """
+
         if self.warning_was_issued:
             return [str(warning.message.args[0]) for warning in self.warnings_record]
         else:
@@ -188,8 +201,8 @@ class ActualTestOutcome:
         RuntimeError
             If no value was returned during the test, for example if
             the test raised an exception.
-
         """
+
         if self.value_was_returned:
             return self._value
         else:
@@ -198,4 +211,18 @@ class ActualTestOutcome:
     @property
     def call_string(self) -> str:
         """A string that reproduces the call that is being tested."""
+
         return self._inputs.call_string
+
+    def __len__(self):
+        """
+        Return the length of the actual value returned in the test, if a
+        value was returned.  If ``__len__`` is undefined in the actual
+        value, then return ``1``.
+        """
+
+        if self.value_was_returned:
+            has_a_len = hasattr(self.value, "__len__")
+            return len(self.value) if has_a_len else 1
+        else:
+            return NotImplemented
