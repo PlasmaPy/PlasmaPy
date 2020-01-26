@@ -13,7 +13,7 @@ from plasmapy.utils.pytest_helpers.expected import (
 
 @pytest.mark.parametrize(
     "argument, expected",
-    [(Warning, True), (UserWarning, True), (Exception, False), ("", False),],
+    [(Warning, True), (UserWarning, True), (Exception, False), ("", False)],
 )
 def test__is_warning(argument, expected):
     """
@@ -25,7 +25,7 @@ def test__is_warning(argument, expected):
 
 @pytest.mark.parametrize(
     "argument, expected",
-    [(Warning, False), (UserWarning, False), (Exception, True), ("", False),],
+    [(Warning, False), (UserWarning, False), (Exception, True), ("", False)],
 )
 def test__is_exception(argument, expected):
     """

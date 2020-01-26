@@ -25,7 +25,7 @@ from plasmapy.utils.pytest_helpers.tests.sample_functions import (
 
 class FunctionTestCase:
     def __init__(
-            self, expected, function, args=None, kwargs=None, exception=None, errmsg=None,
+        self, expected, function, args=None, kwargs=None, exception=None, errmsg=None
     ):
         """
         Store information for a test of ``function_test_runner``.
@@ -46,6 +46,7 @@ function_test_cases = [
     FunctionTestCase(expected=42, function=return_42),
     FunctionTestCase(expected=43, function=return_42, exception=pytest.fail.Exception),
 ]
+
 
 @pytest.mark.parametrize("case", function_test_cases)
 def test_function_test_runner(case):

@@ -99,7 +99,7 @@ f_args_kwargs_expected_whaterror = [
 
 
 @pytest.mark.parametrize(
-    "f, args, kwargs, expected, whaterror", f_args_kwargs_expected_whaterror,
+    "f, args, kwargs, expected, whaterror", f_args_kwargs_expected_whaterror
 )
 def test_run_test(f, args, kwargs, expected, whaterror):
     """
@@ -206,11 +206,11 @@ def test_func(inputs):
 
 run_test_equivalent_calls_table = [
     # cases like inputs = (func, (args, kwargs), (args, kwargs), (args, kwargs))
-    [(return_arg, [(1,), {}], [(1,), {}],), None,],
-    [(return_arg, [(1,), {}], [(86,), {}],), UnexpectedResultError,],
-    [(return_arg, [(1,), {}], [(1,), {}], [(1,), {}], [(1,), {}], [(1,), {}],), None,],
+    [(return_arg, [(1,), {}], [(1,), {}]), None],
+    [(return_arg, [(1,), {}], [(86,), {}]), UnexpectedResultError],
+    [(return_arg, [(1,), {}], [(1,), {}], [(1,), {}], [(1,), {}], [(1,), {}]), None],
     # cases like inputs = [(func, args, kwargs), (func, args, kwargs))
-    (((return_arg, (1,), {}), (return_arg, (1,), {}),), None,),
+    (((return_arg, (1,), {}), (return_arg, (1,), {})), None),
     (
         (
             (return_arg, (1,), {}),
@@ -230,16 +230,16 @@ run_test_equivalent_calls_table = [
         UnexpectedResultError,
     ),
     # cases where there are no kwargs
-    ((return_arg, [1], [1]), None,),
-    ((return_arg, ["this"], ["that"]), UnexpectedResultError,),
-    ([(return_arg, [1], [1])], None,),
+    ((return_arg, [1], [1]), None),
+    ((return_arg, ["this"], ["that"]), UnexpectedResultError),
+    ([(return_arg, [1], [1])], None),
     # cases where there are no kwargs and the args are not in tuples or lists
     ((return_arg, 1, 1, 1, 1), None),
-    ((return_arg, 1, 1, 1, 8794), UnexpectedResultError,),
-    (((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 1), {}),), None,),
-    (((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 1), {}),), None,),
+    ((return_arg, 1, 1, 1, 8794), UnexpectedResultError),
+    (((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 1), {})), None),
+    (((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 1), {})), None),
     (
-        ((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 59), {}),),
+        ((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 59), {})),
         UnexpectedResultError,
     ),
 ]
@@ -321,7 +321,7 @@ class_method_call_string_table = [
 
 
 @pytest.mark.parametrize(
-    "c_args, c_kwargs, m_args, m_kwargs, expected", class_method_call_string_table,
+    "c_args, c_kwargs, m_args, m_kwargs, expected", class_method_call_string_table
 )
 def test_class_method_call_string(c_args, c_kwargs, m_args, m_kwargs, expected):
     """Test that `class_method_call_string` returns the expected results."""

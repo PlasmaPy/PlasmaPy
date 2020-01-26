@@ -29,7 +29,7 @@ def raise_exception():
         (issue_warning, "exception_was_raised", False),
         (issue_warning, "value", 24),
         (issue_warning, "value_was_returned", True),
-        (issue_warning, "warning_messages", ["warning message",]),
+        (issue_warning, "warning_messages", ["warning message"]),
         (issue_warning, "warning_types", [UserWarning]),
         (raise_exception, "warning_was_issued", False),
         (raise_exception, "exception_was_raised", True),
@@ -45,7 +45,7 @@ def test_actual_test_outcome(function, attribute, expected):
         pytest.fail(
             f"The attribute {repr(attribute)} of ActualTestOutcome for"
             f" function {function.__name__} was {getattr(actual, attribute)}, "
-            f"instead of the expected value of {expected}.",
+            f"instead of the expected value of {expected}."
         )
 
 

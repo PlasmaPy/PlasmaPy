@@ -363,7 +363,7 @@ def test_class_method_test_inputs(
     """
     method_name = "sample_method"
     instance = ClassMethodTestInputs(
-        cls, method_name, cls_args, cls_kwargs, method_args, method_kwargs,
+        cls, method_name, cls_args, cls_kwargs, method_args, method_kwargs
     )
     value_of_attribute = getattr(instance, attribute_being_tested)
     if value_of_attribute != expected:
@@ -375,10 +375,10 @@ def test_class_method_test_inputs(
 
 @pytest.mark.parametrize(
     "cls, cls_args, cls_kwargs, method_args, method_kwargs, expected",
-    [(*common_inputs, sum(sample_method_args) + sum(sample_method_kwargs.values())),],
+    [(*common_inputs, sum(sample_method_args) + sum(sample_method_kwargs.values()))],
 )
 def test_class_method_test_inputs_call(
-    cls, cls_args, cls_kwargs, method_args, method_kwargs, expected,
+    cls, cls_args, cls_kwargs, method_args, method_kwargs, expected
 ):
     """
     Test that the ``call`` method on ClassMethodTestInputs returns
@@ -412,7 +412,7 @@ def test_class_method_test_inputs_call(
     ],
 )
 def test_class_method_test_inputs_errors(
-    cls, cls_args, cls_kwargs, method_args, method_kwargs, method_name,
+    cls, cls_args, cls_kwargs, method_args, method_kwargs, method_name
 ):
     """
     Test that ``ClassMethodTestInputs`` raises exceptions upon
@@ -453,7 +453,7 @@ def test_validate_kwargs():
 
 @pytest.mark.parametrize(
     "bad_kwargs, exception",
-    [(bad_kwargs_wrong_type, TypeError), (bad_kwargs_nonstring_key, ValueError),],
+    [(bad_kwargs_wrong_type, TypeError), (bad_kwargs_nonstring_key, ValueError)],
 )
 def test_validate_kwargs_errors(bad_kwargs, exception):
     """
