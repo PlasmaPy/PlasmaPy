@@ -3,7 +3,6 @@ import pytest
 from typing import Callable
 
 from plasmapy.utils.pytest_helpers.inputs import (
-    InvalidTestError,
     AbstractTestInputs,
     FunctionTestInputs,
     ClassAttributeTestInputs,
@@ -33,7 +32,9 @@ def _test_runner(inputs: AbstractTestInputs, expected, *, rtol=1e-8, atol=None):
     try:
         actual_outcome = ActualTestOutcome(inputs)
         expected_outcome = ExpectedTestOutcome(expected)
-        comparison = CompareActualExpected(actual_outcome, expected_outcome, rtol=rtol, atol=atol)
+        comparison = CompareActualExpected(
+            actual_outcome, expected_outcome, rtol=rtol, atol=atol
+        )
     except Exception as exc:
         raise InvalidTestError("Unable to run test.") from exc
 
@@ -42,7 +43,7 @@ def _test_runner(inputs: AbstractTestInputs, expected, *, rtol=1e-8, atol=None):
 
 
 def function_test_runner(
-    expected, function: Callable, args=None, kwargs=None, *, rtol=1e-8, atol=None,
+    expected, function: Callable, args=None, kwargs=None, *, rtol=1e-8, atol=None
 ):
     """
     Test that calling a function with particular arguments results in
@@ -163,7 +164,6 @@ def method_test_runner(
     InvalidTestError
         If the test is not set up correctly.
 
-
     Examples
     --------
 
@@ -177,7 +177,7 @@ def method_test_runner(
 
 
 def attr_test_runner(
-    expected, cls, attribute, cls_args=None, cls_kwargs=None, *, rtol=1e-8, atol=None,
+    expected, cls, attribute, cls_args=None, cls_kwargs=None, *, rtol=1e-8, atol=None
 ):
     """
     Test that accessing a class attribute results in the expected outcome.

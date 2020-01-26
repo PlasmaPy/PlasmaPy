@@ -11,7 +11,7 @@ import astropy.tests.helper as astrohelper
 import warnings
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
-from plasmapy.utils.pytest_helpers.error_messages import (
+from plasmapy.utils.pytest_helpers.formatting import (
     call_string,
     _get_object_name,
     _exc_str,
@@ -26,11 +26,7 @@ from plasmapy.utils.pytest_helpers.exceptions import (
     MissingWarningError,
 )
 
-__all__ = [
-    "run_test",
-    "run_test_equivalent_calls",
-    "assert_can_handle_nparray",
-]
+__all__ = ["run_test", "run_test_equivalent_calls", "assert_can_handle_nparray"]
 
 
 def _process_input(wrapped_function: Callable):

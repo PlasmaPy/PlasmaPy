@@ -5,7 +5,7 @@ import inspect
 
 from plasmapy.utils.pytest_helpers.exceptions import InvalidTestError
 
-from plasmapy.utils.pytest_helpers.error_messages import (
+from plasmapy.utils.pytest_helpers.formatting import (
     call_string,
     class_attribute_call_string,
     class_method_call_string,
@@ -26,6 +26,7 @@ def _validate_args(args: Any) -> Union[Tuple, List]:
     Otherwise, return a `tuple` containing the argument.  If the input
     is `None`, then this function will return an empty `tuple`.
     """
+
     if isinstance(args, (tuple, list)):
         return args
     elif args is None:
@@ -48,8 +49,8 @@ def _validate_kwargs(kwargs: Optional[Dict[str, Any]]) -> Dict[str, Any]:
 
     ValueError
         If the `dict` contains a key that is not a string.
-
     """
+
     if kwargs is None:
         return dict()
     if not isinstance(kwargs, dict):
@@ -93,7 +94,6 @@ class FunctionTestInputs(AbstractTestInputs):
         The keyword arguments to be provided to the function that is
         being tested. If provided, the keys of this `dict` must be
         strings.
-
     """
 
     def __init__(
@@ -117,31 +117,37 @@ class FunctionTestInputs(AbstractTestInputs):
     @property
     def function(self) -> Callable:
         """The function to be tested."""
+
         __tracebackhide__ = False
         return self._info["function"]
 
     @property
     def args(self) -> Union[Tuple, List]:
         """The positional arguments to be provided to the function that is being tested."""
+
         return self._info["args"]
 
     @property
     def kwargs(self) -> Dict[str, Any]:
         """The keyword arguments to be provided to the function that is being tested."""
+
         return self._info["kwargs"]
 
     @function.setter
     def function(self, provided_function: Callable):
+
         if not inspect.isfunction(provided_function):
             raise TypeError("The provided function is not a function.")
         self._info["function"] = provided_function
 
     @args.setter
     def args(self, provided_args: Any):
+
         self._info["args"] = _validate_args(provided_args)
 
     @kwargs.setter
     def kwargs(self, provided_kwargs: Optional[Dict[str, Any]]):
+
         self._info["kwargs"] = _validate_kwargs(provided_kwargs)
 
     def call(self):
@@ -149,11 +155,17 @@ class FunctionTestInputs(AbstractTestInputs):
         Call the function to be tested with the provided positional and
         keyword arguments.
         """
+
         __tracebackhide__ = True
         return self.function(*self.args, **self.kwargs)
 
     @property
     def call_string(self) -> str:
+        """
+        Return the string corresponding to calling a function or class
+        method or accessing a class attribute.
+        """
+
         return call_string(self.function, args=self.args, kwargs=self.kwargs)
 
 
@@ -164,20 +176,24 @@ class GenericClassTestInputs(AbstractTestInputs):
     @property
     def cls(self):
         """The class to be tested."""
+
         return self._info["cls"]
 
     @property
     def cls_args(self) -> Union[Tuple, List]:
         """The positional arguments to be passed to the class during instantiation."""
+
         return self._info["cls_args"]
 
     @property
     def cls_kwargs(self) -> Dict[str, Any]:
         """The keyword arguments to be passed to the class during instantiation."""
+
         return self._info["cls_kwargs"]
 
     @cls.setter
     def cls(self, provided_cls):
+
         if inspect.isclass(provided_cls):
             self._info["cls"] = provided_cls
         else:
@@ -185,10 +201,12 @@ class GenericClassTestInputs(AbstractTestInputs):
 
     @cls_args.setter
     def cls_args(self, provided_cls_args: Any):
+
         self._info["cls_args"] = _validate_args(provided_cls_args)
 
     @cls_kwargs.setter
     def cls_kwargs(self, provided_cls_kwargs: Optional[Dict[str, Any]]):
+
         self._info["cls_kwargs"] = _validate_kwargs(provided_cls_kwargs)
 
 
@@ -233,6 +251,7 @@ class ClassAttributeTestInputs(GenericClassTestInputs):
         cls_args: Any = None,
         cls_kwargs: Optional[Dict[str, Any]] = None,
     ):
+
         try:
             self._info = {}
             self.cls = cls
@@ -251,10 +270,12 @@ class ClassAttributeTestInputs(GenericClassTestInputs):
     @property
     def attribute(self) -> AnyStr:
         """The name of the attribute to be tested."""
+
         return self._info["attribute"]
 
     @attribute.setter
     def attribute(self, attribute_name: AnyStr):
+
         if not isinstance(attribute_name, str):
             raise TypeError("Expecting the name of a class attribute as a string.")
         if not hasattr(self.cls, attribute_name):
@@ -264,6 +285,7 @@ class ClassAttributeTestInputs(GenericClassTestInputs):
 
     def call(self):
         """Instantiate the class and access the attribute."""
+
         __tracebackhide__ = True
         instance = self.cls(*self.cls_args, **self.cls_kwargs)
         return getattr(instance, self.attribute)
@@ -274,6 +296,7 @@ class ClassAttributeTestInputs(GenericClassTestInputs):
         Return a string that is designed to reproduce class instantiation
         and accessing the class attribute.
         """
+
         return class_attribute_call_string(
             cls=self.cls,
             attr=self.attribute,
@@ -336,6 +359,7 @@ class ClassMethodTestInputs(GenericClassTestInputs):
         method_args=None,
         method_kwargs: Optional[Dict[str, Any]] = None,
     ):
+
         try:
             self._info = {}
             self.cls = cls
@@ -356,27 +380,33 @@ class ClassMethodTestInputs(GenericClassTestInputs):
     @property
     def method(self):
         """The name of the method to be tested."""
+
         return self._info["method"]
 
     @property
     def method_args(self) -> Union[Tuple, List]:
         """The positional arguments to be provided to the method being tested."""
+
         return self._info["method_args"]
 
     @property
     def method_kwargs(self) -> Dict[str, Any]:
         """The keyword arguments to be provided to the method being tested."""
+
         return self._info["method_kwargs"]
 
     @method.setter
     def method(self, method_name: AnyStr):
+
         if not isinstance(method_name, str):
             raise TypeError("Expecting the name of a method as a string.")
         elif not hasattr(self.cls, method_name):
             raise ValueError(
                 f"No method named {method_name} in class {self.cls.__name__}."
             )
+
         actual_method = getattr(self.cls, method_name)
+
         if callable(actual_method):
             self._info["method"] = method_name
         else:
@@ -387,14 +417,17 @@ class ClassMethodTestInputs(GenericClassTestInputs):
 
     @method_args.setter
     def method_args(self, provided_args):
+
         self._info["method_args"] = _validate_args(provided_args)
 
     @method_kwargs.setter
     def method_kwargs(self, provided_kwargs: Optional[Dict[str, Any]]):
+
         self._info["method_kwargs"] = _validate_kwargs(provided_kwargs)
 
     def call(self):
         """Instantiate the class and call the appropriate method."""
+
         __tracebackhide__ = True
         instance = self.cls(*self.cls_args, **self.cls_kwargs)
         method = getattr(instance, self.method)
@@ -406,6 +439,7 @@ class ClassMethodTestInputs(GenericClassTestInputs):
         Return a string that is designed to reproduce class instantiation
         and accessing the class attribute.
         """
+
         return class_method_call_string(
             cls=self.cls,
             method=self.method,

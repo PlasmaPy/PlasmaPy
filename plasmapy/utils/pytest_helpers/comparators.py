@@ -10,7 +10,7 @@ from plasmapy.utils.pytest_helpers import InvalidTestError
 from plasmapy.utils.pytest_helpers.expected import ExpectedTestOutcome
 from plasmapy.utils.pytest_helpers.actual import ActualTestOutcome
 
-from plasmapy.utils.pytest_helpers.error_messages import (
+from plasmapy.utils.pytest_helpers.formatting import (
     _exc_str,
     _string_together_warnings_for_printing,
     _get_object_name,
@@ -22,7 +22,7 @@ __all__ = ["CompareActualExpected"]
 #       be hard to manually check.
 
 
-def _get_unit(obj):
+def _get_unit(obj: Any):
     """
     Return the unit corresponding to a unit or Quantity, or return
     `None` when ``obj`` is not a unit or Quantity.
@@ -136,6 +136,7 @@ class CompareValues:
         `True` if the units of the two values being compared are identical
         to each other or if neither of the values has a unit, and `False` otherwise.
         """
+
         return self.units[0] is self.units[1]
 
     @property
@@ -170,7 +171,7 @@ class CompareValues:
             ) from None
 
     @property
-    def atol(self):
+    def atol(self) -> Optional[Union[Number, u.Quantity]]:
         """
         The absolute tolerance to be used by `~astropy.units.isclose` or
         `~astropy.units.allclose`.  If the objects being compared are two
@@ -181,7 +182,7 @@ class CompareValues:
         return self._atol
 
     @atol.setter
-    def atol(self, new_atol):
+    def atol(self, new_atol: Optional[Union[Number, u.Quantity]]):
 
         self._atol = new_atol
 
@@ -330,8 +331,8 @@ class CompareActualExpected:
         actual: ActualTestOutcome,
         expected: ExpectedTestOutcome,
         *,
-        rtol=1e-8,
-        atol=0.0,
+        rtol: Union[Number, u.Quantity] = 1e-8,
+        atol: Optional[Union[Number, u.Quantity]] = 0.0,
     ):
 
         if not isinstance(actual, ActualTestOutcome):
@@ -551,6 +552,10 @@ class CompareActualExpected:
         elif not comparison.units_are_identical:
             self._make_nonidentical_units_errmsg()
 
+        # Should we add a method to check whether the len(...) of the
+        # expected and actual outcomes matches or not?  That could
+        # potentially be useful for debugging.
+
     def _make_missing_warning_errmsg(self):
         """
         Compose an error message for tests where a warning was expected
@@ -569,7 +574,7 @@ class CompareActualExpected:
         """
 
         warnings_for_printing = _string_together_warnings_for_printing(
-            self.actual.warning_types, self.actual.warning_messages,
+            self.actual.warning_types, self.actual.warning_messages
         )
 
         number_of_warnings = len(self.actual.warning_types)
@@ -599,7 +604,7 @@ class CompareActualExpected:
             return
 
         warnings_for_printing = _string_together_warnings_for_printing(
-            self.actual.warning_types, self.actual.warning_messages,
+            self.actual.warning_types, self.actual.warning_messages
         )
 
         errmsg = (
@@ -611,6 +616,7 @@ class CompareActualExpected:
         )
 
         self._add_errmsg(errmsg)
+
         # TODO: Figure out a way to deal to deal with deprecation warnings.
         #       We should not count those as test failures, but those should
         #       show up in the test report as an actual warning.
