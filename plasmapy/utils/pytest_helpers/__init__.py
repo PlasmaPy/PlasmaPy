@@ -4,7 +4,7 @@ from plasmapy.utils.pytest_helpers.pytest_helpers import (
     assert_can_handle_nparray,
 )
 
-from plasmapy.utils.pytest_helpers.error_messages import (
+from plasmapy.utils.pytest_helpers.formatting import (
     call_string,
     class_method_call_string,
     class_attribute_call_string,
