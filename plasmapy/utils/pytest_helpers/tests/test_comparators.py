@@ -449,7 +449,7 @@ func_args_kwargs_expected_errmsg = [
         nokwargs,
         Warning,
         "The command issue_sample_warning_and_return_42() was expected to "
-        "issue a a Warning, but instead issued the following warning:\n\n"
+        "issue a Warning, but instead issued the following warning:\n\n"
         "SampleWarning: warning message",
     ),
     case(
@@ -494,7 +494,8 @@ func_args_kwargs_expected_errmsg = [
         42,
         "The command return_sum_of_two_args_and_kwargs(5.3, 2.42, kw1=1.56, "
         "kw2=4.2) returned a value of 13.48, which differs from the expected "
-        "value of 42. The type of the returned value (Quantity) "
+        "value of 42. The type of the returned value "
+        "(astropy.units.quantity.Quantity) "
         "is different than the type of the expected value (int).",
     ),
 ]

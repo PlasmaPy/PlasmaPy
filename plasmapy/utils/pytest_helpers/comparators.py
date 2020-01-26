@@ -13,6 +13,7 @@ from plasmapy.utils.pytest_helpers.actual import ActualTestOutcome
 from plasmapy.utils.pytest_helpers.error_messages import (
     _exc_str,
     _string_together_warnings_for_printing,
+    _get_object_name,
 )
 
 __all__ = ["CompareActualExpected"]
@@ -424,31 +425,6 @@ class CompareActualExpected:
             else "This command"
         )
 
-    def _make_unexpected_warnings_errmsg(self):
-        """
-        Compose an error message for tests where warnings were
-        unexpectedly issued.
-        """
-
-        _string_together_warnings_for_printing(
-            self.actual.warning_types, self.actual.warning_messages,
-        )
-
-        warnings_for_printing = _string_together_warnings_for_printing(
-            self.actual.warning_types, self.actual.warning_messages,
-        )
-
-        number_of_warnings = len(self.actual.warning_types)
-
-        errmsg = (
-            f"{self._subject} unexpectedly issued the following warnings"
-            f"{'s' if number_of_warnings > 1 else ''}:"
-            f"\n\n"
-            f"{warnings_for_printing}"
-        )
-
-        self._add_errmsg(errmsg)
-
     def _make_exception_mismatch_errmsg_if_necessary(self):
         """
         Compose an error message for tests where a certain type of
@@ -537,9 +513,13 @@ class CompareActualExpected:
         actual_type = type(self.actual.value)
         expected_type = type(self.expected.expected_value)
 
+        actual_type_name = _get_object_name(actual_type, showmodule=True)
+        expected_type_name = _get_object_name(expected_type, showmodule=True)
+
         self._add_errmsg(
-            f"The type of the returned value ({actual_type}) is different "
-            f"than the type of the expected value ({expected_type})."
+            f"The type of the returned value ({actual_type_name})"
+            f" is different than the type of the expected value "
+            f"({expected_type_name})."
         )
 
     def _make_value_mismatch_errmsg_if_necessary(self):
@@ -582,6 +562,27 @@ class CompareActualExpected:
             f"as expected."
         )
 
+    def _make_unexpected_warnings_errmsg(self):
+        """
+        Compose an error message for tests where warnings were
+        unexpectedly issued.
+        """
+
+        warnings_for_printing = _string_together_warnings_for_printing(
+            self.actual.warning_types, self.actual.warning_messages,
+        )
+
+        number_of_warnings = len(self.actual.warning_types)
+
+        errmsg = (
+            f"{self._subject} unexpectedly issued the following warnings"
+            f"{'s' if number_of_warnings > 1 else ''}:"
+            f"\n\n"
+            f"{warnings_for_printing}"
+        )
+
+        self._add_errmsg(errmsg)
+
     def _make_warning_mismatch_errmsg_if_necessary(self):
         """
         Compose an error message for tests where the expected warning
@@ -597,18 +598,19 @@ class CompareActualExpected:
         if expected_warning in actual_warnings:
             return
 
-        errmsg = (
-            f"{self._subject} was expected to issue a {_exc_str(expected_warning)}, "
-            f"but instead issued the following warning"
-            f"{'' if number_of_warnings == 1 else 's'}:"
+        warnings_for_printing = _string_together_warnings_for_printing(
+            self.actual.warning_types, self.actual.warning_messages,
         )
-        errmsg += "\n\n"
 
-        for warning, message in zip(actual_warnings, warning_messages):
-            errmsg += warning.__name__ + message + "\n\n"
+        errmsg = (
+            f"{self._subject} was expected to issue {_exc_str(expected_warning)}, "
+            f"but instead issued the following warning"
+            f"{'s' if number_of_warnings > 1 else ''}:"
+            f"\n\n"
+            f"{warnings_for_printing}"
+        )
 
         self._add_errmsg(errmsg)
-
         # TODO: Figure out a way to deal to deal with deprecation warnings.
         #       We should not count those as test failures, but those should
         #       show up in the test report as an actual warning.
