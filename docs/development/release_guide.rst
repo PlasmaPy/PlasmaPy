@@ -53,44 +53,31 @@ I would think about limiting this to the credits in new release entries in
 
 * Commit your changes up until now
 
-* Make sure that tests pass  and that
-  documentation builds without issue (``tox``)
+* Make sure that tests pass and that documentation builds without issue (``tox``)
 
-* Tag the new version with ``git tag -s v<version> -m "Tagging v<version>"``
+* Tag the new version with ``git tag -s v<version> -m "Version v<version>"``
 
   * Note that ``-s`` signs the commit with a GPG key
 
-* Test that RTD is building the documentation correctly on release
-  branch (and the version is correct)
+* Push the tagged commit to the version's branch on GitHub: `git push --force --follow-tags upstream v0.3.x`
 
-* Perform a source distribution release
+At this point, `the OpenAstronomy Azure Pipelines
+<https://openastronomy-azure-pipelines.readthedocs.io/en/latest/publish.html>`
+infrastructure should do most of the work for you! `Ensure that the pipeline
+goes through. <https://dev.azure.com/plasmapy/PlasmaPy/_build>`
 
-  * Get a clean copy of the repository (``git clean -fxd`` or ``git clone``)
-  * Use ``python setup.py build sdist``
-  * Test that the sdist installs in a clean environment::
-
-       $ conda create -n plasmapy_release_test_v<version> numpy
-       $ conda activate plasmapy_release_test_v<version>
-       $ pip install dist/plasmapy-<version>.tar.gz
-       $ python -c 'import plasmapy; plasmapy.test()'
-       $ conda deactivate
-
-  * Check that the `plasmapy.__version__` number is correct
-    (``python -c 'import plasmapy; print(plasmapy.__version__)'``)
-
-* Merge (via fast-forward merge with `git merge --ff-only`) changes
-  from ``master`` into ``stable``
-
-* Make sure all tests pass
-
-* Make the release on PyPI::
-    
-    twine upload dist/plasmapy-X.Y.Z.tar.gz dist/plasmapy-X.Y.Z.tar.gz.asc
-
-* Make the release on conda-forge
+* Update ``setup.cfg`` (increment version and add ``.dev`` suffix)
 
 Post-release
 ------------
+
+* If necessary (for MINOR+ and not for BUGFIX versions) activate the new
+  branch's version `on RTD
+  <https://readthedocs.org/projects/plasmapy/versions/>`.
+
+* Update the `stable` branch on GitHub.
+
+* Make the release on conda-forge
 
 * Reserve a digital object identifier on Zenodo
 
@@ -99,11 +86,6 @@ Post-release
   * The `Codemeta standard <https://codemeta.github.io/>`_ is
     relatively new, so check the standard for terms that have changed
     and new terms that may apply
-
-* Update ``docs/about/change_log.rst`` (Add a new heading for the next
-  release)
-
-* Update ``setup.cfg`` (increment version and add ``dev`` suffix)
 
 * Upload the release to the Zenodo record corresponding to the reserved
   DOI
