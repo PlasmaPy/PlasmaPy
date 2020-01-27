@@ -34,9 +34,7 @@ def _test_runner(inputs: AbstractTestInputs, expected, *, rtol=1e-8, atol=None):
     try:
         actual_outcome = ActualTestOutcome(inputs)
         expected_outcome = ExpectedTestOutcome(expected)
-        comparison = CompareActualExpected(
-            actual_outcome, expected_outcome, rtol=rtol, atol=atol
-        )
+        comparison = CompareActualExpected(actual_outcome, expected_outcome, rtol=rtol, atol=atol)
     except Exception as exc:
         raise InvalidTestError("Unable to run test.") from exc
 
@@ -170,9 +168,7 @@ def method_test_runner(
     """
 
     __tracebackhide__ = True
-    inputs = ClassMethodTestInputs(
-        cls, method, cls_args, cls_kwargs, method_args, method_kwargs
-    )
+    inputs = ClassMethodTestInputs(cls, method, cls_args, cls_kwargs, method_args, method_kwargs)
     _test_runner(inputs, expected, rtol=rtol, atol=atol)
 
 

@@ -12,14 +12,6 @@ from plasmapy.tests.helper.expected import ExpectedTestOutcome
 
 from plasmapy.tests.helper.actual import ActualTestOutcome
 
-from plasmapy.tests.helper.exceptions import (
-    InvalidTestError,
-    InconsistentTypeError,
-    IncorrectResultError,
-    MissingExceptionError,
-    MissingWarningError,
-)
-
 from plasmapy.tests.helper.runners import (
     function_test_runner,
     attr_test_runner,
@@ -27,13 +19,11 @@ from plasmapy.tests.helper.runners import (
 )
 
 from plasmapy.tests.helper.exceptions import (
-    RunTestError,
+    Failed,
     UnexpectedResultError,
     InvalidTestError,
-    IncorrectResultError,
     MissingWarningError,
     MissingExceptionError,
     UnexpectedExceptionError,
-    IncorrectResultError,
     InconsistentTypeError,
 )

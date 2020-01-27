@@ -10,9 +10,7 @@ from plasmapy.tests.helper.tests.sample_functions import return_42
 
 
 class FunctionTestCase:
-    def __init__(
-        self, expected, function, args=None, kwargs=None, exception=None, errmsg=None
-    ):
+    def __init__(self, expected, function, args=None, kwargs=None, exception=None, errmsg=None):
         """
         Store information for a test of ``function_test_runner``.  If no
         exception is provided, then the test is assumed to pass.

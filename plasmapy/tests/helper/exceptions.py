@@ -1,69 +1,104 @@
 import pytest
 
 __all__ = [
-    "RunTestError",
+    "Failed",
     "UnexpectedResultError",
     "InconsistentTypeError",
     "MissingExceptionError",
     "UnexpectedExceptionError",
-    "UnexpectedResultError",
     "MissingExceptionError",
+    "UnexpectedWarningError",
     "MissingWarningError",
-    "IncorrectResultError",
     "InvalidTestError",
+    "ExceptionMismatchError",
+    "WarningMismatchError",
 ]
 
 
-class RunTestError(pytest.fail.Exception):
-    """Base exception for test failures. Derived from `Exception`."""
-
-
-class UnexpectedResultError(RunTestError):
+class Failed(pytest.fail.Exception):
     """
-    Exception for when the actual result differs from the expected
-    result.  Derived from `~plasmapy.pytest_helpers.utils.RunTestError`.
+    Base exception for test failures.
+
+    Notes
+    -----
+    This exception was derived from `~pytest.fail.Exception`, which in
+    turn was derived from `BaseException` (not `Exception`).
     """
 
+    pass
 
-class InconsistentTypeError(RunTestError):
+
+class InconsistentTypeError(Failed):
     """
     Exception for when the type of the actual result differs from the
-    type of the expected result.  Derived from
-    `~plasmapy.utils.pytest_helpers.RunTestError`.
+    type of the expected result.
     """
 
+    pass
 
-class MissingExceptionError(RunTestError):
+
+class MissingExceptionError(Failed):
     """
-    Exception for when an expected exception is not raised.  Derived
-    from `~plasmapy.utils.pytest_helpers.RunTestError`.
+    Exception for when the expected exception is not raised.
     """
 
+    pass
 
-class UnexpectedExceptionError(RunTestError):
+
+class UnexpectedExceptionError(Failed):
+    """
+    Exception for when an exception is raised unexpectedly.
+    """
+
+    pass
+
+
+class ExceptionMismatchError(UnexpectedExceptionError, MissingExceptionError):
     """
     Exception for when an exception is expected, but a different
-    exception is raised instead.  Derived from
-    `~plasmapy.utils.pytest_helpers.RunTestError`.
+    exception is raised.
     """
 
+    pass
 
-class MissingWarningError(RunTestError):
+
+class UnexpectedWarningError(Failed):
     """
-    Exception for when a warning is expected to be issued, but isn't.
-    Derived from `~plasmapy.utils.pytest_helpers.RunTestError`.
+    Exception for when a warning is issued unexpectedly.
     """
 
+    pass
 
-class IncorrectResultError(RunTestError):
+
+class MissingWarningError(Failed):
+    """
+    Exception for when an expected warning is not issued.
+    """
+
+    pass
+
+
+class WarningMismatchError(UnexpectedWarningError, MissingWarningError):
+    """
+    Exception for when a warning is expected, but one or more
+    different warnings were issued instead.
+    """
+
+    pass
+
+
+class UnexpectedResultError(Failed):
     """
     Exception for when the actual result differs from the expected
-    result by more than the allowed tolerance.  Derived from
-    `~plasmapy.utils.pytest_helpers.RunTestError`.
+    result by more than the allowed tolerance.
     """
+
+    pass
 
 
 class InvalidTestError(Exception):
     """
     Exception for when the inputs to a test are not valid.
     """
+
+    pass

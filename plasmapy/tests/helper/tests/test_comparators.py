@@ -7,22 +7,36 @@ from plasmapy.tests.helper.actual import ActualTestOutcome
 from plasmapy.tests.helper.expected import ExpectedTestOutcome
 from plasmapy.tests.helper.inputs import FunctionTestInputs
 
+from plasmapy.utils.formatting.formatting import _name_with_article, call_string
+
 from plasmapy.tests.helper.comparators import (
     CompareActualExpected,
     CompareValues,
     _get_unit,
     _units_are_compatible,
 )
-from plasmapy.tests.helper.exceptions import InvalidTestError
+
+from plasmapy.tests.helper.exceptions import (
+    Failed,
+    UnexpectedResultError,
+    InconsistentTypeError,
+    UnexpectedExceptionError,
+    MissingExceptionError,
+    UnexpectedWarningError,
+    MissingWarningError,
+    InvalidTestError,
+    ExceptionMismatchError,
+    WarningMismatchError,
+)
 
 from plasmapy.tests.helper.tests.sample_functions import (
     return_42,
     return_42_meters,
     return_np_array,
-    return_sum_of_two_args_and_kwargs,
+    sum_of_args_and_kwargs,
     return_none,
-    raise_sample_exception,
-    issue_sample_warning_and_return_42,
+    raise_exception,
+    issue_warning_return_42,
     SampleException,
     SampleExceptionSubclass,
     SampleWarning,
@@ -33,118 +47,54 @@ noargs = ()
 nokwargs = {}
 
 
+table_of_function_args_kwargs_expected_and_exception = [
+    (raise_exception, noargs, nokwargs, SampleException, None),
+    (raise_exception, noargs, nokwargs, Exception, ExceptionMismatchError),
+    (raise_exception, noargs, nokwargs, SampleExceptionSubclass, ExceptionMismatchError),
+    (raise_exception, noargs, nokwargs, 42, UnexpectedExceptionError),
+    (raise_exception, noargs, nokwargs, SampleWarning, Failed),
+    (return_42, noargs, nokwargs, 42, None),
+    (return_42, noargs, nokwargs, 6 * 9, UnexpectedResultError),
+    (return_42, noargs, nokwargs, 42.0, InconsistentTypeError),
+    (return_42, noargs, nokwargs, SampleException, MissingExceptionError),
+    (return_42, noargs, nokwargs, (SampleWarning, 42), MissingWarningError),
+    (return_42, noargs, nokwargs, (42, SampleWarning), MissingWarningError),
+    (return_42_meters, noargs, nokwargs, 42.0 * u.m, None),
+    (return_42_meters, noargs, nokwargs, 42 * (1 + 1e-15) * u.m, None),
+    (return_42_meters, noargs, nokwargs, 4200.0 * u.cm, u.UnitsError),
+    (return_42_meters, noargs, nokwargs, 42 * u.kg, u.UnitsError),
+    (return_42_meters, noargs, nokwargs, 6 * 9 * u.m, UnexpectedResultError),
+    (return_42_meters, noargs, nokwargs, u.m, None),
+    (return_42_meters, noargs, nokwargs, u.cm, u.UnitsError),  # THIS ONE!!!!!!!!
+    (return_none, noargs, nokwargs, None, None),
+    (return_none, noargs, nokwargs, False, InconsistentTypeError),
+    (issue_warning_return_42, noargs, nokwargs, SampleWarning, None),
+    (issue_warning_return_42, noargs, nokwargs, SampleWarningSubclass, WarningMismatchError),
+    (issue_warning_return_42, noargs, nokwargs, Warning, WarningMismatchError),
+    (issue_warning_return_42, noargs, nokwargs, (SampleWarning, 42), None),
+    (issue_warning_return_42, noargs, nokwargs, (42, SampleWarning), None),
+    (issue_warning_return_42, noargs, nokwargs, (SampleWarning, 6 * 9), UnexpectedResultError),
+    (issue_warning_return_42, noargs, nokwargs, (6 * 9, SampleWarning), UnexpectedResultError,),
+    (issue_warning_return_42, noargs, nokwargs, (SampleWarningSubclass, 42), WarningMismatchError),
+    (issue_warning_return_42, noargs, nokwargs, (42, SampleWarningSubclass), WarningMismatchError),
+    (issue_warning_return_42, noargs, nokwargs, (Warning, 42), WarningMismatchError,),
+    (issue_warning_return_42, noargs, nokwargs, (42, Warning), WarningMismatchError,),
+    (issue_warning_return_42, noargs, nokwargs, 42, UnexpectedWarningError),
+    (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, 17, None),
+    (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, 42, UnexpectedResultError,),
+    (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, Warning, MissingWarningError,),
+    (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, Exception, MissingExceptionError,),
+    (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, (Warning, 17), MissingWarningError,),
+    (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, (17, Warning), MissingWarningError,),
+    (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, "17", InconsistentTypeError,),
+]
+
+
 @pytest.mark.parametrize(
-    "function, args, kwargs, expected, test_should_pass",
-    [
-        (raise_sample_exception, noargs, nokwargs, SampleException, True),
-        (raise_sample_exception, noargs, nokwargs, Exception, False),
-        (raise_sample_exception, noargs, nokwargs, SampleExceptionSubclass, False),
-        (raise_sample_exception, noargs, nokwargs, 42, False),
-        (raise_sample_exception, noargs, nokwargs, SampleWarning, False),
-        (return_42, noargs, nokwargs, 42, True),
-        (return_42, noargs, nokwargs, 6 * 9, False),
-        (return_42, noargs, nokwargs, 42.0, False),
-        (return_42, noargs, nokwargs, SampleException, False),
-        (return_42, noargs, nokwargs, (SampleWarning, 42), False),
-        (return_42, noargs, nokwargs, (42, SampleWarning), False),
-        (return_42_meters, noargs, nokwargs, 42.0 * u.m, True),
-        (return_42_meters, noargs, nokwargs, 42 * (1 + 1e-15) * u.m, True),
-        (return_42_meters, noargs, nokwargs, 4200.0 * u.cm, False),
-        (return_42_meters, noargs, nokwargs, 42 * u.kg, False),
-        (return_42_meters, noargs, nokwargs, 6 * 9 * u.m, False),
-        (return_42_meters, noargs, nokwargs, u.m, True),
-        (return_42_meters, noargs, nokwargs, u.cm, False),
-        (return_none, noargs, nokwargs, None, True),
-        (return_none, noargs, nokwargs, False, False),
-        (issue_sample_warning_and_return_42, noargs, nokwargs, SampleWarning, True),
-        (
-            issue_sample_warning_and_return_42,
-            noargs,
-            nokwargs,
-            SampleWarningSubclass,
-            False,
-        ),
-        (issue_sample_warning_and_return_42, noargs, nokwargs, Warning, False),
-        (
-            issue_sample_warning_and_return_42,
-            noargs,
-            nokwargs,
-            (SampleWarning, 42),
-            True,
-        ),
-        (
-            issue_sample_warning_and_return_42,
-            noargs,
-            nokwargs,
-            (42, SampleWarning),
-            True,
-        ),
-        (
-            issue_sample_warning_and_return_42,
-            noargs,
-            nokwargs,
-            (SampleWarning, 6 * 9),
-            False,
-        ),
-        (
-            issue_sample_warning_and_return_42,
-            noargs,
-            nokwargs,
-            (6 * 9, SampleWarning),
-            False,
-        ),
-        (
-            issue_sample_warning_and_return_42,
-            noargs,
-            nokwargs,
-            (SampleWarningSubclass, 42),
-            False,
-        ),
-        (
-            issue_sample_warning_and_return_42,
-            noargs,
-            nokwargs,
-            (42, SampleWarningSubclass),
-            False,
-        ),
-        (issue_sample_warning_and_return_42, noargs, nokwargs, (Warning, 42), False),
-        (issue_sample_warning_and_return_42, noargs, nokwargs, (42, Warning), False),
-        # if unexpected warnings should cause a failure
-        (issue_sample_warning_and_return_42, noargs, nokwargs, 42, False),
-        (return_sum_of_two_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, 17, True),
-        (return_sum_of_two_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, 42, False),
-        (
-            return_sum_of_two_args_and_kwargs,
-            (2, 3),
-            {"kw1": 5, "kw2": 7},
-            Warning,
-            False,
-        ),
-        (
-            return_sum_of_two_args_and_kwargs,
-            (2, 3),
-            {"kw1": 5, "kw2": 7},
-            Exception,
-            False,
-        ),
-        (
-            return_sum_of_two_args_and_kwargs,
-            (2, 3),
-            {"kw1": 5, "kw2": 7},
-            (Warning, 17),
-            False,
-        ),
-        (
-            return_sum_of_two_args_and_kwargs,
-            (2, 3),
-            {"kw1": 5, "kw2": 7},
-            (17, Warning),
-            False,
-        ),
-        (return_sum_of_two_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, "17", False),
-    ],
+    "function, args, kwargs, expected, expected_exception",
+    table_of_function_args_kwargs_expected_and_exception,
 )
-def test_comparator_actual_expected(function, args, kwargs, expected, test_should_pass):
+def test_compare_actual_expected(function, args, kwargs, expected, expected_exception):
     """
     Test that `CompareActualExpected` correctly determines whether or
     not a test passes.
@@ -173,44 +123,45 @@ def test_comparator_actual_expected(function, args, kwargs, expected, test_shoul
         `False` if ``expected`` is incorrect.
     """
 
+    test_should_pass = expected_exception is None
+
     test_information = (
         "\n\n"
         f"function = {function.__name__}\n"
         f"args = {repr(args)}\n"
         f"kwargs = {repr(kwargs)}\n"
         f"expected = {repr(expected)}\n"
-        f"test_should_pass = {test_should_pass}"
+        f"test_should_pass = {test_should_pass}\n"
+        f"expected_exception = {expected_exception}"
     )
 
     try:
         inputs = FunctionTestInputs(function, args, kwargs)
         actual = ActualTestOutcome(inputs)
         expected = ExpectedTestOutcome(expected)
-    except Exception:
-        pytest.fail(
-            "Problem instantiating classes needed to instantiate "
-            "CompareActualExpected" + test_information
-        )
+    except Exception as exc:
+        raise Failed(
+            f"The classes needed to instantiate CompareActualExpected "
+            f"were not able to be instantiated." + test_information
+        ) from exc
 
     try:
         comparison = CompareActualExpected(actual, expected, atol=None, rtol=1e-7)
-    except Exception:
-        raise InvalidTestError(
-            f"Unable to instantiate CompareActualExpected." f"{test_information}"
-        )
+    except Exception as exc:
+        raise Failed(f"Problem instantiating CompareActualExpected." + test_information) from exc
 
-    test_information += f"\ncomparison.test_passed = {comparison.test_passed}"
-
-    if comparison.error_message:
-        test_information += (
-            f"\n\n" f"Presumably incorrect error message: " + comparison.error_message
-        )
-
-    if test_should_pass and not comparison.test_passed:
-        pytest.fail("Test should have passed, but did not." + test_information)
-
-    if not test_should_pass and comparison.test_passed:
-        pytest.fail("Test should not have passed, but did." + test_information)
+    if test_should_pass is True and comparison.test_passed is False:
+        raise Failed("This test was expected to pass, but instead failed." + test_information)
+    elif test_should_pass is False and comparison.test_passed is True:
+        raise Failed("This test was expected to fail, but instead passed." + test_information)
+    elif test_should_pass is False:
+        if comparison.exception is not expected_exception:
+            actual_exception_from_test = _name_with_article(comparison.exception)
+            expected_exception_for_test = _name_with_article(expected_exception)
+            raise ExceptionMismatchError(
+                f"This should should raise {expected_exception_for_test}, "
+                f"but instead raised {actual_exception_from_test}." + test_information
+            )
 
 
 @pytest.mark.parametrize(
@@ -308,10 +259,7 @@ def test_compare_values_bool(this, that, when_made_boolean):
     try:
         made_boolean = bool(comparison)
     except Exception:
-        pytest.fail(
-            f"The CompareValues instance for {this} and {that} cannot "
-            f"be made boolean."
-        )
+        pytest.fail(f"The CompareValues instance for {this} and {that} cannot " f"be made boolean.")
 
     if made_boolean is not when_made_boolean:
         pytest.fail(
@@ -330,8 +278,7 @@ def test_compare_values_rtol_exceptions(rtol):
     with pytest.raises(InvalidTestError):
         CompareValues(1, 1, rtol=rtol)
         pytest.fail(
-            f"CompareValues with rtol = {rtol} is not raising an "
-            f"InvalidTestError as expected."
+            f"CompareValues with rtol = {rtol} is not raising an " f"InvalidTestError as expected."
         )
 
 
@@ -340,9 +287,7 @@ def test_compare_values_rtol(rtol):
     """Test that good values of rtol get passed through okay."""
     comparison = CompareValues(1, 1, rtol=rtol)
     if comparison.rtol != rtol:
-        pytest.fail(
-            f"rtol attribute of CompareValues is not the expected " f"value of {rtol}."
-        )
+        pytest.fail(f"rtol attribute of CompareValues is not the expected " f"value of {rtol}.")
 
 
 inputs_and_expected_units = [(u.m, u.m), (5 * u.kg * u.s, u.kg * u.s), (1, None)]
@@ -365,9 +310,7 @@ units_and_expected_compatibility = [
 ]
 
 
-@pytest.mark.parametrize(
-    "unit1, unit2, expected_compatibility", units_and_expected_compatibility
-)
+@pytest.mark.parametrize("unit1, unit2, expected_compatibility", units_and_expected_compatibility)
 def test__units_are_compatible(unit1, unit2, expected_compatibility):
     actual_compatibility = _units_are_compatible(unit1, unit2)
     if actual_compatibility is not expected_compatibility:
@@ -424,73 +367,72 @@ func_args_kwargs_expected_errmsg = [
         "[1. 2. 3.], which differs from the expected value of [1.  2.  3.1].",
     ),
     case(
-        issue_sample_warning_and_return_42,
+        issue_warning_return_42,
         noargs,
         nokwargs,
         43,
-        "The command issue_sample_warning_and_return_42() returned a value "
+        "The command issue_warning_return_42() returned a value "
         "of 42, which differs from the expected value of 43. This command "
         "unexpectedly issued the following warnings:\n\n"
         "SampleWarning: warning message",
     ),
     case(
-        issue_sample_warning_and_return_42,
+        issue_warning_return_42,
         noargs,
         nokwargs,
         (SampleWarning, 43),
-        "The command issue_sample_warning_and_return_42() returned a "
+        "The command issue_warning_return_42() returned a "
         "value of 42, which differs from the expected value of 43.",
     ),
     case(
-        issue_sample_warning_and_return_42,
+        issue_warning_return_42,
         noargs,
         nokwargs,
         Warning,
-        "The command issue_sample_warning_and_return_42() was expected to "
+        "The command issue_warning_return_42() was expected to "
         "issue a Warning, but instead issued the following warning:\n\n"
         "SampleWarning: warning message",
     ),
     case(
-        issue_sample_warning_and_return_42,
+        issue_warning_return_42,
         noargs,
         nokwargs,
         (SampleWarningSubclass, 43),
-        "The command issue_sample_warning_and_return_42() returned a value "
+        "The command issue_warning_return_42() returned a value "
         "of 42, which differs from the expected value of 43. This command "
         "was expected to issue a SampleWarningSubclass, but instead "
         "issued the following warning:\n\n"
         "SampleWarning: warning message",
     ),
     case(
-        raise_sample_exception,
+        raise_exception,
         noargs,
         nokwargs,
         Exception,
-        "The command raise_sample_exception() raised a SampleException, "
+        "The command raise_exception() raised a SampleException, "
         "instead of an Exception as expected.",
     ),
     case(
-        raise_sample_exception,
+        raise_exception,
         noargs,
         nokwargs,
         SampleExceptionSubclass,
-        "The command raise_sample_exception() raised a SampleException, "
+        "The command raise_exception() raised a SampleException, "
         "instead of a SampleExceptionSubclass as expected.",
     ),
     case(
-        raise_sample_exception,
+        raise_exception,
         noargs,
         nokwargs,
         42,
-        "The command raise_sample_exception() unexpectedly raised a "
-        "SampleException.",
+        "The command raise_exception() unexpectedly raised a SampleException.",
     ),
     case(
-        return_sum_of_two_args_and_kwargs,
+        sum_of_args_and_kwargs,
         (5.3, 2.42),
         {"kw1": 1.56 * u.dimensionless_unscaled, "kw2": 4.2},
         42,
-        "The command return_sum_of_two_args_and_kwargs(5.3, 2.42, kw1=1.56, "
+        "The command sum_of_args_and_kwargs(5.3, 2.42, kw1=1.56, "
         "kw2=4.2) returned a value of 13.48, which differs from the expected "
         "value of 42. The type of the returned value "
         "(astropy.units.quantity.Quantity) "
@@ -499,9 +441,7 @@ func_args_kwargs_expected_errmsg = [
 ]
 
 
-@pytest.mark.parametrize(
-    "func, args, kwargs, expected, errmsg", func_args_kwargs_expected_errmsg
-)
+@pytest.mark.parametrize("func, args, kwargs, expected, errmsg", func_args_kwargs_expected_errmsg)
 def test_compare_actual_expected_errmsg(func, args, kwargs, expected, errmsg):
     """
     Test that CompareActualExpected generates the appropriate error

@@ -5,8 +5,6 @@ from typing import Union, Tuple, Any, Optional
 
 from astropy import units as u
 
-from plasmapy.tests.helper import InvalidTestError
-
 from plasmapy.tests.helper.expected import ExpectedTestOutcome
 from plasmapy.tests.helper.actual import ActualTestOutcome
 
@@ -15,6 +13,20 @@ from plasmapy.utils.formatting.formatting import (
     _string_together_warnings_for_printing,
     _object_name,
 )
+
+from plasmapy.tests.helper.exceptions import (
+    Failed,
+    UnexpectedResultError,
+    InconsistentTypeError,
+    UnexpectedExceptionError,
+    MissingExceptionError,
+    UnexpectedWarningError,
+    MissingWarningError,
+    InvalidTestError,
+    ExceptionMismatchError,
+    WarningMismatchError,
+)
+
 
 __all__ = ["CompareActualExpected"]
 
@@ -224,9 +236,7 @@ class CompareValues:
         if self.are_quantity_and_unit:
             return False
 
-        raise InvalidTestError(
-            f"Cannot determine whether or not {self.values} are equal."
-        )
+        raise InvalidTestError(f"Cannot determine whether or not {self.values} are equal.")
 
     @property
     def have_same_types(self) -> bool:
@@ -244,9 +254,7 @@ class CompareValues:
         `False` otherwise.
         """
 
-        return isinstance(self.values[0], u.Quantity) and isinstance(
-            self.values[1], u.Quantity
-        )
+        return isinstance(self.values[0], u.Quantity) and isinstance(self.values[1], u.Quantity)
 
     @property
     def are_quantity_and_unit(self) -> bool:
@@ -256,9 +264,7 @@ class CompareValues:
         (a subclass of) `~astropy.units.UnitBase`, and `False` otherwise.
         """
 
-        return isinstance(self.values[0], u.Quantity) and isinstance(
-            self.values[1], u.UnitBase
-        )
+        return isinstance(self.values[0], u.Quantity) and isinstance(self.values[1], u.UnitBase)
 
     @property
     def are_allclose(self) -> bool:
@@ -272,9 +278,7 @@ class CompareValues:
         """
 
         try:
-            return u.allclose(
-                *self.values, rtol=self.rtol, atol=self.atol, equal_nan=True
-            )
+            return u.allclose(*self.values, rtol=self.rtol, atol=self.atol, equal_nan=True)
         except u.UnitsError as exc:
             if self.units_are_compatible and isinstance(self.atol, u.Quantity):
                 if not _units_are_compatible(self.units[0], self.atol.unit):
@@ -391,7 +395,7 @@ class CompareActualExpected:
     @property
     def test_passed(self) -> bool:
         """
-        Returns `True` if the actual outcome matches the expected outcome,
+        Return `True` if the actual outcome matches the expected outcome,
         and `False` otherwise.
         """
 
@@ -412,6 +416,34 @@ class CompareActualExpected:
         self._error_messages_list.append(errmsg)
 
     @property
+    def exception(self) -> Exception:
+        """
+        Return the exception to be raised if the test failed.
+        """
+
+        if self.test_passed:
+            raise InvalidTestError(
+                f"The test of {self.actual.call_string} passed, so no " f"exception is available."
+            )
+        else:
+            return self._exception
+
+    def _add_exception(self, exception):
+        """
+        Specify the exception associated with the test failure.
+        """
+
+        if not issubclass(exception, BaseException):
+            raise TypeError("Expecting an exception.")
+
+        more_than_one_thing_is_going_wrong = hasattr(self, "_exception")
+
+        if more_than_one_thing_is_going_wrong:
+            self._exception = Failed
+        else:
+            self._exception = exception
+
+    @property
     def _subject(self):
         """
         Return an appropriate subject for the first sentence in the
@@ -420,11 +452,8 @@ class CompareActualExpected:
         """
 
         is_first_error = not self._error_messages_list
-        return (
-            f"The command {self.actual.call_string}"
-            if is_first_error
-            else "This command"
-        )
+        subject = f"The command {self.actual.call_string}" if is_first_error else "This command"
+        return subject
 
     def _make_exception_mismatch_errmsg_if_necessary(self):
         """
@@ -437,17 +466,17 @@ class CompareActualExpected:
         expected_exception = self.expected.expected_exception
         actual_exception = self.actual.exception_type
 
-        if actual_exception is not expected_exception:
+        if actual_exception is expected_exception:
+            return
 
-            self._add_errmsg(
-                f"{self._subject} raised "
-                f"{_name_with_article(self.actual.exception_type)}, instead of "
-                f"{_name_with_article(self.expected.expected_exception)} as expected."
-            )
+        errmsg = (
+            f"{self._subject} raised "
+            f"{_name_with_article(self.actual.exception_type)}, instead of "
+            f"{_name_with_article(self.expected.expected_exception)} as expected."
+        )
 
-        # TODO: Create a different error message for cases where the
-        #       expected error message is a subclass of the actual
-        #       error message, or vice versa.
+        self._add_errmsg(errmsg)
+        self._add_exception(ExceptionMismatchError)
 
     def _make_missing_exception_errmsg(self):
         """
@@ -455,12 +484,15 @@ class CompareActualExpected:
         have been raised, but was not.
         """
 
-        self._add_errmsg(
+        errmsg = (
             f"The command {self.actual.call_string} did not raise "
             f"{_name_with_article(self.expected.expected_exception)} as expected. "
             f"Instead, this command returned the unexpected value of "
             f"{repr(self.actual.value)}."
         )
+
+        self._add_errmsg(errmsg)
+        self._add_exception(MissingExceptionError)
 
         # TODO: improve representation of the value (as repr doesn't
         #       always result in something particularly readable.)
@@ -471,10 +503,13 @@ class CompareActualExpected:
         unexpectedly raised.
         """
 
-        self._add_errmsg(
+        errmsg = (
             f"The command {self.actual.call_string} unexpectedly raised "
             f"{_name_with_article(self.actual.exception_type)}."
         )
+
+        self._add_errmsg(errmsg)
+        self._add_exception(UnexpectedExceptionError)
 
     def _make_incompatible_units_errmsg(self):
         """
@@ -484,11 +519,14 @@ class CompareActualExpected:
         actual_unit = _get_unit(self.actual.value)
         expected_unit = _get_unit(self.expected.expected_value)
 
-        self._add_errmsg(
+        incompatible_units_errmsg = (
             f"The units of the returned value ({actual_unit}) are "
             f"incompatible with the units of the expected value "
             f"({expected_unit})."
         )
+
+        self._add_errmsg(incompatible_units_errmsg)
+        self._add_exception(u.UnitsError)
 
     def _make_nonidentical_units_errmsg(self):
         """
@@ -499,11 +537,14 @@ class CompareActualExpected:
         actual_unit = _get_unit(self.actual.value)
         expected_unit = _get_unit(self.expected.expected_value)
 
-        self._add_errmsg(
+        unit_mismatch_errmsg = (
             f"The units of the returned value ({actual_unit}) are not "
             f"identical to the units of the expected value "
             f"({expected_unit})."
         )
+
+        self._add_errmsg(unit_mismatch_errmsg)
+        self._add_exception(u.UnitsError)
 
     def _make_different_types_errmsg(self):
         """
@@ -517,11 +558,14 @@ class CompareActualExpected:
         actual_type_name = _object_name(actual_type, showmodule=True)
         expected_type_name = _object_name(expected_type, showmodule=True)
 
-        self._add_errmsg(
+        errmsg = (
             f"The type of the returned value ({actual_type_name})"
             f" is different than the type of the expected value "
             f"({expected_type_name})."
         )
+
+        self._add_errmsg(errmsg)
+        self._add_exception(InconsistentTypeError)
 
     def _make_value_mismatch_errmsg_if_necessary(self):
         """
@@ -531,26 +575,27 @@ class CompareActualExpected:
         """
 
         comparison = CompareValues(
-            self.actual.value,
-            self.expected.expected_value,
-            rtol=self.rtol,
-            atol=self.atol,
+            self.actual.value, self.expected.expected_value, rtol=self.rtol, atol=self.atol,
         )
 
         if comparison:
             return
 
-        self._add_errmsg(
+        value_mismatch_errmsg = (
             f"{self._subject} returned a value of {self.actual.value}, "
             f"which differs from the expected value of {self.expected.expected_value}."
         )
 
-        if not comparison.have_same_types:
+        self._add_errmsg(value_mismatch_errmsg)
+
+        if not comparison.have_same_types and not comparison.are_quantity_and_unit:
             self._make_different_types_errmsg()
         elif not comparison.units_are_compatible:
             self._make_incompatible_units_errmsg()
         elif not comparison.units_are_identical:
             self._make_nonidentical_units_errmsg()
+        else:
+            self._add_exception(UnexpectedResultError)
 
         # Should we add a method to check whether the len(...) of the
         # expected and actual outcomes matches or not?  That could
@@ -562,10 +607,14 @@ class CompareActualExpected:
         to be issued, but was not.
         """
 
-        self._add_errmsg(
-            f"{self._subject} did not raise {_name_with_article(self.expected.expected_warning)}"
+        missing_warning_errmsg = (
+            f"{self._subject} did not raise "
+            f"{_name_with_article(self.expected.expected_warning)}"
             f"as expected."
         )
+
+        self._add_errmsg(missing_warning_errmsg)
+        self._add_exception(MissingWarningError)
 
     def _make_unexpected_warnings_errmsg(self):
         """
@@ -579,14 +628,15 @@ class CompareActualExpected:
 
         number_of_warnings = len(self.actual.warning_types)
 
-        errmsg = (
+        unexpected_warnings_errmsg = (
             f"{self._subject} unexpectedly issued the following warnings"
             f"{'s' if number_of_warnings > 1 else ''}:"
             f"\n\n"
             f"{warnings_for_printing}"
         )
 
-        self._add_errmsg(errmsg)
+        self._add_errmsg(unexpected_warnings_errmsg)
+        self._add_exception(UnexpectedWarningError)
 
     def _make_warning_mismatch_errmsg_if_necessary(self):
         """
@@ -604,10 +654,10 @@ class CompareActualExpected:
             return
 
         warnings_for_printing = _string_together_warnings_for_printing(
-            self.actual.warning_types, self.actual.warning_messages
+            actual_warnings, warning_messages,
         )
 
-        errmsg = (
+        warning_mismatch_errmsg = (
             f"{self._subject} was expected to issue {_name_with_article(expected_warning)}, "
             f"but instead issued the following warning"
             f"{'s' if number_of_warnings > 1 else ''}:"
@@ -615,7 +665,8 @@ class CompareActualExpected:
             f"{warnings_for_printing}"
         )
 
-        self._add_errmsg(errmsg)
+        self._add_errmsg(warning_mismatch_errmsg)
+        self._add_exception(WarningMismatchError)
 
         # TODO: Figure out a way to deal to deal with deprecation warnings.
         #       We should not count those as test failures, but those should

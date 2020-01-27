@@ -33,16 +33,16 @@ def return_np_array(*args) -> np.array:
     return np.array(args)
 
 
-def issue_sample_warning_and_return_42() -> int:
+def issue_warning_return_42() -> int:
     warnings.warn("warning message", SampleWarning)
     return 42
 
 
-def raise_sample_exception():
+def raise_exception():
     raise SampleException("exception message")
 
 
-def return_sum_of_two_args_and_kwargs(arg1, arg2, *, kw1=None, kw2=None):
+def sum_of_args_and_kwargs(arg1, arg2, *, kw1=None, kw2=None):
     return arg1 + arg2 + kw1 + kw2
 
 

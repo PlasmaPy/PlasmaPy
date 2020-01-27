@@ -10,8 +10,7 @@ from plasmapy.tests.helper.expected import (
 
 
 @pytest.mark.parametrize(
-    "argument, expected",
-    [(Warning, True), (UserWarning, True), (Exception, False), ("", False)],
+    "argument, expected", [(Warning, True), (UserWarning, True), (Exception, False), ("", False)],
 )
 def test__is_warning(argument, expected):
     """
@@ -22,8 +21,7 @@ def test__is_warning(argument, expected):
 
 
 @pytest.mark.parametrize(
-    "argument, expected",
-    [(Warning, False), (UserWarning, False), (Exception, True), ("", False)],
+    "argument, expected", [(Warning, False), (UserWarning, False), (Exception, True), ("", False)],
 )
 def test__is_exception(argument, expected):
     """
@@ -122,9 +120,7 @@ exception_raising_cases = [
 @pytest.mark.parametrize("case", exception_raising_cases)
 def test_attribute_exceptions(case):
     if not issubclass(case.correct_outcome, Exception):
-        raise TypeError(
-            "Incorrect test setup: the expected outcome must be an exception."
-        )
+        raise TypeError("Incorrect test setup: the expected outcome must be an exception.")
     with pytest.raises(case.correct_outcome):
         expected_outcome = ExpectedTestOutcome(case.argument)
         result = expected_outcome.__getattribute__(case.attribute)
