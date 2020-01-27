@@ -1,6 +1,9 @@
 import pytest
 
-from typing import Callable
+from typing import Callable, Union, Optional, Any, AnyStr, Dict
+from numbers import Number
+
+from astropy import units as u
 
 from plasmapy.utils.pytest_helpers.inputs import (
     AbstractTestInputs,
@@ -43,7 +46,13 @@ def _test_runner(inputs: AbstractTestInputs, expected, *, rtol=1e-8, atol=None):
 
 
 def function_test_runner(
-    expected, function: Callable, args=None, kwargs=None, *, rtol=1e-8, atol=None
+        expected,
+        function: Callable,
+        args=None,
+        kwargs: Optional[Dict[AnyStr, Any]] = None,
+        *,
+        rtol: Union[Number, u.Quantity] = 1e-8,
+        atol: Optional[Union[Number, u.Quantity]] = None,
 ):
     """
     Test that calling a function with particular arguments results in
@@ -86,10 +95,6 @@ def function_test_runner(
     ------
     InvalidTestError
         If the test is not set up correctly.
-
-    Examples
-    --------
-
     """
 
     __tracebackhide__ = True
@@ -100,14 +105,14 @@ def function_test_runner(
 def method_test_runner(
     expected,
     cls,
-    method,
+    method: AnyStr,
     *,
     cls_args=None,
-    cls_kwargs=None,
+    cls_kwargs: Optional[Dict[AnyStr, Any]] = None,
     method_args=None,
-    method_kwargs=None,
-    rtol=1e-8,
-    atol=None,
+    method_kwargs: Optional[Dict[str, Any]] = None,
+    rtol: Union[Number, u.Quantity] = 1e-8,
+    atol: Optional[Union[Number, u.Quantity]]=None,
 ):
     """
     Test that calling a class method results in the expected outcome.
@@ -163,10 +168,6 @@ def method_test_runner(
     ------
     InvalidTestError
         If the test is not set up correctly.
-
-    Examples
-    --------
-
     """
 
     __tracebackhide__ = True
@@ -177,14 +178,19 @@ def method_test_runner(
 
 
 def attr_test_runner(
-    expected, cls, attribute, cls_args=None, cls_kwargs=None, *, rtol=1e-8, atol=None
+        expected,
+        cls,
+        attribute: AnyStr,
+        cls_args=None,
+        cls_kwargs: Optional[Dict[AnyStr, Any]] = None,
+        *,
+        rtol: Union[Number, u.Quantity] = 1e-8,
+        atol: Optional[Union[Number, u.Quantity]] = None,
 ):
     """
     Test that accessing a class attribute results in the expected outcome.
 
     Parameters
-    ----------
-        Parameters
     ----------
     expected
         The expected outcome of the test, which can be an exception,
@@ -219,11 +225,6 @@ def attr_test_runner(
         or `~astropy.units.allclose`.  If ``atol`` is a
         `~astropy.units.Quantity`, then it must have the same units as
         ``this`` and ``that``.  Defaults to zero in the appropriate units.
-
-
-    Examples
-    --------
-
     """
 
     __tracebackhide__ = True
