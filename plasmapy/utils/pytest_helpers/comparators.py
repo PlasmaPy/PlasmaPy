@@ -11,7 +11,9 @@ from plasmapy.utils.pytest_helpers.expected import ExpectedTestOutcome
 from plasmapy.utils.pytest_helpers.actual import ActualTestOutcome
 
 from plasmapy.utils.formatting.formatting import (
-    _name_with_article, _string_together_warnings_for_printing, _object_name,
+    _name_with_article,
+    _string_together_warnings_for_printing,
+    _object_name,
 )
 
 __all__ = ["CompareActualExpected"]

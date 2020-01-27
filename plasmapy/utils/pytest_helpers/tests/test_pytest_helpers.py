@@ -261,4 +261,3 @@ def test_run_test_equivalent_calls_types():
     run_test_equivalent_calls(return_arg, 1, 1.0, require_same_type=False)
     with pytest.raises(UnexpectedResultError):
         run_test_equivalent_calls(return_arg, 1, 1.0)
-
