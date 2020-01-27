@@ -10,10 +10,8 @@ from plasmapy.utils.pytest_helpers import InvalidTestError
 from plasmapy.utils.pytest_helpers.expected import ExpectedTestOutcome
 from plasmapy.utils.pytest_helpers.actual import ActualTestOutcome
 
-from plasmapy.utils.pytest_helpers.formatting import (
-    _exc_str,
-    _string_together_warnings_for_printing,
-    _get_object_name,
+from plasmapy.utils.formatting.formatting import (
+    _name_with_article, _string_together_warnings_for_printing, _object_name,
 )
 
 __all__ = ["CompareActualExpected"]
@@ -441,8 +439,8 @@ class CompareActualExpected:
 
             self._add_errmsg(
                 f"{self._subject} raised "
-                f"{_exc_str(self.actual.exception_type)}, instead of "
-                f"{_exc_str(self.expected.expected_exception)} as expected."
+                f"{_name_with_article(self.actual.exception_type)}, instead of "
+                f"{_name_with_article(self.expected.expected_exception)} as expected."
             )
 
         # TODO: Create a different error message for cases where the
@@ -457,7 +455,7 @@ class CompareActualExpected:
 
         self._add_errmsg(
             f"The command {self.actual.call_string} did not raise "
-            f"{_exc_str(self.expected.expected_exception)} as expected. "
+            f"{_name_with_article(self.expected.expected_exception)} as expected. "
             f"Instead, this command returned the unexpected value of "
             f"{repr(self.actual.value)}."
         )
@@ -473,7 +471,7 @@ class CompareActualExpected:
 
         self._add_errmsg(
             f"The command {self.actual.call_string} unexpectedly raised "
-            f"{_exc_str(self.actual.exception_type)}."
+            f"{_name_with_article(self.actual.exception_type)}."
         )
 
     def _make_incompatible_units_errmsg(self):
@@ -514,8 +512,8 @@ class CompareActualExpected:
         actual_type = type(self.actual.value)
         expected_type = type(self.expected.expected_value)
 
-        actual_type_name = _get_object_name(actual_type, showmodule=True)
-        expected_type_name = _get_object_name(expected_type, showmodule=True)
+        actual_type_name = _object_name(actual_type, showmodule=True)
+        expected_type_name = _object_name(expected_type, showmodule=True)
 
         self._add_errmsg(
             f"The type of the returned value ({actual_type_name})"
@@ -563,7 +561,7 @@ class CompareActualExpected:
         """
 
         self._add_errmsg(
-            f"{self._subject} did not raise {_exc_str(self.expected.expected_warning)}"
+            f"{self._subject} did not raise {_name_with_article(self.expected.expected_warning)}"
             f"as expected."
         )
 
@@ -608,7 +606,7 @@ class CompareActualExpected:
         )
 
         errmsg = (
-            f"{self._subject} was expected to issue {_exc_str(expected_warning)}, "
+            f"{self._subject} was expected to issue {_name_with_article(expected_warning)}, "
             f"but instead issued the following warning"
             f"{'s' if number_of_warnings > 1 else ''}:"
             f"\n\n"

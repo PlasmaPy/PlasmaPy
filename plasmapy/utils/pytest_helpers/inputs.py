@@ -5,7 +5,7 @@ import inspect
 
 from plasmapy.utils.pytest_helpers.exceptions import InvalidTestError
 
-from plasmapy.utils.pytest_helpers.formatting import (
+from plasmapy.utils.formatting.formatting import (
     call_string,
     class_attribute_call_string,
     class_method_call_string,

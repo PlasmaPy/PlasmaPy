@@ -11,7 +11,7 @@ from plasmapy.formulary.collisions import coupling_parameter
 from plasmapy.atomic import particle_mass
 
 from plasmapy.utils import CouplingWarning
-from plasmapy.utils.pytest_helpers import call_string
+from plasmapy.utils import formatting
 
 from plasmapy.classes import GenericPlasma
 
@@ -71,7 +71,7 @@ class PlasmaBlob(GenericPlasma):
                          'particle': self.particle,
                          'Z': self.Z}
 
-        return call_string(PlasmaBlob, (), argument_dict)
+        return formatting.call_string(PlasmaBlob, (), argument_dict)
 
     @property
     def electron_temperature(self):

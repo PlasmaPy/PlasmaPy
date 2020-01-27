@@ -11,10 +11,10 @@ import astropy.tests.helper as astrohelper
 import warnings
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
-from plasmapy.utils.pytest_helpers.formatting import (
+from plasmapy.utils.formatting.formatting import (
     call_string,
-    _get_object_name,
-    _exc_str,
+    _object_name,
+    _name_with_article,
 )
 
 from plasmapy.utils.pytest_helpers.exceptions import (
@@ -278,22 +278,22 @@ def run_test(
             else:
                 raise UnexpectedExceptionError(
                     f"The command {call_str} did not specifically raise "
-                    f"{_exc_str(expected_exception)} as expected, but "
-                    f"instead raised {_exc_str(resulting_exception)} "
+                    f"{_name_with_article(expected_exception)} as expected, but "
+                    f"instead raised {_name_with_article(resulting_exception)} "
                     f"which is a subclass of the expected exception."
                 )
         except Exception as exc_unexpected_exception:
             unexpected_exception = exc_unexpected_exception.__reduce__()[0]
             raise UnexpectedExceptionError(
                 f"The command {call_str} did not raise "
-                f"{_exc_str(expected_exception)} as expected, "
-                f"but instead raised {_exc_str(unexpected_exception)}."
+                f"{_name_with_article(expected_exception)} as expected, "
+                f"but instead raised {_name_with_article(unexpected_exception)}."
             ) from exc_unexpected_exception
         else:
             raise MissingExceptionError(
                 f"The command {call_str} did not raise "
-                f"{_exc_str(expected_exception)} as expected, but instead "
-                f"returned {_get_object_name(result)}."
+                f"{_name_with_article(expected_exception)} as expected, but instead "
+                f"returned {_object_name(result)}."
             )
 
     try:
@@ -302,15 +302,15 @@ def run_test(
     except pytest.raises.Exception as missing_warning:
         raise MissingWarningError(
             f"The command {call_str} should issue "
-            f"{_exc_str(expected['warning'])}, but instead returned "
-            f"{_get_object_name(result)}."
+            f"{_name_with_article(expected['warning'])}, but instead returned "
+            f"{_object_name(result)}."
         ) from missing_warning
     except Exception as exception_no_warning:
         raise UnexpectedExceptionError(
             f"The command {call_str} unexpectedly raised "
-            f"{_exc_str(exception_no_warning.__reduce__()[0])} "
+            f"{_name_with_article(exception_no_warning.__reduce__()[0])} "
             f"instead of returning the expected value of "
-            f"{_get_object_name(expected['result'])}."
+            f"{_object_name(expected['result'])}."
         ) from exception_no_warning
 
     if isinstance(expected["result"], u.UnitBase):
@@ -319,25 +319,25 @@ def run_test(
             if result != expected["result"]:
                 raise u.UnitsError(
                     f"The command {call_str} returned "
-                    f"{_get_object_name(result)} instead of the expected "
-                    f"value of {_get_object_name(expected['result'])}."
+                    f"{_object_name(result)} instead of the expected "
+                    f"value of {_object_name(expected['result'])}."
                 )
             return None
 
         if not isinstance(result, (u.Quantity, const.Constant, const.EMConstant)):
             raise u.UnitsError(
                 f"The command {call_str} returned "
-                f"{_get_object_name(result)} instead of a quantity or "
+                f"{_object_name(result)} instead of a quantity or "
                 f"constant with units of "
-                f"{_get_object_name(expected['result'])}."
+                f"{_object_name(expected['result'])}."
             )
 
         if result.unit != expected["result"]:
             raise u.UnitsError(
                 f"The command {call_str} returned "
-                f"{_get_object_name(result)}, which has units of "
+                f"{_object_name(result)}, which has units of "
                 f"{result.unit} instead of the expected units of "
-                f"{_get_object_name(expected['result'])}."
+                f"{_object_name(expected['result'])}."
             )
 
         return None
@@ -346,9 +346,9 @@ def run_test(
         if not result.unit == expected["result"].unit:
             raise u.UnitsError(
                 f"The command {call_str} returned "
-                f"{_get_object_name(result)} which has different units "
+                f"{_object_name(result)} which has different units "
                 f"than the expected result of "
-                f"{_get_object_name(expected['result'])}."
+                f"{_object_name(expected['result'])}."
             )
 
         if np.allclose(result.value, expected["result"].value):
@@ -360,11 +360,11 @@ def run_test(
     if type(result) != type(expected["result"]):
         raise InconsistentTypeError(
             f"The command {call_str} returned "
-            f"{_get_object_name(result)} which has type "
-            f"{_get_object_name(type(result))}, "
+            f"{_object_name(result)} which has type "
+            f"{_object_name(type(result))}, "
             f"instead of the expected value of "
-            f"{_get_object_name(expected['result'])} which has type "
-            f"{_get_object_name(type(expected['result']))}."
+            f"{_object_name(expected['result'])} which has type "
+            f"{_object_name(type(expected['result']))}."
         )
 
     try:
@@ -372,8 +372,8 @@ def run_test(
             return None
     except Exception as exc_equality:  # coverage: ignore
         raise TypeError(
-            f"The equality of {_get_object_name(result)} and "
-            f"{_get_object_name(expected['result'])} "
+            f"The equality of {_object_name(result)} and "
+            f"{_object_name(expected['result'])} "
             f"cannot be evaluated."
         ) from exc_equality
 
@@ -391,8 +391,8 @@ def run_test(
 
     errmsg = (
         f"The command {call_str} returned "
-        f"{_get_object_name(result)} instead of the expected "
-        f"value of {_get_object_name(expected['result'])}."
+        f"{_object_name(result)} instead of the expected "
+        f"value of {_object_name(expected['result'])}."
     )
 
     if atol or rtol:

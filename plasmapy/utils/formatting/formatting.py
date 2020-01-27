@@ -68,7 +68,7 @@ def _format_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str:
     return args_and_kwargs
 
 
-def _exc_str(ex: Exception) -> str:
+def _name_with_article(ex: Exception) -> str:
     """
     Return a string with an indefinite article and the name of
     exception ``ex``.
@@ -80,7 +80,7 @@ def _exc_str(ex: Exception) -> str:
     return f"{indefinite_article} {exception_name}"
 
 
-def _get_object_name(obj: Any, showmodule=False) -> str:
+def _object_name(obj: Any, showmodule=False) -> str:
     """
     Return the name of an `object`.  If the `object` has a "__name__"
     attribute and ``showmodule`` is `True`, then prepend the module
@@ -105,7 +105,7 @@ def _string_together_warnings_for_printing(warning_types, warning_messages):
     """
 
     warnings_with_messages = [
-        _get_object_name(warning, showmodule=False) + ": " + message
+        _object_name(warning, showmodule=False) + ": " + message
         for warning, message in zip(warning_types, warning_messages)
     ]
 
@@ -136,6 +136,11 @@ def call_string(f: Callable, args: Any = tuple(), kwargs: Dict = {}) -> str:
     'int(3.14159)'
     >>> call_string(int, args=(9.2,), kwargs={'base': 2})
     'int(9.2, base=2)'
+
+    See Also
+    --------
+    class_attribute_call_string
+    class_method_call_string
     """
 
     args_and_kwargs = _format_args_and_kwargs(args, kwargs)
@@ -237,6 +242,11 @@ def class_method_call_string(
     >>> m_kwargs = {'method_kwarg': 4}
     >>> class_method_call_string(SampleClass, 'method', c_args, c_kwargs, m_args, m_kwargs)
     'SampleClass(1, cls_kwarg=2).method(3, method_kwarg=4)'
+
+    See Also
+    --------
+    call_string
+    class_attribute_call_string
     """
 
     class_call_string = f"{call_string(cls, cls_args, cls_kwargs)}"

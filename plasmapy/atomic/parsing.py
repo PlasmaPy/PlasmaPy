@@ -14,7 +14,7 @@ from plasmapy.atomic.elements import (
 from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.atomic.special_particles import _Particles, ParticleZoo
 
-from plasmapy.utils import roman, pytest_helpers
+from plasmapy.utils import roman, formatting
 
 from plasmapy.atomic.exceptions import InvalidElementError, InvalidParticleError, AtomicWarning
 
@@ -437,9 +437,4 @@ def _particle_call_string(arg: Union[str, Integral], kwargs: Dict = {}) -> str:
     Return a `str` that recreates the call to create a particular
     `~plasmapy.atomic.Particle` instance from the input.
     """
-    return pytest_helpers.call_string(Particle, arg, kwargs)
-#    if kwargs != {}:
-#        keyword_string = ", " + str(kwargs).strip(r"}{'").replace("'", "").replace(":", " =")
-#    else:
-#        keyword_string = ""
-#    return f"Particle({repr(arg)}{keyword_string})"
+    return formatting.call_string(Particle, arg, kwargs)

@@ -16,3 +16,5 @@ from plasmapy.utils.exceptions import (
     RelativityError,
     RelativityWarning,
 )
+
+import plasmapy.utils.formatting
