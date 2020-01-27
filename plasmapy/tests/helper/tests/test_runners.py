@@ -1,26 +1,12 @@
 import pytest
-import collections
 
-from plasmapy.utils.pytest_helpers.runners import (
+from plasmapy.tests.helper.runners import (
     function_test_runner,
     attr_test_runner,
     method_test_runner,
 )
 
-from plasmapy.utils.pytest_helpers.tests.sample_functions import (
-    return_42,
-    return_42_meters,
-    return_np_array,
-    return_sum_of_two_args_and_kwargs,
-    return_none,
-    raise_sample_exception,
-    issue_sample_warning_and_return_42,
-    SampleClass,
-    SampleException,
-    SampleExceptionSubclass,
-    SampleWarning,
-    SampleWarningSubclass,
-)
+from plasmapy.tests.helper.tests.sample_functions import return_42
 
 
 class FunctionTestCase:
@@ -28,10 +14,8 @@ class FunctionTestCase:
         self, expected, function, args=None, kwargs=None, exception=None, errmsg=None
     ):
         """
-        Store information for a test of ``function_test_runner``.
-
-        If no exception is provided, then the test is assumed to pass.
-
+        Store information for a test of ``function_test_runner``.  If no
+        exception is provided, then the test is assumed to pass.
         """
         self.expected = expected
         self.function = function

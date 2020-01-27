@@ -5,20 +5,19 @@ from numbers import Number
 
 from astropy import units as u
 
-from plasmapy.utils.pytest_helpers.inputs import (
+from plasmapy.tests.helper.inputs import (
     AbstractTestInputs,
     FunctionTestInputs,
     ClassAttributeTestInputs,
     ClassMethodTestInputs,
 )
 
-from plasmapy.utils.pytest_helpers.actual import ActualTestOutcome
-from plasmapy.utils.pytest_helpers.expected import ExpectedTestOutcome
+from plasmapy.tests.helper.actual import ActualTestOutcome
+from plasmapy.tests.helper.expected import ExpectedTestOutcome
 
-from plasmapy.utils.pytest_helpers.comparators import (
-    CompareActualExpected,
-    InvalidTestError,
-)
+from plasmapy.tests.helper.comparators import CompareActualExpected
+
+from plasmapy.tests.helper.exceptions import InvalidTestError
 
 
 __all__ = ["function_test_runner", "method_test_runner", "attr_test_runner"]
@@ -46,13 +45,13 @@ def _test_runner(inputs: AbstractTestInputs, expected, *, rtol=1e-8, atol=None):
 
 
 def function_test_runner(
-        expected,
-        function: Callable,
-        args=None,
-        kwargs: Optional[Dict[AnyStr, Any]] = None,
-        *,
-        rtol: Union[Number, u.Quantity] = 1e-8,
-        atol: Optional[Union[Number, u.Quantity]] = None,
+    expected,
+    function: Callable,
+    args=None,
+    kwargs: Optional[Dict[AnyStr, Any]] = None,
+    *,
+    rtol: Union[Number, u.Quantity] = 1e-8,
+    atol: Optional[Union[Number, u.Quantity]] = None,
 ):
     """
     Test that calling a function with particular arguments results in
@@ -112,7 +111,7 @@ def method_test_runner(
     method_args=None,
     method_kwargs: Optional[Dict[str, Any]] = None,
     rtol: Union[Number, u.Quantity] = 1e-8,
-    atol: Optional[Union[Number, u.Quantity]]=None,
+    atol: Optional[Union[Number, u.Quantity]] = None,
 ):
     """
     Test that calling a class method results in the expected outcome.
@@ -178,14 +177,14 @@ def method_test_runner(
 
 
 def attr_test_runner(
-        expected,
-        cls,
-        attribute: AnyStr,
-        cls_args=None,
-        cls_kwargs: Optional[Dict[AnyStr, Any]] = None,
-        *,
-        rtol: Union[Number, u.Quantity] = 1e-8,
-        atol: Optional[Union[Number, u.Quantity]] = None,
+    expected,
+    cls,
+    attribute: AnyStr,
+    cls_args=None,
+    cls_kwargs: Optional[Dict[AnyStr, Any]] = None,
+    *,
+    rtol: Union[Number, u.Quantity] = 1e-8,
+    atol: Optional[Union[Number, u.Quantity]] = None,
 ):
     """
     Test that accessing a class attribute results in the expected outcome.

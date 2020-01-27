@@ -1,6 +1,6 @@
 import pytest
 
-from plasmapy.utils.pytest_helpers.inputs import (
+from plasmapy.tests.helper.inputs import (
     ClassMethodTestInputs,
     ClassAttributeTestInputs,
     FunctionTestInputs,
@@ -8,7 +8,7 @@ from plasmapy.utils.pytest_helpers.inputs import (
     _validate_kwargs,
 )
 
-from plasmapy.utils.pytest_helpers.exceptions import InvalidTestError
+from plasmapy.tests.helper.exceptions import InvalidTestError
 
 sample_args = (2, 3)
 sample_args_list = [5, 7]

@@ -1,9 +1,7 @@
 import collections
-import inspect
-
 import pytest
 
-from plasmapy.utils.pytest_helpers.expected import (
+from plasmapy.tests.helper.expected import (
     ExpectedTestOutcome,
     _is_warning,
     _is_exception,

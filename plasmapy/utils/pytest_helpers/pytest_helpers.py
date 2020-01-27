@@ -17,7 +17,7 @@ from plasmapy.utils.formatting.formatting import (
     _name_with_article,
 )
 
-from plasmapy.utils.pytest_helpers.exceptions import (
+from plasmapy.tests.helper.exceptions import (
     InvalidTestError,
     UnexpectedResultError,
     UnexpectedExceptionError,

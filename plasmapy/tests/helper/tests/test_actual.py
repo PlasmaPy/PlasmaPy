@@ -1,7 +1,7 @@
 import pytest
 import warnings
-from plasmapy.utils.pytest_helpers.actual import ActualTestOutcome
-from plasmapy.utils.pytest_helpers.inputs import FunctionTestInputs
+from plasmapy.tests.helper.actual import ActualTestOutcome
+from plasmapy.tests.helper.inputs import FunctionTestInputs
 
 
 def return_something():

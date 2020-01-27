@@ -1,7 +1,7 @@
 import pytest
 import warnings
 from typing import List, Any
-from plasmapy.utils.pytest_helpers.inputs import AbstractTestInputs
+from plasmapy.tests.helper.inputs import AbstractTestInputs
 
 __all__ = ["ActualTestOutcome"]
 

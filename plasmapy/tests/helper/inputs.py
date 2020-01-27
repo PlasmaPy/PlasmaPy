@@ -3,7 +3,7 @@ from typing import Tuple, List, Dict, Union, Callable, Optional, Any, AnyStr
 import inspect
 
 
-from plasmapy.utils.pytest_helpers.exceptions import InvalidTestError
+from plasmapy.tests.helper.exceptions import InvalidTestError
 
 from plasmapy.utils.formatting.formatting import (
     call_string,

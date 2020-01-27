@@ -1,22 +1,21 @@
-import warnings
 import collections
 import pytest
 import numpy as np
 from astropy import units as u
 
-from plasmapy.utils.pytest_helpers.actual import ActualTestOutcome
-from plasmapy.utils.pytest_helpers.expected import ExpectedTestOutcome
-from plasmapy.utils.pytest_helpers.inputs import FunctionTestInputs
+from plasmapy.tests.helper.actual import ActualTestOutcome
+from plasmapy.tests.helper.expected import ExpectedTestOutcome
+from plasmapy.tests.helper.inputs import FunctionTestInputs
 
-from plasmapy.utils.pytest_helpers.comparators import (
+from plasmapy.tests.helper.comparators import (
     CompareActualExpected,
     CompareValues,
     _get_unit,
     _units_are_compatible,
 )
-from plasmapy.utils.pytest_helpers.exceptions import InvalidTestError
+from plasmapy.tests.helper.exceptions import InvalidTestError
 
-from plasmapy.utils.pytest_helpers.tests.sample_functions import (
+from plasmapy.tests.helper.tests.sample_functions import (
     return_42,
     return_42_meters,
     return_np_array,
@@ -24,7 +23,6 @@ from plasmapy.utils.pytest_helpers.tests.sample_functions import (
     return_none,
     raise_sample_exception,
     issue_sample_warning_and_return_42,
-    SampleClass,
     SampleException,
     SampleExceptionSubclass,
     SampleWarning,

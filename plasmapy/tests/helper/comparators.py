@@ -5,10 +5,10 @@ from typing import Union, Tuple, Any, Optional
 
 from astropy import units as u
 
-from plasmapy.utils.pytest_helpers import InvalidTestError
+from plasmapy.tests.helper import InvalidTestError
 
-from plasmapy.utils.pytest_helpers.expected import ExpectedTestOutcome
-from plasmapy.utils.pytest_helpers.actual import ActualTestOutcome
+from plasmapy.tests.helper.expected import ExpectedTestOutcome
+from plasmapy.tests.helper.actual import ActualTestOutcome
 
 from plasmapy.utils.formatting.formatting import (
     _name_with_article,
