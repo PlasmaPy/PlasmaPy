@@ -21,12 +21,15 @@ means:
  * decorators we use for reusable physical quantity computation and
    checking, such as `plasmapy.utils.decorators.validate_quantities` and
    `plasmapy.utils.check_relativistic`.
+ * General functions for formatting strings are in
+   `plasmapy.utils.formatting`.
  * Some helper utilities for importing and testing packages such as
-   `plasmapy.utils.call_string`.
+   `plasmapy.utils.pytest_helpers`.
 
 Reference/API
 =============
 
 .. automodapi:: plasmapy.utils.decorators
 .. automodapi:: plasmapy.utils.exceptions
+.. automodapi:: plasmapy.utils.formatting
 .. automodapi:: plasmapy.utils.pytest_helpers
