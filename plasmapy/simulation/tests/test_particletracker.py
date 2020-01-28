@@ -14,10 +14,10 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
     def sine(t, amplitude, omega, phase, mean):
         return amplitude * np.sin(omega * t + phase) + mean
 
-    mean = position.mean().si.value
-    amplitude = 3 * position.std().si.value
+    mean = position.mean()
+    amplitude = 3 * position.std()
     omega = expected_gyrofrequency.si.value
-    params, covariances = curve_fit(sine, position.si.value, t.si.value,
+    params, covariances = curve_fit(sine, position, t,
                                     p0=(amplitude, omega, phase, mean))
     stds = np.sqrt(np.diag(covariances))
     return params, stds
@@ -36,8 +36,8 @@ def test_run_no_fields():
 
     s = ParticleTracker(test_plasma)
     sol = s.run(dt=1e-10 * u.s, nt=int(2))
-    assert np.isfinite(sol.position_history).all()
-    assert np.isfinite(sol.velocity_history).all()
+    assert np.isfinite(sol.data.position).all()
+    assert np.isfinite(sol.data.velocity).all()
 
 def test_adjust_position_velocity():
     def magnetic_field(r):
@@ -137,11 +137,11 @@ def test_particle_uniform_magnetic():
     s = ParticleTracker(test_plasma, particle_type=particle_type,  v = v)
     sol = s.run(dt=dt, nt=int(1e4))
 
-    x = sol.position_history[:, 0, 0]
-    z = sol.position_history[:, 0, 2]
+    x = sol.data.position.sel(particle=0, dimension='x')
+    z = sol.data.position.sel(particle=0, dimension='z')
 
     try:
-        params, stds = fit_sine_curve(x, sol.t, expected_gyrofrequency)
+        params, stds = fit_sine_curve(x, sol.data.time, expected_gyrofrequency)
     except RuntimeError as e:
         print(s)
         raise e
@@ -160,9 +160,9 @@ def test_particle_uniform_magnetic():
 
     p_init = models.Polynomial1D(degree=1)
     fit_p = fitting.LinearLSQFitter()
-    p = fit_p(p_init, sol.t, z)
+    p = fit_p(p_init, sol.data.time, z)
 
-    assert u.allclose(z, p(sol.t), atol=1e-4 * u.m), \
+    assert np.allclose(z, p(sol.data.time), atol=1e-4), \
         "z-velocity doesn't stay constant!"
 
     # s.plot_trajectories()
@@ -195,24 +195,24 @@ def test_particle_exb_drift():
     assert np.isfinite(s._v).all()
     assert np.isfinite(s._x).all()
     sol = s.run(dt=1e-10 * u.s, nt=int(5e3))
-    assert np.isfinite(sol.position_history).all()
-    assert np.isfinite(sol.velocity_history).all()
+    assert np.isfinite(sol.data.position).all()
+    assert np.isfinite(sol.data.velocity).all()
 
     p_init = models.Polynomial1D(degree=1)
-    for x in sol.position_history[:, :, 0].T:
+    for x in sol.data.position.sel(dimension='x').T:
         fit_p = fitting.LinearLSQFitter()
-        p = fit_p(p_init, sol.t, x)
+        p = fit_p(p_init, sol.data.time, x)
         fit_velocity = p.parameters[1] * u.m / u.s
 
-        assert u.allclose(x, p(sol.t), atol=1e-3 * u.m), \
+        assert np.allclose(x, p(sol.data.time), atol=1e-3), \
             "x position doesn't follow linear fit!"
 
-    assert u.isclose(expected_drift_velocity, fit_velocity,
-                      atol=1e-3 * u.m / u.s), \
+    assert np.isclose(expected_drift_velocity, fit_velocity,
+                      atol=1e-3), \
         "x velocity doesn't agree with expected drift velocity!"
 
     # s.plot_trajectories()
-    with pytest.raises(PhysicsError):
+    with pytest.raises(PhysicsError):   # Kinetic energy is not conserved here due to the electric field
         sol.test_kinetic_energy()
 
 if __name__ == "__main__":

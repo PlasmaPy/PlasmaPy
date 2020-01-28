@@ -16,6 +16,7 @@ dependencies:
   - colorama
   - pip
   - vtk
+  - xarray
   - pip:
     - numpydoc
     - pytest

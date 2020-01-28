@@ -11,35 +11,13 @@ from plasmapy.classes.sources import Coils
 
 MINOR_RADIUS = 0.3 * u.m
 RADIUS = 1 * u.m
-MAIN_CURRENT = 15 * u.MA
+MAIN_CURRENT = 0 * u.MA
 
-COIL_CURRENT = 10 * u.MA
+COIL_CURRENTS = 1 * [10 * u.MA]
 
 @pytest.fixture
 def coils():
-    n_coils = 1 # 8
-    currents = u.Quantity(n_coils * [COIL_CURRENT])
-
-    coil_angles = np.linspace(0, 2*np.pi, n_coils, endpoint=False)
-
-    coils = []
-    for i in range(n_coils):
-        coil_angle = coil_angles[i]
-        x = RADIUS * np.cos(coil_angle)
-        y = RADIUS * np.sin(coil_angle)
-        normal_angle = np.pi/2 + coil_angle
-        normal = u.Quantity([np.cos(normal_angle), np.sin(normal_angle), 0])
-        center = u.Quantity([x, y, 0 * u.m])
-        coil = magnetostatics.CircularWire(normal, center, MINOR_RADIUS, currents[i])
-        coils.append(coil)
-
-    # plasma_wire = magnetostatics.CircularWire([0, 0, 1],
-    #                                           u.Quantity((0, 0, 0), u.m),
-    #                                           RADIUS, MAIN_CURRENT)
-    # coils.append(plasma_wire)
-
-    c = Coils(*coils)
-    return c
+    return Coils.toykamak(MINOR_RADIUS, RADIUS, MAIN_CURRENT, COIL_CURRENTS)
 
 
 @pytest.fixture
@@ -54,7 +32,8 @@ def sim_single(coils):
 def sim_many(coils):
     N = 100
     x = u.Quantity(N * [[1 + MINOR_RADIUS.si.value / 2, 0, 0]],  u.m)
-    v = u.Quantity(np.random.normal(size=(N, 3)), u.m / u.s)
+    s = np.random.RandomState(0)
+    v = u.Quantity(s.normal(size=(N, 3)), u.m / u.s)
 
     sim = simulation.ParticleTracker(coils, x, v, 'e-')
     return sim
@@ -62,10 +41,10 @@ def sim_many(coils):
 
 def test_1(sim_single):
     solution = sim_single.run(1e-3 * u.s, 1e3)
-    assert abs(np.mean(solution.position_history[:,0,1])) < 4 * u.m  # should be about 5m for no B field
-    assert 0.001 * u.m < abs(np.mean(solution.position_history[:,0,1])) < 0.01 * u.m
+    assert abs(solution.data.position.sel(dimension='y').mean()).item() < 4  # should be about 5m for no B field
+    assert 0.001 < abs(solution.data.position.sel(dimension='y').mean()).item() < 0.01
 
 def test_2(sim_many):
     solution = sim_many.run(1e-3 * u.s, 1e3)
-    assert abs(np.mean(solution.position_history[:,:,1])) < 4 * u.m  # should be about 5m for no B field
-    assert 0.001 * u.m < abs(np.mean(solution.position_history[:,:,1])) < 0.1 * u.m
+    assert abs(solution.data.position.sel(dimension='y').mean()).item() < 4  # should be about 5m for no B field
+    assert 0.001 < abs(solution.data.position.sel(dimension='y').mean()).item() < 0.1
