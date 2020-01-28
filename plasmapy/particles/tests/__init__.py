@@ -1,1 +1,1 @@
-"""Tests for the atomic subpackage."""
+"""Tests for the `~plasmapy.particles` subpackage."""

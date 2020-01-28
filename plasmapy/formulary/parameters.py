@@ -40,7 +40,7 @@ def _grab_charge(ion, z_mean=None):
 
     Parameters
     ----------
-    ion : str or `plasmapy.atomic.Particle`
+    ion : str or `plasmapy.particles.Particle`
         a string representing a charged particle, or a Particle object.
 
     z_mean : float

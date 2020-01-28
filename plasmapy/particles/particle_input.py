@@ -1,7 +1,7 @@
 """
 A decorator to take string and/or integer representations of particles
 as arguments and pass through the corresponding instance of the
-`~plasmapy.atomic.Particle` class.
+`~plasmapy.particles.Particle` class.
 """
 
 import functools
@@ -77,11 +77,11 @@ def particle_input(wrapped_function: Callable = None,
                    none_shall_pass: bool = False) -> Any:
     """
     Convert arguments to methods and functions to
-    `~plasmapy.atomic.Particle` objects.
+    `~plasmapy.particles.Particle` objects.
 
     Take positional and keyword arguments that are annotated with
-    `~plasmapy.atomic.Particle`, and pass through the
-    `~plasmapy.atomic.Particle` object corresponding to those arguments
+    `~plasmapy.particles.Particle`, and pass through the
+    `~plasmapy.particles.Particle` object corresponding to those arguments
     to the decorated function or method.
 
     Optionally, raise an exception if the particle does not satisfy the
@@ -122,7 +122,7 @@ def particle_input(wrapped_function: Callable = None,
     if the particle does not correspond to an element, isotope, or ion,
     respectively.
 
-    If exactly one argument is annotated with `~plasmapy.atomic.Particle`,
+    If exactly one argument is annotated with `~plasmapy.particles.Particle`,
     then the keywords ``Z`` and ``mass_numb`` may be used to specify the
     integer charge and/or mass number of an ion or isotope.  However,
     the decorated function must allow ``Z`` and/or ``mass_numb`` as keywords
@@ -132,7 +132,7 @@ def particle_input(wrapped_function: Callable = None,
     ------
     `TypeError`
         If the annotated argument is not a `str`, `int`, `tuple`, `list`
-        or `~plasmapy.atomic.Particle`; or if ``Z`` or ``mass_numb`` is
+        or `~plasmapy.particles.Particle`; or if ``Z`` or ``mass_numb`` is
         not an `int`.
 
     `ValueError`
@@ -166,17 +166,17 @@ def particle_input(wrapped_function: Callable = None,
         categories in the ``require``, ``any_of``, and ``exclude``
         keywords; if more than one argument is annotated and ``Z`` or
         ``mass_numb`` are used as arguments; or if none of the arguments
-        have been annotated with `~plasmapy.atomic.Particle`.
+        have been annotated with `~plasmapy.particles.Particle`.
 
     Examples
     --------
     The following simple decorated function returns the
-    `~plasmapy.atomic.Particle` object created from the function's
+    `~plasmapy.particles.Particle` object created from the function's
     sole argument:
 
     .. code-block:: python
 
-        from plasmapy.atomic import particle_input, Particle
+        from plasmapy.particles import particle_input, Particle
         @particle_input
         def decorated_function(particle: Particle):
             return particle
@@ -184,11 +184,11 @@ def particle_input(wrapped_function: Callable = None,
     This decorator may also be used to accept arguments using tuple
     annotation containing specific number of elements or using list
     annotation which accepts any number of elements in an iterable.
-    Returns a tuple of `~plasmapy.atomic.Particle`:
+    Returns a tuple of `~plasmapy.particles.Particle`:
 
     .. code-block:: python
 
-        from plasmapy.atomic import particle_input, Particle
+        from plasmapy.particles import particle_input, Particle
         @particle_input
         def decorated_tuple_function(particles: (Particle, Particle)):
             return particles
@@ -205,7 +205,7 @@ def particle_input(wrapped_function: Callable = None,
 
     .. code-block:: python
 
-        from plasmapy.atomic import particle_input, Particle
+        from plasmapy.particles import particle_input, Particle
         class SampleClass:
             @particle_input
             def decorated_method(self, particle: Particle):
@@ -219,7 +219,7 @@ def particle_input(wrapped_function: Callable = None,
 
     .. code-block:: python
 
-        from plasmapy.atomic import particle_input, Particle
+        from plasmapy.particles import particle_input, Particle
         @particle_input(
             require={'matter'},
             any_of={'charged', 'uncharged},

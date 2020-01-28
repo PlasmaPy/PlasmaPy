@@ -164,8 +164,9 @@ def run_test(
     >>> run_test(lambda: 0, args, kwargs, 0)
 
     If `expected` is a an exception or warning, then
-    `~plasmapy.atomic.run_test` will raise an exception if the expected
-    exception is not raised or the expected warning is not issued.
+    `~plasmapy.utils.pytest_helpers.run_test` will raise an exception if
+    the expected exception is not raised or the expected warning is not
+    issued.
 
     >>> from warnings import warn
 

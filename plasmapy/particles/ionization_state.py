@@ -40,8 +40,8 @@ class IonizationState:
 
     Parameters
     ----------
-    particle: str, integer, or ~plasmapy.atomic.Particle
-        A `str` or `~plasmapy.atomic.Particle` instance representing
+    particle: str, integer, or ~plasmapy.particles.Particle
+        A `str` or `~plasmapy.particles.Particle` instance representing
         an element or isotope, or an integer representing the atomic
         number of an element.
 
@@ -112,7 +112,7 @@ class IonizationState:
                  kappa: Real = np.inf,
                  n_elem: u.m ** -3 = np.nan * u.m ** -3,
                  tol: Union[float, int] = 1e-15):
-        """Initialize an `~plasmapy.atomic.IonizationState` instance."""
+        """Initialize an `~plasmapy.particles.IonizationState` instance."""
 
         self._particle_instance = particle
 
@@ -201,7 +201,7 @@ class IonizationState:
 
     def __next__(self):
         """
-        Return a `~plasmapy.atomic.State` instance that contains
+        Return a `~plasmapy.particles.State` instance that contains
         information about a particular ionization level.
         """
         if self._charge_index <= self.atomic_number:
@@ -226,7 +226,7 @@ class IonizationState:
         Raises
         ------
         TypeError
-            If ``other`` is not an `~plasmapy.atomic.IonizationState`
+            If ``other`` is not an `~plasmapy.particles.IonizationState`
             instance.
 
         AtomicError
@@ -493,7 +493,7 @@ class IonizationState:
     @property
     def _particle_instances(self) -> List[Particle]:
         """
-        Return a list of the `~plasmapy.atomic.Particle` class
+        Return a list of the `~plasmapy.particles.Particle` class
         instances corresponding to each ion.
         """
         return [
@@ -595,7 +595,7 @@ class IonizationState:
     def info(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information for an
-        `~plasmapy.atomic.IonizationState` instance.
+        `~plasmapy.particles.IonizationState` instance.
 
         Parameters
         ----------

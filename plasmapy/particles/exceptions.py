@@ -2,7 +2,7 @@ from plasmapy.utils import PlasmaPyError, PlasmaPyWarning
 
 
 class AtomicError(PlasmaPyError):
-    """An exception for errors in the `~plasmapy.atomic` subpackage."""
+    """An exception for errors in the `~plasmapy.particles` subpackage."""
     pass
 
 
@@ -51,7 +51,7 @@ class InvalidParticleError(AtomicError):
 
 
 class AtomicWarning(PlasmaPyWarning):
-    """The base warning for the `~plasmapy.atomic` subpackage."""
+    """The base warning for the `~plasmapy.particles` subpackage."""
     pass
 
 

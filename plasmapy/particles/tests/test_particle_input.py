@@ -183,7 +183,7 @@ def function_to_test_annotations(particles: Union[Tuple, List], resulting_partic
     =========
     particles: tuple or list
         A collection containing many items, each of which may be a valid
-        representation of a particle or a `~plasmapy.atomic.Particle`
+        representation of a particle or a `~plasmapy.particles.Particle`
         instance
 
     """
@@ -534,8 +534,8 @@ not_ion = ['D', 'T', 'H-1', 'He-4', 'e-', 'e+', 'n']
 
 @particle_input
 def function_with_element_argument(element: Particle) -> Particle:
-    """A function decorated with `~plasmapy.atomic.particle_input`
-    where the argument annotated with `~plasmapy.atomic.Particle`
+    """A function decorated with `~plasmapy.particles.particle_input`
+    where the argument annotated with `~plasmapy.particles.Particle`
     is named `element`.  This function should raise an
     `~plasmapy.utils.InvalidElementError` when the argument is not
     an element, isotope, or ion."""
@@ -544,8 +544,8 @@ def function_with_element_argument(element: Particle) -> Particle:
 
 @particle_input
 def function_with_isotope_argument(isotope: Particle) -> Particle:
-    """A function decorated with `~plasmapy.atomic.particle_input`
-    where the argument annotated with `~plasmapy.atomic.Particle`
+    """A function decorated with `~plasmapy.particles.particle_input`
+    where the argument annotated with `~plasmapy.particles.Particle`
     is named `isotope`.  This function should raise an
     `~plasmapy.utils.InvalidIsotopeError` when the argument is not an
     isotope or an ion of an isotope."""
@@ -555,8 +555,8 @@ def function_with_isotope_argument(isotope: Particle) -> Particle:
 @particle_input
 def function_with_ion_argument(ion: Particle) -> Particle:
     """
-    A function decorated with `~plasmapy.atomic.particle_input`
-    where the argument annotated with `~plasmapy.atomic.Particle`
+    A function decorated with `~plasmapy.particles.particle_input`
+    where the argument annotated with `~plasmapy.particles.Particle`
     is named `ion`.  This function should raise an
     `~plasmapy.utils.InvalidIonError` when the argument is not an
     ion.
@@ -580,7 +580,7 @@ def test_not_element(particle):
     """
     Test that particle_input will raise an
     `~plasmapy.utils.InvalidElementError` if an argument decorated with
-    `~plasmapy.atomic.Particle` is named 'element', but the annotated
+    `~plasmapy.particles.Particle` is named 'element', but the annotated
     argument ends up not being an element, isotope, or ion.
     """
     with pytest.raises(InvalidElementError):
@@ -606,7 +606,7 @@ def test_not_isotope(particle):
     """
     Test that particle_input will raise an
     `~plasmapy.utils.InvalidIsotopeError` if an argument decorated with
-    `~plasmapy.atomic.Particle` is named 'isotope', but the annotated
+    `~plasmapy.particles.Particle` is named 'isotope', but the annotated
     argument ends up not being an isotope or an ion of an isotope.
     """
     with pytest.raises(InvalidIsotopeError):
@@ -632,7 +632,7 @@ def test_not_ion(particle):
     """
     Test that particle_input will raise an
     `~plasmapy.utils.InvalidIonError` if an argument decorated with
-    `~plasmapy.atomic.Particle` is named 'ion', but the annotated
+    `~plasmapy.particles.Particle` is named 'ion', but the annotated
     argument ends up not being an ion.
     """
     with pytest.raises(InvalidIonError):

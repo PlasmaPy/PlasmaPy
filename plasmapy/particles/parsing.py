@@ -435,7 +435,7 @@ def _parse_and_check_atomic_input(
 def _particle_call_string(arg: Union[str, Integral], kwargs: Dict = {}) -> str:
     """
     Return a `str` that recreates the call to create a particular
-    `~plasmapy.atomic.Particle` instance from the input.
+    `~plasmapy.particles.Particle` instance from the input.
     """
     return pytest_helpers.call_string(Particle, arg, kwargs)
 #    if kwargs != {}:
