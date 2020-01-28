@@ -160,8 +160,8 @@ class ParticleTrackerSolution:
 
         quantity_support()
         fig, ax = plt.subplots()
-        for p_index in range(self.N):
-            r = self.data.position.sel(particle=p_index)
+        for p_index in range(self.data.particle.size):
+            r = self.data.position.isel(particle=p_index)
             x, y, z = r.T
             if "x" in plot:
                 ax.plot(self.data.time, x, label=f"x_{p_index}")
