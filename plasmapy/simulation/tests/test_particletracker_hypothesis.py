@@ -28,10 +28,10 @@ else:
         freq = gyrofrequency(4 * u.T, 'p').to(u.Hz, equivalencies=u.dimensionless_angles())
         gyroperiod = (1/freq).to(u.s)
         steps_to_gyroperiod = 10
-        timestep = gyroperiod / steps_to_gyroperiod
+        timestep = gyroperiod / steps_to_gyroperiod / 100
         number_steps = 5 * steps_to_gyroperiod * int(2 * np.pi)
 
         v = np.zeros((N, 3))
         v[:, :2] = velocity
         trajectory = ParticleTracker(plasma, v = v * u.m / u.s)
-        trajectory.run(timestep/100, number_steps)
+        trajectory.run(number_steps * timestep, timestep)

@@ -35,7 +35,7 @@ def test_run_no_fields():
     test_plasma = AnalyticalFields(magnetic_field, electric_field)
 
     s = ParticleTracker(test_plasma)
-    sol = s.run(dt=1e-10 * u.s, nt=int(2))
+    sol = s.run(2e-10*u.s, dt=1e-10 * u.s)
     assert np.isfinite(sol.data.position).all()
     assert np.isfinite(sol.data.velocity).all()
 
@@ -135,7 +135,7 @@ def test_particle_uniform_magnetic():
     dt = expected_gyroperiod / 100
     v = u.Quantity([0 * u.m/u.s, perp_speed, parallel_speed]).reshape((1,3))
     s = ParticleTracker(test_plasma, particle_type=particle_type,  v = v)
-    sol = s.run(dt=dt, nt=int(1e4))
+    sol = s.run(1e4*dt, dt)
 
     x = sol.data.position.sel(particle=0, dimension='x')
     z = sol.data.position.sel(particle=0, dimension='z')
@@ -194,7 +194,7 @@ def test_particle_exb_drift():
     s = ParticleTracker(test_plasma, v = v * u.m / u.s)
     assert np.isfinite(s._v).all()
     assert np.isfinite(s._x).all()
-    sol = s.run(dt=1e-10 * u.s, nt=int(5e3))
+    sol = s.run(5e-7 * u.s, dt=1e-10 * u.s)
     assert np.isfinite(sol.data.position).all()
     assert np.isfinite(sol.data.velocity).all()
 

@@ -313,7 +313,7 @@ class ParticleTracker:
         self._v = value.si.value
 
     @check_units()
-    def run(self, dt: u.s, nt: int):
+    def run(self, total_time: u.s, dt: u.s):
         r"""
         Runs a simulation instance.
          dt: u.s = np.inf * u.s,
@@ -322,8 +322,7 @@ class ParticleTracker:
         _hqmdt = (self.q / self.m / 2 * dt).si.value
         _dt = dt.si.value
 
-        nt = int(nt)
-
+        _total_time = total_time.si.value
         _x = self._x.copy()
         _v = self._v.copy()
         _time = 0
@@ -340,8 +339,12 @@ class ParticleTracker:
             _position_history = [_x.copy()]
             _velocity_history = [_v.copy()]
             _times = [_time]
-            with tqdm.auto.trange(1, nt) as pbar:
-                for i in pbar:
+            with tqdm.auto.tqdm(total=_total_time,
+                                unit="s",
+                                unit_scale = True,
+                                ) as pbar:
+                while _time < _total_time:
+
                     _time += _dt
                     b = self.plasma._interpolate_B(_x)
                     e = self.plasma._interpolate_E(_x)
@@ -349,12 +352,14 @@ class ParticleTracker:
                     _position_history.append(_x.copy())
                     _velocity_history.append(_v.copy())
                     _times.append(_time)
+
                     if init_kinetic:
                         reldelta = self._kinetic_energy(_v)/init_kinetic - 1
                         pbar.set_postfix({"Relative kinetic energy change": reldelta})
                     else:
                         delta = self._kinetic_energy(_v)
                         pbar.set_postfix({"Kinetic energy change": delta})
+                    pbar.update(_dt)
 
         solution = ParticleTrackerSolution(u.Quantity(_position_history, u.m),
                                            u.Quantity(_velocity_history, u.m/u.s),
