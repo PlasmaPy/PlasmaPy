@@ -106,6 +106,7 @@ class ParticleTrackerSolution:
                  velocity_history: u.m/u.s,
                  times: u.s,
                  particle: Particle,
+                 diagnostics: list,
                  dimensions = 'xyz',
                  ):
         data_vars = {}
@@ -123,6 +124,7 @@ class ParticleTrackerSolution:
         self.data.time.attrs['unit'] = times.unit
         self.data.attrs["particle"] = particle
         self.particle = particle
+        self.diagnostics = diagnostics
 
     def plot_trajectories(self, *args, **kwargs):  # coverage: ignore
         r"""Draws trajectory history."""
@@ -313,13 +315,20 @@ class ParticleTracker:
         self._v = value.si.value
 
     @check_units()
-    def run(self, total_time: u.s, dt: u.s):
+    def run(self, total_time: u.s, dt: u.s = None, progressbar = True):
         r"""
         Runs a simulation instance.
          dt: u.s = np.inf * u.s,
          nt: int = np.inf,
         """
-        _hqmdt = (self.q / self.m / 2 * dt).si.value
+        if dt is None:
+            b = np.linalg.norm(self.plasma.interpolate_B(self.x), axis=-1)
+            gyroperiod = (1/formulary.gyrofrequency(b, self.particle, to_hz = True)).to(u.s)
+            dt = gyroperiod.min() / 20
+            print(f"Set timestep to {dt:.3e}, 1/20 of smallest gyroperiod")
+            # TODO warn about this
+
+        _hqmdt = (self.q / self.m / 2 * dt).si.value  # TODO this needs calculating within boris stepper; just use the q/m ratio
         _dt = dt.si.value
 
         _total_time = total_time.si.value
@@ -328,6 +337,7 @@ class ParticleTracker:
         _time = 0
 
         init_kinetic = self._kinetic_energy(_v)
+        list_diagnostics = []
 
         with np.errstate(all='raise'):
             b = self.plasma._interpolate_B(_x)
@@ -339,32 +349,44 @@ class ParticleTracker:
             _position_history = [_x.copy()]
             _velocity_history = [_v.copy()]
             _times = [_time]
-            with tqdm.auto.tqdm(total=_total_time,
-                                unit="s",
-                                unit_scale = True,
-                                ) as pbar:
-                while _time < _total_time:
+            if progressbar:
+                pbar = tqdm.auto.tqdm(total=_total_time, unit="s")
+            while _time < _total_time:
+                _time += _dt
+                b = self.plasma._interpolate_B(_x)
+                e = self.plasma._interpolate_E(_x)
+                _boris_push(_x, _v, b, e, _hqmdt, _dt)
 
-                    _time += _dt
-                    b = self.plasma._interpolate_B(_x)
-                    e = self.plasma._interpolate_E(_x)
-                    _boris_push(_x, _v, b, e, _hqmdt, _dt)
-                    _position_history.append(_x.copy())
-                    _velocity_history.append(_v.copy())
-                    _times.append(_time)
 
-                    if init_kinetic:
-                        reldelta = self._kinetic_energy(_v)/init_kinetic - 1
-                        pbar.set_postfix({"Relative kinetic energy change": reldelta})
-                    else:
-                        delta = self._kinetic_energy(_v)
-                        pbar.set_postfix({"Kinetic energy change": delta})
+                if True:
+                    timestep_info = dict(i = len(_times), dt = _dt, 
+                                         )
+
+                _position_history.append(_x.copy())
+                _velocity_history.append(_v.copy())
+                _times.append(_time)
+
+                if init_kinetic:
+                    reldelta = self._kinetic_energy(_v)/init_kinetic - 1
+                    kinetic_info = {"Relative kinetic energy change": reldelta}
+                else:
+                    delta = self._kinetic_energy(_v)
+                    kinetic_info = {"Kinetic energy change": delta}
+
+                diagnostics = dict(**timestep_info, **kinetic_info, )
+                list_diagnostics.append(diagnostics)
+
+                if progressbar:
+                    pbar.set_postfix(diagnostics)
                     pbar.update(_dt)
+        if progressbar:
+            pbar.close()
 
         solution = ParticleTrackerSolution(u.Quantity(_position_history, u.m),
                                            u.Quantity(_velocity_history, u.m/u.s),
                                            u.Quantity(_times, u.s),
                                            self.particle,
+                                           diagnostics = list_diagnostics
                                            )
         return solution
 

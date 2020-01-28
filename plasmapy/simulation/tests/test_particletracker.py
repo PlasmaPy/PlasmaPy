@@ -135,7 +135,7 @@ def test_particle_uniform_magnetic():
     dt = expected_gyroperiod / 100
     v = u.Quantity([0 * u.m/u.s, perp_speed, parallel_speed]).reshape((1,3))
     s = ParticleTracker(test_plasma, particle_type=particle_type,  v = v)
-    sol = s.run(1e4*dt, dt)
+    sol = s.run(1e4 * dt, dt)
 
     x = sol.data.position.sel(particle=0, dimension='x')
     z = sol.data.position.sel(particle=0, dimension='z')
