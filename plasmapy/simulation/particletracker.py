@@ -14,6 +14,8 @@ from plasmapy.utils.decorators import check_units
 from plasmapy.utils import PhysicsError
 from plasmapy.atomic import particle_input, Particle
 
+PLOTTING = False
+
 __all__ = [
     "ParticleTracker",
     "ParticleTrackerSolution",
@@ -131,7 +133,7 @@ class ParticleTrackerSolution:
         quantity_support()
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
-        for p_index in range(self.N):
+        for p_index in range(self.data.particle.size):
             r = self.data.position.isel(particle=p_index)
             x, y, z = r.T
             ax.plot(x, y, z, *args, **kwargs)
@@ -178,16 +180,11 @@ class ParticleTrackerSolution:
                                    self.kinetic_energy.mean().item(),
                                    atol=3 * self.kinetic_energy.std().item())
         if not conservation:
-            try:
+            if PLOTTING:
                 import matplotlib.pyplot as plt
 
-                quantity_support()
-                fig, ax = plt.subplots()
-                difference = self.kinetic_energy - self.kinetic_energy.sel(time=0)
-                ax.plot(difference)
+                self.kinetic_energy.plot.line()
                 plt.show()
-            except ImportError:
-                pass
             raise PhysicsError("Kinetic energy is not conserved!")
 
     def visualize(self,  figure = None, particle = 0):  # coverage: ignore
@@ -212,7 +209,7 @@ class ParticleTrackerSolution:
         ~astropy.units.Quantity
             Array of kinetic energies, shape (nt, n).
         """
-        return (self.data.velocity ** 2).sum(dim=['particle', 'dimension']) * self.particle.mass / 2
+        return (self.data.velocity ** 2).sum(dim='dimension') * self.particle.mass / 2
 
 
 class ParticleTracker:
