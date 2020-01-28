@@ -109,15 +109,10 @@ class ParticleTrackerSolution:
         data_vars = {}
         assert position_history.shape == velocity_history.shape
         particles = range(position_history.shape[1])
-        data_vars['position'] = (('time', 'particle', 'dimension'), position_history)
-        data_vars['velocity'] = (('time', 'particle', 'dimension'), position_history)
-        # for i, dim in enumerate(dimensions):
-        #     data_vars[dim] = (('time', 'particle'), position_history[:, :, i])
-        #     self.data[dim].attrs['unit'] = position_history.unit
-        #     data_vars[f'v{dim}'] = (('time', 'particle'), velocity_history[:, :, i])
-        #     self.data[f"v{dim}"].attrs['unit'] = velocity_history.unit
+        data_vars['position'] = (('time', 'particle', 'dimension'), position_history.si.value)
+        data_vars['velocity'] = (('time', 'particle', 'dimension'), velocity_history.si.value)
         self.data = xarray.Dataset(data_vars = data_vars,
-                                      coords={'time': times,
+                                      coords={'time': times.si.value,
                                               'particle': particles,
                                               'dimension': list(dimensions),
                                               }) 
@@ -179,18 +174,16 @@ class ParticleTrackerSolution:
 
     def test_kinetic_energy(self):
         r"""Test conservation of kinetic energy."""
-        conservation = np.allclose(self.kinetic_energy_history,
-                                   self.kinetic_energy_history.mean(),
-                                   atol=3 * self.kinetic_energy_history.std())
+        conservation = np.allclose(self.kinetic_energy.values,
+                                   self.kinetic_energy.mean().item(),
+                                   atol=3 * self.kinetic_energy.std().item())
         if not conservation:
             try:
-                from astropy.visualization import quantity_support
                 import matplotlib.pyplot as plt
-                from mpl_toolkits.mplot3d import Axes3D
 
                 quantity_support()
                 fig, ax = plt.subplots()
-                difference = self.kinetic_energy_history - self.kinetic_energy_history[0]
+                difference = self.kinetic_energy - self.kinetic_energy.sel(time=0)
                 ax.plot(difference)
                 plt.show()
             except ImportError:
@@ -203,8 +196,8 @@ class ParticleTrackerSolution:
             fig = mlab.figure()
         else:
             fig = figure
-        x, y, z = self.data.position.sel(particle=particle).T   # TODO FIXME
-        trajectory = mlab.plot3d(x,y,z, self.data.t, figure=fig, line_width=1e-13, representation='surface')
+        x, y, z = self.data.position.sel(particle=particle).T
+        trajectory = mlab.plot3d(x,y,z, self.data.time, figure=fig, line_width=1e-13, representation='surface')
         mlab.colorbar(trajectory, title="Trajectory - Time", orientation="vertical")
         if figure is None:
             mlab.show()
@@ -219,7 +212,7 @@ class ParticleTrackerSolution:
         ~astropy.units.Quantity
             Array of kinetic energies, shape (nt, n).
         """
-        return (self.data.velocity ** 2).sum(dim='particle') * self.particle.mass / 2
+        return (self.data.velocity ** 2).sum(dim=['particle', 'dimension']) * self.particle.mass / 2
 
 
 class ParticleTracker:
@@ -356,8 +349,8 @@ class ParticleTracker:
                     b = self.plasma._interpolate_B(_x)
                     e = self.plasma._interpolate_E(_x)
                     _boris_push(_x, _v, b, e, _hqmdt, _dt)
-                    _position_history.append(_x)
-                    _velocity_history.append(_v)
+                    _position_history.append(_x.copy())
+                    _velocity_history.append(_v.copy())
                     _times.append(_time)
                     if init_kinetic:
                         reldelta = self._kinetic_energy(_v)/init_kinetic - 1

@@ -138,7 +138,7 @@ def test_particle_uniform_magnetic():
     sol = s.run(dt=dt, nt=int(1e4))
 
     x = sol.data.position.sel(particle=0, dimension='x')
-    x = sol.data.position.sel(particle=0, dimension='z')
+    z = sol.data.position.sel(particle=0, dimension='z')
 
     try:
         params, stds = fit_sine_curve(x, sol.data.time, expected_gyrofrequency)
@@ -212,7 +212,7 @@ def test_particle_exb_drift():
         "x velocity doesn't agree with expected drift velocity!"
 
     # s.plot_trajectories()
-    with pytest.raises(PhysicsError):
+    with pytest.raises(PhysicsError):   # Kinetic energy is not conserved here due to the electric field
         sol.test_kinetic_energy()
 
 if __name__ == "__main__":
