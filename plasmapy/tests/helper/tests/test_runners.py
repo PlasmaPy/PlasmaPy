@@ -1,5 +1,6 @@
 import warnings
 import pytest
+from abc import ABC, abstractmethod
 import numpy as np
 import astropy.units as u
 
@@ -45,10 +46,9 @@ from plasmapy.utils.formatting.formatting import (
     _object_name,
 )
 
-from abc import ABC, abstractmethod
-
 
 class BaseTestCase(ABC):
+    """Define the interface to be used when testing the test cases."""
 
     @abstractmethod
     def run_test(self):
@@ -63,6 +63,8 @@ class BaseTestCase(ABC):
 
 
 class FunctionTestCase(BaseTestCase):
+    """Contains information for a test case for `function_test_runner`."""
+
     def __init__(
             self,
             expected,
@@ -74,7 +76,6 @@ class FunctionTestCase(BaseTestCase):
             rtol=1e-8,
             atol=None,
     ):
-        """Contains information for a test case for `function_test_runner`."""
 
         self.expected = expected
         self.function = function
