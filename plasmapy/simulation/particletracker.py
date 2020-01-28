@@ -8,6 +8,7 @@ from astropy import units as u
 import numba
 import tqdm.auto
 import xarray
+import warnings
 
 from plasmapy import atomic, formulary
 from plasmapy.utils.decorators import check_units
@@ -114,6 +115,7 @@ class ParticleTrackerSolution:
         particles = range(position_history.shape[1])
         data_vars['position'] = (('time', 'particle', 'dimension'), position_history.si.value)
         data_vars['velocity'] = (('time', 'particle', 'dimension'), velocity_history.si.value)
+        data_vars['timestep'] = (('time',), [row['dt'] for row in diagnostics])
         self.data = xarray.Dataset(data_vars = data_vars,
                                       coords={'time': times.si.value,
                                               'particle': particles,
@@ -325,8 +327,7 @@ class ParticleTracker:
             b = np.linalg.norm(self.plasma.interpolate_B(self.x), axis=-1)
             gyroperiod = (1/formulary.gyrofrequency(b, self.particle, to_hz = True)).to(u.s)
             dt = gyroperiod.min() / 20
-            print(f"Set timestep to {dt:.3e}, 1/20 of smallest gyroperiod")
-            # TODO warn about this
+            warnings.warn(UserWarning(f"Set timestep to {dt:.3e}, 1/20 of smallest gyroperiod"))
 
         _hqmdt = (self.q / self.m / 2 * dt).si.value  # TODO this needs calculating within boris stepper; just use the q/m ratio
         _dt = dt.si.value
@@ -336,8 +337,21 @@ class ParticleTracker:
         _v = self._v.copy()
         _time = 0
 
+        _times = [_time]
         init_kinetic = self._kinetic_energy(_v)
-        list_diagnostics = []
+        timestep_info = dict(i = len(_times), dt = _dt,
+                             )
+        if init_kinetic:
+            reldelta = self._kinetic_energy(_v)/init_kinetic - 1
+            kinetic_info = {"Relative kinetic energy change": reldelta}
+        else:
+            delta = self._kinetic_energy(_v)
+            kinetic_info = {"Kinetic energy change": delta}
+        list_diagnostics = [
+            dict(**timestep_info, **kinetic_info, )
+        ]
+    
+
 
         with np.errstate(all='raise'):
             b = self.plasma._interpolate_B(_x)
@@ -348,7 +362,6 @@ class ParticleTracker:
 
             _position_history = [_x.copy()]
             _velocity_history = [_v.copy()]
-            _times = [_time]
             if progressbar:
                 pbar = tqdm.auto.tqdm(total=_total_time, unit="s")
             while _time < _total_time:
