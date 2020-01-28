@@ -78,7 +78,7 @@ from plasmapy.utils.decorators.checks import _check_relativistic
 @atomic.particle_input
 def Coulomb_logarithm(T: u.K,
                       n_e: u.m**-3,
-                      particles: (atomic.Particle, atomic.Particle),
+                      species: (atomic.Particle, atomic.Particle),
                       z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
                       V: u.m / u.s = np.nan * u.m / u.s,
                       method="classical"):
@@ -96,7 +96,7 @@ def Coulomb_logarithm(T: u.K,
     n_e : ~astropy.units.Quantity
         The electron density in units convertible to per cubic meter.
 
-    particles : tuple
+    species : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
@@ -233,12 +233,11 @@ def Coulomb_logarithm(T: u.K,
     Examples
     --------
     >>> from astropy import units as u
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
-    >>> particles = ('e', 'p')
-    >>> Coulomb_logarithm(T, n, particles)
+    >>> n = 1e19 * u.m**-3
+    >>> T = 1e6 * u.K
+    >>> Coulomb_logarithm(T, n, ('e-', 'p+'))
     14.545527...
-    >>> Coulomb_logarithm(T, n, particles, V=1e6 * u.m / u.s)
+    >>> Coulomb_logarithm(T, n, ('e-', 'p+'), V = 1e6 * u.m / u.s)
     11.363478...
 
     References
@@ -260,7 +259,7 @@ def Coulomb_logarithm(T: u.K,
     # fetching impact min and max impact parameters
     bmin, bmax = impact_parameter(T=T,
                                   n_e=n_e,
-                                  particles=particles,
+                                  species=species,
                                   z_mean=z_mean,
                                   V=V,
                                   method=method)
@@ -292,17 +291,17 @@ def Coulomb_logarithm(T: u.K,
 
 @validate_quantities(T={'equivalencies': u.temperature_energy()})
 @atomic.particle_input
-def _boilerPlate(T: u.K, particles: (atomic.Particle, atomic.Particle), V):
+def _boilerPlate(T: u.K, species: (atomic.Particle, atomic.Particle), V):
     """
     Some boiler plate code for checking if inputs to functions in
     collisions.py are good. Also obtains reduced in mass in a
     2 particle collision system along with thermal velocity.
     """
-    masses = [p.mass for p in particles]
-    charges = [np.abs(p.charge) for p in particles]
+    masses = [p.mass for p in species]
+    charges = [np.abs(p.charge) for p in species]
 
     # obtaining reduced mass of 2 particle collision system
-    reduced_mass = atomic.reduced_mass(*particles)
+    reduced_mass = atomic.reduced_mass(*species)
 
     # getting thermal velocity of system if no velocity is given
     V = _replaceNanVwithThermalV(V, T, reduced_mass)
@@ -340,7 +339,7 @@ def _replaceNanVwithThermalV(V, T, m):
                         'equivalencies': u.temperature_energy()})
 @atomic.particle_input
 def impact_parameter_perp(T: u.K,
-                          particles: (atomic.Particle, atomic.Particle),
+                          species: (atomic.Particle, atomic.Particle),
                           V: u.m / u.s = np.nan * u.m / u.s) -> u.m:
     r"""Distance of closest approach for a 90 degree Coulomb collision.
 
@@ -352,7 +351,7 @@ def impact_parameter_perp(T: u.K,
         which is assumed to be equal for both the test particle and
         the target particle
 
-    particles : tuple
+    species : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
@@ -403,8 +402,8 @@ def impact_parameter_perp(T: u.K,
     --------
     >>> from astropy import units as u
     >>> T = 1e6*u.K
-    >>> particles = ('e', 'p')
-    >>> impact_parameter_perp(T, particles)
+    >>> species = ('e', 'p')
+    >>> impact_parameter_perp(T, species)
     <Quantity 8.3550...e-12 m>
 
 
@@ -416,7 +415,7 @@ def impact_parameter_perp(T: u.K,
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
+                                                       species=species,
                                                        V=V)
     # Corresponds to a deflection of 90 degrees, which is valid when
     # classical effects dominate.
@@ -433,7 +432,7 @@ def impact_parameter_perp(T: u.K,
                      V={'none_shall_pass': True})
 def impact_parameter(T: u.K,
                      n_e: u.m ** -3,
-                     particles,
+                     species,
                      z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
                      V: u.m / u.s = np.nan * u.m / u.s,
                      method="classical"):
@@ -450,7 +449,7 @@ def impact_parameter(T: u.K,
     n_e : ~astropy.units.Quantity
         The electron density in units convertible to per cubic meter.
 
-    particles : tuple
+    species : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
@@ -527,10 +526,10 @@ def impact_parameter(T: u.K,
     >>> from astropy import units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
-    >>> particles = ('e', 'p')
-    >>> impact_parameter(T, n, particles)
+    >>> species = ('e', 'p')
+    >>> impact_parameter(T, n, species)
     (<Quantity 1.051...e-11 m>, <Quantity 2.182...e-05 m>)
-    >>> impact_parameter(T, n, particles, V=1e6 * u.m / u.s)
+    >>> impact_parameter(T, n, species, V=1e6 * u.m / u.s)
     (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
 
     References
@@ -541,7 +540,7 @@ def impact_parameter(T: u.K,
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
+                                                       species=species,
                                                        V=V)
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
@@ -555,7 +554,7 @@ def impact_parameter(T: u.K,
     lambdaBroglie = hbar / (2 * reduced_mass * V)
     # distance of closest approach in 90 degree Coulomb collision
     bPerp = impact_parameter_perp(T=T,
-                                  particles=particles,
+                                  species=species,
                                   V=V)
     # obtaining minimum and maximum impact parameters depending on which
     # method is requested
@@ -641,7 +640,7 @@ def impact_parameter(T: u.K,
                      z_mean={'none_shall_pass': True})
 def collision_frequency(T: u.K,
                         n: u.m ** -3,
-                        particles,
+                        species,
                         z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
                         V: u.m / u.s = np.nan * u.m / u.s,
                         method="classical") -> u.Hz:
@@ -662,7 +661,7 @@ def collision_frequency(T: u.K,
         This should be the electron density for electron-electron collisions,
         and the ion density for electron-ion and ion-ion collisions.
 
-    particles : tuple
+    species : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
@@ -731,8 +730,8 @@ def collision_frequency(T: u.K,
     >>> from astropy import units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
-    >>> particles = ('e', 'p')
-    >>> collision_frequency(T, n, particles)
+    >>> species = ('e', 'p')
+    >>> collision_frequency(T, n, species)
     <Quantity 70249... Hz>
 
     References
@@ -744,29 +743,29 @@ def collision_frequency(T: u.K,
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T,
-                                                         particles=particles,
+                                                         species=species,
                                                          V=V)
     # using a more descriptive name for the thermal velocity using
     # reduced mass
     V_reduced = V_r
-    if particles[0] in ('e', 'e-') and particles[1] in ('e', 'e-'):
+    if species[0] in ('e', 'e-') and species[1] in ('e', 'e-'):
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
         V = _replaceNanVwithThermalV(V, T, reduced_mass)
         # impact parameter for 90 degree collision
         bPerp = impact_parameter_perp(T=T,
-                                      particles=particles,
+                                      species=species,
                                       V=V_reduced)
-        print(T, n, particles, z_mean, method)
+        print(T, n, species, z_mean, method)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T,
                                     n,
-                                    particles,
+                                    species,
                                     z_mean,
                                     V=V,
                                     method=method)
-    elif particles[0] in ('e', 'e-') or particles[1] in ('e', 'e-'):
+    elif species[0] in ('e', 'e-') or species[1] in ('e', 'e-'):
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
@@ -776,14 +775,14 @@ def collision_frequency(T: u.K,
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
         bPerp = impact_parameter_perp(T=T,
-                                      particles=particles,
+                                      species=species,
                                       V=V) * reduced_mass / m_e
         # Coulomb logarithm
         # !!! may also need to correct Coulomb logarithm to be
         # electron-electron version !!!
         cou_log = Coulomb_logarithm(T,
                                     n,
-                                    particles,
+                                    species,
                                     z_mean,
                                     V=V,
                                     method=method)
@@ -793,12 +792,12 @@ def collision_frequency(T: u.K,
         # thermal velocity
         V = _replaceNanVwithThermalV(V, T, reduced_mass)
         bPerp = impact_parameter_perp(T=T,
-                                      particles=particles,
+                                      species=species,
                                       V=V)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T,
                                     n,
-                                    particles,
+                                    species,
                                     z_mean,
                                     V=V,
                                     method=method)
@@ -858,7 +857,7 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m**2:
                      n_e={'can_be_negative': False})
 def fundamental_electron_collision_freq(T_e: u.K,
                                         n_e: u.m ** -3,
-                                        ion_particle,
+                                        ion,
                                         coulomb_log=None,
                                         V=None,
                                         coulomb_log_method="classical") -> u.s ** -1:
@@ -879,7 +878,7 @@ def fundamental_electron_collision_freq(T_e: u.K,
     n_e : ~astropy.units.Quantity
         The number density of the Maxwellian test electrons
 
-    ion_particle: str
+    ion: str
         String signifying a particle type of the field ions, including charge
         state information.
 
@@ -949,11 +948,11 @@ def fundamental_electron_collision_freq(T_e: u.K,
     # specify to use electron thermal velocity (most probable), not based on reduced mass
     V = _replaceNanVwithThermalV(V, T_e, m_e)
 
-    particles = [ion_particle, 'e-']
-    Z_i = atomic.integer_charge(ion_particle)
+    species = [ion, 'e-']
+    Z_i = atomic.integer_charge(ion)
     nu = collision_frequency(T_e,
                              n_e,
-                             particles,
+                             species,
                              z_mean=Z_i,
                              V=V,
                              method=coulomb_log_method
@@ -964,7 +963,7 @@ def fundamental_electron_collision_freq(T_e: u.K,
     if np.any(coulomb_log):
         cLog = Coulomb_logarithm(T_e,
                                  n_e,
-                                 particles,
+                                 species,
                                  z_mean=Z_i,
                                  V=V,
                                  method=coulomb_log_method)
@@ -984,7 +983,7 @@ def fundamental_electron_collision_freq(T_e: u.K,
                      n_i={'can_be_negative': False})
 def fundamental_ion_collision_freq(T_i: u.K,
                                    n_i: u.m ** -3,
-                                   ion_particle,
+                                   ion,
                                    coulomb_log=None,
                                    V=None,
                                    coulomb_log_method="classical") -> u.s ** -1:
@@ -1003,7 +1002,7 @@ def fundamental_ion_collision_freq(T_i: u.K,
     n_i : ~astropy.units.Quantity
         The number density of the Maxwellian test ions
 
-    ion_particle: str
+    ion: str
         String signifying a particle type of the test and field ions,
         including charge state information. This function assumes the test
         and field ions are the same species.
@@ -1079,17 +1078,17 @@ def fundamental_ion_collision_freq(T_i: u.K,
     collision_frequency
     fundamental_electron_collision_freq
     """
-    m_i = atomic.particle_mass(ion_particle)
-    particles = [ion_particle, ion_particle]
+    m_i = atomic.particle_mass(ion)
+    species = [ion, ion]
 
     # specify to use ion thermal velocity (most probable), not based on reduced mass
     V = _replaceNanVwithThermalV(V, T_i, m_i)
 
-    Z_i = atomic.integer_charge(ion_particle)
+    Z_i = atomic.integer_charge(ion)
 
     nu = collision_frequency(T_i,
                              n_i,
-                             particles,
+                             species,
                              z_mean=Z_i,
                              V=V,
                              method=coulomb_log_method)
@@ -1101,7 +1100,7 @@ def fundamental_ion_collision_freq(T_i: u.K,
     if np.any(coulomb_log):
         cLog = Coulomb_logarithm(T_i,
                                  n_i,
-                                 particles,
+                                 species,
                                  z_mean=Z_i,
                                  V=V,
                                  method=coulomb_log_method)
@@ -1122,7 +1121,7 @@ def fundamental_ion_collision_freq(T_i: u.K,
                      z_mean={'none_shall_pass': True})
 def mean_free_path(T: u.K,
                    n_e: u.m ** -3,
-                   particles,
+                   species,
                    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
                    V: u.m / u.s = np.nan * u.m / u.s,
                    method="classical") -> u.m:
@@ -1139,7 +1138,7 @@ def mean_free_path(T: u.K,
     n_e : ~astropy.units.Quantity
         The electron density in units convertible to per cubic meter.
 
-    particles : tuple
+    species : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
@@ -1202,12 +1201,11 @@ def mean_free_path(T: u.K,
     Examples
     --------
     >>> from astropy import units as u
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
-    >>> particles = ('e', 'p')
-    >>> mean_free_path(T, n, particles)
+    >>> n = 1e19 * u.m ** -3
+    >>> T = 1e6 * u.K
+    >>> mean_free_path(T, n, ('e-', 'p+'))
     <Quantity 7.839... m>
-    >>> mean_free_path(T, n, particles, V=1e6 * u.m / u.s)
+    >>> mean_free_path(T, n, ('e-', 'p+'), V=1e6 * u.m / u.s)
     <Quantity 0.0109... m>
 
     References
@@ -1218,7 +1216,7 @@ def mean_free_path(T: u.K,
     # collisional frequency
     freq = collision_frequency(T=T,
                                n=n_e,
-                               particles=particles,
+                               species=species,
                                z_mean=z_mean,
                                V=V,
                                method=method)
@@ -1228,7 +1226,7 @@ def mean_free_path(T: u.K,
     # Should be fine since collision_frequency has its own boiler_plate
     # check, and we are only using this here to get the velocity.
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
+                                                       species=species,
                                                        V=V)
     # mean free path length
     mfp = V / freq
@@ -1241,7 +1239,7 @@ def mean_free_path(T: u.K,
                      z_mean={'none_shall_pass': True})
 def Spitzer_resistivity(T: u.K,
                         n: u.m ** -3,
-                        particles,
+                        species,
                         z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
                         V: u.m/u.s = np.nan * u.m / u.s,
                         method="classical") -> u.Ohm * u.m:
@@ -1268,7 +1266,7 @@ def Spitzer_resistivity(T: u.K,
         density) for calculating the ion sphere radius for non-classical
         impact parameters.
 
-    particles : tuple
+    species : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
@@ -1332,10 +1330,10 @@ def Spitzer_resistivity(T: u.K,
     >>> from astropy import units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
-    >>> particles = ('e', 'p')
-    >>> Spitzer_resistivity(T, n, particles)
+    >>> species = ('e', 'p')
+    >>> Spitzer_resistivity(T, n, species)
     <Quantity 2.4915...e-06 m Ohm>
-    >>> Spitzer_resistivity(T, n, particles, V=1e6 * u.m / u.s)
+    >>> Spitzer_resistivity(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 0.000324... m Ohm>
 
     References
@@ -1348,14 +1346,14 @@ def Spitzer_resistivity(T: u.K,
     # collisional frequency
     freq = collision_frequency(T=T,
                                n=n,
-                               particles=particles,
+                               species=species,
                                z_mean=z_mean,
                                V=V,
                                method=method)
     # boiler plate checks
     # fetching additional parameters
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
+                                                       species=species,
                                                        V=V)
     if np.isnan(z_mean):
         spitzer = freq * reduced_mass / (n * charges[0] * charges[1])
@@ -1370,7 +1368,7 @@ def Spitzer_resistivity(T: u.K,
                      z_mean={'none_shall_pass': True})
 def mobility(T: u.K,
              n_e: u.m ** -3,
-             particles,
+             species,
              z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
              V: u.m / u.s = np.nan * u.m / u.s,
              method="classical") -> u.m ** 2 / (u.V * u.s):
@@ -1387,7 +1385,7 @@ def mobility(T: u.K,
     n_e : ~astropy.units.Quantity
         The electron density in units convertible to per cubic meter.
 
-    particles : tuple
+    species : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
@@ -1461,10 +1459,10 @@ def mobility(T: u.K,
     >>> from astropy import units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
-    >>> particles = ('e', 'p')
-    >>> mobility(T, n, particles)
+    >>> species = ('e', 'p')
+    >>> mobility(T, n, species)
     <Quantity 250505... m2 / (s V)>
-    >>> mobility(T, n, particles, V=1e6 * u.m / u.s)
+    >>> mobility(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 1921.2784... m2 / (s V)>
 
     References
@@ -1473,7 +1471,7 @@ def mobility(T: u.K,
     """
     freq = collision_frequency(T=T,
                                n=n_e,
-                               particles=particles,
+                               species=species,
                                z_mean=z_mean,
                                V=V,
                                method=method)
@@ -1482,7 +1480,7 @@ def mobility(T: u.K,
     # already has a boiler_plate check and we are doing this just
     # to recover the charges, mass, etc.
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
+                                                       species=species,
                                                        V=V)
     if np.isnan(z_mean):
         z_val = (charges[0] + charges[1]) / 2
@@ -1499,7 +1497,7 @@ def mobility(T: u.K,
 def Knudsen_number(characteristic_length,
                    T: u.K,
                    n_e: u.m ** -3,
-                   particles,
+                   species,
                    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
                    V: u.m / u.s = np.nan * u.m / u.s,
                    method="classical") -> u.dimensionless_unscaled:
@@ -1519,7 +1517,7 @@ def Knudsen_number(characteristic_length,
     n_e : ~astropy.units.Quantity
         The electron density in units convertible to per cubic meter.
 
-    particles : tuple
+    species : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
@@ -1591,10 +1589,10 @@ def Knudsen_number(characteristic_length,
     >>> L = 1e-3 * u.m
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
-    >>> particles = ('e', 'p')
-    >>> Knudsen_number(L, T, n, particles)
+    >>> species = ('e', 'p')
+    >>> Knudsen_number(L, T, n, species)
     <Quantity 7839.5...>
-    >>> Knudsen_number(L, T, n, particles, V=1e6 * u.m / u.s)
+    >>> Knudsen_number(L, T, n, species, V=1e6 * u.m / u.s)
     <Quantity 10.91773...>
 
     References
@@ -1604,7 +1602,7 @@ def Knudsen_number(characteristic_length,
     """
     path_length = mean_free_path(T=T,
                                  n_e=n_e,
-                                 particles=particles,
+                                 species=species,
                                  z_mean=z_mean,
                                  V=V,
                                  method=method)
@@ -1618,7 +1616,7 @@ def Knudsen_number(characteristic_length,
                      z_mean={'none_shall_pass': True})
 def coupling_parameter(T: u.K,
                        n_e: u.m ** -3,
-                       particles,
+                       species,
                        z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
                        V: u.m / u.s = np.nan * u.m / u.s,
                        method="classical") -> u.dimensionless_unscaled:
@@ -1638,7 +1636,7 @@ def coupling_parameter(T: u.K,
     n_e : ~astropy.units.Quantity
         The electron density in units convertible to per cubic meter.
 
-    particles : tuple
+    species : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
@@ -1738,10 +1736,10 @@ def coupling_parameter(T: u.K,
     >>> from astropy import units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
-    >>> particles = ('e', 'p')
-    >>> coupling_parameter(T, n, particles)
+    >>> species = ('e', 'p')
+    >>> coupling_parameter(T, n, species)
     <Quantity 5.8033...e-05>
-    >>> coupling_parameter(T, n, particles, V=1e6 * u.m / u.s)
+    >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 5.8033...e-05>
 
     References
@@ -1755,14 +1753,14 @@ def coupling_parameter(T: u.K,
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       particles=particles,
+                                                       species=species,
                                                        V=V)
     if np.isnan(z_mean):
         # using mean charge to get average ion density.
         # If you are running this, you should strongly consider giving
         # a value of z_mean as an argument instead.
-        Z1 = np.abs(atomic.integer_charge(particles[0]))
-        Z2 = np.abs(atomic.integer_charge(particles[1]))
+        Z1 = np.abs(atomic.integer_charge(species[0]))
+        Z2 = np.abs(atomic.integer_charge(species[1]))
         Z = (Z1 + Z2) / 2
         # getting ion density from electron density
         n_i = n_e / Z

@@ -57,9 +57,9 @@ class Test_classical_transport:
         """set up some initial values for tests"""
         self.T_e = 1000 * u.eV
         self.n_e = 2e13 / u.cm ** 3
-        self.ion_particle = 'D +1'
-        self.m_i = particle_mass(self.ion_particle)
-        self.Z = integer_charge(self.ion_particle)
+        self.ion = 'D +1'
+        self.m_i = particle_mass(self.ion)
+        self.Z = integer_charge(self.ion)
         self.T_i = self.T_e
         self.n_i = self.n_e / self.Z
         self.B = 0.01 * u.T
@@ -79,7 +79,7 @@ class Test_classical_transport:
                 n_e=self.n_e,
                 T_i=self.T_i,
                 n_i=self.n_i,
-                ion_particle=self.ion_particle,
+                ion=self.ion,
                 Z=self.Z,
                 B=self.B,
                 model=self.model,
@@ -98,7 +98,7 @@ class Test_classical_transport:
                 n_e=self.n_e,
                 T_i=self.T_i,
                 n_i=self.n_i,
-                ion_particle=self.ion_particle,
+                ion=self.ion,
                 Z=self.Z,
                 B=self.B,
                 model=self.model,
@@ -115,7 +115,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      model='spitzer',
                                      field_orientation='perp')
             alpha_spitzer_perp_NRL = (
@@ -189,7 +189,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle='empty moment',
+                                     ion='empty moment',
                                      Z=1)
 
     def test_particle_charge_state(self):
@@ -199,7 +199,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle='empty moment',
+                                     ion='empty moment',
                                      m_i=m_p)
 
     def test_Z_checks(self):
@@ -209,7 +209,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      Z=-1)
 
     def test_coulomb_log_warnings(self):
@@ -219,7 +219,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      coulomb_log_ii=1.3)
 
         with pytest.warns(CouplingWarning):
@@ -227,7 +227,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      coulomb_log_ei=1.3)
 
     def test_coulomb_log_errors(self):
@@ -237,7 +237,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      coulomb_log_ii=0.3)
 
         with pytest.raises(PhysicsError), pytest.warns(CouplingWarning):
@@ -245,7 +245,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      coulomb_log_ei=0.3)
 
     def test_coulomb_log_calc(self):
@@ -255,14 +255,14 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle)
+                                     ion=self.ion)
             cl_ii = Coulomb_logarithm(self.T_i,
                                       self.n_e,
-                                      [self.ion_particle, self.ion_particle],
+                                      [self.ion, self.ion],
                                       self.V_ii)
             cl_ei = Coulomb_logarithm(self.T_e,
                                       self.n_e,
-                                      ['e', self.ion_particle],
+                                      ['e', self.ion],
                                       self.V_ei)
             testTrue = cl_ii == ct2.coulomb_log_ii
             errStr = (f"Ion-ion coulomb logarithm should be {cl_ii} "
@@ -280,18 +280,18 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle)
+                                     ion=self.ion)
             hall_i = Hall_parameter(ct2.n_i,
                                     ct2.T_i,
                                     ct2.B,
-                                    ct2.ion_particle,
-                                    ct2.ion_particle,
+                                    ct2.ion,
+                                    ct2.ion,
                                     ct2.coulomb_log_ii,
                                     ct2.V_ii)
             hall_e = Hall_parameter(ct2.n_e,
                                     ct2.T_e,
                                     ct2.B,
-                                    ct2.ion_particle,
+                                    ct2.ion,
                                     ct2.e_particle,
                                     ct2.coulomb_log_ei,
                                     ct2.V_ei)
@@ -310,7 +310,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      model="standard")
 
     def test_invalid_field(self):
@@ -319,7 +319,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      field_orientation='to the left')
 
     def test_precalculated_parameters(self):
@@ -328,7 +328,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      hall_i=0,
                                      hall_e=0)
             testTrue = np.isclose(ct2.resistivity,
@@ -351,7 +351,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      model=model,
                                      field_orientation=field_orientation)
             attr_to_test = getattr(ct2, attr_name)
@@ -372,7 +372,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      model=model)
             testTrue = np.isclose(ct2.resistivity,
                                   expected,
@@ -392,7 +392,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      model=model)
             testTrue = np.isclose(ct2.thermoelectric_conductivity,
                                   expected,
@@ -414,7 +414,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      model=model)
             testTrue = np.allclose(ct2.electron_viscosity,
                                    expected,
@@ -435,7 +435,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      model=model)
             testTrue = np.allclose(ct2.ion_viscosity,
                                    expected,
@@ -455,7 +455,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      model=model)
             testTrue = np.allclose(ct2.electron_thermal_conductivity,
                                    expected,
@@ -475,7 +475,7 @@ class Test_classical_transport:
                                      n_e=self.n_e,
                                      T_i=self.T_i,
                                      n_i=self.n_i,
-                                     ion_particle=self.ion_particle,
+                                     ion=self.ion,
                                      model=model)
             testTrue = np.allclose(ct2.ion_thermal_conductivity,
                                    expected,
@@ -527,7 +527,7 @@ class Test_classical_transport:
                                                  n_e=self.n_e,
                                                  T_i=self.T_i,
                                                  n_i=self.n_i,
-                                                 ion_particle=self.ion_particle,
+                                                 ion=self.ion,
                                                  Z=self.Z,
                                                  B=self.B,
                                                  model=self.model,
@@ -543,7 +543,7 @@ class Test_classical_transport:
                                                n_e=self.n_e,
                                                T_i=self.T_i,
                                                n_i=self.n_i,
-                                               ion_particle=self.ion_particle,
+                                               ion=self.ion,
                                                Z=self.Z,
                                                B=self.B,
                                                model=self.model,
@@ -560,7 +560,7 @@ class Test_classical_transport:
                                                n_e=self.n_e,
                                                T_i=self.T_i,
                                                n_i=self.n_i,
-                                               ion_particle=self.ion_particle,
+                                               ion=self.ion,
                                                Z=self.Z,
                                                B=self.B,
                                                model=self.model,
@@ -576,7 +576,7 @@ class Test_classical_transport:
                                                     n_e=self.n_e,
                                                     T_i=self.T_i,
                                                     n_i=self.n_i,
-                                                    ion_particle=self.ion_particle,
+                                                    ion=self.ion,
                                                     Z=self.Z,
                                                     B=self.B,
                                                     model=self.model,
@@ -592,7 +592,7 @@ class Test_classical_transport:
                                                    n_e=self.n_e,
                                                    T_i=self.T_i,
                                                    n_i=self.n_i,
-                                                   ion_particle=self.ion_particle,
+                                                   ion=self.ion,
                                                    Z=self.Z,
                                                    B=self.B,
                                                    model=self.model,
@@ -608,7 +608,7 @@ class Test_classical_transport:
                                                         n_e=self.n_e,
                                                         T_i=self.T_i,
                                                         n_i=self.n_i,
-                                                        ion_particle=self.ion_particle,
+                                                        ion=self.ion,
                                                         Z=self.Z,
                                                         B=self.B,
                                                         model=self.model,

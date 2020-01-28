@@ -858,7 +858,7 @@ class Test_fundamental_electron_collision_freq():
         """initializing parameters for tests """
         self.T_arr = np.array([1, 2]) * u.eV
         self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
-        self.ion_particle = 'p'
+        self.ion = 'p'
         self.coulomb_log = 10
 
     # TODO: array coulomb log
@@ -876,7 +876,7 @@ class Test_fundamental_ion_collision_freq():
         """initializing parameters for tests """
         self.T_arr = np.array([1, 2]) * u.eV
         self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
-        self.ion_particle = 'p'
+        self.ion = 'p'
         self.coulomb_log = 10
 
     # TODO: array coulomb log

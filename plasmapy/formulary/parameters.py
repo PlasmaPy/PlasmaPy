@@ -367,12 +367,12 @@ def ion_sound_speed(T_e: u.K,
     m_i = atomic.particle_mass(ion)
     Z = _grab_charge(ion, z_mean)
 
-    for gamma, particles in zip([gamma_e, gamma_i], ["electrons", "ions"]):
+    for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"]):
         if not isinstance(gamma, (numbers.Real, numbers.Integral)):
-            raise TypeError(f"The adiabatic index gamma for {particles} must be "
+            raise TypeError(f"The adiabatic index gamma for {species} must be "
                             "a float or int")
         if gamma < 1:
-            raise PhysicsError(f"The adiabatic index for {particles} must be between "
+            raise PhysicsError(f"The adiabatic index for {species} must be between "
                                f"one and infinity")
 
     # Assume non-dispersive limit if values for n_e (or k) are not specified
@@ -658,7 +658,7 @@ def kappa_thermal_speed(T: u.K, kappa, particle="e-", method="most_probable") ->
 def Hall_parameter(n: u.m ** -3,
                    T: u.K,
                    B: u.T,
-                   ion_particle,
+                   ion,
                    particle='e-',
                    coulomb_log=None,
                    V=None,
@@ -676,7 +676,7 @@ def Hall_parameter(n: u.m ** -3,
         The temperature of particles
     B : ~astropy.units.quantity.Quantity
         The magnetic field
-    ion_particle : str
+    ion : str
         String signifying the type of ion.
     particle : str, optional
         String signifying the type of particles. Defaults to electrons.
@@ -713,12 +713,12 @@ def Hall_parameter(n: u.m ** -3,
     if atomic.Particle(particle).particle == 'e-':
         coll_rate = fundamental_electron_collision_freq(T,
                                                         n,
-                                                        ion_particle,
+                                                        ion,
                                                         coulomb_log,
                                                         V,
                                                         coulomb_log_method=coulomb_log_method)
     else:
-        coll_rate = fundamental_ion_collision_freq(T, n, ion_particle, coulomb_log, V)
+        coll_rate = fundamental_ion_collision_freq(T, n, ion, coulomb_log, V)
     return gyro_frequency / coll_rate
 
 
