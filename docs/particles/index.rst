@@ -1,17 +1,17 @@
-.. py:module:: plasmapy.atomic
+.. py:module:: plasmapy.particles
 
-.. _plasmapy-atomic:
+.. _plasmapy-particles:
 
-**************************
-Atomic (`plasmapy.atomic`)
-**************************
+********************************
+Particles (`plasmapy.particles`)
+********************************
 
-.. currentmodule:: plasmapy.atomic
+.. currentmodule:: plasmapy.particles
 
 Introduction
 ============
 
-The `~plasmapy.atomic` subpackage provides access to information about
+The `~plasmapy.particles` subpackage provides access to information about
 atoms, ions, isotopes, and other particles.
 
 Submodules
@@ -35,6 +35,6 @@ See Also
 Reference/API
 =============
 
-.. automodapi:: plasmapy.atomic
+.. automodapi:: plasmapy.particles
    :no-heading:
    :no-main-docstr:

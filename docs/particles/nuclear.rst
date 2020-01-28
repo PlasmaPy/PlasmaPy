@@ -5,10 +5,10 @@ Binding Energy
 ==============
 
 The binding energy of a nuclide may be accessed either as an
-attribute of a `~plasmapy.atomic.Particle` instance, or by using the
-`~plasmapy.atomic.nuclear_binding_energy` function.
+attribute of a `~plasmapy.particles.Particle` instance, or by using the
+`~plasmapy.particles.nuclear_binding_energy` function.
 
->>> from plasmapy.atomic import Particle, nuclear_binding_energy
+>>> from plasmapy.particles import Particle, nuclear_binding_energy
 >>> D = Particle('deuterium')
 >>> D.binding_energy
 <Quantity 3.56414847e-13 J>
@@ -19,10 +19,10 @@ Nuclear Reactions
 =================
 
 The energy released from a nuclear reaction may be found using the
-`~plasmapy.atomic.nuclear_reaction_energy` function.  The input may be
+`~plasmapy.particles.nuclear_reaction_energy` function.  The input may be
 a `str` representing the reaction.
 
->>> from plasmapy.atomic import nuclear_reaction_energy
+>>> from plasmapy.particles import nuclear_reaction_energy
 >>> nuclear_reaction_energy('Be-8 + alpha --> carbon-12')
 <Quantity 1.18025735e-12 J>
 

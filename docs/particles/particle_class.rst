@@ -3,20 +3,20 @@
 Particle Class
 **************
 
-The `~plasmapy.atomic.Particle` class provides an object-oriented
+The `~plasmapy.particles.Particle` class provides an object-oriented
 interface for particle information.
 
 Creating a Particle Instance
 ============================
 
 The simplest way to create an instance of the
-`~plasmapy.atomic.Particle` class is to pass it a `str` representing a
+`~plasmapy.particles.Particle` class is to pass it a `str` representing a
 particle.
 
->>> from plasmapy.atomic import Particle
+>>> from plasmapy.particles import Particle
 >>> electron = Particle('e-')
 
-The `~plasmapy.atomic.Particle` class accepts a variety of different
+The `~plasmapy.particles.Particle` class accepts a variety of different
 `str` formats to represent particles. Atomic symbols are case-sensitive,
 but element names and many aliases are not.
 
@@ -30,19 +30,19 @@ but element names and many aliases are not.
 >>> hydride = Particle('H-')
 
 An `int` may be used as the first positional argument to
-`~plasmapy.atomic.Particle` to represent an atomic number.  For isotopes
+`~plasmapy.particles.Particle` to represent an atomic number.  For isotopes
 and ions, the mass number may be represented with the ``mass_numb``
 keyword and the integer charge may be represented with the ``Z``
 keyword.
 
 >>> proton = Particle(1, mass_numb=1, Z=1)
 
-The most frequently used `~plasmapy.atomic.Particle` instances may be
+The most frequently used `~plasmapy.particles.Particle` instances may be
 imported directly from the atomic subpackage.
 
->>> from plasmapy.atomic import proton, electron
+>>> from plasmapy.particles import proton, electron
 
-The `~plasmapy.atomic.Particle` instances that may be imported
+The `~plasmapy.particles.Particle` instances that may be imported
 directly are: ``proton``, ``electron``, ``neutron``, ``positron``,
 ``deuteron``, ``triton``, and ``alpha``.
 
@@ -50,7 +50,7 @@ Accessing Particle Properties
 =============================
 
 The properties of each particle may be accessed using the attributes of
-the `~plasmapy.atomic.Particle` instance.
+the `~plasmapy.particles.Particle` instance.
 
 >>> proton.atomic_number
 1
@@ -72,10 +72,10 @@ SI units.
 <Quantity 0.49225958 GeV>
 
 Strings representing particles may be accessed using the
-`~plasmapy.atomic.Particle.particle`,
-`~plasmapy.atomic.Particle.element`,
-`~plasmapy.atomic.Particle.isotope`, and
-`~plasmapy.atomic.Particle.ionic_symbol` attributes.
+`~plasmapy.particles.Particle.particle`,
+`~plasmapy.particles.Particle.element`,
+`~plasmapy.particles.Particle.isotope`, and
+`~plasmapy.particles.Particle.ionic_symbol` attributes.
 
 >>> antimuon.particle
 'mu+'
@@ -91,14 +91,14 @@ Strings representing particles may be accessed using the
 Categories
 ==========
 
-The `~plasmapy.atomic.Particle.categories` attribute returns a `set`
+The `~plasmapy.particles.Particle.categories` attribute returns a `set`
 with the classification categories corresponding to the particle.
 
 >>> sorted(electron.categories)
 ['charged', 'electron', 'fermion', 'lepton', 'matter', 'stable']
 
 Membership of a particle within a category may be checked using the
-`~plasmapy.atomic.Particle.is_category` method.
+`~plasmapy.particles.Particle.is_category` method.
 
 >>> alpha.is_category('lepton')
 False
@@ -119,7 +119,7 @@ False
 >>> alpha.is_category(exclude='lepton')
 True
 
-Calling the `~plasmapy.atomic.Particle.is_category` method with no
+Calling the `~plasmapy.particles.Particle.is_category` method with no
 arguments returns a set containing all of the valid categories for any
 particle.  Valid categories include: ``'actinide'``, ``'alkali metal'``,
 ``'alkaline earth metal'``, ``'antibaryon'``, ``'antilepton'``,
@@ -137,16 +137,16 @@ Conditionals and Equality Properties
 ====================================
 
 Equality between particles may be tested either between two
-`~plasmapy.atomic.Particle` instances, or between a
-`~plasmapy.atomic.Particle` instance and a `str`.
+`~plasmapy.particles.Particle` instances, or between a
+`~plasmapy.particles.Particle` instance and a `str`.
 
 >>> Particle('H-1') == Particle('protium 1+')
 False
 >>> alpha == 'He-4 2+'
 True
 
-The `~plasmapy.atomic.Particle.is_electron` and
-`~plasmapy.atomic.Particle.is_ion` attributes provide a quick way to
+The `~plasmapy.particles.Particle.is_electron` and
+`~plasmapy.particles.Particle.is_ion` attributes provide a quick way to
 check whether or not a particle is an electron or ion, respectively.
 
 >>> electron.is_electron
@@ -156,8 +156,8 @@ False
 >>> deuteron.is_ion
 True
 
-The `~plasmapy.atomic.Particle.element` and
-`~plasmapy.atomic.Particle.isotope` attributes return `None` when the
+The `~plasmapy.particles.Particle.element` and
+`~plasmapy.particles.Particle.isotope` attributes return `None` when the
 particle does not correspond to an element or isotope.  Because
 non-empty strings evaluate to `True` and `None` evaluates to `False`
 when converted to a `bool`, these attributes may be used in conditional
@@ -181,8 +181,8 @@ Returning Antiparticles
 
 The antiparticle of an elementary particle or antiparticle may be found
 by either using Python's unary invert operator (~) or the
-`~plasmapy.atomic.Particle.antiparticle` attribute of a
-`~plasmapy.atomic.Particle` instance.
+`~plasmapy.particles.Particle.antiparticle` attribute of a
+`~plasmapy.particles.Particle` instance.
 
 >>> ~electron
 Particle("e+")
