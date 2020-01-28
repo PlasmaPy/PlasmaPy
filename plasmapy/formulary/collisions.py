@@ -59,7 +59,7 @@ import numpy as np
 import warnings
 
 from astropy import units as u
-from plasmapy import (atomic, utils)
+from plasmapy import (particles, utils)
 from astropy.constants.si import (c, m_e, k_B, e, eps0, hbar)
 from numpy import pi
 from plasmapy.formulary import parameters
@@ -75,10 +75,10 @@ from plasmapy.utils.decorators.checks import _check_relativistic
                         "equivalencies": u.temperature_energy()},
                      z_mean={'none_shall_pass': True},
                      V={'none_shall_pass': True})
-@atomic.particle_input
+@particles.particle_input
 def Coulomb_logarithm(T: u.K,
                       n_e: u.m**-3,
-                      species: (atomic.Particle, atomic.Particle),
+                      species: (particles.Particle, particles.Particle),
                       z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
                       V: u.m / u.s = np.nan * u.m / u.s,
                       method="classical"):
@@ -290,8 +290,8 @@ def Coulomb_logarithm(T: u.K,
 
 
 @validate_quantities(T={'equivalencies': u.temperature_energy()})
-@atomic.particle_input
-def _boilerPlate(T: u.K, species: (atomic.Particle, atomic.Particle), V):
+@particles.particle_input
+def _boilerPlate(T: u.K, species: (particles.Particle, particles.Particle), V):
     """
     Some boiler plate code for checking if inputs to functions in
     collisions.py are good. Also obtains reduced in mass in a
@@ -301,7 +301,7 @@ def _boilerPlate(T: u.K, species: (atomic.Particle, atomic.Particle), V):
     charges = [np.abs(p.charge) for p in species]
 
     # obtaining reduced mass of 2 particle collision system
-    reduced_mass = atomic.reduced_mass(*species)
+    reduced_mass = particles.reduced_mass(*species)
 
     # getting thermal velocity of system if no velocity is given
     V = _replaceNanVwithThermalV(V, T, reduced_mass)
@@ -337,9 +337,9 @@ def _replaceNanVwithThermalV(V, T, m):
 
 @validate_quantities(T={'can_be_negative': False,
                         'equivalencies': u.temperature_energy()})
-@atomic.particle_input
+@particles.particle_input
 def impact_parameter_perp(T: u.K,
-                          species: (atomic.Particle, atomic.Particle),
+                          species: (particles.Particle, particles.Particle),
                           V: u.m / u.s = np.nan * u.m / u.s) -> u.m:
     r"""Distance of closest approach for a 90 degree Coulomb collision.
 
@@ -949,7 +949,7 @@ def fundamental_electron_collision_freq(T_e: u.K,
     V = _replaceNanVwithThermalV(V, T_e, m_e)
 
     species = [ion, 'e-']
-    Z_i = atomic.integer_charge(ion)
+    Z_i = particles.integer_charge(ion)
     nu = collision_frequency(T_e,
                              n_e,
                              species,
@@ -1078,13 +1078,13 @@ def fundamental_ion_collision_freq(T_i: u.K,
     collision_frequency
     fundamental_electron_collision_freq
     """
-    m_i = atomic.particle_mass(ion)
+    m_i = particles.particle_mass(ion)
     species = [ion, ion]
 
     # specify to use ion thermal velocity (most probable), not based on reduced mass
     V = _replaceNanVwithThermalV(V, T_i, m_i)
 
-    Z_i = atomic.integer_charge(ion)
+    Z_i = particles.integer_charge(ion)
 
     nu = collision_frequency(T_i,
                              n_i,
@@ -1759,8 +1759,8 @@ def coupling_parameter(T: u.K,
         # using mean charge to get average ion density.
         # If you are running this, you should strongly consider giving
         # a value of z_mean as an argument instead.
-        Z1 = np.abs(atomic.integer_charge(species[0]))
-        Z2 = np.abs(atomic.integer_charge(species[1]))
+        Z1 = np.abs(particles.integer_charge(species[0]))
+        Z2 = np.abs(particles.integer_charge(species[1]))
         Z = (Z1 + Z2) / 2
         # getting ion density from electron density
         n_i = n_e / Z

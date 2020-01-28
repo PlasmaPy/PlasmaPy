@@ -9,9 +9,9 @@ import numpy as np
 
 from astropy import units as u
 from numbers import (Real, Integral)
-from plasmapy.atomic import (atomic_number, Particle, particle_symbol, IonizationState,
-                             State)
-from plasmapy.atomic.exceptions import (AtomicError, ChargeError, InvalidParticleError)
+from plasmapy.particles import (atomic_number, Particle, particle_symbol, IonizationState,
+                                State)
+from plasmapy.particles.exceptions import (AtomicError, ChargeError, InvalidParticleError)
 from plasmapy.utils.decorators import validate_quantities
 from typing import (Dict, List, Optional, Tuple, Union)
 
@@ -65,7 +65,7 @@ class IonizationStates:
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.atomic import IonizationStates
+    >>> from plasmapy.particles import IonizationStates
     >>> states = IonizationStates(
     ...     {'H': [0.5, 0.5], 'He': [0.95, 0.05, 0]},
     ...     T_e = 1.2e4 * u.K,

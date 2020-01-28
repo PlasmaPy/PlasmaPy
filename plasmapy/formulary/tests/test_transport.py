@@ -6,8 +6,8 @@ import pytest
 from astropy import units as u
 from astropy.constants import m_p, m_e
 from astropy.tests.helper import assert_quantity_allclose
-from plasmapy.atomic.atomic import particle_mass, integer_charge
-from plasmapy.atomic.exceptions import InvalidParticleError
+from plasmapy.particles.atomic import particle_mass, integer_charge
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.formulary.braginskii import (
     _nondim_thermal_conductivity,
     _nondim_viscosity,

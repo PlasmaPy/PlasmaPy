@@ -28,7 +28,7 @@ import warnings
 
 from astropy import units as u
 from astropy.constants.si import (m_p, m_e, c, mu0, k_B, e, eps0)
-from plasmapy import atomic
+from plasmapy import particles
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (angular_freq_to_hz, check_relativistic, validate_quantities)
 from plasmapy.utils.exceptions import PhysicsWarning
@@ -57,7 +57,7 @@ def _grab_charge(ion, z_mean=None):
     if z_mean is None:
         # warnings.warn("No z_mean given, defaulting to atomic charge",
         #               PhysicsWarning)
-        Z = atomic.integer_charge(ion)
+        Z = particles.integer_charge(ion)
     else:
         # using average ionization provided by user
         Z = z_mean
@@ -111,7 +111,7 @@ def mass_density(density: [u.m ** -3, u.kg / (u.m ** 3)],
     rho = density
     if not rho.unit.is_equivalent(u.kg / u.m ** 3):
         if particle:
-            m_i = atomic.particle_mass(particle)
+            m_i = particles.particle_mass(particle)
             Z = _grab_charge(particle, z_mean)
             rho = density * m_i + Z * density * m_e
         else:
@@ -364,7 +364,7 @@ def ion_sound_speed(T_e: u.K,
 
     """
 
-    m_i = atomic.particle_mass(ion)
+    m_i = particles.particle_mass(ion)
     Z = _grab_charge(ion, z_mean)
 
     for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"]):
@@ -398,9 +398,9 @@ def ion_sound_speed(T_e: u.K,
 @validate_quantities(T={'can_be_negative': False,
                         'equivalencies': u.temperature_energy()},
                      mass={'can_be_negative': False, 'can_be_nan': True})
-@atomic.particle_input
+@particles.particle_input
 def thermal_speed(T: u.K,
-                  particle: atomic.Particle = "e-",
+                  particle: particles.Particle = "e-",
                   method="most_probable",
                   mass: u.kg = np.nan * u.kg) -> u.m / u.s:
     r"""
@@ -485,7 +485,7 @@ def thermal_speed(T: u.K,
     <Quantity 621251... m / s>
 
     """
-    m = mass if np.isfinite(mass) else atomic.particle_mass(particle)
+    m = mass if np.isfinite(mass) else particles.particle_mass(particle)
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     if method == "most_probable":
@@ -710,7 +710,7 @@ def Hall_parameter(n: u.m ** -3,
                                                fundamental_electron_collision_freq)
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
-    if atomic.Particle(particle).particle == 'e-':
+    if particles.Particle(particle).particle == 'e-':
         coll_rate = fundamental_electron_collision_freq(T,
                                                         n,
                                                         ion,
@@ -816,7 +816,7 @@ def gyrofrequency(B: u.T, particle='e-', signed=False, Z=None) -> u.rad / u.s:
     279924... Hz
 
     """
-    m_i = atomic.particle_mass(particle)
+    m_i = particles.particle_mass(particle)
     Z = _grab_charge(particle, Z)
     if not signed:
         Z = abs(Z)
@@ -1052,12 +1052,12 @@ def plasma_frequency(n: u.m**-3, particle='e-', z_mean=None) -> u.rad / u.s:
     """
 
     try:
-        m = atomic.particle_mass(particle)
+        m = particles.particle_mass(particle)
         if z_mean is None:
             # warnings.warn("No z_mean given, defaulting to atomic charge",
             #               PhysicsWarning)
             try:
-                Z = atomic.integer_charge(particle)
+                Z = particles.integer_charge(particle)
             except Exception:
                 Z = 1
         else:
@@ -1209,8 +1209,8 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
 @validate_quantities(n={'can_be_negative': False},
                      validations_on_return={'equivalencies': u.dimensionless_angles()})
-@atomic.particle_input(require='charged')
-def inertial_length(n: u.m ** -3, particle: atomic.Particle) -> u.m:
+@particles.particle_input(require='charged')
+def inertial_length(n: u.m ** -3, particle: particles.Particle) -> u.m:
     r"""
     Calculate a charged particle's inertial length.
 
@@ -1524,7 +1524,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion='p+') -> u.rad / u.s:
     # We do not need a charge state here, so the sole intent is to
     # catch invalid ions.
     try:
-        atomic.integer_charge(ion)
+        particles.integer_charge(ion)
     except Exception:
         raise ValueError("Invalid ion in lower_hybrid_frequency.")
 

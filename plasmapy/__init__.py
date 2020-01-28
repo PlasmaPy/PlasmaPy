@@ -42,7 +42,7 @@ from .version import version as __version__
 from .version import githash as __githash__
 
 from . import formulary
-from . import atomic
+from . import particles
 # ----------------------------------------------------------------------------
 
 # Enforce Python version check during package import.

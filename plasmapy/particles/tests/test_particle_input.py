@@ -1,7 +1,7 @@
 import pytest
 from typing import Optional, Union, Tuple, List
 
-from plasmapy.atomic.exceptions import (
+from plasmapy.particles.exceptions import (
     AtomicError,
     ChargeError,
     InvalidIonError,

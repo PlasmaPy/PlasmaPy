@@ -10,8 +10,8 @@ import warnings
 
 from astropy import units as u
 from numbers import (Integral, Real)
-from plasmapy.atomic import Particle, particle_input
-from plasmapy.atomic.exceptions import AtomicError, ChargeError, InvalidParticleError
+from plasmapy.particles import Particle, particle_input
+from plasmapy.particles.exceptions import AtomicError, ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import validate_quantities
 from typing import (Union, List, Optional)
 

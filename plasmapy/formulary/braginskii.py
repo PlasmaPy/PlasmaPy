@@ -136,8 +136,8 @@ import warnings
 
 from astropy import units as u
 from astropy.constants.si import (e, m_e, k_B)
-from plasmapy import (atomic, utils)
-from plasmapy.atomic.atomic import _is_electron
+from plasmapy import (particles, utils)
+from plasmapy.particles.atomic import _is_electron
 from plasmapy.formulary.parameters import (Hall_parameter, _grab_charge)
 from plasmapy.formulary.collisions import (fundamental_electron_collision_freq,
                                            fundamental_ion_collision_freq,
@@ -353,7 +353,7 @@ class ClassicalTransport:
         # get ion mass and charge state
         if m_i is None:
             try:
-                self.m_i = atomic.particle_mass(ion)
+                self.m_i = particles.particle_mass(ion)
             except Exception:
                 raise ValueError(f"Unable to find mass of particle: "
                                  f"{ion} in ClassicalTransport")

@@ -16,13 +16,13 @@ import numpy as np
 import astropy.units as u
 import astropy.constants as const
 
-from plasmapy.atomic.elements import _Elements
-from plasmapy.atomic.isotopes import _Isotopes
-from plasmapy.atomic.particle_class import Particle
-from plasmapy.atomic.particle_input import particle_input
-from plasmapy.atomic.symbols import atomic_symbol
+from plasmapy.particles.elements import _Elements
+from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_input import particle_input
+from plasmapy.particles.symbols import atomic_symbol
 
-from plasmapy.atomic.exceptions import (
+from plasmapy.particles.exceptions import (
     MissingAtomicDataError,
     InvalidIsotopeError,
     InvalidElementError,

@@ -4,7 +4,7 @@ Class representing a group of particles.
 
 import numpy as np
 import scipy.interpolate as interp
-from plasmapy.atomic import atomic
+from plasmapy.particles import atomic
 from astropy import constants
 from astropy import units as u
 

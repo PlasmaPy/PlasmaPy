@@ -4,7 +4,7 @@ from ..nuclear import nuclear_binding_energy, nuclear_reaction_energy, mass_ener
 
 from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
 
-from plasmapy.atomic.exceptions import AtomicError, InvalidParticleError
+from plasmapy.particles.exceptions import AtomicError, InvalidParticleError
 import pytest
 
 test_nuclear_table = [

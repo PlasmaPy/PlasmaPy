@@ -16,7 +16,7 @@ import numpy as np
 
 from astropy import units as u
 from astropy.constants.si import (c, h, hbar, m_e, eps0, e, k_B)
-from plasmapy import atomic
+from plasmapy import particles
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
 from plasmapy.utils import RelativityError
@@ -102,7 +102,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     if not isinstance(particle, u.Quantity):
         try:
             # TODO: Replace with more general routine!
-            m = atomic.particle_mass(particle)
+            m = particles.particle_mass(particle)
         except Exception:
             raise ValueError("Unable to find particle mass.")
     else:

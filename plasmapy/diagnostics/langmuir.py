@@ -24,7 +24,7 @@ import astropy.constants.si as const
 
 from astropy import units as u
 from astropy.visualization import quantity_support
-from plasmapy.atomic import Particle
+from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 from scipy.optimize import curve_fit
 
