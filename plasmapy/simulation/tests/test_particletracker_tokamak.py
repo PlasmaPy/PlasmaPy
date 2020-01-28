@@ -11,13 +11,14 @@ from plasmapy.classes.sources import Coils
 
 MINOR_RADIUS = 0.3 * u.m
 RADIUS = 1 * u.m
-MAIN_CURRENT = 15 * u.MA
+MAIN_CURRENT = 0 * u.MA
 
-COIL_CURRENT = 10 * u.MA
+COIL_CURRENTS = 1 * [10 * u.MA]
 
 @pytest.fixture
 def coils():
-    return Coils.toykamak(MINOR_RADIUS, RADIUS, MAIN_CURRENT, 8 * [10 * u.MA])
+    return Coils.toykamak(MINOR_RADIUS, RADIUS, MAIN_CURRENT, COIL_CURRENTS)
+
 
 @pytest.fixture
 def sim_single(coils):
@@ -29,9 +30,10 @@ def sim_single(coils):
 
 @pytest.fixture
 def sim_many(coils):
-    N = 20
+    N = 100
     x = u.Quantity(N * [[1 + MINOR_RADIUS.si.value / 2, 0, 0]],  u.m)
-    v = u.Quantity(np.random.normal(size=(N, 3)), u.m / u.s)
+    s = np.random.RandomState(0)
+    v = u.Quantity(s.normal(size=(N, 3)), u.m / u.s)
 
     sim = simulation.ParticleTracker(coils, x, v, 'e-')
     return sim
@@ -39,10 +41,10 @@ def sim_many(coils):
 
 def test_1(sim_single):
     solution = sim_single.run(1e-3 * u.s, 1e3)
-    assert abs(solution.data.position.sel(dimension='y')).mean().item() < 4  # should be about 5m for no B field
-    assert 0.001 < abs(solution.data.position.sel(dimension='y')).mean().item() < 0.01
+    assert abs(solution.data.position.sel(dimension='y').mean()).item() < 4  # should be about 5m for no B field
+    assert 0.001 < abs(solution.data.position.sel(dimension='y').mean()).item() < 0.01
 
 def test_2(sim_many):
     solution = sim_many.run(1e-3 * u.s, 1e3)
-    assert abs(solution.data.position.sel(dimension='y')).mean().item() < 4  # should be about 5m for no B field
-    assert 0.001 < abs(solution.data.position.sel(dimension='y')).mean().item() < 0.1
+    assert abs(solution.data.position.sel(dimension='y').mean()).item() < 4  # should be about 5m for no B field
+    assert 0.001 < abs(solution.data.position.sel(dimension='y').mean()).item() < 0.1
