@@ -43,7 +43,7 @@ class ActualTestOutcome:
 
         with pytest.warns(Warning) as warnings_record:
             warnings.warn("So we can exit pytest.warns context manager", _ExitPytestWarns)
-            with pytest.raises(Exception) as exception_info:
+            with pytest.raises(BaseException) as exception_info:
                 self._value = inputs.call()
                 raise _ExitPytestRaises("So we can exit pytest.raises context manager")
 
