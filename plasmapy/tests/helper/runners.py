@@ -39,7 +39,7 @@ def _test_runner(inputs: AbstractTestInputs, expected, *, rtol=1e-8, atol=None):
         raise InvalidTestError("Unable to run test.") from exc
 
     if not comparison.test_passed:
-        pytest.fail(comparison.error_message)
+        raise comparison.exception(comparison.error_message)
 
 
 def function_test_runner(

@@ -15,7 +15,7 @@ def _is_exception(obj) -> bool:
     if not inspect.isclass(obj):
         return False
     else:
-        return issubclass(obj, Exception) and not issubclass(obj, Warning)
+        return issubclass(obj, BaseException) and not issubclass(obj, Warning)
 
 
 def _is_warning_and_value(obj) -> bool:
@@ -152,7 +152,7 @@ class ExpectedTestOutcome:
         return "exception" in self._info.keys()
 
     @property
-    def expected_exception(self) -> Exception:
+    def expected_exception(self) -> BaseException:
         """
         If an exception is expected to be raised, then return that
         exception. Otherwise, raise a `RuntimeError`.
