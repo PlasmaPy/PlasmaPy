@@ -2,7 +2,6 @@ import numpy as np
 import pytest
 from astropy import units as u
 from astropy.tests.helper import assert_quantity_allclose
-from astropy.modeling import models, fitting
 from scipy.optimize import curve_fit
 
 from plasmapy import formulary
@@ -158,12 +157,10 @@ def test_particle_uniform_magnetic():
                       atol=estimated_gyrofrequency_std), \
         "Gyrofrequencies don't match!"
 
-    p_init = models.Polynomial1D(degree=1)
-    fit_p = fitting.LinearLSQFitter()
-    p = fit_p(p_init, sol.data.time, z)
+    p = np.polynomial.Polynomial.fit(sol.data.time, z, 1)
 
-    assert np.allclose(z, p(sol.data.time), atol=1e-4), \
-        "z-velocity doesn't stay constant!"
+    # "z-velocity doesn't stay constant!"
+    assert np.allclose(z, p(sol.data.time), atol=1e-4)
 
     # s.plot_trajectories()
     sol.test_kinetic_energy()
@@ -179,7 +176,6 @@ def test_particle_exb_drift():
 
         which is independent of ion charge.
     """
-    np.random.seed(0)
     def magnetic_field(r):
         return u.Quantity([0, 0, 1], u.T)
 
@@ -189,8 +185,9 @@ def test_particle_exb_drift():
 
     expected_drift_velocity = -1 * u.m / u.s
 
-    v = np.zeros((50, 3))
-    v[:, 2] += np.random.normal(size=50)
+    v = np.zeros((50, 3), dtype=float)
+    s = np.random.RandomState(42)
+    v[:, 2] += s.normal(size=50)
     s = ParticleTracker(test_plasma, v = v * u.m / u.s)
     assert np.isfinite(s._v).all()
     assert np.isfinite(s._x).all()
@@ -198,18 +195,15 @@ def test_particle_exb_drift():
     assert np.isfinite(sol.data.position).all()
     assert np.isfinite(sol.data.velocity).all()
 
-    p_init = models.Polynomial1D(degree=1)
-    for x in sol.data.position.sel(dimension='x').T:
-        fit_p = fitting.LinearLSQFitter()
-        p = fit_p(p_init, sol.data.time, x)
-        fit_velocity = p.parameters[1] * u.m / u.s
+    for particle in sol.data.position.particle:
+        x = sol.data.position.sel(dimension='x', particle = particle)
+        p = np.polynomial.Polynomial.fit(x.time, x, 1)
+        fit_velocity = p.convert().coef[1] * u.m / u.s
 
-        assert np.allclose(x, p(sol.data.time), atol=1e-3), \
-            "x position doesn't follow linear fit!"
+        np.testing.assert_allclose(x, p(x.time), atol=1e-3)
+        assert np.isclose(expected_drift_velocity, fit_velocity, atol=1e-3), \
+            "x velocity doesn't agree with expected drift velocity!"
 
-    assert np.isclose(expected_drift_velocity, fit_velocity,
-                      atol=1e-3), \
-        "x velocity doesn't agree with expected drift velocity!"
 
     # s.plot_trajectories()
     with pytest.raises(PhysicsError):   # Kinetic energy is not conserved here due to the electric field
