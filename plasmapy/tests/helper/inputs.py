@@ -9,6 +9,7 @@ from plasmapy.utils.formatting.formatting import (
     call_string,
     class_attribute_call_string,
     class_method_call_string,
+    _object_name,
 )
 
 __all__ = [
@@ -136,8 +137,9 @@ class FunctionTestInputs(AbstractTestInputs):
     @function.setter
     def function(self, provided_function: Callable):
 
-        if not inspect.isfunction(provided_function):
-            raise TypeError("The provided function is not a function.")
+        if not callable(provided_function):
+            function_name = _object_name(provided_function)
+            raise TypeError(f"The provided function ({function_name}) is not callable.")
         self._info["function"] = provided_function
 
     @args.setter
