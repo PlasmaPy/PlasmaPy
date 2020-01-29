@@ -335,7 +335,7 @@ class ParticleTracker:
         _total_time = total_time.si.value
         _x = self._x.copy()
         _v = self._v.copy()
-        _time = 0
+        _time = 0.0
 
         _times = [_time]
         init_kinetic = self._kinetic_energy(_v)
