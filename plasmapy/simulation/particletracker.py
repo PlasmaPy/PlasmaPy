@@ -182,12 +182,12 @@ class ParticleTrackerSolution:
         ax.set_ylabel(f"Position [{u.m}]")
         plt.show()
 
-    def test_kinetic_energy(self):
+    def test_kinetic_energy(self, cutoff = 2):
         r"""Test conservation of kinetic energy."""
-        conservation = np.allclose(self.kinetic_energy.values,
-                                   self.kinetic_energy.mean().item(),
-                                   atol=3 * self.kinetic_energy.std().item())
-        if not conservation:
+        difference = self.kinetic_energy - self.kinetic_energy.mean(dim='time')
+        scaled = difference /  self.kinetic_energy.std(dim='time')
+        conservation = abs(scaled) < cutoff 
+        if not conservation.all():
             if PLOTTING:
                 import matplotlib.pyplot as plt
 
