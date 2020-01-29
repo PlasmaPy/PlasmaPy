@@ -106,6 +106,8 @@ class ParticleTrackerSolution:
     def __init__(self, position_history: u.m,
                  velocity_history: u.m/u.s,
                  times: u.s,
+                 b_history: u.T,
+                 e_history: u.V/u.m,
                  particle: Particle,
                  diagnostics: list,
                  dimensions = 'xyz',
@@ -115,6 +117,8 @@ class ParticleTrackerSolution:
         particles = range(position_history.shape[1])
         data_vars['position'] = (('time', 'particle', 'dimension'), position_history.si.value)
         data_vars['velocity'] = (('time', 'particle', 'dimension'), velocity_history.si.value)
+        data_vars['B'] = (('time', 'particle', 'dimension'), b_history.si.value)
+        data_vars['E'] = (('time', 'particle', 'dimension'), e_history.si.value)
         data_vars['timestep'] = (('time',), [row['dt'] for row in diagnostics])
         self.data = xarray.Dataset(data_vars = data_vars,
                                       coords={'time': times.si.value,
@@ -362,6 +366,8 @@ class ParticleTracker:
 
             _position_history = [_x.copy()]
             _velocity_history = [_v.copy()]
+            _b_history = [b.copy()]
+            _e_history = [e.copy()]
             if progressbar:
                 pbar = tqdm.auto.tqdm(total=_total_time, unit="s")
             while _time < _total_time:
@@ -377,6 +383,8 @@ class ParticleTracker:
 
                 _position_history.append(_x.copy())
                 _velocity_history.append(_v.copy())
+                _b_history.append(b.copy())
+                _e_history.append(e.copy())
                 _times.append(_time)
 
                 if init_kinetic:
@@ -398,6 +406,8 @@ class ParticleTracker:
         solution = ParticleTrackerSolution(u.Quantity(_position_history, u.m),
                                            u.Quantity(_velocity_history, u.m/u.s),
                                            u.Quantity(_times, u.s),
+                                           u.Quantity(_b_history, u.T),
+                                           u.Quantity(_e_history, u.V/u.m),
                                            self.particle,
                                            diagnostics = list_diagnostics
                                            )
