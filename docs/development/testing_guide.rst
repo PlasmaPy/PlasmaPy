@@ -248,15 +248,15 @@ and `astropy.units.allclose` should be used instead.
 Testing warnings and exceptions
 -------------------------------
 
-Robust testing frameworks should test that functions and methods return
-the expected results, issue the expected warnings, and raise the
-expected exceptions.  Pytest contains functionality to `test warnings
-<https://docs.pytest.org/en/latest/warnings.html#warns>`_
+Robust testing frameworks should test that functions, methods, and
+attributes return the expected results, issue the expected warnings,
+and raise the expected exceptions.  Pytest contains functionality to
+`test warnings <https://docs.pytest.org/en/latest/warnings.html#warns>`_
 and `test exceptions
 <https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions>`_.
 
 To test that a function issues an appropriate warning, use
-`pytest.warns`.
+`~pytest.warns`.
 
 .. code-block:: python
 
@@ -271,7 +271,7 @@ To test that a function issues an appropriate warning, use
           issue_warning()
 
 To test that a function raises an appropriate exception, use
-`pytest.raises`.
+`~pytest.raises`.
 
 .. code-block:: python
 
@@ -353,8 +353,8 @@ functions or pass in tuples containing inputs and expected values.
 
 .. _testing-guidelines-writing-tests-helpers:
 
-Pytest helpers
---------------
+Test helpers
+------------
 
 A robust testing framework should test not just that functions and
 methods return the expected results, but also that they issue the
@@ -362,92 +362,87 @@ expected warnings and raise the expected exceptions. In PlasmaPy, tests
 often need to compare a `float` against a `float`, an `~numpy.array`
 against an `~numpy.array`, and `~astropy.units.Quantity` objects against
 other `~astropy.units.Quantity` objects to within a certain tolerance.
-Occasionally tests will be needed to make sure that a function will
+At other times, we will want to check that the returned value has a
+specific unit.
+
+PlasmaPy's `~plasmapy.tests` subpackage contains helper functionality
+to simplify tests that fall under the result test pattern.  These
+functions and classes thoroughly check that the actual test outcome
+matches the expected test outcome.  The potential expected outcomes can
+be values, warnings, exceptions, and units.  When the actual and
+expected test outcomes differ, then this functionality raises
+appropriate exceptions with error messages designed to pinpoint the
+problem.  The function
+`~plasmapy.tests.helper.runners.function_test_runner`
+checks that a function supplied with certain positional and keyword
+arguments yields the expected outcome.  Similarly,
+`~plasmapy.tests.helper.runners.attr_test_runner`
+performs these checks for class attributes and
+`~plasmapy.tests.helper.runners.method_test_runner`
+performs these checks for class methods.
+
+.. Occasionally tests will be needed to make sure that a function will
 return the same value for different arguments (e.g., due to symmetry
-properties). PlasmaPy's `~plasmapy.utils` subpackage contains the
-`~plasmapy.utils.pytest_helpers.run_test` and
-`~plasmapy.utils.pytest_helpers.run_test_equivalent_calls` helper functions that can
-generically perform many of these comparisons and checks.
+properties).
 
-The `~plasmapy.utils.pytest_helpers.run_test` function can be used to
-check that a callable object returns the expected result, raises the
-expected exception, or issues the expected warning for different
-positional and keyword arguments. This function is particularly useful
-when unit testing straightforward functions when you have a bunch of
-inputs and know the expected result.
-
-Suppose that we want to test the trigonometric property that
-
-.. math::
-
-  \sin(\theta) = \cos(\theta + \frac{\pi}{2}).
-
-We may use `~plasmapy.utils.pytest_helpers.run_test` as in the following example to
-check the case of :math:`\theta \equiv 0`.
+Suppose that we want to check that a function that doubles its argument is
+working correctly.  We may use `~plasmapy.tests.helper.function_test_runner`
+to do this.
 
 .. code-block:: python
 
-  from numpy import sin, cos, pi
-  from plasmapy.utils.pytest_helpers import run_test
+  from plasmapy.tests.helper import function_test_runner
 
-  def test_trigonometric_properties():
-      run_test(func=sin, args=0, expected_outcome=cos(pi/2), atol=1e-16)
+  def double(x):
+      return 2 * x
 
-We may use `pytest.mark.parametrize` with
-`~plasmapy.utils.pytest_helpers.run_test` to check multiple cases.  If
-`~plasmapy.utils.pytest_helpers.run_test` only receives one positional
-argument that is a `list` or `tuple`, then it will assume that `list`
-or `tuple` contains the `callable`, the positional arguments, the
-keyword arguments (which may be omitted), and the expected outcome
+  function_test_runner(expected=4, function=double, args=2)
+
+If we instead had ``expected=5``, then
+`~plasmapy.tests.helper.function_test_runner` would have raised an
+exception indicating a test failure.
+
+If we want to test this function for multiple arguments, we may use
+`~pytest.mark.parametrize` in conjunction with
+`~plasmapy.tests.helper.function_test_runner`.
+
+.. code-block:: python
+
+  import numpy as np
+  from astropy import units as u
+
+  values_and_expected_outcomes = [
+      (2, 4),  # passes
+      (2, 5),  # fails
+      ('bye', 'byebye'),  # passes
+      (None, TypeError),  # passes because None * 2 raises a TypeError
+      (None, ValueError),  # fails because no ValueError was raised
+      (1, Warning),  # fails because no warning was issued
+      (2 * u.m, 4 * u.m),  # passes
+      (2 * u.m, u.m),  # passes, since the expected units
+      (2 * u.m, 400 * u.cm),  # fails, since the units are not identical
+      (np.nan, np.nan),  # passes, even though np.nan == np.nan returns False
+  ]
+
+  @pytest.mark.parametrize("value, doubled_value", [(1, 2), (2, 4), ('.', '..'), (None)])
+  def test_double(value, doubled_value):
+      function_test_runner(expected=doubled_value, function=double, args=value)
+
+.. Not yet implemented!  Was true for run_test.
+If `~plasmapy.tests.helper.function_test_runner` only receives one
+positional argument that is a `list` or `tuple`, then it will assume
+that `list` or `tuple` contains the `callable`, the positional arguments,
+the keyword arguments (which may be omitted), and the expected outcome
 (which may be the returned `object`, a warning, or an exception).
 
-.. code-block:: python
-
-  @pytest.mark.parametrize("input_tuple", [(sin, 0, cos(pi/2)), (sin, '.', TypeError)])
-  def test_trigonometry(input_tuple):
-      run_test(input_tuple, atol=1e-16)
-
-This parametrized function will check that ``sin(0)`` is within
-``1e-16`` of ``cos(pi/2)`` and that  ``sin('.')`` raises a `TypeError`.
-
-We may use `~plasmapy.utils.run_test_equivalent_calls` to check symmetry
-properties such as
-
-.. math::
-
-  \cos(\theta) = \cos(-\theta).
-
-This property can be checked for :math:`\theta = 1` with the following
-code.
-
-.. code-block:: python
-
-  def test_cosine_symmetry():
-      """Test that cos(1) equals cos(-1)."""
-      plasmapy.utils.run_test_equivalent_calls(cos, 1, -1)
-
-We may also use `pytest.mark.parametrize` with
-`~plasmapy.utils.pytest_helpers.run_test_equivalent_calls` to
-sequentially test multiple symmetry properties.
-
-.. code-block:: python
-
-  @pytest.mark.parametrize('input_tuple', [(cos, 1, -1), ([cos, pi/2], [sin, 0])])
-  def test_symmetry_properties(input_tuple):
-      plasmapy.utils.run_test_equivalent_calls(input_tuple, atol=1e-16)
-
-This parametrized function will check that ``cos(1)`` is within
-``1e-16`` of ``cos(-1)``, and that ``cos(pi/2)`` is within ``1e-16`` of
-``sin(0)``.
-
 Please refer to the documentation for
-`~plasmapy.utils.pytest_helpers.run_test` and
-`~plasmapy.utils.pytest_helpers.run_test_equivalent_calls` to learn
-about the full capabilities of these pytest helper functions (including
-for testing functions that return `~astropy.units.Quantity` objects).
+`~plasmapy.tests.helper.function_test_runner`,
+`~plasmapy.tests.helper.attr_test_runner`, and
+`~plasmapy.tests.helper.method_test_runner` for the full capabilities
+of these functions.
 
 .. warning::
-    The API within `~plasmapy.utils.pytest_helpers` is not yet stable
+    The API for helper functions within `~plasmapy.tests` is unstable
     and may change in the near future.
 
 .. _testing-guidelines-writing-tests-fixtures:
