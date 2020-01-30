@@ -15,6 +15,10 @@ __all__ = [
 ]
 
 
+# TODO: get the error message while raising this to be simply "Failed"
+#       rathern than plasmapy.tests.helper.exceptions.Failed
+
+
 class Failed(pytest.fail.Exception):
     """
     Base exception for test failures.
