@@ -357,6 +357,20 @@ cases = [
         exception_upon_failure=InvalidTestError,
     ),
 
+    FunctionTestCase(
+        expected="..",
+        function=lambda x: 2 * x,
+        args=("."),
+        exception_upon_failure=None,
+    ),
+
+    FunctionTestCase(
+        expected="",
+        function=lambda x: 2 * x,
+        args=".",
+        exception_upon_failure=UnexpectedResultError,
+    ),
+
     AttributeTestCase(
         expected=40,
         cls=SampleClass,
