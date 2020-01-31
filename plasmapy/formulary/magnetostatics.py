@@ -46,6 +46,7 @@ class MagneticDipole(MagnetoStatics):
         Position of the dipole
 
     """
+
     @validate_quantities
     def __init__(self, moment: u.A * u.m**2, p0: u.m):
         self.moment = moment.value
@@ -59,7 +60,7 @@ class MagneticDipole(MagnetoStatics):
             moment=self.moment,
             p0=self.p0,
             moment_u=self._moment_u,
-            p0_u=self._p0_u
+            p0_u=self._p0_u,
         )
 
     def magnetic_field(self, p: u.m) -> u.T:
@@ -105,11 +106,9 @@ class GeneralWire(Wire):
         electric current
 
     """
+
     @validate_quantities
-    def __init__(self, parametric_eq,
-                 t1,
-                 t2,
-                 current: u.A):
+    def __init__(self, parametric_eq, t1, t2, current: u.A):
         if callable(parametric_eq):
             self.parametric_eq = parametric_eq
         else:
@@ -123,14 +122,16 @@ class GeneralWire(Wire):
         self._current_u = current.unit.get_format_name(str)
 
     def __repr__(self):
-        return "{name}(parametric_eq={parametric_eq}, t1={t1}, t2={t2}, " \
-               "current={current}{current_u})".format(
-            name=self.__class__.__name__,
-            parametric_eq=self.parametric_eq,
-            t1=self.t1,
-            t2=self.t2,
-            current=self.current,
-            current_u=self._current_u
+        return (
+            "{name}(parametric_eq={parametric_eq}, t1={t1}, t2={t2}, "
+            "current={current}{current_u})".format(
+                name=self.__class__.__name__,
+                parametric_eq=self.parametric_eq,
+                t1=self.t1,
+                t2=self.t2,
+                current=self.current,
+                current_u=self._current_u,
+            )
         )
 
     def magnetic_field(self, p: u.m, n: numbers.Integral = 1000) -> u.T:
@@ -197,6 +198,7 @@ class FiniteStraightWire(Wire):
         electric current
 
     """
+
     @validate_quantities
     def __init__(self, p1: u.m, p2: u.m, current: u.A):
         self.p1 = p1.value
@@ -216,7 +218,7 @@ class FiniteStraightWire(Wire):
             current=self.current,
             p1_u=self._p1_u,
             p2_u=self._p2_u,
-            current_u=self._current_u
+            current_u=self._current_u,
         )
 
     def magnetic_field(self, p) -> u.T:
@@ -283,9 +285,10 @@ class InfiniteStraightWire(Wire):
         electric current
 
     """
+
     @validate_quantities
     def __init__(self, direction, p0: u.m, current: u.A):
-        self.direction = direction/np.linalg.norm(direction)
+        self.direction = direction / np.linalg.norm(direction)
         self.p0 = p0.value
         self._p0_u = p0.unit.get_format_name(str)
         self.current = current.value
@@ -298,7 +301,7 @@ class InfiniteStraightWire(Wire):
             p0=self.p0,
             current=self.current,
             p0_u=self._p0_u,
-            current_u=self._current_u
+            current_u=self._current_u,
         )
 
     def magnetic_field(self, p) -> u.T:
@@ -346,10 +349,10 @@ class CircularWire(Wire):
         electric current
 
     """
+
     @validate_quantities
-    def __init__(self, normal, center: u.m, radius: u.m,
-                 current: u.A, n=300):
-        self.normal = normal/np.linalg.norm(normal)
+    def __init__(self, normal, center: u.m, radius: u.m, current: u.A, n=300):
+        self.normal = normal / np.linalg.norm(normal)
         self.center = center.value
         self._center_u = center.unit.get_format_name(str)
         if radius > 0:
@@ -392,16 +395,18 @@ class CircularWire(Wire):
         self.n = n
 
     def __repr__(self):
-        return "{name}(normal={normal}, center={center}{center_u}, " \
-               "radius={radius}{radius_u}, current={current}{current_u})".format(
-            name=self.__class__.__name__,
-            normal=self.normal,
-            center=self.center,
-            radius=self.radius,
-            current=self.current,
-            center_u=self._center_u,
-            radius_u=self._radius_u,
-            current_u=self._current_u
+        return (
+            "{name}(normal={normal}, center={center}{center_u}, "
+            "radius={radius}{radius_u}, current={current}{current_u})".format(
+                name=self.__class__.__name__,
+                normal=self.normal,
+                center=self.center,
+                radius=self.radius,
+                current=self.current,
+                center_u=self._center_u,
+                radius_u=self._radius_u,
+                current_u=self._current_u,
+            )
         )
 
     def magnetic_field(self, p) -> u.T:
