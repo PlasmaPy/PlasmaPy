@@ -9,6 +9,8 @@ from plasmapy.tests.helper.inputs import (
     ClassMethodTestInputs,
 )
 
+from plasmapy.tests.helper.exceptions import InvalidTestError
+
 __all__ = ["ActualTestOutcome"]
 
 
@@ -97,14 +99,14 @@ class ActualTestOutcome:
 
         Raises
         ------
-        RuntimeError
+        InvalidTestError
             If no exception was raised during the test.
         """
 
         if self.exception_was_raised:
             return self._exception_info
         else:
-            raise RuntimeError("No exception was raised.")
+            raise InvalidTestError("No exception was raised.")
 
     @property
     def exception_type(self):
@@ -113,7 +115,7 @@ class ActualTestOutcome:
 
         Raises
         ------
-        RuntimeError
+        InvalidTestError
             If no exception was raised during the test.
         """
 
@@ -127,7 +129,7 @@ class ActualTestOutcome:
 
         Raises
         ------
-        RuntimeError
+        InvalidTestError
             If no exception was raised during the test.
         """
 
@@ -141,14 +143,14 @@ class ActualTestOutcome:
 
         Raises
         ------
-        RuntimeError
+        InvalidTestError
             If no warning was issued during the test.
         """
 
         if self.warning_was_issued:
             return self._warnings_record
         else:
-            raise RuntimeError(
+            raise InvalidTestError(
                 f"The warnings_record attribute is not available because "
                 f" no warnings were issued when running the command: "
                 f"{self._inputs.call_string}"
@@ -162,14 +164,14 @@ class ActualTestOutcome:
 
         Raises
         ------
-        RuntimeError
+        InvalidTestError
             If no warning was issued during the test.
         """
 
         if self.warning_was_issued:
             return [warning.category for warning in self.warnings_record]
         else:
-            raise RuntimeError(
+            raise InvalidTestError(
                 f"The warning_types attribute is not available because "
                 f"no warnings were issued when running the command: "
                 f"{self._inputs.call_string}"
@@ -184,14 +186,14 @@ class ActualTestOutcome:
 
         Raises
         ------
-        RuntimeError
+        InvalidTestError
             If no warning was issued during the test.
         """
 
         if self.warning_was_issued:
             return [str(warning.message.args[0]) for warning in self.warnings_record]
         else:
-            raise RuntimeError(
+            raise InvalidTestError(
                 f"The warning_messages attribute is not available because "
                 f"no warnings were issued when running the command: "
                 f"{self._inputs.call_string}"
@@ -205,7 +207,7 @@ class ActualTestOutcome:
 
         Raises
         ------
-        RuntimeError
+        InvalidTestError
             If no value was returned during the test, for example if
             the test raised an exception.
         """
@@ -213,7 +215,7 @@ class ActualTestOutcome:
         if self.value_was_returned:
             return self._value
         else:
-            raise RuntimeError("No value was returned.")
+            raise InvalidTestError("No value was returned.")
 
     @property
     def call_string(self) -> str:
