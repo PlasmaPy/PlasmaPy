@@ -481,13 +481,18 @@ radius={radius}, current={current})".format(
         return self._magnetic_field(p, self.pt, self.dl, self.current, self.w).reshape(shape) * u.T
     
     def visualize(self, figure = None):   # coverage: ignore
-        from mayavi import mlab
+        import pyvista as pv
         if figure is None:
-            fig = mlab.figure()
+            fig = pv.Plotter(notebook=True)
         else:
             fig = figure
-        x, y, z = self.curve(np.linspace(0, 2*np.pi))
-        mlab.plot3d(x, y, z, figure=fig)
+        x, y, z = points = self.curve(np.linspace(0, 2*np.pi))
+        spline = pv.Spline(points.T, 1000)
+        trajectory = spline.tube(radius=1e-1)
+        if figure is None:
+            trajectory.plot()
+        else:
+            figure.add_mesh(trajectory)
         return fig
 
 

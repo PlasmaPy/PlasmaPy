@@ -53,15 +53,15 @@ trajectory = ParticleTracker(plasma, v = u.Quantity([[-1, 0, 0]] * u.m/u.s), par
 # We'll just show the y-z trajectories for clarity.
 
 solution = trajectory.run(5 * gyroperiod, timestep)
-solution.plot_time_trajectories('yz')
+# solution.plot_time_trajectories('yz')
 
 ############################################################
 # Plot the shape of the trajectory in 3D.
 
-solution.plot_trajectories()
+# solution.plot_trajectories()
 
 ############################################################
-# If you have Mayavi, you can  run the following line - it'll open up a neat 3D visualization.
+# If you have Pyvista, you can  run the following line - it'll open up a neat 3D visualization.
 
 solution.visualize()
 
@@ -94,4 +94,8 @@ solution.plot_time_trajectories('z')
 
 #############################################################
 
-solution.visualize()
+import pyvista
+fig = pyvista.Plotter()
+for i in range(N):
+    solution.visualize(fig, i)
+fig.show()

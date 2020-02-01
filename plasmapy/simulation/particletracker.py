@@ -196,16 +196,21 @@ class ParticleTrackerSolution:
             raise PhysicsError("Kinetic energy is not conserved!")
 
     def visualize(self,  figure = None, particle = 0):  # coverage: ignore
-        from mayavi import mlab
+        # breakpoint()
+        import pyvista as pv
         if figure is None:
-            fig = mlab.figure()
+            fig = pv.Plotter()
         else:
             fig = figure
-        x, y, z = self.data.position.sel(particle=particle).T
-        trajectory = mlab.plot3d(x,y,z, self.data.time, figure=fig, line_width=1e-13, representation='surface')
-        mlab.colorbar(trajectory, title="Trajectory - Time", orientation="vertical")
+        points = self.data.position.sel(particle=particle).values
+        # breakpoint()
+        spline = pv.Spline(points, 1000)
+        trajectory = spline.tube(radius=1e-2)
         if figure is None:
-            mlab.show()
+            trajectory.plot()
+        else:
+            figure.add_mesh(trajectory)
+        return fig
 
     @property
     def kinetic_energy(self):

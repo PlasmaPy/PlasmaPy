@@ -36,14 +36,17 @@ class Coils(GenericPlasma):
         return match
 
     def visualize(self, figure = None):   # coverage: ignore
-        from mayavi import mlab
+        import pyvista as pv
         if figure is None:
-            fig = mlab.figure()
+            fig = pv.Plotter(notebook=True)
         else:
             fig = figure
 
         for ms in self.magnetostatics:
             ms.visualize(fig)
+
+        if figure is None:
+            fig.show()
 
         return fig
 
