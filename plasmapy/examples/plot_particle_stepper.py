@@ -46,14 +46,13 @@ timestep = gyroperiod / steps_to_gyroperiod
 # one in the x direction, parallel to the magnetic field B -
 # that way, it won't turn in the z direction.
 
-number_steps = 5 * steps_to_gyroperiod * int(2 * np.pi)
 trajectory = ParticleTracker(plasma, v = u.Quantity([[-1, 0, 0]] * u.m/u.s), particle_type = 'p')
 
 ############################################################
 # Let's run the pusher and plot the trajectory versus time.
 # We'll just show the y-z trajectories for clarity.
 
-solution = trajectory.run(timestep, number_steps)
+solution = trajectory.run(5 * gyroperiod, timestep)
 solution.plot_time_trajectories('yz')
 
 ############################################################
@@ -65,7 +64,6 @@ solution.plot_trajectories()
 # If you have Mayavi, you can  run the following line - it'll open up a neat 3D visualization.
 
 # solution.visualize()
-
 
 ############################################################
 # As a test, we calculate the mean velocity in the z direction from the
@@ -89,7 +87,7 @@ v[:, :2] = np.random.normal(size=(N, 2))
 trajectory = ParticleTracker(plasma, v = v * u.m / u.s, particle_type = 'p')
 # we choose this as our example's thumbnail:
 # sphinx_gallery_thumbnail_number = 3
-solution = trajectory.run(timestep/100, number_steps*200)
+solution = trajectory.run(gyroperiod * 20, timestep/10)
 solution.plot_trajectories(alpha=0.8)
 
 ############################################################
