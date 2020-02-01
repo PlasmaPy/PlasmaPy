@@ -1,2 +1,0 @@
-sh binder/xvfb_bg start
-export DISPLAY=:1

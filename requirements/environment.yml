@@ -15,7 +15,6 @@ dependencies:
   - pillow
   - colorama
   - pip
-  - vtk
   - xarray
   - pip:
     - numpydoc
@@ -28,4 +27,3 @@ dependencies:
     - numba
     - tqdm
     - hypothesis[numpy]
-    - mayavi

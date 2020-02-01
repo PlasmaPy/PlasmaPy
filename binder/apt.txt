@@ -1,2 +1,0 @@
-xvfb
-libglu1
