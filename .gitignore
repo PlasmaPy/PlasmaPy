@@ -125,3 +125,6 @@ untitled*
 
 # Documentation files
 auto_examples
+
+# Version file
+plasmapy/version.py
