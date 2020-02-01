@@ -1,1 +1,0 @@
-Remove the now unnecessary `astropy_helpers` submodule

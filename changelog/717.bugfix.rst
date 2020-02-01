@@ -1,1 +1,0 @@
-Fix `h5py` warning in OpenPMD module, opening files in read mode by default

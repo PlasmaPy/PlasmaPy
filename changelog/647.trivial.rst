@@ -1,1 +1,0 @@
-Move existing "check" decorators to new ``plasmapy.utils.decorators`` module

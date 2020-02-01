@@ -1,2 +1,0 @@
-Reduce precision of tests and doctests to allow for refinements of
-fundamental constants.
