@@ -69,7 +69,7 @@ solution.plot_trajectories()
 # As a test, we calculate the mean velocity in the z direction from the
 # velocity and position
 
-vmean = solution.data.velocity.sel(dimension='z').mean()
+vmean = solution.data.velocity.sel(dimension='z').mean().item()
 print(f"The calculated drift velocity is {vmean:.4f} to compare with the "
       f"theoretical E0/B0 = {0.5 * u.m / u.s}")
 
