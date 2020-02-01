@@ -12,7 +12,8 @@ from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.atomic.particle_class import Particle
 from plasmapy.atomic.special_particles import ParticleZoo
 
-from plasmapy.utils.pytest_helpers import call_string, run_test_equivalent_calls
+from plasmapy.utils import call_string
+from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
 from plasmapy.atomic.exceptions import (
     AtomicError,
