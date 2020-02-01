@@ -11,7 +11,7 @@ from plasmapy.formulary.collisions import coupling_parameter
 from plasmapy.atomic import particle_mass
 
 from plasmapy.utils import CouplingWarning
-from plasmapy.utils.pytest_helpers import call_string
+from plasmapy.utils.pytest_helpers.error_messages import call_string
 
 from plasmapy.classes import GenericPlasma
 
