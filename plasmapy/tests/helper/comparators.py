@@ -27,11 +27,7 @@ from plasmapy.tests.helper.exceptions import (
     WarningMismatchError,
 )
 
-
 __all__ = ["CompareActualExpected"]
-
-# TODO: Test that error messages are working correctly!  This is going to
-#       be hard to manually check.
 
 
 def _get_unit(obj: Any):
@@ -269,24 +265,40 @@ class CompareValues:
     @property
     def are_allclose(self) -> bool:
         """
-        `True` if the compared values are
-
-        `True` if ``this`` is element-wise equal to ``that`` within an
-        absolute tolerance of ``atol`` and a relative tolerance of
-        ``rtol``, and `False` otherwise.  This attribute calls
+        `True` if the compared values are element-wise equal to ``that``
+        within an absolute tolerance of ``atol`` and a relative tolerance
+        of ``rtol``, and `False` otherwise.  This attribute calls
         `~astropy.units.allclose` to make this determination.
+
+        Notes
+        -----
+        This attribute will return `True` if ``this`` and ``that`` refer
+        to the same `object` or are equal to each other.  Otherwise,
+        if `~astropy.units.allclose` raises a `TypeError`, then this
+        attribute will return `False`.
+
+        Raises
+        ------
+        InvalidTestError
+            If the units of ``atol`` are incompatible with units shared
+            by both ``this`` and ``that``.
         """
+
+        if self.are_identical or self.are_equal:
+            return True
 
         try:
             return u.allclose(*self.values, rtol=self.rtol, atol=self.atol, equal_nan=True)
-        except u.UnitsError as exc:
+        except u.UnitsError as exc1:
             if self.units_are_compatible and isinstance(self.atol, u.Quantity):
                 if not _units_are_compatible(self.units[0], self.atol.unit):
                     raise InvalidTestError(
                         f"The units of atol ({self.atol}) are incompatible with "
                         f"the units of the Quantity instances being compared "
                         f"{self.units}."
-                    ) from exc
+                    ) from exc1
+            return False
+        except TypeError:
             return False
 
     def __bool__(self):
@@ -597,9 +609,9 @@ class CompareActualExpected:
         else:
             self._add_exception(UnexpectedResultError)
 
-        # Should we add a method to check whether the len(...) of the
-        # expected and actual outcomes matches or not?  That could
-        # potentially be useful for debugging.
+        # TODO: Should we add a method to check whether the len(...) of
+        #       the expected and actual outcomes matches or not?  That
+        #       could potentially be useful for debugging.
 
     def _make_missing_warning_errmsg(self):
         """
