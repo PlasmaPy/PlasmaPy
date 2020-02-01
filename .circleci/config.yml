@@ -79,7 +79,7 @@ jobs:
           name: Install PlasmaPy
           command: |
             pip install --progress-bar off .[all]
-            pip install -e .[all]
+            pip install -e .[dev]
             python setup.py develop
 
   html-docs:
