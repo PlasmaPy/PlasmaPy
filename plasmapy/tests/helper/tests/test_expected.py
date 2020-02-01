@@ -8,48 +8,68 @@ from plasmapy.tests.helper.expected import (
     _is_warning_and_value,
 )
 
+is_warning_test_inputs = [
+    (Warning, True),
+    (UserWarning, True),
+    (Exception, False),
+    (BaseException, False),
+    ("", False),
+]
 
-@pytest.mark.parametrize(
-    "argument, expected", [(Warning, True), (UserWarning, True), (Exception, False), ("", False)],
-)
-def test__is_warning(argument, expected):
+
+@pytest.mark.parametrize("possible_warning, actually_a_warning", is_warning_test_inputs)
+def test_is_warning(possible_warning, actually_a_warning: bool):
     """
     Test that `~plasmapy.utils.pytest_helpers.expected._is_warning`
     returns `True` for warnings and `False` for other objects.
     """
-    assert _is_warning(argument) is expected
+    assert _is_warning(possible_warning) is actually_a_warning
+
+
+is_exception_test_inputs = [
+    (Warning, False),
+    (UserWarning, False),
+    (Exception, True),
+    (BaseException, True),
+    ("", False),
+]
 
 
 @pytest.mark.parametrize(
-    "argument, expected", [(Warning, False), (UserWarning, False), (Exception, True), ("", False)],
+    "possible_exception, actually_an_exception", is_exception_test_inputs
 )
-def test__is_exception(argument, expected):
+def test_is_exception(possible_exception, actually_an_exception: bool):
     """
     Test that `~plasmapy.utils.pytest_helpers.expected._is_exception`
     returns `True` for exceptions and `False` for other objects.
     """
-    assert _is_exception(argument) is expected
+    assert _is_exception(possible_exception) is actually_an_exception
+
+
+is_warning_and_value_test_inputs = [
+    ((Warning, ""), True),
+    (["", UserWarning], True),
+    ((Warning, UserWarning), False),
+    (Warning, False),
+    (UserWarning, False),
+    (Exception, False),
+    (BaseException, False),
+    ("", False),
+]
 
 
 @pytest.mark.parametrize(
-    "argument, expected",
-    [
-        ((Warning, ""), True),
-        (["", UserWarning], True),
-        ((Warning, UserWarning), False),
-        (Warning, False),
-        (UserWarning, False),
-        (Exception, False),
-        ("", False),
-    ],
+    "is_warning_and_value, actually_warning_and_value",
+    is_warning_and_value_test_inputs,
 )
-def test__is_warning_and_value(argument, expected):
+def test__is_warning_and_value(is_warning_and_value, actually_warning_and_value: bool):
     """
-    Test that `~plasmapy.utils.pytest_helpers.expected._is_warning_and_value`
-    returns `True` for a `tuple` or `list` containing a warning and an
-    object that is not a warning, and `False` for other objects.
+    Test that `_is_warning_and_value` returns `True` for a `tuple` or
+    `list` containing a warning and an `object` that is not a `Warning`,
+    and `False` for anything else.
     """
-    assert _is_warning_and_value(argument) is expected
+
+    assert _is_warning_and_value(is_warning_and_value) is actually_warning_and_value
 
 
 expected_exception = KeyError
@@ -93,7 +113,9 @@ cases = [
 
 
 @pytest.mark.parametrize("case", cases)
-def test_expected_outcome(case):
+def test_expected_test_outcome_attributes(case: Case):
+    """Test that attributes of `ExpectedTestOutcome` return the correct values."""
+
     expected_outcome = ExpectedTestOutcome(case.argument)
     result = expected_outcome.__getattribute__(case.attribute)
     if result is not case.correct_outcome and result != case.correct_outcome:
@@ -118,10 +140,17 @@ exception_raising_cases = [
 
 
 @pytest.mark.parametrize("case", exception_raising_cases)
-def test_attribute_exceptions(case):
+def test_expected_test_outcome_exceptions(case: Case):
+    """Test that attributes of `ExpectedTestOutcome` raise exceptions as needed."""
+
     if not issubclass(case.correct_outcome, Exception):
-        raise TypeError("Incorrect test setup: the expected outcome must be an exception.")
+        raise TypeError(
+            "Incorrect test setup: the expected outcome must be an exception."
+        )
     with pytest.raises(case.correct_outcome):
         expected_outcome = ExpectedTestOutcome(case.argument)
         result = expected_outcome.__getattribute__(case.attribute)
-        print(result)
+        pytest.fail(
+            f"The ExpectedTestOutcome instance for {case.argument} did not "
+            f"raise the expected exception but instead returned {result}."
+        )
