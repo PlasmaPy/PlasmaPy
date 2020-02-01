@@ -14,8 +14,7 @@ from plasmapy.atomic.elements import (
 from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.atomic.special_particles import _Particles, ParticleZoo
 
-from plasmapy.utils import roman
-from plasmapy.utils.pytest_helpers.error_messages import call_string
+from plasmapy.utils import roman, call_string
 
 from plasmapy.atomic.exceptions import InvalidElementError, InvalidParticleError, AtomicWarning
 
