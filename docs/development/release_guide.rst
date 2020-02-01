@@ -45,12 +45,6 @@ Release
 I would think about limiting this to the credits in new release entries in
 `docs/whatsnew` due to maintenance burden. ~Dominik
 
-* Update ``setup.cfg``
-
-  * Remove ``.dev`` from ``version = x.y.z.dev``
-  * Update minimum versions of required packages, including
-    ``python_requires``, ``install_requires``, and other variables
-
 * Commit your changes up until now
 
 * Make sure that tests pass and that documentation builds without issue (``tox``)
@@ -65,8 +59,6 @@ At this point, `the OpenAstronomy Azure Pipelines
 <https://openastronomy-azure-pipelines.readthedocs.io/en/latest/publish.html>`
 infrastructure should do most of the work for you! `Ensure that the pipeline
 goes through. <https://dev.azure.com/plasmapy/PlasmaPy/_build>`
-
-* Update ``setup.cfg`` (increment version and add ``.dev`` suffix)
 
 Post-release
 ------------
