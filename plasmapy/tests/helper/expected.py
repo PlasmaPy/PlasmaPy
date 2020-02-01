@@ -1,4 +1,5 @@
 import inspect
+from typing import Any
 
 __all__ = ["ExpectedTestOutcome"]
 
@@ -91,7 +92,7 @@ class ExpectedTestOutcome:
         self.expected_outcome = expected
 
     @property
-    def expected_outcome(self):
+    def expected_outcome(self) -> Any:
         """
         The expected outcome of the test, which can be an exception,
         a warning, the resulting object, or a tuple that contains
@@ -132,7 +133,7 @@ class ExpectedTestOutcome:
         return "value" in self._info.keys()
 
     @property
-    def expected_value(self):
+    def expected_value(self) -> Any:
         """
         If the test is expected to return a value, then return the
         expected value.  Otherwise, raise a `RuntimeError`.

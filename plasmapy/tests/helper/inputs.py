@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Tuple, List, Dict, Union, Callable, Optional, Any, AnyStr
+from typing import Tuple, List, Dict, Union, Callable, Optional, Any, NoReturn
 import inspect
 
 
@@ -63,13 +63,14 @@ def _validate_kwargs(kwargs: Optional[Dict[str, Any]]) -> Dict[str, Any]:
 
 
 class AbstractTestInputs(ABC):
+
     @abstractmethod
-    def call(self):
+    def call(self) -> NoReturn:
         pass
 
     @property
     @abstractmethod
-    def call_string(self):
+    def call_string(self) -> str:
         pass
 
 
@@ -103,6 +104,7 @@ class FunctionTestInputs(AbstractTestInputs):
         args: Optional[Union[Tuple, List, Any]] = None,
         kwargs: Optional[Dict[str, Any]] = None,
     ):
+
         try:
             self._info = dict()
             self.function = function
@@ -152,7 +154,7 @@ class FunctionTestInputs(AbstractTestInputs):
 
         self._info["kwargs"] = _validate_kwargs(provided_kwargs)
 
-    def call(self):
+    def call(self) -> Any:
         """
         Call the function to be tested with the provided positional and
         keyword arguments.
@@ -243,13 +245,12 @@ class ClassAttributeTestInputs(GenericClassTestInputs):
     ------
     ~plasmapy.utils.pytest_helpers.InvalidTestError
         If this class cannot be instantiated.
-
     """
 
     def __init__(
         self,
         cls,
-        attribute: AnyStr,
+        attribute: str,
         cls_args: Any = None,
         cls_kwargs: Optional[Dict[str, Any]] = None,
     ):
@@ -270,13 +271,13 @@ class ClassAttributeTestInputs(GenericClassTestInputs):
             ) from exc
 
     @property
-    def attribute(self) -> AnyStr:
+    def attribute(self) -> str:
         """The name of the attribute to be tested."""
 
         return self._info["attribute"]
 
     @attribute.setter
-    def attribute(self, attribute_name: AnyStr):
+    def attribute(self, attribute_name: str):
 
         if not isinstance(attribute_name, str):
             raise TypeError("Expecting the name of a class attribute as a string.")
@@ -285,7 +286,7 @@ class ClassAttributeTestInputs(GenericClassTestInputs):
         else:
             self._info["attribute"] = attribute_name
 
-    def call(self):
+    def call(self) -> Any:
         """Instantiate the class and access the attribute."""
 
         __tracebackhide__ = True
@@ -352,7 +353,7 @@ class ClassMethodTestInputs(GenericClassTestInputs):
     def __init__(
         self,
         cls,
-        method: AnyStr,
+        method: str,
         cls_args=None,
         cls_kwargs: Optional[Dict[str, Any]] = None,
         method_args=None,
@@ -377,7 +378,7 @@ class ClassMethodTestInputs(GenericClassTestInputs):
             ) from exc
 
     @property
-    def method(self):
+    def method(self) -> str:
         """The name of the method to be tested."""
 
         return self._info["method"]
@@ -395,7 +396,7 @@ class ClassMethodTestInputs(GenericClassTestInputs):
         return self._info["method_kwargs"]
 
     @method.setter
-    def method(self, method_name: AnyStr):
+    def method(self, method_name: str):
 
         if not isinstance(method_name, str):
             raise TypeError("Expecting the name of a method as a string.")
@@ -421,7 +422,7 @@ class ClassMethodTestInputs(GenericClassTestInputs):
 
         self._info["method_kwargs"] = _validate_kwargs(provided_kwargs)
 
-    def call(self):
+    def call(self) -> Any:
         """Instantiate the class and call the appropriate method."""
 
         __tracebackhide__ = True

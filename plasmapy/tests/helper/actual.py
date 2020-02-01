@@ -1,7 +1,13 @@
 import pytest
 import warnings
-from typing import List, Any
-from plasmapy.tests.helper.inputs import AbstractTestInputs
+from typing import List, Any, Union
+
+from plasmapy.tests.helper.inputs import (
+    AbstractTestInputs,
+    FunctionTestInputs,
+    ClassAttributeTestInputs,
+    ClassMethodTestInputs,
+)
 
 __all__ = ["ActualTestOutcome"]
 
@@ -19,7 +25,10 @@ class _ExitPytestWarns(Warning):
 
 
 class ActualTestOutcome:
-    def __init__(self, inputs):
+    def __init__(
+            self,
+            inputs: Union[FunctionTestInputs, ClassMethodTestInputs, ClassAttributeTestInputs],
+    ):
         """
         A class to record the actual outcome of a test.
 
@@ -111,7 +120,7 @@ class ActualTestOutcome:
         return self.exception_info.type
 
     @property
-    def exception_message(self):
+    def exception_message(self) -> str:
         """
         The error message of the exception that was raised during the
         test.
@@ -146,7 +155,7 @@ class ActualTestOutcome:
             )
 
     @property
-    def warning_types(self) -> List:
+    def warning_types(self) -> List[Warning]:
         """
         A `tuple` containing the warnings that were issued during the
         test, corresponding to the ``warning_messages`` attribute.
