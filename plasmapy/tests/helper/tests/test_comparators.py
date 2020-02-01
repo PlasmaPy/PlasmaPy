@@ -75,20 +75,8 @@ table_of_function_args_kwargs_expected_and_exception = [
     (issue_warning_return_42, noargs, nokwargs, (42, SampleWarning), None),
     (issue_warning_return_42, noargs, nokwargs, (SampleWarning, 6 * 9), UnexpectedResultError,),
     (issue_warning_return_42, noargs, nokwargs, (6 * 9, SampleWarning), UnexpectedResultError,),
-    (
-        issue_warning_return_42,
-        noargs,
-        nokwargs,
-        (SampleWarningSubclass, 42),
-        WarningMismatchError,
-    ),
-    (
-        issue_warning_return_42,
-        noargs,
-        nokwargs,
-        (42, SampleWarningSubclass),
-        WarningMismatchError,
-    ),
+    (issue_warning_return_42, noargs, nokwargs, (SampleWarningSubclass, 42), WarningMismatchError),
+    (issue_warning_return_42, noargs, nokwargs, (42, SampleWarningSubclass), WarningMismatchError),
     (issue_warning_return_42, noargs, nokwargs, (Warning, 42), WarningMismatchError,),
     (issue_warning_return_42, noargs, nokwargs, (42, Warning), WarningMismatchError,),
     (issue_warning_return_42, noargs, nokwargs, 42, UnexpectedWarningError),
@@ -176,39 +164,40 @@ def test_compare_actual_expected(function, args, kwargs, expected, expected_exce
             )
 
 
-@pytest.mark.parametrize(
-    "this, that, attribute, expected",
-    [
-        (1, 1, "values", (1, 1)),
-        ("1", "1", "types", (str, str)),
-        (1, 1, "units", (None, None)),
-        (1, 1, "units_are_identical", True),
-        (1, 1, "units_are_compatible", True),
-        (None, None, "are_identical", True),
-        (1, 1, "are_equal", True),
-        (0, 0.0, "are_equal", True),
-        (1, 1, "are_quantities", False),
-        (1, 1, "have_same_types", True),
-        (5 * u.m, u.m, "units", (u.m, u.m)),
-        (5 * u.m, u.cm, "are_quantity_and_unit", True),
-        (5 * u.m, 6 * u.m, "units_are_identical", True),
-        (5 * u.m, 6 * u.cm, "units_are_identical", False),
-        (5 * u.m, u.cm, "units_are_compatible", True),
-        (5 * u.m, 5.000001 * u.m, "are_allclose", True),
-        (5 * u.m, 5.01 * u.m, "are_allclose", False),
-        ([5.0, 6.0] * u.m, [5.0, 6.0] * u.m, "are_allclose", True),
-        ([5.0, 6.0] * u.m, [5.0, 6.00000001] * u.m, "are_allclose", True),
-        ([5.0, 6.0] * u.m, [5.0, 6.01] * u.m, "are_allclose", False),
-        (5 * u.m, 5.000001 * u.m, "are_equal", False),
-        (5 * u.m, 5.01 * u.m, "are_equal", False),
-        ([5.0, 6.0] * u.m, [5.0, 6.0] * u.m, "are_equal", True),
-        ([5.0, 6.0] * u.m, [5.0, 6.00000001] * u.m, "are_equal", False),
-        ([5.0, 6.0] * u.m, [5.0, 6.01] * u.m, "are_equal", False),
-    ],
-)
+compared_values_attr_expected = [
+    (1, 1, "values", (1, 1)),
+    ("1", "1", "types", (str, str)),
+    (1, 1, "units", (None, None)),
+    (1, 1, "units_are_identical", True),
+    (1, 1, "units_are_compatible", True),
+    (None, None, "are_identical", True),
+    (1, 1, "are_equal", True),
+    (0, 0.0, "are_equal", True),
+    (1, 1, "are_quantities", False),
+    (1, 1, "have_same_types", True),
+    (5 * u.m, u.m, "units", (u.m, u.m)),
+    (5 * u.m, u.cm, "are_quantity_and_unit", True),
+    (5 * u.m, 6 * u.m, "units_are_identical", True),
+    (5 * u.m, 6 * u.cm, "units_are_identical", False),
+    (5 * u.m, u.cm, "units_are_compatible", True),
+    (5 * u.m, 5.000001 * u.m, "are_allclose", True),
+    (5 * u.m, 5.01 * u.m, "are_allclose", False),
+    ([5.0, 6.0] * u.m, [5.0, 6.0] * u.m, "are_allclose", True),
+    ([5.0, 6.0] * u.m, [5.0, 6.00000001] * u.m, "are_allclose", True),
+    ([5.0, 6.0] * u.m, [5.0, 6.01] * u.m, "are_allclose", False),
+    (5 * u.m, 5.000001 * u.m, "are_equal", False),
+    (5 * u.m, 5.01 * u.m, "are_equal", False),
+    ([5.0, 6.0] * u.m, [5.0, 6.0] * u.m, "are_equal", True),
+    ([5.0, 6.0] * u.m, [5.0, 6.00000001] * u.m, "are_equal", False),
+    ([5.0, 6.0] * u.m, [5.0, 6.01] * u.m, "are_equal", False),
+]
+
+
+@pytest.mark.parametrize("this, that, attribute, expected", compared_values_attr_expected)
 def test_compare_values_attributes(this, that, attribute, expected):
     """
-    Test that the attributes of CompareValues return the correct results.
+    Test that the attributes of `CompareValues` return the correct
+    results for different pairs of compared values.
     """
 
     try:
@@ -233,31 +222,31 @@ def test_compare_values_attributes(this, that, attribute, expected):
         )
 
 
-@pytest.mark.parametrize(
-    "this, that, when_made_boolean",
-    [
-        (1, 1, True),
-        (1, 2, False),
-        ("1", "1", True),
-        (5 * u.m, 6 * u.m, False),
-        (None, None, True),
-        (0, 0.0, False),
-        (5 * u.m, u.m, True),
-        (5 * u.m, u.cm, False),
-        (5 * u.m, 6 * u.m, False),
-        (5 * u.m, 6 * u.cm, False),
-        (5 * u.m, 500 * u.cm, False),
-        (5 * u.m, 5.000001 * u.m, True),
-        (5 * u.m, 5.01 * u.m, False),
-        ([5.0, 6.0] * u.m, [5.0, 6.0] * u.m, True),
-        ([5.0, 6.0] * u.m, [5.0, 6.00000001] * u.m, True),
-        ([5.0, 6.0] * u.m, [5.0, 6.01] * u.m, False),
-        (np.nan, np.nan, True),
-        (np.inf, np.inf, True),
-        (np.inf, np.nan, False),
-        (1, np.int32(1), False),
-    ],
-)
+compared_values_and_boolean_value = [
+    (1, 1, True),
+    (1, 2, False),
+    ("1", "1", True),
+    (5 * u.m, 6 * u.m, False),
+    (None, None, True),
+    (0, 0.0, False),
+    (5 * u.m, u.m, True),
+    (5 * u.m, u.cm, False),
+    (5 * u.m, 6 * u.m, False),
+    (5 * u.m, 6 * u.cm, False),
+    (5 * u.m, 500 * u.cm, False),
+    (5 * u.m, 5.000001 * u.m, True),
+    (5 * u.m, 5.01 * u.m, False),
+    ([5.0, 6.0] * u.m, [5.0, 6.0] * u.m, True),
+    ([5.0, 6.0] * u.m, [5.0, 6.00000001] * u.m, True),
+    ([5.0, 6.0] * u.m, [5.0, 6.01] * u.m, False),
+    (np.nan, np.nan, True),
+    (np.inf, np.inf, True),
+    (np.inf, np.nan, False),
+    (1, np.int32(1), False),
+]
+
+
+@pytest.mark.parametrize("this, that, when_made_boolean", compared_values_and_boolean_value)
 def test_compare_values_bool(this, that, when_made_boolean):
     """
     Test that CompareValues.__bool__ returns the expected results.
@@ -272,7 +261,8 @@ def test_compare_values_bool(this, that, when_made_boolean):
         made_boolean = bool(comparison)
     except Exception:
         pytest.fail(
-            f"The CompareValues instance for {this} and {that} cannot " f"be made boolean."
+            f"The CompareValues instance for {this} and {that} cannot " 
+            f"be made boolean."
         )
 
     if made_boolean is not when_made_boolean:
@@ -292,26 +282,34 @@ def test_compare_values_rtol_exceptions(rtol):
     with pytest.raises(InvalidTestError):
         CompareValues(1, 1, rtol=rtol)
         pytest.fail(
-            f"CompareValues with rtol = {rtol} is not raising an " f"InvalidTestError as expected."
+            f"CompareValues with rtol = {rtol} is not raising an " 
+            f"InvalidTestError as expected."
         )
 
 
 @pytest.mark.parametrize("rtol", [1e-14, 0.999999, 0.5 * u.dimensionless_unscaled])
 def test_compare_values_rtol(rtol):
-    """Test that good values of rtol get passed through okay."""
+    """Test that good values of ``rtol`` get passed through okay."""
+
     comparison = CompareValues(1, 1, rtol=rtol)
     if comparison.rtol != rtol:
-        pytest.fail(f"rtol attribute of CompareValues is not the expected " f"value of {rtol}.")
+        pytest.fail(
+            f"rtol attribute of CompareValues is not the expected " 
+            f"value of {rtol}."
+        )
 
 
 inputs_and_expected_units = [(u.m, u.m), (5 * u.kg * u.s, u.kg * u.s), (1, None)]
 
 
 @pytest.mark.parametrize("input, expected_unit", inputs_and_expected_units)
-def test__get_unit(input, expected_unit):
+def test_get_unit(input, expected_unit):
+    """Test that `_get_unit` returns the expected unit."""
+
     gotten_unit = _get_unit(input)
+
     if gotten_unit != expected_unit:
-        pytest.fail(f"_get_unit({input}) is not ")
+        pytest.fail(f"_get_unit({input}) is not {expected_unit}.")
 
 
 units_and_expected_compatibility = [
@@ -325,7 +323,12 @@ units_and_expected_compatibility = [
 
 
 @pytest.mark.parametrize("unit1, unit2, expected_compatibility", units_and_expected_compatibility)
-def test__units_are_compatible(unit1, unit2, expected_compatibility):
+def test_units_are_compatible(unit1, unit2, expected_compatibility):
+    """
+    Test that `_units_are_compatible` correctly compares the
+    compatibility of two units.
+    """
+
     actual_compatibility = _units_are_compatible(unit1, unit2)
     if actual_compatibility is not expected_compatibility:
         pytest.fail(
@@ -447,8 +450,8 @@ func_args_kwargs_expected_errmsg = [
         {"kw1": 1.56 * u.dimensionless_unscaled, "kw2": 4.2},
         42,
         "The command sum_of_args_and_kwargs(5.3, 2.42, kw1=1.56, "
-        "kw2=4.2) returned a value of 13.48, which differs from the expected "
-        "value of 42. The type of the returned value "
+        "kw2=4.2) returned a value of 13.48, which differs from the "
+        "expected value of 42. The type of the returned value "
         "(astropy.units.quantity.Quantity) "
         "is different than the type of the expected value (int).",
     ),
@@ -458,8 +461,7 @@ func_args_kwargs_expected_errmsg = [
 @pytest.mark.parametrize("func, args, kwargs, expected, errmsg", func_args_kwargs_expected_errmsg)
 def test_compare_actual_expected_errmsg(func, args, kwargs, expected, errmsg):
     """
-    Test that CompareActualExpected generates the appropriate error
-    messages.
+    Test that `CompareActualExpected` generates the appropriate error messages.
 
     Parameters
     ----------
