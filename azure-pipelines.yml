@@ -60,6 +60,10 @@ jobs:
 
       - linux: py36-minimal-conda
         name: py36_minimal_conda
+        libraries: {}
+
+      - linux: py36-minimal-pypi-import
+        name: py36_minimal_pypi_import
 
 # On branches which aren't master, and not Pull Requests, build the wheels but only upload them on tags
 - ${{ if and(ne(variables['Build.Reason'], 'PullRequest'), not(contains(variables['Build.SourceBranch'], 'master'))) }}:
