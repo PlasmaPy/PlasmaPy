@@ -69,14 +69,10 @@ solution.plot_trajectories()
 # As a test, we calculate the mean velocity in the z direction from the
 # velocity and position
 
-vmean = solution.velocity_history[:, :, 2].mean()
+vmean = solution.data.velocity.sel(dimension='z').mean()
 print(f"The calculated drift velocity is {vmean:.4f} to compare with the "
       f"theoretical E0/B0 = {0.5 * u.m / u.s}")
 
-############################################################
-# and from position:
-Vdrift = solution.position_history[-1, 0, 2] / solution.t.max()
-print(f"The calculated drift velocity from position is {Vdrift:.4f}")
 
 ############################################################
 # Supposing we wanted to examine the effect of the initial velocity in the x-y plane on the trajectory:
@@ -95,3 +91,7 @@ solution.plot_trajectories(alpha=0.8)
 # each one traverses the z direction in about the same time:
 
 solution.plot_time_trajectories('z')
+
+#############################################################
+
+# solution.visualize()
