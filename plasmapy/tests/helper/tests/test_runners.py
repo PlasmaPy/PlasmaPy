@@ -1,5 +1,5 @@
-import warnings
 import pytest
+from typing import Optional, NoReturn
 from abc import ABC, abstractmethod
 import numpy as np
 import astropy.units as u
@@ -28,14 +28,11 @@ from plasmapy.tests.helper.tests.sample_functions import (
     return_42_meters,
     issue_warning_return_42,
     raise_exception,
-    return_np_array,
-    return_none,
     SampleWarningSubclass,
     SampleWarning,
     SampleExceptionSubclass,
     SampleException,
     SampleClass,
-    sum_of_args_and_kwargs,
 )
 
 from plasmapy.utils.formatting.formatting import (
@@ -51,13 +48,13 @@ class BaseTestCase(ABC):
     """Define the interface to be used when testing the test cases."""
 
     @abstractmethod
-    def run_test(self):
+    def run_test(self) -> NoReturn:
 
         pass
 
     @property
     @abstractmethod
-    def call_string(self):
+    def call_string(self) -> str:
 
         pass
 
@@ -66,15 +63,14 @@ class FunctionTestCase(BaseTestCase):
     """Contains information for a test case for `function_test_runner`."""
 
     def __init__(
-            self,
-            expected,
-            function,
-            args=None,
-            kwargs=None,
-            exception_upon_failure=None,
-            errmsg="",
-            rtol=1e-8,
-            atol=None,
+        self,
+        expected,
+        function,
+        args=None,
+        kwargs=None,
+        exception_upon_failure: Optional[Exception] = None,
+        rtol=1e-8,
+        atol=None,
     ):
 
         self.expected = expected
@@ -83,11 +79,10 @@ class FunctionTestCase(BaseTestCase):
         self.kwargs = kwargs if kwargs is not None else {}
         self.exception_upon_failure = exception_upon_failure
         self.test_should_pass = exception_upon_failure is None
-        self.errmsg = errmsg
-        self.rtol=rtol
-        self.atol=atol
+        self.rtol = rtol
+        self.atol = atol
 
-    def run_test(self):
+    def run_test(self) -> NoReturn:
         """Perform the test using `function_test_runner`."""
 
         function_test_runner(
@@ -100,7 +95,7 @@ class FunctionTestCase(BaseTestCase):
         )
 
     @property
-    def call_string(self):
+    def call_string(self) -> str:
         """Return a string to replicate the function call."""
 
         return call_string(self.function, self.args, self.kwargs)
@@ -110,16 +105,15 @@ class AttributeTestCase(BaseTestCase):
     """Contains information for a test case for `attr_test_runner`."""
 
     def __init__(
-            self,
-            expected,
-            cls,
-            attribute,
-            cls_args=None,
-            cls_kwargs=None,
-            exception_upon_failure=None,
-            rtol=1e-8,
-            atol=None,
-            errmsg="",
+        self,
+        expected,
+        cls,
+        attribute: str,
+        cls_args=None,
+        cls_kwargs=None,
+        exception_upon_failure: Optional[Exception] = None,
+        rtol=1e-8,
+        atol=None,
     ):
 
         self.expected = expected
@@ -128,12 +122,11 @@ class AttributeTestCase(BaseTestCase):
         self.cls_args = cls_args if cls_args is not None else ()
         self.cls_kwargs = cls_kwargs if cls_kwargs is not None else {}
         self.test_should_pass = exception_upon_failure is None
-        self.errmsg = "" if errmsg is None else errmsg
         self.exception_upon_failure = exception_upon_failure
         self.rtol = rtol
         self.atol = atol
 
-    def run_test(self):
+    def run_test(self) -> NoReturn:
         """Perform the test using `attr_test_runner`."""
 
         attr_test_runner(
@@ -147,7 +140,7 @@ class AttributeTestCase(BaseTestCase):
         )
 
     @property
-    def call_string(self):
+    def call_string(self) -> str:
         """Return a string to replicate accessing the attribute."""
 
         return class_attribute_call_string(
@@ -157,22 +150,22 @@ class AttributeTestCase(BaseTestCase):
             cls_kwargs=self.cls_kwargs,
         )
 
+
 class MethodTestCase(BaseTestCase):
     """Contains information for a test case for `method_test_runner`."""
 
     def __init__(
-            self,
-            expected,
-            cls,
-            method,
-            cls_args=None,
-            cls_kwargs=None,
-            method_args=None,
-            method_kwargs=None,
-            exception_upon_failure=None,
-            errmsg="",
-            rtol=1e-8,
-            atol=None,
+        self,
+        expected,
+        cls,
+        method: str,
+        cls_args=None,
+        cls_kwargs=None,
+        method_args=None,
+        method_kwargs=None,
+        exception_upon_failure: Optional[Exception] = None,
+        rtol=1e-8,
+        atol=None,
     ):
 
         self.expected = expected
@@ -184,11 +177,10 @@ class MethodTestCase(BaseTestCase):
         self.method_kwargs = method_kwargs if method_kwargs is not None else {}
         self.test_should_pass = exception_upon_failure is None
         self.exception_upon_failure = exception_upon_failure
-        self.errmsg = errmsg
         self.rtol = rtol
         self.atol = atol
 
-    def run_test(self):
+    def run_test(self) -> NoReturn:
         """Perform the test using `method_test_runner`."""
 
         __tracebackhide__ = True
@@ -206,7 +198,7 @@ class MethodTestCase(BaseTestCase):
         )
 
     @property
-    def call_string(self):
+    def call_string(self) -> str:
         """Return a string to replicate calling the method."""
 
         return class_method_call_string(
@@ -219,186 +211,138 @@ class MethodTestCase(BaseTestCase):
         )
 
 
-# TODO: Incorporate this back into sample_functions.py?
-
-class SampleClass:
-
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def arg_plus_kwarg(self, arg, *, kwarg=None):
-        return arg + kwarg
-
-    @property
-    def forty(self):
-        return 40
-
-    def raise_exception(self):
-        raise SampleException("error message")
-
-    def issue_warning(self):
-        warnings.warn("warning message", SampleWarning)
-
-
 cases = [
-
     FunctionTestCase(
         expected=42,
         function=return_42,
         exception_upon_failure=None,
     ),
-
     FunctionTestCase(
         expected=SampleException,
         function=return_42,
         exception_upon_failure=MissingExceptionError,
     ),
-
     FunctionTestCase(
         expected=SampleWarning,
         function=return_42,
         exception_upon_failure=MissingWarningError,
     ),
-
     FunctionTestCase(
-        expected = 42.0 * u.m,
+        expected=42.0 * u.m,
         function=return_42_meters,
         exception_upon_failure=None,
     ),
-
     FunctionTestCase(
         expected=u.m,
         function=return_42_meters,
         exception_upon_failure=None,
     ),
-
     FunctionTestCase(
-        expected = 42.0 * u.cm,
+        expected=42.0 * u.cm,
         function=return_42_meters,
         exception_upon_failure=u.UnitsError,
     ),
-
     FunctionTestCase(
         expected=u.cm,
         function=return_42_meters,
         exception_upon_failure=u.UnitsError,
     ),
-
     FunctionTestCase(
         expected=u.kg,
         function=return_42_meters,
         exception_upon_failure=u.UnitsError,
     ),
-
     FunctionTestCase(
         expected=SampleException,
         function=raise_exception,
         exception_upon_failure=None,
     ),
-
     FunctionTestCase(
         expected=SampleExceptionSubclass,
         function=raise_exception,
         exception_upon_failure=ExceptionMismatchError,
     ),
-
     FunctionTestCase(
         expected=BaseException,
         function=raise_exception,
         exception_upon_failure=ExceptionMismatchError,
     ),
-
     FunctionTestCase(
         expected=43,
         function=return_42,
         exception_upon_failure=UnexpectedResultError,
     ),
-
     FunctionTestCase(
         expected=np.int32(42),
         function=return_42,
         exception_upon_failure=InconsistentTypeError,
     ),
-
     FunctionTestCase(
         expected=42,
         function=raise_exception,
         exception_upon_failure=UnexpectedExceptionError,
     ),
-
     FunctionTestCase(
         expected=42,
         function=issue_warning_return_42,
         exception_upon_failure=UnexpectedWarningError,
     ),
-
     FunctionTestCase(
         expected=SampleWarning,
         function=issue_warning_return_42,
         exception_upon_failure=None,
     ),
-
     FunctionTestCase(
         expected=Warning,
         function=issue_warning_return_42,
         exception_upon_failure=WarningMismatchError,
     ),
-
     FunctionTestCase(
         expected=SampleWarningSubclass,
         function=issue_warning_return_42,
         exception_upon_failure=WarningMismatchError,
     ),
-
     FunctionTestCase(
         expected=42,
         function=return_42,
         kwargs=42,
         exception_upon_failure=InvalidTestError,
     ),
-
     FunctionTestCase(
         expected="..",
         function=lambda x: 2 * x,
         args=("."),
         exception_upon_failure=None,
     ),
-
     FunctionTestCase(
         expected="",
         function=lambda x: 2 * x,
         args=".",
         exception_upon_failure=UnexpectedResultError,
     ),
-
     AttributeTestCase(
         expected=40,
         cls=SampleClass,
         attribute="forty",
         exception_upon_failure=None,
     ),
-
     AttributeTestCase(
         expected=41,
         cls=SampleClass,
         attribute="forty",
         exception_upon_failure=UnexpectedResultError,
     ),
-
     MethodTestCase(
         expected=5,
         cls=SampleClass,
         method="arg_plus_kwarg",
         method_args=1,
-        method_kwargs={'kwarg': 4},
+        method_kwargs={"kwarg": 4},
         exception_upon_failure=None,
     ),
-
 ]
 
 # TODO: Add more attribute and method test cases to make sure everything is working
-
-# TODO: Add in error messages?
 
 
 @pytest.mark.parametrize("case", cases)
@@ -410,7 +354,9 @@ def test_the_test_runners(case: BaseTestCase):
     if case.test_should_pass:
 
         try:
+
             case.run_test()
+
         except BaseException as exc:
 
             exception_name = exc.__class__.__name__
@@ -426,6 +372,7 @@ def test_the_test_runners(case: BaseTestCase):
     else:
 
         with pytest.raises(BaseException) as exc_info:
+
             case.run_test()
 
             should_have_failed_errmsg = (

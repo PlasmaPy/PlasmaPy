@@ -22,16 +22,19 @@ sample_value = 59
 
 def sample_function(arg1, arg2, kwarg1=None, kwarg2=None):
     """Sum up the positional and keyword arguments."""
+
     return sum([arg1, arg2, kwarg1, kwarg2])
 
 
 def sample_function_one_arg(arg):
     """Double the argument."""
+
     return arg * 2
 
 
 def sample_function_no_args():
     """Return a sample value."""
+
     return sample_value
 
 
@@ -41,10 +44,12 @@ class SampleClassNoArgs:
     @property
     def sample_attribute(self):
         """Return a sample value."""
+
         return sample_value
 
     def sample_method(self, method_arg1, method_arg2, method_kwarg1=None, method_kwarg2=None):
         """Return the sum of the positional and keyword arguments to the method."""
+
         return method_arg1 + method_arg2 + method_kwarg1 + method_kwarg2
 
 
@@ -52,6 +57,7 @@ class SampleClass(SampleClassNoArgs):
     """A sample class that takes positional and keyword arguments."""
 
     def __init__(self, arg1, arg2, kwarg1=None, kwarg2=None):
+
         pass
 
 
@@ -77,6 +83,7 @@ class SampleClass(SampleClassNoArgs):
 )
 def test_function_test_inputs(function, args, kwargs, attribute, expected):
     """Test the attributes of FunctionTestInputs."""
+
     instance = FunctionTestInputs(function, args, kwargs)
     value_of_attribute = getattr(instance, attribute)
     if value_of_attribute != expected:
@@ -129,6 +136,7 @@ def test_function_test_inputs_errors(function, args, kwargs):
     Test that FunctionTestInputs raises an InvalidTestError when passed
     an invalid function or keyword arguments.
     """
+
     with pytest.raises(InvalidTestError):
         FunctionTestInputs(function, args, kwargs)
         name = function.__name__ if hasattr(function, "__name__") else repr(function)
@@ -179,6 +187,7 @@ def test_class_attr_test_inputs(cls, args, kwargs, attribute_being_tested, expec
         for a ``ClassAttributeTestInputs`` instance.
 
     """
+
     attribute_of_cls = "sample_attribute"
     instance = ClassAttributeTestInputs(cls, attribute_of_cls, args, kwargs)
     value_of_attribute = getattr(instance, attribute_being_tested)
@@ -238,6 +247,7 @@ def test_class_attr_test_inputs_call(cls, args, kwargs, expected):
 )
 def test_class_attr_test_inputs_errors(cls, args, kwargs, attribute_of_cls):
     """Test that ``ClassAttributeTestInputs`` raises appropriate exceptions."""
+
     with pytest.raises(InvalidTestError):
         ClassAttributeTestInputs(cls, attribute_of_cls, args, kwargs)
         name = cls.__name__ if hasattr(cls, "__name__") else repr(cls)
@@ -329,6 +339,7 @@ def test_class_method_test_inputs(
         that is being tested
 
     """
+
     method_name = "sample_method"
     instance = ClassMethodTestInputs(
         cls, method_name, cls_args, cls_kwargs, method_args, method_kwargs
@@ -353,6 +364,7 @@ def test_class_method_test_inputs_call(
     the expected values for a sample class with a method named
     ``sample_method``.
     """
+
     method_name = "sample_method"
     instance = ClassMethodTestInputs(
         cls, method_name, cls_args, cls_kwargs, method_args, method_kwargs
@@ -388,6 +400,7 @@ def test_class_method_test_inputs_errors(
     the method name is not a string or refers to an attribute,
     and where keyword arguments are not a dictionary.
     """
+
     with pytest.raises(InvalidTestError):
         ClassMethodTestInputs(cls, method_name, cls_args, cls_kwargs, method_args, method_kwargs)
 
@@ -397,6 +410,7 @@ def test_validate_args_value():
     Test that passing a value into _validate_args returns a tuple
     containing that value.
     """
+
     assert (sample_value,) == _validate_args(sample_value)
 
 
@@ -406,6 +420,7 @@ def test_validate_args_collections(input):
     Test that passing a tuple or list into _validate_args returns the
     same tuple or list.
     """
+
     assert input == _validate_args(input)
 
 
@@ -414,6 +429,7 @@ def test_validate_kwargs():
     Test that _validate_kwargs returns the input dictionary if it is a
     valid keyword arguments dictionary.
     """
+
     assert sample_kwargs == _validate_kwargs(sample_kwargs)
 
 
@@ -426,5 +442,6 @@ def test_validate_kwargs_errors(bad_kwargs, exception):
     Test that _validate_kwargs raises appropriate exceptions when
     passed invalid keyword arguments.
     """
+
     with pytest.raises(exception):
         _validate_kwargs(bad_kwargs)

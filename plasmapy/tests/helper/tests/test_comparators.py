@@ -50,7 +50,7 @@ nokwargs = {}
 table_of_function_args_kwargs_expected_and_exception = [
     (raise_exception, noargs, nokwargs, SampleException, None),
     (raise_exception, noargs, nokwargs, Exception, ExceptionMismatchError),
-    (raise_exception, noargs, nokwargs, SampleExceptionSubclass, ExceptionMismatchError),
+    (raise_exception, noargs, nokwargs, SampleExceptionSubclass, ExceptionMismatchError,),
     (raise_exception, noargs, nokwargs, 42, UnexpectedExceptionError),
     (raise_exception, noargs, nokwargs, SampleWarning, Failed),
     (return_42, noargs, nokwargs, 42, None),
@@ -69,14 +69,26 @@ table_of_function_args_kwargs_expected_and_exception = [
     (return_none, noargs, nokwargs, None, None),
     (return_none, noargs, nokwargs, False, InconsistentTypeError),
     (issue_warning_return_42, noargs, nokwargs, SampleWarning, None),
-    (issue_warning_return_42, noargs, nokwargs, SampleWarningSubclass, WarningMismatchError),
+    (issue_warning_return_42, noargs, nokwargs, SampleWarningSubclass, WarningMismatchError,),
     (issue_warning_return_42, noargs, nokwargs, Warning, WarningMismatchError),
     (issue_warning_return_42, noargs, nokwargs, (SampleWarning, 42), None),
     (issue_warning_return_42, noargs, nokwargs, (42, SampleWarning), None),
-    (issue_warning_return_42, noargs, nokwargs, (SampleWarning, 6 * 9), UnexpectedResultError),
+    (issue_warning_return_42, noargs, nokwargs, (SampleWarning, 6 * 9), UnexpectedResultError,),
     (issue_warning_return_42, noargs, nokwargs, (6 * 9, SampleWarning), UnexpectedResultError,),
-    (issue_warning_return_42, noargs, nokwargs, (SampleWarningSubclass, 42), WarningMismatchError),
-    (issue_warning_return_42, noargs, nokwargs, (42, SampleWarningSubclass), WarningMismatchError),
+    (
+        issue_warning_return_42,
+        noargs,
+        nokwargs,
+        (SampleWarningSubclass, 42),
+        WarningMismatchError,
+    ),
+    (
+        issue_warning_return_42,
+        noargs,
+        nokwargs,
+        (42, SampleWarningSubclass),
+        WarningMismatchError,
+    ),
     (issue_warning_return_42, noargs, nokwargs, (Warning, 42), WarningMismatchError,),
     (issue_warning_return_42, noargs, nokwargs, (42, Warning), WarningMismatchError,),
     (issue_warning_return_42, noargs, nokwargs, 42, UnexpectedWarningError),
@@ -259,7 +271,9 @@ def test_compare_values_bool(this, that, when_made_boolean):
     try:
         made_boolean = bool(comparison)
     except Exception:
-        pytest.fail(f"The CompareValues instance for {this} and {that} cannot " f"be made boolean.")
+        pytest.fail(
+            f"The CompareValues instance for {this} and {that} cannot " f"be made boolean."
+        )
 
     if made_boolean is not when_made_boolean:
         pytest.fail(
