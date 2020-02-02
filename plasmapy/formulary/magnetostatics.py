@@ -484,11 +484,12 @@ radius={radius}, current={current})".format(
         import pyvista as pv
         if figure is None:
             fig = pv.Plotter(notebook=True)
+            fig.add_axes()
         else:
             fig = figure
         x, y, z = points = self.curve(np.linspace(0, 2*np.pi))
         spline = pv.Spline(points.T, 1000)
-        trajectory = spline.tube(radius=1e-1)
+        trajectory = spline
         if figure is None:
             trajectory.plot()
         else:

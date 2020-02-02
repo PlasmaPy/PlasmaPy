@@ -52,19 +52,22 @@ trajectory = ParticleTracker(plasma, v = u.Quantity([[-1, 0, 0]] * u.m/u.s), par
 # Let's run the pusher and plot the trajectory versus time.
 # We'll just show the y-z trajectories for clarity.
 
-solution = trajectory.run(5 * gyroperiod, timestep)
-# solution.plot_time_trajectories('yz')
+solution = trajectory.run(50 * gyroperiod, timestep)
+solution.plot_time_trajectories('yz')
 
 ############################################################
 # Plot the shape of the trajectory in 3D.
 
-# solution.plot_trajectories()
+solution.plot_trajectories()
 
 ############################################################
 # If you have Pyvista, you can  run the following line - it'll open up a neat 3D visualization.
 
 try:
-    solution.visualize()
+    import pyvista
+    fig = pyvista.Plotter()
+    solution.visualize(fig)
+    fig.show()
 except ImportError:
     pass
 
@@ -96,6 +99,7 @@ solution.plot_trajectories(alpha=0.8)
 solution.plot_time_trajectories('z')
 
 #############################################################
+# And, optionally, with Pyvista:
 
 try:
     import pyvista

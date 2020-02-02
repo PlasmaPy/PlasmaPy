@@ -200,12 +200,13 @@ class ParticleTrackerSolution:
         import pyvista as pv
         if figure is None:
             fig = pv.Plotter()
+            fig.add_axes()
         else:
             fig = figure
         points = self.data.position.sel(particle=particle).values
         # breakpoint()
         spline = pv.Spline(points, 1000)
-        trajectory = spline.tube(radius=1e-2)
+        trajectory = spline
         if figure is None:
             trajectory.plot()
         else:
