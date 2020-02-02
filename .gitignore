@@ -71,6 +71,7 @@ instance/
 docs/_build/
 docs/api
 docs/gen_modules
+docs/errors.txt
 
 # PyBuilder
 target/
