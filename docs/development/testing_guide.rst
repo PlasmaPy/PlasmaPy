@@ -381,10 +381,6 @@ performs these checks for class attributes and
 `~plasmapy.tests.helper.runners.method_test_runner`
 performs these checks for class methods.
 
-.. Occasionally tests will be needed to make sure that a function will
-   return the same value for different arguments (e.g., due to symmetry
-   properties).
-
 Suppose that we want to check that a function that doubles its argument is
 working correctly.  We may use `~plasmapy.tests.helper.function_test_runner`
 to do this.
@@ -427,13 +423,6 @@ If we want to test this function for multiple arguments, we may use
   @pytest.mark.parametrize("value, doubled_value", [(1, 2), (2, 4), ('.', '..'), (None)])
   def test_double(value, doubled_value):
       function_test_runner(expected=doubled_value, function=double, args=value)
-
-.. Not yet implemented!  Was true for run_test.
-   If `~plasmapy.tests.helper.function_test_runner` only receives one
-   positional argument that is a `list` or `tuple`, then it will assume
-   that `list` or `tuple` contains the `callable`, the positional arguments,
-   the keyword arguments (which may be omitted), and the expected outcome
-   (which may be the returned `object`, a warning, or an exception).
 
 Please refer to the documentation for
 `~plasmapy.tests.helper.function_test_runner`,
