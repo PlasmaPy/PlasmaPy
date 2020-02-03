@@ -7,7 +7,7 @@ from plasmapy.tests.helper.actual import ActualTestOutcome
 from plasmapy.tests.helper.expected import ExpectedTestOutcome
 from plasmapy.tests.helper.inputs import FunctionTestInputs
 
-from plasmapy.utils.formatting.formatting import _name_with_article, call_string
+from plasmapy.utils.formatting.formatting import _name_with_article
 
 from plasmapy.tests.helper.comparators import (
     CompareActualExpected,
@@ -65,7 +65,7 @@ table_of_function_args_kwargs_expected_and_exception = [
     (return_42_meters, noargs, nokwargs, 42 * u.kg, u.UnitsError),
     (return_42_meters, noargs, nokwargs, 6 * 9 * u.m, UnexpectedResultError),
     (return_42_meters, noargs, nokwargs, u.m, None),
-    (return_42_meters, noargs, nokwargs, u.cm, u.UnitsError),  # THIS ONE!!!!!!!!
+    (return_42_meters, noargs, nokwargs, u.cm, u.UnitsError),
     (return_none, noargs, nokwargs, None, None),
     (return_none, noargs, nokwargs, False, InconsistentTypeError),
     (issue_warning_return_42, noargs, nokwargs, SampleWarning, None),
@@ -279,6 +279,7 @@ def test_compare_values_rtol_exceptions(rtol):
     Test that bad values of ``rtol`` raise appropriate exceptions
     in CompareValues.
     """
+
     with pytest.raises(InvalidTestError):
         CompareValues(1, 1, rtol=rtol)
         pytest.fail(
@@ -480,7 +481,6 @@ def test_compare_actual_expected_errmsg(func, args, kwargs, expected, errmsg):
     errmsg : str
         The error message that is expected to be generated (or a portion
         thereof).
-
     """
 
     try:
@@ -494,7 +494,7 @@ def test_compare_actual_expected_errmsg(func, args, kwargs, expected, errmsg):
     if not comparison.error_message:
         pytest.fail("No error message was created.")
 
-    if not errmsg in comparison.error_message:
+    if errmsg not in comparison.error_message:
         pytest.fail(
             f"The instance of CompareActualExpected created from:\n\n"
             f"   func = {func.__name__}\n"

@@ -16,7 +16,7 @@ from plasmapy.tests.helper.tests.sample_functions import (
 from plasmapy.tests.helper.exceptions import InvalidTestError
 
 
-func_attr_expected =     [
+func_attr_expected = [
     (return_42, "warning_was_issued", False),
     (return_42, "exception_was_raised", False),
     (return_42, "value", 42),
@@ -42,6 +42,7 @@ def test_actual_test_outcome(function: Callable, attr: str, expected):
 
     inputs = FunctionTestInputs(function)
     actual = ActualTestOutcome(inputs)
+
     if getattr(actual, attr) != expected:
         pytest.fail(
             f"The attribute {repr(attr)} of ActualTestOutcome for"
@@ -51,16 +52,16 @@ def test_actual_test_outcome(function: Callable, attr: str, expected):
 
 
 function_and_exception_raising_attribute = [
-        (return_42, "exception_info"),
-        (return_42, "warnings_record"),
-        (return_42, "exception_type"),
-        (issue_warning, "exception_info"),
-        (issue_warning, "exception_type"),
-        (issue_warning, "exception_message"),
-        (raise_exception, "warnings_record"),
-        (raise_exception, "value"),
-        (raise_exception, "warning_messages"),
-        (raise_exception, "warning_types"),
+    (return_42, "exception_info"),
+    (return_42, "warnings_record"),
+    (return_42, "exception_type"),
+    (issue_warning, "exception_info"),
+    (issue_warning, "exception_type"),
+    (issue_warning, "exception_message"),
+    (raise_exception, "warnings_record"),
+    (raise_exception, "value"),
+    (raise_exception, "warning_messages"),
+    (raise_exception, "warning_types"),
 ]
 
 

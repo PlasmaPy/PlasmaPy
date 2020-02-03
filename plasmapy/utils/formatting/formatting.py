@@ -4,8 +4,6 @@ from typing import Callable, Any, Dict, Optional, Union, Tuple
 
 __all__ = ["call_string", "class_attribute_call_string", "class_method_call_string"]
 
-# TODO: Choose a more appropriate filename...perhaps errmsg_formatting.py?
-
 
 def _format_quantity(arg) -> str:
     """
