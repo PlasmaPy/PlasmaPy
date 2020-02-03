@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import NoReturn
+from typing import NoReturn, Union
 from numbers import Real, Integral
 from astropy import units as u
 
