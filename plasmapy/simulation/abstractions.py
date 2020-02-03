@@ -61,22 +61,22 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
     to change without notice.
     """
 
-    @abstractmethod
     @property
+    @abstractmethod
     def start_time(self) -> Union[Real, u.Quantity]:
         """The start time of the simulation."""
 
         pass
 
-    @abstractmethod
     @property
+    @abstractmethod
     def end_time(self) -> Union[Real, u.Quantity]:
         """The end time of the simulation."""
 
         pass
 
-    @abstractmethod
     @property
+    @abstractmethod
     def time_step(self) -> Union[Real, u.Quantity]:
         """Return the time step of the simulation."""
 
@@ -88,8 +88,8 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
 
         pass
 
-    @abstractmethod
     @property
+    @abstractmethod
     def step_number(self) -> Integral:
         """The current step number of the simulation."""
 
