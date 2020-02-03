@@ -85,8 +85,10 @@ class Test_mass_density:
 def test_Alfven_speed():
     r"""Test the Alfven_speed function in parameters.py."""
 
+    # TODO: break this test up until multiple tests
+
     assert np.isclose(Alfven_speed(1 * u.T, 1e-8 * u.kg * u.m ** -3).value,
-                      8920620.580763856)
+                      8920620.580763856, rtol=1e-6)
 
     V_A = Alfven_speed(B, n_i)
     assert np.isclose(
@@ -179,7 +181,7 @@ def test_Alfven_speed():
     assert np.isclose(testMeth1,
                       testTrue1,
                       atol=0.0,
-                      rtol=1e-15), errStr
+                      rtol=1e-6), errStr
 
     assert_can_handle_nparray(Alfven_speed)
 
@@ -190,14 +192,14 @@ def test_ion_sound_speed():
     assert np.isclose(ion_sound_speed(T_i=1.3232 * u.MK, T_e=1.831 * u.MK,
                                       ion='p', gamma_e=1, gamma_i=3).value,
                       218816.06086407552)
-    
+
     assert np.isclose(ion_sound_speed(T_i=1.3232 * u.MK, T_e=1.831 * u.MK,
-                                      n_e=n_e, k=k_1, ion='p', gamma_e=1, 
+                                      n_e=n_e, k=k_1, ion='p', gamma_e=1,
                                       gamma_i=3).value,
                       218816.06086407552)
-    
+
     assert np.isclose(ion_sound_speed(T_i=1.3232 * u.MK, T_e=1.831 * u.MK,
-                                      n_e=n_e, k=k_2, ion='p', gamma_e=1, 
+                                      n_e=n_e, k=k_2, ion='p', gamma_e=1,
                                       gamma_i=3).value,
                       552.3212936293337)
 
@@ -209,16 +211,16 @@ def test_ion_sound_speed():
     # assert ion_sound_speed(T_i=T_i, T_e=T_e, ion='p+') == ion_sound_speed(T_i=T_i, T_e=T_e,
     # ion='H-1')
 
-    assert ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=n_e, 
+    assert ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=n_e,
                            k=k_1, ion='p+').unit.is_equivalent(u.m / u.s)
 
     with pytest.raises(RelativityError):
-        ion_sound_speed(T_i=T_i, T_e=T_e, n_e=n_e, 
+        ion_sound_speed(T_i=T_i, T_e=T_e, n_e=n_e,
                         k=k_1, gamma_i=np.inf)
-        
+
     with pytest.warns(PhysicsWarning):
         ion_sound_speed(T_i=T_i, T_e=T_e, n_e=n_e)
-        
+
     with pytest.warns(PhysicsWarning):
         ion_sound_speed(T_i=T_i, T_e=T_e, k=k_1)
 
@@ -251,10 +253,10 @@ def test_ion_sound_speed():
 
     with pytest.raises(ValueError):
         ion_sound_speed(T_i=-np.abs(T_i), T_e=0 * u.K)
-    
+
     with pytest.raises(ValueError):
         ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=-np.abs(n_e), k=k_1)
-        
+
     with pytest.raises(ValueError):
         ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=n_e, k=-np.abs(k_1))
 
@@ -287,14 +289,14 @@ def test_ion_sound_speed():
 
     ion_sound_speed(T_e=1.2e6 * u.K, T_i=0 * u.K, n_e=n_e, k=k_1)
     # testing for user input z_mean
-    testMeth1 = ion_sound_speed(T_e=1.2e6 * u.K, T_i=0 * u.K, n_e=n_e, 
+    testMeth1 = ion_sound_speed(T_e=1.2e6 * u.K, T_i=0 * u.K, n_e=n_e,
                                 k=0 * u.m ** -1, z_mean=0.8).si.value
-    testTrue1 = 89018.0944146141
+    testTrue1 = 89018.09
     errStr = f"ion_sound_speed() gave {testMeth1}, should be {testTrue1}."
     assert np.isclose(testMeth1,
                       testTrue1,
                       atol=0.0,
-                      rtol=1e-15), errStr
+                      rtol=1e-6), errStr
 
     assert_can_handle_nparray(ion_sound_speed)
 
@@ -487,7 +489,6 @@ def test_gyrofrequency():
     assert np.isclose(gyrofrequency(1 * u.G).cgs.value,
                       1.76e7, rtol=1e-3)
 
-
     with pytest.raises(TypeError):
         gyrofrequency(u.m)
 
@@ -545,7 +546,7 @@ def test_gyrofrequency():
     assert np.isclose(testMeth1,
                       testTrue1,
                       atol=0.0,
-                      rtol=1e-15), errStr
+                      rtol=1e-5), errStr
 
     assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
 
@@ -743,7 +744,7 @@ def test_plasma_frequency():
     assert np.isclose(testMeth1,
                       testTrue1,
                       atol=0.0,
-                      rtol=1e-15), errStr
+                      rtol=1e-6), errStr
 
     assert_can_handle_nparray(plasma_frequency)
 

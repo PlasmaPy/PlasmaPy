@@ -10,8 +10,7 @@ from plasmapy.formulary.dimensionless import quantum_theta
 from plasmapy.formulary.collisions import coupling_parameter
 from plasmapy.atomic import particle_mass
 
-from plasmapy.utils import CouplingWarning
-from plasmapy.utils.pytest_helpers import call_string
+from plasmapy.utils import CouplingWarning, call_string
 
 from plasmapy.classes import GenericPlasma
 
@@ -47,8 +46,8 @@ class PlasmaBlob(GenericPlasma):
         --------
         >>> print(PlasmaBlob(1e4*u.K, 1e20/u.m**3, particle='p'))
         PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p', Z=1)
-        Intermediate coupling regime: Gamma = 0.012502837623108332.
-        Thermal kinetic energy dominant: Theta = 109690.53176225389
+        Intermediate coupling regime: Gamma = 0.01250283...
+        Thermal kinetic energy dominant: Theta = 109690.5...
 
         """
         return self.__repr__() + "\n" + "\n".join(self.regimes())

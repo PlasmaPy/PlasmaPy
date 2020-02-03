@@ -1,1 +1,0 @@
-Add examples images to the top of the main doc page in `docs\index.rst`

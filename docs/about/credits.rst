@@ -78,6 +78,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Thomas Varnish <https://github.com/tvarnish>`__
 * `Aditya Magarde <https://github.com/adityamagarde>`__
 * `Diego A. Diaz Riega <https://github.com/diego7319>`__
+* `Jakub Polak <https://github.com/Ishinomori>`__
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy

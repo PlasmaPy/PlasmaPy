@@ -214,9 +214,9 @@ class Particle:
     >>> deuteron.mass_number
     2
     >>> deuteron.binding_energy.to('MeV')
-    <Quantity 2.22456652 MeV>
+    <Quantity 2.224... MeV>
     >>> alpha.charge
-    <Quantity 3.20435324e-19 C>
+    <Quantity 3.20435...e-19 C>
     >>> neutron.half_life
     <Quantity 881.5 s>
     >>> Particle('C-14').half_life.to(u.year)
@@ -792,7 +792,7 @@ class Particle:
         --------
         >>> oxygen = Particle('O')
         >>> oxygen.standard_atomic_weight
-        <Quantity 2.65669641e-26 kg>
+        <Quantity 2.656696...e-26 kg>
 
         """
         if self.isotope or self.is_ion or not self.element:
@@ -869,13 +869,13 @@ class Particle:
         Examples
         --------
         >>> Particle('He').mass
-        <Quantity 6.64647688e-27 kg>
+        <Quantity 6.64647...e-27 kg>
         >>> Particle('He+').mass
-        <Quantity 6.64556594e-27 kg>
+        <Quantity 6.64556...e-27 kg>
         >>> Particle('He-4 +1').mass
-        <Quantity 6.64556803e-27 kg>
+        <Quantity 6.64556...e-27 kg>
         >>> Particle('alpha').mass
-        <Quantity 6.64465709e-27 kg>
+        <Quantity 6.64465...e-27 kg>
 
         """
 
@@ -965,15 +965,15 @@ class Particle:
         --------
         >>> proton = Particle('p+')
         >>> proton.mass_energy
-        <Quantity 1.50327759e-10 J>
+        <Quantity 1.503277...e-10 J>
 
         >>> protium = Particle('H-1 0+')
         >>> protium.mass_energy
-        <Quantity 1.50327759e-10 J>
+        <Quantity 1.503277...e-10 J>
 
         >>> electron = Particle('electron')
         >>> electron.mass_energy.to('MeV')
-        <Quantity 0.51099895 MeV>
+        <Quantity 0.510998... MeV>
 
         """
         try:
@@ -998,9 +998,9 @@ class Particle:
         --------
         >>> alpha = Particle('alpha')
         >>> alpha.binding_energy
-        <Quantity 4.53346938e-12 J>
+        <Quantity 4.53346...e-12 J>
         >>> Particle('T').binding_energy.to('MeV')
-        <Quantity 8.48179621 MeV>
+        <Quantity 8.481... MeV>
 
         The binding energy of a nucleon equals 0 joules.
 
@@ -1308,9 +1308,9 @@ class Particle:
 
     def is_category(self,
                     *category_tuple,
-                    require: Union[str, Set, Tuple, List] = set(),
-                    any_of: Union[str, Set, Tuple, List] = set(),
-                    exclude: Union[str, Set, Tuple, List] = set(),
+                    require: Union[str, Set, Tuple, List] = None,
+                    any_of: Union[str, Set, Tuple, List] = None,
+                    exclude: Union[str, Set, Tuple, List] = None,
                     ) -> bool:
         """
         Determine if the particle meets categorization criteria.
@@ -1347,7 +1347,7 @@ class Particle:
 
         def become_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
             """Change the argument into a `set`."""
-            if len(arg) == 0:
+            if arg is None:
                 return set()
             if isinstance(arg, set):
                 return arg
@@ -1358,7 +1358,7 @@ class Particle:
             else:
                 return set(arg)
 
-        if category_tuple != () and require != set():  # coverage: ignore
+        if category_tuple and require:  # coverage: ignore
             raise AtomicError(
                 "No positional arguments are allowed if the `require` keyword "
                 "is set in is_category.")

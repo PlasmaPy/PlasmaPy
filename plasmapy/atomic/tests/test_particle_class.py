@@ -12,7 +12,8 @@ from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.atomic.particle_class import Particle
 from plasmapy.atomic.special_particles import ParticleZoo
 
-from plasmapy.utils.pytest_helpers import call_string, run_test_equivalent_calls
+from plasmapy.utils import call_string
+from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
 from plasmapy.atomic.exceptions import (
     AtomicError,
@@ -450,7 +451,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
             try:
                 result = eval(f"particle.{key}")
-                assert result == expected
+                assert result == expected or u.isclose(result, expected)
             except AssertionError:
                 errmsg += (f"\n{call}.{key} returns {result} instead "
                            f"of the expected value of {expected}.")

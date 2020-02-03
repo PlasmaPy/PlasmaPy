@@ -605,18 +605,19 @@ class Test_classical_transport:
     def test_electron_viscosity_wrapper(self):
         with pytest.warns(RelativityWarning):
             assert_quantity_allclose(electron_viscosity(T_e=self.T_e,
-                                                    n_e=self.n_e,
-                                                    T_i=self.T_i,
-                                                    n_i=self.n_i,
-                                                    ion_particle=self.ion_particle,
-                                                    Z=self.Z,
-                                                    B=self.B,
-                                                    model=self.model,
-                                                    field_orientation=self.field_orientation,
-                                                    mu=self.mu,
-                                                    theta=self.theta,
-                                                    ),
+                                                        n_e=self.n_e,
+                                                        T_i=self.T_i,
+                                                        n_i=self.n_i,
+                                                        ion_particle=self.ion_particle,
+                                                        Z=self.Z,
+                                                        B=self.B,
+                                                        model=self.model,
+                                                        field_orientation=self.field_orientation,
+                                                        mu=self.mu,
+                                                        theta=self.theta,
+                                                        ),
                                      self.ct_wrapper.electron_viscosity)
+
 
 @pytest.mark.parametrize(["particle"], ['e', 'p'])
 def test_nondim_thermal_conductivity_unrecognized_model(particle):
