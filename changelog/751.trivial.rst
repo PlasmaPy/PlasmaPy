@@ -1,0 +1,1 @@
+ Remove mutable arguments from `Particle.is_category` method.
