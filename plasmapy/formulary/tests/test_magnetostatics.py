@@ -32,6 +32,11 @@ class Test_MagneticDipole:
         assert np.all(np.isclose(B2.value, B2_expected.value))
         assert B2.unit == u.T
 
+    def test_repr(self):
+        "Test __repr__ function"
+        B1 = MagneticDipole(self.moment, self.p0)
+        assert repr(B1) == r"MagneticDipole(moment=[0. 0. 1.]A m2, p0=[0. 0. 0.]m)"
+
 
 class Test_GeneralWire:
     def setup_method(self):
@@ -54,6 +59,16 @@ class Test_GeneralWire:
 
         assert np.all(np.isclose(B_cw.value, B_gw_cw.value))
         assert B_cw.unit == B_gw_cw.unit
+
+    def test_repr(self):
+        "Test __repr__ function"
+        gw_cw = self.cw.to_GeneralWire()
+        # round numbers to avoid calculation accuracy mismatch
+        gw_cw.t1 = -3.1516
+        gw_cw.t2 = +3.1516
+        assert repr(
+            gw_cw
+        ) == r"GeneralWire(parametric_eq=curve, t1=-3.1516, t2=3.1516, current=1.0A)"
 
     def test_close_fw(self):
         "Test if the GeneralWire is close to the FiniteWire it converted from"
@@ -93,7 +108,7 @@ class Test_FiniteStraightWire:
     def test_repr(self):
         "Test __repr__ function"
         fw = FiniteStraightWire(self.p1, self.p2, self.current)
-        assert repr(fw) == r"FiniteStraightWire(p1=[ 0.  0. -1.], p2=[0. 0. 1.], current=1.0)"
+        assert repr(fw) == r"FiniteStraightWire(p1=[ 0.  0. -1.]m, p2=[0. 0. 1.]m, current=1.0A)"
 
 
 class Test_InfiniteStraightWire:
@@ -114,7 +129,7 @@ class Test_InfiniteStraightWire:
         "Test __repr__ function"
         iw = InfiniteStraightWire(self.direction, self.p0, self.current)
         assert repr(iw) == \
-            r"InfiniteStraightWire(direction=[0. 1. 0.], p0=[0. 0. 0.], current=1.0)"
+            r"InfiniteStraightWire(direction=[0. 1. 0.], p0=[0. 0. 0.]m, current=1.0A)"
 
 
 class Test_CircularWire:
@@ -150,4 +165,4 @@ class Test_CircularWire:
         "Test __repr__ function"
         cw = CircularWire(self.normalz, self.center, self.radius, self.current)
         assert repr(cw) == \
-            r"CircularWire(normal=[0. 0. 1.], center=[0. 0. 0.], radius=1.0, current=1.0)"
+            r"CircularWire(normal=[0. 0. 1.], center=[0. 0. 0.]m, radius=1.0m, current=1.0A)"
