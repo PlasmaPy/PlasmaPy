@@ -5,9 +5,17 @@ from astropy import units as u
 
 
 class AbstractSimulation(ABC):
+    """
+    A prototype abstract interface for numerical simulations.
+
+    Notes
+    -----
+    This interface has unstable eigenfunctions, and is therefore subject
+    to change without notice.
+    """
 
     @abstractmethod
-    def check_inputs(self) -> NoReturn:
+    def check_inputs(self) -> NoReturn:  # rename to validate_inputs?
         """
         Check the inputted simulation parameters.  Raise an exception or
         issue a warning if any potential or actual problems are found.
@@ -31,19 +39,27 @@ class AbstractSimulation(ABC):
         pass
 
     @abstractmethod
-    def simulate(self) -> NoReturn:
+    def simulate(self) -> NoReturn:  # Return a class for the simulation output?
         """Perform the actual simulation."""
 
         pass
 
     @abstractmethod
     def finalize(self) -> NoReturn:
-        """Perform the steps to close the simulation and """
+        """Perform the steps to close the simulation and output data."""
 
         pass
 
 
 class AbstractTimeDependentSimulation(AbstractSimulation):
+    """
+    A prototype abstract interface for time-dependent numerical simulations.
+
+    Notes
+    -----
+    This interface has unstable eigenfunctions, and is therefore subject
+    to change without notice.
+    """
 
     @abstractmethod
     @property
@@ -58,7 +74,6 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
         """The end time of the simulation."""
 
         pass
-
 
     @abstractmethod
     @property
@@ -79,5 +94,3 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
         """The current step number of the simulation."""
 
         pass
-
-
