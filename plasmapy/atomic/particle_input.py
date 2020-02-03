@@ -71,9 +71,9 @@ def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
 
 
 def particle_input(wrapped_function: Callable = None,
-                   require: Union[str, Set, List, Tuple] = set(),
-                   any_of: Union[str, Set, List, Tuple] = set(),
-                   exclude: Union[str, Set, List, Tuple] = set(),
+                   require: Union[str, Set, List, Tuple] = None,
+                   any_of: Union[str, Set, List, Tuple] =None,
+                   exclude: Union[str, Set, List, Tuple]=None,
                    none_shall_pass: bool = False) -> Any:
     """
     Convert arguments to methods and functions to
@@ -229,6 +229,13 @@ def particle_input(wrapped_function: Callable = None,
             return particle
 
     """
+
+    if exclude is None:
+        exclude = set()
+    if any_of is None:
+        any_of = set()
+    if require is None:
+        require = set()
 
     def decorator(wrapped_function: Callable):
         wrapped_signature = inspect.signature(wrapped_function)
