@@ -431,6 +431,7 @@ Please refer to the documentation for
 of these functions.
 
 .. warning::
+
     The API for helper functions within `~plasmapy.tests` is unstable
     and may change in the near future.
 
