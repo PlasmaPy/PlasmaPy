@@ -72,8 +72,8 @@ def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
 
 def particle_input(wrapped_function: Callable = None,
                    require: Union[str, Set, List, Tuple] = None,
-                   any_of: Union[str, Set, List, Tuple] =None,
-                   exclude: Union[str, Set, List, Tuple]=None,
+                   any_of: Union[str, Set, List, Tuple] = None,
+                   exclude: Union[str, Set, List, Tuple] = None,
                    none_shall_pass: bool = False) -> Any:
     """
     Convert arguments to methods and functions to
