@@ -1603,3 +1603,89 @@ class Particle(AbstractParticle):
             self.__init__(base_particle, Z=new_integer_charge)
         else:
             return Particle(base_particle, Z=new_integer_charge)
+
+
+class DimensionlessParticle(AbstractParticle):
+    """
+    A class to represent dimensionless custom particles.
+
+    Parameters
+    ----------
+    mass : positive real number, keyword-only, optional
+        The mass of the dimensionless particle.
+
+    charge : real number, keyword-only, optional
+        The electric charge of the dimensionless particle.
+
+    rms_charge : real number, keyword-only, optional
+        The root mean square charge electric charge of the dimensionless
+        particle.
+
+    Notes
+    -----
+    The charge and mass default to `~np.nan` when not specified.
+
+    Examples
+    --------
+    >>> from plasmapy.particles import DimensionlessParticle
+    >>> dimensionless_particle = DimensionlessParticle(mass=1.0, charge=-1.0)
+    >>> dimensionless_particle.mass
+    1.0
+    >>> dimensionless_particle.charge
+    -1.0
+
+    """
+
+    def __init__(self, *, mass: Real = None, charge: Real = None, rms_charge: Real = None):
+
+        if mass is None or charge is None:
+            raise InvalidParticleError(
+                "Both the mass and charge of a dimensionless particle "
+                "must be provided."
+            )
+
+        self.mass = mass
+        self.charge = charge
+
+    @property
+    def mass(self) -> Real:
+        """Return the dimensionless mass of the particle."""
+
+        return self._mass
+
+    @property
+    def charge(self) -> Real:
+        """Return the dimensionless charge of the particle."""
+
+        return self._charge
+
+    @mass.setter
+    def mass(self, m: Optional[Real, u.Quantity]):
+
+        if isinstance(m, Real) and m >= 0:
+            self._mass = m
+        elif isinstance(m, u.Quantity) and m.unit is u.dimensionless_unscaled and m >= 0:
+            self._mass = m.to(u.dimensionless_unscaled).value
+        elif m is None or m is np.nan:
+            self._mass = np.nan
+        else:
+            raise InvalidParticleError(
+                "The mass of a dimensionless particle must be a real "
+                "number that is greater than or equal to zero."
+            )
+
+    @charge.setter
+    def charge(self, q: Optional[Real, u.Quantity]):
+
+        if isinstance(q, Real):
+            self._charge = q
+        elif isinstance(q, u.Quantity) and q.unit is u.dimensionless_unscaled:
+            self._charge = q.to(u.dimensionless_unscaled).value
+        elif q is None or q is np.nan:
+            self._charge = np.nan
+        else:
+            raise InvalidParticleError(
+                "The charge of a dimensionless particle must be a real number."
+            )
+
+    # TODO: Add a root mean square charge attribute.
