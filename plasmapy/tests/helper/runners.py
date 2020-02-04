@@ -12,9 +12,7 @@ from plasmapy.tests.helper.inputs import (
 
 from plasmapy.tests.helper.actual import ActualTestOutcome
 from plasmapy.tests.helper.expected import ExpectedTestOutcome
-
 from plasmapy.tests.helper.comparators import CompareActualExpected
-
 from plasmapy.tests.helper.exceptions import InvalidTestError
 
 
