@@ -3,14 +3,14 @@ variables:
   CI_NAME: Azure Pipelines
   CI_BUILD_ID: $(Build.BuildId)
   CI_BUILD_URL: "https://dev.azure.com/plasmapy/plasmapy/_build/results?buildId=$(Build.BuildId)"
-  CIBW_BUILD: cp36-* cp37-*
+  CIBW_BUILD: cp36-* cp37-* cp38-*
   CIBW_SKIP: "*-win32 *-manylinux1_i686"
 
 resources:
   repositories:
   - repository: OpenAstronomy
     type: github
-    endpoint: plasmapy
+    endpoint: PlasmaPy
     name: OpenAstronomy/azure-pipelines-templates
     ref: master
 
@@ -37,6 +37,7 @@ jobs:
         name: py37_macos
 
       - windows: py36
+        name: py36_windows
 
       - linux: py37
         name: py37_linux
@@ -59,6 +60,10 @@ jobs:
 
       - linux: py36-minimal-conda
         name: py36_minimal_conda
+        libraries: {}
+
+      - linux: py36-minimal-pypi-import
+        name: py36_minimal_pypi_import
 
 # On branches which aren't master, and not Pull Requests, build the wheels but only upload them on tags
 - ${{ if and(ne(variables['Build.Reason'], 'PullRequest'), not(contains(variables['Build.SourceBranch'], 'master'))) }}:
@@ -66,18 +71,18 @@ jobs:
     parameters:
       # Only Upload to PyPI on tags
       ${{ if startsWith(variables['Build.SourceBranch'], 'refs/tags/') }}:
-        pypi_connection_name : 'PyPI'
+        pypi_connection_name : 'pypi_endpoint'
       test_extras: 'dev'
-      test_command: 'pytest -p no:warnings --doctest-rst -m "not figure" --pyargs plasmapy'
+      test_command: 'pytest --pyargs plasmapy'
       submodules: false
       targets:
-        - wheels_linux
-        - wheels_macos
+        - wheels_universal
         - sdist
       dependsOn:
-        - py37_offline
-        - py36_offline
-        - py37_online
+        - py37_linux
+        - py36_windows
+        - py36_minimal_conda
         - py36_conda
-        - py38
+        - py38_linux
         - py36_astropy31
+        - py37_macos

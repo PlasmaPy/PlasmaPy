@@ -17,4 +17,4 @@ from plasmapy.utils.exceptions import (
     RelativityWarning,
 )
 
-import plasmapy.utils.formatting
+from . import formatting

@@ -28,12 +28,6 @@ from plasmapy.atomic import Particle
 from plasmapy.utils.decorators import validate_quantities
 from scipy.optimize import curve_fit
 
-try:
-    import matplotlib.pyplot as plt
-except (ImportError, ModuleNotFoundError) as e:
-    from plasmapy.optional_deps import mpl_import_error
-    raise mpl_import_error from e
-
 
 def _fit_func_lin(x, x0, y0, c0):
     r"""Linear fitting function."""
@@ -179,6 +173,12 @@ class Characteristic:
 
     def plot(self):  # coverage: ignore
         r"""Plot the characteristic in matplotlib."""
+        try:
+            import matplotlib.pyplot as plt
+        except (ImportError, ModuleNotFoundError) as e:
+            from plasmapy.optional_deps import mpl_import_error
+            raise mpl_import_error from e
+
 
         with quantity_support():
             plt.figure()
@@ -328,6 +328,12 @@ def swept_probe_analysis(probe_characteristic, probe_area: u.m ** 2, gas_argumen
                                   hot_fraction), probe_area)
 
     if visualize:  # coverage: ignore
+        try:
+            import matplotlib.pyplot as plt
+        except (ImportError, ModuleNotFoundError) as e:
+            from plasmapy.optional_deps import mpl_import_error
+            raise mpl_import_error from e
+
         with quantity_support():
             fig, (ax1, ax2) = plt.subplots(2, 1)
             ax1.plot(probe_characteristic.bias,
@@ -867,6 +873,12 @@ def get_electron_temperature(exponential_section, bimaxwellian=False,
         T_e = np.array([T0, T0 + Delta_T]) * u.eV
 
     if visualize:  # coverage: ignore
+        try:
+            import matplotlib.pyplot as plt
+        except (ImportError, ModuleNotFoundError) as e:
+            from plasmapy.optional_deps import mpl_import_error
+            raise mpl_import_error from e
+
         with quantity_support():
             plt.figure()
 
@@ -963,6 +975,12 @@ def extrapolate_electron_current(probe_characteristic, fit,
                                              electron_current)
 
     if visualize:  # coverage: ignore
+        try:
+            import matplotlib.pyplot as plt
+        except (ImportError, ModuleNotFoundError) as e:
+            from plasmapy.optional_deps import mpl_import_error
+            raise mpl_import_error from e
+
         with quantity_support():
             plt.figure()
             plt.scatter(probe_characteristic.bias,
@@ -1090,6 +1108,12 @@ def get_ion_density_OML(probe_characteristic: Characteristic,
                       (probe_area ** 2 * const.e ** 3 * 2))
 
     if visualize:  # coverage: ignore
+        try:
+            import matplotlib.pyplot as plt
+        except (ImportError, ModuleNotFoundError) as e:
+            from plasmapy.optional_deps import mpl_import_error
+            raise mpl_import_error from e
+
         with quantity_support():
             plt.figure()
             plt.scatter(ion_section.bias.to(u.V), ion_section.current.to(
@@ -1151,6 +1175,12 @@ def extrapolate_ion_current_OML(probe_characteristic, fit,
     ion_characteristic = Characteristic(probe_characteristic.bias, ion_current)
 
     if visualize:  # coverage: ignore
+        try:
+            import matplotlib.pyplot as plt
+        except (ImportError, ModuleNotFoundError) as e:
+            from plasmapy.optional_deps import mpl_import_error
+            raise mpl_import_error from e
+
         with quantity_support():
             plt.figure()
             plt.scatter(probe_characteristic.bias,
@@ -1238,6 +1268,12 @@ def get_EEDF(probe_characteristic, visualize=False):
     probability = probability / integral
 
     if visualize:  # coverage: ignore
+        try:
+            import matplotlib.pyplot as plt
+        except (ImportError, ModuleNotFoundError) as e:
+            from plasmapy.optional_deps import mpl_import_error
+            raise mpl_import_error from e
+
         with quantity_support():
             plt.figure()
             plt.semilogy(energy, probability, c='k')

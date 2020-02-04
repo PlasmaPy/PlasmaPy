@@ -13,91 +13,71 @@ expand the instructions while performing each release, and may refer to
 <http://docs.astropy.org/en/stable/development/releasing.html>` for
 guidance.
 
-Pre-release
------------
+Release
+-------
 
+* Create a new branch for the release that is separate from the master
+  branch, e.g. `v0.3.x`
+  
 * Check that the Continuous Integration is passing for the correct
   version `(see the latest commit on master)
-  <https://github.com/PlasmaPy/PlasmaPy/commits/master>`_
+  <https://github.com/PlasmaPy/PlasmaPy/commits/master>`_. You can use `hub
+  ci-status master` with the `hub` CLI tool.
 
-* Update ``docs/about/change_log.rst``
+* Turn changelog entries into a `CHANGELOG.rst` file via `towncrier --version
+  v0.3.0` or equivalent. When asked about removing changelog entries, do so. Ensure
+  the entries are in proper categories.
 
-* Update ``docs/about/release_notes.rst``
+* Move the generated `CHANGELOG.rst` file into
+  `docs/whatsnew/{version_number}.rst`. Add the corresponding entry in the
+  table of contents in `docs/whatsnew/index.rst`. 
 
-* Update ``.mailmap`` and ``docs/about/credits.rst`` to include new
-  contributors
+* Add the note on include new contributors. To do this efficiently, borrow the
+  SunPy Xonsh script `generate_releaserst.xsh 0.2.0 --auth
+  --project-name=plasmapy --pretty-project-name=PlasmaPy`.
 
-  * Use ``git shortlog -n -s -e`` for ``.mailmap``
-  * Use ``astropy-tools/author_lists.py`` for ``credits.rst``
+* Use ``git shortlog -nse | cut -f 2 | vim`` for ``.mailmap``
 
-* Update ``setup.cfg``
+* Use ``astropy-tools/author_lists.py`` for ``credits.rst``
 
-  * Remove ``.dev`` from ``version = x.y.z.dev``
-  * Update minimum versions of required packages, including
-    ``python_requires``, ``install_requires``, and other variables
+.. note:
 
-* Reserve a digital object identifier on Zenodo, and update citation
-  information (e.g., in ``plasmapy.__citation__`` and ``README.md``)
+I would think about limiting this to the credits in new release entries in
+`docs/whatsnew` due to maintenance burden. ~Dominik
+
+* Commit your changes up until now
+
+* Make sure that tests pass and that documentation builds without issue (``tox``)
+
+* Tag the new version with ``git tag -s v<version> -m "Version v<version>"``
+
+  * Note that ``-s`` signs the commit with a GPG key
+
+* Push the tagged commit to the version's branch on GitHub: `git push --force --follow-tags upstream v0.3.x`
+
+At this point, `the OpenAstronomy Azure Pipelines
+<https://openastronomy-azure-pipelines.readthedocs.io/en/latest/publish.html>`
+infrastructure should do most of the work for you! `Ensure that the pipeline
+goes through. <https://dev.azure.com/plasmapy/PlasmaPy/_build>`
+
+Post-release
+------------
+
+* If necessary (for MINOR+ and not for BUGFIX versions) activate the new
+  branch's version `on RTD
+  <https://readthedocs.org/projects/plasmapy/versions/>`.
+
+* Update the `stable` branch on GitHub.
+
+* Make the release on conda-forge
+
+* Reserve a digital object identifier on Zenodo
 
 * Update code metadata in ``codemeta.json``
 
   * The `Codemeta standard <https://codemeta.github.io/>`_ is
     relatively new, so check the standard for terms that have changed
     and new terms that may apply
-
-* Make sure that tests pass  and that
-  documentation builds without issue (``tox``)
-
-* Commit your changes up until now
-
-  * Double-check CI on pushing this to a branch
-
-* Tag the new version with ``git tag -s v<version> -m "Tagging v<version>"``
-
-  * Note that ``-s`` signs the commit with a GPG key
-
-* Test that RTD is building the documentation correctly on release
-  branch (and the version is correct)
-
-* Perform a source distribution release
-
-  * Get a clean copy of the repository (``git clean -fxd`` or ``git clone``)
-  * Use ``python setup.py build sdist``
-  * Test that the sdist installs in a clean environment::
-
-       $ conda create -n plasmapy_release_test_v<version> numpy
-       $ conda activate plasmapy_release_test_v<version>
-       $ pip install dist/plasmapy-<version>.tar.gz
-       $ python -c 'import plasmapy; plasmapy.test()'
-       $ conda deactivate
-
-  * Check that the `plasmapy.__version__` number is correct
-    (``python -c 'import plasmapy; print(plasmapy.__version__)'``)
-
-Release
--------
-
-* Create a new branch for the release that is separate from the master
-  branch
-  
-* Merge (via fast-forward merge with `git merge --ff-only`) changes
-  from ``master`` into ``stable``
-
-* Make sure all tests pass
-
-* Make the release on PyPI::
-    
-    twine upload dist/plasmapy-X.Y.Z.tar.gz dist/plasmapy-X.Y.Z.tar.gz.asc
-
-* Make the release on conda-forge
-
-Post-release
-------------
-
-* Update ``docs/about/change_log.rst`` (Add a new heading for the next
-  release)
-
-* Update ``setup.cfg`` (increment version and add ``dev`` suffix)
 
 * Upload the release to the Zenodo record corresponding to the reserved
   DOI

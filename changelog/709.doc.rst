@@ -1,2 +1,0 @@
-Added exampes to the documentation to mass_density
- and Hall_parameter functions

@@ -13,9 +13,8 @@ from plasmapy.atomic.elements import (
 
 from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.atomic.special_particles import _Particles, ParticleZoo
-
-from plasmapy.utils import roman, formatting
-
+from plasmapy.utils import roman
+from plasmapy.utils.formatting import call_string
 from plasmapy.atomic.exceptions import InvalidElementError, InvalidParticleError, AtomicWarning
 
 
@@ -430,11 +429,3 @@ def _parse_and_check_atomic_input(
     }
 
     return nomenclature_dict
-
-
-def _particle_call_string(arg: Union[str, Integral], kwargs: Dict = {}) -> str:
-    """
-    Return a `str` that recreates the call to create a particular
-    `~plasmapy.atomic.Particle` instance from the input.
-    """
-    return formatting.call_string(Particle, arg, kwargs)

@@ -70,7 +70,7 @@ def _process_input(wrapped_function: Callable):
 def run_test(
     func,
     args: Any = (),
-    kwargs: Dict = {},
+    kwargs: Dict = None,
     expected_outcome: Any = None,
     rtol: float = 0.0,
     atol: float = 0.0,
@@ -212,6 +212,9 @@ def run_test(
             run_test(inputs)
 
     """
+
+    if kwargs is None:
+        kwargs = {}
 
     if not isinstance(args, tuple):
         args = (args,)
@@ -618,7 +621,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
 
 
 def assert_can_handle_nparray(
-    function_to_test, insert_some_nans=[], insert_all_nans=[], kwargs={}
+    function_to_test, insert_some_nans=None, insert_all_nans=None, kwargs=None,
 ):
     """
     Test for ability to handle numpy array quantities.
@@ -660,6 +663,15 @@ def assert_can_handle_nparray(
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
     """
+
+    if insert_some_nans is None:
+        insert_some_nans = []
+
+    if insert_all_nans is None:
+        insert_all_nans = []
+
+    if kwargs is None:
+        kwargs = {}
 
     def _prepare_input(
         param_name, param_default, insert_some_nans, insert_all_nans, kwargs

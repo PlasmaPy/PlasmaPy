@@ -11,7 +11,6 @@ from plasmapy.atomic.atomic import known_isotopes
 from plasmapy.atomic.isotopes import _Isotopes
 from plasmapy.atomic.particle_class import Particle
 from plasmapy.atomic.special_particles import ParticleZoo
-
 from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 from plasmapy.utils.formatting import call_string
 
