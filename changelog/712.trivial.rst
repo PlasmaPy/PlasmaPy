@@ -1,2 +1,0 @@
-Overhaul and simplify CI, add Python 3.8 to tests, bump minimal required package versions, fix docs.
-
