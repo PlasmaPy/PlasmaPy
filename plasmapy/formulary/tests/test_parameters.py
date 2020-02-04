@@ -463,8 +463,10 @@ class Test_kappa_thermal_speed(object):
                           atol=0.0), errStr
         return
 
-    def test_handle_nparrays(self, kwargs={"kappa": 2}):
+    def test_handle_nparrays(self, kwargs=None):
         """Test for ability to handle numpy array quantities"""
+        if kwargs is None:
+            kwargs = {"kappa": 2}
         assert_can_handle_nparray(kappa_thermal_speed, kwargs=kwargs)
 
 

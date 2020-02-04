@@ -1,2 +1,0 @@
-Remove plasmapy.constants, which was a thin wrapper around astropy.constants
-with no added value

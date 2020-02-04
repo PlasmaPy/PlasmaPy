@@ -12,7 +12,7 @@ import colorama
 import warnings
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
-from plasmapy.utils.pytest_helpers.error_messages import (
+from plasmapy.utils.error_messages import (
     call_string,
     _represent_result,
     _exc_str

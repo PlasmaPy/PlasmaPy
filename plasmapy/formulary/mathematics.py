@@ -9,11 +9,6 @@ __all__ = ['Fermi_integral']
 import numbers
 import numpy as np
 
-try:
-    from mpmath import polylog
-except (ImportError, ModuleNotFoundError) as e:
-    from plasmapy.optional_deps import mpmath_import_error
-    raise mpmath_import_error from e
 from typing import Union
 
 
@@ -79,6 +74,12 @@ def Fermi_integral(
     (1.8062860704447743-0j)
 
     """
+    try:
+        from mpmath import polylog
+    except (ImportError, ModuleNotFoundError) as e:
+        from plasmapy.optional_deps import mpmath_import_error
+        raise mpmath_import_error from e
+
     if isinstance(x, (numbers.Integral, numbers.Real, numbers.Complex)):
         arg = -np.exp(x)
         integral = -1 * complex(polylog(j + 1, arg))

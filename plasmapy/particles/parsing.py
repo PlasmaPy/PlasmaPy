@@ -2,7 +2,7 @@
 
 import re
 import warnings
-from typing import (Union, Dict)
+from typing import (Union, Dict, Optional)
 from numbers import Integral
 import numpy as np
 
@@ -14,7 +14,7 @@ from plasmapy.particles.elements import (
 from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.special_particles import _Particles, ParticleZoo
 
-from plasmapy.utils import roman, pytest_helpers
+from plasmapy.utils import roman, call_string
 
 from plasmapy.particles.exceptions import InvalidElementError, InvalidParticleError, AtomicWarning
 
@@ -432,12 +432,16 @@ def _parse_and_check_atomic_input(
     return nomenclature_dict
 
 
-def _particle_call_string(arg: Union[str, Integral], kwargs: Dict = {}) -> str:
+def _particle_call_string(arg: Union[str, Integral], kwargs: Optional[Dict] = None) -> str:
     """
     Return a `str` that recreates the call to create a particular
     `~plasmapy.particles.Particle` instance from the input.
     """
-    return pytest_helpers.call_string(Particle, arg, kwargs)
+    if kwargs is None:
+        kwargs = {}
+
+    return call_string(Particle, arg, kwargs)
+
 #    if kwargs != {}:
 #        keyword_string = ", " + str(kwargs).strip(r"}{'").replace("'", "").replace(":", " =")
 #    else:

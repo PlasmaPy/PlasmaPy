@@ -3,8 +3,8 @@ import warnings
 from typing import Any
 import astropy.units as u
 
+from plasmapy.utils import call_string
 from plasmapy.utils.pytest_helpers import (
-    call_string,
     run_test,
     run_test_equivalent_calls,
     UnexpectedResultError,

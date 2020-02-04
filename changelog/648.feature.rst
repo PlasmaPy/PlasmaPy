@@ -1,9 +1,0 @@
-Create decorators for checking/validating values and units of function/method input
-and return arguments.  Defined decorators include
-:func:`~plasmapy.utils.decorators.checks.check_values`,
-:func:`~plasmapy.utils.decorators.checks.check_units`, and
-:func:`~plasmapy.utils.decorators.validators.validate_quantities`.  These decorators are
-fully defined by "decorator classes" :class:`~plasmapy.utils.decorators.checks.CheckBase`,
-:class:`~plasmapy.utils.decorators.checks.CheckValues`,
-:class:`~plasmapy.utils.decorators.checks.CheckUnits`, and
-:class:`~plasmapy.utils.decorators.validators.ValidateQuantities`.

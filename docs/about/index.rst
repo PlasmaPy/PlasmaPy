@@ -9,7 +9,6 @@ About PlasmaPy
 
    credits
    stability
-   release_notes
-   change_log
+   ../whatsnew/index.rst
    vision_statement
    citation

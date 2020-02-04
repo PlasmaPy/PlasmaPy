@@ -73,12 +73,15 @@ class BasicRegistrationFactory:
     """
 
     def __init__(self, default_widget_type=None,
-                 additional_validation_functions=[], registry=None):
+                 additional_validation_functions=None, registry=None):
 
         if registry is None:
             self.registry = dict()
         else:
             self.registry = registry
+
+        if additional_validation_functions is None:
+            additional_validation_functions = []
 
         self.default_widget_type = default_widget_type
 
@@ -160,7 +163,7 @@ class BasicRegistrationFactory:
                 if hasattr(WidgetType, vfunc_str):
                     vfunc = getattr(WidgetType, vfunc_str)
 
-                    # check if classmethod: stackoverflow #19227724
+                    # check if classmethod: stackoverflow #19227g724
                     _classmethod = inspect.ismethod(vfunc) and vfunc.__self__ is WidgetType
 
                     if _classmethod:

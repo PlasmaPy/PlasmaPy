@@ -10,8 +10,7 @@ from plasmapy.formulary.dimensionless import quantum_theta
 from plasmapy.formulary.collisions import coupling_parameter
 from plasmapy.particles import particle_mass
 
-from plasmapy.utils import CouplingWarning
-from plasmapy.utils.pytest_helpers import call_string
+from plasmapy.utils import CouplingWarning, call_string
 
 from plasmapy.classes import GenericPlasma
 

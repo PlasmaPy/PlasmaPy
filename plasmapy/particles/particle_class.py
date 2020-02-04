@@ -1308,9 +1308,9 @@ class Particle:
 
     def is_category(self,
                     *category_tuple,
-                    require: Union[str, Set, Tuple, List] = set(),
-                    any_of: Union[str, Set, Tuple, List] = set(),
-                    exclude: Union[str, Set, Tuple, List] = set(),
+                    require: Union[str, Set, Tuple, List] = None,
+                    any_of: Union[str, Set, Tuple, List] = None,
+                    exclude: Union[str, Set, Tuple, List] = None,
                     ) -> bool:
         """
         Determine if the particle meets categorization criteria.
@@ -1347,7 +1347,7 @@ class Particle:
 
         def become_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
             """Change the argument into a `set`."""
-            if len(arg) == 0:
+            if arg is None:
                 return set()
             if isinstance(arg, set):
                 return arg
@@ -1358,7 +1358,7 @@ class Particle:
             else:
                 return set(arg)
 
-        if category_tuple != () and require != set():  # coverage: ignore
+        if category_tuple and require:  # coverage: ignore
             raise AtomicError(
                 "No positional arguments are allowed if the `require` keyword "
                 "is set in is_category.")

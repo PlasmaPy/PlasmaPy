@@ -1,5 +1,11 @@
-conda:
-  file: requirements/environment.yml
+version: 2
+
+formats: all
 
 python:
-   setup_py_install: true
+  version: 3.7
+  install:
+    - requirements: requirements/automated-documentation-tests.txt
+    - method: setuptools
+      path: .
+  system_packages: true

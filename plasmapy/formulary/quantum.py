@@ -22,12 +22,6 @@ from plasmapy.formulary.relativity import Lorentz_factor
 from plasmapy.utils import RelativityError
 from plasmapy.utils.decorators import validate_quantities
 
-try:
-    from lmfit import minimize, Parameters
-except (ImportError, ModuleNotFoundError) as e:
-    from plasmapy.optional_deps import lmfit_import_error
-    raise lmfit_import_error from e
-
 
 # TODO: Use @check_relativistic and @particle_input
 @validate_quantities(V={'can_be_negative': True},
@@ -475,6 +469,12 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     # setting parameters for fitting along with bounds
     alphaGuess = 1 * u.dimensionless_unscaled
+    try:
+        from lmfit import minimize, Parameters
+    except (ImportError, ModuleNotFoundError) as e:
+        from plasmapy.optional_deps import lmfit_import_error
+        raise lmfit_import_error from e
+
     params = Parameters()
     params.add('alpha', value=alphaGuess, min=0.0)
     # calling minimize function from lmfit to fit by minimizing the residual
