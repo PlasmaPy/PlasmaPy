@@ -10,9 +10,9 @@ import astropy.units as u
 import astropy.constants as const
 
 import plasmapy.utils.roman as roman
-from plasmapy.atomic.elements import _Elements, _PeriodicTable
-from plasmapy.atomic.isotopes import _Isotopes
-from plasmapy.atomic.exceptions import (
+from plasmapy.particles.elements import _Elements, _PeriodicTable
+from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.exceptions import (
     AtomicError,
     MissingAtomicDataError,
     ChargeError,
@@ -23,12 +23,12 @@ from plasmapy.atomic.exceptions import (
     AtomicWarning,
     MissingAtomicDataWarning,
     )
-from plasmapy.atomic.parsing import (
+from plasmapy.particles.parsing import (
     _dealias_particle_aliases,
     _parse_and_check_atomic_input,
     _invalid_particle_errmsg,
 )
-from plasmapy.atomic.special_particles import (
+from plasmapy.particles.special_particles import (
     _Particles,
     ParticleZoo,
     _special_ion_masses,
@@ -111,7 +111,7 @@ class Particle:
 
     Parameters
     ----------
-    argument : `str`, `int`, or `~plasmapy.atomic.Particle`
+    argument : `str`, `int`, or `~plasmapy.particles.Particle`
         A string representing a particle, element, isotope, or ion; an
         integer representing the atomic number of an element; or a
         `Particle` instance.
@@ -143,14 +143,14 @@ class Particle:
         an isotope (or an ion of an isotope).
 
     `~plasmapy.utils.ChargeError`
-        For when either the `~plasmapy.atomic.Particle.charge` or
-        `~plasmapy.atomic.Particle.integer_charge` attributes is
+        For when either the `~plasmapy.particles.Particle.charge` or
+        `~plasmapy.particles.Particle.integer_charge` attributes is
         being accessed but the charge information for the particle is
         not available.
 
     `~plasmapy.utils.AtomicError`
         Raised for attempts at converting a
-        `~plasmapy.atomic.Particle` object to a `bool`.
+        `~plasmapy.particles.Particle` object to a `bool`.
 
     Examples
     --------
@@ -164,7 +164,7 @@ class Particle:
     >>> positron = Particle('positron')
     >>> hydrogen = Particle(1)  # atomic number
 
-    The `~plasmapy.atomic.Particle.particle` attribute returns the
+    The `~plasmapy.particles.Particle.particle` attribute returns the
     particle's symbol in the standard form.
 
     >>> positron.particle
@@ -180,7 +180,7 @@ class Particle:
     >>> deuteron.ionic_symbol
     'D 1+'
 
-    The `~plasmapy.atomic.Particle.ionic_symbol` attribute works for
+    The `~plasmapy.particles.Particle.ionic_symbol` attribute works for
     neutral atoms if charge information is available.
 
     >>> deuterium = Particle("D", Z=0)
@@ -193,7 +193,7 @@ class Particle:
     >>> positron.element is None
     True
 
-    The attributes of a `~plasmapy.atomic.Particle` instance may be used
+    The attributes of a `~plasmapy.particles.Particle` instance may be used
     to test whether or not a particle is an element, isotope, or ion.
 
     >>> True if positron.element else False
@@ -226,7 +226,7 @@ class Particle:
     >>> alpha.neutron_number
     2
 
-    If a `~plasmapy.atomic.Particle` instance represents an elementary
+    If a `~plasmapy.particles.Particle` instance represents an elementary
     particle, then the unary ``~`` (invert) operator may be used to
     return the particle's antiparticle.
 
@@ -237,8 +237,8 @@ class Particle:
     >>> ~positron
     Particle("e-")
 
-    A `~plasmapy.atomic.Particle` instance may be used as the first
-    argument to `~plasmapy.atomic.Particle`.
+    A `~plasmapy.particles.Particle` instance may be used as the first
+    argument to `~plasmapy.particles.Particle`.
 
     >>> iron = Particle('Fe')
     >>> iron == Particle(iron)
@@ -246,7 +246,7 @@ class Particle:
     >>> Particle(iron, mass_numb=56, Z=6)
     Particle("Fe-56 6+")
 
-    If the previously constructed `~plasmapy.atomic.Particle` instance
+    If the previously constructed `~plasmapy.particles.Particle` instance
     represents an element, then the ``Z`` and ``mass_numb`` arguments
     may be used to specify an ion or isotope.
 
@@ -256,8 +256,8 @@ class Particle:
     >>> Particle(iron, mass_numb=56)
     Particle("Fe-56")
 
-    The `~plasmapy.atomic.particle_class.Particle.categories` attribute
-    and `~plasmapy.atomic.particle_class.Particle.is_category` method
+    The `~plasmapy.particles.particle_class.Particle.categories` attribute
+    and `~plasmapy.particles.particle_class.Particle.is_category` method
     may be used to find and test particle membership in categories.
 
     Valid particle categories include: ``'actinide'``, ``'alkali
@@ -279,7 +279,7 @@ class Particle:
             mass_numb: Integral = None,
             Z: Integral = None):
         """
-        Instantiate a `~plasmapy.atomic.Particle` object and set private
+        Instantiate a `~plasmapy.particles.Particle` object and set private
         attributes.
         """
 
@@ -451,12 +451,12 @@ class Particle:
         Determine if two objects correspond to the same particle.
 
         This method will return `True` if ``other`` is an identical
-        `~plasmapy.atomic.Particle` instance or a `str` representing the
+        `~plasmapy.particles.Particle` instance or a `str` representing the
         same particle, and return `False` if ``other`` is a different
-        `~plasmapy.atomic.Particle` or a `str` representing a different
+        `~plasmapy.particles.Particle` or a `str` representing a different
         particle.
 
-        If ``other`` is not a `str` or `~plasmapy.atomic.Particle`
+        If ``other`` is not a `str` or `~plasmapy.particles.Particle`
         instance, then this method will raise a `TypeError`.  If
         ``other.particle`` equals ``self.particle`` but the attributes
         differ, then this method will raise a
@@ -523,12 +523,12 @@ class Particle:
         Test whether or not two objects are different particles.
 
         This method will return `False` if ``other`` is an identical
-        `~plasmapy.atomic.Particle` instance or a `str` representing the
+        `~plasmapy.particles.Particle` instance or a `str` representing the
         same particle, and return `True` if ``other`` is a different
-        `~plasmapy.atomic.Particle` or a `str` representing a different
+        `~plasmapy.particles.Particle` or a `str` representing a different
         particle.
 
-        If ``other`` is not a `str` or `~plasmapy.atomic.Particle`
+        If ``other`` is not a `str` or `~plasmapy.particles.Particle`
         instance, then this method will raise a `TypeError`.  If
         ``other.particle`` equals ``self.particle`` but the attributes
         differ, then this method will raise a
@@ -539,7 +539,7 @@ class Particle:
 
     def __hash__(self) -> int:
         """
-        Allow use of `hash` so that a `~plasmapy.atomic.Particle`
+        Allow use of `hash` so that a `~plasmapy.particles.Particle`
         instance may be used as a key in a `dict`.
         """
         return hash(self.__repr__())
@@ -581,7 +581,7 @@ class Particle:
         elementary particle.
 
         This attribute may be accessed by using the unary operator ``~``
-        acting on a `~plasma.atomic.Particle` instance.
+        acting on a `~plasmapy.particles.Particle` instance.
 
         Examples
         --------
@@ -784,7 +784,7 @@ class Particle:
         If the particle is isotope or ion or not an element, this
         attribute will raise an `~plasmapy.utils.InvalidElementError`.
 
-        If the element does not have a defined stsandard atomic weight,
+        If the element does not have a defined standard atomic weight,
         this attribute will raise a
         `~plasmapy.utils.MissingAtomicDataError`.
 
@@ -1429,46 +1429,46 @@ class Particle:
 
     def ionize(self, n: Integral = 1, inplace: bool = False):
         """
-        Create a new `~plasmapy.atomic.Particle` instance corresponding
-        to the current `~plasmapy.atomic.Particle` after being ionized
+        Create a new `~plasmapy.particles.Particle` instance corresponding
+        to the current `~plasmapy.particles.Particle` after being ionized
         ``n`` times.
 
         If ``inplace`` is `False` (default), then return the ionized
-        `~plasmapy.atomic.Particle`.
+        `~plasmapy.particles.Particle`.
 
         If ``inplace`` is `True`, then replace the current
-        `~plasmapy.atomic.Particle` with the newly ionized
-        `~plasmapy.atomic.Particle`.
+        `~plasmapy.particles.Particle` with the newly ionized
+        `~plasmapy.particles.Particle`.
 
         Parameters
         ----------
         n : positive integer
             The number of bound electrons to remove from the
-            `~plasmapy.atomic.Particle` object.  Defaults to ``1``.
+            `~plasmapy.particles.Particle` object.  Defaults to ``1``.
 
         inplace : bool, optional
             If `True`, then replace the current
-            `~plasmapy.atomic.Particle` instance with the newly ionized
-            `~plasmapy.atomic.Particle`.
+            `~plasmapy.particles.Particle` instance with the newly ionized
+            `~plasmapy.particles.Particle`.
 
         Returns
         -------
-        particle : ~plasmapy.atomic.Particle
-            A new `~plasmapy.atomic.Particle` object that has been
+        particle : ~plasmapy.particles.Particle
+            A new `~plasmapy.particles.Particle` object that has been
             ionized ``n`` times relative to the original
-            `~plasmapy.atomic.Particle`.  If ``inplace`` is `False`,
+            `~plasmapy.particles.Particle`.  If ``inplace`` is `False`,
             instead return `None`.
 
         Raises
         ------
-        ~plasmapy.atomic.InvalidElementError
-            If the `~plasampy.atomic.Particle` is not an element.
+        ~plasmapy.particles.InvalidElementError
+            If the `~plasmapy.particles.Particle` is not an element.
 
-        ~plasmapy.atomic.ChargeError
-            If no charge information for the `~plasmapy.atomic.Particle`
+        ~plasmapy.particles.ChargeError
+            If no charge information for the `~plasmapy.particles.Particle`
             object is specified.
 
-        ~plasmapy.atomic.InvalidIonError
+        ~plasmapy.particles.InvalidIonError
             If there are less than ``n`` remaining bound electrons.
 
         ValueError
@@ -1511,44 +1511,44 @@ class Particle:
 
     def recombine(self, n: Integral = 1, inplace=False):
         """
-        Create a new `~plasmapy.atomic.Particle` instance corresponding
-        to the current `~plasmapy.atomic.Particle` after undergoing
+        Create a new `~plasmapy.particles.Particle` instance corresponding
+        to the current `~plasmapy.particles.Particle` after undergoing
         recombination ``n`` times.
 
         If ``inplace`` is `False` (default), then return the
-        `~plasmapy.atomic.Particle` that just underwent recombination.
+        `~plasmapy.particles.Particle` that just underwent recombination.
 
         If ``inplace`` is `True`, then replace the current
-        `~plasmapy.atomic.Particle` with the `~plasmapy.atomic.Particle`
+        `~plasmapy.particles.Particle` with the `~plasmapy.particles.Particle`
         that just underwent recombination.
 
         Parameters
         ----------
         n : positive integer
             The number of electrons to recombine into the
-            `~plasmapy.atomic.Particle` object.
+            `~plasmapy.particles.Particle` object.
 
         inplace : bool, optional
             If `True`, then replace the current
-            `~plasmapy.atomic.Particle` instance with the
-            `~plasmapy.atomic.Particle` that just underwent
+            `~plasmapy.particles.Particle` instance with the
+            `~plasmapy.particles.Particle` that just underwent
             recombination.
 
         Returns
         -------
-        particle : ~plasmapy.atomic.Particle
-            A new `~plasmapy.atomic.Particle` object that has undergone
+        particle : ~plasmapy.particles.Particle
+            A new `~plasmapy.particles.Particle` object that has undergone
             recombination ``n`` times relative to the original
-            `~plasmapy.atomic.Particle`.  If ``inplace`` is `False`,
+            `~plasmapy.particles.Particle`.  If ``inplace`` is `False`,
             instead return `None`.
 
         Raises
         ------
-        ~plasmapy.atomic.InvalidElementError
-            If the `~plasampy.atomic.Particle` is not an element.
+        ~plasmapy.particles.InvalidElementError
+            If the `~plasmapy.particles.Particle` is not an element.
 
-        ~plasmapy.atomic.ChargeError
-            If no charge information for the `~plasmapy.atomic.Particle`
+        ~plasmapy.particles.ChargeError
+            If no charge information for the `~plasmapy.particles.Particle`
             object is specified.
 
         ValueError

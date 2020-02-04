@@ -19,7 +19,7 @@ from plasmapy.tests.helper.exceptions import (
 
 from plasmapy.utils.exceptions import PlasmaPyWarning, PlasmaPyError
 
-from plasmapy.atomic import Particle
+from plasmapy.particles import Particle
 
 
 def generic_function(*args, **kwargs):

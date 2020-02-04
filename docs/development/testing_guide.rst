@@ -174,9 +174,9 @@ Pytest has certain `test discovery conventions
 that are used to collect the tests to be run.
 
 The tests for each subpackage are contained in a ``tests`` subfolder.
-For example, the tests for `~plasmapy.atomic` are located in
-``plasmapy/atomic/tests``.  Test files should begin with ``test_`` and
-generally contain the name of the module or `object` that is being
+For example, the tests for `~plasmapy.particles` are located in
+``plasmapy/particles/tests``.  Test files should begin with ``test_``
+and generally contain the name of the module or `object` that is being
 tested.
 
 The functions that are to be tested in each test file should likewise be

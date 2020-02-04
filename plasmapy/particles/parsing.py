@@ -2,11 +2,11 @@
 
 import re
 import warnings
-from typing import (Union, Dict)
+from typing import (Union, Dict, Optional)
 from numbers import Integral
 import numpy as np
 
-from plasmapy.atomic.elements import (
+from plasmapy.particles.elements import (
     _atomic_numbers_to_symbols,
     _element_names_to_symbols,
     _Elements)

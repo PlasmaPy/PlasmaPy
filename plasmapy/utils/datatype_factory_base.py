@@ -73,12 +73,15 @@ class BasicRegistrationFactory:
     """
 
     def __init__(self, default_widget_type=None,
-                 additional_validation_functions=[], registry=None):
+                 additional_validation_functions=None, registry=None):
 
         if registry is None:
             self.registry = dict()
         else:
             self.registry = registry
+
+        if additional_validation_functions is None:
+            additional_validation_functions = []
 
         self.default_widget_type = default_widget_type
 

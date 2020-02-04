@@ -24,7 +24,7 @@ import astropy.constants.si as const
 
 from astropy import units as u
 from astropy.visualization import quantity_support
-from plasmapy.atomic import Particle
+from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 from scipy.optimize import curve_fit
 
@@ -206,7 +206,7 @@ def swept_probe_analysis(probe_characteristic, probe_area: u.m ** 2, gas_argumen
         The area of the probe exposed to plasma in units convertible to m^2.
 
     gas_argument : argument to instantiate the `Particle` class.
-        `str`, `int`, or `~plasmapy.atomic.Particle`
+        `str`, `int`, or `~plasmapy.particles.Particle`
         A string representing a particle, element, isotope, or ion; an
         integer representing the atomic number of an element; or a
         `Particle` instance.
