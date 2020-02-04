@@ -2,7 +2,7 @@
 
 import re
 import warnings
-from typing import (Union, Dict, Optional)
+from typing import (Union, Dict)
 from numbers import Integral
 import numpy as np
 
@@ -11,11 +11,10 @@ from plasmapy.particles.elements import (
     _element_names_to_symbols,
     _Elements)
 
-from plasmapy.atomic.isotopes import _Isotopes
-from plasmapy.atomic.special_particles import _Particles, ParticleZoo
+from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.special_particles import _Particles, ParticleZoo
 from plasmapy.utils import roman
-from plasmapy.utils.formatting import call_string
-from plasmapy.atomic.exceptions import InvalidElementError, InvalidParticleError, AtomicWarning
+from plasmapy.particles.exceptions import InvalidElementError, InvalidParticleError, AtomicWarning
 
 
 def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):

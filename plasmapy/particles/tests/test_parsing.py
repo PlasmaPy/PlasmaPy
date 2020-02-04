@@ -11,7 +11,7 @@ from ..parsing import (
     _parse_and_check_atomic_input,
 )
 
-from plasmapy.atomic.particle_class import Particle
+from plasmapy.particles.particle_class import Particle
 
 from plasmapy.utils.formatting import call_string
 

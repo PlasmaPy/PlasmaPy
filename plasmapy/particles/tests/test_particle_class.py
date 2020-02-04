@@ -7,19 +7,11 @@ from astropy import units as u
 
 from plasmapy.utils import roman
 from astropy.constants import m_p, m_e, m_n, e, c
-<<<<<<< HEAD:plasmapy/atomic/tests/test_particle_class.py
-from plasmapy.atomic.atomic import known_isotopes
-from plasmapy.atomic.isotopes import _Isotopes
-from plasmapy.atomic.particle_class import Particle
-from plasmapy.atomic.special_particles import ParticleZoo
-=======
+
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.special_particles import ParticleZoo
-
-from plasmapy.utils import call_string
->>>>>>> 063c678fcaa79926a6de394a8000cf5076cd8fe7:plasmapy/particles/tests/test_particle_class.py
 from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 from plasmapy.utils.formatting import call_string
 
