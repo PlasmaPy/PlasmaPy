@@ -91,7 +91,7 @@ PlasmaPy's planned and existing subpackages are:
         </tr>
         <tr>
             <td>
-                plasmapy.atomic
+                plasmapy.particles
             </td>
             <td align='center'>
                 <span class="dev"></span>

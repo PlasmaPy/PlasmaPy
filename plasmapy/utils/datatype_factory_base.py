@@ -163,7 +163,7 @@ class BasicRegistrationFactory:
                 if hasattr(WidgetType, vfunc_str):
                     vfunc = getattr(WidgetType, vfunc_str)
 
-                    # check if classmethod: stackoverflow #19227g724
+                    # check if classmethod: stackoverflow #19227724
                     _classmethod = inspect.ismethod(vfunc) and vfunc.__self__ is WidgetType
 
                     if _classmethod:

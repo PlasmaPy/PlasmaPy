@@ -3,7 +3,7 @@ import pytest
 from astropy import units as u
 from astropy.tests.helper import assert_quantity_allclose
 
-import plasmapy.atomic.exceptions
+import plasmapy.particles.exceptions
 from plasmapy.formulary.braginskii import Coulomb_logarithm
 from plasmapy.formulary.collisions import (Spitzer_resistivity,
                                            fundamental_electron_collision_freq,
@@ -559,7 +559,7 @@ class Test_Coulomb_logarithm:
         Tests whether an error is raised when an invalid particle name
         is given.
         """
-        with pytest.raises(plasmapy.atomic.exceptions.InvalidParticleError):
+        with pytest.raises(plasmapy.particles.exceptions.InvalidParticleError):
             Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, ('e', 'g'))
 
     n_e = np.array([1e9, 1e9, 1e24]) * u.cm ** -3
@@ -857,7 +857,7 @@ class Test_fundamental_electron_collision_freq():
         """initializing parameters for tests """
         self.T_arr = np.array([1, 2]) * u.eV
         self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
-        self.ion_particle = 'p'
+        self.ion = 'p'
         self.coulomb_log = 10
 
     # TODO: array coulomb log
@@ -875,7 +875,7 @@ class Test_fundamental_ion_collision_freq():
         """initializing parameters for tests """
         self.T_arr = np.array([1, 2]) * u.eV
         self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
-        self.ion_particle = 'p'
+        self.ion = 'p'
         self.coulomb_log = 10
 
     # TODO: array coulomb log

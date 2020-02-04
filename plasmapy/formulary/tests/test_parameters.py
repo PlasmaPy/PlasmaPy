@@ -7,7 +7,7 @@ from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
-from plasmapy.atomic.exceptions import InvalidParticleError
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 from astropy.constants import c, m_p, m_e, e, mu0
 

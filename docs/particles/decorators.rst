@@ -3,34 +3,34 @@
 Decorators
 **********
 
-Passing `~plasmapy.atomic.Particle` Instances to Functions and Methods
-======================================================================
+Passing `~plasmapy.particles.Particle` Instances to Functions and Methods
+=========================================================================
 
 When calculating plasma parameters, we very frequently need to access
 the properties of the particles that make up that plasma. The
-`~plasmapy.atomic.particle_input` decorator allows functions and
+`~plasmapy.particles.particle_input` decorator allows functions and
 methods to easily the properties of a particle.
 
-The `~plasmapy.atomic.particle_input` decorator takes valid
+The `~plasmapy.particles.particle_input` decorator takes valid
 representations of particles given in arguments to functions and passes
-through the corresponding instance of the `~plasmapy.atomic.Particle`
-class.  The arguments must be annotated with `~plasmapy.atomic.Particle`
-so that the decorator knows to create the `~plasmapy.atomic.Particle`
+through the corresponding instance of the `~plasmapy.particles.Particle`
+class.  The arguments must be annotated with `~plasmapy.particles.Particle`
+so that the decorator knows to create the `~plasmapy.particles.Particle`
 instance.  The function can then access particle properties by using
-`~plasmapy.atomic.Particle` attributes.  This decorator will raise an
+`~plasmapy.particles.Particle` attributes.  This decorator will raise an
 `~plasmapy.utils.InvalidParticleError` if the input does not correspond
 to a valid particle.
 
 .. code-block:: python
 
-  from plasmapy.atomic import Particle, particle_input
+  from plasmapy.particles import Particle, particle_input
 
   @particle_input
   def particle_mass(particle: Particle):
       return particle.mass
 
 If only one positional or keyword argument is annotated with
-`~plasmapy.atomic.Particle`, then the keywords ``mass_numb`` and ``Z``
+`~plasmapy.particles.Particle`, then the keywords ``mass_numb`` and ``Z``
 may be used when the decorated function is called.
 
 .. code-block:: python
@@ -41,7 +41,7 @@ may be used when the decorated function is called.
 
 The above example includes optional type hint annotations for ``Z`` and
 ``mass_numb`` and the returned value.  The
-`~plasmapy.atomic.particle_input` decorator may be used in methods in
+`~plasmapy.particles.particle_input` decorator may be used in methods in
 classes as well:
 
 .. code-block:: python
@@ -52,11 +52,11 @@ classes as well:
           return particle.particle
 
 On occasion it is necessary for a function to accept only certain
-categories of particles.  The `~plasmapy.atomic.particle_input`
+categories of particles.  The `~plasmapy.particles.particle_input`
 decorator enables several ways to allow this.
 
 If an annotated keyword is named ``element``, ``isotope``, or ``ion``;
-then `~plasmapy.atomic.particle_input` will raise an
+then `~plasmapy.particles.particle_input` will raise an
 `~plasmapy.utils.InvalidElementError`,
 `~plasmapy.utils.InvalidIsotopeError`, or
 `~plasmapy.utils.InvalidIonError` if the particle is not associated with
@@ -79,7 +79,7 @@ an element, isotope, or ion; respectively.
 The keywords ``require``, ``any_of``, and ``exclude`` to the decorator
 allow further customization of the particle categories allowed as
 inputs.  These keywords are used as in
-`~plasmapy.atomic.Particle.is_category`.
+`~plasmapy.particles.Particle.is_category`.
 
 .. code-block:: python
 

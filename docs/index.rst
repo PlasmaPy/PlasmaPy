@@ -122,15 +122,15 @@ Data Structures and Simulation
     plasma/index
     simulation/particletracker
 
-.. _toplevel-physical-data:
+.. _toplevel-particle-data:
 
-Physical Data
+Particle Data
 -------------
 
 .. toctree::
     :maxdepth: 1
 
-    atomic/index
+    particles/index
 
 .. _toplevel-utilities:
 

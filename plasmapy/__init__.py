@@ -12,12 +12,12 @@ PlasmaPy provides the following functionality:
 
 Subpackages
 -----------
-Each of these subpackages (except for `formulary` and `atomic`) requires an
+Each of these subpackages (except for `formulary` and `particles` requires an
 explicit import, for example, via ``import plasmapy.diagnostics``.
 
 ::
 
- atomic                            --- Database for atoms, isotopes, ions...
+ particles                         --- Database for atoms, isotopes, ions...
  classes                           --- (WIP) classes used in multiple places
  data                              --- Data used for testing and examples
  diagnostics                       --- Experimental research data analysis
@@ -41,7 +41,7 @@ Utility tools
 from .version import __version__
 
 from . import formulary
-from . import atomic
+from . import particles
 # ----------------------------------------------------------------------------
 
 # Enforce Python version check during package import.
