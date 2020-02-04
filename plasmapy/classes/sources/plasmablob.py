@@ -8,7 +8,7 @@ import astropy.units as u
 from plasmapy.formulary.parameters import _grab_charge
 from plasmapy.formulary.dimensionless import quantum_theta
 from plasmapy.formulary.collisions import coupling_parameter
-from plasmapy.atomic import particle_mass
+from plasmapy.particles import particle_mass
 from plasmapy.utils import CouplingWarning
 from plasmapy.utils import formatting
 from plasmapy.classes import GenericPlasma
