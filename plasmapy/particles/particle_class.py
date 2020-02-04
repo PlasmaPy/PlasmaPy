@@ -35,7 +35,10 @@ from plasmapy.particles.special_particles import (
     _antiparticles,
 )
 
+from abc import ABC, abstractmethod
+
 __all__ = [
+    'AbstractParticle',
     'Particle',
 ]
 
@@ -105,7 +108,23 @@ def _category_errmsg(particle, category: str) -> str:
     return errmsg
 
 
-class Particle:
+class AbstractParticle(ABC):
+    """
+    An abstract base class that defines the interface for particles.
+    """
+
+    @property
+    @abstractmethod
+    def mass(self) -> Union[u.Quantity, Real]:
+        pass
+
+    @property
+    @abstractmethod
+    def charge(self) -> Union[u.Quantity, Real]:
+        pass
+
+
+class Particle(AbstractParticle):
     """
     A class for an individual particle or antiparticle.
 
@@ -270,7 +289,6 @@ class Particle:
     ``'noble gas'``, ``'nonmetal'``, ``'positron'``,
     ``'post-transition metal'``, ``'proton'``, ``'stable'``,
     ``'transition metal'``, ``'uncharged'``, and ``'unstable'``.
-
     """
 
     def __init__(
