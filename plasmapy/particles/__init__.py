@@ -1,5 +1,5 @@
 """
-The `plasmapy.atomic` subpackage provides access to information about
+The `plasmapy.particles` subpackage provides access to information about
 atoms, isotopes, ions, and other particles.
 """
 

@@ -4,7 +4,7 @@ import astropy.units as u
 
 from plasmapy.classes.sources import plasma3d, plasmablob
 from plasmapy.formulary import magnetostatics
-from plasmapy.atomic.exceptions import InvalidParticleError
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import CouplingWarning
 
 

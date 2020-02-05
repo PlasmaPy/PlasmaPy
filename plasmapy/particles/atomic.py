@@ -16,13 +16,13 @@ import numpy as np
 import astropy.units as u
 import astropy.constants as const
 
-from plasmapy.atomic.elements import _Elements
-from plasmapy.atomic.isotopes import _Isotopes
-from plasmapy.atomic.particle_class import Particle
-from plasmapy.atomic.particle_input import particle_input
-from plasmapy.atomic.symbols import atomic_symbol
+from plasmapy.particles.elements import _Elements
+from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_input import particle_input
+from plasmapy.particles.symbols import atomic_symbol
 
-from plasmapy.atomic.exceptions import (
+from plasmapy.particles.exceptions import (
     MissingAtomicDataError,
     InvalidIsotopeError,
     InvalidElementError,
@@ -57,9 +57,9 @@ def atomic_number(element: Particle) -> Integral:
 
     Parameters
     ----------
-    element: `str` or `~plasmapy.atomic.Particle`
+    element: `str` or `~plasmapy.particles.Particle`
         A string representing an element, isotope, or ion; or an
-        instance of the `~plasmapy.atomic.Particle` class.
+        instance of the `~plasmapy.particles.Particle` class.
 
     Returns
     -------
@@ -79,7 +79,7 @@ def atomic_number(element: Particle) -> Integral:
 
     See Also
     --------
-    `~plasmapy.atomic.mass_number` : returns the mass number (the total
+    `~plasmapy.particles.mass_number` : returns the mass number (the total
         number of protons and neutrons) of an isotope.
 
     Examples
@@ -104,9 +104,9 @@ def mass_number(isotope: Particle) -> Integral:
 
     Parameters
     ----------
-    isotope : `str` or `~plasmapy.atomic.Particle`
+    isotope : `str` or `~plasmapy.particles.Particle`
         A string representing an isotope or a neutron; or an instance of
-        the `plasmapy.atomic.Particle` class.
+        the `plasmapy.particles.Particle` class.
 
     Returns
     -------
@@ -127,7 +127,7 @@ def mass_number(isotope: Particle) -> Integral:
 
     See Also
     --------
-    `~plasmapy.atomic.atomic_number` : returns the number of protons in
+    `~plasmapy.particles.atomic_number` : returns the number of protons in
         an isotope or element
 
     Examples
@@ -153,7 +153,7 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
     Parameters
     ----------
-    element: `str`, `int`, or `~plasmapy.atomic.Particle`
+    element: `str`, `int`, or `~plasmapy.particles.Particle`
         A string representing an element or an integer representing an
         atomic number, or an instance of the Particle class.
 
@@ -217,7 +217,7 @@ def particle_mass(
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.atomic.Particle`
+    particle: `str`, `int`, or `~plasmapy.particles.Particle`
         A string representing an element, isotope, ion, or special
         particle; an integer representing an atomic number; or an
         instance of the Particle class.
@@ -247,7 +247,7 @@ def particle_mass(
 
     See Also
     --------
-    ~plasmapy.atomic.standard_atomic_weight
+    ~plasmapy.particles.standard_atomic_weight
 
     Notes
     -----
@@ -331,14 +331,14 @@ def integer_charge(particle: Particle) -> Integral:
 
     Raises
     ------
-    `~plasmapy.atomic.InvalidParticleError`
+    `~plasmapy.particles.InvalidParticleError`
         If the argument does not correspond to a valid particle
         or contradictory information is provided.
 
-    `~plasmapy.atomic.ChargeError`
+    `~plasmapy.particles.ChargeError`
         If charge information for the particle is not available.
 
-    `~plasmapy.atomic.AtomicWarning`
+    `~plasmapy.particles.AtomicWarning`
         If the input represents an ion with an integer charge that is
         less than or equal to ``-3``, which is unlikely to occur in
         nature.
@@ -433,7 +433,7 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.atomic.Particle`
+    particle: `int`, `str`, or `~plasmapy.particles.Particle`
         A string representing an isotope or particle, or an integer
         representing an atomic number.
 
@@ -487,7 +487,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.atomic.Particle`
+    particle: `int`, `str`, or `~plasmapy.particles.Particle`
         A string representing an isotope or particle, an integer
         representing an atomic number, or an instance of the Particle
         class.
@@ -572,10 +572,10 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
 
     See Also
     --------
-    `~plasmapy.atomic.common_isotopes` : returns isotopes with non-zero
+    `~plasmapy.particles.common_isotopes` : returns isotopes with non-zero
         isotopic abundances.
 
-    `~plasmapy.atomic.stable_isotopes` : returns isotopes that are
+    `~plasmapy.particles.stable_isotopes` : returns isotopes that are
         stable against radioactive decay.
 
     Examples
@@ -789,10 +789,10 @@ def stable_isotopes(argument: Union[str, Integral] = None,
 
     See Also
     --------
-    `~plasmapy.atomic.known_isotopes` : returns a list of isotopes that
+    `~plasmapy.particles.known_isotopes` : returns a list of isotopes that
         have been discovered
 
-    `~plasmapy.atomic.common_isotopes` : returns isotopes with non-zero
+    `~plasmapy.particles.common_isotopes` : returns isotopes with non-zero
         isotopic abundances
 
     Examples
@@ -848,11 +848,11 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     Parameters
     ----------
-    test_particle, target_particle : `str`, `int`, `~plasmapy.atomic.Particle`,
+    test_particle, target_particle : `str`, `int`, `~plasmapy.particles.Particle`,
     `~astropy.units.Quantity`, or `~astropy.constants.Constant`
 
         The test particle as represented by a string, an integer
-        representing atomic number, a `~plasmapy.atomic.Particle`
+        representing atomic number, a `~plasmapy.particles.Particle`
         object, or a `~astropy.units.Quantity` or
         `~astropy.constants.Constant` with units of mass.
 
@@ -875,7 +875,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     `TypeError`
         If either argument is not a `str`, `int`,
-        `~plasmapy.atomic.Particle`, `~astropy.units.Quantity`, or
+        `~plasmapy.particles.Particle`, `~astropy.units.Quantity`, or
         `~astropy.constants.Constant`.
 
     Example
@@ -940,10 +940,10 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
 
     See Also
     --------
-    `~plasmapy.atomic.periodic_table_group` : returns periodic table
+    `~plasmapy.particles.periodic_table_group` : returns periodic table
         group of element.
 
-    `~plasmapy.atomic.periodic_table_block` : returns periodic table
+    `~plasmapy.particles.periodic_table_block` : returns periodic table
         block of element.
 
     Examples
@@ -992,13 +992,13 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
 
     See Also
     --------
-    `~plasmapy.atomic.periodic_table_period` : returns periodic table
+    `~plasmapy.particles.periodic_table_period` : returns periodic table
         period of element.
 
-    `~plasmapy.atomic.periodic_table_block` : returns periodic table
+    `~plasmapy.particles.periodic_table_block` : returns periodic table
         block of element.
 
-    `~plasmapy.atomic.periodic_table_category` : returns periodic table
+    `~plasmapy.particles.periodic_table_category` : returns periodic table
         category of element.
 
     Examples
@@ -1049,13 +1049,13 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
 
     See Also
     --------
-    `~plasmapy.atomic.periodic_table_period` : returns periodic table
+    `~plasmapy.particles.periodic_table_period` : returns periodic table
         period of element.
 
-    `~plasmapy.atomic.periodic_table_group` : returns periodic table
+    `~plasmapy.particles.periodic_table_group` : returns periodic table
         group of element.
 
-    `~plasmapy.atomic.periodic_table_category` : returns periodic table
+    `~plasmapy.particles.periodic_table_category` : returns periodic table
         category of element.
 
     Examples
@@ -1106,13 +1106,13 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
 
     See Also
     --------
-    `~plasmapy.atomic.periodic_table_period` : returns periodic table
+    `~plasmapy.particles.periodic_table_period` : returns periodic table
         period of element.
 
-    `~plasmapy.atomic.periodic_table_group` : returns periodic table
+    `~plasmapy.particles.periodic_table_group` : returns periodic table
         group of element.
 
-    `~plasmapy.atomic.periodic_table_block` : returns periodic table
+    `~plasmapy.particles.periodic_table_block` : returns periodic table
         block of element.
 
     Examples

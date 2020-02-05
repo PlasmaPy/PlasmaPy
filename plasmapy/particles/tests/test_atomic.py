@@ -38,7 +38,7 @@ from ..nuclear import (
 
 from plasmapy.utils.pytest_helpers import run_test
 
-from plasmapy.atomic.exceptions import (
+from plasmapy.particles.exceptions import (
     AtomicError,
     MissingAtomicDataError,
     ChargeError,

@@ -9,9 +9,9 @@ import numpy as np
 
 from astropy import units as u
 from numbers import (Real, Integral)
-from plasmapy.atomic import (atomic_number, Particle, particle_symbol, IonizationState,
-                             State)
-from plasmapy.atomic.exceptions import (AtomicError, ChargeError, InvalidParticleError)
+from plasmapy.particles import (atomic_number, Particle, particle_symbol, IonizationState,
+                                State)
+from plasmapy.particles.exceptions import (AtomicError, ChargeError, InvalidParticleError)
 from plasmapy.utils.decorators import validate_quantities
 from typing import (Dict, List, Optional, Tuple, Union)
 
@@ -25,7 +25,7 @@ class IonizationStates:
     ----------
     inputs: `list`, `tuple`, or `dict`
         A `list` or `tuple` of elements or isotopes (if ``T_e`` is
-        provided); a `list` of `~plasmapy.atomic.IonizationState`
+        provided); a `list` of `~plasmapy.particles.IonizationState`
         instances; a `dict` with elements or isotopes as keys and
         a `~numpy.ndarray` of ionic fractions as the values; or a `dict`
         with elements or isotopes as keys and `~astropy.units.Quantity`
@@ -60,12 +60,12 @@ class IonizationStates:
     Raises
     ------
     AtomicError
-        If `~plasmapy.atomic.IonizationStates` cannot be instantiated.
+        If `~plasmapy.particles.IonizationStates` cannot be instantiated.
 
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.atomic import IonizationStates
+    >>> from plasmapy.particles import IonizationStates
     >>> states = IonizationStates(
     ...     {'H': [0.5, 0.5], 'He': [0.95, 0.05, 0]},
     ...     T_e = 1.2e4 * u.K,
@@ -106,7 +106,7 @@ class IonizationStates:
     the total element density, then the ionic fractions will be set
     proportionately.
 
-    When making comparisons between `~plasmapy.atomic.IonizationStates`
+    When making comparisons between `~plasmapy.particles.IonizationStates`
     instances, `~numpy.nan` values are treated as equal.  Equality tests
     are performed to within a tolerance of ``tol``.
 
@@ -306,7 +306,7 @@ class IonizationStates:
 
     def __iter__(self):
         """
-        Prepare an `~plasmapy.atomic.IonizationStates` instance for
+        Prepare an `~plasmapy.particles.IonizationStates` instance for
         iteration.
         """
         self._element_index = 0
@@ -417,11 +417,11 @@ class IonizationStates:
         Notes
         -----
         The ionic fractions are initialized during instantiation of
-        `~plasmapy.atomic.IonizationStates`.  After this, the only way
+        `~plasmapy.particles.IonizationStates`.  After this, the only way
         to reset the ionic fractions via the ``ionic_fractions``
         attribute is via a `dict` with elements or isotopes that are a
         superset of the previous elements or isotopes.  However, you may
-        use item assignment of the `~plasmapy.atomic.IonizationState`
+        use item assignment of the `~plasmapy.particles.IonizationState`
         instance to assign new ionic fractions one element or isotope
         at a time.
 
@@ -844,7 +844,7 @@ class IonizationStates:
     def info(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information for an
-        `~plasmapy.atomic.IonizationStates` instance.
+        `~plasmapy.particles.IonizationStates` instance.
 
         Parameters
         ----------
