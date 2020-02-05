@@ -136,8 +136,8 @@ import warnings
 
 from astropy import units as u
 from astropy.constants.si import (e, m_e, k_B)
-from plasmapy import (atomic, utils)
-from plasmapy.atomic.atomic import _is_electron
+from plasmapy import (particles, utils)
+from plasmapy.particles.atomic import _is_electron
 from plasmapy.formulary.parameters import (Hall_parameter, _grab_charge)
 from plasmapy.formulary.collisions import (fundamental_electron_collision_freq,
                                            fundamental_ion_collision_freq,
@@ -172,7 +172,7 @@ class ClassicalTransport:
     n_i : ~astropy.units.Quantity
         The ion number density in units convertible to per cubic meter.
 
-    ion_particle : string
+    ion : string
         Representation of the ion species (e.g., 'p' for protons,
         'e' for electrons, 'D+' for deuterium, or 'He-4 +1' for singly
         ionized helium-4). If no charge state information is provided,
@@ -305,7 +305,7 @@ class ClassicalTransport:
                  n_e: u.m**-3,
                  T_i: u.K,
                  n_i: u.m**-3,
-                 ion_particle,
+                 ion,
                  m_i: u.kg = None,
                  Z=None,
                  B: u.T = 0.0 * u.T,
@@ -353,19 +353,19 @@ class ClassicalTransport:
         # get ion mass and charge state
         if m_i is None:
             try:
-                self.m_i = atomic.particle_mass(ion_particle)
+                self.m_i = particles.particle_mass(ion)
             except Exception:
                 raise ValueError(f"Unable to find mass of particle: "
-                                 f"{ion_particle} in ClassicalTransport")
+                                 f"{ion} in ClassicalTransport")
         else:
             self.m_i = m_i
-        self.Z = _grab_charge(ion_particle, Z)
+        self.Z = _grab_charge(ion, Z)
         if self.Z < 0:
             raise ValueError("Z is not allowed to be negative!")  # TODO remove?
 
         # decide on the particle string for the electrons
         self.e_particle = 'e'
-        self.ion_particle = ion_particle
+        self.ion = ion
 
         # save other arguments
         self.B = B
@@ -379,7 +379,7 @@ class ClassicalTransport:
             self.coulomb_log_ei = Coulomb_logarithm(T_e,
                                                     n_e,
                                                     (self.e_particle,
-                                                     self.ion_particle),
+                                                     self.ion),
                                                     V_ei,
                                                     method=coulomb_log_method)
 
@@ -397,8 +397,8 @@ class ClassicalTransport:
         else:
             self.coulomb_log_ii = Coulomb_logarithm(T_i,
                                                     n_e,  # this is not a typo!
-                                                    (self.ion_particle,
-                                                     self.ion_particle),
+                                                    (self.ion,
+                                                     self.ion),
                                                     V_ii,
                                                     method=coulomb_log_method)
 
@@ -418,7 +418,7 @@ class ClassicalTransport:
             self.hall_e = Hall_parameter(n_e,
                                          T_e,
                                          B,
-                                         self.ion_particle,
+                                         self.ion,
                                          self.e_particle,
                                          coulomb_log_ei,
                                          V_ei,
@@ -429,8 +429,8 @@ class ClassicalTransport:
             self.hall_i = Hall_parameter(n_i,
                                          T_i,
                                          B,
-                                         self.ion_particle,
-                                         self.ion_particle,
+                                         self.ion,
+                                         self.ion,
                                          coulomb_log_ii,
                                          V_ii,
                                          coulomb_log_method=coulomb_log_method)
@@ -472,7 +472,7 @@ class ClassicalTransport:
                                         self.field_orientation)
         tau_e = 1 / fundamental_electron_collision_freq(self.T_e,
                                                         self.n_e,
-                                                        self.ion_particle,
+                                                        self.ion,
                                                         self.coulomb_log_ei,
                                                         self.V_ei)
 
@@ -528,14 +528,14 @@ class ClassicalTransport:
         """
         kappa_hat = _nondim_thermal_conductivity(self.hall_i,
                                                  self.Z,
-                                                 self.ion_particle,
+                                                 self.ion,
                                                  self.model,
                                                  self.field_orientation,
                                                  self.mu,
                                                  self.theta)
         tau_i = 1 / fundamental_ion_collision_freq(self.T_i,
                                                    self.n_i,
-                                                   self.ion_particle,
+                                                   self.ion,
                                                    self.coulomb_log_ii,
                                                    self.V_ii)
         kappa = kappa_hat * (self.n_i * k_B ** 2 * self.T_i * tau_i / self.m_i)
@@ -588,7 +588,7 @@ class ClassicalTransport:
                                                  self.theta)
         tau_e = 1 / fundamental_electron_collision_freq(self.T_e,
                                                         self.n_e,
-                                                        self.ion_particle,
+                                                        self.ion,
                                                         self.coulomb_log_ei,
                                                         self.V_ei)
         kappa = kappa_hat * (self.n_e * k_B ** 2 * self.T_e * tau_e / m_e)
@@ -619,14 +619,14 @@ class ClassicalTransport:
         """
         eta_hat = _nondim_viscosity(self.hall_i,
                                     self.Z,
-                                    self.ion_particle,
+                                    self.ion,
                                     self.model,
                                     self.field_orientation,
                                     self.mu,
                                     self.theta)
         tau_i = 1 / fundamental_ion_collision_freq(self.T_i,
                                                    self.n_i,
-                                                   self.ion_particle,
+                                                   self.ion,
                                                    self.coulomb_log_ii,
                                                    self.V_ii)
         common_factor = self.n_i * k_B * self.T_i * tau_i
@@ -671,7 +671,7 @@ class ClassicalTransport:
                                     self.theta)
         tau_e = 1 / fundamental_electron_collision_freq(self.T_e,
                                                         self.n_e,
-                                                        self.ion_particle,
+                                                        self.ion,
                                                         self.coulomb_log_ei,
                                                         self.V_ei)
         common_factor = (self.n_e * k_B * self.T_e * tau_e)
@@ -722,7 +722,7 @@ def resistivity(T_e,
                 n_e,
                 T_i,
                 n_i,
-                ion_particle,
+                ion,
                 m_i=None,
                 Z=None,
                 B: u.T = 0.0 * u.T,
@@ -754,7 +754,7 @@ def resistivity(T_e,
     astropy.units.quantity.Quantity
 
     """
-    ct = ClassicalTransport(T_e, n_e, T_i, n_i, ion_particle, m_i,
+    ct = ClassicalTransport(T_e, n_e, T_i, n_i, ion, m_i,
                             Z=Z, B=B, model=model,
                             field_orientation=field_orientation,
                             mu=mu, theta=theta,
@@ -767,7 +767,7 @@ def thermoelectric_conductivity(T_e,
                                 n_e,
                                 T_i,
                                 n_i,
-                                ion_particle,
+                                ion,
                                 m_i=None,
                                 Z=None,
                                 B: u.T = 0.0 * u.T,
@@ -781,7 +781,7 @@ def thermoelectric_conductivity(T_e,
                             n_e,
                             T_i,
                             n_i,
-                            ion_particle,
+                            ion,
                             m_i,
                             Z=Z,
                             B=B,
@@ -798,7 +798,7 @@ def ion_thermal_conductivity(T_e,
                              n_e,
                              T_i,
                              n_i,
-                             ion_particle,
+                             ion,
                              m_i=None,
                              Z=None,
                              B: u.T = 0.0 * u.T,
@@ -834,7 +834,7 @@ def ion_thermal_conductivity(T_e,
                             n_e,
                             T_i,
                             n_i,
-                            ion_particle,
+                            ion,
                             m_i,
                             Z=Z,
                             B=B,
@@ -851,7 +851,7 @@ def electron_thermal_conductivity(T_e,
                                   n_e,
                                   T_i,
                                   n_i,
-                                  ion_particle,
+                                  ion,
                                   m_i=None,
                                   Z=None,
                                   B: u.T = 0.0 * u.T,
@@ -899,7 +899,7 @@ def electron_thermal_conductivity(T_e,
                             n_e,
                             T_i,
                             n_i,
-                            ion_particle,
+                            ion,
                             m_i,
                             Z=Z,
                             B=B,
@@ -916,7 +916,7 @@ def ion_viscosity(T_e,
                   n_e,
                   T_i,
                   n_i,
-                  ion_particle,
+                  ion,
                   m_i=None,
                   Z=None,
                   B: u.T = 0.0 * u.T,
@@ -949,7 +949,7 @@ def ion_viscosity(T_e,
                             n_e,
                             T_i,
                             n_i,
-                            ion_particle,
+                            ion,
                             m_i,
                             Z=Z,
                             B=B,
@@ -966,7 +966,7 @@ def electron_viscosity(T_e,
                        n_e,
                        T_i,
                        n_i,
-                       ion_particle,
+                       ion,
                        m_i=None,
                        Z=None,
                        B: u.T = 0.0 * u.T,
@@ -999,7 +999,7 @@ def electron_viscosity(T_e,
                             n_e,
                             T_i,
                             n_i,
-                            ion_particle,
+                            ion,
                             m_i,
                             Z=Z,
                             B=B,

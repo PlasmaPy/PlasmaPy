@@ -7,7 +7,7 @@ from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.utils.exceptions import RelativityWarning, RelativityError
 from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
-from plasmapy.atomic.exceptions import InvalidParticleError
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 from astropy.constants import c, m_p, m_e, e, mu0
 
@@ -463,8 +463,10 @@ class Test_kappa_thermal_speed(object):
                           atol=0.0), errStr
         return
 
-    def test_handle_nparrays(self, kwargs={"kappa": 2}):
+    def test_handle_nparrays(self, kwargs=None):
         """Test for ability to handle numpy array quantities"""
+        if kwargs is None:
+            kwargs = {"kappa": 2}
         assert_can_handle_nparray(kappa_thermal_speed, kwargs=kwargs)
 
 

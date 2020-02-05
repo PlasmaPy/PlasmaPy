@@ -36,7 +36,7 @@ def atomic_symbol(element: Particle) -> str:
 
     Parameters
     ----------
-    element: `str`, `int`, or `~plasmapy.atomic.Particle`
+    element: `str`, `int`, or `~plasmapy.particles.Particle`
         A `str` representing an element, isotope, or ion; or an
         `int` or `str` representing an atomic number.
 
@@ -104,7 +104,7 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 
     Parameters
     ----------
-    isotope: `str`, `int`, or `~plasmapy.atomic.Particle`
+    isotope: `str`, `int`, or `~plasmapy.particles.Particle`
         A `str` representing an element, isotope, or ion or an
         `int` representing an atomic number
 
@@ -166,7 +166,7 @@ def ionic_symbol(
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.atomic.Particle`
+    particle: `int`, `str`, or `~plasmapy.particles.Particle`
         A `str` representing an element, isotope, or ion; or an
         `int` representing an atomic number.
 
@@ -194,7 +194,7 @@ def ionic_symbol(
 
     `TypeError`
         If `particle` is not a `str`, `int`, or
-        `~plasmapy.atomic.Particle`; or if either of ``mass_numb`` or
+        `~plasmapy.particles.Particle`; or if either of ``mass_numb`` or
         ``Z`` is not an `int` or `str` representing an integer.
 
     Warns
@@ -234,7 +234,7 @@ def particle_symbol(
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.atomic.Particle`
+    particle: `int`, `str`, or `~plasmapy.particles.Particle`
         A `str` representing a particle, element, isotope, or ion or an
         `int` representing an atomic number
 
@@ -259,7 +259,7 @@ def particle_symbol(
         contradictory information is provided.
 
     `TypeError`
-        If ion is not a `str`, `int`, or `~plasmapy.atomic.Particle`; or
+        If ion is not a `str`, `int`, or `~plasmapy.particles.Particle`; or
         if either of ``mass_numb`` or ``Z`` is not an `int` or a `str`
         representing an integer.
 
@@ -294,7 +294,7 @@ def element_name(element: Particle) -> str:
 
     Parameters
     ----------
-    argument : `str`, `int`, or `~plasmapy.atomic.Particle`
+    argument : `str`, `int`, or `~plasmapy.particles.Particle`
         A `str` representing an element, isotope, or ion or an
         `int` representing an atomic number
 

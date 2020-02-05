@@ -6,14 +6,14 @@ information for special particles.
 from typing import Set, Dict
 from astropy import units as u, constants as const
 import numpy as np
-from plasmapy.atomic.elements import _PeriodicTable
+from plasmapy.particles.elements import _PeriodicTable
 
 
 class _ParticleZooClass:
     """
     Create an object with taxonomy information for special particles.
 
-    The `~plasmapy.atomic.special_particles._ParticleZooClass._taxonomy_dict`
+    The `~plasmapy.particles.special_particles._ParticleZooClass._taxonomy_dict`
     attribute contains the name of each classification (e.g.,
     ``'lepton'``, ``'baryon'``, ``'matter'``, etc.) as the keys and a
     set of particle symbol strings of the particles belonging to that

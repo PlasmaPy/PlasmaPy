@@ -4,10 +4,10 @@ import re
 from typing import List, Union, Optional
 from astropy import units as u
 
-from plasmapy.atomic.exceptions import AtomicError, InvalidParticleError
+from plasmapy.particles.exceptions import AtomicError, InvalidParticleError
 
-from plasmapy.atomic.particle_class import Particle
-from plasmapy.atomic.particle_input import particle_input
+from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_input import particle_input
 
 __all__ = [
     "nuclear_binding_energy",
@@ -23,7 +23,7 @@ def nuclear_binding_energy(particle: Particle, mass_numb: Optional[int] = None) 
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.atomic.Particle`
+    particle: `str`, `int`, or `~plasmapy.particles.Particle`
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
@@ -50,10 +50,10 @@ def nuclear_binding_energy(particle: Particle, mass_numb: Optional[int] = None) 
 
     See Also
     --------
-    `~plasmapy.atomic.nuclear_reaction_energy` : Return the change in
+    `~plasmapy.particles.nuclear_reaction_energy` : Return the change in
         binding energy during nuclear fusion or fission reactions.
 
-    `~plasmapy.atomic.mass_energy` : Return the mass energy of a
+    `~plasmapy.particles.mass_energy` : Return the mass energy of a
         nucleon or particle.
 
     Examples
@@ -83,7 +83,7 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.atomic.Particle`
+    particle: `str`, `int`, or `~plasmapy.particles.Particle`
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
@@ -157,7 +157,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     See Also
     --------
-    `~plasmapy.atomic.nuclear_binding_energy` : finds the binding energy
+    `~plasmapy.particles.nuclear_binding_energy` : finds the binding energy
         of an isotope
 
     Notes

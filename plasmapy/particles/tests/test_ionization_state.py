@@ -4,10 +4,10 @@ import collections
 import numpy as np
 import astropy.units as u
 
-from plasmapy.atomic.ionization_state import IonizationState
+from plasmapy.particles.ionization_state import IonizationState
 from plasmapy.utils.pytest_helpers import run_test
-from plasmapy.atomic.exceptions import AtomicError, InvalidIsotopeError
-from plasmapy.atomic import (
+from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
+from plasmapy.particles import (
     atomic_number,
     atomic_symbol,
     particle_symbol,

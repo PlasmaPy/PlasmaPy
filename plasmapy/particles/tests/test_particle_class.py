@@ -7,15 +7,15 @@ from astropy import units as u
 
 from plasmapy.utils import roman
 from astropy.constants import m_p, m_e, m_n, e, c
-from plasmapy.atomic.atomic import known_isotopes
-from plasmapy.atomic.isotopes import _Isotopes
-from plasmapy.atomic.particle_class import Particle
-from plasmapy.atomic.special_particles import ParticleZoo
+from plasmapy.particles.atomic import known_isotopes
+from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.special_particles import ParticleZoo
 
 from plasmapy.utils import call_string
 from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
-from plasmapy.atomic.exceptions import (
+from plasmapy.particles.exceptions import (
     AtomicError,
     MissingAtomicDataError,
     ChargeError,
@@ -412,7 +412,7 @@ test_Particle_table = [
 @pytest.mark.parametrize("arg, kwargs, expected_dict", test_Particle_table)
 def test_Particle_class(arg, kwargs, expected_dict):
     """
-    Test that `~plasmapy.atomic.Particle` objects for different
+    Test that `~plasmapy.particles.Particle` objects for different
     subatomic particles, elements, isotopes, and ions return the
     expected properties.  Provide a detailed error message that lists
     all of the inconsistencies with the expected results.
@@ -529,7 +529,7 @@ test_Particle_error_table = [
 def test_Particle_errors(arg, kwargs, attribute, exception):
     """
     Test that the appropriate exceptions are raised during the creation
-    and use of a `~plasmapy.atomic.Particle` object.
+    and use of a `~plasmapy.particles.Particle` object.
     """
     with pytest.raises(exception):
         exec(f'Particle(arg, **kwargs){attribute}')
@@ -552,7 +552,7 @@ test_Particle_warning_table = [
 def test_Particle_warnings(arg, kwargs, attribute, warning):
     """
     Test that the appropriate warnings are issued during the creation
-    and use of a `~plasmapy.atomic.Particle` object.
+    and use of a `~plasmapy.particles.Particle` object.
     """
     with pytest.warns(warning) as record:
         exec(f'Particle(arg, **kwargs){attribute}')
