@@ -6,7 +6,7 @@ atoms, isotopes, ions, and other particles.
 from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.particles.particle_input import particle_input
 from plasmapy.particles.particle_class import (
-    Particle, AbstractParticle, DimensionlessParticle,
+    Particle, AbstractParticle, DimensionlessParticle, CustomParticle,
 )
 
 from plasmapy.particles.symbols import (

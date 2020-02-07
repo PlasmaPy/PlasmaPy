@@ -40,6 +40,8 @@ from abc import ABC, abstractmethod
 __all__ = [
     'AbstractParticle',
     'Particle',
+    'DimensionlessParticle',
+    'CustomParticle',
 ]
 
 _classification_categories = {
@@ -1617,13 +1619,9 @@ class DimensionlessParticle(AbstractParticle):
     charge : real number, keyword-only, optional
         The electric charge of the dimensionless particle.
 
-    rms_charge : real number, keyword-only, optional
-        The root mean square charge electric charge of the dimensionless
-        particle.
-
     Notes
     -----
-    The charge and mass default to `~np.nan` when not specified.
+    The charge and mass default to `~numpy.nan` when not specified.
 
     Examples
     --------
@@ -1633,7 +1631,6 @@ class DimensionlessParticle(AbstractParticle):
     1.0
     >>> dimensionless_particle.charge
     -1.0
-
     """
 
     def __init__(self, *, mass: Real = None, charge: Real = None, rms_charge: Real = None):
@@ -1660,7 +1657,7 @@ class DimensionlessParticle(AbstractParticle):
         return self._charge
 
     @mass.setter
-    def mass(self, m: Optional[Real, u.Quantity]):
+    def mass(self, m: Optional[Union[Real, u.Quantity]]):
 
         if isinstance(m, Real) and m >= 0:
             self._mass = m
@@ -1675,7 +1672,7 @@ class DimensionlessParticle(AbstractParticle):
             )
 
     @charge.setter
-    def charge(self, q: Optional[Real, u.Quantity]):
+    def charge(self, q: Optional[Union[Real, u.Quantity]]):
 
         if isinstance(q, Real):
             self._charge = q
@@ -1689,3 +1686,104 @@ class DimensionlessParticle(AbstractParticle):
             )
 
     # TODO: Add a root mean square charge attribute.
+
+
+class CustomParticle(AbstractParticle):
+    """
+    A class to represent custom particles.
+
+    Parameters
+    ----------
+    mass : ~astropy.units.Quantity, optional
+        The mass of the custom particle in units of mass.
+
+    charge : ~astropy.units.Quantity or ~numbers.Real
+        The electric charge of the custom particle.  If provided as a
+        `~astropy.units.Quantity`, then it must be in units of electric
+        charge.  If provided as a real number, then it is treated as the
+        ratio of the charge to the elementary charge.
+
+    Raises
+    ------
+    InvalidParticleError
+        If the charge or mass provided is invalid so that the custom
+        particle cannot be created.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> from plasmapy.particles import CustomParticle
+    >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg, charge=-1)
+    >>> custom_particle.mass
+    <Quantity 1.5e-26 kg>
+    >>> custom_particle.charge
+    <Quantity -1.60217...e-19 C>
+    """
+
+    def __init__(self, mass: u.kg = None, charge: u.C = None):
+
+        try:
+            self.mass = mass
+            self.charge = charge
+        except Exception as exc:
+            raise InvalidParticleError(
+                f"Unable to create a custom particle with a mass of "
+                f"{mass} and a charge of {charge}."
+            ) from exc
+
+    @property
+    def mass(self) -> u.kg:
+        """Return the custom particle's mass."""
+
+        return self._mass
+
+    @property
+    def charge(self) -> u.C:
+        """Return the custom particle's electric charge in coulombs."""
+
+        return self._charge
+
+    @mass.setter
+    def mass(self, m: u.kg):
+
+        if m is None:
+            self._mass = np.nan * u.kg
+        elif not isinstance(m, u.Quantity):
+            raise TypeError(
+                "The mass of a custom particle must be a Quantity with "
+                "units of mass."
+            )
+        else:
+            try:
+                self._mass = m.to(u.kg)
+            except u.UnitsError as exc:
+                raise u.UnitsError(
+                    "The mass of a custom particle must have units of mass."
+                ) from exc
+
+
+    @charge.setter
+    def charge(self, q: Optional[Union[u.Quantity, Real]]):
+
+        if q is None:
+            self._charge = np.nan * u.C
+        elif isinstance(q, Real):
+            self._charge = q * const.e.si
+        elif isinstance(q, u.Quantity):
+
+            # TODO: figure out units of ESU which cannot be converted to coulombs
+
+            try:
+                self._charge = q.to(u.C)
+            except u.UnitsError as exc:
+                raise InvalidParticleError(
+                    "The charge of a custom particle can only have units "
+                    "that are compatible with coulombs."
+                ) from exc
+        else:
+            raise TypeError(
+                "The charge of a custom particle must be provided either "
+                "as a Quantity with units compatible with coulombs or as "
+                "a real number that represents the ratio of the charge to "
+                "the elementary charge."
+            )
