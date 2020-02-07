@@ -1,8 +1,4 @@
-"""
-Class representing a group of particles moving in a plasma's electric and
-magnetic fields.
-"""
-
+"""Class representing a group of particles moving in a plasma's fields."""
 import numpy as np
 from astropy import units as u
 import numba
@@ -23,8 +19,7 @@ __all__ = ["ParticleTracker", "ParticleTrackerSolution"]
 @numba.njit(parallel=True)
 def _boris_push(x, v, b, e, hqmdt, dt):
     r"""
-    Implements the Boris algorithm for moving particles and updating their
-    velocities.
+    Implement the explicit Boris pusher for moving and accelerating particles.
 
     Arguments
     ----------
@@ -207,6 +202,7 @@ class ParticleTrackerSolution:
             raise PhysicsError("Kinetic energy is not conserved!")
 
     def visualize(self, figure=None, particle=0):  # coverage: ignore
+        """Plot the trajectory using PyVista."""
         # breakpoint()
         import pyvista as pv
 
@@ -228,7 +224,7 @@ class ParticleTrackerSolution:
     @property
     def kinetic_energy(self):
         r"""
-        Calculates the kinetic energy history for each particle.
+        Calculate the kinetic energy history for each particle.
 
         Returns
         --------
@@ -322,6 +318,7 @@ class ParticleTracker:
 
     @property
     def x(self):
+        """Particle position (as Astropy Quantity)."""
         return u.Quantity(self._x, u.m, copy=False)
 
     # @check_units() # TODO
@@ -331,6 +328,7 @@ class ParticleTracker:
 
     @property
     def v(self):
+        """Particle velocity (as Astropy Quantity)."""
         return u.Quantity(self._v, u.m / u.s, copy=False)
 
     # @check_units()
@@ -340,10 +338,10 @@ class ParticleTracker:
 
     @check_units()
     def run(self, total_time: u.s, dt: u.s = None, progressbar=True):
-        r"""
-        Runs a simulation instance.
-         dt: u.s = np.inf * u.s,
-         nt: int = np.inf,
+        r"""Run a simulation instance.
+
+        dt: u.s = np.inf * u.s,
+        nt: int = np.inf,
         """
         if dt is None:
             b = np.linalg.norm(self.plasma.interpolate_B(self.x), axis=-1)
@@ -437,6 +435,7 @@ class ParticleTracker:
         return (_v ** 2).sum() * self._m / 2
 
     def kinetic_energy(self, v=None):
+        """Calculate particle kinetic energy."""
         if v is None:
             v = self.v
         return u.Quantity(self._kinetic_energy(v.si.value), u.J)
