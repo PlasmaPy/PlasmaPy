@@ -9,7 +9,7 @@ from plasmapy.utils import roman
 from astropy.constants import m_p, m_e, m_n, e, c
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.isotopes import _Isotopes
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import Particle, CustomParticle, DimensionlessParticle
 from plasmapy.particles.special_particles import ParticleZoo
 
 from plasmapy.utils import call_string
@@ -813,3 +813,11 @@ def test_that_object_can_be_dict_key(key):
         raise TypeError(error_message) from exc
 
     assert dictionary[key] is value
+
+
+def test_dimensionless_particle():
+    raise NotImplementedError("To be implemented after test runner PR is complete.")
+
+
+def test_custom_particle():
+    raise NotImplementedError("To be implemented after test runner PR is complete.")
