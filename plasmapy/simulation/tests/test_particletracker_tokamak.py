@@ -15,6 +15,7 @@ MAIN_CURRENT = 0 * u.MA
 
 COIL_CURRENTS = 1 * [10 * u.MA]
 
+
 @pytest.fixture
 def coils():
     return Coils.toykamak(MINOR_RADIUS, RADIUS, MAIN_CURRENT, COIL_CURRENTS)
@@ -22,29 +23,35 @@ def coils():
 
 @pytest.fixture
 def sim_single(coils):
-    x = u.Quantity([[1 + MINOR_RADIUS.si.value / 2, 0, 0]],  u.m)
+    x = u.Quantity([[1 + MINOR_RADIUS.si.value / 2, 0, 0]], u.m)
     v = u.Quantity([[0, 100, 10]], u.m / u.s)
 
-    sim = simulation.ParticleTracker(coils, x, v, 'e-')
+    sim = simulation.ParticleTracker(coils, x, v, "e-")
     return sim
+
 
 @pytest.fixture
 def sim_many(coils):
     N = 100
-    x = u.Quantity(N * [[1 + MINOR_RADIUS.si.value / 2, 0, 0]],  u.m)
+    x = u.Quantity(N * [[1 + MINOR_RADIUS.si.value / 2, 0, 0]], u.m)
     s = np.random.RandomState(0)
     v = u.Quantity(s.normal(size=(N, 3)), u.m / u.s)
 
-    sim = simulation.ParticleTracker(coils, x, v, 'e-')
+    sim = simulation.ParticleTracker(coils, x, v, "e-")
     return sim
 
 
 def test_1(sim_single):
     solution = sim_single.run(1 * u.s, 1e-3 * u.s)
-    assert abs(solution.data.position.sel(dimension='y').mean()).item() < 4  # should be about 5m for no B field
-    assert 0.001 < abs(solution.data.position.sel(dimension='y').mean()).item() < 0.01
+    assert (
+        abs(solution.data.position.sel(dimension="y").mean()).item() < 4
+    )  # should be about 5m for no B field
+    assert 0.001 < abs(solution.data.position.sel(dimension="y").mean()).item() < 0.01
+
 
 def test_2(sim_many):
     solution = sim_many.run(1 * u.s, 1e-3 * u.s)
-    assert abs(solution.data.position.sel(dimension='y').mean()).item() < 4  # should be about 5m for no B field
-    assert 0.001 < abs(solution.data.position.sel(dimension='y').mean()).item() < 0.1
+    assert (
+        abs(solution.data.position.sel(dimension="y").mean()).item() < 4
+    )  # should be about 5m for no B field
+    assert 0.001 < abs(solution.data.position.sel(dimension="y").mean()).item() < 0.1

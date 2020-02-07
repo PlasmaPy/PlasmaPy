@@ -17,12 +17,10 @@ from plasmapy.atomic import particle_input, Particle
 
 PLOTTING = False
 
-__all__ = [
-    "ParticleTracker",
-    "ParticleTrackerSolution",
-]
+__all__ = ["ParticleTracker", "ParticleTrackerSolution"]
 
-@numba.njit(parallel = True)
+
+@numba.njit(parallel=True)
 def _boris_push(x, v, b, e, hqmdt, dt):
     r"""
     Implements the Boris algorithm for moving particles and updating their
@@ -70,6 +68,7 @@ def _boris_push(x, v, b, e, hqmdt, dt):
         v[i] = vplus + e[i] * hqmdt
         x[i] += v[i] * dt
 
+
 class ParticleTrackerSolution:
     """
     A solution to `ParticleTracker`'s trajectory integration.
@@ -101,33 +100,45 @@ class ParticleTrackerSolution:
     See `plasmapy/examples/plot_particle_stepper.ipynb`.
 
     """
+
     @check_units
     @particle_input
-    def __init__(self, position_history: u.m,
-                 velocity_history: u.m/u.s,
-                 times: u.s,
-                 b_history: u.T,
-                 e_history: u.V/u.m,
-                 particle: Particle,
-                 diagnostics: list,
-                 dimensions = 'xyz',
-                 ):
+    def __init__(
+        self,
+        position_history: u.m,
+        velocity_history: u.m / u.s,
+        times: u.s,
+        b_history: u.T,
+        e_history: u.V / u.m,
+        particle: Particle,
+        diagnostics: list,
+        dimensions="xyz",
+    ):
         data_vars = {}
         assert position_history.shape == velocity_history.shape
         particles = range(position_history.shape[1])
-        data_vars['position'] = (('time', 'particle', 'dimension'), position_history.si.value)
-        data_vars['velocity'] = (('time', 'particle', 'dimension'), velocity_history.si.value)
-        data_vars['B'] = (('time', 'particle', 'dimension'), b_history.si.value)
-        data_vars['E'] = (('time', 'particle', 'dimension'), e_history.si.value)
-        data_vars['timestep'] = (('time',), [row['dt'] for row in diagnostics])
-        self.data = xarray.Dataset(data_vars = data_vars,
-                                      coords={'time': times.si.value,
-                                              'particle': particles,
-                                              'dimension': list(dimensions),
-                                              }) 
-        self.data['position'].attrs['unit'] = position_history.unit
-        self.data['velocity'].attrs['unit'] = velocity_history.unit
-        self.data.time.attrs['unit'] = times.unit
+        data_vars["position"] = (
+            ("time", "particle", "dimension"),
+            position_history.si.value,
+        )
+        data_vars["velocity"] = (
+            ("time", "particle", "dimension"),
+            velocity_history.si.value,
+        )
+        data_vars["B"] = (("time", "particle", "dimension"), b_history.si.value)
+        data_vars["E"] = (("time", "particle", "dimension"), e_history.si.value)
+        data_vars["timestep"] = (("time",), [row["dt"] for row in diagnostics])
+        self.data = xarray.Dataset(
+            data_vars=data_vars,
+            coords={
+                "time": times.si.value,
+                "particle": particles,
+                "dimension": list(dimensions),
+            },
+        )
+        self.data["position"].attrs["unit"] = position_history.unit
+        self.data["velocity"].attrs["unit"] = velocity_history.unit
+        self.data.time.attrs["unit"] = times.unit
         self.data.attrs["particle"] = particle
         self.particle = particle
         self.diagnostics = diagnostics
@@ -140,7 +151,7 @@ class ParticleTrackerSolution:
 
         quantity_support()
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
+        ax = fig.add_subplot(111, projection="3d")
         for p_index in range(self.data.particle.size):
             r = self.data.position.isel(particle=p_index)
             x, y, z = r.T
@@ -176,17 +187,17 @@ class ParticleTrackerSolution:
             if "z" in plot:
                 ax.plot(self.data.time, z, label=f"z_{p_index}")
         # ax.set_title(self.name)
-        ax.legend(loc='best')
+        ax.legend(loc="best")
         ax.grid()
         ax.set_xlabel(f"Time $t$ [{u.s}]")
         ax.set_ylabel(f"Position [{u.m}]")
         plt.show()
 
-    def test_kinetic_energy(self, cutoff = 2):
+    def test_kinetic_energy(self, cutoff=2):
         r"""Test conservation of kinetic energy."""
-        difference = self.kinetic_energy - self.kinetic_energy.mean(dim='time')
-        scaled = difference /  self.kinetic_energy.std(dim='time')
-        conservation = abs(scaled) < cutoff 
+        difference = self.kinetic_energy - self.kinetic_energy.mean(dim="time")
+        scaled = difference / self.kinetic_energy.std(dim="time")
+        conservation = abs(scaled) < cutoff
         if not conservation.all():
             if PLOTTING:
                 import matplotlib.pyplot as plt
@@ -195,9 +206,10 @@ class ParticleTrackerSolution:
                 plt.show()
             raise PhysicsError("Kinetic energy is not conserved!")
 
-    def visualize(self,  figure = None, particle = 0):  # coverage: ignore
+    def visualize(self, figure=None, particle=0):  # coverage: ignore
         # breakpoint()
         import pyvista as pv
+
         if figure is None:
             fig = pv.Plotter()
             fig.add_axes()
@@ -223,7 +235,7 @@ class ParticleTrackerSolution:
         ~astropy.units.Quantity
             Array of kinetic energies, shape (nt, n).
         """
-        return (self.data.velocity ** 2).sum(dim='dimension') * self.particle.mass / 2
+        return (self.data.velocity ** 2).sum(dim="dimension") * self.particle.mass / 2
 
 
 class ParticleTracker:
@@ -259,22 +271,23 @@ class ParticleTracker:
 
     @atomic.particle_input
     @check_units()
-    def __init__(self,
-                 plasma,
-                 x: u.m = None,
-                 v: u.m/u.s = None,
-                 particle_type: atomic.Particle = 'p',
-                 ):
+    def __init__(
+        self,
+        plasma,
+        x: u.m = None,
+        v: u.m / u.s = None,
+        particle_type: atomic.Particle = "p",
+    ):
 
         if x is not None and v is not None:
             pass
         elif x is None and v is None:
             x = u.Quantity(np.zeros((1, 3)), u.m)
-            v = u.Quantity(np.zeros((1, 3)), u.m/u.s)
+            v = u.Quantity(np.zeros((1, 3)), u.m / u.s)
         elif v is not None:
             x = u.Quantity(np.zeros((v.shape)), u.m)
         elif x is not None:
-            v = u.Quantity(np.zeros((x.shape)), u.m/u.s)
+            v = u.Quantity(np.zeros((x.shape)), u.m / u.s)
         self.q = particle_type.charge
         self.m = particle_type.mass
         self._m = particle_type.mass.si.value
@@ -307,10 +320,9 @@ class ParticleTracker:
                 where N is the number of particles in the simulation, currently {self.N}."""
             )
 
-
     @property
     def x(self):
-        return u.Quantity(self._x, u.m, copy = False)
+        return u.Quantity(self._x, u.m, copy=False)
 
     # @check_units() # TODO
     @x.setter
@@ -319,7 +331,7 @@ class ParticleTracker:
 
     @property
     def v(self):
-        return u.Quantity(self._v, u.m / u.s, copy = False)
+        return u.Quantity(self._v, u.m / u.s, copy=False)
 
     # @check_units()
     @v.setter
@@ -327,7 +339,7 @@ class ParticleTracker:
         self._v = value.si.value
 
     @check_units()
-    def run(self, total_time: u.s, dt: u.s = None, progressbar = True):
+    def run(self, total_time: u.s, dt: u.s = None, progressbar=True):
         r"""
         Runs a simulation instance.
          dt: u.s = np.inf * u.s,
@@ -335,11 +347,17 @@ class ParticleTracker:
         """
         if dt is None:
             b = np.linalg.norm(self.plasma.interpolate_B(self.x), axis=-1)
-            gyroperiod = (1/formulary.gyrofrequency(b, self.particle, to_hz = True)).to(u.s)
+            gyroperiod = (1 / formulary.gyrofrequency(b, self.particle, to_hz=True)).to(
+                u.s
+            )
             dt = gyroperiod.min() / 20
-            warnings.warn(UserWarning(f"Set timestep to {dt:.3e}, 1/20 of smallest gyroperiod"))
+            warnings.warn(
+                UserWarning(f"Set timestep to {dt:.3e}, 1/20 of smallest gyroperiod")
+            )
 
-        _hqmdt = (self.q / self.m / 2 * dt).si.value  # TODO this needs calculating within boris stepper; just use the q/m ratio
+        _hqmdt = (
+            self.q / self.m / 2 * dt
+        ).si.value  # TODO this needs calculating within boris stepper; just use the q/m ratio
         _dt = dt.si.value
 
         _total_time = total_time.si.value
@@ -349,24 +367,19 @@ class ParticleTracker:
 
         _times = [_time]
         init_kinetic = self._kinetic_energy(_v)
-        timestep_info = dict(i = len(_times), dt = _dt,
-                             )
+        timestep_info = dict(i=len(_times), dt=_dt)
         if init_kinetic:
-            reldelta = self._kinetic_energy(_v)/init_kinetic - 1
+            reldelta = self._kinetic_energy(_v) / init_kinetic - 1
             kinetic_info = {"Relative kinetic energy change": reldelta}
         else:
             delta = self._kinetic_energy(_v)
             kinetic_info = {"Kinetic energy change": delta}
-        list_diagnostics = [
-            dict(**timestep_info, **kinetic_info, )
-        ]
-    
+        list_diagnostics = [dict(**timestep_info, **kinetic_info)]
 
-
-        with np.errstate(all='raise'):
+        with np.errstate(all="raise"):
             b = self.plasma._interpolate_B(_x)
             e = self.plasma._interpolate_E(_x)
-            _boris_push(_x, _v, b, e, -0.5 * _hqmdt, -0.5*_dt)
+            _boris_push(_x, _v, b, e, -0.5 * _hqmdt, -0.5 * _dt)
 
             _x = _x - _v * 0.5 * _dt
 
@@ -382,10 +395,8 @@ class ParticleTracker:
                 e = self.plasma._interpolate_E(_x)
                 _boris_push(_x, _v, b, e, _hqmdt, _dt)
 
-
                 if True:
-                    timestep_info = dict(i = len(_times), dt = _dt, 
-                                         )
+                    timestep_info = dict(i=len(_times), dt=_dt)
 
                 _position_history.append(_x.copy())
                 _velocity_history.append(_v.copy())
@@ -394,13 +405,13 @@ class ParticleTracker:
                 _times.append(_time)
 
                 if init_kinetic:
-                    reldelta = self._kinetic_energy(_v)/init_kinetic - 1
+                    reldelta = self._kinetic_energy(_v) / init_kinetic - 1
                     kinetic_info = {"Relative kinetic energy change": reldelta}
                 else:
                     delta = self._kinetic_energy(_v)
                     kinetic_info = {"Kinetic energy change": delta}
 
-                diagnostics = dict(**timestep_info, **kinetic_info, )
+                diagnostics = dict(**timestep_info, **kinetic_info)
                 list_diagnostics.append(diagnostics)
 
                 if progressbar:
@@ -409,32 +420,32 @@ class ParticleTracker:
         if progressbar:
             pbar.close()
 
-        solution = ParticleTrackerSolution(u.Quantity(_position_history, u.m),
-                                           u.Quantity(_velocity_history, u.m/u.s),
-                                           u.Quantity(_times, u.s),
-                                           u.Quantity(_b_history, u.T),
-                                           u.Quantity(_e_history, u.V/u.m),
-                                           self.particle,
-                                           diagnostics = list_diagnostics
-                                           )
+        solution = ParticleTrackerSolution(
+            u.Quantity(_position_history, u.m),
+            u.Quantity(_velocity_history, u.m / u.s),
+            u.Quantity(_times, u.s),
+            u.Quantity(_b_history, u.T),
+            u.Quantity(_e_history, u.V / u.m),
+            self.particle,
+            diagnostics=list_diagnostics,
+        )
         return solution
 
-    def _kinetic_energy(self, _v = None):
+    def _kinetic_energy(self, _v=None):
         if _v is None:
             _v = self._v
         return (_v ** 2).sum() * self._m / 2
 
-    def kinetic_energy(self, v = None):
+    def kinetic_energy(self, v=None):
         if v is None:
             v = self.v
         return u.Quantity(self._kinetic_energy(v.si.value), u.J)
 
-
-
     def __repr__(self, *args, **kwargs):
-        return f"ParticleTracker(plasma={self.plasma}, particle_type={self.particle}," \
-               f"N = {self.x.shape[0]})"
+        return (
+            f"ParticleTracker(plasma={self.plasma}, particle_type={self.particle},"
+            f"N = {self.x.shape[0]})"
+        )
 
     def __str__(self):  # coverage: ignore
-        return f"{self.N} {self.name} with " \
-               f"q = {self.q:.2e}, m = {self.m:.2e}"
+        return f"{self.N} {self.name} with " f"q = {self.q:.2e}, m = {self.m:.2e}"
