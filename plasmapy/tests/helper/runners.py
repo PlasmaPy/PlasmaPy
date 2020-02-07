@@ -15,16 +15,15 @@ from plasmapy.tests.helper.expected import ExpectedTestOutcome
 from plasmapy.tests.helper.comparators import CompareActualExpected
 from plasmapy.tests.helper.exceptions import InvalidTestError
 
-
 __all__ = ["function_test_runner", "method_test_runner", "attr_test_runner"]
 
 
 def _test_runner(
-        inputs: AbstractTestInputs,
-        expected,
-        *,
-        rtol: Union[Number, u.Quantity] = 1e-8,
-        atol: Optional[Union[Number, u.Quantity]] = None,
+    inputs: AbstractTestInputs,
+    expected,
+    *,
+    rtol: Union[Number, u.Quantity] = 1e-8,
+    atol: Optional[Union[Number, u.Quantity]] = None,
 ) -> NoReturn:
     """
     Perform the parts of the test that are common among the different
@@ -92,8 +91,97 @@ def function_test_runner(
 
     Raises
     ------
-    InvalidTestError
+    ~plasmapy.tests.helper.exceptions.InvalidTestError
         If the test is not set up correctly.
+
+    ~plasmapy.tests.helper.exceptions.UnexpectedResultError
+        If the value returned by the test does not match the expected value.
+
+    ~plasmapy.tests.helper.exceptions.InconsistentTypeError
+        If the type of the value returned by the test is not the same
+        type as the expected value.
+
+    ~plasmapy.tests.helper.exceptions.UnexpectedExceptionError
+        If an exception was raised unexpectedly.
+
+    ~plasmapy.tests.helper.exceptions.MissingExceptionError
+        If an exception was expected to be raised, but was not.
+
+    ~plasmapy.tests.helper.exceptions.ExceptionMismatchError
+        If an exception was raised that was different from the expected exception.
+
+    ~plasmapy.tests.helper.exceptions.UnexpectedWarningError
+        If a warning was issued unexpectedly.
+
+    ~plasmapy.tests.helper.exceptions.MissingWarningError
+        If a warning was expected to be issued, but was not.
+
+    ~plasmapy.tests.helper.exceptions.WarningMismatchError
+        If the expected warning was not issued, but one or more different warnings were.
+
+    ~plasmapy.tests.helper.exceptions.Failed
+        If the test fails in a different way or more than one way.
+
+    See Also
+    --------
+    method_test_runner
+    attr_test_runner
+
+    Examples
+    --------
+    This test runner checks that calling a function supplied with certain
+    positional and keyword arguments results in the expected outcome. The
+    expected outcome may be a value, a warning, an exception, or a
+    combination of a warning and a value.
+
+    Suppose we create a function that takes no arguments and returns ``42``.
+
+    >>> return_42 = lambda: 42
+
+    To test that this function is behaving properly, we run:
+
+    >>> function_test_runner(expected=42, function=return_42)
+
+    No exception is raised when running the test, which means that this
+    test passes.
+
+    Next we wish to test a function that adds the values of the positional
+    argument and the expected argument.
+
+    >>> def add_arg_and_kwarg(arg, kwarg=None):
+    ...     return arg + kwarg
+
+    Positional arguments are generally given as a `tuple` or `list`
+    while keyword arguments are provided as a `dict`.  If there is only
+    one positional argument, then it may be supplied as itself if it is
+    not a `tuple` or `list`.
+
+    >>> args = (5,)
+    >>> kwargs = {"kwarg": 4}
+
+    >>> function_test_runner(expected=9, function=add_arg_and_kwarg, args=args, kwargs=kwargs)
+
+    We may use this function to test that the expected exception is raised.
+
+    >>> def raise_syntax_error():
+    ...     raise SyntaxError
+
+    >>> function_test_runner(expected=SyntaxError, function=raise_syntax_error)
+
+    Similarly, we may test that a function issues a particular warning.
+    If ``expected`` is a `tuple` containing a warning and a value in
+    either order, then ``function_test_runner`` will check that the
+    warning is issued and that that value is returned.
+
+    >>> import warnings
+    >>> def issue_warning_and_return_6():
+    ...     warnings.warn("...", UserWarning)
+    ...     return None
+
+    >>> function_test_runner(expected=UserWarning, function=issue_warning_and_return_6)
+    >>> function_test_runner(expected=(UserWarning, 6), function=issue_warning_and_return_6)
+
+    This test runner works well in combination with `~pytest.mark.parametrize`.
     """
 
     __tracebackhide__ = True
@@ -165,8 +253,76 @@ def method_test_runner(
 
     Raises
     ------
-    InvalidTestError
+    ~plasmapy.tests.helper.exceptions.InvalidTestError
         If the test is not set up correctly.
+
+    ~plasmapy.tests.helper.exceptions.UnexpectedResultError
+        If the value returned by the test does not match the expected value.
+
+    ~plasmapy.tests.helper.exceptions.InconsistentTypeError
+        If the type of the value returned by the test is not the same
+        type as the expected value.
+
+    ~plasmapy.tests.helper.exceptions.UnexpectedExceptionError
+        If an exception was raised unexpectedly.
+
+    ~plasmapy.tests.helper.exceptions.MissingExceptionError
+        If an exception was expected to be raised, but was not.
+
+    ~plasmapy.tests.helper.exceptions.ExceptionMismatchError
+        If an exception was raised that was different from the expected exception.
+
+    ~plasmapy.tests.helper.exceptions.UnexpectedWarningError
+        If a warning was issued unexpectedly.
+
+    ~plasmapy.tests.helper.exceptions.MissingWarningError
+        If a warning was expected to be issued, but was not.
+
+    ~plasmapy.tests.helper.exceptions.WarningMismatchError
+        If the expected warning was not issued, but one or more different warnings were.
+
+    ~plasmapy.tests.helper.exceptions.Failed
+        If the test fails in a different way or more than one way.
+
+    See Also
+    --------
+    function_test_runner
+    attr_test_runner
+
+    Examples
+    --------
+    This test runner checks that calling a method attached to a class
+    instance results in the expected outcome.  Positional and keyword
+    arguments can be supplied to each of the class (to be used during
+    instantiation) and to the method itself.
+
+    >>> class SimpleClass:
+    ...     def method(self):
+    ...         return 42
+
+    >>> method_test_runner(expected=42, cls=SomeClass, method="method")
+
+    No exception is raised when running the test, which means that this
+    test passes.
+
+    The ``cls_args`` and ``cls_kwargs`` arguments, if given, are passed
+    to the class during instantiation.
+
+    >>> class SomeClass:
+    ...     def __init__(self, cls_arg, cls_kwarg=None):
+    ...         self.cls_arg = cls_args
+    ...         self.cls_kwarg = cls_kwarg
+    ...     def f(self, method_arg, method_kwarg=None):
+    ...         return self.cls_arg + 2 * self.cls_kwarg + 3 * method_arg + 4 * method_kwarg
+
+    >>> cls_args = (4,)
+    >>> cls_kwargs = {"cls_kwarg": 1}
+    >>> method_args = (3,)
+    >>> method_kwargs = {"method_kwarg": 2}
+
+    >>> method_test_runner(23, SomeClass, "f", cls_args, cls_kwargs, method_args, method_kwargs)
+
+    This test runner works well in combination with `~pytest.mark.parametrize`.
     """
 
     __tracebackhide__ = True
@@ -222,6 +378,79 @@ def attr_test_runner(
         or `~astropy.units.allclose`.  If ``atol`` is a
         `~astropy.units.Quantity`, then it must have the same units as
         ``this`` and ``that``.  Defaults to zero in the appropriate units.
+
+    Raises
+    ------
+    ~plasmapy.tests.helper.exceptions.InvalidTestError
+        If the test is not set up correctly.
+
+    ~plasmapy.tests.helper.exceptions.UnexpectedResultError
+        If the value returned by the test does not match the expected value.
+
+    ~plasmapy.tests.helper.exceptions.InconsistentTypeError
+        If the type of the value returned by the test is not the same
+        type as the expected value.
+
+    ~plasmapy.tests.helper.exceptions.UnexpectedExceptionError
+        If an exception was raised unexpectedly.
+
+    ~plasmapy.tests.helper.exceptions.MissingExceptionError
+        If an exception was expected to be raised, but was not.
+
+    ~plasmapy.tests.helper.exceptions.ExceptionMismatchError
+        If an exception was raised that was different from the expected exception.
+
+    ~plasmapy.tests.helper.exceptions.UnexpectedWarningError
+        If a warning was issued unexpectedly.
+
+    ~plasmapy.tests.helper.exceptions.MissingWarningError
+        If a warning was expected to be issued, but was not.
+
+    ~plasmapy.tests.helper.exceptions.WarningMismatchError
+        If the expected warning was not issued, but one or more different warnings were.
+
+    ~plasmapy.tests.helper.exceptions.Failed
+        If the test fails in a different way or more than one way.
+
+    See Also
+    --------
+    function_test_runner
+    method_test_runner
+
+    Examples
+    --------
+    This test runner checks that accessing an attribute attached to a
+    class instance results in the expected outcome.  Positional and
+    keyword arguments can be supplied to the class to be used upon
+    instantiation.
+
+    >>> class SimpleClass:
+    ...     @property
+    ...     def attr(self):
+    ...         return 42
+
+    >>> attr_test_runner(expected=42, cls=SomeClass, attribute="attr")
+
+    No exception is raised when running the test, which means that this
+    test passes.
+
+    The ``cls_args`` and ``cls_kwargs`` arguments, if given, are passed
+    to the class during instantiation.
+
+    >>> class SomeClass:
+    ...     def __init__(self, cls_arg, cls_kwarg=None):
+    ...         self.cls_arg = cls_args
+    ...         self.cls_kwarg = cls_kwarg
+    ...     @property
+    ...     def attr(self):
+    ...         return self.cls_arg = 2 * self.cls_kwarg
+
+    >>> cls_args = (2,)
+    >>> cls_kwargs = {"cls_kwarg": 3}
+
+    >>> method_test_runner(8, SomeClass, "attr", cls_args, cls_kwargs)
+
+    This test runner works well in combination with `~pytest.mark.parametrize`.
     """
 
     __tracebackhide__ = True
