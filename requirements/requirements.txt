@@ -5,8 +5,8 @@ h5py >= 2.8
 lmfit >= 0.9.7
 matplotlib >= 2.0
 mpmath >= 1.0.0
-numpy >= 1.14
 numba >= 0.46
+numpy >= 1.14
+scipy >= 0.19
 tqdm >= 4.41
 xarray
-scipy >= 0.19
