@@ -79,10 +79,11 @@ class Coils(GenericPlasma):
             coil = magnetostatics.CircularWire(normal, center, minor_radius, current)
             coils.append(coil)
 
-        plasma_wire = magnetostatics.CircularWire(
-            [0, 0, 1], u.Quantity((0, 0, 0), u.m), radius, main_current
-        )
-        coils.append(plasma_wire)
+        if main_current.si.value != 0.0:
+            plasma_wire = magnetostatics.CircularWire(
+                [0, 0, 1], u.Quantity((0, 0, 0), u.m), radius, main_current
+            )
+            coils.append(plasma_wire)
 
         c = cls(*coils)
         return c

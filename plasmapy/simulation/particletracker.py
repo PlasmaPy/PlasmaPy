@@ -1,10 +1,10 @@
 """Class representing a group of particles moving in a plasma's fields."""
 import numpy as np
 from astropy import units as u
-import numba
 import tqdm.auto
 import xarray
 import warnings
+import matplotlib.pyplot as plt
 
 from plasmapy import atomic, formulary
 from plasmapy.utils.decorators import check_units
@@ -58,6 +58,7 @@ class ParticleTrackerSolution:
         times: u.s,
         b_history: u.T,
         e_history: u.V / u.m,
+        plasma,
         particle: Particle,
         diagnostics: list,
         dimensions="xyz",
@@ -90,6 +91,7 @@ class ParticleTrackerSolution:
         self.data.attrs["particle"] = particle
         self.particle = particle
         self.diagnostics = diagnostics
+        self.plasma = plasma
 
     def plot_trajectories(self, *args, **kwargs):  # coverage: ignore
         r"""Draws trajectory history."""
@@ -166,12 +168,15 @@ class ParticleTrackerSolution:
             fig = figure
         points = self.data.position.sel(particle=particle).values
         # breakpoint()
-        spline = pv.Spline(points, 1000)
-        trajectory = spline
+        trajectory = spline = pv.Spline(points, 1000)
+        if hasattr(self.plasma, "visualize"):
+            self.plasma.visualize(fig)
+
         if figure is None:
-            trajectory.plot()
+            trajectory.plot(fig)
+            fig.show()
         else:
-            figure.add_mesh(trajectory)
+            fig.add_mesh(trajectory)
         return fig
 
     @property
@@ -385,6 +390,7 @@ class ParticleTracker:
             u.Quantity(_times, u.s),
             u.Quantity(_b_history, u.T),
             u.Quantity(_e_history, u.V / u.m),
+            self.plasma,
             self.particle,
             diagnostics=list_diagnostics,
         )
