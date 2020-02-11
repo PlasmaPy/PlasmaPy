@@ -10,7 +10,7 @@ from plasmapy import atomic, formulary
 from plasmapy.utils.decorators import check_units
 from plasmapy.utils import PhysicsError
 from plasmapy.atomic import particle_input, Particle
-from .particle_integrators import _boris_push, _boris_push_implicit
+from .particle_integrators import _boris_push, _boris_push_implicit, _zenitani
 
 PLOTTING = False
 
@@ -221,6 +221,7 @@ class ParticleTracker:
     integrators = {
         "explicit_boris": _boris_push,
         "implicit_boris": _boris_push_implicit,
+        "zenitani": _zenitani,
     }
 
     @atomic.particle_input

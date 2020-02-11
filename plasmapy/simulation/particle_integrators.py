@@ -179,3 +179,57 @@ def _boris_push_implicit(x, v, b, e, q, m, dt):
         )
         v[i] = (vx, vy, vz)
         x[i] += v[i] * dt
+
+
+@numba.njit(parallel=True)
+def _zenitani(x, v, b, e, q, m, dt):
+    r"""
+    Implement the Zenitani-Umeda pusher
+
+    Arguments
+    ----------
+    init : bool (optional)
+        If `True`, does not change the particle positions and sets dt
+        to -dt/2.
+
+    Notes
+    ----------
+    The Boris algorithm is the standard energy conserving algorithm for
+    particle movement in plasma physics. See [1]_ for more details.
+
+    Conceptually, the algorithm has three phases:
+
+    1. Add half the impulse from electric field.
+    2. Rotate the particle velocity about the direction of the magnetic
+       field.
+    3. Add the second half of the impulse from the electric field.
+
+    This ends up causing the magnetic field action to be properly
+    "centered" in time, and the algorithm conserves energy.
+
+    References
+    ----------
+    .. [1] Seiji Zenitani and Takayuki Umeda,
+           On the Boris solver in particle-in-cell simulation
+           Physics of Plasmas 25, 112110 (2018); https://doi.org/10.1063/1.5051077
+    """
+    C = q / m
+    for i in numba.prange(len(x)):
+        # add first half of electric impulse
+        epsilon = q * dt / 2 / m * e[i]
+        uminus = v[i] + epsilon
+        magfield_norm = np.linalg.norm(b[i])
+        if magfield_norm == 0.0:
+            uplus = uminus
+        else:
+            theta = q * dt / m * magfield_norm  # Eq. 6
+            bnormed = b[i] / magfield_norm
+            u_parallel_minus = np.dot(uminus, bnormed) * bnormed  # Eq. 11
+            uplus = (
+                u_parallel_minus
+                + (uminus - u_parallel_minus) * np.cos(theta)
+                + np.cross(uminus, bnormed) * np.sin(theta)
+            )  # Eq. 12
+        v[i] = uplus + epsilon  # Eq. 5
+
+        x[i] += v[i] * dt
