@@ -28,7 +28,7 @@ else:
     )
     @given(arrays(dtype="float", shape=(N, 2)))
     @settings(deadline=None)
-    def test_no_underflow(velocity):
+    def test_no_underflow(velocity, integrator_name):
         plasma = AnalyticalFields(magnetic_field, electric_field)
         freq = gyrofrequency(4 * u.T, "p").to(
             u.Hz, equivalencies=u.dimensionless_angles()
@@ -41,4 +41,4 @@ else:
         v = np.zeros((N, 3))
         v[:, :2] = velocity
         trajectory = ParticleTracker(plasma, v=v * u.m / u.s)
-        trajectory.run(number_steps * timestep, timestep)
+        trajectory.run(number_steps * timestep, timestep, pusher=integrator_name)

@@ -5,7 +5,7 @@ from astropy.tests.helper import assert_quantity_allclose
 from scipy.optimize import curve_fit
 
 from plasmapy import formulary
-from plasmapy.simulation.particletracker import ParticleTracker, _boris_push
+from plasmapy.simulation.particletracker import ParticleTracker
 from plasmapy.classes.sources import AnalyticalFields
 from plasmapy.utils.exceptions import PhysicsError
 
@@ -28,7 +28,7 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 E_unit = u.V / u.m
 
 
-def test_run_no_fields():
+def test_run_no_fields(integrator_name):
     def magnetic_field(r):
         return u.Quantity(np.zeros(3), u.T)
 
@@ -38,7 +38,7 @@ def test_run_no_fields():
     test_plasma = AnalyticalFields(magnetic_field, electric_field)
 
     s = ParticleTracker(test_plasma)
-    sol = s.run(2e-10 * u.s, dt=1e-10 * u.s)
+    sol = s.run(2e-10 * u.s, dt=1e-10 * u.s, pusher=integrator_name)
     assert np.isfinite(sol.data.position).all()
     assert np.isfinite(sol.data.velocity).all()
 
@@ -68,7 +68,7 @@ def test_adjust_position_velocity():
     assert "particle_type=p" in r
 
 
-def test_boris_push_no_fields_no_movement():
+def test_boris_push_no_fields_no_movement(integrator):
     x = np.zeros((2, 3), dtype=float)
     x_copy = x.copy()
     v = np.zeros_like(x)
@@ -78,13 +78,13 @@ def test_boris_push_no_fields_no_movement():
     m = 1
     dt = 1e-3
     hqmdt = 0.5 * q * m * dt
-    _boris_push(x, v, b, e, hqmdt, dt)
+    integrator(x, v, b, e, q, m, dt)
     assert np.isfinite(x).all()
     assert np.isfinite(v).all()
     assert (x == x_copy).all()
 
 
-def test_boris_push_no_fields_just_velocity():
+def test_boris_push_no_fields_just_velocity(integrator):
     x = np.zeros((2, 3), dtype=float)
     x_copy = x.copy()
     v = np.ones_like(x)
@@ -94,13 +94,13 @@ def test_boris_push_no_fields_just_velocity():
     m = 1
     dt = 1e-3
     hqmdt = 0.5 * q * m * dt
-    _boris_push(x, v, b, e, hqmdt, dt)
+    integrator(x, v, b, e, q, m, dt)
     assert np.isfinite(x).all()
     assert np.isfinite(v).all()
     assert ((x - v * dt) == x_copy).all()
 
 
-def test_boris_push_electric_field():
+def test_boris_push_electric_field(integrator):
     x = np.zeros((2, 3), dtype=float)
     x_copy = x.copy()
     v = np.zeros_like(x)
@@ -112,13 +112,13 @@ def test_boris_push_electric_field():
     m = 1
     dt = 1e-3
     hqmdt = 0.5 * q * m * dt
-    _boris_push(x, v, b, e, hqmdt, dt)
+    integrator(x, v, b, e, q, m, dt)
     assert np.isfinite(x).all()
     assert np.isfinite(v).all()
     assert ((x - e * dt ** 2 / 2 - v * dt / 2) == x_copy).all()
 
 
-def test_particle_uniform_magnetic():
+def test_particle_uniform_magnetic(integrator_name):
     r"""
         Tests the particle stepper for a uniform magnetic field motion.
     """
@@ -143,7 +143,7 @@ def test_particle_uniform_magnetic():
     dt = expected_gyroperiod / 100
     v = u.Quantity([0 * u.m / u.s, perp_speed, parallel_speed]).reshape((1, 3))
     s = ParticleTracker(test_plasma, particle_type=particle_type, v=v)
-    sol = s.run(1e4 * dt, dt)
+    sol = s.run(1e4 * dt, dt, pusher=integrator_name)
 
     x = sol.data.position.sel(particle=0, dimension="x")
     z = sol.data.position.sel(particle=0, dimension="z")
@@ -180,7 +180,7 @@ def test_particle_uniform_magnetic():
 @pytest.mark.xfail(
     reason="Kinetic energy probably should not actually be conserved here!"
 )
-def test_particle_exb_drift():
+def test_particle_exb_drift(integrator_name):
     r"""
         Tests the particle stepper for a field with magnetic field in the Z
         direction, electric field in the y direction. This should produce a
@@ -207,7 +207,7 @@ def test_particle_exb_drift():
     s = ParticleTracker(test_plasma, v=v * u.m / u.s)
     assert np.isfinite(s._v).all()
     assert np.isfinite(s._x).all()
-    sol = s.run(5e-4 * u.s, dt=1e-7 * u.s)
+    sol = s.run(5e-4 * u.s, dt=1e-7 * u.s, pusher=integrator_name)
     assert np.isfinite(sol.data.position).all()
     assert np.isfinite(sol.data.velocity).all()
 

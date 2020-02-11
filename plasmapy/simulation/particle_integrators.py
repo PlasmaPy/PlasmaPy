@@ -3,7 +3,7 @@ import numpy as np
 
 
 @numba.njit(parallel=True)
-def _boris_push(x, v, b, e, hqmdt, dt):
+def _boris_push(x, v, b, e, q, m, dt):
     r"""
     Implement the explicit Boris pusher for moving and accelerating particles.
 
@@ -33,6 +33,7 @@ def _boris_push(x, v, b, e, hqmdt, dt):
     .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
            Simulation", 2004, p. 58-63
     """
+    hqmdt = 0.5 * dt * q / m
     for i in numba.prange(len(x)):
         # add first half of electric impulse
         vminus = v[i] + hqmdt * e[i]
@@ -51,7 +52,7 @@ def _boris_push(x, v, b, e, hqmdt, dt):
 
 
 @numba.njit(parallel=True)
-def _boris_push_implicit(x, v, b, e, hqmdt, dt):
+def _boris_push_implicit(x, v, b, e, q, m, dt):
     r"""
     Implement the implicit Boris pusher for moving and accelerating particles.
 
@@ -81,4 +82,100 @@ def _boris_push_implicit(x, v, b, e, hqmdt, dt):
     .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
            Simulation", 2004, p. 58-63
     """
-    raise NotImplementedError
+    C = q / m
+    for i in numba.prange(len(x)):
+        # add first half of electric impulse
+        B_x, B_y, B_z = b[i]
+        v_x, v_y, v_z = v[i]
+        E_x, E_y, E_z = e[i]
+
+        # calculated via sympy
+        vx = (
+            0.0625 * B_x ** 2 * C ** 3 * E_x * dt ** 3
+            + 0.0625 * B_x ** 2 * C ** 2 * dt ** 2 * v_x
+            + 0.0625 * B_x * B_y * C ** 3 * E_y * dt ** 3
+            + 0.125 * B_x * B_y * C ** 2 * dt ** 2 * v_y
+            + 0.0625 * B_x * B_z * C ** 3 * E_z * dt ** 3
+            + 0.125 * B_x * B_z * C ** 2 * dt ** 2 * v_z
+            - 0.0625 * B_y ** 2 * C ** 2 * dt ** 2 * v_x
+            - 0.125 * B_y * C ** 2 * E_z * dt ** 2
+            - 0.25 * B_y * C * dt * v_z
+            - 0.0625 * B_z ** 2 * C ** 2 * dt ** 2 * v_x
+            + 0.125 * B_z * C ** 2 * E_y * dt ** 2
+            + 0.25 * B_z * C * dt * v_y
+            + 0.25 * C * E_x * dt
+            + 0.25 * v_x
+        ) / (
+            0.0625 * B_x ** 2 * C ** 2 * dt ** 2
+            + 0.0625 * B_y ** 2 * C ** 2 * dt ** 2
+            + 0.0625 * B_z ** 2 * C ** 2 * dt ** 2
+            + 0.25
+        )
+        vy = (
+            -0.0625 * B_x ** 2 * C ** 2 * dt ** 2 * v_y
+            + 0.0625 * B_x * B_y * C ** 3 * E_x * dt ** 3
+            + 0.125 * B_x * B_y * C ** 2 * dt ** 2 * v_x
+            + 0.125 * B_x * C ** 2 * E_z * dt ** 2
+            + 0.25 * B_x * C * dt * v_z
+            + 0.0625 * B_y ** 2 * C ** 3 * E_y * dt ** 3
+            + 0.0625 * B_y ** 2 * C ** 2 * dt ** 2 * v_y
+            + 0.0625 * B_y * B_z * C ** 3 * E_z * dt ** 3
+            + 0.125 * B_y * B_z * C ** 2 * dt ** 2 * v_z
+            - 0.0625 * B_z ** 2 * C ** 2 * dt ** 2 * v_y
+            - 0.125 * B_z * C ** 2 * E_x * dt ** 2
+            - 0.25 * B_z * C * dt * v_x
+            + 0.25 * C * E_y * dt
+            + 0.25 * v_y
+        ) / (
+            0.0625 * B_x ** 2 * C ** 2 * dt ** 2
+            + 0.0625 * B_y ** 2 * C ** 2 * dt ** 2
+            + 0.0625 * B_z ** 2 * C ** 2 * dt ** 2
+            + 0.25
+        )
+        vz = (
+            -C
+            * dt
+            * (0.5 * B_x - 0.25 * B_y * B_z * C * dt)
+            * (
+                0.5 * B_x * C * dt * v_z
+                - 0.5 * B_z * C * dt * v_x
+                - 0.5
+                * B_z
+                * C
+                * dt
+                * (
+                    -0.5 * B_y * C * dt * v_z
+                    + 0.5 * B_z * C * dt * v_y
+                    + C * E_x * dt
+                    + v_x
+                )
+                + C * E_y * dt
+                + v_y
+            )
+            + (0.25 * B_z ** 2 * C ** 2 * dt ** 2 + 1)
+            * (
+                -0.5 * B_x * C * dt * v_y
+                + 0.5 * B_y * C * dt * v_x
+                + 0.5
+                * B_y
+                * C
+                * dt
+                * (
+                    -0.5 * B_y * C * dt * v_z
+                    + 0.5 * B_z * C * dt * v_y
+                    + C * E_x * dt
+                    + v_x
+                )
+                + C * E_z * dt
+                + v_z
+            )
+        ) / (
+            C ** 2
+            * dt ** 2
+            * (0.5 * B_x - 0.25 * B_y * B_z * C * dt)
+            * (0.5 * B_x + 0.25 * B_y * B_z * C * dt)
+            + (0.25 * B_y ** 2 * C ** 2 * dt ** 2 + 1)
+            * (0.25 * B_z ** 2 * C ** 2 * dt ** 2 + 1)
+        )
+        v[i] = (vx, vy, vz)
+        x[i] += v[i] * dt

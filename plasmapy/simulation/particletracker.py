@@ -314,10 +314,9 @@ class ParticleTracker:
                 UserWarning(f"Set timestep to {dt:.3e}, 1/20 of smallest gyroperiod")
             )
 
-        _hqmdt = (
-            self.q / self.m / 2 * dt
-        ).si.value  # TODO this needs calculating within boris stepper; just use the q/m ratio
         _dt = dt.si.value
+        _q = self.particle.charge.si.value
+        _m = self.particle.mass.si.value
 
         _total_time = total_time.si.value
         _x = self._x.copy()
@@ -338,7 +337,7 @@ class ParticleTracker:
         with np.errstate(all="raise"):
             b = self.plasma._interpolate_B(_x)
             e = self.plasma._interpolate_E(_x)
-            integrator(_x, _v, b, e, -0.5 * _hqmdt, -0.5 * _dt)
+            integrator(_x, _v, b, e, _q, _m, -0.5 * _dt)
 
             _x = _x - _v * 0.5 * _dt
 
@@ -352,7 +351,7 @@ class ParticleTracker:
                 _time += _dt
                 b = self.plasma._interpolate_B(_x)
                 e = self.plasma._interpolate_E(_x)
-                integrator(_x, _v, b, e, _hqmdt, _dt)
+                integrator(_x, _v, b, e, _q, _m, _dt)
 
                 if True:
                     timestep_info = dict(i=len(_times), dt=_dt)
