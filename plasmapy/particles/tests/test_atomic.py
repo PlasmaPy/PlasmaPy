@@ -1,16 +1,13 @@
+from collections import namedtuple
 import pytest
 import numpy as np
 from astropy import units as u, constants as const
 
-from ..symbols import (
-    atomic_symbol,
-    isotope_symbol,
-    element_name,
-)
+from plasmapy.tests.helper import function_test_runner
+from plasmapy.particles.symbols import atomic_symbol, isotope_symbol, element_name
+from plasmapy.particles.isotopes import _Isotopes
 
-from ..isotopes import _Isotopes
-
-from ..atomic import (
+from plasmapy.particles.atomic import (
     atomic_number,
     mass_number,
     standard_atomic_weight,
@@ -31,13 +28,6 @@ from ..atomic import (
     _is_electron,
 )
 
-from ..nuclear import (
-    nuclear_binding_energy,
-    nuclear_reaction_energy,
-)
-
-from plasmapy.utils.pytest_helpers import run_test
-
 from plasmapy.particles.exceptions import (
     AtomicError,
     MissingAtomicDataError,
@@ -46,478 +36,418 @@ from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
     AtomicWarning,
-    )
+)
 
-# function to be tested, argument(s), expected result/outcome
+Inputs = namedtuple("Inputs", ["function", "args", "kwargs", "expected"])
 
-# The following lists (with the name of a function
+nokwargs = {}
 
-atomic_symbol_table = [
-    [1, 'H'],
-    [1, 'H'],
-    ['H', 'H'],
-    ['p', 'H'],
-    ['T', 'H'],
-    ['deuterium', 'H'],
-    ['deuteron', 'H'],
-    ['Tritium', 'H'],
-    ['triton', 'H'],
-    ['H-2', 'H'],
-    ['D', 'H'],
-    ['T', 'H'],
-    ['H-3', 'H'],
-    ['Hydrogen-3', 'H'],
-    ['helium', 'He'],
-    [2, 'He'],
-    ['alpha', 'He'],
-    ['gold', 'Au'],
-    ['Gold', 'Au'],
-    [79, 'Au'],
-    ['79', 'Au'],
-    ['P', 'P'],
-    [118, 'Og'],
-    ['N-14', 'N'],
-    ['N', 'N'],
-    ['H +1', 'H'],
-    ['H 1+', 'H'],
-    ['hydrogen 1+', 'H'],
-    ['deuterium 1+', 'H'],
-    ['Fe 24+', 'Fe'],
-    ['Fe +24', 'Fe'],
-    ['Fe 2-', 'Fe'],
-    ['Fe -2', 'Fe'],
-    ['Fe+', 'Fe'],
-    ['Fe++', 'Fe'],
-    ['Fe-', 'Fe'],
-    ['Fe++++++++++++++', 'Fe'],
-    ['H-0', InvalidParticleError],
-    [3.14159, TypeError],
-    ['Og-294b', InvalidParticleError],
-    ['H-934361079326356530741942970523610389', InvalidParticleError],
-    ['Fe 2+4', InvalidParticleError],
-    ['Fe+24', InvalidParticleError],
-    ['Fe +59', InvalidParticleError],
-    ['C++++++++++++++++', InvalidParticleError],
-    ['C-++++', InvalidParticleError],
-    ['neutron', InvalidElementError],
-    ['n', InvalidElementError],
-    ['n-1', InvalidElementError],
-    ['h', InvalidParticleError],
-    ['d', InvalidParticleError],
-    ['he', InvalidParticleError],
-    ['au', InvalidParticleError],
-    ['p-', InvalidElementError],
-    [0, InvalidParticleError],
-    [119, InvalidParticleError],
-    ['antiproton', InvalidElementError],
+test_inputs = [
+    Inputs(atomic_symbol, 1, nokwargs, 'H'),
+    Inputs(atomic_symbol, 1, nokwargs, 'H'),
+    Inputs(atomic_symbol, 'H', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'p', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'T', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'deuterium', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'deuteron', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'Tritium', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'triton', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'H-2', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'D', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'T', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'H-3', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'Hydrogen-3', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'helium', nokwargs, 'He'),
+    Inputs(atomic_symbol, 2, nokwargs, 'He'),
+    Inputs(atomic_symbol, 'alpha', nokwargs, 'He'),
+    Inputs(atomic_symbol, 'gold', nokwargs, 'Au'),
+    Inputs(atomic_symbol, 'Gold', nokwargs, 'Au'),
+    Inputs(atomic_symbol, 79, nokwargs, 'Au'),
+    Inputs(atomic_symbol, '79', nokwargs, 'Au'),
+    Inputs(atomic_symbol, 'P', nokwargs, 'P'),
+    Inputs(atomic_symbol, 118, nokwargs, 'Og'),
+    Inputs(atomic_symbol, 'N-14', nokwargs, 'N'),
+    Inputs(atomic_symbol, 'N', nokwargs, 'N'),
+    Inputs(atomic_symbol, 'H +1', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'H 1+', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'hydrogen 1+', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'deuterium 1+', nokwargs, 'H'),
+    Inputs(atomic_symbol, 'Fe 24+', nokwargs, 'Fe'),
+    Inputs(atomic_symbol, 'Fe +24', nokwargs, 'Fe'),
+    Inputs(atomic_symbol, 'Fe 2-', nokwargs, 'Fe'),
+    Inputs(atomic_symbol, 'Fe -2', nokwargs, 'Fe'),
+    Inputs(atomic_symbol, 'Fe+', nokwargs, 'Fe'),
+    Inputs(atomic_symbol, 'Fe++', nokwargs, 'Fe'),
+    Inputs(atomic_symbol, 'Fe-', nokwargs, 'Fe'),
+    Inputs(atomic_symbol, 'Fe++++++++++++++', nokwargs, 'Fe'),
+    Inputs(atomic_symbol, 'H-0', nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 3.14159, nokwargs, TypeError),
+    Inputs(atomic_symbol, 'Og-294b', nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 'H-93436107932635', nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 'Fe 2+4', nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 'Fe+24', nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 'Fe +59', nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 'C++++++++++++++++', nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 'C-++++', nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 'neutron', nokwargs, InvalidElementError),
+    Inputs(atomic_symbol, 'n', nokwargs, InvalidElementError),
+    Inputs(atomic_symbol, 'n-1', nokwargs, InvalidElementError),
+    Inputs(atomic_symbol, 'h', nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 'd', nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 'he', nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 'au', nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 'p-', nokwargs, InvalidElementError),
+    Inputs(atomic_symbol, 0, nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 119, nokwargs, InvalidParticleError),
+    Inputs(atomic_symbol, 'antiproton', nokwargs, InvalidElementError),
+    Inputs(isotope_symbol, ('He', 4), nokwargs, 'He-4'),
+    Inputs(isotope_symbol, ('helium-4',), nokwargs, 'He-4'),
+    Inputs(isotope_symbol, ('H-2',), nokwargs, 'D'),
+    Inputs(isotope_symbol, ('Deuterium',), nokwargs, 'D'),
+    Inputs(isotope_symbol, ('deuterium',), nokwargs, 'D'),
+    Inputs(isotope_symbol, ('deuteron',), nokwargs, 'D'),
+    Inputs(isotope_symbol, ('tritium',), nokwargs, 'T'),
+    Inputs(isotope_symbol, ('triton',), nokwargs, 'T'),
+    Inputs(isotope_symbol, ('Hydrogen-3',), nokwargs, 'T'),
+    Inputs(isotope_symbol, ('hydrogen-3',), nokwargs, 'T'),
+    Inputs(isotope_symbol, ('H-3',), nokwargs, 'T'),
+    Inputs(isotope_symbol, (1, 2), nokwargs, 'D'),
+    Inputs(isotope_symbol, ('Hydrogen', 3), nokwargs, 'T'),
+    Inputs(isotope_symbol, ('tritium',), nokwargs, 'T'),
+    Inputs(isotope_symbol, ('H', 2), nokwargs, 'D'),
+    Inputs(isotope_symbol, ('Alpha',), nokwargs, 'He-4'),
+    Inputs(isotope_symbol, ('alpha',), nokwargs, 'He-4'),
+    Inputs(isotope_symbol, (79, 197), nokwargs, 'Au-197'),
+    Inputs(isotope_symbol, ('p',), nokwargs, 'H-1'),
+    Inputs(isotope_symbol, ('beryllium-8',), nokwargs, 'Be-8'),
+    Inputs(isotope_symbol, ('N-13',), nokwargs, 'N-13'),
+    Inputs(isotope_symbol, ('p',), nokwargs, 'H-1'),
+    Inputs(isotope_symbol, ('proton',), nokwargs, 'H-1'),
+    Inputs(isotope_symbol, ('protium',), nokwargs, 'H-1'),
+    Inputs(isotope_symbol, ('N-13 2+',), nokwargs, 'N-13'),
+    Inputs(isotope_symbol, ('Hydrogen-3 +1',), nokwargs, 'T'),
+    Inputs(isotope_symbol, 'Md-260', {"mass_numb": 261}, InvalidParticleError),
+    Inputs(isotope_symbol, 'protium', {"mass_numb": 2}, InvalidParticleError),
+    Inputs(isotope_symbol, 'alpha', {"mass_numb": 3}, InvalidParticleError),
+    Inputs(isotope_symbol, 'O-18', {"mass_numb": 19}, InvalidParticleError),
+    Inputs(isotope_symbol, 'lead-209', {"mass_numb": 511}, InvalidParticleError),
+    Inputs(isotope_symbol, 'He-1', nokwargs, InvalidParticleError),
+    Inputs(isotope_symbol, 24, {"mass_numb": 23}, InvalidParticleError),
+    Inputs(isotope_symbol, 'H', {"mass_numb": 0}, InvalidParticleError),
+    Inputs(isotope_symbol, 'H-1', {"mass_numb": 2}, InvalidParticleError),
+    Inputs(isotope_symbol, 'P', nokwargs, InvalidIsotopeError),
+    Inputs(isotope_symbol, 1, nokwargs, InvalidIsotopeError),
+    Inputs(isotope_symbol, 4, nokwargs, InvalidIsotopeError),
+    Inputs(isotope_symbol, 'hydrogen-444444', nokwargs, InvalidParticleError),
+    Inputs(isotope_symbol, 'Fe', {"mass_numb": 2.1}, TypeError),
+    Inputs(isotope_symbol, 'He', {"mass_numb": 'c'}, TypeError),
+    Inputs(isotope_symbol, 'He-3', {"mass_numb": 4}, InvalidParticleError),
+    Inputs(isotope_symbol, 'D', {"mass_numb": 3}, InvalidParticleError),
+    Inputs(isotope_symbol, 'T', {"mass_numb": 2}, InvalidParticleError),
+    Inputs(isotope_symbol, 'Fe', {"mass_numb": None}, InvalidIsotopeError),
+    Inputs(isotope_symbol, 'He', {"mass_numb": 99}, InvalidParticleError),
+    Inputs(isotope_symbol, 'd', nokwargs, InvalidParticleError),
+    Inputs(isotope_symbol, 'h-3', nokwargs, InvalidParticleError),
+    Inputs(isotope_symbol, 'h', nokwargs, InvalidParticleError),
+    Inputs(isotope_symbol, 'd+', nokwargs, InvalidParticleError),
+    Inputs(isotope_symbol, 'H-1', {"mass_numb": 1}, AtomicWarning),
+    Inputs(isotope_symbol, 'H-2', {"mass_numb": 2}, AtomicWarning),
+    Inputs(isotope_symbol, 'T', {"mass_numb": 3}, AtomicWarning),
+    Inputs(isotope_symbol, 'Li-6', {"mass_numb": 6}, AtomicWarning),
+    Inputs(isotope_symbol, 'lithium-6', {"mass_numb": 6}, AtomicWarning),
+    Inputs(isotope_symbol, 'alpha', {"mass_numb": 4}, AtomicWarning),
+    Inputs(isotope_symbol, 'p', {"mass_numb": 1}, AtomicWarning),
+    Inputs(atomic_number, 'H', nokwargs, 1),
+    Inputs(atomic_number, 'D', nokwargs, 1),
+    Inputs(atomic_number, 'deuterium', nokwargs, 1),
+    Inputs(atomic_number, 'Deuterium', nokwargs, 1),
+    Inputs(atomic_number, 'tritium', nokwargs, 1),
+    Inputs(atomic_number, 'p', nokwargs, 1),
+    Inputs(atomic_number, 'P', nokwargs, 15),
+    Inputs(atomic_number, 'Alpha', nokwargs, 2),
+    Inputs(atomic_number, 'C-12', nokwargs, 6),
+    Inputs(atomic_number, 'Argon', nokwargs, 18),
+    Inputs(atomic_number, 'protium', nokwargs, 1),
+    Inputs(atomic_number, 'H-3', nokwargs, 1),
+    Inputs(atomic_number, 'p+', nokwargs, 1),
+    Inputs(atomic_number, 'Be-8', nokwargs, 4),
+    Inputs(atomic_number, 'N', nokwargs, 7),
+    Inputs(atomic_number, 'N 2+', nokwargs, 7),
+    Inputs(atomic_number, 'N +1', nokwargs, 7),
+    Inputs(atomic_number, 'N+++', nokwargs, 7),
+    Inputs(atomic_number, 'H-3934', nokwargs, InvalidParticleError),
+    Inputs(atomic_number, 'C-12b', nokwargs, InvalidParticleError),
+    Inputs(atomic_number, -1.5, nokwargs, TypeError),
+    Inputs(atomic_number, 'n', nokwargs, InvalidElementError),
+    Inputs(atomic_number, 'n-1', nokwargs, InvalidElementError),
+    Inputs(atomic_number, 'neutron', nokwargs, InvalidElementError),
+    Inputs(atomic_number, 'Neutron', nokwargs, InvalidElementError),
+    Inputs(atomic_number, 'd', nokwargs, InvalidParticleError),
+    Inputs(atomic_number, 't', nokwargs, InvalidParticleError),
+    Inputs(atomic_number, 's-36', nokwargs, InvalidParticleError),
+    Inputs(mass_number, 'helium-3', nokwargs, 3),
+    Inputs(mass_number, 'Au-197', nokwargs, 197),
+    Inputs(mass_number, 'deuterium', nokwargs, 2),
+    Inputs(mass_number, 'D', nokwargs, 2),
+    Inputs(mass_number, 'H-2', nokwargs, 2),
+    Inputs(mass_number, 'tritium', nokwargs, 3),
+    Inputs(mass_number, 'T', nokwargs, 3),
+    Inputs(mass_number, 'alpha', nokwargs, 4),
+    Inputs(mass_number, 'p', nokwargs, 1),
+    Inputs(mass_number, 'Be-8', nokwargs, 8),
+    Inputs(mass_number, 'N-13', nokwargs, 13),
+    Inputs(mass_number, 'N-13 2+', nokwargs, 13),
+    Inputs(mass_number, 'N-13 +2', nokwargs, 13),
+    Inputs(mass_number, 'N-13+++', nokwargs, 13),
+    Inputs(mass_number, 'H-359', nokwargs, InvalidParticleError),
+    Inputs(mass_number, 'C-12b', nokwargs, InvalidParticleError),
+    Inputs(mass_number, -1.5, nokwargs, TypeError),
+    Inputs(mass_number, 'N-13+-+-', nokwargs, InvalidParticleError),
+    Inputs(mass_number, 'h-3', nokwargs, InvalidParticleError),
+    Inputs(mass_number, 'n', nokwargs, InvalidIsotopeError),
+    Inputs(mass_number, 'n-1', nokwargs, InvalidIsotopeError),
+    Inputs(element_name, 'D', nokwargs, 'hydrogen'),
+    Inputs(element_name, 'deuterium', nokwargs, 'hydrogen'),
+    Inputs(element_name, 'Au', nokwargs, 'gold'),
+    Inputs(element_name, 'alpha', nokwargs, 'helium'),
+    Inputs(element_name, 'helium-4', nokwargs, 'helium'),
+    Inputs(element_name, 'H-2', nokwargs, 'hydrogen'),
+    Inputs(element_name, 'Deuterium', nokwargs, 'hydrogen'),
+    Inputs(element_name, 'Hydrogen-3', nokwargs, 'hydrogen'),
+    Inputs(element_name, 'hydrogen-3', nokwargs, 'hydrogen'),
+    Inputs(element_name, 'H-3', nokwargs, 'hydrogen'),
+    Inputs(element_name, 'tritium', nokwargs, 'hydrogen'),
+    Inputs(element_name, 'Alpha', nokwargs, 'helium'),
+    Inputs(element_name, 'alpha', nokwargs, 'helium'),
+    Inputs(element_name, 1, nokwargs, 'hydrogen'),
+    Inputs(element_name, 26, nokwargs, 'iron'),
+    Inputs(element_name, 79, nokwargs, 'gold'),
+    Inputs(element_name, 'p', nokwargs, 'hydrogen'),
+    Inputs(element_name, 'P', nokwargs, 'phosphorus'),
+    Inputs(element_name, 'Be-8', nokwargs, 'beryllium'),
+    Inputs(element_name, 'Li-7', nokwargs, 'lithium'),
+    Inputs(element_name, 'N', nokwargs, 'nitrogen'),
+    Inputs(element_name, 'N+++', nokwargs, 'nitrogen'),
+    Inputs(element_name, 'D-', nokwargs, 'hydrogen'),
+    Inputs(element_name, 'vegancupcakes', nokwargs, InvalidParticleError),
+    Inputs(element_name, 'C-+-', nokwargs, InvalidParticleError),
+    Inputs(element_name, 1.24, nokwargs, TypeError),
+    Inputs(element_name, 'n', nokwargs, InvalidElementError),
+    Inputs(element_name, 'neutron', nokwargs, InvalidElementError),
+    Inputs(element_name, 0, nokwargs, InvalidParticleError),
+    Inputs(element_name, 'H++', nokwargs, InvalidParticleError),
+    Inputs(element_name, 't', nokwargs, InvalidParticleError),
+    Inputs(element_name, 'pb', nokwargs, InvalidParticleError),
+    Inputs(element_name, 'd', nokwargs, InvalidParticleError),
+    Inputs(element_name, 'h-3', nokwargs, InvalidParticleError),
+    Inputs(element_name, 'Pb-9', nokwargs, InvalidParticleError),
+    Inputs(element_name, 'H 2+', nokwargs, InvalidParticleError),
+    Inputs(standard_atomic_weight, 'H', nokwargs, (1.008 * u.u).to(u.kg)),
+    Inputs(standard_atomic_weight, 1, nokwargs, (1.008 * u.u).to(u.kg)),
+    Inputs(standard_atomic_weight, 'Hydrogen', nokwargs, (1.008 * u.u).to(u.kg)),
+    Inputs(standard_atomic_weight, 'Au', nokwargs, u.kg),
+    Inputs(standard_atomic_weight, 'H-1', nokwargs, AtomicError),
+    Inputs(standard_atomic_weight, 1.1, nokwargs, TypeError),
+    Inputs(standard_atomic_weight, 'n', nokwargs, InvalidElementError),
+    Inputs(standard_atomic_weight, 'p', nokwargs, AtomicError),
+    Inputs(standard_atomic_weight, 'alpha', nokwargs, AtomicError),
+    Inputs(standard_atomic_weight, 'deuteron', nokwargs, AtomicError),
+    Inputs(standard_atomic_weight, 'tritium', nokwargs, AtomicError),
+    Inputs(standard_atomic_weight, 'Au+', nokwargs, AtomicError),
+    Inputs(standard_atomic_weight, 'Fe -2', nokwargs, AtomicError),
+    Inputs(standard_atomic_weight, 'Og 2+', nokwargs, AtomicError),
+    Inputs(standard_atomic_weight, 'h', nokwargs, InvalidParticleError),
+    Inputs(standard_atomic_weight, 'fe', nokwargs, InvalidParticleError),
+    Inputs(particle_mass, 'proton', nokwargs, const.m_p.to('kg')),
+    Inputs(particle_mass, 'H-1+', nokwargs, const.m_p.to('kg')),
+    Inputs(particle_mass, 'H-1 +1', nokwargs, const.m_p.to('kg')),
+    Inputs(particle_mass, 'H-1 1+', nokwargs, const.m_p.to('kg')),
+    Inputs(particle_mass, 'H-1', {'Z': 1}, const.m_p.to('kg')),
+    Inputs(particle_mass, 'hydrogen-1', {'Z': 1}, const.m_p.to('kg')),
+    Inputs(particle_mass, 'p+', nokwargs, const.m_p.to('kg')),
+    Inputs(particle_mass, 'F-19', {'Z': 3}, u.kg),
+    Inputs(particle_mass, 'Og 1+', nokwargs, MissingAtomicDataError),
+    Inputs(particle_mass, 'Fe-56', {"Z": 1.4}, TypeError),
+    Inputs(particle_mass, 'H-1 +1', {"Z": 0}, InvalidParticleError),
+    Inputs(particle_mass, 26, {"Z": 1, "mass_numb": 'a'}, TypeError),
+    Inputs(particle_mass, 26, {"Z": 27, "mass_numb": 56}, InvalidParticleError),
+    Inputs(particle_mass, 'Og', {"Z": 1}, MissingAtomicDataError),
+    Inputs(particle_mass, 'Og', {"mass_numb": 696, "Z": 1}, InvalidParticleError),
+    Inputs(particle_mass, 'He 1+', {"mass_numb": 99}, InvalidParticleError),
+    Inputs(particle_mass, 'fe-56 1+', nokwargs, InvalidParticleError),
+    Inputs(particle_mass, 'H-1', {'mass_numb': 1, 'Z': 1}, AtomicWarning),
+    Inputs(particle_mass, 'H', nokwargs, standard_atomic_weight('H')),
+    Inputs(is_stable, 'H-1', nokwargs, True),
+    Inputs(is_stable, (1, 1), nokwargs, True),
+    Inputs(is_stable, 'N-14', nokwargs, True),
+    Inputs(is_stable, ('N', 14), nokwargs, True),
+    Inputs(is_stable, 'P-31', nokwargs, True),
+    Inputs(is_stable, ('P', 31), nokwargs, True),
+    Inputs(is_stable, 'p', nokwargs, True),
+    Inputs(is_stable, 'alpha', nokwargs, True),
+    Inputs(is_stable, 'Xe-124', nokwargs, True),
+    Inputs(is_stable, 'Fe', {'mass_numb': 56}, True),
+    Inputs(is_stable, 'Fe-56', nokwargs, True),
+    Inputs(is_stable, 'iron-56', nokwargs, True),
+    Inputs(is_stable, 'Iron-56', nokwargs, True),
+    Inputs(is_stable, (26, 56), nokwargs, True),
+    Inputs(is_stable, 'Be-8', nokwargs, False),
+    Inputs(is_stable, 'U-235', nokwargs, False),
+    Inputs(is_stable, 'uranium-235', nokwargs, False),
+    Inputs(is_stable, 'T', nokwargs, False),
+    Inputs(is_stable, (4, 8), nokwargs, False),
+    Inputs(is_stable, 'tritium', nokwargs, False),
+    Inputs(is_stable, 'Pb-209', nokwargs, False),
+    Inputs(is_stable, 'lead-209', nokwargs, False),
+    Inputs(is_stable, 'Lead-209', nokwargs, False),
+    Inputs(is_stable, 'Pb', {'mass_numb': 209}, False),
+    Inputs(is_stable, (82, 209), nokwargs, False),
+    Inputs(is_stable, ('hydrogen-444444',), nokwargs, InvalidParticleError),
+    Inputs(is_stable, ('hydrogen', 0), nokwargs, InvalidParticleError),
+    Inputs(is_stable, ('',), nokwargs, InvalidParticleError),
+    Inputs(is_stable, ('pb-209',), nokwargs, InvalidParticleError),
+    Inputs(is_stable, ('h',), nokwargs, InvalidParticleError),
+    Inputs(is_stable, ('He',), nokwargs, InvalidIsotopeError),
+    Inputs(is_stable, ('B',), nokwargs, InvalidIsotopeError),
+    Inputs(integer_charge, 'H+', nokwargs, 1),
+    Inputs(integer_charge, 'D +1', nokwargs, 1),
+    Inputs(integer_charge, 'tritium 1+', nokwargs, 1),
+    Inputs(integer_charge, 'H-', nokwargs, -1),
+    Inputs(integer_charge, 'Fe -2', nokwargs, -2),
+    Inputs(integer_charge, 'Fe 2-', nokwargs, -2),
+    Inputs(integer_charge, 'N--', nokwargs, -2),
+    Inputs(integer_charge, 'N++', nokwargs, 2),
+    Inputs(integer_charge, 'alpha', nokwargs, 2),
+    Inputs(integer_charge, 'proton', nokwargs, 1),
+    Inputs(integer_charge, 'deuteron', nokwargs, 1),
+    Inputs(integer_charge, 'triton', nokwargs, 1),
+    Inputs(integer_charge, 'electron', nokwargs, -1),
+    Inputs(integer_charge, 'e-', nokwargs, -1),
+    Inputs(integer_charge, 'e+', nokwargs, 1),
+    Inputs(integer_charge, 'positron', nokwargs, 1),
+    Inputs(integer_charge, 'n', nokwargs, 0),
+    Inputs(integer_charge, 'neutron', nokwargs, 0),
+    Inputs(integer_charge, 'p-', nokwargs, -1),
+    Inputs(integer_charge, 'antiproton', nokwargs, -1),
+    Inputs(integer_charge, 'fads', nokwargs, InvalidParticleError),
+    Inputs(integer_charge, 'H++', nokwargs, InvalidParticleError),
+    Inputs(integer_charge, 'h+', nokwargs, InvalidParticleError),
+    Inputs(integer_charge, 'fe 1+', nokwargs, InvalidParticleError),
+    Inputs(integer_charge, 'd+', nokwargs, InvalidParticleError),
+    Inputs(integer_charge, 'Fe 29+', nokwargs, InvalidParticleError),
+    Inputs(integer_charge, 'H-1', nokwargs, ChargeError),
+    Inputs(integer_charge, 'H---', nokwargs, AtomicWarning),
+    Inputs(integer_charge, 'Fe -26', nokwargs, AtomicWarning),
+    Inputs(integer_charge, 'Og 10-', nokwargs, AtomicWarning),
+    Inputs(electric_charge, 'p', nokwargs, u.C),
+    Inputs(electric_charge, 'p', nokwargs, const.e),
+    Inputs(electric_charge, 'e', nokwargs, -1.6021766208e-19 * u.C),
+    Inputs(electric_charge, 'alpha', nokwargs, 3.2043532416e-19 * u.C),
+    Inputs(electric_charge, 'n', nokwargs, 0 * u.C),
+    Inputs(electric_charge, 'bad input', nokwargs, InvalidParticleError),
+    Inputs(electric_charge, 'h+', nokwargs, InvalidParticleError),
+    Inputs(electric_charge, 'Au 81+', nokwargs, InvalidParticleError),
+    Inputs(electric_charge, 'Au 81-', nokwargs, AtomicWarning),
+    Inputs(electric_charge, 'H---', nokwargs, AtomicWarning),
+    Inputs(half_life, 'H-1', nokwargs, u.s),
+    Inputs(half_life, 'tritium', nokwargs, u.s),
+    Inputs(half_life, 'H-1', nokwargs, np.inf * u.s),
+    Inputs(half_life, 'No-248', nokwargs, MissingAtomicDataError),  # isotope with missing data
+    Inputs(periodic_table_period, ('Ne', 'Na'), nokwargs, TypeError),
+    Inputs(periodic_table_block, ('N', 'C', 'F'), nokwargs, TypeError),
+    Inputs(periodic_table_category, ('Rb', 'He', 'Li'), nokwargs, TypeError),
+    Inputs(periodic_table_group, ('B', 'Ti', 'Ge'), nokwargs, TypeError),
+    Inputs(isotopic_abundance, ('H', 1), nokwargs, isotopic_abundance("protium")),
+    Inputs(isotopic_abundance, 'D', nokwargs, 0.000115),
+    Inputs(isotopic_abundance, "Be-8", nokwargs, 0.0),
+    Inputs(isotopic_abundance, "Li-8", nokwargs, 0.0),
+    Inputs(isotopic_abundance, ("Og", 294), nokwargs, AtomicWarning),
+    Inputs(isotopic_abundance, "neutron", nokwargs, InvalidIsotopeError),
+    Inputs(isotopic_abundance, "Og-2", nokwargs, InvalidParticleError),
+    Inputs(particle_mass, 'berkelium-249', nokwargs, (249.0749877 * u.u).to('kg')),
+    Inputs(common_isotopes, 'n', nokwargs, InvalidElementError),
+    Inputs(stable_isotopes, 'n', nokwargs, InvalidElementError),
+    Inputs(known_isotopes, 'n', nokwargs, InvalidElementError),
+    Inputs(reduced_mass, ('N', 6e-26 * u.l), nokwargs, u.UnitConversionError),
+    Inputs(reduced_mass, ('Og', 'H'), nokwargs, MissingAtomicDataError),
+    Inputs(known_isotopes, "H", nokwargs, ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7']),
+    Inputs(common_isotopes, "H", nokwargs, ['H-1', 'D']),
+    Inputs(stable_isotopes, "He", nokwargs, ["He-3", "He-4"]),
+    Inputs(_is_electron, 'e-', nokwargs, True),
+    Inputs(_is_electron, 'e+', nokwargs, False),
+    Inputs(_is_electron, 'e', nokwargs, True),
+    Inputs(_is_electron, 'electron', nokwargs, True),
+    Inputs(_is_electron, 'ELECTRON', nokwargs, True),
+    Inputs(_is_electron, 'H', nokwargs, False),
+    Inputs(_is_electron, 'positron', nokwargs, False),
+    Inputs(_is_electron, 'Carbon', nokwargs, False),
+    Inputs(half_life, 'tritium', nokwargs, 3.888e8 * u.s),
 ]
 
-isotope_symbol_table = [
-    [('He', 4), 'He-4'],
-    [('helium-4',), 'He-4'],
-    [('H-2',), 'D'],
-    [('Deuterium',), 'D'],
-    [('deuterium',), 'D'],
-    [('deuteron',), 'D'],
-    [('tritium',), 'T'],
-    [('triton',), 'T'],
-    [('Hydrogen-3',), 'T'],
-    [('hydrogen-3',), 'T'],
-    [('H-3',), 'T'],
-    [(1, 2), 'D'],
-    [('Hydrogen', 3), 'T'],
-    [('tritium',), 'T'],
-    [('H', 2), 'D'],
-    [('Alpha',), 'He-4'],
-    [('alpha',), 'He-4'],
-    [(79, 197), 'Au-197'],
-    [('p',), 'H-1'],
-    [('beryllium-8',), 'Be-8'],
-    [('N-13',), 'N-13'],
-    [('p',), 'H-1'],
-    [('proton',), 'H-1'],
-    [('protium',), 'H-1'],
-    [('N-13 2+',), 'N-13'],
-    [('Hydrogen-3 +1',), 'T'],
-    ['Md-260', {"mass_numb": 261}, InvalidParticleError],
-    ['protium', {"mass_numb": 2}, InvalidParticleError],
-    ['alpha', {"mass_numb": 3}, InvalidParticleError],
-    ['O-18', {"mass_numb": 19}, InvalidParticleError],
-    ['lead-209', {"mass_numb": 511}, InvalidParticleError],
-    ['He-1', {}, InvalidParticleError],
-    [24, {"mass_numb": 23}, InvalidParticleError],
-    ['H', {"mass_numb": 0}, InvalidParticleError],
-    ['H-1', {"mass_numb": 2}, InvalidParticleError],
-    ['P', {}, InvalidIsotopeError],
-    [1, {}, InvalidIsotopeError],
-    [4, {}, InvalidIsotopeError],
-    ['hydrogen-444444', {}, InvalidParticleError],
-    ['Fe', {"mass_numb": 2.1}, TypeError],
-    ['He', {"mass_numb": 'c'}, TypeError],
-    ['He-3', {"mass_numb": 4}, InvalidParticleError],
-    ['D', {"mass_numb": 3}, InvalidParticleError],
-    ['T', {"mass_numb": 2}, InvalidParticleError],
-    ['Fe', {"mass_numb": None}, InvalidIsotopeError],
-    ['He', {"mass_numb": 99}, InvalidParticleError],
-    ['d', {}, InvalidParticleError],
-    ['h-3', {}, InvalidParticleError],
-    ['h', {}, InvalidParticleError],
-    ['d+', {}, InvalidParticleError],
-    ['H-1', {"mass_numb": 1}, AtomicWarning],
-    ['H-2', {"mass_numb": 2}, AtomicWarning],
-    ['T', {"mass_numb": 3}, AtomicWarning],
-    ['Li-6', {"mass_numb": 6}, AtomicWarning],
-    ['lithium-6', {"mass_numb": 6}, AtomicWarning],
-    ['alpha', {"mass_numb": 4}, AtomicWarning],
-    ['p', {"mass_numb": 1}, AtomicWarning],
-]
 
-atomic_number_table = [
-    ['H', 1],
-    ['D', 1],
-    ['deuterium', 1],
-    ['Deuterium', 1],
-    ['tritium', 1],
-    ['p', 1],
-    ['P', 15],
-    ['Alpha', 2],
-    ['C-12', 6],
-    ['Argon', 18],
-    ['protium', 1],
-    ['H-3', 1],
-    ['p+', 1],
-    ['Be-8', 4],
-    ['N', 7],
-    ['N 2+', 7],
-    ['N +1', 7],
-    ['N+++', 7],
-    ['H-3934', InvalidParticleError],
-    ['C-12b', InvalidParticleError],
-    [-1.5, TypeError],
-    ['n', InvalidElementError],
-    ['n-1', InvalidElementError],
-    ['neutron', InvalidElementError],
-    ['Neutron', InvalidElementError],
-    ['d', InvalidParticleError],
-    ['t', InvalidParticleError],
-    ['s-36', InvalidParticleError],
-]
+def append_invalid_particle_tests(list_of_tests):
+    """
+    Add test cases for bad inputs that should each raise the same type
+    of exception for most functions related to atomic data.
+    """
 
-mass_number_table = [
-    ['helium-3', 3],
-    ['Au-197', 197],
-    ['deuterium', 2],
-    ['D', 2],
-    ['H-2', 2],
-    ['tritium', 3],
-    ['T', 3],
-    ['alpha', 4],
-    ['p', 1],
-    ['Be-8', 8],
-    ['N-13', 13],
-    ['N-13 2+', 13],
-    ['N-13 +2', 13],
-    ['N-13+++', 13],
-    ['H-359', InvalidParticleError],
-    ['C-12b', InvalidParticleError],
-    [-1.5, TypeError],
-    ['N-13+-+-', InvalidParticleError],
-    ['h-3', InvalidParticleError],
-    ['n', InvalidIsotopeError],
-    ['n-1', InvalidIsotopeError],
-]
+    functions_to_test = [
+        atomic_symbol,
+        isotope_symbol,
+        atomic_number,
+        is_stable,
+        half_life,
+        mass_number,
+        element_name,
+        standard_atomic_weight,
+        particle_mass,
+        known_isotopes,
+        stable_isotopes,
+        common_isotopes,
+        isotopic_abundance,
+        integer_charge,
+        electric_charge,
+    ]
+
+    invalid_particles_and_exceptions = [
+        (-1, InvalidParticleError),
+        (119, InvalidParticleError),
+        ('...', InvalidParticleError),
+        ('H-0', InvalidParticleError),
+        ('Og-294b', InvalidParticleError),
+        ('H-9343610', InvalidParticleError),
+        ('Fe 2+4', InvalidParticleError),
+        ('Fe+24', InvalidParticleError),
+        ('Fe +59', InvalidParticleError),
+        ('C++++++++++++++++', InvalidParticleError),
+        ('C-++++', InvalidParticleError),
+        ('h', InvalidParticleError),
+        ('d', InvalidParticleError),
+        ('he', InvalidParticleError),
+        ('au', InvalidParticleError),
+        ('alpha 1+', InvalidParticleError),
+        ('alpha-4', InvalidParticleError),
+        (1.1, TypeError),
+        ({"...": "..."}, TypeError),
+        (1 + 1j, TypeError),
+    ]
+
+    for function in functions_to_test:
+        for invalid_particle, exception in invalid_particles_and_exceptions:
+            list_of_tests.append(Inputs(function, invalid_particle, nokwargs, exception))
 
 
-element_name_table = [
-    ['D', 'hydrogen'],
-    ['deuterium', 'hydrogen'],
-    ['Au', 'gold'],
-    ['alpha', 'helium'],
-    ['helium-4', 'helium'],
-    ['H-2', 'hydrogen'],
-    ['Deuterium', 'hydrogen'],
-    ['Hydrogen-3', 'hydrogen'],
-    ['hydrogen-3', 'hydrogen'],
-    ['H-3', 'hydrogen'],
-    ['tritium', 'hydrogen'],
-    ['Alpha', 'helium'],
-    ['alpha', 'helium'],
-    [1, 'hydrogen'],
-    [26, 'iron'],
-    [79, 'gold'],
-    ['p', 'hydrogen'],
-    ['P', 'phosphorus'],
-    ['Be-8', 'beryllium'],
-    ['Li-7', 'lithium'],
-    ['N', 'nitrogen'],
-    ['N+++', 'nitrogen'],
-    ['D-', 'hydrogen'],
-    ['vegancupcakes', InvalidParticleError],
-    ['C-+-', InvalidParticleError],
-    [1.24, TypeError],
-    ['n', InvalidElementError],
-    ['neutron', InvalidElementError],
-    [0, InvalidParticleError],
-    ['H++', InvalidParticleError],
-    ['t', InvalidParticleError],
-    ['pb', InvalidParticleError],
-    ['d', InvalidParticleError],
-    ['h-3', InvalidParticleError],
-    ['Pb-9', InvalidParticleError],
-    ['H 2+', InvalidParticleError],
-]
-
-standard_atomic_weight_table = [
-    ['H', (1.008 * u.u).to(u.kg)],
-    [1, (1.008 * u.u).to(u.kg)],
-    ['Hydrogen', (1.008 * u.u).to(u.kg)],
-    ['Au', u.kg],
-    ['H-1', AtomicError],
-    ["help i'm trapped in a unit test", InvalidParticleError],
-    [1.1, TypeError],
-    ['n', InvalidElementError],
-    ['p', AtomicError],
-    ['alpha', AtomicError],
-    ['deuteron', AtomicError],
-    ['tritium', AtomicError],
-    ['Au+', AtomicError],
-    ['Fe -2', AtomicError],
-    ['Og 2+', AtomicError],
-    ['h', InvalidParticleError],
-    ['fe', InvalidParticleError],
-]
-
-particle_mass_table = [
-    ['proton', const.m_p],
-    ['H-1+', const.m_p],
-    ['H-1 +1', const.m_p],
-    ['H-1 1+', const.m_p],
-    ['H-1', {'Z': 1}, const.m_p],
-    ['hydrogen-1', {'Z': 1}, const.m_p],
-    ['p+', const.m_p],
-    ['F-19', {'Z': 3}, u.kg],
-    ['Og 1+', {}, MissingAtomicDataError],
-    ['Fe-56', {"Z": 1.4}, TypeError],
-    ['H-1 +1', {"Z": 0}, InvalidParticleError],
-    [26, {"Z": 1, "mass_numb": 'a'}, TypeError],
-    [26, {"Z": 27, "mass_numb": 56}, InvalidParticleError],
-    ['Og', {"Z": 1}, MissingAtomicDataError],
-    ['Og', {"mass_numb": 696, "Z": 1}, InvalidParticleError],
-    ['He 1+', {"mass_numb": 99}, InvalidParticleError],
-    ['fe-56 1+', {}, InvalidParticleError],
-    ['H-1', {'mass_numb': 1, 'Z': 1}, AtomicWarning],
-    ['H', standard_atomic_weight('H')],
-]
-
-is_stable_table = [
-    ['H-1', True],
-    [(1, 1), True],
-    ['N-14', True],
-    [('N', 14), True],
-    ['P-31', True],
-    [('P', 31), True],
-    ['p', True],
-    ['alpha', True],
-    ['Xe-124', True],
-    ['Fe', {'mass_numb': 56}, True],
-    ['Fe-56', True],
-    ['iron-56', True],
-    ['Iron-56', True],
-    [(26, 56), True],
-    ['Be-8', False],
-    ['U-235', False],
-    ['uranium-235', False],
-    ['T', False],
-    [(4, 8), False],
-    ['tritium', False],
-    ['Pb-209', False],
-    ['lead-209', False],
-    ['Lead-209', False],
-    ['Pb', {'mass_numb': 209}, False],
-    [(82, 209), False],
-    [('hydrogen-444444',), InvalidParticleError],
-    [('hydrogen', 0), InvalidParticleError],
-    [('',), InvalidParticleError],
-    [('pb-209',), InvalidParticleError],
-    [('h',), InvalidParticleError],
-    [('He',), InvalidIsotopeError],
-    [('B',), InvalidIsotopeError],
-]
-
-integer_charge_table = [
-    ['H+', 1],
-    ['D +1', 1],
-    ['tritium 1+', 1],
-    ['H-', -1],
-    ['Fe -2', -2],
-    ['Fe 2-', -2],
-    ['N--', -2],
-    ['N++', 2],
-    ['alpha', 2],
-    ['proton', 1],
-    ['deuteron', 1],
-    ['triton', 1],
-    ['electron', -1],
-    ['e-', -1],
-    ['e+', 1],
-    ['positron', 1],
-    ['n', 0],
-    ['neutron', 0],
-    ['p-', -1],
-    ['antiproton', -1],
-    ['fads', InvalidParticleError],
-    ['H++', InvalidParticleError],
-    ['h+', InvalidParticleError],
-    ['fe 1+', InvalidParticleError],
-    ['d+', InvalidParticleError],
-    ['Fe 29+', InvalidParticleError],
-    ['H-1', ChargeError],
-    ['H---', AtomicWarning],
-    ['Fe -26', AtomicWarning],
-    ['Og 10-', AtomicWarning],
-]
-
-electric_charge_table = [
-    ['p', u.C],
-    ['p', 1.6021766208e-19 * u.C],
-    ['e', -1.6021766208e-19 * u.C],
-    ['alpha', 3.2043532416e-19 * u.C],
-    ['n', 0 * u.C],
-    ['badinput', InvalidParticleError],
-    ['h+', InvalidParticleError],
-    ['Au 81+', InvalidParticleError],
-    ['Au 81-', AtomicWarning],
-    ['H---', AtomicWarning],
-]
-
-half_life_table = [
-    ['H-1', u.s],
-    ['tritium', u.s],
-    ['H-1', np.inf * u.s],
-]
+append_invalid_particle_tests(test_inputs)
 
 
-class TestInvalidPeriodicElement:
-    def test_periodic_table_period(self):
-        with pytest.raises(TypeError):
-            periodic_table_period(('Ne', 'Na'))
+@pytest.mark.parametrize("function, args, kwargs, expected", test_inputs)
+def test_particle_functions(function, args, kwargs, expected):
+    """
+    Test that providing the principal functions in `~plasmapy.particles.atomic`
+    result in the expected outcome.
+    """
 
-    def test_periodic_table_block(self):
-        with pytest.raises(TypeError):
-            periodic_table_block(('N', 'C', 'F'))
-
-    def test_periodic_table_category(self):
-        with pytest.raises(TypeError):
-            periodic_table_category(['Rb', 'He', 'Li'])
-
-    def test_periodic_table_group(self):
-        with pytest.raises(TypeError):
-            periodic_table_group(('B', 'Ti', 'Ge'))
-
-
-# The tables above do not include the function to be tested in order to
-# avoid cluttering up the code.  The following block of code prepends
-# the correct function to each list containing args, kwargs, and the
-# expected outcome prior to being passed through to run_test.
-
-
-tables_and_functions = [
-    (atomic_symbol, atomic_symbol_table),
-    (isotope_symbol, isotope_symbol_table),
-    (atomic_number, atomic_number_table),
-    (mass_number, mass_number_table),
-    (element_name, element_name_table),
-    (standard_atomic_weight, standard_atomic_weight_table),
-    (is_stable, is_stable_table),
-    (particle_mass, particle_mass_table),
-    (integer_charge, integer_charge_table),
-    (electric_charge, electric_charge_table),
-    (half_life, half_life_table),
-]
-
-all_tests = []
-
-for func, table in tables_and_functions:
-    for inputs in table:
-        inputs.insert(0, func)
-        if len(inputs) == 3:
-            inputs.insert(2, {})
-    all_tests += table
-
-# Set up tests for a variety of atomic functions to make sure that bad
-# inputs lead to the expected errors.
-
-atomic_TypeError_funcs_table = [
-    atomic_symbol,
-    isotope_symbol,
-    atomic_number,
-    is_stable,
-    half_life,
-    mass_number,
-    element_name,
-    standard_atomic_weight,
-    nuclear_binding_energy,
-    nuclear_reaction_energy
-]
-
-atomic_TypeError_badargs = [1.1, {'cats': 'bats'}, 1 + 1j]
-
-atomic_ParticleErrors_funcs_table = [
-    atomic_symbol,
-    isotope_symbol,
-    atomic_number,
-    is_stable,
-    half_life,
-    mass_number,
-    element_name,
-    standard_atomic_weight,
-    particle_mass,
-    known_isotopes,
-    stable_isotopes,
-    common_isotopes,
-    isotopic_abundance,
-    integer_charge,
-    electric_charge,
-]
-
-atomic_ParticleError_badargs = [
-    -1,
-    119,
-    'grumblemuffins',
-    'H-0',
-    'Og-294b',
-    'H-9343610',
-    'Fe 2+4',
-    'Fe+24',
-    'Fe +59',
-    'C++++++++++++++++',
-    'C-++++',
-    'h',
-    'd',
-    'he',
-    'au',
-    'alpha 1+',
-    'alpha-4',
-]
-
-metatable = [
-    (atomic_TypeError_funcs_table, atomic_TypeError_badargs, TypeError),
-    (atomic_ParticleErrors_funcs_table, atomic_ParticleError_badargs, InvalidParticleError),
-]
-
-for funcs, badargs, error in metatable:
-    for func in funcs:
-        for badarg in badargs:
-            all_tests += [[func, badarg, error]]
-
-
-@pytest.mark.parametrize('inputs', all_tests)
-def test_atomic_functions(inputs):
-    print(inputs)
-    run_test(inputs)
-
-
-# Next we have tests that do not fall nicely into equality comparisons.
+    function_test_runner(function=function, args=args, kwargs=kwargs, expected=expected)
 
 
 def test_standard_atomic_weight_value_between():
@@ -525,12 +455,6 @@ def test_standard_atomic_weight_value_between():
     correct value for phosphorus."""
     assert 30.973 < standard_atomic_weight('P').to(u.u).value < 30.974, \
         "Incorrect standard atomic weight for phosphorus."
-
-
-def test_particle_mass_berkelium_249():
-    """Test that `particle_mass` returns the correct value for Bk-249."""
-    assert np.isclose(particle_mass('berkelium-249').to(u.u).value, 249.0749877), \
-        "Incorrect isotope mass for berkelium."
 
 
 def test_particle_mass_for_hydrogen_with_no_mass_number():
@@ -587,35 +511,6 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
              f"these results are not equal to {repr(expected)} as expected.")
 
 
-def test_known_common_stable_isotopes():
-    """Test that `known_isotopes`, `common_isotopes`, and
-    `stable_isotopes` return the correct values for hydrogen."""
-
-    known_should_be = ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7']
-    common_should_be = ['H-1', 'D']
-    stable_should_be = ['He-3', 'He-4']
-
-    assert known_isotopes('H') == known_should_be, \
-        (f"known_isotopes('H') should return {known_should_be}, but is "
-         f"instead returning {known_isotopes('H')}")
-
-    assert common_isotopes('H') == common_should_be, \
-        (f"common_isotopes('H') should return {common_should_be}, but is "
-         f"instead returning {common_isotopes('H')}")
-
-    assert stable_isotopes('He') == stable_should_be, \
-        (f"stable_isotopes('He') should return {stable_should_be}, but is "
-         f"instead returning {stable_isotopes('He')}")
-
-
-def test_half_life():
-    """Test that `half_life` returns the correct values for various
-    isotopes."""
-    assert np.isclose(half_life('tritium').to(u.s).value,
-                      (12.32 * u.yr).to(u.s).value, rtol=2e-4), \
-        "Incorrect half-life for tritium."
-
-
 def test_half_life_unstable_isotopes():
     """Test that `half_life` returns `None` and raises an exception for
     all isotopes that do not yet have half-life data."""
@@ -624,22 +519,6 @@ def test_half_life_unstable_isotopes():
                 not _Isotopes[isotope].keys():
             with pytest.raises(MissingAtomicDataError):
                 half_life(isotope)
-
-
-def test_half_life_u_220():
-    """Test that `half_life` returns `None` and issues a warning for an
-    isotope without half-life data."""
-
-    isotope_without_half_life_data = "No-248"
-
-    with pytest.raises(MissingAtomicDataError):
-        half_life(isotope_without_half_life_data)
-        pytest.fail(
-            f"This test assumes that {isotope_without_half_life_data} does "
-            f"not have half-life data.  If half-life data is added for this "
-            f"isotope, then a different isotope that does not have half-life "
-            f"data should be chosen for this test."
-        )
 
 
 def test_known_common_stable_isotopes_cases():
@@ -687,36 +566,6 @@ def test_known_common_stable_isotopes_len():
          f"{len(known_isotopes())}, which is not within the expected range.")
 
 
-@pytest.mark.parametrize(
-    "func", [common_isotopes, stable_isotopes, known_isotopes])
-def test_known_common_stable_isotopes_error(func):
-    """Test that `known_isotopes`, `common_isotopes`, and
-    `stable_isotopes` raise an `~plasmapy.utils.InvalidElementError` for
-    neutrons."""
-    with pytest.raises(InvalidElementError):
-        func('n')
-        pytest.fail(f"{func} is not raising a ElementError for neutrons.")
-
-
-def test_isotopic_abundance():
-    """Test that `isotopic_abundance` returns the appropriate values or
-    raises appropriate errors for various isotopes."""
-    assert isotopic_abundance('H', 1) == isotopic_abundance('protium')
-    assert np.isclose(isotopic_abundance('D'), 0.000115)
-    assert isotopic_abundance('Be-8') == 0.0, 'Be-8'
-    assert isotopic_abundance('Li-8') == 0.0, 'Li-8'
-
-    with pytest.warns(AtomicWarning):
-        isotopic_abundance('Og', 294)
-
-    with pytest.raises(InvalidIsotopeError):
-        isotopic_abundance('neutron')
-        pytest.fail("No exception raised for neutrons.")
-
-    with pytest.raises(InvalidParticleError):
-        isotopic_abundance('Og-2')
-
-
 isotopic_abundance_elements = (
     atomic_number(atomic_numb) for atomic_numb in range(1, 119))
 
@@ -736,33 +585,3 @@ def test_isotopic_abundances_sum(element, isotopes):
     sum_of_iso_abund = sum(isotopic_abundance(isotope) for isotope in isotopes)
     assert np.isclose(sum_of_iso_abund, 1, atol=1e-6), \
         f"The sum of the isotopic abundances for {element} does not equal 1."
-
-
-class TestReducedMassInput:
-    def test_incorrect_units(self):
-        with pytest.raises(u.UnitConversionError):
-            reduced_mass('N', 6e-26 * u.l)
-
-    def test_missing_atomic_data(self):
-        with pytest.raises(MissingAtomicDataError):
-            reduced_mass('Og', 'H')
-
-
-str_electron_table = [
-    ('e-', True),
-    ('e+', False),
-    ('e', True),
-    ('electron', True),
-    ('ELECTRON', True),
-    ('H', False),
-    ('positron', False),
-    ('Carbon', False),
-    (('e', 'e-'), False),
-    (['e+', 'proton'], False),
-    ('merry-go-round', False),
-]
-
-
-@pytest.mark.parametrize('particle, electron', str_electron_table)
-def test_is_electron(particle, electron):
-    assert _is_electron(particle) == electron
