@@ -175,7 +175,7 @@ class CompareValues:
                 raise ValueError
         except Exception:
             raise InvalidTestError(
-                "rtol must be a number or dimensionless Quantity with" "0 <= rtol < 0."
+                "rtol must be a number or dimensionless Quantity with 0 <= rtol < 0."
             ) from None
 
     @property
@@ -435,7 +435,7 @@ class CompareActualExpected:
 
         if self.test_passed:
             raise InvalidTestError(
-                f"The test of {self.actual.call_string} passed, so no " f"exception is available."
+                f"The test of {self.actual.call_string} passed, so no exception is available."
             )
         else:
             return self._exception
