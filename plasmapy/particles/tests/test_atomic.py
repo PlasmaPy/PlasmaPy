@@ -521,21 +521,41 @@ def test_half_life_unstable_isotopes():
                 half_life(isotope)
 
 
-def test_known_common_stable_isotopes_cases():
-    """Test that known_isotopes, common_isotopes, and stable_isotopes
-    return certain isotopes that fall into these categories."""
-    assert 'H-1' in known_isotopes('H')
-    assert 'D' in known_isotopes('H')
-    assert 'T' in known_isotopes('H')
-    assert 'Be-8' in known_isotopes('Be')
-    assert 'Og-294' in known_isotopes(118)
-    assert 'H-1' in common_isotopes('H')
-    assert 'H-4' not in common_isotopes(1)
-    assert 'H-1' in stable_isotopes('H')
-    assert 'D' in stable_isotopes('H')
-    assert 'T' not in stable_isotopes('H')
-    assert 'Fe-56' in common_isotopes('Fe', most_common_only=True)
-    assert 'He-4' in common_isotopes('He', most_common_only=True)
+isotope_inputs = [
+    (known_isotopes, "H", {}, "H-1", True),
+    (known_isotopes, "H", {}, "D", True),
+    (known_isotopes, "H", {}, "T", True),
+    (known_isotopes, "Be", {}, "Be-8", True),
+    (known_isotopes, 118, {}, "Og-294", True),
+    (common_isotopes, "H", {}, "H-1", True),
+    (stable_isotopes, "H", {}, "H-1", True),
+    (stable_isotopes, "H", {}, "D", True),
+    (common_isotopes, "Fe", {"most_common_only": True}, "Fe-56", True),
+    (common_isotopes, "He", {"most_common_only": True}, "He-4", True),
+    (stable_isotopes, "H", {}, "T", False),
+    (common_isotopes, 1, {}, "H-4", False),
+]
+
+
+@pytest.mark.parametrize("function, element, kwargs, isotope, should_be_in_list", isotope_inputs)
+def test_isotope_contents(function, element, kwargs, isotope, should_be_in_list):
+    """
+    Test that `known_isotopes`, `common_isotopes`, and `stable_isotopes`
+    return certain isotopes that fall into these categories.
+    """
+
+    returned_isotopes = function(element, **kwargs)
+    is_actually_in_list = isotope in returned_isotopes
+
+    if is_actually_in_list is not should_be_in_list:
+
+        errmsg = (
+            f"{isotope} in {function.__name__}({element}, **{kwargs}) "
+            f"should return {should_be_in_list} but instead returned "
+            f"{is_actually_in_list}."
+        )
+
+        pytest.fail(errmsg)
 
 
 def test_known_common_stable_isotopes_len():
