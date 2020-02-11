@@ -10,58 +10,11 @@ from plasmapy import atomic, formulary
 from plasmapy.utils.decorators import check_units
 from plasmapy.utils import PhysicsError
 from plasmapy.atomic import particle_input, Particle
+from .particle_integrators import _boris_push, _boris_push_implicit
 
 PLOTTING = False
 
 __all__ = ["ParticleTracker", "ParticleTrackerSolution"]
-
-
-@numba.njit(parallel=True)
-def _boris_push(x, v, b, e, hqmdt, dt):
-    r"""
-    Implement the explicit Boris pusher for moving and accelerating particles.
-
-    Arguments
-    ----------
-    init : bool (optional)
-        If `True`, does not change the particle positions and sets dt
-        to -dt/2.
-
-    Notes
-    ----------
-    The Boris algorithm is the standard energy conserving algorithm for
-    particle movement in plasma physics. See [1]_ for more details.
-
-    Conceptually, the algorithm has three phases:
-
-    1. Add half the impulse from electric field.
-    2. Rotate the particle velocity about the direction of the magnetic
-       field.
-    3. Add the second half of the impulse from the electric field.
-
-    This ends up causing the magnetic field action to be properly
-    "centered" in time, and the algorithm conserves energy.
-
-    References
-    ----------
-    .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
-           Simulation", 2004, p. 58-63
-    """
-    for i in numba.prange(len(x)):
-        # add first half of electric impulse
-        vminus = v[i] + hqmdt * e[i]
-
-        # rotate to add magnetic field
-        t = -b[i] * hqmdt
-        s = 2 * t / (1 + (t[0] * t[0] + t[1] * t[1] + t[2] * t[2]))
-        cross_result = np.cross(vminus, t)
-        vprime = vminus + cross_result
-        cross_result_2 = np.cross(vprime, s)
-        vplus = vminus + cross_result_2
-
-        # add second half of electric impulse
-        v[i] = vplus + e[i] * hqmdt
-        x[i] += v[i] * dt
 
 
 class ParticleTrackerSolution:
@@ -265,6 +218,11 @@ class ParticleTracker:
 
     """
 
+    integrators = {
+        "explicit_boris": _boris_push,
+        "implicit_boris": _boris_push_implicit,
+    }
+
     @atomic.particle_input
     @check_units()
     def __init__(
@@ -337,12 +295,15 @@ class ParticleTracker:
         self._v = value.si.value
 
     @check_units()
-    def run(self, total_time: u.s, dt: u.s = None, progressbar=True):
+    def run(
+        self, total_time: u.s, dt: u.s = None, progressbar=True, pusher="explicit_boris"
+    ):
         r"""Run a simulation instance.
 
         dt: u.s = np.inf * u.s,
         nt: int = np.inf,
         """
+        integrator = self.integrators[pusher]
         if dt is None:
             b = np.linalg.norm(self.plasma.interpolate_B(self.x), axis=-1)
             gyroperiod = (1 / formulary.gyrofrequency(b, self.particle, to_hz=True)).to(
@@ -377,7 +338,7 @@ class ParticleTracker:
         with np.errstate(all="raise"):
             b = self.plasma._interpolate_B(_x)
             e = self.plasma._interpolate_E(_x)
-            _boris_push(_x, _v, b, e, -0.5 * _hqmdt, -0.5 * _dt)
+            integrator(_x, _v, b, e, -0.5 * _hqmdt, -0.5 * _dt)
 
             _x = _x - _v * 0.5 * _dt
 
@@ -391,7 +352,7 @@ class ParticleTracker:
                 _time += _dt
                 b = self.plasma._interpolate_B(_x)
                 e = self.plasma._interpolate_E(_x)
-                _boris_push(_x, _v, b, e, _hqmdt, _dt)
+                integrator(_x, _v, b, e, _hqmdt, _dt)
 
                 if True:
                     timestep_info = dict(i=len(_times), dt=_dt)
