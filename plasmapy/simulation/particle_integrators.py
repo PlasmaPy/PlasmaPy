@@ -182,6 +182,93 @@ def _boris_push_implicit(x, v, b, e, q, m, dt):
 
 
 @numba.njit(parallel=True)
+def _boris_push_implicit2(x, v, b, e, q, m, dt):
+    r"""
+    Implement the implicit Boris pusher for moving and accelerating particles.
+    DOES NOT HANDLE ELECTRIC FIELDS RIGHT NOW
+
+    Arguments
+    ----------
+    init : bool (optional)
+        If `True`, does not change the particle positions and sets dt
+        to -dt/2.
+
+    Notes
+    ----------
+    The Boris algorithm is the standard energy conserving algorithm for
+    particle movement in plasma physics. See [1]_ for more details.
+
+    Conceptually, the algorithm has three phases:
+
+    1. Add half the impulse from electric field.
+    2. Rotate the particle velocity about the direction of the magnetic
+       field.
+    3. Add the second half of the impulse from the electric field.
+
+    This ends up causing the magnetic field action to be properly
+    "centered" in time, and the algorithm conserves energy.
+
+    References
+    ----------
+    .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
+           Simulation", 2004, p. 58-63
+    """
+    C = q / m * dt
+    for i in numba.prange(len(x)):
+        # add first half of electric impulse
+        B_i, B_j, B_k = b[i]
+        v_i, v_j, v_k = v[i]
+        E_x, E_y, E_z = e[i]
+        vx = (
+            2
+            * C
+            * v_j
+            * (B_i * B_j * C + 2 * B_k)
+            / (B_i ** 2 * C ** 2 + B_j ** 2 * C ** 2 + B_k ** 2 * C ** 2 + 4)
+            + 2
+            * C
+            * v_k
+            * (B_i * B_k * C - 2 * B_j)
+            / (B_i ** 2 * C ** 2 + B_j ** 2 * C ** 2 + B_k ** 2 * C ** 2 + 4)
+            + v_i
+            * (B_i ** 2 * C ** 2 - B_j ** 2 * C ** 2 - B_k ** 2 * C ** 2 + 4)
+            / (B_i ** 2 * C ** 2 + B_j ** 2 * C ** 2 + B_k ** 2 * C ** 2 + 4)
+        )
+        vy = (
+            2
+            * C
+            * v_i
+            * (B_i * B_j * C - 2 * B_k)
+            / (B_i ** 2 * C ** 2 + B_j ** 2 * C ** 2 + B_k ** 2 * C ** 2 + 4)
+            + 2
+            * C
+            * v_k
+            * (2 * B_i + B_j * B_k * C)
+            / (B_i ** 2 * C ** 2 + B_j ** 2 * C ** 2 + B_k ** 2 * C ** 2 + 4)
+            + v_j
+            * (-(B_i ** 2) * C ** 2 + B_j ** 2 * C ** 2 - B_k ** 2 * C ** 2 + 4)
+            / (B_i ** 2 * C ** 2 + B_j ** 2 * C ** 2 + B_k ** 2 * C ** 2 + 4)
+        )
+        vz = (
+            2
+            * C
+            * v_i
+            * (B_i * B_k * C + 2 * B_j)
+            / (B_i ** 2 * C ** 2 + B_j ** 2 * C ** 2 + B_k ** 2 * C ** 2 + 4)
+            - 2
+            * C
+            * v_j
+            * (2 * B_i - B_j * B_k * C)
+            / (B_i ** 2 * C ** 2 + B_j ** 2 * C ** 2 + B_k ** 2 * C ** 2 + 4)
+            + v_k
+            * (-(B_i ** 2) * C ** 2 - B_j ** 2 * C ** 2 + B_k ** 2 * C ** 2 + 4)
+            / (B_i ** 2 * C ** 2 + B_j ** 2 * C ** 2 + B_k ** 2 * C ** 2 + 4)
+        )
+        v[i] = (vx, vy, vz)
+        x[i] += v[i] * dt
+
+
+@numba.njit(parallel=True)
 def _zenitani(x, v, b, e, q, m, dt):
     r"""
     Implement the Zenitani-Umeda pusher

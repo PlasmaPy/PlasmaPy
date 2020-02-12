@@ -3,6 +3,7 @@ import pytest
 from astropy import units as u
 from astropy.tests.helper import assert_quantity_allclose
 from scipy.optimize import curve_fit
+import matplotlib.pyplot as plt
 
 from plasmapy import formulary
 from plasmapy.simulation.particletracker import ParticleTracker

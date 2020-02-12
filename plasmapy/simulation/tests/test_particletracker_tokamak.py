@@ -42,7 +42,7 @@ def sim_many(coils):
 
 
 def test_1(sim_single, integrator_name):
-    solution = sim_single.run(1 * u.s, 1e-3 * u.s, pusher=integrator_name)
+    solution = sim_single.run(1 * u.s, 1e-4 * u.s, pusher=integrator_name)
     assert (
         abs(solution.data.position.sel(dimension="y").mean()).item() < 4
     )  # should be about 5m for no B field
