@@ -1073,7 +1073,7 @@ def _nondim_thermal_conductivity(
             kappa_hat = _nondim_tc_e_ji_held(hall, Z, field_orientation)
         else:
             raise ValueError(
-                f"Unrecognized model '{model}' in " "_nondim_thermal_conductivity"
+                f"Unrecognized model '{model}' in _nondim_thermal_conductivity"
             )
     else:
         if model == "braginskii":
@@ -1082,11 +1082,11 @@ def _nondim_thermal_conductivity(
             kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)
         elif model == "spitzer-harm" or model == "spitzer":
             raise NotImplementedError(
-                "Ion thermal conductivity is not " "implemented in the Spitzer model."
+                "Ion thermal conductivity is not implemented in the Spitzer model."
             )
         else:
             raise ValueError(
-                f"Unrecognized model '{model}' in " "_nondim_thermal_conductivity"
+                f"Unrecognized model '{model}' in _nondim_thermal_conductivity"
             )
     return kappa_hat
 
@@ -1105,7 +1105,7 @@ def _nondim_viscosity(hall, Z, particle, model, field_orientation, mu=None, thet
         elif model == "ji-held":
             eta_hat = _nondim_visc_e_ji_held(hall, Z)
         else:
-            raise ValueError(f"Unrecognized model '{model}' in " "_nondim_viscosity")
+            raise ValueError(f"Unrecognized model '{model}' in _nondim_viscosity")
     else:
         if model == "braginskii":
             eta_hat = _nondim_visc_i_braginskii(hall)
@@ -1113,10 +1113,10 @@ def _nondim_viscosity(hall, Z, particle, model, field_orientation, mu=None, thet
             eta_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)
         elif model == "spitzer-harm" or model == "spitzer":
             raise NotImplementedError(
-                "Ion viscosity is not " "implemented in the Spitzer model."
+                "Ion viscosity is not implemented in the Spitzer model."
             )
         else:
-            raise ValueError(f"Unrecognized model '{model}' in " "_nondim_viscosity")
+            raise ValueError(f"Unrecognized model '{model}' in _nondim_viscosity")
     return eta_hat
 
 
@@ -1133,7 +1133,7 @@ def _nondim_resistivity(hall, Z, particle, model, field_orientation):
     elif model == "ji-held":
         alpha_hat = _nondim_resist_ji_held(hall, Z, field_orientation)
     else:
-        raise ValueError(f"Unrecognized model '{model}' in " "_nondim_resistivity")
+        raise ValueError(f"Unrecognized model '{model}' in _nondim_resistivity")
     return alpha_hat
 
 
@@ -1150,7 +1150,7 @@ def _nondim_te_conductivity(hall, Z, particle, model, field_orientation):
     elif model == "ji-held":
         beta_hat = _nondim_tec_ji_held(hall, Z, field_orientation)
     else:
-        raise ValueError(f"Unrecognized model '{model}' in " "_nondim_te_conductivity")
+        raise ValueError(f"Unrecognized model '{model}' in _nondim_te_conductivity")
     return beta_hat
 
 

@@ -559,7 +559,7 @@ def impact_parameter(
     if method in ("GMS-2", "GMS-5", "GMS-6"):
         if np.isnan(z_mean):
             raise ValueError(
-                "Must provide a z_mean for GMS-2, GMS-5, and " "GMS-6 methods."
+                "Must provide a z_mean for GMS-2, GMS-5, and GMS-6 methods."
             )
     # Debye length
     lambdaDe = parameters.Debye_length(T, n_e)

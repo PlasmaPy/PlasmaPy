@@ -378,7 +378,7 @@ def ion_sound_speed(
     for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"]):
         if not isinstance(gamma, (numbers.Real, numbers.Integral)):
             raise TypeError(
-                f"The adiabatic index gamma for {species} must be " "a float or int"
+                f"The adiabatic index gamma for {species} must be a float or int"
             )
         if gamma < 1:
             raise PhysicsError(
@@ -1107,7 +1107,7 @@ def plasma_frequency(n: u.m ** -3, particle="e-", z_mean=None) -> u.rad / u.s:
         Z = np.abs(Z)
         # TODO REPLACE WITH Z = np.abs(_grab_charge(particle, z_mean)), some bugs atm
     except Exception:
-        raise ValueError(f"Invalid particle, {particle}, in " "plasma_frequency.")
+        raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.")
 
     omega_p = u.rad * Z * e * np.sqrt(n / (eps0 * m))
 

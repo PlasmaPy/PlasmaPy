@@ -103,7 +103,7 @@ class HDF5Reader(GenericPlasma):
                 )
         except KeyError:
             raise DataStandardError(
-                "Input HDF5 file does not go on with " "standards defined by OpenPMD"
+                "Input HDF5 file does not go on with standards defined by OpenPMD"
             )
 
     @property
@@ -114,7 +114,7 @@ class HDF5Reader(GenericPlasma):
             axes = [self.h5[path][axis] for axis in self.h5[path]]
             return np.array(axes) * units
         else:
-            raise AttributeError("No electric field data available " "in HDF5 file")
+            raise AttributeError("No electric field data available in HDF5 file")
 
     @property
     def charge_density(self):
@@ -123,7 +123,7 @@ class HDF5Reader(GenericPlasma):
             units = _fetch_units(self.h5[path].attrs["unitDimension"])
             return np.array(self.h5[path]) * units
         else:
-            raise AttributeError("No charge density data available " "in HDF5 file")
+            raise AttributeError("No charge density data available in HDF5 file")
 
     @property
     def magnetic_field(self):
@@ -133,7 +133,7 @@ class HDF5Reader(GenericPlasma):
             axes = [self.h5[path][axis] for axis in self.h5[path]]
             return np.array(axes) * units
         else:
-            raise AttributeError("No magnetic field data available " "in HDF5 file")
+            raise AttributeError("No magnetic field data available in HDF5 file")
 
     @property
     def electric_current(self):
@@ -143,7 +143,7 @@ class HDF5Reader(GenericPlasma):
             axes = [self.h5[path][axis] for axis in self.h5[path]]
             return np.array(axes) * units
         else:
-            raise AttributeError("No electric current data available " "in HDF5 file")
+            raise AttributeError("No electric current data available in HDF5 file")
 
     @classmethod
     def is_datasource_for(cls, **kwargs):

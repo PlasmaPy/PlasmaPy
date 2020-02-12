@@ -88,7 +88,7 @@ def plasma_dispersion_func(
             )
 
     if not np.all(np.isfinite(zeta)):
-        raise ValueError("The argument to plasma_dispersion_function is " "not finite.")
+        raise ValueError("The argument to plasma_dispersion_function is not finite.")
 
     Z = 1j * np.sqrt(np.pi) * Faddeeva_function(zeta)
 

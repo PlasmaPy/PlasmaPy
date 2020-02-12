@@ -1365,7 +1365,7 @@ def _check_relativistic(V, funcname, betafrac=0.05):
 
     # TODO: Replace `funcname` with func.__name__?
 
-    errmsg = "V must be a Quantity with units of velocity in" "_check_relativistic"
+    errmsg = "V must be a Quantity with units of velocity in _check_relativistic"
 
     if not isinstance(V, u.Quantity):
         raise TypeError(errmsg)
