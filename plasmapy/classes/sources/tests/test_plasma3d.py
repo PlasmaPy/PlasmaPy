@@ -6,11 +6,14 @@ from plasmapy.classes.sources import plasma3d
 from plasmapy.particles.exceptions import InvalidParticleError
 
 
-@pytest.mark.parametrize('grid_dimensions, expected_size', [
-    ((100, 1, 1), 100),  # Test 1D setup
-    ((128, 128, 1), 16384),  # 2D
-    ((64, 64, 64), 262144),  # 3D
-])
+@pytest.mark.parametrize(
+    "grid_dimensions, expected_size",
+    [
+        ((100, 1, 1), 100),  # Test 1D setup
+        ((128, 128, 1), 16384),  # 2D
+        ((64, 64, 64), 262144),  # 3D
+    ],
+)
 def test_Plasma3D_setup(grid_dimensions, expected_size):
     r"""Function to test basic setup of the Plasma3D object.
 
@@ -34,9 +37,11 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
     >>> test_Plasma3D_setup((100, 10, 1), 1000)
     """
     x, y, z = grid_dimensions
-    test_plasma = plasma3d.Plasma3D(domain_x=np.linspace(0, 1, x) * u.m,
-                                    domain_y=np.linspace(0, 1, y) * u.m,
-                                    domain_z=np.linspace(0, 1, z) * u.m)
+    test_plasma = plasma3d.Plasma3D(
+        domain_x=np.linspace(0, 1, x) * u.m,
+        domain_y=np.linspace(0, 1, y) * u.m,
+        domain_z=np.linspace(0, 1, z) * u.m,
+    )
 
     # Basic grid setup
     assert test_plasma.x.size == x
@@ -69,9 +74,11 @@ def test_Plasma3D_derived_vars():
     variables.  The core variables are set with arbitrary uniform
     values.
     """
-    test_plasma = plasma3d.Plasma3D(domain_x=np.linspace(0, 1, 64) * u.m,
-                                    domain_y=np.linspace(0, 1, 64) * u.m,
-                                    domain_z=np.linspace(0, 1, 1) * u.m)
+    test_plasma = plasma3d.Plasma3D(
+        domain_x=np.linspace(0, 1, 64) * u.m,
+        domain_y=np.linspace(0, 1, 64) * u.m,
+        domain_z=np.linspace(0, 1, 1) * u.m,
+    )
 
     # Set an arbitrary uniform values throughout the plasma
     test_plasma.density[...] = 2.0 * u.kg / u.m ** 3
@@ -84,13 +91,17 @@ def test_Plasma3D_derived_vars():
     assert test_plasma.velocity.shape == test_plasma.momentum.shape
     assert (test_plasma.velocity == 5.0 * u.m / u.s).all()
 
-    assert test_plasma.magnetic_field_strength.shape == \
-        test_plasma.magnetic_field.shape[1:]
+    assert (
+        test_plasma.magnetic_field_strength.shape
+        == test_plasma.magnetic_field.shape[1:]
+    )
     assert test_plasma.magnetic_field_strength.si.unit == u.T
     assert np.allclose(test_plasma.magnetic_field_strength.value, 0.017320508)
 
-    assert test_plasma.electric_field_strength.shape == \
-        test_plasma.electric_field.shape[1:]
+    assert (
+        test_plasma.electric_field_strength.shape
+        == test_plasma.electric_field.shape[1:]
+    )
     assert test_plasma.electric_field_strength.si.unit == u.V / u.m
 
     assert test_plasma.alfven_speed.shape == test_plasma.density.shape

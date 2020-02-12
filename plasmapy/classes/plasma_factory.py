@@ -5,10 +5,8 @@ from plasmapy.utils.datatype_factory_base import NoMatchError
 from plasmapy.utils.datatype_factory_base import MultipleMatchError
 from plasmapy.utils.datatype_factory_base import ValidationFunctionError
 
-__all__ = [
-    "PlasmaFactory",
-    "Plasma",
-]
+__all__ = ["PlasmaFactory", "Plasma"]
+
 
 class PlasmaFactory(BasicRegistrationFactory):
     """
@@ -16,9 +14,12 @@ class PlasmaFactory(BasicRegistrationFactory):
     Valid plasma structures are specified by registering them with the
     factory.
     """
+
     pass
 
 
-Plasma = PlasmaFactory(default_widget_type=GenericPlasma,
-                       registry=GenericPlasma._registry,
-                       additional_validation_functions=['is_datasource_for'])
+Plasma = PlasmaFactory(
+    default_widget_type=GenericPlasma,
+    registry=GenericPlasma._registry,
+    additional_validation_functions=["is_datasource_for"],
+)
