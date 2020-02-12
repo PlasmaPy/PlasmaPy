@@ -103,7 +103,7 @@ def return_none() -> None:
     return None
 
 
-class SampleClass:
+class SampleClass1:
     """A sample class to be used for testing purposes."""
 
     def __init__(self, *args, **kwargs):
@@ -136,3 +136,41 @@ class SampleClass:
         """A sample method that issues a `SampleWarning`."""
 
         warnings.warn("warning message", SampleWarning)
+
+
+class SampleClass2:
+    """A sample class to be used for testing purposes."""
+
+    def __init__(self, cls_arg1, cls_arg2, *, cls_kwarg1=None, cls_kwarg2=None):
+
+        self.cls_arg1 = cls_arg1
+        self.cls_arg2 = cls_arg2
+        self.cls_kwarg1 = cls_kwarg1
+        self.cls_kwarg2 = cls_kwarg2
+
+    def method(self, method_arg1, method_arg2, *, method_kwarg1=None, method_kwarg2=None):
+        """
+        Return the sum of the positional and keyword arguments supplied
+        to the class upon instantiation plus the sum of the positional
+        and keyword arguments supplied to the method when it is called.
+        """
+
+        return np.sum([
+            self.cls_arg1,
+            self.cls_arg2,
+            self.cls_kwarg1,
+            self.cls_kwarg2,
+            method_arg1,
+            method_arg2,
+            method_kwarg1,
+            method_kwarg2,
+        ])
+
+    @property
+    def attr(self):
+        """
+        Return the sum of the positional and keyword arguments supplied
+        to the class upon instantiation.
+        """
+
+        return self.cls_arg1 + self.cls_arg2 + self.cls_kwarg1 + self.cls_kwarg2
