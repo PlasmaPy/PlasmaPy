@@ -384,6 +384,18 @@ class ClassMethodTestInputs(GenericClassTestInputs):
         return self._info["method"]
 
     @property
+    def cls_args(self) -> Union[Tuple, List]:
+        """The positional arguments to be provided to the class upon instantiation."""
+
+        return self._info["cls_args"]
+
+    @property
+    def cls_kwargs(self) -> Dict[str, Any]:
+        """The keyword arguments to be provided to the class upon instantiation."""
+
+        return self._info["cls_kwargs"]
+
+    @property
     def method_args(self) -> Union[Tuple, List]:
         """The positional arguments to be provided to the method being tested."""
 
@@ -411,6 +423,16 @@ class ClassMethodTestInputs(GenericClassTestInputs):
             raise ValueError(
                 f"Expecting the attribute {method_name} in " f"{self.cls.__name__} to be callable."
             )
+
+    @cls_args.setter
+    def cls_args(self, provided_args):
+
+        self._info["cls_args"] = _validate_args(provided_args)
+
+    @cls_kwargs.setter
+    def cls_kwargs(self, provided_kwargs: Optional[Dict[str, Any]]):
+
+        self._info["cls_kwargs"] = _validate_kwargs(provided_kwargs)
 
     @method_args.setter
     def method_args(self, provided_args):
