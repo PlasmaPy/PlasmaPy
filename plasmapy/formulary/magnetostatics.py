@@ -480,7 +480,7 @@ radius={radius}, current={current})".format(
 
         return self._magnetic_field(p, self.pt, self.dl, self.current, self.w).reshape(shape) * u.T
     
-    def visualize(self, figure = None):   # coverage: ignore
+    def visualize(self, figure = None, color = 'white'):   # coverage: ignore
         import pyvista as pv
         if figure is None:
             fig = pv.Plotter(notebook=True)
@@ -491,9 +491,9 @@ radius={radius}, current={current})".format(
         spline = pv.Spline(points.T, 1000)
         trajectory = spline
         if figure is None:
-            trajectory.plot()
+            trajectory.plot(color = color)
         else:
-            figure.add_mesh(trajectory)
+            figure.add_mesh(trajectory, color=color)
         return fig
 
 
