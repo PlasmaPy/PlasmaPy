@@ -176,7 +176,7 @@ def function_test_runner(
     >>> import warnings
     >>> def issue_warning_and_return_6():
     ...     warnings.warn("...", UserWarning)
-    ...     return None
+    ...     return 6
 
     >>> function_test_runner(expected=UserWarning, function=issue_warning_and_return_6)
     >>> function_test_runner(expected=(UserWarning, 6), function=issue_warning_and_return_6)
@@ -300,7 +300,7 @@ def method_test_runner(
     ...     def method(self):
     ...         return 42
 
-    >>> method_test_runner(expected=42, cls=SomeClass, method="method")
+    >>> method_test_runner(expected=42, cls=SimpleClass, method="method")
 
     No exception is raised when running the test, which means that this
     test passes.
@@ -315,12 +315,20 @@ def method_test_runner(
     ...     def f(self, method_arg, method_kwarg=None):
     ...         return self.cls_arg + 2 * self.cls_kwarg + 3 * method_arg + 4 * method_kwarg
 
-    >>> cls_args = (4,)
+    >>> cls_args = 4  # This should be a tuple for more than one argument
     >>> cls_kwargs = {"cls_kwarg": 1}
-    >>> method_args = (3,)
+    >>> method_args = 3
     >>> method_kwargs = {"method_kwarg": 2}
 
-    >>> method_test_runner(23, SomeClass, "f", cls_args, cls_kwargs, method_args, method_kwargs)
+    >>> method_test_runner(
+    ...     23,
+    ...     SomeClass,
+    ...     "f",
+    ...     cls_args=cls_args,
+    ...     cls_kwargs=cls_kwargs,
+    ...     method_args=method_args,
+    ...     method_kwargs=method_kwargs,
+    ... )
 
     This test runner works well in combination with `~pytest.mark.parametrize`.
     """
@@ -428,8 +436,7 @@ def attr_test_runner(
     ...     @property
     ...     def attr(self):
     ...         return 42
-
-    >>> attr_test_runner(expected=42, cls=SomeClass, attribute="attr")
+    >>> attr_test_runner(expected=42, cls=SimpleClass, attribute="attr")
 
     No exception is raised when running the test, which means that this
     test passes.
@@ -443,12 +450,10 @@ def attr_test_runner(
     ...         self.cls_kwarg = cls_kwarg
     ...     @property
     ...     def attr(self):
-    ...         return self.cls_arg = 2 * self.cls_kwarg
-
-    >>> cls_args = (2,)
+    ...         return self.cls_arg + 2 * self.cls_kwarg
+    >>> cls_args = 2
     >>> cls_kwargs = {"cls_kwarg": 3}
-
-    >>> method_test_runner(8, SomeClass, "attr", cls_args, cls_kwargs)
+    >>> attr_test_runner(8, SomeClass, "attr", cls_args, cls_kwargs)
 
     This test runner works well in combination with `~pytest.mark.parametrize`.
     """
