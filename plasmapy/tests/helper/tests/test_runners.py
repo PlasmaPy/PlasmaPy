@@ -32,7 +32,8 @@ from plasmapy.tests.helper.tests.sample_functions import (
     SampleWarning,
     SampleExceptionSubclass,
     SampleException,
-    SampleClass,
+    SampleClass1,
+    SampleClass2,
 )
 
 from plasmapy.utils.formatting.formatting import (
@@ -207,7 +208,7 @@ class MethodTestCase(BaseTestCase):
             cls_args=self.cls_args,
             cls_kwargs=self.cls_kwargs,
             method_args=self.method_args,
-            method_kwargs=self.method.kwargs,
+            method_kwargs=self.method_kwargs,
         )
 
 
@@ -322,22 +323,40 @@ cases = [
     ),
     AttributeTestCase(
         expected=40,
-        cls=SampleClass,
+        cls=SampleClass1,
         attribute="forty",
         exception_upon_failure=None,
     ),
     AttributeTestCase(
         expected=41,
-        cls=SampleClass,
+        cls=SampleClass1,
         attribute="forty",
         exception_upon_failure=UnexpectedResultError,
     ),
     MethodTestCase(
         expected=5,
-        cls=SampleClass,
+        cls=SampleClass1,
         method="arg_plus_kwarg",
         method_args=1,
         method_kwargs={"kwarg": 4},
+        exception_upon_failure=None,
+    ),
+    MethodTestCase(
+        expected=5,
+        cls=SampleClass1,
+        method="arg_plus_kwarg",
+        method_args=(1,),
+        method_kwargs={"kwarg": 4},
+        exception_upon_failure=None,
+    ),
+    MethodTestCase(
+        expected=np.int64(36),
+        cls=SampleClass2,
+        method="method",
+        cls_args=(1, 2),
+        cls_kwargs={"cls_kwarg1": 3, "cls_kwarg2": 4},
+        method_args=(5, 6),
+        method_kwargs={"method_kwarg1": 7, "method_kwarg2": 8},
         exception_upon_failure=None,
     ),
 ]
@@ -367,7 +386,7 @@ def test_the_test_runners(case: BaseTestCase):
                 f"passed but instead raised {exception_name}."
             )
 
-            raise Failed(unexpected_exception_errmsg) from None
+            raise Failed(unexpected_exception_errmsg) from exc
 
     else:
 
