@@ -33,6 +33,7 @@ class MagnetoStatics(abc.ABC):
             magnetic field at the specified positon
 
         """
+
     @abc.abstractmethod
     def magnetic_field(self, p: u.m) -> u.T:
         """
@@ -63,16 +64,15 @@ class MagneticDipole(MagnetoStatics):
         Position of the dipole
 
     """
+
     @validate_quantities
-    def __init__(self, moment: u.A * u.m**2, p0: u.m):
+    def __init__(self, moment: u.A * u.m ** 2, p0: u.m):
         self.moment = moment.value
         self.p0 = p0.value
 
     def __repr__(self):
         return "{name}(moment={moment}, p0={p0})".format(
-            name=self.__class__.__name__,
-            moment=self.moment,
-            p0=self.p0
+            name=self.__class__.__name__, moment=self.moment, p0=self.p0
         )
 
     def magnetic_field(self, p: u.m) -> u.T:
@@ -92,9 +92,16 @@ class MagneticDipole(MagnetoStatics):
         """
         r = p - self.p0
         m = self.moment
-        B = constants.mu0.value/4/np.pi \
-            * (3*r*np.dot(m, r)/np.linalg.norm(r)**5 - m/np.linalg.norm(r)**3)
-        return B*u.T
+        B = (
+            constants.mu0.value
+            / 4
+            / np.pi
+            * (
+                3 * r * np.dot(m, r) / np.linalg.norm(r) ** 5
+                - m / np.linalg.norm(r) ** 3
+            )
+        )
+        return B * u.T
 
 
 class Wire(MagnetoStatics):
@@ -118,11 +125,9 @@ class GeneralWire(Wire):
         electric current
 
     """
+
     @validate_quantities
-    def __init__(self, parametric_eq,
-                 t1,
-                 t2,
-                 current: u.A):
+    def __init__(self, parametric_eq, t1, t2, current: u.A):
         if callable(parametric_eq):
             self.parametric_eq = parametric_eq
         else:
@@ -177,9 +182,9 @@ class GeneralWire(Wire):
             dl = p2 - p1
             p1 = p2
             R = p - (p2 + p1) / 2
-            B += np.cross(dl, R)/np.linalg.norm(R)**3
-        B = B*constants.mu0.value/4/np.pi*self.current
-        return B*u.T
+            B += np.cross(dl, R) / np.linalg.norm(R) ** 3
+        B = B * constants.mu0.value / 4 / np.pi * self.current
+        return B * u.T
 
 
 class FiniteStraightWire(Wire):
@@ -198,6 +203,7 @@ class FiniteStraightWire(Wire):
         electric current
 
     """
+
     @validate_quantities
     def __init__(self, p1: u.m, p2: u.m, current: u.A):
         self.p1 = p1.value
@@ -208,10 +214,7 @@ class FiniteStraightWire(Wire):
 
     def __repr__(self):
         return "{name}(p1={p1}, p2={p2}, current={current})".format(
-            name=self.__class__.__name__,
-            p1=self.p1,
-            p2=self.p2,
-            current=self.current
+            name=self.__class__.__name__, p1=self.p1, p2=self.p2, current=self.current
         )
 
     def magnetic_field(self, p) -> u.T:
@@ -243,25 +246,36 @@ class FiniteStraightWire(Wire):
         # foot of perpendicular
         p1, p2 = self.p1, self.p2
         p2_p1 = p2 - p1
-        ratio = np.dot(p - p1, p2_p1)/np.dot(p2_p1, p2_p1)
-        pf = p1 + p2_p1*ratio
+        ratio = np.dot(p - p1, p2_p1) / np.dot(p2_p1, p2_p1)
+        pf = p1 + p2_p1 * ratio
 
         # angles: theta_1 = <p - p1, p2 - p1>, theta_2 = <p - p2, p2 - p1>
-        cos_theta_1 = np.dot(p - p1, p2_p1)/np.linalg.norm(p - p1)/np.linalg.norm(p2_p1)
-        cos_theta_2 = np.dot(p - p2, p2_p1)/np.linalg.norm(p - p2)/np.linalg.norm(p2_p1)
+        cos_theta_1 = (
+            np.dot(p - p1, p2_p1) / np.linalg.norm(p - p1) / np.linalg.norm(p2_p1)
+        )
+        cos_theta_2 = (
+            np.dot(p - p2, p2_p1) / np.linalg.norm(p - p2) / np.linalg.norm(p2_p1)
+        )
 
         B_unit = np.cross(p2_p1, p - pf)
-        B_unit = B_unit/np.linalg.norm(B_unit)
+        B_unit = B_unit / np.linalg.norm(B_unit)
 
-        B = B_unit/np.linalg.norm(p-pf)*(cos_theta_1 - cos_theta_2) \
-            * constants.mu0.value/4/np.pi*self.current
+        B = (
+            B_unit
+            / np.linalg.norm(p - pf)
+            * (cos_theta_1 - cos_theta_2)
+            * constants.mu0.value
+            / 4
+            / np.pi
+            * self.current
+        )
 
-        return B*u.T
+        return B * u.T
 
     def to_GeneralWire(self):
         """Convert this `Wire` into a `GeneralWire`."""
         p1, p2 = self.p1, self.p2
-        return GeneralWire(lambda t: p1+(p2-p1)*t, 0, 1, self.current*u.A)
+        return GeneralWire(lambda t: p1 + (p2 - p1) * t, 0, 1, self.current * u.A)
 
 
 class InfiniteStraightWire(Wire):
@@ -278,9 +292,10 @@ class InfiniteStraightWire(Wire):
         electric current
 
     """
+
     @validate_quantities
     def __init__(self, direction, p0: u.m, current: u.A):
-        self.direction = direction/np.linalg.norm(direction)
+        self.direction = direction / np.linalg.norm(direction)
         self.p0 = p0.value
         self.current = current.value
 
@@ -289,7 +304,7 @@ class InfiniteStraightWire(Wire):
             name=self.__class__.__name__,
             direction=self.direction,
             p0=self.p0,
-            current=self.current
+            current=self.current,
         )
 
     def magnetic_field(self, p) -> u.T:
@@ -318,7 +333,7 @@ class InfiniteStraightWire(Wire):
         B_unit = r / np.linalg.norm(r)
         r = np.linalg.norm(r)
 
-        return B_unit/r*constants.mu0.value/2/np.pi*self.current*u.T
+        return B_unit / r * constants.mu0.value / 2 / np.pi * self.current * u.T
 
 
 class CircularWire(Wire):
@@ -337,10 +352,10 @@ class CircularWire(Wire):
         electric current
 
     """
+
     @validate_quantities
-    def __init__(self, normal, center: u.m, radius: u.m,
-                 current: u.A, n=300):
-        self.normal = normal/np.linalg.norm(normal)
+    def __init__(self, normal, center: u.m, radius: u.m, current: u.A, n=300):
+        self.normal = normal / np.linalg.norm(normal)
         self.center = center.value
         if radius > 0:
             self.radius = radius.value
@@ -358,8 +373,8 @@ class CircularWire(Wire):
             axis_x = np.array([1, 0, 0])
             axis_y = np.array([0, 1, 0])
         else:
-            axis_x = axis_x/np.linalg.norm(axis_x)
-            axis_y = axis_y/np.linalg.norm(axis_y)
+            axis_x = axis_x / np.linalg.norm(axis_x)
+            axis_y = axis_y / np.linalg.norm(axis_y)
 
         self.axis_x = axis_x
         self.axis_y = axis_y
@@ -369,23 +384,28 @@ class CircularWire(Wire):
                 t = np.expand_dims(t, 0)
                 axis_x_mat = np.expand_dims(axis_x, 1)
                 axis_y_mat = np.expand_dims(axis_y, 1)
-                return self.radius*(np.matmul(axis_x_mat, np.cos(t))
-                                    + np.matmul(axis_y_mat, np.sin(t))) \
-                    + np.expand_dims(self.center, 1)
+                return self.radius * (
+                    np.matmul(axis_x_mat, np.cos(t)) + np.matmul(axis_y_mat, np.sin(t))
+                ) + np.expand_dims(self.center, 1)
             else:
-                return self.radius*(np.cos(t)*axis_x + np.sin(t)*axis_y) + self.center
+                return (
+                    self.radius * (np.cos(t) * axis_x + np.sin(t) * axis_y)
+                    + self.center
+                )
+
         self.curve = curve
 
         self.roots_legendre = scipy.special.roots_legendre(n)
         self.n = n
         x, self.w = self.roots_legendre
-        t = x*np.pi
+        t = x * np.pi
         self.pt = self.curve(t)
         if isinstance(self.pt, u.Quantity):
             self.pt = self.pt.si.value
-        self.dl = self.radius*(
-            - np.matmul(np.expand_dims(self.axis_x, 1), np.expand_dims(np.sin(t), 0))
-            + np.matmul(np.expand_dims(self.axis_y, 1), np.expand_dims(np.cos(t), 0)))  # (3, n)
+        self.dl = self.radius * (
+            -np.matmul(np.expand_dims(self.axis_x, 1), np.expand_dims(np.sin(t), 0))
+            + np.matmul(np.expand_dims(self.axis_y, 1), np.expand_dims(np.cos(t), 0))
+        )  # (3, n)
         if isinstance(self.dl, u.Quantity):
             self.dl = self.dl.si.value
 
@@ -418,7 +438,7 @@ class CircularWire(Wire):
 
         """
 
-        field = np.zeros((p.shape[0],  pt.shape[1], p.shape[1]))
+        field = np.zeros((p.shape[0], pt.shape[1], p.shape[1]))
         for i in numba.prange(pt.shape[1]):  # 300
             pti = pt[:, i]
             dli = dl[:, i]
@@ -426,10 +446,12 @@ class CircularWire(Wire):
             for pi in numba.prange(p.shape[0]):
                 P = p[pi]
                 r = P - pti
-                r_norm_3 = np.linalg.norm(r)**3
-                ft = np.cross(dli, r) 
+                r_norm_3 = np.linalg.norm(r) ** 3
+                ft = np.cross(dli, r)
                 field[pi, i] = wi * ft / r_norm_3
-        field  = field.sum(1) * scipy.constants.mu_0/4*current  # np.pi in nominator and denominator cancels out
+        field = (
+            field.sum(1) * scipy.constants.mu_0 / 4 * current
+        )  # np.pi in nominator and denominator cancels out
         return field
 
     def __repr__(self):
@@ -439,7 +461,7 @@ radius={radius}, current={current})".format(
             normal=self.normal,
             center=self.center,
             radius=self.radius,
-            current=self.current
+            current=self.current,
         )
 
     def magnetic_field(self, p: u.m) -> u.T:
@@ -477,26 +499,30 @@ radius={radius}, current={current})".format(
             p = p.reshape(1, 3)
         p = p.astype(float)
 
+        return (
+            self._magnetic_field(p, self.pt, self.dl, self.current, self.w).reshape(
+                shape
+            )
+            * u.T
+        )
 
-        return self._magnetic_field(p, self.pt, self.dl, self.current, self.w).reshape(shape) * u.T
-    
-    def visualize(self, figure = None, color = 'white'):   # coverage: ignore
+    def visualize(self, figure=None, color="white"):  # coverage: ignore
         import pyvista as pv
+
         if figure is None:
             fig = pv.Plotter(notebook=True)
             fig.add_axes()
         else:
             fig = figure
-        x, y, z = points = self.curve(np.linspace(0, 2*np.pi))
+        x, y, z = points = self.curve(np.linspace(0, 2 * np.pi))
         spline = pv.Spline(points.T, 1000)
         trajectory = spline
         if figure is None:
-            trajectory.plot(color = color)
+            trajectory.plot(color=color)
         else:
             figure.add_mesh(trajectory, color=color)
         return fig
 
-
     def to_GeneralWire(self):
         """Convert this `Wire` into a `GeneralWire`."""
-        return GeneralWire(self.curve, -np.pi, np.pi, self.current*u.A)
+        return GeneralWire(self.curve, -np.pi, np.pi, self.current * u.A)
