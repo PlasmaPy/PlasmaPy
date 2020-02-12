@@ -303,7 +303,12 @@ class ParticleTracker:
 
     @check_units()
     def run(
-        self, total_time: u.s, dt: u.s = None, progressbar=True, pusher="explicit_boris"
+        self,
+        total_time: u.s,
+        dt: u.s = None,
+        progressbar=True,
+        pusher="explicit_boris",
+        diagnostics_update_step: u.s = None,
     ):
         r"""Run a simulation instance.
 
@@ -344,9 +349,10 @@ class ParticleTracker:
         with np.errstate(all="raise"):
             b = self.plasma._interpolate_B(_x)
             e = self.plasma._interpolate_E(_x)
-            integrator(_x, _v, b, e, _q, _m, -0.5 * _dt)
 
-            _x = _x - _v * 0.5 * _dt
+            integrator(
+                _x.copy(), _v, b, e, _q, _m, -0.5 * _dt
+            )  # we don't want to change position here
 
             _position_history = [_x.copy()]
             _velocity_history = [_v.copy()]

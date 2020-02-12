@@ -1,4 +1,5 @@
 import numba
+import math
 import numpy as np
 
 
@@ -268,31 +269,33 @@ def _boris_push_implicit2(x, v, b, e, q, m, dt):
         x[i] += v[i] * dt
 
 
+from astropy import constants
+
+c = constants.c.si.value
+
+
+@numba.njit()
+def gamma_from_velocity(velocity):
+    return np.sqrt(1 - ((np.linalg.norm(velocity) / c) ** 2))
+
+
+@numba.njit()
+def gamma_from_u(u):
+    return np.sqrt(1 + ((np.linalg.norm(u) / c) ** 2))
+
+
 @numba.njit(parallel=True)
-def _zenitani(x, v, b, e, q, m, dt):
+def _zenitani(x, v, b, e, q, m, dt, B_numerical_threshold=1e-20):
     r"""
     Implement the Zenitani-Umeda pusher
 
     Arguments
     ----------
-    init : bool (optional)
-        If `True`, does not change the particle positions and sets dt
-        to -dt/2.
+    TODO
 
     Notes
     ----------
-    The Boris algorithm is the standard energy conserving algorithm for
-    particle movement in plasma physics. See [1]_ for more details.
-
-    Conceptually, the algorithm has three phases:
-
-    1. Add half the impulse from electric field.
-    2. Rotate the particle velocity about the direction of the magnetic
-       field.
-    3. Add the second half of the impulse from the electric field.
-
-    This ends up causing the magnetic field action to be properly
-    "centered" in time, and the algorithm conserves energy.
+    TODO
 
     References
     ----------
@@ -300,23 +303,20 @@ def _zenitani(x, v, b, e, q, m, dt):
            On the Boris solver in particle-in-cell simulation
            Physics of Plasmas 25, 112110 (2018); https://doi.org/10.1063/1.5051077
     """
-    C = q / m
+    C = q / m * dt
     for i in numba.prange(len(x)):
         # add first half of electric impulse
-        epsilon = q * dt / 2 / m * e[i]
+        epsilon = C / 2.0 * e[i]
         uminus = v[i] + epsilon
-        magfield_norm = np.linalg.norm(b[i])
-        if magfield_norm == 0.0:
-            uplus = uminus
-        else:
-            theta = q * dt / m * magfield_norm  # Eq. 6
-            bnormed = b[i] / magfield_norm
-            u_parallel_minus = np.dot(uminus, bnormed) * bnormed  # Eq. 11
-            uplus = (
-                u_parallel_minus
-                + (uminus - u_parallel_minus) * np.cos(theta)
-                + np.cross(uminus, bnormed) * np.sin(theta)
-            )  # Eq. 12
-        v[i] = uplus + epsilon  # Eq. 5
-
+        magfield_norm = max((np.linalg.norm(b[i]), B_numerical_threshold))
+        theta = C * magfield_norm / gamma_from_u(uminus)  # Eq. 6
+        bnormed = b[i] / magfield_norm
+        u_parallel_minus = np.dot(uminus, bnormed) * bnormed  # Eq. 11
+        uplus = (
+            u_parallel_minus
+            + (uminus - u_parallel_minus) * math.cos(theta)
+            + np.cross(uminus, bnormed) * math.sin(theta)
+        )  # Eq. 12
+        u_t_plus_half = uplus + epsilon
+        v[i] = u_t_plus_half / gamma_from_u(u_t_plus_half)
         x[i] += v[i] * dt
