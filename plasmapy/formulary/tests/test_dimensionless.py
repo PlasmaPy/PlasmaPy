@@ -1,4 +1,4 @@
-from plasmapy.formulary.dimensionless import (beta, quantum_theta)
+from plasmapy.formulary.dimensionless import beta, quantum_theta
 
 import astropy.units as u
 import numpy as np
@@ -21,7 +21,7 @@ def test_quantum_theta_dimensionless():
 def test_beta_nan():
     # Check that nans are passed through properly
     B = np.array([1, np.nan]) * u.T
-    n = np.array([1, 1]) * u.cm**-3
+    n = np.array([1, 1]) * u.cm ** -3
     T = np.array([1, 1]) * u.K
     out = beta(T, n, B)
     assert np.isnan(out[1])
