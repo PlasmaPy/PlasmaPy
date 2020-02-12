@@ -2,7 +2,9 @@
 
 from numbers import Number
 from typing import Union, Tuple, Any, Optional
+import warnings
 
+import numpy as np
 from astropy import units as u
 
 from plasmapy.tests.helper.expected import ExpectedTestOutcome
@@ -210,29 +212,27 @@ class CompareValues:
         and `False` otherwise.
         """
 
-        if self.are_quantities:
-            return u.allclose(*self.values, atol=None, rtol=0, equal_nan=True)
-
-        try:
-            equality = self.values[0] == self.values[1]
-        except Exception:
-            return False
-
-        if isinstance(equality, bool):
-            return equality
-
-        try:
-            return all(equality)
-        except Exception:
-            pass
-
         if not self.units_are_compatible:
             return False
 
         if self.are_quantity_and_unit:
             return False
 
-        raise InvalidTestError(f"Cannot determine whether or not {self.values} are equal.")
+        if self.are_quantities:
+            try:
+                return u.allclose(*self.values, atol=None, rtol=0, equal_nan=True)
+            except Exception:
+                return False
+
+        try:
+            equality = self.values[0] == self.values[1]
+        except Exception:
+            return False
+
+        try:
+            return all(equality)
+        except TypeError:
+            return equality
 
     @property
     def have_same_types(self) -> bool:
@@ -314,7 +314,7 @@ class CompareValues:
         elif not self.units_are_identical:
             return False
 
-        if self.are_identical or self.are_allclose or self.are_equal:
+        if self.are_identical or self.are_equal or self.are_allclose:
             return True
         else:
             return False
