@@ -48,7 +48,7 @@ class MagneticDipole(MagnetoStatics):
     """
 
     @validate_quantities
-    def __init__(self, moment: u.A * u.m**2, p0: u.m):
+    def __init__(self, moment: u.A * u.m ** 2, p0: u.m):
         self.moment = moment.value
         self._moment_u = moment.unit
         self.p0 = p0.value
@@ -80,9 +80,16 @@ class MagneticDipole(MagnetoStatics):
         """
         r = p - self.p0
         m = self.moment
-        B = constants.mu0.value/4/np.pi \
-            * (3*r*np.dot(m, r)/np.linalg.norm(r)**5 - m/np.linalg.norm(r)**3)
-        return B*u.T
+        B = (
+            constants.mu0.value
+            / 4
+            / np.pi
+            * (
+                3 * r * np.dot(m, r) / np.linalg.norm(r) ** 5
+                - m / np.linalg.norm(r) ** 3
+            )
+        )
+        return B * u.T
 
 
 class Wire(MagnetoStatics):
@@ -177,9 +184,9 @@ class GeneralWire(Wire):
             dl = p2 - p1
             p1 = p2
             R = p - (p2 + p1) / 2
-            B += np.cross(dl, R)/np.linalg.norm(R)**3
-        B = B*constants.mu0.value/4/np.pi*self.current
-        return B*u.T
+            B += np.cross(dl, R) / np.linalg.norm(R) ** 3
+        B = B * constants.mu0.value / 4 / np.pi * self.current
+        return B * u.T
 
 
 class FiniteStraightWire(Wire):
@@ -250,25 +257,36 @@ class FiniteStraightWire(Wire):
         # foot of perpendicular
         p1, p2 = self.p1, self.p2
         p2_p1 = p2 - p1
-        ratio = np.dot(p - p1, p2_p1)/np.dot(p2_p1, p2_p1)
-        pf = p1 + p2_p1*ratio
+        ratio = np.dot(p - p1, p2_p1) / np.dot(p2_p1, p2_p1)
+        pf = p1 + p2_p1 * ratio
 
         # angles: theta_1 = <p - p1, p2 - p1>, theta_2 = <p - p2, p2 - p1>
-        cos_theta_1 = np.dot(p - p1, p2_p1)/np.linalg.norm(p - p1)/np.linalg.norm(p2_p1)
-        cos_theta_2 = np.dot(p - p2, p2_p1)/np.linalg.norm(p - p2)/np.linalg.norm(p2_p1)
+        cos_theta_1 = (
+            np.dot(p - p1, p2_p1) / np.linalg.norm(p - p1) / np.linalg.norm(p2_p1)
+        )
+        cos_theta_2 = (
+            np.dot(p - p2, p2_p1) / np.linalg.norm(p - p2) / np.linalg.norm(p2_p1)
+        )
 
         B_unit = np.cross(p2_p1, p - pf)
-        B_unit = B_unit/np.linalg.norm(B_unit)
+        B_unit = B_unit / np.linalg.norm(B_unit)
 
-        B = B_unit/np.linalg.norm(p-pf)*(cos_theta_1 - cos_theta_2) \
-            * constants.mu0.value/4/np.pi*self.current
+        B = (
+            B_unit
+            / np.linalg.norm(p - pf)
+            * (cos_theta_1 - cos_theta_2)
+            * constants.mu0.value
+            / 4
+            / np.pi
+            * self.current
+        )
 
-        return B*u.T
+        return B * u.T
 
     def to_GeneralWire(self):
         """Convert this `Wire` into a `GeneralWire`."""
         p1, p2 = self.p1, self.p2
-        return GeneralWire(lambda t: p1+(p2-p1)*t, 0, 1, self.current*u.A)
+        return GeneralWire(lambda t: p1 + (p2 - p1) * t, 0, 1, self.current * u.A)
 
 
 class InfiniteStraightWire(Wire):
@@ -330,7 +348,7 @@ class InfiniteStraightWire(Wire):
         B_unit = r / np.linalg.norm(r)
         r = np.linalg.norm(r)
 
-        return B_unit/r*constants.mu0.value/2/np.pi*self.current*u.T
+        return B_unit / r * constants.mu0.value / 2 / np.pi * self.current * u.T
 
 
 class CircularWire(Wire):
@@ -388,8 +406,8 @@ class CircularWire(Wire):
             axis_x = np.array([1, 0, 0])
             axis_y = np.array([0, 1, 0])
         else:
-            axis_x = axis_x/np.linalg.norm(axis_x)
-            axis_y = axis_y/np.linalg.norm(axis_y)
+            axis_x = axis_x / np.linalg.norm(axis_x)
+            axis_y = axis_y / np.linalg.norm(axis_y)
 
         self.axis_x = axis_x
         self.axis_y = axis_y
@@ -399,11 +417,15 @@ class CircularWire(Wire):
                 t = np.expand_dims(t, 0)
                 axis_x_mat = np.expand_dims(axis_x, 1)
                 axis_y_mat = np.expand_dims(axis_y, 1)
-                return self.radius*(np.matmul(axis_x_mat, np.cos(t))
-                                    + np.matmul(axis_y_mat, np.sin(t))) \
-                    + np.expand_dims(self.center, 1)
+                return self.radius * (
+                    np.matmul(axis_x_mat, np.cos(t)) + np.matmul(axis_y_mat, np.sin(t))
+                ) + np.expand_dims(self.center, 1)
             else:
-                return self.radius*(np.cos(t)*axis_x + np.sin(t)*axis_y) + self.center
+                return (
+                    self.radius * (np.cos(t) * axis_x + np.sin(t) * axis_y)
+                    + self.center
+                )
+
         self.curve = curve
 
         self.roots_legendre = scipy.special.roots_legendre(n)
@@ -437,19 +459,27 @@ class CircularWire(Wire):
         """
 
         x, w = self.roots_legendre
-        t = x*np.pi
+        t = x * np.pi
         pt = self.curve(t)
-        dl = self.radius*(
-            - np.matmul(np.expand_dims(self.axis_x, 1), np.expand_dims(np.sin(t), 0))
-            + np.matmul(np.expand_dims(self.axis_y, 1), np.expand_dims(np.cos(t), 0)))  # (3, n)
+        dl = self.radius * (
+            -np.matmul(np.expand_dims(self.axis_x, 1), np.expand_dims(np.sin(t), 0))
+            + np.matmul(np.expand_dims(self.axis_y, 1), np.expand_dims(np.cos(t), 0))
+        )  # (3, n)
 
         r = np.expand_dims(p, 1) - pt  # (3, n)
-        r_norm_3 = np.linalg.norm(r, axis=0)**3
-        ft = np.cross(dl, r, axisa=0, axisb=0)/np.expand_dims(r_norm_3, 1)  # (n, 3)
+        r_norm_3 = np.linalg.norm(r, axis=0) ** 3
+        ft = np.cross(dl, r, axisa=0, axisb=0) / np.expand_dims(r_norm_3, 1)  # (n, 3)
 
-        return np.pi*np.matmul(np.expand_dims(w, 0), ft).squeeze(0) \
-            * constants.mu0.value/4/np.pi*self.current*u.T
+        return (
+            np.pi
+            * np.matmul(np.expand_dims(w, 0), ft).squeeze(0)
+            * constants.mu0.value
+            / 4
+            / np.pi
+            * self.current
+            * u.T
+        )
 
     def to_GeneralWire(self):
         """Convert this `Wire` into a `GeneralWire`."""
-        return GeneralWire(self.curve, -np.pi, np.pi, self.current*u.A)
+        return GeneralWire(self.curve, -np.pi, np.pi, self.current * u.A)

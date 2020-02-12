@@ -59,29 +59,34 @@ import numpy as np
 import warnings
 
 from astropy import units as u
-from plasmapy import (particles, utils)
-from astropy.constants.si import (c, m_e, k_B, e, eps0, hbar)
+from plasmapy import particles, utils
+from astropy.constants.si import c, m_e, k_B, e, eps0, hbar
 from numpy import pi
 from plasmapy.formulary import parameters
 from plasmapy.formulary.mathematics import Fermi_integral
-from plasmapy.formulary.quantum import (Wigner_Seitz_radius,
-                                        thermal_deBroglie_wavelength,
-                                        chemical_potential)
+from plasmapy.formulary.quantum import (
+    Wigner_Seitz_radius,
+    thermal_deBroglie_wavelength,
+    chemical_potential,
+)
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 
 
-@validate_quantities(T={"can_be_negative": False,
-                        "equivalencies": u.temperature_energy()},
-                     z_mean={'none_shall_pass': True},
-                     V={'none_shall_pass': True})
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    z_mean={"none_shall_pass": True},
+    V={"none_shall_pass": True},
+)
 @particles.particle_input
-def Coulomb_logarithm(T: u.K,
-                      n_e: u.m**-3,
-                      species: (particles.Particle, particles.Particle),
-                      z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
-                      V: u.m / u.s = np.nan * u.m / u.s,
-                      method="classical"):
+def Coulomb_logarithm(
+    T: u.K,
+    n_e: u.m ** -3,
+    species: (particles.Particle, particles.Particle),
+    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    V: u.m / u.s = np.nan * u.m / u.s,
+    method="classical",
+):
     r"""
     Estimates the Coulomb logarithm.
 
@@ -257,12 +262,9 @@ def Coulomb_logarithm(T: u.K,
        DOI: 10.1103/PhysRevE.65.036418
     """
     # fetching impact min and max impact parameters
-    bmin, bmax = impact_parameter(T=T,
-                                  n_e=n_e,
-                                  species=species,
-                                  z_mean=z_mean,
-                                  V=V,
-                                  method=method)
+    bmin, bmax = impact_parameter(
+        T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
+    )
     if method in ("classical", "GMS-1", "GMS-2"):
         ln_Lambda = np.log(bmax / bmin)
     elif method == "GMS-3":
@@ -275,21 +277,29 @@ def Coulomb_logarithm(T: u.K,
     elif method in ("GMS-4", "GMS-5", "GMS-6"):
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
-        raise ValueError("Unknown method! Choose from 'classical' and 'GMS-N', N from 1 to 6.")
+        raise ValueError(
+            "Unknown method! Choose from 'classical' and 'GMS-N', N from 1 to 6."
+        )
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
     # Allow NaNs through the < checks without warning
-    with np.errstate(invalid='ignore'):
+    with np.errstate(invalid="ignore"):
         if np.any(ln_Lambda < 2) and method in ["classical", "GMS-1", "GMS-2"]:
-            warnings.warn(f"Coulomb logarithm is {ln_Lambda} and {method} relies on "
-                          "weak coupling.", utils.CouplingWarning)
+            warnings.warn(
+                f"Coulomb logarithm is {ln_Lambda} and {method} relies on "
+                "weak coupling.",
+                utils.CouplingWarning,
+            )
         elif np.any(ln_Lambda < 4):
-            warnings.warn(f"Coulomb logarithm is {ln_Lambda}, you might have strong "
-                          "coupling effects", utils.CouplingWarning)
+            warnings.warn(
+                f"Coulomb logarithm is {ln_Lambda}, you might have strong "
+                "coupling effects",
+                utils.CouplingWarning,
+            )
     return ln_Lambda
 
 
-@validate_quantities(T={'equivalencies': u.temperature_energy()})
+@validate_quantities(T={"equivalencies": u.temperature_energy()})
 @particles.particle_input
 def _boilerPlate(T: u.K, species: (particles.Particle, particles.Particle), V):
     """
@@ -306,7 +316,7 @@ def _boilerPlate(T: u.K, species: (particles.Particle, particles.Particle), V):
     # getting thermal velocity of system if no velocity is given
     V = _replaceNanVwithThermalV(V, T, reduced_mass)
 
-    _check_relativistic(V, 'V')
+    _check_relativistic(V, "V")
 
     return T, masses, charges, reduced_mass, V
 
@@ -335,12 +345,15 @@ def _replaceNanVwithThermalV(V, T, m):
     return V
 
 
-@validate_quantities(T={'can_be_negative': False,
-                        'equivalencies': u.temperature_energy()})
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
+)
 @particles.particle_input
-def impact_parameter_perp(T: u.K,
-                          species: (particles.Particle, particles.Particle),
-                          V: u.m / u.s = np.nan * u.m / u.s) -> u.m:
+def impact_parameter_perp(
+    T: u.K,
+    species: (particles.Particle, particles.Particle),
+    V: u.m / u.s = np.nan * u.m / u.s,
+) -> u.m:
     r"""Distance of closest approach for a 90 degree Coulomb collision.
 
     Parameters
@@ -414,28 +427,29 @@ def impact_parameter_perp(T: u.K,
 
     """
     # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       species=species,
-                                                       V=V)
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
     # Corresponds to a deflection of 90 degrees, which is valid when
     # classical effects dominate.
     # !!!Note: an average ionization parameter will have to be
     # included here in the future
-    bPerp = (charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V ** 2))
+    bPerp = charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V ** 2)
     return bPerp
 
 
-@validate_quantities(T={'can_be_negative': False,
-                        'equivalencies': u.temperature_energy()},
-                     n_e={'can_be_negative': False},
-                     z_mean={'none_shall_pass': True},
-                     V={'none_shall_pass': True})
-def impact_parameter(T: u.K,
-                     n_e: u.m ** -3,
-                     species,
-                     z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
-                     V: u.m / u.s = np.nan * u.m / u.s,
-                     method="classical"):
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False},
+    z_mean={"none_shall_pass": True},
+    V={"none_shall_pass": True},
+)
+def impact_parameter(
+    T: u.K,
+    n_e: u.m ** -3,
+    species,
+    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    V: u.m / u.s = np.nan * u.m / u.s,
+    method="classical",
+):
     r"""Impact parameters for classical and quantum Coulomb collision
 
     Parameters
@@ -539,23 +553,20 @@ def impact_parameter(T: u.K,
        DOI: 10.1103/PhysRevE.65.036418
     """
     # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       species=species,
-                                                       V=V)
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
     if method in ("GMS-2", "GMS-5", "GMS-6"):
         if np.isnan(z_mean):
-            raise ValueError("Must provide a z_mean for GMS-2, GMS-5, and "
-                             "GMS-6 methods.")
+            raise ValueError(
+                "Must provide a z_mean for GMS-2, GMS-5, and " "GMS-6 methods."
+            )
     # Debye length
     lambdaDe = parameters.Debye_length(T, n_e)
     # deBroglie wavelength
     lambdaBroglie = hbar / (2 * reduced_mass * V)
     # distance of closest approach in 90 degree Coulomb collision
-    bPerp = impact_parameter_perp(T=T,
-                                  species=species,
-                                  V=V)
+    bPerp = impact_parameter_perp(T=T, species=species, V=V)
     # obtaining minimum and maximum impact parameters depending on which
     # method is requested
     if method == "classical":
@@ -634,16 +645,19 @@ def impact_parameter(T: u.K,
     return bmin.to(u.m), bmax.to(u.m)
 
 
-@validate_quantities(T={'can_be_negative': False,
-                        'equivalencies': u.temperature_energy()},
-                     n={'can_be_negative': False},
-                     z_mean={'none_shall_pass': True})
-def collision_frequency(T: u.K,
-                        n: u.m ** -3,
-                        species,
-                        z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
-                        V: u.m / u.s = np.nan * u.m / u.s,
-                        method="classical") -> u.Hz:
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n={"can_be_negative": False},
+    z_mean={"none_shall_pass": True},
+)
+def collision_frequency(
+    T: u.K,
+    n: u.m ** -3,
+    species,
+    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    V: u.m / u.s = np.nan * u.m / u.s,
+    method="classical",
+) -> u.Hz:
     r"""Collision frequency of particles in a plasma.
 
     Parameters
@@ -742,30 +756,21 @@ def collision_frequency(T: u.K,
 
     """
     # boiler plate checks
-    T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T,
-                                                         species=species,
-                                                         V=V)
+    T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T, species=species, V=V)
     # using a more descriptive name for the thermal velocity using
     # reduced mass
     V_reduced = V_r
-    if species[0] in ('e', 'e-') and species[1] in ('e', 'e-'):
+    if species[0] in ("e", "e-") and species[1] in ("e", "e-"):
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
         V = _replaceNanVwithThermalV(V, T, reduced_mass)
         # impact parameter for 90 degree collision
-        bPerp = impact_parameter_perp(T=T,
-                                      species=species,
-                                      V=V_reduced)
+        bPerp = impact_parameter_perp(T=T, species=species, V=V_reduced)
         print(T, n, species, z_mean, method)
         # Coulomb logarithm
-        cou_log = Coulomb_logarithm(T,
-                                    n,
-                                    species,
-                                    z_mean,
-                                    V=V,
-                                    method=method)
-    elif species[0] in ('e', 'e-') or species[1] in ('e', 'e-'):
+        cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
+    elif species[0] in ("e", "e-") or species[1] in ("e", "e-"):
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
@@ -774,33 +779,19 @@ def collision_frequency(T: u.K,
         V = _replaceNanVwithThermalV(V, T, m_e)
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
-        bPerp = impact_parameter_perp(T=T,
-                                      species=species,
-                                      V=V) * reduced_mass / m_e
+        bPerp = impact_parameter_perp(T=T, species=species, V=V) * reduced_mass / m_e
         # Coulomb logarithm
         # !!! may also need to correct Coulomb logarithm to be
         # electron-electron version !!!
-        cou_log = Coulomb_logarithm(T,
-                                    n,
-                                    species,
-                                    z_mean,
-                                    V=V,
-                                    method=method)
+        cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     else:
         # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
         V = _replaceNanVwithThermalV(V, T, reduced_mass)
-        bPerp = impact_parameter_perp(T=T,
-                                      species=species,
-                                      V=V)
+        bPerp = impact_parameter_perp(T=T, species=species, V=V)
         # Coulomb logarithm
-        cou_log = Coulomb_logarithm(T,
-                                    n,
-                                    species,
-                                    z_mean,
-                                    V=V,
-                                    method=method)
+        cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     # collisional cross section
     sigma = Coulomb_cross_section(bPerp)
     # collision frequency where Coulomb logarithm accounts for
@@ -810,8 +801,8 @@ def collision_frequency(T: u.K,
     return freq
 
 
-@validate_quantities(impact_param={'can_be_negative': False})
-def Coulomb_cross_section(impact_param: u.m) -> u.m**2:
+@validate_quantities(impact_param={"can_be_negative": False})
+def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
     r"""Cross section for a large angle Coulomb collision.
 
     Parameters
@@ -852,15 +843,18 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m**2:
     return sigma
 
 
-@validate_quantities(T_e={'can_be_negative': False,
-                          'equivalencies': u.temperature_energy()},
-                     n_e={'can_be_negative': False})
-def fundamental_electron_collision_freq(T_e: u.K,
-                                        n_e: u.m ** -3,
-                                        ion,
-                                        coulomb_log=None,
-                                        V=None,
-                                        coulomb_log_method="classical") -> u.s ** -1:
+@validate_quantities(
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False},
+)
+def fundamental_electron_collision_freq(
+    T_e: u.K,
+    n_e: u.m ** -3,
+    ion,
+    coulomb_log=None,
+    V=None,
+    coulomb_log_method="classical",
+) -> u.s ** -1:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian distribution of electrons.
 
@@ -948,25 +942,18 @@ def fundamental_electron_collision_freq(T_e: u.K,
     # specify to use electron thermal velocity (most probable), not based on reduced mass
     V = _replaceNanVwithThermalV(V, T_e, m_e)
 
-    species = [ion, 'e-']
+    species = [ion, "e-"]
     Z_i = particles.integer_charge(ion)
-    nu = collision_frequency(T_e,
-                             n_e,
-                             species,
-                             z_mean=Z_i,
-                             V=V,
-                             method=coulomb_log_method
-                             )
+    nu = collision_frequency(
+        T_e, n_e, species, z_mean=Z_i, V=V, method=coulomb_log_method
+    )
     coeff = 4 / np.sqrt(np.pi) / 3
 
     # accounting for when a Coulomb logarithm value is passed
     if np.any(coulomb_log):
-        cLog = Coulomb_logarithm(T_e,
-                                 n_e,
-                                 species,
-                                 z_mean=Z_i,
-                                 V=V,
-                                 method=coulomb_log_method)
+        cLog = Coulomb_logarithm(
+            T_e, n_e, species, z_mean=Z_i, V=V, method=coulomb_log_method
+        )
         # dividing out by typical Coulomb logarithm value implicit in
         # the collision frequency calculation and replacing with
         # the user defined Coulomb logarithm value
@@ -978,15 +965,18 @@ def fundamental_electron_collision_freq(T_e: u.K,
     return nu_e
 
 
-@validate_quantities(T_i={'can_be_negative': False,
-                          'equivalencies': u.temperature_energy()},
-                     n_i={'can_be_negative': False})
-def fundamental_ion_collision_freq(T_i: u.K,
-                                   n_i: u.m ** -3,
-                                   ion,
-                                   coulomb_log=None,
-                                   V=None,
-                                   coulomb_log_method="classical") -> u.s ** -1:
+@validate_quantities(
+    T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_i={"can_be_negative": False},
+)
+def fundamental_ion_collision_freq(
+    T_i: u.K,
+    n_i: u.m ** -3,
+    ion,
+    coulomb_log=None,
+    V=None,
+    coulomb_log_method="classical",
+) -> u.s ** -1:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian distribution of ions.
 
@@ -1086,24 +1076,18 @@ def fundamental_ion_collision_freq(T_i: u.K,
 
     Z_i = particles.integer_charge(ion)
 
-    nu = collision_frequency(T_i,
-                             n_i,
-                             species,
-                             z_mean=Z_i,
-                             V=V,
-                             method=coulomb_log_method)
+    nu = collision_frequency(
+        T_i, n_i, species, z_mean=Z_i, V=V, method=coulomb_log_method
+    )
     # factor of 4 due to reduced mass in bperp and the rest is
     # due to differences in definitions of collisional frequency
     coeff = np.sqrt(8 / np.pi) / 3 / 4
 
     # accounting for when a Coulomb logarithm value is passed
     if np.any(coulomb_log):
-        cLog = Coulomb_logarithm(T_i,
-                                 n_i,
-                                 species,
-                                 z_mean=Z_i,
-                                 V=V,
-                                 method=coulomb_log_method)
+        cLog = Coulomb_logarithm(
+            T_i, n_i, species, z_mean=Z_i, V=V, method=coulomb_log_method
+        )
         # dividing out by typical Coulomb logarithm value implicit in
         # the collision frequency calculation and replacing with
         # the user defined Coulomb logarithm value
@@ -1115,16 +1099,19 @@ def fundamental_ion_collision_freq(T_i: u.K,
     return nu_i
 
 
-@validate_quantities(T={'can_be_negative': False,
-                        'equivalencies': u.temperature_energy()},
-                     n_e={'can_be_negative': False},
-                     z_mean={'none_shall_pass': True})
-def mean_free_path(T: u.K,
-                   n_e: u.m ** -3,
-                   species,
-                   z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
-                   V: u.m / u.s = np.nan * u.m / u.s,
-                   method="classical") -> u.m:
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False},
+    z_mean={"none_shall_pass": True},
+)
+def mean_free_path(
+    T: u.K,
+    n_e: u.m ** -3,
+    species,
+    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    V: u.m / u.s = np.nan * u.m / u.s,
+    method="classical",
+) -> u.m:
     r"""Collisional mean free path (m)
 
     Parameters
@@ -1214,35 +1201,33 @@ def mean_free_path(T: u.K,
        fusion 3rd edition. Ch 5 (Springer 2015).
     """
     # collisional frequency
-    freq = collision_frequency(T=T,
-                               n=n_e,
-                               species=species,
-                               z_mean=z_mean,
-                               V=V,
-                               method=method)
+    freq = collision_frequency(
+        T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
+    )
     # boiler plate to fetch velocity
     # this has been moved to after collision_frequency to avoid use of
     # reduced mass thermal velocity in electron-ion collision case.
     # Should be fine since collision_frequency has its own boiler_plate
     # check, and we are only using this here to get the velocity.
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       species=species,
-                                                       V=V)
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
     # mean free path length
     mfp = V / freq
     return mfp
 
 
-@validate_quantities(T={'can_be_negative': False,
-                        'equivalencies': u.temperature_energy()},
-                     n={'can_be_negative': False},
-                     z_mean={'none_shall_pass': True})
-def Spitzer_resistivity(T: u.K,
-                        n: u.m ** -3,
-                        species,
-                        z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
-                        V: u.m/u.s = np.nan * u.m / u.s,
-                        method="classical") -> u.Ohm * u.m:
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n={"can_be_negative": False},
+    z_mean={"none_shall_pass": True},
+)
+def Spitzer_resistivity(
+    T: u.K,
+    n: u.m ** -3,
+    species,
+    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    V: u.m / u.s = np.nan * u.m / u.s,
+    method="classical",
+) -> u.Ohm * u.m:
     r"""Spitzer resistivity of a plasma
 
     Parameters
@@ -1344,17 +1329,12 @@ def Spitzer_resistivity(T: u.K,
 
     """
     # collisional frequency
-    freq = collision_frequency(T=T,
-                               n=n,
-                               species=species,
-                               z_mean=z_mean,
-                               V=V,
-                               method=method)
+    freq = collision_frequency(
+        T=T, n=n, species=species, z_mean=z_mean, V=V, method=method
+    )
     # boiler plate checks
     # fetching additional parameters
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       species=species,
-                                                       V=V)
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
     if np.isnan(z_mean):
         spitzer = freq * reduced_mass / (n * charges[0] * charges[1])
     else:
@@ -1362,16 +1342,19 @@ def Spitzer_resistivity(T: u.K,
     return spitzer
 
 
-@validate_quantities(T={'can_be_negative': False,
-                        'equivalencies': u.temperature_energy()},
-                     n_e={'can_be_negative': False},
-                     z_mean={'none_shall_pass': True})
-def mobility(T: u.K,
-             n_e: u.m ** -3,
-             species,
-             z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
-             V: u.m / u.s = np.nan * u.m / u.s,
-             method="classical") -> u.m ** 2 / (u.V * u.s):
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False},
+    z_mean={"none_shall_pass": True},
+)
+def mobility(
+    T: u.K,
+    n_e: u.m ** -3,
+    species,
+    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    V: u.m / u.s = np.nan * u.m / u.s,
+    method="classical",
+) -> u.m ** 2 / (u.V * u.s):
     r"""Electrical mobility (m^2/(V s))
 
     Parameters
@@ -1469,19 +1452,14 @@ def mobility(T: u.K,
     ----------
     .. [1] https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase
     """
-    freq = collision_frequency(T=T,
-                               n=n_e,
-                               species=species,
-                               z_mean=z_mean,
-                               V=V,
-                               method=method)
+    freq = collision_frequency(
+        T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
+    )
     # boiler plate checks
     # we do this after collision_frequency since collision_frequency
     # already has a boiler_plate check and we are doing this just
     # to recover the charges, mass, etc.
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       species=species,
-                                                       V=V)
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
     if np.isnan(z_mean):
         z_val = (charges[0] + charges[1]) / 2
     else:
@@ -1490,17 +1468,20 @@ def mobility(T: u.K,
     return mobility_value
 
 
-@validate_quantities(T={'can_be_negative': False,
-                        'equivalencies': u.temperature_energy()},
-                     n_e={'can_be_negative': False},
-                     z_mean={'none_shall_pass': True})
-def Knudsen_number(characteristic_length,
-                   T: u.K,
-                   n_e: u.m ** -3,
-                   species,
-                   z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
-                   V: u.m / u.s = np.nan * u.m / u.s,
-                   method="classical") -> u.dimensionless_unscaled:
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False},
+    z_mean={"none_shall_pass": True},
+)
+def Knudsen_number(
+    characteristic_length,
+    T: u.K,
+    n_e: u.m ** -3,
+    species,
+    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    V: u.m / u.s = np.nan * u.m / u.s,
+    method="classical",
+) -> u.dimensionless_unscaled:
     r"""Knudsen number (dimensionless)
 
     Parameters
@@ -1600,26 +1581,26 @@ def Knudsen_number(characteristic_length,
     .. [1] https://en.wikipedia.org/wiki/Knudsen_number
 
     """
-    path_length = mean_free_path(T=T,
-                                 n_e=n_e,
-                                 species=species,
-                                 z_mean=z_mean,
-                                 V=V,
-                                 method=method)
+    path_length = mean_free_path(
+        T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
+    )
     knudsen_param = path_length / characteristic_length
     return knudsen_param
 
 
-@validate_quantities(T={'can_be_negative': False,
-                        'equivalencies': u.temperature_energy()},
-                     n_e={'can_be_negative': False},
-                     z_mean={'none_shall_pass': True})
-def coupling_parameter(T: u.K,
-                       n_e: u.m ** -3,
-                       species,
-                       z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
-                       V: u.m / u.s = np.nan * u.m / u.s,
-                       method="classical") -> u.dimensionless_unscaled:
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False},
+    z_mean={"none_shall_pass": True},
+)
+def coupling_parameter(
+    T: u.K,
+    n_e: u.m ** -3,
+    species,
+    z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
+    V: u.m / u.s = np.nan * u.m / u.s,
+    method="classical",
+) -> u.dimensionless_unscaled:
     r"""Coupling parameter.
     Coupling parameter compares Coulomb energy to kinetic energy (typically)
     thermal. Classical plasmas are weakly coupled Gamma << 1, whereas dense
@@ -1752,9 +1733,7 @@ def coupling_parameter(T: u.K,
 
     """
     # boiler plate checks
-    T, masses, charges, reduced_mass, V = _boilerPlate(T=T,
-                                                       species=species,
-                                                       V=V)
+    T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
     if np.isnan(z_mean):
         # using mean charge to get average ion density.
         # If you are running this, you should strongly consider giving
@@ -1789,11 +1768,15 @@ def coupling_parameter(T: u.K,
         if np.all(np.imag(kineticEnergy) == 0):
             kineticEnergy = np.real(kineticEnergy)
         else:  # coverage: ignore
-            raise ValueError("Kinetic energy should not be imaginary."
-                             "Something went horribly wrong.")
+            raise ValueError(
+                "Kinetic energy should not be imaginary."
+                "Something went horribly wrong."
+            )
     else:
-        raise ValueError(f"Keyword 'method' must be either 'classical' or "
-                         f"'quantum', instead of '{method}'.")
+        raise ValueError(
+            f"Keyword 'method' must be either 'classical' or "
+            f"'quantum', instead of '{method}'."
+        )
 
     coupling = coulombEnergy / kineticEnergy
     return coupling
