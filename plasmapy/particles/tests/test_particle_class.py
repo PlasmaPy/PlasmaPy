@@ -3,7 +3,7 @@ import inspect
 import collections
 
 import numpy as np
-from astropy import units as u
+from astropy import units as u, constants as const
 
 from plasmapy.utils import roman
 from astropy.constants import m_p, m_e, m_n, e, c
@@ -888,9 +888,44 @@ def test_that_object_can_be_dict_key(key):
     assert dictionary[key] is value
 
 
-def test_dimensionless_particle():
-    raise NotImplementedError("To be implemented after test runner PR is complete.")
+# TODO: Refactor tests using forthcoming functionality in plasmapy.tests.helper
+
+customized_particle_tests = [
+    (DimensionlessParticle, {"mass": 1.0, "charge": -1.0}, "mass", 1.0),
+    (DimensionlessParticle, {"mass": 0.0, "charge": -1.0}, "charge", -1.0),
+    (DimensionlessParticle, {}, "mass", np.nan),
+    (DimensionlessParticle, {}, "charge", np.nan),
+    (CustomParticle, {}, "mass", np.nan * u.kg),
+    (CustomParticle, {}, "charge", np.nan * u.C),
+    (CustomParticle, {"mass": 1.1 * u.kg, "charge": -0.1 * u.C}, "mass", 1.1 * u.kg),
+    (CustomParticle, {"charge": -0.1 * u.C}, "charge", -0.1 * u.C),
+    (CustomParticle, {"charge": -2}, "charge", -2 * const.e.si),
+]
 
 
-def test_custom_particle():
-    raise NotImplementedError("To be implemented after test runner PR is complete.")
+@pytest.mark.parametrize("cls, kwargs, attr, expected", customized_particle_tests)
+def test_customized_particles(cls, kwargs, attr, expected):
+    instance = cls(**kwargs)
+    value = getattr(instance, attr)
+
+    if not u.isclose(value, expected, equal_nan=True):
+        pytest.fail(
+            f"{call_string(cls, kwargs=kwargs)}.{attr} should return a value "
+            f"of {expected}, but instead returned a value of {value}."
+        )
+
+
+customized_particle_errors = [
+    (DimensionlessParticle, {"mass": -1e-36}, InvalidParticleError),
+    (CustomParticle, {"mass": -1e-36 * u.kg}, InvalidParticleError),
+    (DimensionlessParticle, {"mass": [1, 1]}, InvalidParticleError),
+    (DimensionlessParticle, {"charge": [-1, 1]}, InvalidParticleError),
+    (CustomParticle, {"mass": np.array([1, 1]) * u.kg}, InvalidParticleError),
+    (CustomParticle, {"charge": np.array([1, 1]) * u.C}, InvalidParticleError),
+]
+
+
+@pytest.mark.parametrize("cls, kwargs, exception", customized_particle_errors)
+def test_customized_particles_errors(cls, kwargs, exception):
+    with pytest.raises(exception):
+        cls(**kwargs)
