@@ -448,7 +448,7 @@ test_Particle_table = [
             'is_category(any_of="boson", exclude="boson")': AtomicError,
         },
     ),
-    (Particle("C"), {}, {"particle": "C", "atomic_number": 6, "element": "C",}),
+    (Particle("C"), {}, {"particle": "C", "atomic_number": 6, "element": "C"}),
     (
         Particle("C"),
         {"Z": 3, "mass_numb": 14},
