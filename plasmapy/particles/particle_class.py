@@ -1660,9 +1660,7 @@ class DimensionlessParticle(AbstractParticle):
     -1.0
     """
 
-    def __init__(
-        self, *, mass: Real = None, charge: Real = None, rms_charge: Real = None
-    ):
+    def __init__(self, *, mass: Real = None, charge: Real = None):
 
         if mass is None or charge is None:
             raise InvalidParticleError(
@@ -1716,8 +1714,6 @@ class DimensionlessParticle(AbstractParticle):
                 "The charge of a dimensionless particle must be a real number."
             )
 
-    # TODO: Add a root mean square charge attribute.
-
 
 class CustomParticle(AbstractParticle):
     """
@@ -1751,7 +1747,7 @@ class CustomParticle(AbstractParticle):
     <Quantity -1.60217...e-19 C>
     """
 
-    def __init__(self, mass: u.kg = None, charge: u.C = None):
+    def __init__(self, mass: u.kg = None, charge: (u.C, Real) = None):
 
         try:
             self.mass = mass
@@ -1795,13 +1791,13 @@ class CustomParticle(AbstractParticle):
     @charge.setter
     def charge(self, q: Optional[Union[u.Quantity, Real]]):
 
+        # TODO: figure out units of ESU which cannot be converted to coulombs
+
         if q is None:
             self._charge = np.nan * u.C
         elif isinstance(q, Real):
             self._charge = q * const.e.si
         elif isinstance(q, u.Quantity):
-
-            # TODO: figure out units of ESU which cannot be converted to coulombs
 
             try:
                 self._charge = q.to(u.C)
