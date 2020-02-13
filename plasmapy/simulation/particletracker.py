@@ -10,88 +10,70 @@ from plasmapy import atomic, formulary
 from plasmapy.utils.decorators import check_units
 from plasmapy.utils import PhysicsError
 from plasmapy.atomic import particle_input, Particle
+import typing
 from . import particle_integrators
 
 PLOTTING = False
 
-__all__ = ["ParticleTracker", "ParticleTrackerSolution"]
+__all__ = ["ParticleTracker", "ParticleTrackerAccessor"]
 
 
-class ParticleTrackerSolution:
-    """
-    A solution to `ParticleTracker`'s trajectory integration.
+@check_units
+@particle_input
+def _create_xarray(
+    position_history: u.m,
+    velocity_history: u.m / u.s,
+    times: u.s,
+    b_history: u.T,
+    e_history: u.V / u.m,
+    timesteps: u.s,
+    particle: Particle,
+    dimensions="xyz",
+):
+    data_vars = {}
+    assert position_history.shape == velocity_history.shape
+    particles = range(position_history.shape[1])
+    data_vars["position"] = (
+        ("time", "particle", "dimension"),
+        position_history.si.value,
+    )
+    data_vars["velocity"] = (
+        ("time", "particle", "dimension"),
+        velocity_history.si.value,
+    )
+    data_vars["B"] = (("time", "particle", "dimension"), b_history.si.value)
+    data_vars["E"] = (("time", "particle", "dimension"), e_history.si.value)
+    data_vars["timestep"] = (("time",), timesteps.si.value)
 
-    Parameters
-    ----------
-    x : `astropy.units.Quantity`
-        Initial particle positions
-    v : `astropy.units.Quantity`
-        Initial particle velocities
-    NT: int
-        Number of time steps
-    dt: `astropy.units.Quantity`
-        time step length
-    particle: `plasmapy.atomic.Particle`
-        Particle type that underwent motion.
+    data = xarray.Dataset(
+        data_vars=data_vars,
+        coords={
+            "time": times.si.value,
+            "particle": particles,
+            "dimension": list(dimensions),
+        },
+    )
+    for index, quantity in [
+        ("position", position_history),
+        ("velocity", velocity_history),
+        ("time", times),
+        ("B", b_history),
+        ("E", e_history),
+        ("timestep", timesteps),
+    ]:
+        data[index].attrs["unit"] = str(quantity.unit)
 
-    Attributes
-    ----------
-    position_history : `astropy.units.Quantity`
-        History of position, with units. Shape (nt, n, 3).
-    velocity_history : `astropy.units.Quantity`
-        History of velocity, with units. Shape (nt, n, 3).
-    t: `astropy.units.Quantity`
-        Array of times at which snapshots were taken.
+    data.attrs["particle"] = str(particle)
+    return data
 
-    Examples
-    ----------
-    See `plasmapy/examples/plot_particle_stepper.ipynb`.
 
-    """
-
-    @check_units
-    @particle_input
-    def __init__(
-        self,
-        position_history: u.m,
-        velocity_history: u.m / u.s,
-        times: u.s,
-        b_history: u.T,
-        e_history: u.V / u.m,
-        plasma,
-        particle: Particle,
-        diagnostics: list,
-        dimensions="xyz",
-    ):
-        data_vars = {}
-        assert position_history.shape == velocity_history.shape
-        particles = range(position_history.shape[1])
-        data_vars["position"] = (
-            ("time", "particle", "dimension"),
-            position_history.si.value,
-        )
-        data_vars["velocity"] = (
-            ("time", "particle", "dimension"),
-            velocity_history.si.value,
-        )
-        data_vars["B"] = (("time", "particle", "dimension"), b_history.si.value)
-        data_vars["E"] = (("time", "particle", "dimension"), e_history.si.value)
-        data_vars["timestep"] = (("time",), [row["dt"] for row in diagnostics])
-        self.data = xarray.Dataset(
-            data_vars=data_vars,
-            coords={
-                "time": times.si.value,
-                "particle": particles,
-                "dimension": list(dimensions),
-            },
-        )
-        self.data["position"].attrs["unit"] = position_history.unit
-        self.data["velocity"].attrs["unit"] = velocity_history.unit
-        self.data.time.attrs["unit"] = times.unit
-        self.data.attrs["particle"] = particle
-        self.particle = particle
-        self.diagnostics = diagnostics
+@xarray.register_dataset_accessor("particletracker")
+class ParticleTrackerAccessor:
+    def __init__(self, xarray_obj, plasma=None):
+        self._obj = xarray_obj
         self.plasma = plasma
+        self.particle = Particle(xarray_obj.attrs["particle"])
+        # self.diagnostics = diagnostics # TODO put in xarray itself
 
     def plot_trajectories(self, *args, **kwargs):  # coverage: ignore
         r"""Draws trajectory history."""
@@ -102,8 +84,8 @@ class ParticleTrackerSolution:
         quantity_support()
         fig = plt.figure()
         ax = fig.add_subplot(111, projection="3d")
-        for p_index in range(self.data.particle.size):
-            r = self.data.position.isel(particle=p_index)
+        for p_index in range(self.particle.size):
+            r = self.position.isel(particle=p_index)
             x, y, z = r.T
             ax.plot(x, y, z, *args, **kwargs)
         ax.set_xlabel("$x$ position")
@@ -127,15 +109,15 @@ class ParticleTrackerSolution:
 
         quantity_support()
         fig, ax = plt.subplots()
-        for p_index in range(self.data.particle.size):
-            r = self.data.position.isel(particle=p_index)
+        for p_index in range(self.particle.size):
+            r = self.position.isel(particle=p_index)
             x, y, z = r.T
             if "x" in plot:
-                ax.plot(self.data.time, x, label=f"x_{p_index}")
+                ax.plot(self.time, x, label=f"x_{p_index}")
             if "y" in plot:
-                ax.plot(self.data.time, y, label=f"y_{p_index}")
+                ax.plot(self.time, y, label=f"y_{p_index}")
             if "z" in plot:
-                ax.plot(self.data.time, z, label=f"z_{p_index}")
+                ax.plot(self.time, z, label=f"z_{p_index}")
         # ax.set_title(self.name)
         ax.legend(loc="best")
         ax.grid()
@@ -166,10 +148,10 @@ class ParticleTrackerSolution:
             fig.add_axes()
         else:
             fig = figure
-        points = self.data.position.sel(particle=particle).values
+        points = self.position.sel(particle=particle).values
         # breakpoint()
         trajectory = spline = pv.Spline(points, 1000)
-        if hasattr(self.plasma, "visualize"):
+        if self.plasma and hasattr(self.plasma, "visualize"):
             self.plasma.visualize(fig)
 
         if figure is None:
@@ -189,7 +171,13 @@ class ParticleTrackerSolution:
         ~astropy.units.Quantity
             Array of kinetic energies, shape (nt, n).
         """
-        return (self.data.velocity ** 2).sum(dim="dimension") * self.particle.mass / 2
+        if "kinetic_energy" not in self._obj:
+            kinetic_energy = (
+                (self._obj.velocity ** 2).sum(axis=-1) * self.particle.mass / 2
+            )
+            self._obj["kinetic_energy"] = (("time", "particle"), kinetic_energy)
+            self._obj["kinetic_energy"].attrs["unit"] = "J"
+        return self._obj.kinetic_energy
 
 
 class ParticleTracker:
@@ -308,7 +296,7 @@ class ParticleTracker:
         dt: u.s = None,
         progressbar=True,
         pusher="explicit_boris",
-        diagnostics_update_step: u.s = None,
+        progressbar_steps=100,
     ):
         r"""Run a simulation instance.
 
@@ -323,7 +311,7 @@ class ParticleTracker:
             )
             dt = gyroperiod.min() / 20
             warnings.warn(
-                UserWarning(f"Set timestep to {dt:.3e}, 1/20 of smallest gyroperiod")
+                f"Set timestep to {dt:.3e}, 1/20 of smallest gyroperiod", UserWarning
             )
 
         _dt = dt.si.value
@@ -331,11 +319,14 @@ class ParticleTracker:
         _m = self.particle.mass.si.value
 
         _total_time = total_time.si.value
+        _time = 0.0
+        _progressbar_timestep = _total_time / progressbar_steps
+        next_progressbar_update_time = _time + _progressbar_timestep
+        _times = [_time]
+        _timesteps = [_dt]
         _x = self._x.copy()
         _v = self._v.copy()
-        _time = 0.0
 
-        _times = [_time]
         init_kinetic = self._kinetic_energy(_v)
         timestep_info = dict(i=len(_times), dt=_dt)
         if init_kinetic:
@@ -344,7 +335,6 @@ class ParticleTracker:
         else:
             delta = self._kinetic_energy(_v)
             kinetic_info = {"Kinetic energy change": delta}
-        list_diagnostics = [dict(**timestep_info, **kinetic_info)]
 
         with np.errstate(all="raise"):
             b = self.plasma._interpolate_B(_x)
@@ -359,47 +349,43 @@ class ParticleTracker:
             _b_history = [b.copy()]
             _e_history = [e.copy()]
             if progressbar:
-                pbar = tqdm.auto.tqdm(total=_total_time, unit="s")
+                pbar = tqdm.auto.tqdm(total=progressbar_steps)
             while _time < _total_time:
                 _time += _dt
                 b = self.plasma._interpolate_B(_x)
                 e = self.plasma._interpolate_E(_x)
                 integrator(_x, _v, b, e, _q, _m, _dt)
 
-                if True:
-                    timestep_info = dict(i=len(_times), dt=_dt)
-
+                # todo should be a list of dicts, probably)
                 _position_history.append(_x.copy())
                 _velocity_history.append(_v.copy())
                 _b_history.append(b.copy())
                 _e_history.append(e.copy())
                 _times.append(_time)
+                _timesteps.append(_dt)
 
-                if init_kinetic:
-                    reldelta = self._kinetic_energy(_v) / init_kinetic - 1
-                    kinetic_info = {"Relative kinetic energy change": reldelta}
-                else:
-                    delta = self._kinetic_energy(_v)
-                    kinetic_info = {"Kinetic energy change": delta}
-
-                diagnostics = dict(**timestep_info, **kinetic_info)
-                list_diagnostics.append(diagnostics)
-
-                if progressbar:
+                if progressbar and _time > next_progressbar_update_time:
+                    next_progressbar_update_time += _progressbar_timestep
+                    diagnostics = dict(i=len(_times), dt=_dt)
+                    if init_kinetic:
+                        reldelta = self._kinetic_energy(_v) / init_kinetic - 1
+                        diagnostics["Relative kinetic energy change"] = reldelta
+                    else:
+                        delta = self._kinetic_energy(_v)
+                        diagnostics["Kinetic energy change"] = delta
                     pbar.set_postfix(diagnostics)
-                    pbar.update(_dt)
+                    pbar.update()
         if progressbar:
             pbar.close()
 
-        solution = ParticleTrackerSolution(
+        solution = _create_xarray(
             u.Quantity(_position_history, u.m),
             u.Quantity(_velocity_history, u.m / u.s),
             u.Quantity(_times, u.s),
             u.Quantity(_b_history, u.T),
             u.Quantity(_e_history, u.V / u.m),
-            self.plasma,
+            u.Quantity(_timesteps, u.s),
             self.particle,
-            diagnostics=list_diagnostics,
         )
         return solution
 

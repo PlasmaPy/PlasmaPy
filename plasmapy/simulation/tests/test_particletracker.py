@@ -40,8 +40,8 @@ def test_run_no_fields(integrator_name):
 
     s = ParticleTracker(test_plasma)
     sol = s.run(2e-10 * u.s, dt=1e-10 * u.s, pusher=integrator_name)
-    assert np.isfinite(sol.data.position).all()
-    assert np.isfinite(sol.data.velocity).all()
+    assert np.isfinite(sol.position).all()
+    assert np.isfinite(sol.velocity).all()
 
 
 def test_adjust_position_velocity():
@@ -146,11 +146,11 @@ def test_particle_uniform_magnetic(integrator_name):
     s = ParticleTracker(test_plasma, particle_type=particle_type, v=v)
     sol = s.run(1e4 * dt, dt, pusher=integrator_name)
 
-    x = sol.data.position.sel(particle=0, dimension="x")
-    z = sol.data.position.sel(particle=0, dimension="z")
+    x = sol.position.sel(particle=0, dimension="x")
+    z = sol.position.sel(particle=0, dimension="z")
 
     try:
-        params, stds = fit_sine_curve(x, sol.data.time, expected_gyrofrequency)
+        params, stds = fit_sine_curve(x, sol.time, expected_gyrofrequency)
     except RuntimeError as e:
         print(s)
         raise e
@@ -169,13 +169,13 @@ def test_particle_uniform_magnetic(integrator_name):
         atol=estimated_gyrofrequency_std,
     ), "Gyrofrequencies don't match!"
 
-    p = np.polynomial.Polynomial.fit(sol.data.time, z, 1)
+    p = np.polynomial.Polynomial.fit(sol.time, z, 1)
 
-    # "z-velocity doesn't stay constant!"
-    assert np.allclose(z, p(sol.data.time), atol=1e-4)
+    np.testing.assert_allclose(
+        z, p(sol.time), atol=1e-4
+    )  # does z-velocity stay constant?
 
-    # s.plot_trajectories()
-    sol.test_kinetic_energy(3)
+    sol.particletracker.test_kinetic_energy(3)  # is energy conserved?
 
 
 @pytest.mark.xfail(
@@ -209,11 +209,11 @@ def test_particle_exb_drift(integrator_name):
     assert np.isfinite(s._v).all()
     assert np.isfinite(s._x).all()
     sol = s.run(5e-4 * u.s, dt=1e-7 * u.s, pusher=integrator_name)
-    assert np.isfinite(sol.data.position).all()
-    assert np.isfinite(sol.data.velocity).all()
+    assert np.isfinite(sol.position).all()
+    assert np.isfinite(sol.velocity).all()
 
-    for particle in sol.data.position.particle:
-        x = sol.data.position.sel(dimension="x", particle=particle)
+    for particle in sol.position.particle:
+        x = sol.position.sel(dimension="x", particle=particle)
         p = np.polynomial.Polynomial.fit(x.time, x, 1)
         fit_velocity = p.convert().coef[1] * u.m / u.s
 
@@ -226,7 +226,7 @@ def test_particle_exb_drift(integrator_name):
     with pytest.raises(
         PhysicsError
     ):  # Kinetic energy is not conserved here due to the electric field
-        sol.test_kinetic_energy()
+        sol.particletracker.test_kinetic_energy()
 
 
 if __name__ == "__main__":
