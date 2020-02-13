@@ -37,12 +37,7 @@ from plasmapy.particles.special_particles import (
 
 from abc import ABC, abstractmethod
 
-__all__ = [
-    "AbstractParticle",
-    "Particle",
-    "DimensionlessParticle",
-    "CustomParticle",
-]
+__all__ = ["AbstractParticle", "Particle", "DimensionlessParticle", "CustomParticle"]
 
 _classification_categories = {
     "lepton",
@@ -75,18 +70,9 @@ _periodic_table_categories = {
     "lanthanide",
 }
 
-_atomic_property_categories = {
-    "element",
-    "isotope",
-    "ion",
-}
+_atomic_property_categories = {"element", "isotope", "ion"}
 
-_specific_particle_categories = {
-    "electron",
-    "positron",
-    "proton",
-    "neutron",
-}
+_specific_particle_categories = {"electron", "positron", "proton", "neutron"}
 
 _valid_categories = (
     _periodic_table_categories
@@ -295,7 +281,10 @@ class Particle(AbstractParticle):
     """
 
     def __init__(
-        self, argument: Union[str, Integral], mass_numb: Integral = None, Z: Integral = None
+        self,
+        argument: Union[str, Integral],
+        mass_numb: Integral = None,
+        Z: Integral = None,
     ):
         """
         Instantiate a `~plasmapy.particles.Particle` object and set private
@@ -359,7 +348,9 @@ class Particle(AbstractParticle):
 
             if mass_numb is not None or Z is not None:
                 if particle == "p+" and (mass_numb == 1 or Z == 1):
-                    warnings.warn("Redundant mass number or charge information.", AtomicWarning)
+                    warnings.warn(
+                        "Redundant mass number or charge information.", AtomicWarning
+                    )
                 else:
                     raise InvalidParticleError(
                         "The keywords 'mass_numb' and 'Z' cannot be used when "
@@ -370,7 +361,9 @@ class Particle(AbstractParticle):
 
         else:  # elements, isotopes, and ions (besides protons)
             try:
-                nomenclature = _parse_and_check_atomic_input(argument, mass_numb=mass_numb, Z=Z)
+                nomenclature = _parse_and_check_atomic_input(
+                    argument, mass_numb=mass_numb, Z=Z
+                )
             except Exception as exc:
                 errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
                 raise InvalidParticleError(errmsg) from exc
@@ -508,7 +501,9 @@ class Particle(AbstractParticle):
             )
 
         no_particle_attr = "particle" not in dir(self) or "particle" not in dir(other)
-        no_attributes_attr = "_attributes" not in dir(self) or "_attributes" not in dir(other)
+        no_attributes_attr = "_attributes" not in dir(self) or "_attributes" not in dir(
+            other
+        )
 
         if no_particle_attr or no_attributes_attr:  # coverage: ignore
             raise TypeError(f"The equality of {self} with {other} is undefined.")
@@ -822,7 +817,9 @@ class Particle(AbstractParticle):
         if self.isotope or self.is_ion or not self.element:
             raise InvalidElementError(_category_errmsg(self, "element"))
         if self._attributes["standard atomic weight"] is None:  # coverage: ignore
-            raise MissingAtomicDataError(f"The standard atomic weight of {self} is unavailable.")
+            raise MissingAtomicDataError(
+                f"The standard atomic weight of {self} is unavailable."
+            )
         return self._attributes["standard atomic weight"].to(u.kg)
 
     @property
@@ -859,9 +856,13 @@ class Particle(AbstractParticle):
         base_mass = self._attributes["isotope mass"]
 
         if base_mass is None:  # coverage: ignore
-            raise MissingAtomicDataError(f"The mass of a {self.isotope} nuclide is not available.")
+            raise MissingAtomicDataError(
+                f"The mass of a {self.isotope} nuclide is not available."
+            )
 
-        _nuclide_mass = self._attributes["isotope mass"] - self.atomic_number * const.m_e
+        _nuclide_mass = (
+            self._attributes["isotope mass"] - self.atomic_number * const.m_e
+        )
 
         return _nuclide_mass.to(u.kg)
 
@@ -967,9 +968,13 @@ class Particle(AbstractParticle):
         base_mass = self._attributes["isotope mass"]
 
         if base_mass is None:  # coverage: ignore
-            raise MissingAtomicDataError(f"The mass of a {self.isotope} nuclide is not available.")
+            raise MissingAtomicDataError(
+                f"The mass of a {self.isotope} nuclide is not available."
+            )
 
-        _nuclide_mass = self._attributes["isotope mass"] - self.atomic_number * const.m_e
+        _nuclide_mass = (
+            self._attributes["isotope mass"] - self.atomic_number * const.m_e
+        )
 
         return _nuclide_mass.to(u.kg)
 
@@ -1270,7 +1275,9 @@ class Particle(AbstractParticle):
             )
 
         if self._attributes["half-life"] is None:
-            raise MissingAtomicDataError(f"The half-life of '{self.particle}' is not available.")
+            raise MissingAtomicDataError(
+                f"The half-life of '{self.particle}' is not available."
+            )
         return self._attributes["half-life"]
 
     @property
@@ -1289,7 +1296,9 @@ class Particle(AbstractParticle):
 
         """
         if self._attributes["spin"] is None:
-            raise MissingAtomicDataError(f"The spin of particle '{self.particle}' is unavailable.")
+            raise MissingAtomicDataError(
+                f"The spin of particle '{self.particle}' is unavailable."
+            )
 
         return self._attributes["spin"]
 
@@ -1519,11 +1528,13 @@ class Particle(AbstractParticle):
         """
         if not self.element:
             raise InvalidElementError(
-                f"Cannot ionize {self.particle} because it is not a " f"neutral atom or ion."
+                f"Cannot ionize {self.particle} because it is not a "
+                f"neutral atom or ion."
             )
         if not self.is_category(any_of={"charged", "uncharged"}):
             raise ChargeError(
-                f"Cannot ionize {self.particle} because its charge " f"is not specified."
+                f"Cannot ionize {self.particle} because its charge "
+                f"is not specified."
             )
         if self.integer_charge == self.atomic_number:
             raise InvalidIonError(
@@ -1649,11 +1660,14 @@ class DimensionlessParticle(AbstractParticle):
     -1.0
     """
 
-    def __init__(self, *, mass: Real = None, charge: Real = None, rms_charge: Real = None):
+    def __init__(
+        self, *, mass: Real = None, charge: Real = None, rms_charge: Real = None
+    ):
 
         if mass is None or charge is None:
             raise InvalidParticleError(
-                "Both the mass and charge of a dimensionless particle " "must be provided."
+                "Both the mass and charge of a dimensionless particle "
+                "must be provided."
             )
 
         self.mass = mass
@@ -1676,7 +1690,9 @@ class DimensionlessParticle(AbstractParticle):
 
         if isinstance(m, Real) and m >= 0:
             self._mass = m
-        elif isinstance(m, u.Quantity) and m.unit is u.dimensionless_unscaled and m >= 0:
+        elif (
+            isinstance(m, u.Quantity) and m.unit is u.dimensionless_unscaled and m >= 0
+        ):
             self._mass = m.to(u.dimensionless_unscaled).value
         elif m is None or m is np.nan:
             self._mass = np.nan
@@ -1765,7 +1781,8 @@ class CustomParticle(AbstractParticle):
             self._mass = np.nan * u.kg
         elif not isinstance(m, u.Quantity):
             raise TypeError(
-                "The mass of a custom particle must be a Quantity with " "units of mass."
+                "The mass of a custom particle must be a Quantity with "
+                "units of mass."
             )
         else:
             try:

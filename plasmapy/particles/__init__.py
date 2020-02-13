@@ -36,10 +36,7 @@ from plasmapy.particles.atomic import (
     reduced_mass,
 )
 
-from plasmapy.particles.nuclear import (
-    nuclear_binding_energy,
-    nuclear_reaction_energy,
-)
+from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 
 from plasmapy.particles.ionization_state import IonizationState, State
 from plasmapy.particles.ionization_states import IonizationStates
