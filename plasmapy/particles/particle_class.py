@@ -1662,14 +1662,14 @@ class DimensionlessParticle(AbstractParticle):
 
     def __init__(self, *, mass: Real = None, charge: Real = None):
 
-        if mass is None or charge is None:
+        try:
+            self.mass = mass
+            self.charge = charge
+        except Exception as exc:
             raise InvalidParticleError(
-                "Both the mass and charge of a dimensionless particle "
-                "must be provided."
-            )
-
-        self.mass = mass
-        self.charge = charge
+                f"Unable to create a custom particle with a mass of "
+                f"{mass} and a charge of {charge}."
+            ) from exc
 
     @property
     def mass(self) -> Real:
@@ -1773,16 +1773,20 @@ class CustomParticle(AbstractParticle):
     @mass.setter
     def mass(self, m: u.kg):
 
-        if m is None:
+        if hasattr(m, "__len__"):
+            raise TypeError("The mass of a custom particle cannot be a collection.")
+        elif m is None:
             self._mass = np.nan * u.kg
         elif not isinstance(m, u.Quantity):
             raise TypeError(
-                "The mass of a custom particle must be a Quantity with "
-                "units of mass."
+                "The mass of a custom particle must be a nonnegative Quantity "
+                "with units of mass."
             )
         else:
             try:
                 self._mass = m.to(u.kg)
+                if self.mass < 0 * u.kg:
+                    raise ValueError("The mass of a particle must be nonnegative.")
             except u.UnitsError as exc:
                 raise u.UnitsError(
                     "The mass of a custom particle must have units of mass."
