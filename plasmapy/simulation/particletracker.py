@@ -68,6 +68,14 @@ class ParticleTrackerAccessor:
         self.particle = Particle(xarray_obj.attrs["particle"])
         # self.diagnostics = diagnostics # TODO put in xarray itself
 
+    def vector_norm(self, array, dim, ord=None):
+        return xarray.apply_ufunc(
+            np.linalg.norm,
+            self._obj[array],
+            input_core_dims=[[dim]],
+            kwargs={"ord": ord, "axis": -1},
+        )
+
     def plot_trajectories(self, *args, **kwargs):  # coverage: ignore
         r"""Draws trajectory history."""
         from astropy.visualization import quantity_support
@@ -190,8 +198,8 @@ class ParticleTracker:
     integrators = {
         "explicit_boris": particle_integrators._boris_push,
         "implicit_boris": particle_integrators._boris_push_implicit,
-        "implicit_boris2": particle_integrators._boris_push_implicit2,
-        "zenitani": particle_integrators._zenitani,
+        # "implicit_boris2": particle_integrators._boris_push_implicit2,
+        # "zenitani": particle_integrators._zenitani,
     }
 
     @atomic.particle_input
@@ -213,16 +221,11 @@ class ParticleTracker:
             x = u.Quantity(np.zeros((v.shape)), u.m)
         elif x is not None:
             v = u.Quantity(np.zeros((x.shape)), u.m / u.s)
-        self.q = particle_type.charge
-        self.m = particle_type.mass
-        self._m = particle_type.mass.si.value
+        self.x = x
+        self.v = v
         self.particle = particle_type
-        self.name = particle_type.particle
-
         self.plasma = plasma
 
-        self._x = x.si.value
-        self._v = v.si.value
         assert v.shape == x.shape
         self.N, dims = x.shape
         assert dims == 3
@@ -232,38 +235,18 @@ class ParticleTracker:
     def _check_field_size(self):
         b = self.plasma.interpolate_B(self.x)
         e = self.plasma.interpolate_E(self.x)
-        if b.shape != self._x.shape:
+        if b.shape != self.x.shape:
             raise ValueError(
                 f"""Invalid shape {b.shape} for the magnetic field array!
                 `plasma.interpolate_B` must return an array of shape (N, 3),
                 where N is the number of particles in the simulation, currently {self.N}."""
             )
-        if e.shape != self._x.shape:
+        if e.shape != self.x.shape:
             raise ValueError(
                 f"""Invalid shape {e.shape} for the electric field array!
                 `plasma.interpolate_E` must return an array of shape (N, 3),
                 where N is the number of particles in the simulation, currently {self.N}."""
             )
-
-    @property
-    def x(self):
-        """Particle position (as Astropy Quantity)."""
-        return u.Quantity(self._x, u.m, copy=False)
-
-    # @check_units() # TODO
-    @x.setter
-    def x(self, value: u.m):
-        self._x = value.si.value
-
-    @property
-    def v(self):
-        """Particle velocity (as Astropy Quantity)."""
-        return u.Quantity(self._v, u.m / u.s, copy=False)
-
-    # @check_units()
-    @v.setter
-    def v(self, value: u.m / u.s):
-        self._v = value.si.value
 
     @check_units()
     def run(
@@ -300,16 +283,16 @@ class ParticleTracker:
         next_progressbar_update_time = _time + _progressbar_timestep
         _times = [_time]
         _timesteps = [_dt]
-        _x = self._x.copy()
-        _v = self._v.copy()
+        _x = self.x.si.value.copy()
+        _v = self.v.si.value.copy()
 
-        init_kinetic = self._kinetic_energy(_v)
+        init_kinetic = self.kinetic_energy(_v, _m)
         timestep_info = dict(i=len(_times), dt=_dt)
         if init_kinetic:
-            reldelta = self._kinetic_energy(_v) / init_kinetic - 1
+            reldelta = self.kinetic_energy(_v, _m) / init_kinetic - 1
             kinetic_info = {"Relative kinetic energy change": reldelta}
         else:
-            delta = self._kinetic_energy(_v)
+            delta = self.kinetic_energy(_v, _m)
             kinetic_info = {"Kinetic energy change": delta}
 
         with np.errstate(all="raise"):
@@ -344,10 +327,10 @@ class ParticleTracker:
                     next_progressbar_update_time += _progressbar_timestep
                     diagnostics = dict(i=len(_times), dt=_dt)
                     if init_kinetic:
-                        reldelta = self._kinetic_energy(_v) / init_kinetic - 1
+                        reldelta = self.kinetic_energy(_v, _m) / init_kinetic - 1
                         diagnostics["Relative kinetic energy change"] = reldelta
                     else:
-                        delta = self._kinetic_energy(_v)
+                        delta = self.kinetic_energy(_v, _m)
                         diagnostics["Kinetic energy change"] = delta
                     pbar.set_postfix(diagnostics)
                     pbar.update()
@@ -365,16 +348,12 @@ class ParticleTracker:
         )
         return solution
 
-    def _kinetic_energy(self, _v=None):
+    def kinetic_energy(self, _v=None, _m=None):
         if _v is None:
-            _v = self._v
-        return (_v ** 2).sum() * self._m / 2
-
-    def kinetic_energy(self, v=None):
-        """Calculate particle kinetic energy."""
-        if v is None:
-            v = self.v
-        return u.Quantity(self._kinetic_energy(v.si.value), u.J)
+            _v = self.v
+        if _m is None:
+            _m = self.particle.mass
+        return (_v ** 2).sum() * _m / 2
 
     def __repr__(self, *args, **kwargs):
         return (
