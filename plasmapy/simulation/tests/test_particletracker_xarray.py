@@ -1,4 +1,5 @@
 import astropy.units as u
+from astropy.tests.helper import assert_quantity_allclose
 import numpy as np
 
 from plasmapy import simulation
@@ -25,3 +26,5 @@ def test_saving_loading(tmp_path):
     solution.to_netcdf(filename)
     loaded_solution = xarray.open_dataset(filename)
     xarray.testing.assert_identical(solution, loaded_solution)
+    for key in solution:
+        assert_quantity_allclose(solution[key], loaded_solution[key])

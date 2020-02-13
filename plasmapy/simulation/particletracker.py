@@ -33,25 +33,17 @@ def _create_xarray(
     data_vars = {}
     assert position_history.shape == velocity_history.shape
     particles = range(position_history.shape[1])
-    data_vars["position"] = (
-        ("time", "particle", "dimension"),
-        position_history.si.value,
-    )
-    data_vars["velocity"] = (
-        ("time", "particle", "dimension"),
-        velocity_history.si.value,
-    )
-    data_vars["B"] = (("time", "particle", "dimension"), b_history.si.value)
-    data_vars["E"] = (("time", "particle", "dimension"), e_history.si.value)
-    data_vars["timestep"] = (("time",), timesteps.si.value)
+    data_vars["position"] = (("time", "particle", "dimension"), position_history)
+    data_vars["velocity"] = (("time", "particle", "dimension"), velocity_history)
+    data_vars["B"] = (("time", "particle", "dimension"), b_history)
+    data_vars["E"] = (("time", "particle", "dimension"), e_history)
+    data_vars["timestep"] = (("time",), timesteps)
+    kinetic_energy = (velocity_history ** 2).sum(axis=-1) * particle.mass / 2
+    data_vars["kinetic_energy"] = (("time", "particle"), kinetic_energy)
 
     data = xarray.Dataset(
         data_vars=data_vars,
-        coords={
-            "time": times.si.value,
-            "particle": particles,
-            "dimension": list(dimensions),
-        },
+        coords={"time": times, "particle": particles, "dimension": list(dimensions)},
     )
     for index, quantity in [
         ("position", position_history),
@@ -60,6 +52,7 @@ def _create_xarray(
         ("B", b_history),
         ("E", e_history),
         ("timestep", timesteps),
+        ("kinetic_energy", kinetic_energy),
     ]:
         data[index].attrs["unit"] = str(quantity.unit)
 
@@ -85,7 +78,7 @@ class ParticleTrackerAccessor:
         fig = plt.figure()
         ax = fig.add_subplot(111, projection="3d")
         for p_index in range(self.particle.size):
-            r = self.position.isel(particle=p_index)
+            r = self._obj.position.isel(particle=p_index)
             x, y, z = r.T
             ax.plot(x, y, z, *args, **kwargs)
         ax.set_xlabel("$x$ position")
@@ -109,15 +102,15 @@ class ParticleTrackerAccessor:
 
         quantity_support()
         fig, ax = plt.subplots()
-        for p_index in range(self.particle.size):
-            r = self.position.isel(particle=p_index)
+        for p_index in range(self._obj.particle.size):
+            r = self._obj.position.isel(particle=p_index)
             x, y, z = r.T
             if "x" in plot:
-                ax.plot(self.time, x, label=f"x_{p_index}")
+                ax.plot(self._obj.time, x, label=f"x_{p_index}")
             if "y" in plot:
-                ax.plot(self.time, y, label=f"y_{p_index}")
+                ax.plot(self._obj.time, y, label=f"y_{p_index}")
             if "z" in plot:
-                ax.plot(self.time, z, label=f"z_{p_index}")
+                ax.plot(self._obj.time, z, label=f"z_{p_index}")
         # ax.set_title(self.name)
         ax.legend(loc="best")
         ax.grid()
@@ -127,14 +120,16 @@ class ParticleTrackerAccessor:
 
     def test_kinetic_energy(self, cutoff=2):
         r"""Test conservation of kinetic energy."""
-        difference = self.kinetic_energy - self.kinetic_energy.mean(dim="time")
-        scaled = difference / self.kinetic_energy.std(dim="time")
+        difference = self._obj.kinetic_energy - self._obj.kinetic_energy.mean(
+            dim="time"
+        )
+        scaled = difference / self._obj.kinetic_energy.std(dim="time")
         conservation = abs(scaled) < cutoff
         if not conservation.all():
             if PLOTTING:
                 import matplotlib.pyplot as plt
 
-                self.kinetic_energy.plot.line()
+                self._obj.kinetic_energy.plot.line()
                 plt.show()
             raise PhysicsError("Kinetic energy is not conserved!")
 
@@ -148,9 +143,8 @@ class ParticleTrackerAccessor:
             fig.add_axes()
         else:
             fig = figure
-        points = self.position.sel(particle=particle).values
-        # breakpoint()
-        trajectory = spline = pv.Spline(points, 1000)
+        points = self._obj.position.sel(particle=particle)  # .values
+        trajectory = spline = pv.Spline(points, max((1000, self._obj.sizes["time"])))
         if self.plasma and hasattr(self.plasma, "visualize"):
             self.plasma.visualize(fig)
 
@@ -160,24 +154,6 @@ class ParticleTrackerAccessor:
         else:
             fig.add_mesh(trajectory)
         return fig
-
-    @property
-    def kinetic_energy(self):
-        r"""
-        Calculate the kinetic energy history for each particle.
-
-        Returns
-        --------
-        ~astropy.units.Quantity
-            Array of kinetic energies, shape (nt, n).
-        """
-        if "kinetic_energy" not in self._obj:
-            kinetic_energy = (
-                (self._obj.velocity ** 2).sum(axis=-1) * self.particle.mass / 2
-            )
-            self._obj["kinetic_energy"] = (("time", "particle"), kinetic_energy)
-            self._obj["kinetic_energy"].attrs["unit"] = "J"
-        return self._obj.kinetic_energy
 
 
 class ParticleTracker:
