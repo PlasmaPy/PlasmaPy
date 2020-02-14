@@ -21,11 +21,13 @@ import astropy.units as u
 # with open("isotopes.json", "w") as f:
 #     json.dump(_Isotopes, f, default=plasma_default, indent=2)
 
+
 def _isotope_obj_hook(obj):
     if "unit" in obj:
         return obj["value"] * u.Unit(obj["unit"])
     return obj
 
 
-_Isotopes = json.loads(pkgutil.get_data('plasmapy', 'data/isotopes.json'),
-                       object_hook=_isotope_obj_hook)
+_Isotopes = json.loads(
+    pkgutil.get_data("plasmapy", "data/isotopes.json"), object_hook=_isotope_obj_hook
+)

@@ -15,7 +15,7 @@ __all__ = [
 import numpy as np
 
 from astropy import units as u
-from astropy.constants.si import (c, h, hbar, m_e, eps0, e, k_B)
+from astropy.constants.si import c, h, hbar, m_e, eps0, e, k_B
 from plasmapy import particles
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
@@ -24,8 +24,9 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 # TODO: Use @check_relativistic and @particle_input
-@validate_quantities(V={'can_be_negative': True},
-                     validations_on_return={'can_be_negative': False})
+@validate_quantities(
+    V={"can_be_negative": True}, validations_on_return={"can_be_negative": False}
+)
 def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
     Calculates the de Broglie wavelength.
@@ -91,7 +92,8 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
         raise RelativityError(
             "Velocity input in deBroglie_wavelength cannot "
             "be greater than or equal to the speed of "
-            "light.")
+            "light."
+        )
 
     if not isinstance(particle, u.Quantity):
         try:
@@ -103,10 +105,12 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
         try:
             m = particle.to(u.kg)
         except Exception:
-            raise u.UnitConversionError("The second argument for deBroglie"
-                                        " wavelength must be either a "
-                                        "representation of a particle or a"
-                                        " Quantity with units of mass.")
+            raise u.UnitConversionError(
+                "The second argument for deBroglie"
+                " wavelength must be either a "
+                "representation of a particle or a"
+                " Quantity with units of mass."
+            )
 
     if V.size > 1:
 
@@ -124,9 +128,10 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     return lambda_dBr
 
 
-@validate_quantities(T_e={'can_be_negative': False,
-                          'equivalencies': u.temperature_energy()},
-                     validations_on_return={'can_be_negative': False})
+@validate_quantities(
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    validations_on_return={"can_be_negative": False},
+)
 def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     r"""
     Calculate the thermal deBroglie wavelength for electrons.
@@ -176,8 +181,9 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     return lambda_dbTh
 
 
-@validate_quantities(n_e={'can_be_negative': False},
-                     validations_on_return={'can_be_negative': False})
+@validate_quantities(
+    n_e={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
+)
 def Fermi_energy(n_e: u.m ** -3) -> u.J:
     r"""
     Calculate the kinetic energy in a degenerate electron gas.
@@ -236,8 +242,9 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
     return energy_F
 
 
-@validate_quantities(n_e={'can_be_negative': False},
-                     validations_on_return={'can_be_negative': False})
+@validate_quantities(
+    n_e={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
+)
 def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
     r"""
     Calculate the exponential scale length for charge screening
@@ -306,8 +313,9 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
     return lambda_TF
 
 
-@validate_quantities(n={'can_be_negative': False},
-                     validations_on_return={'can_be_negative': False})
+@validate_quantities(
+    n={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
+)
 def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
     r"""
     Calculate the Wigner-Seitz radius, which approximates the inter-
@@ -371,9 +379,10 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
 # TODO: remove NotImplementedError and 'doctest: +SKIP' when the following issues are addressed...
 #       https://github.com/PlasmaPy/PlasmaPy/issues/726
 #       https://github.com/astropy/astropy/issues/9721
-@validate_quantities(n_e={'can_be_negative': False},
-                     T={'can_be_negative': False,
-                        'equivalencies': u.temperature_energy()})
+@validate_quantities(
+    n_e={"can_be_negative": False},
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+)
 def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     r"""
     Calculate the ideal chemical potential.
@@ -461,7 +470,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     def residual(params, data, eps_data):
         """Residual function for fitting parameters to Fermi_integral."""
-        alpha = params['alpha'].value
+        alpha = params["alpha"].value
         # note that alpha = mu / (k_B * T)
         model = mathematics.Fermi_integral(alpha, 0.5)
         complexResidue = (data - model) / eps_data
@@ -473,15 +482,16 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
         from lmfit import minimize, Parameters
     except (ImportError, ModuleNotFoundError) as e:
         from plasmapy.optional_deps import lmfit_import_error
+
         raise lmfit_import_error from e
 
     params = Parameters()
-    params.add('alpha', value=alphaGuess, min=0.0)
+    params.add("alpha", value=alphaGuess, min=0.0)
     # calling minimize function from lmfit to fit by minimizing the residual
     data = np.array([degen])  # result of Fermi_integral - degen should be zero
     eps_data = np.array([1e-15])  # numerical error
     minFit = minimize(residual, params, args=(data, eps_data))
-    beta_mu = minFit.params['alpha'].value * u.dimensionless_unscaled
+    beta_mu = minFit.params["alpha"].value * u.dimensionless_unscaled
     return beta_mu
 
 

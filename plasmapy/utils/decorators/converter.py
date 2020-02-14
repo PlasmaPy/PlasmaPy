@@ -88,16 +88,20 @@ def angular_freq_to_hz(fn):
     """
     # raise exception if fn uses the 'to_hz' kwarg
     sig = inspect.signature(fn)
-    if 'to_hz' in sig.parameters:
-        raise ValueError(f"Wrapped function '{fn.__name__}' can not use keyword 'to_hz'."
-                         f" Keyword reserved for decorator functionality.")
+    if "to_hz" in sig.parameters:
+        raise ValueError(
+            f"Wrapped function '{fn.__name__}' can not use keyword 'to_hz'."
+            f" Keyword reserved for decorator functionality."
+        )
 
     # make new signature for fn
     new_params = sig.parameters.copy()
-    new_params['to_hz'] = inspect.Parameter('to_hz', inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                                            default=False)
-    new_sig = inspect.Signature(parameters=new_params.values(),
-                                return_annotation=sig.return_annotation)
+    new_params["to_hz"] = inspect.Parameter(
+        "to_hz", inspect.Parameter.POSITIONAL_OR_KEYWORD, default=False
+    )
+    new_sig = inspect.Signature(
+        parameters=new_params.values(), return_annotation=sig.return_annotation
+    )
     fn.__signature__ = new_sig
 
     @preserve_signature
@@ -105,8 +109,9 @@ def angular_freq_to_hz(fn):
     def wrapper(*args, to_hz=False, **kwargs):
         _result = fn(*args, **kwargs)
         if to_hz:
-            return _result.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
+            return _result.to(u.Hz, equivalencies=[(u.cy / u.s, u.Hz)])
         return _result
+
     added_doc_bit = """
     Other Parameters
     ----------------
