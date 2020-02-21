@@ -18,53 +18,6 @@ PLOTTING = False
 __all__ = ["ParticleTracker", "ParticleTrackerAccessor"]
 
 
-@check_units
-@particle_input
-def _create_xarray(
-    position_history: u.m,
-    velocity_history: u.m / u.s,
-    times: u.s,
-    b_history: u.T,
-    e_history: u.V / u.m,
-    timesteps: u.s,
-    particle: Particle,
-    dimensions="xyz",
-    potentials=None,
-):
-    data_vars = {}
-    assert position_history.shape == velocity_history.shape
-    particles = range(position_history.shape[1])
-    data_vars["position"] = (("time", "particle", "dimension"), position_history)
-    data_vars["velocity"] = (("time", "particle", "dimension"), velocity_history)
-    data_vars["B"] = (("time", "particle", "dimension"), b_history)
-    data_vars["E"] = (("time", "particle", "dimension"), e_history)
-    data_vars["timestep"] = (("time",), timesteps)
-    kinetic_energy = (velocity_history ** 2).sum(axis=-1) * particle.mass / 2
-    data_vars["kinetic_energy"] = (("time", "particle"), kinetic_energy)
-    if potentials is not None:
-        data_vars["potential_energy"] = (("time", "particle"), potentials)
-
-    data = xarray.Dataset(
-        data_vars=data_vars,
-        coords={"time": times, "particle": particles, "dimension": list(dimensions)},
-    )
-    for index, quantity in [
-        ("position", position_history),
-        ("velocity", velocity_history),
-        ("time", times),
-        ("B", b_history),
-        ("E", e_history),
-        ("timestep", timesteps),
-        ("kinetic_energy", kinetic_energy),
-        ("potential_energy", potentials),
-    ]:
-        if index in data:
-            data[index].attrs["unit"] = str(quantity.unit)
-
-    data.attrs["particle"] = str(particle)
-    return data
-
-
 @xarray.register_dataset_accessor("particletracker")
 class ParticleTrackerAccessor:
     def __init__(self, xarray_obj, plasma=None):
@@ -364,14 +317,13 @@ class ParticleTracker:
         if progressbar:
             pbar.close()
 
-        solution = _create_xarray(
+        solution = self._create_xarray(
             u.Quantity(_position_history, u.m),
             u.Quantity(_velocity_history, u.m / u.s),
             u.Quantity(_times, u.s),
             u.Quantity(_b_history, u.T),
             u.Quantity(_e_history, u.V / u.m),
             u.Quantity(_timesteps, u.s),
-            self.particle,
             potentials=u.Quantity(potential_history, u.J)
             if potential_history is not None
             else None,
@@ -393,3 +345,53 @@ class ParticleTracker:
 
     def __str__(self):  # coverage: ignore
         return f"{self.N} {self.name} with " f"q = {self.q:.2e}, m = {self.m:.2e}"
+
+    @check_units
+    @particle_input
+    def _create_xarray(
+        self,
+        position_history: u.m,
+        velocity_history: u.m / u.s,
+        times: u.s,
+        b_history: u.T,
+        e_history: u.V / u.m,
+        timesteps: u.s,
+        dimensions="xyz",
+        potentials=None,
+    ):
+        data_vars = {}
+        assert position_history.shape == velocity_history.shape
+        particles = range(position_history.shape[1])
+        data_vars["position"] = (("time", "particle", "dimension"), position_history)
+        data_vars["velocity"] = (("time", "particle", "dimension"), velocity_history)
+        data_vars["B"] = (("time", "particle", "dimension"), b_history)
+        data_vars["E"] = (("time", "particle", "dimension"), e_history)
+        data_vars["timestep"] = (("time",), timesteps)
+        kinetic_energy = (velocity_history ** 2).sum(axis=-1) * particle.mass / 2
+        data_vars["kinetic_energy"] = (("time", "particle"), kinetic_energy)
+        if potentials is not None:
+            data_vars["potential_energy"] = (("time", "particle"), potentials)
+
+        data = xarray.Dataset(
+            data_vars=data_vars,
+            coords={
+                "time": times,
+                "particle": particles,
+                "dimension": list(dimensions),
+            },
+        )
+        for index, quantity in [
+            ("position", position_history),
+            ("velocity", velocity_history),
+            ("time", times),
+            ("B", b_history),
+            ("E", e_history),
+            ("timestep", timesteps),
+            ("kinetic_energy", kinetic_energy),
+            ("potential_energy", potentials),
+        ]:
+            if index in data:
+                data[index].attrs["unit"] = str(quantity.unit)
+
+        data.attrs["particle"] = str(self.particle)
+        return data
