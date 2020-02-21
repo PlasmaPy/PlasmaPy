@@ -5,6 +5,7 @@ import tqdm.auto
 import xarray
 import warnings
 import matplotlib.pyplot as plt
+import pathlib
 
 from plasmapy import atomic, formulary
 from plasmapy.utils.decorators import check_units
@@ -102,7 +103,6 @@ class ParticleTrackerAccessor:
 
     def visualize(self, figure=None, particle=0, stride=1):  # coverage: ignore
         """Plot the trajectory using PyVista."""
-        # breakpoint()
         import pyvista as pv
 
         if figure is None:
@@ -123,6 +123,73 @@ class ParticleTrackerAccessor:
         else:
             fig.add_mesh(trajectory)
         return fig
+
+    def animate(
+        self,
+        filename: pathlib.Path,
+        particles=(0,),
+        nframes: int = 50,
+        plasma=None,
+        notebook_display=False,
+    ):
+        import pyvista as pv
+
+        fig = pv.Plotter(off_screen=True)
+        fig.open_movie(str(filename))
+        if plasma is not None:
+            if hasattr(plasma, "visualize"):
+                plasma.visualize(fig)
+            else:
+                warnings.warn(
+                    f"Plasma object {plasma} passed to animate, but it has no visualize method!"
+                )
+                raise ValueError(
+                    f"Plasma object {plasma} passed to animate, but it has no visualize method!"
+                )
+        fig.show(auto_close=False)
+        fig.write_frame()
+        for i in tqdm.auto.trange(1, nframes):
+            fig.clear()
+            if plasma is not None:
+                if hasattr(plasma, "visualize"):
+                    plasma.visualize(fig)
+                else:
+                    warnings.warn(
+                        f"Plasma object {plasma} passed to animate, but it has no visualize method!"
+                    )
+                    raise ValueError(
+                        f"Plasma object {plasma} passed to animate, but it has no visualize method!"
+                    )
+            frame_max = self._obj.sizes["time"] // nframes * i
+            for particle in particles:
+                trajectories = (
+                    self._obj.position.sel(particle=particle)
+                    .isel(time=range(0, frame_max + 1))
+                    .values
+                )
+                trajectory = pv.Spline(trajectories)
+                fig.add_mesh(trajectory)
+
+            points = (
+                self._obj.position.sel(particle=list(particles))
+                .isel(time=frame_max)
+                .values
+            )
+            velocities = (
+                self._obj.velocity.sel(particle=list(particles))
+                .isel(time=frame_max)
+                .values
+            )
+            point_cloud = pv.PolyData(points)
+            point_cloud.abs_vel = np.linalg.norm(velocities, axis=1)
+            point_cloud.vectors = velocities / (10 * point_cloud.abs_vel)
+            fig.add_mesh(point_cloud.arrows, show_scalar_bar=False)
+            fig.write_frame()
+        fig.close()
+        if notebook_display:
+            from IPython.display import Video, display
+
+            display(Video(str(filename), embed=True))
 
 
 class ParticleTracker:
@@ -216,7 +283,6 @@ class ParticleTracker:
         dt: u.s = None,
         progressbar=True,
         pusher="explicit_boris",
-        progressbar_steps=100,
         snapshot_steps=1000,
     ):
         r"""Run a simulation instance.
@@ -241,9 +307,7 @@ class ParticleTracker:
 
         _total_time = total_time.si.value
         _time = 0.0
-        _progressbar_timestep = _total_time / progressbar_steps
         _snapshot_timestep = _total_time / snapshot_steps
-        next_progressbar_update_time = _time + _progressbar_timestep
         next_snapshot_update_time = _time + _snapshot_timestep
         _times = [_time]
         _timesteps = [_dt]
@@ -280,7 +344,7 @@ class ParticleTracker:
                 potential_history = None
             if progressbar:
                 pbar = tqdm.auto.tqdm(
-                    total=progressbar_steps,
+                    total=snapshot_steps,
                     bar_format="{l_bar}{bar}| [{elapsed}<{remaining}, "
                     "{rate_fmt}{postfix}]",
                 )
@@ -303,8 +367,6 @@ class ParticleTracker:
                     _times.append(_time)
                     _timesteps.append(_dt)
 
-                if progressbar and _time > next_progressbar_update_time:
-                    next_progressbar_update_time += _progressbar_timestep
                     diagnostics = dict(i=i, dt=_dt)
                     if init_kinetic:
                         reldelta = self.kinetic_energy(_v, _m) / init_kinetic - 1
@@ -348,7 +410,6 @@ class ParticleTracker:
         return f"{self.N} {self.name} with " f"q = {self.q:.2e}, m = {self.m:.2e}"
 
     @check_units
-    @particle_input
     def _create_xarray(
         self,
         position_history: u.m,
