@@ -324,6 +324,7 @@ class ParticleTracker:
             u.Quantity(_b_history, u.T),
             u.Quantity(_e_history, u.V / u.m),
             u.Quantity(_timesteps, u.s),
+            total_iterations=i,
             potentials=u.Quantity(potential_history, u.J)
             if potential_history is not None
             else None,
@@ -356,6 +357,7 @@ class ParticleTracker:
         b_history: u.T,
         e_history: u.V / u.m,
         timesteps: u.s,
+        total_iterations: int,
         dimensions="xyz",
         potentials=None,
     ):
@@ -367,7 +369,7 @@ class ParticleTracker:
         data_vars["B"] = (("time", "particle", "dimension"), b_history)
         data_vars["E"] = (("time", "particle", "dimension"), e_history)
         data_vars["timestep"] = (("time",), timesteps)
-        kinetic_energy = (velocity_history ** 2).sum(axis=-1) * particle.mass / 2
+        kinetic_energy = (velocity_history ** 2).sum(axis=-1) * self.particle.mass / 2
         data_vars["kinetic_energy"] = (("time", "particle"), kinetic_energy)
         if potentials is not None:
             data_vars["potential_energy"] = (("time", "particle"), potentials)
@@ -394,4 +396,5 @@ class ParticleTracker:
                 data[index].attrs["unit"] = str(quantity.unit)
 
         data.attrs["particle"] = str(self.particle)
+        data.attrs["total_iterations"] = total_iterations
         return data
