@@ -198,8 +198,8 @@ class ParticleTracker:
     integrators = {
         "explicit_boris": particle_integrators._boris_push,
         "implicit_boris": particle_integrators._boris_push_implicit,
-        # "implicit_boris2": particle_integrators._boris_push_implicit2,
-        # "zenitani": particle_integrators._zenitani,
+        "implicit_boris2": particle_integrators._boris_push_implicit2,
+        "zenitani": particle_integrators._zenitani,
     }
 
     @atomic.particle_input
