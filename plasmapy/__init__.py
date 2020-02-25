@@ -43,13 +43,24 @@ try:
     from plasmapy.version import __version__
 except ModuleNotFoundError:
     # package is not installed
-    from warnings import warn
+    try:
+        from setuptools_scm import get_version
+        __version__ = get_version(root='..',
+                                  relative_to=__file__,
+                                  fallback_version='0.0.0')
+        del get_version
+        warn_add = 'setuptools_scm failed to detect the version'
+    except ModuleNotFoundError:
+        # setuptools_scm is not installed
+        __version__ = '0.0.0'
+        warn_add = 'setuptools_scm is not installed'
 
-    warn('plasmapy.__version__ not generated, PlasmaPy is not an installed package.',
-         RuntimeWarning)
-    __version__ = ''
+    if __version__ == '0.0.0':
+        from warnings import warn
+        warn(f"plasmapy.__version__ not generated (0.0.0), PlasmaPy is not an "
+             f"installed package and {warn_add}.", RuntimeWarning)
 
-    del warn
+        del warn
 
 
 from . import formulary
