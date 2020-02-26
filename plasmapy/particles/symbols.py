@@ -156,11 +156,10 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
     return isotope.isotope
 
 
-@particle_input(require="element", any_of=('charged', 'uncharged'))
+@particle_input(require="element", any_of=("charged", "uncharged"))
 def ionic_symbol(
-        particle: Particle,
-        mass_numb: Integral = None,
-        Z: Integral = None) -> str:
+    particle: Particle, mass_numb: Integral = None, Z: Integral = None
+) -> str:
     """
     Return the ionic symbol of an ion or neutral atom.
 
@@ -226,9 +225,8 @@ def ionic_symbol(
 
 @particle_input
 def particle_symbol(
-        particle: Particle,
-        mass_numb: Integral = None,
-        Z: Integral = None) -> str:
+    particle: Particle, mass_numb: Integral = None, Z: Integral = None
+) -> str:
     """
     Return the symbol of a particle.
 

@@ -2,9 +2,7 @@ r"""This module currently provides ample room for the Lorentz factor,
 as it turned out we didn't really have much else of the relativistic
 variety to add just yet! This is expected to change in the future.
 """
-__all__ = [
-    "Lorentz_factor",
-]
+__all__ = ["Lorentz_factor"]
 
 import numpy as np
 
@@ -14,7 +12,7 @@ from plasmapy import utils
 from plasmapy.utils.decorators import validate_quantities
 
 
-@validate_quantities(V={'can_be_negative': True})
+@validate_quantities(V={"can_be_negative": True})
 def Lorentz_factor(V: u.m / u.s):
     r"""
     Return the Lorentz factor.
@@ -70,7 +68,8 @@ def Lorentz_factor(V: u.m / u.s):
     if not np.all(np.abs(V) <= c):
         raise utils.RelativityError(
             "The Lorentz factor cannot be calculated for "
-            "speeds faster than the speed of light. ")
+            "speeds faster than the speed of light. "
+        )
 
     if V.size > 1:
 
@@ -79,13 +78,13 @@ def Lorentz_factor(V: u.m / u.s):
         equals_c = np.abs(V) == c
         is_slow = ~equals_c
 
-        gamma[is_slow] = ((1 - (V[is_slow] / c)**2)**-0.5).value
+        gamma[is_slow] = ((1 - (V[is_slow] / c) ** 2) ** -0.5).value
         gamma[equals_c] = np.inf
 
     else:
         if np.abs(V) == c:
             gamma = np.inf
         else:
-            gamma = ((1 - (V / c)**2)**-0.5).value
+            gamma = ((1 - (V / c) ** 2) ** -0.5).value
 
     return gamma

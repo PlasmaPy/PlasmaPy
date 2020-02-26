@@ -31,8 +31,10 @@ class Test__fitting_functions:
         value = langmuir._fit_func_lin(self.x, self.x0, self.y0, self.c0)
         expect_value = 25
 
-        errStr = (f"Linear fitting function did not return the expected"
-                  f"value {expect_value} and instead returned {value}")
+        errStr = (
+            f"Linear fitting function did not return the expected"
+            f"value {expect_value} and instead returned {value}"
+        )
         assert value == expect_value, errStr
 
     def test_fit_func_lin_inverse(self):
@@ -41,33 +43,36 @@ class Test__fitting_functions:
         value = langmuir._fit_func_lin_inverse(self.x, self.x0, self.y0, self.T0)
         expect_value = 8.33333
 
-        errStr = (f"Linear fitting function with inverse slope did not return"
-                  f"the expected value {expect_value} and instead returned"
-                  f"{value}")
+        errStr = (
+            f"Linear fitting function with inverse slope did not return"
+            f"the expected value {expect_value} and instead returned"
+            f"{value}"
+        )
         assert np.allclose(value, expect_value), errStr
 
     def test_fit_func_double_lin_inverse(self):
         r"""Test double linear fitting function with inverse slope and an offset
             for use in fitting a bi-Maxwellian electron current growth region"""
 
-        value = langmuir._fit_func_double_lin_inverse(self.x, self.x0, self.y0,
-                                                      self.T0, self.Delta_T)
+        value = langmuir._fit_func_double_lin_inverse(
+            self.x, self.x0, self.y0, self.T0, self.Delta_T
+        )
         expect_value = 8
 
-        errStr = (f"Linear fitting function with inverse slope and an offset for"
-                  f"use in fitting a bi-Maxwellian electron current growth"
-                  f"region did not return the expected value {expect_value} and"
-                  f"instead returned {value}")
+        errStr = (
+            f"Linear fitting function with inverse slope and an offset for"
+            f"use in fitting a bi-Maxwellian electron current growth"
+            f"region did not return the expected value {expect_value} and"
+            f"instead returned {value}"
+        )
         assert value == expect_value, errStr
 
 
 class Test__characteristic_errors:
     r"""Test the Characteristic class constructor in langmuir.py"""
 
-    bias_2darr = np.array((np.random.rand(N),
-                           np.random.rand(N))) * u.V
-    current_2darr = np.array((np.random.rand(N),
-                              np.random.rand(N))) * u.A
+    bias_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.V
+    current_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.A
 
     bias_infarr = np.append(np.random.rand(N - 1), np.inf) * u.V
     current_infarr = np.append(np.random.rand(N - 1), np.inf) * u.A
@@ -113,8 +118,7 @@ class Test__characteristic_errors:
 
         ab_sum = a + b
 
-        errStr = (f"Addition of characteristic objects is not behaving as it "
-                  f"should.")
+        errStr = f"Addition of characteristic objects is not behaving as it " f"should."
         assert (a.current + b.current == ab_sum.current).all(), errStr
 
     def test_subtraction(self):
@@ -125,8 +129,9 @@ class Test__characteristic_errors:
 
         ab_sub = a - b
 
-        errStr = (f"Subtraction of characteristic objects is not behaving as "
-                  f"it should.")
+        errStr = (
+            f"Subtraction of characteristic objects is not behaving as " f"it should."
+        )
         assert (a.current - b.current == ab_sub.current).all(), errStr
 
 
@@ -142,10 +147,11 @@ def characteristic_simulated():
     r""""Create a simulated probe characteristic (provisional)"""
 
     T_e_sim = 1 * u.eV
-    n_e_sim = 1e18 * u.m**-3
-    probe_area_sim = 1 * u.cm**2
-    I_es_sim = (n_e_sim * probe_area_sim * const.e *
-                np.sqrt(T_e_sim / (2 * np.pi * const.m_e)))
+    n_e_sim = 1e18 * u.m ** -3
+    probe_area_sim = 1 * u.cm ** 2
+    I_es_sim = (
+        n_e_sim * probe_area_sim * const.e * np.sqrt(T_e_sim / (2 * np.pi * const.m_e))
+    )
 
     # Create bias array
     bias_simarr = np.arange(-20, 15, 0.1) * u.V
@@ -156,11 +162,13 @@ def characteristic_simulated():
 
     # Add simulated linear sheath expansion current
     current_simarr[current_simarr == I_es_sim] += (
-        bias_simarr[current_simarr == I_es_sim] * 5e-4 * u.A/u.V)
+        bias_simarr[current_simarr == I_es_sim] * 5e-4 * u.A / u.V
+    )
 
     # Add simulated linear ion collection current
     current_simarr[current_simarr < I_es_sim] += (
-        bias_simarr[current_simarr < I_es_sim] * 1e-4 * u.A/u.V)
+        bias_simarr[current_simarr < I_es_sim] * 1e-4 * u.A / u.V
+    )
 
     return langmuir.Characteristic(bias_simarr, current_simarr)
 
@@ -168,8 +176,9 @@ def characteristic_simulated():
 def shuffle_characteristic(characteristic):
     r""""Shuffle a given characteristic"""
 
-    _shuffle = sorted(np.arange(len(characteristic.bias)),
-                      key=lambda k: np.random.random())
+    _shuffle = sorted(
+        np.arange(len(characteristic.bias)), key=lambda k: np.random.random()
+    )
     U_shuffled = characteristic.bias[_shuffle]
     I_shuffled = characteristic.current[_shuffle]
     return langmuir.Characteristic(U_shuffled, I_shuffled)
@@ -180,6 +189,7 @@ class DryCharacteristic(langmuir.Characteristic):
     Overrides the constructor in Characteristic class such that `bias` is not filtered for
     unique values.
     """
+
     def __init__(self, bias, current):
         super().__init__(bias, current)
         self.bias = bias
@@ -190,15 +200,13 @@ class DryCharacteristic(langmuir.Characteristic):
 class Test__Characteristic_inherited_methods:
     r"""Test methods on DryCharacteristic class."""
 
-    bias_2darr = np.array((np.random.rand(N),
-                           np.random.rand(N))) * u.V
-    current_2darr = np.array((np.random.rand(N),
-                              np.random.rand(N))) * u.A
+    bias_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.V
+    current_2darr = np.array((np.random.rand(N), np.random.rand(N))) * u.A
 
-    bias_4length_arr = np.array(np.random.rand(N-1)) * u.V
+    bias_4length_arr = np.array(np.random.rand(N - 1)) * u.V
     current_5length_arr = np.array(np.random.rand(N)) * u.A
 
-    bias_duplicates_arr = np.array((1, 2) * int(N/2))
+    bias_duplicates_arr = np.array((1, 2) * int(N / 2))
 
     def test_invalid_bias_dimensions(self):
         r"""Test error on non-1D bias array"""
@@ -238,10 +246,8 @@ class Test__Characteristic_inherited_methods:
         char = characteristic
         limits = char.get_padded_limit(0.1)
         log_limits = char.get_padded_limit(0.1, log=True)
-        assert np.allclose(limits.to(u.A).value,
-                           np.array((-0.07434804, 1.06484239)))
-        assert np.allclose(log_limits.to(u.A).value,
-                           np.array((0.014003, 1.42577333)))
+        assert np.allclose(limits.to(u.A).value, np.array((-0.07434804, 1.06484239)))
+        assert np.allclose(log_limits.to(u.A).value, np.array((0.014003, 1.42577333)))
 
 
 class Test__swept_probe_analysis:
@@ -252,21 +258,23 @@ class Test__swept_probe_analysis:
         r"""Test error upon NaN area"""
 
         with pytest.raises(ValueError):
-            langmuir.swept_probe_analysis(characteristic, np.nan * u.cm**2, 'Ar-40 1+')
+            langmuir.swept_probe_analysis(
+                characteristic, np.nan * u.cm ** 2, "Ar-40 1+"
+            )
 
     @staticmethod
     def test_unit_conversion_error():
         r"""Test error upon incorrect probe area unit"""
 
         with pytest.raises(u.UnitTypeError):
-            langmuir.swept_probe_analysis(characteristic, 1 * u.cm, 'Ar-40 1+')
+            langmuir.swept_probe_analysis(characteristic, 1 * u.cm, "Ar-40 1+")
 
     @staticmethod
     def test_negative_area():
         r"""Test error upon negative probe area"""
 
         with pytest.raises(ValueError):
-            langmuir.swept_probe_analysis(characteristic, -1 * u.cm**2, 'Ar-40 1+')
+            langmuir.swept_probe_analysis(characteristic, -1 * u.cm ** 2, "Ar-40 1+")
 
     @staticmethod
     @pytest.mark.parametrize("bimaxwellian", [True, False])
@@ -275,18 +283,19 @@ class Test__swept_probe_analysis:
 
         sim_result = langmuir.swept_probe_analysis(
             characteristic_simulated,
-            1 * u.cm**2,
-            'Ar-40 1+',
-            bimaxwellian=bimaxwellian)
+            1 * u.cm ** 2,
+            "Ar-40 1+",
+            bimaxwellian=bimaxwellian,
+        )
 
         sim_result_shuffled = langmuir.swept_probe_analysis(
             shuffle_characteristic(characteristic_simulated),
-            1 * u.cm**2,
-            'Ar-40 1+',
-            bimaxwellian=bimaxwellian)
+            1 * u.cm ** 2,
+            "Ar-40 1+",
+            bimaxwellian=bimaxwellian,
+        )
 
-        errStr = (f"Analysis should be invariant to the ordering of the "
-                  f"input data.")
+        errStr = f"Analysis should be invariant to the ordering of the " f"input data."
         for key in sim_result:
             assert (sim_result[key] == sim_result_shuffled[key]).all(), errStr
 
@@ -301,16 +310,16 @@ def test_get_floating_potential_with_return_arg(characteristic):
 def test_get_ion_density_OML_without_return_fit(characteristic):
     r"""Test ion density without returning the fit value"""
 
-    density = langmuir.get_ion_density_OML(characteristic, 5000000*u.m**2,
-                                           'p+', return_fit=False)
+    density = langmuir.get_ion_density_OML(
+        characteristic, 5000000 * u.m ** 2, "p+", return_fit=False
+    )
     assert np.isclose(density.value, 385344135.12064785)
 
 
 def test_get_EEDF():
     """Test the obtained EEDF"""
 
-    char = langmuir.Characteristic(bias_arr[:17],
-                                   current_arr[:17])
+    char = langmuir.Characteristic(bias_arr[:17], current_arr[:17])
     energy, probability = langmuir.get_EEDF(char, visualize=False)
 
     expect_energy = (0.14118696, 0.05293109, 0.00709731)
