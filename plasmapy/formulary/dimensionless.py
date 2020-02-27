@@ -8,7 +8,7 @@ For example, plasmas at high (much larger than 1) Reynolds numbers are
 highly turbulent, while turbulence is negligible at low Reynolds
 numbers.
 """
-__all__ = ["beta", "quantum_theta"]
+__all__ = ["beta", "quantum_theta","magnetic_prandtl_number"]
 
 from astropy import constants
 from astropy import units as u
@@ -89,3 +89,74 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     thermal_pressure = parameters.thermal_pressure(T, n)
     magnetic_pressure = parameters.magnetic_pressure(B)
     return thermal_pressure / magnetic_pressure
+
+
+@validate_quantities()
+def prandtl_number(V:u.m**2/u.s):
+    """
+    The ratio of momentum diffusivity (viscosity) and magnetic diffusivity.
+
+    Parameters
+    ----------
+    p : ~astropy.units.Quantity
+        The the momentum diffusivity (kinematic viscosity).
+    u : ~astropy.units.Quantity
+        The magnetic diffusivity.
+
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> magnetic_Prandtl_number(1*u.eV, 1e20*u.m**-3, 1*u.T)
+    <Quantity 4.0267...e-05>
+    >>> magnetic_Prandtl_number(8.8e3*u.eV, 1e20*u.m**-3, 5.3*u.T)
+    <Quantity 0.01261...>
+
+    Returns
+    -------
+    number: ~astropy.units.Quantity
+        Dimensionless quantity.
+
+    """
+
+    thermal_pressure = parameters.thermal_pressure(T, n)
+    magnetic_pressure = parameters.magnetic_pressure(B)
+    return thermal_pressure / magnetic_pressure
+
+
+@validate_quantities()
+def magnetic_prandtl_number(v: u.m**2/u.s, nu: u.m**2/u.s):
+    """
+    The ratio of momentum diffusivity (viscosity) and magnetic diffusivity.
+
+    Parameters
+    ----------
+    v : ~astropy.units.Quantity
+        The the momentum diffusivity (kinematic viscosity).
+    nu : ~astropy.units.Quantity
+        The magnetic diffusivity.
+
+    Returns
+    -------
+    number: ~astropy.units.Quantity
+        Dimensionless quantity.
+
+    Notes
+    -----
+    The magnetic Prandtl number :math:`Pr_m` is  given by:
+
+    .. math::
+
+        r_{Li} = \frac{V_{\perp}}{omega_{ci}}
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> magnetic_prandtl_number(1*u.m**2/u.s,3*u.m**2/u.s)
+    <Quantity 4.0267...e-05>
+    >>> magnetic_prandtl_number(8.8e3*u.eV, 1e20*u.m**-3, 5.3*u.T)
+    <Quantity 0.01261...>
+
+    """
+
+    return v / nu
