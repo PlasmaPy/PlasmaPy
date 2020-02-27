@@ -1,0 +1,1 @@
+Updated pep8speaks/flake8 configuration and added `.pre-commit-config.yaml` to simplify automated style checks during development.
