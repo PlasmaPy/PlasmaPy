@@ -1,0 +1,5 @@
+Adding the next functions to plasmapy.dimensionless
+ -magnetic_prandtl_number
+ -prandtl_number
+ -reynolds_number
+ -magnetic_reynolds_number

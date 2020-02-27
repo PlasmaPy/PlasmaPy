@@ -26,3 +26,11 @@ def test_beta_nan():
     out = beta(T, n, B)
     assert np.isnan(out[1])
     assert out[1].unit == u.dimensionless_unscaled
+
+def test_magnetic_prandtl_number():
+    #TO DO
+    pass
+
+def test_prandtl_number():
+    #TO DO
+    pass
