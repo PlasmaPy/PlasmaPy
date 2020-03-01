@@ -1,4 +1,4 @@
-Adding the next functions to plasmapy.dimensionless
+Adding the next functions to plasmapy.dimensionless Issue#49
  -magnetic_prandtl_number
  -prandtl_number
  -reynolds_number
