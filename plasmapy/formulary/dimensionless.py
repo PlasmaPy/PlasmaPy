@@ -8,7 +8,7 @@ For example, plasmas at high (much larger than 1) Reynolds numbers are
 highly turbulent, while turbulence is negligible at low Reynolds
 numbers.
 """
-__all__ = ["beta", "quantum_theta", "magnetic_prandtl_number"]
+__all__ = ["beta", "quantum_theta", "prandtl_number", "magnetic_prandtl_number"]
 
 from astropy import constants
 from astropy import units as u
@@ -92,8 +92,8 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 
 
 @validate_quantities(
-    v = {"can_be_negative": False},
-    alpha = {"can_be_negative": False},
+    v={"can_be_negative": False},
+    alpha={"can_be_negative": False},
 )
 def prandtl_number(v: u.m ** 2 / u.s,
                    alpha: u.m ** 2 / u.s) -> u.dimensionless_unscaled:
@@ -138,8 +138,8 @@ def prandtl_number(v: u.m ** 2 / u.s,
 
 
 @validate_quantities(
-    v = {"can_be_negative": False},
-    n = {"can_be_negative": False},
+    v={"can_be_negative": False},
+    n={"can_be_negative": False},
 )
 def magnetic_prandtl_number(v: u.m ** 2 / u.s,
                             n: u.m ** 2 / u.s) -> u.dimensionless_unscaled:
