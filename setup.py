@@ -1,14 +1,8 @@
 #!/usr/bin/env python
-import os
-import sys
 from itertools import chain
-import builtins
 
 from setuptools import setup
 from setuptools.config import read_configuration
-
-# Append cwd for pip 19
-sys.path.append(os.path.abspath("."))
 
 ################################################################################
 # Programmatically generate some extras combos.
