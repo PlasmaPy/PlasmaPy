@@ -41,8 +41,8 @@ def test_prandtl_number():
     error2 = f"""Prandtl number should be 2 when the momentum diffusivity(v)
              and thermal diffusivity(alpha) are 10**4 and 10**6 instead of
              {assert2}"""
-    assert assert1 ==  1.0 , error1
-    assert assert2 == 0.01 , error2
+    assert assert1 == 1.0, error1
+    assert assert2 == 0.01, error2
 
 
 def test_magnetic_prandtl_number():
@@ -54,5 +54,5 @@ def test_magnetic_prandtl_number():
     error2 = f"""Magnetic prandtl number should be 2 when the momentum
              diffusivity(v) and magnetic diffusivity(n) are 10**4 and 10**6
              instead of {assert2}"""
-    assert assert1 ==  1.0 , error1
-    assert assert2 == 0.01 , error2
+    assert assert1 == 1.0, error1
+    assert assert2 == 0.01, error2
