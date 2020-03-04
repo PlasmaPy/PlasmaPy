@@ -1,9 +1,7 @@
 from abc import ABC, abstractmethod, abstractproperty
 
-__all__ = [
-    "BasePlasma",
-    "GenericPlasma",
-]
+__all__ = ["BasePlasma", "GenericPlasma"]
+
 
 class BasePlasma(ABC):
     """
@@ -14,12 +12,13 @@ class BasePlasma(ABC):
     when a subclass of `GenericPlasma` is defined. If it exists it will add that
     class to the registry.
     """
+
     # GenericPlasma subclass registry
     _registry = dict()
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
-        if hasattr(cls, 'is_datasource_for'):
+        if hasattr(cls, "is_datasource_for"):
             cls._registry[cls] = cls.is_datasource_for
 
     # This class is supposed to declare abstract methods (@abstractmethod or
@@ -58,6 +57,7 @@ class GenericPlasma(BasePlasma):
     A Generic Plasma class. This class contains definitions for abstract
     methods declared in the `~plasmapy.classes.plasma_base.BaseClass`.
     """
+
     def __init__(self, **kwargs):
         pass
 

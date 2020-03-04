@@ -13,9 +13,7 @@ from plasmapy.utils import CouplingWarning
 from plasmapy.utils import formatting
 from plasmapy.classes import GenericPlasma
 
-__all__ = [
-    "PlasmaBlob"
-]
+__all__ = ["PlasmaBlob"]
 
 
 class PlasmaBlob(GenericPlasma):
@@ -23,8 +21,9 @@ class PlasmaBlob(GenericPlasma):
     Class for describing and calculating plasma parameters without
     spatial/temporal description.
     """
-    @u.quantity_input(T_e=u.K, n_e=u.m**-3)
-    def __init__(self, T_e, n_e, Z=None, particle='p'):
+
+    @u.quantity_input(T_e=u.K, n_e=u.m ** -3)
+    def __init__(self, T_e, n_e, Z=None, particle="p"):
         """
         Initialize plasma paramters.
         The most basic description is composition (ion), temperature,
@@ -64,10 +63,12 @@ class PlasmaBlob(GenericPlasma):
         >>> PlasmaBlob(1e4*u.K, 1e20/u.m**3, particle='p')
         PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p', Z=1)
         """
-        argument_dict = {'T_e': self.T_e,
-                         'n_e': self.n_e,
-                         'particle': self.particle,
-                         'Z': self.Z}
+        argument_dict = {
+            "T_e": self.T_e,
+            "n_e": self.n_e,
+            "particle": self.particle,
+            "Z": self.Z,
+        }
 
         return formatting.call_string(PlasmaBlob, (), argument_dict)
 
@@ -110,21 +111,22 @@ class PlasmaBlob(GenericPlasma):
         # quantum_theta
         if quantum_theta <= 0.01:
             # Fermi energy dominant
-            quantum_theta_str = (f"Fermi quantum energy dominant: Theta = "
-                                 f"{quantum_theta}")
+            quantum_theta_str = (
+                f"Fermi quantum energy dominant: Theta = " f"{quantum_theta}"
+            )
         elif quantum_theta >= 100:
             # thermal kinetic energy dominant
-            quantum_theta_str = (f"Thermal kinetic energy dominant: Theta = "
-                                 f"{quantum_theta}")
+            quantum_theta_str = (
+                f"Thermal kinetic energy dominant: Theta = " f"{quantum_theta}"
+            )
         else:
             # intermediate regime
-            quantum_theta_str = (f"Both Fermi and thermal energy important: "
-                                 f"Theta = {quantum_theta}")
+            quantum_theta_str = (
+                f"Both Fermi and thermal energy important: " f"Theta = {quantum_theta}"
+            )
 
         # summarizing and printing/returning regimes
-        aggregateStrs = [coupling_str,
-                         quantum_theta_str,
-                         ]
+        aggregateStrs = [coupling_str, quantum_theta_str]
         return aggregateStrs
 
     def coupling(self):
@@ -133,15 +135,17 @@ class PlasmaBlob(GenericPlasma):
         are important. This compares Coulomb potential energy to thermal
         kinetic energy.
         """
-        couple = coupling_parameter(self.T_e,
-                                    self.n_e,
-                                    (self.particle, self.particle),
-                                    self.Z)
+        couple = coupling_parameter(
+            self.T_e, self.n_e, (self.particle, self.particle), self.Z
+        )
         if couple < 0.01:
-            warnings.warn(f"Coupling parameter is {couple}, you might have strong coupling effects",
-                          CouplingWarning)
+            warnings.warn(
+                f"Coupling parameter is {couple}, you might have strong coupling effects",
+                CouplingWarning,
+            )
 
         return couple
+
     def quantum_theta(self):
         """
         Quantum theta parameter, which compares Fermi kinetic energy to
@@ -152,5 +156,5 @@ class PlasmaBlob(GenericPlasma):
 
     @classmethod
     def is_datasource_for(cls, **kwargs):
-        match = 'T_e' in kwargs.keys() and 'n_e' in kwargs.keys()
+        match = "T_e" in kwargs.keys() and "n_e" in kwargs.keys()
         return match
