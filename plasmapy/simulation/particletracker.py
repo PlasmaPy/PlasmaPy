@@ -21,9 +21,8 @@ __all__ = ["ParticleTracker", "ParticleTrackerAccessor"]
 
 @xarray.register_dataset_accessor("particletracker")
 class ParticleTrackerAccessor:
-    def __init__(self, xarray_obj, plasma=None):
+    def __init__(self, xarray_obj):
         self._obj = xarray_obj
-        self.plasma = plasma
         # TODO handle CustomParticles on the `Particle` layer!
         self.particle = Particle(xarray_obj.attrs["particle"])
         # self.diagnostics = diagnostics # TODO put in xarray itself
@@ -101,7 +100,9 @@ class ParticleTrackerAccessor:
                 plt.show()
             raise PhysicsError("Kinetic energy is not conserved!")
 
-    def visualize(self, figure=None, particle=0, stride=1):  # coverage: ignore
+    def visualize(
+        self, figure=None, particle=0, stride=1, plasma=None
+    ):  # coverage: ignore
         """Plot the trajectory using PyVista."""
         import pyvista as pv
 
@@ -112,16 +113,19 @@ class ParticleTrackerAccessor:
             fig = figure
         points = self._obj.position.sel(particle=particle)[::stride].values
         trajectory = spline = pv.Spline(
-            points, max((1000, self._obj.sizes["time"] // 100))
+            points, max((1000, self._obj.sizes["time"] // 100))  # TODO clean this up!
         )
-        if self.plasma and hasattr(self.plasma, "visualize"):
-            self.plasma.visualize(fig)
 
-        if figure is None:
-            trajectory.plot(fig)
-            fig.show()
-        else:
-            fig.add_mesh(trajectory)
+        if plasma is not None:
+            if hasattr(plasma, "visualize"):
+                plasma.visualize(fig)
+            else:
+                warnings.warn(
+                    f"Your plasma={plasma} has no `visualize` method, there's nothing to display!"
+                )
+
+        fig.add_mesh(trajectory)
+
         return fig
 
     def animate(
@@ -143,10 +147,7 @@ class ParticleTrackerAccessor:
                 warnings.warn(
                     f"Plasma object {plasma} passed to animate, but it has no visualize method!"
                 )
-                raise ValueError(
-                    f"Plasma object {plasma} passed to animate, but it has no visualize method!"
-                )
-        fig.show(auto_close=False)
+        fig.show(auto_close=False)  # TODO prevent this from
         fig.write_frame()
         for i in tqdm.auto.trange(1, nframes):
             fig.clear()
@@ -155,9 +156,6 @@ class ParticleTrackerAccessor:
                     plasma.visualize(fig)
                 else:
                     warnings.warn(
-                        f"Plasma object {plasma} passed to animate, but it has no visualize method!"
-                    )
-                    raise ValueError(
                         f"Plasma object {plasma} passed to animate, but it has no visualize method!"
                     )
             frame_max = self._obj.sizes["time"] // nframes * i
@@ -403,7 +401,7 @@ class ParticleTracker:
     def __repr__(self, *args, **kwargs):
         return (
             f"ParticleTracker(plasma={self.plasma}, particle_type={self.particle},"
-            f"N = {self.x.shape[0]})"
+            f" N = {self.x.shape[0]})"
         )
 
     def __str__(self):  # coverage: ignore
@@ -422,6 +420,7 @@ class ParticleTracker:
         dimensions="xyz",
         potentials=None,
     ):
+        # TODO replace scheme with OpenPMD! I can't believe I forgot about it!
         data_vars = {}
         assert position_history.shape == velocity_history.shape
         particles = range(position_history.shape[1])
