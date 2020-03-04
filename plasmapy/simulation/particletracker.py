@@ -101,7 +101,7 @@ class ParticleTrackerAccessor:
             raise PhysicsError("Kinetic energy is not conserved!")
 
     def visualize(
-        self, figure=None, particle=0, stride=1, plasma=None
+        self, figure=None, particles=(0,), stride=1, plasma=None
     ):  # coverage: ignore
         """Plot the trajectory using PyVista."""
         import pyvista as pv
@@ -111,10 +111,13 @@ class ParticleTrackerAccessor:
             fig.add_axes()
         else:
             fig = figure
-        points = self._obj.position.sel(particle=particle)[::stride].values
-        trajectory = spline = pv.Spline(
-            points, max((1000, self._obj.sizes["time"] // 100))  # TODO clean this up!
-        )
+        for i in particles:
+            points = self._obj.position.sel(particle=i)[::stride].values
+            trajectory = spline = pv.Spline(
+                points,
+                max((1000, self._obj.sizes["time"] // 100)),  # TODO clean this up!
+            )
+            fig.add_mesh(trajectory)
 
         if plasma is not None:
             if hasattr(plasma, "visualize"):
@@ -123,8 +126,6 @@ class ParticleTrackerAccessor:
                 warnings.warn(
                     f"Your plasma={plasma} has no `visualize` method, there's nothing to display!"
                 )
-
-        fig.add_mesh(trajectory)
 
         return fig
 
@@ -179,7 +180,7 @@ class ParticleTrackerAccessor:
                 .values
             )
             point_cloud = pv.PolyData(points)
-            point_cloud.abs_vel = np.linalg.norm(velocities, axis=1)
+            point_cloud.abs_vel = np.linalg.norm(velocities, axis=1, keepdims=True)
             point_cloud.vectors = velocities / (10 * point_cloud.abs_vel)
             fig.add_mesh(point_cloud.arrows, show_scalar_bar=False)
             fig.write_frame()
