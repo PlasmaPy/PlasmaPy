@@ -112,6 +112,13 @@ class AbstractParticle(ABC):
     def charge(self) -> Union[u.Quantity, Real]:
         pass
 
+    def __bool__(self):
+        """
+        Raise an `~plasmapy.utils.AtomicError` because particles
+        do not have a truth value.
+        """
+        raise AtomicError("The truth value of a particle is not defined.")
+
 
 class Particle(AbstractParticle):
     """
@@ -561,13 +568,6 @@ class Particle(AbstractParticle):
         instance may be used as a key in a `dict`.
         """
         return hash(self.__repr__())
-
-    def __bool__(self):
-        """
-        Raise an `~plasmapy.utils.AtomicError` because Particle objects
-        do not have a truth value.
-        """
-        raise AtomicError("The truthiness of a Particle instance is not defined.")
 
     def __invert__(self):
         """
