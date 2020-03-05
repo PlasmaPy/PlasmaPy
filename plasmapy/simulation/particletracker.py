@@ -137,6 +137,7 @@ class ParticleTrackerAccessor:
         plasma=None,
         notebook_display=False,
         plot_trajectories=True,
+        plot_arrows=True,
     ):
         import pyvista as pv
 
@@ -153,7 +154,8 @@ class ParticleTrackerAccessor:
         fig.write_frame()
         abs_vel = self.vector_norm("velocity", dim="dimension")
         self._obj["|v|"] = (("time", "particle"), abs_vel)
-        vectors = self._obj["velocity"] / (10 * self._obj["|v|"])
+        if plot_arrows:
+            vectors = self._obj["velocity"] / (10 * self._obj["|v|"])
 
         for i in tqdm.auto.trange(1, nframes):
             fig.clear()
@@ -186,16 +188,17 @@ class ParticleTrackerAccessor:
                 .values
             )
             point_cloud = pv.PolyData(points)
-            point_cloud["vectors"] = vectors.isel(time=frame_max)
             point_cloud["velocity"] = self._obj["|v|"].isel(time=frame_max)
             velocity_range = [
                 self._obj["|v|"].min().item(),
                 self._obj["|v|"].max().item(),
             ]
-            point_vectors = point_cloud.glyph(
-                orient="vectors", scale=False, factor=0.15
-            )
-            fig.add_mesh(point_vectors)
+            if plot_arrows:
+                point_cloud["vectors"] = vectors.isel(time=frame_max)
+                point_vectors = point_cloud.glyph(
+                    orient="vectors", scale=False, factor=0.15
+                )
+                fig.add_mesh(point_vectors)
             fig.add_mesh(
                 point_cloud,
                 scalars="velocity",
