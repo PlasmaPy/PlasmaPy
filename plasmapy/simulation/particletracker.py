@@ -136,6 +136,7 @@ class ParticleTrackerAccessor:
         nframes: int = 50,
         plasma=None,
         notebook_display=False,
+        plot_trajectories=True,
     ):
         import pyvista as pv
 
@@ -150,6 +151,10 @@ class ParticleTrackerAccessor:
                 )
         fig.show(auto_close=False)  # TODO prevent this from
         fig.write_frame()
+        abs_vel = self.vector_norm("velocity", dim="dimension")
+        self._obj["|v|"] = (("time", "particle"), abs_vel)
+        vectors = self._obj["velocity"] / (10 * self._obj["|v|"])
+
         for i in tqdm.auto.trange(1, nframes):
             fig.clear()
             if plasma is not None:
@@ -160,14 +165,15 @@ class ParticleTrackerAccessor:
                         f"Plasma object {plasma} passed to animate, but it has no visualize method!"
                     )
             frame_max = self._obj.sizes["time"] // nframes * i
-            for particle in particles:
-                trajectories = (
-                    self._obj.position.sel(particle=particle)
-                    .isel(time=range(0, frame_max + 1))
-                    .values
-                )
-                trajectory = pv.Spline(trajectories)
-                fig.add_mesh(trajectory)
+            if plot_trajectories:
+                for particle in particles:
+                    trajectories = (
+                        self._obj.position.sel(particle=particle)
+                        .isel(time=range(0, frame_max + 1))
+                        .values
+                    )
+                    trajectory = pv.Spline(trajectories)
+                    fig.add_mesh(trajectory)
 
             points = (
                 self._obj.position.sel(particle=list(particles))
@@ -180,9 +186,22 @@ class ParticleTrackerAccessor:
                 .values
             )
             point_cloud = pv.PolyData(points)
-            point_cloud.abs_vel = np.linalg.norm(velocities, axis=1, keepdims=True)
-            point_cloud.vectors = velocities / (10 * point_cloud.abs_vel)
-            fig.add_mesh(point_cloud.arrows, show_scalar_bar=False)
+            point_cloud["vectors"] = vectors.isel(time=frame_max)
+            point_cloud["velocity"] = self._obj["|v|"].isel(time=frame_max)
+            velocity_range = [
+                self._obj["|v|"].min().item(),
+                self._obj["|v|"].max().item(),
+            ]
+            point_vectors = point_cloud.glyph(
+                orient="vectors", scale=False, factor=0.15
+            )
+            fig.add_mesh(point_vectors)
+            fig.add_mesh(
+                point_cloud,
+                scalars="velocity",
+                clim=velocity_range,
+                render_points_as_spheres=True,
+            )
             fig.write_frame()
         fig.close()
         if notebook_display:
