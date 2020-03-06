@@ -897,11 +897,17 @@ customized_particle_tests = [
     (DimensionlessParticle, {"mass": 0.0, "charge": -1.0}, "charge", -1.0),
     (DimensionlessParticle, {}, "mass", np.nan),
     (DimensionlessParticle, {}, "charge", np.nan),
+    (DimensionlessParticle, {"mass": np.inf}, "mass", np.inf),
+    (DimensionlessParticle, {"charge": np.inf}, "charge", np.inf),
+    (DimensionlessParticle, {"charge": 1.0 * u.dimensionless_unscaled}, "charge", 1.0),
+    (DimensionlessParticle, {"mass": 1.0 * u.dimensionless_unscaled}, "mass", 1.0),
     (CustomParticle, {}, "mass", np.nan * u.kg),
     (CustomParticle, {}, "charge", np.nan * u.C),
     (CustomParticle, {"mass": 1.1 * u.kg, "charge": -0.1 * u.C}, "mass", 1.1 * u.kg),
     (CustomParticle, {"charge": -0.1 * u.C}, "charge", -0.1 * u.C),
     (CustomParticle, {"charge": -2}, "charge", -2 * const.e.si),
+    (CustomParticle, {"mass": np.inf * u.g}, "mass", np.inf * u.kg),
+    (CustomParticle, {"charge": -np.inf * u.kC}, "charge", -np.inf * u.C),
 ]
 
 
@@ -922,6 +928,7 @@ customized_particle_errors = [
     (DimensionlessParticle, {"mass": -1e-36}, InvalidParticleError),
     (DimensionlessParticle, {"mass": [1, 1]}, InvalidParticleError),
     (DimensionlessParticle, {"charge": [-1, 1]}, InvalidParticleError),
+    (DimensionlessParticle, {"mass": True}, InvalidParticleError),
     (
         DimensionlessParticle,
         {"mass": np.array([1, 2]) * u.dimensionless_unscaled},
@@ -930,6 +937,11 @@ customized_particle_errors = [
     (
         DimensionlessParticle,
         {"charge": np.array([1, 2]) * u.dimensionless_unscaled},
+        InvalidParticleError,
+    ),
+    (
+        DimensionlessParticle,
+        {"charge": (1 + 2j) * u.dimensionless_unscaled},
         InvalidParticleError,
     ),
     (CustomParticle, {"charge": 5 + 2j}, InvalidParticleError),
@@ -975,5 +987,13 @@ customized_particle_repr_table = [
 def test_customized_particle_repr(cls, kwargs, expected_repr):
     """Test the string representations of dimensionless and custom particles."""
     instance = cls(**kwargs)
-    representation = repr(instance)
-    assert representation == expected_repr
+    from_repr = repr(instance)
+    from_str = str(instance)
+    if not expected_repr == from_repr == from_str:
+        pytest.fail(
+            f"Problem with a string representation of {cls.__name__} "
+            f"with kwargs = {kwargs}.\n\n"
+            f"expected_repr = {expected_repr}"
+            f"from_str: {from_str}"
+            f"from_repr: {from_repr}"
+        )
