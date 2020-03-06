@@ -20,7 +20,7 @@ class SampleExceptionSubclass(SampleException):
     If the `~pytest.raises` context manager expects a certain exception
     to be raised, then the test will pass if a subclass of that exception
     is raised.  This subclass is used to test that PlasmaPy's test
-    helper functionality catches situations like that.
+    helpers functionality catches situations like that.
     """
 
     pass
@@ -38,7 +38,7 @@ class SampleWarningSubclass(SampleWarning):
 
     If the `~pytest.warns` context manager expects a certain warning to
     be issued, then the test will pass if a subclass of that warning is
-    issued.  This subclass is used to test that PlasmaPy's test helper
+    issued.  This subclass is used to test that PlasmaPy's test helpers
     functionality catches situations like that.
     """
 

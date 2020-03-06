@@ -3,17 +3,17 @@ from numbers import Number
 
 from astropy import units as u
 
-from plasmapy.tests.helper.inputs import (
+from plasmapy.tests.helpers.inputs import (
     AbstractTestInputs,
     FunctionTestInputs,
     ClassAttributeTestInputs,
     ClassMethodTestInputs,
 )
 
-from plasmapy.tests.helper.actual import ActualTestOutcome
-from plasmapy.tests.helper.expected import ExpectedTestOutcome
-from plasmapy.tests.helper.comparators import CompareActualExpected
-from plasmapy.tests.helper.exceptions import InvalidTestError
+from plasmapy.tests.helpers.actual import ActualTestOutcome
+from plasmapy.tests.helpers.expected import ExpectedTestOutcome
+from plasmapy.tests.helpers.comparators import CompareActualExpected
+from plasmapy.tests.helpers.exceptions import InvalidTestError
 
 __all__ = ["function_test_runner", "method_test_runner", "attr_test_runner"]
 
@@ -91,35 +91,35 @@ def function_test_runner(
 
     Raises
     ------
-    ~plasmapy.tests.helper.exceptions.InvalidTestError
+    ~plasmapy.tests.helpers.exceptions.InvalidTestError
         If the test is not set up correctly.
 
-    ~plasmapy.tests.helper.exceptions.UnexpectedResultError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedResultError
         If the value returned by the test does not match the expected value.
 
-    ~plasmapy.tests.helper.exceptions.InconsistentTypeError
+    ~plasmapy.tests.helpers.exceptions.InconsistentTypeError
         If the type of the value returned by the test is not the same
         type as the expected value.
 
-    ~plasmapy.tests.helper.exceptions.UnexpectedExceptionError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionError
         If an exception was raised unexpectedly.
 
-    ~plasmapy.tests.helper.exceptions.MissingExceptionError
+    ~plasmapy.tests.helpers.exceptions.MissingExceptionError
         If an exception was expected to be raised, but was not.
 
-    ~plasmapy.tests.helper.exceptions.ExceptionMismatchError
+    ~plasmapy.tests.helpers.exceptions.ExceptionMismatchError
         If an exception was raised that was different from the expected exception.
 
-    ~plasmapy.tests.helper.exceptions.UnexpectedWarningError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedWarningError
         If a warning was issued unexpectedly.
 
-    ~plasmapy.tests.helper.exceptions.MissingWarningError
+    ~plasmapy.tests.helpers.exceptions.MissingWarningError
         If a warning was expected to be issued, but was not.
 
-    ~plasmapy.tests.helper.exceptions.WarningMismatchError
+    ~plasmapy.tests.helpers.exceptions.WarningMismatchError
         If the expected warning was not issued, but one or more different warnings were.
 
-    ~plasmapy.tests.helper.exceptions.Failed
+    ~plasmapy.tests.helpers.exceptions.Failed
         If the test fails in a different way or more than one way.
 
     See Also
@@ -253,35 +253,35 @@ def method_test_runner(
 
     Raises
     ------
-    ~plasmapy.tests.helper.exceptions.InvalidTestError
+    ~plasmapy.tests.helpers.exceptions.InvalidTestError
         If the test is not set up correctly.
 
-    ~plasmapy.tests.helper.exceptions.UnexpectedResultError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedResultError
         If the value returned by the test does not match the expected value.
 
-    ~plasmapy.tests.helper.exceptions.InconsistentTypeError
+    ~plasmapy.tests.helpers.exceptions.InconsistentTypeError
         If the type of the value returned by the test is not the same
         type as the expected value.
 
-    ~plasmapy.tests.helper.exceptions.UnexpectedExceptionError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionError
         If an exception was raised unexpectedly.
 
-    ~plasmapy.tests.helper.exceptions.MissingExceptionError
+    ~plasmapy.tests.helpers.exceptions.MissingExceptionError
         If an exception was expected to be raised, but was not.
 
-    ~plasmapy.tests.helper.exceptions.ExceptionMismatchError
+    ~plasmapy.tests.helpers.exceptions.ExceptionMismatchError
         If an exception was raised that was different from the expected exception.
 
-    ~plasmapy.tests.helper.exceptions.UnexpectedWarningError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedWarningError
         If a warning was issued unexpectedly.
 
-    ~plasmapy.tests.helper.exceptions.MissingWarningError
+    ~plasmapy.tests.helpers.exceptions.MissingWarningError
         If a warning was expected to be issued, but was not.
 
-    ~plasmapy.tests.helper.exceptions.WarningMismatchError
+    ~plasmapy.tests.helpers.exceptions.WarningMismatchError
         If the expected warning was not issued, but one or more different warnings were.
 
-    ~plasmapy.tests.helper.exceptions.Failed
+    ~plasmapy.tests.helpers.exceptions.Failed
         If the test fails in a different way or more than one way.
 
     See Also
@@ -389,35 +389,35 @@ def attr_test_runner(
 
     Raises
     ------
-    ~plasmapy.tests.helper.exceptions.InvalidTestError
+    ~plasmapy.tests.helpers.exceptions.InvalidTestError
         If the test is not set up correctly.
 
-    ~plasmapy.tests.helper.exceptions.UnexpectedResultError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedResultError
         If the value returned by the test does not match the expected value.
 
-    ~plasmapy.tests.helper.exceptions.InconsistentTypeError
+    ~plasmapy.tests.helpers.exceptions.InconsistentTypeError
         If the type of the value returned by the test is not the same
         type as the expected value.
 
-    ~plasmapy.tests.helper.exceptions.UnexpectedExceptionError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionError
         If an exception was raised unexpectedly.
 
-    ~plasmapy.tests.helper.exceptions.MissingExceptionError
+    ~plasmapy.tests.helpers.exceptions.MissingExceptionError
         If an exception was expected to be raised, but was not.
 
-    ~plasmapy.tests.helper.exceptions.ExceptionMismatchError
+    ~plasmapy.tests.helpers.exceptions.ExceptionMismatchError
         If an exception was raised that was different from the expected exception.
 
-    ~plasmapy.tests.helper.exceptions.UnexpectedWarningError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedWarningError
         If a warning was issued unexpectedly.
 
-    ~plasmapy.tests.helper.exceptions.MissingWarningError
+    ~plasmapy.tests.helpers.exceptions.MissingWarningError
         If a warning was expected to be issued, but was not.
 
-    ~plasmapy.tests.helper.exceptions.WarningMismatchError
+    ~plasmapy.tests.helpers.exceptions.WarningMismatchError
         If the expected warning was not issued, but one or more different warnings were.
 
-    ~plasmapy.tests.helper.exceptions.Failed
+    ~plasmapy.tests.helpers.exceptions.Failed
         If the test fails in a different way or more than one way.
 
     See Also

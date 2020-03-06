@@ -2,14 +2,14 @@ import pytest
 import warnings
 from typing import List, Any, Union
 
-from plasmapy.tests.helper.inputs import (
+from plasmapy.tests.helpers.inputs import (
     AbstractTestInputs,
     FunctionTestInputs,
     ClassAttributeTestInputs,
     ClassMethodTestInputs,
 )
 
-from plasmapy.tests.helper.exceptions import InvalidTestError
+from plasmapy.tests.helpers.exceptions import InvalidTestError
 
 __all__ = ["ActualTestOutcome"]
 

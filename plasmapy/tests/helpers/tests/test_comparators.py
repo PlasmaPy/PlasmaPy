@@ -3,20 +3,20 @@ import pytest
 import numpy as np
 from astropy import units as u
 
-from plasmapy.tests.helper.actual import ActualTestOutcome
-from plasmapy.tests.helper.expected import ExpectedTestOutcome
-from plasmapy.tests.helper.inputs import FunctionTestInputs
+from plasmapy.tests.helpers.actual import ActualTestOutcome
+from plasmapy.tests.helpers.expected import ExpectedTestOutcome
+from plasmapy.tests.helpers.inputs import FunctionTestInputs
 
 from plasmapy.utils.formatting.formatting import _name_with_article
 
-from plasmapy.tests.helper.comparators import (
+from plasmapy.tests.helpers.comparators import (
     CompareActualExpected,
     CompareValues,
     _get_unit,
     _units_are_compatible,
 )
 
-from plasmapy.tests.helper.exceptions import (
+from plasmapy.tests.helpers.exceptions import (
     Failed,
     UnexpectedResultError,
     InconsistentTypeError,
@@ -29,7 +29,7 @@ from plasmapy.tests.helper.exceptions import (
     WarningMismatchError,
 )
 
-from plasmapy.tests.helper.tests.sample_functions import (
+from plasmapy.tests.helpers.tests.sample_functions import (
     return_42,
     return_42_meters,
     return_np_array,

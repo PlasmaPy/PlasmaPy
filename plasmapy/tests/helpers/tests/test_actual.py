@@ -1,10 +1,10 @@
 import pytest
 from typing import Callable
 
-from plasmapy.tests.helper.actual import ActualTestOutcome
-from plasmapy.tests.helper.inputs import FunctionTestInputs
+from plasmapy.tests.helpers.actual import ActualTestOutcome
+from plasmapy.tests.helpers.inputs import FunctionTestInputs
 
-from plasmapy.tests.helper.tests.sample_functions import (
+from plasmapy.tests.helpers.tests.sample_functions import (
     return_42,
     issue_warning,
     issue_warning_return_42,
@@ -13,7 +13,7 @@ from plasmapy.tests.helper.tests.sample_functions import (
     SampleException,
 )
 
-from plasmapy.tests.helper.exceptions import InvalidTestError
+from plasmapy.tests.helpers.exceptions import InvalidTestError
 
 
 func_attr_expected = [

@@ -9,7 +9,7 @@ from plasmapy.utils.pytest_helpers import (
     run_test_equivalent_calls,
 )
 
-from plasmapy.tests.helper.exceptions import (
+from plasmapy.tests.helpers.exceptions import (
     UnexpectedResultError,
     InconsistentTypeError,
     UnexpectedExceptionError,
@@ -98,7 +98,7 @@ f_args_kwargs_expected_whaterror = [
 )
 def test_run_test(f, args, kwargs, expected, whaterror):
     """
-    Test the behavior of the test helper function.
+    Test the behavior of the test helpers function.
 
     The arguments ``f``, ``args``, ``kwargs``, and ``expected`` are to
     be passed directly to `~plasmapy.utils.run_test`.  If the test is
@@ -127,8 +127,8 @@ def test_run_test(f, args, kwargs, expected, whaterror):
         result and the type of warning.
 
     whaterror : exception or None
-        The type of exception that the test helper function is supposed
-        to raise, or `None` if the test helper function is not supposed
+        The type of exception that the test helpers function is supposed
+        to raise, or `None` if the test helpers function is not supposed
         to raise an exception.
 
     """

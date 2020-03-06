@@ -7,8 +7,8 @@ import warnings
 import numpy as np
 from astropy import units as u
 
-from plasmapy.tests.helper.expected import ExpectedTestOutcome
-from plasmapy.tests.helper.actual import ActualTestOutcome
+from plasmapy.tests.helpers.expected import ExpectedTestOutcome
+from plasmapy.tests.helpers.actual import ActualTestOutcome
 
 from plasmapy.utils.formatting.formatting import (
     _name_with_article,
@@ -16,7 +16,7 @@ from plasmapy.utils.formatting.formatting import (
     _object_name,
 )
 
-from plasmapy.tests.helper.exceptions import (
+from plasmapy.tests.helpers.exceptions import (
     Failed,
     UnexpectedResultError,
     InconsistentTypeError,

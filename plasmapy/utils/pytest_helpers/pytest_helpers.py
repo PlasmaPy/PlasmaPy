@@ -1,4 +1,4 @@
-"""Test helper utilities."""
+"""Test helpers utilities."""
 import functools
 import pytest
 import inspect
@@ -17,7 +17,7 @@ from plasmapy.utils.formatting.formatting import (
     _name_with_article,
 )
 
-from plasmapy.tests.helper.exceptions import (
+from plasmapy.tests.helpers.exceptions import (
     InvalidTestError,
     UnexpectedResultError,
     UnexpectedExceptionError,

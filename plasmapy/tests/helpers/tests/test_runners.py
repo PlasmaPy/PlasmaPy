@@ -4,13 +4,13 @@ from abc import ABC, abstractmethod
 import numpy as np
 import astropy.units as u
 
-from plasmapy.tests.helper.runners import (
+from plasmapy.tests.helpers.runners import (
     function_test_runner,
     attr_test_runner,
     method_test_runner,
 )
 
-from plasmapy.tests.helper.exceptions import (
+from plasmapy.tests.helpers.exceptions import (
     Failed,
     UnexpectedResultError,
     InconsistentTypeError,
@@ -23,7 +23,7 @@ from plasmapy.tests.helper.exceptions import (
     WarningMismatchError,
 )
 
-from plasmapy.tests.helper.tests.sample_functions import (
+from plasmapy.tests.helpers.tests.sample_functions import (
     return_42,
     return_42_meters,
     issue_warning_return_42,
