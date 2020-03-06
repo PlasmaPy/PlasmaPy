@@ -3,7 +3,7 @@
 import warnings
 from typing import Union, Set, Tuple, List, Optional
 from collections import defaultdict, namedtuple
-from numbers import Integral, Real
+from numbers import Integral, Real, Complex
 
 import numpy as np
 import astropy.units as u
@@ -1661,7 +1661,6 @@ class DimensionlessParticle(AbstractParticle):
     """
 
     def __init__(self, *, mass: Real = None, charge: Real = None):
-
         try:
             self.mass = mass
             self.charge = charge
@@ -1671,48 +1670,75 @@ class DimensionlessParticle(AbstractParticle):
                 f"{mass} and a charge of {charge}."
             ) from exc
 
-    @property
-    def mass(self) -> Real:
-        """Return the dimensionless mass of the particle."""
+    def __repr__(self):
+        """
+        Return a call string that would recreate this object.
 
+        Examples
+        --------
+        >>> dimensionless_particle = DimensionlessParticle(mass=1.45, charge=1.23)
+        >>> repr(dimensionless_particle)
+        'DimensionlessParticle(mass=1.45, charge=1.23)'
+        """
+        return f"DimensionlessParticle(mass={self.mass}, charge={self.charge})"
+
+    def __str__(self):
+        return self.__repr__()
+
+    @staticmethod
+    def _validate_parameter(obj, can_be_negative=True) -> np.float64:
+        """Verify that the argument corresponds to a valid real number."""
+        if obj is None or obj is np.nan:
+            return np.nan
+        elif np.isinf(obj):
+            return obj
+        elif isinstance(obj, bool):
+            raise TypeError("Expecting a real number, not a bool.")
+        elif isinstance(obj, u.Quantity) and not isinstance(obj.value, Real):
+            raise ValueError("The value of a Quantity must be a real number.")
+
+        try:
+            new_obj = np.float64(obj)
+        except Exception:
+            raise TypeError(f"Cannot convert {obj} to numpy.float64.")
+
+        if hasattr(new_obj, "__len__"):
+            raise TypeError("Expecting a real number, not a collection.")
+
+        if not can_be_negative and new_obj < 0:
+            raise ValueError("Expecting a nonnegative number.")
+
+        return new_obj
+
+    @property
+    def mass(self) -> np.float64:
+        """Return the dimensionless mass of the particle."""
         return self._mass
 
     @property
-    def charge(self) -> Real:
+    def charge(self) -> np.float64:
         """Return the dimensionless charge of the particle."""
-
         return self._charge
 
     @mass.setter
     def mass(self, m: Optional[Union[Real, u.Quantity]]):
-
-        if isinstance(m, Real) and m >= 0:
-            self._mass = m
-        elif (
-            isinstance(m, u.Quantity) and m.unit is u.dimensionless_unscaled and m >= 0
-        ):
-            self._mass = m.to(u.dimensionless_unscaled).value
-        elif m is None or m is np.nan:
-            self._mass = np.nan
-        else:
+        try:
+            self._mass = self._validate_parameter(m, can_be_negative=False)
+        except (TypeError, ValueError):
             raise InvalidParticleError(
-                "The mass of a dimensionless particle must be a real "
-                "number that is greater than or equal to zero."
-            )
+                f"The mass of a dimensionless particle must be a real "
+                f"number that is greater than or equal to zero, not: {m}"
+            ) from None
 
     @charge.setter
     def charge(self, q: Optional[Union[Real, u.Quantity]]):
-
-        if isinstance(q, Real):
-            self._charge = q
-        elif isinstance(q, u.Quantity) and q.unit is u.dimensionless_unscaled:
-            self._charge = q.to(u.dimensionless_unscaled).value
-        elif q is None or q is np.nan:
-            self._charge = np.nan
-        else:
+        try:
+            self._charge = self._validate_parameter(q, can_be_negative=True)
+        except (TypeError, ValueError):
             raise InvalidParticleError(
-                "The charge of a dimensionless particle must be a real number."
-            )
+                f"The charge of a dimensionless particle must be a real "
+                f"number, not: {q}"
+            ) from None
 
 
 class CustomParticle(AbstractParticle):
@@ -1748,7 +1774,6 @@ class CustomParticle(AbstractParticle):
     """
 
     def __init__(self, mass: u.kg = None, charge: (u.C, Real) = None):
-
         try:
             self.mass = mass
             self.charge = charge
@@ -1758,24 +1783,34 @@ class CustomParticle(AbstractParticle):
                 f"{mass} and a charge of {charge}."
             ) from exc
 
+    def __repr__(self):
+        """
+        Return a call string that would recreate this object.
+
+        Examples
+        --------
+        >>> custom_particle = CustomParticle(mass=1.2e-26 * u.kg, charge=9.2e-19 * u.C)
+        >>> repr(custom_particle)
+        'CustomParticle(mass=1.2...e-26 kg, charge=9.2...e-19 C)'
+        """
+        return f"CustomParticle(mass={self.mass}, charge={self.charge})"
+
+    def __str__(self):
+        return self.__repr__()
+
     @property
     def mass(self) -> u.kg:
         """Return the custom particle's mass."""
-
         return self._mass
 
     @property
     def charge(self) -> u.C:
         """Return the custom particle's electric charge in coulombs."""
-
         return self._charge
 
     @mass.setter
     def mass(self, m: u.kg):
-
-        if hasattr(m, "__len__"):
-            raise TypeError("The mass of a custom particle cannot be a collection.")
-        elif m is None:
+        if m is None:
             self._mass = np.nan * u.kg
         elif not isinstance(m, u.Quantity):
             raise TypeError(
@@ -1783,6 +1818,12 @@ class CustomParticle(AbstractParticle):
                 "with units of mass."
             )
         else:
+
+            if not isinstance(m.value, Real):
+                raise TypeError(
+                    "The mass of a custom particle must be a real number "
+                    "with units of mass."
+                )
             try:
                 self._mass = m.to(u.kg)
                 if self.mass < 0 * u.kg:
@@ -1794,15 +1835,17 @@ class CustomParticle(AbstractParticle):
 
     @charge.setter
     def charge(self, q: Optional[Union[u.Quantity, Real]]):
-
-        # TODO: figure out units of ESU which cannot be converted to coulombs
-
         if q is None:
             self._charge = np.nan * u.C
         elif isinstance(q, Real):
             self._charge = q * const.e.si
         elif isinstance(q, u.Quantity):
-
+            if not isinstance(q.value, Real):
+                raise InvalidParticleError(
+                    "The charge of a custom particle can only be a real "
+                    "number or a quantity representing a real number with "
+                    "units of charge."
+                )
             try:
                 self._charge = q.to(u.C)
             except u.UnitsError as exc:
