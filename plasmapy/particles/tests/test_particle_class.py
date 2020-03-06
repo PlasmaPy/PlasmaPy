@@ -888,7 +888,9 @@ def test_that_object_can_be_dict_key(key):
     assert dictionary[key] is value
 
 
-# TODO: Refactor tests using forthcoming functionality in plasmapy.tests.helper
+# TODO: These tests may be refactored using forthcoming functionality in
+#       plasmapy.tests.helpers.  It may be necessary to case the expected
+#       results as certain types (e.g., numpy.float64).
 
 customized_particle_tests = [
     (DimensionlessParticle, {"mass": 1.0, "charge": -1.0}, "mass", 1.0),
@@ -905,6 +907,7 @@ customized_particle_tests = [
 
 @pytest.mark.parametrize("cls, kwargs, attr, expected", customized_particle_tests)
 def test_customized_particles(cls, kwargs, attr, expected):
+    """Test the attributes of dimensionless and custom particles."""
     instance = cls(**kwargs)
     value = getattr(instance, attr)
 
@@ -917,15 +920,60 @@ def test_customized_particles(cls, kwargs, attr, expected):
 
 customized_particle_errors = [
     (DimensionlessParticle, {"mass": -1e-36}, InvalidParticleError),
-    (CustomParticle, {"mass": -1e-36 * u.kg}, InvalidParticleError),
     (DimensionlessParticle, {"mass": [1, 1]}, InvalidParticleError),
     (DimensionlessParticle, {"charge": [-1, 1]}, InvalidParticleError),
+    (
+        DimensionlessParticle,
+        {"mass": np.array([1, 2]) * u.dimensionless_unscaled},
+        InvalidParticleError,
+    ),
+    (
+        DimensionlessParticle,
+        {"charge": np.array([1, 2]) * u.dimensionless_unscaled},
+        InvalidParticleError,
+    ),
+    (CustomParticle, {"charge": 5 + 2j}, InvalidParticleError),
+    (CustomParticle, {"mass": 5 + 2j}, InvalidParticleError),
+    (CustomParticle, {"charge": np.complex128(5 + 2j)}, InvalidParticleError),
+    (CustomParticle, {"mass": np.complex128(5 + 2j)}, InvalidParticleError),
+    (CustomParticle, {"mass": -1e-36 * u.kg}, InvalidParticleError),
     (CustomParticle, {"mass": np.array([1, 1]) * u.kg}, InvalidParticleError),
     (CustomParticle, {"charge": np.array([1, 1]) * u.C}, InvalidParticleError),
+    (CustomParticle, {"charge": (5 + 2j) * u.C}, InvalidParticleError),
+    (CustomParticle, {"mass": (5 + 2j) * u.kg}, InvalidParticleError),
+    (CustomParticle, {"charge": np.complex128(5 + 2j) * u.C}, InvalidParticleError),
+    (CustomParticle, {"mass": np.complex128(5 + 2j) * u.kg}, InvalidParticleError),
 ]
 
 
 @pytest.mark.parametrize("cls, kwargs, exception", customized_particle_errors)
 def test_customized_particles_errors(cls, kwargs, exception):
+    """
+    Test that attempting to create invalid dimensionless or custom particles
+    results in an InvalidParticleError.
+    """
     with pytest.raises(exception):
         cls(**kwargs)
+        pytest.fail(f"{cls.__name__}(**{kwargs}) did not raise: {exception.__name__}.")
+
+
+customized_particle_repr_table = [
+    (
+        CustomParticle,
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
+        "CustomParticle(mass=5.12 kg, charge=6.2 C)",
+    ),
+    (
+        DimensionlessParticle,
+        {"mass": 5.2, "charge": 6.3},
+        "DimensionlessParticle(mass=5.2, charge=6.3)",
+    ),
+]
+
+
+@pytest.mark.parametrize("cls, kwargs, expected_repr", customized_particle_repr_table)
+def test_customized_particle_repr(cls, kwargs, expected_repr):
+    """Test the string representations of dimensionless and custom particles."""
+    instance = cls(**kwargs)
+    representation = repr(instance)
+    assert representation == expected_repr
