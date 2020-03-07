@@ -12,9 +12,7 @@ from astropy.constants import mu0
 
 from plasmapy.classes import GenericPlasma
 
-__all__ = [
-    "Plasma3D"
-]
+__all__ = ["Plasma3D"]
 
 
 class Plasma3D(GenericPlasma):
@@ -62,6 +60,7 @@ class Plasma3D(GenericPlasma):
         units convertable to length.
 
     """
+
     @u.quantity_input(domain_x=u.m, domain_y=u.m, domain_z=u.m)
     def __init__(self, domain_x, domain_y, domain_z):
         # Define domain sizes
@@ -69,12 +68,11 @@ class Plasma3D(GenericPlasma):
         self.y = domain_y
         self.z = domain_z
 
-        self.grid = np.array(np.meshgrid(self.x, self.y, self.z,
-                                         indexing='ij'))
+        self.grid = np.array(np.meshgrid(self.x, self.y, self.z, indexing="ij"))
         self.domain_shape = (len(self.x), len(self.y), len(self.z))
 
         # Initiate core plasma variables
-        self.density = np.zeros(self.domain_shape) * u.kg / u.m**3
+        self.density = np.zeros(self.domain_shape) * u.kg / u.m ** 3
         self.momentum = np.zeros((3, *self.domain_shape)) * u.kg / (u.m ** 2 * u.s)
         self.pressure = np.zeros(self.domain_shape) * u.Pa
         self.magnetic_field = np.zeros((3, *self.domain_shape)) * u.T
@@ -83,20 +81,18 @@ class Plasma3D(GenericPlasma):
         # create intermediate array of dimension (nx,ny,nz,3) in order to allow
         # interpolation on non-equal spatial domain dimensions
         self._interpolate_B = interp.RegularGridInterpolator(
-            (self.x.si.value,
-             self.y.si.value,
-             self.z.si.value),
+            (self.x.si.value, self.y.si.value, self.z.si.value),
             self.magnetic_field.si.value.reshape((*self.domain_shape, 3)),
             method="linear",
-            bounds_error=True)
+            bounds_error=True,
+        )
 
         self._interpolate_E = interp.RegularGridInterpolator(
-            (self.x.si.value,
-             self.y.si.value,
-             self.z.si.value),
+            (self.x.si.value, self.y.si.value, self.z.si.value),
             self.electric_field.si.value.reshape((*self.domain_shape, 3)),
             method="linear",
-            bounds_error=True)
+            bounds_error=True,
+        )
 
     def interpolate_E(self, x):
         return self._interpolate_E(x.si.value) * (u.V / u.m)
@@ -127,7 +123,7 @@ class Plasma3D(GenericPlasma):
     @classmethod
     def is_datasource_for(cls, **kwargs):
         if len(kwargs) == 3:
-            match = all(f'domain_{direction}' in kwargs.keys() for direction in 'xyz')
+            match = all(f"domain_{direction}" in kwargs.keys() for direction in "xyz")
         else:
             match = False
         return match
@@ -139,6 +135,8 @@ class Plasma3D(GenericPlasma):
             # loop over 3D-index (ix,iy,iz)
             for point_index in prod:
                 # get coordinate
-                p = self.grid[(slice(None),)+point_index]  # function as [:, *index]
+                p = self.grid[(slice(None),) + point_index]  # function as [:, *index]
                 # calculate magnetic field at this point and add back
-                self.magnetic_field[(slice(None),)+point_index] += mstat.magnetic_field(p)
+                self.magnetic_field[
+                    (slice(None),) + point_index
+                ] += mstat.magnetic_field(p)

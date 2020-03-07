@@ -7,10 +7,10 @@ import warnings
 import matplotlib.pyplot as plt
 import pathlib
 
-from plasmapy import atomic, formulary
+from plasmapy import particles, formulary
 from plasmapy.utils.decorators import check_units
 from plasmapy.utils import PhysicsError
-from plasmapy.atomic import particle_input, Particle
+from plasmapy.particles import particle_input, Particle
 import typing
 from . import particle_integrators
 
@@ -25,7 +25,6 @@ class ParticleTrackerAccessor:
         self._obj = xarray_obj
         # TODO handle CustomParticles on the `Particle` layer!
         self.particle = Particle(xarray_obj.attrs["particle"])
-        # self.diagnostics = diagnostics # TODO put in xarray itself
 
     def vector_norm(self, array, dim, ord=None):
         return xarray.apply_ufunc(
@@ -150,7 +149,7 @@ class ParticleTrackerAccessor:
                 warnings.warn(
                     f"Plasma object {plasma} passed to animate, but it has no visualize method!"
                 )
-        fig.show(auto_close=False)  # TODO prevent this from
+        fig.show(auto_close=False)  # TODO prevent this from displaying the picture
         fig.write_frame()
         abs_vel = self.vector_norm("velocity", dim="dimension")
         self._obj["|v|"] = (("time", "particle"), abs_vel)
@@ -222,7 +221,7 @@ class ParticleTracker:
     plasma : `Plasma`
         plasma from which fields can be pulled
     type : str
-        particle type. See `plasmapy.atomic.atomic` for suitable arguments.
+        particle type. See `plasmapy.particles.atomic` for suitable arguments.
         The default is a proton.
     x: `astropy.units.Quantity`
     v: `astropy.units.Quantity`
@@ -251,14 +250,14 @@ class ParticleTracker:
         "zenitani": particle_integrators._zenitani,
     }
 
-    @atomic.particle_input
+    @particles.particle_input
     @check_units()
     def __init__(
         self,
         plasma,
         x: u.m = None,
         v: u.m / u.s = None,
-        particle_type: atomic.Particle = "p",
+        particle_type: particles.Particle = "p",
     ):
 
         if x is not None and v is not None:

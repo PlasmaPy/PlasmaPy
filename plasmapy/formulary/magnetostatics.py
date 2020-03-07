@@ -68,11 +68,17 @@ class MagneticDipole(MagnetoStatics):
     @validate_quantities
     def __init__(self, moment: u.A * u.m ** 2, p0: u.m):
         self.moment = moment.value
+        self._moment_u = moment.unit
         self.p0 = p0.value
+        self._p0_u = p0.unit
 
     def __repr__(self):
-        return "{name}(moment={moment}, p0={p0})".format(
-            name=self.__class__.__name__, moment=self.moment, p0=self.p0
+        return "{name}(moment={moment}{moment_u}, p0={p0}{p0_u})".format(
+            name=self.__class__.__name__,
+            moment=self.moment,
+            p0=self.p0,
+            moment_u=self._moment_u,
+            p0_u=self._p0_u,
         )
 
     def magnetic_field(self, p: u.m) -> u.T:
@@ -138,6 +144,20 @@ class GeneralWire(Wire):
         else:
             raise ValueError(f"t1={t1} is not smaller than t2={t2}")
         self.current = current.value
+        self._current_u = current.unit
+
+    def __repr__(self):
+        return (
+            "{name}(parametric_eq={parametric_eq}, t1={t1}, t2={t2}, "
+            "current={current}{current_u})".format(
+                name=self.__class__.__name__,
+                parametric_eq=self.parametric_eq.__name__,
+                t1=self.t1,
+                t2=self.t2,
+                current=self.current,
+                current_u=self._current_u,
+            )
+        )
 
     def magnetic_field(self, p: u.m, n: numbers.Integral = 1000) -> u.T:
         r"""
@@ -208,13 +228,22 @@ class FiniteStraightWire(Wire):
     def __init__(self, p1: u.m, p2: u.m, current: u.A):
         self.p1 = p1.value
         self.p2 = p2.value
+        self._p1_u = p1.unit
+        self._p2_u = p2.unit
         if np.all(p1 == p2):
             raise ValueError("p1, p2 should not be the same point.")
         self.current = current.value
+        self._current_u = current.unit
 
     def __repr__(self):
-        return "{name}(p1={p1}, p2={p2}, current={current})".format(
-            name=self.__class__.__name__, p1=self.p1, p2=self.p2, current=self.current
+        return "{name}(p1={p1}{p1_u}, p2={p2}{p2_u}, current={current}{current_u})".format(
+            name=self.__class__.__name__,
+            p1=self.p1,
+            p2=self.p2,
+            current=self.current,
+            p1_u=self._p1_u,
+            p2_u=self._p2_u,
+            current_u=self._current_u,
         )
 
     def magnetic_field(self, p) -> u.T:
@@ -297,14 +326,18 @@ class InfiniteStraightWire(Wire):
     def __init__(self, direction, p0: u.m, current: u.A):
         self.direction = direction / np.linalg.norm(direction)
         self.p0 = p0.value
+        self._p0_u = p0.unit
         self.current = current.value
+        self._current_u = current.unit
 
     def __repr__(self):
-        return "{name}(direction={direction}, p0={p0}, current={current})".format(
+        return "{name}(direction={direction}, p0={p0}{p0_u}, current={current}{current_u})".format(
             name=self.__class__.__name__,
             direction=self.direction,
             p0=self.p0,
             current=self.current,
+            p0_u=self._p0_u,
+            current_u=self._current_u,
         )
 
     def magnetic_field(self, p) -> u.T:
@@ -353,15 +386,33 @@ class CircularWire(Wire):
 
     """
 
+    def __repr__(self):
+        return (
+            "{name}(normal={normal}, center={center}{center_u}, "
+            "radius={radius}{radius_u}, current={current}{current_u})".format(
+                name=self.__class__.__name__,
+                normal=self.normal,
+                center=self.center,
+                radius=self.radius,
+                current=self.current,
+                center_u=self._center_u,
+                radius_u=self._radius_u,
+                current_u=self._current_u,
+            )
+        )
+
     @validate_quantities
     def __init__(self, normal, center: u.m, radius: u.m, current: u.A, n=300):
         self.normal = normal / np.linalg.norm(normal)
         self.center = center.value
+        self._center_u = center.unit
         if radius > 0:
             self.radius = radius.value
+            self._radius_u = radius.unit
         else:
             raise ValueError("Radius should bu larger than 0")
         self.current = current.value
+        self._current_u = current.unit
 
         # parametric equation
         # find other two axises in the disc plane
@@ -453,16 +504,6 @@ class CircularWire(Wire):
             field.sum(1) * scipy.constants.mu_0 / 4 * current
         )  # np.pi in nominator and denominator cancels out
         return field
-
-    def __repr__(self):
-        return "{name}(normal={normal}, center={center}, \
-radius={radius}, current={current})".format(
-            name=self.__class__.__name__,
-            normal=self.normal,
-            center=self.center,
-            radius=self.radius,
-            current=self.current,
-        )
 
     def magnetic_field(self, p: u.m) -> u.T:
         r"""

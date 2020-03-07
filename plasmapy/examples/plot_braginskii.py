@@ -18,7 +18,7 @@ electron_concentration = 10.1e19 / u.m**3
 
 thermal_energy_per_ion = 8.0 * u.keV
 ion_concentration = electron_concentration
-ion_particle = 'D+'  # a crude approximation
+ion = 'D+'  # a crude approximation
 
 ######################################################
 # We now make the default ClassicalTransport object:
@@ -27,7 +27,7 @@ braginskii = ClassicalTransport(thermal_energy_per_electron,
                                 electron_concentration,
                                 thermal_energy_per_ion,
                                 ion_concentration,
-                                ion_particle)
+                                ion)
 
 ######################################################
 # These variables are calculated during initialization and can be
@@ -55,7 +55,7 @@ mag_braginskii = ClassicalTransport(thermal_energy_per_electron,
                                     electron_concentration,
                                     thermal_energy_per_ion,
                                     ion_concentration,
-                                    ion_particle,
+                                    ion,
                                     B = 0.1 * u.T)
 
 print(mag_braginskii.resistivity)
@@ -70,12 +70,12 @@ print(mag_braginskii.ion_thermal_conductivity)
 # for more information on these.
 
 all_direction_braginskii = ClassicalTransport(thermal_energy_per_electron,
-                                    electron_concentration,
-                                    thermal_energy_per_ion,
-                                    ion_concentration,
-                                    ion_particle,
-                                    B = 0.1 * u.T,
-                                    field_orientation = 'all')
+                                              electron_concentration,
+                                              thermal_energy_per_ion,
+                                              ion_concentration,
+                                              ion,
+                                              B = 0.1 * u.T,
+                                              field_orientation = 'all')
 
 print(all_direction_braginskii.resistivity)
 print(all_direction_braginskii.thermoelectric_conductivity)

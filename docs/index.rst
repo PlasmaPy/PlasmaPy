@@ -18,7 +18,7 @@ PlasmaPy Documentation
 
 .. raw:: html
 
-    </div> 
+    </div>
 
 .. raw:: html
 
@@ -46,7 +46,7 @@ PlasmaPy Documentation
 
 .. raw:: html
 
-    </div> 
+    </div>
 
 .. image:: _static/graphic-circular.png
    :alt: PlasmaPy logo
@@ -122,15 +122,15 @@ Data Structures and Simulation
     plasma/index
     simulation/index
 
-.. _toplevel-physical-data:
+.. _toplevel-particle-data:
 
-Physical Data
+Particle Data
 -------------
 
 .. toctree::
     :maxdepth: 1
 
-    atomic/index
+    particles/index
 
 .. _toplevel-utilities:
 

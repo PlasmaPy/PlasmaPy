@@ -8,18 +8,19 @@ For example, plasmas at high (much larger than 1) Reynolds numbers are
 highly turbulent, while turbulence is negligible at low Reynolds
 numbers.
 """
-__all__ = ['beta', 'quantum_theta']
+__all__ = ["beta", "quantum_theta"]
 
 from astropy import constants
 from astropy import units as u
-from plasmapy.formulary import (quantum, parameters)
+from plasmapy.formulary import quantum, parameters
 from plasmapy.utils.decorators import validate_quantities
 
 
-@validate_quantities(T={'can_be_negative': False,
-                        'equivalencies': u.temperature_energy()},
-                     n_e={'can_be_negative': False})
-def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False},
+)
+def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     """
     Compares Fermi energy to thermal kinetic energy to check if quantum
     effects are important.
@@ -54,10 +55,11 @@ def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
     return theta
 
 
-@validate_quantities(T={'can_be_negative': False,
-                        'equivalencies': u.temperature_energy()},
-                     n={'can_be_negative': False})
-def beta(T: u.K, n: u.m**-3, B: u.T) -> u.dimensionless_unscaled:
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n={"can_be_negative": False},
+)
+def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     """
     The ratio of thermal pressure to magnetic pressure.
 

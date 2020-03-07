@@ -54,6 +54,21 @@ Coding Style
 
 * There should be at most one pun per 1284 lines of code.
 
+pre-commit hooks
+----------------
+
+PlasmaPy has a configuration for `pre-commit` that takes care of style mostly
+automatically. Install it with `pip install pre-commit`, then use `pre-commit
+install` within the repository.
+
+This will cause git to run an automated style checking suite, mostly composed
+of `flake8` and `black`, on every commit. Do note that this works better with
+a `git add`, then `git commit` workflow than a `git commit -a` workflow - that
+way, you can check via `git diff` what the automated changes actually did.
+
+Note that `flake8` does not change your files automatically (help in setting
+that up, if possible, most welcome!).
+
 Branches, commits, and pull requests
 ====================================
 

@@ -1,7 +1,7 @@
 """
 Miscellaneous decorators for various package uses.
 """
-__all__ = ['preserve_signature']
+__all__ = ["preserve_signature"]
 
 import functools
 import inspect
@@ -37,7 +37,7 @@ def preserve_signature(f):
     # add '__signature__' to methods that are copied from
     # f onto wrapper
     assigned = list(functools.WRAPPER_ASSIGNMENTS)
-    assigned.append('__signature__')
+    assigned.append("__signature__")
 
     @functools.wraps(f, assigned=assigned)
     def wrapper(*args, **kwargs):
@@ -45,7 +45,7 @@ def preserve_signature(f):
 
     # add '__signature__' if it does not exist
     # - this will preserve parameter hints in IDE's
-    if not hasattr(wrapper, '__signature__'):
+    if not hasattr(wrapper, "__signature__"):
         wrapper.__signature__ = inspect.signature(f)
 
     return wrapper

@@ -1,7 +1,7 @@
 """
 Formulas for calculating particle drifts.
 """
-__all__ = ['ExB_drift', 'force_drift']
+__all__ = ["ExB_drift", "force_drift"]
 
 import astropy.units as u
 import numpy as np
@@ -10,7 +10,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities
-def ExB_drift(E: u.V/u.m, B: u.T) -> u.m/u.s:
+def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
     r"""
     Calculate the "electric cross magnetic" particle drift.
 
@@ -58,7 +58,7 @@ def ExB_drift(E: u.V/u.m, B: u.T) -> u.m/u.s:
     # np.cross drops units right now, thus this hack: see
     # https://github.com/PlasmaPy/PlasmaPy/issues/59
     cross = np.cross(E.si.value, B.si.value) * E.unit * B.unit
-    return cross / (B*B).sum(-1)
+    return cross / (B * B).sum(-1)
 
 
 @validate_quantities
@@ -109,4 +109,4 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
 
     """
     cross = np.cross(F.si.value, B.si.value) * F.unit * B.unit
-    return cross / (q * (B*B).sum(-1))
+    return cross / (q * (B * B).sum(-1))

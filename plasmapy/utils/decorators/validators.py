@@ -1,17 +1,17 @@
 """
 Various decorators to validate input/output arguments to functions.
 """
-__all__ = ['validate_quantities', 'ValidateQuantities']
+__all__ = ["validate_quantities", "ValidateQuantities"]
 
 import functools
 import inspect
 import warnings
 
 from astropy import units as u
-from plasmapy.utils.decorators.checks import (CheckValues, CheckUnits)
+from plasmapy.utils.decorators.checks import CheckValues, CheckUnits
 from plasmapy.utils.decorators.helpers import preserve_signature
 from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
-from typing import (Any, Dict)
+from typing import Any, Dict
 
 
 class ValidateQuantities(CheckUnits, CheckValues):
@@ -146,17 +146,19 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     def __init__(self, validations_on_return=None, **validations: Dict[str, Any]):
 
-        if 'checks_on_return' in validations:
-            raise TypeError(f"keyword argument 'checks_on_return' is not allowed, "
-                            f"use 'validations_on_return' to set validations "
-                            f"on the return variable")
+        if "checks_on_return" in validations:
+            raise TypeError(
+                f"keyword argument 'checks_on_return' is not allowed, "
+                f"use 'validations_on_return' to set validations "
+                f"on the return variable"
+            )
 
         self._validations = validations
 
         checks = validations.copy()
         if validations_on_return is not None:
-            self._validations['validations_on_return'] = validations_on_return
-            checks['checks_on_return'] = validations_on_return
+            self._validations["validations_on_return"] = validations_on_return
+            checks["checks_on_return"] = validations_on_return
 
         super().__init__(**checks)
 
@@ -188,29 +190,33 @@ class ValidateQuantities(CheckUnits, CheckValues):
             # validate (input) argument units and values
             for arg_name in validations:
                 # skip check of output/return
-                if arg_name == 'validations_on_return':
+                if arg_name == "validations_on_return":
                     continue
 
                 # validate argument & update for conversion
-                arg = self._validate_quantity(bound_args.arguments[arg_name],
-                                              arg_name,
-                                              validations[arg_name])
+                arg = self._validate_quantity(
+                    bound_args.arguments[arg_name], arg_name, validations[arg_name]
+                )
                 bound_args.arguments[arg_name] = arg
 
             # call function
             _return = f(**bound_args.arguments)
 
             # validate output
-            if 'validations_on_return' in validations:
-                _return = self._validate_quantity(_return, 'validations_on_return',
-                                                  validations['validations_on_return'])
+            if "validations_on_return" in validations:
+                _return = self._validate_quantity(
+                    _return,
+                    "validations_on_return",
+                    validations["validations_on_return"],
+                )
 
             return _return
+
         return wrapper
 
     def _get_validations(
-            self,
-            bound_args: inspect.BoundArguments) -> Dict[str, Dict[str, Any]]:
+        self, bound_args: inspect.BoundArguments
+    ) -> Dict[str, Dict[str, Any]]:
         """
         Review :attr:`validations` and function bound arguments to build a complete
         'validations' dictionary.  If a validation key is omitted from the argument
@@ -245,10 +251,12 @@ class ValidateQuantities(CheckUnits, CheckValues):
             try:
                 # if 'none_shall_pass' was in the original passed-in validations,
                 # then override the value determined by CheckUnits
-                _none_shall_pass = self.validations[arg_name]['none_shall_pass']
+                _none_shall_pass = self.validations[arg_name]["none_shall_pass"]
                 # if validations[arg_name]['none_shall_pass'] != _none_shall_pass:
-                if _none_shall_pass is False \
-                        and validations[arg_name]['none_shall_pass'] is True:
+                if (
+                    _none_shall_pass is False
+                    and validations[arg_name]["none_shall_pass"] is True
+                ):
                     raise ValueError(
                         f"Validation 'none_shall_pass' for argument '{arg_name}' is "
                         f"inconsistent between function annotations "
@@ -256,24 +264,24 @@ class ValidateQuantities(CheckUnits, CheckValues):
                         f"argument ({_none_shall_pass})."
                     )
 
-                validations[arg_name]['none_shall_pass'] = _none_shall_pass
+                validations[arg_name]["none_shall_pass"] = _none_shall_pass
             except (KeyError, TypeError):
                 # 'none_shall_pass' was not in the original passed-in validations, so
                 # rely on the value determined by CheckUnits
                 pass
             finally:
                 try:
-                    del value_checks[arg_name]['none_shall_pass']
+                    del value_checks[arg_name]["none_shall_pass"]
                 except KeyError:
                     dvc = self._CheckValues__check_defaults.copy()
-                    del dvc['none_shall_pass']
+                    del dvc["none_shall_pass"]
                     value_checks[arg_name] = dvc
 
             # update the validations dictionary
             validations[arg_name].update(value_checks[arg_name])
 
-        if 'checks_on_return' in validations:
-            validations['validations_on_return'] = validations.pop('checks_on_return')
+        if "checks_on_return" in validations:
+            validations["validations_on_return"] = validations.pop("checks_on_return")
 
         return validations
 
@@ -302,60 +310,69 @@ class ValidateQuantities(CheckUnits, CheckValues):
             if validations fail
         """
         # rename to work with "check" methods
-        if arg_name == 'validations_on_return':
-            arg_name = 'checks_on_return'
+        if arg_name == "validations_on_return":
+            arg_name = "checks_on_return"
 
         # initialize str for error message
-        if arg_name == 'checks_on_return':
+        if arg_name == "checks_on_return":
             err_msg = f"The return value  "
         else:
             err_msg = f"The argument '{arg_name}' "
         err_msg += f"to function {self.f.__name__}()"
 
         # initialize TypeError message
-        typeerror_msg = (f"{err_msg} should be an astropy Quantity with units"
-                         f" equivalent to one of [")
-        for ii, unit in enumerate(arg_validations['units']):
+        typeerror_msg = (
+            f"{err_msg} should be an astropy Quantity with units"
+            f" equivalent to one of ["
+        )
+        for ii, unit in enumerate(arg_validations["units"]):
             typeerror_msg += f"{unit}"
 
-            if ii != len(arg_validations['units']) - 1:
+            if ii != len(arg_validations["units"]) - 1:
                 typeerror_msg += f", "
         typeerror_msg += f"]"
 
         # add units to arg if possible
         # * a None value will be taken care of by `_check_unit_core`
         #
-        if arg is None or hasattr(arg, 'unit'):
+        if arg is None or hasattr(arg, "unit"):
             pass
-        elif len(arg_validations['units']) != 1:
+        elif len(arg_validations["units"]) != 1:
             raise TypeError(typeerror_msg)
         else:
             try:
-                arg = arg * arg_validations['units'][0]
+                arg = arg * arg_validations["units"][0]
             except (TypeError, ValueError):
                 raise TypeError(typeerror_msg)
             else:
-                warnings.warn(u.UnitsWarning(
-                    f"{err_msg} has no specified units. Assuming units of "
-                    f"{arg_validations['units'][0]}. To silence this warning, "
-                    f"explicitly pass in an astropy Quantity "
-                    f"(e.g. 5. * astropy.units.cm) "
-                    f"(see http://docs.astropy.org/en/stable/units/)"
-                ))
+                warnings.warn(
+                    u.UnitsWarning(
+                        f"{err_msg} has no specified units. Assuming units of "
+                        f"{arg_validations['units'][0]}. To silence this warning, "
+                        f"explicitly pass in an astropy Quantity "
+                        f"(e.g. 5. * astropy.units.cm) "
+                        f"(see http://docs.astropy.org/en/stable/units/)"
+                    )
+                )
 
         # check units
         arg, unit, equiv, err = self._check_unit_core(arg, arg_name, arg_validations)
 
         # convert quantity
-        if arg is not None \
-                and unit is not None \
-                and not arg_validations['pass_equivalent_units']:
+        if (
+            arg is not None
+            and unit is not None
+            and not arg_validations["pass_equivalent_units"]
+        ):
 
             if not arg.unit.is_equivalent(unit, equivalencies=None):
                 # non-standard conversion
-                warnings.warn(ImplicitUnitConversionWarning(
-                    f"{err_msg} has a non-standard unit conversion..."
-                    f"converting {arg.unit} to {unit}"))
+                warnings.warn(
+                    ImplicitUnitConversionWarning(
+                        f"{err_msg} has a non-standard unit conversion..."
+                        f"converting {arg.unit} to {unit}"
+                    )
+                )
 
             arg = arg.to(unit, equivalencies=equiv)
         elif err is not None:
@@ -516,7 +533,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
     """
 
     if validations_on_return is not None:
-        validations['validations_on_return'] = validations_on_return
+        validations["validations_on_return"] = validations_on_return
 
     if func is not None:
         # `validate_quantities` called as a function
