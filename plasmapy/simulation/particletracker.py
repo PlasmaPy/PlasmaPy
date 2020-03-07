@@ -86,13 +86,12 @@ class ParticleTrackerAccessor:
 
     def test_kinetic_energy(self, rtol=1e-7, atol=0):
         r"""Test conservation of kinetic energy."""
-        np.testing.assert_allclose(
+        assert np.allclose(
             self._obj.kinetic_energy,
             self._obj.kinetic_energy.isel(time=0),
             rtol=rtol,
             atol=atol,
-            err_msg="Kinetic energy is not conserved!",
-        )
+        ), "Kinetic energy is not conserved!"
 
     def visualize(
         self, figure=None, particles=(0,), stride=1, plasma=None
