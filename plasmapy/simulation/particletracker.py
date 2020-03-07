@@ -84,20 +84,15 @@ class ParticleTrackerAccessor:
         ax.set_ylabel(f"Position [{u.m}]")
         plt.show()
 
-    def test_kinetic_energy(self, cutoff=2):
+    def test_kinetic_energy(self, rtol=1e-7, atol=0):
         r"""Test conservation of kinetic energy."""
-        difference = self._obj.kinetic_energy - self._obj.kinetic_energy.mean(
-            dim="time"
+        np.testing.assert_allclose(
+            self._obj.kinetic_energy,
+            self._obj.kinetic_energy.isel(time=0),
+            rtol=rtol,
+            atol=atol,
+            err_msg="Kinetic energy is not conserved!",
         )
-        scaled = difference / self._obj.kinetic_energy.std(dim="time")
-        conservation = abs(scaled) < cutoff
-        if not conservation.all():
-            if PLOTTING:
-                import matplotlib.pyplot as plt
-
-                self._obj.kinetic_energy.plot.line()
-                plt.show()
-            raise PhysicsError("Kinetic energy is not conserved!")
 
     def visualize(
         self, figure=None, particles=(0,), stride=1, plasma=None

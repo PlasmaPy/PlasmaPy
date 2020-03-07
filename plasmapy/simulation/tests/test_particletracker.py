@@ -175,7 +175,7 @@ def test_particle_uniform_magnetic(integrator_name):
         z, p(sol.time), atol=1e-4
     )  # does z-velocity stay constant?
 
-    sol.particletracker.test_kinetic_energy(3)  # is energy conserved?
+    sol.particletracker.test_kinetic_energy()  # is energy conserved?
 
 
 @pytest.mark.xfail(
