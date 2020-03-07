@@ -116,7 +116,7 @@ def test_boris_push_electric_field(integrator):
     integrator(x, v, b, e, q, m, dt)
     assert np.isfinite(x).all()
     assert np.isfinite(v).all()
-    assert ((x - e * dt ** 2 / 2 - v * dt / 2) == x_copy).all()
+    np.testing.assert_allclose(x_copy, x - e * dt ** 2 / 2 - v * dt / 2)
 
 
 def test_particle_uniform_magnetic(integrator_name):
@@ -141,10 +141,10 @@ def test_particle_uniform_magnetic(integrator_name):
     expected_gyroradius = formulary.gyroradius(mean_B, particle_type, Vperp=perp_speed)
     expected_gyroperiod = 1 / expected_gyrofrequency
 
-    dt = expected_gyroperiod / 100
+    dt = expected_gyroperiod / 1e2
     v = u.Quantity([0 * u.m / u.s, perp_speed, parallel_speed]).reshape((1, 3))
     s = ParticleTracker(test_plasma, particle_type=particle_type, v=v)
-    sol = s.run(1e4 * dt, dt, pusher=integrator_name)
+    sol = s.run(1e3 * dt, dt, pusher=integrator_name)
 
     x = sol.position.sel(particle=0, dimension="x")
     z = sol.position.sel(particle=0, dimension="z")
