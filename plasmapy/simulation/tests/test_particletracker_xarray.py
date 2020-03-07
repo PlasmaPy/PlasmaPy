@@ -41,8 +41,8 @@ def test_saving_loading(solution, tmp_path):
         )
 
 
-def test_vector_norm(solution):
-    np.testing.assert_allclose(
-        solution.particletracker.vector_norm("B", "dimension"),
-        np.zeros_like(solution.B),
-    )
+def test_velocity_vector_norm(solution):
+    assert np.allclose(
+        solution.particletracker.vector_norm("velocity", "dimension"),
+        solution.isel(time=[0]).particletracker.vector_norm("velocity", "dimension"),
+    ), "Velocity magnitude should be conserved!"
