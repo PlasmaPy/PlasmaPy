@@ -1,4 +1,4 @@
-import pytest
+"""Exceptions that describe different types of test failures."""
 
 __all__ = [
     "Failed",
@@ -14,6 +14,7 @@ __all__ = [
     "WarningMismatchError",
 ]
 
+import pytest
 
 # TODO: get the error message while raising this to be simply "Failed"
 #       rather than plasmapy.tests.helpers.exceptions.Failed

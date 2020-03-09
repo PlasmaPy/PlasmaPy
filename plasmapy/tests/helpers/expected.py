@@ -1,7 +1,9 @@
-import inspect
-from typing import Any
+"""..."""
 
 __all__ = ["ExpectedTestOutcome"]
+
+import inspect
+from typing import Any
 
 
 def _is_warning(obj) -> bool:

@@ -1,4 +1,4 @@
-"""..."""
+"""Classes and functions that validate, store, and call inputs for test cases."""
 
 __all__ = [
     "AbstractTestInputs",

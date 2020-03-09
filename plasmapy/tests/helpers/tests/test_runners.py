@@ -1,4 +1,4 @@
-"""..."""
+"""Test the helper functions and classes used to run tests."""
 
 from abc import ABC, abstractmethod
 from typing import NoReturn, Optional

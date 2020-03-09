@@ -1,4 +1,4 @@
-"""..."""
+"""Test the classes that compare the actual and expected outcomes."""
 
 import collections
 

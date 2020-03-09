@@ -1,4 +1,4 @@
-"""..."""
+"""Functions and classes that run tests."""
 
 __all__ = ["function_test_runner", "method_test_runner", "attr_test_runner"]
 

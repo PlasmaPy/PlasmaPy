@@ -1,4 +1,4 @@
-"""..."""
+"""Classes that represent the actual outcome of running a test."""
 
 __all__ = ["ActualTestOutcome"]
 

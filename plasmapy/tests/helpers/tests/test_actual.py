@@ -1,4 +1,4 @@
-"""..."""
+"""Test the classes that represent the actual result of a test."""
 
 from typing import Callable
 

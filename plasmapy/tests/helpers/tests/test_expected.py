@@ -1,4 +1,4 @@
-"""..."""
+"""Test the class responsible for checking and analyzing the expected result of a test."""
 
 import collections
 
