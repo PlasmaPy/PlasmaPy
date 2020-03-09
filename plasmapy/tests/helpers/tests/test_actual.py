@@ -1,20 +1,19 @@
-import pytest
+"""..."""
+
 from typing import Callable
 
+import pytest
 from plasmapy.tests.helpers.actual import ActualTestOutcome
+from plasmapy.tests.helpers.exceptions import InvalidTestError
 from plasmapy.tests.helpers.inputs import FunctionTestInputs
-
 from plasmapy.tests.helpers.tests.sample_functions import (
-    return_42,
+    SampleException,
+    SampleWarning,
     issue_warning,
     issue_warning_return_42,
     raise_exception,
-    SampleWarning,
-    SampleException,
+    return_42,
 )
-
-from plasmapy.tests.helpers.exceptions import InvalidTestError
-
 
 func_attr_expected = [
     (return_42, "warning_was_issued", False),
@@ -65,7 +64,9 @@ function_and_exception_raising_attribute = [
 ]
 
 
-@pytest.mark.parametrize("function, attribute", function_and_exception_raising_attribute)
+@pytest.mark.parametrize(
+    "function, attribute", function_and_exception_raising_attribute
+)
 def test_actual_test_outcome_errors(function: Callable, attribute: str):
     """Test that `ActualTestOutcome` attributes raise exceptions as appropriate."""
 

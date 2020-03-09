@@ -1,47 +1,46 @@
-import pytest
-from typing import Optional, NoReturn
+"""..."""
+
 from abc import ABC, abstractmethod
-import numpy as np
+from typing import NoReturn, Optional
+
 import astropy.units as u
-
-from plasmapy.tests.helpers.runners import (
-    function_test_runner,
-    attr_test_runner,
-    method_test_runner,
-)
-
+import numpy as np
+import pytest
 from plasmapy.tests.helpers.exceptions import (
-    Failed,
-    UnexpectedResultError,
-    InconsistentTypeError,
-    UnexpectedExceptionError,
-    MissingExceptionError,
-    UnexpectedWarningError,
-    MissingWarningError,
-    InvalidTestError,
     ExceptionMismatchError,
+    Failed,
+    InconsistentTypeError,
+    InvalidTestError,
+    MissingExceptionError,
+    MissingWarningError,
+    UnexpectedExceptionError,
+    UnexpectedResultError,
+    UnexpectedWarningError,
     WarningMismatchError,
 )
-
+from plasmapy.tests.helpers.runners import (
+    attr_test_runner,
+    function_test_runner,
+    method_test_runner,
+)
 from plasmapy.tests.helpers.tests.sample_functions import (
-    return_42,
-    return_42_meters,
-    issue_warning_return_42,
-    raise_exception,
-    SampleWarningSubclass,
-    SampleWarning,
-    SampleExceptionSubclass,
-    SampleException,
     SampleClass1,
     SampleClass2,
+    SampleException,
+    SampleExceptionSubclass,
+    SampleWarning,
+    SampleWarningSubclass,
+    issue_warning_return_42,
+    raise_exception,
+    return_42,
+    return_42_meters,
 )
-
 from plasmapy.utils.formatting.formatting import (
+    _name_with_article,
+    _object_name,
     call_string,
     class_attribute_call_string,
     class_method_call_string,
-    _name_with_article,
-    _object_name,
 )
 
 
@@ -213,11 +212,7 @@ class MethodTestCase(BaseTestCase):
 
 
 cases = [
-    FunctionTestCase(
-        expected=42,
-        function=return_42,
-        exception_upon_failure=None,
-    ),
+    FunctionTestCase(expected=42, function=return_42, exception_upon_failure=None,),
     FunctionTestCase(
         expected=SampleException,
         function=return_42,
@@ -229,14 +224,10 @@ cases = [
         exception_upon_failure=MissingWarningError,
     ),
     FunctionTestCase(
-        expected=42.0 * u.m,
-        function=return_42_meters,
-        exception_upon_failure=None,
+        expected=42.0 * u.m, function=return_42_meters, exception_upon_failure=None,
     ),
     FunctionTestCase(
-        expected=u.m,
-        function=return_42_meters,
-        exception_upon_failure=None,
+        expected=u.m, function=return_42_meters, exception_upon_failure=None,
     ),
     FunctionTestCase(
         expected=42.0 * u.cm,
@@ -244,19 +235,13 @@ cases = [
         exception_upon_failure=u.UnitsError,
     ),
     FunctionTestCase(
-        expected=u.cm,
-        function=return_42_meters,
-        exception_upon_failure=u.UnitsError,
+        expected=u.cm, function=return_42_meters, exception_upon_failure=u.UnitsError,
     ),
     FunctionTestCase(
-        expected=u.kg,
-        function=return_42_meters,
-        exception_upon_failure=u.UnitsError,
+        expected=u.kg, function=return_42_meters, exception_upon_failure=u.UnitsError,
     ),
     FunctionTestCase(
-        expected=SampleException,
-        function=raise_exception,
-        exception_upon_failure=None,
+        expected=SampleException, function=raise_exception, exception_upon_failure=None,
     ),
     FunctionTestCase(
         expected=SampleExceptionSubclass,
@@ -269,9 +254,7 @@ cases = [
         exception_upon_failure=ExceptionMismatchError,
     ),
     FunctionTestCase(
-        expected=43,
-        function=return_42,
-        exception_upon_failure=UnexpectedResultError,
+        expected=43, function=return_42, exception_upon_failure=UnexpectedResultError,
     ),
     FunctionTestCase(
         expected=np.int32(42),
@@ -322,10 +305,7 @@ cases = [
         exception_upon_failure=UnexpectedResultError,
     ),
     AttributeTestCase(
-        expected=40,
-        cls=SampleClass1,
-        attribute="forty",
-        exception_upon_failure=None,
+        expected=40, cls=SampleClass1, attribute="forty", exception_upon_failure=None,
     ),
     AttributeTestCase(
         expected=41,

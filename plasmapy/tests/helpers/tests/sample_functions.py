@@ -1,10 +1,10 @@
 """Sample functions and classes to be used in tests."""
 
 import warnings
-import numpy as np
-import astropy.units as u
-
 from typing import NoReturn
+
+import astropy.units as u
+import numpy as np
 
 
 class SampleException(Exception):
@@ -148,23 +148,27 @@ class SampleClass2:
         self.cls_kwarg1 = cls_kwarg1
         self.cls_kwarg2 = cls_kwarg2
 
-    def method(self, method_arg1, method_arg2, *, method_kwarg1=None, method_kwarg2=None):
+    def method(
+        self, method_arg1, method_arg2, *, method_kwarg1=None, method_kwarg2=None
+    ):
         """
         Return the sum of the positional and keyword arguments supplied
         to the class upon instantiation plus the sum of the positional
         and keyword arguments supplied to the method when it is called.
         """
 
-        return np.sum([
-            self.cls_arg1,
-            self.cls_arg2,
-            self.cls_kwarg1,
-            self.cls_kwarg2,
-            method_arg1,
-            method_arg2,
-            method_kwarg1,
-            method_kwarg2,
-        ])
+        return np.sum(
+            [
+                self.cls_arg1,
+                self.cls_arg2,
+                self.cls_kwarg1,
+                self.cls_kwarg2,
+                method_arg1,
+                method_arg2,
+                method_kwarg1,
+                method_kwarg2,
+            ]
+        )
 
     @property
     def attr(self):

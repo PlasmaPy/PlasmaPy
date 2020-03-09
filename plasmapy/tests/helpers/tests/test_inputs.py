@@ -1,14 +1,14 @@
-import pytest
+"""..."""
 
+import pytest
+from plasmapy.tests.helpers.exceptions import InvalidTestError
 from plasmapy.tests.helpers.inputs import (
-    ClassMethodTestInputs,
     ClassAttributeTestInputs,
+    ClassMethodTestInputs,
     FunctionTestInputs,
     _validate_args,
     _validate_kwargs,
 )
-
-from plasmapy.tests.helpers.exceptions import InvalidTestError
 
 sample_args = (2, 3)
 sample_args_list = [5, 7]
@@ -47,7 +47,9 @@ class SampleClassNoArgs:
 
         return sample_value
 
-    def sample_method(self, method_arg1, method_arg2, method_kwarg1=None, method_kwarg2=None):
+    def sample_method(
+        self, method_arg1, method_arg2, method_kwarg1=None, method_kwarg2=None
+    ):
         """Return the sum of the positional and keyword arguments to the method."""
 
         return method_arg1 + method_arg2 + method_kwarg1 + method_kwarg2
@@ -71,7 +73,13 @@ class SampleClass(SampleClassNoArgs):
         (sample_function_one_arg, sample_value, None, "args", (sample_value,)),
         (sample_function_no_args, None, None, "args", ()),
         (sample_function_no_args, None, None, "kwargs", {}),
-        (sample_function_no_args, None, None, "call_string", "sample_function_no_args()",),
+        (
+            sample_function_no_args,
+            None,
+            None,
+            "call_string",
+            "sample_function_no_args()",
+        ),
         (
             sample_function,
             sample_args,
@@ -103,7 +111,12 @@ def test_function_test_inputs(function, args, kwargs, attribute, expected):
             sample_kwargs,
             sample_function(*sample_args, **sample_kwargs),
         ),
-        (sample_function_one_arg, sample_value, None, sample_function_one_arg(sample_value),),
+        (
+            sample_function_one_arg,
+            sample_value,
+            None,
+            sample_function_one_arg(sample_value),
+        ),
         (sample_function_no_args, None, None, sample_value),
     ],
 )
@@ -158,8 +171,20 @@ def test_function_test_inputs_errors(function, args, kwargs):
         (SampleClass, sample_args, None, "cls_kwargs", {}),
         (SampleClass, sample_args, None, "attribute", "sample_attribute"),
         (SampleClass, None, None, "call_string", "SampleClass().sample_attribute"),
-        (SampleClass, sample_args, None, "call_string", "SampleClass(2, 3).sample_attribute",),
-        (SampleClass, 1, {"a": 2}, "call_string", "SampleClass(1, a=2).sample_attribute",),
+        (
+            SampleClass,
+            sample_args,
+            None,
+            "call_string",
+            "SampleClass(2, 3).sample_attribute",
+        ),
+        (
+            SampleClass,
+            1,
+            {"a": 2},
+            "call_string",
+            "SampleClass(1, a=2).sample_attribute",
+        ),
     ],
 )
 def test_class_attr_test_inputs(cls, args, kwargs, attribute_being_tested, expected):
@@ -233,7 +258,8 @@ def test_class_attr_test_inputs_call(cls, args, kwargs, expected):
     result_of_call = instance.call()
     if result_of_call != expected:
         pytest.fail(
-            f"{cls.__name__}(*{args}, **{kwargs}).call() is not " f"returning the expected value."
+            f"{cls.__name__}(*{args}, **{kwargs}).call() is not "
+            f"returning the expected value."
         )
 
 
@@ -304,7 +330,13 @@ common_inputs = (
     ],
 )
 def test_class_method_test_inputs(
-    cls, cls_args, cls_kwargs, method_args, method_kwargs, attribute_being_tested, expected,
+    cls,
+    cls_args,
+    cls_kwargs,
+    method_args,
+    method_kwargs,
+    attribute_being_tested,
+    expected,
 ):
     """
     Test that the attributes of a ``ClassMethodTestInputs`` instance
@@ -402,7 +434,9 @@ def test_class_method_test_inputs_errors(
     """
 
     with pytest.raises(InvalidTestError):
-        ClassMethodTestInputs(cls, method_name, cls_args, cls_kwargs, method_args, method_kwargs)
+        ClassMethodTestInputs(
+            cls, method_name, cls_args, cls_kwargs, method_args, method_kwargs
+        )
 
 
 def test_validate_args_value():

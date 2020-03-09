@@ -1,10 +1,12 @@
-import collections
-import pytest
+"""..."""
 
+import collections
+
+import pytest
 from plasmapy.tests.helpers.expected import (
     ExpectedTestOutcome,
-    _is_warning,
     _is_exception,
+    _is_warning,
     _is_warning_and_value,
 )
 

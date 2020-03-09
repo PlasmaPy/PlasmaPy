@@ -1,21 +1,21 @@
-from typing import Callable, Union, Optional, Any, Dict, NoReturn
-from numbers import Number
-
-from astropy import units as u
-
-from plasmapy.tests.helpers.inputs import (
-    AbstractTestInputs,
-    FunctionTestInputs,
-    ClassAttributeTestInputs,
-    ClassMethodTestInputs,
-)
-
-from plasmapy.tests.helpers.actual import ActualTestOutcome
-from plasmapy.tests.helpers.expected import ExpectedTestOutcome
-from plasmapy.tests.helpers.comparators import CompareActualExpected
-from plasmapy.tests.helpers.exceptions import InvalidTestError
+"""..."""
 
 __all__ = ["function_test_runner", "method_test_runner", "attr_test_runner"]
+
+from numbers import Number
+from typing import Any, Callable, Dict, NoReturn, Optional, Union
+
+from astropy import units as u
+from plasmapy.tests.helpers.actual import ActualTestOutcome
+from plasmapy.tests.helpers.comparators import CompareActualExpected
+from plasmapy.tests.helpers.exceptions import InvalidTestError
+from plasmapy.tests.helpers.expected import ExpectedTestOutcome
+from plasmapy.tests.helpers.inputs import (
+    AbstractTestInputs,
+    ClassAttributeTestInputs,
+    ClassMethodTestInputs,
+    FunctionTestInputs,
+)
 
 
 def _test_runner(
@@ -35,7 +35,9 @@ def _test_runner(
     try:
         actual_outcome = ActualTestOutcome(inputs)
         expected_outcome = ExpectedTestOutcome(expected)
-        comparison = CompareActualExpected(actual_outcome, expected_outcome, rtol=rtol, atol=atol)
+        comparison = CompareActualExpected(
+            actual_outcome, expected_outcome, rtol=rtol, atol=atol
+        )
     except Exception as exc:
         raise InvalidTestError("Unable to run test.") from exc
 
@@ -334,7 +336,9 @@ def method_test_runner(
     """
 
     __tracebackhide__ = True
-    inputs = ClassMethodTestInputs(cls, method, cls_args, cls_kwargs, method_args, method_kwargs)
+    inputs = ClassMethodTestInputs(
+        cls, method, cls_args, cls_kwargs, method_args, method_kwargs
+    )
     _test_runner(inputs, expected, rtol=rtol, atol=atol)
 
 

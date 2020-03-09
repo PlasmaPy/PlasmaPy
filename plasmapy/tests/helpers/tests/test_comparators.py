@@ -1,47 +1,45 @@
+"""..."""
+
 import collections
-import pytest
+
 import numpy as np
+import pytest
 from astropy import units as u
-
 from plasmapy.tests.helpers.actual import ActualTestOutcome
-from plasmapy.tests.helpers.expected import ExpectedTestOutcome
-from plasmapy.tests.helpers.inputs import FunctionTestInputs
-
-from plasmapy.utils.formatting.formatting import _name_with_article
-
 from plasmapy.tests.helpers.comparators import (
     CompareActualExpected,
     CompareValues,
     _get_unit,
     _units_are_compatible,
 )
-
 from plasmapy.tests.helpers.exceptions import (
-    Failed,
-    UnexpectedResultError,
-    InconsistentTypeError,
-    UnexpectedExceptionError,
-    MissingExceptionError,
-    UnexpectedWarningError,
-    MissingWarningError,
-    InvalidTestError,
     ExceptionMismatchError,
+    Failed,
+    InconsistentTypeError,
+    InvalidTestError,
+    MissingExceptionError,
+    MissingWarningError,
+    UnexpectedExceptionError,
+    UnexpectedResultError,
+    UnexpectedWarningError,
     WarningMismatchError,
 )
-
+from plasmapy.tests.helpers.expected import ExpectedTestOutcome
+from plasmapy.tests.helpers.inputs import FunctionTestInputs
 from plasmapy.tests.helpers.tests.sample_functions import (
-    return_42,
-    return_42_meters,
-    return_np_array,
-    sum_of_args_and_kwargs,
-    return_none,
-    raise_exception,
-    issue_warning_return_42,
     SampleException,
     SampleExceptionSubclass,
     SampleWarning,
     SampleWarningSubclass,
+    issue_warning_return_42,
+    raise_exception,
+    return_42,
+    return_42_meters,
+    return_none,
+    return_np_array,
+    sum_of_args_and_kwargs,
 )
+from plasmapy.utils.formatting.formatting import _name_with_article
 
 noargs = ()
 nokwargs = {}
@@ -50,7 +48,13 @@ nokwargs = {}
 table_of_function_args_kwargs_expected_and_exception = [
     (raise_exception, noargs, nokwargs, SampleException, None),
     (raise_exception, noargs, nokwargs, Exception, ExceptionMismatchError),
-    (raise_exception, noargs, nokwargs, SampleExceptionSubclass, ExceptionMismatchError,),
+    (
+        raise_exception,
+        noargs,
+        nokwargs,
+        SampleExceptionSubclass,
+        ExceptionMismatchError,
+    ),
     (raise_exception, noargs, nokwargs, 42, UnexpectedExceptionError),
     (raise_exception, noargs, nokwargs, SampleWarning, Failed),
     (return_42, noargs, nokwargs, 42, None),
@@ -69,24 +73,84 @@ table_of_function_args_kwargs_expected_and_exception = [
     (return_none, noargs, nokwargs, None, None),
     (return_none, noargs, nokwargs, False, InconsistentTypeError),
     (issue_warning_return_42, noargs, nokwargs, SampleWarning, None),
-    (issue_warning_return_42, noargs, nokwargs, SampleWarningSubclass, WarningMismatchError,),
+    (
+        issue_warning_return_42,
+        noargs,
+        nokwargs,
+        SampleWarningSubclass,
+        WarningMismatchError,
+    ),
     (issue_warning_return_42, noargs, nokwargs, Warning, WarningMismatchError),
     (issue_warning_return_42, noargs, nokwargs, (SampleWarning, 42), None),
     (issue_warning_return_42, noargs, nokwargs, (42, SampleWarning), None),
-    (issue_warning_return_42, noargs, nokwargs, (SampleWarning, 6 * 9), UnexpectedResultError,),
-    (issue_warning_return_42, noargs, nokwargs, (6 * 9, SampleWarning), UnexpectedResultError,),
-    (issue_warning_return_42, noargs, nokwargs, (SampleWarningSubclass, 42), WarningMismatchError),
-    (issue_warning_return_42, noargs, nokwargs, (42, SampleWarningSubclass), WarningMismatchError),
+    (
+        issue_warning_return_42,
+        noargs,
+        nokwargs,
+        (SampleWarning, 6 * 9),
+        UnexpectedResultError,
+    ),
+    (
+        issue_warning_return_42,
+        noargs,
+        nokwargs,
+        (6 * 9, SampleWarning),
+        UnexpectedResultError,
+    ),
+    (
+        issue_warning_return_42,
+        noargs,
+        nokwargs,
+        (SampleWarningSubclass, 42),
+        WarningMismatchError,
+    ),
+    (
+        issue_warning_return_42,
+        noargs,
+        nokwargs,
+        (42, SampleWarningSubclass),
+        WarningMismatchError,
+    ),
     (issue_warning_return_42, noargs, nokwargs, (Warning, 42), WarningMismatchError,),
     (issue_warning_return_42, noargs, nokwargs, (42, Warning), WarningMismatchError,),
     (issue_warning_return_42, noargs, nokwargs, 42, UnexpectedWarningError),
     (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, 17, None),
     (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, 42, UnexpectedResultError,),
-    (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, Warning, MissingWarningError,),
-    (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, Exception, MissingExceptionError,),
-    (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, (Warning, 17), MissingWarningError,),
-    (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, (17, Warning), MissingWarningError,),
-    (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, "17", InconsistentTypeError,),
+    (
+        sum_of_args_and_kwargs,
+        (2, 3),
+        {"kw1": 5, "kw2": 7},
+        Warning,
+        MissingWarningError,
+    ),
+    (
+        sum_of_args_and_kwargs,
+        (2, 3),
+        {"kw1": 5, "kw2": 7},
+        Exception,
+        MissingExceptionError,
+    ),
+    (
+        sum_of_args_and_kwargs,
+        (2, 3),
+        {"kw1": 5, "kw2": 7},
+        (Warning, 17),
+        MissingWarningError,
+    ),
+    (
+        sum_of_args_and_kwargs,
+        (2, 3),
+        {"kw1": 5, "kw2": 7},
+        (17, Warning),
+        MissingWarningError,
+    ),
+    (
+        sum_of_args_and_kwargs,
+        (2, 3),
+        {"kw1": 5, "kw2": 7},
+        "17",
+        InconsistentTypeError,
+    ),
 ]
 
 
@@ -148,12 +212,18 @@ def test_compare_actual_expected(function, args, kwargs, expected, expected_exce
     try:
         comparison = CompareActualExpected(actual, expected, atol=None, rtol=1e-7)
     except Exception as exc:
-        raise Failed(f"Problem instantiating CompareActualExpected." + test_information) from exc
+        raise Failed(
+            f"Problem instantiating CompareActualExpected." + test_information
+        ) from exc
 
     if test_should_pass is True and comparison.test_passed is False:
-        raise Failed("This test was expected to pass, but instead failed." + test_information)
+        raise Failed(
+            "This test was expected to pass, but instead failed." + test_information
+        )
     elif test_should_pass is False and comparison.test_passed is True:
-        raise Failed("This test was expected to fail, but instead passed." + test_information)
+        raise Failed(
+            "This test was expected to fail, but instead passed." + test_information
+        )
     elif test_should_pass is False:
         if comparison.exception is not expected_exception:
             actual_exception_from_test = _name_with_article(comparison.exception)
@@ -193,7 +263,9 @@ compared_values_attr_expected = [
 ]
 
 
-@pytest.mark.parametrize("this, that, attribute, expected", compared_values_attr_expected)
+@pytest.mark.parametrize(
+    "this, that, attribute, expected", compared_values_attr_expected
+)
 def test_compare_values_attributes(this, that, attribute, expected):
     """
     Test that the attributes of `CompareValues` return the correct
@@ -246,7 +318,9 @@ compared_values_and_boolean_value = [
 ]
 
 
-@pytest.mark.parametrize("this, that, when_made_boolean", compared_values_and_boolean_value)
+@pytest.mark.parametrize(
+    "this, that, when_made_boolean", compared_values_and_boolean_value
+)
 def test_compare_values_bool(this, that, when_made_boolean):
     """
     Test that CompareValues.__bool__ returns the expected results.
@@ -261,7 +335,7 @@ def test_compare_values_bool(this, that, when_made_boolean):
         made_boolean = bool(comparison)
     except Exception:
         pytest.fail(
-            f"The CompareValues instance for {this} and {that} cannot " 
+            f"The CompareValues instance for {this} and {that} cannot "
             f"be made boolean."
         )
 
@@ -283,7 +357,7 @@ def test_compare_values_rtol_exceptions(rtol):
     with pytest.raises(InvalidTestError):
         CompareValues(1, 1, rtol=rtol)
         pytest.fail(
-            f"CompareValues with rtol = {rtol} is not raising an " 
+            f"CompareValues with rtol = {rtol} is not raising an "
             f"InvalidTestError as expected."
         )
 
@@ -295,8 +369,7 @@ def test_compare_values_rtol(rtol):
     comparison = CompareValues(1, 1, rtol=rtol)
     if comparison.rtol != rtol:
         pytest.fail(
-            f"rtol attribute of CompareValues is not the expected " 
-            f"value of {rtol}."
+            f"rtol attribute of CompareValues is not the expected " f"value of {rtol}."
         )
 
 
@@ -323,7 +396,9 @@ units_and_expected_compatibility = [
 ]
 
 
-@pytest.mark.parametrize("unit1, unit2, expected_compatibility", units_and_expected_compatibility)
+@pytest.mark.parametrize(
+    "unit1, unit2, expected_compatibility", units_and_expected_compatibility
+)
 def test_units_are_compatible(unit1, unit2, expected_compatibility):
     """
     Test that `_units_are_compatible` correctly compares the
@@ -459,7 +534,9 @@ func_args_kwargs_expected_errmsg = [
 ]
 
 
-@pytest.mark.parametrize("func, args, kwargs, expected, errmsg", func_args_kwargs_expected_errmsg)
+@pytest.mark.parametrize(
+    "func, args, kwargs, expected, errmsg", func_args_kwargs_expected_errmsg
+)
 def test_compare_actual_expected_errmsg(func, args, kwargs, expected, errmsg):
     """
     Test that `CompareActualExpected` generates the appropriate error messages.

@@ -1,35 +1,30 @@
 """Contains test comparators: tools that automate comparisons."""
 
+__all__ = ["CompareActualExpected"]
+
 from numbers import Number
-from typing import Union, Tuple, Any, Optional
-import warnings
+from typing import Any, Optional, Tuple, Union
 
-import numpy as np
 from astropy import units as u
-
-from plasmapy.tests.helpers.expected import ExpectedTestOutcome
 from plasmapy.tests.helpers.actual import ActualTestOutcome
-
-from plasmapy.utils.formatting.formatting import (
-    _name_with_article,
-    _string_together_warnings_for_printing,
-    _object_name,
-)
-
 from plasmapy.tests.helpers.exceptions import (
-    Failed,
-    UnexpectedResultError,
-    InconsistentTypeError,
-    UnexpectedExceptionError,
-    MissingExceptionError,
-    UnexpectedWarningError,
-    MissingWarningError,
-    InvalidTestError,
     ExceptionMismatchError,
+    Failed,
+    InconsistentTypeError,
+    InvalidTestError,
+    MissingExceptionError,
+    MissingWarningError,
+    UnexpectedExceptionError,
+    UnexpectedResultError,
+    UnexpectedWarningError,
     WarningMismatchError,
 )
-
-__all__ = ["CompareActualExpected"]
+from plasmapy.tests.helpers.expected import ExpectedTestOutcome
+from plasmapy.utils.formatting.formatting import (
+    _name_with_article,
+    _object_name,
+    _string_together_warnings_for_printing,
+)
 
 
 def _get_unit(obj: Any):
@@ -250,7 +245,9 @@ class CompareValues:
         `False` otherwise.
         """
 
-        return isinstance(self.values[0], u.Quantity) and isinstance(self.values[1], u.Quantity)
+        return isinstance(self.values[0], u.Quantity) and isinstance(
+            self.values[1], u.Quantity
+        )
 
     @property
     def are_quantity_and_unit(self) -> bool:
@@ -260,7 +257,9 @@ class CompareValues:
         (a subclass of) `~astropy.units.UnitBase`, and `False` otherwise.
         """
 
-        return isinstance(self.values[0], u.Quantity) and isinstance(self.values[1], u.UnitBase)
+        return isinstance(self.values[0], u.Quantity) and isinstance(
+            self.values[1], u.UnitBase
+        )
 
     @property
     def are_allclose(self) -> bool:
@@ -288,7 +287,9 @@ class CompareValues:
             return True
 
         try:
-            return u.allclose(*self.values, rtol=self.rtol, atol=self.atol, equal_nan=True)
+            return u.allclose(
+                *self.values, rtol=self.rtol, atol=self.atol, equal_nan=True
+            )
         except u.UnitsError as exc1:
             if self.units_are_compatible and isinstance(self.atol, u.Quantity):
                 if not _units_are_compatible(self.units[0], self.atol.unit):
@@ -464,7 +465,11 @@ class CompareActualExpected:
         """
 
         is_first_error = not self._error_messages_list
-        subject = f"The command {self.actual.call_string}" if is_first_error else "This command"
+        subject = (
+            f"The command {self.actual.call_string}"
+            if is_first_error
+            else "This command"
+        )
         return subject
 
     def _make_exception_mismatch_errmsg_if_necessary(self):
@@ -587,7 +592,10 @@ class CompareActualExpected:
         """
 
         comparison = CompareValues(
-            self.actual.value, self.expected.expected_value, rtol=self.rtol, atol=self.atol,
+            self.actual.value,
+            self.expected.expected_value,
+            rtol=self.rtol,
+            atol=self.atol,
         )
 
         if comparison:
