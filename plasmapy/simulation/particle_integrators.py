@@ -1,10 +1,12 @@
-import numba
 import math
+
+import numba
 import numpy as np
+from astropy import constants
 
 
 @numba.njit(parallel=True)
-def _boris_push(x, v, b, e, q, m, dt):
+def boris_push(x, v, b, e, q, m, dt):
     r"""
     Implement the explicit Boris pusher for moving and accelerating particles.
 
@@ -53,7 +55,7 @@ def _boris_push(x, v, b, e, q, m, dt):
 
 
 @numba.njit(parallel=True)
-def _boris_push_implicit(x, v, b, e, q, m, dt):
+def boris_push_implicit(x, v, b, e, q, m, dt):
     r"""
     Implement the implicit Boris pusher for moving and accelerating particles.
 
@@ -183,7 +185,7 @@ def _boris_push_implicit(x, v, b, e, q, m, dt):
 
 
 @numba.njit(parallel=True)
-def _boris_push_implicit2(x, v, b, e, q, m, dt):
+def boris_push_implicit2(x, v, b, e, q, m, dt):
     r"""
     Implement the implicit Boris pusher for moving and accelerating particles.
     DOES NOT HANDLE ELECTRIC FIELDS RIGHT NOW
@@ -269,8 +271,6 @@ def _boris_push_implicit2(x, v, b, e, q, m, dt):
         x[i] += v[i] * dt
 
 
-from astropy import constants
-
 c = constants.c.si.value
 
 
@@ -285,7 +285,7 @@ def gamma_from_u(u):
 
 
 @numba.njit(parallel=True)
-def _zenitani(x, v, b, e, q, m, dt, B_numerical_threshold=1e-20):
+def zenitani(x, v, b, e, q, m, dt, B_numerical_threshold=1e-20):
     r"""
     Implement the Zenitani-Umeda pusher
 

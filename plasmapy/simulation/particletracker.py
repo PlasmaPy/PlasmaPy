@@ -7,6 +7,7 @@ import numpy as np
 import tqdm.auto
 import xarray
 from astropy import units as u
+
 from plasmapy import formulary, particles
 from plasmapy.particles import Particle, particle_input
 from plasmapy.utils import PhysicsError
@@ -31,7 +32,7 @@ class ParticleTrackerAccessor:
             np.linalg.norm,
             self._obj[array],
             input_core_dims=[[dim]],
-            kwargs={"ord": ord, "axis": -1},
+            kwargs={"ord": order, "axis": -1},
         )
 
     def plot_trajectories(self, *args, **kwargs):  # coverage: ignore
@@ -106,7 +107,7 @@ class ParticleTrackerAccessor:
             fig = figure
         for i in particles:
             points = self._obj.position.sel(particle=i)[::stride].values
-            trajectory = spline = pv.Spline(
+            trajectory = pv.Spline(
                 points,
                 max((1000, self._obj.sizes["time"] // 100)),  # TODO clean this up!
             )
@@ -175,11 +176,7 @@ class ParticleTrackerAccessor:
                 .isel(time=frame_max)
                 .values
             )
-            velocities = (
-                self._obj.velocity.sel(particle=list(particles))
-                .isel(time=frame_max)
-                .values
-            )
+
             point_cloud = pv.PolyData(points)
             point_cloud["velocity"] = self._obj["|v|"].isel(time=frame_max)
             velocity_range = [
@@ -238,10 +235,10 @@ class ParticleTracker:
     """
 
     integrators = {
-        "explicit_boris": particle_integrators._boris_push,
-        "implicit_boris": particle_integrators._boris_push_implicit,
-        # "implicit_boris2": particle_integrators._boris_push_implicit2,
-        "zenitani": particle_integrators._zenitani,
+        "explicit_boris": particle_integrators.boris_push,
+        "implicit_boris": particle_integrators.boris_push_implicit,
+        # "implicit_boris2": particle_integrators.boris_push_implicit2,
+        "zenitani": particle_integrators.zenitani,
     }
 
     @particles.particle_input
@@ -330,13 +327,10 @@ class ParticleTracker:
         i = 0
 
         init_kinetic = self.kinetic_energy(_v, _m)
-        timestep_info = dict(i=i, dt=_dt)
         if init_kinetic:
             reldelta = self.kinetic_energy(_v, _m) / init_kinetic - 1
-            kinetic_info = {"Relative kinetic energy change": reldelta}
         else:
             delta = self.kinetic_energy(_v, _m)
-            kinetic_info = {"Kinetic energy change": delta}
 
         with np.errstate(all="raise"):
             b = self.plasma._interpolate_B(_x)
@@ -369,7 +363,7 @@ class ParticleTracker:
                 e = self.plasma._interpolate_E(_x)
                 integrator(_x, _v, b, e, _q, _m, _dt)
 
-                # todo should be a list of dicts, probably)
+                # TODO should be a list of dicts, probably)
                 if _time > next_snapshot_update_time:
                     next_snapshot_update_time += _snapshot_timestep
                     _position_history.append(_x.copy())
@@ -420,9 +414,6 @@ class ParticleTracker:
             f" N = {self.x.shape[0]})"
         )
 
-    def __str__(self):  # coverage: ignore
-        return f"{self.N} {self.name} with " f"q = {self.q:.2e}, m = {self.m:.2e}"
-
     @check_units
     def _create_xarray(
         self,
@@ -439,7 +430,6 @@ class ParticleTracker:
         # TODO replace scheme with OpenPMD! I can't believe I forgot about it!
         data_vars = {}
         assert position_history.shape == velocity_history.shape
-        particles = range(position_history.shape[1])
         data_vars["position"] = (("time", "particle", "dimension"), position_history)
         data_vars["velocity"] = (("time", "particle", "dimension"), velocity_history)
         data_vars["B"] = (("time", "particle", "dimension"), b_history)
@@ -454,7 +444,7 @@ class ParticleTracker:
             data_vars=data_vars,
             coords={
                 "time": times,
-                "particle": particles,
+                "particle": range(position_history.shape[1]),
                 "dimension": list(dimensions),
             },
         )
