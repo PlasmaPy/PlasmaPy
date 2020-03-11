@@ -1,6 +1,5 @@
 """Class representing a group of particles moving in a plasma's fields."""
 import pathlib
-import typing
 import warnings
 
 import numpy as np
@@ -9,8 +8,6 @@ import xarray
 from astropy import units as u
 
 from plasmapy import formulary, particles
-from plasmapy.particles import Particle, particle_input
-from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import check_units
 
 from . import particle_integrators
@@ -22,16 +19,26 @@ __all__ = ["ParticleTracker", "ParticleTrackerAccessor"]
 
 @xarray.register_dataset_accessor("particletracker")
 class ParticleTrackerAccessor:
-    def __init__(self, xarray_obj):
+    def __init__(self, xarray_obj: xarray.Dataset):
         self._obj = xarray_obj
         # TODO handle CustomParticles on the `Particle` layer!
-        self.particle = Particle(xarray_obj.attrs["particle"])
+        self.particle = particles.Particle(xarray_obj.attrs["particle"])
 
-    def vector_norm(self, array, dim, ord=None):
+    def vector_norm(self, array: xarray.DataArray, order: int = None):
+        """
+        Calculates the norm of a vector quantity.
+
+        Parameters
+        ----------
+        array : xarray.DataArray
+            Array to calculate vector norm of.
+        order : int
+            Order of vector norm passed to numpy.linalg.norm
+        """
         return xarray.apply_ufunc(
             np.linalg.norm,
             self._obj[array],
-            input_core_dims=[[dim]],
+            input_core_dims=[["dimension"]],
             kwargs={"ord": order, "axis": -1},
         )
 
@@ -43,14 +50,14 @@ class ParticleTrackerAccessor:
 
         quantity_support()
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection="3d")
+        axis = fig.add_subplot(111, projection="3d")
         for p_index in range(self._obj.particle.size):
             r = self._obj.position.isel(particle=p_index)
             x, y, z = r.T
-            ax.plot(x, y, z, *args, **kwargs)
-        ax.set_xlabel("$x$ position")
-        ax.set_ylabel("$y$ position")
-        ax.set_zlabel("$z$ position")
+            axis.plot(x, y, z, *args, **kwargs)
+        axis.set_xlabel("$x$ position")
+        axis.set_ylabel("$y$ position")
+        axis.set_zlabel("$z$ position")
         plt.show()
 
     def plot_time_trajectories(self, plot="xyz"):  # coverage: ignore
@@ -68,21 +75,20 @@ class ParticleTrackerAccessor:
         from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
-        fig, ax = plt.subplots()
+        fig, axis = plt.subplots()
         for p_index in range(self._obj.particle.size):
             r = self._obj.position.isel(particle=p_index)
             x, y, z = r.T
             if "x" in plot:
-                ax.plot(self._obj.time, x, label=f"x_{p_index}")
+                axis.plot(self._obj.time, x, label=f"x_{p_index}")
             if "y" in plot:
-                ax.plot(self._obj.time, y, label=f"y_{p_index}")
+                axis.plot(self._obj.time, y, label=f"y_{p_index}")
             if "z" in plot:
-                ax.plot(self._obj.time, z, label=f"z_{p_index}")
-        # ax.set_title(self.name)
-        ax.legend(loc="best")
-        ax.grid()
-        ax.set_xlabel(f"Time $t$ [{u.s}]")
-        ax.set_ylabel(f"Position [{u.m}]")
+                axis.plot(self._obj.time, z, label=f"z_{p_index}")
+        axis.legend(loc="best")
+        axis.grid()
+        axis.set_xlabel(f"Time $t$ [{u.s}]")
+        axis.set_ylabel(f"Position [{u.m}]")
         plt.show()
 
     def test_kinetic_energy(self, rtol=1e-7, atol=0):
