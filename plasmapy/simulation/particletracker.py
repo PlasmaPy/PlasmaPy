@@ -1,17 +1,17 @@
 """Class representing a group of particles moving in a plasma's fields."""
+import pathlib
+import typing
+import warnings
+
 import numpy as np
-from astropy import units as u
 import tqdm.auto
 import xarray
-import warnings
-import matplotlib.pyplot as plt
-import pathlib
-
-from plasmapy import particles, formulary
-from plasmapy.utils.decorators import check_units
+from astropy import units as u
+from plasmapy import formulary, particles
+from plasmapy.particles import Particle, particle_input
 from plasmapy.utils import PhysicsError
-from plasmapy.particles import particle_input, Particle
-import typing
+from plasmapy.utils.decorators import check_units
+
 from . import particle_integrators
 
 PLOTTING = False
