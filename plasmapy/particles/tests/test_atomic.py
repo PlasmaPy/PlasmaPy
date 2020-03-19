@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 from astropy import units as u, constants as const
 
-from plasmapy.tests.helpers import function_test_runner
+from plasmapy.tests.helpers import test_runner, FunctionTestInputs
 from plasmapy.particles.symbols import atomic_symbol, isotope_symbol, element_name
 from plasmapy.particles.isotopes import _Isotopes
 
