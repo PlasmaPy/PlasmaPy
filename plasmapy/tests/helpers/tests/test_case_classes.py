@@ -62,11 +62,24 @@ class TestMethodTestCase:
             rtol=self.rtol,
         )
 
-    @pytest.mark.parametrize("attr", ["expected", "cls", "method", "cls_args", "cls_kwargs", "method_args", "method_kwargs", "atol", "rtol"])
+    @pytest.mark.parametrize(
+        "attr",
+        [
+            "expected",
+            "cls",
+            "method",
+            "cls_args",
+            "cls_kwargs",
+            "method_args",
+            "method_kwargs",
+            "atol",
+            "rtol",
+        ],
+    )
     def test_that_attribute_is_stored_correctly(self, attr):
         assert getattr(self, attr) is getattr(self.instance, attr)
 
-        
+
 class TestAttrTestCase:
     """Test that `AttrTestCase` correctly stores its attributes."""
 
@@ -90,6 +103,9 @@ class TestAttrTestCase:
             rtol=self.rtol,
         )
 
-    @pytest.mark.parametrize("attr", ["expected", "cls", "attribute", "cls_args", "cls_kwargs", "atol", "rtol"])
+    @pytest.mark.parametrize(
+        "attr",
+        ["expected", "cls", "attribute", "cls_args", "cls_kwargs", "atol", "rtol"],
+    )
     def test_that_attribute_is_stored_correctly(self, attr):
         assert getattr(self, attr) is getattr(self.instance, attr)
