@@ -1,1 +1,2 @@
-Expanded and refactored pytest helper functionality
+Created a new test runner function named ``test_runner`` in
+``plasmapy.tests.helpers``.

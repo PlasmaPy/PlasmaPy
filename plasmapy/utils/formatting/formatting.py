@@ -1,8 +1,9 @@
 import inspect
-from astropy import units as u
 from typing import Callable, Any, Dict, Optional, Union, Tuple
 
-__all__ = ["call_string", "class_attribute_call_string", "class_method_call_string"]
+from astropy import units as u
+
+__all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
 
 def _format_quantity(arg) -> str:
@@ -137,19 +138,19 @@ def call_string(f: Callable, args: Any = tuple(), kwargs: Dict = {}) -> str:
 
     See Also
     --------
-    class_attribute_call_string
-    class_method_call_string
+    attribute_call_string
+    method_call_string
     """
 
     args_and_kwargs = _format_args_and_kwargs(args, kwargs)
     return f"{f.__name__}({args_and_kwargs})"
 
 
-def class_attribute_call_string(
-    cls,
-    attr: str,
-    cls_args: Optional[Union[Tuple, Any]] = None,
-    cls_kwargs: Optional[Dict[str, Any]] = None,
+def attribute_call_string(
+        cls,
+        attr: str,
+        cls_args: Optional[Union[Tuple, Any]] = None,
+        cls_kwargs: Optional[Dict[str, Any]] = None,
 ) -> str:
     """
     Return a string to represent accessing a class attribute.
@@ -181,7 +182,7 @@ def class_attribute_call_string(
     ...         return 42
     >>> cls_args = (1,)
     >>> cls_kwargs = {'kwarg1': 2}
-    >>> class_attribute_call_string(SampleClass, 'attribute', cls_args, cls_kwargs)
+    >>> attribute_call_string(SampleClass, 'attribute', cls_args, cls_kwargs)
     'SampleClass(1, kwarg1=2).attribute'
     """
 
@@ -190,13 +191,13 @@ def class_attribute_call_string(
     return f"{call_string(cls, cls_args, cls_kwargs)}.{attr}"
 
 
-def class_method_call_string(
-    cls,
-    method: str,
-    cls_args: Any = tuple(),
-    cls_kwargs: Dict = {},
-    method_args: Any = tuple(),
-    method_kwargs: Dict = {},
+def method_call_string(
+        cls,
+        method: str,
+        cls_args: Any = tuple(),
+        cls_kwargs: Dict = {},
+        method_args: Any = tuple(),
+        method_kwargs: Dict = {},
 ) -> str:
     """
     Return a string to represent calling a class method.
@@ -238,13 +239,13 @@ def class_method_call_string(
     >>> c_kwargs = {'cls_kwarg': 2}
     >>> m_args = 3
     >>> m_kwargs = {'method_kwarg': 4}
-    >>> class_method_call_string(SampleClass, 'method', c_args, c_kwargs, m_args, m_kwargs)
+    >>> method_call_string(SampleClass, 'method', c_args, c_kwargs, m_args, m_kwargs)
     'SampleClass(1, cls_kwarg=2).method(3, method_kwarg=4)'
 
     See Also
     --------
     call_string
-    class_attribute_call_string
+    attribute_call_string
     """
 
     class_call_string = f"{call_string(cls, cls_args, cls_kwargs)}"

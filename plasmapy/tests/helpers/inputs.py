@@ -16,8 +16,8 @@ from plasmapy.tests.helpers.exceptions import InvalidTestError
 from plasmapy.utils.formatting.formatting import (
     _object_name,
     call_string,
-    class_attribute_call_string,
-    class_method_call_string,
+    attribute_call_string,
+    method_call_string,
 )
 
 
@@ -299,7 +299,7 @@ class ClassAttributeTestInputs(GenericClassTestInputs):
         and accessing the class attribute.
         """
 
-        return class_attribute_call_string(
+        return attribute_call_string(
             cls=self.cls,
             attr=self.attribute,
             cls_args=self.cls_args,
@@ -464,7 +464,7 @@ class ClassMethodTestInputs(GenericClassTestInputs):
         and accessing the class attribute.
         """
 
-        return class_method_call_string(
+        return method_call_string(
             cls=self.cls,
             method=self.method,
             cls_args=self.cls_args,

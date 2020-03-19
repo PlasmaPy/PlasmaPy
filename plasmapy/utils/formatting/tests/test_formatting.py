@@ -1,9 +1,8 @@
 import pytest
-
 from astropy import units as u
 
 from plasmapy.utils.formatting import (
-    call_string, class_method_call_string, class_attribute_call_string,
+    call_string, method_call_string, attribute_call_string,
 )
 
 
@@ -72,8 +71,8 @@ class_method_call_string_table = [
     "c_args, c_kwargs, m_args, m_kwargs, expected", class_method_call_string_table
 )
 def test_class_method_call_string(c_args, c_kwargs, m_args, m_kwargs, expected):
-    """Test that `class_method_call_string` returns the expected results."""
-    actual = class_method_call_string(
+    """Test that `method_call_string` returns the expected results."""
+    actual = method_call_string(
         SampleClass, "method", c_args, c_kwargs, m_args, m_kwargs
     )
     assert expected == actual
@@ -91,6 +90,6 @@ class_attribute_call_string_table = [
     "c_args, c_kwargs, expected", class_attribute_call_string_table
 )
 def test_class_attribute_call_string(c_args, c_kwargs, expected):
-    """Test that `class_attribute_call_string` returns the expected results."""
-    actual = class_attribute_call_string(SampleClass, "attr", c_args, c_kwargs)
+    """Test that `attribute_call_string` returns the expected results."""
+    actual = attribute_call_string(SampleClass, "attr", c_args, c_kwargs)
     assert expected == actual

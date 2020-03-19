@@ -1,21 +1,15 @@
 """Test helpers utilities."""
-import functools
-import pytest
-import inspect
 import collections
+import functools
+import inspect
+import warnings
 from typing import Any, Callable, Dict
-import numpy as np
-import astropy.units as u
+
 import astropy.constants as const
 import astropy.tests.helper as astrohelper
-import warnings
-from plasmapy.utils.exceptions import PlasmaPyWarning
-
-from plasmapy.utils.formatting.formatting import (
-    call_string,
-    _object_name,
-    _name_with_article,
-)
+import astropy.units as u
+import numpy as np
+import pytest
 
 from plasmapy.tests.helpers.exceptions import (
     InvalidTestError,
@@ -24,6 +18,12 @@ from plasmapy.tests.helpers.exceptions import (
     InconsistentTypeError,
     MissingExceptionError,
     MissingWarningError,
+)
+from plasmapy.utils.exceptions import PlasmaPyWarning
+from plasmapy.utils.formatting.formatting import (
+    call_string,
+    _object_name,
+    _name_with_article,
 )
 
 __all__ = ["run_test", "run_test_equivalent_calls", "assert_can_handle_nparray"]
@@ -213,6 +213,11 @@ def run_test(
             run_test(inputs)
 
     """
+
+    warnings.warn(
+        "'run_test' is deprecated; use 'plasmapy.tests.helpers.test_runner' instead",
+        DeprecationWarning,
+    )
 
     if kwargs is None:
         kwargs = {}

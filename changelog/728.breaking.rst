@@ -1,0 +1,6 @@
+The old test runner (``plasmapy.utils.pytest_helpers.run_test``) was removed
+in favor of a new test runner (``plasmapy.tests.helpers.test_runner``).  The
+``call_string`` function was moved to ``plasmapy.utils.formatting``, and the
+``method_call_string`` and ``attribute_call_string`` functions were created.
+The ``test_runner`` function was applied to some of the tests in
+``plasmapy.particles``.

@@ -1,11 +1,11 @@
 """Test the helper functions and classes used to run tests."""
 
-from abc import ABC, abstractmethod
-from typing import NoReturn, Optional
+from typing import Optional
 
 import astropy.units as u
 import numpy as np
 import pytest
+
 from plasmapy.tests.helpers.cases import FunctionTestCase, MethodTestCase, AttrTestCase
 from plasmapy.tests.helpers.exceptions import (
     ExceptionMismatchError,
@@ -35,10 +35,9 @@ from plasmapy.tests.helpers.tests.sample_functions import (
 from plasmapy.utils.formatting.formatting import (
     _object_name,
     call_string,
-    class_attribute_call_string,
-    class_method_call_string,
+    attribute_call_string,
+    method_call_string,
 )
-
 
 cases_and_expected_exceptions = [
     (FunctionTestCase(expected=42, function=return_42), None),
@@ -135,7 +134,7 @@ def _get_call_string(case):
     if isinstance(case, FunctionTestCase):
         return call_string(case.function, case.args, case.kwargs)
     elif isinstance(case, MethodTestCase):
-        return class_method_call_string(
+        return method_call_string(
             case.cls,
             case.method,
             case.cls_args,
@@ -144,7 +143,7 @@ def _get_call_string(case):
             case.method_kwargs,
         )
     elif isinstance(case, AttrTestCase):
-        return class_attribute_call_string(
+        return attribute_call_string(
             case.cls, case.attribute, case.cls_args, case.cls_kwargs
         )
 
