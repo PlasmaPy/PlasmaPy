@@ -32,7 +32,12 @@ from plasmapy.tests.helpers.tests.sample_functions import (
     return_42,
     return_42_meters,
 )
-from plasmapy.utils.formatting.formatting import _object_name, call_string, class_attribute_call_string, class_method_call_string
+from plasmapy.utils.formatting.formatting import (
+    _object_name,
+    call_string,
+    class_attribute_call_string,
+    class_method_call_string,
+)
 
 
 cases_and_expected_exceptions = [
@@ -48,7 +53,8 @@ cases_and_expected_exceptions = [
     (FunctionTestCase(expected=u.cm, function=return_42_meters), u.UnitsError),
     (FunctionTestCase(expected=u.kg, function=return_42_meters), u.UnitsError),
     (FunctionTestCase(expected=SampleException, function=raise_exception), None),
-    (FunctionTestCase(expected=SampleExceptionSubclass, function=raise_exception),
+    (
+        FunctionTestCase(expected=SampleExceptionSubclass, function=raise_exception),
         ExceptionMismatchError,
     ),
     (
@@ -129,9 +135,18 @@ def _get_call_string(case):
     if isinstance(case, FunctionTestCase):
         return call_string(case.function, case.args, case.kwargs)
     elif isinstance(case, MethodTestCase):
-        return class_method_call_string(case.cls, case.method, case.cls_args, case.cls_kwargs, case.method_args, case.method_kwargs)
+        return class_method_call_string(
+            case.cls,
+            case.method,
+            case.cls_args,
+            case.cls_kwargs,
+            case.method_args,
+            case.method_kwargs,
+        )
     elif isinstance(case, AttrTestCase):
-        return class_attribute_call_string(case.cls, case.attribute, case.cls_args, case.cls_kwargs)
+        return class_attribute_call_string(
+            case.cls, case.attribute, case.cls_args, case.cls_kwargs
+        )
 
 
 @pytest.mark.parametrize("case, exception", cases_and_expected_exceptions)

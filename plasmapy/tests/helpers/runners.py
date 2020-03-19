@@ -8,7 +8,11 @@ from typing import NoReturn, Union
 from plasmapy.tests.helpers.actual import ActualTestOutcome
 from plasmapy.tests.helpers.cases import FunctionTestCase, MethodTestCase, AttrTestCase
 from plasmapy.tests.helpers.comparators import CompareActualExpected
-from plasmapy.tests.helpers.exceptions import InvalidTestError, UnexpectedExceptionError, ExceptionMismatchError
+from plasmapy.tests.helpers.exceptions import (
+    InvalidTestError,
+    UnexpectedExceptionError,
+    ExceptionMismatchError,
+)
 from plasmapy.tests.helpers.expected import ExpectedTestOutcome
 from plasmapy.tests.helpers.inputs import (
     AbstractTestInputs,
@@ -65,7 +69,6 @@ def _get_test_inputs(
     return inputs
 
 
-@pytest.mark.skip
 def test_runner(
     test_case: Union[FunctionTestCase, MethodTestCase, AttrTestCase]
 ) -> NoReturn:
