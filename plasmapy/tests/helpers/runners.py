@@ -2,12 +2,13 @@
 
 __all__ = ["test_runner"]
 
+import pytest
 from typing import NoReturn, Union
 
 from plasmapy.tests.helpers.actual import ActualTestOutcome
 from plasmapy.tests.helpers.cases import FunctionTestCase, MethodTestCase, AttrTestCase
 from plasmapy.tests.helpers.comparators import CompareActualExpected
-from plasmapy.tests.helpers.exceptions import InvalidTestError
+from plasmapy.tests.helpers.exceptions import InvalidTestError, UnexpectedExceptionError, ExceptionMismatchError
 from plasmapy.tests.helpers.expected import ExpectedTestOutcome
 from plasmapy.tests.helpers.inputs import (
     AbstractTestInputs,
@@ -34,7 +35,7 @@ def _get_test_inputs(
             function=test_case.function, args=test_case.args, kwargs=test_case.kwargs
         )
 
-    elif isinstance(MethodTestCase):
+    elif isinstance(test_case, MethodTestCase):
 
         inputs = ClassMethodTestInputs(
             cls=test_case.cls,
@@ -45,7 +46,7 @@ def _get_test_inputs(
             method_kwargs=test_case.method_kwargs,
         )
 
-    elif isinstance(AttrTestCase):
+    elif isinstance(test_case, AttrTestCase):
 
         inputs = ClassAttributeTestInputs(
             cls=test_case.cls,
@@ -64,6 +65,7 @@ def _get_test_inputs(
     return inputs
 
 
+@pytest.mark.skip
 def test_runner(
     test_case: Union[FunctionTestCase, MethodTestCase, AttrTestCase]
 ) -> NoReturn:
@@ -184,14 +186,14 @@ def test_runner(
     an attribute named ``attribute`` and a method named ``method``.
 
     >>> class SampleClass:
-    ...     def __init__(self, cls_arg, *, cls_kwarg=None):
+    ...     def __init__(self, cls_arg, cls_kwarg=None):
     ...         self.cls_arg = cls_arg
     ...         self.cls_kwarg = cls_kwarg
     ...     @property
     ...     def attribute(self):
     ...         return self.cls_arg + self.cls_kwarg
-    ...     def method(self, method_arg, *, method_kwarg=None):
-    ...         return self.cls_arg + self.cls_kwarg + self.method_arg + self.method_kwarg
+    ...     def method(self, method_arg, method_kwarg=None):
+    ...         return self.cls_arg + self.cls_kwarg + method_arg + method_kwarg
 
     We may set up a test case for an attribute using
     `~plasmapy.tests.helper.cases.AttrTestCase`.
@@ -233,4 +235,10 @@ def test_runner(
         raise InvalidTestError("Unable to run test.") from exc
 
     if not comparison.test_passed:
-        raise comparison.exception(comparison.error_message)
+        if comparison.exception in (UnexpectedExceptionError, ExceptionMismatchError):
+            try:
+                test_inputs.call()  # To get minimal traceback
+            except Exception as exc:
+                raise comparison.exception(comparison.error_message) from exc
+        else:
+            raise comparison.exception(comparison.error_message) from None
