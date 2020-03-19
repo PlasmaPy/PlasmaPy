@@ -19,7 +19,7 @@ from plasmapy.tests.helpers.exceptions import (
     UnexpectedWarningError,
     WarningMismatchError,
 )
-from plasmapy.tests.helpers.runners import test_runner
+from plasmapy.tests.helpers.runner import test_runner
 from plasmapy.tests.helpers.tests.sample_functions import (
     SampleClass1,
     SampleClass2,
@@ -114,7 +114,7 @@ cases_and_expected_exceptions = [
     ),
     (
         MethodTestCase(
-            expected=np.int64(36),
+            expected=36,
             cls=SampleClass2,
             method="method",
             cls_args=(1, 2),

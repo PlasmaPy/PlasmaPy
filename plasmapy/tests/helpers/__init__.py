@@ -23,4 +23,4 @@ from plasmapy.tests.helpers.inputs import (
     FunctionTestInputs,
     GenericClassTestInputs,
 )
-from plasmapy.tests.helpers.runners import test_runner
+from plasmapy.tests.helpers.runner import test_runner

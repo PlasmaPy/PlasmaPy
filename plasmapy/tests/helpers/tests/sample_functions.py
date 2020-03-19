@@ -157,7 +157,7 @@ class SampleClass2:
         and keyword arguments supplied to the method when it is called.
         """
 
-        return np.sum(
+        return sum(
             [
                 self.cls_arg1,
                 self.cls_arg2,
