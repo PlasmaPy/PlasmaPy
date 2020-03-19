@@ -178,9 +178,9 @@ class MethodTestCase:
         method: str,
         *,
         cls_args=(),
-        cls_kwargs: Optional[Dict[str, Any]],
+        cls_kwargs: Optional[Dict[str, Any]] = None,
         method_args=(),
-        method_kwargs: Optional[Dict[str, Any]],
+        method_kwargs: Optional[Dict[str, Any]] = None,
         atol=None,
         rtol=1e-8,
         purpose: Optional[str] = None,
@@ -192,7 +192,7 @@ class MethodTestCase:
         self._cls_args = cls_args
         self._cls_kwargs = {} if cls_kwargs is None else cls_kwargs
         self._method_args = method_args
-        self._method_kwargs = method_kwargs
+        self._method_kwargs = {} if method_kwargs is None else method_kwargs
         self._purpose = str(purpose)
         self._atol = atol
         self._rtol = rtol
@@ -242,7 +242,7 @@ class MethodTestCase:
         The keyword arguments to be provided to ``cls`` during
         instantiation.
         """
-        return self._cls_kwargs
+        return self._method_kwargs
 
     @property
     def rtol(self):
