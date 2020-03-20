@@ -2,8 +2,15 @@
 
 import pytest
 
-from plasmapy.tests.helpers.cases import FunctionTestCase, MethodTestCase, AttrTestCase
-from plasmapy.tests.helpers.tests.sample_functions import return_42, SampleClass2
+from plasmapy.tests.helpers.cases import (
+    AttrTestCase,
+    FunctionTestCase,
+    MethodTestCase,
+)
+from plasmapy.tests.helpers.tests.sample_functions import (
+    SampleClass2,
+    return_42,
+)
 
 
 class TestFunctionTestCase:

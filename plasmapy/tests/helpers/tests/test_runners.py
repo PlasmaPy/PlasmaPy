@@ -6,7 +6,11 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.tests.helpers.cases import FunctionTestCase, MethodTestCase, AttrTestCase
+from plasmapy.tests.helpers.cases import (
+    AttrTestCase,
+    FunctionTestCase,
+    MethodTestCase,
+)
 from plasmapy.tests.helpers.exceptions import (
     ExceptionMismatchError,
     Failed,
@@ -34,8 +38,8 @@ from plasmapy.tests.helpers.tests.sample_functions import (
 )
 from plasmapy.utils.formatting.formatting import (
     _object_name,
-    call_string,
     attribute_call_string,
+    call_string,
     method_call_string,
 )
 

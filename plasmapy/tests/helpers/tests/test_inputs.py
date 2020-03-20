@@ -1,6 +1,7 @@
 """Test the classes that store and check the inputs for a test."""
 
 import pytest
+
 from plasmapy.tests.helpers.exceptions import InvalidTestError
 from plasmapy.tests.helpers.inputs import (
     ClassAttributeTestInputs,

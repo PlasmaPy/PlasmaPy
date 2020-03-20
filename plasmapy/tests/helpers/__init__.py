@@ -2,9 +2,9 @@
 
 from plasmapy.tests.helpers.actual import ActualTestOutcome
 from plasmapy.tests.helpers.cases import (
+    AttrTestCase,
     FunctionTestCase,
     MethodTestCase,
-    AttrTestCase,
 )
 from plasmapy.tests.helpers.exceptions import (
     Failed,

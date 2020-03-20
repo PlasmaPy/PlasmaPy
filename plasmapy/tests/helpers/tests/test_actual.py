@@ -3,6 +3,7 @@
 from typing import Callable
 
 import pytest
+
 from plasmapy.tests.helpers.actual import ActualTestOutcome
 from plasmapy.tests.helpers.exceptions import InvalidTestError
 from plasmapy.tests.helpers.inputs import FunctionTestInputs

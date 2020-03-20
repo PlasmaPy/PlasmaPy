@@ -6,6 +6,7 @@ import warnings
 from typing import Any, List, Union
 
 import pytest
+
 from plasmapy.tests.helpers.exceptions import InvalidTestError
 from plasmapy.tests.helpers.inputs import (
     AbstractTestInputs,

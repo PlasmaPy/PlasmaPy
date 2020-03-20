@@ -6,6 +6,7 @@ from numbers import Number
 from typing import Any, Optional, Tuple, Union
 
 from astropy import units as u
+
 from plasmapy.tests.helpers.actual import ActualTestOutcome
 from plasmapy.tests.helpers.exceptions import (
     ExceptionMismatchError,

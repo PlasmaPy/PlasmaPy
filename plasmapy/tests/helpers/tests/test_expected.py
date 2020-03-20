@@ -3,6 +3,7 @@
 import collections
 
 import pytest
+
 from plasmapy.tests.helpers.expected import (
     ExpectedTestOutcome,
     _is_exception,

@@ -15,8 +15,8 @@ from typing import Any, Callable, Dict, List, NoReturn, Optional, Tuple, Union
 from plasmapy.tests.helpers.exceptions import InvalidTestError
 from plasmapy.utils.formatting.formatting import (
     _object_name,
-    call_string,
     attribute_call_string,
+    call_string,
     method_call_string,
 )
 

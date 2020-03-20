@@ -5,6 +5,7 @@ import collections
 import numpy as np
 import pytest
 from astropy import units as u
+
 from plasmapy.tests.helpers.actual import ActualTestOutcome
 from plasmapy.tests.helpers.comparators import (
     CompareActualExpected,

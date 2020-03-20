@@ -4,7 +4,7 @@ __all__ = ["FunctionTestCase", "MethodTestCase", "AttrTestCase"]
 
 from abc import ABC, abstractmethod
 from numbers import Real
-from typing import Any, Optional, Dict, Callable
+from typing import Any, Callable, Dict, Optional
 
 
 class _AbstractTestCase(ABC):
