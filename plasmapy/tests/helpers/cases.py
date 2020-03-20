@@ -28,7 +28,7 @@ class _AbstractTestCase(ABC):
 
 class FunctionTestCase(_AbstractTestCase):
     """
-    Stores the objects needed to test a function.
+    Stores objects that define a test case for a function.
 
     Parameters
     ----------
@@ -65,8 +65,86 @@ class FunctionTestCase(_AbstractTestCase):
 
     Examples
     --------
-    >>> return_arg = lambda arg: arg
-    >>> test_case = FunctionTestCase(function=return_arg, args=42, expected=42)
+    `FunctionTestCase` stores the objects needed by
+    `~plasmapy.tests.helpers.test_runner` to test that calling
+    a function with certain positional and/or keyword arguments results
+    in the expected outcome (which could be a value, an exception, a
+    warning, or a unit).
+
+    This example demonstrates how to set up and run a test case to check
+    that a function that takes no arguments returns a particular value.
+
+    >>> from plasmapy.tests.helpers import FunctionTestCase, test_runner
+    >>> def return_42():
+    ...     return 42
+    >>> test_case1 = FunctionTestCase(function=return_42, expected=42)
+    >>> test_runner(test_case1)
+
+    We may similarly specify a test case for a function that takes
+    positional and keyword arguments.
+
+    >>> def return_args_plus_kwarg(arg1, arg2, *, kwarg=0):
+    ...     return arg1 + arg2 + kwarg
+    >>> test_case2 = FunctionTestCase(
+    ...     function=return_args_plus_kwarg,
+    ...     args=(1, 2),
+    ...     kwargs={"kwarg": 3},
+    ...     expected=6,
+    ... )
+    >>> test_runner(test_case2)
+
+    For tests with floating point operations, we may specify a relative
+    tolerance with the ``rtol`` keyword and an absolute tolerance with
+    the ``atol`` keyword.
+
+    >>> from astropy import units as u
+    >>> def double(x):
+    ...     return 2.0 * x
+    >>> test_case3 = FunctionTestCase(
+    ...     expected=0.7360212041 * u.kg,
+    ...     function=double,
+    ...     args=0.36801 * u.kg,
+    ...     rtol=0.0001,  # relative tolerance; must be dimensionless
+    ...     atol=0.000001 * u.kg,  # absolute tolerance; needs compatible units
+    ... )
+    >>> test_runner(test_case3)
+
+    Next suppose we have a function that issues a `Warning` and returns
+    a value.
+
+    >>> import warnings
+    >>> def issue_warning():
+    ...     warnings.warn("warning message", Warning)
+    ...     return 42
+
+    We may set up a test case to check that ``issue_warning`` issues a
+    `Warning` by setting ``expected=Warning``.
+
+    >>> test_case4 = FunctionTestCase(function=issue_warning, expected=Warning)
+    >>> test_runner(test_case4)
+
+    We may set up a test case that checks both that a `Warning` is
+    issued and the expected value is returned by having ``expected`` be
+    a `tuple` containing a warning and the expected value (in either
+    order).
+
+    >>> test_case5 = FunctionTestCase(function=issue_warning, expected=(Warning, 42))
+    >>> test_runner(test_case5)
+
+    Similarly, we may test that a function raises an exception by
+    setting ``expected`` to that exception.
+
+    >>> def raise_exception():
+    ...     raise Exception
+    >>> test_case6 = FunctionTestCase(function=raise_exception, expected=Exception)
+    >>> test_runner(test_case6)
+
+    See Also
+    --------
+    ~plasmapy.tests.helpers.test_runner
+    MethodTestCase
+    AttrTestCase
+
     """
 
     def __init__(

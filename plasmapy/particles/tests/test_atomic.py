@@ -1,7 +1,8 @@
+"""Test the functions in atomic.py."""
+
 import numpy as np
 import pytest
-from astropy import constants as const
-from astropy import units as u
+from astropy import constants as const, units as u
 
 from plasmapy.particles.atomic import (
     _is_electron,
