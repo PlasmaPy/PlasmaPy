@@ -307,7 +307,7 @@ function.
 
 .. code-block:: python
 
-  def test_proof_by_riemann_hypothesis():
+   def test_proof_by_riemann_hypothesis():
        assert proof_by_riemann(False)
        assert proof_by_riemann(True)  # only run if previous test passes
 
@@ -319,10 +319,10 @@ will both be run.
 .. code-block:: python
 
   def test_proof_if_riemann_false():
-       assert proof_by_riemann(False)
+      assert proof_by_riemann(False)
 
   def test_proof_if_riemann_true():
-       assert proof_by_riemann(True)
+      assert proof_by_riemann(True)
 
 However, this approach can lead to cumbersome, repeated code if you are
 calling the same function over and over.  If you wish to run multiple
@@ -334,7 +334,7 @@ capabilities.
 
   @pytest.mark.parametrize("truth_value", [True, False])
   def test_proof_if_riemann(truth_value):
-       assert proof_by_riemann(truth_value)
+      assert proof_by_riemann(truth_value)
 
 This code snippet will run ``proof_by_riemann(truth_value)`` for each
 ``truth_value`` in ``truth_values_to_test``.  Both of the above
@@ -365,75 +365,151 @@ other `~astropy.units.Quantity` objects to within a certain tolerance.
 At other times, we will want to check that the returned value has a
 specific unit.
 
-PlasmaPy's `~plasmapy.tests` subpackage contains helper functionality
-to simplify tests that fall under the result test pattern.  These
-functions and classes thoroughly check that the actual test outcome
-matches the expected test outcome.  The potential expected outcomes can
-be values, warnings, exceptions, and units.  When the actual and
-expected test outcomes differ, then this functionality raises
-appropriate exceptions with error messages designed to pinpoint the
-problem.  The function
-`~plasmapy.tests.helper.runners.function_test_runner`
-checks that a function supplied with certain positional and keyword
-arguments yields the expected outcome.  Similarly,
-`~plasmapy.tests.helper.runners.attr_test_runner`
-performs these checks for class attributes and
-`~plasmapy.tests.helper.runners.method_test_runner`
-performs these checks for class methods.
+The `~plasmapy.tests.helpers.test_runner` function may be used to
+simplify tests that fall under the result test pattern.  This function
+thoroughly checks that the actual test outcome matches the expected
+test outcome.  The expected test outcome may be a value, a warning,
+an exception, or a unit.  When the actual and expected test outcomes
+differ, then this functionality raises appropriate exceptions with
+error messages designed to pinpoint the problem.
 
-Suppose that we want to check that a function that doubles its argument is
-working correctly.  We may use `~plasmapy.tests.helper.function_test_runner`
-to do this.
+Testing a function with ``test_runner``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Suppose we want to test a function that doubles its argument.
 
 .. code-block:: python
 
-  from plasmapy.tests.helper import function_test_runner
+   def double(x):
+       return 2 * x
 
-  def double(x):
-      return 2 * x
-
-  function_test_runner(expected=4, function=double, args=2)
-
-If we instead had ``expected=5``, then
-`~plasmapy.tests.helper.function_test_runner` would have raised an
-exception indicating a test failure.
-
-If we want to test this function for multiple arguments, we may use
-`~pytest.mark.parametrize` in conjunction with
-`~plasmapy.tests.helper.function_test_runner`.
+To test ``double``, we may use `~plasmapy.tests.helpers.test_runner`.
+To do this, we first set up a test case using
+`~plasmapy.tests.helpers.FunctionTestCase`.
 
 .. code-block:: python
 
-  import numpy as np
-  from astropy import units as u
+   from plasmapy.tests.helpers import test_runner, FunctionTestCase
 
-  values_and_expected_outcomes = [
-      (2, 4),  # passes
-      (2, 5),  # fails
-      ('bye', 'byebye'),  # passes
-      (None, TypeError),  # passes because None * 2 raises a TypeError
-      (None, ValueError),  # fails because no ValueError was raised
-      (1, Warning),  # fails because no warning was issued
-      (2 * u.m, 4 * u.m),  # passes
-      (2 * u.m, u.m),  # passes, since the expected units
-      (2 * u.m, 400 * u.cm),  # fails, since the units are not identical
-      (np.nan, np.nan),  # passes, even though np.nan == np.nan returns False
-  ]
+   def test_double():
+       # Set up the test case
+       test_case_for_double = FunctionTestCase(function=double, args=2, expected=4)
+       # Run the actual test
+       test_runner(test_case_for_double)
 
-  @pytest.mark.parametrize("value, doubled_value", [(1, 2), (2, 4), ('.', '..'), (None)])
-  def test_double(value, doubled_value):
-      function_test_runner(expected=doubled_value, function=double, args=value)
+No exception is raised and this test passes because ``double(2)`` returns
+the expected value of ``4``.  If we instead had ``expected=5``, then
+`~plasmapy.tests.helpers.test_runner` would have raised an exception
+and this test would have failed.
 
-Please refer to the documentation for
-`~plasmapy.tests.helper.function_test_runner`,
-`~plasmapy.tests.helper.attr_test_runner`, and
-`~plasmapy.tests.helper.method_test_runner` for the full capabilities
-of these functions.
+We may similarly use `~plasmapy.tests.helpers.FunctionTestCase` and
+`~plasmapy.tests.helpers.test_runner` to test a function that adds
+two positional and two keyword arguments.
+
+.. code-block:: python
+
+   def add(a, b, *, c=0, d=0):
+       return a + b + c + d
+
+   def test_add():
+       args = (1, 2)
+       kwargs = {"c": 3, "d": 4}
+       test_case = FunctionTestCase(function=add, args=args, kwargs=kwargs, expected=10)
+       test_runner(test_case)
+
+In this example, we are testing that ``add(*args, **kwargs)`` [or
+equivalently, ``add(1, 2, c=3, d=4)``] returns ``expected`` which is
+``10``.  If ``args`` is a `tuple` or `list`, then it contains each of
+the positional arguments provided to the function when it is being
+tested.  If ``args`` is any other `object`, then ``args`` will be
+treated as the sole positional argument.  The keyword arguments are
+supplied in ``kwargs``.
+
+Parametrizing with ``test_runner``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The `~plasmapy.tests.helpers.test_runner` function is particularly useful with
+`~pytest.mark.parametrize`.
+
+.. code-block:: python
+
+   import astropy.units as u
+   import pytest
+   import warnings
+
+   def return_quantity():
+       return 6 * u.kg
+
+   def issue_warning():
+       warnings.warn("warning message", Warning)
+       return 42
+
+   def raise_exception():
+       raise Exception
+
+   test_cases = [
+       FunctionTestCase(function=return_quantity, expected = 6 * u.kg, rtol=1e-9, atol=1e-8),
+       FunctionTestCase(function=return_quantity, expected=u.kg),
+       FunctionTestCase(function=issue_warning, expected=(Warning),
+       FunctionTestCase(function=issue_warning, expected=(42, Warning)),  # tuple with value and warning
+       FunctionTestCase(function=raise_exception, expected=Exception),
+   ]
+
+   @pytest.mark.parametrize("test_case", test_cases)
+   def test_functions(test_case):
+       test_runner(test_case)
+
+Here, ``rtol`` and ``atol`` keywords specify the relative and absolute
+tolerances for the comparison.
+
+Testing methods and attributes with ``test_runner``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We may similarly test methods and attributes of class instances using
+`~plasmapy.tests.helpers.test_runner` with
+`~plasmapy.tests.helpers.MethodTestCase` and
+`~plasmapy.tests.helpers.AttrTestCase`, respectively.
+
+.. code-block:: python
+
+   from plasmapy.tests.helpers import test_runner, MethodTestCase, AttrTestCase
+
+   class SampleClass:
+       def __init__(self, cls_arg, *, cls_kwarg=0):
+           self.cls_arg = cls_arg
+           self.cls_kwarg = cls_kwarg
+       def sample_method(self, method_arg1, method_arg2, *, method_kwarg=0):
+           return self.cls_arg + self.cls_kwarg + method_arg1 + method_arg2 + method_kwarg
+       @property
+       def sample_attribute(self):
+           return self.cls_arg + self.cls_kwarg
+
+   def test_method():
+       method_test_case = MethodTestCase(
+           cls=SampleClass,
+           method="sample_method",
+           cls_args=1,
+           cls_kwargs={"cls_kwarg": 2},
+           method_args=(3, 4),
+           method_kwargs={"method_kwarg": 5},
+           expected=15,
+       )
+       test_runner(method_test_case)
+
+   def test_attribute():
+       attr_test_case = AttrTestCase(
+           cls=SampleClass,
+           attribute="sample_attribute",
+           cls_args=1,
+           cls_kwargs={"cls_kwarg": 2},
+           expected=3,
+       )
+       test_runner(attr_test_case)
 
 .. warning::
 
-    The API for helper functions within `~plasmapy.tests` is unstable
-    and may change in the near future.
+    The API for helper functions within `~plasmapy.tests.helpers`
+    may change in the near future.
 
 .. _testing-guidelines-writing-tests-fixtures:
 
