@@ -247,6 +247,65 @@ class MethodTestCase:
         or `~astropy.units.allclose`.  If ``atol`` is a
         `~astropy.units.Quantity`, then it must have the same units as
         ``this`` and ``that``.  Defaults to zero in the appropriate units.
+
+    Examples
+    --------
+    `MethodTestCase` stores the objects needed by
+    `~plasmapy.tests.helpers.test_runner` to test that calling a method
+    of a class instance results in the expected outcome (which could be
+    a value, an exception, a warning, or a unit).
+
+    Suppose we have a simple class with a simple method that returns a
+    value.  Neither the class nor the method takes any arguments.
+
+    >>> class SimpleClass:
+    ...     def simple_method(self):
+    ...         return 6
+
+    We may set up a test case with `MethodTestCase` and run that case
+    with `~plasmapy.tests.helpers.test_runner`.
+
+    >>> from plasmapy.tests.helpers import MethodTestCase, test_runner
+    >>> test_case = MethodTestCase(cls=SimpleClass, method="simple_method", expected=6)
+    >>> test_runner(test_case)
+
+    A more complex class may accept positional and/or keyword arguments
+    upon instantiation, and methods in that class may also accept
+    positional and/or keyword arguments.
+
+    >>> class ComplexClass:
+    ...     def __init__(self, cls_arg1, cls_arg2, *, cls_kwarg1=0, cls_kwarg2=0):
+    ...         self.everything = [cls_arg1, cls_arg2, cls_kwarg1, cls_kwarg2]
+    ...     def complex_method(self, method_arg, *, method_kwarg=0):
+    ...         return sum(self.everything) + method_arg + method_kwarg
+
+    We may use the ``cls_args`` and ``cls_kwargs`` arguments to specify
+    the positional and keyword arguments to be supplied to the class
+    during instantiation within the test, and ``method_args`` and
+    ``method_kwargs`` to specify the arguments to be passed to the
+    method.
+
+    >>> more_complex_test_case = MethodTestCase(
+    ...     expected=21,
+    ...     cls=ComplexClass,
+    ...     method="complex_method",
+    ...     cls_args=(1, 2),
+    ...     cls_kwargs={"cls_kwarg1": 3, "cls_kwarg2": 4},
+    ...     method_args=5,
+    ...     method_kwargs={"method_kwarg": 6},
+    ... )
+    >>> test_runner(more_complex_test_case)
+
+    If either of ``cls_args`` or ``method_args`` is a `tuple` or `list`,
+    then it will be treated as a collection of positional arguments.
+    If either of these arguments is any other type of `object`, then it
+    will be treated as the sole positional argument.
+
+    See Also
+    --------
+    ~plasmapy.tests.helpers.test_runner
+    FunctionTestCase
+    AttrTestCase
     """
 
     def __init__(
@@ -372,6 +431,13 @@ class AttrTestCase:
         or `~astropy.units.allclose`.  If ``atol`` is a
         `~astropy.units.Quantity`, then it must have the same units as
         ``this`` and ``that``.  Defaults to zero in the appropriate units.
+
+
+    See Also
+    --------
+    ~plasmapy.tests.helpers.test_runner
+    FunctionTestCase
+    MethodTestCase
     """
 
     def __init__(
