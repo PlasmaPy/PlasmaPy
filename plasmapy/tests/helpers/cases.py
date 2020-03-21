@@ -261,6 +261,9 @@ class MethodTestCase:
     >>> class SimpleClass:
     ...     def simple_method(self):
     ...         return 6
+    >>> instance = SimpleClass()
+    >>> instance.simple_method()
+    6
 
     We may set up a test case with `MethodTestCase` and run that case
     with `~plasmapy.tests.helpers.test_runner`.
@@ -275,9 +278,9 @@ class MethodTestCase:
 
     >>> class ComplexClass:
     ...     def __init__(self, cls_arg1, cls_arg2, *, cls_kwarg1=0, cls_kwarg2=0):
-    ...         self.everything = [cls_arg1, cls_arg2, cls_kwarg1, cls_kwarg2]
+    ...         self._everything = [cls_arg1, cls_arg2, cls_kwarg1, cls_kwarg2]
     ...     def complex_method(self, method_arg, *, method_kwarg=0):
-    ...         return sum(self.everything) + method_arg + method_kwarg
+    ...         return sum(self._everything) + method_arg + method_kwarg
 
     We may use the ``cls_args`` and ``cls_kwargs`` arguments to specify
     the positional and keyword arguments to be supplied to the class
@@ -432,6 +435,58 @@ class AttrTestCase:
         `~astropy.units.Quantity`, then it must have the same units as
         ``this`` and ``that``.  Defaults to zero in the appropriate units.
 
+    Examples
+    --------
+    `AttrTestCase` stores the objects needed by
+    `~plasmapy.tests.helpers.test_runner` to test that accessing an
+    attribute of a class instance results in the expected outcome (which
+    could be a value, an exception, a warning, or a unit).
+
+    Suppose we have a simple class with a simple attribute that returns
+    a value.  The class does not accept any arguments.
+
+    >>> class SimpleClass:
+    ...     @property
+    ...     def simple_attribute(self):
+    ...         return 6
+    >>> instance = SimpleClass()
+    >>> instance.simple_attribute
+    6
+
+    We may set up a test case with `AttrTestCase` and run that case
+    with `~plasmapy.tests.helpers.test_runner`.
+
+    >>> from plasmapy.tests.helpers import AttrTestCase, test_runner
+    >>> test_case = AttrTestCase(cls=SimpleClass, attribute="simple_attribute", expected=6)
+    >>> test_runner(test_case)
+
+    A more complex class may accept positional and/or keyword arguments
+    upon instantiation.
+
+    >>> class ComplexClass:
+    ...     def __init__(self, cls_arg1, cls_arg2, *, cls_kwarg1=0, cls_kwarg2=0):
+    ...         self._everything = [cls_arg1, cls_arg2, cls_kwarg1, cls_kwarg2]
+    ...     @property
+    ...     def complex_attribute(self):
+    ...         return sum(self._everything)
+
+    We may use the ``cls_args`` and ``cls_kwargs`` arguments to specify
+    the positional and keyword arguments to be supplied to the class
+    during instantiation within the test.
+
+    >>> more_complex_test_case = AttrTestCase(
+    ...     expected=10,
+    ...     cls=ComplexClass,
+    ...     attribute="complex_attribute",
+    ...     cls_args=(1, 2),
+    ...     cls_kwargs={"cls_kwarg1": 3, "cls_kwarg2": 4},
+    ... )
+    >>> test_runner(more_complex_test_case)
+
+    If ``cls_args`` is a `tuple` or `list`, then it will be treated as a
+    collection of positional arguments.  If ``cls_args`` is any other
+    type of `object`, then it will be treated as the sole positional
+    argument.
 
     See Also
     --------
