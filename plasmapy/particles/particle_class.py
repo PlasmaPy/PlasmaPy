@@ -498,7 +498,7 @@ class Particle(AbstractParticle):
                 return self.particle == other_particle.particle
             except InvalidParticleError as exc:
                 raise InvalidParticleError(
-                    f"{other} is not a particle and cannot be " f"compared to {self}."
+                    f"{other} is not a particle and cannot be compared to {self}."
                 ) from exc
 
         if not isinstance(other, self.__class__):
@@ -1671,7 +1671,7 @@ class DimensionlessParticle(AbstractParticle):
 
     def __repr__(self):
         """
-        Return a call string that would recreate this object.
+        Return a string representation of a dimensionless particle.
 
         Examples
         --------
@@ -1681,9 +1681,13 @@ class DimensionlessParticle(AbstractParticle):
         """
         return f"DimensionlessParticle(mass={self.mass}, charge={self.charge})"
 
+
     @staticmethod
     def _validate_parameter(obj, can_be_negative=True) -> np.float64:
         """Verify that the argument corresponds to a valid real number."""
+
+        # TODO: Replace with validator? Use an equivalency between coulombs and reals.
+
         if obj is None or obj is np.nan:
             return np.nan
         elif np.isinf(obj):
@@ -1785,7 +1789,7 @@ class CustomParticle(AbstractParticle):
 
     def __repr__(self):
         """
-        Return a call string that would recreate this object.
+        Return a string representation of a custom particle.
 
         Examples
         --------
