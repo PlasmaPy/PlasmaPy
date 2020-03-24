@@ -1,43 +1,42 @@
 """The Particle class."""
 
-import warnings
-from typing import Union, Set, Tuple, List, Optional
-from collections import defaultdict, namedtuple
-from numbers import Integral, Real, Complex
+__all__ = ["AbstractParticle", "Particle", "DimensionlessParticle", "CustomParticle"]
 
-import numpy as np
-import astropy.units as u
+import warnings
+from abc import ABC, abstractmethod
+from collections import defaultdict, namedtuple
+from numbers import Complex, Integral, Real
+from typing import List, Optional, Set, Tuple, Union
+
 import astropy.constants as const
+import astropy.units as u
+import numpy as np
 
 import plasmapy.utils.roman as roman
 from plasmapy.particles.elements import _Elements, _PeriodicTable
-from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.exceptions import (
     AtomicError,
-    MissingAtomicDataError,
+    AtomicWarning,
     ChargeError,
+    InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
-    InvalidElementError,
     InvalidParticleError,
-    AtomicWarning,
+    MissingAtomicDataError,
     MissingAtomicDataWarning,
 )
+from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.parsing import (
     _dealias_particle_aliases,
-    _parse_and_check_atomic_input,
     _invalid_particle_errmsg,
+    _parse_and_check_atomic_input,
 )
 from plasmapy.particles.special_particles import (
-    _Particles,
     ParticleZoo,
-    _special_ion_masses,
     _antiparticles,
+    _Particles,
+    _special_ion_masses,
 )
-
-from abc import ABC, abstractmethod
-
-__all__ = ["AbstractParticle", "Particle", "DimensionlessParticle", "CustomParticle"]
 
 _classification_categories = {
     "lepton",
@@ -1729,6 +1728,8 @@ class DimensionlessParticle(AbstractParticle):
                 f"The mass of a dimensionless particle must be a real "
                 f"number that is greater than or equal to zero, not: {m}"
             ) from None
+        if self._mass is np.nan:
+            warnings.warn("DimensionlessParticle mass set to NaN", MissingAtomicDataWarning)
 
     @charge.setter
     def charge(self, q: Optional[Union[Real, u.Quantity]]):
@@ -1739,6 +1740,8 @@ class DimensionlessParticle(AbstractParticle):
                 f"The charge of a dimensionless particle must be a real "
                 f"number, not: {q}"
             ) from None
+        if self._charge is np.nan:
+            warnings.warn("DimensionlessParticle charge set to NaN", MissingAtomicDataWarning)
 
 
 class CustomParticle(AbstractParticle):
@@ -1812,6 +1815,7 @@ class CustomParticle(AbstractParticle):
     def mass(self, m: u.kg):
         if m is None:
             self._mass = np.nan * u.kg
+            warnings.warn("CustomParticle mass set to NaN kg", MissingAtomicDataWarning)
         elif not isinstance(m, u.Quantity):
             raise TypeError(
                 "The mass of a custom particle must be a nonnegative Quantity "
@@ -1837,6 +1841,7 @@ class CustomParticle(AbstractParticle):
     def charge(self, q: Optional[Union[u.Quantity, Real]]):
         if q is None:
             self._charge = np.nan * u.C
+            warnings.warn("CustomParticle charge set to NaN C", MissingAtomicDataWarning)
         elif isinstance(q, Real):
             self._charge = q * const.e.si
         elif isinstance(q, u.Quantity):
