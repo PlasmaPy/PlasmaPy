@@ -1681,9 +1681,6 @@ class DimensionlessParticle(AbstractParticle):
         """
         return f"DimensionlessParticle(mass={self.mass}, charge={self.charge})"
 
-    def __str__(self):
-        return self.__repr__()
-
     @staticmethod
     def _validate_parameter(obj, can_be_negative=True) -> np.float64:
         """Verify that the argument corresponds to a valid real number."""
@@ -1797,9 +1794,6 @@ class CustomParticle(AbstractParticle):
         'CustomParticle(mass=1.2...e-26 kg, charge=9.2...e-19 C)'
         """
         return f"CustomParticle(mass={self.mass}, charge={self.charge})"
-
-    def __str__(self):
-        return self.__repr__()
 
     @property
     def mass(self) -> u.kg:
