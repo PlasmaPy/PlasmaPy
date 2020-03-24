@@ -1637,6 +1637,9 @@ class DimensionlessParticle(AbstractParticle):
     """
     A class to represent dimensionless custom particles.
 
+    This class may be used, for example, to represent a particle in a
+    dimensionless particle-in-cell simulation.
+
     Parameters
     ----------
     mass : positive real number, keyword-only, optional
@@ -1647,7 +1650,8 @@ class DimensionlessParticle(AbstractParticle):
 
     Notes
     -----
-    The charge and mass default to `~numpy.nan` when not specified.
+    If the charge or mass is not specified, then the corresponding value
+    will be set to ``numpy.nan``.
 
     Examples
     --------
@@ -1680,7 +1684,6 @@ class DimensionlessParticle(AbstractParticle):
         'DimensionlessParticle(mass=1.45, charge=1.23)'
         """
         return f"DimensionlessParticle(mass={self.mass}, charge={self.charge})"
-
 
     @staticmethod
     def _validate_parameter(obj, can_be_negative=True) -> np.float64:
@@ -1749,6 +1752,9 @@ class CustomParticle(AbstractParticle):
     """
     A class to represent custom particles.
 
+    Example use cases for this class include representing an average
+    ion in a multi-component plasma, molecules, or dust grains.
+
     Parameters
     ----------
     mass : ~astropy.units.Quantity, optional
@@ -1765,6 +1771,16 @@ class CustomParticle(AbstractParticle):
     InvalidParticleError
         If the charge or mass provided is invalid so that the custom
         particle cannot be created.
+
+    See Also
+    --------
+    ~plasmapy.particles.Particle
+    ~plasmapy.particles.DimensionlessParticle
+
+    Notes
+    -----
+    If the charge or mass is not specified, then the corresponding value
+    will be set to ``numpy.nan`` in the appropriate units.
 
     Examples
     --------
