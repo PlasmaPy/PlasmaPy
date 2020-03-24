@@ -1858,6 +1858,7 @@ class CustomParticle(AbstractParticle):
             warnings.warn("CustomParticle charge set to NaN C", MissingAtomicDataWarning)
         elif isinstance(q, Real):
             self._charge = q * const.e.si
+            warnings.warn(f"CustomParticle charge set to {q} times the elementary charge.")
         elif isinstance(q, u.Quantity):
             if not isinstance(q.value, Real):
                 raise InvalidParticleError(
