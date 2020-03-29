@@ -6,6 +6,7 @@ import numpy as np
 import tqdm.auto
 import xarray
 from astropy import units as u
+
 from plasmapy import formulary, particles
 from plasmapy.utils.decorators import check_units
 
@@ -248,8 +249,8 @@ class ParticleTracker:
     }
 
     _wip_integrators = {
-        "implicit_boris2": particle_integrators.boris_push_implicit2,
-        "zenitani": particle_integrators.zenitani,
+        # "implicit_boris2": particle_integrators.boris_push_implicit2,
+        "zenitani": particle_integrators.zenitani
     }
 
     _all_integrators = dict(**integrators, **_wip_integrators)
@@ -314,7 +315,7 @@ class ParticleTracker:
         dt: u.s = np.inf * u.s,
         nt: int = np.inf,
         """
-        integrator = self.integrators[pusher]
+        integrator = self._all_integrators[pusher]
         if dt is None:
             b = np.linalg.norm(self.plasma.interpolate_B(self.x), axis=-1)
             gyroperiod = (1 / formulary.gyrofrequency(b, self.particle, to_hz=True)).to(
