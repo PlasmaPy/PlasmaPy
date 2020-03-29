@@ -6,7 +6,6 @@ import numpy as np
 import tqdm.auto
 import xarray
 from astropy import units as u
-
 from plasmapy import formulary, particles
 from plasmapy.utils.decorators import check_units
 
@@ -101,7 +100,7 @@ class ParticleTrackerAccessor:
         ), "Kinetic energy is not conserved!"
 
     def visualize(
-        self, figure=None, particles=(0,), stride=1, plasma=None
+        self, figure=None, particles=(0,), stride=1, plasma=None, name=None
     ):  # coverage: ignore
         """Plot the trajectory using PyVista."""
         import pyvista as pv
@@ -117,7 +116,7 @@ class ParticleTrackerAccessor:
                 points,
                 max((1000, self._obj.sizes["time"] // 100)),  # TODO clean this up!
             )
-            fig.add_mesh(trajectory)
+            fig.add_mesh(trajectory, name=name)
 
         if plasma is not None:
             if hasattr(plasma, "visualize"):
@@ -246,9 +245,14 @@ class ParticleTracker:
     integrators = {
         "explicit_boris": particle_integrators.boris_push,
         "implicit_boris": particle_integrators.boris_push_implicit,
-        # "implicit_boris2": particle_integrators.boris_push_implicit2,
+    }
+
+    _wip_integrators = {
+        "implicit_boris2": particle_integrators.boris_push_implicit2,
         "zenitani": particle_integrators.zenitani,
     }
+
+    _all_integrators = dict(**integrators, **_wip_integrators)
 
     @particles.particle_input
     @check_units()
@@ -316,9 +320,9 @@ class ParticleTracker:
             gyroperiod = (1 / formulary.gyrofrequency(b, self.particle, to_hz=True)).to(
                 u.s
             )
-            dt = gyroperiod.min() / 20
+            dt = gyroperiod.min() / 10
             warnings.warn(
-                f"Set timestep to {dt:.3e}, 1/20 of smallest gyroperiod", UserWarning
+                f"Set timestep to {dt:.3e}, 1/10 of smallest gyroperiod", UserWarning
             )
 
         _dt = dt.si.value

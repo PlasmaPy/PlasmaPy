@@ -1,12 +1,10 @@
 import astropy.units as u
-from astropy.tests.helper import assert_quantity_allclose
 import numpy as np
-
+import pytest
+import xarray
+from astropy.tests.helper import assert_quantity_allclose
 from plasmapy import simulation
 from plasmapy.classes.sources import Coils
-import xarray
-
-import pytest
 
 
 @pytest.fixture
@@ -43,6 +41,6 @@ def test_saving_loading(solution, tmp_path):
 
 def test_velocity_vector_norm(solution):
     assert np.allclose(
-        solution.particletracker.vector_norm("velocity", "dimension"),
-        solution.isel(time=[0]).particletracker.vector_norm("velocity", "dimension"),
+        solution.particletracker.vector_norm("velocity"),
+        solution.isel(time=[0]).particletracker.vector_norm("velocity"),
     ), "Velocity magnitude should be conserved!"
