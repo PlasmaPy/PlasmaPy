@@ -150,9 +150,12 @@ class ParticleTrackerAccessor:
                 warnings.warn(
                     f"Plasma object {plasma} passed to animate, but it has no visualize method!"
                 )
-        fig.show(auto_close=False)  # TODO prevent this from displaying the picture
+        for renderer in fig.renderers:
+            if not renderer.camera_set:
+                renderer.camera_position = renderer.get_default_cam_pos()
+                renderer.ResetCamera()
         fig.write_frame()
-        abs_vel = self.vector_norm("velocity", dim="dimension")
+        abs_vel = self.vector_norm("velocity")
         self._obj["|v|"] = (("time", "particle"), abs_vel)
         if plot_arrows:
             vectors = self._obj["velocity"] / (10 * self._obj["|v|"])

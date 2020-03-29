@@ -5,13 +5,14 @@ as first raised in issue #100.
 
 import abc
 import numbers
-import numpy as np
-import scipy.special
-import scipy.constants
-import numba
 
+import numba
+import numpy as np
+import scipy.constants
+import scipy.special
 from astropy import constants
 from astropy import units as u
+
 from plasmapy.utils.decorators import validate_quantities
 
 
@@ -551,17 +552,13 @@ class CircularWire(Wire):
         import pyvista as pv
 
         if figure is None:
-            fig = pv.Plotter(notebook=True)
+            fig = pv.Plotter()
             fig.add_axes()
         else:
             fig = figure
         x, y, z = points = self.curve(np.linspace(0, 2 * np.pi))
-        spline = pv.Spline(points.T, 1000)
-        trajectory = spline
-        if figure is None:
-            trajectory.plot(color=color)
-        else:
-            figure.add_mesh(trajectory, color=color)
+        trajectory = pv.Spline(points.T, 1000)
+        fig.add_mesh(trajectory, color=color)
         return fig
 
     def to_GeneralWire(self):

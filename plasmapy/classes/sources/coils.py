@@ -1,6 +1,7 @@
-from plasmapy.classes.plasma_base import GenericPlasma
 import astropy.units as u
 import numpy as np
+
+from plasmapy.classes.plasma_base import GenericPlasma
 from plasmapy.formulary import magnetostatics
 
 E_unit = u.V / u.m
@@ -32,6 +33,18 @@ class Coils(GenericPlasma):
     def interpolate_B(self, r: u.m):
         return u.Quantity(self._interpolate_B(r.si.value), u.T)
 
+    def __repr__(self):
+        names = []
+        for ms in self.magnetostatics:
+            name = f"{ms.__class__.__name__}({ms.current * u.A})"
+            names.append(name)
+        from collections import Counter
+
+        items = []
+        for key, value in Counter(names).items():
+            items.append(f"{value} x {key}")
+        return f"{self.__class__.__name__}({', '.join(items)})"
+
     @classmethod
     def is_datasource_for(cls, **kwargs):
         match = "interpolate_B" in kwargs.keys()
@@ -41,15 +54,12 @@ class Coils(GenericPlasma):
         import pyvista as pv
 
         if figure is None:
-            fig = pv.Plotter(notebook=True)
+            fig = pv.Plotter()
         else:
             fig = figure
 
         for ms in self.magnetostatics:
             ms.visualize(fig)
-
-        if figure is None:
-            fig.show()
 
         return fig
 
