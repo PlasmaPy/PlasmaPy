@@ -45,8 +45,10 @@ try:
     #
     # note: if there's any distribution metadata in your source files, then this
     #       will find a version based on those files.  Keep distribution metadata
-    #       out of your repository unless you've intentially installed using
-    #       as editable (e.g. `pip install -e `)
+    #       out of your repository unless you've intentionally installed the package
+    #       as editable (e.g. `pip install -e {plasmapy_directory_root}`),
+    #       but then __version__ will not be updated with each commit, it is
+    #       frozen to the version at time of install.
     __version__ = pkg_resources.get_distribution("plasmapy").version
 except pkg_resources.DistributionNotFound:
     # package is not installed
