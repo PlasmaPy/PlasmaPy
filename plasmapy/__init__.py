@@ -67,8 +67,8 @@ except pkg_resources.DistributionNotFound:
 
     if __version__ == fallback_version:
         from warnings import warn
-        warn(f"plasmapy.__version__ not generated (0.0.0), PlasmaPy is not an "
-             f"installed package and {warn_add}.", RuntimeWarning)
+        warn(f"plasmapy.__version__ not generated (set to 'unknown'), PlasmaPy is "
+             f"not an installed package and {warn_add}.", RuntimeWarning)
 
         del warn
     del fallback_version, warn_add
