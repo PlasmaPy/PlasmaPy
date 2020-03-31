@@ -145,7 +145,7 @@ documentation.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Development guide
+   :caption: About
 
    about/index
 
