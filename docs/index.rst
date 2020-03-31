@@ -58,11 +58,6 @@ PlasmaPy Documentation
 community-developed core `Python <https://www.python.org/>`_ 3.6+
 package for plasma physics currently under development.
 
-.. _toplevel-getting-started:
-
-***************
-Getting Started
-***************
 
 .. toctree::
    :caption: Getting started
@@ -80,34 +75,24 @@ Getting Started
   <http://www.plasmapy.org/>`_
 * `Using astropy.units <http://docs.astropy.org/en/stable/units/>`_
 
-.. _toplevel-user-documentation:
-
-******************
-User Documentation
-******************
-
 .. toctree::
    :maxdepth: 1
    :caption: Formulary
+   :hidden:
 
    formulary/index
-
-The `~plasmapy.formulary` subpackage aims to cover the `NRL Plasma Physics
-Formulary <https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary>`_.
-
 
 .. toctree::
    :maxdepth: 1
    :caption: Experimental tools
+   :hidden:
 
    diagnostics/index
-
-The `~plasmapy.diagnostics` package is in the early stages of
-development.
 
 .. toctree::
     :maxdepth: 1
     :caption: Data structures and simulation
+    :hidden:
 
     plasma/index
     simulation/particletracker
@@ -115,18 +100,21 @@ development.
 .. toctree::
     :maxdepth: 1
     :caption: Particle data
+    :hidden:
 
     particles/index
 
 .. toctree::
    :maxdepth: 1
    :caption: Utilities
+   :hidden:
 
    utils/index
 
 .. toctree::
     :maxdepth: 1
     :caption: Examples
+    :hidden:
 
     auto_examples/index
 
@@ -134,13 +122,9 @@ development.
 .. toctree::
     :maxdepth: 1
     :caption: Development guide
+    :hidden:
 
     development/index
-
-
-The :ref:`plasmapy-development-guide` contains information on how to
-contribute to PlasmaPy, along with guidelines for code, testing, and
-documentation.
 
 
 .. toctree::
