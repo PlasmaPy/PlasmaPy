@@ -18,7 +18,7 @@ PlasmaPy Documentation
 
 .. raw:: html
 
-    </div> 
+    </div>
 
 .. raw:: html
 
@@ -46,7 +46,7 @@ PlasmaPy Documentation
 
 .. raw:: html
 
-    </div> 
+    </div>
 
 .. image:: _static/graphic-circular.png
    :alt: PlasmaPy logo
@@ -65,6 +65,7 @@ Getting Started
 ***************
 
 .. toctree::
+   :caption: Getting started
    :maxdepth: 1
 
    install
@@ -85,104 +86,72 @@ Getting Started
 User Documentation
 ******************
 
-.. _toplevel-plasma-parameters:
+.. toctree::
+   :maxdepth: 1
+   :caption: Formulary
 
-Formulary
----------
+   formulary/index
 
 The `~plasmapy.formulary` subpackage aims to cover the `NRL Plasma Physics
 Formulary <https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary>`_.
 
+
 .. toctree::
    :maxdepth: 1
+   :caption: Experimental tools
 
-   formulary/index
-
-.. _toplevel-experimental-tools:
-
-Experimental Tools
-------------------
+   diagnostics/index
 
 The `~plasmapy.diagnostics` package is in the early stages of
 development.
 
 .. toctree::
-   :maxdepth: 1
-
-   diagnostics/index
-
-.. _toplevel-data-structures:
-
-Data Structures and Simulation
-------------------------------
-
-.. toctree::
     :maxdepth: 1
+    :caption: Data structures and simulation
 
     plasma/index
     simulation/particletracker
 
-.. _toplevel-particle-data:
-
-Particle Data
--------------
-
 .. toctree::
     :maxdepth: 1
+    :caption: Particle data
 
     particles/index
 
-.. _toplevel-utilities:
-
-Utilities
----------
-
 .. toctree::
    :maxdepth: 1
+   :caption: Utilities
 
    utils/index
 
-.. _toplevel-examples:
-
-Examples
---------
 .. toctree::
     :maxdepth: 1
+    :caption: Examples
 
     auto_examples/index
 
-.. _toplevel-development-guide:
 
-*****************
-Development Guide
-*****************
+.. toctree::
+    :maxdepth: 1
+    :caption: Development guide
+
+    development/index
+
 
 The :ref:`plasmapy-development-guide` contains information on how to
 contribute to PlasmaPy, along with guidelines for code, testing, and
 documentation.
 
+
 .. toctree::
-    :maxdepth: 1
-    :hidden:
+   :maxdepth: 2
+   :caption: Development guide
 
-    development/index
-
-.. _toplevel-project-details:
-
-***************
-Project Details
-***************
+   about/index
 
 .. The about PlasmaPy section has some important information that would
    be helpful to have more readily accessible from the main doc index
    page.
-
-.. toctree::
-   :maxdepth: 2
-
-   about/index
-
-.. _toplevel-index:
 
 *****
 Index
