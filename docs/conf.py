@@ -44,9 +44,8 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'numpy': ('https://docs.scipy.org/doc/numpy', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
-    'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
-    'astropy': ('http://docs.astropy.org/en/stable/', None),
-    'numba': ('https://numba.pydata.org/numba-doc/dev/', None)}
+    'pandas': ('http://pandas.pydata.org/pandas-docs/stable/', None),
+    'astropy': ('http://docs.astropy.org/en/stable/', None)}
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -228,6 +227,5 @@ sphinx_gallery_conf = {
         'binderhub_url': 'https://mybinder.org',
         'dependencies': ['../binder/requirements.txt'],
         'notebooks_dir': 'plasmapy/examples',
-    },
-    'image_scrapers': ('matplotlib'),
+    }
 }
