@@ -9,8 +9,8 @@ An example of using PlasmaPy's particle stepper class.
 import numpy as np
 from astropy import units as u
 from plasmapy.classes.sources import AnalyticalFields
-from plasmapy.formulary import gyrofrequency
 from plasmapy.simulation import ParticleTracker
+from plasmapy.formulary import gyrofrequency
 
 ############################################################
 # Initialize a plasma. This will be a source of electric and magnetic
@@ -71,12 +71,12 @@ solution.plot_trajectories()
 
 try:
     import pyvista
-except ImportError:
-    pass
-else:
+
     fig = pyvista.Plotter()
     solution.visualize(fig)
     fig.show()
+except ImportError:
+    pass
 
 ############################################################
 # As a test, we calculate the mean velocity in the z direction from the
@@ -112,10 +112,10 @@ solution.plot_time_trajectories("z")
 
 try:
     import pyvista
-except:
-    pass
-else:
+
     fig = pyvista.Plotter()
     for i in range(N):
         solution.visualize(fig, i)
     fig.show()
+except ImportError:
+    pass
