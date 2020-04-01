@@ -229,5 +229,5 @@ sphinx_gallery_conf = {
         'dependencies': ['../binder/requirements.txt'],
         'notebooks_dir': 'plasmapy/examples',
     },
-    'image_scrapers': ('pyvista', 'matplotlib'),
+    'image_scrapers': ('matplotlib'),
 }

@@ -67,16 +67,13 @@ solution.plot_time_trajectories("yz")
 solution.plot_trajectories()
 
 ############################################################
-# If you have Pyvista, you can  run the following line - it'll open up a neat 3D visualization.
+# If you have Pyvista, you can  run the following code - it'll open up a neat 3D visualization.
 
-try:
-    import pyvista
+# import pyvista
 
-    fig = pyvista.Plotter()
-    solution.visualize(fig)
-    fig.show()
-except ImportError:
-    pass
+# fig = pyvista.Plotter()
+# solution.visualize(fig)
+# fig.show()
 
 ############################################################
 # As a test, we calculate the mean velocity in the z direction from the
@@ -110,12 +107,8 @@ solution.plot_time_trajectories("z")
 #############################################################
 # And, optionally, with Pyvista:
 
-try:
-    import pyvista
-
-    fig = pyvista.Plotter()
-    for i in range(N):
-        solution.visualize(fig, i)
-    fig.show()
-except ImportError:
-    pass
+# import pyvista
+# fig = pyvista.Plotter()
+# for i in range(N):
+#     solution.visualize(fig, i)
+# fig.show()
