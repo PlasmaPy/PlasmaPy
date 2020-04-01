@@ -9,8 +9,8 @@ An example of using PlasmaPy's particle stepper class.
 import numpy as np
 from astropy import units as u
 from plasmapy.classes.sources import AnalyticalFields
-from plasmapy.simulation import ParticleTracker
 from plasmapy.formulary import gyrofrequency
+from plasmapy.simulation import ParticleTracker
 
 ############################################################
 # Initialize a plasma. This will be a source of electric and magnetic
@@ -59,12 +59,12 @@ trajectory = ParticleTracker(
 # We'll just show the y-z trajectories for clarity.
 
 solution = trajectory.run(50 * gyroperiod, timestep)
-solution.plot_time_trajectories("yz")
+solution.particletracker.plot_time_trajectories("yz")
 
 ############################################################
 # Plot the shape of the trajectory in 3D.
 
-solution.plot_trajectories()
+solution.particletracker.plot_trajectories()
 
 ############################################################
 # If you have Pyvista, you can  run the following code - it'll open up a neat 3D visualization.
@@ -96,13 +96,13 @@ trajectory = ParticleTracker(plasma, v=v * u.m / u.s, particle_type="p")
 # we choose this as our example's thumbnail:
 # sphinx_gallery_thumbnail_number = 3
 solution = trajectory.run(gyroperiod * 20, timestep / 10)
-solution.plot_trajectories(alpha=0.8)
+solution.particletracker.plot_trajectories(alpha=0.8)
 
 ############################################################
 # Note how while each trajectory fans out in a different way,
 # each one traverses the z direction in about the same time:
 
-solution.plot_time_trajectories("z")
+solution.particletracker.plot_time_trajectories("z")
 
 #############################################################
 # And, optionally, with Pyvista:
