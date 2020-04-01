@@ -2,3 +2,4 @@
 .[dev]
 jupytext
 pytest
+pyvista
