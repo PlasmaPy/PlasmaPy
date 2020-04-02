@@ -551,6 +551,21 @@ class CircularWire(Wire):
         )
 
     def visualize(self, figure=None, color="white"):  # coverage: ignore
+        """
+        Visualizes the magnetostatic in 3D using PyVista.
+
+        Parameters
+        ----------
+        figure : pyvista.BasePlotter, optional
+            If not provided, a new plotter is created.
+        color: str
+            Color specifier for the magnetostatic (consult pyvista.BasePlotter)
+
+        Returns
+        -------
+        the same `pyvista.BasePlotter` instance as (if) provided;
+        this allows method chaining.
+        """
         import pyvista as pv
 
         if figure is None:
