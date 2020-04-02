@@ -48,3 +48,5 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
     This interface is incomplete and unstable, and is thus subject to
     change at any time.
     """
+
+    pass
