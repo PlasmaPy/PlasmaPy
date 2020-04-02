@@ -34,6 +34,7 @@ class MagnetoStatics(abc.ABC):
             magnetic field at the specified positon
 
         """
+        raise NotImplementedError
 
     @abc.abstractmethod
     def magnetic_field(self, p: u.m) -> u.T:
@@ -51,6 +52,7 @@ class MagnetoStatics(abc.ABC):
             magnetic field at the specified positon
 
         """
+        raise NotImplementedError
 
 
 class MagneticDipole(MagnetoStatics):
