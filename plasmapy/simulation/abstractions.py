@@ -1,3 +1,7 @@
+"""Abstract classes for numerical simulations."""
+
+__all__ = ["AbstractSimulation", "AbstractTimeDependentSimulation"]
+
 from abc import ABC, abstractmethod
 from typing import NoReturn
 
