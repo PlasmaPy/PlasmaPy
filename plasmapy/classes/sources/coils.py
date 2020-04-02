@@ -17,6 +17,7 @@ class Coils(GenericPlasma):
         This is primarily helpful for `plasmapy.simulation.ParticleTracker`.
 
         Note: currently this accepts only circular coils as magnetostatics.
+        Look for TODO in the code for the reason.
 
         Parameters
         ----------
@@ -49,6 +50,7 @@ class Coils(GenericPlasma):
     def _interpolate_B(self, r: np.ndarray):
         B = np.zeros(r.shape, dtype=float)
         for ms in self.magnetostatics:
+            # TODO - I had trouble calling the function otherwise...
             field = ms._magnetic_field(r, ms.pt, ms.dl, ms.current, ms.w)
             B += field
         return B
