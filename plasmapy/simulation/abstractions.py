@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import NoReturn, Union
-from numbers import Real, Integral
-from astropy import units as u
+from typing import NoReturn
 
 
 class AbstractSimulation(ABC):
@@ -10,24 +8,14 @@ class AbstractSimulation(ABC):
 
     Notes
     -----
-    This interface has unstable eigenfunctions, and is therefore subject
-    to change without notice.
+    This interface is incomplete and unstable, and is thus subject to
+    change at any time.
     """
 
     @abstractmethod
-    def check_inputs(self) -> NoReturn:  # rename to validate_inputs?
+    def summarize(self):
         """
-        Check the inputted simulation parameters.  Raise an exception or
-        issue a warning if any potential or actual problems are found.
-        """
-
-        pass
-
-    @abstractmethod
-    def summarize(self) -> str:
-        """
-        Return a string containing a summary of the simulation parameters
-        and status.
+        Print out a summary of the simulation parameters and status.
         """
 
         pass
@@ -39,7 +27,7 @@ class AbstractSimulation(ABC):
         pass
 
     @abstractmethod
-    def simulate(self) -> NoReturn:  # Return a class for the simulation output?
+    def simulate(self):
         """Perform the actual simulation."""
 
         pass
@@ -57,40 +45,6 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
 
     Notes
     -----
-    This interface has unstable eigenfunctions, and is therefore subject
-    to change without notice.
+    This interface is incomplete and unstable, and is thus subject to
+    change at any time.
     """
-
-    @property
-    @abstractmethod
-    def start_time(self) -> Union[Real, u.Quantity]:
-        """The start time of the simulation."""
-
-        pass
-
-    @property
-    @abstractmethod
-    def end_time(self) -> Union[Real, u.Quantity]:
-        """The end time of the simulation."""
-
-        pass
-
-    @property
-    @abstractmethod
-    def time_step(self) -> Union[Real, u.Quantity]:
-        """Return the time step of the simulation."""
-
-        pass
-
-    @abstractmethod
-    def time_advance(self) -> NoReturn:
-        """Perform one step of the time advance."""
-
-        pass
-
-    @property
-    @abstractmethod
-    def step_number(self) -> Integral:
-        """The current step number of the simulation."""
-
-        pass
