@@ -1,0 +1,3 @@
+Fix incorrect use of `pkg.resources` when defining `plasmapy.__version__`.  Add
+`setuptools` to package dependencies.  Add a definition of `__version__` for
+developers using source files.
