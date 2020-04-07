@@ -87,7 +87,7 @@ class Coils(GenericPlasma):
         match = "interpolate_B" in kwargs.keys()
         return match
 
-    def visualize(self, figure=None):  # coverage: ignore
+    def visualize(self, figure=None):
         """
         Visualizes the set of coils in 3D using PyVista.
 
@@ -132,8 +132,8 @@ class Coils(GenericPlasma):
             major radius of the single coil representing the plasma
         main_current : u.A
             current through the single plasma-representing coil
-        coil_currents :  Iterable[u.A]
-            list of currents through the coils. By default, 8 15-MA coils are created.
+        coil_currents : Iterable[u.A]
+            list of currents through the coils. By default, eight 15 MA coils are created.
 
         Returns
         -------
