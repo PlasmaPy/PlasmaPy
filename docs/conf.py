@@ -68,6 +68,9 @@ author = 'PlasmaPy Community'
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
+#  Note: If plasmapy.__version__ can not be defined then it is set to 'unknown'.
+#        However, release needs to be a semantic style version number, so set
+#        the 'unknown' case to ''.
 from plasmapy import __version__ as release
 release = '' if release == 'unknown' else release
 # The short X.Y version.
