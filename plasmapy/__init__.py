@@ -12,12 +12,12 @@ PlasmaPy provides the following functionality:
 
 Subpackages
 -----------
-Each of these subpackages (except for `formulary` and `atomic`) requires an
+Each of these subpackages (except for `formulary` and `particles` requires an
 explicit import, for example, via ``import plasmapy.diagnostics``.
 
 ::
 
- atomic                            --- Database for atoms, isotopes, ions...
+ particles                         --- Database for atoms, isotopes, ions...
  classes                           --- (WIP) classes used in multiple places
  data                              --- Data used for testing and examples
  diagnostics                       --- Experimental research data analysis
@@ -33,8 +33,17 @@ Utility tools
  __citation__      --- PlasmaPy citation instructions
 
 """
-__all__ = ['addons', 'atomic', 'classes', 'data', 'diagnostics', 'formulary',
-           'simulation', 'utils', 'online_help']
+__all__ = [
+    'addons',
+    'classes',
+    'data',
+    'diagnostics',
+    'formulary',
+    'particles',
+    'simulation',
+    'utils',
+    'online_help',
+]
 
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 
@@ -42,24 +51,57 @@ __all__ = ['addons', 'atomic', 'classes', 'data', 'diagnostics', 'formulary',
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
 import importlib
+import pkg_resources
 import pkgutil
 import sys
 
 from pkg_resources import iter_entry_points
 
-from .version import version as __version__
-from .version import githash as __githash__
-
 from . import (
     addons,
-    atomic,
     classes,
     data,
     diagnostics,
     formulary,
+    particles,
     simulation,
     utils,
 )
+
+try:
+    # this places a runtime dependency on setuptools
+    #
+    # note: if there's any distribution metadata in your source files, then this
+    #       will find a version based on those files.  Keep distribution metadata
+    #       out of your repository unless you've intentionally installed the package
+    #       as editable (e.g. `pip install -e {plasmapy_directory_root}`),
+    #       but then __version__ will not be updated with each commit, it is
+    #       frozen to the version at time of install.
+    __version__ = pkg_resources.get_distribution("plasmapy").version
+except pkg_resources.DistributionNotFound:
+    # package is not installed
+    fallback_version = 'unknown'
+    try:
+        # code most likely being used from source
+        # if setuptools_scm is installed then generate a version
+        from setuptools_scm import get_version
+        __version__ = get_version(root='..',
+                                  relative_to=__file__,
+                                  fallback_version=fallback_version)
+        del get_version
+        warn_add = 'setuptools_scm failed to detect the version'
+    except ModuleNotFoundError:
+        # setuptools_scm is not installed
+        __version__ = fallback_version
+        warn_add = 'setuptools_scm is not installed'
+
+    if __version__ == fallback_version:
+        from warnings import warn
+        warn(f"plasmapy.__version__ not generated (set to 'unknown'), PlasmaPy is "
+             f"not an installed package and {warn_add}.", RuntimeWarning)
+
+        del warn
+    del fallback_version, warn_add
 
 # import addon packages so that they're discoverable by dir()
 for finder, name, ispkg in \
@@ -82,7 +124,7 @@ __citation__ = (
     "online documentation at: http://docs.plasmapy.org/en/latest/about/citation.html"
 )
 
-if sys.version_info < tuple((int(val) for val in "3.6".split('.'))):
+if sys.version_info < tuple((int(val) for val in "3.6".split("."))):
     raise Exception("PlasmaPy does not support Python < {}".format(3.6))
 
 
@@ -101,14 +143,15 @@ def online_help(query):
     from urllib.parse import urlencode
     import webbrowser
 
-    url = ('http://docs.plasmapy.org/en/stable/search.html?'
-           '{0}&check_keywords=yes&area=default').format(urlencode({'q': query}))
+    url = (
+        "http://docs.plasmapy.org/en/stable/search.html?"
+        "{0}&check_keywords=yes&area=default"
+    ).format(urlencode({"q": query}))
 
-    if(query.lower() in ('unit', 'units')):
-        url = 'http://docs.astropy.org/en/stable/units/'
+    if query.lower() in ("unit", "units"):
+        url = "http://docs.astropy.org/en/stable/units/"
 
     webbrowser.open(url)
 
 
-del sys
-del version
+del pkg_resources, sys

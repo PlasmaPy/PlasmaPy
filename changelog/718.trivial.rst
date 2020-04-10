@@ -1,2 +1,0 @@
-Clean up main package namespace, removing `plasmapy.test`
-

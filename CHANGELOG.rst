@@ -1,0 +1,80 @@
+Plasmapy v0.3.0 (2020-01-25)
+============================
+
+Backwards Incompatible Changes
+------------------------------
+
+- Create simulation subpackage; move Species particle tracker there; rename to particletracker (`#665 <https://github.com/plasmapy/plasmapy/pull/665>`__)
+- Changed `plasmapy.classes.Species` to `plasmapy.simulation.ParticleTracker` (`#668 <https://github.com/plasmapy/plasmapy/pull/668>`__)
+- Move pytest helper functionality from `plasmapy.utils` to
+  `~plasmapy.utils.pytest_helpers` (`#674 <https://github.com/plasmapy/plasmapy/pull/674>`__)
+- Move `plasmapy.physics`, `plasmapy.mathematics` and `plasmapy.transport` into the common `plasmapy.formulary` subpackage (`#692 <https://github.com/plasmapy/plasmapy/pull/692>`__)
+- Change `ClassicalTransport` methods into attributes (`#705 <https://github.com/plasmapy/plasmapy/pull/705>`__)
+
+Deprecations and Removals
+-------------------------
+
+- Remove `parameters_cython.pyx`, switching to Numba for the future of computationally intensive code in PlasmaPy (`#650 <https://github.com/plasmapy/plasmapy/pull/650>`__)
+- Remove plasmapy.constants, which was a thin wrapper around astropy.constants
+  with no added value (`#651 <https://github.com/plasmapy/plasmapy/pull/651>`__)
+
+Features
+--------
+
+- Generalize `ion_sound_speed` function to work for all values of :math:`k^2 \lambda_{D}^2` (i.e. not just in the non-dispersive limit). (`#700 <https://github.com/plasmapy/plasmapy/pull/700>`__)
+- Optimize `add__magnetostatics` for a 16x speedup in tests! (`#703 <https://github.com/plasmapy/plasmapy/pull/703>`__)
+
+Bug Fixes
+---------
+
+- Define `preserve_signature` decorator to help IDEs parse signatures of decorated functions. (`#640 <https://github.com/plasmapy/plasmapy/pull/640>`__)
+- Fix Pytest deprecations of `message` argument to `raise` and `warn` functions. (`#666 <https://github.com/plasmapy/plasmapy/pull/666>`__)
+- Fix `h5py` warning in OpenPMD module, opening files in read mode by default (`#717 <https://github.com/plasmapy/plasmapy/pull/717>`__)
+
+
+Improved Documentation
+----------------------
+
+- Added real-world examples to examples/plot_physics.py and adjusted the plots to be more human-friendly. (`#448 <https://github.com/plasmapy/plasmapy/pull/448>`__)
+- Add examples images to the top of the main doc page in `docs\index.rst` (`#655 <https://github.com/plasmapy/plasmapy/pull/655>`__)
+- Added exampes to the documentation to mass_density
+   and Hall_parameter functions (`#709 <https://github.com/plasmapy/plasmapy/pull/709>`__)
+- Add docstrings to decorator :func:`plasmapy.utils.decorators.converter.angular_freq_to_hz`. (`#729 <https://github.com/plasmapy/plasmapy/pull/729>`__)
+
+
+Trivial/Internal Changes
+------------------------
+
+- Replace decorator :func:`plasmapy.utils.decorators.checks.check_quantity` with decorator
+  :func:`plasmapy.utils.decorators.validators.validate_quantities`.  Permanently delete decorator
+  :func:`~plasmapy.utils.decorators.checks.check_quantity` and its supporting code.  For functions
+  :func:`plasmapy.formulary.quantum.chemical_potential` and
+  :func:`plasmapy.formulary.quantum._chemical_potential_interp`, add a `RaiseNotImplementedError` due
+  to bug outlined in issue `<https://github.com/PlasmaPy/PlasmaPy/issues/726>`_.  Associated pytests
+  are marked with `pytest.mark.xfails` and doctests are marked with `doctests: +SKIP`. (`#722 <https://github.com/plasmapy/plasmapy/pull/722>`__)
+- Add `Towncrier <https://github.com/hawkowl/towncrier>`_ automated changelog creation support (`#643 <https://github.com/plasmapy/plasmapy/pull/643>`__)
+- Move existing "check" decorators to new ``plasmapy.utils.decorators`` module (`#647 <https://github.com/plasmapy/plasmapy/pull/647>`__)
+- Allow running our sphinx-gallery examples as Jupyter notebooks via Binder (`#656 <https://github.com/plasmapy/plasmapy/pull/656>`__)
+- Overhaul CI setup, following the example of SunPy (`#657 <https://github.com/plasmapy/plasmapy/pull/657>`__)
+- Patch `sphinx_gallery.binder` to output custom links to Binder instance (`#658 <https://github.com/plasmapy/plasmapy/pull/658>`__)
+- Remove the now unnecessary `astropy_helpers` submodule (`#663 <https://github.com/plasmapy/plasmapy/pull/663>`__)
+- Followup PR to CI overhaul (`#664 <https://github.com/plasmapy/plasmapy/pull/664>`__)
+- Add a Codemeta file (``codemeta.json``) (`#676 <https://github.com/plasmapy/plasmapy/pull/676>`__)
+- Overhaul and simplify CI, add Python 3.8 to tests, bump minimal required package versions, fix docs. (`#712 <https://github.com/plasmapy/plasmapy/pull/712>`__)
+- Update communication channels in docs (`#715 <https://github.com/plasmapy/plasmapy/pull/715>`__)
+- Code style fixes to the `atomic` subpackage (`#716 <https://github.com/plasmapy/plasmapy/pull/716>`__)
+- Clean up main package namespace, removing `plasmapy.test` (`#718 <https://github.com/plasmapy/plasmapy/pull/718>`__)
+- Reduce precision of tests and doctests to allow for refinements of
+  fundamental constants. (`#731 <https://github.com/plasmapy/plasmapy/pull/731>`__)
+- Create decorators for checking/validating values and units of function/method input
+  and return arguments.  Defined decorators include
+  :func:`~plasmapy.utils.decorators.checks.check_values`,
+  :func:`~plasmapy.utils.decorators.checks.check_units`, and
+  :func:`~plasmapy.utils.decorators.validators.validate_quantities`.  These decorators are
+  fully defined by "decorator classes" :class:`~plasmapy.utils.decorators.checks.CheckBase`,
+  :class:`~plasmapy.utils.decorators.checks.CheckValues`,
+  :class:`~plasmapy.utils.decorators.checks.CheckUnits`, and
+  :class:`~plasmapy.utils.decorators.validators.ValidateQuantities`. (`#648 <https://github.com/plasmapy/plasmapy/pull/648>`__)
+- Create a decorator to change output of physics functions from "radians/s" to "hz" (`#667 <https://github.com/plasmapy/plasmapy/pull/667>`__)
+- Added pytest.mark.slow to pytest markers.
+  Updated documentation to notify developers of functionality. (`#677 <https://github.com/plasmapy/plasmapy/pull/677>`__)

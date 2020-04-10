@@ -5,7 +5,10 @@
 import numpy as np
 import pytest
 from astropy import units as u
-from plasmapy.formulary.dispersionfunction import plasma_dispersion_func, plasma_dispersion_func_deriv
+from plasmapy.formulary.dispersionfunction import (
+    plasma_dispersion_func,
+    plasma_dispersion_func_deriv,
+)
 from numpy import pi as π
 from scipy.special import gamma as Γ
 
@@ -18,10 +21,11 @@ plasma_dispersion_func_table = [
     (9.2j, plasma_dispersion_func(9.2j * u.dimensionless_unscaled)),
     (5.4 - 3.1j, -0.139_224_873_051_713_11 - 0.082_067_822_640_155_802j),
     (9.9 - 10j, 2.013_835_257_947_027_6 - 25.901_274_737_989_727j),
-    (4.5 - 10j, -1.367_495_046_340_094_7e35 - 6.853_923_234_842_270_6e34j)]
+    (4.5 - 10j, -1.367_495_046_340_094_7e35 - 6.853_923_234_842_270_6e34j),
+]
 
 
-@pytest.mark.parametrize('w, expected', plasma_dispersion_func_table)
+@pytest.mark.parametrize("w, expected", plasma_dispersion_func_table)
 def test_plasma_dispersion_func(w, expected):
     r"""Test plasma_dispersion_func against tabulated results and
     known symmetry properties."""
@@ -34,36 +38,40 @@ def test_plasma_dispersion_func(w, expected):
 
     Z_of_w = plasma_dispersion_func(w)
 
-    assert np.isclose(Z_of_w, expected, atol=1e-12 * (1 + 1j), rtol=1e-12), \
-        (f"plasma_dispersion_func({w}) equals {Z_of_w} instead of the "
-         f"expected approximate result of {expected}.  The difference between "
-         f"the actual and expected results is {Z_of_w - expected}.")
+    assert np.isclose(Z_of_w, expected, atol=1e-12 * (1 + 1j), rtol=1e-12), (
+        f"plasma_dispersion_func({w}) equals {Z_of_w} instead of the "
+        f"expected approximate result of {expected}.  The difference between "
+        f"the actual and expected results is {Z_of_w - expected}."
+    )
 
     Z_of_wconj = plasma_dispersion_func(w.conjugate())
     minusZ_of_minuswconj = -(plasma_dispersion_func(-w).conjugate())
 
-    assert np.isclose(Z_of_wconj, minusZ_of_minuswconj, atol=0, rtol=1e-15), \
-        ("The symmetry property of the plasma dispersion function that "
-         f"Z(w*) == -[Z(-w)]* is not met for w = {w}.  Instead, "
-         f"plasma_dispersion_func({w.conjugate()}) = {Z_of_wconj} "
-         f"whereas -plasma_dispersion_func({-w}).conjugate() = "
-         f"{minusZ_of_minuswconj}.  "
-         "The difference between Z(w*) and -[Z(-w)]* is "
-         f"{Z_of_wconj - minusZ_of_minuswconj}.")
+    assert np.isclose(Z_of_wconj, minusZ_of_minuswconj, atol=0, rtol=1e-15), (
+        "The symmetry property of the plasma dispersion function that "
+        f"Z(w*) == -[Z(-w)]* is not met for w = {w}.  Instead, "
+        f"plasma_dispersion_func({w.conjugate()}) = {Z_of_wconj} "
+        f"whereas -plasma_dispersion_func({-w}).conjugate() = "
+        f"{minusZ_of_minuswconj}.  "
+        "The difference between Z(w*) and -[Z(-w)]* is "
+        f"{Z_of_wconj - minusZ_of_minuswconj}."
+    )
 
     if w.imag > 0:
 
-        should_equal_Z_of_wconj = (plasma_dispersion_func(w)).conjugate() \
-            + 2j * np.sqrt(π) * np.exp(-(w.conjugate()**2))
+        should_equal_Z_of_wconj = (
+            plasma_dispersion_func(w)
+        ).conjugate() + 2j * np.sqrt(π) * np.exp(-(w.conjugate() ** 2))
 
-        assert np.isclose(Z_of_wconj, should_equal_Z_of_wconj, rtol=1e-14), \
-            ("The symmetry property of the plasma dispersion function that "
-             "Z(w*) = Z(w) + 2j * sqrt(pi) * exp[-(w*)**2] for Im(w) > 0 "
-             f"is not met for w = {w}.  The value of "
-             f"plasma_dispersion_func({w.conjugate()}) is {Z_of_wconj}, "
-             f"which is different from {should_equal_Z_of_wconj}.  "
-             "The difference between these two results is "
-             f"{Z_of_wconj - should_equal_Z_of_wconj}.")
+        assert np.isclose(Z_of_wconj, should_equal_Z_of_wconj, rtol=1e-14), (
+            "The symmetry property of the plasma dispersion function that "
+            "Z(w*) = Z(w) + 2j * sqrt(pi) * exp[-(w*)**2] for Im(w) > 0 "
+            f"is not met for w = {w}.  The value of "
+            f"plasma_dispersion_func({w.conjugate()}) is {Z_of_wconj}, "
+            f"which is different from {should_equal_Z_of_wconj}.  "
+            "The difference between these two results is "
+            f"{Z_of_wconj - should_equal_Z_of_wconj}."
+        )
 
 
 def test_plasma_dispersion_func_power_series_expansion():
@@ -71,17 +79,22 @@ def test_plasma_dispersion_func_power_series_expansion():
     the plasma dispersion function."""
 
     w_array = np.array(
-        [[0.1356 + 0.114j, -0.204 - 0.0012j],
-         [-0.131 + 0.131j, 0.1313 - 0.125j],
-         [-0.334 - 0.712j, 0.12411 + 0j],
-         [0.1278 + 0.928j, 0 + 0j]],
-        dtype=np.complex128)
+        [
+            [0.1356 + 0.114j, -0.204 - 0.0012j],
+            [-0.131 + 0.131j, 0.1313 - 0.125j],
+            [-0.334 - 0.712j, 0.12411 + 0j],
+            [0.1278 + 0.928j, 0 + 0j],
+        ],
+        dtype=np.complex128,
+    )
 
     try:
         Z_of_w_array = plasma_dispersion_func(w_array)
     except Exception as exc:
-        raise ValueError("plasma_dispersion_func is unable to accept an "
-                         f"ndarray argument with values:\n{w_array}") from exc
+        raise ValueError(
+            "plasma_dispersion_func is unable to accept an "
+            f"ndarray argument with values:\n{w_array}"
+        ) from exc
 
     # The following power series expansion is given by equation (B.3)
     # on page 401 of Plasma Waves by D. G. Swanson (2003, 2nd
@@ -93,16 +106,18 @@ def test_plasma_dispersion_func_power_series_expansion():
     for n in range(0, 200):
         Z_power_series += 1j * np.sqrt(π) * (1j * w_array) ** n / Γ(n / 2 + 1)
 
-    assert np.allclose(Z_of_w_array, Z_power_series,
-                       atol=1e-15 * (1 + 1j), rtol=1e-15), \
-        ("The values returned by plasma_dispersion_func are inconsistent "
-         "with the power series expansion of the plasma dispersion function.  "
-         f"The argument given to plasma_dispersion_func is:\n\n{w_array}\n\n"
-         f"The results of plasma_dispersion_func are:\n\n{Z_of_w_array}\n\n"
-         "The results from the power series expansion are:\n\n"
-         f"{Z_power_series}\n\n"
-         "The difference between these two results is:\n\n"
-         f"{Z_of_w_array - Z_power_series}\n")
+    assert np.allclose(
+        Z_of_w_array, Z_power_series, atol=1e-15 * (1 + 1j), rtol=1e-15
+    ), (
+        "The values returned by plasma_dispersion_func are inconsistent "
+        "with the power series expansion of the plasma dispersion function.  "
+        f"The argument given to plasma_dispersion_func is:\n\n{w_array}\n\n"
+        f"The results of plasma_dispersion_func are:\n\n{Z_of_w_array}\n\n"
+        "The results from the power series expansion are:\n\n"
+        f"{Z_power_series}\n\n"
+        "The difference between these two results is:\n\n"
+        f"{Z_of_w_array - Z_power_series}\n"
+    )
 
 
 def test_plasma_dispersion_func_roots():
@@ -113,20 +128,24 @@ def test_plasma_dispersion_func_roots():
     # error in the final decimal point.  These roots were found to
     # higher precision using mpmath.findroot.
 
-    roots = np.array([
+    roots = np.array(
+        [
             1.991_466_842_833_879_6 - 1.354_810_128_112_006_2j,
             2.691_149_024_251_438_8 - 2.177_044_906_089_615_9j,
             3.235_330_868_352_816_5 - 2.784_387_613_230_428_2j,
             3.697_309_702_468_468_4 - 3.287_410_789_389_848_6j,
-            4.106_107_284_682_632_1 - 3.725_948_719_445_790_4j],
-            dtype=np.complex128)
+            4.106_107_284_682_632_1 - 3.725_948_719_445_790_4j,
+        ],
+        dtype=np.complex128,
+    )
 
     for root in roots:
         Z_at_root = plasma_dispersion_func(root)
-        assert np.isclose(Z_at_root, 0 + 0j, atol=1e-15 * (1 + 1j)), \
-            ("A root of the plasma dispersion function is expected at w = "
-             f"{root}, but plasma_dispersion_func({root}) is equal to "
-             f"{Z_at_root} instead of {0j}.")
+        assert np.isclose(Z_at_root, 0 + 0j, atol=1e-15 * (1 + 1j)), (
+            "A root of the plasma dispersion function is expected at w = "
+            f"{root}, but plasma_dispersion_func({root}) is equal to "
+            f"{Z_at_root} instead of {0j}."
+        )
 
 
 # w, expected
@@ -139,10 +158,11 @@ plasma_disp_deriv_table = [
     (5.4 - 3.1j, 0.012_449_1 + 0.023_138_3j),
     (9.9 - 10j, 476.153 + 553.121j),
     (5 + 7j, -4.591_20e-3 - 0.012_610_4j),
-    (4.5 - 10j, 0.260_153e37 - 0.211_814e37j)]
+    (4.5 - 10j, 0.260_153e37 - 0.211_814e37j),
+]
 
 
-@pytest.mark.parametrize('w, expected', plasma_disp_deriv_table)
+@pytest.mark.parametrize("w, expected", plasma_disp_deriv_table)
 def test_plasma_dispersion_func_deriv(w, expected):
     r"""Test plasma_dispersion_func_deriv against tabulated results
     and an exact relationship."""
@@ -153,31 +173,34 @@ def test_plasma_dispersion_func_deriv(w, expected):
 
     Z_deriv = plasma_dispersion_func_deriv(w)
 
-    assert np.isclose(Z_deriv, expected, atol=5e-5 * (1 + 1j), rtol=5e-6), \
-        (f"The derivative of the plasma dispersion function does not match "
-         f"the expected value for w = {w}.  The value of "
-         f"plasma_dispersion_func_deriv({w}) equals {Z_deriv} whereas the "
-         f"expected value is {expected}.  The difference between the actual "
-         f"and expected results is {Z_deriv - expected}.")
+    assert np.isclose(Z_deriv, expected, atol=5e-5 * (1 + 1j), rtol=5e-6), (
+        f"The derivative of the plasma dispersion function does not match "
+        f"the expected value for w = {w}.  The value of "
+        f"plasma_dispersion_func_deriv({w}) equals {Z_deriv} whereas the "
+        f"expected value is {expected}.  The difference between the actual "
+        f"and expected results is {Z_deriv - expected}."
+    )
 
     Z = plasma_dispersion_func(w)
     Z_deriv_characterization = -2 * (1 + w * Z)
 
-    assert np.isclose(Z_deriv, Z_deriv_characterization, rtol=1e-15), \
-        (f"The relationship that Z'(w) = -2 * [1 + w * Z(w)] is not "
-         f"met for w = {w}, where Z'(w) = {Z_deriv} and "
-         f"-2 * [1 + w * Z(w)] = {Z_deriv_characterization}.")
+    assert np.isclose(Z_deriv, Z_deriv_characterization, rtol=1e-15), (
+        f"The relationship that Z'(w) = -2 * [1 + w * Z(w)] is not "
+        f"met for w = {w}, where Z'(w) = {Z_deriv} and "
+        f"-2 * [1 + w * Z(w)] = {Z_deriv_characterization}."
+    )
 
 
 # w, expected_error
 plasma_disp_func_errors_table = [
-    ('', TypeError),
+    ("", TypeError),
     (7 * u.m, u.UnitsError),
     (np.inf, ValueError),
-    (np.nan, ValueError)]
+    (np.nan, ValueError),
+]
 
 
-@pytest.mark.parametrize('w, expected_error', plasma_disp_func_errors_table)
+@pytest.mark.parametrize("w, expected_error", plasma_disp_func_errors_table)
 def test_plasma_dispersion_func_errors(w, expected_error):
     """Test errors that should be raised by plasma_dispersion_func."""
 
@@ -185,10 +208,11 @@ def test_plasma_dispersion_func_errors(w, expected_error):
         plasma_dispersion_func(w)
         pytest.fail(
             f"plasma_dispersion_func({w}) did not raise "
-            f"{expected_error.__name__} as expected.")
+            f"{expected_error.__name__} as expected."
+        )
 
 
-@pytest.mark.parametrize('w, expected_error', plasma_disp_func_errors_table)
+@pytest.mark.parametrize("w, expected_error", plasma_disp_func_errors_table)
 def test_plasma_dispersion_deriv_errors(w, expected_error):
     """Test errors that should be raised by plasma_dispersion_func_deriv."""
 
@@ -196,4 +220,5 @@ def test_plasma_dispersion_deriv_errors(w, expected_error):
         plasma_dispersion_func_deriv(w)
         pytest.fail(
             f"plasma_dispersion_func_deriv({w}) did not raise "
-            f"{expected_error.__name__} as expected.")
+            f"{expected_error.__name__} as expected."
+        )

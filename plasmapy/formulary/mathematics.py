@@ -4,22 +4,17 @@ relevant to plasma physics. Usually, those are used somewhere else in
 the code but were deemed general enough for the mathematical apparatus
 to be abstracted from the main function interface.
 """
-__all__ = ['Fermi_integral']
+__all__ = ["Fermi_integral"]
 
 import numbers
 import numpy as np
 
-try:
-    from mpmath import polylog
-except (ImportError, ModuleNotFoundError) as e:
-    from plasmapy.optional_deps import mpmath_import_error
-    raise mpmath_import_error from e
 from typing import Union
 
 
 def Fermi_integral(
-        x: Union[float, int, complex, np.ndarray],
-        j: Union[float, int, complex, np.ndarray]) -> Union[float, complex, np.ndarray]:
+    x: Union[float, int, complex, np.ndarray], j: Union[float, int, complex, np.ndarray]
+) -> Union[float, complex, np.ndarray]:
     r"""
     Calculate the complete Fermi-Dirac integral.
 
@@ -79,12 +74,19 @@ def Fermi_integral(
     (1.8062860704447743-0j)
 
     """
+    try:
+        from mpmath import polylog
+    except (ImportError, ModuleNotFoundError) as e:
+        from plasmapy.optional_deps import mpmath_import_error
+
+        raise mpmath_import_error from e
+
     if isinstance(x, (numbers.Integral, numbers.Real, numbers.Complex)):
         arg = -np.exp(x)
         integral = -1 * complex(polylog(j + 1, arg))
         return integral
     elif isinstance(x, np.ndarray):
-        integral_arr = np.zeros_like(x, dtype='complex')
+        integral_arr = np.zeros_like(x, dtype="complex")
         for idx, val in enumerate(x):
             integral_arr[idx] = -1 * complex(polylog(j + 1, -np.exp(val)))
         return integral_arr

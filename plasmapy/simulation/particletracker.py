@@ -4,7 +4,7 @@ Class representing a group of particles.
 
 import numpy as np
 import scipy.interpolate as interp
-from plasmapy.atomic import atomic
+from plasmapy.particles import atomic
 from astropy import constants
 from astropy import units as u
 
@@ -22,7 +22,7 @@ class ParticleTracker:
     plasma : `Plasma`
         plasma from which fields can be pulled
     type : str
-        particle type. See `plasmapy.atomic.atomic` for suitable arguments.
+        particle type. See `plasmapy.particles.atomic` for suitable arguments.
         The default is a proton.
     n_particles : int
         number of macroparticles. The default is a single particle.
@@ -49,10 +49,6 @@ class ParticleTracker:
     eff_q : `astropy.units.Quantity`
     eff_m : `astropy.units.Quantity`
         Total charge and mass of macroparticle.
-    kinetic_energy
-        calculated from `v`, as in, current velocity.
-    kinetic_energy_history
-        calculated from `velocity_history`.
 
     Examples
     ----------

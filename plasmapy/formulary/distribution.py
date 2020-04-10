@@ -9,32 +9,30 @@ from plasmapy.formulary import parameters
 import numpy as np
 from scipy.special import gamma
 
-__all__ = ["Maxwellian_1D",
-           "Maxwellian_velocity_2D",
-           "Maxwellian_velocity_3D",
-           "Maxwellian_speed_1D",
-           "Maxwellian_speed_2D",
-           "Maxwellian_speed_3D",
-           "kappa_velocity_1D",
-           "kappa_velocity_3D"]
+__all__ = [
+    "Maxwellian_1D",
+    "Maxwellian_velocity_2D",
+    "Maxwellian_velocity_3D",
+    "Maxwellian_speed_1D",
+    "Maxwellian_speed_2D",
+    "Maxwellian_speed_3D",
+    "kappa_velocity_1D",
+    "kappa_velocity_3D",
+]
+
 
 def _v_drift_units(v_drift):
     # Helper method to assign units to  v_drift if it takes a default value
-    if (v_drift == 0 and
-        not isinstance(v_drift, astropy.units.quantity.Quantity)):
+    if v_drift == 0 and not isinstance(v_drift, astropy.units.quantity.Quantity):
         v_drift = v_drift * u.m / u.s
     else:
         v_drift = v_drift.to(u.m / u.s)
     return v_drift
 
-def Maxwellian_1D(v,
-                  T,
-                  particle="e",
-                  v_drift=0,
-                  vTh=np.nan,
-                  units="units"):
+
+def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
     r"""
-    Probability distribution function of velocity for a Maxwellian 
+    Probability distribution function of velocity for a Maxwellian
     distribution in 1D.
 
     Returns the probability density function at the velocity `v` in m/s
@@ -104,7 +102,7 @@ def Maxwellian_1D(v,
     >>> from astropy import units as u
     >>> v=1*u.m/u.s
     >>> Maxwellian_1D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
-    <Quantity 5.91632969e-07 s / m>
+    <Quantity 5.9163...e-07 s / m>
     """
 
     if units == "units":
@@ -118,17 +116,15 @@ def Maxwellian_1D(v,
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
-            vTh = (parameters.thermal_speed(T,
-                                            particle=particle,
-                                            method="most_probable"))
+            vTh = parameters.thermal_speed(T, particle=particle, method="most_probable")
         elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m / u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = (parameters.thermal_speed(T * u.K,
-                                        particle=particle,
-                                        method="most_probable")).si.value
+        vTh = (
+            parameters.thermal_speed(T * u.K, particle=particle, method="most_probable")
+        ).si.value
     # Get thermal velocity squared
     vThSq = vTh ** 2
     # Get square of relative particle velocity
@@ -143,21 +139,16 @@ def Maxwellian_1D(v,
         return distFunc
 
 
-def Maxwellian_velocity_2D(vx,
-                           vy,
-                           T,
-                           particle="e",
-                           vx_drift=0,
-                           vy_drift=0,
-                           vTh=np.nan,
-                           units="units"):
+def Maxwellian_velocity_2D(
+    vx, vy, T, particle="e", vx_drift=0, vy_drift=0, vTh=np.nan, units="units"
+):
     r"""
-    Probability distribution function of velocity for a Maxwellian 
+    Probability distribution function of velocity for a Maxwellian
     distribution in 2D.
 
-    Return the probability density function for finding a particle with 
-    velocity components `vx` and `vy` in m/s in an equilibrium plasma of 
-    temperature `T` which follows the 2D Maxwellian distribution function. 
+    Return the probability density function for finding a particle with
+    velocity components `vx` and `vy` in m/s in an equilibrium plasma of
+    temperature `T` which follows the 2D Maxwellian distribution function.
     This function assumes Cartesian coordinates.
 
     Parameters
@@ -239,7 +230,7 @@ def Maxwellian_velocity_2D(vx,
     ... particle='e',
     ... vx_drift=0 * u.m / u.s,
     ... vy_drift=0 * u.m / u.s)
-    <Quantity 3.5002957e-13 s2 / m2>
+    <Quantity 3.5002...e-13 s2 / m2>
 
 
     """
@@ -256,48 +247,48 @@ def Maxwellian_velocity_2D(vx,
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
-            vTh = (parameters.thermal_speed(T,
-                                            particle=particle,
-                                            method="most_probable"))
+            vTh = parameters.thermal_speed(T, particle=particle, method="most_probable")
         elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m / u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = parameters.thermal_speed(T * u.K,
-                                       particle=particle,
-                                       method="most_probable").si.value
+        vTh = parameters.thermal_speed(
+            T * u.K, particle=particle, method="most_probable"
+        ).si.value
     # accounting for thermal velocity in 2D
     vThSq = vTh ** 2
     # Get square of relative particle velocity
-    vSq = ((vx - vx_drift) ** 2 + (vy - vy_drift) ** 2)
+    vSq = (vx - vx_drift) ** 2 + (vy - vy_drift) ** 2
     # calculating distribution function
     coeff = (vThSq * np.pi) ** (-1)
     expTerm = np.exp(-vSq / vThSq)
     distFunc = coeff * expTerm
     if units == "units":
-        return distFunc.to((u.s / u.m)**2)
+        return distFunc.to((u.s / u.m) ** 2)
     elif units == "unitless":
         return distFunc
 
 
-def Maxwellian_velocity_3D(vx,
-                           vy,
-                           vz,
-                           T,
-                           particle="e",
-                           vx_drift=0,
-                           vy_drift=0,
-                           vz_drift=0,
-                           vTh=np.nan,
-                           units="units"):
+def Maxwellian_velocity_3D(
+    vx,
+    vy,
+    vz,
+    T,
+    particle="e",
+    vx_drift=0,
+    vy_drift=0,
+    vz_drift=0,
+    vTh=np.nan,
+    units="units",
+):
     r"""
-    Probability distribution function of velocity for a Maxwellian 
+    Probability distribution function of velocity for a Maxwellian
     distribution in 3D.
 
-    Return the probability density function for finding a particle with 
-    velocity components `vx`, `vy`, and `vz` in m/s in an equilibrium 
-    plasma of temperature `T` which follows the 3D Maxwellian distribution 
+    Return the probability density function for finding a particle with
+    velocity components `vx`, `vy`, and `vz` in m/s in an equilibrium
+    plasma of temperature `T` which follows the 3D Maxwellian distribution
     function. This function assumes Cartesian coordinates.
 
     Parameters
@@ -387,7 +378,7 @@ def Maxwellian_velocity_3D(vx,
     ... vx_drift=0 * u.m / u.s,
     ... vy_drift=0 * u.m / u.s,
     ... vz_drift=0 * u.m / u.s)
-    <Quantity 2.07089033e-19 s3 / m3>
+    <Quantity 2.0708...e-19 s3 / m3>
 
 
     """
@@ -406,43 +397,36 @@ def Maxwellian_velocity_3D(vx,
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
-            vTh = (parameters.thermal_speed(T,
-                                            particle=particle,
-                                            method="most_probable"))
+            vTh = parameters.thermal_speed(T, particle=particle, method="most_probable")
         elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m / u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = parameters.thermal_speed(T * u.K,
-                                       particle=particle,
-                                       method="most_probable").si.value
+        vTh = parameters.thermal_speed(
+            T * u.K, particle=particle, method="most_probable"
+        ).si.value
     # accounting for thermal velocity in 3D
     vThSq = vTh ** 2
     # Get square of relative particle velocity
-    vSq = ((vx - vx_drift) ** 2 + (vy - vy_drift) ** 2 + (vz - vz_drift) ** 2)
+    vSq = (vx - vx_drift) ** 2 + (vy - vy_drift) ** 2 + (vz - vz_drift) ** 2
     # calculating distribution function
     coeff = (vThSq * np.pi) ** (-3 / 2)
     expTerm = np.exp(-vSq / vThSq)
     distFunc = coeff * expTerm
     if units == "units":
-        return distFunc.to((u.s / u.m)**3)
+        return distFunc.to((u.s / u.m) ** 3)
     elif units == "unitless":
         return distFunc
 
 
-def Maxwellian_speed_1D(v,
-                        T,
-                        particle="e",
-                        v_drift=0,
-                        vTh=np.nan,
-                        units="units"):
+def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
     r"""
     Probability distribution function of speed for a Maxwellian distribution
     in 1D.
 
-    Return the probability density function for finding a particle with 
-    speed `v` in m/s in an equilibrium plasma of temperature `T` which 
+    Return the probability density function for finding a particle with
+    speed `v` in m/s in an equilibrium plasma of temperature `T` which
     follows the Maxwellian distribution function.
 
     Parameters
@@ -508,7 +492,7 @@ def Maxwellian_speed_1D(v,
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_1D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
-    <Quantity 1.18326594e-06 s / m>
+    <Quantity 1.1832...e-06 s / m>
 
     """
     if units == "units":
@@ -522,17 +506,15 @@ def Maxwellian_speed_1D(v,
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
-            vTh = (parameters.thermal_speed(T,
-                                            particle=particle,
-                                            method="most_probable"))
+            vTh = parameters.thermal_speed(T, particle=particle, method="most_probable")
         elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m / u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = (parameters.thermal_speed(T * u.K,
-                                        particle=particle,
-                                        method="most_probable")).si.value
+        vTh = (
+            parameters.thermal_speed(T * u.K, particle=particle, method="most_probable")
+        ).si.value
     # Get thermal velocity squared
     vThSq = vTh ** 2
     # Get square of relative particle velocity
@@ -547,12 +529,7 @@ def Maxwellian_speed_1D(v,
         return distFunc
 
 
-def Maxwellian_speed_2D(v,
-                        T,
-                        particle="e",
-                        v_drift=0,
-                        vTh=np.nan,
-                        units="units"):
+def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
     r"""
     Probability distribution function of speed for a Maxwellian distribution
     in 2D.
@@ -629,7 +606,7 @@ def Maxwellian_speed_2D(v,
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
-    <Quantity 2.19930065e-12 s / m>
+    <Quantity 2.199...e-12 s / m>
 
     """
     if v_drift != 0:
@@ -645,17 +622,15 @@ def Maxwellian_speed_2D(v,
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
-            vTh = (parameters.thermal_speed(T,
-                                            particle=particle,
-                                            method="most_probable"))
+            vTh = parameters.thermal_speed(T, particle=particle, method="most_probable")
         elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m / u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = (parameters.thermal_speed(T * u.K,
-                                        particle=particle,
-                                        method="most_probable")).si.value
+        vTh = (
+            parameters.thermal_speed(T * u.K, particle=particle, method="most_probable")
+        ).si.value
     # getting square of thermal speed
     vThSq = vTh ** 2
     # get square of relative particle speed
@@ -671,19 +646,14 @@ def Maxwellian_speed_2D(v,
         return distFunc
 
 
-def Maxwellian_speed_3D(v,
-                        T,
-                        particle="e",
-                        v_drift=0,
-                        vTh=np.nan,
-                        units="units"):
+def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
     r"""
     Probability distribution function of speed for a Maxwellian
     distribution in 3D.
 
-    Return the probability density function for finding a particle with 
-    speed components `vx`, `vy`, and `vz` in m/s in an equilibrium 
-    plasma of temperature `T` which follows the 3D Maxwellian 
+    Return the probability density function for finding a particle with
+    speed components `vx`, `vy`, and `vz` in m/s in an equilibrium
+    plasma of temperature `T` which follows the 3D Maxwellian
     distribution function. This function assumes Cartesian coordinates.
 
     Parameters
@@ -753,7 +723,7 @@ def Maxwellian_speed_3D(v,
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> Maxwellian_speed_3D(v=v, T=30000*u.K, particle='e', v_drift=0 * u.m / u.s)
-    <Quantity 2.60235754e-18 s / m>
+    <Quantity 2.60235...e-18 s / m>
 
     """
     if v_drift != 0:
@@ -769,17 +739,15 @@ def Maxwellian_speed_3D(v,
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
-            vTh = (parameters.thermal_speed(T,
-                                            particle=particle,
-                                            method="most_probable"))
+            vTh = parameters.thermal_speed(T, particle=particle, method="most_probable")
         elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m / u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = (parameters.thermal_speed(T * u.K,
-                                        particle=particle,
-                                        method="most_probable")).si.value
+        vTh = (
+            parameters.thermal_speed(T * u.K, particle=particle, method="most_probable")
+        ).si.value
     # getting square of thermal speed
     vThSq = vTh ** 2
     # get square of relative particle speed
@@ -795,13 +763,7 @@ def Maxwellian_speed_3D(v,
         return distFunc
 
 
-def kappa_velocity_1D(v,
-                      T,
-                      kappa,
-                      particle="e",
-                      v_drift=0,
-                      vTh=np.nan,
-                      units="units"):
+def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="units"):
     r"""
     Return the probability density at the velocity `v` in m/s
     to find a particle `particle` in a plasma of temperature `T`
@@ -886,7 +848,7 @@ def kappa_velocity_1D(v,
     >>> from astropy import units as u
     >>> v=1 * u.m / u.s
     >>> kappa_velocity_1D(v=v, T=30000*u.K, kappa=4, particle='e', v_drift=0 * u.m / u.s)
-    <Quantity 6.75549854e-07 s / m>
+    <Quantity 6.75549...e-07 s / m>
 
     See Also
     --------
@@ -911,17 +873,15 @@ def kappa_velocity_1D(v,
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
-            vTh = parameters.kappa_thermal_speed(T,
-                                                 kappa,
-                                                 particle=particle)
+            vTh = parameters.kappa_thermal_speed(T, kappa, particle=particle)
         elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m / u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = (parameters.kappa_thermal_speed(T * u.K,
-                                              kappa,
-                                              particle=particle)).si.value
+        vTh = (
+            parameters.kappa_thermal_speed(T * u.K, kappa, particle=particle)
+        ).si.value
     # Get thermal velocity squared and accounting for 1D instead of 3D
     vThSq = vTh ** 2
     # Get square of relative particle velocity
@@ -937,22 +897,24 @@ def kappa_velocity_1D(v,
         return distFunc
 
 
-def kappa_velocity_3D(vx,
-                      vy,
-                      vz,
-                      T,
-                      kappa,
-                      particle="e",
-                      vx_drift=0,
-                      vy_drift=0,
-                      vz_drift=0,
-                      vTh=np.nan,
-                      units="units"):
+def kappa_velocity_3D(
+    vx,
+    vy,
+    vz,
+    T,
+    kappa,
+    particle="e",
+    vx_drift=0,
+    vy_drift=0,
+    vz_drift=0,
+    vTh=np.nan,
+    units="units",
+):
     r"""
-    Return the probability density function for finding a particle with 
-    velocity components `v_x`, `v_y`, and `v_z`in m/s in a suprathermal 
-    plasma of temperature `T` and parameter 'kappa' which follows the 
-    3D Kappa distribution function. This function assumes Cartesian 
+    Return the probability density function for finding a particle with
+    velocity components `v_x`, `v_y`, and `v_z`in m/s in a suprathermal
+    plasma of temperature `T` and parameter 'kappa' which follows the
+    3D Kappa distribution function. This function assumes Cartesian
     coordinates.
 
     Parameters
@@ -1056,7 +1018,7 @@ def kappa_velocity_3D(vx,
     ... vx_drift=0 * u.m / u.s,
     ... vy_drift=0 * u.m / u.s,
     ... vz_drift=0 * u.m / u.s)
-    <Quantity 3.7833988e-19 s3 / m3>
+    <Quantity 3.7833...e-19 s3 / m3>
     """
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3 / 2:
@@ -1076,27 +1038,23 @@ def kappa_velocity_3D(vx,
         T = T.to(u.K, equivalencies=u.temperature_energy())
         if np.isnan(vTh):
             # get thermal velocity and thermal velocity squared
-            vTh = parameters.kappa_thermal_speed(T,
-                                                 kappa,
-                                                 particle=particle)
+            vTh = parameters.kappa_thermal_speed(T, kappa, particle=particle)
         elif not np.isnan(vTh):
             # check units of thermal velocity
             vTh = vTh.to(u.m / u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in Kelvins
-        vTh = parameters.kappa_thermal_speed(T * u.K,
-                                             kappa,
-                                             particle=particle).si.value
+        vTh = parameters.kappa_thermal_speed(T * u.K, kappa, particle=particle).si.value
     # getting square of thermal velocity
     vThSq = vTh ** 2
     # Get square of relative particle velocity
-    vSq = ((vx - vx_drift) ** 2 + (vy - vy_drift) ** 2 + (vz - vz_drift) ** 2)
+    vSq = (vx - vx_drift) ** 2 + (vy - vy_drift) ** 2 + (vz - vz_drift) ** 2
     # calculating distribution function
     expTerm = (1 + vSq / (kappa * vThSq)) ** (-(kappa + 1))
     coeff1 = 1 / (2 * np.pi * (kappa * vThSq) ** (3 / 2))
     coeff2 = gamma(kappa + 1) / (gamma(kappa - 1 / 2) * gamma(3 / 2))
     distFunc = coeff1 * coeff2 * expTerm
     if units == "units":
-        return distFunc.to((u.s / u.m)**3)
+        return distFunc.to((u.s / u.m) ** 3)
     elif units == "unitless":
         return distFunc

@@ -1,8 +1,14 @@
 """
 Decorator for checking input/output arguments of functions.
 """
-__all__ = ["check_values", "check_units", "check_relativistic",
-           "CheckBase", "CheckUnits", "CheckValues"]
+__all__ = [
+    "check_values",
+    "check_units",
+    "check_relativistic",
+    "CheckBase",
+    "CheckUnits",
+    "CheckValues",
+]
 
 import collections
 import functools
@@ -14,10 +20,12 @@ from astropy import units as u
 from astropy.constants import c
 from functools import reduce
 from plasmapy.utils.decorators import preserve_signature
-from plasmapy.utils.exceptions import (PlasmaPyWarning,
-                                       RelativityWarning,
-                                       RelativityError)
-from typing import (Any, Dict, List, Tuple, Union)
+from plasmapy.utils.exceptions import (
+    PlasmaPyWarning,
+    RelativityWarning,
+    RelativityError,
+)
+from typing import Any, Dict, List, Tuple, Union
 
 try:
     from astropy.units.equivalencies import Equivalency
@@ -40,10 +48,11 @@ class CheckBase:
     **checks
         specified checks on the input arguments of the wrapped function
     """
+
     def __init__(self, checks_on_return=None, **checks):
         self._checks = checks
         if checks_on_return is not None:
-            self._checks['checks_on_return'] = checks_on_return
+            self._checks["checks_on_return"] = checks_on_return
 
     @property
     def checks(self):
@@ -111,23 +120,23 @@ class CheckValues(CheckBase):
             def bar(self, arg1, arg2):
                 return None
     """
+
     #: Default values for the possible 'check' keys.
     # To add a new check to the class, the following needs to be done:
     #   1. Add a key & default value to the `__check_defaults` dictionary
     #   2. Add a corresponding if-statement to method `_check_value`
     #
     __check_defaults = {
-        'can_be_negative': True,
-        'can_be_complex': False,
-        'can_be_inf': True,
-        'can_be_nan': True,
-        'none_shall_pass': False,
+        "can_be_negative": True,
+        "can_be_complex": False,
+        "can_be_inf": True,
+        "can_be_nan": True,
+        "none_shall_pass": False,
     }
 
     def __init__(
-            self,
-            checks_on_return: Dict[str, bool] = None,
-            **checks: Dict[str, bool]):
+        self, checks_on_return: Dict[str, bool] = None, **checks: Dict[str, bool]
+    ):
 
         super().__init__(checks_on_return=checks_on_return, **checks)
 
@@ -159,28 +168,29 @@ class CheckValues(CheckBase):
             # check input arguments
             for arg_name in checks:
                 # skip check of output/return
-                if arg_name == 'checks_on_return':
+                if arg_name == "checks_on_return":
                     continue
 
                 # check argument
-                self._check_value(bound_args.arguments[arg_name],
-                                  arg_name,
-                                  checks[arg_name])
+                self._check_value(
+                    bound_args.arguments[arg_name], arg_name, checks[arg_name]
+                )
 
             # call function
             _return = f(**bound_args.arguments)
 
             # check function return
-            if 'checks_on_return' in checks:
-                self._check_value(_return, 'checks_on_return',
-                                  checks['checks_on_return'])
+            if "checks_on_return" in checks:
+                self._check_value(
+                    _return, "checks_on_return", checks["checks_on_return"]
+                )
 
             return _return
+
         return wrapper
 
     def _get_value_checks(
-            self,
-            bound_args: inspect.BoundArguments
+        self, bound_args: inspect.BoundArguments
     ) -> Dict[str, Dict[str, bool]]:
         """
         Review :attr:`checks` and function bound arguments to build a complete 'checks'
@@ -209,17 +219,20 @@ class CheckValues(CheckBase):
         #
         # artificially add "return" to parameters
         things_to_check = bound_args.signature.parameters.copy()
-        things_to_check['checks_on_return'] = \
-            inspect.Parameter('checks_on_return',
-                              inspect.Parameter.POSITIONAL_ONLY,
-                              annotation=bound_args.signature.return_annotation)
+        things_to_check["checks_on_return"] = inspect.Parameter(
+            "checks_on_return",
+            inspect.Parameter.POSITIONAL_ONLY,
+            annotation=bound_args.signature.return_annotation,
+        )
         for param in things_to_check.values():
             # variable arguments are NOT checked
             # e.g. in foo(x, y, *args, d=None, **kwargs) variable arguments
             #      *args and **kwargs will NOT be checked
             #
-            if param.kind in (inspect.Parameter.VAR_KEYWORD,
-                              inspect.Parameter.VAR_POSITIONAL):
+            if param.kind in (
+                inspect.Parameter.VAR_KEYWORD,
+                inspect.Parameter.VAR_POSITIONAL,
+            ):
                 continue
 
             # grab the checks dictionary for the desired parameter
@@ -234,8 +247,9 @@ class CheckValues(CheckBase):
             out_checks[param.name] = {}
             for v_name, v_default in self.__check_defaults.items():
                 try:
-                    out_checks[param.name][v_name] = \
-                        param_in_checks.get(v_name, v_default)
+                    out_checks[param.name][v_name] = param_in_checks.get(
+                        v_name, v_default
+                    )
                 except AttributeError:
                     # for the case that checks are defined for an argument,
                     # but is NOT a dictionary
@@ -245,14 +259,16 @@ class CheckValues(CheckBase):
 
         # Does `self.checks` indicate arguments not used by f?
         missing_params = [
-            param
-            for param in set(self.checks.keys()) - set(out_checks.keys())
+            param for param in set(self.checks.keys()) - set(out_checks.keys())
         ]
         if len(missing_params) > 0:
             params_str = ", ".join(missing_params)
-            warnings.warn(PlasmaPyWarning(
-                f"Expected to value check parameters {params_str} but they "
-                f"are missing from the call to {self.f.__name__}"))
+            warnings.warn(
+                PlasmaPyWarning(
+                    f"Expected to value check parameters {params_str} but they "
+                    f"are missing from the call to {self.f.__name__}"
+                )
+            )
 
         return out_checks
 
@@ -277,7 +293,7 @@ class CheckValues(CheckBase):
             raised if a check fails
 
         """
-        if arg_name == 'checks_on_return':
+        if arg_name == "checks_on_return":
             valueerror_msg = f"The return value "
         else:
             valueerror_msg = f"The argument '{arg_name}' "
@@ -286,33 +302,33 @@ class CheckValues(CheckBase):
         # check values
         # * 'none_shall_pass' always needs to be checked first
         ckeys = list(self.__check_defaults.keys())
-        ckeys.remove('none_shall_pass')
-        ckeys = ('none_shall_pass',) + tuple(ckeys)
+        ckeys.remove("none_shall_pass")
+        ckeys = ("none_shall_pass",) + tuple(ckeys)
         for ckey in ckeys:
-            if ckey == 'none_shall_pass':
+            if ckey == "none_shall_pass":
                 if arg is None and arg_checks[ckey]:
                     break
                 elif arg is None:
                     raise ValueError(f"{valueerror_msg} Nones.")
 
-            elif ckey == 'can_be_negative':
+            elif ckey == "can_be_negative":
                 if not arg_checks[ckey]:
                     # Allow NaNs through without raising a warning
-                    with np.errstate(invalid='ignore'):
+                    with np.errstate(invalid="ignore"):
                         isneg = np.any(arg < 0)
                     if isneg:
                         raise ValueError(f"{valueerror_msg} negative numbers.")
 
-            elif ckey == 'can_be_complex':
+            elif ckey == "can_be_complex":
                 if not arg_checks[ckey] and np.any(np.iscomplexobj(arg)):
                     raise ValueError(f"{valueerror_msg} complex numbers.")
 
-            elif ckey == 'can_be_inf':
+            elif ckey == "can_be_inf":
                 if not arg_checks[ckey] and np.any(np.isinf(arg)):
                     raise ValueError(f"{valueerror_msg} infs.")
 
-            elif ckey == 'can_be_nan':
-                if not arg_checks['can_be_nan'] and np.any(np.isnan(arg)):
+            elif ckey == "can_be_nan":
+                if not arg_checks["can_be_nan"] and np.any(np.isnan(arg)):
                     raise ValueError(f"{valueerror_msg} NaNs.")
 
 
@@ -434,6 +450,7 @@ class CheckUnits(CheckBase):
     .. _astropy equivalencies:
         https://docs.astropy.org/en/stable/units/equivalencies.html
     """
+
     #: Default values for the possible 'check' keys.
     # To add a new check the the class, the following needs to be done:
     #   1. Add a key & default value to the `__check_defaults` dictionary
@@ -441,18 +458,17 @@ class CheckUnits(CheckBase):
     #   3. Add a corresponding behavior to `_check_unit`
     #
     __check_defaults = {
-        'units': None,
-        'equivalencies': None,
-        'pass_equivalent_units': False,
-        'none_shall_pass': False,
+        "units": None,
+        "equivalencies": None,
+        "pass_equivalent_units": False,
+        "none_shall_pass": False,
     }
 
     def __init__(
-            self,
-            checks_on_return: Union[u.Unit,
-                                    List[u.Unit],
-                                    Dict[str, Any]] = None,
-            **checks: Union[u.Unit, List[u.Unit], Dict[str, Any]]):
+        self,
+        checks_on_return: Union[u.Unit, List[u.Unit], Dict[str, Any]] = None,
+        **checks: Union[u.Unit, List[u.Unit], Dict[str, Any]],
+    ):
 
         super().__init__(checks_on_return=checks_on_return, **checks)
 
@@ -484,28 +500,29 @@ class CheckUnits(CheckBase):
             # check (input) argument units
             for arg_name in checks:
                 # skip check of output/return
-                if arg_name == 'checks_on_return':
+                if arg_name == "checks_on_return":
                     continue
 
                 # check argument
-                self._check_unit(bound_args.arguments[arg_name],
-                                 arg_name,
-                                 checks[arg_name])
+                self._check_unit(
+                    bound_args.arguments[arg_name], arg_name, checks[arg_name]
+                )
 
             # call function
             _return = f(**bound_args.arguments)
 
             # check output
-            if 'checks_on_return' in checks:
-                self._check_unit(_return, 'checks_on_return',
-                                 checks['checks_on_return'])
+            if "checks_on_return" in checks:
+                self._check_unit(
+                    _return, "checks_on_return", checks["checks_on_return"]
+                )
 
             return _return
+
         return wrapper
 
     def _get_unit_checks(
-            self,
-            bound_args: inspect.BoundArguments
+        self, bound_args: inspect.BoundArguments
     ) -> Dict[str, Dict[str, Any]]:
         """
         Review :attr:`checks` and function bound arguments to build a complete 'checks'
@@ -534,17 +551,20 @@ class CheckUnits(CheckBase):
         #
         # artificially add "return" to parameters
         things_to_check = bound_args.signature.parameters.copy()
-        things_to_check['checks_on_return'] = \
-            inspect.Parameter('checks_on_return',
-                              inspect.Parameter.POSITIONAL_ONLY,
-                              annotation=bound_args.signature.return_annotation)
+        things_to_check["checks_on_return"] = inspect.Parameter(
+            "checks_on_return",
+            inspect.Parameter.POSITIONAL_ONLY,
+            annotation=bound_args.signature.return_annotation,
+        )
         for param in things_to_check.values():
             # variable arguments are NOT checked
             # e.g. in foo(x, y, *args, d=None, **kwargs) variable arguments
             #      *args and **kwargs will NOT be checked
             #
-            if param.kind in (inspect.Parameter.VAR_KEYWORD,
-                              inspect.Parameter.VAR_POSITIONAL):
+            if param.kind in (
+                inspect.Parameter.VAR_KEYWORD,
+                inspect.Parameter.VAR_POSITIONAL,
+            ):
                 continue
 
             # grab the checks dictionary for the desired parameter
@@ -575,7 +595,7 @@ class CheckUnits(CheckBase):
             if param_checks is not None:
                 # checks for argument were defined with decorator
                 try:
-                    _units = param_checks['units']
+                    _units = param_checks["units"]
                 except TypeError:
                     # if checks is NOT None and is NOT a dictionary, then assume
                     # only units were specified
@@ -604,7 +624,7 @@ class CheckUnits(CheckBase):
             elif _units is None and _units_anno is None:
                 # checks specified, but NO unit checks
                 msg = f"No astropy.units specified for "
-                if param.name == 'checks_on_return':
+                if param.name == "checks_on_return":
                     msg += f"return value "
                 else:
                     msg += f"argument {param.name} "
@@ -634,10 +654,12 @@ class CheckUnits(CheckBase):
             # ensure all _units are astropy.units.Unit or physical types &
             # define 'units' for unit checks &
             # define 'none_shall_pass' check
-            _units = self._condition_target_units(_units,
-                                                  from_annotations=_units_are_from_anno)
-            _units_anno = self._condition_target_units(_units_anno,
-                                                       from_annotations=True)
+            _units = self._condition_target_units(
+                _units, from_annotations=_units_are_from_anno
+            )
+            _units_anno = self._condition_target_units(
+                _units_anno, from_annotations=True
+            )
             if not all(_u in _units for _u in _units_anno):
                 raise ValueError(
                     f"For argument '{param.name}', "
@@ -653,15 +675,17 @@ class CheckUnits(CheckBase):
             elif len(_units) == 0 and len(_units_anno) == 0:
                 # checks specified, but NO unit checks
                 msg = f"No astropy.units specified for "
-                if param.name == 'checks_on_return':
+                if param.name == "checks_on_return":
                     msg += f"return value "
                 else:
                     msg += f"argument {param.name} "
                 msg += f"of function {self.f.__name__}()."
                 raise ValueError(msg)
 
-            out_checks[param.name] = {'units': _units,
-                                      'none_shall_pass': _none_shall_pass}
+            out_checks[param.name] = {
+                "units": _units,
+                "none_shall_pass": _none_shall_pass,
+            }
 
             # -- Determine target equivalencies --
             # Unit equivalences can be defined by:
@@ -671,9 +695,9 @@ class CheckUnits(CheckBase):
             #
             # initialize equivalencies
             try:
-                _equivs = param_checks['equivalencies']
+                _equivs = param_checks["equivalencies"]
             except (KeyError, TypeError):
-                _equivs = self.__check_defaults['equivalencies']
+                _equivs = self.__check_defaults["equivalencies"]
 
             # ensure equivalences are properly formatted
             if _equivs is None or _equivs == [None]:
@@ -701,29 +725,31 @@ class CheckUnits(CheckBase):
                 else:
                     _equivs = self._normalize_equivalencies(_equivs)
 
-            out_checks[param.name]['equivalencies'] = _equivs
+            out_checks[param.name]["equivalencies"] = _equivs
 
             # -- Determine if equivalent units pass --
             try:
                 peu = param_checks.get(
-                    'pass_equivalent_units',
-                    self.__check_defaults['pass_equivalent_units']
+                    "pass_equivalent_units",
+                    self.__check_defaults["pass_equivalent_units"],
                 )
             except (AttributeError, TypeError):
-                peu = self.__check_defaults['pass_equivalent_units']
+                peu = self.__check_defaults["pass_equivalent_units"]
 
-            out_checks[param.name]['pass_equivalent_units'] = peu
+            out_checks[param.name]["pass_equivalent_units"] = peu
 
         # Does `self.checks` indicate arguments not used by f?
         missing_params = [
-            param
-            for param in set(self.checks.keys()) - set(out_checks.keys())
+            param for param in set(self.checks.keys()) - set(out_checks.keys())
         ]
         if len(missing_params) > 0:
             params_str = ", ".join(missing_params)
-            warnings.warn(PlasmaPyWarning(
-                f"Expected to unit check parameters {params_str} but they "
-                f"are missing from the call to {self.f.__name__}"))
+            warnings.warn(
+                PlasmaPyWarning(
+                    f"Expected to unit check parameters {params_str} but they "
+                    f"are missing from the call to {self.f.__name__}"
+                )
+            )
 
         return out_checks
 
@@ -753,17 +779,18 @@ class CheckUnits(CheckBase):
         :class:`astropy.units.UnitTypeError`
             If the units of `arg` do not satisfy conditions of `arg_checks`
         """
-        arg, unit, equiv, err = \
-            self._check_unit_core(arg, arg_name, arg_checks)
+        arg, unit, equiv, err = self._check_unit_core(arg, arg_name, arg_checks)
         if err is not None:
             raise err
 
     def _check_unit_core(
-            self, arg, arg_name: str, arg_checks: Dict[str, Any]
-    ) -> Tuple[Union[None, u.Quantity],
-               Union[None, u.Unit],
-               Union[None, List[Any]],
-               Union[None, Exception]]:
+        self, arg, arg_name: str, arg_checks: Dict[str, Any]
+    ) -> Tuple[
+        Union[None, u.Quantity],
+        Union[None, u.Unit],
+        Union[None, List[Any]],
+        Union[None, Exception],
+    ]:
         """
         Determines if `arg` passes unit checks `arg_checks` and if the units of
         `arg` is equivalent to any units specified in `arg_checks`.
@@ -792,7 +819,7 @@ class CheckUnits(CheckBase):
               or `None` for successful unit checks
         """
         # initialize str for error messages
-        if arg_name == 'checks_on_return':
+        if arg_name == "checks_on_return":
             err_msg = f"The return value "
         else:
             err_msg = f"The argument '{arg_name}' "
@@ -803,40 +830,44 @@ class CheckUnits(CheckBase):
 
         # initialize TypeError message
         typeerror_msg = f"{err_msg} should be an astropy Quantity with "
-        if len(arg_checks['units']) == 1:
+        if len(arg_checks["units"]) == 1:
             typeerror_msg += f"the following unit: {arg_checks['units'][0]}"
         else:
             typeerror_msg += "one of the following units: "
-            for unit in arg_checks['units']:
+            for unit in arg_checks["units"]:
                 typeerror_msg += str(unit)
-                if unit != arg_checks['units'][-1]:
+                if unit != arg_checks["units"][-1]:
                     typeerror_msg += ", "
-        if arg_checks['none_shall_pass']:
+        if arg_checks["none_shall_pass"]:
             typeerror_msg += "or None "
 
         # pass Nones if allowed
         if arg is None:
-            if arg_checks['none_shall_pass']:
+            if arg_checks["none_shall_pass"]:
                 return arg, None, None, None
             else:
                 return None, None, None, ValueError(f"{valueerror_msg} Nones")
 
         # check units
         in_acceptable_units = []
-        equiv = arg_checks['equivalencies']
-        for unit in arg_checks['units']:
+        equiv = arg_checks["equivalencies"]
+        for unit in arg_checks["units"]:
             try:
                 in_acceptable_units.append(
                     arg.unit.is_equivalent(unit, equivalencies=equiv)
                 )
             except AttributeError:
-                if hasattr(arg, 'unit'):
-                    err_specifier = "a 'unit' attribute without an 'is_equivalent' method"
+                if hasattr(arg, "unit"):
+                    err_specifier = (
+                        "a 'unit' attribute without an 'is_equivalent' method"
+                    )
                 else:
                     err_specifier = "no 'unit' attribute"
 
-                msg = (f"{err_msg} has {err_specifier}. "
-                       f"Use an astropy Quantity instead.")
+                msg = (
+                    f"{err_msg} has {err_specifier}. "
+                    f"Use an astropy Quantity instead."
+                )
                 return None, None, None, TypeError(msg)
 
         # How many acceptable units?
@@ -850,20 +881,20 @@ class CheckUnits(CheckBase):
             err = u.UnitTypeError(typeerror_msg)
         else:
             # is there an exact match?
-            units_arr = np.array(arg_checks['units'])
+            units_arr = np.array(arg_checks["units"])
             units_equal_mask = np.equal(units_arr, arg.unit)
             units_mask = np.logical_and(units_equal_mask, in_acceptable_units)
             if np.count_nonzero(units_mask) == 1:
                 # matched exactly to a desired unit
                 unit = units_arr[units_mask][0]
-                equiv = arg_checks['equivalencies']
+                equiv = arg_checks["equivalencies"]
             elif nacceptable == 1:
                 # there is a match to 1 equivalent unit
                 unit = units_arr[in_acceptable_units][0]
-                equiv = arg_checks['equivalencies']
-                if not arg_checks['pass_equivalent_units']:
+                equiv = arg_checks["equivalencies"]
+                if not arg_checks["pass_equivalent_units"]:
                     err = u.UnitTypeError(typeerror_msg)
-            elif arg_checks['pass_equivalent_units']:
+            elif arg_checks["pass_equivalent_units"]:
                 # there is a match to more than one equivalent units
                 pass
             else:
@@ -967,15 +998,15 @@ class CheckUnits(CheckBase):
             elif len(equiv) == 4:
                 from_unit, to_unit, a, b = equiv
             else:
-                raise ValueError(
-                    f"Invalid equivalence entry {i}: {equiv!r}")
+                raise ValueError(f"Invalid equivalence entry {i}: {equiv!r}")
 
-            if not (from_unit is u.Unit(from_unit) and
-                    (to_unit is None or to_unit is u.Unit(to_unit)) and
-                    callable(a) and
-                    callable(b)):
-                raise ValueError(
-                    f"Invalid equivalence entry {i}: {equiv!r}")
+            if not (
+                from_unit is u.Unit(from_unit)
+                and (to_unit is None or to_unit is u.Unit(to_unit))
+                and callable(a)
+                and callable(b)
+            ):
+                raise ValueError(f"Invalid equivalence entry {i}: {equiv!r}")
             normalized.append((from_unit, to_unit, a, b))
 
         return normalized
@@ -1006,9 +1037,9 @@ class CheckUnits(CheckBase):
         return new_list
 
 
-def check_units(func=None,
-                checks_on_return: Dict[str, Any] = None,
-                **checks: Dict[str, Any]):
+def check_units(
+    func=None, checks_on_return: Dict[str, Any] = None, **checks: Dict[str, Any]
+):
     """
     A decorator to 'check' -- limit/control -- the units of input and return
     arguments to a function or method.
@@ -1133,7 +1164,7 @@ def check_units(func=None,
         https://docs.astropy.org/en/stable/units/equivalencies.html
     """
     if checks_on_return is not None:
-        checks['checks_on_return'] = checks_on_return
+        checks["checks_on_return"] = checks_on_return
 
     if func is not None:
         # `check_units` called as a function
@@ -1143,9 +1174,9 @@ def check_units(func=None,
         return CheckUnits(**checks)
 
 
-def check_values(func=None,
-                 checks_on_return: Dict[str, bool] = None,
-                 **checks: Dict[str, bool]):
+def check_values(
+    func=None, checks_on_return: Dict[str, bool] = None, **checks: Dict[str, bool]
+):
     """
     A decorator to 'check' -- limit/control -- the values of input and return
     arguments to a function or method.
@@ -1208,7 +1239,7 @@ def check_values(func=None,
                 return None
     """
     if checks_on_return is not None:
-        checks['checks_on_return'] = checks_on_return
+        checks["checks_on_return"] = checks_on_return
 
     if func is not None:
         # `check_values` called as a function
@@ -1271,8 +1302,8 @@ def check_relativistic(func=None, betafrac=0.05):
     ...     return 1 * u.m / u.s
 
     """
-    def decorator(f):
 
+    def decorator(f):
         @preserve_signature
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
@@ -1281,6 +1312,7 @@ def check_relativistic(func=None, betafrac=0.05):
             return return_
 
         return wrapper
+
     if func:
         return decorator(func)
     return decorator
@@ -1333,8 +1365,7 @@ def _check_relativistic(V, funcname, betafrac=0.05):
 
     # TODO: Replace `funcname` with func.__name__?
 
-    errmsg = ("V must be a Quantity with units of velocity in"
-              "_check_relativistic")
+    errmsg = "V must be a Quantity with units of velocity in _check_relativistic"
 
     if not isinstance(V, u.Quantity):
         raise TypeError(errmsg)
@@ -1351,10 +1382,12 @@ def _check_relativistic(V, funcname, betafrac=0.05):
     elif beta >= 1:
         raise RelativityError(
             f"{funcname} is yielding a velocity that is {str(round(beta, 3))} "
-            f"times the speed of light.")
+            f"times the speed of light."
+        )
     elif beta >= betafrac:
         warnings.warn(
             f"{funcname} is yielding a velocity that is "
             f"{str(round(beta * 100, 3))}% of the speed of "
             f"light. Relativistic effects may be important.",
-            RelativityWarning)
+            RelativityWarning,
+        )

@@ -174,9 +174,9 @@ Pytest has certain `test discovery conventions
 that are used to collect the tests to be run.
 
 The tests for each subpackage are contained in a ``tests`` subfolder.
-For example, the tests for `~plasmapy.atomic` are located in
-``plasmapy/atomic/tests``.  Test files should begin with ``test_`` and
-generally contain the name of the module or `object` that is being
+For example, the tests for `~plasmapy.particles` are located in
+``plasmapy/particles/tests``.  Test files should begin with ``test_``
+and generally contain the name of the module or `object` that is being
 tested.
 
 The functions that are to be tested in each test file should likewise be
@@ -225,6 +225,26 @@ be included in the error message by using `f-strings
 
 .. _testing-guidelines-writing-tests-warnings:
 
+Floating point comparisons
+--------------------------
+
+Comparisons between floating point numbers with `==` is fraught with
+peril because of limited precision and rounding errors.  Moreover, the
+values of fundamental constants in `astropy.constants` are occasionally
+refined as improvements become available.
+
+Using `numpy.isclose` when comparing floating point numbers and
+`astropy.units.isclose` for `astropy.units.Quantity` instances lets us
+avoid these difficulties.  The ``rtol`` keyword for each of these
+functions allows us to set an acceptable relative tolerance.  Ideally,
+``rtol`` should be set to be an order of magnitude or two greater than
+the expected uncertainty.  For mathematical functions, a value of
+``rtol=1e-14`` may be appropriate.  For quantities that depend on
+physical constants, a value between ``rtol=1e-8`` and ``rtol=1e-5`` may
+be required, depending on how much the accepted values for fundamental
+constants are likely to change.  For comparing arrays, `numpy.allclose`
+and `astropy.units.allclose` should be used instead.
+
 Testing warnings and exceptions
 -------------------------------
 
@@ -244,7 +264,7 @@ To test that a function issues an appropriate warning, use
   import warnings
 
   def issue_warning():
-      warnings.warn("grumblemuffins", UserWarning)
+      warnings.warn("Beware the ides of March", UserWarning)
 
   def test_issue_warning():
       with pytest.warns(UserWarning):

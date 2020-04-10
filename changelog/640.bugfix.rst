@@ -1,1 +1,0 @@
-Define `preserve_signature` decorator to help IDEs parse signatures of decorated functions.

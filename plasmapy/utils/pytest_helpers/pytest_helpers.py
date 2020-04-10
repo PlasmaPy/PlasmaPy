@@ -12,7 +12,7 @@ import colorama
 import warnings
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
-from plasmapy.utils.pytest_helpers.error_messages import (
+from plasmapy.utils.error_messages import (
     call_string,
     _represent_result,
     _exc_str
@@ -164,8 +164,9 @@ def run_test(
     >>> run_test(lambda: 0, args, kwargs, 0)
 
     If `expected` is a an exception or warning, then
-    `~plasmapy.atomic.run_test` will raise an exception if the expected
-    exception is not raised or the expected warning is not issued.
+    `~plasmapy.utils.pytest_helpers.run_test` will raise an exception if
+    the expected exception is not raised or the expected warning is not
+    issued.
 
     >>> from warnings import warn
 
@@ -663,7 +664,7 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
                 return (param_default, ) * 4
             else:
                 return ("p", ) * 4
-        elif param_name == "particles":
+        elif param_name == "particles" or param_name == "species":
             if not (param_default is inspect._empty):
                 return (param_default, ) * 4
             else:
@@ -695,7 +696,7 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
             return (param_default, ) * 4
 
         else:
-            raise ValueError("Unrecognized function input")
+            raise ValueError(f"Unrecognized function input: {param_name}")
 
         # now knowing unit and magnitude, set up the 0d, 1d, 2d, and 3d arrays:
         input_data_3d = np.reshape(np.arange(1.0, 9.0, 1.0), (2, 2, 2))

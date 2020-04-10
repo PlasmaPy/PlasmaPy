@@ -8,18 +8,19 @@ For example, plasmas at high (much larger than 1) Reynolds numbers are
 highly turbulent, while turbulence is negligible at low Reynolds
 numbers.
 """
-__all__ = ['beta', 'quantum_theta']
+__all__ = ["beta", "quantum_theta"]
 
 from astropy import constants
 from astropy import units as u
-from plasmapy.formulary import (quantum, parameters)
+from plasmapy.formulary import quantum, parameters
 from plasmapy.utils.decorators import validate_quantities
 
 
-@validate_quantities(T={'can_be_negative': False,
-                        'equivalencies': u.temperature_energy()},
-                     n_e={'can_be_negative': False})
-def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False},
+)
+def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     """
     Compares Fermi energy to thermal kinetic energy to check if quantum
     effects are important.
@@ -35,13 +36,13 @@ def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
     --------
     >>> import astropy.units as u
     >>> quantum_theta(1*u.eV, 1e20*u.m**-3)
-    <Quantity 127290.61956522>
+    <Quantity 127290.619...>
     >>> quantum_theta(1*u.eV, 1e16*u.m**-3)
-    <Quantity 59083071.83975738>
+    <Quantity 59083071...>
     >>> quantum_theta(1*u.eV, 1e26*u.m**-3)
-    <Quantity 12.72906196>
+    <Quantity 12.72906...>
     >>> quantum_theta(1*u.K, 1e26*u.m**-3)
-    <Quantity 0.00109691>
+    <Quantity 0.00109...>
 
     Returns
     -------
@@ -54,10 +55,11 @@ def quantum_theta(T: u.K, n_e: u.m**-3) -> u.dimensionless_unscaled:
     return theta
 
 
-@validate_quantities(T={'can_be_negative': False,
-                        'equivalencies': u.temperature_energy()},
-                     n={'can_be_negative': False})
-def beta(T: u.K, n: u.m**-3, B: u.T) -> u.dimensionless_unscaled:
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n={"can_be_negative": False},
+)
+def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     """
     The ratio of thermal pressure to magnetic pressure.
 
@@ -74,9 +76,9 @@ def beta(T: u.K, n: u.m**-3, B: u.T) -> u.dimensionless_unscaled:
     --------
     >>> import astropy.units as u
     >>> beta(1*u.eV, 1e20*u.m**-3, 1*u.T)
-    <Quantity 4.02670904e-05>
+    <Quantity 4.0267...e-05>
     >>> beta(8.8e3*u.eV, 1e20*u.m**-3, 5.3*u.T)
-    <Quantity 0.01261482>
+    <Quantity 0.01261...>
 
     Returns
     -------
