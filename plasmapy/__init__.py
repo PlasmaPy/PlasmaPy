@@ -33,12 +33,36 @@ Utility tools
  __citation__      --- PlasmaPy citation instructions
 
 """
+__all__ = [
+    'addons',
+    'classes',
+    'data',
+    'diagnostics',
+    'formulary',
+    'particles',
+    'simulation',
+    'utils',
+    'online_help',
+]
+
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
 import pkg_resources
+import sys
+
+from . import (
+    addons,
+    classes,
+    data,
+    diagnostics,
+    formulary,
+    particles,
+    simulation,
+    utils,
+)
 
 try:
     # this places a runtime dependency on setuptools
@@ -75,15 +99,10 @@ except pkg_resources.DistributionNotFound:
         del warn
     del fallback_version, warn_add
 
-
-from . import formulary
-from . import particles
-
 # ----------------------------------------------------------------------------
 
 # Enforce Python version check during package import.
 # This is the same check as the one at the top of setup.py
-import sys
 
 __citation__ = (
     "Instructions on how to cite and acknowledge PlasmaPy are provided in the "
