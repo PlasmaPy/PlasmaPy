@@ -103,10 +103,6 @@ except pkg_resources.DistributionNotFound:
         del warn
     del fallback_version, warn_add
 
-# import addon entry points
-for ep in iter_entry_points('plasmapy.addons'):
-    addons.__dict__[ep.name] = ep.load()
-
 # ----------------------------------------------------------------------------
 
 # Enforce Python version check during package import.

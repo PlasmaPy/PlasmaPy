@@ -1,6 +1,6 @@
+__all__ = []
 
-
-from pkg_resources import resource_filename
+from pkg_resources import (iter_entry_points, resource_filename)
 
 
 def _parse_readme():
@@ -11,5 +11,13 @@ def _parse_readme():
     return readme
 
 
-def about():
-    print(_parse_readme())
+__readme__ = _parse_readme()
+
+
+# import addon entry points
+for ep in iter_entry_points('plasmapy.addons'):
+    # __dict__[ep.name] = ep.load()
+    globals()[ep.name] = ep.load()
+    __all__.append(ep.name)
+
+del ep, iter_entry_points, resource_filename
