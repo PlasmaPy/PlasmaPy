@@ -103,13 +103,6 @@ except pkg_resources.DistributionNotFound:
         del warn
     del fallback_version, warn_add
 
-# import addon packages so that they're discoverable by dir()
-for finder, name, ispkg in \
-        pkgutil.iter_modules(path=addons.__path__, prefix=addons.__name__ + "."):
-    # if ispkg:
-    #     importlib.import_module(name)
-    importlib.import_module(name)
-
 # import addon entry points
 for ep in iter_entry_points('plasmapy.addons'):
     addons.__dict__[ep.name] = ep.load()
