@@ -20,4 +20,9 @@ for ep in iter_entry_points('plasmapy.addons'):
     globals()[ep.name] = ep.load()
     __all__.append(ep.name)
 
-del ep, iter_entry_points, resource_filename
+try:
+    del ep
+except NameError:
+    pass
+
+del iter_entry_points, resource_filename
