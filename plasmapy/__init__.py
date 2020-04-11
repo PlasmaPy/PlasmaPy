@@ -50,12 +50,8 @@ __all__ = [
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
-import importlib
 import pkg_resources
-import pkgutil
 import sys
-
-from pkg_resources import iter_entry_points
 
 from . import (
     addons,
