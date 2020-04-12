@@ -493,7 +493,7 @@ class CircularWire(Wire):
         """
 
         field = np.zeros((p.shape[0], pt.shape[1], p.shape[1]))
-        for i in numba.prange(pt.shape[1]):  # 300
+        for i in numba.prange(pt.shape[1]):
             pti = pt[:, i]
             dli = dl[:, i]
             wi = w[i]
