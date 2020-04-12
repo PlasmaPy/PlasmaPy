@@ -71,8 +71,3 @@ class AnalyticalFields(GenericPlasma):
         electric field array of the same shape as the input.
         """
         return u.Quantity(self._interpolate_E(r), _volt_over_meter, copy=False)
-
-    @classmethod
-    def is_datasource_for(cls, **kwargs):
-        match = "interpolate_E" in kwargs.keys() and "interpolate_B" in kwargs.keys()
-        return match
