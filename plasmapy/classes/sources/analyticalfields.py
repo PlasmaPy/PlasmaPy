@@ -14,6 +14,16 @@ import numpy as np
 _volt_over_meter = u.V / u.m  # for performance reasons
 
 
+def _make_function(field_function):
+    test_array = np.zeros((4, 3))
+    if field_function(test_array).shape != test_array.shape:
+        output_function = lambda r: np.array([field_function(ri) for ri in r])
+        # TODO speed this up!
+    else:
+        output_function = field_function
+    return output_function
+
+
 class AnalyticalFields(GenericPlasma):
     """
     Allows passing analytical functions as fields.
@@ -34,14 +44,8 @@ class AnalyticalFields(GenericPlasma):
 
     def __init__(self, magnetic_field: Callable, electric_field: Callable):
         test_array = np.zeros((4, 3))
-        if magnetic_field(test_array).shape != test_array.shape:
-            self._interpolate_B = lambda r: np.array([magnetic_field(ri) for ri in r])
-        else:
-            self._interpolate_B = magnetic_field
-        if electric_field(test_array).shape != test_array.shape:
-            self._interpolate_E = lambda r: np.array([electric_field(ri) for ri in r])
-        else:
-            self._interpolate_E = electric_field
+        self._interpolate_B = _make_function(magnetic_field)
+        self._interpolate_E = _make_function(electric_field)
 
     def interpolate_B(self, r: u.m) -> u.T:
         """
