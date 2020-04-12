@@ -2,13 +2,14 @@
 Defines the AnalyticalFields class used by PlasmaPy to represent electric and magnetic fields
 varying as known functions of position.
 """
+
+__all__ = ["AnalyticalFields"]
+
 import astropy.units as u
 
 from typing import Callable
 from plasmapy.classes import GenericPlasma
 import numpy as np
-
-__all__ = ["AnalyticalFields"]
 
 _volt_over_meter = u.V / u.m  # for performance reasons
 

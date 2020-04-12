@@ -1,4 +1,7 @@
 """Class representing a group of particles moving in a plasma's fields."""
+
+__all__ = ["ParticleTracker", "ParticleTrackerAccessor"]
+
 import pathlib
 import warnings
 
@@ -13,8 +16,6 @@ from plasmapy.utils.decorators import check_units
 from . import particle_integrators
 
 PLOTTING = False
-
-__all__ = ["ParticleTracker", "ParticleTrackerAccessor"]
 
 
 @xarray.register_dataset_accessor("particletracker")
