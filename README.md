@@ -106,4 +106,5 @@ Early development on PlasmaPy was supported in part by the U.S.
 Department of Energy, the Smithsonian Institution, and Google Summer of
 Code.  Ongoing PlasmaPy development is being supported through a
 collaborative award from the U.S. National Science Foundation's
-Cyberinfrastructure for Sustained Scientific Innovation program.
+Cyberinfrastructure for Sustained Scientific Innovation program and a
+NASA HDEE grant.
