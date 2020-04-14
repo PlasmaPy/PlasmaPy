@@ -108,8 +108,8 @@ with support from the U.S. National Science Foundation through
 grants 1931388, 1931393, 1931429, and 1931435 that were awarded
 through `a collaborative proposal
 <http://doi.org/10.5281/zenodo.3406803>`__ submitted to the
-Cyberinfrastructure for Sustained Scientific Innovation (CSSI) program
-and NASA HDEE grant 80NSSC20K0174.
+Cyberinfrastructure for Sustained Scientific Innovation (CSSI) program and
+NASA Heliophysics Data Environment Enhancements (HDEE) grant 80NSSC20K0174.
 Any opinions, findings, and conclusions or recommendations expressed
 in this material are those of the authors and do not necessarily
 reflect the views of any of the funding agencies or organizations that
