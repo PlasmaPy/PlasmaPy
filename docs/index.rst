@@ -60,10 +60,13 @@ package for plasma physics currently under development.
 
 
 .. toctree::
-   :caption: Getting started
+   :caption: First Steps
    :maxdepth: 1
 
+   about/vision_statement
    install
+   getting_started
+   auto_examples/index
    COMMUNICATION
    CONTRIBUTING
    CODE_OF_CONDUCT
@@ -77,61 +80,37 @@ package for plasma physics currently under development.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Formulary
-   :hidden:
-
-   formulary/index
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Experimental tools
+   :caption: Package features
    :hidden:
 
    diagnostics/index
-
-.. toctree::
-    :maxdepth: 1
-    :caption: Data structures and simulation
-    :hidden:
-
-    plasma/index
-    simulation/particletracker
-
-.. toctree::
-    :maxdepth: 1
-    :caption: Particle data
-    :hidden:
-
-    particles/index
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Utilities
-   :hidden:
-
+   formulary/index
+   particles/index
+   simulation/particletracker
+   plasma/index
    utils/index
 
 .. toctree::
-    :maxdepth: 1
-    :caption: Examples
-    :hidden:
-
-    auto_examples/index
-
-
-.. toctree::
-    :maxdepth: 1
-    :caption: Development guide
-    :hidden:
-
-    development/index
-
-
-.. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: About
+   :hidden:
+
+   development/index
+   development/code_guide
+   development/doc_guide
+   development/testing_guide
+   development/release_guide
+
+.. toctree::
+   :maxdepth: 3
+   :caption: About
+   :hidden:
 
    about/index
+   whatsnew/index
+   about/stability
+   PlasmaPy.org <https://plasmapy.org>
+
 
 .. The about PlasmaPy section has some important information that would
    be helpful to have more readily accessible from the main doc index

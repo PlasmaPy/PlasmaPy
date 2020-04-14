@@ -1,8 +1,8 @@
 .. _plasmapy-about:
 
-**************
-About PlasmaPy
-**************
+*****
+About
+*****
 
 .. toctree::
    :maxdepth: 3

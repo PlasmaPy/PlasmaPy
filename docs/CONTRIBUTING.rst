@@ -1,7 +1,7 @@
 .. _contributing-to-plasmapy:
 
-Contributing to PlasmaPy
-========================
+How to Contribute
+=================
 
 There are numerous ways to contribute to PlasmaPy, including by
 providing code and documentation, suggesting and discussing ideas,
