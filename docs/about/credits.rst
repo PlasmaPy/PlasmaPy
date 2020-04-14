@@ -89,6 +89,7 @@ list, your information is incorrect, or you do not wish to be listed,
 then please submit a pull request or email ``namurphy@cfa.harvard.edu``.
 
 Other Credits
+=============
 
 The PlasmaPy Community thanks the SunPy and Astropy communities for
 inspiring this project in the first place, providing much helpful
@@ -96,6 +97,7 @@ advice, and showing examples of how to build a community-wide open
 source scientific software package.
 
 Acknowledgements
+================
 
 Early development on PlasmaPy was partially supported by the U.S.
 Department of Energy through grant DE-SC0016363 that was funded
@@ -107,7 +109,7 @@ grants 1931388, 1931393, 1931429, and 1931435 that were awarded
 through `a collaborative proposal
 <http://doi.org/10.5281/zenodo.3406803>`__ submitted to the
 Cyberinfrastructure for Sustained Scientific Innovation (CSSI) program
-and a NASA HDEE grant 80NSSC20K0174.
+and NASA HDEE grant 80NSSC20K0174.
 Any opinions, findings, and conclusions or recommendations expressed
 in this material are those of the authors and do not necessarily
 reflect the views of any of the funding agencies or organizations that
