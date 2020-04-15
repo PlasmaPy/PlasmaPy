@@ -32,6 +32,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Apoorv Choubey <https://github.com/apooravc>`__
 * `cclauss <https://github.com/cclauss>`__
 * `Jacob Deal <https://github.com/Jac0bDeal>`__
+* `Diego A. Diaz Riega <https://github.com/diego7319>`__
 * `Leah Einhorn <https://github.com/leahein>`__
 * `Erik Everson <https://github.com/rocco8773>`__
 * `Thomas Fan <https://github.com/thomasjpfan>`__
@@ -52,6 +53,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Samuel Langendorf <https://github.com/samurai688>`__ (`0000-0002-7757-5879 <https://orcid.org/0000-0002-7757-5879>`__)
 * `Drew Leonard <https://github.com/SolarDrew>`__ (`0000-0001-5270-7487 <https://orcid.org/0000-0001-5270-7487>`__)
 * `lgoenner <https://github.com/lgoenner>`__
+* `Aditya Magarde <https://github.com/adityamagarde>`__
 * `Ritiek Malhotra <https://github.com/ritiek>`__
 * `Stuart Mumford <https://github.com/Cadair>`__ (`0000-0003-4217-4642 <https://orcid.org/0000-0003-4217-4642>`__)
 * `Joshua Munn <https://github.com/jams2>`__
@@ -62,6 +64,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Neil Patel <https://github.com/ministrike3>`__
 * `Francisco Silva Pavon <https://github.com/fsilvapavon>`__
 * `Roberto Díaz Pérez <https://github.com/RobertTnf>`__
+* `Jakub Polak <https://github.com/Ishinomori>`__
 * `Raajit Raj <https://github.com/raajitr>`__
 * `Antonia Savcheva <https://github.com/savcheva>`__ (`0000-0002-5598-046X <https://orcid.org/0000-0002-5598-046X>`__)
 * `Chengcai Shen <https://github.com/ionizationcalc>`__ (`0000-0002-9258-4490 <https://orcid.org/0000-0002-9258-4490>`__)
@@ -73,12 +76,9 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Dominik Stańczak <https://github.com/StanczakDominik>`__ (`0000-0001-6291-8843 <https://orcid.org/0000-0001-6291-8843>`__)
 * `Antoine Tavant <https://github.com/antoinelpp>`__
 * `Thomas Ulrich <https://github.com/Elfhelm>`__
+* `Thomas Varnish <https://github.com/tvarnish>`__
 * `Sixue Xu <https://github.com/hzxusx>`__
 * `Carol Zhang <https://github.com/carolyz>`__
-* `Thomas Varnish <https://github.com/tvarnish>`__
-* `Aditya Magarde <https://github.com/adityamagarde>`__
-* `Diego A. Diaz Riega <https://github.com/diego7319>`__
-* `Jakub Polak <https://github.com/Ishinomori>`__
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy
@@ -89,6 +89,7 @@ list, your information is incorrect, or you do not wish to be listed,
 then please submit a pull request or email ``namurphy@cfa.harvard.edu``.
 
 Other Credits
+=============
 
 The PlasmaPy Community thanks the SunPy and Astropy communities for
 inspiring this project in the first place, providing much helpful
@@ -96,6 +97,7 @@ advice, and showing examples of how to build a community-wide open
 source scientific software package.
 
 Acknowledgements
+================
 
 Early development on PlasmaPy was partially supported by the U.S.
 Department of Energy through grant DE-SC0016363 that was funded
@@ -106,7 +108,8 @@ with support from the U.S. National Science Foundation through
 grants 1931388, 1931393, 1931429, and 1931435 that were awarded
 through `a collaborative proposal
 <http://doi.org/10.5281/zenodo.3406803>`__ submitted to the
-Cyberinfrastructure for Sustained Scientific Innovation (CSSI) program.
+Cyberinfrastructure for Sustained Scientific Innovation (CSSI) program and
+NASA Heliophysics Data Environment Enhancements (HDEE) grant 80NSSC20K0174.
 Any opinions, findings, and conclusions or recommendations expressed
 in this material are those of the authors and do not necessarily
 reflect the views of any of the funding agencies or organizations that
