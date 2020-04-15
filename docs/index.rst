@@ -65,7 +65,6 @@ package for plasma physics currently under development.
 
    about/vision_statement
    install
-   getting_started
    auto_examples/index
    COMMUNICATION
    CONTRIBUTING
