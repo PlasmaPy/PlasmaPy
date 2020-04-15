@@ -63,7 +63,7 @@ package for plasma physics currently under development.
    :caption: First Steps
    :maxdepth: 1
 
-   about/vision_statement
+   Vision Statement <about/vision_statement>
    install
    getting_started
    auto_examples/index
@@ -92,10 +92,10 @@ package for plasma physics currently under development.
 
 .. toctree::
    :maxdepth: 3
-   :caption: About
+   :caption: Guide for Contributors
    :hidden:
 
-   development/index
+   Overview <development/index>
    development/code_guide
    development/doc_guide
    development/testing_guide
@@ -103,13 +103,13 @@ package for plasma physics currently under development.
 
 .. toctree::
    :maxdepth: 3
-   :caption: About
+   :caption: All the Rest
    :hidden:
 
-   about/index
+   about/credits
    whatsnew/index
    about/stability
-   PlasmaPy.org <https://plasmapy.org>
+   PlasmaPy.org <https://www.plasmapy.org>
 
 
 .. The about PlasmaPy section has some important information that would
