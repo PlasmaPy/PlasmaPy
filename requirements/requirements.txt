@@ -7,3 +7,4 @@ matplotlib >= 2.0
 mpmath >= 1.0.0
 numpy >= 1.14
 scipy >= 0.19
+setuptools >= 41.2
