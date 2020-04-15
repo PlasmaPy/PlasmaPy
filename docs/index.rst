@@ -64,7 +64,7 @@ package for plasma physics currently under development.
    :maxdepth: 1
 
    Vision Statement <about/vision_statement>
-   install
+   Installing <install>
    getting_started
    auto_examples/index
    COMMUNICATION
