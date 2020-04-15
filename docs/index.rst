@@ -82,12 +82,12 @@ package for plasma physics currently under development.
    :caption: Package features
    :hidden:
 
-   diagnostics/index
-   formulary/index
-   particles/index
-   simulation/particletracker
-   plasma/index
-   utils/index
+   Diagnostics <diagnostics/index>
+   Formulary <formulary/index>
+   Particles <particles/index>
+   Particle tracker <simulation/particletracker>
+   Plasma objects <plasma/index>
+   Package utilities <utils/index>
 
 .. toctree::
    :maxdepth: 3
