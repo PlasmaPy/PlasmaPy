@@ -1,6 +1,6 @@
 .. _plasmapy-communication:
 
-Feedback and communication
+Feedback and Communication
 ==========================
 
 `Matrix chat <https://riot.im/app/#/room/#plasmapy:matrix.org>`__
