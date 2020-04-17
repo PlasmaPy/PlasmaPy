@@ -1,7 +1,7 @@
 .. _citation:
 
-Acknowledging and Citing PlasmaPy
-=================================
+Acknowledging and Citing
+========================
 
 If you use PlasmaPy for a project resulting in a publication, we ask
 that you cite both the specific version of PlasmaPy used in your
@@ -39,5 +39,3 @@ depends on, including but not limited to
 `Astropy <https://www.astropy.org/acknowledging.html>`__,
 `NumPy <https://www.scipy.org/citing.html#numpy>`__, and
 `SciPy <https://www.scipy.org/citing.html#scipy-the-library>`__.
-
-
