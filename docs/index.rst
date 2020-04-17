@@ -85,9 +85,9 @@ package for plasma physics currently under development.
    Diagnostics <diagnostics/index>
    Formulary <formulary/index>
    Particles <particles/index>
-   Particle tracker <simulation/particletracker>
-   Plasma objects <plasma/index>
-   Package utilities <utils/index>
+   Particle Tracker <simulation/particletracker>
+   Plasma Objects <plasma/index>
+   Package Utilities <utils/index>
 
 .. toctree::
    :maxdepth: 3
