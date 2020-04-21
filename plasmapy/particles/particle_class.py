@@ -109,7 +109,7 @@ class AbstractParticle(ABC):
     @property
     @abstractmethod
     def charge(self) -> Union[u.Quantity, Real]:
-        pass
+        raise NotImplementedError
 
     def __bool__(self):
         """
