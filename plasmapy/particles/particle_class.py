@@ -104,7 +104,7 @@ class AbstractParticle(ABC):
     @property
     @abstractmethod
     def mass(self) -> Union[u.Quantity, Real]:
-        pass
+        raise NotImplementedError
 
     @property
     @abstractmethod
