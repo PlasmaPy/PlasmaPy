@@ -3,12 +3,16 @@ The `plasmapy.particles` subpackage provides access to information about
 atoms, isotopes, ions, and other particles.
 """
 
-from .special_particles import ParticleZoo
+from plasmapy.particles.special_particles import ParticleZoo
+from plasmapy.particles.particle_input import particle_input
+from plasmapy.particles.particle_class import (
+    Particle,
+    AbstractParticle,
+    DimensionlessParticle,
+    CustomParticle,
+)
 
-from .particle_class import Particle
-from .particle_input import particle_input
-
-from .symbols import (
+from plasmapy.particles.symbols import (
     atomic_symbol,
     isotope_symbol,
     ionic_symbol,
@@ -16,7 +20,7 @@ from .symbols import (
     element_name,
 )
 
-from .atomic import (
+from plasmapy.particles.atomic import (
     atomic_number,
     is_stable,
     half_life,
@@ -32,13 +36,10 @@ from .atomic import (
     reduced_mass,
 )
 
-from .nuclear import (
-    nuclear_binding_energy,
-    nuclear_reaction_energy,
-)
+from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 
-from .ionization_state import IonizationState, State
-from .ionization_states import IonizationStates
+from plasmapy.particles.ionization_state import IonizationState, State
+from plasmapy.particles.ionization_states import IonizationStates
 
 # Create instances of the most commonly used particles
 
