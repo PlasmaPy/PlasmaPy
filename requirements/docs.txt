@@ -1,0 +1,9 @@
+# these are dependencies required to build package documentaiton
+# ought to mirror 'docs' under options.extras_require in config.cfg
+numpydoc
+pillow
+sphinx <= 2.4.4
+sphinx-automodapi
+sphinx-gallery
+sphinx_rtd_theme
+towncrier
