@@ -1,0 +1,8 @@
+# these are dependencies required to use the package
+# ought to mirror 'instal_requires' under 'options' in config.cfg
+astropy >= 3.1
+colorama >= 0.3
+matplotlib
+numpy >= 1.14
+scipy >= 0.19
+setuptools >= 41.2
