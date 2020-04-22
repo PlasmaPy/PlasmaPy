@@ -1,0 +1,6 @@
+# these are "extra" dependencies to run advanced package features
+# ought to mirror 'extras' under options.extras_require in config.cfg
+h5py
+lmfit
+mpmath
+setuptools_scm
