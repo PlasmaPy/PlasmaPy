@@ -1,5 +1,6 @@
 # these are dependencies required to build package documentaiton
 # ought to mirror 'docs' under options.extras_require in config.cfg
+-r extras.txt
 numpydoc
 pillow
 sphinx <= 2.4.4
