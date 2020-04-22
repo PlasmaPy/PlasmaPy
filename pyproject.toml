@@ -1,5 +1,7 @@
 [build-system]
-requires = [ "setuptools >= 35.0.2", "wheel >= 0.29.0"]
+requires = ["setuptools >= 41.2",
+            "setuptools_scm",
+            "wheel >= 0.29.0"]  # out to mirror 'requirements/build.txt'
 build-backend = "setuptools.build_meta"
 
 [tool.towncrier]
