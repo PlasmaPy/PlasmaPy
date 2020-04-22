@@ -52,10 +52,6 @@ h5py_import_error = _optional_import_error_template(
     "h5py", "http://docs.h5py.org/en/latest/build.html"
 )
 
-mpl_import_error = _optional_import_error_template(
-    "matplotlib", "https://matplotlib.org/users/installing.html"
-)
-
 mpmath_import_error = _optional_import_error_template(
     "mpmath", "http://mpmath.org/doc/current/setup.html#download-and-installation"
 )
