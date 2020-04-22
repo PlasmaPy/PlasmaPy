@@ -2,7 +2,7 @@
 # ought to mirror 'instal_requires' under 'options' in config.cfg
 astropy >= 3.1
 colorama >= 0.3
-matplotlib
+matplotlib >= 3.2
 numpy >= 1.14
 scipy >= 0.19
 setuptools >= 41.2
