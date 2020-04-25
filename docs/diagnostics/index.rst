@@ -9,7 +9,8 @@ Plasma diagnostics (`plasmapy.diagnostics`)
 .. automodapi:: plasmapy.diagnostics.langmuir
    :no-heading:
 
-.. topic:: Examples:
+.. nbgallery::
+    :name: Examples
+    :glob:
 
-   * :ref:`sphx_glr_auto_examples_plot_langmuir_analysis.py`
-
+    /notebooks/plot_langmuir_analysis

@@ -41,9 +41,12 @@ uncertainties can be found in `astropy.constants`.
 For a general overview of how unit-based input works, take a look at the
 following example:
 
-.. topic:: Examples:
 
-   * :ref:`sphx_glr_auto_examples_plot_physics.py`
+.. nbgallery::
+    :name: Examples
+    :glob:
+
+    /notebooks/plot_physics
 
 Notes for developers
 ====================
