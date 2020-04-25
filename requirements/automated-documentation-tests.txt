@@ -8,3 +8,5 @@ sphinx-gallery
 sphinx_rtd_theme
 pytest
 setuptools-scm
+nbsphinx
+ipykernel
