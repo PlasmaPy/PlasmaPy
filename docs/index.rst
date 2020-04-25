@@ -70,6 +70,7 @@ package for plasma physics currently under development.
    CONTRIBUTING
    CODE_OF_CONDUCT
    about/citation
+   examples
 
 * `PlasmaPy's GitHub repository
   <https://github.com/PlasmaPy/plasmapy>`_
