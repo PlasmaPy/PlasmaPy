@@ -181,3 +181,11 @@ texinfo_documents = [
 ]
 
 html_favicon = "./_static/icon.ico"
+
+
+# -- NBSphinx options
+
+nbsphinx_thumbnails = {
+    'notebooks/*': '_images/graphic-circular.png',
+}
+
