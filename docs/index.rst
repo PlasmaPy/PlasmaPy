@@ -5,49 +5,6 @@
 ######################
 PlasmaPy Documentation
 ######################
-
-.. raw:: html
-
-    <div style="width: 30%;" class="sphx-glr-thumbcontainer" tooltip="Let&#x27;s try to look at ITER plasma conditions using the physics subpackage. ">
-
-.. only:: html
-
-    .. figure:: /auto_examples/images/thumb/sphx_glr_plot_physics_thumb.png
-
-        :ref:`sphx_glr_auto_examples_plot_physics.py`
-
-.. raw:: html
-
-    </div>
-
-.. raw:: html
-
-    <div style="width: 30%;" class="sphx-glr-thumbcontainer" tooltip="Let&#x27;s import some basics (and PlasmaPy!) ">
-
-.. only:: html
-
-    .. figure:: /auto_examples/images/thumb/sphx_glr_plot_dispersion_function_thumb.png
-
-        :ref:`sphx_glr_auto_examples_plot_dispersion_function.py`
-
-.. raw:: html
-
-    </div>
-
-.. raw:: html
-
-    <div style="width: 30%;" class="sphx-glr-thumbcontainer" tooltip="Let&#x27;s analyze a few Langmuir probe characteristics using the diagnostics.langmuir subpackage. F...">
-
-.. only:: html
-
-    .. figure:: /auto_examples/images/thumb/sphx_glr_plot_langmuir_analysis_thumb.png
-
-        :ref:`sphx_glr_auto_examples_plot_langmuir_analysis.py`
-
-.. raw:: html
-
-    </div>
-
 .. image:: _static/graphic-circular.png
    :alt: PlasmaPy logo
    :align: right
@@ -65,7 +22,6 @@ package for plasma physics currently under development.
 
    Vision Statement <about/vision_statement>
    Installing <install>
-   auto_examples/index
    COMMUNICATION
    CONTRIBUTING
    CODE_OF_CONDUCT
