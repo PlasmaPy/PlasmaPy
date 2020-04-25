@@ -6,15 +6,44 @@
 PlasmaPy Documentation
 ######################
 
-.. nbgallery::
-    :name: Examples (frontpage)
-    :glob:
-    :reversed:
-    :hidden:
+.. raw:: html
 
-    notebooks/plot_langmuir_analysis
-    notebooks/plot_dispersion_function
-    notebooks/plot_physics
+  <div class="sphx-glr-thumbcontainer">
+    <div class="figure align-center">
+      <img alt="thumbnail" src="./_images/notebooks_plot_physics_16_0.png" />
+      <p class="caption">
+        <span class="caption-text">
+          <a class="reference internal" href="notebooks/plot_physics.html">
+            <span class="std std-ref">Analysing ITER parameters</span>
+          </a>
+        </span>
+      </p>
+    </div>
+  </div>
+  <div class="sphx-glr-thumbcontainer">
+    <div class="figure align-center">
+      <img alt="thumbnail" src="./_images/notebooks_plot_dispersion_function_9_0.png" />
+      <p class="caption">
+        <span class="caption-text">
+          <a class="reference internal" href="notebooks/plot_dispersion_function.html">
+            <span class="std std-ref">The plasma dispersion function</span>
+          </a>
+        </span>
+      </p>
+    </div>
+  </div>
+  <div class="sphx-glr-thumbcontainer">
+    <div class="figure align-center">
+      <img alt="thumbnail" src="./_images/notebooks_plot_langmuir_analysis_6_1.png" />
+      <p class="caption">
+        <span class="caption-text">
+          <a class="reference internal" href="notebooks/plot_langmuir_analysis.html">
+            <span class="std std-ref">Langmuir probe data analysis</span>
+          </a>
+        </span>
+      </p>
+    </div>
+  </div>
 
 .. image:: _static/graphic-circular.png
    :alt: PlasmaPy logo
