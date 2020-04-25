@@ -44,6 +44,7 @@ PlasmaPy Documentation
       </p>
     </div>
   </div>
+  <div class="sphx-glr-clear"></div>
 
 .. image:: _static/graphic-circular.png
    :alt: PlasmaPy logo
