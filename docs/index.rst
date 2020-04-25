@@ -5,6 +5,17 @@
 ######################
 PlasmaPy Documentation
 ######################
+
+.. nbgallery::
+    :name: Examples (frontpage)
+    :glob:
+    :reversed:
+    :hidden:
+
+    notebooks/plot_langmuir_analysis
+    notebooks/plot_dispersion_function
+    notebooks/plot_physics
+
 .. image:: _static/graphic-circular.png
    :alt: PlasmaPy logo
    :align: right
