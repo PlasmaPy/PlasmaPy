@@ -49,10 +49,6 @@ class ParticleTracker:
     eff_q : `astropy.units.Quantity`
     eff_m : `astropy.units.Quantity`
         Total charge and mass of macroparticle.
-    kinetic_energy
-        calculated from `v`, as in, current velocity.
-    kinetic_energy_history
-        calculated from `velocity_history`.
 
     Examples
     ----------
