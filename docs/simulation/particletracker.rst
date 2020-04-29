@@ -18,7 +18,7 @@ future.
     :name: Examples
     :glob:
 
-    /notebooks/plot_particle_stepper
+    /notebooks/particle_stepper
 
 Reference/API
 =============

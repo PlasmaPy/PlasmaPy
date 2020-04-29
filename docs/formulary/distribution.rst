@@ -13,4 +13,4 @@ Distribution functions (`plasmapy.formulary.distribution`)
     :name: Examples
     :glob:
 
-    /notebooks/plot_distribution
+    /notebooks/distribution

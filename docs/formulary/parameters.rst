@@ -11,4 +11,4 @@ Plasma parameters (`plasmapy.formulary.parameters`)
     :name: Examples
     :glob:
 
-    /notebooks/plot_distribution
+    /notebooks/distribution

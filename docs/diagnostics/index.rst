@@ -13,4 +13,4 @@ Plasma diagnostics (`plasmapy.diagnostics`)
     :name: Examples
     :glob:
 
-    /notebooks/plot_langmuir_analysis
+    /notebooks/langmuir_analysis

@@ -13,4 +13,4 @@ Dielectric functions (`plasmapy.formulary.dielectric`)
     :name: Examples
     :glob:
 
-    /notebooks/plot_cold_plasma_tensor_elements
+    /notebooks/cold_plasma_tensor_elements

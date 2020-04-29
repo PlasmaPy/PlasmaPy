@@ -13,4 +13,4 @@ Dispersion relations (`plasmapy.formulary.dispersionfunction`)
     :name: Examples
     :glob:
 
-    /notebooks/plot_dispersion_function
+    /notebooks/dispersion_function

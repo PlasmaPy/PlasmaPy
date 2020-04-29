@@ -46,7 +46,7 @@ following example:
     :name: Examples
     :glob:
 
-    /notebooks/plot_physics
+    /notebooks/physics
 
 Notes for developers
 ====================

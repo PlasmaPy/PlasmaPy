@@ -10,10 +10,10 @@ PlasmaPy Documentation
 
   <div class="sphx-glr-thumbcontainer">
     <div class="figure align-center">
-      <img alt="thumbnail" src="./_images/notebooks_plot_physics_16_0.png" />
+      <img alt="thumbnail" src="./_images/notebooks_physics_16_0.png" />
       <p class="caption">
         <span class="caption-text">
-          <a class="reference internal" href="notebooks/plot_physics.html">
+          <a class="reference internal" href="notebooks/physics.html">
             <span class="std std-ref">Analysing ITER parameters</span>
           </a>
         </span>
@@ -22,10 +22,10 @@ PlasmaPy Documentation
   </div>
   <div class="sphx-glr-thumbcontainer">
     <div class="figure align-center">
-      <img alt="thumbnail" src="./_images/notebooks_plot_dispersion_function_9_0.png" />
+      <img alt="thumbnail" src="./_images/notebooks_dispersion_function_9_0.png" />
       <p class="caption">
         <span class="caption-text">
-          <a class="reference internal" href="notebooks/plot_dispersion_function.html">
+          <a class="reference internal" href="notebooks/dispersion_function.html">
             <span class="std std-ref">The plasma dispersion function</span>
           </a>
         </span>
@@ -34,10 +34,10 @@ PlasmaPy Documentation
   </div>
   <div class="sphx-glr-thumbcontainer">
     <div class="figure align-center">
-      <img alt="thumbnail" src="./_images/notebooks_plot_langmuir_analysis_6_1.png" />
+      <img alt="thumbnail" src="./_images/notebooks_langmuir_analysis_6_1.png" />
       <p class="caption">
         <span class="caption-text">
-          <a class="reference internal" href="notebooks/plot_langmuir_analysis.html">
+          <a class="reference internal" href="notebooks/langmuir_analysis.html">
             <span class="std std-ref">Langmuir probe data analysis</span>
           </a>
         </span>
