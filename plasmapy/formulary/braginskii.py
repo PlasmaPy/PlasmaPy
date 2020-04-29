@@ -4,7 +4,7 @@
     :name: Examples
     :glob:
 
-    /notebooks/plot_braginskii
+    /notebooks/braginskii
 
 Introduction
 ============
