@@ -69,12 +69,13 @@ c = constants.c.si.value
 
 
 @numba.njit()
-def _gamma_from_velocity(velocity):
-    return np.sqrt(1 - ((np.linalg.norm(velocity) / c) ** 2))
+def _Lorentz_factor(u):
+    """Calculates the Lorentz factor from the relativistic momentum.
 
+    The analogous calculation from velocity is
 
-@numba.njit()
-def _gamma_from_u(u):
+    np.sqrt(1 - ((np.linalg.norm(velocity) / c) ** 2))
+    """
     return np.sqrt(1 + ((np.linalg.norm(u) / c) ** 2))
 
 
@@ -118,7 +119,7 @@ def _zenitani(x, v, b, e, q, m, dt, B_numerical_threshold=1e-20):
         epsilon = C / 2.0 * e[i]
         uminus = v[i] + epsilon
         magfield_norm = max((np.linalg.norm(b[i]), B_numerical_threshold))
-        theta = C * magfield_norm / _gamma_from_u(uminus)  # Eq. 6
+        theta = C * magfield_norm / _Lorentz_factor(uminus)  # Eq. 6
         bnormed = b[i] / magfield_norm
         u_parallel_minus = np.dot(uminus, bnormed) * bnormed  # Eq. 11
         uplus = (
@@ -127,5 +128,5 @@ def _zenitani(x, v, b, e, q, m, dt, B_numerical_threshold=1e-20):
             + np.cross(uminus, bnormed) * math.sin(theta)
         )  # Eq. 12
         u_t_plus_half = uplus + epsilon
-        v[i] = u_t_plus_half / _gamma_from_u(u_t_plus_half)
+        v[i] = u_t_plus_half / _Lorentz_factor(u_t_plus_half)
         x[i] += v[i] * dt
