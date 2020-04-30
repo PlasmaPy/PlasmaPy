@@ -39,7 +39,7 @@ class Coils(GenericPlasma):
         Parameters
         ----------
         r : u.m
-            Position; can be a (3,) array or a (N, 3) array.
+            Position in Cartesian (x, y, z) coordinates; can be a (3,) array or a (N, 3) array.
 
         Returns
         -------
@@ -62,7 +62,7 @@ class Coils(GenericPlasma):
         Parameters
         ----------
         r : u.m
-            Position; can be a (3,) array or a (N, 3) array.
+            Position in Cartesian (x, y, z) coordinates; can be a (3,) array or a (N, 3) array.
 
         Returns
         -------

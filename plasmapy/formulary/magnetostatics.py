@@ -64,7 +64,7 @@ class MagneticDipole(MagnetoStatics):
     moment: `astropy.units.Quantity`
         Magnetic moment vector, in units of A * m^2
     p0: `astropy.units.Quantity`
-        Position of the dipole
+        Position of the dipole, in Cartesian (x, y, z) coordinates
 
     """
 
