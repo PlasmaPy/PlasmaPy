@@ -67,7 +67,7 @@ solution.particletracker.plot_time_trajectories("yz")
 solution.particletracker.plot_trajectories()
 
 ############################################################
-# If you have Pyvista, you can  run the following code - it'll open up a neat 3D visualization.
+# If you have Pyvista, you can run the following code - it'll open up a neat 3D visualization.
 
 # import pyvista
 
