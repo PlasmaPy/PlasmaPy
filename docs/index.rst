@@ -85,7 +85,7 @@ package for plasma physics currently under development.
    Diagnostics <diagnostics/index>
    Formulary <formulary/index>
    Particles <particles/index>
-   Particle Tracker <simulation/particletracker>
+   Simulation <simulation/index>
    Plasma Objects <plasma/index>
    Package Utilities <utils/index>
 
