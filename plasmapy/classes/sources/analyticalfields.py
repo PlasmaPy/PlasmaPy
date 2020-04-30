@@ -45,7 +45,6 @@ class AnalyticalFields(GenericPlasma):
     """
 
     def __init__(self, magnetic_field: Callable, electric_field: Callable):
-        test_array = np.zeros((4, 3))
         self._interpolate_B = _make_function(magnetic_field)
         self._interpolate_E = _make_function(electric_field)
 
