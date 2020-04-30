@@ -1,3 +1,8 @@
+"""
+The `~plasmapy.formulary` subpackage contains commonly used formulae
+from plasma science.
+"""
+
 from .braginskii import *
 from .collisions import *
 from .dielectric import *

@@ -65,14 +65,14 @@ or directly in GitHub issues, as appropriate, for further discussion.
 
 ## [Weekly](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) [community meetings](https://jitsi.riot.im/plasmapy)
 
-We have approximately weekly community meetings in the
-[PlasmaPy room on Jitsi](https://jitsi.riot.im/plasmapy).
+We have weekly community meetings in the
+[PlasmaPy room on Jitsi](https://meet.jit.si/plasmapy).
 The schedule of our community meetings is on our [calendar](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ), and you may access the [minutes and 
 agendas](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing).
 Any last minute changes will be discussed on 
 [Matrix](https://riot.im/app/#/room/#plasmapy:openastronomy.org).
-As of November 2019, our meetings are on Tuesdays at
-[19:00 UTC](http://time.unitarium.com/utc/7pm).
+As of April 2020, our meetings are on Tuesdays at
+[18:00 UTC](http://time.unitarium.com/utc/6pm).
 Come discuss plasma software with us!
 
 # Installation
@@ -106,4 +106,5 @@ Early development on PlasmaPy was supported in part by the U.S.
 Department of Energy, the Smithsonian Institution, and Google Summer of
 Code.  Ongoing PlasmaPy development is being supported through a
 collaborative award from the U.S. National Science Foundation's
-Cyberinfrastructure for Sustained Scientific Innovation program.
+Cyberinfrastructure for Sustained Scientific Innovation program and a
+NASA HDEE grant.

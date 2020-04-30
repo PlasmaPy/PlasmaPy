@@ -1,6 +1,6 @@
 .. _plasmapy-communication:
 
-Feedback and communication
+Feedback and Communication
 ==========================
 
 `Matrix chat <https://riot.im/app/#/room/#plasmapy:matrix.org>`__
@@ -39,12 +39,12 @@ directly in GitHub issues, as appropriate, for further discussion.
 `Weekly <https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ>`__ `community meetings <https://jitsi.riot.im/plasmapy>`__
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 We have approximately weekly community meetings in the
-`PlasmaPy room on Jitsi <https://jitsi.riot.im/plasmapy>`__.
+`PlasmaPy room on Jitsi <https://meet.jit.si/plasmapy>`__.
 The schedule of our community meetings is on our `calendar
 <https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ>`__,
 and you may access the `minutes and agendas
 <https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing>`__.
 Any last minute changes will be discussed on `Matrix
 <https://riot.im/app/#/room/#plasmapy:openastronomy.org>`__.
-As of November 2019, our meetings are on Tuesdays at
-`19:00 UTC <http://time.unitarium.com/utc/7pm>`__.
+As of April 2020, our meetings are on Tuesdays at
+`18:00 UTC <http://time.unitarium.com/utc/6pm>`__.
