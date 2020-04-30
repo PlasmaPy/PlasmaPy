@@ -25,11 +25,11 @@ def magnetic_field(r):
 
 
 # precomputed for efficiency
-E_unit = u.V / u.m
+_volt_over_meter = u.V / u.m
 
 
 def electric_field(r):
-    return u.Quantity([0, 2, 0], E_unit)
+    return u.Quantity([0, 2, 0], _volt_over_meter)
 
 
 plasma = AnalyticalFields(magnetic_field, electric_field)

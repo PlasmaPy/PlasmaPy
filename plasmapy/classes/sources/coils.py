@@ -6,7 +6,7 @@ import numpy as np
 from plasmapy.classes.plasma_base import GenericPlasma
 from plasmapy.formulary import magnetostatics
 
-E_unit = u.V / u.m
+_volt_over_meter = u.V / u.m
 
 
 class Coils(GenericPlasma):
@@ -45,7 +45,7 @@ class Coils(GenericPlasma):
         -------
         electric field array of the same shape as the input.
         """
-        return u.Quantity(self._interpolate_E(r.si.value), E_unit)
+        return u.Quantity(self._interpolate_E(r.si.value), _volt_over_meter)
 
     def _interpolate_B(self, r: np.ndarray):
         B = np.zeros(r.shape, dtype=float)

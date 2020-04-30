@@ -26,7 +26,7 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 
 
 # precalculating unit for efficiency
-E_unit = u.V / u.m
+_volt_over_meter = u.V / u.m
 
 
 def test_run_no_fields(integrator_name):
@@ -34,7 +34,7 @@ def test_run_no_fields(integrator_name):
         return u.Quantity(np.zeros(3), u.T)
 
     def electric_field(r):
-        return u.Quantity(np.zeros(3), E_unit)
+        return u.Quantity(np.zeros(3), _volt_over_meter)
 
     test_plasma = AnalyticalFields(magnetic_field, electric_field)
 
@@ -49,7 +49,7 @@ def test_adjust_position_velocity():
         return u.Quantity(np.zeros(3), u.T)
 
     def electric_field(r):
-        return u.Quantity(np.zeros(3), E_unit)
+        return u.Quantity(np.zeros(3), _volt_over_meter)
 
     test_plasma = AnalyticalFields(magnetic_field, electric_field)
 
@@ -129,7 +129,7 @@ def test_particle_uniform_magnetic(integrator_name):
         return u.Quantity([0, 0, 1], u.T)
 
     def electric_field(r):
-        return u.Quantity(np.zeros(3), E_unit)
+        return u.Quantity(np.zeros(3), _volt_over_meter)
 
     test_plasma = AnalyticalFields(magnetic_field, electric_field)
 
@@ -196,7 +196,7 @@ def test_particle_exb_drift(integrator_name):
         return u.Quantity([0, 0, 1], u.T)
 
     def electric_field(r):
-        return u.Quantity([0, 1, 0], E_unit)
+        return u.Quantity([0, 1, 0], _volt_over_meter)
 
     test_plasma = AnalyticalFields(magnetic_field, electric_field)
 

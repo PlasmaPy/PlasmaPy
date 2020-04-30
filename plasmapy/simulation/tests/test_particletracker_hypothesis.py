@@ -16,10 +16,10 @@ else:
         return u.Quantity([4, 0, 0], u.T)
 
     # precomputed for efficiency
-    E_unit = u.V / u.m
+    _volt_over_meter = u.V / u.m
 
     def electric_field(r):
-        return u.Quantity([0, 2, 0], E_unit)
+        return u.Quantity([0, 2, 0], _volt_over_meter)
 
     N = 20
 
