@@ -11,15 +11,17 @@ import xarray
 from astropy import units as u
 
 from plasmapy import formulary, particles
+from plasmapy.classes import BasePlasma
 from plasmapy.utils.decorators import check_units
 
+from typing import Union, Iterable
 from . import particle_integrators
-
-PLOTTING = False
 
 
 @xarray.register_dataset_accessor("particletracker")
 class ParticleTrackerAccessor:
+    """Custom accessor for PlasmaPy particle simulations."""
+
     def __init__(self, xarray_obj: xarray.Dataset):
         self._obj = xarray_obj
         # TODO handle CustomParticles on the `Particle` layer!
@@ -132,15 +134,44 @@ class ParticleTrackerAccessor:
 
     def animate(
         self,
-        filename: pathlib.Path,
-        particles=(0,),
+        filename: Union[str, pathlib.Path],
+        particles: Iterable[int] = None,
         nframes: int = 50,
-        plasma=None,
-        notebook_display=False,
-        plot_trajectories=True,
-        plot_arrows=True,
+        plasma: BasePlasma = None,
+        notebook_display: bool = False,
+        plot_trajectories: bool = True,
+        plot_arrows: bool = True,
     ):
+        """
+        Produces a 3D animation of particle trajectories using the pyvista library.
+
+        Parameters
+        ----------
+
+        filename: str or pathlib.Path
+            File path for the saved animation (.mp4).
+        particles: iterable of int
+            indices of particles to display. By default, displays all particles.
+            This may be resource intensive.
+        nframes: int
+            Number of frames to display. By default, 50.
+        plasma: `plasmapy.classes.BasePlasma`
+            Optional plasmapy Plasma object; if it has a `visualize` method,
+            that is used to display the environment the particles move in
+        notebook_display: bool
+            If True, displays the animation from the saved file.
+            Use for interactive work in Jupyter notebooks.
+        plot_trajectories: bool
+            If True, draws trajectories as curves.
+        plot_arrows: bool
+            If True, draws arrows representing current particle positions
+            and velocities.
+
+        """
         import pyvista as pv
+
+        if particles is None:
+            particles = (0,)
 
         fig = pv.Plotter(off_screen=True)
         fig.open_movie(str(filename))

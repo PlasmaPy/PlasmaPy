@@ -14,11 +14,13 @@ import numpy as np
 _volt_over_meter = u.V / u.m  # for performance reasons
 
 
-def _make_function(field_function):
+def _make_function(field_function: Callable):
+    """Helper function that checks whether the passed function's return value is
+    of shape (N, 3) or (3,), and standardizes the output to (N,3)."""
     test_array = np.zeros((4, 3))
     if field_function(test_array).shape != test_array.shape:
+        # TODO speed this up! Numba usage is nonobvious here...
         output_function = lambda r: np.array([field_function(ri) for ri in r])
-        # TODO speed this up!
     else:
         output_function = field_function
     return output_function
