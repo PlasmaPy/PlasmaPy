@@ -1,4 +1,4 @@
-.. ionization-state-data-structures::
+.. _ionization-state-data-structures::
 
 Ionization state data structures
 ********************************
