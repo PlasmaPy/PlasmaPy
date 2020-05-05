@@ -10,7 +10,7 @@ import astropy.units as u
 from plasmapy.utils.pytest_helpers import run_test
 from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
 from plasmapy.particles import (
-    State,
+    IonicFraction,
     IonizationState,
     IonizationStates,
     atomic_number,
@@ -636,7 +636,7 @@ class TestIonizationStatesAttributes:
         particle = indices[0]
         integer_charge = indices[1]
 
-        assert isinstance(result, State)
+        assert isinstance(result, IonicFraction)
         assert result.integer_charge == integer_charge
 
         expected_ionic_fraction = instance.ionic_fractions[particle][integer_charge]

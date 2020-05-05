@@ -2,9 +2,9 @@
 Objects for storing ionization state data for a single element or for
 a single ionization level.
 """
-__all__ = ["IonizationState", "State"]
 
-import collections
+__all__ = ["IonizationState", "IonicFraction"]
+
 import numpy as np
 import warnings
 
@@ -20,12 +20,89 @@ _number_density_errmsg = (
     "Number densities must be Quantity objects with units of inverse " "volume."
 )
 
-# TODO: Change `State` into a class with validations for all of the
-# TODO: attributes.
 
-State = collections.namedtuple(
-    "State", ["integer_charge", "ionic_fraction", "ionic_symbol", "number_density"]
-)
+# SingleIonState = collections.namedtuple(
+#    "SingleIonState", ["integer_charge", "ionic_fraction", "ionic_symbol", "number_density"]
+#)
+
+
+# TODO: The usage of the IonicFraction class is not yet fully consistent
+#       with the use of SingleIonState, which used to be State.
+
+class IonicFraction:
+    """
+    Representation of the ionic fraction for a single ion.
+
+    Parameters
+    ----------
+    ion: particle-like
+        The ion for the corresponding ionic fraction.
+
+    ionic_fraction: real number between 0 and 1, optional
+        The fraction of an element or isotope that is at this ionization
+        level.
+
+    number_density: ~astropy.units.Quantity, optional
+        The number density of this ion.
+    """
+
+    @particle_input
+    def __init__(self, ion: Particle, ionic_fraction=None, number_density=None):
+        self._particle = ion
+        self.ionic_fraction = ionic_fraction
+        self.number_density = number_density
+
+    @property
+    def ionic_symbol(self) -> str:
+        """The symbol of the ion."""
+        return self._particle.ionic_symbol
+
+    @property
+    def integer_charge(self) -> Integral:
+        """The integer charge of the ion."""
+        return self._particle.integer_charge
+
+    @property
+    def ionic_fraction(self) -> Real:
+        r"""
+        The fraction of particles of an element that are at this
+        ionization level.
+
+        Notes
+        -----
+        An ionic fraction must be in the interval :math:`[0, 1]`.
+
+        If no ionic fraction is specified, then this attribute will be
+        assigned the value of `~numpy.nan`.
+        """
+        return self._ionic_fraction
+
+    @ionic_fraction.setter
+    def ionic_fraction(self, ionfrac):
+        if ionfrac is None or np.isnan(ionfrac):
+            self._ion_fraction = np.nan
+        else:
+            try:
+                out_of_range = ionfrac < 0 or ionfrac > 1
+            except TypeError:
+                raise TypeError(f"Invalid ionic fraction: {ionfrac}")
+            else:
+                if out_of_range:
+                    raise ValueError(f"The ionic fraction must be between 0 and 1.")
+                else:
+                    self._ionic_fraction = ionfrac
+
+    @property
+    def number_density(self) -> u.m ** -3:
+        """THe number density of the ion."""
+        return self._number_density
+
+    @number_density.setter
+    @validate_quantities(
+        n={'units': u.m ** -3, "can_be_negative": False, "can_be_inf": False},
+    )
+    def number_density(self, n):
+        self._number_density = n
 
 
 class IonizationState:
@@ -150,17 +227,16 @@ class IonizationState:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, value) -> State:
+    def __getitem__(self, value) -> IonicFraction:
         """Return information for a single ionization level."""
         if isinstance(value, slice):
             raise TypeError("IonizationState instances cannot be sliced.")
 
         if isinstance(value, Integral) and 0 <= value <= self.atomic_number:
-            result = State(
-                value,
-                self.ionic_fractions[value],
-                self.ionic_symbols[value],
-                self.number_densities[value],
+            result = IonicFraction(
+                ion=Particle(self.base_particle, Z=value),
+                ionic_fraction=self.ionic_fractions[value],
+                number_density=self.number_densities[value],
             )
         else:
             if not isinstance(value, Particle):
@@ -177,11 +253,10 @@ class IonizationState:
 
             if same_element and same_isotope and has_charge_info:
                 Z = value.integer_charge
-                result = State(
-                    Z,
-                    self.ionic_fractions[Z],
-                    self.ionic_symbols[Z],
-                    self.number_densities[Z],
+                result = IonicFraction(
+                    ion=Particle(self.base_particle, Z=Z),
+                    ionic_fraction=self.ionic_fractions[Z],
+                    number_density=self.number_densities[Z],
                 )
             else:
                 if not same_element or not same_isotope:
@@ -209,11 +284,10 @@ class IonizationState:
         information about a particular ionization level.
         """
         if self._charge_index <= self.atomic_number:
-            result = State(
-                self._charge_index,
-                self._ionic_fractions[self._charge_index],
-                self.ionic_symbols[self._charge_index],
-                self.number_densities[self._charge_index],
+            result = IonicFraction(
+                ion=Particle(self.base_particle, Z=self._charge_index),
+                ionic_fraction=self.ionic_fractions[self._charge_index],
+                number_density=self.number_densities[self._charge_index]
             )
             self._charge_index += 1
             return result
@@ -598,12 +672,17 @@ class IonizationState:
         """
         Return a `list` containing the ion symbol, ionic fraction, and
         (if available) the number density for that ion.
+
+        Parameters
+        ----------
+        minimum_ionic_fraction
+            The minimum ionic fraction to return state information for.
         """
 
         states_info = []
 
         for state in self:
-            if state.ionic_fraction > minimum_ionic_fraction:
+            if state.ionic_fraction >= minimum_ionic_fraction:
                 state_info = ""
                 symbol = state.ionic_symbol
                 if state.integer_charge < 10:

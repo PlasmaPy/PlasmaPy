@@ -38,7 +38,7 @@ from plasmapy.particles.atomic import (
 
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 
-from plasmapy.particles.ionization_state import IonizationState, State
+from plasmapy.particles.ionization_state import IonizationState, IonicFraction
 from plasmapy.particles.ionization_states import IonizationStates
 
 # Create instances of the most commonly used particles

@@ -14,7 +14,7 @@ from plasmapy.particles import (
     Particle,
     particle_symbol,
     IonizationState,
-    State,
+    IonicFraction,
 )
 from plasmapy.particles.exceptions import AtomicError, ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import validate_quantities
@@ -213,7 +213,7 @@ class IonizationStates:
                     raise ChargeError(
                         f"{int_charge} is not a valid charge for {base_particle}."
                     )
-                return State(
+                return IonicFraction(
                     integer_charge=int_charge,
                     ionic_fraction=self.ionic_fractions[particle][int_charge],
                     ionic_symbol=particle_symbol(particle, Z=int_charge),
