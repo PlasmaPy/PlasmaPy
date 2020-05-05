@@ -79,16 +79,16 @@ ion or neutral.
 Ionization states for multiple elements
 =======================================
 
-The `~plasmapy.particles.IonizationStates` class may be used to
+The `~plasmapy.particles.IonizationStateCollection` class may be used to
 represent the ionization state for multiple elements.
 
->>> from plasmapy.atomic import IonizationStates
+>>> from plasmapy.atomic import IonizationStateCollection
 
-The minimal input to `~plasmapy.particles.IonizationStates` is a `list`
+The minimal input to `~plasmapy.particles.IonizationStateCollection` is a `list`
 of the elements or isotopes to represent.  Integers in the `list` will
 be treated as atomic numbers.
 
->>> states = IonizationStates(["H", 2])
+>>> states = IonizationStateCollection(["H", 2])
 
 To set the ionic fractions for hydrogen, we may do item assignment.
 
@@ -103,7 +103,7 @@ instance for an element.
 The ionization states for all of the elements may be specified directly
 as arguments to the class.
 
->>> states = IonizationStates(
+>>> states = IonizationStateCollection(
 ...     {"H": [0.01, 0.99], "He": [0.04, 0.95, 0.01]},
 ...     abundances={"H": 1, "He": 0.08},
 ...     n = 5e19 * u.m ** -3,

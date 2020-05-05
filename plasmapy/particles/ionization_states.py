@@ -2,7 +2,7 @@
 A class for storing ionization state data for multiple elements or
 isotopes.
 """
-__all__ = ["IonizationStates"]
+__all__ = ["IonizationStateCollection"]
 
 import collections
 import numpy as np
@@ -21,7 +21,7 @@ from plasmapy.utils.decorators import validate_quantities
 from typing import Dict, List, Optional, Tuple, Union
 
 
-class IonizationStates:
+class IonizationStateCollection:
     """
     Describe the ionization state distributions of multiple elements
     or isotopes.
@@ -65,13 +65,13 @@ class IonizationStates:
     Raises
     ------
     AtomicError
-        If `~plasmapy.particles.IonizationStates` cannot be instantiated.
+        If `~plasmapy.particles.IonizationStateCollection` cannot be instantiated.
 
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.particles import IonizationStates
-    >>> states = IonizationStates(
+    >>> from plasmapy.particles import IonizationStateCollection
+    >>> states = IonizationStateCollection(
     ...     {'H': [0.5, 0.5], 'He': [0.95, 0.05, 0]},
     ...     T_e = 1.2e4 * u.K,
     ...     n = 1e15 * u.m ** -3,
@@ -90,7 +90,7 @@ class IonizationStates:
     To change the ionic fractions for a single element, use item
     assignment.
 
-    >>> states = IonizationStates(['H', 'He'])
+    >>> states = IonizationStateCollection(['H', 'He'])
     >>> states['H'] = [0.1, 0.9]
 
     Item assignment will also work if you supply number densities.
@@ -111,7 +111,7 @@ class IonizationStates:
     the total element density, then the ionic fractions will be set
     proportionately.
 
-    When making comparisons between `~plasmapy.particles.IonizationStates`
+    When making comparisons between `~plasmapy.particles.IonizationStateCollection`
     instances, `~numpy.nan` values are treated as equal.  Equality tests
     are performed to within a tolerance of ``tol``.
 
@@ -170,20 +170,20 @@ class IonizationStates:
                 self.log_abundances = log_abundances
             self.kappa = kappa
         except Exception as exc:
-            raise AtomicError("Unable to create IonizationStates instance.") from exc
+            raise AtomicError("Unable to create IonizationStateCollection instance.") from exc
 
         if equilibrate:
             self.equilibrate()  # for now, this raises a NotImplementedError
 
     def __str__(self) -> str:
-        return f"<IonizationStates for: {', '.join(self.base_particles)}>"
+        return f"<IonizationStateCollection for: {', '.join(self.base_particles)}>"
 
     def __repr__(self) -> str:
         return self.__str__()
 
     def __getitem__(self, *values) -> IonizationState:
 
-        errmsg = f"Invalid indexing for IonizationStates instance: {values[0]}"
+        errmsg = f"Invalid indexing for IonizationStateCollection instance: {values[0]}"
 
         one_input = not isinstance(values[0], tuple)
         two_inputs = len(values[0]) == 2
@@ -225,7 +225,7 @@ class IonizationStates:
     def __setitem__(self, key, value):
 
         errmsg = (
-            f"Cannot set item for this IonizationStates instance for "
+            f"Cannot set item for this IonizationStateCollection instance for "
             f"key = {repr(key)} and value = {repr(value)}"
         )
 
@@ -331,7 +331,7 @@ class IonizationStates:
 
     def __iter__(self):
         """
-        Prepare an `~plasmapy.particles.IonizationStates` instance for
+        Prepare an `~plasmapy.particles.IonizationStateCollection` instance for
         iteration.
         """
         self._element_index = 0
@@ -366,15 +366,15 @@ class IonizationStates:
 
     def __eq__(self, other):
 
-        if not isinstance(other, IonizationStates):
+        if not isinstance(other, IonizationStateCollection):
             raise TypeError(
-                "IonizationStates instance can only be compared with "
-                "other IonizationStates instances."
+                "IonizationStateCollection instance can only be compared with "
+                "other IonizationStateCollection instances."
             )
 
         if self.base_particles != other.base_particles:
             raise AtomicError(
-                "Two IonizationStates instances can be compared only "
+                "Two IonizationStateCollection instances can be compared only "
                 "if the base particles are the same."
             )
 
@@ -449,7 +449,7 @@ class IonizationStates:
         Notes
         -----
         The ionic fractions are initialized during instantiation of
-        `~plasmapy.particles.IonizationStates`.  After this, the only way
+        `~plasmapy.particles.IonizationStateCollection`.  After this, the only way
         to reset the ionic fractions via the ``ionic_fractions``
         attribute is via a `dict` with elements or isotopes that are a
         superset of the previous elements or isotopes.  However, you may
@@ -475,8 +475,8 @@ class IonizationStates:
         # eventually want to create a new class or subclass of UserDict
         # that goes through these checks.  In the meantime, we should
         # make it clear to users to set ionic_fractions by using item
-        # assignment on the IonizationStates instance as a whole.  An
-        # example of the problem is `s = IonizationStates(["He"])` being
+        # assignment on the IonizationStateCollection instance as a whole.  An
+        # example of the problem is `s = IonizationStateCollection(["He"])` being
         # followed by `s.ionic_fractions["He"] = 0.3`.
 
         if hasattr(self, "_ionic_fractions"):
@@ -494,7 +494,7 @@ class IonizationStates:
                     "the new base particles are a superset of the "
                     "prior base particles.  To change ionic fractions "
                     "for one base particle, use item assignment on the "
-                    "IonizationStates instance instead."
+                    "IonizationStateCollection instance instead."
                 )
 
         if isinstance(inputs, dict):
@@ -513,7 +513,7 @@ class IonizationStates:
                 particles = {key: Particle(key) for key in original_keys}
             except (InvalidParticleError, TypeError) as exc:
                 raise AtomicError(
-                    "Unable to create IonizationStates instance "
+                    "Unable to create IonizationStateCollection instance "
                     "because not all particles are valid."
                 ) from exc
 
@@ -555,7 +555,7 @@ class IonizationStates:
                 new_key = particles[key].particle
                 _particle_instances.append(particles[key])
                 if new_key in _elements_and_isotopes:
-                    raise AtomicError("Repeated particles in IonizationStates.")
+                    raise AtomicError("Repeated particles in IonizationStateCollection.")
 
                 nstates_input = len(inputs[key])
                 nstates = particles[key].atomic_number + 1
@@ -632,7 +632,7 @@ class IonizationStates:
             try:
                 _particle_instances = [Particle(particle) for particle in inputs]
             except (InvalidParticleError, TypeError) as exc:
-                raise AtomicError("Invalid inputs to IonizationStates.") from exc
+                raise AtomicError("Invalid inputs to IonizationStateCollection.") from exc
 
             _particle_instances.sort(
                 key=lambda p: (p.atomic_number, p.mass_number if p.isotope else 0)
@@ -912,7 +912,7 @@ class IonizationStates:
     def info(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information for an
-        `~plasmapy.particles.IonizationStates` instance.
+        `~plasmapy.particles.IonizationStateCollection` instance.
 
         Parameters
         ----------
@@ -923,7 +923,7 @@ class IonizationStates:
 
         Examples
         --------
-        >>> states = IonizationStates(
+        >>> states = IonizationStateCollection(
         ...     {'H': [0.1, 0.9], 'He': [0.95, 0.05, 0.0]},
         ...     T_e = 12000 * u.K,
         ...     n = 3e9 * u.cm ** -3,
@@ -931,7 +931,7 @@ class IonizationStates:
         ...     kappa = 3.4,
         ... )
         >>> states.info()
-        IonizationStates instance for: H, He
+        IonizationStateCollection instance for: H, He
         ----------------------------------------------------------------
         H  0+: 0.100    n_i = 3.00e+14 m**-3
         H  1+: 0.900    n_i = 2.70e+15 m**-3
@@ -950,7 +950,7 @@ class IonizationStates:
         output = []
 
         output.append(
-            f"IonizationStates instance for: {', '.join(self.base_particles)}"
+            f"IonizationStateCollection instance for: {', '.join(self.base_particles)}"
         )
 
         # Get the ionic symbol with the corresponding ionic fraction and
