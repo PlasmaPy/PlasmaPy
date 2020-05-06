@@ -5,20 +5,20 @@ isotopes.
 __all__ = ["IonizationStateCollection"]
 
 import collections
-import numpy as np
+from numbers import Integral, Real
+from typing import Dict, List, Optional, Tuple, Union
 
+import numpy as np
 from astropy import units as u
-from numbers import Real, Integral
 from plasmapy.particles import (
-    atomic_number,
-    Particle,
-    particle_symbol,
-    IonizationState,
     IonicFraction,
+    IonizationState,
+    Particle,
+    atomic_number,
+    particle_symbol,
 )
 from plasmapy.particles.exceptions import AtomicError, ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import validate_quantities
-from typing import Dict, List, Optional, Tuple, Union
 
 
 class IonizationStateCollection:

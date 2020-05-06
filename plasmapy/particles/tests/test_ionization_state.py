@@ -1,20 +1,18 @@
-import pytest
 import collections
 
-import numpy as np
 import astropy.units as u
-
-from plasmapy.particles.ionization_state import IonicFraction, IonizationState
-from plasmapy.utils.pytest_helpers import run_test
-from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
+import numpy as np
+import pytest
 from plasmapy.particles import (
+    Particle,
     atomic_number,
     atomic_symbol,
-    particle_symbol,
     isotope_symbol,
-    Particle,
+    particle_symbol,
 )
-
+from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
+from plasmapy.particles.ionization_state import IonicFraction, IonizationState
+from plasmapy.utils.pytest_helpers import run_test
 
 ionic_fraction_table = [
     ("Fe 6+", 0.52, 5.2e-6 * u.m ** -3),
