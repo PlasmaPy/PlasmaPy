@@ -1,0 +1,3 @@
+In ``plasmapy.particles``, rename the ``IonizationStates`` class to
+``IonizationStateCollection`` and replace the ``State`` namedtuple with
+a the ``IonicFraction`` class.
