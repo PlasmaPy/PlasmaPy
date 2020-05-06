@@ -4,7 +4,7 @@ import collections
 import numpy as np
 import astropy.units as u
 
-from plasmapy.particles.ionization_state import IonizationState
+from plasmapy.particles.ionization_state import IonicFraction, IonizationState
 from plasmapy.utils.pytest_helpers import run_test
 from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
 from plasmapy.particles import (
@@ -14,6 +14,28 @@ from plasmapy.particles import (
     isotope_symbol,
     Particle,
 )
+
+
+ionic_fraction_table = [
+    ("Fe 6+", 0.52, 5.2e-6 * u.m ** -3),
+]
+
+@pytest.mark.parametrize("ion, ionic_fraction, number_density", ionic_fraction_table)
+def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
+
+    try:
+        instance = IonicFraction(ion=ion, ionic_fraction=ionic_fraction, number_density=number_density)
+    except Exception:
+        pytest.fail(
+            f"Unable to instantiate IonicFraction for ion = {ion}, "
+            f"ionic_fraction = {ionic_fraction}, and number_density = "
+            f"{number_density}"
+        )
+
+    assert Particle(ion) == Particle(instance.ionic_symbol)
+    assert instance.ionic_fraction == ionic_fraction
+    assert instance.number_density == number_density
+
 
 test_cases = {
     "Li": {
@@ -51,6 +73,8 @@ test_cases = {
 
 test_names = test_cases.keys()
 
+
+# TODO: Refactor these tests using fixtures
 
 class Test_IonizationState:
     """Test instances of IonizationState."""
@@ -336,11 +360,12 @@ class Test_IonizationState:
         # (see Astropy issue #7901 on GitHub).
 
         for keys in zip(integer_charges, symbols, particles):
+
             set_of_str_values = {str(instance[key]) for key in keys}
             if len(set_of_str_values) != 1:
                 errors.append(
                     f"\n\n"
-                    f"The following keys in test {test_name} did not "
+                    f"The following keys in test '{test_name}' did not "
                     f"produce identical outputs as required: {keys}. "
                     f"The set containing string representations of"
                     f"the values is:\n\n{set_of_str_values}"

@@ -181,7 +181,7 @@ class IonizationStateCollection:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, *values) -> IonizationState:
+    def __getitem__(self, *values) -> Union[IonizationState, IonicFraction]:
 
         errmsg = f"Invalid indexing for IonizationStateCollection instance: {values[0]}"
 
@@ -214,9 +214,8 @@ class IonizationStateCollection:
                         f"{int_charge} is not a valid charge for {base_particle}."
                     )
                 return IonicFraction(
-                    integer_charge=int_charge,
+                    ion=particle_symbol(particle, Z=int_charge),
                     ionic_fraction=self.ionic_fractions[particle][int_charge],
-                    ionic_symbol=particle_symbol(particle, Z=int_charge),
                     number_density=self.number_densities[particle][int_charge],
                 )
         except Exception as exc:

@@ -21,17 +21,13 @@ _number_density_errmsg = (
 )
 
 
-# SingleIonState = collections.namedtuple(
-#    "SingleIonState", ["integer_charge", "ionic_fraction", "ionic_symbol", "number_density"]
-#)
-
-
-# TODO: The usage of the IonicFraction class is not yet fully consistent
-#       with the use of SingleIonState, which used to be State.
-
 class IonicFraction:
     """
     Representation of the ionic fraction for a single ion.
+
+    This class is created when indexing
+    `~plasmapy.particles.IonizationState` or
+    `~plasmapy.particles.IonizationStateCollection`.
 
     Parameters
     ----------
@@ -44,13 +40,70 @@ class IonicFraction:
 
     number_density: ~astropy.units.Quantity, optional
         The number density of this ion.
+
+    See Also
+    --------
+    IonizationState
+    IonizationStateCollection
+
+    Examples
+    --------
+    >>> alpha_fraction = IonicFraction("alpha", ionic_fraction=0.31)
+    >>> alpha_fraction.ionic_symbol
+    'He-4 2+'
+    >>> alpha_fraction.integer_charge
+    2
+    >>> alpha_fraction.ionic_fraction
+    0.31
     """
+
+    def __eq__(self, other):
+
+        try:
+            different_symbol = self.ionic_symbol != other.ionic_symbol
+
+            if different_symbol:
+                raise TypeError(
+                    f"Unable to ascertain equality of ionic fractions for "
+                    f"different ions."
+                )
+
+            # TODO: tol is used inconsistently, as atol above and rtol below.
+            #       This inconsistency should be fixed.
+
+            ionic_fraction_within_tolerance = np.isclose(
+                self.ionic_fraction,
+                other.ionic_fraction,
+                rtol=1e-15,
+            )
+
+            number_density_within_tolerance = u.isclose(
+                self.number_density,
+                other.number_density,
+                rtol=1e-15,
+            )
+
+            return all([
+                ionic_fraction_within_tolerance,
+                number_density_within_tolerance,
+            ])
+
+        except Exception as exc:
+            raise TypeError(
+                "Unable to ascertain equality between the following objects:\n"
+                f"  {self}"
+                f"  {other}"
+            ) from exc
 
     @particle_input
     def __init__(self, ion: Particle, ionic_fraction=None, number_density=None):
         self._particle = ion
         self.ionic_fraction = ionic_fraction
         self.number_density = number_density
+
+    def __str__(self):
+        return f"IonicFraction({repr(self.ionic_symbol)}, " \
+               f"ionic_fraction={self.ionic_fraction}"
 
     @property
     def ionic_symbol(self) -> str:
@@ -78,9 +131,9 @@ class IonicFraction:
         return self._ionic_fraction
 
     @ionic_fraction.setter
-    def ionic_fraction(self, ionfrac):
+    def ionic_fraction(self, ionfrac: Optional[Real]):
         if ionfrac is None or np.isnan(ionfrac):
-            self._ion_fraction = np.nan
+            self._ionic_fraction = np.nan
         else:
             try:
                 out_of_range = ionfrac < 0 or ionfrac > 1
@@ -94,15 +147,23 @@ class IonicFraction:
 
     @property
     def number_density(self) -> u.m ** -3:
-        """THe number density of the ion."""
-        return self._number_density
+        """The number density of the ion."""
+        return self._number_density.to(u.m ** -3)
 
     @number_density.setter
     @validate_quantities(
-        n={'units': u.m ** -3, "can_be_negative": False, "can_be_inf": False},
+        n={
+            'units': u.m ** -3,
+            "can_be_negative": False,
+            "can_be_inf": False,
+            "none_shall_pass": True,
+        },
     )
-    def number_density(self, n):
-        self._number_density = n
+    def number_density(self, n: u.m ** -3):
+        if n is None:
+            self._number_density = np.nan * u.m ** -3
+        else:
+            self._number_density = n.to(u.m ** -3)
 
 
 class IonizationState:
