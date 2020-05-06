@@ -503,7 +503,10 @@ class IonizationState:
     def normalize(self) -> None:
         """
         Normalize the ionization state distribution (if set) so that the
-        sum becomes equal to one.
+        sum of the ionic fractions becomes equal to one.
+
+        This method may be used, for example, to correct for rounding
+        errors.
         """
         self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)
 

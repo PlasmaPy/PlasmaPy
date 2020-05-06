@@ -81,7 +81,7 @@ class IonizationStateCollection:
     {'H': array([0.5, 0.5]), 'He': array([0.95, 0.05, 0.  ])}
 
     The number densities are given by the ionic fractions multiplied by
-    the abundance and the
+    the abundance and the number density scaling factor ``n``.
 
     >>> states.number_densities['H']
     <Quantity [5.e+14, 5.e+14] 1 / m3>
