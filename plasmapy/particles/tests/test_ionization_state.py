@@ -20,11 +20,14 @@ ionic_fraction_table = [
     ("Fe 6+", 0.52, 5.2e-6 * u.m ** -3),
 ]
 
+
 @pytest.mark.parametrize("ion, ionic_fraction, number_density", ionic_fraction_table)
 def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
 
     try:
-        instance = IonicFraction(ion=ion, ionic_fraction=ionic_fraction, number_density=number_density)
+        instance = IonicFraction(
+            ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
+        )
     except Exception:
         pytest.fail(
             f"Unable to instantiate IonicFraction for ion = {ion}, "
@@ -75,6 +78,7 @@ test_names = test_cases.keys()
 
 
 # TODO: Refactor these tests using fixtures
+
 
 class Test_IonizationState:
     """Test instances of IonizationState."""
@@ -580,9 +584,9 @@ class Test_IonizationStateNumberDensitiesSetter:
         )
 
     def test_n_e(self):
-        assert u.quantity.allclose(self.instance.n_e, self.valid_number_densities[1]), (
-            "IonizationState.n_e not set correctly after number_densities was set."
-        )
+        assert u.quantity.allclose(
+            self.instance.n_e, self.valid_number_densities[1]
+        ), "IonizationState.n_e not set correctly after number_densities was set."
 
     def test_that_negative_density_raises_error(self):
         with pytest.raises(AtomicError, match="cannot be negative"):

@@ -170,7 +170,9 @@ class IonizationStateCollection:
                 self.log_abundances = log_abundances
             self.kappa = kappa
         except Exception as exc:
-            raise AtomicError("Unable to create IonizationStateCollection instance.") from exc
+            raise AtomicError(
+                "Unable to create IonizationStateCollection instance."
+            ) from exc
 
         if equilibrate:
             self.equilibrate()  # for now, this raises a NotImplementedError
@@ -554,7 +556,9 @@ class IonizationStateCollection:
                 new_key = particles[key].particle
                 _particle_instances.append(particles[key])
                 if new_key in _elements_and_isotopes:
-                    raise AtomicError("Repeated particles in IonizationStateCollection.")
+                    raise AtomicError(
+                        "Repeated particles in IonizationStateCollection."
+                    )
 
                 nstates_input = len(inputs[key])
                 nstates = particles[key].atomic_number + 1
@@ -631,7 +635,9 @@ class IonizationStateCollection:
             try:
                 _particle_instances = [Particle(particle) for particle in inputs]
             except (InvalidParticleError, TypeError) as exc:
-                raise AtomicError("Invalid inputs to IonizationStateCollection.") from exc
+                raise AtomicError(
+                    "Invalid inputs to IonizationStateCollection."
+                ) from exc
 
             _particle_instances.sort(
                 key=lambda p: (p.atomic_number, p.mass_number if p.isotope else 0)

@@ -142,7 +142,9 @@ class TestIonizationStateCollection:
         a = IonizationStateCollection(**tests[test_name])
         b = IonizationStateCollection(**tests[test_name])
         assert a == a, f"IonizationStateCollection instance does not equal itself."
-        assert a == b, f"IonizationStateCollection instance does not equal identical instance."
+        assert (
+            a == b
+        ), f"IonizationStateCollection instance does not equal identical instance."
 
     @pytest.mark.parametrize(
         "test_name",
@@ -364,7 +366,9 @@ class TestIonizationStateCollectionItemAssignment:
 
     @classmethod
     def setup_class(cls):
-        cls.states = IonizationStateCollection({"H": [0.9, 0.1], "He": [0.5, 0.4999, 1e-4]})
+        cls.states = IonizationStateCollection(
+            {"H": [0.9, 0.1], "He": [0.5, 0.4999, 1e-4]}
+        )
 
     @pytest.mark.parametrize(
         "element, new_states",

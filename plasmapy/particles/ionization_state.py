@@ -72,21 +72,16 @@ class IonicFraction:
             #       This inconsistency should be fixed.
 
             ionic_fraction_within_tolerance = np.isclose(
-                self.ionic_fraction,
-                other.ionic_fraction,
-                rtol=1e-15,
+                self.ionic_fraction, other.ionic_fraction, rtol=1e-15,
             )
 
             number_density_within_tolerance = u.isclose(
-                self.number_density,
-                other.number_density,
-                rtol=1e-15,
+                self.number_density, other.number_density, rtol=1e-15,
             )
 
-            return all([
-                ionic_fraction_within_tolerance,
-                number_density_within_tolerance,
-            ])
+            return all(
+                [ionic_fraction_within_tolerance, number_density_within_tolerance,]
+            )
 
         except Exception as exc:
             raise TypeError(
@@ -102,8 +97,10 @@ class IonicFraction:
         self.number_density = number_density
 
     def __str__(self):
-        return f"IonicFraction({repr(self.ionic_symbol)}, " \
-               f"ionic_fraction={self.ionic_fraction}"
+        return (
+            f"IonicFraction({repr(self.ionic_symbol)}, "
+            f"ionic_fraction={self.ionic_fraction}"
+        )
 
     @property
     def ionic_symbol(self) -> str:
@@ -153,7 +150,7 @@ class IonicFraction:
     @number_density.setter
     @validate_quantities(
         n={
-            'units': u.m ** -3,
+            "units": u.m ** -3,
             "can_be_negative": False,
             "can_be_inf": False,
             "none_shall_pass": True,
@@ -348,7 +345,7 @@ class IonizationState:
             result = IonicFraction(
                 ion=Particle(self.base_particle, Z=self._charge_index),
                 ionic_fraction=self.ionic_fractions[self._charge_index],
-                number_density=self.number_densities[self._charge_index]
+                number_density=self.number_densities[self._charge_index],
             )
             self._charge_index += 1
             return result
