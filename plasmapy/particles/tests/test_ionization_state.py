@@ -16,6 +16,7 @@ from plasmapy.utils.pytest_helpers import run_test
 
 ionic_fraction_table = [
     ("Fe 6+", 0.52, 5.2e-6 * u.m ** -3),
+    ("He 1+", None, None),
 ]
 
 
@@ -33,9 +34,16 @@ def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
             f"{number_density}"
         )
 
+    # Prepare to check for the default values when they are not set
+
+    if ionic_fraction is None:
+        ionic_fraction = np.nan
+    if number_density is None:
+        number_density = np.nan * u.m ** -3
+
     assert Particle(ion) == Particle(instance.ionic_symbol)
-    assert instance.ionic_fraction == ionic_fraction
-    assert instance.number_density == number_density
+    assert u.isclose(instance.ionic_fraction, ionic_fraction, equal_nan=True)
+    assert u.isclose(instance.number_density, number_density, equal_nan=True)
 
 
 test_cases = {
