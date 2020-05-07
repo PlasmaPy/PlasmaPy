@@ -11,6 +11,7 @@ from typing import List, Optional, Union
 
 import numpy as np
 from astropy import units as u
+
 from plasmapy.particles import Particle, particle_input
 from plasmapy.particles.exceptions import AtomicError, ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import validate_quantities
@@ -95,10 +96,10 @@ class IonicFraction:
         self.ionic_fraction = ionic_fraction
         self.number_density = number_density
 
-    def __str__(self):
+    def __repr__(self):
         return (
             f"IonicFraction({repr(self.ionic_symbol)}, "
-            f"ionic_fraction={self.ionic_fraction}"
+            f"ionic_fraction={self.ionic_fraction})"
         )
 
     @property
@@ -171,8 +172,8 @@ class IonizationState:
     ----------
     particle: str, integer, or ~plasmapy.particles.Particle
         A `str` or `~plasmapy.particles.Particle` instance representing
-        an element or isotope, or an integer representing the atomic
-        number of an element.
+        an element, isotope, or ion; or an integer representing the
+        atomic number of an element.
 
     ionic_fractions: ~numpy.ndarray, list, tuple, or ~astropy.units.Quantity; optional
         The ionization fractions of an element, where the indices
@@ -180,10 +181,11 @@ class IonizationState:
         atomic number plus one items, and must sum to one within an
         absolute tolerance of ``tol`` if dimensionless.  Alternatively,
         this argument may be a `~astropy.units.Quantity` that represents
-        the number densities of each neutral/ion.
+        the number densities of each neutral/ion.  This argument cannot
+        be specified when ``particle`` is an ion.
 
     T_e: ~astropy.units.Quantity, keyword-only, optional
-        The electron temperature or thermal energy per particle.
+        The electron temperature or thermal energy per electron.
 
     n_elem: ~astropy.units.Quantity, keyword-only, optional
         The number density of the element, including neutrals and all
@@ -215,11 +217,22 @@ class IonizationState:
     >>> states.n_elem  # element number density
     <Quantity 1000000. 1 / m3>
 
+    If the input particle is an ion, then the ionization state for the
+    corresponding element or isotope will be set to ``1.0`` for that
+    ion.  For example, when the input particle is an alpha particle, the
+    base particle will be He-4, and all He-4 particles will be set as
+    doubly charged.
+
+    >>> states = IonizationState('alpha')
+    >>> states.base_particle
+    'He-4'
+    >>> states.ionic_fractions
+    array([0., 0., 1.])
+
     Notes
     -----
     Calculation of collisional ionization equilibrium has not yet been
     implemented.
-
     """
 
     # TODO: Allow this class to (optionally?) handle negatively charged
@@ -232,7 +245,7 @@ class IonizationState:
     # TODO: Add in functionality to find equilibrium ionization states.
 
     @validate_quantities(T_e={"equivalencies": u.temperature_energy()})
-    @particle_input(require="element", exclude="ion")
+    @particle_input(require="element")
     def __init__(
         self,
         particle: Particle,
@@ -245,7 +258,20 @@ class IonizationState:
     ):
         """Initialize an `~plasmapy.particles.IonizationState` instance."""
 
-        self._particle_instance = particle
+        if particle.is_ion or particle.is_category(require=("uncharged", "element")):
+            if ionic_fractions is None:
+                ionic_fractions = np.zeros(particle.atomic_number + 1)
+                ionic_fractions[particle.integer_charge] = 1.0
+                particle = Particle(
+                    particle.isotope if particle.isotope else particle.element
+                )
+            else:
+                raise AtomicError(
+                    "The ionic fractions must not be specified when "
+                    "the input particle to IonizationState is an ion."
+                )
+
+        self._particle = particle
 
         try:
             self.tol = tol
@@ -525,8 +551,7 @@ class IonizationState:
         Set the ionic fractions to collisional ionization equilibrium
         for temperature ``T_e``.  Not implemented.
         """
-        # self.ionic_fractions = self.equil_ionic_fractions
-        raise NotImplementedError
+        self.ionic_fractions = self.equil_ionic_fractions
 
     @property
     @u.quantity_input
@@ -629,7 +654,7 @@ class IonizationState:
     @property
     def element(self) -> str:
         """Return the atomic symbol of the element."""
-        return self._particle_instance.element
+        return self._particle.element
 
     @property
     def isotope(self) -> Optional[str]:
@@ -637,7 +662,7 @@ class IonizationState:
         Return the isotope symbol for an isotope, or `None` if the
         particle is not an isotope.
         """
-        return self._particle_instance.isotope
+        return self._particle.isotope
 
     @property
     def base_particle(self) -> str:
@@ -647,7 +672,7 @@ class IonizationState:
     @property
     def atomic_number(self) -> int:
         """Return the atomic number of the element."""
-        return self._particle_instance.atomic_number
+        return self._particle.atomic_number
 
     @property
     def _particle_instances(self) -> List[Particle]:
@@ -656,7 +681,7 @@ class IonizationState:
         instances corresponding to each ion.
         """
         return [
-            Particle(self._particle_instance.particle, Z=i)
+            Particle(self._particle.particle, Z=i)
             for i in range(self.atomic_number + 1)
         ]
 

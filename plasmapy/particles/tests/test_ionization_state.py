@@ -3,6 +3,7 @@ import collections
 import astropy.units as u
 import numpy as np
 import pytest
+
 from plasmapy.particles import (
     Particle,
     atomic_number,
@@ -279,11 +280,9 @@ class Test_IonizationState:
             self.instances[test_name].atomic_number,
         )
 
-        expected_element = self.instances[test_name]._particle_instance.element
-        expected_isotope = self.instances[test_name]._particle_instance.isotope
-        expected_atomic_number = self.instances[
-            test_name
-        ]._particle_instance.atomic_number
+        expected_element = self.instances[test_name]._particle.element
+        expected_isotope = self.instances[test_name]._particle.isotope
+        expected_atomic_number = self.instances[test_name]._particle.atomic_number
 
         resulting_identifications = Identifications(
             expected_element, expected_isotope, expected_atomic_number
@@ -451,6 +450,48 @@ tests_for_exceptions = {
         AtomicError,
     ),
 }
+
+
+@pytest.mark.parametrize("ion", ["Fe 6+", "p", "He-4 0+", "triton"])
+def test_IonizationState_with_ion_input(ion):
+    """
+    Test that supplying an ion to IonizationState will result in the
+    base particle being the corresponding isotope or ion and that the
+    ionic fraction of the corresponding charge level is 100%.
+    """
+
+    try:
+        ionization_state = IonizationState(ion)
+    except Exception:
+        pytest.fail(f"Unable to instantiate IonizationState({repr(ion)})")
+
+    errmsg = ""
+
+    ion_particle = Particle(ion)
+
+    if ion_particle.isotope:
+        expected_base_particle = ion_particle.isotope
+    else:
+        expected_base_particle = ion_particle.element
+
+    if expected_base_particle != ionization_state.base_particle:
+        errmsg += (
+            f"The expected base particle was {expected_base_particle}, "
+            f"but the returned base particle was {ionization_state.base_particle}. "
+        )
+
+    expected_ionic_fraction = np.zeros(ion_particle.atomic_number + 1)
+    expected_ionic_fraction[ion_particle.integer_charge] = 1.0
+
+    if not np.allclose(expected_ionic_fraction, ionization_state.ionic_fractions):
+        errmsg += (
+            f"The returned ionic fraction for IonizationState({repr(ion)}) "
+            f"should have entirely been in the Z = {ion_particle.integer_charge} "
+            f"level, but was instead: {ionization_state.ionic_fractions}."
+        )
+
+    if errmsg:
+        pytest.fail(errmsg)
 
 
 @pytest.mark.parametrize("test", tests_for_exceptions.keys())
