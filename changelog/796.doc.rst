@@ -1,1 +1,1 @@
-Add narrative documentation for functionality describing ionization states
+Add narrative documentation on ionization state functionality.

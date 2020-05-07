@@ -1,3 +1,5 @@
 In ``plasmapy.particles``, rename the ``IonizationStates`` class to
 ``IonizationStateCollection`` and replace the ``State`` namedtuple with
-a the ``IonicFraction`` class.
+the ``IonicFraction`` class.  When the ``IonizationState`` class is now
+provided with an ion, the ionic fraction for that ion is set to 100% for
+the corresponding element or isotope.
