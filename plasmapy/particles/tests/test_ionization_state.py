@@ -18,6 +18,7 @@ from plasmapy.utils.pytest_helpers import run_test
 ionic_fraction_table = [
     ("Fe 6+", 0.52, 5.2e-6 * u.m ** -3),
     ("He 1+", None, None),
+    ("H-2 0+", None, None),
 ]
 
 
@@ -45,6 +46,35 @@ def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
     assert Particle(ion) == Particle(instance.ionic_symbol)
     assert u.isclose(instance.ionic_fraction, ionic_fraction, equal_nan=True)
     assert u.isclose(instance.number_density, number_density, equal_nan=True)
+
+
+@pytest.mark.parametrize(
+    "invalid_fraction, expected_exception",
+    [(-1e-9, ValueError), (1.00000000001, ValueError), ("...", TypeError),],
+)
+def test_ionic_fraction_invalid_inputs(invalid_fraction, expected_exception):
+    """
+    Test that IonicFraction raises exceptions when the ionic fraction
+    is out of the interval [0,1] or otherwise invalid.
+    """
+    with pytest.raises(expected_exception):
+        IonicFraction(ion="Fe 6+", ionic_fraction=invalid_fraction)
+        pytest.fail(
+            f"IonicFraction did not raise the appropriate exception "
+            f"for ionic_fraction = {repr(invalid_fraction)}, which is "
+            f"invalid."
+        )
+
+
+@pytest.mark.parametrize("invalid_particle", ["H", "e-", "Fe-56"])
+def test_ionic_fraction_invalid_particles(invalid_particle):
+    """
+    Test that `~plasmapy.particles.IonicFraction` raises the appropriate
+    exception when passed a particle that isn't a neutral or ion.
+    """
+    with pytest.raises(ParticleError):
+        IonicFraction(invalid_particle, ionic_fraction=0)
+        pytest.fail()
 
 
 def test_ionization_state_ion_input_error():
