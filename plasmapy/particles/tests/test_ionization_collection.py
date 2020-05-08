@@ -15,7 +15,7 @@ from plasmapy.particles import (
     mass_number,
     particle_symbol,
 )
-from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
+from plasmapy.particles.exceptions import ParticleError, InvalidIsotopeError
 from plasmapy.utils.pytest_helpers import run_test
 
 
@@ -241,7 +241,7 @@ class TestIonizationStateCollection:
                     )
 
                 if not isinstance(actual, np.ndarray) or isinstance(actual, u.Quantity):
-                    raise AtomicError(
+                    raise ParticleError(
                         f"\n\nNot a numpy.ndarray: ({test_name}, {element})"
                     )
         else:
@@ -505,13 +505,13 @@ class TestIonizationStateCollectionAttributes:
         "attribute, invalid_value, expected_exception",
         [
             ("T_e", "5 * u.m", u.UnitsError),
-            ("T_e", "-1 * u.K", AtomicError),
+            ("T_e", "-1 * u.K", ParticleError),
             ("n", "5 * u.m", u.UnitsError),
-            ("n", "-1 * u.m ** -3", AtomicError),
-            ("ionic_fractions", {"H": [0.3, 0.7], "He": [-0.1, 0.4, 0.7]}, AtomicError),
-            ("ionic_fractions", {"H": [0.3, 0.7], "He": [1.01, 0.0, 0.7]}, AtomicError),
-            ("ionic_fractions", {"H": [0.3, 0.6], "He": [1.0, 0.0, 0.0]}, AtomicError),
-            ("ionic_fractions", {"H": [1.0, 0.0]}, AtomicError),
+            ("n", "-1 * u.m ** -3", ParticleError),
+            ("ionic_fractions", {"H": [0.3, 0.7], "He": [-0.1, 0.4, 0.7]}, ParticleError),
+            ("ionic_fractions", {"H": [0.3, 0.7], "He": [1.01, 0.0, 0.7]}, ParticleError),
+            ("ionic_fractions", {"H": [0.3, 0.6], "He": [1.0, 0.0, 0.0]}, ParticleError),
+            ("ionic_fractions", {"H": [1.0, 0.0]}, ParticleError),
         ],
     )
     def test_attribute_exceptions(self, attribute, invalid_value, expected_exception):
@@ -568,7 +568,7 @@ class TestIonizationStateCollectionAttributes:
 
     def test_setting_incomplete_abundances(self):
         new_abundances = {"H": 1, "He": 0.1, "Fe": 1e-5, "Au": 1e-8}  # missing lithium
-        with pytest.raises(AtomicError):
+        with pytest.raises(ParticleError):
             self.instance.abundances = new_abundances
 
     def test_setting_abundances(self):
@@ -733,54 +733,54 @@ class TestIonizationStateCollectionAttributes:
 IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
 
 tests_for_exceptions = {
-    "wrong type": IE({"inputs": None}, AtomicError),
-    "not normalized": IE({"inputs": {"He": [0.4, 0.5, 0.0]}, "tol": 1e-9}, AtomicError),
-    "negative ionfrac": IE({"inputs": {"H": [-0.1, 1.1]}}, AtomicError),
-    "ion": IE({"inputs": {"H": [0.1, 0.9], "He+": [0.0, 0.9, 0.1]}}, AtomicError),
+    "wrong type": IE({"inputs": None}, ParticleError),
+    "not normalized": IE({"inputs": {"He": [0.4, 0.5, 0.0]}, "tol": 1e-9}, ParticleError),
+    "negative ionfrac": IE({"inputs": {"H": [-0.1, 1.1]}}, ParticleError),
+    "ion": IE({"inputs": {"H": [0.1, 0.9], "He+": [0.0, 0.9, 0.1]}}, ParticleError),
     "repeat elements": IE(
-        {"inputs": {"H": [0.1, 0.9], "hydrogen": [0.2, 0.8]}}, AtomicError
+        {"inputs": {"H": [0.1, 0.9], "hydrogen": [0.2, 0.8]}}, ParticleError
     ),
     "isotope of element": IE(
-        {"inputs": {"H": [0.1, 0.9], "D": [0.2, 0.8]}}, AtomicError
+        {"inputs": {"H": [0.1, 0.9], "D": [0.2, 0.8]}}, ParticleError
     ),
     "negative abundance": IE(
         {
             "inputs": {"H": [0.1, 0.9], "He": [0.4, 0.5, 0.1]},
             "abundances": {"H": 1, "He": -0.1},
         },
-        AtomicError,
+        ParticleError,
     ),
     "imaginary abundance": IE(
         {
             "inputs": {"H": [0.1, 0.9], "He": [0.4, 0.5, 0.1]},
             "abundances": {"H": 1, "He": 0.1j},
         },
-        AtomicError,
+        ParticleError,
     ),
     "wrong density units": IE(
         {
             "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -2},
             "abundances": {"H": 1, "He": 0.1},
         },
-        AtomicError,
+        ParticleError,
     ),
     "abundance redundance": IE(
         {
             "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -3},
             "abundances": {"H": 1, "He": 0.1},
         },
-        AtomicError,
+        ParticleError,
     ),
     "abundance contradiction": IE(
         {
             "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -3},
             "abundances": {"H": 1, "He": 0.11},
         },
-        AtomicError,
+        ParticleError,
     ),
-    "kappa too small": IE({"inputs": ["H"], "kappa": 1.499999}, AtomicError),
-    "negative n": IE({"inputs": ["H"], "n": -1 * u.cm ** -3}, AtomicError),
-    "negative T_e": IE({"inputs": ["H-1"], "T_e": -1 * u.K}, AtomicError),
+    "kappa too small": IE({"inputs": ["H"], "kappa": 1.499999}, ParticleError),
+    "negative n": IE({"inputs": ["H"], "n": -1 * u.cm ** -3}, ParticleError),
+    "negative T_e": IE({"inputs": ["H-1"], "T_e": -1 * u.K}, ParticleError),
 }
 
 

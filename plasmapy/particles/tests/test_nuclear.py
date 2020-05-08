@@ -4,14 +4,14 @@ from ..nuclear import nuclear_binding_energy, nuclear_reaction_energy, mass_ener
 
 from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
 
-from plasmapy.particles.exceptions import AtomicError, InvalidParticleError
+from plasmapy.particles.exceptions import ParticleError, InvalidParticleError
 import pytest
 
 test_nuclear_table = [
     [nuclear_binding_energy, "p", {}, 0 * u.J],
     [nuclear_binding_energy, "n", {}, 0 * u.J],
     [nuclear_binding_energy, "p", {}, 0 * u.J],
-    [nuclear_binding_energy, "H", {}, AtomicError],
+    [nuclear_binding_energy, "H", {}, ParticleError],
     [nuclear_binding_energy, "He-99", {}, InvalidParticleError],
     [nuclear_binding_energy, "He", {"mass_numb": 99}, InvalidParticleError],
     [nuclear_binding_energy, 3.1415926535j, {}, TypeError],
@@ -25,54 +25,54 @@ test_nuclear_table = [
         nuclear_reaction_energy,
         (),
         {"reactants": ["n"], "products": ["He-4"]},
-        AtomicError,
+        ParticleError,
     ],
     [
         nuclear_reaction_energy,
         (),
         {"reactants": ["h"], "products": ["H-1"]},
-        AtomicError,
+        ParticleError,
     ],
     [
         nuclear_reaction_energy,
         (),
         {"reactants": ["e-", "n"], "products": ["p+"]},
-        AtomicError,
+        ParticleError,
     ],
     [
         nuclear_reaction_energy,
         (),
         {"reactants": ["e+", "n"], "products": ["p-"]},
-        AtomicError,
+        ParticleError,
     ],
     [
         nuclear_reaction_energy,
         (),
         {"reactants": ["ksdf"], "products": ["H-3"]},
-        AtomicError,
+        ParticleError,
     ],
     [
         nuclear_reaction_energy,
         (),
         {"reactants": ["H"], "products": ["H-1"]},
-        AtomicError,
+        ParticleError,
     ],
     [
         nuclear_reaction_energy,
         (),
         {"reactants": ["p"], "products": ["n", "n", "e-"]},
-        AtomicError,
+        ParticleError,
     ],
-    [nuclear_reaction_energy, "H + H --> H", {}, AtomicError],
-    [nuclear_reaction_energy, "H + H", {}, AtomicError],
+    [nuclear_reaction_energy, "H + H --> H", {}, ParticleError],
+    [nuclear_reaction_energy, "H + H", {}, ParticleError],
     [nuclear_reaction_energy, 1, {}, TypeError],
-    [nuclear_reaction_energy, "H-1 + H-1 --> H-1", {}, AtomicError],
-    [nuclear_reaction_energy, "p --> n", {}, AtomicError],
+    [nuclear_reaction_energy, "H-1 + H-1 --> H-1", {}, ParticleError],
+    [nuclear_reaction_energy, "p --> n", {}, ParticleError],
     [
         nuclear_reaction_energy,
         "p --> p",
         {"reactants": "p", "products": "p"},
-        AtomicError,
+        ParticleError,
     ],
 ]
 

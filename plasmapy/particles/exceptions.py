@@ -1,25 +1,25 @@
 from plasmapy.utils import PlasmaPyError, PlasmaPyWarning
 
 
-class AtomicError(PlasmaPyError):
+class ParticleError(PlasmaPyError):
     """An exception for errors in the `~plasmapy.particles` subpackage."""
 
     pass
 
 
-class MissingAtomicDataError(AtomicError):
+class MissingParticleDataError(ParticleError):
     """An exception for missing atomic or particle data."""
 
     pass
 
 
-class ChargeError(AtomicError):
+class ChargeError(ParticleError):
     """An exception for incorrect or missing charge information."""
 
     pass
 
 
-class UnexpectedParticleError(AtomicError):
+class UnexpectedParticleError(ParticleError):
     """An exception for when a particle is not of the expected category."""
 
     pass
@@ -52,7 +52,7 @@ class InvalidElementError(UnexpectedParticleError):
     pass
 
 
-class InvalidParticleError(AtomicError):
+class InvalidParticleError(ParticleError):
     """An exception for when a particle is invalid."""
 
     pass

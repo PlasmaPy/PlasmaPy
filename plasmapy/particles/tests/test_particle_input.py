@@ -2,7 +2,7 @@ import pytest
 from typing import Optional, Union, Tuple, List
 
 from plasmapy.particles.exceptions import (
-    AtomicError,
+    ParticleError,
     ChargeError,
     InvalidIonError,
     InvalidIsotopeError,
@@ -67,12 +67,12 @@ def test_particle_input_simple(func, args, kwargs, symbol):
     try:
         expected = Particle(symbol)
     except Exception as e:
-        raise AtomicError(f"Cannot create Particle class from symbol {symbol}") from e
+        raise ParticleError(f"Cannot create Particle class from symbol {symbol}") from e
 
     try:
         result = func(*args, **kwargs)
     except Exception as e:
-        raise AtomicError(
+        raise ParticleError(
             f"An exception was raised while trying to execute "
             f"{func} with args = {args} and kwargs = {kwargs}."
         ) from e
@@ -129,12 +129,12 @@ def test_particle_input_classes():
     try:
         result_noparens = instance.method_noparens(symbol)
     except Exception as e:
-        raise AtomicError("Problem with method_noparens") from e
+        raise ParticleError("Problem with method_noparens") from e
 
     try:
         result_parens = instance.method_parens(symbol)
     except Exception as e:
-        raise AtomicError("Problem with method_parens") from e
+        raise ParticleError("Problem with method_parens") from e
 
     assert result_parens == result_noparens == expected
 
@@ -148,8 +148,8 @@ def function_with_no_annotations():
 
 def test_no_annotations_exception():
     """Test that a function decorated with particle_input that has no
-    annotated arguments will raise an AtomicError."""
-    with pytest.raises(AtomicError):
+    annotated arguments will raise an ParticleError."""
+    with pytest.raises(ParticleError):
         function_with_no_annotations()
 
 
@@ -163,11 +163,11 @@ def ambiguous_keywords(p1: Particle, p2: Particle, Z=None, mass_numb=None):
 def test_function_with_ambiguity():
     """Test that a function decorated with particle_input that has two
     annotated arguments"""
-    with pytest.raises(AtomicError):
+    with pytest.raises(ParticleError):
         ambiguous_keywords("H", "He", Z=1, mass_numb=4)
-    with pytest.raises(AtomicError):
+    with pytest.raises(ParticleError):
         ambiguous_keywords("H", "He", Z=1)
-    with pytest.raises(AtomicError):
+    with pytest.raises(ParticleError):
         ambiguous_keywords("H", "He", mass_numb=4)
     # TODO: should particle_input raise an exception when Z and mass_numb
     # are given as keyword arguments but are not explicitly set?
@@ -206,7 +206,7 @@ def function_to_test_annotations(particles: Union[Tuple, List], resulting_partic
     )
 
     if not returned_particle_instances:
-        raise AtomicError(
+        raise ParticleError(
             f"A function decorated by particle_input did not return "
             f"a collection of Particle instances for input of "
             f"{repr(particles)}, and instead returned"
@@ -214,7 +214,7 @@ def function_to_test_annotations(particles: Union[Tuple, List], resulting_partic
         )
 
     if not returned_correct_instances:
-        raise AtomicError(
+        raise ParticleError(
             f"A function decorated by particle_input did not return "
             f"{repr(expected)} as expected, and instead returned "
             f"{repr(resulting_particles)}."
@@ -241,7 +241,7 @@ def test_tuple_annotation(particles: Union[Tuple, List]):
             particles, "ignore", x="ignore"
         )
     except Exception as exc2:
-        raise AtomicError(
+        raise ParticleError(
             f"Unable to evaluate a function decorated by particle_input"
             f" with an annotation of (Particle, Particle) for inputs of"
             f" {repr(particles)}."
@@ -270,7 +270,7 @@ def test_list_annotation(particles: Union[Tuple, List]):
             particles, "ignore", x="ignore"
         )
     except Exception as exc2:
-        raise AtomicError(
+        raise ParticleError(
             f"Unable to evaluate a function decorated by particle_input"
             f" with an annotation of [Particle] for inputs of"
             f" {repr(particles)}."
@@ -356,10 +356,10 @@ def test_unexpected_tuple_and_list_argument_types():
 
 # decorator_kwargs, particle, expected_exception
 decorator_categories_table = [
-    ({"exclude": {"element"}}, "Fe", AtomicError),
+    ({"exclude": {"element"}}, "Fe", ParticleError),
     ({"any_of": {"lepton", "antilepton"}}, "tau-", None),
     ({"require": {"isotope", "ion"}}, "Fe-56+", None),
-    ({"require": {"isotope", "ion"}}, "Fe+", AtomicError),
+    ({"require": {"isotope", "ion"}}, "Fe+", ParticleError),
     ({"any_of": {"isotope", "ion"}}, "Fe+", None),
     ({"any_of": {"charged", "uncharged"}}, "Fe", ChargeError),
     ({"any_of": ["charged", "uncharged"]}, "Fe", ChargeError),
@@ -390,7 +390,7 @@ decorator_categories_table = [
             "exclude": ["matter"],
         },
         "p+",
-        AtomicError,
+        ParticleError,
     ),
 ]
 
@@ -400,8 +400,8 @@ decorator_categories_table = [
 )
 def test_decorator_categories(decorator_kwargs, particle, expected_exception):
     """Tests the require, any_of, and exclude categories lead to an
-    AtomicError being raised when an inputted particle does not meet
-    the required criteria, and do not lead to an AtomicError when the
+    ParticleError being raised when an inputted particle does not meet
+    the required criteria, and do not lead to an ParticleError when the
     inputted particle matches the criteria."""
 
     @particle_input(**decorator_kwargs)

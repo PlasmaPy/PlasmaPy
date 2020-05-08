@@ -17,7 +17,7 @@ from plasmapy.particles import (
     atomic_number,
     particle_symbol,
 )
-from plasmapy.particles.exceptions import AtomicError, ChargeError, InvalidParticleError
+from plasmapy.particles.exceptions import ParticleError, ChargeError, InvalidParticleError
 from plasmapy.utils.decorators import validate_quantities
 
 
@@ -64,7 +64,7 @@ class IonizationStateCollection:
 
     Raises
     ------
-    AtomicError
+    ParticleError
         If `~plasmapy.particles.IonizationStateCollection` cannot be instantiated.
 
     Examples
@@ -149,11 +149,11 @@ class IonizationStateCollection:
                     [fracs[0].si.unit == u.m ** -3 for fracs in inputs.values()]
                 )
                 if not right_units:
-                    raise AtomicError(
+                    raise ParticleError(
                         "Units must be inverse volume for number densities."
                     )
                 if abundances_provided:
-                    raise AtomicError(
+                    raise ParticleError(
                         "Abundances cannot be provided if inputs "
                         "provides number density information."
                     )
@@ -170,7 +170,7 @@ class IonizationStateCollection:
                 self.log_abundances = log_abundances
             self.kappa = kappa
         except Exception as exc:
-            raise AtomicError(
+            raise ParticleError(
                 "Unable to create IonizationStateCollection instance."
             ) from exc
 
@@ -233,7 +233,7 @@ class IonizationStateCollection:
         try:
             particle = particle_symbol(key)
             self.ionic_fractions[key]
-        except (AtomicError, TypeError):
+        except (ParticleError, TypeError):
             raise KeyError(
                 f"{errmsg} because {repr(key)} is an invalid particle."
             ) from None
@@ -284,7 +284,7 @@ class IonizationStateCollection:
                     self.n = new_n_elem
                     self._pars["abundances"][particle] = 1
                 else:
-                    raise AtomicError(
+                    raise ParticleError(
                         f"Cannot set number density of {particle} to "
                         f"{value * new_n_elem} when the number density "
                         f"scaling factor is undefined, the abundance "
@@ -374,7 +374,7 @@ class IonizationStateCollection:
             )
 
         if self.base_particles != other.base_particles:
-            raise AtomicError(
+            raise ParticleError(
                 "Two IonizationStateCollection instances can be compared only "
                 "if the base particles are the same."
             )
@@ -460,7 +460,7 @@ class IonizationStateCollection:
 
         Raises
         ------
-        AtomicError
+        ParticleError
             If the ionic fractions cannot be set.
 
         TypeError
@@ -490,7 +490,7 @@ class IonizationStateCollection:
             new_particles = {particle_symbol(key) for key in inputs.keys()}
             missing_particles = old_particles - new_particles
             if missing_particles:
-                raise AtomicError(
+                raise ParticleError(
                     "Can only reset ionic fractions with a dict if "
                     "the new base particles are a superset of the "
                     "prior base particles.  To change ionic fractions "
@@ -513,7 +513,7 @@ class IonizationStateCollection:
             try:
                 particles = {key: Particle(key) for key in original_keys}
             except (InvalidParticleError, TypeError) as exc:
-                raise AtomicError(
+                raise ParticleError(
                     "Unable to create IonizationStateCollection instance "
                     "because not all particles are valid."
                 ) from exc
@@ -528,7 +528,7 @@ class IonizationStateCollection:
                 )
 
                 if not is_element or has_charge_info:
-                    raise AtomicError(
+                    raise ParticleError(
                         f"{key} is not an element or isotope without "
                         f"charge information."
                     )
@@ -556,14 +556,14 @@ class IonizationStateCollection:
                 new_key = particles[key].particle
                 _particle_instances.append(particles[key])
                 if new_key in _elements_and_isotopes:
-                    raise AtomicError(
+                    raise ParticleError(
                         "Repeated particles in IonizationStateCollection."
                     )
 
                 nstates_input = len(inputs[key])
                 nstates = particles[key].atomic_number + 1
                 if nstates != nstates_input:
-                    raise AtomicError(
+                    raise ParticleError(
                         f"The ionic fractions array for {key} must "
                         f"have a length of {nstates}."
                     )
@@ -578,7 +578,7 @@ class IonizationStateCollection:
                         )
                         n_elems[key] = n_elem
                     except u.UnitConversionError as exc:
-                        raise AtomicError("Units are not inverse volume.") from exc
+                        raise ParticleError("Units are not inverse volume.") from exc
                 elif (
                     isinstance(inputs[key], np.ndarray)
                     and inputs[key].dtype.kind == "f"
@@ -590,7 +590,7 @@ class IonizationStateCollection:
                             inputs[key], dtype=np.float
                         )
                     except ValueError as exc:
-                        raise AtomicError(
+                        raise ParticleError(
                             f"Inappropriate ionic fractions for {key}."
                         ) from exc
 
@@ -598,11 +598,11 @@ class IonizationStateCollection:
                 fractions = new_ionic_fractions[key]
                 if not np.all(np.isnan(fractions)):
                     if np.min(fractions) < 0 or np.max(fractions) > 1:
-                        raise AtomicError(
+                        raise ParticleError(
                             f"Ionic fractions for {key} are not between 0 and 1."
                         )
                     if not np.isclose(np.sum(fractions), 1, atol=self.tol, rtol=0):
-                        raise AtomicError(
+                        raise ParticleError(
                             f"Ionic fractions for {key} are not normalized to 1."
                         )
 
@@ -635,7 +635,7 @@ class IonizationStateCollection:
             try:
                 _particle_instances = [Particle(particle) for particle in inputs]
             except (InvalidParticleError, TypeError) as exc:
-                raise AtomicError(
+                raise ParticleError(
                     "Invalid inputs to IonizationStateCollection."
                 ) from exc
 
@@ -660,7 +660,7 @@ class IonizationStateCollection:
                     not _particle_instances[i - 1].isotope
                     and _particle_instances[i].isotope
                 ):
-                    raise AtomicError(
+                    raise ParticleError(
                         "Cannot have an element and isotopes of that element."
                     )
 
@@ -734,11 +734,11 @@ class IonizationStateCollection:
         try:
             n = n.to(u.m ** -3)
         except u.UnitConversionError as exc:
-            raise AtomicError("Units cannot be converted to u.m ** -3.") from exc
+            raise ParticleError("Units cannot be converted to u.m ** -3.") from exc
         except Exception as exc:
-            raise AtomicError(f"{n} is not a valid number density.") from exc
+            raise ParticleError(f"{n} is not a valid number density.") from exc
         if n < 0 * u.m ** -3:
-            raise AtomicError("Number density cannot be negative.")
+            raise ParticleError("Number density cannot be negative.")
         self._pars["n"] = n.to(u.m ** -3)
 
     @property
@@ -779,7 +779,7 @@ class IonizationStateCollection:
                     particle_symbol(old_key): old_key for old_key in old_keys
                 }
             except Exception:
-                raise AtomicError(
+                raise ParticleError(
                     f"The key {repr(old_key)} in the abundances "
                     f"dictionary is not a valid element or isotope."
                 )
@@ -790,7 +790,7 @@ class IonizationStateCollection:
             new_elements_set = set(new_elements)
 
             if old_elements_set - new_elements_set:
-                raise AtomicError(
+                raise ParticleError(
                     f"The abundances of the following particles are "
                     f"missing: {old_elements_set - new_elements_set}"
                 )
@@ -809,7 +809,7 @@ class IonizationStateCollection:
                     ) from None
 
                 if inputted_abundance < 0:
-                    raise AtomicError(f"The abundance of {element} is negative.")
+                    raise ParticleError(f"The abundance of {element} is negative.")
                 new_abundances_dict[element] = inputted_abundance
 
             self._pars["abundances"] = new_abundances_dict
@@ -838,7 +838,7 @@ class IonizationStateCollection:
                     new_abundances_input[key] = 10 ** value[key]
                 self.abundances = new_abundances_input
             except Exception:
-                raise AtomicError("Invalid log_abundances.") from None
+                raise ParticleError("Invalid log_abundances.") from None
 
     @property
     @u.quantity_input(equivalencies=u.temperature_energy())
@@ -855,11 +855,11 @@ class IonizationStateCollection:
                 u.K, equivalencies=u.temperature_energy()
             )
         except (AttributeError, u.UnitsError):
-            raise AtomicError(
+            raise ParticleError(
                 f"{electron_temperature} is not a valid temperature."
             ) from None
         if temperature < 0 * u.K:
-            raise AtomicError("The electron temperature cannot be negative.")
+            raise ParticleError("The electron temperature cannot be negative.")
         self._pars["T_e"] = temperature
 
     @property

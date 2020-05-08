@@ -12,7 +12,7 @@ import numbers
 from .particle_class import Particle
 
 from plasmapy.particles.exceptions import (
-    AtomicError,
+    ParticleError,
     ChargeError,
     InvalidIonError,
     InvalidIsotopeError,
@@ -98,17 +98,17 @@ def particle_input(
 
     require : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle must be in.  If a particle is not in
-        all of these categories, then an `~plasmapy.utils.AtomicError`
+        all of these categories, then an `~plasmapy.utils.ParticleError`
         will be raised.
 
     any_of : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle may be in.  If a particle is not in
-        any of these categories, then an `~plasmapy.utils.AtomicError`
+        any of these categories, then an `~plasmapy.utils.ParticleError`
         will be raised.
 
     exclude : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle cannot be in.  If a particle is in
-        any of these categories, then an `~plasmapy.utils.AtomicError`
+        any of these categories, then an `~plasmapy.utils.ParticleError`
         will be raised.
 
     none_shall_pass : `bool`, optional
@@ -165,7 +165,7 @@ def particle_input(
         'uncharged'}`` and the particle does not have charge information
         associated with it.
 
-    `~plasmapy/utils/AtomicError`
+    `~plasmapy/utils/ParticleError`
         If an annotated argument does not meet the criteria set by the
         categories in the ``require``, ``any_of``, and ``exclude``
         keywords; if more than one argument is annotated and ``Z`` or
@@ -304,14 +304,14 @@ def particle_input(
                         args_to_become_particles.append(argname)
 
             if not args_to_become_particles:
-                raise AtomicError(
+                raise ParticleError(
                     f"None of the arguments or keywords to {funcname} "
                     f"have been annotated with Particle, as required "
                     f"by the @particle_input decorator."
                 )
             elif len(args_to_become_particles) > 1:
                 if "Z" in argnames or "mass_numb" in argnames:
-                    raise AtomicError(
+                    raise ParticleError(
                         f"The arguments Z and mass_numb in {funcname} are not "
                         f"allowed when more than one argument or keyword is "
                         f"annotated with Particle in functions decorated "
@@ -488,7 +488,7 @@ def particle_input(
         # maximally useful error message.
 
         if not particle.is_category(require=require, exclude=exclude, any_of=any_of):
-            raise AtomicError(
+            raise ParticleError(
                 _category_errmsg(particle, require, exclude, any_of, funcname)
             )
 

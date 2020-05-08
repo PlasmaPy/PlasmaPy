@@ -39,8 +39,8 @@ from ..nuclear import (
 from plasmapy.utils.pytest_helpers import run_test
 
 from plasmapy.particles.exceptions import (
-    AtomicError,
-    MissingAtomicDataError,
+    ParticleError,
+    MissingParticleDataError,
     ChargeError,
     InvalidIsotopeError,
     InvalidElementError,
@@ -272,17 +272,17 @@ standard_atomic_weight_table = [
     [1, (1.008 * u.u).to(u.kg)],
     ['Hydrogen', (1.008 * u.u).to(u.kg)],
     ['Au', u.kg],
-    ['H-1', AtomicError],
+    ['H-1', ParticleError],
     ["help i'm trapped in a unit test", InvalidParticleError],
     [1.1, TypeError],
     ['n', InvalidElementError],
-    ['p', AtomicError],
-    ['alpha', AtomicError],
-    ['deuteron', AtomicError],
-    ['tritium', AtomicError],
-    ['Au+', AtomicError],
-    ['Fe -2', AtomicError],
-    ['Og 2+', AtomicError],
+    ['p', ParticleError],
+    ['alpha', ParticleError],
+    ['deuteron', ParticleError],
+    ['tritium', ParticleError],
+    ['Au+', ParticleError],
+    ['Fe -2', ParticleError],
+    ['Og 2+', ParticleError],
     ['h', InvalidParticleError],
     ['fe', InvalidParticleError],
 ]
@@ -296,12 +296,12 @@ particle_mass_table = [
     ['hydrogen-1', {'Z': 1}, const.m_p],
     ['p+', const.m_p],
     ['F-19', {'Z': 3}, u.kg],
-    ['Og 1+', {}, MissingAtomicDataError],
+    ['Og 1+', {}, MissingParticleDataError],
     ['Fe-56', {"Z": 1.4}, TypeError],
     ['H-1 +1', {"Z": 0}, InvalidParticleError],
     [26, {"Z": 1, "mass_numb": 'a'}, TypeError],
     [26, {"Z": 27, "mass_numb": 56}, InvalidParticleError],
-    ['Og', {"Z": 1}, MissingAtomicDataError],
+    ['Og', {"Z": 1}, MissingParticleDataError],
     ['Og', {"mass_numb": 696, "Z": 1}, InvalidParticleError],
     ['He 1+', {"mass_numb": 99}, InvalidParticleError],
     ['fe-56 1+', {}, InvalidParticleError],
@@ -622,7 +622,7 @@ def test_half_life_unstable_isotopes():
     for isotope in _Isotopes.keys():
         if 'half_life' not in _Isotopes[isotope].keys() and \
                 not _Isotopes[isotope].keys():
-            with pytest.raises(MissingAtomicDataError):
+            with pytest.raises(MissingParticleDataError):
                 half_life(isotope)
 
 
@@ -632,7 +632,7 @@ def test_half_life_u_220():
 
     isotope_without_half_life_data = "No-248"
 
-    with pytest.raises(MissingAtomicDataError):
+    with pytest.raises(MissingParticleDataError):
         half_life(isotope_without_half_life_data)
         pytest.fail(
             f"This test assumes that {isotope_without_half_life_data} does "
@@ -744,7 +744,7 @@ class TestReducedMassInput:
             reduced_mass('N', 6e-26 * u.l)
 
     def test_missing_atomic_data(self):
-        with pytest.raises(MissingAtomicDataError):
+        with pytest.raises(MissingParticleDataError):
             reduced_mass('Og', 'H')
 
 

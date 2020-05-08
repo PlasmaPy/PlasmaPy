@@ -15,14 +15,14 @@ import numpy as np
 import plasmapy.utils.roman as roman
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
-    AtomicError,
+    ParticleError,
     AtomicWarning,
     ChargeError,
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
     InvalidParticleError,
-    MissingAtomicDataError,
+    MissingParticleDataError,
     MissingAtomicDataWarning,
 )
 from plasmapy.particles.isotopes import _Isotopes
@@ -113,10 +113,10 @@ class AbstractParticle(ABC):
 
     def __bool__(self):
         """
-        Raise an `~plasmapy.utils.AtomicError` because particles
+        Raise an `~plasmapy.utils.ParticleError` because particles
         do not have a truth value.
         """
-        raise AtomicError("The truth value of a particle is not defined.")
+        raise ParticleError("The truth value of a particle is not defined.")
 
 
 class Particle(AbstractParticle):
@@ -162,7 +162,7 @@ class Particle(AbstractParticle):
         being accessed but the charge information for the particle is
         not available.
 
-    `~plasmapy.utils.AtomicError`
+    `~plasmapy.utils.ParticleError`
         Raised for attempts at converting a
         `~plasmapy.particles.Particle` object to a `bool`.
 
@@ -480,7 +480,7 @@ class Particle(AbstractParticle):
         instance, then this method will raise a `TypeError`.  If
         ``other.particle`` equals ``self.particle`` but the attributes
         differ, then this method will raise a
-        `~plasmapy.utils.AtomicError`.
+        `~plasmapy.utils.ParticleError`.
 
         Examples
         --------
@@ -533,7 +533,7 @@ class Particle(AbstractParticle):
         same_attributes = self._attributes == other._attributes
 
         if same_particle and not same_attributes:  # coverage: ignore
-            raise AtomicError(
+            raise ParticleError(
                 f"{self} and {other} should be the same Particle, but "
                 f"have differing attributes.\n\n"
                 f"The attributes of {self} are:\n\n{self._attributes}\n\n"
@@ -556,7 +556,7 @@ class Particle(AbstractParticle):
         instance, then this method will raise a `TypeError`.  If
         ``other.particle`` equals ``self.particle`` but the attributes
         differ, then this method will raise a
-        `~plasmapy.utils.AtomicError`.
+        `~plasmapy.utils.ParticleError`.
 
         """
         return not self.__eq__(other)
@@ -571,7 +571,7 @@ class Particle(AbstractParticle):
     def __invert__(self):
         """
         Return the corresponding antiparticle, or raise an
-        `~plasmapy.utils.AtomicError` if the particle is not an
+        `~plasmapy.utils.ParticleError` if the particle is not an
         elementary particle.
         """
         return self.antiparticle
@@ -594,7 +594,7 @@ class Particle(AbstractParticle):
     def antiparticle(self):
         """
         Return the corresponding antiparticle, or raise an
-        `~plasmapy.utils.AtomicError` if the particle is not an
+        `~plasmapy.utils.ParticleError` if the particle is not an
         elementary particle.
 
         This attribute may be accessed by using the unary operator ``~``
@@ -614,7 +614,7 @@ class Particle(AbstractParticle):
         if self.particle in _antiparticles.keys():
             return Particle(_antiparticles[self.particle])
         else:
-            raise AtomicError(
+            raise ParticleError(
                 "The unary operator can only be used for elementary "
                 "particles and antiparticles."
             )
@@ -816,7 +816,7 @@ class Particle(AbstractParticle):
         if self.isotope or self.is_ion or not self.element:
             raise InvalidElementError(_category_errmsg(self, "element"))
         if self._attributes["standard atomic weight"] is None:  # coverage: ignore
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The standard atomic weight of {self} is unavailable."
             )
         return self._attributes["standard atomic weight"].to(u.kg)
@@ -855,7 +855,7 @@ class Particle(AbstractParticle):
         base_mass = self._attributes["isotope mass"]
 
         if base_mass is None:  # coverage: ignore
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The mass of a {self.isotope} nuclide is not available."
             )
 
@@ -913,7 +913,7 @@ class Particle(AbstractParticle):
                 base_mass = self._attributes["standard atomic weight"]
 
             if base_mass is None:
-                raise MissingAtomicDataError(
+                raise MissingParticleDataError(
                     f"The mass of ion '{self.ionic_symbol}' is not available."
                 )
 
@@ -931,7 +931,7 @@ class Particle(AbstractParticle):
             if mass is not None:
                 return mass.to(u.kg)
 
-        raise MissingAtomicDataError(f"The mass of {self} is not available.")
+        raise MissingParticleDataError(f"The mass of {self} is not available.")
 
     @property
     def nuclide_mass(self) -> u.Quantity:
@@ -967,7 +967,7 @@ class Particle(AbstractParticle):
         base_mass = self._attributes["isotope mass"]
 
         if base_mass is None:  # coverage: ignore
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The mass of a {self.isotope} nuclide is not available."
             )
 
@@ -1007,8 +1007,8 @@ class Particle(AbstractParticle):
             mass = self.nuclide_mass if self.isotope else self.mass
             energy = mass * const.c ** 2
             return energy.to(u.J)
-        except MissingAtomicDataError:
-            raise MissingAtomicDataError(
+        except MissingParticleDataError:
+            raise MissingParticleDataError(
                 f"The mass energy of {self.particle} is not available "
                 f"because the mass is unknown."
             ) from None
@@ -1212,7 +1212,7 @@ class Particle(AbstractParticle):
 
         """
         if self._attributes["baryon number"] is None:  # coverage: ignore
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The baryon number for '{self.particle}' is not available."
             )
         return self._attributes["baryon number"]
@@ -1240,7 +1240,7 @@ class Particle(AbstractParticle):
 
         """
         if self._attributes["lepton number"] is None:  # coverage: ignore
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The lepton number for {self.particle} is not available."
             )
         return self._attributes["lepton number"]
@@ -1274,7 +1274,7 @@ class Particle(AbstractParticle):
             )
 
         if self._attributes["half-life"] is None:
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The half-life of '{self.particle}' is not available."
             )
         return self._attributes["half-life"]
@@ -1295,7 +1295,7 @@ class Particle(AbstractParticle):
 
         """
         if self._attributes["spin"] is None:
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The spin of particle '{self.particle}' is unavailable."
             )
 
@@ -1398,7 +1398,7 @@ class Particle(AbstractParticle):
                 return set(arg)
 
         if category_tuple and require:  # coverage: ignore
-            raise AtomicError(
+            raise ParticleError(
                 "No positional arguments are allowed if the `require` keyword "
                 "is set in is_category."
             )
@@ -1422,7 +1422,7 @@ class Particle(AbstractParticle):
 
         for problem_categories, adjective in categories_and_adjectives:
             if problem_categories:
-                raise AtomicError(
+                raise ParticleError(
                     f"The following categories in {self.__repr__()}"
                     f".is_category are {adjective}: {problem_categories}"
                 )

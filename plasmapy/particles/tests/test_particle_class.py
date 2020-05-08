@@ -20,8 +20,8 @@ from plasmapy.utils import call_string
 from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
 from plasmapy.particles.exceptions import (
-    AtomicError,
-    MissingAtomicDataError,
+    ParticleError,
+    MissingParticleDataError,
     ChargeError,
     InvalidIonError,
     InvalidIsotopeError,
@@ -194,7 +194,7 @@ test_Particle_table = [
             "charge": ChargeError,
             "integer_charge": ChargeError,
             "mass_number": InvalidIsotopeError,
-            "baryon_number": AtomicError,
+            "baryon_number": ParticleError,
             "lepton_number": 0,
             "half_life": InvalidIsotopeError,
             "standard_atomic_weight": (1.008 * u.u).to(u.kg),
@@ -218,7 +218,7 @@ test_Particle_table = [
             "is_ion": True,
             "integer_charge": -1,
             "mass_number": InvalidIsotopeError,
-            "baryon_number": MissingAtomicDataError,
+            "baryon_number": MissingParticleDataError,
             "lepton_number": 0,
             "half_life": InvalidIsotopeError,
             "standard_atomic_weight": InvalidElementError,
@@ -423,8 +423,8 @@ test_Particle_table = [
             "element": None,
             "isotope": None,
             "isotope_name": InvalidElementError,
-            "mass": MissingAtomicDataError,
-            "mass_energy": MissingAtomicDataError,
+            "mass": MissingParticleDataError,
+            "mass_energy": MissingParticleDataError,
             "integer_charge": 0,
             "mass_number": InvalidIsotopeError,
             "element_name": InvalidElementError,
@@ -442,10 +442,10 @@ test_Particle_table = [
             'is_category(any_of={"matter", "boson"})': True,
             'is_category(any_of=["antimatter", "boson", "charged"])': False,
             'is_category(["fermion", "lepton"], exclude="matter")': False,
-            'is_category("lepton", "invalid")': AtomicError,
-            'is_category(["boson"], exclude=["lepton", "invalid"])': AtomicError,
-            'is_category("boson", exclude="boson")': AtomicError,
-            'is_category(any_of="boson", exclude="boson")': AtomicError,
+            'is_category("lepton", "invalid")': ParticleError,
+            'is_category(["boson"], exclude=["lepton", "invalid"])': ParticleError,
+            'is_category("boson", exclude="boson")': ParticleError,
+            'is_category(any_of="boson", exclude="boson")': ParticleError,
         },
     ),
     (Particle("C"), {}, {"particle": "C", "atomic_number": 6, "element": "C"}),
@@ -477,7 +477,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
     try:
         particle = Particle(arg, **kwargs)
     except Exception as exc:
-        raise AtomicError(f"Problem creating {call}") from exc
+        raise ParticleError(f"Problem creating {call}") from exc
 
     for key in expected_dict.keys():
         expected = expected_dict[key]
@@ -563,9 +563,9 @@ test_Particle_error_table = [
     ("neutron", {}, ".mass_number", InvalidIsotopeError),
     ("He", {"mass_numb": 4}, ".charge", ChargeError),
     ("He", {"mass_numb": 4}, ".integer_charge", ChargeError),
-    ("Fe", {}, ".spin", MissingAtomicDataError),
-    ("nu_e", {}, ".mass", MissingAtomicDataError),
-    ("Og", {}, ".standard_atomic_weight", MissingAtomicDataError),
+    ("Fe", {}, ".spin", MissingParticleDataError),
+    ("nu_e", {}, ".mass", MissingParticleDataError),
+    ("Og", {}, ".standard_atomic_weight", MissingParticleDataError),
     (Particle("C-14"), {"mass_numb": 13}, "", InvalidParticleError),
     (Particle("Au 1+"), {"Z": 2}, "", InvalidParticleError),
     ([], {}, "", TypeError),
@@ -632,7 +632,7 @@ def test_Particle_cmp():
     with pytest.raises(TypeError):
         electron == 1
 
-    with pytest.raises(AtomicError):
+    with pytest.raises(ParticleError):
         electron == "dfasdf"
 
 
@@ -722,7 +722,7 @@ def test_particle_is_electron(p, is_one):
 
 
 def test_particle_bool_error():
-    with pytest.raises(AtomicError):
+    with pytest.raises(ParticleError):
         bool(Particle("e-"))
 
 
@@ -757,7 +757,7 @@ def test_antiparticle_inversion(particle, antiparticle):
 
 
 def test_unary_operator_for_elements():
-    with pytest.raises(AtomicError):
+    with pytest.raises(ParticleError):
         Particle("C").antiparticle
 
 

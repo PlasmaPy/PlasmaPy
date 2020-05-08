@@ -23,7 +23,7 @@ from plasmapy.particles.particle_input import particle_input
 from plasmapy.particles.symbols import atomic_symbol
 
 from plasmapy.particles.exceptions import (
-    MissingAtomicDataError,
+    MissingParticleDataError,
     InvalidIsotopeError,
     InvalidElementError,
     InvalidParticleError,
@@ -907,8 +907,8 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
             return particle.mass.to(u.kg)
         except u.UnitConversionError as exc1:
             raise u.UnitConversionError(f"Incorrect units in reduced_mass.") from exc1
-        except MissingAtomicDataError:
-            raise MissingAtomicDataError(
+        except MissingParticleDataError:
+            raise MissingParticleDataError(
                 f"Unable to find the reduced mass because the mass of "
                 f"{particle} is not available.") from None
 

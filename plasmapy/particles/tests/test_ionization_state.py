@@ -11,7 +11,7 @@ from plasmapy.particles import (
     isotope_symbol,
     particle_symbol,
 )
-from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
+from plasmapy.particles.exceptions import ParticleError, InvalidIsotopeError
 from plasmapy.particles.ionization_state import IonicFraction, IonizationState
 from plasmapy.utils.pytest_helpers import run_test
 
@@ -57,7 +57,7 @@ def test_ionization_state_ion_input_error():
     ion = "He 1+"
     unnecessary_ionic_fractions = [0.0, 0.0, 1.0]
 
-    with pytest.raises(AtomicError):
+    with pytest.raises(ParticleError):
         IonizationState(ion, ionic_fractions=unnecessary_ionic_fractions)
         pytest.fail(
             f"When IonizationState is supplied an ion input ({repr(ion)}) "
@@ -186,7 +186,7 @@ class Test_IonizationState:
         Test that comparisons of `IonizationState` instances for
         different elements fail.
         """
-        with pytest.raises(AtomicError):
+        with pytest.raises(ParticleError):
             self.instances["Li"] == self.instances["H"]
 
     @pytest.mark.parametrize("test_name", test_names)
@@ -268,7 +268,7 @@ class Test_IonizationState:
         Test that an `IonizationState` instance cannot be indexed
         outside of the bounds of allowed integer charges.
         """
-        with pytest.raises(AtomicError):
+        with pytest.raises(ParticleError):
             self.instances["Li"][index]
 
     def test_normalization(self):
@@ -428,18 +428,18 @@ class Test_IonizationState:
 IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
 
 tests_for_exceptions = {
-    "too few nstates": IE({"particle": "H", "ionic_fractions": [1.0]}, AtomicError),
+    "too few nstates": IE({"particle": "H", "ionic_fractions": [1.0]}, ParticleError),
     "too many nstates": IE(
-        {"particle": "H", "ionic_fractions": [1, 0, 0, 0]}, AtomicError
+        {"particle": "H", "ionic_fractions": [1, 0, 0, 0]}, ParticleError
     ),
     "ionic fraction < 0": IE(
-        {"particle": "He", "ionic_fractions": [-0.1, 0.1, 1]}, AtomicError
+        {"particle": "He", "ionic_fractions": [-0.1, 0.1, 1]}, ParticleError
     ),
     "ionic fraction > 1": IE(
-        {"particle": "He", "ionic_fractions": [1.1, 0.0, 0.0]}, AtomicError
+        {"particle": "He", "ionic_fractions": [1.1, 0.0, 0.0]}, ParticleError
     ),
     "invalid ionic fraction": IE(
-        {"particle": "He", "ionic_fractions": [1.0, 0.0, "a"]}, AtomicError
+        {"particle": "He", "ionic_fractions": [1.0, 0.0, "a"]}, ParticleError
     ),
     "bad n_elem units": IE(
         {"particle": "H", "ionic_fractions": [0, 1], "n_elem": 3 * u.m ** 3},
@@ -454,11 +454,11 @@ tests_for_exceptions = {
             "ionic_fractions": [1.0, 0.0, 0.0],
             "n_elem": -1 * u.m ** -3,
         },
-        AtomicError,
+        ParticleError,
     ),
     "negative T_e": IE(
         {"particle": "He", "ionic_fractions": [1.0, 0.0, 0.0], "T_e": -1 * u.K},
-        AtomicError,
+        ParticleError,
     ),
     "redundant ndens": IE(
         {
@@ -466,7 +466,7 @@ tests_for_exceptions = {
             "ionic_fractions": np.array([3, 4]) * u.m ** -3,
             "n_elem": 4 * u.m ** -3,
         },
-        AtomicError,
+        ParticleError,
     ),
 }
 
@@ -661,11 +661,11 @@ class Test_IonizationStateNumberDensitiesSetter:
         ), "IonizationState.n_e not set correctly after number_densities was set."
 
     def test_that_negative_density_raises_error(self):
-        with pytest.raises(AtomicError, match="cannot be negative"):
+        with pytest.raises(ParticleError, match="cannot be negative"):
             self.instance.number_densities = u.Quantity([-0.1, 0.2], unit=u.m ** -3)
 
     def test_incorrect_number_of_charge_states_error(self):
-        with pytest.raises(AtomicError, match="Incorrect number of charge states"):
+        with pytest.raises(ParticleError, match="Incorrect number of charge states"):
             self.instance.number_densities = u.Quantity([0.1, 0.2, 0.3], unit=u.m ** -3)
 
     def test_incorrect_units_error(self):
