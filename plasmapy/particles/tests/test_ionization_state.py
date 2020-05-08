@@ -11,7 +11,7 @@ from plasmapy.particles import (
     isotope_symbol,
     particle_symbol,
 )
-from plasmapy.particles.exceptions import ParticleError, InvalidIsotopeError
+from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 from plasmapy.particles.ionization_state import IonicFraction, IonizationState
 from plasmapy.utils.pytest_helpers import run_test
 

@@ -6,6 +6,7 @@ from typing import Dict
 import astropy.units as u
 import numpy as np
 import pytest
+
 from plasmapy.particles import (
     IonicFraction,
     IonizationState,
@@ -15,7 +16,7 @@ from plasmapy.particles import (
     mass_number,
     particle_symbol,
 )
-from plasmapy.particles.exceptions import ParticleError, InvalidIsotopeError
+from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 from plasmapy.utils.pytest_helpers import run_test
 
 
@@ -508,9 +509,21 @@ class TestIonizationStateCollectionAttributes:
             ("T_e", "-1 * u.K", ParticleError),
             ("n", "5 * u.m", u.UnitsError),
             ("n", "-1 * u.m ** -3", ParticleError),
-            ("ionic_fractions", {"H": [0.3, 0.7], "He": [-0.1, 0.4, 0.7]}, ParticleError),
-            ("ionic_fractions", {"H": [0.3, 0.7], "He": [1.01, 0.0, 0.7]}, ParticleError),
-            ("ionic_fractions", {"H": [0.3, 0.6], "He": [1.0, 0.0, 0.0]}, ParticleError),
+            (
+                "ionic_fractions",
+                {"H": [0.3, 0.7], "He": [-0.1, 0.4, 0.7]},
+                ParticleError,
+            ),
+            (
+                "ionic_fractions",
+                {"H": [0.3, 0.7], "He": [1.01, 0.0, 0.7]},
+                ParticleError,
+            ),
+            (
+                "ionic_fractions",
+                {"H": [0.3, 0.6], "He": [1.0, 0.0, 0.0]},
+                ParticleError,
+            ),
             ("ionic_fractions", {"H": [1.0, 0.0]}, ParticleError),
         ],
     )
@@ -734,7 +747,9 @@ IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
 
 tests_for_exceptions = {
     "wrong type": IE({"inputs": None}, ParticleError),
-    "not normalized": IE({"inputs": {"He": [0.4, 0.5, 0.0]}, "tol": 1e-9}, ParticleError),
+    "not normalized": IE(
+        {"inputs": {"He": [0.4, 0.5, 0.0]}, "tol": 1e-9}, ParticleError
+    ),
     "negative ionfrac": IE({"inputs": {"H": [-0.1, 1.1]}}, ParticleError),
     "ion": IE({"inputs": {"H": [0.1, 0.9], "He+": [0.0, 0.9, 0.1]}}, ParticleError),
     "repeat elements": IE(

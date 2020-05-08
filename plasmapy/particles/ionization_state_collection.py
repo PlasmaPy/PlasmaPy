@@ -10,6 +10,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 from astropy import units as u
+
 from plasmapy.particles import (
     IonicFraction,
     IonizationState,
@@ -17,7 +18,11 @@ from plasmapy.particles import (
     atomic_number,
     particle_symbol,
 )
-from plasmapy.particles.exceptions import ParticleError, ChargeError, InvalidParticleError
+from plasmapy.particles.exceptions import (
+    ChargeError,
+    InvalidParticleError,
+    ParticleError,
+)
 from plasmapy.utils.decorators import validate_quantities
 
 
