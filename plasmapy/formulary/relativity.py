@@ -130,9 +130,9 @@ def relativistic_energy(V: u.m / u.s, m: u.kg):
     >>> velocity = 1.4e8 * u.m / u.s
     >>> mass = 1 * u.kg
     >>> relativistic_energy(velocity, mass)
-    1.0163893e17 * u.kg * u.m ** 2 / u.s ** 2
+    1.01638929e+17 kg m2 / s2
     >>> relativistic_energy(299792458*u.m/u.s, mass)
-    inf * u.kg * u.m ** 2 / u.s ** 2
+    inf kg m2 / s2
     '''
 
     gamma = Lorentz_factor(V)
