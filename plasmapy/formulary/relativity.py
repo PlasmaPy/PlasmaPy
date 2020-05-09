@@ -92,5 +92,5 @@ def Lorentz_factor(V: u.m / u.s):
 
 def relativistic_energy(V: u.m / u.s, m: u.kg):
     gamma = Lorentz_factor(V)
-    return gamma*m*const.c**2
+    return gamma*m*c**2
 
