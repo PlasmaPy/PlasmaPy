@@ -106,7 +106,7 @@ def relativistic_energy(V: u.m / u.s, m: u.kg):
     -------
     E : float or ~numpy.ndarray
         The Lorentz factor associated with the inputted velocities.
-      
+
     Raises
     ------
     TypeError
