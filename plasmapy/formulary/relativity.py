@@ -92,7 +92,7 @@ def Lorentz_factor(V: u.m / u.s):
 
 def relativistic_energy(V: u.m / u.s, m: u.kg):
     '''
-    Return the relativistic energy of a particle
+    Return the relativistic energy of a particle.
 
     Parameters
     ----------
@@ -105,7 +105,7 @@ def relativistic_energy(V: u.m / u.s, m: u.kg):
     Returns
     -------
     E : float or ~numpy.ndarray
-        The Lorentz factor associated with the inputted velocities.
+        The relativitstic energy of the particle.
 
     Raises
     ------
@@ -129,9 +129,9 @@ def relativistic_energy(V: u.m / u.s, m: u.kg):
     >>> from astropy import units as u
     >>> velocity = 1.4e8 * u.m / u.s
     >>> mass = 1 * u.kg
-    >>> relativistic energy(velocity, mass)
+    >>> relativistic_energy(velocity, mass)
     1.0163893e17 * u.kg * u.m ** 2 / u.s ** 2
-    >>> relativistic(299792458*u.m/u.s)
+    >>> relativistic_energy(299792458*u.m/u.s, mass)
     inf * u.kg * u.m ** 2 / u.s ** 2
     '''
 
