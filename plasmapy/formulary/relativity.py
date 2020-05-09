@@ -21,8 +21,6 @@ def Lorentz_factor(V: u.m / u.s):
     ----------
     V : ~astropy.units.Quantity
         The velocity in units convertible to meters per second.
-    m : ~astropy.units.Quantity
-        The mass in units convertible to kilograms.
 
     Returns
     -------
@@ -100,6 +98,9 @@ def relativistic_energy(V: u.m / u.s, m: u.kg):
     ----------
     V : ~astropy.units.Quantity
         The velocity in units convertible to meters per second.
+        
+    m : ~astropy.units.Quantity
+        The mass in units convertible to kilograms.
 
     Returns
     -------
