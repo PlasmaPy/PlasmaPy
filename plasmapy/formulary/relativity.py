@@ -93,12 +93,12 @@ def Lorentz_factor(V: u.m / u.s):
 def relativistic_energy(V: u.m / u.s, m: u.kg):
     '''
     Return the relativistic energy of a particle
-    
+
     Parameters
     ----------
     V : ~astropy.units.Quantity
         The velocity in units convertible to meters per second.
-        
+
     m : ~astropy.units.Quantity
         The mass in units convertible to kilograms.
 
@@ -123,7 +123,7 @@ def relativistic_energy(V: u.m / u.s, m: u.kg):
     -----
     ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed.
-    
+
     Examples
     --------
     >>> from astropy import units as u
@@ -134,8 +134,7 @@ def relativistic_energy(V: u.m / u.s, m: u.kg):
     >>> relativistic(299792458*u.m/u.s)
     inf * u.kg * u.m ** 2 / u.s ** 2
     '''
-    
+
     gamma = Lorentz_factor(V)
     E = gamma*m*c**2
     return E
-
