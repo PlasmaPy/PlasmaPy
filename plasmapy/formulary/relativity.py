@@ -89,7 +89,7 @@ def Lorentz_factor(V: u.m / u.s):
 
     return gamma
 
-
+@validate_quantities(V={"can_be_negative": True}, m={"can_be_negative": False})
 def relativistic_energy(V: u.m / u.s, m: u.kg):
     '''
     Return the relativistic energy of a particle.
@@ -136,5 +136,5 @@ def relativistic_energy(V: u.m / u.s, m: u.kg):
     '''
 
     gamma = Lorentz_factor(V)
-    E = gamma*m*c**2
+    E = gamma * m * c ** 2
     return E
