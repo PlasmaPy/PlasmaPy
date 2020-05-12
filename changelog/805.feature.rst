@@ -1,1 +1,1 @@
-relativistic_energy() is a function that uses the establised Lorentz_factor function to calculate the relativistic energy of a particle in Joules from the mass of the particle in kilograms and the speed in meters per second.
+relativistic_energy() is a function that uses the establised Lorentz_factor() function to calculate the relativistic energy of a particle in Joules from the mass of the particle in kilograms and the speed in meters per second.
