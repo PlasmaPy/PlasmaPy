@@ -6,8 +6,6 @@ __all__ = ['AbstractProbe', 'XAbstractDiagnostic']
 import abc
 import xarray as xr
 
-from warnings import warn
-
 
 class AbstractProbe(abc.ABC):
     """Abstract class for defining probe characteristics/parameters."""
