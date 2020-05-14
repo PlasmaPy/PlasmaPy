@@ -66,10 +66,10 @@ def test_relativistic_energy():
         relativistic_energy(1.0000000001 * c, m)
 
     with pytest.raises(ValueError), pytest.warns(u.UnitsWarning):
-        Lorentz_factor(299792459)
+        relativistic_energy(299792459, 1)
 
     with pytest.warns(u.UnitsWarning):
-        Lorentz_factor(2.2)
+        relativistic_energy(2.2, m)
 
     with pytest.raises(u.UnitTypeError):
-        Lorentz_factor(4 * u.kg)
+        relativistic_energy(4 * u.kg, m)
