@@ -135,7 +135,7 @@ def relativistic_energy(V: u.m / u.s, m: u.kg) -> u.Joule:
     <Quantity 1.01638929e+17 J>
     >>> relativistic_energy(299792458*u.m/u.s, mass)
     <Quantity inf J>
-    '''
+    """
 
     gamma = Lorentz_factor(V)
     E = gamma * m * c ** 2
