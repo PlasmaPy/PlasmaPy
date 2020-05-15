@@ -131,10 +131,14 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     >>> from astropy import units as u
     >>> velocity = 1.4e8 * u.m / u.s
     >>> mass = 1 * u.kg
-    >>> relativistic_energy(velocity, mass)
+    >>> relativistic_energy(mass, velocity)
     <Quantity 1.01638929e+17 J>
-    >>> relativistic_energy(299792458*u.m/u.s, mass)
+    >>> relativistic_energy(mass, 299792458*u.m / u.s)
     <Quantity inf J>
+    >>> relativistic_energy(1 * u.mg, 1.4e8 * u.m / u.s)
+    <Quantity 101638929310.80406 J>
+    >>> relativistic_energy(-1 * u.mg, 1.4e8 * u.m / u.s)
+    ValueError: The argument 'm' to function relativistic_energy() can not contain negative numbers.
     """
 
     gamma = Lorentz_factor(v)
