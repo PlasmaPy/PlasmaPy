@@ -136,9 +136,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     >>> relativistic_energy(mass, 299792458*u.m / u.s)
     <Quantity inf J>
     >>> relativistic_energy(1 * u.mg, 1.4e8 * u.m / u.s)
-    <Quantity 101638929310.80406 J>
-    >>> relativistic_energy(-1 * u.mg, 1.4e8 * u.m / u.s)
-    ValueError: The argument 'm' to function relativistic_energy() can not contain negative numbers.
+    <Quantity 1.01638929e+11 J>
     """
 
     gamma = Lorentz_factor(v)
