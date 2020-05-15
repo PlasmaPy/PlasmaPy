@@ -45,8 +45,6 @@ def test_relativistic_energy():
 
     V = 123456789 * u.m / u.s
     m = 1 * u.kg
-    assert V.unit == u.m / u.s
-    assert m.unit == u.kg
     assert np.isclose(relativistic_energy(V, m).value, ((1 / np.sqrt(1 - V ** 2 / c ** 2)) * m * c ** 2).value)
     assert relativistic_energy(-V, m) == relativistic_energy(V, m)
 
