@@ -93,7 +93,7 @@ def Lorentz_factor(V: u.m / u.s):
 @validate_quantities(m={"can_be_negative": False}, 
                      validations_on_return={"can_be_negative": False})
 def relativistic_energy(V: u.m / u.s, m: u.kg) -> u.Joule:
-    '''
+    """
     Return the relativistic energy of a particle.
 
     Parameters
