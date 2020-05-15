@@ -116,7 +116,7 @@ def find_floating_potential(
     iadd = (istop - istart + 1) - min_points
     if iadd < 0:
         # need to pad
-        iadd_2_start, iadd_2_stop = int(np.ceil(-iadd / 2.0))
+        iadd_2_start = iadd_2_stop = int(np.ceil(-iadd / 2.0))
         if istart - iadd_2_start < 0:
             iadd_2_stop += iadd_2_start - istart
             iadd_2_start = 0
@@ -129,8 +129,9 @@ def find_floating_potential(
             istart = 0 if (istart - iadd_2_start < 0) else (istart - iadd_2_start)
             # iadd_2_start = 0
     if (istop - istart + 1) < min_points:
-        warn(f"The number of elements in the current array ({current.size}) is less"
-             f" than 'min_points' ({min_points}).")
+        warn(f"The number of elements in the current array "
+             f"({istop - istart + 1}) is less than 'min_points' "
+             f"({min_points}).")
 
     # Perform Linear Regression Fit
     volt_sub = voltage[istart:istop + 1]
