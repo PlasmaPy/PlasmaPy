@@ -62,7 +62,7 @@ def test_relativistic_energy():
            ).unit == u.J
 
     with pytest.raises(RelativityError):
-        relativistic_energy(1.0000000001 * c, m)
+        relativistic_energy(m, 1.0000000001 * c)
 
     with pytest.raises(RelativityError), pytest.warns(u.UnitsWarning):
         relativistic_energy(1, 299792459)
