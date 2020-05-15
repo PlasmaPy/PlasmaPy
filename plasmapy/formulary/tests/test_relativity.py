@@ -58,7 +58,7 @@ def test_relativistic_energy():
     assert Energy_arr[1] == np.inf
 
     assert (
-                   relativistic_energy(2 * u.kg3 * u.m / u.s)
+                   relativistic_energy(2 * u.kg, 3 * u.m / u.s)
            ).unit == u.J
 
     with pytest.raises(RelativityError):
