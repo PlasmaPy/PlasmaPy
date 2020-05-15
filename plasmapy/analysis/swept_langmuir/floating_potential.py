@@ -88,6 +88,11 @@ def find_floating_potential(
     cp_exact = np.logical_and(lower_vals, upper_vals).nonzero()[0]
     cp_low2high = np.logical_and(np.roll(lower_vals, 1), upper_vals).nonzero()[0]
     cp_high2low = np.logical_and(np.roll(lower_vals, -1), upper_vals).nonzero()[0]
+
+    # adjust for array wrapping cause by np.roll
+    cp_low2high = cp_low2high[np.where(cp_low2high != 0, True, False)]
+    cp_high2low = cp_high2low[np.where(cp_high2low != current.size-1, True, False)]
+
     cp_candidates = np.concatenate((
         cp_exact,
         cp_low2high,
