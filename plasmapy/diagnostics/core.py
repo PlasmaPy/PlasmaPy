@@ -60,9 +60,11 @@ class XDiagnostics:
     #     self._ds = xr_obj
 
     def __repr__(self) -> str:
-        summary = [super().__repr__()]
-        summary.append("")
-        summary.append("Enabled   Available Diagnostic")
+        summary = [
+            super().__repr__(),
+            "",
+            "Enabled   Available Diagnostic",
+        ]
 
         for diag in self.__available_diagnostics.keys():
             sum_str = "    ["
@@ -79,6 +81,10 @@ class XDiagnostics:
     def enable(self, *args):
         for arg in args:
             if arg in self.__available_diagnostics:
+                if hasattr(xr.Dataset, arg):
+                    # Do NOT register accessor to xarray.Dataset if already there
+                    continue
+
                 diag_name = arg
                 mod_name = self.__available_diagnostics[diag_name][0]
                 cls_name = self.__available_diagnostics[diag_name][1]
