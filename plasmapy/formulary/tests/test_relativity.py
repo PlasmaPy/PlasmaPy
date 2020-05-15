@@ -2,6 +2,7 @@
 
 import pytest
 import numpy as np
+
 from astropy import units as u
 from astropy.constants import c
 from plasmapy.formulary.relativity import Lorentz_factor, relativistic_energy
