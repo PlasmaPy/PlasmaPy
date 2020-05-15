@@ -112,8 +112,8 @@ def relativistic_energy(V: u.m / u.s, m: u.kg) -> u.Joule:
     Raises
     ------
     TypeError
-        The `V` is not a `~astropy.units.Quantity` and cannot be
-        converted into a ~astropy.units.Quantity.
+        If input arguments are not instances `~astropy.units.Quantity` or
+        convertible to a `~astropy.units.Quantity`.
 
     ~astropy.units.UnitConversionError
         If the `V` is not in appropriate units.
