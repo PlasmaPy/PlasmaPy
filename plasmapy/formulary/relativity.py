@@ -2,7 +2,7 @@ r"""This module currently provides ample room for the Lorentz factor,
 as it turned out we didn't really have much else of the relativistic
 variety to add just yet! This is expected to change in the future.
 """
-__all__ = ["Lorentz_factor"]
+__all__ = ["Lorentz_factor", "relativistic_energy"]
 
 import numpy as np
 
