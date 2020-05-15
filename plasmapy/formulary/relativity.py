@@ -106,8 +106,8 @@ def relativistic_energy(V: u.m / u.s, m: u.kg) -> u.Joule:
 
     Returns
     -------
-    E : float or ~numpy.ndarray
-        The relativitstic energy of the particle.
+    `~astropy.Quantity`
+        The relativistic energy (in Joules) of an object of mass `m` moving at velocity `v`.
 
     Raises
     ------
