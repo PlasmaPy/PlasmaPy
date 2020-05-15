@@ -98,11 +98,11 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
     Parameters
     ----------
-    V : ~astropy.units.Quantity
-        The velocity in units convertible to meters per second.
-
     m : ~astropy.units.Quantity
         The mass in units convertible to kilograms.
+
+    v : ~astropy.units.Quantity
+        The velocity in units convertible to meters per second.
 
     Returns
     -------
@@ -116,10 +116,10 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
         convertible to a `~astropy.units.Quantity`.
 
     ~astropy.units.UnitConversionError
-        If the `V` is not in appropriate units.
+        If the `v` is not in appropriate units.
 
     ValueError
-        If the magnitude of `V` is faster than the speed of light.
+        If the magnitude of `v` is faster than the speed of light.
 
     Warns
     -----
@@ -137,6 +137,6 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     <Quantity inf J>
     """
 
-    gamma = Lorentz_factor(V)
+    gamma = Lorentz_factor(v)
     E = gamma * m * c ** 2
     return E
