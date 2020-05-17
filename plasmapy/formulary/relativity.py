@@ -1,6 +1,5 @@
-r"""This module currently provides ample room for the Lorentz factor,
-as it turned out we didn't really have much else of the relativistic
-variety to add just yet! This is expected to change in the future.
+r"""Functions to calculate relativistic quantities.
+These quantities are relevant in the relativistic regime (v approaches c)
 """
 __all__ = ["Lorentz_factor", "relativistic_energy"]
 
