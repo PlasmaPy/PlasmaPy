@@ -107,7 +107,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     m : `~astropy.units.Quantity`
         The mass in units convertible to kilograms.
 
-    v : ~astropy.units.Quantity
+    v : `~astropy.units.Quantity`
         The velocity in units convertible to meters per second.
 
     Returns
