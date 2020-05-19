@@ -99,7 +99,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
         E = \\gamma m c^{2}
     
-    where :math:`gamma` is the `Lorentz_factor`.
+    where :math:`\\gamma` is the `Lorentz_factor`.
 
     Parameters
     ----------
