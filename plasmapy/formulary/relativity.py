@@ -131,7 +131,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     If the velocity `v` is greater than the speed of light.
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Examples
