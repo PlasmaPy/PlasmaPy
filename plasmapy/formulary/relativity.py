@@ -127,6 +127,8 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     ValueError
         If the magnitude of `v` is faster than the speed of light.
 
+`RelativityError`
+    If the velocity `v` is greater than the speed of light.
     Warns
     -----
     ~astropy.units.UnitsWarning
