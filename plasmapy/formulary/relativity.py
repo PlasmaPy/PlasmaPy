@@ -1,5 +1,4 @@
-r"""Functions to calculate relativistic quantities.
-These quantities are relevant in the relativistic regime (v approaches c)
+r"""Functionality for calculating relativistic quantities (:math:`v \to c`)."""
 """
 __all__ = ["Lorentz_factor", "relativistic_energy"]
 
