@@ -1,5 +1,4 @@
 r"""Functionality for calculating relativistic quantities (:math:`v \to c`)."""
-"""
 __all__ = ["Lorentz_factor", "relativistic_energy"]
 
 import numpy as np
