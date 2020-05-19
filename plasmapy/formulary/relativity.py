@@ -125,7 +125,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     ValueError
         If the magnitude of `m` is negative or arguments are complex.
 
-    `RelativityError`
+    :exc:`~plasmapy.utils.exceptions.RelativityError`
         If the velocity `v` is greater than the speed of light.
 
     Warns
