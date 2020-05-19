@@ -125,10 +125,11 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
         If the `v` is not in appropriate units.
 
     ValueError
-        If the magnitude of `v` is faster than the speed of light.
+        If the magnitude of 'm' is negative
 
-`RelativityError`
-    If the velocity `v` is greater than the speed of light.
+    `RelativityError`
+        If the velocity `v` is greater than the speed of light.
+
     Warns
     -----
     `~astropy.units.UnitsWarning`
@@ -146,7 +147,9 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     >>> relativistic_energy(1 * u.mg, 1.4e8 * u.m / u.s)
     <Quantity 1.01638929e+11 J>
     >>> relativistic_energy(-mass, velocity)
-    <ValueError: The argument 'm' to function relativistic_energy() can not contain negative numbers.>
+    Traceback (most recent call last):
+        ...
+    ValueError: The argument 'm' to function relativistic_energy() can not contain negative numbers.
     """
 
     gamma = Lorentz_factor(v)
