@@ -93,7 +93,14 @@ def Lorentz_factor(V: u.m / u.s):
                      validations_on_return={"can_be_negative": False})
 def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     """
-    Return the relativistic energy of a particle.
+    Calculate the relativistic energy (in Joules) of an object of mass 
+    `m` and velocity `v`.
+    
+    .. math::
+
+        E = \\gamma m c^{2}
+    
+    where :math:`gamma` is the `Lorentz_factor`.
 
     Parameters
     ----------
@@ -143,4 +150,3 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     gamma = Lorentz_factor(v)
     E = gamma * m * c ** 2
     return E
-
