@@ -21,14 +21,6 @@
 import os
 import sys
 
-# The version info for the project you're documenting, acts as replacement for
-# |version| and |release|, also used in various other places throughout the
-# built documents.
-#
-# The full version, including alpha/beta/rc tags.
-#  Note: If plasmapy.__version__ can not be defined then it is set to 'unknown'.
-#        However, release needs to be a semantic style version number, so set
-#        the 'unknown' case to ''.
 from plasmapy import __version__ as release
 
 sys.path.insert(0, os.path.abspath(".."))
@@ -80,6 +72,14 @@ copyright = "2015-2020, PlasmaPy Community"
 author = "PlasmaPy Community"
 
 
+# The version info for the project you're documenting, acts as replacement for
+# |version| and |release|, also used in various other places throughout the
+# built documents.
+#
+# The full version, including alpha/beta/rc tags.
+#  Note: If plasmapy.__version__ can not be defined then it is set to 'unknown'.
+#        However, release needs to be a semantic style version number, so set
+#        the 'unknown' case to ''.
 release = "" if release == "unknown" else release
 # The short X.Y version.
 version = ".".join(release.split(".")[:2])
