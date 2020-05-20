@@ -1,8 +1,5 @@
-r"""This module currently provides ample room for the Lorentz factor,
-as it turned out we didn't really have much else of the relativistic
-variety to add just yet! This is expected to change in the future.
-"""
-__all__ = ["Lorentz_factor"]
+r"""Functionality for calculating relativistic quantities (:math:`v \to c`)."""
+__all__ = ["Lorentz_factor", "relativistic_energy"]
 
 import numpy as np
 
@@ -88,3 +85,71 @@ def Lorentz_factor(V: u.m / u.s):
             gamma = ((1 - (V / c) ** 2) ** -0.5).value
 
     return gamma
+
+
+@validate_quantities(m={"can_be_negative": False}, 
+                     validations_on_return={"can_be_negative": False})
+def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
+    """
+    Calculate the relativistic energy (in Joules) of an object of mass 
+    `m` and velocity `v`.
+    
+    .. math::
+
+        E = \\gamma m c^{2}
+    
+    where :math:`\\gamma` is the `Lorentz_factor`.
+
+    Parameters
+    ----------
+    m : `~astropy.units.Quantity`
+        The mass in units convertible to kilograms.
+
+    v : `~astropy.units.Quantity`
+        The velocity in units convertible to meters per second.
+
+    Returns
+    -------
+    `~astropy.Quantity`
+        The relativistic energy (in Joules) of an object of mass `m` moving at velocity `v`.
+
+    Raises
+    ------
+    TypeError
+        If input arguments are not instances `~astropy.units.Quantity` or
+        convertible to a `~astropy.units.Quantity`.
+
+    ~astropy.units.UnitConversionError
+        If the `v` is not in appropriate units.
+
+    ValueError
+        If the magnitude of `m` is negative or arguments are complex.
+
+    :exc:`~plasmapy.utils.exceptions.RelativityError`
+        If the velocity `v` is greater than the speed of light.
+
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> velocity = 1.4e8 * u.m / u.s
+    >>> mass = 1 * u.kg
+    >>> relativistic_energy(mass, velocity)
+    <Quantity 1.01638929e+17 J>
+    >>> relativistic_energy(mass, 299792458*u.m / u.s)
+    <Quantity inf J>
+    >>> relativistic_energy(1 * u.mg, 1.4e8 * u.m / u.s)
+    <Quantity 1.01638929e+11 J>
+    >>> relativistic_energy(-mass, velocity)
+    Traceback (most recent call last):
+        ...
+    ValueError: The argument 'm' to function relativistic_energy() can not contain negative numbers.
+    """
+
+    gamma = Lorentz_factor(v)
+    E = gamma * m * c ** 2
+    return E
