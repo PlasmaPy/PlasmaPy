@@ -311,8 +311,11 @@ by an angular frequency to get a length scale:
 Examples
 ========
 
+.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/master/docs/notebooks
+.. _nbsphinx: https://nbsphinx.readthedocs.io/en/latest/
+
 Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
-of their mature ecosystems. They are located in `docs/notebooks`. `nbsphinx`
+of their mature ecosystems. They are located in `docs/notebooks`_. `nbsphinx`_
 takes care of executing them at documentation build time and including them
 in the documentation.
 

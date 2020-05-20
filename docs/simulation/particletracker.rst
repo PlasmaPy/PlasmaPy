@@ -15,8 +15,7 @@ future.
 
 
 .. nbgallery::
-    :name: Examples
-    :glob:
+    :caption: Examples
 
     /notebooks/particle_stepper
 

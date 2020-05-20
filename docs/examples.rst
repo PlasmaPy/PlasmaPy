@@ -13,7 +13,7 @@ General-purpose and introductory examples from PlasmaPy.
 
 .. nbgallery::
     :caption: Examples
-    :name: rst-gallery
+    :name: example-gallery
     :glob:
     :reversed:
 

@@ -1,8 +1,6 @@
 """Functions to calculate classical transport coefficients.
 
 .. nbgallery::
-    :name: Examples
-    :glob:
 
     /notebooks/braginskii
 

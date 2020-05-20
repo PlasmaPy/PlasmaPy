@@ -43,8 +43,7 @@ following example:
 
 
 .. nbgallery::
-    :name: Examples
-    :glob:
+    :caption: Examples
 
     /notebooks/physics
 

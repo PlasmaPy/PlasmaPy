@@ -10,7 +10,6 @@ Dielectric functions (`plasmapy.formulary.dielectric`)
    :no-heading:
 
 .. nbgallery::
-    :name: Examples
-    :glob:
+    :caption: Examples
 
     /notebooks/cold_plasma_tensor_elements

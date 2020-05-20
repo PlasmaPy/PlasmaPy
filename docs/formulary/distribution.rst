@@ -10,7 +10,6 @@ Distribution functions (`plasmapy.formulary.distribution`)
    :no-heading:
 
 .. nbgallery::
-    :name: Examples
-    :glob:
+    :caption: Examples
 
     /notebooks/distribution

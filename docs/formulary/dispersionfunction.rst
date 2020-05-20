@@ -10,7 +10,6 @@ Dispersion relations (`plasmapy.formulary.dispersionfunction`)
    :no-heading:
 
 .. nbgallery::
-    :name: Examples
-    :glob:
+    :caption: Examples
 
     /notebooks/dispersion_function

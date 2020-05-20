@@ -8,7 +8,6 @@ Plasma parameters (`plasmapy.formulary.parameters`)
    :no-heading:
 
 .. nbgallery::
-    :name: Examples
-    :glob:
+    :caption: Examples
 
     /notebooks/distribution
