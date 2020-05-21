@@ -128,7 +128,6 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
     >>> Reynolds_number(rho, v, L, mu)
     <Quantity 3370.786516853933>
 
-
     Returns
     -------
     Re: `~astropy.Quantity`
