@@ -54,6 +54,35 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     theta = thermal_energy / fermi_energy
     return theta
 
+@validate_quantities(
+    v={"can_be_negative": True})
+def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m, mu: u.kg / (u.m * u.s)) -> u.dimensionless_unscaled:
+    """
+    The Reynold's Number is a dimensionless quantity that is used to predict flow patterns in certain situations.
+    A low Reynold's Number describes smooth, laminar flow. While a large Reynold's Number describes rough, turbulent flow.
+
+    Parameters
+    ----------
+    rho : ~astropy.units.Quantity
+        The density of the plasma.
+    v : ~astropy.units.Quantity
+        The flow speed of the plasma.
+    L : ~astropy.units.Quantity
+        The characteristic length scale.
+    mu : ~astropy.units.Quantity
+        The viscosity of the plasma.
+
+    Examples
+    --------
+
+
+    Returns
+    -------
+    Re: ~astropy.units.Quantity
+        Dimensionless quantity.
+    """
+    return abs(rho * v * L / mu)
+
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -91,7 +120,8 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     return thermal_pressure / magnetic_pressure
 
 
-def Reynolds_number():
+def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m, mu: u.kg / (u.m * u.s)):
     """
     The Reynold's Number
     """
+    return abs(rho * v * L / mu)
