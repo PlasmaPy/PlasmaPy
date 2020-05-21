@@ -119,9 +119,30 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     magnetic_pressure = parameters.magnetic_pressure(B)
     return thermal_pressure / magnetic_pressure
 
-
-def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m, mu: u.kg / (u.m * u.s)):
+@validate_quantities(v = {"can_be_negative": True})
+def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m, mu: u.kg / (u.m * u.s)) -> u.dimensionless_unscaled:
     """
     The Reynold's Number
+
+    Parameters
+    ----------
+    rho : `~astropy.units.Quantity`
+        The density of the plasma.
+    v : `~astropy.units.Quantity`
+        The flow velocity of the plasma.
+    L : `~astropy.units.Quantity`
+        The characteristic length scale.
+    mu : `~astropy.units.Quantity`
+        The viscosity of the plasma.
+
+    Examples
+    --------
+
+
+    Returns
+    -------
+    Re: `~astropy.Quantity`
+        Dimensionless quantity.
+
     """
     return abs(rho * v * L / mu)
