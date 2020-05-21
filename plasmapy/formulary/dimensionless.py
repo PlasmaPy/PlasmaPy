@@ -74,7 +74,13 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m, mu: u.kg / (u.m 
 
     Examples
     --------
-
+    >>> import astropy.units as u
+    >>> rho = 1000 * u.kg / u.m ** 3
+    >>> v = 10 * u.m / u.s
+    >>> L = 1 * u.m
+    >>> mu = 8.9e-4 * u.kg / (u.m * u.s)
+    >>> Reynolds_number(rho, v, L, mu)
+    <Quantity 11235955.056179777>
 
     Returns
     -------
