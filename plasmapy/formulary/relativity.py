@@ -19,6 +19,7 @@ def Lorentz_factor(V: u.m / u.s):
 
     Parameters
     ----------
+
     V : ~astropy.units.Quantity
         The velocity in units convertible to meters per second.
 
