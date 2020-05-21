@@ -119,10 +119,12 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     magnetic_pressure = parameters.magnetic_pressure(B)
     return thermal_pressure / magnetic_pressure
 
+
 @validate_quantities(v = {"can_be_negative": True})
 def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m, mu: u.kg / (u.m * u.s)) -> u.dimensionless_unscaled:
     """
-    The Reynold's Number
+    The Reynold's Number is a dimensionless quantity that is used to predict flow patterns in fluids.
+    The Reynold's Number is defined as the ratio of inertial forces to viscous forces. A low Reynold's Number describes smooth laminar flow, while a high Reynold's Number describes rough turbulent flow
 
     Parameters
     ----------
@@ -145,4 +147,5 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m, mu: u.kg / (u.m 
         Dimensionless quantity.
 
     """
-    return abs(rho * v * L / mu)
+    Re = abs(rho * v * L / mu)
+    return Re
