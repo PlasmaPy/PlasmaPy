@@ -121,12 +121,12 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
     >>> mu = 8.9e-4 * u.kg / (u.m * u.s)
     >>> Reynolds_number(rho, v, L, mu)
     <Quantity 11235955.05617978>
-    >>> rho = 1000 * u.kg / u.m ** 3
+    >>> rho = 1490 * u.kg / u.m ** 3
     >>> v = 0.1 * u.m / u.s
-    >>> L = 0.003 * u.m
-    >>> mu = 8.9e-4 * u.kg / (u.m * u.s)
+    >>> L = 0.05 * u.m
+    >>> mu = 10 * u.kg / (u.m * u.s)
     >>> Reynolds_number(rho, v, L, mu)
-    <Quantity 337.07865169>
+    <Quantity 0.745>
 
     Returns
     -------
