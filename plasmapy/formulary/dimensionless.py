@@ -91,8 +91,7 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     return thermal_pressure / magnetic_pressure
 
 
-def Reynolds_number(x):
+def Reynolds_number():
     """
     The Reynold's Number
     """
-    return x
