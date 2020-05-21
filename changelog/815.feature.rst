@@ -1,1 +1,1 @@
-Creates the function `Reynolds_number()` and adds it to the dimensionless category of the plasmapy formulary
+Create :func:`~plasmapy.formulary.dimensionless.Reynolds_number` function
