@@ -1,1 +1,1 @@
-Create :func:`~plasmapy.formulary.dimensionless.Reynolds_number` function.
+Create :func:`~plasmapy.formulary.dimensionless.Reynolds_number` function and add it to the Formulary
