@@ -8,7 +8,7 @@ For example, plasmas at high (much larger than 1) Reynolds numbers are
 highly turbulent, while turbulence is negligible at low Reynolds
 numbers.
 """
-__all__ = ["beta", "quantum_theta"]
+__all__ = ["beta", "quantum_theta", "Reynolds_number"]
 
 from astropy import constants
 from astropy import units as u
