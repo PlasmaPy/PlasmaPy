@@ -44,12 +44,6 @@ def test_Reynolds_number():
         Reynolds_number(rho, v, L, mu) * u.dimensionless_unscaled
            ).unit == u.dimensionless_unscaled
 
-    with pytest.raises(RelativityError):
-        Reynolds_number(rho, 1.0000000001 * c, L, mu)
-
-    with pytest.raises(RelativityError), pytest.warns(u.UnitsWarning):
-        Reynolds_number(1, 299792459, 0.05, 10)
-
     with pytest.warns(u.UnitsWarning):
         Reynolds_number(rho, 2.2, L, mu)
 

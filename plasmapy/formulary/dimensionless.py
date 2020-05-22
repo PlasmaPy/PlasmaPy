@@ -112,6 +112,23 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
     mu : `~astropy.units.Quantity`
         The viscosity of the plasma.
 
+     Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
+
+    Raises
+    ------
+    TypeError
+        The `v` is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
+
+    ~astropy.units.UnitConversionError
+        If the `v` is not in appropriate units.
+
+    :exc:`~plasmapy.utils.exceptions.RelativityError`
+        If the velocity `v` is greater than the speed of light.
+
     Examples
     --------
     >>> import astropy.units as u
