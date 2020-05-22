@@ -1,4 +1,5 @@
 import pytest
+from astropy.constants import c
 
 from plasmapy.formulary.dimensionless import beta, quantum_theta, Reynolds_number
 
