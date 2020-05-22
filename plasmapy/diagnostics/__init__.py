@@ -9,29 +9,29 @@ __all__ = [
 ]
 
 from . import core
-from .core import AbstractProbe, XAbstractDiagnostic, XDiagnostics
+from .core import AbstractProbe, XAbstractDiagnostic, XDiagnosticEnabler
 
-xdiagnostics = XDiagnostics()
+xdiagnostics = XDiagnosticEnabler()
 """
-An instance of `~plasmapy.diagnostics.core.XDiagnostic` that allows users to only
-load the xarray diagnostic accessors they want to use.
+An instance of `~plasmapy.diagnostics.core.XDiagnosticEnabler` that allows users 
+to only enable the xarray diagnostic accessors they want to use.
 
 Examples
 --------
 >>> import xarray as xr
 >>> from plasmapy.diagnostics import xdiagnostics
-...
+
 >>> xdiagnostics
-<plasmapy.diagnostics.core.XDiagnostics>
+<plasmapy.diagnostics.core.XDiagnosticEnabler>
 Enabled   Available Diagnostic
     [ ]   swept_langmuir
-...
+
 >>> xdiagnostics.enable('swept_langmuir')
 >>> xdiagnostics
-<plasmapy.diagnostics.core.XDiagnostics>
+<plasmapy.diagnostics.core.XDiagnosticEnabler>
 Enabled   Available Diagnostic
     [x]   swept_langmuir
-...
+
 >>> hasattr(xr.Dataset, 'swept_langmuir')
 True
 """

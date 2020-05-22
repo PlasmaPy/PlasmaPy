@@ -1,7 +1,7 @@
 __all__ = [
     "AbstractProbe",
     "XAbstractDiagnostic",
-    "XDiagnostics",
+    "XDiagnosticEnabler",
 ]
 
 import abc
@@ -50,7 +50,7 @@ class XAbstractDiagnostic(abc.ABC):
 
 # @xr.register_dataset_accessor('plasmapy')
 # class PlasmaPyAccessor:
-class XDiagnostics:
+class XDiagnosticEnabler:
     __available_diagnostics = {
         'swept_langmuir': (".swept_langmuir.xdiagnostic",
                            "XSweptLangmuirDiagnostic"),
