@@ -39,7 +39,9 @@ def test_Reynolds_number():
     L = 0.05 * u.m
     mu = 10 * u.kg / (u.m * u.s)
 
-    assert Reynolds_number(rho, v, L, mu).units == u.dimensionless_unscaled
+    assert (
+        Reynolds_number(rho, v, L, mu) * u.dimensionless_unscaled
+           ).unit == u.dimensionless_unscaled
 
     with pytest.raises(RelativityError):
         Reynolds_number(rho, 1.0000000001 * c, L, mu)
