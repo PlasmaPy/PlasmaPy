@@ -308,6 +308,8 @@ by an angular frequency to get a length scale:
 
 >>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())    # doctest: +SKIP
 
+.. _example_notebooks:
+
 Examples
 ========
 

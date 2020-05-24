@@ -21,7 +21,14 @@ To build docs locally, either:
 
 Afterwards, open ``docs/_build/index.html`` with your browser of choice.
 
-Do try to solve warnings in documentation when writing your code.
+Do try to solve warnings in documentation when writing your code. To enforce this,
+The ``build_docs`` environment is set to fail on encountering any warnings via
+the ``-W`` flag to ``sphinx-build``
+
+.. note::
+   The ``tox -e build_docs_no_examples`` command will build the documentation without
+   executing the :ref:`example notebooks <example_notebooks>`. It will also
+   pass with warnings.
 
 Docstrings
 ==========
@@ -36,14 +43,14 @@ Docstrings
   <https://docs.python.org/3/reference/lexical_analysis.html#literals>`_
   if they contain backslashes.  A raw string literal is denoted by
   having an `r` immediately precede quotes or triple quotes:
-  
+
 .. code-block:: python
 
    r""" I did not like unstable eigenfunctions at first, but then they
    grew on me.
-   
+
    """
-    
+
 * Simple functions may need only a one-line docstring.
 
 Narrative Documentation

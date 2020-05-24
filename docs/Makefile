@@ -23,7 +23,7 @@ clean:
 	rm -rf $(BUILDDIR)/*
 	rm -rf api cache gen_modules __pycache
 
-html-nonb:
-	$(SPHINXBUILD) -D nbsphinx_execute='never' -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
-	@echo
+html-nonb: Makefile
+	@echo $(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) -D nbsphinx_execute='never' $(O)
+	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) -D nbsphinx_execute='never' $(O)
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html. Jupyter notebooks were skipped."
