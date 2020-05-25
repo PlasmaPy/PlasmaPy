@@ -157,3 +157,17 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
     """
     Re = abs(rho * v * L / mu)
     return Re
+
+
+def Mag_Reynolds(U: u.m / u.s, L: u.m, rho: u.ohm)
+    """
+    
+    Parameters
+    ----------
+    U : `~astropy.units.Quantity`
+        The velocity scale of the plasma.
+    L : `~astropy.units.Quantity`
+        The length scale of the plasma.
+    rho : `~astropy.units.Quantity`
+        The resistivity of the plasma.
+    """
