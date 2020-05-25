@@ -1,7 +1,12 @@
-from plasmapy.formulary.dimensionless import beta, quantum_theta
+import pytest
+from astropy.constants import c
+
+from plasmapy.formulary.dimensionless import beta, quantum_theta, Reynolds_number
 
 import astropy.units as u
 import numpy as np
+
+from plasmapy.utils import RelativityError
 
 B = 1.0 * u.T
 n = 5e19 * u.m ** -3
@@ -26,3 +31,21 @@ def test_beta_nan():
     out = beta(T, n, B)
     assert np.isnan(out[1])
     assert out[1].unit == u.dimensionless_unscaled
+
+
+def test_Reynolds_number():
+    r"""Test Reynolds_number in dimensionless.py"""
+    rho = 1490 * u.kg / u.m ** 3
+    v = 0.1 * u.m / u.s
+    L = 0.05 * u.m
+    mu = 10 * u.kg / (u.m * u.s)
+
+    assert (
+        Reynolds_number(rho, v, L, mu) * u.dimensionless_unscaled
+           ).unit == u.dimensionless_unscaled
+
+    with pytest.warns(u.UnitsWarning):
+        Reynolds_number(rho, 2.2, L, mu)
+
+    with pytest.raises(u.UnitTypeError):
+        Reynolds_number(rho, 4 * u.kg, L, mu)
