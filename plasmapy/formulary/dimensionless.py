@@ -99,7 +99,11 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
     that is used to predict flow patterns in fluids.
     The Reynold's Number is defined as the ratio of inertial forces to viscous forces.
     A low Reynold's Number describes smooth, laminar flow
-    while a high Reynold's Number describes rough, turbulent flow
+    while a high Reynold's Number describes rough, turbulent flow.
+
+    .. math::
+
+        Re = \\rho v L / \\mu
 
     Parameters
     ----------
