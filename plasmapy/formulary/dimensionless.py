@@ -10,10 +10,13 @@ numbers.
 """
 __all__ = ["beta", "quantum_theta", "Reynolds_number"]
 
+from math import pi
+
 from astropy import constants
 from astropy import units as u
 from plasmapy.formulary import quantum, parameters
 from plasmapy.utils.decorators import validate_quantities
+from astropy.constants import c
 
 
 @validate_quantities(
@@ -92,7 +95,7 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 
 
 @validate_quantities(v={"can_be_negative": True})
-def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
+def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, l: u.m,
                     mu: u.kg / (u.m * u.s)) -> u.dimensionless_unscaled:
     """
     The Reynold's Number is a dimensionless quantity
@@ -111,7 +114,7 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
         The density of the plasma.
     v : `~astropy.units.Quantity`
         The flow velocity of the plasma.
-    L : `~astropy.units.Quantity`
+    l : `~astropy.units.Quantity`
         The characteristic length scale.
     mu : `~astropy.units.Quantity`
         The viscosity of the plasma.
@@ -138,13 +141,13 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
     >>> import astropy.units as u
     >>> rho = 1000 * u.kg / u.m ** 3
     >>> v = 10 * u.m / u.s
-    >>> L = 1 * u.m
+    >>> l = 1 * u.m
     >>> mu = 8.9e-4 * u.kg / (u.m * u.s)
     >>> Reynolds_number(rho, v, L, mu)
     <Quantity 11235955.05617978>
     >>> rho = 1490 * u.kg / u.m ** 3
     >>> v = 0.1 * u.m / u.s
-    >>> L = 0.05 * u.m
+    >>> l = 0.05 * u.m
     >>> mu = 10 * u.kg / (u.m * u.s)
     >>> Reynolds_number(rho, v, L, mu)
     <Quantity 0.745>
@@ -155,19 +158,47 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
         Dimensionless quantity.
 
     """
-    Re = abs(rho * v * L / mu)
+    Re = abs(rho * v * l / mu)
     return Re
 
 
-def Mag_Reynolds(U: u.m / u.s, L: u.m, rho: u.ohm)
+@validate_quantities(v={"can_be_negative": True})
+def Mag_Reynolds(v: u.m / u.s, l: u.m, rho: u.ohm) -> u.dimensionless_unscaled:
     """
     
     Parameters
     ----------
-    U : `~astropy.units.Quantity`
+    u : `~astropy.units.Quantity`
         The velocity scale of the plasma.
-    L : `~astropy.units.Quantity`
+    v : `~astropy.units.Quantity`
         The length scale of the plasma.
     rho : `~astropy.units.Quantity`
         The resistivity of the plasma.
+
+     Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
+
+    Raises
+    ------
+    TypeError
+        The `v` is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
+
+    ~astropy.units.UnitConversionError
+        If the `v` is not in appropriate units.
+
+    :exc:`~plasmapy.utils.exceptions.RelativityError`
+        If the velocity `v` is greater than the speed of light.
+
+    Examples
+    --------
+    Returns
+    -------
+    Rm: `~astropy.Quantity`
+        Dimensionless quantity.
+
     """
+    Rm = abs(4 * pi * v * l / (rho * c ** 2))
+    return Rm
