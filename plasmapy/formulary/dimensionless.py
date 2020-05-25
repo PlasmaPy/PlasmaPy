@@ -92,7 +92,7 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 
 
 @validate_quantities(v={"can_be_negative": True})
-def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
+def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, l: u.m,
                     mu: u.kg / (u.m * u.s)) -> u.dimensionless_unscaled:
     """
     The Reynold's Number is a dimensionless quantity
@@ -103,7 +103,7 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
 
     .. math::
 
-        Re = \\rho v L / \\mu
+        Re = \\rho v l / \\mu
 
     Parameters
     ----------
@@ -111,7 +111,7 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
         The density of the plasma.
     v : `~astropy.units.Quantity`
         The flow velocity of the plasma.
-    L : `~astropy.units.Quantity`
+    l : `~astropy.units.Quantity`
         The characteristic length scale.
     mu : `~astropy.units.Quantity`
         The viscosity of the plasma.
@@ -138,15 +138,15 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
     >>> import astropy.units as u
     >>> rho = 1000 * u.kg / u.m ** 3
     >>> v = 10 * u.m / u.s
-    >>> L = 1 * u.m
+    >>> l = 1 * u.m
     >>> mu = 8.9e-4 * u.kg / (u.m * u.s)
-    >>> Reynolds_number(rho, v, L, mu)
+    >>> Reynolds_number(rho, v, l, mu)
     <Quantity 11235955.05617978>
     >>> rho = 1490 * u.kg / u.m ** 3
     >>> v = 0.1 * u.m / u.s
-    >>> L = 0.05 * u.m
+    >>> l = 0.05 * u.m
     >>> mu = 10 * u.kg / (u.m * u.s)
-    >>> Reynolds_number(rho, v, L, mu)
+    >>> Reynolds_number(rho, v, l, mu)
     <Quantity 0.745>
 
     Returns
@@ -155,5 +155,5 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
         Dimensionless quantity.
 
     """
-    Re = abs(rho * v * L / mu)
+    Re = abs(rho * v * l / mu)
     return Re
