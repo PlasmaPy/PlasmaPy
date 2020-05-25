@@ -1,8 +1,8 @@
 """Functions to calculate classical transport coefficients.
 
-.. topic:: Examples:
+.. nbgallery::
 
-   * :ref:`sphx_glr_auto_examples_plot_braginskii.py`
+    /notebooks/braginskii
 
 Introduction
 ============
