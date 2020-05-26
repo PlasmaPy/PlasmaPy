@@ -201,6 +201,19 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, rho: u.ohm) -> u.dimensionless_unscaled:
 
     Examples
     --------
+    >>> import astropy.units as u
+    >>> rho = 1 * u.ohm
+    >>> U = 10 * u.m / u.s
+    >>> L = 1 * u.cm
+    >>> Mag_Reynolds(U, L, rho)
+    <Quantity 11235955.05617978>
+    >>> rho = 1490 * u.kg / u.m ** 3
+    >>> v = 0.1 * u.m / u.s
+    >>> l = 0.05 * u.m
+    >>> mu = 10 * u.kg / (u.m * u.s)
+    >>> Reynolds_number(rho, v, L, mu)
+    <Quantity 0.745>
+
     Returns
     -------
     Rm: `~astropy.Quantity`
