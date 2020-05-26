@@ -1,0 +1,3 @@
+Enforce using ``astropy.units``` as parameters to create distributions
+in `~plasmapy.formulary.distribution`. Removed ```units``` argument
+from all distribution methods. Adding unit validation and casting.
