@@ -37,15 +37,15 @@ def test_Reynolds_number():
     r"""Test Reynolds_number in dimensionless.py"""
     rho = 1490 * u.kg / u.m ** 3
     v = 0.1 * u.m / u.s
-    l = 0.05 * u.m
+    L = 0.05 * u.m
     mu = 10 * u.kg / (u.m * u.s)
 
     assert (
-        Reynolds_number(rho, v, l, mu) * u.dimensionless_unscaled
+        Reynolds_number(rho, v, L, mu) * u.dimensionless_unscaled
            ).unit == u.dimensionless_unscaled
 
     with pytest.warns(u.UnitsWarning):
-        Reynolds_number(rho, 2.2, l, mu)
+        Reynolds_number(rho, 2.2, L, mu)
 
     with pytest.raises(u.UnitTypeError):
-        Reynolds_number(rho, 4 * u.kg, l, mu)
+        Reynolds_number(rho, 4 * u.kg, L, mu)
