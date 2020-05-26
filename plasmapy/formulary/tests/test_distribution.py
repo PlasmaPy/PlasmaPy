@@ -133,7 +133,6 @@ class Test_Maxwellian_1D(object):
             distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
         ), errStr
 
-
     def test_zero_drift_units(self):
         """
         Testing inputting drift equal to 0 with units. These should just
@@ -184,14 +183,47 @@ class Test_Maxwellian_1D(object):
         """
         Testing temperature passed with wrong unit
         """
-
         with pytest.raises(UnitTypeError):
             Maxwellian_1D(
                 v=self.v,
-                T=0 * u.eV,
+                T=0 * u.C,
                 particle=self.particle,
                 v_drift=self.v_drift3,
             )
+
+    def test_convert_v_unit(self):
+        testVal = ((self.vTh ** 2 * np.pi) ** (-1 / 2)).si.value
+        distFunc = Maxwellian_1D(
+            v=self.v * 100 / u.m * u.cm,
+            T=self.T_e,
+            particle=self.particle,
+            v_drift=self.v_drift3,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+
+    def test_convert_drift_units(self):
+        testVal = ((self.vTh ** 2 * np.pi) ** (-1 / 2)).si.value
+        distFunc = Maxwellian_1D(
+            v=self.v,
+            T=self.T_e,
+            particle=self.particle,
+            v_drift=self.v_drift3 * 100 / u.m * u.cm,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+    def test_convert_temperature_units(self):
+        testVal = ((self.vTh ** 2 * np.pi) ** (-1 / 2)).si.value
+        distFunc = Maxwellian_1D(
+            v=self.v,
+            T=self.T_e.to(u.eV, equivalencies=u.temperature_energy()),
+            particle=self.particle,
+            v_drift=self.v_drift3,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 # test class for Maxwellian_speed_1D function
 class Test_Maxwellian_speed_1D(object):
@@ -289,6 +321,42 @@ class Test_Maxwellian_speed_1D(object):
             distFunc.value, self.distFuncDrift.value, rtol=1e-5, atol=0.0
         ), errStr
 
+    def test_convert_v_unit(self):
+        distFunc = Maxwellian_speed_1D(
+            v=self.v * 100 / u.m * u.cm,
+            T=self.T,
+            particle=self.particle,
+            v_drift=self.v_drift2,
+        )
+        errStr = f"Distribution function should be 0.0 " f"and not {distFunc}."
+        assert np.isclose(
+            distFunc.value, self.distFuncDrift.value, rtol=1e-5, atol=0.0
+        ), errStr
+
+    def test_convert_drift_units(self):
+        distFunc = Maxwellian_speed_1D(
+            v=self.v,
+            T=self.T,
+            particle=self.particle,
+            v_drift=self.v_drift2 * 100 / u.m * u.cm,
+        )
+        errStr = f"Distribution function should be 0.0 " f"and not {distFunc}."
+        assert np.isclose(
+            distFunc.value, self.distFuncDrift.value, rtol=1e-5, atol=0.0
+        ), errStr
+
+    def test_convert_temperature_units(self):
+        distFunc = Maxwellian_speed_1D(
+            v=self.v,
+            T=self.T.to(u.eV, equivalencies=u.temperature_energy()),
+            particle=self.particle,
+            v_drift=self.v_drift2,
+        )
+        errStr = f"Distribution function should be 0.0 " f"and not {distFunc}."
+        assert np.isclose(
+            distFunc.value, self.distFuncDrift.value, rtol=1e-5, atol=0.0
+        ), errStr
+
 
 # test class for Maxwellian_velocity_2D function
 class Test_Maxwellian_velocity_2D(object):
@@ -377,7 +445,6 @@ class Test_Maxwellian_velocity_2D(object):
             distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
         ), errStr
 
-
     def test_zero_drift(self):
         """
         Testing inputting drift equal to 0. These should just
@@ -415,7 +482,7 @@ class Test_Maxwellian_velocity_2D(object):
         errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
-    def test_convert_drift_units(self):
+    def test_convert_v_unit(self):
         testVal = ((self.vTh ** 2 * np.pi) ** (-1)).si.value
         distFunc = Maxwellian_velocity_2D(
             vx=self.vx * 100 / u.m * u.cm,
@@ -428,6 +495,31 @@ class Test_Maxwellian_velocity_2D(object):
         errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
+    def test_convert_drift_units(self):
+        testVal = ((self.vTh ** 2 * np.pi) ** (-1)).si.value
+        distFunc = Maxwellian_velocity_2D(
+            vx=self.vx,
+            vy=self.vy,
+            T=self.T,
+            particle=self.particle,
+            vx_drift=self.vx_drift2 * 100  / u.m * u.cm,
+            vy_drift=self.vy_drift2,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+    def test_convert_temperature_units(self):
+        testVal = ((self.vTh ** 2 * np.pi) ** (-1)).si.value
+        distFunc = Maxwellian_velocity_2D(
+            vx=self.vx,
+            vy=self.vy,
+            T=self.T.to(u.eV, equivalencies=u.temperature_energy()),
+            particle=self.particle,
+            vx_drift=self.vx_drift2,
+            vy_drift=self.vy_drift2,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
     def test_wrong_drift_unit(self):
         """
@@ -444,7 +536,7 @@ class Test_Maxwellian_velocity_2D(object):
             )
 
 
-# # # test class for Maxwellian_speed_2D function
+# test class for Maxwellian_speed_2D function
 class Test_Maxwellian_speed_2D(object):
     @classmethod
     def setup_class(self):
@@ -550,6 +642,51 @@ class Test_Maxwellian_speed_2D(object):
                 particle=self.particle,
                 v_drift=self.v_drift2,
             )
+
+    def test_convert_v_unit(self):
+        distFunc = Maxwellian_speed_2D(
+            v=self.v * 100 / u.m * u.cm,
+            T=self.T,
+            particle=self.particle,
+            v_drift=self.v_drift,
+        )
+        errStr = (
+            f"Distribution function should be {self.distFuncTrue} "
+            f"and not {distFunc}."
+        )
+        assert np.isclose(
+            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
+        ), errStr
+
+    def test_convert_drift_units(self):
+        distFunc = Maxwellian_speed_2D(
+            v=self.v,
+            T=self.T,
+            particle=self.particle,
+            v_drift=self.v_drift * 100 / u.m * u.cm,
+        )
+        errStr = (
+            f"Distribution function should be {self.distFuncTrue} "
+            f"and not {distFunc}."
+        )
+        assert np.isclose(
+            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
+        ), errStr
+
+    def test_convert_temperature_units(self):
+        distFunc = Maxwellian_speed_2D(
+            v=self.v,
+            T=self.T.to(u.eV, equivalencies=u.temperature_energy()),
+            particle=self.particle,
+            v_drift=self.v_drift * 100 / u.m * u.cm,
+        )
+        errStr = (
+            f"Distribution function should be {self.distFuncTrue} "
+            f"and not {distFunc}."
+        )
+        assert np.isclose(
+            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
+        ), errStr
 
 
 # # test class for Maxwellian_velocity_3D function
@@ -708,6 +845,51 @@ class Test_Maxwellian_velocity_3D(object):
                 vz_drift=self.vy_drift2,
             )
 
+    def test_convert_v_unit(self):
+        testVal = ((self.vTh ** 2 * np.pi) ** (-3 / 2)).si.value
+        distFunc = Maxwellian_velocity_3D(
+            vx=self.vx * 100 / u.m * u.cm,
+            vy=self.vy,
+            vz=self.vz * 100 / u.m * u.cm,
+            T=self.T,
+            particle=self.particle,
+            vx_drift=self.vx_drift2,
+            vy_drift=self.vy_drift2,
+            vz_drift=self.vz_drift2,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+    def test_convert_drift_units(self):
+        testVal = ((self.vTh ** 2 * np.pi) ** (-3 / 2)).si.value
+        distFunc = Maxwellian_velocity_3D(
+            vx=self.vx,
+            vy=self.vy,
+            vz=self.vz,
+            T=self.T,
+            particle=self.particle,
+            vx_drift=self.vx_drift2 * 100 / u.m * u.cm,
+            vy_drift=self.vy_drift2 * 100 / u.m * u.cm,
+            vz_drift=self.vz_drift2,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+    def test_convert_temperature_units(self):
+        testVal = ((self.vTh ** 2 * np.pi) ** (-3 / 2)).si.value
+        distFunc = Maxwellian_velocity_3D(
+            vx=self.vx,
+            vy=self.vy,
+            vz=self.vz,
+            T=self.T.to(u.eV, equivalencies=u.temperature_energy()),
+            particle=self.particle,
+            vx_drift=self.vx_drift2,
+            vy_drift=self.vy_drift2,
+            vz_drift=self.vz_drift2,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
 
 # test class for Maxwellian_speed_3D function
 class Test_Maxwellian_speed_3D(object):
@@ -801,9 +983,52 @@ class Test_Maxwellian_speed_3D(object):
                 v_drift=self.v_drift2,
             )
 
+    def test_convert_v_unit(self):
+        distFunc = Maxwellian_speed_3D(
+            v=self.v * 100 / u.m * u.cm,
+            T=self.T,
+            particle=self.particle,
+            v_drift=self.v_drift,
+        )
+        errStr = (
+            f"Distribution function should be {self.distFuncTrue} "
+            f"and not {distFunc}."
+        )
+        assert np.isclose(
+            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
+        ), errStr
+
+    def test_convert_drift_units(self):
+        distFunc = Maxwellian_speed_3D(
+            v=self.v,
+            T=self.T,
+            particle=self.particle,
+            v_drift=self.v_drift * 100 / u.m * u.cm,
+        )
+        errStr = (
+            f"Distribution function should be {self.distFuncTrue} "
+            f"and not {distFunc}."
+        )
+        assert np.isclose(
+            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
+        ), errStr
+
+    def test_convert_temperature_units(self):
+        distFunc = Maxwellian_speed_3D(
+            v=self.v,
+            T=self.T.to(u.eV, equivalencies=u.temperature_energy()),
+            particle=self.particle,
+            v_drift=self.v_drift * 100 / u.m * u.cm,
+        )
+        errStr = (
+            f"Distribution function should be {self.distFuncTrue} "
+            f"and not {distFunc}."
+        )
+        assert np.isclose(
+            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
+        ), errStr
 
 # kappa
-
 # test class for kappa_velocity_1D function:
 class Test_kappa_velocity_1D(object):
     @classmethod
@@ -977,6 +1202,42 @@ class Test_kappa_velocity_1D(object):
         distFunc = kappa_velocity_1D(
             v=self.v,
             T=self.T_e,
+            kappa=self.kappa,
+            particle=self.particle,
+            v_drift=self.v_drift3,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+    def test_convert_v_unit(self):
+        testVal = 6.755498543630533e-07
+        distFunc = kappa_velocity_1D(
+            v=self.v * 100 / u.m * u.cm,
+            T=self.T_e,
+            kappa=self.kappa,
+            particle=self.particle,
+            v_drift=self.v_drift3,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+    def test_convert_drift_units(self):
+        testVal = 6.755498543630533e-07
+        distFunc = kappa_velocity_1D(
+            v=self.v,
+            T=self.T_e,
+            kappa=self.kappa,
+            particle=self.particle,
+            v_drift=self.v_drift3 * 100 / u.m * u.cm,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+    def test_convert_temperature_units(self):
+        testVal = 6.755498543630533e-07
+        distFunc = kappa_velocity_1D(
+            v=self.v,
+            T=self.T_e.to(u.eV, equivalencies=u.temperature_energy()),
             kappa=self.kappa,
             particle=self.particle,
             v_drift=self.v_drift3,
@@ -1175,6 +1436,54 @@ class Test_kappa_velocity_3D(object):
             particle=self.particle,
             vx_drift=self.vx_drift2,
             vy_drift=self.vy_drift2,
+            vz_drift=self.vz_drift2,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+    def test_convert_v_unit(self):
+        testVal = 1.2376545373917465e-13
+        distFunc = kappa_velocity_3D(
+            vx=self.vx * 100 / u.m * u.cm,
+            vy=self.vy,
+            vz=self.vz,
+            T=self.T,
+            kappa=self.kappa,
+            particle=self.particle,
+            vx_drift=self.vx_drift2,
+            vy_drift=self.vy_drift2,
+            vz_drift=self.vz_drift2,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+    def test_convert_drift_units(self):
+        testVal = 1.2376545373917465e-13
+        distFunc = kappa_velocity_3D(
+            vx=self.vx,
+            vy=self.vy,
+            vz=self.vz,
+            T=self.T,
+            kappa=self.kappa,
+            particle=self.particle,
+            vx_drift=self.vx_drift2,
+            vy_drift=self.vy_drift2 * 100 / u.m * u.cm,
+            vz_drift=self.vz_drift2,
+        )
+        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
+
+    def test_convert_temperature_units(self):
+        testVal = 1.2376545373917465e-13
+        distFunc = kappa_velocity_3D(
+            vx=self.vx,
+            vy=self.vy,
+            vz=self.vz,
+            T=self.T.to(u.eV, equivalencies=u.temperature_energy()),
+            kappa=self.kappa,
+            particle=self.particle,
+            vx_drift=self.vx_drift2,
+            vy_drift=self.vy_drift2 * 100 / u.m * u.cm,
             vz_drift=self.vz_drift2,
         )
         errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
