@@ -163,7 +163,7 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, l: u.m,
 
 
 @validate_quantities(v={"can_be_negative": True})
-def Mag_Reynolds(U: u.m / u.s, L: u.m, rho: u.ohm) -> u.dimensionless_unscaled:
+def Mag_Reynolds(U: u.m / u.s, L: u.m, rho: u.ohm * u.m) -> u.dimensionless_unscaled:
     """
     The Magnetic Reynolds number is a dimensionless quantity that
     estimates the relative contributions of advection and induction
@@ -202,7 +202,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, rho: u.ohm) -> u.dimensionless_unscaled:
     Examples
     --------
     >>> import astropy.units as u
-    >>> rho = 1 * u.ohm
+    >>> rho = 1 * u.ohm * u.m
     >>> U = 10 * u.m / u.s
     >>> L = 1 * u.cm
     >>> Mag_Reynolds(U, L, rho)
