@@ -8,7 +8,8 @@ For example, plasmas at high (much larger than 1) Reynolds numbers are
 highly turbulent, while turbulence is negligible at low Reynolds
 numbers.
 """
-__all__ = ["beta", "quantum_theta"]
+__all__ = ["beta", "quantum_theta", "prandtl_number", "magnetic_prandtl_number",
+           "reynolds_number"]
 
 from astropy import constants
 from astropy import units as u
@@ -89,3 +90,161 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     thermal_pressure = parameters.thermal_pressure(T, n)
     magnetic_pressure = parameters.magnetic_pressure(B)
     return thermal_pressure / magnetic_pressure
+
+
+@validate_quantities(
+    v={"can_be_negative": False},
+    alpha={"can_be_negative": False},
+)
+def prandtl_number(v: u.m ** 2 / u.s,
+                   alpha: u.m ** 2 / u.s) -> u.dimensionless_unscaled:
+    r"""
+    The ratio of momentum diffusivity to thermal diffusivity.
+
+    Parameters
+    ----------
+    v : ~astropy.units.Quantity
+        The momentum diffusivity (kinematic viscosity).
+    alpha : ~astropy.units.Quantity
+        The thermal diffusivity.
+
+    Returns
+    -------
+    prandtl_number: ~astropy.units.Quantity
+        Dimensionless quantity.
+
+    Notes
+    -----
+    The Prandtl number is given as [1]_:
+
+    .. math::
+        \mathrm{Pr} =  \frac{\nu}{\alpha}
+
+    - For most gases over a wide range of temperature and pressure, Pr is
+      approximately constant. Therefore, it can be used to determine the thermal
+      conductivity of gases at high temperatures, where it is difficult to measure
+      experimentally due to the formation of convection currents.
+
+    - Small values of the Prandtl number, Pr << 1, means the thermal diffusivity
+      dominates. Whereas with large values, Pr >> 1, the momentum diffusivity
+      dominates the behavior.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> prandtl_number(8e-2 * u.m**2 / u.s, 3e2 * u.m**2 / u.s)
+    <Quantity 0.00026667>
+    >>> prandtl_number(4e2 * u.m**2 / u.s,2e-10 * u.m**2 / u.s)
+    <Quantity 2.e+12>
+
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Prandtl_number
+
+    """
+
+    return v / alpha
+
+
+@validate_quantities(
+    v={"can_be_negative": False},
+    n={"can_be_negative": False},
+)
+def magnetic_prandtl_number(v: u.m ** 2 / u.s,
+                            n: u.m ** 2 / u.s) -> u.dimensionless_unscaled:
+    r"""
+    The ratio of momentum diffusivity (viscosity) and magnetic diffusivity.
+
+    Parameters
+    ----------
+    v : ~astropy.units.Quantity
+        The momentum diffusivity (kinematic viscosity).
+    n : ~astropy.units.Quantity
+        The magnetic diffusivity.
+
+    Returns
+    -------
+    magnetic_prandtl_number: ~astropy.units.Quantity
+        Dimensionless quantity.
+
+    Notes
+    -----
+    The magnetic Prandtl number is given as [1]_:
+
+    .. math::
+        \mathrm{Pr}_\mathrm{m} =  \frac{\nu}{\eta}
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> magnetic_prandtl_number(8e-2 * u.m**2 / u.s, 3e2 * u.m**2 / u.s)
+    <Quantity 0.00026667>
+    >>> magnetic_prandtl_number(4e2 * u.m**2 / u.s, 2e-10 * u.m**2  /u.s)
+    <Quantity 2.e+12>
+
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Magnetic_Prandtl_number
+
+    """
+
+    return v / n
+
+
+@validate_quantities(
+    u={"can_be_negative": False},
+    L={"can_be_negative": False},
+    v={"can_be_negative": False},
+)
+def reynolds_number(u: u.m / u.s,
+                    L: u.m,
+                    v: u.m ** 2 / u.s) -> u.dimensionless_unscaled:
+    r"""
+    The Reynolds number is the ratio of inertial forces to viscous forces within
+    a fluid.
+
+    Parameters
+    ----------
+    u : ~astropy.units.Quantity
+        is the flow speed
+    L : ~astropy.units.Quantity
+        is a characteristic linear dimension
+    v : ~astropy.units.Quantity
+        is the kinematic viscosity of the fluid.
+
+    Returns
+    -------
+    reynolds_number: ~astropy.units.Quantity
+        Dimensionless quantity.
+
+    Notes
+    -----
+    The reynolds number is given as [1]_:
+
+    .. math::
+        \mathrm {Re} = {\frac {uL}{\nu }}
+
+    - Laminar flow occurs at low Reynolds numbers, where viscous forces are
+      dominant, and is characterized by smooth, constant fluid motion.
+    - Turbulent flow occurs at high Reynolds numbers and is dominated by
+      inertial forces, which tend to produce chaotic eddies, vortices and other
+      flow instabilities[2].
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> reynolds_number(8 * u.m / u.s, 3 * u.m, 3e2 * u.m**2 / u.s)
+    <Quantity 0.08>
+    >>> reynolds_number(10 * u.m / u.s, 0.2 * u.m, 1.4207e-5 * u.m**2 / u.s)
+    <Quantity 140775.67396354>
+
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Reynolds_number
+
+    """
+
+    return (u * L) / v
