@@ -98,11 +98,11 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, l: u.m,
                     mu: u.kg / (u.m * u.s)) -> u.dimensionless_unscaled:
     """
-    The Reynold's Number is a dimensionless quantity
+    The Reynolds Number is a dimensionless quantity
     that is used to predict flow patterns in fluids.
-    The Reynold's Number is defined as the ratio of inertial forces to viscous forces.
-    A low Reynold's Number describes smooth, laminar flow
-    while a high Reynold's Number describes rough, turbulent flow.
+    The Reynolds Number is defined as the ratio of inertial forces to viscous forces.
+    A low Reynolds Number describes smooth, laminar flow
+    while a high Reynolds Number describes rough, turbulent flow.
 
     .. math::
 
@@ -163,14 +163,21 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, l: u.m,
 
 
 @validate_quantities(v={"can_be_negative": True})
-def Mag_Reynolds(v: u.m / u.s, l: u.m, rho: u.ohm) -> u.dimensionless_unscaled:
+def Mag_Reynolds(V: u.m / u.s, L: u.m, rho: u.ohm) -> u.dimensionless_unscaled:
     """
-    
+    The Magnetic Reynolds number is a dimensionless quantity that
+    estimates the relative contributions of advection and induction
+    to magnetic diffusion in a conducting medium.
+
+    .. math::
+
+        Rm = \frac{4 \\pi U L}{\\rho_e c^2}
+
     Parameters
     ----------
-    u : `~astropy.units.Quantity`
+    U : `~astropy.units.Quantity`
         The velocity scale of the plasma.
-    v : `~astropy.units.Quantity`
+    L : `~astropy.units.Quantity`
         The length scale of the plasma.
     rho : `~astropy.units.Quantity`
         The resistivity of the plasma.
@@ -183,14 +190,14 @@ def Mag_Reynolds(v: u.m / u.s, l: u.m, rho: u.ohm) -> u.dimensionless_unscaled:
     Raises
     ------
     TypeError
-        The `v` is not a `~astropy.units.Quantity` and cannot be
+        The `U` is not a `~astropy.units.Quantity` and cannot be
         converted into a ~astropy.units.Quantity.
 
     ~astropy.units.UnitConversionError
-        If the `v` is not in appropriate units.
+        If the `U` is not in appropriate units.
 
     :exc:`~plasmapy.utils.exceptions.RelativityError`
-        If the velocity `v` is greater than the speed of light.
+        If the velocity `U` is greater than the speed of light.
 
     Examples
     --------
@@ -200,5 +207,5 @@ def Mag_Reynolds(v: u.m / u.s, l: u.m, rho: u.ohm) -> u.dimensionless_unscaled:
         Dimensionless quantity.
 
     """
-    Rm = abs(4 * pi * v * l / (rho * c ** 2))
+    Rm = abs(4 * pi * U * L / (rho * c ** 2))
     return Rm
