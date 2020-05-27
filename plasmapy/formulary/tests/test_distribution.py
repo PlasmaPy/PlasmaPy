@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 from astropy import units as u
 import scipy.integrate as spint
+import time
 
 from astropy.constants import m_p, m_e, c, mu0, k_B, e, eps0
 from astropy.units.core import UnitTypeError
@@ -375,7 +376,6 @@ class Test_Maxwellian_velocity_2D(object):
         self.vy_drift2 = 1e5 * u.m / u.s
         self.distFuncTrue = 7.477094598799251e-55
 
-    @pytest.mark.slow
     def test_norm(self):
         """
         Tests whether distribution function is normalized, and integrates to 1.
@@ -384,17 +384,15 @@ class Test_Maxwellian_velocity_2D(object):
         infApprox = 10 * self.vTh.si.value
 
         def Maxwellian_velocity_2D_wrap(
-            vx, vy, T, particle="e", vx_drift=0, vy_drift=0, vTh=np.nan
+            vx, vy, T, particle, vx_drift, vy_drift, vTh
         ):
-            vx = vx * (u.m / u.s)
-            vy = vy * (u.m / u.s)
             return Maxwellian_velocity_2D(
                 vx, vy, T, particle, vx_drift, vy_drift, vTh
             ).si.value
 
         # integrating, this should be close to 1
         integ = spint.dblquad(
-            Maxwellian_velocity_2D_wrap,
+            Maxwellian_velocity_2D,
             -infApprox,
             infApprox,
             lambda y: -infApprox,
