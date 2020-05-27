@@ -71,7 +71,6 @@ class Test_Maxwellian_1D(object):
         infApprox = 10 * self.vTh.si.value
 
         def Maxwellian_1D_wrap(v, T, particle="e", v_drift=0, vTh=np.nan):
-            v = v * (u.m / u.s)
             return Maxwellian_1D(v, T, particle, v_drift, vTh).si.value
 
         # integrating, this should be close to 1
@@ -249,7 +248,6 @@ class Test_Maxwellian_speed_1D(object):
         xData1D = np.arange(0, 10.01, 0.01) * self.vTh.si.value
 
         def Maxwellian_speed_1D_wrap(v, T, particle="e", v_drift=0, vTh=np.nan):
-            v = v * (u.m / u.s)
             return Maxwellian_speed_1D(v, T, particle, v_drift, vTh).si.value
 
         yData1D = Maxwellian_speed_1D_wrap(v=xData1D, T=self.T, particle=self.particle)
@@ -392,7 +390,7 @@ class Test_Maxwellian_velocity_2D(object):
 
         # integrating, this should be close to 1
         integ = spint.dblquad(
-            Maxwellian_velocity_2D,
+            Maxwellian_velocity_2D_wrap,
             -infApprox,
             infApprox,
             lambda y: -infApprox,
@@ -556,7 +554,6 @@ class Test_Maxwellian_speed_2D(object):
         xData1D = np.arange(0, 10.001, 0.001) * self.vTh.si.value
 
         def Maxwellian_speed_2D_wrap(v, T, particle="e", v_drift=0, vTh=np.nan):
-            v = v * (u.m / u.s)
             return Maxwellian_speed_2D(v, T, particle, v_drift, vTh).si.value
 
         yData1D = Maxwellian_speed_2D_wrap(v=xData1D, T=self.T, particle=self.particle)
@@ -720,9 +717,6 @@ class Test_Maxwellian_velocity_3D(object):
         def Maxwellian_velocity_3D_wrap(
             vx, vy, vz, T, particle="e", vx_drift=0, vy_drift=0, vz_drift=0, vTh=np.nan
         ):
-            vx = vx * (u.m / u.s)
-            vy = vy * (u.m / u.s)
-            vz = vz * (u.m / u.s)
             return Maxwellian_velocity_3D(
                 vx, vy, vz, T, particle, vx_drift, vy_drift, vz_drift, vTh
             ).si.value
@@ -911,7 +905,6 @@ class Test_Maxwellian_speed_3D(object):
         xData1D = np.arange(0, 10.01, 0.01) * self.vTh.si.value
 
         def Maxwellian_speed_3D_wrap(v, T, particle="e", v_drift=0, vTh=np.nan):
-            v = v * (u.m / u.s)
             return Maxwellian_speed_3D(v, T, particle, v_drift, vTh).si.value
 
         yData1D = Maxwellian_speed_3D_wrap(v=xData1D, T=self.T, particle=self.particle)
@@ -1100,7 +1093,6 @@ class Test_kappa_velocity_1D(object):
         infApprox = 10 * vTh
 
         def kappa_velocity_1D_wrap(v, T, kappa, particle="e", v_drift=0, vTh=np.nan):
-            v = v * (u.m / u.s)
             return kappa_velocity_1D(v, T, kappa, particle, v_drift, vTh).si.value
 
         # integrating, this should be close to 1
@@ -1327,9 +1319,6 @@ class Test_kappa_velocity_3D(object):
         def kappa_velocity_3D_wrap(
             vx, vy, vz, T, kappa, particle="e", vx_drift=0, vy_drift=0, vz_drift=0, vTh=np.nan
         ):
-            vx = vx * (u.m / u.s)
-            vy = vy * (u.m / u.s)
-            vz = vz * (u.m / u.s)
             return kappa_velocity_3D(
                 vx, vy, vz, T, kappa, particle, vx_drift, vy_drift, vz_drift, vTh
             ).si.value
