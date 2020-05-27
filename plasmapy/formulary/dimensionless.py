@@ -12,7 +12,7 @@ __all__ = ["beta", "quantum_theta", "Reynolds_number"]
 
 from astropy import constants
 from astropy import units as u
-from plasmapy.formulary import quantum, parameters
+from plasmapy.formulary import quantum, parameters, electron_viscosity
 from plasmapy.utils.decorators import validate_quantities
 
 
@@ -148,6 +148,16 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
     >>> mu = 10 * u.kg / (u.m * u.s)
     >>> Reynolds_number(rho, v, L, mu)
     <Quantity 0.745>
+    >>> from plasmapy.formulary import electron_viscosity
+    >>> T_e = 5.0 * u.eV
+    >>> n_e = 1.5e15 * u.cm ** -3
+    >>> T_i = 1.0 * u.eV
+    >>> n_i = 1.5e15 * u.cm ** -3
+    >>> ion = 'p'
+    >>> mu = electron_viscosity(T_e, n_e, T_i, n_i, ion)
+    >>> Reynolds_number(rho, v, L, mu)
+    <Quantity [26384186.65239927, 26392877.91388476, 26392877.91388476,
+                             inf,               inf]>
 
     Returns
     -------
