@@ -1,7 +1,7 @@
 import pytest
 from astropy.constants import c
 
-from plasmapy.formulary.dimensionless import beta, quantum_theta, Reynolds_number
+from plasmapy.formulary.dimensionless import beta, quantum_theta, Reynolds_number, Mag_Reynolds
 
 import astropy.units as u
 import numpy as np
@@ -53,3 +53,16 @@ def test_Reynolds_number():
 def test_Mag_Reynolds():
     r"""Test Mag_Reynolds in dimensionless.py"""
 
+    sigma = 1e8 * u.S / u.m
+    U = 0.1 * u.m / u.s
+    L = 0.05 * u.m
+
+    assert (
+                   Mag_Reynolds(U, L, sigma) * u.dimensionless_unscaled
+           ).unit == u.dimensionless_unscaled
+
+    with pytest.warns(u.UnitsWarning):
+        Mag_Reynolds(2.2, L, sigma)
+
+    with pytest.raises(u.UnitTypeError):
+        Mag_Reynolds(2.2 * u.kg, L, sigma)

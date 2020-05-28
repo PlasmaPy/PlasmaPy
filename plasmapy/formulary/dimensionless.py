@@ -14,6 +14,8 @@ from math import pi
 
 from astropy import constants
 from astropy import units as u
+from astropy.constants.codata2010 import mu0
+
 from plasmapy.formulary import quantum, parameters, electron_viscosity
 from plasmapy.utils.decorators import validate_quantities
 from astropy.constants import c
@@ -141,13 +143,13 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, l: u.m,
     >>> import astropy.units as u
     >>> rho = 1000 * u.kg / u.m ** 3
     >>> v = 10 * u.m / u.s
-    >>> l = 1 * u.m
+    >>> L = 1 * u.m
     >>> mu = 8.9e-4 * u.kg / (u.m * u.s)
     >>> Reynolds_number(rho, v, L, mu)
     <Quantity 11235955.05617978>
     >>> rho = 1490 * u.kg / u.m ** 3
     >>> v = 0.1 * u.m / u.s
-    >>> l = 0.05 * u.m
+    >>> L = 0.05 * u.m
     >>> mu = 10 * u.kg / (u.m * u.s)
     >>> Reynolds_number(rho, v, L, mu)
     <Quantity 0.745>
@@ -172,8 +174,8 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, l: u.m,
     return Re
 
 
-@validate_quantities(v={"can_be_negative": True})
-def Mag_Reynolds(U: u.m / u.s, L: u.m, rho: u.ohm * u.m) -> u.dimensionless_unscaled:
+@validate_quantities(U={"can_be_negative": True})
+def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unscaled:
     """
     The Magnetic Reynolds number is a dimensionless quantity that
     estimates the relative contributions of advection and induction
@@ -181,7 +183,11 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, rho: u.ohm * u.m) -> u.dimensionless_unsc
 
     .. math::
 
-        Rm = \frac{4 \\pi U L}{\\rho_e c^2}
+        Rm = \frac{U L}{\\eta}
+
+        where: \\eta = frac{1}{\\mu_0 \\sigma}
+
+        and \\mu_0 us the permeability of free space
 
     Parameters
     ----------
@@ -189,8 +195,8 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, rho: u.ohm * u.m) -> u.dimensionless_unsc
         The velocity scale of the plasma.
     L : `~astropy.units.Quantity`
         The length scale of the plasma.
-    rho : `~astropy.units.Quantity`
-        The resistivity of the plasma.
+    sigma : `~astropy.units.Quantity`
+        The conductivity of the plasma.
 
      Warns
     -----
@@ -212,17 +218,16 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, rho: u.ohm * u.m) -> u.dimensionless_unsc
     Examples
     --------
     >>> import astropy.units as u
-    >>> rho = 1 * u.ohm * u.m
+    >>> sigma = 5.96e7 * u.S / u.m
     >>> U = 10 * u.m / u.s
     >>> L = 1 * u.cm
-    >>> Mag_Reynolds(U, L, rho)
-    <Quantity 11235955.05617978>
-    >>> rho = 1490 * u.kg / u.m ** 3
-    >>> v = 0.1 * u.m / u.s
-    >>> l = 0.05 * u.m
-    >>> mu = 10 * u.kg / (u.m * u.s)
-    >>> Reynolds_number(rho, v, L, mu)
-    <Quantity 0.745>
+    >>> Mag_Reynolds(U, L, sigma)
+    <Quantity 7.48955689>
+    >>> rho = 1e-8 * u.S / u.m
+    >>> U = 0.1 * u.m / u.s
+    >>> L = 0.05 * u.m
+    >>> Mag_Reynolds(U, L, sigma)
+    <Quantity 0.37447784>
 
     Returns
     -------
@@ -230,5 +235,5 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, rho: u.ohm * u.m) -> u.dimensionless_unsc
         Dimensionless quantity.
 
     """
-    Rm = abs(4 * pi * U * L / (rho * c ** 2))
+    Rm = abs(U * L * mu0 * sigma)
     return Rm
