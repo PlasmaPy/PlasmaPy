@@ -185,7 +185,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
         Rm = \frac{U L}{\\eta}
 
-        where: \\eta = frac{1}{\\mu_0 \\sigma}
+        where: \\eta = \frac{1}{\\mu_0 \\sigma}
 
         and \\mu_0 us the permeability of free space
 
