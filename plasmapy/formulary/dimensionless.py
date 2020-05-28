@@ -103,7 +103,7 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
 
     .. math::
 
-        Re = \frac{\\rho v L }{\\mu}
+        Re = \frac{\rho v L }{\\mu}
 
     Parameters
     ----------
