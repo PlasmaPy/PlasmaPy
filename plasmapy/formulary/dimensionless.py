@@ -156,6 +156,7 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
     -------
     Re: `~astropy.Quantity`
         Dimensionless quantity.
+
     """
     Re = abs(rho * v * L / mu)
     return Re
