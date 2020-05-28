@@ -94,7 +94,7 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 @validate_quantities(v={"can_be_negative": True})
 def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
                     mu: u.kg / (u.m * u.s)) -> u.dimensionless_unscaled:
-    """
+    r"""
     The Reynold's Number is a dimensionless quantity
     that is used to predict flow patterns in fluids.
     The Reynold's Number is defined as the ratio of inertial forces to viscous forces.
@@ -103,7 +103,7 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
 
     .. math::
 
-        Re = \frac{\rho v L }{\\mu}
+        Re = \frac{\rho v L }{\mu}
 
     Parameters
     ----------
