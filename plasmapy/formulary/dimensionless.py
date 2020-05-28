@@ -114,7 +114,7 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
     L : `~astropy.units.Quantity`
         The characteristic length scale.
     mu : `~astropy.units.Quantity`
-        The viscosity of the plasma.
+        The dynamic viscosity of the plasma.
 
      Warns
     -----
