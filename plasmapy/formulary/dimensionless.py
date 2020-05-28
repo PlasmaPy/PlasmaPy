@@ -10,8 +10,6 @@ numbers.
 """
 __all__ = ["beta", "quantum_theta", "Reynolds_number"]
 
-from math import pi
-
 from astropy import constants
 from astropy import units as u
 from astropy.constants.codata2010 import mu0
@@ -97,9 +95,9 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 
 
 @validate_quantities(v={"can_be_negative": True})
-def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, l: u.m,
+def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
                     mu: u.kg / (u.m * u.s)) -> u.dimensionless_unscaled:
-    """
+    r"""
     The Reynolds Number is a dimensionless quantity
     that is used to predict flow patterns in fluids.
     The Reynolds Number is defined as the ratio of inertial forces to viscous forces.
@@ -108,7 +106,7 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, l: u.m,
 
     .. math::
 
-        Re = \\rho v L / \\mu
+        Re = \frac{\rho v L }{\mu}
 
     Parameters
     ----------
@@ -116,10 +114,10 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, l: u.m,
         The density of the plasma.
     v : `~astropy.units.Quantity`
         The flow velocity of the plasma.
-    l : `~astropy.units.Quantity`
+    L : `~astropy.units.Quantity`
         The characteristic length scale.
     mu : `~astropy.units.Quantity`
-        The viscosity of the plasma.
+        The dynamic viscosity of the plasma.
 
      Warns
     -----
@@ -153,24 +151,13 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, l: u.m,
     >>> mu = 10 * u.kg / (u.m * u.s)
     >>> Reynolds_number(rho, v, L, mu)
     <Quantity 0.745>
-    >>> from plasmapy.formulary import electron_viscosity
-    >>> T_e = 5.0 * u.eV
-    >>> n_e = 1.5e15 * u.cm ** -3
-    >>> T_i = 1.0 * u.eV
-    >>> n_i = 1.5e15 * u.cm ** -3
-    >>> ion = 'p'
-    >>> mu = electron_viscosity(T_e, n_e, T_i, n_i, ion)
-    >>> Reynolds_number(rho, v, L, mu)
-    <Quantity [26384186.65239927, 26392877.91388476, 26392877.91388476,
-                             inf,               inf]>
 
     Returns
     -------
     Re: `~astropy.Quantity`
         Dimensionless quantity.
-
     """
-    Re = abs(rho * v * l / mu)
+    Re = abs(rho * v * L / mu)
     return Re
 
 
