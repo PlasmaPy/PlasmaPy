@@ -15,7 +15,7 @@ apt-run: &apt-install
   name: Install apt packages
   command: |
     apt update
-    apt install -y graphviz build-essential 
+    apt install -y graphviz build-essential pandoc
 
 apt-latex: &apt-latex
   name: Install apt packages
