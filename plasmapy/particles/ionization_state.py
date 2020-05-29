@@ -365,7 +365,7 @@ class IonizationState:
 
     def __next__(self):
         """
-        Return a `~plasmapy.particles.State` instance that contains
+        Return a `~plasmapy.particles.IonicFraction` instance that contains
         information about a particular ionization level.
         """
         if self._charge_index <= self.atomic_number:
