@@ -50,6 +50,7 @@ def test_Reynolds_number():
     with pytest.raises(u.UnitTypeError):
         Reynolds_number(rho, 4 * u.kg, L, mu)
 
+
 def test_Mag_Reynolds():
     r"""Test Mag_Reynolds in dimensionless.py"""
 
