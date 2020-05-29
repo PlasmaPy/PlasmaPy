@@ -64,6 +64,22 @@ def test_ionic_fraction_invalid_particles(invalid_particle):
         IonicFraction(invalid_particle, ionic_fraction=0)
 
 
+
+@pytest.mark.parametrize("ion1, ion2", [("Fe-56 6+", "Fe-56 5+"), ("H 1+", "D 1+")])
+def test_ionic_fraction_comparison_with_different_ions(ion1, ion2):
+    """
+    Test that a `TypeError` is raised when an `IonicFraction` object
+    is compared to an `IonicFraction` object of a different ion.
+    """
+    fraction = 0.251
+
+    ionic_fraction_1 = IonicFraction(ion=ion1, ionic_fraction=fraction)
+    ionic_fraction_2 = IonicFraction(ion=ion2, ionic_fraction=fraction)
+
+    with pytest.raises(TypeError):
+        ionic_fraction_1 == ionic_fraction_2
+
+
 def test_ionization_state_ion_input_error():
     """
     Test that `~plasmapy.particles.IonizationState` raises the appropriate
