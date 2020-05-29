@@ -25,16 +25,9 @@ ionic_fraction_table = [
 @pytest.mark.parametrize("ion, ionic_fraction, number_density", ionic_fraction_table)
 def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
 
-    try:
-        instance = IonicFraction(
-            ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
-        )
-    except Exception:
-        pytest.fail(
-            f"Unable to create IonicFraction object for ion = {ion}, "
-            f"ionic_fraction = {ionic_fraction}, and number_density = "
-            f"{number_density}"
-        )
+    instance = IonicFraction(
+        ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
+    )
 
     # Prepare to check for the default values when they are not set
 
