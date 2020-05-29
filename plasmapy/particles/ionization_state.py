@@ -96,7 +96,7 @@ class IonicFraction:
             self.ionic_fraction = ionic_fraction
             self.number_density = number_density
         except Exception as exc:
-            raise ParticleError("Unable to create IonicFraction object")
+            raise ParticleError("Unable to create IonicFraction object") from exc
 
     def __repr__(self):
         return (
