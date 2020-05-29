@@ -50,7 +50,7 @@ def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
 
 @pytest.mark.parametrize(
     "invalid_fraction, expected_exception",
-    [(-1e-9, ValueError), (1.00000000001, ValueError), ("...", TypeError),],
+    [(-1e-9, ParticleError), (1.00000000001, ParticleError), ("...", ParticleError),],
 )
 def test_ionic_fraction_invalid_inputs(invalid_fraction, expected_exception):
     """
@@ -74,7 +74,6 @@ def test_ionic_fraction_invalid_particles(invalid_particle):
     """
     with pytest.raises(ParticleError):
         IonicFraction(invalid_particle, ionic_fraction=0)
-        pytest.fail()
 
 
 def test_ionization_state_ion_input_error():
