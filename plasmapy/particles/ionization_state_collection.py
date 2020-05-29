@@ -119,10 +119,6 @@ class IonizationStateCollection:
     When making comparisons between `~plasmapy.particles.IonizationStateCollection`
     instances, `~numpy.nan` values are treated as equal.  Equality tests
     are performed to within a tolerance of ``tol``.
-
-    Collisional ionization equilibrium is based on atomic data that
-    has relative errors of order 20%.
-
     """
 
     # TODO: The docstring above needs to be expanded and revised to

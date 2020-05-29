@@ -64,16 +64,11 @@ class IonicFraction:
     def __eq__(self, other):
 
         try:
-            different_symbol = self.ionic_symbol != other.ionic_symbol
-
-            if different_symbol:
+            if self.ionic_symbol != other.ionic_symbol:
                 raise TypeError(
                     f"Unable to ascertain equality of ionic fractions for "
                     f"different ions."
                 )
-
-            # TODO: tol is used inconsistently, as atol above and rtol below.
-            #       This inconsistency should be fixed.
 
             ionic_fraction_within_tolerance = np.isclose(
                 self.ionic_fraction, other.ionic_fraction, rtol=1e-15,
@@ -90,7 +85,7 @@ class IonicFraction:
         except Exception as exc:
             raise TypeError(
                 "Unable to ascertain equality between the following objects:\n"
-                f"  {self}"
+                f"  {self}\n"
                 f"  {other}"
             ) from exc
 
