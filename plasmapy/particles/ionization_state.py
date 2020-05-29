@@ -439,7 +439,7 @@ class IonizationState:
             )
         )
 
-        # For the next line, recall that np.nan == np.nan is False (sigh)
+        # For the next line, recall that np.nan == np.nan is False
 
         same_fractions = np.any(
             [
@@ -542,7 +542,7 @@ class IonizationState:
     def equil_ionic_fractions(self, T_e: u.K = None):
         """
         Return the equilibrium ionic fractions for temperature ``T_e``
-        or the temperature set in the IonizationState instance.  Not
+        or the temperature set in the `IonizationState` instance.  Not
         implemented.
         """
         raise NotImplementedError
