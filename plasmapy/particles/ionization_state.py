@@ -302,7 +302,7 @@ class IonizationState:
 
         except Exception as exc:
             raise ParticleError(
-                f"Unable to create IonizationState instance for "
+                f"Unable to create IonizationState object for "
                 f"{particle.particle}."
             ) from exc
 

@@ -31,7 +31,7 @@ def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
         )
     except Exception:
         pytest.fail(
-            f"Unable to instantiate IonicFraction for ion = {ion}, "
+            f"Unable to create IonicFraction object for ion = {ion}, "
             f"ionic_fraction = {ionic_fraction}, and number_density = "
             f"{number_density}"
         )
@@ -59,11 +59,6 @@ def test_ionic_fraction_invalid_inputs(invalid_fraction, expected_exception):
     """
     with pytest.raises(expected_exception):
         IonicFraction(ion="Fe 6+", ionic_fraction=invalid_fraction)
-        pytest.fail(
-            f"IonicFraction did not raise the appropriate exception "
-            f"for ionic_fraction = {repr(invalid_fraction)}, which is "
-            f"invalid."
-        )
 
 
 @pytest.mark.parametrize("invalid_particle", ["H", "e-", "Fe-56"])
@@ -88,11 +83,6 @@ def test_ionization_state_ion_input_error():
 
     with pytest.raises(ParticleError):
         IonizationState(ion, ionic_fractions=unnecessary_ionic_fractions)
-        pytest.fail(
-            f"When IonizationState is supplied an ion input ({repr(ion)}) "
-            f"along with ionic fractions {unnecessary_ionic_fractions}, "
-            f"the expected exception is not raised."
-        )
 
 
 test_cases = {

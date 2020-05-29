@@ -172,7 +172,7 @@ class IonizationStateCollection:
             self.kappa = kappa
         except Exception as exc:
             raise ParticleError(
-                "Unable to create IonizationStateCollection instance."
+                "Unable to create IonizationStateCollection object."
             ) from exc
 
         if equilibrate:
