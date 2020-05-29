@@ -48,6 +48,18 @@ a tie.
 The ``info`` method prints out the ionic fraction for the ions with
 an abundance of at least 1%.
 
+>>> ionization_state.summarize()
+an abundance of at least 1%.
+
+>>> ionization_state.summarize()
+an abundance of at least 1%.
+
+>>> ionization_state.summarize()
+an abundance of at least 1%.
+
+>>> ionization_state.summarize()
+an abundance of at least 1%.
+
 >>> ionization_state.info()
 IonizationState instance for He with Z_mean = 0.96
 ----------------------------------------------------------------

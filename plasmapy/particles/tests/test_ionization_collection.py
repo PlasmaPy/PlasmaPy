@@ -134,7 +134,7 @@ class TestIonizationStateCollection:
 
     @pytest.mark.parametrize("test_name", test_names)
     def test_no_exceptions_from_info(self, test_name):
-        self.instances[test_name].info()
+        self.instances[test_name].summarize()
 
     @pytest.mark.parametrize("test_name", test_names)
     def test_simple_equality(self, test_name):
@@ -891,10 +891,10 @@ class TestIonizationStateCollectionDensityEqualities:
         are_equal = self.instances[this] == self.instances[that]
         if expect_equality != are_equal:
             print(f"{this} kwargs:\n {self.dict_of_kwargs[this]}\n")
-            self.instances[this].info()
+            self.instances[this].summarize()
             print()
             print(f"{that} kwargs:\n {self.dict_of_kwargs[that]}\n")
-            self.instances[that].info()
+            self.instances[that].summarize()
             descriptor = "equal" if expect_equality else "unequal"
             pytest.fail(
                 f"Cases {this} and {that} should be {descriptor} but " f"are not."

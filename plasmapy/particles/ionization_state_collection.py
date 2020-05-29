@@ -915,7 +915,7 @@ class IonizationStateCollection:
         else:
             raise ValueError("Need 0 <= tol <= 1.")
 
-    def info(self, minimum_ionic_fraction: Real = 0.01) -> None:
+    def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information for an
         `~plasmapy.particles.IonizationStateCollection` instance.
@@ -936,7 +936,7 @@ class IonizationStateCollection:
         ...     abundances = {'H': 1.0, 'He': 0.1},
         ...     kappa = 3.4,
         ... )
-        >>> states.info()
+        >>> states.summarize()
         IonizationStateCollection instance for: H, He
         ----------------------------------------------------------------
         H  0+: 0.100    n_i = 3.00e+14 m**-3

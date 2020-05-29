@@ -783,7 +783,7 @@ class IonizationState:
 
         return states_info
 
-    def info(self, minimum_ionic_fraction: Real = 0.01) -> None:
+    def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information for an
         `~plasmapy.particles.IonizationState` instance.
@@ -804,7 +804,7 @@ class IonizationState:
         ...     kappa = 4.05,
         ...     n_elem = 5.51e19 * u.m ** -3,
         ... )
-        >>> He_states.info()
+        >>> He_states.summarize()
         IonizationState instance for He with Z_mean = 0.06
         ----------------------------------------------------------------
         He  0+: 0.941    n_i = 5.18e+19 m**-3
