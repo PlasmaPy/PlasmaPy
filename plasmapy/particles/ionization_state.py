@@ -91,9 +91,12 @@ class IonicFraction:
 
     @particle_input
     def __init__(self, ion: Particle, ionic_fraction=None, number_density=None):
-        self._particle = ion
-        self.ionic_fraction = ionic_fraction
-        self.number_density = number_density
+        try:
+            self._particle = ion
+            self.ionic_fraction = ionic_fraction
+            self.number_density = number_density
+        except Exception as exc:
+            raise ParticleError("Unable to create IonicFraction object")
 
     def __repr__(self):
         return (
