@@ -119,7 +119,7 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
     mu : `~astropy.units.Quantity`
         The dynamic viscosity of the plasma.
 
-     Warns
+    Warns
     -----
     ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed.
@@ -164,7 +164,7 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
 
 @validate_quantities(U={"can_be_negative": True})
 def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unscaled:
-    """
+    r"""
     The Magnetic Reynolds number is a dimensionless quantity that
     estimates the relative contributions of advection and induction
     to magnetic diffusion in a conducting medium.
@@ -173,9 +173,9 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
         Rm = \frac{U L}{\\eta}
 
-        where: \\eta = \frac{1}{\\mu_0 \\sigma}
+        where: \eta = \frac{1}{\mu_0 \sigma}
 
-        and \\mu_0 is the permeability of free space.
+        and \mu_0 is the permeability of free space.
 
     Parameters
     ----------
@@ -186,7 +186,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
     sigma : `~astropy.units.Quantity`
         The conductivity of the plasma.
 
-     Warns
+    Warns
     -----
     ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed.
@@ -223,5 +223,6 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
         Dimensionless quantity.
 
     """
-    Rm = abs(U * L * mu0 * sigma)
+    eta = 1 / (mu0 * sigma)
+    Rm = abs(U * L / eta)
     return Rm
