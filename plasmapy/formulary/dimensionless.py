@@ -8,11 +8,11 @@ For example, plasmas at high (much larger than 1) Reynolds numbers are
 highly turbulent, while turbulence is negligible at low Reynolds
 numbers.
 """
-__all__ = ["beta", "quantum_theta"]
+__all__ = ["beta", "quantum_theta", "Reynolds_number"]
 
 from astropy import constants
 from astropy import units as u
-from plasmapy.formulary import quantum, parameters
+from plasmapy.formulary import quantum, parameters, electron_viscosity
 from plasmapy.utils.decorators import validate_quantities
 
 
@@ -89,3 +89,71 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     thermal_pressure = parameters.thermal_pressure(T, n)
     magnetic_pressure = parameters.magnetic_pressure(B)
     return thermal_pressure / magnetic_pressure
+
+
+@validate_quantities(v={"can_be_negative": True})
+def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
+                    mu: u.kg / (u.m * u.s)) -> u.dimensionless_unscaled:
+    r"""
+    The Reynold's Number is a dimensionless quantity
+    that is used to predict flow patterns in fluids.
+    The Reynold's Number is defined as the ratio of inertial forces to viscous forces.
+    A low Reynold's Number describes smooth, laminar flow
+    while a high Reynold's Number describes rough, turbulent flow.
+
+    .. math::
+
+        Re = \frac{\rho v L }{\mu}
+
+    Parameters
+    ----------
+    rho : `~astropy.units.Quantity`
+        The density of the plasma.
+    v : `~astropy.units.Quantity`
+        The flow velocity of the plasma.
+    L : `~astropy.units.Quantity`
+        The characteristic length scale.
+    mu : `~astropy.units.Quantity`
+        The dynamic viscosity of the plasma.
+
+     Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
+
+    Raises
+    ------
+    TypeError
+        The `v` is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
+
+    ~astropy.units.UnitConversionError
+        If the `v` is not in appropriate units.
+
+    :exc:`~plasmapy.utils.exceptions.RelativityError`
+        If the velocity `v` is greater than the speed of light.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> rho = 1000 * u.kg / u.m ** 3
+    >>> v = 10 * u.m / u.s
+    >>> L = 1 * u.m
+    >>> mu = 8.9e-4 * u.kg / (u.m * u.s)
+    >>> Reynolds_number(rho, v, L, mu)
+    <Quantity 11235955.05617978>
+    >>> rho = 1490 * u.kg / u.m ** 3
+    >>> v = 0.1 * u.m / u.s
+    >>> L = 0.05 * u.m
+    >>> mu = 10 * u.kg / (u.m * u.s)
+    >>> Reynolds_number(rho, v, L, mu)
+    <Quantity 0.745>
+
+    Returns
+    -------
+    Re: `~astropy.Quantity`
+        Dimensionless quantity.
+
+    """
+    Re = abs(rho * v * L / mu)
+    return Re
