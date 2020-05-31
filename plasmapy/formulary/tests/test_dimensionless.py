@@ -36,12 +36,12 @@ def test_beta_nan():
 def test_Reynolds_number():
     r"""Test Reynolds_number in dimensionless.py"""
     rho = 1490 * u.kg / u.m ** 3
-    v = 0.1 * u.m / u.s
+    U = 0.1 * u.m / u.s
     L = 0.05 * u.m
     mu = 10 * u.kg / (u.m * u.s)
 
     assert (
-        Reynolds_number(rho, v, L, mu) * u.dimensionless_unscaled
+        Reynolds_number(rho, U, L, mu) * u.dimensionless_unscaled
            ).unit == u.dimensionless_unscaled
 
     with pytest.warns(u.UnitsWarning):

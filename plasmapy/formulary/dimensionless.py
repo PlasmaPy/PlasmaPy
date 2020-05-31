@@ -94,8 +94,8 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     return thermal_pressure / magnetic_pressure
 
 
-@validate_quantities(v={"can_be_negative": True})
-def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
+@validate_quantities(U={"can_be_negative": True})
+def Reynolds_number(rho: u.kg / u.m ** 3, U: u.m / u.s, L: u.m,
                     mu: u.kg / (u.m * u.s)) -> u.dimensionless_unscaled:
     r"""
     The Reynolds Number is a dimensionless quantity
@@ -106,13 +106,13 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
 
     .. math::
 
-        Re = \frac{\rho v L }{\mu}
+        Re = \frac{\rho U L }{\mu}
 
     Parameters
     ----------
     rho : `~astropy.units.Quantity`
         The density of the plasma.
-    v : `~astropy.units.Quantity`
+    U : `~astropy.units.Quantity`
         The flow velocity of the plasma.
     L : `~astropy.units.Quantity`
         The characteristic length scale.
@@ -127,29 +127,29 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
     Raises
     ------
     TypeError
-        The `v` is not a `~astropy.units.Quantity` and cannot be
+        The `U` is not a `~astropy.units.Quantity` and cannot be
         converted into a ~astropy.units.Quantity.
 
     ~astropy.units.UnitConversionError
-        If the `v` is not in appropriate units.
+        If the `U` is not in appropriate units.
 
     :exc:`~plasmapy.utils.exceptions.RelativityError`
-        If the velocity `v` is greater than the speed of light.
+        If the velocity `U` is greater than the speed of light.
 
     Examples
     --------
     >>> import astropy.units as u
     >>> rho = 1000 * u.kg / u.m ** 3
-    >>> v = 10 * u.m / u.s
+    >>> U = 10 * u.m / u.s
     >>> L = 1 * u.m
     >>> mu = 8.9e-4 * u.kg / (u.m * u.s)
-    >>> Reynolds_number(rho, v, L, mu)
+    >>> Reynolds_number(rho, U, L, mu)
     <Quantity 11235955.05617978>
     >>> rho = 1490 * u.kg / u.m ** 3
-    >>> v = 0.1 * u.m / u.s
+    >>> U = 0.1 * u.m / u.s
     >>> L = 0.05 * u.m
     >>> mu = 10 * u.kg / (u.m * u.s)
-    >>> Reynolds_number(rho, v, L, mu)
+    >>> Reynolds_number(rho, U, L, mu)
     <Quantity 0.745>
 
     Returns
@@ -158,7 +158,7 @@ def Reynolds_number(rho: u.kg / u.m ** 3, v: u.m / u.s, L: u.m,
         Dimensionless quantity.
 
     """
-    Re = abs(rho * v * L / mu)
+    Re = abs(rho * U * L / mu)
     return Re
 
 
