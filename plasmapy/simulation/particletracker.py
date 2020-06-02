@@ -52,8 +52,9 @@ class ParticleTracker:
 
     Examples
     ----------
-    See `plasmapy/examples/particle-stepper.ipynb.`
+    See `Particle Stepper Notebook`_.
 
+    .. _`Particle Stepper Notebook`: ../notebooks/particle_stepper.ipynb
     """
     @u.quantity_input(dt=u.s)
     def __init__(self, plasma, particle_type='p', n_particles=1, scaling=1,
