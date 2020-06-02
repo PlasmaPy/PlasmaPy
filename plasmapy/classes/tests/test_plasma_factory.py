@@ -4,7 +4,7 @@ import os
 import pytest
 
 import plasmapy.classes
-from plasmapy.data.test import rootdir
+from plasmapy.particles.data.test import rootdir
 
 
 @pytest.fixture(scope="module")
