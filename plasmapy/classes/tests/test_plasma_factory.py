@@ -4,12 +4,12 @@ import os
 import pytest
 
 import plasmapy.classes
-from plasmapy.particles.data.test import rootdir
+from plasmapy.particles.data.test import data_dir
 
 
 @pytest.fixture(scope="module")
 def h5(request):
-    h5 = plasmapy.classes.Plasma(hdf5=os.path.join(rootdir, "data00000255.h5"))
+    h5 = plasmapy.classes.Plasma(hdf5=os.path.join(data_dir, "data00000255.h5"))
     yield h5
     h5.close()
 
