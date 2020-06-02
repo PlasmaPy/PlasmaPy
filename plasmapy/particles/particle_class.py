@@ -332,102 +332,47 @@ class Particle(AbstractParticle):
 
         particle = _dealias_particle_aliases(argument)
 
-        if particle in _Particles.keys():  # special particles
+        self._checking_alias(argument, mass_numb, Z)
 
-            attributes["particle"] = particle
+        # Element properties
 
-            for attribute in _Particles[particle].keys():
-                attributes[attribute] = _Particles[particle][attribute]
+        Element = _Elements[self.element]
 
-            particle_taxonomy = ParticleZoo._taxonomy_dict
-            all_categories = particle_taxonomy.keys()
+        attributes["atomic number"] = Element["atomic number"]
+        attributes["element name"] = Element["element name"]
 
-            for category in all_categories:
-                if particle in particle_taxonomy[category]:
-                    categories.add(category)
+        # Set the lepton number to zero for elements, isotopes, and
+        # ions.  The lepton number will probably come up primarily
+        # during nuclear reactions.
 
-            if attributes["name"] in _specific_particle_categories:
-                categories.add(attributes["name"])
+        attributes["lepton number"] = 0
 
-            if particle == "p+":
-                categories.update({"element", "isotope", "ion"})
+        if isotope:
+            Isotope = _Isotopes[isotope]
 
-            if mass_numb is not None or Z is not None:
-                if particle == "p+" and (mass_numb == 1 or Z == 1):
-                    warnings.warn(
-                        "Redundant mass number or charge information.", AtomicWarning
-                    )
-                else:
-                    raise InvalidParticleError(
-                        "The keywords 'mass_numb' and 'Z' cannot be used when "
-                        "creating Particle objects for special particles. To "
-                        f"create a Particle object for {attributes['name']}s, "
-                        f"use:  Particle({repr(attributes['particle'])})"
-                    )
+            attributes["baryon number"] = Isotope["mass number"]
+            attributes["isotope mass"] = Isotope.get("mass", None)
+            attributes["isotopic abundance"] = Isotope.get("abundance", 0.0)
 
-        else:  # elements, isotopes, and ions (besides protons)
-            try:
-                nomenclature = _parse_and_check_atomic_input(
-                    argument, mass_numb=mass_numb, Z=Z
-                )
-            except Exception as exc:
-                errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
-                raise InvalidParticleError(errmsg) from exc
+            if Isotope["stable"]:
+                attributes["half-life"] = np.inf * u.s
+            else:
+                attributes["half-life"] = Isotope.get("half-life", None)
 
-            for key in nomenclature.keys():
-                attributes[key] = nomenclature[key]
+        if element and not isotope:
+            attributes["standard atomic weight"] = Element.get("atomic mass", None)
 
-            element = attributes["element"]
-            isotope = attributes["isotope"]
-            ion = attributes["ion"]
+        if ion in _special_ion_masses.keys():
+            attributes["mass"] = _special_ion_masses[ion]
 
-            if element:
-                categories.add("element")
-            if isotope:
-                categories.add("isotope")
-            if self.element and self._attributes["integer charge"]:
-                categories.add("ion")
+        attributes["periodic table"] = _PeriodicTable(
+            group=Element["group"],
+            period=Element["period"],
+            block=Element["block"],
+            category=Element["category"],
+        )
 
-            # Element properties
-
-            Element = _Elements[element]
-
-            attributes["atomic number"] = Element["atomic number"]
-            attributes["element name"] = Element["element name"]
-
-            # Set the lepton number to zero for elements, isotopes, and
-            # ions.  The lepton number will probably come up primarily
-            # during nuclear reactions.
-
-            attributes["lepton number"] = 0
-
-            if isotope:
-
-                Isotope = _Isotopes[isotope]
-
-                attributes["baryon number"] = Isotope["mass number"]
-                attributes["isotope mass"] = Isotope.get("mass", None)
-                attributes["isotopic abundance"] = Isotope.get("abundance", 0.0)
-
-                if Isotope["stable"]:
-                    attributes["half-life"] = np.inf * u.s
-                else:
-                    attributes["half-life"] = Isotope.get("half-life", None)
-
-            if element and not isotope:
-                attributes["standard atomic weight"] = Element.get("atomic mass", None)
-
-            if ion in _special_ion_masses.keys():
-                attributes["mass"] = _special_ion_masses[ion]
-
-            attributes["periodic table"] = _PeriodicTable(
-                group=Element["group"],
-                period=Element["period"],
-                block=Element["block"],
-                category=Element["category"],
-            )
-
-            categories.add(Element["category"])
+        categories.add(Element["category"])
 
         if attributes["integer charge"] == 1:
             attributes["charge"] = const.e.si
@@ -435,7 +380,7 @@ class Particle(AbstractParticle):
             attributes["charge"] = attributes["integer charge"] * const.e.si
 
         if attributes["integer charge"]:
-            categories.add("charged")
+            self.categories.add("charged")
         elif attributes["integer charge"] == 0:
             categories.add("uncharged")
 
@@ -448,6 +393,66 @@ class Particle(AbstractParticle):
                 categories.add("unstable")
 
         self.__name__ = self.__repr__()
+
+    def _checking_alias(self,
+                        particle,
+                        argument: Union[str, Integral],
+                        mass_numb: Integral = None,
+                        Z: Integral = None):
+        if particle in _Particles.keys():  # special particles
+
+            self._attributes['particle'] = particle
+
+            for attribute in _Particles[particle].keys():
+                self._attributes[attribute] = _Particles[particle][attribute]
+
+            particle_taxonomy = ParticleZoo._taxonomy_dict
+            all_categories = particle_taxonomy.keys()
+
+            for category in all_categories:
+                if particle in particle_taxonomy[category]:
+                    self.categories.add(category)
+
+            if self._attributes['name'] in _specific_particle_categories:
+                self.categories.add(self._attributes['name'])
+
+            if particle == 'p+':
+                self.categories.update({'element', 'isotope', 'ion'})
+
+            if mass_numb is not None or Z is not None:
+                if particle == 'p+' and (mass_numb == 1 or Z == 1):
+                    warnings.warn(
+                        "Redundant mass number or charge information.",
+                        AtomicWarning)
+                else:
+                    raise InvalidParticleError(
+                        "The keywords 'mass_numb' and 'Z' cannot be used when "
+                        "creating Particle objects for special particles. To "
+                        f"create a Particle object for {self._attributes['name']}s, "
+                        f"use:  Particle({repr(self._attributes['particle'])})")
+
+        else:  # elements, isotopes, and ions (besides protons)
+            try:
+                nomenclature = _parse_and_check_atomic_input(
+                    argument, mass_numb=mass_numb, Z=Z)
+            except Exception as exc:
+                errmsg = _invalid_particle_errmsg(
+                    argument, mass_numb=mass_numb, Z=Z)
+                raise InvalidParticleError(errmsg) from exc
+
+            for key in nomenclature.keys():
+                self._attributes[key] = nomenclature[key]
+
+            element = self._attributes['element']
+            isotope = self._attributes['isotope']
+            ion = self._attributes['ion']
+
+            if element:
+                self.categories.add('element')
+            if isotope:
+                self.categories.add('isotope')
+            if self.element and self._attributes['integer charge']:
+                self.categories.add('ion')
 
     def __repr__(self) -> str:
         """
