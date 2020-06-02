@@ -1588,3 +1588,40 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
     omega_lh = omega_lh
 
     return omega_lh
+
+
+@validate_quantities(
+    T_e={"can_be_negative": False},
+    B={"can_be_negative": False})
+def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
+    r"""
+    The Bohm diffusion coefficient was conjectured to follow Bohm model of
+    the diffusion of plasma across a magnetic field and describe
+    the diffusion of early fusion energy machines.
+    The rate predicted by Bohm diffusion is much higher than classical diffusion
+    and if there were no exceptions, magnetically confined fusion would be impractical.
+
+    Parameters
+    ----------
+    T_e: `~astropy.units.Quantity`
+        The electron temperature.
+    B: `~astropy.units.Quantity`
+        The magnetic field in the plasma.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
+
+    Examples
+    --------
+
+
+    Returns
+    -------
+    D_B: `~astropy.units.Quantity`
+    The Bohm diffusion coefficient in meters squared per second.
+
+    """
+    D_B = k_B * T_e / (16 * e * B)
+    return D_B

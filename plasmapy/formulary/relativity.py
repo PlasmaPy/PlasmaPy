@@ -154,3 +154,6 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     gamma = Lorentz_factor(v)
     E = gamma * m * c ** 2
     return E
+
+
+def relativistic_gyroradius()
