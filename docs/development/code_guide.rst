@@ -307,3 +307,34 @@ However, ``dimensionless_angles`` does work when dividing a velocity
 by an angular frequency to get a length scale:
 
 >>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())    # doctest: +SKIP
+
+.. _example_notebooks:
+
+Examples
+========
+
+.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/master/docs/notebooks
+.. _nbsphinx: https://nbsphinx.readthedocs.io/en/latest/
+
+Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
+of their mature ecosystems. They are located in `docs/notebooks`_. `nbsphinx`_
+takes care of executing them at documentation build time and including them
+in the documentation.
+
+Please note that it is necessary to store notebooks with their outputs stripped
+(use the "Edit -> Clear all outputs" option). This accomplishes two goals:
+
+1. helps with versioning the notebooks, as binary image data is not stored in
+   the notebook
+2. signals `nbpshinx` that it should execute the notebook.
+
+.. note::
+
+  In the future, verifying and running this step may be automated via a GitHub bot.
+  Currently, reviewers should ensure that submitted notebooks have outputs stripped.
+
+If you have an example notebook that includes packages unavailable in the
+documentation building environment (e.g., `bokeh`) or runs some heavy
+computation that should not be executed on every commit, *keep the outputs in
+the notebook* but store it in the repository with a `preexecuted_` prefix, e.g.
+`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.

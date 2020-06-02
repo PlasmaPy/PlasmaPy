@@ -1,0 +1,1 @@
+Linked various instances of classes and functions in the `.ipynb` examples in `docs/notebooks/` to the respective API docs.
