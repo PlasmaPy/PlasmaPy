@@ -1613,6 +1613,15 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
     ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed.
 
+    Raises
+    ------
+    TypeError
+        The `T_e` is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
+
+    ~astropy.units.UnitConversionError
+        If the `T_e` is not in appropriate units.
+
     Examples
     --------
 
