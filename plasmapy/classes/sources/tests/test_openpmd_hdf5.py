@@ -1,6 +1,6 @@
 from plasmapy.classes.sources import openpmd_hdf5
 from plasmapy.classes.exceptions import DataStandardError
-from plasmapy.data.test import rootdir
+from plasmapy.particles.data.test import data_dir
 import plasmapy.classes
 
 from astropy import units as u
@@ -11,21 +11,21 @@ import pytest
 
 @pytest.fixture(scope="module")
 def h5_2d(request):
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000255.h5"))
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(data_dir, "data00000255.h5"))
     yield h5
     h5.close()
 
 
 @pytest.fixture(scope="module")
 def h5_3d(request):
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000100.h5"))
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(data_dir, "data00000100.h5"))
     yield h5
     h5.close()
 
 
 @pytest.fixture(scope="module")
 def h5_theta(request):
-    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "data00000200.h5"))
+    h5 = openpmd_hdf5.HDF5Reader(hdf5=os.path.join(data_dir, "data00000200.h5"))
     yield h5
     h5.close()
 
@@ -142,7 +142,7 @@ def test_unavailable_hdf5():
 
 def test_non_openpmd_hdf5():
     with pytest.raises(DataStandardError):
-        openpmd_hdf5.HDF5Reader(hdf5=os.path.join(rootdir, "blank.h5"))
+        openpmd_hdf5.HDF5Reader(hdf5=os.path.join(data_dir, "blank.h5"))
 
 
 def test_HDF5Reader(h5_2d):

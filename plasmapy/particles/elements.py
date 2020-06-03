@@ -36,7 +36,8 @@ def _element_obj_hook(obj):
 
 
 _Elements = json.loads(
-    pkgutil.get_data("plasmapy", "data/elements.json"), object_hook=_element_obj_hook
+    pkgutil.get_data("plasmapy", "particles/data/elements.json"),
+    object_hook=_element_obj_hook
 )
 
 
