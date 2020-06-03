@@ -1624,7 +1624,15 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
     Examples
     --------
-
+    >>> import astropy.units as u
+    >>> T_e = 5000 * u.K
+    >>> B = 10 * u.T
+    >>> Bohm_diffusion(T_e, B)
+    <Quantity 7.48955689>
+    >>> T_e = 5000 * u.eV
+    >>> B = 10 * u.T
+    >>> Bohm_diffusion(T_e, B)
+    <Quantity 0.37447784>
 
     Returns
     -------
