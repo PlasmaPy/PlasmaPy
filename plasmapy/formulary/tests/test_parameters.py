@@ -1048,7 +1048,7 @@ def test_Bohm_diffusion():
     B = 10 * u.T
 
     assert (
-                   Bohm_diffusion(T_e, B) * u.m ** 2 / u.s
+            Bohm_diffusion(T_e, B)
            ).unit == u.m ** 2 / u.s
 
     with pytest.warns(u.UnitsWarning):
