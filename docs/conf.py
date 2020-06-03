@@ -21,6 +21,7 @@
 import os
 import sys
 
+from sphinx.application import Sphinx
 from pkg_resources import parse_version
 from plasmapy import __version__ as release
 
@@ -224,3 +225,7 @@ nbsphinx_prolog = r"""
     \textcolor{gray}{The following section was generated from
     \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
 """
+
+
+def setup(app: Sphinx) -> None:
+    app.add_config_value("revision", "", True)
