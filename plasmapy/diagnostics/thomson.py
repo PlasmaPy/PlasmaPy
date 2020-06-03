@@ -1,4 +1,7 @@
-"""Defines the Thomson scattering analysis module as part of the diagnostics package."""
+"""
+Defines the Thomson scattering analysis module as 
+part of the diagnostics package.
+"""
 
 __all__ = [
     "spectral_density",
@@ -8,8 +11,9 @@ __all__ = [
 import numpy as np
 from astropy import units as u
 
-from plasmapy.formulary.dispersionfunction import plasma_dispersion_func_deriv as ZPrime
-from plasmapy.formulary.dispersionfunction import plasma_dispersion_func as ZFcn
+from plasmapy.formulary.dispersionfunction \
+    import plasma_dispersion_func_deriv as ZPrime
+
 
 
 
@@ -24,7 +28,8 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
                      ion_z = np.ones(1), ion_mu=np.ones(1),
                      fluid_vel = np.zeros([3])*u.cm/u.s,
                      ion_vel = np.zeros([1,3])*u.cm/u.s, 
-                     probe_n = np.array([1,0,0]),scatter_n = np.array([0,1,0])):
+                     probe_n = np.array([1,0,0]),
+                     scatter_n = np.array([0,1,0])):
     r"""
     Calculates the spectral dispersion function for Thomson scattering of a
     probe laser beam by a multi-species Maxwellian plasma.
@@ -171,11 +176,13 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
     epsilon = 1 + chiE + np.sum(chiI, axis=0)
     
     #Calculate the contributions to the spectral density function
-    econtr = 2*np.sqrt(np.pi)/k/vTe*np.power(np.abs(1 - chiE/epsilon),2)*np.exp(-xe**2)
+    econtr = 2*np.sqrt(np.pi)/k/vTe* \
+        np.power(np.abs(1 - chiE/epsilon),2)*np.exp(-xe**2)
     
     icontr = np.zeros([fract.size, w.size], dtype=np.complex128)*u.s/u.rad
     for m in range(fract.size):
-        icontr[m,:] = 2*np.sqrt(np.pi)*ion_z[m]/k/vTi[m]*np.power(np.abs(chiE/epsilon),2)*np.exp(-xi[m,:]**2)
+        icontr[m,:] = 2*np.sqrt(np.pi)*ion_z[m]/k/vTi[m]* \
+        np.power(np.abs(chiE/epsilon),2)*np.exp(-xi[m,:]**2)
         
     #Re-cast as real as a formality: imaginary part is zero
     Skw = np.real(econtr + np.sum(icontr, axis=0))
