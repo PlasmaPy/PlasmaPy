@@ -23,6 +23,7 @@ Features
 
 - Generalize `ion_sound_speed` function to work for all values of :math:`k^2 \lambda_{D}^2` (i.e. not just in the non-dispersive limit). (`#700 <https://github.com/plasmapy/plasmapy/pull/700>`__)
 - Optimize `add__magnetostatics` for a 16x speedup in tests! (`#703 <https://github.com/plasmapy/plasmapy/pull/703>`__)
+- Added `thomson.spectral_density` function, which calculates Thomson scattering spectra for Maxwellian plasmas in both the collective and non-collective regimes. (`#831 <https://github.com/PlasmaPy/PlasmaPy/pull/831>`__)
 
 Bug Fixes
 ---------
