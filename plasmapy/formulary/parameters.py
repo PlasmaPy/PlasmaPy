@@ -1628,11 +1628,11 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
     >>> T_e = 5000 * u.K
     >>> B = 10 * u.T
     >>> Bohm_diffusion(T_e, B)
-    <Quantity 7.48955689>
-    >>> T_e = 5000 * u.eV
+    <Quantity 0.00269292 m2 / s>
+    >>> T_e = 50 * u.eV
     >>> B = 10 * u.T
     >>> Bohm_diffusion(T_e, B)
-    <Quantity 0.37447784>
+    <Quantity 0.3125 m2 / s>
 
     Returns
     -------
