@@ -1,0 +1,1 @@
+Added a new diagnostics module 'thomson' containing a function 'spectral_density' that calculates Thomson scattering spectra for Maxwellian plasmas in both the collective and non-collective regimes.
