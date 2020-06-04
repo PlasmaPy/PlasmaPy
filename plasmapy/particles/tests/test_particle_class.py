@@ -997,3 +997,46 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
             f"from_str: {from_str}"
             f"from_repr: {from_repr}"
         )
+
+particle_json_test_table = [
+    (
+        Particle,
+        'lead',
+        {'atomic_number': 82,
+         'categories': {'post-transition metal', 'element'},
+         'element': 'Pb',
+         'element_name': 'lead',
+         'ionic_symbol': None,
+         'isotope': None,
+         'periodic_table_entry': {'block': 'p',
+                                 'category': 'post-transition metal',
+                                 'group': 14,
+                                 'period': 6},
+         'symbol': 'Pb'}
+    ),
+    (
+        Particle, 
+        'electron',
+        {'antiparticle': Particle("e+"),
+         'categories': {'lepton', 'fermion', 'matter', 'electron', 'charged', 'stable'},
+         'element': None,
+         'integer_charge': -1,
+         'ionic_symbol': None,
+         'isotope': None,
+         'roman_symbol': None,
+         'spin': 0.5,
+         'symbol': 'e-'}
+    )
+]
+@pytest.mark.parametrize("cls,arg,expected_JSON",particle_json_test_table)
+def test_particle_get_json(cls,arg, expected_JSON):
+    """Test the JSON representation of an object of the Particle class."""
+    instance = cls(arg)
+    json_repr = instance.get_json()
+    if (json_repr != expected_JSON):
+        pytest.fail(
+            f"Problem with a string representation of {cls.__name__} "
+            f"with kwargs = {kwargs}.\n\n"
+            f"expected_repr = {expected_JSON}"
+            f"generated JSON = {json_repr}"
+        )
