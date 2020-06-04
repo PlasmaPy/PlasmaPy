@@ -9,9 +9,12 @@ __all__ = [
 
 import numpy as np
 from astropy import units as u
+import astropy.constants as const
 
 from plasmapy.formulary.dispersionfunction \
     import plasma_dispersion_func_deriv as ZPrime
+
+from plasmapy.utils.decorators import validate_quantities
 
 
 # TODO: interface for inputting a multi-species configuration could be
@@ -19,8 +22,8 @@ from plasmapy.formulary.dispersionfunction \
 # included ion and electron drift velocities and information about the ion
 # atomic species.
 
-@u.quantity_input(wavelength=u.nm, probe_wavelength=u.nm, ne=u.cm**-3,
-                  Te=u.eV, Ti=u.eV, ion_vel=u.cm/u.s, e_drift=u.cm/u.s)
+@validate_quantities(wavelength=u.nm, probe_wavelength=u.nm, ne=u.cm**-3,
+                  Te=u.eV, Ti=u.eV, ion_vel=u.cm/u.s, fluid_vel=u.cm/u.s)
 def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
                      fract=np.ones(1), Te=1*u.eV, Ti=np.ones(1)*u.eV,
                      ion_z=np.ones(1), ion_mu=np.ones(1),
@@ -44,7 +47,7 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
         Wavelength of the probe laser convertable to nm
 
     ne : astropy.units.Quantity, ndarray
-        Mean (0th order) electron density of all plasma components combined
+        mean (0th order) electron density of all plasma components combined
         convertable to cm^-3.
 
     fract : float ndarray, shape [N]
@@ -80,7 +83,7 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
     Returns
     -------
     alpha : float
-        Mean scattering parameter. alpha > 1 corresponds to collective
+        mean scattering parameter. alpha > 1 corresponds to collective
         scattering, while alpha < 1 indicates non-collective scattering.
 
     Skw : astropy.units.Quantity ndarray
@@ -106,22 +109,14 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
     probe_n = probe_n/np.linalg.norm(probe_n)
     scatter_n = scatter_n/np.linalg.norm(scatter_n)
 
-    # Convert units
-    wavelength = wavelength.to(u.cm)
-    probe_wavelength = probe_wavelength.to(u.cm)
-    ne = ne.to(u.cm**-3)
-    Te = Te.to(u.eV)
-    Ti = Ti.to(u.eV)
-    ion_vel = ion_vel.to(u.cm/u.s)
-    fluid_vel = fluid_vel.to(u.cm/u.s)
-
     # Define some constants
-    C = 2.99792458e10*u.cm/u.s  # speed of light
-    Me = 5.685e-16*u.eV/(u.cm/u.s)**2  # Electron mass in eV per (cm/s)^2
-    Mp = Me*1836.1  # Proton mass in same units
-    Mi = ion_mu*Mp  # mass of each ion species in same units
-    vTe = np.sqrt(Te/Me)  # Electron thermal velocity
+    C = const.c.to(u.cm/u.s)  # speed of light
+    m_e = const.m_e.to(u.eV/(u.cm/u.s)**2)  # Electron mass in eV per (cm/s)^2
+    m_p = const.m_p.to(u.eV/(u.cm/u.s)**2)  # Proton mass in same units
+    Mi = ion_mu*m_p  # mass of each ion species in same units
+    vTe = np.sqrt(Te/m_e)  # Electron thermal velocity
     vTi = np.sqrt(Ti/Mi)  # Ion thermal velocity
+    # Electron plasma frequency per the NRL formulary
     wpe = 5.64e4*(u.cm**1.5*u.rad/u.s)*np.sqrt(ne)
 
     # Compute the ion velocity in the rest frame
