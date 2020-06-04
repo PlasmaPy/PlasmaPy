@@ -20,6 +20,7 @@ __all__ = [
     "magnetic_energy_density",
     "upper_hybrid_frequency",
     "lower_hybrid_frequency",
+    "Bohm_diffusion",
 ]
 
 import numbers
