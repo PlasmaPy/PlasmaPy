@@ -141,8 +141,8 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
     kl = np.sqrt(wl**2 - wpe**2)/C
 
     # Compute the wavenumber shift (required by momentum conservation)
-    sa = np.arccos(np.dot(probe_n, scatter_n))  # The scattering angle
-    k = np.sqrt(ks**2 + kl**2 - 2*ks*kl*np.cos(sa))  # Eq. 1.7.10 in Sheffield
+    scattering_angle = np.arccos(np.dot(probe_n, scatter_n))
+    k = np.sqrt(ks**2 + kl**2 - 2*ks*kl*np.cos(scattering_angle))  # Eq. 1.7.10 in Sheffield
     k_n = scatter_n - probe_n  # Normal vector along k
 
     # Compute Doppler-shifted frequencies for both the ions and electrons
