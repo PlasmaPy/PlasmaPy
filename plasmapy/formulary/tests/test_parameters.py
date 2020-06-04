@@ -27,7 +27,7 @@ from plasmapy.formulary.parameters import (
     magnetic_energy_density,
     magnetic_pressure,
     upper_hybrid_frequency,
-    lower_hybrid_requency,
+    lower_hybrid_frequency,
     Bohm_diffusion,
 )
 
