@@ -466,6 +466,79 @@ class Particle(AbstractParticle):
         """Return the particle's symbol."""
         return self.particle
 
+    def get_json(self) -> dict:
+        """
+        Returns a dictionary object
+        """
+        particle_json = dict()
+        particle_json["symbol"] = self.particle
+        try:
+            particle_json["antiparticle"] = self.antiparticle
+        except AtomicError:
+            # Does not have an antiparticle
+            pass
+        particle_json["element"] = self.element
+        particle_json["isotope"] = self.isotope
+        particle_json["ionic_symbol"] = self.ionic_symbol
+        try:
+            particle_json["roman_symbol"] = self.roman_symbol
+        except (roman.OutOfRangeError, ChargeError):
+            # negative charge or no charge specified
+            pass
+        try:
+            particle_json["element_name"] = self.element_name
+        except InvalidElementError:
+            # not an element
+            pass
+        # TODO: isotope name
+        try:
+            particle_json["integer_charge"] = self.integer_charge
+        except ChargeError:
+            # Unknown Charge
+            pass
+        # TODO: charge in u.Quantity
+        # TODO: st. atomic weight in u.Quantity
+        # TODO: nuclide_mass in u.Quantity
+        # TODO: mass in u.Quantity
+        # TODO: mass_energy in u.Quantity
+        # TODO: binding_energy in u.Quantity
+        try:
+            particle_json["atomic_number"] = self.atomic_number
+        except InvalidElementError:
+            # Not an element
+            pass
+        try:
+            particle_json["mass_number"] = self.mass_number
+        except InvalidIsotopeError:
+            # not an isotope
+            pass
+        # TODO: Neutron_number
+        # TODO: Electron_number
+        # TODO: Isotopic abundance
+        # TODO: baryon number
+        # TODO: lepton number
+        # TODO: half_life
+        try:
+            particle_json["spin"] = self.spin
+        except MissingAtomicDataError:
+            # no data for spin
+            pass
+        try:
+            particle_json["periodic_table_entry"] = dict(self.periodic_table._asdict())
+        except InvalidElementError:
+            # not an element
+            pass
+        particle_json["categories"] = self.categories
+        # TODO: is_electron
+        # TODO: is_ion
+        return particle_json
+
+    def get_json_string(self) -> str:
+        """
+        Returns a stringified JSON representation of a Particle
+        """
+        return str(self.get_json())
+
     def __eq__(self, other) -> bool:
         """
         Determine if two objects correspond to the same particle.
