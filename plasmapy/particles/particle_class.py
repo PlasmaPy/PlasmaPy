@@ -468,7 +468,38 @@ class Particle(AbstractParticle):
 
     def get_json(self) -> dict:
         """
-        Returns a dictionary object
+        Returns a dictionary object representing the
+        Particle's data
+
+        Examples
+        --------
+
+        >>> import pprint
+        >>> lead = Particle('lead')
+        >>> pprint.pprint(lead.get_json()) #pretty-printed for ease of viewing
+        {'atomic_number': 82,
+         'categories': {'post-transition metal', 'element'},
+         'element': 'Pb',
+         'element_name': 'lead',
+         'ionic_symbol': None,
+         'isotope': None,
+         'periodic_table_entry': {'block': 'p',
+                                 'category': 'post-transition metal',
+                                 'group': 14,
+                                 'period': 6},
+         'symbol': 'Pb'}
+        >>> electron = Particle('e-')
+        >>> pprint.pprint(electron.get_json()) #pretty-printed for ease of viewing
+        {'antiparticle': Particle("e+"),
+         'categories': {'lepton', 'fermion', 'matter', 'electron', 'charged', 'stable'},
+         'element': None,
+         'integer_charge': -1,
+         'ionic_symbol': None,
+         'isotope': None,
+         'roman_symbol': None,
+         'spin': 0.5,
+         'symbol': 'e-'}
+
         """
         particle_json = dict()
         particle_json["symbol"] = self.particle
@@ -535,7 +566,7 @@ class Particle(AbstractParticle):
 
     def get_json_string(self) -> str:
         """
-        Returns a stringified JSON representation of a Particle
+        Returns a stringified JSON representation of a Particle.
         """
         return str(self.get_json())
 
