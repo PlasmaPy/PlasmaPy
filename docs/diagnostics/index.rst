@@ -8,6 +8,12 @@ Plasma diagnostics (`plasmapy.diagnostics`)
 
 .. automodapi:: plasmapy.diagnostics.langmuir
    :no-heading:
+   
+.. currentmodule:: plasmapy.diagnostics.thomson
+
+.. automodapi:: plasmapy.diagnostics.thomson
+   :no-heading:   
+
 
 |
 
@@ -15,3 +21,4 @@ Plasma diagnostics (`plasmapy.diagnostics`)
     :caption: Examples
 
     /notebooks/langmuir_analysis
+	/notebooks/thomson
