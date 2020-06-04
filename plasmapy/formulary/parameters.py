@@ -1606,7 +1606,7 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
     T_e: `~astropy.units.Quantity`
         The electron temperature.
     B: `~astropy.units.Quantity`
-        The magnetic field in the plasma.
+        The magnitude of the magnetic field in the plasma.
 
     Warns
     -----
