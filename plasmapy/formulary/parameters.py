@@ -19,7 +19,6 @@ __all__ = [
     "magnetic_pressure",
     "magnetic_energy_density",
     "upper_hybrid_frequency",
-    "lower_hybrid_frequency",
     "Bohm_diffusion",
 ]
 
@@ -215,11 +214,11 @@ def Alfven_speed(
     >>> rho = n*(m_p+m_e)
     >>> ion = 'p'
     >>> Alfven_speed(B, n, ion)
-    <Quantity 43173.870... m / s>
+    <Quantity 43173.86995228 m / s>
     >>> Alfven_speed(B, rho, ion)
-    <Quantity 43173.870... m / s>
+    <Quantity 43173.86995228 m / s>
     >>> Alfven_speed(B, rho, ion).to(u.cm/u.us)
-    <Quantity 4.31738... cm / us>
+    <Quantity 4.317387 cm / us>
 
     """
     rho = mass_density(density, ion, z_mean)
@@ -1595,6 +1594,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     B={"can_be_negative": False})
 def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
+
     r"""
     The Bohm diffusion coefficient was conjectured to follow Bohm model of
     the diffusion of plasma across a magnetic field and describe
