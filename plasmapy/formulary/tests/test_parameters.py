@@ -27,7 +27,8 @@ from plasmapy.formulary.parameters import (
     magnetic_energy_density,
     magnetic_pressure,
     upper_hybrid_frequency,
-    lower_hybrid_frequency, Bohm_diffusion,
+    lower_hybrid_requency,
+    Bohm_diffusion,
 )
 
 B = 1.0 * u.T
