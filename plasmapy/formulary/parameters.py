@@ -215,9 +215,9 @@ def Alfven_speed(
     >>> rho = n*(m_p+m_e)
     >>> ion = 'p'
     >>> Alfven_speed(B, n, ion)
-    <Quantity 43173.86995228 m / s>
+    <Quantity 43173.870... m / s>
     >>> Alfven_speed(B, rho, ion)
-    <Quantity 43173.86995228 m / s>
+    <Quantity 43173.870... m / s>
     >>> Alfven_speed(B, rho, ion).to(u.cm/u.us)
     <Quantity 4.317387 cm / us>
 
