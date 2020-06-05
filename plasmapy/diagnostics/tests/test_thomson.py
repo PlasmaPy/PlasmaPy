@@ -24,8 +24,8 @@ def gen_collective_spectrum():
     wavelength = np.arange(520, 545, 0.01)*u.nm
     probe_wavelength = 532*u.nm
     ne = 5e17*u.cm**-3
-    probe_n = np.array([1, 0, 0])
-    scatter_n = np.array([0, 1, 0])
+    probe_vec = np.array([1, 0, 0])
+    scatter_vec = np.array([0, 1, 0])
     fract = np.array([1.0])
     Te = 10*u.eV
     Ti = np.array([10])*u.eV
@@ -39,7 +39,7 @@ def gen_collective_spectrum():
                                           ne=ne, fract=fract, Te=Te, Ti=Ti,
                                           ion_z=ion_z, ion_mu=ion_mu,
                                           ion_vel=ion_vel, fluid_vel=fluid_vel,
-                                          probe_n=probe_n, scatter_n=scatter_n)
+                                          probe_vec=probe_vec, scatter_vec=scatter_vec)
 
     return alpha, wavelength, Skw
 
@@ -52,8 +52,8 @@ def gen_non_collective_spectrum():
     wavelength = np.arange(500, 570, 0.01)*u.nm
     probe_wavelength = 532*u.nm
     ne = 5e15*u.cm**-3
-    probe_n = np.array([1, 0, 0])
-    scatter_n = np.array([0, 1, 0])
+    probe_vec = np.array([1, 0, 0])
+    scatter_vec = np.array([0, 1, 0])
     fract = np.array([1.0])
     Te = 100*u.eV
     Ti = np.array([10])*u.eV
@@ -67,7 +67,7 @@ def gen_non_collective_spectrum():
                                           ne=ne, fract=fract, Te=Te, Ti=Ti,
                                           ion_z=ion_z, ion_mu=ion_mu,
                                           ion_vel=ion_vel, fluid_vel=fluid_vel,
-                                          probe_n=probe_n, scatter_n=scatter_n)
+                                          probe_vec=probe_vec, scatter_vec=scatter_vec)
 
     return alpha, wavelength, Skw
 

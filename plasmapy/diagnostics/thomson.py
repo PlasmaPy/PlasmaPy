@@ -30,8 +30,8 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
                      ion_z=np.ones(1), ion_mu=np.ones(1),
                      fluid_vel=np.zeros([3])*u.cm/u.s,
                      ion_vel=np.zeros([1, 3])*u.cm/u.s,
-                     probe_n=np.array([1, 0, 0]),
-                     scatter_n=np.array([0, 1, 0])):
+                     probe_vec=np.array([1, 0, 0]),
+                     scatter_vec=np.array([0, 1, 0])):
     r"""
     Calculate the spectral dispersion function for Thomson scattering of a
     probe laser beam by a multi-species Maxwellian plasma.
@@ -75,10 +75,10 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
         Velocity vectors for each ion population relative to the
         fluid velocit in units convertable to cm/s.
 
-    probe_n : float ndarray, shape [3]
+    probe_vec : float ndarray, shape [3]
         Unit vector in the direction of the probe laser.
 
-    scatter_n : float ndarray, shape [3]
+    scatter_vec : float ndarray, shape [3]
         Unit vector pointing from the scattering volume to the detector.
 
     Returns
@@ -107,8 +107,8 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
         fract = fract/np.sum(fract)
 
     # Ensure unit vectors are normalized
-    probe_n = probe_n/np.linalg.norm(probe_n)
-    scatter_n = scatter_n/np.linalg.norm(scatter_n)
+    probe_vec = probe_vec/np.linalg.norm(probe_vec)
+    scatter_vec = scatter_vec/np.linalg.norm(scatter_vec)
 
     # Define some constants
     C = const.c.to(u.cm/u.s)  # speed of light
@@ -140,10 +140,10 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
     kl = np.sqrt(wl**2 - wpe**2)/C
 
     # Compute the wavenumber shift (required by momentum conservation)
-    scattering_angle = np.arccos(np.dot(probe_n, scatter_n))
+    scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
     # Eq. 1.7.10 in Sheffield
     k = np.sqrt(ks**2 + kl**2 - 2*ks*kl*np.cos(scattering_angle))
-    k_n = scatter_n - probe_n  # Normal vector along k
+    k_n = scatter_vec - probe_vec  # Normal vector along k
 
     # Compute Doppler-shifted frequencies for both the ions and electrons
     # Matmul is simultaneously conducting dot product over all wavelengths
