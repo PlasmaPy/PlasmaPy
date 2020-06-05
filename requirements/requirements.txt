@@ -1,5 +1,5 @@
 # Required Packages w/ version
-astropy >= 3.1
+astropy >= 4.0
 colorama >= 0.3
 h5py >= 2.8
 lmfit >= 0.9.7
