@@ -29,15 +29,11 @@ def gen_collective_spectrum():
     fract = np.array([1.0])
     Te = 10*u.eV
     Ti = np.array([10])*u.eV
-    ion_z = np.array([5])
-    ion_mu = np.array([12])
-    fluid_vel = np.array([0, 0, 0])*u.km/u.s
-    ion_vel = np.array([[0, 0, 0]])*u.km/u.s
+    ion_species = np.array(['C-12 5+'])
 
     alpha, Skw = thomson.spectral_density(wavelengths, probe_wavelength,
                                           ne, Te, Ti, fract=fract,
-                                          ion_z=ion_z, ion_mu=ion_mu,
-                                          ion_vel=ion_vel, fluid_vel=fluid_vel,
+                                          ion_species=ion_species,
                                           probe_vec=probe_vec,
                                           scatter_vec=scatter_vec)
 
@@ -57,15 +53,12 @@ def gen_non_collective_spectrum():
     fract = np.array([1.0])
     Te = 100*u.eV
     Ti = np.array([10])*u.eV
-    ion_z = np.array([1])
-    ion_mu = np.array([1])
-    fluid_vel = np.array([0, 0, 0])*u.km/u.s
-    ion_vel = np.array([[0, 0, 0]])*u.km/u.s
+    ion_species = np.array(['H+'])
+
 
     alpha, Skw = thomson.spectral_density(wavelengths, probe_wavelength,
                                           ne, Te, Ti, fract=fract,
-                                          ion_z=ion_z, ion_mu=ion_mu,
-                                          ion_vel=ion_vel, fluid_vel=fluid_vel,
+                                          ion_species=ion_species,
                                           probe_vec=probe_vec,
                                           scatter_vec=scatter_vec)
 
@@ -79,21 +72,21 @@ def test_collective_spectrum():
     alpha, wavelength, Skw = gen_collective_spectrum()
 
     # Check that alpha is correct
-    assert np.isclose(alpha.value, 1.27, atol=.01), ('Collective case alpha '
+    assert np.isclose(alpha.value, 1.801, atol=.01), ('Collective case alpha '
                                                f'returns {alpha} instead of '
-                                               'expected 1.27')
+                                               'expected 1.801')
 
     i_width = width_at_value(wavelength.value, Skw.value, 2e-13)
     e_width = width_at_value(wavelength.value, Skw.value, .2e-13)
 
     # Check that the widths of the ion and electron features match expectations
-    assert np.isclose(i_width, 0.14, 1e-3), ('Collective case ion feature '
+    assert np.isclose(i_width, 0.1599, 1e-3), ('Collective case ion feature '
                                              f'width is {i_width}'
-                                             'instead of expected 0.14')
+                                             'instead of expected 0.1599')
 
-    assert np.isclose(e_width, 16.32, 1e-3), ('Collective case electron '
+    assert np.isclose(e_width, 17.7899, 1e-3), ('Collective case electron '
                                               f'feature width is {e_width} '
-                                              'instead of expected 16.32')
+                                              'instead of expected 17.7899')
 
 
 def test_non_collective_spectrum():
@@ -103,13 +96,13 @@ def test_non_collective_spectrum():
     alpha, wavelength, Skw = gen_non_collective_spectrum()
 
     # Check that alpha is correct
-    assert np.isclose(alpha.value, 0.0403, atol=.01), ('Non-collective case alpha '
+    assert np.isclose(alpha.value, 0.05707, atol=.01), ('Non-collective case alpha '
                                                  f'returns {alpha} instead of '
-                                                 'expected 0.0403')
+                                                 'expected 0.05707')
 
     e_width = width_at_value(wavelength.value, Skw.value, .2e-13)
 
     # Check that the widts of the electron feature matchs expectations
-    assert np.isclose(e_width, 28.68, 1e-3), ('Non-collective case electron '
+    assert np.isclose(e_width, 22.6699, 1e-3), ('Non-collective case electron '
                                               f'feature width is {e_width} '
-                                              'instead of expected 28.68')
+                                              'instead of expected 22.6699')
