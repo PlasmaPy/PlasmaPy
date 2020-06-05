@@ -25,8 +25,8 @@ from plasmapy.formulary.parameters import plasma_frequency as wp
 
 @validate_quantities(wavelength=u.nm, probe_wavelength=u.nm, ne=u.cm**-3,
                   Te=u.eV, Ti=u.eV, ion_vel=u.cm/u.s, fluid_vel=u.cm/u.s)
-def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
-                     fract=np.ones(1), Te=1*u.eV, Ti=np.ones(1)*u.eV,
+def spectral_density(wavelength, *, probe_wavelength=532*u.nm, ne=None,
+                     fract=np.ones(1), Te=None, Ti=None,
                      ion_z=np.ones(1), ion_mu=np.ones(1),
                      fluid_vel=np.zeros([3])*u.cm/u.s,
                      ion_vel=np.zeros([1, 3])*u.cm/u.s,
