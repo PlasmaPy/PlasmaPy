@@ -111,6 +111,10 @@ class AbstractParticle(ABC):
     def charge(self) -> Union[u.Quantity, Real]:
         raise NotImplementedError
 
+    @abstractmethod
+    def to_dict(self) -> dict:
+        raise NotImplementedError
+
     def __bool__(self):
         """
         Raise an `~plasmapy.utils.AtomicError` because particles
@@ -118,11 +122,11 @@ class AbstractParticle(ABC):
         """
         raise AtomicError("The truth value of a particle is not defined.")
 
-    def to_json(self, dict_representation) -> str:
+    def to_json(self) -> str:
         """
         Return a JSON string representation of the minimum description of a particle.
         """
-        return json.dumps(dict_representation)
+        return json.dumps(self.to_dict())
 
 
 class Particle(AbstractParticle):
@@ -490,22 +494,6 @@ class Particle(AbstractParticle):
         particle_dict['type'] = 'Particle'
         particle_dict['symbol'] = self.particle
         return particle_dict
-
-    def to_json(self) -> str:
-        """
-        Return a JSON string representation of the minimum description of a particle.
-
-        Examples
-        --------
-        >>> lead = Particle('lead')
-        >>> lead.to_json()
-        '{"type": "Particle", "symbol": "Pb"}'
-        >>> electron = Particle('e-')
-        >>> electron.to_json()
-        '{"type": "Particle", "symbol": "e-"}'
-
-        """
-        return super().to_json(self.to_dict())
 
     def __eq__(self, other) -> bool:
         """
@@ -1728,39 +1716,23 @@ class DimensionlessParticle(AbstractParticle):
 
     def to_dict(self) -> dict:
         """
-        Return a dictionary representation of the minimum description of a particle.
+        Return a dictionary representation of the minimum description of a dimensionless particle.
 
         Examples
         --------
         >>> from plasmapy.particles import DimensionlessParticle
         >>> dimensionless_particle = DimensionlessParticle(mass=1.0, charge=-1.0)
         >>> dimensionless_particle.to_dict()
-        {'type': 'DimensionlessParticle', 'mass': {'quantity': 1.0}, 'charge': {'quantity': -1.0}}
+        {'type': 'DimensionlessParticle', 'mass': '1.0', 'charge': '-1.0'}
         >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
         >>> dimensionless_particle.to_dict()
-        {'type': 'DimensionlessParticle', 'mass': {'quantity': 1.0}, 'charge': {'quantity': nan}}
+        {'type': 'DimensionlessParticle', 'mass': '1.0', 'charge': 'nan'}
         """
         particle_dict = dict()
         particle_dict['type'] = 'DimensionlessParticle'
-        particle_dict['mass'] = {"quantity": self.mass}
-        particle_dict['charge'] = {"quantity": self.charge}
+        particle_dict['mass'] = str(self.mass)
+        particle_dict['charge'] = str(self.charge)
         return particle_dict
-
-    def to_json(self) -> str:
-        """
-        Return a JSON string representation of the minimum description of a particle.
-
-        Examples
-        --------
-        >>> from plasmapy.particles import DimensionlessParticle
-        >>> dimensionless_particle = DimensionlessParticle(mass=1.0, charge=-1.0)
-        >>> dimensionless_particle.to_json()
-        '{"type": "DimensionlessParticle", "mass": {"quantity": 1.0}, "charge": {"quantity": -1.0}}'
-        >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
-        >>> dimensionless_particle.to_json()
-        '{"type": "DimensionlessParticle", "mass": {"quantity": 1.0}, "charge": {"quantity": NaN}}'
-        """
-        return super().to_json(self.to_dict())
 
     @staticmethod
     def _validate_parameter(obj, can_be_negative=True) -> np.float64:
@@ -1894,38 +1866,23 @@ class CustomParticle(AbstractParticle):
 
     def to_dict(self) -> dict:
         """
-        Return a dictionary representation of the minimum description of a particle.
+        Return a dictionary representation of the minimum description of a CustomParticle.
 
         Examples
         --------
         >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg, charge=-1)
         >>> custom_particle.to_dict()
-        {'type': 'CustomParticle', 'mass': {'quantity': 1.5e-26, 'unit': 'kg'}, 'charge': {'quantity': -1.602176634e-19, 'unit': 'C'}}
+        {'type': 'CustomParticle', 'mass': '1.5e-26 kg', 'charge': '-1.6021...e-19 C'}
         >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
         >>> custom_particle.to_dict()
-        {'type': 'CustomParticle', 'mass': {'quantity': 1.5e-26, 'unit': 'kg'}, 'charge': {'quantity': nan, 'unit': 'C'}}
+        {'type': 'CustomParticle', 'mass': '1.5e-26 kg', 'charge': 'nan C'}
 
         """
         particle_dict = dict()
         particle_dict['type'] = 'CustomParticle'
-        particle_dict['mass'] = {"quantity": self.mass.value, "unit": str(self.mass.unit)}
-        particle_dict['charge'] = {"quantity": self.charge.value, "unit": str(self.charge.unit)}
+        particle_dict['mass'] = str(self.mass)
+        particle_dict['charge'] = str(self.charge)
         return particle_dict
-
-    def to_json(self) -> str:
-        """
-        Return a JSON string representation of the minimum description of a particle.
-
-        Examples
-        --------
-        >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg, charge=-1)
-        >>> custom_particle.to_json()
-        '{"type": "CustomParticle", "mass": {"quantity": 1.5e-26, "unit": "kg"}, "charge": {"quantity": -1.602176634e-19, "unit": "C"}}'
-        >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
-        >>> custom_particle.to_json()
-        '{"type": "CustomParticle", "mass": {"quantity": 1.5e-26, "unit": "kg"}, "charge": {"quantity": NaN, "unit": "C"}}'
-        """
-        return super().to_json(self.to_dict())
 
     @property
     def mass(self) -> u.kg:
