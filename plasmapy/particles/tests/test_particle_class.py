@@ -1007,13 +1007,13 @@ particle_json_repr_table = [
     ),
     (
         CustomParticle,
-        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
-        '{"type": "CustomParticle", "mass": {"quantity": 5.12, "unit": "kg"}, "charge": {"quantity": 6.2, "unit": "C"}}',
+        {"mass": 5.12 * u.kg, "charge": 6.2*u.C},
+        '{"type": "CustomParticle", "mass": "5.12 kg", "charge": "6.2 C"}',
     ),
     (
         DimensionlessParticle,
         {"mass": 5.2, "charge": 6.3},
-        '{"type": "DimensionlessParticle", "mass": {"quantity": 5.2}, "charge": {"quantity": 6.3}}',
+        '{"type": "DimensionlessParticle", "mass": "5.2", "charge": "6.3"}',
     ),
 ]
 
@@ -1023,10 +1023,9 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
     """Test the JSON representations of normal, dimensionless and custom particles."""
     instance = cls(**kwargs)
     json_repr = instance.to_json()
-    if not expected_repr == json_repr:
-        pytest.fail(
+    assert expected_repr == json_repr, pytest.fail(
             f"Problem with JSON representation of {cls.__name__} "
             f"with kwargs = {kwargs}.\n\n"
-            f"expected_repr = {expected_repr}"
+            f"expected_repr = {expected_repr}.\n\n"
             f"json_repr: {json_repr}"
         )
