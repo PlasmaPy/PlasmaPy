@@ -23,11 +23,10 @@ from plasmapy.formulary.parameters import plasma_frequency as wp
 # included ion and electron drift velocities and information about the ion
 # atomic species.
 
-@validate_quantities(wavelength=u.nm, probe_wavelength=u.nm, ne=u.cm**-3,
+@validate_quantities(wavelengths=u.nm, probe_wavelength=u.nm, ne=u.cm**-3,
                   Te=u.eV, Ti=u.eV, ion_vel=u.cm/u.s, fluid_vel=u.cm/u.s)
-def spectral_density(wavelength, *, probe_wavelength=532*u.nm, ne=None,
-                     fract=np.ones(1), Te=None, Ti=None,
-                     ion_z=np.ones(1), ion_mu=np.ones(1),
+def spectral_density(wavelengths, probe_wavelength, ne, Te, Ti,
+                     fract=np.ones(1), ion_z=np.ones(1), ion_mu=np.ones(1),
                      fluid_vel=np.zeros([3])*u.cm/u.s,
                      ion_vel=np.zeros([1, 3])*u.cm/u.s,
                      probe_vec=np.array([1, 0, 0]),
@@ -38,46 +37,57 @@ def spectral_density(wavelength, *, probe_wavelength=532*u.nm, ne=None,
 
     Parameters
     ---------
-    wavelength : astropy.units.Quantity ndarray
+
+    wavelengths : astropy.units.Quantity ndarray (required)
         Array of wavelengths over which the spectral density function
         will be calculated, convertable to nm.
 
-    probe_wavelength : astropy.units.Quantity
+    probe_wavelength : astropy.units.Quantity (required)
         Wavelength of the probe laser convertable to nm
 
-    ne : astropy.units.Quantity, ndarray
+    ne : astropy.units.Quantity, ndarray (required)
         mean (0th order) electron density of all plasma components combined
         convertable to cm^-3.
 
-    fract : float ndarray, shape [N]
-        Relative fractions of the overall electron charge density
-        corresponding to each ion population such that ne = -SUM(fract*Z*ni)
-
-    Te : astropy.units.Quantity
+    Te : astropy.units.Quantity (required)
         Temperature of the electron component convertable to eV.
 
-    Ti : astropy.units.Quantity ndarray, shape [N]
+    Ti : astropy.units.Quantity ndarray, shape [N] (required)
         Temperature of each ion component convertable to eV.
+
+    fract : float ndarray, shape [N]
+        Relative fractions of the overall electron charge density
+        corresponding to each ion population such that ne = -SUM(fract*Z*ni).
+        Default is a single ion species.
 
     ion_z : float ndarray, shape [N]
         Charge of each ion species normalized to the proton charge.
+        Defaults to ion_z=[1], representing a singly charged single
+        ion species
 
     ion_mu : float ndarray, shape [N]
         Mass of each ion species normalized to the proton mass.
+        Defaults to Mu=[1] representing a single proton species.
 
     fluid_vel : astropy.units.Quantity ndarray shape [3]
         Velocity of the fluid or electron component in the rest frame in
-        units convertable to cm/s
+        units convertable to cm/s. Defaults to [0, 0, 0], representing
+        a stationary plasma.
 
     ion_vel : astropy.units.Quantity ndarray, shape [N,3]
         Velocity vectors for each ion population relative to the
-        fluid velocit in units convertable to cm/s.
+        fluid velocit in units convertable to cm/s. Defaults to [[0, 0, 0]]
+        representing a single ion species with no velocity drift relative
+        to the electrons.
 
     probe_vec : float ndarray, shape [3]
-        Unit vector in the direction of the probe laser.
+        Unit vector in the direction of the probe laser. Defaults to
+        [1, 0, 0].
 
     scatter_vec : float ndarray, shape [3]
         Unit vector pointing from the scattering volume to the detector.
+        Defaults to [0, 1, 0] which, along with the default probe_vec,
+        corresponds to a 90 degree scattering angle geometry.
 
     Returns
     -------
@@ -123,7 +133,7 @@ def spectral_density(wavelength, *, probe_wavelength=532*u.nm, ne=None,
 
     # Convert wavelengths to angular frequencies (electromagnetic waves, so
     # phase speed is c)
-    ws = (2*np.pi*u.rad*C/wavelength).to(u.rad/u.s)
+    ws = (2*np.pi*u.rad*C/wavelengths).to(u.rad/u.s)
     wl = (2*np.pi*u.rad*C/probe_wavelength).to(u.rad/u.s)
 
     # Compute the frequency shift (required by energy conservation)

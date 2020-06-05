@@ -21,7 +21,7 @@ def gen_collective_spectrum():
     """
     Generates an example Thomson scattering spectrum in the collective regime
     """
-    wavelength = np.arange(520, 545, 0.01)*u.nm
+    wavelengths = np.arange(520, 545, 0.01)*u.nm
     probe_wavelength = 532*u.nm
     ne = 5e17*u.cm**-3
     probe_vec = np.array([1, 0, 0])
@@ -34,15 +34,14 @@ def gen_collective_spectrum():
     fluid_vel = np.array([0, 0, 0])*u.km/u.s
     ion_vel = np.array([[0, 0, 0]])*u.km/u.s
 
-    alpha, Skw = thomson.spectral_density(wavelength,
-                                          probe_wavelength=probe_wavelength,
-                                          ne=ne, fract=fract, Te=Te, Ti=Ti,
+    alpha, Skw = thomson.spectral_density(wavelengths, probe_wavelength,
+                                          ne, Te, Ti, fract=fract,
                                           ion_z=ion_z, ion_mu=ion_mu,
                                           ion_vel=ion_vel, fluid_vel=fluid_vel,
                                           probe_vec=probe_vec,
                                           scatter_vec=scatter_vec)
 
-    return alpha, wavelength, Skw
+    return alpha, wavelengths, Skw
 
 
 def gen_non_collective_spectrum():
@@ -50,7 +49,7 @@ def gen_non_collective_spectrum():
     Generates an example Thomson scattering spectrum in the non-collective
     regime
     """
-    wavelength = np.arange(500, 570, 0.01)*u.nm
+    wavelengths = np.arange(500, 570, 0.01)*u.nm
     probe_wavelength = 532*u.nm
     ne = 5e15*u.cm**-3
     probe_vec = np.array([1, 0, 0])
@@ -63,15 +62,14 @@ def gen_non_collective_spectrum():
     fluid_vel = np.array([0, 0, 0])*u.km/u.s
     ion_vel = np.array([[0, 0, 0]])*u.km/u.s
 
-    alpha, Skw = thomson.spectral_density(wavelength,
-                                          probe_wavelength=probe_wavelength,
-                                          ne=ne, fract=fract, Te=Te, Ti=Ti,
+    alpha, Skw = thomson.spectral_density(wavelengths, probe_wavelength,
+                                          ne, Te, Ti, fract=fract,
                                           ion_z=ion_z, ion_mu=ion_mu,
                                           ion_vel=ion_vel, fluid_vel=fluid_vel,
                                           probe_vec=probe_vec,
                                           scatter_vec=scatter_vec)
 
-    return alpha, wavelength, Skw
+    return alpha, wavelengths, Skw
 
 
 def test_collective_spectrum():
@@ -115,4 +113,3 @@ def test_non_collective_spectrum():
     assert np.isclose(e_width, 28.68, 1e-3), ('Non-collective case electron '
                                               f'feature width is {e_width} '
                                               'instead of expected 28.68')
-test_collective_spectrum()
