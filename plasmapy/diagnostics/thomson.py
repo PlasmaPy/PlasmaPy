@@ -11,11 +11,12 @@ import numpy as np
 from astropy import units as u
 import astropy.constants as const
 
-from plasmapy.formulary.dispersionfunction \
-    import plasma_dispersion_func_deriv as ZPrime
-
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.formulary.parameters import plasma_frequency as wp
+
+from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
+
+from plasmapy.particles import Particle
 
 
 # TODO: interface for inputting a multi-species configuration could be
@@ -24,11 +25,11 @@ from plasmapy.formulary.parameters import plasma_frequency as wp
 # atomic species.
 
 @validate_quantities(wavelengths=u.nm, probe_wavelength=u.nm, ne=u.cm**-3,
-                  Te=u.eV, Ti=u.eV, ion_vel=u.cm/u.s, fluid_vel=u.cm/u.s)
-def spectral_density(wavelengths, probe_wavelength, ne, Te, Ti,
-                     fract=np.ones(1), ion_z=np.ones(1), ion_mu=np.ones(1),
+                  kTe=u.eV, kTi=u.eV, ion_vel=u.cm/u.s, fluid_vel=u.cm/u.s)
+def spectral_density(wavelengths, probe_wavelength, ne, kTe, kTi,
+                     fract=np.ones(1), ion_species=['H+'],
                      fluid_vel=np.zeros([3])*u.cm/u.s,
-                     ion_vel=np.zeros([1, 3])*u.cm/u.s,
+                     ion_vel=None,
                      probe_vec=np.array([1, 0, 0]),
                      scatter_vec=np.array([0, 1, 0])):
     r"""
@@ -49,25 +50,24 @@ def spectral_density(wavelengths, probe_wavelength, ne, Te, Ti,
         mean (0th order) electron density of all plasma components combined
         convertable to cm^-3.
 
-    Te : astropy.units.Quantity (required)
+    kTe : astropy.units.Quantity (required)
         Temperature of the electron component convertable to eV.
 
-    Ti : astropy.units.Quantity ndarray, shape [N] (required)
+    kTi : astropy.units.Quantity ndarray, shape [N] (required)
         Temperature of each ion component convertable to eV.
 
     fract : float ndarray, shape [N]
-        Relative fractions of the overall electron charge density
-        corresponding to each ion population such that ne = -SUM(fract*Z*ni).
-        Default is a single ion species.
+        Fraction (by number) of the total number of ions made up by each ion
+        species. Must sum to 1.0. Default is a single ion species.
 
-    ion_z : float ndarray, shape [N]
-        Charge of each ion species normalized to the proton charge.
-        Defaults to ion_z=[1], representing a singly charged single
-        ion species
+    Relative fractions of the overall electron charge density
+        corresponding to each ion population such that fract_i = Z_i*ni/ne
 
-    ion_mu : float ndarray, shape [N]
-        Mass of each ion species normalized to the proton mass.
-        Defaults to Mu=[1] representing a single proton species.
+
+    ion_species : str ndarray, shape [N]
+        Strings representing each ion species in the format interpretable by
+        the plasmapy Particle class. Default is ['H+'] corresponding to a
+        single species of hydrogen ions.
 
     fluid_vel : astropy.units.Quantity ndarray shape [3]
         Velocity of the fluid or electron component in the rest frame in
@@ -76,9 +76,8 @@ def spectral_density(wavelengths, probe_wavelength, ne, Te, Ti,
 
     ion_vel : astropy.units.Quantity ndarray, shape [N,3]
         Velocity vectors for each ion population relative to the
-        fluid velocit in units convertable to cm/s. Defaults to [[0, 0, 0]]
-        representing a single ion species with no velocity drift relative
-        to the electrons.
+        fluid velocit in units convertable to cm/s. Defaults zero drift
+        for all specified ion species.
 
     probe_vec : float ndarray, shape [3]
         Unit vector in the direction of the probe laser. Defaults to
@@ -114,17 +113,36 @@ def spectral_density(wavelengths, probe_wavelength, ne, Te, Ti,
         print("WARNING: Sum(fract) != 1.0. Normalizing array.")
         fract = fract/np.sum(fract)
 
+    # If ion drift velocity is not specified, create an array corresponding
+    # to zero drift
+    if ion_vel is None:
+        ion_vel = np.zeros([fract.size, 3])*u.cm/u.s
+
+    #Check to make sure the ion arrays are compatible
+    if (ion_species.size != fract.size) or \
+        (ion_vel.shape[0] != fract.size) or (kTi.size != fract.size):
+        raise ValueError("WARNING: Inconsistent number of species in fract, "
+              "ion_species, kTi, and/or ion_vel.")
+
     # Ensure unit vectors are normalized
     probe_vec = probe_vec/np.linalg.norm(probe_vec)
     scatter_vec = scatter_vec/np.linalg.norm(scatter_vec)
 
     # Define some constants
     C = const.c.to(u.cm/u.s)  # speed of light
-    m_e = const.m_e.to(u.eV/(u.cm/u.s)**2)  # Electron mass in eV per (cm/s)^2
-    m_p = const.m_p.to(u.eV/(u.cm/u.s)**2)  # Proton mass in same units
-    Mi = ion_mu*m_p  # mass of each ion species in same units
-    vTe = np.sqrt(Te/m_e)  # Electron thermal velocity
-    vTi = np.sqrt(Ti/Mi)  # Ion thermal velocity
+    m_e = const.m_e.to(u.eV/(u.cm/u.s)**2)
+    Te = (kTe/const.k_B).to(u.K)
+    Ti = (kTi/const.k_B).to(u.K)
+
+    #Calculate the mass and charge of each ion species
+    particles = [Particle(s) for s in ion_species]
+    Mi = u.Quantity([p.mass.to(u.eV/(u.cm/u.s)**2) for p in particles])
+    ion_z = u.Quantity([p.integer_charge for p in particles])
+    zbar = np.sum(fract*ion_z)
+    ni = fract*ne/zbar # ne/zbar = sum(ni)
+
+    vTe = np.sqrt(2*kTe/m_e)  # Electron thermal velocity
+    vTi = np.sqrt(2*kTi/Mi)  # Ion thermal velocity
     # Electron plasma frequency
     wpe = wp(n=ne)
 
@@ -151,8 +169,6 @@ def spectral_density(wavelengths, probe_wavelength, ne, Te, Ti,
     # Normal vector along k
     k_vec = (scatter_vec - probe_vec)* u.dimensionless_unscaled
 
-
-
     # Compute Doppler-shifted frequencies for both the ions and electrons
     # Matmul is simultaneously conducting dot product over all wavelengths
     # and ion components
@@ -161,21 +177,22 @@ def spectral_density(wavelengths, probe_wavelength, ne, Te, Ti,
 
     # Compute the scattering parameter alpha
     # expressed here using the fact that v_th/w_p = root(2) * Debye length
-    alpha = wpe/(np.sqrt(2)*k*vTe)
+    alpha = np.sqrt(2)*wpe/(k*vTe)
 
     # Calculate the normalized phase velocities (Sec. 3.4.2 in Sheffield)
-    xe = w_e/(k*np.sqrt(2)*vTe)
-    xi = 1/np.sqrt(2)*np.outer(1/vTi, 1/k)*w_i
+    xe = (w_e/(k*vTe)).to(u.dimensionless_unscaled)
+    xi = (np.outer(1/vTi, 1/k)*w_i).to(u.dimensionless_unscaled)
 
     # Calculate the succeptabilities
+    chiE = permittivity_1D_Maxwellian(w_e, k, Te, ne, 'e-')
+
     # Treatment of multiple species is an extension of the discussion in
     # Sheffield Sec. 5.1
-    chiE = -0.5*np.power(alpha, 2)*ZPrime(xe)
-
     chiI = np.zeros([fract.size, w.size], dtype=np.complex128)
-    for m in range(fract.size):
-        chiI[m, :] = -0.5*fract[m]*alpha**2*ion_z[m]*(Te/Ti[m])* \
-            ZPrime(xi[m, :])
+    for i,s in enumerate(particles):
+        chiI[i, :] = permittivity_1D_Maxwellian(w_i[i, :], k, Ti[i], ni[i],
+                                                ion_species[i],
+                                                z_mean=ion_z[i])
 
     # Calculate the logitudinal dielectric function
     epsilon = 1 + chiE + np.sum(chiI, axis=0)
