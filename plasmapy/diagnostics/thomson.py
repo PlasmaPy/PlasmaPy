@@ -15,6 +15,7 @@ from plasmapy.formulary.dispersionfunction \
     import plasma_dispersion_func_deriv as ZPrime
 
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.formulary.parameters import plasma_frequency as wp
 
 
 # TODO: interface for inputting a multi-species configuration could be
@@ -116,8 +117,11 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
     Mi = ion_mu*m_p  # mass of each ion species in same units
     vTe = np.sqrt(Te/m_e)  # Electron thermal velocity
     vTi = np.sqrt(Ti/Mi)  # Ion thermal velocity
-    # Electron plasma frequency per the NRL formulary
-    wpe = 5.64e4*(u.cm**1.5*u.rad/u.s)*np.sqrt(ne)
+    # Electron plasma frequency
+    wpe = wp(n=ne)
+
+
+
 
     # Compute the ion velocity in the rest frame
     ion_vel = fluid_vel + ion_vel
