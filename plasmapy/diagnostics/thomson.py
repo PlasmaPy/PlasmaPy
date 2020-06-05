@@ -60,10 +60,6 @@ def spectral_density(wavelengths, probe_wavelength, ne, kTe, kTi,
         Fraction (by number) of the total number of ions made up by each ion
         species. Must sum to 1.0. Default is a single ion species.
 
-    Relative fractions of the overall electron charge density
-        corresponding to each ion population such that fract_i = Z_i*ni/ne
-
-
     ion_species : str ndarray, shape [N]
         Strings representing each ion species in the format interpretable by
         the plasmapy Particle class. Default is ['H+'] corresponding to a
