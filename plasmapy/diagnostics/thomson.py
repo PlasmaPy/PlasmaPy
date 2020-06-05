@@ -138,7 +138,10 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
     # Eq. 1.7.10 in Sheffield
     k = np.sqrt(ks**2 + kl**2 - 2*ks*kl*np.cos(scattering_angle))
-    k_vec = scatter_vec - probe_vec  # Normal vector along k
+    # Normal vector along k
+    k_vec = (scatter_vec - probe_vec)* u.dimensionless_unscaled
+
+
 
     # Compute Doppler-shifted frequencies for both the ions and electrons
     # Matmul is simultaneously conducting dot product over all wavelengths
