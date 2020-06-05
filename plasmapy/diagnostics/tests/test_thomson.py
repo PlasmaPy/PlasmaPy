@@ -39,7 +39,8 @@ def gen_collective_spectrum():
                                           ne=ne, fract=fract, Te=Te, Ti=Ti,
                                           ion_z=ion_z, ion_mu=ion_mu,
                                           ion_vel=ion_vel, fluid_vel=fluid_vel,
-                                          probe_vec=probe_vec, scatter_vec=scatter_vec)
+                                          probe_vec=probe_vec,
+                                          scatter_vec=scatter_vec)
 
     return alpha, wavelength, Skw
 
@@ -67,7 +68,8 @@ def gen_non_collective_spectrum():
                                           ne=ne, fract=fract, Te=Te, Ti=Ti,
                                           ion_z=ion_z, ion_mu=ion_mu,
                                           ion_vel=ion_vel, fluid_vel=fluid_vel,
-                                          probe_vec=probe_vec, scatter_vec=scatter_vec)
+                                          probe_vec=probe_vec,
+                                          scatter_vec=scatter_vec)
 
     return alpha, wavelength, Skw
 
@@ -79,7 +81,7 @@ def test_collective_spectrum():
     alpha, wavelength, Skw = gen_collective_spectrum()
 
     # Check that alpha is correct
-    assert np.isclose(alpha, 1.27, atol=.01), ('Collective case alpha '
+    assert np.isclose(alpha.value, 1.27, atol=.01), ('Collective case alpha '
                                                f'returns {alpha} instead of '
                                                'expected 1.27')
 
@@ -103,7 +105,7 @@ def test_non_collective_spectrum():
     alpha, wavelength, Skw = gen_non_collective_spectrum()
 
     # Check that alpha is correct
-    assert np.isclose(alpha, 0.0403, atol=.01), ('Non-collective case alpha '
+    assert np.isclose(alpha.value, 0.0403, atol=.01), ('Non-collective case alpha '
                                                  f'returns {alpha} instead of '
                                                  'expected 0.0403')
 
@@ -113,3 +115,4 @@ def test_non_collective_spectrum():
     assert np.isclose(e_width, 28.68, 1e-3), ('Non-collective case electron '
                                               f'feature width is {e_width} '
                                               'instead of expected 28.68')
+test_collective_spectrum()

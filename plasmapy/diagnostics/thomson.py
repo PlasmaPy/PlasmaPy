@@ -118,9 +118,6 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
     # Electron plasma frequency
     wpe = wp(n=ne)
 
-
-
-
     # Compute the ion velocity in the rest frame
     ion_vel = fluid_vel + ion_vel
 
@@ -141,13 +138,13 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
     # Eq. 1.7.10 in Sheffield
     k = np.sqrt(ks**2 + kl**2 - 2*ks*kl*np.cos(scattering_angle))
-    k_n = scatter_vec - probe_vec  # Normal vector along k
+    k_vec = scatter_vec - probe_vec  # Normal vector along k
 
     # Compute Doppler-shifted frequencies for both the ions and electrons
     # Matmul is simultaneously conducting dot product over all wavelengths
     # and ion components
-    w_e = w - k*np.dot(fluid_vel, k_n)
-    w_i = w - np.matmul(ion_vel, np.outer(k, k_n).T)
+    w_e = w - k*np.dot(fluid_vel, k_vec)
+    w_i = w - np.matmul(ion_vel, np.outer(k, k_vec).T)
 
     # Compute the scattering parameter alpha
     # expressed here using the fact that v_th/w_p = root(2) * Debye length
