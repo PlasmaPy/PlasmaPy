@@ -1,0 +1,2 @@
+Added `to_json` method to `AbstractParticle` class that returns a JSON string representation of the minimum description of a particle.
+Added `to_dict` abstract method to `AbstractParticle` class that forms a dictionary representation of the minimum description of a particle.
