@@ -36,8 +36,8 @@ def spectral_density(wavelength, probe_wavelength=532*u.nm, ne=1e15*u.cm**-3,
     Calculate the spectral dispersion function for Thomson scattering of a
     probe laser beam by a multi-species Maxwellian plasma.
 
-    Positional Arguments
-    --------------------
+    Arguments
+    ---------
     wavelength : astropy.units.Quantity ndarray
         Array of wavelengths over which the spectral density function
         will be calculated, convertable to nm.
