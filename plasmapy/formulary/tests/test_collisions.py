@@ -1313,9 +1313,6 @@ class Test_coupling_parameter:
             coupling_parameter, insert_some_nans, insert_all_nans, {}
         )
 
-    @pytest.mark.xfail(
-        reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726"
-    )
     def test_quantum(self):
         """
         Testing quantum method for coupling parameter.
