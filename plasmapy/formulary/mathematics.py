@@ -7,9 +7,9 @@ to be abstracted from the main function interface.
 __all__ = ["Fermi_integral"]
 
 import numbers
-import numpy as np
-
 from typing import Union
+
+import numpy as np
 
 
 def Fermi_integral(
@@ -59,10 +59,6 @@ def Fermi_integral(
 
     .. math::
         F_j (x) = -Li_{j+1}\left(-e^{x}\right)
-
-    Warning: at present this function is limited to relatively small
-    arguments due to limitations in the `~mpmath` package's
-    implementation of `~mpmath.polylog`.
 
     Examples
     --------

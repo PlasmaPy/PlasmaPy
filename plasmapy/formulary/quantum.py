@@ -440,11 +440,6 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     This function returns :math:`\beta \mu^{ideal}` the dimensionless
     ideal chemical potential.
 
-    Warning: at present this function is limited to relatively small
-    arguments due to limitations in the `~mpmath` package's implementation
-    of `~mpmath.polylog`, which PlasmaPy uses in calculating the Fermi
-    integral.
-
     References
     ----------
     .. [1] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.

@@ -27,7 +27,7 @@ PlasmaPy also depends on the following packages for optional features:
 
 - `matplotlib <https://matplotlib.org/>`_ 2.0 or newer
 - `h5py <https://www.h5py.org/>`_ 2.8 or newer
-- `mpmath <http://mpmath.org/>`_ 1.0 or newer
+- `mpmath <http://mpmath.org/>`_ 1.1 or newer
 - `lmfit <https://lmfit.github.io/lmfit-py/>`_ 1.0.1 or newer
 
 .. _install-process:
