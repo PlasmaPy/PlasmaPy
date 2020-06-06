@@ -12,7 +12,7 @@ from astropy import units as u
 import astropy.constants as const
 
 from plasmapy.utils.decorators import validate_quantities
-from plasmapy.formulary.parameters import plasma_frequency as wp
+from plasmapy.formulary.parameters import plasma_frequency
 
 from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
 
@@ -140,7 +140,7 @@ def spectral_density(wavelengths, probe_wavelength, ne, kTe, kTi,
     vTe = np.sqrt(2*kTe/m_e)  # Electron thermal velocity
     vTi = np.sqrt(2*kTi/Mi)  # Ion thermal velocity
     # Electron plasma frequency
-    wpe = wp(n=ne)
+    wpe = plasma_frequency(n=ne)
 
     # Compute the ion velocity in the rest frame
     ion_vel = fluid_vel + ion_vel
