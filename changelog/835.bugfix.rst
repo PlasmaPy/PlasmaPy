@@ -1,1 +1,1 @@
-Increase the required Astropy version from 3.1 to 4.0, and Numpy from 1.14 to 1.16.6. This fixes long-standing issues with Numpy operations dropping units from AstroPy quantities.
+Increase the required Astropy version from 3.1 to 4.0, Numpy from 1.14 to 1.16.6, Scipy from 0.19 to 1.2 and lmfit from 0.9.7 to 1.0.1. This fixes long-standing issues with Numpy operations dropping units from AstroPy quantities.
