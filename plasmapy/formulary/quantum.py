@@ -457,12 +457,6 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     """
 
-    raise NotImplementedError(
-        "This function has been temporarily disabled due to a bug.\n"
-        "Please refer to https://github.com/PlasmaPy/PlasmaPy/issues/726 \n"
-        "and https://github.com/astropy/astropy/issues/9721 "
-        "for progress in fixing it."
-    )
     # deBroglie wavelength
     lambdaDB = thermal_deBroglie_wavelength(T)
     # degeneracy parameter
