@@ -13,9 +13,9 @@ __all__ = [
 ]
 
 import numpy as np
-
 from astropy import units as u
-from astropy.constants.si import c, h, hbar, m_e, eps0, e, k_B
+from astropy.constants.si import c, e, eps0, h, hbar, k_B, m_e
+
 from plasmapy import particles
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
@@ -563,12 +563,6 @@ def _chemical_potential_interp(n_e, T):
     <Quantity 8.17649>
 
     """
-    raise NotImplementedError(
-        "This function has been temporarily disabled due to a bug.\n"
-        "Please refer to https://github.com/PlasmaPy/PlasmaPy/issues/726 \n"
-        "and https://github.com/astropy/astropy/issues/9721 "
-        "for progress in fixing it."
-    )
     A = 0.25945
     B = 0.072
     b = 0.858
