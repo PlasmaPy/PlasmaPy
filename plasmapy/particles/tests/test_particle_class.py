@@ -997,3 +997,70 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
             f"from_str: {from_str}"
             f"from_repr: {from_repr}"
         )
+
+
+custom_particles_from_json_tests = [
+    (
+        DimensionlessParticle,
+        {"mass": 5.2, "charge": 6.3},
+        '{"type": "DimensionlessParticle", "mass": "5.2", "charge": "6.3"}'
+    ),
+    (
+        DimensionlessParticle,
+        {"mass": 5.2},
+        '{"type": "DimensionlessParticle", "mass": "5.2", "charge": "nan"}'
+    ),
+    (
+        CustomParticle,
+        {"mass": 5.12 * u.kg, "charge": 6.2},
+        '{"type": "CustomParticle", "mass": "5.12 kg", "charge": "9.933495130799999e-19 C"}'
+    ),
+    (
+        CustomParticle,
+        {"mass": 5.12 * u.kg},
+        '{"type": "CustomParticle", "mass": "5.12 kg", "charge": "nan C"}'
+    )
+]
+
+
+@pytest.mark.parametrize("cls, kwargs, json_string", custom_particles_from_json_tests)
+def test_custom_particles_from_json(cls, kwargs, json_string):
+    """Test the attributes of dimensionless and custom particles generated from
+    JSON representation"""
+    instance = cls(**kwargs)
+    instance_from_json = cls.from_json(json_string)
+    assert u.isclose(instance.mass, instance_from_json.mass, equal_nan=True), pytest.fail(
+            f"Expected a mass value of {instance.mass}\n"
+            f"Received a mass value of {instance_from_json.mass}"
+        )
+    assert u.isclose(instance.charge, instance_from_json.charge, equal_nan=True), pytest.fail(
+            f"Expected a charge value of {instance.charge}\n"
+            f"Received a charge value of {instance_from_json.charge}"
+        )
+
+
+particles_from_json_tests = [
+    (
+        Particle,
+        {"argument": 'Pb'},
+        '{"type": "Particle", "symbol": "Pb"}'
+    ),
+    (
+        Particle,
+        {"argument": 'e-'},
+        '{"type": "Particle", "symbol": "e-"}'
+    )
+]
+
+
+@pytest.mark.parametrize("cls, kwargs, json_string", particles_from_json_tests)
+def test_particles_from_json(cls, kwargs, json_string):
+    """Test the attributes of Particle objects created from JSON representation."""
+    instance = cls(**kwargs)
+    instance_from_json = cls.from_json(json_string)
+    expected_particle = instance.particle
+    actual_particle = instance_from_json.particle
+    assert (expected_particle == actual_particle), pytest.fail(
+            f"Expected {expected_particle}\n"
+            f"Got {actual_particle}"
+        )
