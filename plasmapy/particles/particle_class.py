@@ -97,6 +97,56 @@ def _category_errmsg(particle, category: str) -> str:
     return errmsg
 
 
+class ParticleJSONDecoder(json.JSONDecoder):
+
+    def __init__(self, *args, **kwargs):
+        json.JSONDecoder.__init__(self, object_hook=self.object_hook, *args, **kwargs)
+
+    def object_hook(self, json_dict):
+        """
+        Returns the appropriate particle object corresponding to the input JSON
+        string. If not a particle, returns a dictionary object. Logic Implementation for
+        plasmapy.particles.from_json method.
+
+        Examples
+        --------
+        >>> import plasmapy
+        >>> input_str = '{"plasmapy_particle": {"type": "Particle", "description": {"argument": "Pb"}}}'
+        >>> plasmapy.particles.from_json(input_str)
+        Particle("Pb")
+        >>> input_str = '{"plasmapy_particle": {"type": "CustomParticle", "description": {"mass": "5.12 kg", "charge": "6.2 C"}}}'
+        >>> plasmapy.particles.from_json(input_str)
+        CustomParticle(mass=5.12 kg, charge=6.2 C)
+        >>> input_str = '{"plasmapy_particle": {"type": "DimensionlessParticle", "description": {"mass": "5.2", "charge": "6.3"}}}'
+        >>> plasmapy.particles.from_json(input_str)
+        DimensionlessParticle(mass=5.2, charge=6.3)
+        """
+        particle_types = {
+            "CustomParticle": CustomParticle,
+            "DimensionlessParticle": DimensionlessParticle,
+            "Particle": Particle,
+        }
+        if ('plasmapy_particle' in json_dict):
+            particle_data = json_dict["plasmapy_particle"]
+            particle_class = particle_data['type']
+            if (particle_class in particle_types):
+                particle_init_args = particle_data["description"]
+                if (particle_class == 'CustomParticle'):
+                    particle_init_args["mass"] = u.Quantity(particle_init_args["mass"])
+                    particle_init_args["charge"] = u.Quantity(particle_init_args["charge"])
+                if (particle_class == 'DimensionlessParticle'):
+                    particle_init_args["mass"] = np.float64(particle_init_args["mass"])
+                    particle_init_args["charge"] = np.float64(particle_init_args["charge"])
+                return particle_types[particle_class](**particle_init_args)
+            else:
+                raise InvalidParticleError(
+                    f"Particle with type {particle_class} is not "
+                    f"present in the _particle_types dictionary or is undefined."
+                )
+        else:
+            return json_dict
+
+
 class AbstractParticle(ABC):
     """
     An abstract base class that defines the interface for particles.
@@ -111,16 +161,6 @@ class AbstractParticle(ABC):
     @abstractmethod
     def charge(self) -> Union[u.Quantity, Real]:
         raise NotImplementedError
-
-    @abstractmethod
-    def from_json(json_string):
-        raise NotImplementedError
-
-    def dict_from_json(json_string) -> dict:
-        """
-        Return dictionary from JSON string representation
-        """
-        return json.loads(json_string)
 
     def __bool__(self):
         """
@@ -472,31 +512,6 @@ class Particle(AbstractParticle):
 
         """
         return f'Particle("{self.particle}")'
-
-    def from_json(json_string):
-        """
-        Returns a Particle object created from JSON representation
-
-        Examples
-        --------
-        >>> lead = Particle.from_json('{"type": "Particle", "symbol": "Pb"}')
-        >>> repr(lead)
-        'Particle("Pb")'
-
-        """
-        particle_dict = AbstractParticle.dict_from_json(json_string)
-        particle_type = particle_dict["type"]
-        if (particle_type != "Particle"):
-            raise InvalidParticleError(
-                f"Unable to create Particle from "
-                f"{particle_type} JSON representation"
-            )
-        if (not ("symbol" in particle_dict)):
-            raise InvalidParticleError(
-                f"Unable to create Particle from "
-                f"{particle_dict}. Missing symbol."
-            )
-        return Particle(particle_dict["symbol"])
 
     def __str__(self) -> str:
         """Return the particle's symbol."""
@@ -1709,39 +1724,6 @@ class DimensionlessParticle(AbstractParticle):
                 f"{mass} and a charge of {charge}."
             ) from exc
 
-    def from_json(json_string):
-        """
-        Returns a DimensionlessParticle object created from JSON representation
-
-        Examples
-        --------
-        >>> input_str = '{"type": "DimensionlessParticle", "mass": "5.2", "charge": "6.3"}'
-        >>> dimensionless_particle = DimensionlessParticle.from_json(input_str)
-        >>> dimensionless_particle.mass
-        5.2
-        >>> dimensionless_particle.charge
-        6.3
-        """
-        particle_dict = AbstractParticle.dict_from_json(json_string)
-        particle_type = particle_dict["type"]
-        if (particle_type != "DimensionlessParticle"):
-            raise InvalidParticleError(
-                f"Unable to create Dimensionless particle from "
-                f"{particle_type} JSON representation"
-            )
-        if (not ("mass" in particle_dict and "charge" in particle_dict)):
-            raise InvalidParticleError(
-                f"Unable to create Dimensionless Particle from "
-                f"{particle_dict} . Missing mass or charge values."
-            )
-        particle_mass = None
-        particle_charge = None
-        if (particle_dict["mass"] != 'nan'):
-            particle_mass = np.float64(particle_dict["mass"])
-        if (particle_dict["charge"] != 'nan'):
-            particle_charge = np.float64(particle_dict["charge"])
-        return DimensionlessParticle(mass=particle_mass, charge=particle_charge)
-
     def __repr__(self):
         """
         Return a string representation of a dimensionless particle.
@@ -1871,40 +1853,6 @@ class CustomParticle(AbstractParticle):
                 f"Unable to create a custom particle with a mass of "
                 f"{mass} and a charge of {charge}."
             ) from exc
-
-    def from_json(json_string):
-        """
-        Returns a CustomParticle object created from JSON representation
-
-        Examples
-        --------
-        >>> input_str = '{"type": "CustomParticle", "mass": "5.12 kg", "charge": "6.2 C"}'
-        >>> custom_particle = CustomParticle.from_json(input_str)
-        >>> custom_particle.mass
-        <Quantity 5.12 kg>
-        >>> custom_particle.charge
-        <Quantity 6.2 C>
-
-        """
-        particle_dict = AbstractParticle.dict_from_json(json_string)
-        particle_type = particle_dict["type"]
-        if (particle_type != "CustomParticle"):
-            raise InvalidParticleError(
-                f"Unable to create Custom particle from "
-                f"{particle_type} JSON representation"
-            )
-        if (not ("mass" in particle_dict and "charge" in particle_dict)):
-            raise InvalidParticleError(
-                f"Unable to create Custom Particle from "
-                f"{particle_dict} . Missing mass or charge values."
-            )
-        particle_mass = None
-        particle_charge = None
-        if (particle_dict["mass"] != 'nan kg'):
-            particle_mass = u.Quantity(particle_dict["mass"])
-        if (particle_dict["charge"] != 'nan C'):
-            particle_charge = u.Quantity(particle_dict["charge"])
-        return CustomParticle(mass=particle_mass, charge=particle_charge)
 
     def __repr__(self):
         """

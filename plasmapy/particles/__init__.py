@@ -41,6 +41,10 @@ from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_
 from plasmapy.particles.ionization_state import IonizationState, State
 from plasmapy.particles.ionization_states import IonizationStates
 
+# load the JSON decoder
+import json
+from plasmapy.particles.particle_class import ParticleJSONDecoder
+
 # Create instances of the most commonly used particles
 
 proton = Particle("p+")
@@ -50,3 +54,7 @@ positron = Particle("e+")
 deuteron = Particle("D 1+")
 triton = Particle("T 1+")
 alpha = Particle("He-4 2+")
+
+
+def from_json(json_string):
+    return json.loads(json_string, cls=ParticleJSONDecoder)
