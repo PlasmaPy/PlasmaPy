@@ -86,9 +86,6 @@ particle, :attr:`PlasmaBlob.particle`.
 
 This feature is currently under development.
 
-Reference/API
-=============
-
 .. automodapi:: plasmapy.plasma.sources
    :no-heading:
 
