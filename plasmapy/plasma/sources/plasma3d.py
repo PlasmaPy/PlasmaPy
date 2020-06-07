@@ -8,7 +8,7 @@ import astropy.units as u
 import numpy as np
 from astropy.constants import mu0
 from plasmapy.formulary.magnetostatics import MagnetoStatics
-from plasmapy.plasma import GenericPlasma
+from plasmapy.plasma.plasma_base import GenericPlasma
 
 __all__ = ["Plasma3D"]
 
