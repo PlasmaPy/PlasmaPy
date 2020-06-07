@@ -12,7 +12,7 @@ from plasmapy.particles import particle_mass
 
 from plasmapy.utils import CouplingWarning, call_string
 
-from plasmapy.classes import GenericPlasma
+from plasmapy.plasma import GenericPlasma
 
 __all__ = ["PlasmaBlob"]
 

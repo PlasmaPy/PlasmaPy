@@ -5,7 +5,7 @@ from astropy.modeling import models, fitting
 from scipy.optimize import curve_fit
 
 from plasmapy.simulation.particletracker import ParticleTracker
-from plasmapy.classes.sources import Plasma3D
+from plasmapy.plasma.sources import Plasma3D
 
 
 @pytest.fixture()

@@ -10,7 +10,7 @@ from plasmapy.formulary.magnetostatics import MagnetoStatics
 
 from astropy.constants import mu0
 
-from plasmapy.classes import GenericPlasma
+from plasmapy.plasma import GenericPlasma
 
 __all__ = ["Plasma3D"]
 

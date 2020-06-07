@@ -1,7 +1,7 @@
-from plasmapy.classes.sources import openpmd_hdf5
-from plasmapy.classes.exceptions import DataStandardError
+from plasmapy.plasma.sources import openpmd_hdf5
+from plasmapy.plasma.exceptions import DataStandardError
 from plasmapy.particles.data.test import data_dir
-import plasmapy.classes
+import plasmapy.plasma
 
 from astropy import units as u
 from typing import Union, Tuple, List
@@ -146,5 +146,5 @@ def test_non_openpmd_hdf5():
 
 
 def test_HDF5Reader(h5_2d):
-    assert isinstance(h5_2d, plasmapy.classes.sources.HDF5Reader)
-    assert isinstance(h5_2d, plasmapy.classes.BasePlasma)
+    assert isinstance(h5_2d, plasmapy.plasma.sources.HDF5Reader)
+    assert isinstance(h5_2d, plasmapy.plasma.BasePlasma)

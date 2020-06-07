@@ -1,4 +1,4 @@
-from plasmapy.classes.plasma_base import GenericPlasma
+from plasmapy.plasma.plasma_base import GenericPlasma
 
 from plasmapy.utils.datatype_factory_base import BasicRegistrationFactory
 from plasmapy.utils.datatype_factory_base import NoMatchError

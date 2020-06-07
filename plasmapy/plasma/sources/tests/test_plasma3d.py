@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 import astropy.units as u
 
-from plasmapy.classes.sources import plasma3d
+from plasmapy.plasma.sources import plasma3d
 from plasmapy.particles.exceptions import InvalidParticleError
 
 

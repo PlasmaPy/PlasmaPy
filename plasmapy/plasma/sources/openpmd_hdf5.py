@@ -1,8 +1,8 @@
 import numpy as np
 import astropy.units as u
 
-from plasmapy.classes import GenericPlasma
-from plasmapy.classes.exceptions import DataStandardError
+from plasmapy.plasma import GenericPlasma
+from plasmapy.plasma.exceptions import DataStandardError
 
 import os
 from distutils.version import StrictVersion
