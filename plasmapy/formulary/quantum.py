@@ -168,10 +168,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     wavelength for electrons in an ideal gas and is given by
 
     .. math::
-
-       \lambda_{dbTh} = \frac{h}{\sqrt{2 \pi m_e k_B T_e}}
-
-    Example
+\lambda_{dbTh} = \frac{h}{\sqrt{2 \pi m_e k_B T_e}} Example
     -------
     >>> from astropy import units as u
     >>> thermal_deBroglie_wavelength(1 * u.eV)
@@ -447,7 +444,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     Example
     -------
     >>> from astropy import units as u
-    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)  # doctest: +SKIP
+    >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)
     <Quantity 2.00039985e-12>
 
     """
@@ -468,7 +465,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     # setting parameters for fitting along with bounds
     alphaGuess = 1 * u.dimensionless_unscaled
     try:
-        from lmfit import minimize, Parameters
+        from lmfit import minimize, Parameters, fit_report
     except (ImportError, ModuleNotFoundError) as e:
         from plasmapy.optional_deps import lmfit_import_error
 
@@ -480,7 +477,9 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     data = np.array([degen])  # result of Fermi_integral - degen should be zero
     eps_data = np.array([1e-15])  # numerical error
     minFit = minimize(residual, params, args=(data, eps_data))
+    print(fit_report(minFit))
     beta_mu = minFit.params["alpha"].value * u.dimensionless_unscaled
+    breakpoint()
     return beta_mu
 
 
@@ -554,7 +553,7 @@ def _chemical_potential_interp(n_e, T):
     Example
     -------
     >>> from astropy import units as u
-    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)  # doctest: +SKIP
+    >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)
     <Quantity 8.17649>
 
     """
