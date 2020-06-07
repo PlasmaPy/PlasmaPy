@@ -1,0 +1,1 @@
+Introduced plasmapy.particles.from_json method to convert JSON strings to corresponding particle
