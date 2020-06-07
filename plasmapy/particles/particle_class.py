@@ -111,9 +111,17 @@ class AbstractParticle(ABC):
     def charge(self) -> Union[u.Quantity, Real]:
         raise NotImplementedError
 
-    @abstractmethod
-    def to_dict(self) -> dict:
-        raise NotImplementedError
+    @property
+    def particle_dict(self) -> dict:
+        particle_dictionary = {
+            "plasmapy_particle": {
+                "type": type(self).__name__,
+                "description": {
+                    # subclass specific description
+                }
+            }
+        }
+        return particle_dictionary
 
     def __bool__(self):
         """
@@ -126,7 +134,7 @@ class AbstractParticle(ABC):
         """
         Return a JSON string representation of the minimum description of a particle.
         """
-        return json.dumps(self.to_dict())
+        return json.dumps(self.particle_dict())
 
 
 class Particle(AbstractParticle):
@@ -476,24 +484,25 @@ class Particle(AbstractParticle):
         """Return the particle's symbol."""
         return self.particle
 
-    def to_dict(self) -> dict:
+    def particle_dict(self) -> dict:
         """
         Return a dictionary representation of the minimum description of a particle.
 
         Examples
         --------
         >>> lead = Particle('lead')
-        >>> lead.to_dict()
-        {'type': 'Particle', 'symbol': 'Pb'}
+        >>> lead.particle_dict()
+        {'plasmapy_particle': {'type': 'Particle', 'description': {'argument': 'Pb'}}}
         >>> electron = Particle('e-')
-        >>> electron.to_dict()
-        {'type': 'Particle', 'symbol': 'e-'}
+        >>> electron.particle_dict()
+        {'plasmapy_particle': {'type': 'Particle', 'description': {'argument': 'e-'}}}
 
         """
-        particle_dict = dict()
-        particle_dict['type'] = 'Particle'
-        particle_dict['symbol'] = self.particle
-        return particle_dict
+        particle_dictionary = super().particle_dict
+        particle_dictionary["plasmapy_particle"]["description"] = {
+            "argument": self.particle
+        }
+        return particle_dictionary
 
     def __eq__(self, other) -> bool:
         """
@@ -1714,7 +1723,7 @@ class DimensionlessParticle(AbstractParticle):
         """
         return f"DimensionlessParticle(mass={self.mass}, charge={self.charge})"
 
-    def to_dict(self) -> dict:
+    def particle_dict(self) -> dict:
         """
         Return a dictionary representation of the minimum description of a dimensionless particle.
 
@@ -1722,17 +1731,18 @@ class DimensionlessParticle(AbstractParticle):
         --------
         >>> from plasmapy.particles import DimensionlessParticle
         >>> dimensionless_particle = DimensionlessParticle(mass=1.0, charge=-1.0)
-        >>> dimensionless_particle.to_dict()
-        {'type': 'DimensionlessParticle', 'mass': '1.0', 'charge': '-1.0'}
+        >>> dimensionless_particle.particle_dict()
+        {'plasmapy_particle': {'type': 'DimensionlessParticle', 'description': {'mass': '1.0', 'charge': '-1.0'}}}
         >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
-        >>> dimensionless_particle.to_dict()
-        {'type': 'DimensionlessParticle', 'mass': '1.0', 'charge': 'nan'}
+        >>> dimensionless_particle.particle_dict()
+        {'plasmapy_particle': {'type': 'DimensionlessParticle', 'description': {'mass': '1.0', 'charge': 'nan'}}}
         """
-        particle_dict = dict()
-        particle_dict['type'] = 'DimensionlessParticle'
-        particle_dict['mass'] = str(self.mass)
-        particle_dict['charge'] = str(self.charge)
-        return particle_dict
+        particle_dictionary = super().particle_dict
+        particle_dictionary["plasmapy_particle"]["description"] = {
+            "mass": str(self.mass),
+            "charge": str(self.charge)
+        }
+        return particle_dictionary
 
     @staticmethod
     def _validate_parameter(obj, can_be_negative=True) -> np.float64:
@@ -1864,25 +1874,26 @@ class CustomParticle(AbstractParticle):
         """
         return f"CustomParticle(mass={self.mass}, charge={self.charge})"
 
-    def to_dict(self) -> dict:
+    def particle_dict(self) -> dict:
         """
         Return a dictionary representation of the minimum description of a CustomParticle.
 
         Examples
         --------
-        >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg, charge=-1)
-        >>> custom_particle.to_dict()
-        {'type': 'CustomParticle', 'mass': '1.5e-26 kg', 'charge': '-1.6021...e-19 C'}
+        >>> custom_particle = CustomParticle(mass=5.12 * u.kg, charge=6.2 * u.C)
+        >>> custom_particle.particle_dict()
+        {'plasmapy_particle': {'type': 'CustomParticle', 'description': {'mass': '5.12 kg', 'charge': '6.2 C'}}}
         >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
-        >>> custom_particle.to_dict()
-        {'type': 'CustomParticle', 'mass': '1.5e-26 kg', 'charge': 'nan C'}
+        >>> custom_particle.particle_dict()
+        {'plasmapy_particle': {'type': 'CustomParticle', 'description': {'mass': '1.5e-26 kg', 'charge': 'nan C'}}}
 
         """
-        particle_dict = dict()
-        particle_dict['type'] = 'CustomParticle'
-        particle_dict['mass'] = str(self.mass)
-        particle_dict['charge'] = str(self.charge)
-        return particle_dict
+        particle_dictionary = super().particle_dict
+        particle_dictionary["plasmapy_particle"]["description"] = {
+            "mass": str(self.mass),
+            "charge": str(self.charge)
+        }
+        return particle_dictionary
 
     @property
     def mass(self) -> u.kg:
