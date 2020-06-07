@@ -1,9 +1,8 @@
-import pytest
-import numpy as np
 import astropy.units as u
-
-from plasmapy.plasma.sources import plasma3d
+import numpy as np
+import pytest
 from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.plasma.sources import plasma3d
 
 
 @pytest.mark.parametrize(

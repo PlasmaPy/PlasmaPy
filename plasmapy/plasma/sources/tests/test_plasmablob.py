@@ -1,10 +1,9 @@
-import pytest
-import numpy as np
 import astropy.units as u
-
-from plasmapy.plasma.sources import plasma3d, plasmablob
+import numpy as np
+import pytest
 from plasmapy.formulary import magnetostatics
 from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.plasma.sources import plasma3d, plasmablob
 from plasmapy.utils.exceptions import CouplingWarning
 
 
