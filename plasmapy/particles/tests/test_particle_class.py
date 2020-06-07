@@ -1003,17 +1003,17 @@ particle_json_repr_table = [
     (
         Particle,
         {"argument": 'lead'},
-        '{"type": "Particle", "symbol": "Pb"}',
+        '{"plasmapy_particle": {"type": "Particle", "description": {"argument": "Pb"}}}',
     ),
     (
         CustomParticle,
         {"mass": 5.12 * u.kg, "charge": 6.2*u.C},
-        '{"type": "CustomParticle", "mass": "5.12 kg", "charge": "6.2 C"}',
+        '{"plasmapy_particle": {"type": "CustomParticle", "description": {"mass": "5.12 kg", "charge": "6.2 C"}}}',
     ),
     (
         DimensionlessParticle,
         {"mass": 5.2, "charge": 6.3},
-        '{"type": "DimensionlessParticle", "mass": "5.2", "charge": "6.3"}',
+        '{"plasmapy_particle": {"type": "DimensionlessParticle", "description": {"mass": "5.2", "charge": "6.3"}}}',
     ),
 ]
 
