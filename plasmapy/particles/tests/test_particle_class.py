@@ -31,6 +31,7 @@ from plasmapy.particles.exceptions import (
     MissingAtomicDataWarning,
 )
 
+from plasmapy.particles import from_json
 # (arg, kwargs, results_dict)
 test_Particle_table = [
     (
@@ -1003,22 +1004,22 @@ custom_particles_from_json_tests = [
     (
         DimensionlessParticle,
         {"mass": 5.2, "charge": 6.3},
-        '{"type": "DimensionlessParticle", "mass": "5.2", "charge": "6.3"}'
+        '{"plasmapy_particle": {"type": "DimensionlessParticle", "description": {"mass": "5.2", "charge": "6.3"}}}'
     ),
     (
         DimensionlessParticle,
         {"mass": 5.2},
-        '{"type": "DimensionlessParticle", "mass": "5.2", "charge": "nan"}'
+        '{"plasmapy_particle": {"type": "DimensionlessParticle", "description": {"mass": "5.2", "charge": "nan"}}}'
     ),
     (
         CustomParticle,
-        {"mass": 5.12 * u.kg, "charge": 6.2},
-        '{"type": "CustomParticle", "mass": "5.12 kg", "charge": "9.933495130799999e-19 C"}'
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
+        '{"plasmapy_particle": {"type": "CustomParticle", "description": {"mass": "5.12 kg", "charge": "6.2 C"}}}'
     ),
     (
         CustomParticle,
         {"mass": 5.12 * u.kg},
-        '{"type": "CustomParticle", "mass": "5.12 kg", "charge": "nan C"}'
+        '{"plasmapy_particle": {"type": "CustomParticle", "description": {"mass": "5.12 kg", "charge": "nan C"}}}'
     )
 ]
 
@@ -1028,7 +1029,7 @@ def test_custom_particles_from_json(cls, kwargs, json_string):
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
     instance = cls(**kwargs)
-    instance_from_json = cls.from_json(json_string)
+    instance_from_json = from_json(json_string)
     assert u.isclose(instance.mass, instance_from_json.mass, equal_nan=True), pytest.fail(
             f"Expected a mass value of {instance.mass}\n"
             f"Received a mass value of {instance_from_json.mass}"
@@ -1043,12 +1044,12 @@ particles_from_json_tests = [
     (
         Particle,
         {"argument": 'Pb'},
-        '{"type": "Particle", "symbol": "Pb"}'
+        '{"plasmapy_particle": {"type": "Particle", "description": {"argument": "Pb"}}}'
     ),
     (
         Particle,
         {"argument": 'e-'},
-        '{"type": "Particle", "symbol": "e-"}'
+        '{"plasmapy_particle": {"type": "Particle", "description": {"argument": "e-"}}}'
     )
 ]
 
@@ -1057,7 +1058,7 @@ particles_from_json_tests = [
 def test_particles_from_json(cls, kwargs, json_string):
     """Test the attributes of Particle objects created from JSON representation."""
     instance = cls(**kwargs)
-    instance_from_json = cls.from_json(json_string)
+    instance_from_json = from_json(json_string)
     expected_particle = instance.particle
     actual_particle = instance_from_json.particle
     assert (expected_particle == actual_particle), pytest.fail(
