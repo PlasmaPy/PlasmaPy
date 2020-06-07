@@ -47,6 +47,9 @@ REQUEST>` is a pull request number, and `<TYPE>` is one of:
 * `removal`: Feature deprecation and/or feature removal.
 * `trivial`: A change which has no user facing effect or is tiny change.
 
+You get the PR number when you submit it, so this part needs a follow-up
+commit.
+
 For more information, see:
 https://github.com/PlasmaPy/PlasmaPy/blob/master/changelog/README.rst
 
