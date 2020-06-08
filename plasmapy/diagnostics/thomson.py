@@ -15,7 +15,7 @@ from plasmapy.formulary.parameters import plasma_frequency, thermal_speed
 from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
-from plasmapy.utils.exception import PlasmaPyWarning
+#from plasmapy.utils.exception import PlasmaPyWarning
 from typing import List, Tuple, Union
 from warnings import warn
 
@@ -154,8 +154,8 @@ def spectral_density(
     if (len(ion_species) != fract.size) \
             or (ion_vel.shape[0] != fract.size) \
             or (Ti.size != fract.size):
-        raise ValueError("Inconsistent number of species in fract, ion_species, Ti, "
-                         "and/or ion_vel.")
+        raise ValueError("Inconsistent number of species in fract, "
+                         "ion_species, Ti, and/or ion_vel.")
 
     # Ensure unit vectors are normalized
     probe_vec = probe_vec/np.linalg.norm(probe_vec)
@@ -166,8 +166,7 @@ def spectral_density(
 
     # Calculate plasma parameters
     vTe = thermal_speed(Te, particle="e-")
-    vTi = []
-    ion_z = []
+    vTi, ion_z = [], []
     for T, ion in zip(Ti, ion_species):
         vTi.append(thermal_speed(T, particle=ion).value)
         ion_z.append(ion.integer_charge)
