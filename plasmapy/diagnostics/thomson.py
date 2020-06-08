@@ -7,16 +7,17 @@ __all__ = [
     "spectral_density",
 ]
 
-import numpy as np
-from astropy import units as u
 import astropy.constants as const
+import astropy.units as u
+import numpy as np
 
-from plasmapy.utils.decorators import validate_quantities
-from plasmapy.formulary.parameters import plasma_frequency
-
+from plasmapy.formulary.parameters import plasma_frequency, thermal_speed
 from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
-
 from plasmapy.particles import Particle
+from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exception import PlasmaPyWarning
+from typing import List, Tuple, Union
+from warnings import warn
 
 
 # TODO: interface for inputting a multi-species configuration could be
