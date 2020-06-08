@@ -29,7 +29,7 @@ def gen_collective_spectrum():
     fract = np.array([1.0])
     Te = 10*u.eV
     Ti = np.array([10])*u.eV
-    ion_species = np.array(['C-12 5+'])
+    ion_species = ['C-12 5+']
 
     alpha, Skw = thomson.spectral_density(wavelengths, probe_wavelength,
                                           ne, Te, Ti, fract=fract,
@@ -53,7 +53,7 @@ def gen_non_collective_spectrum():
     fract = np.array([1.0])
     Te = 100*u.eV
     Ti = np.array([10])*u.eV
-    ion_species = np.array(['H+'])
+    ion_species = ['H+']
 
 
     alpha, Skw = thomson.spectral_density(wavelengths, probe_wavelength,
