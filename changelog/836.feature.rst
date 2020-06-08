@@ -1,1 +1,2 @@
-Introduced plasmapy.particles.from_json method to convert JSON strings to corresponding particle
+Introduced `to_json` method for AbstractParticleClass that converts a particle into a JSON representation
+Introduced `plasmapy.particles.from_json` method to convert JSON strings to corresponding particle
