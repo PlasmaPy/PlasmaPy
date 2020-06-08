@@ -229,8 +229,9 @@ def spectral_density(
     epsilon = 1 + chiE + np.sum(chiI, axis=0)
 
     # Calculate the contributions to the spectral density function
-    econtr = 2*np.sqrt(np.pi)/k/vTe* \
-        np.power(np.abs(1 - chiE/epsilon), 2)*np.exp(-xe**2)
+    econtr = (2*np.sqrt(np.pi)/k/vTe
+              * np.power(np.abs(1 - chiE/epsilon), 2)
+              * np.exp(-xe**2))
 
     icontr = np.zeros([fract.size, w.size], dtype=np.complex128)*u.s/u.rad
     for m in range(fract.size):
