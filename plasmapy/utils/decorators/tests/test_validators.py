@@ -3,15 +3,15 @@ Tests for 'validate` decorators (i.e. decorators that check objects and change t
 when possible).
 """
 import inspect
-import pytest
 import warnings
-
-from astropy import units as u
-from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
-from plasmapy.utils.decorators.validators import validate_quantities, ValidateQuantities
-from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
 from typing import Any, Dict, List
 from unittest import mock
+
+import pytest
+from astropy import units as u
+from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
+from plasmapy.utils.decorators.validators import ValidateQuantities, validate_quantities
+from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
 
 
 # ----------------------------------------------------------------------------------------

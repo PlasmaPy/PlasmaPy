@@ -13,10 +13,10 @@ https://www.python.org/download/releases/2.1.1/license/
 """
 
 import re
-import numpy as np
-from typing import Union
 from numbers import Integral
+from typing import Union
 
+import numpy as np
 
 __all__ = [
     "RomanError",

@@ -13,19 +13,19 @@ __all__ = [
 import collections
 import functools
 import inspect
-import numpy as np
 import warnings
+from functools import reduce
+from typing import Any, Dict, List, Tuple, Union
 
+import numpy as np
 from astropy import units as u
 from astropy.constants import c
-from functools import reduce
 from plasmapy.utils.decorators import preserve_signature
 from plasmapy.utils.exceptions import (
     PlasmaPyWarning,
-    RelativityWarning,
     RelativityError,
+    RelativityWarning,
 )
-from typing import Any, Dict, List, Tuple, Union
 
 try:
     from astropy.units.equivalencies import Equivalency

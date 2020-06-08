@@ -4,15 +4,12 @@ Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 import warnings
 
 import astropy.units as u
-
-from plasmapy.formulary.parameters import _grab_charge
-from plasmapy.formulary.dimensionless import quantum_theta
-from plasmapy.formulary.collisions import coupling_parameter
-from plasmapy.particles import particle_mass
-
-from plasmapy.utils import CouplingWarning, call_string
-
 from plasmapy.classes import GenericPlasma
+from plasmapy.formulary.collisions import coupling_parameter
+from plasmapy.formulary.dimensionless import quantum_theta
+from plasmapy.formulary.parameters import _grab_charge
+from plasmapy.particles import particle_mass
+from plasmapy.utils import CouplingWarning, call_string
 
 __all__ = ["PlasmaBlob"]
 

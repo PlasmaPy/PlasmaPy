@@ -19,9 +19,9 @@ __all__ = [
 ]
 
 import copy
-import numpy as np
-import astropy.constants.si as const
 
+import astropy.constants.si as const
+import numpy as np
 from astropy import units as u
 from astropy.visualization import quantity_support
 from plasmapy.particles import Particle

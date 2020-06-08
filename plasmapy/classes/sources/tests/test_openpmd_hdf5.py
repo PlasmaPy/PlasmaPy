@@ -1,12 +1,12 @@
-from plasmapy.classes.sources import openpmd_hdf5
-from plasmapy.classes.exceptions import DataStandardError
-from plasmapy.particles.data.test import data_dir
-import plasmapy.classes
-
-from astropy import units as u
-from typing import Union, Tuple, List
 import os
+from typing import List, Tuple, Union
+
+import plasmapy.classes
 import pytest
+from astropy import units as u
+from plasmapy.classes.exceptions import DataStandardError
+from plasmapy.classes.sources import openpmd_hdf5
+from plasmapy.particles.data.test import data_dir
 
 
 @pytest.fixture(scope="module")

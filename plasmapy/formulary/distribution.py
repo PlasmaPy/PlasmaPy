@@ -4,9 +4,9 @@ Kappa distributions. Functionality is intended to include generation,
 fitting and calculation.
 """
 import astropy as astropy
+import numpy as np
 from astropy import units as u
 from plasmapy.formulary import parameters
-import numpy as np
 from scipy.special import gamma
 
 __all__ = [

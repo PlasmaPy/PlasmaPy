@@ -1,35 +1,32 @@
-import pytest
-import inspect
 import collections
+import inspect
 
 import numpy as np
-from astropy import units as u, constants as const
-
-from plasmapy.utils import roman
-from astropy.constants import m_p, m_e, m_n, e, c
+import pytest
+from astropy import constants as const
+from astropy import units as u
+from astropy.constants import c, e, m_e, m_n, m_p
 from plasmapy.particles.atomic import known_isotopes
-from plasmapy.particles.isotopes import _Isotopes
-from plasmapy.particles.particle_class import (
-    Particle,
-    CustomParticle,
-    DimensionlessParticle,
-)
-from plasmapy.particles.special_particles import ParticleZoo
-
-from plasmapy.utils import call_string
-from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
-
 from plasmapy.particles.exceptions import (
     AtomicError,
-    MissingAtomicDataError,
+    AtomicWarning,
     ChargeError,
+    InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
-    InvalidElementError,
     InvalidParticleError,
-    AtomicWarning,
+    MissingAtomicDataError,
     MissingAtomicDataWarning,
 )
+from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.particle_class import (
+    CustomParticle,
+    DimensionlessParticle,
+    Particle,
+)
+from plasmapy.particles.special_particles import ParticleZoo
+from plasmapy.utils import call_string, roman
+from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
 # (arg, kwargs, results_dict)
 test_Particle_table = [

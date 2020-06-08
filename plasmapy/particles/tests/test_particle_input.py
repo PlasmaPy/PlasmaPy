@@ -1,12 +1,12 @@
-import pytest
-from typing import Optional, Union, Tuple, List
+from typing import List, Optional, Tuple, Union
 
+import pytest
 from plasmapy.particles.exceptions import (
     AtomicError,
     ChargeError,
+    InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
-    InvalidElementError,
     InvalidParticleError,
 )
 

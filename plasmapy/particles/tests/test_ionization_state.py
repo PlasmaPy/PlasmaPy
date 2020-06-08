@@ -1,19 +1,18 @@
-import pytest
 import collections
 
-import numpy as np
 import astropy.units as u
-
-from plasmapy.particles.ionization_state import IonizationState
-from plasmapy.utils.pytest_helpers import run_test
-from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
+import numpy as np
+import pytest
 from plasmapy.particles import (
+    Particle,
     atomic_number,
     atomic_symbol,
-    particle_symbol,
     isotope_symbol,
-    Particle,
+    particle_symbol,
 )
+from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
+from plasmapy.particles.ionization_state import IonizationState
+from plasmapy.utils.pytest_helpers import run_test
 
 test_cases = {
     "Li": {
@@ -555,9 +554,9 @@ class Test_IonizationStateNumberDensitiesSetter:
         )
 
     def test_n_e(self):
-        assert u.quantity.allclose(self.instance.n_e, self.valid_number_densities[1]), (
-            "IonizationState.n_e not set correctly after number_densities was set."
-        )
+        assert u.quantity.allclose(
+            self.instance.n_e, self.valid_number_densities[1]
+        ), "IonizationState.n_e not set correctly after number_densities was set."
 
     def test_that_negative_density_raises_error(self):
         with pytest.raises(AtomicError, match="cannot be negative"):

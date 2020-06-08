@@ -2,44 +2,43 @@
 
 import numpy as np
 import pytest
-
 from astropy import units as u
-from astropy.constants import m_p, m_e
+from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
-from plasmapy.particles.atomic import particle_mass, integer_charge
-from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.formulary.braginskii import (
-    _nondim_thermal_conductivity,
-    _nondim_viscosity,
-    _nondim_resistivity,
-    _nondim_te_conductivity,
-    _check_Z,
-    _nondim_tc_e_spitzer,
-    _nondim_resist_spitzer,
-    _nondim_tec_spitzer,
-    _nondim_tc_e_braginskii,
-    _nondim_tc_i_braginskii,
-    _nondim_visc_e_braginskii,
-    _nondim_visc_i_braginskii,
-    _nondim_resist_braginskii,
-    _nondim_tec_braginskii,
-    _nondim_tc_e_ji_held,
-    _nondim_resist_ji_held,
-    _nondim_tec_ji_held,
-    _nondim_visc_e_ji_held,
-    _nondim_tc_i_ji_held,
-    _nondim_visc_i_ji_held,
-    resistivity,
-    electron_thermal_conductivity,
-    ion_thermal_conductivity,
-    electron_viscosity,
-    ion_viscosity,
-    thermoelectric_conductivity,
     ClassicalTransport,
+    _check_Z,
+    _nondim_resist_braginskii,
+    _nondim_resist_ji_held,
+    _nondim_resist_spitzer,
+    _nondim_resistivity,
+    _nondim_tc_e_braginskii,
+    _nondim_tc_e_ji_held,
+    _nondim_tc_e_spitzer,
+    _nondim_tc_i_braginskii,
+    _nondim_tc_i_ji_held,
+    _nondim_te_conductivity,
+    _nondim_tec_braginskii,
+    _nondim_tec_ji_held,
+    _nondim_tec_spitzer,
+    _nondim_thermal_conductivity,
+    _nondim_visc_e_braginskii,
+    _nondim_visc_e_ji_held,
+    _nondim_visc_i_braginskii,
+    _nondim_visc_i_ji_held,
+    _nondim_viscosity,
+    electron_thermal_conductivity,
+    electron_viscosity,
+    ion_thermal_conductivity,
+    ion_viscosity,
+    resistivity,
+    thermoelectric_conductivity,
 )
 from plasmapy.formulary.collisions import Coulomb_logarithm
-from plasmapy.utils.exceptions import PhysicsError, CouplingWarning, RelativityWarning
 from plasmapy.formulary.parameters import Hall_parameter
+from plasmapy.particles.atomic import integer_charge, particle_mass
+from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsError, RelativityWarning
 
 
 def count_decimal_places(digits):

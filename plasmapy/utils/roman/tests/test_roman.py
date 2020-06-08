@@ -1,8 +1,7 @@
-import pytest
 import numpy as np
 import plasmapy.utils.roman as roman
+import pytest
 from plasmapy.utils.pytest_helpers import run_test
-
 
 ints_and_roman_numerals = [
     (1, "I"),

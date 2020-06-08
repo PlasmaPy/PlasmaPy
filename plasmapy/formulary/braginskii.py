@@ -131,19 +131,19 @@ __all__ = [
     "electron_viscosity",
 ]
 
-import numpy as np
 import warnings
 
+import numpy as np
 from astropy import units as u
-from astropy.constants.si import e, m_e, k_B
+from astropy.constants.si import e, k_B, m_e
 from plasmapy import particles, utils
-from plasmapy.particles.atomic import _is_electron
-from plasmapy.formulary.parameters import Hall_parameter, _grab_charge
 from plasmapy.formulary.collisions import (
+    Coulomb_logarithm,
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
-    Coulomb_logarithm,
 )
+from plasmapy.formulary.parameters import Hall_parameter, _grab_charge
+from plasmapy.particles.atomic import _is_electron
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import validate_quantities
 

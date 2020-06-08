@@ -3,9 +3,11 @@ Classes, sets, and dictionaries to store data and taxonomy
 information for special particles.
 """
 
-from typing import Set, Dict
-from astropy import units as u, constants as const
+from typing import Dict, Set
+
 import numpy as np
+from astropy import constants as const
+from astropy import units as u
 from plasmapy.particles.elements import _PeriodicTable
 
 

@@ -5,7 +5,6 @@ __all__ = ["ExB_drift", "force_drift"]
 
 import astropy.units as u
 import numpy as np
-
 from plasmapy.utils.decorators import validate_quantities
 
 
