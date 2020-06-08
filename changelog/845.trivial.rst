@@ -1,1 +1,1 @@
-Added a GitHub action that applies pre-commit tests to incoming pull requests.
+Added GitHub actions that apply pre-commit and flake8 (separately) to incoming pull requests.
