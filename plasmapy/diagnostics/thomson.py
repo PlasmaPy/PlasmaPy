@@ -121,7 +121,7 @@ def spectral_density(
 
     Skw : astropy.units.Quantity ndarray
         Computed spectral density function over the input wavelength range
-        with units of nm.
+        with units of s/rad.
 
     Notes
     -----
