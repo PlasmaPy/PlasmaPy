@@ -49,7 +49,7 @@ class IonizationStates:
 
     T_e: `~astropy.units.Quantity`, optional, keyword-only
         The electron temperature in units of temperature or thermal
-        energy per base_particle.
+        energy per particle.
 
     kappa: float, optional, keyword-only
         The value of kappa for a kappa distribution function.
@@ -207,11 +207,11 @@ class IonizationStates:
             else:
                 if not isinstance(int_charge, Integral):
                     raise TypeError(
-                        f"{int_charge} is not a valid charge for {base_particle}."
+                        f"{int_charge} is not a valid charge for {particle}."
                     )
                 elif not 0 <= int_charge <= atomic_number(particle):
                     raise ChargeError(
-                        f"{int_charge} is not a valid charge for {base_particle}."
+                        f"{int_charge} is not a valid charge for {particle}."
                     )
                 return State(
                     integer_charge=int_charge,
@@ -769,15 +769,15 @@ class IonizationStates:
             )
         else:
             old_keys = abundances_dict.keys()
-            try:
-                new_keys_dict = {
-                    particle_symbol(old_key): old_key for old_key in old_keys
-                }
-            except Exception:
-                raise AtomicError(
-                    f"The key {repr(old_key)} in the abundances "
-                    f"dictionary is not a valid element or isotope."
-                )
+            new_keys_dict = {}
+            for old_key in old_keys:
+                try:
+                    new_keys_dict[particle_symbol(old_key)] = old_key
+                except Exception:
+                    raise AtomicError(
+                        f"The key {repr(old_key)} in the abundances "
+                        f"dictionary is not a valid element or isotope."
+                    )
 
             new_elements = new_keys_dict.keys()
 
