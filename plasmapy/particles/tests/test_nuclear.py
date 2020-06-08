@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 from astropy import constants as const
 from astropy import units as u
+
 from plasmapy.particles.exceptions import AtomicError, InvalidParticleError
 from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
 

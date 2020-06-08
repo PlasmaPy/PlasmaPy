@@ -1,4 +1,5 @@
 import pytest
+
 from plasmapy.particles.special_particles import ParticleZoo, _Particles
 
 particle_antiparticle_pairs = [

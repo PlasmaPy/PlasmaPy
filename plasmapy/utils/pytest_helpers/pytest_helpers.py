@@ -11,6 +11,7 @@ import astropy.units as u
 import colorama
 import numpy as np
 import pytest
+
 from plasmapy.utils.error_messages import _exc_str, _represent_result, call_string
 from plasmapy.utils.exceptions import PlasmaPyWarning
 from plasmapy.utils.pytest_helpers.exceptions import (

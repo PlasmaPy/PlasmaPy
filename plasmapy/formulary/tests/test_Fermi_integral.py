@@ -4,6 +4,7 @@
 
 import numpy as np
 import pytest
+
 from plasmapy.formulary.mathematics import Fermi_integral
 
 

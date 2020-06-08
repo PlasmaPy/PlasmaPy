@@ -6,6 +6,7 @@ from typing import Dict
 import astropy.units as u
 import numpy as np
 import pytest
+
 from plasmapy.particles import (
     IonizationState,
     IonizationStates,

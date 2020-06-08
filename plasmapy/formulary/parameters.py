@@ -30,6 +30,7 @@ from typing import Optional
 import numpy as np
 from astropy import units as u
 from astropy.constants.si import c, e, eps0, k_B, m_e, m_p, mu0
+
 from plasmapy import particles
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (

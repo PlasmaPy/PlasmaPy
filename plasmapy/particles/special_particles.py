@@ -8,6 +8,7 @@ from typing import Dict, Set
 import numpy as np
 from astropy import constants as const
 from astropy import units as u
+
 from plasmapy.particles.elements import _PeriodicTable
 
 

@@ -14,6 +14,7 @@ from astropy import constants
 from astropy import units as u
 from astropy.constants import c
 from astropy.constants.codata2010 import mu0
+
 from plasmapy.formulary import electron_viscosity, parameters, quantum
 from plasmapy.utils.decorators import validate_quantities
 

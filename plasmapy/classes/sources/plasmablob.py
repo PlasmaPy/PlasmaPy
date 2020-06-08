@@ -4,6 +4,7 @@ Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 import warnings
 
 import astropy.units as u
+
 from plasmapy.classes.plasma_base import GenericPlasma
 from plasmapy.formulary.collisions import coupling_parameter
 from plasmapy.formulary.dimensionless import quantum_theta

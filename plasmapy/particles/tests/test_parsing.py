@@ -1,4 +1,5 @@
 import pytest
+
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import (
     AtomicWarning,

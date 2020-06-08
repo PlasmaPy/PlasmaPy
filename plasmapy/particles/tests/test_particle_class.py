@@ -6,6 +6,7 @@ import pytest
 from astropy import constants as const
 from astropy import units as u
 from astropy.constants import c, e, m_e, m_n, m_p
+
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
     AtomicError,

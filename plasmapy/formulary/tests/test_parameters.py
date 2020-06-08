@@ -5,6 +5,7 @@ import pytest
 from astropy import units as u
 from astropy.constants import c, e, m_e, m_p, mu0
 from astropy.tests.helper import assert_quantity_allclose
+
 from plasmapy.formulary.parameters import (
     Alfven_speed,
     Bohm_diffusion,

@@ -1,9 +1,10 @@
 import numpy as np
-import plasmapy.particles.exceptions
 import pytest
 from astropy import units as u
 from astropy.constants import c
 from astropy.tests.helper import assert_quantity_allclose
+
+import plasmapy.particles.exceptions
 from plasmapy.formulary.braginskii import Coulomb_logarithm
 from plasmapy.formulary.collisions import (
     Knudsen_number,

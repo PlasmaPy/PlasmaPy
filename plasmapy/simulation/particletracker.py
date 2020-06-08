@@ -6,6 +6,7 @@ import numpy as np
 import scipy.interpolate as interp
 from astropy import constants
 from astropy import units as u
+
 from plasmapy.particles import atomic
 
 __all__ = ["ParticleTracker"]

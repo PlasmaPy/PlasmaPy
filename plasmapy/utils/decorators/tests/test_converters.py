@@ -1,5 +1,6 @@
 import astropy.units as u
 import numpy as np
+
 from plasmapy.utils.decorators.converter import angular_freq_to_hz
 
 

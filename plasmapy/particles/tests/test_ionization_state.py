@@ -3,6 +3,7 @@ import collections
 import astropy.units as u
 import numpy as np
 import pytest
+
 from plasmapy.particles import (
     Particle,
     atomic_number,

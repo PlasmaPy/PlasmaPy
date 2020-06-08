@@ -11,6 +11,7 @@ from typing import List, Optional, Set, Tuple, Union
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
+
 import plasmapy.utils.roman as roman
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (

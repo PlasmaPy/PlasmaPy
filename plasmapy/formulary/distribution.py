@@ -6,8 +6,9 @@ fitting and calculation.
 import astropy as astropy
 import numpy as np
 from astropy import units as u
-from plasmapy.formulary import parameters
 from scipy.special import gamma
+
+from plasmapy.formulary import parameters
 
 __all__ = [
     "Maxwellian_1D",

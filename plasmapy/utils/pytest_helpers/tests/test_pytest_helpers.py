@@ -3,6 +3,7 @@ from typing import Any
 
 import astropy.units as u
 import pytest
+
 from plasmapy.particles import Particle
 from plasmapy.utils import call_string
 from plasmapy.utils.exceptions import PlasmaPyError, PlasmaPyWarning

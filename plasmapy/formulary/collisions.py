@@ -61,6 +61,7 @@ import numpy as np
 from astropy import units as u
 from astropy.constants.si import c, e, eps0, hbar, k_B, m_e
 from numpy import pi
+
 from plasmapy import particles, utils
 from plasmapy.formulary import parameters
 from plasmapy.formulary.mathematics import Fermi_integral

@@ -1,6 +1,7 @@
 import astropy.units as u
 import numpy as np
 import pytest
+
 from plasmapy.classes.sources import plasma3d
 from plasmapy.particles.exceptions import InvalidParticleError
 

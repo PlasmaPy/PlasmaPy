@@ -3,6 +3,7 @@ from distutils.version import StrictVersion
 
 import astropy.units as u
 import numpy as np
+
 from plasmapy.classes.exceptions import DataStandardError
 from plasmapy.classes.plasma_base import GenericPlasma
 
