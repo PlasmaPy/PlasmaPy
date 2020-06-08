@@ -1,6 +1,6 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: v3.1.0
     hooks:
     -   id: check-yaml
     -   id: check-json
@@ -10,7 +10,7 @@ repos:
     -   id: check-ast
     -   id: requirements-txt-fixer
 -   repo: https://github.com/timothycrosley/isort
-    rev: 4.3.21-2
+    rev: 4.3.21
     hooks:
     -   id: isort
         name: isort
@@ -20,6 +20,6 @@ repos:
         types: [python]
         args: [-m=3, -tc]
 -   repo: https://github.com/psf/black
-    rev: 19.3b0
+    rev: 19.10b0
     hooks:
     -   id: black
