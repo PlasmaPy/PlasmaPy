@@ -48,8 +48,16 @@ def spectral_density(
         scatter_vec=np.array([0, 1, 0])
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
-    Calculate the spectral dispersion function for Thomson scattering of a
+    Calculate the spectral density function for Thomson scattering of a
     probe laser beam by a multi-species Maxwellian plasma.
+
+    This function calculates the spectral density function for Thomson
+    scattering of a probe laser beam by a plasma consisting of one or more ion
+    species and a neutralizing electron fluid. All ion species and the
+    electron fluid are assumed to be Maxwellian. Relativistic effects are
+    neglected.
+
+    The output of this function is equivalent to Eq. 3.4.6 in Sheffield.
 
     Parameters
     ---------
