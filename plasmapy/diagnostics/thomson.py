@@ -120,12 +120,14 @@ def spectral_density(
     Notes
     -----
     For details, see "Plasma Scattering of Electromagnetic Radiation" by
-    Sheffield et al. ISBN 978-0123748775. This code is a modified version of
+    Sheffield et al. `ISBN 978\\-0123748775`_. This code is a modified version of
     the program described therein.
 
     For a concise summary of the relevant physics, see Chapter 5 of Derek
-    Schaeffer's thesis, DOI: 10.5281/zenodo.3766933
-
+    Schaeffer's thesis, DOI: `10.5281/zenodo.3766933`_.
+    
+    .. _`ISBN 978\\-0123748775`: https://www.sciencedirect.com/book/9780123748775/plasma-scattering-of-electromagnetic-radiation
+    .. _`10.5281/zenodo.3766933`: https://doi.org/10.5281/zenodo.3766933
     """
 
     # If ion drift velocity is not specified, create an array corresponding
@@ -219,17 +221,17 @@ def spectral_density(
     # Treatment of multiple species is an extension of the discussion in
     # Sheffield Sec. 5.1
     chiI = np.zeros([fract.size, w.size], dtype=np.complex128)
-    for i,s in enumerate(particles):
+    for i, ion in enumerate(ion_species):
         chiI[i, :] = permittivity_1D_Maxwellian(w_i[i, :], k, Ti[i], ni[i],
-                                                ion_species[i],
-                                                z_mean=ion_z[i])
+                                                ion, z_mean=ion_z[i])
 
     # Calculate the logitudinal dielectric function
     epsilon = 1 + chiE + np.sum(chiI, axis=0)
 
     # Calculate the contributions to the spectral density function
-    econtr = 2*np.sqrt(np.pi)/k/vTe* \
-        np.power(np.abs(1 - chiE/epsilon), 2)*np.exp(-xe**2)
+    econtr = (2*np.sqrt(np.pi)/k/vTe
+              * np.power(np.abs(1 - chiE/epsilon), 2)
+              * np.exp(-xe**2))
 
     icontr = np.zeros([fract.size, w.size], dtype=np.complex128)*u.s/u.rad
     for m in range(fract.size):
