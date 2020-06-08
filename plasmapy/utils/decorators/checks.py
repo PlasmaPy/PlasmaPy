@@ -20,7 +20,7 @@ from typing import Any, Dict, List, Tuple, Union
 import numpy as np
 from astropy import units as u
 from astropy.constants import c
-from plasmapy.utils.decorators import preserve_signature
+from plasmapy.utils.decorators.helpers import preserve_signature
 from plasmapy.utils.exceptions import (
     PlasmaPyWarning,
     RelativityError,

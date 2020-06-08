@@ -10,14 +10,11 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 from astropy import units as u
-from plasmapy.particles import (
-    IonizationState,
-    Particle,
-    State,
-    atomic_number,
-    particle_symbol,
-)
+from plasmapy.particles.atomic import atomic_number
 from plasmapy.particles.exceptions import AtomicError, ChargeError, InvalidParticleError
+from plasmapy.particles.ionization_state import IonizationState, State
+from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
 
 

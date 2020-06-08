@@ -11,8 +11,9 @@ from typing import List, Optional, Union
 
 import numpy as np
 from astropy import units as u
-from plasmapy.particles import Particle, particle_input
 from plasmapy.particles.exceptions import AtomicError, ChargeError, InvalidParticleError
+from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_input import particle_input
 from plasmapy.utils.decorators import validate_quantities
 
 _number_density_errmsg = (
