@@ -61,6 +61,7 @@ def spectral_density(
         \sum_i \frac{2\pi Z_i}{k}
         \bigg |\frac{\chi_e}{\epsilon} \bigg |^2 f_{io}
         \bigg ( \frac{\omega}{k} \bigg )
+
     where:
 
     .. math::
