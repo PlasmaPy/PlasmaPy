@@ -25,14 +25,28 @@ from warnings import warn
 # included ion and electron drift velocities and information about the ion
 # atomic species.
 
-@validate_quantities(wavelengths=u.nm, probe_wavelength=u.nm, ne=u.cm**-3,
-                  kTe=u.eV, kTi=u.eV, ion_vel=u.cm/u.s, fluid_vel=u.cm/u.s)
-def spectral_density(wavelengths, probe_wavelength, ne, kTe, kTi,
-                     fract=np.ones(1), ion_species=['H+'],
-                     fluid_vel=np.zeros([3])*u.cm/u.s,
-                     ion_vel=None,
-                     probe_vec=np.array([1, 0, 0]),
-                     scatter_vec=np.array([0, 1, 0])):
+@validate_quantities(
+    wavelengths={"can_be_negative": False},
+    probe_wavelength={"can_be_negative": False},
+    ne={"can_be_negative": False},
+    Te={"can_be_negative": False,
+        "equivalencies": u.temperature_energy()},
+    Ti={"can_be_negative": False,
+        "equivalencies": u.temperature_energy()},
+)
+def spectral_density(
+        wavelengths: u.nm,
+        probe_wavelength: u.nm,
+        ne: u.m**-3,
+        Te: u.K,
+        Ti: u.K,
+        fract: np.ndarray = np.ones(1),
+        ion_species: Union[str, List[str], Particle, List[Particle]] = 'H+',
+        fluid_vel: u.m/u.s = np.zeros(3)*u.cm/u.s,
+        ion_vel: u.m/u.s = None,
+        probe_vec=np.array([1, 0, 0]),
+        scatter_vec=np.array([0, 1, 0])
+) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
     Calculate the spectral dispersion function for Thomson scattering of a
     probe laser beam by a multi-species Maxwellian plasma.
