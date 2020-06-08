@@ -56,8 +56,8 @@ def spectral_density(
 
     .. math::
         S(k,\omega) = 1 - \frac{2\pi}{k}
-        bigg |1 - \frac{\chi_e}{\epsilon} \bigg |^2
-        f_{e0}\bigg (\frac{\omega}{k} \bigg ) +
+        \bigg |1 - \frac{\chi_e}{\epsilon} \bigg |^2
+        f_{e0} \bigg (\frac{\omega}{k} \bigg ) +
         \sum_i \frac{2\pi Z_i}{k}
         \bigg |\frac{\chi_e}{\epsilon} \bigg |^2 f_{io}
         \bigg ( \frac{\omega}{k} \bigg )
@@ -85,10 +85,10 @@ def spectral_density(
         mean (0th order) electron density of all plasma components combined
         convertable to cm^-3.
 
-    kTe : astropy.units.Quantity (required)
+    Te : astropy.units.Quantity (required)
         Temperature of the electron component (convertable to either eV or K)
 
-    kTi : astropy.units.Quantity ndarray, shape [N] (required)
+    Ti : astropy.units.Quantity ndarray, shape [N] (required)
         Temperature of each ion component (convertable to either eV or K)
 
     fract : float ndarray, shape [N]
