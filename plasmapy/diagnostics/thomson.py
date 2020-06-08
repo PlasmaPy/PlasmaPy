@@ -164,17 +164,18 @@ def spectral_density(
     # Define some constants
     C = const.c.si  # speed of light
 
-    #Calculate the mass and charge of each ion species
-    particles = [Particle(s) for s in ion_species]
-    Mi = u.Quantity([p.mass.to(u.eV/(u.cm/u.s)**2) for p in particles])
-    ion_z = u.Quantity([p.integer_charge for p in particles])
+    # Calculate plasma parameters
+    vTe = thermal_speed(Te, particle="e-")
+    vTi = []
+    ion_z = []
+    for T, ion in zip(Ti, ion_species):
+        vTi.append(thermal_speed(T, particle=ion).value)
+        ion_z.append(ion.integer_charge)
+    vTi = vTi * vTe.unit
+    ion_z = np.array(ion_z)
     zbar = np.sum(fract*ion_z)
-    ni = fract*ne/zbar # ne/zbar = sum(ni)
-
-    vTe = np.sqrt(2*kTe/m_e)  # Electron thermal velocity
-    vTi = np.sqrt(2*kTi/Mi)  # Ion thermal velocity
-    # Electron plasma frequency
-    wpe = plasma_frequency(n=ne)
+    ni = fract * ne / zbar  # ne/zbar = sum(ni)
+    wpe = plasma_frequency(n=ne, particle="e-")
 
     # Compute the ion velocity in the rest frame
     ion_vel = fluid_vel + ion_vel
