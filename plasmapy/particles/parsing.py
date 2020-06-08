@@ -466,7 +466,7 @@ def _particle_call_string(
     Return a `str` that recreates the call to create a particular
     `~plasmapy.particles.Particle` instance from the input.
     """
-    from plasmapy.particles.particle_class import Particle
+    from plasmapy.particles import Particle
 
     if kwargs is None:
         kwargs = {}
