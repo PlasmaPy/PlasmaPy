@@ -3,10 +3,10 @@ on:
   push:
     branches: [master]
 
-name: flake8
+name: Lint
 jobs:
   gitHubActionForFlake8:
-    name: GitHub Action for Flake8
+    name: flake8
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
