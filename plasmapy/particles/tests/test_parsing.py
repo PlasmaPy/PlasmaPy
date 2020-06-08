@@ -11,6 +11,7 @@ from ..parsing import (  # duplicate with utils.pytest_helpers.error_messages.ca
     _case_sensitive_aliases,
     _dealias_particle_aliases,
     _parse_and_check_atomic_input,
+    call_string,
 )
 from ..special_particles import ParticleZoo
 
