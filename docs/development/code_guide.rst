@@ -343,7 +343,7 @@ Benchmarks
 ==========
 
 
-.. _benchmarks: hhtps://plasmapy.org/plasmapy-benchmarks
+.. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
 .. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
 .. _asv: https://github.com/airspeed-velocity/asv
 .. _asv-docs: https://asv.readthedocs.io/en/stable/
