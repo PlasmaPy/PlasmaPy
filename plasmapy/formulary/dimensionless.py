@@ -199,8 +199,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
     ~astropy.units.UnitConversionError
         If the `U` is not in appropriate units.
 
-    :exc:`~plasmapy.utils.exceptions.RelativityError`
-        If the velocity `U` is greater than the speed of light.
+
 
     Examples
     --------
