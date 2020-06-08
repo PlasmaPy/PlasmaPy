@@ -1,0 +1,1 @@
+Added a GitHub action that applies pre-commit tests to incoming pull requests.
