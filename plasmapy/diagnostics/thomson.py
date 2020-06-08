@@ -55,10 +55,14 @@ def spectral_density(
     species and a neutralizing electron fluid:
 
     .. math::
-        S(k,\omega) = 1 - \frac{2\pi}{k}|1 - \frac{\chi_e}{\epsilon}|^2
-            f_{e0}(\frac{\omega}{k}) + \sum_i \frac{2\pi Z_i}{k}
-            |frac{\chi_e}{\epsilon}|^2 f_{io}(\frac{\omega}{k})
-    where
+        S(k,\omega) = 1 - \frac{2\pi}{k}
+        bigg |1 - \frac{\chi_e}{\epsilon} \bigg |^2
+        f_{e0}\bigg (\frac{\omega}{k} \bigg ) +
+        \sum_i \frac{2\pi Z_i}{k}
+        \bigg |\frac{\chi_e}{\epsilon} \bigg |^2 f_{io}
+        \bigg ( \frac{\omega}{k} \bigg )
+    where:
+
     .. math::
         \epsilon = 1 + \chi_e + \sum_i \chi_i
 
