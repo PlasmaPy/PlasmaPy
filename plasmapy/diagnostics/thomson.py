@@ -120,20 +120,34 @@ def spectral_density(
 
     """
 
-    if np.sum(fract) != 1.0:
-        print("WARNING: Sum(fract) != 1.0. Normalizing array.")
-        fract = fract/np.sum(fract)
-
     # If ion drift velocity is not specified, create an array corresponding
     # to zero drift
     if ion_vel is None:
-        ion_vel = np.zeros([fract.size, 3])*u.cm/u.s
+        ion_vel = np.zeros([fract.size, 3]) * u.cm / u.s
 
-    #Check to make sure the ion arrays are compatible
-    if (ion_species.size != fract.size) or \
-        (ion_vel.shape[0] != fract.size) or (kTi.size != fract.size):
-        raise ValueError("WARNING: Inconsistent number of species in fract, "
-              "ion_species, kTi, and/or ion_vel.")
+    # Condition ion_species
+    if isinstance(ion_species, (str, Particle)):
+        ion_species = [ion_species]
+    if len(ion_species) == 0:
+        raise ValueError("At least one ion species needs to be defined.")
+    for ii, ion in enumerate(ion_species):
+        if isinstance(ion, Particle):
+            continue
+        ion_species[ii] = Particle(ion)
+
+    # Condition Ti
+    if Ti.size == 1 and len(ion_species) != 1:
+        # assume same temperature for all ions
+        Ti = [Ti.value] * len(ion_species) * Ti.unit
+    elif Ti.size != len(ion_species):
+        raise ValueError(f"Got {Ti.size} ion temperatures and expected "
+                         f"{len(ion_species)}.")
+
+    if (len(ion_species) != fract.size) \
+            or (ion_vel.shape[0] != fract.size) \
+            or (Ti.size != fract.size):
+        raise ValueError("Inconsistent number of species in fract, ion_species, Ti, "
+                         "and/or ion_vel.")
 
     # Ensure unit vectors are normalized
     probe_vec = probe_vec/np.linalg.norm(probe_vec)
