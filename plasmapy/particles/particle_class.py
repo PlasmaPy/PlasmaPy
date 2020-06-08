@@ -12,7 +12,6 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import json
-
 import plasmapy.utils.roman as roman
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
@@ -162,12 +161,30 @@ class AbstractParticle(ABC):
     def charge(self) -> Union[u.Quantity, Real]:
         raise NotImplementedError
 
+    @property
+    def particle_dict(self) -> dict:
+        particle_dictionary = {
+            "plasmapy_particle": {
+                "type": type(self).__name__,
+                "description": {
+                    # subclass specific description
+                }
+            }
+        }
+        return particle_dictionary
+
     def __bool__(self):
         """
         Raise an `~plasmapy.utils.AtomicError` because particles
         do not have a truth value.
         """
         raise AtomicError("The truth value of a particle is not defined.")
+
+    def to_json(self) -> str:
+        """
+        Return a JSON string representation of the minimum description of a particle.
+        """
+        return json.dumps(self.particle_dict())
 
 
 class Particle(AbstractParticle):
@@ -516,6 +533,26 @@ class Particle(AbstractParticle):
     def __str__(self) -> str:
         """Return the particle's symbol."""
         return self.particle
+
+    def particle_dict(self) -> dict:
+        """
+        Return a dictionary representation of the minimum description of a particle.
+
+        Examples
+        --------
+        >>> lead = Particle('lead')
+        >>> lead.particle_dict()
+        {'plasmapy_particle': {'type': 'Particle', 'description': {'argument': 'Pb'}}}
+        >>> electron = Particle('e-')
+        >>> electron.particle_dict()
+        {'plasmapy_particle': {'type': 'Particle', 'description': {'argument': 'e-'}}}
+
+        """
+        particle_dictionary = super().particle_dict
+        particle_dictionary["plasmapy_particle"]["description"] = {
+            "argument": self.particle
+        }
+        return particle_dictionary
 
     def __eq__(self, other) -> bool:
         """
@@ -1736,6 +1773,27 @@ class DimensionlessParticle(AbstractParticle):
         """
         return f"DimensionlessParticle(mass={self.mass}, charge={self.charge})"
 
+    def particle_dict(self) -> dict:
+        """
+        Return a dictionary representation of the minimum description of a dimensionless particle.
+
+        Examples
+        --------
+        >>> from plasmapy.particles import DimensionlessParticle
+        >>> dimensionless_particle = DimensionlessParticle(mass=1.0, charge=-1.0)
+        >>> dimensionless_particle.particle_dict()
+        {'plasmapy_particle': {'type': 'DimensionlessParticle', 'description': {'mass': '1.0', 'charge': '-1.0'}}}
+        >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
+        >>> dimensionless_particle.particle_dict()
+        {'plasmapy_particle': {'type': 'DimensionlessParticle', 'description': {'mass': '1.0', 'charge': 'nan'}}}
+        """
+        particle_dictionary = super().particle_dict
+        particle_dictionary["plasmapy_particle"]["description"] = {
+            "mass": str(self.mass),
+            "charge": str(self.charge)
+        }
+        return particle_dictionary
+
     @staticmethod
     def _validate_parameter(obj, can_be_negative=True) -> np.float64:
         """Verify that the argument corresponds to a valid real number."""
@@ -1865,6 +1923,27 @@ class CustomParticle(AbstractParticle):
         'CustomParticle(mass=1.2...e-26 kg, charge=9.2...e-19 C)'
         """
         return f"CustomParticle(mass={self.mass}, charge={self.charge})"
+
+    def particle_dict(self) -> dict:
+        """
+        Return a dictionary representation of the minimum description of a CustomParticle.
+
+        Examples
+        --------
+        >>> custom_particle = CustomParticle(mass=5.12 * u.kg, charge=6.2 * u.C)
+        >>> custom_particle.particle_dict()
+        {'plasmapy_particle': {'type': 'CustomParticle', 'description': {'mass': '5.12 kg', 'charge': '6.2 C'}}}
+        >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
+        >>> custom_particle.particle_dict()
+        {'plasmapy_particle': {'type': 'CustomParticle', 'description': {'mass': '1.5e-26 kg', 'charge': 'nan C'}}}
+
+        """
+        particle_dictionary = super().particle_dict
+        particle_dictionary["plasmapy_particle"]["description"] = {
+            "mass": str(self.mass),
+            "charge": str(self.charge)
+        }
+        return particle_dictionary
 
     @property
     def mass(self) -> u.kg:

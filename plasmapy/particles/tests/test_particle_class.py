@@ -1064,4 +1064,33 @@ def test_particles_from_json(cls, kwargs, json_string):
     assert (expected_particle == actual_particle), pytest.fail(
             f"Expected {expected_particle}\n"
             f"Got {actual_particle}"
+particle_json_repr_table = [
+    (
+        Particle,
+        {"argument": 'lead'},
+        '{"plasmapy_particle": {"type": "Particle", "description": {"argument": "Pb"}}}',
+    ),
+    (
+        CustomParticle,
+        {"mass": 5.12 * u.kg, "charge": 6.2*u.C},
+        '{"plasmapy_particle": {"type": "CustomParticle", "description": {"mass": "5.12 kg", "charge": "6.2 C"}}}',
+    ),
+    (
+        DimensionlessParticle,
+        {"mass": 5.2, "charge": 6.3},
+        '{"plasmapy_particle": {"type": "DimensionlessParticle", "description": {"mass": "5.2", "charge": "6.3"}}}',
+    ),
+]
+
+
+@pytest.mark.parametrize("cls, kwargs, expected_repr", particle_json_repr_table)
+def test_customized_particle_repr(cls, kwargs, expected_repr):
+    """Test the JSON representations of normal, dimensionless and custom particles."""
+    instance = cls(**kwargs)
+    json_repr = instance.to_json()
+    assert expected_repr == json_repr, pytest.fail(
+            f"Problem with JSON representation of {cls.__name__} "
+            f"with kwargs = {kwargs}.\n\n"
+            f"expected_repr = {expected_repr}.\n\n"
+            f"json_repr: {json_repr}"
         )
