@@ -1,4 +1,5 @@
 import pytest
+from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import (
     AtomicWarning,
     InvalidElementError,
@@ -10,9 +11,20 @@ from ..parsing import (  # duplicate with utils.pytest_helpers.error_messages.ca
     _case_sensitive_aliases,
     _dealias_particle_aliases,
     _parse_and_check_atomic_input,
-    _particle_call_string,
 )
 from ..special_particles import ParticleZoo
+
+
+def _particle_call_string(arg, kwargs=None) -> str:
+    """
+    Return a `str` that recreates the call to create a particular
+    `~plasmapy.particles.Particle` instance from the input.
+    """
+    if kwargs is None:
+        kwargs = {}
+
+    return call_string(Particle, arg, kwargs)
+
 
 aliases_and_symbols = [
     ("electron", "e-"),

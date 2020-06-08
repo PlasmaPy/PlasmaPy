@@ -457,23 +457,3 @@ def _parse_and_check_atomic_input(
     }
 
     return nomenclature_dict
-
-
-def _particle_call_string(
-    arg: Union[str, Integral], kwargs: Optional[Dict] = None
-) -> str:
-    """
-    Return a `str` that recreates the call to create a particular
-    `~plasmapy.particles.Particle` instance from the input.
-    """
-    if kwargs is None:
-        kwargs = {}
-
-    return call_string(Particle, arg, kwargs)
-
-
-#    if kwargs != {}:
-#        keyword_string = ", " + str(kwargs).strip(r"}{'").replace("'", "").replace(":", " =")
-#    else:
-#        keyword_string = ""
-#    return f"Particle({repr(arg)}{keyword_string})"
