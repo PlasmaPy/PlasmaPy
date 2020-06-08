@@ -59,6 +59,7 @@ def spectral_density(
             f_{e0}(\frac{\omega}{k}) + \sum_i \frac{2\pi Z_i}{k}
             |frac{\chi_e}{\epsilon}|^2 f_{io}(\frac{\omega}{k})
     where
+    .. math::
         \epsilon = 1 + \chi_e + \sum_i \chi_i
 
     In this function the electron and ion distribution functions
