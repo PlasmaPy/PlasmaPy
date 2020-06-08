@@ -216,7 +216,7 @@ def spectral_density(
     xe = (w_e/(k*vTe)).to(u.dimensionless_unscaled)
     xi = (np.outer(1/vTi, 1/k)*w_i).to(u.dimensionless_unscaled)
 
-    # Calculate the succeptabilities
+    # Calculate the susceptibilities
     chiE = permittivity_1D_Maxwellian(w_e, k, Te, ne, 'e-')
 
     # Treatment of multiple species is an extension of the discussion in
