@@ -1,0 +1,1 @@
+Officially delete :mod:`plasmapy.examples`.

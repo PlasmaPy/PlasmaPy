@@ -28,6 +28,7 @@ from plasmapy.formulary.parameters import (
     magnetic_pressure,
     upper_hybrid_frequency,
     lower_hybrid_frequency,
+    Bohm_diffusion,
 )
 
 B = 1.0 * u.T
@@ -1039,3 +1040,20 @@ def test_lower_hybrid_frequency():
             1.3 * u.T, 1e19 * u.m ** -3
         )
     assert_can_handle_nparray(lower_hybrid_frequency)
+
+
+def test_Bohm_diffusion():
+    r"""Test Mag_Reynolds in dimensionless.py"""
+
+    T_e = 5000 * u.K
+    B = 10 * u.T
+
+    assert (
+            Bohm_diffusion(T_e, B)
+           ).unit == u.m ** 2 / u.s
+
+    with pytest.warns(u.UnitsWarning):
+        Bohm_diffusion(5000, B)
+
+    with pytest.raises(u.UnitTypeError):
+        Bohm_diffusion(2.2 * u.kg, B)
