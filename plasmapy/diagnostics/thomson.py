@@ -120,7 +120,7 @@ def spectral_density(
         scattering, while alpha < 1 indicates non-collective scattering.
 
     Skw : astropy.units.Quantity ndarray
-        Computed spectral density function over the input wavelength range
+        Computed spectral density function over the input wavelength array
         with units of s/rad.
 
     Notes
