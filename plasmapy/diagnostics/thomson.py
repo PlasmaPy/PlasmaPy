@@ -220,10 +220,9 @@ def spectral_density(
     # Treatment of multiple species is an extension of the discussion in
     # Sheffield Sec. 5.1
     chiI = np.zeros([fract.size, w.size], dtype=np.complex128)
-    for i,s in enumerate(particles):
+    for i, ion in enumerate(ion_species):
         chiI[i, :] = permittivity_1D_Maxwellian(w_i[i, :], k, Ti[i], ni[i],
-                                                ion_species[i],
-                                                z_mean=ion_z[i])
+                                                ion, z_mean=ion_z[i])
 
     # Calculate the logitudinal dielectric function
     epsilon = 1 + chiE + np.sum(chiI, axis=0)
