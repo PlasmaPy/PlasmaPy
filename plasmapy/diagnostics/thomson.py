@@ -15,7 +15,6 @@ from plasmapy.formulary.parameters import plasma_frequency, thermal_speed
 from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
-#from plasmapy.utils.exception import PlasmaPyWarning
 from typing import List, Tuple, Union
 from warnings import warn
 
@@ -53,11 +52,18 @@ def spectral_density(
 
     This function calculates the spectral density function for Thomson
     scattering of a probe laser beam by a plasma consisting of one or more ion
-    species and a neutralizing electron fluid. All ion species and the
-    electron fluid are assumed to be Maxwellian. Relativistic effects are
-    neglected.
+    species and a neutralizing electron fluid:
 
-    The output of this function is equivalent to Eq. 3.4.6 in Sheffield.
+    .. math::
+        S(k,\omega) = 1 - \frac{2\pi}{k}|1 - \frac{\chi_e}{\epsilon}|^2
+            f_{e0}(\frac{\omega}{k}) + \sum_i \frac{2\pi Z_i}{k}
+            |frac{\chi_e}{\epsilon}|^2 f_{io}(\frac{\omega}{k})
+    where
+        \epsilon = 1 + \chi_e + \sum_i \chi_i
+
+    In this function the electron and ion distribution functions
+    :math:`f_{e0}` and :math:`f_{i0}` are assumed to be Maxwellian, making this
+    function equivalent to Eq. 3.4.6 in Sheffield.
 
     Parameters
     ---------
@@ -83,10 +89,10 @@ def spectral_density(
         Fraction (by number) of the total number of ions made up by each ion
         species. Must sum to 1.0. Default is a single ion species.
 
-    ion_species : str ndarray, shape [N]
-        Strings representing each ion species in the format interpretable by
-        the plasmapy Particle class. Default is ['H+'] corresponding to a
-        single species of hydrogen ions.
+    ion_species : str or Particle class list, shape [N]
+        A list of either instances of the Particle class or strings
+        interpretable by that class representing each ion species.
+        Default is ['H+'] corresponding to a single species of hydrogen ions.
 
     fluid_vel : astropy.units.Quantity ndarray shape [3]
         Velocity of the fluid or electron component in the rest frame in
@@ -119,13 +125,14 @@ def spectral_density(
 
     Notes
     -----
+
     For details, see "Plasma Scattering of Electromagnetic Radiation" by
     Sheffield et al. `ISBN 978\\-0123748775`_. This code is a modified version of
     the program described therein.
 
     For a concise summary of the relevant physics, see Chapter 5 of Derek
     Schaeffer's thesis, DOI: `10.5281/zenodo.3766933`_.
-    
+
     .. _`ISBN 978\\-0123748775`: https://www.sciencedirect.com/book/9780123748775/plasma-scattering-of-electromagnetic-radiation
     .. _`10.5281/zenodo.3766933`: https://doi.org/10.5281/zenodo.3766933
     """
@@ -171,9 +178,8 @@ def spectral_density(
     vTi, ion_z = [], []
     for T, ion in zip(Ti, ion_species):
         vTi.append(thermal_speed(T, particle=ion).value)
-        ion_z.append(ion.integer_charge)
+        ion_z.append(ion.integer_charge * u.dimensionless_unscaled)
     vTi = vTi * vTe.unit
-    ion_z = np.array(ion_z)
     zbar = np.sum(fract*ion_z)
     ni = fract * ne / zbar  # ne/zbar = sum(ni)
     wpe = plasma_frequency(n=ne, particle="e-")
