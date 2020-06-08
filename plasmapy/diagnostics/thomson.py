@@ -40,9 +40,9 @@ def spectral_density(
         Te: u.K,
         Ti: u.K,
         fract: np.ndarray = np.ones(1),
-        ion_species: Union[str, List[str], Particle, List[Particle]] = 'H+',
+        ion_species: Union[str, List[str], Particle, List[Particle]]='H+',
         fluid_vel: u.m/u.s = np.zeros(3)*u.cm/u.s,
-        ion_vel: u.m/u.s = None,
+        ion_vel: u.m/u.s=None,
         probe_vec=np.array([1, 0, 0]),
         scatter_vec=np.array([0, 1, 0])
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
@@ -132,14 +132,15 @@ def spectral_density(
     -----
 
     For details, see "Plasma Scattering of Electromagnetic Radiation" by
-    Sheffield et al. `ISBN 978\\-0123748775`_. This code is a modified version of
-    the program described therein.
+    Sheffield et al. `ISBN 978\\-0123748775`_. This code is a modified version
+    of the program described therein.
 
     For a concise summary of the relevant physics, see Chapter 5 of Derek
     Schaeffer's thesis, DOI: `10.5281/zenodo.3766933`_.
 
     .. _`ISBN 978\\-0123748775`: https://www.sciencedirect.com/book/9780123748775/plasma-scattering-of-electromagnetic-radiation
     .. _`10.5281/zenodo.3766933`: https://doi.org/10.5281/zenodo.3766933
+
     """
 
     # If ion drift velocity is not specified, create an array corresponding
@@ -240,9 +241,9 @@ def spectral_density(
     epsilon = 1 + chiE + np.sum(chiI, axis=0)
 
     # Calculate the contributions to the spectral density function
-    econtr = (2*np.sqrt(np.pi)/k/vTe
-              * np.power(np.abs(1 - chiE/epsilon), 2)
-              * np.exp(-xe**2))
+    econtr = (2*np.sqrt(np.pi)/k/vTe *
+              np.power(np.abs(1 - chiE/epsilon), 2) *
+              np.exp(-xe**2))
 
     icontr = np.zeros([fract.size, w.size], dtype=np.complex128)*u.s/u.rad
     for m in range(fract.size):
