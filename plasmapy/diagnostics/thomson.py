@@ -162,10 +162,7 @@ def spectral_density(
     scatter_vec = scatter_vec/np.linalg.norm(scatter_vec)
 
     # Define some constants
-    C = const.c.to(u.cm/u.s)  # speed of light
-    m_e = const.m_e.to(u.eV/(u.cm/u.s)**2)
-    Te = (kTe/const.k_B).to(u.K)
-    Ti = (kTi/const.k_B).to(u.K)
+    C = const.c.si  # speed of light
 
     #Calculate the mass and charge of each ion species
     particles = [Particle(s) for s in ion_species]
