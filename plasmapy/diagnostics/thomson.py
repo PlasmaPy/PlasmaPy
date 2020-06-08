@@ -74,10 +74,10 @@ def spectral_density(
         convertable to cm^-3.
 
     kTe : astropy.units.Quantity (required)
-        Temperature of the electron component convertable to eV.
+        Temperature of the electron component (convertable to either eV or K)
 
     kTi : astropy.units.Quantity ndarray, shape [N] (required)
-        Temperature of each ion component convertable to eV.
+        Temperature of each ion component (convertable to either eV or K)
 
     fract : float ndarray, shape [N]
         Fraction (by number) of the total number of ions made up by each ion
