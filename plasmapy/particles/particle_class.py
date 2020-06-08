@@ -10,9 +10,9 @@ from typing import List, Optional, Set, Tuple, Union
 
 import astropy.constants as const
 import astropy.units as u
-import numpy as np
+from datetime import datetime
 import json
-import plasmapy.utils.roman as roman
+import numpy as np
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
     AtomicError,
@@ -31,6 +31,7 @@ from plasmapy.particles.parsing import (
     _invalid_particle_errmsg,
     _parse_and_check_atomic_input,
 )
+from plasmapy.utils import roman
 from plasmapy.particles.special_particles import (
     ParticleZoo,
     _antiparticles,
@@ -110,13 +111,13 @@ class ParticleJSONDecoder(json.JSONDecoder):
         Examples
         --------
         >>> import plasmapy
-        >>> input_str = '{"plasmapy_particle": {"type": "Particle", "description": {"argument": "Pb"}}}'
+        >>> input_str = '{"plasmapy_particle": {"type": "Particle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"argument": "Pb"}}}'
         >>> plasmapy.particles.from_json(input_str)
         Particle("Pb")
-        >>> input_str = '{"plasmapy_particle": {"type": "CustomParticle", "description": {"mass": "5.12 kg", "charge": "6.2 C"}}}'
+        >>> input_str = '{"plasmapy_particle": {"type": "CustomParticle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"mass": "5.12 kg", "charge": "6.2 C"}}}'
         >>> plasmapy.particles.from_json(input_str)
         CustomParticle(mass=5.12 kg, charge=6.2 C)
-        >>> input_str = '{"plasmapy_particle": {"type": "DimensionlessParticle", "description": {"mass": "5.2", "charge": "6.3"}}}'
+        >>> input_str = '{"plasmapy_particle": {"type": "DimensionlessParticle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"mass": "5.2", "charge": "6.3"}}}'
         >>> plasmapy.particles.from_json(input_str)
         DimensionlessParticle(mass=5.2, charge=6.3)
         """
@@ -129,7 +130,7 @@ class ParticleJSONDecoder(json.JSONDecoder):
             particle_data = json_dict["plasmapy_particle"]
             particle_class = particle_data['type']
             if (particle_class in particle_types):
-                particle_init_args = particle_data["description"]
+                particle_init_args = particle_data["init_args"]
                 if (particle_class == 'CustomParticle'):
                     particle_init_args["mass"] = u.Quantity(particle_init_args["mass"])
                     particle_init_args["charge"] = u.Quantity(particle_init_args["charge"])
@@ -162,16 +163,18 @@ class AbstractParticle(ABC):
         raise NotImplementedError
 
     @property
-    def particle_dict(self) -> dict:
-        particle_dictionary = {
+    def json_dict(self) -> dict:
+        json_dictionary = {
             "plasmapy_particle": {
                 "type": type(self).__name__,
-                "description": {
-                    # subclass specific description
+                "module": self.__module__,
+                "date_created": str(datetime.now().date()),
+                "init_args": {
+                    # custom init_args for subclasses
                 }
             }
         }
-        return particle_dictionary
+        return json_dictionary
 
     def __bool__(self):
         """
@@ -184,7 +187,7 @@ class AbstractParticle(ABC):
         """
         Return a JSON string representation of the minimum description of a particle.
         """
-        return json.dumps(self.particle_dict())
+        return json.dumps(self.json_dict())
 
 
 class Particle(AbstractParticle):
@@ -534,22 +537,22 @@ class Particle(AbstractParticle):
         """Return the particle's symbol."""
         return self.particle
 
-    def particle_dict(self) -> dict:
+    def json_dict(self) -> dict:
         """
         Return a dictionary representation of the minimum description of a particle.
 
         Examples
         --------
         >>> lead = Particle('lead')
-        >>> lead.particle_dict()
-        {'plasmapy_particle': {'type': 'Particle', 'description': {'argument': 'Pb'}}}
+        >>> lead.json_dict()
+        {'plasmapy_particle': {'type': 'Particle', 'module': 'plasmapy.particles.particle_class', 'date_created': '...', 'init_args': {'argument': 'Pb'}}}
         >>> electron = Particle('e-')
-        >>> electron.particle_dict()
-        {'plasmapy_particle': {'type': 'Particle', 'description': {'argument': 'e-'}}}
+        >>> electron.json_dict()
+        {'plasmapy_particle': {'type': 'Particle', 'module': 'plasmapy.particles.particle_class', 'date_created': '...', 'init_args': {'argument': 'e-'}}}
 
         """
-        particle_dictionary = super().particle_dict
-        particle_dictionary["plasmapy_particle"]["description"] = {
+        particle_dictionary = super().json_dict
+        particle_dictionary["plasmapy_particle"]["init_args"] = {
             "argument": self.particle
         }
         return particle_dictionary
@@ -1773,22 +1776,22 @@ class DimensionlessParticle(AbstractParticle):
         """
         return f"DimensionlessParticle(mass={self.mass}, charge={self.charge})"
 
-    def particle_dict(self) -> dict:
+    def json_dict(self) -> dict:
         """
-        Return a dictionary representation of the minimum description of a dimensionless particle.
+        Return a dictionary representation of a dimensionless particle.
 
         Examples
         --------
         >>> from plasmapy.particles import DimensionlessParticle
         >>> dimensionless_particle = DimensionlessParticle(mass=1.0, charge=-1.0)
-        >>> dimensionless_particle.particle_dict()
-        {'plasmapy_particle': {'type': 'DimensionlessParticle', 'description': {'mass': '1.0', 'charge': '-1.0'}}}
+        >>> dimensionless_particle.json_dict()
+        {'plasmapy_particle': {'type': 'DimensionlessParticle', 'module': 'plasmapy.particles.particle_class', 'date_created': '2020-06-08', 'init_args': {'mass': '1.0', 'charge': '-1.0'}}}
         >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
-        >>> dimensionless_particle.particle_dict()
-        {'plasmapy_particle': {'type': 'DimensionlessParticle', 'description': {'mass': '1.0', 'charge': 'nan'}}}
+        >>> dimensionless_particle.json_dict()
+        {'plasmapy_particle': {'type': 'DimensionlessParticle', 'module': 'plasmapy.particles.particle_class', 'date_created': '2020-06-08', 'init_args': {'mass': '1.0', 'charge': 'nan'}}}
         """
-        particle_dictionary = super().particle_dict
-        particle_dictionary["plasmapy_particle"]["description"] = {
+        particle_dictionary = super().json_dict
+        particle_dictionary["plasmapy_particle"]["init_args"] = {
             "mass": str(self.mass),
             "charge": str(self.charge)
         }
@@ -1924,22 +1927,22 @@ class CustomParticle(AbstractParticle):
         """
         return f"CustomParticle(mass={self.mass}, charge={self.charge})"
 
-    def particle_dict(self) -> dict:
+    def json_dict(self) -> dict:
         """
         Return a dictionary representation of the minimum description of a CustomParticle.
 
         Examples
         --------
         >>> custom_particle = CustomParticle(mass=5.12 * u.kg, charge=6.2 * u.C)
-        >>> custom_particle.particle_dict()
-        {'plasmapy_particle': {'type': 'CustomParticle', 'description': {'mass': '5.12 kg', 'charge': '6.2 C'}}}
+        >>> custom_particle.json_dict()
+        {'plasmapy_particle': {'type': 'CustomParticle', 'module': 'plasmapy.particles.particle_class', 'date_created': '2020-06-08', 'init_args': {'mass': '5.12 kg', 'charge': '6.2 C'}}}
         >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
-        >>> custom_particle.particle_dict()
-        {'plasmapy_particle': {'type': 'CustomParticle', 'description': {'mass': '1.5e-26 kg', 'charge': 'nan C'}}}
+        >>> custom_particle.json_dict()
+        {'plasmapy_particle': {'type': 'CustomParticle', 'module': 'plasmapy.particles.particle_class', 'date_created': '2020-06-08', 'init_args': {'mass': '1.5e-26 kg', 'charge': 'nan C'}}}
 
         """
-        particle_dictionary = super().particle_dict
-        particle_dictionary["plasmapy_particle"]["description"] = {
+        particle_dictionary = super().json_dict
+        particle_dictionary["plasmapy_particle"]["init_args"] = {
             "mass": str(self.mass),
             "charge": str(self.charge)
         }
