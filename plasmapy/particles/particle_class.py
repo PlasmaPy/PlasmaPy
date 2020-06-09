@@ -1777,7 +1777,8 @@ class DimensionlessParticle(AbstractParticle):
         """
         return f"DimensionlessParticle(mass={self.mass}, charge={self.charge})"
 
-    def json_dict(self) -> dict:
+    @property
+    def json_dict(self) -> dict: 
         """
         Return a dictionary representation of a dimensionless particle.
 
