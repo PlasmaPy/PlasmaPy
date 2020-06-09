@@ -483,10 +483,34 @@ def thermal_speed(
     The particle thermal speed is given by:
 
     .. math::
-        V_{th,i} = \sqrt{\frac{2 k_B T_i}{m_i}}
+        V_{th,i} = \sqrt{\frac{N k_B T_i}{m_i}}
 
-    This function yields the most probable speed within a distribution
-    function.  However, the definition of thermal velocity varies by
+    where the value of N depends on the dimensionality and the definition of
+    :math:`v_{th}`: most probable, root-mean-square (RMS), or mean magnitude.
+    The value of N in each case is
+
+    .. list-table:: Values of constant N
+       :widths: 50, 25, 25, 25
+       :header-rows: 1
+
+       * - Dim.
+         - Most-Probable
+         - RMS
+         - Mean-Magnitude
+       * - 1D
+         - 0
+         - 1
+         - :math:`2/\pi`
+       * - 2D
+         - 1
+         - 2
+         - :math:`\pi/2`
+       * - 3D
+         - 2
+         - 3
+         - :math:`8/\pi`
+
+    The definition of thermal velocity varies by
     the square root of two depending on whether or not this velocity
     absorbs that factor in the expression for a Maxwellian
     distribution.  In particular, the expression given in the NRL
