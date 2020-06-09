@@ -1047,13 +1047,13 @@ particles_from_json_tests = [
     (
         Particle,
         {"argument": "Pb"},
-        '{"plasmapy_particle": {"type": "Particle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"argument": "Pb"}}}'
+        '{"plasmapy_particle": {"type": "Particle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"argument": "Pb"}}}',
     ),
     (
         Particle,
         {"argument": "e-"},
-        '{"plasmapy_particle": {"type": "Particle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"argument": "e-"}}}'
-    )
+        '{"plasmapy_particle": {"type": "Particle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"argument": "e-"}}}',
+    ),
 ]
 
 
@@ -1064,7 +1064,7 @@ def test_particles_from_json(cls, kwargs, json_string):
     instance_from_json = from_json(json_string)
     expected_particle = instance.particle
     actual_particle = instance_from_json.particle
-    assert (expected_particle == actual_particle), pytest.fail(
+    assert expected_particle == actual_particle, pytest.fail(
         f"Expected {expected_particle}\n" f"Got {actual_particle}"
     )
 
@@ -1093,17 +1093,17 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
     """Test the JSON representations of normal, dimensionless and custom particles."""
     instance = cls(**kwargs)
     json_repr = instance.to_json()
-    test_dict = json.loads(json_repr)['plasmapy_particle']
-    expected_repr = json.loads(expected_repr)['plasmapy_particle']
-    assert test_dict['type'] == expected_repr['type'], pytest.fail(
+    test_dict = json.loads(json_repr)["plasmapy_particle"]
+    expected_repr = json.loads(expected_repr)["plasmapy_particle"]
+    assert test_dict["type"] == expected_repr["type"], pytest.fail(
         f"Problem with JSON representation of {cls.__name__} "
         f"with kwargs = {kwargs}.\n\n"
         f"expected type = {expected_repr['type']}\n\n"
         f"got type: {test_dict['type']}"
     )
-    assert expected_repr['init_args'] == test_dict['init_args'], pytest.fail(
+    assert expected_repr["init_args"] == test_dict["init_args"], pytest.fail(
         f"Problem with JSON representation of {cls.__name__} "
         f"with kwargs = {kwargs}.\n\n"
-        f"expected_repr = {expected_repr['init_args']}.\n\n"
-        f"json_repr: {test_dict['init_args']}"
+        f"expected_repr = {expected_repr["init_args"]}.\n\n"
+        f"json_repr: {test_dict["init_args"]}"
     )

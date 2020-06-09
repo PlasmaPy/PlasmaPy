@@ -131,14 +131,14 @@ class ParticleJSONDecoder(json.JSONDecoder):
             particle_class = particle_data["type"]
             if particle_class in particle_types:
                 particle_init_args = particle_data["init_args"]
-                if (particle_class == "CustomParticle"):
+                if particle_class == "CustomParticle":
                     particle_init_args["mass"] = u.Quantity(
                         particle_init_args["mass"]
                     )
                     particle_init_args["charge"] = u.Quantity(
                         particle_init_args["charge"]
                     )
-                if (particle_class == "DimensionlessParticle"):
+                if particle_class == "DimensionlessParticle":
                     particle_init_args["mass"] = np.float64(
                         particle_init_args["mass"]
                     )
