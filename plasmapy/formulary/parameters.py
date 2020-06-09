@@ -422,7 +422,7 @@ def thermal_speed(
     particle: particles.Particle = "e-",
     method="most_probable",
     mass: u.kg = np.nan * u.kg,
-    ndim = 3,
+    ndim=3,
 ) -> u.m / u.s:
     r"""
     Return the most probable speed for a particle within a Maxwellian

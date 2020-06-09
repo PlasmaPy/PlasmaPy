@@ -1093,5 +1093,3 @@ def test_Bohm_diffusion():
 
     with pytest.raises(u.UnitTypeError):
         Bohm_diffusion(2.2 * u.kg, B)
-
-test_thermal_speed()
