@@ -1605,9 +1605,9 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
     .. math::
 
-        Rm = \frac{1}{16} \frac{k_B T}{e B}
+        D\_B = \frac{1}{16} \frac{k\_B T}{e B}
 
-    where :math:`k_B` is the Boltzmann constant
+    where :math:`k\_B` is the Boltzmann constant
     and :math:`e` is the fundamental charge.
 
     Parameters
