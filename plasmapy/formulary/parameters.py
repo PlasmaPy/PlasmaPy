@@ -415,7 +415,6 @@ def ion_sound_speed(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     mass={"can_be_negative": False, "can_be_nan": True},
-    ndim={"can_be_negative": False, "can_be_nan": False}
 )
 @particles.particle_input
 def thermal_speed(
@@ -528,7 +527,7 @@ def thermal_speed(
         else:
             raise ValueError("Method {method} not supported in thermal_speed")
 
-    if ndim == 2:
+    elif ndim == 2:
         if method == "most_probable":
             V = np.sqrt(k_B * T / m)
         elif method == "rms":

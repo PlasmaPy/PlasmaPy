@@ -362,6 +362,42 @@ def test_thermal_speed():
         thermal_speed(1 * u.MK, particle="p").si.value, 128486.56960876315
     )
 
+    # Explicitly check all three modes and dimensionalities
+    # ndim = 1
+    assert np.isclose(
+        thermal_speed(T_e, method='most_probable', ndim=1).si.value, 0.0)
+
+    assert np.isclose(
+        thermal_speed(T_e, method='rms', ndim=1).si.value, 3893114.2008620175)
+
+    assert np.isclose(
+        thermal_speed(T_e, method='mean_magnitude', ndim=1).si.value,
+        3106255.714310189)
+
+    # ndim = 2
+    assert np.isclose(
+        thermal_speed(T_e, method='most_probable', ndim=2).si.value,
+        3893114.2008620175)
+
+    assert np.isclose(
+        thermal_speed(T_e, method='rms', ndim=2).si.value, 5505694.902726359)
+
+    assert np.isclose(
+        thermal_speed(T_e, method='mean_magnitude', ndim=2).si.value,
+        4879295.066124102)
+
+    # ndim = 3
+    assert np.isclose(
+        thermal_speed(T_e, method='most_probable', ndim=3).si.value,
+        5505694.902726359)
+
+    assert np.isclose(
+        thermal_speed(T_e, method='rms', ndim=3).si.value, 6743071.595560921)
+
+    assert np.isclose(
+        thermal_speed(T_e, method='mean_magnitude', ndim=3).si.value,
+        6212511.428620378)
+
     # Case when Z=1 is assumed
     assert thermal_speed(T_i, particle="p") == thermal_speed(T_i, particle="H-1+")
 
@@ -1057,3 +1093,5 @@ def test_Bohm_diffusion():
 
     with pytest.raises(u.UnitTypeError):
         Bohm_diffusion(2.2 * u.kg, B)
+
+test_thermal_speed()
