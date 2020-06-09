@@ -448,7 +448,7 @@ def thermal_speed(
         anything, but if set, overrides mass acquired from `particle`. Useful
         with relative velocities of particles.
 
-    ndmim : int
+    ndim : int
         Dimensionality of space in which to calculate thermal velocity. Valid
         values are 1,2,3.
 
