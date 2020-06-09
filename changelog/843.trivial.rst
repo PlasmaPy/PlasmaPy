@@ -1,0 +1,1 @@
+Improved pull request template to include more information about changelog entries.

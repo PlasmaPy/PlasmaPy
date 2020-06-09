@@ -1646,7 +1646,7 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
     Returns
     -------
     D_B: `~astropy.units.Quantity`
-        The Bohm diffusion coefficient in meters squared per second.
+    The Bohm diffusion coefficient in meters squared per second.
 
     """
     D_B = k_B * T_e / (16 * e * B)

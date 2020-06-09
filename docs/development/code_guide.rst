@@ -326,7 +326,7 @@ Please note that it is necessary to store notebooks with their outputs stripped
 
 1. helps with versioning the notebooks, as binary image data is not stored in
    the notebook
-2. signals `nbpshinx` that it should execute the notebook.
+2. signals `nbsphinx` that it should execute the notebook.
 
 .. note::
 
@@ -338,3 +338,20 @@ documentation building environment (e.g., `bokeh`) or runs some heavy
 computation that should not be executed on every commit, *keep the outputs in
 the notebook* but store it in the repository with a `preexecuted_` prefix, e.g.
 `preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
+
+Benchmarks
+==========
+
+
+.. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
+.. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
+.. _asv: https://github.com/airspeed-velocity/asv
+.. _asv-docs: https://asv.readthedocs.io/en/stable/
+
+PlasmaPy has a set of `asv`_ benchmarks that monitor performance of its
+functionalities.  This is meant to protect the package from performance
+regressions. The benchmarks can be viewed at `benchmarks`_. They're
+generated from results located in `benchmarks-repo`_. Detailed
+instructions on writing such benchmarks can be found at `asv-docs`_.
+Up-to-date instructions on running the benchmark suite will be located in
+the README file of `benchmarks-repo`_.
