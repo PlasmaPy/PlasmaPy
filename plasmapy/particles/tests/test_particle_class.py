@@ -1003,23 +1003,23 @@ custom_particles_from_json_tests = [
     (
         DimensionlessParticle,
         {"mass": 5.2, "charge": 6.3},
-        '{"plasmapy_particle": {"type": "DimensionlessParticle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"mass": "5.2", "charge": "6.3"}}}'
+        '{"plasmapy_particle": {"type": "DimensionlessParticle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"mass": "5.2", "charge": "6.3"}}}',
     ),
     (
         DimensionlessParticle,
         {"mass": 5.2},
-        '{"plasmapy_particle": {"type": "DimensionlessParticle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"mass": "5.2", "charge": "nan"}}}'
+        '{"plasmapy_particle": {"type": "DimensionlessParticle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"mass": "5.2", "charge": "nan"}}}',
     ),
     (
         CustomParticle,
         {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
-        '{"plasmapy_particle": {"type": "CustomParticle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"mass": "5.12 kg", "charge": "6.2 C"}}}'
+        '{"plasmapy_particle": {"type": "CustomParticle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"mass": "5.12 kg", "charge": "6.2 C"}}}',
     ),
     (
         CustomParticle,
         {"mass": 5.12 * u.kg},
-        '{"plasmapy_particle": {"type": "CustomParticle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"mass": "5.12 kg", "charge": "nan C"}}}'
-    )
+        '{"plasmapy_particle": {"type": "CustomParticle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"mass": "5.12 kg", "charge": "nan C"}}}',
+    ),
 ]
 
 
@@ -1029,25 +1029,29 @@ def test_custom_particles_from_json(cls, kwargs, json_string):
     JSON representation"""
     instance = cls(**kwargs)
     instance_from_json = from_json(json_string)
-    assert u.isclose(instance.mass, instance_from_json.mass, equal_nan=True), pytest.fail(
-            f"Expected a mass value of {instance.mass}\n"
-            f"Received a mass value of {instance_from_json.mass}"
-        )
-    assert u.isclose(instance.charge, instance_from_json.charge, equal_nan=True), pytest.fail(
-            f"Expected a charge value of {instance.charge}\n"
-            f"Received a charge value of {instance_from_json.charge}"
-        )
+    assert u.isclose(
+        instance.mass, instance_from_json.mass, equal_nan=True
+    ), pytest.fail(
+        f"Expected a mass value of {instance.mass}\n"
+        f"Received a mass value of {instance_from_json.mass}"
+    )
+    assert u.isclose(
+        instance.charge, instance_from_json.charge, equal_nan=True
+    ), pytest.fail(
+        f"Expected a charge value of {instance.charge}\n"
+        f"Received a charge value of {instance_from_json.charge}"
+    )
 
 
 particles_from_json_tests = [
     (
         Particle,
-        {"argument": 'Pb'},
+        {"argument": "Pb"},
         '{"plasmapy_particle": {"type": "Particle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"argument": "Pb"}}}'
     ),
     (
         Particle,
-        {"argument": 'e-'},
+        {"argument": "e-"},
         '{"plasmapy_particle": {"type": "Particle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-08", "init_args": {"argument": "e-"}}}'
     )
 ]
@@ -1061,20 +1065,19 @@ def test_particles_from_json(cls, kwargs, json_string):
     expected_particle = instance.particle
     actual_particle = instance_from_json.particle
     assert (expected_particle == actual_particle), pytest.fail(
-            f"Expected {expected_particle}\n"
-            f"Got {actual_particle}"
+        f"Expected {expected_particle}\n" f"Got {actual_particle}"
     )
 
 
 particle_json_repr_table = [
     (
         Particle,
-        {"argument": 'lead'},
+        {"argument": "lead"},
         '{"plasmapy_particle": {"type": "Particle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-09", "init_args": {"argument": "Pb"}}}',
     ),
     (
         CustomParticle,
-        {"mass": 5.12 * u.kg, "charge": 6.2*u.C},
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
         '{"plasmapy_particle": {"type": "CustomParticle", "module": "plasmapy.particles.particle_class", "date_created": "2020-06-09", "init_args": {"mass": "5.12 kg", "charge": "6.2 C"}}}',
     ),
     (
@@ -1093,14 +1096,14 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
     test_dict = json.loads(json_repr)['plasmapy_particle']
     expected_repr = json.loads(expected_repr)['plasmapy_particle']
     assert test_dict['type'] == expected_repr['type'], pytest.fail(
-            f"Problem with JSON representation of {cls.__name__} "
-            f"with kwargs = {kwargs}.\n\n"
-            f"expected type = {expected_repr['type']}\n\n"
-            f"got type: {test_dict['type']}"
+        f"Problem with JSON representation of {cls.__name__} "
+        f"with kwargs = {kwargs}.\n\n"
+        f"expected type = {expected_repr['type']}\n\n"
+        f"got type: {test_dict['type']}"
     )
     assert expected_repr['init_args'] == test_dict['init_args'], pytest.fail(
-            f"Problem with JSON representation of {cls.__name__} "
-            f"with kwargs = {kwargs}.\n\n"
-            f"expected_repr = {expected_repr['init_args']}.\n\n"
-            f"json_repr: {test_dict['init_args']}"
+        f"Problem with JSON representation of {cls.__name__} "
+        f"with kwargs = {kwargs}.\n\n"
+        f"expected_repr = {expected_repr['init_args']}.\n\n"
+        f"json_repr: {test_dict['init_args']}"
     )

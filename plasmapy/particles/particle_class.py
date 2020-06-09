@@ -126,17 +126,25 @@ class ParticleJSONDecoder(json.JSONDecoder):
             "DimensionlessParticle": DimensionlessParticle,
             "Particle": Particle,
         }
-        if ('plasmapy_particle' in json_dict):
+        if "plasmapy_particle" in json_dict:
             particle_data = json_dict["plasmapy_particle"]
-            particle_class = particle_data['type']
-            if (particle_class in particle_types):
+            particle_class = particle_data["type"]
+            if particle_class in particle_types:
                 particle_init_args = particle_data["init_args"]
-                if (particle_class == 'CustomParticle'):
-                    particle_init_args["mass"] = u.Quantity(particle_init_args["mass"])
-                    particle_init_args["charge"] = u.Quantity(particle_init_args["charge"])
-                if (particle_class == 'DimensionlessParticle'):
-                    particle_init_args["mass"] = np.float64(particle_init_args["mass"])
-                    particle_init_args["charge"] = np.float64(particle_init_args["charge"])
+                if (particle_class == "CustomParticle"):
+                    particle_init_args["mass"] = u.Quantity(
+                        particle_init_args["mass"]
+                    )
+                    particle_init_args["charge"] = u.Quantity(
+                        particle_init_args["charge"]
+                    )
+                if (particle_class == "DimensionlessParticle"):
+                    particle_init_args["mass"] = np.float64(
+                        particle_init_args["mass"]
+                    )
+                    particle_init_args["charge"] = np.float64(
+                        particle_init_args["charge"]
+                    )
                 return particle_types[particle_class](**particle_init_args)
             else:
                 raise InvalidParticleError(
@@ -171,7 +179,7 @@ class AbstractParticle(ABC):
                 "date_created": str(datetime.now().date()),
                 "init_args": {
                     # custom init_args for subclasses
-                }
+                },
             }
         }
         return json_dictionary
@@ -1823,7 +1831,7 @@ class DimensionlessParticle(AbstractParticle):
         particle_dictionary = super().json_dict
         particle_dictionary["plasmapy_particle"]["init_args"] = {
             "mass": str(self.mass),
-            "charge": str(self.charge)
+            "charge": str(self.charge),
         }
         return particle_dictionary
 
@@ -1951,7 +1959,7 @@ class CustomParticle(AbstractParticle):
         particle_dictionary = super().json_dict
         particle_dictionary["plasmapy_particle"]["init_args"] = {
             "mass": str(self.mass),
-            "charge": str(self.charge)
+            "charge": str(self.charge),
         }
         return particle_dictionary
 
