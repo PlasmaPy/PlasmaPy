@@ -415,6 +415,7 @@ def ion_sound_speed(
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     mass={"can_be_negative": False, "can_be_nan": True},
+    ndim={"can_be_negative": False, "can_be_nan": False}
 )
 @particles.particle_input
 def thermal_speed(
@@ -422,6 +423,7 @@ def thermal_speed(
     particle: particles.Particle = "e-",
     method="most_probable",
     mass: u.kg = np.nan * u.kg,
+    ndim = 3,
 ) -> u.m / u.s:
     r"""
     Return the most probable speed for a particle within a Maxwellian
@@ -446,6 +448,10 @@ def thermal_speed(
         The particle's mass override. Defaults to NaN and if so, doesn't do
         anything, but if set, overrides mass acquired from `particle`. Useful
         with relative velocities of particles.
+
+    ndmim : int
+        Dimensionality of space in which to calculate thermal velocity. Valid
+        values are 1,2,3.
 
     Returns
     -------
@@ -507,15 +513,43 @@ def thermal_speed(
     """
     m = mass if np.isfinite(mass) else particles.particle_mass(particle)
 
+    # TODO: Could implement this more cleanly for any integer ndim
+    # at the cost of using the gamma function in the expression for the
+    # mean magnitude velocity.
+
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
-    if method == "most_probable":
-        V = np.sqrt(2 * k_B * T / m)
-    elif method == "rms":
-        V = np.sqrt(3 * k_B * T / m)
-    elif method == "mean_magnitude":
-        V = np.sqrt(8 * k_B * T / (m * np.pi))
+    if ndim == 1:
+        if method == "most_probable":
+            V = 0 * u.m/u.s
+        elif method == "rms":
+            V = np.sqrt(k_B * T / m)
+        elif method == "mean_magnitude":
+            V = np.sqrt(2 * k_B * T / (m * np.pi))
+        else:
+            raise ValueError("Method {method} not supported in thermal_speed")
+
+    if ndim == 2:
+        if method == "most_probable":
+            V = np.sqrt(k_B * T / m)
+        elif method == "rms":
+            V = np.sqrt(2 * k_B * T / m)
+        elif method == "mean_magnitude":
+            V = np.sqrt(np.pi * k_B * T / (2 * m))
+        else:
+            raise ValueError("Method {method} not supported in thermal_speed")
+
+    elif ndim == 3:
+        if method == "most_probable":
+            V = np.sqrt(2 * k_B * T / m)
+        elif method == "rms":
+            V = np.sqrt(3 * k_B * T / m)
+        elif method == "mean_magnitude":
+            V = np.sqrt(8 * k_B * T / (m * np.pi))
+        else:
+            raise ValueError("Method {method} not supported in thermal_speed")
     else:
-        raise ValueError("Method {method} not supported in thermal_speed")
+        raise ValueError("{ndim} is not a supported value for ndim in "
+                         "thermal_speed")
 
     return V
 
