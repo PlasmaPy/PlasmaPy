@@ -1,0 +1,1 @@
+Apply pre-commit hooks to entire repository, so that GitHub actions do not shout at contributors needlessly.

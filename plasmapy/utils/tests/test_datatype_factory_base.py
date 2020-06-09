@@ -1,9 +1,11 @@
 import pytest
 
-from plasmapy.utils.datatype_factory_base import BasicRegistrationFactory
-from plasmapy.utils.datatype_factory_base import NoMatchError
-from plasmapy.utils.datatype_factory_base import MultipleMatchError
-from plasmapy.utils.datatype_factory_base import ValidationFunctionError
+from plasmapy.utils.datatype_factory_base import (
+    BasicRegistrationFactory,
+    MultipleMatchError,
+    NoMatchError,
+    ValidationFunctionError,
+)
 
 # SunPy is released under a BSD-style open source licence:
 

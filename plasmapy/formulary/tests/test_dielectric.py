@@ -1,4 +1,3 @@
-
 """Tests for functions that calculate plasma dielectric parameters in
 dielectry.py"""
 
@@ -6,14 +5,13 @@ import numpy as np
 from astropy import units as u
 
 from ..dielectric import (
+    RotatingTensorElements,
+    StixTensorElements,
     cold_plasma_permittivity_LRP,
     cold_plasma_permittivity_SDP,
     permittivity_1D_Maxwellian,
-    RotatingTensorElements,
-    StixTensorElements,
 )
-
-from ..parameters import plasma_frequency, gyrofrequency, thermal_speed
+from ..parameters import gyrofrequency, plasma_frequency, thermal_speed
 
 B = 1.0 * u.T
 n = [1e18 / u.m ** 3]
