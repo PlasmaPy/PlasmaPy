@@ -98,7 +98,6 @@ def _category_errmsg(particle, category: str) -> str:
 
 
 class ParticleJSONDecoder(json.JSONDecoder):
-
     def __init__(self, *args, **kwargs):
         json.JSONDecoder.__init__(self, object_hook=self.object_hook, *args, **kwargs)
 
@@ -132,16 +131,12 @@ class ParticleJSONDecoder(json.JSONDecoder):
             if particle_class in particle_types:
                 particle_init_args = particle_data["init_args"]
                 if particle_class == "CustomParticle":
-                    particle_init_args["mass"] = u.Quantity(
-                        particle_init_args["mass"]
-                    )
+                    particle_init_args["mass"] = u.Quantity(particle_init_args["mass"])
                     particle_init_args["charge"] = u.Quantity(
                         particle_init_args["charge"]
                     )
                 if particle_class == "DimensionlessParticle":
-                    particle_init_args["mass"] = np.float64(
-                        particle_init_args["mass"]
-                    )
+                    particle_init_args["mass"] = np.float64(particle_init_args["mass"])
                     particle_init_args["charge"] = np.float64(
                         particle_init_args["charge"]
                     )

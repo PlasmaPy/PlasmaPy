@@ -31,6 +31,7 @@ from plasmapy.utils import call_string, roman
 from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
 from plasmapy.particles import from_json
+
 # (arg, kwargs, results_dict)
 test_Particle_table = [
     (
@@ -1104,6 +1105,6 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
     assert expected_repr["init_args"] == test_dict["init_args"], pytest.fail(
         f"Problem with JSON representation of {cls.__name__} "
         f"with kwargs = {kwargs}.\n\n"
-        f"expected_repr = {expected_repr["init_args"]}.\n\n"
-        f"json_repr: {test_dict["init_args"]}"
+        f"expected_repr = {expected_repr['init_args']}.\n\n"
+        f"json_repr: {test_dict['init_args']}"
     )
