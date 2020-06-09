@@ -537,6 +537,7 @@ class Particle(AbstractParticle):
         """Return the particle's symbol."""
         return self.particle
 
+    @property
     def json_dict(self) -> dict:
         """
         Return a dictionary representation of the minimum description of a particle.
