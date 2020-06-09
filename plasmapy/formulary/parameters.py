@@ -20,14 +20,17 @@ __all__ = [
     "magnetic_energy_density",
     "upper_hybrid_frequency",
     "lower_hybrid_frequency",
+    "Bohm_diffusion",
 ]
 
 import numbers
-import numpy as np
 import warnings
+from typing import Optional
 
+import numpy as np
 from astropy import units as u
-from astropy.constants.si import m_p, m_e, c, mu0, k_B, e, eps0
+from astropy.constants.si import c, e, eps0, k_B, m_e, m_p, mu0
+
 from plasmapy import particles
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
@@ -36,7 +39,6 @@ from plasmapy.utils.decorators import (
     validate_quantities,
 )
 from plasmapy.utils.exceptions import PhysicsWarning
-from typing import Optional
 
 
 def _grab_charge(ion, z_mean=None):
@@ -218,7 +220,7 @@ def Alfven_speed(
     >>> Alfven_speed(B, rho, ion)
     <Quantity 43173.870... m / s>
     >>> Alfven_speed(B, rho, ion).to(u.cm/u.us)
-    <Quantity 4.31738... cm / us>
+    <Quantity 4.317387 cm / us>
 
     """
     rho = mass_density(density, ion, z_mean)
@@ -1588,3 +1590,59 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
     omega_lh = omega_lh
 
     return omega_lh
+
+
+@validate_quantities(
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    B={"can_be_negative": False},
+)
+def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
+
+    r"""
+    The Bohm diffusion coefficient was conjectured to follow Bohm model of
+    the diffusion of plasma across a magnetic field and describe
+    the diffusion of early fusion energy machines.
+    The rate predicted by Bohm diffusion is much higher than classical diffusion
+    and if there were no exceptions, magnetically confined fusion would be impractical.
+
+    Parameters
+    ----------
+    T_e: `~astropy.units.Quantity`
+        The electron temperature.
+    B: `~astropy.units.Quantity`
+        The magnitude of the magnetic field in the plasma.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
+
+    Raises
+    ------
+    TypeError
+        The `T_e` is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
+
+    ~astropy.units.UnitConversionError
+        If the `T_e` is not in appropriate units.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> T_e = 5000 * u.K
+    >>> B = 10 * u.T
+    >>> Bohm_diffusion(T_e, B)
+    <Quantity 0.00269292 m2 / s>
+    >>> T_e = 50 * u.eV
+    >>> B = 10 * u.T
+    >>> Bohm_diffusion(T_e, B)
+    <Quantity 0.3125 m2 / s>
+
+    Returns
+    -------
+    D_B: `~astropy.units.Quantity`
+    The Bohm diffusion coefficient in meters squared per second.
+
+    """
+    D_B = k_B * T_e / (16 * e * B)
+    return D_B

@@ -3,32 +3,36 @@
 import numpy as np
 import pytest
 from astropy import units as u
+from astropy.constants import c, e, m_e, m_p, mu0
 from astropy.tests.helper import assert_quantity_allclose
 
-from plasmapy.utils.exceptions import RelativityWarning, RelativityError
-from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
-from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
-from astropy.constants import c, m_p, m_e, e, mu0
-
 from plasmapy.formulary.parameters import (
-    mass_density,
     Alfven_speed,
-    gyrofrequency,
-    gyroradius,
-    thermal_speed,
-    thermal_pressure,
-    kappa_thermal_speed,
-    plasma_frequency,
+    Bohm_diffusion,
     Debye_length,
     Debye_number,
+    gyrofrequency,
+    gyroradius,
     inertial_length,
     ion_sound_speed,
+    kappa_thermal_speed,
+    lower_hybrid_frequency,
     magnetic_energy_density,
     magnetic_pressure,
+    mass_density,
+    plasma_frequency,
+    thermal_pressure,
+    thermal_speed,
     upper_hybrid_frequency,
-    lower_hybrid_frequency,
 )
+from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.utils.exceptions import (
+    PhysicsError,
+    PhysicsWarning,
+    RelativityError,
+    RelativityWarning,
+)
+from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 B = 1.0 * u.T
 Z = 1
@@ -1039,3 +1043,18 @@ def test_lower_hybrid_frequency():
             1.3 * u.T, 1e19 * u.m ** -3
         )
     assert_can_handle_nparray(lower_hybrid_frequency)
+
+
+def test_Bohm_diffusion():
+    r"""Test Mag_Reynolds in dimensionless.py"""
+
+    T_e = 5000 * u.K
+    B = 10 * u.T
+
+    assert (Bohm_diffusion(T_e, B)).unit == u.m ** 2 / u.s
+
+    with pytest.warns(u.UnitsWarning):
+        Bohm_diffusion(5000, B)
+
+    with pytest.raises(u.UnitTypeError):
+        Bohm_diffusion(2.2 * u.kg, B)

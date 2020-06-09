@@ -1847,7 +1847,9 @@ class DimensionlessParticle(AbstractParticle):
                 f"number that is greater than or equal to zero, not: {m}"
             ) from None
         if self._mass is np.nan:
-            warnings.warn("DimensionlessParticle mass set to NaN", MissingAtomicDataWarning)
+            warnings.warn(
+                "DimensionlessParticle mass set to NaN", MissingAtomicDataWarning
+            )
 
     @charge.setter
     def charge(self, q: Optional[Union[Real, u.Quantity]]):
@@ -1859,7 +1861,9 @@ class DimensionlessParticle(AbstractParticle):
                 f"number, not: {q}"
             ) from None
         if self._charge is np.nan:
-            warnings.warn("DimensionlessParticle charge set to NaN", MissingAtomicDataWarning)
+            warnings.warn(
+                "DimensionlessParticle charge set to NaN", MissingAtomicDataWarning
+            )
 
 
 class CustomParticle(AbstractParticle):
@@ -1991,10 +1995,14 @@ class CustomParticle(AbstractParticle):
     def charge(self, q: Optional[Union[u.Quantity, Real]]):
         if q is None:
             self._charge = np.nan * u.C
-            warnings.warn("CustomParticle charge set to NaN C", MissingAtomicDataWarning)
+            warnings.warn(
+                "CustomParticle charge set to NaN C", MissingAtomicDataWarning
+            )
         elif isinstance(q, Real):
             self._charge = q * const.e.si
-            warnings.warn(f"CustomParticle charge set to {q} times the elementary charge.")
+            warnings.warn(
+                f"CustomParticle charge set to {q} times the elementary charge."
+            )
         elif isinstance(q, u.Quantity):
             if not isinstance(q.value, Real):
                 raise InvalidParticleError(

@@ -1,11 +1,11 @@
 """Functions that are related to nuclear reactions."""
 
 import re
-from typing import List, Union, Optional
+from typing import List, Optional, Union
+
 from astropy import units as u
 
 from plasmapy.particles.exceptions import AtomicError, InvalidParticleError
-
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.particle_input import particle_input
 
