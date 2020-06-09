@@ -1603,6 +1603,13 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
     The rate predicted by Bohm diffusion is much higher than classical diffusion
     and if there were no exceptions, magnetically confined fusion would be impractical.
 
+    .. math::
+
+        Rm = \frac{1}{16} \frac{k_B T}{e B}
+
+    where :math:`k_B` is the Boltzmann constant
+    and :math:`e` is the fundamental charge.
+
     Parameters
     ----------
     T_e: `~astropy.units.Quantity`
