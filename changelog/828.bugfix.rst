@@ -1,0 +1,2 @@
+Repair notebook links that are defined in the `nbsphinx_prolog` sphinx configuration
+variable.
