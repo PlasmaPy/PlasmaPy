@@ -28,6 +28,8 @@ def Z_bal(n: u.m ** -3, T: u.K):
     T : `~astropy.units.Quantity`
         The electron temperature.
 
+    n : ~astropy.units.Quantity`
+        The electron number density of the plasma.
     Returns
     -------
     Z: `~astropy.units.Quantity`
