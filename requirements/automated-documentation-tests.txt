@@ -1,10 +1,14 @@
 -r requirements.txt
+ipykernel
+ipywidgets
+nbsphinx
 
 numpydoc
 pillow
-sphinx
+pytest
+setuptools-scm
+sphinx <= 2.4.4
 sphinx-automodapi
+sphinx-copybutton
 sphinx-gallery
 sphinx_rtd_theme
-sphinx-astropy
-pytest

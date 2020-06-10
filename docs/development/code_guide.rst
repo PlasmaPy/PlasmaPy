@@ -54,6 +54,21 @@ Coding Style
 
 * There should be at most one pun per 1284 lines of code.
 
+pre-commit hooks
+----------------
+
+PlasmaPy has a configuration for `pre-commit` that takes care of style mostly
+automatically. Install it with `pip install pre-commit`, then use `pre-commit
+install` within the repository.
+
+This will cause git to run an automated style checking suite, mostly composed
+of `flake8` and `black`, on every commit. Do note that this works better with
+a `git add`, then `git commit` workflow than a `git commit -a` workflow - that
+way, you can check via `git diff` what the automated changes actually did.
+
+Note that `flake8` does not change your files automatically (help in setting
+that up, if possible, most welcome!).
+
 Branches, commits, and pull requests
 ====================================
 
@@ -292,3 +307,51 @@ However, ``dimensionless_angles`` does work when dividing a velocity
 by an angular frequency to get a length scale:
 
 >>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())    # doctest: +SKIP
+
+.. _example_notebooks:
+
+Examples
+========
+
+.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/master/docs/notebooks
+.. _nbsphinx: https://nbsphinx.readthedocs.io/en/latest/
+
+Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
+of their mature ecosystems. They are located in `docs/notebooks`_. `nbsphinx`_
+takes care of executing them at documentation build time and including them
+in the documentation.
+
+Please note that it is necessary to store notebooks with their outputs stripped
+(use the "Edit -> Clear all outputs" option). This accomplishes two goals:
+
+1. helps with versioning the notebooks, as binary image data is not stored in
+   the notebook
+2. signals `nbsphinx` that it should execute the notebook.
+
+.. note::
+
+  In the future, verifying and running this step may be automated via a GitHub bot.
+  Currently, reviewers should ensure that submitted notebooks have outputs stripped.
+
+If you have an example notebook that includes packages unavailable in the
+documentation building environment (e.g., `bokeh`) or runs some heavy
+computation that should not be executed on every commit, *keep the outputs in
+the notebook* but store it in the repository with a `preexecuted_` prefix, e.g.
+`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
+
+Benchmarks
+==========
+
+
+.. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
+.. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
+.. _asv: https://github.com/airspeed-velocity/asv
+.. _asv-docs: https://asv.readthedocs.io/en/stable/
+
+PlasmaPy has a set of `asv`_ benchmarks that monitor performance of its
+functionalities.  This is meant to protect the package from performance
+regressions. The benchmarks can be viewed at `benchmarks`_. They're
+generated from results located in `benchmarks-repo`_. Detailed
+instructions on writing such benchmarks can be found at `asv-docs`_.
+Up-to-date instructions on running the benchmark suite will be located in
+the README file of `benchmarks-repo`_.

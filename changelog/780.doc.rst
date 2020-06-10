@@ -1,0 +1,3 @@
+Fix failing documentation build due to duplicate docstrings for
+`ParticleTracker.kinetic_energy_history` and incompatibility of `sphinx-automodapi`
+with `sphinx` `v3.0.0`.

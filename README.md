@@ -12,8 +12,9 @@
 [![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy/branch/master/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy)
 [![Documentation Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PlasmaPy/PlasmaPy/master?filepath=plasmapy%2Fexamples)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
-[![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy:matrix.org)
+[![Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/room/#plasmapy:openastronomy.org)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/PlasmaPy/Lobby)
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 [![Open Source Helpers](https://www.codetriage.com/plasmapy/plasmapy/badges/users.svg)](https://www.codetriage.com/plasmapy/plasmapy)
@@ -30,26 +31,24 @@ and [this recent reference](https://doi.org/10.5281/zenodo.1238132).
 We are in the process of writing [online
 documentation](http://docs.plasmapy.org/en/latest/).
 
-We created a guide on [contributing to
-PlasmaPy](http://plasmapy.readthedocs.io/en/master/CONTRIBUTING.html)
-and have a [Code of
-Conduct](http://plasmapy.readthedocs.io/en/master/CODE_OF_CONDUCT.html).
+We created a guide on [contributing to PlasmaPy](http://docs.plasmapy.org/en/stable/CONTRIBUTING.html)
+and have a [Code of Conduct](http://docs.plasmapy.org/en/stable/CODE_OF_CONDUCT.html).
 New contributors are very welcome!
 
 # Feedback and communication
 
-## [Matrix chat](https://riot.im/app/#/room/#plasmapy:matrix.org)
+## [Matrix chat](https://riot.im/app/#/room/#plasmapy:openastronomy.org)
 
 If you have any questions, the quickest way to get a response is to ask
 on our
-[Matrix](https://riot.im/app/#/room/#plasmapy:matrix.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
-channel. 
+[Matrix](https://riot.im/app/#/room/#plasmapy:openastronomy.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
+channel.
 
 ## [Discourse room](https://plasmapy.discourse.group/)
 
-We have recently created a [PlasmaPy Discourse 
-group](https://plasmapy.discourse.group/) in order to allow threaded 
-public discussions on a variety of topics.  This group will be a great 
+We have recently created a [PlasmaPy Discourse
+group](https://plasmapy.discourse.group/) in order to allow threaded
+public discussions on a variety of topics.  This group is a great
 place to suggest ideas, bring up discussion topics, and ask questions.
 
 ## [Mailing list](https://groups.google.com/forum/#!forum/plasmapy)
@@ -59,18 +58,22 @@ that serves as a less volatile discussion forum.
 
 ## [Suggestion box](https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link)
 
-We have 
+We have
 [a suggestion box](https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link)
 if you would like to (optionally anonymously) suggest
 a feature/topic for consideration. These will be reposted on the mailing list
 or directly in GitHub issues, as appropriate, for further discussion.
 
-## [Biweekly](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) [video calls](https://meet.jit.si/plasmapy)
+## [Weekly](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) [community meetings](https://jitsi.riot.im/plasmapy)
 
-We also have approximately bi-weekly online meetings at
-[Jitsi](https://meet.jit.si/plasmapy), for which we have a 
-[calendar here](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ)
-and [written meeting notes here](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing).
+We have weekly community meetings in the
+[PlasmaPy room on Jitsi](https://meet.jit.si/plasmapy).
+The schedule of our community meetings is on our [calendar](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ), and you may access the [minutes and
+agendas](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing).
+Any last minute changes will be discussed on
+[Matrix](https://riot.im/app/#/room/#plasmapy:openastronomy.org).
+As of April 2020, our meetings are on Tuesdays at
+[18:00 UTC](http://time.unitarium.com/utc/6pm).
 Come discuss plasma software with us!
 
 # Installation
@@ -100,8 +103,9 @@ how to cite PlasmaPy.
 
 # Acknowledgements
 
-Early development on PlasmaPy was supported in part by the U.S. 
+Early development on PlasmaPy was supported in part by the U.S.
 Department of Energy, the Smithsonian Institution, and Google Summer of
 Code.  Ongoing PlasmaPy development is being supported through a
 collaborative award from the U.S. National Science Foundation's
-Cyberinfrastructure for Sustained Scientific Innovation program.
+Cyberinfrastructure for Sustained Scientific Innovation program and a
+NASA HDEE grant.

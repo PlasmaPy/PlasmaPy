@@ -14,11 +14,6 @@ build-backend = "setuptools.build_meta"
         showcontent = true
 
     [[tool.towncrier.type]]
-        directory = "api"
-        name = "API Changes"
-        showcontent = true
-
-    [[tool.towncrier.type]]
       directory = "removal"
       name = "Deprecations and Removals"
       showcontent = true
@@ -42,3 +37,18 @@ build-backend = "setuptools.build_meta"
       directory = "trivial"
       name = "Trivial/Internal Changes"
       showcontent = true
+
+[ tool.gilesbot ]
+  [ tool.gilesbot.pull_requests ]
+    enabled = true
+
+  [ tool.gilesbot.towncrier_changelog ]
+      enabled = true
+      changelog_skip_label = "No changelog entry needed"
+      help_url = "https://github.com/PlasmaPy/PlasmaPy/blob/master/changelog/README.rst"
+      changelog_missing = "Missing changelog entry"
+      changelog_missing_long = "This pull request needs a changelog entry file in `changelog/NUMBER.TYPE.rst`. For more information, consult https://github.com/PlasmaPy/PlasmaPy/blob/master/changelog/README.rst "
+      number_incorrect = "Incorrect changelog entry number (match PR!)"
+      number_incorrect_long = "The changelog entry's number does not match this pull request's number."
+      type_incorrect = "Incorrect changelog entry type (see list in changelog README)"
+      type_incorrect_long = "The changelog entry for this PR must have one of the types (as in NUMBER.TYPE.rst) as described in the changelog README)."

@@ -1,0 +1,20 @@
+Version 0.1.1
+=============
+
+Version 0.1.1 is a bugfix patch release correcting a number of issues
+that arose during the release process and adding two minor convenience
+features.
+
+New Features
+------------
+
+- Add `plasmapy.online_help()`
+- Add `plasmapy.__citation__` containing a BibTeX reference.
+
+Bug Fixes
+---------
+
+- Bring back mistakenly removed Cython versions of plasma parameters.
+- Optimize `check_relativistic`.
+- Correct a failing import statement.
+- Fix a number of issues with the Maxwellian distribution in `physics.distribution`.

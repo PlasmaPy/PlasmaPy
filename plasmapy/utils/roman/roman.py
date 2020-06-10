@@ -13,23 +13,24 @@ https://www.python.org/download/releases/2.1.1/license/
 """
 
 import re
-import numpy as np
-from typing import Union
 from numbers import Integral
+from typing import Union
 
+import numpy as np
 
 __all__ = [
-    'RomanError',
-    'OutOfRangeError',
-    'InvalidRomanNumeralError',
-    'to_roman',
-    'from_roman',
-    'is_roman_numeral',
+    "RomanError",
+    "OutOfRangeError",
+    "InvalidRomanNumeralError",
+    "to_roman",
+    "from_roman",
+    "is_roman_numeral",
 ]
 
 
 class RomanError(Exception):
     """A base exception for errors from `~plasmapy.utils.roman`."""
+
     pass
 
 
@@ -38,6 +39,7 @@ class OutOfRangeError(RomanError):
     An exception to be raised for integers that outside of the range
     that can be converted to Roman numerals.
     """
+
     pass
 
 
@@ -46,26 +48,30 @@ class InvalidRomanNumeralError(RomanError):
     An exception to be raised when the input is not a valid Roman
     numeral.
     """
+
     pass
 
 
 # Define digit mapping
-_romanNumeralMap = (('M', 1000),
-                    ('CM', 900),
-                    ('D',  500),
-                    ('CD', 400),
-                    ('C',  100),
-                    ('XC', 90),
-                    ('L',  50),
-                    ('XL', 40),
-                    ('X',  10),
-                    ('IX', 9),
-                    ('V',  5),
-                    ('IV', 4),
-                    ('I',  1))
+_romanNumeralMap = (
+    ("M", 1000),
+    ("CM", 900),
+    ("D", 500),
+    ("CD", 400),
+    ("C", 100),
+    ("XC", 90),
+    ("L", 50),
+    ("XL", 40),
+    ("X", 10),
+    ("IX", 9),
+    ("V", 5),
+    ("IV", 4),
+    ("I", 1),
+)
 
 # Define pattern to detect valid Roman numerals
-_romanNumeralPattern = re.compile("""
+_romanNumeralPattern = re.compile(
+    """
     ^                   # beginning of string
     M{0,4}              # thousands - 0 to 4 M's
     (CM|CD|D?C{0,3})    # hundreds - 900 (CM), 400 (CD), 0-300 (0 to 3 C's),
@@ -75,7 +81,9 @@ _romanNumeralPattern = re.compile("""
     (IX|IV|V?I{0,3})    # ones - 9 (IX), 4 (IV), 0-3 (0 to 3 I's),
                         #        or 5-8 (V, followed by 0 to 3 I's)
     $                   # end of string
-    """, re.VERBOSE)
+    """,
+    re.VERBOSE,
+)
 
 
 def to_roman(n: Union[Integral, np.integer]) -> str:
@@ -161,14 +169,14 @@ def from_roman(s: str) -> Integral:
 
     """
     if not isinstance(s, str):
-        raise TypeError('The argument to from_roman must be a string.')
+        raise TypeError("The argument to from_roman must be a string.")
     if not _romanNumeralPattern.search(s):
-        raise InvalidRomanNumeralError('Invalid Roman numeral: %s' % s)
+        raise InvalidRomanNumeralError("Invalid Roman numeral: %s" % s)
 
     result = 0
     index = 0
     for numeral, integer in _romanNumeralMap:
-        while s[index:index+len(numeral)] == numeral:
+        while s[index : index + len(numeral)] == numeral:
             result += integer
             index += len(numeral)
     return result

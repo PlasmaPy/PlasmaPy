@@ -1,0 +1,2 @@
+Automate definition of documentation `release` and `version` in `docs/conf.py` with
+`plasmapy.__version__`.

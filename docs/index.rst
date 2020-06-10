@@ -8,45 +8,43 @@ PlasmaPy Documentation
 
 .. raw:: html
 
-    <div style="width: 30%;" class="sphx-glr-thumbcontainer" tooltip="Let&#x27;s try to look at ITER plasma conditions using the physics subpackage. ">
-
-.. only:: html
-
-    .. figure:: /auto_examples/images/thumb/sphx_glr_plot_physics_thumb.png
-
-        :ref:`sphx_glr_auto_examples_plot_physics.py`
-
-.. raw:: html
-
-    </div> 
-
-.. raw:: html
-
-    <div style="width: 30%;" class="sphx-glr-thumbcontainer" tooltip="Let&#x27;s import some basics (and PlasmaPy!) ">
-
-.. only:: html
-
-    .. figure:: /auto_examples/images/thumb/sphx_glr_plot_dispersion_function_thumb.png
-
-        :ref:`sphx_glr_auto_examples_plot_dispersion_function.py`
-
-.. raw:: html
-
+  <div class="sphx-glr-thumbcontainer">
+    <div class="figure align-center">
+      <img alt="thumbnail" src="./_images/notebooks_physics_16_0.png" />
+      <p class="caption">
+        <span class="caption-text">
+          <a class="reference internal" href="notebooks/physics.html">
+            <span class="std std-ref">Analysing ITER parameters</span>
+          </a>
+        </span>
+      </p>
     </div>
-
-.. raw:: html
-
-    <div style="width: 30%;" class="sphx-glr-thumbcontainer" tooltip="Let&#x27;s analyze a few Langmuir probe characteristics using the diagnostics.langmuir subpackage. F...">
-
-.. only:: html
-
-    .. figure:: /auto_examples/images/thumb/sphx_glr_plot_langmuir_analysis_thumb.png
-
-        :ref:`sphx_glr_auto_examples_plot_langmuir_analysis.py`
-
-.. raw:: html
-
-    </div> 
+  </div>
+  <div class="sphx-glr-thumbcontainer">
+    <div class="figure align-center">
+      <img alt="thumbnail" src="./_images/notebooks_dispersion_function_9_0.png" />
+      <p class="caption">
+        <span class="caption-text">
+          <a class="reference internal" href="notebooks/dispersion_function.html">
+            <span class="std std-ref">The plasma dispersion function</span>
+          </a>
+        </span>
+      </p>
+    </div>
+  </div>
+  <div class="sphx-glr-thumbcontainer">
+    <div class="figure align-center">
+      <img alt="thumbnail" src="./_images/notebooks_langmuir_analysis_6_1.png" />
+      <p class="caption">
+        <span class="caption-text">
+          <a class="reference internal" href="notebooks/langmuir_analysis.html">
+            <span class="std std-ref">Langmuir probe data analysis</span>
+          </a>
+        </span>
+      </p>
+    </div>
+  </div>
+  <div class="sphx-glr-clear"></div>
 
 .. image:: _static/graphic-circular.png
    :alt: PlasmaPy logo
@@ -58,16 +56,14 @@ PlasmaPy Documentation
 community-developed core `Python <https://www.python.org/>`_ 3.6+
 package for plasma physics currently under development.
 
-.. _toplevel-getting-started:
-
-***************
-Getting Started
-***************
 
 .. toctree::
+   :caption: First Steps
    :maxdepth: 1
 
-   install
+   Vision Statement <about/vision_statement>
+   Installing <install>
+   examples
    COMMUNICATION
    CONTRIBUTING
    CODE_OF_CONDUCT
@@ -79,109 +75,43 @@ Getting Started
   <http://www.plasmapy.org/>`_
 * `Using astropy.units <http://docs.astropy.org/en/stable/units/>`_
 
-.. _toplevel-user-documentation:
-
-******************
-User Documentation
-******************
-
-.. _toplevel-plasma-parameters:
-
-Theoretical Analysis
---------------------
-
 .. toctree::
    :maxdepth: 1
+   :caption: Package features
+   :hidden:
 
-   physics/index
-   transport/index
-   mathematics/index
-
-.. _toplevel-experimental-tools:
-
-Experimental Tools
-------------------
-
-The `~plasmapy.diagnostics` package is in the early stages of
-development.
+   Diagnostics <diagnostics/index>
+   Formulary <formulary/index>
+   Particles <particles/index>
+   Particle Tracker <simulation/particletracker>
+   Plasma Objects <plasma/index>
+   Package Utilities <utils/index>
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
+   :caption: Guide for Contributors
+   :hidden:
 
-   diagnostics/index
-
-.. _toplevel-data-structures:
-
-Data Structures and Simulation
-------------------------------
-
-.. toctree::
-    :maxdepth: 1
-
-    plasma/index
-    simulation/particletracker
-
-.. _toplevel-physical-data:
-
-Physical Data
--------------
+   Overview <development/index>
+   development/code_guide
+   development/doc_guide
+   development/testing_guide
+   development/release_guide
 
 .. toctree::
-    :maxdepth: 1
+   :maxdepth: 3
+   :caption: All the Rest
+   :hidden:
 
-    atomic/index
+   about/credits
+   whatsnew/index
+   about/stability
+   PlasmaPy.org <https://www.plasmapy.org>
 
-.. _toplevel-utilities:
-
-Utilities
----------
-
-.. toctree::
-   :maxdepth: 1
-
-   utils/index
-
-.. _toplevel-examples:
-
-Examples
---------
-.. toctree::
-    :maxdepth: 1
-
-    auto_examples/index
-
-.. _toplevel-development-guide:
-
-*****************
-Development Guide
-*****************
-
-The :ref:`plasmapy-development-guide` contains information on how to
-contribute to PlasmaPy, along with guidelines for code, testing, and
-documentation.
-
-.. toctree::
-    :maxdepth: 1
-    :hidden:
-
-    development/index
-
-.. _toplevel-project-details:
-
-***************
-Project Details
-***************
 
 .. The about PlasmaPy section has some important information that would
    be helpful to have more readily accessible from the main doc index
    page.
-
-.. toctree::
-   :maxdepth: 2
-
-   about/index
-
-.. _toplevel-index:
 
 *****
 Index

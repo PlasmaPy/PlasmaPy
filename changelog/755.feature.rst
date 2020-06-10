@@ -1,0 +1,1 @@
+Created classes to represent custom and dimensionless particles in ``plasmapy.particles``.

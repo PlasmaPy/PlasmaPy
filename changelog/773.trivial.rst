@@ -1,0 +1,1 @@
+Default settings for isort were set to be consistent with default settings for black.
