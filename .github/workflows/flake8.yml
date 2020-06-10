@@ -1,0 +1,16 @@
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+name: flake8
+jobs:
+  gitHubActionForFlake8:
+    name: GitHub Action for Flake8
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: GitHub Action for Flake8
+      uses: cclauss/GitHub-Action-for-Flake8@master
+      with:
+        args: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics

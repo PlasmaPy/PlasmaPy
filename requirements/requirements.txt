@@ -1,10 +1,10 @@
 # Required Packages w/ version
-astropy >= 3.1
+astropy >= 4.0
 colorama >= 0.3
 h5py >= 2.8
-lmfit >= 0.9.7
+lmfit >= 1.0.1
 matplotlib >= 2.0
 mpmath >= 1.0.0
-numpy >= 1.14
-scipy >= 0.19
+numpy >= 1.16.6
+scipy >= 1.2
 setuptools >= 41.2

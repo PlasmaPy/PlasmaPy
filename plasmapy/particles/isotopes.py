@@ -29,5 +29,6 @@ def _isotope_obj_hook(obj):
 
 
 _Isotopes = json.loads(
-    pkgutil.get_data("plasmapy", "data/isotopes.json"), object_hook=_isotope_obj_hook
+    pkgutil.get_data("plasmapy", "particles/data/isotopes.json"),
+    object_hook=_isotope_obj_hook
 )
