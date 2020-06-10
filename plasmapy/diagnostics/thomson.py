@@ -24,27 +24,26 @@ from warnings import warn
 # included ion and electron drift velocities and information about the ion
 # atomic species.
 
+
 @validate_quantities(
     wavelengths={"can_be_negative": False},
     probe_wavelength={"can_be_negative": False},
     ne={"can_be_negative": False},
-    Te={"can_be_negative": False,
-        "equivalencies": u.temperature_energy()},
-    Ti={"can_be_negative": False,
-        "equivalencies": u.temperature_energy()},
+    Te={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    Ti={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 def spectral_density(
-        wavelengths: u.nm,
-        probe_wavelength: u.nm,
-        ne: u.m**-3,
-        Te: u.K,
-        Ti: u.K,
-        fract: np.ndarray = np.ones(1),
-        ion_species: Union[str, List[str], Particle, List[Particle]]='H+',
-        fluid_vel: u.m/u.s = np.zeros(3)*u.cm/u.s,
-        ion_vel: u.m/u.s=None,
-        probe_vec=np.array([1, 0, 0]),
-        scatter_vec=np.array([0, 1, 0])
+    wavelengths: u.nm,
+    probe_wavelength: u.nm,
+    ne: u.m ** -3,
+    Te: u.K,
+    Ti: u.K,
+    fract: np.ndarray = np.ones(1),
+    ion_species: Union[str, List[str], Particle, List[Particle]] = "H+",
+    fluid_vel: u.m / u.s = np.zeros(3) * u.cm / u.s,
+    ion_vel: u.m / u.s = None,
+    probe_vec=np.array([1, 0, 0]),
+    scatter_vec=np.array([0, 1, 0]),
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
     Calculate the spectral density function for Thomson scattering of a
@@ -164,18 +163,23 @@ def spectral_density(
         # assume same temperature for all ions
         Ti = [Ti.value] * len(ion_species) * Ti.unit
     elif Ti.size != len(ion_species):
-        raise ValueError(f"Got {Ti.size} ion temperatures and expected "
-                         f"{len(ion_species)}.")
+        raise ValueError(
+            f"Got {Ti.size} ion temperatures and expected " f"{len(ion_species)}."
+        )
 
-    if (len(ion_species) != fract.size) \
-            or (ion_vel.shape[0] != fract.size) \
-            or (Ti.size != fract.size):
-        raise ValueError("Inconsistent number of species in fract, "
-                         "ion_species, Ti, and/or ion_vel.")
+    if (
+        (len(ion_species) != fract.size)
+        or (ion_vel.shape[0] != fract.size)
+        or (Ti.size != fract.size)
+    ):
+        raise ValueError(
+            "Inconsistent number of species in fract, "
+            "ion_species, Ti, and/or ion_vel."
+        )
 
     # Ensure unit vectors are normalized
-    probe_vec = probe_vec/np.linalg.norm(probe_vec)
-    scatter_vec = scatter_vec/np.linalg.norm(scatter_vec)
+    probe_vec = probe_vec / np.linalg.norm(probe_vec)
+    scatter_vec = scatter_vec / np.linalg.norm(scatter_vec)
 
     # Define some constants
     C = const.c.si  # speed of light
@@ -187,7 +191,7 @@ def spectral_density(
         vTi.append(thermal_speed(T, particle=ion).value)
         ion_z.append(ion.integer_charge * u.dimensionless_unscaled)
     vTi = vTi * vTe.unit
-    zbar = np.sum(fract*ion_z)
+    zbar = np.sum(fract * ion_z)
     ni = fract * ne / zbar  # ne/zbar = sum(ni)
     wpe = plasma_frequency(n=ne, particle="e-")
 
@@ -196,60 +200,73 @@ def spectral_density(
 
     # Convert wavelengths to angular frequencies (electromagnetic waves, so
     # phase speed is c)
-    ws = (2*np.pi*u.rad*C/wavelengths).to(u.rad/u.s)
-    wl = (2*np.pi*u.rad*C/probe_wavelength).to(u.rad/u.s)
+    ws = (2 * np.pi * u.rad * C / wavelengths).to(u.rad / u.s)
+    wl = (2 * np.pi * u.rad * C / probe_wavelength).to(u.rad / u.s)
 
     # Compute the frequency shift (required by energy conservation)
     w = ws - wl
 
     # Compute the wavenumbers in the plasma
     # See Sheffield Sec. 1.8.1 and Eqs. 5.4.1 and 5.4.2
-    ks = np.sqrt(ws**2 - wpe**2)/C
-    kl = np.sqrt(wl**2 - wpe**2)/C
+    ks = np.sqrt(ws ** 2 - wpe ** 2) / C
+    kl = np.sqrt(wl ** 2 - wpe ** 2) / C
 
     # Compute the wavenumber shift (required by momentum conservation)
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
     # Eq. 1.7.10 in Sheffield
-    k = np.sqrt(ks**2 + kl**2 - 2*ks*kl*np.cos(scattering_angle))
+    k = np.sqrt(ks ** 2 + kl ** 2 - 2 * ks * kl * np.cos(scattering_angle))
     # Normal vector along k
     k_vec = (scatter_vec - probe_vec) * u.dimensionless_unscaled
 
     # Compute Doppler-shifted frequencies for both the ions and electrons
     # Matmul is simultaneously conducting dot product over all wavelengths
     # and ion components
-    w_e = w - k*np.dot(fluid_vel, k_vec)
+    w_e = w - k * np.dot(fluid_vel, k_vec)
     w_i = w - np.matmul(ion_vel, np.outer(k, k_vec).T)
 
     # Compute the scattering parameter alpha
     # expressed here using the fact that v_th/w_p = root(2) * Debye length
-    alpha = np.sqrt(2)*wpe/(k*vTe)
+    alpha = np.sqrt(2) * wpe / (k * vTe)
 
     # Calculate the normalized phase velocities (Sec. 3.4.2 in Sheffield)
-    xe = (w_e/(k*vTe)).to(u.dimensionless_unscaled)
-    xi = (np.outer(1/vTi, 1/k)*w_i).to(u.dimensionless_unscaled)
+    xe = (w_e / (k * vTe)).to(u.dimensionless_unscaled)
+    xi = (np.outer(1 / vTi, 1 / k) * w_i).to(u.dimensionless_unscaled)
 
     # Calculate the susceptibilities
-    chiE = permittivity_1D_Maxwellian(w_e, k, Te, ne, 'e-')
+    chiE = permittivity_1D_Maxwellian(w_e, k, Te, ne, "e-")
 
     # Treatment of multiple species is an extension of the discussion in
     # Sheffield Sec. 5.1
     chiI = np.zeros([fract.size, w.size], dtype=np.complex128)
     for i, ion in enumerate(ion_species):
-        chiI[i, :] = permittivity_1D_Maxwellian(w_i[i, :], k, Ti[i], ni[i],
-                                                ion, z_mean=ion_z[i])
+        chiI[i, :] = permittivity_1D_Maxwellian(
+            w_i[i, :], k, Ti[i], ni[i], ion, z_mean=ion_z[i]
+        )
 
     # Calculate the logitudinal dielectric function
     epsilon = 1 + chiE + np.sum(chiI, axis=0)
 
     # Calculate the contributions to the spectral density function
-    econtr = (2*np.sqrt(np.pi)/k/vTe *
-              np.power(np.abs(1 - chiE/epsilon), 2) *
-              np.exp(-xe**2))
+    econtr = (
+        2
+        * np.sqrt(np.pi)
+        / k
+        / vTe
+        * np.power(np.abs(1 - chiE / epsilon), 2)
+        * np.exp(-(xe ** 2))
+    )
 
-    icontr = np.zeros([fract.size, w.size], dtype=np.complex128)*u.s/u.rad
+    icontr = np.zeros([fract.size, w.size], dtype=np.complex128) * u.s / u.rad
     for m in range(fract.size):
-        icontr[m, :] = 2*np.sqrt(np.pi)*ion_z[m]/k/vTi[m]* \
-            np.power(np.abs(chiE/epsilon), 2)*np.exp(-xi[m, :]**2)
+        icontr[m, :] = (
+            2
+            * np.sqrt(np.pi)
+            * ion_z[m]
+            / k
+            / vTi[m]
+            * np.power(np.abs(chiE / epsilon), 2)
+            * np.exp(-xi[m, :] ** 2)
+        )
 
     # Recast as real: imaginary part is already zero
     Skw = np.real(econtr + np.sum(icontr, axis=0))
