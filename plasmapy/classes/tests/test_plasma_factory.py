@@ -1,6 +1,7 @@
+import os
+
 import astropy.units as u
 import numpy as np
-import os
 import pytest
 
 import plasmapy.classes

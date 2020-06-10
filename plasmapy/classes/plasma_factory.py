@@ -1,9 +1,10 @@
 from plasmapy.classes.plasma_base import GenericPlasma
-
-from plasmapy.utils.datatype_factory_base import BasicRegistrationFactory
-from plasmapy.utils.datatype_factory_base import NoMatchError
-from plasmapy.utils.datatype_factory_base import MultipleMatchError
-from plasmapy.utils.datatype_factory_base import ValidationFunctionError
+from plasmapy.utils.datatype_factory_base import (
+    BasicRegistrationFactory,
+    MultipleMatchError,
+    NoMatchError,
+    ValidationFunctionError,
+)
 
 __all__ = ["PlasmaFactory", "Plasma"]
 
