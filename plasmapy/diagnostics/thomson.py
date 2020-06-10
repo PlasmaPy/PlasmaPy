@@ -160,8 +160,9 @@ def spectral_density(
         ion_species[ii] = Particle(ion)
 
     # Condition Ti
-    if Ti.size == 1 and len(ion_species) != 1:
-        # assume same temperature for all ions
+    if Ti.size == 1:
+        # If a single quantity is given, put it in an array so it's iterable
+        # If Ti.size != len(ion_species), assume same temp. for all species
         Ti = [Ti.value] * len(ion_species) * Ti.unit
     elif Ti.size != len(ion_species):
         raise ValueError(f"Got {Ti.size} ion temperatures and expected "
