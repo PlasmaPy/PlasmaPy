@@ -1,11 +1,11 @@
 import numpy as np
 import pytest
 from astropy import units as u
-from astropy.modeling import models, fitting
+from astropy.modeling import fitting, models
 from scipy.optimize import curve_fit
 
-from plasmapy.simulation.particletracker import ParticleTracker
 from plasmapy.classes.sources import Plasma3D
+from plasmapy.simulation.particletracker import ParticleTracker
 
 
 @pytest.fixture()
@@ -35,8 +35,9 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
     mean = position.mean().si.value
     amplitude = 3 * position.std().si.value
     omega = expected_gyrofrequency.si.value
-    params, covariances = curve_fit(sine, position.si.value, t.si.value,
-                                    p0=(amplitude, omega, phase, mean))
+    params, covariances = curve_fit(
+        sine, position.si.value, t.si.value, p0=(amplitude, omega, phase, mean)
+    )
     stds = np.sqrt(np.diag(covariances))
     return params, stds
 
@@ -97,6 +98,7 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 #     s.test_kinetic_energy()
 #     # s.plot_trajectories()
 
+
 @pytest.mark.slow
 def test_particle_exb_drift(uniform_magnetic_field):
     r"""
@@ -110,11 +112,13 @@ def test_particle_exb_drift(uniform_magnetic_field):
     """
     test_plasma = uniform_magnetic_field
     test_plasma.electric_field[1] = 1 * u.V / u.m
-    expected_drift_velocity = -(test_plasma.electric_field_strength /
-                                test_plasma.magnetic_field_strength).mean() \
+    expected_drift_velocity = (
+        -(test_plasma.electric_field_strength / test_plasma.magnetic_field_strength)
+        .mean()
         .to(u.m / u.s)
+    )
 
-    s = ParticleTracker(test_plasma, 'p', 5, dt=1e-10 * u.s, nt=int(5e3))
+    s = ParticleTracker(test_plasma, "p", 5, dt=1e-10 * u.s, nt=int(5e3))
     s.v[:, 2] += np.random.normal(size=s.N) * u.m / u.s
 
     s.run()
@@ -125,12 +129,13 @@ def test_particle_exb_drift(uniform_magnetic_field):
         p = fit_p(p_init, s.t, x)
         fit_velocity = p.parameters[1] * u.m / u.s
 
-        assert np.allclose(x, p(s.t), atol=1e-3 * u.m), \
-            "x position doesn't follow linear fit!"
+        assert np.allclose(
+            x, p(s.t), atol=1e-3 * u.m
+        ), "x position doesn't follow linear fit!"
 
-        assert np.isclose(expected_drift_velocity, fit_velocity,
-                          atol=1e-3 * u.m / u.s), \
-            "x velocity doesn't agree with expected drift velocity!"
+        assert np.isclose(
+            expected_drift_velocity, fit_velocity, atol=1e-3 * u.m / u.s
+        ), "x velocity doesn't agree with expected drift velocity!"
 
     s.test_kinetic_energy()
 
