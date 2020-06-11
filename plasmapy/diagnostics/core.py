@@ -8,6 +8,7 @@ import abc
 import importlib
 import xarray as xr
 
+from typing import List, Union
 from warnings import warn
 
 
@@ -52,8 +53,11 @@ class XAbstractDiagnostic(abc.ABC):
 # class PlasmaPyAccessor:
 class XDiagnosticEnabler:
     __available_diagnostics = {
-        'swept_langmuir': (".swept_langmuir.xdiagnostic",
-                           "XSweptLangmuirDiagnostic"),
+        'swept_langmuir': {
+            "path": ".swept_langmuir.xdiagnostic",
+            "cls": "XSweptLangmuirDiagnostic",
+            "renamed": None,
+        },
     }
 
     # def __init__(self, xr_obj: xr.Dataset):
@@ -63,31 +67,63 @@ class XDiagnosticEnabler:
         summary = [
             super().__repr__(),
             "",
-            "Enabled   Available Diagnostic",
+            "Enabled   Available Diagnostic   Bound As",
         ]
 
-        for diag in self.__available_diagnostics.keys():
+        for name, value in self.__available_diagnostics.items():
+            bound_as = name if value["renamed"] is None else value["renamed"]
+            bound = hasattr(xr.Dataset, bound_as)
+            if not bound:
+                bound_as = ""
+
             sum_str = "    ["
-            sum_str += "x" if hasattr(xr.Dataset, diag) else " "
-            sum_str += f"]   {diag}"
+            sum_str += "x" if bound else " "
+            sum_str += f"]   {name}"
+
+            pad = 23 - len(name)
+            sum_str += (" " * pad) + f"{bound_as}"
+
             summary.append(sum_str)
 
         return '\n'.join(summary)
 
     @property
-    def available(self):
+    def available(self) -> List[str]:
         return list(self.__available_diagnostics)
 
-    def enable(self, *args):
-        for arg in args:
+    def enable(self, *args, rename: Union[str, List[str]] = None) -> None:
+        if rename is None:
+            rename = (None, ) * len(args)
+        else:
+            if isinstance(rename, str):
+                rename = (rename, )
+
+            rename = tuple(rename)
+            if len(args) != len(rename):
+                raise ValueError(
+                    f"The number of renames {len(rename)} does not match the number "
+                    f"of diagnostics to enable {len(args)}."
+                )
+            elif not all([isinstance(rn, str) for rn in rename]):
+                raise TypeError(f"Expected all renames to be strings.")
+
+        for arg, rn in zip(args, rename):
             if arg in self.__available_diagnostics:
-                if hasattr(xr.Dataset, arg):
-                    # Do NOT register accessor to xarray.Dataset if already there
+                possible_names = (arg, self.__available_diagnostics[arg]["renamed"])
+                registered = False
+                for name in possible_names:
+                    if name is not None and hasattr(xr.Dataset, name):
+                        # Do NOT register accessor to xarray.Dataset if already there
+                        registered = True
+                if registered:
                     continue
 
                 diag_name = arg
-                mod_name = self.__available_diagnostics[diag_name][0]
-                cls_name = self.__available_diagnostics[diag_name][1]
+                if rn is not None:
+                    diag_name = rn
+                    self.__available_diagnostics[arg]["renamed"] = rn
+                mod_name = self.__available_diagnostics[arg]["path"]
+                cls_name = self.__available_diagnostics[arg]["cls"]
                 cls = getattr(
                     importlib.import_module(mod_name, package="plasmapy.diagnostics"),
                     cls_name,
