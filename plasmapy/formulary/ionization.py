@@ -41,8 +41,22 @@ def Z_bal(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     T_e : `~astropy.units.Quantity`
         The electron temperature.
 
-    n : ~astropy.units.Quantity`
+    n : `~astropy.units.Quantity`
         The electron number density of the plasma.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
+
+    Raises
+    ------
+    TypeError
+        The `T_e` or `n` is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
+
+    ~astropy.units.UnitConversionError
+        If the `T_e` or `n` not in appropriate units.
 
     Examples
     --------
