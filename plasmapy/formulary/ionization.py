@@ -12,8 +12,13 @@ from astropy.constants import c, a0, k_B
 from numpy import pi, exp, sqrt, log
 
 
-def Z_bal(n: u.m ** -3, T_e: u.K):
+@validate_quantities(
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n={"can_be_negative": False}
+)
+def Z_bal(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     r"""
+    Z_bal is the estimate average ionization level of a plasma in thermal equilibrium.
     Z_bal is derived from the Saha equation with the assumptions that
     the atoms are of a single species,
     are either hydrogenic or completely ionized,
@@ -46,7 +51,7 @@ def Z_bal(n: u.m ** -3, T_e: u.K):
         assuming that the number of ions in each state are equal.
 
     """
-    E_H = 13.6 * u.eV
+    E_H = 1 * u.Ry
 
     A = sqrt(k_B * T_e / E_H)
     B = log(1 / (4 * n * a0 ** 3) * (k_B * T_e / (pi * E_H)) ** (3 / 2))
