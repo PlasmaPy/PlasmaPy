@@ -55,19 +55,20 @@ __all__ = [
     "coupling_parameter",
 ]
 
-import numpy as np
 import warnings
 
+import numpy as np
 from astropy import units as u
-from plasmapy import particles, utils
-from astropy.constants.si import c, m_e, k_B, e, eps0, hbar
+from astropy.constants.si import c, e, eps0, hbar, k_B, m_e
 from numpy import pi
+
+from plasmapy import particles, utils
 from plasmapy.formulary import parameters
 from plasmapy.formulary.mathematics import Fermi_integral
 from plasmapy.formulary.quantum import (
     Wigner_Seitz_radius,
-    thermal_deBroglie_wavelength,
     chemical_potential,
+    thermal_deBroglie_wavelength,
 )
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic

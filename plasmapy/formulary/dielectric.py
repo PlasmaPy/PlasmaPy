@@ -5,11 +5,12 @@ __all__ = [
     "permittivity_1D_Maxwellian",
 ]
 
-import numpy as np
-
-from astropy import units as u
 from collections import namedtuple
+
+import numpy as np
+from astropy import units as u
 from numpy import pi
+
 from plasmapy.formulary import parameters
 from plasmapy.formulary.dispersionfunction import plasma_dispersion_func_deriv
 from plasmapy.utils.decorators import validate_quantities
@@ -114,9 +115,9 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
         omega_c = parameters.gyrofrequency(B=B, particle=s, signed=True)
         omega_p = parameters.plasma_frequency(n=n_s, particle=s)
 
-        S += -omega_p ** 2 / (omega ** 2 - omega_c ** 2)
+        S += -(omega_p ** 2) / (omega ** 2 - omega_c ** 2)
         D += omega_c / omega * omega_p ** 2 / (omega ** 2 - omega_c ** 2)
-        P += -omega_p ** 2 / omega ** 2
+        P += -(omega_p ** 2) / omega ** 2
     return StixTensorElements(S, D, P)
 
 
@@ -206,9 +207,9 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
         omega_c = parameters.gyrofrequency(B=B, particle=s, signed=True)
         omega_p = parameters.plasma_frequency(n=n_s, particle=s)
 
-        L += -omega_p ** 2 / (omega * (omega - omega_c))
-        R += -omega_p ** 2 / (omega * (omega + omega_c))
-        P += -omega_p ** 2 / omega ** 2
+        L += -(omega_p ** 2) / (omega * (omega - omega_c))
+        R += -(omega_p ** 2) / (omega * (omega + omega_c))
+        P += -(omega_p ** 2) / omega ** 2
     return RotatingTensorElements(L, R, P)
 
 

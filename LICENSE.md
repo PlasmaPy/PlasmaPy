@@ -12,8 +12,8 @@ modification, are permitted provided that the following conditions are met:
   this list of conditions and the following disclaimer in the documentation
   and/or other materials provided with the distribution.
 
-* Neither the name of PlasmaPy nor the names of its contributors may be used 
-  to endorse or promote products derived from this software without specific 
+* Neither the name of PlasmaPy nor the names of its contributors may be used
+  to endorse or promote products derived from this software without specific
   prior written permission.
 
 Subject to the terms and conditions of this license, each copyright
@@ -44,8 +44,8 @@ expressly, by implication, estoppel or otherwise.
 ## Disclaimer
 
 This software is provided by the copyright holders and contributors "as is"
-and any express or implied warranties, including, but not limited to, the 
-implied warranties of merchantability and fitness for a particular purpose are 
+and any express or implied warranties, including, but not limited to, the
+implied warranties of merchantability and fitness for a particular purpose are
 disclaimed. In no event shall the copyright holder or contributors be liable
 for any direct, indirect, incidental, special, exemplary, or consequential
 damages (including, but not limited to, procurement of substitute goods or

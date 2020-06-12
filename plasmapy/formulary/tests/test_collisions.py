@@ -1,26 +1,26 @@
 import numpy as np
 import pytest
 from astropy import units as u
+from astropy.constants import c
 from astropy.tests.helper import assert_quantity_allclose
 
 import plasmapy.particles.exceptions
 from plasmapy.formulary.braginskii import Coulomb_logarithm
 from plasmapy.formulary.collisions import (
+    Knudsen_number,
     Spitzer_resistivity,
+    collision_frequency,
+    coupling_parameter,
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
-    impact_parameter_perp,
     impact_parameter,
-    collision_frequency,
+    impact_parameter_perp,
     mean_free_path,
     mobility,
-    Knudsen_number,
-    coupling_parameter,
 )
 from plasmapy.utils import exceptions
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
-from astropy.constants import c
 from plasmapy.utils.exceptions import CouplingWarning
+from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
 class Test_Coulomb_logarithm:
