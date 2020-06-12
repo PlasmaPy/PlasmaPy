@@ -18,7 +18,8 @@ from numpy import pi, exp, sqrt, log
 )
 def Z_bal(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     r"""
-    Z_bal is the estimate average ionization level of a plasma in thermal equilibrium.
+    Z_bal is the estimate average ionization level of a plasma in thermal equilibrium
+    that balances the number density of ions in two different ionization states.
     Z_bal is derived from the Saha equation with the assumptions that
     the atoms are of a single species,
     are either hydrogenic or completely ionized,
