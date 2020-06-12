@@ -38,12 +38,12 @@ def Z_bal(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
 
     Parameters
     ----------
-
     T_e : `~astropy.units.Quantity`
         The electron temperature.
 
     n : ~astropy.units.Quantity`
         The electron number density of the plasma.
+
     Returns
     -------
     Z: `~astropy.units.Quantity`
