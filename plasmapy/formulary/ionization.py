@@ -44,6 +44,18 @@ def Z_bal(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     n : ~astropy.units.Quantity`
         The electron number density of the plasma.
 
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> T_e = 5000 * u.K
+    >>> n = 1e19 * u.m ** -3
+    >>> Z_bal(n, T_e)
+    <Quantity 0.27478417>
+    >>> T_e = 50 * u.eV
+    >>> n = 1e10 * u.m ** -3
+    >>> Z_bal(n, T_e)
+    <Quantity 12.61576334>
+
     Returns
     -------
     Z: `~astropy.units.Quantity`
