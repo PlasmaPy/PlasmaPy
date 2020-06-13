@@ -1,4 +1,4 @@
-from plasmapy.classes import BasePlasma, GenericPlasma
+from plasmapy.plasma import BasePlasma, GenericPlasma
 
 # Get rid of any previously registered classes.
 BasePlasma._registry = {}

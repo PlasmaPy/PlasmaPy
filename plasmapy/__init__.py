@@ -18,7 +18,7 @@ explicit import, for example, via ``import plasmapy.diagnostics``.
 ::
 
  particles                         --- Database for atoms, isotopes, ions...
- classes                           --- (WIP) classes used in multiple places
+ plasma                            --- (WIP) `Plasma` class
  data                              --- Data used for testing and examples
  diagnostics                       --- Experimental research data analysis
  formulary                         --- Plasma theory analysis formulae
