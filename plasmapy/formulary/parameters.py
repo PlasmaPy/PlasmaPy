@@ -24,11 +24,13 @@ __all__ = [
 ]
 
 import numbers
-import numpy as np
 import warnings
+from typing import Optional
 
+import numpy as np
 from astropy import units as u
-from astropy.constants.si import m_p, m_e, c, mu0, k_B, e, eps0
+from astropy.constants.si import c, e, eps0, k_B, m_e, m_p, mu0
+
 from plasmapy import particles
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
@@ -37,7 +39,6 @@ from plasmapy.utils.decorators import (
     validate_quantities,
 )
 from plasmapy.utils.exceptions import PhysicsWarning
-from typing import Optional
 
 
 def _grab_charge(ion, z_mean=None):
@@ -1593,7 +1594,8 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
 
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-    B={"can_be_negative": False})
+    B={"can_be_negative": False},
+)
 def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
     r"""
@@ -1602,6 +1604,13 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
     the diffusion of early fusion energy machines.
     The rate predicted by Bohm diffusion is much higher than classical diffusion
     and if there were no exceptions, magnetically confined fusion would be impractical.
+
+    .. math::
+
+        D_B = \frac{1}{16} \frac{k_B T}{e B}
+
+    where :math:`k_B` is the Boltzmann constant
+    and :math:`e` is the fundamental charge.
 
     Parameters
     ----------

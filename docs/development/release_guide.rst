@@ -18,7 +18,7 @@ Release
 
 * Create a new branch for the release that is separate from the master
   branch, e.g. `v0.3.x`
-  
+
 * Check that the Continuous Integration is passing for the correct
   version `(see the latest commit on master)
   <https://github.com/PlasmaPy/PlasmaPy/commits/master>`_. You can use `hub
@@ -30,7 +30,7 @@ Release
 
 * Move the generated `CHANGELOG.rst` file into
   `docs/whatsnew/{version_number}.rst`. Add the corresponding entry in the
-  table of contents in `docs/whatsnew/index.rst`. 
+  table of contents in `docs/whatsnew/index.rst`.
 
 * Add the note on include new contributors. To do this efficiently, borrow the
   SunPy Xonsh script `generate_releaserst.xsh 0.2.0 --auth

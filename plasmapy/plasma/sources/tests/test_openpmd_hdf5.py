@@ -1,14 +1,13 @@
-import astropy.units as u
+from astropy import units as u
+from typing import Union, Tuple, List
 import os
+from typing import List, Tuple, Union
 import pytest
 
-from typing import List, Tuple, Union
-
-import plasmapy.plasma
-
-from plasmapy.particles.data.test import data_dir
-from plasmapy.plasma.exceptions import DataStandardError
 from plasmapy.plasma.sources import openpmd_hdf5
+from plasmapy.plasma.exceptions import DataStandardError
+from plasmapy.particles.data.test import data_dir
+import plasmapy.plasma
 
 
 @pytest.fixture(scope="module")

@@ -6,12 +6,13 @@ __all__ = ["validate_quantities", "ValidateQuantities"]
 import functools
 import inspect
 import warnings
+from typing import Any, Dict
 
 from astropy import units as u
-from plasmapy.utils.decorators.checks import CheckValues, CheckUnits
+
+from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.helpers import preserve_signature
 from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
-from typing import Any, Dict
 
 
 class ValidateQuantities(CheckUnits, CheckValues):

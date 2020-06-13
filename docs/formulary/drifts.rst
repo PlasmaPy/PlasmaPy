@@ -8,4 +8,3 @@ Particle drifts (`plasmapy.formulary.drifts`)
 
 .. automodapi:: plasmapy.formulary.drifts
    :no-heading:
-

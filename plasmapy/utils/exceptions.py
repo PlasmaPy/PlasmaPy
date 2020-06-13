@@ -12,7 +12,6 @@ __all__ = [
 
 from astropy.units import UnitsWarning
 
-
 # ----------
 # Exceptions
 # ----------

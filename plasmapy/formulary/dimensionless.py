@@ -12,11 +12,11 @@ __all__ = ["beta", "quantum_theta", "Reynolds_number", "Mag_Reynolds"]
 
 from astropy import constants
 from astropy import units as u
+from astropy.constants import c
 from astropy.constants.codata2010 import mu0
 
-from plasmapy.formulary import quantum, parameters, electron_viscosity
+from plasmapy.formulary import electron_viscosity, parameters, quantum
 from plasmapy.utils.decorators import validate_quantities
-from astropy.constants import c
 
 
 @validate_quantities(
@@ -95,8 +95,9 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 
 
 @validate_quantities(U={"can_be_negative": True})
-def Reynolds_number(rho: u.kg / u.m ** 3, U: u.m / u.s, L: u.m,
-                    mu: u.kg / (u.m * u.s)) -> u.dimensionless_unscaled:
+def Reynolds_number(
+    rho: u.kg / u.m ** 3, U: u.m / u.s, L: u.m, mu: u.kg / (u.m * u.s)
+) -> u.dimensionless_unscaled:
     r"""
     The Reynolds Number is a dimensionless quantity
     that is used to predict flow patterns in fluids.
@@ -171,11 +172,10 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
     .. math::
 
-        Rm = \frac{U L}{\\eta}
+        Rm = \frac{U L}{\eta}
 
-        where: \eta = \frac{1}{\mu_0 \sigma}
-
-        and \mu_0 is the permeability of free space.
+    where :math:`\eta = \frac{1}{\mu_0 \sigma}`
+    and :math:`\mu_0` is the permeability of free space.
 
     Parameters
     ----------
@@ -200,8 +200,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
     ~astropy.units.UnitConversionError
         If the `U` is not in appropriate units.
 
-    :exc:`~plasmapy.utils.exceptions.RelativityError`
-        If the velocity `U` is greater than the speed of light.
+
 
     Examples
     --------
