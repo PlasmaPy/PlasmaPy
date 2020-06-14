@@ -53,8 +53,19 @@ class XAbstractDiagnostic(abc.ABC):
     def sel_indexers(self,
                      indexers: Mapping[Hashable, Any] = None,
                      **indexers_kwargs: Any) -> Mapping[Hashable, Any]:
+        # this member is currently a static method but subclasses may override the
+        # member and the override method is not necessarily static
         indexers = either_dict_or_kwargs(indexers, indexers_kwargs,
                                          "swept_langmuir.sel_indexers")
+        return indexers
+
+    def isel_indexers(self,
+                      indexers: Mapping[Hashable, Any] = None,
+                      **indexers_kwargs: Any) -> Mapping[Hashable, Any]:
+        # this member is currently a static method but subclasses may override the
+        # member and the override method is not necessarily static
+        indexers = either_dict_or_kwargs(indexers, indexers_kwargs,
+                                         "swept_langmuir.isel_indexers")
         return indexers
 
     def sel(self, indexers: Mapping[Hashable, Any] = None,
@@ -64,6 +75,14 @@ class XAbstractDiagnostic(abc.ABC):
         return self._ds.sel(indexers=indexers, method=method,
                             tolerance=tolerance, drop=drop)
 
+    def isel(self,
+             indexers: Mapping[Hashable, Any] = None,
+             drop: bool = False,
+             missing_dims: str = "raise",
+             **indexers_kwargs: Any,
+             ) -> xr.Dataset:
+        indexers = self.isel_indexers(indexers=indexers, **indexers_kwargs)
+        return  self._ds.isel(indexers=indexers, drop=drop, missing_dims=missing_dims)
 
 # @xr.register_dataset_accessor('plasmapy')
 # class PlasmaPyAccessor:
