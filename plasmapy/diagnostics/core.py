@@ -8,8 +8,10 @@ import abc
 import importlib
 import xarray as xr
 
-from typing import List, Union
+from numbers import Number
+from typing import Any, Hashable, List, Mapping, Union
 from warnings import warn
+from xarray.core.utils import either_dict_or_kwargs
 
 
 class AbstractProbe(abc.ABC):
@@ -47,6 +49,20 @@ class XAbstractDiagnostic(abc.ABC):
         else:
             raise ValueError(f"Expected instance of {self._probe_class} "
                              f"and got {value.__class__}.")
+
+    def sel_indexers(self,
+                     indexers: Mapping[Hashable, Any] = None,
+                     **indexers_kwargs: Any) -> Mapping[Hashable, Any]:
+        indexers = either_dict_or_kwargs(indexers, indexers_kwargs,
+                                         "swept_langmuir.sel_indexers")
+        return indexers
+
+    def sel(self, indexers: Mapping[Hashable, Any] = None,
+            method: str = None, tolerance: Number = None,
+            drop: bool = False, **indexers_kwargs: Any) -> xr.Dataset:
+        indexers = self.sel_indexers(indexers=indexers, **indexers_kwargs)
+        return self._ds.sel(indexers=indexers, method=method,
+                            tolerance=tolerance, drop=drop)
 
 
 # @xr.register_dataset_accessor('plasmapy')
