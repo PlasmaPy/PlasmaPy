@@ -436,8 +436,13 @@ def test_thermal_speed():
         thermal_speed(1e6 * u.K, method="rms").si.value, 6743070.475775486
     )
 
+    # Test invalid method
     with pytest.raises(ValueError):
         thermal_speed(T_i, method="sadks")
+
+    # Test invalid ndim
+    with pytest.raises(ValueError):
+        thermal_speed(T_i, ndim=4)
 
     assert_can_handle_nparray(thermal_speed)
 
