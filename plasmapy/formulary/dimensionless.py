@@ -172,11 +172,10 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
     .. math::
 
-        Rm = \frac{U L}{\\eta}
+        Rm = \frac{U L}{\eta}
 
-        where: \eta = \frac{1}{\mu_0 \sigma}
-
-        and \mu_0 is the permeability of free space.
+    where :math:`\eta = \frac{1}{\mu_0 \sigma}`
+    and :math:`\mu_0` is the permeability of free space.
 
     Parameters
     ----------
@@ -201,8 +200,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
     ~astropy.units.UnitConversionError
         If the `U` is not in appropriate units.
 
-    :exc:`~plasmapy.utils.exceptions.RelativityError`
-        If the velocity `U` is greater than the speed of light.
+
 
     Examples
     --------

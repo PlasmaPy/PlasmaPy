@@ -1,10 +1,11 @@
+import astropy.units as u
 import numpy as np
 import pytest
 from astropy import units as u
-from astropy.modeling import fitting, models
+from astropy.modeling import models, fitting
 from scipy.optimize import curve_fit
 
-from plasmapy.classes.sources import Plasma3D
+from plasmapy.plasma.sources import Plasma3D
 from plasmapy.simulation.particletracker import ParticleTracker
 
 
