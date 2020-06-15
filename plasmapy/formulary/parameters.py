@@ -411,6 +411,14 @@ def ion_sound_speed(
     return V_S
 
 
+
+# This dictionary defines coefficients for thermal speeds
+# calculated for different methods and values of ndim. 
+# Created here to avoid re-instantiating on each call
+coefficients = {1: {'most_probable':0, 'rms':1, 'mean_magnitude':2/np.pi},
+                2:{'most_probable':1, 'rms':2, 'mean_magnitude':np.pi/2},
+                3:{'most_probable':2, 'rms':3, 'mean_magnitude':8/np.pi}}
+
 @check_relativistic
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -536,45 +544,19 @@ def thermal_speed(
     """
     m = mass if np.isfinite(mass) else particles.particle_mass(particle)
 
-    # TODO: Could implement this more cleanly for any integer ndim
-    # at the cost of using the gamma function in the expression for the
-    # mean magnitude velocity.
-
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
-    if ndim == 1:
-        if method == "most_probable":
-            V = 0 * u.m/u.s
-        elif method == "rms":
-            V = np.sqrt(k_B * T / m)
-        elif method == "mean_magnitude":
-            V = np.sqrt(2 * k_B * T / (m * np.pi))
-        else:
-            raise ValueError("Method {method} not supported in thermal_speed")
-
-    elif ndim == 2:
-        if method == "most_probable":
-            V = np.sqrt(k_B * T / m)
-        elif method == "rms":
-            V = np.sqrt(2 * k_B * T / m)
-        elif method == "mean_magnitude":
-            V = np.sqrt(np.pi * k_B * T / (2 * m))
-        else:
-            raise ValueError("Method {method} not supported in thermal_speed")
-
-    elif ndim == 3:
-        if method == "most_probable":
-            V = np.sqrt(2 * k_B * T / m)
-        elif method == "rms":
-            V = np.sqrt(3 * k_B * T / m)
-        elif method == "mean_magnitude":
-            V = np.sqrt(8 * k_B * T / (m * np.pi))
-        else:
-            raise ValueError("Method {method} not supported in thermal_speed")
-    else:
+    try:
+        coef = coefficients[ndim]
+    except KeyError:
         raise ValueError("{ndim} is not a supported value for ndim in "
-                         "thermal_speed")
+                             "thermal_speed")      
+    try:
+        coef = coef[method]
+    except KeyError:
+        raise ValueError("Method {method} not supported in thermal_speed") 
 
-    return V
+    return np.sqrt(coef* k_B * T / m)
+
 
 
 @validate_quantities(
