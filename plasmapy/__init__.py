@@ -18,7 +18,7 @@ explicit import, for example, via ``import plasmapy.diagnostics``.
 ::
 
  particles                         --- Database for atoms, isotopes, ions...
- classes                           --- (WIP) classes used in multiple places
+ plasma                            --- (WIP) `Plasma` class
  data                              --- Data used for testing and examples
  diagnostics                       --- Experimental research data analysis
  formulary                         --- Plasma theory analysis formulae
@@ -35,10 +35,16 @@ Utility tools
 """
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 
+# Enforce Python version check during package import.
+# This is the same check as the one at the top of setup.py
+import sys
+
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
 import pkg_resources
+
+from . import formulary, particles
 
 try:
     # this places a runtime dependency on setuptools
@@ -52,38 +58,37 @@ try:
     __version__ = pkg_resources.get_distribution("plasmapy").version
 except pkg_resources.DistributionNotFound:
     # package is not installed
-    fallback_version = 'unknown'
+    fallback_version = "unknown"
     try:
         # code most likely being used from source
         # if setuptools_scm is installed then generate a version
         from setuptools_scm import get_version
-        __version__ = get_version(root='..',
-                                  relative_to=__file__,
-                                  fallback_version=fallback_version)
+
+        __version__ = get_version(
+            root="..", relative_to=__file__, fallback_version=fallback_version
+        )
         del get_version
-        warn_add = 'setuptools_scm failed to detect the version'
+        warn_add = "setuptools_scm failed to detect the version"
     except ModuleNotFoundError:
         # setuptools_scm is not installed
         __version__ = fallback_version
-        warn_add = 'setuptools_scm is not installed'
+        warn_add = "setuptools_scm is not installed"
 
     if __version__ == fallback_version:
         from warnings import warn
-        warn(f"plasmapy.__version__ not generated (set to 'unknown'), PlasmaPy is "
-             f"not an installed package and {warn_add}.", RuntimeWarning)
+
+        warn(
+            f"plasmapy.__version__ not generated (set to 'unknown'), PlasmaPy is "
+            f"not an installed package and {warn_add}.",
+            RuntimeWarning,
+        )
 
         del warn
     del fallback_version, warn_add
 
 
-from . import formulary
-from . import particles
-
 # ----------------------------------------------------------------------------
 
-# Enforce Python version check during package import.
-# This is the same check as the one at the top of setup.py
-import sys
 
 __citation__ = (
     "Instructions on how to cite and acknowledge PlasmaPy are provided in the "

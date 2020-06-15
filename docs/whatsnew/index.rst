@@ -17,4 +17,3 @@ including bug fixes and changes to the application programming interface
    0.2.0
    0.1.1
    0.1.0
-

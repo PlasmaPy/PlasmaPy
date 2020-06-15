@@ -22,7 +22,7 @@ make things easier for all of us:
 * Feel free to chat with other developers on our Matrix channel at:
    https://riot.im/app/#/room/#plasmapy:openastronomy.org
 
-* We have a developer's guide to help answer some of your questions. 
+* We have a developer's guide to help answer some of your questions.
   http://docs.plasmapy.org/en/latest/development/index.html
 
 Many thanks in advance for following these pointers and for being willing to contribute!
@@ -37,8 +37,8 @@ sometime before it is merged) check the following basic requirements:
 <!--
 
 In short: A changelog entry is a short description of your PR's changes.
-Each entry is written in a `<PULL REQUEST>.<TYPE>.rst` file and stored in 
-the `changelog` directory,  where `<PULL REQUEST>` is a pull request 
+Each entry is written in a `<PULL REQUEST>.<TYPE>.rst` file and stored in
+the `changelog` directory,  where `<PULL REQUEST>` is a pull request
 number and `<TYPE>` is one of:
 
 * `breaking`: A change which requires users to change code and is not backwards compatible. (Not to be used for removal of deprecated features.)

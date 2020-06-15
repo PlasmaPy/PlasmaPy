@@ -13,9 +13,9 @@ __all__ = [
 ]
 
 import numpy as np
-
 from astropy import units as u
-from astropy.constants.si import c, h, hbar, m_e, eps0, e, k_B
+from astropy.constants.si import c, e, eps0, h, hbar, k_B, m_e
+
 from plasmapy import particles
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor

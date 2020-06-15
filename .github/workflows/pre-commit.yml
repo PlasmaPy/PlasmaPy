@@ -1,4 +1,4 @@
-name: pre-commit
+name: Style
 
 on:
   pull_request:
@@ -7,6 +7,7 @@ on:
 
 jobs:
   pre-commit:
+    name: pre-commit (black)
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1

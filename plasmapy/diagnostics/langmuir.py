@@ -19,14 +19,15 @@ __all__ = [
 ]
 
 import copy
-import numpy as np
-import astropy.constants.si as const
 
+import astropy.constants.si as const
+import numpy as np
 from astropy import units as u
 from astropy.visualization import quantity_support
+from scipy.optimize import curve_fit
+
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
-from scipy.optimize import curve_fit
 
 
 def _fit_func_lin(x, x0, y0, c0):

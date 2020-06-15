@@ -4,13 +4,13 @@ Class representing a group of particles.
 
 import numpy as np
 import scipy.interpolate as interp
-from plasmapy.particles import atomic
 from astropy import constants
 from astropy import units as u
 
-__all__ = [
-    "ParticleTracker",
-]
+from plasmapy.particles import atomic
+
+__all__ = ["ParticleTracker"]
+
 
 class ParticleTracker:
     """
@@ -56,9 +56,17 @@ class ParticleTracker:
 
     .. _`Particle Stepper Notebook`: ../notebooks/particle_stepper.ipynb
     """
+
     @u.quantity_input(dt=u.s)
-    def __init__(self, plasma, particle_type='p', n_particles=1, scaling=1,
-                 dt=np.inf * u.s, nt=np.inf):
+    def __init__(
+        self,
+        plasma,
+        particle_type="p",
+        n_particles=1,
+        scaling=1,
+        dt=np.inf * u.s,
+        nt=np.inf,
+    ):
 
         if np.isinf(dt) and np.isinf(nt):  # coverage: ignore
             raise ValueError("Both dt and nt are infinite.")
@@ -80,30 +88,28 @@ class ParticleTracker:
         self.v = np.zeros((n_particles, 3), dtype=float) * (u.m / u.s)
         self.name = particle_type
 
-        self.position_history = np.zeros((self.NT, *self.x.shape),
-                                         dtype=float) * u.m
-        self.velocity_history = np.zeros((self.NT, *self.v.shape),
-                                         dtype=float) * (u.m / u.s)
+        self.position_history = np.zeros((self.NT, *self.x.shape), dtype=float) * u.m
+        self.velocity_history = np.zeros((self.NT, *self.v.shape), dtype=float) * (
+            u.m / u.s
+        )
         # create intermediate array of dimension (nx,ny,nz,3) in order to allow
         # interpolation on non-equal spatial domain dimensions
         _B = np.moveaxis(self.plasma.magnetic_field.si.value, 0, -1)
         _E = np.moveaxis(self.plasma.electric_field.si.value, 0, -1)
 
         self._B_interpolator = interp.RegularGridInterpolator(
-            (self.plasma.x.si.value,
-             self.plasma.y.si.value,
-             self.plasma.z.si.value),
+            (self.plasma.x.si.value, self.plasma.y.si.value, self.plasma.z.si.value),
             _B,
             method="linear",
-            bounds_error=True)
+            bounds_error=True,
+        )
 
         self._E_interpolator = interp.RegularGridInterpolator(
-            (self.plasma.x.si.value,
-             self.plasma.y.si.value,
-             self.plasma.z.si.value),
+            (self.plasma.x.si.value, self.plasma.y.si.value, self.plasma.z.si.value),
             _E,
             method="linear",
-            bounds_error=True)
+            bounds_error=True,
+        )
 
     def _interpolate_fields(self):
         interpolated_b = self._B_interpolator(self.x.si.value) * u.T
@@ -185,14 +191,18 @@ class ParticleTracker:
             self.velocity_history[i] = self.v
 
     def __repr__(self, *args, **kwargs):
-        return f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N}," \
-               f"name=\"{self.name}\",NT={self.NT})"
+        return (
+            f"Species(q={self.q:.4e},m={self.m:.4e},N={self.N},"
+            f'name="{self.name}",NT={self.NT})'
+        )
 
     def __str__(self):  # coverage: ignore
-        return f"{self.N} {self.scaling:.2e}-{self.name} with " \
-               f"q = {self.q:.2e}, m = {self.m:.2e}, " \
-               f"{self.saved_iterations} saved history " \
-               f"steps over {self.NT} iterations"
+        return (
+            f"{self.N} {self.scaling:.2e}-{self.name} with "
+            f"q = {self.q:.2e}, m = {self.m:.2e}, "
+            f"{self.saved_iterations} saved history "
+            f"steps over {self.NT} iterations"
+        )
 
     def plot_trajectories(self):  # coverage: ignore
         r"""Draws trajectory history."""
@@ -202,7 +212,7 @@ class ParticleTracker:
 
         quantity_support()
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
+        ax = fig.add_subplot(111, projection="3d")
         for p_index in range(self.N):
             r = self.position_history[:, p_index]
             x, y, z = r.T
@@ -239,13 +249,14 @@ class ParticleTracker:
             if "z" in plot:
                 ax.plot(self.t, z, label=f"z_{p_index}")
         ax.set_title(self.name)
-        ax.legend(loc='best')
+        ax.legend(loc="best")
         ax.grid()
         plt.show()
 
     def test_kinetic_energy(self):
         r"""Test conservation of kinetic energy."""
-        assert np.allclose(self.kinetic_energy_history,
-                           self.kinetic_energy_history.mean(),
-                           atol=3 * self.kinetic_energy_history.std()), \
-            "Kinetic energy is not conserved!"
+        assert np.allclose(
+            self.kinetic_energy_history,
+            self.kinetic_energy_history.mean(),
+            atol=3 * self.kinetic_energy_history.std(),
+        ), "Kinetic energy is not conserved!"
