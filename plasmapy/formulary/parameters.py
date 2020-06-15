@@ -412,13 +412,15 @@ def ion_sound_speed(
     return V_S
 
 
-
 # This dictionary defines coefficients for thermal speeds
-# calculated for different methods and values of ndim. 
+# calculated for different methods and values of ndim.
 # Created here to avoid re-instantiating on each call
-coefficients = {1: {'most_probable':0, 'rms':1, 'mean_magnitude':2/np.pi},
-                2:{'most_probable':1, 'rms':2, 'mean_magnitude':np.pi/2},
-                3:{'most_probable':2, 'rms':3, 'mean_magnitude':8/np.pi}}
+coefficients = {
+    1: {"most_probable": 0, "rms": 1, "mean_magnitude": 2 / np.pi},
+    2: {"most_probable": 1, "rms": 2, "mean_magnitude": np.pi / 2},
+    3: {"most_probable": 2, "rms": 3, "mean_magnitude": 8 / np.pi},
+}
+
 
 @check_relativistic
 @validate_quantities(
@@ -549,15 +551,13 @@ def thermal_speed(
     try:
         coef = coefficients[ndim]
     except KeyError:
-        raise ValueError("{ndim} is not a supported value for ndim in "
-                             "thermal_speed")      
+        raise ValueError("{ndim} is not a supported value for ndim in " "thermal_speed")
     try:
         coef = coef[method]
     except KeyError:
-        raise ValueError("Method {method} not supported in thermal_speed") 
+        raise ValueError("Method {method} not supported in thermal_speed")
 
-    return np.sqrt(coef* k_B * T / m)
-
+    return np.sqrt(coef * k_B * T / m)
 
 
 @validate_quantities(
