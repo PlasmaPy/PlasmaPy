@@ -13,4 +13,4 @@ Distribution functions (`plasmapy.formulary.distribution`)
     :caption: Examples
 
     /notebooks/distribution
-	/notebooks/thermal_speed
+    /notebooks/thermal_speed 
