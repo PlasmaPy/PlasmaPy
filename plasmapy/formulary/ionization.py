@@ -1,6 +1,6 @@
 """ This module gathers functions relating to ionization states and the properties thereof.
 """
-__all__ = ["Z_bal"]
+__all__ = ["ionization_balance"]
 
 from astropy import units as u
 from plasmapy.utils.decorators import (
@@ -16,7 +16,7 @@ from numpy import pi, exp, sqrt, log
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False}
 )
-def Z_bal(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
+def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     r"""
     Z_bal is the estimate average ionization level of a plasma in thermal equilibrium
     that balances the number density of ions in two different ionization states.
@@ -64,11 +64,11 @@ def Z_bal(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     >>> import astropy.units as u
     >>> T_e = 5000 * u.K
     >>> n = 1e19 * u.m ** -3
-    >>> Z_bal(n, T_e)
+    >>> ionization_balance(n, T_e)
     <Quantity 0.27478417>
     >>> T_e = 50 * u.eV
     >>> n = 1e10 * u.m ** -3
-    >>> Z_bal(n, T_e)
+    >>> ionization_balance(n, T_e)
     <Quantity 12.61576334>
 
     Returns
@@ -85,3 +85,7 @@ def Z_bal(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
 
     Z = A * sqrt(B) - 1 / 2
     return Z
+
+
+Z_bal = ionization_balance
+"""alias for :func:`ionization_balance`"""
