@@ -369,6 +369,7 @@ def test_thermal_speed():
     # ndim = 1
     assert np.isclose(thermal_speed(T_e, method="most_probable", ndim=1).si.value, 0.0)
 
+    # Regression tests start here!
     assert np.isclose(
         thermal_speed(T_e, method="rms", ndim=1).si.value, 3893114.2008620175
     )
