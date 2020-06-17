@@ -13,8 +13,7 @@ from numpy import pi, exp, sqrt, log
 
 
 @validate_quantities(
-    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-    n={"can_be_negative": False}
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
 def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     r"""
