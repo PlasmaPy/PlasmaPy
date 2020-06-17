@@ -1594,7 +1594,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
 
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-    B={"can_be_negative": False}
+    B={"can_be_negative": False},
 )
 def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
