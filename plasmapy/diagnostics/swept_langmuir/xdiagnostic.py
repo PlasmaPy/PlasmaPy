@@ -2,39 +2,163 @@ __all__ = ["XSweptLangmuirDiagnostic"]
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import xarray as xr
+
+from typing import Any, Hashable, Mapping
+from warnings import warn
 
 from plasmapy.analysis.swept_langmuir.floating_potential import find_floating_potential
 from plasmapy.diagnostics import XAbstractDiagnostic
 from plasmapy.diagnostics.swept_langmuir import SweptLangmuirProbe
-from warnings import warn
+from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
 class XSweptLangmuirDiagnostic(XAbstractDiagnostic):
+    _sig_index = None
+    _time_index = None
+    _id_index = "id"
+    _ds_structured_changed = False
+
     def __init__(self, dataset: xr.Dataset):
         super().__init__(dataset)
         self._probe_class = SweptLangmuirProbe
-        # self._check_dataset()
-
-    def _check_dataset(self):
-        # check for XArray Variables
-        if 'voltage' not in self._ds.data_vars.keys():
-            raise ValueError(f"Dataset does not have the 'voltage' Variable.")
-        if 'current' not in self._ds.data_vars.keys():
-            raise ValueError(f"Dataset does not have the 'current' Variable.")
+        self._check_dataset()
 
     @property
-    def floating_potential(self):
-        try:
-            return self._ds.floating_potential[0].data[()]
-        except AttributeError:
-            warn('Floating potential has not be calculated.')
-            return np.nan
+    def _id_wstart(self) -> str:
+        return self._id_index + "_wstart"
 
-    def analyze(self):
-        self.find_floating_potential()
+    @property
+    def _id_wstop(self) -> str:
+        return self._id_index + "_wstop"
 
-    def find_floating_potential(self, **kwargs):
+    @property
+    def _id_signum(self) -> str:
+        return self._id_index + "_signum"
+
+    @property
+    def _id_sweepnum(self) -> str:
+        return self._id_index + "_swpnum"
+
+    def _check_dataset(self) -> None:
+        """
+        Examine xarray `~xarray.Dataset` for expected data.
+        """
+        # check for XArray Variables
+        for dname in ('voltage', 'current'):
+            if dname not in self._ds.data_vars.keys():
+                raise ValueError(f"Dataset does not have the '{dname}' Variable.")
+
+        # check DataArrays are matched
+        if self._ds.voltage.dims != self._ds.current.dims:
+            raise ValueError(
+                f"The 'voltage' DataArray dims {self._ds.voltage.dims} does not "
+                f"match the 'current' DataAray dims {self._ds.current.dims}."
+            )
+        if self._ds.voltage.shape != self._ds.current.shape:
+            raise ValueError(
+                f"The 'voltage' DataArray shape {self._ds.voltage.dims} does "
+                f"not match the 'current' DataArray shape {self._ds.current.dims}."
+            )
+
+        # Examine dimensions and get index names
+        if len(self._ds.current.dims) == 1:
+            self._set_time_index(self._ds.current.dims[0])
+        elif len(self._ds.current.dims) == 2:
+            self._set_shot_index(self._ds.current.dims[0])
+            self._set_time_index(self._ds.current.dims[1])
+        else:
+            raise ValueError(
+                f"Expected DataArrays with 1 or 2 dimensions and got "
+                f"{len(self._ds.current.dims)}."
+            )
+        if self._ds_structured_changed:
+            self._set_trace_id()
+
+    def _set_time_index(self, new_index: str) -> None:
+        if self._time_index == new_index:
+            pass
+        elif self._time_index is None:
+            self._time_index = new_index
+        else:
+            warn(f"The expected time index '{self._time_index}' has changed"
+                 f"'{new_index}'.", PlasmaPyWarning)
+            self._time_index = new_index
+
+    def _set_shot_index(self, new_index: str) -> None:
+        if self._sig_index == new_index:
+            pass
+        elif self._sig_index is None:
+            self._sig_index = new_index
+            self._ds_structured_changed = True
+        else:
+            warn(f"The expected shot index '{self._sig_index}' has changed"
+                 f"'{new_index}'.", PlasmaPyWarning)
+            self._sig_index = new_index
+            self._ds_structured_changed = True
+
+    def _set_trace_id(self) -> None:
+        if self._id_index in self._ds.coords:
+            coords = (self._id_index, self._id_signum, self._id_sweepnum,
+                      self._id_wstart, self._id_wstop)
+            warn(f"Overriding the dataset coords '{coords}'.")
+            for coord in coords:
+                del self._ds[coord]
+
+        if len(self._ds.current.dims) == 1:
+            self._ds.coords[self._id_index] = (self._id_index, 0)
+            self._ds.coords[self._id_wstart] = (self._id_index,
+                                                self._ds[self._time_index].data[0])
+            self._ds.coords[self._id_wstop] = (self._id_index,
+                                               self._ds[self._time_index].data[-1])
+        else:
+            # this should only be reached if len(dims) == 2
+            _shot_coord = self._ds[self._sig_index]
+            _time_coord = self._ds[self._time_index]
+
+            # initialize "id" coordinate
+            self._ds.coords[self._id_index] = (
+                self._id_index,
+                pd.MultiIndex.from_product([_shot_coord, [0]],
+                                           names=[self._id_signum, self._id_sweepnum]),
+            )
+
+            # initialize "sid" coordinate
+            # self._ds.coords[self._id_shot] = (
+            #     self._id_index,
+            #     self._ds[self._sig_index]
+            # )
+
+            # initialize "id_wstart" coordinate
+            self._ds.coords[self._id_wstart] = (
+                self._id_index,
+                np.repeat(self._ds[self._time_index].data[0],
+                          self._ds[self._id_index].size)
+            )
+            self._ds.coords[self._id_wstop] = (
+                self._id_index,
+                np.repeat(self._ds[self._time_index].data[-1],
+                          self._ds.current.shape[0])
+            )
+
+        self._ds_structured_changed = False
+
+    def rename_trace_id(self, new_is) -> None:
+        raise NotImplementedError
+
+    # @property
+    # def floating_potential(self):
+    #     try:
+    #         return self._ds.floating_potential[0].data[()]
+    #     except AttributeError:
+    #         warn('Floating potential has not be calculated.')
+    #         return np.nan
+
+    # def analyze(self):
+    #     self.find_floating_potential()
+
+    def find_floating_potential(self, id=slice(None), **kwargs) -> None:
         self._check_dataset()
 
         # find floating potential
@@ -67,6 +191,78 @@ class XSweptLangmuirDiagnostic(XAbstractDiagnostic):
     #             plot_methods[what]()
     #         except KeyError:
     #             pass
+
+    def sel_indexers(self,
+                     indexers: Mapping[Hashable, Any] = None,
+                     **indexers_kwargs: Any) -> Mapping[Hashable, Any]:
+        indexers = super().sel_indexers(indexers=indexers, **indexers_kwargs)
+        indexers = dict(indexers)
+
+        _shot_index = self._sig_index
+        _time_index = self._time_index
+        _id_index = self._id_index
+        _id_shot = self._id_signum
+        _id_trace = self._id_sweepnum
+        _id_wstart = self._id_wstart
+        _id_wstop = self._id_wstop
+
+        if _id_index in indexers and _shot_index in indexers:
+            print(f"{_id_index} and {_shot_index}")
+
+            raise ValueError(
+                f"I'm not smart enough to resolve indexing using both {_id_index} and "
+                f"{_shot_index}, use just one."
+            )
+        elif _id_index in indexers:
+            # generate sel for shot index
+            sn = self._ds[_id_shot].sel({_id_index: indexers[_id_index]}).data
+            indexers[_shot_index] = sn
+
+            # generate sel for time index
+            if _time_index in indexers:
+                # let the id time interval be overruled by _time_index
+                pass
+            else:
+                wstart = self._ds[_id_wstart].sel({_id_index: indexers[_id_index]}).data
+                wstop = self._ds[_id_wstop].sel({_id_index: indexers[_id_index]}).data
+                indexers[_time_index] = slice(np.min(wstart), np.max(wstop))
+        elif _shot_index in indexers and _time_index in indexers:
+            # need to filter for both sid's and trid's
+
+            # get shot index values
+            sn = indexers[_shot_index]
+
+            # get trace index values
+            # pick id's where any time value falls between wstart and wstop
+            mask = xr.where((self._ds[_id_wstart] >= np.min(indexers[_time_index]))
+                            & (self._ds[_id_wstop] <= np.max(indexers[_time_index])),
+                            True, False).data
+            warn(f"I'm not smart enough to select trace id's '{_id_trace}' based on "
+                 f"time index '{_time_index}' values.  Only filtering for shot index "
+                 f"values",
+                 PlasmaPyWarning)
+
+        elif _shot_index in indexers:
+            # need to filter for sid only
+            pass
+        elif _time_index in indexers:
+            # need to filter for trid only
+            pass
+
+        return indexers
+
+    def sweep_count(self, signum: int) -> int:
+        if not isinstance(signum, int):
+            raise TypeError(f"Expected in for 'signum' and got type "
+                            f"{type(signum).__name__}.")
+
+        indexer = {self._id_index: (signum, )}
+        try:
+            count = self._ds[self._id_signum].sel(**indexer).size
+        except KeyError:
+            raise KeyError(f"Signal number {signum} does not exist in the Dataset.")
+
+        return count
 
     def plot_floating_potential_fit(self):
         self._check_dataset()
