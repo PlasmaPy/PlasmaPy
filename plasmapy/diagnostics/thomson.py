@@ -58,7 +58,7 @@ def spectral_density(
         \bigg |1 - \frac{\chi_e}{\epsilon} \bigg |^2
         f_{e0} \bigg (\frac{\omega}{k} \bigg ) +
         \sum_i \frac{2\pi Z_i}{k}
-        \bigg |\frac{\chi_e}{\epsilon} \bigg |^2 f_{io}
+        \bigg |\frac{\chi_e}{\epsilon} \bigg |^2 f_{i0,i}
         \bigg ( \frac{\omega}{k} \bigg )
 
     where :math:`\chi_e` is the electron component susceptibility of the
