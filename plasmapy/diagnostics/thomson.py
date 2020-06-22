@@ -85,8 +85,8 @@ def spectral_density(
         Mean (0th order) electron density of all plasma components combined.
         (convertible to cm^-3.)
 
-    Te : astropy.units.Quantity (required)
-        Temperature of the electron component (convertable to either eV or K)
+    Te : `~astropy.units.Quantity`
+        Temperature of the electron component. (in K or convertible to eV)
 
     Ti : astropy.units.Quantity ndarray, shape [N] (required)
         Temperature of each ion component (convertable to either eV or K)
