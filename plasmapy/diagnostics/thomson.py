@@ -64,7 +64,7 @@ def spectral_density(
     where :math:`\chi_e` is the electron component susceptibility of the
     plasma and :math:`\epsilon = 1 + \chi_e + \sum_i \chi_i` is the total
     plasma dielectric  function (with :math:`\chi_i` being the ion component
-    of the succeptibility), :math:`Z_i` is the charge of each ion, :math:`k`
+    of the susceptibility), :math:`Z_i` is the charge of each ion, :math:`k`
     is the scattering wavenumber, :math:`\omega` is the scattering frequency,
     and :math:`f_{e0}` and :math:`f_{i0,i}` are the electron and ion velocity
     distribution functions respectively. In this function the electron and ion
