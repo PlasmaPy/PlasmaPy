@@ -72,38 +72,39 @@ def spectral_density(
     function equivalent to Eq. 3.4.6 in `Sheffield`_.
 
     Parameters
-    ---------
+    ----------
 
-    wavelengths : astropy.units.Quantity ndarray (required)
+    wavelengths : `~astropy.units.Quantity`
         Array of wavelengths over which the spectral density function
-        will be calculated, convertable to nm.
+        will be calculated. (convertible to nm)
 
-    probe_wavelength : astropy.units.Quantity (required)
-        Wavelength of the probe laser convertable to nm
+    probe_wavelength : `~astropy.units.Quantity`
+        Wavelength of the probe laser. (convertible to nm)
 
-    ne : astropy.units.Quantity, ndarray (required)
-        mean (0th order) electron density of all plasma components combined
-        convertable to cm^-3.
+    ne : `~astropy.units.Quantity`
+        Mean (0th order) electron density of all plasma components combined.
+        (convertible to cm^-3.)
 
-    Te : astropy.units.Quantity (required)
-        Temperature of the electron component (convertable to either eV or K)
+    Te : `~astropy.units.Quantity`
+        Temperature of the electron component. (in K or convertible to eV)
 
-    Ti : astropy.units.Quantity ndarray, shape [N] (required)
-        Temperature of each ion component (convertable to either eV or K)
+    Ti : `~astropy.units.Quantity`, shape (N, )
+        Temperature of each ion component. Shape (N, ) must be equal to the
+        number of ion components N. (in K or convertible to eV)
 
-    fract : float ndarray, shape [N]
-        Fraction (by number) of the total number of ions made up by each ion
-        species. Must sum to 1.0. Default is a single ion species.
+    fract : array_like, shape (N, ), optional
+        An array-like object where each element represents the fraction (or ratio)
+        of the ion component number density to the total ion number density.
+        Must sum to 1.0. Default is a single ion species.
 
-    ion_species : str or Particle class list, shape [N]
-        A list of either instances of the Particle class or strings
-        interpretable by that class representing each ion species.
-        Default is ['H+'] corresponding to a single species of hydrogen ions.
+    ion_species : str or `~plasmapy.particles.Particle`, shape (N, ), optional
+        A list or single instance of `~plasmapy.particles.Particle`, or strings
+        convertible to `~plasmapy.particles.Particle`. Default is `'H+'`
+        corresponding to a single species of hydrogen ions.
 
-    fluid_vel : astropy.units.Quantity ndarray shape [3]
-        Velocity of the fluid or electron component in the rest frame in
-        units convertable to cm/s. Defaults to [0, 0, 0], representing
-        a stationary plasma.
+    fluid_vel : `~astropy.units.Quantity`, shape (3, ), optional
+        Electron fluid velocity in the rest frame. (convertible to cm/s) 
+        Defaults to a stationary plasma [0, 0, 0] m/s.
 
     ion_vel : astropy.units.Quantity ndarray, shape [N,3]
         Velocity vectors for each ion population relative to the
@@ -143,6 +144,7 @@ def spectral_density(
     .. _`10.5281/zenodo.3766933`: https://doi.org/10.5281/zenodo.3766933
     .. _`Sheffield`: https://doi.org/10.1016/B978-0-12-374877-5.00003-8
     """
+    fract = np.asarray(fract, dtype=np.float64)
 
     # If ion drift velocity is not specified, create an array corresponding
     # to zero drift
