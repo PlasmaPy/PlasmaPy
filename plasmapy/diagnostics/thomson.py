@@ -92,9 +92,10 @@ def spectral_density(
         Temperature of each ion component. Shape (N, ) must be equal to the
         number of ion components N. (in K or convertible to eV)
 
-    fract : float ndarray, shape [N]
-        Fraction (by number) of the total number of ions made up by each ion
-        species. Must sum to 1.0. Default is a single ion species.
+    fract : array_like, shape (N, ), optional
+        An array-like object where each element represents the fraction (or ratio)
+        of the ion component number density to the total ion number density.
+        Must sum to 1.0. Default is a single ion species.
 
     ion_species : str or Particle class list, shape [N]
         A list of either instances of the Particle class or strings
