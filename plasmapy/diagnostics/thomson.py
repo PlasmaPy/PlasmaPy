@@ -140,7 +140,7 @@ def spectral_density(
 
     .. _`ISBN 978\\-0123748775`: https://www.sciencedirect.com/book/9780123748775/plasma-scattering-of-electromagnetic-radiation
     .. _`10.5281/zenodo.3766933`: https://doi.org/10.5281/zenodo.3766933
-
+    .. _`Sheffield`: https://doi.org/10.1016/B978-0-12-374877-5.00003-8
     """
 
     # If ion drift velocity is not specified, create an array corresponding
