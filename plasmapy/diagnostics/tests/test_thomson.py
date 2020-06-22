@@ -4,8 +4,10 @@ Tests for Thomson scattering analysis functions
 
 import astropy.units as u
 import numpy as np
+import pytest
 
 from plasmapy.diagnostics import thomson
+from plasmapy.particles import Particle
 
 
 def width_at_value(x, y, val):
@@ -59,9 +61,11 @@ def gen_multiple_ion_species_spectrum():
     fract = np.array([0.7, 0.3])
     Te = 10 * u.eV
     Ti = np.array([5, 5]) * u.eV
-    ion_species = ["p+", "C-12 5+"]
     fluid_vel = np.array([300, 0, 0]) * u.km / u.s
     ion_vel = np.array([[-500, 0, 0], [0, 500, 0]]) * u.km / u.s
+
+    # Use this to also test inputing ion species as Particle objects
+    ion_species = [Particle("p+"), Particle("C-12 5+")]
 
     alpha, Skw = thomson.spectral_density(
         wavelengths,
@@ -108,6 +112,62 @@ def gen_non_collective_spectrum():
     )
 
     return alpha, wavelengths, Skw
+
+
+def test_different_input_types():
+
+    # Define some constants
+    wavelengths = np.arange(520, 545, 0.01) * u.nm
+    probe_wavelength = 532 * u.nm
+    ne = 5e17 * u.cm ** -3
+    probe_vec = np.array([1, 0, 0])
+    scatter_vec = np.array([0, 1, 0])
+    fract = np.array([1.0])
+    Te = 10 * u.eV
+    Ti = np.array([10]) * u.eV
+    ion_species = ["C-12 5+"]
+
+    # Raise a ValueError with inconsistent ion array lengths
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(
+            wavelengths,
+            probe_wavelength,
+            ne,
+            Te,
+            Ti,
+            fract=np.array([0.5, 0.5]),
+            ion_species=ion_species,
+            probe_vec=probe_vec,
+            scatter_vec=scatter_vec,
+        )
+
+    # Raise a ValueError with inconsistent ion temperature array
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(
+            wavelengths,
+            probe_wavelength,
+            ne,
+            Te,
+            np.array([5, 5]) * u.eV,
+            fract=fract,
+            ion_species=ion_species,
+            probe_vec=probe_vec,
+            scatter_vec=scatter_vec,
+        )
+
+    # Raise a ValueError with empty ion_species
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(
+            wavelengths,
+            probe_wavelength,
+            ne,
+            Te,
+            Ti,
+            fract=fract,
+            ion_species=[],
+            probe_vec=probe_vec,
+            scatter_vec=scatter_vec,
+        )
 
 
 def test_collective_spectrum():
