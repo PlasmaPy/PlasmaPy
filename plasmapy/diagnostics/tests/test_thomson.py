@@ -125,7 +125,7 @@ def test_different_input_types():
     fract = np.array([1.0])
     Te = 10 * u.eV
     Ti = np.array([10]) * u.eV
-    ion_species = ["C-12 5+"]
+    ion_species = "C-12 5+"
 
     # Raise a ValueError with inconsistent ion array lengths
     with pytest.raises(ValueError):
