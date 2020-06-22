@@ -88,8 +88,9 @@ def spectral_density(
     Te : `~astropy.units.Quantity`
         Temperature of the electron component. (in K or convertible to eV)
 
-    Ti : astropy.units.Quantity ndarray, shape [N] (required)
-        Temperature of each ion component (convertable to either eV or K)
+    Ti : `~astropy.units.Quantity`, shape (N, )
+        Temperature of each ion component. Shape (N, ) must be equal to the
+        number of ion components N. (in K or convertible to eV)
 
     fract : float ndarray, shape [N]
         Fraction (by number) of the total number of ions made up by each ion
