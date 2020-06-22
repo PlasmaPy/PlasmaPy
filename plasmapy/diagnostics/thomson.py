@@ -79,7 +79,7 @@ def spectral_density(
         will be calculated. (convertible to nm)
 
     probe_wavelength : astropy.units.Quantity (required)
-        Wavelength of the probe laser convertable to nm
+        Wavelength of the probe laser. (convertible to nm)
 
     ne : astropy.units.Quantity, ndarray (required)
         mean (0th order) electron density of all plasma components combined
