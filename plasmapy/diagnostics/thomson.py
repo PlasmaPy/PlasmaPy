@@ -102,10 +102,9 @@ def spectral_density(
         convertible to `~plasmapy.particles.Particle`. Default is `'H+'`
         corresponding to a single species of hydrogen ions.
 
-    fluid_vel : astropy.units.Quantity ndarray shape [3]
-        Velocity of the fluid or electron component in the rest frame in
-        units convertable to cm/s. Defaults to [0, 0, 0], representing
-        a stationary plasma.
+    fluid_vel : `~astropy.units.Quantity`, shape (3, ), optional
+        Electron fluid velocity in the rest frame. (convertible to cm/s) 
+        Defaults to a stationary plasma [0, 0, 0] m/s.
 
     ion_vel : astropy.units.Quantity ndarray, shape [N,3]
         Velocity vectors for each ion population relative to the
