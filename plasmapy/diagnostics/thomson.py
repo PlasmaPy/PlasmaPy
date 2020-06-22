@@ -105,9 +105,9 @@ def spectral_density(
         Electron fluid velocity in the rest frame. (convertible to m/s)
         Defaults to a stationary plasma [0, 0, 0] m/s.
 
-    ion_vel : astropy.units.Quantity ndarray, shape [N,3]
+    ion_vel : `~astropy.units.Quantity`, shape (N, 3), optional
         Velocity vectors for each ion population relative to the
-        fluid velocit in units convertable to cm/s. Defaults zero drift
+        fluid velocity. (convertible to m/s) Defaults zero drift
         for all specified ion species.
 
     probe_vec : float `~numpy.ndarray`, shape (3, )
