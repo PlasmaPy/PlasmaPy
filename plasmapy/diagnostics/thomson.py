@@ -97,10 +97,10 @@ def spectral_density(
         of the ion component number density to the total ion number density.
         Must sum to 1.0. Default is a single ion species.
 
-    ion_species : str or Particle class list, shape [N]
-        A list of either instances of the Particle class or strings
-        interpretable by that class representing each ion species.
-        Default is ['H+'] corresponding to a single species of hydrogen ions.
+    ion_species : str or `~plasmapy.particles.Particle`, shape (N, ), optional
+        A list or single instance of `~plasmapy.particles.Particle`, or strings
+        convertible to `~plasmapy.particles.Particle`. Default is `'H+'`
+        corresponding to a single species of hydrogen ions.
 
     fluid_vel : astropy.units.Quantity ndarray shape [3]
         Velocity of the fluid or electron component in the rest frame in
