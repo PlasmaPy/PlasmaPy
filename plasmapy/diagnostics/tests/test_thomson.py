@@ -45,6 +45,41 @@ def gen_collective_spectrum():
     return alpha, wavelengths, Skw
 
 
+def gen_multiple_ion_species_spectrum():
+    """
+    Generates an example Thomson scattering spectrum for multiple ion species
+    that also have drift velocities. Parameters are set to be in the
+    collective regime where ion species are important.
+    """
+    wavelengths = np.arange(520, 545, 0.01) * u.nm
+    probe_wavelength = 532 * u.nm
+    ne = 5e17 * u.cm ** -3
+    probe_vec = np.array([1, 0, 0])
+    scatter_vec = np.array([0, 1, 0])
+    fract = np.array([0.7, 0.3])
+    Te = 10 * u.eV
+    Ti = np.array([5, 5]) * u.eV
+    ion_species = ["p+", "C-12 5+"]
+    fluid_vel = np.array([300, 0, 0]) * u.km / u.s
+    ion_vel = np.array([[-500, 0, 0], [0, 500, 0]]) * u.km / u.s
+
+    alpha, Skw = thomson.spectral_density(
+        wavelengths,
+        probe_wavelength,
+        ne,
+        Te,
+        Ti,
+        fract=fract,
+        ion_species=ion_species,
+        probe_vec=probe_vec,
+        scatter_vec=scatter_vec,
+        fluid_vel=fluid_vel,
+        ion_vel=ion_vel,
+    )
+
+    return alpha, wavelengths, Skw
+
+
 def gen_non_collective_spectrum():
     """
     Generates an example Thomson scattering spectrum in the non-collective
@@ -121,4 +156,36 @@ def test_non_collective_spectrum():
         "Non-collective case electron "
         f"feature width is {e_width} "
         "instead of expected 22.6699"
+    )
+
+
+def test_multiple_ion_species_spectrum():
+    """
+    Compares the generated spectrum to previously determined values
+    """
+
+    alpha, wavelength, Skw = gen_multiple_ion_species_spectrum()
+
+    # Compute the width and max of the spectrum, and the wavelength
+    # of the max (sensitive to ion vel)
+    width = width_at_value(wavelength.value, Skw.value, 0.2e-11)
+    max_skw = np.max(Skw.value)
+    max_wavelength = wavelength.value[np.argmax(Skw.value)]
+
+    # Check width
+    assert np.isclose(width, 0.1599, 1e-3), (
+        f"Multiple ion species case spectrum width is {width} instead of "
+        "expected 0.1599"
+    )
+
+    # Check max value
+    assert np.isclose(max_skw, 2.4e-11, 1e-11), (
+        f"Multiple ion species case spectrum max is {max_skw} instead of "
+        "expected 2.4e-11"
+    )
+
+    # Check max peak location
+    assert np.isclose(max_wavelength, 531.549, 1e-3), (
+        "Multiple ion species case spectrum peak wavelength is "
+        f"{max_wavelength} instead of expected 531.549"
     )
