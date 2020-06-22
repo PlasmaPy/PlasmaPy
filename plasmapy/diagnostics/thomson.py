@@ -103,7 +103,7 @@ def spectral_density(
         corresponding to a single species of hydrogen ions.
 
     fluid_vel : `~astropy.units.Quantity`, shape (3, ), optional
-        Electron fluid velocity in the rest frame. (convertible to cm/s) 
+        Electron fluid velocity in the rest frame. (convertible to cm/s)
         Defaults to a stationary plasma [0, 0, 0] m/s.
 
     ion_vel : astropy.units.Quantity ndarray, shape [N,3]
