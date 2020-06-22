@@ -146,7 +146,7 @@ def spectral_density(
     # If ion drift velocity is not specified, create an array corresponding
     # to zero drift
     if ion_vel is None:
-        ion_vel = np.zeros([fract.size, 3]) * u.cm / u.s
+        ion_vel = np.zeros([fract.size, 3]) * u.m / u.s
 
     # Condition ion_species
     if isinstance(ion_species, (str, Particle)):
