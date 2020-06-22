@@ -247,7 +247,7 @@ def spectral_density(
             w_i[i, :], k, Ti[i], ni[i], ion, z_mean=ion_z[i]
         )
 
-    # Calculate the logitudinal dielectric function
+    # Calculate the longitudinal dielectric function
     epsilon = 1 + chiE + np.sum(chiI, axis=0)
 
     # Calculate the contributions to the spectral density function
